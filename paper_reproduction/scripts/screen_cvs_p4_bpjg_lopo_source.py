@@ -373,7 +373,9 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--support_pool_max_k", type=int, choices=(20,), default=20)
     parser.add_argument("--seed", type=int, required=True)
     parser.add_argument(
-        "--scope", choices=("joint_gate", "identity_joint", "fusion_joint"), required=True
+        "--scope",
+        choices=("joint_projection", "joint_gate", "identity_joint", "fusion_joint"),
+        required=True,
     )
     parser.add_argument("--rank", type=int, choices=(8,), default=8)
     parser.add_argument("--learning_rate", type=float, choices=(0.005, 0.01, 0.02), required=True)

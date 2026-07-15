@@ -928,3 +928,45 @@ N607计划：
 - 输出：`runs/qknnv42_p4_bpjg_lopo_source_kgrid_20260715_v22/<arm>/result.json`、`loss_trace.json/csv`、`adapter_state_fp16.pt`、状态回执；
 - 成功规则：每臂adapted accuracy严格高于P4 identity且最低类不降低；任何SHA漂移、support/query重叠、非LEO_weak输入或基础artifact缺失均立即停止；
 - 已知风险：K=1只能leave-one-view，无法像K≥2那样真正留一物理shot；若K=1为负，不扩大参数量，优先调整K1专用support增强/先验正则。
+
+### 18.2v22完成结果与shot依赖诊断
+
+v22由Git提交`976f6ae`承载。2026-07-15 23:23+08:00直连预检与live inventory确认`active_training_processes=[]`、`gpu_compute=[]`，8张GPU约10MiB；目标run/log不存在。远端trainer、checkpoint、P4的SHA与锁定值一致，screen与launcher同步后SHA及远端语法验证通过。三个launcher PID分别为K1 `1864643`、K5 `1864644`、K20 `1864646`。
+
+共同strict direct ADV3B02为87.3917%/71.0227%。以下每行指标和资源来自同一K、同一候选；K10为v21既有同split结果。
+
+|K|P4 identity acc/floor|adapted acc/floor|相对identity acc/floor|相对direct acc/floor|steps|adapt时延|support forward等价|判定|
+|---:|---:|---:|---:|---:|---:|---:|---:|---|
+|1|88.0334%/73.5484%|87.9371%/73.3333%|-0.0962/-0.2151pp|+0.5454/+2.3106pp|5|0.650s|108|`SOURCE_SCREEN_NEGATIVE`|
+|5|88.2900%/72.6882%|88.5146%/72.2581%|+0.2246/-0.4301pp|+1.1229/+1.2353pp|25|1.078s|990|`SOURCE_SCREEN_NEGATIVE`|
+|10|88.3221%/73.7634%|88.8354%/75.9140%|+0.5133/+2.1505pp|+1.4437/+4.8913pp|50|1.293s|1,980|PASS/source winner|
+|20|88.4184%/73.7634%|88.8996%/73.9785%|+0.4812/+0.2151pp|+1.5079/+2.9558pp|50|1.330s|2,160|PASS|
+
+三份完整日志各有5个`[BP-JG-EPOCH]`，均无Traceback、OOM或Killed。K1的loss从0.670236降至0.615924、mean margin从0.695903升至0.696725，但clear场景accuracy提高+0.0963pp，low/rain分别下降-0.2887/-0.0962pp，且rain floor下降-1.7045pp；说明三View交叉损失的平均改善不能保证最差场景/类改善。K5整体accuracy正增益，但clear/rain floor各下降-0.6452pp，因此被最低类保护规则正确拒绝。K20在三个场景accuracy全部提升，rain floor提高+0.6452pp。
+
+关键artifact：
+
+|K|result SHA256|target adapter SHA256|
+|---:|---|---|
+|1|`3fc880aaa7052bbe9b4c74d3771bfb00abe34a4c3ca61cee6c842747fb35e2cf`|`582ee42f2f2403b64c9e218b74c4d63da51a2196fb404cca3666e77e57bbb133`|
+|5|`c40d0d4940a4e5b2bc272c0b3bbb80596fa82b34b92d58ca832b93b14079eba4`|`ce499e135653f13f84497ad028ef586ec9639b13fc965ef0939803155f5506a8`|
+|20|`16f1a195b307298d76c6e24ad83f9e1f3dd61e7ab1db12d1924e7a279dbcf6be`|`c840de062b63218168b5ba01962bacb049b6909148ee32240d586039ac09ee6a`|
+
+完整回收位于`E:\type10-7\automation_reports\CV-SincNet\qknnv42_extreme_light_optimization_20260715\remote_artifacts_lopo_source_v22`。回收后无远端v22进程/GPU占用，本地SSH与N607/bridge TCP22连接均为0。
+
+### 18.3K1关键层收缩设计
+
+K1不继续扩大模型。ADV3B02的`joint_proj`是所有identity/PA/DAC分支汇合后、qKNN的`feat_joint`输出前最后一层；只更新它可以直接旋转最终判别几何，同时冻结`id_gate`，避免仅凭每类1个物理shot错误重估设备缺陷门控。当前`joint_gate`为6400参数；`joint_projection`预计进一步下降到约3840参数，并保持合并后每query额外MAC为0。
+
+v23只做K1最小判别实验：`joint_projection,rank8`的lr=0.005/0.01/0.02，加一个`joint_gate,lr=0.005`作为低步长对照；均为5epoch自然5步、相同嵌套support/query、相同三LEO_weak View。若joint projection仍不能同时提高accuracy/floor，下一步才加入support-only最差View×类margin信赖域缩放，不增加训练参数。
+
+新增/更新文件：
+
+|文件|用途|SHA256|
+|---|---|---|
+|`screen_cvs_p4_bpjg_lopo_source.py`|允许已有`joint_projection`注入范围|`f19be0b4c3745c4c950161199faa82008b001f4904640fc8a6129e00a8fd1834`|
+|`launch_cvs_p4_bpjg_lopo_source_v23.sh`|K1四臂最小层/步长实验|`19bed00f24580c62d90156825843c914cab1c559dd4fcf79d08da1da4ab205ef`|
+|`test_source_bpjg_lopo_screen.py`|锁定v23层、lr、K与SHA|`5d5fe783f4d4a07a5715fe2398503fc84d28101f04c92ec1edd82c08e822695e`|
+|`test_support_lora_adapter.py`|真实ADV3B02＋P4下锁定joint projection为3840参数并验证FP16合并|`b8a8209dc6d18d968ae12e36be652c054c01a0de769cecf6e7fd1864847354ad`|
+
+本地使用真实checkpoint/P4 artifact验证`61 passed`，确认joint projection精确为3840参数，非目标层不变、FP16 roundtrip/merge parity及最终全冻结均通过；`py_compile`和v23 `bash -n`通过。

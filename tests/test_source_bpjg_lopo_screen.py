@@ -159,3 +159,31 @@ def test_v22_launcher_confirms_locked_joint_gate_across_k_grid() -> None:
     assert 'ARM_INDEXES_RAW="${ARM_INDEXES:-0 1 2}"' in launcher
     assert 'refusing to overwrite existing v22 arm' in launcher
     assert 'f"source LEO_weak K{int(args.k_shot)} method screen only"' in screen
+
+
+def test_v23_launcher_tests_the_minimal_k1_joint_projection_scope() -> None:
+    root = Path(__file__).resolve().parents[1]
+    launcher = (
+        root
+        / "paper_reproduction"
+        / "scripts"
+        / "launch_cvs_p4_bpjg_lopo_source_v23.sh"
+    ).read_text(encoding="utf-8")
+    screen = (
+        root
+        / "paper_reproduction"
+        / "scripts"
+        / "screen_cvs_p4_bpjg_lopo_source.py"
+    ).read_text(encoding="utf-8")
+    assert "qknnv42_p4_bpjg_lopo_source_k1_layer_20260715_v23" in launcher
+    assert "labels=(JP8_LR005 JP8_LR010 JP8_LR020 JG8_LR005)" in launcher
+    assert "scopes=(joint_projection joint_projection joint_projection joint_gate)" in launcher
+    assert "lrs=(0.005 0.01 0.02 0.005)" in launcher
+    assert "--k_shot 1" in launcher
+    assert (
+        "SCREEN_SHA256="
+        "f19be0b4c3745c4c950161199faa82008b001f4904640fc8a6129e00a8fd1834"
+        in launcher
+    )
+    assert 'refusing to overwrite existing v23 arm' in launcher
+    assert '"joint_projection", "joint_gate"' in screen

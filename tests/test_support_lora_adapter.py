@@ -257,6 +257,7 @@ def test_ground_p4_is_loaded_merged_then_target_jg_is_injected(tmp_path) -> None
 @pytest.mark.parametrize(
     ("scope", "targets", "expected_parameters"),
     [
+        ("joint_projection", JOINT_PROJECTION_LORA_TARGETS, 3_840),
         ("joint_gate", JOINT_GATE_LORA_TARGETS, 6_400),
         ("identity_joint", IDENTITY_JOINT_LORA_TARGETS, 6_400),
         ("fusion_joint", FUSION_JOINT_LORA_TARGETS, 7_688),
