@@ -563,3 +563,117 @@ bash paper_reproduction/scripts/launch_cvs_p4_bpjg_dev20_k10_v17.sh
 - 4个同步文件远端SHA256与14.4本地值逐项一致；ADV3B02 checkpoint和P4 artifact的远端SHA也分别匹配`2699eedc...`与`95f9a8ba...`。
 - 远端CVS-RFFI Python `py_compile`、launcher `bash -n`、专用config类对称qKNN锁和3个input cache存在性均通过；run/log目标根均不存在。
 - 每个GPU只安排1个训练进程，低于项目允许的每卡2个上限。launcher完成有界启动后退出，不保留SSH或monitor会话。
+
+
+## 十五、v17完成结果：容量不是瓶颈，层位置与同shot捷径才是瓶颈
+
+### 15.1完成状态与声明边界
+
+实验`qknnv42_p4_bpjg_dev20_k10_20260715_v17`已在N607完成，全部训练、评测、FP16 artifact、完整日志和资源审计已回收到本地`remote_artifacts_bpjg_v17`。原始`P4_IDENTITY`训练/导出成功，但评测器拒绝自定义resource tier；修复评测兼容后在独立目录`v17_identity_repair1`重跑identity评测，没有删除或覆盖原结果。以下仍是receiver `8-8`、seed713101、K10、20新类的单行development diagnostic，不能写成正式Stage2-C或显著优于MRIOR结论。
+
+### 15.2同一候选行联合结果
+
+|candidate|层/rank|old_acc|new_acc|H|遗忘率|min old|min new|相对identity old/new/H|结论|
+|---|---|---:|---:|---:|---:|---:|---:|---:|---|
+|`P4_IDENTITY`|无target更新|51.111%|26.333%|34.422%|29.722%|13.333%|0%|基线|加入20类后旧类严重塌缩|
+|`P4_JP_R8`|`joint_proj`/8|51.944%|26.500%|34.734%|30.000%|16.667%|0%|+0.833/+0.167/+0.312pp|小幅改善floor，但遗忘略增|
+|`P4_JG_R8`|`id_gate＋joint_proj`/8|52.778%|26.583%|34.991%|29.167%|18.333%|0%|+1.667/+0.250/+0.570pp|v17最佳，但远未达到目标|
+|`P4_JG_R16`|`id_gate＋joint_proj`/16|52.778%|26.583%|34.991%|29.167%|18.333%|0%|+1.667/+0.250/+0.570pp|预测与rank8完全相同，无容量收益|
+
+|candidate/scenario|old_acc|new_acc|H|old-before|遗忘率|
+|---|---:|---:|---:|---:|---:|
+|`P4_IDENTITY/clear`|53.333%|31.750%|39.804%|82.500%|29.167%|
+|`P4_IDENTITY/low`|45.833%|27.000%|33.982%|78.333%|32.500%|
+|`P4_IDENTITY/rain`|54.167%|20.250%|29.479%|81.667%|27.500%|
+|`P4_JP_R8/clear`|54.167%|32.250%|40.429%|84.167%|30.000%|
+|`P4_JP_R8/low`|45.833%|26.750%|33.783%|79.167%|33.333%|
+|`P4_JP_R8/rain`|55.833%|20.500%|29.989%|82.500%|26.667%|
+|`P4_JG_R8/clear`|55.833%|32.250%|40.885%|84.167%|28.333%|
+|`P4_JG_R8/low`|45.833%|27.000%|33.982%|79.167%|33.333%|
+|`P4_JG_R8/rain`|56.667%|20.500%|30.108%|82.500%|25.833%|
+|`P4_JG_R16/clear`|55.833%|32.250%|40.885%|84.167%|28.333%|
+|`P4_JG_R16/low`|45.833%|27.000%|33.982%|79.167%|33.333%|
+|`P4_JG_R16/rain`|56.667%|20.500%|30.108%|82.500%|25.833%|
+
+### 15.3训练与资源结果
+
+|candidate|target参数|step|训练时延|峰值CUDA|support前向等价|最终loss|最终margin/base margin|真实总状态|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+|`P4_IDENTITY`|0|0|0s|0|0|0|—|77,033B|
+|`P4_JP_R8`|3,840|50|4.401s|166,224,384B|4,680|2.9334|-0.06633/-0.07158|85,431B|
+|`P4_JG_R8`|6,400|50|4.136s|166,234,624B|4,680|2.9399|-0.06664/-0.07158|91,141B|
+|`P4_JG_R16`|12,800|50|4.495s|166,260,224B|4,680|2.9368|-0.06646/-0.07158|103,941B|
+
+真实总状态按qKNN runner `persistent_state_bytes=35,977B`＋P4文件40,124B＋target文件＋24B门限计算，四臂均显著低于256KB。相对历史MRIOR平均17.90s，三条target适配仅约4.14–4.50s，已达到时延≤25%的轻量级目标附近；50步也仅为MRIOR每row 600次full-backbone更新的1/12。但性能门槛完全未达到，不能因资源PASS而promotion。
+
+### 15.4底层诊断
+
+1. **主故障是26类竞争，不是单纯域偏移。**P4 identity的old-before三场景均值约80.83%，加入20类后old_acc降至51.11%，说明旧类特征本身尚可，但统一26类原型空间发生严重重叠。
+2. **rank不是瓶颈。**JG-r8与JG-r16逐项预测完全相同；继续增大rank只增加状态，不增加有效自由度。
+3. **`id_gate`几乎没有真正更新。**JG-r8中`id_gate`合并delta Frobenius范数仅为base的0.00483%，而`joint_proj`为0.52971%。ADV3B02中门控实际为`feat_id*(1+0.35*sigmoid(g))`，受0.35系数和sigmoid共同限制，因此少步LoRA很难通过它重塑类间几何。
+4. **原跨View CE存在同shot捷径。**每个shot index episode每类只有一个物理shot，prototype虽然排除了当前View，却仍包含同一物理shot的另外两个View。网络可用接收View一致性完成匹配，却没有被迫学会“同类不同物理shot”之间的可迁移边界。
+5. **loss仍未把support边界推为正值。**50步后margin仍约-0.0666，support训练正确率不足，表明当前监督结构比rank更值得优先修改。
+
+因此v18不增加rank，不更新卷积backbone，而是同时改变两件事：把可写层换到更有直接几何作用的`id_proj/fuse`，并用leave-one-physical-shot-out消除同shot捷径。
+
+
+## 十六、v18高效域适应设计：P4-BPJG-LOPO
+
+### 16.1梯度更新层选择
+
+|target层组|数据流位置|作用|rank8参数|判断|
+|---|---|---|---:|---|
+|`joint_gate`|`id_gate＋joint_proj`|保留v17锚点，验证单改loss的收益|6,400|必要对照|
+|`identity_joint`|`id_proj＋joint_proj`|`id_proj`直接旋转由`fuse`输出得到的160维身份核，再由`joint_proj`校正最终qKNN空间|6,400|主候选；参数不变但梯度作用更直接|
+|`fusion_joint`|`fuse＋joint_proj`|`fuse`在池化后融合time/frequency/rho，能先纠正receiver/LEO造成的分支尺度与方向偏移，再修正最终类几何|7,688|稍上游但仍不保存长卷积反向图，资源可控|
+
+Sinc、time/frequency/PA卷积、归一化、CosFace head和domain branch继续冻结。这样既避免K10用少量support重写硬件指纹滤波器，也把星上可训练参数限制在7,688以内。
+
+### 16.2LOPO目标
+
+对一个episode中物理support样本`i`、View集合`V`和类别`c`，构造排除该物理样本全部View的原型：
+
+`p_c^(-i)=Norm(sum_{j:y_j=c,j!=i} sum_{v in V} z_jv / count)`。
+
+再用每个`z_iv`对`p_c^(-i)`计算prototype CE和boundary保持。这样同一物理shot的其他View不能进入其教师原型，模型必须依赖同类的另一个物理shot，直接针对跨shot泛化与26类原型去混淆。prototype bank实现为`[physical,C,D]`向量化张量，不在Python中逐样本/逐类循环，也不产生GPU同步点。
+
+K10采用环形相邻shot配对：episode `i`包含每类shot `i`与`(i+1) mod K`，10个episode/epoch；每个物理shot每epoch出现2次。K20仍将20个shot分成10组，每组2个shot，每个shot每epoch只出现1次。K1没有第二个物理shot，自动回退到原leave-one-view目标，保证K1路径可运行；后续K1专用增益仍需独立设计和确认。
+
+损失权重保持`CE＋2boundary＋0.5anchor＋0.5Gram＋0.25sep＋0.1view`不变，仅改变prototype排除规则，避免同时改层、loss权重和优化器而无法归因。SGD无momentum、5epoch、50步、`weight_decay=1e-4`、temperature18、clip1保持不变。
+
+### 16.3计算与存储预算
+
+K10、26类、3View时，v17为base预计算780次样本前向＋50×78次episode前向，共4,680；LOPO配对后为780＋50×156，共8,580，增加83.3%，位于用户允许的50%–100%性能优先放宽区间。相对MRIOR的full-backbone 600步，LOPO仍只有50个optimizer step，且只对≤7,688参数反向。
+
+|层组|参数|FP16 payload|预计真实总状态|部署额外LoRA MAC|
+|---|---:|---:|---:|---:|
+|`joint_gate-r8`|6,400|12,800B|约91KB|合并后0|
+|`identity_joint-r8`|6,400|12,800B|约91KB|合并后0|
+|`fusion_joint-r8`|7,688|15,376B|约94KB|合并后0|
+
+训练时仍只使用3个已注册弱信道View；query默认1-view，自适应多View属于后续阶段，本轮不混入adapt层/损失筛选。
+
+### 16.4v18四臂开发矩阵
+
+实验ID锁定为`qknnv42_p4_bpjg_lopo_dev20_k10_20260715_v18`，仍只使用receiver `8-8`、seed713101、K10、20新类development row。
+
+|arm|target层|lr|rank|参数|用途|
+|---|---|---:|---:|---:|---|
+|`JG_R8_LOPO_LR005`|`id_gate＋joint_proj`|0.005|8|6,400|仅改变LOPO目标，与v17同层同lr比较|
+|`JG_R8_LOPO_LR020`|`id_gate＋joint_proj`|0.020|8|6,400|验证原更新幅度过小假设|
+|`IJ_R8_LOPO_LR010`|`id_proj＋joint_proj`|0.010|8|6,400|主层组候选|
+|`FJ_R8_LOPO_LR010`|`fuse＋joint_proj`|0.010|8|7,688|分支融合层候选|
+
+选择顺序仍是old_acc→min old→new_acc→H→遗忘率，且必须先显著改善identity；资源只作硬约束，不用来掩盖性能不足。本轮config继续锁定`resource_diagnostic_only=true`、`formal_claim_authority=false`，不使用query训练、old/new角色、类别配额、dense graph或额外head训练。
+
+
+### 16.5本地实现与验证
+
+- `train_export_cvs_support_lora_adapter.py`已增加`bp_jg_lopo`目标、`identity_joint/fusion_joint`层组、K10环形双shot episode、K20无遗漏单覆盖、K1安全回退、向量化LOPO prototype bank，以及包含objective/scope/rank/lr/P4 SHA的防碰撞run ID。
+- 真实ADV3B02＋P4集成验证通过：`joint_gate/identity_joint/fusion_joint`分别严格为6,400/6,400/7,688个可训练参数；三者LoRA恒等注入的最大特征误差均为0；P4合并最大绝对误差为4.17e-7。
+- 专用support测试46/46通过；support、micro-IQ、adaptive View、candidate lock、class-incremental和Stage2 runner相邻回归共134/134通过；Python `py_compile`、v18 launcher `bash -n`、四臂CLI部署锁、config类对称qKNN锁和`git diff --check`均通过。
+- Git承载面本轮待提交文件SHA256：
+  - `train_export_cvs_support_lora_adapter.py`：`0c5857696d08695895d484105ef4e8932d489654d4767827f8fb6eb3aab277e1`；
+  - `cvs_qknnv42_p4_bpjg_lopo_dev20_k10_20260715_n607.json`：`96470803c7a1c6f039b2ad673aa21e119622d52517c117054e817ecef791dc04`；
+  - `launch_cvs_p4_bpjg_lopo_dev20_k10_v18.sh`：`0289062ea6d73df81058049d71473807767866878f63782c873275ced83c0be0`；
+  - `test_support_lora_adapter.py`：`ddf366fbdd7b1e883fbadd25d7fa403b47e345c7c39a09828ee8464d0dae9fb0`。

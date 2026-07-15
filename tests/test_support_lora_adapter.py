@@ -7,6 +7,8 @@ from paper_reproduction.scripts.train_export_cvs_support_lora_adapter import (
     EFFECTIVE_FEATURE_LORA_TARGETS,
     LATE_FILM_TARGETS,
     FULL_FEATURE_LORA_TARGETS,
+    FUSION_JOINT_LORA_TARGETS,
+    IDENTITY_JOINT_LORA_TARGETS,
     JOINT_GATE_LORA_TARGETS,
     JOINT_PROJECTION_LORA_TARGETS,
     PROJECTION_LORA_TARGETS,
@@ -189,6 +191,23 @@ def test_target_joint_projection_rank8_is_exactly_3840_parameters() -> None:
     assert [row["module"] for row in audit["target_modules"]] == list(
         JOINT_PROJECTION_LORA_TARGETS
     )
+
+
+@pytest.mark.parametrize(
+    ("scope", "targets", "expected_parameters"),
+    [
+        ("identity_joint", IDENTITY_JOINT_LORA_TARGETS, 6_400),
+        ("fusion_joint", FUSION_JOINT_LORA_TARGETS, 7_688),
+    ],
+)
+def test_lopo_key_layer_scopes_remain_below_8k_parameters(
+    scope: str, targets: tuple[str, ...], expected_parameters: int
+) -> None:
+    model = _Model()
+    audit = inject_feat_joint_lora(model, rank=8, alpha=8.0, scope=scope)
+    assert audit["trainable_parameters"] == expected_parameters
+    assert audit["adapter_state_bytes_fp16"] == 2 * expected_parameters
+    assert [row["module"] for row in audit["target_modules"]] == list(targets)
 
 
 def test_ground_p4_is_loaded_merged_then_target_jg_is_injected(tmp_path) -> None:
@@ -635,6 +654,29 @@ def test_shot_index_episodes_cover_k20_in_ten_balanced_steps() -> None:
         assert torch.bincount(per_view_labels[0], minlength=3).tolist() == [2, 2, 2]
 
 
+@pytest.mark.parametrize(
+    ("k_shot", "expected_repeats"), [(10, 2), (20, 1)]
+)
+def test_lopo_shot_index_episodes_pair_k10_without_omitting_k20(
+    k_shot: int, expected_repeats: int
+) -> None:
+    physical_labels = torch.arange(3).repeat_interleave(k_shot)
+    labels = physical_labels.repeat(3)
+    episodes = build_shot_index_episode_positions(
+        labels,
+        view_count=3,
+        max_episodes_per_epoch=10,
+        pair_physical_shots=True,
+    )
+    assert len(episodes) == 10
+    assert all(int(episode.numel()) == 3 * 3 * 2 for episode in episodes)
+    first_view = torch.cat(
+        [episode[: int(episode.numel()) // 3] for episode in episodes]
+    )
+    counts = torch.bincount(first_view, minlength=3 * k_shot)
+    assert torch.equal(counts, torch.full_like(counts, expected_repeats))
+
+
 def test_bp_jg_episode_loss_is_finite_symmetric_and_differentiable() -> None:
     torch.manual_seed(7)
     physical_labels = torch.tensor([0, 0, 1, 1, 2, 2])
@@ -673,6 +715,37 @@ def test_bp_jg_episode_loss_is_finite_symmetric_and_differentiable() -> None:
         temperature=18.0,
     )
     for key in expected:
+        torch.testing.assert_close(losses[key], permuted[key])
+    losses["loss"].backward()
+    assert features.grad is not None
+    assert bool(torch.isfinite(features.grad).all())
+
+
+def test_bp_jg_lopo_loss_is_class_symmetric_and_differentiable() -> None:
+    torch.manual_seed(17)
+    physical_labels = torch.tensor([0, 0, 1, 1, 2, 2])
+    labels = physical_labels.repeat(3)
+    base = torch.randn(18, 12)
+    features = (base + 0.03 * torch.randn_like(base)).requires_grad_(True)
+    losses = bp_jg_episode_loss(
+        features,
+        base,
+        labels,
+        view_count=3,
+        temperature=18.0,
+        leave_one_physical_shot=True,
+    )
+    assert all(bool(torch.isfinite(value).all()) for value in losses.values())
+    class_permutation = torch.tensor([1, 2, 0])
+    permuted = bp_jg_episode_loss(
+        features,
+        base,
+        class_permutation[labels],
+        view_count=3,
+        temperature=18.0,
+        leave_one_physical_shot=True,
+    )
+    for key in losses:
         torch.testing.assert_close(losses[key], permuted[key])
     losses["loss"].backward()
     assert features.grad is not None
@@ -842,6 +915,64 @@ def test_bp_jg_k_grid_executes_locked_step_budget(
     assert runtime["support_forward_sample_equivalents"] == 36 * k_shot
 
 
+def test_bp_jg_lopo_k10_uses_paired_shots_with_bounded_compute(
+    monkeypatch,
+) -> None:
+    import numpy as np
+    import paper_reproduction.scripts.train_export_cvs_micro_iq_adapter as micro_trainer
+    import paper_reproduction.scripts.train_export_cvs_support_lora_adapter as trainer
+
+    model = _Model()
+    inject_feat_joint_lora(model, rank=8, alpha=8.0, scope="joint_gate")
+
+    def fake_feature_forward(current_model, rows):
+        signal = rows.mean(dim=(1, 2), keepdim=False).unsqueeze(1)
+        identity = signal.expand(-1, 160)
+        gate = current_model.id_backbone.cls_head.id_gate[0](identity)
+        joint = current_model.id_backbone.cls_head.joint_proj[0](
+            torch.cat([identity, gate], dim=1)
+        )
+        return joint, joint[:, :2]
+
+    monkeypatch.setattr(micro_trainer, "_feature_forward", fake_feature_forward)
+    monkeypatch.setattr(trainer, "_feature_forward", fake_feature_forward)
+    k_shot = 10
+    physical_labels = np.repeat(np.asarray([0, 1]), k_shot)
+    signal = np.where(physical_labels == 0, -1.0, 1.0).astype(np.float32)
+    physical = np.repeat(signal[:, None, None], 2 * 4, axis=1).reshape(-1, 2, 4)
+    support_rows = np.concatenate([physical, physical * 0.9, physical * 1.1])
+    support_labels = np.tile(physical_labels, 3)
+    physical_ids = [
+        f"c{class_index}-shot{shot_index}"
+        for class_index in (0, 1)
+        for shot_index in range(k_shot)
+    ]
+    _, runtime = train_support_only_bp_jg(
+        model,
+        support_rows,
+        support_labels,
+        physical_support_ids=physical_ids,
+        support_row_physical_ids=physical_ids * 3,
+        epochs=5,
+        learning_rate=1.0e-2,
+        weight_decay=1.0e-4,
+        temperature=18.0,
+        support_view_count=3,
+        batch_size=256,
+        max_optimizer_steps=50,
+        grad_clip=1.0,
+        leave_one_physical_shot=True,
+        seed=713101,
+        device=torch.device("cpu"),
+    )
+    assert runtime["optimizer_steps"] == 50
+    assert runtime["episodes_per_epoch"] == 10
+    assert runtime["shot_indices_consumed_per_epoch"] == 10
+    assert runtime["shot_occurrences_per_class_per_epoch"] == 20
+    assert runtime["prototype_exclusion_mode"] == "leave_one_physical_shot"
+    assert runtime["support_forward_sample_equivalents"] == 660
+
+
 def test_cli_accepts_class_symmetric_dro_controls() -> None:
     from paper_reproduction.scripts.train_export_cvs_support_lora_adapter import parse_args
 
@@ -940,6 +1071,78 @@ def test_cli_locks_bp_jg_p4_and_five_epoch_controls() -> None:
     assert build_support_run_id(other_ground) != run_id
     args.view_sampling_mode = "stacked"
     with pytest.raises(ValueError, match="bp_jg_shot_index_episodes"):
+        _validate_deployment_controls(args)
+
+
+@pytest.mark.parametrize(
+    ("scope", "learning_rate"),
+    [
+        ("joint_gate", "0.005"),
+        ("identity_joint", "0.01"),
+        ("fusion_joint", "0.02"),
+    ],
+)
+def test_cli_locks_lopo_key_layers_rank8_and_learning_rate_grid(
+    scope: str, learning_rate: str
+) -> None:
+    from paper_reproduction.scripts.train_export_cvs_support_lora_adapter import (
+        parse_args,
+    )
+
+    args = parse_args(
+        [
+            "--config",
+            "config.json",
+            "--ckpt",
+            "model.pth",
+            "--out_root",
+            "out",
+            "--receiver",
+            "8-8",
+            "--new_count",
+            "20",
+            "--seed",
+            "713101",
+            "--k_shot",
+            "10",
+            "--adapt_objective",
+            "bp_jg_lopo",
+            "--scope",
+            scope,
+            "--rank",
+            "8",
+            "--alpha",
+            "8",
+            "--epochs",
+            "5",
+            "--optimizer",
+            "sgd",
+            "--max_optimizer_steps",
+            "50",
+            "--learning_rate",
+            learning_rate,
+            "--weight_decay",
+            "0.0001",
+            "--temperature",
+            "18",
+            "--grad_clip",
+            "1",
+            "--view_sampling_mode",
+            "shot_index",
+            "--ground_adapter_state",
+            "ground_p4.pt",
+            "--ground_adapter_sha256",
+            "a" * 64,
+        ]
+    )
+    _validate_deployment_controls(args)
+    run_id = build_support_run_id(args)
+    assert f"bp_jg_lopo_{scope}_r8" in run_id
+    assert f"lr{learning_rate.replace('.', 'p')}" in run_id
+
+    args.rank = 16
+    args.alpha = 16.0
+    with pytest.raises(ValueError, match="bp_jg_rank"):
         _validate_deployment_controls(args)
 
 

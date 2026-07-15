@@ -82,6 +82,16 @@ JOINT_GATE_LORA_TARGETS = (
     "id_backbone.cls_head.joint_proj.0",
 )
 
+IDENTITY_JOINT_LORA_TARGETS = (
+    "id_backbone.cls_head.id_proj.0",
+    "id_backbone.cls_head.joint_proj.0",
+)
+
+FUSION_JOINT_LORA_TARGETS = (
+    "id_backbone.fuse.0",
+    "id_backbone.cls_head.joint_proj.0",
+)
+
 FULL_FEATURE_LORA_TARGETS = (
     "id_backbone.t_proj",
     "id_backbone.f_proj",
@@ -285,6 +295,10 @@ def inject_feat_joint_lora(
         target_names = JOINT_PROJECTION_LORA_TARGETS
     elif scope_norm == "joint_gate":
         target_names = JOINT_GATE_LORA_TARGETS
+    elif scope_norm == "identity_joint":
+        target_names = IDENTITY_JOINT_LORA_TARGETS
+    elif scope_norm == "fusion_joint":
+        target_names = FUSION_JOINT_LORA_TARGETS
     else:
         raise ValueError(f"unsupported LoRA scope: {scope}")
     for parameter in model.parameters():
@@ -767,6 +781,7 @@ def build_shot_index_episode_positions(
     *,
     view_count: int,
     max_episodes_per_epoch: int = 10,
+    pair_physical_shots: bool = False,
 ) -> list[torch.Tensor]:
     """Group all registered classes by shot index without role or class quotas."""
 
@@ -776,7 +791,17 @@ def build_shot_index_episode_positions(
         _matched_view_support_layout(labels, view_count=int(view_count))
     )
     episode_count = min(int(k_shot), int(max_episodes_per_epoch))
-    shot_groups = np.array_split(np.arange(k_shot, dtype=np.int64), episode_count)
+    if bool(pair_physical_shots) and int(k_shot) >= 2 and int(k_shot) <= int(
+        max_episodes_per_epoch
+    ):
+        shot_groups = [
+            np.asarray([index, (index + 1) % int(k_shot)], dtype=np.int64)
+            for index in range(int(k_shot))
+        ]
+    else:
+        shot_groups = list(
+            np.array_split(np.arange(k_shot, dtype=np.int64), episode_count)
+        )
     episodes: list[torch.Tensor] = []
     for shot_group in shot_groups:
         shot_tensor = torch.as_tensor(
@@ -793,13 +818,24 @@ def build_shot_index_episode_positions(
                 ]
             )
         )
-    covered = torch.sort(
-        torch.cat([episode[: int(episode.numel()) // int(view_count)] for episode in episodes])
-    ).values
+    covered = torch.cat(
+        [episode[: int(episode.numel()) // int(view_count)] for episode in episodes]
+    )
+    bincount = torch.bincount(covered, minlength=physical_count)
+    expected_repeats = (
+        2
+        if bool(pair_physical_shots)
+        and int(k_shot) >= 2
+        and int(k_shot) <= int(max_episodes_per_epoch)
+        else 1
+    )
     if not torch.equal(
-        covered, torch.arange(physical_count, device=labels.device)
+        bincount,
+        torch.full_like(bincount, int(expected_repeats)),
     ):
-        raise RuntimeError("shot-index episodes do not cover every physical support exactly once")
+        raise RuntimeError(
+            "shot-index episodes do not provide the registered physical coverage"
+        )
     return episodes
 
 
@@ -816,6 +852,7 @@ def bp_jg_episode_loss(
     gram_weight: float = 0.5,
     separation_weight: float = 0.25,
     view_weight: float = 0.1,
+    leave_one_physical_shot: bool = False,
 ) -> dict[str, torch.Tensor]:
     """Boundary-preserving, class-symmetric loss on registered support only."""
 
@@ -827,7 +864,7 @@ def bp_jg_episode_loss(
         raise ValueError("temperature must be positive and finite")
     if not 0.0 <= float(boundary_margin_delta) <= 0.5:
         raise ValueError("boundary_margin_delta must be in [0,0.5]")
-    physical_count, class_count, _, _ = _matched_view_support_layout(
+    physical_count, class_count, episode_k_shot, _ = _matched_view_support_layout(
         labels, view_count=int(view_count)
     )
     z = _norm_rows(features).reshape(int(view_count), physical_count, -1)
@@ -849,15 +886,65 @@ def bp_jg_episode_loss(
 
     cross_scores: list[torch.Tensor] = []
     base_cross_scores: list[torch.Tensor] = []
-    for held_out_view in range(int(view_count)):
-        kept = [index for index in range(int(view_count)) if index != held_out_view]
-        prototype_rows = torch.cat([z[index] for index in kept], dim=0)
-        base_prototype_rows = torch.cat([z0[index] for index in kept], dim=0)
-        prototype_labels = physical_labels.repeat(len(kept))
-        prototypes = class_prototypes(prototype_rows, prototype_labels)
-        base_prototypes = class_prototypes(base_prototype_rows, prototype_labels)
-        cross_scores.append(z[held_out_view] @ prototypes.T)
-        base_cross_scores.append(z0[held_out_view] @ base_prototypes.T)
+    use_lopo = bool(leave_one_physical_shot) and int(episode_k_shot) >= 2
+    if use_lopo:
+        # Build one prototype bank per held physical sample in a single tensor.
+        # Only the held sample's true-class prototype changes; all other-class
+        # prototypes retain every registered support row.  This removes the
+        # same-shot multi-view shortcut without Python/GPU synchronization in
+        # the physical-sample loop.
+        class_one_hot = F.one_hot(
+            physical_labels, num_classes=class_count
+        ).to(dtype=z.dtype)
+        class_row_counts = class_one_hot.sum(dim=0) * float(view_count)
+        if bool((class_row_counts <= float(view_count)).any()):
+            raise ValueError(
+                "leave-one-physical prototype requires another shot per class"
+            )
+
+        class_sums = torch.einsum("pc,vpd->cd", class_one_hot, z)
+        base_class_sums = torch.einsum("pc,vpd->cd", class_one_hot, z0)
+        prototype_sums = class_sums.unsqueeze(0).expand(
+            physical_count, -1, -1
+        ).clone()
+        base_prototype_sums = base_class_sums.unsqueeze(0).expand(
+            physical_count, -1, -1
+        ).clone()
+        prototype_counts = class_row_counts.unsqueeze(0).expand(
+            physical_count, -1
+        ).clone()
+        held_indices = torch.arange(physical_count, device=labels.device)
+        held_view_sums = z.sum(dim=0)
+        base_held_view_sums = z0.sum(dim=0)
+        prototype_sums[held_indices, physical_labels] -= held_view_sums
+        base_prototype_sums[held_indices, physical_labels] -= base_held_view_sums
+        prototype_counts[held_indices, physical_labels] -= float(view_count)
+        prototype_banks = F.normalize(
+            prototype_sums / prototype_counts.unsqueeze(-1), dim=-1
+        )
+        base_prototype_banks = F.normalize(
+            base_prototype_sums / prototype_counts.unsqueeze(-1), dim=-1
+        )
+        cross_scores = [
+            torch.einsum("pd,pcd->pc", z[view_index], prototype_banks)
+            for view_index in range(int(view_count))
+        ]
+        base_cross_scores = [
+            torch.einsum(
+                "pd,pcd->pc", z0[view_index], base_prototype_banks
+            )
+            for view_index in range(int(view_count))
+        ]
+    else:
+        for held_out_view in range(int(view_count)):
+            kept = [index for index in range(int(view_count)) if index != held_out_view]
+            prototype_rows = torch.cat([z[index] for index in kept], dim=0)
+            base_prototype_rows = torch.cat([z0[index] for index in kept], dim=0)
+            prototype_labels = physical_labels.repeat(len(kept))
+            prototypes = class_prototypes(prototype_rows, prototype_labels)
+            base_prototypes = class_prototypes(base_prototype_rows, prototype_labels)
+            cross_scores.append(z[held_out_view] @ prototypes.T)
+            base_cross_scores.append(z0[held_out_view] @ base_prototypes.T)
     cosine_scores = torch.cat(cross_scores, dim=0)
     base_cosine_scores = torch.cat(base_cross_scores, dim=0).detach()
     targets = physical_labels.repeat(int(view_count))
@@ -931,6 +1018,7 @@ def train_support_only_bp_jg(
     batch_size: int,
     max_optimizer_steps: int,
     grad_clip: float,
+    leave_one_physical_shot: bool = False,
     seed: int,
     device: torch.device,
 ) -> tuple[list[dict[str, Any]], dict[str, Any]]:
@@ -985,6 +1073,7 @@ def train_support_only_bp_jg(
         labels,
         view_count=int(support_view_count),
         max_episodes_per_epoch=max_episodes_per_epoch,
+        pair_physical_shots=bool(leave_one_physical_shot),
     )
     identity = nn.Identity()
     model.eval()
@@ -1039,6 +1128,7 @@ def train_support_only_bp_jg(
                 labels[positions],
                 view_count=int(support_view_count),
                 temperature=float(temperature),
+                leave_one_physical_shot=bool(leave_one_physical_shot),
             )
             losses["loss"].backward()
             grad_norm = torch.nn.utils.clip_grad_norm_(parameters, float(grad_clip))
@@ -1118,6 +1208,21 @@ def train_support_only_bp_jg(
         "episodes_per_epoch": int(len(episodes)),
         "max_episodes_per_epoch": int(max_episodes_per_epoch),
         "shot_indices_consumed_per_epoch": int(k_shot),
+        "shot_occurrences_per_class_per_epoch": int(
+            k_shot
+            * (
+                2
+                if bool(leave_one_physical_shot)
+                and k_shot >= 2
+                and k_shot <= max_episodes_per_epoch
+                else 1
+            )
+        ),
+        "prototype_exclusion_mode": (
+            "leave_one_physical_shot"
+            if bool(leave_one_physical_shot)
+            else "leave_one_view"
+        ),
         "support_forward_sample_equivalents": int(forward_sample_equivalents),
         "terminated_by_step_cap": int(optimizer_steps) < int(expected_natural_steps),
         "query_rows_used_for_training": 0,
@@ -1550,12 +1655,14 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
             "full_feature",
             "joint_projection",
             "joint_gate",
+            "identity_joint",
+            "fusion_joint",
         ),
         default="feat_joint",
     )
     parser.add_argument(
         "--adapt_objective",
-        choices=("legacy", "bp_jg", "p4_identity"),
+        choices=("legacy", "bp_jg", "bp_jg_lopo", "p4_identity"),
         default="legacy",
     )
     parser.add_argument("--learning_rate", type=float, default=1.0e-3)
@@ -1598,12 +1705,19 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
 
 
 def _validate_deployment_controls(args: argparse.Namespace) -> None:
-    if str(args.adapt_objective) == "bp_jg":
+    if str(args.adapt_objective) in {"bp_jg", "bp_jg_lopo"}:
+        is_lopo = str(args.adapt_objective) == "bp_jg_lopo"
         checks = {
             "bp_jg_lora_only": str(args.adapter_type) == "lora",
             "bp_jg_target_scope": str(args.scope)
-            in {"joint_projection", "joint_gate"},
-            "bp_jg_rank": int(args.rank) in {8, 16},
+            in (
+                {"joint_gate", "identity_joint", "fusion_joint"}
+                if is_lopo
+                else {"joint_projection", "joint_gate"}
+            ),
+            "bp_jg_rank": (
+                int(args.rank) == 8 if is_lopo else int(args.rank) in {8, 16}
+            ),
             "bp_jg_alpha_matches_rank": math.isclose(
                 float(args.alpha), float(args.rank), rel_tol=0.0, abs_tol=1.0e-12
             ),
@@ -1631,8 +1745,23 @@ def _validate_deployment_controls(args: argparse.Namespace) -> None:
                 float(args.ground_adapter_alpha), 16.0, rel_tol=0.0, abs_tol=1.0e-12
             ),
             "bp_jg_no_legacy_init_state": args.init_adapter_state is None,
-            "bp_jg_learning_rate": math.isclose(
-                float(args.learning_rate), 5.0e-3, rel_tol=0.0, abs_tol=1.0e-12
+            "bp_jg_learning_rate": (
+                any(
+                    math.isclose(
+                        float(args.learning_rate),
+                        allowed,
+                        rel_tol=0.0,
+                        abs_tol=1.0e-12,
+                    )
+                    for allowed in (5.0e-3, 1.0e-2, 2.0e-2)
+                )
+                if is_lopo
+                else math.isclose(
+                    float(args.learning_rate),
+                    5.0e-3,
+                    rel_tol=0.0,
+                    abs_tol=1.0e-12,
+                )
             ),
             "bp_jg_weight_decay": math.isclose(
                 float(args.weight_decay), 1.0e-4, rel_tol=0.0, abs_tol=1.0e-12
@@ -1718,10 +1847,22 @@ def _validate_deployment_controls(args: argparse.Namespace) -> None:
 
 
 def build_support_run_id(args: argparse.Namespace) -> str:
-    if str(args.adapt_objective) == "bp_jg":
+    if str(args.adapt_objective) in {"bp_jg", "bp_jg_lopo"}:
         ground_tag = str(args.ground_adapter_sha256).strip().lower()[:12]
+        objective_tag = (
+            "bp_jg_lopo"
+            if str(args.adapt_objective) == "bp_jg_lopo"
+            else "bp_jg"
+        )
+        learning_rate_tag = (
+            format(float(args.learning_rate), ".6f")
+            .rstrip("0")
+            .rstrip(".")
+            .replace(".", "p")
+        )
         run_prefix = (
-            f"support_p4_{ground_tag}_bp_jg_{args.scope}_r{int(args.rank)}"
+            f"support_p4_{ground_tag}_{objective_tag}_{args.scope}"
+            f"_r{int(args.rank)}_lr{learning_rate_tag}"
         )
     elif str(args.adapt_objective) == "p4_identity":
         ground_tag = str(args.ground_adapter_sha256).strip().lower()[:12]
@@ -1773,14 +1914,18 @@ def validate_bp_jg_qknn_config(config: dict[str, Any]) -> None:
 def main(argv: Sequence[str] | None = None) -> int:
     args = parse_args(argv)
     _validate_deployment_controls(args)
+    is_bp_jg = str(args.adapt_objective) in {"bp_jg", "bp_jg_lopo"}
+    is_bp_jg_lopo = str(args.adapt_objective) == "bp_jg_lopo"
     config = json.loads(args.config.read_text(encoding="utf-8-sig"))
     support_pool_max_k = int(config.get("support_pool_max_k", 10))
-    if str(args.adapt_objective) in {"bp_jg", "p4_identity"} and support_pool_max_k != 20:
+    if (
+        is_bp_jg or str(args.adapt_objective) == "p4_identity"
+    ) and support_pool_max_k != 20:
         raise ValueError(
             "BP-JG requires support_pool_max_k=20 so K1/5/10/20 share one "
             "disjoint query set"
         )
-    if str(args.adapt_objective) in {"bp_jg", "p4_identity"}:
+    if is_bp_jg or str(args.adapt_objective) == "p4_identity":
         validate_bp_jg_qknn_config(config)
     old_labels = [str(value) for value in config["target_old_tx_labels"]]
     new_labels = [str(value) for value in config["target_new_tx_labels"]][: int(args.new_count)]
@@ -1827,12 +1972,12 @@ def main(argv: Sequence[str] | None = None) -> int:
         ),
         "receive_views_per_physical_sample_per_epoch": (
             int(split_manifest["support_view_count"])
-            if str(args.adapt_objective) == "bp_jg"
+            if is_bp_jg
             else 1
         ),
         "unique_receive_view_count": (
             int(split_manifest["support_view_count"])
-            if str(args.adapt_objective) == "bp_jg"
+            if is_bp_jg
             else 1
         ),
     }
@@ -1864,7 +2009,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         )
     ground_adapter_audit: dict[str, Any] = {"mode": "none"}
     if args.ground_adapter_state is not None:
-        if str(args.adapt_objective) not in {"bp_jg", "p4_identity"}:
+        if not is_bp_jg and str(args.adapt_objective) != "p4_identity":
             raise ValueError(
                 "ground_adapter_state is reserved for the BP-JG two-stage route"
             )
@@ -1918,8 +2063,12 @@ def main(argv: Sequence[str] | None = None) -> int:
             model, rank=int(args.rank), alpha=float(args.alpha), scope=str(args.scope)
         )
         method = (
-            f"support_only_p4_bp_jg_{args.scope}_lora_v1"
-            if str(args.adapt_objective) == "bp_jg"
+            (
+                f"support_only_p4_bp_jg_lopo_{args.scope}_lora_v1"
+                if is_bp_jg_lopo
+                else f"support_only_p4_bp_jg_{args.scope}_lora_v1"
+            )
+            if is_bp_jg
             else f"support_only_{args.scope}_lora_v1"
         )
     strict_checkpoint_trainable_state = {
@@ -1937,7 +2086,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             model, Path(args.init_adapter_state)
         )
     model.to(device).eval()
-    if str(args.adapt_objective) == "bp_jg":
+    if is_bp_jg:
         trace, runtime = train_support_only_bp_jg(
             model,
             support_rows,
@@ -1952,6 +2101,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             batch_size=int(args.batch_size),
             max_optimizer_steps=int(args.max_optimizer_steps),
             grad_clip=float(args.grad_clip),
+            leave_one_physical_shot=is_bp_jg_lopo,
             seed=int(args.seed),
             device=device,
         )
@@ -2051,7 +2201,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         adapter_state_path.stat().st_size
     )
     target_merge_audit: dict[str, Any] = {"mode": "not_merged"}
-    if str(args.adapt_objective) == "bp_jg":
+    if is_bp_jg:
         target_merge_audit = roundtrip_fp16_target_lora_and_merge(
             model, adapter_state_path
         )
@@ -2181,8 +2331,13 @@ def main(argv: Sequence[str] | None = None) -> int:
                     "view_consistency": 0.1,
                     "boundary_margin_delta": 0.02,
                 }
-                if str(args.adapt_objective) == "bp_jg"
+                if is_bp_jg
                 else None
+            ),
+            "prototype_exclusion_mode": (
+                "leave_one_physical_shot"
+                if is_bp_jg_lopo
+                else ("leave_one_view" if is_bp_jg else None)
             ),
         },
         "resources": resources,
