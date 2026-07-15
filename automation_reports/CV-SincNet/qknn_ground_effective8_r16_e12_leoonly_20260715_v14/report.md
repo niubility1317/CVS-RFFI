@@ -5,7 +5,7 @@
 |实验ID|`qknn_ground_effective8_r16_e12_leoonly_20260715_v14`|
 |时间|2026-07-15 13:44 CST|
 |operator|Codex`/root`|
-|当前状态|`REMOTE_REPAIR2_VERIFIED_RELAUNCH_PENDING`；target matrix未启动|
+|当前状态|`SOURCE_PIPELINE_FAILED_CLOSED_LORA_DEVICE_REPAIR3_LOCAL_VERIFIED`；target matrix未启动|
 |基座模型|同一ADV3B02 checkpoint：`ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth`|
 |目标|在新版`LEO_weak-only`边界下，以≤50k参数、≤20epoch、≤256KB持久状态的极轻型适配器和逐样本1→3→5-view推理，完成5receiver×5seed×3场景×新类5/10/20×K=1/5/10/20正式确认|
 
@@ -173,3 +173,9 @@ TypeError: expected np.ndarray (got numpy.ndarray)
 repair2不修改共享Conda环境，避免影响其他项目；仅在formal trainer的数据桥接层新增`_float32_numpy_to_tensor`：先将IQ保证为连续float32并调用标准`from_numpy`，仅当异常精确匹配`expected np.ndarray`且对象仍为原生`np.ndarray`时，回退到同一buffer的`frombuffer`视图。该修复不复制整份cache、不改样本值，不增加模型参数、训练epoch、损失、View或backbone forward。新增回归测试模拟NumPy2/Torch2.1异常并验证shape、dtype、数值和标签；本地trainer`py_compile`通过，聚焦文件10项通过，10组正式相关回归升级为`80 passed`。candidate lock会在运行时重新绑定repair2 trainer SHA，不需要改变cache spec、K/seed或target cell身份。
 
 repair2远端覆盖前快照为`/home/szu2070436088/2510044040/CV-SincNet/code/snapshots/qknn_ground_effective8_r16_e12_leoonly_20260715_v14_repair2_before_sync_20260715_144746`，封存旧trainer、旧report、repair1 runner/train完整日志和state。Git提交为`123b69b3dbbf`；trainer和report本地/远端SHA256一致，分别为`a6fbabb58aabca185c343c43a75d883f594757926f6449547c31bf152e7fe1d9`和`fde478f9f83ea95eb531ba143cbd6a1a18f1ac5847b802a4b21eb552d902232a`，远端`py_compile`通过。随后使用正式source cache进行严格loader smoke：18,000条三场景数据加载通过，单样本shape=`(2,256)`、dtype=`float32`、buffer转换与原数组sum差`4.77e-7`，DataLoader batch shape=`(4,2,256)`，且`clean_sample_access=False`。这证明repair2在实际N607环境和实际密封cache上修复了首batch阻断点；尚未证明12epoch训练、promotion或性能目标通过。
+
+## 2026-07-15 repair2恢复失败与LoRA device repair3
+
+repair2 source pipeline以GPU0、PID`1549892`实际landed并越过严格cache loader和prototype构建，但在首次student backbone前向、任何epoch日志或optimizer step之前失败关闭。runner完整日志8行、训练完整日志32行已逐行读取；唯一错误为LoRA的`lora_a`权重在CPU、输入与冻结base在`cuda:0`，触发`Expected all tensors to be on the same device`。代码追踪确认ground trainer先获得已在CUDA的ADV3B02，再调用`inject_feat_joint_lora`；旧`LoRALinear`构造器新建`nn.Linear`时未继承被替换base的device/dtype。support-only历史路径之所以未暴露，是其注入后还会统一执行`model.to(device)`。
+
+repair3在`LoRALinear`构造时让`lora_a/lora_b`显式继承`base.weight.device`和`base.weight.dtype`，保持冻结base、rank、alpha、参数量、初始化和合并语义不变。新增float64基座回归测试，若低秩层仍默认float32则前向必然失败；当前该测试确认device/dtype继承且identity初始化逐元素精确。support LoRA测试20项通过，包含formal链路的11组完整相关回归共`100 passed`，脚本`py_compile`通过。该修复不增加参数、MAC、状态、epoch、View或数据访问；candidate lock会在运行时绑定新的LoRA实现SHA。

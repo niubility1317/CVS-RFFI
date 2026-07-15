@@ -62,6 +62,18 @@ def test_lora_linear_is_exact_identity_at_initialization() -> None:
     assert not any(parameter.requires_grad for parameter in adapter.base.parameters())
 
 
+def test_lora_linear_inherits_base_device_and_dtype() -> None:
+    base = torch.nn.Linear(7, 5).to(dtype=torch.float64)
+    rows = torch.randn(4, 7, dtype=torch.float64)
+    expected = base(rows).detach()
+    adapter = LoRALinear(base, rank=2, alpha=2.0)
+    assert adapter.lora_a.weight.device == base.weight.device
+    assert adapter.lora_b.weight.device == base.weight.device
+    assert adapter.lora_a.weight.dtype == base.weight.dtype
+    assert adapter.lora_b.weight.dtype == base.weight.dtype
+    torch.testing.assert_close(adapter(rows), expected, rtol=0.0, atol=0.0)
+
+
 def test_channel_affine_linear_is_exact_identity_at_initialization() -> None:
     base = torch.nn.Linear(7, 5)
     rows = torch.randn(4, 7)

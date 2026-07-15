@@ -197,8 +197,12 @@ class LoRALinear(nn.Module):
         self.rank = int(rank)
         self.alpha = float(alpha)
         self.scaling = float(alpha) / float(rank)
-        self.lora_a = nn.Linear(base.in_features, self.rank, bias=False)
-        self.lora_b = nn.Linear(self.rank, base.out_features, bias=False)
+        self.lora_a = nn.Linear(base.in_features, self.rank, bias=False).to(
+            device=base.weight.device, dtype=base.weight.dtype
+        )
+        self.lora_b = nn.Linear(self.rank, base.out_features, bias=False).to(
+            device=base.weight.device, dtype=base.weight.dtype
+        )
         nn.init.kaiming_uniform_(self.lora_a.weight, a=math.sqrt(5.0))
         nn.init.zeros_(self.lora_b.weight)
 
