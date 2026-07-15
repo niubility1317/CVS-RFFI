@@ -578,3 +578,5 @@ CUDA_VISIBLE_DEVICES=7 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/code
 ```
 
 仅当固定5-view显著恢复性能，且support校准的自适应路线在不看query门限的前提下获得有意义的准确率/平均前向Pareto改善，才继续设计压缩View；否则结论为当前适配/特征本身不足，不能通过增加View掩盖机制失败。
+
+09:41 CST直连N607 preflight再次PASS；8张GPU各有1个约624MiB既有RIEI进程，GPU7 PID=`1058292`，本次为短时只读推理且不超过每卡2实验上限。目标输出根不存在，checkpoint和最终adapter state存在。提交=`de51b32`；新脚本本地/远端SHA256均为`d74ad1d55c6e0dabf33b26c1f543bbddfbb58acb9fb4b3e72291c0e02c66835a`，远端`py_compile`PASS。首次只读inventory命令中的`$(date ...)`被本地PowerShell提前解释而只丢失时间字段，远端GPU/路径检查仍返回成功；这不是实验错误。每次SSH/SCP后本地`ssh.exe=0`且端口22连接为0，可以执行上述预注册命令。
