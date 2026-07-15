@@ -163,9 +163,15 @@ strict_v8已从修复提交构建：12项模型/capsule/config复用artifact逐�
 
 23:55预检/实时清单再次确认8张GPU空闲、无训练进程。v10已同步至v3新根`protocol_plan/strict_plan_manifest_v10.json`并核验SHA。v3 smoke仍只获`cuda:0`单单元权限，使用`smoke_driver_v3_attempt1.pid`、`logs/smoke_driver_v3_attempt1.out`、`logs/smoke_v3_attempt1`和新根`smoke_receipt.json`，路径不存在时才启动。
 
+v3 attempt1以PID`1882465`结束。完整读取3,760字节driver日志并核对全部v3文件后确认：request及4项pre-run evidence已成功生成，随后外层`run_cvs_stage2_landlock_pinned.py`导入`phase2_isolated_runner`时因远端当时缺少`cvsrffi.phase2_bwrap_policy`而失败；`prediction_artifact.cvspred`、scoring receipt、cell receipt和smoke receipt均不存在。该失败未进入ADV3B02/effective8推理，不含任何`old_acc/seen_new_acc/H_old_new`性能证据。因空`predictor_output`目录已经创建，严格runner禁止在v3原地续跑或清理。
+
+依赖闭包复核覆盖外层runner实际导入的8个`cvsrffi`文件；当前本地与N607逐文件SHA完全一致，包含`phase2_bwrap_policy.py`SHA=`a9258cbb…e3b`。在`ssr-gpu`下显式导入`phase2_isolated_runner`和`phase2_bwrap_policy`通过，27项bwrap/pre-run/isolated-runner/strict-package/strict-plan测试通过。下一次不重建strict_v8，仅生成绑定同一strict_v8、suffix=`landlock_strict300_v4`的新v11 fail-closed清单，并使用全新v4输出根；v3证据保持不动。
+
 v3 attempt1以PID`1882465`运行，成功生成pre-run evidence与truth-free request，首次进入Landlock pinned runner前因N607工作区缺少其外层依赖`code/cvsrffi/phase2_bwrap_policy.py`而fail closed；尚未产生prediction/scoring/smoke receipt。由于空`predictor_output`目录已创建，v3不复用。下一步先同步该本地已受控依赖并在N607执行只读完整import smoke；只有import闭包通过后才生成全新v4计划/输出根。
 
 依赖核验显示`phase2_isolated_runner.py`与`phase2_bwrap_policy.py`已存在且SHA与本地一致，实际唯一缺失项为`phase2_pre_run_evidence.py`。补齐后远端SHA=`60bdc81b3c579ba5a0d05b797dea5f686d57b3e5a0959277e5e771356f492c06`，以实际直接脚本入口执行`run_cvs_stage2_landlock_pinned.py --help`的无写入import smoke为`PASS`。v11清单继续绑定strict_v8，但输出改到全新`..._landlock_strict300_v4`根；25/75/300/900、`launch_authority=false`，SHA=`17a6de5501700b204047e1bb663af30a374c4f50e2af4914869c9f5e21c9aa96`。
+
+23:59预检与实时训练清单为`gpu_compute=[]`、`active_training_processes=[]`，8张GPU空闲。v11已同步至v4新根并核验SHA。v4 smoke使用独立`smoke_driver_v4_attempt1.pid`、`logs/smoke_driver_v4_attempt1.out`、`logs/smoke_v4_attempt1`和新根`smoke_receipt.json`；完整矩阵继续无权限。
 
 ## 完成后结果表
 
