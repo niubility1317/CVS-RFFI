@@ -121,6 +121,12 @@ def _phase2_protocol_fields() -> dict:
         "phase2_query_true_batch_class_count_access": False,
         "phase2_query_class_quota_access": False,
         "phase2_query_batch_global_assignment": False,
+        "predictor_query_truth_access": False,
+        "predictor_query_role_access": False,
+        "predictor_query_true_batch_class_count_access": False,
+        "predictor_query_class_quota_access": False,
+        "prediction_scoring_process_isolated": True,
+        "scorer_output_must_not_feed_predictor": True,
     }
 
 

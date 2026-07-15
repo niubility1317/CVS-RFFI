@@ -10,6 +10,7 @@ from paper_reproduction.scripts.build_adv3b02_three_da_leo_weak_plan import buil
 def test_three_da_plan_has_375_phase2_rows_and_no_dataset_path(tmp_path: Path) -> None:
     base = {
         "experiment_id": "test",
+        "adv3b02_checkpoint": "/remote/checkpoint.pth",
         "target_old_tx_labels": ["a", "b"],
         "source_receiver_labels": ["s0", "s1"],
         "publication_target_receiver_grid": ["20-1", "3-19", "7-14", "7-7", "8-8"],
@@ -31,18 +32,29 @@ def test_three_da_plan_has_375_phase2_rows_and_no_dataset_path(tmp_path: Path) -
         cache_device="cuda:0",
         shard_count=8,
         gpu_count=4,
+        runtime_project_root="/remote/project",
     ))
     assert manifest["formal_method_rows"] == 375
     assert manifest["rows_per_method"] == 125
     assert manifest["phase1_offline_cache_build_count"] == 26
+    assert manifest["phase1_offline_predictor_bundle_build_count"] == 25
+    assert manifest["offline_preparation_task_count"] == 52
     assert len(manifest["commands"]["phase2_workers"]) == 8
     phase2_config = json.loads((output / "phase2_config.json").read_text(encoding="utf-8"))
     assert "source_dataset" not in phase2_config
     assert "target_dataset" not in phase2_config
     assert "manysig_pkl" not in phase2_config
+    assert "adv3b02_checkpoint" not in phase2_config
     assert phase2_config["source_leo_weak_cache_set_manifest"].endswith(
         "/phase1_caches/source/cache_set.json"
     )
+    assert phase2_config["target_predictor_bundle_root"].endswith(
+        "/phase1_caches/predictor_bundles"
+    )
+    assert "target_leo_weak_cache_root" not in phase2_config
+    worker = manifest["commands"]["phase2_workers"][0]
+    assert "--post-prediction-scorer" in worker
+    assert "--runtime-allowlist" in worker
     target_spec = json.loads(
         (output / "cache_specs/target/rx_20_1/seed_713101.json").read_text(encoding="utf-8")
     )

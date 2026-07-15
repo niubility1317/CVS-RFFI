@@ -10,7 +10,7 @@
 |阶段|Stage2-B target-old few-shot domain adaptation|
 |目标|按最新项目协议重跑ProtoNet CDA、MRIOR-SDA、DADDA-SDA；每方法5个target receiver×5个seed×5个K，共125次，合计375次正式方法运行|
 |历史比较|替代2026-07-14批次中Phase2直接读取raw/clean IQ并在runner内部生成LEO视图的375行历史artifact|
-|当前状态|LOCAL_VERIFIED_PENDING_N607_PREFLIGHT|
+|当前状态|LOCAL_VERIFIED_PROTOCOL_REPAIR_COMPLETE_PENDING_REMOTE_SYNC_AND_PREP；未启动正式任务|
 
 ## 二、假设与声明边界
 
@@ -34,9 +34,11 @@
 |旧类|`14-10`、`14-7`、`20-15`、`20-19`、`6-15`、`8-20`|
 |source receiver|`1-1`、`1-19`、`14-7`、`18-2`、`19-2`、`2-1`、`2-19`|
 |场景|`leo_clear_weak`、`leo_low_elev_weak`、`leo_rain_weak`|
-|Phase1/offline缓存准备|1个source cache set+25个target-old cache set，共26个任务；此阶段可读取ManySig并只导出post-channel IQ|
+|Phase1/offline准备|26个LEO_weak cache任务+25个无真值predictor bundle任务+1个运行时密封任务，共52个；只有前26个任务可读取ManySig|
 |Phase2正式运行|每方法125行，共375行；Phase2配置不包含任何pkl/dataset路径|
 |query决策|逐样本面对全部六个注册旧类；无角色Oracle、无类别数量、无类别配额、无全局批量分配|
+|预测/评分隔离|predictor仅接收opaque query ID、LEO_weak query IQ、注册support和类别表；预测artifact固化并校验SHA256后，独立scorer才连接truth sidecar|
+|OS隔离|N607内核6.8、Landlock ABI 4；predictor使用`no_new_privs`+Landlock文件白名单，另由`strace`生成实际文件访问账本|
 
 每个launchable row必须记录：
 
@@ -50,7 +52,7 @@ phase2_clean_control_flow_reachable=false
 phase2_pretrained_artifact_policy=sealed_phase1_checkpoint_only
 phase2_query_decision_policy=per_sample_all_registered_classes
 phase2_query_role_oracle_access=false
-phase2_query_class_count_access=false
+phase2_query_true_batch_class_count_access=false
 phase2_query_class_quota_access=false
 phase2_query_batch_global_assignment=false
 ```
@@ -70,7 +72,12 @@ phase2_query_batch_global_assignment=false
 |文件|用途|
 |---|---|
 |`code/scripts/build_cvs_leo_weak_iq_cache.py`|新增`stage2_target_old`封存缓存scope|
-|`paper_reproduction/cvs_aligned/adv3b02_supervised_da_runner.py`|移除pkl、raw IQ和运行时信道叠加入口；仅加载验证后的LEO cache set|
+|`paper_reproduction/cvs_aligned/adv3b02_supervised_da_runner.py`|移除pkl、raw IQ和运行时信道叠加入口；source仅加载LEO cache，target仅加载v2 truth-free predictor package内的注册support与query|
+|`code/cvsrffi/stage2_predictor_bundle.py`|同一文件描述符完成hash、NPZ成员白名单审计与IQ读取；禁止query真值/角色/配额字段|
+|`code/scripts/build_cvs_stage2_predictor_bundle.py`|Phase2外生成opaque query ID、无真值predictor bundle和独立truth sidecar|
+|`code/scripts/build_phase2_runtime_seal.py`|生成密封包root digest、runtime code digest、成员白名单和pre-run隔离证据|
+|`code/scripts/run_phase2_landlock_isolated.py`|使用Landlock ABI和`no_new_privs`限制predictor文件访问|
+|`paper_reproduction/scripts/score_adv3b02_three_da_predictions.py`|预测进程退出后独立连接truth并生成old_acc、逐类和逐receiver统计|
 |`paper_reproduction/cvs_aligned/supervised_da.py`|fail-closed校验clean可达性与query Oracle guard|
 |`paper_reproduction/scripts/build_adv3b02_three_da_leo_weak_plan.py`|生成26个offline缓存任务和375个Phase2任务|
 |`paper_reproduction/scripts/run_adv3b02_three_da_cache_plan.py`|仅执行并验证offline缓存准备，明确`phase2_started=false`|
@@ -83,11 +90,10 @@ phase2_query_batch_global_assignment=false
 |验证|结果|
 |---|---|
 |`python -m py_compile ...`|PASS|
-|相关pytest 36项|`36 passed`|
-|三方法单行`--dry-run`|PASS|
-|计划生成|PASS；26个offline cache build，375个formal method rows|
+|相关pytest 57项|`57 passed`；包含v2 predictor package的相对路径、detached seal、同fd审计、篡改和symlink拒绝测试|
+|计划生成|PASS；26个cache build+25个predictor bundle build+1个runtime seal，375个formal method rows|
 |矩阵dry-run|PASS；首行为`protonet_cda_stage2b_rx20-1_k1_seed713101`，末行为`dadda_sda_stage2b_rx8-8_k20_seed713105`|
-|`git diff --check`|PASS；仅有工作区既有CRLF提示，无本次patch空白错误|
+|N607隔离能力只读探测|内核`6.8.0-117-generic`、Landlock ABI 4；`bwrap`因user namespace权限失败、Docker无daemon权限，因此采用Landlock等价隔离|
 
 本地生成计划：
 
@@ -95,16 +101,16 @@ phase2_query_batch_global_assignment=false
 
 ## 六、N607同步与启动记录
 
-待预检后填写。
+直接SSH预检已PASS，8张RTX 3090当时均空闲；初版同步后的远端dry-run暴露新协议字段与运行时隔离缺口，因此在任何缓存或正式任务启动前停止。当前修复版尚未重新同步。
 
 |字段|内容|
 |---|---|
 |本地Conda环境|`ssr-gpu`|
 |远端工作目录|`/home/szu2070436088/2510044040/CV-SincNet`|
-|远端Python/Conda环境|待N607预检确认|
+|远端Python/Conda环境|`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`|
 |远端run root|`/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_three_da_leoweakonly_20260715_v1`|
 |远端log root|`.../stage2_logs/`|
-|GPU/PID|待启动后填写|
+|GPU/PID|未启动；最近一次只读审计8张GPU均空闲|
 |精确命令|待缓存准备、占用审计和远端dry-run后填写|
 |期望输出|每行`metrics.json`、`split_manifest.json`、`resolved_config.json`、`score_table.csv`、详细分组统计和完整loss trace|
 
@@ -112,7 +118,8 @@ phase2_query_batch_global_assignment=false
 
 成功条件：
 
-- 26/26缓存通过hash、成员列表和逐样本overlay provenance审计；
+- 26/26缓存、25/25 predictor bundle和1/1运行时密封通过审计；
+- 375/375行均有Landlock执行证明、实际文件访问账本、密封prediction artifact和独立scoring audit；
 - 375/375方法artifact完整，每方法125行，每K档25行；
 - checkpoint严格加载为0 missing/0 unexpected/0 shape mismatch；
 - support/query零重叠，三个场景均为预叠加LEO_weak缓存；
@@ -134,4 +141,3 @@ phase2_query_batch_global_assignment=false
 |candidate/run|方法|receiver|K|seed|场景|before old_acc|after old_acc|delta|loss/adapter摘要|缓存审计|最终判定|
 |---|---|---:|---:|---:|---|---:|---:|---:|---|---|---|
 |待运行|—|—|—|—|—|—|—|—|—|—|PENDING|
-

@@ -73,10 +73,14 @@ def build_plan(args: argparse.Namespace) -> dict[str, Any]:
     plan_root = PurePosixPath(args.runtime_plan_dir)
     source_root = run_root / "phase1_caches/source"
     target_root = run_root / "phase1_caches/target"
+    predictor_root = run_root / "phase1_caches/predictor_bundles"
+    seal_root = run_root / "runtime_seal"
     phase2_config = dict(base)
+    phase2_config.pop("adv3b02_checkpoint", None)
     phase2_config.update({
         "source_leo_weak_cache_set_manifest": str(source_root / "cache_set.json"),
-        "target_leo_weak_cache_root": str(target_root),
+        "target_predictor_bundle_root": str(predictor_root),
+        "phase2_runtime_isolation_evidence_root": str(seal_root),
     })
     forbidden = {
         "manysig_pkl", "manytx_pkl", "source_dataset", "target_dataset",
@@ -114,6 +118,7 @@ def build_plan(args: argparse.Namespace) -> dict[str, Any]:
     ])
 
     target_contracts: list[dict[str, Any]] = []
+    bundle_commands: list[list[str]] = []
     for receiver in RECEIVERS:
         for seed in SEEDS:
             receiver_root = target_root / f"rx_{_safe(receiver)}" / f"seed_{seed}"
@@ -149,6 +154,27 @@ def build_plan(args: argparse.Namespace) -> dict[str, Any]:
                 "cache_set_manifest": str(receiver_root / "cache_set.json"),
                 "satellite_seed_by_scenario": satellite_seeds,
             })
+            bundle_root = predictor_root / f"rx_{_safe(receiver)}" / f"seed_{seed}"
+            bundle_commands.append([
+                "python", "code/scripts/build_cvs_stage2_predictor_bundle.py",
+                "--target-cache-set", str(receiver_root / "cache_set.json"),
+                "--checkpoint", str(base["adv3b02_checkpoint"]),
+                "--out-root", str(bundle_root),
+                "--receiver", receiver,
+                "--seed", str(seed),
+                "--class-labels", ",".join(old_labels),
+                "--support-pool-max-k", str(base["support_pool_max_k"]),
+                "--query-per-tx", str(base["query_per_tx"]),
+            ])
+
+    project_root = PurePosixPath(args.runtime_project_root)
+    runtime_seal_command = [
+        "python", "code/scripts/build_phase2_runtime_seal.py",
+        "--config", str(plan_root / phase2_config_rel),
+        "--out-root", str(seal_root),
+        "--runtime-code-root", str(project_root / "code"),
+        "--runtime-code-root", str(project_root / "paper_reproduction"),
+    ]
 
     output_root = run_root / "stage2_runs"
     log_root = run_root / "stage2_logs"
@@ -166,6 +192,14 @@ def build_plan(args: argparse.Namespace) -> dict[str, Any]:
             "--shard-count", str(args.shard_count),
             "--shard-index", str(shard_index),
             "--device", device,
+            "--post-prediction-scorer",
+            "paper_reproduction/scripts/score_adv3b02_three_da_predictions.py",
+            "--scoring-root", str(predictor_root),
+            "--isolation-launcher", "code/scripts/run_phase2_landlock_isolated.py",
+            "--runtime-allowlist", str(seal_root / "artifact_member_allowlist.json"),
+            "--runtime-evidence-root", str(seal_root),
+            "--isolation-runtime-read-dir",
+            "/home/szu2070436088/.conda/envs/CVS-RFFI",
             "--execute",
         ])
     manifest = {
@@ -184,6 +218,9 @@ def build_plan(args: argparse.Namespace) -> dict[str, Any]:
         "formal_method_rows": len(METHODS) * len(RECEIVERS) * len(SEEDS) * len(K_VALUES),
         "rows_per_method": len(RECEIVERS) * len(SEEDS) * len(K_VALUES),
         "phase1_offline_cache_build_count": len(cache_commands),
+        "phase1_offline_predictor_bundle_build_count": len(bundle_commands),
+        "phase2_runtime_seal_build_count": 1,
+        "offline_preparation_task_count": len(cache_commands) + len(bundle_commands) + 1,
         "phase2_config": str(plan_root / phase2_config_rel),
         "phase2_config_sha256": _sha256(output_dir / phase2_config_rel),
         "phase2_config_exposes_dataset_path": False,
@@ -191,6 +228,8 @@ def build_plan(args: argparse.Namespace) -> dict[str, Any]:
         "target_cache_contracts": target_contracts,
         "commands": {
             "phase1_offline_cache_build": cache_commands,
+            "phase1_offline_predictor_bundle_build": bundle_commands,
+            "phase2_runtime_seal": runtime_seal_command,
             "phase2_workers": worker_commands,
         },
         "runtime_plan_dir": str(plan_root),
@@ -211,6 +250,10 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--cache-device", default="cuda:0")
     parser.add_argument("--shard-count", type=int, default=8)
     parser.add_argument("--gpu-count", type=int, default=4)
+    parser.add_argument(
+        "--runtime-project-root",
+        default="/home/szu2070436088/2510044040/CV-SincNet",
+    )
     return parser.parse_args()
 
 
@@ -223,6 +266,10 @@ def main() -> int:
         "plan_manifest": str((args.output_dir / "plan_manifest.json").resolve()),
         "formal_method_rows": manifest["formal_method_rows"],
         "phase1_offline_cache_build_count": manifest["phase1_offline_cache_build_count"],
+        "phase1_offline_predictor_bundle_build_count": manifest[
+            "phase1_offline_predictor_bundle_build_count"
+        ],
+        "offline_preparation_task_count": manifest["offline_preparation_task_count"],
     }, ensure_ascii=False, sort_keys=True))
     return 0
 

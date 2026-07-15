@@ -36,6 +36,16 @@ from cvsrffi.leo_weak_cache import (  # noqa: E402
     FORMAL_LEO_WEAK_SCENARIOS,
     PHASE2_SAMPLE_VIEW_POLICY,
     load_verified_leo_weak_cache_set,
+    sha256_file,
+)
+from cvsrffi.stage2_predictor_bundle import (  # noqa: E402
+    load_verified_stage2_predictor_bundle,
+    preflight_stage2_predictor_package,
+)
+from cvsrffi.phase2_runtime_contract import (  # noqa: E402
+    PHASE2_FULL_CONTRACT,
+    validate_phase2_contract,
+    validate_predictor_request,
 )
 from model_dual_cvsincnet import backbone_forward_compat  # noqa: E402
 from eval_feature_diagnosis import infer_num_domains, strip_module_prefix  # noqa: E402
@@ -43,7 +53,6 @@ from paper_reproduction.common.config import load_json_config  # noqa: E402
 from paper_reproduction.common.wisig_runtime import set_seed, write_json  # noqa: E402
 from paper_reproduction.cvs_aligned.class_incremental import (  # noqa: E402
     _cycle_batches,
-    _detailed_breakdown,
     _trace_loss,
 )
 from paper_reproduction.cvs_aligned.supervised_da import (  # noqa: E402
@@ -67,6 +76,10 @@ FORBIDDEN_CONFIG_KEYS = {
     "train_channel_view",
     "clean_cache",
     "clean_control",
+    "target_leo_weak_cache_root",
+    "truth_sidecar",
+    "scoring_manifest",
+    "adv3b02_checkpoint",
 }
 
 
@@ -82,11 +95,22 @@ def _safe_receiver(value: str) -> str:
     return re.sub(r"[^A-Za-z0-9]+", "_", str(value)).strip("_")
 
 
-def _target_cache_manifest_path(config: dict[str, Any]) -> Path:
-    root = Path(str(config["target_leo_weak_cache_root"]))
+def _target_predictor_bundle_path(config: dict[str, Any]) -> Path:
+    root = Path(str(config["target_predictor_bundle_root"]))
     receiver = _safe_receiver(str(config["target_receiver_labels"][0]))
     seed = int(config["split_seed"])
-    return root / f"rx_{receiver}" / f"seed_{seed}" / "cache_set.json"
+    return root / f"rx_{receiver}" / f"seed_{seed}" / "predictor_package"
+
+
+def _target_predictor_seal_path(config: dict[str, Any]) -> Path:
+    return _target_predictor_bundle_path(config).parent / "predictor_package_seal.json"
+
+
+def _runtime_evidence_path(config: dict[str, Any]) -> Path:
+    root = Path(str(config["phase2_runtime_isolation_evidence_root"]))
+    receiver = _safe_receiver(str(config["target_receiver_labels"][0]))
+    seed = int(config["split_seed"])
+    return root / f"rx_{receiver}" / f"seed_{seed}" / "runtime_isolation_evidence.json"
 
 
 def _exact_adv3b02(checkpoint_path: Path, *, device: torch.device) -> tuple[nn.Module, dict[str, Any]]:
@@ -215,11 +239,21 @@ def _validate_config(config: dict[str, Any]) -> None:
             "LOCAL_PROTOCOL_REPAIR_REQUIRED: Phase2 config exposes raw/clean inputs: "
             f"{present_forbidden}"
         )
-    for key in ("source_leo_weak_cache_set_manifest", "target_leo_weak_cache_root"):
+    for key in ("source_leo_weak_cache_set_manifest", "target_predictor_bundle_root"):
         if not str(config.get(key, "")).strip():
             raise ValueError(f"LOCAL_PROTOCOL_REPAIR_REQUIRED: missing sealed cache field={key}")
     if not config.get("target_old_tx_labels"):
         raise ValueError("target_old_tx_labels must be nonempty")
+    if not str(config.get("phase2_runtime_isolation_evidence_root", "")).strip():
+        raise ValueError("LOCAL_PROTOCOL_REPAIR_REQUIRED: runtime isolation evidence root missing")
+    evidence_path = _runtime_evidence_path(config)
+    if not evidence_path.is_file() or evidence_path.is_symlink():
+        raise ValueError("LOCAL_PROTOCOL_REPAIR_REQUIRED: runtime isolation evidence unavailable")
+    evidence = json.loads(evidence_path.read_text(encoding="utf-8-sig"))
+    contract = dict(config)
+    contract["phase2_runtime_isolation_evidence"] = evidence
+    validate_phase2_contract(contract, require_runtime_evidence=True)
+    config["_verified_phase2_runtime_isolation_evidence"] = evidence
 
 
 def _nearest_prototype(support: torch.Tensor, labels: torch.Tensor, query: torch.Tensor) -> torch.Tensor:
@@ -262,63 +296,33 @@ def _source_loader_from_cache(
     )
 
 
-def _target_split_from_cache(
-    arrays: dict[str, np.ndarray], config: dict[str, Any]
-) -> dict[str, Any]:
-    roles = np.asarray(arrays["dataset_role"]).astype(str)
-    if set(roles.tolist()) != {"target_old"}:
-        raise ValueError("Stage2-B target cache must expose only target_old rows")
-    receiver = str(config["target_receiver_labels"][0])
-    receivers = np.asarray(arrays["rx_ids"]).astype(str)
-    if set(receivers.tolist()) != {receiver}:
-        raise ValueError("target cache receiver does not match the matrix row")
-    tx_ids = np.asarray(arrays["tx_ids"]).astype(str)
-    class_labels = [str(value) for value in config["target_old_tx_labels"]]
-    if set(tx_ids.tolist()) != set(class_labels):
-        raise ValueError("target cache TX set does not match registered target-old classes")
-    max_k = int(config["support_pool_max_k"])
+def _select_registered_support(arrays: dict[str, np.ndarray], config: dict[str, Any]):
+    labels = np.asarray(arrays["support_pool_class_indices"], dtype=np.int64)
     k_shot = int(config["k_shot"])
-    query_per_tx = int(config["query_per_tx"])
-    support_indices: list[int] = []
-    query_indices: list[int] = []
-    support_labels: list[int] = []
-    query_labels: list[int] = []
-    for class_index, label in enumerate(class_labels):
-        indices = np.flatnonzero(tx_ids == label).astype(np.int64).tolist()
-        required = max_k + query_per_tx
-        if len(indices) < required:
-            raise ValueError(
-                f"target cache has insufficient rows for TX={label}: {len(indices)}<{required}"
-            )
-        support_indices.extend(indices[:k_shot])
-        query_indices.extend(indices[max_k : max_k + query_per_tx])
-        support_labels.extend([class_index] * k_shot)
-        query_labels.extend([class_index] * query_per_tx)
-    sample_ids = np.asarray(arrays["sample_ids"]).astype(str)
-    if set(sample_ids[support_indices].tolist()) & set(sample_ids[query_indices].tolist()):
-        raise ValueError("support/query overlap in sealed target cache")
-    day_ids = np.asarray(arrays["day_ids"]).astype(str)
-    sig_ids = np.asarray(arrays["sig_ids"]).astype(str)
-    query_meta = [
-        {
-            "sample_id": str(sample_ids[index]),
-            "rx_label": str(receivers[index]),
-            "tx_label": str(tx_ids[index]),
-            "day_i": str(day_ids[index]),
-            "sig_i": str(sig_ids[index]),
-            "role": "target_old",
-        }
-        for index in query_indices
-    ]
-    return {
-        "support_indices": np.asarray(support_indices, dtype=np.int64),
-        "query_indices": np.asarray(query_indices, dtype=np.int64),
-        "support_y": torch.tensor(support_labels, dtype=torch.long),
-        "query_y": torch.tensor(query_labels, dtype=torch.long),
-        "support_sample_ids": sample_ids[support_indices].tolist(),
-        "query_sample_ids": sample_ids[query_indices].tolist(),
-        "query_meta": query_meta,
-    }
+    class_count = len(config["target_old_tx_labels"])
+    indices: list[int] = []
+    for class_index in range(class_count):
+        candidates = np.flatnonzero(labels == class_index).astype(np.int64).tolist()
+        if len(candidates) < k_shot:
+            raise ValueError(f"support pool has fewer than K rows for registered class={class_index}")
+        indices.extend(candidates[:k_shot])
+    selected = np.asarray(indices, dtype=np.int64)
+    iq = torch.from_numpy(
+        np.asarray(arrays["support_pool_leo_weak_iq"], dtype=np.float32)[selected]
+    )
+    y = torch.from_numpy(labels[selected]).long()
+    ids = np.asarray(arrays["support_pool_tokens"]).astype(str)[selected].tolist()
+    return iq, y, ids
+
+
+def _write_csv(path: Path, rows: list[dict[str, Any]]) -> None:
+    if not rows:
+        raise ValueError(f"refusing to write empty CSV: {path}")
+    fields = sorted({key for row in rows for key in row})
+    with path.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=fields)
+        writer.writeheader()
+        writer.writerows(rows)
 
 
 def _predict_logits(model: ADV3B02MethodModel, x: torch.Tensor, device: torch.device) -> torch.Tensor:
@@ -405,31 +409,79 @@ def _adapt(
     }
 
 
-def _accuracy(predicted: torch.Tensor, truth: torch.Tensor) -> float:
-    return float((predicted.cpu() == truth.cpu()).float().mean())
-
-
-def _write_csv(path: Path, rows: list[dict[str, Any]]) -> None:
-    fields = sorted({key for row in rows for key in row})
-    with path.open("w", encoding="utf-8", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=fields)
-        writer.writeheader()
-        writer.writerows(rows)
-
-
 def run(config: dict[str, Any], *, run_dir: Path, device: torch.device) -> dict[str, Any]:
     _validate_config(config)
     seed = int(config["seed"])
     set_seed(seed)
     method = str(config["method_id"])
 
-    target_cache_path = _target_cache_manifest_path(config)
-    target_arrays, target_cache_manifest, target_cache_audit = load_verified_leo_weak_cache_set(
-        target_cache_path,
-        expected_scope="stage2_target_old",
-        allowed_roles={"target_old"},
+    predictor_bundle_path = _target_predictor_bundle_path(config)
+    predictor_seal_path = _target_predictor_seal_path(config)
+    predictor_seal_sha = (
+        predictor_seal_path.parent / "predictor_package_seal.sha256"
+    ).read_text(encoding="ascii").strip()
+    if predictor_seal_sha != config[
+        "_verified_phase2_runtime_isolation_evidence"
+    ]["sealed_inference_package_sha256"]:
+        raise ValueError("predictor package seal/evidence digest mismatch")
+    preflight_manifest, _preflight_seal, _preflight_audit = preflight_stage2_predictor_package(
+        predictor_bundle_path,
+        detached_seal_path=predictor_seal_path,
+        expected_seal_sha256=predictor_seal_sha,
     )
-    split = _target_split_from_cache(target_arrays[SCENARIOS[0]], config)
+    members = {item["artifact_role"]: item for item in preflight_manifest["members"]}
+    def request_descriptor(item: dict[str, Any]) -> dict[str, Any]:
+        return {
+            "relative_path": item["relative_path"], "sha256": item["sha256"],
+            "size_bytes": item["size_bytes"], "artifact_role": item["artifact_role"],
+            "schema": item["schema"],
+        }
+    evidence = config["_verified_phase2_runtime_isolation_evidence"]
+    for scenario in SCENARIOS:
+        validate_predictor_request({
+            "schema_version": "cvs.phase2.predict_request.v2",
+            "request_id": f"{config['experiment_id']}:{scenario}",
+            "row_id": str(config["experiment_id"]),
+            "stage": "stage2b",
+            "receiver": str(config["target_receiver_labels"][0]),
+            "scenario": scenario,
+            "k_shot": int(config["k_shot"]),
+            "satellite_seed": int(config["split_seed"]),
+            "candidate_lock_sha256": preflight_manifest["candidate_lock_sha256"],
+            "package_root_sha256": preflight_manifest["package_root_sha256"],
+            "runtime_code_sha256": evidence["runtime_code_sha256"],
+            "registered_class_count": preflight_manifest["registered_class_count"],
+            "registered_classes": preflight_manifest["registered_classes"],
+            "support_artifact": request_descriptor(members[f"support:{scenario}"]),
+            "query_artifact": request_descriptor(members[f"query:{scenario}"]),
+            "checkpoint_artifact": request_descriptor(members["checkpoint"]),
+            "adapter_artifact": request_descriptor(members["adapter"]),
+            "head_artifact": request_descriptor(members["head"]),
+            "tta_policy": {"mode": "single_view", "views": 1},
+            "tta_policy_sha256": members["tta_policy"]["sha256"],
+            "output_contract": {
+                "schema": "cvs.phase2.prediction.v2",
+                "relative_path": "prediction_artifact.npz",
+                "sealed_immutable_required": True,
+            },
+            "phase2_runtime_isolation_evidence": evidence,
+            **{key: config[key] for key in PHASE2_FULL_CONTRACT},
+        })
+    support_arrays, query_arrays, predictor_bundle_manifest, predictor_bundle_audit = (
+        load_verified_stage2_predictor_bundle(
+            predictor_bundle_path,
+            detached_seal_path=predictor_seal_path,
+            expected_seal_sha256=predictor_seal_sha,
+        )
+    )
+    if int(predictor_bundle_manifest["registered_class_count"]) != len(
+        config["target_old_tx_labels"]
+    ):
+        raise ValueError("predictor package registered class count does not match config")
+    if predictor_bundle_manifest["receiver"] != str(config["target_receiver_labels"][0]):
+        raise ValueError("predictor package receiver does not match config")
+    if int(predictor_bundle_manifest["seed"]) != int(config["split_seed"]):
+        raise ValueError("predictor package seed does not match config")
 
     source_arrays: dict[str, dict[str, np.ndarray]] | None = None
     source_cache_manifest: dict[str, Any] | None = None
@@ -441,23 +493,30 @@ def run(config: dict[str, Any], *, run_dir: Path, device: torch.device) -> dict[
             allowed_roles={"source"},
         )
 
-    checkpoint_path = Path(config["adv3b02_checkpoint"])
+    checkpoint_path = predictor_bundle_path / str(members["checkpoint"]["relative_path"])
     exact_model, checkpoint_info = _exact_adv3b02(checkpoint_path, device=device)
     feature_dim = int(config.get("adv3b02_feature_dim", getattr(exact_model, "emb_dim", 160)))
     template = ADV3B02MethodModel(exact_model, method=method, feature_dim=feature_dim).cpu()
     del exact_model
 
-    scenarios: dict[str, dict[str, Any]] = {}
-    score_rows: list[dict[str, Any]] = []
-    detailed: list[dict[str, Any]] = []
+    prediction_rows: list[dict[str, Any]] = []
+    scenario_runtime: dict[str, dict[str, Any]] = {}
     trace: list[dict[str, Any]] = []
     updates = 0
+    reference_support_ids: list[str] | None = None
+    reference_query_ids: list[str] | None = None
     for scenario in SCENARIOS:
         set_seed(seed)
-        arrays = target_arrays[scenario]
-        iq = np.asarray(arrays["leo_weak_iq"], dtype=np.float32)
-        support_x = torch.from_numpy(iq[split["support_indices"]])
-        query_x = torch.from_numpy(iq[split["query_indices"]])
+        support_x, support_y, support_ids = _select_registered_support(
+            support_arrays[scenario], config
+        )
+        query_input = query_arrays[scenario]
+        query_x = torch.from_numpy(np.asarray(query_input["query_leo_weak_iq"], dtype=np.float32))
+        query_ids = np.asarray(query_input["query_tokens"]).astype(str).tolist()
+        if reference_support_ids is None:
+            reference_support_ids, reference_query_ids = support_ids, query_ids
+        elif support_ids != reference_support_ids or query_ids != reference_query_ids:
+            raise ValueError("predictor inputs drift across LEO scenarios")
         model = copy.deepcopy(template).to(device)
         before = _predict_logits(model, query_x, device)
         started = time.perf_counter()
@@ -466,7 +525,7 @@ def run(config: dict[str, Any], *, run_dir: Path, device: torch.device) -> dict[
             with torch.no_grad():
                 support_z = model(support_x.to(device)).cpu()
                 query_z = model(query_x.to(device)).cpu()
-            predicted = _nearest_prototype(support_z, split["support_y"], query_z)
+            predicted = _nearest_prototype(support_z, support_y, query_z)
             method_info = {
                 "adapt_steps": 0, "adv3b02_gradient_updates": 0,
                 "adaptation_objective": "labeled_target_support_prototype_registration",
@@ -479,39 +538,31 @@ def run(config: dict[str, Any], *, run_dir: Path, device: torch.device) -> dict[
             assert source_arrays is not None
             source_loader = _source_loader_from_cache(source_arrays[scenario], config, scenario=scenario)
             scenario_trace, method_info = _adapt(
-                config, model, source_loader, support_x, split["support_y"],
+                config, model, source_loader, support_x, support_y,
                 scenario=scenario, device=device,
             )
             trace.extend(scenario_trace)
             updates += int(method_info["adv3b02_gradient_updates"])
             predicted = _predict_logits(model, query_x, device)
         elapsed = time.perf_counter() - started
-        after_acc = _accuracy(predicted, split["query_y"])
-        before_acc = _accuracy(before, split["query_y"])
-        scenarios[scenario] = {
-            "target_old_accuracy": after_acc,
-            "target_old_accuracy_before_adaptation": before_acc,
-            "target_old_accuracy_delta": after_acc - before_acc,
+        scenario_runtime[scenario] = {
             "adaptation_latency_sec": elapsed,
-            "latency_per_query_ms": elapsed * 1000.0 / int(split["query_y"].numel()),
+            "latency_per_query_ms": elapsed * 1000.0 / int(len(query_ids)),
             "role_oracle_used": False,
-            "equal_class_quota_used": False,
+            "true_batch_class_count_used": False,
+            "class_quota_used": False,
             "query_query_graph_used": False,
             "query_batch_state_required": False,
             **method_info,
         }
-        detailed.extend(_detailed_breakdown(
-            predicted, split["query_y"], split["query_meta"], scenario=scenario
-        ))
-        for meta, truth, prediction in zip(
-            split["query_meta"], split["query_y"].tolist(), predicted.tolist()
+        for sample_id, before_label, predicted_label in zip(
+            query_ids, before.tolist(), predicted.tolist()
         ):
-            score_rows.append({
-                "sample_id": meta["sample_id"], "receiver_label": meta["rx_label"],
-                "transmitter_label": meta["tx_label"], "day_i": meta["day_i"],
-                "sig_i": meta["sig_i"], "role": meta["role"],
-                "true_label": truth, "predicted_label": prediction,
-                "correct": int(truth == prediction), "scenario": scenario,
+            prediction_rows.append({
+                "sample_id": sample_id,
+                "scenario": scenario,
+                "before_predicted_label": int(before_label),
+                "predicted_label": int(predicted_label),
             })
 
     manifest = validate_supervised_da_manifest({
@@ -519,11 +570,17 @@ def run(config: dict[str, Any], *, run_dir: Path, device: torch.device) -> dict[
         "method_id": method,
         "stage": "Stage2-B",
         "cvs_extension": True,
-        "target_old_support_sample_ids": split["support_sample_ids"],
-        "target_old_query_sample_ids": split["query_sample_ids"],
+        "target_old_support_sample_ids": reference_support_ids,
+        "target_old_query_sample_ids": reference_query_ids,
         "target_labels_scope": "registered_support_only",
         "target_query_used_for_training": False,
         "target_query_used_for_model_selection": False,
+        "predictor_query_truth_access": False,
+        "predictor_query_role_access": False,
+        "predictor_query_true_batch_class_count_access": False,
+        "predictor_query_class_quota_access": False,
+        "prediction_scoring_process_isolated": True,
+        "scorer_output_must_not_feed_predictor": True,
     })
     manifest.update({
         **checkpoint_info,
@@ -537,15 +594,26 @@ def run(config: dict[str, Any], *, run_dir: Path, device: torch.device) -> dict[
         "support_query_overlap": False,
         "all_tests_satellite_augmented": True,
         "overlay_applied_before_phase2": True,
-        "target_leo_weak_cache_set_manifest": str(target_cache_path),
-        "target_leo_weak_cache_manifest": target_cache_manifest,
-        "target_leo_weak_cache_audit": target_cache_audit,
+        "target_predictor_bundle_manifest": str(predictor_bundle_path),
+        "target_predictor_package_seal": str(predictor_seal_path),
+        "target_predictor_package_seal_sha256": predictor_seal_sha,
+        "target_predictor_bundle_contract": predictor_bundle_manifest,
+        "target_predictor_bundle_audit": predictor_bundle_audit,
         "source_leo_weak_cache_used": method != "protonet_cda",
         "source_leo_weak_cache_manifest": source_cache_manifest,
         "source_leo_weak_cache_audit": source_cache_audit,
         "source_cache_declared_but_not_opened": method == "protonet_cda",
         "query_used_for_joint_decision": False,
         "query_used_for_transductive_inference": False,
+        "predictor_query_truth_access": False,
+        "predictor_query_role_access": False,
+        "predictor_query_true_batch_class_count_access": False,
+        "predictor_query_class_quota_access": False,
+        "prediction_scoring_process_isolated": True,
+        "scorer_output_must_not_feed_predictor": True,
+        "phase2_runtime_isolation_evidence": config[
+            "_verified_phase2_runtime_isolation_evidence"
+        ],
         "resource_profile": (
             "frozen_backbone_prototype_comparison" if method == "protonet_cda"
             else "non_lightweight_full_backbone_da_comparison"
@@ -553,34 +621,52 @@ def run(config: dict[str, Any], *, run_dir: Path, device: torch.device) -> dict[
         "deployment_resource_claim_allowed": method == "protonet_cda",
         "claim_boundary": "Stage2-B target-old LEO_weak-only adaptation comparison",
     })
-    aggregate = {
-        key + "_mean": float(sum(float(row[key]) for row in scenarios.values()) / len(scenarios))
-        for key in (
-            "target_old_accuracy", "target_old_accuracy_before_adaptation",
-            "target_old_accuracy_delta", "adaptation_latency_sec",
-        )
-    }
-    result = {
-        "schema": "adv3b02_stage2b_supervised_da_v2",
+
+    run_dir.mkdir(parents=True, exist_ok=True)
+    prediction_npz = run_dir / "prediction_artifact.npz"
+    np.savez(
+        prediction_npz,
+        sample_ids=np.asarray([row["sample_id"] for row in prediction_rows]),
+        scenarios=np.asarray([row["scenario"] for row in prediction_rows]),
+        before_predicted_labels=np.asarray(
+            [row["before_predicted_label"] for row in prediction_rows], dtype=np.int64
+        ),
+        predicted_labels=np.asarray(
+            [row["predicted_label"] for row in prediction_rows], dtype=np.int64
+        ),
+    )
+    prediction_manifest = {
+        "schema": "adv3b02_stage2b_prediction_artifact_v1",
         "experiment_id": config["experiment_id"],
         "method_id": method,
         "seed": seed,
         "target_receiver_label": config["target_receiver_labels"][0],
         "k_shot": int(config["k_shot"]),
-        "metrics": aggregate,
-        "metrics_by_scenario": scenarios,
+        "prediction_npz": prediction_npz.name,
+        "prediction_npz_sha256": sha256_file(prediction_npz),
+        "prediction_row_count": len(prediction_rows),
+        "scenario_runtime": scenario_runtime,
+        "predictor_input_schema": {
+            "allowed": [
+                "LEO query IQ", "query sample ID", "overlay provenance",
+                "registered support IQ/labels", "registered class list", "sealed source LEO cache",
+            ],
+            "query_truth": False,
+            "query_role": False,
+            "query_true_batch_class_count": False,
+            "query_class_quota": False,
+            "query_ordering_hint": False,
+        },
+        "scoring_completed_inside_predictor": False,
     }
-    run_dir.mkdir(parents=True, exist_ok=True)
     for filename, payload in (
-        ("metrics.json", result), ("split_manifest.json", manifest),
-        ("resolved_config.json", config), ("detailed_metrics.json", detailed),
+        ("prediction_manifest.json", prediction_manifest),
+        ("split_manifest.json", manifest), ("resolved_config.json", config),
         ("loss_trace.json", trace),
     ):
         write_json(run_dir / filename, payload)
-    _write_csv(run_dir / "score_table.csv", score_rows)
-    _write_csv(run_dir / "detailed_metrics.csv", detailed)
     _write_csv(run_dir / "loss_trace.csv", trace)
-    return result
+    return prediction_manifest
 
 
 def main() -> int:
@@ -611,7 +697,7 @@ def main() -> int:
     if args.dry_run:
         print(json.dumps({
             "status": "dry_run_pass",
-            "target_cache_set": str(_target_cache_manifest_path(config)),
+            "target_predictor_bundle": str(_target_predictor_bundle_path(config)),
             "config": config,
         }, ensure_ascii=False, default=str))
         return 0

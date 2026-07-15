@@ -7,6 +7,7 @@ import json
 import subprocess
 import sys
 import time
+import re
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any
@@ -150,6 +151,11 @@ def _artifact_status(row: MatrixRow, *, scenarios: int = 3, query_per_tx: int = 
         "detailed_metrics.csv",
         "loss_trace.json",
         "loss_trace.csv",
+        "prediction_manifest.json",
+        "prediction_artifact.npz",
+        "scoring_audit.json",
+        "runtime_isolation_evidence.json",
+        "filesystem_access_audit.json",
     )
     missing = [name for name in expected if not (run_dir / name).is_file() or (run_dir / name).stat().st_size == 0]
     if missing:
@@ -195,9 +201,23 @@ def _artifact_status(row: MatrixRow, *, scenarios: int = 3, query_per_tx: int = 
             errors.append(f"protocol_guard:{field}")
     if manifest.get("overlay_applied_before_phase2") is not True:
         errors.append("overlay_not_proven_before_phase2")
+    for field in (
+        "predictor_query_truth_access", "predictor_query_role_access",
+        "predictor_query_true_batch_class_count_access", "predictor_query_class_quota_access",
+    ):
+        if manifest.get(field) is not False:
+            errors.append(f"predictor_access_guard:{field}")
+    if manifest.get("prediction_scoring_process_isolated") is not True:
+        errors.append("predict_score_process_not_isolated")
+    runtime_evidence = manifest.get("phase2_runtime_isolation_evidence", {})
+    if runtime_evidence.get("os_isolation_mode") != "equivalent_verified_isolation":
+        errors.append("os_isolation_evidence_missing")
+    if runtime_evidence.get("filesystem_access_audit_status") != "PASS":
+        errors.append("actual_filesystem_access_audit_failed_or_missing")
     forbidden_config = {
         "manysig_pkl", "manytx_pkl", "dataset_path", "source_dataset",
         "target_dataset", "source_train_channel_view", "train_channel_view",
+        "adv3b02_checkpoint",
     }
     leaked = sorted(forbidden_config & set(resolved))
     if leaked:
@@ -308,6 +328,65 @@ def _append_event(path: Path, payload: dict[str, Any]) -> None:
         handle.write(json.dumps(payload, ensure_ascii=False, sort_keys=True) + "\n")
 
 
+def _safe_receiver(value: str) -> str:
+    return re.sub(r"[^A-Za-z0-9]+", "_", str(value)).strip("_")
+
+
+def _sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def _finalize_runtime_evidence(
+    row: MatrixRow, *, trace_prefix: Path, base_evidence_path: Path
+) -> Path:
+    trace_files = sorted(trace_prefix.parent.glob(trace_prefix.name + "*"))
+    if not trace_files:
+        raise RuntimeError("strace did not emit a filesystem access ledger")
+    forbidden_tokens = (".pkl", "truth_sidecar", "scoring_manifest", "manysig", "manytx")
+    forbidden_hits: list[str] = []
+    trace_entries: list[dict[str, Any]] = []
+    for path in trace_files:
+        content = path.read_text(encoding="utf-8", errors="replace")
+        for line in content.splitlines():
+            lowered = line.lower()
+            if any(token in lowered for token in forbidden_tokens):
+                forbidden_hits.append(line[:500])
+        trace_entries.append({"path": str(path), "sha256": _sha256(path), "size": path.stat().st_size})
+    audit = {
+        "schema": "cvs_phase2_actual_filesystem_access_audit_v1",
+        "status": "PASS" if not forbidden_hits else "FAIL",
+        "landlock_enforced": True,
+        "trace_files": trace_entries,
+        "forbidden_access_hits": forbidden_hits,
+    }
+    audit_path = Path(row.run_dir) / "filesystem_access_audit.json"
+    audit_path.write_text(json.dumps(audit, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    if forbidden_hits:
+        raise RuntimeError(f"predictor attempted forbidden filesystem access: {forbidden_hits[:3]}")
+    evidence = json.loads(base_evidence_path.read_text(encoding="utf-8-sig"))
+    evidence.update({
+        "filesystem_access_audit_sha256": _sha256(audit_path),
+        "filesystem_access_audit_status": "PASS",
+        "prediction_artifact_sha256": _sha256(
+            Path(row.run_dir) / "prediction_artifact.npz"
+        ),
+        "prediction_seal_sha256": _sha256(
+            Path(row.run_dir) / "prediction_manifest.json"
+        ),
+    })
+    evidence_path = Path(row.run_dir) / "runtime_isolation_evidence.json"
+    evidence_path.write_text(json.dumps(evidence, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    manifest_path = Path(row.run_dir) / "split_manifest.json"
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8-sig"))
+    manifest["phase2_runtime_isolation_evidence"] = evidence
+    manifest_path.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    return evidence_path
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Resume-safe CVS Stage2 publication matrix worker")
     parser.add_argument("--phase", choices=sorted(PHASE_METHODS), required=True)
@@ -330,6 +409,13 @@ def main() -> int:
     parser.add_argument("--shard-index", type=int, default=0)
     parser.add_argument("--max-rows", type=int, default=0)
     parser.add_argument("--execute", action="store_true")
+    parser.add_argument("--post-prediction-scorer", type=Path, default=None)
+    parser.add_argument("--scoring-root", type=Path, default=None)
+    parser.add_argument("--isolation-launcher", type=Path, default=None)
+    parser.add_argument("--runtime-allowlist", type=Path, default=None)
+    parser.add_argument("--runtime-evidence-root", type=Path, default=None)
+    parser.add_argument("--isolation-runtime-read-dir", type=Path, action="append", default=[])
+    parser.add_argument("--strace", default="strace")
     args = parser.parse_args()
     _assert_cvs_config_uses_independent_query_decisions(args.cvs_config)
     if args.shard_count <= 0 or not 0 <= args.shard_index < args.shard_count:
@@ -412,12 +498,65 @@ def main() -> int:
             module_override=args.module_override,
             device=args.device,
         )
+        isolated = all(
+            value is not None for value in (
+                args.post_prediction_scorer, args.scoring_root, args.isolation_launcher,
+                args.runtime_allowlist, args.runtime_evidence_root,
+            )
+        )
+        if any(value is not None for value in (
+            args.post_prediction_scorer, args.scoring_root, args.isolation_launcher,
+            args.runtime_allowlist, args.runtime_evidence_root,
+        )) and not isolated:
+            raise ValueError("isolated predictor/scorer arguments must be provided together")
+        trace_prefix = Path(row.run_dir) / "fs_trace"
+        predictor_command = command
+        if isolated:
+            predictor_command = [
+                args.strace, "-ff", "-e", "trace=%file", "-o", str(trace_prefix),
+                args.python, str(args.isolation_launcher),
+                "--allowlist", str(args.runtime_allowlist),
+                "--write-dir", row.run_dir, "--", *command,
+            ]
+            insert_at = predictor_command.index("--")
+            for runtime_dir in args.isolation_runtime_read_dir:
+                predictor_command[insert_at:insert_at] = [
+                    "--runtime-read-dir", str(runtime_dir)
+                ]
+                insert_at += 2
         started = time.time()
-        _append_event(event_path, {"event": "start", "row": asdict(row), "command": command, "time": started})
+        _append_event(event_path, {"event": "predictor_start", "row": asdict(row), "command": predictor_command, "time": started})
         with Path(row.log_path).open("w", encoding="utf-8") as log_handle:
-            completed = subprocess.run(command, stdout=log_handle, stderr=subprocess.STDOUT, check=False)
+            completed = subprocess.run(predictor_command, stdout=log_handle, stderr=subprocess.STDOUT, check=False)
+            scorer_returncode = None
+            if completed.returncode == 0 and isolated:
+                base_evidence_path = (
+                    args.runtime_evidence_root / f"rx_{_safe_receiver(row.receiver)}" /
+                    f"seed_{row.seed}" / "runtime_isolation_evidence.json"
+                )
+                evidence_path = _finalize_runtime_evidence(
+                    row, trace_prefix=trace_prefix, base_evidence_path=base_evidence_path
+                )
+                scoring_manifest = (
+                    args.scoring_root / f"rx_{_safe_receiver(row.receiver)}" /
+                    f"seed_{row.seed}" / "scoring_manifest.json"
+                )
+                scorer_command = [
+                    args.python, "-u", str(args.post_prediction_scorer),
+                    "--run-dir", row.run_dir,
+                    "--scoring-manifest", str(scoring_manifest),
+                    "--runtime-evidence", str(evidence_path),
+                ]
+                _append_event(event_path, {
+                    "event": "scorer_start", "row": asdict(row), "command": scorer_command,
+                    "prediction_artifact_sha256": _sha256(Path(row.run_dir) / "prediction_artifact.npz"),
+                })
+                scorer = subprocess.run(
+                    scorer_command, stdout=log_handle, stderr=subprocess.STDOUT, check=False
+                )
+                scorer_returncode = scorer.returncode
         final_status = _artifact_status(row)
-        if completed.returncode == 0 and final_status["complete"]:
+        if completed.returncode == 0 and scorer_returncode in (None, 0) and final_status["complete"]:
             counts["completed"] += 1
             event = "complete"
         else:
@@ -429,6 +568,7 @@ def main() -> int:
                 "event": event,
                 "row": asdict(row),
                 "returncode": completed.returncode,
+                "scorer_returncode": scorer_returncode,
                 "elapsed_sec": time.time() - started,
                 "status": final_status,
             },

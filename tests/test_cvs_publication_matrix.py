@@ -18,6 +18,45 @@ from paper_reproduction.scripts.run_cvs_publication_matrix import (
 )
 
 
+def _strict_protocol_manifest() -> dict:
+    return {
+        "phase2_sample_view_policy": "leo_weak_only_no_clean_access",
+        "clean_sample_access": False,
+        "clean_derived_signal_access": False,
+        "phase2_clean_dataset_reachable": False,
+        "phase2_clean_cache_reachable": False,
+        "phase2_clean_control_flow_reachable": False,
+        "phase2_pretrained_artifact_policy": "sealed_phase1_checkpoint_only",
+        "target_channel_view": "leo_weak_only",
+        "phase2_query_decision_policy": "per_sample_all_registered_classes",
+        "phase2_query_role_oracle_access": False,
+        "phase2_query_true_batch_class_count_access": False,
+        "phase2_query_class_quota_access": False,
+        "phase2_query_batch_global_assignment": False,
+        "overlay_applied_before_phase2": True,
+        "support_query_overlap": False,
+        "all_tests_satellite_augmented": True,
+        "predictor_query_truth_access": False,
+        "predictor_query_role_access": False,
+        "predictor_query_true_batch_class_count_access": False,
+        "predictor_query_class_quota_access": False,
+        "prediction_scoring_process_isolated": True,
+        "phase2_runtime_isolation_evidence": {
+            "os_isolation_mode": "equivalent_verified_isolation",
+            "filesystem_access_audit_status": "PASS",
+        },
+    }
+
+
+def _write_isolation_artifacts(run_dir: Path) -> None:
+    for name in (
+        "prediction_manifest.json", "scoring_audit.json",
+        "runtime_isolation_evidence.json", "filesystem_access_audit.json",
+    ):
+        (run_dir / name).write_text("{}\n", encoding="utf-8")
+    (run_dir / "prediction_artifact.npz").write_bytes(b"npz")
+
+
 def test_full_stage2_matrices_cover_methods_receivers_k_and_seeds(tmp_path: Path) -> None:
     for phase in ("stage2b", "stage2c"):
         rows = build_rows(
@@ -73,9 +112,10 @@ def test_artifact_contract_requires_satellite_scores_details_and_loss_trace(tmp_
     (run_dir / "metrics.json").write_text("{}\n", encoding="utf-8")
     (run_dir / "resolved_config.json").write_text("{}\n", encoding="utf-8")
     (run_dir / "split_manifest.json").write_text(
-        json.dumps({"support_query_overlap": False, "all_tests_satellite_augmented": True}),
+        json.dumps(_strict_protocol_manifest()),
         encoding="utf-8",
     )
+    _write_isolation_artifacts(run_dir)
     (run_dir / "detailed_metrics.json").write_text("[]\n", encoding="utf-8")
     (run_dir / "loss_trace.json").write_text('[{"loss":1.0}]\n', encoding="utf-8")
     with (run_dir / "score_table.csv").open("w", encoding="utf-8", newline="") as handle:
@@ -188,6 +228,7 @@ def test_publication_artifact_contract_rejects_oracle_metadata(tmp_path: Path) -
     (run_dir / "split_manifest.json").write_text(
         json.dumps(
             {
+                **_strict_protocol_manifest(),
                 "support_query_overlap": False,
                 "all_tests_satellite_augmented": True,
                 "qknnv42_decision_mode": "legacy_role_quota_oracle",
@@ -199,6 +240,7 @@ def test_publication_artifact_contract_rejects_oracle_metadata(tmp_path: Path) -
         ),
         encoding="utf-8",
     )
+    _write_isolation_artifacts(run_dir)
     (run_dir / "detailed_metrics.json").write_text("[]\n", encoding="utf-8")
     (run_dir / "loss_trace.json").write_text('[{"loss":1.0}]\n', encoding="utf-8")
     with (run_dir / "score_table.csv").open("w", encoding="utf-8", newline="") as handle:

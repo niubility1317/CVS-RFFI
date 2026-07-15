@@ -73,6 +73,7 @@ def main() -> int:
         manifest = json.loads((run_dir / "split_manifest.json").read_text(encoding="utf-8"))
         trace = json.loads((run_dir / "loss_trace.json").read_text(encoding="utf-8"))
         detailed = json.loads((run_dir / "detailed_metrics.json").read_text(encoding="utf-8"))
+        scoring_audit = json.loads((run_dir / "scoring_audit.json").read_text(encoding="utf-8"))
         with (run_dir / "score_table.csv").open("r", encoding="utf-8", newline="") as handle:
             scores = list(csv.DictReader(handle))
         score_total += len(scores)
@@ -111,9 +112,22 @@ def main() -> int:
             "no_class_quota": manifest.get("phase2_query_class_quota_access") is False,
             "no_global_assignment": manifest.get("phase2_query_batch_global_assignment")
             is False,
-            "target_cache_verified": isinstance(
-                manifest.get("target_leo_weak_cache_audit"), dict
+            "target_predictor_bundle_verified": isinstance(
+                manifest.get("target_predictor_bundle_audit"), dict
             ),
+            "predictor_no_truth": manifest.get("predictor_query_truth_access") is False,
+            "predictor_no_role": manifest.get("predictor_query_role_access") is False,
+            "predictor_no_true_batch_count": manifest.get(
+                "predictor_query_true_batch_class_count_access"
+            ) is False,
+            "predictor_no_quota": manifest.get("predictor_query_class_quota_access") is False,
+            "predict_score_isolated": manifest.get("prediction_scoring_process_isolated") is True,
+            "actual_filesystem_audit": manifest.get(
+                "phase2_runtime_isolation_evidence", {}
+            ).get("filesystem_access_audit_status") == "PASS",
+            "truth_join_after_prediction": scoring_audit.get(
+                "truth_join_after_prediction_only"
+            ) is True,
         }
         if method == "protonet_cda":
             checks["source_cache_not_opened"] = (

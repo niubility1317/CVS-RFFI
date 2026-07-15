@@ -25,8 +25,10 @@ CVS extension scope:
 
 - `cvs_aligned/`: CVS Stage2-C protocol, metrics, and evaluation adapter.
 - `configs/*_cvs_stage2c_*.json`: sanitized CVS Stage2-C example configs.
-- `cvs_aligned/adv3b02_supervised_da_runner.py`: Stage2-B target-old comparison runner for ProtoNet CDA, MRIOR-SDA, and DADDA-SDA. The current runner accepts only sealed post-channel `leo_*_weak` cache sets, exposes no dataset path, uses per-sample predictions over all registered old classes, and emits the clean-reachability/query-Oracle guards required by `docs/PROJECT_PROTOCOL.md`.
-- `scripts/build_adv3b02_three_da_leo_weak_plan.py`: creates one offline source cache specification, 25 receiver-seed target-old cache specifications, and a 375-row Phase2 execution plan (`125` rows per method). Dataset paths remain confined to the offline cache-preparation specifications and are not copied into the Phase2 config.
+- `cvs_aligned/adv3b02_supervised_da_runner.py`: Stage2-B target-old predictor for ProtoNet CDA、MRIOR-SDA和DADDA-SDA。它只接收密封的post-channel `leo_*_weak` source cache、注册support bundle和无真值query bundle；query使用opaque ID并对全部注册旧类逐样本决策。预测先写入SHA256绑定的不可变artifact，runner内不读取truth或计算accuracy。
+- `scripts/score_adv3b02_three_da_predictions.py`: 独立post-prediction scorer。只有predictor进程退出且prediction hash、Landlock证据和实际文件访问账本通过后，才按opaque query ID连接独立truth sidecar并生成old_acc及逐类/逐receiver统计。
+- `scripts/build_adv3b02_three_da_leo_weak_plan.py`: 生成26个offline LEO_weak cache任务、25个无真值predictor bundle任务、1个运行时密封任务和375行Phase2执行矩阵（每方法125行）。dataset路径只存在于前26个offline cache spec，不进入Phase2配置、predictor bundle或运行时文件白名单。
+- `../code/scripts/build_phase2_runtime_seal.py`与`../code/scripts/run_phase2_landlock_isolated.py`: 生成密封包/root digest/成员白名单，并在N607使用Landlock+`no_new_privs`限制predictor文件访问；worker另用`strace`生成post-run实际访问账本。缺少任一pre-run或post-run证据时，该行不得成为正式结果。
 
 Boundary:
 

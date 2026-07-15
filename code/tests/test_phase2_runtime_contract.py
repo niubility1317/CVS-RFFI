@@ -13,15 +13,26 @@ from cvsrffi.phase2_runtime_contract import (
 )
 
 
-def _evidence():
+def _descriptor(role: str, path: str):
+    return {
+        "relative_path": path,
+        "sha256": "a" * 64,
+        "size_bytes": 10,
+        "artifact_role": role,
+        "schema": f"cvs.phase2.{role}.v1",
+    }
+
+
+def _pre_run_evidence():
     return {
         "sealed_inference_package_sha256": "a" * 64,
-        "package_root_sha256": "b" * 64,
-        "runtime_code_sha256": "c" * 64,
+        "package_root_sha256": "2" * 64,
+        "runtime_code_sha256": "3" * 64,
         "artifact_member_allowlist_sha256": "d" * 64,
-        "filesystem_access_audit_sha256": "e" * 64,
-        "os_isolation_mode": "container_readonly_mounts",
+        "os_isolation_mode": "bwrap_readonly_mounts",
+        "os_isolation_attestation_sha256": "e" * 64,
         "preopen_audit_status": "PASS",
+        "preopen_audit_receipt_sha256": "f" * 64,
         "predict_score_process_isolation": True,
     }
 
@@ -29,9 +40,10 @@ def _evidence():
 def _request():
     return {
         **PHASE2_FULL_CONTRACT,
-        "schema_version": "cvs.phase2.predict_request.v1",
+        "schema_version": "cvs.phase2.predict_request.v2",
         "request_id": "req-1",
         "row_id": "row-1",
+        "stage": "stage2c",
         "receiver": "20-1",
         "scenario": "leo_clear_weak",
         "k_shot": 1,
@@ -41,18 +53,22 @@ def _request():
         "runtime_code_sha256": "3" * 64,
         "registered_class_count": 2,
         "registered_classes": [
-            {"class_index": 0, "class_label": "opaque-class-0"},
-            {"class_index": 1, "class_label": "opaque-class-1"},
+            {"class_index": 0, "class_handle": "cls_" + "0" * 32},
+            {"class_index": 1, "class_handle": "cls_" + "1" * 32},
         ],
-        "support_artifact": "artifacts/support.npz",
-        "query_artifact": "artifacts/query.npz",
-        "checkpoint_artifact": "artifacts/checkpoint.bin",
-        "adapter_artifact": "artifacts/adapter.bin",
-        "head_artifact": "artifacts/head.npz",
+        "support_artifact": _descriptor("support", "support.npz"),
+        "query_artifact": _descriptor("query", "query.npz"),
+        "checkpoint_artifact": _descriptor("checkpoint", "checkpoint.bin"),
+        "adapter_artifact": _descriptor("adapter", "adapter.bin"),
+        "head_artifact": _descriptor("head", "head.npz"),
         "tta_policy": {"base_views": 1, "max_views": 5},
         "tta_policy_sha256": "4" * 64,
-        "output_contract": "cvs.phase2.prediction.v1",
-        "phase2_runtime_isolation_evidence": _evidence(),
+        "output_contract": {
+            "schema": "cvs.phase2.prediction.v2",
+            "relative_path": "prediction.npz",
+            "sealed_immutable_required": True,
+        },
+        "phase2_runtime_isolation_evidence": _pre_run_evidence(),
     }
 
 
@@ -83,6 +99,35 @@ def test_predictor_request_rejects_truth_role_count_quota_and_build_signals(key,
         validate_predictor_request(request)
 
 
+def test_predictor_request_requires_every_declared_key():
+    request = _request()
+    request.pop("scenario")
+    with pytest.raises(Phase2ContractError, match="predictor_request_schema"):
+        validate_predictor_request(request)
+
+
+@pytest.mark.parametrize("bad_path", ["/absolute/query.npz", "../query.npz", "a\\b.npz"])
+def test_predictor_request_rejects_unsafe_artifact_paths(bad_path):
+    request = _request()
+    request["query_artifact"]["relative_path"] = bad_path
+    with pytest.raises(Phase2ContractError, match="artifact_relative_path_invalid"):
+        validate_predictor_request(request)
+
+
+def test_predictor_request_cross_checks_runtime_digests():
+    request = _request()
+    request["phase2_runtime_isolation_evidence"]["package_root_sha256"] = "9" * 64
+    with pytest.raises(Phase2ContractError, match="cross_digest_mismatch"):
+        validate_predictor_request(request)
+
+
+def test_registered_class_handles_must_be_opaque_and_ordered():
+    request = _request()
+    request["registered_classes"][0]["class_handle"] = "14-10"
+    with pytest.raises(Phase2ContractError, match="not_opaque"):
+        validate_predictor_request(request)
+
+
 def test_deprecated_ambiguous_field_never_satisfies_current_contract():
     request = _request()
     request["phase2_query_class_count_access"] = False
@@ -90,22 +135,43 @@ def test_deprecated_ambiguous_field_never_satisfies_current_contract():
         validate_phase2_contract(request)
 
 
-def test_runtime_reachability_false_requires_runtime_evidence():
+def test_pre_run_evidence_does_not_claim_future_filesystem_ledger():
     request = _request()
-    request.pop("phase2_runtime_isolation_evidence")
-    with pytest.raises(Phase2ContractError, match="runtime_isolation_evidence"):
-        validate_phase2_contract(request)
+    request["phase2_runtime_isolation_evidence"]["filesystem_access_audit_sha256"] = "e" * 64
+    with pytest.raises(Phase2ContractError, match="unexpected_runtime_evidence"):
+        validate_predictor_request(request)
+
+
+def test_post_run_evidence_requires_access_and_prediction_seals():
+    request = _request()
+    with pytest.raises(Phase2ContractError, match="filesystem_access_audit_sha256"):
+        validate_phase2_contract(request, evidence_phase="post_run")
+    request["phase2_runtime_isolation_evidence"].update(
+        {
+            "filesystem_access_audit_sha256": "5" * 64,
+            "filesystem_access_audit_status": "PASS",
+            "prediction_artifact_sha256": "6" * 64,
+            "prediction_seal_sha256": "7" * 64,
+        }
+    )
+    validate_phase2_contract(request, evidence_phase="post_run")
 
 
 def test_runtime_evidence_hashes_must_be_canonical_sha256():
     request = _request()
-    request["phase2_runtime_isolation_evidence"]["filesystem_access_audit_sha256"] = "pass"
+    request["phase2_runtime_isolation_evidence"]["preopen_audit_receipt_sha256"] = "pass"
     with pytest.raises(Phase2ContractError, match="invalid_runtime_evidence_sha256"):
         validate_phase2_contract(request)
 
 
 def test_historical_missing_evidence_is_unverified_not_automatically_invalid():
     record = copy.deepcopy(PHASE2_FULL_CONTRACT)
-    assert classify_legacy_phase2_record(record) == "PHASE2_RUNTIME_ISOLATION_UNVERIFIED"
+    assert classify_legacy_phase2_record(record) == "UNVERIFIED_UNDER_CURRENT_PROTOCOL"
     record["clean_sample_access"] = True
     assert classify_legacy_phase2_record(record) == "PROTOCOL_INVALID_FOR_PHASE2"
+
+
+def test_confirmed_role_or_quota_oracle_is_deployment_invalid():
+    record = copy.deepcopy(PHASE2_FULL_CONTRACT)
+    record["phase2_query_role_oracle_access"] = True
+    assert classify_legacy_phase2_record(record) == "PROTOCOL_INVALID_FOR_DEPLOYMENT"
