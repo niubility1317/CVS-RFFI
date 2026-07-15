@@ -12,3 +12,10 @@
 - 推理：单视图、FFT96、禁dense query、无角色Oracle、无类别配额。
 - 本地验证：33项pytest通过，Python编译、Bash语法和875矩阵dry-run均通过。
 - 结果：待运行完成后补充完整主表与行级artifact索引。
+
+## N607预检与同步摘要
+
+- 直连预检PASS；8张RTX 3090空闲，无活动训练；`/home`剩余7.6TB。
+- checkpoint、ManySig、ManyTx、远端Python导入、协议校验和Bash语法均PASS。
+- 两个被更新的远端旧脚本已下载到本地快照。
+- 6个运行文件已同步，逐项本地/远端SHA256一致；完整映射与哈希见根目录正式报告。
