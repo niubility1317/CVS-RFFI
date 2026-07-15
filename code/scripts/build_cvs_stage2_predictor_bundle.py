@@ -20,8 +20,10 @@ import numpy as np
 CODE_ROOT = Path(__file__).resolve().parents[1]
 REPO_ROOT = CODE_ROOT.parent
 for value in (str(CODE_ROOT), str(REPO_ROOT)):
-    if value not in sys.path:
-        sys.path.insert(0, value)
+    while value in sys.path:
+        sys.path.remove(value)
+for value in (str(REPO_ROOT), str(CODE_ROOT)):
+    sys.path.insert(0, value)
 
 from cvsrffi.leo_weak_cache import (  # noqa: E402
     FORMAL_LEO_WEAK_SCENARIOS,

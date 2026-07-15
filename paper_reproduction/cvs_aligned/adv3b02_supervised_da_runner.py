@@ -28,8 +28,10 @@ from torch.utils.data import DataLoader, TensorDataset
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 CODE_ROOT = PROJECT_ROOT / "code"
 for value in (str(CODE_ROOT), str(PROJECT_ROOT)):
-    if value not in sys.path:
-        sys.path.insert(0, value)
+    while value in sys.path:
+        sys.path.remove(value)
+for value in (str(PROJECT_ROOT), str(CODE_ROOT)):
+    sys.path.insert(0, value)
 
 from SSDG import train_ssdg as ssdg_mod  # noqa: E402
 from cvsrffi.leo_weak_cache import (  # noqa: E402

@@ -17,8 +17,10 @@ import torch
 REPO_ROOT = Path(__file__).resolve().parents[2]
 CODE_ROOT = REPO_ROOT / "code"
 for value in (str(CODE_ROOT), str(REPO_ROOT)):
-    if value not in sys.path:
-        sys.path.insert(0, value)
+    while value in sys.path:
+        sys.path.remove(value)
+for value in (str(REPO_ROOT), str(CODE_ROOT)):
+    sys.path.insert(0, value)
 
 from cvsrffi.leo_weak_cache import FORMAL_LEO_WEAK_SCENARIOS, sha256_file  # noqa: E402
 from cvsrffi.phase2_runtime_contract import validate_phase2_contract  # noqa: E402
