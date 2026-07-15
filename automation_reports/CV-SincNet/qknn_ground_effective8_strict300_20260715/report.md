@@ -197,6 +197,8 @@ v7 attempt1以PID`1896254`运行，成功通过新版seccomp/attestation并进�
 
 strict_v11远端闭包构建完成：12项复用artifact逐字节一致，闭包SHA与本地同为`785a844d49fabc230ce803db3c64dd249093fc779980a2ccec2efd5faa31d8b2`，新predictor脚本SHA=`9eaa8f73879c2266e806097dee2f6076b3f0516c892e6b61c4b1a25221b10421`。v15清单绑定strict_v11与全新`..._landlock_strict300_v8`根，25/75/300/900、`launch_authority=false`，SHA=`8c0a37bde37b7604b1517198017fac75b0c6ed3eda7a5cbcb2635e15abb4ad66`。
 
+00:21预检与实时清单确认无GPU计算进程、无训练进程。v15已同步到v8新根并核验SHA。v8 smoke使用`smoke_driver_v8_attempt1.pid`、`logs/smoke_driver_v8_attempt1.out`、`logs/smoke_v8_attempt1`与新根`smoke_receipt.json`，仍仅`cuda:0`单单元。
+
 并行构建留下`runtime_artifacts_strict_v9`部分目录：12项不可变模型/config文件存在，`05_runtime_closure.json`为0字节且closure目录不存在，符合旧closure白名单拒绝新增`ctypes/platform`导入的fail-closed行为。strict_v9完整保留且不补写。下一次使用全新`runtime_artifacts_strict_v10`：先同步提交`764c11c`的memfd实现与提交`5d87bdd`的closure白名单，逐文件核验SHA；再在N607直接调用`_sealed_memfd`执行临时seal smoke并验证`REQUIRED_SEALS`，通过后才复制strict_v8的12项不可变artifact并新建closure。后续计划/运行根使用全新版本，不复用v4/v11。
 
 ## 完成后结果表
