@@ -163,6 +163,8 @@ strict_v8已从修复提交构建：12项模型/capsule/config复用artifact逐�
 
 23:55预检/实时清单再次确认8张GPU空闲、无训练进程。v10已同步至v3新根`protocol_plan/strict_plan_manifest_v10.json`并核验SHA。v3 smoke仍只获`cuda:0`单单元权限，使用`smoke_driver_v3_attempt1.pid`、`logs/smoke_driver_v3_attempt1.out`、`logs/smoke_v3_attempt1`和新根`smoke_receipt.json`，路径不存在时才启动。
 
+v3 attempt1以PID`1882465`运行，成功生成pre-run evidence与truth-free request，首次进入Landlock pinned runner前因N607工作区缺少其外层依赖`code/cvsrffi/phase2_bwrap_policy.py`而fail closed；尚未产生prediction/scoring/smoke receipt。由于空`predictor_output`目录已创建，v3不复用。下一步先同步该本地已受控依赖并在N607执行只读完整import smoke；只有import闭包通过后才生成全新v4计划/输出根。
+
 ## 完成后结果表
 
 实验完成后在本节追加逐单元同一行结果，至少包含candidate ID、机制、receiver/TX split、K-shot、seed、old/seen-new/unknown指标、coverage/rollback/defer、loss/adapter摘要和最终判定。不得用来自不同单元的独立极值替代联合行。
