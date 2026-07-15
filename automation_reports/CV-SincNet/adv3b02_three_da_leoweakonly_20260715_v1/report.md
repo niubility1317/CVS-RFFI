@@ -138,6 +138,14 @@ phase2_query_batch_global_assignment=false
 
 第五次smoke PID `1626556`在最小代码闭包下到达checkpoint反序列化，但checkpoint `args`包含`baseline_origin_sat_view.SatViewStage`，因此`torch.load(weights_only=False)`需要该类定义；`weights_only=True`最小测试确认因该类不在PyTorch 2.1内置安全集合而失败。`baseline_origin_sat_view.py`仅定义dataclass/数学/torch辅助，不导入dataset或信道数据入口，故把该单文件加入显式代码白名单；仍不允许任何dataset loader或clean/ManySig/ManyTx路径。复测使用`smoke_runs_v6/`。
 
+第六次smoke PID `1628089`已`completed=3`、`failed=0`。最终最小runtime seal的global inventory SHA256为`463ad98e75bf81720844add010b153a1bd53096d59df52fef48d921c4a194f31`，runtime code SHA256为`8ef15765fa639647b4ed6f0cbdd23a0408acdcc0e177a789bccb6b5919de0182`；allowlist禁止路径命中为0。三行均为receiver `20-1`、seed `713101`、K=5，checkpoint严格加载均为0 missing/0 unexpected/0 shape mismatch，访问审计PASS、forbidden hit 0、prediction/scoring进程隔离PASS、每行360个评分样本。
+
+|smoke方法|before old_acc|after old_acc|delta|loss rows|loss有限|访问审计|判定|
+|---|---:|---:|---:|---:|---|---|---|
+|ProtoNet CDA|61.11%|60.00%|-1.11pp|3|是|PASS|允许正式启动|
+|MRIOR-SDA|61.11%|83.06%|+21.94pp|33|是|PASS|允许正式启动|
+|DADDA-SDA|61.11%|71.39%|+10.28pp|33|是|PASS|允许正式启动|
+
 ## 七、成功条件与风险
 
 成功条件：
