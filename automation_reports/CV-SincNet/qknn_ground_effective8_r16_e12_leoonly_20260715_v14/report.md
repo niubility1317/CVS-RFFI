@@ -5,7 +5,7 @@
 |实验ID|`qknn_ground_effective8_r16_e12_leoonly_20260715_v14`|
 |时间|2026-07-15 13:44 CST|
 |operator|Codex`/root`|
-|当前状态|`SOURCE_PIPELINE_FAILED_CLOSED_PROTOCOL_REPAIR1_LOCAL_VERIFIED`；target matrix未启动|
+|当前状态|`REMOTE_REPAIR1_VERIFIED_RELAUNCH_PENDING`；target matrix未启动|
 |基座模型|同一ADV3B02 checkpoint：`ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth`|
 |目标|在新版`LEO_weak-only`边界下，以≤50k参数、≤20epoch、≤256KB持久状态的极轻型适配器和逐样本1→3→5-view推理，完成5receiver×5seed×3场景×新类5/10/20×K=1/5/10/20正式确认|
 
@@ -149,3 +149,11 @@ ValueError: source TX set drift for leo_clear_weak: ['14-10','14-7','20-15','20-
 repair1保持cache build spec中的selector index不变，仅在训练与验证命令边界显式传递真实标签：source TX=`14-10,14-7,20-15,20-19,6-15,8-20`，source train receiver=`1-1,1-19,14-7,18-2,19-2,2-1`，source validation holdout receiver=`2-19`。正式config同时封存selector到真实receiver的映射，plan validator要求6个source receiver唯一、训练与验证参考集合完全相同、holdout唯一且不重叠。该修复不改变LEO_weak样本、不引入clean、角色Oracle、类别quota或query信息，也不改变adapter、损失、K、seed、场景和target矩阵。
 
 repair1本地验证使用`ssr-gpu`解释器：plan builder`py_compile`通过；10组相关测试`79 passed`；修复计划精确生成2个source cache-set、25个target cache-set、300次benchmark调用、900条场景row、1次collection和1次summary。修复计划保存在本地非发布artifact`local_artifacts/qknn_ground_effective8_v14_protocol_plan_repair1_20260715/`，尚未覆盖远端正式plan。已按cache builder的规范化JSON算法核对repair1与现有cache的`build_spec_sha256`：source train均为`7897de1138ee67bf0ebcb91df3ed11f4993020dc8222e9535f18a54b7e8dd2f3`，source validation均为`75a7d772aa9d39b209a9ddd2b6f310189ff43107d603d9bd8573fe6dd897256f`。原始JSON文件SHA因格式化不同而不同，但实际build spec语义哈希完全相同，故严格loader允许复用已完成cache；恢复前仍须快照远端旧plan，再同步修复代码/config和修复plan。只有source pipeline从失败步骤恢复且promotion PASS后，才允许启动target matrix。
+
+### repair1远端同步与恢复门禁
+
+2026-07-15 14:32 CST重新执行direct preflight与live inventory：8张RTX 3090均约10MiB，`active_training_processes=[]`、`gpu_compute=[]`。覆盖前快照为`/home/szu2070436088/2510044040/CV-SincNet/code/snapshots/qknn_ground_effective8_r16_e12_leoonly_20260715_v14_repair1_before_sync_20260715_143529`，包含旧protocol plan、将覆盖的config/builder/report，以及首次失败的runner日志、`0002_train.log`和state；原cache、日志、state和run产物未删除或移动。
+
+Git提交`e4a67c5`封存selector→真实标签修复，提交`7eacc1a`封存cache兼容性审计。config、plan builder、report和本地生成的repair1 plan压缩包已通过direct SCP同步；本地/远端SHA256分别一致为`0627c019...`、`6de1b42d...`、`f1cd8378...`、`6da35637...`，远端builder`py_compile`通过。repair1 plan已覆盖到原正式plan目录，远端runner validator确认source step=5、target cache step=25、benchmark step=300，并确认训练TX/receiver与validation holdout均为真实标签。两份source spec的规范化SHA继续与现有cache manifest逐项相等。所有SSH/SCP后均确认本地`ssh.exe=0`、N607:22 established连接=0。
+
+恢复将复用原`source_pipeline_state.json`：步骤`0000`和`0001`的完整命令未变化且状态为complete，因此runner只从命令已经变化的`0002_train`重跑；旧失败记录与原日志已单独保存在快照的`failure_evidence/`。恢复前仍需再次执行live inventory；若出现其他任务则不启动。
