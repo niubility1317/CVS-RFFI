@@ -1,0 +1,9 @@
+stage,metric,method,feature_lineage,k1_pct,k2_pct,k5_pct,k10_pct,k20_pct,comparison_boundary
+Stage2-B,old_acc,Direct ADV3B02,strict ADV3B02 checkpoint,75.21,75.21,75.21,75.21,75.21,K-independent direct classifier
+Stage2-B,old_acc,MRIOR-SDA,strict ADV3B02 feature extractor and method adaptation,69.88,73.71,79.17,84.50,88.31,old-class adaptation only
+Stage2-B,old_acc,DADDA-SDA,strict ADV3B02 feature extractor and method adaptation,72.58,73.27,76.74,79.36,82.61,old-class adaptation only
+Stage2-B,old_acc,ProtoNet CDA,strict ADV3B02 feature extractor and support prototypes,59.47,65.68,70.28,70.86,73.07,old-class adaptation only
+Stage2-C,H_old_new,CSIL,method-native historical pipeline,16.23,19.34,18.05,17.69,9.45,not a strict shared-ADV3B02 head-only ablation
+Stage2-C,H_old_new,MoPC-HR,method-native historical pipeline,14.70,18.45,24.17,30.93,37.30,not a strict shared-ADV3B02 head-only ablation
+Stage2-C,H_old_new,Orthogonal Incremental,method-native historical pipeline,9.88,8.16,6.84,7.73,6.00,not a strict shared-ADV3B02 head-only ablation
+Stage2-C,H_old_new,Full qKNN non-Oracle,strict ADV3B02 plus 60epoch adapter plus 5-view TTA plus FFT96,61.10,69.91,76.93,82.07,85.04,dense-transductive non-Oracle result
