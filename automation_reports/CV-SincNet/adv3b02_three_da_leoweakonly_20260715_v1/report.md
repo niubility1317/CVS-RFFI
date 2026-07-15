@@ -10,7 +10,7 @@
 |阶段|Stage2-B target-old few-shot domain adaptation|
 |目标|按最新项目协议重跑ProtoNet CDA、MRIOR-SDA、DADDA-SDA；每方法5个target receiver×5个seed×5个K，共125次，合计375次正式方法运行|
 |历史比较|替代2026-07-14批次中Phase2直接读取raw/clean IQ并在runner内部生成LEO视图的375行历史artifact|
-|当前状态|N607_OFFLINE_PREPARATION_RUNNING；PID 1604043；正式375行尚未启动|
+|当前状态|N607_FORMAL_RUNNING；8个GPU分片已启动；17:25首次健康检查完成14/375、异常0|
 
 ## 二、假设与声明边界
 
@@ -110,10 +110,10 @@ phase2_query_batch_global_assignment=false
 |远端Python/Conda环境|`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`|
 |远端run root|`/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_three_da_leoweakonly_20260715_v1`|
 |远端log root|`.../stage2_logs/`|
-|GPU/PID|offline准备PID `1604043`已退出；26个cache已完成，25个bundle和1个runtime seal待续跑；正式worker未启动|
-|代码版本|待同步Git commit `98ea663`；本地`py_compile` PASS、相关pytest `33 passed`、375行matrix dry-run PASS|
+|GPU/PID|正式分片GPU0–7分别为PID `1630806`、`1630865`、`1630924`、`1631084`、`1631232`、`1631381`、`1631553`、`1631676`|
+|代码版本|正式启动时Git HEAD `d3fa2d4`；最终runtime代码闭包commit `51be8e2`，本地编译、相关pytest与375行matrix dry-run均PASS|
 |offline准备命令|`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u paper_reproduction/scripts/run_adv3b02_three_da_cache_plan.py --plan-manifest runs/adv3b02_three_da_leoweakonly_20260715_v1/plan/plan_manifest.json --execute`|
-|正式worker命令|由`plan_manifest.json.commands.phase2_workers`给出8个shard；必须在52/52离线准备和三方法smoke通过后才允许启动|
+|正式worker命令|由`plan_manifest.json.commands.phase2_workers`给出8个shard；52/52离线准备及三方法smoke通过后已于2026-07-15 17:24 CST启动|
 |期望输出|每行`metrics.json`、`split_manifest.json`、`resolved_config.json`、`score_table.csv`、详细分组统计和完整loss trace|
 
 下一次同步映射：commit `98ea663`中的`code/scripts/{build_cvs_stage2_predictor_bundle,build_phase2_runtime_seal}.py`、ADV3B02 runner、独立scorer、plan/cache-plan脚本和配置同步至N607同相对路径；本地`local_artifacts/adv3b02_three_da_leoweakonly_20260715_v1_plan/{phase2_config.json,plan_manifest.json,cache_specs/,package_artifacts/}`同步至远端run root的`plan/`。既有26个cache不覆盖、不删除。
@@ -139,6 +139,8 @@ phase2_query_batch_global_assignment=false
 第五次smoke PID `1626556`在最小代码闭包下到达checkpoint反序列化，但checkpoint `args`包含`baseline_origin_sat_view.SatViewStage`，因此`torch.load(weights_only=False)`需要该类定义；`weights_only=True`最小测试确认因该类不在PyTorch 2.1内置安全集合而失败。`baseline_origin_sat_view.py`仅定义dataclass/数学/torch辅助，不导入dataset或信道数据入口，故把该单文件加入显式代码白名单；仍不允许任何dataset loader或clean/ManySig/ManyTx路径。复测使用`smoke_runs_v6/`。
 
 第六次smoke PID `1628089`已`completed=3`、`failed=0`。最终最小runtime seal的global inventory SHA256为`463ad98e75bf81720844add010b153a1bd53096d59df52fef48d921c4a194f31`，runtime code SHA256为`8ef15765fa639647b4ed6f0cbdd23a0408acdcc0e177a789bccb6b5919de0182`；allowlist禁止路径命中为0。三行均为receiver `20-1`、seed `713101`、K=5，checkpoint严格加载均为0 missing/0 unexpected/0 shape mismatch，访问审计PASS、forbidden hit 0、prediction/scoring进程隔离PASS、每行360个评分样本。
+
+正式运行于2026-07-15 17:24 CST启动8个GPU分片，shard 0–7分别固定GPU0–7。17:25首次健康检查显示8张GPU均有独立计算进程，已生成14/375个`metrics.json`，8个顶层分片日志均无`Traceback`、`FAILED`或`ERROR`标记。正式结果根目录为`runs/adv3b02_three_da_leoweakonly_20260715_v1/stage2_runs/`，分片事件与摘要位于同run root的`stage2_logs/`。
 
 |smoke方法|before old_acc|after old_acc|delta|loss rows|loss有限|访问审计|判定|
 |---|---:|---:|---:|---:|---|---|---|
