@@ -104,6 +104,10 @@ $PY code/scripts/build_cvs_stage2_runtime_closure.py --source-code-root code --o
 
 第五次生成推进到胶囊candidate-lock复验后停止：历史lock包含训练时期整个工作区的代码SHA，而当前N607若干训练脚本已更新。v5保留。部署验证现默认绑定candidate-lock文件自身SHA、所有不可变训练/选择artifact SHA、checkpoint/adapter/source stats/head/TTA/双runtime SHA和数值parity；当前9文件预测runtime由独立闭包SHA绑定。对历史工作区代码的逐文件复验保留为显式可选审计，不再要求可变工作区回退到旧版本；路径穿越或非法SHA声明仍拒绝。相关测试`11 passed`。下一次使用全新`runtime_artifacts_strict_v6`。
 
+第六次生成完整通过：candidate capsule SHA=`825312b058a43d122d4985331ce280abb95dfe6af9aa69c0f83bf1c5fe67efd6`；base runtime SHA=`f7921a6078a1fc540270a03b05473c231dc0eae6a2931614f6c2a806d2135001`；candidate runtime SHA=`ce12b7c3eed2f514113d884e085d73e05526ed44f2891c3d8ccdf4d204dd50c9`；9文件runtime closure SHA=`b7524a8f8676cb53637009fa4bffef7cbb3d28e2b969fdcb5e0f59aebc536a3d`。注入态↔合并态feature/logit最大误差分别为`2.682209e-7`和`3.814697e-6`，base/merged↔重载TorchScript误差均为0。胶囊增量持久状态109,818字节，小于256KiB上限。
+
+回传证据位于`evidence/runtime_artifacts_strict_v6/`。严格计划CLI入口修复后测试`6 passed`；生成清单SHA=`65a494109b28ed3ed233264d20f0d2ec4469a739480c3f90bcce57ea27d6ba88`，结构为25个cache、75个sealed package、300个prediction cell、900行formal scorer row，当前`launch_authority=false`、`authority_state=N607_LANDLOCK_SMOKE_REQUIRED`。
+
 ## 完成后结果表
 
 实验完成后在本节追加逐单元同一行结果，至少包含candidate ID、机制、receiver/TX split、K-shot、seed、old/seen-new/unknown指标、coverage/rollback/defer、loss/adapter摘要和最终判定。不得用来自不同单元的独立极值替代联合行。

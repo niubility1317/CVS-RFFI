@@ -1,0 +1,124 @@
+{
+  "adapter_manifest": {
+    "schema": "cvs.ground_effective8_adapter_manifest.v1",
+    "sha256": "15bafc5dc2ac369bb230461bc2fef23e3232d3df767e3dbd22f7da33eb77d8bc",
+    "size_bytes": 13603
+  },
+  "adapter_state": {
+    "schema": "cvs.effective8_lora_state.fp16.v1",
+    "sha256": "9e43d6decc3b05dcc526c0897127d959a768573a674236de657a12f619c6931b",
+    "size_bytes": 94054
+  },
+  "base_checkpoint_sha256": "2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98",
+  "base_model_id": "ADV3B02_CORE90_SOFT_E200",
+  "base_runtime": {
+    "schema": "adv3b02.torchscript_identity_runtime.v1",
+    "sha256": "f7921a6078a1fc540270a03b05473c231dc0eae6a2931614f6c2a806d2135001",
+    "size_bytes": 4602025
+  },
+  "candidate_id": "effective8-r16-e12-leoweak-v14",
+  "candidate_lock_sha256": "33afa7218fcaa0eb1d9c528ba3cf231c8a25674a307433a33f76c8e7d33a1dec",
+  "candidate_runtime": {
+    "schema": "adv3b02.torchscript_effective8_merged_runtime.v1",
+    "sha256": "ce12b7c3eed2f514113d884e085d73e05526ed44f2891c3d8ccdf4d204dd50c9",
+    "size_bytes": 4633233
+  },
+  "deployment_install_contract": {
+    "base_runtime_preinstalled": true,
+    "candidate_runtime_is_reproducible_execution_image": true,
+    "candidate_runtime_not_counted_as_incremental_state": true,
+    "delta_rebuild_and_parity_required": true,
+    "deployment_install_evidence_status": "PASS",
+    "full_merged_runtime_persisted_as_extra_copy": false,
+    "mode": "rebuild_merged_runtime_from_preinstalled_base_plus_delta"
+  },
+  "head_lock": {
+    "schema": "cvs.symmetric_head_lock.v1",
+    "sha256": "d4dc2a565f5ed0dadd64594a55cb8056071588b340cf53c357aaf33bf31ed2d0",
+    "size_bytes": 263
+  },
+  "merge_parity": {
+    "adapter_state_sha256": "9e43d6decc3b05dcc526c0897127d959a768573a674236de657a12f619c6931b",
+    "base_runtime_sha256": "f7921a6078a1fc540270a03b05473c231dc0eae6a2931614f6c2a806d2135001",
+    "candidate_runtime_sha256": "ce12b7c3eed2f514113d884e085d73e05526ed44f2891c3d8ccdf4d204dd50c9",
+    "lora_tensor_keys": [
+      "id_backbone.cls_head.id_gate.0.lora_a.weight",
+      "id_backbone.cls_head.id_gate.0.lora_b.weight",
+      "id_backbone.cls_head.id_proj.0.lora_a.weight",
+      "id_backbone.cls_head.id_proj.0.lora_b.weight",
+      "id_backbone.cls_head.joint_proj.0.lora_a.weight",
+      "id_backbone.cls_head.joint_proj.0.lora_b.weight",
+      "id_backbone.cls_head.pa_proj.0.lora_a.weight",
+      "id_backbone.cls_head.pa_proj.0.lora_b.weight",
+      "id_backbone.f_proj.lora_a.weight",
+      "id_backbone.f_proj.lora_b.weight",
+      "id_backbone.fuse.0.lora_a.weight",
+      "id_backbone.fuse.0.lora_b.weight",
+      "id_backbone.pa_proj.0.lora_a.weight",
+      "id_backbone.pa_proj.0.lora_b.weight",
+      "id_backbone.t_proj.lora_a.weight",
+      "id_backbone.t_proj.lora_b.weight"
+    ],
+    "max_abs_injected_vs_merged_feature": 2.682209014892578e-07,
+    "max_abs_injected_vs_merged_logit": 3.814697265625e-06,
+    "max_abs_merged_vs_torchscript_feature": 0.0,
+    "max_abs_merged_vs_torchscript_logit": 0.0,
+    "receipt_sha256": "c4c411fa960e60d217e9543afabae6bf00783523c297b7d7b3e29b713a66d206",
+    "schema": "cvs.adv3b02_effective8_torchscript_parity.v1",
+    "status": "PASS",
+    "target_modules": [
+      "id_backbone.t_proj",
+      "id_backbone.f_proj",
+      "id_backbone.pa_proj.0",
+      "id_backbone.fuse.0",
+      "id_backbone.cls_head.id_proj.0",
+      "id_backbone.cls_head.pa_proj.0",
+      "id_backbone.cls_head.id_gate.0",
+      "id_backbone.cls_head.joint_proj.0"
+    ]
+  },
+  "payload_sha256": "673a9e105297d10e87b0ea69309fe39823a74511bc2e3e178716ea93948d7ce2",
+  "permissions": {
+    "class_quota_used": false,
+    "clean_derived_signal_access": false,
+    "clean_sample_access": false,
+    "old_new_role_oracle_used": false,
+    "phase2_sample_view_policy": "leo_weak_only_no_clean_access",
+    "query_batch_global_assignment_used": false,
+    "query_fit_used": false,
+    "query_true_batch_class_count_used": false,
+    "target_query_features_used_for_selection": false,
+    "target_query_labels_used_for_selection": false,
+    "target_support_used_for_selection": false
+  },
+  "resource_accounting": {
+    "adapter_parameter_cap": 50000,
+    "adapter_serialized_file_bytes": 94054,
+    "adapter_state_bytes_fp16": 88096,
+    "adapter_trainable_parameters": 44048,
+    "deployment_incremental_persistent_bytes": 109818,
+    "deployment_incremental_state_cap_bytes": 262144,
+    "deployment_tensor_payload_bytes": 103860,
+    "fft_descriptor_dim": 96,
+    "fft_descriptor_persistent_bytes": 0,
+    "ground_adapter_train_epochs": 12,
+    "ground_epoch_cap": 20,
+    "head_state_bytes_fp16": 15740,
+    "on_orbit_gradient_epochs": 0,
+    "on_orbit_optimizer_steps": 0,
+    "on_orbit_trainable_parameters": 0,
+    "tta_threshold_state_bytes": 24
+  },
+  "resource_profile_id": "effective8_r16_e12_preferred_v1",
+  "schema": "cvs.phase2.adv3b02_effective8_candidate_capsule.v1",
+  "source_feature_stats": {
+    "schema": "cvs.source_feature_stats.npz.v1",
+    "sha256": "25ac693c24d559ab931d4e174f24d49a2acfe25294b8b1c178335a012468453f",
+    "size_bytes": 3320
+  },
+  "tta_policy": {
+    "schema": "cvs.phase2.adaptive_rxlight_tta.v1",
+    "sha256": "ef3b10b32c7fb0849adfa680237600db3d805241797516ae181000e13b84490c",
+    "size_bytes": 409
+  }
+}

@@ -15,8 +15,9 @@ from typing import Any, Mapping, Sequence
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 CODE_ROOT = REPO_ROOT / "code"
-if str(CODE_ROOT) not in sys.path:
-    sys.path.insert(0, str(CODE_ROOT))
+for value in (str(REPO_ROOT), str(CODE_ROOT)):
+    if value not in sys.path:
+        sys.path.insert(0, value)
 
 from cvsrffi.stage2_predictor_bundle import (  # noqa: E402
     preflight_stage2_predictor_package,

@@ -7,8 +7,13 @@ import argparse
 import hashlib
 import json
 import re
+import sys
 from pathlib import Path, PurePosixPath
 from typing import Any, Mapping, Sequence
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
 
 from paper_reproduction.scripts.build_cvs_stage2c_effective8_formal_plan import (
     K_VALUES,
@@ -138,7 +143,7 @@ def generate_strict_plan(
         runtime_project_root=runtime_project_root,
     )
     source = json.loads(plan_path.read_text(encoding="utf-8-sig"))
-    split_path = Path(__file__).resolve().parents[2] / source["class_split_manifest"]
+    split_path = REPO_ROOT / source["class_split_manifest"]
     split = json.loads(split_path.read_text(encoding="utf-8-sig"))
     old_labels = [str(value) for value in split["target_old_tx_labels"]]
     new_by_count = {
