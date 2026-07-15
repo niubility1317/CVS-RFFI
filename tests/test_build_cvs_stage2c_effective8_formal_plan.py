@@ -71,3 +71,16 @@ def test_training_command_uses_sealed_cache_and_same_leo_reference_names(
     assert "--wisig_pkl" not in command
     assert "--clean_identity_weight" not in command
     assert "--clean_feature_margin_weight" not in command
+    assert command[command.index("--source_tx_ids") + 1] == (
+        "14-10,14-7,20-15,20-19,6-15,8-20"
+    )
+    assert command[command.index("--source_rxs") + 1] == (
+        "1-1,1-19,14-7,18-2,19-2,2-1"
+    )
+    validation_command = manifest["commands"]["source_validation"][0]
+    assert validation_command[validation_command.index("--source_train_rxs") + 1] == (
+        "1-1,1-19,14-7,18-2,19-2,2-1"
+    )
+    assert validation_command[validation_command.index("--source_val_rxs") + 1] == (
+        "2-19"
+    )

@@ -93,6 +93,35 @@ def validate_plan(plan: Mapping[str, Any]) -> dict[str, Any]:
         or tta.get("class_quota_used") is not False
     ):
         raise ValueError("formal matrix adaptive TTA contract drift")
+    source_train = dict(plan.get("source_train", {}))
+    source_validation = dict(plan.get("source_validation", {}))
+    resolved_train = tuple(
+        value.strip()
+        for value in str(source_train.get("resolved_receiver_labels", "")).split(",")
+        if value.strip()
+    )
+    resolved_validation_train = tuple(
+        value.strip()
+        for value in str(
+            source_validation.get("resolved_train_receiver_labels", "")
+        ).split(",")
+        if value.strip()
+    )
+    resolved_validation_holdout = tuple(
+        value.strip()
+        for value in str(
+            source_validation.get("resolved_validation_receiver_labels", "")
+        ).split(",")
+        if value.strip()
+    )
+    if (
+        len(resolved_train) != 6
+        or len(set(resolved_train)) != 6
+        or resolved_validation_train != resolved_train
+        or len(resolved_validation_holdout) != 1
+        or set(resolved_train) & set(resolved_validation_holdout)
+    ):
+        raise ValueError("formal source receiver selector-to-label mapping drift")
     return dict(plan)
 
 
@@ -294,9 +323,9 @@ def generate_plan(
             "--runs_root",
             runtime_run_root,
             "--source_tx_ids",
-            str(source_train["tx_ids"]),
+            ",".join(old_labels),
             "--source_rxs",
-            str(source_train["receivers"]),
+            str(source_train["resolved_receiver_labels"]),
             "--source_leo_weak_cache_set_manifest",
             str(PurePosixPath(source_train_root) / "cache_set.json"),
             "--wisig_out_len",
@@ -398,9 +427,9 @@ def generate_plan(
             "--out_dir",
             source_validation_out,
             "--source_train_rxs",
-            str(source_validation["train_receivers"]),
+            str(source_validation["resolved_train_receiver_labels"]),
             "--source_val_rxs",
-            str(source_validation["validation_receivers"]),
+            str(source_validation["resolved_validation_receiver_labels"]),
             "--num_old_classes",
             str(len(old_labels)),
             "--batch_size",

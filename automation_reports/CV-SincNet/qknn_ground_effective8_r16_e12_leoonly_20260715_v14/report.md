@@ -5,7 +5,7 @@
 |实验ID|`qknn_ground_effective8_r16_e12_leoonly_20260715_v14`|
 |时间|2026-07-15 13:44 CST|
 |operator|Codex`/root`|
-|当前状态|`LOCAL_PROTOCOL_REPAIR_COMPLETE_PRELAUNCH`；尚未启动N607训练或评估|
+|当前状态|`SOURCE_PIPELINE_FAILED_CLOSED_PROTOCOL_REPAIR1_LOCAL_VERIFIED`；target matrix未启动|
 |基座模型|同一ADV3B02 checkpoint：`ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth`|
 |目标|在新版`LEO_weak-only`边界下，以≤50k参数、≤20epoch、≤256KB持久状态的极轻型适配器和逐样本1→3→5-view推理，完成5receiver×5seed×3场景×新类5/10/20×K=1/5/10/20正式确认|
 
@@ -32,7 +32,7 @@
 
 输入为ManySig/ManyTx物理IQ、预注册TX/receiver/day集合、三个允许场景和satellite seed。该阶段在Phase2边界外实际叠加`simplified_leo_residual`，输出每场景一个只含`leo_weak_iq`和sample-level provenance的NPZ，以及一个cache-set manifest。输出不含raw/clean IQ、feature、logit、FFT或prototype。
 
-source训练cache使用ManySig TX index`0–5`和receiver index`0–5`；source validation cache覆盖receiver index`0–6`，其中`0–5`作为source参考，`6`完整holdout。target cache以5个receiver和5个确认seed分别构建，每个cache预先包含6个target-old TX和有序嵌套的20个target-new TX，K和query切分发生在密封cache内部。
+source训练cache使用ManySig TX selector index`0–5`和receiver selector index`0–5`；解析后的真实TX标签为`14-10,14-7,20-15,20-19,6-15,8-20`，真实source receiver标签为`1-1,1-19,14-7,18-2,19-2,2-1`。source validation cache覆盖receiver selector index`0–6`，其中前6个真实receiver作为source参考，真实receiver`2-19`为完整holdout。target cache以5个receiver和5个确认seed分别构建，每个cache预先包含6个target-old TX和有序嵌套的20个target-new TX，K和query切分发生在密封cache内部。
 
 ### 极轻型ADV3B02适配
 
@@ -135,3 +135,17 @@ CUDA_VISIBLE_DEVICES=0 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/code
 ```
 
 当前仍没有新版adapter、validation、candidate lock或formal metrics；启动后也必须以state、PID/cmdline、日志和产物共同判断状态，不能把landed submit当作训练或部署成功。
+
+## 2026-07-15 source pipeline失败关闭与protocol repair1
+
+首次source pipeline已实际landed到N607物理GPU0，runner PID为`1531601`。source train cache构建在约13.5s完成，source validation cache构建在约15.3s完成；随后训练步骤在约2.2s内失败，错误为：
+
+```text
+ValueError: source TX set drift for leo_clear_weak: ['14-10','14-7','20-15','20-19','6-15','8-20']!=['0','1','2','3','4','5']
+```
+
+这是正确的协议失败关闭，不是性能结果。根因为plan generator把Phase1 cache builder使用的selector index`0–5`原样传给了Phase2 trainer，而严格cache manifest保存的是解析后的真实TX/receiver标签。两个source cache均已完整生成，但adapter训练、source validation、candidate lock和全部target matrix均未开始；因此没有任何新版准确率、遗忘率或资源结论。
+
+repair1保持cache build spec中的selector index不变，仅在训练与验证命令边界显式传递真实标签：source TX=`14-10,14-7,20-15,20-19,6-15,8-20`，source train receiver=`1-1,1-19,14-7,18-2,19-2,2-1`，source validation holdout receiver=`2-19`。正式config同时封存selector到真实receiver的映射，plan validator要求6个source receiver唯一、训练与验证参考集合完全相同、holdout唯一且不重叠。该修复不改变LEO_weak样本、不引入clean、角色Oracle、类别quota或query信息，也不改变adapter、损失、K、seed、场景和target矩阵。
+
+repair1本地验证使用`ssr-gpu`解释器：plan builder`py_compile`通过；10组相关测试`79 passed`；修复计划精确生成2个source cache-set、25个target cache-set、300次benchmark调用、900条场景row、1次collection和1次summary。修复计划保存在本地非发布artifact`local_artifacts/qknn_ground_effective8_v14_protocol_plan_repair1_20260715/`，尚未覆盖远端正式plan。恢复前必须先确认新旧两份source build spec内容SHA完全一致，快照远端旧plan，再同步修复代码/config和修复plan；只有source pipeline从失败步骤恢复且promotion PASS后，才允许启动target matrix。

@@ -13,6 +13,7 @@
   "source_train": {
     "tx_ids": "0,1,2,3,4,5",
     "receivers": "0,1,2,3,4,5",
+    "resolved_receiver_labels": "1-1,1-19,14-7,18-2,19-2,2-1",
     "max_samples_per_tx": 1000,
     "dataset_seed": 4070391,
     "satellite_seed_by_scenario": {
@@ -26,6 +27,8 @@
     "train_receivers": "0,1,2,3,4,5",
     "validation_receivers": "6",
     "cache_receivers": "0,1,2,3,4,5,6",
+    "resolved_train_receiver_labels": "1-1,1-19,14-7,18-2,19-2,2-1",
+    "resolved_validation_receiver_labels": "2-19",
     "max_samples_per_tx": 1400,
     "dataset_seed": 4071391,
     "satellite_seed_by_scenario": {
