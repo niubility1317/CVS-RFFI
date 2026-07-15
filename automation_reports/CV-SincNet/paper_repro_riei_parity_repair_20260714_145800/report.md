@@ -616,3 +616,8 @@
 
 - Git提交为`7989319 Confirm RIEI Table III with model seed 42`。直接N607预检通过；实时训练进程0、GPU0–7 compute均为0，目标run/log目录不存在；计划每GPU峰值1个训练，`existing_compute+planned_peak=1≤2`。
 - 仅同步新launcher到N607同路径；既有`cvs_data.py`与paper queue保持上一轮已核对版本。同步后必须核对SHA256、远端`bash -n`和12-job dry-run，再执行正式命令。
+
+### 远端验证与计划命令
+
+- 远端launcher SHA256=`1a10ece3...`，与本地、快照及Git镜像一致；`bash -n`通过。dry-run确认12个job、8个capacity gate、12条split seed1337、12条model seed42和12条mean命令。
+- 计划命令：`bash code/scripts/launch_riei_table3_shortstem_modelseed42_20260715.sh --launch --gpu-ids 0,1,2,3,4,5,6,7 --max-train-per-gpu 2`；工作目录与Python环境沿用已验证的N607 paper reproduction路径。
