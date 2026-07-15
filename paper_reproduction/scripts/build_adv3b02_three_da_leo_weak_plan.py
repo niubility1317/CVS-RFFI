@@ -226,6 +226,7 @@ def build_plan(args: argparse.Namespace) -> dict[str, Any]:
         "--out-root", str(seal_root),
         "--runtime-code-root", str(project_root / "code"),
         "--runtime-code-root", str(project_root / "paper_reproduction"),
+        "--runtime-code-root", str(project_root / "baselines"),
     ]
 
     output_root = run_root / "stage2_runs"

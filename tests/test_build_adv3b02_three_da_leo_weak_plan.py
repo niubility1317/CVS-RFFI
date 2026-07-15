@@ -70,6 +70,16 @@ def test_three_da_plan_has_375_phase2_rows_and_no_dataset_path(tmp_path: Path) -
     assert "--out-root" not in bundle
     assert (output / "package_artifacts/candidate_lock.json").is_file()
     assert (output / "package_artifacts/tta_policy.json").is_file()
+    seal_command = manifest["commands"]["phase2_runtime_seal"]
+    roots = [
+        seal_command[index + 1]
+        for index, value in enumerate(seal_command)
+        if value == "--runtime-code-root"
+    ]
+    assert roots == [
+        "/remote/project/code", "/remote/project/paper_reproduction",
+        "/remote/project/baselines",
+    ]
     target_spec = json.loads(
         (output / "cache_specs/target/rx_20_1/seed_713101.json").read_text(encoding="utf-8")
     )

@@ -130,6 +130,8 @@ phase2_query_batch_global_assignment=false
 
 第一次smoke PID `1617869`在首行、模型加载前退出，`completed=0`、`failed=1`。行日志为`ModuleNotFoundError: No module named 'paper_reproduction'`；访问trace证明Landlock允许具体runtime文件但缺少仓库根目录遍历权限。修复仅将两个`runtime_code_root`及其共同项目父目录加入`runtime_code_list_dirs`，权限为`LIST_DIR`而非任意文件读取；本地重新编译和33项pytest通过。失败smoke artifact保留，复测使用`smoke_runs_v2/`，并在复测前重建runtime seal/allowlist/evidence。
 
+第二次smoke PID `1619013`已能导入`paper_reproduction`，但随后在读取`baselines/__init__.py`时被Landlock阻断，仍为`completed=0`、`failed=1`且未加载模型。`model_dual_cvsincnet`和复现辅助模块确实依赖`baselines`代码；因此将`baselines/`作为第三个`runtime_code_root`纳入逐文件SHA256、目录遍历白名单和runtime code digest，不开放任何数据目录或未登记文件。plan生成测试通过并重新生成52项/375行plan；下一次复测使用`smoke_runs_v3/`。
+
 ## 七、成功条件与风险
 
 成功条件：
