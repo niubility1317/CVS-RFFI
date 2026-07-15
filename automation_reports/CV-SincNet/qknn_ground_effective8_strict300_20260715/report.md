@@ -177,6 +177,8 @@ v4 attempt1以PID`1885770`运行，成功推进到sealed memfd snapshot创建，
 
 完整读取4,302字节v4 driver日志并核对cell目录后确认：prediction/scoring/cell/smoke receipt全部不存在，故该次仍无性能指标。由于`phase2_memfd_snapshot.py`属于9文件密封predictor closure，新引入的`ctypes/platform`必须同时进入runtime closure精确外部导入与成员导入白名单；否则闭包构建应fail closed。白名单已同步更新，`py_compile`及39项memfd/runtime-closure/bwrap/pre-run/isolated-runner/strict-package测试通过。下一次必须基于该提交新建runtime artifact和全新v5运行根，不能让旧strict_v8/v11继续执行。
 
+并行构建留下`runtime_artifacts_strict_v9`部分目录：12项不可变模型/config文件存在，`05_runtime_closure.json`为0字节且closure目录不存在，符合旧closure白名单拒绝新增`ctypes/platform`导入的fail-closed行为。strict_v9完整保留且不补写。下一次使用全新`runtime_artifacts_strict_v10`：先同步提交`764c11c`的memfd实现与提交`5d87bdd`的closure白名单，逐文件核验SHA；再在N607直接调用`_sealed_memfd`执行临时seal smoke并验证`REQUIRED_SEALS`，通过后才复制strict_v8的12项不可变artifact并新建closure。后续计划/运行根使用全新版本，不复用v4/v11。
+
 ## 完成后结果表
 
 实验完成后在本节追加逐单元同一行结果，至少包含candidate ID、机制、receiver/TX split、K-shot、seed、old/seen-new/unknown指标、coverage/rollback/defer、loss/adapter摘要和最终判定。不得用来自不同单元的独立极值替代联合行。
