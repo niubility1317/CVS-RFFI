@@ -559,3 +559,9 @@
 - Git镜像仅提交本任务6个文件，提交为`e1e869a Probe fixed-partition RIEI model seeds`；根目录报告、traceability及运行文件与Git镜像内容一致，未纳入工作树中其他任务的修改或未跟踪artifact。
 - 直接N607预检通过；实时process/CWD/cmdline检查训练进程0，GPU0–7 compute均为0，目标run/log目录不存在。计划每GPU新增1个训练，因此`existing_compute+planned_peak=1≤2`。
 - 同步前远端SHA256：`cvs_data.py=a2093e0a...`、paper queue=`5a1fe1f1...`；新launcher不存在。计划同步本地`baselines/common/cvs_data.py`、`run_wisig_paper_scope_queue.sh`及`code/scripts/launch_riei_modelseed_probe_20260715.sh`到N607同路径，随后核对SHA256、远端`py_compile`、`bash -n`和8-job dry-run。
+
+### 08:34远端同步验证与计划命令
+
+- 3个文件已按本地→N607同路径同步；远端SHA256分别为`e3b80d1d...`、`d2ad5621...`、`24208548...`，与根目录、快照及Git镜像一致。远端`py_compile`、两份`bash -n`均通过。
+- 远端dry-run确认`jobs=8`、`capacity=8`、split1337命令8条，model seed0/42各4个job。首次计数命令因PowerShell提前解释远端`$(grep ...)`只导致本地计数输出为空；dry-run文件已成功生成，随后用远端Python完整复核计数，未把本地引号错误解释为远端失败。
+- 计划正式命令：`bash code/scripts/launch_riei_modelseed_probe_20260715.sh --launch --gpu-ids 0,1,2,3,4,5,6,7 --max-train-per-gpu 2`。Python为`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`，工作目录为`/home/szu2070436088/2510044040/CV-SincNet`；预期8个并行job、每GPU1个训练、各200epoch及paper last10。
