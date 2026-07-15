@@ -514,3 +514,5 @@ Git提交=`57528108015e49a48c35738c4b1af5d4ad0ac4ac`。2026-07-15 09:19 CST按�
 |`paper_reproduction/cvs_aligned/adaptive_rxlight_tta.py`|`ced44529eb97e1c29cad20f2939d3578c9c5d23be6772dca8fa8062df67a3b78`|同相对路径；仅在后续自适应TTA评估使用|
 
 同步只覆盖上述本轮已提交文件；不覆盖远端数据、checkpoint、既有run/log或其它并发修改。同步后必须复核远端SHA256、`py_compile`、实体checkpoint严格加载、31,200参数精确白名单和目标目录仍为空，满足后才启动地面run。
+
+09:21 CST完成直接SCP，3个远端SHA256与表中本地值逐项一致，远端`py_compile` PASS。首次实体审计因Python的空路径把项目根同名`cvsrffi`放在`code/cvsrffi`之前而在import阶段退出，未进入模型加载；显式将`code`放入`sys.path[0]`后重跑PASS。真实checkpoint审计为`exact_ssdg_training_architecture_v1`、195个state tensor、`missing=0/unexpected=0/skipped_mismatch=0`。可训练参数精确为31,200，且仅有`t_proj/f_proj/pa_proj.0`的6个weight/bias tensor；FP16 delta62,400B、合并推理新增MAC=0、`fuse.0`与其它层冻结。目标run/log根复核仍为空。本轮SSH/SCP结束后本地SSH进程与端口22连接均为0。
