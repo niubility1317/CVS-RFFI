@@ -6,6 +6,7 @@ from paper_reproduction.scripts.analyze_qknnv42_support_only_taskadapt_875 impor
     build_markdown,
     paired_deltas,
     summarize,
+    summarize_training,
 )
 
 
@@ -47,3 +48,41 @@ def test_paired_delta_and_markdown_use_same_task_baseline() -> None:
     assert "E2" in markdown
     assert "+5.00pp" in markdown
     assert "+10.00pp" in markdown
+
+
+def test_training_summary_reports_loss_decrease_fraction() -> None:
+    rows = [
+        {
+            "arm": "E2",
+            "loss_first": 2.0,
+            "loss_last": 1.0,
+            "loss_delta": -1.0,
+            "prototype_ce_first": 2.0,
+            "prototype_ce_last": 1.0,
+            "feature_anchor_last": 0.1,
+            "input_residual_mse_last": 0.01,
+            "support_train_acc_first": 0.2,
+            "support_train_acc_last": 0.8,
+            "support_train_acc_delta": 0.6,
+            "adaptation_wall_seconds": 1.0,
+            "peak_cuda_memory_bytes": 1024,
+        },
+        {
+            "arm": "E2",
+            "loss_first": 1.0,
+            "loss_last": 1.1,
+            "loss_delta": 0.1,
+            "prototype_ce_first": 1.0,
+            "prototype_ce_last": 1.1,
+            "feature_anchor_last": 0.2,
+            "input_residual_mse_last": 0.02,
+            "support_train_acc_first": 0.4,
+            "support_train_acc_last": 0.3,
+            "support_train_acc_delta": -0.1,
+            "adaptation_wall_seconds": 2.0,
+            "peak_cuda_memory_bytes": 2048,
+        },
+    ]
+    summary = summarize_training(rows, ("arm",))
+    assert summary[0]["count"] == 2
+    assert summary[0]["loss_decreased_task_fraction"] == 0.5

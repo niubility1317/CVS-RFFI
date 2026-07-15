@@ -376,6 +376,112 @@ def audit_logs(log_root: Path) -> dict[str, Any]:
     }
 
 
+def collect_training_traces(run_root: Path) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    manifest = read_json(run_root / "matrix_manifest.json")
+    task_rows: list[dict[str, Any]] = []
+    epoch_rows: list[dict[str, Any]] = []
+    for task in manifest["tasks"]:
+        epochs = int(task["epochs"])
+        if epochs == 0:
+            continue
+        training = read_json(Path(task["adapter_run_dir"]) / "training_manifest.json")
+        trace = read_json(Path(task["adapter_run_dir"]) / "loss_trace.json")
+        first, last = trace[0], trace[-1]
+        task_rows.append(
+            {
+                "task_id": task["task_id"],
+                "arm": task["arm"],
+                "epochs": epochs,
+                "receiver": task["receiver"],
+                "seed": int(task["seed"]),
+                "k_shot": int(task["k_shot"]),
+                "loss_first": float(first["loss"]),
+                "loss_last": float(last["loss"]),
+                "loss_delta": float(last["loss"]) - float(first["loss"]),
+                "prototype_ce_first": float(first["prototype_ce"]),
+                "prototype_ce_last": float(last["prototype_ce"]),
+                "feature_anchor_last": float(last["feature_anchor"]),
+                "input_residual_mse_last": float(last["input_residual_mse"]),
+                "support_train_acc_first": float(first["support_train_acc"]),
+                "support_train_acc_last": float(last["support_train_acc"]),
+                "support_train_acc_delta": float(last["support_train_acc"])
+                - float(first["support_train_acc"]),
+                "adaptation_wall_seconds": float(training["runtime"]["adaptation_wall_seconds"]),
+                "peak_cuda_memory_bytes": int(training["runtime"]["peak_cuda_memory_bytes"]),
+            }
+        )
+        for item in trace:
+            epoch_rows.append(
+                {
+                    "task_id": task["task_id"],
+                    "arm": task["arm"],
+                    "receiver": task["receiver"],
+                    "seed": int(task["seed"]),
+                    "k_shot": int(task["k_shot"]),
+                    **item,
+                }
+            )
+    return task_rows, epoch_rows
+
+
+def summarize_training(
+    rows: list[dict[str, Any]], group_fields: Sequence[str]
+) -> list[dict[str, Any]]:
+    groups: dict[tuple[Any, ...], list[dict[str, Any]]] = defaultdict(list)
+    for row in rows:
+        groups[tuple(row[field] for field in group_fields)].append(row)
+    output: list[dict[str, Any]] = []
+    metrics = (
+        "loss_first",
+        "loss_last",
+        "loss_delta",
+        "prototype_ce_first",
+        "prototype_ce_last",
+        "feature_anchor_last",
+        "input_residual_mse_last",
+        "support_train_acc_first",
+        "support_train_acc_last",
+        "support_train_acc_delta",
+        "adaptation_wall_seconds",
+        "peak_cuda_memory_bytes",
+    )
+    for key, group in sorted(groups.items(), key=lambda item: item[0]):
+        item = {field: value for field, value in zip(group_fields, key)}
+        item["count"] = len(group)
+        for metric in metrics:
+            values = [float(row[metric]) for row in group]
+            item[f"{metric}_mean"] = mean(values)
+            item[f"{metric}_std"] = statistics.pstdev(values)
+            item[f"{metric}_ci95"] = ci95(values)
+        item["loss_decreased_task_fraction"] = mean(
+            float(row["loss_delta"]) < 0.0 for row in group
+        )
+        output.append(item)
+    return output
+
+
+def summarize_loss_curve(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    groups: dict[tuple[str, int], list[dict[str, Any]]] = defaultdict(list)
+    for row in rows:
+        groups[(str(row["arm"]), int(row["epoch"]))].append(row)
+    output: list[dict[str, Any]] = []
+    for (arm, epoch), group in sorted(groups.items()):
+        output.append(
+            {
+                "arm": arm,
+                "epoch": epoch,
+                "count": len(group),
+                "loss_mean": mean(row["loss"] for row in group),
+                "prototype_ce_mean": mean(row["prototype_ce"] for row in group),
+                "feature_anchor_mean": mean(row["feature_anchor"] for row in group),
+                "input_residual_mse_mean": mean(row["input_residual_mse"] for row in group),
+                "support_train_acc_mean": mean(row["support_train_acc"] for row in group),
+                "epoch_seconds_mean": mean(row["epoch_seconds"] for row in group),
+            }
+        )
+    return output
+
+
 def _pct(value: float) -> str:
     return f"{100.0 * float(value):.2f}%"
 
@@ -439,6 +545,10 @@ def main(argv: Sequence[str] | None = None) -> int:
     by_receiver_arm_k = summarize(rows, ("receiver", "arm", "k_shot"))
     deltas = paired_deltas(rows)
     delta_by_arm_k = summarize_deltas(deltas, ("arm", "k_shot")) if deltas else []
+    training_rows, epoch_rows = collect_training_traces(args.run_root)
+    training_by_arm = summarize_training(training_rows, ("arm",))
+    training_by_arm_k = summarize_training(training_rows, ("arm", "k_shot"))
+    loss_curve = summarize_loss_curve(epoch_rows)
     args.output_dir.mkdir(parents=True, exist_ok=True)
     write_csv(args.output_dir / "task_rows.csv", rows)
     write_csv(args.output_dir / "summary_by_arm_k.csv", by_arm_k)
@@ -446,6 +556,10 @@ def main(argv: Sequence[str] | None = None) -> int:
     write_csv(args.output_dir / "summary_by_receiver_arm_k.csv", by_receiver_arm_k)
     write_csv(args.output_dir / "paired_deltas.csv", deltas)
     write_csv(args.output_dir / "paired_delta_summary_by_arm_k.csv", delta_by_arm_k)
+    write_csv(args.output_dir / "training_task_rows.csv", training_rows)
+    write_csv(args.output_dir / "training_summary_by_arm.csv", training_by_arm)
+    write_csv(args.output_dir / "training_summary_by_arm_k.csv", training_by_arm_k)
+    write_csv(args.output_dir / "loss_curve_by_arm_epoch.csv", loss_curve)
     audit = {
         "status": "PASS" if not protocol["errors"] and not any(logs["hit_counts"].values()) else "FAIL",
         "protocol": protocol,
