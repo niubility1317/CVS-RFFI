@@ -118,6 +118,8 @@ phase2_query_batch_global_assignment=false
 
 下一次同步映射：commit `98ea663`中的`code/scripts/{build_cvs_stage2_predictor_bundle,build_phase2_runtime_seal}.py`、ADV3B02 runner、独立scorer、plan/cache-plan脚本和配置同步至N607同相对路径；本地`local_artifacts/adv3b02_three_da_leoweakonly_20260715_v1_plan/{phase2_config.json,plan_manifest.json,cache_specs/,package_artifacts/}`同步至远端run root的`plan/`。既有26个cache不覆盖、不删除。
 
+计划SCP命令均使用`scp -F E:\type10-7\tools\n607_ssh_config`：按`code/scripts/`、`paper_reproduction/cvs_aligned/`、`paper_reproduction/scripts/`、`paper_reproduction/configs/`四个目标目录分别同步上述文件，再将`phase2_config.json`、`plan_manifest.json`、`cache_specs/`和`package_artifacts/`同步至`N607:/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_three_da_leoweakonly_20260715_v1/plan/`。同步前只读复核为相关进程0、8张GPU空闲、cache manifest 26、predictor manifest 0、磁盘余量7.6TB。
+
 启动诊断记录：初次后台命令因远端根目录旧`cvsrffi`包遮蔽`code/cvsrffi`而退出；commit `e325503`已修复`sys.path`优先级。第二次因offline spec误写`/CV-SincNet/ManySig.pkl`而退出；服务器实际路径为`/CV-SincNet/Dataset_WigSig/ManySig.pkl`，已修正。第三次PID `1604043`完成26/26缓存后，旧plan在第1个bundle调用已升级打包器时因CLI不兼容退出。三次均未启动正式Phase2行；第三次产生的26个LEO_weak cache保留并将在续跑时逐项hash复核后跳过。
 
 ## 七、成功条件与风险
