@@ -523,3 +523,33 @@
 - 直接N607预检通过；4个原queue与4个原trainer PID持续运行，无重启或进程替换。row3、4、11、12分别完整写入epoch`119,116,124,117/200`，4份`metrics.json`均连续且无`final`字段。
 - 完整读取12份当前日志，共1968行/158138字节；4份训练日志均确认稳定partition、`short_stem1d`和`sgd_momentum=0.9`。`PAPER-EVAL-SUMMARY=0`、`FINAL-TEST=0`、成功完成job=0；全量硬错误扫描计数0。
 - GPU0–3各仅1个本任务compute，SM占用约22%–31%；GPU4–7无compute。当前判定为`RUNNING_HEALTHY_THROUGH_EPOCH_116_124`，不是momentum正式选型结果。SSH短连接已退出，本地`ssh.exe=0`、N607 TCP22已建立连接`=0`。
+
+## 2026-07-15 08:21 momentum0.9完整诊断结果
+
+- 完成性：4/4个job均自然完成epoch200；4个`QUEUE-JOB-END status=0`、4个`PAPER-EVAL-SUMMARY`和4份含`FINAL-TEST`的训练日志齐全，原queue与trainer均已退出。完整分析覆盖4份metrics的800个epoch及16份日志的3184行/250476字节，硬错误0。
+- 小型证据包只含日志、metrics、manifest和scheduler TSV，不含dataset/checkpoint。远端与本地SHA256均为`506c707dd989ed1e9b4c47d28d37eb513014bf34cfacca60240c9ccbab4b6f4d`；本地路径为`analysis_tmp/paper_repro_riei_momentum09_probe_seed1337_20260715_071500/final_0821`。
+- 正式比较固定epoch191–200 last10；稳定partition、short stem、mean、no-RMS、no-feature-norm、seed1337和学习率均与momentum0对照一致，唯一变量为`momentum=0.9`。
+
+|行|论文均值±SD|momentum0 last10|momentum0.9 last10均值±SD|差值|绝对误差改善|final|source val last10|last10 loss|CE/MI/IE/FN|论文±2SD|
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|---|
+|3|66.09±0.67%|68.95%|63.94±1.89%|-2.15pp|+0.71pp|63.15%|99.88%|-2.9791|0.00084/0.00093/2.48421/2.862|未命中|
+|4|70.51±3.53%|79.32%|76.64±2.56%|+6.13pp|+2.68pp|78.04%|99.89%|-2.9784|0.00106/0.00093/2.48378/2.961|命中|
+|11|72.05±2.71%|67.03%|63.20±0.79%|-8.85pp|-3.83pp|62.17%|99.90%|-2.9794|0.00068/0.00088/2.48429/4.075|未命中|
+|12|73.46±2.00%|66.83%|63.59±1.22%|-9.87pp|-3.24pp|61.88%|99.89%|-2.9784|0.00105/0.00092/2.48380/2.956|未命中|
+
+- momentum0.9四行MAE=`6.75pp`，高于momentum0的`5.83pp`；仅row3、4降低绝对误差，row11、12恶化。它同时未满足“MAE降低”和“至少3/4行改善”两个预注册条件，因此判定为`REJECT_MOMENTUM09`，不运行完整12行。
+- momentum0.9把CE/MI压到约`1e-3`但未改善跨receiver泛化，说明剩余误差不是常用momentum缺失导致。下一项未公开因素是模型初始化seed；必须先把数据partition seed与模型seed解耦，否则直接改变`--seed`会同时改变样本划分，无法归因。
+
+## 2026-07-15 08:30固定partition模型seed诊断设计
+
+- 新增`--wisig_split_seed`，负值保持旧行为并复用`--seed`；paper queue显式传递`WISIG_SPLIT_SEED`。该改动只允许固定数据partition，不改变既有默认实验语义。
+- 新launcher为`code/scripts/launch_riei_modelseed_probe_20260715.sh`，预定run ID为`paper_repro_riei_modelseed_probe_split1337_20260715_083000`。固定split seed1337、short stem、SGD momentum0、mean、no-RMS、no-feature-norm、200epoch和paper last10，只比较model seed0与42；row3、4、11、12各两个seed，共8个job。
+- 每个候选seed分别与既有seed1337四行对照。预注册门槛为四行MAE低于seed1337的`5.83pp`且至少3/4行降低绝对误差；只有满足门槛的单一固定seed才允许进入完整Table III确认。若两者均通过，按四行MAE较低者进入确认；若均失败，则拒绝把seed作为复现修复。
+- 当前状态为本地实现待验证；启动前必须完成`ssr-gpu`聚焦测试、`bash -n`、8-job dry-run、根目录非Git快照、Git提交、直接N607预检、实时容量门、SCP hash核对和远端dry-run。
+
+### 08:33本地验证与版本准备
+
+- `ssr-gpu`下根目录及Git镜像均完成`py_compile`和3个聚焦测试文件，结果各为`8 passed`；根目录仅出现既知`.pytest_cache`无写权warning。两份launcher均通过`bash -n`，root/Git的code、queue与launcher内容逐字一致。
+- 8-job dry-run确认8个job、8个capacity gate、model seed0与42各4行、所有命令`WISIG_SPLIT_SEED=1337`、momentum0和short stem。新增测试同时验证负值split seed回退旧`--seed`语义，以及split/model seed均写入`split_info`。
+- 根目录不是Git仓库；快照为`code/snapshots/paper_repro_riei_modelseed_probe_split1337_20260715_083000/`。SHA256：`cvs_data.py=e3b80d1d...`、paper queue=`d2ad5621...`、launcher=`24208548...`、test=`5daaa78f...`。
+- 下一步仅在提交本任务文件、重新执行直接N607预检并确认每GPU`existing_compute+planned_peak≤2`后，才同步这3个运行文件并启动；不得根据已结束momentum run的空闲GPU假设当前容量。

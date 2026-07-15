@@ -25,6 +25,7 @@ STOP_ON_FAIL="${STOP_ON_FAIL:-0}"
 STREAM_LOGS="${STREAM_LOGS:-0}"
 
 SEED="${SEED:-1337}"
+WISIG_SPLIT_SEED="${WISIG_SPLIT_SEED:-${SEED}}"
 TRAIN_RATIO="${TRAIN_RATIO:-0.1}"
 VAL_RATIO="${VAL_RATIO:-0.9}"
 GUARD_GAP="${GUARD_GAP:-8}"
@@ -201,6 +202,7 @@ append_baseline_common_args() {
     --num_workers "${NUM_WORKERS}"
     --prefetch_factor "${PREFETCH_FACTOR}"
     --seed "${SEED}"
+    --wisig_split_seed "${WISIG_SPLIT_SEED}"
   )
   if [ "${SAT_EVAL}" = "1" ]; then
     CMD+=(--eval_sat_channel --eval_sat_on "${SAT_EVAL_ON}" --eval_sat_scenarios "${SAT_SCENARIOS}" --sat_eval_max_batches "${SAT_EVAL_MAX_BATCHES}")

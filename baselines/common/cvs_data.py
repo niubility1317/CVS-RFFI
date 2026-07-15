@@ -74,6 +74,12 @@ def add_cvs_data_args(parser: argparse.ArgumentParser) -> argparse.ArgumentParse
     parser.add_argument("--wisig_train_rxs", type=str, default="0,1,2,3,4,5,6")
     parser.add_argument("--wisig_test_rxs", type=str, default="7,8,9,10,11")
     parser.add_argument("--wisig_split_strategy", type=str, default="random", choices=["random", "contiguous"])
+    parser.add_argument(
+        "--wisig_split_seed",
+        type=int,
+        default=-1,
+        help="Dataset-partition seed; negative values reuse --seed for backward compatibility.",
+    )
     parser.add_argument("--wisig_cap_strategy", type=str, default="random", choices=["random", "front"])
     parser.add_argument("--wisig_max_day123_per_combo", type=int, default=0)
     parser.add_argument("--wisig_max_train_per_combo", type=int, default=0)
@@ -228,6 +234,9 @@ def build_cvs_split(
     ds_w = load_wisig_compact_pkl(args.wisig_pkl)
     eq = "both" if str(args.wisig_equalized).lower() == "both" else int(args.wisig_equalized)
     protocol = str(getattr(args, "wisig_protocol", "cvs_day_rx")).lower()
+    split_seed = int(getattr(args, "wisig_split_seed", -1))
+    if split_seed < 0:
+        split_seed = int(getattr(args, "seed", 1337))
     unlabeled_ds = None
     if bool(getattr(args, "use_source_ssl_split", False)):
         if protocol != "cvs_day_rx":
@@ -250,7 +259,7 @@ def build_cvs_split(
             train_rxs=parse_csv_indices(args.wisig_train_rxs),
             holdout_rxs=parse_csv_indices(args.wisig_test_rxs),
             max_samples_per_combo_source=_cap_arg(args.wisig_max_day123_per_combo),
-            seed=int(getattr(args, "seed", 1337)),
+            seed=split_seed,
             sample_strategy=str(getattr(args, "wisig_cap_strategy", "random")),
         )
         _, _, test_ds, named_tests, named_test_meta, test_info = make_wisig_trainval_test_by_day_rx(
@@ -273,7 +282,7 @@ def build_cvs_split(
             max_samples_per_combo_val=_cap_arg(args.wisig_max_val_per_combo),
             max_samples_per_combo_test=_cap_arg(args.wisig_max_test_per_combo),
             max_samples_per_class_train=_cap_arg(getattr(args, "wisig_train_shots_per_class", 0)),
-            seed=int(getattr(args, "seed", 1337)),
+            seed=split_seed,
             split_strategy=str(getattr(args, "wisig_split_strategy", "random")),
             cap_strategy=str(getattr(args, "wisig_cap_strategy", "random")),
             train_class_cap_strategy=str(getattr(args, "wisig_train_shot_strategy", "domain_balanced")),
@@ -306,7 +315,7 @@ def build_cvs_split(
             train_samples_per_combo=int(args.wisig_paper_train_samples_per_combo),
             val_samples_per_combo=int(args.wisig_paper_val_samples_per_combo),
             test_samples_per_combo=int(args.wisig_paper_test_samples_per_combo),
-            seed=int(getattr(args, "seed", 1337)),
+            seed=split_seed,
             sample_strategy=str(getattr(args, "wisig_paper_sample_strategy", "front")),
         )
     elif protocol == "riei_original":
@@ -324,7 +333,7 @@ def build_cvs_split(
             train_samples_per_combo=int(args.wisig_paper_train_samples_per_combo),
             val_samples_per_combo=int(args.wisig_paper_val_samples_per_combo),
             test_samples_per_combo=int(args.wisig_paper_test_samples_per_combo),
-            seed=int(getattr(args, "seed", 1337)),
+            seed=split_seed,
         )
     else:
         if float(getattr(args, "wisig_val_ratio", -1.0)) > 0.0:
@@ -349,12 +358,17 @@ def build_cvs_split(
             max_samples_per_combo_val=_cap_arg(args.wisig_max_val_per_combo),
             max_samples_per_combo_test=_cap_arg(args.wisig_max_test_per_combo),
             max_samples_per_class_train=_cap_arg(getattr(args, "wisig_train_shots_per_class", 0)),
-            seed=int(getattr(args, "seed", 1337)),
+            seed=split_seed,
             split_strategy=str(getattr(args, "wisig_split_strategy", "random")),
             cap_strategy=str(getattr(args, "wisig_cap_strategy", "random")),
             train_class_cap_strategy=str(getattr(args, "wisig_train_shot_strategy", "domain_balanced")),
         )
         unlabeled_ds = None
+    split_info = {
+        **split_info,
+        "model_seed": int(getattr(args, "seed", 1337)),
+        "split_seed": split_seed,
+    }
     return CVSSplit(
         train=CVSDictDataset(train_ds, transform=transform_train),
         unlabeled=CVSDictDataset(unlabeled_ds, transform=transform_train) if unlabeled_ds is not None else None,
