@@ -67,6 +67,11 @@ def _run_json(command: Sequence[str], *, cwd: Path) -> dict[str, Any]:
     return value
 
 
+def _runtime_python_executable() -> str:
+    """Return the physical interpreter file attested inside the sandbox."""
+    return str(Path(sys.executable).resolve(strict=True))
+
+
 def _package_by_id(plan: Mapping[str, Any], package_id: str) -> dict[str, Any]:
     matched = [item for item in plan["package_steps"] if item["package_id"] == package_id]
     if len(matched) != 1:
@@ -171,6 +176,7 @@ def _execute_cell(
     request_path.parent.mkdir(parents=True, exist_ok=True)
     artifacts = dict(plan["runtime_artifacts"])
     seal_sha = str(binding["package_seal_sha256"])
+    runtime_python = _runtime_python_executable()
     _run_json(
         [
             sys.executable,
@@ -183,7 +189,7 @@ def _execute_cell(
             "--candidate-capsule", artifacts["candidate_capsule"],
             "--expected-candidate-capsule-sha256", str(plan["candidate_capsule_sha256"]),
             "--runtime-config-receipt", artifacts["runtime_config_receipt"],
-            "--python-executable", sys.executable,
+            "--python-executable", runtime_python,
             "--strace-executable", str(plan["strace_executable"]),
             "--landlock-launcher", str(plan["landlock_launcher"]),
             "--output-root", str(evidence_root),
@@ -217,7 +223,7 @@ def _execute_cell(
             "--expected-package-seal-sha256", seal_sha,
             "--request-json", str(request_path),
             "--output-root", str(output_root),
-            "--python-executable", sys.executable,
+            "--python-executable", runtime_python,
             "--strace-executable", str(plan["strace_executable"]),
             "--landlock-launcher", str(plan["landlock_launcher"]),
             "--forbidden-root", str(plan["target_dataset_forbidden_root"]),

@@ -141,6 +141,8 @@ PYTHONPATH=code:. "$PY" paper_reproduction/scripts/run_cvs_stage2c_effective8_st
 
 2026-07-15 23:34 CST重新执行直连只读预检：项目根可见，8张RTX3090利用率均为0、显存均约10 MiB。提交`e75df2c`中的生成器和v7清单已同步并逐项核验：生成器SHA=`88dee562ff5163db30b4603dc12dfe7563c6224cca65861b7977f8f5ac11f2c3`，远端清单`protocol_plan/strict_plan_manifest_v7.json`SHA=`cf6c4572130245653e753031ff20f2d42b0511fb9b3635cc147c02e359c0ecbf`。同步完成后本地`ssh.exe=0`、N607/桥接机TCP22连接数为0。attempt2仅运行`--stage smoke --device cuda:0`，driver日志写入`logs/smoke_driver_attempt2.out`，阶段日志目录为`logs/smoke_attempt2`，PID写入`smoke_driver_attempt2.pid`；最终receipt仍为尚不存在的`smoke_receipt.json`，不存在时才允许启动。
 
+attempt2于PID`1871127`落地后fail closed。它完整生成并封印predictor/scorer package，但pre-run evidence拒绝`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`，因为该路径是指向常规文件`python3.10`的符号链接；未生成prediction、scoring receipt或smoke receipt。修复不改变“证据输入必须为非符号链接常规文件”规则，而是在严格package runner中把`sys.executable`解析为物理解释器，再同时传给pre-run evidence与Landlock pinned runner；相关测试`5 passed`。attempt3允许复用已经完整且会重新校验seal的package，不覆盖它，也不复用任何prediction/scorer输出；使用独立`smoke_driver_attempt3.pid`、`logs/smoke_driver_attempt3.out`和`logs/smoke_attempt3`。
+
 ## 完成后结果表
 
 实验完成后在本节追加逐单元同一行结果，至少包含candidate ID、机制、receiver/TX split、K-shot、seed、old/seen-new/unknown指标、coverage/rollback/defer、loss/adapter摘要和最终判定。不得用来自不同单元的独立极值替代联合行。

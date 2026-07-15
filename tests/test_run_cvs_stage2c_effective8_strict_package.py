@@ -3,7 +3,10 @@ from __future__ import annotations
 from pathlib import Path
 
 from paper_reproduction.scripts.build_cvs_stage2c_effective8_strict_plan import generate_strict_plan
-from paper_reproduction.scripts.run_cvs_stage2c_effective8_strict_package import package_build_command
+from paper_reproduction.scripts.run_cvs_stage2c_effective8_strict_package import (
+    _runtime_python_executable,
+    package_build_command,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -26,3 +29,15 @@ def test_strict_package_command_binds_dual_runtime_capsule_and_receipt(tmp_path:
     assert "--runtime-config-receipt" in command
     assert command[command.index("--checkpoint") + 1].endswith("candidate_runtime.ts")
     assert command[command.index("--base-checkpoint") + 1].endswith("base_runtime.ts")
+
+
+def test_runtime_python_executable_is_physical_canonical_file(monkeypatch, tmp_path: Path) -> None:
+    interpreter = tmp_path / "bin" / "python-real"
+    interpreter.parent.mkdir()
+    interpreter.write_bytes(b"python")
+    monkeypatch.setattr(
+        "paper_reproduction.scripts.run_cvs_stage2c_effective8_strict_package.sys.executable",
+        str(interpreter.parent / ".." / "bin" / interpreter.name),
+    )
+
+    assert _runtime_python_executable() == str(interpreter.resolve(strict=True))
