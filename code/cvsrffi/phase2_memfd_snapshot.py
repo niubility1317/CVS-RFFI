@@ -9,9 +9,11 @@ read-only paths and ordinary Landlock path rules.
 
 from __future__ import annotations
 
+import ctypes
 import hashlib
 import json
 import os
+import platform
 import stat
 from contextlib import contextmanager
 from dataclasses import dataclass
@@ -40,6 +42,46 @@ REQUIRED_SEALS = F_SEAL_SEAL | F_SEAL_SHRINK | F_SEAL_GROW | F_SEAL_WRITE
 
 class Phase2MemfdSnapshotError(RuntimeError):
     """Raised when an immutable predictor snapshot cannot be proven."""
+
+
+def _libc_memfd_create(name: str, flags: int) -> int:
+    if os.name != "posix":
+        raise OSError("libc memfd_create fallback requires POSIX")
+    encoded = os.fsencode(name)
+    if b"\x00" in encoded:
+        raise ValueError("memfd name contains NUL")
+    libc = ctypes.CDLL(None, use_errno=True)
+    native = getattr(libc, "memfd_create", None)
+    if native is not None:
+        native.argtypes = (ctypes.c_char_p, ctypes.c_uint)
+        native.restype = ctypes.c_int
+        fd = int(native(encoded, int(flags)))
+    else:  # pragma: no cover - N607 glibc exports memfd_create.
+        syscall_numbers = {
+            "x86_64": 319,
+            "amd64": 319,
+            "aarch64": 279,
+            "arm64": 279,
+            "riscv64": 279,
+            "s390x": 350,
+            "ppc64": 360,
+            "ppc64le": 360,
+        }
+        number = syscall_numbers.get(platform.machine().lower())
+        if number is None:
+            raise OSError("memfd_create syscall number is unknown for this architecture")
+        fd = int(libc.syscall(number, encoded, int(flags)))
+    if fd < 0:
+        error = ctypes.get_errno()
+        raise OSError(error, os.strerror(error))
+    return fd
+
+
+def _create_memfd(name: str, flags: int) -> int:
+    native = getattr(os, "memfd_create", None)
+    if native is not None:
+        return int(native(name, flags=flags))
+    return _libc_memfd_create(name, flags)
 
 
 def _sha256_fd(fd: int) -> tuple[str, int]:
@@ -86,12 +128,15 @@ def _read_regular_nofollow(path: Path) -> bytes:
 
 
 def _sealed_memfd(name: str, payload: bytes) -> int:
-    if _fcntl is None or not hasattr(os, "memfd_create"):
-        raise Phase2MemfdSnapshotError("os.memfd_create is unavailable")
+    if _fcntl is None:
+        raise Phase2MemfdSnapshotError("fcntl sealing support is unavailable")
     flags = int(getattr(os, "MFD_CLOEXEC", 0x0001)) | int(
         getattr(os, "MFD_ALLOW_SEALING", 0x0002)
     )
-    fd = os.memfd_create(name, flags=flags)
+    try:
+        fd = _create_memfd(name, flags)
+    except (OSError, ValueError) as exc:
+        raise Phase2MemfdSnapshotError(f"memfd_create failed: {exc}") from exc
     try:
         view = memoryview(payload)
         while view:

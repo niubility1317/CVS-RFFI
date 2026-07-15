@@ -173,6 +173,8 @@ v3 attempt1以PID`1882465`运行，成功生成pre-run evidence与truth-free req
 
 23:59预检与实时训练清单为`gpu_compute=[]`、`active_training_processes=[]`，8张GPU空闲。v11已同步至v4新根并核验SHA。v4 smoke使用独立`smoke_driver_v4_attempt1.pid`、`logs/smoke_driver_v4_attempt1.out`、`logs/smoke_v4_attempt1`和新根`smoke_receipt.json`；完整矩阵继续无权限。
 
+v4 attempt1以PID`1885770`运行，成功推进到sealed memfd snapshot创建，但N607的Python 3.10未暴露`os.memfd_create`，因此在预测前fail closed；libc实际导出`memfd_create`且主机为`x86_64`。本地实现优先使用Python API、缺失时调用libc（再保留架构限定syscall后备），写入后仍执行`F_ADD_SEALS`并复验完整`REQUIRED_SEALS`，未降低不可变性门禁；10项memfd/package/request测试通过。v4已有partial predictor output，不复用；后续需新闭包和全新v5根。
+
 ## 完成后结果表
 
 实验完成后在本节追加逐单元同一行结果，至少包含candidate ID、机制、receiver/TX split、K-shot、seed、old/seen-new/unknown指标、coverage/rollback/defer、loss/adapter摘要和最终判定。不得用来自不同单元的独立极值替代联合行。
