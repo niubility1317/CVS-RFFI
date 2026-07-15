@@ -70,6 +70,23 @@ python -m paper_reproduction.scripts.run_cvs_publication_matrix ... # 六档配�
 
 同步前远端`cvs_method_runner.py`、matrix worker和adapter导出器hash均与本地已验证版本不同，因此必须先同步本地版本。同步映射如下，均为同相对路径覆盖：
 
+## 五点二、正式启动与即时健康
+
+2026-07-15约10:54正式启动7个独立launcher：
+
+|分支|GPU|launcher PID|启动日志|
+|---|---:|---:|---|
+|adapter E2|0|1149135|`logs/qknnv42_nondense_adapter_epoch_sweep_20260715_104409/E2/launcher_e2.out`|
+|adapter E5|1|1149137|`logs/qknnv42_nondense_adapter_epoch_sweep_20260715_104409/E5/launcher_e5.out`|
+|adapter E10|2|1149140|`logs/qknnv42_nondense_adapter_epoch_sweep_20260715_104409/E10/launcher_e10.out`|
+|adapter E20|3|1149144|`logs/qknnv42_nondense_adapter_epoch_sweep_20260715_104409/E20/launcher_e20.out`|
+|adapter E30|4|1149148|`logs/qknnv42_nondense_adapter_epoch_sweep_20260715_104409/E30/launcher_e30.out`|
+|adapter E60|5|1149151|`logs/qknnv42_nondense_adapter_epoch_sweep_20260715_104409/E60/launcher_e60.out`|
+|单qKNN头FFT96|6|1149155|`logs/qknnv42_nondense_adapter_epoch_sweep_20260715_104409/singlehead_fft96/launcher_singlehead_fft96.out`|
+
+启动后约15秒检查：7个launcher均存活；六个adapter子进程各占约1314MiB，连同每卡原RIEI 624MiB仍远低于24GB；六档均已写出epoch1有限loss，无Traceback、OOM、Killed或NaN/Inf。单qKNN头FFT96进入125行矩阵执行，无额外adapter训练。
+
+
 |本地/远端相对路径|本地SHA256|
 |---|---|
 |`paper_reproduction/cvs_aligned/cvs_method_runner.py`|`8f526c7821d9ebb0342a3de325d8442e0397ef3b98bb0b60a89815c4f0ec9420`|
