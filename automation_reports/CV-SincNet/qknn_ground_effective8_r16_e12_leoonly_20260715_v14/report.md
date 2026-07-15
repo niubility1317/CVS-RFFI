@@ -92,4 +92,46 @@ git diff --check
 
 启动前必须重新执行本地只读direct preflight和live GPU/process inventory。先只启动`source_pipeline`：构建2个source cache-set→训练12epoch→source validation→candidate lock；只有state为complete且source validation PASS，才允许启动8个matrix shard。任何Traceback、OOM、nan/inf、cache/hash/receiver/class/protocol gate失败都会停止后续阶段。
 
-当前没有新版run/log、adapter、validation、candidate lock或formal metrics。下一阶段必须先做Git提交、N607预检、受控同步和远端哈希/py_compile验证，再启动source pipeline。
+### 启动前版本与同步证据
+
+|项目|证据|
+|---|---|
+|Git承载面|`E:\type10-7\github_publish\CVS-RFFI-repo`，commit=`fef819bd062a`|
+|N607 direct preflight|2026-07-15 14:15 CST通过；项目根、GPU可见|
+|live lane inventory|2026-07-15 14:16 CST：`active_training_processes=[]`、`gpu_compute=[]`|
+|GPU/磁盘|8×RTX 3090均约10MiB；项目盘可用7.6TB|
+|数据/checkpoint|ManySig、ManyTx及ADV3B02 checkpoint存在|
+|远端环境|`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`；Python 3.10.19、Torch 2.1.0+cu121|
+|覆盖前快照|`/home/szu2070436088/2510044040/CV-SincNet/code/snapshots/qknn_ground_effective8_v14_remote_before_sync_20260715_1420`；5个既有同名文件|
+|同步|14个生产代码/config/report文件按仓库相对路径同步到N607项目根；14/14 SHA256一致|
+|远端验证|同一远端Python对10个生产`.py`执行`py_compile`通过|
+|SSH清理|每次SSH/SCP后本地`ssh.exe=0`、N607:22 established连接=0|
+
+同步映射为同相对路径：`code/cvsrffi/leo_weak_cache.py`、cache builder、formal trainer、validator、benchmark、candidate lock、summarizer、plan builder、collector、runner、3个正式config和本报告；本地根均为Git承载面，远端根均为`/home/szu2070436088/2510044040/CV-SincNet`。
+
+### source pipeline精确启动约定
+
+|字段|值|
+|---|---|
+|工作目录|`/home/szu2070436088/2510044040/CV-SincNet`|
+|物理GPU|GPU0；以`CUDA_VISIBLE_DEVICES=0`暴露，子命令内部使用`cuda:0`|
+|plan manifest|`runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14/protocol_plan/plan_manifest.json`|
+|runner日志|`logs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14/source_pipeline_runner.log`|
+|step日志|`logs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14/source_pipeline_steps/`|
+|state|`runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14/source_pipeline_state.json`|
+|PID文件|`logs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14/source_pipeline_runner.pid`|
+|预期产物|2个source cache-set、`effective8_adapter_fp16.pt`、`training_manifest.json`、source validation/promotion manifest、`candidate_lock.json`|
+
+精确plan生成命令：
+
+```bash
+PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/code:/home/szu2070436088/2510044040/CV-SincNet /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python paper_reproduction/scripts/build_cvs_stage2c_effective8_formal_plan.py --plan paper_reproduction/configs/cvs_stage2c_effective8_formal_matrix_20260715.json --out_dir runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14/protocol_plan --runtime_project_root /home/szu2070436088/2510044040/CV-SincNet
+```
+
+精确runner命令：
+
+```bash
+CUDA_VISIBLE_DEVICES=0 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/code:/home/szu2070436088/2510044040/CV-SincNet nohup /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u paper_reproduction/scripts/run_cvs_stage2c_effective8_formal_plan.py --plan_manifest runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14/protocol_plan/plan_manifest.json --project_root /home/szu2070436088/2510044040/CV-SincNet --stage source_pipeline --log_dir logs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14/source_pipeline_steps --state_json runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14/source_pipeline_state.json > logs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14/source_pipeline_runner.log 2>&1 &
+```
+
+当前仍没有新版adapter、validation、candidate lock或formal metrics；启动后也必须以state、PID/cmdline、日志和产物共同判断状态，不能把landed submit当作训练或部署成功。
