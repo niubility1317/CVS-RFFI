@@ -263,6 +263,10 @@ strict plan v19绑定strict_v13与全新`..._landlock_strict300_v10`运行根，
 
 00:39再次核验8张GPU空闲且无严格runner。v10根原先不存在，现仅创建`protocol_plan/`并同步`strict_plan_manifest_v19.json`；smoke将使用新路径`smoke_driver_v10_attempt1.pid`、`logs/smoke_driver_v10_attempt1.out`、`logs/smoke_v10_attempt1`和`smoke_receipt.json`。权限仍严格锁定K1/new20单cell，K10与矩阵未授权。
 
+v10 attempt1以PID=`1910063`运行，再次生成2,658,628字节密封prediction，并成功生成1,779字节predictor资源收据，证明首次密封读取SHA修复生效；随后execution audit和最终stdout返回中的两处遗留`sha256_file(request_path)`仍触发Landlock拒绝。scorer/cell/smoke receipt依然不存在，v10不原地续跑。完整driver日志6,042字节，SHA=`54bb8c51…5c78`。
+
+提交`ec86075`把execution audit与最终返回统一绑定首次密封读取所得`request_sha256`，新增源码级门禁保证严格predictor中不再出现任何`sha256_file(request_path)`。41项相关测试通过；全新strict_v14 closure在N607与本地均为SHA=`3f8a577de614666cf33eb2cdc50244045c0898cabc22d545571d229c4b87805b`，12项模型/capsule/config复用artifact逐项一致。v20清单绑定strict_v14和全新v11运行根，仍为25/75/300/900、`launch_authority=false`，清单SHA=`717bcd08dadd0dccaf2f24ae4407d64aea4cd44b32f63b423451ee8f3884a0a4`。
+
 ## 完成后结果表
 
 实验完成后在本节追加逐单元同一行结果，至少包含candidate ID、机制、receiver/TX split、K-shot、seed、old/seen-new/unknown指标、coverage/rollback/defer、loss/adapter摘要和最终判定。不得用来自不同单元的独立极值替代联合行。

@@ -1,0 +1,36 @@
+{
+  "schema": "cvs_leo_weak_iq_cache_build_spec_v1",
+  "cache_set_id": "qknn_ground_effective8_r16_e12_leoonly_20260715_v14_source_train",
+  "cache_scope": "source_train",
+  "phase2_sample_view_policy": "leo_weak_only_no_clean_access",
+  "clean_sample_access": false,
+  "clean_derived_signal_access": false,
+  "star_ground_channel_impl": "simplified_leo_residual",
+  "role_specs": [
+    {
+      "role": "source",
+      "pkl": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "tx_ids": "0,1,2,3,4,5",
+      "rxs": "0,1,2,3,4,5",
+      "max_samples_per_tx": 1000
+    }
+  ],
+  "dataset_seed": 4070391,
+  "satellite_seed_by_scenario": {
+    "leo_clear_weak": 4070391,
+    "leo_low_elev_weak": 4070392,
+    "leo_rain_weak": 4070393
+  },
+  "out_npz_by_scenario": {
+    "leo_clear_weak": "/home/szu2070436088/2510044040/CV-SincNet/runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14/phase1_caches/source_train/leo_clear_weak.npz",
+    "leo_low_elev_weak": "/home/szu2070436088/2510044040/CV-SincNet/runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14/phase1_caches/source_train/leo_low_elev_weak.npz",
+    "leo_rain_weak": "/home/szu2070436088/2510044040/CV-SincNet/runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14/phase1_caches/source_train/leo_rain_weak.npz"
+  },
+  "out_manifest": "/home/szu2070436088/2510044040/CV-SincNet/runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14/phase1_caches/source_train/cache_set.json",
+  "batch_size": 256,
+  "wisig_out_len": 256,
+  "wisig_equalized": "1",
+  "wisig_domain": "rx_day",
+  "sat_fs_hz": 25000000.0,
+  "sat_fc_hz": 2462000000.0
+}
