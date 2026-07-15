@@ -199,6 +199,8 @@ strict_v11远端闭包构建完成：12项复用artifact逐字节一致，闭包
 
 00:21预检与实时清单确认无GPU计算进程、无训练进程。v15已同步到v8新根并核验SHA。v8 smoke使用`smoke_driver_v8_attempt1.pid`、`logs/smoke_driver_v8_attempt1.out`、`logs/smoke_v8_attempt1`与新根`smoke_receipt.json`，仍仅`cuda:0`单单元。
 
+v8 attempt1以PID`1899303`运行，CUDA初始化、密封memfd、Landlock/seccomp及support feature forward均已通过，但严格闭包内`torch.from_numpy(np.asarray(...))`触发`TypeError: expected np.ndarray (got numpy.ndarray)`，因此未生成prediction/scoring/smoke receipt。修复将NumPy数据先复制为连续float32字节，再通过`torch.frombuffer(...).clone()`建立自有Torch存储，完全避开PyTorch NumPy C-API桥接；CPU回归测试同时验证原数组改写不会影响tensor。23项predictor entry/runtime/closure测试通过，新9文件本地closure构建通过，SHA=`7d8247a6feaf652acdf7d84f7bcdbab6cd32ca76b80d93dc5b445eebcad5b522`。v8不复用；下一次在全新`runtime_artifacts_strict_v12`重建闭包，并使用全新v9运行根。
+
 并行构建留下`runtime_artifacts_strict_v9`部分目录：12项不可变模型/config文件存在，`05_runtime_closure.json`为0字节且closure目录不存在，符合旧closure白名单拒绝新增`ctypes/platform`导入的fail-closed行为。strict_v9完整保留且不补写。下一次使用全新`runtime_artifacts_strict_v10`：先同步提交`764c11c`的memfd实现与提交`5d87bdd`的closure白名单，逐文件核验SHA；再在N607直接调用`_sealed_memfd`执行临时seal smoke并验证`REQUIRED_SEALS`，通过后才复制strict_v8的12项不可变artifact并新建closure。后续计划/运行根使用全新版本，不复用v4/v11。
 
 ## 完成后结果表

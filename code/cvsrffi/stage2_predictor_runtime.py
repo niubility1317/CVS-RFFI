@@ -292,6 +292,16 @@ def select_nested_support_prefix(
     return iq[mask], selected_labels, tokens[mask]
 
 
+def _float32_tensor_without_numpy_bridge(
+    rows: np.ndarray, *, device: torch.device
+) -> torch.Tensor:
+    """Copy an ndarray into Torch without using NumPy's C-API bridge."""
+    array = np.ascontiguousarray(rows, dtype=np.float32)
+    owner = bytearray(array.tobytes(order="C"))
+    tensor = torch.frombuffer(owner, dtype=torch.float32).clone().reshape(array.shape)
+    return tensor.to(device)
+
+
 def _runtime_forward(
     model: torch.nn.Module,
     rows: np.ndarray,
@@ -304,7 +314,9 @@ def _runtime_forward(
     model.eval()
     with torch.no_grad():
         for start in range(0, len(rows), int(batch_size)):
-            batch = torch.from_numpy(np.asarray(rows[start : start + batch_size], dtype=np.float32)).to(device)
+            batch = _float32_tensor_without_numpy_bridge(
+                rows[start : start + batch_size], device=device
+            )
             output = model(batch)
             if isinstance(output, dict):
                 feature_value = output.get("features")

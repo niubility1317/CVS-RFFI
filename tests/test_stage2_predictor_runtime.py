@@ -9,6 +9,7 @@ from cvsrffi.stage2_predictor_runtime import (
     HEAD_SCHEMA,
     TTA_SCHEMA,
     Stage2PredictorRuntimeError,
+    _float32_tensor_without_numpy_bridge,
     apply_feature_adapter,
     build_formal_support_state,
     predict_formal_scenario_streams,
@@ -81,6 +82,22 @@ def test_nested_k_prefix_is_per_class() -> None:
     _iq, labels, tokens = select_nested_support_prefix(support, k_shot=1, class_count=2)
     assert labels.tolist() == [0, 1]
     assert tokens.tolist() == [f"sid_{0:064x}", f"sid_{2:064x}"]
+
+
+def test_float32_tensor_avoids_numpy_bridge_and_owns_storage(monkeypatch) -> None:
+    rows = np.arange(12, dtype=np.float32).reshape(1, 2, 6)
+    expected = rows.copy()
+
+    def forbidden_from_numpy(*_args, **_kwargs):
+        raise AssertionError("strict runtime must not use torch.from_numpy")
+
+    monkeypatch.setattr(torch, "from_numpy", forbidden_from_numpy)
+    tensor = _float32_tensor_without_numpy_bridge(rows, device=torch.device("cpu"))
+    rows.fill(-1.0)
+
+    assert tensor.dtype == torch.float32
+    assert tuple(tensor.shape) == expected.shape
+    assert tensor.tolist() == expected.tolist()
 
 
 def test_predictor_emits_five_role_blind_streams_with_shared_budget() -> None:
