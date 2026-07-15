@@ -58,6 +58,10 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
     candidate_lock = _read_json(candidate_lock_path)
     candidate = dict(candidate_lock["locked_candidate"])
     selected = dict(dict(candidate["head"])["selected"])
+    # v14 predates the two optional symmetric-head controls.  Zero is the
+    # exact identity/no-penalty representation and introduces no fitted state.
+    selected.setdefault("gram_mix", 0.0)
+    selected.setdefault("uncertainty_penalty", 0.0)
     with np.load(source_stats_path, allow_pickle=False) as payload:
         mean = np.asarray(payload["mean"], dtype=np.float32).reshape(-1)
         std = np.asarray(payload["std"], dtype=np.float32).reshape(-1)

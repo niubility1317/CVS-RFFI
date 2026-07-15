@@ -36,6 +36,14 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
     head_payload = {"schema": "cvs.symmetric_head_lock.v1", **dict(candidate["head"])}
     adaptive = dict(candidate["adaptive_tta"])
     thresholds = dict(adaptive["thresholds"])
+    # v14 locked three active decision thresholds.  The current deployment
+    # image persists six float32 slots, so encode the three historically absent
+    # controls as exact no-ops instead of fitting anything on target queries.
+    compatibility_defaults = {
+        "base_stop_min_score": -1.0e9,
+        "shift3_stop_min_score": -1.0e9,
+        "fusion_std_penalty": 0.0,
+    }
     tta_payload = {
         "schema": "cvs.phase2.adaptive_rxlight_tta.v1",
         "mode": "adaptive_1_3_5",
@@ -44,9 +52,15 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
         "base_stop_margin": thresholds["base_stop_margin"],
         "shift3_stop_margin": thresholds["shift3_stop_margin"],
         "shift3_max_disagreement": thresholds["shift3_max_disagreement"],
-        "base_stop_min_score": thresholds["base_stop_min_score"],
-        "shift3_stop_min_score": thresholds["shift3_stop_min_score"],
-        "fusion_std_penalty": thresholds["fusion_std_penalty"],
+        "base_stop_min_score": thresholds.get(
+            "base_stop_min_score", compatibility_defaults["base_stop_min_score"]
+        ),
+        "shift3_stop_min_score": thresholds.get(
+            "shift3_stop_min_score", compatibility_defaults["shift3_stop_min_score"]
+        ),
+        "fusion_std_penalty": thresholds.get(
+            "fusion_std_penalty", compatibility_defaults["fusion_std_penalty"]
+        ),
         "calibration_scope": "source_validation",
         "uses_query_labels": False,
         "uses_query_role": False,
@@ -67,6 +81,9 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
         "head_lock_sha256": _sha(head),
         "tta_policy_sha256": _sha(tta),
         "target_query_used": False,
+        "compatibility_defaults": {
+            key: value for key, value in compatibility_defaults.items() if key not in thresholds
+        },
     }
     receipt_path = output / "lock_artifact_receipt.json"
     _write(receipt_path, receipt)

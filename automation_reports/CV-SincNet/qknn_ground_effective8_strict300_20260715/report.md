@@ -58,6 +58,7 @@ python -m pytest tests/test_stage2_predictor_runtime.py tests/test_stage2_predic
 - 依赖：`/usr/bin/strace`存在，Landlock ABI=4。
 - 本地测试环境：`ssr-gpu`。N607没有同名环境；现有实验解释器为`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`，PyTorch`2.1.0+cu121`、NumPy`2.2.5`。
 - v14来源artifact：`candidate_lock_v2.json`、`effective8_adapter_fp16.pt`、`training_manifest.json`、`source_validation_v2/promotion_manifest.json`、`source_validation_v2/source_joint_feature_stats_fp32.npz`和原300单元`protocol_plan/plan_manifest.json`均存在。
+- v14历史锁只含3个有效TTA阈值。当前6个float32部署槽位将缺失的`base_stop_min_score`、`shift3_stop_min_score`、`fusion_std_penalty`分别锁为无操作值`-1e9`、`-1e9`、`0.0`；历史head缺失的`gram_mix`和`uncertainty_penalty`锁为`0.0`。这些兼容值不使用target query，不改变v14三阈值决策语义。
 - 每次SSH检查后：本地`ssh.exe=0`，到`172.31.111.215:22`和bridge的ESTABLISHED连接数为0。
 
 ### 版本与同步边界
@@ -69,6 +70,8 @@ python -m pytest tests/test_stage2_predictor_runtime.py tests/test_stage2_predic
 - 同步范围：本提交中的`code/cvsrffi`严格runtime文件、`code/scripts`胶囊/闭包/包构建与Landlock执行文件、`paper_reproduction/scripts`严格计划/分包/授权执行文件；不传输tests、数据集、checkpoint、现有run输出或无关工作树改动。
 
 当前完整矩阵仍未获启动权限。下一步串行SCP并逐文件远端SHA核验，然后只生成v14严格runtime artifact；在报告记录确切命令后执行一个K=1烟测。
+
+兼容导出修复验证：`18 passed`，覆盖历史三阈值导出、胶囊和effective8 runtime/head。
 
 ## 完成后结果表
 
