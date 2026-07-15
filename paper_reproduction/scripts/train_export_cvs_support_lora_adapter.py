@@ -1220,8 +1220,12 @@ def train_support_only_bp_jg(
         ),
         "prototype_exclusion_mode": (
             "leave_one_physical_shot"
-            if bool(leave_one_physical_shot)
-            else "leave_one_view"
+            if bool(leave_one_physical_shot) and int(k_shot) >= 2
+            else (
+                "leave_one_view_k1_fallback"
+                if bool(leave_one_physical_shot)
+                else "leave_one_view"
+            )
         ),
         "support_forward_sample_equivalents": int(forward_sample_equivalents),
         "terminated_by_step_cap": int(optimizer_steps) < int(expected_natural_steps),
@@ -1849,21 +1853,21 @@ def _validate_deployment_controls(args: argparse.Namespace) -> None:
 def build_support_run_id(args: argparse.Namespace) -> str:
     if str(args.adapt_objective) in {"bp_jg", "bp_jg_lopo"}:
         ground_tag = str(args.ground_adapter_sha256).strip().lower()[:12]
-        objective_tag = (
-            "bp_jg_lopo"
-            if str(args.adapt_objective) == "bp_jg_lopo"
-            else "bp_jg"
-        )
-        learning_rate_tag = (
-            format(float(args.learning_rate), ".6f")
-            .rstrip("0")
-            .rstrip(".")
-            .replace(".", "p")
-        )
-        run_prefix = (
-            f"support_p4_{ground_tag}_{objective_tag}_{args.scope}"
-            f"_r{int(args.rank)}_lr{learning_rate_tag}"
-        )
+        if str(args.adapt_objective) == "bp_jg_lopo":
+            learning_rate_tag = (
+                format(float(args.learning_rate), ".6f")
+                .rstrip("0")
+                .rstrip(".")
+                .replace(".", "p")
+            )
+            run_prefix = (
+                f"support_p4_{ground_tag}_bp_jg_lopo_{args.scope}"
+                f"_r{int(args.rank)}_lr{learning_rate_tag}"
+            )
+        else:
+            run_prefix = (
+                f"support_p4_{ground_tag}_bp_jg_{args.scope}_r{int(args.rank)}"
+            )
     elif str(args.adapt_objective) == "p4_identity":
         ground_tag = str(args.ground_adapter_sha256).strip().lower()[:12]
         run_prefix = f"support_p4_{ground_tag}_identity"

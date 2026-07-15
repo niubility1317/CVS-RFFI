@@ -752,7 +752,7 @@ def test_bp_jg_lopo_loss_is_class_symmetric_and_differentiable() -> None:
     assert bool(torch.isfinite(features.grad).all())
 
 
-def test_bp_jg_k1_uses_five_steps_and_zero_optimizer_state(monkeypatch) -> None:
+def test_bp_jg_lopo_k1_falls_back_to_five_leave_one_view_steps(monkeypatch) -> None:
     import numpy as np
     import paper_reproduction.scripts.train_export_cvs_micro_iq_adapter as micro_trainer
     import paper_reproduction.scripts.train_export_cvs_support_lora_adapter as trainer
@@ -795,6 +795,7 @@ def test_bp_jg_k1_uses_five_steps_and_zero_optimizer_state(monkeypatch) -> None:
         batch_size=32,
         max_optimizer_steps=50,
         grad_clip=1.0,
+        leave_one_physical_shot=True,
         seed=713101,
         device=torch.device("cpu"),
     )
@@ -802,6 +803,8 @@ def test_bp_jg_k1_uses_five_steps_and_zero_optimizer_state(monkeypatch) -> None:
     assert runtime["optimizer_steps"] == 5
     assert runtime["episodes_per_epoch"] == 1
     assert runtime["k_shot_inferred"] == 1
+    assert runtime["prototype_exclusion_mode"] == "leave_one_view_k1_fallback"
+    assert runtime["shot_occurrences_per_class_per_epoch"] == 1
     assert runtime["optimizer_training_state_bytes_estimate"] == 0
     assert runtime["support_forward_sample_equivalents"] == 36
     assert runtime["query_rows_used_for_training"] == 0
@@ -1059,6 +1062,7 @@ def test_cli_locks_bp_jg_p4_and_five_epoch_controls() -> None:
     assert args.ground_adapter_rank == 16
     run_id = build_support_run_id(args)
     assert "joint_gate_r8" in run_id
+    assert "_lr" not in run_id
     assert "000000000000" in run_id
     import copy
 

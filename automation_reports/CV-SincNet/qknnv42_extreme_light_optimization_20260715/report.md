@@ -673,7 +673,7 @@ K10、26类、3View时，v17为base预计算780次样本前向＋50×78次episod
 - 真实ADV3B02＋P4集成验证通过：`joint_gate/identity_joint/fusion_joint`分别严格为6,400/6,400/7,688个可训练参数；三者LoRA恒等注入的最大特征误差均为0；P4合并最大绝对误差为4.17e-7。
 - 专用support测试46/46通过；support、micro-IQ、adaptive View、candidate lock、class-incremental和Stage2 runner相邻回归共134/134通过；Python `py_compile`、v18 launcher `bash -n`、四臂CLI部署锁、config类对称qKNN锁和`git diff --check`均通过。
 - Git承载面本轮待提交文件SHA256：
-  - `train_export_cvs_support_lora_adapter.py`：`0c5857696d08695895d484105ef4e8932d489654d4767827f8fb6eb3aab277e1`；
+  - `train_export_cvs_support_lora_adapter.py`：`914fae539a74426d326fdd9c1fff4b863b98684d8e87a488a194535583e0d774`；
   - `cvs_qknnv42_p4_bpjg_lopo_dev20_k10_20260715_n607.json`：`96470803c7a1c6f039b2ad673aa21e119622d52517c117054e817ecef791dc04`；
   - `launch_cvs_p4_bpjg_lopo_dev20_k10_v18.sh`：`0289062ea6d73df81058049d71473807767866878f63782c873275ced83c0be0`；
-  - `test_support_lora_adapter.py`：`ddf366fbdd7b1e883fbadd25d7fa403b47e345c7c39a09828ee8464d0dae9fb0`。
+  - `test_support_lora_adapter.py`：`19aa01471427c69b4a71bd77415056858d231976a4d278c4c2ae86aba8e73bb1`。
