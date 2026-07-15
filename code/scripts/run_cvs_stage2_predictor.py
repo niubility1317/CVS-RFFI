@@ -189,7 +189,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
     audit_receipt = {
         "schema": "cvs.phase2.predictor_execution_audit.v2",
         "status": "PASS",
-        "request_sha256": sha256_file(request_path),
+        "request_sha256": request_sha256,
         "prediction_artifact_sha256": published["artifact_sha256"],
         "prediction_seal_sha256": published["seal_sha256"],
         "predictor_resource_receipt_sha256": resource_sha256,
@@ -206,7 +206,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
     return {
         **published,
         "verified_artifact_sha256": verified["artifact_sha256"],
-        "request_sha256": sha256_file(request_path),
+        "request_sha256": request_sha256,
         "predictor_resource_receipt": str(resource_path),
         "predictor_resource_receipt_sha256": resource_sha256,
         "predictor_execution_audit": str(audit_path),

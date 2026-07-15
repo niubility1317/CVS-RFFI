@@ -92,6 +92,11 @@ def test_pinned_request_sha_does_not_reopen_the_forbidden_path(
     assert digest == hashlib.sha256(raw).hexdigest()
 
 
+def test_predictor_never_reopens_request_path_for_hashing() -> None:
+    source = (SCRIPT_ROOT / "run_cvs_stage2_predictor.py").read_text(encoding="utf-8")
+    assert "sha256_file(request_path)" not in source
+
+
 def test_cuda_is_initialized_before_peak_memory_reset(monkeypatch) -> None:
     calls: list[object] = []
     monkeypatch.setattr(
