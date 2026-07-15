@@ -5,7 +5,7 @@
     "surface": "report",
     "title": "ADV3B02、qKNN、域适应与类增量方法完整对比",
     "description": "严格结果、历史兼容诊断和不同协议方法分层汇报",
-    "generatedAt": "2026-07-14T19:21:29+08:00",
+    "generatedAt": "2026-07-15T09:15:31+08:00",
     "cards": [
       {
         "id": "card_direct_old",
@@ -38,21 +38,6 @@
         "sourceId": "strict_qknn"
       },
       {
-        "id": "card_full_h",
-        "dataset": "headline",
-        "filter": {
-          "key": "full_h"
-        },
-        "metrics": [
-          {
-            "label": "严格完整Oracle H",
-            "field": "value_pct",
-            "format": "number"
-          }
-        ],
-        "sourceId": "strict_qknn"
-      },
-      {
         "id": "card_legacy_h",
         "dataset": "headline",
         "filter": {
@@ -71,8 +56,8 @@
     "charts": [
       {
         "id": "core_chart",
-        "title": "四条主路径old/new/H对比",
-        "subtitle": "百分比；缺失值表示指标不适用",
+        "title": "非Oracle主路径old/new/H对比",
+        "subtitle": "role/quota Oracle已排除；百分比；缺失值表示指标不适用",
         "type": "bar",
         "dataset": "core_chart",
         "encodings": {
@@ -109,8 +94,8 @@
       },
       {
         "id": "k_chart",
-        "title": "qKNN路径随K-shot变化的H",
-        "subtitle": "每个点为5接收机×5seed的25行均值",
+        "title": "非Oracle qKNN路径随K-shot变化的H",
+        "subtitle": "role/quota Oracle已排除；每个点为5接收机×5seed的25行均值",
         "type": "line",
         "dataset": "k_compare",
         "encodings": {
@@ -238,7 +223,7 @@
     "tables": [
       {
         "id": "core_table",
-        "title": "主路径完整对比与证据边界",
+        "title": "非Oracle主路径完整对比与证据边界",
         "dataset": "core_table",
         "columns": [
           {
@@ -280,6 +265,96 @@
         "density": "dense",
         "layout": "full",
         "sourceId": "core_synthesis"
+      },
+      {
+        "id": "oracle_invalid_table",
+        "title": "历史role/quota Oracle协议无效附表",
+        "dataset": "oracle_invalid",
+        "columns": [
+          {
+            "field": "method",
+            "label": "历史方法",
+            "type": "text"
+          },
+          {
+            "field": "old_pct",
+            "label": "old_acc(%)",
+            "type": "number"
+          },
+          {
+            "field": "new_pct",
+            "label": "new_acc(%)",
+            "type": "number"
+          },
+          {
+            "field": "H_pct",
+            "label": "H(%)",
+            "type": "number"
+          },
+          {
+            "field": "decision",
+            "label": "禁止的决策先验",
+            "type": "text"
+          },
+          {
+            "field": "protocol_valid",
+            "label": "协议有效",
+            "type": "boolean"
+          },
+          {
+            "field": "eligible_for_ranking",
+            "label": "可参与排名",
+            "type": "boolean"
+          },
+          {
+            "field": "verdict",
+            "label": "结论",
+            "type": "text"
+          }
+        ],
+        "density": "dense",
+        "layout": "full",
+        "sourceId": "oracle_invalid_synthesis"
+      },
+      {
+        "id": "oracle_invalid_k_table",
+        "title": "历史role/quota Oracle逐K协议无效附表",
+        "dataset": "oracle_invalid_k",
+        "columns": [
+          {
+            "field": "k_shot",
+            "label": "K-shot",
+            "type": "number"
+          },
+          {
+            "field": "old_pct",
+            "label": "old_acc(%)",
+            "type": "number"
+          },
+          {
+            "field": "new_pct",
+            "label": "new_acc(%)",
+            "type": "number"
+          },
+          {
+            "field": "H_pct",
+            "label": "H(%)",
+            "type": "number"
+          },
+          {
+            "field": "protocol_valid",
+            "label": "协议有效",
+            "type": "boolean"
+          },
+          {
+            "field": "eligible_for_ranking",
+            "label": "可参与排名",
+            "type": "boolean"
+          }
+        ],
+        "density": "dense",
+        "layout": "full",
+        "sourceId": "oracle_invalid_synthesis"
       },
       {
         "id": "method_table",
@@ -420,13 +495,13 @@
       },
       {
         "id": "core_synthesis",
-        "label": "四条主路径证据分层汇总",
+        "label": "非Oracle主路径证据分层汇总",
         "path": "local_artifacts/adv3b02_full_comparison_20260714_191356/core_comparison.csv",
         "query": {
           "engine": "DuckDB",
           "language": "sql",
           "sql": "SELECT * FROM read_csv_auto('local_artifacts/adv3b02_full_comparison_20260714_191356/core_comparison.csv', header=true);",
-          "description": "由严格双125、严格直接地面评测和历史完整矩阵合并生成；每行保留严格性与结论边界。",
+          "description": "由逐样本决策路径、严格直接地面评测和历史完整矩阵合并生成；role/quota Oracle已排除。",
           "tables_used": [
             "summary_by_arm.csv",
             "query125_summary.csv",
@@ -440,19 +515,37 @@
       },
       {
         "id": "k_synthesis",
-        "label": "qKNN三路径K-shot汇总",
+        "label": "非Oracle qKNN路径K-shot汇总",
         "path": "local_artifacts/adv3b02_full_comparison_20260714_191356/kshot_comparison.csv",
         "query": {
           "engine": "DuckDB",
           "language": "sql",
           "sql": "SELECT * FROM read_csv_auto('local_artifacts/adv3b02_full_comparison_20260714_191356/kshot_comparison.csv', header=true);",
-          "description": "合并历史无FFT qKNN与两条严格qKNN路径的逐K汇总。",
+          "description": "合并历史无FFT qKNN与严格单视图FFT96逐K结果；role/quota Oracle已排除。",
           "tables_used": [
             "method_k_summary.csv",
             "summary_by_k.csv"
           ],
           "metric_definitions": [
             "每个K点为5接收机×5seed的25行均值"
+          ]
+        }
+      },
+      {
+        "id": "oracle_invalid_synthesis",
+        "label": "历史role/quota Oracle协议无效附表",
+        "path": "local_artifacts/adv3b02_full_comparison_20260714_191356/historical_invalid_oracle_summary.csv",
+        "query": {
+          "engine": "DuckDB",
+          "language": "sql",
+          "sql": "SELECT * FROM read_csv_auto('local_artifacts/adv3b02_full_comparison_20260714_191356/historical_invalid_oracle_summary.csv', header=true);",
+          "description": "仅保留既有Oracle数值用于信息泄漏上界审计；protocol_valid=false且eligible_for_ranking=false。",
+          "tables_used": [
+            "summary_by_arm.csv",
+            "summary_by_k.csv"
+          ],
+          "metric_definitions": [
+            "不得参与正式排名、3pp晋升、论文主表或部署声明"
           ]
         }
       }
@@ -466,7 +559,7 @@
       {
         "id": "summary",
         "type": "markdown",
-        "body": "## 技术摘要\n严格可比的核心结论是：直接地面ADV3B02在对齐125任务的旧类query上为73.87%；加入单视图FFT96后的严格qKNN达到old 75.12%、new 64.64%、H 68.56%；完整体达到84.07%、93.24%、88.23%，但它同时使用60epoch特征适配、5-view TTA和Oracle角色/类别配额，因此只能作为非部署上限。历史单qKNN为65.59%、47.94%、53.26%，其缓存manifest存在7个missing key、31个unexpected key和3个shape mismatch，不能当作严格ADV3B02结果。"
+        "body": "## 技术摘要\n正式headline、core主路径与K-shot主表只保留不使用query真实角色和类别配额的路径。直接地面ADV3B02在对齐125任务的旧类query上为73.87%；加入单视图FFT96后的严格qKNN达到old 75.12%、new 64.64%、H 68.56%。历史单qKNN为65.59%、47.94%、53.26%，其缓存manifest存在7个missing key、31个unexpected key和3个shape mismatch，不能当作严格ADV3B02结果。完整Oracle的84.07%、93.24%、88.23%仅进入协议无效附表。"
       },
       {
         "id": "metric_strip",
@@ -474,7 +567,6 @@
         "cardIds": [
           "card_direct_old",
           "card_light_h",
-          "card_full_h",
           "card_legacy_h"
         ]
       },
@@ -486,7 +578,7 @@
       {
         "id": "core_interpret",
         "type": "markdown",
-        "body": "## 核心判断\nFFT96使严格轻量qKNN相对历史单qKNN提高old约9.53pp、new约16.70pp、H约15.31pp，但由于历史单qKNN不是严格加载，这一差值只能作为跨证据层诊断，不能作为纯FFT因果消融。严格完整体相对严格单视图FFT96提高old 8.94pp、new 28.60pp、H 19.66pp；这项差值混合了adapter、TTA与Oracle约束。"
+        "body": "## 核心判断\nFFT96使严格轻量qKNN相对历史单qKNN提高old约9.53pp、new约16.70pp、H约15.31pp，但由于历史单qKNN不是严格加载，这一差值只能作为跨证据层诊断，不能作为纯FFT因果消融。role/quota Oracle不参与本节排名。"
       },
       {
         "id": "core_table_block",
@@ -496,12 +588,27 @@
       {
         "id": "k_heading",
         "type": "markdown",
-        "body": "## K-shot敏感性\n三条qKNN路径均随K增加而改善。严格单视图FFT96的H由K=1的52.70%升至K=20的79.89%；完整Oracle由81.10%升至92.81%。低K和困难接收机仍是轻量路径的主要瓶颈。"
+        "body": "## K-shot敏感性\n本节只比较不使用role/quota Oracle的qKNN路径。严格单视图FFT96的H由K=1的52.70%升至K=20的79.89%；低K和困难接收机仍是轻量路径的主要瓶颈。"
       },
       {
         "id": "k_chart_block",
         "type": "chart",
         "chartId": "k_chart"
+      },
+      {
+        "id": "oracle_invalid_heading",
+        "type": "markdown",
+        "body": "## 历史协议无效Oracle附表\n以下结果使用target query真实old/new角色和整批每类quota，违反逐样本自主决策硬约束。它们只用于审计信息泄漏上界，`protocol_valid=false`且`eligible_for_ranking=false`，不得参与正式候选选择、3pp晋升、论文主表或部署声明。"
+      },
+      {
+        "id": "oracle_invalid_table_block",
+        "type": "table",
+        "tableId": "oracle_invalid_table"
+      },
+      {
+        "id": "oracle_invalid_k_table_block",
+        "type": "table",
+        "tableId": "oracle_invalid_k_table"
       },
       {
         "id": "da_heading",
@@ -531,12 +638,12 @@
       {
         "id": "quality",
         "type": "markdown",
-        "body": "## 数据质量与可比性\n证据分三层：A层为20260714严格checkpoint重建后的直接地面、单视图FFT96和完整Oracle；B层为20260713 artifact完整但ADV3B02缓存兼容加载的历史qKNN/OPGAC；C层为各自训练管线的DA/CIL对比。只能在同层、同阶段、同指标内排序。直接地面模型没有新类头，因此new_acc与H必须留空；完整Oracle使用角色和类别配额真值约束，因此不得作为自主卫星部署性能。"
+        "body": "## 数据质量与可比性\n证据分三层：A层为20260714严格checkpoint重建后的直接地面和单视图FFT96；B层为20260713 artifact完整但ADV3B02缓存兼容加载的历史qKNN/OPGAC；C层为各自训练管线的DA/CIL对比。只能在同层、同阶段、同指标内排序。直接地面模型没有新类头，因此new_acc与H必须留空。role/quota Oracle另列为协议无效历史附表，不属于任何正式证据层。"
       },
       {
         "id": "next",
         "type": "markdown",
-        "body": "## 建议\n下一项最有价值的实验是用已修复的严格ADV3B02导出器重跑无FFT单qKNN 125矩阵，并在完全相同的strict cache上做FFT96开/关配对；随后分别做adapter、TTA和Oracle约束的逐项消融。只有这样才能把15.31pp和19.66pp拆解为可归因的增益。"
+        "body": "## 建议\n下一项最有价值的实验是用已修复的严格ADV3B02导出器重跑无FFT单qKNN 125矩阵，并在完全相同的strict cache上做FFT96开/关配对；随后固定逐样本决策，分别做adapter与TTA消融。既有Oracle artifact只保留审计，不再生成新候选。"
       },
       {
         "id": "limitations",
@@ -547,7 +654,7 @@
   },
   "snapshot": {
     "version": 1,
-    "generatedAt": "2026-07-14T19:21:29+08:00",
+    "generatedAt": "2026-07-15T09:15:31+08:00",
     "status": "ready",
     "datasets": {
       "headline": [
@@ -558,10 +665,6 @@
         {
           "key": "light_h",
           "value_pct": 68.56467579198244
-        },
-        {
-          "key": "full_h",
-          "value_pct": 88.22702369170554
         },
         {
           "key": "legacy_h",
@@ -607,19 +710,6 @@
           "strictness": "严格加载0/0/0",
           "evidence_tier": "A-严格125矩阵",
           "verdict": "当前最接近轻量卫星侧路径的严格诊断"
-        },
-        {
-          "method": "完整qKNN legacy Oracle",
-          "old_pct": 84.0666666666667,
-          "new_pct": 93.24000000000005,
-          "H_pct": 88.22702369170554,
-          "runs": 125,
-          "input": "严格ADV3B02+60epoch adapter+5-view TTA+FFT96",
-          "adaptation": "id_norm_late_feature适配、TTA融合、support-only qKNN",
-          "decision": "角色Oracle+类别配额Hungarian",
-          "strictness": "严格加载0/0/0；但含Oracle约束",
-          "evidence_tier": "A-严格Oracle上限",
-          "verdict": "NON_DEPLOYMENT_ORACLE_DIAGNOSTIC"
         }
       ],
       "core_table": [
@@ -661,19 +751,6 @@
           "strictness": "严格加载0/0/0",
           "evidence_tier": "A-严格125矩阵",
           "verdict": "当前最接近轻量卫星侧路径的严格诊断"
-        },
-        {
-          "method": "完整qKNN legacy Oracle",
-          "old_pct": 84.0666666666667,
-          "new_pct": 93.24000000000005,
-          "H_pct": 88.22702369170554,
-          "runs": 125,
-          "input": "严格ADV3B02+60epoch adapter+5-view TTA+FFT96",
-          "adaptation": "id_norm_late_feature适配、TTA融合、support-only qKNN",
-          "decision": "角色Oracle+类别配额Hungarian",
-          "strictness": "严格加载0/0/0；但含Oracle约束",
-          "evidence_tier": "A-严格Oracle上限",
-          "verdict": "NON_DEPLOYMENT_ORACLE_DIAGNOSTIC"
         }
       ],
       "k_compare": [
@@ -723,51 +800,6 @@
           "run_count": 25
         },
         {
-          "method": "完整qKNN legacy Oracle",
-          "k_shot": 1,
-          "old_pct": 76.5888888888889,
-          "new_pct": 87.26666666666667,
-          "H_pct": 81.10337373974079,
-          "strictness": "严格ADV3B02+Oracle",
-          "run_count": 25
-        },
-        {
-          "method": "完整qKNN legacy Oracle",
-          "k_shot": 2,
-          "old_pct": 81.54444444444447,
-          "new_pct": 91.93333333333332,
-          "H_pct": 86.22501323950019,
-          "strictness": "严格ADV3B02+Oracle",
-          "run_count": 25
-        },
-        {
-          "method": "完整qKNN legacy Oracle",
-          "k_shot": 5,
-          "old_pct": 85.46666666666668,
-          "new_pct": 94.39999999999999,
-          "H_pct": 89.59160857615385,
-          "strictness": "严格ADV3B02+Oracle",
-          "run_count": 25
-        },
-        {
-          "method": "完整qKNN legacy Oracle",
-          "k_shot": 10,
-          "old_pct": 87.34444444444445,
-          "new_pct": 96.0,
-          "H_pct": 91.40128030998221,
-          "strictness": "严格ADV3B02+Oracle",
-          "run_count": 25
-        },
-        {
-          "method": "完整qKNN legacy Oracle",
-          "k_shot": 20,
-          "old_pct": 89.3888888888889,
-          "new_pct": 96.60000000000001,
-          "H_pct": 92.8138425931509,
-          "strictness": "严格ADV3B02+Oracle",
-          "run_count": 25
-        },
-        {
           "method": "qKNNV42+单视图FFT96",
           "k_shot": 1,
           "old_pct": 62.8,
@@ -811,6 +843,80 @@
           "H_pct": 79.89169788393511,
           "strictness": "严格ADV3B02",
           "run_count": 25
+        }
+      ],
+      "oracle_invalid": [
+        {
+          "method": "完整qKNN legacy Oracle（历史协议无效）",
+          "old_pct": 84.0666666666667,
+          "new_pct": 93.24000000000005,
+          "H_pct": 88.22702369170554,
+          "runs": 125,
+          "input": "严格ADV3B02+60epoch adapter+5-view TTA+FFT96",
+          "adaptation": "id_norm_late_feature适配、TTA融合、support-only qKNN",
+          "decision": "query真实角色Oracle+类别配额Hungarian",
+          "strictness": "严格加载0/0/0；但违反逐样本自主决策协议",
+          "evidence_tier": "HISTORICAL_PROTOCOL_INVALID",
+          "verdict": "PROTOCOL_INVALID_FOR_DEPLOYMENT",
+          "protocol_valid": false,
+          "eligible_for_ranking": false
+        }
+      ],
+      "oracle_invalid_k": [
+        {
+          "method": "完整qKNN legacy Oracle（历史协议无效）",
+          "k_shot": 1,
+          "old_pct": 76.5888888888889,
+          "new_pct": 87.26666666666667,
+          "H_pct": 81.10337373974079,
+          "strictness": "严格ADV3B02；query真实角色/类别配额Oracle；协议无效",
+          "run_count": 25,
+          "protocol_valid": false,
+          "eligible_for_ranking": false
+        },
+        {
+          "method": "完整qKNN legacy Oracle（历史协议无效）",
+          "k_shot": 2,
+          "old_pct": 81.54444444444447,
+          "new_pct": 91.93333333333332,
+          "H_pct": 86.22501323950019,
+          "strictness": "严格ADV3B02；query真实角色/类别配额Oracle；协议无效",
+          "run_count": 25,
+          "protocol_valid": false,
+          "eligible_for_ranking": false
+        },
+        {
+          "method": "完整qKNN legacy Oracle（历史协议无效）",
+          "k_shot": 5,
+          "old_pct": 85.46666666666668,
+          "new_pct": 94.39999999999999,
+          "H_pct": 89.59160857615385,
+          "strictness": "严格ADV3B02；query真实角色/类别配额Oracle；协议无效",
+          "run_count": 25,
+          "protocol_valid": false,
+          "eligible_for_ranking": false
+        },
+        {
+          "method": "完整qKNN legacy Oracle（历史协议无效）",
+          "k_shot": 10,
+          "old_pct": 87.34444444444445,
+          "new_pct": 96.0,
+          "H_pct": 91.40128030998221,
+          "strictness": "严格ADV3B02；query真实角色/类别配额Oracle；协议无效",
+          "run_count": 25,
+          "protocol_valid": false,
+          "eligible_for_ranking": false
+        },
+        {
+          "method": "完整qKNN legacy Oracle（历史协议无效）",
+          "k_shot": 20,
+          "old_pct": 89.3888888888889,
+          "new_pct": 96.60000000000001,
+          "H_pct": 92.8138425931509,
+          "strictness": "严格ADV3B02；query真实角色/类别配额Oracle；协议无效",
+          "run_count": 25,
+          "protocol_valid": false,
+          "eligible_for_ranking": false
         }
       ],
       "stage2b": [

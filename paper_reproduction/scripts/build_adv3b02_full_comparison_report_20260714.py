@@ -115,6 +115,22 @@ def main() -> None:
     except Exception as exc:  # report the evidence gap rather than silently assuming strictness
         cache_load_note = f"manifest读取失败:{type(exc).__name__}"
 
+    oracle_invalid_row = {
+        "method": "完整qKNN legacy Oracle（历史协议无效）",
+        "old_pct": 100 * float(full["old_acc"]),
+        "new_pct": 100 * float(full["seen_new_acc"]),
+        "H_pct": 100 * float(full["H_old_new"]),
+        "runs": int(full["count"]),
+        "input": "严格ADV3B02+60epoch adapter+5-view TTA+FFT96",
+        "adaptation": "id_norm_late_feature适配、TTA融合、support-only qKNN",
+        "decision": "query真实角色Oracle+类别配额Hungarian",
+        "strictness": "严格加载0/0/0；但违反逐样本自主决策协议",
+        "evidence_tier": "HISTORICAL_PROTOCOL_INVALID",
+        "verdict": "PROTOCOL_INVALID_FOR_DEPLOYMENT",
+        "protocol_valid": False,
+        "eligible_for_ranking": False,
+    }
+
     core_rows = [
         {
             "method": "直接地面ADV3B02分类头",
@@ -155,19 +171,6 @@ def main() -> None:
             "evidence_tier": "A-严格125矩阵",
             "verdict": "当前最接近轻量卫星侧路径的严格诊断",
         },
-        {
-            "method": "完整qKNN legacy Oracle",
-            "old_pct": 100 * float(full["old_acc"]),
-            "new_pct": 100 * float(full["seen_new_acc"]),
-            "H_pct": 100 * float(full["H_old_new"]),
-            "runs": int(full["count"]),
-            "input": "严格ADV3B02+60epoch adapter+5-view TTA+FFT96",
-            "adaptation": "id_norm_late_feature适配、TTA融合、support-only qKNN",
-            "decision": "角色Oracle+类别配额Hungarian",
-            "strictness": "严格加载0/0/0；但含Oracle约束",
-            "evidence_tier": "A-严格Oracle上限",
-            "verdict": "NON_DEPLOYMENT_ORACLE_DIAGNOSTIC",
-        },
     ]
 
     core_long: list[dict[str, Any]] = []
@@ -197,16 +200,31 @@ def main() -> None:
             "strictness": "兼容加载诊断",
             "run_count": len(rows),
         })
+    oracle_k_compare: list[dict[str, Any]] = []
     for row in strict_k_rows:
-        label = "qKNNV42+单视图FFT96" if row["arm"] == "singleview_fft96_strict" else "完整qKNN legacy Oracle"
-        k_compare.append({
-            "method": label,
+        is_oracle = row["arm"] == "full_legacy_oracle_strict"
+        target = oracle_k_compare if is_oracle else k_compare
+        target.append({
+            "method": (
+                "完整qKNN legacy Oracle（历史协议无效）"
+                if is_oracle
+                else "qKNNV42+单视图FFT96"
+            ),
             "k_shot": int(row["k_shot"]),
             "old_pct": 100 * float(row["old_acc"]),
             "new_pct": 100 * float(row["seen_new_acc"]),
             "H_pct": 100 * float(row["H_old_new"]),
-            "strictness": "严格ADV3B02" + ("+Oracle" if row["arm"] == "full_legacy_oracle_strict" else ""),
+            "strictness": (
+                "严格ADV3B02；query真实角色/类别配额Oracle；协议无效"
+                if is_oracle
+                else "严格ADV3B02"
+            ),
             "run_count": int(row["count"]),
+            **(
+                {"protocol_valid": False, "eligible_for_ranking": False}
+                if is_oracle
+                else {}
+            ),
         })
 
     stage2b: list[dict[str, Any]] = []
@@ -261,6 +279,8 @@ def main() -> None:
 
     write_csv(out / "core_comparison.csv", core_rows)
     write_csv(out / "kshot_comparison.csv", k_compare)
+    write_csv(out / "historical_invalid_oracle_summary.csv", [oracle_invalid_row])
+    write_csv(out / "historical_invalid_oracle_kshot.csv", oracle_k_compare)
     write_csv(out / "stage2b_domain_adaptation.csv", sorted(stage2b, key=lambda r: (r["method"], r["k_shot"])))
     write_csv(out / "stage2c_class_incremental.csv", sorted(stage2c, key=lambda r: (r["method"], r["k_shot"])))
     write_csv(out / "method_input_output_effect.csv", method_notes)
@@ -272,25 +292,29 @@ def main() -> None:
         {"id": "publication_matrix", "label": "CVS论文级Stage2-B/C完整矩阵汇总", "path": "local_artifacts/cvs_publication_stage2_summary_20260713/final_audit.json", "query": {"engine": "DuckDB", "language": "sql", "sql": "SELECT * FROM read_csv_auto('local_artifacts/cvs_publication_stage2_summary_20260713/method_k_summary.csv', header=true);", "description": "读取20260713 Stage2-B/C各500行完整矩阵的method×K汇总及125行历史qKNN。", "tables_used": ["method_k_summary.csv", "per_run_results.csv", "final_audit.json"], "metric_definitions": ["Stage2-B=target-old accuracy", "Stage2-C=old/new harmonic mean", "统计单位=receiver-seed run的三场景均值"]}},
         {"id": "compat_cache", "label": "20260713 ADV3B02历史特征缓存与manifest", "path": "local_artifacts/cvs_publication_adv3b02_feature_cache_20260713/validation.json", "query": {"engine": "DuckDB", "language": "sql", "sql": "SELECT * FROM read_json_auto('local_artifacts/cvs_publication_adv3b02_feature_cache_20260713/validation.json');", "description": "读取历史特征缓存验证文件；严格性字段另从NPZ内嵌manifest解析。", "tables_used": ["leo_clear_weak.npz", "validation.json"], "metric_definitions": ["strictness由missing_keys、unexpected_keys、skipped_mismatch共同判定"]}},
         {"id": "protocol", "label": "CVS-RFFI项目科学协议", "path": "docs/CVS_PUBLICATION_COMPARISON_PROTOCOL_20260713.md", "query": {"language": "text", "query": "read_text('docs/CVS_PUBLICATION_COMPARISON_PROTOCOL_20260713.md', encoding='utf-8')", "description": "读取Stage2-B/C、receiver、K-shot和场景定义。", "tables_used": ["CVS_PUBLICATION_COMPARISON_PROTOCOL_20260713.md"]}},
-        {"id": "core_synthesis", "label": "四条主路径证据分层汇总", "path": f"local_artifacts/{args.run_id}/core_comparison.csv", "query": {"engine": "DuckDB", "language": "sql", "sql": f"SELECT * FROM read_csv_auto('local_artifacts/{args.run_id}/core_comparison.csv', header=true);", "description": "由严格双125、严格直接地面评测和历史完整矩阵合并生成；每行保留严格性与结论边界。", "tables_used": ["summary_by_arm.csv", "query125_summary.csv", "per_run_results.csv", "leo_clear_weak.npz"], "metric_definitions": ["跨证据层差值仅为诊断，不解释为因果消融"]}},
-        {"id": "k_synthesis", "label": "qKNN三路径K-shot汇总", "path": f"local_artifacts/{args.run_id}/kshot_comparison.csv", "query": {"engine": "DuckDB", "language": "sql", "sql": f"SELECT * FROM read_csv_auto('local_artifacts/{args.run_id}/kshot_comparison.csv', header=true);", "description": "合并历史无FFT qKNN与两条严格qKNN路径的逐K汇总。", "tables_used": ["method_k_summary.csv", "summary_by_k.csv"], "metric_definitions": ["每个K点为5接收机×5seed的25行均值"]}},
+        {"id": "core_synthesis", "label": "非Oracle主路径证据分层汇总", "path": f"local_artifacts/{args.run_id}/core_comparison.csv", "query": {"engine": "DuckDB", "language": "sql", "sql": f"SELECT * FROM read_csv_auto('local_artifacts/{args.run_id}/core_comparison.csv', header=true);", "description": "由逐样本决策路径、严格直接地面评测和历史完整矩阵合并生成；role/quota Oracle已排除。", "tables_used": ["summary_by_arm.csv", "query125_summary.csv", "per_run_results.csv", "leo_clear_weak.npz"], "metric_definitions": ["跨证据层差值仅为诊断，不解释为因果消融"]}},
+        {"id": "k_synthesis", "label": "非Oracle qKNN路径K-shot汇总", "path": f"local_artifacts/{args.run_id}/kshot_comparison.csv", "query": {"engine": "DuckDB", "language": "sql", "sql": f"SELECT * FROM read_csv_auto('local_artifacts/{args.run_id}/kshot_comparison.csv', header=true);", "description": "合并历史无FFT qKNN与严格单视图FFT96逐K结果；role/quota Oracle已排除。", "tables_used": ["method_k_summary.csv", "summary_by_k.csv"], "metric_definitions": ["每个K点为5接收机×5seed的25行均值"]}},
+        {"id": "oracle_invalid_synthesis", "label": "历史role/quota Oracle协议无效附表", "path": f"local_artifacts/{args.run_id}/historical_invalid_oracle_summary.csv", "query": {"engine": "DuckDB", "language": "sql", "sql": f"SELECT * FROM read_csv_auto('local_artifacts/{args.run_id}/historical_invalid_oracle_summary.csv', header=true);", "description": "仅保留既有Oracle数值用于信息泄漏上界审计；protocol_valid=false且eligible_for_ranking=false。", "tables_used": ["summary_by_arm.csv", "summary_by_k.csv"], "metric_definitions": ["不得参与正式排名、3pp晋升、论文主表或部署声明"]}},
     ]
 
     cards = [
         {"id": "card_direct_old", "dataset": "headline", "filter": {"key": "direct_old"}, "metrics": [{"label": "直接地面old_acc", "field": "value_pct", "format": "number"}], "sourceId": "direct_ground"},
         {"id": "card_light_h", "dataset": "headline", "filter": {"key": "light_h"}, "metrics": [{"label": "严格单视图FFT96 H", "field": "value_pct", "format": "number"}], "sourceId": "strict_qknn"},
-        {"id": "card_full_h", "dataset": "headline", "filter": {"key": "full_h"}, "metrics": [{"label": "严格完整Oracle H", "field": "value_pct", "format": "number"}], "sourceId": "strict_qknn"},
         {"id": "card_legacy_h", "dataset": "headline", "filter": {"key": "legacy_h"}, "metrics": [{"label": "历史单qKNN H", "field": "value_pct", "format": "number"}], "sourceId": "publication_matrix"},
     ]
     charts = [
-        {"id": "core_chart", "title": "四条主路径old/new/H对比", "subtitle": "百分比；缺失值表示指标不适用", "type": "bar", "dataset": "core_chart", "encodings": {"x": {"field": "method", "type": "nominal", "label": "方法"}, "y": {"fields": ["old_pct", "new_pct", "H_pct"], "type": "quantitative", "label": "准确率/H", "unit": "%"}, "tooltip": [{"field": "strictness", "type": "text"}, {"field": "runs", "type": "quantitative"}]}, "valueFormat": "number", "unit": "%", "layout": "full", "sourceId": "core_synthesis"},
-        {"id": "k_chart", "title": "qKNN路径随K-shot变化的H", "subtitle": "每个点为5接收机×5seed的25行均值", "type": "line", "dataset": "k_compare", "encodings": {"x": {"field": "k_shot", "type": "ordinal", "label": "K-shot"}, "y": {"field": "H_pct", "type": "quantitative", "label": "H", "unit": "%"}, "color": {"field": "method", "type": "nominal", "label": "方法"}, "tooltip": [{"field": "old_pct", "type": "quantitative", "unit": "%"}, {"field": "new_pct", "type": "quantitative", "unit": "%"}, {"field": "strictness", "type": "text"}]}, "valueFormat": "number", "unit": "%", "layout": "full", "sourceId": "k_synthesis"},
+        {"id": "core_chart", "title": "非Oracle主路径old/new/H对比", "subtitle": "role/quota Oracle已排除；百分比；缺失值表示指标不适用", "type": "bar", "dataset": "core_chart", "encodings": {"x": {"field": "method", "type": "nominal", "label": "方法"}, "y": {"fields": ["old_pct", "new_pct", "H_pct"], "type": "quantitative", "label": "准确率/H", "unit": "%"}, "tooltip": [{"field": "strictness", "type": "text"}, {"field": "runs", "type": "quantitative"}]}, "valueFormat": "number", "unit": "%", "layout": "full", "sourceId": "core_synthesis"},
+        {"id": "k_chart", "title": "非Oracle qKNN路径随K-shot变化的H", "subtitle": "role/quota Oracle已排除；每个点为5接收机×5seed的25行均值", "type": "line", "dataset": "k_compare", "encodings": {"x": {"field": "k_shot", "type": "ordinal", "label": "K-shot"}, "y": {"field": "H_pct", "type": "quantitative", "label": "H", "unit": "%"}, "color": {"field": "method", "type": "nominal", "label": "方法"}, "tooltip": [{"field": "old_pct", "type": "quantitative", "unit": "%"}, {"field": "new_pct", "type": "quantitative", "unit": "%"}, {"field": "strictness", "type": "text"}]}, "valueFormat": "number", "unit": "%", "layout": "full", "sourceId": "k_synthesis"},
         {"id": "stage2b_chart", "title": "Stage2-B域适应方法target-old accuracy", "subtitle": "20260713完整矩阵；各点25个receiver-seed运行", "type": "line", "dataset": "stage2b", "encodings": {"x": {"field": "k_shot", "type": "ordinal", "label": "K-shot"}, "y": {"field": "target_old_pct", "type": "quantitative", "label": "target-old accuracy", "unit": "%"}, "color": {"field": "method", "type": "nominal", "label": "方法"}, "tooltip": [{"field": "before_pct", "type": "quantitative", "unit": "%"}, {"field": "delta_pp", "type": "quantitative", "unit": "pp"}]}, "valueFormat": "number", "unit": "%", "layout": "full", "sourceId": "publication_matrix"},
         {"id": "stage2c_chart", "title": "Stage2-C类增量方法old/new harmonic mean", "subtitle": "20260713完整矩阵；各点25个receiver-seed运行", "type": "line", "dataset": "stage2c", "encodings": {"x": {"field": "k_shot", "type": "ordinal", "label": "K-shot"}, "y": {"field": "H_pct", "type": "quantitative", "label": "H", "unit": "%"}, "color": {"field": "method", "type": "nominal", "label": "方法"}, "tooltip": [{"field": "old_pct", "type": "quantitative", "unit": "%"}, {"field": "new_pct", "type": "quantitative", "unit": "%"}]}, "valueFormat": "number", "unit": "%", "layout": "full", "sourceId": "publication_matrix"},
     ]
     tables = [
-        {"id": "core_table", "title": "主路径完整对比与证据边界", "dataset": "core_table", "columns": [
+        {"id": "core_table", "title": "非Oracle主路径完整对比与证据边界", "dataset": "core_table", "columns": [
             {"field": "method", "label": "方法", "type": "text"}, {"field": "old_pct", "label": "old_acc(%)", "type": "number"}, {"field": "new_pct", "label": "new_acc(%)", "type": "number"}, {"field": "H_pct", "label": "H(%)", "type": "number"}, {"field": "runs", "label": "运行数", "type": "number"}, {"field": "strictness", "label": "加载/证据", "type": "text"}, {"field": "verdict", "label": "结论", "type": "text"}], "density": "dense", "layout": "full", "sourceId": "core_synthesis"},
+        {"id": "oracle_invalid_table", "title": "历史role/quota Oracle协议无效附表", "dataset": "oracle_invalid", "columns": [
+            {"field": "method", "label": "历史方法", "type": "text"}, {"field": "old_pct", "label": "old_acc(%)", "type": "number"}, {"field": "new_pct", "label": "new_acc(%)", "type": "number"}, {"field": "H_pct", "label": "H(%)", "type": "number"}, {"field": "decision", "label": "禁止的决策先验", "type": "text"}, {"field": "protocol_valid", "label": "协议有效", "type": "boolean"}, {"field": "eligible_for_ranking", "label": "可参与排名", "type": "boolean"}, {"field": "verdict", "label": "结论", "type": "text"}], "density": "dense", "layout": "full", "sourceId": "oracle_invalid_synthesis"},
+        {"id": "oracle_invalid_k_table", "title": "历史role/quota Oracle逐K协议无效附表", "dataset": "oracle_invalid_k", "columns": [
+            {"field": "k_shot", "label": "K-shot", "type": "number"}, {"field": "old_pct", "label": "old_acc(%)", "type": "number"}, {"field": "new_pct", "label": "new_acc(%)", "type": "number"}, {"field": "H_pct", "label": "H(%)", "type": "number"}, {"field": "protocol_valid", "label": "协议有效", "type": "boolean"}, {"field": "eligible_for_ranking", "label": "可参与排名", "type": "boolean"}], "density": "dense", "layout": "full", "sourceId": "oracle_invalid_synthesis"},
         {"id": "method_table", "title": "方法、输入、输出与效果", "dataset": "method_notes", "columns": [
             {"field": "family", "label": "类别", "type": "text"}, {"field": "method", "label": "方法", "type": "text"}, {"field": "input", "label": "输入", "type": "text"}, {"field": "methodology", "label": "主要机制", "type": "text"}, {"field": "output", "label": "输出", "type": "text"}, {"field": "effect", "label": "达到效果", "type": "text"}, {"field": "boundary", "label": "边界", "type": "text"}], "density": "dense", "layout": "full", "sourceId": "publication_matrix"},
     ]
@@ -309,20 +333,23 @@ def main() -> None:
             "sources": sources,
             "blocks": [
                 {"id": "title", "type": "markdown", "body": "# ADV3B02、qKNN、域适应与类增量方法完整对比"},
-                {"id": "summary", "type": "markdown", "body": "## 技术摘要\n严格可比的核心结论是：直接地面ADV3B02在对齐125任务的旧类query上为73.87%；加入单视图FFT96后的严格qKNN达到old 75.12%、new 64.64%、H 68.56%；完整体达到84.07%、93.24%、88.23%，但它同时使用60epoch特征适配、5-view TTA和Oracle角色/类别配额，因此只能作为非部署上限。历史单qKNN为65.59%、47.94%、53.26%，其缓存manifest存在7个missing key、31个unexpected key和3个shape mismatch，不能当作严格ADV3B02结果。"},
-                {"id": "metric_strip", "type": "metric-strip", "cardIds": ["card_direct_old", "card_light_h", "card_full_h", "card_legacy_h"]},
+                {"id": "summary", "type": "markdown", "body": "## 技术摘要\n正式headline、core主路径与K-shot主表只保留不使用query真实角色和类别配额的路径。直接地面ADV3B02在对齐125任务的旧类query上为73.87%；加入单视图FFT96后的严格qKNN达到old 75.12%、new 64.64%、H 68.56%。历史单qKNN为65.59%、47.94%、53.26%，其缓存manifest存在7个missing key、31个unexpected key和3个shape mismatch，不能当作严格ADV3B02结果。完整Oracle的84.07%、93.24%、88.23%仅进入协议无效附表。"},
+                {"id": "metric_strip", "type": "metric-strip", "cardIds": ["card_direct_old", "card_light_h", "card_legacy_h"]},
                 {"id": "core_chart_block", "type": "chart", "chartId": "core_chart"},
-                {"id": "core_interpret", "type": "markdown", "body": "## 核心判断\nFFT96使严格轻量qKNN相对历史单qKNN提高old约9.53pp、new约16.70pp、H约15.31pp，但由于历史单qKNN不是严格加载，这一差值只能作为跨证据层诊断，不能作为纯FFT因果消融。严格完整体相对严格单视图FFT96提高old 8.94pp、new 28.60pp、H 19.66pp；这项差值混合了adapter、TTA与Oracle约束。"},
+                {"id": "core_interpret", "type": "markdown", "body": "## 核心判断\nFFT96使严格轻量qKNN相对历史单qKNN提高old约9.53pp、new约16.70pp、H约15.31pp，但由于历史单qKNN不是严格加载，这一差值只能作为跨证据层诊断，不能作为纯FFT因果消融。role/quota Oracle不参与本节排名。"},
                 {"id": "core_table_block", "type": "table", "tableId": "core_table"},
-                {"id": "k_heading", "type": "markdown", "body": "## K-shot敏感性\n三条qKNN路径均随K增加而改善。严格单视图FFT96的H由K=1的52.70%升至K=20的79.89%；完整Oracle由81.10%升至92.81%。低K和困难接收机仍是轻量路径的主要瓶颈。"},
+                {"id": "k_heading", "type": "markdown", "body": "## K-shot敏感性\n本节只比较不使用role/quota Oracle的qKNN路径。严格单视图FFT96的H由K=1的52.70%升至K=20的79.89%；低K和困难接收机仍是轻量路径的主要瓶颈。"},
                 {"id": "k_chart_block", "type": "chart", "chartId": "k_chart"},
+                {"id": "oracle_invalid_heading", "type": "markdown", "body": "## 历史协议无效Oracle附表\n以下结果使用target query真实old/new角色和整批每类quota，违反逐样本自主决策硬约束。它们只用于审计信息泄漏上界，`protocol_valid=false`且`eligible_for_ranking=false`，不得参与正式候选选择、3pp晋升、论文主表或部署声明。"},
+                {"id": "oracle_invalid_table_block", "type": "table", "tableId": "oracle_invalid_table"},
+                {"id": "oracle_invalid_k_table_block", "type": "table", "tableId": "oracle_invalid_k_table"},
                 {"id": "da_heading", "type": "markdown", "body": "## Stage2-B域适应方法\n该组比较只评估target-old。CVS-OPGAC在完整矩阵中显著高于ProtoNet CDA、MRIOR-SDA和DADDA-SDA，但这些行比较的是完整管线而非同一严格ADV3B02特征上的适配模块消融；不同方法继承的表示与训练入口不同。"},
                 {"id": "stage2b_chart_block", "type": "chart", "chartId": "stage2b_chart"},
                 {"id": "cil_heading", "type": "markdown", "body": "## Stage2-C类增量方法\n历史CVS-qKNNV42在五档K上均高于CSIL、MoPC-HR和Orthogonal Incremental。Orthogonal在K=20保留71.11%的旧类，却只有3.47%的新类，说明不能用old_acc单独替代old/new联合指标。该历史CVS-qKNNV42仍受兼容加载问题约束；严格无FFT单qKNN尚未重跑。"},
                 {"id": "stage2c_chart_block", "type": "chart", "chartId": "stage2c_chart"},
                 {"id": "method_table_block", "type": "table", "tableId": "method_table"},
-                {"id": "quality", "type": "markdown", "body": "## 数据质量与可比性\n证据分三层：A层为20260714严格checkpoint重建后的直接地面、单视图FFT96和完整Oracle；B层为20260713 artifact完整但ADV3B02缓存兼容加载的历史qKNN/OPGAC；C层为各自训练管线的DA/CIL对比。只能在同层、同阶段、同指标内排序。直接地面模型没有新类头，因此new_acc与H必须留空；完整Oracle使用角色和类别配额真值约束，因此不得作为自主卫星部署性能。"},
-                {"id": "next", "type": "markdown", "body": "## 建议\n下一项最有价值的实验是用已修复的严格ADV3B02导出器重跑无FFT单qKNN 125矩阵，并在完全相同的strict cache上做FFT96开/关配对；随后分别做adapter、TTA和Oracle约束的逐项消融。只有这样才能把15.31pp和19.66pp拆解为可归因的增益。"},
+                {"id": "quality", "type": "markdown", "body": "## 数据质量与可比性\n证据分三层：A层为20260714严格checkpoint重建后的直接地面和单视图FFT96；B层为20260713 artifact完整但ADV3B02缓存兼容加载的历史qKNN/OPGAC；C层为各自训练管线的DA/CIL对比。只能在同层、同阶段、同指标内排序。直接地面模型没有新类头，因此new_acc与H必须留空。role/quota Oracle另列为协议无效历史附表，不属于任何正式证据层。"},
+                {"id": "next", "type": "markdown", "body": "## 建议\n下一项最有价值的实验是用已修复的严格ADV3B02导出器重跑无FFT单qKNN 125矩阵，并在完全相同的strict cache上做FFT96开/关配对；随后固定逐样本决策，分别做adapter与TTA消融。既有Oracle artifact只保留审计，不再生成新候选。"},
                 {"id": "limitations", "type": "markdown", "body": "## 限制\n所有LEO场景均为简化星地信道仿真，不是真实在轨测量；125行由5接收机×5seed×5K构成，但直接地面分支不读取K，实际只有25个独立receiver-seed query集合。历史94.52/90.14/92.28属于不同切分、20新类、单seed legacy diagnostic，不进入本报告数值排名。"},
             ],
         },
@@ -334,12 +361,13 @@ def main() -> None:
                 "headline": [
                     {"key": "direct_old", "value_pct": 100 * direct_old},
                     {"key": "light_h", "value_pct": 100 * float(light["H_old_new"])},
-                    {"key": "full_h", "value_pct": 100 * float(full["H_old_new"])},
                     {"key": "legacy_h", "value_pct": 100 * legacy_h},
                 ],
                 "core_chart": core_rows,
                 "core_table": core_rows,
                 "k_compare": k_compare,
+                "oracle_invalid": [oracle_invalid_row],
+                "oracle_invalid_k": oracle_k_compare,
                 "stage2b": stage2b,
                 "stage2c": stage2c,
                 "method_notes": method_notes,
@@ -364,6 +392,8 @@ def main() -> None:
 
     report = f"""# ADV3B02、qKNN、域适应与类增量方法完整对比报告
 
+> role/quota Oracle使用target query真实old/new角色和整批每类quota，违反逐样本自主决策协议。相关历史结果只进入协议无效附表，`protocol_valid=false`且`eligible_for_ranking=false`。
+
 ## 实验与报告信息
 
 |字段|内容|
@@ -371,17 +401,17 @@ def main() -> None:
 |报告ID|`{args.run_id}`|
 |生成时间|{generated_at}|
 |操作者|Codex|
-|目标|统一汇报直接地面模型、单qKNN、qKNN+单视图FFT96、严格完整qKNN Oracle，以及此前域适应和类增量方法|
+|目标|正式比较直接地面模型、单qKNN、qKNN+单视图FFT96及此前域适应和类增量方法；历史Oracle只作协议无效附表|
 |协议|5个target receiver×5个seed×K={{1,2,5,10,20}}；旧类6个、新类2个；三种简化LEO场景|
-|声明边界|严格结果、兼容加载历史诊断和不同训练管线结果分层，不做跨层因果归因|
+|声明边界|正式主表仅保留不使用query真实角色和类别配额的结果；严格结果、兼容加载历史诊断和不同训练管线结果分层|
 
 ## 一、执行结论
 
-严格可引用的轻量路径是`qKNNV42+单视图FFT96`：old_acc={pct(float(light['old_acc']))}、new_acc={pct(float(light['seen_new_acc']))}、H={pct(float(light['H_old_new']))}。完整体为old_acc={pct(float(full['old_acc']))}、new_acc={pct(float(full['seen_new_acc']))}、H={pct(float(full['H_old_new']))}，但其同时使用60epoch特征适配、5-view TTA和Oracle角色/类别配额，必须标记`NON_DEPLOYMENT_ORACLE_DIAGNOSTIC`。
+严格可引用的轻量路径是`qKNNV42+单视图FFT96`：old_acc={pct(float(light['old_acc']))}、new_acc={pct(float(light['seen_new_acc']))}、H={pct(float(light['H_old_new']))}。完整Oracle体为old_acc={pct(float(full['old_acc']))}、new_acc={pct(float(full['seen_new_acc']))}、H={pct(float(full['H_old_new']))}，但它使用query真实角色与类别配额，只能标记`PROTOCOL_INVALID_FOR_DEPLOYMENT`并移入历史附表。
 
 直接地面ADV3B02在对齐原125任务的旧类query上old_acc={pct(direct_old)}；它没有新类头，所以new_acc和H不可定义。历史单qKNNV42无FFT为old_acc={pct(legacy_old)}、new_acc={pct(legacy_new)}、H={pct(legacy_h)}，但其特征缓存manifest为`{cache_load_note}`，只能保留为兼容加载诊断。
 
-## 二、四条主路径完整对比
+## 二、非Oracle主路径完整对比
 
 {md_table(['方法','old_acc','new_acc','H','运行数','加载/证据','结论'], core_md_rows)}
 
@@ -390,19 +420,25 @@ def main() -> None:
 1.直接地面模型输入单个LEO视图raw IQ，严格重建ADV3B02后直接读取六旧类`tx_logits`并argmax；输出只有旧类预测。
 2.单qKNN输入单视图`z_id160`与old/new K-shot support；输出8类分数与预测。历史数值完整，但checkpoint为兼容加载。
 3.qKNN+FFT96输入`z_id160+FFT96`，主特征与FFT辅助分别做support-only qKNN后融合分数；无60epoch训练adapter、无TTA、无Oracle。
-4.完整体输入严格ADV3B02的5-view特征与FFT96，先训练60epoch `id_norm_late_feature` adapter，再做TTA融合和qKNN，最后用角色Oracle与类别配额Hungarian约束输出。
 
 ### 达到的效果与不能下的结论
 
 - 严格单视图FFT96相对历史单qKNN提高old {100*(float(light['old_acc'])-legacy_old):.2f}pp、new {100*(float(light['seen_new_acc'])-legacy_new):.2f}pp、H {100*(float(light['H_old_new'])-legacy_h):.2f}pp；由于两者严格加载状态不同，这不是纯FFT因果增益。
-- 严格完整体相对严格单视图FFT96提高old {100*(float(full['old_acc'])-float(light['old_acc'])):.2f}pp、new {100*(float(full['seen_new_acc'])-float(light['seen_new_acc'])):.2f}pp、H {100*(float(full['H_old_new'])-float(light['H_old_new'])):.2f}pp；该差值混合adapter、TTA与Oracle。
-- 完整体的88.23%H是上限诊断，不是卫星自主部署性能；轻量FFT96才更接近当前星上约束，但H=68.56%仍未达到部署成功。
+- 历史完整Oracle体不进入本节差值或排名；轻量FFT96更接近当前星上约束，但H=68.56%仍未达到部署成功。
 
 ## 三、K-shot分解
 
-{md_table(['方法','K=1 H','K=2 H','K=5 H','K=10 H','K=20 H'], [[m] + [f"{next(r['H_pct'] for r in k_compare if r['method']==m and r['k_shot']==k):.2f}%" for k in ks] for m in ['单qKNNV42（历史无FFT）','qKNNV42+单视图FFT96','完整qKNN legacy Oracle']])}
+{md_table(['方法','K=1 H','K=2 H','K=5 H','K=10 H','K=20 H'], [[m] + [f"{next(r['H_pct'] for r in k_compare if r['method']==m and r['k_shot']==k):.2f}%" for k in ks] for m in ['单qKNNV42（历史无FFT）','qKNNV42+单视图FFT96']])}
 
-严格单视图FFT96的H由K=1的52.70%升至K=20的79.89%；完整Oracle由81.10%升至92.81%。低K时新类support不足是轻量路径的主要瓶颈。
+严格单视图FFT96的H由K=1的52.70%升至K=20的79.89%。低K时新类support不足是轻量路径的主要瓶颈。
+
+## 附录A：历史role/quota Oracle协议无效结果
+
+以下数值只用于审计信息泄漏上界，不得参与正式候选选择、3pp晋升、方法排名、论文主表或部署声明。
+
+{md_table(['方法','old_acc','new_acc','H','协议有效','可参与排名','结论'], [[oracle_invalid_row['method'], f"{oracle_invalid_row['old_pct']:.2f}%", f"{oracle_invalid_row['new_pct']:.2f}%", f"{oracle_invalid_row['H_pct']:.2f}%", 'false', 'false', oracle_invalid_row['verdict']]])}
+
+{md_table(['方法','K=1 H','K=2 H','K=5 H','K=10 H','K=20 H'], [[oracle_invalid_row['method']] + [f"{next(r['H_pct'] for r in oracle_k_compare if r['k_shot']==k):.2f}%" for k in ks]])}
 
 ## 四、此前Stage2-B域适应方法
 
@@ -432,9 +468,10 @@ def main() -> None:
 
 |证据层|包含结果|可回答的问题|不可回答的问题|
 |---|---|---|---|
-|A：严格checkpoint|直接地面、FFT96、完整Oracle|严格ADV3B02下的当前性能|完整Oracle不能代表部署；直接地面不能回答新类|
+|A：严格checkpoint|直接地面、FFT96|严格ADV3B02下的当前非Oracle性能|直接地面不能回答新类|
 |B：完整artifact但兼容加载|历史单qKNN、CVS-OPGAC|历史管线与K趋势|不能称为严格ADV3B02；不能和A层做纯因果消融|
 |C：各自训练管线|ProtoNet/MRIOR/DADDA、CSIL/MoPC/Orthogonal|同协议下完整管线比较|不能归因于单一adapter或ADV3B02特征|
+|X：协议无效历史附表|role/quota Oracle|信息泄漏上界审计|不得排名、晋升、进入论文主表或部署声明|
 
 此前125次差距大的主要问题不是单一“随机波动”，而是四项叠加：checkpoint重建是否严格、是否加入FFT96、是否训练60epoch特征adapter并使用5-view TTA、以及是否使用Oracle角色/类别配额约束。困难接收机`3-19`和低K进一步放大差距。
 
@@ -442,8 +479,8 @@ def main() -> None:
 
 1.用当前严格ADV3B02导出器重跑“无FFT单qKNN”125矩阵，建立真正的strict no-FFT基线。
 2.在完全相同的strict cache、split、query上仅切换FFT96开/关，得到FFT的配对因果增益。
-3.依次加入60epoch adapter、5-view TTA、场景筛选、角色Oracle、类别配额，逐项报告Δold/Δnew/ΔH和资源开销。
-4.主表只报告可部署逐样本决策；Oracle结果移入上限附表。
+3.固定逐样本决策后依次比较60epoch adapter、5-view TTA和场景机制，逐项报告Δold/Δnew/ΔH和资源开销。
+4.不再生成role/quota Oracle候选；既有Oracle artifact仅保留在协议无效附表。
 
 ## 八、限制与声明边界
 
@@ -456,8 +493,10 @@ def main() -> None:
 
 |文件|用途|
 |---|---|
-|`core_comparison.csv`|四条主路径及证据层|
-|`kshot_comparison.csv`|qKNN三条路径K-shot分解|
+|`core_comparison.csv`|非Oracle主路径及证据层|
+|`kshot_comparison.csv`|非Oracle qKNN路径K-shot分解|
+|`historical_invalid_oracle_summary.csv`|历史Oracle协议无效汇总；不可排名|
+|`historical_invalid_oracle_kshot.csv`|历史Oracle逐K协议无效附表；不可排名|
 |`stage2b_domain_adaptation.csv`|域适应方法逐K结果|
 |`stage2c_class_incremental.csv`|类增量方法逐K结果|
 |`method_input_output_effect.csv`|各方法输入、方法、输出、效果与边界|

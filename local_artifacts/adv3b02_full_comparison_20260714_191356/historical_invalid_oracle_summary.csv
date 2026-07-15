@@ -1,0 +1,2 @@
+method,old_pct,new_pct,H_pct,runs,input,adaptation,decision,strictness,evidence_tier,verdict,protocol_valid,eligible_for_ranking
+完整qKNN legacy Oracle（历史协议无效）,84.0666666666667,93.24000000000005,88.22702369170554,125,严格ADV3B02+60epoch adapter+5-view TTA+FFT96,id_norm_late_feature适配、TTA融合、support-only qKNN,query真实角色Oracle+类别配额Hungarian,严格加载0/0/0；但违反逐样本自主决策协议,HISTORICAL_PROTOCOL_INVALID,PROTOCOL_INVALID_FOR_DEPLOYMENT,False,False

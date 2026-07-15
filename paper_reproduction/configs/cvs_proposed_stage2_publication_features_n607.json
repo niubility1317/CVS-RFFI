@@ -27,5 +27,7 @@
   "target_query_used_for_training": false,
   "target_query_used_for_model_selection": false,
   "unknown_rejection_enabled": false,
+  "qknnv42_decision_mode": "per_sample_argmax",
+  "qknnv42_feature_adapter_mode": "support_diag_whiten_fisher",
   "publication_protocol": "five_seed_paired_nested_k_curve_per_target_receiver"
 }

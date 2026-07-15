@@ -47,6 +47,19 @@ def _parse_ints(raw: str) -> tuple[int, ...]:
     return values
 
 
+def _assert_cvs_config_uses_independent_query_decisions(path: Path | None) -> None:
+    if path is None:
+        return
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    if payload.get("launchable") is False:
+        raise ValueError(f"CVS config is not launchable: {payload.get('protocol_status', path)}")
+    if str(payload.get("qknnv42_decision_mode", "per_sample_argmax")) != "per_sample_argmax":
+        raise ValueError("publication matrix prohibits role Oracle and class-quota decisions")
+    adapter = str(payload.get("qknnv42_feature_adapter_mode", ""))
+    if adapter.startswith("support_role_"):
+        raise ValueError("publication matrix prohibits query-role partition adapters")
+
+
 def _parse_strings(raw: str) -> tuple[str, ...]:
     values = tuple(value.strip() for value in str(raw).split(",") if value.strip())
     if not values:
@@ -141,6 +154,8 @@ def _artifact_status(row: MatrixRow, *, scenarios: int = 3, query_per_tx: int = 
         return {"complete": False, "reason": "missing_artifacts", "missing": missing}
     try:
         manifest = json.loads((run_dir / "split_manifest.json").read_text(encoding="utf-8"))
+        metrics = json.loads((run_dir / "metrics.json").read_text(encoding="utf-8"))
+        resolved = json.loads((run_dir / "resolved_config.json").read_text(encoding="utf-8"))
         with (run_dir / "score_table.csv").open("r", encoding="utf-8", newline="") as handle:
             score_count = sum(1 for _ in csv.DictReader(handle))
         with (run_dir / "detailed_metrics.csv").open("r", encoding="utf-8", newline="") as handle:
@@ -162,6 +177,26 @@ def _artifact_status(row: MatrixRow, *, scenarios: int = 3, query_per_tx: int = 
         errors.append("support_query_overlap")
     if manifest.get("all_tests_satellite_augmented") is not True:
         errors.append("tests_not_all_satellite")
+    if row.method == "cvs_qknnv42":
+        if manifest.get("qknnv42_decision_mode") != "per_sample_argmax":
+            errors.append("non_independent_query_decision")
+        if manifest.get("non_deployment_oracle_diagnostic") is not False:
+            errors.append("oracle_diagnostic_status_missing_or_true")
+        if manifest.get("query_used_for_joint_decision") is not False:
+            errors.append("query_used_for_joint_decision_missing_or_true")
+        adapter = resolved.get("qknnv42_feature_adapter_mode")
+        if adapter is None:
+            errors.append("feature_adapter_mode_missing")
+        elif str(adapter).startswith("support_role_"):
+            errors.append("query_role_partition_adapter")
+        scenario_metrics = metrics.get("metrics_by_scenario")
+        if not isinstance(scenario_metrics, dict) or len(scenario_metrics) != int(scenarios):
+            errors.append("scenario_decision_metadata_missing_or_incomplete")
+        else:
+            required_false = ("role_oracle_used", "equal_class_quota_used")
+            for field in required_false:
+                if any(item.get(field) is not False for item in scenario_metrics.values()):
+                    errors.append(f"{field}_missing_or_true")
     if score_count != expected_scores:
         errors.append(f"score_count={score_count},expected={expected_scores}")
     if not required_groups <= group_types:
@@ -258,6 +293,7 @@ def main() -> int:
     parser.add_argument("--max-rows", type=int, default=0)
     parser.add_argument("--execute", action="store_true")
     args = parser.parse_args()
+    _assert_cvs_config_uses_independent_query_decisions(args.cvs_config)
     if args.shard_count <= 0 or not 0 <= args.shard_index < args.shard_count:
         raise ValueError("shard index must be in [0,shard_count)")
     methods = _parse_strings(args.methods) if args.methods else PHASE_METHODS[args.phase]

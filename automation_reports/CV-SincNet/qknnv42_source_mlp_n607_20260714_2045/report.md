@@ -1,5 +1,7 @@
 # qKNNV42源域教师蒸馏轻量MLP实验报告
 
+> 2026-07-15协议失效通知：target query的真实old/new/unknown角色和每类query配额在部署时不可获得。本文`82.19/85.23/83.25`等role/quota Oracle结果统一改列为`PROTOCOL_INVALID_FOR_DEPLOYMENT`历史信息泄漏上界，不得参与正式候选选择、3pp晋升、方法排名、论文主表或部署声明；可引用的逐样本结果仅限明确记录`per_sample_argmax`且无类别配额的行。
+
 ## 实验信息
 
 |字段|内容|
@@ -90,7 +92,7 @@ MLP为`LayerNorm+160→rank→GELU→160`残差映射：
 
 9个候选中，`rank32/alpha0.25`取得最高源域holdout cosine=`0.918858`、MSE=`0.001014`，随后用全部1440个源域样本重训。最终适配器含10,560个参数，推理为10,240MAC/sample，FP32持久状态42,244B；相比历史adapter60的289,685个可训练参数减少96.35%。全搜索加最终重训的前向计算约51.98G MAC；反向计算未用硬件计数器测量，不能与MAC精确相加。该训练直接消费预计算160维cache，不执行ADV3B02前向或反向。
 
-## 严格历史Oracle矩阵
+## 严格历史Oracle矩阵（协议无效附表）
 
 以下每行均为同一候选的5个接收机×5个seed×5个K-shot=125行联合均值；差值顺序为old/new/H相对严格历史84.07/93.24/88.23的百分点。所有候选split与历史逐行一致。
 
@@ -105,7 +107,7 @@ MLP为`LayerNorm+160→rank→GELU→160`残差映射：
 |`support_diag_whiten+FFT0.34`|78.14|83.37|80.21|-5.92/-9.87/-8.02|24.986M|77.01KB|FAIL|
 |`none+FFT0.34`|75.02|84.31|78.72|-9.04/-8.93/-9.51|24.986M|77.01KB|FAIL|
 
-## 角色分支Oracle矩阵
+## 角色分支Oracle矩阵（协议无效附表）
 
 |候选|old|new|H|差值pp|含MLP的head MAC/场景|状态|门槛|
 |---|---:|---:|---:|---|---:|---:|---|
@@ -122,7 +124,7 @@ MLP为`LayerNorm+160→rank→GELU→160`残差映射：
 |`support_role_diag_whiten_fisher+FFT0.80`|80.50|83.99|81.76|-3.56/-9.25/-6.47|15.220M|81.01KB|FAIL|
 |`support_role_diag_whiten+FFT0.80`|79.82|83.73|81.27|-4.25/-9.51/-6.96|15.220M|81.01KB|FAIL|
 
-最佳角色分支候选为`support_role_center+FFT0.65`，old=82.19%、new=85.23%、H=83.25%。old差距已压到1.87pp，但new仍低8.01pp、H低4.97pp，未通过三指标均不低于历史3pp的门槛。相对此前无MLP的最佳角色分支81.84/85.05/83.00，本次只提高约0.35/0.17/0.25pp，源域教师holdout的0.9189 cosine没有转化为足够的target seen-new恢复。
+Oracle协议无效附表中内部最高H行为`support_role_center+FFT0.65`，old=82.19%、new=85.23%、H=83.25%。该行`protocol_valid=false`且`eligible_for_ranking=false`，不得称为正式候选。即使只看Oracle内部性能gate，old差距虽压到1.87pp，new仍低8.01pp、H低4.97pp；相对此前无MLP的角色分支内部最高H 81.84/85.05/83.00，本次只提高约0.35/0.17/0.25pp，源域教师holdout的0.9189 cosine没有转化为足够的target seen-new恢复。
 
 ## 单qKNN确认
 
@@ -130,6 +132,6 @@ MLP为`LayerNorm+160→rank→GELU→160`残差映射：
 
 ## 结论与后续边界
 
-该MLP在计算上属于轻量后置适配：单样本10,240MAC仅为identity-only ADV3B02单视图8.912M MAC的0.115%，状态约41.25KB；N607实测显存约355MiB。它在性能上未替代历史adapter60。最好的Oracle诊断仍依赖old/new角色与类别配额，不能作为星上可部署算法；最好的单qKNN虽然可部署，但H仅72.01%。因此本路线最终标记为`NEGATIVE_DIAGNOSTIC_NOT_PROMOTABLE`，不进入部署主线。
+该MLP在计算上属于轻量后置适配：单样本10,240MAC仅为identity-only ADV3B02单视图8.912M MAC的0.115%，状态约41.25KB；N607实测显存约355MiB。它在性能上未替代历史adapter60。Oracle附表内部最高H仍依赖old/new角色与类别配额，属于`PROTOCOL_INVALID_FOR_DEPLOYMENT`且不可排名；逐样本单qKNN虽然符合本项决策权限，但H仅72.01%。因此本路线最终标记为`NEGATIVE_DIAGNOSTIC_NOT_PROMOTABLE`，不进入部署主线。
 
 后续若继续追求历史≤3pp，不能再只拟合源域教师特征。需要引入不使用query标签的target support条件化映射、类原型对齐或更强的源域跨接收机训练目标，并在独立seed上预注册选择规则；任何使用角色真值、类别配额或完整query batch的方案仍只能列为Oracle诊断。

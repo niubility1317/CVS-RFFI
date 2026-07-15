@@ -2,4 +2,3 @@ method,old_pct,new_pct,H_pct,runs,input,adaptation,decision,strictness,evidence_
 直接地面ADV3B02分类头,73.86666666666667,,,125,单LEO视图raw IQ→严格ADV3B02 tx_logits,无support、无域适应、无新类头,六旧类分类头argmax,严格加载；old-query与125矩阵对齐,A-严格旧类基线,只回答旧类；new/H不可定义
 单qKNNV42（历史无FFT）,65.59333333333333,47.94,53.25617192566791,125,单LEO视图z_id160,support-only Fisher对角白化、int8类内top-1、prototype与标签传播,逐样本argmax,"兼容加载诊断；missing=7,unexpected=31,mismatch=3",B-完整但非严格,保留为历史基线，不能写作严格ADV3B02结果
 qKNNV42+单视图FFT96,75.12444444444438,64.64000000000001,68.56467579198244,125,单LEO视图z_id160+FFT96,无训练adapter；qKNN support-only拟合；主/辅分数融合,逐样本argmax,严格加载0/0/0,A-严格125矩阵,当前最接近轻量卫星侧路径的严格诊断
-完整qKNN legacy Oracle,84.0666666666667,93.24000000000005,88.22702369170554,125,严格ADV3B02+60epoch adapter+5-view TTA+FFT96,id_norm_late_feature适配、TTA融合、support-only qKNN,角色Oracle+类别配额Hungarian,严格加载0/0/0；但含Oracle约束,A-严格Oracle上限,NON_DEPLOYMENT_ORACLE_DIAGNOSTIC

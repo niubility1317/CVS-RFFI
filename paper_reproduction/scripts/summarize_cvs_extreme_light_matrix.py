@@ -125,6 +125,12 @@ def main() -> int:
             "query_used_for_joint_decision": split.get("query_used_for_joint_decision") is False,
             "non_deployment_oracle_diagnostic": split.get("non_deployment_oracle_diagnostic") is False,
             "per_sample_argmax": split.get("qknnv42_decision_mode") == "per_sample_argmax",
+            "role_oracle_used": not any(
+                bool(item.get("role_oracle_used", False)) for item in scenario_payload.values()
+            ),
+            "equal_class_quota_used": not any(
+                bool(item.get("equal_class_quota_used", False)) for item in scenario_payload.values()
+            ),
         }
         for key, passed in checks.items():
             if not passed:

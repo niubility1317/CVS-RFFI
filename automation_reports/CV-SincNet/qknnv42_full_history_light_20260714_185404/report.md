@@ -1,5 +1,7 @@
 # 完整历史qKNN星上轻量化报告
 
+> 2026-07-15协议失效通知：target query推理前不可能知道真实old/new/unknown角色，也不知道整批每类query配额。本文所有role/quota Oracle结果（包括`83.59/92.76/87.74`）统一改列为`PROTOCOL_INVALID_FOR_DEPLOYMENT`历史信息泄漏上界，不得参与正式候选选择、3pp晋升、方法排名、论文主表或部署声明；不再生成新的role/quota Oracle候选。
+
 ## 1.实验定义
 
 |字段|内容|
@@ -8,7 +10,7 @@
 |目标|优化完整历史qKNN链路，而不是只优化非参数head；最终候选相对严格完整历史基线的`old_acc`、`seen_new_acc`和`H_old_new`矩阵均值均不得下降超过3pp|
 |严格历史链路|`ADV3B02+60epoch id_norm_late_feature+5-view TTA+FFT96+三LEO场景+old/new角色Oracle+类别配额Hungarian+dense LP`|
 |历史基线|严格加载125行：`old_acc=84.07%`、`seen_new_acc=93.24%`、`H_old_new=88.23%`|
-|声明边界|角色与类别配额使用Oracle，因此历史基线和保留该约束的压缩候选均为`NON_DEPLOYMENT_ORACLE_DIAGNOSTIC`，不能写成卫星自主部署性能|
+|声明边界|角色与类别配额使用Oracle，因此历史基线和保留该约束的压缩结果均为`PROTOCOL_INVALID_FOR_DEPLOYMENT`，不可作为候选、排名或卫星自主部署性能|
 |特征适配原则|ADV3B02完全冻结且梯度更新为0；适配发生在qKNN enrollment阶段，由K-shot support拟合`support_diag_whiten_fisher`，不读取query，不更新ADV3B02|
 
 严格历史基线证据来自`runs/cvs_qknnv42_full_legacy_oracle_strict125_20260714_183556`，完整125行及审计见`automation_reports/CV-SincNet/qknnv42_strict_dual125_20260714_183556/report.md`。
@@ -101,7 +103,7 @@
 
 第二轮复审另发现1项Critical和2项Important，均已闭合：`full_legacy_oracle`现在强制提供历史目录且固定三指标不可由CLI覆盖；feature cache额外强制`checkpoint_load_strict=true`且load audit三类异常计数均为0；identity独立导出目录也在任何计算前拒绝覆盖。最终独立复审结论为通过，未发现剩余Critical或Important；针对性测试为`15 passed`。
 
-head压缩与双head矩阵扩展再次独立复审：首轮指出历史split配对、Oracle transductive标记和Hungarian资源边界三项问题；修复后最终复审通过，当前diff无剩余Critical或Important，复审针对性测试`19 passed`。
+head压缩与双head矩阵扩展曾针对历史split配对、Oracle transductive标记和Hungarian资源边界完成复审，当时针对性测试为`19 passed`。该工程复审结论不覆盖2026-07-15新增的逐样本自主决策硬约束；在新协议下，整套role/quota Oracle矩阵统一失效。
 
 待同步文件SHA256：
 
@@ -119,23 +121,23 @@ head压缩与双head矩阵扩展再次独立复审：首轮指出历史split配�
 
 N607仍有活动训练时，本轮只读拉取既有严格历史5-view+adapter60+FFT96特征cache到本地，不改变服务器状态。5个接收机cache共约225MB，SHA256已逐文件核验，SSH进程与TCP22连接随后均归零。基于这些严格历史特征执行`7模式×5 receiver×5 seed×5 K=875`行本地Oracle head矩阵，全部完成；代码同时校验模式间split和候选对严格历史125行split逐行一致。结果artifact位于`local_artifacts/qknnv42_full_history_head_compression_20260714_1941/`。
 
-所有模式均保留old/new角色Oracle与类别配额Hungarian，因此仍为`NON_DEPLOYMENT_ORACLE_DIAGNOSTIC`。变化仅限dense LP、support表示和流式prototype residual：
+所有模式均保留old/new角色Oracle与类别配额Hungarian，因此统一标记为`PROTOCOL_INVALID_FOR_DEPLOYMENT`。变化仅限dense LP、support表示和流式prototype residual；以下数据只审计同一无效决策链内部的压缩效果：
 
 |模式|old/new/H|相对严格历史下降pp|评分MAC/query|评分MAC下降|持久状态|状态下降|dense graph峰值|判定|
 |---|---|---|---:|---:|---:|---:|---:|---|
 |dense all-support|84.07/93.24/88.23|0/0/0|22.725M|0%|36.62KB|0%|0.829MB|历史基线|
-|stream all-support|84.05/92.81/88.02|0.02/0.43/0.21|3.146M|86.16%|36.62KB|0%|0|通过|
-|disabled all-support|83.89/92.89/87.96|0.18/0.35/0.27|2.818M|87.60%|36.62KB|0%|0|通过|
-|stream diverse-4|83.71/92.85/87.84|0.35/0.39/0.38|1.638M|92.79%|26.90KB|26.53%|0|通过|
-|stream diverse-2|83.25/92.76/87.55|0.81/0.48/0.68|1.245M|94.52%|24.37KB|33.45%|0|通过|
-|stream medoid|82.58/92.11/86.87|1.49/1.13/1.36|0.983M|95.67%|22.68KB|38.07%|0|通过|
-|stream prototype-only|83.59/92.76/87.74|0.47/0.48/0.49|0.655M|97.12%|20.57KB|43.84%|0|通过，推荐|
+|stream all-support|84.05/92.81/88.02|0.02/0.43/0.21|3.146M|86.16%|36.62KB|0%|0|Oracle内部压缩gate通过；协议无效|
+|disabled all-support|83.89/92.89/87.96|0.18/0.35/0.27|2.818M|87.60%|36.62KB|0%|0|Oracle内部压缩gate通过；协议无效|
+|stream diverse-4|83.71/92.85/87.84|0.35/0.39/0.38|1.638M|92.79%|26.90KB|26.53%|0|Oracle内部压缩gate通过；协议无效|
+|stream diverse-2|83.25/92.76/87.55|0.81/0.48/0.68|1.245M|94.52%|24.37KB|33.45%|0|Oracle内部压缩gate通过；协议无效|
+|stream medoid|82.58/92.11/86.87|1.49/1.13/1.36|0.983M|95.67%|22.68KB|38.07%|0|Oracle内部压缩gate通过；协议无效|
+|stream prototype-only|83.59/92.76/87.74|0.47/0.48/0.49|0.655M|97.12%|20.57KB|43.84%|0|Oracle内部压缩gate通过；协议无效；仅历史机制最省资源|
 
-推荐`stream prototype-only`：它不保存support code、不构建query-query图，只保存每类prototype与qKNN support拟合的中心/scale；相对严格历史三个矩阵均值下降均小于0.5pp，明显低于3pp门槛。它在精度上也优于medoid，同时评分MAC和持久状态更低。若保持5-view identity-only前端，ADV3B02前端与qKNN评分合计由约207.794M降至`44.561M+0.655M=45.216M MAC/sample`，该MAC路径下降约78.24%，FFT96小项未计入；FFT仍随view线性变化，但远小于前端卷积。
+在历史Oracle内部压缩诊断中，`stream prototype-only`资源最省：它不保存support code、不构建query-query图，只保存每类prototype与qKNN support拟合的中心/scale；相对严格历史三个矩阵均值下降均小于0.5pp。该结果仅说明保留同一信息泄漏决策时的head压缩特性，不构成候选推荐、3pp晋升或正式排名。若保持5-view identity-only前端，ADV3B02前端与qKNN评分合计由约207.794M降至`44.561M+0.655M=45.216M MAC/sample`，该MAC路径下降约78.24%，FFT96小项未计入；FFT仍随view线性变化，但远小于前端卷积。
 
 必须保留一个重要边界：角色/类别配额Hungarian没有被压缩。每个场景仍需完整old/new query block，`query_used_for_transductive_inference=true`、`decision_batch_state_required=true`；同row下所有模式的assignment下界均为`1.792M cubic work units`，score-slot工作区下界为`115,200B`。这类work unit不能直接等同于MAC，因此97.12%和78.24%均明确只表示神经前端与qKNN评分MAC，不把Hungarian复杂度藏入MAC。prototype-only移除了dense graph，但完整历史Oracle仍不是逐样本星上部署算法。
 
-已将500行冻结前端矩阵扩展为双head复核：同一组导出cache分别运行完整dense Oracle和推荐prototype-only Oracle，总计1000个qKNN row。这样最终结果可同时分离“前端压缩损失”和“联合轻量化损失”。
+历史上曾将500行冻结前端矩阵扩展为双head复核：同一组导出cache分别运行完整dense Oracle和prototype-only Oracle，总计1000个qKNN row。该复核只能在同一协议无效Oracle链内部比较“前端压缩损失”和“联合轻量化损失”，不得据此推荐部署候选。
 
 ## 9.完成判据
 
@@ -144,7 +146,7 @@ N607仍有活动训练时，本轮只读拉取既有严格历史5-view+adapter60
 - 所有candidate split hash与严格历史reference逐行一致；
 - 最终选择view数最少且三个矩阵均值相对历史完整体均下降不超过3pp的候选；
 - 若冻结ADV3B02的5-view候选已经下降超过3pp，则先优化qKNN feature adapter，不得用重新训练ADV3B02绕过要求；
-- 角色/配额Oracle未移除前，结论始终保持`NON_DEPLOYMENT_ORACLE_DIAGNOSTIC`。
+- 任何保留角色/配额Oracle的既有结果均标记`PROTOCOL_INVALID_FOR_DEPLOYMENT`；不再生成此类候选。
 
 ## 10.冻结ADV3B02后的qKNN侧特征适配搜索
 
@@ -153,11 +155,11 @@ N607仍有活动训练时，本轮只读拉取既有严格历史5-view+adapter60
 |搜索族|候选数/运行数|最佳候选|old/new/H|相对严格历史下降pp|结论|
 |---|---:|---|---|---|---|
 |基础中心/对角白化/Fisher×FFT权重|16/2000|`support_center+FFT w=0.70`|81.80%/83.45%/82.23%|-2.26/-9.79/-5.99|失败；new和H未过3pp|
-|old/new角色分支适配×FFT权重|15/1875|`support_role_center+FFT w=0.70`|81.84%/85.05%/83.00%|-2.22/-8.19/-5.23|当前最佳冻结qKNN替代，但仍失败|
+|old/new角色分支适配×FFT权重|15/1875|`support_role_center+FFT w=0.70`|81.84%/85.05%/83.00%|-2.22/-8.19/-5.23|Oracle内部最高H；协议无效且性能gate失败|
 |类均值子空间×FFT权重|12/1500|`support_mean_subspace1+FFT w=0.65`|81.74%/83.41%/82.19%|-2.32/-9.83/-6.04|失败|
 |源域教师线性ridge|4 policy/500|最佳H约81.94%|未达到门槛|源域holdout cosine约0.90仍不能恢复target几何|
 
-结论：仅靠support中心化、对角Fisher、role拆分或低秩类均值子空间，能够把old差距压进3pp，但无法恢复adapter60对seen-new几何的贡献。当前最佳`81.84/85.05/83.00`不能晋升为“完整历史≤3pp轻量替代”。问题不在qKNN评分MAC，而在移除60epoch identity内部适配后，冻结`z_id`对两类seen-new的类间结构不足。
+结论：仅靠support中心化、对角Fisher、role拆分或低秩类均值子空间，能够把old差距压进3pp，但无法恢复adapter60对seen-new几何的贡献。`81.84/85.05/83.00`只是Oracle内部最高H，因协议无效且性能gate失败，不能晋升为“完整历史≤3pp轻量替代”。问题不在qKNN评分MAC，而在移除60epoch identity内部适配后，冻结`z_id`对两类seen-new的类间结构不足。
 
 ## 11.单qKNN性能标签与独立确认
 
@@ -185,7 +187,7 @@ N607仍有活动训练时，本轮只读拉取既有严格历史5-view+adapter60
 
 N607物理GPU6完成200epoch搜索，选中`rank32/alpha0.25`：源域physical-key holdout cosine=0.918858、MSE=0.001014。适配器为10,560参数、10,240MAC/sample和42,244B状态；ADV3B02梯度更新为0，target row不参与拟合。v2实测显存约355MiB，完整日志无Traceback、NaN或OOM；日志未写逐epoch loss，因此该实验没有可重建的epoch收敛曲线。
 
-严格历史Oracle下，最佳为`support_role_center+FFT0.65`：old=82.19%、new=85.23%、H=83.25%，相对84.07/93.24/88.23为-1.87/-8.01/-4.97pp。它相对无MLP最佳角色分支只提高约0.35/0.17/0.25pp，仍因seen-new和H未通过3pp门槛而失败。该路径含MLP后的head计算为15.220M MAC/场景、状态81.01KB，并继续依赖角色/类别配额Oracle，属于`NON_DEPLOYMENT_ORACLE_DIAGNOSTIC`。
+严格历史Oracle内部最高H行为`support_role_center+FFT0.65`：old=82.19%、new=85.23%、H=83.25%，相对84.07/93.24/88.23为-1.87/-8.01/-4.97pp。它相对无MLP角色分支内部最高H只提高约0.35/0.17/0.25pp，仍因seen-new和H未通过3pp门槛而失败；更重要的是，该路径依赖query真实角色与类别配额，属于`PROTOCOL_INVALID_FOR_DEPLOYMENT`，不可排名或晋升。其head计算为15.220M MAC/场景、状态81.01KB，仅作历史资源审计。
 
 独立seed713106-713110单qKNN确认得到71.06/74.00/72.01，head+MLP为5.079M MAC/场景、状态77.01KB、decision workspace=0。相同确认网格的无MLP结果为70.98/74.69/72.33，MLP使H下降0.32pp。最终判定：`NEGATIVE_DIAGNOSTIC_NOT_PROMOTABLE`。计算瓶颈已不在这个后置MLP，而在冻结`z_id`缺少能泛化到target seen-new的几何结构；仅提高源域教师特征相似度不足以恢复历史adapter60。
 

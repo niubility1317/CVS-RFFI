@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+echo "BLOCKED: this launcher generates role/quota Oracle candidates, prohibited by the 2026-07-15 target-query protocol. Historical artifacts remain audit-only." >&2
+exit 2
+
 ROOT="${ROOT:-/home/szu2070436088/2510044040/CV-SincNet}"
 PYTHON="${PYTHON:-/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python}"
 GPU="${GPU:-3}"

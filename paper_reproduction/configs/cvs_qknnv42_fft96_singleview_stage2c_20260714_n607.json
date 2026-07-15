@@ -31,5 +31,6 @@
   "qknnv42_aux_score_weight": 0.34,
   "qknnv42_expected_tta_view_count": 1,
   "qknnv42_decision_mode": "per_sample_argmax",
+  "qknnv42_feature_adapter_mode": "support_diag_whiten_fisher",
   "publication_protocol": "five_seed_paired_nested_k_curve_per_target_receiver"
 }

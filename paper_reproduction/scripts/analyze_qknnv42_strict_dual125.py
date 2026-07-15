@@ -116,23 +116,6 @@ def paired(rows, reference, include_arm=True):
     return output
 
 
-def pair_arms(rows):
-    index = {(row["arm"], row["receiver"], row["seed"], row["k_shot"]): row for row in rows}
-    output = []
-    for key, full in sorted(index.items()):
-        arm, receiver, seed, k_shot = key
-        if arm != "full_legacy_oracle_strict":
-            continue
-        light = index[("singleview_fft96_strict", receiver, seed, k_shot)]
-        out = {"receiver": receiver, "seed": seed, "k_shot": k_shot}
-        for metric in METRICS:
-            out[f"{metric}_full"] = full[metric]
-            out[f"{metric}_light"] = light[metric]
-            out[f"delta_{metric}"] = full[metric] - light[metric]
-        output.append(out)
-    return output
-
-
 def delta_summary(rows, group_field):
     groups = defaultdict(list)
     for row in rows:
@@ -226,21 +209,38 @@ def main():
 
     light, light_scenarios = load_arm(args.light_root, "singleview_fft96_strict")
     full, full_scenarios = load_arm(args.full_root, "full_legacy_oracle_strict")
-    rows = light + full
-    scenarios = light_scenarios + full_scenarios
-    comparison = paired(rows, load_diagnostic(args.compatibility_csv))
-    cross_arm = pair_arms(rows)
-    by_arm = summarize(rows, ["arm"])
-    by_k = summarize(rows, ["arm", "k_shot"])
-    by_receiver = summarize(rows, ["arm", "receiver"])
-    by_scenario = summarize(scenarios, ["arm", "scenario"])
+    for row in light:
+        row.update(protocol_valid=True, eligible_for_ranking=True)
+    for row in full:
+        row.update(
+            protocol_valid=False,
+            eligible_for_ranking=False,
+            protocol_status="PROTOCOL_INVALID_FOR_DEPLOYMENT",
+        )
+    for row in full_scenarios:
+        row.update(
+            protocol_valid=False,
+            eligible_for_ranking=False,
+            protocol_status="PROTOCOL_INVALID_FOR_DEPLOYMENT",
+        )
+    comparison = paired(light, load_diagnostic(args.compatibility_csv))
+    by_arm = summarize(light, ["arm"])
+    by_k = summarize(light, ["arm", "k_shot"])
+    by_receiver = summarize(light, ["arm", "receiver"])
+    by_scenario = summarize(light_scenarios, ["arm", "scenario"])
     compatibility_delta = delta_summary(comparison, "arm")
-    cross_summary = [{
-        "comparison": "full_minus_light_strict",
-        "count": len(cross_arm),
-        **{f"delta_{metric}": mean(row[f"delta_{metric}"] for row in cross_arm) for metric in METRICS},
-    }]
-    ranked = sorted(rows, key=lambda row: (min(row["old_acc"], row["seen_new_acc"]), row["H_old_new"]), reverse=True)
+    invalid_oracle_summary = summarize(full, ["arm"])
+    for row in invalid_oracle_summary:
+        row.update(
+            protocol_valid=False,
+            eligible_for_ranking=False,
+            protocol_status="PROTOCOL_INVALID_FOR_DEPLOYMENT",
+        )
+    ranked = sorted(
+        light,
+        key=lambda row: (min(row["old_acc"], row["seen_new_acc"]), row["H_old_new"]),
+        reverse=True,
+    )
     thresholds = [{
         "arm": arm,
         "count": len(group),
@@ -248,37 +248,44 @@ def main():
         "new_ge_80": sum(row["seen_new_acc"] >= 0.8 for row in group),
         "H_ge_80": sum(row["H_old_new"] >= 0.8 for row in group),
         "old_and_new_ge_80": sum(row["old_acc"] >= 0.8 and row["seen_new_acc"] >= 0.8 for row in group),
-    } for arm, group in (("singleview_fft96_strict", light), ("full_legacy_oracle_strict", full))]
-    artifact_audit = [
-        audit_run_root(args.light_root, "singleview_fft96_strict"),
-        audit_run_root(args.full_root, "full_legacy_oracle_strict"),
-    ]
+    } for arm, group in (("singleview_fft96_strict", light),)]
+    light_audit = audit_run_root(args.light_root, "singleview_fft96_strict")
+    full_audit = audit_run_root(args.full_root, "full_legacy_oracle_strict")
+    full_audit.update(
+        protocol_valid=False,
+        eligible_for_ranking=False,
+        protocol_status="PROTOCOL_INVALID_FOR_DEPLOYMENT",
+    )
     log_audit = audit_logs(args.log_root)
 
     outputs = {
-        "per_run_results.csv": rows,
-        "per_scenario_results.csv": scenarios,
+        "per_run_results.csv": light,
+        "per_scenario_results.csv": light_scenarios,
         "summary_by_arm.csv": by_arm,
         "summary_by_k.csv": by_k,
         "summary_by_receiver.csv": by_receiver,
         "summary_by_scenario.csv": by_scenario,
         "paired_strict_vs_compatibility.csv": comparison,
         "paired_strict_vs_compatibility_summary.csv": compatibility_delta,
-        "paired_full_minus_light_strict.csv": cross_arm,
-        "paired_full_minus_light_strict_summary.csv": cross_summary,
         "ranked_joint_rows.csv": ranked,
+        "historical_invalid_oracle_rows.csv": full,
+        "historical_invalid_oracle_scenarios.csv": full_scenarios,
+        "historical_invalid_oracle_summary.csv": invalid_oracle_summary,
         "threshold_counts.csv": thresholds,
     }
     for filename, payload in outputs.items():
         write_csv(args.output_dir / filename, payload)
     summary = {
-        "strict_row_count": len(rows),
-        "strict_scenario_row_count": len(scenarios),
+        "strict_row_count": len(light),
+        "strict_scenario_row_count": len(light_scenarios),
+        "historical_invalid_oracle_row_count": len(full),
+        "historical_invalid_oracle_scenario_row_count": len(full_scenarios),
         "summary_by_arm": by_arm,
         "strict_minus_compatibility": compatibility_delta,
-        "full_minus_light_strict": cross_summary,
+        "historical_invalid_oracle_summary": invalid_oracle_summary,
         "threshold_counts": thresholds,
-        "artifact_audit": artifact_audit,
+        "artifact_audit": [light_audit],
+        "historical_invalid_oracle_artifact_audit": [full_audit],
         "log_audit": log_audit,
         "top_joint_rows": ranked[:10],
         "bottom_joint_rows": list(reversed(ranked[-10:])),
