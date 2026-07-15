@@ -621,3 +621,9 @@
 
 - 远端launcher SHA256=`1a10ece3...`，与本地、快照及Git镜像一致；`bash -n`通过。dry-run确认12个job、8个capacity gate、12条split seed1337、12条model seed42和12条mean命令。
 - 计划命令：`bash code/scripts/launch_riei_table3_shortstem_modelseed42_20260715.sh --launch --gpu-ids 0,1,2,3,4,5,6,7 --max-train-per-gpu 2`；工作目录与Python环境沿用已验证的N607 paper reproduction路径。
+
+### 09:55正式启动与4分钟健康检查
+
+- 正式命令执行成功；launcher再次确认GPU0–7均`current=0`、`planned_peak=1`、`total_peak=1≤2`。8个queue PID为`1115823,1115825,1115828,1115833,1115837,1115842,1115853,1115859`；首批row1–8 trainer PID为`1116006,1116023,1116045,1116040,1116057,1116061,1116071,1116076`。
+- 约4分钟健康检查时8个queue/trainer均存活，row1–8分别完整写入epoch`10,8,9,9,8,9,9,9/200`。32份当前日志共681行/101384字节，稳定partition、split seed1337、model seed42和short stem marker各8个，硬错误0。
+- GPU0–7各仅1个本任务compute，SM约28%–38%，容量合规。当前判定为`RUNNING_STARTUP_HEALTHY_THROUGH_EPOCH_8_10`；正式结论必须等待全部12行自然完成并按paper last10计算。

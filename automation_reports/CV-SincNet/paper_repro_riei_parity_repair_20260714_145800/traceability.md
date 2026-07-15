@@ -15,11 +15,11 @@
 | RIEI-P11 | Table III最终证据必须覆盖全部12个receiver组合；架构筛选不能替代正式矩阵 | short stem仅在4个诊断行验证 | 用`short_stem1d`和固定paper last10协议运行完整12行 | verified-rejected | 12×200epoch、硬错误0；均值72.76%，MAE3.14pp，命中7/12，未达到3pp与10/12门槛 |
 | RIEI-P12 | 论文未公开SGD是否包含momentum | 当前固定momentum0 | 在row3/4/11/12上受控测试常用momentum0.9；其余协议固定 | verified-rejected | 4×200epoch、硬错误0；momentum0.9 MAE6.75pp高于对照5.83pp且仅2/4行改善，拒绝完整矩阵 |
 | RIEI-P13 | 论文未公开模型初始化seed；现有`--seed`同时控制模型与partition | 直接换seed会改变模型与样本，无法归因 | 新增独立`wisig_split_seed`；固定partition1337比较model seed0/42 | verified | 8×200epoch、硬错误0；seed42 MAE4.59pp且3/4行改善，通过门槛；seed0拒绝 |
-| RIEI-P14 | 诊断seed不能替代Table III完整证据 | seed42仅在4行通过 | 固定model seed42与split seed1337运行完整12行 | verified | launcher bash-n与12-job dry-run通过；待Git提交、容量门与N607运行 |
+| RIEI-P14 | 诊断seed不能替代Table III完整证据 | seed42仅在4行通过 | 固定model seed42与split seed1337运行完整12行 | running | 本地/远端验证通过；12行run首批8个job健康至epoch8–10，硬错误0 |
 
 ## 声明边界
 
 - 论文未明确给出优化器名称和总epoch数；Eq.(10)–(11)描述的是梯度更新顺序，不能据此断言作者使用了PyTorch SGD。
 - 发现阶段只在Table III第1行比较训练动力学；最终论文结论必须用胜出配置重跑完整12行，不能用单row或目标域峰值代替。
 - 目标域逐epoch曲线仅用于诊断；下一轮正式分数采用论文明确的最终10个epoch，禁止target-oracle选epoch。
-- 当前反向审计：`verified=11`、`verified-rejected=3`、`deferred=0`、`blocked=0`。seed42完整launcher已本地验证但尚未运行12行，RIEI正式结论仍为`NOT_REPRODUCED`。
+- 当前反向审计：`verified=10`、`verified-rejected=3`、`running=1`、`deferred=0`、`blocked=0`。seed42完整12行正在运行，RIEI正式结论仍为`NOT_REPRODUCED`。
