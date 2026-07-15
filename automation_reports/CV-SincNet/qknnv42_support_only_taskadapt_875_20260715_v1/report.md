@@ -5,6 +5,7 @@
 ## 当前摘要
 
 - 状态：本地实现与dry-run验证完成，等待N607预检、同步与启动。
+- Git提交：`08bce60 run: add task-specific qKNN support-only 875 matrix`。
 - 矩阵：125个单qKNN+FFT96基线+6×125个逐任务support-only适应=875。
 - 类别：6个旧类+2个已注册新类。
 - 训练数据：只允许当前(receiver,seed,K)任务的目标receiver LEO support；禁止clean、source、proxy和query。
