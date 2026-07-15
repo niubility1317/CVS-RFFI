@@ -190,6 +190,7 @@ def _validate_candidate_lock(
     *,
     candidate_id: str,
     artifacts: Mapping[str, Mapping[str, Any]],
+    verify_workspace_code_artifacts: bool,
 ) -> None:
     if sha256_file(path) != expected_sha256:
         raise CandidateCapsuleError("candidate lock file digest mismatch")
@@ -252,8 +253,19 @@ def _validate_candidate_lock(
             raise CandidateCapsuleError(f"candidate lock immutable source cache drift: {field}")
     repo_root = Path(__file__).resolve().parents[2]
     for relative, expected in dict(candidate.get("code_artifacts_sha256", {})).items():
+        relative_path = Path(str(relative))
+        if (
+            relative_path.is_absolute()
+            or ".." in relative_path.parts
+            or not _is_sha256(expected)
+        ):
+            raise CandidateCapsuleError(
+                f"candidate lock code artifact declaration drift: {relative}"
+            )
+        if not verify_workspace_code_artifacts:
+            continue
         code_path = repo_root / str(relative)
-        if not _is_sha256(expected) or not code_path.is_file() or sha256_file(code_path) != expected:
+        if not code_path.is_file() or sha256_file(code_path) != expected:
             raise CandidateCapsuleError(f"candidate lock code artifact drift: {relative}")
     permissions = dict(candidate.get("permissions", {}))
     forbidden_true = (
@@ -278,6 +290,7 @@ def validate_candidate_capsule(
     candidate_lock_path: Path | None = None,
     expected_artifact_paths: Mapping[str, Path] | None = None,
     allow_unsealed_build: bool = False,
+    verify_candidate_lock_workspace_code: bool = False,
 ) -> dict[str, Any]:
     """Validate exact schema, provenance, parity, and deployment resource claims."""
 
@@ -336,6 +349,7 @@ def validate_candidate_capsule(
             capsule["candidate_lock_sha256"],
             candidate_id=capsule["candidate_id"],
             artifacts=artifacts,
+            verify_workspace_code_artifacts=verify_candidate_lock_workspace_code,
         )
 
     parity = capsule.get("merge_parity")
@@ -448,6 +462,7 @@ def load_and_validate_candidate_capsule(
     expected_capsule_sha256: str,
     candidate_lock_path: Path | None = None,
     expected_artifact_paths: Mapping[str, Path] | None = None,
+    verify_candidate_lock_workspace_code: bool = False,
 ) -> dict[str, Any]:
     path = Path(capsule_path)
     payload = _load_json_file(path, context="candidate capsule")
@@ -458,4 +473,5 @@ def load_and_validate_candidate_capsule(
         candidate_lock_path=candidate_lock_path,
         expected_artifact_paths=expected_artifact_paths,
         allow_unsealed_build=False,
+        verify_candidate_lock_workspace_code=verify_candidate_lock_workspace_code,
     )

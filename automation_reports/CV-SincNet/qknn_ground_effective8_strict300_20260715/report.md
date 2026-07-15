@@ -102,6 +102,8 @@ $PY code/scripts/build_cvs_stage2_runtime_closure.py --source-code-root code --o
 
 第四次生成的双TorchScript和实际数值parity通过，胶囊审计因仍把历史缺失阈值读成`null`而拒绝无操作槽位。v4保留。审计器现要求历史3个有效阈值逐值一致，并仅允许缺失3项精确编码为`-1e9/-1e9/0.0`；兼容审计测试`8 passed`。下一次使用全新`runtime_artifacts_strict_v5`。
 
+第五次生成推进到胶囊candidate-lock复验后停止：历史lock包含训练时期整个工作区的代码SHA，而当前N607若干训练脚本已更新。v5保留。部署验证现默认绑定candidate-lock文件自身SHA、所有不可变训练/选择artifact SHA、checkpoint/adapter/source stats/head/TTA/双runtime SHA和数值parity；当前9文件预测runtime由独立闭包SHA绑定。对历史工作区代码的逐文件复验保留为显式可选审计，不再要求可变工作区回退到旧版本；路径穿越或非法SHA声明仍拒绝。相关测试`11 passed`。下一次使用全新`runtime_artifacts_strict_v6`。
+
 ## 完成后结果表
 
 实验完成后在本节追加逐单元同一行结果，至少包含candidate ID、机制、receiver/TX split、K-shot、seed、old/seen-new/unknown指标、coverage/rollback/defer、loss/adapter摘要和最终判定。不得用来自不同单元的独立极值替代联合行。

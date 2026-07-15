@@ -201,6 +201,33 @@ def test_candidate_capsule_accepts_strict_adv3b02_effective8(tmp_path: Path) -> 
     )
 
 
+def test_candidate_lock_workspace_code_recheck_is_explicit_historical_audit(
+    tmp_path: Path,
+) -> None:
+    payload, _capsule, lock, artifacts = _fixture(tmp_path)
+    lock_payload = json.loads(lock.read_text(encoding="utf-8"))
+    candidate = lock_payload["locked_candidate"]
+    candidate["code_artifacts_sha256"] = {"historical/missing.py": "a" * 64}
+    lock_payload["locked_candidate_sha256"] = canonical_sha256(candidate)
+    lock.write_text(json.dumps(lock_payload, sort_keys=True), encoding="utf-8")
+    payload["candidate_lock_sha256"] = sha256_file(lock)
+    payload = _rehash(payload)
+    validate_candidate_capsule(
+        payload,
+        candidate_lock_path=lock,
+        expected_artifact_paths=artifacts,
+        allow_unsealed_build=True,
+    )
+    with pytest.raises(CandidateCapsuleError, match="code artifact drift"):
+        validate_candidate_capsule(
+            payload,
+            candidate_lock_path=lock,
+            expected_artifact_paths=artifacts,
+            allow_unsealed_build=True,
+            verify_candidate_lock_workspace_code=True,
+        )
+
+
 def test_candidate_capsule_rejects_external_trust_root_mismatch(tmp_path: Path) -> None:
     payload, capsule, lock, artifacts = _fixture(tmp_path)
     with pytest.raises(CandidateCapsuleError, match="trust root"):
