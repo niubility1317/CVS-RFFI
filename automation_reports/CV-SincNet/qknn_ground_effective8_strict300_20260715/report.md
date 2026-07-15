@@ -201,7 +201,29 @@ strict_v11远端闭包构建完成：12项复用artifact逐字节一致，闭包
 
 v8 attempt1以PID`1899303`运行，CUDA初始化、密封memfd、Landlock/seccomp及support feature forward均已通过，但严格闭包内`torch.from_numpy(np.asarray(...))`触发`TypeError: expected np.ndarray (got numpy.ndarray)`，因此未生成prediction/scoring/smoke receipt。修复将NumPy数据先复制为连续float32字节，再通过`torch.frombuffer(...).clone()`建立自有Torch存储，完全避开PyTorch NumPy C-API桥接；CPU回归测试同时验证原数组改写不会影响tensor。23项predictor entry/runtime/closure测试通过，新9文件本地closure构建通过，SHA=`7d8247a6feaf652acdf7d84f7bcdbab6cd32ca76b80d93dc5b445eebcad5b522`。v8不复用；下一次在全新`runtime_artifacts_strict_v12`重建闭包，并使用全新v9运行根。
 
+00:26直连预检与实时训练清单确认8张GPU空闲，`gpu_compute=[]`、`active_training_processes=[]`。提交`555eb09`中的predictor已同步，远端SHA=`3ca338b41f5433a599555949f699cce165a86ab9cfca47625b9356c76e6fd7d0`。strict_v12以strict_v11为只读来源复制12项模型/capsule/config artifact并逐项`cmp=PASS`，重新构建的9文件闭包SHA=`8c6f464b3bba7e5fc5c09f22a5cf4f4f4a4635782ee56555a3b2d7a2ce0c6403`；与strict_v11逐成员比对，仅`cvsrffi/stage2_predictor_runtime.py`发生预期变化。证据回传至`evidence/runtime_artifacts_strict_v12/`，SSH/SCP结束后本地`ssh.exe=0`、N607/桥接TCP22连接为0。
+
+本地计划目录v16因先创建out-dir触发生成器防覆盖门禁，v17因误把generated base plan作为source plan触发schema门禁，二者均未生成strict manifest且不发布。随后从原始受控配置生成v18清单，绑定strict_v12与全新`..._landlock_strict300_v9`运行根；覆盖25 cache、75 package、300 cell、900 formal row，继续保持`launch_authority=false`、`authority_state=N607_LANDLOCK_SMOKE_REQUIRED`，清单SHA=`fe323f56087a840e7f8b9cf8102224f09b40decbcb6cf7d93108b94f9926b8e4`。只有该v18清单可进入下一次单单元smoke。
+
 并行构建留下`runtime_artifacts_strict_v9`部分目录：12项不可变模型/config文件存在，`05_runtime_closure.json`为0字节且closure目录不存在，符合旧closure白名单拒绝新增`ctypes/platform`导入的fail-closed行为。strict_v9完整保留且不补写。下一次使用全新`runtime_artifacts_strict_v10`：先同步提交`764c11c`的memfd实现与提交`5d87bdd`的closure白名单，逐文件核验SHA；再在N607直接调用`_sealed_memfd`执行临时seal smoke并验证`REQUIRED_SEALS`，通过后才复制strict_v8的12项不可变artifact并新建closure。后续计划/运行根使用全新版本，不复用v4/v11。
+
+### v8失败、注册前后指标补全与第1次三轮回顾
+
+v8 attempt1以PID=`1899303`退出。完整读取5,741字节driver日志确认：v8已经越过CUDA初始化并进入`build_formal_support_state`，但隔离进程中NumPy模块重载造成`torch.from_numpy`类型身份冲突，报`expected np.ndarray (got numpy.ndarray)`。该次仍无prediction、scoring、cell或smoke receipt，因而仍不能报告新类注册性能。提交`555eb09`已将严格runtime的NumPy→Torch转换改为连续buffer桥接并增加存储所有权测试。
+
+当前补充修复在CUDA初始化后显式选定设备并以1标量初始化allocator，再重置峰值统计；同时扩展独立scorer，使每个正式场景行同时物化注册前/后的旧类整体与逐类结果：`candidate_old_class_acc_before_increment`、`candidate_old_class_acc_after_increment`、`candidate_old_class_forgetting`、对应identity字段，以及注册前/后最低旧类准确率。注册前新类尚未注册，明确写`pre_increment_new_class_state=NEW_CLASSES_NOT_REGISTERED`，对应`seen_new_acc_before_increment/H_old_new_before_increment=null`；注册后写`seen_new_acc_after_increment/H_old_new_after_increment`。单package runner新增`smoke/formal`执行模式，未授权K10在任何package物化前fail closed。相关predictor/runtime/scorer/strict-plan/authority共63项测试通过；本地9文件closure验证SHA=`7d8247a6feaf652acdf7d84f7bcdbab6cd32ca76b80d93dc5b445eebcad5b522`。
+
+2026-07-16执行第1次“每3轮探索强制回顾”：重新核对当前目标、`项目.md`、977条项目对话索引，并完整读取qKNN V92注册、Oracle禁用和v14缺少新类结果的历史摘要。
+
+| 回顾项 | 历史教训 | 当前决策 |
+|---|---|---|
+| 域适应与新类注册 | source-only v21-v23只有旧类，不能证明Stage2-C收益 | 后续候选必须同时跑域适应、注册前和注册后，不再晋升old-only结果 |
+| 注册指标 | v14正式target结果文件数为0；92.28%属于不同切分且含旧Oracle机制的legacy diagnostic | 只接受严格sealed predictor+独立scorer生成的同一cell正式行 |
+| 开发K值 | K1只能做压力smoke，不能代替目标工作点 | smoke完成后优先运行K10/new20单cell；K10是唯一开发选参点 |
+| 遗忘 | 总体旧类准确率会掩盖最低类和个别类崩塌 | 同时报注册前后old、最低旧类、逐类差值和最坏遗忘 |
+| 视图与协议 | 历史固定5-view和角色/类别配额不能直接复用 | support/query仅`LEO_weak`；自适应view只依赖逐样本置信度，禁止query真值、角色Oracle和类别配额 |
+
+回顾规则已加入根目录`AGENTS.md`并镜像到Git承载面的`AGENTS.md`。以后每完成3轮算法候选探索，在第4轮启动前必须把目标、协议、历史路径、完整日志和下一轮取舍写回本报告。
 
 ## 完成后结果表
 
