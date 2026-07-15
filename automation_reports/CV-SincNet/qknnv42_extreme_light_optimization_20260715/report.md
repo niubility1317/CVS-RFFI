@@ -174,3 +174,49 @@ TorchScript测试出现PyTorch对`torch.jit.trace`的弃用提示，但当前严
 3. K10锁定后执行K=1/5/20独立确认；完整300cell/900场景行仍由独立scorer给出最终结论。
 
 本报告当前是设计、审计和控制修复记录，不是性能达标声明，也不是N607部署成功证据。
+
+## 九、N607 source-only FFT权重消融启动登记
+
+|字段|内容|
+|---|---|
+|实验ID|`qknn_ground_effective8_fft_source_ablation_20260715_v15`|
+|目标|在不重训adapter、不增加参数和forward的条件下，检验FFT96权重从2.0降至0.5/0.7/1.0能否改善K1及旧类floor|
+|比较对象|同一ADV3B02 checkpoint、同一v14 effective8 adapter、同一source receiver holdout；仅`fft_weight`变化|
+|运行性质|source-only性能诊断；不得直接promotion或写成target结论|
+|本地版本|Git commit `3d64252`＋自适应约束修复commit `44baec3`|
+|本地验证|主回归85/85通过；审查后TTA约束定向回归39/39通过|
+|远端项目根|`/home/szu2070436088/2510044040/CV-SincNet`|
+|Conda环境|`CVS-RFFI`|
+|GPU计划|weight0.5/0.7/1.0/2.0分别使用GPU0/1/2/3；每GPU1个验证进程|
+|输出根|`runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14/qknn_ground_effective8_fft_source_ablation_20260715_v15/`|
+|日志根|`logs/qknn_ground_effective8_fft_source_ablation_20260715_v15/`|
+|预期输出|每个权重独立的`validation_result.json`、source feature stats、head/TTA lock与launch manifest|
+
+### 9.1启动前证据
+
+- 2026-07-15 20:07+08:00直接SSH preflight通过；N607项目根和8张RTX3090可见。
+- live inventory显示`active_training_processes=[]`，8张GPU均约10MiB占用、0%利用率。
+- v14 adapter存在，文件大小94,054B；training manifest与source-validation cache set均存在。
+- 独立审查指出：新的multi-view worst-K训练仍需按physical ID排除同源场景副本，因此本次不启动重训，只复用旧v14 adapter做FFT source诊断。
+- 本轮禁用source C=6绝对top1阈值，只消融margin＋std-LCB；TTA候选在排序前必须满足平均forward≤3.0且额外View率≥5%。
+
+### 9.2同步与启动命令
+
+待同步文件：
+
+|本地文件|N607目标|
+|---|---|
+|`paper_reproduction/cvs_aligned/extreme_light_adapter.py`|同相对路径|
+|`paper_reproduction/cvs_aligned/k1_symmetric_head.py`|同相对路径|
+|`paper_reproduction/cvs_aligned/adaptive_rxlight_tta.py`|同相对路径|
+|`paper_reproduction/scripts/validate_cvs_ground_lora_multiview.py`|同相对路径|
+|`paper_reproduction/scripts/launch_cvs_ground_lora_fft_ablation_v15.sh`|同相对路径|
+
+服务器启动命令：
+
+```bash
+cd /home/szu2070436088/2510044040/CV-SincNet
+bash paper_reproduction/scripts/launch_cvs_ground_lora_fft_ablation_v15.sh
+```
+
+成功启动必须记录4个独立PID、GPU、日志和输出目录；启动后仅作短连接只读监控，不保留SSH会话。
