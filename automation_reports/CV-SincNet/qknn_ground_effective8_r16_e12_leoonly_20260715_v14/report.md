@@ -5,7 +5,7 @@
 |实验ID|`qknn_ground_effective8_r16_e12_leoonly_20260715_v14`|
 |时间|2026-07-15 13:44 CST|
 |operator|Codex`/root`|
-|当前状态|`SOURCE_PIPELINE_FAILED_CLOSED_LORA_DEVICE_REPAIR3_LOCAL_VERIFIED`；target matrix未启动|
+|当前状态|`REMOTE_REPAIR3_VERIFIED_RELAUNCH_PENDING`；target matrix未启动|
 |基座模型|同一ADV3B02 checkpoint：`ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth`|
 |目标|在新版`LEO_weak-only`边界下，以≤50k参数、≤20epoch、≤256KB持久状态的极轻型适配器和逐样本1→3→5-view推理，完成5receiver×5seed×3场景×新类5/10/20×K=1/5/10/20正式确认|
 
@@ -179,3 +179,5 @@ repair2远端覆盖前快照为`/home/szu2070436088/2510044040/CV-SincNet/code/s
 repair2 source pipeline以GPU0、PID`1549892`实际landed并越过严格cache loader和prototype构建，但在首次student backbone前向、任何epoch日志或optimizer step之前失败关闭。runner完整日志8行、训练完整日志32行已逐行读取；唯一错误为LoRA的`lora_a`权重在CPU、输入与冻结base在`cuda:0`，触发`Expected all tensors to be on the same device`。代码追踪确认ground trainer先获得已在CUDA的ADV3B02，再调用`inject_feat_joint_lora`；旧`LoRALinear`构造器新建`nn.Linear`时未继承被替换base的device/dtype。support-only历史路径之所以未暴露，是其注入后还会统一执行`model.to(device)`。
 
 repair3在`LoRALinear`构造时让`lora_a/lora_b`显式继承`base.weight.device`和`base.weight.dtype`，保持冻结base、rank、alpha、参数量、初始化和合并语义不变。新增float64基座回归测试，若低秩层仍默认float32则前向必然失败；当前该测试确认device/dtype继承且identity初始化逐元素精确。support LoRA测试20项通过，包含formal链路的11组完整相关回归共`100 passed`，脚本`py_compile`通过。该修复不增加参数、MAC、状态、epoch、View或数据访问；candidate lock会在运行时绑定新的LoRA实现SHA。
+
+repair3远端覆盖前快照为`/home/szu2070436088/2510044040/CV-SincNet/code/snapshots/qknn_ground_effective8_r16_e12_leoonly_20260715_v14_repair3_before_sync_20260715_145448`，封存旧LoRA实现、旧report、repair2 runner/train完整日志和state。Git提交为`dfd0541c4c48`；LoRA脚本与report本地/远端SHA256一致，分别为`7877bcfd243dce0d6739a2b574e0db6fd401c8bf5ae86253bc52a4f17c0fc07b`和`4e2e9ade2e64f140fb8f0bef7fd27d18b5398d18d968bddcfc7c1748309d6565`，远端`py_compile`通过。GPU0微型CUDA探针确认base、`lora_a`、`lora_b`均位于`cuda:0`、dtype一致，identity初始化前向`max_abs_diff=0.0`。这修复了已知device阻断点，但仍不把smoke视为12epoch训练或promotion成功。
