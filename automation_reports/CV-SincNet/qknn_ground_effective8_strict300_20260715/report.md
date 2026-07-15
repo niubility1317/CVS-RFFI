@@ -227,6 +227,24 @@ v8 attempt1以PID=`1899303`退出。完整读取5,741字节driver日志确认：
 
 回顾规则已加入根目录`AGENTS.md`并镜像到Git承载面的`AGENTS.md`。以后每完成3轮算法候选探索，在第4轮启动前必须把目标、协议、历史路径、完整日志和下一轮取舍写回本报告。
 
+00:31提交`f8de85e`的scorer、predictor工作区副本、strict package runner和strict plan runner已串行同步至N607并逐项核验SHA：`b25d996e…8ce3`、`b7ba6e94…0ebe`、`5b77c93d…9df0`、`cfd435a7…627`；两个CLI的远端import/help smoke均为PASS。v9清单仍绑定不可变strict_v12 closure SHA=`8c6f464b…c6403`，清单SHA=`fe323f56…6b8e4`，`launch_authority=false`。下一次仅允许执行receiver=`20-1`、seed=`713101`、20个真实seen-new、K1、3个`LEO_weak`场景的smoke；完整矩阵和K10均尚未授权。
+
+计划命令：
+
+```bash
+cd /home/szu2070436088/2510044040/CV-SincNet
+PY=/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python
+V9=/home/szu2070436088/2510044040/CV-SincNet/runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14_landlock_strict300_v9
+PYTHONPATH=code:. "$PY" paper_reproduction/scripts/run_cvs_stage2c_effective8_strict_plan.py \
+  --plan-manifest "$V9/protocol_plan/strict_plan_manifest_v18.json" \
+  --project-root /home/szu2070436088/2510044040/CV-SincNet \
+  --stage smoke --device cuda:0 \
+  --log-dir "$V9/logs/smoke_v9_attempt1" \
+  --smoke-receipt "$V9/smoke_receipt.json"
+```
+
+后台包装只写新路径`smoke_driver_v9_attempt1.pid`与`logs/smoke_driver_v9_attempt1.out`。成功后必须回传并核验`prediction_artifact.cvspred`、`formal_rows.json`、`formal_predictions.json`、scoring/cell/smoke receipt及资源收据，随后才运行官方授权器；授权后优先执行同package的K10/new20单cell，而不是启动完整300-cell矩阵。
+
 ## 完成后结果表
 
 实验完成后在本节追加逐单元同一行结果，至少包含candidate ID、机制、receiver/TX split、K-shot、seed、old/seen-new/unknown指标、coverage/rollback/defer、loss/adapter摘要和最终判定。不得用来自不同单元的独立极值替代联合行。
