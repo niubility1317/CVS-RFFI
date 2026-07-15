@@ -5,7 +5,7 @@
 |实验ID|`qknn_ground_effective8_r16_e12_leoonly_20260715_v14`|
 |时间|2026-07-15 13:44 CST|
 |operator|Codex`/root`|
-|当前状态|`SOURCE_TRAIN_COMPLETE_VALIDATION_BRIDGE_REPAIR4_LOCAL_VERIFIED`；target matrix未启动|
+|当前状态|`SOURCE_TRAIN_COMPLETE_REMOTE_REPAIR4_VERIFIED`；validation恢复待启动，target matrix未启动|
 |基座模型|同一ADV3B02 checkpoint：`ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth`|
 |目标|在新版`LEO_weak-only`边界下，以≤50k参数、≤20epoch、≤256KB持久状态的极轻型适配器和逐样本1→3→5-view推理，完成5receiver×5seed×3场景×新类5/10/20×K=1/5/10/20正式确认|
 
@@ -201,3 +201,5 @@ repair3训练步骤在59.87s内完成12/12epoch并返回0，生成94,054B的`eff
 日志中历史字段`clean`/`clean_margin`是沿用旧键名的same-LEO reference损失记录，不代表读取clean样本；同一manifest明确`clean_sample_access=false`、`clean_derived_signal_access=false`、`target_receiver_data_used_for_training=false`。可确认训练数值稳定、worst-K surrogate总体改善；不能从这些loss直接推出old/new准确率达标。
 
 训练完成后source validation仅运行2.89s便在首个prototype batch失败，完整validation日志10行的唯一错误仍是NumPy2.2.5/Torch2.1.0的`torch.from_numpy`不兼容，尚未计算任何source准确率或promotion gate。repair4新增共享`cvsrffi.tensors.numpy_to_tensor_compat`，validator的float32 IQ、int64 label和拼接feature三类入口全部改用buffer bridge；正式benchmark原有三个NumPy入口已使用兼容helper，micro helper现委托同一实现。静态测试要求validator源码不再含`torch.from_numpy`。candidate lock新增绑定共享tensor bridge、micro helper和LoRA实现，补齐此前间接依赖未进入代码哈希的问题。已产出adapter的trainer与LoRA实现保持不变，runner恢复时会跳过complete的`0002_train`，只重跑validation。4个相关文件`py_compile`通过，聚焦23项通过，12组完整正式回归为`107 passed`。
+
+repair4远端覆盖前快照为`/home/szu2070436088/2510044040/CV-SincNet/code/snapshots/qknn_ground_effective8_r16_e12_leoonly_20260715_v14_repair4_before_sync_20260715_150657`，封存旧tensor/micro/validator/candidate-lock代码、旧report、首次validation完整日志和state。Git提交为`c6a1fb8d9864`；5个同步文件本地/远端SHA256逐项一致，远端4个Python文件`py_compile`通过。N607 GPU0实际探针对float32 IQ与int64 label分别完成buffer bridge和CPU→CUDA移动，shape、dtype、值均一致。此次未覆盖trainer、LoRA、adapter或training manifest，已完成训练证据保持原样。恢复前仍需live inventory；恢复只能从`0003_source_validation`继续。
