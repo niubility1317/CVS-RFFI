@@ -615,6 +615,24 @@ v11 PID=`1114226`完成5epoch/20步，适配0.7397s，峰值CUDA178,206,720B，s
 
 v11r1 PID=`1117703`完成且与原run确定性一致：state SHA256=`2b725085...ac817`、20步、7,800前向等效和最终loss逐项相同；新training manifest SHA=`fb0fd9f...cc8b`，内嵌state SHA与文件实算完全匹配，完整日志错误扫描为空。唯一联合审计输出根预注册为`runs/qknn_extreme_light_sourceinit_keyft5_rxshiftpair_adaptive_tta_20260715_v11r1`，命令如下：
 
+联合审计PID=`1118998`完成，manifest provenance的known method、support-only、query禁止、无角色Oracle、无类别配额、5epoch、delta格式、31,200参数、62,400B、合并0新增MAC和state SHA共11项全部PASS。成功日志96行，错误扫描为空。
+
+|三场景合并|v10 fixed/adaptive|v11 rx-shift-pair|v11-v10|
+|---|---:|---:|---:|
+|fixed1 old/new/H|71.11/71.42/71.26%|70.83/71.42/71.12%|-0.28/0.00/-0.14pp|
+|fixed3 old/new/H|72.78/72.92/72.85%|72.78/73.00/72.89%|0.00/+0.08/+0.04pp|
+|fixed5 old/new/H|73.89/75.17/74.52%|73.89/75.50/74.69%|0.00/+0.33/+0.16pp|
+|adaptive old/new/H|72.78/74.17/73.47%|72.78/74.33/73.55%|0.00/+0.17/+0.08pp|
+|adaptive最低旧/新类|40.00/33.33%|40.00/35.00%|0.00/+1.67pp|
+|adaptive平均/P95前向|2.291/5|2.296/5|+0.005/0|
+
+v11 support多View适配没有形成有意义的机制增益；fixed5和adaptive的H仅提高0.16pp与0.08pp，远小于正式差距。v11自适应相对自身fixed5为old`-1.11pp`、new`-1.17pp`、H`-1.14pp`，平均前向减少54.08%，仍是合格的计算压缩组件，但绝对old/floor/new距目标分别22.22/48.00/11.67pp，判定`MECHANISM_GATE_FAILED_NO_MATRIX_EXPANSION`。禁止继续在该query cell扫描shift/CFO组合、学习率或门限。
+
+v11r1训练artifact回收到`E:\type10-7\local_artifacts\qknn_extreme_light_sourceinit_keyft5_rxshiftpair_20260715_v11r1`（9文件6,443,732B），联合审计回收到`E:\type10-7\local_artifacts\qknn_extreme_light_sourceinit_keyft5_rxshiftpair_adaptive_tta_20260715_v11r1`（5文件680,611B）；本地重算哈希与N607逐项一致。训练实测0.8595s、峰值178,206,720B约170.0MiB、20步/7,800前向等效，状态62,400B；自适应部署总tensor状态128,972B，低于128KiB 2,100B。
+
+方法结论：多View不是无效，它在当前合法切分上稳定提供约3pp fixed5增益；1→3→5能以约2.30次平均前向保留其中大部分。但固定5-view上界只有H=74.69%，说明剩余约17.59pp相对历史92.28%的差额不能由View压缩解决，也不能在不同切分、adapter60、场景筛选和历史角色/配额Oracle之间作因果拆分。下一路线应固定现有TTA门控，不再优化View数量；转而提高support本身的类判别几何。优先设计不超过约8.5k参数的class-symmetric低秩score distillation：只在source validation/注册support上用完整5-view LOO score作teacher，单base view作student，query保持1-view；与31,200关键层delta和单套FP16 prototype合计预计约92.6KiB、增加约8.2k MAC/query。该方案必须先在source validation或新开发seed锁定，不能沿用本cell query选超参。
+
+
 ```bash
 CUDA_VISIBLE_DEVICES=7 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/code:/home/szu2070436088/2510044040/CV-SincNet /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u paper_reproduction/scripts/benchmark_cvs_adaptive_rxlight_tta.py --config paper_reproduction/configs/cvs_qknnv42_extreme_light_20new_stage2c_k10_rawiq_20260715_n607.json --ckpt runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth --adapter_state runs/qknn_extreme_light_sourceinit_keyft5_rxshiftpair_20260715_v11r1/support_late_key_ft_rx_8-8_new_20_seed_713101_k_10/adapter_state_fp16.pt --adapter_manifest runs/qknn_extreme_light_sourceinit_keyft5_rxshiftpair_20260715_v11r1/support_late_key_ft_rx_8-8_new_20_seed_713101_k_10/training_manifest.json --out_dir runs/qknn_extreme_light_sourceinit_keyft5_rxshiftpair_adaptive_tta_20260715_v11r1 --batch_size 256 --max_accuracy_drop_pp 1.0 --device cuda:0
 ```
