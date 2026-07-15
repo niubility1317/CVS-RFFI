@@ -1,0 +1,45 @@
+{
+  "schema": "cvs_leo_weak_iq_cache_build_spec_v1",
+  "cache_set_id": "qknn_ground_effective8_r16_e12_leoonly_20260715_v14_20-1_713102",
+  "cache_scope": "stage2_registered",
+  "phase2_sample_view_policy": "leo_weak_only_no_clean_access",
+  "clean_sample_access": false,
+  "clean_derived_signal_access": false,
+  "star_ground_channel_impl": "simplified_leo_residual",
+  "role_specs": [
+    {
+      "role": "target_old",
+      "pkl": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManyTx.pkl",
+      "tx_ids": "14-10,14-7,20-15,20-19,6-15,8-20",
+      "rxs": "20-1",
+      "days": "0",
+      "max_samples_per_tx": 50
+    },
+    {
+      "role": "target_new",
+      "pkl": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManyTx.pkl",
+      "tx_ids": "1-16,1-18,18-10,14-11,8-3,18-8,10-10,16-19,20-12,4-10,13-14,2-5,1-8,19-13,19-9,3-8,19-8,11-19,2-16,19-6",
+      "rxs": "20-1",
+      "days": "0",
+      "max_samples_per_tx": 50
+    }
+  ],
+  "dataset_seed": 713102,
+  "satellite_seed_by_scenario": {
+    "leo_clear_weak": 7131020,
+    "leo_low_elev_weak": 7131021,
+    "leo_rain_weak": 7131022
+  },
+  "out_npz_by_scenario": {
+    "leo_clear_weak": "/home/szu2070436088/2510044040/CV-SincNet/runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14/phase1_caches/target/rx_20_1/seed_713102/leo_clear_weak.npz",
+    "leo_low_elev_weak": "/home/szu2070436088/2510044040/CV-SincNet/runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14/phase1_caches/target/rx_20_1/seed_713102/leo_low_elev_weak.npz",
+    "leo_rain_weak": "/home/szu2070436088/2510044040/CV-SincNet/runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14/phase1_caches/target/rx_20_1/seed_713102/leo_rain_weak.npz"
+  },
+  "out_manifest": "/home/szu2070436088/2510044040/CV-SincNet/runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14/phase1_caches/target/rx_20_1/seed_713102/cache_set.json",
+  "batch_size": 256,
+  "wisig_out_len": 256,
+  "wisig_equalized": "1",
+  "wisig_domain": "rx_day",
+  "sat_fs_hz": 25000000.0,
+  "sat_fc_hz": 2462000000.0
+}

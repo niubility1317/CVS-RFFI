@@ -255,6 +255,12 @@ PYTHONPATH=code:. "$PY" paper_reproduction/scripts/run_cvs_stage2c_effective8_st
 
 后台包装只写新路径`smoke_driver_v9_attempt1.pid`与`logs/smoke_driver_v9_attempt1.out`。成功后必须回传并核验`prediction_artifact.cvspred`、`formal_rows.json`、`formal_predictions.json`、scoring/cell/smoke receipt及资源收据，随后才运行官方授权器；授权后优先执行同package的K10/new20单cell，而不是启动完整300-cell矩阵。
 
+v9 attempt1以PID=`1906162`运行，首次完整执行了ADV3B02 support/query forward、support-only新类注册和五路注册前/后预测，并生成2,658,628字节密封`prediction_artifact.cvspred`；但predictor在写资源收据时又尝试按原路径回读Landlock已禁止的`request.json`以计算SHA，因`PermissionError`停止。独立scorer、cell receipt和smoke receipt均未生成，所以该prediction不能单独晋升为性能证据。完整6,034字节driver日志SHA=`a00e50e2…0a84`；v9保持不可变。
+
+提交`9cb6e84`改为在首次密封memfd读取request时同步计算原始字节SHA，后续资源收据不再打开request路径；常规文件与物理不可达pinned request两条回归均覆盖。40项predictor/runtime/closure测试通过，新本地closure SHA=`6f3ccbebd1aef610c1a96f4fad94703dd0ada070b927eecabd8b68e794027fc4`。N607全新strict_v13从strict_v12逐项复制12个不可变模型/capsule/config artifact且`cmp/diff=PASS`，重建closure SHA与本地一致；证据回传至`evidence/runtime_artifacts_strict_v13/`。
+
+strict plan v19绑定strict_v13与全新`..._landlock_strict300_v10`运行根，25 cache/75 package/300 cell/900 formal row，继续保持`launch_authority=false`、`authority_state=N607_LANDLOCK_SMOKE_REQUIRED`，清单SHA=`7868eccb4cf6b639ad6c46b046a656c5ce74c9ee54760fcfe50e0549c28e91e4`。生成后只读摘要脚本曾因误用旧字段名`cache_count`返回1，但清单已完整生成并按实际`cache_steps/package_steps/cells`重新核验通过；该摘要错误不属于计划或实验失败。
+
 ## 完成后结果表
 
 实验完成后在本节追加逐单元同一行结果，至少包含candidate ID、机制、receiver/TX split、K-shot、seed、old/seen-new/unknown指标、coverage/rollback/defer、loss/adapter摘要和最终判定。不得用来自不同单元的独立极值替代联合行。
