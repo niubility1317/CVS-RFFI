@@ -101,7 +101,7 @@ phase2_query_batch_global_assignment=false
 
 ## 六、N607同步与启动记录
 
-直接SSH预检已PASS，8张RTX 3090当时均空闲；初版同步后的远端dry-run暴露新协议字段与运行时隔离缺口，因此在任何缓存或正式任务启动前停止。当前修复版尚未重新同步。
+直接SSH预检已PASS，8张RTX 3090当时均空闲。第三次offline准备已完成26/26个LEO_weak cache，随后因预测器打包器升级后的CLI/layout与旧plan不一致而在第1个bundle前停止；未生成predictor package、runtime seal或正式Phase2行。已在本地commit `98ea663`完成三目录物理隔离接口迁移并通过33项相关测试，待重新同步后复用26个已验证cache继续准备。
 
 |字段|内容|
 |---|---|
@@ -110,15 +110,15 @@ phase2_query_batch_global_assignment=false
 |远端Python/Conda环境|`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`|
 |远端run root|`/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_three_da_leoweakonly_20260715_v1`|
 |远端log root|`.../stage2_logs/`|
-|GPU/PID|offline准备PID `1604043`，单进程使用`cuda:0`串行执行；正式worker未启动|
-|代码版本|Git commit `e90a52f`；远端13个运行文件与新plan已同步，远端`py_compile` PASS|
+|GPU/PID|offline准备PID `1604043`已退出；26个cache已完成，25个bundle和1个runtime seal待续跑；正式worker未启动|
+|代码版本|待同步Git commit `98ea663`；本地`py_compile` PASS、相关pytest `33 passed`、375行matrix dry-run PASS|
 |offline准备命令|`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u paper_reproduction/scripts/run_adv3b02_three_da_cache_plan.py --plan-manifest runs/adv3b02_three_da_leoweakonly_20260715_v1/plan/plan_manifest.json --execute`|
 |正式worker命令|由`plan_manifest.json.commands.phase2_workers`给出8个shard；必须在52/52离线准备和三方法smoke通过后才允许启动|
 |期望输出|每行`metrics.json`、`split_manifest.json`、`resolved_config.json`、`score_table.csv`、详细分组统计和完整loss trace|
 
-同步映射：本地commit `e90a52f`中的`code/cvsrffi/{phase2_runtime_contract,stage2_predictor_bundle,stage2_scoring_sidecar}.py`、三个`code/scripts/`隔离/构包脚本、ADV3B02 runner、独立scorer、matrix/cache-plan/summary脚本同步至N607同相对路径；本地`local_artifacts/adv3b02_three_da_leoweakonly_20260715_v1_plan/{phase2_config.json,plan_manifest.json,cache_specs/}`同步至远端run root的`plan/`。
+下一次同步映射：commit `98ea663`中的`code/scripts/{build_cvs_stage2_predictor_bundle,build_phase2_runtime_seal}.py`、ADV3B02 runner、独立scorer、plan/cache-plan脚本和配置同步至N607同相对路径；本地`local_artifacts/adv3b02_three_da_leoweakonly_20260715_v1_plan/{phase2_config.json,plan_manifest.json,cache_specs/,package_artifacts/}`同步至远端run root的`plan/`。既有26个cache不覆盖、不删除。
 
-启动诊断记录：初次后台命令已landed但PID文件写入受shell后台优先级影响；只读复核确认该进程因远端根目录旧`cvsrffi`包遮蔽`code/cvsrffi`而退出。已在commit `e325503`修复`sys.path`优先级并同步。第二次在构建前因offline spec误写`/CV-SincNet/ManySig.pkl`而退出；服务器实际路径为`/CV-SincNet/Dataset_WigSig/ManySig.pkl`。已本地重生成并同步plan，当前PID 1604043正常运行。两次失败均未产生正式Phase2行。
+启动诊断记录：初次后台命令因远端根目录旧`cvsrffi`包遮蔽`code/cvsrffi`而退出；commit `e325503`已修复`sys.path`优先级。第二次因offline spec误写`/CV-SincNet/ManySig.pkl`而退出；服务器实际路径为`/CV-SincNet/Dataset_WigSig/ManySig.pkl`，已修正。第三次PID `1604043`完成26/26缓存后，旧plan在第1个bundle调用已升级打包器时因CLI不兼容退出。三次均未启动正式Phase2行；第三次产生的26个LEO_weak cache保留并将在续跑时逐项hash复核后跳过。
 
 ## 七、成功条件与风险
 
