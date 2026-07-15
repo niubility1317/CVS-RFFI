@@ -108,6 +108,33 @@ $PY code/scripts/build_cvs_stage2_runtime_closure.py --source-code-root code --o
 
 回传证据位于`evidence/runtime_artifacts_strict_v6/`。严格计划CLI入口修复后测试`6 passed`；生成清单SHA=`65a494109b28ed3ed233264d20f0d2ec4469a739480c3f90bcce57ea27d6ba88`，结构为25个cache、75个sealed package、300个prediction cell、900行formal scorer row，当前`launch_authority=false`、`authority_state=N607_LANDLOCK_SMOKE_REQUIRED`。
 
+### N607严格烟测
+
+- Git证据提交：`dcb0aa0 feat: bind strict plan to N607 runtime capsule`。
+- 清单远端路径：`/home/szu2070436088/2510044040/CV-SincNet/runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14_landlock_strict300/protocol_plan/strict_plan_manifest.json`。
+- 烟测单元：receiver=`20-1`、seed=`713101`、new-count=`20`、K=`1`、3个LEO_weak场景；只允许烟测，不允许完整矩阵。
+- GPU：`cuda:0`，执行前重新检查实时进程和GPU占用。
+- predictor输出：`..._landlock_strict300/cells/rx_20_1__seed_713101__new_20__k_1/predictor_output/`。
+- scorer输出：同一cell下`scoring_output/`；truth只存在package的独立scorer root。
+- 烟测收据：`..._landlock_strict300/smoke_receipt.json`。
+- 失败边界：cache/package/cell出现部分目录时不覆盖；胶囊、seal、Landlock、seccomp、memfd、open ledger、prediction seal或独立scorer任一失败即停止。
+
+确切命令：
+
+```bash
+cd /home/szu2070436088/2510044040/CV-SincNet
+PY=/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python
+STRICT=/home/szu2070436088/2510044040/CV-SincNet/runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14_landlock_strict300
+PYTHONPATH=code:. "$PY" paper_reproduction/scripts/run_cvs_stage2c_effective8_strict_plan.py \
+  --plan-manifest "$STRICT/protocol_plan/strict_plan_manifest.json" \
+  --project-root /home/szu2070436088/2510044040/CV-SincNet \
+  --stage smoke --device cuda:0 \
+  --log-dir "$STRICT/logs/smoke" \
+  --smoke-receipt "$STRICT/smoke_receipt.json"
+```
+
+只有`smoke_receipt.json`回传本地、SHA进入Git且授权器生成`launch_authority=true`的新清单后，才可启动8个matrix shard。
+
 ## 完成后结果表
 
 实验完成后在本节追加逐单元同一行结果，至少包含candidate ID、机制、receiver/TX split、K-shot、seed、old/seen-new/unknown指标、coverage/rollback/defer、loss/adapter摘要和最终判定。不得用来自不同单元的独立极值替代联合行。
