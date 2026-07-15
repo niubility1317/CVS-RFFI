@@ -5,6 +5,7 @@ import pytest
 import torch
 
 from paper_reproduction.scripts.benchmark_cvs_adaptive_rxlight_tta import (
+    _reference_parity,
     apply_fp16_checkpoint_delta,
     build_view_prototypes,
     leave_one_out_support_scores,
@@ -55,3 +56,22 @@ def test_fp16_delta_rejects_wrong_element_budget() -> None:
     }
     with pytest.raises(ValueError, match="element budget drift"):
         apply_fp16_checkpoint_delta(model, state)
+
+
+def test_reference_parity_accepts_feature_cache_without_raw_iq(tmp_path) -> None:
+    path = tmp_path / "features_only.npz"
+    arrays = {
+        "dataset_role": np.asarray(["target_old"]),
+        "tx_ids": np.asarray(["a"]),
+        "rx_ids": np.asarray(["r"]),
+        "day_ids": np.asarray(["d"]),
+        "eq_ids": np.asarray(["1"]),
+        "sig_ids": np.asarray(["0"]),
+    }
+    primary = np.asarray([[1.0, 0.0]], dtype=np.float32)
+    fft = np.asarray([[0.0, 1.0]], dtype=np.float32)
+    np.savez(path, **arrays, features=primary, fft_logmag_features=fft)
+    generated = np.asarray([[1.0, 0.0, 0.0, 2.0]], dtype=np.float32)
+    audit = _reference_parity(path, arrays, [0], generated)
+    assert audit["checked"] is True
+    assert audit["min_cosine"] == pytest.approx(1.0)

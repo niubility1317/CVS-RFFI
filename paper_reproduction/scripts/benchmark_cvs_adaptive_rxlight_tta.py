@@ -51,6 +51,7 @@ from paper_reproduction.scripts.train_export_cvs_micro_iq_adapter import (
     _load_npz,
     _numpy_to_tensor_compat,
     _sha256_file,
+    _tensor_to_numpy_compat,
 )
 from paper_reproduction.scripts.train_export_cvs_support_lora_adapter import (
     LATE_KEY_FT_TARGETS,
@@ -245,7 +246,9 @@ def extract_joint_rxlight5(
         for start in range(0, int(view_rows.shape[0]), int(batch_size)):
             batch = view_rows[start : start + int(batch_size)].to(device)
             primary, _ = _feature_forward(model, batch)
-            primary_parts.append(primary.detach().cpu().numpy().astype(np.float32))
+            primary_parts.append(
+                _tensor_to_numpy_compat(primary, dtype=np.dtype(np.float32))
+            )
         primary_np = np.concatenate(primary_parts, axis=0)
         raw_np = view_rows.detach().cpu().numpy().astype(np.float32)
         fft = _spectral_logmag_sketch_batch(raw_np, dim=int(fft_dim))
@@ -338,7 +341,25 @@ def _reference_parity(
 ) -> dict[str, Any]:
     if reference_path is None:
         return {"checked": False}
-    reference, _ = _load_npz(reference_path)
+    # Adapted feature exports intentionally omit raw_iq; the training loader
+    # enforces raw_iq and therefore cannot be reused for this read-only parity
+    # cache.  Keep this loader narrow and reject pickle/object arrays.
+    with np.load(reference_path, allow_pickle=False) as payload:
+        reference = {key: payload[key] for key in payload.files}
+    required = {
+        "features",
+        "fft_logmag_features",
+        "dataset_role",
+        "tx_ids",
+        "rx_ids",
+        "day_ids",
+        "eq_ids",
+        "sig_ids",
+    }
+    if not required.issubset(reference):
+        raise KeyError(
+            f"reference feature cache is missing keys: {sorted(required - set(reference))}"
+        )
     expected_ids = [_sample_id(arrays, index) for index in selected_indices]
     reference_lookup = {_sample_id(reference, index): index for index in range(len(reference["tx_ids"]))}
     positions = [reference_lookup[value] for value in expected_ids]
