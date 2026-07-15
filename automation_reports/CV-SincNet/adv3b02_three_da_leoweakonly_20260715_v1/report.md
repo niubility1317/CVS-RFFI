@@ -128,6 +128,8 @@ phase2_query_batch_global_assignment=false
 
 下一步smoke固定`receiver=20-1`、`seed=713101`、`K=5`，三方法各1行，输出到`runs/adv3b02_three_da_leoweakonly_20260715_v1/smoke_runs/`，使用与正式worker相同的Landlock launcher、artifact allowlist、runtime evidence和独立scorer；smoke成功后才允许启动8个正式shard。
 
+第一次smoke PID `1617869`在首行、模型加载前退出，`completed=0`、`failed=1`。行日志为`ModuleNotFoundError: No module named 'paper_reproduction'`；访问trace证明Landlock允许具体runtime文件但缺少仓库根目录遍历权限。修复仅将两个`runtime_code_root`及其共同项目父目录加入`runtime_code_list_dirs`，权限为`LIST_DIR`而非任意文件读取；本地重新编译和33项pytest通过。失败smoke artifact保留，复测使用`smoke_runs_v2/`，并在复测前重建runtime seal/allowlist/evidence。
+
 ## 七、成功条件与风险
 
 成功条件：

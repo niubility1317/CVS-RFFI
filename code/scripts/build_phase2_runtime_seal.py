@@ -114,6 +114,10 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
         return {"path": str(path), "sha256": digest_cache[key], "size": stat_result.st_size}
     artifact_entries = [entry(path) for path in artifact_files]
     code_entries = [entry(path) for path in code_files]
+    runtime_code_list_dirs = {path.parent for path in code_files}
+    for root in code_roots:
+        runtime_code_list_dirs.add(root)
+        runtime_code_list_dirs.add(root.parent)
     root_digest = hashlib.sha256(
         "\n".join(f"{row['path']}\0{row['sha256']}\0{row['size']}" for row in artifact_entries + code_entries).encode("utf-8")
     ).hexdigest()
@@ -129,7 +133,7 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
         "read_files": [str(path) for path in artifact_files + code_files] + [
             str(record[2]) for record in package_records
         ],
-        "runtime_code_list_dirs": sorted({str(path.parent) for path in code_files}),
+        "runtime_code_list_dirs": sorted(str(path) for path in runtime_code_list_dirs),
         "forbidden_predictor_artifact_tokens": ["truth_sidecar", "scoring_manifest", ".pkl"],
     }
     _write(allowlist_path, allowlist)
