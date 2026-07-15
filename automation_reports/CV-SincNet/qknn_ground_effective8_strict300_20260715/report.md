@@ -382,8 +382,8 @@ K10使注册前adapt由K1的64.44%提高到76.94%，并从低于direct 5.83pp转
 | TR-1 | `项目.md`与根`AGENTS.md`的no-query-truth/no-role-Oracle边界 | predictor的query包不得包含真实TX、old/new/unknown role、query quota或可回流真值 | `code/scripts/build_cvs_stage2_predictor_bundle.py`、predictor bundle测试 | verified | 结构化枚举NPZ字符串数组、manifest和opaque token；真实`query_tokens`泄漏负例继续被拒绝；26项密封/package/authority测试通过 | 未放宽结构化文本、JSON、seal或成员白名单门禁 |
 | TR-2 | Phase2 sealed input package与pre-open验证 | 避免把数值IQ/ZIP随机字节中对短TX标签的偶然命中误判为结构化真值泄漏，同时保持JSON/字符串/token门禁 | 同上 | verified | 4个实际失败NPZ的raw命中仅位于`float32`IQ成员，字符串字段0命中；修复后实际文件回归PASS | 数值成员仍受NPZ allowlist、member/package SHA、detached seal和runtime audit约束 |
 | TR-3 | 本地优先、Git、SCP和不可覆盖 | 修复必须本地提交、验证后同步；v12 partial evidence不得覆盖或原地续跑 | 代码、测试、报告、新运行根/计划 | verified | `git diff --check`、26项pytest、目标脚本/计划远端SHA、v13根预先不存在、8分片落地 | v12保持失败证据；v13为唯一新正式根 |
-| TR-4 | 125任务诉求与当前严格25/75/300/900计划 | 只有全部300 cells/900 rows完成并通过protocol receipts才可聚合性能 | 新run states、receipts、本报告 | blocked | 8/8 shard complete、300 cell receipts、900同row formal rows、完整driver日志 | 等待TR-3同步与全新运行根完成 |
-| TR-5 | Experiment Reporting同row联合解释 | 汇总器必须校验receipt/formal row/resource绑定，输出300-cell明细、K×new-count联合汇总、receiver分组和审计SHA，不得拼接不同cell极值 | `paper_reproduction/scripts/summarize_cvs_stage2c_effective8_strict_matrix.py`、测试、v13 summary artifacts | pending | synthetic绑定/篡改测试；v13 300/900计数；完整driver读取；输出SHA复算 | 汇总通过前不下最终性能结论 |
+| TR-4 | 125任务诉求与当前严格25/75/300/900计划 | 只有全部300 cells/900 rows完成并通过protocol receipts才可聚合性能 | 新run states、receipts、本报告 | verified | 8/8 shard complete、75/75 packages、300/300 `PROTOCOL_VALID` cell receipts、900/900同row formal rows、完整driver日志 | 严格矩阵artifact-complete；性能门槛另判且未通过 |
+| TR-5 | Experiment Reporting同row联合解释 | 汇总器必须校验receipt/formal row/resource绑定，输出300-cell明细、K×new-count联合汇总、receiver分组和审计SHA，不得拼接不同cell极值 | `paper_reproduction/scripts/summarize_cvs_stage2c_effective8_strict_matrix.py`、测试、v13 summary artifacts | verified | 2项synthetic绑定/篡改测试PASS；审计`status=PASS`；300 cells、900 rows；全部输出SHA本地复算一致 | 最终解释基于同cell联合行；不把边际极值拼接为候选 |
 
 TR-5汇总器已本地实现并提交为`7f14821`，`py_compile`与2项synthetic绑定/篡改测试通过；脚本SHA=`13607f2f320abd11697b41bb3b17ec41bc750a212de3a8434aad19e4c83d4751`。唯一同步目标为`/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/scripts/summarize_cvs_stage2c_effective8_strict_matrix.py`，只读输入为v13根，唯一新输出目录为v13根下`matrix_summary_v1`。命令固定为`python summarize_cvs_stage2c_effective8_strict_matrix.py --run-root <v13> --output-dir <v13>/matrix_summary_v1 --expected-cells 300`；输出目录预先存在时fail closed。
 
@@ -408,3 +408,56 @@ v13唯一计划同步目标预登记为`/home/szu2070436088/2510044040/CV-SincNe
 机制归因同时更正：当前锁定head为`use_alignment=false`，所以注册前后的旧类原型由相同旧类support独立计算且数值一致；遗忘来自新增类进入argmax后的竞争/hubness，而不是全局alignment坐标被重拟合。Round1直接抑制支持证据不足或对其他类support产生高相似度的prototype hub，但不会预先宣称突破ADV3B02表征上限。
 
 实现审查后增加三个fail-closed约束：Q95固定使用NumPy`method=higher`；类gap先向全类中位数收缩再执行正下限；另用source-locked`inverse_scale_cap`限制最大逆尺度，避免小gap制造新hub。EvidenceNorm启用时禁止alignment、非恒等Gram变换和非零uncertainty penalty。TTA的1→3→5触发继续使用EvidenceNorm前的raw cosine流，EvidenceNorm只改变最终融合/分类分数，从而保持Round1与v14的View预算可比。
+
+## effective8 v14严格矩阵最终结果（2026-07-16 01:29 CST）
+
+v13正式根已完成75/75 packages、300/300 prediction cells、300/300 `PROTOCOL_VALID` receipts和900/900 formal scenario rows；8/8 shard state均为`complete`，所有父PID均已退出。该状态表示协议有效且artifact-complete，不表示算法性能成功。汇总审计`status=PASS`，`audit.json` SHA=`37cb9498edafa299f255b3721d38c3d1d6e254888bf07806fed77888f84eb1e3`；完整300-cell同row表见`evidence/matrix_v13_complete/matrix_summary_v1/cell_summary.md`，900-row机器可读证据见同目录`scenario_rows.json`。
+
+### K×真实新类数联合结果
+
+下表每行由25个receiver×seed cell聚合；每个cell内部先对`leo_clear_weak`、`leo_low_elev_weak`、`leo_rain_weak`三场景等权平均。所有百分数仍保持同一实验行上下文。
+
+| 真实new数 | K | 注册前old | 注册后old | direct old | seen-new | H | 平均遗忘 | 注册前−direct | 注册后−direct | 全局旧类floor | 平均view |
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 5 | 1 | 76.62% | 60.21% | 77.18% | 51.24% | 54.14% | 16.41pp | -0.56pp | -16.97pp | 0.00% | 1.966 |
+| 5 | 5 | 80.56% | 64.59% | 77.18% | 60.28% | 61.62% | 15.97pp | +3.38pp | -12.59pp | 0.00% | 1.981 |
+| 5 | 10 | 81.96% | 67.09% | 77.18% | 60.16% | 62.83% | 14.87pp | +4.78pp | -10.09pp | 0.00% | 1.986 |
+| 5 | 20 | 82.07% | 67.91% | 77.18% | 61.41% | 63.91% | 14.16pp | +4.89pp | -9.27pp | 0.00% | 1.993 |
+| 10 | 1 | 76.29% | 54.19% | 77.18% | 38.95% | 44.37% | 22.10pp | -0.89pp | -22.99pp | 0.00% | 2.329 |
+| 10 | 5 | 80.23% | 60.52% | 77.18% | 46.92% | 52.30% | 19.71pp | +3.06pp | -16.66pp | 0.00% | 2.330 |
+| 10 | 10 | 81.77% | 62.21% | 77.18% | 48.37% | 53.84% | 19.56pp | +4.59pp | -14.97pp | 0.00% | 2.351 |
+| 10 | 20 | 81.66% | 63.00% | 77.18% | 50.59% | 55.42% | 18.66pp | +4.48pp | -14.18pp | 0.00% | 2.350 |
+| 20 | 1 | 76.20% | 51.53% | 77.18% | 30.83% | 38.17% | 24.67pp | -0.98pp | -25.64pp | 0.00% | 2.520 |
+| 20 | 5 | 80.21% | 58.30% | 77.18% | 39.38% | 46.75% | 21.91pp | +3.03pp | -18.88pp | 0.00% | 2.512 |
+| 20 | 10 | 81.66% | 59.80% | 77.18% | 41.57% | 48.66% | 21.86pp | +4.48pp | -17.38pp | 0.00% | 2.514 |
+| 20 | 20 | 81.59% | 60.71% | 77.18% | 43.19% | 50.08% | 20.88pp | +4.41pp | -16.47pp | 0.00% | 2.514 |
+
+矩阵内最佳联合组为5-new/K20，但注册后old=67.91%、seen-new=61.41%、H=63.91%、遗忘=14.16pp，仍显著低于正式门槛。H最高的单cell是`rx_8_8__seed_713101__new_5__k_20`：注册前old=89.44%、注册后old=75.28%、seen-new=71.00%、H=73.06%、全局旧类floor=45.00%、遗忘=14.17pp、注册后相对direct=-4.17pp；它也不得晋升。
+
+### `项目.md`门槛核验
+
+| 检查项 | 实测证据 | 要求 | 结论 |
+|---|---|---|---|
+| K10、5-new | old=67.09%；最低聚合旧类`6-15`=46.80%；seen-new=60.16%；H=62.83% | old≥92%；最低旧类≥88%；seen-new≥92% | FAIL |
+| K10、10-new | old=62.21%；最低聚合旧类`6-15`=41.93%；seen-new=48.37%；H=53.84% | old≥92%；最低旧类≥88%；seen-new≥90% | FAIL |
+| K10、20-new | old=59.80%；最低聚合旧类`6-15`=35.87%；seen-new=41.57%；H=48.66% | old≥92%；最低旧类≥88%；seen-new≥86% | FAIL |
+| K1无遗忘 | 15个receiver×new-count聚合组的适应增益全部为负；全矩阵K1平均遗忘16.41%至24.67% | overall gain≥+2pp且CI下界>0；每个receiver非负 | FAIL |
+| K5相对K10鲁棒性 | 225个匹配receiver×seed×scenario×new pair中仅59个同时满足四项≤3pp下降；old/min-old/H/seen分别有78/112/65/67次违规 | 每个匹配单元四项下降均≤3pp | FAIL |
+| 注册后优于direct | 0/300 cells满足注册后old≥direct；平均差为-9.27pp至-25.64pp | 应达到正收益并满足绝对门槛 | FAIL |
+| 旧类floor稳定性 | 仅8/300 cells的全局旧类floor≥50%；所有12个K×new组的跨cell floor均为0 | 不得逐类塌缩 | FAIL |
+
+candidate的遗忘在12个K×new组中均低于identity对照，但仍全部为正，范围14.16pp至24.67pp；全矩阵平均遗忘19.23pp，单cell最大40.83pp。其注册前adapt在K≥5时通常高于direct，说明轻量适配本身已产生有限正收益；新增类进入全类argmax后，旧/新类竞争与prototype hubness重新造成系统性塌缩，这是当前主要瓶颈，而不是继续增大K即可解决的问题。
+
+### 资源、缺口与最终判定
+
+| 真实new数 | 参数/epoch/持久状态 | 峰值CUDA显存 | query延迟均值 | 平均/P95 view | 1/3/5-view触发率 |
+|---:|---|---:|---:|---:|---:|
+| 5 | 44,048/12/109,818B | 168,198,144B | 0.677ms | 1.982/3 | 51.79%/47.35%/0.86% |
+| 10 | 44,048/12/109,818B | 168,271,872B | 0.714ms | 2.340/3 | 35.02%/62.96%/2.02% |
+| 20 | 44,048/12/109,818B | 168,441,856B | 0.751ms | 2.515/5 | 27.65%/68.96%/3.39% |
+
+参数、epoch、持久状态与1→3→5-view预算符合偏好上限，但当前receipt未提供MAC与端到端adapt latency；严格同协议的MRIOR-SDA配对基线也未随本矩阵产出。因此不能主张资源全面达标或相对MRIOR-SDA优越。
+
+最终判定：`effective8-v14-strict300-v13`为`PROTOCOL_VALID`、artifact-complete的正式负结果；它不是当前性能最佳版本，不满足Stage2-C晋升、部署或论文成功声明条件。后续应优先修复support-only全类注册竞争与prototype hubness，并以相同密封预测/独立评分闭环验证；不得通过query真值、role、quota或global assignment调参，也不建议仅扩展K或重复当前effective8矩阵。
+
+设计追踪最终计数：TR-1至TR-5均为`verified`，`deferred=0`、`rejected=0`、`blocked=0`。实现与当前严格协议完全对应，不是近似实现；剩余最高风险是算法层面的注册塌缩，以及MRIOR-SDA、MAC和端到端adapt latency证据缺口。
