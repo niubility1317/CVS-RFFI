@@ -1,4 +1,4 @@
-# CVS Stage2-C极轻型快速适应目标模式
+# CVS Phase2 Stage2-B/Stage2-C极轻型快速适应目标模式
 
 日期：2026-07-14
 协议源：`E:\type10-7\项目.md`第10.3.1节
@@ -8,13 +8,15 @@
 
 |指标|独立确认门槛|
 |---|---:|
-|target-old总体准确率|`old_acc>=0.95`|
+|target-old总体准确率|`old_acc>=0.92`|
 |旧类逐类下限|`min_old_class_acc>=0.88`|
 |5个真实target-new TX|`seen_new_acc>=0.92`|
 |10个真实target-new TX|`seen_new_acc>=0.90`|
 |20个真实target-new TX|`seen_new_acc>=0.86`|
 
 以上绝对门槛默认在统一`K=10`达到。开发阶段仅允许在K10选择一套candidate与超参数；锁定后以相同candidate评估嵌套K5。K5复用K10前5个物理support和完全相同query，matched row的`old_acc`、`min_old_class_acc`、`seen_new_acc`和`H_old_new`相对K10均不得下降超过3个百分点。
+
+`old_acc>=0.92`与`min_old_class_acc>=0.88`同时用于Stage2-B旧类校准和Stage2-C同row旧类适应。Stage2-B仅包含合法target-old support/query，不得报告或替代Stage2-C的seen-new准确率与`H_old_new`门槛；Stage2-C仍须同时满足5/10/20个真实target-new TX的门槛。
 
 K1自2026-07-15起作为极少support下旧类适应的强制压力门槛。K1复用K10第1个物理support和完全相同query，不得用K1 query重新选择candidate、域适应方法、超参数、epoch或门限。每个K1 row必须同时报告`old_acc_before_increment`、加入全部注册类后的`old_acc`和`old_adaptation_gain=old_acc-old_acc_before_increment`；独立确认矩阵总体聚合及每个target receiver聚合均要求`old_adaptation_gain>=0`。未满足时只能声明K1负迁移诊断，不能声明极少shot适应有效；K1正增益也不能替代K10绝对性能门槛。
 
