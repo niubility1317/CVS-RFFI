@@ -370,3 +370,14 @@ K10使注册前adapt由K1的64.44%提高到76.94%，并从低于direct 5.83pp转
 | 7 | 7 | `cuda:0` | 1930192 | `matrix_shard_7_logical0` | LIVE；首个new5 package完成，new10运行中 |
 
 `/proc/<pid>/environ`逐项确认上述物理映射，`/proc/<pid>/cmdline`逐项确认`--device cuda:0 --shard-count 8`及对应`--shard-index`。GPU0同时存在保留运行的v11 shard0与v12 shard0，共2个实验进程，未超过每GPU最多2个的默认上限；其他GPU最多1个v12实验。此次状态是“已落地并在运行”，不是矩阵完成或性能成功；后续必须等待8个state全部完成、完整读取driver日志并聚合300 prediction cells/900 formal rows后才能形成最终版本判定。
+
+### new20 truth/role扫描失败与修复追踪（2026-07-16 01:04 CST）
+
+01:03只读监控统计v12已完成20/75 packages，即80/300 prediction cells和240/900 formal rows；shard2、3、4、6父PID已退出而state仍停在`running`。完整读取4份driver日志后确认它们均在new20 predictor package构建的`_reject_predictor_truth_leaks`失败，分别命中`query_leo_rain_weak.npz`、`query_leo_clear_weak.npz`、`query_leo_low_elev_weak.npz`和`support_leo_rain_weak.npz`；new5/new10均已通过。失败包和日志完整保留，未重启、未清理。
+
+| ID | Source section | Requirement | Target files | Status | Verification | Notes |
+|---|---|---|---|---|---|---|
+| TR-1 | `项目.md`与根`AGENTS.md`的no-query-truth/no-role-Oracle边界 | predictor的query包不得包含真实TX、old/new/unknown role、query quota或可回流真值 | `code/scripts/build_cvs_stage2_predictor_bundle.py`、predictor bundle测试 | pending | 结构化枚举NPZ成员、字符串数组、manifest和opaque token；构造真泄漏负例 | 不得以“完成矩阵”为由放宽协议 |
+| TR-2 | Phase2 sealed input package与pre-open验证 | 避免把数值IQ/ZIP随机字节中对短TX标签的偶然命中误判为结构化真值泄漏，同时保持JSON/字符串/token门禁 | 同上 | pending | 复现new20失败；新增数值payload短标签碰撞正例与结构化字符串泄漏负例；本地`ssr-gpu`测试 | 先证明是二进制误报后才修改 |
+| TR-3 | 本地优先、Git、SCP和不可覆盖 | 修复必须本地提交、验证后同步；v12 partial evidence不得覆盖或原地续跑 | 代码、测试、报告、新运行根/计划 | pending | `git diff --check`、focused pytest、远端SHA、全新根存在性检查 | v12保持失败证据 |
+| TR-4 | 125任务诉求与当前严格25/75/300/900计划 | 只有全部300 cells/900 rows完成并通过protocol receipts才可聚合性能 | 新run states、receipts、本报告 | blocked | 8/8 shard complete、300 cell receipts、900同row formal rows、完整driver日志 | 当前被TR-1/TR-2阻塞 |
