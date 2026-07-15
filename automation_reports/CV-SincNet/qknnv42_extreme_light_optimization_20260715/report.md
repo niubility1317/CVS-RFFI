@@ -348,3 +348,21 @@ bash paper_reproduction/scripts/launch_cvs_ground_lora_fft_ablation_v15.sh
 ### 12.3下一target adapt候选
 
 若source层组消融证明final feature-head仍是有效位置，下一唯一target快速适配候选为`BP-JG-LoRA`：仅对合并后的ground model之`id_gate.0`和`joint_proj.0`注入rank8 LoRA，共6,400参数、FP16 delta 12,800B；统一5epoch，SGD无momentum，K1自然5步、K10自然50步。损失使用跨View prototype CE、全注册类margin不下降、feature anchor、prototype Gram保持/去混淆和轻量View一致性；所有项对全部注册类对称，不使用query、role或quota。该机制当前仅为待实现/待验证假设，不写成性能结论。
+
+
+### 12.4启动前证据与同步
+
+- Git版本：`11ea241`；本地分支`codex/cvs-rffi-release-20260626`。
+- 本地`ssr-gpu`：34/34定向测试通过，两个训练脚本`py_compile`、launcher `bash -n`和`git diff --check`均通过。
+- 2026-07-15 20:35+08:00 direct N607 preflight通过；项目根、时间和8张RTX3090可见。
+- live inventory为`active_training_processes=[]`、`gpu_compute=[]`；8张GPU均10MiB、0%利用率。
+- local-first同步后SHA256逐文件一致：
+  - `train_apply_phase1_iq_preadapter_20260703.py`：`193f20474cea8b4347f399337a4d2881ce1bd9f52526e6e9f88c5f4dc3ae8fe5`；
+  - `train_export_cvs_support_lora_adapter.py`：`563b90126df602d86ff7cce0831214f06e8eedf8cc58c2a0323da6171d89c7d8`；
+  - `launch_cvs_ground_lora_adapt_ablation_v16.sh`：`7d91bd967327834641e4d23820bc6942857dc2f93cd463827b911929ea3ebbb0`。
+- 远端`CVS-RFFI`环境下`py_compile`和`bash -n`通过；run/log目标根均不存在，满足不覆盖约束。
+- 唯一启动命令：
+  ```bash
+  cd /home/szu2070436088/2510044040/CV-SincNet
+  bash paper_reproduction/scripts/launch_cvs_ground_lora_adapt_ablation_v16.sh
+  ```
