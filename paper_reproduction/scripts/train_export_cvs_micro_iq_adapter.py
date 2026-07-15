@@ -266,6 +266,7 @@ def assemble_support_views(
     class_to_index = {label: index for index, label in enumerate(class_order)}
     view_rows: list[np.ndarray] = []
     view_labels: list[int] = []
+    support_row_physical_ids: list[str] = []
     reference_support_ids: list[str] | None = None
     reference_query_ids: list[str] | None = None
     scenario_audit: dict[str, Any] = {}
@@ -292,6 +293,7 @@ def assemble_support_views(
         labels = arrays["tx_ids"][support_idx].astype(str).tolist()
         view_rows.append(arrays["raw_iq"][support_idx].astype(np.float32, copy=False))
         view_labels.extend(class_to_index[label] for label in labels)
+        support_row_physical_ids.extend(support_ids)
         scenario_audit[scenario] = {
             "support_count": len(support_idx),
             "query_count": len(query_idx),
@@ -308,6 +310,7 @@ def assemble_support_views(
         {
             "class_order": class_order,
             "physical_support_ids": reference_support_ids or [],
+            "support_row_physical_ids": support_row_physical_ids,
             "physical_query_ids": reference_query_ids or [],
             "support_view_count": len(SCENARIOS),
             "scenario_audit": scenario_audit,

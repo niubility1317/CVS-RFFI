@@ -7,6 +7,8 @@ from paper_reproduction.scripts.train_export_cvs_support_lora_adapter import (
     EFFECTIVE_FEATURE_LORA_TARGETS,
     LATE_FILM_TARGETS,
     FULL_FEATURE_LORA_TARGETS,
+    JOINT_GATE_LORA_TARGETS,
+    JOINT_PROJECTION_LORA_TARGETS,
     PROJECTION_LORA_TARGETS,
     LORA_TARGETS,
     ChannelAffineLinear,
@@ -14,13 +16,20 @@ from paper_reproduction.scripts.train_export_cvs_support_lora_adapter import (
     LoRALinear,
     _prototype_banks_from_matched_views,
     _validate_deployment_controls,
+    bp_jg_episode_loss,
+    build_support_run_id,
+    build_shot_index_episode_positions,
     build_rx_shift_pair_cycle,
     inject_feat_joint_lora,
     merge_feat_joint_lora,
     inject_late_channel_film,
     enable_late_key_layer_finetune,
     load_trainable_adapter_state,
+    load_and_merge_ground_lora,
+    roundtrip_fp16_target_lora_and_merge,
+    train_support_only_bp_jg,
     train_support_only_lora,
+    validate_bp_jg_qknn_config,
     view_score_distillation_loss,
 )
 
@@ -157,6 +166,70 @@ def test_projection_feature_rank16_updates_only_four_pooled_projection_layers() 
     )
 
 
+def test_target_joint_gate_rank8_is_exactly_6400_parameters() -> None:
+    model = _Model()
+    audit = inject_feat_joint_lora(
+        model, rank=8, alpha=8.0, scope="joint_gate"
+    )
+    assert audit["trainable_parameters"] == 6_400
+    assert audit["adapter_state_bytes_fp16"] == 12_800
+    assert audit["adapter_macs_per_query"] == 6_400
+    assert [row["module"] for row in audit["target_modules"]] == list(
+        JOINT_GATE_LORA_TARGETS
+    )
+
+
+def test_target_joint_projection_rank8_is_exactly_3840_parameters() -> None:
+    model = _Model()
+    audit = inject_feat_joint_lora(
+        model, rank=8, alpha=8.0, scope="joint_projection"
+    )
+    assert audit["trainable_parameters"] == 3_840
+    assert audit["adapter_state_bytes_fp16"] == 7_680
+    assert [row["module"] for row in audit["target_modules"]] == list(
+        JOINT_PROJECTION_LORA_TARGETS
+    )
+
+
+def test_ground_p4_is_loaded_merged_then_target_jg_is_injected(tmp_path) -> None:
+    source = _Model()
+    inject_feat_joint_lora(
+        source, rank=16, alpha=16.0, scope="projection_feature"
+    )
+    state = {
+        name: torch.full_like(parameter, 0.01).half()
+        for name, parameter in source.named_parameters()
+        if parameter.requires_grad
+    }
+    state_path = tmp_path / "ground_p4.pt"
+    torch.save(state, state_path)
+
+    model = _Model()
+    ground = load_and_merge_ground_lora(
+        model,
+        state_path,
+        scope="projection_feature",
+        rank=16,
+        alpha=16.0,
+    )
+    assert ground["resources"]["trainable_parameters"] == 18_448
+    assert ground["merge"]["merged_module_count"] == 4
+    assert not any(isinstance(module, LoRALinear) for module in model.modules())
+    target = inject_feat_joint_lora(
+        model, rank=8, alpha=8.0, scope="joint_gate"
+    )
+    assert target["trainable_parameters"] == 6_400
+    trainable = [
+        name for name, parameter in model.named_parameters() if parameter.requires_grad
+    ]
+    assert trainable
+    assert all(
+        ("cls_head.id_gate.0" in name or "cls_head.joint_proj.0" in name)
+        and ".lora_" in name
+        for name in trainable
+    )
+
+
 def test_lora_merge_removes_wrappers_and_preserves_outputs() -> None:
     model = _Model()
     inject_feat_joint_lora(model, rank=4, alpha=4.0, scope="effective_feature")
@@ -169,6 +242,15 @@ def test_lora_merge_removes_wrappers_and_preserves_outputs() -> None:
     assert audit["remaining_lora_wrappers"] == []
     assert audit["algebraic_probe_parity_pass"] is True
     assert not any(isinstance(module, LoRALinear) for module in model.modules())
+
+
+def test_lora_merge_rejects_nan_delta() -> None:
+    model = _Model()
+    inject_feat_joint_lora(model, rank=8, alpha=8.0, scope="joint_projection")
+    with torch.no_grad():
+        model.id_backbone.cls_head.joint_proj[0].lora_b.weight.fill_(float("nan"))
+    with pytest.raises(RuntimeError, match="parity failed"):
+        merge_feat_joint_lora(model)
 
 
 def test_late_channel_film_is_1280_params_and_freezes_checkpoint() -> None:
@@ -238,6 +320,74 @@ def test_ground_adapter_state_load_is_strict_and_finite(tmp_path) -> None:
         load_trainable_adapter_state(model, state_path)
 
 
+def test_ground_lora_sha_is_checked_before_load(tmp_path) -> None:
+    import hashlib
+
+    model = _Model()
+    inject_feat_joint_lora(model, rank=16, alpha=16.0, scope="projection_feature")
+    state = {
+        name: parameter.detach().half()
+        for name, parameter in model.named_parameters()
+        if parameter.requires_grad
+    }
+    state_path = tmp_path / "ground_p4.pt"
+    torch.save(state, state_path)
+    expected_sha256 = hashlib.sha256(state_path.read_bytes()).hexdigest()
+
+    audit = load_and_merge_ground_lora(
+        _Model(),
+        state_path,
+        scope="projection_feature",
+        rank=16,
+        alpha=16.0,
+        expected_sha256=expected_sha256,
+    )
+    assert audit["sha256_preload_match"] is True
+    assert audit["observed_sha256_before_load"] == expected_sha256
+
+    with pytest.raises(ValueError, match="mismatch before load"):
+        load_and_merge_ground_lora(
+            _Model(),
+            state_path,
+            scope="projection_feature",
+            rank=16,
+            alpha=16.0,
+            expected_sha256="0" * 64,
+        )
+
+
+def test_target_fp16_artifact_is_reloaded_before_merge(tmp_path) -> None:
+    import copy
+
+    torch.manual_seed(713101)
+    model = _Model()
+    inject_feat_joint_lora(model, rank=8, alpha=8.0, scope="joint_gate")
+    with torch.no_grad():
+        for name, parameter in model.named_parameters():
+            if parameter.requires_grad:
+                parameter.copy_(torch.randn_like(parameter) * 0.017)
+    state = {
+        name: parameter.detach().cpu().half()
+        for name, parameter in model.named_parameters()
+        if parameter.requires_grad
+    }
+    state_path = tmp_path / "target_fp16.pt"
+    torch.save(state, state_path)
+
+    expected = copy.deepcopy(model)
+    load_trainable_adapter_state(expected, state_path)
+    merge_feat_joint_lora(expected)
+
+    audit = roundtrip_fp16_target_lora_and_merge(model, state_path)
+    assert audit["mode"] == "fp16_artifact_roundtrip_then_merge"
+    assert audit["state_roundtrip"]["strict_key_match"] is True
+    assert audit["merge"]["remaining_lora_wrappers"] == []
+    assert audit["merge"]["post_merge_trainable_parameters"] == 0
+    assert not any(parameter.requires_grad for parameter in model.parameters())
+    for name, parameter in model.state_dict().items():
+        torch.testing.assert_close(parameter, expected.state_dict()[name])
+
+
 def test_ground_late_key_state_load_is_strict_and_within_patch_budget(tmp_path) -> None:
     model = _Model()
     audit = enable_late_key_layer_finetune(model)
@@ -286,6 +436,61 @@ def test_rx_shift_pair_cycle_uses_two_views_per_epoch_and_three_unique_views() -
         "rx_shift_p2",
         "rx_shift_m2",
     ]
+
+
+def test_maxk20_split_is_nested_and_uses_one_disjoint_query_set() -> None:
+    import numpy as np
+    from paper_reproduction.scripts.train_export_cvs_micro_iq_adapter import (
+        assemble_support_views,
+    )
+    from paper_reproduction.scripts.train_export_cvs_support_lora_adapter import (
+        SCENARIOS,
+    )
+
+    roles: list[str] = []
+    labels: list[str] = []
+    sample_numbers: list[int] = []
+    for role, label in (("target_old", "old0"), ("target_new", "new0")):
+        for sample_number in range(45):
+            roles.append(role)
+            labels.append(label)
+            sample_numbers.append(sample_number)
+    count = len(roles)
+    caches = {}
+    for scenario_index, scenario in enumerate(SCENARIOS):
+        caches[scenario] = {
+            "raw_iq": np.full(
+                (count, 2, 8), float(scenario_index), dtype=np.float32
+            ),
+            "dataset_role": np.asarray(roles),
+            "tx_ids": np.asarray(labels),
+            "rx_ids": np.asarray(["rx0"] * count),
+            "day_ids": np.asarray([f"d{value}" for value in sample_numbers]),
+            "eq_ids": np.asarray([f"e{value}" for value in sample_numbers]),
+            "sig_ids": np.asarray([f"s{value}" for value in sample_numbers]),
+            "sat_scenarios": np.asarray([scenario] * count),
+        }
+
+    manifests = {}
+    for k_shot in (1, 5, 10, 20):
+        _, _, manifests[k_shot] = assemble_support_views(
+            caches,
+            receiver="rx0",
+            old_labels=["old0"],
+            new_labels=["new0"],
+            seed=713101,
+            k_shot=k_shot,
+            support_pool_max_k=20,
+            query_per_tx=20,
+        )
+    support_sets = {
+        k_shot: set(manifest["physical_support_ids"])
+        for k_shot, manifest in manifests.items()
+    }
+    assert support_sets[1] < support_sets[5] < support_sets[10] < support_sets[20]
+    query_ids = [manifests[k_shot]["physical_query_ids"] for k_shot in (1, 5, 10, 20)]
+    assert query_ids[1:] == [query_ids[0], query_ids[0], query_ids[0]]
+    assert not support_sets[20].intersection(query_ids[0])
 
 
 def test_rotating_single_view_film_uses_cached_teacher_and_step_cap(
@@ -411,6 +616,232 @@ def test_leave_one_view_out_prototypes_exclude_current_view() -> None:
     assert torch.allclose(torch.linalg.norm(leave_one_out, dim=-1), torch.ones(3, 2))
 
 
+def test_shot_index_episodes_cover_k20_in_ten_balanced_steps() -> None:
+    physical_labels = torch.arange(3).repeat_interleave(20)
+    labels = physical_labels.repeat(3)
+    episodes = build_shot_index_episode_positions(
+        labels, view_count=3, max_episodes_per_epoch=10
+    )
+    assert len(episodes) == 10
+    assert all(int(episode.numel()) == 3 * 3 * 2 for episode in episodes)
+    first_view = torch.cat([episode[:6] for episode in episodes])
+    torch.testing.assert_close(
+        torch.sort(first_view).values, torch.arange(60), rtol=0.0, atol=0.0
+    )
+    for episode in episodes:
+        per_view_labels = labels[episode].reshape(3, -1)
+        assert torch.equal(per_view_labels[0], per_view_labels[1])
+        assert torch.equal(per_view_labels[0], per_view_labels[2])
+        assert torch.bincount(per_view_labels[0], minlength=3).tolist() == [2, 2, 2]
+
+
+def test_bp_jg_episode_loss_is_finite_symmetric_and_differentiable() -> None:
+    torch.manual_seed(7)
+    physical_labels = torch.tensor([0, 0, 1, 1, 2, 2])
+    labels = physical_labels.repeat(3)
+    base = torch.randn(18, 12)
+    features = (base + 0.03 * torch.randn_like(base)).requires_grad_(True)
+    losses = bp_jg_episode_loss(
+        features,
+        base,
+        labels,
+        view_count=3,
+        temperature=18.0,
+    )
+    expected = {
+        "loss",
+        "xview_prototype_ce",
+        "boundary_margin_loss",
+        "feature_anchor_loss",
+        "prototype_gram_loss",
+        "prototype_separation_loss",
+        "view_consistency_loss",
+        "mean_margin",
+        "mean_base_margin",
+        "correct",
+        "sample_count",
+    }
+    assert set(losses) == expected
+    assert all(bool(torch.isfinite(value).all()) for value in losses.values())
+    assert int(losses["sample_count"]) == 18
+    class_permutation = torch.tensor([2, 0, 1])
+    permuted = bp_jg_episode_loss(
+        features,
+        base,
+        class_permutation[labels],
+        view_count=3,
+        temperature=18.0,
+    )
+    for key in expected:
+        torch.testing.assert_close(losses[key], permuted[key])
+    losses["loss"].backward()
+    assert features.grad is not None
+    assert bool(torch.isfinite(features.grad).all())
+
+
+def test_bp_jg_k1_uses_five_steps_and_zero_optimizer_state(monkeypatch) -> None:
+    import numpy as np
+    import paper_reproduction.scripts.train_export_cvs_micro_iq_adapter as micro_trainer
+    import paper_reproduction.scripts.train_export_cvs_support_lora_adapter as trainer
+
+    model = _Model()
+    inject_feat_joint_lora(model, rank=8, alpha=8.0, scope="joint_gate")
+
+    def fake_feature_forward(current_model, rows):
+        signal = rows.mean(dim=(1, 2), keepdim=False).unsqueeze(1)
+        identity = signal.expand(-1, 160)
+        gate = current_model.id_backbone.cls_head.id_gate[0](identity)
+        joint = current_model.id_backbone.cls_head.joint_proj[0](
+            torch.cat([identity, gate], dim=1)
+        )
+        return joint, joint[:, :2]
+
+    monkeypatch.setattr(micro_trainer, "_feature_forward", fake_feature_forward)
+    monkeypatch.setattr(trainer, "_feature_forward", fake_feature_forward)
+    physical = np.asarray(
+        [
+            np.full((2, 4), -1.0, dtype=np.float32),
+            np.full((2, 4), 1.0, dtype=np.float32),
+        ]
+    )
+    support_rows = np.concatenate(
+        [physical, physical * 0.9, physical * 1.1], axis=0
+    )
+    support_labels = np.tile(np.asarray([0, 1]), 3)
+    trace, runtime = train_support_only_bp_jg(
+        model,
+        support_rows,
+        support_labels,
+        physical_support_ids=["c0-shot0", "c1-shot0"],
+        support_row_physical_ids=["c0-shot0", "c1-shot0"] * 3,
+        epochs=5,
+        learning_rate=5.0e-3,
+        weight_decay=1.0e-4,
+        temperature=18.0,
+        support_view_count=3,
+        batch_size=32,
+        max_optimizer_steps=50,
+        grad_clip=1.0,
+        seed=713101,
+        device=torch.device("cpu"),
+    )
+    assert len(trace) == 5
+    assert runtime["optimizer_steps"] == 5
+    assert runtime["episodes_per_epoch"] == 1
+    assert runtime["k_shot_inferred"] == 1
+    assert runtime["optimizer_training_state_bytes_estimate"] == 0
+    assert runtime["support_forward_sample_equivalents"] == 36
+    assert runtime["query_rows_used_for_training"] == 0
+    assert runtime["old_new_role_used_by_optimizer"] is False
+    assert runtime["class_quota_used_by_optimizer"] is False
+    assert runtime["dense_query_graph_used"] is False
+    assert runtime["physical_support_ids_unique"] is True
+    assert len(runtime["physical_support_ids_sha256"]) == 64
+    assert runtime["train_receive_views_per_physical_sample_per_epoch"] == 3
+
+    with pytest.raises(ValueError, match="non-empty and unique"):
+        train_support_only_bp_jg(
+            model,
+            support_rows,
+            support_labels,
+            physical_support_ids=["duplicate", "duplicate"],
+            support_row_physical_ids=["duplicate", "duplicate"] * 3,
+            epochs=5,
+            learning_rate=5.0e-3,
+            weight_decay=1.0e-4,
+            temperature=18.0,
+            support_view_count=3,
+            batch_size=32,
+            max_optimizer_steps=50,
+            grad_clip=1.0,
+            seed=713101,
+            device=torch.device("cpu"),
+        )
+
+    with pytest.raises(ValueError, match="alignment drift"):
+        train_support_only_bp_jg(
+            model,
+            support_rows,
+            support_labels,
+            physical_support_ids=["c0-shot0", "c1-shot0"],
+            support_row_physical_ids=[
+                "c0-shot0",
+                "c1-shot0",
+                "c1-shot0",
+                "c0-shot0",
+                "c0-shot0",
+                "c1-shot0",
+            ],
+            epochs=5,
+            learning_rate=5.0e-3,
+            weight_decay=1.0e-4,
+            temperature=18.0,
+            support_view_count=3,
+            batch_size=32,
+            max_optimizer_steps=50,
+            grad_clip=1.0,
+            seed=713101,
+            device=torch.device("cpu"),
+        )
+
+
+@pytest.mark.parametrize(
+    ("k_shot", "expected_steps", "expected_episodes"),
+    [(5, 25, 5), (10, 50, 10), (20, 50, 10)],
+)
+def test_bp_jg_k_grid_executes_locked_step_budget(
+    monkeypatch, k_shot: int, expected_steps: int, expected_episodes: int
+) -> None:
+    import numpy as np
+    import paper_reproduction.scripts.train_export_cvs_micro_iq_adapter as micro_trainer
+    import paper_reproduction.scripts.train_export_cvs_support_lora_adapter as trainer
+
+    model = _Model()
+    inject_feat_joint_lora(model, rank=8, alpha=8.0, scope="joint_gate")
+
+    def fake_feature_forward(current_model, rows):
+        signal = rows.mean(dim=(1, 2), keepdim=False).unsqueeze(1)
+        identity = signal.expand(-1, 160)
+        gate = current_model.id_backbone.cls_head.id_gate[0](identity)
+        joint = current_model.id_backbone.cls_head.joint_proj[0](
+            torch.cat([identity, gate], dim=1)
+        )
+        return joint, joint[:, :2]
+
+    monkeypatch.setattr(micro_trainer, "_feature_forward", fake_feature_forward)
+    monkeypatch.setattr(trainer, "_feature_forward", fake_feature_forward)
+    physical_labels = np.repeat(np.asarray([0, 1]), k_shot)
+    signal = np.where(physical_labels == 0, -1.0, 1.0).astype(np.float32)
+    physical = np.repeat(signal[:, None, None], 2 * 4, axis=1).reshape(-1, 2, 4)
+    support_rows = np.concatenate([physical, physical * 0.9, physical * 1.1])
+    support_labels = np.tile(physical_labels, 3)
+    physical_ids = [
+        f"c{class_index}-shot{shot_index}"
+        for class_index in (0, 1)
+        for shot_index in range(k_shot)
+    ]
+    _, runtime = train_support_only_bp_jg(
+        model,
+        support_rows,
+        support_labels,
+        physical_support_ids=physical_ids,
+        support_row_physical_ids=physical_ids * 3,
+        epochs=5,
+        learning_rate=5.0e-3,
+        weight_decay=1.0e-4,
+        temperature=18.0,
+        support_view_count=3,
+        batch_size=256,
+        max_optimizer_steps=50,
+        grad_clip=1.0,
+        seed=713101,
+        device=torch.device("cpu"),
+    )
+    assert runtime["optimizer_steps"] == expected_steps
+    assert runtime["episodes_per_epoch"] == expected_episodes
+    assert runtime["support_forward_sample_equivalents"] == 36 * k_shot
+
+
 def test_cli_accepts_class_symmetric_dro_controls() -> None:
     from paper_reproduction.scripts.train_export_cvs_support_lora_adapter import parse_args
 
@@ -439,6 +870,146 @@ def test_cli_accepts_class_symmetric_dro_controls() -> None:
     assert args.cosine_margin == 0.1
     assert args.class_dro_temperature == 5.0
     assert args.cross_view_prototype_weight == 1.0
+
+
+def test_cli_locks_bp_jg_p4_and_five_epoch_controls() -> None:
+    from paper_reproduction.scripts.train_export_cvs_support_lora_adapter import parse_args
+
+    args = parse_args(
+        [
+            "--config",
+            "config.json",
+            "--ckpt",
+            "model.pth",
+            "--out_root",
+            "out",
+            "--receiver",
+            "8-8",
+            "--new_count",
+            "20",
+            "--seed",
+            "713101",
+            "--k_shot",
+            "1",
+            "--adapt_objective",
+            "bp_jg",
+            "--scope",
+            "joint_gate",
+            "--rank",
+            "8",
+            "--alpha",
+            "8",
+            "--epochs",
+            "5",
+            "--optimizer",
+            "sgd",
+            "--max_optimizer_steps",
+            "50",
+            "--learning_rate",
+            "0.005",
+            "--weight_decay",
+            "0.0001",
+            "--temperature",
+            "18",
+            "--grad_clip",
+            "1",
+            "--view_sampling_mode",
+            "shot_index",
+            "--ground_adapter_state",
+            "ground_p4.pt",
+            "--ground_adapter_sha256",
+            "0" * 64,
+        ]
+    )
+    _validate_deployment_controls(args)
+    assert args.k_shot == 1
+    assert args.scope == "joint_gate"
+    assert args.ground_adapter_scope == "projection_feature"
+    assert args.ground_adapter_rank == 16
+    run_id = build_support_run_id(args)
+    assert "joint_gate_r8" in run_id
+    assert "000000000000" in run_id
+    import copy
+
+    rank16 = copy.copy(args)
+    rank16.rank = 16
+    rank16.alpha = 16.0
+    assert build_support_run_id(rank16) != run_id
+    other_ground = copy.copy(args)
+    other_ground.ground_adapter_sha256 = "1" * 64
+    assert build_support_run_id(other_ground) != run_id
+    args.view_sampling_mode = "stacked"
+    with pytest.raises(ValueError, match="bp_jg_shot_index_episodes"):
+        _validate_deployment_controls(args)
+
+
+def test_bp_jg_qknn_config_forbids_legacy_head_and_old_bias() -> None:
+    config = {
+        "support_pool_max_k": 20,
+        "qknnv42_head_mode": "qknn",
+        "qknnv42_support_representation": "prototype_only",
+        "qknnv42_feature_adapter_mode": "none",
+        "qknnv42_labelprop_mode": "disabled",
+        "qknnv42_decision_mode": "per_sample_argmax",
+        "qknnv42_old_anchor_bias": 0.0,
+    }
+    validate_bp_jg_qknn_config(config)
+    for key, value in (
+        ("qknnv42_head_mode", "extreme_light_diag_cosine"),
+        ("qknnv42_old_anchor_bias", 0.001),
+        ("qknnv42_feature_adapter_mode", "support_diag_whiten"),
+    ):
+        invalid = dict(config)
+        invalid[key] = value
+        with pytest.raises(ValueError, match="class-symmetric qKNN"):
+            validate_bp_jg_qknn_config(invalid)
+    legacy = dict(config, primary_k_shot=10, sensitivity_k_shot=5)
+    with pytest.raises(ValueError, match="legacy K10/K5"):
+        validate_bp_jg_qknn_config(legacy)
+
+
+def test_p4_identity_control_is_zero_update_and_collision_safe() -> None:
+    from paper_reproduction.scripts.train_export_cvs_support_lora_adapter import (
+        parse_args,
+    )
+
+    args = parse_args(
+        [
+            "--config",
+            "config.json",
+            "--ckpt",
+            "model.pth",
+            "--out_root",
+            "out",
+            "--receiver",
+            "8-8",
+            "--new_count",
+            "20",
+            "--seed",
+            "713101",
+            "--k_shot",
+            "10",
+            "--adapt_objective",
+            "p4_identity",
+            "--epochs",
+            "0",
+            "--optimizer",
+            "sgd",
+            "--max_optimizer_steps",
+            "0",
+            "--ground_adapter_state",
+            "ground_p4.pt",
+            "--ground_adapter_sha256",
+            "a" * 64,
+        ]
+    )
+    _validate_deployment_controls(args)
+    run_id = build_support_run_id(args)
+    assert "p4_aaaaaaaaaaaa_identity" in run_id
+    assert "rx_8-8_new_20_seed_713101_k_10" in run_id
+    args.epochs = 1
+    with pytest.raises(ValueError, match="p4_identity_zero_epochs"):
+        _validate_deployment_controls(args)
 
 
 def test_cli_accepts_late_film_fast_adaptation_controls() -> None:

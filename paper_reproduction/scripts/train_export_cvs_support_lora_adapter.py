@@ -10,6 +10,7 @@ LEO support views; target query rows never enter fitting or model selection.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import math
 import sys
@@ -70,6 +71,15 @@ PROJECTION_LORA_TARGETS = (
     "id_backbone.f_proj",
     "id_backbone.pa_proj.0",
     "id_backbone.fuse.0",
+)
+
+JOINT_PROJECTION_LORA_TARGETS = (
+    "id_backbone.cls_head.joint_proj.0",
+)
+
+JOINT_GATE_LORA_TARGETS = (
+    "id_backbone.cls_head.id_gate.0",
+    "id_backbone.cls_head.joint_proj.0",
 )
 
 FULL_FEATURE_LORA_TARGETS = (
@@ -271,6 +281,10 @@ def inject_feat_joint_lora(
         target_names = EFFECTIVE_FEATURE_LORA_TARGETS
     elif scope_norm == "projection_feature":
         target_names = PROJECTION_LORA_TARGETS
+    elif scope_norm == "joint_projection":
+        target_names = JOINT_PROJECTION_LORA_TARGETS
+    elif scope_norm == "joint_gate":
+        target_names = JOINT_GATE_LORA_TARGETS
     else:
         raise ValueError(f"unsupported LoRA scope: {scope}")
     for parameter in model.parameters():
@@ -366,6 +380,8 @@ def merge_feat_joint_lora(model: nn.Module) -> dict[str, Any]:
         merged.weight.copy_(base.weight + delta.to(base.weight.dtype))
         if base.bias is not None:
             merged.bias.copy_(base.bias)
+        for parameter in merged.parameters():
+            parameter.requires_grad_(False)
         parent, leaf = _resolve_parent(model, name)
         if leaf.isdigit():
             parent[int(leaf)] = merged
@@ -378,7 +394,7 @@ def merge_feat_joint_lora(model: nn.Module) -> dict[str, Any]:
         name for name, module in model.named_modules() if isinstance(module, LoRALinear)
     ]
     max_difference = max(row["max_absolute_difference"] for row in parity)
-    if remaining or max_difference > 1.0e-5:
+    if remaining or not math.isfinite(max_difference) or max_difference > 1.0e-5:
         raise RuntimeError(
             f"LoRA merge parity failed: remaining={remaining}, max_diff={max_difference}"
         )
@@ -386,6 +402,13 @@ def merge_feat_joint_lora(model: nn.Module) -> dict[str, Any]:
         "merged_module_count": int(len(parity)),
         "merged_modules": parity,
         "remaining_lora_wrappers": remaining,
+        "post_merge_trainable_parameters": int(
+            sum(
+                parameter.numel()
+                for parameter in model.parameters()
+                if parameter.requires_grad
+            )
+        ),
         "max_absolute_difference": max_difference,
         "algebraic_probe_parity_pass": True,
         "deployment_added_macs_per_view_after_merge": 0,
@@ -578,6 +601,71 @@ def load_trainable_adapter_state(
     }
 
 
+def load_and_merge_ground_lora(
+    model: nn.Module,
+    state_path: Path,
+    *,
+    scope: str,
+    rank: int,
+    alpha: float,
+    expected_sha256: str | None = None,
+) -> dict[str, Any]:
+    """Load a ground LoRA exactly, merge it, then refreeze the base model."""
+
+    state_path = Path(state_path)
+    observed_sha256 = _sha256_file(state_path)
+    if expected_sha256 is not None:
+        expected_sha256 = str(expected_sha256).strip().lower()
+        if len(expected_sha256) != 64 or any(
+            value not in "0123456789abcdef" for value in expected_sha256
+        ):
+            raise ValueError("ground adapter expected SHA256 must be 64 hex characters")
+        if observed_sha256 != expected_sha256:
+            raise ValueError(
+                "ground adapter SHA256 mismatch before load: "
+                f"{observed_sha256} != {expected_sha256}"
+            )
+    resources = inject_feat_joint_lora(
+        model, rank=int(rank), alpha=float(alpha), scope=str(scope)
+    )
+    initialization = load_trainable_adapter_state(model, state_path)
+    merge = merge_feat_joint_lora(model)
+    for parameter in model.parameters():
+        parameter.requires_grad_(False)
+    return {
+        "mode": "ground_lora_loaded_and_merged",
+        "scope": str(scope),
+        "rank": int(rank),
+        "alpha": float(alpha),
+        "resources": resources,
+        "initialization": initialization,
+        "merge": merge,
+        "serialized_file_bytes": int(state_path.stat().st_size),
+        "expected_sha256": expected_sha256,
+        "observed_sha256_before_load": observed_sha256,
+        "sha256_preload_match": expected_sha256 is None
+        or observed_sha256 == expected_sha256,
+        "deployment_added_macs_per_query_after_merge": 0,
+    }
+
+
+def roundtrip_fp16_target_lora_and_merge(
+    model: nn.Module, state_path: Path
+) -> dict[str, Any]:
+    """Reload the persisted FP16 target patch before deployment merge/export."""
+
+    state_path = Path(state_path)
+    roundtrip = load_trainable_adapter_state(model, state_path)
+    merge = merge_feat_joint_lora(model)
+    return {
+        "mode": "fp16_artifact_roundtrip_then_merge",
+        "state_roundtrip": roundtrip,
+        "merge": merge,
+        "artifact_sha256": _sha256_file(state_path),
+        "deployment_added_macs_per_query_after_merge": 0,
+    }
+
+
 def _prototype_banks_from_matched_views(
     features: torch.Tensor,
     labels: torch.Tensor,
@@ -639,6 +727,405 @@ def view_score_distillation_loss(
     return F.kl_div(
         student_log_probs, targets, reduction="batchmean"
     ) * float(temperature) ** 2
+
+
+def _matched_view_support_layout(
+    labels: torch.Tensor, *, view_count: int
+) -> tuple[int, int, int, list[torch.Tensor]]:
+    """Validate view-major support rows and return physical class positions."""
+
+    if labels.ndim != 1 or int(view_count) <= 1:
+        raise ValueError("BP-JG requires one-dimensional labels and at least two views")
+    if int(labels.numel()) % int(view_count) != 0:
+        raise ValueError("support labels cannot be grouped into matched views")
+    physical_count = int(labels.numel()) // int(view_count)
+    physical_labels = labels[:physical_count]
+    for view_index in range(1, int(view_count)):
+        current = labels[
+            view_index * physical_count : (view_index + 1) * physical_count
+        ]
+        if not torch.equal(physical_labels, current):
+            raise ValueError("support labels are not matched across views")
+    unique = torch.unique(physical_labels, sorted=True)
+    if unique.numel() < 2 or not torch.equal(
+        unique, torch.arange(int(unique.numel()), device=labels.device)
+    ):
+        raise ValueError("support classes must be contiguous and include at least two classes")
+    class_positions = [
+        torch.nonzero(physical_labels == class_index, as_tuple=False).flatten()
+        for class_index in range(int(unique.numel()))
+    ]
+    counts = {int(positions.numel()) for positions in class_positions}
+    if len(counts) != 1 or min(counts) <= 0:
+        raise ValueError("each registered class must have the same positive K-shot count")
+    k_shot = int(next(iter(counts)))
+    return physical_count, int(unique.numel()), k_shot, class_positions
+
+
+def build_shot_index_episode_positions(
+    labels: torch.Tensor,
+    *,
+    view_count: int,
+    max_episodes_per_epoch: int = 10,
+) -> list[torch.Tensor]:
+    """Group all registered classes by shot index without role or class quotas."""
+
+    if int(max_episodes_per_epoch) <= 0:
+        raise ValueError("max_episodes_per_epoch must be positive")
+    physical_count, class_count, k_shot, class_positions = (
+        _matched_view_support_layout(labels, view_count=int(view_count))
+    )
+    episode_count = min(int(k_shot), int(max_episodes_per_epoch))
+    shot_groups = np.array_split(np.arange(k_shot, dtype=np.int64), episode_count)
+    episodes: list[torch.Tensor] = []
+    for shot_group in shot_groups:
+        shot_tensor = torch.as_tensor(
+            shot_group, device=labels.device, dtype=torch.long
+        )
+        physical = torch.cat(
+            [class_positions[class_index][shot_tensor] for class_index in range(class_count)]
+        )
+        episodes.append(
+            torch.cat(
+                [
+                    physical + view_index * physical_count
+                    for view_index in range(int(view_count))
+                ]
+            )
+        )
+    covered = torch.sort(
+        torch.cat([episode[: int(episode.numel()) // int(view_count)] for episode in episodes])
+    ).values
+    if not torch.equal(
+        covered, torch.arange(physical_count, device=labels.device)
+    ):
+        raise RuntimeError("shot-index episodes do not cover every physical support exactly once")
+    return episodes
+
+
+def bp_jg_episode_loss(
+    features: torch.Tensor,
+    base_features: torch.Tensor,
+    labels: torch.Tensor,
+    *,
+    view_count: int,
+    temperature: float = 18.0,
+    boundary_margin_delta: float = 0.02,
+    boundary_weight: float = 2.0,
+    anchor_weight: float = 0.5,
+    gram_weight: float = 0.5,
+    separation_weight: float = 0.25,
+    view_weight: float = 0.1,
+) -> dict[str, torch.Tensor]:
+    """Boundary-preserving, class-symmetric loss on registered support only."""
+
+    if features.shape != base_features.shape or features.ndim != 2:
+        raise ValueError("adapted and base episode features must have the same [N,D] shape")
+    if int(features.shape[0]) != int(labels.numel()):
+        raise ValueError("episode feature and label counts differ")
+    if not math.isfinite(float(temperature)) or float(temperature) <= 0.0:
+        raise ValueError("temperature must be positive and finite")
+    if not 0.0 <= float(boundary_margin_delta) <= 0.5:
+        raise ValueError("boundary_margin_delta must be in [0,0.5]")
+    physical_count, class_count, _, _ = _matched_view_support_layout(
+        labels, view_count=int(view_count)
+    )
+    z = _norm_rows(features).reshape(int(view_count), physical_count, -1)
+    z0 = _norm_rows(base_features.detach()).reshape(
+        int(view_count), physical_count, -1
+    )
+    physical_labels = labels[:physical_count]
+
+    def class_prototypes(rows: torch.Tensor, row_labels: torch.Tensor) -> torch.Tensor:
+        return torch.stack(
+            [
+                _norm_rows(
+                    rows[row_labels == class_index].mean(dim=0, keepdim=True)
+                )[0]
+                for class_index in range(class_count)
+            ],
+            dim=0,
+        )
+
+    cross_scores: list[torch.Tensor] = []
+    base_cross_scores: list[torch.Tensor] = []
+    for held_out_view in range(int(view_count)):
+        kept = [index for index in range(int(view_count)) if index != held_out_view]
+        prototype_rows = torch.cat([z[index] for index in kept], dim=0)
+        base_prototype_rows = torch.cat([z0[index] for index in kept], dim=0)
+        prototype_labels = physical_labels.repeat(len(kept))
+        prototypes = class_prototypes(prototype_rows, prototype_labels)
+        base_prototypes = class_prototypes(base_prototype_rows, prototype_labels)
+        cross_scores.append(z[held_out_view] @ prototypes.T)
+        base_cross_scores.append(z0[held_out_view] @ base_prototypes.T)
+    cosine_scores = torch.cat(cross_scores, dim=0)
+    base_cosine_scores = torch.cat(base_cross_scores, dim=0).detach()
+    targets = physical_labels.repeat(int(view_count))
+    xview_ce = F.cross_entropy(float(temperature) * cosine_scores, targets)
+
+    row_index = torch.arange(int(targets.numel()), device=targets.device)
+    true_scores = cosine_scores[row_index, targets]
+    base_true_scores = base_cosine_scores[row_index, targets]
+    class_mask = F.one_hot(targets, num_classes=class_count).bool()
+    negative_scores = cosine_scores.masked_fill(class_mask, float("-inf")).max(dim=1).values
+    base_negative_scores = base_cosine_scores.masked_fill(
+        class_mask, float("-inf")
+    ).max(dim=1).values
+    margin = true_scores - negative_scores
+    base_margin = base_true_scores - base_negative_scores
+    boundary = F.relu(base_margin + float(boundary_margin_delta) - margin).mean()
+    anchor = (1.0 - torch.sum(z * z0, dim=-1)).mean()
+
+    all_rows = z.reshape(-1, int(z.shape[-1]))
+    base_all_rows = z0.reshape(-1, int(z0.shape[-1]))
+    all_labels = physical_labels.repeat(int(view_count))
+    prototypes = class_prototypes(all_rows, all_labels)
+    base_prototypes = class_prototypes(base_all_rows, all_labels).detach()
+    gram = prototypes @ prototypes.T
+    base_gram = base_prototypes @ base_prototypes.T
+    off_diagonal = ~torch.eye(class_count, device=gram.device, dtype=torch.bool)
+    gram_preservation = F.smooth_l1_loss(
+        gram[off_diagonal], base_gram[off_diagonal]
+    )
+    separation_cap = torch.minimum(base_gram, torch.full_like(base_gram, 0.65))
+    separation = F.relu(gram[off_diagonal] - separation_cap[off_diagonal]).square().mean()
+    view_center = _norm_rows(z.mean(dim=0))
+    view_consistency = (1.0 - torch.sum(z * view_center.unsqueeze(0), dim=-1)).mean()
+    loss = (
+        xview_ce
+        + float(boundary_weight) * boundary
+        + float(anchor_weight) * anchor
+        + float(gram_weight) * gram_preservation
+        + float(separation_weight) * separation
+        + float(view_weight) * view_consistency
+    )
+    return {
+        "loss": loss,
+        "xview_prototype_ce": xview_ce,
+        "boundary_margin_loss": boundary,
+        "feature_anchor_loss": anchor,
+        "prototype_gram_loss": gram_preservation,
+        "prototype_separation_loss": separation,
+        "view_consistency_loss": view_consistency,
+        "mean_margin": margin.mean(),
+        "mean_base_margin": base_margin.mean(),
+        "correct": (cosine_scores.argmax(dim=1) == targets).sum(),
+        "sample_count": torch.as_tensor(
+            int(targets.numel()), device=features.device, dtype=torch.long
+        ),
+    }
+
+
+def train_support_only_bp_jg(
+    model: nn.Module,
+    support_rows: np.ndarray,
+    support_labels: np.ndarray,
+    *,
+    physical_support_ids: Sequence[str],
+    support_row_physical_ids: Sequence[str],
+    epochs: int,
+    learning_rate: float,
+    weight_decay: float,
+    temperature: float,
+    support_view_count: int,
+    batch_size: int,
+    max_optimizer_steps: int,
+    grad_clip: float,
+    seed: int,
+    device: torch.device,
+) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    """Train only the target JG LoRA with at most ten shot episodes per epoch."""
+
+    if not 1 <= int(epochs) <= 5:
+        raise ValueError("BP-JG adaptation epochs must be in [1,5]")
+    if not 1 <= int(max_optimizer_steps) <= 50:
+        raise ValueError("BP-JG max_optimizer_steps must be in [1,50]")
+    if float(grad_clip) <= 0.0:
+        raise ValueError("grad_clip must be positive")
+    rows = _numpy_to_tensor_compat(
+        support_rows, numpy_dtype=np.dtype(np.float32), torch_dtype=torch.float32
+    ).to(device)
+    labels = _numpy_to_tensor_compat(
+        support_labels, numpy_dtype=np.dtype(np.int64), torch_dtype=torch.int64
+    ).to(device)
+    physical_count, class_count, k_shot, _ = _matched_view_support_layout(
+        labels, view_count=int(support_view_count)
+    )
+    support_ids = [str(value) for value in physical_support_ids]
+    if len(support_ids) != int(physical_count):
+        raise ValueError(
+            "physical support ID count mismatch: "
+            f"{len(support_ids)} != {physical_count}"
+        )
+    if any(not value for value in support_ids) or len(set(support_ids)) != len(
+        support_ids
+    ):
+        raise ValueError("physical support IDs must be non-empty and unique")
+    support_ids_sha256 = hashlib.sha256(
+        "\n".join(support_ids).encode("utf-8")
+    ).hexdigest()
+    support_row_ids = [str(value) for value in support_row_physical_ids]
+    if len(support_row_ids) != int(labels.numel()):
+        raise ValueError(
+            "support row physical ID count mismatch: "
+            f"{len(support_row_ids)} != {int(labels.numel())}"
+        )
+    for view_index in range(int(support_view_count)):
+        start = int(view_index * physical_count)
+        stop = int(start + physical_count)
+        if support_row_ids[start:stop] != support_ids:
+            raise ValueError(
+                f"support row physical ID alignment drift for view {view_index}"
+            )
+    support_row_ids_sha256 = hashlib.sha256(
+        "\n".join(support_row_ids).encode("utf-8")
+    ).hexdigest()
+    max_episodes_per_epoch = max(1, int(max_optimizer_steps) // int(epochs))
+    episodes = build_shot_index_episode_positions(
+        labels,
+        view_count=int(support_view_count),
+        max_episodes_per_epoch=max_episodes_per_epoch,
+    )
+    identity = nn.Identity()
+    model.eval()
+    with torch.no_grad():
+        base_features, _, _ = _batched_feature_forward(
+            model, identity, rows, batch_size=int(batch_size), require_grad=False
+        )
+        base_features = _norm_rows(base_features).detach()
+    parameters = [parameter for parameter in model.parameters() if parameter.requires_grad]
+    if not parameters:
+        raise ValueError("BP-JG injection selected no trainable parameters")
+    optimizer = torch.optim.SGD(
+        parameters,
+        lr=float(learning_rate),
+        momentum=0.0,
+        weight_decay=float(weight_decay),
+    )
+    rng = np.random.default_rng(int(seed))
+    trace: list[dict[str, Any]] = []
+    started = time.perf_counter()
+    if device.type == "cuda":
+        torch.empty(0, device=device)
+        torch.cuda.reset_peak_memory_stats(device)
+    optimizer_steps = 0
+    forward_sample_equivalents = int(rows.shape[0])
+    for epoch in range(1, int(epochs) + 1):
+        epoch_started = time.perf_counter()
+        totals = {
+            "loss": 0.0,
+            "xview_prototype_ce": 0.0,
+            "boundary_margin_loss": 0.0,
+            "feature_anchor_loss": 0.0,
+            "prototype_gram_loss": 0.0,
+            "prototype_separation_loss": 0.0,
+            "view_consistency_loss": 0.0,
+            "mean_margin": 0.0,
+            "mean_base_margin": 0.0,
+            "correct": 0.0,
+            "grad": 0.0,
+        }
+        seen = 0
+        batches = 0
+        for episode_index in rng.permutation(len(episodes)):
+            if optimizer_steps >= int(max_optimizer_steps):
+                break
+            positions = episodes[int(episode_index)]
+            optimizer.zero_grad(set_to_none=True)
+            z, _ = _feature_forward(model, rows[positions])
+            losses = bp_jg_episode_loss(
+                z,
+                base_features[positions],
+                labels[positions],
+                view_count=int(support_view_count),
+                temperature=float(temperature),
+            )
+            losses["loss"].backward()
+            grad_norm = torch.nn.utils.clip_grad_norm_(parameters, float(grad_clip))
+            optimizer.step()
+            optimizer_steps += 1
+            count = int(losses["sample_count"].detach())
+            forward_sample_equivalents += int(positions.numel())
+            seen += count
+            batches += 1
+            for key in (
+                "loss",
+                "xview_prototype_ce",
+                "boundary_margin_loss",
+                "feature_anchor_loss",
+                "prototype_gram_loss",
+                "prototype_separation_loss",
+                "view_consistency_loss",
+                "mean_margin",
+                "mean_base_margin",
+            ):
+                totals[key] += float(losses[key].detach()) * count
+            totals["correct"] += float(losses["correct"].detach())
+            totals["grad"] += float(grad_norm.detach())
+        row = {
+            "epoch": int(epoch),
+            **{
+                key: totals[key] / max(1, seen)
+                for key in (
+                    "loss",
+                    "xview_prototype_ce",
+                    "boundary_margin_loss",
+                    "feature_anchor_loss",
+                    "prototype_gram_loss",
+                    "prototype_separation_loss",
+                    "view_consistency_loss",
+                    "mean_margin",
+                    "mean_base_margin",
+                )
+            },
+            "support_train_acc": totals["correct"] / max(1, seen),
+            "gradient_norm": totals["grad"] / max(1, batches),
+            "optimizer_steps": int(optimizer_steps),
+            "episode_count": int(batches),
+            "learning_rate": float(optimizer.param_groups[0]["lr"]),
+            "epoch_seconds": time.perf_counter() - epoch_started,
+        }
+        if not all(math.isfinite(float(value)) for value in row.values()):
+            raise FloatingPointError(f"non-finite BP-JG trace: {row}")
+        trace.append(row)
+        print("[BP-JG-EPOCH] " + json.dumps(row, sort_keys=True), flush=True)
+        if optimizer_steps >= int(max_optimizer_steps):
+            break
+    expected_natural_steps = int(epochs) * len(episodes)
+    runtime = {
+        "adaptation_wall_seconds": time.perf_counter() - started,
+        "peak_cuda_memory_bytes": (
+            int(torch.cuda.max_memory_allocated(device)) if device.type == "cuda" else 0
+        ),
+        "optimizer_state_deployment_required": False,
+        "optimizer": "sgd",
+        "optimizer_momentum": 0.0,
+        "optimizer_steps": int(optimizer_steps),
+        "max_optimizer_steps": int(max_optimizer_steps),
+        "optimizer_training_state_bytes_estimate": 0,
+        "support_view_count": int(support_view_count),
+        "physical_support_count": int(physical_count),
+        "physical_support_ids_sha256": support_ids_sha256,
+        "physical_support_ids_unique": True,
+        "support_row_physical_ids_sha256": support_row_ids_sha256,
+        "matched_view_physical_id_order": True,
+        "physical_ids_used_for_layout_validation_only": True,
+        "train_receive_views_per_physical_sample_per_epoch": int(
+            support_view_count
+        ),
+        "registered_class_count": int(class_count),
+        "k_shot_inferred": int(k_shot),
+        "episodes_per_epoch": int(len(episodes)),
+        "max_episodes_per_epoch": int(max_episodes_per_epoch),
+        "shot_indices_consumed_per_epoch": int(k_shot),
+        "support_forward_sample_equivalents": int(forward_sample_equivalents),
+        "terminated_by_step_cap": int(optimizer_steps) < int(expected_natural_steps),
+        "query_rows_used_for_training": 0,
+        "old_new_role_used_by_optimizer": False,
+        "class_quota_used_by_optimizer": False,
+        "dense_query_graph_used": False,
+    }
+    return trace, runtime
 
 
 def train_support_only_lora(
@@ -1046,7 +1533,7 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--receiver", required=True)
     parser.add_argument("--new_count", type=int, choices=(5, 10, 20), required=True)
     parser.add_argument("--seed", type=int, required=True)
-    parser.add_argument("--k_shot", type=int, choices=(5, 10), default=10)
+    parser.add_argument("--k_shot", type=int, choices=(1, 5, 10, 20), default=10)
     parser.add_argument("--epochs", type=int, default=20)
     parser.add_argument(
         "--adapter_type",
@@ -1057,8 +1544,19 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--alpha", type=float, default=8.0)
     parser.add_argument(
         "--scope",
-        choices=("feat_joint", "late_feat_joint", "full_feature"),
+        choices=(
+            "feat_joint",
+            "late_feat_joint",
+            "full_feature",
+            "joint_projection",
+            "joint_gate",
+        ),
         default="feat_joint",
+    )
+    parser.add_argument(
+        "--adapt_objective",
+        choices=("legacy", "bp_jg", "p4_identity"),
+        default="legacy",
     )
     parser.add_argument("--learning_rate", type=float, default=1.0e-3)
     parser.add_argument("--weight_decay", type=float, default=1.0e-4)
@@ -1076,7 +1574,7 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--grad_clip", type=float, default=5.0)
     parser.add_argument(
         "--view_sampling_mode",
-        choices=("stacked", "rotating_single"),
+        choices=("stacked", "rotating_single", "shot_index"),
         default="stacked",
     )
     parser.add_argument("--matched_view_teacher_weight", type=float, default=0.0)
@@ -1086,11 +1584,98 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
         default="formal_scenario_cycle",
     )
     parser.add_argument("--init_adapter_state", type=Path, default=None)
+    parser.add_argument("--ground_adapter_state", type=Path, default=None)
+    parser.add_argument("--ground_adapter_sha256", default=None)
+    parser.add_argument(
+        "--ground_adapter_scope",
+        choices=("projection_feature", "effective_feature"),
+        default="projection_feature",
+    )
+    parser.add_argument("--ground_adapter_rank", type=int, choices=(8, 16), default=16)
+    parser.add_argument("--ground_adapter_alpha", type=float, default=16.0)
     parser.add_argument("--device", default="cuda:0")
     return parser.parse_args(argv)
 
 
 def _validate_deployment_controls(args: argparse.Namespace) -> None:
+    if str(args.adapt_objective) == "bp_jg":
+        checks = {
+            "bp_jg_lora_only": str(args.adapter_type) == "lora",
+            "bp_jg_target_scope": str(args.scope)
+            in {"joint_projection", "joint_gate"},
+            "bp_jg_rank": int(args.rank) in {8, 16},
+            "bp_jg_alpha_matches_rank": math.isclose(
+                float(args.alpha), float(args.rank), rel_tol=0.0, abs_tol=1.0e-12
+            ),
+            "bp_jg_exactly_five_epochs": int(args.epochs) == 5,
+            "bp_jg_sgd_without_momentum_state": str(args.optimizer) == "sgd",
+            "bp_jg_exactly_fifty_step_cap": int(args.max_optimizer_steps) == 50,
+            "bp_jg_grad_clip_one": math.isclose(
+                float(args.grad_clip), 1.0, rel_tol=0.0, abs_tol=1.0e-12
+            ),
+            "bp_jg_shot_index_episodes": str(args.view_sampling_mode)
+            == "shot_index",
+            "bp_jg_formal_scenario_views": str(args.support_view_policy)
+            == "formal_scenario_cycle",
+            "bp_jg_ground_state_required": args.ground_adapter_state is not None,
+            "bp_jg_ground_sha256_required": args.ground_adapter_sha256 is not None
+            and len(str(args.ground_adapter_sha256).strip()) == 64
+            and all(
+                value in "0123456789abcdef"
+                for value in str(args.ground_adapter_sha256).strip().lower()
+            ),
+            "bp_jg_ground_p4_scope": str(args.ground_adapter_scope)
+            == "projection_feature",
+            "bp_jg_ground_rank16": int(args.ground_adapter_rank) == 16,
+            "bp_jg_ground_alpha16": math.isclose(
+                float(args.ground_adapter_alpha), 16.0, rel_tol=0.0, abs_tol=1.0e-12
+            ),
+            "bp_jg_no_legacy_init_state": args.init_adapter_state is None,
+            "bp_jg_learning_rate": math.isclose(
+                float(args.learning_rate), 5.0e-3, rel_tol=0.0, abs_tol=1.0e-12
+            ),
+            "bp_jg_weight_decay": math.isclose(
+                float(args.weight_decay), 1.0e-4, rel_tol=0.0, abs_tol=1.0e-12
+            ),
+            "bp_jg_temperature": math.isclose(
+                float(args.temperature), 18.0, rel_tol=0.0, abs_tol=1.0e-12
+            ),
+        }
+        failed = [name for name, passed in checks.items() if not passed]
+        if failed:
+            raise ValueError(f"invalid BP-JG deployment controls: {failed}")
+        return
+    if str(args.adapt_objective) == "p4_identity":
+        checks = {
+            "p4_identity_lora_cli": str(args.adapter_type) == "lora",
+            "p4_identity_zero_epochs": int(args.epochs) == 0,
+            "p4_identity_zero_steps": int(args.max_optimizer_steps) == 0,
+            "p4_identity_ground_state_required": args.ground_adapter_state
+            is not None,
+            "p4_identity_ground_sha256_required": args.ground_adapter_sha256
+            is not None
+            and len(str(args.ground_adapter_sha256).strip()) == 64
+            and all(
+                value in "0123456789abcdef"
+                for value in str(args.ground_adapter_sha256).strip().lower()
+            ),
+            "p4_identity_ground_scope": str(args.ground_adapter_scope)
+            == "projection_feature",
+            "p4_identity_ground_rank16": int(args.ground_adapter_rank) == 16,
+            "p4_identity_ground_alpha16": math.isclose(
+                float(args.ground_adapter_alpha),
+                16.0,
+                rel_tol=0.0,
+                abs_tol=1.0e-12,
+            ),
+            "p4_identity_no_legacy_init": args.init_adapter_state is None,
+            "p4_identity_formal_views": str(args.support_view_policy)
+            == "formal_scenario_cycle",
+        }
+        failed = [name for name, passed in checks.items() if not passed]
+        if failed:
+            raise ValueError(f"invalid P4 identity controls: {failed}")
+        return
     if str(args.adapter_type) not in {"late_film", "late_key_ft"}:
         return
     checks = {
@@ -1132,10 +1717,71 @@ def _validate_deployment_controls(args: argparse.Namespace) -> None:
         )
 
 
+def build_support_run_id(args: argparse.Namespace) -> str:
+    if str(args.adapt_objective) == "bp_jg":
+        ground_tag = str(args.ground_adapter_sha256).strip().lower()[:12]
+        run_prefix = (
+            f"support_p4_{ground_tag}_bp_jg_{args.scope}_r{int(args.rank)}"
+        )
+    elif str(args.adapt_objective) == "p4_identity":
+        ground_tag = str(args.ground_adapter_sha256).strip().lower()[:12]
+        run_prefix = f"support_p4_{ground_tag}_identity"
+    else:
+        run_prefix = (
+            "support_late_film"
+            if str(args.adapter_type) == "late_film"
+            else (
+                "support_late_key_ft"
+                if str(args.adapter_type) == "late_key_ft"
+                else f"support_lora_{args.scope}"
+            )
+        )
+    return (
+        f"{run_prefix}_rx_{args.receiver}_new_{args.new_count}"
+        f"_seed_{args.seed}_k_{args.k_shot}"
+    )
+
+
+def validate_bp_jg_qknn_config(config: dict[str, Any]) -> None:
+    """Lock the post-adaptation classifier to class-symmetric prototype qKNN."""
+
+    forbidden = [
+        key
+        for key in ("primary_k_shot", "sensitivity_k_shot")
+        if key in config
+    ]
+    if forbidden:
+        raise ValueError(f"BP-JG config retains legacy K10/K5 fields: {forbidden}")
+    expected = {
+        "support_pool_max_k": 20,
+        "qknnv42_head_mode": "qknn",
+        "qknnv42_support_representation": "prototype_only",
+        "qknnv42_feature_adapter_mode": "none",
+        "qknnv42_labelprop_mode": "disabled",
+        "qknnv42_decision_mode": "per_sample_argmax",
+        "qknnv42_old_anchor_bias": 0.0,
+    }
+    failed = {
+        key: {"expected": value, "observed": config.get(key)}
+        for key, value in expected.items()
+        if config.get(key) != value
+    }
+    if failed:
+        raise ValueError(f"invalid BP-JG class-symmetric qKNN config: {failed}")
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     args = parse_args(argv)
     _validate_deployment_controls(args)
     config = json.loads(args.config.read_text(encoding="utf-8-sig"))
+    support_pool_max_k = int(config.get("support_pool_max_k", 10))
+    if str(args.adapt_objective) in {"bp_jg", "p4_identity"} and support_pool_max_k != 20:
+        raise ValueError(
+            "BP-JG requires support_pool_max_k=20 so K1/5/10/20 share one "
+            "disjoint query set"
+        )
+    if str(args.adapt_objective) in {"bp_jg", "p4_identity"}:
+        validate_bp_jg_qknn_config(config)
     old_labels = [str(value) for value in config["target_old_tx_labels"]]
     new_labels = [str(value) for value in config["target_new_tx_labels"]][: int(args.new_count)]
     mapping = config.get("feature_npz_by_scenario", {})
@@ -1160,17 +1806,35 @@ def main(argv: Sequence[str] | None = None) -> int:
         new_labels=new_labels,
         seed=int(args.seed),
         k_shot=int(args.k_shot),
-        support_pool_max_k=int(config.get("support_pool_max_k", 10)),
+        support_pool_max_k=support_pool_max_k,
         query_per_tx=int(config.get("query_per_tx", 20)),
     )
+    physical_support_ids = [str(value) for value in split_manifest["physical_support_ids"]]
+    physical_query_ids = [str(value) for value in split_manifest["physical_query_ids"]]
+    support_query_overlap = sorted(set(physical_support_ids) & set(physical_query_ids))
+    if support_query_overlap:
+        raise ValueError(
+            "physical support/query overlap detected: "
+            f"{support_query_overlap[:5]}"
+        )
+    split_manifest["support_pool_max_k"] = support_pool_max_k
+    split_manifest["support_query_overlap_count"] = 0
     support_view_policy_audit: dict[str, Any] = {
         "policy": "formal_scenario_cycle",
         "input_formal_scenario_count": int(split_manifest["support_view_count"]),
         "physical_support_count": int(
             len(support_rows) // int(split_manifest["support_view_count"])
         ),
-        "receive_views_per_physical_sample_per_epoch": 1,
-        "unique_receive_view_count": 1,
+        "receive_views_per_physical_sample_per_epoch": (
+            int(split_manifest["support_view_count"])
+            if str(args.adapt_objective) == "bp_jg"
+            else 1
+        ),
+        "unique_receive_view_count": (
+            int(split_manifest["support_view_count"])
+            if str(args.adapt_objective) == "bp_jg"
+            else 1
+        ),
     }
     training_support_view_count = int(split_manifest["support_view_count"])
     if str(args.support_view_policy) == "rx_shift_pair_cycle":
@@ -1198,7 +1862,40 @@ def main(argv: Sequence[str] | None = None) -> int:
             "lightweight adapter targets are preregistered for feat_joint, got "
             f"{getattr(model, 'id_feature_key', None)!r}"
         )
-    if str(args.adapter_type) == "late_film":
+    ground_adapter_audit: dict[str, Any] = {"mode": "none"}
+    if args.ground_adapter_state is not None:
+        if str(args.adapt_objective) not in {"bp_jg", "p4_identity"}:
+            raise ValueError(
+                "ground_adapter_state is reserved for the BP-JG two-stage route"
+            )
+        ground_adapter_audit = load_and_merge_ground_lora(
+            model,
+            Path(args.ground_adapter_state),
+            scope=str(args.ground_adapter_scope),
+            rank=int(args.ground_adapter_rank),
+            alpha=float(args.ground_adapter_alpha),
+            expected_sha256=str(args.ground_adapter_sha256),
+        )
+    if str(args.adapt_objective) == "p4_identity":
+        resources = {
+            "adapter_type": "target_identity",
+            "scope": "none",
+            "target_modules": [],
+            "trainable_parameter_names": [],
+            "trainable_parameters": 0,
+            "adapter_state_bytes_fp16": 0,
+            "adapter_state_bytes_fp32": 0,
+            "adapter_macs_per_query": 0,
+            "query_view_count": 1,
+            "original_checkpoint_trainable_parameters": 0,
+            "original_checkpoint_gradient_updates": 0,
+            "full_model_finetune": False,
+            "resource_tier": "preferred_identity_control",
+            "trainable_parameter_cap": 50_000,
+            "persistent_state_cap_bytes": 256 * 1024,
+        }
+        method = "support_only_p4_identity_control_v1"
+    elif str(args.adapter_type) == "late_film":
         resources = inject_late_channel_film(model)
         method = (
             "support_only_late_channel_film_source_init_v1"
@@ -1220,7 +1917,11 @@ def main(argv: Sequence[str] | None = None) -> int:
         resources = inject_feat_joint_lora(
             model, rank=int(args.rank), alpha=float(args.alpha), scope=str(args.scope)
         )
-        method = f"support_only_{args.scope}_lora_v1"
+        method = (
+            f"support_only_p4_bp_jg_{args.scope}_lora_v1"
+            if str(args.adapt_objective) == "bp_jg"
+            else f"support_only_{args.scope}_lora_v1"
+        )
     strict_checkpoint_trainable_state = {
         name: parameter.detach().cpu().clone()
         for name, parameter in model.named_parameters()
@@ -1236,33 +1937,85 @@ def main(argv: Sequence[str] | None = None) -> int:
             model, Path(args.init_adapter_state)
         )
     model.to(device).eval()
-    trace, runtime = train_support_only_lora(
-        model,
-        support_rows,
-        support_labels,
-        epochs=int(args.epochs),
-        learning_rate=float(args.learning_rate),
-        weight_decay=float(args.weight_decay),
-        temperature=float(args.temperature),
-        feature_anchor_weight=float(args.feature_anchor_weight),
-        view_consistency_weight=float(args.view_consistency_weight),
-        cross_view_prototype_weight=float(args.cross_view_prototype_weight),
-        view_score_distill_weight=float(args.view_score_distill_weight),
-        view_score_distill_temperature=float(
-            args.view_score_distill_temperature
-        ),
-        cosine_margin=float(args.cosine_margin),
-        class_dro_temperature=float(args.class_dro_temperature),
-        support_view_count=int(training_support_view_count),
-        batch_size=int(args.batch_size),
-        optimizer_name=str(args.optimizer),
-        max_optimizer_steps=int(args.max_optimizer_steps),
-        grad_clip=float(args.grad_clip),
-        view_sampling_mode=str(args.view_sampling_mode),
-        matched_view_teacher_weight=float(args.matched_view_teacher_weight),
-        seed=int(args.seed),
-        device=device,
-    )
+    if str(args.adapt_objective) == "bp_jg":
+        trace, runtime = train_support_only_bp_jg(
+            model,
+            support_rows,
+            support_labels,
+            physical_support_ids=split_manifest["physical_support_ids"],
+            support_row_physical_ids=split_manifest["support_row_physical_ids"],
+            epochs=int(args.epochs),
+            learning_rate=float(args.learning_rate),
+            weight_decay=float(args.weight_decay),
+            temperature=float(args.temperature),
+            support_view_count=int(training_support_view_count),
+            batch_size=int(args.batch_size),
+            max_optimizer_steps=int(args.max_optimizer_steps),
+            grad_clip=float(args.grad_clip),
+            seed=int(args.seed),
+            device=device,
+        )
+    elif str(args.adapt_objective) == "p4_identity":
+        trace = [
+            {
+                "epoch": 0,
+                "loss": 0.0,
+                "support_train_acc": 0.0,
+                "gradient_norm": 0.0,
+                "optimizer_steps": 0,
+                "episode_count": 0,
+                "learning_rate": 0.0,
+                "epoch_seconds": 0.0,
+            }
+        ]
+        runtime = {
+            "adaptation_wall_seconds": 0.0,
+            "peak_cuda_memory_bytes": 0,
+            "optimizer_state_deployment_required": False,
+            "optimizer": "none",
+            "optimizer_momentum": 0.0,
+            "optimizer_steps": 0,
+            "max_optimizer_steps": 0,
+            "optimizer_training_state_bytes_estimate": 0,
+            "support_view_count": int(training_support_view_count),
+            "physical_support_count": len(physical_support_ids),
+            "registered_class_count": len(old_labels) + len(new_labels),
+            "k_shot_inferred": int(args.k_shot),
+            "episodes_per_epoch": 0,
+            "support_forward_sample_equivalents": 0,
+            "query_rows_used_for_training": 0,
+            "old_new_role_used_by_optimizer": False,
+            "class_quota_used_by_optimizer": False,
+            "dense_query_graph_used": False,
+        }
+    else:
+        trace, runtime = train_support_only_lora(
+            model,
+            support_rows,
+            support_labels,
+            epochs=int(args.epochs),
+            learning_rate=float(args.learning_rate),
+            weight_decay=float(args.weight_decay),
+            temperature=float(args.temperature),
+            feature_anchor_weight=float(args.feature_anchor_weight),
+            view_consistency_weight=float(args.view_consistency_weight),
+            cross_view_prototype_weight=float(args.cross_view_prototype_weight),
+            view_score_distill_weight=float(args.view_score_distill_weight),
+            view_score_distill_temperature=float(
+                args.view_score_distill_temperature
+            ),
+            cosine_margin=float(args.cosine_margin),
+            class_dro_temperature=float(args.class_dro_temperature),
+            support_view_count=int(training_support_view_count),
+            batch_size=int(args.batch_size),
+            optimizer_name=str(args.optimizer),
+            max_optimizer_steps=int(args.max_optimizer_steps),
+            grad_clip=float(args.grad_clip),
+            view_sampling_mode=str(args.view_sampling_mode),
+            matched_view_teacher_weight=float(args.matched_view_teacher_weight),
+            seed=int(args.seed),
+            device=device,
+        )
     if str(args.adapter_type) == "late_key_ft":
         resources["original_checkpoint_gradient_updates"] = int(
             runtime["optimizer_steps"]
@@ -1272,19 +2025,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     if str(args.support_view_policy) == "rx_shift_pair_cycle":
         runtime["train_receive_views_per_physical_sample_per_epoch"] = 2
         runtime["unique_receive_view_count"] = 3
-    run_prefix = (
-        "support_late_film"
-        if str(args.adapter_type) == "late_film"
-        else (
-            "support_late_key_ft"
-            if str(args.adapter_type) == "late_key_ft"
-            else f"support_lora_{args.scope}"
-        )
-    )
-    run_id = (
-        f"{run_prefix}_rx_{args.receiver}_new_{args.new_count}"
-        f"_seed_{args.seed}_k_{args.k_shot}"
-    )
+    run_id = build_support_run_id(args)
     run_dir = args.out_root / run_id
     run_dir.mkdir(parents=True, exist_ok=True)
     _write_trace(run_dir / "loss_trace.json", trace)
@@ -1309,6 +2050,13 @@ def main(argv: Sequence[str] | None = None) -> int:
     resources["adapter_state_file_bytes_fp16_pt"] = int(
         adapter_state_path.stat().st_size
     )
+    target_merge_audit: dict[str, Any] = {"mode": "not_merged"}
+    if str(args.adapt_objective) == "bp_jg":
+        target_merge_audit = roundtrip_fp16_target_lora_and_merge(
+            model, adapter_state_path
+        )
+        resources["deployment_added_macs_per_query_after_merge"] = 0
+        resources["target_lora_merge_audit"] = target_merge_audit
     registered_class_count = int(len(old_labels) + len(new_labels))
     registered_feature_dim = int(
         160
@@ -1321,9 +2069,15 @@ def main(argv: Sequence[str] | None = None) -> int:
     prototype_state_bytes = int(
         5 * registered_class_count * registered_feature_dim * 2
     )
-    threshold_state_bytes = 12
+    threshold_state_bytes = 24
+    ground_adapter_state_bytes = int(
+        ground_adapter_audit.get("resources", {}).get(
+            "adapter_state_bytes_fp16", 0
+        )
+    )
     combined_state_bytes = int(
-        resources["adapter_state_bytes_fp16"]
+        ground_adapter_state_bytes
+        + resources["adapter_state_bytes_fp16"]
         + prototype_state_bytes
         + threshold_state_bytes
     )
@@ -1332,6 +2086,22 @@ def main(argv: Sequence[str] | None = None) -> int:
     )
     resources.update(
         {
+            "ground_adapter_state_bytes_fp16": ground_adapter_state_bytes,
+            "target_adapter_state_bytes_fp16": int(
+                resources["adapter_state_bytes_fp16"]
+            ),
+            "ground_plus_target_adapter_state_bytes_fp16": int(
+                ground_adapter_state_bytes + resources["adapter_state_bytes_fp16"]
+            ),
+            "ground_adapter_serialized_file_bytes": int(
+                ground_adapter_audit.get("serialized_file_bytes", 0)
+            ),
+            "target_adapter_serialized_file_bytes": int(
+                resources.get("adapter_state_file_bytes_fp16_pt", 0)
+            ),
+            "runner_persistent_state_bytes": None,
+            "runner_persistent_state_requires_post_evaluation_audit": True,
+            "combined_adaptive_tta_state_is_pre_evaluation_estimate": True,
             "five_view_prototype_state_bytes_fp16": prototype_state_bytes,
             "adaptive_tta_threshold_state_bytes_fp32": threshold_state_bytes,
             "combined_adaptive_tta_state_bytes": combined_state_bytes,
@@ -1357,6 +2127,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         )
     adaptation_manifest = {
         "method": method,
+        "adapt_objective": str(args.adapt_objective),
         "resource_tier": str(resources.get("resource_tier", "preferred")),
         "receiver": str(args.receiver),
         "new_count": int(args.new_count),
@@ -1369,6 +2140,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         "query_view_count": 1,
         "support_only": True,
         "query_update_forbidden": True,
+        "query_features_used_for_training": False,
         "query_labels_used_for_training": False,
         "old_new_role_used_by_optimizer": False,
         "class_quota_used_at_inference": False,
@@ -1399,9 +2171,24 @@ def main(argv: Sequence[str] | None = None) -> int:
                 args.matched_view_teacher_weight
             ),
             "support_view_policy": str(args.support_view_policy),
+            "bp_jg_loss_weights": (
+                {
+                    "xview_prototype_ce": 1.0,
+                    "boundary_margin": 2.0,
+                    "feature_anchor": 0.5,
+                    "prototype_gram": 0.5,
+                    "prototype_separation": 0.25,
+                    "view_consistency": 0.1,
+                    "boundary_margin_delta": 0.02,
+                }
+                if str(args.adapt_objective) == "bp_jg"
+                else None
+            ),
         },
         "resources": resources,
         "initialization": initialization_audit,
+        "ground_adapter": ground_adapter_audit,
+        "target_merge": target_merge_audit,
         "adapter_state_format": adapter_state_format,
         "adapter_state": str(adapter_state_path),
         "adapter_state_sha256": _sha256_file(adapter_state_path),

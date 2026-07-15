@@ -475,3 +475,76 @@ bash paper_reproduction/scripts/launch_cvs_ground_lora_fft_ablation_v15.sh
 |`P4_JG_R16`|`id_gate.0＋joint_proj.0`|16|12,800|5|用户允许的性能放宽对照|
 
 只用K10开发row选定一个arm；排序先检查`old_acc/min_old_class_acc/seen_new_acc/H_old_new`和相对MRIOR配对差，再检查时延、显存、状态与平均forward。锁定后K1/K5/K20只做确认，不在其query上继续调层、rank、损失权重或View门限。
+
+
+## 十四、P4-BPJG-qKNN本地实现与v17启动前锁定
+
+### 14.1实现结果
+
+P4-BPJG-qKNN已从设计状态进入可运行实现。主链固定为：严格装载ADV3B02 checkpoint→按SHA256装载并合并P4 ground adapter→仅对target侧`joint_proj.0`或`id_gate.0＋joint_proj.0`注入LoRA→使用target receiver注册support的3个匹配LEO弱信道View训练→将target FP16 artifact落盘并立即回读→合并LoRA→导出适应特征→使用对全部注册类对称的prototype-only qKNN评测。
+
+关键实现锁如下：
+
+- BP-JG主候选只更新`id_gate.0＋joint_proj.0`，rank8为6,400参数；放宽对照rank16为12,800参数；JP最小对照rank8为3,840参数。
+- 训练固定5epoch、SGD无momentum、`lr=0.005`、`weight_decay=0.0001`、`grad_clip=1`、temperature18、最多50步。
+- 实际步数已由trainer级回归锁定：K1/K5/K10/K20分别5/25/50/50步；K20每个episode对每类取2个shot，共10个episode/epoch。
+- 所有K统一`support_pool_max_k=20`。回归证明K1⊂K5⊂K10⊂K20、四个K使用完全相同query ID、support/query零交集。
+- 每个View的row-level physical ID必须逐项等于第一个View；仅标签相同但physical ID次序漂移会fail closed。
+- P4 artifact必须在`torch.load`前匹配SHA256；不同target scope/rank或P4 SHA具有不同run ID，不会互相覆盖。
+- target LoRA性能状态以持久化FP16 artifact为准：训练后先保存、再回读、最后合并和导出，避免用内存FP32 patch评测却交付FP16 patch。
+- LoRA合并后所有参数重新冻结；合并等价检查同时拒绝非有限值和大于`1e-5`的差异。
+- qKNN固定`head_mode=qknn`、`support_representation=prototype_only`、`feature_adapter=none`、`labelprop=disabled`、`decision=per_sample_argmax`、`old_anchor_bias=0`；保留legacy K10/K5字段、旧类bias或额外head训练都会被拒绝。
+- target优化器不读取query、old/new角色、类别配额或dense graph；类别ID置换前后BP-JG各损失项严格不变。
+
+### 14.2真实ADV3B02集成验证
+
+本地使用正式基座文件`best_joint_safe_ssdg.pth`，SHA256为`2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98`；P4 winner为`adapter_fp16.pt`，SHA256为`95f9a8bac7880d42f705db7f16523c37cf4ce5ff8438ac2c500c7550a38de446`。
+
+|验证项|结果|
+|---|---:|
+|ADV3B02 strict checkpoint load|PASS|
+|部署特征键|`feat_joint`|
+|P4更新参数|18,448|
+|P4合并最大绝对误差|4.17e-7|
+|JG-r8更新参数|6,400|
+|JG-r8 FP16 tensor payload|12,800B|
+|JG恒等注入前后特征最大误差|0|
+|FP16 roundtrip后合并最大误差|0|
+|合并后特征最大误差|0|
+|合并后可训练参数|0|
+
+本地`ssr-gpu`最终回归为104/104通过，覆盖support LoRA、micro-IQ、adaptive View、Stage2 runner、candidate lock和class-incremental相邻路径；`py_compile`、v17 launcher `bash -n`、专用config验证和`git diff --check`均通过。
+
+### 14.3v17最小开发矩阵
+
+实验ID为`qknnv42_p4_bpjg_dev20_k10_20260715_v17`。本轮只使用receiver `8-8`、seed713101、K10和20个注册新类，先回答target层组/容量是否产生正收益；不在本轮调K1/K5/K20。
+
+|arm|target更新层|rank|参数|epoch/step|GPU|
+|---|---|---:|---:|---:|---:|
+|`P4_IDENTITY`|无target梯度|0|0|0/0|0|
+|`P4_JP_R8`|`joint_proj.0`|8|3,840|5/50|1|
+|`P4_JG_R8`|`id_gate.0＋joint_proj.0`|8|6,400|5/50|2|
+|`P4_JG_R16`|`id_gate.0＋joint_proj.0`|16|12,800|5/50|3|
+
+每路独立输出training manifest、完整5epoch loss trace、FP16 target state、合并后3场景cache、Stage2-C `metrics.json/detailed_metrics.csv`及`resource_audit.json`。资源审计不再把训练器的FP16理论估算冒充真实部署state；实验完成后从qKNN runner读取实际float64 `persistent_state_bytes`，再加P4/target真实序列化文件和24B自适应View门限，硬判定是否≤256KB。
+
+专用config为`paper_reproduction/configs/cvs_qknnv42_p4_bpjg_dev20_k10_20260715_n607.json`，launcher为`paper_reproduction/scripts/launch_cvs_p4_bpjg_dev20_k10_v17.sh`。远端输出根计划为`runs/qknnv42_p4_bpjg_dev20_k10_20260715_v17/`，日志根为`logs/qknnv42_p4_bpjg_dev20_k10_20260715_v17/`。唯一启动命令计划为：
+
+```bash
+cd /home/szu2070436088/2510044040/CV-SincNet
+bash paper_reproduction/scripts/launch_cvs_p4_bpjg_dev20_k10_v17.sh
+```
+
+### 14.4版本与声明边界
+
+本轮本地文件SHA256：
+
+|文件|SHA256|
+|---|---|
+|`train_export_cvs_micro_iq_adapter.py`|`aef73233505b23664e148a46e427b84199860f3b9f5568339f50b966adc9758b`|
+|`train_export_cvs_support_lora_adapter.py`|`e0f9417fdb7c57ff8b35a597da5860824fd1ffb41a77eab9417f767e9acc3009`|
+|`cvs_qknnv42_p4_bpjg_dev20_k10_20260715_n607.json`|`07a331cb6aab64b833711c464ab167c4625c8cdf7c1ff18e0631a5c0e6268641`|
+|`launch_cvs_p4_bpjg_dev20_k10_v17.sh`|`ed7e64711d15052013f7c326b5b262444c85ad27e75e4f3328435f28cf6a5bf2`|
+|`test_support_lora_adapter.py`|`698202c5fa53e4ea7bddd471ae1e99bcdbcdf67b7fac2a6922898b2bb8345649`|
+
+`E:\type10-7`根目录仍不是Git仓库；实现、config、launcher、测试和本报告均落在Git承载面`E:\type10-7\github_publish\CVS-RFFI-repo`。本轮开发config显式`resource_diagnostic_only=true`且`formal_claim_authority=false`：其输入是历史post-channel raw-IQ诊断cache，因此可用于层/rank性能筛选，但不能替代`项目.md`要求的正式sealed LEO-only Stage2-C结果，也不能据此声称显著优于MRIOR。正式结论仍需5receiver×至少5seed、5/10/20新类、K1/5/10/20和matched MRIOR配对置信区间。
