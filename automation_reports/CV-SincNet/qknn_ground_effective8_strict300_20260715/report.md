@@ -135,6 +135,8 @@ PYTHONPATH=code:. "$PY" paper_reproduction/scripts/run_cvs_stage2c_effective8_st
 
 只有`smoke_receipt.json`回传本地、SHA进入Git且授权器生成`launch_authority=true`的新清单后，才可启动8个matrix shard。
 
+为避免长驻SSH，实际启动采用等价后台包装：先`mkdir -p "$STRICT/logs/smoke"`，再执行`nohup env PYTHONPATH=code:. "$PY" paper_reproduction/scripts/run_cvs_stage2c_effective8_strict_plan.py ... > "$STRICT/logs/smoke_driver.out" 2>&1 &`，PID写入`$STRICT/smoke_driver.pid`。后台只运行上述单一smoke stage；使用短连接检查PID、日志、GPU和`smoke_receipt.json`，不会启动matrix shard。
+
 ## 完成后结果表
 
 实验完成后在本节追加逐单元同一行结果，至少包含candidate ID、机制、receiver/TX split、K-shot、seed、old/seen-new/unknown指标、coverage/rollback/defer、loss/adapter摘要和最终判定。不得用来自不同单元的独立极值替代联合行。
