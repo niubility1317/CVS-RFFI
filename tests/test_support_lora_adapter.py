@@ -428,3 +428,12 @@ def test_cli_accepts_sparse_key_layer_fast_adaptation_controls() -> None:
     assert args.adapter_type == "late_key_ft"
     assert args.init_adapter_state.name == "ground_late_key.pt"
     assert args.support_view_policy == "rx_shift_pair_cycle"
+
+
+def test_trainer_source_persists_adapter_state_hash_contract() -> None:
+    from pathlib import Path
+
+    source = Path(
+        "paper_reproduction/scripts/train_export_cvs_support_lora_adapter.py"
+    ).read_text(encoding="utf-8")
+    assert '"adapter_state_sha256": _sha256_file(adapter_state_path)' in source

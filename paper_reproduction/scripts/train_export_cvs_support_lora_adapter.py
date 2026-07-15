@@ -1143,9 +1143,10 @@ def main(argv: Sequence[str] | None = None) -> int:
             if parameter.requires_grad
         }
         adapter_state_format = "fp16_trainable_state"
-    torch.save(fp16_state, run_dir / "adapter_state_fp16.pt")
+    adapter_state_path = run_dir / "adapter_state_fp16.pt"
+    torch.save(fp16_state, adapter_state_path)
     resources["adapter_state_file_bytes_fp16_pt"] = int(
-        (run_dir / "adapter_state_fp16.pt").stat().st_size
+        adapter_state_path.stat().st_size
     )
     adaptation_manifest = {
         "method": method,
@@ -1190,6 +1191,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         "resources": resources,
         "initialization": initialization_audit,
         "adapter_state_format": adapter_state_format,
+        "adapter_state": str(adapter_state_path),
+        "adapter_state_sha256": _sha256_file(adapter_state_path),
         "runtime": runtime,
         "split": split_manifest,
         "input_cache_sha256": cache_hashes,
@@ -1242,7 +1245,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         **adaptation_manifest,
         "loss_trace_json": str(run_dir / "loss_trace.json"),
         "loss_trace_csv": str(run_dir / "loss_trace.csv"),
-        "adapter_state": str(run_dir / "adapter_state_fp16.pt"),
+        "adapter_state": str(adapter_state_path),
+        "adapter_state_sha256": _sha256_file(adapter_state_path),
         "export_audit": export_audit,
         "resolved_qknn_config": str(resolved_path),
     }
