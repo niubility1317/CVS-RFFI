@@ -867,6 +867,7 @@ def _attach_post_adapter_resources(
             "support_only_late_key_ft_v1",
             "support_only_late_key_ft_source_init_v1",
         }
+        is_full_feature_lora = adapter_method == "support_only_full_feature_lora_v1"
         checks = {
             "support_only": support_adapter.get("support_only") is True,
             "no_query_update": support_adapter.get("query_update_forbidden") is True,
@@ -876,7 +877,7 @@ def _attach_post_adapter_resources(
             "single_query_view": int(support_adapter.get("query_view_count", -1)) == 1,
             "epoch_cap": 0
             <= int(support_adapter.get("epochs", -1))
-            <= (5 if is_sparse_key_delta else 20),
+            <= (5 if is_sparse_key_delta else (40 if is_full_feature_lora else 20)),
         }
         checkpoint_trainable = int(
             resources.get(
@@ -915,6 +916,27 @@ def _attach_post_adapter_resources(
                         resources.get("deployment_added_macs_per_query_after_merge", -1)
                     )
                     == 0,
+                }
+            )
+        elif is_full_feature_lora:
+            params = int(resources.get("trainable_parameters", -1))
+            state_bytes = int(resources.get("adapter_state_bytes_fp16", -1))
+            checks.update(
+                {
+                    "checkpoint_frozen": checkpoint_trainable == 0,
+                    "checkpoint_no_updates": checkpoint_updates == 0,
+                    "relaxed_resource_tier": support_adapter.get("resource_tier")
+                    == "performance_relaxed",
+                    "full_feature_scope": dict(
+                        support_adapter.get("hyperparameters", {})
+                    ).get("scope")
+                    == "full_feature",
+                    "lora_state_format": support_adapter.get("adapter_state_format")
+                    == "fp16_trainable_state",
+                    "relaxed_parameter_band": 50_000 < params <= 100_000,
+                    "fp16_state_matches_parameters": state_bytes == params * 2,
+                    "no_full_model_finetune": resources.get("full_model_finetune")
+                    is False,
                 }
             )
         else:
@@ -1156,10 +1178,33 @@ def validate_config(config: dict[str, Any]) -> None:
             ridge_lambda = float(config.get("extreme_light_ridge_lambda", 0.1))
             if not math.isfinite(ridge_lambda) or ridge_lambda <= 0.0:
                 raise ValueError("extreme_light_ridge_lambda must be finite and positive")
-        if int(config.get("extreme_light_max_trainable_parameters", 50_000)) > 50_000:
-            raise ValueError("extreme-light parameter cap cannot exceed 50000")
-        if int(config.get("extreme_light_max_persistent_state_bytes", 128 * 1024)) > 128 * 1024:
-            raise ValueError("extreme-light persistent-state cap cannot exceed 128KB")
+        resource_tier = str(
+            config.get("extreme_light_resource_tier", "preferred")
+        ).strip().lower()
+        if resource_tier not in {"preferred", "performance_relaxed"}:
+            raise ValueError(
+                "extreme_light_resource_tier must be preferred or performance_relaxed"
+            )
+        parameter_cap = int(
+            config.get("extreme_light_max_trainable_parameters", 50_000)
+        )
+        persistent_cap = int(
+            config.get("extreme_light_max_persistent_state_bytes", 256 * 1024)
+        )
+        allowed_parameter_cap = 100_000 if resource_tier == "performance_relaxed" else 50_000
+        allowed_persistent_cap = (
+            512 * 1024 if resource_tier == "performance_relaxed" else 256 * 1024
+        )
+        if parameter_cap > allowed_parameter_cap:
+            raise ValueError(
+                "extreme-light parameter cap exceeds selected resource tier: "
+                f"{parameter_cap}>{allowed_parameter_cap}"
+            )
+        if persistent_cap > allowed_persistent_cap:
+            raise ValueError(
+                "extreme-light persistent-state cap exceeds selected resource tier: "
+                f"{persistent_cap}>{allowed_persistent_cap}"
+            )
         extreme_aux_weight = float(config.get("extreme_light_aux_weight", 0.0))
         if extreme_aux_weight < 0.0 or not math.isfinite(extreme_aux_weight):
             raise ValueError("extreme_light_aux_weight must be finite and nonnegative")
@@ -1392,7 +1437,7 @@ def run(config: dict[str, Any], run_dir: Path) -> dict[str, Any]:
                         fit_support_y,
                         joint_query,
                         max_persistent_state_bytes=int(
-                            config.get("extreme_light_max_persistent_state_bytes", 128 * 1024)
+                            config.get("extreme_light_max_persistent_state_bytes", 256 * 1024)
                         ),
                     )
                 elif head_mode == "extreme_light_diag_gaussian":
@@ -1408,7 +1453,7 @@ def run(config: dict[str, Any], run_dir: Path) -> dict[str, Any]:
                             config.get("extreme_light_variance_floor_ratio", 0.01)
                         ),
                         max_persistent_state_bytes=int(
-                            config.get("extreme_light_max_persistent_state_bytes", 128 * 1024)
+                            config.get("extreme_light_max_persistent_state_bytes", 256 * 1024)
                         ),
                     )
                 elif head_mode == "extreme_light_multiprototype_cosine":
@@ -1421,7 +1466,7 @@ def run(config: dict[str, Any], run_dir: Path) -> dict[str, Any]:
                         ),
                         kmeans_steps=int(config.get("extreme_light_kmeans_steps", 5)),
                         max_persistent_state_bytes=int(
-                            config.get("extreme_light_max_persistent_state_bytes", 128 * 1024)
+                            config.get("extreme_light_max_persistent_state_bytes", 256 * 1024)
                         ),
                     )
                 elif head_mode == "extreme_light_support_ridge":
@@ -1431,7 +1476,7 @@ def run(config: dict[str, Any], run_dir: Path) -> dict[str, Any]:
                         joint_query,
                         ridge_lambda=float(config.get("extreme_light_ridge_lambda", 0.1)),
                         max_persistent_state_bytes=int(
-                            config.get("extreme_light_max_persistent_state_bytes", 128 * 1024)
+                            config.get("extreme_light_max_persistent_state_bytes", 256 * 1024)
                         ),
                     )
                 elif head_mode == "extreme_light_low_rank_cosine":
@@ -1450,7 +1495,7 @@ def run(config: dict[str, Any], run_dir: Path) -> dict[str, Any]:
                         feature_noise_std=float(config.get("extreme_light_feature_noise_std", 0.01)),
                         weight_decay=float(config.get("extreme_light_weight_decay", 0.002)),
                         max_trainable_parameters=int(config.get("extreme_light_max_trainable_parameters", 50_000)),
-                        max_persistent_state_bytes=int(config.get("extreme_light_max_persistent_state_bytes", 128 * 1024)),
+                        max_persistent_state_bytes=int(config.get("extreme_light_max_persistent_state_bytes", 256 * 1024)),
                         device=runtime_device,
                     )
                 else:
@@ -1492,7 +1537,7 @@ def run(config: dict[str, Any], run_dir: Path) -> dict[str, Any]:
                             config.get("extreme_light_max_trainable_parameters", 50_000)
                         ),
                         max_persistent_state_bytes=int(
-                            config.get("extreme_light_max_persistent_state_bytes", 128 * 1024)
+                            config.get("extreme_light_max_persistent_state_bytes", 256 * 1024)
                         ),
                         source_anchor_x=source_anchor_x,
                         source_anchor_y=source_anchor_y,

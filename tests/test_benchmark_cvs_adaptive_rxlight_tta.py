@@ -7,6 +7,7 @@ import torch
 from paper_reproduction.scripts.benchmark_cvs_adaptive_rxlight_tta import (
     _reference_parity,
     apply_fp16_checkpoint_delta,
+    apply_fp16_lora_state,
     audit_adapter_manifest,
     build_view_prototypes,
     leave_one_out_support_scores,
@@ -106,4 +107,82 @@ def test_adapter_manifest_requires_support_only_pair_provenance(tmp_path) -> Non
     assert audit["method"].endswith("rx_shift_pair_v1")
     manifest["class_quota_used_at_inference"] = True
     with pytest.raises(ValueError, match="no_class_quota"):
+        audit_adapter_manifest(manifest, adapter_state=state)
+
+
+class _TinyFullHead(torch.nn.Module):
+    def __init__(self) -> None:
+        super().__init__()
+        self.id_proj = torch.nn.Sequential(torch.nn.Linear(2, 2))
+        self.pa_proj = torch.nn.Sequential(torch.nn.Linear(2, 2))
+        self.id_gate = torch.nn.Sequential(torch.nn.Linear(2, 2))
+        self.joint_proj = torch.nn.Sequential(torch.nn.Linear(2, 2))
+        self.imp_merge = torch.nn.Sequential(torch.nn.Linear(2, 2))
+
+
+class _TinyFullModel(torch.nn.Module):
+    def __init__(self) -> None:
+        super().__init__()
+        self.id_backbone = torch.nn.Module()
+        self.id_backbone.t_proj = torch.nn.Linear(2, 2)
+        self.id_backbone.f_proj = torch.nn.Linear(2, 2)
+        self.id_backbone.pa_proj = torch.nn.Sequential(torch.nn.Linear(2, 2))
+        self.id_backbone.fuse = torch.nn.Sequential(torch.nn.Linear(2, 2))
+        self.id_backbone.con_proj = torch.nn.Sequential(torch.nn.Linear(2, 2))
+        self.id_backbone.cls_head = _TinyFullHead()
+
+
+def test_fp16_full_feature_lora_state_loads_strictly() -> None:
+    source = _TinyFullModel()
+    from paper_reproduction.scripts.train_export_cvs_support_lora_adapter import (
+        inject_feat_joint_lora,
+    )
+
+    resources = inject_feat_joint_lora(
+        source, rank=2, alpha=2.0, scope="full_feature"
+    )
+    state = {
+        name: parameter.detach().half()
+        for name, parameter in source.named_parameters()
+        if parameter.requires_grad
+    }
+    target = _TinyFullModel()
+    audit = apply_fp16_lora_state(
+        target, state, scope="full_feature", rank=2, alpha=2.0
+    )
+    assert audit["element_count"] == resources["trainable_parameters"]
+    assert audit["tensor_bytes_fp16"] == 2 * resources["trainable_parameters"]
+    assert audit["mergeable_into_base_linear_weights"] is True
+
+
+def test_relaxed_lora_manifest_keeps_permission_gates(tmp_path) -> None:
+    state = tmp_path / "lora.pt"
+    state.write_bytes(b"lora")
+    import hashlib
+
+    digest = hashlib.sha256(b"lora").hexdigest()
+    manifest = {
+        "method": "support_only_full_feature_lora_v1",
+        "resource_tier": "performance_relaxed",
+        "support_only": True,
+        "query_update_forbidden": True,
+        "query_labels_used_for_training": False,
+        "old_new_role_used_by_optimizer": False,
+        "class_quota_used_at_inference": False,
+        "epochs": 10,
+        "adapter_state_format": "fp16_trainable_state",
+        "adapter_state_sha256": digest,
+        "support_view_policy": "rx_shift_pair_cycle",
+        "hyperparameters": {"scope": "full_feature", "rank": 24, "alpha": 24.0},
+        "runtime": {"optimizer_steps": 100},
+        "resources": {
+            "trainable_parameters": 81_432,
+            "adapter_state_bytes_fp16": 162_864,
+            "combined_persistent_state_within_cap": True,
+        },
+    }
+    audit = audit_adapter_manifest(manifest, adapter_state=state)
+    assert audit["method"] == "support_only_full_feature_lora_v1"
+    manifest["query_labels_used_for_training"] = True
+    with pytest.raises(ValueError, match="no_query_labels"):
         audit_adapter_manifest(manifest, adapter_state=state)

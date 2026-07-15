@@ -55,6 +55,7 @@ from paper_reproduction.scripts.train_export_cvs_micro_iq_adapter import (
 )
 from paper_reproduction.scripts.train_export_cvs_support_lora_adapter import (
     LATE_KEY_FT_TARGETS,
+    inject_feat_joint_lora,
 )
 
 
@@ -135,41 +136,130 @@ def apply_fp16_checkpoint_delta(
     }
 
 
+def apply_fp16_lora_state(
+    model: torch.nn.Module,
+    state: dict[str, torch.Tensor],
+    *,
+    scope: str,
+    rank: int,
+    alpha: float,
+) -> dict[str, Any]:
+    """Inject and strictly load a compact support-trained LoRA state."""
+
+    resources = inject_feat_joint_lora(
+        model, rank=int(rank), alpha=float(alpha), scope=str(scope)
+    )
+    trainable = {
+        name: parameter
+        for name, parameter in model.named_parameters()
+        if parameter.requires_grad
+    }
+    if set(state) != set(trainable):
+        raise ValueError(
+            "LoRA state key mismatch: "
+            f"observed={sorted(state)}, expected={sorted(trainable)}"
+        )
+    element_count = 0
+    with torch.no_grad():
+        for name, parameter in trainable.items():
+            value = state[name].detach().cpu()
+            if tuple(value.shape) != tuple(parameter.shape):
+                raise ValueError(
+                    f"LoRA state shape mismatch for {name}: "
+                    f"{tuple(value.shape)} != {tuple(parameter.shape)}"
+                )
+            if not bool(torch.isfinite(value).all()):
+                raise FloatingPointError(f"non-finite LoRA state tensor: {name}")
+            parameter.copy_(value.to(device=parameter.device, dtype=parameter.dtype))
+            element_count += int(value.numel())
+    if element_count != int(resources["trainable_parameters"]):
+        raise ValueError(
+            "LoRA state element count drift: "
+            f"{element_count}!={resources['trainable_parameters']}"
+        )
+    return {
+        "format": "fp16_trainable_state",
+        "scope": str(scope),
+        "rank": int(rank),
+        "alpha": float(alpha),
+        "tensor_count": int(len(trainable)),
+        "element_count": int(element_count),
+        "tensor_bytes_fp16": int(element_count * 2),
+        "dynamic_added_macs_per_backbone_forward": int(
+            resources["adapter_macs_per_query"]
+        ),
+        "mergeable_into_base_linear_weights": True,
+        "merged_added_macs_per_query": 0,
+        "target_modules": [
+            str(row["module"]) for row in resources["target_modules"]
+        ],
+    }
+
+
 def audit_adapter_manifest(
     manifest: dict[str, Any], *, adapter_state: Path
 ) -> dict[str, Any]:
     """Fail closed on support-only sparse-key provenance before query scoring."""
 
     resources = dict(manifest.get("resources", {}))
-    allowed_methods = {
+    sparse_key_methods = {
         "support_only_late_key_ft_source_init_v1",
         "support_only_late_key_ft_source_init_rx_shift_pair_v1",
     }
-    checks = {
-        "known_method": str(manifest.get("method", "")) in allowed_methods,
+    lora_methods = {"support_only_full_feature_lora_v1"}
+    method = str(manifest.get("method", ""))
+    common_checks = {
+        "known_method": method in sparse_key_methods | lora_methods,
         "support_only": manifest.get("support_only") is True,
         "query_update_forbidden": manifest.get("query_update_forbidden") is True,
         "no_query_labels": manifest.get("query_labels_used_for_training") is False,
         "no_role_oracle": manifest.get("old_new_role_used_by_optimizer") is False,
         "no_class_quota": manifest.get("class_quota_used_at_inference") is False,
-        "epoch_cap": 1 <= int(manifest.get("epochs", -1)) <= 5,
-        "delta_format": manifest.get("adapter_state_format")
-        == "fp16_delta_from_strict_checkpoint",
-        "parameter_count": int(resources.get("trainable_parameters", -1)) == 31_200,
-        "delta_tensor_bytes": int(resources.get("adapter_state_bytes_fp16", -1))
-        == 62_400,
-        "merged_added_macs": int(
-            resources.get("deployment_added_macs_per_query_after_merge", -1)
-        )
-        == 0,
         "state_hash": str(manifest.get("adapter_state_sha256", ""))
         == _sha256_file(adapter_state),
     }
+    if method in sparse_key_methods:
+        method_checks = {
+            "epoch_cap": 1 <= int(manifest.get("epochs", -1)) <= 5,
+            "delta_format": manifest.get("adapter_state_format")
+            == "fp16_delta_from_strict_checkpoint",
+            "parameter_count": int(resources.get("trainable_parameters", -1))
+            == 31_200,
+            "delta_tensor_bytes": int(
+                resources.get("adapter_state_bytes_fp16", -1)
+            )
+            == 62_400,
+            "merged_added_macs": int(
+                resources.get("deployment_added_macs_per_query_after_merge", -1)
+            )
+            == 0,
+        }
+    else:
+        hyperparameters = dict(manifest.get("hyperparameters", {}))
+        parameter_count = int(resources.get("trainable_parameters", -1))
+        method_checks = {
+            "relaxed_resource_tier": manifest.get("resource_tier")
+            == "performance_relaxed",
+            "epoch_cap": 1 <= int(manifest.get("epochs", -1)) <= 40,
+            "state_format": manifest.get("adapter_state_format")
+            == "fp16_trainable_state",
+            "scope": hyperparameters.get("scope") == "full_feature",
+            "parameter_count": 50_000 < parameter_count <= 100_000,
+            "state_tensor_bytes": int(
+                resources.get("adapter_state_bytes_fp16", -1)
+            )
+            == 2 * parameter_count,
+            "combined_state_within_cap": resources.get(
+                "combined_persistent_state_within_cap"
+            )
+            is True,
+        }
+    checks = {**common_checks, **method_checks}
     failed = [name for name, passed in checks.items() if not passed]
     if failed:
         raise ValueError(f"invalid support adapter manifest: {failed}")
     return {
-        "method": str(manifest["method"]),
+        "method": method,
         "checks": checks,
         "support_view_policy": str(manifest.get("support_view_policy", "")),
         "epochs": int(manifest["epochs"]),
@@ -446,22 +536,27 @@ def main(argv: Sequence[str] | None = None) -> int:
     config = json.loads(args.config.read_text(encoding="utf-8-sig"))
     if list(config["target_receiver_labels"]) != ["8-8"]:
         raise ValueError("this preregistered recovery check is fixed to receiver 8-8")
-    if int(config["k_shot"]) != 10 or int(config["seed"]) != 713101:
-        raise ValueError("this preregistered recovery check is fixed to K10/seed713101")
+    if int(config["k_shot"]) != 10 or int(config["seed"]) not in range(713101, 713106):
+        raise ValueError(
+            "this development benchmark requires K10 and a registered development seed"
+        )
     if len(config["target_new_tx_labels"]) != 20:
         raise ValueError("this preregistered recovery check is fixed to 20 seen-new classes")
     reference_config = None
     if args.reference_config is not None:
         reference_config = json.loads(args.reference_config.read_text(encoding="utf-8-sig"))
     device = torch.device(str(args.device) if torch.cuda.is_available() else "cpu")
-    checkpoint = torch.load(args.ckpt, map_location="cpu")
+    # Project checkpoints contain the trusted SatViewStage enum in addition to tensors.
+    checkpoint = torch.load(args.ckpt, map_location="cpu", weights_only=False)
     model, checkpoint_audit = build_exact_ssdg_model_from_checkpoint(
-        checkpoint, input_len=256, device=device
+        checkpoint,
+        input_len=int(config.get("raw_iq_input_len", 4800)),
+        device=device,
     )
-    delta_state = torch.load(args.adapter_state, map_location="cpu")
-    if not isinstance(delta_state, dict):
+    adapter_state = torch.load(args.adapter_state, map_location="cpu")
+    if not isinstance(adapter_state, dict):
         raise TypeError("adapter_state must be a tensor dictionary")
-    delta_audit = apply_fp16_checkpoint_delta(model, delta_state)
+    adapter_manifest = None
     adapter_manifest_audit = None
     if args.adapter_manifest is not None:
         adapter_manifest = json.loads(
@@ -470,6 +565,21 @@ def main(argv: Sequence[str] | None = None) -> int:
         adapter_manifest_audit = audit_adapter_manifest(
             adapter_manifest, adapter_state=args.adapter_state
         )
+    if (
+        adapter_manifest is not None
+        and str(adapter_manifest.get("method", ""))
+        == "support_only_full_feature_lora_v1"
+    ):
+        hyperparameters = dict(adapter_manifest.get("hyperparameters", {}))
+        delta_audit = apply_fp16_lora_state(
+            model,
+            adapter_state,
+            scope=str(hyperparameters["scope"]),
+            rank=int(hyperparameters["rank"]),
+            alpha=float(hyperparameters["alpha"]),
+        )
+    else:
+        delta_audit = apply_fp16_checkpoint_delta(model, adapter_state)
     model.to(device).eval()
 
     old_labels = [str(value) for value in config["target_old_tx_labels"]]
@@ -634,6 +744,20 @@ def main(argv: Sequence[str] | None = None) -> int:
         )
 
     fixed1_parity = [row for row in rows if row["scenario"] == "ALL" and row["method"] == "fixed1"][0]
+    adapter_tensor_bytes = int(delta_audit["tensor_bytes_fp16"])
+    prototype_tensor_bytes = int(5 * len(classes) * 256 * 2)
+    threshold_bytes = 12
+    total_state_bytes = int(
+        adapter_tensor_bytes + prototype_tensor_bytes + threshold_bytes
+    )
+    state_cap_bytes = int(
+        config.get("extreme_light_max_persistent_state_bytes", 256 * 1024)
+    )
+    if total_state_bytes > state_cap_bytes:
+        raise ValueError(
+            "adaptive multiview state exceeds configured cap: "
+            f"{total_state_bytes}>{state_cap_bytes}"
+        )
     manifest = {
         "method": "support_prototype_adaptive_rxlight5_v1",
         "stage": "Stage2-C_recovery_diagnostic",
@@ -655,6 +779,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         "protocol_audit": protocol_audit,
         "extraction_audit": extraction_audit,
         "reference_base_view_parity": parity_audit,
+        "fixed1_deployed_adapter_metrics": fixed1_parity,
         "fixed1_deployed_fp16_delta_metrics": fixed1_parity,
         "checkpoint": str(args.ckpt),
         "checkpoint_sha256": _sha256_file(args.ckpt),
@@ -667,17 +792,27 @@ def main(argv: Sequence[str] | None = None) -> int:
         ),
         "adapter_manifest_audit": adapter_manifest_audit,
         "persistent_state": {
-            "adapter_tensor_bytes_fp16": 62_400,
-            "five_view_prototype_tensor_bytes_fp16": int(5 * 26 * 256 * 2),
-            "threshold_bytes_fp32": 12,
-            "total_bytes": int(62_400 + 5 * 26 * 256 * 2 + 12),
-            "headroom_to_128kib_bytes": int(
-                128 * 1024 - (62_400 + 5 * 26 * 256 * 2 + 12)
+            "adapter_tensor_bytes_fp16": adapter_tensor_bytes,
+            "five_view_prototype_tensor_bytes_fp16": prototype_tensor_bytes,
+            "threshold_bytes_fp32": threshold_bytes,
+            "total_bytes": total_state_bytes,
+            "configured_cap_bytes": state_cap_bytes,
+            "headroom_to_configured_cap_bytes": int(
+                state_cap_bytes - total_state_bytes
             ),
-            "under_128kib": bool(
-                62_400 + 5 * 26 * 256 * 2 + 12 <= 128 * 1024
-            ),
+            "within_configured_cap": total_state_bytes <= state_cap_bytes,
             "class_label_strings_excluded_from_tensor_state_accounting": True,
+        },
+        "adapter_compute": {
+            "dynamic_added_macs_per_backbone_forward": int(
+                delta_audit.get("dynamic_added_macs_per_backbone_forward", 0)
+            ),
+            "mergeable_into_base_linear_weights": bool(
+                delta_audit.get("mergeable_into_base_linear_weights", True)
+            ),
+            "merged_added_macs_per_query": int(
+                delta_audit.get("merged_added_macs_per_query", 0)
+            ),
         },
         "results": rows,
     }

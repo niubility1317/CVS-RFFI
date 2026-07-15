@@ -65,6 +65,16 @@ LATE_LORA_TARGETS = (
     *LORA_TARGETS,
 )
 
+FULL_FEATURE_LORA_TARGETS = (
+    "id_backbone.t_proj",
+    "id_backbone.f_proj",
+    "id_backbone.pa_proj.0",
+    "id_backbone.fuse.0",
+    "id_backbone.con_proj.0",
+    *LORA_TARGETS,
+    "id_backbone.cls_head.imp_merge.0",
+)
+
 LATE_FILM_TARGETS = (
     "id_backbone.t_proj",
     "id_backbone.f_proj",
@@ -238,6 +248,8 @@ def inject_feat_joint_lora(
         target_names = LORA_TARGETS
     elif scope_norm == "late_feat_joint":
         target_names = LATE_LORA_TARGETS
+    elif scope_norm == "full_feature":
+        target_names = FULL_FEATURE_LORA_TARGETS
     else:
         raise ValueError(f"unsupported LoRA scope: {scope}")
     for parameter in model.parameters():
@@ -283,11 +295,20 @@ def inject_feat_joint_lora(
         "query_view_count": 1,
         "original_checkpoint_trainable_parameters": 0,
         "original_checkpoint_gradient_updates": 0,
+        "full_model_finetune": False,
     }
-    if parameter_count > 50_000:
-        raise ValueError(f"LoRA exceeds 50k parameter cap: {audit}")
-    if fp16_bytes > 128 * 1024:
-        raise ValueError(f"LoRA exceeds 128KB state cap: {audit}")
+    parameter_cap = 100_000 if scope_norm == "full_feature" else 50_000
+    audit["resource_tier"] = (
+        "performance_relaxed" if scope_norm == "full_feature" else "preferred"
+    )
+    audit["trainable_parameter_cap"] = int(parameter_cap)
+    audit["persistent_state_cap_bytes"] = int(256 * 1024)
+    if parameter_count > parameter_cap:
+        raise ValueError(
+            f"LoRA exceeds {parameter_cap} parameter cap for {scope_norm}: {audit}"
+        )
+    if fp16_bytes > 256 * 1024:
+        raise ValueError(f"LoRA exceeds 256KB state cap: {audit}")
     return audit
 
 
@@ -518,6 +539,28 @@ def _prototype_banks_from_matched_views(
     return torch.stack(all_view, dim=0).detach(), torch.stack(leave_one_out, dim=0).detach()
 
 
+def view_score_distillation_loss(
+    scores: torch.Tensor, *, view_count: int, temperature: float
+) -> torch.Tensor:
+    """Distill the detached multiView score ensemble into every support View."""
+
+    if int(view_count) <= 1:
+        raise ValueError("view score distillation requires at least two views")
+    if scores.ndim != 2 or int(scores.shape[0]) % int(view_count) != 0:
+        raise ValueError("scores cannot be grouped into matched views")
+    if not math.isfinite(float(temperature)) or float(temperature) <= 0.0:
+        raise ValueError("view score distillation temperature must be positive")
+    grouped = scores.reshape(int(view_count), -1, int(scores.shape[1]))
+    softened_teacher = torch.softmax(
+        grouped.detach().mean(dim=0) / float(temperature), dim=-1
+    )
+    student_log_probs = torch.log_softmax(grouped / float(temperature), dim=-1)
+    targets = softened_teacher.unsqueeze(0).expand_as(student_log_probs)
+    return F.kl_div(
+        student_log_probs, targets, reduction="batchmean"
+    ) * float(temperature) ** 2
+
+
 def train_support_only_lora(
     model: nn.Module,
     support_rows: np.ndarray,
@@ -530,6 +573,8 @@ def train_support_only_lora(
     feature_anchor_weight: float,
     view_consistency_weight: float,
     cross_view_prototype_weight: float,
+    view_score_distill_weight: float,
+    view_score_distill_temperature: float,
     cosine_margin: float,
     class_dro_temperature: float,
     support_view_count: int,
@@ -550,6 +595,13 @@ def train_support_only_lora(
         raise ValueError("class_dro_temperature must be nonnegative")
     if not 0.0 <= float(cross_view_prototype_weight) <= 1.0:
         raise ValueError("cross_view_prototype_weight must be in [0,1]")
+    if float(view_score_distill_weight) < 0.0:
+        raise ValueError("view_score_distill_weight must be nonnegative")
+    if (
+        not math.isfinite(float(view_score_distill_temperature))
+        or float(view_score_distill_temperature) <= 0.0
+    ):
+        raise ValueError("view_score_distill_temperature must be positive")
     if float(matched_view_teacher_weight) < 0.0:
         raise ValueError("matched_view_teacher_weight must be nonnegative")
     if float(grad_clip) <= 0.0:
@@ -565,6 +617,7 @@ def train_support_only_lora(
     if view_sampling_mode_norm == "rotating_single" and (
         float(view_consistency_weight) > 0.0
         or float(cross_view_prototype_weight) > 0.0
+        or float(view_score_distill_weight) > 0.0
     ):
         raise ValueError(
             "rotating_single uses cached matched-view teacher targets; "
@@ -684,6 +737,7 @@ def train_support_only_lora(
         use_view_groups = (
             float(view_consistency_weight) > 0.0
             or float(cross_view_prototype_weight) > 0.0
+            or float(view_score_distill_weight) > 0.0
         )
         if view_sampling_mode_norm == "rotating_single":
             physical_order = rng.permutation(physical_count)
@@ -726,6 +780,7 @@ def train_support_only_lora(
             "anchor": 0.0,
             "matched_view_teacher": 0.0,
             "consistency": 0.0,
+            "view_score_distill": 0.0,
             "correct": 0.0,
             "grad": 0.0,
         }
@@ -813,11 +868,20 @@ def train_support_only_lora(
                 ).mean()
             else:
                 consistency = z.new_zeros(())
+            if float(view_score_distill_weight) > 0.0:
+                score_distill = view_score_distillation_loss(
+                    decision_scores,
+                    view_count=view_count,
+                    temperature=float(view_score_distill_temperature),
+                )
+            else:
+                score_distill = z.new_zeros(())
             loss = (
                 dro
                 + float(feature_anchor_weight) * anchor
                 + float(matched_view_teacher_weight) * matched_teacher
                 + float(view_consistency_weight) * consistency
+                + float(view_score_distill_weight) * score_distill
             )
             loss.backward()
             grad_norm = torch.nn.utils.clip_grad_norm_(parameters, float(grad_clip))
@@ -834,6 +898,7 @@ def train_support_only_lora(
             totals["anchor"] += float(anchor.detach()) * count
             totals["matched_view_teacher"] += float(matched_teacher.detach()) * count
             totals["consistency"] += float(consistency.detach()) * count
+            totals["view_score_distill"] += float(score_distill.detach()) * count
             totals["correct"] += float(
                 (decision_scores.argmax(dim=1) == targets).sum().detach()
             )
@@ -848,6 +913,8 @@ def train_support_only_lora(
             "matched_view_teacher_loss": totals["matched_view_teacher"]
             / max(1, seen),
             "view_consistency": totals["consistency"] / max(1, seen),
+            "view_score_distillation_loss": totals["view_score_distill"]
+            / max(1, seen),
             "support_train_acc": totals["correct"] / max(1, seen),
             "gradient_norm": totals["grad"] / max(1, batches),
             "learning_rate": float(optimizer.param_groups[0]["lr"]),
@@ -906,10 +973,12 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
         choices=("lora", "late_film", "late_key_ft"),
         default="lora",
     )
-    parser.add_argument("--rank", type=int, choices=(2, 4, 8, 16), default=8)
+    parser.add_argument("--rank", type=int, choices=(2, 4, 8, 16, 24), default=8)
     parser.add_argument("--alpha", type=float, default=8.0)
     parser.add_argument(
-        "--scope", choices=("feat_joint", "late_feat_joint"), default="feat_joint"
+        "--scope",
+        choices=("feat_joint", "late_feat_joint", "full_feature"),
+        default="feat_joint",
     )
     parser.add_argument("--learning_rate", type=float, default=1.0e-3)
     parser.add_argument("--weight_decay", type=float, default=1.0e-4)
@@ -917,6 +986,8 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--feature_anchor_weight", type=float, default=0.05)
     parser.add_argument("--view_consistency_weight", type=float, default=0.0)
     parser.add_argument("--cross_view_prototype_weight", type=float, default=0.0)
+    parser.add_argument("--view_score_distill_weight", type=float, default=0.0)
+    parser.add_argument("--view_score_distill_temperature", type=float, default=2.0)
     parser.add_argument("--cosine_margin", type=float, default=0.0)
     parser.add_argument("--class_dro_temperature", type=float, default=0.0)
     parser.add_argument("--batch_size", type=int, default=128)
@@ -953,6 +1024,10 @@ def _validate_deployment_controls(args: argparse.Namespace) -> None:
         "no_stacked_view_consistency": float(args.view_consistency_weight) == 0.0,
         "no_stacked_cross_view_prototype": float(
             args.cross_view_prototype_weight
+        )
+        == 0.0,
+        "no_stacked_view_score_distillation": float(
+            args.view_score_distill_weight
         )
         == 0.0,
     }
@@ -1032,7 +1107,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     device = torch.device(str(args.device) if torch.cuda.is_available() else "cpu")
     torch.manual_seed(int(args.seed))
     np.random.seed(int(args.seed) % (2**32))
-    checkpoint = torch.load(args.ckpt, map_location="cpu")
+    # Project checkpoints contain the trusted SatViewStage enum in addition to tensors.
+    # PyTorch 2.6 defaults weights_only=True, which rejects that local metadata.
+    checkpoint = torch.load(args.ckpt, map_location="cpu", weights_only=False)
     model, checkpoint_load_audit = build_exact_ssdg_model_from_checkpoint(
         checkpoint, input_len=int(support_rows.shape[-1]), device=device
     )
@@ -1090,6 +1167,10 @@ def main(argv: Sequence[str] | None = None) -> int:
         feature_anchor_weight=float(args.feature_anchor_weight),
         view_consistency_weight=float(args.view_consistency_weight),
         cross_view_prototype_weight=float(args.cross_view_prototype_weight),
+        view_score_distill_weight=float(args.view_score_distill_weight),
+        view_score_distill_temperature=float(
+            args.view_score_distill_temperature
+        ),
         cosine_margin=float(args.cosine_margin),
         class_dro_temperature=float(args.class_dro_temperature),
         support_view_count=int(training_support_view_count),
@@ -1148,8 +1229,55 @@ def main(argv: Sequence[str] | None = None) -> int:
     resources["adapter_state_file_bytes_fp16_pt"] = int(
         adapter_state_path.stat().st_size
     )
+    registered_class_count = int(len(old_labels) + len(new_labels))
+    registered_feature_dim = int(
+        160
+        + (
+            int(config.get("qknnv42_aux_feature_dim", 0))
+            if str(config.get("qknnv42_aux_feature_key", ""))
+            else 0
+        )
+    )
+    prototype_state_bytes = int(
+        5 * registered_class_count * registered_feature_dim * 2
+    )
+    threshold_state_bytes = 12
+    combined_state_bytes = int(
+        resources["adapter_state_bytes_fp16"]
+        + prototype_state_bytes
+        + threshold_state_bytes
+    )
+    persistent_state_cap = int(
+        config.get("extreme_light_max_persistent_state_bytes", 256 * 1024)
+    )
+    resources.update(
+        {
+            "five_view_prototype_state_bytes_fp16": prototype_state_bytes,
+            "adaptive_tta_threshold_state_bytes_fp32": threshold_state_bytes,
+            "combined_adaptive_tta_state_bytes": combined_state_bytes,
+            "combined_persistent_state_cap_bytes": persistent_state_cap,
+            "combined_persistent_state_within_cap": combined_state_bytes
+            <= persistent_state_cap,
+            "parameter_increase_vs_50k_percent": float(
+                max(
+                    0.0,
+                    (
+                        float(resources["trainable_parameters"]) / 50_000.0
+                        - 1.0
+                    )
+                    * 100.0,
+                )
+            ),
+        }
+    )
+    if not bool(resources["combined_persistent_state_within_cap"]):
+        raise ValueError(
+            "adapter plus five-view prototype state exceeds configured cap: "
+            f"{resources}"
+        )
     adaptation_manifest = {
         "method": method,
+        "resource_tier": str(resources.get("resource_tier", "preferred")),
         "receiver": str(args.receiver),
         "new_count": int(args.new_count),
         "seed": int(args.seed),
@@ -1175,6 +1303,10 @@ def main(argv: Sequence[str] | None = None) -> int:
             "feature_anchor_weight": float(args.feature_anchor_weight),
             "view_consistency_weight": float(args.view_consistency_weight),
             "cross_view_prototype_weight": float(args.cross_view_prototype_weight),
+            "view_score_distill_weight": float(args.view_score_distill_weight),
+            "view_score_distill_temperature": float(
+                args.view_score_distill_temperature
+            ),
             "cosine_margin": float(args.cosine_margin),
             "class_dro_temperature": float(args.class_dro_temperature),
             "batch_size": int(args.batch_size),

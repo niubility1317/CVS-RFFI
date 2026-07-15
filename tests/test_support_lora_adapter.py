@@ -5,6 +5,7 @@ import pytest
 
 from paper_reproduction.scripts.train_export_cvs_support_lora_adapter import (
     LATE_FILM_TARGETS,
+    FULL_FEATURE_LORA_TARGETS,
     LORA_TARGETS,
     ChannelAffineLinear,
     LATE_KEY_FT_TARGETS,
@@ -17,6 +18,7 @@ from paper_reproduction.scripts.train_export_cvs_support_lora_adapter import (
     enable_late_key_layer_finetune,
     load_trainable_adapter_state,
     train_support_only_lora,
+    view_score_distillation_loss,
 )
 
 
@@ -38,6 +40,7 @@ class _Backbone(torch.nn.Module):
         self.f_proj = torch.nn.Linear(32, 160)
         self.pa_proj = torch.nn.Sequential(torch.nn.Linear(64, 160))
         self.fuse = torch.nn.Sequential(torch.nn.Linear(321, 160))
+        self.con_proj = torch.nn.Sequential(torch.nn.Linear(160, 160))
         self.cls_head = _Head()
 
 
@@ -92,6 +95,20 @@ def test_late_feat_joint_rank4_compresses_full_late_scope() -> None:
     assert audit["adapter_macs_per_query"] == 11_012
     assert audit["scope"] == "late_feat_joint"
     assert len(audit["target_modules"]) == 8
+
+
+def test_full_feature_rank24_uses_relaxed_tier_but_stays_under_100k() -> None:
+    model = _Model()
+    audit = inject_feat_joint_lora(
+        model, rank=24, alpha=24.0, scope="full_feature"
+    )
+    assert audit["trainable_parameters"] == 81_432
+    assert audit["adapter_state_bytes_fp16"] == 162_864
+    assert audit["adapter_macs_per_query"] == 81_432
+    assert audit["scope"] == "full_feature"
+    assert audit["resource_tier"] == "performance_relaxed"
+    assert audit["trainable_parameter_cap"] == 100_000
+    assert len(audit["target_modules"]) == len(FULL_FEATURE_LORA_TARGETS) == 10
 
 
 def test_late_channel_film_is_1280_params_and_freezes_checkpoint() -> None:
@@ -261,6 +278,8 @@ def test_rotating_single_view_film_uses_cached_teacher_and_step_cap(
         feature_anchor_weight=0.05,
         view_consistency_weight=0.0,
         cross_view_prototype_weight=0.0,
+        view_score_distill_weight=0.0,
+        view_score_distill_temperature=2.0,
         cosine_margin=0.0,
         class_dro_temperature=0.0,
         support_view_count=3,
@@ -281,6 +300,29 @@ def test_rotating_single_view_film_uses_cached_teacher_and_step_cap(
     assert runtime["train_views_per_physical_sample_per_epoch"] == 1
     assert runtime["support_forward_sample_equivalents"] == 28
     assert runtime["terminated_by_step_cap"]
+
+
+def test_view_score_distillation_preserves_full_view_ensemble() -> None:
+    identical = torch.tensor(
+        [[3.0, 1.0], [2.0, 0.0], [3.0, 1.0], [2.0, 0.0]],
+        requires_grad=True,
+    )
+    zero = view_score_distillation_loss(
+        identical, view_count=2, temperature=2.0
+    )
+    assert float(zero.detach()) == pytest.approx(0.0, abs=1.0e-7)
+
+    divergent = torch.tensor(
+        [[4.0, 0.0], [0.0, 4.0], [0.0, 4.0], [4.0, 0.0]],
+        requires_grad=True,
+    )
+    loss = view_score_distillation_loss(
+        divergent, view_count=2, temperature=2.0
+    )
+    assert float(loss.detach()) > 0.0
+    loss.backward()
+    assert divergent.grad is not None
+    assert bool(torch.isfinite(divergent.grad).all())
 
 
 def test_leave_one_view_out_prototypes_exclude_current_view() -> None:

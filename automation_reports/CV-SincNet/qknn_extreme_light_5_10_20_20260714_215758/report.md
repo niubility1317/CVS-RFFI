@@ -636,3 +636,46 @@ v11r1训练artifact回收到`E:\type10-7\local_artifacts\qknn_extreme_light_sour
 ```bash
 CUDA_VISIBLE_DEVICES=7 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/code:/home/szu2070436088/2510044040/CV-SincNet /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u paper_reproduction/scripts/benchmark_cvs_adaptive_rxlight_tta.py --config paper_reproduction/configs/cvs_qknnv42_extreme_light_20new_stage2c_k10_rawiq_20260715_n607.json --ckpt runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth --adapter_state runs/qknn_extreme_light_sourceinit_keyft5_rxshiftpair_20260715_v11r1/support_late_key_ft_rx_8-8_new_20_seed_713101_k_10/adapter_state_fp16.pt --adapter_manifest runs/qknn_extreme_light_sourceinit_keyft5_rxshiftpair_20260715_v11r1/support_late_key_ft_rx_8-8_new_20_seed_713101_k_10/training_manifest.json --out_dir runs/qknn_extreme_light_sourceinit_keyft5_rxshiftpair_adaptive_tta_20260715_v11r1 --batch_size 256 --max_accuracy_drop_pp 1.0 --device cuda:0
 ```
+
+## 2026-07-15性能优先压缩档与v12唯一候选预注册
+
+用户允许为接近正式目标，将压缩预算上浮50%–100%。`项目.md`已先更新为独立`performance-relaxed`档：可训参数上限100,000、适配上限40epoch、持久状态上限512KiB、query最多5次backbone前向；support/query权限、无角色Oracle、无类别配额、无query拟合、无密集query图仍是不可放宽的硬边界。协议镜像对应Git提交`48ed1bf`和`43e7b88`。本候选实际只使用81,432参数、10epoch、229,436B和最多5次前向，没有耗尽放宽上限。
+
+新完成的125个`qknnv42_full_nonoracle`诊断均无角色Oracle、无类别配额、无query标签拟合，但125/125使用密集query图且只有2个新类，只能作诊断。K10均值为old=83.04%、最低旧类均值=62.53%、new=81.87%、H=82.07%；最佳H row为`rx=7-14/seed=713103/K10`，old=91.39%、最低旧类=80.00%、new=92.50%、H=91.89%，仍未达到old95%和floor88%。因此`adapter60+5-view+FFT96`去掉角色/配额Oracle后也不能自动复现历史92.28%；不同切分、2类/20类差异、场景筛选和Oracle是巨大差距的重要来源。完整联合行审计见`automation_reports/CV-SincNet/qknnv42_full_nonoracle125_20260715_094615/report.md`，提交=`65e2acb`。
+
+唯一开发cell固定为`receiver=8-8/new20/seed713103/K10`，不做rank、学习率、loss权重或门限sweep。在相同ADV3B02 checkpoint的10个后段身份分支线性层注入rank24、alpha24 LoRA：`t_proj/f_proj/pa_proj.0/fuse.0/con_proj.0`及`cls_head`内的`id_proj.0/pa_proj.0/id_gate.0/joint_proj.0/imp_merge.0`。原checkpoint全部冻结，LoRA零残差初始化；训练后可合并回原线性层，持续推理新增MAC为0，未合并动态口径为81,432MAC/backbone forward。
+
+support只使用注册K10及3个正式LEO场景。`rx_shift_pair_cycle`的5个slot每个只含base和一个±2 shift，全程唯一接收变换为`base/-2/+2`三个。训练固定10epoch、≤100step、AdamW lr=`1e-3`，使用全类对称prototype CE、`0.5×`跨View留一原型CE、`0.1×`特征一致性、`0.5×`逐View分数到完整5-slot均值分数的KL蒸馏、`0.05×`原特征锚定、cosine margin=`0.05`和类对称DRO temperature=`2.0`。DRO只读取support类别ID，对26类规则完全相同，不读取old/new角色或query类别数。
+
+推理严格使用`rx_light5`的base、±2 shift、±1e-4 CFO；每个View都以`z_id160+FFT96`构建同View原型和分数。固定5-view是性能上界；部署默认由注册support leave-one-out分数冻结逐样本1→3→5门限。query标签、query特征、角色、quota、Hungarian和跨query状态均不参与校准或决策。
+
+| 资源项 | 历史adapter60 | v11稀疏关键层 | v12候选 |
+|---|---:|---:|---:|
+|可训参数|289,685|31,200|81,432|
+|target-support epoch|60|5|10|
+|参数×epoch|17,381,100|156,000|814,320|
+|相对历史压缩|1倍|111.4倍|21.35倍|
+|接收变换种类|5|3|3|
+|query backbone前向|固定5|自适应均值2.296、P95=5|固定5上界；自适应目标均值≤3.5|
+|适配器FP16状态|579,370B|62,400B|162,864B|
+|5套26类256维原型+门限|至少66,560B|66,572B|66,572B|
+|合计持久状态|至少645,930B|128,972B|229,436B=224.06KiB|
+|训练优化器状态|未统一记载|SGD=0|AdamW估算651,456B，仅训练暂态|
+|合并后持续新增MAC/query|取决于旧实现|0|0|
+
+v12相对历史减少71.89%可训参数、83.33%epoch和95.31%的`参数×epoch`更新量；相对原50k首选参数线提高62.86%，符合用户授权。预计support前向样本等效量54,600，高于v11的7,800但显著轻于复制60epoch路线。持久状态仍低于256KiB，训练暂态仅MiB级。
+
+| 晋级检查 | 必须结果 |
+|---|---|
+|权限|仅K10 support训练；无query训练/选模、角色Oracle、类别配额和密集query图|
+|固定5-view机制gate|old≥78%、最低旧类≥55%、new20≥82%、H≥80%|
+|自适应gate|平均前向≤3.5，且H比固定5-view下降≤1.5pp|
+|正式目标|old≥95%、最低旧类≥88%、new20≥86%；机制gate通过后才扩5/10类、K5、receiver和seed|
+
+未通过机制gate就停止，不按该query回调参数。通过只代表允许扩矩阵，不代表达到正式目标。
+
+本地变更包括trainer、adaptive benchmark、runner、唯一v12配置和两份focused测试。`ssr-gpu`下`py_compile` PASS、49项pytest PASS、配置`validate_config` PASS、`git diff --check` PASS。真实checkpoint SHA256=`2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98`，严格重建195个tensor且missing/unexpected/skipped均为0；实体注入精确81,432参数、162,864B、10个白名单层。trainer SHA=`33da85c0...7080b`，benchmark=`9e3f7492...c5e99`，runner=`8f526c78...9420`，config=`450e599e...49b5`。根目录不是Git仓库，完整变更仅在Git承载面提交，不纳入其它并发修改或未跟踪artifact。
+
+训练命令预注册为：`CUDA_VISIBLE_DEVICES=<live-free-gpu> PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/code:/home/szu2070436088/2510044040/CV-SincNet /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u paper_reproduction/scripts/train_export_cvs_support_lora_adapter.py --config paper_reproduction/configs/cvs_qknnv42_multiview_relaxed_rank24_stage2c_k10_20260715_n607.json --ckpt runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth --out_root runs/qknn_multiview_relaxed_rank24_scorekd_20260715_v12 --receiver 8-8 --new_count 20 --seed 713103 --k_shot 10 --adapter_type lora --scope full_feature --rank 24 --alpha 24 --epochs 10 --optimizer adamw --max_optimizer_steps 100 --grad_clip 1 --support_view_policy rx_shift_pair_cycle --view_sampling_mode stacked --learning_rate 1e-3 --weight_decay 1e-4 --temperature 18 --feature_anchor_weight 0.05 --view_consistency_weight 0.1 --cross_view_prototype_weight 0.5 --view_score_distill_weight 0.5 --view_score_distill_temperature 2 --cosine_margin 0.05 --class_dro_temperature 2 --batch_size 260 --device cuda:0`。
+
+训练artifact严格审计后，联合评估命令为：`CUDA_VISIBLE_DEVICES=<live-free-gpu> PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/code:/home/szu2070436088/2510044040/CV-SincNet /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u paper_reproduction/scripts/benchmark_cvs_adaptive_rxlight_tta.py --config paper_reproduction/configs/cvs_qknnv42_multiview_relaxed_rank24_stage2c_k10_20260715_n607.json --ckpt runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth --adapter_state runs/qknn_multiview_relaxed_rank24_scorekd_20260715_v12/support_lora_full_feature_rx_8-8_new_20_seed_713103_k_10/adapter_state_fp16.pt --adapter_manifest runs/qknn_multiview_relaxed_rank24_scorekd_20260715_v12/support_lora_full_feature_rx_8-8_new_20_seed_713103_k_10/adaptation_manifest.json --out_dir runs/qknn_multiview_relaxed_rank24_scorekd_adaptive_tta_20260715_v12 --batch_size 256 --max_accuracy_drop_pp 1 --device cuda:0`。GPU号在实时N607占用审计后替换。
