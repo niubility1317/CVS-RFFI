@@ -646,3 +646,10 @@
 - 终止范围严格限定为该run的queue、wrapper和trainer进程树；先阻止queue继续提交row9–12，再对目标树发送TERM并验证退出。不得删除或覆盖该run的partial日志、metrics、checkpoint、manifest和queue记录。
 - “删除其他版本”的执行范围限定为旧RIEI论文复现launcher入口；历史报告、日志、metrics、checkpoint、run、分析包、snapshot和回归证据全部保留。CVS/Stage2/ratio-sweep等非论文复现RIEI入口不在删除范围。
 - 固化唯一入口计划为`code/scripts/launch_riei_paper_reproduction.sh`。由于用户在完整12行确认结束前主动停止，当前科学结论仍为`NOT_REPRODUCED`；“最终唯一复现版本”仅表示唯一支持实现，不表示完整Table III已经确认达标。
+
+### 11:01终止完成与本地固化验证
+
+- 精确枚举8个queue及其24个后代，共32个目标进程；先对queue发送TERM阻止row9–12提交，再对其后代由深到浅发送TERM。6秒后目标剩余进程0，无需KILL。复查GPU compute为0，目标run/log目录仍存在，分别保留26和32个文件；row9–12目录不存在。
+- 根目录不是Git仓库；代码、测试、报告与追踪表同步镜像到`github_publish/CVS-RFFI-repo`。新增唯一入口`code/scripts/launch_riei_paper_reproduction.sh`，删除8个版本化旧论文复现launcher及根目录旧`run_riei_original_table3_queue.sh`；保留所有非论文复现RIEI/CVS/Stage2入口及历史证据。
+- 唯一入口取消model/split seed覆盖参数，将最终科学配置硬编码。root与Git镜像launcher SHA256一致；两侧`bash -n`通过，dry-run生成12个Table III job和8个capacity marker，所有job固定seed42、split1337与short stem。
+- `ssr-gpu`下聚焦测试结果为`8 passed`；唯一warning是既知`.pytest_cache`写权限，不影响测试结论。下一步只同步唯一入口并从N607精确删除同名旧launcher文件，随后复核远端hash、`bash -n`与dry-run；不启动新实验。
