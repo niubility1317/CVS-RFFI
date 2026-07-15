@@ -47,6 +47,17 @@ def test_source_only_switch_cannot_hide_a_nonformal_adapter_export() -> None:
         )
 
 
+def test_non_source_only_path_still_requires_target_cells() -> None:
+    with pytest.raises(ValueError, match="nonempty --cells"):
+        _validate_source_only_ground_lora_mode(
+            argparse.Namespace(
+                model_adapter_mode="none",
+                source_only_ground_lora=False,
+                cells="",
+            )
+        )
+
+
 def test_relation_loss_is_zero_for_identical_geometry_and_positive_after_drift() -> None:
     reference = torch.tensor(
         [[1.0, 0.0], [0.0, 1.0], [-1.0, 0.0]], dtype=torch.float32

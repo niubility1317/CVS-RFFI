@@ -1605,7 +1605,7 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     p.add_argument("--export_identity", action=argparse.BooleanOptionalAction, default=False)
     p.add_argument(
         "--cells",
-        required=True,
+        default="",
         help=(
             "semicolon-separated name:target_rx:target_unknown_tx_ids legacy cells, "
             "or name:target_rx:target_new_tx_ids:target_unknown_tx_ids Stage2-C cells"
@@ -1779,6 +1779,8 @@ def _validate_source_only_ground_lora_mode(args: argparse.Namespace) -> None:
         raise ValueError(
             "--source_only_ground_lora is reserved for lora_effective_feature"
         )
+    if not bool(args.source_only_ground_lora) and not str(args.cells).strip():
+        raise ValueError("target export requires a nonempty --cells definition")
 
 
 def main(argv: Sequence[str] | None = None) -> int:
