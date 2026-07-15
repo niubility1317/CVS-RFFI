@@ -37,7 +37,7 @@ def test_builds_only_exact_runtime_members_with_bwrap_layout(tmp_path: Path) -> 
     output = tmp_path / "closure"
     result = build_phase2_runtime_closure(CODE_ROOT, output)
     assert result["verified"] is True
-    assert result["member_count"] == 7
+    assert result["member_count"] == 9
     assert result["runtime_mount_path"] == RUNTIME_MOUNT_PATH == "/runtime/code"
     assert result["entrypoint"] == RUNTIME_ENTRYPOINT
     actual = {

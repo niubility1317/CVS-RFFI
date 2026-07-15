@@ -44,6 +44,10 @@ from cvsrffi.stage2_predictor_bundle import (  # noqa: E402
     sha256_file,
     write_predictor_package_manifest_and_seal,
 )
+from cvsrffi.phase2_candidate_capsule import (  # noqa: E402
+    load_and_validate_candidate_capsule,
+    sha256_file,
+)
 from cvsrffi.stage2_scoring_sidecar import (  # noqa: E402
     SCORING_MANIFEST_SCHEMA,
     load_verified_scoring_sidecar,
@@ -263,6 +267,44 @@ def build(args: argparse.Namespace, *, token_secret: bytes | None = None) -> dic
     if not isinstance(token_secret, bytes) or len(token_secret) < 32:
         raise ValueError("token_secret must contain at least 256 bits")
 
+    base_checkpoint = getattr(args, "base_checkpoint", None)
+    candidate_capsule = getattr(args, "candidate_capsule", None)
+    expected_capsule_sha256 = getattr(args, "expected_candidate_capsule_sha256", None)
+    runtime_config_receipt = getattr(args, "runtime_config_receipt", None)
+    if base_checkpoint is not None:
+        if not candidate_capsule or not expected_capsule_sha256 or not runtime_config_receipt:
+            raise ValueError(
+                "effective8 dual-runtime package requires external capsule and runtime-config receipt"
+            )
+        capsule = load_and_validate_candidate_capsule(
+            Path(candidate_capsule),
+            expected_capsule_sha256=str(expected_capsule_sha256).lower(),
+            candidate_lock_path=Path(args.candidate_lock),
+            expected_artifact_paths={
+                "base_runtime": Path(base_checkpoint),
+                "candidate_runtime": Path(args.checkpoint),
+            },
+        )
+        receipt_path = Path(runtime_config_receipt)
+        receipt = json.loads(receipt_path.read_text(encoding="utf-8-sig"))
+        expected_receipt = {
+            "candidate_capsule_sha256": sha256_file(Path(candidate_capsule)),
+            "candidate_lock_sha256": sha256_file(Path(args.candidate_lock)),
+            "adapter_config_sha256": sha256_file(Path(args.adapter)),
+            "head_config_sha256": sha256_file(Path(args.head_artifact)),
+            "tta_config_sha256": sha256_file(Path(args.tta_policy_json)),
+        }
+        if (
+            not isinstance(receipt, dict)
+            or receipt.get("schema")
+            != "cvs.phase2.effective8_runtime_config_receipt.v1"
+            or receipt.get("status") != "PASS"
+            or any(receipt.get(key) != value for key, value in expected_receipt.items())
+            or receipt.get("derivation_uses_target_query") is not False
+            or capsule["candidate_lock_sha256"] != expected_receipt["candidate_lock_sha256"]
+        ):
+            raise ValueError("effective8 runtime-config provenance is not externally bound")
+
     stage = str(args.stage).lower()
     if stage not in {"stage2b", "stage2c"}:
         raise ValueError("stage must be stage2b or stage2c")
@@ -357,7 +399,11 @@ def build(args: argparse.Namespace, *, token_secret: bytes | None = None) -> dic
             "checkpoint",
             Path(args.checkpoint),
             "checkpoint.bin",
-            "adv3b02.torchscript_identity_runtime.v1",
+            (
+                "adv3b02.torchscript_effective8_merged_runtime.v1"
+                if base_checkpoint is not None
+                else "adv3b02.torchscript_identity_runtime.v1"
+            ),
         ),
         ("adapter", Path(args.adapter), "adapter.bin", "cvs.feature_adapter.v1"),
         ("head", Path(args.head_artifact), "head.bin", "cvs.prototype_head.v1"),
@@ -372,6 +418,18 @@ def build(args: argparse.Namespace, *, token_secret: bytes | None = None) -> dic
                 relative_path=filename,
                 artifact_role=role,
                 schema=schema,
+            )
+        )
+    if base_checkpoint is not None:
+        source = Path(base_checkpoint)
+        destination = predictor_root / "base_checkpoint.bin"
+        _copy_regular_new(source, destination)
+        members.append(
+            make_member_descriptor(
+                destination,
+                relative_path=destination.name,
+                artifact_role="base_checkpoint",
+                schema="adv3b02.torchscript_identity_runtime.v1",
             )
         )
 
@@ -608,6 +666,10 @@ def main() -> int:
     parser.add_argument("--query-per-tx", type=int, required=True)
     parser.add_argument("--candidate-lock", type=Path, required=True)
     parser.add_argument("--checkpoint", type=Path, required=True)
+    parser.add_argument("--base-checkpoint", type=Path)
+    parser.add_argument("--candidate-capsule", type=Path)
+    parser.add_argument("--expected-candidate-capsule-sha256")
+    parser.add_argument("--runtime-config-receipt", type=Path)
     parser.add_argument("--adapter", type=Path, required=True)
     parser.add_argument("--head-artifact", type=Path, required=True)
     parser.add_argument("--tta-policy-json", type=Path, required=True)

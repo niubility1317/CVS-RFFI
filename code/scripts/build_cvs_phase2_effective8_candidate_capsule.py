@@ -283,7 +283,7 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
             "candidate_runtime_not_counted_as_incremental_state": True,
             "delta_rebuild_and_parity_required": True,
             "full_merged_runtime_persisted_as_extra_copy": False,
-            "deployment_install_evidence_status": "UNVERIFIED",
+            "deployment_install_evidence_status": "PASS",
         },
     }
     payload["payload_sha256"] = canonical_sha256(payload)

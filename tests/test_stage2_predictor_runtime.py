@@ -10,6 +10,8 @@ from cvsrffi.stage2_predictor_runtime import (
     TTA_SCHEMA,
     Stage2PredictorRuntimeError,
     apply_feature_adapter,
+    build_formal_support_state,
+    predict_formal_scenario_streams,
     predict_all_streams,
     select_nested_support_prefix,
     spectral_logmag_sketch,
@@ -134,3 +136,84 @@ def test_adapter_epoch_and_state_caps_fail_closed(field: str, value: int) -> Non
             support["support_pool_leo_weak_iq"],
             config,
         )
+
+
+def test_effective8_formal_runtime_uses_three_scenario_head_and_distinct_base() -> None:
+    support, query = _arrays()
+    support_by_scenario = {
+        name: support
+        for name in ("leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak")
+    }
+    adapter = _adapter()
+    adapter.update(
+        {
+            "trainable_parameters": 44_048,
+            "adapt_epochs": 12,
+            "persistent_state_bytes": 100_000,
+        }
+    )
+    head = {
+        "schema": "cvs.phase2.symmetric_locked_head.v1",
+        "mode": "three_leo_support_symmetric_locked",
+        "selected": {
+            "use_alignment": False,
+            "prototype_rule": "mean",
+            "ridge": None,
+            "gram_mix": 0.0,
+            "uncertainty_penalty": 0.0,
+        },
+        "source_feature_mean": [0.0, 0.0],
+        "source_feature_std": [1.0, 1.0],
+        "variance_floor": 0.05,
+        "storage_dtype": "fp16",
+    }
+    tta = {
+        "schema": TTA_SCHEMA,
+        "mode": "adaptive_1_3_5",
+        "base_views": 1,
+        "max_views": 5,
+        "base_stop_margin": 0.0,
+        "shift3_stop_margin": 0.0,
+        "shift3_max_disagreement": 1.0,
+        "base_stop_min_score": -1.0e9,
+        "shift3_stop_min_score": -1.0e9,
+        "fusion_std_penalty": 0.0,
+        "calibration_scope": "source_validation",
+        "uses_query_labels": False,
+        "uses_query_role": False,
+        "uses_class_quota": False,
+    }
+    candidate = TinyRuntime()
+    base = TinyRuntime()
+    state = build_formal_support_state(
+        candidate,
+        base,
+        support_by_scenario,
+        scenarios=tuple(support_by_scenario),
+        k_shot=1,
+        registered_class_count=2,
+        new_class_count=1,
+        adapter_config=adapter,
+        head_config=head,
+        device=torch.device("cpu"),
+        batch_size=2,
+    )
+    predictions, resources = predict_formal_scenario_streams(
+        candidate,
+        base,
+        query,
+        state,
+        scenario="leo_clear_weak",
+        old_class_count=1,
+        adapter_config=adapter,
+        tta_config=tta,
+        device=torch.device("cpu"),
+        batch_size=2,
+    )
+    assert predictions["candidate_after"].tolist() == [0, 1]
+    assert predictions["candidate_before"].tolist() == [0, 0]
+    assert predictions["identity_after"].tolist() == [0, 1]
+    assert predictions["direct"].tolist() == [0, 0]
+    assert predictions["shared_view_counts"].tolist() == [1, 1]
+    assert resources["candidate_and_base_runtimes_distinct"] is True
+    assert resources["candidate_head"] == "three_leo_support_symmetric_locked_fp16"

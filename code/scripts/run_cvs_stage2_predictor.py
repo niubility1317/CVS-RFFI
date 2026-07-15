@@ -20,6 +20,10 @@ if str(CODE_ROOT) not in sys.path:
     sys.path.insert(0, str(CODE_ROOT))
 
 from cvsrffi.phase2_runtime_contract import validate_predictor_request  # noqa: E402
+from cvsrffi.phase2_memfd_snapshot import (  # noqa: E402
+    open_pinned_special,
+    pinned_input_mode_active,
+)
 from cvsrffi.stage2_prediction_artifact import (  # noqa: E402
     publish_prediction_artifact,
     verify_prediction_artifact,
@@ -29,6 +33,14 @@ from cvsrffi.stage2_predictor_entry import prepare_role_blind_prediction  # noqa
 
 
 def _read_request(path: Path) -> dict[str, Any]:
+    if pinned_input_mode_active():
+        with open_pinned_special("request") as handle:
+            raw = handle.read()
+        payload = json.loads(raw.decode("utf-8-sig"))
+        if not isinstance(payload, dict):
+            raise ValueError("predictor request root must be an object")
+        validate_predictor_request(payload)
+        return payload
     before = path.lstat()
     if stat.S_ISLNK(before.st_mode) or not stat.S_ISREG(before.st_mode):
         raise ValueError("predictor request must be a regular non-symlink file")

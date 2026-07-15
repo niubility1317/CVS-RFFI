@@ -14,9 +14,10 @@ from cvsrffi.stage2_predictor_bundle import (
     preflight_stage2_predictor_package,
 )
 from cvsrffi.stage2_predictor_runtime import (
+    build_formal_support_state,
     load_json_artifact_same_fd,
     load_torchscript_backbone_same_fd,
-    predict_all_streams,
+    predict_formal_scenario_streams,
 )
 
 
@@ -113,9 +114,29 @@ def prepare_role_blind_prediction(
         raise ValueError("predictor request/TTA artifact content mismatch")
     adapter_config = load_json_artifact_same_fd(package_root, members["adapter"])
     head_config = load_json_artifact_same_fd(package_root, members["head"])
-    model = load_torchscript_backbone_same_fd(
+    candidate_model = load_torchscript_backbone_same_fd(
         package_root, members["checkpoint"], device=device
     )
+    base_descriptor = members.get("base_checkpoint", members["checkpoint"])
+    base_model = load_torchscript_backbone_same_fd(
+        package_root, base_descriptor, device=device
+    )
+    dual_runtime = "base_checkpoint" in members
+    support_state = None
+    if dual_runtime:
+        support_state = build_formal_support_state(
+            candidate_model,
+            base_model,
+            support_by_scenario,
+            scenarios=request["scenarios"],
+            k_shot=int(request["k_shot"]),
+            registered_class_count=int(manifest["registered_class_count"]),
+            new_class_count=int(manifest["new_class_count"]),
+            adapter_config=adapter_config,
+            head_config=head_config,
+            device=device,
+            batch_size=int(batch_size),
+        )
     payload_parts: dict[str, list[np.ndarray]] = {
         name: []
         for name in (
@@ -131,19 +152,38 @@ def prepare_role_blind_prediction(
     }
     resources_by_scenario: dict[str, dict[str, Any]] = {}
     for scenario in request["scenarios"]:
-        predictions, scenario_resource = predict_all_streams(
-            model,
-            support_by_scenario[scenario],
-            query_by_scenario[scenario],
-            k_shot=int(request["k_shot"]),
-            registered_class_count=int(manifest["registered_class_count"]),
-            new_class_count=int(manifest["new_class_count"]),
-            adapter_config=adapter_config,
-            head_config=head_config,
-            tta_config=tta_config,
-            device=device,
-            batch_size=int(batch_size),
-        )
+        if support_state is not None:
+            predictions, scenario_resource = predict_formal_scenario_streams(
+                candidate_model,
+                base_model,
+                query_by_scenario[scenario],
+                support_state,
+                scenario=scenario,
+                old_class_count=(
+                    int(manifest["registered_class_count"])
+                    - int(manifest["new_class_count"])
+                ),
+                adapter_config=adapter_config,
+                tta_config=tta_config,
+                device=device,
+                batch_size=int(batch_size),
+            )
+        else:
+            from cvsrffi.stage2_predictor_runtime import predict_all_streams
+
+            predictions, scenario_resource = predict_all_streams(
+                candidate_model,
+                support_by_scenario[scenario],
+                query_by_scenario[scenario],
+                k_shot=int(request["k_shot"]),
+                registered_class_count=int(manifest["registered_class_count"]),
+                new_class_count=int(manifest["new_class_count"]),
+                adapter_config=adapter_config,
+                head_config=head_config,
+                tta_config=tta_config,
+                device=device,
+                batch_size=int(batch_size),
+            )
         query_tokens = np.asarray(
             query_by_scenario[scenario]["query_tokens"]
         ).astype(str)
@@ -174,7 +214,14 @@ def prepare_role_blind_prediction(
         "view3_rate": float(np.mean(shared_counts == 3)),
         "view5_rate": float(np.mean(shared_counts == 5)),
         "support_enrollment_backbone_forwards": int(
-            sum(value["support_enrollment_backbone_forwards"] for value in resources_by_scenario.values())
+            (
+                support_state["support_enrollment_backbone_forwards"]
+                if support_state is not None
+                else sum(
+                    value["support_enrollment_backbone_forwards"]
+                    for value in resources_by_scenario.values()
+                )
+            )
         ),
         "query_backbone_forwards": int(np.sum(shared_counts)),
         "fft_descriptor_count": int(
@@ -185,6 +232,7 @@ def prepare_role_blind_prediction(
         "persistent_state_bytes": int(adapter_config["persistent_state_bytes"]),
         "shared_view_budget_for_all_streams": True,
         "direct_uses_base_view_only": True,
+        "candidate_and_base_runtimes_distinct": dual_runtime,
     }
     metadata = {
         "schema": "cvs.phase2.prediction_metadata.v2",

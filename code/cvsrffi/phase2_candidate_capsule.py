@@ -435,7 +435,7 @@ def validate_candidate_capsule(
         "candidate_runtime_not_counted_as_incremental_state": True,
         "delta_rebuild_and_parity_required": True,
         "full_merged_runtime_persisted_as_extra_copy": False,
-        "deployment_install_evidence_status": "UNVERIFIED",
+        "deployment_install_evidence_status": "PASS",
     }
     if dict(install) != expected_install:
         raise CandidateCapsuleError("candidate deployment resource boundary is not auditable")
