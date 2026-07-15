@@ -281,12 +281,33 @@ def run_package(
     package_id: str,
     project_root: Path,
     device: str,
+    execution_mode: str,
     k_values: Sequence[int] | None = None,
 ) -> list[dict[str, Any]]:
     plan = validate_strict_plan(plan)
     package = _package_by_id(plan, package_id)
-    binding = _ensure_package(plan, package, project_root=project_root)
     selected = tuple(int(value) for value in (k_values or [cell["k_shot"] for cell in package["cells"]]))
+    if execution_mode == "smoke":
+        if (
+            plan.get("smoke_authority") is not True
+            or plan.get("launch_authority") is not False
+            or plan.get("authority_state") != "N607_LANDLOCK_SMOKE_REQUIRED"
+            or package_id != plan.get("smoke_package_id")
+            or selected != (int(plan.get("smoke_k_shot", -1)),)
+        ):
+            raise RuntimeError("smoke execution is not bound to the locked pre-authority cell")
+    elif execution_mode == "formal":
+        receipt_sha = str(plan.get("n607_smoke_receipt_sha256", ""))
+        if (
+            plan.get("launch_authority") is not True
+            or plan.get("authority_state") != "N607_LANDLOCK_SMOKE_PASS"
+            or len(receipt_sha) != 64
+            or any(character not in "0123456789abcdef" for character in receipt_sha)
+        ):
+            raise RuntimeError("formal package execution remains fail-closed without authorized N607 smoke")
+    else:
+        raise ValueError("execution_mode must be smoke or formal")
+    binding = _ensure_package(plan, package, project_root=project_root)
     return [
         _execute_cell(
             plan,
@@ -307,12 +328,14 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--project-root", type=Path, required=True)
     parser.add_argument("--device", default="cuda:0")
     parser.add_argument("--k-shot", type=int, action="append")
+    parser.add_argument("--execution-mode", choices=("smoke", "formal"), required=True)
     args = parser.parse_args(argv)
     receipts = run_package(
         _read_json(args.plan_manifest),
         package_id=args.package_id,
         project_root=args.project_root.resolve(strict=True),
         device=args.device,
+        execution_mode=args.execution_mode,
         k_values=args.k_shot,
     )
     print(json.dumps({"status": "PROTOCOL_VALID", "receipts": receipts}, ensure_ascii=False))

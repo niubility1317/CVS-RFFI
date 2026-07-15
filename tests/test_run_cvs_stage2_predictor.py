@@ -57,6 +57,14 @@ def test_cuda_is_initialized_before_peak_memory_reset(monkeypatch) -> None:
         "run_cvs_stage2_predictor.torch.cuda.init", lambda: calls.append("init")
     )
     monkeypatch.setattr(
+        "run_cvs_stage2_predictor.torch.cuda.set_device",
+        lambda device: calls.append(("set_device", str(device))),
+    )
+    monkeypatch.setattr(
+        "run_cvs_stage2_predictor.torch.empty",
+        lambda size, *, device: calls.append(("warmup", size, str(device))),
+    )
+    monkeypatch.setattr(
         "run_cvs_stage2_predictor.torch.cuda.reset_peak_memory_stats",
         lambda device: calls.append(("reset", str(device))),
     )
@@ -64,7 +72,12 @@ def test_cuda_is_initialized_before_peak_memory_reset(monkeypatch) -> None:
     device = _prepare_device("cuda:0")
 
     assert str(device) == "cuda:0"
-    assert calls == ["init", ("reset", "cuda:0")]
+    assert calls == [
+        "init",
+        ("set_device", "cuda:0"),
+        ("warmup", 1, "cuda:0"),
+        ("reset", "cuda:0"),
+    ]
 
 
 def test_cpu_device_does_not_initialize_cuda(monkeypatch) -> None:

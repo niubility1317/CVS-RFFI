@@ -99,7 +99,8 @@ def run_smoke(
     _ensure_cache(cache, project_root=project_root, device=device, log_path=log_dir / "smoke_cache.log")
     receipts = run_package(
         plan, package_id=package_id, project_root=project_root,
-        device=device, k_values=[int(plan["smoke_k_shot"])],
+        device=device, execution_mode="smoke",
+        k_values=[int(plan["smoke_k_shot"])],
     )
     if len(receipts) != 1 or receipts[0].get("status") != "PROTOCOL_VALID":
         raise RuntimeError("strict N607 smoke did not produce one PROTOCOL_VALID receipt")
@@ -153,7 +154,8 @@ def run_matrix_shard(
             state.update({"status": "running", "steps": steps})
             _write_atomic(state_path, state)
             receipts = run_package(
-                plan, package_id=package_id, project_root=project_root, device=device
+                plan, package_id=package_id, project_root=project_root, device=device,
+                execution_mode="formal",
             )
             if len(receipts) != 4 or any(item.get("status") != "PROTOCOL_VALID" for item in receipts):
                 raise RuntimeError(f"strict package did not complete four K cells: {package_id}")

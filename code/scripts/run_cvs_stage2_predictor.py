@@ -117,6 +117,13 @@ def _prepare_device(requested: str) -> torch.device:
     if torch.cuda.is_available() and requested.startswith("cuda"):
         device = torch.device(requested)
         torch.cuda.init()
+        torch.cuda.set_device(device)
+        # torch.cuda.init() initializes PyTorch's CUDA state but does not
+        # guarantee that the caching allocator has created the selected-device
+        # context.  Peak-memory APIs require that allocator context, so create
+        # and immediately release one scalar before resetting the counters.
+        warmup = torch.empty(1, device=device)
+        del warmup
         torch.cuda.reset_peak_memory_stats(device)
         return device
     return torch.device("cpu")

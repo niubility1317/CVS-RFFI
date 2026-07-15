@@ -511,7 +511,14 @@ def score_prediction_arrays(
         identity_old_after = _accuracy(streams["identity_after"][old_mask], old_truth)
         identity_old_before = _accuracy(streams["identity_before"][old_mask], old_truth)
         direct_old = _accuracy(streams["direct"][old_mask], old_truth)
-        candidate_class_acc: dict[str, float] = {}
+        candidate_class_acc_before: dict[str, float] = {}
+        candidate_class_acc_after: dict[str, float] = {}
+        candidate_class_forgetting: dict[str, float] = {}
+        candidate_class_adaptation_gain: dict[str, float] = {}
+        identity_class_acc_before: dict[str, float] = {}
+        identity_class_acc_after: dict[str, float] = {}
+        identity_class_forgetting: dict[str, float] = {}
+        identity_class_adaptation_gain: dict[str, float] = {}
         candidate_class_count: dict[str, int] = {}
         old_transmitters = sorted(
             {
@@ -529,11 +536,29 @@ def score_prediction_arrays(
                 ],
                 dtype=bool,
             )
-            candidate_class_acc[tx] = _accuracy(
+            candidate_class_acc_before[tx] = _accuracy(
+                streams["candidate_before"][mask], scored_truth[mask]
+            )
+            candidate_class_acc_after[tx] = _accuracy(
                 streams["candidate_after"][mask], scored_truth[mask]
             )
+            candidate_class_forgetting[tx] = (
+                candidate_class_acc_before[tx] - candidate_class_acc_after[tx]
+            )
+            candidate_class_adaptation_gain[tx] = -candidate_class_forgetting[tx]
+            identity_class_acc_before[tx] = _accuracy(
+                streams["identity_before"][mask], scored_truth[mask]
+            )
+            identity_class_acc_after[tx] = _accuracy(
+                streams["identity_after"][mask], scored_truth[mask]
+            )
+            identity_class_forgetting[tx] = (
+                identity_class_acc_before[tx] - identity_class_acc_after[tx]
+            )
+            identity_class_adaptation_gain[tx] = -identity_class_forgetting[tx]
             candidate_class_count[tx] = int(np.sum(mask))
-        min_old_class_acc = min(candidate_class_acc.values())
+        min_old_class_acc_before = min(candidate_class_acc_before.values())
+        min_old_class_acc_after = min(candidate_class_acc_after.values())
 
         if binding["stage"] == "stage2c":
             seen_new_acc: float | None = _accuracy(
@@ -564,9 +589,16 @@ def score_prediction_arrays(
                 "old_acc": candidate_old_after,
                 "old_acc_before_increment": candidate_old_before,
                 "old_acc_after_increment": candidate_old_after,
-                "min_old_class_acc": min_old_class_acc,
+                "min_old_class_acc": min_old_class_acc_after,
+                "min_old_class_acc_before_increment": min_old_class_acc_before,
+                "min_old_class_acc_after_increment": min_old_class_acc_after,
                 "seen_new_acc": seen_new_acc,
                 "H_old_new": h_old_new,
+                "seen_new_acc_before_increment": None,
+                "seen_new_acc_after_increment": seen_new_acc,
+                "H_old_new_before_increment": None,
+                "H_old_new_after_increment": h_old_new,
+                "pre_increment_new_class_state": "NEW_CLASSES_NOT_REGISTERED",
                 "candidate_average_forgetting": candidate_forgetting,
                 "candidate_old_adaptation_gain": -candidate_forgetting,
                 "identity_old_acc_before_increment": identity_old_before,
@@ -583,7 +615,15 @@ def score_prediction_arrays(
                 "identity_delta_vs_direct_ADV3B02_K1": (
                     identity_old_after - direct_old if is_k1 else None
                 ),
-                "candidate_old_class_acc": candidate_class_acc,
+                "candidate_old_class_acc": candidate_class_acc_after,
+                "candidate_old_class_acc_before_increment": candidate_class_acc_before,
+                "candidate_old_class_acc_after_increment": candidate_class_acc_after,
+                "candidate_old_class_forgetting": candidate_class_forgetting,
+                "candidate_old_class_adaptation_gain": candidate_class_adaptation_gain,
+                "identity_old_class_acc_before_increment": identity_class_acc_before,
+                "identity_old_class_acc_after_increment": identity_class_acc_after,
+                "identity_old_class_forgetting": identity_class_forgetting,
+                "identity_old_class_adaptation_gain": identity_class_adaptation_gain,
                 "candidate_old_class_count": candidate_class_count,
                 "shared_view_count_mean": float(np.mean(scenario_view_counts)),
                 "shared_view_count_p95": _observed_p95(scenario_view_counts),

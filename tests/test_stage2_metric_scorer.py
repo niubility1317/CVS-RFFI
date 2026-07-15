@@ -195,14 +195,42 @@ def test_stage2c_scores_five_streams_and_k1_deltas(tmp_path: Path) -> None:
     assert row["old_acc"] == pytest.approx(0.75)
     assert row["old_acc_before_increment"] == pytest.approx(0.5)
     assert row["min_old_class_acc"] == pytest.approx(0.5)
+    assert row["min_old_class_acc_before_increment"] == pytest.approx(0.5)
+    assert row["min_old_class_acc_after_increment"] == pytest.approx(0.5)
     assert row["seen_new_acc"] == pytest.approx(0.5)
     assert row["H_old_new"] == pytest.approx(0.6)
+    assert row["seen_new_acc_before_increment"] is None
+    assert row["seen_new_acc_after_increment"] == pytest.approx(0.5)
+    assert row["H_old_new_before_increment"] is None
+    assert row["H_old_new_after_increment"] == pytest.approx(0.6)
+    assert row["pre_increment_new_class_state"] == "NEW_CLASSES_NOT_REGISTERED"
     assert row["candidate_average_forgetting"] == pytest.approx(-0.25)
     assert row["identity_average_forgetting"] == pytest.approx(0.25)
     assert row["delta_vs_direct_ADV3B02_K1"] == pytest.approx(0.5)
     assert row["delta_vs_identity_K1"] == pytest.approx(0.25)
     assert row["identity_delta_vs_direct_ADV3B02_K1"] == pytest.approx(0.25)
     assert row["candidate_old_class_acc"] == {"old-a": 1.0, "old-b": 0.5}
+    assert row["candidate_old_class_acc_before_increment"] == {
+        "old-a": 0.5, "old-b": 0.5,
+    }
+    assert row["candidate_old_class_acc_after_increment"] == {
+        "old-a": 1.0, "old-b": 0.5,
+    }
+    assert row["candidate_old_class_forgetting"] == {
+        "old-a": pytest.approx(-0.5), "old-b": pytest.approx(0.0),
+    }
+    assert row["candidate_old_class_adaptation_gain"] == {
+        "old-a": pytest.approx(0.5), "old-b": pytest.approx(0.0),
+    }
+    assert row["identity_old_class_acc_before_increment"] == {
+        "old-a": 1.0, "old-b": 0.5,
+    }
+    assert row["identity_old_class_acc_after_increment"] == {
+        "old-a": 0.5, "old-b": 0.5,
+    }
+    assert row["identity_old_class_forgetting"] == {
+        "old-a": pytest.approx(0.5), "old-b": pytest.approx(0.0),
+    }
     assert row["view1_count"] == 2
     assert row["view3_count"] == 2
     assert row["view5_count"] == 2
