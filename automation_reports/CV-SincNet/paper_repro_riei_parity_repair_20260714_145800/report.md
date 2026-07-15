@@ -611,3 +611,8 @@
 - launcher根目录与Git镜像内容一致；`bash -n`通过，dry-run确认12个job、8个capacity gate、12条`WISIG_SPLIT_SEED=1337`、12条mean命令，model seed固定42。
 - 根目录仍不是Git仓库；快照位于`code/snapshots/paper_repro_riei_table3_shortstem_modelseed42_split1337_20260715_100000/`。launcher SHA256为`1a10ece3a47ef6d64ef366a1d656d30d1e27a0857f9ec196b8af94929c45a9ce`。
 - 启动前仍须提交本任务文件、重新执行直接N607预检、确认目标目录不存在和实时容量，再同步launcher并核对远端hash/bash-n/12-job dry-run。
+
+### 09:53同步前容量门
+
+- Git提交为`7989319 Confirm RIEI Table III with model seed 42`。直接N607预检通过；实时训练进程0、GPU0–7 compute均为0，目标run/log目录不存在；计划每GPU峰值1个训练，`existing_compute+planned_peak=1≤2`。
+- 仅同步新launcher到N607同路径；既有`cvs_data.py`与paper queue保持上一轮已核对版本。同步后必须核对SHA256、远端`bash -n`和12-job dry-run，再执行正式命令。
