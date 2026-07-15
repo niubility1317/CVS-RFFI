@@ -565,3 +565,10 @@
 - 3个文件已按本地→N607同路径同步；远端SHA256分别为`e3b80d1d...`、`d2ad5621...`、`24208548...`，与根目录、快照及Git镜像一致。远端`py_compile`、两份`bash -n`均通过。
 - 远端dry-run确认`jobs=8`、`capacity=8`、split1337命令8条，model seed0/42各4个job。首次计数命令因PowerShell提前解释远端`$(grep ...)`只导致本地计数输出为空；dry-run文件已成功生成，随后用远端Python完整复核计数，未把本地引号错误解释为远端失败。
 - 计划正式命令：`bash code/scripts/launch_riei_modelseed_probe_20260715.sh --launch --gpu-ids 0,1,2,3,4,5,6,7 --max-train-per-gpu 2`。Python为`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`，工作目录为`/home/szu2070436088/2510044040/CV-SincNet`；预期8个并行job、每GPU1个训练、各200epoch及paper last10。
+
+### 08:35正式启动与4分钟健康检查
+
+- 正式命令按上述预注册内容执行；launcher再次确认GPU0–7均`current=0`、`planned_peak=1`、`total_peak=1≤2`。8个queue PID为`1058061,1058064,1058066,1058071,1058078,1058081,1058091,1058098`。
+- GPU0–7的trainer PID依次为`1058241,1058250,1058260,1058249,1058275,1058282,1058288,1058292`；前4个对应model seed0的row3/4/11/12，后4个对应model seed42的同四行。完整命令行确认所有job均使用split seed1337、short stem、momentum0、mean、no-RMS、no-feature-norm和paper last10。
+- 约4分钟健康检查时8个queue/trainer均存活，8份metrics均连续：seed0四行到epoch`13,13,12,12`，seed42四行到`11,13,12,12`。32份当前日志共770行/100060字节，稳定partition marker8个、split seed1337 marker8个、model seed0/42各4个，硬错误0。
+- GPU0–7各仅1个本任务compute，SM约21%–32%，每GPU显存约11%–12%；容量合规。当前判定为`RUNNING_STARTUP_HEALTHY_THROUGH_EPOCH_11_13`，不是seed选型结果。自动心跳已更新为当前run；不得干预、重启、覆盖或删除产物。

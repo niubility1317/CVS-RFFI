@@ -14,11 +14,11 @@
 | RIEI-P10 | 论文仅说明WiSig FED为ResNet 1D-18，未公开stem卷积核/stride/max-pool | 当前固定ImageNet式`kernel7/stride2+maxpool` | 在row3/6/10/12上受控比较现有`imagenet1d`与`short_stem1d`；其余协议固定mean最优配置 | verified | 8×200epoch、硬错误0；short四行MAE4.02pp低于image的7.91pp，且3/4行降低绝对误差，预注册门槛通过 |
 | RIEI-P11 | Table III最终证据必须覆盖全部12个receiver组合；架构筛选不能替代正式矩阵 | short stem仅在4个诊断行验证 | 用`short_stem1d`和固定paper last10协议运行完整12行 | verified-rejected | 12×200epoch、硬错误0；均值72.76%，MAE3.14pp，命中7/12，未达到3pp与10/12门槛 |
 | RIEI-P12 | 论文未公开SGD是否包含momentum | 当前固定momentum0 | 在row3/4/11/12上受控测试常用momentum0.9；其余协议固定 | verified-rejected | 4×200epoch、硬错误0；momentum0.9 MAE6.75pp高于对照5.83pp且仅2/4行改善，拒绝完整矩阵 |
-| RIEI-P13 | 论文未公开模型初始化seed；现有`--seed`同时控制模型与partition | 直接换seed会改变模型与样本，无法归因 | 新增独立`wisig_split_seed`；固定partition1337比较model seed0/42 | verified | root/Git各8项聚焦测试通过；launcher bash-n及8-job dry-run通过；待Git提交与N607启动 |
+| RIEI-P13 | 论文未公开模型初始化seed；现有`--seed`同时控制模型与partition | 直接换seed会改变模型与样本，无法归因 | 新增独立`wisig_split_seed`；固定partition1337比较model seed0/42 | running | root/Git各8项测试、远端hash/bash-n/dry-run通过；8个job健康运行至epoch11–13，硬错误0 |
 
 ## 声明边界
 
 - 论文未明确给出优化器名称和总epoch数；Eq.(10)–(11)描述的是梯度更新顺序，不能据此断言作者使用了PyTorch SGD。
 - 发现阶段只在Table III第1行比较训练动力学；最终论文结论必须用胜出配置重跑完整12行，不能用单row或目标域峰值代替。
 - 目标域逐epoch曲线仅用于诊断；下一轮正式分数采用论文明确的最终10个epoch，禁止target-oracle选epoch。
-- 当前反向审计：`verified=10`、`verified-rejected=3`、`deferred=0`、`blocked=0`。short stem把完整12行MAE降至3.14pp但命中仅7/12，正式结论仍为`NOT_REPRODUCED`。momentum0.9已被否定；最高风险项转为固定partition下的模型seed敏感性。
+- 当前反向审计：`verified=9`、`verified-rejected=3`、`running=1`、`deferred=0`、`blocked=0`。short stem把完整12行MAE降至3.14pp但命中仅7/12，正式结论仍为`NOT_REPRODUCED`。momentum0.9已被否定；固定partition模型seed诊断正在运行。
