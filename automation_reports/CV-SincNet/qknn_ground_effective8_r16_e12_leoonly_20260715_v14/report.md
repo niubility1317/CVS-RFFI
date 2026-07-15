@@ -5,7 +5,7 @@
 |实验ID|`qknn_ground_effective8_r16_e12_leoonly_20260715_v14`|
 |时间|2026-07-15 13:44 CST|
 |operator|Codex`/root`|
-|当前状态|`REMOTE_REPAIR1_VERIFIED_RELAUNCH_PENDING`；target matrix未启动|
+|当前状态|`SOURCE_PIPELINE_FAILED_CLOSED_NUMPY_TORCH_BRIDGE_REPAIR2_LOCAL_VERIFIED`；target matrix未启动|
 |基座模型|同一ADV3B02 checkpoint：`ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth`|
 |目标|在新版`LEO_weak-only`边界下，以≤50k参数、≤20epoch、≤256KB持久状态的极轻型适配器和逐样本1→3→5-view推理，完成5receiver×5seed×3场景×新类5/10/20×K=1/5/10/20正式确认|
 
@@ -157,3 +157,17 @@ repair1本地验证使用`ssr-gpu`解释器：plan builder`py_compile`通过；1
 Git提交`e4a67c5`封存selector→真实标签修复，提交`7eacc1a`封存cache兼容性审计。config、plan builder、report和本地生成的repair1 plan压缩包已通过direct SCP同步；本地/远端SHA256分别一致为`0627c019...`、`6de1b42d...`、`f1cd8378...`、`6da35637...`，远端builder`py_compile`通过。repair1 plan已覆盖到原正式plan目录，远端runner validator确认source step=5、target cache step=25、benchmark step=300，并确认训练TX/receiver与validation holdout均为真实标签。两份source spec的规范化SHA继续与现有cache manifest逐项相等。所有SSH/SCP后均确认本地`ssh.exe=0`、N607:22 established连接=0。
 
 恢复将复用原`source_pipeline_state.json`：步骤`0000`和`0001`的完整命令未变化且状态为complete，因此runner只从命令已经变化的`0002_train`重跑；旧失败记录与原日志已单独保存在快照的`failure_evidence/`。恢复前仍需再次执行live inventory；若出现其他任务则不启动。
+
+## 2026-07-15 repair1恢复失败与NumPy/Torch bridge repair2
+
+14:41 CST启动前live inventory再次确认`active_training_processes=[]`、`gpu_compute=[]`。repair1 source pipeline以物理GPU0、PID`1544400`实际landed，runner正确跳过两项已完成cache步骤并进入`0002_train`，但在首个prototype loader batch、任何epoch和optimizer step之前再次失败关闭：
+
+```text
+TypeError: expected np.ndarray (got numpy.ndarray)
+```
+
+按完整日志而非tail完成审计：runner日志8行、source train cache日志73行、source validation cache日志73行、repair1训练日志20行均已逐行读取。两个cache构建日志均完整结束，3个场景分别为6,000条训练行和8,400条验证行，`clean_sample_access=false`、`phase2_sample_view_policy=leo_weak_only_no_clean_access`；没有OOM、Killed、nan/inf或epoch/loss记录。失败位置唯一落在`SealedLeoWeakSourceDataset.__getitem__`的`torch.from_numpy`。
+
+远端运行环境为NumPy`2.2.5`与Torch`2.1.0+cu121`。独立只读探针证明：精确`np.ndarray`身份为true，普通float32数组和密封cache的连续float32 IQ行都在`torch.from_numpy`报同一TypeError，`torch.as_tensor`/`torch.tensor(np_array)`也失败；相同内存通过`torch.frombuffer(memoryview(array), dtype=torch.float32)`精确得到正确shape/dtype。由此根因是服务器Torch 2.1与NumPy 2.x桥接不兼容，不是cache损坏、标签漂移、训练发散或方法失败。
+
+repair2不修改共享Conda环境，避免影响其他项目；仅在formal trainer的数据桥接层新增`_float32_numpy_to_tensor`：先将IQ保证为连续float32并调用标准`from_numpy`，仅当异常精确匹配`expected np.ndarray`且对象仍为原生`np.ndarray`时，回退到同一buffer的`frombuffer`视图。该修复不复制整份cache、不改样本值，不增加模型参数、训练epoch、损失、View或backbone forward。新增回归测试模拟NumPy2/Torch2.1异常并验证shape、dtype、数值和标签；本地trainer`py_compile`通过，聚焦文件10项通过，10组正式相关回归升级为`80 passed`。candidate lock会在运行时重新绑定repair2 trainer SHA，不需要改变cache spec、K/seed或target cell身份。

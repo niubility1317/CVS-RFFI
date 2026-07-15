@@ -120,6 +120,25 @@ class IdentityPreAdapter(nn.Module):
         return x
 
 
+def _float32_numpy_to_tensor(value: np.ndarray) -> torch.Tensor:
+    """Bridge NumPy IQ rows into Torch without changing the sample values.
+
+    Torch 2.1's ``from_numpy`` rejects NumPy 2.x arrays even when the object is
+    an exact ``np.ndarray``.  ``frombuffer`` uses the same contiguous float32
+    storage and keeps the compatibility repair local to the host data bridge.
+    """
+
+    array = np.ascontiguousarray(value, dtype=np.float32)
+    try:
+        return torch.from_numpy(array)
+    except TypeError as exc:
+        if type(array) is not np.ndarray or "expected np.ndarray" not in str(exc):
+            raise
+        return torch.frombuffer(
+            memoryview(array), dtype=torch.float32
+        ).reshape(array.shape)
+
+
 class SealedLeoWeakSourceDataset(Dataset):
     """Source rows from a verified Phase1 post-channel cache set."""
 
@@ -162,7 +181,7 @@ class SealedLeoWeakSourceDataset(Dataset):
 
     def __getitem__(self, index: int):
         return (
-            torch.from_numpy(self.iq[int(index)]),
+            _float32_numpy_to_tensor(self.iq[int(index)]),
             torch.tensor(int(self.class_ids[int(index)]), dtype=torch.long),
             torch.tensor(0, dtype=torch.long),
             {

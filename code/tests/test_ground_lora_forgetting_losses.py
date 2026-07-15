@@ -133,6 +133,32 @@ def test_formal_source_loader_consumes_only_verified_postchannel_arrays(
     assert info["clean_sample_access"] is False
 
 
+def test_sealed_source_dataset_supports_numpy2_torch21_bridge(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    arrays_by_scenario = {}
+    for offset, scenario in enumerate(FORMAL_LEO_WEAK_SCENARIOS):
+        arrays_by_scenario[scenario] = {
+            "leo_weak_iq": np.full((1, 2, 8), offset + 1, dtype=np.float32),
+            "tx_ids": np.asarray(["a"]),
+            "rx_ids": np.asarray(["r"]),
+            "sat_scenarios": np.asarray([scenario]),
+            "sample_ids": np.asarray([f"source|a|r|d|1|{offset}"]),
+        }
+    dataset = SealedLeoWeakSourceDataset(arrays_by_scenario, tx_labels=("a",))
+
+    def incompatible_from_numpy(_value):
+        raise TypeError("expected np.ndarray (got numpy.ndarray)")
+
+    monkeypatch.setattr(torch, "from_numpy", incompatible_from_numpy)
+    iq, class_id, domain_id, _meta = dataset[0]
+    assert iq.dtype == torch.float32
+    assert iq.shape == (2, 8)
+    assert torch.equal(iq, torch.ones((2, 8), dtype=torch.float32))
+    assert class_id.item() == 0
+    assert domain_id.item() == 0
+
+
 def test_source_only_switch_cannot_hide_a_nonformal_adapter_export() -> None:
     with pytest.raises(ValueError, match="reserved for lora_effective_feature"):
         _validate_source_only_ground_lora_mode(
