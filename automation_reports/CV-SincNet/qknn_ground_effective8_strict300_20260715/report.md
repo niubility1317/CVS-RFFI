@@ -207,6 +207,16 @@ v8 attempt1以PID`1899303`运行，CUDA初始化、密封memfd、Landlock/seccom
 
 00:31再次预检并确认`gpu_compute=[]`、`active_training_processes=[]`。远端v9根在创建前不存在；v18清单已同步到`/home/szu2070436088/2510044040/CV-SincNet/runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14_landlock_strict300_v9/protocol_plan/strict_plan_manifest_v18.json`并核验相同SHA。smoke工作目录为`/home/szu2070436088/2510044040/CV-SincNet`，Python为`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`，GPU为`cuda:0`；PID、driver日志、阶段日志和receipt分别写入`smoke_driver_v9_attempt1.pid`、`logs/smoke_driver_v9_attempt1.out`、`logs/smoke_v9_attempt1/`和`smoke_receipt.json`。确切入口为`paper_reproduction/scripts/run_cvs_stage2c_effective8_strict_plan.py --plan-manifest <v18远端清单> --project-root <项目根> --stage smoke --device cuda:0 --log-dir <smoke_v9_attempt1> --smoke-receipt <v9根/smoke_receipt.json>`；仅当上述输出均不存在时以`nohup env PYTHONPATH=code:.`启动。正式matrix shard仍未获授权。
 
+### 三轮回顾与下一路线选择（2026-07-16 00:36 CST）
+
+按新增治理规则保守地把最近v6/v7/v8三次严格smoke视作一组探索轮，在下一次启动前完成回顾。已重新阅读当前目标、根`项目.md`、Git承载面的`AGENTS.md`和`docs/PROJECT_PROTOCOL.md`；刷新项目conversation index并检索`effective8 125 registration forgetting seen_new_acc H_old_new`。历史命中明确指出qKNNv42/effective8已有source诊断不能替代正式Phase2 target-new结果，旧support-anchor路线也必须同时验证旧类域适应、新类注册和遗忘，不能退回old-only或unknown/open-set代理指标。
+
+完整v8 driver日志共5,741字节，SHA=`1680beac9d39b0f4857154003dfe4e8768a81143a5924974a6b23de3a926005b`，已回传`evidence/smoke_v8_failure/`并从首字节读到EOF。它只证明严格隔离链已进入support forward后在NumPy桥接处失败，没有任何可排名性能行。v6是混合同步版本诊断，v7是CUDA统计初始化顺序错误，v8是NumPy C-API桥接错误；三者都不是候选机制性能失败，不据此修改adapter/head/TTA或在query上调参。
+
+下一路线继续锁定同一effective8 candidate，仅修复可执行隔离链并补全正式评分门禁。域适应与新类注册必须同等覆盖：每个formal row同时保留`old_acc_before_increment`、`old_acc_after_increment`、`seen_new_acc_after_increment`和`H_old_new_after_increment`；逐旧类必须同时给出before/after accuracy、forgetting及adaptation gain。路线继续满足`LEO_weak-only`、no-clean、no-query-truth、no-role-Oracle、no-class-quota及逐样本全注册类决策；scorer结果不得回流预测。缺少注册后`seen_new_acc/H_old_new`、逐类旧类准确率或遗忘证据的cell一律视为不完整，不得计入125任务正式结果。
+
+提交`f8de85e`正好实现上述独立scorer字段和smoke/formal执行权限门禁，并为CUDA allocator建立显式device context。56项predictor/runtime/closure/scorer/strict-package/strict-plan/authority测试通过。由于该提交改变密封predictor入口和外层正式判定，已同步但未启动的v18/v9计划标记为superseded，不执行；下一次必须重建全新runtime closure和新运行根。
+
 并行构建留下`runtime_artifacts_strict_v9`部分目录：12项不可变模型/config文件存在，`05_runtime_closure.json`为0字节且closure目录不存在，符合旧closure白名单拒绝新增`ctypes/platform`导入的fail-closed行为。strict_v9完整保留且不补写。下一次使用全新`runtime_artifacts_strict_v10`：先同步提交`764c11c`的memfd实现与提交`5d87bdd`的closure白名单，逐文件核验SHA；再在N607直接调用`_sealed_memfd`执行临时seal smoke并验证`REQUIRED_SEALS`，通过后才复制strict_v8的12项不可变artifact并新建closure。后续计划/运行根使用全新版本，不复用v4/v11。
 
 ### v8失败、注册前后指标补全与第1次三轮回顾

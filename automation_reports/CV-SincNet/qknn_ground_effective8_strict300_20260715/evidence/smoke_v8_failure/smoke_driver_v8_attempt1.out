@@ -1,0 +1,40 @@
+Traceback (most recent call last):
+  File "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/scripts/run_cvs_stage2c_effective8_strict_plan.py", line 205, in <module>
+    raise SystemExit(main())
+  File "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/scripts/run_cvs_stage2c_effective8_strict_plan.py", line 188, in main
+    result = run_smoke(
+  File "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/scripts/run_cvs_stage2c_effective8_strict_plan.py", line 100, in run_smoke
+    receipts = run_package(
+  File "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/scripts/run_cvs_stage2c_effective8_strict_package.py", line 290, in run_package
+    return [
+  File "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/scripts/run_cvs_stage2c_effective8_strict_package.py", line 291, in <listcomp>
+    _execute_cell(
+  File "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/scripts/run_cvs_stage2c_effective8_strict_package.py", line 215, in _execute_cell
+    runner = _run_json(
+  File "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/scripts/run_cvs_stage2c_effective8_strict_package.py", line 57, in _run_json
+    raise RuntimeError(
+RuntimeError: strict command failed rc=1: /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python /home/szu2070436088/2510044040/CV-SincNet/code/scripts/run_cvs_stage2_landlock_pinned.py --runtime-closure-root /home/szu2070436088/2510044040/CV-SincNet/runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14/runtime_artifacts_strict_v11/runtime_closure --pre-run-evidence-root /home/szu2070436088/2510044040/CV-SincNet/runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14_landlock_strict300_v8/cells/rx_20_1__seed_713101__new_20__k_1/pre_run_evidence --package-root /home/szu2070436088/2510044040/CV-SincNet/runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14_landlock_strict300_v8/packages/rx_20_1__seed_713101__new_20/predictor --detached-seal /home/szu2070436088/2510044040/CV-SincNet/runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14_landlock_strict300_v8/packages/rx_20_1__seed_713101__new_20/predictor.seal.json --expected-package-seal-sha256 0c1d5223bef1f25e122d5f56e234eca87c9691ad631085c58bd1f2df05f2f235 --request-json /home/szu2070436088/2510044040/CV-SincNet/runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14_landlock_strict300_v8/cells/rx_20_1__seed_713101__new_20__k_1/request.json --output-root /home/szu2070436088/2510044040/CV-SincNet/runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14_landlock_strict300_v8/cells/rx_20_1__seed_713101__new_20__k_1/predictor_output --python-executable /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python3.10 --strace-executable /usr/bin/strace --landlock-launcher /home/szu2070436088/2510044040/CV-SincNet/code/scripts/run_phase2_landlock_isolated.py --forbidden-root /home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManyTx.pkl --forbidden-root /home/szu2070436088/2510044040/CV-SincNet/runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14/phase1_caches/target/rx_20_1/seed_713101 --forbidden-root /home/szu2070436088/2510044040/CV-SincNet/runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14_landlock_strict300_v8/packages/rx_20_1__seed_713101__new_20/scorer --device cuda:0
+stdout=
+stderr=Traceback (most recent call last):
+  File "/home/szu2070436088/2510044040/CV-SincNet/code/scripts/run_cvs_stage2_landlock_pinned.py", line 416, in <module>
+    raise SystemExit(main())
+  File "/home/szu2070436088/2510044040/CV-SincNet/code/scripts/run_cvs_stage2_landlock_pinned.py", line 411, in main
+    print(json.dumps(run(args), ensure_ascii=False, sort_keys=True))
+  File "/home/szu2070436088/2510044040/CV-SincNet/code/scripts/run_cvs_stage2_landlock_pinned.py", line 346, in run
+    raise RuntimeError(_predictor_failure_message(int(completed.returncode), stderr))
+RuntimeError: Landlock predictor failed with return code 1; stderr_tail=Traceback (most recent call last):
+  File "/home/szu2070436088/2510044040/CV-SincNet/runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14/runtime_artifacts_strict_v11/runtime_closure/runtime/scripts/run_cvs_stage2_predictor.py", line 226, in <module>
+    raise SystemExit(main())
+  File "/home/szu2070436088/2510044040/CV-SincNet/runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14/runtime_artifacts_strict_v11/runtime_closure/runtime/scripts/run_cvs_stage2_predictor.py", line 221, in main
+    print(json.dumps(run(args), ensure_ascii=False, sort_keys=True))
+  File "/home/szu2070436088/2510044040/CV-SincNet/runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14/runtime_artifacts_strict_v11/runtime_closure/runtime/scripts/run_cvs_stage2_predictor.py", line 129, in run
+    payload, metadata, audit = prepare_role_blind_prediction(
+  File "/home/szu2070436088/2510044040/CV-SincNet/runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14/runtime_artifacts_strict_v11/runtime_closure/runtime/cvsrffi/stage2_predictor_entry.py", line 127, in prepare_role_blind_prediction
+    support_state = build_formal_support_state(
+  File "/home/szu2070436088/2510044040/CV-SincNet/runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14/runtime_artifacts_strict_v11/runtime_closure/runtime/cvsrffi/stage2_predictor_runtime.py", line 449, in build_formal_support_state
+    candidate_raw, _ = _runtime_forward(
+  File "/home/szu2070436088/2510044040/CV-SincNet/runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14/runtime_artifacts_strict_v11/runtime_closure/runtime/cvsrffi/stage2_predictor_runtime.py", line 307, in _runtime_forward
+    batch = torch.from_numpy(np.asarray(rows[start : start + batch_size], dtype=np.float32)).to(device)
+TypeError: expected np.ndarray (got numpy.ndarray)
+
+
