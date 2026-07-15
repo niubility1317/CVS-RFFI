@@ -579,3 +579,9 @@
 - 8份metrics均可完整解析且epoch序列连续：seed0的row3/4/11/12分别为epoch`45,46,45,46`；seed42对应为`44,46,46,45`，均无`final`字段。`PAPER-EVAL-SUMMARY=0`、`FINAL-TEST=0`、成功完成job=0符合训练阶段。
 - 完整读取32份当前日志，共2345行/197302字节；稳定partition、split seed1337及model seed0/42 marker齐全。全量硬错误扫描计数0，未见Traceback、RuntimeError、CUDA OOM、Killed、NaN、Inf或参数错误。
 - GPU0–7各仅1个本任务compute，SM约17%–36%，容量门持续合规。当前判定为`RUNNING_HEALTHY_THROUGH_EPOCH_44_46`；未进入论文epoch191–200正式窗口，不做seed选型。
+
+### 09:21只读心跳监控
+
+- 直接N607预检通过；8个原queue与8个原trainer PID保持存活，无重启或进程替换。8份metrics均连续：seed0的row3/4/11/12分别为epoch`129,128,129,128`；seed42对应为`126,129,130,127`，均无`final`字段。
+- 完整读取32份当前日志，共5578行/407343字节；稳定partition、split seed1337、model seed0/42、short stem和momentum0 marker齐全。`PAPER-EVAL-SUMMARY=0`、`FINAL-TEST=0`、成功完成job=0；全量硬错误扫描计数0。
+- GPU0–7各仅1个本任务compute，SM约23%–39%，容量持续合规。当前判定为`RUNNING_HEALTHY_THROUGH_EPOCH_126_130`；正式last10仍须等待epoch191–200。
