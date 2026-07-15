@@ -111,8 +111,12 @@ phase2_query_batch_global_assignment=false
 |远端run root|`/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_three_da_leoweakonly_20260715_v1`|
 |远端log root|`.../stage2_logs/`|
 |GPU/PID|未启动；最近一次只读审计8张GPU均空闲|
-|精确命令|待缓存准备、占用审计和远端dry-run后填写|
+|代码版本|Git commit `e90a52f`；远端13个运行文件与新plan已同步，远端`py_compile` PASS|
+|offline准备命令|`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u paper_reproduction/scripts/run_adv3b02_three_da_cache_plan.py --plan-manifest runs/adv3b02_three_da_leoweakonly_20260715_v1/plan/plan_manifest.json --execute`|
+|正式worker命令|由`plan_manifest.json.commands.phase2_workers`给出8个shard；必须在52/52离线准备和三方法smoke通过后才允许启动|
 |期望输出|每行`metrics.json`、`split_manifest.json`、`resolved_config.json`、`score_table.csv`、详细分组统计和完整loss trace|
+
+同步映射：本地commit `e90a52f`中的`code/cvsrffi/{phase2_runtime_contract,stage2_predictor_bundle,stage2_scoring_sidecar}.py`、三个`code/scripts/`隔离/构包脚本、ADV3B02 runner、独立scorer、matrix/cache-plan/summary脚本同步至N607同相对路径；本地`local_artifacts/adv3b02_three_da_leoweakonly_20260715_v1_plan/{phase2_config.json,plan_manifest.json,cache_specs/}`同步至远端run root的`plan/`。
 
 ## 七、成功条件与风险
 
