@@ -47,7 +47,7 @@
 |R13|identity-only及三种方法Pareto|pending|baseline改为独立artifact；ProtoNet 0参数/0step只能做零维不劣＋性能/MAC/状态/时延/显存Pareto|
 |R14|完整日志或闭式求解诊断|structural_logging_real_run_pending|闭式support-only单元审计可重算head张量、state与MAC；不可变head artifact、canonical execution receipt、mean/p95/max singleton latency字段已实现；正式时延、峰值内存、包成员和OS访问日志待真实隔离运行|
 |R15|合法TX/receiver/support-query清单|exact40_gate_implemented_real_cache_pending|旧6TX、新20TX嵌套顺序和5receiver已固定；post-build coverage gate强制每scenario每role/TX/receiver恰好40条、总1040条、sample ID唯一且跨场景一致；真实30-cell cache尚未构建|
-|R16|自动化报告和Git提交|authority_cache_plan_increment_pending_commit|根目录报告、locked formal matrix和30-cell cache spec artifact已更新；authority、signer、offline producer、coverage gate及相关扩大回归278项PASS；本轮文件待精确暂存并提交|
+|R16|自动化报告和Git提交|committed_local_milestone|根目录报告、locked formal matrix和30-cell cache spec artifact已更新；authority、signer、offline producer、coverage gate及相关扩大回归278项PASS；实现提交=`5d5e0ed`|
 |R17|每3个turn回顾目标和对话|implemented|已完成本轮三轮回顾：拒绝clean cache、query侧Q20/ordering、结构JSON冒充真实证据及注册后切片模拟注册前|
 |R18|外部authority不可由同一Phase2调用者自签|implemented_real_signing_pending|生产验签使用函数体literal issuer/key-id/public key；离线私钥仅存根报告offline controller且ACL限制，签名CLI固定OpenSSL路径/SHA并返回receipt SHA；真实cache authority lock尚未签名|
 
