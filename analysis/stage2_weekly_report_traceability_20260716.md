@@ -4,7 +4,7 @@
 
 依据：
 
-- `E:\type10-7\项目.md`，版本2026-07-15；
+- `E:\type10-7\项目.md`，版本2026-07-16；
 - `paper_reproduction/configs/cvs_stage2c_extreme_light_tx_sets_20260714.json`；
 - `paper_reproduction/configs/cvs_stage2c_effective8_class_split_20260715.json`；
 - 用户要求：在三种域适应方法周报中加入详细Stage2实验规划、数据划分和数据协议。
@@ -20,7 +20,7 @@
 |S2W-07|项目.md§9.1|说明Stage2-A的support/query与声明边界|周报Stage2-A章节|verified|章节7.6文本检查通过|已禁止报告seen-new|
 |S2W-08|项目.md§9.2|说明Stage2-B的support/query与指标|周报Stage2-B章节|verified|章节7.7文本检查通过|已禁止使用target-new support|
 |S2W-09|项目.md§9.3|说明Stage2-C的support/query与指标|周报Stage2-C章节|verified|章节7.8文本检查通过|同row输出old/new/H与遗忘|
-|S2W-10|项目.md§7.1|写明LEO_weak-only及clean物理不可达|周报Phase2输入协议章节|verified|7个强制协议字段检查通过|覆盖dataset/cache/control flow|
+|S2W-10|项目.md§7.1、§7.3|写明LEO_weak-only、clean不可达及Stage2禁止源域数据|周报Phase2输入协议章节|verified|clean与source强制协议字段检查通过|仅允许sealed Phase1 ADV3B02 checkpoint继承源域训练|
 |S2W-11|项目.md§7.2|写明逐样本全注册类决策和无Oracle/配额|周报预测协议章节|verified|5个决策字段检查通过|已禁止dense query图和全局分配|
 |S2W-12|项目.md§7.2|写明prediction与scorer隔离|周报评分协议章节|verified|章节7.9、7.10文本检查通过|prediction artifact先固化并绑定SHA256|
 |S2W-13|项目.md§8.5|写明三个LEO场景和自适应1→3→5-view|周报View规划章节|verified|场景和View文本检查通过|已区分物理场景与TTA View|
@@ -34,4 +34,4 @@
 
 18项要求全部落实并完成静态一致性验证：`verified=18`、`deferred=0`、`rejected=0`、`blocked=0`。
 
-本次交付是实验规划和协议文档的严格对照更新，不代表Stage2-C矩阵已经执行，也不代表性能目标已经达到。最高风险仍是matched MRIOR与轻量qKNN候选尚未在同一Stage2-C封存矩阵上完成实测；正式启动前还需登记development seed，并由生成器产出sealed LEO_weak-only package、prediction artifact和runtime access audit。
+本次交付是实验规划和协议文档的严格对照更新，不代表Stage2-C矩阵已经执行，也不代表性能目标已经达到。最高风险是现有MRIOR-SDA/DADDA-SDA runner仍具备source cache入口，必须先完成无source predictor package、validator和runtime access audit修复，才能启动当前协议下的新Stage2矩阵。
