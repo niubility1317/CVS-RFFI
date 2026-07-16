@@ -1,0 +1,103 @@
+{
+  "adaptive_view_triggering_enabled": false,
+  "candidate_backbone_forward_sample_count": 1560,
+  "candidate_id": "JG_R8_LR020",
+  "candidate_latency_ms_per_query": 4.495493135152337,
+  "dense_query_graph_used": false,
+  "direct_baseline_latency_ms_per_query": 3.988962307369384,
+  "enrollment_receipt_sha256": "677ca3aebb3b44cc7326079964659f14ebd89cb501ae9e849003ea69daa98ad1",
+  "fft96_enabled": false,
+  "identity_baseline_latency_ms_per_query": 3.9233597490984278,
+  "k_shot": 10,
+  "new_class_count": 20,
+  "optimizer_inside_predictor": false,
+  "package_root_sha256": "709cac742ff70862c73f8266294993e068c55c767e758d3ec060ca123f8282db",
+  "package_seal_sha256": "5eb4699ba05733f6c2d46de955724662817f334d644f78dbe38b8921a58d3318",
+  "peak_cuda_memory_bytes_all_three_eval_streams": 172169216,
+  "per_sample_all_registered_classes": true,
+  "prediction_artifact_sha256": "030c6cd99122c57fa2b2c155b0b833226d5fcc2c8cbfe904499157587189f0b6",
+  "prediction_immutable_state": "SEALED_READ_ONLY_ATOMIC_NOREPLACE",
+  "prediction_seal_sha256": "f4a93b6781e155b1e323c06ac5c7a359e48baee6c458cc4673d31c51626d9037",
+  "preopen_audit": {
+    "clean_member_reachable": false,
+    "iq_payload_materialized": false,
+    "opened_members": [
+      {
+        "artifact_role": "candidate_lock",
+        "relative_path": "candidate_lock.json",
+        "sha256": "361ad8f53114266f5f6ca1de131d7e1d6e3968f0681dac8d8eb2a8563b232774",
+        "size_bytes": 1756
+      },
+      {
+        "artifact_role": "candidate_runtime",
+        "relative_path": "candidate_runtime.ts",
+        "sha256": "375a2e3978f1c18bf82f8ec0b90a2c1c9117e01e1474cbd78723b32784488520",
+        "size_bytes": 4636189
+      },
+      {
+        "artifact_role": "identity_runtime",
+        "relative_path": "identity_runtime.ts",
+        "sha256": "eda6a061636ee6c5d767b62014406191b2c2b9b18aaf514874e9532c0084447f",
+        "size_bytes": 4635211
+      },
+      {
+        "artifact_role": "direct_runtime",
+        "relative_path": "direct_runtime.ts",
+        "sha256": "71f85c6c2fce3593ffacdc11631802ffac6f2e0e5f51e2b85251a74209497c25",
+        "size_bytes": 4608517
+      },
+      {
+        "artifact_role": "prototype_head",
+        "relative_path": "prototype_head.npz",
+        "sha256": "17fc0799b7e91e922827b8a3eb2c803d6b8bf2ba4639bdd2cb88be276387ff0b",
+        "size_bytes": 60964
+      },
+      {
+        "artifact_role": "enrollment_receipt",
+        "relative_path": "enrollment_receipt.json",
+        "sha256": "677ca3aebb3b44cc7326079964659f14ebd89cb501ae9e849003ea69daa98ad1",
+        "size_bytes": 14064
+      },
+      {
+        "artifact_role": "query:leo_clear_weak",
+        "relative_path": "query_leo_clear_weak.npz",
+        "sha256": "7218596675f1f607ed630ea6dfd8c71bf29a66efc6a5e2173f91eefed56f6c5c",
+        "size_bytes": 1487964
+      },
+      {
+        "artifact_role": "query:leo_low_elev_weak",
+        "relative_path": "query_leo_low_elev_weak.npz",
+        "sha256": "7181b794708748ca58abea7b92fc3a1b57a50c66f4e7a4eb202cf5b59cd69946",
+        "size_bytes": 1487976
+      },
+      {
+        "artifact_role": "query:leo_rain_weak",
+        "relative_path": "query_leo_rain_weak.npz",
+        "sha256": "29d6a2cf76e4903bac4ce041d8eac439eb1f54733d6c0670c80ba02d4333167c",
+        "size_bytes": 1487960
+      }
+    ],
+    "package_root_sha256": "709cac742ff70862c73f8266294993e068c55c767e758d3ec060ca123f8282db",
+    "profile": "apply_only",
+    "query_member_reachable": true,
+    "schema": "cvs.phase2.jg020_preopen_audit.v1",
+    "seal_sha256": "5eb4699ba05733f6c2d46de955724662817f334d644f78dbe38b8921a58d3318",
+    "status": "PASS",
+    "support_member_reachable": false,
+    "truth_member_reachable": false
+  },
+  "prototype_fit_inside_predictor": false,
+  "query_batch_global_assignment": false,
+  "query_class_quota_access": false,
+  "query_count_per_scenario": 520,
+  "query_role_access": false,
+  "query_true_batch_class_count_access": false,
+  "query_truth_access": false,
+  "query_view_count": 1,
+  "receiver": "20-1",
+  "runtime_fixed_batch_size": 2,
+  "scenario_count": 3,
+  "schema": "cvs.phase2.jg020_apply_receipt.v1",
+  "seed": 713101,
+  "status": "PASS"
+}

@@ -1,0 +1,388 @@
+{
+  "adapt_epochs": 5,
+  "adapt_fit_class_count": 6,
+  "adapt_input_audit": {
+    "adapt_fit_class_count": 6,
+    "adapt_full_forward_row_count": 180,
+    "adapt_physical_support_count": 60,
+    "adapt_support_view_count": 3,
+    "excluded_registered_new_support_count": 200,
+    "new_support_gradient_used": false,
+    "optimizer_input_stage": "preincrement_registered_old_only",
+    "per_sample_old_new_role_branch_used": false,
+    "query_role_used_by_optimizer": false,
+    "registered_support_labels_used": true
+  },
+  "adaptation_wall_seconds": 1.3104398809373379,
+  "adapter_alpha": 1.0,
+  "adapter_macs_per_support_forward_before_merge": 6400,
+  "adapter_retrained_at_registration": false,
+  "cached_small_path_forward_count": 50,
+  "cached_small_path_forward_sample_equivalents": 1800,
+  "candidate_ground_audit": {
+    "alpha": 16.0,
+    "deployment_added_macs_per_query_after_merge": 0,
+    "expected_sha256": "95f9a8bac7880d42f705db7f16523c37cf4ce5ff8438ac2c500c7550a38de446",
+    "initialization": {
+      "element_count": 18448,
+      "finite": true,
+      "l2_norm": 5.114376454983042,
+      "mode": "ground_source_pretrained",
+      "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/qknnv42_jg_r8_lr020_newclass_dev_20260716_retry7/new_20/enrollment_package/ground_adapter.pt",
+      "sha256": "95f9a8bac7880d42f705db7f16523c37cf4ce5ff8438ac2c500c7550a38de446",
+      "strict_key_match": true,
+      "tensor_count": 8
+    },
+    "merge": {
+      "algebraic_probe_parity_pass": true,
+      "deployment_added_macs_per_view_after_merge": 0,
+      "max_absolute_difference": 3.5762786865234375e-07,
+      "merged_module_count": 4,
+      "merged_modules": [
+        {
+          "max_absolute_difference": 1.341104507446289e-07,
+          "module": "id_backbone.t_proj"
+        },
+        {
+          "max_absolute_difference": 1.1920928955078125e-07,
+          "module": "id_backbone.f_proj"
+        },
+        {
+          "max_absolute_difference": 1.4901161193847656e-07,
+          "module": "id_backbone.pa_proj.0"
+        },
+        {
+          "max_absolute_difference": 3.5762786865234375e-07,
+          "module": "id_backbone.fuse.0"
+        }
+      ],
+      "post_merge_trainable_parameters": 0,
+      "remaining_lora_wrappers": []
+    },
+    "mode": "ground_lora_loaded_and_merged",
+    "observed_sha256_before_load": "95f9a8bac7880d42f705db7f16523c37cf4ce5ff8438ac2c500c7550a38de446",
+    "rank": 16,
+    "resources": {
+      "adapter_macs_per_query": 18448,
+      "adapter_state_bytes_fp16": 36896,
+      "adapter_state_bytes_fp32": 73792,
+      "adapter_type": "projection_feature_lora",
+      "full_model_finetune": false,
+      "original_checkpoint_gradient_updates": 0,
+      "original_checkpoint_trainable_parameters": 0,
+      "persistent_state_cap_bytes": 262144,
+      "query_view_count": 1,
+      "resource_tier": "preferred",
+      "scope": "projection_feature",
+      "target_modules": [
+        {
+          "added_macs_per_query": 4096,
+          "in_features": 96,
+          "module": "id_backbone.t_proj",
+          "out_features": 160,
+          "rank": 16,
+          "trainable_parameters": 4096
+        },
+        {
+          "added_macs_per_query": 3072,
+          "in_features": 32,
+          "module": "id_backbone.f_proj",
+          "out_features": 160,
+          "rank": 16,
+          "trainable_parameters": 3072
+        },
+        {
+          "added_macs_per_query": 3584,
+          "in_features": 64,
+          "module": "id_backbone.pa_proj.0",
+          "out_features": 160,
+          "rank": 16,
+          "trainable_parameters": 3584
+        },
+        {
+          "added_macs_per_query": 7696,
+          "in_features": 321,
+          "module": "id_backbone.fuse.0",
+          "out_features": 160,
+          "rank": 16,
+          "trainable_parameters": 7696
+        }
+      ],
+      "trainable_parameter_cap": 50000,
+      "trainable_parameter_names": [
+        "id_backbone.t_proj.lora_a.weight",
+        "id_backbone.t_proj.lora_b.weight",
+        "id_backbone.f_proj.lora_a.weight",
+        "id_backbone.f_proj.lora_b.weight",
+        "id_backbone.pa_proj.0.lora_a.weight",
+        "id_backbone.pa_proj.0.lora_b.weight",
+        "id_backbone.fuse.0.lora_a.weight",
+        "id_backbone.fuse.0.lora_b.weight"
+      ],
+      "trainable_parameters": 18448
+    },
+    "scope": "projection_feature",
+    "serialized_file_bytes": 40124,
+    "sha256_preload_match": true
+  },
+  "candidate_id": "JG_R8_LR020",
+  "candidate_lock_sha256": "361ad8f53114266f5f6ca1de131d7e1d6e3968f0681dac8d8eb2a8563b232774",
+  "checkpoint_load_audit": {
+    "checkpoint_load_strict": true,
+    "input_len": 256,
+    "loader": "exact_ssdg_training_architecture_v1",
+    "missing_keys": 0,
+    "num_domains_from_state": 14,
+    "skipped_mismatch": 0,
+    "state_tensor_count": 195,
+    "unexpected_keys": 0
+  },
+  "dense_query_graph_used": false,
+  "deployment_added_macs_per_query_after_merge": 0,
+  "direct_class_mapping_audit": {
+    "direct_class_count": 6,
+    "direct_logit_to_class_handle_order_bound": true,
+    "mapping_sha256": "97af6115b51a6a3252e22315e40183c4c3efd7ccfeb1f16a61710028f72fda7f",
+    "old_class_count": 6,
+    "old_class_order_sha256": "7c8673f29d6983b62e2ea7e5b77f549c9fa68e85f30f2309e2e0b47e13bbcdfa"
+  },
+  "full_backbone_forward_avoided_sample_equivalents": 1800,
+  "full_backbone_forward_call_count": 1,
+  "full_backbone_forward_sample_equivalents": 180,
+  "ground_state_bytes_fp16": 36896,
+  "identity_ground_audit": {
+    "alpha": 16.0,
+    "deployment_added_macs_per_query_after_merge": 0,
+    "expected_sha256": "95f9a8bac7880d42f705db7f16523c37cf4ce5ff8438ac2c500c7550a38de446",
+    "initialization": {
+      "element_count": 18448,
+      "finite": true,
+      "l2_norm": 5.114376454983042,
+      "mode": "ground_source_pretrained",
+      "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/qknnv42_jg_r8_lr020_newclass_dev_20260716_retry7/new_20/enrollment_package/ground_adapter.pt",
+      "sha256": "95f9a8bac7880d42f705db7f16523c37cf4ce5ff8438ac2c500c7550a38de446",
+      "strict_key_match": true,
+      "tensor_count": 8
+    },
+    "merge": {
+      "algebraic_probe_parity_pass": true,
+      "deployment_added_macs_per_view_after_merge": 0,
+      "max_absolute_difference": 3.5762786865234375e-07,
+      "merged_module_count": 4,
+      "merged_modules": [
+        {
+          "max_absolute_difference": 1.341104507446289e-07,
+          "module": "id_backbone.t_proj"
+        },
+        {
+          "max_absolute_difference": 1.1920928955078125e-07,
+          "module": "id_backbone.f_proj"
+        },
+        {
+          "max_absolute_difference": 1.4901161193847656e-07,
+          "module": "id_backbone.pa_proj.0"
+        },
+        {
+          "max_absolute_difference": 3.5762786865234375e-07,
+          "module": "id_backbone.fuse.0"
+        }
+      ],
+      "post_merge_trainable_parameters": 0,
+      "remaining_lora_wrappers": []
+    },
+    "mode": "ground_lora_loaded_and_merged",
+    "observed_sha256_before_load": "95f9a8bac7880d42f705db7f16523c37cf4ce5ff8438ac2c500c7550a38de446",
+    "rank": 16,
+    "resources": {
+      "adapter_macs_per_query": 18448,
+      "adapter_state_bytes_fp16": 36896,
+      "adapter_state_bytes_fp32": 73792,
+      "adapter_type": "projection_feature_lora",
+      "full_model_finetune": false,
+      "original_checkpoint_gradient_updates": 0,
+      "original_checkpoint_trainable_parameters": 0,
+      "persistent_state_cap_bytes": 262144,
+      "query_view_count": 1,
+      "resource_tier": "preferred",
+      "scope": "projection_feature",
+      "target_modules": [
+        {
+          "added_macs_per_query": 4096,
+          "in_features": 96,
+          "module": "id_backbone.t_proj",
+          "out_features": 160,
+          "rank": 16,
+          "trainable_parameters": 4096
+        },
+        {
+          "added_macs_per_query": 3072,
+          "in_features": 32,
+          "module": "id_backbone.f_proj",
+          "out_features": 160,
+          "rank": 16,
+          "trainable_parameters": 3072
+        },
+        {
+          "added_macs_per_query": 3584,
+          "in_features": 64,
+          "module": "id_backbone.pa_proj.0",
+          "out_features": 160,
+          "rank": 16,
+          "trainable_parameters": 3584
+        },
+        {
+          "added_macs_per_query": 7696,
+          "in_features": 321,
+          "module": "id_backbone.fuse.0",
+          "out_features": 160,
+          "rank": 16,
+          "trainable_parameters": 7696
+        }
+      ],
+      "trainable_parameter_cap": 50000,
+      "trainable_parameter_names": [
+        "id_backbone.t_proj.lora_a.weight",
+        "id_backbone.t_proj.lora_b.weight",
+        "id_backbone.f_proj.lora_a.weight",
+        "id_backbone.f_proj.lora_b.weight",
+        "id_backbone.pa_proj.0.lora_a.weight",
+        "id_backbone.pa_proj.0.lora_b.weight",
+        "id_backbone.fuse.0.lora_a.weight",
+        "id_backbone.fuse.0.lora_b.weight"
+      ],
+      "trainable_parameters": 18448
+    },
+    "scope": "projection_feature",
+    "serialized_file_bytes": 40124,
+    "sha256_preload_match": true
+  },
+  "k1_trust_gate_enabled": false,
+  "k_shot": 10,
+  "legacy_uncached_full_backbone_forward_sample_equivalents": 1980,
+  "loss_trace_sha256": "b9b24ac751f92f4c759a8e849e7775b2b6e0939b0fa01009f6652876f8661b10",
+  "new_class_count": 20,
+  "new_support_gradient_used": false,
+  "old_new_query_role_used": false,
+  "optimizer_input_stage": "preincrement_registered_old_only",
+  "optimizer_steps": 50,
+  "package_root_sha256": "b1d4ab613c0665f74c0150f6a320f485bb8535e08340a40dded02ce7cec36106",
+  "package_seal_sha256": "4d848014a8eb369c8bb0b5b85ef236a8ebe40c0505d00a29112519503f56853c",
+  "peak_cuda_memory_bytes": 31924224,
+  "per_sample_old_new_role_branch_used": false,
+  "persistent_state_bytes": 99616,
+  "persistent_state_cap_bytes": 262144,
+  "persistent_state_within_cap": true,
+  "preopen_audit": {
+    "clean_member_reachable": false,
+    "iq_payload_materialized": false,
+    "opened_members": [
+      {
+        "artifact_role": "checkpoint_full",
+        "relative_path": "checkpoint_full.pth",
+        "sha256": "2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98",
+        "size_bytes": 8582116
+      },
+      {
+        "artifact_role": "ground_adapter",
+        "relative_path": "ground_adapter.pt",
+        "sha256": "95f9a8bac7880d42f705db7f16523c37cf4ce5ff8438ac2c500c7550a38de446",
+        "size_bytes": 40124
+      },
+      {
+        "artifact_role": "candidate_lock",
+        "relative_path": "candidate_lock.json",
+        "sha256": "361ad8f53114266f5f6ca1de131d7e1d6e3968f0681dac8d8eb2a8563b232774",
+        "size_bytes": 1756
+      },
+      {
+        "artifact_role": "direct_class_mapping",
+        "relative_path": "class_registry_map.json",
+        "sha256": "97af6115b51a6a3252e22315e40183c4c3efd7ccfeb1f16a61710028f72fda7f",
+        "size_bytes": 399
+      },
+      {
+        "artifact_role": "support:leo_clear_weak",
+        "relative_path": "support_leo_clear_weak.npz",
+        "sha256": "24ea7b1482aeca991499f4f6f1a26bd5248245a06ff11de6f643975187283602",
+        "size_bytes": 749886
+      },
+      {
+        "artifact_role": "support:leo_low_elev_weak",
+        "relative_path": "support_leo_low_elev_weak.npz",
+        "sha256": "b1ae5372b8b2aa81837d56357ce39ff4593be13fdb2f35411cf634494ddca9db",
+        "size_bytes": 749898
+      },
+      {
+        "artifact_role": "support:leo_rain_weak",
+        "relative_path": "support_leo_rain_weak.npz",
+        "sha256": "1c26091131b777c2cbe59ac828fd4827776335fee06fc15370a72c0a794dbe9b",
+        "size_bytes": 749882
+      }
+    ],
+    "package_root_sha256": "b1d4ab613c0665f74c0150f6a320f485bb8535e08340a40dded02ce7cec36106",
+    "profile": "enrollment_only",
+    "query_member_reachable": false,
+    "schema": "cvs.phase2.jg020_preopen_audit.v1",
+    "seal_sha256": "4d848014a8eb369c8bb0b5b85ef236a8ebe40c0505d00a29112519503f56853c",
+    "status": "PASS",
+    "support_member_reachable": true,
+    "truth_member_reachable": false
+  },
+  "prototype_fit_class_count": 26,
+  "prototype_head_sha256": "17fc0799b7e91e922827b8a3eb2c803d6b8bf2ba4639bdd2cb88be276387ff0b",
+  "prototype_head_tensor_bytes_fp16": 49920,
+  "query_class_quota_used": false,
+  "query_path_argument_exists": false,
+  "query_role_used_by_optimizer": false,
+  "query_rows_used_for_training": 0,
+  "query_view_count": 1,
+  "receiver": "20-1",
+  "registered_support_labels_used": true,
+  "runtime_audit": {
+    "candidate_runtime.ts": {
+      "feature_max_abs": 0.0,
+      "logit_max_abs": 0.0,
+      "sha256": "375a2e3978f1c18bf82f8ec0b90a2c1c9117e01e1474cbd78723b32784488520"
+    },
+    "direct_runtime.ts": {
+      "feature_max_abs": 0.0,
+      "logit_max_abs": 0.0,
+      "sha256": "71f85c6c2fce3593ffacdc11631802ffac6f2e0e5f51e2b85251a74209497c25"
+    },
+    "identity_runtime.ts": {
+      "feature_max_abs": 0.0,
+      "logit_max_abs": 0.0,
+      "sha256": "eda6a061636ee6c5d767b62014406191b2c2b9b18aaf514874e9532c0084447f"
+    }
+  },
+  "runtime_fixed_batch_size": 2,
+  "schema": "cvs.phase2.jg020_enrollment_receipt.v1",
+  "seed": 713101,
+  "status": "PASS",
+  "support_forward_sample_equivalents": 1980,
+  "support_physical_count": 60,
+  "support_view_count": 3,
+  "target_delta_sha256": "ba6e79238ec0666bcad243dcd8f033e10249d87bd825a27507457d468dd13ab3",
+  "target_delta_tensor_bytes_fp16": 12800,
+  "target_merge_audit": {
+    "algebraic_probe_parity_pass": true,
+    "deployment_added_macs_per_view_after_merge": 0,
+    "max_absolute_difference": 4.76837158203125e-07,
+    "merged_module_count": 2,
+    "merged_modules": [
+      {
+        "max_absolute_difference": 4.76837158203125e-07,
+        "module": "id_backbone.cls_head.id_gate.0"
+      },
+      {
+        "max_absolute_difference": 3.5762786865234375e-07,
+        "module": "id_backbone.cls_head.joint_proj.0"
+      }
+    ],
+    "post_merge_trainable_parameters": 0,
+    "remaining_lora_wrappers": []
+  },
+  "trainable_parameters": 6400,
+  "training_compute_mode": "frozen_backbone_cached_joint_inputs",
+  "trust_decision": "locked_k10_full_delta"
+}

@@ -5,7 +5,7 @@
 - 实验ID：`qknnv42_jg_r8_lr020_newclass_dev_20260716`
 - 日期：2026-07-16
 - 操作者：Codex主agent`root`＋子agent`jg020_registration_exp`
-- 当前状态：`EIGHTH_SCORER_HASH_BINDING_CALL_REPAIRED_AWAITING_RETRY7`；retry6的new5 enrollment与三个runtime parity已PASS，尚未生成prediction或正式指标
+- 当前状态：`COMPLETED_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE`；retry7的new5/new10/new20 enrollment、truth-free prediction与isolated scoring全部PASS，共生成9个正式Stage2-C结果行
 - 目标：验证锁定的`JG_R8_LR020`轻量旧类适配器在合法Stage2-C新类注册后的同row旧类保持、新类准确率与资源表现。
 - 声明边界：这是单receiver、单development seed的开发单元；即使指标达到门槛，也不能替代独立确认矩阵或宣称总目标完成。
 
@@ -86,17 +86,58 @@ isolated scorer
   output: before/after/direct metrics, per-class/per-scenario tables
 ```
 
-## 必须生成的同run结果
+## retry7正式同run结果
 
 | candidate | new scale | scenario | old_acc_before_increment | old_acc_after_increment | min_old_class_acc | seen_new_acc | H_old_new | forgetting | status |
 |---|---:|---|---:|---:|---:|---:|---:|---:|---|
-| 待运行 | 5 | `leo_clear_weak` | - | - | - | - | - | - | pending |
-| 待运行 | 10 | `leo_clear_weak` | - | - | - | - | - | - | pending |
-| 待运行 | 20 | `leo_clear_weak` | - | - | - | - | - | - | pending |
-| 待运行 | 5/10/20 | `leo_low_elev_weak` | - | - | - | - | - | - | pending |
-| 待运行 | 5/10/20 | `leo_rain_weak` | - | - | - | - | - | - | pending |
+| `JG_R8_LR020` | 5 | `leo_clear_weak` | 0.7583 | 0.6000 | 0.1000 | 0.6300 | 0.6146 | 0.1583 | fail-target |
+| `JG_R8_LR020` | 5 | `leo_low_elev_weak` | 0.8250 | 0.6583 | 0.3000 | 0.6200 | 0.6386 | 0.1667 | fail-target |
+| `JG_R8_LR020` | 5 | `leo_rain_weak` | 0.7333 | 0.4750 | 0.2000 | 0.5800 | 0.5223 | 0.2583 | fail-target |
+| `JG_R8_LR020` | 10 | `leo_clear_weak` | 0.7583 | 0.5417 | 0.0000 | 0.4000 | 0.4602 | 0.2167 | fail-target |
+| `JG_R8_LR020` | 10 | `leo_low_elev_weak` | 0.8250 | 0.6167 | 0.3000 | 0.3500 | 0.4466 | 0.2083 | fail-target |
+| `JG_R8_LR020` | 10 | `leo_rain_weak` | 0.7333 | 0.4250 | 0.1000 | 0.3700 | 0.3956 | 0.3083 | fail-target |
+| `JG_R8_LR020` | 20 | `leo_clear_weak` | 0.7583 | 0.5000 | 0.0000 | 0.2175 | 0.3031 | 0.2583 | fail-target |
+| `JG_R8_LR020` | 20 | `leo_low_elev_weak` | 0.8250 | 0.6083 | 0.2500 | 0.2050 | 0.3067 | 0.2167 | fail-target |
+| `JG_R8_LR020` | 20 | `leo_rain_weak` | 0.7333 | 0.4167 | 0.1000 | 0.1975 | 0.2680 | 0.3167 | fail-target |
 
-完成时还必须附：逐old/new TX、逐scenario、receiver×TX sample count/correct/accuracy、old→new/new→old稀疏confusion、support/query零重叠、direct与identity-only同sample比较。
+同row对照显示，strict direct ADV3B02在clear/low-elev/rain下的old_acc分别为0.6667/0.6833/0.6167；JG注册前分别提高到0.7583/0.8250/0.7333，但注册后9行old_acc全部低于对应注册前结果，且均未达到0.92门槛。identity-only注册后old_acc分别为：new5的0.5333/0.6000/0.4250、new10的0.5167/0.5583/0.4167、new20的0.4750/0.5417/0.4083；JG略优于identity-only，但绝对差距不足以形成可晋级路线。
+
+| new scale | mean old_acc | mean min_old_class_acc | mean seen_new_acc | mean H_old_new | mean forgetting | verdict |
+|---:|---:|---:|---:|---:|---:|---|
+| 5 | 0.5778 | 0.2000 | 0.6100 | 0.5918 | 0.1944 | diagnostic-negative |
+| 10 | 0.5278 | 0.1333 | 0.3733 | 0.4341 | 0.2444 | diagnostic-negative |
+| 20 | 0.5083 | 0.1167 | 0.2067 | 0.2926 | 0.2639 | diagnostic-negative |
+
+逐TX表中的C/L/R依次表示`leo_clear_weak/leo_low_elev_weak/leo_rain_weak`，每格为20个query的candidate-after accuracy；`-`表示该规模尚未注册该新类。
+
+| role | TX | n5 C/L/R | n10 C/L/R | n20 C/L/R |
+|---|---|---|---|---|
+| old | `14-10` | 0.10/0.30/0.20 | 0.00/0.30/0.10 | 0.00/0.25/0.10 |
+| old | `14-7` | 0.70/1.00/0.40 | 0.70/0.85/0.40 | 0.70/0.85/0.40 |
+| old | `20-15` | 0.80/0.85/0.95 | 0.80/0.85/0.90 | 0.80/0.85/0.90 |
+| old | `20-19` | 0.30/0.45/0.30 | 0.20/0.35/0.15 | 0.20/0.35/0.15 |
+| old | `6-15` | 0.85/0.45/0.20 | 0.75/0.45/0.20 | 0.50/0.45/0.15 |
+| old | `8-20` | 0.85/0.90/0.80 | 0.80/0.90/0.80 | 0.80/0.90/0.80 |
+| new | `1-16` | 0.90/1.00/0.95 | 0.60/0.65/0.55 | 0.15/0.45/0.10 |
+| new | `1-18` | 0.05/0.25/0.35 | 0.05/0.25/0.35 | 0.05/0.10/0.30 |
+| new | `18-10` | 0.55/0.45/0.15 | 0.55/0.35/0.15 | 0.45/0.35/0.15 |
+| new | `14-11` | 0.65/0.55/0.50 | 0.60/0.45/0.50 | 0.60/0.45/0.50 |
+| new | `8-3` | 1.00/0.85/0.95 | 1.00/0.85/0.95 | 1.00/0.85/0.95 |
+| new | `18-8` | - | 0.20/0.15/0.30 | 0.15/0.15/0.30 |
+| new | `10-10` | - | 0.00/0.25/0.20 | 0.00/0.25/0.20 |
+| new | `16-19` | - | 0.60/0.30/0.20 | 0.10/0.10/0.15 |
+| new | `20-12` | - | 0.40/0.20/0.45 | 0.40/0.20/0.45 |
+| new | `4-10` | - | 0.00/0.05/0.05 | 0.00/0.05/0.05 |
+| new | `13-14` | - | - | 0.15/0.15/0.05 |
+| new | `2-5` | - | - | 0.25/0.05/0.10 |
+| new | `1-8` | - | - | 0.30/0.10/0.10 |
+| new | `19-13` | - | - | 0.10/0.15/0.15 |
+| new | `19-9` | - | - | 0.15/0.20/0.05 |
+| new | `3-8` | - | - | 0.30/0.10/0.00 |
+| new | `19-8` | - | - | 0.05/0.15/0.00 |
+| new | `11-19` | - | - | 0.05/0.00/0.30 |
+| new | `2-16` | - | - | 0.10/0.10/0.05 |
+| new | `19-6` | - | - | 0.00/0.15/0.00 |
 
 ## 资源与门槛
 
@@ -112,6 +153,16 @@ isolated scorer
 | K10 seen_new_acc | 5类>=92%、10类>=90%、20类>=86% |
 | Pareto | 同row报告MAC、适配/推理时延、峰值显存、持久状态与identity-only变化 |
 
+retry7资源receipt：
+
+| new scale | params | steps | adapt wall(s) | peak CUDA(B) | persistent state(B) | candidate latency(ms/query) | identity latency(ms/query) | runtime parity |
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 5 | 6,400 | 50 | 1.3383 | 31,924,224 | 70,816 | 7.0884 | 6.3041 | 0.0 |
+| 10 | 6,400 | 50 | 1.3642 | 31,924,224 | 80,416 | 5.8585 | 5.4040 | 0.0 |
+| 20 | 6,400 | 50 | 1.3104 | 31,924,224 | 99,616 | 4.4955 | 3.9234 | 0.0 |
+
+三项均满足参数、step、持久状态与runtime parity资源门。prediction artifact均为`SEALED_READ_ONLY_ATOMIC_NOREPLACE`。scorer明确给出`formal_adapter_resource_claim_allowed=false`，原因是不可变prediction artifact本身未嵌入adapter matrix；因此上表只能作为独立enrollment receipt资源证据，不能冒充“由prediction artifact单独证明”的正式资源声明。
+
 ## 本地与N607执行记录
 
 | 项目 | 当前值 |
@@ -124,11 +175,16 @@ isolated scorer
 | N607只读preflight | 2026-07-16 11:48:16 CST直连PASS；`dell-DSS8440`；项目根可见；8×RTX 3090均为10MiB/24576MiB、0%利用率 |
 | N607训练inventory | 2026-07-16 11:48:33+0800；`active_training_processes=[]`、`gpu_compute=[]`、`unknown_training_active=false`、route=`direct` |
 | SSH断开审计 | preflight与inventory后均为`N607_SSH_DISCONNECTED=PASS`，无残留`ssh.exe`或到N607/bridge的ESTABLISHED TCP22 |
-| 远端环境 | 项目根`/home/szu2070436088/2510044040/CV-SincNet`；执行时使用`ssr-gpu`，启动前仍需校验目标文件/依赖哈希 |
+| 远端环境 | 项目根`/home/szu2070436088/2510044040/CV-SincNet`；Python`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`、Torch`2.1.0+cu121`、NumPy`2.2.5` |
 | 首次启动 | 物理GPU0；PID=`2250148`；`CUDA_VISIBLE_DEVICES=0 /opt/miniconda3/bin/conda run --no-capture-output -n CVS-RFFI python -u paper_reproduction/scripts/launch_cvs_jg020_stage2c_dev_20260716.py --execute` |
 | 首次外层日志 | `/home/szu2070436088/2510044040/CV-SincNet/logs/qknnv42_jg_r8_lr020_newclass_dev_20260716_launcher.out` |
 | 首次运行状态 | launcher已退出；Phase1 cache成功，Stage2-C未开始；没有性能结果，不能报告candidate指标 |
 | 预期输出 | sealed manifests、adapter/prototype、loss trace、immutable predictions、scorer tables、resource audit、完整日志 |
+| retry7实际启动 | GPU0；shell PID=`2296736`、conda PID=`2296737`、python PID=`2296746`；SSH启动命令超时但远端landed，随后短连接只读确认并停止残留本地ssh PID=`26924` |
+| retry7正式输出 | `/home/szu2070436088/2510044040/CV-SincNet/runs/qknnv42_jg_r8_lr020_newclass_dev_20260716_retry7`；`execution_summary.json.status=PASS` |
+| retry7外层日志 | `/home/szu2070436088/2510044040/CV-SincNet/logs/qknnv42_jg_r8_lr020_newclass_dev_20260716_retry7_launcher.out` |
+| 完成后inventory | 2026-07-16 12:33:57+0800；JG retry7进程已全部退出；另有不属于本实验的`adv3b02_ci_strict_matrix_20260716_v4`在GPU0运行，未干预 |
+| 最终SSH断开审计 | `N607_SSH_DISCONNECTED=PASS`；无残留`ssh.exe`或到N607/bridge的ESTABLISHED TCP22 |
 
 retry7同步映射（本地→N607同相对路径；其余retry6文件保持远端已验证版本）：
 
@@ -144,7 +200,7 @@ cd /home/szu2070436088/2510044040/CV-SincNet
 CUDA_VISIBLE_DEVICES=0 nohup /opt/miniconda3/bin/conda run --no-capture-output -n CVS-RFFI python -u paper_reproduction/scripts/launch_cvs_jg020_stage2c_dev_20260716.py --execute --run-root /home/szu2070436088/2510044040/CV-SincNet/runs/qknnv42_jg_r8_lr020_newclass_dev_20260716_retry4 --reuse-cache-set /home/szu2070436088/2510044040/CV-SincNet/runs/qknnv42_jg_r8_lr020_newclass_dev_20260716/phase1_cache/cache_set.json > /home/szu2070436088/2510044040/CV-SincNet/logs/qknnv42_jg_r8_lr020_newclass_dev_20260716_retry4_launcher.out 2>&1 &
 ```
 
-启动前远端复核：`retry4`根不存在；环境为Python`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`、Torch`2.1.0+cu121`、NumPy`2.2.5`；4个同步文件SHA256与当时的retry4记录一致；远端py_compile、enrollment CLI import闭包和launcher dry-run均PASS。上表已更新为下一次retry5待同步哈希。
+retry4启动前远端复核：`retry4`根不存在；环境为Python`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`、Torch`2.1.0+cu121`、NumPy`2.2.5`；4个同步文件SHA256与当时的retry4记录一致；远端py_compile、enrollment CLI import闭包和launcher dry-run均PASS。上表记录的是后续retry7最终同步哈希。
 
 retry5已按相同命令启动，外层PID=`2287997`；retry6计划沿用相同命令，仅把run root和外层日志改为`..._retry6`。两者都只读复用原run的`phase1_cache/cache_set.json`，不删除或覆盖既有训练artifact。
 
@@ -189,6 +245,16 @@ retry6使用外层PID=`2291586`，首次完整完成new5 enrollment并生成PASS
 
 retry6随后在apply package的独立truth/scorer复制阶段因接口升级漏参而fail closed：`load_verified_scoring_sidecar()`现要求关键字`expected_scoring_manifest_sha256`，JG split builder的两处调用仍使用旧签名。修复对原source scoring manifest和新生成scoring manifest分别先计算SHA256再传入验证函数，并把新manifest SHA256写入builder结果；这加强truth-sidecar绑定，不改变预测输入或算法。`ssr-gpu`中py_compile与14/14测试通过；下一根为不可覆盖的`..._retry7`。
 
+retry7完整通过new5/new10/new20的source bundle、enrollment package、old-only JG适配、runtime发布、apply-only package、truth-free predictor与isolated scorer。`execution_summary.json.status=PASS`，三个scorer各生成3个scenario行；prediction count分别为660/960/1560。所有enrollment preflight均为`query_member_reachable=false`、`truth_member_reachable=false`、`clean_member_reachable=false`；所有apply preflight均为`support_member_reachable=false`、`truth_member_reachable=false`、`clean_member_reachable=false`。predictor逐样本面向全部注册类，单view，未使用query truth/role/quota/global assignment；truth只在预测密封后由独立scorer按`exact_scenario_query_token`连接。
+
+## 最终解释与下一步
+
+1. `JG_R8_LR020`对注册前旧类域适配有效：三场景相对strict direct分别提高约9.17/14.17/11.67个百分点。
+2. 当前单cosine prototype注册头无法保持该收益。随着新类从5增至20，mean old_acc从0.5778降至0.5083，mean forgetting从0.1944增至0.2639；最低旧类准确率在clear场景的10类和20类条件下降到0。
+3. 新类可分性高度不均衡：`8-3`三场景始终为0.85–1.00，但多个新增TX接近0；mean seen_new_acc从0.6100降至0.2067，说明主要问题是共享prototype空间中的类拥挤与旧/新边界冲突，不是adapter训练失败。
+4. 本development cell所有9行均远低于old>=0.92、min-old>=0.88和new5/10/20>=0.92/0.90/0.86门槛。因此结论是`diagnostic-negative`，不得晋级、不得登记为部署成功，也不值得直接扩展到5receiver×5seed确认矩阵。
+5. 后续如继续，应保留JG注册前旧类适配器，只替换注册头并做可归因实验：先验证multi-prototype或对称qKNN，再单独验证低置信度自适应多View；不得使用query角色、类别quota或全局重分配补丁。
+
 ## 启动后对话回顾与路线教训
 
 2026-07-16刷新项目conversation index，共978条项目相关记录。重点命中线程`019f6882-849d-74c2-8c0b-534ae0257c49`、`019f6710-a7e4-7541-ba9f-fdb814a9f99c`与`019f6573-9453-7e90-b4b8-eabac68fe8e4`。回顾结论如下：
@@ -204,6 +270,6 @@ retry6随后在apply package的独立truth/scorer复制阶段因接口升级漏�
 
 1. enrollment package exact role set只含support、checkpoint、P4、direct mapping和lock；apply package exact role set只含query、3个runtime、head、receipt和lock。双向物理排除测试均通过，truth仅在独立scorer root。
 2. `.cvspred`使用exclusive temp和atomic no-replace发布，首次可见即只读；重复目标路径测试按预期抛出`FileExistsError`。apply predictor不包含prototype fit或optimizer。
-3. `20-1`下真实新TX逐类至少K10+Q20覆盖仍须由N607 offline cache build验证；配置预设每TX最多40行，但配置声明不是数据coverage证据。
+3. `20-1`下真实新TX逐类K10+Q20覆盖已由N607实际source package验证；n5/n10/n20的support/query分别为110/220、160/320、260/520。
 4. 本cell只提供development证据；无FFT、无自适应多View、非最终qKNNV42，也不能替代5receiver×5seed确认矩阵。
-5. N607直连preflight与活动训练inventory已通过，当前无活动训练；仍须完成Git提交、SCP映射、远端依赖哈希和目标路径不存在性审计后才允许启动。
+5. N607直连preflight、同步哈希、目标路径不存在性与最终inventory均已完成；完成时另有非本实验`adv3b02_ci_strict_matrix_20260716_v4`占用GPU0，未干预。
