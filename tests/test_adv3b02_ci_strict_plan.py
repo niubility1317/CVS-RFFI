@@ -7,7 +7,10 @@ from pathlib import Path
 import pytest
 
 from paper_reproduction.scripts.build_adv3b02_ci_strict_plan import build
-from paper_reproduction.scripts.run_adv3b02_ci_strict_plan import _load_plan
+from paper_reproduction.scripts.run_adv3b02_ci_strict_plan import (
+    _load_formal_rows,
+    _load_plan,
+)
 from paper_reproduction.scripts import run_adv3b02_ci_strict_plan as runner
 
 
@@ -81,3 +84,18 @@ def test_matrix_sharding_is_package_exclusive():
     source = __import__("inspect").getsource(runner.run)
     assert 'for index, package in enumerate(plan["packages"])' in source
     assert 'cells_by_package[package["package_id"]]' in source
+
+
+def test_formal_rows_loader_requires_schema_wrapped_three_rows(tmp_path: Path):
+    path = tmp_path / "formal_rows.json"
+    path.write_text(json.dumps({
+        "schema": "cvs.phase2.formal_metric_rows.v1",
+        "rows": [{"scenario": value} for value in (
+            "leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak"
+        )],
+    }), encoding="utf-8")
+    assert len(_load_formal_rows(path)) == 3
+
+    path.write_text(json.dumps([{"scenario": "leo_clear_weak"}]), encoding="utf-8")
+    with pytest.raises(ValueError):
+        _load_formal_rows(path)

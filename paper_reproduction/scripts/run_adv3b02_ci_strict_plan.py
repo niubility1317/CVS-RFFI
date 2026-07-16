@@ -60,6 +60,16 @@ def _selected(index: int, shard_index: int, shard_count: int) -> bool:
     return int(index) % int(shard_count) == int(shard_index)
 
 
+def _load_formal_rows(path: Path) -> list[dict[str, Any]]:
+    document = json.loads(path.read_text(encoding="utf-8-sig"))
+    if not isinstance(document, dict) or document.get("schema") != "cvs.phase2.formal_metric_rows.v1":
+        raise ValueError("formal metric rows schema drift")
+    rows = document.get("rows")
+    if not isinstance(rows, list) or not all(isinstance(row, dict) for row in rows):
+        raise ValueError("formal metric rows payload drift")
+    return rows
+
+
 def _build_package(plan: dict[str, Any], package: dict[str, Any], *, project_root: Path) -> dict[str, Any]:
     receipt_path = Path(package["build_receipt"])
     if receipt_path.is_file():
@@ -161,7 +171,7 @@ def _run_cell(
         ],
         cwd=project_root,
     )
-    formal_rows = json.loads((scoring_root / "formal_rows.json").read_text(encoding="utf-8-sig"))
+    formal_rows = _load_formal_rows(scoring_root / "formal_rows.json")
     if len(formal_rows) != 3:
         raise ValueError("cell scorer did not produce three formal scenario rows")
     receipt = {

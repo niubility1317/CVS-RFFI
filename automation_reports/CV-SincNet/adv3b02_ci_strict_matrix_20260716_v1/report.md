@@ -58,3 +58,5 @@
 - v2最小TTA策略SHA=`440c4214...c7139`；未授权计划SHA=`299b6775...bf4d5`。v2 smoke仍只允许GPU0的new5/K1/CSIL单cell。
 
 - v2 PID`2287367`完成密封包后，在head状态落盘的多维字节转换处fail closed；query尚未打开，无prediction/评分。修复为展平字节视图并补回归，v3新根重试。
+
+- v3 PID`2289456`已取得predictor/scorer PASS与3行指标，但外层把schema包裹rows误判为裸list，未写cell/smoke receipt。修复严格rows schema解析并在v4新根重跑；v3 K1性能为明显负例。
