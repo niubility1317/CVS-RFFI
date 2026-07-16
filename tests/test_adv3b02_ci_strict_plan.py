@@ -86,6 +86,12 @@ def test_matrix_sharding_is_package_exclusive():
     assert 'cells_by_package[package["package_id"]]' in source
 
 
+def test_ci_runner_uses_isolated_structural_bundle_builder():
+    source = __import__("inspect").getsource(runner._build_package)
+    assert "build_adv3b02_ci_predictor_bundle.py" in source
+    assert "build_cvs_stage2_predictor_bundle.py" not in source
+
+
 def test_formal_rows_loader_requires_schema_wrapped_three_rows(tmp_path: Path):
     path = tmp_path / "formal_rows.json"
     path.write_text(json.dumps({

@@ -85,7 +85,10 @@ def _build_package(plan: dict[str, Any], package: dict[str, Any], *, project_roo
     result = _run_json(
         [
             sys.executable,
-            str(project_root / "code/scripts/build_cvs_stage2_predictor_bundle.py"),
+            str(
+                project_root
+                / "paper_reproduction/scripts/build_adv3b02_ci_predictor_bundle.py"
+            ),
             "--target-cache-set", package["target_cache_set"],
             "--expected-cache-scope", "stage2_registered",
             "--predictor-out-root", package["predictor_package_root"],
