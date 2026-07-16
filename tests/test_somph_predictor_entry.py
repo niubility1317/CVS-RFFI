@@ -58,7 +58,8 @@ def _manifest(*, profile: str) -> dict:
             for index in range(3)
         ],
         "package_root_sha256": "6" * 64,
-        "checkpoint_sha256": "7" * 64,
+        "phase1_checkpoint_sha256": "7" * 64,
+        "feature_runtime_sha256": "a" * 64,
         "method_lock_sha256": "8" * 64,
         "overlay_provenance_sha256": "9" * 64,
         "head_capsule_sha256": "2" * 64 if apply else None,
@@ -67,6 +68,38 @@ def _manifest(*, profile: str) -> dict:
         "row_manifest_sha256": "5" * 64 if apply else None,
         "members": [],
     }
+
+
+def test_cuda_memory_audit_initializes_context_before_peak_reset(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    calls: list[tuple[str, object]] = []
+    device = entry.torch.device("cuda:0")
+    monkeypatch.setattr(
+        entry.torch.cuda,
+        "set_device",
+        lambda value: calls.append(("set_device", value)),
+    )
+    monkeypatch.setattr(
+        entry.torch,
+        "empty",
+        lambda *args, **kwargs: calls.append(
+            ("empty", kwargs.get("device"))
+        ),
+    )
+    monkeypatch.setattr(
+        entry.torch.cuda,
+        "reset_peak_memory_stats",
+        lambda value: calls.append(("reset", value)),
+    )
+
+    entry._prepare_cuda_memory_audit(device)
+
+    assert calls == [
+        ("set_device", device),
+        ("empty", device),
+        ("reset", device),
+    ]
 
 
 def test_invalid_request_is_rejected_before_package_open(
@@ -150,6 +183,10 @@ def test_apply_uses_fixed_loaded_runtime_singleton_and_artifact_v2_binding(
     assert calls["batch_size"] == 1
     assert calls["publication"]["registered_class_count"] == 3
     assert calls["publication"]["row_id"] == manifest["row_handle"]
+    assert (
+        calls["publication"]["feature_runtime_sha256"]
+        == manifest["feature_runtime_sha256"]
+    )
     assert (
         calls["publication"]["row_manifest_sha256"]
         == manifest["row_manifest_sha256"]

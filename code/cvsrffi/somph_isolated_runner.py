@@ -224,7 +224,8 @@ def _execution_receipt(
         "request_sha256",
         "package_root_sha256",
         "package_seal_sha256",
-        "checkpoint_sha256",
+        "phase1_checkpoint_sha256",
+        "feature_runtime_sha256",
         "method_lock_sha256",
         "overlay_provenance_sha256",
         "preopen_audit",
@@ -256,7 +257,10 @@ def _execution_receipt(
         or receipt.get("package_root_sha256")
         != manifest["package_root_sha256"]
         or receipt.get("package_seal_sha256") != expected_seal
-        or receipt.get("checkpoint_sha256") != manifest["checkpoint_sha256"]
+        or receipt.get("phase1_checkpoint_sha256")
+        != manifest["phase1_checkpoint_sha256"]
+        or receipt.get("feature_runtime_sha256")
+        != manifest["feature_runtime_sha256"]
         or receipt.get("method_lock_sha256") != manifest["method_lock_sha256"]
         or receipt.get("overlay_provenance_sha256")
         != manifest["overlay_provenance_sha256"]

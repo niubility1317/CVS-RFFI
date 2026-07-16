@@ -49,7 +49,7 @@ def _fixture(tmp_path: Path) -> dict:
     paths["request_sha"] = hashlib.sha256(request_path.read_bytes()).hexdigest()
     paths["seal_sha"] = seal_sha
     members = [
-        ("checkpoint", "checkpoint.pt"),
+        ("feature_runtime", "sealed_feature_runtime.pt"),
         ("method_lock", "method_lock.json"),
         ("head_capsule", "head_capsule.npz"),
         ("overlay_provenance", "overlay_provenance.json"),
@@ -60,7 +60,8 @@ def _fixture(tmp_path: Path) -> dict:
     paths["manifest"] = {
         "profile": APPLY_ONLY,
         "package_root_sha256": "6" * 64,
-        "checkpoint_sha256": "9" * 64,
+        "phase1_checkpoint_sha256": "9" * 64,
+        "feature_runtime_sha256": "e" * 64,
         "method_lock_sha256": "c" * 64,
         "overlay_provenance_sha256": "d" * 64,
         "head_capsule_sha256": "2" * 64,
@@ -144,7 +145,12 @@ def _write_apply_outputs(paths: dict, *, receipt_sha_drift: bool = False) -> str
         "request_sha256": paths["request_sha"],
         "package_root_sha256": paths["manifest"]["package_root_sha256"],
         "package_seal_sha256": paths["seal_sha"],
-        "checkpoint_sha256": paths["manifest"]["checkpoint_sha256"],
+        "phase1_checkpoint_sha256": paths["manifest"][
+            "phase1_checkpoint_sha256"
+        ],
+        "feature_runtime_sha256": paths["manifest"][
+            "feature_runtime_sha256"
+        ],
         "method_lock_sha256": paths["manifest"]["method_lock_sha256"],
         "overlay_provenance_sha256": paths["manifest"][
             "overlay_provenance_sha256"

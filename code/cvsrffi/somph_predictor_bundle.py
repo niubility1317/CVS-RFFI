@@ -52,9 +52,12 @@ from cvsrffi.stage2_predictor_bundle import (
 )
 
 
-ADV3B02_CHECKPOINT_SHA256 = (
+ADV3B02_PHASE1_CHECKPOINT_SHA256 = (
     "2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98"
 )
+# Compatibility alias for callers that still import the historical name.  The
+# bytes identified here are Phase1 state-dict lineage, never a Phase2 runtime.
+ADV3B02_CHECKPOINT_SHA256 = ADV3B02_PHASE1_CHECKPOINT_SHA256
 ADV3B02_FEATURE_SCHEMA = "adv3b02_z_id160_fp32"
 SOMPH_METHOD_LOCK_SCHEMA = "cvs.phase2.somph_method_lock.v1"
 SOMPH_ENROLLMENT_BINDING_SCHEMA = "cvs.phase2.somph_enrollment_binding.v1"
@@ -71,7 +74,7 @@ PROFILE_VALUES = frozenset({ENROLLMENT_ONLY, APPLY_ONLY})
 REGISTRATION_STATES = frozenset({"before", "after"})
 SUPPORT_POOL_MAX_K = 20
 
-CHECKPOINT_RELATIVE_PATH = "checkpoint.pt"
+FEATURE_RUNTIME_RELATIVE_PATH = "sealed_feature_runtime.pt"
 METHOD_LOCK_RELATIVE_PATH = "method_lock.json"
 HEAD_CAPSULE_RELATIVE_PATH = "head_capsule.npz"
 OVERLAY_PROVENANCE_RELATIVE_PATH = "overlay_provenance.json"
@@ -140,7 +143,8 @@ MANIFEST_KEYS = {
     "target_channel_scenarios",
     "registered_class_count",
     "registered_classes",
-    "checkpoint_sha256",
+    "phase1_checkpoint_sha256",
+    "feature_runtime_sha256",
     "method_lock_sha256",
     "overlay_provenance_sha256",
     "head_capsule_sha256",
@@ -187,7 +191,8 @@ ENROLLMENT_BINDING_KEYS = {
     "registered_class_handles",
     "enrollment_package_root_sha256",
     "enrollment_package_seal_sha256",
-    "checkpoint_sha256",
+    "phase1_checkpoint_sha256",
+    "feature_runtime_sha256",
     "method_lock_sha256",
     "support_token_sha256_by_scenario",
     "support_feature_sha256_by_scenario",
@@ -203,7 +208,7 @@ def _is_row_handle(value: Any) -> bool:
 
 
 def _profile_kinds(profile: str) -> tuple[str, ...]:
-    common = ("checkpoint", "method_lock", "overlay_provenance")
+    common = ("feature_runtime", "method_lock", "overlay_provenance")
     if profile == ENROLLMENT_ONLY:
         return common + tuple(f"support:{value}" for value in FORMAL_LEO_WEAK_SCENARIOS)
     if profile == APPLY_ONLY:
@@ -215,7 +220,7 @@ def _profile_kinds(profile: str) -> tuple[str, ...]:
 
 def _relative_path_for_kind(kind: str) -> str:
     fixed = {
-        "checkpoint": CHECKPOINT_RELATIVE_PATH,
+        "feature_runtime": FEATURE_RUNTIME_RELATIVE_PATH,
         "method_lock": METHOD_LOCK_RELATIVE_PATH,
         "head_capsule": HEAD_CAPSULE_RELATIVE_PATH,
         "overlay_provenance": OVERLAY_PROVENANCE_RELATIVE_PATH,
@@ -233,7 +238,7 @@ def _relative_path_for_kind(kind: str) -> str:
 
 
 def _schema_for_kind(kind: str) -> str:
-    if kind == "checkpoint":
+    if kind == "feature_runtime":
         return "adv3b02.torchscript_identity_runtime.v1"
     if kind == "method_lock":
         return SOMPH_METHOD_LOCK_SCHEMA
@@ -395,8 +400,17 @@ def _validate_enrollment_binding(
         )
     ):
         raise PredictorPackageError("SOMP-H enrollment binding registry drift")
-    if payload.get("checkpoint_sha256") != ADV3B02_CHECKPOINT_SHA256:
-        raise PredictorPackageError("SOMP-H enrollment binding checkpoint drift")
+    if (
+        payload.get("phase1_checkpoint_sha256")
+        != ADV3B02_PHASE1_CHECKPOINT_SHA256
+    ):
+        raise PredictorPackageError(
+            "SOMP-H enrollment binding Phase1 checkpoint lineage drift"
+        )
+    if not _is_sha256(payload.get("feature_runtime_sha256")):
+        raise PredictorPackageError(
+            "SOMP-H enrollment binding feature runtime SHA256 drift"
+        )
     for field in (
         "enrollment_package_root_sha256",
         "enrollment_package_seal_sha256",
@@ -437,6 +451,11 @@ def _validate_enrollment_binding(
             raise PredictorPackageError(
                 "SOMP-H head/manifest method lock mismatch"
             )
+        for field in ("phase1_checkpoint_sha256", "feature_runtime_sha256"):
+            if payload[field] != manifest[field]:
+                raise PredictorPackageError(
+                    f"SOMP-H head/manifest runtime lineage mismatch: {field}"
+                )
         if digest != manifest["head_enrollment_binding_sha256"]:
             raise PredictorPackageError(
                 "SOMP-H head enrollment binding digest mismatch"
@@ -515,7 +534,7 @@ def _validate_manifest(payload: dict[str, Any]) -> list[dict[str, Any]]:
         "schema": SOMPH_BUNDLE_MANIFEST_SCHEMA,
         "support_pool_max_k": SUPPORT_POOL_MAX_K,
         "target_channel_scenarios": list(FORMAL_LEO_WEAK_SCENARIOS),
-        "checkpoint_sha256": ADV3B02_CHECKPOINT_SHA256,
+        "phase1_checkpoint_sha256": ADV3B02_PHASE1_CHECKPOINT_SHA256,
         **PHASE2_FULL_CONTRACT,
     }
     failed = [key for key, value in expected.items() if payload.get(key) != value]
@@ -542,6 +561,12 @@ def _validate_manifest(payload: dict[str, Any]) -> list[dict[str, Any]]:
     _validate_registry(payload.get("registered_classes"), count)
     if not _is_sha256(payload.get("method_lock_sha256")):
         raise PredictorPackageError("SOMP-H method lock SHA256 invalid")
+    if not _is_sha256(payload.get("feature_runtime_sha256")):
+        raise PredictorPackageError("SOMP-H feature runtime SHA256 invalid")
+    if payload["feature_runtime_sha256"] == payload["phase1_checkpoint_sha256"]:
+        raise PredictorPackageError(
+            "Phase1 state-dict checkpoint cannot be the sealed feature runtime"
+        )
     if not _is_sha256(payload.get("overlay_provenance_sha256")):
         raise PredictorPackageError("SOMP-H overlay provenance SHA256 invalid")
     head_binding = payload.get("head_enrollment_binding_sha256")
@@ -765,14 +790,19 @@ def write_somph_predictor_bundle(
     _validate_package_root_exact_allowlist(root, allowed_files=expected_paths)
     members = [_descriptor(root, value) for value in kinds]
     by_kind = {item["kind"]: item for item in members}
-    if by_kind["checkpoint"]["sha256"] != ADV3B02_CHECKPOINT_SHA256:
-        raise PredictorPackageError("formal ADV3B02 checkpoint SHA256 mismatch")
+    feature_runtime_sha256 = by_kind["feature_runtime"]["sha256"]
+    if feature_runtime_sha256 == ADV3B02_PHASE1_CHECKPOINT_SHA256:
+        raise PredictorPackageError(
+            "Phase1 state-dict checkpoint cannot be packaged as TorchScript runtime"
+        )
     if by_kind["method_lock"]["sha256"] != expected_method_lock_sha256:
         raise PredictorPackageError("SOMP-H method lock SHA256 mismatch")
 
     method_lock, _ = _verify_regular_member(root, by_kind["method_lock"])
     assert method_lock is not None
-    _validate_method_lock(method_lock, checkpoint_sha256=ADV3B02_CHECKPOINT_SHA256)
+    _validate_method_lock(
+        method_lock, checkpoint_sha256=ADV3B02_PHASE1_CHECKPOINT_SHA256
+    )
     if (
         by_kind["method_lock"]["sha256"]
         != sha256_bytes(canonical_json_bytes(method_lock))
@@ -834,7 +864,8 @@ def write_somph_predictor_bundle(
         "target_channel_scenarios": list(FORMAL_LEO_WEAK_SCENARIOS),
         "registered_class_count": count,
         "registered_classes": registry,
-        "checkpoint_sha256": ADV3B02_CHECKPOINT_SHA256,
+        "phase1_checkpoint_sha256": ADV3B02_PHASE1_CHECKPOINT_SHA256,
+        "feature_runtime_sha256": feature_runtime_sha256,
         "method_lock_sha256": expected_method_lock_sha256,
         "overlay_provenance_sha256": expected_overlay_provenance_sha256,
         "head_capsule_sha256": (
@@ -920,18 +951,28 @@ def _preflight(
     by_kind = {item["kind"]: item for item in members}
 
     opened: list[dict[str, Any]] = []
-    checkpoint_payload, receipt = _verify_regular_member(root, by_kind["checkpoint"])
-    assert checkpoint_payload is None
+    runtime_payload, receipt = _verify_regular_member(
+        root, by_kind["feature_runtime"]
+    )
+    assert runtime_payload is None
     opened.append(receipt)
-    if receipt["sha256"] != ADV3B02_CHECKPOINT_SHA256:
-        raise PredictorPackageError("formal ADV3B02 checkpoint SHA256 mismatch before IQ")
+    if receipt["sha256"] != manifest["feature_runtime_sha256"]:
+        raise PredictorPackageError(
+            "sealed ADV3B02 feature runtime SHA256 mismatch before IQ"
+        )
+    if receipt["sha256"] == ADV3B02_PHASE1_CHECKPOINT_SHA256:
+        raise PredictorPackageError(
+            "Phase1 state-dict checkpoint reached the Phase2 runtime package"
+        )
 
     method_lock, receipt = _verify_regular_member(root, by_kind["method_lock"])
     opened.append(receipt)
     assert method_lock is not None
     if receipt["sha256"] != manifest["method_lock_sha256"]:
         raise PredictorPackageError("SOMP-H method lock digest binding mismatch")
-    _validate_method_lock(method_lock, checkpoint_sha256=ADV3B02_CHECKPOINT_SHA256)
+    _validate_method_lock(
+        method_lock, checkpoint_sha256=ADV3B02_PHASE1_CHECKPOINT_SHA256
+    )
     if receipt["sha256"] != sha256_bytes(canonical_json_bytes(method_lock)):
         raise PredictorPackageError(
             "SOMP-H method lock is not the canonical JSON trust root"

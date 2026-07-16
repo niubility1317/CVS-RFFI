@@ -162,7 +162,8 @@ _APPLY_STAGING_AUTHORITY_KEYS = {
     "registered_classes_sha256",
     "enrollment_package_root_sha256",
     "enrollment_package_seal_sha256",
-    "checkpoint_sha256",
+    "phase1_checkpoint_sha256",
+    "feature_runtime_sha256",
     "method_lock_sha256",
     "apply_staging_root",
     "apply_overlay_provenance_sha256",
@@ -323,6 +324,7 @@ def _write_apply_staging_authority(
     *,
     path: Path,
     seal_path: Path,
+    stage: str,
     registration_state: str,
     receiver: str,
     seed: int,
@@ -332,7 +334,8 @@ def _write_apply_staging_authority(
     registered_classes: list[Mapping[str, Any]],
     enrollment_package_root_sha256: str,
     enrollment_package_seal_sha256: str,
-    checkpoint_sha256: str,
+    phase1_checkpoint_sha256: str,
+    feature_runtime_sha256: str,
     method_lock_sha256: str,
     apply_staging_root: Path,
     apply_overlay_provenance_sha256: str,
@@ -372,7 +375,7 @@ def _write_apply_staging_authority(
         "schema": staging_schema,
         "status": staging_status,
         "profile": profile,
-        "stage": "stage2c",
+        "stage": stage,
         "registration_state": registration_state,
         "receiver": receiver,
         "seed": seed,
@@ -383,7 +386,8 @@ def _write_apply_staging_authority(
         "registered_classes_sha256": _canonical_sha256(registry),
         "enrollment_package_root_sha256": enrollment_package_root_sha256,
         "enrollment_package_seal_sha256": enrollment_package_seal_sha256,
-        "checkpoint_sha256": checkpoint_sha256,
+        "phase1_checkpoint_sha256": phase1_checkpoint_sha256,
+        "feature_runtime_sha256": feature_runtime_sha256,
         "method_lock_sha256": method_lock_sha256,
         "apply_staging_root": str(apply_staging_root.resolve()),
         "apply_overlay_provenance_sha256": (
@@ -488,9 +492,13 @@ def _load_apply_staging_authority(
         or authority_payload.get("schema") != expected_authority_schema
         or authority_payload.get("status") != expected_status
         or authority_payload.get("profile") != expected_profile
-        or authority_payload.get("stage") != "stage2c"
+        or authority_payload.get("stage") not in {"stage2b", "stage2c"}
         or authority_payload.get("registration_state")
         not in bundle.REGISTRATION_STATES
+        or (
+            authority_payload.get("stage") == "stage2b"
+            and authority_payload.get("registration_state") != "before"
+        )
         or not isinstance(authority_payload.get("receiver"), str)
         or not authority_payload["receiver"]
         or not isinstance(authority_payload.get("seed"), int)
@@ -510,7 +518,8 @@ def _load_apply_staging_authority(
         "registered_classes_sha256",
         "enrollment_package_root_sha256",
         "enrollment_package_seal_sha256",
-        "checkpoint_sha256",
+        "phase1_checkpoint_sha256",
+        "feature_runtime_sha256",
         "method_lock_sha256",
         "apply_overlay_provenance_sha256",
         "cache_set_manifest_sha256",
@@ -645,7 +654,12 @@ def _prevalidate_external_head(
         "enrollment_package_seal_sha256": staging_authority[
             "enrollment_package_seal_sha256"
         ],
-        "checkpoint_sha256": staging_authority["checkpoint_sha256"],
+        "phase1_checkpoint_sha256": staging_authority[
+            "phase1_checkpoint_sha256"
+        ],
+        "feature_runtime_sha256": staging_authority[
+            "feature_runtime_sha256"
+        ],
         "method_lock_sha256": staging_authority["method_lock_sha256"],
     }
     failed = [
@@ -1329,13 +1343,16 @@ def _write_profile_payloads(
 def _prepare_root(
     root: Path,
     *,
-    checkpoint_path: str | Path,
+    sealed_feature_runtime_path: str | Path,
     method_lock_path: str | Path,
 ) -> tuple[str, str]:
     root.mkdir(parents=True, exist_ok=False)
-    checkpoint_sha = _copy_regular_new(checkpoint_path, root / "checkpoint.pt")
+    runtime_sha = _copy_regular_new(
+        sealed_feature_runtime_path,
+        root / bundle.FEATURE_RUNTIME_RELATIVE_PATH,
+    )
     method_sha = _copy_regular_new(method_lock_path, root / "method_lock.json")
-    return checkpoint_sha, method_sha
+    return runtime_sha, method_sha
 
 
 def _physical_root(rows: list[tuple[str, str]]) -> str:
@@ -1348,7 +1365,8 @@ def _build_somph_offline_row_pair_from_context(
     cache_set_manifest_path: str | Path,
     verified_lineage_context: Mapping[str, Any],
     formal_staging_authority: bool,
-    checkpoint_path: str | Path,
+    phase1_checkpoint_path: str | Path,
+    sealed_feature_runtime_path: str | Path,
     method_lock_path: str | Path,
     output_root: str | Path,
     receiver: str,
@@ -1537,7 +1555,22 @@ def _build_somph_offline_row_pair_from_context(
     scorer_root.mkdir()
     seals_root.mkdir()
     method_sha = sha256_file(method_lock_path)
-    checkpoint_sha = sha256_file(checkpoint_path)
+    phase1_checkpoint = Path(phase1_checkpoint_path).resolve()
+    sealed_feature_runtime = Path(sealed_feature_runtime_path).resolve()
+    phase1_checkpoint_sha = sha256_file(phase1_checkpoint)
+    feature_runtime_sha = sha256_file(sealed_feature_runtime)
+    if phase1_checkpoint_sha != bundle.ADV3B02_PHASE1_CHECKPOINT_SHA256:
+        raise SomphOfflinePackageError(
+            "Phase1 checkpoint lineage SHA256 does not match ADV3B02"
+        )
+    if phase1_checkpoint == sealed_feature_runtime:
+        raise SomphOfflinePackageError(
+            "Phase1 checkpoint and sealed feature runtime paths must differ"
+        )
+    if feature_runtime_sha == phase1_checkpoint_sha:
+        raise SomphOfflinePackageError(
+            "Phase1 state-dict checkpoint bytes cannot be the sealed runtime"
+        )
     row_handle = _opaque(
         token_secret,
         "row",
@@ -1550,6 +1583,8 @@ def _build_somph_offline_row_pair_from_context(
     row_manifest = {
         "schema": ROW_MANIFEST_SCHEMA,
         "method_lock_sha256": method_sha,
+        "phase1_checkpoint_sha256": phase1_checkpoint_sha,
+        "feature_runtime_sha256": feature_runtime_sha,
         "split_role": (
             "development"
             if (receiver, seed, k_shot) == ("20-1", DEVELOPMENT_SEED, 10)
@@ -1568,28 +1603,29 @@ def _build_somph_offline_row_pair_from_context(
     state_results: dict[str, Any] = {}
     truth_by_state: dict[str, list[dict[str, Any]]] = {}
     for state, labels in (("before", old_labels), ("after", old_labels + new_labels)):
+        stage = "stage2b" if state == "before" else "stage2c"
         enrollment_root = predictor_root / state / "enrollment_only"
         apply_staging_root = predictor_root / state / "apply_only_staging"
-        enrollment_checkpoint, enrollment_method = _prepare_root(
+        enrollment_runtime, enrollment_method = _prepare_root(
             enrollment_root,
-            checkpoint_path=checkpoint_path,
+            sealed_feature_runtime_path=sealed_feature_runtime,
             method_lock_path=method_lock_path,
         )
-        apply_checkpoint, apply_method = _prepare_root(
+        apply_runtime, apply_method = _prepare_root(
             apply_staging_root,
-            checkpoint_path=checkpoint_path,
+            sealed_feature_runtime_path=sealed_feature_runtime,
             method_lock_path=method_lock_path,
         )
         if {
-            enrollment_checkpoint,
-            apply_checkpoint,
-            checkpoint_sha,
-        } != {checkpoint_sha} or {
+            enrollment_runtime,
+            apply_runtime,
+            feature_runtime_sha,
+        } != {feature_runtime_sha} or {
             enrollment_method,
             apply_method,
             method_sha,
         } != {method_sha}:
-            raise SomphOfflinePackageError("checkpoint/method copy digest drift")
+            raise SomphOfflinePackageError("runtime/method copy digest drift")
         registry, _unused_truth = _write_profile_payloads(
             enrollment_root,
             profile=bundle.ENROLLMENT_ONLY,
@@ -1626,7 +1662,7 @@ def _build_somph_offline_row_pair_from_context(
             bundle.write_somph_predictor_bundle(
                 enrollment_root,
                 profile=bundle.ENROLLMENT_ONLY,
-                stage="stage2c",
+                stage=stage,
                 registration_state=state,
                 receiver=receiver,
                 seed=seed,
@@ -1651,6 +1687,7 @@ def _build_somph_offline_row_pair_from_context(
             _write_apply_staging_authority(
                 path=staging_authority_path,
                 seal_path=staging_authority_seal_path,
+                stage=stage,
                 registration_state=state,
                 receiver=receiver,
                 seed=seed,
@@ -1662,7 +1699,8 @@ def _build_somph_offline_row_pair_from_context(
                     "package_root_sha256"
                 ],
                 enrollment_package_seal_sha256=enrollment_seal_sha,
-                checkpoint_sha256=checkpoint_sha,
+                phase1_checkpoint_sha256=phase1_checkpoint_sha,
+                feature_runtime_sha256=feature_runtime_sha,
                 method_lock_sha256=method_sha,
                 apply_staging_root=apply_staging_root,
                 apply_overlay_provenance_sha256=apply_overlay_sha,
@@ -1687,6 +1725,9 @@ def _build_somph_offline_row_pair_from_context(
             )
         )
         state_results[state] = {
+            "stage": stage,
+            "phase1_checkpoint_sha256": phase1_checkpoint_sha,
+            "feature_runtime_sha256": feature_runtime_sha,
             "registered_classes": registry,
             "enrollment_package_root": str(enrollment_root),
             "enrollment_package_root_sha256": manifest["package_root_sha256"],
@@ -1786,6 +1827,16 @@ def _build_somph_offline_row_pair_from_context(
         "query_per_tx": query_per_tx,
         "old_tx_labels": list(FORMAL_OLD_TX_LABELS),
         "new_tx_labels": list(FORMAL_NEW20_TX_LABELS[:new_class_count]),
+        "phase1_checkpoint_lineage": {
+            "path": str(phase1_checkpoint),
+            "sha256": phase1_checkpoint_sha,
+            "copied_into_phase2_predictor_package": False,
+        },
+        "sealed_feature_runtime": {
+            "source_path": str(sealed_feature_runtime),
+            "sha256": feature_runtime_sha,
+            "package_relative_path": bundle.FEATURE_RUNTIME_RELATIVE_PATH,
+        },
         "states": state_results,
         "truth_sidecar": str(truth_path),
         "truth_sidecar_sha256": sha256_file(truth_path),
@@ -1803,7 +1854,8 @@ def build_somph_offline_row_pair_diagnostic(
     cache_set_manifest_path: str | Path,
     verified_lineage_loader: Callable[..., Mapping[str, Any]],
     verified_lineage_loader_kwargs: Mapping[str, Any],
-    checkpoint_path: str | Path,
+    phase1_checkpoint_path: str | Path,
+    sealed_feature_runtime_path: str | Path,
     method_lock_path: str | Path,
     output_root: str | Path,
     receiver: str,
@@ -1842,7 +1894,8 @@ def build_somph_offline_row_pair_diagnostic(
         cache_set_manifest_path=cache_set_manifest_path,
         verified_lineage_context=context,
         formal_staging_authority=False,
-        checkpoint_path=checkpoint_path,
+        phase1_checkpoint_path=phase1_checkpoint_path,
+        sealed_feature_runtime_path=sealed_feature_runtime_path,
         method_lock_path=method_lock_path,
         output_root=output_root,
         receiver=receiver,
@@ -1859,7 +1912,8 @@ def build_somph_offline_row_pair(
     cache_set_manifest_path: str | Path,
     authority_bundle_root: str | Path,
     expected_authority_commit_sha256: str,
-    checkpoint_path: str | Path,
+    phase1_checkpoint_path: str | Path,
+    sealed_feature_runtime_path: str | Path,
     method_lock_path: str | Path,
     output_root: str | Path,
     receiver: str,
@@ -1888,7 +1942,8 @@ def build_somph_offline_row_pair(
         cache_set_manifest_path=cache_set_manifest_path,
         verified_lineage_context=context,
         formal_staging_authority=True,
-        checkpoint_path=checkpoint_path,
+        phase1_checkpoint_path=phase1_checkpoint_path,
+        sealed_feature_runtime_path=sealed_feature_runtime_path,
         method_lock_path=method_lock_path,
         output_root=output_root,
         receiver=receiver,

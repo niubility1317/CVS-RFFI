@@ -129,7 +129,8 @@ def _enrollment_input(class_count: int, *, k_shot: int) -> dict:
         "registered_class_handles": _handles(class_count),
         "enrollment_package_root_sha256": "1" * 64,
         "enrollment_package_seal_sha256": "2" * 64,
-        "checkpoint_sha256": ADV3B02_CHECKPOINT_SHA256,
+        "phase1_checkpoint_sha256": ADV3B02_CHECKPOINT_SHA256,
+        "feature_runtime_sha256": "f" * 64,
         "method_lock_sha256": canonical_sha256(lock),
     }
 

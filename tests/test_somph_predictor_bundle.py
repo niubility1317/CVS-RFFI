@@ -219,12 +219,21 @@ def _package(
 ):
     root = tmp_path / profile
     root.mkdir(parents=True)
-    checkpoint = root / "checkpoint.pt"
-    checkpoint.write_bytes(b"synthetic-adv3b02-checkpoint")
-    checkpoint_sha = sha256_file(checkpoint)
-    monkeypatch.setattr(somph_bundle, "ADV3B02_CHECKPOINT_SHA256", checkpoint_sha)
-    monkeypatch.setattr(somph_runtime, "ADV3B02_CHECKPOINT_SHA256", checkpoint_sha)
-    _method_lock(root / "method_lock.json", checkpoint_sha)
+    feature_runtime = root / somph_bundle.FEATURE_RUNTIME_RELATIVE_PATH
+    feature_runtime.write_bytes(b"synthetic-adv3b02-torchscript-runtime")
+    feature_runtime_sha = sha256_file(feature_runtime)
+    phase1_checkpoint_sha = "e" * 64
+    monkeypatch.setattr(
+        somph_bundle,
+        "ADV3B02_PHASE1_CHECKPOINT_SHA256",
+        phase1_checkpoint_sha,
+    )
+    monkeypatch.setattr(
+        somph_runtime,
+        "ADV3B02_PHASE1_CHECKPOINT_SHA256",
+        phase1_checkpoint_sha,
+    )
+    _method_lock(root / "method_lock.json", phase1_checkpoint_sha)
     if noncanonical_method_lock:
         payload = json.loads((root / "method_lock.json").read_text(encoding="utf-8"))
         (root / "method_lock.json").write_text(
@@ -251,7 +260,8 @@ def _package(
             ],
             "enrollment_package_root_sha256": "1" * 64,
             "enrollment_package_seal_sha256": "2" * 64,
-            "checkpoint_sha256": checkpoint_sha,
+            "phase1_checkpoint_sha256": phase1_checkpoint_sha,
+            "feature_runtime_sha256": feature_runtime_sha,
             "method_lock_sha256": method_sha,
             "support_token_sha256_by_scenario": {
                 scenario: "3" * 64 for scenario in FORMAL_LEO_WEAK_SCENARIOS
@@ -353,13 +363,18 @@ def _package(
     [
         (
             ENROLLMENT_ONLY,
-            {"checkpoint", "method_lock", "overlay_provenance"}
+            {"feature_runtime", "method_lock", "overlay_provenance"}
             | {f"support:{value}" for value in FORMAL_LEO_WEAK_SCENARIOS},
             {"head_capsule"} | {f"query:{value}" for value in FORMAL_LEO_WEAK_SCENARIOS},
         ),
         (
             APPLY_ONLY,
-            {"checkpoint", "method_lock", "head_capsule", "overlay_provenance"}
+            {
+                "feature_runtime",
+                "method_lock",
+                "head_capsule",
+                "overlay_provenance",
+            }
             | {f"query:{value}" for value in FORMAL_LEO_WEAK_SCENARIOS},
             {f"support:{value}" for value in FORMAL_LEO_WEAK_SCENARIOS},
         ),
@@ -494,13 +509,15 @@ def test_apply_head_semantics_fail_before_query_iq_inspection(
     assert inspected == []
 
 
-def test_wrong_adv3b02_sha_fails_before_iq_inspection(
+def test_wrong_adv3b02_phase1_lineage_fails_before_iq_inspection(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     root, seal, digest, _manifest = _package(
         tmp_path, monkeypatch, profile=APPLY_ONLY
     )
-    monkeypatch.setattr(somph_bundle, "ADV3B02_CHECKPOINT_SHA256", "f" * 64)
+    monkeypatch.setattr(
+        somph_bundle, "ADV3B02_PHASE1_CHECKPOINT_SHA256", "f" * 64
+    )
     inspected = []
     monkeypatch.setattr(
         somph_bundle,

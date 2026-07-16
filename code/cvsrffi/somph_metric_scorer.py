@@ -511,8 +511,27 @@ def _load_scoring_inputs(
     for field in ("truth_sidecar_sha256", "evidence_manifest_sha256"):
         if not _base._is_sha256(manifest[field]):
             raise SomphScoringError(f"SOMP-H scoring {field} drift")
+    registration_pair = (
+        manifest["stage"] == "stage2c"
+        and len(bindings) == 2
+        and {
+            binding["registration_state"] for binding in bindings
+        }
+        == {"before_registration", "after_registration"}
+    )
     for binding in bindings:
-        _validate_common_binding(binding, manifest)
+        expected_stage = None
+        if registration_pair:
+            expected_stage = (
+                "Stage2-B"
+                if binding["registration_state"] == "before_registration"
+                else "Stage2-C"
+            )
+        _validate_common_binding(
+            binding,
+            manifest,
+            expected_stage=expected_stage,
+        )
     evidence_audit = _validate_evidence_bundle(
         manifest_path, manifest, bindings, verified_artifacts
     )
@@ -651,9 +670,15 @@ def _binding(verified: Mapping[str, Any]) -> dict[str, Any]:
 
 
 def _validate_common_binding(
-    binding: Mapping[str, Any], manifest: Mapping[str, Any]
+    binding: Mapping[str, Any],
+    manifest: Mapping[str, Any],
+    *,
+    expected_stage: str | None = None,
 ) -> None:
-    expected_stage = "Stage2-B" if manifest["stage"] == "stage2b" else "Stage2-C"
+    if expected_stage is None:
+        expected_stage = (
+            "Stage2-B" if manifest["stage"] == "stage2b" else "Stage2-C"
+        )
     for field, expected in (
         ("stage", expected_stage),
         ("receiver", manifest["receiver"]),
@@ -854,6 +879,10 @@ def score_somph_registration_pair(
         raise SomphScoringError("registration-pair scoring requires Stage2-C")
     if before["registration_state"] != "before_registration" or after["registration_state"] != "after_registration":
         raise SomphScoringError("SOMP-H registration-state ordering drift")
+    if before["stage"] != "Stage2-B" or after["stage"] != "Stage2-C":
+        raise SomphScoringError(
+            "SOMP-H registration pair must transition Stage2-B to Stage2-C"
+        )
     for field in (
         "row_id", "receiver", "seed", "k_shot",
         "method_lock_sha256", "row_manifest_sha256", "feature_runtime_sha256",

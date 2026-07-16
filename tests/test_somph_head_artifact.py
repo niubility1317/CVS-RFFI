@@ -83,7 +83,8 @@ def _capsule() -> tuple[dict[str, np.ndarray], dict, str]:
         ],
         "enrollment_package_root_sha256": "1" * 64,
         "enrollment_package_seal_sha256": "2" * 64,
-        "checkpoint_sha256": ADV3B02_CHECKPOINT_SHA256,
+        "phase1_checkpoint_sha256": ADV3B02_CHECKPOINT_SHA256,
+        "feature_runtime_sha256": "f" * 64,
         "method_lock_sha256": canonical_sha256(lock),
     }
     capsule, receipt = enroll_somph_heads(

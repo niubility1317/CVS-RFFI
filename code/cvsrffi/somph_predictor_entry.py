@@ -107,6 +107,14 @@ def _device(value: str) -> torch.device:
     return torch.device(value)
 
 
+def _prepare_cuda_memory_audit(device: torch.device) -> None:
+    if device.type != "cuda":
+        return
+    torch.cuda.set_device(device)
+    torch.empty(0, device=device)
+    torch.cuda.reset_peak_memory_stats(device)
+
+
 def _descriptor(manifest: Mapping[str, Any], kind: str) -> dict[str, Any]:
     matches = [dict(item) for item in manifest["members"] if item["kind"] == kind]
     if len(matches) != 1:
@@ -154,7 +162,7 @@ def _load_fixed_runtime(
     )
     model = load_torchscript_backbone_same_fd(
         package_root,
-        _descriptor(manifest, "checkpoint"),
+        _descriptor(manifest, "feature_runtime"),
         device=device,
     )
     return model, method_lock
@@ -187,8 +195,7 @@ def run_somph_enrollment(
             "SOMP-H enrollment entry requires enrollment_only package"
         )
     device = _device(request["device"])
-    if device.type == "cuda":
-        torch.cuda.reset_peak_memory_stats(device)
+    _prepare_cuda_memory_audit(device)
     model, method_lock = _load_fixed_runtime(
         package_root, manifest, device=device
     )
@@ -204,7 +211,10 @@ def run_somph_enrollment(
         ],
         "enrollment_package_root_sha256": manifest["package_root_sha256"],
         "enrollment_package_seal_sha256": request["package_seal_sha256"],
-        "checkpoint_sha256": manifest["checkpoint_sha256"],
+        "phase1_checkpoint_sha256": manifest[
+            "phase1_checkpoint_sha256"
+        ],
+        "feature_runtime_sha256": manifest["feature_runtime_sha256"],
         "method_lock_sha256": manifest["method_lock_sha256"],
     }
     capsule, resource = enroll_somph_heads(
@@ -231,7 +241,10 @@ def run_somph_enrollment(
         "request_sha256": request_sha256,
         "package_root_sha256": manifest["package_root_sha256"],
         "package_seal_sha256": request["package_seal_sha256"],
-        "checkpoint_sha256": manifest["checkpoint_sha256"],
+        "phase1_checkpoint_sha256": manifest[
+            "phase1_checkpoint_sha256"
+        ],
+        "feature_runtime_sha256": manifest["feature_runtime_sha256"],
         "method_lock_sha256": manifest["method_lock_sha256"],
         "overlay_provenance_sha256": manifest["overlay_provenance_sha256"],
         "head_capsule_sha256": published["head_capsule_sha256"],
@@ -327,8 +340,7 @@ def run_somph_apply(
             "SOMP-H loaded head binding does not match request"
         )
     device = _device(request["device"])
-    if device.type == "cuda":
-        torch.cuda.reset_peak_memory_stats(device)
+    _prepare_cuda_memory_audit(device)
     model, method_lock = _load_fixed_runtime(
         package_root, manifest, device=device
     )
@@ -388,7 +400,7 @@ def run_somph_apply(
         stage_input_binding_sha256=binding_sha256,
         package_root_sha256=manifest["package_root_sha256"],
         package_seal_sha256=request["package_seal_sha256"],
-        feature_runtime_sha256=manifest["checkpoint_sha256"],
+        feature_runtime_sha256=manifest["feature_runtime_sha256"],
         head_capsule_sha256=request["head_capsule_sha256"],
         protocol_policy_sha256=canonical_sha256(PHASE2_FULL_CONTRACT),
     )
@@ -400,7 +412,10 @@ def run_somph_apply(
         "request_sha256": request_sha256,
         "package_root_sha256": manifest["package_root_sha256"],
         "package_seal_sha256": request["package_seal_sha256"],
-        "checkpoint_sha256": manifest["checkpoint_sha256"],
+        "phase1_checkpoint_sha256": manifest[
+            "phase1_checkpoint_sha256"
+        ],
+        "feature_runtime_sha256": manifest["feature_runtime_sha256"],
         "method_lock_sha256": manifest["method_lock_sha256"],
         "overlay_provenance_sha256": manifest["overlay_provenance_sha256"],
         "head_capsule_sha256": request["head_capsule_sha256"],

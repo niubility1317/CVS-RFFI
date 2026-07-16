@@ -148,14 +148,15 @@ def _write_valid_head(
     *,
     state: dict,
     method_sha256: str,
-    checkpoint_sha256: str,
+    phase1_checkpoint_sha256: str,
+    feature_runtime_sha256: str,
     enrollment_root_override: str | None = None,
 ) -> tuple[str, str]:
     registry = state["registered_classes"]
     class_count = len(registry)
     binding = {
         "schema": bundle.SOMPH_ENROLLMENT_BINDING_SCHEMA,
-        "stage": "stage2c",
+        "stage": state["stage"],
         "registration_state": (
             "before" if class_count == len(FORMAL_OLD_TX_LABELS) else "after"
         ),
@@ -172,7 +173,8 @@ def _write_valid_head(
         "enrollment_package_seal_sha256": state[
             "enrollment_package_seal_sha256"
         ],
-        "checkpoint_sha256": checkpoint_sha256,
+        "phase1_checkpoint_sha256": phase1_checkpoint_sha256,
+        "feature_runtime_sha256": feature_runtime_sha256,
         "method_lock_sha256": method_sha256,
         "support_token_sha256_by_scenario": {
             scenario: "3" * 64 for scenario in FORMAL_LEO_WEAK_SCENARIOS
@@ -231,11 +233,17 @@ def _fixture(
 ) -> dict:
     source = tmp_path / "source"
     source.mkdir()
-    checkpoint = source / "checkpoint.pt"
-    checkpoint.write_bytes(b"synthetic-adv3b02")
+    checkpoint = source / "best_joint_safe_ssdg.pth"
+    checkpoint.write_bytes(b"synthetic-adv3b02-phase1-state-dict")
     checkpoint_sha = sha256_file(checkpoint)
-    monkeypatch.setattr(bundle, "ADV3B02_CHECKPOINT_SHA256", checkpoint_sha)
-    monkeypatch.setattr(runtime, "ADV3B02_CHECKPOINT_SHA256", checkpoint_sha)
+    feature_runtime = source / "adv3b02_identity_runtime.pt"
+    feature_runtime.write_bytes(b"synthetic-adv3b02-torchscript-runtime")
+    monkeypatch.setattr(
+        bundle, "ADV3B02_PHASE1_CHECKPOINT_SHA256", checkpoint_sha
+    )
+    monkeypatch.setattr(
+        runtime, "ADV3B02_PHASE1_CHECKPOINT_SHA256", checkpoint_sha
+    )
     method = expected_somph_method_lock()
     method["checkpoint_sha256"] = checkpoint_sha
     method_path = source / "method_lock.json"
@@ -391,7 +399,8 @@ def _fixture(
             "expected_lineage_receipt_sha256": sha256_file(receipt_path),
             "expected_lineage_seal_sha256": sha256_file(seal_path),
         },
-        "checkpoint_path": checkpoint,
+        "phase1_checkpoint_path": checkpoint,
+        "sealed_feature_runtime_path": feature_runtime,
         "method_lock_path": method_path,
         "output_root": tmp_path / "built",
         "receiver": "20-1",
@@ -626,18 +635,47 @@ def test_builds_matched_before_after_enrollment_and_apply_staging(
     assert result["external_authority_lock_verified"] is False
     assert result["authority_commit_sha256"] is None
     assert result["token_secret_persisted"] is False
+    assert result["states"]["before"]["stage"] == "stage2b"
+    assert result["states"]["after"]["stage"] == "stage2c"
+    assert result["phase1_checkpoint_lineage"] == {
+        "path": str(Path(kwargs["phase1_checkpoint_path"]).resolve()),
+        "sha256": sha256_file(kwargs["phase1_checkpoint_path"]),
+        "copied_into_phase2_predictor_package": False,
+    }
+    assert result["sealed_feature_runtime"]["sha256"] == sha256_file(
+        kwargs["sealed_feature_runtime_path"]
+    )
 
     before = Path(result["states"]["before"]["enrollment_package_root"])
     after = Path(result["states"]["after"]["enrollment_package_root"])
     before_apply = Path(result["states"]["before"]["apply_staging_root"])
     after_apply = Path(result["states"]["after"]["apply_staging_root"])
     for root in (before_apply, after_apply):
+        assert (root / bundle.FEATURE_RUNTIME_RELATIVE_PATH).is_file()
+        assert not (root / "checkpoint.pt").exists()
         assert not (root / "head_capsule.npz").exists()
         assert not (root / "package_manifest.json").exists()
         assert not any(root.glob("support_*.npz"))
         assert len(list(root.glob("query_*.npz"))) == 3
     assert not any(before.glob("query_*.npz"))
     assert not any(after.glob("query_*.npz"))
+    for root in (before, after):
+        assert (root / bundle.FEATURE_RUNTIME_RELATIVE_PATH).is_file()
+        assert not (root / "checkpoint.pt").exists()
+    before_manifest = json.loads(
+        (before / bundle.MANIFEST_RELATIVE_PATH).read_text(encoding="utf-8")
+    )
+    after_manifest = json.loads(
+        (after / bundle.MANIFEST_RELATIVE_PATH).read_text(encoding="utf-8")
+    )
+    assert before_manifest["stage"] == "stage2b"
+    assert after_manifest["stage"] == "stage2c"
+    assert before_manifest["phase1_checkpoint_sha256"] == sha256_file(
+        kwargs["phase1_checkpoint_path"]
+    )
+    assert before_manifest["feature_runtime_sha256"] == sha256_file(
+        kwargs["sealed_feature_runtime_path"]
+    )
 
     with np.load(before / "support_leo_clear_weak.npz") as archive:
         before_tokens = archive["support_tokens"].astype(str)
@@ -736,6 +774,8 @@ def test_authority_commit_context_builds_matching_formal_row(
         producer.FORMAL_APPLY_STAGING_AUTHORITY_SCHEMA
     )
     assert staging_authority["profile"] == "formal_external_authority"
+    assert staging_authority["stage"] == "stage2b"
+    assert staging_authority["registration_state"] == "before"
     assert result["formal_launch_authority"] is False
 
 
@@ -808,6 +848,19 @@ def test_formal_builder_requires_q20_before_authority_access(
     ):
         producer.build_somph_offline_row_pair(**kwargs)
     assert not Path(kwargs["output_root"]).exists()
+
+
+def test_builder_rejects_phase1_state_dict_as_feature_runtime(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    kwargs = _fixture(tmp_path, monkeypatch)
+    kwargs["sealed_feature_runtime_path"] = kwargs["phase1_checkpoint_path"]
+    with pytest.raises(
+        producer.SomphOfflinePackageError,
+        match="paths must differ",
+    ):
+        producer.build_somph_offline_row_pair_diagnostic(**kwargs)
 
 
 def test_authority_loader_rejects_alternate_cache_set_path(
@@ -1001,7 +1054,12 @@ def test_diagnostic_callback_cannot_mint_formal_staging_authority(
         head,
         state=state,
         method_sha256=sha256_file(kwargs["method_lock_path"]),
-        checkpoint_sha256=sha256_file(kwargs["checkpoint_path"]),
+        phase1_checkpoint_sha256=sha256_file(
+            kwargs["phase1_checkpoint_path"]
+        ),
+        feature_runtime_sha256=sha256_file(
+            kwargs["sealed_feature_runtime_path"]
+        ),
     )
     staging = Path(state["apply_staging_root"])
     with pytest.raises(
@@ -1071,7 +1129,12 @@ def test_formal_apply_finalizer_rejects_diagnostic_staging_authority(
         head,
         state=state,
         method_sha256=sha256_file(kwargs["method_lock_path"]),
-        checkpoint_sha256=sha256_file(kwargs["checkpoint_path"]),
+        phase1_checkpoint_sha256=sha256_file(
+            kwargs["phase1_checkpoint_path"]
+        ),
+        feature_runtime_sha256=sha256_file(
+            kwargs["sealed_feature_runtime_path"]
+        ),
     )
     with pytest.raises(
         producer.SomphOfflinePackageError,
@@ -1114,7 +1177,12 @@ def test_formal_apply_finalizer_consumes_sealed_authority_chain(
         head,
         state=state,
         method_sha256=sha256_file(kwargs["method_lock_path"]),
-        checkpoint_sha256=sha256_file(kwargs["checkpoint_path"]),
+        phase1_checkpoint_sha256=sha256_file(
+            kwargs["phase1_checkpoint_path"]
+        ),
+        feature_runtime_sha256=sha256_file(
+            kwargs["sealed_feature_runtime_path"]
+        ),
     )
     with pytest.raises(
         producer.SomphOfflinePackageError,
@@ -1176,7 +1244,12 @@ def test_apply_finalizer_rejects_head_from_other_enrollment_root(
         head,
         state=state,
         method_sha256=sha256_file(kwargs["method_lock_path"]),
-        checkpoint_sha256=sha256_file(kwargs["checkpoint_path"]),
+        phase1_checkpoint_sha256=sha256_file(
+            kwargs["phase1_checkpoint_path"]
+        ),
+        feature_runtime_sha256=sha256_file(
+            kwargs["sealed_feature_runtime_path"]
+        ),
         enrollment_root_override="9" * 64,
     )
     staging = Path(state["apply_staging_root"])
@@ -1214,7 +1287,12 @@ def test_apply_finalizer_rolls_back_head_after_late_bundle_failure(
         head,
         state=state,
         method_sha256=sha256_file(kwargs["method_lock_path"]),
-        checkpoint_sha256=sha256_file(kwargs["checkpoint_path"]),
+        phase1_checkpoint_sha256=sha256_file(
+            kwargs["phase1_checkpoint_path"]
+        ),
+        feature_runtime_sha256=sha256_file(
+            kwargs["sealed_feature_runtime_path"]
+        ),
     )
 
     def fail_bundle(*_args, **_kwargs):

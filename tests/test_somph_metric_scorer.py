@@ -151,9 +151,14 @@ def _case(
     state_evidence: dict[str, dict] = {}
     resource_hashes: dict[str, str] = {}
     for state in states:
+        artifact_stage = (
+            "stage2b"
+            if stage == "stage2c" and state == "before_registration"
+            else stage
+        )
         placeholder = _binding(
             state=state,
-            stage=stage,
+            stage=artifact_stage,
             new_count=0 if stage == "stage2b" else 5,
             protocol_policy_sha256=protocol_policy_sha,
             resource_sha256="0" * 64,
@@ -273,7 +278,7 @@ def _case(
     before = _publish(
         root / "before.cvspred",
         state="before_registration",
-        stage=stage,
+        stage="stage2b" if stage == "stage2c" else stage,
         rows=rows,
         token_rows=old_rows,
         protocol_policy_sha256=protocol_policy_sha,
@@ -470,7 +475,7 @@ def test_pair_rejects_before_query_set_drift(tmp_path: Path) -> None:
     case["before"] = _publish(
         before_path,
         state="before_registration",
-        stage="stage2c",
+        stage="stage2b",
         rows=case["rows"],
         token_rows=old_rows,
         protocol_policy_sha256=case["protocol_policy_sha256"],
@@ -490,7 +495,7 @@ def test_before_artifact_cannot_predict_a_new_registration_handle(tmp_path: Path
     case["before"] = _publish(
         before_path,
         state="before_registration",
-        stage="stage2c",
+        stage="stage2b",
         rows=case["rows"],
         token_rows=old_rows,
         protocol_policy_sha256=case["protocol_policy_sha256"],

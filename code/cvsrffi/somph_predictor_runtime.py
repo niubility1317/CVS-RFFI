@@ -20,9 +20,10 @@ from cvsrffi.stage2_predictor_bundle import FORMAL_LEO_WEAK_SCENARIOS
 SOMPH_METHOD_LOCK_SCHEMA = "cvs.phase2.somph_method_lock.v1"
 SOMPH_HEAD_CAPSULE_SCHEMA = "cvs.phase2.somph_runtime_head_capsule.v1"
 SOMPH_ENROLLMENT_BINDING_SCHEMA = "cvs.phase2.somph_enrollment_binding.v1"
-ADV3B02_CHECKPOINT_SHA256 = (
+ADV3B02_PHASE1_CHECKPOINT_SHA256 = (
     "2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98"
 )
+ADV3B02_CHECKPOINT_SHA256 = ADV3B02_PHASE1_CHECKPOINT_SHA256
 FEATURE_DIM = 160
 EPS = 1.0e-8
 
@@ -83,7 +84,7 @@ def expected_somph_method_lock() -> dict[str, Any]:
         "schema": SOMPH_METHOD_LOCK_SCHEMA,
         "method_id": "SOMPH_V1",
         "base_model_id": "ADV3B02_CORE90_SOFT_E200",
-        "checkpoint_sha256": ADV3B02_CHECKPOINT_SHA256,
+        "checkpoint_sha256": ADV3B02_PHASE1_CHECKPOINT_SHA256,
         "feature_schema": "adv3b02_z_id160_fp32",
         "feature_dim": FEATURE_DIM,
         "feature_runtime_policy": "sealed_adv3b02_identity_runtime_only",
@@ -221,7 +222,8 @@ def validate_enrollment_binding(value: Mapping[str, Any]) -> dict[str, Any]:
         "registered_class_handles",
         "enrollment_package_root_sha256",
         "enrollment_package_seal_sha256",
-        "checkpoint_sha256",
+        "phase1_checkpoint_sha256",
+        "feature_runtime_sha256",
         "method_lock_sha256",
         "support_token_sha256_by_scenario",
         "support_feature_sha256_by_scenario",
@@ -265,8 +267,21 @@ def validate_enrollment_binding(value: Mapping[str, Any]) -> dict[str, Any]:
         raise SomphPredictorRuntimeError(
             "SOMP-H enrollment class registry is not unique opaque"
         )
-    if value["checkpoint_sha256"] != ADV3B02_CHECKPOINT_SHA256:
-        raise SomphPredictorRuntimeError("SOMP-H enrollment checkpoint drift")
+    if (
+        value["phase1_checkpoint_sha256"]
+        != ADV3B02_PHASE1_CHECKPOINT_SHA256
+    ):
+        raise SomphPredictorRuntimeError(
+            "SOMP-H enrollment Phase1 checkpoint lineage drift"
+        )
+    if (
+        not _is_sha256(value["feature_runtime_sha256"])
+        or value["feature_runtime_sha256"]
+        == value["phase1_checkpoint_sha256"]
+    ):
+        raise SomphPredictorRuntimeError(
+            "SOMP-H enrollment feature runtime identity drift"
+        )
     for field in (
         "enrollment_package_root_sha256",
         "enrollment_package_seal_sha256",
@@ -617,9 +632,20 @@ def _strict_zid160_forward(
     model.eval()
     with torch.no_grad():
         for start in range(0, len(source), int(batch_size)):
-            batch = torch.from_numpy(
-                np.asarray(source[start : start + int(batch_size)], dtype=np.float32)
-            ).to(device)
+            chunk = np.ascontiguousarray(
+                source[start : start + int(batch_size)],
+                dtype=np.float32,
+            )
+            # N607 currently pairs PyTorch 2.1 with NumPy 2.x, whose legacy
+            # ndarray C-API bridge rejects torch.from_numpy()/Tensor.numpy().
+            # The buffer/list boundary keeps the predictor functional without
+            # changing package bytes or numerical dtype.
+            batch = (
+                torch.frombuffer(chunk, dtype=torch.float32)
+                .reshape(chunk.shape)
+                .clone()
+                .to(device)
+            )
             output = model(batch)
             if isinstance(output, dict):
                 feature_value = output.get("features")
@@ -638,7 +664,10 @@ def _strict_zid160_forward(
                 raise SomphPredictorRuntimeError(
                     "sealed ADV3B02 runtime must return adv3b02_z_id160_fp32"
                 )
-            values = feature_value.detach().cpu().numpy()
+            values = np.asarray(
+                feature_value.detach().cpu().tolist(),
+                dtype=np.float32,
+            )
             if not np.isfinite(values).all():
                 raise SomphPredictorRuntimeError(
                     "sealed ADV3B02 runtime returned non-finite z_id160"
@@ -678,7 +707,8 @@ def enroll_somph_heads(
         "registered_class_handles",
         "enrollment_package_root_sha256",
         "enrollment_package_seal_sha256",
-        "checkpoint_sha256",
+        "phase1_checkpoint_sha256",
+        "feature_runtime_sha256",
         "method_lock_sha256",
     }
     if set(input_binding) != input_keys:
@@ -691,9 +721,20 @@ def enroll_somph_heads(
         raise SomphPredictorRuntimeError(
             "SOMP-H enrollment input/method lock mismatch"
         )
-    if input_binding["checkpoint_sha256"] != ADV3B02_CHECKPOINT_SHA256:
+    if (
+        input_binding["phase1_checkpoint_sha256"]
+        != ADV3B02_PHASE1_CHECKPOINT_SHA256
+    ):
         raise SomphPredictorRuntimeError(
-            "SOMP-H enrollment input/checkpoint mismatch"
+            "SOMP-H enrollment input/Phase1 checkpoint lineage mismatch"
+        )
+    if (
+        not _is_sha256(input_binding["feature_runtime_sha256"])
+        or input_binding["feature_runtime_sha256"]
+        == input_binding["phase1_checkpoint_sha256"]
+    ):
+        raise SomphPredictorRuntimeError(
+            "SOMP-H enrollment input/feature runtime mismatch"
         )
     validate_enrollment_binding(
         {
@@ -990,6 +1031,7 @@ def assert_role_oracle_free_public_api() -> None:
 
 __all__ = [
     "ADV3B02_CHECKPOINT_SHA256",
+    "ADV3B02_PHASE1_CHECKPOINT_SHA256",
     "FEATURE_DIM",
     "SOMPH_HEAD_CAPSULE_SCHEMA",
     "SOMPH_ENROLLMENT_BINDING_SCHEMA",
