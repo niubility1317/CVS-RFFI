@@ -215,7 +215,8 @@ def verify(
                     "row_identity_contract_match": row_identity_match,
                     "legacy_split_manifest": str(legacy_path),
                     "target_cache_set_id": cache_manifest["cache_set_id"],
-                    "cache_audit_status": cache_audit["status"],
+                    "cache_audit_verified": True,
+                    "cache_set_manifest_sha256": cache_audit["sha256"],
                 }
             )
     passed = sum(row["status"] == "PASS" for row in rows)
