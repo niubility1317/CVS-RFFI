@@ -62,7 +62,13 @@ def _manifest_from_spec(spec_path: Path) -> Path:
     return value if value.is_absolute() else spec_path.parent / value
 
 
-def verify(plan_path: Path, legacy_root: Path) -> dict[str, Any]:
+def verify(
+    plan_path: Path,
+    legacy_root: Path,
+    *,
+    receivers: tuple[str, ...] = RECEIVERS,
+    seeds: tuple[int, ...] = SEEDS,
+) -> dict[str, Any]:
     plan = json.loads(plan_path.read_text(encoding="utf-8-sig"))
     if plan.get("schema") != "adv3b02_jg020_matched_stage2b_k10_plan_v1":
         raise ValueError("unexpected JG matched plan schema")
@@ -79,8 +85,19 @@ def verify(plan_path: Path, legacy_root: Path) -> dict[str, Any]:
         spec_by_key[(receiver, int(match.group(2)))] = spec_path
 
     rows: list[dict[str, Any]] = []
-    for receiver in RECEIVERS:
-        for seed in SEEDS:
+    unknown_receivers = sorted(set(receivers) - set(RECEIVERS))
+    unknown_seeds = sorted(set(seeds) - set(SEEDS))
+    if unknown_receivers or unknown_seeds:
+        raise ValueError(
+            "audit filter is outside the matched plan: "
+            f"receivers={unknown_receivers}, seeds={unknown_seeds}"
+        )
+    expected_row_count = len(receivers) * len(seeds)
+    if expected_row_count == 0:
+        raise ValueError("matched ID/View audit requires at least one row")
+
+    for receiver in receivers:
+        for seed in seeds:
             spec_path = spec_by_key[(receiver, seed)]
             arrays_by_scenario, cache_manifest, cache_audit = load_verified_leo_weak_cache_set(
                 _manifest_from_spec(spec_path),
@@ -208,14 +225,15 @@ def verify(plan_path: Path, legacy_root: Path) -> dict[str, Any]:
     passed = sum(row["status"] == "PASS" for row in rows)
     result = {
         "schema": "adv3b02_jg020_matched_id_audit_v1",
-        "status": "PASS" if passed == 25 else "FAIL",
+        "status": "PASS" if passed == expected_row_count else "FAIL",
         "row_count": len(rows),
+        "expected_row_count": expected_row_count,
         "passed_row_count": passed,
         "same_target_receiver": True,
         "same_seed": True,
         "same_k_shot": True,
-        "same_support_query_physical_id_sets": passed == 25,
-        "same_query_view_strategy": passed == 25,
+        "same_support_query_physical_id_sets": passed == expected_row_count,
+        "same_query_view_strategy": passed == expected_row_count,
         "rows": rows,
     }
     if result["status"] != "PASS":
@@ -229,8 +247,26 @@ def main() -> int:
     parser.add_argument("--plan-manifest", type=Path, required=True)
     parser.add_argument("--legacy-run-root", type=Path, required=True)
     parser.add_argument("--out", type=Path, required=True)
+    parser.add_argument(
+        "--receiver",
+        action="append",
+        choices=RECEIVERS,
+        help="Audit only this target receiver; repeat for multiple receivers.",
+    )
+    parser.add_argument(
+        "--seed",
+        action="append",
+        type=int,
+        choices=SEEDS,
+        help="Audit only this seed; repeat for multiple seeds.",
+    )
     args = parser.parse_args()
-    result = verify(args.plan_manifest, args.legacy_run_root)
+    result = verify(
+        args.plan_manifest,
+        args.legacy_run_root,
+        receivers=tuple(args.receiver or RECEIVERS),
+        seeds=tuple(args.seed or SEEDS),
+    )
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(json.dumps({"status": result["status"], "rows": result["row_count"]}))
