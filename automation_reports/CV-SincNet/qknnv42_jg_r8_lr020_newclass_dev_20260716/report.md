@@ -121,8 +121,8 @@ isolated scorer
 | 新增实现 | `jg020_stage2c.py`、support-only enrollment、apply-only predictor、split package builder、顺序launcher、3个candidate lock、registered cache spec、3个边界descriptor、9项测试、traceability/report |
 | 本地验证 | `ssr-gpu`中py_compile PASS；最新`pytest tests/test_jg020_stage2c_isolation.py -q`为12/12 PASS；3个lock、cache spec校验PASS；launcher dry-run展开19阶段条目；待提交前再次执行`git diff --check` |
 | 远端工作目录 | `/home/szu2070436088/2510044040/CV-SincNet` |
-| N607只读preflight | 2026-07-16 10:50:07 CST直连PASS；`dell-DSS8440`；项目根可见；8×RTX 3090均为10MiB/24576MiB、0%利用率 |
-| N607训练inventory | 2026-07-16 10:53:48+0800；`active_training_processes=[]`、`gpu_compute=[]`、`unknown_training_active=false`、route=`direct` |
+| N607只读preflight | 2026-07-16 11:48:16 CST直连PASS；`dell-DSS8440`；项目根可见；8×RTX 3090均为10MiB/24576MiB、0%利用率 |
+| N607训练inventory | 2026-07-16 11:48:33+0800；`active_training_processes=[]`、`gpu_compute=[]`、`unknown_training_active=false`、route=`direct` |
 | SSH断开审计 | preflight与inventory后均为`N607_SSH_DISCONNECTED=PASS`，无残留`ssh.exe`或到N607/bridge的ESTABLISHED TCP22 |
 | 远端环境 | 项目根`/home/szu2070436088/2510044040/CV-SincNet`；执行时使用`ssr-gpu`，启动前仍需校验目标文件/依赖哈希 |
 | 首次启动 | 物理GPU0；PID=`2250148`；`CUDA_VISIBLE_DEVICES=0 /opt/miniconda3/bin/conda run --no-capture-output -n CVS-RFFI python -u paper_reproduction/scripts/launch_cvs_jg020_stage2c_dev_20260716.py --execute` |
@@ -138,6 +138,15 @@ retry4同步映射（本地→N607同相对路径）：
 | `paper_reproduction/scripts/enroll_cvs_jg020_support_only.py` | `920a5999ce5fe808eedcaa9c5061d8a8616e6a3778e2a5bb9da726e81f3b9a63` | support-only训练与runtime导出的ABI兼容路径 |
 | `paper_reproduction/scripts/launch_cvs_jg020_stage2c_dev_20260716.py` | `d5fb5adbb8253dada3514710aaa815fea575185139cc0feb41d0186ca06a6b6a` | 允许不可覆盖的`retry4`运行根 |
 | `paper_reproduction/scripts/run_cvs_jg020_apply_only_predictor.py` | `c9b83306e399aae5b707f2904867cfa73f27042a667e24688edc8f4fdcb5091a` | prediction端feature/logit ABI兼容路径 |
+
+retry4计划启动命令：
+
+```bash
+cd /home/szu2070436088/2510044040/CV-SincNet
+CUDA_VISIBLE_DEVICES=0 nohup /opt/miniconda3/bin/conda run --no-capture-output -n CVS-RFFI python -u paper_reproduction/scripts/launch_cvs_jg020_stage2c_dev_20260716.py --execute --run-root /home/szu2070436088/2510044040/CV-SincNet/runs/qknnv42_jg_r8_lr020_newclass_dev_20260716_retry4 --reuse-cache-set /home/szu2070436088/2510044040/CV-SincNet/runs/qknnv42_jg_r8_lr020_newclass_dev_20260716/phase1_cache/cache_set.json > /home/szu2070436088/2510044040/CV-SincNet/logs/qknnv42_jg_r8_lr020_newclass_dev_20260716_retry4_launcher.out 2>&1 &
+```
+
+启动前远端复核：`retry4`根不存在；环境为Python`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`、Torch`2.1.0+cu121`、NumPy`2.2.5`；4个同步文件SHA256与上表一致；远端py_compile、enrollment CLI import闭包和launcher dry-run均PASS。
 
 ## 首次启动完整日志诊断与恢复设计
 

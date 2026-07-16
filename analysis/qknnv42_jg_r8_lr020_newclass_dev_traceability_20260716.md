@@ -2,7 +2,7 @@
 
 日期：2026-07-16
 
-状态：retry3在训练前暴露N607 Torch/NumPy ABI桥问题；本地兼容修复与12/12定向测试通过，等待retry4同步启动
+状态：retry3在训练前暴露N607 Torch/NumPy ABI桥问题；兼容修复已提交并同步，远端哈希/py_compile/dry-run通过，等待retry4启动
 
 依据：`E:\type10-7\AGENTS.md`、`E:\type10-7\项目.md`、用户锁定的`JG_R8_LR020`候选
 
