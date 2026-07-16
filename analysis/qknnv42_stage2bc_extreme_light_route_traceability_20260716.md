@@ -12,14 +12,14 @@
 |---|---|---|---|---|---|---|
 |T01|`项目.md`7.1|Phase2包根与NPZ在IQ materialization前执行exact allowlist、解压边界、CRC和无额外成员检查|`code/cvsrffi/stage2_predictor_bundle.py`;`tests/test_stage2_predictor_bundle.py`|verified|关联测试43项PASS|通用sealed package P0已加固；不等于SOMP-H专用包已完成|
 |T02|`项目.md`7.1、AGENTS.md|实际OS账本拒绝额外execve及未登记sealed package成员，并检查必需成员确实打开|`code/cvsrffi/phase2_isolated_runner.py`;`tests/test_phase2_isolated_runner.py`|verified|runner+sealed integration共12项PASS|exact member检查为opt-in；SOMP-H调用方必须强制传入|
-|T03|`项目.md`7.1|sample-level LEO overlay provenance、scenario、satellite seed和post-channel IQ SHA在打开IQ payload前进入独立trust root|`somph_predictor_bundle.py`;专用sealer|implemented|package sealer要求外部`overlay_provenance_sha256`；错误checkpoint/provenance均在IQ前阻断；跨场景token与support assignment检查PASS|真实overlay exporter、源包clean-unreachability与实际OS ledger尚缺，因此不升为正式`verified`|
+|T03|`项目.md`7.1|sample-level LEO overlay provenance、scenario、satellite seed和post-channel IQ SHA在打开IQ payload前进入独立trust root|`somph_leo_weak_lineage_seal.py`;`somph_lineage_authority.py`;离线签名CLI|authority_chain_implemented_real_data_pending|固定Ed25519公钥验证预签authority lock；逐字段绑定cache-set、dataset、exporter、build spec、channel closure、physical/IQ/overlay root；生产identity不读取可变展示global；相关扩大回归278项PASS|当前仅证明代码与合成fixture闭合；真实N607 maxK20 cache尚未生成authority lock/签名/bundle，`formal_launch_authority=false`|
 |T04|`项目.md`7.1、7.2|support-only enrollment与query-only apply物理隔离，两个进程均不挂载truth/scorer；apply不挂载support|`somph_predictor_entry.py`;`somph_isolated_runner.py`;profile-specific closure与固定CLI|implemented|外部pre-run binding/runtime SHA、固定system-root allowlist、非注入式生产subprocess、exact output/resource receipt、额外execve与apply打开support负测试PASS；相关扩大回归237项PASS|仅Windows伪strace；必须在Linux/N607真实bwrap+strace后才能升为`verified`|
-|T05|`项目.md`7.2、9.3|注册前/后采用物理独立统一class registry包；predictor内部无old/new边界，scorer侧才配对角色与physical ID|`somph_predictor_bundle.py`;`somph_predictor_runtime.py`;`somph_metric_scorer.py`|implemented|head绑定stage/state/receiver/seed/K/registry/enrollment package/support token与feature摘要；artifact v2只携带当前registry count与opaque snapshot|before/after物理包schema已实现；独立pair/K-family manifest尚未接入真实runner，不能用after切片冒充before|
+|T05|`项目.md`7.2、9.3|注册前/后采用物理独立统一class registry包；predictor内部无old/new边界，scorer侧才配对角色与physical ID|`somph_offline_target_package.py`;`somph_predictor_bundle.py`;`somph_metric_scorer.py`|implemented_real_input_pending|formal builder固定消费外部expected authority COMMIT；同一max-new20 cache派生new5/10/20嵌套registry；before/after旧support/query物理摘要匹配；query按无role/class信息的HMAC全局置换|真实head/apply package、prediction和scorer artifact尚未从N607真实cache产生|
 |T06|`项目.md`7.1、`项目实验.md`13|钉死正式ADV3B02 checkpoint SHA并强制`adv3b02_z_id160_fp32`输出|`somph_predictor_runtime.py`;`somph_predictor_bundle.py`;`somph_predictor_entry.py`;profile-specific closure|implemented|固定entry只调用`load_torchscript_backbone_same_fd`读取sealed checkpoint descriptor；32维和FP16输出拒绝；method lock canonical SHA；enrollment/apply closure不含generic入口或对侧SOMP-H脚本|真实ADV3B02 checkpoint尚未在N607隔离进程执行，公开内核API不能单独作为正式证据|
 |T07|`项目.md`7.2|每个query独立面对当前统一registry，禁止truth/role/Q20/quota/order/global assignment/dense graph|SOMP-H runtime、single-stream artifact、专用bundle/request schema|implemented|apply batch固定1并拒绝非singleton；query exact schema、registry replay、shuffle/singleton、cross-scenario token set与support token→class/rank映射检查PASS|真实OS closure与逐样本open/execve trace尚缺|
 |T08|`项目.md`7.2|先冻结不可变单stream prediction artifact，再由隔离scorer打开truth并输出前后指标|`somph_prediction_artifact.py`;`somph_metric_scorer.py`;`somph_head_artifact.py`;专用runner|implemented|prediction artifact v2移除`new_class_count`和post-run resource SHA；head/prediction均0444、atomic noreplace；scorer侧才持有new-count/truth|真实scorer OS ledger与evidence重算待补；receipt固定`LOCAL_PROTOCOL_REPAIR_REQUIRED`|
 |T09|`项目.md`10.3、`项目实验.md`13|从实际head/runtime重算状态、MAC、enrollment/query时延、峰值显存/内存和backbone forward|专用runtime receipt与resource auditor|implemented|26类实际capsule重算state=76320B、active=25440B、head MAC/query=13142；每query forward count=1|合成CPU时延不可作为正式Pareto；真实隔离进程峰值显存/内存/时延仍待测|
-|T10|`项目.md`10.3、`项目实验.md`14–16|开发K10锁定后完成5receiver×至少5确认seed×3场景×new5/10/20及K1/5/10/20、逐类/逐receiver/日志/Pareto|matrix、runner、自动化报告|blocked|本地缺713106与formal maxK20真实sealed包|数据覆盖补齐前不启动正式矩阵|
+|T10|`项目.md`10.3、`项目实验.md`14–16|开发K10锁定后完成5receiver×至少5确认seed×3场景×new5/10/20及K1/5/10/20、逐类/逐receiver/日志/Pareto|`somph_formal_matrix.py`;`somph_cache_build_matrix.py`;matrix、runner、自动化报告|schema_and_cache_plan_verified_data_blocked|结构模板固定120个Stage2-B行、360个Stage2-C pair、确认seed713102–713106；另生成30个5receiver×seed713101–713106的maxK20+Q20 cache spec|真实data-bound pair数仍为0；post-build exact40 coverage尚未在N607执行，数据补齐前不启动Phase2正式矩阵|
 
 ## 当前证据边界
 
@@ -32,13 +32,13 @@
 
 |ID|要求|状态|证据/下一步|
 |---|---|---|---|
-|R01|Phase2`LEO_weak-only`且clean/clean-derived物理不可达|structural_only_real_recompute_required|专用bundle要求外部overlay provenance SHA、精确成员与sample-level自洽；runner绑定外部pre-run/runtime SHA和固定system-root allowlist；但真实overlay exporter、target-only包和Linux OS ledger尚未接入|
+|R01|Phase2`LEO_weak-only`且clean/clean-derived物理不可达|signed_authority_implemented_real_recompute_required|lineage链已加入固定公钥签名authority、真实dataset/build-spec/exporter/channel闭包和逐样本root复核；缓存计划固定只输出预叠加三种`leo_*_weak`的Phase1离线cache；真实N607 authority bundle与Linux OS ledger尚未接入|
 |R02|逐样本全部注册类、无角色/真实批次数/quota/global assignment|runtime_entry_implemented_real_os_pending|apply request无batch/new-count/query-count字段，entry固定singleton backbone＋singleton head并面对统一registry；正式证据仍须真实N607 trace|
 |R03|不可变prediction与independent scorer隔离|artifact_v2_predictor_runner_implemented_scorer_os_pending|`.cvspred`无future `new_class_count`或post-run resource SHA；head/prediction只读atomic noreplace；entry resource receipt和输出exact allowlist已后验绑定，scorer独立OS ledger尚缺|
-|R04|Stage2-B注册前与Stage2-C注册后matched pair|structural_pair_only|registration-pair结构与scorer指标已实现；当前physical-ID摘要仍未从真实sealed包重算，正式路线改为两个物理独立统一registry包并由scorer配对|
-|R05|真实嵌套5/10/20 seen-new TX覆盖|pending|等待5receiver逐TX×K5/K10覆盖审计|
+|R04|Stage2-B注册前与Stage2-C注册后matched pair|authority_bound_package_producer_real_run_pending|offline producer已生成物理独立before/after enrollment package和apply staging；formal finalizer重新验证authority COMMIT并绑定本row enrollment root/seal、lineage、cache、registry；真实N607 payload尚未产生|
+|R05|真实嵌套5/10/20 seen-new TX覆盖|max20_cache_plan_locked_data_missing|new20合法顺序固定，new5/new10为同一authority/cache的嵌套前缀；30个maxK20+Q20 spec已锁定，但除既有20-1/713101开发cache外尚未构建|
 |R06|K10开发锁定、K5独立matched确认|implemented_not_integrated|method lock采用canonical JSON唯一SHA；package K绑定独立于开发K10锁；正式项目另要求K1/K20遗忘压力|
-|R07|多receiver、多seed、多场景确认|schema_implemented_data_pending|development=`20-1/713101/K10`；confirmation=`713102–713106`，713106密封包待建|
+|R07|多receiver、多seed、多场景确认|cache_specs_locked_data_pending|exact matrix template固定development=`20-1/713101/K10`、confirmation=`713102–713106`；30个receiver/seed cache spec、90个全局唯一卫星seed和固定N607离线根已生成；全部840状态行仍是UNBOUND模板|
 |R08|K10 old>=92%、旧类floor>=88%|pending|真实LEO矩阵未运行|
 |R09|K10 seen-new 5/10/20>=92/90/86%|pending|真实LEO矩阵未运行|
 |R10|K5较K10下降<=3pp|schema_implemented_data_pending|`validate_k_family`已强制K1/K5/K10/K20共享K20 pool、query、runtime和场景；真实密封包与正式评分尚缺|
@@ -46,9 +46,18 @@
 |R12|adapter<=50k、<=20epoch、无dense query图|runtime_resource_recompute_local_only|纯SOMP-H为0参数/0epoch/0step；26类三场景从实际capsule重算state=76320B、active-scenario state=25440B、head MAC/query=13142；真实隔离进程时延/显存/内存receipt仍缺|
 |R13|identity-only及三种方法Pareto|pending|baseline改为独立artifact；ProtoNet 0参数/0step只能做零维不劣＋性能/MAC/状态/时延/显存Pareto|
 |R14|完整日志或闭式求解诊断|structural_logging_real_run_pending|闭式support-only单元审计可重算head张量、state与MAC；不可变head artifact、canonical execution receipt、mean/p95/max singleton latency字段已实现；正式时延、峰值内存、包成员和OS访问日志待真实隔离运行|
-|R15|合法TX/receiver/support-query清单|pending|legacy 20-new feature NPZ因clean共存定性`PROTOCOL_INVALID_FOR_PHASE2`；等待target-only coverage audit和sealed package manifest|
-|R16|自动化报告和Git提交|implemented_structural_milestone|根目录报告已更新；既有提交`9837abf`、`cdd0bcf`、`f285605`；本轮artifact v2、sealed row binding、profile-specific closure、pre-run trust root、entry/runner/resource闭环完成237项本地回归并提交为`a2c319f`；正式数据/N607证据仍pending|
+|R15|合法TX/receiver/support-query清单|exact40_gate_implemented_real_cache_pending|旧6TX、新20TX嵌套顺序和5receiver已固定；post-build coverage gate强制每scenario每role/TX/receiver恰好40条、总1040条、sample ID唯一且跨场景一致；真实30-cell cache尚未构建|
+|R16|自动化报告和Git提交|authority_cache_plan_increment_pending_commit|根目录报告、locked formal matrix和30-cell cache spec artifact已更新；authority、signer、offline producer、coverage gate及相关扩大回归278项PASS；本轮文件待精确暂存并提交|
 |R17|每3个turn回顾目标和对话|implemented|已完成本轮三轮回顾：拒绝clean cache、query侧Q20/ordering、结构JSON冒充真实证据及注册后切片模拟注册前|
+|R18|外部authority不可由同一Phase2调用者自签|implemented_real_signing_pending|生产验签使用函数体literal issuer/key-id/public key；离线私钥仅存根报告offline controller且ACL限制，签名CLI固定OpenSSL路径/SHA并返回receipt SHA；真实cache authority lock尚未签名|
+
+## 本轮authority与真实缓存计划里程碑
+
+- 正式矩阵artifact固定为`somph_formal_matrix_locked.json`，文件SHA256=`06f86484b2443e7198c67aac13083cf90efef4b043eee2e15b85e7fe55625f4e`，内部matrix SHA256=`8ccddb7f5b78624ecd2c6d4a62dd86b008e9e11f2d47c6f701c7c58062ff08e8`。它仍是`UNBOUND_REQUIREMENT_TEMPLATE`，不是性能证据。
+- 30-cell cache spec manifest固定5receiver×seed`713101–713106`，每cell为旧6+新20、每类maxK20 support pool+Q20 query、三种`leo_*_weak`，manifest文件SHA256=`0e1f09ba08afd52b43a1bc9188d319f389c6cb57c9c8e06eee087ac99b3666c5`。
+- N607缓存根固定为`/home/szu2070436088/2510044040/CV-SincNet/runs/somph_stage2bc_leo_weak_cache_20260716`；post-build gate未通过前状态保持`LOCAL_PROTOCOL_REPAIR_REQUIRED`。
+- N607只读preflight于2026-07-16通过：8张RTX 3090可见、无活动训练进程、项目根和ManySig/ManyTx可见、约7.6TB可用空间。该检查没有启动或修改远端作业。
+- 本轮验证集合共278项PASS；它只证明本地代码、schema、fail-closed边界和合成fixture闭合，不代表target-old/seen-new门槛达标，不授权Phase2正式launch。
 
 ## SOMP-H首条路线
 
