@@ -68,6 +68,12 @@ def _resolve(base: Path, value: str) -> Path:
     return path if path.is_absolute() else (base / path).resolve()
 
 
+def _numpy_from_torch(value: torch.Tensor, *, dtype: Any) -> np.ndarray:
+    """Copy through Python values for the N607 NumPy2/PyTorch2.1 runtime."""
+
+    return np.asarray(value.detach().cpu().tolist(), dtype=dtype)
+
+
 def _meta_arrays(
     support_meta: list[dict[str, Any]], query_meta: list[dict[str, Any]]
 ) -> dict[str, np.ndarray]:
@@ -176,7 +182,9 @@ def build(spec_path: Path, *, device: torch.device) -> dict[str, Any]:
     metadata = _meta_arrays(support_meta, query_meta)
     if len(set(metadata["sample_ids"].astype(str).tolist())) != len(metadata["sample_ids"]):
         raise ValueError("matched cache physical IDs are not unique")
-    labels = torch.cat([tensors["support_y"], tensors["query_y"]]).numpy()
+    labels = _numpy_from_torch(
+        torch.cat([tensors["support_y"], tensors["query_y"]]), dtype=np.int64
+    )
     partition = metadata["split_partition"].astype(str)
     support_count = len(support_meta)
     query_count = len(query_meta)
@@ -210,13 +218,17 @@ def build(spec_path: Path, *, device: torch.device) -> dict[str, Any]:
             tensors["support_x"][historical_k10_positions].to(device),
             scenario,
             seed=int(support_seeds[scenario]),
-        ).detach().cpu().float().numpy()
+        )
+        historical_support_iq = _numpy_from_torch(
+            historical_support_iq, dtype=np.float32
+        )
         extra_seed = int(support_seeds[scenario]) + 3000
         extra_support_iq = _apply_scenario(
             tensors["support_x"][support_extra_positions].to(device),
             scenario,
             seed=extra_seed,
-        ).detach().cpu().float().numpy()
+        )
+        extra_support_iq = _numpy_from_torch(extra_support_iq, dtype=np.float32)
         support_iq = np.empty(
             (support_count, *historical_support_iq.shape[1:]), dtype=np.float32
         )
@@ -226,15 +238,20 @@ def build(spec_path: Path, *, device: torch.device) -> dict[str, Any]:
             tensors["query_x"].to(device),
             scenario,
             seed=int(query_seeds[scenario]),
-        ).detach().cpu().float().numpy()
-        iq = np.concatenate([support_iq, query_iq]).astype(np.float32)
+        )
+        query_iq = _numpy_from_torch(query_iq, dtype=np.float32)
+        iq = np.empty(
+            (support_count + query_count, *support_iq.shape[1:]), dtype=np.float32
+        )
+        iq[:support_count] = support_iq
+        iq[support_count:] = query_iq
         support_seed_rows = np.full(support_count, extra_seed, dtype=np.int64)
         support_seed_rows[historical_k10_positions.numpy()] = int(
             support_seeds[scenario]
         )
-        satellite_seeds = np.concatenate(
-            [support_seed_rows, np.full(query_count, int(query_seeds[scenario]), dtype=np.int64)]
-        )
+        satellite_seeds = np.empty(support_count + query_count, dtype=np.int64)
+        satellite_seeds[:support_count] = support_seed_rows
+        satellite_seeds[support_count:] = int(query_seeds[scenario])
         channel_config = dict(sat_channel_config_for_scenario(scenario))
         channel_config.update(
             {
