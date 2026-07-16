@@ -5,7 +5,7 @@
 - 实验ID：`qknnv42_jg_r8_lr020_newclass_dev_20260716`
 - 日期：2026-07-16
 - 操作者：Codex主agent`root`＋子agent`jg020_registration_exp`
-- 当前状态：`LOCAL_IMPLEMENTATION_VERIFIED_N607_IDLE_AWAITING_COMMIT_SYNC_LAUNCH`；未同步、未启动
+- 当前状态：`INITIAL_LAUNCHER_PARSE_FAILURE_REPAIRED_AWAITING_SAFE_RESUME`；Phase1 cache完成，Stage2-C尚未开始
 - 目标：验证锁定的`JG_R8_LR020`轻量旧类适配器在合法Stage2-C新类注册后的同row旧类保持、新类准确率与资源表现。
 - 声明边界：这是单receiver、单development seed的开发单元；即使指标达到门槛，也不能替代独立确认矩阵或宣称总目标完成。
 
@@ -125,8 +125,34 @@ isolated scorer
 | N607训练inventory | 2026-07-16 10:53:48+0800；`active_training_processes=[]`、`gpu_compute=[]`、`unknown_training_active=false`、route=`direct` |
 | SSH断开审计 | preflight与inventory后均为`N607_SSH_DISCONNECTED=PASS`，无残留`ssh.exe`或到N607/bridge的ESTABLISHED TCP22 |
 | 远端环境 | 项目根`/home/szu2070436088/2510044040/CV-SincNet`；执行时使用`ssr-gpu`，启动前仍需校验目标文件/依赖哈希 |
-| GPU/PID/命令/日志 | 计划使用物理GPU0，单个顺序launcher；实际PID、命令和日志在启动后补写 |
+| 首次启动 | 物理GPU0；PID=`2250148`；`CUDA_VISIBLE_DEVICES=0 /opt/miniconda3/bin/conda run --no-capture-output -n CVS-RFFI python -u paper_reproduction/scripts/launch_cvs_jg020_stage2c_dev_20260716.py --execute` |
+| 首次外层日志 | `/home/szu2070436088/2510044040/CV-SincNet/logs/qknnv42_jg_r8_lr020_newclass_dev_20260716_launcher.out` |
+| 首次运行状态 | launcher已退出；Phase1 cache成功，Stage2-C未开始；没有性能结果，不能报告candidate指标 |
 | 预期输出 | sealed manifests、adapter/prototype、loss trace、immutable predictions、scorer tables、resource audit、完整日志 |
+
+## 首次启动完整日志诊断与恢复设计
+
+已完整读取首次`launcher.out`的97行、`phase1_offline_cache.log`的80行，并保存到本报告目录`remote_logs/initial_failure/`。Phase1为成功状态：`stage2_registered`三场景各1040行，物理sample根一致；`forbidden_members_checked_before_iq_read=true`、`clean_sample_access=false`。唯一warning是NumPy私有命名空间弃用提示；没有NaN、Inf、OOM、Killed或训练loss异常。
+
+失败发生在任何Stage2-C row建立之前。cache builder输出的是带warning前缀的多行pretty JSON，launcher旧实现却执行`json.loads(lines[-1])`，因此把单独的`}`送入JSON解析器并触发`JSONDecodeError`。这是launcher控制流错误，不是数据、ADV3B02、JG适配或新类注册性能失败。
+
+修复内容：
+
+1. 从混合stdout末尾逆向识别最后一个完整JSON文档，支持warning＋pretty JSON与单行JSON。
+2. 新增显式`--resume`；只允许复用已有`phase1_cache/cache_set.json`且尚无任何`new_5/new_10/new_20`row、尚无`execution_summary.json`的cache-only中断状态。
+3. 不删除、不覆盖、不重建已有cache；若出现部分Stage2-C row则fail closed。
+4. 本地`ssr-gpu`回归更新为10/10 PASS，并直接用首次完整80行cache log验证解析得到`stage2_registered/1040`。
+
+## 启动后对话回顾与路线教训
+
+2026-07-16刷新项目conversation index，共978条项目相关记录。重点命中线程`019f6882-849d-74c2-8c0b-534ae0257c49`、`019f6710-a7e4-7541-ba9f-fdb814a9f99c`与`019f6573-9453-7e90-b4b8-eabac68fe8e4`。回顾结论如下：
+
+1. 任务不能退化为old-only域适应；必须在同一运行提供适应后注册前old指标和new5/10/20注册后的old/new/H/最低类/遗忘。本cell正为补齐该缺口。
+2. 历史`88.8354%`只来自source-old、不同切分、单seed诊断，不能当作当前target Stage2-C最强性能；本次结果必须独立报告。
+3. K1目标仍是适应后明显优于strict direct ADV3B02。历史JG/JP梯度在K1对identity为负，因此后续只能使用support-only信赖门或闭式轻量对齐，不得靠query选择补丁。
+4. 多View被用户明确判断为高性能关键，但应采用默认1-view、低置信度再触发3/5-view。本cell故意先锁1-view cosine baseline，用于隔离JG和注册本身；它不是最终qKNNV42。
+5. 禁止query角色Oracle、类别配额和global assignment是不可放宽边界；即使准确率下降也不能回到历史role/quota筛选。
+6. 下一轮只有在本cell得到真实注册混淆后，才决定加入FFT96、对称qKNN/multi-prototype与自适应View；不能同时堆叠所有模块而失去归因。
 
 ## 当前风险与放行条件
 

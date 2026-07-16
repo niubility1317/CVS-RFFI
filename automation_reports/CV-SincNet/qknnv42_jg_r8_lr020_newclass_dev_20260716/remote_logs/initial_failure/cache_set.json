@@ -1,0 +1,101 @@
+{
+  "schema": "cvs_leo_weak_iq_cache_set_v1",
+  "artifact_stage": "phase1_offline_prechannel_export",
+  "cache_set_id": "qknnv42_jg_r8_lr020_newclass_dev_20260716_rx20-1_seed713101",
+  "cache_scope": "stage2_registered",
+  "phase2_sample_view_policy": "leo_weak_only_no_clean_access",
+  "clean_sample_access": false,
+  "clean_derived_signal_access": false,
+  "target_channel_view": "leo_weak_only",
+  "target_channel_scenarios": [
+    "leo_clear_weak",
+    "leo_low_elev_weak",
+    "leo_rain_weak"
+  ],
+  "output_roles": [
+    "target_old",
+    "target_new"
+  ],
+  "cache_npz_by_scenario": {
+    "leo_clear_weak": "leo_clear_weak.npz",
+    "leo_low_elev_weak": "leo_low_elev_weak.npz",
+    "leo_rain_weak": "leo_rain_weak.npz"
+  },
+  "cache_sha256_by_scenario": {
+    "leo_clear_weak": "7bcdf8a3de193d61078b342bab3093e5d020a08cb5c10cad1992a4bf0bae295b",
+    "leo_low_elev_weak": "cecefae20600cfa0d020a2542abcead781212ef34a1ad2aa3a73573e77ce8a76",
+    "leo_rain_weak": "c5e15708cfdcd9e752657511ccce9e3c96ec4a1bad313be7de092a7c04652c84"
+  },
+  "cache_audits": {
+    "leo_clear_weak": {
+      "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/qknnv42_jg_r8_lr020_newclass_dev_20260716/phase1_cache/leo_clear_weak.npz",
+      "sha256": "7bcdf8a3de193d61078b342bab3093e5d020a08cb5c10cad1992a4bf0bae295b",
+      "schema": "cvs_leo_weak_iq_cache_v1",
+      "scenario": "leo_clear_weak",
+      "row_count": 1040,
+      "roles": [
+        "target_new",
+        "target_old"
+      ],
+      "satellite_seeds": [
+        7131010,
+        8131013
+      ],
+      "physical_sample_ids_sha256": "cc9ccdecf256b7d6ece705d193723ef8d6c54dabce800732feae00e178ca143a",
+      "post_channel_iq_sha256_root": "be9735435faba7c7bfa73fc852a15733b61782bcee04ff4f9ad6fc30341383f2",
+      "overlay_ids_sha256": "197327c5f0178bbfca04bcfbf0cb44f5a02d42d9260e5440977a58ddc680526b",
+      "manifest_sha256": "9ae9f52d3015168bcf76d260a306009d66dcd6e9382214f8c4e0a8a0236ac99d",
+      "forbidden_members_checked_before_iq_read": true,
+      "clean_sample_access": false,
+      "phase2_sample_view_policy": "leo_weak_only_no_clean_access"
+    },
+    "leo_low_elev_weak": {
+      "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/qknnv42_jg_r8_lr020_newclass_dev_20260716/phase1_cache/leo_low_elev_weak.npz",
+      "sha256": "cecefae20600cfa0d020a2542abcead781212ef34a1ad2aa3a73573e77ce8a76",
+      "schema": "cvs_leo_weak_iq_cache_v1",
+      "scenario": "leo_low_elev_weak",
+      "row_count": 1040,
+      "roles": [
+        "target_new",
+        "target_old"
+      ],
+      "satellite_seeds": [
+        7131011,
+        8131014
+      ],
+      "physical_sample_ids_sha256": "cc9ccdecf256b7d6ece705d193723ef8d6c54dabce800732feae00e178ca143a",
+      "post_channel_iq_sha256_root": "57a78eae7001a53ac1307ac8a2d7cf66350cc3faf0c1d3056e07679ed9d250d9",
+      "overlay_ids_sha256": "f478ecbc45ee0f766b9db45053d6a56b0ecfb00cb8a8ca5a9da19183b440565f",
+      "manifest_sha256": "5ec5e1bfc26e618d8cb264a92ba12e210335fcd81369c0cefe4adf0bfdb50c89",
+      "forbidden_members_checked_before_iq_read": true,
+      "clean_sample_access": false,
+      "phase2_sample_view_policy": "leo_weak_only_no_clean_access"
+    },
+    "leo_rain_weak": {
+      "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/qknnv42_jg_r8_lr020_newclass_dev_20260716/phase1_cache/leo_rain_weak.npz",
+      "sha256": "c5e15708cfdcd9e752657511ccce9e3c96ec4a1bad313be7de092a7c04652c84",
+      "schema": "cvs_leo_weak_iq_cache_v1",
+      "scenario": "leo_rain_weak",
+      "row_count": 1040,
+      "roles": [
+        "target_new",
+        "target_old"
+      ],
+      "satellite_seeds": [
+        7131012,
+        8131015
+      ],
+      "physical_sample_ids_sha256": "cc9ccdecf256b7d6ece705d193723ef8d6c54dabce800732feae00e178ca143a",
+      "post_channel_iq_sha256_root": "03a0a16444aa728472a9b29aaa0ed1da72dfacbd54ee086dba53f3990af5fb70",
+      "overlay_ids_sha256": "691c14667e3e43746f10cb2dcd09fc0065f53cb3bb6eea551d2f0f974e6a0963",
+      "manifest_sha256": "e95ffc889b770dc8dc5bc66dac288b6c8cd5aade2c19ccfe140502cda0f66d16",
+      "forbidden_members_checked_before_iq_read": true,
+      "clean_sample_access": false,
+      "phase2_sample_view_policy": "leo_weak_only_no_clean_access"
+    }
+  },
+  "physical_sample_ids_sha256": "cc9ccdecf256b7d6ece705d193723ef8d6c54dabce800732feae00e178ca143a",
+  "builder_sha256": "b14e4afa915dd2f2a4b18130dc03218e2b6b06dc34a17bee109a6733afb33930",
+  "build_spec_sha256": "0812e2f3b5310cc22f2e52ff6afbed1b7a7036b5471a3688b46369c4ebfb986c",
+  "build_spec_path_exposed_to_phase2": false
+}

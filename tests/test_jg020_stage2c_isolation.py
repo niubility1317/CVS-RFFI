@@ -27,6 +27,10 @@ from paper_reproduction.cvs_aligned.jg020_stage2c import (
     write_package_manifest_and_seal,
 )
 from cvsrffi.stage2_prediction_artifact import publish_prediction_artifact
+from paper_reproduction.scripts.launch_cvs_jg020_stage2c_dev_20260716 import (
+    _parse_last_json_document,
+    _prepare_run_root,
+)
 
 
 def _lock(new_count: int = 5) -> dict[str, object]:
@@ -437,3 +441,24 @@ def test_cvspred_publish_is_readonly_atomic_noreplace_and_apply_does_not_fit(tmp
     assert "prototype_fit_inside_predictor\": False" in predictor
     assert "build_head_state(" not in predictor
     assert "build_prototypes(" not in predictor
+
+
+def test_launcher_parses_pretty_json_after_warning_and_resume_is_cache_only(tmp_path: Path) -> None:
+    stdout = "warning before result\n{\n  \"status\": \"PASS\",\n  \"nested\": {\"rows\": 1040}\n}\n"
+    assert _parse_last_json_document(stdout) == {
+        "status": "PASS",
+        "nested": {"rows": 1040},
+    }
+    with pytest.raises(ValueError, match="without a final JSON object"):
+        _parse_last_json_document("warning only\n")
+
+    run_root = tmp_path / "run"
+    with pytest.raises(FileNotFoundError, match="does not exist"):
+        _prepare_run_root(run_root, resume=True)
+    assert _prepare_run_root(run_root, resume=False) is False
+    (run_root / "phase1_cache").mkdir()
+    (run_root / "phase1_cache/cache_set.json").write_text("{}\n", encoding="utf-8")
+    assert _prepare_run_root(run_root, resume=True) is True
+    (run_root / "new_5").mkdir()
+    with pytest.raises(FileExistsError, match="partially materialised"):
+        _prepare_run_root(run_root, resume=True)

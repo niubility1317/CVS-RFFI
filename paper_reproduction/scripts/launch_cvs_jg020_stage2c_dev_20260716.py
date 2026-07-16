@@ -139,14 +139,54 @@ def _run(command: Sequence[str], *, log_path: Path) -> dict[str, Any]:
     print(result.stdout, end="", flush=True)
     if result.returncode:
         raise subprocess.CalledProcessError(result.returncode, command)
-    lines = [line for line in result.stdout.splitlines() if line.strip()]
-    return json.loads(lines[-1]) if lines else {"status": "PASS"}
+    return _parse_last_json_document(result.stdout)
 
 
-def execute(run_root: Path, python: str) -> dict[str, Any]:
+def _parse_last_json_document(stdout: str) -> dict[str, Any]:
+    """Parse the final complete JSON document from mixed or pretty stdout."""
+
+    decoder = json.JSONDecoder()
+    starts = [index for index, value in enumerate(stdout) if value in "[{"]
+    for start in reversed(starts):
+        try:
+            value, end = decoder.raw_decode(stdout[start:])
+        except json.JSONDecodeError:
+            continue
+        if stdout[start + end :].strip():
+            continue
+        if not isinstance(value, dict):
+            raise ValueError("launcher child result must be a JSON object")
+        return value
+    if stdout.strip():
+        raise ValueError("launcher child completed without a final JSON object")
+    return {"status": "PASS", "stdout_empty": True}
+
+
+def _prepare_run_root(run_root: Path, *, resume: bool) -> bool:
+    """Create a new run root or validate a cache-only interrupted run."""
+
+    if not run_root.exists():
+        if resume:
+            raise FileNotFoundError("resume requested but JG020 run root does not exist")
+        run_root.mkdir(parents=True, exist_ok=False)
+        return False
+    if not resume:
+        raise FileExistsError("JG020 run root exists; explicit --resume is required")
+    if (run_root / "execution_summary.json").exists():
+        raise FileExistsError("completed JG020 run cannot be resumed")
+    cache_manifest = run_root / "phase1_cache/cache_set.json"
+    if not cache_manifest.is_file():
+        raise FileNotFoundError("resume requires the completed Phase1 cache manifest")
+    for count in (5, 10, 20):
+        if (run_root / f"new_{count}").exists():
+            raise FileExistsError("resume refuses a partially materialised Stage2-C row")
+    return True
+
+
+def execute(run_root: Path, python: str, *, resume: bool = False) -> dict[str, Any]:
     if run_root != DEFAULT_RUN_ROOT:
         raise ValueError("locked cache spec requires the default N607 run root")
-    run_root.mkdir(parents=True, exist_ok=False)
+    cache_reused = _prepare_run_root(run_root, resume=bool(resume))
     logs = run_root / "logs"
     for required in (CHECKPOINT, GROUND_P4, MAPPING, CACHE_SPEC, SOURCE_ADAPTER, SOURCE_HEAD, VIEW_POLICY):
         if not required.is_file():
@@ -157,10 +197,18 @@ def execute(run_root: Path, python: str) -> dict[str, Any]:
         raise ValueError("ground P4 hash drift")
     if sha256_file(MAPPING) != "97af6115b51a6a3252e22315e40183c4c3efd7ccfeb1f16a61710028f72fda7f":
         raise ValueError("direct class mapping hash drift")
-    cache_result = _run(
-        [python, "code/scripts/build_cvs_leo_weak_iq_cache.py", "--spec", str(CACHE_SPEC), "--device", "cuda:0"],
-        log_path=logs / "phase1_offline_cache.log",
-    )
+    if cache_reused:
+        cache_manifest = run_root / "phase1_cache/cache_set.json"
+        cache_result = {
+            "status": "REUSED_EXISTING_SEALED_CACHE",
+            "cache_set_manifest": str(cache_manifest),
+            "cache_set_manifest_sha256": sha256_file(cache_manifest),
+        }
+    else:
+        cache_result = _run(
+            [python, "code/scripts/build_cvs_leo_weak_iq_cache.py", "--spec", str(CACHE_SPEC), "--device", "cuda:0"],
+            log_path=logs / "phase1_offline_cache.log",
+        )
     rows: list[dict[str, Any]] = []
     for count in (5, 10, 20):
         row = run_root / f"new_{count}"
@@ -284,6 +332,7 @@ def execute(run_root: Path, python: str) -> dict[str, Any]:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--execute", action="store_true")
+    parser.add_argument("--resume", action="store_true")
     parser.add_argument("--run-root", type=Path, default=DEFAULT_RUN_ROOT)
     parser.add_argument("--python", default=sys.executable)
     parser.add_argument("--plan-out", type=Path)
@@ -294,6 +343,7 @@ def main() -> int:
         "run_root": str(args.run_root),
         "experimental_repeated_adapter_fit_count": 3,
         "deployment_amortized_adapter_fit_count": 1,
+        "resume": bool(args.resume),
         "commands": _command_plan(args.run_root, args.python),
     }
     if not args.execute:
@@ -301,7 +351,13 @@ def main() -> int:
             _write_json_new(args.plan_out, plan)
         print(json.dumps(plan, ensure_ascii=False, sort_keys=True))
         return 0
-    print(json.dumps(execute(args.run_root, args.python), ensure_ascii=False, sort_keys=True))
+    print(
+        json.dumps(
+            execute(args.run_root, args.python, resume=bool(args.resume)),
+            ensure_ascii=False,
+            sort_keys=True,
+        )
+    )
     return 0
 
 
