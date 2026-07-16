@@ -7,6 +7,7 @@ from pathlib import Path
 import pytest
 
 import cvsrffi.phase2_pre_run_evidence as pre_run
+import cvsrffi.somph_predictor_bundle as somph_bundle
 from cvsrffi.phase2_runtime_contract import PRE_RUN_RUNTIME_EVIDENCE_REQUIRED_FIELDS
 
 
@@ -36,7 +37,7 @@ def _fixture(tmp_path: Path, monkeypatch) -> dict[str, object]:
     monkeypatch.setattr(
         pre_run,
         "verify_phase2_runtime_closure",
-        lambda _path: {
+        lambda _path, **_kwargs: {
             "schema": "test.closure",
             "runtime_root": str(runtime),
             "runtime_mount_path": "/runtime/code",
@@ -187,7 +188,7 @@ def test_verifier_rejects_runtime_closure_digest_drift(tmp_path: Path, monkeypat
     monkeypatch.setattr(
         pre_run,
         "verify_phase2_runtime_closure",
-        lambda _path: {
+        lambda _path, **_kwargs: {
             "schema": "test.closure",
             "runtime_root": str(runtime),
             "runtime_mount_path": "/runtime/code",
@@ -244,3 +245,60 @@ def test_builder_rejects_caller_nominated_system_data_root(tmp_path: Path, monke
             system_read_roots=[other],
             forbidden_scorer_truth_roots=[paths["scorer"]],
         )
+
+
+def test_builds_profile_bound_somph_pre_run_evidence(
+    tmp_path: Path, monkeypatch
+) -> None:
+    paths = _fixture(tmp_path, monkeypatch)
+    monkeypatch.setattr(
+        pre_run,
+        "verify_phase2_runtime_closure",
+        lambda _path, **kwargs: {
+            "schema": "test.closure",
+            "profile": kwargs["expected_profile"],
+            "runtime_root": str(paths["runtime"]),
+            "runtime_mount_path": "/runtime/code",
+            "entrypoint": "/runtime/code/scripts/run_cvs_somph_apply.py",
+            "member_count": 12,
+            "root_sha256": "1" * 64,
+            "verified": True,
+        },
+    )
+    monkeypatch.setattr(
+        somph_bundle,
+        "preflight_somph_predictor_bundle",
+        lambda *_args, **_kwargs: (
+            {
+                "profile": somph_bundle.APPLY_ONLY,
+                "package_root_sha256": "2" * 64,
+            },
+            {"artifact_member_allowlist_sha256": "3" * 64},
+            {
+                "schema": "test.somph_preopen",
+                "status": "STRUCTURAL_SELF_CONSISTENCY_PASS",
+            },
+        ),
+    )
+    executables: list[Path] = paths["executables"]  # type: ignore[assignment]
+    result = pre_run.build_phase2_pre_run_evidence(
+        runtime_closure_root=paths["closure"],
+        package_root=paths["package"],
+        detached_seal=paths["seal"],
+        expected_package_seal_sha256=_sha(paths["seal"]),  # type: ignore[arg-type]
+        output_root=tmp_path / "somph_evidence",
+        bwrap_executable=executables[0],
+        strace_executable=executables[1],
+        python_executable=executables[2],
+        system_read_roots=[paths["system"]],
+        forbidden_scorer_truth_roots=[paths["scorer"]],
+        isolation_profile=pre_run.SOMPH_APPLY_PROFILE,
+    )
+    assert result["isolation_profile"] == pre_run.SOMPH_APPLY_PROFILE
+    attestation = json.loads(
+        Path(result["os_isolation_attestation"]).read_text(encoding="utf-8")
+    )
+    assert attestation["isolation_profile"] == pre_run.SOMPH_APPLY_PROFILE
+    assert attestation["policy_contract"]["entrypoint"].endswith(
+        "run_cvs_somph_apply.py"
+    )

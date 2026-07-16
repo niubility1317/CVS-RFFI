@@ -47,6 +47,7 @@ _QUOTED_RE = re.compile(r'"(?:\\.|[^"\\])*"')
 _BRACKET_PID_RE = re.compile(r"^\[pid\s+(\d+)\]\s+")
 _PLAIN_PID_RE = re.compile(r"^(\d+)\s+")
 _RESUMED_RE = re.compile(r"^<\.\.\.\s+(open|openat|openat2)\s+resumed>(.*)$")
+_EXECVE_RESUMED_RE = re.compile(r"^<\.\.\.\s+execve\s+resumed>(.*)$")
 _SENSITIVE_COMPONENTS = frozenset(
     {
         "truth",
@@ -243,6 +244,53 @@ def _complete_trace_lines(text: str) -> list[tuple[int, str]]:
     return completed
 
 
+def parse_successful_execve_trace(text: str) -> list[dict[str, Any]]:
+    """Parse successful execve calls after the bound predictor entrypoint."""
+
+    result: list[dict[str, Any]] = []
+    pending: dict[str, tuple[int, str]] = {}
+    for line_number, raw_line in enumerate(text.splitlines(), 1):
+        pid, body = _trace_pid_and_body(raw_line)
+        if "<unfinished ...>" in body and _EXECVE_RE.search(body) is not None:
+            if pid in pending:
+                raise Phase2IsolatedRunnerError(
+                    "strace contains duplicate unfinished execve syscall"
+                )
+            pending[pid] = (line_number, body.replace("<unfinished ...>", ""))
+            continue
+        resumed = _EXECVE_RESUMED_RE.match(body)
+        if resumed is not None:
+            if pid not in pending:
+                raise Phase2IsolatedRunnerError(
+                    "strace contains an orphan resumed execve syscall"
+                )
+            original_line, prefix = pending.pop(pid)
+            line_number = original_line
+            body = prefix + resumed.group(1)
+        exec_match = _EXECVE_RE.search(body)
+        if exec_match is None:
+            continue
+        result_match = _RESULT_RE.search(body)
+        if result_match is None or int(result_match.group(1)) < 0:
+            continue
+        quoted = _QUOTED_RE.findall(body[exec_match.start() : result_match.start() + 1])
+        if not quoted:
+            raise Phase2IsolatedRunnerError(
+                f"successful execve has no parseable executable path at line {line_number}"
+            )
+        result.append(
+            {
+                "line_number": line_number,
+                "executable": posixpath.normpath(
+                    _decode_strace_string(quoted[0]).replace("\\", "/")
+                ),
+            }
+        )
+    if pending:
+        raise Phase2IsolatedRunnerError("strace ends with an unfinished execve syscall")
+    return result
+
+
 def parse_successful_open_trace(text: str, *, cwd: str = "/runtime/code") -> list[dict[str, Any]]:
     """Parse successful open/openat/openat2 calls into an aggregated ledger."""
 
@@ -306,15 +354,58 @@ def _sensitive_path(path: str) -> bool:
     ) or path.lower().endswith(".pkl")
 
 
+def _normalise_package_member_paths(
+    values: Iterable[str], *, context: str
+) -> list[str]:
+    root = PurePosixPath("/sealed/package")
+    result: set[str] = set()
+    for raw in values:
+        if not isinstance(raw, str) or not raw or "\\" in raw:
+            raise Phase2IsolatedRunnerError(f"{context} contains an invalid package member")
+        candidate = PurePosixPath(raw)
+        if candidate.is_absolute():
+            normalised = PurePosixPath(posixpath.normpath(raw))
+            if normalised == root or root not in normalised.parents:
+                raise Phase2IsolatedRunnerError(
+                    f"{context} member is outside /sealed/package: {raw}"
+                )
+        else:
+            if any(part in {"", ".", ".."} for part in candidate.parts):
+                raise Phase2IsolatedRunnerError(
+                    f"{context} contains an unsafe relative package member: {raw}"
+                )
+            normalised = root.joinpath(candidate)
+        result.add(normalised.as_posix())
+    return sorted(result)
+
+
 def audit_open_ledger(
     ledger: Sequence[Mapping[str, Any]],
     *,
     system_read_roots: Iterable[str | Path],
     forbidden_project_roots: Iterable[str] = (),
+    sealed_package_members: Iterable[str] | None = None,
+    required_package_members: Iterable[str] = (),
 ) -> dict[str, Any]:
     """Audit the actual ledger against the sandbox-visible path allowlist."""
 
     system_roots = sorted({posixpath.normpath(str(path)) for path in system_read_roots})
+    exact_package_members = (
+        None
+        if sealed_package_members is None
+        else _normalise_package_member_paths(
+            sealed_package_members, context="sealed_package_members"
+        )
+    )
+    required_package = _normalise_package_member_paths(
+        required_package_members, context="required_package_members"
+    )
+    if exact_package_members is not None and not set(required_package).issubset(
+        exact_package_members
+    ):
+        raise Phase2IsolatedRunnerError(
+            "required_package_members must be included in sealed_package_members"
+        )
     allowed_roots = ["/runtime/code", "/sealed/package", "/output", "/tmp", "/proc", "/dev"]
     allowed_roots.extend(system_roots)
     allowed_exact = ["/sealed/package.seal.json", "/sealed/request.json"]
@@ -329,10 +420,21 @@ def audit_open_ledger(
     for required in required_roots:
         if not any(_path_inside(path, required) for path in opened_paths):
             violations.append({"path": required, "reason": "required_runtime_root_not_opened"})
+    for required in required_package:
+        if required not in opened_paths:
+            violations.append({"path": required, "reason": "required_package_member_not_opened"})
     for row in ledger:
         path = str(row["path"])
         if _sensitive_path(path):
             violations.append({"path": path, "reason": "truth_scorer_or_clean_sensitive_path"})
+            continue
+        if (
+            exact_package_members is not None
+            and path != "/sealed/package"
+            and _path_inside(path, "/sealed/package")
+            and path not in exact_package_members
+        ):
+            violations.append({"path": path, "reason": "sealed_package_member_not_allowlisted"})
             continue
         if any(_path_inside(path, root) for root in forbidden_project):
             violations.append({"path": path, "reason": "host_project_path_outside_mount_allowlist"})
@@ -345,6 +447,8 @@ def audit_open_ledger(
         "allowed_read_roots": allowed_roots,
         "required_exact_paths": required_exact,
         "required_open_roots": required_roots,
+        "sealed_package_exact_members": exact_package_members,
+        "required_package_members": required_package,
         "forbidden_host_project_roots": forbidden_project,
         "opened_file_ledger": [dict(row) for row in ledger],
         "unique_opened_path_count": len(ledger),
@@ -382,6 +486,8 @@ def execute_phase2_isolated(
     gpu_devices: Sequence[str | Path] = (),
     forbidden_roots: Sequence[str | Path] = (),
     forbidden_project_roots: Sequence[str] = (),
+    sealed_package_members: Sequence[str] | None = None,
+    required_package_members: Sequence[str] = (),
     device: str = "cuda:0",
     batch_size: int = 256,
     timeout_seconds: int | None = None,
@@ -502,11 +608,19 @@ def execute_phase2_isolated(
     predictor_trace_text = _predictor_trace_suffix(
         trace_text, expected_executable=Path(python_executable).resolve(strict=True)
     )
+    additional_execves = parse_successful_execve_trace(predictor_trace_text)
+    if additional_execves:
+        raise Phase2IsolatedRunnerError(
+            "bound predictor launched an additional successful execve: "
+            + ", ".join(str(item["executable"]) for item in additional_execves)
+        )
     ledger = parse_successful_open_trace(predictor_trace_text)
     audit_core = audit_open_ledger(
         ledger,
         system_read_roots=system_read_roots,
         forbidden_project_roots=forbidden_project_roots,
+        sealed_package_members=sealed_package_members,
+        required_package_members=required_package_members,
     )
 
     stdout_text = str(completed.stdout or "")
@@ -651,5 +765,6 @@ __all__ = [
     "audit_open_ledger",
     "build_production_predictor_argv",
     "execute_phase2_isolated",
+    "parse_successful_execve_trace",
     "parse_successful_open_trace",
 ]

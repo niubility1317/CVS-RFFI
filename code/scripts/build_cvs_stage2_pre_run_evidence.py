@@ -13,7 +13,10 @@ CODE_ROOT = Path(__file__).resolve().parents[1]
 if str(CODE_ROOT) not in sys.path:
     sys.path.insert(0, str(CODE_ROOT))
 
-from cvsrffi.phase2_pre_run_evidence import build_phase2_pre_run_evidence  # noqa: E402
+from cvsrffi.phase2_pre_run_evidence import (  # noqa: E402
+    ISOLATION_PROFILES,
+    build_phase2_pre_run_evidence,
+)
 
 
 def main() -> int:
@@ -27,6 +30,11 @@ def main() -> int:
     parser.add_argument("--strace-executable", type=Path, required=True)
     parser.add_argument("--python-executable", type=Path, required=True)
     parser.add_argument("--system-read-root", type=Path, action="append", required=True)
+    parser.add_argument(
+        "--isolation-profile",
+        choices=sorted(ISOLATION_PROFILES),
+        default="stage2_predictor",
+    )
     parser.add_argument(
         "--forbidden-scorer-truth-root", type=Path, action="append", required=True
     )
@@ -42,6 +50,7 @@ def main() -> int:
         python_executable=args.python_executable,
         system_read_roots=args.system_read_root,
         forbidden_scorer_truth_roots=args.forbidden_scorer_truth_root,
+        isolation_profile=args.isolation_profile,
     )
     print(json.dumps(result, ensure_ascii=False, sort_keys=True))
     return 0

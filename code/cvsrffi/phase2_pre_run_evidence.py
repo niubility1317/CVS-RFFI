@@ -52,6 +52,17 @@ PHASE2_BWRAP_POLICY_CONTRACT = {
     "post_run_open_ledger_required": True,
 }
 
+GENERIC_PREDICTOR_PROFILE = "stage2_predictor"
+SOMPH_ENROLLMENT_PROFILE = "somph_enrollment_only"
+SOMPH_APPLY_PROFILE = "somph_apply_only"
+ISOLATION_PROFILES = frozenset(
+    {
+        GENERIC_PREDICTOR_PROFILE,
+        SOMPH_ENROLLMENT_PROFILE,
+        SOMPH_APPLY_PROFILE,
+    }
+)
+
 
 class Phase2PreRunEvidenceError(ValueError):
     """Raised when a formal pre-run isolation condition is not satisfied."""
@@ -107,15 +118,65 @@ def _regular_descriptor(path: str | Path, *, context: str) -> dict[str, Any]:
     }
 
 
-def _controller_descriptors() -> dict[str, dict[str, Any]]:
+def _policy_contract(isolation_profile: str) -> dict[str, Any]:
+    if isolation_profile not in ISOLATION_PROFILES:
+        raise Phase2PreRunEvidenceError("unsupported Phase2 isolation profile")
+    entrypoint = {
+        GENERIC_PREDICTOR_PROFILE: "/runtime/code/scripts/run_cvs_stage2_predictor.py",
+        SOMPH_ENROLLMENT_PROFILE: "/runtime/code/scripts/run_cvs_somph_enrollment.py",
+        SOMPH_APPLY_PROFILE: "/runtime/code/scripts/run_cvs_somph_apply.py",
+    }[isolation_profile]
+    return {
+        **PHASE2_BWRAP_POLICY_CONTRACT,
+        "schema": "cvs.phase2.bwrap_policy_contract.v2",
+        "isolation_profile": isolation_profile,
+        "entrypoint": entrypoint,
+    }
+
+
+def _controller_descriptors(
+    isolation_profile: str,
+) -> dict[str, dict[str, Any]]:
     code_root = Path(__file__).resolve().parents[1]
     members = {
         "phase2_pre_run_evidence": Path(__file__),
         "phase2_runtime_closure": Path(__file__).with_name("phase2_runtime_closure.py"),
         "phase2_bwrap_policy": Path(__file__).with_name("phase2_bwrap_policy.py"),
-        "phase2_isolated_runner": Path(__file__).with_name("phase2_isolated_runner.py"),
-        "run_cvs_stage2_bwrap_isolated": code_root / "scripts/run_cvs_stage2_bwrap_isolated.py",
     }
+    if isolation_profile == GENERIC_PREDICTOR_PROFILE:
+        members.update(
+            {
+                "phase2_isolated_runner": Path(__file__).with_name(
+                    "phase2_isolated_runner.py"
+                ),
+                "run_cvs_stage2_bwrap_isolated": (
+                    code_root / "scripts/run_cvs_stage2_bwrap_isolated.py"
+                ),
+            }
+        )
+    else:
+        entry_script = (
+            "run_cvs_somph_enrollment.py"
+            if isolation_profile == SOMPH_ENROLLMENT_PROFILE
+            else "run_cvs_somph_apply.py"
+        )
+        members.update(
+            {
+                "somph_isolated_runner": Path(__file__).with_name(
+                    "somph_isolated_runner.py"
+                ),
+                "somph_predictor_bundle": Path(__file__).with_name(
+                    "somph_predictor_bundle.py"
+                ),
+                "somph_predictor_entry": Path(__file__).with_name(
+                    "somph_predictor_entry.py"
+                ),
+                "somph_fixed_entry_script": code_root / "scripts" / entry_script,
+                "run_cvs_somph_bwrap_isolated": (
+                    code_root / "scripts/run_cvs_somph_bwrap_isolated.py"
+                ),
+            }
+        )
     return {
         name: _regular_descriptor(path, context=f"trusted controller {name}")
         for name, path in members.items()
@@ -140,6 +201,7 @@ def _valid_sha256(value: str) -> bool:
 
 def _attestation_document(
     *,
+    isolation_profile: str,
     closure_root: Path,
     runtime_root: Path,
     package: Path,
@@ -156,9 +218,10 @@ def _attestation_document(
         "claim_scope": "pre_run_prerequisites_only",
         "host_system": "Linux",
         "isolation_mode": "bwrap_readonly_mounts",
+        "isolation_profile": isolation_profile,
         "trusted_package_seal_sha256": trusted_package_seal_sha256,
-        "trusted_controller_members": _controller_descriptors(),
-        "policy_contract": PHASE2_BWRAP_POLICY_CONTRACT,
+        "trusted_controller_members": _controller_descriptors(isolation_profile),
+        "policy_contract": _policy_contract(isolation_profile),
         "executables": dict(executables),
         "system_read_roots": [str(path) for path in system_roots],
         "trusted_system_root_allowlist": [str(path) for path in trusted_system_roots],
@@ -201,6 +264,52 @@ def _audit_document(
         "query_iq_materialized_during_preopen": False,
         "post_run_filesystem_access_audit_pending": True,
     }
+
+
+def _preflight_profile_package(
+    isolation_profile: str,
+    package: Path,
+    *,
+    seal_path: Path,
+    seal_sha256: str,
+) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
+    if isolation_profile == GENERIC_PREDICTOR_PROFILE:
+        manifest, seal, package_audit = preflight_stage2_predictor_package(
+            package,
+            detached_seal_path=seal_path,
+            expected_seal_sha256=seal_sha256,
+        )
+        if package_audit.get("status") != "PASS":
+            raise Phase2PreRunEvidenceError(
+                "predictor package pre-open audit did not pass"
+            )
+        return manifest, seal, package_audit
+
+    from .somph_predictor_bundle import (
+        APPLY_ONLY,
+        ENROLLMENT_ONLY,
+        preflight_somph_predictor_bundle,
+    )
+
+    manifest, seal, package_audit = preflight_somph_predictor_bundle(
+        package,
+        detached_seal_path=seal_path,
+        expected_seal_sha256=seal_sha256,
+    )
+    expected_profile = (
+        ENROLLMENT_ONLY
+        if isolation_profile == SOMPH_ENROLLMENT_PROFILE
+        else APPLY_ONLY
+    )
+    if manifest.get("profile") != expected_profile:
+        raise Phase2PreRunEvidenceError(
+            "SOMP-H package does not match the requested isolation profile"
+        )
+    if package_audit.get("status") != "STRUCTURAL_SELF_CONSISTENCY_PASS":
+        raise Phase2PreRunEvidenceError(
+            "SOMP-H package structural pre-open audit did not pass"
+        )
+    return manifest, seal, package_audit
 
 
 def _inside(path: Path, roots: Iterable[Path]) -> bool:
@@ -268,6 +377,7 @@ def build_phase2_pre_run_evidence(
     python_executable: str | Path,
     system_read_roots: Iterable[str | Path],
     forbidden_scorer_truth_roots: Iterable[str | Path],
+    isolation_profile: str = GENERIC_PREDICTOR_PROFILE,
 ) -> dict[str, Any]:
     """Verify immutable inputs and publish exact 9-field pre-run evidence.
 
@@ -279,8 +389,12 @@ def build_phase2_pre_run_evidence(
         raise Phase2PreRunEvidenceError(
             "formal bwrap pre-run evidence must be produced on the Linux execution host"
         )
+    if isolation_profile not in ISOLATION_PROFILES:
+        raise Phase2PreRunEvidenceError("unsupported Phase2 isolation profile")
     closure_root = _resolved_directory(runtime_closure_root, context="runtime closure root")
-    closure = verify_phase2_runtime_closure(closure_root)
+    closure = verify_phase2_runtime_closure(
+        closure_root, expected_profile=isolation_profile
+    )
     runtime_root = Path(str(closure["runtime_root"])).resolve(strict=True)
     package = _resolved_directory(package_root, context="predictor package root")
     seal_path = Path(detached_seal).resolve(strict=True)
@@ -327,13 +441,12 @@ def build_phase2_pre_run_evidence(
     seal_sha256 = sha256_file(seal_path)
     if seal_sha256 != trusted_seal_sha256:
         raise Phase2PreRunEvidenceError("detached seal does not match the external trusted SHA256")
-    manifest, seal, package_audit = preflight_stage2_predictor_package(
+    manifest, seal, package_audit = _preflight_profile_package(
+        isolation_profile,
         package,
-        detached_seal_path=seal_path,
-        expected_seal_sha256=seal_sha256,
+        seal_path=seal_path,
+        seal_sha256=seal_sha256,
     )
-    if package_audit.get("status") != "PASS":
-        raise Phase2PreRunEvidenceError("predictor package pre-open audit did not pass")
 
     output = Path(output_root)
     if output.exists() or output.is_symlink():
@@ -343,6 +456,7 @@ def build_phase2_pre_run_evidence(
         raise Phase2PreRunEvidenceError("evidence output overlaps predictor or scorer/truth roots")
 
     attestation = _attestation_document(
+        isolation_profile=isolation_profile,
         closure_root=closure_root,
         runtime_root=runtime_root,
         package=package,
@@ -399,10 +513,12 @@ def build_phase2_pre_run_evidence(
         system_read_roots=system_roots,
         forbidden_scorer_truth_roots=forbidden,
         expected_evidence=evidence,
+        isolation_profile=isolation_profile,
     )
     return {
         "schema": "cvs.phase2.pre_run_evidence_build_result.v1",
         "status": "PASS",
+        "isolation_profile": isolation_profile,
         "runtime_isolation_evidence": str(output / PRE_RUN_EVIDENCE_NAME),
         "os_isolation_attestation": str(output / ATTESTATION_NAME),
         "preopen_audit_receipt": str(output / PREOPEN_AUDIT_NAME),
@@ -427,6 +543,7 @@ def verify_phase2_pre_run_evidence(
     system_read_roots: Iterable[str | Path],
     forbidden_scorer_truth_roots: Iterable[str | Path],
     expected_evidence: Mapping[str, Any] | None = None,
+    isolation_profile: str = GENERIC_PREDICTOR_PROFILE,
 ) -> dict[str, Any]:
     """Re-verify the complete pre-run bundle against the actual runner inputs."""
 
@@ -434,6 +551,8 @@ def verify_phase2_pre_run_evidence(
         raise Phase2PreRunEvidenceError(
             "formal bwrap pre-run evidence must be verified on the Linux execution host"
         )
+    if isolation_profile not in ISOLATION_PROFILES:
+        raise Phase2PreRunEvidenceError("unsupported Phase2 isolation profile")
     bundle_root = _resolved_directory(evidence_root, context="pre-run evidence root")
     actual_members = {path.name for path in bundle_root.iterdir()}
     if actual_members != set(PRE_RUN_BUNDLE_MEMBERS):
@@ -460,7 +579,9 @@ def verify_phase2_pre_run_evidence(
         raise Phase2PreRunEvidenceError("request evidence does not match the immutable evidence bundle")
 
     closure_root = _resolved_directory(runtime_closure_root, context="runtime closure root")
-    closure = verify_phase2_runtime_closure(closure_root)
+    closure = verify_phase2_runtime_closure(
+        closure_root, expected_profile=isolation_profile
+    )
     runtime_root = Path(str(closure["runtime_root"])).resolve(strict=True)
     package = _resolved_directory(package_root, context="predictor package root")
     seal_source = Path(detached_seal)
@@ -506,12 +627,14 @@ def verify_phase2_pre_run_evidence(
                 f"{name} executable is outside declared read-only system roots"
             )
 
-    manifest, seal, package_audit = preflight_stage2_predictor_package(
+    manifest, seal, package_audit = _preflight_profile_package(
+        isolation_profile,
         package,
-        detached_seal_path=seal_path,
-        expected_seal_sha256=trusted_seal_sha256,
+        seal_path=seal_path,
+        seal_sha256=trusted_seal_sha256,
     )
     expected_attestation = _attestation_document(
+        isolation_profile=isolation_profile,
         closure_root=closure_root,
         runtime_root=runtime_root,
         package=package,
@@ -552,6 +675,7 @@ def verify_phase2_pre_run_evidence(
     return {
         "schema": "cvs.phase2.pre_run_evidence_verification.v1",
         "status": "PASS",
+        "isolation_profile": isolation_profile,
         "runtime_root": str(runtime_root),
         "trusted_system_read_roots": [str(path) for path in trusted_system_roots],
         "runtime_code_sha256": closure["root_sha256"],
@@ -574,6 +698,10 @@ __all__ = [
     "PRE_RUN_BUNDLE_MEMBERS",
     "PHASE2_BWRAP_POLICY_CONTRACT",
     "FORMAL_LAUNCH_BLOCKERS",
+    "GENERIC_PREDICTOR_PROFILE",
+    "ISOLATION_PROFILES",
+    "SOMPH_APPLY_PROFILE",
+    "SOMPH_ENROLLMENT_PROFILE",
     "Phase2PreRunEvidenceError",
     "build_phase2_pre_run_evidence",
     "verify_phase2_pre_run_evidence",

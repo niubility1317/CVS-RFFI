@@ -20,6 +20,7 @@ from paper_reproduction.cvs_aligned.somph_stage2c import (
     build_stage_head_capsule,
     canonical_sha256,
     expected_method_lock,
+    opaque_class_handle,
     ordered_values_sha256,
     stage_head_resource_audit,
     validate_method_lock,
@@ -47,10 +48,7 @@ def _row(*, k_shot: int = 5, new_count: int = 5) -> tuple[dict, dict]:
         "seed": 713106,
         "k_shot": k_shot,
         "new_class_count": new_count,
-        "old_class_handles": list(FORMAL_OLD_CLASSES),
-        "new_class_handles": list(FORMAL_NEW20[:new_count]),
         "support_pool_max_k": 20,
-        "query_per_tx": 20,
         "scenarios": list(FORMAL_SCENARIOS),
     }
     return method, row
@@ -79,12 +77,8 @@ def _binding(
 ) -> dict:
     handles = list(FORMAL_OLD_CLASSES)
     if stage == "after_registration":
-        handles.extend(row["new_class_handles"])
+        handles.extend(FORMAL_NEW20[: int(row["new_class_count"])])
     sequence = [handles[int(index)] for index in labels.tolist()]
-    tokens = [
-        _token("qid", f"{stage}-q-{index}")
-        for index in range(len(handles) * int(row["query_per_tx"]))
-    ]
     return {
         "schema": STAGE_INPUT_SCHEMA,
         "stage": stage,
@@ -108,9 +102,6 @@ def _binding(
         },
         "support_feature_sha256_by_scenario": {
             scenario: array_sha256(features[scenario]) for scenario in FORMAL_SCENARIOS
-        },
-        "query_ids_sha256_by_scenario": {
-            scenario: ordered_values_sha256(tokens) for scenario in FORMAL_SCENARIOS
         },
         "satellite_seed_by_scenario": {
             scenario: 713100 + index for index, scenario in enumerate(FORMAL_SCENARIOS)
@@ -291,9 +282,9 @@ def test_stage_rejects_broken_k20_pool_or_nonprefix_selection() -> None:
 
 def test_apply_uses_fp16_capsule_and_scores_all_registered_classes() -> None:
     method, row, binding, capsule = _capsule("after_registration")
-    query_count = 11 * row["query_per_tx"]
+    query_count = 17
     tokens = np.asarray(
-        [_token("qid", f"after_registration-q-{index}") for index in range(query_count)]
+        [_token("qid", f"arbitrary-query-{index}") for index in range(query_count)]
     )
     query = np.random.default_rng(5).normal(size=(query_count, 160)).astype(np.float32)
     output = apply_stage_head_capsule(
@@ -305,12 +296,15 @@ def test_apply_uses_fp16_capsule_and_scores_all_registered_classes() -> None:
         row_manifest=row,
         stage_input_binding=binding,
     )
-    registered = {*FORMAL_OLD_CLASSES, *FORMAL_NEW20[:5]}
+    registered = {
+        opaque_class_handle(value)
+        for value in (*FORMAL_OLD_CLASSES, *FORMAL_NEW20[:5])
+    }
     assert set(output["prediction"]).issubset(registered)
     np.testing.assert_array_equal(output["query_tokens"], tokens)
 
 
-def test_apply_rejects_query_token_row_or_order_misalignment() -> None:
+def test_apply_rejects_only_query_token_row_misalignment_and_accepts_arbitrary_order() -> None:
     method, row, binding, capsule = _capsule("after_registration")
     with pytest.raises(ValueError, match="token layout drift"):
         apply_stage_head_capsule(
@@ -322,18 +316,17 @@ def test_apply_rejects_query_token_row_or_order_misalignment() -> None:
             row_manifest=row,
             stage_input_binding=binding,
         )
-    with pytest.raises(ValueError, match="digest/order drift"):
-        apply_stage_head_capsule(
-            scenario=FORMAL_SCENARIOS[0],
-            query_features=np.zeros((220, 160), dtype=np.float32),
-            query_tokens=np.asarray(
-                [_token("qid", f"after_registration-q-{index}") for index in [1, 0, *range(2, 220)]]
-            ),
-            capsule=capsule,
-            method_lock=method,
-            row_manifest=row,
-            stage_input_binding=binding,
-        )
+    tokens = np.asarray([_token("qid", value) for value in ("z", "a", "m")])
+    result = apply_stage_head_capsule(
+        scenario=FORMAL_SCENARIOS[0],
+        query_features=np.zeros((3, 160), dtype=np.float32),
+        query_tokens=tokens,
+        capsule=capsule,
+        method_lock=method,
+        row_manifest=row,
+        stage_input_binding=binding,
+    )
+    np.testing.assert_array_equal(result["query_tokens"], tokens)
 
 
 def test_capsule_rejects_extra_truth_or_out_of_lock_scale() -> None:
@@ -369,6 +362,12 @@ def test_resource_audit_counts_registry_but_claims_candidate_only() -> None:
     )
     assert audit["trainable_parameters"] == 0
     assert audit["optimizer_steps"] == 0
+    assert audit["optimizer_state_bytes"] == 0
+    assert audit["query_rows_used_for_fit"] == 0
+    assert audit["clean_sample_access"] is False
+    assert audit["active_scenario_state_bytes_fp16"] * 3 == audit[
+        "candidate_state_bytes_fp16"
+    ]
     assert audit["candidate_state_within_cap"] is True
     assert audit["capsule_array_bytes_including_registry_and_audit"] > audit[
         "candidate_state_bytes_fp16"
@@ -439,7 +438,7 @@ def test_stage2b_new_count_zero_is_supported_only_before_registration() -> None:
         )
 
 
-def test_query_tokens_must_be_opaque_and_have_exact_count() -> None:
+def test_query_tokens_must_be_opaque_but_predictor_has_no_quota_count_gate() -> None:
     method, row, binding, capsule = _capsule("after_registration")
     with pytest.raises(ValueError, match="not opaque"):
         apply_stage_head_capsule(
@@ -451,15 +450,50 @@ def test_query_tokens_must_be_opaque_and_have_exact_count() -> None:
             row_manifest=row,
             stage_input_binding=binding,
         )
-    with pytest.raises(ValueError, match="token layout drift"):
+    result = apply_stage_head_capsule(
+        scenario=FORMAL_SCENARIOS[0],
+        query_features=np.zeros((1, 160), dtype=np.float32),
+        query_tokens=np.asarray([_token("qid", "one")]),
+        capsule=capsule,
+        method_lock=method,
+        row_manifest=row,
+        stage_input_binding=binding,
+    )
+    assert len(result["prediction"]) == 1
+    with pytest.raises(ValueError, match="must be finite"):
         apply_stage_head_capsule(
             scenario=FORMAL_SCENARIOS[0],
-            query_features=np.zeros((1, 160), dtype=np.float32),
-            query_tokens=np.asarray([_token("qid", "one")]),
+            query_features=np.full((1, 160), np.nan, dtype=np.float32),
+            query_tokens=np.asarray([_token("qid", "nan")]),
             capsule=capsule,
             method_lock=method,
             row_manifest=row,
             stage_input_binding=binding,
+        )
+
+
+def test_predictor_manifests_reject_query_quota_and_order_fields() -> None:
+    method, row, binding, _capsule_value = _capsule("after_registration")
+    row_with_quota = dict(row)
+    row_with_quota["query_per_tx"] = 20
+    with pytest.raises(ValueError, match="row manifest exact schema drift"):
+        validate_row_manifest(
+            row_with_quota, method_lock_sha256=canonical_sha256(method)
+        )
+    binding_with_order = dict(binding)
+    binding_with_order["query_ids_sha256_by_scenario"] = {
+        scenario: "a" * 64 for scenario in FORMAL_SCENARIOS
+    }
+    with pytest.raises(ValueError, match="stage input binding exact schema drift"):
+        build_stage_head_capsule(
+            features_by_scenario={},
+            support_tokens_by_scenario={},
+            support_pool_tokens_by_scenario={},
+            support_pool_labels=np.asarray([], dtype=np.int64),
+            support_pool_ranks=np.asarray([], dtype=np.int64),
+            method_lock=method,
+            row_manifest=row,
+            stage_input_binding=binding_with_order,
         )
 
 
@@ -514,7 +548,7 @@ def test_registration_pair_locks_matched_old_support_query_and_runtime() -> None
         )
 
 
-def test_k_family_shares_pool_query_runtime_and_satellite_seeds() -> None:
+def test_k_family_shares_pool_runtime_and_satellite_seeds() -> None:
     method = expected_method_lock()
     rows: dict[int, dict] = {}
     bindings: dict[int, dict] = {}
@@ -550,12 +584,10 @@ def test_k_family_shares_pool_query_runtime_and_satellite_seeds() -> None:
     )
     broken_bindings = dict(bindings)
     broken_bindings[5] = json.loads(json.dumps(bindings[5]))
-    broken_bindings[5]["query_ids_sha256_by_scenario"] = {
-        scenario: "a" * 64 for scenario in FORMAL_SCENARIOS
-    }
+    broken_bindings[5]["feature_runtime_sha256"] = "a" * 64
     broken_family = json.loads(json.dumps(family))
     broken_family["binding_sha256_by_k"]["5"] = canonical_sha256(broken_bindings[5])
-    with pytest.raises(ValueError, match="binding mismatch: query_ids"):
+    with pytest.raises(ValueError, match="binding mismatch: feature_runtime"):
         validate_k_family(
             broken_family,
             method_lock=method,

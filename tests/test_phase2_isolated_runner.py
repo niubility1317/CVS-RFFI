@@ -19,6 +19,7 @@ from cvsrffi.phase2_isolated_runner import (
     audit_open_ledger,
     build_production_predictor_argv,
     execute_phase2_isolated,
+    parse_successful_execve_trace,
     parse_successful_open_trace,
 )
 from cvsrffi.phase2_runtime_contract import (
@@ -152,6 +153,30 @@ def test_trace_parser_keeps_only_successful_opens_and_resolves_dirfd() -> None:
     assert sum(row["successful_open_count"] for row in ledger) == 3
 
 
+def test_execve_parser_reports_only_successful_additional_processes() -> None:
+    trace = "\n".join(
+        [
+            '201 execve("/usr/bin/helper", ["helper"], 0x0) = 0',
+            '201 execve("/usr/bin/missing", ["missing"], 0x0) = -1 ENOENT (No such file or directory)',
+            '[pid 202] execve("/bin/sh", ["sh", "-c", "true"], 0x0 <unfinished ...>',
+            '[pid 202] <... execve resumed>) = 0',
+        ]
+    )
+    assert parse_successful_execve_trace(trace) == [
+        {"line_number": 1, "executable": "/usr/bin/helper"},
+        {"line_number": 3, "executable": "/bin/sh"},
+    ]
+
+
+def test_execve_parser_fails_closed_on_incomplete_resumed_trace() -> None:
+    with pytest.raises(Phase2IsolatedRunnerError, match="unfinished execve"):
+        parse_successful_execve_trace(
+            '201 execve("/bin/sh", ["sh"], 0x0 <unfinished ...>\n'
+        )
+    with pytest.raises(Phase2IsolatedRunnerError, match="orphan resumed execve"):
+        parse_successful_execve_trace("201 <... execve resumed>) = 0\n")
+
+
 def test_open_ledger_rejects_truth_and_unmounted_project_paths() -> None:
     ledger = [
         {"path": "/runtime/code/predict.py", "successful_open_count": 1, "syscalls": ["openat"]},
@@ -167,6 +192,52 @@ def test_open_ledger_rejects_truth_and_unmounted_project_paths() -> None:
     )
     assert audit["status"] == "FAIL"
     assert len(audit["violations"]) == 2
+
+
+def test_open_ledger_enforces_exact_and_required_sealed_package_members() -> None:
+    ledger = [
+        {"path": "/runtime/code/predict.py", "successful_open_count": 1, "syscalls": ["openat"]},
+        {"path": "/sealed/request.json", "successful_open_count": 1, "syscalls": ["openat"]},
+        {"path": "/sealed/package.seal.json", "successful_open_count": 1, "syscalls": ["openat"]},
+        {"path": "/sealed/package/package_manifest.json", "successful_open_count": 1, "syscalls": ["openat"]},
+        {"path": "/sealed/package/extra.json", "successful_open_count": 1, "syscalls": ["openat"]},
+        {"path": "/output/prediction.cvspred", "successful_open_count": 1, "syscalls": ["openat"]},
+    ]
+    audit = audit_open_ledger(
+        ledger,
+        system_read_roots=["/usr"],
+        sealed_package_members=["package_manifest.json", "query.npz"],
+        required_package_members=["package_manifest.json", "query.npz"],
+    )
+    assert audit["status"] == "FAIL"
+    assert audit["sealed_package_exact_members"] == [
+        "/sealed/package/package_manifest.json",
+        "/sealed/package/query.npz",
+    ]
+    assert audit["required_package_members"] == [
+        "/sealed/package/package_manifest.json",
+        "/sealed/package/query.npz",
+    ]
+    assert {"path": "/sealed/package/extra.json", "reason": "sealed_package_member_not_allowlisted"} in audit[
+        "violations"
+    ]
+    assert {"path": "/sealed/package/query.npz", "reason": "required_package_member_not_opened"} in audit[
+        "violations"
+    ]
+
+
+def test_open_ledger_default_keeps_directory_level_package_compatibility() -> None:
+    ledger = [
+        {"path": "/runtime/code/predict.py", "successful_open_count": 1, "syscalls": ["openat"]},
+        {"path": "/sealed/request.json", "successful_open_count": 1, "syscalls": ["openat"]},
+        {"path": "/sealed/package.seal.json", "successful_open_count": 1, "syscalls": ["openat"]},
+        {"path": "/sealed/package/legacy_member.bin", "successful_open_count": 1, "syscalls": ["openat"]},
+        {"path": "/output/prediction.cvspred", "successful_open_count": 1, "syscalls": ["openat"]},
+    ]
+    audit = audit_open_ledger(ledger, system_read_roots=["/usr"])
+    assert audit["status"] == "PASS"
+    assert audit["sealed_package_exact_members"] is None
+    assert audit["required_package_members"] == []
 
 
 def test_fake_isolated_run_emits_immutable_bound_post_run_evidence(
@@ -286,6 +357,59 @@ def test_fake_isolated_run_emits_immutable_bound_post_run_evidence(
     assert "/host/bwrap/setup-source" not in {
         row["path"] for row in audit["opened_file_ledger"]
     }
+
+
+def test_production_runner_rejects_additional_successful_execve(
+    tmp_path: Path, monkeypatch
+) -> None:
+    paths = _fixture_tree(tmp_path)
+    monkeypatch.setattr(
+        isolated_runner,
+        "verify_phase2_pre_run_evidence",
+        lambda **_kwargs: {
+            "status": "PASS",
+            "runtime_root": str(paths["runtime"]),
+            "binding_sha256": "a" * 64,
+            "trusted_system_read_roots": [str(paths["system"].resolve())],
+        },
+    )
+
+    def fake_run(command, **_kwargs):
+        trace_target = Path(command[command.index("-o") + 1])
+        trace_target.write_text(
+            "\n".join(
+                [
+                    f'201 execve({json.dumps(str(Path(paths["python"]).resolve()))}, ["python"], 0x0) = 0',
+                    '201 openat(AT_FDCWD, "/sealed/request.json", O_RDONLY) = 3</sealed/request.json>',
+                    '201 execve("/bin/sh", ["sh", "-c", "true"], 0x0) = 0',
+                ]
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+        return SimpleNamespace(returncode=1, stdout="", stderr="")
+
+    request = paths["request_payload"]
+    with pytest.raises(
+        Phase2IsolatedRunnerError, match="additional successful execve.*?/bin/sh"
+    ):
+        execute_phase2_isolated(
+            bwrap=paths["bwrap"],
+            strace_executable=paths["strace"],
+            runtime_closure_root=paths["closure"],
+            pre_run_evidence_root=paths["evidence"],
+            package_root=paths["package"],
+            detached_seal=paths["seal"],
+            expected_package_seal_sha256=request["phase2_runtime_isolation_evidence"][
+                "sealed_inference_package_sha256"
+            ],
+            request_json=paths["request"],
+            output_root=paths["output"],
+            python_executable=paths["python"],
+            system_read_roots=[paths["system"]],
+            forbidden_roots=[paths["scorer"]],
+            command_runner=fake_run,
+        )
 
 
 def test_production_runner_rejects_nonempty_output_before_subprocess(tmp_path: Path) -> None:

@@ -1,9 +1,9 @@
-"""Build and verify the minimal Phase2 predictor Python runtime closure.
+"""Build and verify reviewed profile-specific Phase2 Python runtime closures.
 
 The produced ``runtime`` directory is intended to be mounted read-only at
-``/runtime/code``.  It contains only the reviewed predictor modules and the
-single production entry script; the manifest is deliberately kept outside
-that mount so it cannot become an undeclared importable runtime member.
+``/runtime/code``.  Each closure contains only one reviewed execution profile;
+the manifest is deliberately kept outside that mount so it cannot become an
+undeclared importable runtime member.
 """
 
 from __future__ import annotations
@@ -17,12 +17,16 @@ from pathlib import Path, PurePosixPath
 from typing import Any, Mapping
 
 
-RUNTIME_CLOSURE_SCHEMA = "cvs_phase2_predictor_runtime_closure_v1"
+RUNTIME_CLOSURE_SCHEMA = "cvs_phase2_predictor_runtime_closure_v2"
 RUNTIME_MOUNT_PATH = "/runtime/code"
 RUNTIME_ENTRYPOINT = "/runtime/code/scripts/run_cvs_stage2_predictor.py"
 RUNTIME_MANIFEST_NAME = "runtime_closure_manifest.json"
 
-RUNTIME_MEMBER_ALLOWLIST = (
+GENERIC_RUNTIME_PROFILE = "stage2_predictor"
+SOMPH_ENROLLMENT_RUNTIME_PROFILE = "somph_enrollment_only"
+SOMPH_APPLY_RUNTIME_PROFILE = "somph_apply_only"
+
+_GENERIC_RUNTIME_MEMBERS = (
     "cvsrffi/__init__.py",
     "cvsrffi/phase2_runtime_contract.py",
     "cvsrffi/stage2_predictor_bundle.py",
@@ -32,12 +36,55 @@ RUNTIME_MEMBER_ALLOWLIST = (
     "scripts/run_cvs_stage2_predictor.py",
 )
 
+_SOMPH_RUNTIME_BASE_MEMBERS = (
+    "cvsrffi/__init__.py",
+    "cvsrffi/phase2_runtime_contract.py",
+    "cvsrffi/stage2_predictor_bundle.py",
+    "cvsrffi/stage2_predictor_runtime.py",
+    "cvsrffi/stage2_prediction_artifact.py",
+    "cvsrffi/somph_runtime_request.py",
+    "cvsrffi/somph_predictor_bundle.py",
+    "cvsrffi/somph_predictor_runtime.py",
+    "cvsrffi/somph_head_artifact.py",
+    "cvsrffi/somph_prediction_artifact.py",
+    "cvsrffi/somph_predictor_entry.py",
+)
+
+RUNTIME_MEMBER_ALLOWLIST_BY_PROFILE = {
+    GENERIC_RUNTIME_PROFILE: _GENERIC_RUNTIME_MEMBERS,
+    SOMPH_ENROLLMENT_RUNTIME_PROFILE: (
+        *_SOMPH_RUNTIME_BASE_MEMBERS,
+        "scripts/run_cvs_somph_enrollment.py",
+    ),
+    SOMPH_APPLY_RUNTIME_PROFILE: (
+        *_SOMPH_RUNTIME_BASE_MEMBERS,
+        "scripts/run_cvs_somph_apply.py",
+    ),
+}
+RUNTIME_ENTRYPOINT_BY_PROFILE = {
+    GENERIC_RUNTIME_PROFILE: RUNTIME_ENTRYPOINT,
+    SOMPH_ENROLLMENT_RUNTIME_PROFILE: (
+        "/runtime/code/scripts/run_cvs_somph_enrollment.py"
+    ),
+    SOMPH_APPLY_RUNTIME_PROFILE: "/runtime/code/scripts/run_cvs_somph_apply.py",
+}
+# Backwards-compatible aliases denote only the generic predictor profile.
+RUNTIME_MEMBER_ALLOWLIST = RUNTIME_MEMBER_ALLOWLIST_BY_PROFILE[
+    GENERIC_RUNTIME_PROFILE
+]
+
 _ALLOWED_INTERNAL_IMPORTS = {
     "cvsrffi.phase2_runtime_contract",
     "cvsrffi.stage2_predictor_bundle",
     "cvsrffi.stage2_predictor_runtime",
     "cvsrffi.stage2_predictor_entry",
     "cvsrffi.stage2_prediction_artifact",
+    "cvsrffi.somph_runtime_request",
+    "cvsrffi.somph_predictor_bundle",
+    "cvsrffi.somph_predictor_runtime",
+    "cvsrffi.somph_head_artifact",
+    "cvsrffi.somph_prediction_artifact",
+    "cvsrffi.somph_predictor_entry",
 }
 
 # Keep this intentionally exact.  A new dependency must receive an explicit
@@ -142,6 +189,84 @@ _EXPECTED_IMPORTS_BY_MEMBER = {
         "typing",
         "zipfile",
     },
+    "cvsrffi/somph_runtime_request.py": {
+        "__future__",
+        "collections.abc",
+        "cvsrffi.phase2_runtime_contract",
+        "re",
+        "typing",
+    },
+    "cvsrffi/somph_predictor_bundle.py": {
+        "__future__",
+        "cvsrffi.phase2_runtime_contract",
+        "cvsrffi.somph_predictor_runtime",
+        "cvsrffi.stage2_predictor_bundle",
+        "json",
+        "numpy",
+        "os",
+        "pathlib",
+        "re",
+        "stat",
+        "typing",
+    },
+    "cvsrffi/somph_predictor_runtime.py": {
+        "__future__",
+        "cvsrffi.stage2_predictor_bundle",
+        "hashlib",
+        "json",
+        "numpy",
+        "time",
+        "torch",
+        "typing",
+    },
+    "cvsrffi/somph_head_artifact.py": {
+        "__future__",
+        "cvsrffi.somph_predictor_runtime",
+        "cvsrffi.stage2_prediction_artifact",
+        "hashlib",
+        "io",
+        "numpy",
+        "os",
+        "pathlib",
+        "secrets",
+        "stat",
+        "typing",
+        "zipfile",
+    },
+    "cvsrffi/somph_prediction_artifact.py": {
+        "__future__",
+        "cvsrffi.stage2_prediction_artifact",
+        "datetime",
+        "hashlib",
+        "io",
+        "json",
+        "numpy",
+        "os",
+        "pathlib",
+        "re",
+        "secrets",
+        "stat",
+        "typing",
+        "zipfile",
+    },
+    "cvsrffi/somph_predictor_entry.py": {
+        "__future__",
+        "cvsrffi.phase2_runtime_contract",
+        "cvsrffi.somph_head_artifact",
+        "cvsrffi.somph_prediction_artifact",
+        "cvsrffi.somph_predictor_bundle",
+        "cvsrffi.somph_predictor_runtime",
+        "cvsrffi.somph_runtime_request",
+        "cvsrffi.stage2_predictor_runtime",
+        "hashlib",
+        "json",
+        "numpy",
+        "os",
+        "pathlib",
+        "stat",
+        "torch",
+        "typing",
+    },
     "scripts/run_cvs_stage2_predictor.py": {
         "__future__",
         "argparse",
@@ -158,10 +283,27 @@ _EXPECTED_IMPORTS_BY_MEMBER = {
         "torch",
         "typing",
     },
+    "scripts/run_cvs_somph_enrollment.py": {
+        "__future__",
+        "argparse",
+        "cvsrffi.somph_predictor_entry",
+        "json",
+        "pathlib",
+        "sys",
+    },
+    "scripts/run_cvs_somph_apply.py": {
+        "__future__",
+        "argparse",
+        "cvsrffi.somph_predictor_entry",
+        "json",
+        "pathlib",
+        "sys",
+    },
 }
 
 _MANIFEST_KEYS = {
     "schema",
+    "profile",
     "runtime_mount_path",
     "python_path",
     "entrypoint",
@@ -353,9 +495,18 @@ def _write_exclusive(path: Path, payload: bytes, *, mode: int = 0o444) -> None:
     os.chmod(path, mode)
 
 
-def _expected_output_files() -> set[str]:
+def _profile_members(profile: str) -> tuple[str, ...]:
+    try:
+        return RUNTIME_MEMBER_ALLOWLIST_BY_PROFILE[profile]
+    except KeyError as exc:
+        raise Phase2RuntimeClosureError(
+            f"unsupported runtime closure profile: {profile}"
+        ) from exc
+
+
+def _expected_output_files(member_allowlist: tuple[str, ...]) -> set[str]:
     return {
-        *(f"runtime/{value}" for value in RUNTIME_MEMBER_ALLOWLIST),
+        *(f"runtime/{value}" for value in member_allowlist),
         RUNTIME_MANIFEST_NAME,
     }
 
@@ -364,7 +515,9 @@ def _expected_output_dirs() -> set[str]:
     return {"runtime", "runtime/cvsrffi", "runtime/scripts"}
 
 
-def _audit_output_tree(output_root: Path) -> None:
+def _audit_output_tree(
+    output_root: Path, *, member_allowlist: tuple[str, ...]
+) -> None:
     if output_root.is_symlink() or not output_root.is_dir():
         raise Phase2RuntimeClosureError(
             f"runtime closure root must be a regular directory: {output_root}"
@@ -383,7 +536,7 @@ def _audit_output_tree(output_root: Path) -> None:
             raise Phase2RuntimeClosureError(
                 f"runtime closure contains non-file member: {relative}"
             )
-    expected_files = _expected_output_files()
+    expected_files = _expected_output_files(member_allowlist)
     expected_dirs = _expected_output_dirs()
     if actual_files != expected_files:
         raise Phase2RuntimeClosureError(
@@ -399,26 +552,44 @@ def _audit_output_tree(output_root: Path) -> None:
         )
 
 
-def verify_phase2_runtime_closure(output_root: str | Path) -> dict[str, Any]:
+def verify_phase2_runtime_closure(
+    output_root: str | Path,
+    *,
+    expected_profile: str | None = None,
+) -> dict[str, Any]:
     """Verify exact members, import closure, permissions, and all digests."""
 
     root = Path(output_root)
-    _audit_output_tree(root)
     manifest_path = root / RUNTIME_MANIFEST_NAME
+    if (
+        root.is_symlink()
+        or not root.is_dir()
+        or manifest_path.is_symlink()
+        or not manifest_path.is_file()
+    ):
+        raise Phase2RuntimeClosureError(
+            "runtime closure root/manifest must be regular non-symlink inputs"
+        )
     manifest = json.loads(manifest_path.read_text(encoding="utf-8-sig"))
     if not isinstance(manifest, dict) or set(manifest) != _MANIFEST_KEYS:
         raise Phase2RuntimeClosureError("runtime closure manifest schema keys drift")
     if manifest.get("schema") != RUNTIME_CLOSURE_SCHEMA:
         raise Phase2RuntimeClosureError("runtime closure manifest schema drift")
+    profile = str(manifest.get("profile", ""))
+    member_allowlist = _profile_members(profile)
+    if expected_profile is not None and profile != expected_profile:
+        raise Phase2RuntimeClosureError("runtime closure profile mismatch")
+    _audit_output_tree(root, member_allowlist=member_allowlist)
     if manifest.get("runtime_mount_path") != RUNTIME_MOUNT_PATH:
         raise Phase2RuntimeClosureError("runtime closure mount path drift")
     if manifest.get("python_path") != RUNTIME_MOUNT_PATH:
         raise Phase2RuntimeClosureError("runtime closure PYTHONPATH drift")
-    if manifest.get("entrypoint") != RUNTIME_ENTRYPOINT:
+    expected_entrypoint = RUNTIME_ENTRYPOINT_BY_PROFILE[profile]
+    if manifest.get("entrypoint") != expected_entrypoint:
         raise Phase2RuntimeClosureError("runtime closure entrypoint drift")
-    if tuple(manifest.get("member_allowlist", [])) != RUNTIME_MEMBER_ALLOWLIST:
+    if tuple(manifest.get("member_allowlist", [])) != member_allowlist:
         raise Phase2RuntimeClosureError("runtime closure member allowlist drift")
-    if manifest.get("member_count") != len(RUNTIME_MEMBER_ALLOWLIST):
+    if manifest.get("member_count") != len(member_allowlist):
         raise Phase2RuntimeClosureError("runtime closure member count drift")
     if manifest.get("copy_policy") != "O_EXCL_NO_OVERWRITE_READ_ONLY":
         raise Phase2RuntimeClosureError("runtime closure copy policy drift")
@@ -426,7 +597,7 @@ def verify_phase2_runtime_closure(output_root: str | Path) -> dict[str, Any]:
         raise Phase2RuntimeClosureError("runtime closure import policy drift")
 
     raw_members = manifest.get("members")
-    if not isinstance(raw_members, list) or len(raw_members) != len(RUNTIME_MEMBER_ALLOWLIST):
+    if not isinstance(raw_members, list) or len(raw_members) != len(member_allowlist):
         raise Phase2RuntimeClosureError("runtime closure manifest members drift")
     by_path: dict[str, Mapping[str, Any]] = {}
     for raw in raw_members:
@@ -436,12 +607,12 @@ def verify_phase2_runtime_closure(output_root: str | Path) -> dict[str, Any]:
         if relative in by_path:
             raise Phase2RuntimeClosureError(f"duplicate runtime closure member: {relative}")
         by_path[relative] = raw
-    if tuple(by_path) != RUNTIME_MEMBER_ALLOWLIST:
+    if tuple(by_path) != member_allowlist:
         raise Phase2RuntimeClosureError("runtime closure manifest member order drift")
 
     verified_entries: list[dict[str, Any]] = []
     runtime_root = root / "runtime"
-    for relative in RUNTIME_MEMBER_ALLOWLIST:
+    for relative in member_allowlist:
         payload = _read_regular_source(runtime_root, relative)
         path = runtime_root.joinpath(*PurePosixPath(relative).parts)
         if path.stat().st_mode & (stat.S_IWUSR | stat.S_IWGRP | stat.S_IWOTH):
@@ -461,10 +632,11 @@ def verify_phase2_runtime_closure(output_root: str | Path) -> dict[str, Any]:
         raise Phase2RuntimeClosureError("runtime closure root SHA256 drift")
     return {
         "schema": RUNTIME_CLOSURE_SCHEMA,
+        "profile": profile,
         "manifest": str(manifest_path),
         "runtime_root": str(runtime_root),
         "runtime_mount_path": RUNTIME_MOUNT_PATH,
-        "entrypoint": RUNTIME_ENTRYPOINT,
+        "entrypoint": expected_entrypoint,
         "member_count": len(verified_entries),
         "root_sha256": root_sha,
         "verified": True,
@@ -474,9 +646,13 @@ def verify_phase2_runtime_closure(output_root: str | Path) -> dict[str, Any]:
 def build_phase2_runtime_closure(
     source_code_root: str | Path,
     output_root: str | Path,
+    *,
+    profile: str = GENERIC_RUNTIME_PROFILE,
 ) -> dict[str, Any]:
     """Copy only the exact reviewed predictor runtime, without overwrite."""
 
+    member_allowlist = _profile_members(profile)
+    entrypoint = RUNTIME_ENTRYPOINT_BY_PROFILE[profile]
     source_root = Path(source_code_root)
     if source_root.is_symlink() or not source_root.is_dir():
         raise Phase2RuntimeClosureError(
@@ -487,7 +663,7 @@ def build_phase2_runtime_closure(
     # cannot leave a misleading partial closure behind.
     source_payloads: dict[str, bytes] = {}
     entries: list[dict[str, Any]] = []
-    for relative in RUNTIME_MEMBER_ALLOWLIST:
+    for relative in member_allowlist:
         payload = _read_regular_source(source_root, relative)
         imports = _audit_imports(payload, relative_path=relative)
         source_payloads[relative] = payload
@@ -507,16 +683,17 @@ def build_phase2_runtime_closure(
     runtime_root = destination / "runtime"
     (runtime_root / "cvsrffi").mkdir(parents=True, exist_ok=False)
     (runtime_root / "scripts").mkdir(parents=True, exist_ok=False)
-    for relative in RUNTIME_MEMBER_ALLOWLIST:
+    for relative in member_allowlist:
         target = runtime_root.joinpath(*PurePosixPath(relative).parts)
         _write_exclusive(target, source_payloads[relative])
 
     manifest = {
         "schema": RUNTIME_CLOSURE_SCHEMA,
+        "profile": profile,
         "runtime_mount_path": RUNTIME_MOUNT_PATH,
         "python_path": RUNTIME_MOUNT_PATH,
-        "entrypoint": RUNTIME_ENTRYPOINT,
-        "member_allowlist": list(RUNTIME_MEMBER_ALLOWLIST),
+        "entrypoint": entrypoint,
+        "member_allowlist": list(member_allowlist),
         "member_count": len(entries),
         "members": entries,
         "root_sha256": _root_sha256(entries),
@@ -527,16 +704,23 @@ def build_phase2_runtime_closure(
         json.dumps(manifest, ensure_ascii=False, indent=2, sort_keys=False) + "\n"
     ).encode("utf-8")
     _write_exclusive(destination / RUNTIME_MANIFEST_NAME, manifest_payload)
-    return verify_phase2_runtime_closure(destination)
+    return verify_phase2_runtime_closure(
+        destination, expected_profile=profile
+    )
 
 
 __all__ = [
     "Phase2RuntimeClosureError",
+    "GENERIC_RUNTIME_PROFILE",
     "RUNTIME_CLOSURE_SCHEMA",
     "RUNTIME_ENTRYPOINT",
+    "RUNTIME_ENTRYPOINT_BY_PROFILE",
     "RUNTIME_MANIFEST_NAME",
     "RUNTIME_MEMBER_ALLOWLIST",
+    "RUNTIME_MEMBER_ALLOWLIST_BY_PROFILE",
     "RUNTIME_MOUNT_PATH",
+    "SOMPH_APPLY_RUNTIME_PROFILE",
+    "SOMPH_ENROLLMENT_RUNTIME_PROFILE",
     "build_phase2_runtime_closure",
     "verify_phase2_runtime_closure",
 ]

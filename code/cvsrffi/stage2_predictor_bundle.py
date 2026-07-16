@@ -92,6 +92,16 @@ MEMBER_DESCRIPTOR_REQUIRED_KEYS = {
 OPAQUE_TOKEN_RE = re.compile(r"(?:cls|qid|sid|oid)_[0-9a-f]{32,64}")
 SHA256_RE = re.compile(r"[0-9a-f]{64}")
 
+ALLOWED_NPZ_COMPRESSION_TYPES = frozenset(
+    {
+        zipfile.ZIP_STORED,
+        zipfile.ZIP_DEFLATED,
+    }
+)
+MAX_NPZ_MEMBER_UNCOMPRESSED_BYTES = 256 * 1024 * 1024
+MAX_NPZ_TOTAL_UNCOMPRESSED_BYTES = 1024 * 1024 * 1024
+MAX_NPZ_COMPRESSION_RATIO = 100.0
+
 
 class PredictorPackageError(ValueError):
     """Raised before untrusted IQ arrays are materialized."""
@@ -137,6 +147,63 @@ def _ensure_root(root: Path) -> Path:
     if root.is_symlink() or not root.is_dir():
         raise PredictorPackageError(f"package root must be a regular directory: {root}")
     return root.resolve()
+
+
+def _is_reparse_point(value: os.stat_result) -> bool:
+    attributes = getattr(value, "st_file_attributes", 0)
+    reparse_flag = getattr(stat, "FILE_ATTRIBUTE_REPARSE_POINT", 0)
+    return bool(attributes & reparse_flag)
+
+
+def _validate_package_root_exact_allowlist(
+    root: Path,
+    *,
+    allowed_files: set[str],
+) -> None:
+    root = _ensure_root(root)
+    expected_files = {validate_relative_member_path(value) for value in allowed_files}
+    expected_directories: set[str] = set()
+    for value in expected_files:
+        parent = PurePosixPath(value).parent
+        while parent != PurePosixPath("."):
+            expected_directories.add(parent.as_posix())
+            parent = parent.parent
+
+    actual_files: set[str] = set()
+    actual_directories: set[str] = set()
+
+    def visit(directory: Path, prefix: PurePosixPath) -> None:
+        with os.scandir(directory) as entries:
+            for entry in entries:
+                relative = (prefix / entry.name).as_posix()
+                metadata = entry.stat(follow_symlinks=False)
+                if entry.is_symlink() or _is_reparse_point(metadata):
+                    raise PredictorPackageError(
+                        f"symlink or reparse-point package entry rejected: {relative}"
+                    )
+                if entry.is_dir(follow_symlinks=False):
+                    if relative not in expected_directories:
+                        raise PredictorPackageError(
+                            f"unexpected package directory: {relative}"
+                        )
+                    actual_directories.add(relative)
+                    visit(Path(entry.path), prefix / entry.name)
+                elif entry.is_file(follow_symlinks=False):
+                    if relative not in expected_files:
+                        raise PredictorPackageError(f"unexpected package file: {relative}")
+                    actual_files.add(relative)
+                else:
+                    raise PredictorPackageError(
+                        f"non-regular package root entry rejected: {relative}"
+                    )
+
+    visit(root, PurePosixPath())
+    if actual_files != expected_files or actual_directories != expected_directories:
+        raise PredictorPackageError(
+            "package root exact allowlist mismatch: "
+            f"missing_files={sorted(expected_files-actual_files)}, "
+            f"missing_directories={sorted(expected_directories-actual_directories)}"
+        )
 
 
 @contextmanager
@@ -214,21 +281,84 @@ def _zip_members_from_handle(handle: BinaryIO, *, context: str) -> tuple[str, ..
     handle.seek(0)
     try:
         with zipfile.ZipFile(handle, mode="r") as archive:
-            raw_members = archive.namelist()
-    except zipfile.BadZipFile as exc:
+            infos = archive.infolist()
+            raw_members = [info.filename for info in infos]
+            if len(raw_members) != len(set(raw_members)):
+                raise PredictorPackageError(f"duplicate NPZ ZIP member for {context}")
+            total_uncompressed = 0
+            members: list[str] = []
+            for info in infos:
+                raw = info.filename
+                path = PurePosixPath(raw)
+                if (
+                    info.is_dir()
+                    or path.is_absolute()
+                    or any(part in {"", ".", ".."} for part in path.parts)
+                ):
+                    raise PredictorPackageError(
+                        f"unsafe NPZ ZIP member for {context}: {raw}"
+                    )
+                if len(path.parts) != 1 or not raw.endswith(".npy"):
+                    raise PredictorPackageError(
+                        f"unexpected NPZ ZIP member for {context}: {raw}"
+                    )
+                if info.flag_bits & 0x1:
+                    raise PredictorPackageError(
+                        f"encrypted NPZ ZIP member rejected for {context}: {raw}"
+                    )
+                if info.compress_type not in ALLOWED_NPZ_COMPRESSION_TYPES:
+                    raise PredictorPackageError(
+                        f"unsupported NPZ ZIP compression for {context}: {raw}"
+                    )
+                if info.file_size > MAX_NPZ_MEMBER_UNCOMPRESSED_BYTES:
+                    raise PredictorPackageError(
+                        f"NPZ ZIP member uncompressed size exceeds limit for {context}: {raw}"
+                    )
+                total_uncompressed += info.file_size
+                if total_uncompressed > MAX_NPZ_TOTAL_UNCOMPRESSED_BYTES:
+                    raise PredictorPackageError(
+                        f"NPZ ZIP total uncompressed size exceeds limit for {context}"
+                    )
+                if info.file_size and info.compress_size <= 0:
+                    raise PredictorPackageError(
+                        f"invalid NPZ ZIP compressed size for {context}: {raw}"
+                    )
+                ratio = info.file_size / max(info.compress_size, 1)
+                if ratio > MAX_NPZ_COMPRESSION_RATIO:
+                    raise PredictorPackageError(
+                        f"NPZ ZIP compression ratio exceeds limit for {context}: {raw}"
+                    )
+                unix_mode = (info.external_attr >> 16) & 0xFFFF
+                if unix_mode and stat.S_ISLNK(unix_mode):
+                    raise PredictorPackageError(
+                        f"symlink NPZ ZIP member rejected for {context}: {raw}"
+                    )
+                try:
+                    with archive.open(info, mode="r") as member:
+                        actual_size = 0
+                        for chunk in iter(lambda: member.read(1024 * 1024), b""):
+                            actual_size += len(chunk)
+                            if actual_size > info.file_size:
+                                raise PredictorPackageError(
+                                    f"NPZ ZIP member expands beyond declared size for "
+                                    f"{context}: {raw}"
+                                )
+                except (RuntimeError, zipfile.BadZipFile, NotImplementedError) as exc:
+                    raise PredictorPackageError(
+                        f"NPZ ZIP member CRC/decompression validation failed for "
+                        f"{context}: {raw}"
+                    ) from exc
+                if actual_size != info.file_size:
+                    raise PredictorPackageError(
+                        f"NPZ ZIP member size validation failed for {context}: {raw}"
+                    )
+                members.append(raw[:-4])
+    except PredictorPackageError:
+        raise
+    except (OSError, zipfile.BadZipFile, zipfile.LargeZipFile) as exc:
         raise PredictorPackageError(f"invalid NPZ for {context}") from exc
     finally:
         handle.seek(0)
-    if len(raw_members) != len(set(raw_members)):
-        raise PredictorPackageError(f"duplicate NPZ ZIP member for {context}")
-    members: list[str] = []
-    for raw in raw_members:
-        path = PurePosixPath(raw)
-        if path.is_absolute() or any(part in {"", ".", ".."} for part in path.parts):
-            raise PredictorPackageError(f"unsafe NPZ ZIP member for {context}: {raw}")
-        if len(path.parts) != 1 or not raw.endswith(".npy"):
-            raise PredictorPackageError(f"unexpected NPZ ZIP member for {context}: {raw}")
-        members.append(raw[:-4])
     return tuple(members)
 
 
@@ -334,6 +464,8 @@ def write_predictor_package_manifest_and_seal(
     else:
         raise PredictorPackageError("detached package seal must be outside predictor root")
     checked_members = _validate_member_descriptors([dict(value) for value in members])
+    member_paths = {item["relative_path"] for item in checked_members}
+    _validate_package_root_exact_allowlist(root, allowed_files=member_paths)
     for item in checked_members:
         with open_regular_member_same_fd(root, item["relative_path"]) as handle:
             digest, size = _hash_handle(handle)
@@ -352,6 +484,10 @@ def write_predictor_package_manifest_and_seal(
     manifest_bytes = canonical_json_bytes(payload) + b"\n"
     with manifest_path.open("xb") as handle:
         handle.write(manifest_bytes)
+    _validate_package_root_exact_allowlist(
+        root,
+        allowed_files=member_paths | {manifest_path.name},
+    )
     seal = {
         "schema": PREDICTOR_PACKAGE_SEAL_SCHEMA,
         "manifest_relative_path": manifest_path.name,
@@ -419,6 +555,8 @@ def preflight_stage2_predictor_package(
     if seal.get("schema") != PREDICTOR_PACKAGE_SEAL_SCHEMA:
         raise PredictorPackageError("detached seal schema drift")
     manifest_relative = validate_relative_member_path(seal["manifest_relative_path"])
+    if manifest_relative != "package_manifest.json":
+        raise PredictorPackageError("package manifest path drift")
     with open_regular_member_same_fd(root, manifest_relative) as handle:
         manifest_digest, manifest_size = _hash_handle(handle)
         if manifest_digest != seal["manifest_sha256"] or manifest_size != seal["manifest_size_bytes"]:
@@ -429,6 +567,10 @@ def preflight_stage2_predictor_package(
         raise PredictorPackageError("manifest/seal package root mismatch")
     if seal["artifact_member_allowlist_sha256"] != seal["package_root_sha256"]:
         raise PredictorPackageError("artifact member allowlist digest mismatch")
+    _validate_package_root_exact_allowlist(
+        root,
+        allowed_files={item["relative_path"] for item in members} | {manifest_relative},
+    )
 
     opened: list[dict[str, Any]] = []
     for item in members:

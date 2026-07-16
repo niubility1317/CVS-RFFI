@@ -14,10 +14,14 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 CODE_ROOT = REPO_ROOT / "code"
 
 from cvsrffi.phase2_runtime_closure import (  # noqa: E402
+    GENERIC_RUNTIME_PROFILE,
     Phase2RuntimeClosureError,
     RUNTIME_ENTRYPOINT,
     RUNTIME_MEMBER_ALLOWLIST,
+    RUNTIME_MEMBER_ALLOWLIST_BY_PROFILE,
     RUNTIME_MOUNT_PATH,
+    SOMPH_APPLY_RUNTIME_PROFILE,
+    SOMPH_ENROLLMENT_RUNTIME_PROFILE,
     build_phase2_runtime_closure,
     verify_phase2_runtime_closure,
 )
@@ -37,7 +41,8 @@ def test_builds_only_exact_runtime_members_with_bwrap_layout(tmp_path: Path) -> 
     output = tmp_path / "closure"
     result = build_phase2_runtime_closure(CODE_ROOT, output)
     assert result["verified"] is True
-    assert result["member_count"] == 7
+    assert result["profile"] == GENERIC_RUNTIME_PROFILE
+    assert result["member_count"] == len(RUNTIME_MEMBER_ALLOWLIST) == 7
     assert result["runtime_mount_path"] == RUNTIME_MOUNT_PATH == "/runtime/code"
     assert result["entrypoint"] == RUNTIME_ENTRYPOINT
     actual = {
@@ -47,6 +52,39 @@ def test_builds_only_exact_runtime_members_with_bwrap_layout(tmp_path: Path) -> 
     }
     assert actual == set(RUNTIME_MEMBER_ALLOWLIST)
     assert (output / "runtime/scripts/run_cvs_stage2_predictor.py").is_file()
+    assert not (output / "runtime/scripts/run_cvs_somph_enrollment.py").exists()
+    assert not (output / "runtime/scripts/run_cvs_somph_apply.py").exists()
+
+
+@pytest.mark.parametrize(
+    ("profile", "entry_leaf"),
+    [
+        (SOMPH_ENROLLMENT_RUNTIME_PROFILE, "run_cvs_somph_enrollment.py"),
+        (SOMPH_APPLY_RUNTIME_PROFILE, "run_cvs_somph_apply.py"),
+    ],
+)
+def test_builds_profile_specific_somph_runtime_without_generic_entry(
+    tmp_path: Path, profile: str, entry_leaf: str
+) -> None:
+    output = tmp_path / profile
+    result = build_phase2_runtime_closure(
+        CODE_ROOT, output, profile=profile
+    )
+    assert result["profile"] == profile
+    assert result["member_count"] == len(
+        RUNTIME_MEMBER_ALLOWLIST_BY_PROFILE[profile]
+    )
+    assert result["entrypoint"].endswith(entry_leaf)
+    assert (output / f"runtime/scripts/{entry_leaf}").is_file()
+    assert not (
+        output / "runtime/scripts/run_cvs_stage2_predictor.py"
+    ).exists()
+    other = (
+        "run_cvs_somph_apply.py"
+        if entry_leaf == "run_cvs_somph_enrollment.py"
+        else "run_cvs_somph_enrollment.py"
+    )
+    assert not (output / f"runtime/scripts/{other}").exists()
 
 
 def test_build_refuses_any_existing_output_root(tmp_path: Path) -> None:
@@ -74,6 +112,7 @@ def test_cli_builds_verified_runtime_closure(tmp_path: Path) -> None:
     )
     payload = json.loads(completed.stdout)
     assert payload["verified"] is True
+    assert payload["profile"] == GENERIC_RUNTIME_PROFILE
     assert payload["root_sha256"] == verify_phase2_runtime_closure(output)["root_sha256"]
 
 

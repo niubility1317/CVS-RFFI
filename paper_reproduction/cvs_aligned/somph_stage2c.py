@@ -97,6 +97,11 @@ def ordered_values_sha256(values: Sequence[str]) -> str:
     return hashlib.sha256(payload).hexdigest()
 
 
+def opaque_class_handle(value: str) -> str:
+    payload = f"SOMPH_V1_CLASS::{value}".encode("utf-8")
+    return f"cls_{hashlib.sha256(payload).hexdigest()}"
+
+
 def array_sha256(value: np.ndarray) -> str:
     rows = np.ascontiguousarray(np.asarray(value))
     digest = hashlib.sha256()
@@ -173,8 +178,7 @@ def validate_row_manifest(
 ) -> dict[str, Any]:
     expected_keys = {
         "schema", "method_lock_sha256", "split_role", "receiver", "seed",
-        "k_shot", "new_class_count", "old_class_handles", "new_class_handles",
-        "support_pool_max_k", "query_per_tx", "scenarios",
+        "k_shot", "new_class_count", "support_pool_max_k", "scenarios",
     }
     if not isinstance(row, dict) or set(row) != expected_keys:
         raise ValueError("SOMP-H row manifest exact schema drift")
@@ -199,12 +203,8 @@ def validate_row_manifest(
     new_count = int(row.get("new_class_count", -1))
     if new_count not in {0, 5, 10, 20}:
         raise ValueError("SOMP-H new class count must be 0, 5, 10, or 20")
-    if tuple(str(value) for value in row.get("old_class_handles", [])) != FORMAL_OLD_CLASSES:
-        raise ValueError("SOMP-H old class registry drift")
-    if tuple(str(value) for value in row.get("new_class_handles", [])) != FORMAL_NEW20[:new_count]:
-        raise ValueError("SOMP-H nested new class registry drift")
-    if int(row.get("support_pool_max_k", -1)) != 20 or int(row.get("query_per_tx", -1)) != 20:
-        raise ValueError("SOMP-H row must use the formal K20 pool and fixed query lock")
+    if int(row.get("support_pool_max_k", -1)) != 20:
+        raise ValueError("SOMP-H row must use the formal K20 support pool")
     if tuple(str(value) for value in row.get("scenarios", [])) != FORMAL_SCENARIOS:
         raise ValueError("SOMP-H row scenario registry drift")
     return json.loads(json.dumps(dict(row), sort_keys=True))
@@ -219,8 +219,7 @@ def validate_stage_input_binding(
         "feature_runtime_sha256", "registered_class_order_sha256",
         "support_class_handles", "support_pool_ids_sha256_by_scenario",
         "support_ids_sha256_by_scenario", "support_label_sequence_sha256_by_scenario",
-        "support_feature_sha256_by_scenario",
-        "query_ids_sha256_by_scenario", "satellite_seed_by_scenario",
+        "support_feature_sha256_by_scenario", "satellite_seed_by_scenario",
         "support_prefix_policy", "support_query_overlap_count",
     }
     if not isinstance(binding, dict) or set(binding) != expected_keys:
@@ -242,7 +241,6 @@ def validate_stage_input_binding(
     digest_maps = (
         "support_pool_ids_sha256_by_scenario", "support_ids_sha256_by_scenario",
         "support_label_sequence_sha256_by_scenario", "support_feature_sha256_by_scenario",
-        "query_ids_sha256_by_scenario",
     )
     for field in digest_maps:
         values = binding.get(field)
@@ -257,7 +255,7 @@ def validate_stage_input_binding(
         raise ValueError("SOMP-H satellite seed must be nonnegative")
     for field in (
         "support_pool_ids_sha256_by_scenario", "support_ids_sha256_by_scenario",
-        "support_label_sequence_sha256_by_scenario", "query_ids_sha256_by_scenario",
+        "support_label_sequence_sha256_by_scenario",
     ):
         if len(set(binding[field].values())) != 1:
             raise ValueError(f"SOMP-H {field} must bind the same physical rows across scenarios")
@@ -314,7 +312,7 @@ def build_stage_head_capsule(
         raise ValueError("SOMP-H Stage2-B row only supports before_registration")
     expected_handles = list(FORMAL_OLD_CLASSES)
     if stage == "after_registration":
-        expected_handles.extend(row["new_class_handles"])
+        expected_handles.extend(FORMAL_NEW20[: int(row["new_class_count"])])
     handles = [str(value) for value in binding["support_class_handles"]]
     if handles != expected_handles:
         raise ValueError("SOMP-H stage cannot access classes outside its registration state")
@@ -519,6 +517,12 @@ def stage_head_resource_audit(
         state_bytes += head.persistent_state_bytes_fp16
         macs.append(head.extra_macs_per_query)
     serialized_array_bytes = int(sum(np.asarray(value).nbytes for value in capsule.values()))
+    active_scenario_state_bytes = int(max(
+        unpack_support_only_multiprototype_head(
+            _unprefix(capsule, f"head__{scenario}")
+        ).persistent_state_bytes_fp16
+        for scenario in FORMAL_SCENARIOS
+    ))
     cap = int(method_lock["persistent_state_cap_bytes"])
     if state_bytes > cap:
         raise ValueError("SOMP-H candidate deployment state exceeds the method cap")
@@ -529,7 +533,13 @@ def stage_head_resource_audit(
         "updated_original_parameters": 0,
         "adaptation_epochs": 0,
         "optimizer_steps": 0,
+        "optimizer_state_bytes": 0,
+        "optimizer_state_deployment_required": False,
+        "query_rows_used_for_fit": 0,
+        "clean_sample_access": False,
+        "clean_derived_signal_access": False,
         "candidate_state_bytes_fp16": int(state_bytes),
+        "active_scenario_state_bytes_fp16": active_scenario_state_bytes,
         "candidate_state_cap_bytes": cap,
         "candidate_state_within_cap": True,
         "candidate_extra_macs_per_query": int(max(macs)),
@@ -559,13 +569,10 @@ def apply_stage_head_capsule(
     tokens = _validate_opaque_tokens(query_tokens, kind="query")
     if rows.ndim != 2 or rows.shape[1] != int(method_lock["feature_dim"]):
         raise ValueError("SOMP-H query feature schema drift")
-    expected_count = len(handles) * int(row_manifest["query_per_tx"])
-    if len(tokens) != len(rows) or len(tokens) != expected_count:
+    if not np.all(np.isfinite(rows)):
+        raise ValueError("SOMP-H query features must be finite")
+    if len(tokens) != len(rows):
         raise ValueError("SOMP-H opaque query token layout drift")
-    if ordered_values_sha256(tokens.tolist()) != stage_input_binding[
-        "query_ids_sha256_by_scenario"
-    ][scenario]:
-        raise ValueError("SOMP-H query token digest/order drift")
     head = unpack_support_only_multiprototype_head(
         _unprefix(capsule, f"head__{scenario}")
     )
@@ -573,7 +580,10 @@ def apply_stage_head_capsule(
     return {
         "stage": np.asarray([stage] * len(rows)),
         "query_tokens": tokens,
-        "prediction": np.asarray(handles, dtype=str)[prediction_ids],
+        "prediction": np.asarray(
+            [opaque_class_handle(handles[int(index)]) for index in prediction_ids],
+            dtype=str,
+        ),
     }
 
 
@@ -661,15 +671,14 @@ def validate_k_family(
             reference_row, reference_binding = row, binding
             continue
         for field in (
-            "split_role", "receiver", "seed", "new_class_count", "old_class_handles",
-            "new_class_handles", "support_pool_max_k", "query_per_tx", "scenarios",
+            "split_role", "receiver", "seed", "new_class_count",
+            "support_pool_max_k", "scenarios",
         ):
             if row[field] != reference_row[field]:
                 raise ValueError(f"SOMP-H K-family row mismatch: {field}")
         for field in (
             "feature_runtime_sha256", "registered_class_order_sha256",
-            "support_pool_ids_sha256_by_scenario", "query_ids_sha256_by_scenario",
-            "satellite_seed_by_scenario",
+            "support_pool_ids_sha256_by_scenario", "satellite_seed_by_scenario",
         ):
             if binding[field] != reference_binding[field]:
                 raise ValueError(f"SOMP-H K-family binding mismatch: {field}")
