@@ -49,6 +49,34 @@ Git索引净变化为1815个文件、61行新增、398839行删除。索引与�
 |保留链定向测试|`57 passed,4 skipped`|
 |无关未提交修改|保持未暂存、未覆盖|
 
-## 后续边界
+## Codex会话记录清理
 
-Codex会话记录和N607运行目录必须按同一目标ID与精确路径单独清理；不得删除其他任务、数据集、ADV3B02 checkpoint、v14 source训练或LOPO v21/K=1结果。
+|检查面|结果|
+|---|---|
+|`E:\codex\home\state_5.sqlite/threads`|目标ID记录为0|
+|`E:\codex\home\sqlite\codex-dev.db/local_thread_catalog`|目标ID记录为0|
+|目标rollout JSONL|不存在|
+|目标可视化目录|不存在|
+|项目会话索引|重建978条记录，目标ID无命中|
+
+当前运行时没有任务删除/归档API；未直接操纵Codex界面。删除通过精确数据库事务和单路径文件删除完成，未修改其他任务记录。
+
+## N607清理结果
+
+2026-07-16 09:37 CST直连preflight通过；清理前后`gpu_compute=[]`、`active_training_processes=[]`，没有strict runner。远端根固定为`/home/szu2070436088/2510044040/CV-SincNet`。
+
+|项目|结果|
+|---|---|
+|strict运行根|删除13个：无suffix及`v2`至`v13`|
+|v14内runtime artifact|删除14个：`runtime_artifacts_strict_v1`至`v14`|
+|目标专属共享文件|11个实际存在文件已删除；全名单复查无残留|
+|被覆盖的共享文件|恢复21个当前保留版本文件|
+|恢复包SHA256|`8527fb465444a6ac12148b492f8ed5ee29e102bcc8cfd9ae704ed94d8514377b`|
+|本地/远端逐文件SHA|`REMOTE_SHA_MATCH=21`|
+|残留连接|`ssh.exe=0`、N607/桥接TCP22连接为0|
+
+删除范围约4.5GiB strict运行产物和约126MiB runtime artifact。未删除数据集、ADV3B02 checkpoint、v14 source训练、LOPO v21结果或K=1 BPJG证据。
+
+## 最终边界
+
+清理后当前可引用的88%版本仍为source-only`JG_R8_LR020=88.8354%`；被删除的strict300、EvidenceNorm和JP-R4结果不得再作为当前版本、探索轮次或性能证据引用。后续优化应从保留的LOPO/K=1谱系重新开始，同时补齐真实target新类注册指标。
