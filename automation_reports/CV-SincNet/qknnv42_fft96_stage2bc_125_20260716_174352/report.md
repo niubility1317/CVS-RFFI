@@ -4,6 +4,8 @@ Git镜像。权威运行记录见`E:\type10-7\automation_reports\CV-SincNet\qknn
 
 当前状态：首次N607 smoke在Stage2-B package构建阶段按协议fail-closed，未进入模型推理，原因是混合registered cache与old-only构建声明冲突。未放宽cache验证；新增离线packager模式，完整核验`target_old+target_new`cache后只密封target-old support/query进注册前predictor package。相关完整回归147项通过。首次run root保留，后续用新的`_v2`run root和独立源码快照重跑。
 
+二次执行证据：代码提交`c0ee1c4`；`plan_v4.json`SHA256=`7ac4401eb98d6c7c04cec15ada9af5f401022bcafd95c13e6c126ec26779e05d`；源码快照SHA256=`dc02e24e5921bcea9c218a4ef1f7c6cd3aeff602b60996f5616dbc496da4eaae`。
+
 关键口径：
 
 - 5 receiver×seed713101–713105×K={1,2,5,10,20}=125个bundle；
