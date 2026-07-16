@@ -4,6 +4,8 @@
 from __future__ import annotations
 
 import argparse
+import contextlib
+import ctypes
 import hashlib
 import json
 import os
@@ -11,7 +13,7 @@ import subprocess
 import sys
 import tempfile
 from pathlib import Path
-from typing import Any, Callable, Mapping
+from typing import Any, Callable, Iterator, Mapping
 
 
 CODE_ROOT = Path(__file__).resolve().parents[1]
@@ -29,6 +31,14 @@ PINNED_OPENSSL_BINARY_PATH = (
 PINNED_OPENSSL_BINARY_SHA256 = (
     "2e081772a6cf076e43cd9a1fda5f26cfe5dd55d3e11dd1019081da4878c8ea5b"
 )
+_PINNED_OPENSSL_RUNTIME_SHA256 = {
+    "libcrypto-3-x64.dll": (
+        "2124998938de36d25dfa32adc8ffcdb324eac0cc98552a160a08e41f17aade9a"
+    ),
+    "libssl-3-x64.dll": (
+        "a0d26c33b88d139f85a98ccd5dd583cbdf55392d0f6ed2bd6d6425bdc7382c8d"
+    ),
+}
 _SIGNING_RECEIPT_KEYS = {
     "schema",
     "formal_launch_authority",
@@ -118,29 +128,201 @@ def _openssl_sha256(path: Path) -> str:
     return digest
 
 
-def _pinned_openssl_binary(requested: str | Path | None) -> tuple[Path, str]:
-    pinned_path = r"F:\App\miniconda3\Library\bin\openssl.exe"
-    pinned_sha256 = (
-        "2e081772a6cf076e43cd9a1fda5f26cfe5dd55d3e11dd1019081da4878c8ea5b"
-    )
+def _pinned_openssl_binary(
+    requested: str | Path | None,
+) -> tuple[Path, bytes, str, dict[str, tuple[bytes, str]]]:
     expected = _resolved_regular_file(
-        pinned_path,
+        PINNED_OPENSSL_BINARY_PATH,
         context="pinned OpenSSL binary",
     )
     candidate = _resolved_regular_file(
-        requested if requested is not None else pinned_path,
+        (
+            requested
+            if requested is not None
+            else PINNED_OPENSSL_BINARY_PATH
+        ),
         context="OpenSSL binary",
     )
     if os.path.normcase(str(candidate)) != os.path.normcase(str(expected)):
         raise SomphAuthoritySigningError(
             "OpenSSL binary path is not pinned for this release"
         )
-    digest = _openssl_sha256(candidate)
-    if digest != pinned_sha256:
+    raw, digest, _size = authority._read_external_bytes(
+        candidate,
+        context="OpenSSL binary",
+    )
+    if digest != PINNED_OPENSSL_BINARY_SHA256:
         raise SomphAuthoritySigningError(
             "pinned OpenSSL binary SHA256 mismatch"
         )
-    return candidate, digest
+    runtime_files: dict[str, tuple[bytes, str]] = {}
+    for name, expected_digest in _PINNED_OPENSSL_RUNTIME_SHA256.items():
+        runtime_path = _resolved_regular_file(
+            candidate.parent / name,
+            context=f"pinned OpenSSL runtime {name}",
+        )
+        runtime_raw, runtime_digest, _runtime_size = (
+            authority._read_external_bytes(
+                runtime_path,
+                context=f"pinned OpenSSL runtime {name}",
+            )
+        )
+        if runtime_digest != expected_digest:
+            raise SomphAuthoritySigningError(
+                f"pinned OpenSSL runtime SHA256 mismatch: {name}"
+            )
+        runtime_files[name] = (runtime_raw, runtime_digest)
+    return candidate, raw, digest, runtime_files
+
+
+def _windows_lock_private_openssl_paths(
+    directory: Path,
+    files: tuple[Path, ...],
+) -> list[int]:
+    if os.name != "nt":
+        return []
+
+    kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
+    create_file = kernel32.CreateFileW
+    create_file.argtypes = (
+        ctypes.c_wchar_p,
+        ctypes.c_uint32,
+        ctypes.c_uint32,
+        ctypes.c_void_p,
+        ctypes.c_uint32,
+        ctypes.c_uint32,
+        ctypes.c_void_p,
+    )
+    create_file.restype = ctypes.c_void_p
+    close_handle = kernel32.CloseHandle
+    close_handle.argtypes = (ctypes.c_void_p,)
+    close_handle.restype = ctypes.c_int
+
+    generic_read = 0x80000000
+    file_share_read = 0x00000001
+    open_existing = 3
+    file_attribute_normal = 0x00000080
+    file_flag_backup_semantics = 0x02000000
+    invalid_handle = ctypes.c_void_p(-1).value
+    handles: list[int] = []
+    try:
+        paths_and_flags = [(directory, file_flag_backup_semantics)]
+        paths_and_flags.extend(
+            (path, file_attribute_normal) for path in files
+        )
+        for path, flags in paths_and_flags:
+            handle = create_file(
+                str(path),
+                generic_read,
+                file_share_read,
+                None,
+                open_existing,
+                flags,
+                None,
+            )
+            if handle in (None, invalid_handle):
+                error = ctypes.get_last_error()
+                raise SomphAuthoritySigningError(
+                    "failed to lock private OpenSSL execution path"
+                ) from OSError(error, os.strerror(error))
+            handles.append(int(handle))
+    except BaseException:
+        for handle in reversed(handles):
+            close_handle(ctypes.c_void_p(handle))
+        raise
+    return handles
+
+
+def _close_windows_handles(handles: list[int]) -> None:
+    if not handles:
+        return
+    kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
+    close_handle = kernel32.CloseHandle
+    close_handle.argtypes = (ctypes.c_void_p,)
+    close_handle.restype = ctypes.c_int
+    for handle in reversed(handles):
+        close_handle(ctypes.c_void_p(handle))
+
+
+@contextlib.contextmanager
+def _private_openssl_executable(
+    *,
+    verified_bytes: bytes,
+    expected_sha256: str,
+    runtime_files: Mapping[str, tuple[bytes, str]],
+) -> Iterator[Path]:
+    directory = Path(tempfile.mkdtemp(prefix="somph-authority-openssl-"))
+    executable = directory / "openssl.exe"
+    created_files: list[Path] = []
+    handles: list[int] = []
+    ready_for_execution = False
+    payloads = {"openssl.exe": (verified_bytes, expected_sha256)}
+    payloads.update(dict(runtime_files))
+    try:
+        os.chmod(directory, 0o700)
+        for name, (payload, _digest) in payloads.items():
+            path = directory / name
+            descriptor = os.open(
+                path,
+                os.O_WRONLY
+                | os.O_CREAT
+                | os.O_EXCL
+                | getattr(os, "O_BINARY", 0)
+                | getattr(os, "O_NOFOLLOW", 0),
+                0o600,
+            )
+            try:
+                with os.fdopen(descriptor, "wb", closefd=False) as handle:
+                    handle.write(payload)
+                    handle.flush()
+                    os.fsync(handle.fileno())
+            finally:
+                os.close(descriptor)
+            os.chmod(path, 0o500 if path == executable else 0o400)
+            created_files.append(path)
+        handles = _windows_lock_private_openssl_paths(
+            directory,
+            tuple(created_files),
+        )
+        for name, (_payload, digest) in payloads.items():
+            if _openssl_sha256(directory / name) != digest:
+                raise SomphAuthoritySigningError(
+                    f"private OpenSSL runtime SHA256 mismatch: {name}"
+                )
+        ready_for_execution = True
+        yield executable
+    finally:
+        integrity_error: BaseException | None = None
+        if ready_for_execution:
+            try:
+                for name, (_payload, digest) in payloads.items():
+                    if _openssl_sha256(directory / name) != digest:
+                        raise SomphAuthoritySigningError(
+                            "private OpenSSL runtime changed during "
+                            f"signing: {name}"
+                        )
+            except BaseException as exc:
+                integrity_error = exc
+        _close_windows_handles(handles)
+        for path in reversed(created_files):
+            try:
+                os.chmod(path, 0o600)
+            except OSError:
+                pass
+            try:
+                path.unlink()
+            except FileNotFoundError:
+                pass
+        try:
+            os.chmod(directory, 0o700)
+        except OSError:
+            pass
+        try:
+            directory.rmdir()
+        except FileNotFoundError:
+            pass
+        if integrity_error is not None:
+            raise integrity_error
 
 
 def _clean_openssl_environment() -> dict[str, str]:
@@ -537,7 +719,12 @@ def _sign_authority_lock_impl(
             "cache_spec_cell_id binding missing"
         )
 
-    openssl_binary, openssl_sha_before = _pinned_openssl_binary(openssl_bin)
+    (
+        _,
+        openssl_verified_bytes,
+        openssl_sha_before,
+        openssl_runtime_files,
+    ) = _pinned_openssl_binary(openssl_bin)
     private_key = _resolved_regular_file(
         private_key_path,
         context="Ed25519 private key",
@@ -562,16 +749,17 @@ def _sign_authority_lock_impl(
         ],
         "signature_ed25519_hex": "",
     }
-    signature = _sign_with_openssl(
-        openssl_binary=openssl_binary,
-        private_key=private_key,
-        message=authority._authority_signature_message(envelope),
-    )
-    openssl_sha_after = _openssl_sha256(openssl_binary)
-    if openssl_sha_after != openssl_sha_before:
-        raise SomphAuthoritySigningError(
-            "OpenSSL binary changed during signing"
+    with _private_openssl_executable(
+        verified_bytes=openssl_verified_bytes,
+        expected_sha256=openssl_sha_before,
+        runtime_files=openssl_runtime_files,
+    ) as private_openssl:
+        signature = _sign_with_openssl(
+            openssl_binary=private_openssl,
+            private_key=private_key,
+            message=authority._authority_signature_message(envelope),
         )
+    openssl_sha_after = openssl_sha_before
     envelope["signature_ed25519_hex"] = signature.hex()
     verify_signed_envelope(
         envelope,

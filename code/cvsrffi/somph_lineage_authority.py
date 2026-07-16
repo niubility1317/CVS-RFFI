@@ -208,6 +208,8 @@ def _ed_xrecover(y: int) -> int:
     x = pow(xx, (_ED_Q + 3) // 8, _ED_Q)
     if (x * x - xx) % _ED_Q:
         x = x * _ED_I % _ED_Q
+    if (x * x - xx) % _ED_Q:
+        raise SomphLineageAuthorityError("Ed25519 point is not on curve")
     if x & 1:
         x = _ED_Q - x
     return x
@@ -258,6 +260,8 @@ def _ed_decode(value: bytes) -> tuple[int, int]:
     if (x & 1) != (raw >> 255):
         x = _ED_Q - x
     point = (x, y)
+    if (-x * x + y * y - 1 - _ED_D * x * x * y * y) % _ED_Q:
+        raise SomphLineageAuthorityError("Ed25519 point is not on curve")
     if _ed_encode(point) != value:
         raise SomphLineageAuthorityError("Ed25519 point encoding drift")
     return point
@@ -276,6 +280,8 @@ def _verify_ed25519(public_key: bytes, message: bytes, signature: bytes) -> None
         or _ed_scalar_mult(public_point, _ED_L) != _ED_IDENTITY
     ):
         raise SomphLineageAuthorityError("Ed25519 public key subgroup drift")
+    if r_point == _ED_IDENTITY or _ed_scalar_mult(r_point, _ED_L) != _ED_IDENTITY:
+        raise SomphLineageAuthorityError("Ed25519 R point subgroup drift")
     challenge = int.from_bytes(
         hashlib.sha512(signature[:32] + public_key + message).digest(), "little"
     ) % _ED_L

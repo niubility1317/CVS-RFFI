@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import shutil
 import subprocess
 import sys
@@ -754,6 +755,130 @@ def test_rejects_unpinned_openssl_path_even_when_binary_bytes_match(
                 authority.canonical_json_bytes(lock_payload)
             ),
         )
+
+
+def test_signing_executes_locked_private_verified_openssl_copy(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    private_key, public_key = _generate_key(tmp_path, "authority")
+    lock_path, _lock_payload = _lock(tmp_path)
+    real_run = signer.subprocess.run
+    real_openssl_sha256 = signer._openssl_sha256
+    executed_paths: list[Path] = []
+    private_hash_checks: list[Path] = []
+
+    def capture_private_hash(path: Path) -> str:
+        if path.parent.name.startswith("somph-authority-openssl-"):
+            private_hash_checks.append(path)
+        return real_openssl_sha256(path)
+
+    def capture_private_execution(args, *positional, **keywords):
+        executable = Path(args[0])
+        if len(args) > 1 and args[1] == "pkeyutl":
+            executed_paths.append(executable)
+            assert executable != _openssl()
+            assert executable.parent.name.startswith(
+                "somph-authority-openssl-"
+            )
+            assert hashlib.sha256(executable.read_bytes()).hexdigest() == (
+                signer.PINNED_OPENSSL_BINARY_SHA256
+            )
+            for name, expected_sha in (
+                signer._PINNED_OPENSSL_RUNTIME_SHA256.items()
+            ):
+                runtime = executable.parent / name
+                assert hashlib.sha256(runtime.read_bytes()).hexdigest() == (
+                    expected_sha
+                )
+            if os.name == "nt":
+                with pytest.raises(OSError):
+                    executable.write_bytes(b"malicious")
+        return real_run(args, *positional, **keywords)
+
+    monkeypatch.setattr(signer, "_openssl_sha256", capture_private_hash)
+    monkeypatch.setattr(signer.subprocess, "run", capture_private_execution)
+    _sign(
+        tmp_path,
+        private_key=private_key,
+        public_key=public_key,
+        lock_path=lock_path,
+    )
+
+    assert len(executed_paths) == 1
+    expected_names = {
+        "openssl.exe",
+        *signer._PINNED_OPENSSL_RUNTIME_SHA256,
+    }
+    assert {path.name for path in private_hash_checks} == expected_names
+    assert all(
+        sum(path.name == name for path in private_hash_checks) == 2
+        for name in expected_names
+    )
+    assert not executed_paths[0].exists()
+    assert not executed_paths[0].parent.exists()
+
+
+def test_original_openssl_a_to_malicious_to_a_swap_cannot_reach_exec(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    private_key, public_key = _generate_key(tmp_path, "authority")
+    lock_path, _lock_payload = _lock(tmp_path)
+    source = tmp_path / "attacked-openssl.exe"
+    verified_bytes = _openssl().read_bytes()
+    verified_sha = hashlib.sha256(verified_bytes).hexdigest()
+    source.write_bytes(verified_bytes)
+    runtime_files = {
+        name: (
+            (_openssl().parent / name).read_bytes(),
+            expected_sha,
+        )
+        for name, expected_sha in (
+            signer._PINNED_OPENSSL_RUNTIME_SHA256.items()
+        )
+    }
+
+    monkeypatch.setattr(
+        signer,
+        "_pinned_openssl_binary",
+        lambda _requested: (
+            source,
+            verified_bytes,
+            verified_sha,
+            runtime_files,
+        ),
+    )
+    real_run = signer.subprocess.run
+    executed_paths: list[Path] = []
+
+    def swap_original_around_exec(args, *positional, **keywords):
+        if len(args) > 1 and args[1] == "pkeyutl":
+            executed_paths.append(Path(args[0]))
+            source.write_bytes(b"malicious")
+            try:
+                return real_run(args, *positional, **keywords)
+            finally:
+                source.write_bytes(verified_bytes)
+        return real_run(args, *positional, **keywords)
+
+    monkeypatch.setattr(
+        signer.subprocess,
+        "run",
+        swap_original_around_exec,
+    )
+    _envelope, receipt_path, _result = _sign(
+        tmp_path,
+        private_key=private_key,
+        public_key=public_key,
+        lock_path=lock_path,
+    )
+
+    assert len(executed_paths) == 1
+    assert executed_paths[0] != source
+    assert source.read_bytes() == verified_bytes
+    receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    assert receipt["openssl_binary_sha256"] == verified_sha
 
 
 def test_tampered_envelope_or_lock_binding_is_rejected(
