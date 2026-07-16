@@ -46,24 +46,24 @@ from cvsrffi.stage2_predictor_bundle import (
 )
 
 
-OFFLINE_BUILD_SCHEMA = "cvs.phase2.somph_offline_row_pair_build.v1"
-PAIR_STAGING_SCHEMA = "cvs.phase2.somph_registration_pair_staging.v1"
-ROW_MANIFEST_SCHEMA = "cvs.phase2.somph_row_manifest.v1"
+OFFLINE_BUILD_SCHEMA = "cvs.phase2.somph_offline_row_pair_build.v2"
+PAIR_STAGING_SCHEMA = "cvs.phase2.somph_registration_pair_staging.v2"
+ROW_MANIFEST_SCHEMA = "cvs.phase2.somph_row_manifest.v2"
 APPLY_FINALIZATION_SCHEMA = "cvs.phase2.somph_apply_finalization.v1"
 FORMAL_APPLY_STAGING_AUTHORITY_SCHEMA = (
-    "cvs.phase2.somph_formal_apply_staging_authority.v1"
+    "cvs.phase2.somph_formal_apply_staging_authority.v2"
 )
 FORMAL_APPLY_STAGING_AUTHORITY_SEAL_SCHEMA = (
-    "cvs.phase2.somph_formal_apply_staging_authority_seal.v1"
+    "cvs.phase2.somph_formal_apply_staging_authority_seal.v2"
 )
 DIAGNOSTIC_APPLY_STAGING_AUTHORITY_SCHEMA = (
-    "cvs.phase2.somph_diagnostic_apply_staging_authority.v1"
+    "cvs.phase2.somph_diagnostic_apply_staging_authority.v2"
 )
 DIAGNOSTIC_APPLY_STAGING_AUTHORITY_SEAL_SCHEMA = (
-    "cvs.phase2.somph_diagnostic_apply_staging_authority_seal.v1"
+    "cvs.phase2.somph_diagnostic_apply_staging_authority_seal.v2"
 )
 VERIFIED_LINEAGE_CONTEXT_SCHEMA = (
-    "cvs.phase2.somph_verified_lineage_context.v1"
+    "cvs.phase2.somph_verified_lineage_context.v2"
 )
 SUPPORT_POOL_MAX_K = 20
 
@@ -81,11 +81,13 @@ _LINEAGE_RECEIPT_KEYS = {
     "build_spec_size_bytes",
     "channel_code_closure_sha256",
     "channel_code_members",
-    "physical_sample_ids_sha256",
+    "physical_sample_ids_sha256_by_scenario",
+    "physical_sample_scenario_assignment_sha256",
     "scenario_receipts",
     "same_fd_nofollow_read",
     "npz_member_crc_size_ratio_audit",
-    "cross_scenario_physical_order_audit",
+    "cross_scenario_physical_disjointness_audit",
+    "single_observation_contract_audit",
     "sample_level_overlay_recompute",
     "manifest_hex_self_declaration_sufficient",
     "external_authority_lock_verified",
@@ -124,7 +126,17 @@ _CACHE_SET_KEYS = {
     "cache_npz_by_scenario",
     "cache_sha256_by_scenario",
     "cache_audits",
-    "physical_sample_ids_sha256",
+    "phase2_physical_sample_observation_policy",
+    "phase2_cross_scenario_physical_sample_reuse",
+    "phase2_additional_leo_channel_state_generation",
+    "phase2_post_reception_equalization_augmentation_transform_allowed",
+    "phase2_post_reception_view_from_fixed_received_iq_only",
+    "phase2_post_reception_view_counts_as_additional_physical_sample",
+    "phase2_physical_sample_root_id_policy",
+    "phase2_query_post_reception_view_fit_access",
+    "physical_sample_scenario_assignment_policy",
+    "physical_sample_ids_sha256_by_scenario",
+    "physical_sample_scenario_assignment_sha256",
     "builder_sha256",
     "build_spec_sha256",
     "build_spec_path_exposed_to_phase2",
@@ -168,7 +180,8 @@ _APPLY_STAGING_AUTHORITY_KEYS = {
     "apply_staging_root",
     "apply_overlay_provenance_sha256",
     "cache_set_manifest_sha256",
-    "cache_physical_sample_ids_sha256",
+    "cache_physical_sample_ids_sha256_by_scenario",
+    "cache_physical_sample_scenario_assignment_sha256",
     "lineage_receipt_sha256",
     "lineage_seal_sha256",
     "authority_commit_sha256",
@@ -196,6 +209,27 @@ def _require_sha256(value: Any, *, field: str) -> str:
 
 def _canonical_sha256(value: Any) -> str:
     return sha256_bytes(canonical_json_bytes(value))
+
+
+def _require_scenario_sha_map(
+    value: Any,
+    *,
+    field: str,
+) -> dict[str, str]:
+    if (
+        not isinstance(value, Mapping)
+        or tuple(value) != bundle.FORMAL_LEO_WEAK_SCENARIOS
+    ):
+        raise SomphOfflinePackageError(
+            f"{field} must use the exact formal scenario order"
+        )
+    return {
+        scenario: _require_sha256(
+            value[scenario],
+            field=f"{field}.{scenario}",
+        )
+        for scenario in bundle.FORMAL_LEO_WEAK_SCENARIOS
+    }
 
 
 def _read_json_same_fd(path: str | Path, *, context: str) -> tuple[dict[str, Any], str, int]:
@@ -340,7 +374,8 @@ def _write_apply_staging_authority(
     apply_staging_root: Path,
     apply_overlay_provenance_sha256: str,
     cache_set_manifest_sha256: str,
-    cache_physical_sample_ids_sha256: str,
+    cache_physical_sample_ids_sha256_by_scenario: Mapping[str, str],
+    cache_physical_sample_scenario_assignment_sha256: str,
     lineage_receipt_sha256: str,
     lineage_seal_sha256: str,
     authority_commit_sha256: str | None,
@@ -371,6 +406,10 @@ def _write_apply_staging_authority(
         external_authority_lock_verified = False
         authority_commit_sha256 = None
         authority_attestation_sha256 = None
+    cache_physical_roots = _require_scenario_sha_map(
+        cache_physical_sample_ids_sha256_by_scenario,
+        field="cache_physical_sample_ids_sha256_by_scenario",
+    )
     payload = {
         "schema": staging_schema,
         "status": staging_status,
@@ -394,8 +433,12 @@ def _write_apply_staging_authority(
             apply_overlay_provenance_sha256
         ),
         "cache_set_manifest_sha256": cache_set_manifest_sha256,
-        "cache_physical_sample_ids_sha256": (
-            cache_physical_sample_ids_sha256
+        "cache_physical_sample_ids_sha256_by_scenario": (
+            cache_physical_roots
+        ),
+        "cache_physical_sample_scenario_assignment_sha256": _require_sha256(
+            cache_physical_sample_scenario_assignment_sha256,
+            field="cache_physical_sample_scenario_assignment_sha256",
         ),
         "lineage_receipt_sha256": lineage_receipt_sha256,
         "lineage_seal_sha256": lineage_seal_sha256,
@@ -523,7 +566,7 @@ def _load_apply_staging_authority(
         "method_lock_sha256",
         "apply_overlay_provenance_sha256",
         "cache_set_manifest_sha256",
-        "cache_physical_sample_ids_sha256",
+        "cache_physical_sample_scenario_assignment_sha256",
         "lineage_receipt_sha256",
         "lineage_seal_sha256",
     ):
@@ -531,6 +574,15 @@ def _load_apply_staging_authority(
             authority_payload.get(field),
             field=f"apply_staging_authority.{field}",
         )
+    _require_scenario_sha_map(
+        authority_payload.get(
+            "cache_physical_sample_ids_sha256_by_scenario"
+        ),
+        field=(
+            "apply_staging_authority."
+            "cache_physical_sample_ids_sha256_by_scenario"
+        ),
+    )
     if (
         not isinstance(authority_payload.get("row_handle"), str)
         or re.fullmatch(
@@ -724,7 +776,8 @@ def load_verified_lineage_context_from_receipt_seal(
         or receipt.get("scenario_order")
         != list(bundle.FORMAL_LEO_WEAK_SCENARIOS)
         or receipt.get("same_fd_nofollow_read") is not True
-        or receipt.get("cross_scenario_physical_order_audit") != "PASS"
+        or receipt.get("cross_scenario_physical_disjointness_audit") != "PASS"
+        or receipt.get("single_observation_contract_audit") != "PASS"
         or receipt.get("sample_level_overlay_recompute") != "PASS"
         or receipt.get("manifest_hex_self_declaration_sufficient") is not False
         or receipt.get("external_authority_lock_verified") is not False
@@ -754,8 +807,55 @@ def load_verified_lineage_context_from_receipt_seal(
         or cache_set.get("clean_sample_access") is not False
         or cache_set.get("clean_derived_signal_access") is not False
         or cache_set.get("build_spec_path_exposed_to_phase2") is not False
+        or cache_set.get("phase2_physical_sample_observation_policy")
+        != "single_leo_weak_observation_per_physical_sample"
+        or cache_set.get("phase2_cross_scenario_physical_sample_reuse")
+        is not False
+        or cache_set.get("phase2_additional_leo_channel_state_generation")
+        is not False
+        or cache_set.get(
+            "phase2_post_reception_equalization_augmentation_transform_allowed"
+        )
+        is not True
+        or cache_set.get(
+            "phase2_post_reception_view_from_fixed_received_iq_only"
+        )
+        is not True
+        or cache_set.get(
+            "phase2_post_reception_view_counts_as_additional_physical_sample"
+        )
+        is not False
+        or cache_set.get("phase2_physical_sample_root_id_policy")
+        != "immutable_preoverlay_lineage_token"
+        or cache_set.get("phase2_query_post_reception_view_fit_access")
+        is not False
+        or cache_set.get("physical_sample_scenario_assignment_policy")
+        != "disjoint_preoverlay_tx_day_stratified_v1"
     ):
         raise SomphOfflinePackageError("cache-set/lineage binding failed")
+    receipt_physical_roots = _require_scenario_sha_map(
+        receipt.get("physical_sample_ids_sha256_by_scenario"),
+        field="lineage_receipt.physical_sample_ids_sha256_by_scenario",
+    )
+    cache_physical_roots = _require_scenario_sha_map(
+        cache_set.get("physical_sample_ids_sha256_by_scenario"),
+        field="cache_set.physical_sample_ids_sha256_by_scenario",
+    )
+    receipt_assignment_root = _require_sha256(
+        receipt.get("physical_sample_scenario_assignment_sha256"),
+        field="lineage_receipt.physical_sample_scenario_assignment_sha256",
+    )
+    cache_assignment_root = _require_sha256(
+        cache_set.get("physical_sample_scenario_assignment_sha256"),
+        field="cache_set.physical_sample_scenario_assignment_sha256",
+    )
+    if (
+        receipt_physical_roots != cache_physical_roots
+        or receipt_assignment_root != cache_assignment_root
+    ):
+        raise SomphOfflinePackageError(
+            "cache-set/lineage physical scenario assignment binding failed"
+        )
     scenario_receipts = receipt.get("scenario_receipts")
     if (
         not isinstance(scenario_receipts, dict)
@@ -770,7 +870,7 @@ def load_verified_lineage_context_from_receipt_seal(
             or item["cache_sha256"]
             != cache_set["cache_sha256_by_scenario"][scenario]
             or item["physical_sample_ids_sha256"]
-            != receipt["physical_sample_ids_sha256"]
+            != receipt_physical_roots[scenario]
             or item["zip_member_crc_and_bounds_check"] != "PASS"
             or item["sample_level_overlay_recompute"] != "PASS"
         ):
@@ -805,6 +905,11 @@ def load_verified_lineage_context_from_authority_commit(
 ) -> dict[str, Any]:
     """Load formal offline lineage from one externally expected authority commit."""
 
+    if authority.AUTHORITY_LOCK_SCHEMA.endswith(".v1"):
+        raise SomphOfflinePackageError(
+            "formal single-observation authority v2 is pending; "
+            "v1 authority cannot bind per-scenario physical roots and assignment SHA"
+        )
     expected_commit = _require_sha256(
         expected_authority_commit_sha256,
         field="expected_authority_commit_sha256",
@@ -969,7 +1074,7 @@ def _load_cache(
     return arrays
 
 
-def _load_aligned_caches(
+def _load_scenario_caches(
     cache_set_manifest_path: str | Path,
     *,
     cache_set: Mapping[str, Any],
@@ -977,18 +1082,11 @@ def _load_aligned_caches(
 ) -> dict[str, dict[str, np.ndarray]]:
     manifest_path = Path(cache_set_manifest_path)
     result: dict[str, dict[str, np.ndarray]] = {}
-    reference: dict[str, np.ndarray] | None = None
-    invariant_fields = (
-        "tx_ids",
-        "rx_ids",
-        "day_ids",
-        "eq_ids",
-        "sig_ids",
-        "dataset_role",
-        "sample_ids",
-        "split_partition",
-        "split_rank",
+    expected_roots = _require_scenario_sha_map(
+        cache_set.get("physical_sample_ids_sha256_by_scenario"),
+        field="cache_set.physical_sample_ids_sha256_by_scenario",
     )
+    physical_ids_by_scenario: dict[str, list[str]] = {}
     for scenario in bundle.FORMAL_LEO_WEAK_SCENARIOS:
         arrays = _load_cache(
             _resolve_cache(
@@ -1000,31 +1098,33 @@ def _load_aligned_caches(
             ],
             scenario_receipt=receipt["scenario_receipts"][scenario],
         )
-        if reference is None:
-            reference = arrays
-        else:
-            for field in invariant_fields:
-                if (field in arrays) != (field in reference):
-                    raise SomphOfflinePackageError(
-                        f"cross-scenario metadata presence drift: {field}"
-                    )
-                if field in arrays and not np.array_equal(
-                    np.asarray(arrays[field]), np.asarray(reference[field])
-                ):
-                    raise SomphOfflinePackageError(
-                        f"cross-scenario physical order drift: {field}"
-                    )
-        result[scenario] = arrays
-    overlay_rows = [
-        np.asarray(result[scenario]["overlay_ids"]).astype(str)
-        for scenario in bundle.FORMAL_LEO_WEAK_SCENARIOS
-    ]
-    for index in range(len(overlay_rows[0])):
-        if len({values[index] for values in overlay_rows}) != len(overlay_rows):
+        physical_ids = np.asarray(arrays["sample_ids"]).astype(str).tolist()
+        if len(set(physical_ids)) != len(physical_ids):
             raise SomphOfflinePackageError(
-                "the three LEO_weak scenarios must use distinct overlays "
-                "for each physical sample"
+                f"duplicate physical sample ID within scenario: {scenario}"
             )
+        if lineage.ids_sha256(physical_ids) != expected_roots[scenario]:
+            raise SomphOfflinePackageError(
+                f"cache-set physical root drift: {scenario}"
+            )
+        physical_ids_by_scenario[scenario] = physical_ids
+        result[scenario] = arrays
+    observed: set[str] = set()
+    for scenario in bundle.FORMAL_LEO_WEAK_SCENARIOS:
+        overlap = observed.intersection(physical_ids_by_scenario[scenario])
+        if overlap:
+            raise SomphOfflinePackageError(
+                "physical samples are reused across LEO_weak scenarios"
+            )
+        observed.update(physical_ids_by_scenario[scenario])
+    assignment_root = _canonical_sha256(physical_ids_by_scenario)
+    if assignment_root != _require_sha256(
+        cache_set.get("physical_sample_scenario_assignment_sha256"),
+        field="cache_set.physical_sample_scenario_assignment_sha256",
+    ):
+        raise SomphOfflinePackageError(
+            "cache-set physical scenario assignment root mismatch"
+        )
     return result
 
 
@@ -1067,8 +1167,16 @@ def _select_class_rows(
     seed: int,
     role: str,
     tx_label: str,
+    support_k: int,
     query_per_tx: int,
 ) -> tuple[list[int], list[int]]:
+    if (
+        not isinstance(support_k, int)
+        or isinstance(support_k, bool)
+        or support_k < 1
+        or support_k > SUPPORT_POOL_MAX_K
+    ):
+        raise SomphOfflinePackageError("support_k is outside 1..20")
     roles = np.asarray(reference["dataset_role"]).astype(str)
     tx_ids = np.asarray(reference["tx_ids"]).astype(str)
     rx_ids = np.asarray(reference["rx_ids"]).astype(str)
@@ -1091,7 +1199,7 @@ def _select_class_rows(
                 )
             return selected
 
-        support = ranked("support_pool")
+        support = ranked("support_pool")[:support_k]
         query = ranked("query")
     else:
         ordered = _selection_order(
@@ -1102,14 +1210,14 @@ def _select_class_rows(
             role=role,
             tx_label=tx_label,
         )
-        support = ordered[:SUPPORT_POOL_MAX_K]
+        support = ordered[:support_k]
         query = ordered[SUPPORT_POOL_MAX_K : SUPPORT_POOL_MAX_K + query_per_tx]
-    if len(support) < SUPPORT_POOL_MAX_K or len(query) < query_per_tx:
+    if len(support) < support_k or len(query) < query_per_tx:
         raise SomphOfflinePackageError(
             f"insufficient target rows for {role}/{tx_label}: "
             f"support={len(support)},query={len(query)}"
         )
-    support = support[:SUPPORT_POOL_MAX_K]
+    support = support[:support_k]
     query = query[:query_per_tx]
     if set(support) & set(query):
         raise SomphOfflinePackageError(
@@ -1156,74 +1264,87 @@ def _write_profile_payloads(
     receiver: str,
     seed: int,
     labels: list[tuple[str, str]],
-    selected_by_label: Mapping[tuple[str, str], tuple[list[int], list[int]]],
+    selected_by_scenario: Mapping[
+        str,
+        Mapping[tuple[str, str], tuple[list[int], list[int]]],
+    ],
     arrays_by_scenario: Mapping[str, Mapping[str, np.ndarray]],
     secret: bytes,
     lineage_receipt_sha256: str,
     cache_sha256_by_scenario: Mapping[str, str],
+    support_pool_k: int = SUPPORT_POOL_MAX_K,
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
-    reference = arrays_by_scenario[bundle.FORMAL_LEO_WEAK_SCENARIOS[0]]
-    sample_ids = np.asarray(reference["sample_ids"]).astype(str)
-    support_indices = [
-        index
-        for label in labels
-        for index in selected_by_label[label][0]
-    ]
-    query_indices = [
-        index
-        for label in labels
-        for index in selected_by_label[label][1]
-    ]
-    query_indices.sort(
-        key=lambda index: (
-            hmac.new(
-                secret,
-                (
-                    f"somph-query-global-order-v1|{receiver}|{seed}|"
-                    f"{sample_ids[index]}"
-                ).encode("utf-8"),
-                hashlib.sha256,
-            ).hexdigest(),
-            sample_ids[index],
-        )
-    )
-    support_tokens = np.asarray(
-        [
-            _opaque(
-                secret,
-                "sid",
-                "somph-support-v1",
-                receiver,
-                seed,
-                sample_ids[index],
-            )
-            for index in support_indices
-        ]
-    )
-    query_tokens = np.asarray(
-        [
-            _opaque(
-                secret,
-                "qid",
-                "somph-query-v1",
-                receiver,
-                seed,
-                sample_ids[index],
-            )
-            for index in query_indices
-        ]
-    )
+    if (
+        not isinstance(support_pool_k, int)
+        or isinstance(support_pool_k, bool)
+        or support_pool_k < 1
+        or support_pool_k > SUPPORT_POOL_MAX_K
+    ):
+        raise SomphOfflinePackageError("support_pool_k is outside 1..20")
     support_class_indices = np.repeat(
-        np.arange(len(labels), dtype=np.int64), SUPPORT_POOL_MAX_K
+        np.arange(len(labels), dtype=np.int64), support_pool_k
     )
     support_ranks = np.tile(
-        np.arange(SUPPORT_POOL_MAX_K, dtype=np.int64), len(labels)
+        np.arange(support_pool_k, dtype=np.int64), len(labels)
     )
     provenance_samples: list[dict[str, Any]] = []
     truth_rows: list[dict[str, Any]] = []
     registry = _registry(secret, labels)
     for scenario in bundle.FORMAL_LEO_WEAK_SCENARIOS:
         arrays = arrays_by_scenario[scenario]
+        scenario_selected = selected_by_scenario[scenario]
+        sample_ids = np.asarray(arrays["sample_ids"]).astype(str)
+        support_indices = [
+            index
+            for label in labels
+            for index in scenario_selected[label][0]
+        ]
+        query_indices = [
+            index
+            for label in labels
+            for index in scenario_selected[label][1]
+        ]
+        query_indices.sort(
+            key=lambda index: (
+                hmac.new(
+                    secret,
+                    (
+                        f"somph-query-global-order-v2|{scenario}|"
+                        f"{receiver}|{seed}|{sample_ids[index]}"
+                    ).encode("utf-8"),
+                    hashlib.sha256,
+                ).hexdigest(),
+                sample_ids[index],
+            )
+        )
+        support_tokens = np.asarray(
+            [
+                _opaque(
+                    secret,
+                    "sid",
+                    "somph-support-v2",
+                    scenario,
+                    receiver,
+                    seed,
+                    sample_ids[index],
+                )
+                for index in support_indices
+            ]
+        )
+        query_tokens = np.asarray(
+            [
+                _opaque(
+                    secret,
+                    "qid",
+                    "somph-query-v2",
+                    scenario,
+                    receiver,
+                    seed,
+                    sample_ids[index],
+                )
+                for index in query_indices
+            ]
+        )
         iq = np.asarray(arrays["leo_weak_iq"])
         overlays = np.asarray(arrays["overlay_ids"]).astype(str)
         seeds = np.asarray(arrays["satellite_seeds"])
@@ -1236,7 +1357,7 @@ def _write_profile_payloads(
                 "scenario": scenario,
                 "registration_state": registration_state,
                 "registered_class_count": len(labels),
-                "support_pool_max_k": SUPPORT_POOL_MAX_K,
+                "support_pool_max_k": support_pool_k,
                 "token_scheme": "hmac_sha256_opaque_v1",
             }
             overlay_tokens = np.asarray(
@@ -1244,7 +1365,8 @@ def _write_profile_payloads(
                     _opaque(
                         secret,
                         "oid",
-                        "somph-support-overlay-v1",
+                        "somph-support-overlay-v2",
+                        scenario,
                         overlays[index],
                     )
                     for index in selected
@@ -1277,7 +1399,8 @@ def _write_profile_payloads(
                     _opaque(
                         secret,
                         "oid",
-                        "somph-query-overlay-v1",
+                        "somph-query-overlay-v2",
+                        scenario,
                         overlays[index],
                     )
                     for index in selected
@@ -1306,29 +1429,33 @@ def _write_profile_payloads(
                     "source_leo_provenance_sha256": lineage_receipt_sha256,
                 }
             )
-    if profile == bundle.APPLY_ONLY:
-        tx_ids = np.asarray(reference["tx_ids"]).astype(str)
-        roles = np.asarray(reference["dataset_role"]).astype(str)
-        rx_ids = np.asarray(reference["rx_ids"]).astype(str)
-        day_ids = np.asarray(reference["day_ids"]).astype(str)
-        sig_ids = np.asarray(reference["sig_ids"]).astype(str)
-        label_to_class = {label: index for index, label in enumerate(labels)}
-        for token, index in zip(query_tokens.tolist(), query_indices):
-            key = (str(roles[index]), str(tx_ids[index]))
-            class_index = label_to_class[key]
-            truth_rows.append(
-                {
-                    "query_token": token,
-                    "true_class_index": class_index,
-                    "true_class_handle": registry[class_index]["class_handle"],
-                    "transmitter_label": str(tx_ids[index]),
-                    "evaluation_role": str(roles[index]),
-                    "receiver_label": str(rx_ids[index]),
-                    "day_label": str(day_ids[index]),
-                    "signal_label": str(sig_ids[index]),
-                    "physical_sample_id": str(sample_ids[index]),
-                }
-            )
+        if profile == bundle.APPLY_ONLY:
+            tx_ids = np.asarray(arrays["tx_ids"]).astype(str)
+            roles = np.asarray(arrays["dataset_role"]).astype(str)
+            rx_ids = np.asarray(arrays["rx_ids"]).astype(str)
+            day_ids = np.asarray(arrays["day_ids"]).astype(str)
+            sig_ids = np.asarray(arrays["sig_ids"]).astype(str)
+            label_to_class = {
+                label: index for index, label in enumerate(labels)
+            }
+            for token, index in zip(query_tokens.tolist(), query_indices):
+                key = (str(roles[index]), str(tx_ids[index]))
+                class_index = label_to_class[key]
+                truth_rows.append(
+                    {
+                        "query_token": token,
+                        "true_class_index": class_index,
+                        "true_class_handle": registry[class_index][
+                            "class_handle"
+                        ],
+                        "transmitter_label": str(tx_ids[index]),
+                        "evaluation_role": str(roles[index]),
+                        "receiver_label": str(rx_ids[index]),
+                        "day_label": str(day_ids[index]),
+                        "signal_label": str(sig_ids[index]),
+                        "physical_sample_id": str(sample_ids[index]),
+                    }
+                )
     provenance = {
         "schema": bundle.SOMPH_OVERLAY_PROVENANCE_SCHEMA,
         "profile": profile,
@@ -1508,44 +1635,92 @@ def _build_somph_offline_row_pair_from_context(
         raise SomphOfflinePackageError(
             "diagnostic lineage context cannot carry authority artifacts"
         )
-    arrays_by_scenario = _load_aligned_caches(
+    arrays_by_scenario = _load_scenario_caches(
         cache_set_manifest_path,
         cache_set=cache_set,
         receipt=receipt,
     )
-    reference = arrays_by_scenario[bundle.FORMAL_LEO_WEAK_SCENARIOS[0]]
     if context["external_authority_lock_verified"]:
-        roles = np.asarray(reference["dataset_role"]).astype(str)
-        tx_ids = np.asarray(reference["tx_ids"]).astype(str)
         authority_lock = context["authority_lock"]
         expected_tx_by_role = {
             "target_old": set(authority_lock["old_tx_ids"]),
             "target_new": set(authority_lock["new_tx_ids"]),
         }
-        if set(roles.tolist()) != set(expected_tx_by_role):
-            raise SomphOfflinePackageError(
-                "authority-locked cache role coverage drift"
-            )
-        for role, expected_tx in expected_tx_by_role.items():
-            if set(tx_ids[roles == role].tolist()) != expected_tx:
+        for scenario in bundle.FORMAL_LEO_WEAK_SCENARIOS:
+            arrays = arrays_by_scenario[scenario]
+            roles = np.asarray(arrays["dataset_role"]).astype(str)
+            tx_ids = np.asarray(arrays["tx_ids"]).astype(str)
+            if set(roles.tolist()) != set(expected_tx_by_role):
                 raise SomphOfflinePackageError(
-                    f"authority-locked cache TX coverage drift: {role}"
+                    f"authority-locked cache role coverage drift: {scenario}"
                 )
+            for role, expected_tx in expected_tx_by_role.items():
+                if set(tx_ids[roles == role].tolist()) != expected_tx:
+                    raise SomphOfflinePackageError(
+                        "authority-locked cache TX coverage drift: "
+                        f"{scenario}/{role}"
+                    )
     old_labels = [("target_old", value) for value in FORMAL_OLD_TX_LABELS]
     new_labels = [
         ("target_new", value)
         for value in FORMAL_NEW20_TX_LABELS[:new_class_count]
     ]
-    selected: dict[tuple[str, str], tuple[list[int], list[int]]] = {}
-    for role, label in old_labels + new_labels:
-        selected[(role, label)] = _select_class_rows(
-            reference,
-            receiver=receiver,
-            seed=seed,
-            role=role,
-            tx_label=label,
-            query_per_tx=query_per_tx,
+    selected_by_scenario: dict[
+        str,
+        dict[tuple[str, str], tuple[list[int], list[int]]],
+    ] = {}
+    selected_physical_ids_by_scenario: dict[str, set[str]] = {}
+    support_physical_roots_by_scenario: dict[str, str] = {}
+    query_physical_roots_by_scenario: dict[str, str] = {}
+    for scenario in bundle.FORMAL_LEO_WEAK_SCENARIOS:
+        arrays = arrays_by_scenario[scenario]
+        scenario_selected: dict[
+            tuple[str, str], tuple[list[int], list[int]]
+        ] = {}
+        for role, label in old_labels + new_labels:
+            scenario_selected[(role, label)] = _select_class_rows(
+                arrays,
+                receiver=receiver,
+                seed=seed,
+                role=role,
+                tx_label=label,
+                support_k=k_shot,
+                query_per_tx=query_per_tx,
+            )
+        selected_by_scenario[scenario] = scenario_selected
+        sample_ids = np.asarray(arrays["sample_ids"]).astype(str)
+        support_ids = [
+            str(sample_ids[index])
+            for label in old_labels + new_labels
+            for index in scenario_selected[label][0]
+        ]
+        query_ids = [
+            str(sample_ids[index])
+            for label in old_labels + new_labels
+            for index in scenario_selected[label][1]
+        ]
+        if set(support_ids).intersection(query_ids):
+            raise SomphOfflinePackageError(
+                f"same-scenario support/query physical overlap: {scenario}"
+            )
+        selected_physical_ids_by_scenario[scenario] = set(
+            support_ids + query_ids
         )
+        support_physical_roots_by_scenario[scenario] = _canonical_sha256(
+            sorted(support_ids)
+        )
+        query_physical_roots_by_scenario[scenario] = _canonical_sha256(
+            sorted(query_ids)
+        )
+    observed_selected: set[str] = set()
+    for scenario in bundle.FORMAL_LEO_WEAK_SCENARIOS:
+        if observed_selected.intersection(
+            selected_physical_ids_by_scenario[scenario]
+        ):
+            raise SomphOfflinePackageError(
+                "selected physical samples overlap across scenarios"
+            )
+        observed_selected.update(selected_physical_ids_by_scenario[scenario])
 
     output.mkdir(parents=True, exist_ok=False)
     predictor_root = output / "predictor"
@@ -1594,8 +1769,22 @@ def _build_somph_offline_row_pair_from_context(
         "seed": seed,
         "k_shot": k_shot,
         "new_class_count": new_class_count,
-        "support_pool_max_k": SUPPORT_POOL_MAX_K,
+        "support_pool_max_k": k_shot,
         "scenarios": list(bundle.FORMAL_LEO_WEAK_SCENARIOS),
+        "physical_sample_ids_sha256_by_scenario": dict(
+            cache_set["physical_sample_ids_sha256_by_scenario"]
+        ),
+        "physical_sample_scenario_assignment_sha256": cache_set[
+            "physical_sample_scenario_assignment_sha256"
+        ],
+        "selected_support_physical_ids_sha256_by_scenario": (
+            support_physical_roots_by_scenario
+        ),
+        "selected_query_physical_ids_sha256_by_scenario": (
+            query_physical_roots_by_scenario
+        ),
+        "same_scenario_support_query_disjointness_audit": "PASS",
+        "cross_scenario_selected_physical_disjointness_audit": "PASS",
     }
     row_manifest_sha = _canonical_sha256(row_manifest)
     _write_json_new(scorer_root / "row_manifest.json", row_manifest)
@@ -1633,11 +1822,12 @@ def _build_somph_offline_row_pair_from_context(
             receiver=receiver,
             seed=seed,
             labels=labels,
-            selected_by_label=selected,
+            selected_by_scenario=selected_by_scenario,
             arrays_by_scenario=arrays_by_scenario,
             secret=token_secret,
             lineage_receipt_sha256=receipt_sha,
             cache_sha256_by_scenario=cache_set["cache_sha256_by_scenario"],
+            support_pool_k=k_shot,
         )
         apply_registry, truth_rows = _write_profile_payloads(
             apply_staging_root,
@@ -1646,11 +1836,12 @@ def _build_somph_offline_row_pair_from_context(
             receiver=receiver,
             seed=seed,
             labels=labels,
-            selected_by_label=selected,
+            selected_by_scenario=selected_by_scenario,
             arrays_by_scenario=arrays_by_scenario,
             secret=token_secret,
             lineage_receipt_sha256=receipt_sha,
             cache_sha256_by_scenario=cache_set["cache_sha256_by_scenario"],
+            support_pool_k=k_shot,
         )
         if apply_registry != registry:
             raise SomphOfflinePackageError("enrollment/apply registry drift")
@@ -1671,6 +1862,7 @@ def _build_somph_offline_row_pair_from_context(
                 expected_method_lock_sha256=method_sha,
                 expected_overlay_provenance_sha256=enrollment_overlay_sha,
                 detached_seal_path=seal_path,
+                support_pool_max_k=k_shot,
             )
         )
         enrollment_seal_sha = sha256_file(seal_path)
@@ -1707,8 +1899,11 @@ def _build_somph_offline_row_pair_from_context(
                 cache_set_manifest_sha256=context[
                     "cache_set_manifest_sha256"
                 ],
-                cache_physical_sample_ids_sha256=cache_set[
-                    "physical_sample_ids_sha256"
+                cache_physical_sample_ids_sha256_by_scenario=cache_set[
+                    "physical_sample_ids_sha256_by_scenario"
+                ],
+                cache_physical_sample_scenario_assignment_sha256=cache_set[
+                    "physical_sample_scenario_assignment_sha256"
                 ],
                 lineage_receipt_sha256=receipt_sha,
                 lineage_seal_sha256=lineage_seal_sha,
@@ -1758,19 +1953,31 @@ def _build_somph_offline_row_pair_from_context(
     }
     if before_old != after_old:
         raise SomphOfflinePackageError("before/after old query physical mapping drift")
+    if (
+        len(before_old) != len(before_truth)
+        or len({row["physical_sample_id"] for row in after_truth})
+        != len(after_truth)
+    ):
+        raise SomphOfflinePackageError(
+            "truth token or physical sample uniqueness drift"
+        )
     old_support_rows = []
-    sample_ids = np.asarray(reference["sample_ids"]).astype(str)
-    for label in old_labels:
-        for index in selected[label][0]:
-            token = _opaque(
-                token_secret,
-                "sid",
-                "somph-support-v1",
-                receiver,
-                seed,
-                sample_ids[index],
-            )
-            old_support_rows.append((token, str(sample_ids[index])))
+    for scenario in bundle.FORMAL_LEO_WEAK_SCENARIOS:
+        sample_ids = np.asarray(
+            arrays_by_scenario[scenario]["sample_ids"]
+        ).astype(str)
+        for label in old_labels:
+            for index in selected_by_scenario[scenario][label][0]:
+                token = _opaque(
+                    token_secret,
+                    "sid",
+                    "somph-support-v2",
+                    scenario,
+                    receiver,
+                    seed,
+                    sample_ids[index],
+                )
+                old_support_rows.append((token, str(sample_ids[index])))
     old_support_root = _physical_root(old_support_rows)
     old_query_root = _physical_root(list(before_old.items()))
 
@@ -1799,6 +2006,9 @@ def _build_somph_offline_row_pair_from_context(
         "old_support_physical_ids_sha256_after": old_support_root,
         "old_query_physical_ids_sha256_before": old_query_root,
         "old_query_physical_ids_sha256_after": old_query_root,
+        "before_after_old_support_query_reuse_audit": "PASS",
+        "same_scenario_support_query_disjointness_audit": "PASS",
+        "cross_scenario_selected_physical_disjointness_audit": "PASS",
         "before_binding_sha256": None,
         "after_binding_sha256": None,
         "finalization_required": True,
@@ -1827,6 +2037,26 @@ def _build_somph_offline_row_pair_from_context(
         "query_per_tx": query_per_tx,
         "old_tx_labels": list(FORMAL_OLD_TX_LABELS),
         "new_tx_labels": list(FORMAL_NEW20_TX_LABELS[:new_class_count]),
+        "physical_sample_ids_sha256_by_scenario": dict(
+            cache_set["physical_sample_ids_sha256_by_scenario"]
+        ),
+        "physical_sample_scenario_assignment_sha256": cache_set[
+            "physical_sample_scenario_assignment_sha256"
+        ],
+        "selected_support_physical_ids_sha256_by_scenario": (
+            support_physical_roots_by_scenario
+        ),
+        "selected_query_physical_ids_sha256_by_scenario": (
+            query_physical_roots_by_scenario
+        ),
+        "same_scenario_support_query_disjointness_audit": "PASS",
+        "cross_scenario_selected_physical_disjointness_audit": "PASS",
+        "before_after_old_support_query_reuse_audit": "PASS",
+        "formal_authority_state": (
+            "VERIFIED_SINGLE_OBSERVATION_AUTHORITY_V2"
+            if context["external_authority_lock_verified"]
+            else "DIAGNOSTIC_STRUCTURAL_ONLY_NO_FORMAL_AUTHORITY"
+        ),
         "phase1_checkpoint_lineage": {
             "path": str(phase1_checkpoint),
             "sha256": phase1_checkpoint_sha,
@@ -1981,6 +2211,11 @@ def _finalize_somph_apply_package(
         require_external_authority=require_external_authority,
     )
     if require_external_authority:
+        if authority.AUTHORITY_LOCK_SCHEMA.endswith(".v1"):
+            raise SomphOfflinePackageError(
+                "formal single-observation authority v2 is pending; "
+                "diagnostic finalization remains available"
+            )
         if (
             authority_bundle_root is None
             or expected_authority_commit_sha256 is None
@@ -2015,8 +2250,11 @@ def _finalize_somph_apply_package(
             "cache_set_manifest_sha256": authority_lock[
                 "cache_set_manifest"
             ]["sha256"],
-            "cache_physical_sample_ids_sha256": authority_lock[
-                "physical_sample_ids_sha256"
+            "cache_physical_sample_ids_sha256_by_scenario": authority_lock[
+                "physical_sample_ids_sha256_by_scenario"
+            ],
+            "cache_physical_sample_scenario_assignment_sha256": authority_lock[
+                "physical_sample_scenario_assignment_sha256"
             ],
             "lineage_receipt_sha256": authority_attestation[
                 "structural_receipt_sha256"
@@ -2239,6 +2477,9 @@ def finalize_registration_pair_manifest(
         "old_support_physical_ids_sha256_after",
         "old_query_physical_ids_sha256_before",
         "old_query_physical_ids_sha256_after",
+        "before_after_old_support_query_reuse_audit",
+        "same_scenario_support_query_disjointness_audit",
+        "cross_scenario_selected_physical_disjointness_audit",
         "before_binding_sha256",
         "after_binding_sha256",
         "finalization_required",
@@ -2249,6 +2490,11 @@ def finalize_registration_pair_manifest(
         or staging.get("before_binding_sha256") is not None
         or staging.get("after_binding_sha256") is not None
         or staging.get("finalization_required") is not True
+        or staging.get("before_after_old_support_query_reuse_audit") != "PASS"
+        or staging.get("same_scenario_support_query_disjointness_audit")
+        != "PASS"
+        or staging.get("cross_scenario_selected_physical_disjointness_audit")
+        != "PASS"
     ):
         raise SomphOfflinePackageError(
             "registration pair staging exact schema drift"

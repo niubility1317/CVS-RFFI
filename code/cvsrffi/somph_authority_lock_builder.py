@@ -34,7 +34,7 @@ from training_controls import sat_channel_config_for_scenario
 
 
 AUTHORITY_LOCK_BUILD_RECEIPT_SCHEMA = (
-    "cvs.phase1.somph_authority_lock_build_receipt.v1"
+    "cvs.phase1.somph_authority_lock_build_receipt.v2"
 )
 AUTHORITY_LOCK_BUILD_STATUS = "UNSIGNED_OFFLINE_AUTHORITY_LOCK_BUILT"
 AUTHORITY_LOCK_BUILD_RECEIPT_NAME = "authority_lock_build_receipt.json"
@@ -55,7 +55,12 @@ AUTHORITY_LOCK_BUILD_RECEIPT_KEYS = {
     "channel_code_closure_sha256",
     "dataset_authority_root_sha256",
     "cache_role_inputs_root_sha256",
-    "physical_sample_ids_sha256",
+    *authority.PHASE2_SINGLE_OBSERVATION_CONTRACT,
+    "physical_sample_scenario_assignment_policy",
+    "physical_sample_ids_sha256_by_scenario",
+    "physical_sample_scenario_assignment_sha256",
+    "cross_scenario_physical_disjointness_audit",
+    "single_observation_contract_audit",
     "cache_sha256_by_scenario",
     "channel_config_sha256_by_scenario",
     "post_channel_iq_sha256_root_by_scenario",
@@ -67,7 +72,7 @@ AUTHORITY_LOCK_BUILD_RECEIPT_KEYS = {
     "formal_launch_authority",
 }
 FORMAL_CACHE_SPEC_MANIFEST_SHA256 = (
-    "0e1f09ba08afd52b43a1bc9188d319f389c6cb57c9c8e06eee087ac99b3666c5"
+    "1febf18043ec39fe599e9f6b114bb8696981c9874f2795061b6be2eec2a5290c"
 )
 _WRITE_BITS = stat.S_IWUSR | stat.S_IWGRP | stat.S_IWOTH
 
@@ -223,7 +228,7 @@ def _locked_cache_spec_cell(
     )
     if (
         manifest.get("schema")
-        != "cvs.phase2.somph_registered_cache_build_matrix.v1"
+        != "cvs.phase2.somph_registered_cache_build_matrix.v2"
         or manifest_scope
         not in {"stage2_target_old", "stage2_registered"}
         or (production_manifest and manifest_scope != "stage2_registered")
@@ -447,6 +452,7 @@ def _recompute_cache_roots(
 ) -> tuple[
     dict[str, str],
     dict[str, str],
+    dict[str, str],
     str,
     dict[str, str],
     dict[str, str],
@@ -474,7 +480,8 @@ def _recompute_cache_roots(
     overlay_roots: dict[str, str] = {}
     recomputed_audits: dict[str, dict[str, Any]] = {}
     role_row_counts: dict[str, int] | None = None
-    physical_root: str | None = None
+    physical_roots: dict[str, str] = {}
+    physical_ids_by_scenario: dict[str, list[str]] = {}
     for scenario in FORMAL_LEO_WEAK_SCENARIOS:
         cache_path = structural._resolve_cache(
             cache_set_path, cache_paths[scenario]
@@ -530,7 +537,7 @@ def _recompute_cache_roots(
             field=f"cache manifest overlay root:{scenario}",
         )
         try:
-            _physical_ids, audit = structural._load_and_verify_cache(
+            physical_ids, audit = structural._load_and_verify_cache(
                 cache_path,
                 scenario=scenario,
                 expected_cache_sha256=actual_sha,
@@ -572,30 +579,45 @@ def _recompute_cache_roots(
             raise SomphAuthorityLockBuildError(
                 f"cache-set audit path drift for {scenario}"
             )
-        current_physical = audit["physical_sample_ids_sha256"]
-        if physical_root is None:
-            physical_root = current_physical
-        elif current_physical != physical_root:
-            raise SomphAuthorityLockBuildError(
-                "physical sample root drift across LEO_weak scenarios"
-            )
+        physical_roots[scenario] = audit["physical_sample_ids_sha256"]
+        physical_ids_by_scenario[scenario] = physical_ids
         actual_hashes[scenario] = actual_sha
         channel_roots[scenario] = channel_sha
         iq_roots[scenario] = audit["post_channel_iq_sha256_root"]
         overlay_roots[scenario] = audit["overlay_ids_sha256"]
         recomputed_audits[scenario] = audit
-    if physical_root is None:
+    if tuple(physical_roots) != FORMAL_LEO_WEAK_SCENARIOS:
         raise SomphAuthorityLockBuildError("cache set has no formal scenarios")
     if role_row_counts is None:
         raise SomphAuthorityLockBuildError("cache role row counts missing")
-    if cache_set.get("physical_sample_ids_sha256") != physical_root:
+    observed_ids: set[str] = set()
+    for scenario in FORMAL_LEO_WEAK_SCENARIOS:
+        overlap = observed_ids.intersection(physical_ids_by_scenario[scenario])
+        if overlap:
+            raise SomphAuthorityLockBuildError(
+                "PROTOCOL_INVALID_FOR_PHASE2_SINGLE_OBSERVATION: "
+                f"physical samples overlap across LEO_weak scenarios: "
+                f"{sorted(overlap)[:3]}"
+            )
+        observed_ids.update(physical_ids_by_scenario[scenario])
+    assignment_root = canonical_json_sha256(physical_ids_by_scenario)
+    declared_physical_roots = authority._scenario_sha_map(
+        cache_set.get("physical_sample_ids_sha256_by_scenario"),
+        field="cache_set.physical_sample_ids_sha256_by_scenario",
+    )
+    if (
+        declared_physical_roots != physical_roots
+        or cache_set.get("physical_sample_scenario_assignment_sha256")
+        != assignment_root
+    ):
         raise SomphAuthorityLockBuildError(
-            "cache-set physical sample root drift"
+            "cache-set physical scenario assignment root drift"
         )
     return (
         actual_hashes,
         channel_roots,
-        physical_root,
+        physical_roots,
+        assignment_root,
         iq_roots,
         overlay_roots,
         recomputed_audits,
@@ -728,9 +750,11 @@ def _write_somph_authority_lock_package_impl(
         )
     required_samples_per_tx = locked_cell["required_samples_per_tx"]
     for role_spec in role_specs:
-        if role_spec.get("max_samples_per_tx") != required_samples_per_tx:
+        if role_spec.get("max_samples_per_tx") != (
+            required_samples_per_tx * len(FORMAL_LEO_WEAK_SCENARIOS)
+        ):
             raise SomphAuthorityLockBuildError(
-                "locked cache-spec exact sample count/build-spec drift"
+                "locked cache-spec pre-overlay sample count/build-spec drift"
             )
     try:
         expected_roles = structural._validate_cache_set(
@@ -784,7 +808,8 @@ def _write_somph_authority_lock_package_impl(
     (
         cache_hashes,
         channel_roots,
-        physical_root,
+        physical_roots,
+        assignment_root,
         iq_roots,
         overlay_roots,
         cache_audits,
@@ -835,11 +860,22 @@ def _write_somph_authority_lock_package_impl(
             role_specs=role_specs,
             seed=identity["seed"],
         )
+        role_input_count_by_role = {
+            str(role_spec["role"]): int(role_spec["max_samples_per_tx"])
+            * len(
+                authority._split_tx_ids(
+                    role_spec["tx_ids"],
+                    field=f"build_spec.{role_spec['role']}.tx_ids",
+                )
+            )
+            for role_spec in role_specs
+        }
         for row in role_inputs[FORMAL_LEO_WEAK_SCENARIOS[0]]:
             role = row.get("role")
             if (
-                role not in role_row_counts
-                or row.get("physical_sample_count") != role_row_counts[role]
+                role not in role_input_count_by_role
+                or row.get("physical_sample_count")
+                != role_input_count_by_role[role]
             ):
                 raise SomphAuthorityLockBuildError(
                     "cache role_inputs physical_sample_count drift"
@@ -860,7 +896,14 @@ def _write_somph_authority_lock_package_impl(
         "build_spec": build_descriptor,
         "channel_code_closure": closure,
         "channel_config_sha256_by_scenario": channel_roots,
-        "physical_sample_ids_sha256": physical_root,
+        **authority.PHASE2_SINGLE_OBSERVATION_CONTRACT,
+        "physical_sample_scenario_assignment_policy": (
+            authority.PHYSICAL_SAMPLE_SCENARIO_ASSIGNMENT_POLICY
+        ),
+        "physical_sample_ids_sha256_by_scenario": physical_roots,
+        "physical_sample_scenario_assignment_sha256": assignment_root,
+        "cross_scenario_physical_disjointness_audit": "PASS",
+        "single_observation_contract_audit": "PASS",
         "post_channel_iq_sha256_root_by_scenario": iq_roots,
         "overlay_ids_sha256_by_scenario": overlay_roots,
         "cache_role_inputs_root_sha256": role_inputs_root,
@@ -871,6 +914,11 @@ def _write_somph_authority_lock_package_impl(
             lock, authority._LOCK_KEYS, field="built authority lock"
         )
         authority._validate_lock_formal_identity(lock)
+        authority._validate_single_observation_contract(
+            lock,
+            field="built authority lock",
+            require_audit_evidence=True,
+        )
     except authority.SomphLineageAuthorityError as exc:
         raise SomphAuthorityLockBuildError(str(exc)) from exc
     lock_bytes = canonical_json_bytes(lock) + b"\n"
@@ -916,7 +964,14 @@ def _write_somph_authority_lock_package_impl(
             "channel_code_closure_sha256": closure["closure_sha256"],
             "dataset_authority_root_sha256": dataset_root,
             "cache_role_inputs_root_sha256": role_inputs_root,
-            "physical_sample_ids_sha256": physical_root,
+            **authority.PHASE2_SINGLE_OBSERVATION_CONTRACT,
+            "physical_sample_scenario_assignment_policy": (
+                authority.PHYSICAL_SAMPLE_SCENARIO_ASSIGNMENT_POLICY
+            ),
+            "physical_sample_ids_sha256_by_scenario": physical_roots,
+            "physical_sample_scenario_assignment_sha256": assignment_root,
+            "cross_scenario_physical_disjointness_audit": "PASS",
+            "single_observation_contract_audit": "PASS",
             "cache_sha256_by_scenario": cache_hashes,
             "channel_config_sha256_by_scenario": channel_roots,
             "post_channel_iq_sha256_root_by_scenario": iq_roots,
@@ -982,6 +1037,6 @@ def write_somph_authority_lock_package(
         channel_code_members=channel_code_members,
         output_root=output_root,
         expected_cache_spec_manifest_sha256=(
-            "0e1f09ba08afd52b43a1bc9188d319f389c6cb57c9c8e06eee087ac99b3666c5"
+            FORMAL_CACHE_SPEC_MANIFEST_SHA256
         ),
     )

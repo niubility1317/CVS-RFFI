@@ -21,8 +21,11 @@ import numpy as np
 
 from cvsrffi.leo_weak_cache import (
     FORMAL_LEO_WEAK_SCENARIOS,
+    LEO_WEAK_CACHE_SET_SCHEMA,
     PHASE2_SAMPLE_VIEW_POLICY,
+    canonical_json_sha256,
     ids_sha256,
+    physical_sample_id_from_values,
 )
 from cvsrffi.somph_formal_matrix import (
     CONFIRMATION_SEEDS,
@@ -34,13 +37,17 @@ from cvsrffi.somph_formal_matrix import (
 )
 
 
-SCHEMA = "cvs.phase2.somph_registered_cache_build_matrix.v1"
-BUILD_SPEC_SCHEMA = "cvs_leo_weak_iq_cache_build_spec_v1"
+SCHEMA = "cvs.phase2.somph_registered_cache_build_matrix.v2"
+BUILD_SPEC_SCHEMA = "cvs_leo_weak_iq_cache_build_spec_v2"
 ARTIFACT_BOUNDARY = "phase1_offline_cache_planner_never_mounted_in_phase2"
 CONTROL_STATUS = "LOCAL_PROTOCOL_REPAIR_REQUIRED"
 CACHE_SCOPE = "stage2_registered"
 QUERY_SAMPLES_PER_TX = 20
 REQUIRED_SAMPLES_PER_TX = SUPPORT_POOL_MAX_K + QUERY_SAMPLES_PER_TX
+TOTAL_REQUIRED_SAMPLES_PER_TX = (
+    REQUIRED_SAMPLES_PER_TX * len(FORMAL_LEO_WEAK_SCENARIOS)
+)
+SCENARIO_PARTITION_POLICY = "disjoint_preoverlay_tx_day_stratified_v1"
 WISIG_OUT_LEN = 256
 BATCH_SIZE = 256
 FLOAT32_BYTES = 4
@@ -63,6 +70,15 @@ _BUILD_SPEC_KEYS = {
     "phase2_sample_view_policy",
     "clean_sample_access",
     "clean_derived_signal_access",
+    "phase2_physical_sample_observation_policy",
+    "phase2_cross_scenario_physical_sample_reuse",
+    "phase2_additional_leo_channel_state_generation",
+    "phase2_post_reception_equalization_augmentation_transform_allowed",
+    "phase2_post_reception_view_from_fixed_received_iq_only",
+    "phase2_post_reception_view_counts_as_additional_physical_sample",
+    "phase2_physical_sample_root_id_policy",
+    "phase2_query_post_reception_view_fit_access",
+    "physical_sample_scenario_assignment_policy",
     "star_ground_channel_impl",
     "role_specs",
     "dataset_seed",
@@ -130,8 +146,10 @@ _MANIFEST_KEYS = {
     "query_samples_per_tx",
     "required_samples_per_tx",
     "sample_count_requirement",
-    "same_physical_samples_across_scenarios",
-    "distinct_leo_weak_overlay_per_scenario",
+    "single_leo_weak_observation_per_physical_sample",
+    "cross_scenario_physical_sample_reuse",
+    "physical_sample_scenario_assignment_policy",
+    "required_physical_samples_per_tx_all_scenarios",
     "datasets",
     "wisig_out_len",
     "estimated_rows_per_scenario",
@@ -286,6 +304,19 @@ def _build_cache_spec(
         "phase2_sample_view_policy": PHASE2_SAMPLE_VIEW_POLICY,
         "clean_sample_access": False,
         "clean_derived_signal_access": False,
+        "phase2_physical_sample_observation_policy": (
+            "single_leo_weak_observation_per_physical_sample"
+        ),
+        "phase2_cross_scenario_physical_sample_reuse": False,
+        "phase2_additional_leo_channel_state_generation": False,
+        "phase2_post_reception_equalization_augmentation_transform_allowed": True,
+        "phase2_post_reception_view_from_fixed_received_iq_only": True,
+        "phase2_post_reception_view_counts_as_additional_physical_sample": False,
+        "phase2_physical_sample_root_id_policy": (
+            "immutable_preoverlay_lineage_token"
+        ),
+        "phase2_query_post_reception_view_fit_access": False,
+        "physical_sample_scenario_assignment_policy": SCENARIO_PARTITION_POLICY,
         "star_ground_channel_impl": "simplified_leo_residual",
         "role_specs": [
             {
@@ -293,16 +324,16 @@ def _build_cache_spec(
                 "pkl": manysig,
                 "tx_ids": ",".join(OLD_TX_IDS),
                 "rxs": receiver,
-                "days": "0",
-                "max_samples_per_tx": REQUIRED_SAMPLES_PER_TX,
+                "days": "0,1,2",
+                "max_samples_per_tx": TOTAL_REQUIRED_SAMPLES_PER_TX,
             },
             {
                 "role": "target_new",
                 "pkl": manytx,
                 "tx_ids": ",".join(NEW_TX_IDS),
                 "rxs": receiver,
-                "days": "0",
-                "max_samples_per_tx": REQUIRED_SAMPLES_PER_TX,
+                "days": "0,1,2",
+                "max_samples_per_tx": TOTAL_REQUIRED_SAMPLES_PER_TX,
             },
         ],
         "dataset_seed": seed,
@@ -338,6 +369,19 @@ def validate_cache_spec(
         "phase2_sample_view_policy": PHASE2_SAMPLE_VIEW_POLICY,
         "clean_sample_access": False,
         "clean_derived_signal_access": False,
+        "phase2_physical_sample_observation_policy": (
+            "single_leo_weak_observation_per_physical_sample"
+        ),
+        "phase2_cross_scenario_physical_sample_reuse": False,
+        "phase2_additional_leo_channel_state_generation": False,
+        "phase2_post_reception_equalization_augmentation_transform_allowed": True,
+        "phase2_post_reception_view_from_fixed_received_iq_only": True,
+        "phase2_post_reception_view_counts_as_additional_physical_sample": False,
+        "phase2_physical_sample_root_id_policy": (
+            "immutable_preoverlay_lineage_token"
+        ),
+        "phase2_query_post_reception_view_fit_access": False,
+        "physical_sample_scenario_assignment_policy": SCENARIO_PARTITION_POLICY,
         "star_ground_channel_impl": "simplified_leo_residual",
         "dataset_seed": seed,
         "batch_size": BATCH_SIZE,
@@ -375,7 +419,7 @@ def validate_cache_spec(
         )
         if role.get("tx_ids") != ",".join(expected_tx_ids):
             raise SomphCacheBuildMatrixError("role TX registry drift")
-        if role.get("rxs") != receiver or role.get("days") != "0":
+        if role.get("rxs") != receiver or role.get("days") != "0,1,2":
             raise SomphCacheBuildMatrixError("role receiver/day binding drift")
         if (
             _require_int(
@@ -383,9 +427,12 @@ def validate_cache_spec(
                 field=f"role_specs[{index}].max_samples_per_tx",
                 minimum=1,
             )
-            != REQUIRED_SAMPLES_PER_TX
+            != TOTAL_REQUIRED_SAMPLES_PER_TX
         ):
-            raise SomphCacheBuildMatrixError("role sample cap must be maxK20 plus Q20")
+            raise SomphCacheBuildMatrixError(
+                "role sample cap must provide independent maxK20 plus Q20 "
+                "for each of three scenarios"
+            )
     seeds = payload.get("satellite_seed_by_scenario")
     outputs = payload.get("out_npz_by_scenario")
     if not isinstance(seeds, Mapping) or tuple(seeds) != FORMAL_LEO_WEAK_SCENARIOS:
@@ -543,10 +590,15 @@ def write_cache_build_matrix(
         "query_samples_per_tx": QUERY_SAMPLES_PER_TX,
         "required_samples_per_tx": REQUIRED_SAMPLES_PER_TX,
         "sample_count_requirement": (
-            "dataset_inventory_must_prove_at_least_40_rows_per_tx_before_build"
+            "dataset_inventory_must_prove_at_least_120_distinct_rows_per_tx_"
+            "before_single_scenario_assignment"
         ),
-        "same_physical_samples_across_scenarios": True,
-        "distinct_leo_weak_overlay_per_scenario": True,
+        "single_leo_weak_observation_per_physical_sample": True,
+        "cross_scenario_physical_sample_reuse": False,
+        "physical_sample_scenario_assignment_policy": SCENARIO_PARTITION_POLICY,
+        "required_physical_samples_per_tx_all_scenarios": (
+            TOTAL_REQUIRED_SAMPLES_PER_TX
+        ),
         "datasets": [
             {
                 "logical_name": "ManySig",
@@ -571,7 +623,8 @@ def write_cache_build_matrix(
         "disk_budget_bytes_per_cell": budget,
         "disk_budget_bytes_total": budget * len(cells),
         "disk_budget_formula": (
-            "max(32MiB,2*(26TX*40rows*3scenarios*2IQ*256*float32))"
+            "max(32MiB,2*(26TX*40independent_rows_per_scenario*"
+            "3scenarios*2IQ*256*float32))"
         ),
         "cell_count": len(cells),
         "cells": cells,
@@ -624,10 +677,15 @@ def validate_cache_build_manifest(
         "query_samples_per_tx": QUERY_SAMPLES_PER_TX,
         "required_samples_per_tx": REQUIRED_SAMPLES_PER_TX,
         "sample_count_requirement": (
-            "dataset_inventory_must_prove_at_least_40_rows_per_tx_before_build"
+            "dataset_inventory_must_prove_at_least_120_distinct_rows_per_tx_"
+            "before_single_scenario_assignment"
         ),
-        "same_physical_samples_across_scenarios": True,
-        "distinct_leo_weak_overlay_per_scenario": True,
+        "single_leo_weak_observation_per_physical_sample": True,
+        "cross_scenario_physical_sample_reuse": False,
+        "physical_sample_scenario_assignment_policy": SCENARIO_PARTITION_POLICY,
+        "required_physical_samples_per_tx_all_scenarios": (
+            TOTAL_REQUIRED_SAMPLES_PER_TX
+        ),
         "wisig_out_len": WISIG_OUT_LEN,
         "estimated_rows_per_scenario": _estimated_rows_per_scenario(),
         "estimated_rows_all_scenarios_per_cell": _estimated_rows_per_scenario()
@@ -640,7 +698,8 @@ def validate_cache_build_manifest(
         * len(FORMAL_RECEIVERS)
         * len(SEEDS),
         "disk_budget_formula": (
-            "max(32MiB,2*(26TX*40rows*3scenarios*2IQ*256*float32))"
+            "max(32MiB,2*(26TX*40independent_rows_per_scenario*"
+            "3scenarios*2IQ*256*float32))"
         ),
         "cell_count": len(FORMAL_RECEIVERS) * len(SEEDS),
         "post_build_coverage_validator": (
@@ -872,6 +931,11 @@ def _load_npz_coverage_same_fd(
                     "dataset_role",
                     "tx_ids",
                     "rx_ids",
+                    "day_ids",
+                    "eq_ids",
+                    "sig_ids",
+                    "source_dataset_sha256",
+                    "source_record_indices",
                     "sample_ids",
                     "sat_scenarios",
                 }
@@ -895,11 +959,30 @@ def _load_npz_coverage_same_fd(
     scenarios = np.asarray(arrays["sat_scenarios"]).astype(str)
     if not bool(np.all(scenarios == scenario)):
         raise SomphCacheBuildMatrixError("cache NPZ scenario row drift")
+    stored_ids = np.asarray(arrays["sample_ids"]).astype(str).tolist()
+    computed_ids = [
+        physical_sample_id_from_values(
+            dataset_sha256=str(arrays["source_dataset_sha256"][index]),
+            source_record_index=int(arrays["source_record_indices"][index]),
+            role=str(arrays["dataset_role"][index]),
+            tx_id=str(arrays["tx_ids"][index]),
+            rx_id=str(arrays["rx_ids"][index]),
+            day_id=str(arrays["day_ids"][index]),
+            eq_id=str(arrays["eq_ids"][index]),
+            sig_id=str(arrays["sig_ids"][index]),
+        )
+        for index in range(row_count)
+    ]
+    if stored_ids != computed_ids:
+        raise SomphCacheBuildMatrixError(
+            "cache NPZ stable physical sample identity drift"
+        )
     return {
         "roles": np.asarray(arrays["dataset_role"]).astype(str).tolist(),
         "tx_ids": np.asarray(arrays["tx_ids"]).astype(str).tolist(),
         "rx_ids": np.asarray(arrays["rx_ids"]).astype(str).tolist(),
-        "sample_ids": np.asarray(arrays["sample_ids"]).astype(str).tolist(),
+        "day_ids": np.asarray(arrays["day_ids"]).astype(str).tolist(),
+        "sample_ids": computed_ids,
     }
 
 
@@ -928,11 +1011,24 @@ def validate_registered_cache_coverage(
     except (UnicodeDecodeError, json.JSONDecodeError) as exc:
         raise SomphCacheBuildMatrixError("cache_set manifest JSON invalid") from exc
     required = {
-        "schema": "cvs_leo_weak_iq_cache_set_v1",
+        "schema": LEO_WEAK_CACHE_SET_SCHEMA,
         "cache_scope": CACHE_SCOPE,
         "phase2_sample_view_policy": PHASE2_SAMPLE_VIEW_POLICY,
         "clean_sample_access": False,
         "clean_derived_signal_access": False,
+        "phase2_physical_sample_observation_policy": (
+            "single_leo_weak_observation_per_physical_sample"
+        ),
+        "phase2_cross_scenario_physical_sample_reuse": False,
+        "phase2_additional_leo_channel_state_generation": False,
+        "phase2_post_reception_equalization_augmentation_transform_allowed": True,
+        "phase2_post_reception_view_from_fixed_received_iq_only": True,
+        "phase2_post_reception_view_counts_as_additional_physical_sample": False,
+        "phase2_physical_sample_root_id_policy": (
+            "immutable_preoverlay_lineage_token"
+        ),
+        "phase2_query_post_reception_view_fit_access": False,
+        "physical_sample_scenario_assignment_policy": SCENARIO_PARTITION_POLICY,
         "target_channel_view": "leo_weak_only",
         "target_channel_scenarios": list(FORMAL_LEO_WEAK_SCENARIOS),
         "output_roles": ["target_old", "target_new"],
@@ -951,8 +1047,12 @@ def validate_registered_cache_coverage(
         or tuple(hash_map) != FORMAL_LEO_WEAK_SCENARIOS
     ):
         raise SomphCacheBuildMatrixError("cache_set scenario mapping drift")
-    reference_sample_ids: list[str] | None = None
     reference_counts: Counter[tuple[str, str, str]] | None = None
+    sample_ids_by_scenario: dict[str, list[str]] = {}
+    day_counts_by_scenario: dict[
+        str, Counter[tuple[str, str, str]]
+    ] = {}
+    observed_all_ids: set[str] = set()
     scenario_audits: dict[str, Any] = {}
     expected_tx_by_role = {
         "target_old": set(OLD_TX_IDS),
@@ -986,8 +1086,9 @@ def validate_registered_cache_coverage(
                 f"cache coverage physical sample IDs must be unique for {scenario}"
             )
         counts: Counter[tuple[str, str, str]] = Counter()
-        for role, tx_id, receiver in zip(
-            rows["roles"], rows["tx_ids"], rows["rx_ids"]
+        day_counts: Counter[tuple[str, str, str]] = Counter()
+        for role, tx_id, receiver, day_id in zip(
+            rows["roles"], rows["tx_ids"], rows["rx_ids"], rows["day_ids"]
         ):
             if role not in expected_tx_by_role:
                 raise SomphCacheBuildMatrixError("cache coverage contains an extra role")
@@ -1000,6 +1101,7 @@ def validate_registered_cache_coverage(
                     "cache coverage contains another receiver"
                 )
             counts[(role, tx_id, receiver)] += 1
+            day_counts[(role, tx_id, day_id)] += 1
         expected_keys = {
             (role, tx_id, expected_receiver)
             for role, tx_ids in expected_tx_by_role.items()
@@ -1016,26 +1118,70 @@ def validate_registered_cache_coverage(
             raise SomphCacheBuildMatrixError(
                 f"cache coverage must be exactly 40 per role/TX/receiver: {bad}"
             )
-        if reference_sample_ids is None:
-            reference_sample_ids = rows["sample_ids"]
-            reference_counts = counts
-        elif (
-            rows["sample_ids"] != reference_sample_ids
-            or counts != reference_counts
-        ):
+        current_ids = rows["sample_ids"]
+        current_set = set(current_ids)
+        overlap = sorted(observed_all_ids.intersection(current_set))
+        if overlap:
             raise SomphCacheBuildMatrixError(
-                "cache coverage/sample IDs drift across LEO_weak scenarios"
+                "PROTOCOL_INVALID_FOR_PHASE2_SINGLE_OBSERVATION: "
+                f"physical sample IDs overlap across LEO scenarios: {overlap[:3]}"
+            )
+        observed_all_ids.update(current_set)
+        sample_ids_by_scenario[scenario] = current_ids
+        day_counts_by_scenario[scenario] = day_counts
+        if reference_counts is None:
+            reference_counts = counts
+        elif counts != reference_counts:
+            raise SomphCacheBuildMatrixError(
+                "cache coverage role/TX counts drift across LEO_weak scenarios"
             )
         scenario_audits[scenario] = {
             "row_count": len(rows["sample_ids"]),
             "role_tx_receiver_cell_count": len(counts),
             "exact_rows_per_role_tx_receiver": REQUIRED_SAMPLES_PER_TX,
             "physical_sample_ids_sha256": ids_sha256(rows["sample_ids"]),
+            "role_tx_day_counts": {
+                "|".join(key): value for key, value in sorted(day_counts.items())
+            },
         }
-    physical_ids_sha256 = ids_sha256(reference_sample_ids or [])
-    if payload.get("physical_sample_ids_sha256") != physical_ids_sha256:
+    for role, tx_ids in expected_tx_by_role.items():
+        for tx_id in tx_ids:
+            observed_days = sorted(
+                {
+                    day
+                    for scenario in FORMAL_LEO_WEAK_SCENARIOS
+                    for current_role, current_tx, day in day_counts_by_scenario[
+                        scenario
+                    ]
+                    if current_role == role and current_tx == tx_id
+                }
+            )
+            if len(observed_days) != 3:
+                raise SomphCacheBuildMatrixError(
+                    f"cache coverage must span exactly three days: {role}/{tx_id}"
+                )
+            for day in observed_days:
+                values = [
+                    day_counts_by_scenario[scenario][(role, tx_id, day)]
+                    for scenario in FORMAL_LEO_WEAK_SCENARIOS
+                ]
+                if max(values) - min(values) > 1:
+                    raise SomphCacheBuildMatrixError(
+                        "cache scenario/day allocation is not stratified: "
+                        f"{role}/{tx_id}/{day} counts={values}"
+                    )
+    physical_roots = {
+        scenario: ids_sha256(sample_ids_by_scenario[scenario])
+        for scenario in FORMAL_LEO_WEAK_SCENARIOS
+    }
+    if payload.get("physical_sample_ids_sha256_by_scenario") != physical_roots:
         raise SomphCacheBuildMatrixError(
-            "cache_set physical sample ID root does not match NPZ rows"
+            "cache_set per-scenario physical sample ID roots do not match NPZ rows"
+        )
+    assignment_root = canonical_json_sha256(sample_ids_by_scenario)
+    if payload.get("physical_sample_scenario_assignment_sha256") != assignment_root:
+        raise SomphCacheBuildMatrixError(
+            "cache_set physical sample scenario assignment root mismatch"
         )
     return {
         "schema": POST_BUILD_GATE_SCHEMA,
@@ -1044,7 +1190,10 @@ def validate_registered_cache_coverage(
         "scenario_count": len(FORMAL_LEO_WEAK_SCENARIOS),
         "row_count_per_scenario": _estimated_rows_per_scenario(),
         "exact_rows_per_role_tx_receiver": REQUIRED_SAMPLES_PER_TX,
-        "physical_sample_ids_sha256": physical_ids_sha256,
+        "physical_sample_ids_sha256_by_scenario": physical_roots,
+        "physical_sample_scenario_assignment_sha256": assignment_root,
+        "cross_scenario_physical_sample_overlap_count": 0,
+        "tx_day_stratification_pass": True,
         "coverage_pass": True,
         "formal_launch_authority": False,
         "scenario_audits": scenario_audits,

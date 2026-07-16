@@ -28,6 +28,7 @@ def _arrays():
     count = len(tx_ids)
     result = {}
     for scenario_index, scenario in enumerate(builder.FORMAL_LEO_WEAK_SCENARIOS):
+        scenario_offset = scenario_index * 100
         result[scenario] = {
             "leo_weak_iq": np.full(
                 (count, 2, 8), float(scenario_index + 1), dtype=np.float32
@@ -36,10 +37,15 @@ def _arrays():
             "dataset_role": np.asarray(dataset_roles),
             "rx_ids": np.asarray(["20-1"] * count),
             "day_ids": np.asarray(["1"] * count),
-            "sig_ids": np.asarray([str(index) for index in range(count)]),
+            "sig_ids": np.asarray(
+                [str(scenario_offset + index) for index in range(count)]
+            ),
             "sample_ids": np.asarray(
                 [
-                    f"{dataset_roles[index]}|{tx_ids[index]}|20-1|1|1|{index}"
+                    (
+                        f"physical|{scenario}|{dataset_roles[index]}|"
+                        f"{tx_ids[index]}|20-1|1|{scenario_offset + index}"
+                    )
                     for index in range(count)
                 ]
             ),
@@ -77,7 +83,6 @@ def _args(tmp_path: Path, suffix: str, *, stage: str):
         old_class_labels="old-a,old-b",
         new_class_labels="new-a" if stage == "stage2c" else "",
         stage2b_reference_new_class_labels="new-a" if stage == "stage2b" else "",
-        stage2b_mixed_cache_old_query_only=False,
         new_class_count=1 if stage == "stage2c" else 0,
         support_pool_max_k=1,
         query_per_tx=1,
@@ -148,11 +153,85 @@ def test_independent_seals_use_unlinkable_query_tokens(tmp_path: Path, monkeypat
         second_tokens = np.asarray(archive["query_tokens"]).astype(str).tolist()
     assert first_tokens != second_tokens
     for root in (first.predictor_out_root, second.predictor_out_root):
-        scenario_tokens = []
+        scenario_token_sets = []
+        support_structures = []
         for scenario in builder.FORMAL_LEO_WEAK_SCENARIOS:
             with np.load(root / f"query_{scenario}.npz") as archive:
-                scenario_tokens.append(np.asarray(archive["query_tokens"]).astype(str).tolist())
-        assert scenario_tokens[0] == scenario_tokens[1] == scenario_tokens[2]
+                query_tokens = np.asarray(archive["query_tokens"]).astype(str).tolist()
+                query_manifest = json.loads(str(archive["manifest_json"]))
+            with np.load(root / f"support_{scenario}.npz") as archive:
+                support_tokens = (
+                    np.asarray(archive["support_pool_tokens"]).astype(str).tolist()
+                )
+                support_structures.append(
+                    (
+                        np.asarray(archive["support_pool_class_indices"]).tolist(),
+                        np.asarray(archive["support_pool_rank_within_class"]).tolist(),
+                    )
+                )
+            scenario_token_sets.append(set(query_tokens) | set(support_tokens))
+            assert query_manifest["query_truth_included"] is False
+            assert query_manifest["query_role_included"] is False
+            assert query_manifest["query_true_batch_class_count_included"] is False
+            assert query_manifest["query_class_quota_included"] is False
+            assert query_manifest["query_ordering_hint_included"] is False
+        assert all(
+            scenario_token_sets[left].isdisjoint(scenario_token_sets[right])
+            for left in range(len(scenario_token_sets))
+            for right in range(left + 1, len(scenario_token_sets))
+        )
+        assert support_structures[0] == support_structures[1] == support_structures[2]
+
+
+def test_selected_physical_samples_are_disjoint_within_and_across_scenarios(
+    tmp_path: Path, monkeypatch
+) -> None:
+    _patch_cache(monkeypatch)
+    args = _args(tmp_path, "physical-disjoint", stage="stage2c")
+    builder.build(args, token_secret=b"p" * 32)
+    truth = json.loads(
+        (args.scorer_out_root / "truth_sidecar.json").read_text(encoding="utf-8")
+    )
+    query_ids_by_scenario = {
+        scenario: {
+            row["physical_sample_id"]
+            for row in truth["rows"]
+            if row["scenario"] == scenario
+        }
+        for scenario in builder.FORMAL_LEO_WEAK_SCENARIOS
+    }
+    assert all(
+        query_ids_by_scenario[left].isdisjoint(query_ids_by_scenario[right])
+        for left in builder.FORMAL_LEO_WEAK_SCENARIOS
+        for right in builder.FORMAL_LEO_WEAK_SCENARIOS
+        if left < right
+    )
+    assert len(truth["rows"]) == 3 * args.query_per_tx * 3
+    audit = json.loads(
+        (args.scorer_out_root / "offline_build_audit.json").read_text(encoding="utf-8")
+    )
+    assert audit["same_scenario_support_query_physical_disjointness"] == "PASS"
+    assert audit["cross_scenario_selected_physical_disjointness"] == "PASS"
+
+
+def test_cross_scenario_physical_sample_reuse_is_rejected(
+    tmp_path: Path, monkeypatch
+) -> None:
+    arrays = _arrays()
+    first, second = builder.FORMAL_LEO_WEAK_SCENARIOS[:2]
+    arrays[second]["sample_ids"][0] = arrays[first]["sample_ids"][0]
+    monkeypatch.setattr(
+        builder,
+        "load_verified_leo_weak_cache_set",
+        lambda *_args, **_kwargs: (
+            arrays,
+            {"schema": "fake-cache", "cache_scope": "stage2_registered"},
+            {"status": "PASS"},
+        ),
+    )
+    args = _args(tmp_path, "physical-reuse", stage="stage2c")
+    with pytest.raises(ValueError, match="physical sample reuse across LEO_weak"):
+        builder.build(args, token_secret=b"r" * 32)
 
 
 def test_stage2b_has_old_support_and_role_blind_new_reference_query(
@@ -172,53 +251,10 @@ def test_stage2b_has_old_support_and_role_blind_new_reference_query(
     truth = json.loads(
         (args.scorer_out_root / "truth_sidecar.json").read_text(encoding="utf-8")
     )
-    assert sum(row["true_class_handle"] is None for row in truth["rows"]) == 1
-
-
-def test_stage2b_mixed_registered_cache_seals_only_old_support_and_query(
-    tmp_path: Path, monkeypatch
-) -> None:
-    arrays = _arrays()
-    observed: dict[str, object] = {}
-
-    def fake_loader(*_args, **kwargs):
-        observed.update(kwargs)
-        return (
-            arrays,
-            {"schema": "fake-cache", "cache_scope": "stage2_registered"},
-            {"status": "PASS"},
-        )
-
-    monkeypatch.setattr(builder, "load_verified_leo_weak_cache_set", fake_loader)
-    args = _args(tmp_path, "b-mixed-old-only", stage="stage2b")
-    args.stage2b_reference_new_class_labels = ""
-    args.stage2b_mixed_cache_old_query_only = True
-    result = builder.build(args, token_secret=b"d" * 32)
-    assert set(observed["allowed_roles"]) == {"target_old", "target_new"}
-    assert result["registered_class_count"] == 2
-    assert result["support_pool_count"] == 2
-    assert result["query_count"] == 2
-    assert result["stage2b_mixed_registered_cache_old_query_only"] is True
-    truth = json.loads(
-        (args.scorer_out_root / "truth_sidecar.json").read_text(encoding="utf-8")
+    assert sum(row["true_class_handle"] is None for row in truth["rows"]) == 3
+    assert {row["scenario"] for row in truth["rows"]} == set(
+        builder.FORMAL_LEO_WEAK_SCENARIOS
     )
-    assert {row["evaluation_role"] for row in truth["rows"]} == {"target_old"}
-    audit = json.loads(
-        (args.scorer_out_root / "offline_build_audit.json").read_text(
-            encoding="utf-8"
-        )
-    )
-    assert audit["unregistered_cache_rows_excluded_before_predictor_package"] is True
-
-
-def test_stage2b_mixed_cache_old_only_rejects_reference_new_queries(
-    tmp_path: Path, monkeypatch
-) -> None:
-    _patch_cache(monkeypatch)
-    args = _args(tmp_path, "b-invalid-mixed", stage="stage2b")
-    args.stage2b_mixed_cache_old_query_only = True
-    with pytest.raises(ValueError, match="cannot include target-new reference"):
-        builder.build(args, token_secret=b"e" * 32)
 
 
 def test_truth_leak_scan_is_structural_for_npz_numeric_payloads(tmp_path: Path) -> None:

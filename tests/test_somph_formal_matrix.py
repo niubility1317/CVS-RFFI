@@ -16,7 +16,9 @@ from cvsrffi.somph_formal_matrix import (
     ADV3B02_CHECKPOINT_SHA256,
     CONFIRMATION_SEEDS,
     FORMAL_RECEIVERS,
+    KSHOT_REACHABILITY_VIOLATION_STATUS,
     NEW_TX_IDS,
+    OFFLINE_AUTHORITY_SUPPORT_POOL_MAX_K,
     SomphFormalMatrixError,
     build_formal_matrix,
     validate_formal_matrix,
@@ -67,6 +69,95 @@ def test_formal_matrix_has_exact_development_and_confirmation_coverage():
     assert payload["receivers"] == list(FORMAL_RECEIVERS)
     assert payload["confirmation_seeds"] == list(CONFIRMATION_SEEDS)
     assert 713106 in payload["confirmation_seeds"]
+    assert payload["resource_limits"]["adapter_parameters_max"] == 80_000
+    assert payload["resource_limits"]["adaptation_epochs_max"] == 30
+    assert (
+        payload["offline_authority_support_pool_max_k"]
+        == OFFLINE_AUTHORITY_SUPPORT_POOL_MAX_K
+        == 20
+    )
+    assert payload["support_pool_max_k"] == 20
+    assert payload["support_pool_max_k_semantics"] == (
+        "offline_authority_candidate_pool_only_not_phase2_reachable"
+    )
+    assert payload["support_member_allowlist_required"] is True
+    assert (
+        payload["support_preopen_per_class_count_validation_required"] is True
+    )
+    assert payload["nested_k_support_prefix_validation_required"] is True
+    assert (
+        payload["kshot_reachability_violation_status"]
+        == KSHOT_REACHABILITY_VIOLATION_STATUS
+    )
+    assert all(
+        row["cross_scenario_physical_sample_reuse"] is False
+        and row["scenario_support_query_physical_id_sets_pairwise_disjoint"] is True
+        and row["reachable_support_pool_max_k"] == row["k_shot"]
+        and row["reachable_support_count_per_registered_class"] == row["k_shot"]
+        for row in payload["rows"]
+    )
+
+
+def test_k1_k5_k10_rows_expose_only_their_exact_reachable_support() -> None:
+    payload = build_formal_matrix()
+    selected = [
+        row
+        for row in payload["rows"]
+        if row["stage"] == "stage2c"
+        and row["registration_state"] == "after"
+        and row["receiver"] == "20-1"
+        and row["seed"] == 713101
+        and row["new_class_count"] == 5
+        and row["k_shot"] in {1, 5, 10}
+    ]
+    assert {row["k_shot"] for row in selected} == {1, 5, 10}
+    for row in selected:
+        assert row["offline_authority_support_pool_max_k"] == 20
+        assert row["support_pool_max_k"] == 20
+        assert row["reachable_support_pool_max_k"] == row["k_shot"]
+        assert (
+            row["reachable_support_count_per_registered_class"] == row["k_shot"]
+        )
+        assert row["support_member_allowlist_required"] is True
+        assert (
+            row["support_preopen_per_class_count_validation_required"] is True
+        )
+        assert row["nested_k_support_prefix_validation_required"] is True
+
+
+def test_matrix_rejects_resigned_reachable_support_greater_than_row_k() -> None:
+    payload = build_formal_matrix()
+    row = next(item for item in payload["rows"] if item["k_shot"] == 1)
+    row["reachable_support_pool_max_k"] = 20
+    row["reachable_support_count_per_registered_class"] = 20
+    _resign(payload)
+    with pytest.raises(
+        SomphFormalMatrixError,
+        match=KSHOT_REACHABILITY_VIOLATION_STATUS,
+    ):
+        validate_formal_matrix(payload)
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    (
+        ("support_member_allowlist_required", False),
+        ("support_preopen_per_class_count_validation_required", False),
+        ("nested_k_support_prefix_validation_required", False),
+        ("nested_k_support_package_policy", "caller_selected_prefix"),
+    ),
+)
+def test_matrix_rejects_resigned_exact_k_guard_drift(
+    field: str, value: object
+) -> None:
+    payload = build_formal_matrix()
+    payload["rows"][0][field] = value
+    _resign(payload)
+    with pytest.raises(
+        SomphFormalMatrixError,
+        match=KSHOT_REACHABILITY_VIOLATION_STATUS,
+    ):
+        validate_formal_matrix(payload)
 
 
 def test_stage2c_before_after_registries_are_exact_nested_prefixes():
@@ -141,7 +232,7 @@ def test_matrix_rejects_resigned_authority_alias_and_semantic_drift():
             {"support_selection_rule": "arbitrary"}
         ),
         lambda payload: payload["rows"][0].update(
-            {"distinct_leo_weak_overlay_per_scenario": False}
+            {"cross_scenario_physical_sample_reuse": True}
         ),
         lambda payload: payload["rows"][0].update({"k_shot": True}),
     ):
@@ -249,5 +340,5 @@ def test_payload_policy_mutation_does_not_poison_future_builds():
     first["development_lock"]["receiver"] = "8-8"
     second = build_formal_matrix()
     assert second["success_criteria"]["k10_target_old_overall_accuracy_min"] == 0.92
-    assert second["resource_limits"]["adapter_parameters_max"] == 50_000
+    assert second["resource_limits"]["adapter_parameters_max"] == 80_000
     assert second["development_lock"]["receiver"] == "20-1"

@@ -221,16 +221,34 @@ def _resolve_indices(name_list: Sequence[Any], spec: str | None) -> list[int] | 
     return sorted(set(out))
 
 
-def _cap_dataset_per_tx(ds: WiSigCompactDataset, max_samples_per_tx: int, seed: int, split_source: str):
+def _cap_dataset_per_tx(
+    ds: WiSigCompactDataset,
+    max_samples_per_tx: int,
+    seed: int,
+    split_source: str,
+    *,
+    exclude_source_record_indices: set[int] | None = None,
+):
     if int(max_samples_per_tx) <= 0:
         return ds
+    excluded = {
+        int(value) for value in (exclude_source_record_indices or set())
+    }
     by_tx: dict[int, list[int]] = {}
     for i, it in enumerate(ds.index):
+        if int(i) in excluded:
+            continue
         by_tx.setdefault(int(it.tx_i), []).append(int(i))
     rng = np.random.default_rng(int(seed))
     selected: list[int] = []
     for tx_i in sorted(by_tx):
         idx = by_tx[tx_i]
+        if len(idx) < int(max_samples_per_tx):
+            raise ValueError(
+                "insufficient independent physical rows after reference-cache "
+                f"exclusion: tx_i={tx_i} available={len(idx)} "
+                f"required={int(max_samples_per_tx)}"
+            )
         if len(idx) > int(max_samples_per_tx):
             pick = rng.permutation(len(idx))[: int(max_samples_per_tx)].tolist()
             idx = sorted(idx[int(i)] for i in pick)
@@ -252,6 +270,7 @@ def _build_wisig_dataset(
     max_samples_per_tx: int,
     seed: int,
     dataset_cache: dict[str, dict[str, Any]] | None = None,
+    exclude_source_record_indices: set[int] | None = None,
 ):
     cache_key = str(Path(pkl_path).resolve())
     if dataset_cache is not None and cache_key in dataset_cache:
@@ -276,7 +295,13 @@ def _build_wisig_dataset(
         seed=int(seed),
         build_index=True,
     )
-    capped = _cap_dataset_per_tx(base, int(max_samples_per_tx), int(seed), split_source=f"{role}_max_per_tx")
+    capped = _cap_dataset_per_tx(
+        base,
+        int(max_samples_per_tx),
+        int(seed),
+        split_source=f"{role}_max_per_tx",
+        exclude_source_record_indices=exclude_source_record_indices,
+    )
     info = {
         "pkl": str(pkl_path),
         "role": role,
@@ -285,6 +310,9 @@ def _build_wisig_dataset(
         "days": days,
         "rxs": rxs,
         "size": len(capped),
+        "excluded_source_record_count": len(
+            exclude_source_record_indices or set()
+        ),
     }
     return capped, info
 

@@ -99,17 +99,20 @@ def _support_npz(
     *,
     scenario: str,
     class_count: int,
+    declared_k: int,
     registration_state: str,
     sample_token_offset: int = 0,
-    swap_first_tokens: bool = False,
+    support_rows_per_class: int | None = None,
+    corrupt_first_assignment: bool = False,
 ) -> list[dict]:
-    count = class_count * 20
+    rows_per_class = (
+        declared_k if support_rows_per_class is None else support_rows_per_class
+    )
+    count = class_count * rows_per_class
     iq = np.arange(count * 2 * 4, dtype=np.float32).reshape(count, 2, 4)
     tokens = [
         _token("sid_", sample_token_offset + index + 1) for index in range(count)
     ]
-    if swap_first_tokens:
-        tokens[0], tokens[1] = tokens[1], tokens[0]
     scenario_offset = FORMAL_LEO_WEAK_SCENARIOS.index(scenario) * 1000
     overlays = [
         _token("oid_", 10000 + scenario_offset + index) for index in range(count)
@@ -118,14 +121,18 @@ def _support_npz(
         20000 + scenario_offset, 20000 + scenario_offset + count, dtype=np.int64
     )
     hashes = [iq_row_sha256(row) for row in iq]
-    labels = np.repeat(np.arange(class_count, dtype=np.int64), 20)
-    ranks = np.tile(np.arange(20, dtype=np.int64), class_count)
+    labels = np.repeat(
+        np.arange(class_count, dtype=np.int64), rows_per_class
+    )
+    ranks = np.tile(np.arange(rows_per_class, dtype=np.int64), class_count)
+    if corrupt_first_assignment:
+        ranks[0] = rows_per_class - 1
     embedded = {
         "schema": SOMPH_SUPPORT_IQ_SCHEMA,
         "scenario": scenario,
         "registration_state": registration_state,
         "registered_class_count": class_count,
-        "support_pool_max_k": 20,
+        "support_pool_max_k": declared_k,
         "token_scheme": "hmac_sha256_opaque_v1",
     }
     with path.open("xb") as handle:
@@ -214,6 +221,8 @@ def _package(
     invalid_head_scalars: bool = False,
     head_trust_root_override: str | None = None,
     overlay_trust_root_override: str | None = None,
+    support_rows_per_class: int | None = None,
+    declared_support_pool_max_k: int | None = None,
     row_handle: str = "row_" + "4" * 64,
     row_manifest_sha256: str = "5" * 64,
 ):
@@ -291,21 +300,24 @@ def _package(
         head_capsule_sha = sha256_file(root / "head_capsule.npz")
     samples = []
     for scenario in FORMAL_LEO_WEAK_SCENARIOS:
-        sample_token_offset = (
-            1000
-            if drift_last_scenario_tokens
+        scenario_index = FORMAL_LEO_WEAK_SCENARIOS.index(scenario)
+        sample_token_offset = scenario_index * 1000
+        if (
+            drift_last_scenario_tokens
             and scenario == FORMAL_LEO_WEAK_SCENARIOS[-1]
-            else 0
-        )
+        ):
+            sample_token_offset = 0
         if profile == ENROLLMENT_ONLY:
             samples.extend(
                 _support_npz(
                     root / f"support_{scenario}.npz",
                     scenario=scenario,
                     class_count=class_count,
+                    declared_k=k_shot,
                     registration_state=registration_state,
                     sample_token_offset=sample_token_offset,
-                    swap_first_tokens=(
+                    support_rows_per_class=support_rows_per_class,
+                    corrupt_first_assignment=(
                         drift_last_support_assignment
                         and scenario == FORMAL_LEO_WEAK_SCENARIOS[-1]
                     ),
@@ -354,6 +366,7 @@ def _package(
         expected_row_manifest_sha256=(
             row_manifest_sha256 if profile == APPLY_ONLY else None
         ),
+        support_pool_max_k=declared_support_pool_max_k,
     )
     return root, seal, sha256_file(seal), manifest
 
@@ -673,7 +686,7 @@ def test_sample_level_provenance_mismatch_rejected_at_load(
 
 
 @pytest.mark.parametrize("profile", [ENROLLMENT_ONLY, APPLY_ONLY])
-def test_cross_scenario_physical_sample_token_set_drift_is_rejected(
+def test_cross_scenario_physical_sample_token_reuse_is_rejected(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
     profile: str,
@@ -686,30 +699,94 @@ def test_cross_scenario_physical_sample_token_set_drift_is_rejected(
     )
     with pytest.raises(
         PredictorPackageError,
-        match="physical sample-token set drifts across LEO_weak scenarios",
+        match="physical sample-token reuse across LEO_weak scenarios",
     ):
         load_verified_somph_predictor_bundle(
             root, detached_seal_path=seal, expected_seal_sha256=digest
         )
 
 
-def test_cross_scenario_support_token_assignment_drift_is_rejected(
+def test_each_scenario_support_structure_must_be_exact_ordered_k(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    root, seal, digest, _manifest = _package(
+    with pytest.raises(
+        PredictorPackageError,
+        match="exactly K ordered samples",
+    ):
+        _package(
+            tmp_path,
+            monkeypatch,
+            profile=ENROLLMENT_ONLY,
+            drift_last_support_assignment=True,
+        )
+    assert not (tmp_path / f"{ENROLLMENT_ONLY}.seal.json").exists()
+
+
+def test_sealer_rejects_k5_with_declared_k20_reachable_pool(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    with pytest.raises(
+        PredictorPackageError,
+        match="reachable support pool must equal the declared K",
+    ):
+        _package(
+            tmp_path,
+            monkeypatch,
+            profile=ENROLLMENT_ONLY,
+            k_shot=5,
+            declared_support_pool_max_k=20,
+        )
+
+
+@pytest.mark.parametrize(
+    ("k_shot", "reachable_per_class"),
+    [(5, 6), (10, 20)],
+)
+def test_sealer_rejects_reachable_support_surplus(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    k_shot: int,
+    reachable_per_class: int,
+) -> None:
+    with pytest.raises(
+        PredictorPackageError,
+        match="exactly K ordered samples",
+    ):
+        _package(
+            tmp_path,
+            monkeypatch,
+            profile=ENROLLMENT_ONLY,
+            k_shot=k_shot,
+            support_rows_per_class=reachable_per_class,
+        )
+    assert not (tmp_path / f"{ENROLLMENT_ONLY}.seal.json").exists()
+
+
+@pytest.mark.parametrize("k_shot", [1, 5, 10, 20])
+def test_loader_materializes_exact_k_support_per_class(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    k_shot: int,
+) -> None:
+    class_count = 2
+    root, seal, digest, manifest = _package(
         tmp_path,
         monkeypatch,
         profile=ENROLLMENT_ONLY,
-        drift_last_support_assignment=True,
+        class_count=class_count,
+        k_shot=k_shot,
     )
-    with pytest.raises(
-        PredictorPackageError,
-        match="support token/class/rank mapping drifts",
-    ):
-        load_verified_somph_predictor_bundle(
-            root, detached_seal_path=seal, expected_seal_sha256=digest
-        )
+    payloads, loaded_manifest, _audit = load_verified_somph_predictor_bundle(
+        root,
+        detached_seal_path=seal,
+        expected_seal_sha256=digest,
+    )
+    assert manifest["support_pool_max_k"] == k_shot
+    assert loaded_manifest["support_pool_max_k"] == k_shot
+    for arrays in payloads.values():
+        assert arrays["support_tokens"].shape == (class_count * k_shot,)
 
 
 def test_exact_npz_member_constants_have_no_query_truth_surface() -> None:

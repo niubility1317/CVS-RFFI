@@ -225,30 +225,40 @@ def _select_support_query(
     )
 
 
-def _assert_scenario_alignment(
+def _assert_scenario_physical_independence(
     arrays_by_scenario: dict[str, dict[str, np.ndarray]],
-) -> dict[str, np.ndarray]:
-    reference = arrays_by_scenario[FORMAL_LEO_WEAK_SCENARIOS[0]]
-    identity_fields = (
+) -> None:
+    required_fields = (
+        "leo_weak_iq",
         "sample_ids",
         "dataset_role",
         "tx_ids",
         "rx_ids",
         "day_ids",
         "sig_ids",
+        "overlay_ids",
+        "satellite_seeds",
     )
-    for scenario in FORMAL_LEO_WEAK_SCENARIOS[1:]:
+    sample_ids_by_scenario: dict[str, set[str]] = {}
+    for scenario in FORMAL_LEO_WEAK_SCENARIOS:
         arrays = arrays_by_scenario[scenario]
-        for field in identity_fields:
-            if not np.array_equal(np.asarray(arrays[field]), np.asarray(reference[field])):
-                raise ValueError(f"physical sample alignment drift across LEO scenarios: {field}")
-        for field in ("split_partition", "split_rank"):
-            if (field in arrays) != (field in reference) or (
-                field in reference
-                and not np.array_equal(np.asarray(arrays[field]), np.asarray(reference[field]))
-            ):
-                raise ValueError(f"offline split alignment drift across LEO scenarios: {field}")
-    return reference
+        missing = [field for field in required_fields if field not in arrays]
+        if missing:
+            raise ValueError(f"{scenario} cache is missing required fields: {missing}")
+        row_count = len(np.asarray(arrays["sample_ids"]))
+        if any(len(np.asarray(arrays[field])) != row_count for field in required_fields):
+            raise ValueError(f"{scenario} cache row-count structure is inconsistent")
+        sample_ids = np.asarray(arrays["sample_ids"]).astype(str).tolist()
+        if len(sample_ids) != len(set(sample_ids)):
+            raise ValueError(f"{scenario} cache contains duplicate physical sample IDs")
+        current = set(sample_ids)
+        for prior_scenario, prior in sample_ids_by_scenario.items():
+            if current & prior:
+                raise ValueError(
+                    "physical sample reuse across LEO_weak scenarios: "
+                    f"{prior_scenario} vs {scenario}"
+                )
+        sample_ids_by_scenario[scenario] = current
 
 
 def _reject_predictor_truth_leaks(root: Path, forbidden_values: Iterable[str]) -> None:
@@ -353,16 +363,6 @@ def build(args: argparse.Namespace, *, token_secret: bytes | None = None) -> dic
         field="stage2b_reference_new_class_labels",
         required=False,
     )
-    stage2b_mixed_cache_old_query_only = bool(
-        getattr(args, "stage2b_mixed_cache_old_query_only", False)
-    )
-    if stage2b_mixed_cache_old_query_only and (
-        stage != "stage2b" or reference_new_labels
-    ):
-        raise ValueError(
-            "mixed-cache old-query-only mode is Stage2-B-only and cannot include "
-            "target-new reference queries"
-        )
     if set(old_labels) & (set(new_labels) | set(reference_new_labels)):
         raise ValueError("old/new transmitter labels must be disjoint")
     if stage == "stage2b" and new_labels:
@@ -376,11 +376,7 @@ def build(args: argparse.Namespace, *, token_secret: bytes | None = None) -> dic
         raise ValueError("support_pool_max_k and query_per_tx must be positive")
 
     allowed_roles = {"target_old"}
-    if (
-        stage == "stage2c"
-        or reference_new_labels
-        or stage2b_mixed_cache_old_query_only
-    ):
+    if stage == "stage2c" or reference_new_labels:
         allowed_roles.add("target_new")
     expected_scope = str(getattr(args, "expected_cache_scope", "stage2_registered"))
     arrays_by_scenario, cache_manifest, cache_audit = load_verified_leo_weak_cache_set(
@@ -388,7 +384,7 @@ def build(args: argparse.Namespace, *, token_secret: bytes | None = None) -> dic
         expected_scope=expected_scope,
         allowed_roles=allowed_roles,
     )
-    reference = _assert_scenario_alignment(arrays_by_scenario)
+    _assert_scenario_physical_independence(arrays_by_scenario)
     support_labels = [("target_old", label) for label in old_labels]
     if stage == "stage2c":
         support_labels.extend(("target_new", label) for label in new_labels)
@@ -397,49 +393,123 @@ def build(args: argparse.Namespace, *, token_secret: bytes | None = None) -> dic
         reference_query_labels = [
             ("target_new", label) for label in reference_new_labels
         ]
-    support_idx, query_idx, support_y, support_rank, query_records = _select_support_query(
-        reference,
-        receiver=str(args.receiver),
-        seed=int(args.seed),
-        support_labels=support_labels,
-        reference_query_labels=reference_query_labels,
-        support_pool_max_k=support_pool_max_k,
-        query_per_tx=query_per_tx,
-        use_offline_split_partition=(
-            str(getattr(args, "offline_split_partition_policy", ""))
-            == "legacy_seeded_nested_exact"
-        ),
+    use_offline_split_partition = (
+        str(getattr(args, "offline_split_partition_policy", ""))
+        == "legacy_seeded_nested_exact"
     )
+    selections: dict[str, dict[str, Any]] = {}
+    reference_support_structure: tuple[tuple[int, ...], tuple[int, ...]] | None = None
+    reference_query_structure: tuple[tuple[str, str, int | None], ...] | None = None
+    selected_physical_ids_by_scenario: dict[str, set[str]] = {}
+    selected_opaque_tokens_by_scenario: dict[str, set[str]] = {}
+    for scenario in FORMAL_LEO_WEAK_SCENARIOS:
+        arrays = arrays_by_scenario[scenario]
+        support_idx, query_idx, support_y, support_rank, query_records = (
+            _select_support_query(
+                arrays,
+                receiver=str(args.receiver),
+                seed=int(args.seed),
+                support_labels=support_labels,
+                reference_query_labels=reference_query_labels,
+                support_pool_max_k=support_pool_max_k,
+                query_per_tx=query_per_tx,
+                use_offline_split_partition=use_offline_split_partition,
+            )
+        )
+        sample_ids = np.asarray(arrays["sample_ids"]).astype(str)
+        support_physical_ids = {
+            str(sample_ids[index]) for index in support_idx.tolist()
+        }
+        query_physical_ids = {str(sample_ids[index]) for index in query_idx.tolist()}
+        if support_physical_ids & query_physical_ids:
+            raise ValueError(f"{scenario} support/query physical sample overlap")
+        selected_physical_ids = support_physical_ids | query_physical_ids
+        for prior_scenario, prior_ids in selected_physical_ids_by_scenario.items():
+            if selected_physical_ids & prior_ids:
+                raise ValueError(
+                    "selected physical sample reuse across LEO_weak scenarios: "
+                    f"{prior_scenario} vs {scenario}"
+                )
+        selected_physical_ids_by_scenario[scenario] = selected_physical_ids
 
-    sample_ids = np.asarray(reference["sample_ids"]).astype(str)
-    support_tokens = np.asarray(
-        [
-            _opaque_token(
-                token_secret,
-                "sid",
-                "cvs-stage2-support-v2",
-                args.receiver,
-                args.seed,
-                sample_ids[index],
+        support_structure = (
+            tuple(int(value) for value in support_y.tolist()),
+            tuple(int(value) for value in support_rank.tolist()),
+        )
+        query_structure = tuple(
+            (
+                str(record["evaluation_role"]),
+                str(record["transmitter_label"]),
+                (
+                    int(record["registered_class_index"])
+                    if record["registered_class_index"] is not None
+                    else None
+                ),
             )
-            for index in support_idx.tolist()
-        ]
-    )
-    query_tokens = np.asarray(
-        [
-            _opaque_token(
-                token_secret,
-                "qid",
-                "cvs-stage2-query-v2",
-                args.receiver,
-                args.seed,
-                sample_ids[index],
+            for record in query_records
+        )
+        if reference_support_structure is None:
+            reference_support_structure = support_structure
+            reference_query_structure = query_structure
+        elif (
+            support_structure != reference_support_structure
+            or query_structure != reference_query_structure
+        ):
+            raise ValueError(
+                "registered class/rank structure drifts across LEO_weak scenarios"
             )
-            for index in query_idx.tolist()
-        ]
-    )
-    if len(set(query_tokens.tolist())) != len(query_tokens):
-        raise ValueError("opaque query token collision")
+
+        support_tokens = np.asarray(
+            [
+                _opaque_token(
+                    token_secret,
+                    "sid",
+                    "cvs-stage2-support-v3",
+                    scenario,
+                    args.receiver,
+                    args.seed,
+                    sample_ids[index],
+                )
+                for index in support_idx.tolist()
+            ]
+        )
+        query_tokens = np.asarray(
+            [
+                _opaque_token(
+                    token_secret,
+                    "qid",
+                    "cvs-stage2-query-v3",
+                    scenario,
+                    args.receiver,
+                    args.seed,
+                    sample_ids[index],
+                )
+                for index in query_idx.tolist()
+            ]
+        )
+        if len(set(support_tokens.tolist())) != len(support_tokens):
+            raise ValueError(f"{scenario} opaque support token collision")
+        if len(set(query_tokens.tolist())) != len(query_tokens):
+            raise ValueError(f"{scenario} opaque query token collision")
+        if set(support_tokens.tolist()) & set(query_tokens.tolist()):
+            raise ValueError(f"{scenario} support/query opaque token overlap")
+        current_tokens = set(support_tokens.tolist()) | set(query_tokens.tolist())
+        for prior_scenario, prior_tokens in selected_opaque_tokens_by_scenario.items():
+            if current_tokens & prior_tokens:
+                raise ValueError(
+                    "opaque sample-token reuse across LEO_weak scenarios: "
+                    f"{prior_scenario} vs {scenario}"
+                )
+        selected_opaque_tokens_by_scenario[scenario] = current_tokens
+        selections[scenario] = {
+            "support_idx": support_idx,
+            "query_idx": query_idx,
+            "support_y": support_y,
+            "support_rank": support_rank,
+            "query_records": query_records,
+            "support_tokens": support_tokens,
+            "query_tokens": query_tokens,
+        }
 
     predictor_root.mkdir(parents=True, exist_ok=False)
     scorer_root.mkdir(parents=True, exist_ok=False)
@@ -469,6 +539,13 @@ def build(args: argparse.Namespace, *, token_secret: bytes | None = None) -> dic
 
     for scenario in FORMAL_LEO_WEAK_SCENARIOS:
         arrays = arrays_by_scenario[scenario]
+        selection = selections[scenario]
+        support_idx = selection["support_idx"]
+        query_idx = selection["query_idx"]
+        support_y = selection["support_y"]
+        support_rank = selection["support_rank"]
+        support_tokens = selection["support_tokens"]
+        query_tokens = selection["query_tokens"]
         overlay_ids = np.asarray(arrays["overlay_ids"]).astype(str)
         support_iq = np.asarray(arrays["leo_weak_iq"], dtype=np.float32)[support_idx]
         query_iq = np.asarray(arrays["leo_weak_iq"], dtype=np.float32)[query_idx]
@@ -504,7 +581,8 @@ def build(args: argparse.Namespace, *, token_secret: bytes | None = None) -> dic
                         _opaque_token(
                             token_secret,
                             "oid",
-                            "cvs-stage2-support-overlay-v2",
+                            "cvs-stage2-support-overlay-v3",
+                            scenario,
                             overlay_ids[index],
                         )
                         for index in support_idx.tolist()
@@ -528,7 +606,8 @@ def build(args: argparse.Namespace, *, token_secret: bytes | None = None) -> dic
                         _opaque_token(
                             token_secret,
                             "oid",
-                            "cvs-stage2-query-overlay-v2",
+                            "cvs-stage2-query-overlay-v3",
+                            scenario,
                             overlay_ids[index],
                         )
                         for index in query_idx.tolist()
@@ -596,31 +675,38 @@ def build(args: argparse.Namespace, *, token_secret: bytes | None = None) -> dic
     )
     seal_sha256 = sha256_file(seal_path)
 
-    tx_ids = np.asarray(reference["tx_ids"]).astype(str)
-    rx_ids = np.asarray(reference["rx_ids"]).astype(str)
-    day_ids = np.asarray(reference["day_ids"]).astype(str)
-    sig_ids = np.asarray(reference["sig_ids"]).astype(str)
     truth_rows = []
-    for position, record in enumerate(query_records):
-        array_index = int(record["array_index"])
-        token = str(query_tokens[position])
-        truth_rows.append(
-            {
-                "query_token": token,
-                "true_class_index": record["registered_class_index"],
-                "true_class_handle": (
-                    class_registry[int(record["registered_class_index"])]["class_handle"]
-                    if record["registered_class_index"] is not None
-                    else None
-                ),
-                "transmitter_label": str(tx_ids[array_index]),
-                "evaluation_role": str(record["evaluation_role"]),
-                "receiver_label": str(rx_ids[array_index]),
-                "day_label": str(day_ids[array_index]),
-                "signal_label": str(sig_ids[array_index]),
-                "physical_sample_id": str(sample_ids[array_index]),
-            }
-        )
+    for scenario in FORMAL_LEO_WEAK_SCENARIOS:
+        arrays = arrays_by_scenario[scenario]
+        selection = selections[scenario]
+        query_records = selection["query_records"]
+        query_tokens = selection["query_tokens"]
+        sample_ids = np.asarray(arrays["sample_ids"]).astype(str)
+        tx_ids = np.asarray(arrays["tx_ids"]).astype(str)
+        rx_ids = np.asarray(arrays["rx_ids"]).astype(str)
+        day_ids = np.asarray(arrays["day_ids"]).astype(str)
+        sig_ids = np.asarray(arrays["sig_ids"]).astype(str)
+        for position, record in enumerate(query_records):
+            array_index = int(record["array_index"])
+            token = str(query_tokens[position])
+            truth_rows.append(
+                {
+                    "query_token": token,
+                    "scenario": scenario,
+                    "true_class_index": record["registered_class_index"],
+                    "true_class_handle": (
+                        class_registry[int(record["registered_class_index"])]["class_handle"]
+                        if record["registered_class_index"] is not None
+                        else None
+                    ),
+                    "transmitter_label": str(tx_ids[array_index]),
+                    "evaluation_role": str(record["evaluation_role"]),
+                    "receiver_label": str(rx_ids[array_index]),
+                    "day_label": str(day_ids[array_index]),
+                    "signal_label": str(sig_ids[array_index]),
+                    "physical_sample_id": str(sample_ids[array_index]),
+                }
+            )
     truth_path = scorer_root / "truth_sidecar.json"
     _write_json_new(
         truth_path,
@@ -655,12 +741,10 @@ def build(args: argparse.Namespace, *, token_secret: bytes | None = None) -> dic
             "predictor_package_seal_sha256": seal_sha256,
             "predictor_scorer_roots_distinct": True,
             "opaque_token_secret_persisted": False,
-            "stage2b_mixed_registered_cache_old_query_only": (
-                stage2b_mixed_cache_old_query_only
-            ),
-            "unregistered_cache_rows_excluded_before_predictor_package": (
-                stage2b_mixed_cache_old_query_only
-            ),
+            "same_scenario_support_query_physical_disjointness": "PASS",
+            "cross_scenario_selected_physical_disjointness": "PASS",
+            "cross_scenario_opaque_token_disjointness": "PASS",
+            "registered_class_rank_structure_consistent": "PASS",
         },
     )
 
@@ -668,11 +752,13 @@ def build(args: argparse.Namespace, *, token_secret: bytes | None = None) -> dic
         predictor_root,
         ["target_old", "target_new", *old_labels, *new_labels, *reference_new_labels],
     )
-    load_verified_stage2_predictor_bundle(
-        predictor_root,
-        detached_seal_path=seal_path,
-        expected_seal_sha256=seal_sha256,
-    )
+    for scenario in FORMAL_LEO_WEAK_SCENARIOS:
+        load_verified_stage2_predictor_bundle(
+            predictor_root,
+            detached_seal_path=seal_path,
+            expected_seal_sha256=seal_sha256,
+            scenario=scenario,
+        )
     load_verified_scoring_sidecar(scoring_path)
     return {
         "stage": stage,
@@ -683,10 +769,11 @@ def build(args: argparse.Namespace, *, token_secret: bytes | None = None) -> dic
         "scoring_manifest": str(scoring_path),
         "scoring_manifest_sha256": sha256_file(scoring_path),
         "registered_class_count": len(support_labels),
-        "support_pool_count": len(support_idx),
-        "query_count": len(query_idx),
-        "stage2b_mixed_registered_cache_old_query_only": (
-            stage2b_mixed_cache_old_query_only
+        "support_pool_count": len(
+            selections[FORMAL_LEO_WEAK_SCENARIOS[0]]["support_idx"]
+        ),
+        "query_count": len(
+            selections[FORMAL_LEO_WEAK_SCENARIOS[0]]["query_idx"]
         ),
     }
 
@@ -704,14 +791,6 @@ def main() -> int:
     parser.add_argument("--old-class-labels", required=True)
     parser.add_argument("--new-class-labels", default="")
     parser.add_argument("--stage2b-reference-new-class-labels", default="")
-    parser.add_argument(
-        "--stage2b-mixed-cache-old-query-only",
-        action="store_true",
-        help=(
-            "Validate a stage2_registered target cache containing target-old and "
-            "target-new rows, but seal only target-old support/query into Stage2-B."
-        ),
-    )
     parser.add_argument("--new-class-count", type=int, default=0)
     parser.add_argument("--support-pool-max-k", type=int, required=True)
     parser.add_argument("--query-per-tx", type=int, required=True)

@@ -45,11 +45,11 @@ from cvsrffi.stage2_predictor_bundle import (
 from training_controls import sat_channel_config_for_scenario
 
 
-AUTHORITY_LOCK_SCHEMA = "cvs.phase2.somph_leo_weak_authority_lock.v1"
+AUTHORITY_LOCK_SCHEMA = "cvs.phase2.somph_leo_weak_authority_lock.v2"
 AUTHORITY_ATTESTATION_SCHEMA = (
-    "cvs.phase2.somph_leo_weak_authority_attestation.v1"
+    "cvs.phase2.somph_leo_weak_authority_attestation.v2"
 )
-AUTHORITY_COMMIT_SCHEMA = "cvs.phase2.somph_leo_weak_authority_commit.v1"
+AUTHORITY_COMMIT_SCHEMA = "cvs.phase2.somph_leo_weak_authority_commit.v2"
 AUTHORITY_ENVELOPE_SCHEMA = "cvs.phase2.somph_leo_weak_signed_authority_envelope.v1"
 AUTHORITY_STATUS = "EXTERNAL_AUTHORITY_LOCK_VERIFIED"
 AUTHORITY_SIGNATURE_DOMAIN = "cvs.somph.leo_weak.authority_lock.ed25519.v1"
@@ -60,6 +60,21 @@ PINNED_AUTHORITY_PUBLIC_KEY_HEX = (
 )
 PINNED_AUTHORITY_PUBLIC_KEY_SHA256 = (
     "52944e59ec99d360e227cbe78e84efeca6db3ebca3d9698f5d567270c37a9444"
+)
+PHASE2_SINGLE_OBSERVATION_CONTRACT = {
+    "phase2_physical_sample_observation_policy": (
+        "single_leo_weak_observation_per_physical_sample"
+    ),
+    "phase2_cross_scenario_physical_sample_reuse": False,
+    "phase2_additional_leo_channel_state_generation": False,
+    "phase2_post_reception_equalization_augmentation_transform_allowed": True,
+    "phase2_post_reception_view_from_fixed_received_iq_only": True,
+    "phase2_post_reception_view_counts_as_additional_physical_sample": False,
+    "phase2_physical_sample_root_id_policy": "immutable_preoverlay_lineage_token",
+    "phase2_query_post_reception_view_fit_access": False,
+}
+PHYSICAL_SAMPLE_SCENARIO_ASSIGNMENT_POLICY = (
+    "disjoint_preoverlay_tx_day_stratified_v1"
 )
 
 AUTHORITY_LOCK_NAME = "authority_lock.json"
@@ -91,7 +106,12 @@ _LOCK_KEYS = {
     "build_spec",
     "channel_code_closure",
     "channel_config_sha256_by_scenario",
-    "physical_sample_ids_sha256",
+    *PHASE2_SINGLE_OBSERVATION_CONTRACT,
+    "physical_sample_scenario_assignment_policy",
+    "physical_sample_ids_sha256_by_scenario",
+    "physical_sample_scenario_assignment_sha256",
+    "cross_scenario_physical_disjointness_audit",
+    "single_observation_contract_audit",
     "post_channel_iq_sha256_root_by_scenario",
     "overlay_ids_sha256_by_scenario",
     "cache_role_inputs_root_sha256",
@@ -114,6 +134,8 @@ _BUILD_SPEC_REQUIRED_KEYS = {
     "phase2_sample_view_policy",
     "clean_sample_access",
     "clean_derived_signal_access",
+    *PHASE2_SINGLE_OBSERVATION_CONTRACT,
+    "physical_sample_scenario_assignment_policy",
     "star_ground_channel_impl",
     "role_specs",
     "dataset_seed",
@@ -181,7 +203,12 @@ _AUTHORITY_LOCK_BUILD_RECEIPT_KEYS = {
     "channel_code_closure_sha256",
     "dataset_authority_root_sha256",
     "cache_role_inputs_root_sha256",
-    "physical_sample_ids_sha256",
+    *PHASE2_SINGLE_OBSERVATION_CONTRACT,
+    "physical_sample_scenario_assignment_policy",
+    "physical_sample_ids_sha256_by_scenario",
+    "physical_sample_scenario_assignment_sha256",
+    "cross_scenario_physical_disjointness_audit",
+    "single_observation_contract_audit",
     "cache_sha256_by_scenario",
     "channel_config_sha256_by_scenario",
     "post_channel_iq_sha256_root_by_scenario",
@@ -193,7 +220,7 @@ _AUTHORITY_LOCK_BUILD_RECEIPT_KEYS = {
     "formal_launch_authority",
 }
 _FORMAL_CACHE_SPEC_MANIFEST_SHA256 = (
-    "0e1f09ba08afd52b43a1bc9188d319f389c6cb57c9c8e06eee087ac99b3666c5"
+    "1febf18043ec39fe599e9f6b114bb8696981c9874f2795061b6be2eec2a5290c"
 )
 _WRITE_BITS = stat.S_IWUSR | stat.S_IWGRP | stat.S_IWOTH
 
@@ -408,6 +435,35 @@ def _scenario_sha_map(value: Any, *, field: str) -> dict[str, str]:
     }
 
 
+def _validate_single_observation_contract(
+    payload: Mapping[str, Any],
+    *,
+    field: str,
+    require_audit_evidence: bool,
+) -> None:
+    failed = [
+        key
+        for key, expected in PHASE2_SINGLE_OBSERVATION_CONTRACT.items()
+        if payload.get(key) != expected
+    ]
+    if (
+        payload.get("physical_sample_scenario_assignment_policy")
+        != PHYSICAL_SAMPLE_SCENARIO_ASSIGNMENT_POLICY
+    ):
+        failed.append("physical_sample_scenario_assignment_policy")
+    if require_audit_evidence:
+        for key in (
+            "cross_scenario_physical_disjointness_audit",
+            "single_observation_contract_audit",
+        ):
+            if payload.get(key) != "PASS":
+                failed.append(key)
+    if failed:
+        raise SomphLineageAuthorityError(
+            f"{field} single-observation contract drift: {failed}"
+        )
+
+
 def _read_external_bytes(
     path: str | Path, *, context: str
 ) -> tuple[bytes, str, int]:
@@ -522,11 +578,15 @@ def _validate_build_spec(
     ):
         raise SomphLineageAuthorityError("real build spec exact schema drift")
     expected = {
-        "schema": "cvs_leo_weak_iq_cache_build_spec_v1",
+        "schema": "cvs_leo_weak_iq_cache_build_spec_v2",
         "cache_scope": lock["cache_scope"],
         "phase2_sample_view_policy": "leo_weak_only_no_clean_access",
         "clean_sample_access": False,
         "clean_derived_signal_access": False,
+        **PHASE2_SINGLE_OBSERVATION_CONTRACT,
+        "physical_sample_scenario_assignment_policy": (
+            PHYSICAL_SAMPLE_SCENARIO_ASSIGNMENT_POLICY
+        ),
         "star_ground_channel_impl": "simplified_leo_residual",
         "dataset_seed": seed,
         "wisig_equalized": "1",
@@ -918,8 +978,18 @@ def _cache_role_inputs(
                 f"cache role_inputs object drift for {scenario}"
             )
         if required_samples_per_tx is not None:
+            role_specs_by_role = {
+                str(item.get("role")): item
+                for item in list(build_spec.get("role_specs", []))
+                if isinstance(item, dict)
+            }
             expected_role_counts = {
-                role: required_samples_per_tx * len(tx_ids_for_role)
+                role: _require_int(
+                    role_specs_by_role.get(role, {}).get("max_samples_per_tx"),
+                    field=f"build_spec.{role}.max_samples_per_tx",
+                    minimum=required_samples_per_tx,
+                )
+                * len(tx_ids_for_role)
                 for role, tx_ids_for_role in expected_tx_by_role.items()
             }
             for row in result[scenario]:
@@ -1129,7 +1199,14 @@ def _verify_lock_receipt_binding(
         "channel_code_closure_sha256": lock["channel_code_closure"][
             "closure_sha256"
         ],
-        "physical_sample_ids_sha256": lock["physical_sample_ids_sha256"],
+        "physical_sample_ids_sha256_by_scenario": lock[
+            "physical_sample_ids_sha256_by_scenario"
+        ],
+        "physical_sample_scenario_assignment_sha256": lock[
+            "physical_sample_scenario_assignment_sha256"
+        ],
+        "cross_scenario_physical_disjointness_audit": "PASS",
+        "single_observation_contract_audit": "PASS",
     }
     if any(receipt.get(key) != value for key, value in direct.items()):
         raise SomphLineageAuthorityError(
@@ -1151,8 +1228,8 @@ def _verify_lock_receipt_binding(
                 "channel_config_sha256_by_scenario"
             ][scenario],
             "physical_sample_ids_sha256": lock[
-                "physical_sample_ids_sha256"
-            ],
+                "physical_sample_ids_sha256_by_scenario"
+            ][scenario],
             "post_channel_iq_sha256_root": lock[
                 "post_channel_iq_sha256_root_by_scenario"
             ][scenario],
@@ -1196,7 +1273,7 @@ def _verify_build_authority_binding(
         f"rx_{str(lock.get('receiver')).replace('-', '_')}_seed_{lock.get('seed')}"
     )
     direct = {
-        "schema": "cvs.phase1.somph_authority_lock_build_receipt.v1",
+        "schema": "cvs.phase1.somph_authority_lock_build_receipt.v2",
         "status": "UNSIGNED_OFFLINE_AUTHORITY_LOCK_BUILT",
         "cache_spec_manifest_sha256": _FORMAL_CACHE_SPEC_MANIFEST_SHA256,
         "cache_spec_manifest_size_bytes": cache_spec_manifest_size_bytes,
@@ -1221,9 +1298,18 @@ def _verify_build_authority_binding(
         "cache_role_inputs_root_sha256": lock.get(
             "cache_role_inputs_root_sha256"
         ),
-        "physical_sample_ids_sha256": lock.get(
-            "physical_sample_ids_sha256"
+        "physical_sample_ids_sha256_by_scenario": lock.get(
+            "physical_sample_ids_sha256_by_scenario"
         ),
+        "physical_sample_scenario_assignment_sha256": lock.get(
+            "physical_sample_scenario_assignment_sha256"
+        ),
+        **PHASE2_SINGLE_OBSERVATION_CONTRACT,
+        "physical_sample_scenario_assignment_policy": (
+            PHYSICAL_SAMPLE_SCENARIO_ASSIGNMENT_POLICY
+        ),
+        "cross_scenario_physical_disjointness_audit": "PASS",
+        "single_observation_contract_audit": "PASS",
         "authority_lock_sha256": lock_file_sha256,
         "authority_lock_canonical_sha256": lock_canonical_sha256,
         "external_authority_lock_verified": False,
@@ -1237,6 +1323,16 @@ def _verify_build_authority_binding(
         raise SomphLineageAuthorityError(
             "authority build receipt/lock/official manifest binding drift"
         )
+    _validate_single_observation_contract(
+        lock,
+        field="authority lock",
+        require_audit_evidence=True,
+    )
+    _validate_single_observation_contract(
+        build_receipt,
+        field="authority build receipt",
+        require_audit_evidence=True,
+    )
     dataset_root_sha = _require_sha256(
         build_receipt.get("dataset_authority_root_sha256"),
         field="authority build receipt dataset authority root",
@@ -1246,6 +1342,7 @@ def _verify_build_authority_binding(
         "channel_config_sha256_by_scenario",
         "post_channel_iq_sha256_root_by_scenario",
         "overlay_ids_sha256_by_scenario",
+        "physical_sample_ids_sha256_by_scenario",
     ):
         if build_receipt.get(field) != lock.get(field):
             raise SomphLineageAuthorityError(
@@ -1258,7 +1355,7 @@ def _verify_build_authority_binding(
         )
     if (
         cache_spec_manifest.get("schema")
-        != "cvs.phase2.somph_registered_cache_build_matrix.v1"
+        != "cvs.phase2.somph_registered_cache_build_matrix.v2"
         or cache_spec_manifest.get("formal_launch_authority") is not False
         or cache_spec_manifest.get("required_samples_per_tx") != 40
     ):
@@ -1310,6 +1407,11 @@ def write_somph_lineage_authority_bundle(
     _require_exact_dict(lock, _LOCK_KEYS, field="authority lock")
     if lock.get("schema") != AUTHORITY_LOCK_SCHEMA:
         raise SomphLineageAuthorityError("authority lock schema drift")
+    _validate_single_observation_contract(
+        lock,
+        field="authority lock",
+        require_audit_evidence=True,
+    )
     lock_canonical_sha = sha256_bytes(canonical_json_bytes(lock))
     expected_envelope_sha = _require_sha256(
         expected_signed_authority_envelope_sha256,
@@ -1449,9 +1551,13 @@ def write_somph_lineage_authority_bundle(
         lock["channel_config_sha256_by_scenario"],
         field="channel_config_sha256_by_scenario",
     )
-    physical_root = _require_sha256(
-        lock["physical_sample_ids_sha256"],
-        field="physical_sample_ids_sha256",
+    physical_roots = _scenario_sha_map(
+        lock["physical_sample_ids_sha256_by_scenario"],
+        field="physical_sample_ids_sha256_by_scenario",
+    )
+    assignment_root = _require_sha256(
+        lock["physical_sample_scenario_assignment_sha256"],
+        field="physical_sample_scenario_assignment_sha256",
     )
     iq_roots = _scenario_sha_map(
         lock["post_channel_iq_sha256_root_by_scenario"],
@@ -1467,9 +1573,9 @@ def write_somph_lineage_authority_bundle(
             role_spec.get("max_samples_per_tx")
             for role_spec in role_specs
         }
-        if declared_counts != {40}:
+        if declared_counts != {120}:
             raise SomphLineageAuthorityError(
-                "formal registered authority requires exact maxK20+Q20 coverage"
+                "formal registered authority requires 120 pre-overlay rows per TX"
             )
         strict_required_samples = 40
     role_inputs = _cache_role_inputs(
@@ -1533,7 +1639,10 @@ def write_somph_lineage_authority_bundle(
                 channel_code_members=channel_paths,
                 expected_channel_code_closure_sha256=channel_closure_sha,
                 expected_channel_config_sha256_by_scenario=channel_config_roots,
-                expected_physical_sample_ids_sha256=physical_root,
+                expected_physical_sample_ids_sha256_by_scenario=physical_roots,
+                expected_physical_sample_scenario_assignment_sha256=(
+                    assignment_root
+                ),
                 expected_post_channel_iq_sha256_root_by_scenario=iq_roots,
                 expected_overlay_ids_sha256_by_scenario=overlay_roots,
                 receipt_path=staging / STRUCTURAL_RECEIPT_NAME,
@@ -1586,6 +1695,14 @@ def write_somph_lineage_authority_bundle(
             ),
             "dataset_authority_root_sha256": dataset_root,
             "cache_role_inputs_root_sha256": role_inputs_root,
+            **PHASE2_SINGLE_OBSERVATION_CONTRACT,
+            "physical_sample_scenario_assignment_policy": (
+                PHYSICAL_SAMPLE_SCENARIO_ASSIGNMENT_POLICY
+            ),
+            "physical_sample_ids_sha256_by_scenario": physical_roots,
+            "physical_sample_scenario_assignment_sha256": assignment_root,
+            "cross_scenario_physical_disjointness_audit": "PASS",
+            "single_observation_contract_audit": "PASS",
             "structural_receipt_sha256": structural_receipt_descriptor["sha256"],
             "structural_detached_seal_sha256": structural_seal_descriptor["sha256"],
             "formal_launch_authority": False,
@@ -1720,6 +1837,11 @@ def verify_somph_lineage_authority_bundle(
     lock = payloads[AUTHORITY_LOCK_NAME]
     if set(lock) != _LOCK_KEYS or lock.get("schema") != AUTHORITY_LOCK_SCHEMA:
         raise SomphLineageAuthorityError("committed authority lock schema drift")
+    _validate_single_observation_contract(
+        lock,
+        field="committed authority lock",
+        require_audit_evidence=True,
+    )
     receiver, seed, roles = _validate_lock_formal_identity(lock)
     envelope = payloads[AUTHORITY_ENVELOPE_NAME]
     envelope_sha = next(
@@ -1803,6 +1925,12 @@ def verify_somph_lineage_authority_bundle(
         "new_tx_ids_sha256",
         "dataset_authority_root_sha256",
         "cache_role_inputs_root_sha256",
+        *PHASE2_SINGLE_OBSERVATION_CONTRACT,
+        "physical_sample_scenario_assignment_policy",
+        "physical_sample_ids_sha256_by_scenario",
+        "physical_sample_scenario_assignment_sha256",
+        "cross_scenario_physical_disjointness_audit",
+        "single_observation_contract_audit",
         "structural_receipt_sha256",
         "structural_detached_seal_sha256",
         "formal_launch_authority",
@@ -1837,12 +1965,37 @@ def verify_somph_lineage_authority_bundle(
         "cache_role_inputs_root_sha256": lock[
             "cache_role_inputs_root_sha256"
         ],
+        **PHASE2_SINGLE_OBSERVATION_CONTRACT,
+        "physical_sample_scenario_assignment_policy": (
+            PHYSICAL_SAMPLE_SCENARIO_ASSIGNMENT_POLICY
+        ),
+        "physical_sample_ids_sha256_by_scenario": lock[
+            "physical_sample_ids_sha256_by_scenario"
+        ],
+        "physical_sample_scenario_assignment_sha256": lock[
+            "physical_sample_scenario_assignment_sha256"
+        ],
+        "cross_scenario_physical_disjointness_audit": "PASS",
+        "single_observation_contract_audit": "PASS",
         "formal_launch_authority": False,
     }
     if any(attestation.get(key) != value for key, value in expected_attestation.items()):
         raise SomphLineageAuthorityError("authority attestation binding drift")
-    for root_field in ("dataset_authority_root_sha256", "cache_role_inputs_root_sha256"):
+    for root_field in (
+        "dataset_authority_root_sha256",
+        "cache_role_inputs_root_sha256",
+        "physical_sample_scenario_assignment_sha256",
+    ):
         _require_sha256(attestation.get(root_field), field=root_field)
+    _scenario_sha_map(
+        attestation.get("physical_sample_ids_sha256_by_scenario"),
+        field="attestation physical_sample_ids_sha256_by_scenario",
+    )
+    _validate_single_observation_contract(
+        attestation,
+        field="authority attestation",
+        require_audit_evidence=True,
+    )
     if receipt.get("formal_launch_authority") is not False:
         raise SomphLineageAuthorityError("structural receipt authorized launch")
     return lock, attestation, commit

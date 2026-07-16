@@ -39,10 +39,25 @@ def _fixture(tmp_path: Path) -> dict:
     channel = tmp_path / "channel.py"
     channel.write_text("def overlay(x): return x\n", encoding="utf-8")
     build_spec = {
-        "schema": "cvs_leo_weak_iq_cache_build_spec_v1",
+        "schema": "cvs_leo_weak_iq_cache_build_spec_v2",
         "phase2_sample_view_policy": PHASE2_SAMPLE_VIEW_POLICY,
         "clean_sample_access": False,
         "clean_derived_signal_access": False,
+        "phase2_physical_sample_observation_policy": (
+            "single_leo_weak_observation_per_physical_sample"
+        ),
+        "phase2_cross_scenario_physical_sample_reuse": False,
+        "phase2_additional_leo_channel_state_generation": False,
+        "phase2_post_reception_equalization_augmentation_transform_allowed": True,
+        "phase2_post_reception_view_from_fixed_received_iq_only": True,
+        "phase2_post_reception_view_counts_as_additional_physical_sample": False,
+        "phase2_physical_sample_root_id_policy": (
+            "immutable_preoverlay_lineage_token"
+        ),
+        "phase2_query_post_reception_view_fit_access": False,
+        "physical_sample_scenario_assignment_policy": (
+            "disjoint_preoverlay_tx_day_stratified_v1"
+        ),
         "satellite_seed_by_scenario": {
             scenario: 100 + index
             for index, scenario in enumerate(FORMAL_LEO_WEAK_SCENARIOS)
@@ -52,25 +67,33 @@ def _fixture(tmp_path: Path) -> dict:
     _write_json(build_spec_path, build_spec)
     build_spec_sha = canonical_json_sha256(build_spec)
     exporter_sha = sha256_file(exporter)
-    sample_ids = [
-        physical_sample_id_from_values(
-            role="target_old",
-            tx_id=str(index),
-            rx_id="20-1",
-            day_id="1",
-            eq_id="1",
-            sig_id=str(index),
-        )
-        for index in range(2)
-    ]
-    physical_root = ids_sha256(sample_ids)
     cache_paths = {}
     cache_hashes = {}
+    physical_ids_by_scenario = {}
+    physical_roots = {}
     iq_roots = {}
     overlay_roots = {}
     channel_hashes = {}
     audits = {}
     for scenario_index, scenario in enumerate(FORMAL_LEO_WEAK_SCENARIOS):
+        day_label = str(scenario_index)
+        source_dataset_sha256 = np.asarray(["a" * 64, "a" * 64])
+        source_record_indices = np.asarray(
+            [scenario_index * 2, scenario_index * 2 + 1], dtype=np.int64
+        )
+        sample_ids = [
+            physical_sample_id_from_values(
+                dataset_sha256=str(source_dataset_sha256[index]),
+                source_record_index=int(source_record_indices[index]),
+                role="target_old",
+                tx_id=str(index),
+                rx_id="20-1",
+                day_id=day_label,
+                eq_id="1",
+                sig_id=str(index),
+            )
+            for index in range(2)
+        ]
         iq = (
             np.arange(16, dtype=np.float32).reshape(2, 2, 4)
             + scenario_index
@@ -117,17 +140,34 @@ def _fixture(tmp_path: Path) -> dict:
             "role_satellite_seeds": {"target_old": int(seeds[0])},
             "role_inputs": [{"role": "target_old", "dataset_sha256": "a" * 64}],
             "row_count": 2,
-            "physical_sample_ids_sha256": physical_root,
+            "physical_sample_ids_sha256": ids_sha256(sample_ids),
             "post_channel_iq_sha256_root": ids_sha256(iq_hashes),
             "overlay_ids_sha256": ids_sha256(overlays),
             "channel_meta_keys": ["channel_model"],
             "sample_overlay_provenance_fields": [
                 "sample_ids",
+                "source_dataset_sha256",
+                "source_record_indices",
                 "sat_scenarios",
                 "satellite_seeds",
                 "post_channel_iq_sha256",
                 "overlay_ids",
             ],
+            "phase2_physical_sample_observation_policy": (
+                "single_leo_weak_observation_per_physical_sample"
+            ),
+            "phase2_cross_scenario_physical_sample_reuse": False,
+            "phase2_additional_leo_channel_state_generation": False,
+            "phase2_post_reception_equalization_augmentation_transform_allowed": True,
+            "phase2_post_reception_view_from_fixed_received_iq_only": True,
+            "phase2_post_reception_view_counts_as_additional_physical_sample": False,
+            "phase2_physical_sample_root_id_policy": (
+                "immutable_preoverlay_lineage_token"
+            ),
+            "phase2_query_post_reception_view_fit_access": False,
+            "physical_sample_scenario_assignment_policy": (
+                "disjoint_preoverlay_tx_day_stratified_v1"
+            ),
         }
         cache = tmp_path / f"{scenario}.npz"
         with cache.open("xb") as handle:
@@ -138,9 +178,11 @@ def _fixture(tmp_path: Path) -> dict:
                 domain_labels=np.asarray([0, 0], dtype=np.int64),
                 tx_ids=np.asarray(["0", "1"]),
                 rx_ids=np.asarray(["20-1", "20-1"]),
-                day_ids=np.asarray(["1", "1"]),
+                day_ids=np.asarray([day_label, day_label]),
                 eq_ids=np.asarray(["1", "1"]),
                 sig_ids=np.asarray(["0", "1"]),
+                source_dataset_sha256=source_dataset_sha256,
+                source_record_indices=source_record_indices,
                 dataset_role=np.asarray(["target_old", "target_old"]),
                 channel_views=np.asarray(["rx_base", "rx_base"]),
                 sat_scenarios=np.asarray([scenario, scenario]),
@@ -153,6 +195,8 @@ def _fixture(tmp_path: Path) -> dict:
             )
         cache_paths[scenario] = cache.name
         cache_hashes[scenario] = sha256_file(cache)
+        physical_ids_by_scenario[scenario] = sample_ids
+        physical_roots[scenario] = ids_sha256(sample_ids)
         iq_roots[scenario] = ids_sha256(iq_hashes)
         overlay_roots[scenario] = ids_sha256(overlays)
         channel_hashes[scenario] = channel_hash
@@ -171,7 +215,25 @@ def _fixture(tmp_path: Path) -> dict:
         "cache_npz_by_scenario": cache_paths,
         "cache_sha256_by_scenario": cache_hashes,
         "cache_audits": audits,
-        "physical_sample_ids_sha256": physical_root,
+        "phase2_physical_sample_observation_policy": (
+            "single_leo_weak_observation_per_physical_sample"
+        ),
+        "phase2_cross_scenario_physical_sample_reuse": False,
+        "phase2_additional_leo_channel_state_generation": False,
+        "phase2_post_reception_equalization_augmentation_transform_allowed": True,
+        "phase2_post_reception_view_from_fixed_received_iq_only": True,
+        "phase2_post_reception_view_counts_as_additional_physical_sample": False,
+        "phase2_physical_sample_root_id_policy": (
+            "immutable_preoverlay_lineage_token"
+        ),
+        "phase2_query_post_reception_view_fit_access": False,
+        "physical_sample_scenario_assignment_policy": (
+            "disjoint_preoverlay_tx_day_stratified_v1"
+        ),
+        "physical_sample_ids_sha256_by_scenario": physical_roots,
+        "physical_sample_scenario_assignment_sha256": canonical_json_sha256(
+            physical_ids_by_scenario
+        ),
         "builder_sha256": exporter_sha,
         "build_spec_sha256": build_spec_sha,
         "build_spec_path_exposed_to_phase2": False,
@@ -205,7 +267,10 @@ def _fixture(tmp_path: Path) -> dict:
         "channel_code_members": channel_members,
         "expected_channel_code_closure_sha256": channel_closure,
         "expected_channel_config_sha256_by_scenario": channel_hashes,
-        "expected_physical_sample_ids_sha256": physical_root,
+        "expected_physical_sample_ids_sha256_by_scenario": physical_roots,
+        "expected_physical_sample_scenario_assignment_sha256": (
+            canonical_json_sha256(physical_ids_by_scenario)
+        ),
         "expected_post_channel_iq_sha256_root_by_scenario": iq_roots,
         "expected_overlay_ids_sha256_by_scenario": overlay_roots,
         "receipt_path": tmp_path / "receipt.json",
@@ -321,7 +386,9 @@ def test_overlay_row_tamper_is_recomputed_not_self_declared(tmp_path: Path) -> N
         write_somph_leo_weak_lineage_seal(**kwargs)
 
 
-def test_cross_scenario_physical_order_drift_is_rejected(tmp_path: Path) -> None:
+def test_within_scenario_physical_row_order_drift_is_rejected(
+    tmp_path: Path,
+) -> None:
     kwargs = _fixture(tmp_path)
     scenario = FORMAL_LEO_WEAK_SCENARIOS[-1]
     cache = tmp_path / f"{scenario}.npz"
@@ -360,7 +427,7 @@ def test_cross_scenario_physical_order_drift_is_rejected(tmp_path: Path) -> None
         kwargs["cache_set_manifest_path"]
     )
     with pytest.raises(
-        SomphLineageError, match="physical sample ordering|physical_sample_ids"
+        SomphLineageError, match="physical sample ID row mismatch|cache sample root mismatch"
     ):
         write_somph_leo_weak_lineage_seal(**kwargs)
 

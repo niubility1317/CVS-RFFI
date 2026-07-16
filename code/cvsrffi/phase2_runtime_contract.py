@@ -45,11 +45,25 @@ PHASE2_SOURCE_RUNTIME_CONTRACT: dict[str, Any] = {
     "phase2_external_source_adapter_access": False,
 }
 
+PHASE2_SINGLE_OBSERVATION_CONTRACT: dict[str, Any] = {
+    "phase2_physical_sample_observation_policy": (
+        "single_leo_weak_observation_per_physical_sample"
+    ),
+    "phase2_cross_scenario_physical_sample_reuse": False,
+    "phase2_additional_leo_channel_state_generation": False,
+    "phase2_post_reception_equalization_augmentation_transform_allowed": True,
+    "phase2_post_reception_view_from_fixed_received_iq_only": True,
+    "phase2_post_reception_view_counts_as_additional_physical_sample": False,
+    "phase2_physical_sample_root_id_policy": "immutable_preoverlay_lineage_token",
+    "phase2_query_post_reception_view_fit_access": False,
+}
+
 PHASE2_FULL_CONTRACT: dict[str, Any] = {
     **PHASE2_BASE_CONTRACT,
     **PHASE2_CLEAN_RUNTIME_CONTRACT,
     **PHASE2_QUERY_DECISION_CONTRACT,
     **PHASE2_SOURCE_RUNTIME_CONTRACT,
+    **PHASE2_SINGLE_OBSERVATION_CONTRACT,
 }
 
 DEPRECATED_QUERY_CLASS_COUNT_FIELD = "phase2_query_class_count_access"
@@ -209,7 +223,7 @@ def validate_phase2_contract(
     require_runtime_evidence: bool | None = None,
     evidence_phase: str | None = None,
 ) -> None:
-    """Validate all 12 Phase2 fields and the requested evidence phase.
+    """Validate the full Phase2 contract and the requested evidence phase.
 
     ``require_runtime_evidence`` is retained for existing callers.  ``True``
     means pre-run evidence; use ``evidence_phase='post_run'`` for a completed

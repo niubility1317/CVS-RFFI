@@ -48,7 +48,7 @@ def _realistic_fixture(
     build_spec = json.loads(
         Path(values["build_spec_path"]).read_text(encoding="utf-8")
     )
-    build_spec["role_specs"][0]["max_samples_per_tx"] = 1
+    build_spec["role_specs"][0]["max_samples_per_tx"] = 3
     _write_json(Path(values["build_spec_path"]), build_spec)
     build_spec_sha = canonical_json_sha256(build_spec)
     cache_set["build_spec_sha256"] = build_spec_sha
@@ -90,6 +90,9 @@ def _realistic_fixture(
         embedded["channel_config_sha256"] = channel_sha
         embedded["build_spec_sha256"] = build_spec_sha
         embedded["overlay_ids_sha256"] = ids_sha256(overlays)
+        embedded["role_inputs"][0]["physical_sample_count"] = (
+            3 * len(values["lock"]["old_tx_ids"])
+        )
         arrays["manifest_json"] = np.asarray(
             json.dumps(embedded, sort_keys=True)
         )
@@ -105,8 +108,8 @@ def _realistic_fixture(
                 "scenario": scenario,
                 "row_count": len(values["lock"]["old_tx_ids"]),
                 "physical_sample_ids_sha256": values["lock"][
-                    "physical_sample_ids_sha256"
-                ],
+                    "physical_sample_ids_sha256_by_scenario"
+                ][scenario],
                 "post_channel_iq_sha256_root": values["lock"][
                     "post_channel_iq_sha256_root_by_scenario"
                 ][scenario],
@@ -122,7 +125,7 @@ def _realistic_fixture(
     }
     cell_id = "rx_20_1_seed_713101"
     spec_manifest = {
-        "schema": "cvs.phase2.somph_registered_cache_build_matrix.v1",
+        "schema": "cvs.phase2.somph_registered_cache_build_matrix.v2",
         "cache_scope": "stage2_target_old",
         "phase2_sample_view_policy": "leo_weak_only_no_clean_access",
         "formal_launch_authority": False,
@@ -257,6 +260,18 @@ def test_builds_unsigned_real_byte_grounded_lock_and_bundle_accepts_it(
     assert lock["cache_scope"] == "stage2_target_old"
     assert lock["old_tx_ids"] == values["lock"]["old_tx_ids"]
     assert lock["new_tx_ids"] == []
+    assert lock["schema"] == "cvs.phase2.somph_leo_weak_authority_lock.v2"
+    assert tuple(lock["physical_sample_ids_sha256_by_scenario"]) == (
+        "leo_clear_weak",
+        "leo_low_elev_weak",
+        "leo_rain_weak",
+    )
+    assert lock["physical_sample_scenario_assignment_sha256"]
+    assert lock["cross_scenario_physical_disjointness_audit"] == "PASS"
+    assert lock["single_observation_contract_audit"] == "PASS"
+    for field, expected in authority.PHASE2_SINGLE_OBSERVATION_CONTRACT.items():
+        assert lock[field] == expected
+        assert receipt[field] == expected
     assert receipt["external_authority_lock_verified"] is False
     assert receipt["formal_launch_authority"] is False
     assert stat.S_IMODE(lock_path.stat().st_mode) & stat.S_IWUSR == 0
@@ -454,6 +469,84 @@ def test_rejects_unbalanced_exact_coverage_and_role_input_count_lie(
         match="physical_sample_count drift",
     ):
         _build(values, tmp_path / "role_input_out")
+
+
+def test_rejects_cross_scenario_reuse_even_with_recomputed_declared_roots(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    values = _realistic_fixture(tmp_path, monkeypatch)
+    source_scenario = "leo_clear_weak"
+    target_scenario = "leo_rain_weak"
+    cache_set = json.loads(
+        values["cache_set_path"].read_text(encoding="utf-8")
+    )
+    source_path = (
+        values["cache_set_path"].parent
+        / cache_set["cache_npz_by_scenario"][source_scenario]
+    )
+    with np.load(source_path, allow_pickle=False) as archive:
+        source_ids = np.asarray(archive["sample_ids"]).astype(str)
+        source_dataset_sha = np.asarray(
+            archive["source_dataset_sha256"]
+        ).astype(str)
+        source_record_indices = np.asarray(
+            archive["source_record_indices"], dtype=np.int64
+        )
+        source_sig_ids = np.asarray(archive["sig_ids"]).astype(str)
+
+    def reuse_physical_rows(arrays, embedded):
+        arrays["sample_ids"] = source_ids.copy()
+        arrays["source_dataset_sha256"] = source_dataset_sha.copy()
+        arrays["source_record_indices"] = source_record_indices.copy()
+        arrays["sig_ids"] = source_sig_ids.copy()
+        embedded["physical_sample_ids_sha256"] = ids_sha256(
+            source_ids.tolist()
+        )
+        overlays = [
+            overlay_id(
+                sample_id=str(sample_id),
+                scenario=target_scenario,
+                satellite_seed=int(seed),
+                channel_config_sha256=embedded["channel_config_sha256"],
+                iq_sha256=str(iq_sha),
+            )
+            for sample_id, seed, iq_sha in zip(
+                arrays["sample_ids"],
+                arrays["satellite_seeds"],
+                arrays["post_channel_iq_sha256"],
+            )
+        ]
+        arrays["overlay_ids"] = np.asarray(overlays)
+        embedded["overlay_ids_sha256"] = ids_sha256(overlays)
+
+    _rewrite_cache(values, target_scenario, reuse_physical_rows)
+    cache_set = json.loads(
+        values["cache_set_path"].read_text(encoding="utf-8")
+    )
+    ids_by_scenario = {}
+    for scenario in cache_set["cache_npz_by_scenario"]:
+        path = (
+            values["cache_set_path"].parent
+            / cache_set["cache_npz_by_scenario"][scenario]
+        )
+        with np.load(path, allow_pickle=False) as archive:
+            ids_by_scenario[scenario] = (
+                np.asarray(archive["sample_ids"]).astype(str).tolist()
+            )
+    cache_set["physical_sample_ids_sha256_by_scenario"] = {
+        scenario: ids_sha256(ids_by_scenario[scenario])
+        for scenario in ids_by_scenario
+    }
+    cache_set["physical_sample_scenario_assignment_sha256"] = (
+        canonical_json_sha256(ids_by_scenario)
+    )
+    _write_json(values["cache_set_path"], cache_set)
+
+    with pytest.raises(
+        SomphAuthorityLockBuildError,
+        match="physical samples overlap across LEO_weak scenarios",
+    ):
+        _build(values, tmp_path / "overlap_must_not_publish")
 
 
 def test_relative_build_spec_paths_follow_spec_directory(

@@ -13,13 +13,19 @@ import pytest
 from cvsrffi.somph_cache_build_matrix import (
     FIXED_N607_CACHE_OUTPUT_ROOT,
     REQUIRED_SAMPLES_PER_TX,
+    TOTAL_REQUIRED_SAMPLES_PER_TX,
     SomphCacheBuildMatrixError,
     validate_cache_build_manifest,
     validate_registered_cache_coverage,
     validate_cache_spec,
     write_cache_build_matrix,
 )
-from cvsrffi.leo_weak_cache import ids_sha256
+from cvsrffi.leo_weak_cache import (
+    LEO_WEAK_CACHE_SET_SCHEMA,
+    canonical_json_sha256,
+    ids_sha256,
+    physical_sample_id_from_values,
+)
 from cvsrffi.somph_formal_matrix import (
     CONFIRMATION_SEEDS,
     FORMAL_RECEIVERS,
@@ -54,38 +60,94 @@ def _write_cache_set(
     drift_scenario_ids: str | None = None,
 ) -> Path:
     root.mkdir(parents=True)
-    rows: list[tuple[str, str, str, str]] = []
-    serial = 0
-    for role, tx_ids in (("target_old", OLD_TX_IDS), ("target_new", NEW_TX_IDS)):
-        for tx_id in tx_ids:
-            count = (count_override or {}).get((role, tx_id), 40)
-            for _ in range(count):
-                rows.append((role, tx_id, receiver, f"sid-{serial:05d}"))
-                serial += 1
     hashes: dict[str, str] = {}
-    for scenario in ("leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak"):
-        scenario_rows = list(rows)
+    ids_by_scenario: dict[str, list[str]] = {}
+    first_scenario_first_row: dict[str, object] | None = None
+    scenarios = ("leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak")
+    for scenario_index, scenario in enumerate(scenarios):
+        scenario_rows: list[dict[str, object]] = []
+        serial = scenario_index * 10_000
+        for role, tx_ids in (("target_old", OLD_TX_IDS), ("target_new", NEW_TX_IDS)):
+            dataset_sha = ("a" if role == "target_old" else "b") * 64
+            for tx_id in tx_ids:
+                count = (count_override or {}).get((role, tx_id), 40)
+                for rank in range(count):
+                    day_id = str((rank + scenario_index) % 3)
+                    sig_id = str(serial)
+                    sample_id = physical_sample_id_from_values(
+                        dataset_sha256=dataset_sha,
+                        source_record_index=serial,
+                        role=role,
+                        tx_id=tx_id,
+                        rx_id=receiver,
+                        day_id=day_id,
+                        eq_id="1",
+                        sig_id=sig_id,
+                    )
+                    scenario_rows.append(
+                        {
+                            "role": role,
+                            "tx_id": tx_id,
+                            "rx_id": receiver,
+                            "day_id": day_id,
+                            "eq_id": "1",
+                            "sig_id": sig_id,
+                            "dataset_sha256": dataset_sha,
+                            "source_record_index": serial,
+                            "sample_id": sample_id,
+                        }
+                    )
+                    serial += 1
+        if scenario_index == 0:
+            first_scenario_first_row = dict(scenario_rows[0])
         if scenario == drift_scenario_ids:
-            role, tx_id, rx_id, _sample_id = scenario_rows[0]
-            scenario_rows[0] = (role, tx_id, rx_id, "sid-drift")
+            assert first_scenario_first_row is not None
+            scenario_rows[0] = dict(first_scenario_first_row)
         path = root / f"{scenario}.npz"
         np.savez(
             path,
             leo_weak_iq=np.zeros((len(scenario_rows), 2, 1), dtype=np.float32),
-            dataset_role=np.asarray([row[0] for row in scenario_rows]),
-            tx_ids=np.asarray([row[1] for row in scenario_rows]),
-            rx_ids=np.asarray([row[2] for row in scenario_rows]),
-            sample_ids=np.asarray([row[3] for row in scenario_rows]),
+            dataset_role=np.asarray([row["role"] for row in scenario_rows]),
+            tx_ids=np.asarray([row["tx_id"] for row in scenario_rows]),
+            rx_ids=np.asarray([row["rx_id"] for row in scenario_rows]),
+            day_ids=np.asarray([row["day_id"] for row in scenario_rows]),
+            eq_ids=np.asarray([row["eq_id"] for row in scenario_rows]),
+            sig_ids=np.asarray([row["sig_id"] for row in scenario_rows]),
+            source_dataset_sha256=np.asarray(
+                [row["dataset_sha256"] for row in scenario_rows]
+            ),
+            source_record_indices=np.asarray(
+                [row["source_record_index"] for row in scenario_rows],
+                dtype=np.int64,
+            ),
+            sample_ids=np.asarray([row["sample_id"] for row in scenario_rows]),
             sat_scenarios=np.asarray([scenario] * len(scenario_rows)),
         )
         hashes[scenario] = hashlib.sha256(path.read_bytes()).hexdigest()
-    sample_ids = [row[3] for row in rows]
+        ids_by_scenario[scenario] = [
+            str(row["sample_id"]) for row in scenario_rows
+        ]
     payload = {
-        "schema": "cvs_leo_weak_iq_cache_set_v1",
+        "schema": LEO_WEAK_CACHE_SET_SCHEMA,
         "cache_scope": "stage2_registered",
         "phase2_sample_view_policy": "leo_weak_only_no_clean_access",
         "clean_sample_access": False,
         "clean_derived_signal_access": False,
+        "phase2_physical_sample_observation_policy": (
+            "single_leo_weak_observation_per_physical_sample"
+        ),
+        "phase2_cross_scenario_physical_sample_reuse": False,
+        "phase2_additional_leo_channel_state_generation": False,
+        "phase2_post_reception_equalization_augmentation_transform_allowed": True,
+        "phase2_post_reception_view_from_fixed_received_iq_only": True,
+        "phase2_post_reception_view_counts_as_additional_physical_sample": False,
+        "phase2_physical_sample_root_id_policy": (
+            "immutable_preoverlay_lineage_token"
+        ),
+        "phase2_query_post_reception_view_fit_access": False,
+        "physical_sample_scenario_assignment_policy": (
+            "disjoint_preoverlay_tx_day_stratified_v1"
+        ),
         "target_channel_view": "leo_weak_only",
         "target_channel_scenarios": [
             "leo_clear_weak",
@@ -102,7 +164,13 @@ def _write_cache_set(
             )
         },
         "cache_sha256_by_scenario": hashes,
-        "physical_sample_ids_sha256": ids_sha256(sample_ids),
+        "physical_sample_ids_sha256_by_scenario": {
+            scenario: ids_sha256(ids_by_scenario[scenario])
+            for scenario in scenarios
+        },
+        "physical_sample_scenario_assignment_sha256": canonical_json_sha256(
+            ids_by_scenario
+        ),
     }
     manifest = root / "cache_set.json"
     manifest.write_text(json.dumps(payload), encoding="utf-8")
@@ -120,6 +188,8 @@ def test_writes_exact_30_cell_registered_maxk20_matrix(tmp_path: Path) -> None:
     assert manifest["support_pool_max_k"] == 20
     assert manifest["query_samples_per_tx"] == 20
     assert manifest["required_samples_per_tx"] == 40
+    assert manifest["required_physical_samples_per_tx_all_scenarios"] == 120
+    assert manifest["cross_scenario_physical_sample_reuse"] is False
     assert manifest["estimated_rows_per_scenario"] == 26 * 40
     assert manifest["estimated_rows_all_scenarios_per_cell"] == 26 * 40 * 3
     assert manifest["disk_budget_bytes_total"] == (
@@ -152,9 +222,10 @@ def test_writes_exact_30_cell_registered_maxk20_matrix(tmp_path: Path) -> None:
         assert spec["role_specs"][0]["tx_ids"] == ",".join(OLD_TX_IDS)
         assert spec["role_specs"][1]["tx_ids"] == ",".join(NEW_TX_IDS)
         assert all(
-            role["max_samples_per_tx"] == REQUIRED_SAMPLES_PER_TX
+            role["max_samples_per_tx"] == TOTAL_REQUIRED_SAMPLES_PER_TX
             for role in spec["role_specs"]
         )
+        assert all(role["days"] == "0,1,2" for role in spec["role_specs"])
         assert list(spec["satellite_seed_by_scenario"]) == [
             "leo_clear_weak",
             "leo_low_elev_weak",
@@ -335,14 +406,17 @@ def test_post_build_gate_rejects_39_rows_for_one_tx_even_when_total_is_1040(
         )
 
 
-def test_post_build_gate_rejects_cross_scenario_physical_id_drift(
+def test_post_build_gate_rejects_cross_scenario_physical_id_overlap(
     tmp_path: Path,
 ) -> None:
     manifest = _write_cache_set(
         tmp_path / "coverage_drift",
         drift_scenario_ids="leo_rain_weak",
     )
-    with pytest.raises(SomphCacheBuildMatrixError, match="drift across"):
+    with pytest.raises(
+        SomphCacheBuildMatrixError,
+        match="PROTOCOL_INVALID_FOR_PHASE2_SINGLE_OBSERVATION",
+    ):
         validate_registered_cache_coverage(
             manifest.resolve(),
             expected_receiver="20-1",

@@ -213,12 +213,16 @@ def _fixture(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> dict:
         for scenario in FORMAL_LEO_WEAK_SCENARIOS
     }
     build_spec = {
-        "schema": "cvs_leo_weak_iq_cache_build_spec_v1",
+        "schema": "cvs_leo_weak_iq_cache_build_spec_v2",
         "cache_set_id": "authority-test",
         "cache_scope": "stage2_target_old",
         "phase2_sample_view_policy": PHASE2_SAMPLE_VIEW_POLICY,
         "clean_sample_access": False,
         "clean_derived_signal_access": False,
+        **authority.PHASE2_SINGLE_OBSERVATION_CONTRACT,
+        "physical_sample_scenario_assignment_policy": (
+            authority.PHYSICAL_SAMPLE_SCENARIO_ASSIGNMENT_POLICY
+        ),
         "star_ground_channel_impl": "simplified_leo_residual",
         "role_specs": [role_spec],
         "dataset_seed": seed,
@@ -238,19 +242,10 @@ def _fixture(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> dict:
     build_spec_canonical_sha = canonical_json_sha256(build_spec)
     exporter_sha = sha256_file(exporter)
 
-    sample_ids = [
-        physical_sample_id_from_values(
-            role="target_old",
-            tx_id=tx_id,
-            rx_id=receiver,
-            day_id="0",
-            eq_id="1",
-            sig_id=str(index),
-        )
-        for index, tx_id in enumerate(old_tx)
-    ]
-    physical_root = ids_sha256(sample_ids)
+    dataset_sha = sha256_file(dataset)
     cache_hashes = {}
+    physical_roots = {}
+    physical_ids_by_scenario = {}
     iq_roots = {}
     overlay_roots = {}
     channel_config_hashes = {}
@@ -258,6 +253,24 @@ def _fixture(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> dict:
     row_count = len(old_tx)
     authority_role_inputs = None
     for scenario_index, scenario in enumerate(FORMAL_LEO_WEAK_SCENARIOS):
+        record_indices = np.asarray(
+            [scenario_index * 1000 + index for index in range(row_count)],
+            dtype=np.int64,
+        )
+        sample_ids = [
+            physical_sample_id_from_values(
+                dataset_sha256=dataset_sha,
+                source_record_index=int(record_indices[index]),
+                role="target_old",
+                tx_id=tx_id,
+                rx_id=receiver,
+                day_id="0",
+                eq_id="1",
+                sig_id=str(scenario_index * 1000 + index),
+            )
+            for index, tx_id in enumerate(old_tx)
+        ]
+        physical_root = ids_sha256(sample_ids)
         iq = (
             np.arange(row_count * 2 * 4, dtype=np.float32).reshape(
                 row_count, 2, 4
@@ -325,11 +338,17 @@ def _fixture(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> dict:
             "channel_meta_keys": ["channel_model"],
             "sample_overlay_provenance_fields": [
                 "sample_ids",
+                "source_dataset_sha256",
+                "source_record_indices",
                 "sat_scenarios",
                 "satellite_seeds",
                 "post_channel_iq_sha256",
                 "overlay_ids",
             ],
+            **authority.PHASE2_SINGLE_OBSERVATION_CONTRACT,
+            "physical_sample_scenario_assignment_policy": (
+                authority.PHYSICAL_SAMPLE_SCENARIO_ASSIGNMENT_POLICY
+            ),
         }
         cache = Path(cache_paths[scenario])
         with cache.open("xb") as handle:
@@ -342,7 +361,14 @@ def _fixture(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> dict:
                 rx_ids=np.asarray([receiver] * row_count),
                 day_ids=np.asarray(["0"] * row_count),
                 eq_ids=np.asarray(["1"] * row_count),
-                sig_ids=np.asarray([str(index) for index in range(row_count)]),
+                sig_ids=np.asarray(
+                    [
+                        str(scenario_index * 1000 + index)
+                        for index in range(row_count)
+                    ]
+                ),
+                source_dataset_sha256=np.asarray([dataset_sha] * row_count),
+                source_record_indices=record_indices,
                 dataset_role=np.asarray(["target_old"] * row_count),
                 channel_views=np.asarray(["rx_base"] * row_count),
                 sat_scenarios=np.asarray([scenario] * row_count),
@@ -354,11 +380,14 @@ def _fixture(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> dict:
                 manifest_json=np.asarray(json.dumps(manifest, sort_keys=True)),
             )
         cache_hashes[scenario] = sha256_file(cache)
+        physical_roots[scenario] = physical_root
+        physical_ids_by_scenario[scenario] = sample_ids
         iq_roots[scenario] = ids_sha256(iq_hashes)
         overlay_roots[scenario] = ids_sha256(overlays)
         channel_config_hashes[scenario] = channel_hash
         cache_audits[scenario] = {}
 
+    assignment_root = canonical_json_sha256(physical_ids_by_scenario)
     cache_set = {
         "schema": LEO_WEAK_CACHE_SET_SCHEMA,
         "artifact_stage": LEO_WEAK_CACHE_STAGE,
@@ -376,7 +405,12 @@ def _fixture(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> dict:
         },
         "cache_sha256_by_scenario": cache_hashes,
         "cache_audits": cache_audits,
-        "physical_sample_ids_sha256": physical_root,
+        **authority.PHASE2_SINGLE_OBSERVATION_CONTRACT,
+        "physical_sample_scenario_assignment_policy": (
+            authority.PHYSICAL_SAMPLE_SCENARIO_ASSIGNMENT_POLICY
+        ),
+        "physical_sample_ids_sha256_by_scenario": physical_roots,
+        "physical_sample_scenario_assignment_sha256": assignment_root,
         "builder_sha256": exporter_sha,
         "build_spec_sha256": build_spec_canonical_sha,
         "build_spec_path_exposed_to_phase2": False,
@@ -405,7 +439,14 @@ def _fixture(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> dict:
             "members": channel_members,
         },
         "channel_config_sha256_by_scenario": channel_config_hashes,
-        "physical_sample_ids_sha256": physical_root,
+        **authority.PHASE2_SINGLE_OBSERVATION_CONTRACT,
+        "physical_sample_scenario_assignment_policy": (
+            authority.PHYSICAL_SAMPLE_SCENARIO_ASSIGNMENT_POLICY
+        ),
+        "physical_sample_ids_sha256_by_scenario": physical_roots,
+        "physical_sample_scenario_assignment_sha256": assignment_root,
+        "cross_scenario_physical_disjointness_audit": "PASS",
+        "single_observation_contract_audit": "PASS",
         "post_channel_iq_sha256_root_by_scenario": iq_roots,
         "overlay_ids_sha256_by_scenario": overlay_roots,
         "cache_role_inputs_root_sha256": sha256_bytes(

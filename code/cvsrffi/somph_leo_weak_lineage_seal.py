@@ -41,7 +41,7 @@ from cvsrffi.stage2_predictor_bundle import (
 )
 
 
-LINEAGE_RECEIPT_SCHEMA = "cvs.phase2.somph_leo_weak_lineage_receipt.v1"
+LINEAGE_RECEIPT_SCHEMA = "cvs.phase2.somph_leo_weak_lineage_receipt.v2"
 LINEAGE_SEAL_SCHEMA = "cvs.phase2.somph_leo_weak_lineage_detached_seal.v1"
 CHANNEL_CODE_CLOSURE_SCHEMA = "cvs.phase1.leo_weak_channel_code_closure.v1"
 
@@ -56,6 +56,8 @@ _CACHE_MEMBERS = (
     "day_ids",
     "eq_ids",
     "sig_ids",
+    "source_dataset_sha256",
+    "source_record_indices",
     "dataset_role",
     "channel_views",
     "sat_scenarios",
@@ -87,7 +89,17 @@ _CACHE_SET_KEYS = {
     "cache_npz_by_scenario",
     "cache_sha256_by_scenario",
     "cache_audits",
-    "physical_sample_ids_sha256",
+    "phase2_physical_sample_observation_policy",
+    "phase2_cross_scenario_physical_sample_reuse",
+    "phase2_additional_leo_channel_state_generation",
+    "phase2_post_reception_equalization_augmentation_transform_allowed",
+    "phase2_post_reception_view_from_fixed_received_iq_only",
+    "phase2_post_reception_view_counts_as_additional_physical_sample",
+    "phase2_physical_sample_root_id_policy",
+    "phase2_query_post_reception_view_fit_access",
+    "physical_sample_scenario_assignment_policy",
+    "physical_sample_ids_sha256_by_scenario",
+    "physical_sample_scenario_assignment_sha256",
     "builder_sha256",
     "build_spec_sha256",
     "build_spec_path_exposed_to_phase2",
@@ -121,6 +133,15 @@ _CACHE_MANIFEST_KEYS = {
     "overlay_ids_sha256",
     "channel_meta_keys",
     "sample_overlay_provenance_fields",
+    "phase2_physical_sample_observation_policy",
+    "phase2_cross_scenario_physical_sample_reuse",
+    "phase2_additional_leo_channel_state_generation",
+    "phase2_post_reception_equalization_augmentation_transform_allowed",
+    "phase2_post_reception_view_from_fixed_received_iq_only",
+    "phase2_post_reception_view_counts_as_additional_physical_sample",
+    "phase2_physical_sample_root_id_policy",
+    "phase2_query_post_reception_view_fit_access",
+    "physical_sample_scenario_assignment_policy",
 }
 _CACHE_CONTRACT = {
     "schema": LEO_WEAK_CACHE_SCHEMA,
@@ -254,6 +275,21 @@ def _validate_cache_set(payload: dict[str, Any], *, expected_scope: str) -> set[
         "target_channel_view": "leo_weak_only",
         "target_channel_scenarios": list(FORMAL_LEO_WEAK_SCENARIOS),
         "build_spec_path_exposed_to_phase2": False,
+        "phase2_physical_sample_observation_policy": (
+            "single_leo_weak_observation_per_physical_sample"
+        ),
+        "phase2_cross_scenario_physical_sample_reuse": False,
+        "phase2_additional_leo_channel_state_generation": False,
+        "phase2_post_reception_equalization_augmentation_transform_allowed": True,
+        "phase2_post_reception_view_from_fixed_received_iq_only": True,
+        "phase2_post_reception_view_counts_as_additional_physical_sample": False,
+        "phase2_physical_sample_root_id_policy": (
+            "immutable_preoverlay_lineage_token"
+        ),
+        "phase2_query_post_reception_view_fit_access": False,
+        "physical_sample_scenario_assignment_policy": (
+            "disjoint_preoverlay_tx_day_stratified_v1"
+        ),
     }
     failed = [
         key
@@ -388,6 +424,8 @@ def _load_and_verify_cache(
             raise SomphLineageError(f"cache role satellite seed drift for {scenario}")
     if manifest.get("sample_overlay_provenance_fields") != [
         "sample_ids",
+        "source_dataset_sha256",
+        "source_record_indices",
         "sat_scenarios",
         "satellite_seeds",
         "post_channel_iq_sha256",
@@ -485,7 +523,8 @@ def write_somph_leo_weak_lineage_seal(
     channel_code_members: Mapping[str, str | Path],
     expected_channel_code_closure_sha256: str,
     expected_channel_config_sha256_by_scenario: Mapping[str, str],
-    expected_physical_sample_ids_sha256: str,
+    expected_physical_sample_ids_sha256_by_scenario: Mapping[str, str],
+    expected_physical_sample_scenario_assignment_sha256: str,
     expected_post_channel_iq_sha256_root_by_scenario: Mapping[str, str],
     expected_overlay_ids_sha256_by_scenario: Mapping[str, str],
     receipt_path: str | Path,
@@ -515,9 +554,13 @@ def write_somph_leo_weak_lineage_seal(
         expected_channel_config_sha256_by_scenario,
         field="expected_channel_config_sha256_by_scenario",
     )
-    expected_physical_root = _require_sha256(
-        expected_physical_sample_ids_sha256,
-        field="expected_physical_sample_ids_sha256",
+    expected_physical_roots = _require_scenario_map(
+        expected_physical_sample_ids_sha256_by_scenario,
+        field="expected_physical_sample_ids_sha256_by_scenario",
+    )
+    expected_assignment_root = _require_sha256(
+        expected_physical_sample_scenario_assignment_sha256,
+        field="expected_physical_sample_scenario_assignment_sha256",
     )
     expected_iq_roots = _require_scenario_map(
         expected_post_channel_iq_sha256_root_by_scenario,
@@ -559,7 +602,7 @@ def write_somph_leo_weak_lineage_seal(
     declared_caches = dict(cache_set["cache_sha256_by_scenario"])
     cache_paths = dict(cache_set["cache_npz_by_scenario"])
     scenario_receipts: dict[str, Any] = {}
-    reference_physical_ids: list[str] | None = None
+    physical_ids_by_scenario: dict[str, list[str]] = {}
     for scenario in FORMAL_LEO_WEAK_SCENARIOS:
         if declared_caches.get(scenario) != expected_caches[scenario]:
             raise SomphLineageError(
@@ -572,20 +615,30 @@ def write_somph_leo_weak_lineage_seal(
             exporter_sha256=exporter_sha,
             build_spec_sha256=actual_build_spec_sha,
             expected_channel_config_sha256=expected_channel_configs[scenario],
-            expected_physical_sample_ids_sha256=expected_physical_root,
+            expected_physical_sample_ids_sha256=expected_physical_roots[scenario],
             expected_post_channel_iq_sha256_root=expected_iq_roots[scenario],
             expected_overlay_ids_sha256=expected_overlay_roots[scenario],
             expected_roles=expected_roles,
         )
-        if reference_physical_ids is None:
-            reference_physical_ids = physical_ids
-        elif physical_ids != reference_physical_ids:
-            raise SomphLineageError(
-                "physical sample ordering drifts across the three LEO_weak scenarios"
-            )
+        physical_ids_by_scenario[scenario] = physical_ids
         scenario_receipts[scenario] = cache_receipt
-    if cache_set.get("physical_sample_ids_sha256") != expected_physical_root:
-        raise SomphLineageError("cache-set physical sample root mismatch")
+    observed: set[str] = set()
+    for scenario in FORMAL_LEO_WEAK_SCENARIOS:
+        overlap = observed.intersection(physical_ids_by_scenario[scenario])
+        if overlap:
+            raise SomphLineageError(
+                "physical samples are reused across LEO_weak scenarios"
+            )
+        observed.update(physical_ids_by_scenario[scenario])
+    assignment_root = canonical_json_sha256(physical_ids_by_scenario)
+    if (
+        cache_set.get("physical_sample_ids_sha256_by_scenario")
+        != expected_physical_roots
+        or cache_set.get("physical_sample_scenario_assignment_sha256")
+        != expected_assignment_root
+        or assignment_root != expected_assignment_root
+    ):
+        raise SomphLineageError("cache-set physical scenario assignment root mismatch")
 
     receipt = {
         "schema": LINEAGE_RECEIPT_SCHEMA,
@@ -600,11 +653,13 @@ def write_somph_leo_weak_lineage_seal(
         "build_spec_size_bytes": build_spec_size,
         "channel_code_closure_sha256": channel_closure_sha,
         "channel_code_members": channel_descriptors,
-        "physical_sample_ids_sha256": expected_physical_root,
+        "physical_sample_ids_sha256_by_scenario": expected_physical_roots,
+        "physical_sample_scenario_assignment_sha256": expected_assignment_root,
         "scenario_receipts": scenario_receipts,
         "same_fd_nofollow_read": True,
         "npz_member_crc_size_ratio_audit": "PASS",
-        "cross_scenario_physical_order_audit": "PASS",
+        "cross_scenario_physical_disjointness_audit": "PASS",
+        "single_observation_contract_audit": "PASS",
         "sample_level_overlay_recompute": "PASS",
         "manifest_hex_self_declaration_sufficient": False,
         "external_authority_lock_verified": False,

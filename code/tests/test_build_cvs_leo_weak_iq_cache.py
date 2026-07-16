@@ -36,9 +36,36 @@ class _TinyWiSig(Dataset):
         return x, y, domain, meta
 
 
+class _PartitionWiSig(Dataset):
+    def __init__(self) -> None:
+        self.rows = [
+            (tx_id, sig_i)
+            for tx_id in ("tx0", "tx1")
+            for sig_i in range(120)
+        ]
+
+    def __len__(self) -> int:
+        return len(self.rows)
+
+    def __getitem__(self, index: int):
+        tx_id, sig_i = self.rows[index]
+        return (
+            torch.zeros((2, 8), dtype=torch.float32),
+            torch.tensor(0, dtype=torch.long),
+            torch.tensor(0, dtype=torch.long),
+            {
+                "tx": tx_id,
+                "rx": "rx0",
+                "day": str(sig_i // 40),
+                "equalized": "1",
+                "sig_i": str(sig_i),
+            },
+        )
+
+
 def _spec(tmp_path: Path) -> dict:
     return {
-        "schema": builder.BUILD_SPEC_SCHEMA,
+        "schema": builder.LEGACY_BUILD_SPEC_SCHEMA,
         "cache_set_id": "tiny",
         "cache_scope": "source_train",
         "phase2_sample_view_policy": PHASE2_SAMPLE_VIEW_POLICY,
@@ -65,6 +92,29 @@ def _spec(tmp_path: Path) -> dict:
         "batch_size": 2,
         "wisig_out_len": 8,
     }
+
+
+def _enable_single_observation_target(spec: dict) -> None:
+    spec.update(
+        {
+            "schema": builder.BUILD_SPEC_SCHEMA,
+            "phase2_physical_sample_observation_policy": (
+                "single_leo_weak_observation_per_physical_sample"
+            ),
+            "phase2_cross_scenario_physical_sample_reuse": False,
+            "phase2_additional_leo_channel_state_generation": False,
+            "phase2_post_reception_equalization_augmentation_transform_allowed": True,
+            "phase2_post_reception_view_from_fixed_received_iq_only": True,
+            "phase2_post_reception_view_counts_as_additional_physical_sample": False,
+            "phase2_physical_sample_root_id_policy": (
+                "immutable_preoverlay_lineage_token"
+            ),
+            "phase2_query_post_reception_view_fit_access": False,
+            "physical_sample_scenario_assignment_policy": (
+                builder.SCENARIO_PARTITION_POLICY
+            ),
+        }
+    )
 
 
 def test_builder_writes_only_verified_post_channel_iq(
@@ -106,6 +156,7 @@ def test_builder_writes_only_verified_post_channel_iq(
 
 def test_build_spec_rejects_target_cache_without_both_registered_roles() -> None:
     spec = _spec(Path("."))
+    _enable_single_observation_target(spec)
     spec["cache_scope"] = "stage2_registered"
     try:
         builder.validate_build_spec(spec)
@@ -117,8 +168,129 @@ def test_build_spec_rejects_target_cache_without_both_registered_roles() -> None
 
 def test_build_spec_accepts_stage2b_target_old_only_scope() -> None:
     spec = _spec(Path("."))
+    _enable_single_observation_target(spec)
     spec["cache_scope"] = "stage2_target_old"
     spec["role_specs"][0]["role"] = "target_old"
+    spec["role_specs"][0]["days"] = "0,1,2"
+    spec["role_specs"][0]["max_samples_per_tx"] = 120
     checked = builder.validate_build_spec(spec)
     assert checked["cache_scope"] == "stage2_target_old"
     assert checked["role_specs"][0]["role"] == "target_old"
+
+
+def test_build_spec_requires_reference_exclusion_pair() -> None:
+    spec = _spec(Path("."))
+    _enable_single_observation_target(spec)
+    spec["cache_scope"] = "stage2_target_old"
+    spec["role_specs"][0]["role"] = "target_old"
+    spec["role_specs"][0]["days"] = "0,1,2"
+    spec["role_specs"][0]["max_samples_per_tx"] = 120
+    spec["physical_sample_exclusion_policy"] = (
+        builder.REFERENCE_EXCLUSION_POLICY
+    )
+    try:
+        builder.validate_build_spec(spec)
+    except ValueError as exc:
+        assert "declared together" in str(exc)
+    else:
+        raise AssertionError("unpaired reference exclusion was accepted")
+
+
+def test_reference_cache_exclusions_are_forwarded_by_role_and_dataset(
+    tmp_path: Path, monkeypatch
+) -> None:
+    dataset_sha = "a" * 64
+    reference = tmp_path / "reference.json"
+    reference.write_text("{}", encoding="utf-8")
+    pkl_path = tmp_path / "ManySig.pkl"
+    pkl_path.write_bytes(b"dataset")
+    arrays = {}
+    for scenario_index, scenario in enumerate(FORMAL_LEO_WEAK_SCENARIOS):
+        arrays[scenario] = {
+            "dataset_role": np.asarray(["target_old"]),
+            "source_dataset_sha256": np.asarray([dataset_sha]),
+            "source_record_indices": np.asarray(
+                [scenario_index], dtype=np.int64
+            ),
+        }
+    monkeypatch.setattr(
+        builder,
+        "load_verified_leo_weak_cache_set",
+        lambda *args, **kwargs: (
+            arrays,
+            {"cache_set_id": "reference"},
+            {"physical_sample_count": 3},
+        ),
+    )
+    monkeypatch.setattr(
+        builder,
+        "sha256_file",
+        lambda path: dataset_sha
+        if Path(path).name == "ManySig.pkl"
+        else "b" * 64,
+    )
+    observed = {}
+
+    def fake_dataset(**kwargs):
+        observed.update(kwargs)
+        return _TinyWiSig("target_old"), {"tx_labels": ["tx0"]}
+
+    monkeypatch.setattr(builder, "_build_wisig_dataset", fake_dataset)
+    spec = _spec(tmp_path)
+    _enable_single_observation_target(spec)
+    spec["cache_scope"] = "stage2_target_old"
+    spec["role_specs"] = [
+        {
+            "role": "target_old",
+            "pkl": str(pkl_path),
+            "tx_ids": "tx0",
+            "rxs": "rx0",
+            "days": "0,1,2",
+            "max_samples_per_tx": 120,
+        }
+    ]
+    spec["physical_sample_exclusion_policy"] = (
+        builder.REFERENCE_EXCLUSION_POLICY
+    )
+    spec["physical_sample_exclusion_reference_cache_set"] = str(reference)
+    datasets, audit = builder._build_role_datasets(
+        builder.validate_build_spec(spec), spec_dir=tmp_path
+    )
+    assert len(datasets) == 1
+    assert observed["exclude_source_record_indices"] == {0, 1, 2}
+    assert audit["excluded_source_record_count"] == 3
+
+
+def test_preoverlay_partition_assigns_each_physical_row_to_one_scenario() -> None:
+    dataset = _PartitionWiSig()
+    role_spec = {"role": "target_old", "tx_ids": "tx0,tx1"}
+    partitions = builder._partition_role_datasets_by_scenario(
+        [
+            (
+                role_spec,
+                dataset,
+                {"dataset_sha256": "a" * 64, "dataset_seed": 713101},
+                Path("ManySig.pkl"),
+            )
+        ],
+        batch_size=32,
+    )
+    observed: set[int] = set()
+    for scenario in FORMAL_LEO_WEAK_SCENARIOS:
+        subset = partitions[scenario][0][1]
+        assert len(subset) == 80
+        current = set(int(value) for value in subset.indices)
+        assert observed.isdisjoint(current)
+        observed.update(current)
+        for tx_id in ("tx0", "tx1"):
+            day_counts = [
+                sum(
+                    1
+                    for index in current
+                    if dataset.rows[index][0] == tx_id
+                    and dataset.rows[index][1] // 40 == day
+                )
+                for day in range(3)
+            ]
+            assert sorted(day_counts) == [13, 13, 14]
+    assert observed == set(range(240))

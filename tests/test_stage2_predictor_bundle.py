@@ -64,12 +64,33 @@ def _rewrite_zip_compression(path: Path, compression: int) -> None:
     replacement.replace(path)
 
 
-def _npz(path: Path, *, scenario: str, query: bool, extra: bool = False) -> None:
-    iq = np.zeros((1, 2, 8), dtype=np.float32)
+def _npz(
+    path: Path,
+    *,
+    scenario: str,
+    query: bool,
+    extra: bool = False,
+    reuse_first_scenario_token: bool = False,
+    declared_support_k: int = 1,
+    actual_support_per_class: int | None = None,
+) -> None:
+    support_count = (
+        declared_support_k
+        if actual_support_per_class is None
+        else actual_support_per_class
+    )
+    count = 1 if query else support_count
+    iq = np.zeros((count, 2, 8), dtype=np.float32)
+    scenario_index = FORMAL_LEO_WEAK_SCENARIOS.index(scenario)
+    token_digit = (
+        1
+        if reuse_first_scenario_token
+        else scenario_index + 1
+    )
     if query:
         payload = {
             "query_leo_weak_iq": iq,
-            "query_tokens": np.asarray(["qid_" + "1" * 64]),
+            "query_tokens": np.asarray(["qid_" + str(token_digit) * 64]),
             "query_overlay_tokens": np.asarray(["oid_" + "2" * 64]),
             "query_satellite_seeds": np.asarray([11], dtype=np.int64),
             "query_post_channel_iq_sha256": np.asarray([iq_row_sha256(iq[0])]),
@@ -92,14 +113,34 @@ def _npz(path: Path, *, scenario: str, query: bool, extra: bool = False) -> None
         if extra:
             payload["debug"] = np.asarray([1])
     else:
+        support_tokens = np.asarray(
+            [
+                "sid_"
+                + f"{(scenario_index + 4) * 1000 + index:064x}"
+                for index in range(count)
+            ]
+        )
+        support_overlays = np.asarray(
+            [
+                "oid_"
+                + f"{(scenario_index + 8) * 1000 + index:064x}"
+                for index in range(count)
+            ]
+        )
         payload = {
             "support_pool_leo_weak_iq": iq,
-            "support_pool_class_indices": np.asarray([0], dtype=np.int64),
-            "support_pool_rank_within_class": np.asarray([0], dtype=np.int64),
-            "support_pool_tokens": np.asarray(["sid_" + "3" * 64]),
-            "support_pool_overlay_tokens": np.asarray(["oid_" + "4" * 64]),
-            "support_pool_satellite_seeds": np.asarray([11], dtype=np.int64),
-            "support_pool_post_channel_iq_sha256": np.asarray([iq_row_sha256(iq[0])]),
+            "support_pool_class_indices": np.zeros(count, dtype=np.int64),
+            "support_pool_rank_within_class": np.arange(
+                count, dtype=np.int64
+            ),
+            "support_pool_tokens": support_tokens,
+            "support_pool_overlay_tokens": support_overlays,
+            "support_pool_satellite_seeds": np.full(
+                count, 11, dtype=np.int64
+            ),
+            "support_pool_post_channel_iq_sha256": np.asarray(
+                [iq_row_sha256(row) for row in iq]
+            ),
             "manifest_json": np.asarray(
                 json.dumps(
                     {
@@ -107,7 +148,7 @@ def _npz(path: Path, *, scenario: str, query: bool, extra: bool = False) -> None
                         "scenario": scenario,
                         "registered_support_labels_allowed": True,
                         "registered_class_count": 1,
-                        "support_pool_max_k": 1,
+                        "support_pool_max_k": declared_support_k,
                         "token_scheme": "hmac_sha256_opaque_v1",
                     },
                     sort_keys=True,
@@ -123,6 +164,9 @@ def _package(
     *,
     extra_query_member: bool = False,
     first_query_mutator=None,
+    reuse_last_scenario_tokens: bool = False,
+    support_k: int = 1,
+    actual_support_per_class: int | None = None,
 ):
     root = tmp_path / "predictor"
     root.mkdir()
@@ -146,12 +190,24 @@ def _package(
     for scenario in FORMAL_LEO_WEAK_SCENARIOS:
         support = root / f"support_{scenario}.npz"
         query = root / f"query_{scenario}.npz"
-        _npz(support, scenario=scenario, query=False)
+        reuse_token = (
+            reuse_last_scenario_tokens
+            and scenario == FORMAL_LEO_WEAK_SCENARIOS[-1]
+        )
+        _npz(
+            support,
+            scenario=scenario,
+            query=False,
+            reuse_first_scenario_token=reuse_token,
+            declared_support_k=support_k,
+            actual_support_per_class=actual_support_per_class,
+        )
         _npz(
             query,
             scenario=scenario,
             query=True,
             extra=extra_query_member and scenario == FORMAL_LEO_WEAK_SCENARIOS[0],
+            reuse_first_scenario_token=reuse_token,
         )
         if (
             first_query_mutator is not None
@@ -185,7 +241,7 @@ def _package(
         "receiver": "20-1",
         "seed": 713101,
         "new_class_count": 1,
-        "support_pool_max_k": 1,
+        "support_pool_max_k": support_k,
         "target_channel_view": "leo_weak_only",
         "target_channel_scenarios": list(FORMAL_LEO_WEAK_SCENARIOS),
         "registered_class_count": 1,
@@ -220,6 +276,60 @@ def test_predictor_package_accepts_opaque_unlabeled_query(tmp_path: Path) -> Non
     )
     assert query[FORMAL_LEO_WEAK_SCENARIOS[0]]["query_tokens"][0].startswith("qid_")
     assert audit["sample_level_post_channel_iq_sha256_status"] == "PASS"
+    assert audit["cross_scenario_physical_sample_token_disjointness"] == "PASS"
+
+
+@pytest.mark.parametrize("support_k", [1, 5, 10, 20])
+def test_predictor_loader_materializes_exact_k_support(
+    tmp_path: Path,
+    support_k: int,
+) -> None:
+    root, seal, digest = _package(tmp_path, support_k=support_k)
+    support, _query, manifest, audit = load_verified_stage2_predictor_bundle(
+        root, detached_seal_path=seal, expected_seal_sha256=digest
+    )
+    assert manifest["support_pool_max_k"] == support_k
+    assert audit["support_pool_count"] == support_k
+    for arrays in support.values():
+        assert arrays["support_pool_tokens"].shape == (support_k,)
+
+
+@pytest.mark.parametrize(
+    ("support_k", "reachable_per_class"),
+    [(5, 6), (10, 20)],
+)
+def test_predictor_sealer_rejects_support_surplus(
+    tmp_path: Path,
+    support_k: int,
+    reachable_per_class: int,
+) -> None:
+    with pytest.raises(
+        PredictorPackageError,
+        match="exactly K samples per class",
+    ):
+        _package(
+            tmp_path,
+            support_k=support_k,
+            actual_support_per_class=reachable_per_class,
+        )
+    assert not (tmp_path / "predictor.seal.json").exists()
+
+
+def test_predictor_package_rejects_cross_scenario_token_reuse(
+    tmp_path: Path,
+) -> None:
+    root, seal, digest = _package(
+        tmp_path, reuse_last_scenario_tokens=True
+    )
+    with pytest.raises(
+        PredictorPackageError,
+        match="physical sample token reuse across LEO_weak scenarios",
+    ):
+        load_verified_stage2_predictor_bundle(
+            root,
+            detached_seal_path=seal,
+            expected_seal_sha256=digest,
+        )
 
 
 def test_predictor_package_rejects_neutral_extra_npz_member_preopen(tmp_path: Path) -> None:

@@ -15,14 +15,18 @@
 |ID|协议需求|`项目.md`落点|实现/验证状态|
 |---|---|---|---|
 |SO-01|一个clean/raw物理IQ样本在进入Phase2前必须且只能叠加一次，并恰好叠加一个`leo_*_weak`场景，形成唯一接收IQ观测|第7.1.1节|本次落盘|
-|SO-02|同一matched receiver×seed×K×new规模下，三个场景的support∪query全角色物理样本并集两两不交，同场景support/query也不交|第7.1.1节、第10.3.1节|本次落盘；builder/validator待修|
-|SO-03|Phase2密封包必须逐样本记录不可重命名的pre-overlay稳定根ID、唯一scenario、恰好一个satellite seed值和overlay provenance|第7.1.1节|本次落盘；package schema待修|
+|SO-02|同一matched receiver×seed×K×new规模下，三个场景的support∪query全角色物理样本并集两两不交，同场景support/query也不交|第7.1.1节、第10.3.1节|cache、lineage v2、authority v2、offline package和两个bundle loader均已实现并通过组合测试|
+|SO-03|Phase2密封包必须逐样本记录不可重命名的pre-overlay稳定根ID、唯一scenario、恰好一个satellite seed值和overlay provenance|第7.1.1节|稳定根已改为dataset SHA+原始WiSig坐标；offline package按scenario独立生成opaque token并绑定逐样本overlay provenance|
 |SO-04|禁止从同一clean/raw样本派生多场景、多信道或多子样本用于Phase2训练、适配、注册、校准、选择或评估|第7.1.1节|本次落盘；历史D1/D3需降级|
-|SO-05|允许的多view只能由已接收的固定LEO_weak IQ在Phase2内执行接收侧信道均衡、增强、变换或表征提取；不得重新访问clean/raw、叠加另一LEO状态或恢复另一物理观测|第7.1.1节、第8节、第10.3.1节|本次落盘；首个合法view待实现|
-|SO-06|同一接收IQ派生的计算view不得计作独立support或增加K；只有support view可参与拟合，query view只能用于当前样本推理且不得更新任何状态|第7.1.1节、第10.3.1节|本次落盘；计数与query-fit审计待修|
+|SO-05|允许的多view只能由已接收的固定LEO_weak IQ在Phase2内执行接收侧信道均衡、增强、变换或表征提取；不得重新访问clean/raw、叠加另一LEO状态或恢复另一物理观测|第7.1.1节、第8节、第10.3.1节|D4a原语和scenario-atomic diag已实现；真实new5/10/20开发行已运行|
+|SO-06|同一接收IQ派生的计算view不得计作独立support或增加K；只有support view可参与拟合，query view只能用于当前样本推理且不得更新任何状态|第7.1.1节、第10.3.1节|D4a输出逐view parent IQ SHA/operator/view seed；K只计物理support，query fit/update为0|
 |SO-07|历史D1/D3因确认使用同一物理样本的三种LEO观测，统一标记`PROTOCOL_INVALID_FOR_PHASE2_SINGLE_OBSERVATION`|第7.1.1节、第12节|本次落盘；报告待更新|
-|SO-08|极轻型正式上限调整为adapter参数不超过80,000、适配不超过30epoch、持久状态不超过256KB、无dense query图|第10.3.1节|本次落盘；资源validator待修|
-|SO-09|三场景仍需完整覆盖，但它们是三个独立接收样本单元，不是同一物理样本的三份view|第8节、第10.3.1节|本次落盘；矩阵生成器待修|
+|SO-08|极轻型正式上限调整为adapter参数不超过80,000、适配不超过30epoch、持久状态不超过256KB、无dense query图|第10.3.1节|统一runtime contract、method lock和D4a resource receipt已接入；D4a为864参数、0epoch、状态低于95KB|
+|SO-09|三场景仍需完整覆盖，但它们是三个独立接收样本单元，不是同一物理样本的三份view|第8节、第10.3.1节|TX×day分层互斥分配和post-build validator已完成；真实cache三scenario各1040行、交集0|
+|SO-10|offline authority可维护每类最多20个候选support，但Phase2密封package与loader对每类只能暴露当前row的exact K；K1/K5/K10不得可达更大候选池|第7节K-shot报告口径第230–231行|verified：formal matrix v3明确分离`offline_authority_support_pool_max_k=20`与`reachable_support_pool_max_k=k_shot`|
+|SO-11|每个exact-K package必须在打开IQ前核验成员allowlist和逐类可达support计数；`reachable_support_pool_max_k>K`必须阻断|第7节K-shot报告口径第230–231行|verified：row强制allowlist与pre-open逐类计数，validator要求可达上限和逐类计数均严格等于row K|
+|SO-12|嵌套K必须验证K1=对应K10有序support前1、K5=前5；K20使用独立只暴露20个support/类的package|第7节K-shot报告口径第231行|verified：formal row锁定`k1_k5_are_k10_ordered_prefixes_k20_is_separate_exact_package`并强制前缀验证|
+|SO-13|任一额外support可达、allowlist缺失、pre-open逐类计数不等于K或嵌套前缀不符，统一标记`PROTOCOL_INVALID_KSHOT_REACHABILITY`并阻断正式row|第7节K-shot报告口径第230–231行|verified：状态常量、schema精确键和重签名负向测试均已落地|
 
 ## 3. 合法与非法view边界
 
@@ -52,12 +56,39 @@ D1和D3的已保存score、loss trace、逐类结果与资源数据继续保留�
 - 与identity-only单qKNN做正式Pareto排名；
 - 声明Stage2-B/C部署性能或floor达标。
 
-## 5. 后续验证
+## 5. 当前验证与后续
 
-1. 审计现有cache中的`physical_sample_id`跨scenario重用。
-2. 修复稳定根ID，使其绑定overlay前dataset artifact、member/split和original record index或等价不可重命名lineage token。
-3. 修复离线builder，使物理样本先分配唯一scenario，再执行一次LEO_weak overlay。
-4. 在pre-open validator中检查三场景support∪query全角色物理ID并集互斥、同场景support/query不重叠及每个样本唯一overlay provenance。
-5. 对接收后view核验父IQ SHA、operator和view seed，并阻断query view拟合。
-6. 修复runner，使计算view只能关联同一sealed IQ并按一个样本计数。
-7. 先运行单receiver、单development seed、K10、5/10/20真实new TX验证，再决定是否扩展K1/K5和正式125矩阵。
+已完成：
+
+1. 真实`rx20-1/seed713101`cache三场景各1040行，跨scenario物理根交集0。
+2. lineage receipt为`BYTE_GROUNDED_SELF_CONSISTENCY_PASS`，single-observation与cross-scenario audit均PASS。
+3. offline package、authority v2、SOMP-H/通用bundle loader均改为scenario独立选择并两两互斥。
+4. D4a真实K10 new5/10/20注册前后开发行完整结束，864参数、0epoch、无query fit。
+
+当前性能失败边界：
+
+- D4a注册前old_acc为76.39%。
+- new5/10/20注册后old_acc为62.22%/57.78%/55.56%。
+- seen-new为68.67%/59.33%/50.50%，旧类遗忘随新类数从14.17pp扩大至20.83pp。
+
+因此下一轮不是扩大125，而是先完成D4b old-head lock、support-only floor guard和稳健多prototype修复；达到开发门槛后再锁定candidate并扩展K1/K5和正式125矩阵。
+
+## 6. exact-K生产闭包验证
+
+|ID|Source section|Requirement|Target files|Status|Verification|Notes|
+|---|---|---|---|---|---|---|
+|EK-01|`项目.md`第230行|离线候选池max20不得等同于Phase2可达support池|`code/cvsrffi/somph_formal_matrix.py`|verified|formal matrix单测与268组回归通过|保留旧`support_pool_max_k`仅作offline authority兼容别名，并增加不可误解的语义字段|
+|EK-02|`项目.md`第230行|K1/K5/K10/K20 row逐类严格只可达自身K|`code/cvsrffi/somph_formal_matrix.py`、`tests/test_somph_formal_matrix.py`|verified|重签名后把K1可达池改为20会以`PROTOCOL_INVALID_KSHOT_REACHABILITY`拒绝|validator同时要求`reachable_support_pool_max_k==reachable_support_count_per_registered_class==k_shot`|
+|EK-03|`项目.md`第231行|IQ打开前验证成员allowlist、逐类计数和嵌套前缀|`code/cvsrffi/somph_formal_matrix.py`、`tests/test_somph_formal_matrix.py`|verified|allowlist、pre-open count、prefix字段逐项负向测试通过|formal matrix只声明不可降级的生产要求，实际package/bundle闭包由同组回归验证|
+|EK-04|`项目.md`第230–231行|缺失或冲突时使用统一协议无效状态|`code/cvsrffi/somph_formal_matrix.py`、`tests/test_somph_formal_matrix.py`|verified|精确schema与重签名guard-drift测试通过|统一状态为`PROTOCOL_INVALID_KSHOT_REACHABILITY`|
+
+验证命令：
+
+```powershell
+conda activate ssr-gpu
+python -m pytest tests/test_somph_formal_matrix.py -q
+python -m pytest code/tests/test_build_cvs_leo_weak_iq_cache.py code/tests/test_leo_weak_cache.py code/tests/test_phase2_runtime_contract.py tests/test_build_cvs_stage2_predictor_bundle.py tests/test_sign_cvs_somph_authority_lock.py tests/test_somph_authority_lock_builder.py tests/test_somph_cache_build_matrix.py tests/test_somph_formal_matrix.py tests/test_somph_leo_weak_lineage_seal.py tests/test_somph_lineage_authority.py tests/test_somph_offline_target_package.py tests/test_somph_predictor_bundle.py tests/test_stage2_predictor_bundle.py tests/test_somph_predictor_runtime.py tests/test_somph_stage2c.py -q
+git diff --check -- code/cvsrffi/somph_formal_matrix.py tests/test_somph_formal_matrix.py analysis/phase2_single_observation_traceability_20260717.md
+```
+
+结果：单文件`19 passed`；原268组回归加本次新增6个exact-K测试后共`274 passed`；`git diff --check`通过，仅有工作区既有LF/CRLF提示。

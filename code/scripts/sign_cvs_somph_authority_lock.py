@@ -24,7 +24,7 @@ from cvsrffi import somph_lineage_authority as authority  # noqa: E402
 from cvsrffi import somph_authority_lock_builder as lock_builder  # noqa: E402
 
 
-SIGNING_RECEIPT_SCHEMA = "cvs.phase2.somph_authority_signing_receipt.v1"
+SIGNING_RECEIPT_SCHEMA = "cvs.phase2.somph_authority_signing_receipt.v2"
 PINNED_OPENSSL_BINARY_PATH = (
     r"F:\App\miniconda3\Library\bin\openssl.exe"
 )
@@ -442,6 +442,11 @@ def _validate_lock_for_signing(lock: dict[str, Any]) -> None:
         )
     if lock.get("schema") != authority.AUTHORITY_LOCK_SCHEMA:
         raise authority.SomphLineageAuthorityError("authority lock schema drift")
+    authority._validate_single_observation_contract(
+        lock,
+        field="authority lock for signing",
+        require_audit_evidence=True,
+    )
     _receiver, _seed, roles = authority._validate_lock_formal_identity(lock)
     _validate_file_descriptor(
         lock.get("cache_set_manifest"),
@@ -456,12 +461,13 @@ def _validate_lock_for_signing(lock: dict[str, Any]) -> None:
     for field in (
         "cache_sha256_by_scenario",
         "channel_config_sha256_by_scenario",
+        "physical_sample_ids_sha256_by_scenario",
         "post_channel_iq_sha256_root_by_scenario",
         "overlay_ids_sha256_by_scenario",
     ):
         authority._scenario_sha_map(lock.get(field), field=field)
     for field in (
-        "physical_sample_ids_sha256",
+        "physical_sample_scenario_assignment_sha256",
         "cache_role_inputs_root_sha256",
     ):
         authority._require_sha256(lock.get(field), field=field)
@@ -561,9 +567,7 @@ def _validate_production_build_authority(
         raise SomphAuthoritySigningError(
             "authority lock build receipt exact schema drift"
         )
-    expected_manifest_sha = (
-        "0e1f09ba08afd52b43a1bc9188d319f389c6cb57c9c8e06eee087ac99b3666c5"
-    )
+    expected_manifest_sha = lock_builder.FORMAL_CACHE_SPEC_MANIFEST_SHA256
     if (
         receipt.get("schema")
         != lock_builder.AUTHORITY_LOCK_BUILD_RECEIPT_SCHEMA
@@ -593,17 +597,30 @@ def _validate_production_build_authority(
         != lock.get("channel_code_closure", {}).get("closure_sha256")
         or receipt.get("cache_role_inputs_root_sha256")
         != lock.get("cache_role_inputs_root_sha256")
-        or receipt.get("physical_sample_ids_sha256")
-        != lock.get("physical_sample_ids_sha256")
+        or receipt.get("physical_sample_ids_sha256_by_scenario")
+        != lock.get("physical_sample_ids_sha256_by_scenario")
+        or receipt.get("physical_sample_scenario_assignment_sha256")
+        != lock.get("physical_sample_scenario_assignment_sha256")
+        or receipt.get("cross_scenario_physical_disjointness_audit") != "PASS"
+        or receipt.get("single_observation_contract_audit") != "PASS"
     ):
         raise SomphAuthoritySigningError(
             "authority lock build receipt/lock binding drift"
         )
+    try:
+        authority._validate_single_observation_contract(
+            receipt,
+            field="authority lock build receipt for signing",
+            require_audit_evidence=True,
+        )
+    except authority.SomphLineageAuthorityError as exc:
+        raise SomphAuthoritySigningError(str(exc)) from exc
     for field in (
         "cache_sha256_by_scenario",
         "channel_config_sha256_by_scenario",
         "post_channel_iq_sha256_root_by_scenario",
         "overlay_ids_sha256_by_scenario",
+        "physical_sample_ids_sha256_by_scenario",
     ):
         if receipt.get(field) != lock.get(field):
             raise SomphAuthoritySigningError(
@@ -611,7 +628,7 @@ def _validate_production_build_authority(
             )
     if (
         manifest.get("schema")
-        != "cvs.phase2.somph_registered_cache_build_matrix.v1"
+        != "cvs.phase2.somph_registered_cache_build_matrix.v2"
         or manifest.get("formal_launch_authority") is not False
         or manifest.get("required_samples_per_tx") != 40
     ):

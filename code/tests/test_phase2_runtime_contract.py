@@ -6,6 +6,7 @@ import pytest
 
 from cvsrffi.phase2_runtime_contract import (
     PHASE2_FULL_CONTRACT,
+    PHASE2_SINGLE_OBSERVATION_CONTRACT,
     Phase2ContractError,
     classify_legacy_phase2_record,
     validate_phase2_contract,
@@ -91,10 +92,45 @@ def _request():
 
 
 def test_full_contract_includes_clean_query_and_source_reachability_fields():
-    assert len(PHASE2_FULL_CONTRACT) == 18
+    assert len(PHASE2_FULL_CONTRACT) == 26
     assert PHASE2_FULL_CONTRACT["phase2_query_true_batch_class_count_access"] is False
     assert PHASE2_FULL_CONTRACT["phase2_source_sample_access"] is False
     assert PHASE2_FULL_CONTRACT["phase2_external_source_adapter_access"] is False
+
+
+def test_full_contract_includes_exact_single_observation_policy():
+    assert PHASE2_SINGLE_OBSERVATION_CONTRACT == {
+        "phase2_physical_sample_observation_policy": (
+            "single_leo_weak_observation_per_physical_sample"
+        ),
+        "phase2_cross_scenario_physical_sample_reuse": False,
+        "phase2_additional_leo_channel_state_generation": False,
+        "phase2_post_reception_equalization_augmentation_transform_allowed": True,
+        "phase2_post_reception_view_from_fixed_received_iq_only": True,
+        "phase2_post_reception_view_counts_as_additional_physical_sample": False,
+        "phase2_physical_sample_root_id_policy": "immutable_preoverlay_lineage_token",
+        "phase2_query_post_reception_view_fit_access": False,
+    }
+    assert {
+        key: PHASE2_FULL_CONTRACT[key]
+        for key in PHASE2_SINGLE_OBSERVATION_CONTRACT
+    } == PHASE2_SINGLE_OBSERVATION_CONTRACT
+
+
+@pytest.mark.parametrize("field", PHASE2_SINGLE_OBSERVATION_CONTRACT)
+def test_manifest_contract_missing_single_observation_field_fails_closed(field):
+    manifest = copy.deepcopy(PHASE2_FULL_CONTRACT)
+    manifest.pop(field)
+    with pytest.raises(Phase2ContractError, match=rf"missing:{field}"):
+        validate_phase2_contract(manifest, evidence_phase="none")
+
+
+@pytest.mark.parametrize("field", PHASE2_SINGLE_OBSERVATION_CONTRACT)
+def test_predictor_request_missing_single_observation_field_fails_closed(field):
+    request = _request()
+    request.pop(field)
+    with pytest.raises(Phase2ContractError, match=rf"missing:{field}"):
+        validate_predictor_request(request)
 
 
 def test_registered_class_count_is_legal_predictor_state():

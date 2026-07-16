@@ -14,9 +14,19 @@ FORMAL_LEO_WEAK_SCENARIOS = (
     "leo_rain_weak",
 )
 PHASE2_SAMPLE_VIEW_POLICY = "leo_weak_only_no_clean_access"
-LEO_WEAK_CACHE_SCHEMA = "cvs_leo_weak_iq_cache_v1"
-LEO_WEAK_CACHE_SET_SCHEMA = "cvs_leo_weak_iq_cache_set_v1"
+LEO_WEAK_CACHE_SCHEMA = "cvs_leo_weak_iq_cache_v2"
+LEO_WEAK_CACHE_SET_SCHEMA = "cvs_leo_weak_iq_cache_set_v2"
 LEO_WEAK_CACHE_STAGE = "phase1_offline_prechannel_export"
+PHASE2_PHYSICAL_SAMPLE_OBSERVATION_POLICY = (
+    "single_leo_weak_observation_per_physical_sample"
+)
+PHASE2_PHYSICAL_SAMPLE_ROOT_ID_POLICY = (
+    "immutable_preoverlay_lineage_token"
+)
+PHASE2_SINGLE_OBSERVATION_CACHE_SCOPES = {
+    "stage2_target_old",
+    "stage2_registered",
+}
 
 _REQUIRED_ARRAY_KEYS = (
     "leo_weak_iq",
@@ -27,6 +37,8 @@ _REQUIRED_ARRAY_KEYS = (
     "day_ids",
     "eq_ids",
     "sig_ids",
+    "source_dataset_sha256",
+    "source_record_indices",
     "dataset_role",
     "channel_views",
     "sat_scenarios",
@@ -83,6 +95,8 @@ def post_channel_iq_sha256(row: np.ndarray) -> str:
 
 def physical_sample_id_from_values(
     *,
+    dataset_sha256: str,
+    source_record_index: int,
     role: str,
     tx_id: str,
     rx_id: str,
@@ -90,13 +104,33 @@ def physical_sample_id_from_values(
     eq_id: str,
     sig_id: str,
 ) -> str:
+    """Return an immutable pre-overlay identity from dataset and WiSig coordinates."""
+
+    dataset_hash = str(dataset_sha256).lower()
+    if (
+        len(dataset_hash) != 64
+        or any(value not in "0123456789abcdef" for value in dataset_hash)
+    ):
+        raise ValueError("physical sample dataset SHA256 must be lowercase hex")
+    record_index = int(source_record_index)
+    if record_index < 0:
+        raise ValueError("physical sample source record index must be nonnegative")
     return "|".join(
-        (str(role), str(tx_id), str(rx_id), str(day_id), str(eq_id), str(sig_id))
+        (
+            dataset_hash,
+            str(tx_id),
+            str(rx_id),
+            str(day_id),
+            str(eq_id),
+            str(sig_id),
+        )
     )
 
 
 def physical_sample_id(arrays: Mapping[str, np.ndarray], index: int) -> str:
     return physical_sample_id_from_values(
+        dataset_sha256=str(arrays["source_dataset_sha256"][index]),
+        source_record_index=int(arrays["source_record_indices"][index]),
         role=str(arrays["dataset_role"][index]),
         tx_id=str(arrays["tx_ids"][index]),
         rx_id=str(arrays["rx_ids"][index]),
@@ -193,6 +227,8 @@ def _require_manifest_contract(
     )
     required_fields = (
         "sample_ids",
+        "source_dataset_sha256",
+        "source_record_indices",
         "sat_scenarios",
         "satellite_seeds",
         "post_channel_iq_sha256",
@@ -298,12 +334,23 @@ def load_verified_leo_weak_cache(
     views = np.asarray(arrays["channel_views"]).astype(str)
     seeds = np.asarray(arrays["satellite_seeds"]).astype(np.int64)
     applied = np.asarray(arrays["overlay_applied"]).astype(bool)
+    dataset_hashes = np.asarray(arrays["source_dataset_sha256"]).astype(str)
+    record_indices = np.asarray(arrays["source_record_indices"]).astype(np.int64)
     if not np.all(scenarios == scenario):
         raise ValueError("LEO cache contains a row from another scenario")
     if not np.all(views == "rx_base"):
         raise ValueError("LEO cache channel_views must be post-channel rx_base")
     if not bool(np.all(applied)):
         raise ValueError("LEO cache contains a row without overlay_applied=true")
+    if np.any(record_indices < 0):
+        raise ValueError("LEO cache source_record_indices must be nonnegative")
+    if any(
+        len(value) != 64
+        or value != value.lower()
+        or any(character not in "0123456789abcdef" for character in value)
+        for value in dataset_hashes.tolist()
+    ):
+        raise ValueError("LEO cache source_dataset_sha256 values must be lowercase hex")
 
     channel_config_hash = str(manifest["channel_config_sha256"])
     sample_ids = np.asarray(arrays["sample_ids"]).astype(str)
@@ -333,6 +380,9 @@ def load_verified_leo_weak_cache(
         raise ValueError("LEO cache overlay_ids do not match sample provenance")
     if len(set(expected_sample_ids)) != row_count:
         raise ValueError("LEO cache contains duplicate physical sample IDs")
+    physical_ids_hash = ids_sha256(expected_sample_ids)
+    if str(manifest.get("physical_sample_ids_sha256", "")) != physical_ids_hash:
+        raise ValueError("LEO cache physical sample ID root mismatch")
 
     arrays["leo_weak_iq"] = iq
     audit = {
@@ -343,13 +393,16 @@ def load_verified_leo_weak_cache(
         "row_count": row_count,
         "roles": sorted(observed_roles),
         "satellite_seeds": sorted(set(int(value) for value in seeds.tolist())),
-        "physical_sample_ids_sha256": ids_sha256(expected_sample_ids),
+        "physical_sample_ids_sha256": physical_ids_hash,
         "post_channel_iq_sha256_root": ids_sha256(expected_iq_hashes),
         "overlay_ids_sha256": ids_sha256(expected_overlay_ids),
         "manifest_sha256": canonical_json_sha256(manifest),
         "forbidden_members_checked_before_iq_read": True,
         "clean_sample_access": False,
         "phase2_sample_view_policy": PHASE2_SAMPLE_VIEW_POLICY,
+        "phase2_physical_sample_root_id_policy": (
+            PHASE2_PHYSICAL_SAMPLE_ROOT_ID_POLICY
+        ),
     }
     return arrays, dict(manifest), audit
 
@@ -373,6 +426,8 @@ def load_verified_leo_weak_cache_set(
     payload = json.loads(path.read_text(encoding="utf-8-sig"))
     if not isinstance(payload, dict):
         raise TypeError("LEO cache-set manifest must be a JSON object")
+    scope = str(expected_scope)
+    single_observation_required = scope in PHASE2_SINGLE_OBSERVATION_CACHE_SCOPES
     required = {
         "schema": LEO_WEAK_CACHE_SET_SCHEMA,
         "artifact_stage": LEO_WEAK_CACHE_STAGE,
@@ -380,8 +435,25 @@ def load_verified_leo_weak_cache_set(
         "clean_sample_access": False,
         "clean_derived_signal_access": False,
         "target_channel_view": "leo_weak_only",
-        "cache_scope": str(expected_scope),
+        "cache_scope": scope,
     }
+    if single_observation_required:
+        required.update(
+            {
+                "phase2_physical_sample_observation_policy": (
+                    PHASE2_PHYSICAL_SAMPLE_OBSERVATION_POLICY
+                ),
+                "phase2_cross_scenario_physical_sample_reuse": False,
+                "phase2_additional_leo_channel_state_generation": False,
+                "phase2_post_reception_equalization_augmentation_transform_allowed": True,
+                "phase2_post_reception_view_from_fixed_received_iq_only": True,
+                "phase2_post_reception_view_counts_as_additional_physical_sample": False,
+                "phase2_physical_sample_root_id_policy": (
+                    PHASE2_PHYSICAL_SAMPLE_ROOT_ID_POLICY
+                ),
+                "phase2_query_post_reception_view_fit_access": False,
+            }
+        )
     failed = [key for key, expected in required.items() if payload.get(key) != expected]
     if failed:
         raise ValueError(f"LEO cache-set manifest contract failed: {failed}")
@@ -394,8 +466,8 @@ def load_verified_leo_weak_cache_set(
 
     arrays_by_scenario: dict[str, dict[str, np.ndarray]] = {}
     cache_audits: dict[str, Any] = {}
-    reference_ids: list[str] | None = None
-    reference_roles: list[str] | None = None
+    ids_by_scenario: dict[str, list[str]] = {}
+    roles_by_scenario: dict[str, list[str]] = {}
     allowed = {str(value) for value in allowed_roles}
     for scenario in FORMAL_LEO_WEAK_SCENARIOS:
         cache_path = _resolve_from_manifest(path, str(scenario_map[scenario])).resolve()
@@ -409,38 +481,115 @@ def load_verified_leo_weak_cache_set(
         )
         current_ids = np.asarray(arrays["sample_ids"]).astype(str).tolist()
         current_roles = np.asarray(arrays["dataset_role"]).astype(str).tolist()
-        if reference_ids is None:
-            reference_ids = current_ids
-            reference_roles = current_roles
-        elif current_ids != reference_ids or current_roles != reference_roles:
-            raise ValueError(
-                "LEO cache-set physical sample ordering drifts across scenarios"
-            )
+        ids_by_scenario[scenario] = current_ids
+        roles_by_scenario[scenario] = current_roles
         arrays_by_scenario[scenario] = arrays
         cache_audits[scenario] = audit
 
-    observed_role_set = set(reference_roles or [])
-    if observed_role_set != allowed:
+    if single_observation_required:
+        for left_index, left_scenario in enumerate(FORMAL_LEO_WEAK_SCENARIOS):
+            left_ids = set(ids_by_scenario[left_scenario])
+            for right_scenario in FORMAL_LEO_WEAK_SCENARIOS[left_index + 1 :]:
+                overlap = left_ids & set(ids_by_scenario[right_scenario])
+                if overlap:
+                    raise ValueError(
+                        "LEO cache-set reuses physical sample IDs across scenarios: "
+                        f"{left_scenario}/{right_scenario} count={len(overlap)}"
+                    )
+    else:
+        reference_ids = ids_by_scenario[FORMAL_LEO_WEAK_SCENARIOS[0]]
+        reference_roles = roles_by_scenario[FORMAL_LEO_WEAK_SCENARIOS[0]]
+        for scenario in FORMAL_LEO_WEAK_SCENARIOS[1:]:
+            if (
+                ids_by_scenario[scenario] != reference_ids
+                or roles_by_scenario[scenario] != reference_roles
+            ):
+                raise ValueError(
+                    "non-Phase2 cache-set physical sample ordering drifts across scenarios"
+                )
+    observed_role_set = {
+        value
+        for scenario_roles in roles_by_scenario.values()
+        for value in scenario_roles
+    }
+    if observed_role_set != allowed or any(
+        set(values) != allowed for values in roles_by_scenario.values()
+    ):
         raise ValueError(
-            "LEO cache-set must contain the exact registered role set: "
+            "LEO cache-set must contain the exact registered role set in every scenario: "
             f"observed={sorted(observed_role_set)}, expected={sorted(allowed)}"
         )
     declared_roles = {str(value) for value in payload.get("output_roles", [])}
     if declared_roles != allowed:
         raise ValueError("LEO cache-set output_roles do not match the required role set")
 
-    physical_ids_hash = ids_sha256(reference_ids or [])
-    if str(payload.get("physical_sample_ids_sha256", "")) != physical_ids_hash:
-        raise ValueError("LEO cache-set physical sample ID root mismatch")
+    roots_by_scenario = {
+        scenario: ids_sha256(ids_by_scenario[scenario])
+        for scenario in FORMAL_LEO_WEAK_SCENARIOS
+    }
+    assignment_root = canonical_json_sha256(
+        {
+            scenario: ids_by_scenario[scenario]
+            for scenario in FORMAL_LEO_WEAK_SCENARIOS
+        }
+    )
+    if single_observation_required:
+        declared_roots = dict(
+            payload.get("physical_sample_ids_sha256_by_scenario", {})
+        )
+        if (
+            tuple(declared_roots) != FORMAL_LEO_WEAK_SCENARIOS
+            or declared_roots != roots_by_scenario
+        ):
+            raise ValueError("LEO cache-set per-scenario physical sample roots mismatch")
+        if (
+            str(payload.get("physical_sample_scenario_assignment_sha256", ""))
+            != assignment_root
+        ):
+            raise ValueError(
+                "LEO cache-set physical sample scenario assignment root mismatch"
+            )
+    else:
+        legacy_root = ids_sha256(
+            ids_by_scenario[FORMAL_LEO_WEAK_SCENARIOS[0]]
+        )
+        if str(payload.get("physical_sample_ids_sha256", "")) != legacy_root:
+            raise ValueError("non-Phase2 cache-set physical sample ID root mismatch")
     audit = {
         "path": str(path),
         "sha256": sha256_file(path),
         "scope": str(expected_scope),
         "scenario_order": list(FORMAL_LEO_WEAK_SCENARIOS),
-        "physical_sample_count": len(reference_ids or []),
-        "physical_sample_ids_sha256": physical_ids_hash,
+        "physical_sample_count": len(
+            {
+                sample_id
+                for scenario in FORMAL_LEO_WEAK_SCENARIOS
+                for sample_id in ids_by_scenario[scenario]
+            }
+        ),
+        "physical_sample_observation_count": sum(
+            len(ids_by_scenario[scenario])
+            for scenario in FORMAL_LEO_WEAK_SCENARIOS
+        ),
+        "physical_sample_count_by_scenario": {
+            scenario: len(ids_by_scenario[scenario])
+            for scenario in FORMAL_LEO_WEAK_SCENARIOS
+        },
+        "physical_sample_ids_sha256_by_scenario": roots_by_scenario,
+        "physical_sample_scenario_assignment_sha256": assignment_root,
         "cache_audits": cache_audits,
         "clean_sample_access": False,
         "phase2_sample_view_policy": PHASE2_SAMPLE_VIEW_POLICY,
+        "phase2_cross_scenario_physical_sample_reuse": False,
+        "phase2_physical_sample_root_id_policy": (
+            PHASE2_PHYSICAL_SAMPLE_ROOT_ID_POLICY
+        ),
+        "phase2_single_observation_compliant": single_observation_required,
     }
+    if single_observation_required:
+        audit["phase2_physical_sample_observation_policy"] = (
+            PHASE2_PHYSICAL_SAMPLE_OBSERVATION_POLICY
+        )
+    else:
+        audit["phase2_cross_scenario_physical_sample_reuse"] = True
     return arrays_by_scenario, payload, audit

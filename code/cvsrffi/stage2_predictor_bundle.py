@@ -478,6 +478,19 @@ def write_predictor_package_manifest_and_seal(
             f"package manifest schema mismatch: missing={sorted(MANIFEST_REQUIRED_KEYS-set(payload))}, "
             f"unexpected={sorted(set(payload)-MANIFEST_REQUIRED_KEYS)}"
         )
+    _validate_manifest(payload)
+    by_role = {item["artifact_role"]: item for item in checked_members}
+    for scenario in FORMAL_LEO_WEAK_SCENARIOS:
+        support, support_manifest = _materialize_npz(
+            root, by_role[f"support:{scenario}"]
+        )
+        _validate_support_arrays(
+            support,
+            support_manifest,
+            scenario=scenario,
+            class_count=payload["registered_class_count"],
+            max_k=payload["support_pool_max_k"],
+        )
     manifest_path = root / "package_manifest.json"
     if manifest_path.exists() or seal_path.exists():
         raise FileExistsError("refusing to overwrite package manifest or detached seal")
@@ -719,6 +732,11 @@ def _validate_support_arrays(
         raise PredictorPackageError("support class/rank dtype or shape drift")
     if labels.shape != (len(tokens),) or len(tokens) != len(overlay):
         raise PredictorPackageError("support token/class count drift")
+    expected_support_count = class_count * max_k
+    if len(tokens) != expected_support_count:
+        raise PredictorPackageError(
+            "support package does not expose exactly K samples per class"
+        )
     if np.asarray(arrays["support_pool_satellite_seeds"]).shape != (len(tokens),):
         raise PredictorPackageError("support satellite seed shape drift")
     expected_pairs = [
@@ -727,7 +745,9 @@ def _validate_support_arrays(
         for rank in range(max_k)
     ]
     if list(zip(labels.tolist(), ranks.tolist())) != expected_pairs:
-        raise PredictorPackageError("support pool is not an ordered nested K prefix")
+        raise PredictorPackageError(
+            "support package is not an exact ordered K-shot prefix"
+        )
     _validate_iq_and_hashes(
         arrays["support_pool_leo_weak_iq"],
         arrays["support_pool_post_channel_iq_sha256"],
@@ -755,8 +775,9 @@ def load_verified_stage2_predictor_bundle(
     by_role = {item["artifact_role"]: item for item in manifest["members"]}
     support_by_scenario: dict[str, dict[str, np.ndarray]] = {}
     query_by_scenario: dict[str, dict[str, np.ndarray]] = {}
-    reference_support_tokens: list[str] | None = None
-    reference_query_tokens: list[str] | None = None
+    observed_tokens: set[str] = set()
+    reference_support_count: int | None = None
+    reference_query_count: int | None = None
     root = Path(package_root)
     for value in scenarios:
         support, support_manifest = _materialize_npz(root, by_role[f"support:{value}"])
@@ -773,19 +794,35 @@ def load_verified_stage2_predictor_bundle(
         query_tokens = np.asarray(query["query_tokens"]).astype(str).tolist()
         if set(support_tokens) & set(query_tokens):
             raise PredictorPackageError("support/query opaque token overlap")
-        if reference_support_tokens is None:
-            reference_support_tokens = support_tokens
-            reference_query_tokens = query_tokens
-        elif support_tokens != reference_support_tokens or query_tokens != reference_query_tokens:
-            raise PredictorPackageError("physical sample ordering drifts across scenarios")
+        scenario_tokens = set(support_tokens) | set(query_tokens)
+        if observed_tokens & scenario_tokens:
+            raise PredictorPackageError(
+                "physical sample token reuse across LEO_weak scenarios"
+            )
+        observed_tokens.update(scenario_tokens)
+        if reference_support_count is None:
+            reference_support_count = len(support_tokens)
+            reference_query_count = len(query_tokens)
+        elif (
+            len(support_tokens) != reference_support_count
+            or len(query_tokens) != reference_query_count
+        ):
+            raise PredictorPackageError(
+                "support/query count drifts across LEO_weak scenarios"
+            )
         support_by_scenario[value] = support
         query_by_scenario[value] = query
     audit = {
         **audit,
         "iq_payload_materialized": True,
         "materialized_scenarios": list(scenarios),
-        "support_pool_count": len(reference_support_tokens or []),
-        "query_count": len(reference_query_tokens or []),
+        "support_pool_count": int(reference_support_count or 0),
+        "query_count": int(reference_query_count or 0),
         "sample_level_post_channel_iq_sha256_status": "PASS",
+        "cross_scenario_physical_sample_token_disjointness": (
+            "PASS"
+            if tuple(scenarios) == tuple(FORMAL_LEO_WEAK_SCENARIOS)
+            else "NOT_CHECKED_SINGLE_SCENARIO"
+        ),
     }
     return support_by_scenario, query_by_scenario, manifest, {**audit, "seal": seal}

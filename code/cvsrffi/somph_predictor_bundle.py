@@ -532,7 +532,6 @@ def _validate_manifest(payload: dict[str, Any]) -> list[dict[str, Any]]:
         raise PredictorPackageError("SOMP-H bundle manifest exact schema mismatch")
     expected = {
         "schema": SOMPH_BUNDLE_MANIFEST_SCHEMA,
-        "support_pool_max_k": SUPPORT_POOL_MAX_K,
         "target_channel_scenarios": list(FORMAL_LEO_WEAK_SCENARIOS),
         "phase1_checkpoint_sha256": ADV3B02_PHASE1_CHECKPOINT_SHA256,
         **PHASE2_FULL_CONTRACT,
@@ -555,6 +554,15 @@ def _validate_manifest(payload: dict[str, Any]) -> list[dict[str, Any]]:
         or payload["k_shot"] > SUPPORT_POOL_MAX_K
     ):
         raise PredictorPackageError("SOMP-H K is outside the sealed K20 pool")
+    support_pool_k = payload.get("support_pool_max_k")
+    if (
+        not isinstance(support_pool_k, int)
+        or isinstance(support_pool_k, bool)
+        or support_pool_k != payload["k_shot"]
+    ):
+        raise PredictorPackageError(
+            "SOMP-H reachable support pool must equal the declared K"
+        )
     count = payload.get("registered_class_count")
     if not isinstance(count, int):
         raise PredictorPackageError("SOMP-H registered class count invalid")
@@ -729,6 +737,7 @@ def write_somph_predictor_bundle(
     expected_head_capsule_sha256: str | None = None,
     expected_row_handle: str | None = None,
     expected_row_manifest_sha256: str | None = None,
+    support_pool_max_k: int | None = None,
 ) -> tuple[Path, Path, dict[str, Any], dict[str, Any]]:
     """Seal one physically isolated SOMP-H predictor profile."""
 
@@ -749,6 +758,16 @@ def write_somph_predictor_bundle(
         or k_shot > SUPPORT_POOL_MAX_K
     ):
         raise PredictorPackageError("SOMP-H K is outside the sealed K20 pool")
+    if support_pool_max_k is None:
+        support_pool_max_k = k_shot
+    if (
+        not isinstance(support_pool_max_k, int)
+        or isinstance(support_pool_max_k, bool)
+        or support_pool_max_k != k_shot
+    ):
+        raise PredictorPackageError(
+            "SOMP-H reachable support pool must equal the declared K"
+        )
     if profile == ENROLLMENT_ONLY:
         if (
             expected_head_enrollment_binding_sha256 is not None
@@ -819,7 +838,7 @@ def write_somph_predictor_bundle(
         raise PredictorPackageError(
             "SOMP-H overlay provenance does not match external trust root"
         )
-    _validate_provenance(
+    provenance_index = _validate_provenance(
         provenance, profile=profile, receiver=receiver, seed=seed
     )
     if profile == APPLY_ONLY:
@@ -851,6 +870,23 @@ def write_somph_predictor_bundle(
     count = len(registered_classes)
     registry = [dict(value) for value in registered_classes]
     _validate_registry(registry, count)
+    if profile == ENROLLMENT_ONLY:
+        support_manifest_context = {
+            "registration_state": registration_state,
+            "registered_class_count": count,
+            "support_pool_max_k": support_pool_max_k,
+        }
+        for scenario in FORMAL_LEO_WEAK_SCENARIOS:
+            arrays, embedded = _materialize_iq(
+                root, by_kind[f"support:{scenario}"]
+            )
+            _validate_support_payload(
+                arrays,
+                embedded,
+                manifest=support_manifest_context,
+                scenario=scenario,
+                provenance=provenance_index[scenario],
+            )
     root_digest = package_root_sha256(members)
     manifest = {
         "schema": SOMPH_BUNDLE_MANIFEST_SCHEMA,
@@ -860,7 +896,7 @@ def write_somph_predictor_bundle(
         "receiver": receiver,
         "seed": seed,
         "k_shot": k_shot,
-        "support_pool_max_k": SUPPORT_POOL_MAX_K,
+        "support_pool_max_k": support_pool_max_k,
         "target_channel_scenarios": list(FORMAL_LEO_WEAK_SCENARIOS),
         "registered_class_count": count,
         "registered_classes": registry,
@@ -891,11 +927,6 @@ def write_somph_predictor_bundle(
     if manifest_path.exists() or seal_path.exists():
         raise FileExistsError("refusing to overwrite SOMP-H manifest or detached seal")
     manifest_bytes = canonical_json_bytes(manifest) + b"\n"
-    with manifest_path.open("xb") as handle:
-        handle.write(manifest_bytes)
-    _validate_package_root_exact_allowlist(
-        root, allowed_files=expected_paths | {MANIFEST_RELATIVE_PATH}
-    )
     seal = {
         "schema": SOMPH_BUNDLE_SEAL_SCHEMA,
         "manifest_relative_path": MANIFEST_RELATIVE_PATH,
@@ -904,9 +935,28 @@ def write_somph_predictor_bundle(
         "package_root_sha256": root_digest,
         "artifact_member_allowlist_sha256": root_digest,
     }
-    seal_path.parent.mkdir(parents=True, exist_ok=True)
-    with seal_path.open("xb") as handle:
-        handle.write(canonical_json_bytes(seal) + b"\n")
+    manifest_created = False
+    seal_created = False
+    try:
+        with manifest_path.open("xb") as handle:
+            manifest_created = True
+            handle.write(manifest_bytes)
+        _validate_package_root_exact_allowlist(
+            root, allowed_files=expected_paths | {MANIFEST_RELATIVE_PATH}
+        )
+        seal_path.parent.mkdir(parents=True, exist_ok=True)
+        with seal_path.open("xb") as handle:
+            seal_created = True
+            handle.write(canonical_json_bytes(seal) + b"\n")
+    except Exception:
+        for owned_path, created in (
+            (seal_path, seal_created),
+            (manifest_path, manifest_created),
+        ):
+            if created and owned_path.exists():
+                os.chmod(owned_path, 0o600)
+                owned_path.unlink()
+        raise
     return manifest_path, seal_path, manifest, seal
 
 
@@ -1155,7 +1205,7 @@ def _validate_support_payload(
         "scenario": scenario,
         "registration_state": manifest["registration_state"],
         "registered_class_count": manifest["registered_class_count"],
-        "support_pool_max_k": SUPPORT_POOL_MAX_K,
+        "support_pool_max_k": manifest["support_pool_max_k"],
         "token_scheme": "hmac_sha256_opaque_v1",
     }
     if embedded != expected_embedded:
@@ -1176,10 +1226,12 @@ def _validate_support_payload(
     expected_pairs = [
         (class_index, rank)
         for class_index in range(manifest["registered_class_count"])
-        for rank in range(SUPPORT_POOL_MAX_K)
+        for rank in range(manifest["support_pool_max_k"])
     ]
     if list(zip(labels.tolist(), ranks.tolist())) != expected_pairs:
-        raise PredictorPackageError("SOMP-H support is not the unified K20 pool")
+        raise PredictorPackageError(
+            "SOMP-H support does not expose exactly K ordered samples per class"
+        )
     _validate_iq(
         arrays["support_leo_weak_iq"],
         arrays["support_post_channel_iq_sha256"],
@@ -1247,8 +1299,7 @@ def load_verified_somph_predictor_bundle(
     by_kind = {item["kind"]: item for item in manifest["members"]}
     prefix = "support:" if manifest["profile"] == ENROLLMENT_ONLY else "query:"
     payloads: dict[str, dict[str, np.ndarray]] = {}
-    reference_sample_tokens: set[str] | None = None
-    reference_support_assignment: dict[str, tuple[int, int]] | None = None
+    observed_sample_tokens: set[str] = set()
     for scenario in FORMAL_LEO_WEAK_SCENARIOS:
         arrays, embedded = _materialize_iq(root, by_kind[prefix + scenario])
         if manifest["profile"] == ENROLLMENT_ONLY:
@@ -1262,14 +1313,6 @@ def load_verified_somph_predictor_bundle(
             sample_tokens = set(
                 np.asarray(arrays["support_tokens"]).astype(str).tolist()
             )
-            support_assignment = {
-                token: (int(class_index), int(rank))
-                for token, class_index, rank in zip(
-                    np.asarray(arrays["support_tokens"]).astype(str).tolist(),
-                    np.asarray(arrays["support_class_indices"]).tolist(),
-                    np.asarray(arrays["support_rank_within_class"]).tolist(),
-                )
-            }
         else:
             _validate_query_payload(
                 arrays,
@@ -1281,28 +1324,20 @@ def load_verified_somph_predictor_bundle(
             sample_tokens = set(
                 np.asarray(arrays["query_tokens"]).astype(str).tolist()
             )
-        if reference_sample_tokens is None:
-            reference_sample_tokens = sample_tokens
-        elif sample_tokens != reference_sample_tokens:
+        reused_tokens = observed_sample_tokens & sample_tokens
+        if reused_tokens:
             raise PredictorPackageError(
-                "SOMP-H physical sample-token set drifts across LEO_weak scenarios"
+                "SOMP-H physical sample-token reuse across LEO_weak scenarios"
             )
-        if manifest["profile"] == ENROLLMENT_ONLY:
-            if reference_support_assignment is None:
-                reference_support_assignment = support_assignment
-            elif support_assignment != reference_support_assignment:
-                raise PredictorPackageError(
-                    "SOMP-H support token/class/rank mapping drifts across "
-                    "LEO_weak scenarios"
-                )
+        observed_sample_tokens.update(sample_tokens)
         payloads[scenario] = arrays
     return payloads, manifest, {
         **audit,
         "iq_payload_materialized": True,
         "materialized_scenarios": list(FORMAL_LEO_WEAK_SCENARIOS),
         "sample_level_overlay_provenance_crosscheck": "PASS",
-        "cross_scenario_physical_sample_token_set_check": "PASS",
-        "cross_scenario_support_assignment_check": (
+        "cross_scenario_physical_sample_token_disjointness_check": "PASS",
+        "per_scenario_unified_support_pool_check": (
             "PASS" if manifest["profile"] == ENROLLMENT_ONLY else "NOT_APPLICABLE"
         ),
     }

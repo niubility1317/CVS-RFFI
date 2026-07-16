@@ -16,7 +16,7 @@ from cvsrffi.leo_weak_cache import FORMAL_LEO_WEAK_SCENARIOS
 from cvsrffi.phase2_runtime_contract import PHASE2_FULL_CONTRACT
 
 
-SCHEMA = "cvs.phase2.somph_formal_matrix.v1"
+SCHEMA = "cvs.phase2.somph_formal_matrix.v3"
 ARTIFACT_BOUNDARY = "offline_matrix_controller_only_never_mounted_in_phase2"
 ADV3B02_CHECKPOINT_SHA256 = (
     "2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98"
@@ -27,7 +27,18 @@ CONFIRMATION_SEEDS = (713102, 713103, 713104, 713105, 713106)
 FORMAL_K_VALUES = (1, 5, 10, 20)
 PRIMARY_K_VALUES = (5, 10)
 FORMAL_NEW_CLASS_COUNTS = (5, 10, 20)
-SUPPORT_POOL_MAX_K = 20
+OFFLINE_AUTHORITY_SUPPORT_POOL_MAX_K = 20
+# Backward-compatible import alias.  In this module it never describes
+# Phase2-reachable support; each formal row exposes exactly its own k_shot.
+SUPPORT_POOL_MAX_K = OFFLINE_AUTHORITY_SUPPORT_POOL_MAX_K
+SUPPORT_POOL_MAX_K_SEMANTICS = (
+    "offline_authority_candidate_pool_only_not_phase2_reachable"
+)
+PHASE2_REACHABLE_SUPPORT_POOL_POLICY = "sealed_exact_k_per_registered_class"
+NESTED_K_SUPPORT_PACKAGE_POLICY = (
+    "k1_k5_are_k10_ordered_prefixes_k20_is_separate_exact_package"
+)
+KSHOT_REACHABILITY_VIOLATION_STATUS = "PROTOCOL_INVALID_KSHOT_REACHABILITY"
 _PHASE2_CONTRACT_ITEMS = tuple(PHASE2_FULL_CONTRACT.items())
 
 
@@ -50,8 +61,8 @@ def _success_criteria() -> dict[str, Any]:
 
 def _resource_limits() -> dict[str, Any]:
     return {
-        "adapter_parameters_max": 50_000,
-        "adaptation_epochs_max": 20,
+        "adapter_parameters_max": 80_000,
+        "adaptation_epochs_max": 30,
         "dense_query_graph_allowed": False,
         "per_sample_query_decision_required": True,
     }
@@ -187,15 +198,37 @@ def _row(
         "registered_class_count": len(registered_tx_ids),
         "registered_tx_ids": registered_tx_ids,
         "target_channel_scenarios": list(FORMAL_LEO_WEAK_SCENARIOS),
+        "offline_authority_support_pool_max_k": (
+            OFFLINE_AUTHORITY_SUPPORT_POOL_MAX_K
+        ),
         "support_pool_max_k": SUPPORT_POOL_MAX_K,
-        "support_selection_rule": "seeded_per_class_rank_prefix_lt_k",
+        "support_pool_max_k_semantics": SUPPORT_POOL_MAX_K_SEMANTICS,
+        "reachable_support_pool_max_k": k_shot,
+        "reachable_support_count_per_registered_class": k_shot,
+        "phase2_reachable_support_pool_policy": (
+            PHASE2_REACHABLE_SUPPORT_POOL_POLICY
+        ),
+        "support_member_allowlist_required": True,
+        "support_preopen_per_class_count_validation_required": True,
+        "nested_k_support_package_policy": NESTED_K_SUPPORT_PACKAGE_POLICY,
+        "nested_k_support_prefix_validation_required": True,
+        "kshot_reachability_violation_status": (
+            KSHOT_REACHABILITY_VIOLATION_STATUS
+        ),
+        "support_selection_rule": (
+            "offline_rank_then_seal_exact_k_ordered_prefix_per_class"
+        ),
         "query_excludes_full_support_pool_max_k": True,
-        "same_physical_samples_across_scenarios": True,
-        "distinct_leo_weak_overlay_per_scenario": True,
+        "cross_scenario_physical_sample_reuse": False,
+        "scenario_physical_sample_assignment_policy": (
+            "disjoint_preoverlay_tx_day_stratified_v1"
+        ),
+        "scenario_support_query_physical_id_sets_pairwise_disjoint": True,
         "data_binding_status": "UNBOUND_REQUIREMENT_TEMPLATE",
         "row_manifest_sha256": None,
-        "old_query_physical_root_sha256": None,
-        "support_pool_physical_root_sha256": None,
+        "query_physical_roots_sha256_by_scenario": None,
+        "support_pool_physical_roots_sha256_by_scenario": None,
+        "physical_sample_scenario_assignment_sha256": None,
         "overlay_lineage_receipt_sha256": None,
         "formal_launch_authority": False,
         **_phase2_contract(),
@@ -250,7 +283,21 @@ def build_formal_matrix() -> dict[str, Any]:
         "k_values": list(FORMAL_K_VALUES),
         "primary_k_values": list(PRIMARY_K_VALUES),
         "new_class_counts": list(FORMAL_NEW_CLASS_COUNTS),
+        "offline_authority_support_pool_max_k": (
+            OFFLINE_AUTHORITY_SUPPORT_POOL_MAX_K
+        ),
         "support_pool_max_k": SUPPORT_POOL_MAX_K,
+        "support_pool_max_k_semantics": SUPPORT_POOL_MAX_K_SEMANTICS,
+        "phase2_reachable_support_pool_policy": (
+            PHASE2_REACHABLE_SUPPORT_POOL_POLICY
+        ),
+        "support_member_allowlist_required": True,
+        "support_preopen_per_class_count_validation_required": True,
+        "nested_k_support_package_policy": NESTED_K_SUPPORT_PACKAGE_POLICY,
+        "nested_k_support_prefix_validation_required": True,
+        "kshot_reachability_violation_status": (
+            KSHOT_REACHABILITY_VIOLATION_STATUS
+        ),
         "target_channel_scenarios": list(FORMAL_LEO_WEAK_SCENARIOS),
         "old_tx_ids": list(OLD_TX_IDS),
         "nested_new_tx_ids": list(NEW_TX_IDS),
@@ -283,7 +330,15 @@ TOP_LEVEL_KEYS = {
     "k_values",
     "primary_k_values",
     "new_class_counts",
+    "offline_authority_support_pool_max_k",
     "support_pool_max_k",
+    "support_pool_max_k_semantics",
+    "phase2_reachable_support_pool_policy",
+    "support_member_allowlist_required",
+    "support_preopen_per_class_count_validation_required",
+    "nested_k_support_package_policy",
+    "nested_k_support_prefix_validation_required",
+    "kshot_reachability_violation_status",
     "target_channel_scenarios",
     "old_tx_ids",
     "nested_new_tx_ids",
@@ -313,15 +368,27 @@ ROW_KEYS = {
     "registered_class_count",
     "registered_tx_ids",
     "target_channel_scenarios",
+    "offline_authority_support_pool_max_k",
     "support_pool_max_k",
+    "support_pool_max_k_semantics",
+    "reachable_support_pool_max_k",
+    "reachable_support_count_per_registered_class",
+    "phase2_reachable_support_pool_policy",
+    "support_member_allowlist_required",
+    "support_preopen_per_class_count_validation_required",
+    "nested_k_support_package_policy",
+    "nested_k_support_prefix_validation_required",
+    "kshot_reachability_violation_status",
     "support_selection_rule",
     "query_excludes_full_support_pool_max_k",
-    "same_physical_samples_across_scenarios",
-    "distinct_leo_weak_overlay_per_scenario",
+    "cross_scenario_physical_sample_reuse",
+    "scenario_physical_sample_assignment_policy",
+    "scenario_support_query_physical_id_sets_pairwise_disjoint",
     "data_binding_status",
     "row_manifest_sha256",
-    "old_query_physical_root_sha256",
-    "support_pool_physical_root_sha256",
+    "query_physical_roots_sha256_by_scenario",
+    "support_pool_physical_roots_sha256_by_scenario",
+    "physical_sample_scenario_assignment_sha256",
     "overlay_lineage_receipt_sha256",
     "formal_launch_authority",
     "structural_row_sha256",
@@ -391,8 +458,32 @@ def validate_formal_matrix(payload: Mapping[str, Any]) -> None:
     )
     if payload.get("development_seed") != DEVELOPMENT_SEED:
         raise SomphFormalMatrixError("development seed drift")
-    if payload.get("support_pool_max_k") != SUPPORT_POOL_MAX_K:
-        raise SomphFormalMatrixError("support pool must be a uniform maxK20 pool")
+    if (
+        payload.get("offline_authority_support_pool_max_k")
+        != OFFLINE_AUTHORITY_SUPPORT_POOL_MAX_K
+        or payload.get("support_pool_max_k")
+        != OFFLINE_AUTHORITY_SUPPORT_POOL_MAX_K
+    ):
+        raise SomphFormalMatrixError(
+            "offline authority support candidate pool must be maxK20"
+        )
+    if payload.get("support_pool_max_k_semantics") != SUPPORT_POOL_MAX_K_SEMANTICS:
+        raise SomphFormalMatrixError("support pool maxK semantics drift")
+    if (
+        payload.get("phase2_reachable_support_pool_policy")
+        != PHASE2_REACHABLE_SUPPORT_POOL_POLICY
+        or payload.get("support_member_allowlist_required") is not True
+        or payload.get("support_preopen_per_class_count_validation_required")
+        is not True
+        or payload.get("nested_k_support_package_policy")
+        != NESTED_K_SUPPORT_PACKAGE_POLICY
+        or payload.get("nested_k_support_prefix_validation_required") is not True
+        or payload.get("kshot_reachability_violation_status")
+        != KSHOT_REACHABILITY_VIOLATION_STATUS
+    ):
+        raise SomphFormalMatrixError(
+            f"{KSHOT_REACHABILITY_VIOLATION_STATUS}: top-level exact-K policy drift"
+        )
     if len(set(OLD_TX_IDS)) != len(OLD_TX_IDS):
         raise SomphFormalMatrixError("old TX registry contains duplicates")
     if len(set(NEW_TX_IDS)) != len(NEW_TX_IDS):
@@ -417,7 +508,16 @@ def validate_formal_matrix(payload: Mapping[str, Any]) -> None:
             raise SomphFormalMatrixError("formal matrix row exact schema drift")
         if FORBIDDEN_AUTHORITY_ALIASES.intersection(row):
             raise SomphFormalMatrixError("formal matrix row contains authority alias")
-        for field in ("seed", "k_shot", "new_class_count", "registered_class_count"):
+        for field in (
+            "seed",
+            "k_shot",
+            "new_class_count",
+            "registered_class_count",
+            "offline_authority_support_pool_max_k",
+            "support_pool_max_k",
+            "reachable_support_pool_max_k",
+            "reachable_support_count_per_registered_class",
+        ):
             if (
                 not isinstance(row.get(field), int)
                 or isinstance(row.get(field), bool)
@@ -467,8 +567,9 @@ def validate_formal_matrix(payload: Mapping[str, Any]) -> None:
             raise SomphFormalMatrixError("requirement row data binding status drift")
         for field in (
             "row_manifest_sha256",
-            "old_query_physical_root_sha256",
-            "support_pool_physical_root_sha256",
+            "query_physical_roots_sha256_by_scenario",
+            "support_pool_physical_roots_sha256_by_scenario",
+            "physical_sample_scenario_assignment_sha256",
             "overlay_lineage_receipt_sha256",
         ):
             if row.get(field) is not None:
@@ -485,16 +586,59 @@ def validate_formal_matrix(payload: Mapping[str, Any]) -> None:
             FORMAL_LEO_WEAK_SCENARIOS,
             field="row.target_channel_scenarios",
         )
-        if row.get("support_pool_max_k") != SUPPORT_POOL_MAX_K:
-            raise SomphFormalMatrixError("row support pool is not maxK20")
-        if row.get("support_selection_rule") != "seeded_per_class_rank_prefix_lt_k":
+        if (
+            row.get("offline_authority_support_pool_max_k")
+            != OFFLINE_AUTHORITY_SUPPORT_POOL_MAX_K
+            or row.get("support_pool_max_k")
+            != OFFLINE_AUTHORITY_SUPPORT_POOL_MAX_K
+        ):
+            raise SomphFormalMatrixError(
+                "row offline authority support candidate pool is not maxK20"
+            )
+        if row.get("support_pool_max_k_semantics") != SUPPORT_POOL_MAX_K_SEMANTICS:
+            raise SomphFormalMatrixError("row support pool maxK semantics drift")
+        reachable_k = row.get("reachable_support_pool_max_k")
+        reachable_count = row.get("reachable_support_count_per_registered_class")
+        if reachable_k != key[4] or reachable_count != key[4]:
+            raise SomphFormalMatrixError(
+                f"{KSHOT_REACHABILITY_VIOLATION_STATUS}: "
+                f"row K={key[4]} must expose exactly K support per class, "
+                f"got reachable_max={reachable_k}, count={reachable_count}"
+            )
+        if (
+            row.get("phase2_reachable_support_pool_policy")
+            != PHASE2_REACHABLE_SUPPORT_POOL_POLICY
+            or row.get("support_member_allowlist_required") is not True
+            or row.get("support_preopen_per_class_count_validation_required")
+            is not True
+            or row.get("nested_k_support_package_policy")
+            != NESTED_K_SUPPORT_PACKAGE_POLICY
+            or row.get("nested_k_support_prefix_validation_required") is not True
+            or row.get("kshot_reachability_violation_status")
+            != KSHOT_REACHABILITY_VIOLATION_STATUS
+        ):
+            raise SomphFormalMatrixError(
+                f"{KSHOT_REACHABILITY_VIOLATION_STATUS}: row exact-K guard drift"
+            )
+        if (
+            row.get("support_selection_rule")
+            != "offline_rank_then_seal_exact_k_ordered_prefix_per_class"
+        ):
             raise SomphFormalMatrixError("row support selection rule drift")
         if row.get("query_excludes_full_support_pool_max_k") is not True:
             raise SomphFormalMatrixError("query/support exclusion is not explicit")
-        if row.get("same_physical_samples_across_scenarios") is not True:
-            raise SomphFormalMatrixError("scenario physical sample pairing is absent")
-        if row.get("distinct_leo_weak_overlay_per_scenario") is not True:
-            raise SomphFormalMatrixError("scenario overlays are not declared distinct")
+        if row.get("cross_scenario_physical_sample_reuse") is not False:
+            raise SomphFormalMatrixError("cross-scenario physical sample reuse is enabled")
+        if (
+            row.get("scenario_physical_sample_assignment_policy")
+            != "disjoint_preoverlay_tx_day_stratified_v1"
+        ):
+            raise SomphFormalMatrixError("scenario physical assignment policy drift")
+        if (
+            row.get("scenario_support_query_physical_id_sets_pairwise_disjoint")
+            is not True
+        ):
+            raise SomphFormalMatrixError("scenario physical ID disjointness is absent")
         expected_seed_role = (
             "development"
             if key[3] == DEVELOPMENT_SEED

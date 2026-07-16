@@ -16,6 +16,7 @@ from typing import Any, Mapping
 import numpy as np
 import torch
 
+from cvsrffi.phase2_runtime_contract import PHASE2_FULL_CONTRACT
 from cvsrffi.stage2_predictor_bundle import FORMAL_LEO_WEAK_SCENARIOS
 SOMPH_METHOD_LOCK_SCHEMA = "cvs.phase2.somph_method_lock.v1"
 SOMPH_HEAD_CAPSULE_SCHEMA = "cvs.phase2.somph_runtime_head_capsule.v1"
@@ -59,24 +60,7 @@ class SomphPredictorRuntimeError(ValueError):
 
 
 def _phase2_contract() -> dict[str, Any]:
-    return {
-        "phase2_sample_view_policy": "leo_weak_only_no_clean_access",
-        "clean_sample_access": False,
-        "clean_derived_signal_access": False,
-        "phase2_clean_dataset_reachable": False,
-        "phase2_clean_cache_reachable": False,
-        "phase2_clean_control_flow_reachable": False,
-        "phase2_pretrained_artifact_policy": "sealed_phase1_checkpoint_only",
-        "phase2_query_decision_policy": "per_sample_all_registered_classes",
-        "phase2_query_role_oracle_access": False,
-        "phase2_query_true_batch_class_count_access": False,
-        "phase2_query_class_quota_access": False,
-        "phase2_query_batch_global_assignment": False,
-        "query_labels_used_for_fit": False,
-        "target_query_used_for_training": False,
-        "target_query_used_for_model_selection": False,
-        "dense_query_graph_used": False,
-    }
+    return dict(PHASE2_FULL_CONTRACT)
 
 
 def expected_somph_method_lock() -> dict[str, Any]:

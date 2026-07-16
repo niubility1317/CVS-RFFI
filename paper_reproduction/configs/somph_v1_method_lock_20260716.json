@@ -37,9 +37,19 @@
     "phase2_query_true_batch_class_count_access": false,
     "phase2_query_class_quota_access": false,
     "phase2_query_batch_global_assignment": false,
-    "query_labels_used_for_fit": false,
-    "target_query_used_for_training": false,
-    "target_query_used_for_model_selection": false,
-    "dense_query_graph_used": false
+    "phase2_source_sample_access": false,
+    "phase2_source_cache_access": false,
+    "phase2_source_label_access": false,
+    "phase2_source_derived_signal_access": false,
+    "phase2_source_replay": false,
+    "phase2_external_source_adapter_access": false,
+    "phase2_physical_sample_observation_policy": "single_leo_weak_observation_per_physical_sample",
+    "phase2_cross_scenario_physical_sample_reuse": false,
+    "phase2_additional_leo_channel_state_generation": false,
+    "phase2_post_reception_equalization_augmentation_transform_allowed": true,
+    "phase2_post_reception_view_from_fixed_received_iq_only": true,
+    "phase2_post_reception_view_counts_as_additional_physical_sample": false,
+    "phase2_physical_sample_root_id_policy": "immutable_preoverlay_lineage_token",
+    "phase2_query_post_reception_view_fit_access": false
   }
 }

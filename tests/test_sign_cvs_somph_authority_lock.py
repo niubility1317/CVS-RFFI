@@ -137,7 +137,19 @@ def _lock(tmp_path: Path) -> tuple[Path, dict]:
         "channel_config_sha256_by_scenario": {
             scenario: sha for scenario in authority.FORMAL_LEO_WEAK_SCENARIOS
         },
-        "physical_sample_ids_sha256": sha,
+        **authority.PHASE2_SINGLE_OBSERVATION_CONTRACT,
+        "physical_sample_scenario_assignment_policy": (
+            authority.PHYSICAL_SAMPLE_SCENARIO_ASSIGNMENT_POLICY
+        ),
+        "physical_sample_ids_sha256_by_scenario": {
+            scenario: f"{index + 1:x}" * 64
+            for index, scenario in enumerate(
+                authority.FORMAL_LEO_WEAK_SCENARIOS
+            )
+        },
+        "physical_sample_scenario_assignment_sha256": "4" * 64,
+        "cross_scenario_physical_disjointness_audit": "PASS",
+        "single_observation_contract_audit": "PASS",
         "post_channel_iq_sha256_root_by_scenario": {
             scenario: sha for scenario in authority.FORMAL_LEO_WEAK_SCENARIOS
         },
@@ -221,7 +233,18 @@ def _production_build_receipt(lock: dict, *, lock_file_sha: str) -> dict:
         "cache_role_inputs_root_sha256": lock[
             "cache_role_inputs_root_sha256"
         ],
-        "physical_sample_ids_sha256": lock["physical_sample_ids_sha256"],
+        **authority.PHASE2_SINGLE_OBSERVATION_CONTRACT,
+        "physical_sample_scenario_assignment_policy": (
+            authority.PHYSICAL_SAMPLE_SCENARIO_ASSIGNMENT_POLICY
+        ),
+        "physical_sample_ids_sha256_by_scenario": lock[
+            "physical_sample_ids_sha256_by_scenario"
+        ],
+        "physical_sample_scenario_assignment_sha256": lock[
+            "physical_sample_scenario_assignment_sha256"
+        ],
+        "cross_scenario_physical_disjointness_audit": "PASS",
+        "single_observation_contract_audit": "PASS",
         "cache_sha256_by_scenario": lock["cache_sha256_by_scenario"],
         "channel_config_sha256_by_scenario": lock[
             "channel_config_sha256_by_scenario"
@@ -244,7 +267,7 @@ def _production_build_receipt(lock: dict, *, lock_file_sha: str) -> dict:
 
 def _production_manifest(lock: dict) -> dict:
     return {
-        "schema": "cvs.phase2.somph_registered_cache_build_matrix.v1",
+        "schema": "cvs.phase2.somph_registered_cache_build_matrix.v2",
         "formal_launch_authority": False,
         "required_samples_per_tx": 40,
         "cells": [
@@ -443,6 +466,60 @@ def test_rejects_nonformal_lock_identity_before_signing(
     assert not (tmp_path / "signing_receipt.json").exists()
 
 
+def test_rejects_v1_lock_and_v1_build_receipt(tmp_path: Path) -> None:
+    _legacy_path, legacy_lock = _lock(tmp_path)
+    legacy_lock["schema"] = "cvs.phase2.somph_leo_weak_authority_lock.v1"
+    with pytest.raises(
+        authority.SomphLineageAuthorityError,
+        match="schema drift",
+    ):
+        signer._validate_lock_for_signing(legacy_lock)
+
+    _path, lock = _registered_lock(tmp_path)
+    lock_file_sha = "a" * 64
+    receipt = _production_build_receipt(
+        lock,
+        lock_file_sha=lock_file_sha,
+    )
+    receipt["schema"] = "cvs.phase1.somph_authority_lock_build_receipt.v1"
+    with pytest.raises(
+        authority.SomphLineageAuthorityError,
+        match="binding drift",
+    ):
+        authority._verify_build_authority_binding(
+            lock,
+            lock_file_sha256=lock_file_sha,
+            lock_canonical_sha256=authority.sha256_bytes(
+                authority.canonical_json_bytes(lock)
+            ),
+            build_receipt=receipt,
+            build_receipt_sha256="b" * 64,
+            cache_spec_manifest=_production_manifest(lock),
+            cache_spec_manifest_sha256=(
+                signer.lock_builder.FORMAL_CACHE_SPEC_MANIFEST_SHA256
+            ),
+            cache_spec_manifest_size_bytes=1,
+        )
+
+
+@pytest.mark.parametrize(
+    "field",
+    tuple(authority.PHASE2_SINGLE_OBSERVATION_CONTRACT),
+)
+def test_signing_rejects_each_single_observation_field_drift(
+    tmp_path: Path,
+    field: str,
+) -> None:
+    _path, lock = _lock(tmp_path)
+    expected = authority.PHASE2_SINGLE_OBSERVATION_CONTRACT[field]
+    lock[field] = (not expected) if isinstance(expected, bool) else "legacy"
+    with pytest.raises(
+        authority.SomphLineageAuthorityError,
+        match="single-observation contract drift",
+    ):
+        signer._validate_lock_for_signing(lock)
+
+
 def test_rejects_malformed_descriptor_before_signing(
     tmp_path: Path,
 ) -> None:
@@ -590,7 +667,7 @@ def test_bundle_validator_rechecks_official_manifest_cell_and_receipt_roots(
     assert dataset_root == receipt["dataset_authority_root_sha256"]
 
     tampered = json.loads(json.dumps(receipt))
-    tampered["physical_sample_ids_sha256"] = "d" * 64
+    tampered["physical_sample_scenario_assignment_sha256"] = "d" * 64
     with pytest.raises(
         authority.SomphLineageAuthorityError,
         match="binding drift",

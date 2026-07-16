@@ -229,6 +229,7 @@ def _fixture(
     monkeypatch: pytest.MonkeyPatch,
     *,
     cache_new_class_count: int = 20,
+    k_shot: int = 10,
     query_per_tx: int = 1,
 ) -> dict:
     source = tmp_path / "source"
@@ -257,27 +258,34 @@ def _fixture(
         ],
     ]
     per_class = 20 + query_per_tx
-    roles: list[str] = []
-    tx_ids: list[str] = []
-    sample_ids: list[str] = []
-    split_partition: list[str] = []
-    split_rank: list[int] = []
-    for role, tx_label in labels:
-        for rank in range(per_class):
-            roles.append(role)
-            tx_ids.append(tx_label)
-            sample_ids.append(
-                sha256_bytes(
-                    f"{role}|{tx_label}|20-1|{rank}".encode("utf-8")
-                )
-            )
-            split_partition.append("support_pool" if rank < 20 else "query")
-            split_rank.append(rank if rank < 20 else rank - 20)
-    row_count = len(sample_ids)
     cache_paths: dict[str, str] = {}
     cache_hashes: dict[str, str] = {}
     scenario_receipts: dict[str, dict] = {}
+    physical_ids_by_scenario: dict[str, list[str]] = {}
     for scenario_index, scenario in enumerate(FORMAL_LEO_WEAK_SCENARIOS):
+        roles: list[str] = []
+        tx_ids: list[str] = []
+        sample_ids: list[str] = []
+        split_partition: list[str] = []
+        split_rank: list[int] = []
+        for role, tx_label in labels:
+            for rank in range(per_class):
+                roles.append(role)
+                tx_ids.append(tx_label)
+                sample_ids.append(
+                    sha256_bytes(
+                        (
+                            f"physical|{scenario}|{role}|{tx_label}|"
+                            f"20-1|{rank}"
+                        ).encode("utf-8")
+                    )
+                )
+                split_partition.append(
+                    "support_pool" if rank < 20 else "query"
+                )
+                split_rank.append(rank if rank < 20 else rank - 20)
+        physical_ids_by_scenario[scenario] = sample_ids
+        row_count = len(sample_ids)
         iq = (
             np.arange(row_count * 8, dtype=np.float32).reshape(
                 row_count, 2, 4
@@ -303,7 +311,17 @@ def _fixture(
                 rx_ids=np.asarray(["20-1"] * row_count),
                 day_ids=np.asarray(["1"] * row_count),
                 eq_ids=np.asarray(["1"] * row_count),
-                sig_ids=np.asarray([str(value) for value in range(row_count)]),
+                sig_ids=np.asarray(
+                    [f"{scenario}:{value}" for value in range(row_count)]
+                ),
+                source_dataset_sha256=np.asarray(
+                    ["a" * 64 if role == "target_old" else "b" * 64
+                     for role in roles]
+                ),
+                source_record_indices=np.arange(
+                    row_count, dtype=np.int64
+                )
+                + scenario_index * row_count,
                 dataset_role=np.asarray(roles),
                 channel_views=np.asarray(["rx_base"] * row_count),
                 sat_scenarios=np.asarray([scenario] * row_count),
@@ -331,9 +349,16 @@ def _fixture(
             "zip_member_crc_and_bounds_check": "PASS",
             "sample_level_overlay_recompute": "PASS",
         }
+    physical_roots = {
+        scenario: ids_sha256(physical_ids_by_scenario[scenario])
+        for scenario in FORMAL_LEO_WEAK_SCENARIOS
+    }
+    physical_assignment_root = sha256_bytes(
+        canonical_json_bytes(physical_ids_by_scenario)
+    )
     cache_set = {
-        "schema": "cvs_leo_weak_iq_cache_set_v1",
-        "artifact_stage": "phase1_precomputed_leo_weak_cache",
+        "schema": "cvs_leo_weak_iq_cache_set_v2",
+        "artifact_stage": "phase1_offline_prechannel_export",
         "cache_set_id": "test",
         "cache_scope": "stage2_registered",
         "phase2_sample_view_policy": "leo_weak_only_no_clean_access",
@@ -347,7 +372,25 @@ def _fixture(
         "cache_audits": {
             scenario: {} for scenario in FORMAL_LEO_WEAK_SCENARIOS
         },
-        "physical_sample_ids_sha256": ids_sha256(sample_ids),
+        "phase2_physical_sample_observation_policy": (
+            "single_leo_weak_observation_per_physical_sample"
+        ),
+        "phase2_cross_scenario_physical_sample_reuse": False,
+        "phase2_additional_leo_channel_state_generation": False,
+        "phase2_post_reception_equalization_augmentation_transform_allowed": True,
+        "phase2_post_reception_view_from_fixed_received_iq_only": True,
+        "phase2_post_reception_view_counts_as_additional_physical_sample": False,
+        "phase2_physical_sample_root_id_policy": (
+            "immutable_preoverlay_lineage_token"
+        ),
+        "phase2_query_post_reception_view_fit_access": False,
+        "physical_sample_scenario_assignment_policy": (
+            "disjoint_preoverlay_tx_day_stratified_v1"
+        ),
+        "physical_sample_ids_sha256_by_scenario": physical_roots,
+        "physical_sample_scenario_assignment_sha256": (
+            physical_assignment_root
+        ),
         "builder_sha256": "3" * 64,
         "build_spec_sha256": "4" * 64,
         "build_spec_path_exposed_to_phase2": False,
@@ -367,11 +410,15 @@ def _fixture(
         "build_spec_size_bytes": 1,
         "channel_code_closure_sha256": "6" * 64,
         "channel_code_members": [],
-        "physical_sample_ids_sha256": ids_sha256(sample_ids),
+        "physical_sample_ids_sha256_by_scenario": physical_roots,
+        "physical_sample_scenario_assignment_sha256": (
+            physical_assignment_root
+        ),
         "scenario_receipts": scenario_receipts,
         "same_fd_nofollow_read": True,
         "npz_member_crc_size_ratio_audit": "PASS",
-        "cross_scenario_physical_order_audit": "PASS",
+        "cross_scenario_physical_disjointness_audit": "PASS",
+        "single_observation_contract_audit": "PASS",
         "sample_level_overlay_recompute": "PASS",
         "manifest_hex_self_declaration_sufficient": False,
         "external_authority_lock_verified": False,
@@ -405,7 +452,7 @@ def _fixture(
         "output_root": tmp_path / "built",
         "receiver": "20-1",
         "seed": 713101,
-        "k_shot": 10,
+        "k_shot": k_shot,
         "new_class_count": 5,
         "query_per_tx": query_per_tx,
         "token_secret": b"s" * 32,
@@ -482,7 +529,18 @@ def _attach_authority_bundle(
         "channel_config_sha256_by_scenario": {
             scenario: "2" * 64 for scenario in FORMAL_LEO_WEAK_SCENARIOS
         },
-        "physical_sample_ids_sha256": cache_set["physical_sample_ids_sha256"],
+        **authority.PHASE2_SINGLE_OBSERVATION_CONTRACT,
+        "physical_sample_scenario_assignment_policy": (
+            authority.PHYSICAL_SAMPLE_SCENARIO_ASSIGNMENT_POLICY
+        ),
+        "physical_sample_ids_sha256_by_scenario": cache_set[
+            "physical_sample_ids_sha256_by_scenario"
+        ],
+        "physical_sample_scenario_assignment_sha256": cache_set[
+            "physical_sample_scenario_assignment_sha256"
+        ],
+        "cross_scenario_physical_disjointness_audit": "PASS",
+        "single_observation_contract_audit": "PASS",
         "post_channel_iq_sha256_root_by_scenario": {
             scenario: json.loads(receipt_path.read_text(encoding="utf-8"))[
                 "scenario_receipts"
@@ -560,6 +618,18 @@ def _attach_authority_bundle(
         "cache_role_inputs_root_sha256": authority_lock[
             "cache_role_inputs_root_sha256"
         ],
+        **authority.PHASE2_SINGLE_OBSERVATION_CONTRACT,
+        "physical_sample_scenario_assignment_policy": (
+            authority.PHYSICAL_SAMPLE_SCENARIO_ASSIGNMENT_POLICY
+        ),
+        "physical_sample_ids_sha256_by_scenario": cache_set[
+            "physical_sample_ids_sha256_by_scenario"
+        ],
+        "physical_sample_scenario_assignment_sha256": cache_set[
+            "physical_sample_scenario_assignment_sha256"
+        ],
+        "cross_scenario_physical_disjointness_audit": "PASS",
+        "single_observation_contract_audit": "PASS",
         "structural_receipt_sha256": sha256_file(structural_receipt),
         "structural_detached_seal_sha256": sha256_file(structural_seal),
         "formal_launch_authority": False,
@@ -634,6 +704,15 @@ def test_builds_matched_before_after_enrollment_and_apply_staging(
     assert result["formal_launch_authority"] is False
     assert result["external_authority_lock_verified"] is False
     assert result["authority_commit_sha256"] is None
+    assert result["formal_authority_state"] == (
+        "DIAGNOSTIC_STRUCTURAL_ONLY_NO_FORMAL_AUTHORITY"
+    )
+    assert result["same_scenario_support_query_disjointness_audit"] == "PASS"
+    assert (
+        result["cross_scenario_selected_physical_disjointness_audit"]
+        == "PASS"
+    )
+    assert result["before_after_old_support_query_reuse_audit"] == "PASS"
     assert result["token_secret_persisted"] is False
     assert result["states"]["before"]["stage"] == "stage2b"
     assert result["states"]["after"]["stage"] == "stage2c"
@@ -680,13 +759,13 @@ def test_builds_matched_before_after_enrollment_and_apply_staging(
     with np.load(before / "support_leo_clear_weak.npz") as archive:
         before_tokens = archive["support_tokens"].astype(str)
         before_iq = archive["support_leo_weak_iq"]
-        assert len(before_tokens) == 6 * 20
+        assert len(before_tokens) == 6 * 10
     with np.load(after / "support_leo_clear_weak.npz") as archive:
         after_tokens = archive["support_tokens"].astype(str)
         after_iq = archive["support_leo_weak_iq"]
-        assert len(after_tokens) == 11 * 20
-    assert np.array_equal(before_tokens, after_tokens[: 6 * 20])
-    assert np.array_equal(before_iq, after_iq[: 6 * 20])
+        assert len(after_tokens) == 11 * 10
+    assert np.array_equal(before_tokens, after_tokens[: 6 * 10])
+    assert np.array_equal(before_iq, after_iq[: 6 * 10])
 
     with np.load(before_apply / "query_leo_clear_weak.npz") as archive:
         before_query = archive["query_tokens"].astype(str)
@@ -698,7 +777,11 @@ def test_builds_matched_before_after_enrollment_and_apply_staging(
     for scenario in FORMAL_LEO_WEAK_SCENARIOS:
         with np.load(after_apply / f"query_{scenario}.npz") as archive:
             scenario_orders.append(archive["query_tokens"].astype(str).tolist())
-    assert scenario_orders[0] == scenario_orders[1] == scenario_orders[2]
+    assert all(
+        set(scenario_orders[left]).isdisjoint(scenario_orders[right])
+        for left in range(3)
+        for right in range(left + 1, 3)
+    )
 
     pair_path = Path(result["registration_pair_manifest"])
     pair = json.loads(pair_path.read_text(encoding="utf-8"))
@@ -713,12 +796,9 @@ def test_builds_matched_before_after_enrollment_and_apply_staging(
         "target_old",
         "target_new",
     }
-    assert len(truth["rows"]) == 11
-    ordered_roles = [row["evaluation_role"] for row in truth["rows"]]
-    assert ordered_roles != [
-        *(["target_old"] * len(FORMAL_OLD_TX_LABELS)),
-        *(["target_new"] * 5),
-    ]
+    assert len(truth["rows"]) == 3 * 11
+    assert len({row["query_token"] for row in truth["rows"]}) == 3 * 11
+    assert len({row["physical_sample_id"] for row in truth["rows"]}) == 3 * 11
     predictor_text = "\n".join(
         path.read_text(encoding="utf-8", errors="ignore")
         for path in Path(kwargs["output_root"]).glob(
@@ -765,6 +845,9 @@ def test_authority_commit_context_builds_matching_formal_row(
         Path(kwargs["authority_bundle_root"])
         / authority.AUTHORITY_ATTESTATION_NAME
     )
+    assert result["formal_authority_state"] == (
+        "VERIFIED_SINGLE_OBSERVATION_AUTHORITY_V2"
+    )
     staging_authority = json.loads(
         Path(
             result["states"]["before"]["apply_staging_authority"]
@@ -776,18 +859,17 @@ def test_authority_commit_context_builds_matching_formal_row(
     assert staging_authority["profile"] == "formal_external_authority"
     assert staging_authority["stage"] == "stage2b"
     assert staging_authority["registration_state"] == "before"
+    assert staging_authority[
+        "cache_physical_sample_ids_sha256_by_scenario"
+    ] == result["physical_sample_ids_sha256_by_scenario"]
     assert result["formal_launch_authority"] is False
 
 
-def test_one_max_new20_authority_builds_nested_5_10_20_rows(
+def test_one_max_new20_diagnostic_builds_nested_5_10_20_rows(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    kwargs = _attach_authority_bundle(
-        _fixture(tmp_path, monkeypatch, query_per_tx=20),
-        tmp_path,
-        monkeypatch,
-    )
+    kwargs = _fixture(tmp_path, monkeypatch, query_per_tx=20)
     old_support_roots = set()
     old_query_roots = set()
     old_query_token_sets = []
@@ -797,7 +879,9 @@ def test_one_max_new20_authority_builds_nested_5_10_20_rows(
             "new_class_count": new_class_count,
             "output_root": tmp_path / f"built_new{new_class_count}",
         }
-        result = producer.build_somph_offline_row_pair(**row_kwargs)
+        result = producer.build_somph_offline_row_pair_diagnostic(
+            **row_kwargs
+        )
         pair = json.loads(
             Path(result["registration_pair_manifest"]).read_text(
                 encoding="utf-8"
@@ -820,13 +904,58 @@ def test_one_max_new20_authority_builds_nested_5_10_20_rows(
             for row in truth["rows"]
             if row["evaluation_role"] == "target_old"
         }
+        all_truth_tokens = {
+            row["query_token"] for row in truth["rows"]
+        }
         old_query_token_sets.append(old_tokens)
-        assert old_tokens.issubset(set(tokens.tolist()))
+        assert set(tokens.tolist()).issubset(all_truth_tokens)
         assert len(tokens) == (len(FORMAL_OLD_TX_LABELS) + new_class_count) * 20
+        assert len(truth["rows"]) == 3 * len(tokens)
     assert len(old_support_roots) == 1
     assert len(old_query_roots) == 1
     assert old_query_token_sets[0] == old_query_token_sets[1]
     assert old_query_token_sets[1] == old_query_token_sets[2]
+
+
+def test_k1_k5_are_k10_prefixes_but_each_package_exposes_exact_k(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    base = _fixture(tmp_path, monkeypatch, query_per_tx=20)
+    tokens_by_k: dict[int, dict[int, list[str]]] = {}
+    query_tokens_by_k: dict[int, set[str]] = {}
+    for k_shot in (1, 5, 10, 20):
+        result = producer.build_somph_offline_row_pair_diagnostic(
+            **{
+                **base,
+                "k_shot": k_shot,
+                "output_root": tmp_path / f"built_k{k_shot}",
+            }
+        )
+        root = Path(result["states"]["before"]["enrollment_package_root"])
+        manifest = json.loads(
+            (root / bundle.MANIFEST_RELATIVE_PATH).read_text(encoding="utf-8")
+        )
+        assert manifest["k_shot"] == k_shot
+        assert manifest["support_pool_max_k"] == k_shot
+        with np.load(root / "support_leo_clear_weak.npz") as archive:
+            labels = archive["support_class_indices"].astype(int)
+            tokens = archive["support_tokens"].astype(str)
+        assert len(tokens) == len(FORMAL_OLD_TX_LABELS) * k_shot
+        tokens_by_k[k_shot] = {
+            class_index: tokens[labels == class_index].tolist()
+            for class_index in range(len(FORMAL_OLD_TX_LABELS))
+        }
+        apply_root = Path(result["states"]["before"]["apply_staging_root"])
+        with np.load(apply_root / "query_leo_clear_weak.npz") as archive:
+            query_tokens_by_k[k_shot] = set(
+                archive["query_tokens"].astype(str).tolist()
+            )
+    for class_index in range(len(FORMAL_OLD_TX_LABELS)):
+        assert tokens_by_k[1][class_index] == tokens_by_k[10][class_index][:1]
+        assert tokens_by_k[5][class_index] == tokens_by_k[10][class_index][:5]
+        assert tokens_by_k[10][class_index] == tokens_by_k[20][class_index][:10]
+    assert len({frozenset(value) for value in query_tokens_by_k.values()}) == 1
 
 
 def test_formal_builder_requires_q20_before_authority_access(
