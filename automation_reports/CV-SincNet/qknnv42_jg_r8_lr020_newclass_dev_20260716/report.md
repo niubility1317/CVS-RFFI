@@ -5,7 +5,7 @@
 - 实验ID：`qknnv42_jg_r8_lr020_newclass_dev_20260716`
 - 日期：2026-07-16
 - 操作者：Codex主agent`root`＋子agent`jg020_registration_exp`
-- 当前状态：`THIRD_IMPORT_CLOSURE_FAILURE_REPAIRED_AWAITING_RETRY2`；Phase1 cache、new5离线bundle与enrollment package完成，适配训练尚未开始
+- 当前状态：`FOURTH_STALE_NAME_FAILURE_REPAIRED_AWAITING_RETRY3`；Phase1 cache、new5离线bundle与enrollment package完成，适配训练尚未开始
 - 目标：验证锁定的`JG_R8_LR020`轻量旧类适配器在合法Stage2-C新类注册后的同row旧类保持、新类准确率与资源表现。
 - 声明边界：这是单receiver、单development seed的开发单元；即使指标达到门槛，也不能替代独立确认矩阵或宣称总目标完成。
 
@@ -152,6 +152,8 @@ isolated scorer
 retry1使用PID=`2256635`，成功通过new5 source bundle与enrollment package双重preflight；`query_member_reachable=false`、`truth_member_reachable=false`、`clean_member_reachable=false`均已在远端receipt中成立。随后enrollment CLI在导入阶段停止：脚本误从`paper_reproduction.scripts`导入实际位于`code/scripts`的TorchScript导出器。远端目标文件存在且SHA256与本地完全相同，因此不是漏同步文件，而是Python模块路径错误。完整17行外层日志与4行enrollment日志已保存到`remote_logs/retry1_import_failure/`；没有optimizer step、GPU训练或性能输出。
 
 修复为显式把`code/scripts`加入CLI导入闭包，并按该目录的既有top-level模块名加载；新增真实子进程`--help`导入闭包测试，回归为11/11 PASS。retry1中间产物继续保留；下一次从空`runs/qknnv42_jg_r8_lr020_newclass_dev_20260716_retry2`开始并只读复用原密封cache。
+
+retry2使用PID=`2259168`，再次通过source/enrollment隔离preflight，随后在模型构建前因严格时序重构遗留的旧变量名`support_rows`触发`NameError`。完整21行外层日志与8行enrollment日志已保存到`remote_logs/retry2_name_failure/`；仍无optimizer step。修复把3个模型的`input_len`统一绑定已构造的old-only`adapt_rows`，并增加静态回归断言：enrollment脚本中不得再出现`support_rows`，且3处模型输入长度均来自`adapt_rows`。本地11/11 PASS，下一根为不可覆盖的`..._retry3`。
 
 ## 启动后对话回顾与路线教训
 

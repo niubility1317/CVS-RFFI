@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/scripts/enroll_cvs_jg020_support_only.py", line 441, in <module>
+    raise SystemExit(main())
+  File "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/scripts/enroll_cvs_jg020_support_only.py", line 436, in main
+    print(json.dumps(enroll(parse_args()), ensure_ascii=False, sort_keys=True))
+  File "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/scripts/enroll_cvs_jg020_support_only.py", line 220, in enroll
+    checkpoint, input_len=int(support_rows.shape[-1]), device=device
+NameError: name 'support_rows' is not defined. Did you mean: 'support_all'?

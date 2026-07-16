@@ -217,13 +217,13 @@ def enroll(args: argparse.Namespace) -> dict[str, Any]:
     torch.manual_seed(lock["seed"])
     np.random.seed(lock["seed"] % (2**32))
     direct_model, direct_load_audit = build_exact_ssdg_model_from_checkpoint(
-        checkpoint, input_len=int(support_rows.shape[-1]), device=device
+        checkpoint, input_len=int(adapt_rows.shape[-1]), device=device
     )
     identity_model, identity_load_audit = build_exact_ssdg_model_from_checkpoint(
-        checkpoint, input_len=int(support_rows.shape[-1]), device=device
+        checkpoint, input_len=int(adapt_rows.shape[-1]), device=device
     )
     candidate_model, candidate_load_audit = build_exact_ssdg_model_from_checkpoint(
-        checkpoint, input_len=int(support_rows.shape[-1]), device=device
+        checkpoint, input_len=int(adapt_rows.shape[-1]), device=device
     )
     if not (direct_load_audit == identity_load_audit == candidate_load_audit):
         raise ValueError("JG020 three-model checkpoint reconstruction drift")

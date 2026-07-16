@@ -481,3 +481,7 @@ def test_support_only_enrollment_cli_import_closure() -> None:
     assert result.returncode == 0, result.stdout
     assert "--package-root" in result.stdout
     assert "--query" not in result.stdout
+
+    source = script.read_text(encoding="utf-8")
+    assert "support_rows" not in source
+    assert source.count("input_len=int(adapt_rows.shape[-1])") == 3
