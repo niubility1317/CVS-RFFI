@@ -39,6 +39,7 @@ from paper_reproduction.cvs_aligned.jg020_stage2c import (  # noqa: E402
     FORMAL_SCENARIOS,
     HEAD_SCHEMA,
     RECEIPT_SCHEMA,
+    RUNTIME_FIXED_BATCH_SIZE,
     build_head_state,
     descriptor_by_role,
     head_npz_members,
@@ -318,7 +319,9 @@ def enroll(args: argparse.Namespace) -> dict[str, Any]:
         dtype=torch.float32,
         device=device,
     )
-    example = probe[: min(2, len(probe))]
+    if len(probe) < RUNTIME_FIXED_BATCH_SIZE:
+        raise ValueError("JG020 runtime parity probe is smaller than the fixed trace batch")
+    example = probe[:RUNTIME_FIXED_BATCH_SIZE]
     runtime_specs = {
         "direct_runtime.ts": ADV3B02IdentityRuntime(direct_model).to(device).eval(),
         "identity_runtime.ts": ADV3B02IdentityRuntime(identity_model).to(device).eval(),
@@ -328,7 +331,7 @@ def enroll(args: argparse.Namespace) -> dict[str, Any]:
     for filename, wrapper in runtime_specs.items():
         path = output_root / filename
         runtime = _trace_runtime(wrapper, example, path)
-        parity = _runtime_parity(wrapper, runtime, probe)
+        parity = _runtime_parity(wrapper, runtime, example)
         if max(parity.values()) > 1.0e-4:
             raise ValueError(f"JG020 TorchScript parity failed: {filename}: {parity}")
         runtime_audit[filename] = {"sha256": sha256_file(path), **parity}
@@ -402,6 +405,7 @@ def enroll(args: argparse.Namespace) -> dict[str, Any]:
         "prototype_head_sha256": sha256_file(head_path),
         "loss_trace_sha256": sha256_file(output_root / "loss_trace.json"),
         "runtime_audit": runtime_audit,
+        "runtime_fixed_batch_size": RUNTIME_FIXED_BATCH_SIZE,
         "direct_class_mapping_audit": direct_mapping_audit,
         "preopen_audit": preopen,
         "checkpoint_load_audit": candidate_load_audit,

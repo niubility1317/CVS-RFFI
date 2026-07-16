@@ -40,6 +40,7 @@ RETRY1_RUN_ROOT = REMOTE_REPO / "runs" / f"{EXPERIMENT_ID}_retry1"
 RETRY2_RUN_ROOT = REMOTE_REPO / "runs" / f"{EXPERIMENT_ID}_retry2"
 RETRY3_RUN_ROOT = REMOTE_REPO / "runs" / f"{EXPERIMENT_ID}_retry3"
 RETRY4_RUN_ROOT = REMOTE_REPO / "runs" / f"{EXPERIMENT_ID}_retry4"
+RETRY5_RUN_ROOT = REMOTE_REPO / "runs" / f"{EXPERIMENT_ID}_retry5"
 ORIGINAL_CACHE_SET = DEFAULT_RUN_ROOT / "phase1_cache/cache_set.json"
 CHECKPOINT = (
     REMOTE_REPO
@@ -204,6 +205,7 @@ def execute(
         RETRY2_RUN_ROOT,
         RETRY3_RUN_ROOT,
         RETRY4_RUN_ROOT,
+        RETRY5_RUN_ROOT,
     }:
         raise ValueError("JG020 run root is outside the locked default/retry roots")
     if reuse_cache_set is not None and resume:
@@ -310,7 +312,7 @@ def execute(
                 python, "paper_reproduction/scripts/run_cvs_jg020_apply_only_predictor.py",
                 "--package-root", str(apply_root), "--detached-seal", str(apply_seal),
                 "--expected-seal-sha256", apply_seal_sha, "--output-dir", str(output),
-                "--device", "cuda:0", "--batch-size", "256",
+                "--device", "cuda:0", "--batch-size", "2",
             ],
             log_path=logs / f"new_{count}_predict.log",
         )

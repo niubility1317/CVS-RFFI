@@ -16,6 +16,7 @@ from paper_reproduction.cvs_aligned.jg020_stage2c import (
     HEAD_SCHEMA,
     LOCK_SCHEMA,
     PHASE2_CONTRACT,
+    RUNTIME_FIXED_BATCH_SIZE,
     JG020ProtocolError,
     apply_head_streams,
     build_head_state,
@@ -36,6 +37,7 @@ from paper_reproduction.scripts.launch_cvs_jg020_stage2c_dev_20260716 import (
     _parse_last_json_document,
     _prepare_run_root,
 )
+from paper_reproduction.scripts.run_cvs_jg020_apply_only_predictor import _forward
 
 
 def _lock(new_count: int = 5) -> dict[str, object]:
@@ -509,3 +511,27 @@ def test_numpy_torch_abi_bridge_uses_explicit_small_copy() -> None:
     combined = "\n".join(path.read_text(encoding="utf-8") for path in paths)
     assert "torch.from_numpy(" not in combined
     assert ".cpu().numpy()" not in combined
+
+
+def test_traced_runtime_uses_locked_two_row_microbatches() -> None:
+    class BatchConstantRuntime(torch.nn.Module):
+        def forward(self, rows: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
+            batch = int(rows.shape[0])
+            flat = rows.reshape(batch, -1)
+            return flat, flat[:, :2]
+
+    example = torch.zeros((RUNTIME_FIXED_BATCH_SIZE, 2, 3), dtype=torch.float32)
+    runtime = torch.jit.trace(BatchConstantRuntime(), example, strict=False)
+    rows = np.arange(24, dtype=np.float32).reshape(4, 2, 3)
+    features, logits = _forward(
+        runtime,
+        rows,
+        device=torch.device("cpu"),
+        batch_size=RUNTIME_FIXED_BATCH_SIZE,
+    )
+    assert features.shape == (4, 6)
+    assert logits.shape == (4, 2)
+    with pytest.raises(ValueError, match="locked fixed batch size"):
+        _forward(runtime, rows, device=torch.device("cpu"), batch_size=4)
+    with pytest.raises(ValueError, match="divisible"):
+        _forward(runtime, rows[:3], device=torch.device("cpu"), batch_size=RUNTIME_FIXED_BATCH_SIZE)

@@ -34,6 +34,7 @@ from paper_reproduction.cvs_aligned.jg020_stage2c import (  # noqa: E402
     FORMAL_SCENARIOS,
     HEAD_SCHEMA,
     RECEIPT_SCHEMA,
+    RUNTIME_FIXED_BATCH_SIZE,
     apply_head_streams,
     descriptor_by_role,
     load_npz_member,
@@ -108,6 +109,10 @@ def _validate_query_arrays(arrays: Mapping[str, np.ndarray], *, scenario: str) -
 
 @torch.no_grad()
 def _forward(runtime: torch.jit.ScriptModule, rows: np.ndarray, *, device: torch.device, batch_size: int):
+    if int(batch_size) != RUNTIME_FIXED_BATCH_SIZE:
+        raise ValueError("JG020 TorchScript runtime requires the locked fixed batch size")
+    if len(rows) == 0 or len(rows) % RUNTIME_FIXED_BATCH_SIZE:
+        raise ValueError("JG020 query rows must be nonempty and divisible by the fixed runtime batch")
     features: list[np.ndarray] = []
     logits: list[np.ndarray] = []
     for start in range(0, len(rows), int(batch_size)):
@@ -167,10 +172,13 @@ def predict(args: argparse.Namespace) -> dict[str, Any]:
         "dense_query_graph_used": False,
         "persistent_state_within_cap": True,
         "candidate_lock_sha256": document["candidate_lock_sha256"],
+        "runtime_fixed_batch_size": RUNTIME_FIXED_BATCH_SIZE,
     }
     failed = [key for key, value in required_receipt.items() if receipt.get(key) != value]
     if failed:
         raise ValueError(f"JG020 enrollment receipt contract failed: {failed}")
+    if int(args.batch_size) != RUNTIME_FIXED_BATCH_SIZE:
+        raise ValueError("JG020 predictor batch size drifts from the sealed runtime contract")
     if receipt.get("optimizer_steps", 51) > 50 or receipt.get("persistent_state_bytes", 1 << 30) > 256 * 1024:
         raise ValueError("JG020 enrollment resource receipt exceeds the preferred cap")
     mapping_audit = receipt.get("direct_class_mapping_audit", {})
@@ -289,6 +297,7 @@ def predict(args: argparse.Namespace) -> dict[str, Any]:
         ),
         "scenario_count": len(FORMAL_SCENARIOS),
         "query_view_count": 1,
+        "runtime_fixed_batch_size": RUNTIME_FIXED_BATCH_SIZE,
         "candidate_backbone_forward_sample_count": total_queries,
         "candidate_latency_ms_per_query": 1000.0 * candidate_seconds / max(total_queries, 1),
         "identity_baseline_latency_ms_per_query": 1000.0 * identity_seconds / max(total_queries, 1),
@@ -334,7 +343,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--expected-seal-sha256", required=True)
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--device", default="cuda:0")
-    parser.add_argument("--batch-size", type=int, default=256)
+    parser.add_argument("--batch-size", type=int, default=RUNTIME_FIXED_BATCH_SIZE)
     return parser.parse_args()
 
 

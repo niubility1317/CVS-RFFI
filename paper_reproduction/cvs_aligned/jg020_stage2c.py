@@ -38,6 +38,7 @@ SEAL_SCHEMA = "cvs.phase2.jg020_package_seal.v1"
 HEAD_SCHEMA = "cvs.phase2.jg020_prototype_head.v1"
 RECEIPT_SCHEMA = "cvs.phase2.jg020_enrollment_receipt.v1"
 LOCK_SCHEMA = "cvs.phase2.jg020_candidate_lock.v1"
+RUNTIME_FIXED_BATCH_SIZE = 2
 ENROLLMENT_PROFILE = "enrollment_only"
 APPLY_PROFILE = "apply_only"
 
