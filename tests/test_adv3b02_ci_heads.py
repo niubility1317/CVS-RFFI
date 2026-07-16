@@ -3,6 +3,7 @@ from __future__ import annotations
 import inspect
 
 import torch
+import numpy as np
 
 from paper_reproduction.cvs_aligned.adv3b02_ci_heads import (
     METHODS,
@@ -63,3 +64,14 @@ def test_truth_free_predictor_source_has_no_truth_or_quota_cli():
         "roles[f\"query:{scenario}\"]"
     )
     assert '"query_members_opened_before_head_lock": False' in predict_source
+
+
+def test_multidimensional_state_tensor_serialization_avoids_torch_numpy_bridge():
+    module = __import__(
+        "paper_reproduction.scripts.run_adv3b02_ci_truth_free_predictor",
+        fromlist=["dummy"],
+    )
+    value = torch.arange(24, dtype=torch.float32).reshape(2, 3, 4)
+    restored = module._numpy(value)
+    assert restored.shape == (2, 3, 4)
+    np.testing.assert_array_equal(restored, np.arange(24, dtype=np.float32).reshape(2, 3, 4))

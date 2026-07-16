@@ -72,7 +72,7 @@ def _numpy(value: torch.Tensor) -> np.ndarray:
     }
     if tensor.dtype not in dtype_by_torch:
         raise TypeError(f"unsupported state dtype: {tensor.dtype}")
-    raw = bytes(tensor.view(torch.uint8).tolist())
+    raw = bytes(tensor.view(torch.uint8).reshape(-1).tolist())
     return np.frombuffer(raw, dtype=dtype_by_torch[tensor.dtype]).copy().reshape(tuple(tensor.shape))
 
 
