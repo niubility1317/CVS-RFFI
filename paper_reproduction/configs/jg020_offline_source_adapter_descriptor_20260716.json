@@ -1,0 +1,11 @@
+{
+  "schema": "cvs.jg020.offline_split_adapter_descriptor.v1",
+  "ground_adapter_sha256": "95f9a8bac7880d42f705db7f16523c37cf4ce5ff8438ac2c500c7550a38de446",
+  "ground_scope": "projection_feature",
+  "ground_rank": 16,
+  "target_scope": "joint_gate",
+  "target_rank": 8,
+  "target_learning_rate": 0.02,
+  "support_only_online_optimization": true,
+  "discarded_before_apply_profile": true
+}

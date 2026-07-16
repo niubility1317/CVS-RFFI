@@ -1,0 +1,10 @@
+{
+  "schema": "cvs.jg020.offline_split_head_descriptor.v1",
+  "fit_scope": "registered_support_only",
+  "metric": "cosine_prototype",
+  "temperature": 18.0,
+  "query_truth_access": false,
+  "query_role_access": false,
+  "query_batch_quota_access": false,
+  "discarded_before_apply_profile": true
+}
