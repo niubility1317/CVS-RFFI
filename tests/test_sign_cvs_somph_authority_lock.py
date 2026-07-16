@@ -14,10 +14,10 @@ from scripts import sign_cvs_somph_authority_lock as signer
 
 
 def _openssl() -> Path:
-    executable = shutil.which("openssl")
-    if executable is None:
+    executable = Path(signer.PINNED_OPENSSL_BINARY_PATH)
+    if not executable.is_file():
         pytest.skip("OpenSSL is required for authority signing tests")
-    return Path(executable).resolve()
+    return executable.resolve()
 
 
 def _generate_key(tmp_path: Path, name: str) -> tuple[Path, bytes]:
@@ -65,6 +65,8 @@ def _test_verifier(public_key: bytes):
         envelope: dict,
         *,
         lock_canonical_sha256: str,
+        expected_cache_spec_cell_id: str,
+        expected_build_receipt_sha256: str | None = None,
     ) -> None:
         if set(envelope) != authority._ENVELOPE_KEYS:
             raise authority.SomphLineageAuthorityError(
@@ -76,6 +78,13 @@ def _test_verifier(public_key: bytes):
                 for key, value in expected_identity.items()
             )
             or envelope["lock_canonical_sha256"] != lock_canonical_sha256
+            or envelope["cache_spec_cell_id"]
+            != expected_cache_spec_cell_id
+            or (
+                expected_build_receipt_sha256 is not None
+                and envelope["authority_lock_build_receipt_sha256"]
+                != expected_build_receipt_sha256
+            )
         ):
             raise authority.SomphLineageAuthorityError(
                 "signed authority envelope pinned identity/binding drift"
@@ -152,6 +161,107 @@ def _lock(tmp_path: Path) -> tuple[Path, dict]:
     return path, payload
 
 
+def _registered_lock(tmp_path: Path) -> tuple[Path, dict]:
+    path, payload = _lock(tmp_path)
+    descriptor = {
+        "path": str(tmp_path / "new_input.bin"),
+        "sha256": "a" * 64,
+        "size_bytes": 1,
+    }
+    payload["cache_scope"] = "stage2_registered"
+    payload["new_tx_ids"] = list(authority.NEW_TX_IDS)
+    payload["datasets"].append(
+        {
+            "role": "target_new",
+            **descriptor,
+            "tx_ids": list(authority.NEW_TX_IDS),
+        }
+    )
+    path.write_text(
+        json.dumps(payload, ensure_ascii=False, sort_keys=True),
+        encoding="utf-8",
+    )
+    return path, payload
+
+
+def _production_build_receipt(lock: dict, *, lock_file_sha: str) -> dict:
+    lock_canonical_sha = authority.sha256_bytes(
+        authority.canonical_json_bytes(lock)
+    )
+    receiver, seed, roles = authority._validate_lock_formal_identity(lock)
+    dataset_root = authority._dataset_root_from_lock(
+        lock,
+        receiver=receiver,
+        seed=seed,
+        roles=roles,
+    )
+    return {
+        "schema": signer.lock_builder.AUTHORITY_LOCK_BUILD_RECEIPT_SCHEMA,
+        "status": signer.lock_builder.AUTHORITY_LOCK_BUILD_STATUS,
+        "cache_spec_manifest_sha256": (
+            signer.lock_builder.FORMAL_CACHE_SPEC_MANIFEST_SHA256
+        ),
+        "cache_spec_manifest_size_bytes": 1,
+        "cache_spec_cell_id": "rx_20_1_seed_713101",
+        "required_samples_per_tx": 40,
+        "receiver": lock["receiver"],
+        "seed": lock["seed"],
+        "cache_scope": lock["cache_scope"],
+        "cache_set_manifest_sha256": lock["cache_set_manifest"]["sha256"],
+        "build_spec_file_sha256": lock["build_spec"]["file_sha256"],
+        "build_spec_canonical_sha256": (
+            lock["build_spec"]["canonical_sha256"]
+        ),
+        "exporter_sha256": lock["exporter"]["sha256"],
+        "channel_code_closure_sha256": (
+            lock["channel_code_closure"]["closure_sha256"]
+        ),
+        "dataset_authority_root_sha256": dataset_root,
+        "cache_role_inputs_root_sha256": lock[
+            "cache_role_inputs_root_sha256"
+        ],
+        "physical_sample_ids_sha256": lock["physical_sample_ids_sha256"],
+        "cache_sha256_by_scenario": lock["cache_sha256_by_scenario"],
+        "channel_config_sha256_by_scenario": lock[
+            "channel_config_sha256_by_scenario"
+        ],
+        "post_channel_iq_sha256_root_by_scenario": lock[
+            "post_channel_iq_sha256_root_by_scenario"
+        ],
+        "overlay_ids_sha256_by_scenario": lock[
+            "overlay_ids_sha256_by_scenario"
+        ],
+        "cache_recompute_audits": {
+            scenario: {} for scenario in authority.FORMAL_LEO_WEAK_SCENARIOS
+        },
+        "authority_lock_sha256": lock_file_sha,
+        "authority_lock_canonical_sha256": lock_canonical_sha,
+        "external_authority_lock_verified": False,
+        "formal_launch_authority": False,
+    }
+
+
+def _production_manifest(lock: dict) -> dict:
+    return {
+        "schema": "cvs.phase2.somph_registered_cache_build_matrix.v1",
+        "formal_launch_authority": False,
+        "required_samples_per_tx": 40,
+        "cells": [
+            {
+                "cell_id": "rx_20_1_seed_713101",
+                "receiver": lock["receiver"],
+                "seed": lock["seed"],
+                "cache_scope": lock["cache_scope"],
+                "required_samples_per_tx": 40,
+                "spec_file_sha256": lock["build_spec"]["file_sha256"],
+                "spec_canonical_sha256": (
+                    lock["build_spec"]["canonical_sha256"]
+                ),
+            }
+        ],
+    }
+
+
 def _sign(
     tmp_path: Path,
     *,
@@ -161,6 +271,7 @@ def _sign(
 ) -> tuple[Path, Path, dict]:
     envelope = tmp_path / "signed_authority_envelope.json"
     receipt = tmp_path / "signing_receipt.json"
+    lock_payload = json.loads(lock_path.read_text(encoding="utf-8"))
     result = signer._sign_authority_lock_impl(
         lock_path,
         private_key_path=private_key,
@@ -170,6 +281,17 @@ def _sign(
         verify_signed_envelope=_test_verifier(public_key),
         receipt_public_key_hex=public_key.hex(),
         receipt_public_key_sha256=hashlib.sha256(public_key).hexdigest(),
+        build_authority_binding={
+            "authority_lock_build_receipt_sha256": "b" * 64,
+            "cache_spec_manifest_sha256": "c" * 64,
+            "cache_spec_cell_id": "rx_20_1_seed_713101",
+        },
+        expected_lock_file_sha256=hashlib.sha256(
+            lock_path.read_bytes()
+        ).hexdigest(),
+        expected_lock_canonical_sha256=authority.sha256_bytes(
+            authority.canonical_json_bytes(lock_payload)
+        ),
     )
     return envelope, receipt, result
 
@@ -201,6 +323,8 @@ def test_signs_exact_envelope_and_minimal_nonsecret_receipt(
     _test_verifier(public_key)(
         envelope,
         lock_canonical_sha256=lock_canonical_sha,
+        expected_cache_spec_cell_id="rx_20_1_seed_713101",
+        expected_build_receipt_sha256="b" * 64,
     )
 
     receipt_raw = receipt_path.read_bytes()
@@ -261,18 +385,36 @@ def test_production_verifier_rejects_generated_untrusted_key(
     tmp_path: Path,
 ) -> None:
     private_key, _public_key = _generate_key(tmp_path, "untrusted")
-    lock_path, _lock_payload = _lock(tmp_path)
+    lock_path, lock_payload = _lock(tmp_path)
 
     with pytest.raises(
         authority.SomphLineageAuthorityError,
         match="Ed25519 authority signature",
     ):
-        signer.sign_authority_lock(
+        signer._sign_authority_lock_impl(
             lock_path,
             private_key_path=private_key,
             openssl_bin=_openssl(),
             envelope_output=tmp_path / "signed_authority_envelope.json",
             receipt_output=tmp_path / "signing_receipt.json",
+            verify_signed_envelope=authority._verify_signed_envelope,
+            receipt_public_key_hex=authority.PINNED_AUTHORITY_PUBLIC_KEY_HEX,
+            receipt_public_key_sha256=(
+                authority.PINNED_AUTHORITY_PUBLIC_KEY_SHA256
+            ),
+            build_authority_binding={
+                "authority_lock_build_receipt_sha256": "b" * 64,
+                "cache_spec_manifest_sha256": (
+                    "0e1f09ba08afd52b43a1bc9188d319f389c6cb57c9c8e06eee087ac99b3666c5"
+                ),
+                "cache_spec_cell_id": "rx_20_1_seed_713101",
+            },
+            expected_lock_file_sha256=hashlib.sha256(
+                lock_path.read_bytes()
+            ).hexdigest(),
+            expected_lock_canonical_sha256=authority.sha256_bytes(
+                authority.canonical_json_bytes(lock_payload)
+            ),
         )
     assert not (tmp_path / "signed_authority_envelope.json").exists()
     assert not (tmp_path / "signing_receipt.json").exists()
@@ -322,11 +464,266 @@ def test_rejects_malformed_descriptor_before_signing(
     assert not (tmp_path / "signing_receipt.json").exists()
 
 
+def test_rejects_lock_substitution_after_production_preflight(
+    tmp_path: Path,
+) -> None:
+    private_key, public_key = _generate_key(tmp_path, "authority")
+    lock_path, original_lock = _lock(tmp_path)
+    expected_file_sha = hashlib.sha256(lock_path.read_bytes()).hexdigest()
+    expected_canonical_sha = authority.sha256_bytes(
+        authority.canonical_json_bytes(original_lock)
+    )
+    substituted_lock = json.loads(json.dumps(original_lock))
+    substituted_lock["cache_sha256_by_scenario"]["leo_clear_weak"] = "d" * 64
+    lock_path.write_text(
+        json.dumps(substituted_lock, ensure_ascii=False, sort_keys=True),
+        encoding="utf-8",
+    )
+
+    with pytest.raises(
+        signer.SomphAuthoritySigningError,
+        match="changed after production preflight",
+    ):
+        signer._sign_authority_lock_impl(
+            lock_path,
+            private_key_path=private_key,
+            openssl_bin=_openssl(),
+            envelope_output=tmp_path / "signed_authority_envelope.json",
+            receipt_output=tmp_path / "signing_receipt.json",
+            verify_signed_envelope=_test_verifier(public_key),
+            receipt_public_key_hex=public_key.hex(),
+            receipt_public_key_sha256=hashlib.sha256(public_key).hexdigest(),
+            build_authority_binding={
+                "authority_lock_build_receipt_sha256": "b" * 64,
+                "cache_spec_manifest_sha256": "c" * 64,
+                "cache_spec_cell_id": "rx_20_1_seed_713101",
+            },
+            expected_lock_file_sha256=expected_file_sha,
+            expected_lock_canonical_sha256=expected_canonical_sha,
+        )
+    assert not (tmp_path / "signed_authority_envelope.json").exists()
+    assert not (tmp_path / "signing_receipt.json").exists()
+
+
+def test_production_entry_binds_official_builder_receipt_and_manifest(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    lock_path, lock = _registered_lock(tmp_path)
+    lock_raw = lock_path.read_bytes()
+    lock_sha = hashlib.sha256(lock_raw).hexdigest()
+    receipt_path = tmp_path / "authority_lock_build_receipt.json"
+    manifest_path = tmp_path / "manifest.json"
+    receipt = _production_build_receipt(lock, lock_file_sha=lock_sha)
+    manifest = _production_manifest(lock)
+    receipt_sha = "b" * 64
+    manifest_sha = signer.lock_builder.FORMAL_CACHE_SPEC_MANIFEST_SHA256
+
+    def read_external_json(path: str | Path, *, context: str):
+        resolved = Path(path)
+        if resolved == lock_path:
+            return lock, lock_raw, lock_sha, len(lock_raw)
+        if resolved == receipt_path:
+            return receipt, b"receipt", receipt_sha, 7
+        if resolved == manifest_path:
+            return manifest, b"manifest", manifest_sha, 8
+        raise AssertionError(f"unexpected read: {context}: {resolved}")
+
+    captured: dict = {}
+
+    def fake_sign_impl(path: str | Path, **kwargs):
+        captured["path"] = Path(path)
+        captured.update(kwargs)
+        return {"status": "captured"}
+
+    monkeypatch.setattr(authority, "_read_external_json", read_external_json)
+    monkeypatch.setattr(signer, "_sign_authority_lock_impl", fake_sign_impl)
+    result = signer.sign_authority_lock(
+        lock_path,
+        private_key_path=tmp_path / "private.pem",
+        openssl_bin=_openssl(),
+        envelope_output=tmp_path / "envelope.json",
+        receipt_output=tmp_path / "signing_receipt.json",
+        lock_build_receipt_path=receipt_path,
+        cache_spec_manifest_path=manifest_path,
+    )
+
+    assert result == {"status": "captured"}
+    assert captured["path"] == lock_path
+    assert captured["expected_lock_file_sha256"] == lock_sha
+    assert captured["expected_lock_canonical_sha256"] == (
+        receipt["authority_lock_canonical_sha256"]
+    )
+    assert captured["build_authority_binding"] == {
+        "authority_lock_build_receipt_sha256": receipt_sha,
+        "cache_spec_manifest_sha256": manifest_sha,
+        "cache_spec_cell_id": "rx_20_1_seed_713101",
+    }
+
+
+def test_bundle_validator_rechecks_official_manifest_cell_and_receipt_roots(
+    tmp_path: Path,
+) -> None:
+    lock_path, lock = _registered_lock(tmp_path)
+    lock_sha = hashlib.sha256(lock_path.read_bytes()).hexdigest()
+    lock_canonical_sha = authority.sha256_bytes(
+        authority.canonical_json_bytes(lock)
+    )
+    receipt = _production_build_receipt(lock, lock_file_sha=lock_sha)
+    manifest = _production_manifest(lock)
+
+    receipt_sha, dataset_root = authority._verify_build_authority_binding(
+        lock,
+        lock_file_sha256=lock_sha,
+        lock_canonical_sha256=lock_canonical_sha,
+        build_receipt=receipt,
+        build_receipt_sha256="b" * 64,
+        cache_spec_manifest=manifest,
+        cache_spec_manifest_sha256=(
+            signer.lock_builder.FORMAL_CACHE_SPEC_MANIFEST_SHA256
+        ),
+        cache_spec_manifest_size_bytes=1,
+    )
+
+    assert receipt_sha == "b" * 64
+    assert dataset_root == receipt["dataset_authority_root_sha256"]
+
+    tampered = json.loads(json.dumps(receipt))
+    tampered["physical_sample_ids_sha256"] = "d" * 64
+    with pytest.raises(
+        authority.SomphLineageAuthorityError,
+        match="binding drift",
+    ):
+        authority._verify_build_authority_binding(
+            lock,
+            lock_file_sha256=lock_sha,
+            lock_canonical_sha256=lock_canonical_sha,
+            build_receipt=tampered,
+            build_receipt_sha256="b" * 64,
+            cache_spec_manifest=manifest,
+            cache_spec_manifest_sha256=(
+                signer.lock_builder.FORMAL_CACHE_SPEC_MANIFEST_SHA256
+            ),
+            cache_spec_manifest_size_bytes=1,
+        )
+
+
+def test_production_entry_executes_real_signing_with_preflight_bindings(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    private_key, public_key = _generate_key(tmp_path, "production")
+    lock_path, lock = _registered_lock(tmp_path)
+    lock_raw = lock_path.read_bytes()
+    lock_sha = hashlib.sha256(lock_raw).hexdigest()
+    receipt_path = tmp_path / "authority_lock_build_receipt.json"
+    manifest_path = tmp_path / "manifest.json"
+    receipt = _production_build_receipt(lock, lock_file_sha=lock_sha)
+    manifest = _production_manifest(lock)
+    receipt_sha = "b" * 64
+    manifest_sha = signer.lock_builder.FORMAL_CACHE_SPEC_MANIFEST_SHA256
+
+    def read_external_json(path: str | Path, *, context: str):
+        resolved = Path(path)
+        if resolved == lock_path:
+            return lock, lock_raw, lock_sha, len(lock_raw)
+        if resolved == receipt_path:
+            return receipt, b"receipt", receipt_sha, 7
+        if resolved == manifest_path:
+            return manifest, b"manifest", manifest_sha, 8
+        raise AssertionError(f"unexpected read: {context}: {resolved}")
+
+    monkeypatch.setattr(authority, "_read_external_json", read_external_json)
+    monkeypatch.setattr(
+        authority,
+        "_verify_signed_envelope",
+        _test_verifier(public_key),
+    )
+    monkeypatch.setattr(
+        authority,
+        "PINNED_AUTHORITY_PUBLIC_KEY_HEX",
+        public_key.hex(),
+    )
+    monkeypatch.setattr(
+        authority,
+        "PINNED_AUTHORITY_PUBLIC_KEY_SHA256",
+        hashlib.sha256(public_key).hexdigest(),
+    )
+    envelope_path = tmp_path / "envelope.json"
+    signing_receipt_path = tmp_path / "signing_receipt.json"
+    signer.sign_authority_lock(
+        lock_path,
+        private_key_path=private_key,
+        openssl_bin=_openssl(),
+        envelope_output=envelope_path,
+        receipt_output=signing_receipt_path,
+        lock_build_receipt_path=receipt_path,
+        cache_spec_manifest_path=manifest_path,
+    )
+
+    envelope = json.loads(envelope_path.read_text(encoding="utf-8"))
+    assert envelope["authority_lock_build_receipt_sha256"] == receipt_sha
+    assert envelope["cache_spec_manifest_sha256"] == manifest_sha
+    assert envelope["cache_spec_cell_id"] == "rx_20_1_seed_713101"
+    _test_verifier(public_key)(
+        envelope,
+        lock_canonical_sha256=receipt[
+            "authority_lock_canonical_sha256"
+        ],
+        expected_cache_spec_cell_id="rx_20_1_seed_713101",
+        expected_build_receipt_sha256=receipt_sha,
+    )
+    signing_receipt = json.loads(
+        signing_receipt_path.read_text(encoding="utf-8")
+    )
+    assert signing_receipt["authority_lock_build_receipt_sha256"] == receipt_sha
+    assert signing_receipt["cache_spec_manifest_sha256"] == manifest_sha
+    assert signing_receipt["cache_spec_cell_id"] == "rx_20_1_seed_713101"
+
+
+def test_production_entry_rejects_nonofficial_manifest(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    lock_path, lock = _registered_lock(tmp_path)
+    lock_raw = lock_path.read_bytes()
+    lock_sha = hashlib.sha256(lock_raw).hexdigest()
+    receipt_path = tmp_path / "authority_lock_build_receipt.json"
+    manifest_path = tmp_path / "manifest.json"
+    receipt = _production_build_receipt(lock, lock_file_sha=lock_sha)
+    manifest = _production_manifest(lock)
+
+    def read_external_json(path: str | Path, *, context: str):
+        resolved = Path(path)
+        if resolved == lock_path:
+            return lock, lock_raw, lock_sha, len(lock_raw)
+        if resolved == receipt_path:
+            return receipt, b"receipt", "b" * 64, 7
+        if resolved == manifest_path:
+            return manifest, b"manifest", "d" * 64, 8
+        raise AssertionError(f"unexpected read: {context}: {resolved}")
+
+    monkeypatch.setattr(authority, "_read_external_json", read_external_json)
+    with pytest.raises(
+        signer.SomphAuthoritySigningError,
+        match="build receipt/lock binding drift",
+    ):
+        signer.sign_authority_lock(
+            lock_path,
+            private_key_path=tmp_path / "private.pem",
+            openssl_bin=_openssl(),
+            envelope_output=tmp_path / "envelope.json",
+            receipt_output=tmp_path / "signing_receipt.json",
+            lock_build_receipt_path=receipt_path,
+            cache_spec_manifest_path=manifest_path,
+        )
+
+
 def test_rejects_unpinned_openssl_path_even_when_binary_bytes_match(
     tmp_path: Path,
 ) -> None:
     private_key, _public_key = _generate_key(tmp_path, "authority")
-    lock_path, _lock_payload = _lock(tmp_path)
+    lock_path, lock_payload = _lock(tmp_path)
     copied_openssl = tmp_path / "copied-openssl.exe"
     shutil.copyfile(_openssl(), copied_openssl)
 
@@ -334,12 +731,28 @@ def test_rejects_unpinned_openssl_path_even_when_binary_bytes_match(
         signer.SomphAuthoritySigningError,
         match="path is not pinned",
     ):
-        signer.sign_authority_lock(
+        signer._sign_authority_lock_impl(
             lock_path,
             private_key_path=private_key,
             openssl_bin=copied_openssl,
             envelope_output=tmp_path / "signed_authority_envelope.json",
             receipt_output=tmp_path / "signing_receipt.json",
+            verify_signed_envelope=authority._verify_signed_envelope,
+            receipt_public_key_hex=authority.PINNED_AUTHORITY_PUBLIC_KEY_HEX,
+            receipt_public_key_sha256=(
+                authority.PINNED_AUTHORITY_PUBLIC_KEY_SHA256
+            ),
+            build_authority_binding={
+                "authority_lock_build_receipt_sha256": "b" * 64,
+                "cache_spec_manifest_sha256": "c" * 64,
+                "cache_spec_cell_id": "rx_20_1_seed_713101",
+            },
+            expected_lock_file_sha256=hashlib.sha256(
+                lock_path.read_bytes()
+            ).hexdigest(),
+            expected_lock_canonical_sha256=authority.sha256_bytes(
+                authority.canonical_json_bytes(lock_payload)
+            ),
         )
 
 
@@ -368,6 +781,8 @@ def test_tampered_envelope_or_lock_binding_is_rejected(
             lock_canonical_sha256=authority.sha256_bytes(
                 authority.canonical_json_bytes(lock)
             ),
+            expected_cache_spec_cell_id="rx_20_1_seed_713101",
+            expected_build_receipt_sha256="b" * 64,
         )
 
     untampered = json.loads(envelope_path.read_text(encoding="utf-8"))
@@ -381,6 +796,8 @@ def test_tampered_envelope_or_lock_binding_is_rejected(
             lock_canonical_sha256=authority.sha256_bytes(
                 authority.canonical_json_bytes(lock)
             ),
+            expected_cache_spec_cell_id="rx_20_1_seed_713101",
+            expected_build_receipt_sha256="b" * 64,
         )
 
 
@@ -475,5 +892,7 @@ def test_cli_requires_external_private_key_and_openssl_paths() -> None:
         "--openssl-bin",
         "--envelope-output",
         "--receipt-output",
+        "--lock-build-receipt",
+        "--cache-spec-manifest",
     ):
         assert option in completed.stdout

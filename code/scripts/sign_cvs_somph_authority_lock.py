@@ -19,6 +19,7 @@ if str(CODE_ROOT) not in sys.path:
     sys.path.insert(0, str(CODE_ROOT))
 
 from cvsrffi import somph_lineage_authority as authority  # noqa: E402
+from cvsrffi import somph_authority_lock_builder as lock_builder  # noqa: E402
 
 
 SIGNING_RECEIPT_SCHEMA = "cvs.phase2.somph_authority_signing_receipt.v1"
@@ -38,6 +39,9 @@ _SIGNING_RECEIPT_KEYS = {
     "pinned_authority_public_key_sha256",
     "authority_key_id",
     "openssl_binary_sha256",
+    "authority_lock_build_receipt_sha256",
+    "cache_spec_manifest_sha256",
+    "cache_spec_cell_id",
 }
 
 
@@ -350,6 +354,125 @@ def _validate_lock_for_signing(lock: dict[str, Any]) -> None:
         )
 
 
+def _validate_production_build_authority(
+    lock: dict[str, Any],
+    *,
+    lock_file_sha256: str,
+    lock_canonical_sha256: str,
+    lock_build_receipt_path: str | Path,
+    cache_spec_manifest_path: str | Path,
+) -> dict[str, str]:
+    try:
+        receipt, _raw, receipt_sha, _size = authority._read_external_json(
+            lock_build_receipt_path,
+            context="SOMP-H authority lock build receipt",
+        )
+        manifest, _manifest_raw, manifest_sha, _manifest_size = (
+            authority._read_external_json(
+                cache_spec_manifest_path,
+                context="SOMP-H locked cache-spec manifest for signing",
+            )
+        )
+    except authority.SomphLineageAuthorityError as exc:
+        raise SomphAuthoritySigningError(str(exc)) from exc
+    if set(receipt) != lock_builder.AUTHORITY_LOCK_BUILD_RECEIPT_KEYS:
+        raise SomphAuthoritySigningError(
+            "authority lock build receipt exact schema drift"
+        )
+    expected_manifest_sha = (
+        "0e1f09ba08afd52b43a1bc9188d319f389c6cb57c9c8e06eee087ac99b3666c5"
+    )
+    if (
+        receipt.get("schema")
+        != lock_builder.AUTHORITY_LOCK_BUILD_RECEIPT_SCHEMA
+        or receipt.get("status") != lock_builder.AUTHORITY_LOCK_BUILD_STATUS
+        or receipt.get("external_authority_lock_verified") is not False
+        or receipt.get("formal_launch_authority") is not False
+        or receipt.get("cache_spec_manifest_sha256")
+        != expected_manifest_sha
+        or manifest_sha != expected_manifest_sha
+        or receipt.get("authority_lock_sha256") != lock_file_sha256
+        or receipt.get("authority_lock_canonical_sha256")
+        != lock_canonical_sha256
+        or receipt.get("receiver") != lock.get("receiver")
+        or receipt.get("seed") != lock.get("seed")
+        or receipt.get("cache_scope") != "stage2_registered"
+        or lock.get("cache_scope") != "stage2_registered"
+        or receipt.get("required_samples_per_tx") != 40
+        or receipt.get("cache_set_manifest_sha256")
+        != lock.get("cache_set_manifest", {}).get("sha256")
+        or receipt.get("build_spec_file_sha256")
+        != lock.get("build_spec", {}).get("file_sha256")
+        or receipt.get("build_spec_canonical_sha256")
+        != lock.get("build_spec", {}).get("canonical_sha256")
+        or receipt.get("exporter_sha256")
+        != lock.get("exporter", {}).get("sha256")
+        or receipt.get("channel_code_closure_sha256")
+        != lock.get("channel_code_closure", {}).get("closure_sha256")
+        or receipt.get("cache_role_inputs_root_sha256")
+        != lock.get("cache_role_inputs_root_sha256")
+        or receipt.get("physical_sample_ids_sha256")
+        != lock.get("physical_sample_ids_sha256")
+    ):
+        raise SomphAuthoritySigningError(
+            "authority lock build receipt/lock binding drift"
+        )
+    for field in (
+        "cache_sha256_by_scenario",
+        "channel_config_sha256_by_scenario",
+        "post_channel_iq_sha256_root_by_scenario",
+        "overlay_ids_sha256_by_scenario",
+    ):
+        if receipt.get(field) != lock.get(field):
+            raise SomphAuthoritySigningError(
+                f"authority lock build receipt root drift: {field}"
+            )
+    if (
+        manifest.get("schema")
+        != "cvs.phase2.somph_registered_cache_build_matrix.v1"
+        or manifest.get("formal_launch_authority") is not False
+        or manifest.get("required_samples_per_tx") != 40
+    ):
+        raise SomphAuthoritySigningError(
+            "locked cache-spec manifest signing contract drift"
+        )
+    cell_id = receipt.get("cache_spec_cell_id")
+    expected_cell_id = (
+        f"rx_{str(lock.get('receiver')).replace('-', '_')}_seed_{lock.get('seed')}"
+    )
+    cells = manifest.get("cells")
+    matches = [
+        item
+        for item in cells
+        if isinstance(item, dict) and item.get("cell_id") == cell_id
+    ] if isinstance(cells, list) else []
+    if (
+        not isinstance(cell_id, str)
+        or cell_id != expected_cell_id
+        or len(matches) != 1
+    ):
+        raise SomphAuthoritySigningError(
+            "locked cache-spec cell signing identity drift"
+        )
+    cell = matches[0]
+    if (
+        cell.get("receiver") != lock.get("receiver")
+        or cell.get("seed") != lock.get("seed")
+        or cell.get("cache_scope") != "stage2_registered"
+        or cell.get("required_samples_per_tx") != 40
+        or cell.get("spec_file_sha256")
+        != lock.get("build_spec", {}).get("file_sha256")
+        or cell.get("spec_canonical_sha256")
+        != lock.get("build_spec", {}).get("canonical_sha256")
+    ):
+        raise SomphAuthoritySigningError(
+            "locked cache-spec cell/build-spec signing drift"
+        )
+    return {
+        "authority_lock_build_receipt_sha256": receipt_sha,
+        "cache_spec_manifest_sha256": manifest_sha,
+        "cache_spec_cell_id": cell_id,
+    }
 def _sign_authority_lock_impl(
     authority_lock_path: str | Path,
     *,
@@ -360,6 +483,9 @@ def _sign_authority_lock_impl(
     verify_signed_envelope: Callable[..., None],
     receipt_public_key_hex: str,
     receipt_public_key_sha256: str,
+    build_authority_binding: Mapping[str, str],
+    expected_lock_file_sha256: str,
+    expected_lock_canonical_sha256: str,
 ) -> dict[str, Any]:
     """Sign and publish an exact pinned-authority envelope plus detached receipt."""
 
@@ -382,6 +508,34 @@ def _sign_authority_lock_impl(
     lock_canonical_sha = authority.sha256_bytes(
         authority.canonical_json_bytes(lock)
     )
+    if (
+        lock_file_sha != expected_lock_file_sha256
+        or lock_canonical_sha != expected_lock_canonical_sha256
+    ):
+        raise SomphAuthoritySigningError(
+            "authority lock changed after production preflight"
+        )
+    binding_keys = {
+        "authority_lock_build_receipt_sha256",
+        "cache_spec_manifest_sha256",
+        "cache_spec_cell_id",
+    }
+    if set(build_authority_binding) != binding_keys:
+        raise SomphAuthoritySigningError(
+            "signing build-authority binding exact schema drift"
+        )
+    authority._require_sha256(
+        build_authority_binding["authority_lock_build_receipt_sha256"],
+        field="authority_lock_build_receipt_sha256",
+    )
+    authority._require_sha256(
+        build_authority_binding["cache_spec_manifest_sha256"],
+        field="cache_spec_manifest_sha256",
+    )
+    if not build_authority_binding["cache_spec_cell_id"]:
+        raise SomphAuthoritySigningError(
+            "cache_spec_cell_id binding missing"
+        )
 
     openssl_binary, openssl_sha_before = _pinned_openssl_binary(openssl_bin)
     private_key = _resolved_regular_file(
@@ -395,6 +549,17 @@ def _sign_authority_lock_impl(
         "issuer": authority.PINNED_AUTHORITY_ISSUER,
         "key_id": authority.PINNED_AUTHORITY_KEY_ID,
         "lock_canonical_sha256": lock_canonical_sha,
+        "authority_lock_build_receipt_sha256": (
+            build_authority_binding[
+                "authority_lock_build_receipt_sha256"
+            ]
+        ),
+        "cache_spec_manifest_sha256": build_authority_binding[
+            "cache_spec_manifest_sha256"
+        ],
+        "cache_spec_cell_id": build_authority_binding[
+            "cache_spec_cell_id"
+        ],
         "signature_ed25519_hex": "",
     }
     signature = _sign_with_openssl(
@@ -411,6 +576,12 @@ def _sign_authority_lock_impl(
     verify_signed_envelope(
         envelope,
         lock_canonical_sha256=lock_canonical_sha,
+        expected_cache_spec_cell_id=build_authority_binding[
+            "cache_spec_cell_id"
+        ],
+        expected_build_receipt_sha256=build_authority_binding[
+            "authority_lock_build_receipt_sha256"
+        ],
     )
     try:
         receipt_public_key = bytes.fromhex(receipt_public_key_hex)
@@ -448,6 +619,7 @@ def _sign_authority_lock_impl(
         ),
         "authority_key_id": authority.PINNED_AUTHORITY_KEY_ID,
         "openssl_binary_sha256": openssl_sha_after,
+        **dict(build_authority_binding),
     }
     if set(receipt) != _SIGNING_RECEIPT_KEYS:
         raise AssertionError("signing receipt exact schema drift")
@@ -481,9 +653,26 @@ def sign_authority_lock(
     openssl_bin: str | Path,
     envelope_output: str | Path,
     receipt_output: str | Path,
+    lock_build_receipt_path: str | Path,
+    cache_spec_manifest_path: str | Path,
 ) -> dict[str, Any]:
     """Production signer; identity and verifier are never caller-selectable."""
 
+    lock, _lock_raw, lock_file_sha, _lock_size = authority._read_external_json(
+        authority_lock_path,
+        context="SOMP-H authority lock for production signing preflight",
+    )
+    _validate_lock_for_signing(lock)
+    lock_canonical_sha = authority.sha256_bytes(
+        authority.canonical_json_bytes(lock)
+    )
+    build_binding = _validate_production_build_authority(
+        lock,
+        lock_file_sha256=lock_file_sha,
+        lock_canonical_sha256=lock_canonical_sha,
+        lock_build_receipt_path=lock_build_receipt_path,
+        cache_spec_manifest_path=cache_spec_manifest_path,
+    )
     return _sign_authority_lock_impl(
         authority_lock_path,
         private_key_path=private_key_path,
@@ -493,6 +682,9 @@ def sign_authority_lock(
         verify_signed_envelope=authority._verify_signed_envelope,
         receipt_public_key_hex=authority.PINNED_AUTHORITY_PUBLIC_KEY_HEX,
         receipt_public_key_sha256=authority.PINNED_AUTHORITY_PUBLIC_KEY_SHA256,
+        build_authority_binding=build_binding,
+        expected_lock_file_sha256=lock_file_sha,
+        expected_lock_canonical_sha256=lock_canonical_sha,
     )
 
 
@@ -507,6 +699,8 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     )
     parser.add_argument("--envelope-output", type=Path, required=True)
     parser.add_argument("--receipt-output", type=Path, required=True)
+    parser.add_argument("--lock-build-receipt", type=Path, required=True)
+    parser.add_argument("--cache-spec-manifest", type=Path, required=True)
     return parser.parse_args(argv)
 
 
@@ -518,6 +712,8 @@ def main(argv: list[str] | None = None) -> int:
         openssl_bin=args.openssl_bin,
         envelope_output=args.envelope_output,
         receipt_output=args.receipt_output,
+        lock_build_receipt_path=args.lock_build_receipt,
+        cache_spec_manifest_path=args.cache_spec_manifest,
     )
     print(json.dumps(result, ensure_ascii=False, sort_keys=True))
     return 0

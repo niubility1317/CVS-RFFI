@@ -31,7 +31,11 @@ def _json(path: Path, value: dict) -> None:
     path.write_bytes(canonical_json_bytes(value) + b"\n")
 
 
-def _signed_authority_envelope(lock: dict) -> tuple[dict, bytes]:
+def _signed_authority_envelope(
+    lock: dict,
+    *,
+    build_receipt_sha256: str = "b" * 64,
+) -> tuple[dict, bytes]:
     seed = secrets.token_bytes(32)
     hashed = hashlib.sha512(seed).digest()
     scalar = int.from_bytes(
@@ -49,6 +53,13 @@ def _signed_authority_envelope(lock: dict) -> tuple[dict, bytes]:
         "issuer": "qknnv42_stage2bc_extreme_light_route_20260716",
         "key_id": "somph-authority-ed25519-20260716",
         "lock_canonical_sha256": sha256_bytes(canonical_json_bytes(lock)),
+        "authority_lock_build_receipt_sha256": build_receipt_sha256,
+        "cache_spec_manifest_sha256": (
+            "0e1f09ba08afd52b43a1bc9188d319f389c6cb57c9c8e06eee087ac99b3666c5"
+        ),
+        "cache_spec_cell_id": (
+            f"rx_{str(lock['receiver']).replace('-', '_')}_seed_{lock['seed']}"
+        ),
         "signature_ed25519_hex": "",
     }
     message = authority._authority_signature_message(envelope)
@@ -72,7 +83,13 @@ def _install_test_authority_verifier(
     monkeypatch: pytest.MonkeyPatch,
     public_key: bytes,
 ) -> None:
-    def verify(envelope: dict, *, lock_canonical_sha256: str) -> None:
+    def verify(
+        envelope: dict,
+        *,
+        lock_canonical_sha256: str,
+        expected_cache_spec_cell_id: str,
+        expected_build_receipt_sha256: str | None = None,
+    ) -> None:
         expected = {
             "schema": (
                 "cvs.phase2.somph_leo_weak_signed_authority_envelope.v1"
@@ -81,6 +98,13 @@ def _install_test_authority_verifier(
             "issuer": "qknnv42_stage2bc_extreme_light_route_20260716",
             "key_id": "somph-authority-ed25519-20260716",
             "lock_canonical_sha256": lock_canonical_sha256,
+            "authority_lock_build_receipt_sha256": (
+                expected_build_receipt_sha256 or "b" * 64
+            ),
+            "cache_spec_manifest_sha256": (
+                "0e1f09ba08afd52b43a1bc9188d319f389c6cb57c9c8e06eee087ac99b3666c5"
+            ),
+            "cache_spec_cell_id": expected_cache_spec_cell_id,
         }
         if any(envelope.get(key) != value for key, value in expected.items()):
             raise authority.SomphLineageAuthorityError(
@@ -93,6 +117,30 @@ def _install_test_authority_verifier(
         )
 
     monkeypatch.setattr(authority, "_verify_signed_envelope", verify)
+
+
+def _install_test_build_authority_verifier(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    def verify(
+        _lock: dict,
+        *,
+        build_receipt_sha256: str,
+        **_kwargs,
+    ) -> tuple[str, str]:
+        receipt_sha = authority._require_sha256(
+            build_receipt_sha256,
+            field="test build receipt SHA",
+        )
+        receiver, seed, roles = authority._validate_lock_formal_identity(_lock)
+        return receipt_sha, authority._dataset_root_from_lock(
+            _lock,
+            receiver=receiver,
+            seed=seed,
+            roles=roles,
+        )
+
+    monkeypatch.setattr(authority, "_verify_build_authority_binding", verify)
 
 
 def _write_valid_head(
@@ -443,8 +491,20 @@ def _attach_authority_bundle(
     }
     lock_path = bundle_root / authority.AUTHORITY_LOCK_NAME
     _json(lock_path, authority_lock)
-    signed_envelope, public_key = _signed_authority_envelope(authority_lock)
+    build_receipt_path = (
+        bundle_root / authority.AUTHORITY_LOCK_BUILD_RECEIPT_NAME
+    )
+    _json(build_receipt_path, {"fixture": True})
+    cache_spec_manifest_path = (
+        bundle_root / authority.CACHE_SPEC_MANIFEST_NAME
+    )
+    _json(cache_spec_manifest_path, {"fixture": True})
+    signed_envelope, public_key = _signed_authority_envelope(
+        authority_lock,
+        build_receipt_sha256=sha256_file(build_receipt_path),
+    )
     _install_test_authority_verifier(monkeypatch, public_key)
+    _install_test_build_authority_verifier(monkeypatch)
     envelope_path = bundle_root / authority.AUTHORITY_ENVELOPE_NAME
     _json(envelope_path, signed_envelope)
     structural_receipt = bundle_root / authority.STRUCTURAL_RECEIPT_NAME
@@ -500,6 +560,8 @@ def _attach_authority_bundle(
     member_names = (
         authority.AUTHORITY_LOCK_NAME,
         authority.AUTHORITY_ENVELOPE_NAME,
+        authority.AUTHORITY_LOCK_BUILD_RECEIPT_NAME,
+        authority.CACHE_SPEC_MANIFEST_NAME,
         authority.STRUCTURAL_RECEIPT_NAME,
         authority.STRUCTURAL_SEAL_NAME,
         authority.AUTHORITY_ATTESTATION_NAME,

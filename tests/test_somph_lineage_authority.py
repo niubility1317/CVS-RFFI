@@ -4,6 +4,8 @@ import json
 import hashlib
 import secrets
 import os
+import subprocess
+import sys
 from pathlib import Path
 
 import numpy as np
@@ -46,7 +48,11 @@ def _descriptor(path: Path) -> dict:
     }
 
 
-def _signed_envelope(lock: dict) -> tuple[dict, bytes]:
+def _signed_envelope(
+    lock: dict,
+    *,
+    build_receipt_sha256: str = "b" * 64,
+) -> tuple[dict, bytes]:
     seed = secrets.token_bytes(32)
     hashed = hashlib.sha512(seed).digest()
     scalar = int.from_bytes(
@@ -64,6 +70,13 @@ def _signed_envelope(lock: dict) -> tuple[dict, bytes]:
         "issuer": "qknnv42_stage2bc_extreme_light_route_20260716",
         "key_id": "somph-authority-ed25519-20260716",
         "lock_canonical_sha256": sha256_bytes(canonical_json_bytes(lock)),
+        "authority_lock_build_receipt_sha256": build_receipt_sha256,
+        "cache_spec_manifest_sha256": (
+            "0e1f09ba08afd52b43a1bc9188d319f389c6cb57c9c8e06eee087ac99b3666c5"
+        ),
+        "cache_spec_cell_id": (
+            f"rx_{str(lock['receiver']).replace('-', '_')}_seed_{lock['seed']}"
+        ),
         "signature_ed25519_hex": "",
     }
     message = authority._authority_signature_message(envelope)
@@ -87,7 +100,13 @@ def _install_test_envelope_verifier(
     monkeypatch: pytest.MonkeyPatch,
     public_key: bytes,
 ) -> None:
-    def verify(envelope: dict, *, lock_canonical_sha256: str) -> None:
+    def verify(
+        envelope: dict,
+        *,
+        lock_canonical_sha256: str,
+        expected_cache_spec_cell_id: str,
+        expected_build_receipt_sha256: str | None = None,
+    ) -> None:
         expected = {
             "schema": (
                 "cvs.phase2.somph_leo_weak_signed_authority_envelope.v1"
@@ -96,6 +115,13 @@ def _install_test_envelope_verifier(
             "issuer": "qknnv42_stage2bc_extreme_light_route_20260716",
             "key_id": "somph-authority-ed25519-20260716",
             "lock_canonical_sha256": lock_canonical_sha256,
+            "authority_lock_build_receipt_sha256": (
+                expected_build_receipt_sha256 or "b" * 64
+            ),
+            "cache_spec_manifest_sha256": (
+                "0e1f09ba08afd52b43a1bc9188d319f389c6cb57c9c8e06eee087ac99b3666c5"
+            ),
+            "cache_spec_cell_id": expected_cache_spec_cell_id,
         }
         if any(envelope.get(key) != value for key, value in expected.items()):
             raise SomphLineageAuthorityError(
@@ -108,6 +134,30 @@ def _install_test_envelope_verifier(
         )
 
     monkeypatch.setattr(authority, "_verify_signed_envelope", verify)
+
+
+def _install_test_build_authority_verifier(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    def verify(
+        _lock: dict,
+        *,
+        build_receipt_sha256: str,
+        **_kwargs,
+    ) -> tuple[str, str]:
+        receipt_sha = authority._require_sha256(
+            build_receipt_sha256,
+            field="test build receipt SHA",
+        )
+        receiver, seed, roles = authority._validate_lock_formal_identity(_lock)
+        return receipt_sha, authority._dataset_root_from_lock(
+            _lock,
+            receiver=receiver,
+            seed=seed,
+            roles=roles,
+        )
+
+    monkeypatch.setattr(authority, "_verify_build_authority_binding", verify)
 
 
 def _fixture(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> dict:
@@ -373,14 +423,25 @@ def _fixture(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> dict:
     }
     lock_path = tmp_path / "authority_lock.json"
     _write_json(lock_path, lock)
-    envelope, public_key = _signed_envelope(lock)
+    build_receipt_path = tmp_path / "authority_lock_build_receipt.json"
+    _write_json(build_receipt_path, {"fixture": True})
+    cache_spec_manifest_path = tmp_path / "cache_spec_manifest.json"
+    _write_json(cache_spec_manifest_path, {"fixture": True})
+    build_receipt_sha = sha256_file(build_receipt_path)
+    envelope, public_key = _signed_envelope(
+        lock,
+        build_receipt_sha256=build_receipt_sha,
+    )
     _install_test_envelope_verifier(monkeypatch, public_key)
+    _install_test_build_authority_verifier(monkeypatch)
     envelope_path = tmp_path / "signed_authority_envelope.json"
     _write_json(envelope_path, envelope)
     return {
         "authority_lock_path": lock_path,
         "signed_authority_envelope_path": envelope_path,
         "expected_signed_authority_envelope_sha256": sha256_file(envelope_path),
+        "authority_lock_build_receipt_path": build_receipt_path,
+        "cache_spec_manifest_path": cache_spec_manifest_path,
         "output_root": tmp_path / "authority_bundle",
         "dataset": dataset,
         "build_spec_path": build_spec_path,
@@ -390,7 +451,12 @@ def _fixture(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> dict:
 
 def _rewrite_lock(kwargs: dict, monkeypatch: pytest.MonkeyPatch) -> None:
     _write_json(kwargs["authority_lock_path"], kwargs["lock"])
-    envelope, public_key = _signed_envelope(kwargs["lock"])
+    envelope, public_key = _signed_envelope(
+        kwargs["lock"],
+        build_receipt_sha256=sha256_file(
+            kwargs["authority_lock_build_receipt_path"]
+        ),
+    )
     _install_test_envelope_verifier(monkeypatch, public_key)
     _write_json(kwargs["signed_authority_envelope_path"], envelope)
     kwargs["expected_signed_authority_envelope_sha256"] = sha256_file(
@@ -409,6 +475,10 @@ def _write_bundle(kwargs: dict, *, expected_envelope_sha: str | None = None):
             if expected_envelope_sha is not None
             else kwargs["expected_signed_authority_envelope_sha256"]
         ),
+        authority_lock_build_receipt_path=kwargs[
+            "authority_lock_build_receipt_path"
+        ],
+        cache_spec_manifest_path=kwargs["cache_spec_manifest_path"],
         output_root=kwargs["output_root"],
     )
 
@@ -432,6 +502,30 @@ def test_pure_python_ed25519_verifier_matches_rfc8032_vector() -> None:
         authority._verify_ed25519(public_key, b"x", signature)
 
 
+def test_authority_bundle_cli_requires_complete_build_evidence() -> None:
+    script = (
+        Path(__file__).resolve().parents[1]
+        / "code"
+        / "scripts"
+        / "build_cvs_somph_lineage_authority_bundle.py"
+    )
+    completed = subprocess.run(
+        [sys.executable, str(script), "--help"],
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    for option in (
+        "--authority-lock",
+        "--signed-authority-envelope",
+        "--expected-signed-authority-envelope-sha256",
+        "--authority-lock-build-receipt",
+        "--cache-spec-manifest",
+        "--output-root",
+    ):
+        assert option in completed.stdout
+
+
 def test_production_identity_ignores_mutated_display_globals(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
@@ -451,6 +545,11 @@ def test_production_identity_ignores_mutated_display_globals(
         "issuer": "qknnv42_stage2bc_extreme_light_route_20260716",
         "key_id": "somph-authority-ed25519-20260716",
         "lock_canonical_sha256": "1" * 64,
+        "authority_lock_build_receipt_sha256": "b" * 64,
+        "cache_spec_manifest_sha256": (
+            "0e1f09ba08afd52b43a1bc9188d319f389c6cb57c9c8e06eee087ac99b3666c5"
+        ),
+        "cache_spec_cell_id": "rx_20_1_seed_713101",
         "signature_ed25519_hex": "00" * 64,
     }
     with pytest.raises(
@@ -458,7 +557,10 @@ def test_production_identity_ignores_mutated_display_globals(
         match="Ed25519",
     ):
         authority._verify_signed_envelope(
-            envelope, lock_canonical_sha256="1" * 64
+            envelope,
+            lock_canonical_sha256="1" * 64,
+            expected_cache_spec_cell_id="rx_20_1_seed_713101",
+            expected_build_receipt_sha256="b" * 64,
         )
 
 
@@ -527,7 +629,12 @@ def test_rejects_self_signed_envelope_from_nonpinned_key(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     kwargs = _fixture(tmp_path, monkeypatch)
-    rogue_envelope, _rogue_public_key = _signed_envelope(kwargs["lock"])
+    rogue_envelope, _rogue_public_key = _signed_envelope(
+        kwargs["lock"],
+        build_receipt_sha256=sha256_file(
+            kwargs["authority_lock_build_receipt_path"]
+        ),
+    )
     _write_json(kwargs["signed_authority_envelope_path"], rogue_envelope)
     kwargs["expected_signed_authority_envelope_sha256"] = sha256_file(
         kwargs["signed_authority_envelope_path"]
@@ -659,6 +766,42 @@ def test_consumer_rejects_tampered_committed_member(
         verify_somph_lineage_authority_bundle(
             kwargs["output_root"],
             expected_commit_sha256=result["authority_commit_sha256"],
+        )
+
+
+def test_consumer_rejects_recommitted_build_receipt_substitution(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    kwargs = _fixture(tmp_path, monkeypatch)
+    _write_bundle(kwargs)
+    root = kwargs["output_root"]
+    os.chmod(root, 0o755)
+    receipt_path = root / authority.AUTHORITY_LOCK_BUILD_RECEIPT_NAME
+    commit_path = root / authority.AUTHORITY_COMMIT_NAME
+    os.chmod(receipt_path, 0o600)
+    os.chmod(commit_path, 0o600)
+    _write_json(receipt_path, {"fixture": "substituted"})
+    commit = json.loads(commit_path.read_text(encoding="utf-8"))
+    for descriptor in commit["members"]:
+        if descriptor["name"] == authority.AUTHORITY_LOCK_BUILD_RECEIPT_NAME:
+            descriptor["sha256"] = sha256_file(receipt_path)
+            descriptor["size_bytes"] = receipt_path.stat().st_size
+    commit["bundle_root_sha256"] = sha256_bytes(
+        canonical_json_bytes(commit["members"])
+    )
+    _write_json(commit_path, commit)
+    substituted_commit_sha = sha256_file(commit_path)
+    os.chmod(receipt_path, 0o444)
+    os.chmod(commit_path, 0o444)
+    os.chmod(root, 0o555)
+
+    with pytest.raises(
+        SomphLineageAuthorityError,
+        match="identity/binding drift",
+    ):
+        verify_somph_lineage_authority_bundle(
+            root,
+            expected_commit_sha256=substituted_commit_sha,
         )
 
 

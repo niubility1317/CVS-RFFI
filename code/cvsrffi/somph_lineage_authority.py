@@ -16,6 +16,7 @@ import os
 import secrets
 import shutil
 import stat
+from collections import Counter
 from pathlib import Path
 from typing import Any, Mapping
 
@@ -41,6 +42,7 @@ from cvsrffi.stage2_predictor_bundle import (
     open_regular_member_same_fd,
     sha256_bytes,
 )
+from training_controls import sat_channel_config_for_scenario
 
 
 AUTHORITY_LOCK_SCHEMA = "cvs.phase2.somph_leo_weak_authority_lock.v1"
@@ -62,6 +64,8 @@ PINNED_AUTHORITY_PUBLIC_KEY_SHA256 = (
 
 AUTHORITY_LOCK_NAME = "authority_lock.json"
 AUTHORITY_ENVELOPE_NAME = "signed_authority_envelope.json"
+AUTHORITY_LOCK_BUILD_RECEIPT_NAME = "authority_lock_build_receipt.json"
+CACHE_SPEC_MANIFEST_NAME = "cache_spec_manifest.json"
 STRUCTURAL_RECEIPT_NAME = "structural_receipt.json"
 STRUCTURAL_SEAL_NAME = "structural_receipt.seal.json"
 AUTHORITY_ATTESTATION_NAME = "authority_attestation.json"
@@ -142,6 +146,8 @@ _ROLE_INPUT_KEYS = {
 _BUNDLE_MEMBERS = {
     AUTHORITY_LOCK_NAME,
     AUTHORITY_ENVELOPE_NAME,
+    AUTHORITY_LOCK_BUILD_RECEIPT_NAME,
+    CACHE_SPEC_MANIFEST_NAME,
     STRUCTURAL_RECEIPT_NAME,
     STRUCTURAL_SEAL_NAME,
     AUTHORITY_ATTESTATION_NAME,
@@ -153,8 +159,42 @@ _ENVELOPE_KEYS = {
     "issuer",
     "key_id",
     "lock_canonical_sha256",
+    "authority_lock_build_receipt_sha256",
+    "cache_spec_manifest_sha256",
+    "cache_spec_cell_id",
     "signature_ed25519_hex",
 }
+_AUTHORITY_LOCK_BUILD_RECEIPT_KEYS = {
+    "schema",
+    "status",
+    "cache_spec_manifest_sha256",
+    "cache_spec_manifest_size_bytes",
+    "cache_spec_cell_id",
+    "required_samples_per_tx",
+    "receiver",
+    "seed",
+    "cache_scope",
+    "cache_set_manifest_sha256",
+    "build_spec_file_sha256",
+    "build_spec_canonical_sha256",
+    "exporter_sha256",
+    "channel_code_closure_sha256",
+    "dataset_authority_root_sha256",
+    "cache_role_inputs_root_sha256",
+    "physical_sample_ids_sha256",
+    "cache_sha256_by_scenario",
+    "channel_config_sha256_by_scenario",
+    "post_channel_iq_sha256_root_by_scenario",
+    "overlay_ids_sha256_by_scenario",
+    "cache_recompute_audits",
+    "authority_lock_sha256",
+    "authority_lock_canonical_sha256",
+    "external_authority_lock_verified",
+    "formal_launch_authority",
+}
+_FORMAL_CACHE_SPEC_MANIFEST_SHA256 = (
+    "0e1f09ba08afd52b43a1bc9188d319f389c6cb57c9c8e06eee087ac99b3666c5"
+)
 _WRITE_BITS = stat.S_IWUSR | stat.S_IWGRP | stat.S_IWOTH
 
 _ED_Q = 2**255 - 19
@@ -255,6 +295,13 @@ def _authority_signature_message(envelope: Mapping[str, Any]) -> bytes:
         "issuer": envelope["issuer"],
         "key_id": envelope["key_id"],
         "lock_canonical_sha256": envelope["lock_canonical_sha256"],
+        "authority_lock_build_receipt_sha256": envelope[
+            "authority_lock_build_receipt_sha256"
+        ],
+        "cache_spec_manifest_sha256": envelope[
+            "cache_spec_manifest_sha256"
+        ],
+        "cache_spec_cell_id": envelope["cache_spec_cell_id"],
     }
     return (
         b"cvs.somph.leo_weak.authority_lock.ed25519.v1"
@@ -264,7 +311,11 @@ def _authority_signature_message(envelope: Mapping[str, Any]) -> bytes:
 
 
 def _verify_signed_envelope(
-    envelope: dict[str, Any], *, lock_canonical_sha256: str
+    envelope: dict[str, Any],
+    *,
+    lock_canonical_sha256: str,
+    expected_cache_spec_cell_id: str,
+    expected_build_receipt_sha256: str | None = None,
 ) -> None:
     if set(envelope) != _ENVELOPE_KEYS:
         raise SomphLineageAuthorityError("signed authority envelope exact schema drift")
@@ -274,10 +325,25 @@ def _verify_signed_envelope(
         "issuer": "qknnv42_stage2bc_extreme_light_route_20260716",
         "key_id": "somph-authority-ed25519-20260716",
         "lock_canonical_sha256": lock_canonical_sha256,
+        "cache_spec_manifest_sha256": (
+            "0e1f09ba08afd52b43a1bc9188d319f389c6cb57c9c8e06eee087ac99b3666c5"
+        ),
+        "cache_spec_cell_id": expected_cache_spec_cell_id,
     }
     if any(envelope.get(key) != value for key, value in expected.items()):
         raise SomphLineageAuthorityError(
             "signed authority envelope pinned identity/binding drift"
+        )
+    receipt_sha = _require_sha256(
+        envelope.get("authority_lock_build_receipt_sha256"),
+        field="signed envelope authority_lock_build_receipt_sha256",
+    )
+    if (
+        expected_build_receipt_sha256 is not None
+        and receipt_sha != expected_build_receipt_sha256
+    ):
+        raise SomphLineageAuthorityError(
+            "signed authority envelope build receipt binding drift"
         )
     try:
         public_key = bytes.fromhex(
@@ -441,6 +507,7 @@ def _validate_build_spec(
     receiver: str,
     seed: int,
     roles: tuple[str, ...],
+    build_spec_dir: Path | None = None,
 ) -> list[dict[str, Any]]:
     keys = set(payload)
     if (
@@ -543,6 +610,10 @@ def _validate_build_spec(
                     role[count_field],
                     field=f"build_spec.role_specs[{index}].{count_field}",
                 )
+        raw_pkl = Path(role["pkl"])
+        if not raw_pkl.is_absolute():
+            raw_pkl = (build_spec_dir or Path.cwd()) / raw_pkl
+        role["pkl"] = str(raw_pkl.absolute())
         checked.append(role)
     return checked
 
@@ -706,6 +777,8 @@ def _cache_role_inputs(
     expected_cache_hashes: Mapping[str, str],
     expected_tx_by_role: Mapping[str, list[str]],
     receiver: str,
+    build_spec: Mapping[str, Any] | None = None,
+    required_samples_per_tx: int | None = None,
 ) -> dict[str, list[dict[str, Any]]]:
     cache_paths = cache_set_manifest.get("cache_npz_by_scenario")
     if not isinstance(cache_paths, dict) or tuple(cache_paths) != FORMAL_LEO_WEAK_SCENARIOS:
@@ -730,6 +803,9 @@ def _cache_role_inputs(
                     roles = np.asarray(archive["dataset_role"]).astype(str)
                     tx_ids = np.asarray(archive["tx_ids"]).astype(str)
                     rx_ids = np.asarray(archive["rx_ids"]).astype(str)
+                    satellite_seeds = np.asarray(
+                        archive["satellite_seeds"]
+                    )
         except structural.SomphLineageError as exc:
             raise SomphLineageAuthorityError(str(exc)) from exc
         if roles.shape != tx_ids.shape or roles.shape != rx_ids.shape:
@@ -749,6 +825,82 @@ def _cache_role_inputs(
                 raise SomphLineageAuthorityError(
                     f"cache TX coverage authority drift for {scenario}:{role}"
                 )
+        if build_spec is not None or required_samples_per_tx is not None:
+            if (
+                build_spec is None
+                or required_samples_per_tx is None
+                or isinstance(required_samples_per_tx, bool)
+                or required_samples_per_tx < 1
+                or satellite_seeds.dtype != np.int64
+                or satellite_seeds.shape != roles.shape
+            ):
+                raise SomphLineageAuthorityError(
+                    "strict cache seed/coverage inputs invalid"
+                )
+            expected_channel_config = dict(
+                sat_channel_config_for_scenario(scenario)
+            )
+            expected_channel_config.update(
+                {
+                    "fs_hz": float(build_spec.get("sat_fs_hz", 25e6)),
+                    "fc_hz": float(build_spec.get("sat_fc_hz", 2.462e9)),
+                    "star_ground_channel_impl": "simplified_leo_residual",
+                }
+            )
+            expected_channel_sha = canonical_json_sha256(
+                expected_channel_config
+            )
+            observed_channel = manifest.get("channel_config")
+            if (
+                not isinstance(observed_channel, dict)
+                or canonical_json_sha256(observed_channel)
+                != expected_channel_sha
+                or manifest.get("channel_config_sha256")
+                != expected_channel_sha
+            ):
+                raise SomphLineageAuthorityError(
+                    f"cache channel config/fixed code drift for {scenario}"
+                )
+            base_seed = build_spec.get(
+                "satellite_seed_by_scenario", {}
+            ).get(scenario)
+            if isinstance(base_seed, bool) or not isinstance(base_seed, int):
+                raise SomphLineageAuthorityError(
+                    f"cache build-spec satellite seed invalid for {scenario}"
+                )
+            role_order = tuple(expected_tx_by_role)
+            expected_role_seeds = {
+                role: base_seed + index * 1_000_003
+                for index, role in enumerate(role_order)
+            }
+            if manifest.get("role_satellite_seeds") != expected_role_seeds:
+                raise SomphLineageAuthorityError(
+                    f"cache role satellite seed/build-spec drift for {scenario}"
+                )
+            observed_counts = Counter(
+                zip(roles.tolist(), tx_ids.tolist(), rx_ids.tolist())
+            )
+            expected_cells = {
+                (role, tx_id, receiver)
+                for role, expected_tx in expected_tx_by_role.items()
+                for tx_id in expected_tx
+            }
+            if set(observed_counts) != expected_cells or any(
+                observed_counts[cell] != required_samples_per_tx
+                for cell in expected_cells
+            ):
+                raise SomphLineageAuthorityError(
+                    f"cache exact per-role/TX/receiver coverage drift for {scenario}"
+                )
+            for role, expected_seed in expected_role_seeds.items():
+                role_seeds = set(
+                    int(value)
+                    for value in satellite_seeds[roles == role].tolist()
+                )
+                if role_seeds != {expected_seed}:
+                    raise SomphLineageAuthorityError(
+                        f"cache row satellite seed/build-spec drift for {scenario}:{role}"
+                    )
         role_inputs = manifest.get("role_inputs")
         if not isinstance(role_inputs, list):
             raise SomphLineageAuthorityError(
@@ -759,6 +911,21 @@ def _cache_role_inputs(
             raise SomphLineageAuthorityError(
                 f"cache role_inputs object drift for {scenario}"
             )
+        if required_samples_per_tx is not None:
+            expected_role_counts = {
+                role: required_samples_per_tx * len(tx_ids_for_role)
+                for role, tx_ids_for_role in expected_tx_by_role.items()
+            }
+            for row in result[scenario]:
+                role = row.get("role")
+                if (
+                    role not in expected_role_counts
+                    or row.get("physical_sample_count")
+                    != expected_role_counts[role]
+                ):
+                    raise SomphLineageAuthorityError(
+                        f"cache role_inputs physical_sample_count drift for {scenario}"
+                    )
     return result
 
 
@@ -924,6 +1091,8 @@ def _validate_commit_members(value: Any) -> list[dict[str, Any]]:
     expected_names = (
         AUTHORITY_LOCK_NAME,
         AUTHORITY_ENVELOPE_NAME,
+        AUTHORITY_LOCK_BUILD_RECEIPT_NAME,
+        CACHE_SPEC_MANIFEST_NAME,
         STRUCTURAL_RECEIPT_NAME,
         STRUCTURAL_SEAL_NAME,
         AUTHORITY_ATTESTATION_NAME,
@@ -993,11 +1162,138 @@ def _verify_lock_receipt_binding(
             )
 
 
+def _verify_build_authority_binding(
+    lock: Mapping[str, Any],
+    *,
+    lock_file_sha256: str,
+    lock_canonical_sha256: str,
+    build_receipt: Mapping[str, Any],
+    build_receipt_sha256: str,
+    cache_spec_manifest: Mapping[str, Any],
+    cache_spec_manifest_sha256: str,
+    cache_spec_manifest_size_bytes: int,
+) -> tuple[str, str]:
+    _require_exact_dict(
+        build_receipt,
+        _AUTHORITY_LOCK_BUILD_RECEIPT_KEYS,
+        field="authority lock build receipt",
+    )
+    receipt_sha = _require_sha256(
+        build_receipt_sha256,
+        field="authority lock build receipt SHA",
+    )
+    manifest_sha = _require_sha256(
+        cache_spec_manifest_sha256,
+        field="cache-spec manifest SHA",
+    )
+    expected_cell_id = (
+        f"rx_{str(lock.get('receiver')).replace('-', '_')}_seed_{lock.get('seed')}"
+    )
+    direct = {
+        "schema": "cvs.phase1.somph_authority_lock_build_receipt.v1",
+        "status": "UNSIGNED_OFFLINE_AUTHORITY_LOCK_BUILT",
+        "cache_spec_manifest_sha256": _FORMAL_CACHE_SPEC_MANIFEST_SHA256,
+        "cache_spec_manifest_size_bytes": cache_spec_manifest_size_bytes,
+        "cache_spec_cell_id": expected_cell_id,
+        "required_samples_per_tx": 40,
+        "receiver": lock.get("receiver"),
+        "seed": lock.get("seed"),
+        "cache_scope": "stage2_registered",
+        "cache_set_manifest_sha256": lock.get(
+            "cache_set_manifest", {}
+        ).get("sha256"),
+        "build_spec_file_sha256": lock.get("build_spec", {}).get(
+            "file_sha256"
+        ),
+        "build_spec_canonical_sha256": lock.get("build_spec", {}).get(
+            "canonical_sha256"
+        ),
+        "exporter_sha256": lock.get("exporter", {}).get("sha256"),
+        "channel_code_closure_sha256": lock.get(
+            "channel_code_closure", {}
+        ).get("closure_sha256"),
+        "cache_role_inputs_root_sha256": lock.get(
+            "cache_role_inputs_root_sha256"
+        ),
+        "physical_sample_ids_sha256": lock.get(
+            "physical_sample_ids_sha256"
+        ),
+        "authority_lock_sha256": lock_file_sha256,
+        "authority_lock_canonical_sha256": lock_canonical_sha256,
+        "external_authority_lock_verified": False,
+        "formal_launch_authority": False,
+    }
+    if (
+        lock.get("cache_scope") != "stage2_registered"
+        or manifest_sha != _FORMAL_CACHE_SPEC_MANIFEST_SHA256
+        or any(build_receipt.get(key) != value for key, value in direct.items())
+    ):
+        raise SomphLineageAuthorityError(
+            "authority build receipt/lock/official manifest binding drift"
+        )
+    dataset_root_sha = _require_sha256(
+        build_receipt.get("dataset_authority_root_sha256"),
+        field="authority build receipt dataset authority root",
+    )
+    for field in (
+        "cache_sha256_by_scenario",
+        "channel_config_sha256_by_scenario",
+        "post_channel_iq_sha256_root_by_scenario",
+        "overlay_ids_sha256_by_scenario",
+    ):
+        if build_receipt.get(field) != lock.get(field):
+            raise SomphLineageAuthorityError(
+                f"authority build receipt root drift: {field}"
+            )
+    audits = build_receipt.get("cache_recompute_audits")
+    if not isinstance(audits, dict) or tuple(audits) != FORMAL_LEO_WEAK_SCENARIOS:
+        raise SomphLineageAuthorityError(
+            "authority build receipt cache audit registry drift"
+        )
+    if (
+        cache_spec_manifest.get("schema")
+        != "cvs.phase2.somph_registered_cache_build_matrix.v1"
+        or cache_spec_manifest.get("formal_launch_authority") is not False
+        or cache_spec_manifest.get("required_samples_per_tx") != 40
+    ):
+        raise SomphLineageAuthorityError(
+            "official cache-spec manifest contract drift"
+        )
+    cells = cache_spec_manifest.get("cells")
+    matches = [
+        item
+        for item in cells
+        if isinstance(item, dict) and item.get("cell_id") == expected_cell_id
+    ] if isinstance(cells, list) else []
+    if len(matches) != 1:
+        raise SomphLineageAuthorityError(
+            "official cache-spec manifest cell identity drift"
+        )
+    cell = matches[0]
+    expected_cell = {
+        "receiver": lock.get("receiver"),
+        "seed": lock.get("seed"),
+        "cache_scope": "stage2_registered",
+        "required_samples_per_tx": 40,
+        "spec_file_sha256": lock.get("build_spec", {}).get("file_sha256"),
+        "spec_canonical_sha256": lock.get("build_spec", {}).get(
+            "canonical_sha256"
+        ),
+    }
+    if any(cell.get(key) != value for key, value in expected_cell.items()):
+        raise SomphLineageAuthorityError(
+            "official cache-spec cell/build-spec binding drift"
+        )
+    return receipt_sha, dataset_root_sha
+
+
 def write_somph_lineage_authority_bundle(
     authority_lock_path: str | Path,
     *,
     signed_authority_envelope_path: str | Path,
     expected_signed_authority_envelope_sha256: str,
+    authority_lock_build_receipt_path: str | Path,
+    cache_spec_manifest_path: str | Path,
     output_root: str | Path,
 ) -> dict[str, Any]:
     """Validate one pre-locked authority document and atomically publish it."""
@@ -1021,11 +1317,45 @@ def write_somph_lineage_authority_bundle(
         raise SomphLineageAuthorityError(
             "external signed authority envelope SHA mismatch"
         )
+    (
+        build_receipt,
+        build_receipt_bytes,
+        build_receipt_sha,
+        _build_receipt_size,
+    ) = _read_external_json(
+        authority_lock_build_receipt_path,
+        context="SOMP-H authority lock build receipt",
+    )
+    (
+        cache_spec_manifest,
+        cache_spec_manifest_bytes,
+        cache_spec_manifest_sha,
+        cache_spec_manifest_size,
+    ) = _read_external_json(
+        cache_spec_manifest_path,
+        context="SOMP-H official locked cache-spec manifest",
+    )
+    receiver, seed, roles = _validate_lock_formal_identity(lock)
+    _verified_build_receipt_sha, build_receipt_dataset_root = (
+        _verify_build_authority_binding(
+        lock,
+        lock_file_sha256=lock_sha,
+        lock_canonical_sha256=lock_canonical_sha,
+        build_receipt=build_receipt,
+        build_receipt_sha256=build_receipt_sha,
+        cache_spec_manifest=cache_spec_manifest,
+        cache_spec_manifest_sha256=cache_spec_manifest_sha,
+        cache_spec_manifest_size_bytes=cache_spec_manifest_size,
+        )
+    )
     _verify_signed_envelope(
         envelope,
         lock_canonical_sha256=lock_canonical_sha,
+        expected_cache_spec_cell_id=(
+            f"rx_{receiver.replace('-', '_')}_seed_{seed}"
+        ),
+        expected_build_receipt_sha256=build_receipt_sha,
     )
-    receiver, seed, roles = _validate_lock_formal_identity(lock)
 
     cache_set_descriptor, _cache_set_bytes = _verify_file_descriptor(
         lock["cache_set_manifest"], field="cache_set_manifest"
@@ -1057,15 +1387,21 @@ def write_somph_lineage_authority_bundle(
         field="build_spec.canonical_sha256",
     ):
         raise SomphLineageAuthorityError("authority build spec canonical SHA mismatch")
+    build_spec_path = Path(str(build_descriptor["path"]))
+    build_spec_dir = build_spec_path.absolute().parent
     role_specs = _validate_build_spec(
         build_spec,
         lock=lock,
         receiver=receiver,
         seed=seed,
         roles=roles,
+        build_spec_dir=build_spec_dir,
     )
+    raw_out_manifest = Path(str(build_spec["out_manifest"]))
+    if not raw_out_manifest.is_absolute():
+        raw_out_manifest = build_spec_dir / raw_out_manifest
     if (
-        Path(str(build_spec["out_manifest"])).resolve()
+        raw_out_manifest.resolve()
         != Path(str(cache_set_descriptor["path"])).resolve()
         or build_spec["cache_set_id"] != cache_set.get("cache_set_id")
     ):
@@ -1076,11 +1412,14 @@ def write_somph_lineage_authority_bundle(
     if not isinstance(cache_paths, dict):
         raise SomphLineageAuthorityError("authority cache-set path map missing")
     for scenario in FORMAL_LEO_WEAK_SCENARIOS:
+        raw_out_npz = Path(str(build_spec["out_npz_by_scenario"][scenario]))
+        if not raw_out_npz.is_absolute():
+            raw_out_npz = build_spec_dir / raw_out_npz
         actual_cache_path = structural._resolve_cache(
             Path(str(cache_set_descriptor["path"])),
             cache_paths.get(scenario),
         )
-        if Path(str(build_spec["out_npz_by_scenario"][scenario])).resolve() != (
+        if raw_out_npz.resolve() != (
             actual_cache_path.resolve()
         ):
             raise SomphLineageAuthorityError(
@@ -1093,6 +1432,10 @@ def write_somph_lineage_authority_bundle(
         receiver=receiver,
         seed=seed,
     )
+    if dataset_root != build_receipt_dataset_root:
+        raise SomphLineageAuthorityError(
+            "authority build receipt dataset authority root drift"
+        )
     channel_paths, channel_closure_sha = _validate_channel_closure(
         lock["channel_code_closure"]
     )
@@ -1112,6 +1455,17 @@ def write_somph_lineage_authority_bundle(
         lock["overlay_ids_sha256_by_scenario"],
         field="overlay_ids_sha256_by_scenario",
     )
+    strict_required_samples: int | None = None
+    if lock["cache_scope"] == "stage2_registered":
+        declared_counts = {
+            role_spec.get("max_samples_per_tx")
+            for role_spec in role_specs
+        }
+        if declared_counts != {40}:
+            raise SomphLineageAuthorityError(
+                "formal registered authority requires exact maxK20+Q20 coverage"
+            )
+        strict_required_samples = 40
     role_inputs = _cache_role_inputs(
         cache_set,
         manifest_path=Path(str(cache_set_descriptor["path"])),
@@ -1125,6 +1479,10 @@ def write_somph_lineage_authority_bundle(
             ),
         },
         receiver=receiver,
+        build_spec=(
+            build_spec if strict_required_samples is not None else None
+        ),
+        required_samples_per_tx=strict_required_samples,
     )
     role_inputs_root = _verify_cache_role_inputs(
         role_inputs,
@@ -1186,6 +1544,14 @@ def write_somph_lineage_authority_bundle(
         _verify_lock_receipt_binding(lock, structural_receipt)
         _write_new_readonly(staging / AUTHORITY_LOCK_NAME, lock_bytes)
         _write_new_readonly(staging / AUTHORITY_ENVELOPE_NAME, envelope_bytes)
+        _write_new_readonly(
+            staging / AUTHORITY_LOCK_BUILD_RECEIPT_NAME,
+            build_receipt_bytes,
+        )
+        _write_new_readonly(
+            staging / CACHE_SPEC_MANIFEST_NAME,
+            cache_spec_manifest_bytes,
+        )
         structural_receipt_descriptor = _member_descriptor(
             staging / STRUCTURAL_RECEIPT_NAME, name=STRUCTURAL_RECEIPT_NAME
         )
@@ -1227,6 +1593,8 @@ def write_somph_lineage_authority_bundle(
             for name in (
                 AUTHORITY_LOCK_NAME,
                 AUTHORITY_ENVELOPE_NAME,
+                AUTHORITY_LOCK_BUILD_RECEIPT_NAME,
+                CACHE_SPEC_MANIFEST_NAME,
                 STRUCTURAL_RECEIPT_NAME,
                 STRUCTURAL_SEAL_NAME,
                 AUTHORITY_ATTESTATION_NAME,
@@ -1358,9 +1726,37 @@ def verify_somph_lineage_authority_bundle(
             "authority commit/signed envelope digest drift"
         )
     lock_canonical_sha = sha256_bytes(canonical_json_bytes(lock))
+    build_receipt = payloads[AUTHORITY_LOCK_BUILD_RECEIPT_NAME]
+    build_receipt_sha = next(
+        item["sha256"]
+        for item in members
+        if item["name"] == AUTHORITY_LOCK_BUILD_RECEIPT_NAME
+    )
+    cache_spec_manifest = payloads[CACHE_SPEC_MANIFEST_NAME]
+    cache_spec_manifest_descriptor = next(
+        item for item in members if item["name"] == CACHE_SPEC_MANIFEST_NAME
+    )
+    _verified_build_receipt_sha, build_receipt_dataset_root = (
+        _verify_build_authority_binding(
+        lock,
+        lock_file_sha256=lock_sha,
+        lock_canonical_sha256=lock_canonical_sha,
+        build_receipt=build_receipt,
+        build_receipt_sha256=build_receipt_sha,
+        cache_spec_manifest=cache_spec_manifest,
+        cache_spec_manifest_sha256=cache_spec_manifest_descriptor["sha256"],
+        cache_spec_manifest_size_bytes=cache_spec_manifest_descriptor[
+            "size_bytes"
+        ],
+        )
+    )
     _verify_signed_envelope(
         envelope,
         lock_canonical_sha256=lock_canonical_sha,
+        expected_cache_spec_cell_id=(
+            f"rx_{receiver.replace('-', '_')}_seed_{seed}"
+        ),
+        expected_build_receipt_sha256=build_receipt_sha,
     )
     committed_dataset_root = _dataset_root_from_lock(
         lock,
@@ -1368,6 +1764,13 @@ def verify_somph_lineage_authority_bundle(
         seed=seed,
         roles=roles,
     )
+    if (
+        committed_dataset_root
+        != build_receipt_dataset_root
+    ):
+        raise SomphLineageAuthorityError(
+            "committed authority build receipt dataset root drift"
+        )
 
     receipt, _seal = structural.verify_somph_leo_weak_lineage_seal(
         root / STRUCTURAL_RECEIPT_NAME,
