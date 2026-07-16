@@ -48,3 +48,9 @@
 - PID`2285219`PASS；base runtime SHA=`b2021ca1...870d9`，严格checkpoint加载0缺失/0意外/0形状不匹配，全部数值parity≤`3.82e-6`。
 - `strict_plan_v1.json`SHA=`cc1a2423...e0fd6`，75包/900 cell/2700行，保持`launch_authority=false`。
 - 下一步只在GPU0运行new5/K1/CSIL smoke，不启动正式矩阵。
+
+## Smoke attempt1
+
+- PID`2286406`在package发布前fail closed：复用的旧promotion manifest含类/角色文本，被truth-leak扫描器拒绝。
+- 未生成prediction/scoring/cell/smoke receipt；v1 partial证据保留。
+- 新增无标签的最小1-view TTA策略；下一次使用全新`..._v2`运行根，不放宽扫描器。
