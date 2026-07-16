@@ -542,3 +542,12 @@ def test_traced_runtime_uses_locked_two_row_microbatches() -> None:
     ).read_text(encoding="utf-8")
     assert "check_trace=False" in enrollment
     assert "parity = _runtime_parity(wrapper, runtime, example)" in enrollment
+
+
+def test_split_builder_binds_both_scoring_manifest_hashes() -> None:
+    split_builder = (
+        Path(__file__).resolve().parents[1]
+        / "paper_reproduction/scripts/build_cvs_jg020_split_packages.py"
+    ).read_text(encoding="utf-8")
+    assert split_builder.count("expected_scoring_manifest_sha256=") == 2
+    assert '"scoring_manifest_sha256": scoring_sha' in split_builder

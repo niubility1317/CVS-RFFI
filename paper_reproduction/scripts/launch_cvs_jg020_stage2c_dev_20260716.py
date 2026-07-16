@@ -42,6 +42,7 @@ RETRY3_RUN_ROOT = REMOTE_REPO / "runs" / f"{EXPERIMENT_ID}_retry3"
 RETRY4_RUN_ROOT = REMOTE_REPO / "runs" / f"{EXPERIMENT_ID}_retry4"
 RETRY5_RUN_ROOT = REMOTE_REPO / "runs" / f"{EXPERIMENT_ID}_retry5"
 RETRY6_RUN_ROOT = REMOTE_REPO / "runs" / f"{EXPERIMENT_ID}_retry6"
+RETRY7_RUN_ROOT = REMOTE_REPO / "runs" / f"{EXPERIMENT_ID}_retry7"
 ORIGINAL_CACHE_SET = DEFAULT_RUN_ROOT / "phase1_cache/cache_set.json"
 CHECKPOINT = (
     REMOTE_REPO
@@ -208,6 +209,7 @@ def execute(
         RETRY4_RUN_ROOT,
         RETRY5_RUN_ROOT,
         RETRY6_RUN_ROOT,
+        RETRY7_RUN_ROOT,
     }:
         raise ValueError("JG020 run root is outside the locked default/retry roots")
     if reuse_cache_set is not None and resume:

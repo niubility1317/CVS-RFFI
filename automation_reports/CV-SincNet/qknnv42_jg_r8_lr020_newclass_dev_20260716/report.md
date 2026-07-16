@@ -5,7 +5,7 @@
 - 实验ID：`qknnv42_jg_r8_lr020_newclass_dev_20260716`
 - 日期：2026-07-16
 - 操作者：Codex主agent`root`＋子agent`jg020_registration_exp`
-- 当前状态：`SEVENTH_TORCH21_TRACE_CHECK_FAILURE_REPAIRED_AWAITING_RETRY6`；retry5再次完成new5的50个support-only optimizer step，但尚未生成prediction或正式指标
+- 当前状态：`EIGHTH_SCORER_HASH_BINDING_CALL_REPAIRED_AWAITING_RETRY7`；retry6的new5 enrollment与三个runtime parity已PASS，尚未生成prediction或正式指标
 - 目标：验证锁定的`JG_R8_LR020`轻量旧类适配器在合法Stage2-C新类注册后的同row旧类保持、新类准确率与资源表现。
 - 声明边界：这是单receiver、单development seed的开发单元；即使指标达到门槛，也不能替代独立确认矩阵或宣称总目标完成。
 
@@ -119,7 +119,7 @@ isolated scorer
 | 本地Git分支/起点 | `codex/cvs-rffi-release-20260626`；本实现提交前HEAD含主线程parity commit`89fc2ff` |
 | 本地现有未提交修改 | 用户已有`mitigating_da_rootcause_20260710_104628/{progress.md,task_plan.md}`，不得触碰 |
 | 新增实现 | `jg020_stage2c.py`、support-only enrollment、apply-only predictor、split package builder、顺序launcher、3个candidate lock、registered cache spec、3个边界descriptor、9项测试、traceability/report |
-| 本地验证 | `ssr-gpu`中py_compile PASS；最新`pytest tests/test_jg020_stage2c_isolation.py -q`为13/13 PASS；3个lock、cache spec校验PASS；launcher dry-run展开19阶段条目；待提交前再次执行`git diff --check` |
+| 本地验证 | `ssr-gpu`中py_compile PASS；最新`pytest tests/test_jg020_stage2c_isolation.py -q`为14/14 PASS；3个lock、cache spec校验PASS；launcher dry-run展开19阶段条目；待提交前再次执行`git diff --check` |
 | 远端工作目录 | `/home/szu2070436088/2510044040/CV-SincNet` |
 | N607只读preflight | 2026-07-16 11:48:16 CST直连PASS；`dell-DSS8440`；项目根可见；8×RTX 3090均为10MiB/24576MiB、0%利用率 |
 | N607训练inventory | 2026-07-16 11:48:33+0800；`active_training_processes=[]`、`gpu_compute=[]`、`unknown_training_active=false`、route=`direct` |
@@ -130,14 +130,12 @@ isolated scorer
 | 首次运行状态 | launcher已退出；Phase1 cache成功，Stage2-C未开始；没有性能结果，不能报告candidate指标 |
 | 预期输出 | sealed manifests、adapter/prototype、loss trace、immutable predictions、scorer tables、resource audit、完整日志 |
 
-retry6同步映射（本地→N607同相对路径；其余retry5文件保持远端已验证版本）：
+retry7同步映射（本地→N607同相对路径；其余retry6文件保持远端已验证版本）：
 
 | 文件 | 本地SHA256 | 目的 |
 |---|---|---|
-| `paper_reproduction/cvs_aligned/jg020_stage2c.py` | `07195d98b26cc41d4314eab97cec431a70e6c46cd954267b1da555d18e268caa` | 远端保持retry5已验证版本；本次不覆盖 |
-| `paper_reproduction/scripts/enroll_cvs_jg020_support_only.py` | `c3eb7fa297acbeb4bd2a3c96021aca73e5a3ac37d12d2233d125d62acbbf9966` | 关闭Torch 2.1不兼容的重复trace checker，保留显式runtime parity |
-| `paper_reproduction/scripts/launch_cvs_jg020_stage2c_dev_20260716.py` | `2a17d163d435a75dc2a1055eb27dfe7eaf6a6a73071c5ac4ff280e6ec26ee104` | 允许不可覆盖的`retry6`运行根 |
-| `paper_reproduction/scripts/run_cvs_jg020_apply_only_predictor.py` | `eb2cf562513aa601c52222d3d948c536eac212269cf0bfb8d5f67c88a101bc83` | 远端保持retry5已验证版本；本次不覆盖 |
+| `paper_reproduction/scripts/build_cvs_jg020_split_packages.py` | `d3670d99dec84dbf0398ba57c8c6ca6a0211b48dabcc801b74919abdb2271e51` | 对source与新scoring manifest都显式绑定expected SHA256 |
+| `paper_reproduction/scripts/launch_cvs_jg020_stage2c_dev_20260716.py` | `58c022318079f7d0b5e0bf9ef120c5314af4fc9ab29a632f1f64ebb5a2b247d3` | 允许不可覆盖的`retry7`运行根 |
 
 retry4实际启动命令：
 
@@ -186,6 +184,10 @@ retry4随后在TorchScript parity阶段fail closed。ADV3B02底层把trace时bat
 retry5确认2-row trace形状修复有效，再次完成new5的5epoch/50step support-only训练；随后`torch.jit.trace(check_trace=True)`在Torch`2.1.0+cu121`的内部重复trace比较中抛出`complex128 != float64`dtype comparison exception。该异常发生在runtime发布前，未进入truth-free predictor或scorer，仍无query性能结果。完整外层/enrollment日志与loss trace已回收到`remote_logs/retry5_*`。
 
 JG020在保存并重新加载每个runtime后，本来就逐元素比较eager feature/logit与runtime feature/logit，容差为`1e-4`并在漂移时fail closed；因此重复的Torch内部trace checker不提供额外协议证据。retry6关闭`check_trace`，但保留加载后显式数值parity、runtime SHA256和receipt绑定。`ssr-gpu`中py_compile与13/13测试通过，测试静态锁定`check_trace=False`和显式parity调用同时存在。
+
+retry6使用外层PID=`2291586`，首次完整完成new5 enrollment并生成PASS receipt：6,400可训练参数、5epoch/50step、适配壁钟`1.652494s`、峰值CUDA内存`31,924,224B`、持久状态`70,816B`。candidate/direct/identity三个runtime的eager-vs-loaded feature/logit最大绝对误差均为`0.0`，runtime SHA256已写入receipt。该结果证明训练与runtime导出链路健康，但仍不是query性能指标。
+
+retry6随后在apply package的独立truth/scorer复制阶段因接口升级漏参而fail closed：`load_verified_scoring_sidecar()`现要求关键字`expected_scoring_manifest_sha256`，JG split builder的两处调用仍使用旧签名。修复对原source scoring manifest和新生成scoring manifest分别先计算SHA256再传入验证函数，并把新manifest SHA256写入builder结果；这加强truth-sidecar绑定，不改变预测输入或算法。`ssr-gpu`中py_compile与14/14测试通过；下一根为不可覆盖的`..._retry7`。
 
 ## 启动后对话回顾与路线教训
 

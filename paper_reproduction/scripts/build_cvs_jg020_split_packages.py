@@ -269,7 +269,8 @@ def build_apply(args: argparse.Namespace) -> dict[str, Any]:
         expected_profile=APPLY_PROFILE,
     )
     original_truth, _original_scoring, truth_audit = load_verified_scoring_sidecar(
-        Path(args.source_scoring_manifest)
+        Path(args.source_scoring_manifest),
+        expected_scoring_manifest_sha256=sha256_file(args.source_scoring_manifest),
     )
     if original_truth["receiver"] != lock["receiver"] or original_truth["seed"] != lock["seed"]:
         raise ValueError("source truth sidecar does not match JG020 cell")
@@ -288,7 +289,11 @@ def build_apply(args: argparse.Namespace) -> dict[str, Any]:
     }
     scoring_path = scorer_root / "scoring_manifest.json"
     _write_json_new(scoring_path, scoring_manifest)
-    load_verified_scoring_sidecar(scoring_path)
+    scoring_sha = sha256_file(scoring_path)
+    load_verified_scoring_sidecar(
+        scoring_path,
+        expected_scoring_manifest_sha256=scoring_sha,
+    )
     return {
         "status": "PASS",
         "profile": APPLY_PROFILE,
@@ -297,6 +302,7 @@ def build_apply(args: argparse.Namespace) -> dict[str, Any]:
         "detached_seal": str(Path(args.output_detached_seal).resolve()),
         "detached_seal_sha256": seal_sha,
         "scoring_manifest": str(scoring_path),
+        "scoring_manifest_sha256": scoring_sha,
         "source_preflight": source_audit,
         "enrollment_preflight": enrollment_audit,
         "final_preflight": final_audit,

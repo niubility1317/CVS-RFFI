@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/scripts/build_cvs_jg020_split_packages.py", line 343, in <module>
+    raise SystemExit(main())
+  File "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/scripts/build_cvs_jg020_split_packages.py", line 337, in main
+    result = build_enrollment(args) if args.command == "enrollment" else build_apply(args)
+  File "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/scripts/build_cvs_jg020_split_packages.py", line 271, in build_apply
+    original_truth, _original_scoring, truth_audit = load_verified_scoring_sidecar(
+TypeError: load_verified_scoring_sidecar() missing 1 required keyword-only argument: 'expected_scoring_manifest_sha256'

@@ -2,7 +2,7 @@
 
 日期：2026-07-16
 
-状态：retry5已完成new5的50个support-only step并在Torch 2.1内部重复trace检查阶段fail closed；显式runtime parity保留、重复checker关闭，13/13测试通过，等待retry6同步启动
+状态：retry6的new5 enrollment与三个runtime显式parity均PASS；apply package在scoring manifest hash绑定旧调用处fail closed，缺参修复与14/14测试通过，等待retry7同步启动
 
 依据：`E:\type10-7\AGENTS.md`、`E:\type10-7\项目.md`、用户锁定的`JG_R8_LR020`候选
 
@@ -18,7 +18,7 @@
 | JG-08 | `项目.md` 10.3.1 | 锁定候选为ADV3B02+ground P4+BPJG-LOPO `joint_gate`, rank8, lr0.02, 5epoch, <=50step, K10 | candidate locks、support-only trainer、launcher | implemented/local-verified | exact 6,400参数门与真实artifact cached parity证据已锁定 | N607 receipt复核steps/loss/resource |
 | JG-09 | `项目.md` 8.5、10.3.1 | development cell覆盖`leo_clear_weak/leo_low_elev_weak/leo_rain_weak`，support/query场景逐row一致 | cache spec、package manifest、scorer | implemented/local-verified | 三场景exact tuple与物理token顺序检查已实现 | query固定1-view |
 | JG-10 | `项目.md` 10.3.1 | 同row报告`old_acc_before_increment`、注册后`old_acc`、`min_old_class_acc`、`seen_new_acc`、`H_old_new`、forgetting、逐类与逐场景 | immutable prediction streams、isolated scorer | implemented/pending-run | 五条prediction stream已绑定同row | 结果待N607运行，不拼接边际最大值 |
-| JG-11 | `项目.md` 10.3.1 | 保存完整训练loss trace和实际适配资源：参数、steps、时延、峰值显存、状态、MAC/forward | enrollment receipt、loss trace | partial-run/receipt-pending | retry4完整5epoch/50step loss trace已回收；runtime导出前fail closed | receipt与正式资源仍待retry5 |
+| JG-11 | `项目.md` 10.3.1 | 保存完整训练loss trace和实际适配资源：参数、steps、时延、峰值显存、状态、MAC/forward | enrollment receipt、loss trace | implemented/remote-verified-new5 | retry6 receipt PASS：6400参数、50step、1.652494s、31924224B峰值、70816B持久状态、runtime parity 0 | new10/new20与正式结果仍待完整run |
 | JG-12 | `项目.md` 10.3.1 | 同sample/同view保存strict direct ADV3B02 old-only对照 | direct runtime、direct stream | implemented/pending-run | checkpoint类别映射顺序SHA已锁定 | direct无新类头，不计算seen-new |
 | JG-13 | `项目.md` 10.3.1 | development query只评分，不参与candidate、epoch、阈值或超参数选择 | candidate locks、apply package | implemented/local-verified | predictor不fit head、无optimizer/query truth路径测试通过 | 本轮仅运行锁定JG_R8_LR020，不做query sweep |
 | JG-14 | `AGENTS.md` Experiment Reporting | N607前本地报告、环境/命令/路径/GPU/输出、风险、成功条件齐备；完成后回收完整日志 | `automation_reports/CV-SincNet/qknnv42_jg_r8_lr020_newclass_dev_20260716/report.md` | implemented/preflight-verified | 本文件与预运行报告已创建；直连preflight与training inventory均PASS | N607尚未同步或运行 |
