@@ -353,6 +353,16 @@ def build(args: argparse.Namespace, *, token_secret: bytes | None = None) -> dic
         field="stage2b_reference_new_class_labels",
         required=False,
     )
+    stage2b_mixed_cache_old_query_only = bool(
+        getattr(args, "stage2b_mixed_cache_old_query_only", False)
+    )
+    if stage2b_mixed_cache_old_query_only and (
+        stage != "stage2b" or reference_new_labels
+    ):
+        raise ValueError(
+            "mixed-cache old-query-only mode is Stage2-B-only and cannot include "
+            "target-new reference queries"
+        )
     if set(old_labels) & (set(new_labels) | set(reference_new_labels)):
         raise ValueError("old/new transmitter labels must be disjoint")
     if stage == "stage2b" and new_labels:
@@ -366,7 +376,11 @@ def build(args: argparse.Namespace, *, token_secret: bytes | None = None) -> dic
         raise ValueError("support_pool_max_k and query_per_tx must be positive")
 
     allowed_roles = {"target_old"}
-    if stage == "stage2c" or reference_new_labels:
+    if (
+        stage == "stage2c"
+        or reference_new_labels
+        or stage2b_mixed_cache_old_query_only
+    ):
         allowed_roles.add("target_new")
     expected_scope = str(getattr(args, "expected_cache_scope", "stage2_registered"))
     arrays_by_scenario, cache_manifest, cache_audit = load_verified_leo_weak_cache_set(
@@ -641,6 +655,12 @@ def build(args: argparse.Namespace, *, token_secret: bytes | None = None) -> dic
             "predictor_package_seal_sha256": seal_sha256,
             "predictor_scorer_roots_distinct": True,
             "opaque_token_secret_persisted": False,
+            "stage2b_mixed_registered_cache_old_query_only": (
+                stage2b_mixed_cache_old_query_only
+            ),
+            "unregistered_cache_rows_excluded_before_predictor_package": (
+                stage2b_mixed_cache_old_query_only
+            ),
         },
     )
 
@@ -665,6 +685,9 @@ def build(args: argparse.Namespace, *, token_secret: bytes | None = None) -> dic
         "registered_class_count": len(support_labels),
         "support_pool_count": len(support_idx),
         "query_count": len(query_idx),
+        "stage2b_mixed_registered_cache_old_query_only": (
+            stage2b_mixed_cache_old_query_only
+        ),
     }
 
 
@@ -681,6 +704,14 @@ def main() -> int:
     parser.add_argument("--old-class-labels", required=True)
     parser.add_argument("--new-class-labels", default="")
     parser.add_argument("--stage2b-reference-new-class-labels", default="")
+    parser.add_argument(
+        "--stage2b-mixed-cache-old-query-only",
+        action="store_true",
+        help=(
+            "Validate a stage2_registered target cache containing target-old and "
+            "target-new rows, but seal only target-old support/query into Stage2-B."
+        ),
+    )
     parser.add_argument("--new-class-count", type=int, default=0)
     parser.add_argument("--support-pool-max-k", type=int, required=True)
     parser.add_argument("--query-per-tx", type=int, required=True)

@@ -2,7 +2,7 @@
 
 Git镜像。权威运行记录见`E:\type10-7\automation_reports\CV-SincNet\qknnv42_fft96_stage2bc_125_20260716_174352\report.md`；本文件与其同步维护。
 
-当前状态：已完成方法与矩阵代码实现；相关完整回归145项通过。真实ADV3B02 runtime、strict plan及25/25个target cache已核验。同步前发现远端共享代码树存在并行改动，因此不覆盖共享文件；改用Git提交`ec3dc84`的独立源码快照和`plan_v3.json`在实验run root内执行。等待N607四状态bwrap+strace smoke和125-bundle启动。
+当前状态：首次N607 smoke在Stage2-B package构建阶段按协议fail-closed，未进入模型推理，原因是混合registered cache与old-only构建声明冲突。未放宽cache验证；新增离线packager模式，完整核验`target_old+target_new`cache后只密封target-old support/query进注册前predictor package。相关完整回归147项通过。首次run root保留，后续用新的`_v2`run root和独立源码快照重跑。
 
 关键口径：
 

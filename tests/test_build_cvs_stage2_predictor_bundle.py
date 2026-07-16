@@ -77,6 +77,7 @@ def _args(tmp_path: Path, suffix: str, *, stage: str):
         old_class_labels="old-a,old-b",
         new_class_labels="new-a" if stage == "stage2c" else "",
         stage2b_reference_new_class_labels="new-a" if stage == "stage2b" else "",
+        stage2b_mixed_cache_old_query_only=False,
         new_class_count=1 if stage == "stage2c" else 0,
         support_pool_max_k=1,
         query_per_tx=1,
@@ -172,6 +173,52 @@ def test_stage2b_has_old_support_and_role_blind_new_reference_query(
         (args.scorer_out_root / "truth_sidecar.json").read_text(encoding="utf-8")
     )
     assert sum(row["true_class_handle"] is None for row in truth["rows"]) == 1
+
+
+def test_stage2b_mixed_registered_cache_seals_only_old_support_and_query(
+    tmp_path: Path, monkeypatch
+) -> None:
+    arrays = _arrays()
+    observed: dict[str, object] = {}
+
+    def fake_loader(*_args, **kwargs):
+        observed.update(kwargs)
+        return (
+            arrays,
+            {"schema": "fake-cache", "cache_scope": "stage2_registered"},
+            {"status": "PASS"},
+        )
+
+    monkeypatch.setattr(builder, "load_verified_leo_weak_cache_set", fake_loader)
+    args = _args(tmp_path, "b-mixed-old-only", stage="stage2b")
+    args.stage2b_reference_new_class_labels = ""
+    args.stage2b_mixed_cache_old_query_only = True
+    result = builder.build(args, token_secret=b"d" * 32)
+    assert set(observed["allowed_roles"]) == {"target_old", "target_new"}
+    assert result["registered_class_count"] == 2
+    assert result["support_pool_count"] == 2
+    assert result["query_count"] == 2
+    assert result["stage2b_mixed_registered_cache_old_query_only"] is True
+    truth = json.loads(
+        (args.scorer_out_root / "truth_sidecar.json").read_text(encoding="utf-8")
+    )
+    assert {row["evaluation_role"] for row in truth["rows"]} == {"target_old"}
+    audit = json.loads(
+        (args.scorer_out_root / "offline_build_audit.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    assert audit["unregistered_cache_rows_excluded_before_predictor_package"] is True
+
+
+def test_stage2b_mixed_cache_old_only_rejects_reference_new_queries(
+    tmp_path: Path, monkeypatch
+) -> None:
+    _patch_cache(monkeypatch)
+    args = _args(tmp_path, "b-invalid-mixed", stage="stage2b")
+    args.stage2b_mixed_cache_old_query_only = True
+    with pytest.raises(ValueError, match="cannot include target-new reference"):
+        builder.build(args, token_secret=b"e" * 32)
 
 
 def test_truth_leak_scan_is_structural_for_npz_numeric_payloads(tmp_path: Path) -> None:

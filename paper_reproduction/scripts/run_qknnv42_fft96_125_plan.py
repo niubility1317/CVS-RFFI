@@ -129,6 +129,8 @@ def _build_package(
         command.extend(
             ["--new-class-labels", ",".join(package["new_class_labels"])]
         )
+    else:
+        command.append("--stage2b-mixed-cache-old-query-only")
     result = _run_json(command, cwd=project_root)
     receipt = {
         "schema": "cvs.phase2.qknnv42_fft96_package_build_receipt.v1",
