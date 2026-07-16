@@ -11,6 +11,7 @@ from paper_reproduction.cvs_aligned.adv3b02_supervised_da_runner import (
     _tensor_from_array,
     _target_predictor_bundle_path,
     _validate_config,
+    _validate_jg_candidate_lock,
 )
 from cvsrffi.phase2_runtime_contract import validate_predictor_request
 
@@ -173,3 +174,20 @@ def test_adv3b02_predictor_request_uses_formal_scenario_lists(tmp_path: Path) ->
     assert "scenario" not in request
     assert "support_artifact" not in request
     assert "query_artifact" not in request
+
+
+def test_jg_candidate_lock_uses_sealed_manifest_digest() -> None:
+    audit = _validate_jg_candidate_lock(
+        {
+            "candidate_lock_sha256": (
+                "43b25b78ec04e77a8442ae9c7dfe587868f91baf62f73a4c01d32697c00bf2a9"
+            )
+        }
+    )
+    assert audit["status"] == "PASS"
+    try:
+        _validate_jg_candidate_lock({"candidate_lock_sha256": "0" * 64})
+    except ValueError as exc:
+        assert "candidate lock digest drift" in str(exc)
+    else:
+        raise AssertionError("JG accepted a drifted sealed candidate lock digest")

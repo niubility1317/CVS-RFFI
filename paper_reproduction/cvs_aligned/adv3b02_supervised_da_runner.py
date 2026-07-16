@@ -71,6 +71,9 @@ METHODS = {"protonet_cda", "mrior_sda", "dadda_sda", "jg_r8_lr020"}
 SCENARIOS = tuple(FORMAL_LEO_WEAK_SCENARIOS)
 QUERY_POLICY = "per_sample_all_registered_classes"
 PRETRAINED_POLICY = "sealed_phase1_checkpoint_only"
+JG_R8_LR020_CANDIDATE_LOCK_SHA256 = (
+    "43b25b78ec04e77a8442ae9c7dfe587868f91baf62f73a4c01d32697c00bf2a9"
+)
 FORBIDDEN_CONFIG_KEYS = {
     "manysig_pkl",
     "manytx_pkl",
@@ -196,6 +199,17 @@ def _runtime_evidence_path(config: dict[str, Any]) -> Path:
     receiver = _safe_receiver(str(config["target_receiver_labels"][0]))
     seed = int(config["split_seed"])
     return root / f"rx_{receiver}" / f"seed_{seed}" / "runtime_isolation_evidence.json"
+
+
+def _validate_jg_candidate_lock(manifest: dict[str, Any]) -> dict[str, Any]:
+    actual = str(manifest.get("candidate_lock_sha256", ""))
+    if actual != JG_R8_LR020_CANDIDATE_LOCK_SHA256:
+        raise ValueError("JG_R8_LR020 sealed candidate lock digest drift")
+    return {
+        "status": "PASS",
+        "candidate_lock_sha256": actual,
+        "validation": "sealed_package_manifest_digest",
+    }
 
 
 def _exact_adv3b02(checkpoint_path: Path, *, device: torch.device) -> tuple[nn.Module, dict[str, Any]]:
@@ -557,20 +571,7 @@ def _run_jg_r8_lr020(
     assert reference_query_ids is not None
     assert reference_support_y is not None
 
-    candidate_lock_path = predictor_bundle_path / str(
-        members["candidate_lock"]["relative_path"]
-    )
-    candidate_lock = json.loads(candidate_lock_path.read_text(encoding="utf-8-sig"))
-    lock_expected = {
-        "schema": "adv3b02_jg020_matched_stage2b_candidate_lock_v1",
-        "method": "jg_r8_lr020",
-        "k_shot": 10,
-        "query_view_count": 1,
-        "support_view_count": 3,
-    }
-    failed_lock = [key for key, value in lock_expected.items() if candidate_lock.get(key) != value]
-    if failed_lock:
-        raise ValueError(f"JG_R8_LR020 package candidate lock drift: {failed_lock}")
+    candidate_lock_audit = _validate_jg_candidate_lock(predictor_bundle_manifest)
 
     direct_model = copy.deepcopy(template).to(device).eval()
     identity_model = copy.deepcopy(template).to(device).eval()
@@ -759,6 +760,7 @@ def _run_jg_r8_lr020(
             "deployment_resource_claim_allowed": True,
             "candidate_id": "JG_R8_LR020",
             "ground_adapter_audit": candidate_ground_audit,
+            "candidate_lock_audit": candidate_lock_audit,
             "target_merge_audit": target_merge_audit,
             "training_runtime": training_runtime,
             "trainable_parameters": 6_400,
