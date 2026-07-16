@@ -7,6 +7,7 @@ from pathlib import Path
 
 import numpy as np
 import pytest
+import torch
 
 from paper_reproduction.cvs_aligned.jg020_stage2c import (
     APPLY_PROFILE,
@@ -20,10 +21,12 @@ from paper_reproduction.cvs_aligned.jg020_stage2c import (
     build_head_state,
     head_npz_members,
     make_member_descriptor,
+    numpy_from_torch_compat,
     ordered_label_sha256,
     preflight_package,
     prepare_preincrement_adaptation_support,
     sha256_file,
+    torch_tensor_from_numpy_compat,
     validate_direct_class_mapping,
     validate_locked_candidate,
     write_package_manifest_and_seal,
@@ -485,3 +488,24 @@ def test_support_only_enrollment_cli_import_closure() -> None:
     source = script.read_text(encoding="utf-8")
     assert "support_rows" not in source
     assert source.count("input_len=int(adapt_rows.shape[-1])") == 3
+
+
+def test_numpy_torch_abi_bridge_uses_explicit_small_copy() -> None:
+    source = np.arange(12, dtype=np.float32).reshape(2, 2, 3)
+    tensor = torch_tensor_from_numpy_compat(
+        source,
+        dtype=torch.float32,
+        device=torch.device("cpu"),
+    )
+    restored = numpy_from_torch_compat(tensor, dtype=np.dtype(np.float32))
+    np.testing.assert_array_equal(restored, source)
+
+    root = Path(__file__).resolve().parents[1]
+    paths = [
+        root / "paper_reproduction/cvs_aligned/jg020_stage2c.py",
+        root / "paper_reproduction/scripts/enroll_cvs_jg020_support_only.py",
+        root / "paper_reproduction/scripts/run_cvs_jg020_apply_only_predictor.py",
+    ]
+    combined = "\n".join(path.read_text(encoding="utf-8") for path in paths)
+    assert "torch.from_numpy(" not in combined
+    assert ".cpu().numpy()" not in combined

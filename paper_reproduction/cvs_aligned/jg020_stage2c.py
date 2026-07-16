@@ -90,6 +90,24 @@ def sha256_file(path: str | Path) -> str:
     return digest.hexdigest()
 
 
+def torch_tensor_from_numpy_compat(
+    value: Any,
+    *,
+    dtype: torch.dtype,
+    device: torch.device,
+) -> torch.Tensor:
+    """Copy a small NumPy payload without relying on the NumPy C-ABI bridge."""
+
+    array = np.asarray(value)
+    return torch.tensor(array.tolist(), dtype=dtype, device=device)
+
+
+def numpy_from_torch_compat(value: torch.Tensor, *, dtype: np.dtype[Any]) -> np.ndarray:
+    """Copy a small tensor through Python values for NumPy-2/Torch-2.1 hosts."""
+
+    return np.asarray(value.detach().cpu().tolist(), dtype=dtype)
+
+
 def _relative_leaf(value: Any) -> str:
     if not isinstance(value, str) or not value or "\\" in value:
         raise JG020ProtocolError("package member path must be a nonempty POSIX leaf")
@@ -643,8 +661,8 @@ def train_support_only_bp_jg_cached(
 
     if int(epochs) != 5 or int(max_optimizer_steps) != 50:
         raise JG020ProtocolError("cached JG020 training requires exactly 5 epochs/50-step cap")
-    rows = torch.from_numpy(np.asarray(support_rows, dtype=np.float32)).to(device)
-    labels = torch.from_numpy(np.asarray(support_labels, dtype=np.int64)).to(device)
+    rows = torch_tensor_from_numpy_compat(support_rows, dtype=torch.float32, device=device)
+    labels = torch_tensor_from_numpy_compat(support_labels, dtype=torch.int64, device=device)
     physical_count, class_count, k_shot, _ = _matched_view_support_layout(
         labels, view_count=int(support_view_count)
     )

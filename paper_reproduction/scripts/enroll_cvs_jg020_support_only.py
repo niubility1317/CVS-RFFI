@@ -43,10 +43,12 @@ from paper_reproduction.cvs_aligned.jg020_stage2c import (  # noqa: E402
     descriptor_by_role,
     head_npz_members,
     load_npz_member,
+    numpy_from_torch_compat,
     open_regular_member_same_fd,
     prepare_preincrement_adaptation_support,
     preflight_package,
     sha256_file,
+    torch_tensor_from_numpy_compat,
     train_support_only_bp_jg_cached,
     validate_direct_class_mapping,
     validate_locked_candidate,
@@ -120,11 +122,15 @@ def _forward_features(model: torch.nn.Module, rows: np.ndarray, *, device: torch
     output = []
     model.eval()
     for start in range(0, len(rows), int(batch_size)):
-        batch = torch.from_numpy(np.asarray(rows[start : start + batch_size], dtype=np.float32)).to(device)
+        batch = torch_tensor_from_numpy_compat(
+            np.asarray(rows[start : start + batch_size], dtype=np.float32),
+            dtype=torch.float32,
+            device=device,
+        )
         result = identity_only_feature_forward(model, batch, "z_id")
         if result is None:
             raise RuntimeError("ADV3B02 identity-only feature path unavailable")
-        output.append(result[0].detach().float().cpu().numpy())
+        output.append(numpy_from_torch_compat(result[0].float(), dtype=np.dtype(np.float32)))
     return np.concatenate(output).astype(np.float32)
 
 
@@ -303,11 +309,15 @@ def enroll(args: argparse.Namespace) -> dict[str, Any]:
     with head_path.open("xb") as handle:
         np.savez(handle, **head)
     with np.load(head_path, allow_pickle=False) as archive:
-        if [f"{name}.npy" for name in archive.files] != head_npz_members():
+        if list(archive.files) != head_npz_members():
             raise ValueError("JG020 persisted head member order drift")
     head_tensor_bytes = int(sum(value.nbytes for name, value in head.items() if "prototypes__" in name))
 
-    probe = torch.from_numpy(np.asarray(adapt_rows[: min(8, len(adapt_rows))], dtype=np.float32)).to(device)
+    probe = torch_tensor_from_numpy_compat(
+        np.asarray(adapt_rows[: min(8, len(adapt_rows))], dtype=np.float32),
+        dtype=torch.float32,
+        device=device,
+    )
     example = probe[: min(2, len(probe))]
     runtime_specs = {
         "direct_runtime.ts": ADV3B02IdentityRuntime(direct_model).to(device).eval(),

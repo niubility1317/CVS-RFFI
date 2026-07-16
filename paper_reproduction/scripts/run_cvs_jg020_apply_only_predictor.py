@@ -37,9 +37,11 @@ from paper_reproduction.cvs_aligned.jg020_stage2c import (  # noqa: E402
     apply_head_streams,
     descriptor_by_role,
     load_npz_member,
+    numpy_from_torch_compat,
     open_regular_member_same_fd,
     preflight_package,
     sha256_file,
+    torch_tensor_from_numpy_compat,
     validate_locked_candidate,
 )
 
@@ -109,15 +111,19 @@ def _forward(runtime: torch.jit.ScriptModule, rows: np.ndarray, *, device: torch
     features: list[np.ndarray] = []
     logits: list[np.ndarray] = []
     for start in range(0, len(rows), int(batch_size)):
-        batch = torch.from_numpy(np.asarray(rows[start : start + int(batch_size)], dtype=np.float32)).to(device)
+        batch = torch_tensor_from_numpy_compat(
+            np.asarray(rows[start : start + int(batch_size)], dtype=np.float32),
+            dtype=torch.float32,
+            device=device,
+        )
         result = runtime(batch)
         if not isinstance(result, (tuple, list)) or len(result) != 2:
             raise ValueError("JG020 runtime output must be (features, logits)")
         feature, logit = result
         if not torch.is_tensor(feature) or not torch.is_tensor(logit):
             raise ValueError("JG020 runtime returned non-tensor output")
-        features.append(feature.detach().float().cpu().numpy())
-        logits.append(logit.detach().float().cpu().numpy())
+        features.append(numpy_from_torch_compat(feature.float(), dtype=np.dtype(np.float32)))
+        logits.append(numpy_from_torch_compat(logit.float(), dtype=np.dtype(np.float32)))
     return np.concatenate(features).astype(np.float32), np.concatenate(logits).astype(np.float32)
 
 

@@ -2,7 +2,7 @@
 
 日期：2026-07-16
 
-状态：本地实现与定向测试通过；N607直连preflight和活动训练inventory通过；尚未同步或启动
+状态：retry3在训练前暴露N607 Torch/NumPy ABI桥问题；本地兼容修复与12/12定向测试通过，等待retry4同步启动
 
 依据：`E:\type10-7\AGENTS.md`、`E:\type10-7\项目.md`、用户锁定的`JG_R8_LR020`候选
 
@@ -22,7 +22,7 @@
 | JG-12 | `项目.md` 10.3.1 | 同sample/同view保存strict direct ADV3B02 old-only对照 | direct runtime、direct stream | implemented/pending-run | checkpoint类别映射顺序SHA已锁定 | direct无新类头，不计算seen-new |
 | JG-13 | `项目.md` 10.3.1 | development query只评分，不参与candidate、epoch、阈值或超参数选择 | candidate locks、apply package | implemented/local-verified | predictor不fit head、无optimizer/query truth路径测试通过 | 本轮仅运行锁定JG_R8_LR020，不做query sweep |
 | JG-14 | `AGENTS.md` Experiment Reporting | N607前本地报告、环境/命令/路径/GPU/输出、风险、成功条件齐备；完成后回收完整日志 | `automation_reports/CV-SincNet/qknnv42_jg_r8_lr020_newclass_dev_20260716/report.md` | implemented/preflight-verified | 本文件与预运行报告已创建；直连preflight与training inventory均PASS | N607尚未同步或运行 |
-| JG-15 | `AGENTS.md` Version Management | 本地先改、`ssr-gpu`验证、Git diff/status、提交，再SCP并校验哈希 | report、Git commit、sync manifest | local-verified/commit-pending | py_compile、9/9 pytest、3 lock/cache spec审计、launcher dry-run、diff-check均通过 | 保留用户已有两处未提交修改；尚未SCP |
+| JG-15 | `AGENTS.md` Version Management | 本地先改、`ssr-gpu`验证、Git diff/status、提交，再SCP并校验哈希 | report、Git commit、sync manifest | local-verified/commit-pending | 最新py_compile与12/12 pytest通过；待提交前执行diff-check | 保留用户已有两处未提交修改；retry4尚未SCP |
 
 ## 遗漏风险
 

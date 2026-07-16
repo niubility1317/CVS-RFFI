@@ -5,7 +5,7 @@
 - 实验ID：`qknnv42_jg_r8_lr020_newclass_dev_20260716`
 - 日期：2026-07-16
 - 操作者：Codex主agent`root`＋子agent`jg020_registration_exp`
-- 当前状态：`FOURTH_STALE_NAME_FAILURE_REPAIRED_AWAITING_RETRY3`；Phase1 cache、new5离线bundle与enrollment package完成，适配训练尚未开始
+- 当前状态：`FIFTH_NUMPY_TORCH_ABI_FAILURE_REPAIRED_AWAITING_RETRY4`；Phase1 cache、new5离线bundle与enrollment package完成，适配训练尚未开始
 - 目标：验证锁定的`JG_R8_LR020`轻量旧类适配器在合法Stage2-C新类注册后的同row旧类保持、新类准确率与资源表现。
 - 声明边界：这是单receiver、单development seed的开发单元；即使指标达到门槛，也不能替代独立确认矩阵或宣称总目标完成。
 
@@ -119,7 +119,7 @@ isolated scorer
 | 本地Git分支/起点 | `codex/cvs-rffi-release-20260626`；本实现提交前HEAD含主线程parity commit`89fc2ff` |
 | 本地现有未提交修改 | 用户已有`mitigating_da_rootcause_20260710_104628/{progress.md,task_plan.md}`，不得触碰 |
 | 新增实现 | `jg020_stage2c.py`、support-only enrollment、apply-only predictor、split package builder、顺序launcher、3个candidate lock、registered cache spec、3个边界descriptor、9项测试、traceability/report |
-| 本地验证 | `ssr-gpu`中py_compile PASS；`pytest tests/test_jg020_stage2c_isolation.py -q`为9/9 PASS，主线程独立复验同为9/9；3个lock、cache spec校验PASS；launcher dry-run展开19阶段条目；`git diff --check` PASS |
+| 本地验证 | `ssr-gpu`中py_compile PASS；最新`pytest tests/test_jg020_stage2c_isolation.py -q`为12/12 PASS；3个lock、cache spec校验PASS；launcher dry-run展开19阶段条目；待提交前再次执行`git diff --check` |
 | 远端工作目录 | `/home/szu2070436088/2510044040/CV-SincNet` |
 | N607只读preflight | 2026-07-16 10:50:07 CST直连PASS；`dell-DSS8440`；项目根可见；8×RTX 3090均为10MiB/24576MiB、0%利用率 |
 | N607训练inventory | 2026-07-16 10:53:48+0800；`active_training_processes=[]`、`gpu_compute=[]`、`unknown_training_active=false`、route=`direct` |
@@ -129,6 +129,15 @@ isolated scorer
 | 首次外层日志 | `/home/szu2070436088/2510044040/CV-SincNet/logs/qknnv42_jg_r8_lr020_newclass_dev_20260716_launcher.out` |
 | 首次运行状态 | launcher已退出；Phase1 cache成功，Stage2-C未开始；没有性能结果，不能报告candidate指标 |
 | 预期输出 | sealed manifests、adapter/prototype、loss trace、immutable predictions、scorer tables、resource audit、完整日志 |
+
+retry4同步映射（本地→N607同相对路径）：
+
+| 文件 | 本地SHA256 | 目的 |
+|---|---|---|
+| `paper_reproduction/cvs_aligned/jg020_stage2c.py` | `26559adcb586fb7798babb90c408bc2b04a5efc55aa70a572d070d8c000eb12f` | Torch/NumPy显式兼容复制 |
+| `paper_reproduction/scripts/enroll_cvs_jg020_support_only.py` | `920a5999ce5fe808eedcaa9c5061d8a8616e6a3778e2a5bb9da726e81f3b9a63` | support-only训练与runtime导出的ABI兼容路径 |
+| `paper_reproduction/scripts/launch_cvs_jg020_stage2c_dev_20260716.py` | `d5fb5adbb8253dada3514710aaa815fea575185139cc0feb41d0186ca06a6b6a` | 允许不可覆盖的`retry4`运行根 |
+| `paper_reproduction/scripts/run_cvs_jg020_apply_only_predictor.py` | `c9b83306e399aae5b707f2904867cfa73f27042a667e24688edc8f4fdcb5091a` | prediction端feature/logit ABI兼容路径 |
 
 ## 首次启动完整日志诊断与恢复设计
 
@@ -154,6 +163,10 @@ retry1使用PID=`2256635`，成功通过new5 source bundle与enrollment package�
 修复为显式把`code/scripts`加入CLI导入闭包，并按该目录的既有top-level模块名加载；新增真实子进程`--help`导入闭包测试，回归为11/11 PASS。retry1中间产物继续保留；下一次从空`runs/qknnv42_jg_r8_lr020_newclass_dev_20260716_retry2`开始并只读复用原密封cache。
 
 retry2使用PID=`2259168`，再次通过source/enrollment隔离preflight，随后在模型构建前因严格时序重构遗留的旧变量名`support_rows`触发`NameError`。完整21行外层日志与8行enrollment日志已保存到`remote_logs/retry2_name_failure/`；仍无optimizer step。修复把3个模型的`input_len`统一绑定已构造的old-only`adapt_rows`，并增加静态回归断言：enrollment脚本中不得再出现`support_rows`，且3处模型输入长度均来自`adapt_rows`。本地11/11 PASS，下一根为不可覆盖的`..._retry3`。
+
+retry3再次通过new5 source bundle与enrollment package双重preflight，远端receipt继续确认`query_member_reachable=false`、`truth_member_reachable=false`、`clean_member_reachable=false`；随后在首个cached JG tensor构造处触发`TypeError: expected np.ndarray (got numpy.ndarray)`。完整外层日志与enrollment日志已保存到`remote_logs/retry3_numpy_abi_failure/`。失败发生在optimizer建立和首个optimizer step之前，因此仍没有训练loss或性能结果。根因是N607当前`CVS-RFFI`环境的Torch 2.1与NumPy 2 C-ABI桥不兼容；这不是数据、协议、候选或GPU失败。
+
+修复把JG020小型support、feature与logit在Torch/NumPy之间的边界改为经Python值的显式复制，避免`torch.from_numpy`和`.cpu().numpy()`依赖NumPy C-ABI；同时保留dtype、device和数值等价测试。新增回归断言确保JG020执行闭包不再出现这两类ABI桥调用，`ssr-gpu`中py_compile与12/12定向测试通过。前三个retry根继续只读保留；下一根锁定为不可覆盖的`runs/qknnv42_jg_r8_lr020_newclass_dev_20260716_retry4`，仍只读复用原密封Phase1 cache。
 
 ## 启动后对话回顾与路线教训
 
