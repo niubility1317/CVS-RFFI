@@ -162,6 +162,8 @@ def _one_job_fixture(tmp_path: Path) -> tuple[Path, dict]:
     for state, prediction_path in (("before", before), ("after", after)):
         apply_root_sha = ("c" if state == "before" else "d") * 64
         apply_seal_sha = ("e" if state == "before" else "f") * 64
+        enrollment_root_sha = ("1" if state == "before" else "2") * 64
+        enrollment_seal_sha = ("3" if state == "before" else "4") * 64
         receipt_path = root / "diag" / state / "execution_receipt.json"
         opened_members = [
             {
@@ -179,12 +181,55 @@ def _one_job_fixture(tmp_path: Path) -> tuple[Path, dict]:
             }
             for scenario in FORMAL_LEO_WEAK_SCENARIOS
         ]
+        support_members = [
+            {
+                "relative_path": f"support_{scenario}.npz",
+                "sha256": ("5" if state == "before" else "6") * 64,
+                "size_bytes": 1234,
+                "status": "PASS",
+            }
+            for scenario in FORMAL_LEO_WEAK_SCENARIOS
+        ]
         _json_readonly(
             receipt_path,
             {
                 "schema": "cvs.phase2.diag_cosine_exploration_receipt.v1",
+                "receiver": "20-1",
+                "seed": 713102,
+                "k_shot": 10,
+                "candidate": {"name": summary.CANDIDATE},
+                "row_handle": "row-handle",
+                "row_manifest_sha256": summary._canonical_sha256(row_manifest),
+                "registration_state": state,
+                "registered_class_count": 6 if state == "before" else 11,
+                "phase2_sample_view_policy": "leo_weak_only_no_clean_access",
+                "clean_sample_access": False,
+                "clean_derived_signal_access": False,
+                "phase2_clean_dataset_reachable": False,
+                "phase2_clean_cache_reachable": False,
+                "phase2_clean_control_flow_reachable": False,
+                "phase2_source_sample_access": False,
+                "phase2_source_cache_access": False,
+                "phase2_source_label_access": False,
+                "phase2_source_derived_signal_access": False,
+                "phase2_source_replay": False,
+                "phase2_external_source_adapter_access": False,
+                "phase2_pretrained_artifact_policy": (
+                    "sealed_phase1_checkpoint_only"
+                ),
+                "phase2_query_decision_policy": (
+                    "per_sample_all_registered_classes"
+                ),
+                "phase2_query_role_oracle_access": False,
+                "phase2_query_true_batch_class_count_access": False,
+                "phase2_query_class_quota_access": False,
+                "phase2_query_batch_global_assignment": False,
+                "query_truth_present_in_predictor": False,
                 "apply_package_root_sha256": apply_root_sha,
                 "apply_package_seal_sha256": apply_seal_sha,
+                "enrollment_package_root_sha256": enrollment_root_sha,
+                "enrollment_package_seal_sha256": enrollment_seal_sha,
+                "support_scenarios": list(FORMAL_LEO_WEAK_SCENARIOS),
                 "preopen_audit": {
                     "apply": {
                         "schema": "cvs.phase2.somph_preopen_audit.v1",
@@ -199,6 +244,20 @@ def _one_job_fixture(tmp_path: Path) -> tuple[Path, dict]:
                             FORMAL_LEO_WEAK_SCENARIOS
                         ),
                         "opened_members": opened_members,
+                    },
+                    "enrollment": {
+                        "schema": "cvs.phase2.somph_preopen_audit.v1",
+                        "profile": "enrollment_only",
+                        "status": "STRUCTURAL_SELF_CONSISTENCY_PASS",
+                        "hash_and_member_audit_same_file_descriptor": True,
+                        "iq_payload_materialized": True,
+                        "package_root_sha256": enrollment_root_sha,
+                        "artifact_member_allowlist_sha256": enrollment_root_sha,
+                        "manifest_sha256": "8" * 64,
+                        "materialized_scenarios": list(
+                            FORMAL_LEO_WEAK_SCENARIOS
+                        ),
+                        "opened_members": support_members,
                     }
                 },
             },
@@ -237,6 +296,7 @@ def _one_job_fixture(tmp_path: Path) -> tuple[Path, dict]:
             "k_shot": 10,
             "new_class_count": 5,
             "candidate": summary.CANDIDATE,
+            "row_handle": "row-handle",
             "row_manifest_sha256": summary._canonical_sha256(row_manifest),
             "registration_pair_final_sha256": summary._sha256(pair_path),
             "score_artifact_sha256": scored["score_artifact_sha256"],
@@ -293,8 +353,11 @@ def test_post_channel_sha_helpers_verify_rank0_and_query_physical_mapping(
             support_post_channel_iq_sha256=support_hashes,
             support_satellite_seeds=np.asarray([1, 2, 3, 4], dtype=np.int64),
         )
-    _readonly(support_path)
-    rank0 = summary._support_rank0(support_path, expected_class_count=2)
+    rank0 = summary._support_rank0(
+        support_path,
+        expected_class_count=2,
+        expected_sha256=summary._sha256(support_path),
+    )
     assert [(row[0], row[1]) for row in rank0] == [(0, 0), (1, 0)]
 
     query_path = tmp_path / "query.npz"
@@ -436,13 +499,20 @@ def test_full_summary_writes_required_outputs_and_keeps_direct_missing(
                 }
                 for state in ("before", "after")
             },
+            "support_sha_by_state": {
+                state: {
+                    scenario: "c" * 64
+                    for scenario in FORMAL_LEO_WEAK_SCENARIOS
+                }
+                for state in ("before", "after")
+            },
         }
 
     monkeypatch.setattr(summary, "_audit_job", fake_audit)
     monkeypatch.setattr(
         summary,
         "_support_rank0",
-        lambda _path, *, expected_class_count: [
+        lambda _path, *, expected_class_count, expected_sha256: [
             (index, 0, "a" * 64, 1)
             for index in range(expected_class_count)
         ],
@@ -515,9 +585,12 @@ def test_support_rank0_rejects_missing_class_and_query_rejects_truth_gap(
             support_post_channel_iq_sha256=hashes,
             support_satellite_seeds=np.asarray([1, 2], dtype=np.int64),
         )
-    _readonly(support_path)
     with pytest.raises(summary.StabilitySummaryError, match="one rank0 per class"):
-        summary._support_rank0(support_path, expected_class_count=2)
+        summary._support_rank0(
+            support_path,
+            expected_class_count=2,
+            expected_sha256=summary._sha256(support_path),
+        )
 
     query_path = tmp_path / "query_gap.npz"
     query_iq = np.arange(2 * 2 * 8, dtype=np.float32).reshape(2, 2, 8)
@@ -582,14 +655,108 @@ def test_receipt_bound_writable_query_accepts_exact_sha_and_rejects_wrong_sha(
     path = tmp_path / "query.npz"
     expected = _sealed_query_package(path, after=True)
     assert path.stat().st_mode & stat.S_IWRITE
-    archive = summary._read_receipt_bound_npz(path, expected_sha256=expected)
+    archive = summary._read_receipt_bound_npz(
+        path,
+        expected_sha256=expected,
+        name="receipt-bound query",
+    )
     assert archive["query_tokens"].astype(str).tolist() == [
         "old-a",
         "old-b",
         "new-c",
     ]
     with pytest.raises(summary.StabilitySummaryError, match="query SHA mismatch"):
-        summary._read_receipt_bound_npz(path, expected_sha256="0" * 64)
+        summary._read_receipt_bound_npz(
+            path,
+            expected_sha256="0" * 64,
+            name="receipt-bound query",
+        )
+
+
+def test_receipt_bound_writable_support_accepts_exact_sha_and_rejects_wrong_sha(
+    tmp_path: Path,
+) -> None:
+    path = tmp_path / "support.npz"
+    iq = np.arange(2 * 2 * 8, dtype=np.float32).reshape(2, 2, 8)
+    hashes = np.asarray([post_channel_iq_sha256(row) for row in iq])
+    with path.open("xb") as handle:
+        np.savez(
+            handle,
+            support_leo_weak_iq=iq,
+            support_class_indices=np.asarray([0, 1], dtype=np.int64),
+            support_rank_within_class=np.asarray([0, 0], dtype=np.int64),
+            support_tokens=np.asarray(["s0", "s1"]),
+            support_post_channel_iq_sha256=hashes,
+            support_satellite_seeds=np.asarray([1, 2], dtype=np.int64),
+        )
+    expected = summary._sha256(path)
+    assert path.stat().st_mode & stat.S_IWRITE
+    rank0 = summary._support_rank0(
+        path,
+        expected_class_count=2,
+        expected_sha256=expected,
+    )
+    assert [(row[0], row[1]) for row in rank0] == [(0, 0), (1, 0)]
+    with pytest.raises(
+        summary.StabilitySummaryError,
+        match="receipt-bound support SHA mismatch",
+    ):
+        summary._support_rank0(
+            path,
+            expected_class_count=2,
+            expected_sha256="0" * 64,
+        )
+
+
+def test_support_binding_requires_unique_enrollment_opened_member(
+    tmp_path: Path,
+) -> None:
+    matrix_root, job = _one_job_fixture(tmp_path)
+    root = matrix_root / "jobs" / job["job_id"]
+    pipeline = json.loads(
+        (root / "pipeline_receipt.json").read_text(encoding="utf-8")
+    )
+    digest = summary._support_member_sha_from_receipt(
+        root=root,
+        state="after",
+        scenario="leo_clear_weak",
+        pipeline=pipeline,
+    )
+    assert digest == "6" * 64
+
+    receipt_path = root / "diag" / "after" / "execution_receipt.json"
+    receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    receipt["preopen_audit"]["enrollment"]["opened_members"].append(
+        dict(receipt["preopen_audit"]["enrollment"]["opened_members"][0])
+    )
+    os.chmod(receipt_path, stat.S_IWRITE | stat.S_IREAD)
+    receipt_path.unlink()
+    _json_readonly(receipt_path, receipt)
+
+    commit_path = root / "diag" / "after" / "COMMIT.json"
+    commit = json.loads(commit_path.read_text(encoding="utf-8"))
+    commit["execution_receipt_sha256"] = summary._sha256(receipt_path)
+    commit["members"][0]["sha256"] = summary._sha256(receipt_path)
+    commit["members"][0]["size_bytes"] = receipt_path.stat().st_size
+    os.chmod(commit_path, stat.S_IWRITE | stat.S_IREAD)
+    commit_path.unlink()
+    _json_readonly(commit_path, commit)
+    pipeline["states"]["after"]["execution_receipt_sha256"] = summary._sha256(
+        receipt_path
+    )
+    pipeline["states"]["after"]["diag_commit_sha256"] = summary._sha256(
+        commit_path
+    )
+    with pytest.raises(
+        summary.StabilitySummaryError,
+        match="immutable support opened-member receipt drift",
+    ):
+        summary._support_member_sha_from_receipt(
+            root=root,
+            state="after",
+            scenario="leo_clear_weak",
+            pipeline=pipeline,
+        )
 
 
 def test_query_binding_requires_pipeline_diag_commit_sha(
@@ -724,13 +891,20 @@ def test_performance_failure_is_not_reported_as_pass(
                 }
                 for state in ("before", "after")
             },
+            "support_sha_by_state": {
+                state: {
+                    scenario: "c" * 64
+                    for scenario in FORMAL_LEO_WEAK_SCENARIOS
+                }
+                for state in ("before", "after")
+            },
         }
 
     monkeypatch.setattr(summary, "_audit_job", fake_audit)
     monkeypatch.setattr(
         summary,
         "_support_rank0",
-        lambda _path, *, expected_class_count: [
+        lambda _path, *, expected_class_count, expected_sha256: [
             (index, 0, "a" * 64, 1)
             for index in range(expected_class_count)
         ],
