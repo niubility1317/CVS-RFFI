@@ -911,6 +911,56 @@ def _adapt(
     }
 
 
+def _build_predictor_request(
+    config: dict[str, Any],
+    *,
+    preflight_manifest: dict[str, Any],
+    members: dict[str, dict[str, Any]],
+    evidence: dict[str, Any],
+) -> dict[str, Any]:
+    def request_descriptor(item: dict[str, Any]) -> dict[str, Any]:
+        return {
+            "relative_path": item["relative_path"], "sha256": item["sha256"],
+            "size_bytes": item["size_bytes"], "artifact_role": item["artifact_role"],
+            "schema": item["schema"],
+        }
+    return {
+        "schema_version": "cvs.phase2.predict_request.v2",
+        "request_id": str(config["experiment_id"]),
+        "row_id": str(config["experiment_id"]),
+        "stage": "stage2b",
+        "receiver": str(config["target_receiver_labels"][0]),
+        "scenarios": list(SCENARIOS),
+        "k_shot": int(config["k_shot"]),
+        "satellite_seed": int(config["split_seed"]),
+        "candidate_lock_sha256": preflight_manifest["candidate_lock_sha256"],
+        "package_root_sha256": preflight_manifest["package_root_sha256"],
+        "runtime_code_sha256": evidence["runtime_code_sha256"],
+        "registered_class_count": preflight_manifest["registered_class_count"],
+        "registered_classes": preflight_manifest["registered_classes"],
+        "support_artifacts": [
+            request_descriptor(members[f"support:{scenario}"])
+            for scenario in SCENARIOS
+        ],
+        "query_artifacts": [
+            request_descriptor(members[f"query:{scenario}"])
+            for scenario in SCENARIOS
+        ],
+        "checkpoint_artifact": request_descriptor(members["checkpoint"]),
+        "adapter_artifact": request_descriptor(members["adapter"]),
+        "head_artifact": request_descriptor(members["head"]),
+        "tta_policy": {"mode": "single_view", "views": 1},
+        "tta_policy_sha256": members["tta_policy"]["sha256"],
+        "output_contract": {
+            "schema": "cvs.phase2.prediction.v2",
+            "relative_path": "prediction_artifact.npz",
+            "sealed_immutable_required": True,
+        },
+        "phase2_runtime_isolation_evidence": evidence,
+        **{key: config[key] for key in PHASE2_FULL_CONTRACT},
+    }
+
+
 def run(config: dict[str, Any], *, run_dir: Path, device: torch.device) -> dict[str, Any]:
     _validate_config(config)
     seed = int(config["seed"])
@@ -930,43 +980,15 @@ def run(config: dict[str, Any], *, run_dir: Path, device: torch.device) -> dict[
         expected_seal_sha256=predictor_seal_sha,
     )
     members = {item["artifact_role"]: item for item in preflight_manifest["members"]}
-    def request_descriptor(item: dict[str, Any]) -> dict[str, Any]:
-        return {
-            "relative_path": item["relative_path"], "sha256": item["sha256"],
-            "size_bytes": item["size_bytes"], "artifact_role": item["artifact_role"],
-            "schema": item["schema"],
-        }
     evidence = config["_verified_phase2_runtime_isolation_evidence"]
-    for scenario in SCENARIOS:
-        validate_predictor_request({
-            "schema_version": "cvs.phase2.predict_request.v2",
-            "request_id": f"{config['experiment_id']}:{scenario}",
-            "row_id": str(config["experiment_id"]),
-            "stage": "stage2b",
-            "receiver": str(config["target_receiver_labels"][0]),
-            "scenario": scenario,
-            "k_shot": int(config["k_shot"]),
-            "satellite_seed": int(config["split_seed"]),
-            "candidate_lock_sha256": preflight_manifest["candidate_lock_sha256"],
-            "package_root_sha256": preflight_manifest["package_root_sha256"],
-            "runtime_code_sha256": evidence["runtime_code_sha256"],
-            "registered_class_count": preflight_manifest["registered_class_count"],
-            "registered_classes": preflight_manifest["registered_classes"],
-            "support_artifact": request_descriptor(members[f"support:{scenario}"]),
-            "query_artifact": request_descriptor(members[f"query:{scenario}"]),
-            "checkpoint_artifact": request_descriptor(members["checkpoint"]),
-            "adapter_artifact": request_descriptor(members["adapter"]),
-            "head_artifact": request_descriptor(members["head"]),
-            "tta_policy": {"mode": "single_view", "views": 1},
-            "tta_policy_sha256": members["tta_policy"]["sha256"],
-            "output_contract": {
-                "schema": "cvs.phase2.prediction.v2",
-                "relative_path": "prediction_artifact.npz",
-                "sealed_immutable_required": True,
-            },
-            "phase2_runtime_isolation_evidence": evidence,
-            **{key: config[key] for key in PHASE2_FULL_CONTRACT},
-        })
+    validate_predictor_request(
+        _build_predictor_request(
+            config,
+            preflight_manifest=preflight_manifest,
+            members=members,
+            evidence=evidence,
+        )
+    )
     support_arrays, query_arrays, predictor_bundle_manifest, predictor_bundle_audit = (
         load_verified_stage2_predictor_bundle(
             predictor_bundle_path,

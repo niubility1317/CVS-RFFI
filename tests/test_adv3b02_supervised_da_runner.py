@@ -5,12 +5,14 @@ import json
 from pathlib import Path
 
 from paper_reproduction.cvs_aligned.adv3b02_supervised_da_runner import (
+    _build_predictor_request,
     _nearest_prototype,
     _select_registered_support,
     _tensor_from_array,
     _target_predictor_bundle_path,
     _validate_config,
 )
+from cvsrffi.phase2_runtime_contract import validate_predictor_request
 
 import numpy as np
 
@@ -118,3 +120,56 @@ def test_registered_support_selector_uses_first_k_per_class(tmp_path: Path) -> N
     assert y5.tolist() == [0] * 5 + [1] * 5
     assert y1.tolist() == [0, 1]
     assert ids1 == [f"sid_{0:032x}", f"sid_{count_per_class:032x}"]
+
+
+def test_adv3b02_predictor_request_uses_formal_scenario_lists(tmp_path: Path) -> None:
+    config = _config(tmp_path)
+    config["experiment_id"] = "jg_r8_lr020_stage2b_rx20-1_k10_seed713101"
+    _validate_config(config)
+    evidence = config["_verified_phase2_runtime_isolation_evidence"]
+    scenarios = config["target_channel_scenarios"]
+
+    def descriptor(role: str, index: int) -> dict:
+        return {
+            "relative_path": f"artifact_{index}.bin",
+            "sha256": f"{index + 1:064x}",
+            "size_bytes": index + 1,
+            "artifact_role": role,
+            "schema": "test.artifact.v1",
+        }
+
+    members = {
+        "checkpoint": descriptor("checkpoint", 0),
+        "adapter": descriptor("adapter", 1),
+        "head": descriptor("head", 2),
+        "tta_policy": descriptor("tta_policy", 3),
+    }
+    for index, scenario in enumerate(scenarios, start=4):
+        members[f"support:{scenario}"] = descriptor(f"support:{scenario}", index)
+        members[f"query:{scenario}"] = descriptor(f"query:{scenario}", index + 3)
+    manifest = {
+        "candidate_lock_sha256": "a" * 64,
+        "package_root_sha256": evidence["package_root_sha256"],
+        "registered_class_count": 2,
+        "registered_classes": [
+            {"class_index": 0, "class_handle": "cls_" + "0" * 32},
+            {"class_index": 1, "class_handle": "cls_" + "1" * 32},
+        ],
+    }
+    request = _build_predictor_request(
+        config,
+        preflight_manifest=manifest,
+        members=members,
+        evidence=evidence,
+    )
+    validate_predictor_request(request)
+    assert request["scenarios"] == scenarios
+    assert [item["artifact_role"] for item in request["support_artifacts"]] == [
+        f"support:{scenario}" for scenario in scenarios
+    ]
+    assert [item["artifact_role"] for item in request["query_artifacts"]] == [
+        f"query:{scenario}" for scenario in scenarios
+    ]
+    assert "scenario" not in request
+    assert "support_artifact" not in request
+    assert "query_artifact" not in request
