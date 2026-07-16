@@ -6,6 +6,7 @@ from pathlib import Path
 from types import SimpleNamespace
 
 import numpy as np
+import pytest
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -171,3 +172,37 @@ def test_stage2b_has_old_support_and_role_blind_new_reference_query(
         (args.scorer_out_root / "truth_sidecar.json").read_text(encoding="utf-8")
     )
     assert sum(row["true_class_handle"] is None for row in truth["rows"]) == 1
+
+
+def test_truth_leak_scan_is_structural_for_npz_numeric_payloads(tmp_path: Path) -> None:
+    root = tmp_path / "predictor"
+    root.mkdir()
+    with (root / "query_leo_clear_weak.npz").open("xb") as handle:
+        np.savez(
+            handle,
+            query_leo_weak_iq=np.frombuffer(b"prefix-old-a-suffix", dtype=np.uint8),
+            query_tokens=np.asarray(["qid_" + "1" * 64]),
+        )
+
+    builder._reject_predictor_truth_leaks(root, ["old-a"])
+
+
+@pytest.mark.parametrize("surface", ["member_name", "string_value", "json_file"])
+def test_truth_leak_scan_rejects_text_bearing_surfaces(
+    tmp_path: Path, surface: str
+) -> None:
+    root = tmp_path / "predictor"
+    root.mkdir()
+    if surface == "member_name":
+        with (root / "query.npz").open("xb") as handle:
+            np.savez(handle, **{"old-a": np.asarray([1], dtype=np.int64)})
+    elif surface == "string_value":
+        with (root / "query.npz").open("xb") as handle:
+            np.savez(handle, query_tokens=np.asarray(["qid_old-a"]))
+    else:
+        (root / "tta_policy.json").write_text(
+            json.dumps({"forbidden": "old-a"}), encoding="utf-8"
+        )
+
+    with pytest.raises(ValueError, match="forbidden truth/role token"):
+        builder._reject_predictor_truth_leaks(root, ["old-a"])

@@ -266,6 +266,35 @@ def _reject_predictor_truth_leaks(root: Path, forbidden_values: Iterable[str]) -
             # A byte substring match is not evidence of query-truth reachability; the
             # generated support/query members are audited structurally and scanned below.
             continue
+        if path.suffix.lower() == ".npz":
+            # NPZ payloads are compressed binary containers. Scanning their raw bytes
+            # creates false positives when arbitrary compressed numeric bytes happen to
+            # equal a TX/role token. Member names and textual array values are the only
+            # text-bearing surfaces; numeric arrays are already constrained by the
+            # package NPZ member/schema/dtype audit.
+            with np.load(path, allow_pickle=False) as archive:
+                for member_name in archive.files:
+                    member_name_bytes = member_name.encode("utf-8")
+                    if any(needle in member_name_bytes for needle in needles):
+                        raise ValueError(
+                            "predictor package contains forbidden truth/role token "
+                            f"in {path.name}:{member_name}"
+                        )
+                    array = np.asarray(archive[member_name])
+                    if array.dtype.kind not in {"S", "U"}:
+                        continue
+                    for value in array.reshape(-1).tolist():
+                        payload = (
+                            bytes(value)
+                            if isinstance(value, (bytes, bytearray))
+                            else str(value).encode("utf-8")
+                        )
+                        if any(needle in payload for needle in needles):
+                            raise ValueError(
+                                "predictor package contains forbidden truth/role token "
+                                f"in {path.name}:{member_name}"
+                            )
+            continue
         payload = path.read_bytes()
         for needle in needles:
             if needle in payload:
