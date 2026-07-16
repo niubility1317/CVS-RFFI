@@ -38,7 +38,7 @@ from cvsrffi.stage2_diag_cosine_scorer import (  # noqa: E402
 from cvsrffi.stage2_predictor_bundle import sha256_file  # noqa: E402
 
 
-PIPELINE_SCHEMA = "cvs.phase2.somph_diag_row_pipeline.v1"
+PIPELINE_SCHEMA = "cvs.phase2.somph_diag_row_pipeline.v2"
 FORMAL_QUERY_PER_TX = 20
 SUPPORT_BATCH_SIZE = 64
 
@@ -97,6 +97,84 @@ def _require_prediction(path: Path, *, state: str) -> None:
         raise SomphDiagRowPipelineError(
             f"{state} diag-cosine prediction artifact is not immutable"
         )
+
+
+def _read_json_snapshot(
+    path: Path, *, name: str
+) -> tuple[dict[str, Any], str, int]:
+    """Read, parse, and hash one immutable JSON artifact from one descriptor."""
+
+    source = path.absolute()
+    before = source.lstat()
+    if stat.S_ISLNK(before.st_mode) or not stat.S_ISREG(before.st_mode):
+        raise SomphDiagRowPipelineError(f"{name} must be a regular file")
+    if before.st_mode & (stat.S_IWUSR | stat.S_IWGRP | stat.S_IWOTH):
+        raise SomphDiagRowPipelineError(f"{name} must be immutable")
+    flags = os.O_RDONLY | getattr(os, "O_BINARY", 0) | getattr(os, "O_NOFOLLOW", 0)
+    descriptor = os.open(source, flags)
+    try:
+        opened = os.fstat(descriptor)
+        if (before.st_dev, before.st_ino, before.st_size) != (
+            opened.st_dev,
+            opened.st_ino,
+            opened.st_size,
+        ):
+            raise SomphDiagRowPipelineError(f"{name} identity changed before open")
+        raw = b""
+        while len(raw) < opened.st_size:
+            chunk = os.read(descriptor, opened.st_size - len(raw))
+            if not chunk:
+                raise SomphDiagRowPipelineError(f"{name} was truncated")
+            raw += chunk
+    finally:
+        os.close(descriptor)
+    try:
+        payload = json.loads(raw.decode("utf-8-sig"))
+    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise SomphDiagRowPipelineError(f"{name} is not valid JSON") from exc
+    if not isinstance(payload, dict):
+        raise SomphDiagRowPipelineError(f"{name} root must be an object")
+    return payload, hashlib.sha256(raw).hexdigest(), len(raw)
+
+
+def _bind_diag_commit(
+    *,
+    state: str,
+    state_diag_root: Path,
+    prediction_sha256: str,
+) -> dict[str, str]:
+    receipt_path = state_diag_root / "execution_receipt.json"
+    commit_path = state_diag_root / "COMMIT.json"
+    receipt, receipt_sha256, receipt_size = _read_json_snapshot(
+        receipt_path, name=f"{state} diag execution receipt"
+    )
+    commit, commit_sha256, _commit_size = _read_json_snapshot(
+        commit_path, name=f"{state} diag COMMIT"
+    )
+    if (
+        commit.get("schema") != "cvs.phase2.diag_cosine_exploration_commit.v1"
+        or commit.get("execution_receipt_sha256") != receipt_sha256
+        or commit.get("prediction_artifact_sha256") != prediction_sha256
+        or receipt.get("schema")
+        != "cvs.phase2.diag_cosine_exploration_receipt.v1"
+        or receipt.get("artifacts", {}).get("prediction_artifact.npz")
+        != prediction_sha256
+        or not isinstance(commit.get("members"), list)
+        or not any(
+            isinstance(item, dict)
+            and item.get("relative_path") == "execution_receipt.json"
+            and item.get("sha256") == receipt_sha256
+            and int(item.get("size_bytes", -1)) == receipt_size
+            for item in commit["members"]
+        )
+    ):
+        raise SomphDiagRowPipelineError(
+            f"{state} diag COMMIT/execution receipt binding drift"
+        )
+    return {
+        "diag_commit_sha256": commit_sha256,
+        "execution_receipt_sha256": receipt_sha256,
+    }
 
 
 def run_pipeline(
@@ -220,6 +298,7 @@ def run_pipeline(
     )
 
     diag_results: dict[str, dict[str, Any]] = {}
+    diag_bindings: dict[str, dict[str, str]] = {}
     prediction_paths: dict[str, Path] = {}
     for state in ("before", "after"):
         state_build = build["states"][state]
@@ -246,6 +325,13 @@ def run_pipeline(
             candidate=candidate,
         )
         prediction_paths[state] = state_diag_root / "prediction_artifact.npz"
+        diag_bindings[state] = _bind_diag_commit(
+            state=state,
+            state_diag_root=state_diag_root,
+            prediction_sha256=diag_results[state][
+                "prediction_artifact_sha256"
+            ],
+        )
 
     for state, prediction_path in prediction_paths.items():
         _require_prediction(prediction_path, state=state)
@@ -306,6 +392,12 @@ def run_pipeline(
                 ],
                 "prediction_artifact_sha256": diag_results[state][
                     "prediction_artifact_sha256"
+                ],
+                "diag_commit_sha256": diag_bindings[state][
+                    "diag_commit_sha256"
+                ],
+                "execution_receipt_sha256": diag_bindings[state][
+                    "execution_receipt_sha256"
                 ],
             }
             for state in ("before", "after")

@@ -150,12 +150,47 @@ def test_pipeline_orders_head_finalization_predictions_then_truth_join(
         )
         events.append(f"diag_{state}")
         assert kwargs["candidate"] == CANDIDATE_D1_B0_CAP
-        prediction = Path(kwargs["output_root"]) / "prediction_artifact.npz"
+        diag_root = Path(kwargs["output_root"])
+        prediction = diag_root / "prediction_artifact.npz"
         _readonly(prediction, f"prediction-{state}".encode("ascii"))
+        prediction_sha256 = pipeline.sha256_file(prediction)
+        receipt = diag_root / "execution_receipt.json"
+        _readonly(
+            receipt,
+            json.dumps(
+                {
+                    "schema":
+                    "cvs.phase2.diag_cosine_exploration_receipt.v1",
+                    "artifacts": {
+                        "prediction_artifact.npz": prediction_sha256
+                    },
+                },
+                sort_keys=True,
+            ).encode("utf-8"),
+        )
+        receipt_sha256 = pipeline.sha256_file(receipt)
+        commit = diag_root / "COMMIT.json"
+        _readonly(
+            commit,
+            json.dumps(
+                {
+                    "schema":
+                    "cvs.phase2.diag_cosine_exploration_commit.v1",
+                    "execution_receipt_sha256": receipt_sha256,
+                    "prediction_artifact_sha256": prediction_sha256,
+                    "members": [
+                        {
+                            "relative_path": "execution_receipt.json",
+                            "sha256": receipt_sha256,
+                            "size_bytes": receipt.stat().st_size,
+                        }
+                    ],
+                },
+                sort_keys=True,
+            ).encode("utf-8"),
+        )
         return {
-            "prediction_artifact_sha256": (
-                "a" * 64 if state == "before" else "b" * 64
-            )
+            "prediction_artifact_sha256": prediction_sha256
         }
 
     def fake_score(**kwargs):
@@ -215,6 +250,14 @@ def test_pipeline_orders_head_finalization_predictions_then_truth_join(
     assert receipt["truth_join_started_after_both_immutable_predictions"] is True
     assert receipt["states"]["before"]["stage"] == "stage2b"
     assert receipt["states"]["after"]["stage"] == "stage2c"
+    for state in ("before", "after"):
+        diag_root = output / "diag" / state
+        assert receipt["states"][state]["diag_commit_sha256"] == (
+            pipeline.sha256_file(diag_root / "COMMIT.json")
+        )
+        assert receipt["states"][state]["execution_receipt_sha256"] == (
+            pipeline.sha256_file(diag_root / "execution_receipt.json")
+        )
     assert receipt["candidate"] == CANDIDATE_D1_B0_CAP
 
 

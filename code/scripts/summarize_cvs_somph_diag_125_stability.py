@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import csv
 import hashlib
+import io
 import json
 import math
 import os
@@ -30,12 +31,13 @@ from cvsrffi.somph_predictor_bundle import (  # noqa: E402
 
 
 MANIFEST_SCHEMA = "cvs.phase2.somph_diag_125_stability.v1"
-PIPELINE_SCHEMA = "cvs.phase2.somph_diag_row_pipeline.v1"
+PIPELINE_SCHEMA = "cvs.phase2.somph_diag_row_pipeline.v2"
 SCORE_SCHEMA = "cvs.phase2.diag_cosine_dev_pair_score.v1"
 SUMMARY_SCHEMA = "cvs.phase2.somph_diag_125_summary.v1"
 GATES_SCHEMA = "cvs.phase2.somph_diag_125_gates.v1"
 CANDIDATE = "d1_historical_diag_fftrf"
 DIRECT_STATUS = "MISSING_NOT_RUN"
+QUERY_PACKAGE_BINDING_STATUS = "PIPELINE_COMMIT_RECEIPT_QUERY_SHA_BOUND"
 EXPECTED_RECEIVERS = ("20-1", "3-19", "7-14", "7-7", "8-8")
 EXPECTED_SEEDS = (713102, 713103, 713104, 713105, 713106)
 EXPECTED_SLICES = ((10, 5), (10, 10), (10, 20), (5, 20), (1, 20))
@@ -88,6 +90,53 @@ def _load_json(path: Path, *, name: str, readonly: bool = True) -> dict[str, Any
     return payload
 
 
+def _load_readonly_json_snapshot(
+    path: Path, *, name: str
+) -> tuple[dict[str, Any], str]:
+    """Parse and hash one immutable JSON snapshot from the same file descriptor."""
+
+    raw, digest = _read_readonly_bytes_snapshot(path, name=name)
+    try:
+        payload = json.loads(raw.decode("utf-8-sig"))
+    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise StabilitySummaryError(f"{name} is not valid UTF-8 JSON") from exc
+    if not isinstance(payload, dict):
+        raise StabilitySummaryError(f"{name} root must be an object")
+    return payload, digest
+
+
+def _read_readonly_bytes_snapshot(
+    path: Path, *, name: str
+) -> tuple[bytes, str]:
+    """Read and hash one immutable file from the same descriptor."""
+
+    source = path.absolute()
+    before = source.lstat()
+    if stat.S_ISLNK(before.st_mode) or not stat.S_ISREG(before.st_mode):
+        raise StabilitySummaryError(f"{name} must be a regular non-symlink file")
+    if before.st_mode & (stat.S_IWUSR | stat.S_IWGRP | stat.S_IWOTH):
+        raise StabilitySummaryError(f"{name} must be immutable/read-only")
+    flags = os.O_RDONLY | getattr(os, "O_BINARY", 0) | getattr(os, "O_NOFOLLOW", 0)
+    descriptor = os.open(source, flags)
+    try:
+        opened = os.fstat(descriptor)
+        if (before.st_dev, before.st_ino, before.st_size) != (
+            opened.st_dev,
+            opened.st_ino,
+            opened.st_size,
+        ):
+            raise StabilitySummaryError(f"{name} identity changed before open")
+        raw = b""
+        while len(raw) < opened.st_size:
+            chunk = os.read(descriptor, opened.st_size - len(raw))
+            if not chunk:
+                raise StabilitySummaryError(f"{name} was truncated")
+            raw += chunk
+    finally:
+        os.close(descriptor)
+    return raw, hashlib.sha256(raw).hexdigest()
+
+
 def _close(left: Any, right: Any, *, field: str, tolerance: float = 1.0e-12) -> None:
     if left is None or right is None:
         if left is not right:
@@ -108,9 +157,11 @@ def _harmonic(old: float, new: float) -> float:
     return 0.0 if old + new <= 0.0 else 2.0 * old * new / (old + new)
 
 
-def _read_prediction(path: Path) -> dict[str, np.ndarray]:
-    source = _regular_readonly(path, name="diag prediction")
-    with np.load(source, allow_pickle=False) as archive:
+def _read_prediction(path: Path) -> tuple[dict[str, np.ndarray], str]:
+    raw, digest = _read_readonly_bytes_snapshot(
+        path, name="diag prediction"
+    )
+    with np.load(io.BytesIO(raw), allow_pickle=False) as archive:
         if tuple(archive.files) != PREDICTION_MEMBERS:
             raise StabilitySummaryError("diag prediction exact schema drift")
         values = {name: archive[name].astype(str) for name in archive.files}
@@ -120,11 +171,48 @@ def _read_prediction(path: Path) -> dict[str, np.ndarray]:
     keys = list(zip(values["scenarios"].tolist(), values["query_tokens"].tolist()))
     if len(keys) != len(set(keys)):
         raise StabilitySummaryError("diag prediction scenario/token duplication")
-    return values
+    return values, digest
 
 
-def _read_truth(path: Path) -> tuple[dict[str, dict[str, str]], list[dict[str, Any]]]:
-    payload = _load_json(path, name="truth sidecar")
+def _read_receipt_bound_npz(
+    path: Path, *, expected_sha256: str
+) -> dict[str, np.ndarray]:
+    """Snapshot one writable staging NPZ only through an immutable receipt digest."""
+
+    source = path.absolute()
+    before = source.lstat()
+    if stat.S_ISLNK(before.st_mode) or not stat.S_ISREG(before.st_mode):
+        raise StabilitySummaryError("receipt-bound query must be a regular file")
+    flags = os.O_RDONLY | getattr(os, "O_BINARY", 0) | getattr(os, "O_NOFOLLOW", 0)
+    descriptor = os.open(source, flags)
+    try:
+        opened = os.fstat(descriptor)
+        if (before.st_dev, before.st_ino, before.st_size) != (
+            opened.st_dev,
+            opened.st_ino,
+            opened.st_size,
+        ):
+            raise StabilitySummaryError("receipt-bound query identity changed before open")
+        raw = b""
+        while len(raw) < opened.st_size:
+            chunk = os.read(descriptor, opened.st_size - len(raw))
+            if not chunk:
+                raise StabilitySummaryError("receipt-bound query was truncated")
+            raw += chunk
+    finally:
+        os.close(descriptor)
+    if hashlib.sha256(raw).hexdigest() != str(expected_sha256):
+        raise StabilitySummaryError("receipt-bound query SHA mismatch")
+    with np.load(io.BytesIO(raw), allow_pickle=False) as archive:
+        return {name: archive[name].copy() for name in archive.files}
+
+
+def _read_truth(
+    path: Path,
+) -> tuple[dict[str, dict[str, str]], list[dict[str, Any]], str]:
+    payload, digest = _load_readonly_json_snapshot(
+        path, name="truth sidecar"
+    )
     if (
         payload.get("schema") != "cvs.phase2.query_truth_sidecar.v2"
         or not isinstance(payload.get("rows"), list)
@@ -149,7 +237,7 @@ def _read_truth(path: Path) -> tuple[dict[str, dict[str, str]], list[dict[str, A
             raise StabilitySummaryError("truth sidecar role drift")
         by_token[token] = row
         rows.append(row)
-    return by_token, rows
+    return by_token, rows, digest
 
 
 def _scenario_details(
@@ -287,21 +375,22 @@ def _support_rank0(
 def _query_physical_iq(
     path: Path,
     truth: Mapping[str, Mapping[str, str]],
+    *,
+    expected_sha256: str,
 ) -> list[tuple[str, str, int]]:
-    source = _regular_readonly(path, name="query package")
-    with np.load(source, allow_pickle=False) as archive:
-        required = {
-            "query_leo_weak_iq",
-            "query_tokens",
-            "query_post_channel_iq_sha256",
-            "query_satellite_seeds",
-        }
-        if required - set(archive.files):
-            raise StabilitySummaryError("query package evidence members missing")
-        iq = archive["query_leo_weak_iq"]
-        tokens = archive["query_tokens"].astype(str)
-        hashes = archive["query_post_channel_iq_sha256"].astype(str)
-        seeds = archive["query_satellite_seeds"].astype(np.int64)
+    archive = _read_receipt_bound_npz(path, expected_sha256=expected_sha256)
+    required = {
+        "query_leo_weak_iq",
+        "query_tokens",
+        "query_post_channel_iq_sha256",
+        "query_satellite_seeds",
+    }
+    if required - set(archive):
+        raise StabilitySummaryError("query package evidence members missing")
+    iq = archive["query_leo_weak_iq"]
+    tokens = archive["query_tokens"].astype(str)
+    hashes = archive["query_post_channel_iq_sha256"].astype(str)
+    seeds = archive["query_satellite_seeds"].astype(np.int64)
     lengths = {len(iq), len(tokens), len(hashes), len(seeds)}
     if lengths == {0} or len(lengths) != 1:
         raise StabilitySummaryError("query package full-array alignment drift")
@@ -319,21 +408,29 @@ def _query_physical_iq(
     return sorted(rows)
 
 
-def _query_package_tokens(path: Path) -> set[str]:
-    source = _regular_readonly(path, name="query package")
-    with np.load(source, allow_pickle=False) as archive:
-        required = {
-            "query_leo_weak_iq",
-            "query_tokens",
-            "query_post_channel_iq_sha256",
-            "query_satellite_seeds",
-        }
-        if required - set(archive.files):
-            raise StabilitySummaryError("query package evidence members missing")
-        iq = archive["query_leo_weak_iq"]
-        tokens = archive["query_tokens"].astype(str)
-        hashes = archive["query_post_channel_iq_sha256"].astype(str)
-        seeds = archive["query_satellite_seeds"].astype(np.int64)
+def _truth_physical_query_ids(
+    truth: Mapping[str, Mapping[str, str]]
+) -> list[str]:
+    rows = [str(row["physical_sample_id"]) for row in truth.values()]
+    if not rows or len(rows) != len(set(rows)):
+        raise StabilitySummaryError("truth physical query ID set is empty or duplicated")
+    return sorted(rows)
+
+
+def _query_package_tokens(path: Path, *, expected_sha256: str) -> set[str]:
+    archive = _read_receipt_bound_npz(path, expected_sha256=expected_sha256)
+    required = {
+        "query_leo_weak_iq",
+        "query_tokens",
+        "query_post_channel_iq_sha256",
+        "query_satellite_seeds",
+    }
+    if required - set(archive):
+        raise StabilitySummaryError("query package evidence members missing")
+    iq = archive["query_leo_weak_iq"]
+    tokens = archive["query_tokens"].astype(str)
+    hashes = archive["query_post_channel_iq_sha256"].astype(str)
+    seeds = archive["query_satellite_seeds"].astype(np.int64)
     lengths = {len(iq), len(tokens), len(hashes), len(seeds)}
     if lengths == {0} or len(lengths) != 1:
         raise StabilitySummaryError("query package full-array alignment drift")
@@ -347,6 +444,79 @@ def _job_root(matrix_root: Path, job: Mapping[str, Any]) -> Path:
     return matrix_root / "jobs" / str(job["job_id"])
 
 
+def _query_member_sha_from_receipt(
+    *,
+    root: Path,
+    state: str,
+    scenario: str,
+    pipeline: Mapping[str, Any],
+) -> str:
+    diag_root = root / "diag" / state
+    receipt_path = diag_root / "execution_receipt.json"
+    commit_path = diag_root / "COMMIT.json"
+    receipt, receipt_sha = _load_readonly_json_snapshot(
+        receipt_path, name="diag execution receipt"
+    )
+    commit, commit_sha = _load_readonly_json_snapshot(
+        commit_path, name="diag COMMIT"
+    )
+    if (
+        pipeline["states"][state].get("diag_commit_sha256") != commit_sha
+        or pipeline["states"][state].get("execution_receipt_sha256")
+        != receipt_sha
+        or commit.get("schema") != "cvs.phase2.diag_cosine_exploration_commit.v1"
+        or commit.get("execution_receipt_sha256") != receipt_sha
+        or not isinstance(commit.get("members"), list)
+        or not any(
+            item.get("relative_path") == "execution_receipt.json"
+            and item.get("sha256") == receipt_sha
+            for item in commit["members"]
+            if isinstance(item, dict)
+        )
+        or commit.get("prediction_artifact_sha256")
+        != pipeline["states"][state]["prediction_artifact_sha256"]
+    ):
+        raise StabilitySummaryError(f"execution receipt/COMMIT binding drift: {state}")
+    apply = receipt.get("preopen_audit", {}).get("apply")
+    expected_root = pipeline["states"][state]["apply_package_root_sha256"]
+    if (
+        not isinstance(apply, dict)
+        or apply.get("schema") != "cvs.phase2.somph_preopen_audit.v1"
+        or apply.get("profile") != "apply_only"
+        or apply.get("status") != "STRUCTURAL_SELF_CONSISTENCY_PASS"
+        or apply.get("hash_and_member_audit_same_file_descriptor") is not True
+        or apply.get("iq_payload_materialized") is not True
+        or apply.get("package_root_sha256") != expected_root
+        or apply.get("artifact_member_allowlist_sha256") != expected_root
+        or receipt.get("apply_package_root_sha256") != expected_root
+        or receipt.get("apply_package_seal_sha256")
+        != pipeline["states"][state]["apply_package_seal_sha256"]
+        or not isinstance(apply.get("manifest_sha256"), str)
+        or len(apply["manifest_sha256"]) != 64
+        or set(apply.get("materialized_scenarios", []))
+        != set(FORMAL_LEO_WEAK_SCENARIOS)
+        or not isinstance(apply.get("opened_members"), list)
+    ):
+        raise StabilitySummaryError(f"immutable apply preopen binding drift: {state}")
+    relative_path = f"query_{scenario}.npz"
+    matches = [
+        item
+        for item in apply["opened_members"]
+        if isinstance(item, dict) and item.get("relative_path") == relative_path
+    ]
+    if (
+        len(matches) != 1
+        or matches[0].get("status") != "PASS"
+        or not isinstance(matches[0].get("sha256"), str)
+        or len(matches[0]["sha256"]) != 64
+        or int(matches[0].get("size_bytes", 0)) <= 0
+    ):
+        raise StabilitySummaryError(
+            f"immutable query opened-member receipt drift: {state}/{scenario}"
+        )
+    return str(matches[0]["sha256"])
+
+
 def _audit_job(
     matrix_root: Path,
     job: Mapping[str, Any],
@@ -357,10 +527,16 @@ def _audit_job(
     truth_path = root / "offline" / "scorer" / "truth_sidecar.json"
     row_manifest_path = root / "offline" / "scorer" / "row_manifest.json"
     final_pair_path = root / "scorer" / "registration_pair.final.json"
-    pipeline = _load_json(pipeline_path, name="pipeline receipt")
-    score = _load_json(score_path, name="diag score")
+    pipeline, pipeline_sha256 = _load_readonly_json_snapshot(
+        pipeline_path, name="pipeline receipt"
+    )
+    score, score_sha256 = _load_readonly_json_snapshot(
+        score_path, name="diag score"
+    )
     row_manifest = _load_json(row_manifest_path, name="row manifest")
-    final_pair = _load_json(final_pair_path, name="registration pair")
+    final_pair, final_pair_sha256 = _load_readonly_json_snapshot(
+        final_pair_path, name="registration pair"
+    )
     expected = {
         "receiver": str(job["receiver"]),
         "seed": int(job["seed"]),
@@ -382,7 +558,7 @@ def _audit_job(
         or score.get("query_truth_fed_back_to_predictor") is not False
     ):
         raise StabilitySummaryError(f"score contract drift: {job['job_id']}")
-    if _sha256(score_path) != pipeline.get("score_artifact_sha256"):
+    if score_sha256 != pipeline.get("score_artifact_sha256"):
         raise StabilitySummaryError(f"score SHA binding drift: {job['job_id']}")
     if (
         row_manifest.get("receiver") != expected["receiver"]
@@ -392,7 +568,7 @@ def _audit_job(
         or _canonical_sha256(row_manifest) != pipeline.get("row_manifest_sha256")
     ):
         raise StabilitySummaryError(f"row manifest binding drift: {job['job_id']}")
-    if _sha256(final_pair_path) != pipeline.get("registration_pair_final_sha256"):
+    if final_pair_sha256 != pipeline.get("registration_pair_final_sha256"):
         raise StabilitySummaryError(f"registration-pair SHA drift: {job['job_id']}")
     if (
         final_pair.get("old_support_physical_ids_sha256_before")
@@ -402,21 +578,31 @@ def _audit_job(
     ):
         raise StabilitySummaryError(f"within-row B/C physical split drift: {job['job_id']}")
 
-    truth, _truth_rows = _read_truth(truth_path)
+    truth, _truth_rows, truth_sha256 = _read_truth(truth_path)
     state_details: dict[str, dict[str, dict[str, Any]]] = {}
-    package_tokens_by_state: dict[str, dict[str, set[str]]] = {}
+    query_sha_by_state: dict[str, dict[str, str]] = {}
+    query_binding_by_state: dict[str, dict[str, str]] = {}
+    prediction_tokens_by_state: dict[str, dict[str, set[str]]] = {}
     per_tx_rows: list[dict[str, Any]] = []
+    old_truth_tokens = {
+        token
+        for token, row in truth.items()
+        if row["evaluation_role"] == "target_old"
+    }
+    all_truth_tokens = set(truth)
     for state in ("before", "after"):
         prediction_path = root / "diag" / state / "prediction_artifact.npz"
-        prediction = _read_prediction(prediction_path)
-        if _sha256(prediction_path) != pipeline["states"][state]["prediction_artifact_sha256"]:
+        prediction, prediction_sha256 = _read_prediction(prediction_path)
+        if prediction_sha256 != pipeline["states"][state]["prediction_artifact_sha256"]:
             raise StabilitySummaryError(f"prediction SHA binding drift: {job['job_id']}:{state}")
         score_sha_field = f"{state}_prediction_sha256"
-        if _sha256(prediction_path) != score.get(score_sha_field):
+        if prediction_sha256 != score.get(score_sha_field):
             raise StabilitySummaryError(f"prediction/score binding drift: {job['job_id']}:{state}")
         details, state_tx = _scenario_details(prediction, truth, state=state)
         state_details[state] = details
-        package_tokens_by_state[state] = {}
+        query_sha_by_state[state] = {}
+        query_binding_by_state[state] = {}
+        prediction_tokens_by_state[state] = {}
         per_tx_rows.extend(state_tx)
         for scenario in FORMAL_LEO_WEAK_SCENARIOS:
             prediction_tokens = set(
@@ -424,20 +610,39 @@ def _audit_job(
                     prediction["scenarios"] == scenario
                 ].tolist()
             )
+            expected_truth_tokens = (
+                old_truth_tokens if state == "before" else all_truth_tokens
+            )
+            if prediction_tokens != expected_truth_tokens:
+                raise StabilitySummaryError(
+                    f"immutable prediction/truth exact coverage drift: "
+                    f"{job['job_id']}:{state}:{scenario}"
+                )
+            prediction_tokens_by_state[state][scenario] = prediction_tokens
+            expected_query_sha = _query_member_sha_from_receipt(
+                root=root,
+                state=state,
+                scenario=scenario,
+                pipeline=pipeline,
+            )
+            query_sha_by_state[state][scenario] = expected_query_sha
+            query_binding_by_state[state][scenario] = (
+                QUERY_PACKAGE_BINDING_STATUS
+            )
             package_tokens = _query_package_tokens(
                 root
                 / "offline"
                 / "predictor"
                 / state
                 / "apply_only_staging"
-                / f"query_{scenario}.npz"
+                / f"query_{scenario}.npz",
+                expected_sha256=expected_query_sha,
             )
-            if prediction_tokens != package_tokens:
+            if package_tokens != prediction_tokens:
                 raise StabilitySummaryError(
-                    f"prediction/query package token coverage drift: "
+                    f"pipeline-bound query/prediction exact coverage drift: "
                     f"{job['job_id']}:{state}:{scenario}"
                 )
-            package_tokens_by_state[state][scenario] = package_tokens
             scored = score[state]["by_scenario"][scenario]
             derived = details[scenario]
             _close(derived["old_acc"], scored["old_acc"], field=f"{job['job_id']}:{state}:{scenario}:old")
@@ -451,24 +656,15 @@ def _audit_job(
                 scored["h_old_new"],
                 field=f"{job['job_id']}:{state}:{scenario}:H",
             )
-    old_truth_tokens = {
-        token
-        for token, row in truth.items()
-        if row["evaluation_role"] == "target_old"
-    }
-    all_truth_tokens = set(truth)
     for scenario in FORMAL_LEO_WEAK_SCENARIOS:
-        before_tokens = package_tokens_by_state["before"][scenario]
-        after_tokens = package_tokens_by_state["after"][scenario]
-        if before_tokens != old_truth_tokens or after_tokens != all_truth_tokens:
-            raise StabilitySummaryError(
-                f"sealed query/truth exact coverage drift: {job['job_id']}:{scenario}"
-            )
+        before_tokens = prediction_tokens_by_state["before"][scenario]
+        after_tokens = prediction_tokens_by_state["after"][scenario]
         if before_tokens != (after_tokens & old_truth_tokens):
             raise StabilitySummaryError(
-                f"before/after old query token drift: {job['job_id']}:{scenario}"
+                f"before/after immutable old query token drift: "
+                f"{job['job_id']}:{scenario}"
             )
-    if _sha256(truth_path) != score.get("truth_sidecar_sha256"):
+    if truth_sha256 != score.get("truth_sidecar_sha256"):
         raise StabilitySummaryError(f"truth SHA binding drift: {job['job_id']}")
 
     row = {
@@ -489,8 +685,8 @@ def _audit_job(
         "direct_adv3b02_status": DIRECT_STATUS,
         "direct_adv3b02_old_acc": None,
         "delta_vs_direct_ADV3B02_K1": None,
-        "pipeline_receipt_sha256": _sha256(pipeline_path),
-        "score_sha256": _sha256(score_path),
+        "pipeline_receipt_sha256": pipeline_sha256,
+        "score_sha256": score_sha256,
     }
     scenario_rows = []
     for scenario in FORMAL_LEO_WEAK_SCENARIOS:
@@ -530,6 +726,8 @@ def _audit_job(
     return row, scenario_rows, per_tx_rows, {
         "truth": truth,
         "root": root,
+        "query_sha_by_state": query_sha_by_state,
+        "query_binding_by_state": query_binding_by_state,
     }
 
 
@@ -760,7 +958,9 @@ def _write_csv_new(path: Path, rows: list[dict[str, Any]]) -> None:
 
 def summarize(matrix_manifest: str | Path, output_root: str | Path) -> dict[str, Any]:
     manifest_path = _regular_readonly(Path(matrix_manifest), name="matrix manifest")
-    manifest = _load_json(manifest_path, name="matrix manifest")
+    manifest, manifest_sha256 = _load_readonly_json_snapshot(
+        manifest_path, name="matrix manifest"
+    )
     matrix_root = manifest_path.parent
     output = Path(output_root).resolve()
     if output.exists():
@@ -833,6 +1033,12 @@ def summarize(matrix_manifest: str | Path, output_root: str | Path) -> dict[str,
         for seed in EXPECTED_SEEDS:
             k1 = evidence[(receiver, seed, 1, 20)]
             k10 = evidence[(receiver, seed, 10, 20)]
+            k1_physical_ids = _truth_physical_query_ids(k1["truth"])
+            k10_physical_ids = _truth_physical_query_ids(k10["truth"])
+            if k1_physical_ids != k10_physical_ids:
+                raise StabilitySummaryError(
+                    f"K1/K10 readonly truth physical query drift: {receiver}/{seed}"
+                )
             for scenario in FORMAL_LEO_WEAK_SCENARIOS:
                 support_leaf = f"support_{scenario}.npz"
                 k1_support = _support_rank0(
@@ -862,6 +1068,7 @@ def summarize(matrix_manifest: str | Path, output_root: str | Path) -> dict[str,
                     / "apply_only_staging"
                     / query_leaf,
                     k1["truth"],
+                    expected_sha256=k1["query_sha_by_state"]["after"][scenario],
                 )
                 k10_query = _query_physical_iq(
                     k10["root"]
@@ -871,6 +1078,7 @@ def summarize(matrix_manifest: str | Path, output_root: str | Path) -> dict[str,
                     / "apply_only_staging"
                     / query_leaf,
                     k10["truth"],
+                    expected_sha256=k10["query_sha_by_state"]["after"][scenario],
                 )
                 if k1_support != k10_support:
                     raise StabilitySummaryError(
@@ -878,7 +1086,8 @@ def summarize(matrix_manifest: str | Path, output_root: str | Path) -> dict[str,
                     )
                 if k1_query != k10_query:
                     raise StabilitySummaryError(
-                        f"K1/K10 query physical/SHA drift: {receiver}/{seed}/{scenario}"
+                        f"K1/K10 postrun query IQ SHA consistency drift: "
+                        f"{receiver}/{seed}/{scenario}"
                     )
                 nesting.append(
                     {
@@ -886,9 +1095,14 @@ def summarize(matrix_manifest: str | Path, output_root: str | Path) -> dict[str,
                         "seed": seed,
                         "scenario": scenario,
                         "rank0_support_post_channel_iq_sha_match": True,
-                        "query_physical_id_and_post_channel_iq_sha_match": True,
+                        "readonly_truth_physical_query_ids_match": True,
+                        "pipeline_bound_post_channel_iq_sha_match": True,
+                        "query_package_binding_status": (
+                            QUERY_PACKAGE_BINDING_STATUS
+                        ),
                         "rank0_support_count": len(k1_support),
-                        "query_count": len(k1_query),
+                        "readonly_truth_query_count": len(k1_physical_ids),
+                        "receipt_bound_staging_query_count": len(k1_query),
                     }
                 )
 
@@ -909,7 +1123,7 @@ def summarize(matrix_manifest: str | Path, output_root: str | Path) -> dict[str,
         "claim_scope": manifest.get("claim_scope"),
         "formal_launch_authority": False,
         "matrix_manifest": str(manifest_path),
-        "matrix_manifest_sha256": _sha256(manifest_path),
+        "matrix_manifest_sha256": manifest_sha256,
         "candidate": CANDIDATE,
         "job_count": len(row_metrics),
         "scenario_pair_count": len(scenario_metrics),
@@ -917,15 +1131,18 @@ def summarize(matrix_manifest: str | Path, output_root: str | Path) -> dict[str,
         "per_tx_metric_count": len(per_tx_metrics),
         "receiver_metric_count": len(receiver_metrics),
         "support_query_nesting_audit_count": len(nesting),
-        "support_query_nesting_all_pass": all(
+        "support_query_nesting_all_strict_bindings_pass": all(
             row["rank0_support_post_channel_iq_sha_match"]
-            and row["query_physical_id_and_post_channel_iq_sha_match"]
+            and row["readonly_truth_physical_query_ids_match"]
+            and row["pipeline_bound_post_channel_iq_sha_match"]
             for row in nesting
         ),
         "direct_adv3b02_status": DIRECT_STATUS,
+        "query_package_commit_binding_status": QUERY_PACKAGE_BINDING_STATUS,
         "result_boundary": (
-            "D1 independent stability summary only; strict direct ADV3B02 K1 "
-            "delta and paired confidence interval were not run."
+            "D1 independent stability summary with strict pipeline-to-COMMIT-"
+            "to-execution-receipt-to-opened-query-member binding. Direct "
+            "ADV3B02 K1 delta and paired confidence interval were not run."
         ),
         "slice_metrics": slice_metrics,
         "support_query_nesting_audit": nesting,

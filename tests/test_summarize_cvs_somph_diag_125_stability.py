@@ -51,7 +51,7 @@ def _prediction(path: Path, *, after: bool) -> None:
     _readonly(path)
 
 
-def _sealed_query_package(path: Path, *, after: bool) -> None:
+def _sealed_query_package(path: Path, *, after: bool) -> str:
     path.parent.mkdir(parents=True, exist_ok=True)
     tokens = ["old-a", "old-b"] + (["new-c"] if after else [])
     iq = np.arange(len(tokens) * 2 * 8, dtype=np.float32).reshape(
@@ -66,7 +66,7 @@ def _sealed_query_package(path: Path, *, after: bool) -> None:
             query_post_channel_iq_sha256=hashes,
             query_satellite_seeds=np.arange(len(tokens), dtype=np.int64),
         )
-    _readonly(path)
+    return summary._sha256(path)
 
 
 def _one_job_fixture(tmp_path: Path) -> tuple[Path, dict]:
@@ -85,9 +85,11 @@ def _one_job_fixture(tmp_path: Path) -> tuple[Path, dict]:
     score_path = root / "scorer" / "diag_cosine_score.json"
     _prediction(before, after=False)
     _prediction(after, after=True)
+    query_shas: dict[str, dict[str, str]] = {}
     for state, is_after in (("before", False), ("after", True)):
+        query_shas[state] = {}
         for scenario in FORMAL_LEO_WEAK_SCENARIOS:
-            _sealed_query_package(
+            query_shas[state][scenario] = _sealed_query_package(
                 root
                 / "offline"
                 / "predictor"
@@ -156,6 +158,74 @@ def _one_job_fixture(tmp_path: Path) -> tuple[Path, dict]:
         },
     )
     pipeline_path = root / "pipeline_receipt.json"
+    pipeline_states = {}
+    for state, prediction_path in (("before", before), ("after", after)):
+        apply_root_sha = ("c" if state == "before" else "d") * 64
+        apply_seal_sha = ("e" if state == "before" else "f") * 64
+        receipt_path = root / "diag" / state / "execution_receipt.json"
+        opened_members = [
+            {
+                "relative_path": f"query_{scenario}.npz",
+                "sha256": query_shas[state][scenario],
+                "size_bytes": (
+                    root
+                    / "offline"
+                    / "predictor"
+                    / state
+                    / "apply_only_staging"
+                    / f"query_{scenario}.npz"
+                ).stat().st_size,
+                "status": "PASS",
+            }
+            for scenario in FORMAL_LEO_WEAK_SCENARIOS
+        ]
+        _json_readonly(
+            receipt_path,
+            {
+                "schema": "cvs.phase2.diag_cosine_exploration_receipt.v1",
+                "apply_package_root_sha256": apply_root_sha,
+                "apply_package_seal_sha256": apply_seal_sha,
+                "preopen_audit": {
+                    "apply": {
+                        "schema": "cvs.phase2.somph_preopen_audit.v1",
+                        "profile": "apply_only",
+                        "status": "STRUCTURAL_SELF_CONSISTENCY_PASS",
+                        "hash_and_member_audit_same_file_descriptor": True,
+                        "iq_payload_materialized": True,
+                        "package_root_sha256": apply_root_sha,
+                        "artifact_member_allowlist_sha256": apply_root_sha,
+                        "manifest_sha256": "9" * 64,
+                        "materialized_scenarios": list(
+                            FORMAL_LEO_WEAK_SCENARIOS
+                        ),
+                        "opened_members": opened_members,
+                    }
+                },
+            },
+        )
+        commit_path = root / "diag" / state / "COMMIT.json"
+        _json_readonly(
+            commit_path,
+            {
+                "schema": "cvs.phase2.diag_cosine_exploration_commit.v1",
+                "execution_receipt_sha256": summary._sha256(receipt_path),
+                "prediction_artifact_sha256": summary._sha256(prediction_path),
+                "members": [
+                    {
+                        "relative_path": "execution_receipt.json",
+                        "sha256": summary._sha256(receipt_path),
+                        "size_bytes": receipt_path.stat().st_size,
+                    }
+                ],
+            },
+        )
+        pipeline_states[state] = {
+            "prediction_artifact_sha256": summary._sha256(prediction_path),
+            "apply_package_root_sha256": apply_root_sha,
+            "apply_package_seal_sha256": apply_seal_sha,
+            "diag_commit_sha256": summary._sha256(commit_path),
+            "execution_receipt_sha256": summary._sha256(receipt_path),
+        }
     _json_readonly(
         pipeline_path,
         {
@@ -170,14 +240,7 @@ def _one_job_fixture(tmp_path: Path) -> tuple[Path, dict]:
             "row_manifest_sha256": summary._canonical_sha256(row_manifest),
             "registration_pair_final_sha256": summary._sha256(pair_path),
             "score_artifact_sha256": scored["score_artifact_sha256"],
-            "states": {
-                "before": {
-                    "prediction_artifact_sha256": summary._sha256(before),
-                },
-                "after": {
-                    "prediction_artifact_sha256": summary._sha256(after),
-                },
-            },
+            "states": pipeline_states,
         },
     )
     return matrix_root, job
@@ -185,6 +248,17 @@ def _one_job_fixture(tmp_path: Path) -> tuple[Path, dict]:
 
 def test_audit_job_binds_score_and_derives_scenario_old_floor(tmp_path: Path) -> None:
     matrix_root, job = _one_job_fixture(tmp_path)
+    writable_query = (
+        matrix_root
+        / "jobs"
+        / job["job_id"]
+        / "offline"
+        / "predictor"
+        / "after"
+        / "apply_only_staging"
+        / "query_leo_clear_weak.npz"
+    )
+    assert writable_query.stat().st_mode & stat.S_IWRITE
     row, scenarios, per_tx, _audit = summary._audit_job(matrix_root, job)
     assert row["b_old_acc"] == 1.0
     assert row["c_old_acc"] == pytest.approx(5.0 / 6.0)
@@ -241,6 +315,7 @@ def test_post_channel_sha_helpers_verify_rank0_and_query_physical_mapping(
             "q0": {"physical_sample_id": "p0"},
             "q1": {"physical_sample_id": "p1"},
         },
+        expected_sha256=summary._sha256(query_path),
     )
     assert mapped == sorted(
         [("p0", query_hashes[0], 5), ("p1", query_hashes[1], 6)]
@@ -354,6 +429,13 @@ def test_full_summary_writes_required_outputs_and_keeps_direct_missing(
         return row, scenarios, tx_rows, {
             "truth": {"q": {"physical_sample_id": "p"}},
             "root": Path("/unused"),
+            "query_sha_by_state": {
+                state: {
+                    scenario: "b" * 64
+                    for scenario in FORMAL_LEO_WEAK_SCENARIOS
+                }
+                for state in ("before", "after")
+            },
         }
 
     monkeypatch.setattr(summary, "_audit_job", fake_audit)
@@ -365,7 +447,11 @@ def test_full_summary_writes_required_outputs_and_keeps_direct_missing(
             for index in range(expected_class_count)
         ],
     )
-    monkeypatch.setattr(summary, "_query_physical_iq", lambda _path, _truth: [("p", "b" * 64, 2)])
+    monkeypatch.setattr(
+        summary,
+        "_query_physical_iq",
+        lambda _path, _truth, *, expected_sha256: [("p", expected_sha256, 2)],
+    )
     output = tmp_path / "summary"
     result = summary.summarize(manifest_path, output)
     assert result["job_count"] == 125
@@ -378,6 +464,9 @@ def test_full_summary_writes_required_outputs_and_keeps_direct_missing(
         "INCOMPLETE_DIRECT_ADV3B02_NOT_RUN_PERFORMANCE_PASS"
     )
     assert result["status"] == "INCOMPLETE_DIRECT_BASELINE_PERFORMANCE_PASS"
+    assert result["query_package_commit_binding_status"] == (
+        "PIPELINE_COMMIT_RECEIPT_QUERY_SHA_BOUND"
+    )
     for name in (
         "summary.json",
         "row_metrics.csv",
@@ -452,10 +541,11 @@ def test_support_rank0_rejects_missing_class_and_query_rejects_truth_gap(
                 "q1": {"physical_sample_id": "p1"},
                 "q2": {"physical_sample_id": "p2"},
             },
+            expected_sha256=summary._sha256(query_path),
         )
 
 
-def test_audit_job_rejects_prediction_missing_sealed_query_token(
+def test_strict_audit_rejects_mutated_writable_staging_query(
     tmp_path: Path,
 ) -> None:
     matrix_root, job = _one_job_fixture(tmp_path)
@@ -482,10 +572,88 @@ def test_audit_job_rejects_prediction_missing_sealed_query_token(
             query_satellite_seeds=np.arange(4, dtype=np.int64),
         )
     _readonly(query_path)
+    with pytest.raises(summary.StabilitySummaryError, match="query SHA mismatch"):
+        summary._audit_job(matrix_root, job)
+
+
+def test_receipt_bound_writable_query_accepts_exact_sha_and_rejects_wrong_sha(
+    tmp_path: Path,
+) -> None:
+    path = tmp_path / "query.npz"
+    expected = _sealed_query_package(path, after=True)
+    assert path.stat().st_mode & stat.S_IWRITE
+    archive = summary._read_receipt_bound_npz(path, expected_sha256=expected)
+    assert archive["query_tokens"].astype(str).tolist() == [
+        "old-a",
+        "old-b",
+        "new-c",
+    ]
+    with pytest.raises(summary.StabilitySummaryError, match="query SHA mismatch"):
+        summary._read_receipt_bound_npz(path, expected_sha256="0" * 64)
+
+
+def test_query_binding_requires_pipeline_diag_commit_sha(
+    tmp_path: Path,
+) -> None:
+    matrix_root, job = _one_job_fixture(tmp_path)
+    root = matrix_root / "jobs" / job["job_id"]
+    pipeline = json.loads(
+        (root / "pipeline_receipt.json").read_text(encoding="utf-8")
+    )
+    digest = summary._query_member_sha_from_receipt(
+        root=root,
+        state="after",
+        scenario="leo_clear_weak",
+        pipeline=pipeline,
+    )
+    assert len(digest) == 64
+    pipeline["states"]["after"].pop("diag_commit_sha256")
     with pytest.raises(
-        summary.StabilitySummaryError, match="prediction/query package token coverage"
+        summary.StabilitySummaryError, match="execution receipt/COMMIT binding"
+    ):
+        summary._query_member_sha_from_receipt(
+            root=root,
+            state="after",
+            scenario="leo_clear_weak",
+            pipeline=pipeline,
+        )
+
+
+def test_audit_job_rejects_legacy_pipeline_v1_without_strict_bindings(
+    tmp_path: Path,
+) -> None:
+    matrix_root, job = _one_job_fixture(tmp_path)
+    pipeline_path = (
+        matrix_root / "jobs" / job["job_id"] / "pipeline_receipt.json"
+    )
+    pipeline = json.loads(pipeline_path.read_text(encoding="utf-8"))
+    pipeline["schema"] = "cvs.phase2.somph_diag_row_pipeline.v1"
+    for state in ("before", "after"):
+        pipeline["states"][state].pop("diag_commit_sha256")
+        pipeline["states"][state].pop("execution_receipt_sha256")
+    os.chmod(pipeline_path, stat.S_IWRITE | stat.S_IREAD)
+    pipeline_path.unlink()
+    _json_readonly(pipeline_path, pipeline)
+    with pytest.raises(
+        summary.StabilitySummaryError, match="pipeline/job binding drift"
     ):
         summary._audit_job(matrix_root, job)
+
+
+def test_readonly_truth_physical_query_ids_are_exact_and_unique() -> None:
+    assert summary._truth_physical_query_ids(
+        {
+            "q0": {"physical_sample_id": "p1"},
+            "q1": {"physical_sample_id": "p0"},
+        }
+    ) == ["p0", "p1"]
+    with pytest.raises(summary.StabilitySummaryError, match="duplicated"):
+        summary._truth_physical_query_ids(
+            {
+                "q0": {"physical_sample_id": "p0"},
+                "q1": {"physical_sample_id": "p0"},
+            }
+        )
 
 
 def test_performance_failure_is_not_reported_as_pass(
@@ -549,6 +717,13 @@ def test_performance_failure_is_not_reported_as_pass(
         return row, scenarios, tx_rows, {
             "truth": {"q": {"physical_sample_id": "p"}},
             "root": Path("/unused"),
+            "query_sha_by_state": {
+                state: {
+                    scenario: "b" * 64
+                    for scenario in FORMAL_LEO_WEAK_SCENARIOS
+                }
+                for state in ("before", "after")
+            },
         }
 
     monkeypatch.setattr(summary, "_audit_job", fake_audit)
@@ -561,7 +736,9 @@ def test_performance_failure_is_not_reported_as_pass(
         ],
     )
     monkeypatch.setattr(
-        summary, "_query_physical_iq", lambda _path, _truth: [("p", "b" * 64, 2)]
+        summary,
+        "_query_physical_iq",
+        lambda _path, _truth, *, expected_sha256: [("p", expected_sha256, 2)],
     )
     result = summary.summarize(manifest_path, tmp_path / "out")
     assert result["gates"]["executed_performance_status"] == "FAIL"
