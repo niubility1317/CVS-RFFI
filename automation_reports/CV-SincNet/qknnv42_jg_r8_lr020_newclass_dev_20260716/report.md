@@ -5,7 +5,7 @@
 - 实验ID：`qknnv42_jg_r8_lr020_newclass_dev_20260716`
 - 日期：2026-07-16
 - 操作者：Codex主agent`root`＋子agent`jg020_registration_exp`
-- 当前状态：`SECOND_SPLIT_ALLOWLIST_FAILURE_REPAIRED_AWAITING_RETRY1`；Phase1 cache与new5离线source bundle完成，适配训练尚未开始
+- 当前状态：`THIRD_IMPORT_CLOSURE_FAILURE_REPAIRED_AWAITING_RETRY2`；Phase1 cache、new5离线bundle与enrollment package完成，适配训练尚未开始
 - 目标：验证锁定的`JG_R8_LR020`轻量旧类适配器在合法Stage2-C新类注册后的同row旧类保持、新类准确率与资源表现。
 - 声明边界：这是单receiver、单development seed的开发单元；即使指标达到门槛，也不能替代独立确认矩阵或宣称总目标完成。
 
@@ -148,6 +148,10 @@ isolated scorer
 第二个根因是NPZ表示层不一致：来源manifest按NumPy逻辑key记录`support_pool_leo_weak_iq`等8个成员，ZIP物理条目则自动带`.npy`后缀；旧JG validator直接比较二者，错误触发`JG020 NPZ member allowlist drift`。实测实际与descriptor逻辑key一一对应，没有额外或缺失成员。修复统一在逻辑key层执行精确有序allowlist，同时继续拒绝重复成员、目录成员、非`.npy`条目及额外/缺失key；materialisation也按`np.load(...).files`复验。
 
 由于原run已含不可覆盖的new5中间目录，不删除、不移动、不覆盖。恢复路径锁定为新根`runs/qknnv42_jg_r8_lr020_newclass_dev_20260716_retry1`，只允许引用原run的`phase1_cache/cache_set.json`；retry1从空Stage2-C目录开始。修复后本地10/10 PASS、retry1 launcher dry-run PASS，并用真实new5 support NPZ验证`ACTUAL_SOURCE_NPZ_LOGICAL_ALLOWLIST_MATCH=True`。
+
+retry1使用PID=`2256635`，成功通过new5 source bundle与enrollment package双重preflight；`query_member_reachable=false`、`truth_member_reachable=false`、`clean_member_reachable=false`均已在远端receipt中成立。随后enrollment CLI在导入阶段停止：脚本误从`paper_reproduction.scripts`导入实际位于`code/scripts`的TorchScript导出器。远端目标文件存在且SHA256与本地完全相同，因此不是漏同步文件，而是Python模块路径错误。完整17行外层日志与4行enrollment日志已保存到`remote_logs/retry1_import_failure/`；没有optimizer step、GPU训练或性能输出。
+
+修复为显式把`code/scripts`加入CLI导入闭包，并按该目录的既有top-level模块名加载；新增真实子进程`--help`导入闭包测试，回归为11/11 PASS。retry1中间产物继续保留；下一次从空`runs/qknnv42_jg_r8_lr020_newclass_dev_20260716_retry2`开始并只读复用原密封cache。
 
 ## 启动后对话回顾与路线教训
 

@@ -37,6 +37,7 @@ EXPERIMENT_ID = "qknnv42_jg_r8_lr020_newclass_dev_20260716"
 REMOTE_REPO = Path("/home/szu2070436088/2510044040/CV-SincNet")
 DEFAULT_RUN_ROOT = REMOTE_REPO / "runs" / EXPERIMENT_ID
 RETRY1_RUN_ROOT = REMOTE_REPO / "runs" / f"{EXPERIMENT_ID}_retry1"
+RETRY2_RUN_ROOT = REMOTE_REPO / "runs" / f"{EXPERIMENT_ID}_retry2"
 ORIGINAL_CACHE_SET = DEFAULT_RUN_ROOT / "phase1_cache/cache_set.json"
 CHECKPOINT = (
     REMOTE_REPO
@@ -195,8 +196,8 @@ def execute(
     resume: bool = False,
     reuse_cache_set: Path | None = None,
 ) -> dict[str, Any]:
-    if run_root not in {DEFAULT_RUN_ROOT, RETRY1_RUN_ROOT}:
-        raise ValueError("JG020 run root is outside the locked default/retry1 roots")
+    if run_root not in {DEFAULT_RUN_ROOT, RETRY1_RUN_ROOT, RETRY2_RUN_ROOT}:
+        raise ValueError("JG020 run root is outside the locked default/retry roots")
     if reuse_cache_set is not None and resume:
         raise ValueError("external cache reuse and in-place resume are mutually exclusive")
     if reuse_cache_set is not None:

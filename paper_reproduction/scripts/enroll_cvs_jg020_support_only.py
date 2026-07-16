@@ -23,10 +23,11 @@ import torch
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 CODE_ROOT = REPO_ROOT / "code"
-for value in (str(REPO_ROOT), str(CODE_ROOT)):
+CODE_SCRIPT_ROOT = CODE_ROOT / "scripts"
+for value in (str(REPO_ROOT), str(CODE_ROOT), str(CODE_SCRIPT_ROOT)):
     while value in sys.path:
         sys.path.remove(value)
-for value in (str(REPO_ROOT), str(CODE_ROOT)):
+for value in (str(REPO_ROOT), str(CODE_ROOT), str(CODE_SCRIPT_ROOT)):
     sys.path.insert(0, value)
 
 from cvsrffi.checkpoint_loading import build_exact_ssdg_model_from_checkpoint  # noqa: E402
@@ -50,7 +51,7 @@ from paper_reproduction.cvs_aligned.jg020_stage2c import (  # noqa: E402
     validate_direct_class_mapping,
     validate_locked_candidate,
 )
-from paper_reproduction.scripts.export_adv3b02_effective8_torchscript import (  # noqa: E402
+from export_adv3b02_effective8_torchscript import (  # noqa: E402
     ADV3B02IdentityRuntime,
 )
 from paper_reproduction.scripts.train_export_cvs_support_lora_adapter import (  # noqa: E402

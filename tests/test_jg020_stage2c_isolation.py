@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import json
+import subprocess
+import sys
 from pathlib import Path
 
 import numpy as np
@@ -462,3 +464,20 @@ def test_launcher_parses_pretty_json_after_warning_and_resume_is_cache_only(tmp_
     (run_root / "new_5").mkdir()
     with pytest.raises(FileExistsError, match="partially materialised"):
         _prepare_run_root(run_root, resume=True)
+
+
+def test_support_only_enrollment_cli_import_closure() -> None:
+    script = (
+        Path(__file__).resolve().parents[1]
+        / "paper_reproduction/scripts/enroll_cvs_jg020_support_only.py"
+    )
+    result = subprocess.run(
+        [sys.executable, str(script), "--help"],
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        check=False,
+    )
+    assert result.returncode == 0, result.stdout
+    assert "--package-root" in result.stdout
+    assert "--query" not in result.stdout
