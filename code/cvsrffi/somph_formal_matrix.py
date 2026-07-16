@@ -12,15 +12,15 @@ import json
 from collections.abc import Mapping, Sequence
 from typing import Any
 
+from cvsrffi.leo_weak_cache import FORMAL_LEO_WEAK_SCENARIOS
 from cvsrffi.phase2_runtime_contract import PHASE2_FULL_CONTRACT
-from cvsrffi.somph_predictor_bundle import (
-    ADV3B02_CHECKPOINT_SHA256,
-    FORMAL_LEO_WEAK_SCENARIOS,
-)
 
 
 SCHEMA = "cvs.phase2.somph_formal_matrix.v1"
 ARTIFACT_BOUNDARY = "offline_matrix_controller_only_never_mounted_in_phase2"
+ADV3B02_CHECKPOINT_SHA256 = (
+    "2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98"
+)
 FORMAL_RECEIVERS = ("20-1", "3-19", "7-14", "7-7", "8-8")
 DEVELOPMENT_SEED = 713101
 CONFIRMATION_SEEDS = (713102, 713103, 713104, 713105, 713106)

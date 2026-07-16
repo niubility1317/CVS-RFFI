@@ -9,7 +9,11 @@ from pathlib import Path
 
 import pytest
 
+from cvsrffi.somph_predictor_bundle import (
+    ADV3B02_CHECKPOINT_SHA256 as PREDICTOR_ADV3B02_CHECKPOINT_SHA256,
+)
 from cvsrffi.somph_formal_matrix import (
+    ADV3B02_CHECKPOINT_SHA256,
     CONFIRMATION_SEEDS,
     FORMAL_RECEIVERS,
     NEW_TX_IDS,
@@ -17,6 +21,10 @@ from cvsrffi.somph_formal_matrix import (
     build_formal_matrix,
     validate_formal_matrix,
 )
+
+
+def test_lightweight_matrix_checkpoint_lock_matches_predictor() -> None:
+    assert ADV3B02_CHECKPOINT_SHA256 == PREDICTOR_ADV3B02_CHECKPOINT_SHA256
 
 
 def _resign(payload: dict) -> None:
