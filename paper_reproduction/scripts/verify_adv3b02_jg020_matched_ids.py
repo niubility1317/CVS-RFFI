@@ -33,13 +33,9 @@ from scripts.build_cvs_stage2_predictor_bundle import (  # noqa: E402
 )
 
 
-def _safe(value: str) -> str:
-    return re.sub(r"[^A-Za-z0-9]+", "_", str(value)).strip("_")
-
-
 def _legacy_manifest(root: Path, receiver: str, seed: int) -> Path:
     relative = (
-        Path(f"rx_{_safe(receiver)}")
+        Path(f"rx_{receiver}")
         / f"seed_{seed}"
         / "k_10"
         / "mrior_sda"
