@@ -60,3 +60,6 @@
 - v2 PID`2287367`完成密封包后，在head状态落盘的多维字节转换处fail closed；query尚未打开，无prediction/评分。修复为展平字节视图并补回归，v3新根重试。
 
 - v3 PID`2289456`已取得predictor/scorer PASS与3行指标，但外层把schema包裹rows误判为裸list，未写cell/smoke receipt。修复严格rows schema解析并在v4新根重跑；v3 K1性能为明显负例。
+
+- schema解析修复提交`fce403c`，54项回归通过；N607运行器SHA由`6eb3...`更新为本地/远端一致的`42b1...`。2026-07-16 12:19 CST直连预检仍为8卡空闲。
+- v4未授权计划SHA=`7d28a925...addb1b`，保持75包/900 cell/2700行与`launch_authority=false`；先仅在GPU0运行new5/K1/CSIL smoke，完整五层收据通过后才允许正式矩阵。
