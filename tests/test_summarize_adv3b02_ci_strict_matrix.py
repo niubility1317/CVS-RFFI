@@ -35,6 +35,14 @@ def test_metric_group_keeps_joint_rows_and_reports_mean_std() -> None:
     assert result[0]["H_old_new_std"] == pytest.approx(0.2)
 
 
+def test_metric_group_never_depends_on_nullable_k1_delta_fields() -> None:
+    row = _metric_row(0.4, cell_id="a")
+    row["delta_vs_direct_ADV3B02_K1"] = None
+    row["delta_vs_identity_K1"] = None
+    result = _group_metrics([row], ("method", "k_shot", "new_class_count"))
+    assert result[0]["old_after_minus_direct_adv3b02_mean"] == pytest.approx(0.4)
+
+
 def test_resource_group_reports_mean_and_max() -> None:
     rows = []
     for value in (1.0, 3.0):

@@ -22,8 +22,8 @@ METRICS = (
     "candidate_average_forgetting",
     "direct_adv3b02_old_acc",
     "identity_old_acc_after_increment",
-    "delta_vs_direct_ADV3B02_K1",
-    "delta_vs_identity_K1",
+    "old_after_minus_direct_adv3b02",
+    "old_after_minus_identity",
     "min_old_class_acc",
 )
 
@@ -173,6 +173,12 @@ def summarize(plan_path: Path, output_root: Path) -> dict[str, Any]:
                     "k_shot": int(cell["k_shot"]),
                 }
             )
+            enriched["old_after_minus_direct_adv3b02"] = float(
+                enriched["old_acc_after_increment"]
+            ) - float(enriched["direct_adv3b02_old_acc"])
+            enriched["old_after_minus_identity"] = float(
+                enriched["old_acc_after_increment"]
+            ) - float(enriched["identity_old_acc_after_increment"])
             formal_rows.append(enriched)
 
         predictor = _load(predictor_receipt_path)
@@ -315,7 +321,7 @@ def summarize(plan_path: Path, output_root: Path) -> dict[str, Any]:
                 new_acc=pct(row["seen_new_acc_mean"]),
                 harmonic=pct(row["H_old_new_mean"]),
                 forgetting=pct(row["candidate_average_forgetting_mean"]),
-                delta=pct(row["delta_vs_direct_ADV3B02_K1_mean"]),
+                delta=pct(row["old_after_minus_direct_adv3b02_mean"]),
             )
         )
     md.extend(
