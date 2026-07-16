@@ -63,3 +63,5 @@
 
 - schema解析修复提交`fce403c`，54项回归通过；N607运行器SHA由`6eb3...`更新为本地/远端一致的`42b1...`。2026-07-16 12:19 CST直连预检仍为8卡空闲。
 - v4未授权计划SHA=`7d28a925...addb1b`，保持75包/900 cell/2700行与`launch_authority=false`；先仅在GPU0运行new5/K1/CSIL smoke，完整五层收据通过后才允许正式矩阵。
+
+- v4 smoke PID`2295678`完整PASS，smoke/cell收据SHA分别为`3f87ec81...a19b`和`5c976f4b...c88e2`；query训练行0、head先锁后开query、五项Oracle/配额访问均false。授权计划SHA=`4447433a...1226f`并绑定smoke收据，正式矩阵按8 GPU各一分片启动。
