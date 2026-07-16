@@ -2,7 +2,7 @@
 
 Git镜像。权威运行记录见`E:\type10-7\automation_reports\CV-SincNet\qknnv42_fft96_stage2bc_125_20260716_174352\report.md`；本文件与其同步维护。
 
-当前状态：已完成方法与矩阵代码实现；相关完整回归145项通过。真实ADV3B02 runtime、strict plan及25/25个target cache已核验；`plan_v2.json`计数为100/125/500/1500且全部执行路径为绝对POSIX路径。等待Git提交、N607四状态bwrap+strace smoke和125-bundle启动。
+当前状态：已完成方法与矩阵代码实现；相关完整回归145项通过。真实ADV3B02 runtime、strict plan及25/25个target cache已核验；`plan_v2.json`计数为100/125/500/1500且全部执行路径为绝对POSIX路径。运行实现已提交为`b04ee15`，等待N607四状态bwrap+strace smoke和125-bundle启动。
 
 关键口径：
 
