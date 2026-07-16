@@ -47,7 +47,7 @@
 |R13|identity-only及三种方法Pareto|pending|baseline改为独立artifact；ProtoNet 0参数/0step只能做零维不劣＋性能/MAC/状态/时延/显存Pareto|
 |R14|完整日志或闭式求解诊断|structural_logging_real_run_pending|闭式support-only单元审计可重算head张量、state与MAC；不可变head artifact、canonical execution receipt、mean/p95/max singleton latency字段已实现；正式时延、峰值内存、包成员和OS访问日志待真实隔离运行|
 |R15|合法TX/receiver/support-query清单|pending|legacy 20-new feature NPZ因clean共存定性`PROTOCOL_INVALID_FOR_PHASE2`；等待target-only coverage audit和sealed package manifest|
-|R16|自动化报告和Git提交|in_progress|根目录报告已更新；既有提交`9837abf`、`cdd0bcf`、`f285605`；本轮artifact v2、sealed row binding、profile-specific closure、pre-run trust root、entry/runner/resource闭环已完成237项本地回归，待最终独立复审后精确提交|
+|R16|自动化报告和Git提交|implemented_structural_milestone|根目录报告已更新；既有提交`9837abf`、`cdd0bcf`、`f285605`；本轮artifact v2、sealed row binding、profile-specific closure、pre-run trust root、entry/runner/resource闭环完成237项本地回归并提交为`a2c319f`；正式数据/N607证据仍pending|
 |R17|每3个turn回顾目标和对话|implemented|已完成本轮三轮回顾：拒绝clean cache、query侧Q20/ordering、结构JSON冒充真实证据及注册后切片模拟注册前|
 
 ## SOMP-H首条路线
