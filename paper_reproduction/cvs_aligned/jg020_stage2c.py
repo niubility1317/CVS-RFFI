@@ -167,10 +167,16 @@ def _npz_members_handle(handle: BinaryIO) -> list[str]:
         names = archive.namelist()
         if len(names) != len(set(names)):
             raise JG020ProtocolError("duplicate NPZ member")
-        if any(name.startswith("/") or ".." in PurePosixPath(name).parts for name in names):
+        if any(
+            name.startswith("/")
+            or ".." in PurePosixPath(name).parts
+            or len(PurePosixPath(name).parts) != 1
+            or not name.endswith(".npy")
+            for name in names
+        ):
             raise JG020ProtocolError("unsafe NPZ member path")
     handle.seek(0)
-    return names
+    return [name[:-4] for name in names]
 
 
 def make_member_descriptor(
@@ -402,7 +408,7 @@ def load_npz_member(root: str | Path, descriptor: Mapping[str, Any]) -> dict[str
         if digest != descriptor["sha256"] or size != descriptor["size_bytes"]:
             raise JG020ProtocolError("JG020 NPZ descriptor drift at materialisation")
         with np.load(handle, allow_pickle=False) as archive:
-            actual = [f"{name}.npy" for name in archive.files]
+            actual = list(archive.files)
             if actual != list(descriptor["npz_members"]):
                 raise JG020ProtocolError("JG020 NPZ member drift at materialisation")
             arrays = {name: np.asarray(archive[name]) for name in archive.files}
@@ -857,7 +863,7 @@ def head_npz_members() -> list[str]:
     names = ["class_handles", "old_class_count", "temperature", "manifest_json"]
     for scenario in FORMAL_SCENARIOS:
         names.extend((f"candidate_prototypes__{scenario}", f"identity_prototypes__{scenario}"))
-    return [f"{name}.npy" for name in names]
+    return names
 
 
 def apply_head_streams(

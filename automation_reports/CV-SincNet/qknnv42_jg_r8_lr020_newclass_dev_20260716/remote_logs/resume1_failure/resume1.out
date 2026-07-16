@@ -1,0 +1,22 @@
+{"predictor_package": "/home/szu2070436088/2510044040/CV-SincNet/runs/qknnv42_jg_r8_lr020_newclass_dev_20260716/new_5/source_package", "predictor_package_root_sha256": "adb1505d000a6689bb095d6a1819a92c0ba8c6470b6ac83f6b6db2821d83221b", "predictor_package_seal": "/home/szu2070436088/2510044040/CV-SincNet/runs/qknnv42_jg_r8_lr020_newclass_dev_20260716/new_5/source_package.seal.json", "predictor_package_seal_sha256": "4b92098b4579a19b32e98969a827784a8b376deb77896b197629d2c3d05f83e4", "query_count": 220, "registered_class_count": 11, "scoring_manifest": "/home/szu2070436088/2510044040/CV-SincNet/runs/qknnv42_jg_r8_lr020_newclass_dev_20260716/new_5/source_scorer/scoring_manifest.json", "scoring_manifest_sha256": "5c5860ebda5b1c81bbead4edc07887ec8e774bee13e03d1250c18025a883fa98", "stage": "stage2c", "support_pool_count": 110}
+Traceback (most recent call last):
+  File "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/scripts/build_cvs_jg020_split_packages.py", line 343, in <module>
+    raise SystemExit(main())
+  File "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/scripts/build_cvs_jg020_split_packages.py", line 337, in main
+    result = build_enrollment(args) if args.command == "enrollment" else build_apply(args)
+  File "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/scripts/build_cvs_jg020_split_packages.py", line 173, in build_enrollment
+    document, _seal = write_package_manifest_and_seal(
+  File "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/cvs_aligned/jg020_stage2c.py", line 297, in write_package_manifest_and_seal
+    raise JG020ProtocolError("JG020 NPZ member allowlist drift")
+paper_reproduction.cvs_aligned.jg020_stage2c.JG020ProtocolError: JG020 NPZ member allowlist drift
+Traceback (most recent call last):
+  File "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/scripts/launch_cvs_jg020_stage2c_dev_20260716.py", line 365, in <module>
+    raise SystemExit(main())
+  File "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/scripts/launch_cvs_jg020_stage2c_dev_20260716.py", line 356, in main
+    execute(args.run_root, args.python, resume=bool(args.resume)),
+  File "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/scripts/launch_cvs_jg020_stage2c_dev_20260716.py", line 238, in execute
+    enrollment_result = _run(
+  File "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/scripts/launch_cvs_jg020_stage2c_dev_20260716.py", line 141, in _run
+    raise subprocess.CalledProcessError(result.returncode, command)
+subprocess.CalledProcessError: Command '['/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python', 'paper_reproduction/scripts/build_cvs_jg020_split_packages.py', 'enrollment', '--source-package-root', '/home/szu2070436088/2510044040/CV-SincNet/runs/qknnv42_jg_r8_lr020_newclass_dev_20260716/new_5/source_package', '--source-detached-seal', '/home/szu2070436088/2510044040/CV-SincNet/runs/qknnv42_jg_r8_lr020_newclass_dev_20260716/new_5/source_package.seal.json', '--source-expected-seal-sha256', '4b92098b4579a19b32e98969a827784a8b376deb77896b197629d2c3d05f83e4', '--candidate-lock', '/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/configs/jg020_stage2c_candidate_lock_new5_20260716.json', '--output-root', '/home/szu2070436088/2510044040/CV-SincNet/runs/qknnv42_jg_r8_lr020_newclass_dev_20260716/new_5/enrollment_package', '--output-detached-seal', '/home/szu2070436088/2510044040/CV-SincNet/runs/qknnv42_jg_r8_lr020_newclass_dev_20260716/new_5/enrollment_package.seal.json', '--checkpoint-full', '/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth', '--ground-adapter', '/home/szu2070436088/2510044040/CV-SincNet/runs/qknn_ground_adapt_layer_loss_ablation_20260715_v16/p4_r16_e8_k1/adapter_fp16.pt', '--direct-class-mapping', '/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/configs/adv3b02_target_old_class_mapping_20260715.json']' returned non-zero exit status 1.
+ERROR conda.cli.main_run:execute(47): `conda run python -u paper_reproduction/scripts/launch_cvs_jg020_stage2c_dev_20260716.py --execute --resume` failed. (See above for error)

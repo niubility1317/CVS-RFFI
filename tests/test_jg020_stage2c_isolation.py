@@ -83,7 +83,7 @@ def _write_npz(path: Path, scenario: str) -> list[str]:
             manifest_json=np.asarray(json.dumps({"scenario": scenario})),
         )
     with np.load(path, allow_pickle=False) as archive:
-        return [f"{name}.npy" for name in archive.files]
+        return list(archive.files)
 
 
 def _write_query_npz(path: Path, scenario: str) -> list[str]:
@@ -98,7 +98,7 @@ def _write_query_npz(path: Path, scenario: str) -> list[str]:
             manifest_json=np.asarray(json.dumps({"scenario": scenario})),
         )
     with np.load(path, allow_pickle=False) as archive:
-        return [f"{name}.npy" for name in archive.files]
+        return list(archive.files)
 
 
 def _write_head_npz(path: Path) -> None:

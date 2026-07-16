@@ -5,7 +5,7 @@
 - 实验ID：`qknnv42_jg_r8_lr020_newclass_dev_20260716`
 - 日期：2026-07-16
 - 操作者：Codex主agent`root`＋子agent`jg020_registration_exp`
-- 当前状态：`INITIAL_LAUNCHER_PARSE_FAILURE_REPAIRED_AWAITING_SAFE_RESUME`；Phase1 cache完成，Stage2-C尚未开始
+- 当前状态：`SECOND_SPLIT_ALLOWLIST_FAILURE_REPAIRED_AWAITING_RETRY1`；Phase1 cache与new5离线source bundle完成，适配训练尚未开始
 - 目标：验证锁定的`JG_R8_LR020`轻量旧类适配器在合法Stage2-C新类注册后的同row旧类保持、新类准确率与资源表现。
 - 声明边界：这是单receiver、单development seed的开发单元；即使指标达到门槛，也不能替代独立确认矩阵或宣称总目标完成。
 
@@ -142,6 +142,12 @@ isolated scorer
 2. 新增显式`--resume`；只允许复用已有`phase1_cache/cache_set.json`且尚无任何`new_5/new_10/new_20`row、尚无`execution_summary.json`的cache-only中断状态。
 3. 不删除、不覆盖、不重建已有cache；若出现部分Stage2-C row则fail closed。
 4. 本地`ssr-gpu`回归更新为10/10 PASS，并直接用首次完整80行cache log验证解析得到`stage2_registered/1040`。
+
+首次`--resume`使用PID=`2253380`。它成功复用Phase1 cache，并完成new5离线source bundle：11个注册类、support pool 110、query 220；随后在enrollment package manifest发布前fail closed。已完整读取并保存`remote_logs/resume1_failure/resume1.out`的22行日志。
+
+第二个根因是NPZ表示层不一致：来源manifest按NumPy逻辑key记录`support_pool_leo_weak_iq`等8个成员，ZIP物理条目则自动带`.npy`后缀；旧JG validator直接比较二者，错误触发`JG020 NPZ member allowlist drift`。实测实际与descriptor逻辑key一一对应，没有额外或缺失成员。修复统一在逻辑key层执行精确有序allowlist，同时继续拒绝重复成员、目录成员、非`.npy`条目及额外/缺失key；materialisation也按`np.load(...).files`复验。
+
+由于原run已含不可覆盖的new5中间目录，不删除、不移动、不覆盖。恢复路径锁定为新根`runs/qknnv42_jg_r8_lr020_newclass_dev_20260716_retry1`，只允许引用原run的`phase1_cache/cache_set.json`；retry1从空Stage2-C目录开始。修复后本地10/10 PASS、retry1 launcher dry-run PASS，并用真实new5 support NPZ验证`ACTUAL_SOURCE_NPZ_LOGICAL_ALLOWLIST_MATCH=True`。
 
 ## 启动后对话回顾与路线教训
 

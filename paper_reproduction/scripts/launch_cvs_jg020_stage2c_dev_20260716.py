@@ -36,6 +36,8 @@ from paper_reproduction.cvs_aligned.jg020_stage2c import (  # noqa: E402
 EXPERIMENT_ID = "qknnv42_jg_r8_lr020_newclass_dev_20260716"
 REMOTE_REPO = Path("/home/szu2070436088/2510044040/CV-SincNet")
 DEFAULT_RUN_ROOT = REMOTE_REPO / "runs" / EXPERIMENT_ID
+RETRY1_RUN_ROOT = REMOTE_REPO / "runs" / f"{EXPERIMENT_ID}_retry1"
+ORIGINAL_CACHE_SET = DEFAULT_RUN_ROOT / "phase1_cache/cache_set.json"
 CHECKPOINT = (
     REMOTE_REPO
     / "runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200"
@@ -68,14 +70,17 @@ def _write_json_new(path: Path, value: Any) -> None:
         os.fsync(handle.fileno())
 
 
-def _command_plan(run_root: Path, python: str) -> list[dict[str, Any]]:
-    plan: list[dict[str, Any]] = [
-        {
-            "phase": "phase1_offline_cache",
-            "command": [python, "code/scripts/build_cvs_leo_weak_iq_cache.py", "--spec", str(CACHE_SPEC), "--device", "cuda:0"],
-        }
-    ]
-    cache_set = run_root / "phase1_cache/cache_set.json"
+def _command_plan(run_root: Path, python: str, *, cache_set: Path | None = None) -> list[dict[str, Any]]:
+    cache_set = cache_set or run_root / "phase1_cache/cache_set.json"
+    if cache_set == run_root / "phase1_cache/cache_set.json":
+        plan: list[dict[str, Any]] = [
+            {
+                "phase": "phase1_offline_cache",
+                "command": [python, "code/scripts/build_cvs_leo_weak_iq_cache.py", "--spec", str(CACHE_SPEC), "--device", "cuda:0"],
+            }
+        ]
+    else:
+        plan = [{"phase": "reuse_sealed_phase1_cache", "cache_set": str(cache_set)}]
     for count in (5, 10, 20):
         row = run_root / f"new_{count}"
         lock = REPO / f"paper_reproduction/configs/jg020_stage2c_candidate_lock_new{count}_20260716.json"
@@ -183,10 +188,27 @@ def _prepare_run_root(run_root: Path, *, resume: bool) -> bool:
     return True
 
 
-def execute(run_root: Path, python: str, *, resume: bool = False) -> dict[str, Any]:
-    if run_root != DEFAULT_RUN_ROOT:
-        raise ValueError("locked cache spec requires the default N607 run root")
-    cache_reused = _prepare_run_root(run_root, resume=bool(resume))
+def execute(
+    run_root: Path,
+    python: str,
+    *,
+    resume: bool = False,
+    reuse_cache_set: Path | None = None,
+) -> dict[str, Any]:
+    if run_root not in {DEFAULT_RUN_ROOT, RETRY1_RUN_ROOT}:
+        raise ValueError("JG020 run root is outside the locked default/retry1 roots")
+    if reuse_cache_set is not None and resume:
+        raise ValueError("external cache reuse and in-place resume are mutually exclusive")
+    if reuse_cache_set is not None:
+        resolved_cache = reuse_cache_set.resolve(strict=True)
+        if resolved_cache != ORIGINAL_CACHE_SET:
+            raise ValueError("retry1 may reuse only the original sealed JG020 cache set")
+        _prepare_run_root(run_root, resume=False)
+        cache_reused = True
+        cache_manifest = resolved_cache
+    else:
+        cache_reused = _prepare_run_root(run_root, resume=bool(resume))
+        cache_manifest = run_root / "phase1_cache/cache_set.json"
     logs = run_root / "logs"
     for required in (CHECKPOINT, GROUND_P4, MAPPING, CACHE_SPEC, SOURCE_ADAPTER, SOURCE_HEAD, VIEW_POLICY):
         if not required.is_file():
@@ -198,7 +220,6 @@ def execute(run_root: Path, python: str, *, resume: bool = False) -> dict[str, A
     if sha256_file(MAPPING) != "97af6115b51a6a3252e22315e40183c4c3efd7ccfeb1f16a61710028f72fda7f":
         raise ValueError("direct class mapping hash drift")
     if cache_reused:
-        cache_manifest = run_root / "phase1_cache/cache_set.json"
         cache_result = {
             "status": "REUSED_EXISTING_SEALED_CACHE",
             "cache_set_manifest": str(cache_manifest),
@@ -223,7 +244,7 @@ def execute(run_root: Path, python: str, *, resume: bool = False) -> dict[str, A
         source_result = _run(
             [
                 python, "code/scripts/build_cvs_stage2_predictor_bundle.py",
-                "--target-cache-set", str(run_root / "phase1_cache/cache_set.json"),
+                "--target-cache-set", str(cache_manifest),
                 "--expected-cache-scope", "stage2_registered", "--predictor-out-root", str(source),
                 "--scorer-out-root", str(source_scorer), "--detached-seal-path", str(source_seal),
                 "--stage", "stage2c", "--receiver", "20-1", "--seed", "713101",
@@ -333,6 +354,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--execute", action="store_true")
     parser.add_argument("--resume", action="store_true")
+    parser.add_argument("--reuse-cache-set", type=Path)
     parser.add_argument("--run-root", type=Path, default=DEFAULT_RUN_ROOT)
     parser.add_argument("--python", default=sys.executable)
     parser.add_argument("--plan-out", type=Path)
@@ -344,7 +366,8 @@ def main() -> int:
         "experimental_repeated_adapter_fit_count": 3,
         "deployment_amortized_adapter_fit_count": 1,
         "resume": bool(args.resume),
-        "commands": _command_plan(args.run_root, args.python),
+        "reuse_cache_set": str(args.reuse_cache_set) if args.reuse_cache_set else None,
+        "commands": _command_plan(args.run_root, args.python, cache_set=args.reuse_cache_set),
     }
     if not args.execute:
         if args.plan_out:
@@ -353,7 +376,12 @@ def main() -> int:
         return 0
     print(
         json.dumps(
-            execute(args.run_root, args.python, resume=bool(args.resume)),
+            execute(
+                args.run_root,
+                args.python,
+                resume=bool(args.resume),
+                reuse_cache_set=args.reuse_cache_set,
+            ),
             ensure_ascii=False,
             sort_keys=True,
         )
