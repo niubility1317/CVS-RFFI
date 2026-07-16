@@ -24,6 +24,7 @@ import numpy as np
 import torch
 import torch.nn.functional as F
 
+from cvsrffi.phase2_runtime_contract import PHASE2_FULL_CONTRACT
 from cvsrffi.somph_predictor_bundle import (
     APPLY_ONLY,
     ENROLLMENT_ONLY,
@@ -345,6 +346,10 @@ def fit_diag_cosine_state(
         raise DiagCosineExplorationError("at least two registered classes are required")
     if candidate not in CANDIDATES:
         raise DiagCosineExplorationError(f"unsupported diag-cosine candidate: {candidate}")
+    if candidate == CANDIDATE_D3_SCENARIO_OLDLOCK_NEWFIT:
+        raise DiagCosineExplorationError(
+            "D3 requires scenario-specific before/after orchestration"
+        )
     class_to_index = {label: index for index, label in enumerate(classes.tolist())}
     targets_np = np.asarray([class_to_index[label] for label in labels], dtype=np.int64)
     feature_dim = int(support.shape[1])
@@ -728,6 +733,7 @@ def _load_parent_scenario_state(
         "feature_runtime_sha256": enrollment_manifest["feature_runtime_sha256"],
         "method_lock_sha256": enrollment_manifest["method_lock_sha256"],
     }
+    resource = receipt.get("resource", {}) if isinstance(receipt, dict) else {}
     if (
         not isinstance(receipt, dict)
         or receipt.get("schema")
@@ -735,6 +741,19 @@ def _load_parent_scenario_state(
         or receipt.get("candidate", {}).get("name")
         != CANDIDATE_D3_SCENARIO_OLDLOCK_NEWFIT
         or any(receipt.get(key) != value for key, value in required_matches.items())
+        or any(
+            receipt.get(key) != value
+            for key, value in PHASE2_FULL_CONTRACT.items()
+        )
+        or receipt.get("query_truth_present_in_predictor") is not False
+        or not isinstance(resource, dict)
+        or resource.get("query_rows_used_for_fit") != 0
+        or resource.get("query_labels_used_for_fit") is not False
+        or resource.get("query_features_used_for_fit") is not False
+        or resource.get("query_role_oracle_access") is not False
+        or resource.get("query_true_batch_class_count_access") is not False
+        or resource.get("query_class_quota_access") is not False
+        or resource.get("query_batch_global_assignment") is not False
         or receipt.get("artifacts", {}).get("diag_cosine_state.npz")
         != state_member["sha256"]
     ):
@@ -817,6 +836,7 @@ def _d3_common_resource(
     parameter_state_bytes: int,
     registry_state_bytes: int,
     estimated_adaptation_macs: int,
+    optimizer_steps: int,
     adaptation_latency_sec: float,
     peak_cuda_memory_bytes: int,
     trace: list[dict[str, Any]],
@@ -833,7 +853,9 @@ def _d3_common_resource(
         "adaptation_objective": phase,
         "candidate": CANDIDATE_D3_SCENARIO_OLDLOCK_NEWFIT,
         "classifier_state_policy": (
-            "scenario_specific_old_head_bitwise_locked_new_weights_only"
+            "scenario_specific_old_head_fit"
+            if phase == "target_support_only_scenario_old_head_fit"
+            else "scenario_specific_old_head_bitwise_locked_new_weights_only"
         ),
         "class_bias_enabled": True,
         "class_bias_trainable_parameters": (
@@ -870,19 +892,27 @@ def _d3_common_resource(
         "old_class_count": int(old_class_count),
         "new_class_count": int(class_count - old_class_count),
         "adaptation_epochs": ADAPTATION_EPOCHS,
-        "optimizer_steps": int(
-            sum(1 for row in trace if row.get("phase") in {
-                "target_support_only_diag_cosine_fit",
-                "target_support_only_scenario_new_weight_fit",
-            })
+        "epochs_per_scenario": ADAPTATION_EPOCHS,
+        "total_epoch_passes": (
+            ADAPTATION_EPOCHS * len(FORMAL_LEO_WEAK_SCENARIOS)
         ),
+        "optimizer_steps": int(optimizer_steps),
         "support_enrollment_rows": int(support_rows),
         "support_view_count": len(FORMAL_LEO_WEAK_SCENARIOS),
         "query_view_count": 1,
         "scenario_specific_state_count": len(FORMAL_LEO_WEAK_SCENARIOS),
         "estimated_adaptation_macs": int(estimated_adaptation_macs),
+        "estimated_adaptation_macs_scope": (
+            "registered_head_plus_feature_scaling_excludes_backbone_fft_rf"
+        ),
         "estimated_macs_per_query": int(
             feature_dim + class_count * feature_dim
+        ),
+        "estimated_head_macs_per_query": int(
+            feature_dim + class_count * feature_dim
+        ),
+        "estimated_macs_per_query_scope": (
+            "registered_head_plus_feature_scaling_excludes_backbone_fft_rf"
         ),
         "dense_query_graph_bytes": 0,
         "adaptation_latency_sec": float(adaptation_latency_sec),
@@ -949,6 +979,9 @@ def _fit_d3_before(
         estimated_adaptation_macs=sum(
             int(state.resource["estimated_adaptation_macs"]) for state in states
         ),
+        optimizer_steps=sum(
+            int(state.resource["optimizer_steps"]) for state in states
+        ),
         adaptation_latency_sec=time.perf_counter() - started,
         peak_cuda_memory_bytes=max(
             int(state.resource["peak_cuda_memory_bytes"]) for state in states
@@ -1003,6 +1036,7 @@ def _fit_d3_after(
     trace: list[dict[str, Any]] = []
     audits: dict[str, Any] = {}
     estimated_adaptation_macs = 0
+    optimizer_steps = 0
     started = time.perf_counter()
     if device.type == "cuda":
         torch.cuda.set_device(device)
@@ -1196,6 +1230,10 @@ def _fit_d3_after(
         estimated_adaptation_macs += int(
             ADAPTATION_EPOCHS * len(support) * macs_per_sample * 3
         )
+        optimizer_steps += int(
+            ADAPTATION_EPOCHS
+            * math.ceil(len(support) / min(BATCH_SIZE, len(support)))
+        )
     log_scale_np = np.stack(all_log_scale).astype(np.float32)
     weights_np = np.stack(all_weights).astype(np.float32)
     bias_np = np.stack(all_bias).astype(np.float32)
@@ -1230,6 +1268,7 @@ def _fit_d3_after(
         parameter_state_bytes=parameter_state_bytes,
         registry_state_bytes=registry_state_bytes,
         estimated_adaptation_macs=estimated_adaptation_macs,
+        optimizer_steps=optimizer_steps,
         adaptation_latency_sec=time.perf_counter() - started,
         peak_cuda_memory_bytes=(
             int(torch.cuda.max_memory_allocated(device))
@@ -1508,6 +1547,11 @@ def run_diag_cosine_exploration(
             weights=state.weights.astype(np.float32),
             bias=state.bias.astype(np.float32),
         )
+    serialized_state_bytes = (output / "diag_cosine_state.npz").stat().st_size
+    if serialized_state_bytes > MAX_PERSISTENT_STATE_BYTES:
+        raise DiagCosineExplorationError(
+            "serialized diag-cosine state cap exceeded"
+        )
     trace_sha256 = _write_json_new(output / "loss_trace.json", list(state.trace))
     prediction_sha256 = _write_npz_new(
         output / "prediction_artifact.npz",
@@ -1517,6 +1561,7 @@ def run_diag_cosine_exploration(
     )
     resource = {
         **state.resource,
+        "serialized_persistent_state_bytes": int(serialized_state_bytes),
         "support_backbone_forward_count": support_forward_count,
         "query_backbone_forward_count": query_forward_count,
         "query_backbone_forwards_per_sample": 1,

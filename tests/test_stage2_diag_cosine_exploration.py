@@ -12,6 +12,7 @@ import pytest
 import torch
 
 import cvsrffi.stage2_diag_cosine_exploration as route
+from cvsrffi.phase2_runtime_contract import PHASE2_FULL_CONTRACT
 from scripts import run_cvs_stage2_diag_cosine_exploration as runner
 
 
@@ -88,6 +89,18 @@ def test_fit_has_no_query_argument_and_prediction_is_batch_extension_invariant()
 
 
 def test_d3_scenario_oldlock_freezes_every_old_head_and_audits_each_old_class():
+    support, labels, _query, _truth = _separable()
+    with pytest.raises(
+        route.DiagCosineExplorationError,
+        match="scenario-specific before/after orchestration",
+    ):
+        route.fit_diag_cosine_state(
+            support,
+            labels,
+            seed=713101,
+            device=torch.device("cpu"),
+            candidate=route.CANDIDATE_D3_SCENARIO_OLDLOCK_NEWFIT,
+        )
     assert all(
         "query" not in name
         for name in inspect.signature(route._fit_d3_after).parameters
@@ -111,6 +124,22 @@ def test_d3_scenario_oldlock_freezes_every_old_head_and_audits_each_old_class():
     assert np.all(after.bias[:, old_count:] == 0.0)
     assert np.all(after.new_offset >= 0.0)
     assert after.resource["trainable_parameters"] == 3 * 2 * 24
+    expected_before_steps = 3 * route.ADAPTATION_EPOCHS
+    expected_after_steps = 3 * route.ADAPTATION_EPOCHS
+    assert before.resource["optimizer_steps"] == expected_before_steps
+    assert after.resource["optimizer_steps"] == expected_after_steps
+    assert before.resource["epochs_per_scenario"] == route.ADAPTATION_EPOCHS
+    assert after.resource["total_epoch_passes"] == (
+        3 * route.ADAPTATION_EPOCHS
+    )
+    assert (
+        before.resource["classifier_state_policy"]
+        == "scenario_specific_old_head_fit"
+    )
+    assert (
+        after.resource["classifier_state_policy"]
+        == "scenario_specific_old_head_bitwise_locked_new_weights_only"
+    )
     assert after.resource["query_rows_used_for_fit"] == 0
     assert after.resource["query_role_oracle_access"] is False
     assert after.resource["query_class_quota_access"] is False
@@ -178,6 +207,17 @@ def test_d3_parent_loader_binds_commit_receipt_state_and_lineage(tmp_path: Path)
         **enrollment,
         **apply,
         "candidate": {"name": route.CANDIDATE_D3_SCENARIO_OLDLOCK_NEWFIT},
+        **PHASE2_FULL_CONTRACT,
+        "query_truth_present_in_predictor": False,
+        "resource": {
+            "query_rows_used_for_fit": 0,
+            "query_labels_used_for_fit": False,
+            "query_features_used_for_fit": False,
+            "query_role_oracle_access": False,
+            "query_true_batch_class_count_access": False,
+            "query_class_quota_access": False,
+            "query_batch_global_assignment": False,
+        },
         "artifacts": {"diag_cosine_state.npz": state_sha},
     }
     receipt_path = root / "execution_receipt.json"
@@ -223,10 +263,57 @@ def test_d3_parent_loader_binds_commit_receipt_state_and_lineage(tmp_path: Path)
     assert closure["parent_execution_receipt_sha256"] == receipt_sha
     assert closure["parent_state_sha256"] == state_sha
 
+    os.chmod(state_path, stat.S_IWRITE)
+    with pytest.raises(
+        route.DiagCosineExplorationError,
+        match="parent closure member must be read-only",
+    ):
+        route._load_parent_scenario_state(
+            parent_diag_root=root,
+            expected_parent_commit_sha256=commit_sha,
+            enrollment_manifest=enrollment,
+            apply_manifest=apply,
+        )
+    os.chmod(state_path, stat.S_IREAD)
+
     with pytest.raises(route.DiagCosineExplorationError, match="COMMIT SHA256"):
         route._load_parent_scenario_state(
             parent_diag_root=root,
             expected_parent_commit_sha256="f" * 64,
+            enrollment_manifest=enrollment,
+            apply_manifest=apply,
+        )
+
+    os.chmod(receipt_path, stat.S_IWRITE)
+    receipt["phase2_query_class_quota_access"] = True
+    receipt_path.write_text(
+        json.dumps(receipt, sort_keys=True), encoding="utf-8"
+    )
+    os.chmod(receipt_path, stat.S_IREAD)
+    tampered_receipt_sha = hashlib.sha256(receipt_path.read_bytes()).hexdigest()
+    members[1]["sha256"] = tampered_receipt_sha
+    members[1]["size_bytes"] = receipt_path.stat().st_size
+    os.chmod(commit_path, stat.S_IWRITE)
+    commit_path.write_text(
+        json.dumps(
+            {
+                "schema": "cvs.phase2.diag_cosine_exploration_commit.v1",
+                "members": members,
+                "execution_receipt_sha256": tampered_receipt_sha,
+            },
+            sort_keys=True,
+        ),
+        encoding="utf-8",
+    )
+    os.chmod(commit_path, stat.S_IREAD)
+    tampered_commit_sha = hashlib.sha256(commit_path.read_bytes()).hexdigest()
+    with pytest.raises(
+        route.DiagCosineExplorationError,
+        match="parent execution receipt lineage drift",
+    ):
+        route._load_parent_scenario_state(
+            parent_diag_root=root,
+            expected_parent_commit_sha256=tampered_commit_sha,
             enrollment_manifest=enrollment,
             apply_manifest=apply,
         )
@@ -290,6 +377,35 @@ def test_standalone_runner_cli_exposes_d1_b0_cap_candidate():
         ]
     )
     assert args.candidate == route.CANDIDATE_D1_B0_CAP
+
+    d3_args = runner.parser().parse_args(
+        [
+            "--enrollment-package-root",
+            "enrollment",
+            "--enrollment-seal-path",
+            "enrollment.seal.json",
+            "--enrollment-seal-sha256",
+            "a" * 64,
+            "--apply-package-root",
+            "apply",
+            "--apply-seal-path",
+            "apply.seal.json",
+            "--apply-seal-sha256",
+            "b" * 64,
+            "--output-root",
+            "output",
+            "--device",
+            "cpu",
+            "--candidate",
+            route.CANDIDATE_D3_SCENARIO_OLDLOCK_NEWFIT,
+            "--parent-diag-root",
+            "before",
+            "--expected-parent-commit-sha256",
+            "c" * 64,
+        ]
+    )
+    assert d3_args.parent_diag_root == "before"
+    assert d3_args.expected_parent_commit_sha256 == "c" * 64
 
 
 def test_fft_rf_features_are_same_row_gain_normalized_and_128d():
@@ -448,6 +564,9 @@ def test_run_writes_unlabeled_prediction_before_any_scorer(
     assert receipt["resource"]["query_rows_used_for_fit"] == 0
     assert receipt["resource"]["support_enrollment_rows"] == 12
     assert receipt["resource"]["query_backbone_forwards_per_sample"] == 1
+    assert receipt["resource"]["serialized_persistent_state_bytes"] == (
+        output_root / "diag_cosine_state.npz"
+    ).stat().st_size
     assert receipt["candidate"]["name"] == route.CANDIDATE_D1_B0_CAP
     assert receipt["candidate"]["class_bias_enabled"] is False
     assert receipt["candidate"]["auxiliary_weight"] == 4.0

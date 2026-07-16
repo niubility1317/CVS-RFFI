@@ -30,6 +30,8 @@ def parser() -> argparse.ArgumentParser:
     result.add_argument("--output-root", required=True)
     result.add_argument("--device", choices=("cpu", "cuda:0", "cuda:1"), default="cuda:0")
     result.add_argument("--candidate", choices=CANDIDATES, default=CANDIDATES[0])
+    result.add_argument("--parent-diag-root")
+    result.add_argument("--expected-parent-commit-sha256")
     return result
 
 
@@ -45,6 +47,8 @@ def main() -> int:
         output_root=args.output_root,
         device=args.device,
         candidate=args.candidate,
+        parent_diag_root=args.parent_diag_root,
+        expected_parent_commit_sha256=args.expected_parent_commit_sha256,
     )
     print(json.dumps(result, ensure_ascii=True, sort_keys=True))
     return 0

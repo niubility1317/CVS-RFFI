@@ -8,7 +8,10 @@ from pathlib import Path
 import pytest
 
 from cvsrffi.phase2_runtime_contract import PHASE2_FULL_CONTRACT
-from cvsrffi.stage2_diag_cosine_exploration import CANDIDATE_D1_B0_CAP
+from cvsrffi.stage2_diag_cosine_exploration import (
+    CANDIDATE_D1_B0_CAP,
+    CANDIDATE_D3_SCENARIO_OLDLOCK_NEWFIT,
+)
 from scripts import run_cvs_somph_diag_row_pipeline as pipeline
 
 
@@ -73,8 +76,12 @@ def _fake_build(tmp_path: Path) -> dict:
     }
 
 
+@pytest.mark.parametrize(
+    "candidate",
+    [CANDIDATE_D1_B0_CAP, CANDIDATE_D3_SCENARIO_OLDLOCK_NEWFIT],
+)
 def test_pipeline_orders_head_finalization_predictions_then_truth_join(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, candidate: str
 ) -> None:
     inputs = _inputs(tmp_path)
     events: list[str] = []
@@ -149,8 +156,20 @@ def test_pipeline_orders_head_finalization_predictions_then_truth_join(
             else "after"
         )
         events.append(f"diag_{state}")
-        assert kwargs["candidate"] == CANDIDATE_D1_B0_CAP
+        assert kwargs["candidate"] == candidate
         diag_root = Path(kwargs["output_root"])
+        if (
+            candidate == CANDIDATE_D3_SCENARIO_OLDLOCK_NEWFIT
+            and state == "after"
+        ):
+            before_root = diag_root.parent / "before"
+            assert Path(kwargs["parent_diag_root"]) == before_root
+            assert kwargs["expected_parent_commit_sha256"] == (
+                pipeline.sha256_file(before_root / "COMMIT.json")
+            )
+        else:
+            assert "parent_diag_root" not in kwargs
+            assert "expected_parent_commit_sha256" not in kwargs
         prediction = diag_root / "prediction_artifact.npz"
         _readonly(prediction, f"prediction-{state}".encode("ascii"))
         prediction_sha256 = pipeline.sha256_file(prediction)
@@ -195,7 +214,7 @@ def test_pipeline_orders_head_finalization_predictions_then_truth_join(
 
     def fake_score(**kwargs):
         events.append("score")
-        assert kwargs["candidate"] == CANDIDATE_D1_B0_CAP
+        assert kwargs["candidate"] == candidate
         assert Path(kwargs["truth_sidecar_path"]) == Path(built["truth_sidecar"])
         for key in ("before_prediction_path", "after_prediction_path"):
             prediction = Path(kwargs[key])
@@ -229,7 +248,7 @@ def test_pipeline_orders_head_finalization_predictions_then_truth_join(
         k_shot=10,
         new_class_count=10,
         device="cpu",
-        candidate=CANDIDATE_D1_B0_CAP,
+        candidate=candidate,
     )
     assert events == [
         "build",
@@ -258,7 +277,11 @@ def test_pipeline_orders_head_finalization_predictions_then_truth_join(
         assert receipt["states"][state]["execution_receipt_sha256"] == (
             pipeline.sha256_file(diag_root / "execution_receipt.json")
         )
-    assert receipt["candidate"] == CANDIDATE_D1_B0_CAP
+    assert receipt["candidate"] == candidate
+    if candidate == CANDIDATE_D3_SCENARIO_OLDLOCK_NEWFIT:
+        assert receipt["states"]["after"][
+            "parent_before_diag_commit_sha256"
+        ] == receipt["states"]["before"]["diag_commit_sha256"]
 
 
 def test_pipeline_refuses_existing_output_before_build(

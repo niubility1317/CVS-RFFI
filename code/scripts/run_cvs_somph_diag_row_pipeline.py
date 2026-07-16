@@ -30,6 +30,7 @@ from cvsrffi.somph_runtime_request import (  # noqa: E402
 from cvsrffi.stage2_diag_cosine_exploration import (  # noqa: E402
     CANDIDATES,
     CANDIDATE_D1,
+    CANDIDATE_D3_SCENARIO_OLDLOCK_NEWFIT,
     run_diag_cosine_exploration,
 )
 from cvsrffi.stage2_diag_cosine_scorer import (  # noqa: E402
@@ -305,6 +306,17 @@ def run_pipeline(
         runtime = state_runtime[state]
         state_diag_root = diag_root / state
         state_diag_root.mkdir(parents=True, exist_ok=False)
+        diag_kwargs: dict[str, Any] = {}
+        if (
+            candidate == CANDIDATE_D3_SCENARIO_OLDLOCK_NEWFIT
+            and state == "after"
+        ):
+            diag_kwargs = {
+                "parent_diag_root": diag_root / "before",
+                "expected_parent_commit_sha256": diag_bindings["before"][
+                    "diag_commit_sha256"
+                ],
+            }
         diag_results[state] = run_diag_cosine_exploration(
             enrollment_package_root=state_build[
                 "enrollment_package_root"
@@ -323,6 +335,7 @@ def run_pipeline(
             output_root=state_diag_root,
             device=device,
             candidate=candidate,
+            **diag_kwargs,
         )
         prediction_paths[state] = state_diag_root / "prediction_artifact.npz"
         diag_bindings[state] = _bind_diag_commit(
@@ -399,6 +412,19 @@ def run_pipeline(
                 "execution_receipt_sha256": diag_bindings[state][
                     "execution_receipt_sha256"
                 ],
+                **(
+                    {
+                        "parent_before_diag_commit_sha256": diag_bindings[
+                            "before"
+                        ]["diag_commit_sha256"]
+                    }
+                    if (
+                        state == "after"
+                        and candidate
+                        == CANDIDATE_D3_SCENARIO_OLDLOCK_NEWFIT
+                    )
+                    else {}
+                ),
             }
             for state in ("before", "after")
         },
