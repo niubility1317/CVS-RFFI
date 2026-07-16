@@ -29,7 +29,7 @@ for value in (str(CODE_ROOT), str(REPO_ROOT)):
 for value in (str(REPO_ROOT), str(CODE_ROOT)):
     sys.path.insert(0, value)
 
-from baseline_origin_sat_view import sat_channel_config_for_scenario  # noqa: E402
+from training_controls import sat_channel_config_for_scenario  # noqa: E402
 from cvsrffi.leo_weak_cache import (  # noqa: E402
     FORMAL_LEO_WEAK_SCENARIOS,
     LEO_WEAK_CACHE_SCHEMA,
