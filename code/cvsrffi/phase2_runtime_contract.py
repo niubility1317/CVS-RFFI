@@ -142,12 +142,6 @@ FORBIDDEN_PREDICTOR_VALUE_TOKENS = (
     "manytx",
 )
 
-# The adaptive TTA runtime requires this guard in its config.  It may cross the
-# predictor boundary only as a literal negative declaration.
-NEGATIVE_ONLY_PREDICTOR_GUARD_KEYS = frozenset(
-    {"uses_class_quota", "uses_query_role"}
-)
-
 
 class Phase2ContractError(ValueError):
     """Raised before Phase2 sample materialization when a contract fails."""
@@ -354,8 +348,7 @@ def validate_predictor_request(request: Mapping[str, Any]) -> None:
         if key not in PHASE2_FULL_CONTRACT and any(
             token in lowered_key for token in FORBIDDEN_PREDICTOR_KEY_TOKENS
         ):
-            if key not in NEGATIVE_ONLY_PREDICTOR_GUARD_KEYS or value is not False:
-                raise Phase2ContractError(f"forbidden_predictor_key:{path}")
+            raise Phase2ContractError(f"forbidden_predictor_key:{path}")
         if isinstance(value, str):
             lowered_value = value.lower()
             if any(token in lowered_value for token in FORBIDDEN_PREDICTOR_VALUE_TOKENS):

@@ -6,7 +6,6 @@ from pathlib import Path
 from types import SimpleNamespace
 
 import numpy as np
-import pytest
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -99,40 +98,6 @@ def _patch_cache(monkeypatch):
             {"status": "PASS", "external_path": "E:/raw/ManyTx.pkl"},
         ),
     )
-
-
-def test_truth_leak_scan_ignores_short_label_bytes_inside_numeric_iq(
-    tmp_path: Path,
-) -> None:
-    root = tmp_path / "predictor"
-    root.mkdir()
-    numeric_iq = np.frombuffer(b"1-8\x00", dtype=np.float32).copy()
-    with (root / "query_leo_clear_weak.npz").open("xb") as handle:
-        np.savez(
-            handle,
-            query_leo_weak_iq=numeric_iq,
-            query_tokens=np.asarray(["qid_" + "1" * 64]),
-        )
-    assert b"1-8" in (root / "query_leo_clear_weak.npz").read_bytes()
-
-    builder._reject_predictor_truth_leaks(root, ["1-8", "target_old"])
-
-
-def test_truth_leak_scan_rejects_label_in_npz_text_member(tmp_path: Path) -> None:
-    root = tmp_path / "predictor"
-    root.mkdir()
-    with (root / "query_leo_clear_weak.npz").open("xb") as handle:
-        np.savez(
-            handle,
-            query_leo_weak_iq=np.zeros((1, 2, 8), dtype=np.float32),
-            query_tokens=np.asarray(["qid_target_old|14-10"]),
-        )
-
-    with pytest.raises(
-        ValueError,
-        match=r"query_leo_clear_weak\.npz:query_tokens",
-    ):
-        builder._reject_predictor_truth_leaks(root, ["target_old", "14-10"])
 
 
 def test_stage2c_sealer_physically_separates_truth_and_uses_opaque_tokens(

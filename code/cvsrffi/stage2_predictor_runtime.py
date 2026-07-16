@@ -12,17 +12,10 @@ import numpy as np
 import torch
 
 from cvsrffi.stage2_predictor_bundle import open_regular_member_same_fd
-from cvsrffi.phase2_symmetric_head import (
-    fit_locked_symmetric_head,
-    score_locked_symmetric_head,
-    score_locked_symmetric_head_with_raw,
-)
 
 
 ADAPTER_SCHEMA = "cvs.phase2.feature_adapter.v1"
 HEAD_SCHEMA = "cvs.phase2.prototype_head.v1"
-SYMMETRIC_HEAD_SCHEMA_V1 = "cvs.phase2.symmetric_locked_head.v1"
-SYMMETRIC_HEAD_SCHEMA_V2 = "cvs.phase2.symmetric_evidence_head.v2"
 TTA_SCHEMA = "cvs.phase2.adaptive_rxlight_tta.v1"
 RX_LIGHT5_ORDER = (
     "rx_base",
@@ -30,15 +23,6 @@ RX_LIGHT5_ORDER = (
     "rx_shift_p2",
     "rx_cfo_m1e4",
     "rx_cfo_p1e4",
-)
-SYMMETRIC_HEAD_STATE_ARRAYS = (
-    "prototypes",
-    "score_transform",
-    "class_bias",
-    "alignment_scale",
-    "alignment_bias",
-    "evidence_bias",
-    "evidence_scale",
 )
 
 
@@ -86,10 +70,7 @@ def load_torchscript_backbone_same_fd(
     *,
     device: torch.device,
 ) -> torch.jit.ScriptModule:
-    if descriptor.get("schema") not in {
-        "adv3b02.torchscript_identity_runtime.v1",
-        "adv3b02.torchscript_effective8_merged_runtime.v1",
-    }:
+    if descriptor.get("schema") != "adv3b02.torchscript_identity_runtime.v1":
         raise Stage2PredictorRuntimeError("checkpoint is not a sealed ADV3B02 TorchScript runtime")
     with open_regular_member_same_fd(
         Path(package_root), str(descriptor["relative_path"])
@@ -186,88 +167,6 @@ def validate_head_config(config: Mapping[str, Any]) -> None:
         raise Stage2PredictorRuntimeError("prototype temperature must be positive and finite")
 
 
-def validate_symmetric_head_config(config: Mapping[str, Any], *, feature_dim: int) -> None:
-    required = {
-        "schema",
-        "mode",
-        "selected",
-        "source_feature_mean",
-        "source_feature_std",
-        "variance_floor",
-        "storage_dtype",
-    }
-    if set(config) != required:
-        raise Stage2PredictorRuntimeError("symmetric head exact schema drift")
-    identity = (config.get("schema"), config.get("mode"))
-    if identity not in {
-        (SYMMETRIC_HEAD_SCHEMA_V1, "three_leo_support_symmetric_locked"),
-        (SYMMETRIC_HEAD_SCHEMA_V2, "three_leo_support_symmetric_evidence_locked"),
-    } or config.get("storage_dtype") != "fp16":
-        raise Stage2PredictorRuntimeError("symmetric head identity drift")
-    selected = config.get("selected")
-    base_selected = {
-        "use_alignment",
-        "prototype_rule",
-        "ridge",
-        "gram_mix",
-        "uncertainty_penalty",
-    }
-    if not isinstance(selected, Mapping):
-        raise Stage2PredictorRuntimeError("symmetric head locked selection drift")
-    if identity[0] == SYMMETRIC_HEAD_SCHEMA_V1:
-        if set(selected) != base_selected:
-            raise Stage2PredictorRuntimeError("symmetric head locked selection drift")
-    else:
-        if set(selected) != base_selected | {"evidence_calibration"}:
-            raise Stage2PredictorRuntimeError("symmetric evidence-head selection drift")
-        evidence = selected.get("evidence_calibration")
-        if not isinstance(evidence, Mapping) or set(evidence) != {
-            "mode",
-            "negative_quantile",
-            "prior_physical_shots",
-            "scale_floor",
-            "inverse_scale_cap",
-        }:
-            raise Stage2PredictorRuntimeError("symmetric evidence-head calibration drift")
-        if evidence.get("mode") != "robust_lopo_class_symmetric":
-            raise Stage2PredictorRuntimeError("symmetric evidence-head mode drift")
-        numeric = {
-            key: evidence.get(key)
-            for key in (
-                "negative_quantile",
-                "prior_physical_shots",
-                "scale_floor",
-                "inverse_scale_cap",
-            )
-        }
-        if any(
-            not isinstance(value, (int, float)) or not np.isfinite(float(value))
-            for value in numeric.values()
-        ):
-            raise Stage2PredictorRuntimeError("symmetric evidence-head value drift")
-        if (
-            not 0.5 <= float(numeric["negative_quantile"]) < 1.0
-            or float(numeric["prior_physical_shots"]) <= 0.0
-            or not 0.0 < float(numeric["scale_floor"]) <= 2.0
-            or float(numeric["inverse_scale_cap"]) < 1.0
-        ):
-            raise Stage2PredictorRuntimeError("symmetric evidence-head bound drift")
-        if (
-            selected.get("use_alignment") is not False
-            or selected.get("ridge") is not None
-            or selected.get("gram_mix") != 0.0
-            or selected.get("uncertainty_penalty") != 0.0
-        ):
-            raise Stage2PredictorRuntimeError("symmetric evidence-head base transform drift")
-    for field in ("source_feature_mean", "source_feature_std"):
-        value = np.asarray(config[field], dtype=np.float32)
-        if value.shape != (feature_dim,) or not np.isfinite(value).all():
-            raise Stage2PredictorRuntimeError(f"symmetric head source statistic drift: {field}")
-    floor = config.get("variance_floor")
-    if not isinstance(floor, (int, float)) or not 0.0 < float(floor) <= 1.0:
-        raise Stage2PredictorRuntimeError("symmetric head variance floor drift")
-
-
 def validate_tta_config(config: Mapping[str, Any]) -> None:
     common = {"schema", "mode", "base_views", "max_views"}
     mode = config.get("mode")
@@ -276,7 +175,7 @@ def validate_tta_config(config: Mapping[str, Any]) -> None:
         if config.get("base_views") != 1 or config.get("max_views") != 1:
             raise Stage2PredictorRuntimeError("base-only TTA count drift")
     elif mode == "adaptive_1_3_5":
-        legacy_expected = common | {
+        expected = common | {
             "base_stop_margin",
             "shift3_stop_margin",
             "shift3_max_disagreement",
@@ -284,11 +183,6 @@ def validate_tta_config(config: Mapping[str, Any]) -> None:
             "uses_query_labels",
             "uses_query_role",
             "uses_class_quota",
-        }
-        expected = legacy_expected | {
-            "base_stop_min_score",
-            "shift3_stop_min_score",
-            "fusion_std_penalty",
         }
         if config.get("base_views") != 1 or config.get("max_views") != 5:
             raise Stage2PredictorRuntimeError("adaptive TTA count drift")
@@ -310,22 +204,6 @@ def validate_tta_config(config: Mapping[str, Any]) -> None:
                 float(config[key])
             ):
                 raise Stage2PredictorRuntimeError(f"adaptive TTA threshold drift: {key}")
-        if set(config) == expected:
-            for key in (
-                "base_stop_min_score",
-                "shift3_stop_min_score",
-                "fusion_std_penalty",
-            ):
-                if not isinstance(config.get(key), (int, float)) or not np.isfinite(
-                    float(config[key])
-                ):
-                    raise Stage2PredictorRuntimeError(f"adaptive TTA threshold drift: {key}")
-            if float(config["fusion_std_penalty"]) < 0.0:
-                raise Stage2PredictorRuntimeError("adaptive TTA fusion penalty must be nonnegative")
-        elif set(config) == legacy_expected:
-            expected = legacy_expected
-        else:
-            raise Stage2PredictorRuntimeError("adaptive TTA exact schema drift")
     else:
         raise Stage2PredictorRuntimeError("unsupported TTA mode")
     if set(config) != expected or config.get("schema") != TTA_SCHEMA:
@@ -350,16 +228,6 @@ def select_nested_support_prefix(
     return iq[mask], selected_labels, tokens[mask]
 
 
-def _float32_tensor_without_numpy_bridge(
-    rows: np.ndarray, *, device: torch.device
-) -> torch.Tensor:
-    """Copy an ndarray into Torch without using NumPy's C-API bridge."""
-    array = np.ascontiguousarray(rows, dtype=np.float32)
-    owner = bytearray(array.tobytes(order="C"))
-    tensor = torch.frombuffer(owner, dtype=torch.float32).clone().reshape(array.shape)
-    return tensor.to(device)
-
-
 def _runtime_forward(
     model: torch.nn.Module,
     rows: np.ndarray,
@@ -372,9 +240,7 @@ def _runtime_forward(
     model.eval()
     with torch.no_grad():
         for start in range(0, len(rows), int(batch_size)):
-            batch = _float32_tensor_without_numpy_bridge(
-                rows[start : start + batch_size], device=device
-            )
+            batch = torch.from_numpy(np.asarray(rows[start : start + batch_size], dtype=np.float32)).to(device)
             output = model(batch)
             if isinstance(output, dict):
                 feature_value = output.get("features")
@@ -468,328 +334,6 @@ def _prototypes(features: np.ndarray, labels: np.ndarray, class_count: int) -> n
 
 def _scores(features: np.ndarray, prototypes: np.ndarray, temperature: float) -> np.ndarray:
     return (_normalize(features) @ prototypes.T * float(temperature)).astype(np.float32)
-
-
-def _fuse_view_scores(view_scores: np.ndarray, *, std_penalty: float) -> np.ndarray:
-    values = np.asarray(view_scores, dtype=np.float32)
-    if values.ndim != 3 or not np.isfinite(values).all():
-        raise Stage2PredictorRuntimeError("view-score fusion requires finite [N,V,C]")
-    penalty = float(std_penalty)
-    if penalty < 0.0 or not np.isfinite(penalty):
-        raise Stage2PredictorRuntimeError("view-score fusion penalty is invalid")
-    return (values.mean(axis=1) - penalty * values.std(axis=1)).astype(np.float32)
-
-
-def _top1(scores: np.ndarray) -> np.ndarray:
-    return np.max(np.asarray(scores, dtype=np.float32), axis=1).astype(np.float32)
-
-
-def build_formal_support_state(
-    candidate_model: torch.nn.Module,
-    base_model: torch.nn.Module,
-    support_by_scenario: Mapping[str, Mapping[str, np.ndarray]],
-    *,
-    scenarios: Sequence[str],
-    k_shot: int,
-    registered_class_count: int,
-    new_class_count: int,
-    adapter_config: Mapping[str, Any],
-    head_config: Mapping[str, Any],
-    device: torch.device,
-    batch_size: int,
-) -> dict[str, Any]:
-    """Fit the source-locked candidate head from three LEO support views."""
-
-    old_class_count = int(registered_class_count) - int(new_class_count)
-    if old_class_count < 1 or tuple(scenarios) != tuple(support_by_scenario):
-        raise Stage2PredictorRuntimeError("formal support scenario/class contract drift")
-    candidate_observations: list[np.ndarray] = []
-    identity_by_scenario: dict[str, dict[str, np.ndarray]] = {}
-    reference_tokens: np.ndarray | None = None
-    for scenario in scenarios:
-        support_iq, support_y, support_tokens = select_nested_support_prefix(
-            support_by_scenario[scenario],
-            k_shot=int(k_shot),
-            class_count=int(registered_class_count),
-        )
-        if reference_tokens is None:
-            reference_tokens = support_tokens
-        elif not np.array_equal(reference_tokens, support_tokens):
-            raise Stage2PredictorRuntimeError("physical support tokens drift across scenarios")
-        candidate_raw, _ = _runtime_forward(
-            candidate_model, support_iq, device=device, batch_size=int(batch_size)
-        )
-        base_raw, _ = _runtime_forward(
-            base_model, support_iq, device=device, batch_size=int(batch_size)
-        )
-        candidate_joint = apply_feature_adapter(candidate_raw, support_iq, adapter_config)
-        identity_joint = apply_feature_adapter(base_raw, support_iq, adapter_config)
-        expected = (int(registered_class_count) * int(k_shot), candidate_joint.shape[1])
-        if candidate_joint.shape != expected or identity_joint.shape != expected:
-            raise Stage2PredictorRuntimeError("formal support feature shape drift")
-        candidate_observations.append(
-            candidate_joint.reshape(int(registered_class_count), int(k_shot), -1).transpose(1, 0, 2)
-        )
-        identity_by_scenario[str(scenario)] = {
-            "after": _prototypes(identity_joint, support_y, int(registered_class_count)),
-            "before": _prototypes(identity_joint, support_y, int(registered_class_count))[
-                :old_class_count
-            ],
-        }
-    observations = np.concatenate(candidate_observations, axis=0).astype(np.float32)
-    validate_symmetric_head_config(head_config, feature_dim=observations.shape[-1])
-    selected = dict(head_config["selected"])
-    head_kwargs = {
-        "physical_shots_per_class": int(k_shot),
-        "selected": selected,
-        "source_mean": np.asarray(head_config["source_feature_mean"], dtype=np.float32),
-        "source_std": np.asarray(head_config["source_feature_std"], dtype=np.float32),
-        "variance_floor": float(head_config["variance_floor"]),
-    }
-    candidate_after = fit_locked_symmetric_head(observations, **head_kwargs)
-    candidate_before = fit_locked_symmetric_head(
-        observations[:, :old_class_count, :], **head_kwargs
-    )
-    support_state = {
-        "candidate_after": candidate_after,
-        "candidate_before": candidate_before,
-        "identity_by_scenario": identity_by_scenario,
-        "support_enrollment_backbone_forwards": int(
-            2 * len(scenarios) * int(registered_class_count) * int(k_shot)
-        ),
-    }
-    after_evidence = candidate_after.get("evidence_diagnostics")
-    before_evidence = candidate_before.get("evidence_diagnostics")
-    if after_evidence is not None or before_evidence is not None:
-        if after_evidence is None or before_evidence is None:
-            raise Stage2PredictorRuntimeError("formal evidence head state is asymmetric")
-
-        def payload_bytes(head: Mapping[str, Any], *, dtype: np.dtype) -> int:
-            itemsize = int(np.dtype(dtype).itemsize)
-            return int(
-                sum(
-                    np.asarray(head[name]).size * itemsize
-                    for name in SYMMETRIC_HEAD_STATE_ARRAYS
-                    if head.get(name) is not None
-                )
-            )
-
-        after_head_fp16 = payload_bytes(candidate_after, dtype=np.float16)
-        before_head_fp16 = payload_bytes(candidate_before, dtype=np.float16)
-        after_head_live = payload_bytes(candidate_after, dtype=np.float32)
-        before_head_live = payload_bytes(candidate_before, dtype=np.float32)
-        after_evidence_fp16 = int(after_evidence["state_bytes_fp16"])
-        before_evidence_fp16 = int(before_evidence["state_bytes_fp16"])
-        deployment_total = int(adapter_config["persistent_state_bytes"]) + after_head_fp16
-        if deployment_total > 256 * 1024:
-            raise Stage2PredictorRuntimeError(
-                "formal adapter plus deployment head exceeds persistent-state bound"
-            )
-        support_state.update(
-            {
-                "candidate_head_deployment_state_bytes_fp16": after_head_fp16,
-                "candidate_head_evaluation_comparator_state_bytes_fp16": before_head_fp16,
-                "candidate_head_formal_dual_stream_state_bytes_fp16": (
-                    after_head_fp16 + before_head_fp16
-                ),
-                "candidate_head_deployment_live_array_bytes": after_head_live,
-                "candidate_head_evaluation_comparator_live_array_bytes": (
-                    before_head_live
-                ),
-                "candidate_head_formal_dual_stream_live_array_bytes": (
-                    after_head_live + before_head_live
-                ),
-                # Compatibility alias. This is the formal dual-stream total,
-                # not the deployment-only live-array footprint.
-                "candidate_head_live_array_bytes": after_head_live + before_head_live,
-                "candidate_head_evidence_deployment_state_bytes_fp16": (
-                    after_evidence_fp16
-                ),
-                "candidate_head_evidence_evaluation_comparator_state_bytes_fp16": (
-                    before_evidence_fp16
-                ),
-                "candidate_head_evidence_formal_dual_stream_state_bytes_fp16": (
-                    after_evidence_fp16 + before_evidence_fp16
-                ),
-                "persistent_state_bytes_total": deployment_total,
-                "formal_dual_stream_persistent_state_bytes_total": int(
-                    adapter_config["persistent_state_bytes"]
-                )
-                + after_head_fp16
-                + before_head_fp16,
-            }
-        )
-    return support_state
-
-
-def predict_formal_scenario_streams(
-    candidate_model: torch.nn.Module,
-    base_model: torch.nn.Module,
-    query_arrays: Mapping[str, np.ndarray],
-    support_state: Mapping[str, Any],
-    *,
-    scenario: str,
-    old_class_count: int,
-    adapter_config: Mapping[str, Any],
-    tta_config: Mapping[str, Any],
-    device: torch.device,
-    batch_size: int,
-) -> tuple[dict[str, np.ndarray], dict[str, Any]]:
-    """Run effective8 candidate, identity qKNN, and strict direct streams."""
-
-    validate_tta_config(tta_config)
-    if not {
-        "base_stop_min_score",
-        "shift3_stop_min_score",
-        "fusion_std_penalty",
-    }.issubset(tta_config):
-        raise Stage2PredictorRuntimeError("formal effective8 TTA lacks six-threshold lock")
-    query_iq = np.asarray(query_arrays["query_leo_weak_iq"], dtype=np.float32)
-    started = time.perf_counter()
-    candidate_raw, _ = _runtime_forward(
-        candidate_model, query_iq, device=device, batch_size=int(batch_size)
-    )
-    base_raw, direct_logits = _runtime_forward(
-        base_model, query_iq, device=device, batch_size=int(batch_size)
-    )
-    if direct_logits.shape[1] < int(old_class_count):
-        raise Stage2PredictorRuntimeError("strict direct ADV3B02 old-head width drift")
-    candidate_joint = apply_feature_adapter(candidate_raw, query_iq, adapter_config)
-    identity_joint = apply_feature_adapter(base_raw, query_iq, adapter_config)
-    after_head = support_state["candidate_after"]
-    before_head = support_state["candidate_before"]
-    base_after, gate_base_after = score_locked_symmetric_head_with_raw(
-        candidate_joint, after_head
-    )
-    base_before = score_locked_symmetric_head(candidate_joint, before_head)
-    selected_after = base_after.copy()
-    selected_before = base_before.copy()
-    counts = np.ones(len(query_iq), dtype=np.int64)
-    if tta_config["mode"] == "adaptive_1_3_5":
-        shift_indices = np.flatnonzero(
-            (_margin(gate_base_after) < float(tta_config["base_stop_margin"]))
-            | (_top1(gate_base_after) < float(tta_config["base_stop_min_score"]))
-        ).astype(np.int64)
-        cfo_indices = np.empty(0, dtype=np.int64)
-        shift_after_by_row: dict[int, np.ndarray] = {}
-        shift_before_by_row: dict[int, np.ndarray] = {}
-        if len(shift_indices):
-            view_rows = _receive_views(query_iq[shift_indices], ("rx_shift_m2", "rx_shift_p2"))
-            after_parts = [base_after[shift_indices]]
-            gate_after_parts = [gate_base_after[shift_indices]]
-            before_parts = [base_before[shift_indices]]
-            for name in ("rx_shift_m2", "rx_shift_p2"):
-                rows = view_rows[name]
-                raw, _ = _runtime_forward(
-                    candidate_model, rows, device=device, batch_size=int(batch_size)
-                )
-                joint = apply_feature_adapter(raw, rows, adapter_config)
-                after_score, gate_after_score = score_locked_symmetric_head_with_raw(
-                    joint, after_head
-                )
-                after_parts.append(after_score)
-                gate_after_parts.append(gate_after_score)
-                before_parts.append(score_locked_symmetric_head(joint, before_head))
-            shift_after = np.stack(after_parts, axis=1)
-            shift_gate_after = np.stack(gate_after_parts, axis=1)
-            shift_before = np.stack(before_parts, axis=1)
-            fused_after = _fuse_view_scores(
-                shift_after, std_penalty=float(tta_config["fusion_std_penalty"])
-            )
-            fused_before = _fuse_view_scores(
-                shift_before, std_penalty=float(tta_config["fusion_std_penalty"])
-            )
-            fused_gate_after = _fuse_view_scores(
-                shift_gate_after, std_penalty=float(tta_config["fusion_std_penalty"])
-            )
-            predictions = np.argmax(shift_gate_after, axis=2)
-            consensus = np.argmax(fused_gate_after, axis=1)
-            disagreement = np.mean(predictions != consensus[:, None], axis=1)
-            needs_cfo = (
-                (_margin(fused_gate_after) < float(tta_config["shift3_stop_margin"]))
-                | (_top1(fused_gate_after) < float(tta_config["shift3_stop_min_score"]))
-                | (disagreement > float(tta_config["shift3_max_disagreement"]))
-            )
-            selected_after[shift_indices] = fused_after
-            selected_before[shift_indices] = fused_before
-            counts[shift_indices] = 3
-            cfo_indices = shift_indices[needs_cfo]
-            for local, row_index in enumerate(shift_indices.tolist()):
-                if needs_cfo[local]:
-                    shift_after_by_row[int(row_index)] = shift_after[local]
-                    shift_before_by_row[int(row_index)] = shift_before[local]
-        if len(cfo_indices):
-            view_rows = _receive_views(query_iq[cfo_indices], ("rx_cfo_m1e4", "rx_cfo_p1e4"))
-            cfo_after: list[np.ndarray] = []
-            cfo_before: list[np.ndarray] = []
-            for name in ("rx_cfo_m1e4", "rx_cfo_p1e4"):
-                rows = view_rows[name]
-                raw, _ = _runtime_forward(
-                    candidate_model, rows, device=device, batch_size=int(batch_size)
-                )
-                joint = apply_feature_adapter(raw, rows, adapter_config)
-                cfo_after.append(score_locked_symmetric_head(joint, after_head))
-                cfo_before.append(score_locked_symmetric_head(joint, before_head))
-            for local, row_index in enumerate(cfo_indices.tolist()):
-                selected_after[row_index] = _fuse_view_scores(
-                    np.concatenate(
-                        [shift_after_by_row[row_index], np.stack(cfo_after, axis=1)[local]], axis=0
-                    )[None, :, :],
-                    std_penalty=float(tta_config["fusion_std_penalty"]),
-                )[0]
-                selected_before[row_index] = _fuse_view_scores(
-                    np.concatenate(
-                        [shift_before_by_row[row_index], np.stack(cfo_before, axis=1)[local]], axis=0
-                    )[None, :, :],
-                    std_penalty=float(tta_config["fusion_std_penalty"]),
-                )[0]
-            counts[cfo_indices] = 5
-    identity = support_state["identity_by_scenario"][str(scenario)]
-    identity_after_scores = _scores(identity_joint, identity["after"], 1.0)
-    identity_before_scores = _scores(identity_joint, identity["before"], 1.0)
-    outputs = {
-        "candidate_after": np.argmax(selected_after, axis=1).astype(np.int64),
-        "candidate_before": np.argmax(selected_before, axis=1).astype(np.int64),
-        "identity_after": np.argmax(identity_after_scores, axis=1).astype(np.int64),
-        "identity_before": np.argmax(identity_before_scores, axis=1).astype(np.int64),
-        "direct": np.argmax(direct_logits[:, : int(old_class_count)], axis=1).astype(np.int64),
-        "shared_view_counts": counts,
-    }
-    evidence_diagnostics = after_head.get("evidence_diagnostics")
-    resources = {
-        "candidate_query_latency_ms": float(
-            1000.0 * (time.perf_counter() - started) / max(len(query_iq), 1)
-        ),
-        "support_enrollment_backbone_forwards": int(
-            support_state["support_enrollment_backbone_forwards"]
-        ),
-        "query_backbone_forwards": int(np.sum(counts) + len(query_iq)),
-        "fft_descriptor_count": int(np.sum(counts) + len(query_iq)),
-        "candidate_and_base_runtimes_distinct": True,
-        "candidate_head": (
-            "three_leo_support_symmetric_evidence_locked_fp16"
-            if evidence_diagnostics is not None
-            else "three_leo_support_symmetric_locked_fp16"
-        ),
-    }
-    if evidence_diagnostics is not None:
-        resources["candidate_head_closed_form_diagnostics"] = evidence_diagnostics
-        for name in (
-            "candidate_head_deployment_state_bytes_fp16",
-            "candidate_head_evaluation_comparator_state_bytes_fp16",
-            "candidate_head_formal_dual_stream_state_bytes_fp16",
-            "candidate_head_deployment_live_array_bytes",
-            "candidate_head_evaluation_comparator_live_array_bytes",
-            "candidate_head_formal_dual_stream_live_array_bytes",
-            "candidate_head_live_array_bytes",
-            "candidate_head_evidence_deployment_state_bytes_fp16",
-            "candidate_head_evidence_evaluation_comparator_state_bytes_fp16",
-            "candidate_head_evidence_formal_dual_stream_state_bytes_fp16",
-            "persistent_state_bytes_total",
-            "formal_dual_stream_persistent_state_bytes_total",
-        ):
-            resources[name] = int(support_state[name])
-    return outputs, resources
 
 
 def _margin(scores: np.ndarray) -> np.ndarray:

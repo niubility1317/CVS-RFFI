@@ -82,15 +82,7 @@ def _fixture(tmp_path: Path):
         ("checkpoint", "checkpoint.bin", b"checkpoint"),
         ("adapter", "adapter.bin", b"adapter"),
         ("head", "head.bin", b"head"),
-        (
-            "tta_policy",
-            "tta.json",
-            (
-                b'{"base_views":1,"max_views":5,'
-                b'"uses_query_labels":false,"uses_query_role":false,'
-                b'"uses_class_quota":false}'
-            ),
-        ),
+        ("tta_policy", "tta.json", b'{"base_views":1,"max_views":5}'),
     ):
         path = root / filename
         path.write_bytes(payload)
@@ -185,20 +177,3 @@ def test_request_refuses_overwrite(tmp_path: Path) -> None:
     request_builder.build_request(args)
     with pytest.raises(FileExistsError):
         request_builder.build_request(args)
-
-
-@pytest.mark.parametrize("field", ("uses_query_role", "uses_class_quota"))
-def test_request_allows_only_negative_nested_forbidden_guard(
-    tmp_path: Path, field: str
-) -> None:
-    args, _evidence = _fixture(tmp_path)
-    result = request_builder.build_request(args)
-    request = json.loads(Path(result["request_json"]).read_text(encoding="utf-8"))
-    assert request["tta_policy"][field] is False
-
-    request["tta_policy"][field] = True
-    with pytest.raises(
-        ValueError,
-        match=rf"forbidden_predictor_key:request.tta_policy.{field}",
-    ):
-        validate_predictor_request(request)

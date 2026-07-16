@@ -20,27 +20,15 @@ if str(CODE_ROOT) not in sys.path:
     sys.path.insert(0, str(CODE_ROOT))
 
 from cvsrffi.phase2_runtime_contract import validate_predictor_request  # noqa: E402
-from cvsrffi.phase2_memfd_snapshot import (  # noqa: E402
-    open_pinned_special,
-    pinned_input_mode_active,
-)
 from cvsrffi.stage2_prediction_artifact import (  # noqa: E402
     publish_prediction_artifact,
     verify_prediction_artifact,
 )
-from cvsrffi.stage2_predictor_bundle import sha256_bytes, sha256_file  # noqa: E402
+from cvsrffi.stage2_predictor_bundle import sha256_file  # noqa: E402
 from cvsrffi.stage2_predictor_entry import prepare_role_blind_prediction  # noqa: E402
 
 
-def _read_request(path: Path) -> tuple[dict[str, Any], str]:
-    if pinned_input_mode_active():
-        with open_pinned_special("request") as handle:
-            raw = handle.read()
-        payload = json.loads(raw.decode("utf-8-sig"))
-        if not isinstance(payload, dict):
-            raise ValueError("predictor request root must be an object")
-        validate_predictor_request(payload)
-        return payload, sha256_bytes(raw)
+def _read_request(path: Path) -> dict[str, Any]:
     before = path.lstat()
     if stat.S_ISLNK(before.st_mode) or not stat.S_ISREG(before.st_mode):
         raise ValueError("predictor request must be a regular non-symlink file")
@@ -68,7 +56,7 @@ def _read_request(path: Path) -> tuple[dict[str, Any], str]:
     # The request is the only file read before this validation.  Package/seal,
     # runtime artifacts and IQ remain untouched until it passes.
     validate_predictor_request(payload)
-    return payload, sha256_bytes(raw)
+    return payload
 
 
 def _class_handle_predictions(
@@ -113,26 +101,14 @@ def _write_readonly_json_new(path: Path, payload: Mapping[str, Any]) -> str:
     return sha256_file(path)
 
 
-def _prepare_device(requested: str) -> torch.device:
-    if torch.cuda.is_available() and requested.startswith("cuda"):
-        device = torch.device(requested)
-        torch.cuda.init()
-        torch.cuda.set_device(device)
-        # torch.cuda.init() initializes PyTorch's CUDA state but does not
-        # guarantee that the caching allocator has created the selected-device
-        # context.  Peak-memory APIs require that allocator context, so create
-        # and immediately release one scalar before resetting the counters.
-        warmup = torch.empty(1, device=device)
-        del warmup
-        torch.cuda.reset_peak_memory_stats(device)
-        return device
-    return torch.device("cpu")
-
-
 def run(args: argparse.Namespace) -> dict[str, Any]:
     request_path = Path(args.request_json)
-    request, request_sha256 = _read_request(request_path)
-    device = _prepare_device(str(args.device))
+    request = _read_request(request_path)
+    if torch.cuda.is_available() and str(args.device).startswith("cuda"):
+        device = torch.device(str(args.device))
+        torch.cuda.reset_peak_memory_stats(device)
+    else:
+        device = torch.device("cpu")
     payload, metadata, audit = prepare_role_blind_prediction(
         request,
         predictor_package_root=args.predictor_package_root,
@@ -179,7 +155,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
             "peak_cuda_memory_bytes": (
                 int(torch.cuda.max_memory_allocated(device)) if device.type == "cuda" else 0
             ),
-            "request_sha256": request_sha256,
+            "request_sha256": sha256_file(request_path),
             "prediction_artifact_sha256": published["artifact_sha256"],
             "prediction_seal_sha256": published["seal_sha256"],
         }
@@ -189,7 +165,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
     audit_receipt = {
         "schema": "cvs.phase2.predictor_execution_audit.v2",
         "status": "PASS",
-        "request_sha256": request_sha256,
+        "request_sha256": sha256_file(request_path),
         "prediction_artifact_sha256": published["artifact_sha256"],
         "prediction_seal_sha256": published["seal_sha256"],
         "predictor_resource_receipt_sha256": resource_sha256,
@@ -206,7 +182,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
     return {
         **published,
         "verified_artifact_sha256": verified["artifact_sha256"],
-        "request_sha256": request_sha256,
+        "request_sha256": sha256_file(request_path),
         "predictor_resource_receipt": str(resource_path),
         "predictor_resource_receipt_sha256": resource_sha256,
         "predictor_execution_audit": str(audit_path),

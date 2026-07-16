@@ -171,9 +171,9 @@ def _audit_head_and_tta_policy(
         "base_stop_margin": thresholds.get("base_stop_margin"),
         "shift3_stop_margin": thresholds.get("shift3_stop_margin"),
         "shift3_max_disagreement": thresholds.get("shift3_max_disagreement"),
-        "base_stop_min_score": thresholds.get("base_stop_min_score", -1.0e9),
-        "shift3_stop_min_score": thresholds.get("shift3_stop_min_score", -1.0e9),
-        "fusion_std_penalty": thresholds.get("fusion_std_penalty", 0.0),
+        "base_stop_min_score": thresholds.get("base_stop_min_score"),
+        "shift3_stop_min_score": thresholds.get("shift3_stop_min_score"),
+        "fusion_std_penalty": thresholds.get("fusion_std_penalty"),
         "calibration_scope": "source_validation",
         "uses_query_labels": False,
         "uses_query_role": False,
@@ -283,7 +283,7 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
             "candidate_runtime_not_counted_as_incremental_state": True,
             "delta_rebuild_and_parity_required": True,
             "full_merged_runtime_persisted_as_extra_copy": False,
-            "deployment_install_evidence_status": "PASS",
+            "deployment_install_evidence_status": "UNVERIFIED",
         },
     }
     payload["payload_sha256"] = canonical_sha256(payload)

@@ -43,26 +43,16 @@ PARITY_SCHEMA = "cvs.adv3b02_effective8_torchscript_parity.v1"
 class ADV3B02IdentityRuntime(nn.Module):
     """Expose only the z_id feature and old-class logits used by strict qKNN."""
 
-    def __init__(self, model: nn.Module, *, runtime_batch_size: int = 256) -> None:
+    def __init__(self, model: nn.Module) -> None:
         super().__init__()
         self.model = model
-        self.runtime_batch_size = int(runtime_batch_size)
 
     def forward(self, rows: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
-        # ADV3B02 converts the batch dimension to a Python integer internally,
-        # which would otherwise freeze the traced runtime to the example batch.
-        # Present the model with one fixed deployment batch and slice the public
-        # result back to the request size; the traced outer slices remain dynamic.
-        count = rows.size(0)
-        padded = rows.new_zeros(
-            (self.runtime_batch_size, rows.size(1), rows.size(2))
-        )
-        padded[:count].copy_(rows)
-        result = identity_only_feature_forward(self.model, padded, "z_id")
+        result = identity_only_feature_forward(self.model, rows, "z_id")
         if result is None:
             raise RuntimeError("ADV3B02 checkpoint does not support identity-only z_id export")
         features, logits = result
-        return features[:count], logits[:count]
+        return features, logits
 
 
 def _load_checkpoint(path: Path) -> Any:
@@ -112,12 +102,7 @@ def _trace_and_save(wrapper: nn.Module, example: torch.Tensor, output: Path) -> 
         raise FileExistsError(f"refusing to overwrite TorchScript runtime: {output}")
     output.parent.mkdir(parents=True, exist_ok=True)
     wrapper.eval()
-    # ADV3B02's FFT path can constant-fold an equivalent complex tensor with a
-    # different internal dtype on the tracer's second graph construction.  A
-    # graph-text sanity comparison therefore rejects a numerically identical
-    # runtime.  The export path below performs stronger eager/injected/merged/
-    # reloaded-TorchScript feature and logit parity on independent probes.
-    traced = torch.jit.trace(wrapper, example, strict=False, check_trace=False)
+    traced = torch.jit.trace(wrapper, example, strict=False, check_trace=True)
     torch.jit.save(traced, output)
     if not output.is_file() or output.stat().st_size < 1:
         raise RuntimeError(f"TorchScript export is empty: {output}")

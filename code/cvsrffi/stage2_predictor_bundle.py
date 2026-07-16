@@ -21,12 +21,6 @@ from typing import Any, BinaryIO, Iterator, Mapping
 import numpy as np
 
 from cvsrffi.phase2_runtime_contract import PHASE2_FULL_CONTRACT
-from cvsrffi.phase2_memfd_snapshot import (
-    open_pinned_package_member,
-    open_pinned_special,
-    pinned_input_mode_active,
-    pinned_package_root,
-)
 
 
 FORMAL_LEO_WEAK_SCENARIOS = (
@@ -140,9 +134,6 @@ def validate_relative_member_path(value: Any) -> str:
 
 
 def _ensure_root(root: Path) -> Path:
-    pinned = pinned_package_root(root)
-    if pinned is not None:
-        return pinned
     if root.is_symlink() or not root.is_dir():
         raise PredictorPackageError(f"package root must be a regular directory: {root}")
     return root.resolve()
@@ -158,13 +149,8 @@ def open_regular_member_same_fd(root: Path, relative_path: str) -> Iterator[Bina
     use the yielded descriptor.
     """
 
-    relative = validate_relative_member_path(relative_path)
-    if pinned_input_mode_active():
-        _ensure_root(root)
-        with open_pinned_package_member(relative) as handle:
-            yield handle
-        return
     root = _ensure_root(root)
+    relative = validate_relative_member_path(relative_path)
     candidate = root.joinpath(*PurePosixPath(relative).parts)
     try:
         candidate.resolve(strict=False).relative_to(root)
@@ -322,11 +308,10 @@ def _validate_member_descriptors(members: Any) -> list[dict[str, Any]]:
     required_roles = {"checkpoint", "adapter", "head", "tta_policy"}
     for scenario in FORMAL_LEO_WEAK_SCENARIOS:
         required_roles.update({f"support:{scenario}", f"query:{scenario}"})
-    allowed_role_sets = (required_roles, required_roles | {"base_checkpoint"})
-    if roles not in allowed_role_sets:
+    if roles != required_roles:
         raise PredictorPackageError(
-            "package artifact role set mismatch: expected legacy single-runtime or "
-            f"effective8 dual-runtime roles, actual={sorted(roles)}"
+            f"package artifact role set mismatch: missing={sorted(required_roles-roles)}, "
+            f"unexpected={sorted(roles-required_roles)}"
         )
     return checked
 
@@ -424,18 +409,11 @@ def preflight_stage2_predictor_package(
 
     root = _ensure_root(Path(package_root))
     seal_path = Path(detached_seal_path)
-    if pinned_input_mode_active():
-        with open_pinned_special("seal") as handle:
-            seal_raw = handle.read()
-        seal_digest = sha256_bytes(seal_raw)
-        seal = json.loads(seal_raw.decode("utf-8-sig"))
-    else:
-        if seal_path.is_symlink() or not seal_path.is_file():
-            raise PredictorPackageError("detached seal must be a regular non-symlink file")
-        seal_digest = sha256_file(seal_path)
-        seal = json.loads(seal_path.read_text(encoding="utf-8-sig"))
-    if not _is_sha256(expected_seal_sha256) or seal_digest != expected_seal_sha256:
+    if seal_path.is_symlink() or not seal_path.is_file():
+        raise PredictorPackageError("detached seal must be a regular non-symlink file")
+    if not _is_sha256(expected_seal_sha256) or sha256_file(seal_path) != expected_seal_sha256:
         raise PredictorPackageError("detached seal digest mismatch")
+    seal = json.loads(seal_path.read_text(encoding="utf-8-sig"))
     if not isinstance(seal, dict) or set(seal) != SEAL_REQUIRED_KEYS:
         raise PredictorPackageError("detached seal exact schema mismatch")
     if seal.get("schema") != PREDICTOR_PACKAGE_SEAL_SCHEMA:

@@ -24,9 +24,7 @@ RUNTIME_MANIFEST_NAME = "runtime_closure_manifest.json"
 
 RUNTIME_MEMBER_ALLOWLIST = (
     "cvsrffi/__init__.py",
-    "cvsrffi/phase2_memfd_snapshot.py",
     "cvsrffi/phase2_runtime_contract.py",
-    "cvsrffi/phase2_symmetric_head.py",
     "cvsrffi/stage2_predictor_bundle.py",
     "cvsrffi/stage2_predictor_runtime.py",
     "cvsrffi/stage2_predictor_entry.py",
@@ -36,8 +34,6 @@ RUNTIME_MEMBER_ALLOWLIST = (
 
 _ALLOWED_INTERNAL_IMPORTS = {
     "cvsrffi.phase2_runtime_contract",
-    "cvsrffi.phase2_symmetric_head",
-    "cvsrffi.phase2_memfd_snapshot",
     "cvsrffi.stage2_predictor_bundle",
     "cvsrffi.stage2_predictor_runtime",
     "cvsrffi.stage2_predictor_entry",
@@ -52,17 +48,14 @@ _ALLOWED_EXTERNAL_IMPORTS = {
     "collections.abc",
     "contextlib",
     "ctypes",
-    "dataclasses",
     "datetime",
     "errno",
-    "fcntl",
     "hashlib",
     "io",
     "json",
     "numpy",
     "os",
     "pathlib",
-    "platform",
     "re",
     "secrets",
     "stat",
@@ -89,20 +82,6 @@ _FORBIDDEN_IMPORT_PARTS = {
 
 _EXPECTED_IMPORTS_BY_MEMBER = {
     "cvsrffi/__init__.py": set(),
-    "cvsrffi/phase2_memfd_snapshot.py": {
-        "__future__",
-        "contextlib",
-        "ctypes",
-        "dataclasses",
-        "fcntl",
-        "hashlib",
-        "json",
-        "os",
-        "pathlib",
-        "platform",
-        "stat",
-        "typing",
-    },
     "cvsrffi/phase2_runtime_contract.py": {
         "__future__",
         "collections.abc",
@@ -110,15 +89,9 @@ _EXPECTED_IMPORTS_BY_MEMBER = {
         "re",
         "typing",
     },
-    "cvsrffi/phase2_symmetric_head.py": {
-        "__future__",
-        "numpy",
-        "typing",
-    },
     "cvsrffi/stage2_predictor_bundle.py": {
         "__future__",
         "contextlib",
-        "cvsrffi.phase2_memfd_snapshot",
         "cvsrffi.phase2_runtime_contract",
         "hashlib",
         "json",
@@ -132,7 +105,6 @@ _EXPECTED_IMPORTS_BY_MEMBER = {
     },
     "cvsrffi/stage2_predictor_runtime.py": {
         "__future__",
-        "cvsrffi.phase2_symmetric_head",
         "cvsrffi.stage2_predictor_bundle",
         "hashlib",
         "json",
@@ -173,7 +145,6 @@ _EXPECTED_IMPORTS_BY_MEMBER = {
     "scripts/run_cvs_stage2_predictor.py": {
         "__future__",
         "argparse",
-        "cvsrffi.phase2_memfd_snapshot",
         "cvsrffi.phase2_runtime_contract",
         "cvsrffi.stage2_prediction_artifact",
         "cvsrffi.stage2_predictor_bundle",
