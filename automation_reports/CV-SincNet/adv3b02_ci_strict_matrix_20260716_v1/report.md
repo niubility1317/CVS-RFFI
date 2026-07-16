@@ -42,3 +42,9 @@
 - PID`2283502`在runtime发布前fail closed：远端旧导出器的graph复跑命中FFT内部dtype漂移。
 - 本地恢复固定256行内部batch、动态外层slice，并关闭不稳定graph文本复跑；独立数值parity门禁保持。
 - 8项相关测试、`py_compile`和`git diff --check`通过；重试必须使用全新`runtime_artifacts_v2`。
+
+## Runtime attempt2与未授权计划
+
+- PID`2285219`PASS；base runtime SHA=`b2021ca1...870d9`，严格checkpoint加载0缺失/0意外/0形状不匹配，全部数值parity≤`3.82e-6`。
+- `strict_plan_v1.json`SHA=`cc1a2423...e0fd6`，75包/900 cell/2700行，保持`launch_authority=false`。
+- 下一步只在GPU0运行new5/K1/CSIL smoke，不启动正式矩阵。
