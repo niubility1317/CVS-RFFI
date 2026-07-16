@@ -37,6 +37,11 @@ _DEPLOYMENT_TENSOR_KEYS = (
     "class_hubness_penalty_fp16",
     "scalars_fp16",
 )
+PACKED_HEAD_KEYS = (
+    "schema_utf8",
+    *_DEPLOYMENT_TENSOR_KEYS,
+    "support_audit_json_utf8",
+)
 
 
 def _normalize(rows: np.ndarray) -> np.ndarray:
@@ -178,7 +183,7 @@ def unpack_support_only_multiprototype_head(
 ) -> SupportOnlyMultiPrototypeHead:
     """Validate and reconstruct a head from a pickle-free capsule payload."""
 
-    required = {"schema_utf8", "support_audit_json_utf8", *_DEPLOYMENT_TENSOR_KEYS}
+    required = set(PACKED_HEAD_KEYS)
     if set(payload) != required:
         missing = sorted(required - set(payload))
         extra = sorted(set(payload) - required)
@@ -368,6 +373,11 @@ def fit_support_only_multiprototype_head(
             "class_count": int(class_count),
             "min_physical_support_per_class": int(min_k),
             "prototypes_per_class": int(per_class),
+            "residual_shrinkage": float(residual_shrinkage),
+            "residual_scale_min": float(residual_scale_min),
+            "residual_scale_max": float(residual_scale_max),
+            "max_mix": float(max_mix),
+            "hubness_weight": float(hubness_weight),
         },
     )
 
@@ -379,9 +389,11 @@ def score_support_only_multiprototype_head(
     """Return independent per-query scores over every registered class."""
 
     rows = np.asarray(query_features, dtype=np.float32)
-    if rows.ndim < 2 or rows.shape[-1] != head.feature_dim:
-        raise ValueError("query features must end in the head feature dimension")
-    flat = _normalize(rows.reshape(-1, rows.shape[-1]) * head.residual_scale[None, :])
+    if rows.ndim != 2 or rows.shape[1] != head.feature_dim:
+        raise ValueError("query features must have shape [N,D] matching the head")
+    if not np.isfinite(rows).all():
+        raise FloatingPointError("query features contain non-finite values")
+    flat = _normalize(rows * head.residual_scale[None, :])
     prototype_scores = flat @ _normalize(head.prototypes).T
     centroid_scores = flat @ _normalize(head.centroids).T
     pooled = np.empty((len(flat), head.class_count), dtype=np.float32)
@@ -392,7 +404,7 @@ def score_support_only_multiprototype_head(
             + (1.0 - float(head.max_mix)) * centroid_scores[:, index]
             - head.class_hubness_penalty[index]
         )
-    return pooled.reshape(*rows.shape[:-1], head.class_count).astype(np.float32)
+    return pooled.astype(np.float32)
 
 
 def predict_support_only_multiprototype_head(

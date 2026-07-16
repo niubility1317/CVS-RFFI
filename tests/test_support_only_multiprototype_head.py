@@ -79,6 +79,17 @@ def test_requires_every_registered_class_and_finite_support() -> None:
         fit_support_only_multiprototype_head(broken, labels, class_count=2)
 
 
+def test_query_requires_finite_rank_two_rows() -> None:
+    support, labels = _bimodal_support()
+    head = fit_support_only_multiprototype_head(support, labels, class_count=2)
+    with pytest.raises(ValueError, match="shape"):
+        score_support_only_multiprototype_head(np.zeros((1, 1, 3), dtype=np.float32), head)
+    broken = np.zeros((1, 3), dtype=np.float32)
+    broken[0, 0] = np.nan
+    with pytest.raises(FloatingPointError, match="non-finite"):
+        score_support_only_multiprototype_head(broken, head)
+
+
 def test_pickle_free_fp16_capsule_round_trip_preserves_predictions() -> None:
     support, labels = _bimodal_support()
     head = fit_support_only_multiprototype_head(support, labels, class_count=2)

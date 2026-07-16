@@ -24,6 +24,7 @@ from paper_reproduction.cvs_aligned.support_only_multiprototype_head import (
     fit_support_only_multiprototype_head,
     pack_support_only_multiprototype_head,
     predict_support_only_multiprototype_head,
+    unpack_support_only_multiprototype_head,
 )
 
 
@@ -203,10 +204,11 @@ def _fit_predict(
         class_count=len(class_order),
     )
     fit_seconds = time.perf_counter() - started
+    packed = pack_support_only_multiprototype_head(head)
+    head = unpack_support_only_multiprototype_head(packed)
     started = time.perf_counter()
     prediction_ids = predict_support_only_multiprototype_head(query_x, head)
     predict_seconds = time.perf_counter() - started
-    packed = pack_support_only_multiprototype_head(head)
     return np.asarray(class_order, dtype=str)[prediction_ids], {
         "fit_seconds": float(fit_seconds),
         "predict_seconds": float(predict_seconds),
