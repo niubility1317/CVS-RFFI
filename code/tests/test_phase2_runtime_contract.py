@@ -90,9 +90,11 @@ def _request():
     }
 
 
-def test_full_contract_has_three_base_four_clean_and_five_query_fields():
-    assert len(PHASE2_FULL_CONTRACT) == 12
+def test_full_contract_includes_clean_query_and_source_reachability_fields():
+    assert len(PHASE2_FULL_CONTRACT) == 18
     assert PHASE2_FULL_CONTRACT["phase2_query_true_batch_class_count_access"] is False
+    assert PHASE2_FULL_CONTRACT["phase2_source_sample_access"] is False
+    assert PHASE2_FULL_CONTRACT["phase2_external_source_adapter_access"] is False
 
 
 def test_registered_class_count_is_legal_predictor_state():

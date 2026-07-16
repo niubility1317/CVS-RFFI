@@ -120,6 +120,17 @@ def validate_adapter_config(config: Mapping[str, Any], *, feature_dim: int) -> N
             "low_rank_up",
             "residual_scale",
         }
+    elif mode == "qknnv42_fft96":
+        extras = {
+            "feature_adapter_mode",
+            "quantization_bits",
+            "support_score_weight",
+            "prototype_score_weight",
+            "support_prototype_residual_weight",
+            "labelprop_mode",
+            "old_anchor_bias",
+            "adaptation_mode",
+        }
     else:
         raise Stage2PredictorRuntimeError("unsupported feature adapter mode")
     if set(config) != common | extras or config.get("schema") != ADAPTER_SCHEMA:
@@ -155,6 +166,38 @@ def validate_adapter_config(config: Mapping[str, Any], *, feature_dim: int) -> N
             raise Stage2PredictorRuntimeError("low-rank adapter contains non-finite values")
         if not isinstance(config["residual_scale"], (int, float)):
             raise Stage2PredictorRuntimeError("low-rank residual scale drift")
+    elif mode == "qknnv42_fft96":
+        expected = {
+            "feature_adapter_mode": "support_diag_whiten_fisher",
+            "quantization_bits": 8,
+            "labelprop_mode": "support_prototype",
+            "old_anchor_bias": 0.0,
+            "adaptation_mode": "EVAL_ONLY_CLOSED_FORM_ADAPTATION",
+        }
+        failed = [key for key, value in expected.items() if config.get(key) != value]
+        if failed:
+            raise Stage2PredictorRuntimeError(
+                f"qKNNV42+FFT96 adapter lock drift: {failed}"
+            )
+        if int(fft_dim) != 96 or not 0.0 <= float(fft_weight) <= 1.0:
+            raise Stage2PredictorRuntimeError(
+                "qKNNV42+FFT96 requires fft_dim=96 and fft_weight in [0,1]"
+            )
+        support_weight = float(config["support_score_weight"])
+        prototype_weight = float(config["prototype_score_weight"])
+        residual_weight = float(config["support_prototype_residual_weight"])
+        if (
+            not np.isfinite(support_weight)
+            or not np.isfinite(prototype_weight)
+            or not np.isfinite(residual_weight)
+            or support_weight < 0.0
+            or prototype_weight < 0.0
+            or abs(support_weight + prototype_weight - 1.0) > 1.0e-9
+            or residual_weight < 0.0
+        ):
+            raise Stage2PredictorRuntimeError(
+                "qKNNV42+FFT96 score weights are invalid"
+            )
 
 
 def validate_head_config(config: Mapping[str, Any]) -> None:
@@ -295,6 +338,10 @@ def apply_feature_adapter(
     value = np.asarray(features, dtype=np.float32)
     validate_adapter_config(config, feature_dim=value.shape[1])
     mode = config["mode"]
+    if mode == "qknnv42_fft96":
+        raise Stage2PredictorRuntimeError(
+            "qKNNV42+FFT96 uses its locked two-stream scorer, not feature concatenation"
+        )
     if mode == "identity":
         adapted = value
     else:
@@ -334,6 +381,178 @@ def _prototypes(features: np.ndarray, labels: np.ndarray, class_count: int) -> n
 
 def _scores(features: np.ndarray, prototypes: np.ndarray, temperature: float) -> np.ndarray:
     return (_normalize(features) @ prototypes.T * float(temperature)).astype(np.float32)
+
+
+def _fit_qknnv42_transform(
+    support: np.ndarray,
+    labels: np.ndarray,
+    *,
+    class_count: int,
+) -> tuple[np.ndarray, np.ndarray]:
+    rows = _normalize(np.asarray(support, dtype=np.float32)).astype(np.float64)
+    y = np.asarray(labels, dtype=np.int64)
+    if rows.ndim != 2 or y.shape != (len(rows),):
+        raise Stage2PredictorRuntimeError("qKNNV42 support schema drift")
+    if np.any(np.bincount(y, minlength=class_count) == 0):
+        raise Stage2PredictorRuntimeError("qKNNV42 registered class lacks support")
+    center = rows.mean(axis=0)
+    centered = rows - center[None, :]
+    means = np.vstack([centered[y == index].mean(axis=0) for index in range(class_count)])
+    counts = np.asarray([np.sum(y == index) for index in range(class_count)], dtype=np.float64)
+    global_mean = np.average(means, axis=0, weights=counts)
+    between = np.average(np.square(means - global_mean), axis=0, weights=counts)
+    within = np.concatenate(
+        [
+            np.square(centered[y == index] - centered[y == index].mean(axis=0, keepdims=True))
+            for index in range(class_count)
+        ],
+        axis=0,
+    ).mean(axis=0)
+    fisher = between / np.maximum(within, 1.0e-6)
+    fisher /= max(float(np.median(fisher)), 1.0e-6)
+    whiten = 1.0 / np.sqrt(np.maximum(centered.var(axis=0), 1.0e-5))
+    scale = np.power(np.clip(fisher, 0.05, 20.0), 0.1)
+    scale *= np.power(
+        whiten / max(float(np.median(whiten)), 1.0e-6),
+        0.5,
+    )
+    return center.astype(np.float32), np.clip(scale, 0.05, 20.0).astype(np.float32)
+
+
+def _apply_qknnv42_transform(
+    rows: np.ndarray,
+    *,
+    center: np.ndarray,
+    scale: np.ndarray,
+) -> np.ndarray:
+    normalized = _normalize(np.asarray(rows, dtype=np.float32))
+    return _normalize((normalized - center[None, :]) * scale[None, :])
+
+
+def _qknnv42_single_stream_scores(
+    support: np.ndarray,
+    labels: np.ndarray,
+    query: np.ndarray,
+    *,
+    class_count: int,
+    config: Mapping[str, Any],
+) -> tuple[np.ndarray, dict[str, Any]]:
+    center, scale = _fit_qknnv42_transform(
+        support,
+        labels,
+        class_count=class_count,
+    )
+    support_transformed = _apply_qknnv42_transform(
+        support,
+        center=center,
+        scale=scale,
+    )
+    query_transformed = _apply_qknnv42_transform(
+        query,
+        center=center,
+        scale=scale,
+    )
+    quantized = np.clip(
+        np.rint(127.0 * support_transformed),
+        -127,
+        127,
+    ).astype(np.int8)
+    restored = _normalize(quantized.astype(np.float32) / 127.0)
+    prototypes = _prototypes(restored, labels, class_count)
+    score_columns: list[np.ndarray] = []
+    for class_index in range(class_count):
+        class_support = restored[np.asarray(labels, dtype=np.int64) == class_index]
+        support_score = np.max(query_transformed @ class_support.T, axis=1)
+        prototype_score = query_transformed @ prototypes[class_index]
+        score_columns.append(
+            float(config["support_score_weight"]) * support_score
+            + float(config["prototype_score_weight"]) * prototype_score
+        )
+    scores = np.stack(score_columns, axis=1).astype(np.float32)
+    residual = query_transformed @ prototypes.T
+    residual = (residual - residual.mean(axis=1, keepdims=True)) / np.maximum(
+        residual.std(axis=1, keepdims=True),
+        1.0e-6,
+    )
+    scores += float(config["support_prototype_residual_weight"]) * np.clip(
+        residual,
+        -2.0,
+        2.0,
+    )
+    persistent_state_bytes = int(
+        quantized.nbytes
+        + np.asarray(labels, dtype=np.uint16).nbytes
+        + prototypes.astype(np.float16).nbytes
+        + center.astype(np.float16).nbytes
+        + scale.astype(np.float16).nbytes
+    )
+    return scores, {
+        "feature_dim": int(support.shape[1]),
+        "support_count": int(len(support)),
+        "class_count": int(class_count),
+        "persistent_state_bytes": persistent_state_bytes,
+        "support_code_bytes_int8": int(quantized.nbytes),
+        "prototype_bytes_fp16": int(prototypes.astype(np.float16).nbytes),
+        "transform_state_bytes_fp16": int(
+            center.astype(np.float16).nbytes + scale.astype(np.float16).nbytes
+        ),
+        "estimated_head_macs_per_query": int(
+            len(support) * support.shape[1]
+            + 2 * class_count * support.shape[1]
+        ),
+    }
+
+
+def _qknnv42_fft96_scores(
+    support_features: np.ndarray,
+    support_iq: np.ndarray,
+    support_labels: np.ndarray,
+    query_features: np.ndarray,
+    query_iq: np.ndarray,
+    *,
+    class_count: int,
+    config: Mapping[str, Any],
+) -> tuple[np.ndarray, dict[str, Any]]:
+    primary_scores, primary = _qknnv42_single_stream_scores(
+        support_features,
+        support_labels,
+        query_features,
+        class_count=class_count,
+        config=config,
+    )
+    support_fft = spectral_logmag_sketch(support_iq, dim=96)
+    query_fft = spectral_logmag_sketch(query_iq, dim=96)
+    fft_scores, fft = _qknnv42_single_stream_scores(
+        support_fft,
+        support_labels,
+        query_fft,
+        class_count=class_count,
+        config=config,
+    )
+    fft_weight = float(config["fft_weight"])
+    scores = (1.0 - fft_weight) * primary_scores + fft_weight * fft_scores
+    state_bytes = int(primary["persistent_state_bytes"] + fft["persistent_state_bytes"])
+    if state_bytes > int(config["persistent_state_bytes"]):
+        raise Stage2PredictorRuntimeError(
+            "qKNNV42+FFT96 persistent state exceeds the locked package bound"
+        )
+    return scores.astype(np.float32), {
+        "schema": "cvs.phase2.qknnv42_fft96_resource.v1",
+        "adaptation_mode": config["adaptation_mode"],
+        "feature_adapter_mode": config["feature_adapter_mode"],
+        "query_query_graph_used": False,
+        "query_batch_state_required": False,
+        "quantization_bits": int(config["quantization_bits"]),
+        "fft_dim": 96,
+        "fft_weight": fft_weight,
+        "persistent_state_bytes": state_bytes,
+        "primary": primary,
+        "fft96": fft,
+        "estimated_head_macs_per_query": int(
+            primary["estimated_head_macs_per_query"]
+            + fft["estimated_head_macs_per_query"]
+        ),
+    }
 
 
 def _margin(scores: np.ndarray) -> np.ndarray:
@@ -397,25 +616,64 @@ def predict_all_streams(
     if direct_logits.shape[1] < old_class_count:
         raise Stage2PredictorRuntimeError("direct ADV3B02 logits do not cover old classes")
     validate_adapter_config(adapter_config, feature_dim=support_raw.shape[1])
-    support_candidate = apply_feature_adapter(support_raw, support_iq, adapter_config)
-    query_candidate = apply_feature_adapter(query_raw, query_iq, adapter_config)
     identity_prototypes = _prototypes(support_raw, support_y, registered_class_count)
-    candidate_prototypes = _prototypes(
-        support_candidate, support_y, registered_class_count
-    )
     temperature = float(head_config["temperature"])
-    stream_sums = {
-        "candidate_after": _scores(query_candidate, candidate_prototypes, temperature),
-        "candidate_before": _scores(
-            query_candidate, candidate_prototypes[:old_class_count], temperature
-        ),
-        "identity_after": _scores(query_raw, identity_prototypes, temperature),
-        "identity_before": _scores(
-            query_raw, identity_prototypes[:old_class_count], temperature
-        ),
-    }
+    candidate_resource: dict[str, Any] | None = None
+    if adapter_config["mode"] == "qknnv42_fft96":
+        candidate_after, after_resource = _qknnv42_fft96_scores(
+            support_raw,
+            support_iq,
+            support_y,
+            query_raw,
+            query_iq,
+            class_count=registered_class_count,
+            config=adapter_config,
+        )
+        old_support_mask = support_y < old_class_count
+        candidate_before, before_resource = _qknnv42_fft96_scores(
+            support_raw[old_support_mask],
+            support_iq[old_support_mask],
+            support_y[old_support_mask],
+            query_raw,
+            query_iq,
+            class_count=old_class_count,
+            config=adapter_config,
+        )
+        candidate_resource = {
+            "after_registration": after_resource,
+            "old_registry_diagnostic": before_resource,
+            "active_persistent_state_bytes": int(after_resource["persistent_state_bytes"]),
+        }
+        stream_sums = {
+            "candidate_after": candidate_after,
+            "candidate_before": candidate_before,
+            "identity_after": _scores(query_raw, identity_prototypes, temperature),
+            "identity_before": _scores(
+                query_raw, identity_prototypes[:old_class_count], temperature
+            ),
+        }
+    else:
+        support_candidate = apply_feature_adapter(support_raw, support_iq, adapter_config)
+        query_candidate = apply_feature_adapter(query_raw, query_iq, adapter_config)
+        candidate_prototypes = _prototypes(
+            support_candidate, support_y, registered_class_count
+        )
+        stream_sums = {
+            "candidate_after": _scores(query_candidate, candidate_prototypes, temperature),
+            "candidate_before": _scores(
+                query_candidate, candidate_prototypes[:old_class_count], temperature
+            ),
+            "identity_after": _scores(query_raw, identity_prototypes, temperature),
+            "identity_before": _scores(
+                query_raw, identity_prototypes[:old_class_count], temperature
+            ),
+        }
     counts = np.ones(len(query_iq), dtype=np.int64)
     if tta_config["mode"] == "adaptive_1_3_5":
+        if adapter_config["mode"] == "qknnv42_fft96":
+            raise Stage2PredictorRuntimeError(
+                "formal qKNNV42+FFT96 run is locked to one pre-overlaid view"
+            )
         shift_indices = np.flatnonzero(
             _margin(stream_sums["candidate_after"])
             < float(tta_config["base_stop_margin"])
@@ -511,7 +769,13 @@ def predict_all_streams(
         ),
         "trainable_parameters": int(adapter_config["trainable_parameters"]),
         "adapt_epochs": int(adapter_config["adapt_epochs"]),
-        "persistent_state_bytes": int(adapter_config["persistent_state_bytes"]),
+        "persistent_state_bytes": int(
+            candidate_resource["active_persistent_state_bytes"]
+            if candidate_resource is not None
+            else adapter_config["persistent_state_bytes"]
+        ),
+        "persistent_state_cap_bytes": int(adapter_config["persistent_state_bytes"]),
+        "candidate_runtime": candidate_resource,
         "shared_view_budget_for_all_streams": True,
         "direct_uses_base_view_only": True,
     }

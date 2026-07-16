@@ -29,6 +29,7 @@ from typing import Any, Mapping, Sequence
 
 import numpy as np
 
+from cvsrffi.phase2_runtime_contract import PHASE2_FULL_CONTRACT
 
 ARTIFACT_SCHEMA = "cvs.stage2.prediction_artifact.v1"
 MANIFEST_SCHEMA = "cvs.stage2.prediction_manifest.v1"
@@ -376,6 +377,15 @@ def _validate_bindings(document: Mapping[str, Any], label: str) -> None:
         raise PredictionArtifactError(f"{label}.k_shot must be a positive integer")
     for field in ("candidate_lock_sha256", "package_root_sha256", "package_seal_sha256"):
         _require_sha256(f"{label}.{field}", document[field])
+    failed = [
+        key
+        for key, value in PHASE2_FULL_CONTRACT.items()
+        if document.get(key) != value
+    ]
+    if failed:
+        raise PredictionArtifactError(
+            f"{label} Phase2 contract drift: {failed}"
+        )
 
 
 def publish_prediction_artifact(
@@ -410,6 +420,7 @@ def publish_prediction_artifact(
         "candidate_lock_sha256": candidate_lock_sha256,
         "package_root_sha256": package_root_sha256,
         "package_seal_sha256": package_seal_sha256,
+        **PHASE2_FULL_CONTRACT,
     }
     _validate_bindings(binding, "publication")
     arrays = _prepare_arrays(
@@ -564,12 +575,14 @@ def verify_prediction_artifact(
         "candidate_lock_sha256", "package_root_sha256", "package_seal_sha256",
         "payload_member", "payload_sha256", "payload_size_bytes", "npz_member_allowlist",
         "row_count", "columns", "resource_receipt", "resource_receipt_sha256", "immutability",
+        *PHASE2_FULL_CONTRACT.keys(),
     }
     seal_keys = {
         "schema_version", "stage", "row_id", "receiver", "k_shot",
         "candidate_lock_sha256", "package_root_sha256", "package_seal_sha256",
         "payload_sha256", "payload_size_bytes", "npz_member_allowlist",
         "manifest_sha256", "manifest_size_bytes", "resource_receipt_sha256", "hash_algorithm",
+        *PHASE2_FULL_CONTRACT.keys(),
     }
     manifest = _load_json_exact(manifest_bytes, "manifest", manifest_keys)
     seal = _load_json_exact(seal_bytes, "seal", seal_keys)
@@ -580,6 +593,7 @@ def verify_prediction_artifact(
     for field in (
         "stage", "row_id", "receiver", "k_shot", "candidate_lock_sha256",
         "package_root_sha256", "package_seal_sha256",
+        *PHASE2_FULL_CONTRACT.keys(),
     ):
         if manifest[field] != seal[field]:
             raise PredictionArtifactError(f"manifest/seal binding mismatch: {field}")

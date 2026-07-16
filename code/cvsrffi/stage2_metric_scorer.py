@@ -23,6 +23,7 @@ import numpy as np
 
 from cvsrffi.stage2_prediction_artifact import (
     NPZ_FIELD_ALLOWLIST,
+    PHASE2_FULL_CONTRACT,
     PredictionArtifactError,
     verify_prediction_artifact,
 )
@@ -590,6 +591,7 @@ def score_prediction_arrays(
                 "view1_count": int(np.sum(scenario_view_counts == 1)),
                 "view3_count": int(np.sum(scenario_view_counts == 3)),
                 "view5_count": int(np.sum(scenario_view_counts == 5)),
+                **PHASE2_FULL_CONTRACT,
             }
         )
 
@@ -699,6 +701,7 @@ def score_sealed_prediction(
         "join_policy": "exact_scenario_query_token",
         "truth_join_after_prediction_only": True,
         "scorer_output_must_not_feed_predictor": True,
+        **PHASE2_FULL_CONTRACT,
         "formal_rows_sha256": sha256_bytes(canonical_json_bytes(rows_payload) + b"\n"),
         "formal_predictions_sha256": sha256_bytes(
             canonical_json_bytes(predictions_payload) + b"\n"

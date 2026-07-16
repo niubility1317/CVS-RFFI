@@ -174,6 +174,7 @@ _EXPECTED_IMPORTS_BY_MEMBER = {
     "cvsrffi/stage2_prediction_artifact.py": {
         "__future__",
         "ctypes",
+        "cvsrffi.phase2_runtime_contract",
         "datetime",
         "errno",
         "hashlib",

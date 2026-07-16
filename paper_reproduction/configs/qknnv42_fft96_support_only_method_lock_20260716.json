@@ -1,0 +1,48 @@
+{
+  "schema": "cvs.phase2.qknnv42_fft96_method_lock.v1",
+  "method_id": "QKNNV42_FFT96_SUPPORT_ONLY_V1",
+  "base_model_id": "ADV3B02_CORE90_SOFT_E200",
+  "base_checkpoint_lineage_sha256": "2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98",
+  "identity_runtime_sha256": "b2021ca1ac97848a8cfda353a4070530bfa41bc08a711f746f329bd2d8d870d9",
+  "primary_feature_schema": "adv3b02_z_id160_fp32",
+  "auxiliary_feature_schema": "fft_logmag96_from_same_leo_weak_iq",
+  "fft_dim": 96,
+  "fft_score_weight": 0.34,
+  "feature_adapter_mode": "support_diag_whiten_fisher",
+  "support_representation": "all_support_int8",
+  "support_score_weight": 0.55,
+  "prototype_score_weight": 0.45,
+  "support_prototype_residual_weight": 0.025,
+  "labelprop_mode": "support_prototype",
+  "query_query_graph_used": false,
+  "query_batch_state_required": false,
+  "decision_policy": "per_sample_argmax_all_registered_classes",
+  "view_policy": "one_preoverlaid_leo_weak_view_per_scenario",
+  "trainable_parameters": 0,
+  "updated_original_parameters": 0,
+  "adaptation_epochs": 0,
+  "optimizer_steps": 0,
+  "adaptation_mode": "EVAL_ONLY_CLOSED_FORM_ADAPTATION",
+  "persistent_state_cap_bytes": 262144,
+  "development_seed": 713101,
+  "matrix_seed_set": [
+    713101,
+    713102,
+    713103,
+    713104,
+    713105
+  ],
+  "matrix_k_values": [
+    1,
+    2,
+    5,
+    10,
+    20
+  ],
+  "new_class_counts": [
+    5,
+    10,
+    20
+  ],
+  "result_boundary": "125 matched-history task bundles; seed 713101 is development and the matrix is not a five-independent-confirmation-seed claim"
+}

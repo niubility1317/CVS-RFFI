@@ -36,10 +36,20 @@ PHASE2_QUERY_DECISION_CONTRACT: dict[str, Any] = {
     "phase2_query_batch_global_assignment": False,
 }
 
+PHASE2_SOURCE_RUNTIME_CONTRACT: dict[str, Any] = {
+    "phase2_source_sample_access": False,
+    "phase2_source_cache_access": False,
+    "phase2_source_label_access": False,
+    "phase2_source_derived_signal_access": False,
+    "phase2_source_replay": False,
+    "phase2_external_source_adapter_access": False,
+}
+
 PHASE2_FULL_CONTRACT: dict[str, Any] = {
     **PHASE2_BASE_CONTRACT,
     **PHASE2_CLEAN_RUNTIME_CONTRACT,
     **PHASE2_QUERY_DECISION_CONTRACT,
+    **PHASE2_SOURCE_RUNTIME_CONTRACT,
 }
 
 DEPRECATED_QUERY_CLASS_COUNT_FIELD = "phase2_query_class_count_access"
@@ -366,6 +376,12 @@ def classify_legacy_phase2_record(record: Mapping[str, Any]) -> str:
             "phase2_clean_dataset_reachable",
             "phase2_clean_cache_reachable",
             "phase2_clean_control_flow_reachable",
+            "phase2_source_sample_access",
+            "phase2_source_cache_access",
+            "phase2_source_label_access",
+            "phase2_source_derived_signal_access",
+            "phase2_source_replay",
+            "phase2_external_source_adapter_access",
         )
     ):
         return "PROTOCOL_INVALID_FOR_PHASE2"

@@ -1,0 +1,17 @@
+{
+  "schema": "cvs.phase2.feature_adapter.v1",
+  "mode": "qknnv42_fft96",
+  "trainable_parameters": 0,
+  "adapt_epochs": 0,
+  "persistent_state_bytes": 262144,
+  "fft_dim": 96,
+  "fft_weight": 0.34,
+  "feature_adapter_mode": "support_diag_whiten_fisher",
+  "quantization_bits": 8,
+  "support_score_weight": 0.55,
+  "prototype_score_weight": 0.45,
+  "support_prototype_residual_weight": 0.025,
+  "labelprop_mode": "support_prototype",
+  "old_anchor_bias": 0.0,
+  "adaptation_mode": "EVAL_ONLY_CLOSED_FORM_ADAPTATION"
+}
