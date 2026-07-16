@@ -289,7 +289,8 @@ def main() -> int:
         )
 
     paired_summary: list[dict[str, Any]] = []
-    win_tolerance = 1e-12
+    # Historical scores were serialized through float32; treat sub-ppm drift as a tie.
+    win_tolerance = 1e-6
     for comparator, delta_field in (
         ("strict_direct_ADV3B02", "jg_delta_vs_direct"),
         ("P4_identity_qKNN", "jg_delta_vs_identity_qknn"),

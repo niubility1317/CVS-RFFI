@@ -180,10 +180,10 @@ JG相对P4 identity qKNN为`+2.2222pp`，但相对MRIOR为`-12.7778pp`、相对D
 |strict direct ADV3B02|75.2111%|59.7222%/91.1111%|**+3.6111pp**|**+1.9647–+5.2575pp**|20/1/4|
 |P4 identity qKNN|77.6333%|59.4444%/91.3889%|**+1.1889pp**|**+0.6218–+1.7560pp**|20/0/5|
 |MRIOR-SDA|84.5000%|69.7222%/93.6111%|**-5.6778pp**|**-7.6463–-3.7092pp**|3/0/22|
-|DADDA-SDA|79.3556%|63.0556%/90.8333%|-0.5333pp|-1.5732–+0.5065pp|8/0/17|
+|DADDA-SDA|79.3556%|63.0556%/90.8333%|-0.5333pp|-1.5732–+0.5065pp|8/1/16|
 |ProtoNet CDA|70.8556%|51.6667%/87.5000%|**+7.9667pp**|**+6.2628–+9.6705pp**|25/0/0|
 
-结论边界：JG对strict direct和P4 identity的提升均为配对CI下界大于0，说明K10轻量梯度适配确实带来统计上稳定的正收益；但它对MRIOR显著落后5.6778pp，对DADDA均值落后0.5333pp且CI跨0。因此本版本满足“适配应优于直接ADV3B02”的方向性要求，但不满足`old_acc>=88%`，也不满足“显著优于MRIOR”的主目标。
+结论边界：JG对strict direct和P4 identity的提升均为配对CI下界大于0，说明K10轻量梯度适配确实带来统计上稳定的正收益；但它对MRIOR显著落后5.6778pp，对DADDA均值落后0.5333pp且CI跨0。只有4/25行达到`old_acc>=88%`。因此本版本满足“适配应优于直接ADV3B02”的方向性要求，但不满足旧类准确率目标，也不满足“显著优于MRIOR”的主目标。
 
 ### 12.2receiver与场景分解
 
@@ -205,7 +205,7 @@ JG相对P4 identity qKNN为`+2.2222pp`，但相对MRIOR为`-12.7778pp`、相对D
 
 ### 12.3旧类floor
 
-每row先把同一旧类在3个场景的60个query合并，再取6个旧类中的最小值。25行该聚合floor均值为55.0667%，最差30.0000%，最好也只有76.6667%；场景×类cell的row floor均值43.2000%，全局最差15.0000%。因此25/25行均未达到`min_old_class_acc>=85%`。
+每row先把同一旧类在3个场景的60个query合并，再取6个旧类中的最小值。25行该聚合floor均值为55.0667%，最差30.0000%，最好也只有76.6667%；场景×类cell的row floor均值43.2000%，全局最差15.0000%，发生在`3-19/713104/leo_rain_weak/20-19`，仅3/20正确。450个类×场景×row cell中231个达到85%，219个低于85%。因此25/25行均未达到聚合`min_old_class_acc>=85%`。
 
 |旧类|25×3个receiver-seed-scenario cell加权准确率|cell最差/最好|
 |---|---:|---:|
@@ -265,7 +265,7 @@ JG相对P4 identity qKNN为`+2.2222pp`，但相对MRIOR为`-12.7778pp`、相对D
 
 每row只执行180个样本等价的完整backbone前向，并把1980个support小子图前向用于5epoch/50step适配；query端合并LoRA后不增加额外adapter层。JG比MRIOR快约9.28倍、比DADDA快约7.27倍，且不做ADV3B02反向；但ProtoNet仍快约49.6倍。
 
-25份loss trace共125个epoch记录，所有数值有限。平均loss由epoch1的2.1327降至epoch5的1.7693，平均support train accuracy由71.4333%升至73.5333%；没有NaN/Inf/OOM。训练收敛健康，但query类floor仍低，支持“优化目标与最差类泛化不匹配”而不是“训练崩溃”的判断。
+25份loss trace共125个epoch记录，所有数值有限。平均loss由epoch1的2.1327降至epoch5的1.7693，25/25行均下降；平均support train accuracy由71.4333%升至73.5333%，23/25行上升。平均每120条场景query推理耗时11.81ms，即0.0984ms/query。没有NaN/Inf/OOM。训练收敛健康，但query类floor仍低，支持“优化目标与最差类泛化不匹配”而不是“训练崩溃”的判断。
 
 ### 12.6协议与artifact审计
 
@@ -278,6 +278,7 @@ JG相对P4 identity qKNN为`+2.2222pp`，但相对MRIOR为`-12.7778pp`、相对D
 |predictor先退出、scorer后打开truth|25/25 PASS|
 |query role/true batch count/class quota/global assignment|25/25均未使用|
 |完整成功日志扫描|33文件、233行、242,509B，错误命中0|
+|子agent独立只读复核|69个相关日志、858行、795,350B；25个row日志与loss trace逐项一致；fatal/OOM/NaN/Inf=0|
 |worker汇总|24完成＋1跳过＋0失败|
 
 远端证据归档为`runs/qknnv42_jg020_matched_stage2b_k10_20260716/completed_matrix_evidence.tar.gz`，SHA256=`6ddbaaf00066a1eab4643386f1d9f7a06aeb0b57efed8b1a6a1cf2e9991dd8e5`，包含424个索引文件、原始总字节9,061,069；本地副本和解包证据位于`evidence/completed_matrix_20260716_1301`，下载后SHA256一致。可复现汇总输出位于`analysis/matched_k10_full`，`summary.json`为`artifact_complete=true`且`errors=[]`。
@@ -290,3 +291,5 @@ JG相对P4 identity qKNN为`+2.2222pp`，但相对MRIOR为`-12.7778pp`、相对D
 2.平均78.8222%与最低类30.0000%远低于旧类88%/最低类85%目标；并且显著低于MRIOR，不允许晋级为最强版本。
 3.当前实验是Stage2-B old-only，没有新类注册、`seen_new_acc`、`H_old_new`或加入新类后的遗忘指标。不得把本轮结果解释为完整“域适应＋新类注册”性能。
 4.下一轮算法重点应把`JG-R8`保留为轻量骨架，但将mean loss改为class×View worst-group保护并加入support-only信赖门；优先修复`14-10/14-7/20-19`三个弱类和低仰角View。任何候选都必须在同一run继续完成注册前old和注册new5/10/20后的old、seen-new、H、最低类与遗忘，且不能使用query结果调参。
+
+独立子agent最终确认25份`score_table.csv`共9000条预测，角色全部为`target_old`；本run没有任何`seen_new_acc`、`H_old_new`或新类逐类准确率。因此本报告完成的是用户指定的严格同配对K10旧类适配矩阵，不是新类注册实验。
