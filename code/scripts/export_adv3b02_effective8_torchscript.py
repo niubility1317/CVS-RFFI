@@ -43,16 +43,24 @@ PARITY_SCHEMA = "cvs.adv3b02_effective8_torchscript_parity.v1"
 class ADV3B02IdentityRuntime(nn.Module):
     """Expose only the z_id feature and old-class logits used by strict qKNN."""
 
-    def __init__(self, model: nn.Module) -> None:
+    def __init__(self, model: nn.Module, *, runtime_batch_size: int = 256) -> None:
         super().__init__()
         self.model = model
+        self.runtime_batch_size = int(runtime_batch_size)
 
     def forward(self, rows: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
-        result = identity_only_feature_forward(self.model, rows, "z_id")
+        # ADV3B02 converts the batch dimension to a Python integer internally.
+        # Use one fixed deployment batch and dynamically slice the public result.
+        count = rows.size(0)
+        padded = rows.new_zeros(
+            (self.runtime_batch_size, rows.size(1), rows.size(2))
+        )
+        padded[:count].copy_(rows)
+        result = identity_only_feature_forward(self.model, padded, "z_id")
         if result is None:
             raise RuntimeError("ADV3B02 checkpoint does not support identity-only z_id export")
         features, logits = result
-        return features, logits
+        return features[:count], logits[:count]
 
 
 def _load_checkpoint(path: Path) -> Any:
@@ -102,7 +110,11 @@ def _trace_and_save(wrapper: nn.Module, example: torch.Tensor, output: Path) -> 
         raise FileExistsError(f"refusing to overwrite TorchScript runtime: {output}")
     output.parent.mkdir(parents=True, exist_ok=True)
     wrapper.eval()
-    traced = torch.jit.trace(wrapper, example, strict=False, check_trace=True)
+    # The FFT branch may build numerically equivalent constant nodes with
+    # different internal complex/real dtypes on the tracer's second graph.
+    # The independent eager/injected/merged/reloaded parity checks below are
+    # the authoritative numerical gate, so disable only graph-text replay.
+    traced = torch.jit.trace(wrapper, example, strict=False, check_trace=False)
     torch.jit.save(traced, output)
     if not output.is_file() or output.stat().st_size < 1:
         raise RuntimeError(f"TorchScript export is empty: {output}")

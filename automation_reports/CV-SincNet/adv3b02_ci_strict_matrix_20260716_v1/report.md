@@ -36,3 +36,9 @@
 - Git提交：`4a1cfe7`。
 - N607四个新文件SHA依次为`fca6f70e...d15dd`、`5f0ce7fb...2027f`、`4b3f4501...64aa1`、`6eb3cdea...421e`，与本地一致。
 - 2026-07-16 12:06 CST直连预检PASS，8张RTX3090空闲且无活动训练进程。
+
+## Runtime导出attempt1
+
+- PID`2283502`在runtime发布前fail closed：远端旧导出器的graph复跑命中FFT内部dtype漂移。
+- 本地恢复固定256行内部batch、动态外层slice，并关闭不稳定graph文本复跑；独立数值parity门禁保持。
+- 8项相关测试、`py_compile`和`git diff --check`通过；重试必须使用全新`runtime_artifacts_v2`。
