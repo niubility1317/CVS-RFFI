@@ -55,8 +55,11 @@ K1只有每类一个物理support，3个信道View高度相关。继续提高学
 |---|---|---|
 |`paper_reproduction/cvs_aligned/k1_support_trust.py`|留一View×类margin、逐alpha安全审计、最大安全缩放、LoRA residual缩放|定向pytest通过|
 |`tests/test_k1_support_trust.py`|无query接口、类置换等变、安全非零选择、回退0、只缩放`lora_b`|7/7通过|
+|`cached_jg_real_parity.json`|真实ADV3B02＋P4上完整`feat_joint`与缓存JG小子图等价性|最大绝对误差5.0664e-7≤1e-6，PASS|
 
 实际命令在`ssr-gpu`环境中执行：`python -m pytest tests/test_k1_support_trust.py -q`以及`python -m py_compile paper_reproduction/cvs_aligned/k1_support_trust.py`。第一次无Profile PowerShell未加载Conda hook，属于命令包装失败；加载`conda shell.powershell hook`后验证通过。当前模块尚未接入真实JG-R8 enrollment，也未产生target准确率。
+
+随后在CPU上严格加载本地ADV3B02 checkpoint和P4，注入零残差`JG-R8`，对seed713101生成的`[7,2,256]`探针分别执行完整`z_id/feat_joint`前向与缓存`feat_cls/feat_dac/feat_pa`后仅重算`id_gate＋joint_proj`。batch size为3，共3次full-backbone调用；最大绝对误差为5.066394805908203e-7，通过1e-6门槛。机器可读证据见`cached_jg_real_parity.json`；正式运行仍以N607 enrollment receipt为准。
 
 ## 风险
 
