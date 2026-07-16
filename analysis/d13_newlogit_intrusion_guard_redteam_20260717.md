@@ -1,7 +1,7 @@
 # D13类条件new-logit侵入保护红队审查
 
-日期：2026-07-17  
-范围：只读审查`项目.md`、D6–D12主报告/追踪及D13实现；不修改D13模块、runner、测试或原追踪，不stage/commit。  
+日期：2026-07-17
+范围：只读审查`项目.md`、D6–D12主报告/追踪及D13实现；不修改D13模块、runner、测试或原追踪，不stage/commit。
 当前判定：`SUPPORT_ONLY_D13_NOT_SELECTED_NO_QUERY_OPEN;FINAL_NO_GO`
 
 ## 0.核心判据
@@ -234,6 +234,6 @@ D13的constant算法原语达到模块级GO：
 
 因此D13不得开放query、不得进入125矩阵、不得声明注册保护有效。最合理的下一机制不是放宽遗忘门，而是提高support对held侵入的可预测性，例如按每个旧类分别估计最坏合法侵入风险，或重新推导有cap的逐样本局部guard；若使用hinge，必须先修复其feasibility数学。任何下一版仍须保持old logit逐位不变、逐new非退化和三场景统一超参。
 
-最高风险：把“旧logit逐位不变”误写成“旧类无遗忘”。v3已经实证二者不同。  
+最高风险：把“旧logit逐位不变”误写成“旧类无遗忘”。v3已经实证二者不同。
 
 反向追踪计数：`verified-module=5`、`verified-design=1`、`verified-real=4`、`blocked-future-query=1`、`rejected-formal-hinge=1`。
