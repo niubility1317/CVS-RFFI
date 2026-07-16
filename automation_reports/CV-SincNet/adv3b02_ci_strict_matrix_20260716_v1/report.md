@@ -30,3 +30,9 @@
 - 已实现smoke receipt派生正式launch authority。
 - `ssr-gpu`下52项focused/cross-module测试通过；`py_compile`与`git diff --check`通过。
 - N607 smoke、正式矩阵与matched Stage2-C MRIOR-SDA仍待执行，因此当前不能声明实验完成或性能优于基线。
+
+## 同步证据
+
+- Git提交：`4a1cfe7`。
+- N607四个新文件SHA依次为`fca6f70e...d15dd`、`5f0ce7fb...2027f`、`4b3f4501...64aa1`、`6eb3cdea...421e`，与本地一致。
+- 2026-07-16 12:06 CST直连预检PASS，8张RTX3090空闲且无活动训练进程。
