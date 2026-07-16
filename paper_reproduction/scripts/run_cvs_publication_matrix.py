@@ -20,6 +20,11 @@ PHASE_METHODS = {
     "stage2b": ("cvs_opgac", "protonet_cda", "mrior_sda", "dadda_sda"),
     "stage2c": ("cvs_qknnv42", "csil", "mopc_hr", "orthogonal_incremental"),
 }
+CONTROLLED_EXTENSION_METHODS = {
+    "stage2b": ("jg_r8_lr020",),
+    "stage2c": (),
+}
+JG020_STRICT_MODULE = "paper_reproduction.cvs_aligned.adv3b02_supervised_da_runner"
 MODULES = {
     "stage2b": "paper_reproduction.cvs_aligned.supervised_da_runner",
     "stage2c": "paper_reproduction.cvs_aligned.class_incremental",
@@ -112,7 +117,7 @@ def build_rows(
     output_root: Path,
     log_root: Path,
 ) -> list[MatrixRow]:
-    allowed = set(PHASE_METHODS[phase])
+    allowed = set(PHASE_METHODS[phase]) | set(CONTROLLED_EXTENSION_METHODS[phase])
     if not methods or not set(methods) <= allowed:
         raise ValueError(f"methods for {phase} must be a non-empty subset of {sorted(allowed)}")
     rows: list[MatrixRow] = []
@@ -421,6 +426,10 @@ def main() -> int:
     if args.shard_count <= 0 or not 0 <= args.shard_index < args.shard_count:
         raise ValueError("shard index must be in [0,shard_count)")
     methods = _parse_strings(args.methods) if args.methods else PHASE_METHODS[args.phase]
+    if "jg_r8_lr020" in methods and args.module_override != JG020_STRICT_MODULE:
+        raise ValueError(
+            "jg_r8_lr020 requires the strict ADV3B02 supervised DA module override"
+        )
     receivers = _parse_strings(args.receivers)
     k_grid = _parse_ints(args.k_grid)
     seeds = _parse_ints(args.seeds)

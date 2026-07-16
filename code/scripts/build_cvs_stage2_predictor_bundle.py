@@ -124,17 +124,50 @@ def _select_support_query(
     reference_query_labels: list[tuple[str, str]],
     support_pool_max_k: int,
     query_per_tx: int,
+    use_offline_split_partition: bool = False,
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, list[dict[str, Any]]]:
     support_indices: list[int] = []
     support_class_indices: list[int] = []
     support_ranks: list[int] = []
     query_records: list[dict[str, Any]] = []
     support_lookup = {pair: index for index, pair in enumerate(support_labels)}
+    partitions = (
+        np.asarray(arrays["split_partition"]).astype(str)
+        if use_offline_split_partition
+        else None
+    )
+    partition_ranks = (
+        np.asarray(arrays["split_rank"]).astype(np.int64)
+        if use_offline_split_partition
+        else None
+    )
+    if use_offline_split_partition and (
+        partitions is None
+        or partition_ranks is None
+        or set(partitions.tolist()) != {"support_pool", "query"}
+        or reference_query_labels
+    ):
+        raise ValueError("legacy exact split partition evidence is missing or inapplicable")
+    roles = np.asarray(arrays["dataset_role"]).astype(str)
+    tx_ids = np.asarray(arrays["tx_ids"]).astype(str)
+    rx_ids = np.asarray(arrays["rx_ids"]).astype(str)
 
     for class_index, (role, label) in enumerate(support_labels):
-        ordered = _stable_class_indices(
-            arrays, receiver=receiver, role=role, label=label, seed=seed
-        )
+        if use_offline_split_partition:
+            class_mask = (roles == role) & (tx_ids == label) & (rx_ids == receiver)
+            support_ordered = np.flatnonzero(
+                class_mask & (partitions == "support_pool")
+            ).tolist()
+            query_ordered = np.flatnonzero(
+                class_mask & (partitions == "query")
+            ).tolist()
+            support_ordered.sort(key=lambda index: int(partition_ranks[index]))
+            query_ordered.sort(key=lambda index: int(partition_ranks[index]))
+            ordered = support_ordered + query_ordered
+        else:
+            ordered = _stable_class_indices(
+                arrays, receiver=receiver, role=role, label=label, seed=seed
+            )
         required = support_pool_max_k + query_per_tx
         if len(ordered) < required:
             raise ValueError(
@@ -144,6 +177,11 @@ def _select_support_query(
         support_indices.extend(ordered[:support_pool_max_k])
         support_class_indices.extend([class_index] * support_pool_max_k)
         support_ranks.extend(range(support_pool_max_k))
+        selected_query = (
+            query_ordered[:query_per_tx]
+            if use_offline_split_partition
+            else ordered[support_pool_max_k:required]
+        )
         query_records.extend(
             {
                 "array_index": index,
@@ -151,7 +189,7 @@ def _select_support_query(
                 "transmitter_label": label,
                 "registered_class_index": class_index,
             }
-            for index in ordered[support_pool_max_k:required]
+            for index in selected_query
         )
 
     for role, label in reference_query_labels:
@@ -175,8 +213,9 @@ def _select_support_query(
             for index in ordered[:query_per_tx]
         )
 
-    query_order = np.random.default_rng(int(seed) + 700_001).permutation(len(query_records))
-    query_records = [query_records[int(index)] for index in query_order]
+    if not use_offline_split_partition:
+        query_order = np.random.default_rng(int(seed) + 700_001).permutation(len(query_records))
+        query_records = [query_records[int(index)] for index in query_order]
     return (
         np.asarray(support_indices, dtype=np.int64),
         np.asarray([row["array_index"] for row in query_records], dtype=np.int64),
@@ -203,6 +242,12 @@ def _assert_scenario_alignment(
         for field in identity_fields:
             if not np.array_equal(np.asarray(arrays[field]), np.asarray(reference[field])):
                 raise ValueError(f"physical sample alignment drift across LEO scenarios: {field}")
+        for field in ("split_partition", "split_rank"):
+            if (field in arrays) != (field in reference) or (
+                field in reference
+                and not np.array_equal(np.asarray(arrays[field]), np.asarray(reference[field]))
+            ):
+                raise ValueError(f"offline split alignment drift across LEO scenarios: {field}")
     return reference
 
 
@@ -317,6 +362,10 @@ def build(args: argparse.Namespace, *, token_secret: bytes | None = None) -> dic
         reference_query_labels=reference_query_labels,
         support_pool_max_k=support_pool_max_k,
         query_per_tx=query_per_tx,
+        use_offline_split_partition=(
+            str(getattr(args, "offline_split_partition_policy", ""))
+            == "legacy_seeded_nested_exact"
+        ),
     )
 
     sample_ids = np.asarray(reference["sample_ids"]).astype(str)
@@ -606,6 +655,7 @@ def main() -> int:
     parser.add_argument("--new-class-count", type=int, default=0)
     parser.add_argument("--support-pool-max-k", type=int, required=True)
     parser.add_argument("--query-per-tx", type=int, required=True)
+    parser.add_argument("--offline-split-partition-policy", default="")
     parser.add_argument("--candidate-lock", type=Path, required=True)
     parser.add_argument("--checkpoint", type=Path, required=True)
     parser.add_argument("--adapter", type=Path, required=True)

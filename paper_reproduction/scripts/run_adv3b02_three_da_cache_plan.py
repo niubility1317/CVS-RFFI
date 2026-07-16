@@ -96,7 +96,10 @@ def main() -> int:
     parser.add_argument("--execute", action="store_true")
     args = parser.parse_args()
     plan = json.loads(args.plan_manifest.read_text(encoding="utf-8-sig"))
-    if plan.get("schema") != "adv3b02_three_da_leo_weak_only_plan_v1":
+    if plan.get("schema") not in {
+        "adv3b02_three_da_leo_weak_only_plan_v1",
+        "adv3b02_jg020_matched_stage2b_k10_plan_v1",
+    }:
         raise ValueError("unexpected plan schema")
     if plan.get("phase2_config_exposes_dataset_path") is not False:
         raise ValueError("Phase2 config exposure guard failed")
@@ -133,6 +136,16 @@ def main() -> int:
             audit = _verify_bundle(command)
             bundle_completed += 1
         bundle_audits.append(audit)
+    id_audit_command = list(plan["commands"].get("matched_id_audit", []))
+    id_audit: dict[str, Any] | None = None
+    if id_audit_command:
+        id_audit_path = _argument(id_audit_command, "--out")
+        if args.execute:
+            _run(id_audit_command)
+        if id_audit_path.is_file():
+            id_audit = json.loads(id_audit_path.read_text(encoding="utf-8-sig"))
+            if id_audit.get("status") != "PASS" or id_audit.get("passed_row_count") != 25:
+                raise ValueError("matched ID/View audit is not PASS for all 25 rows")
     seal_command = list(plan["commands"].get("phase2_runtime_seal", []))
     seal_audit: dict[str, Any] | None = None
     seal_completed = seal_skipped = 0
@@ -145,8 +158,18 @@ def main() -> int:
                 _run(seal_command)
                 seal_audit = _verify_seal(seal_command)
                 seal_completed = 1
-    expected_total = len(commands) + len(bundle_commands) + (1 if seal_command else 0)
-    verified_total = len(audits) + len(bundle_audits) + (1 if seal_audit else 0)
+    expected_total = (
+        len(commands)
+        + len(bundle_commands)
+        + (1 if id_audit_command else 0)
+        + (1 if seal_command else 0)
+    )
+    verified_total = (
+        len(audits)
+        + len(bundle_audits)
+        + (1 if id_audit else 0)
+        + (1 if seal_audit else 0)
+    )
     summary = {
         "schema": "adv3b02_three_da_cache_prep_summary_v1",
         "execute": bool(args.execute),
@@ -157,6 +180,8 @@ def main() -> int:
         "cache_verified": len(audits),
         "predictor_bundle_verified": len(bundle_audits),
         "runtime_seal_verified": bool(seal_audit),
+        "matched_id_audit_verified": bool(id_audit),
+        "matched_id_audit": id_audit,
         "phase2_started": False,
         "audits": audits,
         "bundle_audits": bundle_audits,

@@ -72,12 +72,17 @@ def _landlock_abi() -> int:
 def build(args: argparse.Namespace) -> dict[str, Any]:
     config_path = _regular(args.config)
     config = json.loads(config_path.read_text(encoding="utf-8-sig"))
-    source_manifest = _regular(Path(str(config["source_leo_weak_cache_set_manifest"])))
-    source_payload = json.loads(source_manifest.read_text(encoding="utf-8-sig"))
-    artifact_files = [config_path, source_manifest]
-    for raw in dict(source_payload["cache_npz_by_scenario"]).values():
-        path = Path(str(raw))
-        artifact_files.append(_regular(path if path.is_absolute() else source_manifest.parent / path))
+    artifact_files = [config_path]
+    source_manifest_value = str(config.get("source_leo_weak_cache_set_manifest", "")).strip()
+    if source_manifest_value:
+        source_manifest = _regular(Path(source_manifest_value))
+        source_payload = json.loads(source_manifest.read_text(encoding="utf-8-sig"))
+        artifact_files.append(source_manifest)
+        for raw in dict(source_payload["cache_npz_by_scenario"]).values():
+            path = Path(str(raw))
+            artifact_files.append(
+                _regular(path if path.is_absolute() else source_manifest.parent / path)
+            )
     predictor_root = Path(str(config["target_predictor_bundle_root"])).resolve(strict=True)
     predictor_seal_root = Path(str(config["target_predictor_seal_root"])).resolve(
         strict=True

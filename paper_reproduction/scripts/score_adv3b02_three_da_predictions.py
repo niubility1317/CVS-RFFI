@@ -87,14 +87,23 @@ def score(run_dir: Path, scoring_manifest_path: Path, runtime_evidence_path: Pat
         expected = {
             "sample_ids", "scenarios", "before_predicted_labels", "predicted_labels"
         }
-        if set(archive.files) != expected:
+        optional = {"identity_predicted_labels"}
+        actual_members = set(archive.files)
+        if actual_members != expected and actual_members != expected | optional:
             raise ValueError("prediction member allowlist drift")
         sample_ids = np.asarray(archive["sample_ids"]).astype(str)
         scenarios = np.asarray(archive["scenarios"]).astype(str)
         before = np.asarray(archive["before_predicted_labels"], dtype=np.int64)
+        identity = (
+            np.asarray(archive["identity_predicted_labels"], dtype=np.int64)
+            if "identity_predicted_labels" in archive.files
+            else None
+        )
         predicted = np.asarray(archive["predicted_labels"], dtype=np.int64)
     if not (len(sample_ids) == len(scenarios) == len(before) == len(predicted)):
         raise ValueError("prediction arrays have inconsistent lengths")
+    if identity is not None and len(identity) != len(sample_ids):
+        raise ValueError("identity prediction array has inconsistent length")
     truth_by_id = {str(row["query_token"]): dict(row) for row in truth["rows"]}
     if len(truth_by_id) != len(truth["rows"]):
         raise ValueError("truth sidecar contains duplicate opaque query IDs")
@@ -112,6 +121,7 @@ def score(run_dir: Path, scoring_manifest_path: Path, runtime_evidence_path: Pat
             [int(truth_by_id[value]["true_class_index"]) for value in ids]
         )
         before_values = before[indices]
+        identity_values = identity[indices] if identity is not None else None
         after_values = predicted[indices]
         before_acc = float(np.mean(before_values == truth_values))
         after_acc = float(np.mean(after_values == truth_values))
@@ -121,6 +131,14 @@ def score(run_dir: Path, scoring_manifest_path: Path, runtime_evidence_path: Pat
             "target_old_accuracy_delta": after_acc - before_acc,
             **runtime[scenario],
         }
+        if identity_values is not None:
+            identity_acc = float(np.mean(identity_values == truth_values))
+            scenario_metrics[scenario].update(
+                {
+                    "target_old_accuracy_identity_qknn": identity_acc,
+                    "target_old_accuracy_delta_vs_identity_qknn": after_acc - identity_acc,
+                }
+            )
         metadata = [
             {
                 **truth_by_id[value],
@@ -140,8 +158,15 @@ def score(run_dir: Path, scoring_manifest_path: Path, runtime_evidence_path: Pat
                 scenario=scenario,
             )
         )
-        for opaque_id, truth_value, before_value, predicted_value in zip(
-            ids, truth_values.tolist(), before_values.tolist(), after_values.tolist()
+        identity_list = (
+            identity_values.tolist() if identity_values is not None else [None] * len(ids)
+        )
+        for opaque_id, truth_value, before_value, identity_value, predicted_value in zip(
+            ids,
+            truth_values.tolist(),
+            before_values.tolist(),
+            identity_list,
+            after_values.tolist(),
         ):
             meta = truth_by_id[opaque_id]
             score_rows.append({
@@ -153,6 +178,7 @@ def score(run_dir: Path, scoring_manifest_path: Path, runtime_evidence_path: Pat
                 "role": meta["evaluation_role"],
                 "true_label": truth_value,
                 "before_predicted_label": before_value,
+                "identity_predicted_label": identity_value,
                 "predicted_label": predicted_value,
                 "correct": int(truth_value == predicted_value),
                 "scenario": scenario,
@@ -164,6 +190,14 @@ def score(run_dir: Path, scoring_manifest_path: Path, runtime_evidence_path: Pat
             "target_old_accuracy_delta", "adaptation_latency_sec",
         )
     }
+    if identity is not None:
+        for key in (
+            "target_old_accuracy_identity_qknn",
+            "target_old_accuracy_delta_vs_identity_qknn",
+        ):
+            aggregate[key + "_mean"] = float(
+                sum(float(row[key]) for row in scenario_metrics.values()) / 3.0
+            )
     if not all(math.isfinite(value) for value in aggregate.values()):
         raise FloatingPointError("non-finite aggregate metric")
     result = {

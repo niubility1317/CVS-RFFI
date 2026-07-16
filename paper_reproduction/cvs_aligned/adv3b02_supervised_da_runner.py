@@ -56,9 +56,18 @@ from paper_reproduction.cvs_aligned.supervised_da import (  # noqa: E402
     mrior_sda_batch_step,
     validate_supervised_da_manifest,
 )
+from paper_reproduction.cvs_aligned.jg020_stage2c import (  # noqa: E402
+    numpy_from_torch_compat,
+    train_support_only_bp_jg_cached,
+)
+from paper_reproduction.cvs_aligned.jg020_runtime_primitives import (  # noqa: E402
+    inject_feat_joint_lora,
+    load_and_merge_ground_lora,
+    merge_feat_joint_lora,
+)
 
 
-METHODS = {"protonet_cda", "mrior_sda", "dadda_sda"}
+METHODS = {"protonet_cda", "mrior_sda", "dadda_sda", "jg_r8_lr020"}
 SCENARIOS = tuple(FORMAL_LEO_WEAK_SCENARIOS)
 QUERY_POLICY = "per_sample_all_registered_classes"
 PRETRAINED_POLICY = "sealed_phase1_checkpoint_only"
@@ -325,6 +334,30 @@ def _validate_config(config: dict[str, Any]) -> None:
         raise ValueError("query_per_tx must be positive")
     if method != "protonet_cda" and int(config.get("adapt_steps", 0)) <= 0:
         raise ValueError("parametric DA methods require positive adapt_steps")
+    if method == "jg_r8_lr020":
+        locked = {
+            "adapt_steps": 50,
+            "jg_scope": "joint_gate",
+            "jg_rank": 8,
+            "jg_alpha": 8.0,
+            "jg_learning_rate": 0.02,
+            "jg_weight_decay": 1.0e-4,
+            "jg_temperature": 18.0,
+            "jg_epochs": 5,
+            "jg_max_optimizer_steps": 50,
+            "jg_grad_clip": 1.0,
+            "jg_support_view_count": 3,
+            "query_view_count": 1,
+            "ground_adapter_scope": "projection_feature",
+            "ground_adapter_rank": 16,
+            "ground_adapter_alpha": 16.0,
+            "ground_adapter_sha256": (
+                "95f9a8bac7880d42f705db7f16523c37cf4ce5ff8438ac2c500c7550a38de446"
+            ),
+        }
+        failed_locked = [key for key, value in locked.items() if config.get(key) != value]
+        if failed_locked:
+            raise ValueError(f"JG_R8_LR020 locked config drift: {failed_locked}")
     expected = {
         "phase2_sample_view_policy": PHASE2_SAMPLE_VIEW_POLICY,
         "clean_sample_access": False,
@@ -349,10 +382,10 @@ def _validate_config(config: dict[str, Any]) -> None:
             "LOCAL_PROTOCOL_REPAIR_REQUIRED: Phase2 config exposes raw/clean inputs: "
             f"{present_forbidden}"
         )
-    for key in (
-        "source_leo_weak_cache_set_manifest", "target_predictor_bundle_root",
-        "target_predictor_seal_root",
-    ):
+    required_sealed = ["target_predictor_bundle_root", "target_predictor_seal_root"]
+    if method in {"mrior_sda", "dadda_sda"}:
+        required_sealed.append("source_leo_weak_cache_set_manifest")
+    for key in required_sealed:
         if not str(config.get(key, "")).strip():
             raise ValueError(f"LOCAL_PROTOCOL_REPAIR_REQUIRED: missing sealed cache field={key}")
     if not config.get("target_old_tx_labels"):
@@ -449,6 +482,356 @@ def _predict_logits(model: ADV3B02MethodModel, x: torch.Tensor, device: torch.de
     with torch.no_grad():
         _, logits, _ = model._identity(x.to(device))
         return logits.argmax(dim=1).cpu()
+
+
+def _prototype_predict(
+    model: ADV3B02MethodModel,
+    support_x: torch.Tensor,
+    support_y: torch.Tensor,
+    query_x: torch.Tensor,
+    *,
+    device: torch.device,
+) -> torch.Tensor:
+    model.eval()
+    with torch.no_grad():
+        support_features, _support_logits, _support_aux = model._identity(support_x.to(device))
+        query_features, _query_logits, _query_aux = model._identity(query_x.to(device))
+        support_features = torch.nn.functional.normalize(support_features, dim=1)
+        query_features = torch.nn.functional.normalize(query_features, dim=1)
+        class_ids = torch.unique(support_y, sorted=True).to(device)
+        prototypes = torch.stack(
+            [support_features[support_y.to(device) == class_id].mean(dim=0) for class_id in class_ids]
+        )
+        prototypes = torch.nn.functional.normalize(prototypes, dim=1)
+        return class_ids[(query_features @ prototypes.T).argmax(dim=1)].cpu()
+
+
+def _run_jg_r8_lr020(
+    config: dict[str, Any],
+    *,
+    run_dir: Path,
+    device: torch.device,
+    template: ADV3B02MethodModel,
+    checkpoint_info: dict[str, Any],
+    support_arrays: dict[str, dict[str, np.ndarray]],
+    query_arrays: dict[str, dict[str, np.ndarray]],
+    predictor_bundle_path: Path,
+    predictor_seal_path: Path,
+    predictor_seal_sha: str,
+    predictor_bundle_manifest: dict[str, Any],
+    predictor_bundle_audit: dict[str, Any],
+    members: dict[str, dict[str, Any]],
+) -> dict[str, Any]:
+    """Run the locked P4+JG adapter once, then score each single-view scenario."""
+
+    seed = int(config["seed"])
+    selected_support: dict[str, tuple[torch.Tensor, torch.Tensor, list[str]]] = {}
+    query_inputs: dict[str, tuple[torch.Tensor, list[str]]] = {}
+    reference_support_ids: list[str] | None = None
+    reference_query_ids: list[str] | None = None
+    reference_support_y: torch.Tensor | None = None
+    for scenario in SCENARIOS:
+        support_x, support_y, support_ids = _select_registered_support(
+            support_arrays[scenario], config
+        )
+        query_input = query_arrays[scenario]
+        query_x = _tensor_from_array(
+            query_input["query_leo_weak_iq"],
+            numpy_dtype=np.float32,
+            torch_dtype=torch.float32,
+        )
+        query_ids = np.asarray(query_input["query_tokens"]).astype(str).tolist()
+        if reference_support_ids is None:
+            reference_support_ids = list(support_ids)
+            reference_query_ids = list(query_ids)
+            reference_support_y = support_y.clone()
+        elif (
+            support_ids != reference_support_ids
+            or query_ids != reference_query_ids
+            or not torch.equal(support_y, reference_support_y)
+        ):
+            raise ValueError("JG_R8_LR020 predictor inputs drift across LEO scenarios")
+        selected_support[scenario] = (support_x, support_y, support_ids)
+        query_inputs[scenario] = (query_x, query_ids)
+    assert reference_support_ids is not None
+    assert reference_query_ids is not None
+    assert reference_support_y is not None
+
+    candidate_lock_path = predictor_bundle_path / str(
+        members["candidate_lock"]["relative_path"]
+    )
+    candidate_lock = json.loads(candidate_lock_path.read_text(encoding="utf-8-sig"))
+    lock_expected = {
+        "schema": "adv3b02_jg020_matched_stage2b_candidate_lock_v1",
+        "method": "jg_r8_lr020",
+        "k_shot": 10,
+        "query_view_count": 1,
+        "support_view_count": 3,
+    }
+    failed_lock = [key for key, value in lock_expected.items() if candidate_lock.get(key) != value]
+    if failed_lock:
+        raise ValueError(f"JG_R8_LR020 package candidate lock drift: {failed_lock}")
+
+    direct_model = copy.deepcopy(template).to(device).eval()
+    identity_model = copy.deepcopy(template).to(device).eval()
+    candidate_model = copy.deepcopy(template).to(device).eval()
+    ground_adapter_path = predictor_bundle_path / str(members["adapter"]["relative_path"])
+    identity_ground_audit = load_and_merge_ground_lora(
+        identity_model,
+        ground_adapter_path,
+        scope=str(config["ground_adapter_scope"]),
+        rank=int(config["ground_adapter_rank"]),
+        alpha=float(config["ground_adapter_alpha"]),
+        expected_sha256=str(config["ground_adapter_sha256"]),
+    )
+    candidate_ground_audit = load_and_merge_ground_lora(
+        candidate_model,
+        ground_adapter_path,
+        scope=str(config["ground_adapter_scope"]),
+        rank=int(config["ground_adapter_rank"]),
+        alpha=float(config["ground_adapter_alpha"]),
+        expected_sha256=str(config["ground_adapter_sha256"]),
+    )
+    if identity_ground_audit != candidate_ground_audit:
+        raise ValueError("JG_R8_LR020 ground P4 merge audit drift")
+    adapter_resources = inject_feat_joint_lora(
+        candidate_model,
+        rank=int(config["jg_rank"]),
+        alpha=float(config["jg_alpha"]),
+        scope=str(config["jg_scope"]),
+    )
+    if int(adapter_resources["trainable_parameters"]) != 6_400:
+        raise ValueError("JG_R8_LR020 trainable parameter count drift")
+
+    adapt_rows = np.concatenate(
+        [
+            numpy_from_torch_compat(
+                selected_support[scenario][0], dtype=np.dtype(np.float32)
+            )
+            for scenario in SCENARIOS
+        ]
+    )
+    adapt_labels = np.concatenate(
+        [
+            numpy_from_torch_compat(
+                selected_support[scenario][1], dtype=np.dtype(np.int64)
+            )
+            for scenario in SCENARIOS
+        ]
+    )
+    support_row_ids = [sample_id for _scenario in SCENARIOS for sample_id in reference_support_ids]
+    trace, training_runtime = train_support_only_bp_jg_cached(
+        candidate_model,
+        adapt_rows,
+        adapt_labels,
+        physical_support_ids=reference_support_ids,
+        support_row_physical_ids=support_row_ids,
+        epochs=int(config["jg_epochs"]),
+        learning_rate=float(config["jg_learning_rate"]),
+        weight_decay=float(config["jg_weight_decay"]),
+        temperature=float(config["jg_temperature"]),
+        support_view_count=int(config["jg_support_view_count"]),
+        batch_size=int(config.get("target_batch_size", 64)),
+        max_optimizer_steps=int(config["jg_max_optimizer_steps"]),
+        grad_clip=float(config["jg_grad_clip"]),
+        seed=seed,
+        device=device,
+    )
+    if len(trace) != 5 or int(training_runtime["optimizer_steps"]) != 50:
+        raise ValueError("JG_R8_LR020 did not complete the locked 5epoch/50step budget")
+
+    # The isolation launcher creates the row directory before entering Landlock.
+    # Resume/overwrite decisions remain the publication worker's responsibility.
+    run_dir.mkdir(parents=True, exist_ok=True)
+    target_state = {
+        name: parameter.detach().cpu().half()
+        for name, parameter in candidate_model.named_parameters()
+        if parameter.requires_grad
+    }
+    if sum(tensor.numel() for tensor in target_state.values()) != 6_400:
+        raise ValueError("JG_R8_LR020 persisted target delta size drift")
+    target_delta_path = run_dir / "target_delta_fp16.pt"
+    torch.save(target_state, target_delta_path)
+    target_merge_audit = merge_feat_joint_lora(candidate_model)
+    candidate_model.eval()
+
+    prediction_rows: list[dict[str, Any]] = []
+    scenario_runtime: dict[str, dict[str, Any]] = {}
+    for scenario in SCENARIOS:
+        support_x, support_y, _support_ids = selected_support[scenario]
+        query_x, query_ids = query_inputs[scenario]
+        before = _predict_logits(direct_model, query_x, device)
+        identity_predicted = _prototype_predict(
+            identity_model, support_x, support_y, query_x, device=device
+        )
+        started = time.perf_counter()
+        predicted = _prototype_predict(
+            candidate_model, support_x, support_y, query_x, device=device
+        )
+        inference_seconds = time.perf_counter() - started
+        scenario_runtime[scenario] = {
+            "adaptation_latency_sec": float(training_runtime["adaptation_wall_seconds"]),
+            "candidate_query_inference_sec": inference_seconds,
+            "latency_per_query_ms": inference_seconds * 1000.0 / int(len(query_ids)),
+            "adapt_steps": int(training_runtime["optimizer_steps"]),
+            "adapter_optimizer_steps": int(training_runtime["optimizer_steps"]),
+            "adv3b02_gradient_updates": 0,
+            "trainable_parameters": 6_400,
+            "support_view_count": 3,
+            "query_view_count": 1,
+            "support_forward_sample_equivalents": int(
+                training_runtime["support_forward_sample_equivalents"]
+            ),
+            "full_backbone_forward_sample_equivalents": int(
+                training_runtime["full_backbone_forward_sample_equivalents"]
+            ),
+            "peak_cuda_memory_bytes": int(training_runtime["peak_cuda_memory_bytes"]),
+            "role_oracle_used": False,
+            "true_batch_class_count_used": False,
+            "class_quota_used": False,
+            "query_query_graph_used": False,
+            "query_batch_state_required": False,
+        }
+        for sample_id, before_label, identity_label, predicted_label in zip(
+            query_ids,
+            before.tolist(),
+            identity_predicted.tolist(),
+            predicted.tolist(),
+        ):
+            prediction_rows.append(
+                {
+                    "sample_id": sample_id,
+                    "scenario": scenario,
+                    "before_predicted_label": int(before_label),
+                    "identity_predicted_label": int(identity_label),
+                    "predicted_label": int(predicted_label),
+                }
+            )
+
+    persistent_state_bytes = (
+        int(ground_adapter_path.stat().st_size)
+        + int(target_delta_path.stat().st_size)
+        + 6 * int(config.get("adv3b02_feature_dim", 160)) * 2
+        + 24
+    )
+    split_manifest = validate_supervised_da_manifest(
+        {
+            **config,
+            "method_id": "jg_r8_lr020",
+            "stage": "Stage2-B",
+            "cvs_extension": True,
+            "target_old_support_sample_ids": reference_support_ids,
+            "target_old_query_sample_ids": reference_query_ids,
+            "target_labels_scope": "registered_support_only",
+            "target_query_used_for_training": False,
+            "target_query_used_for_model_selection": False,
+            "predictor_query_truth_access": False,
+            "predictor_query_role_access": False,
+            "predictor_query_true_batch_class_count_access": False,
+            "predictor_query_class_quota_access": False,
+            "prediction_scoring_process_isolated": True,
+            "scorer_output_must_not_feed_predictor": True,
+        }
+    )
+    split_manifest.update(
+        {
+            **checkpoint_info,
+            "feature_extractor": "ADV3B02 identity backbone",
+            "adv3b02_frozen": True,
+            "adv3b02_gradient_updates": 0,
+            "adapter_optimizer_steps": 50,
+            "support_query_overlap": False,
+            "all_tests_satellite_augmented": True,
+            "overlay_applied_before_phase2": True,
+            "target_predictor_bundle_manifest": str(predictor_bundle_path),
+            "target_predictor_package_seal": str(predictor_seal_path),
+            "target_predictor_package_seal_sha256": predictor_seal_sha,
+            "target_predictor_bundle_contract": predictor_bundle_manifest,
+            "target_predictor_bundle_audit": predictor_bundle_audit,
+            "source_leo_weak_cache_used": False,
+            "source_cache_declared_but_not_opened": True,
+            "query_used_for_joint_decision": False,
+            "query_used_for_transductive_inference": False,
+            "phase2_runtime_isolation_evidence": config[
+                "_verified_phase2_runtime_isolation_evidence"
+            ],
+            "resource_profile": "extreme_lightweight_cached_key_layer_delta",
+            "deployment_resource_claim_allowed": True,
+            "candidate_id": "JG_R8_LR020",
+            "ground_adapter_audit": candidate_ground_audit,
+            "target_merge_audit": target_merge_audit,
+            "training_runtime": training_runtime,
+            "trainable_parameters": 6_400,
+            "persistent_state_bytes_estimate": persistent_state_bytes,
+            "persistent_state_within_256k": persistent_state_bytes <= 262_144,
+            "support_view_count": 3,
+            "query_view_count": 1,
+            "claim_boundary": "Stage2-B target-old matched K10 LEO_weak-only adaptation",
+        }
+    )
+
+    prediction_npz = run_dir / "prediction_artifact.npz"
+    np.savez(
+        prediction_npz,
+        sample_ids=np.asarray([row["sample_id"] for row in prediction_rows]),
+        scenarios=np.asarray([row["scenario"] for row in prediction_rows]),
+        before_predicted_labels=np.asarray(
+            [row["before_predicted_label"] for row in prediction_rows], dtype=np.int64
+        ),
+        identity_predicted_labels=np.asarray(
+            [row["identity_predicted_label"] for row in prediction_rows], dtype=np.int64
+        ),
+        predicted_labels=np.asarray(
+            [row["predicted_label"] for row in prediction_rows], dtype=np.int64
+        ),
+    )
+    prediction_manifest = {
+        "schema": "adv3b02_stage2b_prediction_artifact_v1",
+        "experiment_id": config["experiment_id"],
+        "method_id": "jg_r8_lr020",
+        "seed": seed,
+        "target_receiver_label": config["target_receiver_labels"][0],
+        "k_shot": 10,
+        "prediction_npz": prediction_npz.name,
+        "prediction_npz_sha256": sha256_file(prediction_npz),
+        "prediction_row_count": len(prediction_rows),
+        "scenario_runtime": scenario_runtime,
+        "identity_qknn_prediction_included": True,
+        "resource_summary": {
+            "trainable_parameters": 6_400,
+            "adapter_optimizer_steps": 50,
+            "adaptation_wall_seconds": float(training_runtime["adaptation_wall_seconds"]),
+            "peak_cuda_memory_bytes": int(training_runtime["peak_cuda_memory_bytes"]),
+            "persistent_state_bytes_estimate": persistent_state_bytes,
+            "support_view_count": 3,
+            "query_view_count": 1,
+        },
+        "predictor_input_schema": {
+            "allowed": [
+                "LEO query IQ",
+                "query sample ID",
+                "overlay provenance",
+                "registered support IQ/labels",
+                "registered class list",
+                "sealed ground P4 adapter",
+            ],
+            "query_truth": False,
+            "query_role": False,
+            "query_true_batch_class_count": False,
+            "query_class_quota": False,
+            "query_ordering_hint": False,
+        },
+        "scoring_completed_inside_predictor": False,
+    }
+    for filename, payload in (
+        ("prediction_manifest.json", prediction_manifest),
+        ("split_manifest.json", split_manifest),
+        ("resolved_config.json", config),
+        ("loss_trace.json", trace),
+    ):
+        write_json(run_dir / filename, payload)
+    _write_csv(run_dir / "loss_trace.csv", trace)
+    return prediction_manifest
 
 
 def _adapt(
@@ -603,7 +986,7 @@ def run(config: dict[str, Any], *, run_dir: Path, device: torch.device) -> dict[
     source_arrays: dict[str, dict[str, np.ndarray]] | None = None
     source_cache_manifest: dict[str, Any] | None = None
     source_cache_audit: dict[str, Any] | None = None
-    if method != "protonet_cda":
+    if method in {"mrior_sda", "dadda_sda"}:
         source_arrays, source_cache_manifest, source_cache_audit = load_verified_leo_weak_cache_set(
             config["source_leo_weak_cache_set_manifest"],
             expected_scope="source_train",
@@ -615,6 +998,23 @@ def run(config: dict[str, Any], *, run_dir: Path, device: torch.device) -> dict[
     feature_dim = int(config.get("adv3b02_feature_dim", getattr(exact_model, "emb_dim", 160)))
     template = ADV3B02MethodModel(exact_model, method=method, feature_dim=feature_dim).cpu()
     del exact_model
+
+    if method == "jg_r8_lr020":
+        return _run_jg_r8_lr020(
+            config,
+            run_dir=run_dir,
+            device=device,
+            template=template,
+            checkpoint_info=checkpoint_info,
+            support_arrays=support_arrays,
+            query_arrays=query_arrays,
+            predictor_bundle_path=predictor_bundle_path,
+            predictor_seal_path=predictor_seal_path,
+            predictor_seal_sha=predictor_seal_sha,
+            predictor_bundle_manifest=predictor_bundle_manifest,
+            predictor_bundle_audit=predictor_bundle_audit,
+            members=members,
+        )
 
     prediction_rows: list[dict[str, Any]] = []
     scenario_runtime: dict[str, dict[str, Any]] = {}

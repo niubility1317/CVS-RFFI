@@ -48,6 +48,7 @@ _FORBIDDEN_EXACT_MEMBERS = {
     "rf_stat_features",
     "fft_rf_features",
 }
+_OPTIONAL_OFFLINE_SPLIT_MEMBERS = ("split_partition", "split_rank")
 
 
 def canonical_json_sha256(value: Any) -> str:
@@ -247,6 +248,17 @@ def load_verified_leo_weak_cache(
             for key in _REQUIRED_ARRAY_KEYS
             if key != "manifest_json"
         }
+        optional_present = [
+            key for key in _OPTIONAL_OFFLINE_SPLIT_MEMBERS if key in members
+        ]
+        if optional_present and len(optional_present) != len(
+            _OPTIONAL_OFFLINE_SPLIT_MEMBERS
+        ):
+            raise ValueError(
+                "LEO cache offline split members must be present as an exact pair"
+            )
+        for key in optional_present:
+            arrays[key] = np.asarray(archive[key])
 
     iq = np.asarray(arrays["leo_weak_iq"], dtype=np.float32)
     if iq.ndim != 3 or iq.shape[1] != 2:
@@ -259,6 +271,15 @@ def load_verified_leo_weak_cache(
             raise ValueError(f"LEO cache row count drift for {key}")
         if np.asarray(value).dtype == object:
             raise ValueError(f"LEO cache object arrays are forbidden: {key}")
+    if "split_partition" in arrays:
+        partitions = np.asarray(arrays["split_partition"]).astype(str)
+        ranks = np.asarray(arrays["split_rank"]).astype(np.int64)
+        if set(partitions.tolist()) != {"support_pool", "query"}:
+            raise ValueError("offline split partition values drift")
+        if np.any(ranks < 0) or manifest.get(
+            "offline_split_partition_policy"
+        ) != "legacy_seeded_nested_exact":
+            raise ValueError("offline split rank/policy drift")
     roles = np.asarray(arrays["dataset_role"]).astype(str)
     observed_roles = set(roles.tolist())
     if not observed_roles or not observed_roles.issubset(allowed):

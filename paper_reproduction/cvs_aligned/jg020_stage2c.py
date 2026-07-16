@@ -654,7 +654,7 @@ def train_support_only_bp_jg_cached(
 ) -> tuple[list[dict[str, Any]], dict[str, Any]]:
     """Cache the frozen ADV3B02 path once; optimize only JG's two small layers."""
 
-    from paper_reproduction.scripts.train_export_cvs_support_lora_adapter import (
+    from paper_reproduction.cvs_aligned.jg020_runtime_primitives import (
         _matched_view_support_layout,
         bp_jg_episode_loss,
         build_shot_index_episode_positions,

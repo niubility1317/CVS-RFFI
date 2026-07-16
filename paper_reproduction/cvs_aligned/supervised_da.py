@@ -245,8 +245,10 @@ def validate_supervised_da_manifest(payload: dict[str, Any]) -> dict[str, Any]:
     """Fail closed on clean reachability, query Oracle access, and leakage."""
 
     method = str(payload.get("method_id", "")).strip().lower()
-    if method not in {"protonet_cda", "mrior_sda", "dadda_sda"}:
-        raise ValueError("method_id must be protonet_cda, mrior_sda, or dadda_sda")
+    if method not in {"protonet_cda", "mrior_sda", "dadda_sda", "jg_r8_lr020"}:
+        raise ValueError(
+            "method_id must be protonet_cda, mrior_sda, dadda_sda, or jg_r8_lr020"
+        )
     if payload.get("cvs_extension") is not True:
         raise ValueError("supervised CVS DA rows must set cvs_extension=true")
     if str(payload.get("stage", "")).strip() not in {"Stage2-B", "B"}:
