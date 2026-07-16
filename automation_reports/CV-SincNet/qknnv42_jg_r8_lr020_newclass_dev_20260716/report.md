@@ -5,7 +5,7 @@
 - 实验ID：`qknnv42_jg_r8_lr020_newclass_dev_20260716`
 - 日期：2026-07-16
 - 操作者：Codex主agent`root`＋子agent`jg020_registration_exp`
-- 当前状态：`FIFTH_NUMPY_TORCH_ABI_FAILURE_REPAIRED_AWAITING_RETRY4`；Phase1 cache、new5离线bundle与enrollment package完成，适配训练尚未开始
+- 当前状态：`SIXTH_TORCHSCRIPT_FIXED_BATCH_FAILURE_REPAIRED_AWAITING_RETRY5`；retry4已完成new5的50个support-only optimizer step，但尚未生成prediction或正式指标
 - 目标：验证锁定的`JG_R8_LR020`轻量旧类适配器在合法Stage2-C新类注册后的同row旧类保持、新类准确率与资源表现。
 - 声明边界：这是单receiver、单development seed的开发单元；即使指标达到门槛，也不能替代独立确认矩阵或宣称总目标完成。
 
@@ -119,7 +119,7 @@ isolated scorer
 | 本地Git分支/起点 | `codex/cvs-rffi-release-20260626`；本实现提交前HEAD含主线程parity commit`89fc2ff` |
 | 本地现有未提交修改 | 用户已有`mitigating_da_rootcause_20260710_104628/{progress.md,task_plan.md}`，不得触碰 |
 | 新增实现 | `jg020_stage2c.py`、support-only enrollment、apply-only predictor、split package builder、顺序launcher、3个candidate lock、registered cache spec、3个边界descriptor、9项测试、traceability/report |
-| 本地验证 | `ssr-gpu`中py_compile PASS；最新`pytest tests/test_jg020_stage2c_isolation.py -q`为12/12 PASS；3个lock、cache spec校验PASS；launcher dry-run展开19阶段条目；待提交前再次执行`git diff --check` |
+| 本地验证 | `ssr-gpu`中py_compile PASS；最新`pytest tests/test_jg020_stage2c_isolation.py -q`为13/13 PASS；3个lock、cache spec校验PASS；launcher dry-run展开19阶段条目；待提交前再次执行`git diff --check` |
 | 远端工作目录 | `/home/szu2070436088/2510044040/CV-SincNet` |
 | N607只读preflight | 2026-07-16 11:48:16 CST直连PASS；`dell-DSS8440`；项目根可见；8×RTX 3090均为10MiB/24576MiB、0%利用率 |
 | N607训练inventory | 2026-07-16 11:48:33+0800；`active_training_processes=[]`、`gpu_compute=[]`、`unknown_training_active=false`、route=`direct` |
@@ -130,23 +130,25 @@ isolated scorer
 | 首次运行状态 | launcher已退出；Phase1 cache成功，Stage2-C未开始；没有性能结果，不能报告candidate指标 |
 | 预期输出 | sealed manifests、adapter/prototype、loss trace、immutable predictions、scorer tables、resource audit、完整日志 |
 
-retry4同步映射（本地→N607同相对路径）：
+retry5同步映射（本地→N607同相对路径）：
 
 | 文件 | 本地SHA256 | 目的 |
 |---|---|---|
-| `paper_reproduction/cvs_aligned/jg020_stage2c.py` | `26559adcb586fb7798babb90c408bc2b04a5efc55aa70a572d070d8c000eb12f` | Torch/NumPy显式兼容复制 |
-| `paper_reproduction/scripts/enroll_cvs_jg020_support_only.py` | `920a5999ce5fe808eedcaa9c5061d8a8616e6a3778e2a5bb9da726e81f3b9a63` | support-only训练与runtime导出的ABI兼容路径 |
-| `paper_reproduction/scripts/launch_cvs_jg020_stage2c_dev_20260716.py` | `d5fb5adbb8253dada3514710aaa815fea575185139cc0feb41d0186ca06a6b6a` | 允许不可覆盖的`retry4`运行根 |
-| `paper_reproduction/scripts/run_cvs_jg020_apply_only_predictor.py` | `c9b83306e399aae5b707f2904867cfa73f27042a667e24688edc8f4fdcb5091a` | prediction端feature/logit ABI兼容路径 |
+| `paper_reproduction/cvs_aligned/jg020_stage2c.py` | `07195d98b26cc41d4314eab97cec431a70e6c46cd954267b1da555d18e268caa` | 固定TorchScript microbatch合同常量 |
+| `paper_reproduction/scripts/enroll_cvs_jg020_support_only.py` | `666f6665ab6fea2f3e5be8d794d7bacc6ea784386c74e10fb3e483e8b088b9b5` | 使用同形状batch做trace与parity并写入receipt |
+| `paper_reproduction/scripts/launch_cvs_jg020_stage2c_dev_20260716.py` | `5483877e2aca2bfd36080b7ec551268b3066daa45d96211ee09d591ff7688829` | 允许不可覆盖的`retry5`运行根并锁定predictor batch=2 |
+| `paper_reproduction/scripts/run_cvs_jg020_apply_only_predictor.py` | `eb2cf562513aa601c52222d3d948c536eac212269cf0bfb8d5f67c88a101bc83` | 按2-row microbatch执行并fail closed检查余数 |
 
-retry4计划启动命令：
+retry4实际启动命令：
 
 ```bash
 cd /home/szu2070436088/2510044040/CV-SincNet
 CUDA_VISIBLE_DEVICES=0 nohup /opt/miniconda3/bin/conda run --no-capture-output -n CVS-RFFI python -u paper_reproduction/scripts/launch_cvs_jg020_stage2c_dev_20260716.py --execute --run-root /home/szu2070436088/2510044040/CV-SincNet/runs/qknnv42_jg_r8_lr020_newclass_dev_20260716_retry4 --reuse-cache-set /home/szu2070436088/2510044040/CV-SincNet/runs/qknnv42_jg_r8_lr020_newclass_dev_20260716/phase1_cache/cache_set.json > /home/szu2070436088/2510044040/CV-SincNet/logs/qknnv42_jg_r8_lr020_newclass_dev_20260716_retry4_launcher.out 2>&1 &
 ```
 
-启动前远端复核：`retry4`根不存在；环境为Python`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`、Torch`2.1.0+cu121`、NumPy`2.2.5`；4个同步文件SHA256与上表一致；远端py_compile、enrollment CLI import闭包和launcher dry-run均PASS。
+启动前远端复核：`retry4`根不存在；环境为Python`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`、Torch`2.1.0+cu121`、NumPy`2.2.5`；4个同步文件SHA256与当时的retry4记录一致；远端py_compile、enrollment CLI import闭包和launcher dry-run均PASS。上表已更新为下一次retry5待同步哈希。
+
+retry5计划沿用相同命令，仅把run root和外层日志改为`..._retry5`；仍只读复用原run的`phase1_cache/cache_set.json`，不删除或覆盖retry4训练artifact。
 
 ## 首次启动完整日志诊断与恢复设计
 
@@ -176,6 +178,10 @@ retry2使用PID=`2259168`，再次通过source/enrollment隔离preflight，随�
 retry3再次通过new5 source bundle与enrollment package双重preflight，远端receipt继续确认`query_member_reachable=false`、`truth_member_reachable=false`、`clean_member_reachable=false`；随后在首个cached JG tensor构造处触发`TypeError: expected np.ndarray (got numpy.ndarray)`。完整外层日志与enrollment日志已保存到`remote_logs/retry3_numpy_abi_failure/`。失败发生在optimizer建立和首个optimizer step之前，因此仍没有训练loss或性能结果。根因是N607当前`CVS-RFFI`环境的Torch 2.1与NumPy 2 C-ABI桥不兼容；这不是数据、协议、候选或GPU失败。
 
 修复把JG020小型support、feature与logit在Torch/NumPy之间的边界改为经Python值的显式复制，避免`torch.from_numpy`和`.cpu().numpy()`依赖NumPy C-ABI；同时保留dtype、device和数值等价测试。新增回归断言确保JG020执行闭包不再出现这两类ABI桥调用，`ssr-gpu`中py_compile与12/12定向测试通过。前三个retry根继续只读保留；下一根锁定为不可覆盖的`runs/qknnv42_jg_r8_lr020_newclass_dev_20260716_retry4`，仍只读复用原密封Phase1 cache。
+
+retry4已确认ABI修复有效并首次完整执行new5的support-only适配：5epoch、50个optimizer step，loss从`1.946215`降至`1.488509`，support train accuracy从`0.711111`升至`0.741667`，mean margin从`0.302293`升至`0.334063`；完整loss trace已回收到`remote_logs/loss_trace.json`和`loss_trace.csv`。训练无NaN、Inf、OOM或Killed，并已写出6,400参数FP16 delta、prototype head与direct runtime。此处仅是support训练诊断，不是query性能结果。
+
+retry4随后在TorchScript parity阶段fail closed。ADV3B02底层把trace时batch维转换为Python整数，batch=2被固化；旧代码却用batch=8的probe调用已trace runtime，触发`shape '[4, 1, 256]' is invalid for input of size 4096`。修复把runtime合同显式锁为2-row microbatch：trace与parity使用相同2-row形状，receipt/apply predictor双向绑定该值，predictor逐2行向量化并要求query数可整除2；当前锁定5/10/20新类行的每类query=20，均满足整除。该microbatch只用于计算向量化，不读取role、truth、quota或全局类别分配。`ssr-gpu`中新增固定batch回归后py_compile与13/13测试通过；下一根为不可覆盖的`..._retry5`。
 
 ## 启动后对话回顾与路线教训
 

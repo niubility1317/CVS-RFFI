@@ -1,0 +1,75 @@
+[JG020-CACHED-EPOCH] {"boundary_margin_loss": 0.01912485044449568, "episode_count": 10, "epoch": 1, "epoch_seconds": 0.6309907180257142, "feature_anchor_loss": 8.625288748120852e-06, "gradient_norm": 0.6527584463357925, "learning_rate": 0.02, "loss": 1.9462154507637024, "mean_base_margin": 0.30141787230968475, "mean_margin": 0.3022930145263672, "optimizer_steps": 10, "prototype_gram_loss": 6.104073009379311e-07, "prototype_separation_loss": 0.0008245585551215129, "support_train_acc": 0.7111111111111111, "view_consistency_loss": 0.12069773972034455, "xview_prototype_ce": 1.8956852674484252}
+[JG020-CACHED-EPOCH] {"boundary_margin_loss": 0.015663430280983447, "episode_count": 10, "epoch": 2, "epoch_seconds": 0.17610834212973714, "feature_anchor_loss": 0.0005393286621256266, "gradient_norm": 1.327179178595543, "learning_rate": 0.02, "loss": 1.8728521645069123, "mean_base_margin": 0.30141787230968475, "mean_margin": 0.3082100287079811, "optimizer_steps": 20, "prototype_gram_loss": 2.5391390522599977e-05, "prototype_separation_loss": 0.0008339850373886293, "support_train_acc": 0.7166666666666667, "view_consistency_loss": 0.11890986114740372, "xview_prototype_ce": 1.829143512248993}
+[JG020-CACHED-EPOCH] {"boundary_margin_loss": 0.015679577924311162, "episode_count": 10, "epoch": 3, "epoch_seconds": 0.24648049660027027, "feature_anchor_loss": 0.005073571112006903, "gradient_norm": 1.7883459210395813, "learning_rate": 0.02, "loss": 1.736838936805725, "mean_base_margin": 0.30141787230968475, "mean_margin": 0.3202598407864571, "optimizer_steps": 30, "prototype_gram_loss": 0.00022442005665652688, "prototype_separation_loss": 0.0010817531627253629, "support_train_acc": 0.7361111111111112, "view_consistency_loss": 0.11444369331002235, "xview_prototype_ce": 1.6911159753799438}
+[JG020-CACHED-EPOCH] {"boundary_margin_loss": 0.020304474420845507, "episode_count": 10, "epoch": 4, "epoch_seconds": 0.3022905378602445, "feature_anchor_loss": 0.016847429005429147, "gradient_norm": 2.248184156417847, "learning_rate": 0.02, "loss": 1.6020905017852782, "mean_base_margin": 0.30141787230968475, "mean_margin": 0.3283871874213219, "optimizer_steps": 40, "prototype_gram_loss": 0.0006252269391552545, "prototype_separation_loss": 0.001810976248816587, "support_train_acc": 0.7416666666666667, "view_consistency_loss": 0.10862918719649314, "xview_prototype_ce": 1.5414295494556427}
+[JG020-CACHED-EPOCH] {"boundary_margin_loss": 0.026437398232519626, "episode_count": 10, "epoch": 5, "epoch_seconds": 0.2947671297006309, "feature_anchor_loss": 0.033427147194743156, "gradient_norm": 2.325471842288971, "learning_rate": 0.02, "loss": 1.488508754968643, "mean_base_margin": 0.30141787230968475, "mean_margin": 0.33406292647123337, "optimizer_steps": 50, "prototype_gram_loss": 0.0012186958527308888, "prototype_separation_loss": 0.0029563433607108893, "support_train_acc": 0.7416666666666667, "view_consistency_loss": 0.10235686078667641, "xview_prototype_ce": 1.4073362529277802}
+/home/szu2070436088/2510044040/CV-SincNet/code/model.py:24: TracerWarning: Converting a tensor to a Python boolean might cause the trace to be incorrect. We can't record the data flow of Python values, so this value will be treated as a constant in the future. This means that the trace might not generalize to other inputs!
+  if x.dim() != 3 or x.size(1) != 2:
+/home/szu2070436088/2510044040/CV-SincNet/code/model.py:26: TracerWarning: Converting a tensor to a Python integer might cause the trace to be incorrect. We can't record the data flow of Python values, so this value will be treated as a constant in the future. This means that the trace might not generalize to other inputs!
+  L = int(x.size(-1))
+/home/szu2070436088/2510044040/CV-SincNet/code/model.py:284: TracerWarning: Converting a tensor to a Python integer might cause the trace to be incorrect. We can't record the data flow of Python values, so this value will be treated as a constant in the future. This means that the trace might not generalize to other inputs!
+  if x.dim() != 3 or int(x.size(1)) != 2:
+/home/szu2070436088/2510044040/CV-SincNet/code/model.py:286: TracerWarning: Converting a tensor to a Python integer might cause the trace to be incorrect. We can't record the data flow of Python values, so this value will be treated as a constant in the future. This means that the trace might not generalize to other inputs!
+  B = int(x.size(0))
+/home/szu2070436088/2510044040/CV-SincNet/code/model.py:1357: TracerWarning: Converting a tensor to a Python boolean might cause the trace to be incorrect. We can't record the data flow of Python values, so this value will be treated as a constant in the future. This means that the trace might not generalize to other inputs!
+  if self.use_rfft_pair and (L % 2 == 0):
+/home/szu2070436088/2510044040/CV-SincNet/code/model.py:1263: TracerWarning: Converting a tensor to a Python boolean might cause the trace to be incorrect. We can't record the data flow of Python values, so this value will be treated as a constant in the future. This means that the trace might not generalize to other inputs!
+  if Fi.size(-1) <= 2:
+/home/szu2070436088/2510044040/CV-SincNet/code/model.py:1365: TracerWarning: Converting a tensor to a Python boolean might cause the trace to be incorrect. We can't record the data flow of Python values, so this value will be treated as a constant in the future. This means that the trace might not generalize to other inputs!
+  if half <= 1:
+/home/szu2070436088/2510044040/CV-SincNet/code/model.py:1371: TracerWarning: Converting a tensor to a Python boolean might cause the trace to be incorrect. We can't record the data flow of Python values, so this value will be treated as a constant in the future. This means that the trace might not generalize to other inputs!
+  m = min(pos.size(-1), neg.size(-1))
+/home/szu2070436088/2510044040/CV-SincNet/code/model.py:662: TracerWarning: Converting a tensor to a Python integer might cause the trace to be incorrect. We can't record the data flow of Python values, so this value will be treated as a constant in the future. This means that the trace might not generalize to other inputs!
+  if int(x.size(0)) <= 1:
+Traceback (most recent call last):
+  File "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/scripts/enroll_cvs_jg020_support_only.py", line 451, in <module>
+    raise SystemExit(main())
+  File "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/scripts/enroll_cvs_jg020_support_only.py", line 446, in main
+    print(json.dumps(enroll(parse_args()), ensure_ascii=False, sort_keys=True))
+  File "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/scripts/enroll_cvs_jg020_support_only.py", line 331, in enroll
+    parity = _runtime_parity(wrapper, runtime, probe)
+  File "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/utils/_contextlib.py", line 115, in decorate_context
+    return func(*args, **kwargs)
+  File "/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/scripts/enroll_cvs_jg020_support_only.py", line 140, in _runtime_parity
+    script_feature, script_logit = runtime(rows)
+  File "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1518, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1527, in _call_impl
+    return forward_call(*args, **kwargs)
+RuntimeError: The following operation failed in the TorchScript interpreter.
+Traceback of TorchScript, serialized code (most recent call last):
+  File "code/__torch__/export_adv3b02_effective8_torchscript.py", line 14, in forward
+    model0 = self.model
+    id_backbone = model0.id_backbone
+    _0, _1, = (id_backbone).forward(hf, rows, )
+               ~~~~~~~~~~~~~~~~~~~~ <--- HERE
+    return (torch.to(_0, 6), torch.to(_1, 6))
+  File "code/__torch__/model.py", line 103, in forward
+    filters = torch.view(bp1, [24, 1, 79])
+    _10 = ops.prim.NumToTensor(torch.size(rows, -1))
+    _11 = torch.reshape(rows, [4, 1, int(_10)])
+          ~~~~~~~~~~~~~ <--- HERE
+    y = torch._convolution(_11, filters, None, [1], [39], [1], False, [0], 1, False, False, True, True)
+    _12 = ops.prim.NumToTensor(torch.size(y, -1))
+
+Traceback of TorchScript, original code (most recent call last):
+/home/szu2070436088/2510044040/CV-SincNet/code/model.py(288): forward_iq_pair
+/home/szu2070436088/2510044040/CV-SincNet/code/model.py(1240): _sinc_on_iq
+/home/szu2070436088/2510044040/CV-SincNet/code/model.py(1444): forward
+/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/nn/modules/module.py(1508): _slow_forward
+/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/nn/modules/module.py(1527): _call_impl
+/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/nn/modules/module.py(1518): _wrapped_call_impl
+/home/szu2070436088/2510044040/CV-SincNet/code/model_dual_cvsincnet.py(64): backbone_forward_compat
+/home/szu2070436088/2510044040/CV-SincNet/code/cvsrffi/identity_only_forward.py(32): identity_only_feature_forward
+/home/szu2070436088/2510044040/CV-SincNet/code/scripts/export_adv3b02_effective8_torchscript.py(51): forward
+/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/nn/modules/module.py(1508): _slow_forward
+/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/nn/modules/module.py(1527): _call_impl
+/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/nn/modules/module.py(1518): _wrapped_call_impl
+/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/jit/_trace.py(1065): trace_module
+/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/jit/_trace.py(798): trace
+/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/scripts/enroll_cvs_jg020_support_only.py(151): _trace_runtime
+/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/scripts/enroll_cvs_jg020_support_only.py(330): enroll
+/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/scripts/enroll_cvs_jg020_support_only.py(446): main
+/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/scripts/enroll_cvs_jg020_support_only.py(451): <module>
+RuntimeError: shape '[4, 1, 256]' is invalid for input of size 4096
+
