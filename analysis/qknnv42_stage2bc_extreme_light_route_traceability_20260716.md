@@ -15,7 +15,7 @@
 
 |ID|要求|状态|证据/下一步|
 |---|---|---|---|
-|R01|Phase2`LEO_weak-only`且clean/clean-derived物理不可达|pending|JG enrollment/apply需接入固定argv隔离和后验访问账本|
+|R01|Phase2`LEO_weak-only`且clean/clean-derived物理不可达|partial|SOMP-H screen已在feature tensor加载前拒绝clean共存cache；正式JG enrollment/apply仍需固定argv隔离和后验访问账本|
 |R02|逐样本全部注册类、无角色/真实批次数/quota/global assignment|implemented|现有JG逻辑与SOMP-H批次不变测试；正式OS闭环待集成|
 |R03|不可变prediction与independent scorer隔离|partial|新head已有无pickleFP16 capsule及严格成员/schema校验；仍需绑定candidate capsule哈希与`.cvspred`|
 |R04|Stage2-B注册前与Stage2-C注册后同row|pending|正式runner/scorer尚未接入新head|
@@ -29,7 +29,7 @@
 |R12|adapter<=50k、<=20epoch、无dense query图|implemented_not_integrated|SOMP-H不增加adapter梯度参数；从实际FP16 tensor重算状态/MAC；24项测试PASS|
 |R13|identity-only及三种方法Pareto|pending|需同rowMAC、时延、峰值显存、状态和性能|
 |R14|完整日志或闭式求解诊断|pending|SOMP-H为闭式support-only，需保存几何/原型/资源诊断|
-|R15|合法TX/receiver/support-query清单|pending|等待coverage audit和sealed package manifest|
+|R15|合法TX/receiver/support-query清单|pending|legacy 20-new feature NPZ因clean共存定性`PROTOCOL_INVALID_FOR_PHASE2`；等待target-only coverage audit和sealed package manifest|
 |R16|自动化报告和Git提交|in_progress|根目录报告已建立；本次route prototype待提交|
 |R17|每3个turn回顾目标和对话|implemented|当前计数`1/3`|
 
@@ -47,4 +47,4 @@
 git diff --check -- paper_reproduction/cvs_aligned/support_only_multiprototype_head.py tests/test_support_only_multiprototype_head.py
 ```
 
-结果：24项PASS；只有既有TorchScript弃用/trace警告。该结果仅证明机制、序列化边界与资源接口可用，不是Stage2-B/C性能成功，也不授予N607正式启动权限。
+结果：核心与协议相关测试合计25项PASS；只有既有TorchScript弃用/trace警告。`screen_support_only_multiprototype_head.py`会在feature tensor加载前拒绝任何clean共存cache；现有legacy 20-new feature NPZ已被该边界排除。该结果仅证明机制、序列化和fail-closed接口可用，不是Stage2-B/C性能成功，也不授予N607正式启动权限。
