@@ -2,7 +2,7 @@
 
 Git镜像。权威运行记录见`E:\type10-7\automation_reports\CV-SincNet\qknnv42_fft96_stage2bc_125_20260716_174352\report.md`；本文件与其同步维护。
 
-当前状态：已完成方法与矩阵代码实现；相关完整回归145项通过。真实ADV3B02 runtime、strict plan及25/25个target cache已核验；`plan_v2.json`计数为100/125/500/1500且全部执行路径为绝对POSIX路径。运行实现已提交为`b04ee15`，等待N607四状态bwrap+strace smoke和125-bundle启动。
+当前状态：已完成方法与矩阵代码实现；相关完整回归145项通过。真实ADV3B02 runtime、strict plan及25/25个target cache已核验。同步前发现远端共享代码树存在并行改动，因此不覆盖共享文件；改用Git提交`ec3dc84`的独立源码快照和`plan_v3.json`在实验run root内执行。等待N607四状态bwrap+strace smoke和125-bundle启动。
 
 关键口径：
 
@@ -16,6 +16,7 @@ Git镜像。权威运行记录见`E:\type10-7\automation_reports\CV-SincNet\qknn
 
 证据哈希：
 
-- `plan_v2.json`：`a24f25657d0c96b3a3b0321e87f3c46a5debd64fb87248c53f463744709cba80`
+- 执行计划`plan_v3.json`：`0e43380fa2689febcb91d8be7b8e23a0eb010901c88001a2cc0890f6ce60a767`
+- 源码快照：`b9b95253b55eee0ab6da76294353fb45e34fb1449ba270816ab69ae895a31cd0`
 - strict plan：`0939d1ef8c837e96f95275febb0c76e31b2d375004dab56688ed79f5ebf83676`
 - ADV3B02 identity runtime：`b2021ca1ac97848a8cfda353a4070530bfa41bc08a711f746f329bd2d8d870d9`
