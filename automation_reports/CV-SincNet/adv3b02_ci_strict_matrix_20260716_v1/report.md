@@ -65,3 +65,5 @@
 - v4未授权计划SHA=`7d28a925...addb1b`，保持75包/900 cell/2700行与`launch_authority=false`；先仅在GPU0运行new5/K1/CSIL smoke，完整五层收据通过后才允许正式矩阵。
 
 - v4 smoke PID`2295678`完整PASS，smoke/cell收据SHA分别为`3f87ec81...a19b`和`5c976f4b...c88e2`；query训练行0、head先锁后开query、五项Oracle/配额访问均false。授权计划SHA=`4447433a...1226f`并绑定smoke收据，正式矩阵按8 GPU各一分片启动。
+
+- v4正式分片在后续package因压缩NPZ数值字节偶然命中短TX文本而fail closed，整批降级为诊断且不拼接。修复提交`9fdb7ee`，并用隔离CI构建入口提交`37e05e0`避免影响并发JG020；27项密封管线测试通过，v5全新根重跑。
