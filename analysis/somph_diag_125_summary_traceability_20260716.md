@@ -15,6 +15,6 @@
 
 验证命令：
 
-`python -m pytest -q tests/test_summarize_cvs_somph_diag_125_stability.py tests/test_run_cvs_somph_diag_125_stability.py tests/test_run_cvs_somph_diag_row_pipeline.py tests/test_stage2_diag_cosine_scorer.py`
+`python -m pytest -q tests/test_summarize_cvs_somph_diag_125_stability.py tests/test_run_cvs_somph_diag_125_stability.py tests/test_run_cvs_somph_diag_row_pipeline.py tests/test_stage2_diag_cosine_scorer.py tests/test_stage2_diag_cosine_exploration.py`
 
 结果：`28 passed`。旧v1 pipeline缺少diag COMMIT SHA，因此聚合器会fail closed拒绝其严格汇总。新v2 row形成`pipeline receipt→diag COMMIT→execution receipt→opened support/query member`严格哈希闭环；首次v2事后汇总因support文件保留写位而fail closed，修复后不再依赖权限位，而是对receipt绑定SHA执行单FD快照、哈希与内存解析。该修复不改变125个不可变预测，也无需重新执行适配。对完整正式目标仍是不完整证据，因为direct ADV3B02 K1配对流和其95%置信区间尚未运行。N607首个失败聚合目录保持原样，不覆盖、不删除。
