@@ -1,9 +1,14 @@
 from __future__ import annotations
 
+import hashlib
+import inspect
 import json
+import os
+import stat
 from pathlib import Path
 
 import numpy as np
+import pytest
 import torch
 
 import cvsrffi.stage2_diag_cosine_exploration as route
@@ -22,6 +27,25 @@ def _separable(seed: int = 7):
     labels = np.repeat(["class-a", "class-b", "class-c"], 9)
     truth = np.repeat(["class-a", "class-b", "class-c"], 5)
     return support, labels, query, truth
+
+
+def _d3_support(*, include_new: bool) -> dict[str, tuple[np.ndarray, np.ndarray]]:
+    result = {}
+    class_names = ["old-a", "old-b"] + (
+        ["new-c", "new-d"] if include_new else []
+    )
+    for scenario_index, scenario in enumerate(route.FORMAL_LEO_WEAK_SCENARIOS):
+        rng = np.random.default_rng(101 + scenario_index)
+        centers = np.eye(len(class_names), 24, dtype=np.float32)
+        features = np.vstack(
+            [
+                centers[index] + 0.01 * rng.normal(size=(4, 24))
+                for index in range(len(class_names))
+            ]
+        ).astype(np.float32)
+        labels = np.repeat(class_names, 4)
+        result[scenario] = (features, labels)
+    return result
 
 
 def test_fit_has_no_query_argument_and_prediction_is_batch_extension_invariant():
@@ -61,6 +85,151 @@ def test_fit_has_no_query_argument_and_prediction_is_batch_extension_invariant()
         stable.resource["classifier_state_policy"]
         == "current_registry_fixed_support_prototypes_zero_class_bias_shared_diag_only"
     )
+
+
+def test_d3_scenario_oldlock_freezes_every_old_head_and_audits_each_old_class():
+    assert all(
+        "query" not in name
+        for name in inspect.signature(route._fit_d3_after).parameters
+    )
+    before = route._fit_d3_before(
+        _d3_support(include_new=False),
+        seed=713101,
+        device=torch.device("cpu"),
+    )
+    after = route._fit_d3_after(
+        before,
+        _d3_support(include_new=True),
+        seed=713101,
+        device=torch.device("cpu"),
+    )
+    old_count = len(before.classes)
+    assert old_count == 2
+    assert np.array_equal(after.log_scale, before.log_scale)
+    assert np.array_equal(after.weights[:, :old_count], before.weights)
+    assert np.array_equal(after.bias[:, :old_count], before.bias)
+    assert np.all(after.bias[:, old_count:] == 0.0)
+    assert np.all(after.new_offset >= 0.0)
+    assert after.resource["trainable_parameters"] == 3 * 2 * 24
+    assert after.resource["query_rows_used_for_fit"] == 0
+    assert after.resource["query_role_oracle_access"] is False
+    assert after.resource["query_class_quota_access"] is False
+    assert after.resource["persistent_state_bytes"] <= 256 * 1024
+    audits = after.resource["scenario_old_support_intrusion_audit"]
+    assert set(audits) == set(route.FORMAL_LEO_WEAK_SCENARIOS)
+    for scenario, audit in audits.items():
+        assert audit["old_class_intrusion_count"] == 0
+        assert audit["worst_old_class_margin"] >= -1.0e-6
+        assert set(audit["per_old_class"]) == set(before.classes.tolist())
+        for row in audit["per_old_class"].values():
+            assert row["old_class_intrusion_count"] == 0
+            assert row["post_support_margin_min"] >= -1.0e-6
+            assert row["pre_support_accuracy"] == row["post_support_accuracy"]
+
+    scenario = route.FORMAL_LEO_WEAK_SCENARIOS[0]
+    query = _d3_support(include_new=True)[scenario][0]
+    first = route._scenario_predict(after, scenario, query)
+    extended = route._scenario_predict(
+        after,
+        scenario,
+        np.vstack([query, np.full((5, 24), 17.0, dtype=np.float32)]),
+    )
+    assert np.array_equal(first, extended[: len(first)])
+    assert set(first.tolist()) <= set(after.classes.tolist())
+
+
+def test_d3_parent_loader_binds_commit_receipt_state_and_lineage(tmp_path: Path):
+    parent = route._fit_d3_before(
+        _d3_support(include_new=False),
+        seed=713101,
+        device=torch.device("cpu"),
+    )
+    root = tmp_path / "parent"
+    root.mkdir()
+    state_path = root / "diag_cosine_state.npz"
+    np.savez(
+        state_path,
+        scenarios=parent.scenarios.astype(str),
+        classes=parent.classes.astype(str),
+        log_scale=parent.log_scale,
+        weights=parent.weights,
+        bias=parent.bias,
+        new_offset=parent.new_offset,
+        old_class_count=np.asarray([parent.old_class_count], dtype=np.int64),
+    )
+    os.chmod(state_path, stat.S_IREAD)
+    state_sha = hashlib.sha256(state_path.read_bytes()).hexdigest()
+    enrollment = {
+        "receiver": "20-1",
+        "seed": 713101,
+        "k_shot": 10,
+        "phase1_checkpoint_sha256": "1" * 64,
+        "feature_runtime_sha256": "2" * 64,
+        "method_lock_sha256": "3" * 64,
+    }
+    apply = {
+        "row_handle": "row_" + "4" * 64,
+        "row_manifest_sha256": "5" * 64,
+    }
+    receipt = {
+        "schema": "cvs.phase2.diag_cosine_exploration_receipt.v1",
+        "stage": "stage2b",
+        "registration_state": "before",
+        **enrollment,
+        **apply,
+        "candidate": {"name": route.CANDIDATE_D3_SCENARIO_OLDLOCK_NEWFIT},
+        "artifacts": {"diag_cosine_state.npz": state_sha},
+    }
+    receipt_path = root / "execution_receipt.json"
+    receipt_path.write_text(
+        json.dumps(receipt, sort_keys=True), encoding="utf-8"
+    )
+    os.chmod(receipt_path, stat.S_IREAD)
+    receipt_sha = hashlib.sha256(receipt_path.read_bytes()).hexdigest()
+    members = [
+        {
+            "relative_path": "diag_cosine_state.npz",
+            "sha256": state_sha,
+            "size_bytes": state_path.stat().st_size,
+        },
+        {
+            "relative_path": "execution_receipt.json",
+            "sha256": receipt_sha,
+            "size_bytes": receipt_path.stat().st_size,
+        },
+    ]
+    commit_path = root / "COMMIT.json"
+    commit_path.write_text(
+        json.dumps(
+            {
+                "schema": "cvs.phase2.diag_cosine_exploration_commit.v1",
+                "members": members,
+                "execution_receipt_sha256": receipt_sha,
+            },
+            sort_keys=True,
+        ),
+        encoding="utf-8",
+    )
+    os.chmod(commit_path, stat.S_IREAD)
+    commit_sha = hashlib.sha256(commit_path.read_bytes()).hexdigest()
+    loaded, closure = route._load_parent_scenario_state(
+        parent_diag_root=root,
+        expected_parent_commit_sha256=commit_sha,
+        enrollment_manifest=enrollment,
+        apply_manifest=apply,
+    )
+    assert np.array_equal(loaded.weights, parent.weights)
+    assert closure["parent_diag_commit_sha256"] == commit_sha
+    assert closure["parent_execution_receipt_sha256"] == receipt_sha
+    assert closure["parent_state_sha256"] == state_sha
+
+    with pytest.raises(route.DiagCosineExplorationError, match="COMMIT SHA256"):
+        route._load_parent_scenario_state(
+            parent_diag_root=root,
+            expected_parent_commit_sha256="f" * 64,
+            enrollment_manifest=enrollment,
+            apply_manifest=apply,
+        )
 
 
 def test_d1_b0_cap_removes_bias_and_caps_only_fft96_log_scale():

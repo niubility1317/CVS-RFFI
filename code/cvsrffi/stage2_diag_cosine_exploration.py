@@ -10,6 +10,7 @@ unlabeled prediction artifact.
 from __future__ import annotations
 
 import hashlib
+import io
 import json
 import math
 import os
@@ -51,7 +52,13 @@ FFT_LOG_SCALE_LIMIT = math.log(1.5)
 CANDIDATE_D1 = "d1_historical_diag_fftrf"
 CANDIDATE_D1_B0_CAP = "d1_b0_cap_diag_fftrf"
 CANDIDATE_D2 = "d2_fixed_proto_diag_fftrf"
-CANDIDATES = (CANDIDATE_D1, CANDIDATE_D1_B0_CAP, CANDIDATE_D2)
+CANDIDATE_D3_SCENARIO_OLDLOCK_NEWFIT = "d3_scenario_oldlock_newfit"
+CANDIDATES = (
+    CANDIDATE_D1,
+    CANDIDATE_D1_B0_CAP,
+    CANDIDATE_D2,
+    CANDIDATE_D3_SCENARIO_OLDLOCK_NEWFIT,
+)
 
 
 class DiagCosineExplorationError(ValueError):
@@ -65,6 +72,20 @@ class DiagCosineState:
     log_scale: np.ndarray
     weights: np.ndarray
     bias: np.ndarray
+    trace: tuple[dict[str, Any], ...]
+    resource: dict[str, Any]
+
+
+@dataclass(frozen=True)
+class ScenarioDiagCosineState:
+    candidate: str
+    scenarios: np.ndarray
+    classes: np.ndarray
+    log_scale: np.ndarray
+    weights: np.ndarray
+    bias: np.ndarray
+    new_offset: np.ndarray
+    old_class_count: int
     trace: tuple[dict[str, Any], ...]
     resource: dict[str, Any]
 
@@ -574,6 +595,665 @@ def predict_diag_cosine(state: DiagCosineState, query_x: np.ndarray) -> np.ndarr
     return state.classes[np.argmax(logits, axis=1)]
 
 
+def _scenario_predict(
+    state: ScenarioDiagCosineState,
+    scenario: str,
+    query_x: np.ndarray,
+) -> np.ndarray:
+    query = np.asarray(query_x, dtype=np.float32)
+    matches = np.flatnonzero(state.scenarios.astype(str) == str(scenario))
+    if len(matches) != 1:
+        raise DiagCosineExplorationError("scenario-specific state lookup drift")
+    index = int(matches[0])
+    if (
+        query.ndim != 2
+        or query.shape[1] != state.weights.shape[2]
+        or not np.isfinite(query).all()
+    ):
+        raise DiagCosineExplorationError("scenario query feature schema drift")
+    lower, upper = log_scale_bounds(CANDIDATE_D1, query.shape[1])
+    scale = np.minimum(np.maximum(state.log_scale[index], lower), upper)
+    logits = TEMPERATURE * (
+        _normalize(query * np.exp(scale)[None, :])
+        @ _normalize(state.weights[index]).T
+    )
+    logits += state.bias[index][None, :]
+    if state.old_class_count < len(state.classes):
+        logits[:, state.old_class_count :] -= float(state.new_offset[index])
+    return state.classes[np.argmax(logits, axis=1)]
+
+
+def _read_readonly_regular_bytes(path: Path) -> bytes:
+    source = path.resolve(strict=True)
+    if path.is_symlink() or source.is_symlink() or not source.is_file():
+        raise DiagCosineExplorationError("parent closure member must be a regular file")
+    descriptor = os.open(
+        source,
+        os.O_RDONLY | getattr(os, "O_BINARY", 0) | getattr(os, "O_NOFOLLOW", 0),
+    )
+    try:
+        metadata = os.fstat(descriptor)
+        if not stat.S_ISREG(metadata.st_mode):
+            raise DiagCosineExplorationError(
+                "parent closure member must remain a regular file"
+            )
+        if metadata.st_mode & (stat.S_IWUSR | stat.S_IWGRP | stat.S_IWOTH):
+            raise DiagCosineExplorationError(
+                "parent closure member must be read-only"
+            )
+        chunks: list[bytes] = []
+        while True:
+            chunk = os.read(descriptor, 1024 * 1024)
+            if not chunk:
+                break
+            chunks.append(chunk)
+        return b"".join(chunks)
+    finally:
+        os.close(descriptor)
+
+
+def _parent_member(
+    commit: Mapping[str, Any],
+    relative_path: str,
+) -> dict[str, Any]:
+    matches = [
+        item
+        for item in commit.get("members", [])
+        if isinstance(item, dict) and item.get("relative_path") == relative_path
+    ]
+    if len(matches) != 1:
+        raise DiagCosineExplorationError(
+            f"parent COMMIT member missing or duplicated: {relative_path}"
+        )
+    member = dict(matches[0])
+    if (
+        not isinstance(member.get("sha256"), str)
+        or len(member["sha256"]) != 64
+        or not isinstance(member.get("size_bytes"), int)
+        or member["size_bytes"] < 1
+    ):
+        raise DiagCosineExplorationError("parent COMMIT member metadata drift")
+    return member
+
+
+def _load_parent_scenario_state(
+    *,
+    parent_diag_root: str | Path,
+    expected_parent_commit_sha256: str,
+    enrollment_manifest: Mapping[str, Any],
+    apply_manifest: Mapping[str, Any],
+) -> tuple[ScenarioDiagCosineState, dict[str, str]]:
+    raw_root = Path(parent_diag_root)
+    root = raw_root.resolve(strict=True)
+    if raw_root.is_symlink() or not root.is_dir():
+        raise DiagCosineExplorationError("parent diag root must be a regular directory")
+    commit_raw = _read_readonly_regular_bytes(root / "COMMIT.json")
+    commit_sha256 = hashlib.sha256(commit_raw).hexdigest()
+    if commit_sha256 != str(expected_parent_commit_sha256).lower():
+        raise DiagCosineExplorationError("parent COMMIT SHA256 mismatch")
+    try:
+        commit = json.loads(commit_raw.decode("utf-8-sig"))
+    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise DiagCosineExplorationError("parent COMMIT JSON drift") from exc
+    if (
+        not isinstance(commit, dict)
+        or commit.get("schema")
+        != "cvs.phase2.diag_cosine_exploration_commit.v1"
+    ):
+        raise DiagCosineExplorationError("parent COMMIT schema drift")
+    receipt_member = _parent_member(commit, "execution_receipt.json")
+    state_member = _parent_member(commit, "diag_cosine_state.npz")
+    receipt_raw = _read_readonly_regular_bytes(root / "execution_receipt.json")
+    if (
+        len(receipt_raw) != receipt_member["size_bytes"]
+        or hashlib.sha256(receipt_raw).hexdigest() != receipt_member["sha256"]
+        or commit.get("execution_receipt_sha256") != receipt_member["sha256"]
+    ):
+        raise DiagCosineExplorationError("parent execution receipt binding drift")
+    try:
+        receipt = json.loads(receipt_raw.decode("utf-8-sig"))
+    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise DiagCosineExplorationError("parent execution receipt JSON drift") from exc
+    required_matches = {
+        "stage": "stage2b",
+        "registration_state": "before",
+        "receiver": enrollment_manifest["receiver"],
+        "seed": enrollment_manifest["seed"],
+        "k_shot": enrollment_manifest["k_shot"],
+        "row_handle": apply_manifest["row_handle"],
+        "row_manifest_sha256": apply_manifest["row_manifest_sha256"],
+        "phase1_checkpoint_sha256": enrollment_manifest[
+            "phase1_checkpoint_sha256"
+        ],
+        "feature_runtime_sha256": enrollment_manifest["feature_runtime_sha256"],
+        "method_lock_sha256": enrollment_manifest["method_lock_sha256"],
+    }
+    if (
+        not isinstance(receipt, dict)
+        or receipt.get("schema")
+        != "cvs.phase2.diag_cosine_exploration_receipt.v1"
+        or receipt.get("candidate", {}).get("name")
+        != CANDIDATE_D3_SCENARIO_OLDLOCK_NEWFIT
+        or any(receipt.get(key) != value for key, value in required_matches.items())
+        or receipt.get("artifacts", {}).get("diag_cosine_state.npz")
+        != state_member["sha256"]
+    ):
+        raise DiagCosineExplorationError("parent execution receipt lineage drift")
+    state_raw = _read_readonly_regular_bytes(root / "diag_cosine_state.npz")
+    if (
+        len(state_raw) != state_member["size_bytes"]
+        or hashlib.sha256(state_raw).hexdigest() != state_member["sha256"]
+    ):
+        raise DiagCosineExplorationError("parent scenario state binding drift")
+    try:
+        with np.load(io.BytesIO(state_raw), allow_pickle=False) as archive:
+            expected_members = (
+                "scenarios",
+                "classes",
+                "log_scale",
+                "weights",
+                "bias",
+                "new_offset",
+                "old_class_count",
+            )
+            if tuple(archive.files) != expected_members:
+                raise DiagCosineExplorationError(
+                    "parent scenario state exact schema drift"
+                )
+            scenarios = archive["scenarios"].astype(str)
+            classes = archive["classes"].astype(str)
+            log_scale = archive["log_scale"].astype(np.float32)
+            weights = archive["weights"].astype(np.float32)
+            bias = archive["bias"].astype(np.float32)
+            new_offset = archive["new_offset"].astype(np.float32)
+            old_class_count = int(archive["old_class_count"].reshape(-1)[0])
+    except (OSError, ValueError, KeyError) as exc:
+        raise DiagCosineExplorationError("parent scenario state NPZ drift") from exc
+    scenario_count = len(FORMAL_LEO_WEAK_SCENARIOS)
+    if (
+        scenarios.tolist() != list(FORMAL_LEO_WEAK_SCENARIOS)
+        or classes.ndim != 1
+        or len(classes) < 2
+        or log_scale.shape != (scenario_count, weights.shape[2])
+        or weights.shape != (scenario_count, len(classes), log_scale.shape[1])
+        or bias.shape != (scenario_count, len(classes))
+        or new_offset.shape != (scenario_count,)
+        or old_class_count != len(classes)
+        or not all(
+            np.isfinite(value).all()
+            for value in (log_scale, weights, bias, new_offset)
+        )
+    ):
+        raise DiagCosineExplorationError("parent scenario state shape/value drift")
+    state = ScenarioDiagCosineState(
+        candidate=CANDIDATE_D3_SCENARIO_OLDLOCK_NEWFIT,
+        scenarios=scenarios,
+        classes=classes,
+        log_scale=log_scale,
+        weights=weights,
+        bias=bias,
+        new_offset=new_offset,
+        old_class_count=old_class_count,
+        trace=(),
+        resource={},
+    )
+    return state, {
+        "parent_diag_commit_sha256": commit_sha256,
+        "parent_execution_receipt_sha256": receipt_member["sha256"],
+        "parent_state_sha256": state_member["sha256"],
+        "parent_old_classes_sha256": hashlib.sha256(
+            _canonical_json_bytes(classes.tolist())
+        ).hexdigest(),
+    }
+
+
+def _d3_common_resource(
+    *,
+    class_count: int,
+    old_class_count: int,
+    feature_dim: int,
+    support_rows: int,
+    trainable_parameters: int,
+    parameter_state_bytes: int,
+    registry_state_bytes: int,
+    estimated_adaptation_macs: int,
+    adaptation_latency_sec: float,
+    peak_cuda_memory_bytes: int,
+    trace: list[dict[str, Any]],
+    phase: str,
+    audits: Mapping[str, Any] | None = None,
+) -> dict[str, Any]:
+    persistent_state_bytes = parameter_state_bytes + registry_state_bytes
+    if trainable_parameters > MAX_TRAINABLE_PARAMETERS:
+        raise DiagCosineExplorationError("D3 trainable parameter cap exceeded")
+    if persistent_state_bytes > MAX_PERSISTENT_STATE_BYTES:
+        raise DiagCosineExplorationError("D3 persistent state cap exceeded")
+    return {
+        "schema": "cvs.phase2.diag_cosine_resource.v1",
+        "adaptation_objective": phase,
+        "candidate": CANDIDATE_D3_SCENARIO_OLDLOCK_NEWFIT,
+        "classifier_state_policy": (
+            "scenario_specific_old_head_bitwise_locked_new_weights_only"
+        ),
+        "class_bias_enabled": True,
+        "class_bias_trainable_parameters": (
+            len(FORMAL_LEO_WEAK_SCENARIOS) * old_class_count
+            if phase == "target_support_only_scenario_old_head_fit"
+            else 0
+        ),
+        "new_class_bias_policy": "zero_per_class_bias_shared_nonnegative_offset",
+        "log_scale_bounds": {
+            "z_id160": [-LOG_SCALE_LIMIT, LOG_SCALE_LIMIT],
+            "fft96": [-LOG_SCALE_LIMIT, LOG_SCALE_LIMIT],
+            "rf32": [-LOG_SCALE_LIMIT, LOG_SCALE_LIMIT],
+        },
+        "support_only": True,
+        "query_rows_used_for_fit": 0,
+        "query_labels_used_for_fit": False,
+        "query_features_used_for_fit": False,
+        "query_role_oracle_access": False,
+        "query_true_batch_class_count_access": False,
+        "query_class_quota_access": False,
+        "query_batch_global_assignment": False,
+        "query_query_graph_used": False,
+        "source_sample_access": False,
+        "source_cache_access": False,
+        "source_derived_signal_access": False,
+        "clean_sample_access": False,
+        "clean_derived_signal_access": False,
+        "trainable_parameters": int(trainable_parameters),
+        "persistent_state_bytes": int(persistent_state_bytes),
+        "parameter_state_bytes": int(parameter_state_bytes),
+        "registry_state_bytes": int(registry_state_bytes),
+        "feature_dim": int(feature_dim),
+        "class_count": int(class_count),
+        "old_class_count": int(old_class_count),
+        "new_class_count": int(class_count - old_class_count),
+        "adaptation_epochs": ADAPTATION_EPOCHS,
+        "optimizer_steps": int(
+            sum(1 for row in trace if row.get("phase") in {
+                "target_support_only_diag_cosine_fit",
+                "target_support_only_scenario_new_weight_fit",
+            })
+        ),
+        "support_enrollment_rows": int(support_rows),
+        "support_view_count": len(FORMAL_LEO_WEAK_SCENARIOS),
+        "query_view_count": 1,
+        "scenario_specific_state_count": len(FORMAL_LEO_WEAK_SCENARIOS),
+        "estimated_adaptation_macs": int(estimated_adaptation_macs),
+        "estimated_macs_per_query": int(
+            feature_dim + class_count * feature_dim
+        ),
+        "dense_query_graph_bytes": 0,
+        "adaptation_latency_sec": float(adaptation_latency_sec),
+        "peak_cuda_memory_bytes": int(peak_cuda_memory_bytes),
+        "runtime_device": (
+            str(trace[0].get("runtime_device", "unknown")) if trace else "unknown"
+        ),
+        "floor_promotion_gate_requires_post_prediction_scorer": True,
+        "scenario_old_support_intrusion_audit": dict(audits or {}),
+    }
+
+
+def _fit_d3_before(
+    support_by_scenario: Mapping[str, tuple[np.ndarray, np.ndarray]],
+    *,
+    seed: int,
+    device: torch.device,
+) -> ScenarioDiagCosineState:
+    states: list[DiagCosineState] = []
+    trace: list[dict[str, Any]] = []
+    started = time.perf_counter()
+    for scenario_index, scenario in enumerate(FORMAL_LEO_WEAK_SCENARIOS):
+        support_x, support_y = support_by_scenario[scenario]
+        fitted = fit_diag_cosine_state(
+            support_x,
+            support_y,
+            seed=int(seed) + scenario_index,
+            device=device,
+            candidate=CANDIDATE_D1,
+        )
+        states.append(fitted)
+        trace.extend(
+            {
+                **row,
+                "scenario": scenario,
+                "runtime_device": str(device),
+            }
+            for row in fitted.trace
+        )
+    classes = states[0].classes
+    if any(not np.array_equal(state.classes, classes) for state in states[1:]):
+        raise DiagCosineExplorationError("D3 before scenario class registry drift")
+    log_scale = np.stack([state.log_scale for state in states]).astype(np.float32)
+    weights = np.stack([state.weights for state in states]).astype(np.float32)
+    bias = np.stack([state.bias for state in states]).astype(np.float32)
+    new_offset = np.zeros(len(states), dtype=np.float32)
+    feature_dim = int(weights.shape[2])
+    parameter_state_bytes = int(
+        (log_scale.size + weights.size + bias.size + new_offset.size)
+        * np.dtype(np.float32).itemsize
+        + np.dtype(np.int64).itemsize
+    )
+    registry_state_bytes = len(_canonical_json_bytes(classes.tolist()))
+    resource = _d3_common_resource(
+        class_count=len(classes),
+        old_class_count=len(classes),
+        feature_dim=feature_dim,
+        support_rows=sum(len(value[0]) for value in support_by_scenario.values()),
+        trainable_parameters=sum(
+            int(state.resource["trainable_parameters"]) for state in states
+        ),
+        parameter_state_bytes=parameter_state_bytes,
+        registry_state_bytes=registry_state_bytes,
+        estimated_adaptation_macs=sum(
+            int(state.resource["estimated_adaptation_macs"]) for state in states
+        ),
+        adaptation_latency_sec=time.perf_counter() - started,
+        peak_cuda_memory_bytes=max(
+            int(state.resource["peak_cuda_memory_bytes"]) for state in states
+        ),
+        trace=trace,
+        phase="target_support_only_scenario_old_head_fit",
+    )
+    return ScenarioDiagCosineState(
+        candidate=CANDIDATE_D3_SCENARIO_OLDLOCK_NEWFIT,
+        scenarios=np.asarray(FORMAL_LEO_WEAK_SCENARIOS),
+        classes=classes.copy(),
+        log_scale=log_scale,
+        weights=weights,
+        bias=bias,
+        new_offset=new_offset,
+        old_class_count=len(classes),
+        trace=tuple(trace),
+        resource=resource,
+    )
+
+
+def _fit_d3_after(
+    parent: ScenarioDiagCosineState,
+    support_by_scenario: Mapping[str, tuple[np.ndarray, np.ndarray]],
+    *,
+    seed: int,
+    device: torch.device,
+) -> ScenarioDiagCosineState:
+    current_sets = [
+        set(np.asarray(support_by_scenario[scenario][1]).astype(str).tolist())
+        for scenario in FORMAL_LEO_WEAK_SCENARIOS
+    ]
+    if any(values != current_sets[0] for values in current_sets[1:]):
+        raise DiagCosineExplorationError("D3 after scenario class registry drift")
+    old_classes = parent.classes.astype(str)
+    old_set = set(old_classes.tolist())
+    if not old_set < current_sets[0]:
+        raise DiagCosineExplorationError(
+            "D3 parent classes must be a strict subset of after registry"
+        )
+    new_classes = np.asarray(sorted(current_sets[0] - old_set))
+    classes = np.concatenate([old_classes, new_classes])
+    old_class_count = len(old_classes)
+    feature_dim = int(parent.weights.shape[2])
+    class_to_index = {
+        label: index for index, label in enumerate(classes.tolist())
+    }
+    all_log_scale: list[np.ndarray] = []
+    all_weights: list[np.ndarray] = []
+    all_bias: list[np.ndarray] = []
+    all_offsets: list[float] = []
+    trace: list[dict[str, Any]] = []
+    audits: dict[str, Any] = {}
+    estimated_adaptation_macs = 0
+    started = time.perf_counter()
+    if device.type == "cuda":
+        torch.cuda.set_device(device)
+        torch.cuda.reset_peak_memory_stats(device)
+    for scenario_index, scenario in enumerate(FORMAL_LEO_WEAK_SCENARIOS):
+        support_x, support_y = support_by_scenario[scenario]
+        support = np.asarray(support_x, dtype=np.float32)
+        labels = np.asarray(support_y).astype(str)
+        targets_np = np.asarray(
+            [class_to_index[label] for label in labels], dtype=np.int64
+        )
+        if support.ndim != 2 or support.shape[1] != feature_dim:
+            raise DiagCosineExplorationError("D3 after support feature drift")
+        x = _tensor_from_numpy(support, device=device)
+        targets = torch.as_tensor(targets_np, dtype=torch.long, device=device)
+        scale = _tensor_from_numpy(
+            parent.log_scale[scenario_index], device=device
+        )
+        old_weights = _tensor_from_numpy(
+            parent.weights[scenario_index], device=device
+        )
+        old_bias = _tensor_from_numpy(parent.bias[scenario_index], device=device)
+        transformed = F.normalize(x * torch.exp(scale)[None, :], dim=1)
+        prototypes = torch.stack(
+            [
+                F.normalize(
+                    transformed[targets == class_index].mean(dim=0), dim=0
+                )
+                for class_index in range(old_class_count, len(classes))
+            ]
+        )
+        new_weights = torch.nn.Parameter(prototypes.detach().clone())
+        optimizer = torch.optim.AdamW(
+            [new_weights], lr=LEARNING_RATE, weight_decay=WEIGHT_DECAY
+        )
+        generator = torch.Generator(device=device).manual_seed(
+            int(seed) + 1009 + scenario_index
+        )
+        for epoch in range(1, ADAPTATION_EPOCHS + 1):
+            permutation = torch.randperm(
+                len(x), generator=generator, device=device
+            )
+            total_sum = 0.0
+            ce_sum = 0.0
+            anchor_sum = 0.0
+            correct = 0
+            seen = 0
+            grad_sum = 0.0
+            batches = 0
+            for positions in permutation.split(min(BATCH_SIZE, len(x))):
+                optimizer.zero_grad(set_to_none=True)
+                rows = x[positions]
+                rows = rows + FEATURE_NOISE_STD * torch.randn(
+                    rows.shape,
+                    generator=generator,
+                    device=device,
+                    dtype=rows.dtype,
+                )
+                z = F.normalize(rows * torch.exp(scale)[None, :], dim=1)
+                old_logits = TEMPERATURE * (
+                    z @ F.normalize(old_weights, dim=1).T
+                ) + old_bias[None, :]
+                new_logits = TEMPERATURE * (
+                    z @ F.normalize(new_weights, dim=1).T
+                )
+                logits = torch.cat([old_logits, new_logits], dim=1)
+                ce_loss = F.cross_entropy(logits, targets[positions])
+                anchor_loss = torch.mean(
+                    (F.normalize(new_weights, dim=1) - prototypes) ** 2
+                )
+                loss = ce_loss + PROTOTYPE_ANCHOR_WEIGHT * anchor_loss
+                loss.backward()
+                grad_norm = torch.nn.utils.clip_grad_norm_(
+                    [new_weights], max_norm=5.0
+                )
+                optimizer.step()
+                count = int(len(positions))
+                total_sum += float(loss.detach()) * count
+                ce_sum += float(ce_loss.detach()) * count
+                anchor_sum += float(anchor_loss.detach()) * count
+                correct += int(
+                    (logits.argmax(dim=1) == targets[positions]).sum().item()
+                )
+                seen += count
+                grad_sum += float(grad_norm.detach())
+                batches += 1
+            row = {
+                "phase": "target_support_only_scenario_new_weight_fit",
+                "scenario": scenario,
+                "epoch": epoch,
+                "step": epoch,
+                "total_steps": ADAPTATION_EPOCHS,
+                "loss": total_sum / max(1, seen),
+                "total_loss": total_sum / max(1, seen),
+                "ce_loss": ce_sum / max(1, seen),
+                "prototype_anchor_loss": anchor_sum / max(1, seen),
+                "learning_rate": LEARNING_RATE,
+                "gradient_norm": grad_sum / max(1, batches),
+                "support_accuracy": correct / max(1, seen),
+                "runtime_device": str(device),
+            }
+            if not all(
+                math.isfinite(float(value))
+                for key, value in row.items()
+                if key not in {"phase", "scenario", "runtime_device"}
+            ):
+                raise DiagCosineExplorationError("non-finite D3 loss trace")
+            trace.append(row)
+        with torch.no_grad():
+            old_mask = targets < old_class_count
+            old_z = transformed[old_mask]
+            old_targets = targets[old_mask]
+            old_logits = TEMPERATURE * (
+                old_z @ F.normalize(old_weights, dim=1).T
+            ) + old_bias[None, :]
+            new_logits = TEMPERATURE * (
+                old_z @ F.normalize(new_weights, dim=1).T
+            )
+            pre_margin = old_logits.max(dim=1).values - new_logits.max(dim=1).values
+            offset = max(
+                0.0,
+                float((-pre_margin.min() + 1.0e-6).detach().cpu()),
+            )
+            post_margin = pre_margin + float(offset)
+            before_pred = old_logits.argmax(dim=1)
+            combined = torch.cat(
+                [old_logits, new_logits - float(offset)], dim=1
+            )
+            after_pred = combined.argmax(dim=1)
+            per_class: dict[str, Any] = {}
+            intrusion_count = 0
+            for class_index, handle in enumerate(old_classes.tolist()):
+                mask = old_targets == class_index
+                class_pre = pre_margin[mask]
+                class_post = post_margin[mask]
+                class_before = before_pred[mask]
+                class_after = after_pred[mask]
+                class_intrusions = int(
+                    (class_after >= old_class_count).sum().item()
+                )
+                intrusion_count += class_intrusions
+                per_class[handle] = {
+                    "support_count": int(mask.sum().item()),
+                    "pre_support_margin_min": float(class_pre.min().cpu()),
+                    "pre_support_margin_mean": float(class_pre.mean().cpu()),
+                    "post_support_margin_min": float(class_post.min().cpu()),
+                    "post_support_margin_mean": float(class_post.mean().cpu()),
+                    "pre_support_accuracy": float(
+                        (class_before == old_targets[mask]).float().mean().cpu()
+                    ),
+                    "post_support_accuracy": float(
+                        (class_after == old_targets[mask]).float().mean().cpu()
+                    ),
+                    "old_class_intrusion_count": class_intrusions,
+                }
+            worst_old_class_margin = min(
+                row["post_support_margin_min"] for row in per_class.values()
+            )
+            if intrusion_count != 0 or worst_old_class_margin < -1.0e-6:
+                raise DiagCosineExplorationError(
+                    "D3 old-class support intrusion protection failed"
+                )
+        audits[scenario] = {
+            "new_offset": float(offset),
+            "worst_old_class_margin": float(worst_old_class_margin),
+            "old_class_intrusion_count": int(intrusion_count),
+            "per_old_class": per_class,
+        }
+        all_log_scale.append(parent.log_scale[scenario_index].copy())
+        all_weights.append(
+            np.concatenate(
+                [
+                    parent.weights[scenario_index],
+                    np.asarray(
+                        new_weights.detach().cpu().tolist(), dtype=np.float32
+                    ),
+                ],
+                axis=0,
+            )
+        )
+        all_bias.append(
+            np.concatenate(
+                [
+                    parent.bias[scenario_index],
+                    np.zeros(len(new_classes), dtype=np.float32),
+                ]
+            )
+        )
+        all_offsets.append(offset)
+        macs_per_sample = feature_dim + len(classes) * feature_dim
+        estimated_adaptation_macs += int(
+            ADAPTATION_EPOCHS * len(support) * macs_per_sample * 3
+        )
+    log_scale_np = np.stack(all_log_scale).astype(np.float32)
+    weights_np = np.stack(all_weights).astype(np.float32)
+    bias_np = np.stack(all_bias).astype(np.float32)
+    offset_np = np.asarray(all_offsets, dtype=np.float32)
+    if (
+        not np.array_equal(log_scale_np, parent.log_scale)
+        or not np.array_equal(
+            weights_np[:, :old_class_count], parent.weights
+        )
+        or not np.array_equal(bias_np[:, :old_class_count], parent.bias)
+    ):
+        raise DiagCosineExplorationError("D3 parent old head mutation detected")
+    parameter_state_bytes = int(
+        (
+            log_scale_np.size
+            + weights_np.size
+            + bias_np.size
+            + offset_np.size
+        )
+        * np.dtype(np.float32).itemsize
+        + np.dtype(np.int64).itemsize
+    )
+    registry_state_bytes = len(_canonical_json_bytes(classes.tolist()))
+    resource = _d3_common_resource(
+        class_count=len(classes),
+        old_class_count=old_class_count,
+        feature_dim=feature_dim,
+        support_rows=sum(len(value[0]) for value in support_by_scenario.values()),
+        trainable_parameters=(
+            len(FORMAL_LEO_WEAK_SCENARIOS) * len(new_classes) * feature_dim
+        ),
+        parameter_state_bytes=parameter_state_bytes,
+        registry_state_bytes=registry_state_bytes,
+        estimated_adaptation_macs=estimated_adaptation_macs,
+        adaptation_latency_sec=time.perf_counter() - started,
+        peak_cuda_memory_bytes=(
+            int(torch.cuda.max_memory_allocated(device))
+            if device.type == "cuda"
+            else 0
+        ),
+        trace=trace,
+        phase="target_support_only_scenario_new_weight_fit",
+        audits=audits,
+    )
+    return ScenarioDiagCosineState(
+        candidate=CANDIDATE_D3_SCENARIO_OLDLOCK_NEWFIT,
+        scenarios=np.asarray(FORMAL_LEO_WEAK_SCENARIOS),
+        classes=classes,
+        log_scale=log_scale_np,
+        weights=weights_np,
+        bias=bias_np,
+        new_offset=offset_np,
+        old_class_count=old_class_count,
+        trace=tuple(trace),
+        resource=resource,
+    )
+
+
 def _descriptor(manifest: Mapping[str, Any], kind: str) -> dict[str, Any]:
     matches = [dict(item) for item in manifest["members"] if item["kind"] == kind]
     if len(matches) != 1:
@@ -671,6 +1351,8 @@ def run_diag_cosine_exploration(
     output_root: str | Path,
     device: str,
     candidate: str = CANDIDATE_D1,
+    parent_diag_root: str | Path | None = None,
+    expected_parent_commit_sha256: str | None = None,
 ) -> dict[str, Any]:
     """Run one Stage2-B or Stage2-C state without ever opening truth."""
 
@@ -687,6 +1369,29 @@ def run_diag_cosine_exploration(
         expected_seal_sha256=str(apply_seal_sha256).lower(),
     )
     _validate_matched_packages(enrollment_manifest, apply_manifest)
+    registration_state = str(enrollment_manifest["registration_state"])
+    if candidate == CANDIDATE_D3_SCENARIO_OLDLOCK_NEWFIT:
+        if registration_state == "before" and (
+            parent_diag_root is not None
+            or expected_parent_commit_sha256 is not None
+        ):
+            raise DiagCosineExplorationError(
+                "D3 before state must not receive a parent diag closure"
+            )
+        if registration_state == "after" and (
+            parent_diag_root is None
+            or expected_parent_commit_sha256 is None
+        ):
+            raise DiagCosineExplorationError(
+                "D3 after state requires a parent diag COMMIT closure"
+            )
+    elif (
+        parent_diag_root is not None
+        or expected_parent_commit_sha256 is not None
+    ):
+        raise DiagCosineExplorationError(
+            "parent diag closure is reserved for D3 old-lock"
+        )
     runtime_device = _device(device)
     model = load_torchscript_backbone_same_fd(
         enrollment_package_root,
@@ -700,6 +1405,7 @@ def run_diag_cosine_exploration(
     k_shot = int(enrollment_manifest["k_shot"])
     support_features: list[np.ndarray] = []
     support_labels: list[np.ndarray] = []
+    support_by_scenario: dict[str, tuple[np.ndarray, np.ndarray]] = {}
     support_forward_count = 0
     for scenario in FORMAL_LEO_WEAK_SCENARIOS:
         payload = enrollment_payloads[scenario]
@@ -716,18 +1422,48 @@ def run_diag_cosine_exploration(
             raise DiagCosineExplorationError("registered support assignment drift")
         iq = np.asarray(payload["support_leo_weak_iq"], dtype=np.float32)[mask]
         zid = forward_zid160(model, iq, device=runtime_device, batch_size=64)
-        support_features.append(registered_feature(iq, zid))
-        support_labels.append(class_handles[class_indices[mask]])
+        scenario_features = registered_feature(iq, zid)
+        scenario_labels = class_handles[class_indices[mask]]
+        support_features.append(scenario_features)
+        support_labels.append(scenario_labels)
+        support_by_scenario[scenario] = (
+            scenario_features,
+            scenario_labels,
+        )
         support_forward_count += int(len(iq))
-    fit_x = np.concatenate(support_features, axis=0)
-    fit_y = np.concatenate(support_labels, axis=0)
-    state = fit_diag_cosine_state(
-        fit_x,
-        fit_y,
-        seed=int(enrollment_manifest["seed"]),
-        device=runtime_device,
-        candidate=candidate,
-    )
+    parent_closure: dict[str, str] = {}
+    if candidate == CANDIDATE_D3_SCENARIO_OLDLOCK_NEWFIT:
+        if registration_state == "before":
+            state: DiagCosineState | ScenarioDiagCosineState = _fit_d3_before(
+                support_by_scenario,
+                seed=int(enrollment_manifest["seed"]),
+                device=runtime_device,
+            )
+        else:
+            parent, parent_closure = _load_parent_scenario_state(
+                parent_diag_root=parent_diag_root,
+                expected_parent_commit_sha256=str(
+                    expected_parent_commit_sha256
+                ),
+                enrollment_manifest=enrollment_manifest,
+                apply_manifest=apply_manifest,
+            )
+            state = _fit_d3_after(
+                parent,
+                support_by_scenario,
+                seed=int(enrollment_manifest["seed"]),
+                device=runtime_device,
+            )
+    else:
+        fit_x = np.concatenate(support_features, axis=0)
+        fit_y = np.concatenate(support_labels, axis=0)
+        state = fit_diag_cosine_state(
+            fit_x,
+            fit_y,
+            seed=int(enrollment_manifest["seed"]),
+            device=runtime_device,
+            candidate=candidate,
+        )
 
     query_tokens: list[np.ndarray] = []
     scenarios: list[np.ndarray] = []
@@ -739,7 +1475,11 @@ def run_diag_cosine_exploration(
         iq = np.asarray(payload["query_leo_weak_iq"], dtype=np.float32)
         zid = forward_zid160(model, iq, device=runtime_device, batch_size=1)
         features = registered_feature(iq, zid)
-        predicted = predict_diag_cosine(state, features)
+        predicted = (
+            _scenario_predict(state, scenario, features)
+            if isinstance(state, ScenarioDiagCosineState)
+            else predict_diag_cosine(state, features)
+        )
         query_tokens.append(np.asarray(payload["query_tokens"]).astype(str))
         scenarios.append(np.asarray([scenario] * len(iq)))
         predicted_handles.append(predicted.astype(str))
@@ -747,13 +1487,27 @@ def run_diag_cosine_exploration(
     scoring_elapsed = time.perf_counter() - scoring_started
 
     output = _output_root(output_root)
-    state_sha256 = _write_npz_new(
-        output / "diag_cosine_state.npz",
-        classes=state.classes.astype(str),
-        log_scale=state.log_scale.astype(np.float32),
-        weights=state.weights.astype(np.float32),
-        bias=state.bias.astype(np.float32),
-    )
+    if isinstance(state, ScenarioDiagCosineState):
+        state_sha256 = _write_npz_new(
+            output / "diag_cosine_state.npz",
+            scenarios=state.scenarios.astype(str),
+            classes=state.classes.astype(str),
+            log_scale=state.log_scale.astype(np.float32),
+            weights=state.weights.astype(np.float32),
+            bias=state.bias.astype(np.float32),
+            new_offset=state.new_offset.astype(np.float32),
+            old_class_count=np.asarray(
+                [state.old_class_count], dtype=np.int64
+            ),
+        )
+    else:
+        state_sha256 = _write_npz_new(
+            output / "diag_cosine_state.npz",
+            classes=state.classes.astype(str),
+            log_scale=state.log_scale.astype(np.float32),
+            weights=state.weights.astype(np.float32),
+            bias=state.bias.astype(np.float32),
+        )
     trace_sha256 = _write_json_new(output / "loss_trace.json", list(state.trace))
     prediction_sha256 = _write_npz_new(
         output / "prediction_artifact.npz",
@@ -815,6 +1569,7 @@ def run_diag_cosine_exploration(
         "phase2_query_class_quota_access": False,
         "phase2_query_batch_global_assignment": False,
         "query_truth_present_in_predictor": False,
+        "parent_diag_closure": parent_closure,
         "support_scenarios": list(FORMAL_LEO_WEAK_SCENARIOS),
         "query_scenarios": list(FORMAL_LEO_WEAK_SCENARIOS),
         "candidate": {
@@ -828,6 +1583,13 @@ def run_diag_cosine_exploration(
             ],
             "class_bias_enabled": state.resource["class_bias_enabled"],
             "log_scale_bounds": state.resource["log_scale_bounds"],
+            "old_head_bitwise_locked": (
+                candidate == CANDIDATE_D3_SCENARIO_OLDLOCK_NEWFIT
+                and registration_state == "after"
+            ),
+            "new_class_bias_policy": state.resource.get(
+                "new_class_bias_policy"
+            ),
         },
         "resource": resource,
         "preopen_audit": {
@@ -857,6 +1619,7 @@ def run_diag_cosine_exploration(
         ).hexdigest(),
         "execution_receipt_sha256": receipt_sha256,
         "prediction_artifact_sha256": prediction_sha256,
+        **parent_closure,
     }
     commit_sha256 = _write_json_new(output / "COMMIT.json", commit)
     return {
@@ -878,9 +1641,11 @@ __all__ = [
     "CANDIDATE_D1",
     "CANDIDATE_D1_B0_CAP",
     "CANDIDATE_D2",
+    "CANDIDATE_D3_SCENARIO_OLDLOCK_NEWFIT",
     "CANDIDATES",
     "DiagCosineExplorationError",
     "DiagCosineState",
+    "ScenarioDiagCosineState",
     "fit_diag_cosine_state",
     "forward_zid160",
     "log_scale_bounds",
