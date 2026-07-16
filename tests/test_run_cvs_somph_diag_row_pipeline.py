@@ -8,6 +8,7 @@ from pathlib import Path
 import pytest
 
 from cvsrffi.phase2_runtime_contract import PHASE2_FULL_CONTRACT
+from cvsrffi.stage2_diag_cosine_exploration import CANDIDATE_D1_B0_CAP
 from scripts import run_cvs_somph_diag_row_pipeline as pipeline
 
 
@@ -148,7 +149,7 @@ def test_pipeline_orders_head_finalization_predictions_then_truth_join(
             else "after"
         )
         events.append(f"diag_{state}")
-        assert kwargs["candidate"] == pipeline.CANDIDATE_D1
+        assert kwargs["candidate"] == CANDIDATE_D1_B0_CAP
         prediction = Path(kwargs["output_root"]) / "prediction_artifact.npz"
         _readonly(prediction, f"prediction-{state}".encode("ascii"))
         return {
@@ -159,6 +160,7 @@ def test_pipeline_orders_head_finalization_predictions_then_truth_join(
 
     def fake_score(**kwargs):
         events.append("score")
+        assert kwargs["candidate"] == CANDIDATE_D1_B0_CAP
         assert Path(kwargs["truth_sidecar_path"]) == Path(built["truth_sidecar"])
         for key in ("before_prediction_path", "after_prediction_path"):
             prediction = Path(kwargs[key])
@@ -192,6 +194,7 @@ def test_pipeline_orders_head_finalization_predictions_then_truth_join(
         k_shot=10,
         new_class_count=10,
         device="cpu",
+        candidate=CANDIDATE_D1_B0_CAP,
     )
     assert events == [
         "build",
@@ -212,6 +215,7 @@ def test_pipeline_orders_head_finalization_predictions_then_truth_join(
     assert receipt["truth_join_started_after_both_immutable_predictions"] is True
     assert receipt["states"]["before"]["stage"] == "stage2b"
     assert receipt["states"]["after"]["stage"] == "stage2c"
+    assert receipt["candidate"] == CANDIDATE_D1_B0_CAP
 
 
 def test_pipeline_refuses_existing_output_before_build(
@@ -276,3 +280,36 @@ def test_parser_exposes_required_row_inputs() -> None:
     assert args.k_shot == 5
     assert args.new_count == 20
     assert args.device == "cpu"
+    assert args.candidate == pipeline.CANDIDATE_D1
+
+    selected = pipeline.parser().parse_args(
+        [
+            "--cache-manifest",
+            "cache.json",
+            "--authority-bundle",
+            "authority",
+            "--authority-commit-sha256",
+            "a" * 64,
+            "--phase1-checkpoint",
+            "phase1.pth",
+            "--sealed-runtime",
+            "runtime.pt",
+            "--method-lock",
+            "method.json",
+            "--output-root",
+            "row",
+            "--receiver",
+            "20-1",
+            "--seed",
+            "713101",
+            "--k-shot",
+            "10",
+            "--new-count",
+            "5",
+            "--device",
+            "cpu",
+            "--candidate",
+            CANDIDATE_D1_B0_CAP,
+        ]
+    )
+    assert selected.candidate == CANDIDATE_D1_B0_CAP

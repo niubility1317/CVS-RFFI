@@ -28,6 +28,7 @@ from cvsrffi.somph_runtime_request import (  # noqa: E402
     SOMPH_ENROLLMENT_REQUEST_SCHEMA,
 )
 from cvsrffi.stage2_diag_cosine_exploration import (  # noqa: E402
+    CANDIDATES,
     CANDIDATE_D1,
     run_diag_cosine_exploration,
 )
@@ -90,11 +91,11 @@ def _enrollment_request(*, package_seal_sha256: str, device: str) -> dict[str, A
 def _require_prediction(path: Path, *, state: str) -> None:
     if not path.is_file() or path.is_symlink():
         raise SomphDiagRowPipelineError(
-            f"{state} D1 prediction artifact was not published"
+            f"{state} diag-cosine prediction artifact was not published"
         )
     if path.stat().st_mode & (stat.S_IWUSR | stat.S_IWGRP | stat.S_IWOTH):
         raise SomphDiagRowPipelineError(
-            f"{state} D1 prediction artifact is not immutable"
+            f"{state} diag-cosine prediction artifact is not immutable"
         )
 
 
@@ -112,6 +113,7 @@ def run_pipeline(
     k_shot: int,
     new_class_count: int,
     device: str,
+    candidate: str = CANDIDATE_D1,
 ) -> dict[str, Any]:
     """Run one development row without exposing scorer truth to predictors."""
 
@@ -241,7 +243,7 @@ def run_pipeline(
             ],
             output_root=state_diag_root,
             device=device,
-            candidate=CANDIDATE_D1,
+            candidate=candidate,
         )
         prediction_paths[state] = state_diag_root / "prediction_artifact.npz"
 
@@ -254,7 +256,7 @@ def run_pipeline(
         after_prediction_path=prediction_paths["after"],
         truth_sidecar_path=build["truth_sidecar"],
         output_path=score_path,
-        candidate=CANDIDATE_D1,
+        candidate=candidate,
     )
 
     receipt = {
@@ -267,7 +269,7 @@ def run_pipeline(
         "k_shot": k_shot,
         "new_class_count": new_class_count,
         "device": device,
-        "candidate": CANDIDATE_D1,
+        "candidate": candidate,
         "query_per_tx": FORMAL_QUERY_PER_TX,
         "row_handle": build["row_handle"],
         "row_manifest_sha256": build["row_manifest_sha256"],
@@ -340,6 +342,7 @@ def parser() -> argparse.ArgumentParser:
     result.add_argument("--k-shot", required=True, type=int)
     result.add_argument("--new-count", required=True, type=int)
     result.add_argument("--device", required=True)
+    result.add_argument("--candidate", choices=CANDIDATES, default=CANDIDATE_D1)
     return result
 
 
@@ -358,6 +361,7 @@ def main() -> int:
         k_shot=args.k_shot,
         new_class_count=args.new_count,
         device=args.device,
+        candidate=args.candidate,
     )
     print(json.dumps(result, ensure_ascii=True, sort_keys=True))
     return 0

@@ -7,6 +7,7 @@ import numpy as np
 import torch
 
 import cvsrffi.stage2_diag_cosine_exploration as route
+from scripts import run_cvs_stage2_diag_cosine_exploration as runner
 
 
 def _separable(seed: int = 7):
@@ -60,6 +61,66 @@ def test_fit_has_no_query_argument_and_prediction_is_batch_extension_invariant()
         stable.resource["classifier_state_policy"]
         == "current_registry_fixed_support_prototypes_zero_class_bias_shared_diag_only"
     )
+
+
+def test_d1_b0_cap_removes_bias_and_caps_only_fft96_log_scale():
+    rng = np.random.default_rng(31)
+    support = rng.normal(size=(12, 288)).astype(np.float32)
+    labels = np.repeat(["class-a", "class-b", "class-c"], 4)
+    state = route.fit_diag_cosine_state(
+        support,
+        labels,
+        seed=29,
+        device=torch.device("cpu"),
+        candidate=route.CANDIDATE_D1_B0_CAP,
+    )
+    lower, upper = route.log_scale_bounds(route.CANDIDATE_D1_B0_CAP, 288)
+    fft_cap = np.log(1.5)
+    assert state.bias.shape == (0,)
+    assert state.resource["class_bias_enabled"] is False
+    assert state.resource["class_bias_trainable_parameters"] == 0
+    assert state.resource["trainable_parameters"] == 288 + 3 * 288
+    assert state.resource["parameter_state_bytes"] == (288 + 3 * 288) * 4
+    assert np.allclose(lower[:160], -1.5)
+    assert np.allclose(upper[:160], 1.5)
+    assert np.allclose(lower[160:256], -fft_cap)
+    assert np.allclose(upper[160:256], fft_cap)
+    assert np.allclose(lower[256:], -1.5)
+    assert np.allclose(upper[256:], 1.5)
+    assert np.all(state.log_scale >= lower)
+    assert np.all(state.log_scale <= upper)
+    assert len(state.trace) == route.ADAPTATION_EPOCHS == 20
+    assert state.resource["support_only"] is True
+    assert state.resource["query_rows_used_for_fit"] == 0
+    assert state.resource["query_role_oracle_access"] is False
+    assert state.resource["query_class_quota_access"] is False
+    assert state.resource["query_batch_global_assignment"] is False
+
+
+def test_standalone_runner_cli_exposes_d1_b0_cap_candidate():
+    args = runner.parser().parse_args(
+        [
+            "--enrollment-package-root",
+            "enrollment",
+            "--enrollment-seal-path",
+            "enrollment.seal.json",
+            "--enrollment-seal-sha256",
+            "a" * 64,
+            "--apply-package-root",
+            "apply",
+            "--apply-seal-path",
+            "apply.seal.json",
+            "--apply-seal-sha256",
+            "b" * 64,
+            "--output-root",
+            "output",
+            "--device",
+            "cpu",
+            "--candidate",
+            route.CANDIDATE_D1_B0_CAP,
+        ]
+    )
+    assert args.candidate == route.CANDIDATE_D1_B0_CAP
 
 
 def test_fft_rf_features_are_same_row_gain_normalized_and_128d():
@@ -187,7 +248,7 @@ def test_run_writes_unlabeled_prediction_before_any_scorer(
         apply_seal_sha256="b" * 64,
         output_root=output_root,
         device="cpu",
-        candidate=route.CANDIDATE_D2,
+        candidate=route.CANDIDATE_D1_B0_CAP,
     )
     assert result["formal_launch_authority"] is False
     with np.load(output_root / "prediction_artifact.npz", allow_pickle=False) as archive:
@@ -204,8 +265,28 @@ def test_run_writes_unlabeled_prediction_before_any_scorer(
     assert "true_label" not in raw
     assert "role_label" not in raw
     assert receipt["query_truth_present_in_predictor"] is False
+    assert receipt["phase2_sample_view_policy"] == "leo_weak_only_no_clean_access"
+    assert receipt["clean_sample_access"] is False
+    assert receipt["clean_derived_signal_access"] is False
+    assert (
+        receipt["phase2_query_decision_policy"]
+        == "per_sample_all_registered_classes"
+    )
+    assert receipt["phase2_query_role_oracle_access"] is False
+    assert receipt["phase2_query_true_batch_class_count_access"] is False
+    assert receipt["phase2_query_class_quota_access"] is False
+    assert receipt["phase2_query_batch_global_assignment"] is False
     assert receipt["resource"]["query_rows_used_for_fit"] == 0
     assert receipt["resource"]["support_enrollment_rows"] == 12
     assert receipt["resource"]["query_backbone_forwards_per_sample"] == 1
-    assert receipt["candidate"]["name"] == route.CANDIDATE_D2
+    assert receipt["candidate"]["name"] == route.CANDIDATE_D1_B0_CAP
+    assert receipt["candidate"]["class_bias_enabled"] is False
+    assert receipt["candidate"]["auxiliary_weight"] == 4.0
+    assert receipt["candidate"]["adaptation_epochs"] == 20
+    assert receipt["candidate"]["log_scale_bounds"]["fft96"] == [
+        -np.log(1.5),
+        np.log(1.5),
+    ]
+    with np.load(output_root / "diag_cosine_state.npz", allow_pickle=False) as state:
+        assert state["bias"].shape == (0,)
     assert (output_root / "COMMIT.json").is_file()

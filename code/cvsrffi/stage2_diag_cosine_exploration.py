@@ -46,9 +46,12 @@ WEIGHT_DECAY = 0.002
 MAX_TRAINABLE_PARAMETERS = 50_000
 MAX_PERSISTENT_STATE_BYTES = 256 * 1024
 FEATURE_DIM = 160
+LOG_SCALE_LIMIT = 1.5
+FFT_LOG_SCALE_LIMIT = math.log(1.5)
 CANDIDATE_D1 = "d1_historical_diag_fftrf"
+CANDIDATE_D1_B0_CAP = "d1_b0_cap_diag_fftrf"
 CANDIDATE_D2 = "d2_fixed_proto_diag_fftrf"
-CANDIDATES = (CANDIDATE_D1, CANDIDATE_D2)
+CANDIDATES = (CANDIDATE_D1, CANDIDATE_D1_B0_CAP, CANDIDATE_D2)
 
 
 class DiagCosineExplorationError(ValueError):
@@ -57,6 +60,7 @@ class DiagCosineExplorationError(ValueError):
 
 @dataclass(frozen=True)
 class DiagCosineState:
+    candidate: str
     classes: np.ndarray
     log_scale: np.ndarray
     weights: np.ndarray
@@ -86,6 +90,33 @@ def _sha256_file(path: Path) -> str:
 def _normalize(rows: np.ndarray) -> np.ndarray:
     values = np.asarray(rows, dtype=np.float32)
     return values / np.maximum(np.linalg.norm(values, axis=1, keepdims=True), EPS)
+
+
+def log_scale_bounds(
+    candidate: str, feature_dim: int
+) -> tuple[np.ndarray, np.ndarray]:
+    """Return locked per-feature log-scale bounds for one candidate."""
+
+    if candidate not in CANDIDATES:
+        raise DiagCosineExplorationError(
+            f"unsupported diag-cosine candidate: {candidate}"
+        )
+    dimension = int(feature_dim)
+    if dimension < 1:
+        raise DiagCosineExplorationError("diag-cosine feature dimension is invalid")
+    lower = np.full(dimension, -LOG_SCALE_LIMIT, dtype=np.float32)
+    upper = np.full(dimension, LOG_SCALE_LIMIT, dtype=np.float32)
+    if candidate == CANDIDATE_D1_B0_CAP:
+        expected = FEATURE_DIM + FFT_DIM + RF_STAT_DIM
+        if dimension != expected:
+            raise DiagCosineExplorationError(
+                "D1-B0-Cap requires z_id160 plus FFT96 plus RF32"
+            )
+        fft_start = FEATURE_DIM
+        fft_stop = FEATURE_DIM + FFT_DIM
+        lower[fft_start:fft_stop] = -FFT_LOG_SCALE_LIMIT
+        upper[fft_start:fft_stop] = FFT_LOG_SCALE_LIMIT
+    return lower, upper
 
 
 def spectral_logmag_sketch(rows: np.ndarray, *, dim: int = FFT_DIM) -> np.ndarray:
@@ -297,12 +328,21 @@ def fit_diag_cosine_state(
     targets_np = np.asarray([class_to_index[label] for label in labels], dtype=np.int64)
     feature_dim = int(support.shape[1])
     class_count = int(len(classes))
-    trainable_parameters = (
-        int(feature_dim + class_count * feature_dim + class_count)
-        if candidate == CANDIDATE_D1
-        else feature_dim
-    )
-    stored_float_count = int(feature_dim + class_count * feature_dim + class_count)
+    trainable_head = candidate in {CANDIDATE_D1, CANDIDATE_D1_B0_CAP}
+    if candidate == CANDIDATE_D1:
+        trainable_parameters = int(
+            feature_dim + class_count * feature_dim + class_count
+        )
+        stored_float_count = trainable_parameters
+    elif candidate == CANDIDATE_D1_B0_CAP:
+        trainable_parameters = int(feature_dim + class_count * feature_dim)
+        stored_float_count = trainable_parameters
+    else:
+        trainable_parameters = feature_dim
+        # Preserve the existing D2 fixed-prototype and zero-bias state layout.
+        stored_float_count = int(
+            feature_dim + class_count * feature_dim + class_count
+        )
     parameter_state_bytes = int(stored_float_count * np.dtype(np.float32).itemsize)
     registry_state_bytes = len(_canonical_json_bytes(classes.tolist()))
     persistent_state_bytes = parameter_state_bytes + registry_state_bytes
@@ -326,10 +366,19 @@ def fit_diag_cosine_state(
         ]
     )
     log_scale = torch.nn.Parameter(torch.zeros(feature_dim, device=device))
-    if candidate == CANDIDATE_D1:
+    lower_np, upper_np = log_scale_bounds(candidate, feature_dim)
+    lower_bound = _tensor_from_numpy(lower_np, device=device)
+    upper_bound = _tensor_from_numpy(upper_np, device=device)
+    if trainable_head:
         weights: torch.Tensor = torch.nn.Parameter(prototypes.detach().clone())
-        bias: torch.Tensor = torch.nn.Parameter(torch.zeros(class_count, device=device))
-        parameters = [log_scale, weights, bias]
+        if candidate == CANDIDATE_D1:
+            bias: torch.Tensor = torch.nn.Parameter(
+                torch.zeros(class_count, device=device)
+            )
+            parameters = [log_scale, weights, bias]
+        else:
+            bias = torch.empty(0, dtype=x.dtype, device=device)
+            parameters = [log_scale, weights]
     else:
         weights = prototypes.detach().clone()
         bias = torch.zeros(class_count, device=device)
@@ -355,24 +404,36 @@ def fit_diag_cosine_state(
             rows = rows + FEATURE_NOISE_STD * torch.randn(
                 rows.shape, generator=generator, device=device, dtype=rows.dtype
             )
-            scaled = rows * torch.exp(torch.clamp(log_scale, -1.5, 1.5))
+            effective_log_scale = torch.minimum(
+                torch.maximum(log_scale, lower_bound), upper_bound
+            )
+            scaled = rows * torch.exp(effective_log_scale)
             logits = TEMPERATURE * (
                 F.normalize(scaled, dim=1) @ F.normalize(weights, dim=1).T
-            ) + bias
+            )
+            if bias.numel():
+                logits = logits + bias
             ce_loss = F.cross_entropy(logits, targets[positions])
             anchor_loss = (
                 torch.mean((F.normalize(weights, dim=1) - prototypes) ** 2)
-                if candidate == CANDIDATE_D1
+                if trainable_head
                 else torch.zeros((), dtype=x.dtype, device=device)
             )
             loss = (
                 ce_loss + PROTOTYPE_ANCHOR_WEIGHT * anchor_loss
-                if candidate == CANDIDATE_D1
+                if trainable_head
                 else ce_loss
             )
             loss.backward()
             grad_norm = torch.nn.utils.clip_grad_norm_(parameters, max_norm=5.0)
             optimizer.step()
+            if candidate == CANDIDATE_D1_B0_CAP:
+                with torch.no_grad():
+                    log_scale.copy_(
+                        torch.minimum(
+                            torch.maximum(log_scale, lower_bound), upper_bound
+                        )
+                    )
             count = int(len(positions))
             total_sum += float(loss.detach()) * count
             ce_sum += float(ce_loss.detach()) * count
@@ -413,8 +474,32 @@ def fit_diag_cosine_state(
         "classifier_state_policy": (
             "free_diag_weights_and_bias"
             if candidate == CANDIDATE_D1
-            else "current_registry_fixed_support_prototypes_zero_class_bias_shared_diag_only"
+            else (
+                "free_diag_weights_zero_class_bias_fft96_capped"
+                if candidate == CANDIDATE_D1_B0_CAP
+                else "current_registry_fixed_support_prototypes_zero_class_bias_shared_diag_only"
+            )
         ),
+        "class_bias_enabled": candidate == CANDIDATE_D1,
+        "class_bias_trainable_parameters": (
+            class_count if candidate == CANDIDATE_D1 else 0
+        ),
+        "log_scale_bounds": {
+            "z_id160": [-LOG_SCALE_LIMIT, LOG_SCALE_LIMIT],
+            "fft96": [
+                (
+                    -FFT_LOG_SCALE_LIMIT
+                    if candidate == CANDIDATE_D1_B0_CAP
+                    else -LOG_SCALE_LIMIT
+                ),
+                (
+                    FFT_LOG_SCALE_LIMIT
+                    if candidate == CANDIDATE_D1_B0_CAP
+                    else LOG_SCALE_LIMIT
+                ),
+            ],
+            "rf32": [-LOG_SCALE_LIMIT, LOG_SCALE_LIMIT],
+        },
         "support_only": True,
         "query_rows_used_for_fit": 0,
         "query_labels_used_for_fit": False,
@@ -458,6 +543,7 @@ def fit_diag_cosine_state(
         "support_accuracy_final": float(trace[-1]["support_accuracy"]),
     }
     return DiagCosineState(
+        candidate=candidate,
         classes=classes,
         log_scale=scale_np,
         weights=weights_np,
@@ -477,9 +563,14 @@ def predict_diag_cosine(state: DiagCosineState, query_x: np.ndarray) -> np.ndarr
         or not np.isfinite(query).all()
     ):
         raise DiagCosineExplorationError("query feature schema drift")
-    scaled = query * np.exp(np.clip(state.log_scale, -1.5, 1.5))[None, :]
+    lower, upper = log_scale_bounds(state.candidate, query.shape[1])
+    effective_log_scale = np.minimum(
+        np.maximum(state.log_scale, lower), upper
+    )
+    scaled = query * np.exp(effective_log_scale)[None, :]
     logits = TEMPERATURE * (_normalize(scaled) @ _normalize(state.weights).T)
-    logits += state.bias[None, :]
+    if state.bias.size:
+        logits += state.bias[None, :]
     return state.classes[np.argmax(logits, axis=1)]
 
 
@@ -735,6 +826,8 @@ def run_diag_cosine_exploration(
             "classifier_state_policy": state.resource[
                 "classifier_state_policy"
             ],
+            "class_bias_enabled": state.resource["class_bias_enabled"],
+            "log_scale_bounds": state.resource["log_scale_bounds"],
         },
         "resource": resource,
         "preopen_audit": {
@@ -783,12 +876,14 @@ __all__ = [
     "ADAPTATION_EPOCHS",
     "AUXILIARY_WEIGHT",
     "CANDIDATE_D1",
+    "CANDIDATE_D1_B0_CAP",
     "CANDIDATE_D2",
     "CANDIDATES",
     "DiagCosineExplorationError",
     "DiagCosineState",
     "fit_diag_cosine_state",
     "forward_zid160",
+    "log_scale_bounds",
     "predict_diag_cosine",
     "registered_feature",
     "rf_statistics",
