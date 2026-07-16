@@ -535,3 +535,10 @@ def test_traced_runtime_uses_locked_two_row_microbatches() -> None:
         _forward(runtime, rows, device=torch.device("cpu"), batch_size=4)
     with pytest.raises(ValueError, match="divisible"):
         _forward(runtime, rows[:3], device=torch.device("cpu"), batch_size=RUNTIME_FIXED_BATCH_SIZE)
+
+    enrollment = (
+        Path(__file__).resolve().parents[1]
+        / "paper_reproduction/scripts/enroll_cvs_jg020_support_only.py"
+    ).read_text(encoding="utf-8")
+    assert "check_trace=False" in enrollment
+    assert "parity = _runtime_parity(wrapper, runtime, example)" in enrollment

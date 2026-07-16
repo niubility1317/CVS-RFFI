@@ -2,7 +2,7 @@
 
 日期：2026-07-16
 
-状态：retry4已完成new5的50个support-only step并在TorchScript固定batch parity阶段fail closed；2-row microbatch合同修复与13/13测试通过，等待retry5同步启动
+状态：retry5已完成new5的50个support-only step并在Torch 2.1内部重复trace检查阶段fail closed；显式runtime parity保留、重复checker关闭，13/13测试通过，等待retry6同步启动
 
 依据：`E:\type10-7\AGENTS.md`、`E:\type10-7\项目.md`、用户锁定的`JG_R8_LR020`候选
 

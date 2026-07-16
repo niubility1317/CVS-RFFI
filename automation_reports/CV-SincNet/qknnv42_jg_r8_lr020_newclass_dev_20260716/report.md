@@ -5,7 +5,7 @@
 - 实验ID：`qknnv42_jg_r8_lr020_newclass_dev_20260716`
 - 日期：2026-07-16
 - 操作者：Codex主agent`root`＋子agent`jg020_registration_exp`
-- 当前状态：`SIXTH_TORCHSCRIPT_FIXED_BATCH_FAILURE_REPAIRED_AWAITING_RETRY5`；retry4已完成new5的50个support-only optimizer step，但尚未生成prediction或正式指标
+- 当前状态：`SEVENTH_TORCH21_TRACE_CHECK_FAILURE_REPAIRED_AWAITING_RETRY6`；retry5再次完成new5的50个support-only optimizer step，但尚未生成prediction或正式指标
 - 目标：验证锁定的`JG_R8_LR020`轻量旧类适配器在合法Stage2-C新类注册后的同row旧类保持、新类准确率与资源表现。
 - 声明边界：这是单receiver、单development seed的开发单元；即使指标达到门槛，也不能替代独立确认矩阵或宣称总目标完成。
 
@@ -130,14 +130,14 @@ isolated scorer
 | 首次运行状态 | launcher已退出；Phase1 cache成功，Stage2-C未开始；没有性能结果，不能报告candidate指标 |
 | 预期输出 | sealed manifests、adapter/prototype、loss trace、immutable predictions、scorer tables、resource audit、完整日志 |
 
-retry5同步映射（本地→N607同相对路径）：
+retry6同步映射（本地→N607同相对路径；其余retry5文件保持远端已验证版本）：
 
 | 文件 | 本地SHA256 | 目的 |
 |---|---|---|
-| `paper_reproduction/cvs_aligned/jg020_stage2c.py` | `07195d98b26cc41d4314eab97cec431a70e6c46cd954267b1da555d18e268caa` | 固定TorchScript microbatch合同常量 |
-| `paper_reproduction/scripts/enroll_cvs_jg020_support_only.py` | `666f6665ab6fea2f3e5be8d794d7bacc6ea784386c74e10fb3e483e8b088b9b5` | 使用同形状batch做trace与parity并写入receipt |
-| `paper_reproduction/scripts/launch_cvs_jg020_stage2c_dev_20260716.py` | `5483877e2aca2bfd36080b7ec551268b3066daa45d96211ee09d591ff7688829` | 允许不可覆盖的`retry5`运行根并锁定predictor batch=2 |
-| `paper_reproduction/scripts/run_cvs_jg020_apply_only_predictor.py` | `eb2cf562513aa601c52222d3d948c536eac212269cf0bfb8d5f67c88a101bc83` | 按2-row microbatch执行并fail closed检查余数 |
+| `paper_reproduction/cvs_aligned/jg020_stage2c.py` | `07195d98b26cc41d4314eab97cec431a70e6c46cd954267b1da555d18e268caa` | 远端保持retry5已验证版本；本次不覆盖 |
+| `paper_reproduction/scripts/enroll_cvs_jg020_support_only.py` | `c3eb7fa297acbeb4bd2a3c96021aca73e5a3ac37d12d2233d125d62acbbf9966` | 关闭Torch 2.1不兼容的重复trace checker，保留显式runtime parity |
+| `paper_reproduction/scripts/launch_cvs_jg020_stage2c_dev_20260716.py` | `2a17d163d435a75dc2a1055eb27dfe7eaf6a6a73071c5ac4ff280e6ec26ee104` | 允许不可覆盖的`retry6`运行根 |
+| `paper_reproduction/scripts/run_cvs_jg020_apply_only_predictor.py` | `eb2cf562513aa601c52222d3d948c536eac212269cf0bfb8d5f67c88a101bc83` | 远端保持retry5已验证版本；本次不覆盖 |
 
 retry4实际启动命令：
 
@@ -148,7 +148,7 @@ CUDA_VISIBLE_DEVICES=0 nohup /opt/miniconda3/bin/conda run --no-capture-output -
 
 启动前远端复核：`retry4`根不存在；环境为Python`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`、Torch`2.1.0+cu121`、NumPy`2.2.5`；4个同步文件SHA256与当时的retry4记录一致；远端py_compile、enrollment CLI import闭包和launcher dry-run均PASS。上表已更新为下一次retry5待同步哈希。
 
-retry5计划沿用相同命令，仅把run root和外层日志改为`..._retry5`；仍只读复用原run的`phase1_cache/cache_set.json`，不删除或覆盖retry4训练artifact。
+retry5已按相同命令启动，外层PID=`2287997`；retry6计划沿用相同命令，仅把run root和外层日志改为`..._retry6`。两者都只读复用原run的`phase1_cache/cache_set.json`，不删除或覆盖既有训练artifact。
 
 ## 首次启动完整日志诊断与恢复设计
 
@@ -182,6 +182,10 @@ retry3再次通过new5 source bundle与enrollment package双重preflight，远�
 retry4已确认ABI修复有效并首次完整执行new5的support-only适配：5epoch、50个optimizer step，loss从`1.946215`降至`1.488509`，support train accuracy从`0.711111`升至`0.741667`，mean margin从`0.302293`升至`0.334063`；完整loss trace已回收到`remote_logs/loss_trace.json`和`loss_trace.csv`。训练无NaN、Inf、OOM或Killed，并已写出6,400参数FP16 delta、prototype head与direct runtime。此处仅是support训练诊断，不是query性能结果。
 
 retry4随后在TorchScript parity阶段fail closed。ADV3B02底层把trace时batch维转换为Python整数，batch=2被固化；旧代码却用batch=8的probe调用已trace runtime，触发`shape '[4, 1, 256]' is invalid for input of size 4096`。修复把runtime合同显式锁为2-row microbatch：trace与parity使用相同2-row形状，receipt/apply predictor双向绑定该值，predictor逐2行向量化并要求query数可整除2；当前锁定5/10/20新类行的每类query=20，均满足整除。该microbatch只用于计算向量化，不读取role、truth、quota或全局类别分配。`ssr-gpu`中新增固定batch回归后py_compile与13/13测试通过；下一根为不可覆盖的`..._retry5`。
+
+retry5确认2-row trace形状修复有效，再次完成new5的5epoch/50step support-only训练；随后`torch.jit.trace(check_trace=True)`在Torch`2.1.0+cu121`的内部重复trace比较中抛出`complex128 != float64`dtype comparison exception。该异常发生在runtime发布前，未进入truth-free predictor或scorer，仍无query性能结果。完整外层/enrollment日志与loss trace已回收到`remote_logs/retry5_*`。
+
+JG020在保存并重新加载每个runtime后，本来就逐元素比较eager feature/logit与runtime feature/logit，容差为`1e-4`并在漂移时fail closed；因此重复的Torch内部trace checker不提供额外协议证据。retry6关闭`check_trace`，但保留加载后显式数值parity、runtime SHA256和receipt绑定。`ssr-gpu`中py_compile与13/13测试通过，测试静态锁定`check_trace=False`和显式parity调用同时存在。
 
 ## 启动后对话回顾与路线教训
 
