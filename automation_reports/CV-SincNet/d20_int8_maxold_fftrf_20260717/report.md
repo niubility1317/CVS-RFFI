@@ -43,7 +43,7 @@
 
 - 环境：`ssr-gpu`。
 - 命令：`conda run -n ssr-gpu python -m pytest -q tests/test_stage2_dali.py tests/test_run_d19_support_only_ciaf.py tests/test_stage2_diag_cosine_exploration.py`。
-- 结果：35项PASS，退出码0。其中新增K>1行为测试实际执行Stage2-C优化路径，发现并修复遗漏的`math`导入；不再只靠K1零epoch路径验证。
+- 结果：37项PASS，退出码0。其中新增K>1行为测试实际执行Stage2-C优化路径，发现并修复遗漏的`math`导入；另有2项DLPack桥接与禁止`torch.from_numpy`回归测试。
 - `py_compile`：DALI模块、runner及两组测试通过。
 - `git diff --check`：通过；仅有Git的LF/CRLF提示。
 - pytest退出后出现Windows临时目录`PermissionError`清理噪声，但测试进程退出码为0，不属于项目失败。
@@ -90,3 +90,18 @@ CUDA_VISIBLE_DEVICES=0 PYTHONPATH=code /home/szu2070436088/.conda/envs/CVS-RFFI/
 ```
 
 - 成功条件：生成75个support-only fold结果；B1–B4必须15/15逐类非劣于B0并严格改善最坏旧类floor，B4还需相对B3严格改善floor且seen-new逐类结果完全相同。失败/回退时不启动query和125矩阵。
++
+
+## 2026-07-17 12:35首次启动阻断与兼容闭包修复
+
+- 首次运行退出码1，在`materialize_somph_enrollment_with_signed_authority`的manifest预检阶段被`SOMP-H bundle manifest exact schema mismatch`阻断；output目录尚未创建，0个fold、0条support物化、0个query访问。
+- 根因：远端当前全局`code/cvsrffi/stage2_predictor_bundle.py`SHA256=`8bf20101130acbfc8063b8e42d47fbc811c4153ab85767341b3923bd8a9dbc05`，而D19成功打开同一密封包时封存源码版本SHA256=`bb27beaa94c4245b2135b5493e1be305985e05ff9f88c01bc0b9f60955944aa9`；属于加载器schema版本漂移，不是数据重建或D20模型失败。
+- 修复边界：不放宽manifest校验、不修改密封输入、不触碰query；将D19成功运行的完整只读源码闭包复制到新的`runs/d20_int8_maxold_fftrf_20260717/source`，再覆盖D20已提交的runner与DALI模块。历史D19源码快照保持不变，全局loader不再改动。
+- 首次失败日志保留为`logs/d20_int8_maxold_fftrf_20260717/k10_new5_rx20_1_seed713101.log`；重试写入`.../k10_new5_rx20_1_seed713101_attempt2.log`。
+
+## 2026-07-17 12:40第二次启动环境兼容阻断
+
+- attempt2通过密封包校验并进入首个合法support的特征提取，但在首个`torch.from_numpy`调用处退出：远端`CVS-RFFI`环境为Torch2.1.0+NumPy2.2.5，该二进制组合的NumPy C-API桥接最小复现同样失败。尚未生成任何候选fold或性能结果，query仍为0访问。
+- 已确认另一个`SDG-SEI`环境为Torch1.11+NumPy1.24，虽然NumPy桥接正常，但无法加载当前TorchScript runtime，因此不更换模型环境。
+- 本地修复：D20 runner的NumPy→Torch改为DLPack、Torch→NumPy改为`tolist`后显式float32重建；导入D1 fit中唯一NumPy `as_tensor`路径仅在单线程context内临时路由到DLPack并通过`finally`恢复。该改动只修复实验运行时数据桥接，张量值、样本、LEO信道、候选、损失和超参数均不变。
+- 修复验证：相关全套37项PASS；新增测试强制禁用`torch.from_numpy`并验证DLPack的float32/int64值一致性和`torch.as_tensor`恢复。

@@ -16,6 +16,7 @@ import json
 import math
 import sys
 import time
+from contextlib import contextmanager
 from pathlib import Path
 from typing import Any, Mapping, Sequence
 
@@ -79,6 +80,46 @@ def _canonical(value: Mapping[str, Any]) -> bytes:
     return json.dumps(
         value, ensure_ascii=False, sort_keys=True, separators=(",", ":")
     ).encode("utf-8")
+
+
+def _tensor_from_numpy_dlpack(
+    value: np.ndarray,
+    *,
+    dtype: torch.dtype,
+    device: torch.device,
+) -> torch.Tensor:
+    """Bridge NumPy to Torch without the NumPy C-API used by from_numpy."""
+
+    rows = np.ascontiguousarray(value)
+    tensor = torch.utils.dlpack.from_dlpack(rows)
+    return tensor.to(dtype=dtype, device=device)
+
+
+@contextmanager
+def _numpy2_torch21_as_tensor_compatibility():
+    """Scope the old Torch/new NumPy workaround to the imported D1 fit."""
+
+    original = torch.as_tensor
+
+    def compatible(value: Any, *args: Any, **kwargs: Any) -> torch.Tensor:
+        if isinstance(value, np.ndarray):
+            if args:
+                raise D19RunnerError(
+                    "NumPy compatibility bridge forbids positional options"
+                )
+            dtype = kwargs.pop("dtype", None)
+            device = kwargs.pop("device", None)
+            if kwargs:
+                raise D19RunnerError("NumPy compatibility bridge option drift")
+            tensor = torch.utils.dlpack.from_dlpack(np.ascontiguousarray(value))
+            return tensor.to(dtype=dtype, device=device)
+        return original(value, *args, **kwargs)
+
+    torch.as_tensor = compatible
+    try:
+        yield
+    finally:
+        torch.as_tensor = original
 
 
 def _member(manifest: Mapping[str, Any], kind: str) -> Mapping[str, Any]:
@@ -488,7 +529,7 @@ def _verify_runtime_direct_logit_binding(
     if state_key not in state:
         raise D19RunnerError("bound direct-logit head absent from sealed runtime")
     weight = np.ascontiguousarray(
-        state[state_key].detach().float().cpu().numpy(), dtype=np.float32
+        np.asarray(state[state_key].detach().float().cpu().tolist(), dtype=np.float32)
     )
     expected_rows = list(binding.get("direct_logit_weight_row_sha256", []))
     if weight.ndim != 2 or weight.shape[0] != len(expected_rows):
@@ -541,9 +582,11 @@ def _extract_scene_signals(
     logit_hashes: list[str] = []
     model.eval()
     for iq in np.asarray(rows["iq"], dtype=np.float32):
-        batch = torch.from_numpy(
-            np.ascontiguousarray(np.asarray(iq, dtype=np.float32)[None, ...])
-        ).to(device)
+        batch = _tensor_from_numpy_dlpack(
+            np.ascontiguousarray(np.asarray(iq, dtype=np.float32)[None, ...]),
+            dtype=torch.float32,
+            device=device,
+        )
         with torch.no_grad():
             output = model(batch)
         if isinstance(output, dict):
@@ -555,8 +598,12 @@ def _extract_scene_signals(
             raise D19RunnerError("sealed runtime must return features and logits")
         if not torch.is_tensor(feature_value) or not torch.is_tensor(logit_value):
             raise D19RunnerError("sealed runtime feature/logit tensor drift")
-        feature = feature_value.detach().float().cpu().numpy()
-        direct = logit_value.detach().float().cpu().numpy()
+        feature = np.asarray(
+            feature_value.detach().float().cpu().tolist(), dtype=np.float32
+        )
+        direct = np.asarray(
+            logit_value.detach().float().cpu().tolist(), dtype=np.float32
+        )
         if feature.shape != (1, 160) or direct.ndim != 2 or direct.shape[0] != 1:
             raise D19RunnerError("sealed runtime z_id shape drift")
         vector = np.ascontiguousarray(feature[0], dtype=np.float32)
@@ -685,13 +732,14 @@ def _fit_diag_registered_state(
 ) -> dict[str, Any]:
     """Fit Stage2-B, then register/fit new weights while freezing the old state."""
 
-    state = fit_diag_cosine_state(
-        features[train & old],
-        labels[train & old],
-        seed=int(fit_seed),
-        device=device,
-        candidate=CANDIDATE_D1_B0_CAP,
-    )
+    with _numpy2_torch21_as_tensor_compatibility():
+        state = fit_diag_cosine_state(
+            features[train & old],
+            labels[train & old],
+            seed=int(fit_seed),
+            device=device,
+            candidate=CANDIDATE_D1_B0_CAP,
+        )
     old_lookup = {str(label): index for index, label in enumerate(state.classes)}
     if set(old_lookup) != set(old_classes):
         raise D19RunnerError("diag old registry drift")
@@ -735,17 +783,26 @@ def _fit_diag_registered_state(
         * features.shape[1]
         * 3
     )
-    old_tensor = torch.as_tensor(
+    old_tensor = _tensor_from_numpy_dlpack(
         _normalize_matrix(old_weights), dtype=torch.float32, device=device
     )
     new_initial = np.stack(new_weights).astype(np.float32)
     new_tensor = torch.nn.Parameter(
-        torch.as_tensor(new_initial, dtype=torch.float32, device=device).clone()
+        _tensor_from_numpy_dlpack(
+            new_initial, dtype=torch.float32, device=device
+        ).clone()
     )
-    train_tensor = torch.as_tensor(
-        _normalize_matrix(scaled_support[train]), dtype=torch.float32, device=device
+    train_tensor = _tensor_from_numpy_dlpack(
+        _normalize_matrix(scaled_support[train]),
+        dtype=torch.float32,
+        device=device,
     )
-    targets = torch.as_tensor(targets_np, dtype=torch.long, device=device)
+    targets = _tensor_from_numpy_dlpack(
+        targets_np, dtype=torch.long, device=device
+    )
+    new_initial_tensor = _tensor_from_numpy_dlpack(
+        new_initial, dtype=torch.float32, device=device
+    )
     registration_trace: list[dict[str, Any]] = []
     if registration_epochs:
         optimizer = torch.optim.SGD([new_tensor], lr=0.05, momentum=0.0)
@@ -772,9 +829,7 @@ def _fit_diag_registered_state(
             anchor_loss = torch.mean(
                 (
                     torch.nn.functional.normalize(new_tensor, dim=1)
-                    - torch.as_tensor(
-                        new_initial, dtype=torch.float32, device=device
-                    )
+                    - new_initial_tensor
                 )
                 ** 2
             )
@@ -804,7 +859,7 @@ def _fit_diag_registered_state(
                 raise D19RunnerError("diag Stage2-C loss trace is non-finite")
             registration_trace.append(row)
     final_new_weights = np.asarray(
-        torch.nn.functional.normalize(new_tensor.detach(), dim=1).cpu().numpy(),
+        torch.nn.functional.normalize(new_tensor.detach(), dim=1).cpu().tolist(),
         dtype=np.float32,
     )
     all_weights = np.ascontiguousarray(

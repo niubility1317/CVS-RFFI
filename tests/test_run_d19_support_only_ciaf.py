@@ -69,6 +69,51 @@ def test_signal_extraction_binds_same_forward_and_no_legacy_zid_call() -> None:
     assert "direct_logit_indices" in extraction
 
 
+def test_dlpack_bridge_avoids_numpy_c_api_and_restores_as_tensor(monkeypatch) -> None:
+    float_rows = np.arange(6, dtype=np.float32).reshape(2, 3)
+    tensor = runner._tensor_from_numpy_dlpack(
+        float_rows, dtype=torch.float32, device=torch.device("cpu")
+    )
+    assert tensor.tolist() == float_rows.tolist()
+
+    def blocked(*args, **kwargs):
+        raise RuntimeError("legacy NumPy C-API bridge called")
+
+    monkeypatch.setattr(torch, "as_tensor", blocked)
+    with runner._numpy2_torch21_as_tensor_compatibility():
+        values = torch.as_tensor(
+            np.asarray([1, 2, 3], dtype=np.int64),
+            dtype=torch.long,
+            device=torch.device("cpu"),
+        )
+        assert values.tolist() == [1, 2, 3]
+        with pytest.raises(RuntimeError, match="legacy NumPy"):
+            torch.as_tensor([1, 2, 3])
+    with pytest.raises(RuntimeError, match="legacy NumPy"):
+        torch.as_tensor(np.asarray([1], dtype=np.int64))
+
+
+def test_signal_extraction_does_not_call_torch_from_numpy(monkeypatch) -> None:
+    class FakeRuntime(torch.nn.Module):
+        def forward(self, batch):
+            feature = torch.zeros((len(batch), FEATURE_DIM), dtype=torch.float32)
+            feature[:, 0] = batch[:, 0, 0]
+            logits = torch.stack([feature[:, 0], -feature[:, 0]], dim=1)
+            return feature, logits
+
+    def blocked(*args, **kwargs):
+        raise RuntimeError("torch.from_numpy is forbidden")
+
+    monkeypatch.setattr(torch, "from_numpy", blocked)
+    rows = {"iq": np.ones((2, 2, 8), dtype=np.float32)}
+    features, logits, audit = runner._extract_scene_signals(
+        FakeRuntime(), torch.device("cpu"), rows, (0, 1)
+    )
+    assert features.shape == (2, FEATURE_DIM)
+    assert logits.tolist() == [[1.0, -1.0], [1.0, -1.0]]
+    assert audit["backbone_forwards"] == 2
+
+
 def test_binding_explicitly_maps_every_old_class_to_direct_logit_column() -> None:
     path = Path(__file__).resolve().parents[1] / "analysis" / (
         "d19_adv3b02_class_binding_20260717.json"
