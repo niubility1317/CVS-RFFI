@@ -31,10 +31,10 @@ D23只处理由目标receiver的合法`LEO_weak` support生成的旧类与新类
 
 |ID|Source section|Requirement|Target files|Status|Verification|Notes|
 |---|---|---|---|---|---|---|
-|D23-01|用户新增要求|旧类与新类使用同一prototype bank schema，支持FP32/FP16/INT8|`code/cvsrffi/stage2_target_prototype_bank.py`|pending|focused codec tests|无old/new角色字段进入query predictor|
-|D23-02|数学定义|INT8使用per-vector fp16 scale、禁止-128；FP16/FP32不保留额外高精度副本|同上|pending|dtype/member/state-byte tests|零向量必须fail closed或使用锁定安全scale|
-|D23-03|半径与K|记录radius/count；K1使用method-locked r0，K>=2仅support估计|同上|pending|K1/K5/K10 unit tests|不从K10状态裁剪K1/K5|
-|D23-04|冻结注册|Stage2-B旧类bank冻结，Stage2-C只能append；old prefix bytes/hash不变|同上；runner|pending|before/after prefix hash tests|旧raw score列逐位不变|
+|D23-01|用户新增要求|旧类与新类使用同一prototype bank schema，支持FP32/FP16/INT8|`code/cvsrffi/stage2_target_prototype_bank.py`|verified|`tests/test_stage2_target_prototype_bank.py`，14项PASS|bank API无query输入|
+|D23-02|数学定义|INT8使用per-vector fp16 scale、禁止-128；FP16/FP32不保留额外高精度副本|同上|verified|dtype/member/state-byte tests PASS|零向量fail closed|
+|D23-03|半径与K|记录radius/count；K1使用method-locked r0，K>=2仅support估计|同上|verified|K1与append锁定测试PASS|正式K1/K5 capsule隔离仍属D23-11/12|
+|D23-04|冻结注册|Stage2-B旧类bank冻结，Stage2-C只能append；old prefix bytes/hash不变|同上；runner|implemented|codec prefix/hash/append测试PASS|runner raw score列证据仍pending|
 |D23-05|可达路径|B3 FP32、FP16、INT8三格式候选进入同一support-only15fold runner|`code/scripts/run_d19_support_only_ciaf.py`|pending|runner tests+N607 log|不能只实现未调用模块|
 |D23-06|评分|三格式对每个样本独立评分全部注册类，无query graph/role/quota/global assignment|codec；runner|pending|API schema/query-unreachable tests|INT8 MAC与rescale ops分开报告|
 |D23-07|资源|报告实际状态、FP32等价状态、压缩倍数、MAC、平均/P95延迟、scratch、峰值显存|runner；`resource_audit.json`|pending|resource formula tests|逻辑状态与serialized bytes分列|
