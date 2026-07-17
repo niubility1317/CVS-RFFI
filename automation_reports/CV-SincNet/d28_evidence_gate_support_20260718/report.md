@@ -37,6 +37,7 @@
 - Git实现提交：`d6e270993424c0e3ece37e7d5a5933e8bc350bca`；runner SHA256=`fe654bfd5f29ca675297af3144e9127c1227a93778e026634d4c99da2bbbcc96`；D28核心SHA256=`d18110786598c05d120fec4c278bf31de555a7b19fb00d3780d5a6c5f3e52e5f`；D27核心SHA256=`553d6361a728490c26963944df8353f1bc64bf1540b2ab6709f2f25bedd6f1ff`；launcher SHA256=`6faaf1feb282eff7a3999e28902cb0e01f12420b4860d4a4c5e19071aa8a8cbb`。
 - 本地`stage2_diag_cosine_exploration.py`有不属于本轮的未提交修改，因此不覆盖远端；launcher继续锁定D27已验证的远端operator SHA256=`14ec919395f9bf9f13214c677b1a3d640764214668d1d00e9109f5b149ec41ca`。
 - 精确远端命令：`cd /home/szu2070436088/2510044040/CV-SincNet && D28_GPU=<live-selected> bash code/scripts/launch_d28_evidence_gate_support_20260718.sh`。
+- 04:23 CST直连preflight PASS：server time、project root和8张RTX3090可见，均0%利用、约10MiB显存；live inventory为`gpu_compute=[]`、`active_training_processes=[]`、`unknown_training_active=false`。选择GPU0，精确命令锁定为`cd /home/szu2070436088/2510044040/CV-SincNet && D28_GPU=0 bash code/scripts/launch_d28_evidence_gate_support_20260718.sh`。
 
 ## 完成后补充
 
