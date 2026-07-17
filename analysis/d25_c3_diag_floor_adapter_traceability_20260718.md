@@ -2,7 +2,7 @@
 
 日期：2026-07-18
 
-状态：核心模块本地验证完成，待独立runner接入与support-only实验
+状态：核心模块、独立runner接入与N607 support-only实验均已完成；核心资源合规，但性能/floor门未通过
 
 约束来源：用户D25拼接决定、`项目.md` Phase2资源与query隔离协议、D21-M6 support-only floor/CVaR设计。
 
@@ -35,4 +35,6 @@
 - `conda activate ssr-gpu; python -m pytest -q tests\test_stage2_multimodal_diag_floor_adapter.py`：15项PASS。
 - `conda activate ssr-gpu; python -m pytest -q tests\test_stage2_multimodal_diag_floor_adapter.py tests\test_stage2_multimodal_concat_fusion.py`：29项PASS。
 - 独立review发现并修复：重复append重置step/忽略既有new竞争、full-batch epoch tier漏报、把old raw-score冻结误当无遗忘、query FP64中间与临时内存漏报。
-- 核心实现对应本追溯表14项严格设计要求；独立runner接入、N607 support-only筛选和实际old-support非退化/回退证据不在本模块交付范围内，仍是下一步最高风险项。
+- 核心实现对应本追溯表14项严格设计要求。N607 v2验证C3A/B/C的参数、epoch、step、状态、MAC、FP32和query隔离均PASS，但三者new pooled floor仍为0，old-support非退化仅0/15、2/15、1/15fold通过。
+- 全部C3 fold的Stage2-B loss下降且`gamma_abs_max`都达到0.35裁剪上限；C3B/C即使消除cosine distance<0.05的原型中心碰撞，`cls_09f8/cls_f608`仍为0–3.33%。这证明共享对角中心几何不足以解决逐样本类内覆盖和新旧score竞争，核心不得晋级。
+- 追溯状态：14/14项verified；“实现符合设计”与“路线性能通过”分开表述，后者为FAIL并已由runner回退C0。
