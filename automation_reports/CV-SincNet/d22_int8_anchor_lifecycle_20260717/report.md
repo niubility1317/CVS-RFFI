@@ -15,6 +15,7 @@
 - runner SHA256：`7e46db1e99ac40f4e9d7679dcb7f668553d928a0672a7bcf07022383949c8553`。
 - CIAF模块SHA256：`f46c5007cb1c0279bf2b27169ad79989eba908f32658c5a4d7f819916381aeb1`。
 - Phase2合同模块本地SHA256：`3b65707f91eb7012b5cd67bd572aa7d786c07ef4414b4b4a25139732a71a0b7b`；远端旧SHA256为`b9e236014aa3cfefe2d37d10def25133fd18b6f0923fcb9edf2059a41c6515e3`，须从本地Git工作树同步至`/home/szu2070436088/2510044040/CV-SincNet/code/cvsrffi/phase2_runtime_contract.py`。
+- SOMP-H runtime本地SHA256：`343a0ddcdb200351a8099cde2c2a9bbdd6a4eb661e54d322ecbd6901a5e720ee`；远端旧SHA256为`9565ded5b2511c173ce313fd31eb2b2b313be329a5b0c57143634daac57076b6`，须同步至`/home/szu2070436088/2510044040/CV-SincNet/code/cvsrffi/somph_predictor_runtime.py`。
 - class binding SHA256：`bb89a1dbb831acb374fccfc596ae98b660b496b449bdca577dabb962121c901f`。
 - 历史int8组件NPZ SHA256：`3c08c823d2e8a13c4233f0060ac67c332ecc8d6e8abec7352de975fead0267d7`；manifest SHA256：`15b5e144f9af3989421d8e925c17758479c327be47e79222f6363dc63994629c`。
 - 本地`ssr-gpu`验证：`tests/test_phase1_int8_prototype_bundle.py tests/test_stage2_ciaf.py tests/test_run_d19_support_only_ciaf.py`共28项PASS。
@@ -70,3 +71,10 @@
 |B4|未开始|无|无|不可评价|
 
 重跑使用`support_screen_v2`独立output/log/PID，并为该run设置独立`PYTHONPYCACHEPREFIX`，从当前源码重新编译模块；不删除历史cache、不覆盖v1失败日志。重跑前必须验证远端新cache进程看到47字段校验器，且继续保持query、clean/source与成员allowlist边界不变。
+
+### support_screen_v2结果与v3修复
+
+- v2 PID`3310020`同样在support打开前退出，manifest严格47字段校验已通过，随后失败于`SOMP-H method lock contract failed: ['phase2_contract']`。
+- 只读核验显示密封method lock自身恰好含26字段且与当前合同逐项一致；失败来自远端`somph_predictor_runtime.py`仍是旧SHA`9565…`，其expected lock使用旧合同。
+- formal policy声明的三项code closure中，`somph_predictor_bundle.py`与`somph_runtime_trust.py`远端已匹配；`stage2_predictor_bundle.py`受既有签名authority约束，不在没有重建authority的情况下追随本地新版本。
+- v3仅同步当前已提交的`somph_predictor_runtime.py`和独立v3 launcher，再做无IQ method-lock原子预检；不修改D18 package、seal、policy或authorization。
