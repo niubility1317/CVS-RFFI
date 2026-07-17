@@ -6,7 +6,7 @@
 - 时间：2026-07-18；operator：Codex。
 - 阶段：正式Stage2-B/C之前的development support-only筛选。
 - 探索节奏：D31是D27-D29强制回顾后的第2轮；D30为回顾后第1轮，因此本轮结束后仍可执行D32，第3轮完成后必须在D33前再次回顾。
-- 当前状态：`LOCAL_VERIFIED_PENDING_N607_PREFLIGHT`。
+- 当前状态：`N607_PREFLIGHT_PASS_PENDING_SYNC`。
 - 目标：把D30确认有效的B3辅助主导拼接几何压入活动上限，并补上其关键机制——Stage2-C使用全部old+new注册support，让旧support成为新类权重的负证据；同时用新类CVaR优化floor，用旧类margin降低注册后遗忘。
 - 比较对象：同run内`Z0`、超步数诊断`B3`、`C0`与D31-A/B/C；同一候选必须联合报告注册前旧类、注册后旧类、seen-new、H、逐类floor和遗忘。
 
@@ -55,6 +55,8 @@
 
 ## N607执行计划
 
+- 2026-07-18 06:24 CST直接SSH preflight通过：host `dell-DSS8440`，项目根可见，8×RTX 3090均为0%利用率且10MiB占用；live inventory无active training process。检查后本地`ssh.exe=0`、到N607/bridge的ESTABLISHED TCP22连接=0。
+- 本地Git提交：`f2745221 feat(stage2): add D31 all-registered suffix route`。
 - 本地验证和Git提交后，先运行`tools\n607_ssh_preflight.ps1`与live process/GPU inventory；若已有任务且未获授权干预，转为monitor-only。
 - 计划只同步runner、D31 core和D31 launcher；其他依赖只读核验远端SHA，不覆盖本地或远端无关改动。
 - 远端cwd：`/home/szu2070436088/2510044040/CV-SincNet`；Python：`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`。
