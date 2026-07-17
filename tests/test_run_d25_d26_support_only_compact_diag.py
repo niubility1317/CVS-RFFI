@@ -194,6 +194,35 @@ def test_d26_candidate_lock_matrix_and_historical_sets_are_stable() -> None:
         if row["candidate_id"] in runner.D30_CANDIDATES
     )
 
+    d31_candidates = runner.preregistered_candidates(runner.CANDIDATE_SET_D31_V1)
+    assert tuple(d31_candidates) == (
+        runner.IDENTITY_CANDIDATE,
+        runner.DIAG_CANDIDATE,
+        runner.D25_C0,
+        runner.D31_A,
+        runner.D31_B,
+        runner.D31_C,
+    )
+    assert [
+        d31_candidates[name].stage2c.method_id
+        for name in runner.D31_CANDIDATES
+    ] == list(runner.D31_CANDIDATES)
+    assert all(
+        d31_candidates[name].base.stage2b_steps == 15
+        and d31_candidates[name].base.stage2c_steps == 0
+        for name in runner.D31_CANDIDATES
+    )
+    d31_lock = runner._candidate_lock(
+        d31_candidates, runner.CANDIDATE_SET_D31_V1
+    )
+    assert d31_lock["schema"] == "cvs.phase2.d25.candidate_lock.v9"
+    assert "d31_all_registered_suffix_core_sha256" in d31_lock["source_closure"]
+    assert all(
+        row["family"] == "d31_all_registered_suffix_with_dali"
+        for row in d31_lock["candidates"]
+        if row["candidate_id"] in runner.D31_CANDIDATES
+    )
+
     assert tuple(runner.preregistered_candidates()) == (
         runner.IDENTITY_CANDIDATE,
         runner.DIAG_CANDIDATE,
@@ -233,6 +262,7 @@ def test_d26_cli_has_no_query_source_or_clean_surface() -> None:
         runner.CANDIDATE_SET_D28_V1,
         runner.CANDIDATE_SET_D29_V1,
         runner.CANDIDATE_SET_D30_V1,
+        runner.CANDIDATE_SET_D31_V1,
     )
     forbidden = ("query", "truth", "scorer", "role", "quota", "source", "clean")
     destinations = {action.dest.lower() for action in parser._actions}
@@ -519,6 +549,82 @@ def test_full_d30_resource_is_bounded_and_records_dual_confusions() -> None:
     before = geometry["support_confusion_before_envelope"]
     after = geometry["support_confusion_after_envelope"]
     assert before["new_aggregate"]["old_win"] == after["new_aggregate"]["old_win"]
+
+
+def test_real_d31_fold_uses_all_registered_suffix_and_dual_state_accounting() -> None:
+    rows, z_rows, fft_rows, rf_rows = _synthetic_d28_blocks()
+    old_classes = ("old_0", "old_1", "old_2")
+    new_classes = ("new_0", "new_1", "new_2")
+    config = runner.preregistered_candidates(runner.CANDIDATE_SET_D31_V1)[
+        runner.D31_B
+    ]
+    result = runner._evaluate_d31_fold(
+        _synthetic_int8_component(old_classes),
+        rows,
+        z_rows,
+        np.zeros((len(z_rows), len(old_classes)), dtype=np.float32),
+        fft_rows,
+        rf_rows,
+        old_classes=old_classes,
+        new_classes=new_classes,
+        held_ranks=(0, 1),
+        candidate_id=runner.D31_B,
+        config=config,
+    )
+    resource = result["resource"]
+    assert resource["total_optimizer_steps"] == 25
+    assert resource["peak_trainable_parameters"] <= 2_016
+    assert resource["query_rows_used_for_fit"] == 0
+    assert resource["dense_query_graph_bytes"] == 0
+    assert resource["authorized_full_bundle_state_bytes"] > 0
+    assert resource["actual_current_dali_state_bytes"] > (
+        resource["projected_slim_dali_runtime_bytes"]
+    )
+    old_count = len(old_classes)
+    assert resource["selected_medoid_int8_anchor_bytes"] == old_count * 160
+    assert resource["selected_medoid_fp32_scale_bytes"] == old_count * 4
+    assert resource["selected_medoid_fp32_radius_bytes"] == old_count * 4
+    assert resource["selected_medoid_u16_column_index_bytes"] == old_count * 2
+    assert resource["selected_medoid_class_digest_bytes"] == old_count * 32
+    assert resource["selected_medoid_header_hash_bytes"] == 128
+    assert resource["selected_medoid_int8_view_bytes"] == (
+        old_count * (160 + 4 + 4 + 2 + 32) + 128
+    )
+    assert resource["slim_runtime_projection_only"] is True
+    assert result["raw_confusion"]["sample_count"] == result["final_confusion"][
+        "sample_count"
+    ]
+    assert len(result["training_trace"]) == 27  # B: 0..15, C: 0..10.
+
+
+def test_full_d31_resource_is_bounded_and_keeps_bundle_residency_explicit() -> None:
+    rows, z_rows, fft_rows, rf_rows = _synthetic_d28_blocks()
+    old_classes = ("old_0", "old_1", "old_2")
+    new_classes = ("new_0", "new_1", "new_2")
+    config = runner.preregistered_candidates(runner.CANDIDATE_SET_D31_V1)[
+        runner.D31_C
+    ]
+    resource, geometry = runner._full_d31_state_audit(
+        _synthetic_int8_component(old_classes),
+        rows,
+        z_rows,
+        np.zeros((len(z_rows), len(old_classes)), dtype=np.float32),
+        fft_rows,
+        rf_rows,
+        old_classes=old_classes,
+        new_classes=new_classes,
+        config=config,
+    )
+    assert resource["total_optimizer_steps"] == 30
+    assert resource["persistent_state_cap_pass"] is True
+    assert resource["full_bundle_resident_combined_state_bytes"] > (
+        resource["projected_slim_active_predictor_state_bytes"]
+    )
+    assert resource["full_authorized_bundle_must_remain_resident_or_sealed_accessible"] is True
+    assert resource["estimated_score_mac_ratio_vs_identity_single_qknn"] < 1.0
+    assert "old_to_new" in geometry["final_confusion"]
+    assert "new_to_old" in geometry["final_confusion"]
+    assert "new_to_wrong_new" in geometry["final_confusion"]
 
 
 def _metric(value: float, labels: tuple[str, ...]) -> dict[str, object]:
