@@ -4,7 +4,7 @@
 - timestamp：2026-07-17
 - operator：Codex
 - objective：在正式Stage2-B/C `LEO_weak-only`协议下，以极轻量KNN原型生命周期同时推进目标域适应和新类注册，利用与ADV3B02共同封存的Phase1压缩中心、域偏移和P90半径改善旧类floor，并抑制5/10/20个新类下的旧类遗忘与新旧混杂。
-- current status：Phase1 exporter提交`dc8f8bda`、D21 lifecycle提交`735232d5`已落地；ADV3B02 runtime+v2组件联合bundle、外置seal/signing request与formal loader本地实现完成，61项联合回归PASS。N607只读预检已完成，但旧ADV3B02 split receipt不满足当前`rho_label`公式，正式重训/export仍等待协议口径选择。
+- current status：Phase1 exporter提交`dc8f8bda`、D21 lifecycle提交`735232d5`、联合bundle提交`ff6def83`、联合bundle运行器提交`0e724ebd`已落地。用户已锁定`L/U/V=0.07/0.63/0.30`、`rho_label=0.10`与epoch200 final权重，协议提交为`fe8421b3`。当前停止扩展协议握手，使用已保存单一LEO_weak Phase2资产研发逐样本域适应、新类注册和floor保护。
 
 ## 假设与比较对象
 
@@ -61,11 +61,11 @@ P90使用4096-bin余弦距离直方图上沿，确定性误差上界为0.0004882
 |---|---|---|
 |`项目.md`|授权domain20 core+R3 residual+P90 radius v2|提交`ba9c7d1`|
 |`analysis/d21_knn_prototype_lifecycle_and_phase1_geometry_design_20260717.md`|完整多路线设计|提交`d373e7e4`，后续资源数字待补提交|
-|`code/cvsrffi/phase1_center_lowrank_prototype_bundle.py`|v2 codec、validator、只读Phase2 API|本地未提交|
-|`code/cvsrffi/phase1_geometry_streaming.py`|Phase1两遍有界内存中心/P90聚合|本地未提交|
-|`code/cvsrffi/stage2_prototype_lifecycle.py`|K1/5/10/20旧snapshot和append-only注册|本地未提交|
-|`code/scripts/export_adv3b02_center_lowrank_radius_component.py`|真实ADV3B02两遍Phase1 export-only入口|本地未提交|
-|`code/scripts/run_d21_support_only_lifecycle.py`|sealed support materialization与生命周期support-only审计|本地未提交|
+|`code/cvsrffi/phase1_center_lowrank_prototype_bundle.py`|v2 codec、validator、只读Phase2 API|提交`dc8f8bda`|
+|`code/cvsrffi/phase1_geometry_streaming.py`|Phase1两遍有界内存中心/P90聚合|提交`dc8f8bda`|
+|`code/cvsrffi/stage2_prototype_lifecycle.py`|K1/5/10/20旧snapshot和append-only注册|提交`735232d5`|
+|`code/scripts/export_adv3b02_center_lowrank_radius_component.py`|真实ADV3B02两遍Phase1 export-only入口|提交`dc8f8bda`|
+|`code/scripts/run_d21_support_only_lifecycle.py`|联合checkpoint+int8 bundle强绑定的support-only运行器|提交`0e724ebd`|
 
 验证记录：
 
@@ -76,6 +76,7 @@ P90使用4096-bin余弦距离直方图上沿，确定性误差上界为0.0004882
 - `conda activate ssr-gpu; python -m pytest -q tests/test_phase1_center_lowrank_prototype_bundle.py tests/test_phase1_geometry_streaming.py tests/test_export_adv3b02_center_lowrank_radius_component.py tests/test_stage2_prototype_lifecycle.py tests/test_run_d21_support_only_lifecycle.py`：联合回归49项PASS。
 - 第二轮对抗修复后同一联合回归为51项PASS；D21 lifecycle/runner聚焦回归为23项PASS。
 - 加入联合bundle的最终联合回归为61项PASS；joint bundle聚焦回归为10项PASS。
+- 联合bundle运行器主agent在`ssr-gpu`串行复核为24项PASS；基础环境误调用一次因无`pytest`立即作废，不计测试结论。
 - 五个D21核心Python文件`py_compile`与本轮Markdown `git diff --check`均PASS；exporter `--help`确认不再存在detached-signature参数。
 - pytest退出后存在本机已知临时junction `PermissionError`清理噪声；测试退出码均为0。
 
@@ -97,7 +98,14 @@ P90使用4096-bin余弦距离直方图上沿，确定性误差上界为0.0004882
 - direct N607 preflight PASS；项目根`/home/szu2070436088/2510044040/CV-SincNet`可见，GPU0～7均为0%利用率、10MiB占用；只见系统`unattended-upgrade-shutdown` Python进程，无训练进程。
 - 远端磁盘`/home`可用7.6TiB；checkpoint为8,582,116B，SHA256=`2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98`；`Dataset_WigSig/ManySig.pkl`为2,359,341,461B，SHA256=`2b0a7a7488dd3650bcae7b1d80efbcffd1598aaa671ae6b0a0df2a24dc0f694f`。
 - checkpoint不可变`split_info`记录`labeled_size=8400`、`unlabeled_size=58800`、`source_val_size=16800`。按当前`项目.md`公式，`8400/(8400+58800)=0.125>0.1`；当前loader因此在重建前直接拒绝。该历史checkpoint可保留为历史诊断，不能绕过guard冒充当前正式Phase1 lineage。
-- `项目.md`5.1另写`0.1/0.6/0.3`，其数学上同样给出`rho_label=0.1/(0.1+0.6)=1/7>0.1`，与第5节公式存在内部口径冲突。当前优先分析`0.08/0.72/0.20`的合法ADV3B02从头重训练路线；在解决该冲突前不启动正式export。
+- 用户已选择公式优先路线：先留出`0.30` source validation，再将剩余训练池按`0.10/0.90`切为L/U，对全池等价为`0.07/0.63/0.30`；正式checkpoint固定epoch200 final权重，source validation只作健康审计和报告。该决定已同步`项目.md`并提交`fe8421b3`。
+
+## 直接算法开发入口与旧v1边界
+
+- N607已保存D18母资产覆盖5个receiver×6个seed×3场景、旧6类＋new20、每类每场景40个唯一LEO_weak观测。固定前20条为support pool、后20条为query，可直接切K=`1/5/10/20`和new=`5/10/20`，不重建信道。
+- 2026-07-17 14:25 direct preflight再次PASS，GPU0～7均空闲。已将`rx20-1/seed713101`三场景母cell拉取到`E:\type10-7\automation_reports\CV-SincNet\d21_knn_prototype_lifecycle_20260717\dev_cache_rx20_1_seed713101`，总计约10.8MiB；远端资产保持只读，传输后`ssh.exe=0`且N607 TCP22连接数为0。
+- 本地另有已密封的`rx20-1/seed713101/K10/new5`before/after胶囊，可先用旧runtime做算法开发冒烟；正式确认必须在用户指定final runtime及联合int8 bundle重建后执行。
+- 旧v1 125行仅含2个seen-new类且使用dense query graph，按当前协议只能作历史诊断。其25-cell聚合为：K1 old/new/H=`67.60/58.80/61.10%`，K5=`80.03/75.60/76.93%`，K10=`83.04/81.87/82.07%`，K20=`85.67/84.87/85.04%`；对应最差旧类floor仅`6.67/25.00/20.00/35.00%`。因此本轮主攻逐类floor和注册后竞争遗忘，而不是复用v1的query图。
 
 ## 成功与停止条件
 
