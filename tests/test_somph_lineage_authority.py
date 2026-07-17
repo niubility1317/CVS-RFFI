@@ -254,7 +254,7 @@ def _fixture(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> dict:
     channel_config_hashes = {}
     cache_audits = {}
     row_count = len(old_tx)
-    authority_role_inputs = None
+    authority_role_inputs: dict[str, list[dict]] = {}
     for scenario_index, scenario in enumerate(FORMAL_LEO_WEAK_SCENARIOS):
         record_indices = np.asarray(
             [scenario_index * 1000 + index for index in range(row_count)],
@@ -309,8 +309,14 @@ def _fixture(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> dict:
             "dataset_seed": seed,
             "resolved_info": {"fixture": True},
             "physical_sample_count": row_count,
+            "reference_excluded_source_record_count": 0,
+            "physical_sample_scenario_assignment_policy": (
+                authority.PHYSICAL_SAMPLE_SCENARIO_ASSIGNMENT_POLICY
+            ),
+            "assigned_scenario": scenario,
+            "assigned_physical_sample_count": row_count,
         }
-        authority_role_inputs = [role_input]
+        authority_role_inputs[scenario] = [role_input]
         manifest = {
             "schema": LEO_WEAK_CACHE_SCHEMA,
             "artifact_stage": LEO_WEAK_CACHE_STAGE,

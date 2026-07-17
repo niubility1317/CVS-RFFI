@@ -347,6 +347,92 @@ def test_builds_unsigned_real_byte_grounded_lock_and_bundle_accepts_it(
     )
 
 
+def test_real_exporter_role_input_shape_is_exactly_accepted(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    values = _realistic_fixture(tmp_path, monkeypatch)
+    cache_set = json.loads(
+        values["cache_set_path"].read_text(encoding="utf-8")
+    )
+    for scenario in authority.FORMAL_LEO_WEAK_SCENARIOS:
+        cache_path = (
+            values["cache_set_path"].parent
+            / cache_set["cache_npz_by_scenario"][scenario]
+        )
+        with np.load(cache_path, allow_pickle=False) as archive:
+            embedded = json.loads(str(archive["manifest_json"].item()))
+        role_input = embedded["role_inputs"][0]
+        assert set(role_input) == authority._ROLE_INPUT_KEYS
+        assert role_input["assigned_scenario"] == scenario
+        assert role_input["physical_sample_scenario_assignment_policy"] == (
+            authority.PHYSICAL_SAMPLE_SCENARIO_ASSIGNMENT_POLICY
+        )
+        assert role_input["assigned_physical_sample_count"] == len(
+            values["lock"]["old_tx_ids"]
+        )
+        assert role_input["reference_excluded_source_record_count"] == 0
+    result = _build(values, tmp_path / "real_shape_lock")
+    assert result["formal_launch_authority"] is False
+
+
+@pytest.mark.parametrize(
+    "missing",
+    [
+        "assigned_physical_sample_count",
+        "assigned_scenario",
+        "physical_sample_scenario_assignment_policy",
+        "reference_excluded_source_record_count",
+    ],
+)
+def test_legacy_role_input_missing_real_exporter_field_fails_closed(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, missing: str
+) -> None:
+    values = _realistic_fixture(tmp_path, monkeypatch)
+
+    def mutate(_arrays, embedded):
+        embedded["role_inputs"][0].pop(missing)
+
+    _rewrite_cache(values, authority.FORMAL_LEO_WEAK_SCENARIOS[0], mutate)
+    with pytest.raises(
+        SomphAuthorityLockBuildError, match="role_inputs .*drift"
+    ):
+        _build(values, tmp_path / f"missing_{missing}")
+
+
+@pytest.mark.parametrize(
+    ("field", "value", "message"),
+    [
+        ("assigned_scenario", "leo_wrong_weak", "assigned count/scenario drift"),
+        (
+            "physical_sample_scenario_assignment_policy",
+            "legacy_reuse",
+            "assigned count/scenario drift",
+        ),
+        ("assigned_physical_sample_count", 999, "assigned count/scenario drift"),
+        (
+            "reference_excluded_source_record_count",
+            -1,
+            "reference_excluded_source_record_count",
+        ),
+    ],
+)
+def test_real_role_input_assignment_value_drift_fails_closed(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    field: str,
+    value,
+    message: str,
+) -> None:
+    values = _realistic_fixture(tmp_path, monkeypatch)
+
+    def mutate(_arrays, embedded):
+        embedded["role_inputs"][0][field] = value
+
+    _rewrite_cache(values, authority.FORMAL_LEO_WEAK_SCENARIOS[0], mutate)
+    with pytest.raises(SomphAuthorityLockBuildError, match=message):
+        _build(values, tmp_path / f"drift_{field}")
+
+
 def test_rejects_build_spec_extra_query_truth_field(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:

@@ -165,6 +165,10 @@ _ROLE_INPUT_KEYS = {
     "dataset_seed",
     "resolved_info",
     "physical_sample_count",
+    "reference_excluded_source_record_count",
+    "physical_sample_scenario_assignment_policy",
+    "assigned_scenario",
+    "assigned_physical_sample_count",
 }
 _BUNDLE_MEMBERS = {
     AUTHORITY_LOCK_NAME,
@@ -999,15 +1003,28 @@ def _cache_role_inputs(
                 * len(tx_ids_for_role)
                 for role, tx_ids_for_role in expected_tx_by_role.items()
             }
+            expected_assigned_counts = {
+                role: required_samples_per_tx * len(tx_ids_for_role)
+                for role, tx_ids_for_role in expected_tx_by_role.items()
+            }
+            actual_assigned_counts = Counter(roles.tolist())
             for row in result[scenario]:
                 role = row.get("role")
                 if (
                     role not in expected_role_counts
                     or row.get("physical_sample_count")
                     != expected_role_counts[role]
+                    or row.get("assigned_physical_sample_count")
+                    != expected_assigned_counts[role]
+                    or row.get("assigned_physical_sample_count")
+                    != actual_assigned_counts[role]
+                    or row.get("assigned_scenario") != scenario
+                    or row.get("physical_sample_scenario_assignment_policy")
+                    != PHYSICAL_SAMPLE_SCENARIO_ASSIGNMENT_POLICY
                 ):
                     raise SomphLineageAuthorityError(
-                        f"cache role_inputs physical_sample_count drift for {scenario}"
+                        f"cache role_inputs physical_sample_count drift or "
+                        f"assigned count/scenario drift for {scenario}"
                     )
     return result
 
@@ -1033,6 +1050,7 @@ def _verify_cache_role_inputs(
             }
         )
     reference: list[dict[str, Any]] | None = None
+    committed: dict[str, list[dict[str, Any]]] = {}
     for scenario in FORMAL_LEO_WEAK_SCENARIOS:
         observed = values[scenario]
         if len(observed) != len(expected_rows):
@@ -1058,14 +1076,48 @@ def _verify_cache_role_inputs(
                 field=f"cache role_inputs physical_sample_count {scenario}:{index}",
                 minimum=1,
             )
+            assigned_count = _require_int(
+                row.get("assigned_physical_sample_count"),
+                field=(
+                    f"cache role_inputs assigned_physical_sample_count "
+                    f"{scenario}:{index}"
+                ),
+                minimum=1,
+            )
+            if assigned_count > row["physical_sample_count"]:
+                raise SomphLineageAuthorityError(
+                    f"cache role_inputs assigned count exceeds physical count "
+                    f"for {scenario}:{index}"
+                )
+            _require_int(
+                row.get("reference_excluded_source_record_count"),
+                field=(
+                    f"cache role_inputs reference_excluded_source_record_count "
+                    f"{scenario}:{index}"
+                ),
+                minimum=0,
+            )
+            if (
+                row.get("assigned_scenario") != scenario
+                or row.get("physical_sample_scenario_assignment_policy")
+                != PHYSICAL_SAMPLE_SCENARIO_ASSIGNMENT_POLICY
+            ):
+                raise SomphLineageAuthorityError(
+                    f"cache role_inputs scenario assignment drift for {scenario}:{index}"
+                )
             normalized.append(row)
+        committed[scenario] = normalized
+        comparable = [
+            {key: value for key, value in row.items() if key != "assigned_scenario"}
+            for row in normalized
+        ]
         if reference is None:
-            reference = normalized
-        elif normalized != reference:
+            reference = comparable
+        elif comparable != reference:
             raise SomphLineageAuthorityError(
                 "cache role_inputs drift across LEO_weak scenarios"
             )
-    return sha256_bytes(canonical_json_bytes(reference or []))
+    return sha256_bytes(canonical_json_bytes(committed))
 
 
 def _write_new_readonly(path: Path, payload: bytes) -> tuple[str, int]:

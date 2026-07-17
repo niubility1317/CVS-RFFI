@@ -869,6 +869,8 @@ def _write_somph_authority_lock_package_impl(
                 ),
             },
             receiver=identity["receiver"],
+            build_spec=build_spec,
+            required_samples_per_tx=required_samples_per_tx,
         )
         role_inputs_root = authority._verify_cache_role_inputs(
             role_inputs,
@@ -886,15 +888,29 @@ def _write_somph_authority_lock_package_impl(
             )
             for role_spec in role_specs
         }
+        assigned_role_input_count_by_role = {
+            role: required_samples_per_tx
+            * len(
+                authority._split_tx_ids(
+                    role_spec["tx_ids"],
+                    field=f"build_spec.{role}.tx_ids",
+                )
+            )
+            for role, role_spec in (
+                (str(item["role"]), item) for item in role_specs
+            )
+        }
         for row in role_inputs[FORMAL_LEO_WEAK_SCENARIOS[0]]:
             role = row.get("role")
             if (
                 role not in role_input_count_by_role
                 or row.get("physical_sample_count")
                 != role_input_count_by_role[role]
+                or row.get("assigned_physical_sample_count")
+                != assigned_role_input_count_by_role[role]
             ):
                 raise SomphAuthorityLockBuildError(
-                    "cache role_inputs physical_sample_count drift"
+                    "cache role_inputs physical/assigned sample count drift"
                 )
     except authority.SomphLineageAuthorityError as exc:
         raise SomphAuthorityLockBuildError(str(exc)) from exc
