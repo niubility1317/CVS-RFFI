@@ -25,11 +25,13 @@ import torch
 import torch.nn.functional as F
 
 from cvsrffi.phase2_runtime_contract import PHASE2_FULL_CONTRACT
+from cvsrffi.somph_diagnostic_bundle_loader import (
+    load_verified_somph_predictor_bundle,
+)
 from cvsrffi.somph_predictor_bundle import (
     APPLY_ONLY,
     ENROLLMENT_ONLY,
     FORMAL_LEO_WEAK_SCENARIOS,
-    load_verified_somph_predictor_bundle,
 )
 from cvsrffi.stage2_predictor_runtime import load_torchscript_backbone_same_fd
 

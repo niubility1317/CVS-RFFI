@@ -141,6 +141,7 @@ def _write_apply_outputs(paths: dict, *, receipt_sha_drift: bool = False) -> str
         "schema": "cvs.phase2.somph_apply_execution_receipt.v1",
         "status": "LOCAL_PROTOCOL_REPAIR_REQUIRED",
         "formal_launch_authority": False,
+        "diagnostic_only": True,
         "formal_metric_claim_allowed": False,
         "request_sha256": paths["request_sha"],
         "package_root_sha256": paths["manifest"]["package_root_sha256"],
@@ -214,6 +215,7 @@ def test_apply_runner_uses_exact_members_and_real_trace_audit(
             "seal_sha256": "b" * 64,
             "execution_receipt_sha256": receipt_sha,
             "formal_launch_authority": False,
+            "diagnostic_only": True,
         }
         return SimpleNamespace(returncode=0, stdout=json.dumps(stdout), stderr="")
 
@@ -285,6 +287,7 @@ def test_runner_rejects_extra_process_or_forbidden_support_member(
             "seal_sha256": "b" * 64,
             "execution_receipt_sha256": receipt_sha,
             "formal_launch_authority": False,
+            "diagnostic_only": True,
         }
         return SimpleNamespace(returncode=0, stdout=json.dumps(stdout), stderr="")
 
@@ -328,6 +331,7 @@ def test_runner_rejects_execution_receipt_digest_before_stdout_pass_receipt(
             "seal_sha256": "b" * 64,
             "execution_receipt_sha256": receipt_sha,
             "formal_launch_authority": False,
+            "diagnostic_only": True,
         }
         return SimpleNamespace(returncode=0, stdout=json.dumps(stdout), stderr="")
 
@@ -375,6 +379,7 @@ def test_runner_rejects_extra_output_member(
             "seal_sha256": "b" * 64,
             "execution_receipt_sha256": receipt_sha,
             "formal_launch_authority": False,
+            "diagnostic_only": True,
         }
         return SimpleNamespace(returncode=0, stdout=json.dumps(stdout), stderr="")
 

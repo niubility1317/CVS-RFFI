@@ -23,6 +23,7 @@ from typing import Any, Mapping
 import numpy as np
 
 from cvsrffi import somph_leo_weak_lineage_seal as structural
+from cvsrffi import somph_cache_build_matrix as cache_matrix
 from cvsrffi.leo_weak_cache import FORMAL_LEO_WEAK_SCENARIOS, canonical_json_sha256
 from cvsrffi.somph_formal_matrix import (
     CONFIRMATION_SEEDS,
@@ -219,9 +220,6 @@ _AUTHORITY_LOCK_BUILD_RECEIPT_KEYS = {
     "external_authority_lock_verified",
     "formal_launch_authority",
 }
-_FORMAL_CACHE_SPEC_MANIFEST_SHA256 = (
-    "1febf18043ec39fe599e9f6b114bb8696981c9874f2795061b6be2eec2a5290c"
-)
 _WRITE_BITS = stat.S_IWUSR | stat.S_IWGRP | stat.S_IWOTH
 
 _ED_Q = 2**255 - 19
@@ -349,6 +347,7 @@ def _verify_signed_envelope(
     lock_canonical_sha256: str,
     expected_cache_spec_cell_id: str,
     expected_build_receipt_sha256: str | None = None,
+    expected_cache_spec_manifest_sha256: str | None = None,
 ) -> None:
     if set(envelope) != _ENVELOPE_KEYS:
         raise SomphLineageAuthorityError("signed authority envelope exact schema drift")
@@ -358,9 +357,6 @@ def _verify_signed_envelope(
         "issuer": "qknnv42_stage2bc_extreme_light_route_20260716",
         "key_id": "somph-authority-ed25519-20260716",
         "lock_canonical_sha256": lock_canonical_sha256,
-        "cache_spec_manifest_sha256": (
-            "0e1f09ba08afd52b43a1bc9188d319f389c6cb57c9c8e06eee087ac99b3666c5"
-        ),
         "cache_spec_cell_id": expected_cache_spec_cell_id,
     }
     if any(envelope.get(key) != value for key, value in expected.items()):
@@ -377,6 +373,17 @@ def _verify_signed_envelope(
     ):
         raise SomphLineageAuthorityError(
             "signed authority envelope build receipt binding drift"
+        )
+    manifest_sha = _require_sha256(
+        envelope.get("cache_spec_manifest_sha256"),
+        field="signed envelope cache_spec_manifest_sha256",
+    )
+    if (
+        expected_cache_spec_manifest_sha256 is not None
+        and manifest_sha != expected_cache_spec_manifest_sha256
+    ):
+        raise SomphLineageAuthorityError(
+            "signed authority envelope cache-spec manifest binding drift"
         )
     try:
         public_key = bytes.fromhex(
@@ -1255,6 +1262,8 @@ def _verify_build_authority_binding(
     cache_spec_manifest: Mapping[str, Any],
     cache_spec_manifest_sha256: str,
     cache_spec_manifest_size_bytes: int,
+    cache_spec_manifest_root: Path | None = None,
+    require_exact_cache_spec_manifest: bool = False,
 ) -> tuple[str, str]:
     _require_exact_dict(
         build_receipt,
@@ -1269,13 +1278,27 @@ def _verify_build_authority_binding(
         cache_spec_manifest_sha256,
         field="cache-spec manifest SHA",
     )
+    if require_exact_cache_spec_manifest:
+        if cache_spec_manifest_root is None:
+            raise SomphLineageAuthorityError(
+                "exact cache-spec manifest validation requires its root"
+            )
+        try:
+            cache_matrix.validate_cache_build_manifest(
+                cache_spec_manifest,
+                manifest_root=cache_spec_manifest_root,
+            )
+        except cache_matrix.SomphCacheBuildMatrixError as exc:
+            raise SomphLineageAuthorityError(
+                "cache-spec manifest exact validation failed"
+            ) from exc
     expected_cell_id = (
         f"rx_{str(lock.get('receiver')).replace('-', '_')}_seed_{lock.get('seed')}"
     )
     direct = {
         "schema": "cvs.phase1.somph_authority_lock_build_receipt.v2",
         "status": "UNSIGNED_OFFLINE_AUTHORITY_LOCK_BUILT",
-        "cache_spec_manifest_sha256": _FORMAL_CACHE_SPEC_MANIFEST_SHA256,
+        "cache_spec_manifest_sha256": manifest_sha,
         "cache_spec_manifest_size_bytes": cache_spec_manifest_size_bytes,
         "cache_spec_cell_id": expected_cell_id,
         "required_samples_per_tx": 40,
@@ -1317,7 +1340,6 @@ def _verify_build_authority_binding(
     }
     if (
         lock.get("cache_scope") != "stage2_registered"
-        or manifest_sha != _FORMAL_CACHE_SPEC_MANIFEST_SHA256
         or any(build_receipt.get(key) != value for key, value in direct.items())
     ):
         raise SomphLineageAuthorityError(
@@ -1454,6 +1476,8 @@ def write_somph_lineage_authority_bundle(
         cache_spec_manifest=cache_spec_manifest,
         cache_spec_manifest_sha256=cache_spec_manifest_sha,
         cache_spec_manifest_size_bytes=cache_spec_manifest_size,
+        cache_spec_manifest_root=Path(cache_spec_manifest_path).absolute().parent,
+        require_exact_cache_spec_manifest=True,
         )
     )
     _verify_signed_envelope(
@@ -1463,6 +1487,7 @@ def write_somph_lineage_authority_bundle(
             f"rx_{receiver.replace('-', '_')}_seed_{seed}"
         ),
         expected_build_receipt_sha256=build_receipt_sha,
+        expected_cache_spec_manifest_sha256=cache_spec_manifest_sha,
     )
 
     cache_set_descriptor, _cache_set_bytes = _verify_file_descriptor(
@@ -1885,6 +1910,9 @@ def verify_somph_lineage_authority_bundle(
             f"rx_{receiver.replace('-', '_')}_seed_{seed}"
         ),
         expected_build_receipt_sha256=build_receipt_sha,
+        expected_cache_spec_manifest_sha256=(
+            cache_spec_manifest_descriptor["sha256"]
+        ),
     )
     committed_dataset_root = _dataset_root_from_lock(
         lock,

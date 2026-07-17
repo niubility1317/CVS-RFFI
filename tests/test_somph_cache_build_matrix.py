@@ -236,6 +236,33 @@ def test_writes_exact_30_cell_registered_maxk20_matrix(tmp_path: Path) -> None:
         assert str(spec["out_manifest"]).startswith(FIXED_N607_CACHE_OUTPUT_ROOT)
 
 
+def test_explicit_cache_output_root_is_bound_into_all_30_exact_cells(
+    tmp_path: Path,
+) -> None:
+    root = tmp_path / "custom_specs"
+    cache_output_root = "/offline/formal/somph-cache-v2"
+    manifest = write_cache_build_matrix(
+        output_root=root,
+        manysig_pkl="/datasets/ManySig.pkl",
+        manytx_pkl="/datasets/ManyTx.pkl",
+        cache_output_root=cache_output_root,
+    )
+
+    assert manifest["cell_count"] == 30
+    assert manifest["cache_output_root"] == cache_output_root
+    validate_cache_build_manifest(manifest, manifest_root=root)
+    for cell in manifest["cells"]:
+        expected_root = (
+            f"{cache_output_root}/rx_{cell['receiver'].replace('-', '_')}"
+            f"/seed_{cell['seed']}"
+        )
+        assert cell["cache_output_root"] == expected_root
+        spec = json.loads(
+            (root / cell["spec_path"]).read_text(encoding="utf-8")
+        )
+        assert spec["out_manifest"] == f"{expected_root}/cache_set.json"
+
+
 def test_all_specs_are_accepted_by_the_real_leo_weak_cache_builder(
     tmp_path: Path,
 ) -> None:
@@ -479,7 +506,9 @@ def test_output_root_must_be_absolute_and_not_a_symlink(tmp_path: Path) -> None:
         )
 
 
-def test_cli_exposes_no_custom_formal_axes_and_writes_specs(tmp_path: Path) -> None:
+def test_cli_only_exposes_cache_root_not_custom_formal_axes_and_writes_specs(
+    tmp_path: Path,
+) -> None:
     script = (
         Path(__file__).resolve().parents[1]
         / "code"
@@ -498,11 +527,12 @@ def test_cli_exposes_no_custom_formal_axes_and_writes_specs(tmp_path: Path) -> N
         "--scenario",
         "--tx-ids",
         "--k-shot",
-        "--cache-output-root",
     ):
         assert forbidden not in help_result.stdout
+    assert "--cache-output-root" in help_result.stdout
 
     output = tmp_path / "cli_specs"
+    cache_output_root = "/offline/formal/cli-cache"
     result = subprocess.run(
         [
             sys.executable,
@@ -513,6 +543,8 @@ def test_cli_exposes_no_custom_formal_axes_and_writes_specs(tmp_path: Path) -> N
             "/datasets/ManySig.pkl",
             "--manytx-pkl",
             "/datasets/ManyTx.pkl",
+            "--cache-output-root",
+            cache_output_root,
         ],
         check=True,
         capture_output=True,
@@ -523,4 +555,5 @@ def test_cli_exposes_no_custom_formal_axes_and_writes_specs(tmp_path: Path) -> N
     assert summary["formal_launch_authority"] is False
     assert summary["control_status"] == "LOCAL_PROTOCOL_REPAIR_REQUIRED"
     manifest = json.loads((output / "manifest.json").read_text(encoding="utf-8"))
+    assert manifest["cache_output_root"] == cache_output_root
     validate_cache_build_manifest(manifest, manifest_root=output)

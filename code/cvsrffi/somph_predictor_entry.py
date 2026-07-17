@@ -15,12 +15,14 @@ import torch
 from cvsrffi.phase2_runtime_contract import PHASE2_FULL_CONTRACT
 from cvsrffi.somph_head_artifact import publish_somph_head_artifact
 from cvsrffi.somph_prediction_artifact import publish_somph_prediction_artifact
-from cvsrffi.somph_predictor_bundle import (
-    APPLY_ONLY,
-    ENROLLMENT_ONLY,
+from cvsrffi.somph_diagnostic_bundle_loader import (
     load_verified_somph_head_capsule,
     load_verified_somph_predictor_bundle,
     preflight_somph_predictor_bundle,
+)
+from cvsrffi.somph_predictor_bundle import (
+    APPLY_ONLY,
+    ENROLLMENT_ONLY,
 )
 from cvsrffi.somph_predictor_runtime import (
     apply_somph_heads,
@@ -235,6 +237,7 @@ def run_somph_enrollment(
     )
     receipt = {
         "schema": "cvs.phase2.somph_enrollment_execution_receipt.v1",
+        "diagnostic_only": True,
         "status": "LOCAL_PROTOCOL_REPAIR_REQUIRED",
         "formal_launch_authority": False,
         "formal_metric_claim_allowed": False,
@@ -264,6 +267,7 @@ def run_somph_enrollment(
     )
     return {
         "schema": "cvs.phase2.somph_enrollment_stdout.v1",
+        "diagnostic_only": True,
         "profile": ENROLLMENT_ONLY,
         "request_sha256": request_sha256,
         "head_output_leaf": request["head_output_leaf"],
@@ -406,6 +410,7 @@ def run_somph_apply(
     )
     receipt = {
         "schema": "cvs.phase2.somph_apply_execution_receipt.v1",
+        "diagnostic_only": True,
         "status": "LOCAL_PROTOCOL_REPAIR_REQUIRED",
         "formal_launch_authority": False,
         "formal_metric_claim_allowed": False,
@@ -435,6 +440,7 @@ def run_somph_apply(
     )
     return {
         "schema": "cvs.phase2.somph_apply_stdout.v1",
+        "diagnostic_only": True,
         "profile": APPLY_ONLY,
         "request_sha256": request_sha256,
         "prediction_output_leaf": request["prediction_output_leaf"],

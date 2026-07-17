@@ -22,10 +22,10 @@ CODE = REPO / "code"
 if str(CODE) not in sys.path:
     sys.path.insert(0, str(CODE))
 
-from cvsrffi.somph_predictor_bundle import (  # noqa: E402
-    FORMAL_LEO_WEAK_SCENARIOS,
+from cvsrffi.somph_diagnostic_bundle_loader import (  # noqa: E402
     load_verified_somph_predictor_bundle,
 )
+from cvsrffi.somph_predictor_bundle import FORMAL_LEO_WEAK_SCENARIOS  # noqa: E402
 from cvsrffi.stage2_diag_cosine_exploration import (  # noqa: E402
     forward_zid160,
     registered_feature,
@@ -854,6 +854,7 @@ def run(
     training_log_sha = _write_jsonl_new(output / "training_log.jsonl", trace)
     audit = {
         "schema": "cvs.phase2.d11_support_only_audit.v1",
+        "diagnostic_only": True,
         "status": status,
         "claim_scope": "support_only_no_query_performance_claim",
         "receiver": after_manifest["receiver"],
@@ -963,6 +964,7 @@ def run(
     report_sha = _write_text_new(output / "report.md", "\n".join(lines))
     commit = {
         "schema": "cvs.phase2.d11_support_only_commit.v1",
+        "diagnostic_only": True,
         "status": status,
         "support_audit_sha256": audit_sha,
         "training_log_sha256": training_log_sha,

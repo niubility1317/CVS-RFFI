@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+import ast
 import hashlib
+import inspect
 import json
 import copy
 from pathlib import Path
@@ -10,6 +12,10 @@ import pytest
 
 import cvsrffi.somph_predictor_bundle as somph_bundle
 import cvsrffi.somph_predictor_runtime as somph_runtime
+from cvsrffi.somph_diagnostic_bundle_loader import (
+    load_verified_somph_predictor_bundle,
+    preflight_somph_predictor_bundle,
+)
 from cvsrffi.phase2_runtime_contract import PHASE2_FULL_CONTRACT
 from cvsrffi.somph_predictor_bundle import (
     ADV3B02_FEATURE_SCHEMA,
@@ -25,8 +31,6 @@ from cvsrffi.somph_predictor_bundle import (
     SUPPORT_NPZ_MEMBERS,
     PredictorPackageError,
     iq_row_sha256,
-    load_verified_somph_predictor_bundle,
-    preflight_somph_predictor_bundle,
     sha256_file,
     write_somph_predictor_bundle,
 )
@@ -409,7 +413,8 @@ def test_profiles_are_physically_isolated(
     _manifest, _seal, audit = preflight_somph_predictor_bundle(
         root, detached_seal_path=seal, expected_seal_sha256=digest
     )
-    assert audit["status"] == "STRUCTURAL_SELF_CONSISTENCY_PASS"
+    assert audit["status"] == "UNVERIFIED_UNDER_CURRENT_PROTOCOL_DIAGNOSTIC_ONLY"
+    assert audit["diagnostic_only"] is True
     assert audit["formal_launch_authority"] is False
     assert audit["iq_payload_materialized"] is False
 
@@ -602,7 +607,7 @@ def test_extra_member_and_extra_root_are_rejected(
 def test_query_npz_forbids_truth_role_and_quota_members(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch, forbidden: str
 ) -> None:
-    root, seal, digest, _manifest = _package(
+    root, seal, digest, manifest = _package(
         tmp_path, monkeypatch, profile=APPLY_ONLY
     )
     query = root / f"query_{FORMAL_LEO_WEAK_SCENARIOS[0]}.npz"
@@ -613,6 +618,15 @@ def test_query_npz_forbids_truth_role_and_quota_members(
     with query.open("xb") as handle:
         np.savez(handle, **payload)
     assert forbidden not in QUERY_NPZ_MEMBERS
+    descriptor = next(
+        dict(item)
+        for item in manifest["members"]
+        if item["kind"] == f"query:{FORMAL_LEO_WEAK_SCENARIOS[0]}"
+    )
+    descriptor["sha256"] = sha256_file(query)
+    descriptor["size_bytes"] = query.stat().st_size
+    with pytest.raises(PredictorPackageError, match="NPZ member allowlist mismatch"):
+        somph_bundle._inspect_iq_member(root, descriptor)
     with pytest.raises(PredictorPackageError, match="digest mismatch|allowlist"):
         preflight_somph_predictor_bundle(
             root, detached_seal_path=seal, expected_seal_sha256=digest
@@ -813,10 +827,135 @@ def test_exact_npz_member_constants_have_no_query_truth_surface() -> None:
     )
 
 
-def _formal_authority_payloads(*, receiver: str = "20-1") -> tuple[dict, dict, dict]:
+def _control_root_manifest(*, profile: str, k_shot: int) -> dict:
+    class_count = 2
+    return {
+        "profile": profile,
+        "registration_state": "before",
+        "registered_class_count": class_count,
+        "registered_classes": [
+            {"class_index": index, "class_handle": _token("cls_", index + 1)}
+            for index in range(class_count)
+        ],
+        "k_shot": k_shot,
+    }
+
+
+def _validated_control_provenance(
+    *, profile: str, rows_by_scenario: dict[str, int]
+) -> dict[str, dict[str, dict]]:
+    prefix = "sid_" if profile == ENROLLMENT_ONLY else "qid_"
+    samples = []
+    for scenario_index, scenario in enumerate(FORMAL_LEO_WEAK_SCENARIOS):
+        for row_index in range(rows_by_scenario[scenario]):
+            unique_index = scenario_index * 1000 + row_index + 1
+            samples.append(
+                {
+                    "sample_token": _token(prefix, unique_index),
+                    "scenario": scenario,
+                    "overlay_token": _token("oid_", 10000 + unique_index),
+                    "satellite_seed": 20000 + unique_index,
+                    "post_channel_iq_sha256": f"{unique_index:064x}",
+                    "source_leo_cache_sha256": "a" * 64,
+                    "source_leo_provenance_sha256": "b" * 64,
+                }
+            )
+    return somph_bundle._validate_provenance(
+        {
+            "schema": SOMPH_OVERLAY_PROVENANCE_SCHEMA,
+            "profile": profile,
+            "receiver": "20-1",
+            "seed": 713101,
+            "samples": samples,
+        },
+        profile=profile,
+        receiver="20-1",
+        seed=713101,
+    )
+
+
+def test_apply_control_roots_use_actual_nonempty_rows_not_k_shot() -> None:
+    row_counts = dict(zip(FORMAL_LEO_WEAK_SCENARIOS, (1, 3, 7)))
+    provenance = _validated_control_provenance(
+        profile=APPLY_ONLY,
+        rows_by_scenario=row_counts,
+    )
+    roots = [
+        somph_bundle._package_control_roots(
+            _control_root_manifest(profile=APPLY_ONLY, k_shot=k_shot),
+            provenance,
+            new_tx_ids=[],
+        )
+        for k_shot in (1, 5, 10, 20)
+    ]
+    assert roots[1:] == [roots[0], roots[0], roots[0]]
+    assert [len(provenance[scenario]) for scenario in FORMAL_LEO_WEAK_SCENARIOS] == [
+        1,
+        3,
+        7,
+    ]
+
+    missing_scene_rows = dict(provenance)
+    missing_scene_rows[FORMAL_LEO_WEAK_SCENARIOS[-1]] = {}
+    with pytest.raises(PredictorPackageError, match="non-empty scenario"):
+        somph_bundle._package_control_roots(
+            _control_root_manifest(profile=APPLY_ONLY, k_shot=5),
+            missing_scene_rows,
+            new_tx_ids=[],
+        )
+
+
+@pytest.mark.parametrize("row_delta", [-1, 1])
+def test_enrollment_control_roots_reject_one_row_short_or_long(
+    row_delta: int,
+) -> None:
+    expected_rows = 2 * 5
+    provenance = _validated_control_provenance(
+        profile=ENROLLMENT_ONLY,
+        rows_by_scenario={
+            scenario: expected_rows + row_delta
+            for scenario in FORMAL_LEO_WEAK_SCENARIOS
+        },
+    )
+    with pytest.raises(PredictorPackageError, match="enrollment.*exact-K"):
+        somph_bundle._package_control_roots(
+            _control_root_manifest(profile=ENROLLMENT_ONLY, k_shot=5),
+            provenance,
+            new_tx_ids=[],
+        )
+
+
+def test_package_control_roots_never_opens_or_materializes_iq(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    provenance = _validated_control_provenance(
+        profile=APPLY_ONLY,
+        rows_by_scenario={
+            scenario: index + 1
+            for index, scenario in enumerate(FORMAL_LEO_WEAK_SCENARIOS)
+        },
+    )
+
+    def forbidden_iq_open(*_args, **_kwargs):
+        raise AssertionError("_package_control_roots must not open IQ")
+
+    monkeypatch.setattr(np, "load", forbidden_iq_open)
+    monkeypatch.setattr(Path, "open", forbidden_iq_open)
+    roots = somph_bundle._package_control_roots(
+        _control_root_manifest(profile=APPLY_ONLY, k_shot=20),
+        provenance,
+        new_tx_ids=[],
+    )
+    assert roots["package_sample_assignment_sha256"]
+
+
+def _path_free_authority_roots(*, receiver: str = "20-1") -> dict:
     old_tx_ids = list(somph_bundle.OLD_TX_IDS)
     new_tx_ids = list(somph_bundle.NEW_TX_IDS[:5])
-    lock = {
+    return {
+        "authority_commit_sha256": "8" * 64,
+        "authority_lock_sha256": "7" * 64,
+        "authority_attestation_sha256": "9" * 64,
         "receiver": receiver,
         "seed": 713101,
         "cache_scope": "stage2_registered",
@@ -825,8 +964,12 @@ def _formal_authority_payloads(*, receiver: str = "20-1") -> tuple[dict, dict, d
         "cache_sha256_by_scenario": {
             scenario: "a" * 64 for scenario in FORMAL_LEO_WEAK_SCENARIOS
         },
+        "channel_config_sha256_by_scenario": {
+            scenario: "e" * 64 for scenario in FORMAL_LEO_WEAK_SCENARIOS
+        },
+        "structural_receipt_sha256": "b" * 64,
         "physical_sample_scenario_assignment_policy": (
-            somph_bundle.lineage_authority.PHYSICAL_SAMPLE_SCENARIO_ASSIGNMENT_POLICY
+            somph_bundle.runtime_trust.PHYSICAL_SAMPLE_SCENARIO_ASSIGNMENT_POLICY
         ),
         "physical_sample_ids_sha256_by_scenario": {
             scenario: "1" * 64 for scenario in FORMAL_LEO_WEAK_SCENARIOS
@@ -841,38 +984,9 @@ def _formal_authority_payloads(*, receiver: str = "20-1") -> tuple[dict, dict, d
             scenario: "3" * 64 for scenario in FORMAL_LEO_WEAK_SCENARIOS
         },
         "cache_role_inputs_root_sha256": "5" * 64,
-        "datasets": [
-            {
-                "role": "target_old",
-                "path": "E:/sealed/offline/ManySig.pkl",
-                "sha256": "6" * 64,
-                "size_bytes": 1,
-                "tx_ids": old_tx_ids,
-            },
-            {
-                "role": "target_new",
-                "path": "E:/sealed/offline/ManyTx.pkl",
-                "sha256": "7" * 64,
-                "size_bytes": 1,
-                "tx_ids": new_tx_ids,
-            },
-        ],
-        **somph_bundle.lineage_authority.PHASE2_SINGLE_OBSERVATION_CONTRACT,
-    }
-    attestation = {
-        "structural_receipt_sha256": "b" * 64,
         "dataset_authority_root_sha256": "6" * 64,
+        **somph_bundle.runtime_trust.PHASE2_SINGLE_OBSERVATION_CONTRACT,
     }
-    commit = {
-        "authority_lock_sha256": "7" * 64,
-        "members": [
-            {
-                "name": somph_bundle.lineage_authority.AUTHORITY_ATTESTATION_NAME,
-                "sha256": "9" * 64,
-            }
-        ],
-    }
-    return lock, attestation, commit
 
 
 def _formal_policy_authorization(
@@ -880,10 +994,7 @@ def _formal_policy_authorization(
     manifest: dict,
     seal: dict,
     expected_seal_sha256: str,
-    expected_commit_sha256: str,
-    lock: dict,
-    attestation: dict,
-    commit: dict,
+    authority_roots: dict,
     policy_sha256: str,
     code_closure_sha256: str,
     package_control_roots: dict,
@@ -892,7 +1003,7 @@ def _formal_policy_authorization(
         "schema": somph_bundle.SOMPH_FORMAL_POLICY_AUTHORIZATION_SCHEMA,
         "status": somph_bundle.SOMPH_FORMAL_POLICY_AUTHORIZATION_STATUS,
         "formal_launch_authority": True,
-        "formal_metric_claim_allowed": True,
+        "formal_metric_claim_allowed": False,
         "package_root_sha256": manifest["package_root_sha256"],
         "package_detached_seal_sha256": expected_seal_sha256,
         "artifact_member_allowlist_sha256": seal[
@@ -900,38 +1011,76 @@ def _formal_policy_authorization(
         ],
         "manifest_sha256": seal["manifest_sha256"],
         "overlay_provenance_sha256": manifest["overlay_provenance_sha256"],
-        "authority_commit_sha256": expected_commit_sha256,
-        "authority_lock_sha256": commit["authority_lock_sha256"],
-        "authority_attestation_sha256": "9" * 64,
+        "authority_commit_sha256": authority_roots[
+            "authority_commit_sha256"
+        ],
+        "authority_lock_sha256": authority_roots["authority_lock_sha256"],
+        "authority_attestation_sha256": authority_roots[
+            "authority_attestation_sha256"
+        ],
         "receiver": manifest["receiver"],
         "seed": manifest["seed"],
         "stage": manifest["stage"],
         "registration_state": manifest["registration_state"],
         "k_shot": manifest["k_shot"],
         "cache_scope": "stage2_registered",
-        "old_tx_ids": lock["old_tx_ids"],
-        "new_tx_ids": lock["new_tx_ids"],
-        "dataset_authority_root_sha256": attestation[
+        "old_tx_ids": authority_roots["old_tx_ids"],
+        "new_tx_ids": authority_roots["new_tx_ids"],
+        "cache_sha256_by_scenario": authority_roots[
+            "cache_sha256_by_scenario"
+        ],
+        "channel_config_sha256_by_scenario": authority_roots[
+            "channel_config_sha256_by_scenario"
+        ],
+        "structural_receipt_sha256": authority_roots[
+            "structural_receipt_sha256"
+        ],
+        "dataset_authority_root_sha256": authority_roots[
             "dataset_authority_root_sha256"
         ],
-        "cache_role_inputs_root_sha256": lock[
+        "cache_role_inputs_root_sha256": authority_roots[
             "cache_role_inputs_root_sha256"
         ],
-        "physical_sample_ids_sha256_by_scenario": lock[
+        "physical_sample_ids_sha256_by_scenario": authority_roots[
             "physical_sample_ids_sha256_by_scenario"
         ],
-        "physical_sample_scenario_assignment_sha256": lock[
+        "physical_sample_scenario_assignment_sha256": authority_roots[
             "physical_sample_scenario_assignment_sha256"
         ],
-        "post_channel_iq_sha256_root_by_scenario": lock[
+        "post_channel_iq_sha256_root_by_scenario": authority_roots[
             "post_channel_iq_sha256_root_by_scenario"
         ],
-        "overlay_ids_sha256_by_scenario": lock[
+        "overlay_ids_sha256_by_scenario": authority_roots[
             "overlay_ids_sha256_by_scenario"
         ],
         "preflight_code_sha256": sha256_file(Path(somph_bundle.__file__)),
         "formal_policy_sha256": policy_sha256,
         "code_closure_sha256": code_closure_sha256,
+        "physical_sample_scenario_assignment_policy": authority_roots[
+            "physical_sample_scenario_assignment_policy"
+        ],
+        "cross_scenario_physical_disjointness_audit": authority_roots[
+            "cross_scenario_physical_disjointness_audit"
+        ],
+        "single_observation_contract_audit": authority_roots[
+            "single_observation_contract_audit"
+        ],
+        "selected_physical_sample_sha256_by_scenario": {
+            scenario: f"{index + 6:x}" * 64
+            for index, scenario in enumerate(FORMAL_LEO_WEAK_SCENARIOS)
+        },
+        "selected_overlay_sha256_by_scenario": {
+            scenario: f"{index + 9:x}" * 64
+            for index, scenario in enumerate(FORMAL_LEO_WEAK_SCENARIOS)
+        },
+        "selected_membership_assignment_sha256": "c" * 64,
+        "support_query_disjointness_status": (
+            somph_bundle.SUPPORT_QUERY_DISJOINTNESS_STATUS
+        ),
+        **{
+            key: authority_roots[key]
+            for key in somph_bundle.runtime_trust.PHASE2_SINGLE_OBSERVATION_CONTRACT
+        },
         **package_control_roots,
     }
 
@@ -947,13 +1096,11 @@ def _formal_policy() -> dict:
             for count in somph_bundle.FORMAL_NEW_CLASS_COUNTS
         ],
         "cache_scope": "stage2_registered",
-        "old_dataset_basename": "ManySig.pkl",
-        "new_dataset_basename": "ManyTx.pkl",
         "physical_sample_scenario_assignment_policy": (
-            somph_bundle.lineage_authority.PHYSICAL_SAMPLE_SCENARIO_ASSIGNMENT_POLICY
+            somph_bundle.runtime_trust.PHYSICAL_SAMPLE_SCENARIO_ASSIGNMENT_POLICY
         ),
         "single_observation_contract": (
-            somph_bundle.lineage_authority.PHASE2_SINGLE_OBSERVATION_CONTRACT
+            somph_bundle.runtime_trust.PHASE2_SINGLE_OBSERVATION_CONTRACT
         ),
         "required_code_closure_members": list(
             somph_bundle.CODE_CLOSURE_LOGICAL_MEMBERS
@@ -970,9 +1117,9 @@ def _test_policy_key_material() -> tuple[bytes, int, bytes]:
         + bytes([(hashed[31] & 63) | 64]),
         "little",
     )
-    public_key = somph_bundle.lineage_authority._ed_encode(
-        somph_bundle.lineage_authority._ed_scalar_mult(
-            somph_bundle.lineage_authority._ED_B, scalar
+    public_key = somph_bundle.runtime_trust._ed_encode(
+        somph_bundle.runtime_trust._ed_scalar_mult(
+            somph_bundle.runtime_trust._ED_B, scalar
         )
     )
     return hashed, scalar, public_key
@@ -983,30 +1130,60 @@ def _signed_policy_envelope(payload: dict) -> tuple[dict, bytes]:
     envelope = {
         "schema": somph_bundle.SOMPH_SIGNED_POLICY_ENVELOPE_SCHEMA,
         "domain": somph_bundle.SOMPH_SIGNED_POLICY_ENVELOPE_DOMAIN,
-        "issuer": somph_bundle.lineage_authority.PINNED_AUTHORITY_ISSUER,
-        "key_id": somph_bundle.lineage_authority.PINNED_AUTHORITY_KEY_ID,
+        "issuer": somph_bundle.runtime_trust.PINNED_AUTHORITY_ISSUER,
+        "key_id": somph_bundle.runtime_trust.PINNED_AUTHORITY_KEY_ID,
         **payload,
         "signature_ed25519_hex": "",
     }
     message = somph_bundle._policy_signature_message(envelope)
     nonce = int.from_bytes(
         hashlib.sha512(hashed[32:] + message).digest(), "little"
-    ) % somph_bundle.lineage_authority._ED_L
-    encoded_r = somph_bundle.lineage_authority._ed_encode(
-        somph_bundle.lineage_authority._ed_scalar_mult(
-            somph_bundle.lineage_authority._ED_B, nonce
+    ) % somph_bundle.runtime_trust._ED_L
+    encoded_r = somph_bundle.runtime_trust._ed_encode(
+        somph_bundle.runtime_trust._ed_scalar_mult(
+            somph_bundle.runtime_trust._ED_B, nonce
         )
     )
     challenge = int.from_bytes(
         hashlib.sha512(encoded_r + public_key + message).digest(), "little"
-    ) % somph_bundle.lineage_authority._ED_L
+    ) % somph_bundle.runtime_trust._ED_L
     signature_scalar = (
         nonce + challenge * scalar
-    ) % somph_bundle.lineage_authority._ED_L
+    ) % somph_bundle.runtime_trust._ED_L
     envelope["signature_ed25519_hex"] = (
         encoded_r + signature_scalar.to_bytes(32, "little")
     ).hex()
     return envelope, public_key
+
+
+def _synthetic_policy_verifier(public_key: bytes):
+    expected_key_sha256 = hashlib.sha256(public_key).hexdigest()
+
+    def verify(envelope: dict, expected: dict) -> None:
+        if set(envelope) != somph_bundle.SIGNED_POLICY_ENVELOPE_KEYS:
+            raise PredictorPackageError("synthetic policy envelope schema drift")
+        pinned = {
+            "schema": somph_bundle.SOMPH_SIGNED_POLICY_ENVELOPE_SCHEMA,
+            "domain": somph_bundle.SOMPH_SIGNED_POLICY_ENVELOPE_DOMAIN,
+            "issuer": somph_bundle.runtime_trust.PINNED_AUTHORITY_ISSUER,
+            "key_id": somph_bundle.runtime_trust.PINNED_AUTHORITY_KEY_ID,
+            **expected,
+        }
+        if any(envelope.get(key) != value for key, value in pinned.items()):
+            raise PredictorPackageError("synthetic policy envelope binding drift")
+        if hashlib.sha256(public_key).hexdigest() != expected_key_sha256:
+            raise PredictorPackageError("synthetic public key drift")
+        try:
+            signature = bytes.fromhex(str(envelope["signature_ed25519_hex"]))
+            somph_bundle.runtime_trust.verify_ed25519(
+                public_key,
+                somph_bundle._policy_signature_message(envelope),
+                signature,
+            )
+        except (ValueError, KeyError) as exc:
+            raise PredictorPackageError("synthetic policy signature invalid") from exc
+
+    return verify
 
 
 def _policy_inputs(
@@ -1017,10 +1194,7 @@ def _policy_inputs(
     seal_path: Path,
     seal_sha: str,
     manifest: dict,
-    lock: dict,
-    attestation: dict,
-    commit: dict,
-    expected_commit_sha: str,
+    authority_roots: dict,
 ) -> dict:
     policy_path = tmp_path / "formal_policy.json"
     _write_json(policy_path, _formal_policy())
@@ -1036,17 +1210,14 @@ def _policy_inputs(
         seed=manifest["seed"],
     )
     control_roots = somph_bundle._package_control_roots(
-        manifest, provenance, new_tx_ids=lock["new_tx_ids"]
+        manifest, provenance, new_tx_ids=authority_roots["new_tx_ids"]
     )
     seal = json.loads(seal_path.read_text(encoding="utf-8"))
     authorization = _formal_policy_authorization(
         manifest=manifest,
         seal=seal,
         expected_seal_sha256=seal_sha,
-        expected_commit_sha256=expected_commit_sha,
-        lock=lock,
-        attestation=attestation,
-        commit=commit,
+        authority_roots=authority_roots,
         policy_sha256=policy_sha,
         code_closure_sha256=code_closure_sha,
         package_control_roots=control_roots,
@@ -1061,7 +1232,9 @@ def _policy_inputs(
             "formal_policy_sha256": policy_sha,
             "package_root_sha256": manifest["package_root_sha256"],
             "package_detached_seal_sha256": seal_sha,
-            "authority_commit_sha256": expected_commit_sha,
+            "authority_commit_sha256": authority_roots[
+                "authority_commit_sha256"
+            ],
             "receiver": manifest["receiver"],
             "seed": manifest["seed"],
             "stage": manifest["stage"],
@@ -1072,10 +1245,19 @@ def _policy_inputs(
     )
     envelope_path = tmp_path / "signed_policy_envelope.json"
     _write_json(envelope_path, envelope)
+    synthetic_verifier = _synthetic_policy_verifier(public_key)
+
+    def synthetic_preflight(package_root: str | Path, **kwargs):
+        return somph_bundle._preflight_somph_predictor_bundle_with_authority_impl(
+            package_root,
+            _pinned_policy_verifier=synthetic_verifier,
+            **kwargs,
+        )
+
     monkeypatch.setattr(
         somph_bundle,
         "preflight_somph_predictor_bundle_with_authority",
-        somph_bundle._make_test_authority_preflight(public_key),
+        synthetic_preflight,
     )
     return {
         "formal_policy_path": policy_path,
@@ -1099,8 +1281,7 @@ def test_authority_preflight_passes_without_opening_iq(
         class_count=6,
         k_shot=10,
     )
-    lock, attestation, commit = _formal_authority_payloads()
-    expected_commit_sha = "8" * 64
+    authority_roots = _path_free_authority_roots()
     policy_inputs = _policy_inputs(
         tmp_path,
         monkeypatch,
@@ -1108,16 +1289,10 @@ def test_authority_preflight_passes_without_opening_iq(
         seal_path=seal_path,
         seal_sha=seal_sha,
         manifest=manifest,
-        lock=lock,
-        attestation=attestation,
-        commit=commit,
-        expected_commit_sha=expected_commit_sha,
+        authority_roots=authority_roots,
     )
-    monkeypatch.setattr(
-        somph_bundle.lineage_authority,
-        "verify_somph_lineage_authority_bundle",
-        lambda *_args, **_kwargs: (lock, attestation, commit),
-    )
+    assert not hasattr(somph_bundle, "lineage_authority")
+    assert not hasattr(somph_bundle, "leo_weak_cache")
     iq_open_calls = {"count": 0}
 
     def forbidden_iq_open(*_args, **_kwargs):
@@ -1135,8 +1310,6 @@ def test_authority_preflight_passes_without_opening_iq(
             root,
             detached_seal_path=seal_path,
             expected_seal_sha256=seal_sha,
-            authority_bundle_root=tmp_path / "authority_bundle",
-            expected_authority_commit_sha256=expected_commit_sha,
             **policy_inputs,
         )
     )
@@ -1147,11 +1320,264 @@ def test_authority_preflight_passes_without_opening_iq(
     assert audit["iq_archive_opened"] is False
     assert audit["np_load_invoked"] is False
     assert audit["iq_payload_materialized"] is False
+    assert audit["signed_path_free_runtime_authorization_verified"] is True
+    assert audit["phase2_clean_dataset_reachable"] is False
+    assert audit["phase2_clean_cache_reachable"] is False
+    assert audit["phase2_clean_control_flow_reachable"] is False
+    authorization = json.loads(
+        Path(policy_inputs["formal_policy_authorization_path"]).read_text(
+            encoding="utf-8"
+        )
+    )
+    assert authorization["formal_launch_authority"] is True
+    assert authorization["formal_metric_claim_allowed"] is False
+    assert (
+        authorization["support_query_disjointness_status"]
+        == somph_bundle.SUPPORT_QUERY_DISJOINTNESS_STATUS
+    )
+    for field in (
+        "selected_physical_sample_sha256_by_scenario",
+        "selected_overlay_sha256_by_scenario",
+        "selected_membership_assignment_sha256",
+        "support_query_disjointness_status",
+    ):
+        assert audit[field] == authorization[field]
+    assert "package_physical_sample_ids_sha256_by_scenario" not in authorization
+    assert "package_physical_sample_ids_sha256_by_scenario" not in audit
+    assert "package_support_token_sha256_by_scenario" in authorization
     assert iq_open_calls["count"] == 0
     assert not any(
         item["relative_path"].endswith(".npz")
         for item in audit["opened_members"]
     )
+
+
+def test_runtime_authority_api_v1_arguments_fail_closed() -> None:
+    signature = inspect.signature(
+        somph_bundle.preflight_somph_predictor_bundle_with_authority
+    )
+    assert "authority_bundle_root" not in signature.parameters
+    assert "expected_authority_commit_sha256" not in signature.parameters
+    with pytest.raises(TypeError):
+        somph_bundle.preflight_somph_predictor_bundle_with_authority(
+            "unused",
+            detached_seal_path="unused",
+            expected_seal_sha256="0" * 64,
+            authority_bundle_root="forbidden",
+            expected_authority_commit_sha256="1" * 64,
+            formal_policy_path="unused",
+            formal_policy_authorization_path="unused",
+            signed_policy_authorization_envelope_path="unused",
+            expected_signed_policy_authorization_envelope_sha256="2" * 64,
+        )
+
+
+@pytest.mark.parametrize(
+    "drift",
+    (
+        "missing_selected_physical",
+        "selected_physical_scene_missing",
+        "selected_overlay_not_sha",
+        "selected_assignment_not_sha",
+        "metric_claim_true",
+        "query_disjointness_claim",
+        "legacy_package_physical_key",
+    ),
+)
+def test_support_only_authorization_exact_membership_schema_fails_closed(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    drift: str,
+) -> None:
+    root, seal_path, seal_sha, manifest = _package(
+        tmp_path,
+        monkeypatch,
+        profile=ENROLLMENT_ONLY,
+        stage="stage2b",
+        registration_state="before",
+        class_count=6,
+        k_shot=10,
+    )
+    policy_inputs = _policy_inputs(
+        tmp_path,
+        monkeypatch,
+        root=root,
+        seal_path=seal_path,
+        seal_sha=seal_sha,
+        manifest=manifest,
+        authority_roots=_path_free_authority_roots(),
+    )
+    path = Path(policy_inputs["formal_policy_authorization_path"])
+    authorization = json.loads(path.read_text(encoding="utf-8"))
+    if drift == "missing_selected_physical":
+        del authorization["selected_physical_sample_sha256_by_scenario"]
+    elif drift == "selected_physical_scene_missing":
+        del authorization["selected_physical_sample_sha256_by_scenario"][
+            FORMAL_LEO_WEAK_SCENARIOS[-1]
+        ]
+    elif drift == "selected_overlay_not_sha":
+        authorization["selected_overlay_sha256_by_scenario"][
+            FORMAL_LEO_WEAK_SCENARIOS[0]
+        ] = "not-a-sha"
+    elif drift == "selected_assignment_not_sha":
+        authorization["selected_membership_assignment_sha256"] = "not-a-sha"
+    elif drift == "metric_claim_true":
+        authorization["formal_metric_claim_allowed"] = True
+    elif drift == "query_disjointness_claim":
+        authorization["support_query_disjointness_status"] = "PASS"
+    else:
+        authorization["package_physical_sample_ids_sha256_by_scenario"] = {
+            scenario: "d" * 64 for scenario in FORMAL_LEO_WEAK_SCENARIOS
+        }
+    with pytest.raises(PredictorPackageError):
+        somph_bundle._validate_path_free_authorization_shape(authorization)
+
+
+def test_runtime_code_closure_excludes_offline_and_cache_modules() -> None:
+    assert somph_bundle.CODE_CLOSURE_LOGICAL_MEMBERS == (
+        "somph_predictor_bundle.py",
+        "somph_runtime_trust.py",
+        "stage2_predictor_bundle.py",
+    )
+    assert not hasattr(somph_bundle, "lineage_authority")
+    assert not hasattr(somph_bundle, "leo_weak_cache")
+    assert not hasattr(somph_bundle, "formal_matrix")
+    tree = ast.parse(inspect.getsource(somph_bundle.runtime_trust))
+    imported = {
+        alias.name
+        for node in ast.walk(tree)
+        if isinstance(node, ast.Import)
+        for alias in node.names
+    }
+    imported_from = {
+        node.module
+        for node in ast.walk(tree)
+        if isinstance(node, ast.ImportFrom) and node.module is not None
+    }
+    assert imported == {"hashlib"}
+    assert imported_from == {"__future__"}
+
+
+@pytest.mark.parametrize(
+    "name",
+    [
+        "preflight_somph_predictor_bundle",
+        "load_verified_somph_predictor_bundle",
+        "load_verified_somph_head_capsule",
+    ],
+)
+def test_formal_runtime_unsigned_reader_surfaces_fail_closed(
+    monkeypatch: pytest.MonkeyPatch, name: str
+) -> None:
+    monkeypatch.setattr(
+        somph_bundle,
+        "_preflight",
+        lambda *_args, **_kwargs: pytest.fail("unsigned reader reached package open"),
+    )
+    with pytest.raises(PredictorPackageError, match="diagnostic_bundle_loader"):
+        getattr(somph_bundle, name)(
+            "unused",
+            detached_seal_path="unused",
+            expected_seal_sha256="0" * 64,
+        )
+
+
+@pytest.mark.parametrize(
+    ("validator", "payload"),
+    [
+        (
+            somph_bundle._validate_formal_policy,
+            {**_formal_policy(), "cache_scope": "ManySig.pkl"},
+        ),
+        (
+            somph_bundle._validate_path_free_authorization_shape,
+            {
+                "schema": somph_bundle.SOMPH_FORMAL_POLICY_AUTHORIZATION_SCHEMA,
+                "build_spec": "forbidden",
+            },
+        ),
+    ],
+)
+def test_runtime_policy_inputs_reject_path_raw_build_loader_reachability(
+    validator, payload: dict
+) -> None:
+    with pytest.raises(PredictorPackageError, match="forbidden reachability|forbidden path"):
+        validator(payload)
+
+
+@pytest.mark.parametrize("legacy_surface", ["authorization", "envelope"])
+def test_signed_policy_v1_surfaces_fail_before_iq(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    legacy_surface: str,
+) -> None:
+    root, seal_path, seal_sha, manifest = _package(
+        tmp_path,
+        monkeypatch,
+        profile=ENROLLMENT_ONLY,
+        stage="stage2b",
+        registration_state="before",
+        class_count=6,
+        k_shot=10,
+    )
+    policy_inputs = _policy_inputs(
+        tmp_path,
+        monkeypatch,
+        root=root,
+        seal_path=seal_path,
+        seal_sha=seal_sha,
+        manifest=manifest,
+        authority_roots=_path_free_authority_roots(),
+    )
+    if legacy_surface == "authorization":
+        path = policy_inputs["formal_policy_authorization_path"]
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        payload["schema"] = "cvs.phase2.somph_formal_row_policy_authorization.v1"
+        _write_json(path, payload)
+    else:
+        path = policy_inputs["signed_policy_authorization_envelope_path"]
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        payload["schema"] = (
+            "cvs.phase2.somph_signed_policy_authorization_envelope.v1"
+        )
+        payload["domain"] = "cvs.somph.formal_policy_authorization.ed25519.v1"
+        _write_json(path, payload)
+        policy_inputs["expected_signed_policy_authorization_envelope_sha256"] = (
+            sha256_file(path)
+        )
+    monkeypatch.setattr(
+        somph_bundle,
+        "_inspect_iq_member",
+        lambda *_args, **_kwargs: pytest.fail("legacy v1 failure opened IQ"),
+    )
+    monkeypatch.setattr(
+        somph_bundle.np,
+        "load",
+        lambda *_args, **_kwargs: pytest.fail("legacy v1 failure called np.load"),
+    )
+    with pytest.raises(PredictorPackageError):
+        somph_bundle.preflight_somph_predictor_bundle_with_authority(
+            root,
+            detached_seal_path=seal_path,
+            expected_seal_sha256=seal_sha,
+            **policy_inputs,
+        )
+
+
+@pytest.mark.parametrize(
+    "forbidden_payload",
+    [
+        {"nested": {"build_spec": {"source": "opaque"}}},
+        {"nested": {"raw_member": "E:/sealed/ManySig.pkl"}},
+    ],
+)
+def test_runtime_authorization_recursive_reachability_guard(
+    forbidden_payload: dict,
+) -> None:
+    with pytest.raises(PredictorPackageError, match="forbidden reachability"):
+        somph_bundle._reject_runtime_authorization_reachability(
+            forbidden_payload
+        )
 
 
 def test_authority_preflight_rejects_d8b_without_opening_iq(
@@ -1167,9 +1593,7 @@ def test_authority_preflight_rejects_d8b_without_opening_iq(
         k_shot=10,
         receiver="1-20",
     )
-    lock, attestation, commit = _formal_authority_payloads(receiver="1-20")
-    lock["datasets"][0]["path"] = "E:/sealed/offline/ManyTx.pkl"
-    expected_commit_sha = "8" * 64
+    authority_roots = _path_free_authority_roots(receiver="1-20")
     policy_inputs = _policy_inputs(
         tmp_path,
         monkeypatch,
@@ -1177,15 +1601,7 @@ def test_authority_preflight_rejects_d8b_without_opening_iq(
         seal_path=seal_path,
         seal_sha=seal_sha,
         manifest=manifest,
-        lock=lock,
-        attestation=attestation,
-        commit=commit,
-        expected_commit_sha=expected_commit_sha,
-    )
-    monkeypatch.setattr(
-        somph_bundle.lineage_authority,
-        "verify_somph_lineage_authority_bundle",
-        lambda *_args, **_kwargs: (lock, attestation, commit),
+        authority_roots=authority_roots,
     )
     monkeypatch.setattr(
         somph_bundle,
@@ -1202,13 +1618,11 @@ def test_authority_preflight_rejects_d8b_without_opening_iq(
             root,
             detached_seal_path=seal_path,
             expected_seal_sha256=seal_sha,
-            authority_bundle_root=tmp_path / "authority_bundle",
-            expected_authority_commit_sha256=expected_commit_sha,
             **policy_inputs,
         )
 
 
-def test_authority_preflight_missing_bundle_field_fails_before_iq(
+def test_authority_preflight_missing_signed_root_fails_before_iq(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     root, seal_path, seal_sha, manifest = _package(
@@ -1220,7 +1634,7 @@ def test_authority_preflight_missing_bundle_field_fails_before_iq(
         class_count=6,
         k_shot=10,
     )
-    lock, attestation, commit = _formal_authority_payloads()
+    authority_roots = _path_free_authority_roots()
     policy_inputs = _policy_inputs(
         tmp_path,
         monkeypatch,
@@ -1228,17 +1642,12 @@ def test_authority_preflight_missing_bundle_field_fails_before_iq(
         seal_path=seal_path,
         seal_sha=seal_sha,
         manifest=manifest,
-        lock=lock,
-        attestation=attestation,
-        commit=commit,
-        expected_commit_sha="8" * 64,
+        authority_roots=authority_roots,
     )
-    del attestation["dataset_authority_root_sha256"]
-    monkeypatch.setattr(
-        somph_bundle.lineage_authority,
-        "verify_somph_lineage_authority_bundle",
-        lambda *_args, **_kwargs: (lock, attestation, commit),
-    )
+    authorization_path = policy_inputs["formal_policy_authorization_path"]
+    authorization = json.loads(authorization_path.read_text(encoding="utf-8"))
+    del authorization["dataset_authority_root_sha256"]
+    _write_json(authorization_path, authorization)
     monkeypatch.setattr(
         somph_bundle,
         "_inspect_iq_member",
@@ -1254,15 +1663,19 @@ def test_authority_preflight_missing_bundle_field_fails_before_iq(
             root,
             detached_seal_path=seal_path,
             expected_seal_sha256=seal_sha,
-            authority_bundle_root=tmp_path / "authority_bundle",
-            expected_authority_commit_sha256="8" * 64,
             **policy_inputs,
         )
 
 
 @pytest.mark.parametrize(
     "tamper",
-    ["signature", "actual_policy", "authorization_root", "code_closure"],
+    [
+        "signature",
+        "actual_policy",
+        "authorization_root",
+        "selected_membership",
+        "code_closure",
+    ],
 )
 def test_signed_policy_binding_drift_fails_before_iq(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch, tamper: str
@@ -1276,8 +1689,7 @@ def test_signed_policy_binding_drift_fails_before_iq(
         class_count=6,
         k_shot=10,
     )
-    lock, attestation, commit = _formal_authority_payloads()
-    expected_commit_sha = "8" * 64
+    authority_roots = _path_free_authority_roots()
     policy_inputs = _policy_inputs(
         tmp_path,
         monkeypatch,
@@ -1285,10 +1697,7 @@ def test_signed_policy_binding_drift_fails_before_iq(
         seal_path=seal_path,
         seal_sha=seal_sha,
         manifest=manifest,
-        lock=lock,
-        attestation=attestation,
-        commit=commit,
-        expected_commit_sha=expected_commit_sha,
+        authority_roots=authority_roots,
     )
     if tamper == "signature":
         path = policy_inputs["signed_policy_authorization_envelope_path"]
@@ -1308,6 +1717,11 @@ def test_signed_policy_binding_drift_fails_before_iq(
         payload = json.loads(path.read_text(encoding="utf-8"))
         payload["package_sample_assignment_sha256"] = "0" * 64
         _write_json(path, payload)
+    elif tamper == "selected_membership":
+        path = policy_inputs["formal_policy_authorization_path"]
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        payload["selected_membership_assignment_sha256"] = "0" * 64
+        _write_json(path, payload)
     else:
         members, _closure = somph_bundle._code_closure()
         monkeypatch.setattr(
@@ -1315,11 +1729,6 @@ def test_signed_policy_binding_drift_fails_before_iq(
             "_code_closure",
             lambda: (members, "0" * 64),
         )
-    monkeypatch.setattr(
-        somph_bundle.lineage_authority,
-        "verify_somph_lineage_authority_bundle",
-        lambda *_args, **_kwargs: (lock, attestation, commit),
-    )
     monkeypatch.setattr(
         somph_bundle,
         "_inspect_iq_member",
@@ -1335,8 +1744,76 @@ def test_signed_policy_binding_drift_fails_before_iq(
             root,
             detached_seal_path=seal_path,
             expected_seal_sha256=seal_sha,
-            authority_bundle_root=tmp_path / "authority_bundle",
-            expected_authority_commit_sha256=expected_commit_sha,
+            **policy_inputs,
+        )
+
+
+def test_signed_selected_physical_root_cannot_alias_opaque_support_tokens(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    root, seal_path, seal_sha, manifest = _package(
+        tmp_path,
+        monkeypatch,
+        profile=ENROLLMENT_ONLY,
+        stage="stage2b",
+        registration_state="before",
+        class_count=6,
+        k_shot=10,
+    )
+    policy_inputs = _policy_inputs(
+        tmp_path,
+        monkeypatch,
+        root=root,
+        seal_path=seal_path,
+        seal_sha=seal_sha,
+        manifest=manifest,
+        authority_roots=_path_free_authority_roots(),
+    )
+    authorization_path = Path(
+        policy_inputs["formal_policy_authorization_path"]
+    )
+    authorization = json.loads(authorization_path.read_text(encoding="utf-8"))
+    scenario = FORMAL_LEO_WEAK_SCENARIOS[0]
+    authorization["selected_physical_sample_sha256_by_scenario"][scenario] = (
+        authorization["package_support_token_sha256_by_scenario"][scenario]
+    )
+    _write_json(authorization_path, authorization)
+
+    envelope_path = Path(
+        policy_inputs["signed_policy_authorization_envelope_path"]
+    )
+    old_envelope = json.loads(envelope_path.read_text(encoding="utf-8"))
+    payload_keys = somph_bundle.SIGNED_POLICY_ENVELOPE_KEYS - {
+        "schema",
+        "domain",
+        "issuer",
+        "key_id",
+        "signature_ed25519_hex",
+    }
+    envelope_payload = {key: old_envelope[key] for key in payload_keys}
+    envelope_payload["authorization_canonical_sha256"] = somph_bundle.sha256_bytes(
+        somph_bundle.canonical_json_bytes(authorization)
+    )
+    envelope, _public_key = _signed_policy_envelope(envelope_payload)
+    _write_json(envelope_path, envelope)
+    policy_inputs["expected_signed_policy_authorization_envelope_sha256"] = (
+        sha256_file(envelope_path)
+    )
+    monkeypatch.setattr(
+        somph_bundle,
+        "_inspect_iq_member",
+        lambda *_args, **_kwargs: pytest.fail("opaque root alias opened IQ"),
+    )
+    monkeypatch.setattr(
+        somph_bundle.np,
+        "load",
+        lambda *_args, **_kwargs: pytest.fail("opaque root alias called np.load"),
+    )
+    with pytest.raises(PredictorPackageError, match="opaque tokens"):
+        somph_bundle.preflight_somph_predictor_bundle_with_authority(
+            root,
+            detached_seal_path=seal_path,
+            expected_seal_sha256=seal_sha,
             **policy_inputs,
         )
 
@@ -1353,8 +1830,7 @@ def _preauthorized_enrollment(
         class_count=6,
         k_shot=10,
     )
-    lock, attestation, commit = _formal_authority_payloads()
-    expected_commit_sha = "8" * 64
+    authority_roots = _path_free_authority_roots()
     policy_inputs = _policy_inputs(
         tmp_path,
         monkeypatch,
@@ -1362,61 +1838,20 @@ def _preauthorized_enrollment(
         seal_path=seal_path,
         seal_sha=seal_sha,
         manifest=manifest,
-        lock=lock,
-        attestation=attestation,
-        commit=commit,
-        expected_commit_sha=expected_commit_sha,
-    )
-    monkeypatch.setattr(
-        somph_bundle.lineage_authority,
-        "verify_somph_lineage_authority_bundle",
-        lambda *_args, **_kwargs: (lock, attestation, commit),
+        authority_roots=authority_roots,
     )
     _manifest, seal, preflight = (
         somph_bundle.preflight_somph_predictor_bundle_with_authority(
             root,
             detached_seal_path=seal_path,
             expected_seal_sha256=seal_sha,
-            authority_bundle_root=tmp_path / "authority_bundle",
-            expected_authority_commit_sha256=expected_commit_sha,
             **policy_inputs,
         )
     )
     return root, seal_path, seal_sha, manifest, seal, {
         "preflight": preflight,
         "policy_inputs": policy_inputs,
-        "expected_commit_sha": expected_commit_sha,
     }
-
-
-def test_post_materialization_finalizer_is_the_only_formal_promotion(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
-    root, seal_path, seal_sha, _manifest, _seal, context = (
-        _preauthorized_enrollment(tmp_path, monkeypatch)
-    )
-    preflight = context["preflight"]
-    assert preflight["formal_launch_authority"] is False
-    evidence = somph_bundle.materialize_somph_enrollment_with_authority(
-        root,
-        detached_seal_path=seal_path,
-        expected_seal_sha256=seal_sha,
-        authority_preflight_audit=preflight,
-    )
-    final = somph_bundle.finalize_somph_enrollment_authority_after_materialization(
-        evidence
-    )
-    assert final["status"] == "CURRENT_PROTOCOL_REAL_INPUT_AUDIT_PASS"
-    assert final["formal_launch_authority"] is True
-    assert final["formal_metric_claim_allowed"] is True
-    assert final["iq_payload_materialized"] is True
-    assert final["verified_materialization_evidence_sha256"] == (
-        evidence.evidence_sha256
-    )
-    with pytest.raises(PredictorPackageError, match="fresh token-sealed"):
-        somph_bundle.finalize_somph_enrollment_authority_after_materialization(
-            evidence
-        )
 
 
 def test_ordinary_payload_and_self_constructed_receipt_cannot_promote() -> None:
@@ -1434,141 +1869,63 @@ def test_ordinary_payload_and_self_constructed_receipt_cannot_promote() -> None:
         )
 
 
-@pytest.mark.parametrize("tamper", ["iq", "token", "overlay", "seed"])
-def test_replaced_archive_observation_cannot_issue_evidence(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, tamper: str
+def test_legacy_audit_handoff_materializer_fails_before_iq(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     root, seal_path, seal_sha, _manifest, _seal, context = (
         _preauthorized_enrollment(tmp_path, monkeypatch)
     )
-    preflight = context["preflight"]
-    scenario = FORMAL_LEO_WEAK_SCENARIOS[0]
-    path = root / f"support_{scenario}.npz"
-    with np.load(path, allow_pickle=False) as archive:
-        arrays = {key: np.array(archive[key], copy=True) for key in archive.files}
-    if tamper == "iq":
-        arrays["support_leo_weak_iq"][0, 0, 0] += 1
-        arrays["support_post_channel_iq_sha256"][0] = iq_row_sha256(
-            arrays["support_leo_weak_iq"][0]
-        )
-    elif tamper == "token":
-        arrays["support_tokens"][0] = "sid_" + "f" * 64
-    elif tamper == "overlay":
-        arrays["support_overlay_tokens"][0] = "oid_" + "f" * 64
-    else:
-        arrays["support_satellite_seeds"][0] += 1
-    path.unlink()
-    with path.open("xb") as handle:
-        np.savez(handle, **arrays)
-    with pytest.raises(PredictorPackageError, match="changed after preflight"):
+    monkeypatch.setattr(
+        somph_bundle,
+        "_materialize_iq",
+        lambda *_args, **_kwargs: pytest.fail("legacy audit handoff opened IQ"),
+    )
+    with pytest.raises(PredictorPackageError, match="atomic entry"):
         somph_bundle.materialize_somph_enrollment_with_authority(
             root,
             detached_seal_path=seal_path,
             expected_seal_sha256=seal_sha,
-            authority_preflight_audit=preflight,
+            authority_preflight_audit=context["preflight"],
         )
 
 
-def test_forged_materializer_return_is_rejected_by_preauthorized_roots(
+def test_synthetic_key_cannot_open_atomic_production_iq(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     root, seal_path, seal_sha, _manifest, _seal, context = (
         _preauthorized_enrollment(tmp_path, monkeypatch)
-    )
-    preflight = context["preflight"]
-    real_materialize = somph_bundle._materialize_iq
-
-    def forged_materialize(*args, **kwargs):
-        arrays, embedded = real_materialize(*args, **kwargs)
-        arrays = {key: np.array(value, copy=True) for key, value in arrays.items()}
-        arrays["support_tokens"][0] = "sid_" + "f" * 64
-        return arrays, embedded
-
-    monkeypatch.setattr(somph_bundle, "_materialize_iq", forged_materialize)
-    with pytest.raises(PredictorPackageError, match="provenance|preauthorized roots"):
-        somph_bundle.materialize_somph_enrollment_with_authority(
-            root,
-            detached_seal_path=seal_path,
-            expected_seal_sha256=seal_sha,
-            authority_preflight_audit=preflight,
-        )
-
-
-def test_materialized_evidence_payload_arrays_are_immutable(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
-    root, seal_path, seal_sha, _manifest, _seal, context = (
-        _preauthorized_enrollment(tmp_path, monkeypatch)
-    )
-    evidence = somph_bundle.materialize_somph_enrollment_with_authority(
-        root,
-        detached_seal_path=seal_path,
-        expected_seal_sha256=seal_sha,
-        authority_preflight_audit=context["preflight"],
-    )
-    array = evidence.materialized_payloads[FORMAL_LEO_WEAK_SCENARIOS[0]][
-        "support_leo_weak_iq"
-    ]
-    assert array.flags.writeable is False
-    with pytest.raises(ValueError):
-        array[0, 0, 0] += 1
-
-
-def test_copied_or_unissued_materialized_evidence_cannot_finalize(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
-    root, seal_path, seal_sha, _manifest, _seal, context = (
-        _preauthorized_enrollment(tmp_path, monkeypatch)
-    )
-    evidence = somph_bundle.materialize_somph_enrollment_with_authority(
-        root,
-        detached_seal_path=seal_path,
-        expected_seal_sha256=seal_sha,
-        authority_preflight_audit=context["preflight"],
-    )
-    copied = copy.copy(evidence)
-    with pytest.raises(PredictorPackageError, match="fresh token-sealed"):
-        somph_bundle.finalize_somph_enrollment_authority_after_materialization(
-            copied
-        )
-    unissued = object.__new__(somph_bundle.SomphMaterializedEnrollmentEvidence)
-    with pytest.raises(PredictorPackageError, match="fresh token-sealed"):
-        somph_bundle.finalize_somph_enrollment_authority_after_materialization(
-            unissued
-        )
-    final = somph_bundle.finalize_somph_enrollment_authority_after_materialization(
-        evidence
-    )
-    assert final["formal_launch_authority"] is True
-
-
-def test_production_policy_verifier_ignores_mutated_trust_globals(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
-    production_preflight = somph_bundle.preflight_somph_predictor_bundle_with_authority
-    root, seal_path, seal_sha, _manifest, _seal, context = (
-        _preauthorized_enrollment(tmp_path, monkeypatch)
-    )
-    _hashed, _scalar, test_public_key = _test_policy_key_material()
-    monkeypatch.setattr(
-        somph_bundle.lineage_authority,
-        "PINNED_AUTHORITY_PUBLIC_KEY_HEX",
-        test_public_key.hex(),
     )
     monkeypatch.setattr(
-        somph_bundle.lineage_authority,
-        "PINNED_AUTHORITY_PUBLIC_KEY_SHA256",
-        hashlib.sha256(test_public_key).hexdigest(),
+        somph_bundle,
+        "_materialize_iq",
+        lambda *_args, **_kwargs: pytest.fail("synthetic key opened production IQ"),
     )
     with pytest.raises(PredictorPackageError, match="signed policy authorization"):
-        production_preflight(
+        somph_bundle.materialize_somph_enrollment_with_signed_authority(
             root,
             detached_seal_path=seal_path,
             expected_seal_sha256=seal_sha,
-            authority_bundle_root=tmp_path / "authority_bundle",
-            expected_authority_commit_sha256=context["expected_commit_sha"],
             **context["policy_inputs"],
         )
+
+
+def test_production_module_exports_no_capability_issuer_or_test_factory() -> None:
+    forbidden = (
+        "SomphAuthorityPreflightEvidence",
+        "_issue_somph_authority_preflight_evidence",
+        "_consume_somph_authority_preflight_evidence",
+        "_make_authority_preflight_capability_api",
+        "_make_test_authority_preflight",
+        "_make_test_signed_policy_envelope_verifier",
+    )
+    assert all(not hasattr(somph_bundle, name) for name in forbidden)
+    signature = inspect.signature(
+        somph_bundle.materialize_somph_enrollment_with_signed_authority
+    )
+    assert not (
+        {"authority_preflight_audit", "capability", "public_key", "verifier"}
+        & set(signature.parameters)
+    )
 
 
 def test_package_root_reached_through_parent_symlink_is_rejected(

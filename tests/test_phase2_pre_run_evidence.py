@@ -7,6 +7,7 @@ from pathlib import Path
 import pytest
 
 import cvsrffi.phase2_pre_run_evidence as pre_run
+import cvsrffi.somph_diagnostic_bundle_loader as somph_diag
 import cvsrffi.somph_predictor_bundle as somph_bundle
 from cvsrffi.phase2_runtime_contract import PRE_RUN_RUNTIME_EVIDENCE_REQUIRED_FIELDS
 
@@ -266,7 +267,7 @@ def test_builds_profile_bound_somph_pre_run_evidence(
         },
     )
     monkeypatch.setattr(
-        somph_bundle,
+        somph_diag,
         "preflight_somph_predictor_bundle",
         lambda *_args, **_kwargs: (
             {
@@ -276,7 +277,8 @@ def test_builds_profile_bound_somph_pre_run_evidence(
             {"artifact_member_allowlist_sha256": "3" * 64},
             {
                 "schema": "test.somph_preopen",
-                "status": "STRUCTURAL_SELF_CONSISTENCY_PASS",
+                "status": "UNVERIFIED_UNDER_CURRENT_PROTOCOL_DIAGNOSTIC_ONLY",
+                "diagnostic_only": True,
             },
         ),
     )

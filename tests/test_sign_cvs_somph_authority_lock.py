@@ -11,6 +11,7 @@ from pathlib import Path
 import pytest
 
 from cvsrffi import somph_lineage_authority as authority
+from cvsrffi.somph_cache_build_matrix import write_cache_build_matrix
 from scripts import sign_cvs_somph_authority_lock as signer
 
 
@@ -68,6 +69,7 @@ def _test_verifier(public_key: bytes):
         lock_canonical_sha256: str,
         expected_cache_spec_cell_id: str,
         expected_build_receipt_sha256: str | None = None,
+        expected_cache_spec_manifest_sha256: str | None = None,
     ) -> None:
         if set(envelope) != authority._ENVELOPE_KEYS:
             raise authority.SomphLineageAuthorityError(
@@ -85,6 +87,11 @@ def _test_verifier(public_key: bytes):
                 expected_build_receipt_sha256 is not None
                 and envelope["authority_lock_build_receipt_sha256"]
                 != expected_build_receipt_sha256
+            )
+            or (
+                expected_cache_spec_manifest_sha256 is not None
+                and envelope["cache_spec_manifest_sha256"]
+                != expected_cache_spec_manifest_sha256
             )
         ):
             raise authority.SomphLineageAuthorityError(
@@ -197,7 +204,13 @@ def _registered_lock(tmp_path: Path) -> tuple[Path, dict]:
     return path, payload
 
 
-def _production_build_receipt(lock: dict, *, lock_file_sha: str) -> dict:
+def _production_build_receipt(
+    lock: dict,
+    *,
+    lock_file_sha: str,
+    cache_spec_manifest_sha256: str | None = None,
+    cache_spec_manifest_size_bytes: int = 1,
+) -> dict:
     lock_canonical_sha = authority.sha256_bytes(
         authority.canonical_json_bytes(lock)
     )
@@ -212,9 +225,10 @@ def _production_build_receipt(lock: dict, *, lock_file_sha: str) -> dict:
         "schema": signer.lock_builder.AUTHORITY_LOCK_BUILD_RECEIPT_SCHEMA,
         "status": signer.lock_builder.AUTHORITY_LOCK_BUILD_STATUS,
         "cache_spec_manifest_sha256": (
-            signer.lock_builder.FORMAL_CACHE_SPEC_MANIFEST_SHA256
+            cache_spec_manifest_sha256
+            or signer.lock_builder.FORMAL_CACHE_SPEC_MANIFEST_SHA256
         ),
-        "cache_spec_manifest_size_bytes": 1,
+        "cache_spec_manifest_size_bytes": cache_spec_manifest_size_bytes,
         "cache_spec_cell_id": "rx_20_1_seed_713101",
         "required_samples_per_tx": 40,
         "receiver": lock["receiver"],
@@ -587,12 +601,21 @@ def test_production_entry_binds_official_builder_receipt_and_manifest(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
+    monkeypatch.setattr(
+        signer.cache_matrix,
+        "validate_cache_build_manifest",
+        lambda *_args, **_kwargs: None,
+    )
     lock_path, lock = _registered_lock(tmp_path)
     lock_raw = lock_path.read_bytes()
     lock_sha = hashlib.sha256(lock_raw).hexdigest()
     receipt_path = tmp_path / "authority_lock_build_receipt.json"
     manifest_path = tmp_path / "manifest.json"
-    receipt = _production_build_receipt(lock, lock_file_sha=lock_sha)
+    receipt = _production_build_receipt(
+        lock,
+        lock_file_sha=lock_sha,
+        cache_spec_manifest_size_bytes=8,
+    )
     manifest = _production_manifest(lock)
     receipt_sha = "b" * 64
     manifest_sha = signer.lock_builder.FORMAL_CACHE_SPEC_MANIFEST_SHA256
@@ -639,6 +662,102 @@ def test_production_entry_binds_official_builder_receipt_and_manifest(
     }
 
 
+def test_actual_dynamic_manifest_is_exactly_validated_and_bound_for_signing(
+    tmp_path: Path,
+) -> None:
+    matrix_root = tmp_path / "matrix"
+    cache_output_root = "/offline/formal/new-cache-root"
+    manifest = write_cache_build_matrix(
+        output_root=matrix_root,
+        manysig_pkl="/datasets/ManySig.pkl",
+        manytx_pkl="/datasets/ManyTx.pkl",
+        cache_output_root=cache_output_root,
+    )
+    manifest_path = matrix_root / "manifest.json"
+    manifest_raw = manifest_path.read_bytes()
+    manifest_sha = hashlib.sha256(manifest_raw).hexdigest()
+    cell = next(
+        item
+        for item in manifest["cells"]
+        if item["cell_id"] == "rx_20_1_seed_713101"
+    )
+    spec_path = matrix_root / cell["spec_path"]
+
+    lock_path, lock = _registered_lock(tmp_path)
+    lock["build_spec"] = {
+        "path": str(spec_path),
+        "file_sha256": cell["spec_file_sha256"],
+        "canonical_sha256": cell["spec_canonical_sha256"],
+        "size_bytes": cell["spec_size_bytes"],
+    }
+    lock_path.write_text(
+        json.dumps(lock, ensure_ascii=False, sort_keys=True),
+        encoding="utf-8",
+    )
+    lock_file_sha = hashlib.sha256(lock_path.read_bytes()).hexdigest()
+    lock_canonical_sha = authority.sha256_bytes(
+        authority.canonical_json_bytes(lock)
+    )
+    receipt = _production_build_receipt(
+        lock,
+        lock_file_sha=lock_file_sha,
+        cache_spec_manifest_sha256=manifest_sha,
+        cache_spec_manifest_size_bytes=len(manifest_raw),
+    )
+    receipt_path = tmp_path / "dynamic_build_receipt.json"
+    receipt_path.write_text(
+        json.dumps(receipt, ensure_ascii=False, sort_keys=True),
+        encoding="utf-8",
+    )
+
+    binding = signer._validate_production_build_authority(
+        lock,
+        lock_file_sha256=lock_file_sha,
+        lock_canonical_sha256=lock_canonical_sha,
+        lock_build_receipt_path=receipt_path,
+        cache_spec_manifest_path=manifest_path,
+    )
+    assert binding["cache_spec_manifest_sha256"] == manifest_sha
+
+    verified_receipt_sha, dataset_root = (
+        authority._verify_build_authority_binding(
+            lock,
+            lock_file_sha256=lock_file_sha,
+            lock_canonical_sha256=lock_canonical_sha,
+            build_receipt=receipt,
+            build_receipt_sha256=binding[
+                "authority_lock_build_receipt_sha256"
+            ],
+            cache_spec_manifest=manifest,
+            cache_spec_manifest_sha256=manifest_sha,
+            cache_spec_manifest_size_bytes=len(manifest_raw),
+            cache_spec_manifest_root=matrix_root,
+            require_exact_cache_spec_manifest=True,
+        )
+    )
+    assert verified_receipt_sha == binding[
+        "authority_lock_build_receipt_sha256"
+    ]
+    assert dataset_root == receipt["dataset_authority_root_sha256"]
+
+    manifest["cells"][0]["cache_output_root"] = "/wrong/root"
+    manifest_path.write_text(
+        json.dumps(manifest, ensure_ascii=False, sort_keys=True),
+        encoding="utf-8",
+    )
+    with pytest.raises(
+        signer.SomphAuthoritySigningError,
+        match="exact validation failed",
+    ):
+        signer._validate_production_build_authority(
+            lock,
+            lock_file_sha256=lock_file_sha,
+            lock_canonical_sha256=lock_canonical_sha,
+            lock_build_receipt_path=receipt_path,
+            cache_spec_manifest_path=manifest_path,
+        )
+
+
 def test_bundle_validator_rechecks_official_manifest_cell_and_receipt_roots(
     tmp_path: Path,
 ) -> None:
@@ -647,7 +766,10 @@ def test_bundle_validator_rechecks_official_manifest_cell_and_receipt_roots(
     lock_canonical_sha = authority.sha256_bytes(
         authority.canonical_json_bytes(lock)
     )
-    receipt = _production_build_receipt(lock, lock_file_sha=lock_sha)
+    receipt = _production_build_receipt(
+        lock,
+        lock_file_sha=lock_sha,
+    )
     manifest = _production_manifest(lock)
 
     receipt_sha, dataset_root = authority._verify_build_authority_binding(
@@ -690,13 +812,22 @@ def test_production_entry_executes_real_signing_with_preflight_bindings(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
+    monkeypatch.setattr(
+        signer.cache_matrix,
+        "validate_cache_build_manifest",
+        lambda *_args, **_kwargs: None,
+    )
     private_key, public_key = _generate_key(tmp_path, "production")
     lock_path, lock = _registered_lock(tmp_path)
     lock_raw = lock_path.read_bytes()
     lock_sha = hashlib.sha256(lock_raw).hexdigest()
     receipt_path = tmp_path / "authority_lock_build_receipt.json"
     manifest_path = tmp_path / "manifest.json"
-    receipt = _production_build_receipt(lock, lock_file_sha=lock_sha)
+    receipt = _production_build_receipt(
+        lock,
+        lock_file_sha=lock_sha,
+        cache_spec_manifest_size_bytes=8,
+    )
     manifest = _production_manifest(lock)
     receipt_sha = "b" * 64
     manifest_sha = signer.lock_builder.FORMAL_CACHE_SPEC_MANIFEST_SHA256
@@ -763,12 +894,21 @@ def test_production_entry_rejects_nonofficial_manifest(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
+    monkeypatch.setattr(
+        signer.cache_matrix,
+        "validate_cache_build_manifest",
+        lambda *_args, **_kwargs: None,
+    )
     lock_path, lock = _registered_lock(tmp_path)
     lock_raw = lock_path.read_bytes()
     lock_sha = hashlib.sha256(lock_raw).hexdigest()
     receipt_path = tmp_path / "authority_lock_build_receipt.json"
     manifest_path = tmp_path / "manifest.json"
-    receipt = _production_build_receipt(lock, lock_file_sha=lock_sha)
+    receipt = _production_build_receipt(
+        lock,
+        lock_file_sha=lock_sha,
+        cache_spec_manifest_size_bytes=8,
+    )
     manifest = _production_manifest(lock)
 
     def read_external_json(path: str | Path, *, context: str):

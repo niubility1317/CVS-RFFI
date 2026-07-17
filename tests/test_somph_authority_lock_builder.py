@@ -21,8 +21,10 @@ from cvsrffi import somph_lineage_authority as authority  # noqa: E402
 from cvsrffi.somph_authority_lock_builder import (  # noqa: E402
     AUTHORITY_LOCK_BUILD_RECEIPT_NAME,
     SomphAuthorityLockBuildError,
+    _locked_cache_spec_cell,
     _write_somph_authority_lock_package_impl,
 )
+from cvsrffi.somph_cache_build_matrix import write_cache_build_matrix  # noqa: E402
 from cvsrffi.leo_weak_cache import (  # noqa: E402
     canonical_json_sha256,
     ids_sha256,
@@ -244,6 +246,47 @@ def _build(values: dict, output_root: Path) -> dict:
     )
 
 
+def test_production_manifest_validation_accepts_actual_dynamic_sha_and_root(
+    tmp_path: Path,
+) -> None:
+    matrix_root = tmp_path / "formal_matrix"
+    cache_output_root = "/offline/formal/cache-output"
+    manifest = write_cache_build_matrix(
+        output_root=matrix_root,
+        manysig_pkl="/datasets/ManySig.pkl",
+        manytx_pkl="/datasets/ManyTx.pkl",
+        cache_output_root=cache_output_root,
+    )
+    manifest_path = matrix_root / "manifest.json"
+
+    cell, checked, spec_path, manifest_sha, manifest_size = (
+        _locked_cache_spec_cell(
+            manifest_path,
+            cell_id="rx_20_1_seed_713101",
+            require_exact_formal_manifest=True,
+        )
+    )
+
+    assert checked == manifest
+    assert cell["cache_output_root"] == (
+        f"{cache_output_root}/rx_20_1/seed_713101"
+    )
+    assert spec_path == (matrix_root / cell["spec_path"]).absolute()
+    assert manifest_sha == sha256_file(manifest_path)
+    assert manifest_size == manifest_path.stat().st_size
+
+    spec_path.write_text("{}", encoding="utf-8")
+    with pytest.raises(
+        SomphAuthorityLockBuildError,
+        match="exact validation failed",
+    ):
+        _locked_cache_spec_cell(
+            manifest_path,
+            cell_id="rx_20_1_seed_713101",
+            require_exact_formal_manifest=True,
+        )
+
+
 def test_builds_unsigned_real_byte_grounded_lock_and_bundle_accepts_it(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
@@ -280,6 +323,9 @@ def test_builds_unsigned_real_byte_grounded_lock_and_bundle_accepts_it(
     envelope, public_key = authority_fixture._signed_envelope(
         lock,
         build_receipt_sha256=sha256_file(receipt_path),
+        cache_spec_manifest_sha256=sha256_file(
+            values["cache_spec_manifest_path"]
+        ),
     )
     authority_fixture._install_test_envelope_verifier(monkeypatch, public_key)
     authority_fixture._install_test_build_authority_verifier(monkeypatch)

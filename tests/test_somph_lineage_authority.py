@@ -52,6 +52,9 @@ def _signed_envelope(
     lock: dict,
     *,
     build_receipt_sha256: str = "b" * 64,
+    cache_spec_manifest_sha256: str = (
+        "0e1f09ba08afd52b43a1bc9188d319f389c6cb57c9c8e06eee087ac99b3666c5"
+    ),
 ) -> tuple[dict, bytes]:
     seed = secrets.token_bytes(32)
     hashed = hashlib.sha512(seed).digest()
@@ -71,9 +74,7 @@ def _signed_envelope(
         "key_id": "somph-authority-ed25519-20260716",
         "lock_canonical_sha256": sha256_bytes(canonical_json_bytes(lock)),
         "authority_lock_build_receipt_sha256": build_receipt_sha256,
-        "cache_spec_manifest_sha256": (
-            "0e1f09ba08afd52b43a1bc9188d319f389c6cb57c9c8e06eee087ac99b3666c5"
-        ),
+        "cache_spec_manifest_sha256": cache_spec_manifest_sha256,
         "cache_spec_cell_id": (
             f"rx_{str(lock['receiver']).replace('-', '_')}_seed_{lock['seed']}"
         ),
@@ -106,6 +107,7 @@ def _install_test_envelope_verifier(
         lock_canonical_sha256: str,
         expected_cache_spec_cell_id: str,
         expected_build_receipt_sha256: str | None = None,
+        expected_cache_spec_manifest_sha256: str | None = None,
     ) -> None:
         expected = {
             "schema": (
@@ -119,7 +121,8 @@ def _install_test_envelope_verifier(
                 expected_build_receipt_sha256 or "b" * 64
             ),
             "cache_spec_manifest_sha256": (
-                "0e1f09ba08afd52b43a1bc9188d319f389c6cb57c9c8e06eee087ac99b3666c5"
+                expected_cache_spec_manifest_sha256
+                or "0e1f09ba08afd52b43a1bc9188d319f389c6cb57c9c8e06eee087ac99b3666c5"
             ),
             "cache_spec_cell_id": expected_cache_spec_cell_id,
         }
@@ -472,6 +475,7 @@ def _fixture(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> dict:
     envelope, public_key = _signed_envelope(
         lock,
         build_receipt_sha256=build_receipt_sha,
+        cache_spec_manifest_sha256=sha256_file(cache_spec_manifest_path),
     )
     _install_test_envelope_verifier(monkeypatch, public_key)
     _install_test_build_authority_verifier(monkeypatch)
@@ -496,6 +500,9 @@ def _rewrite_lock(kwargs: dict, monkeypatch: pytest.MonkeyPatch) -> None:
         kwargs["lock"],
         build_receipt_sha256=sha256_file(
             kwargs["authority_lock_build_receipt_path"]
+        ),
+        cache_spec_manifest_sha256=sha256_file(
+            kwargs["cache_spec_manifest_path"]
         ),
     )
     _install_test_envelope_verifier(monkeypatch, public_key)
@@ -674,6 +681,9 @@ def test_rejects_self_signed_envelope_from_nonpinned_key(
         kwargs["lock"],
         build_receipt_sha256=sha256_file(
             kwargs["authority_lock_build_receipt_path"]
+        ),
+        cache_spec_manifest_sha256=sha256_file(
+            kwargs["cache_spec_manifest_path"]
         ),
     )
     _write_json(kwargs["signed_authority_envelope_path"], rogue_envelope)

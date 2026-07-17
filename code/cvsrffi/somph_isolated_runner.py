@@ -31,11 +31,13 @@ from cvsrffi.somph_predictor_entry import (
     APPLY_RECEIPT_NAME,
     ENROLLMENT_RECEIPT_NAME,
 )
+from cvsrffi.somph_diagnostic_bundle_loader import (
+    load_verified_somph_head_capsule,
+    preflight_somph_predictor_bundle,
+)
 from cvsrffi.somph_predictor_bundle import (
     APPLY_ONLY,
     ENROLLMENT_ONLY,
-    load_verified_somph_head_capsule,
-    preflight_somph_predictor_bundle,
 )
 from cvsrffi.somph_runtime_request import (
     validate_somph_apply_request,
@@ -110,6 +112,7 @@ def _parse_stdout(text: str, *, profile: str) -> dict[str, Any]:
         "request_sha256",
         "execution_receipt_sha256",
         "formal_launch_authority",
+        "diagnostic_only",
     }
     expected |= (
         {
@@ -129,6 +132,7 @@ def _parse_stdout(text: str, *, profile: str) -> dict[str, Any]:
         set(payload) != expected
         or payload.get("schema") != expected_schema
         or payload["formal_launch_authority"] is not False
+        or payload["diagnostic_only"] is not True
     ):
         raise SomphIsolatedRunnerError("SOMP-H stdout exact trust fields missing")
     for field in (
@@ -219,6 +223,7 @@ def _execution_receipt(
     common = {
         "schema",
         "status",
+        "diagnostic_only",
         "formal_launch_authority",
         "formal_metric_claim_allowed",
         "request_sha256",
@@ -251,6 +256,7 @@ def _execution_receipt(
         set(receipt) != common | specific
         or receipt.get("schema") != expected_schema
         or receipt.get("status") != "LOCAL_PROTOCOL_REPAIR_REQUIRED"
+        or receipt.get("diagnostic_only") is not True
         or receipt.get("formal_launch_authority") is not False
         or receipt.get("formal_metric_claim_allowed") is not False
         or receipt.get("request_sha256") != request_sha256
@@ -584,6 +590,7 @@ def _execute_somph_isolated_impl(
         )
     stdout_receipt = {
         "schema": "cvs.phase2.somph_stdout_receipt.v2",
+        "diagnostic_only": True,
         "status": "VALIDATED_LOCAL_SUBPROCESS_OUTPUT",
         "returncode": int(completed.returncode),
         "request_sha256": request_sha256,
@@ -601,6 +608,7 @@ def _execute_somph_isolated_impl(
     )
     audit = {
         "schema": "cvs.phase2.somph_filesystem_access_audit.v1",
+        "diagnostic_only": True,
         "status": audit_core["status"],
         "control_state": "LOCAL_PROTOCOL_REPAIR_REQUIRED",
         "formal_launch_authority": False,
@@ -634,6 +642,7 @@ def _execute_somph_isolated_impl(
     )
     return {
         "schema": "cvs.phase2.somph_isolated_runner_result.v1",
+        "diagnostic_only": True,
         "status": "LOCAL_PROTOCOL_REPAIR_REQUIRED",
         "formal_launch_authority": False,
         "formal_metric_claim_allowed": False,

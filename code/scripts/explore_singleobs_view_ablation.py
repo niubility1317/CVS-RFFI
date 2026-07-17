@@ -30,10 +30,10 @@ CODE_ROOT = Path(__file__).resolve().parents[1]
 if str(CODE_ROOT) not in sys.path:
     sys.path.insert(0, str(CODE_ROOT))
 
-from cvsrffi.somph_predictor_bundle import (  # noqa: E402
-    FORMAL_LEO_WEAK_SCENARIOS,
+from cvsrffi.somph_diagnostic_bundle_loader import (  # noqa: E402
     load_verified_somph_predictor_bundle,
 )
+from cvsrffi.somph_predictor_bundle import FORMAL_LEO_WEAK_SCENARIOS  # noqa: E402
 from cvsrffi.stage2_diag_cosine_exploration import (  # noqa: E402
     FEATURE_DIM,
     TEMPERATURE,
@@ -938,6 +938,7 @@ def predict_command(args: argparse.Namespace) -> int:
     )
     commit = {
         "schema": "cvs.phase2.singleobs_view_ablation_prediction_commit.v1",
+        "diagnostic_only": True,
         "status": "PREDICTIONS_COMMITTED_BEFORE_TRUTH_JOIN",
         "prediction_manifest_sha256": manifest_sha256,
         "support_selection_sha256": selection_sha256,
@@ -1183,6 +1184,7 @@ def score_command(args: argparse.Namespace) -> int:
     ]
     score_commit = {
         "schema": "cvs.phase2.singleobs_view_ablation_score_commit.v1",
+        "diagnostic_only": True,
         "status": "POST_PREDICTION_ISOLATED_SCORING_COMMITTED",
         "support_selected_variant": selection["selected_variant"],
         "score_summary_sha256": summary_sha256,

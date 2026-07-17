@@ -1,7 +1,7 @@
 """Run D18-CMRAE on sealed strict-K10 enrollment support only.
 
 This executable deliberately has no query, truth, scorer, or formal-evaluation
-input.  It first requires the external authority-aware no-IQ-open preflight,
+input.  It first requires the signed path-free v2 no-IQ-open preflight,
 then reuses the D14 package materializer, binds every fixed received-IQ row to
 the package's overlay provenance, and keeps output claims support-only.
 Candidate selection is the D18 three-scene atomic selector; a failed positive
@@ -34,9 +34,9 @@ for value in (CODE, SCRIPT_DIR):
 
 from cvsrffi.somph_predictor_bundle import (  # noqa: E402
     FORMAL_LEO_WEAK_SCENARIOS,
+    SOMPH_FORMAL_POLICY_AUTHORIZATION_SCHEMA,
     finalize_somph_enrollment_authority_after_materialization,
-    materialize_somph_enrollment_with_authority,
-    preflight_somph_predictor_bundle_with_authority,
+    materialize_somph_enrollment_with_signed_authority,
 )
 from cvsrffi.stage2_cmrae import (  # noqa: E402
     MAX_ADAPTER_STATE_BYTES,
@@ -54,6 +54,10 @@ from cvsrffi.stage2_cmrae import (  # noqa: E402
     select_k10_candidate_three_scene,
     serialize_state_bytes,
 )
+
+
+SUPPORT_QUERY_DISJOINTNESS_STATUS = "SUPPORT_ONLY_NO_QUERY_CLAIM"
+FORMAL_SUPPORT_ADAPTATION_SCOPE = "formal_support_adaptation_state_only"
 from cvsrffi.stage2_predictor_runtime import load_torchscript_backbone_same_fd  # noqa: E402
 from run_d14_support_only_pairwise_fisher_guard import (  # noqa: E402
     _base_feature,
@@ -260,32 +264,6 @@ def _manifest_binding(
         raise D18RunnerError("real new-class registration set required")
 
 
-def _require_pre_iq_open_authority(
-    before_audit: Mapping[str, Any], after_audit: Mapping[str, Any]
-) -> None:
-    required_state = "AUTHORITY_PREFLIGHT_PASS_IQ_OPEN_AUTHORIZED"
-    for registration_state, audit in (
-        ("before", before_audit),
-        ("after", after_audit),
-    ):
-        if (
-            audit.get("iq_payload_materialized") is not False
-            or audit.get("iq_archive_opened") is not False
-            or audit.get("np_load_invoked") is not False
-            or audit.get("iq_open_authorized") is not True
-            or audit.get("formal_launch_authority") is not False
-            or audit.get("formal_metric_claim_allowed") is not False
-            or audit.get("external_authority_lock_verified") is not True
-            or audit.get("status") != required_state
-            or audit.get("control_state") != required_state
-            or audit.get("phase2_protocol_evidence_status") != required_state
-        ):
-            raise D18RunnerError(
-                "IQ-open authority required before IQ materialization: "
-                f"{registration_state}"
-            )
-
-
 def _require_post_materialization_authority(
     before_audit: Mapping[str, Any], after_audit: Mapping[str, Any]
 ) -> None:
@@ -299,8 +277,16 @@ def _require_post_materialization_authority(
             or audit.get("iq_archive_opened") is not True
             or audit.get("np_load_invoked") is not True
             or audit.get("formal_launch_authority") is not True
-            or audit.get("formal_metric_claim_allowed") is not True
-            or audit.get("external_authority_lock_verified") is not True
+            or audit.get("formal_metric_claim_allowed") is not False
+            or audit.get("support_query_disjointness_status")
+            != SUPPORT_QUERY_DISJOINTNESS_STATUS
+            or audit.get("signed_path_free_runtime_authorization_verified")
+            is not True
+            or audit.get("runtime_authorization_schema")
+            != SOMPH_FORMAL_POLICY_AUTHORIZATION_SCHEMA
+            or audit.get("phase2_clean_dataset_reachable") is not False
+            or audit.get("phase2_clean_cache_reachable") is not False
+            or audit.get("phase2_clean_control_flow_reachable") is not False
             or audit.get("status") != required_state
             or audit.get("control_state") != required_state
             or audit.get("phase2_protocol_evidence_status") != required_state
@@ -438,6 +424,9 @@ def _build_k10_selection_authority_anchor(
             before_authority_audit["formal_metric_claim_allowed"]
             and after_authority_audit["formal_metric_claim_allowed"]
         ),
+        "support_query_disjointness_status": SUPPORT_QUERY_DISJOINTNESS_STATUS,
+        "query_opened": False,
+        "performance_claim_allowed": False,
     }
     return {
         "payload": payload,
@@ -520,6 +509,13 @@ def _write_state_roundtrip(path: Path, state: CmraeState) -> dict[str, Any]:
         "candidate_id": state.hyperparameters.candidate_id,
         "registration_generation": state.registration_generation,
         "authority_scope": state.authority_scope,
+        "artifact_scope": FORMAL_SUPPORT_ADAPTATION_SCOPE,
+        "formal_launch_authority": True,
+        "formal_support_adaptation_state": True,
+        "formal_metric_claim_allowed": False,
+        "support_query_disjointness_status": SUPPORT_QUERY_DISJOINTNESS_STATUS,
+        "query_opened": False,
+        "performance_claim_allowed": False,
     }
     commit_sha = _write_json_new(path / "COMMIT", commit)
     if {value.name for value in path.iterdir()} != {"state.npz", "COMMIT"}:
@@ -739,8 +735,6 @@ def run(
     before_root: Path,
     before_seal: Path,
     expected_before_seal_sha256: str,
-    before_authority_bundle_root: Path,
-    expected_before_authority_commit_sha256: str,
     before_formal_policy: Path,
     before_formal_policy_authorization: Path,
     before_signed_policy_authorization_envelope: Path,
@@ -748,8 +742,6 @@ def run(
     after_root: Path,
     after_seal: Path,
     expected_after_seal_sha256: str,
-    after_authority_bundle_root: Path,
-    expected_after_authority_commit_sha256: str,
     after_formal_policy: Path,
     after_formal_policy_authorization: Path,
     after_signed_policy_authorization_envelope: Path,
@@ -768,67 +760,39 @@ def run(
     if output.exists():
         raise D18RunnerError("output path already exists")
 
-    # Authority-aware SOMP-H preflight verifies the external lineage/policy and
-    # package structure with inspect_iq_members=False.  Authority is checked
-    # before D14 is permitted to open, CRC, decompress, or materialize IQ.
-    before_manifest_pre, before_seal_pre, before_authority_preopen = (
-        preflight_somph_predictor_bundle_with_authority(
-            before_root,
-            detached_seal_path=before_seal,
-            expected_seal_sha256=expected_before_seal_sha256,
-            authority_bundle_root=before_authority_bundle_root,
-            expected_authority_commit_sha256=(
-                expected_before_authority_commit_sha256
-            ),
-            formal_policy_path=before_formal_policy,
-            formal_policy_authorization_path=before_formal_policy_authorization,
-            signed_policy_authorization_envelope_path=(
-                before_signed_policy_authorization_envelope
-            ),
-            expected_signed_policy_authorization_envelope_sha256=(
-                expected_before_signed_policy_authorization_envelope_sha256
-            ),
-        )
-    )
-    after_manifest_pre, after_seal_pre, after_authority_preopen = (
-        preflight_somph_predictor_bundle_with_authority(
-            after_root,
-            detached_seal_path=after_seal,
-            expected_seal_sha256=expected_after_seal_sha256,
-            authority_bundle_root=after_authority_bundle_root,
-            expected_authority_commit_sha256=(
-                expected_after_authority_commit_sha256
-            ),
-            formal_policy_path=after_formal_policy,
-            formal_policy_authorization_path=after_formal_policy_authorization,
-            signed_policy_authorization_envelope_path=(
-                after_signed_policy_authorization_envelope
-            ),
-            expected_signed_policy_authorization_envelope_sha256=(
-                expected_after_signed_policy_authorization_envelope_sha256
-            ),
-        )
-    )
-    _require_pre_iq_open_authority(
-        before_authority_preopen, after_authority_preopen
-    )
-
-    before_evidence = materialize_somph_enrollment_with_authority(
+    # Each atomic entry performs the pinned signature preflight internally and
+    # only then opens/materializes IQ.  The runner has no audit/capability
+    # handoff surface and cannot substitute a synthetic verifier.
+    before_evidence = materialize_somph_enrollment_with_signed_authority(
         before_root,
         detached_seal_path=before_seal,
         expected_seal_sha256=expected_before_seal_sha256,
-        authority_preflight_audit=before_authority_preopen,
+        formal_policy_path=before_formal_policy,
+        formal_policy_authorization_path=before_formal_policy_authorization,
+        signed_policy_authorization_envelope_path=(
+            before_signed_policy_authorization_envelope
+        ),
+        expected_signed_policy_authorization_envelope_sha256=(
+            expected_before_signed_policy_authorization_envelope_sha256
+        ),
+    )
+    after_evidence = materialize_somph_enrollment_with_signed_authority(
+        after_root,
+        detached_seal_path=after_seal,
+        expected_seal_sha256=expected_after_seal_sha256,
+        formal_policy_path=after_formal_policy,
+        formal_policy_authorization_path=after_formal_policy_authorization,
+        signed_policy_authorization_envelope_path=(
+            after_signed_policy_authorization_envelope
+        ),
+        expected_signed_policy_authorization_envelope_sha256=(
+            expected_after_signed_policy_authorization_envelope_sha256
+        ),
     )
     before_authority_final = (
         finalize_somph_enrollment_authority_after_materialization(
             before_evidence
         )
-    )
-    after_evidence = materialize_somph_enrollment_with_authority(
-        after_root,
-        detached_seal_path=after_seal,
-        expected_seal_sha256=expected_after_seal_sha256,
-        authority_preflight_audit=after_authority_preopen,
     )
     after_authority_final = (
         finalize_somph_enrollment_authority_after_materialization(
@@ -839,13 +803,6 @@ def run(
     after_payloads = after_evidence.materialized_payloads
     before_manifest = before_evidence.manifest
     after_manifest = after_evidence.manifest
-    if (
-        before_manifest.get("package_root_sha256")
-        != before_manifest_pre.get("package_root_sha256")
-        or after_manifest.get("package_root_sha256")
-        != after_manifest_pre.get("package_root_sha256")
-    ):
-        raise D18RunnerError("preflight/materialized package root drift")
     _require_post_materialization_authority(
         before_authority_final, after_authority_final
     )
@@ -1053,8 +1010,6 @@ def run(
     trace = [
         {
             "phase": "sealed_package_preopen",
-            "authority_pre_iq_before": before_authority_preopen,
-            "authority_pre_iq_after": after_authority_preopen,
             "authority_final_before": before_authority_final,
             "authority_final_after": after_authority_final,
             "materialization_evidence_before_sha256": (
@@ -1064,12 +1019,12 @@ def run(
                 after_evidence.evidence_sha256
             ),
             "before_package_structure": {
-                "manifest": before_manifest_pre,
-                "detached_seal": before_seal_pre,
+                "manifest": before_manifest,
+                "detached_seal_sha256": expected_before_seal_sha256,
             },
             "after_package_structure": {
-                "manifest": after_manifest_pre,
-                "detached_seal": after_seal_pre,
+                "manifest": after_manifest,
+                "detached_seal_sha256": expected_after_seal_sha256,
             },
             "overlay_before": before_overlay_audit,
             "overlay_after": after_overlay_audit,
@@ -1175,19 +1130,23 @@ def run(
         output / "training_log.jsonl", _jsonable(trace)
     )
     status = (
-        "SUPPORT_ONLY_D18_DEVELOPMENT_SELECTED_NO_QUERY_OPEN"
+        "FORMAL_SUPPORT_ADAPTATION_D18_SELECTED_NO_QUERY_NO_METRIC"
         if positive_selected
-        else "SUPPORT_ONLY_D18_DEVELOPMENT_TRUE_Z0_NO_QUERY_OPEN"
+        else "FORMAL_SUPPORT_ADAPTATION_D18_TRUE_Z0_NO_QUERY_NO_METRIC"
     )
     lock_certificate = selection.k10_lock_certificate
     audit = _jsonable(
         {
             "schema": "cvs.phase2.d18_support_only_audit.v1",
             "status": status,
-            "claim_scope": "development_diagnostic_support_only_no_query_claim",
-            "authority": "development_diagnostic_only",
-            "formal_launch_authority": False,
+            "claim_scope": FORMAL_SUPPORT_ADAPTATION_SCOPE,
+            "authority": FORMAL_SUPPORT_ADAPTATION_SCOPE,
+            "formal_launch_authority": True,
+            "formal_support_adaptation_state": True,
             "formal_metric_claim_allowed": False,
+            "support_query_disjointness_status": SUPPORT_QUERY_DISJOINTNESS_STATUS,
+            "query_opened": False,
+            "performance_claim_allowed": False,
             "promotion_ready_for_query": False,
             "receiver": after_manifest["receiver"],
             "seed": int(after_manifest["seed"]),
@@ -1227,8 +1186,6 @@ def run(
                 **code_hashes,
             },
             "preopen_audit": {
-                "authority_pre_iq_before": before_authority_preopen,
-                "authority_pre_iq_after": after_authority_preopen,
                 "authority_final_before": before_authority_final,
                 "authority_final_after": after_authority_final,
                 "materialization_evidence_before_sha256": (
@@ -1238,12 +1195,12 @@ def run(
                     after_evidence.evidence_sha256
                 ),
                 "before_package_structure": {
-                    "manifest": before_manifest_pre,
-                    "detached_seal": before_seal_pre,
+                    "manifest": before_manifest,
+                    "detached_seal_sha256": expected_before_seal_sha256,
                 },
                 "after_package_structure": {
-                    "manifest": after_manifest_pre,
-                    "detached_seal": after_seal_pre,
+                    "manifest": after_manifest,
+                    "detached_seal_sha256": expected_after_seal_sha256,
                 },
                 "before_overlay": before_overlay_audit,
                 "after_overlay": after_overlay_audit,
@@ -1304,12 +1261,12 @@ def run(
             "after_seal_sha256": _sha256_file(after_seal),
             "expected_before_seal_sha256": expected_before_seal_sha256,
             "expected_after_seal_sha256": expected_after_seal_sha256,
-            "expected_before_authority_commit_sha256": (
-                expected_before_authority_commit_sha256
-            ),
-            "expected_after_authority_commit_sha256": (
-                expected_after_authority_commit_sha256
-            ),
+            "before_authority_commit_sha256": before_authority_final[
+                "authority_commit_sha256"
+            ],
+            "after_authority_commit_sha256": after_authority_final[
+                "authority_commit_sha256"
+            ],
             "expected_before_signed_policy_authorization_envelope_sha256": (
                 expected_before_signed_policy_authorization_envelope_sha256
             ),
@@ -1322,7 +1279,7 @@ def run(
     lines = [
         "# D18-CMRAE strict-K10 support-only开发审计",
         "",
-        f"状态：`{status}`。只打开sealed enrollment support，authority保持`development_diagnostic_only`；未打开query、truth或scorer。",
+        f"状态：`{status}`。产物只具有formal support adaptation state权限；未打开query、truth或scorer，不允许formal metric或performance claim。",
         "",
         f"三场景统一candidate：`{selected_id}`；K10 lock certificate SHA：`{lock_certificate.certificate_sha256}`。",
         "",
@@ -1388,8 +1345,12 @@ def run(
     receipt = {
         "schema": "cvs.phase2.d18_support_only_receipt.v1",
         "status": status,
-        "authority": "development_diagnostic_only",
-        "formal_launch_authority": False,
+        "authority": FORMAL_SUPPORT_ADAPTATION_SCOPE,
+        "formal_launch_authority": True,
+        "formal_support_adaptation_state": True,
+        "formal_metric_claim_allowed": False,
+        "support_query_disjointness_status": SUPPORT_QUERY_DISJOINTNESS_STATUS,
+        "performance_claim_allowed": False,
         "promotion_ready_for_query": False,
         "selected_candidate_id": selected_id,
         "support_candidate_gate_pass": positive_selected,
@@ -1403,10 +1364,10 @@ def run(
         "expected_before_seal_sha256": expected_before_seal_sha256,
         "expected_after_seal_sha256": expected_after_seal_sha256,
         "before_authority_commit_sha256": (
-            expected_before_authority_commit_sha256
+            before_authority_final["authority_commit_sha256"]
         ),
         "after_authority_commit_sha256": (
-            expected_after_authority_commit_sha256
+            after_authority_final["authority_commit_sha256"]
         ),
         **code_hashes,
     }
@@ -1419,8 +1380,6 @@ def main() -> int:
     parser.add_argument("--before-root", type=Path, required=True)
     parser.add_argument("--before-seal", type=Path, required=True)
     parser.add_argument("--before-seal-sha256", required=True)
-    parser.add_argument("--before-authority-bundle-root", type=Path, required=True)
-    parser.add_argument("--before-authority-commit-sha256", required=True)
     parser.add_argument("--before-formal-policy", type=Path, required=True)
     parser.add_argument(
         "--before-formal-policy-authorization", type=Path, required=True
@@ -1434,8 +1393,6 @@ def main() -> int:
     parser.add_argument("--after-root", type=Path, required=True)
     parser.add_argument("--after-seal", type=Path, required=True)
     parser.add_argument("--after-seal-sha256", required=True)
-    parser.add_argument("--after-authority-bundle-root", type=Path, required=True)
-    parser.add_argument("--after-authority-commit-sha256", required=True)
     parser.add_argument("--after-formal-policy", type=Path, required=True)
     parser.add_argument(
         "--after-formal-policy-authorization", type=Path, required=True
@@ -1454,10 +1411,6 @@ def main() -> int:
         before_root=args.before_root,
         before_seal=args.before_seal,
         expected_before_seal_sha256=args.before_seal_sha256,
-        before_authority_bundle_root=args.before_authority_bundle_root,
-        expected_before_authority_commit_sha256=(
-            args.before_authority_commit_sha256
-        ),
         before_formal_policy=args.before_formal_policy,
         before_formal_policy_authorization=(
             args.before_formal_policy_authorization
@@ -1471,10 +1424,6 @@ def main() -> int:
         after_root=args.after_root,
         after_seal=args.after_seal,
         expected_after_seal_sha256=args.after_seal_sha256,
-        after_authority_bundle_root=args.after_authority_bundle_root,
-        expected_after_authority_commit_sha256=(
-            args.after_authority_commit_sha256
-        ),
         after_formal_policy=args.after_formal_policy,
         after_formal_policy_authorization=(
             args.after_formal_policy_authorization

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import importlib.util
+import inspect
 import json
 from types import SimpleNamespace
 from pathlib import Path
@@ -11,6 +12,7 @@ import pytest
 
 import cvsrffi.somph_predictor_bundle as somph_bundle
 import cvsrffi.somph_predictor_runtime as somph_runtime
+from cvsrffi import somph_runtime_trust as runtime_trust
 from cvsrffi.somph_predictor_bundle import (
     ENROLLMENT_ONLY,
     SOMPH_SUPPORT_IQ_SCHEMA,
@@ -150,79 +152,84 @@ def test_overlay_member_is_same_fd_hash_checked_before_parse(tmp_path: Path) -> 
         )
 
 
-def test_authority_gate_precedes_any_iq_materialization(
+def test_atomic_authority_failure_precedes_finalizer_and_output(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    calls = {"preflight": 0, "materialize": 0}
+    calls = {"atomic": 0, "finalize": 0}
 
-    def fake_preflight(*args, **kwargs):
-        calls["preflight"] += 1
-        return (
-            {"package_root_sha256": "a" * 64},
-            {},
-            {
-                "iq_payload_materialized": False,
-                "formal_launch_authority": False,
-                "formal_metric_claim_allowed": False,
-                "control_state": "LOCAL_PROTOCOL_REPAIR_REQUIRED",
-            },
+    def rejected_atomic(*_args, **_kwargs):
+        calls["atomic"] += 1
+        raise somph_bundle.PredictorPackageError(
+            "synthetic atomic signed-authority rejection"
         )
 
-    def forbidden_materialize(*args, **kwargs):
-        calls["materialize"] += 1
-        raise AssertionError("IQ materialization was reached before authority")
-
     monkeypatch.setattr(
-        runner, "preflight_somph_predictor_bundle_with_authority", fake_preflight
+        runner,
+        "materialize_somph_enrollment_with_signed_authority",
+        rejected_atomic,
     )
     monkeypatch.setattr(
         runner,
-        "materialize_somph_enrollment_with_authority",
-        forbidden_materialize,
-    )
-    with pytest.raises(runner.D18RunnerError, match="before IQ materialization"):
-        runner.run(
-            before_root=tmp_path / "before" / "enrollment_only",
-            before_seal=tmp_path / "before.seal.json",
-            expected_before_seal_sha256="1" * 64,
-            before_authority_bundle_root=tmp_path / "before_authority",
-            expected_before_authority_commit_sha256="3" * 64,
-            before_formal_policy=tmp_path / "before_policy.json",
-            before_formal_policy_authorization=tmp_path / "before_auth.json",
-            before_signed_policy_authorization_envelope=(
-                tmp_path / "before_envelope.json"
-            ),
-            expected_before_signed_policy_authorization_envelope_sha256="4" * 64,
-            after_root=tmp_path / "after" / "enrollment_only",
-            after_seal=tmp_path / "after.seal.json",
-            expected_after_seal_sha256="2" * 64,
-            after_authority_bundle_root=tmp_path / "after_authority",
-            expected_after_authority_commit_sha256="6" * 64,
-            after_formal_policy=tmp_path / "after_policy.json",
-            after_formal_policy_authorization=tmp_path / "after_auth.json",
-            after_signed_policy_authorization_envelope=(
-                tmp_path / "after_envelope.json"
-            ),
-            expected_after_signed_policy_authorization_envelope_sha256="7" * 64,
-            output=tmp_path / "output",
-        )
-    assert calls == {"preflight": 2, "materialize": 0}
-
-    ready = {
-        "iq_payload_materialized": False,
-        "iq_archive_opened": False,
-        "np_load_invoked": False,
-        "iq_open_authorized": True,
-        "formal_launch_authority": False,
-        "formal_metric_claim_allowed": False,
-        "external_authority_lock_verified": True,
-        "status": "AUTHORITY_PREFLIGHT_PASS_IQ_OPEN_AUTHORIZED",
-        "control_state": "AUTHORITY_PREFLIGHT_PASS_IQ_OPEN_AUTHORIZED",
-        "phase2_protocol_evidence_status": (
-            "AUTHORITY_PREFLIGHT_PASS_IQ_OPEN_AUTHORIZED"
+        "finalize_somph_enrollment_authority_after_materialization",
+        lambda *_args, **_kwargs: calls.__setitem__(
+            "finalize", calls["finalize"] + 1
         ),
+    )
+    output = tmp_path / "output"
+    with pytest.raises(
+        somph_bundle.PredictorPackageError,
+        match="atomic signed-authority rejection",
+    ):
+        runner.run(**_dummy_runner_inputs(tmp_path, output=output))
+    assert calls == {"atomic": 1, "finalize": 0}
+    assert output.exists() is False
+
+
+def _dummy_runner_inputs(tmp_path: Path, *, output: Path) -> dict:
+    return {
+        "before_root": tmp_path / "before" / "enrollment_only",
+        "before_seal": tmp_path / "before.seal.json",
+        "expected_before_seal_sha256": "1" * 64,
+        "before_formal_policy": tmp_path / "before_policy.json",
+        "before_formal_policy_authorization": tmp_path / "before_auth.json",
+        "before_signed_policy_authorization_envelope": (
+            tmp_path / "before_envelope.json"
+        ),
+        "expected_before_signed_policy_authorization_envelope_sha256": "2" * 64,
+        "after_root": tmp_path / "after" / "enrollment_only",
+        "after_seal": tmp_path / "after.seal.json",
+        "expected_after_seal_sha256": "3" * 64,
+        "after_formal_policy": tmp_path / "after_policy.json",
+        "after_formal_policy_authorization": tmp_path / "after_auth.json",
+        "after_signed_policy_authorization_envelope": (
+            tmp_path / "after_envelope.json"
+        ),
+        "expected_after_signed_policy_authorization_envelope_sha256": "4" * 64,
+        "output": output,
     }
-    runner._require_pre_iq_open_authority(ready, ready)
+
+
+@pytest.mark.parametrize(
+    "legacy_argument",
+    [
+        "before_authority_bundle_root",
+        "expected_before_authority_commit_sha256",
+        "authority_preflight_audit",
+        "before_authority_preflight_capability",
+    ],
+)
+def test_runner_old_authority_api_fails_closed(
+    tmp_path: Path, legacy_argument: str
+) -> None:
+    output = tmp_path / f"{legacy_argument}_output"
+    with pytest.raises(TypeError):
+        runner.run(
+            **{
+                legacy_argument: tmp_path / "forbidden",
+                "output": output,
+            }
+        )
+    assert output.exists() is False
 
 
 def test_cross_scene_disjointness_covers_physical_parent_and_overlay() -> None:
@@ -401,30 +408,88 @@ def test_state_payload_roundtrip_uses_actual_bytes_and_external_commit(tmp_path:
         runner._write_state_roundtrip(tmp_path / "state", fitted.after_state)
 
 
-def test_cli_and_receipt_are_support_only_and_keep_d8b_authority() -> None:
+def test_cli_and_receipt_are_support_only_and_path_free_v2() -> None:
     source = SCRIPT.read_text(encoding="utf-8")
+    signature = inspect.signature(runner.run)
     assert "from run_d14_support_only_pairwise_fisher_guard import" in source
-    assert "materialize_somph_enrollment_with_authority" in source
+    assert "materialize_somph_enrollment_with_signed_authority" in source
     assert "finalize_somph_enrollment_authority_after_materialization" in source
+    assert "preflight_somph_predictor_bundle_with_authority" not in source
+    assert "materialize_somph_enrollment_with_authority(" not in source
+    assert "authority_preflight_audit" not in source
+    assert "SomphAuthorityPreflightEvidence" not in source
     assert "_load_enrollment" not in source
     assert "_materialization_receipt" not in source
     assert "--before-formal-policy" in source
     assert "--before-signed-policy-authorization-envelope" in source
     assert "--after-formal-policy" in source
     assert "--after-signed-policy-authorization-envelope" in source
+    assert "--before-authority-bundle-root" not in source
+    assert "--after-authority-bundle-root" not in source
+    assert "--before-authority-commit-sha256" not in source
+    assert "--after-authority-commit-sha256" not in source
+    assert "before_authority_bundle_root" not in signature.parameters
+    assert "after_authority_bundle_root" not in signature.parameters
+    assert "expected_before_authority_commit_sha256" not in signature.parameters
+    assert "expected_after_authority_commit_sha256" not in signature.parameters
     assert "_payload_rows" in source
     assert "support_overlay_tokens" in source
     assert "support_satellite_seeds" in source
     assert "select_k10_candidate_three_scene" in source
     assert "k10_lock_certificate" in source
     assert "--query" not in source
+    assert "--clean" not in source
+    assert "--source" not in source
     assert "--truth" not in source
     assert "--scorer" not in source
-    assert '"formal_launch_authority": False' in source
-    assert '"authority": "development_diagnostic_only"' in source
+    assert '"formal_launch_authority": True' in source
+    assert '"formal_metric_claim_allowed": False' in source
+    assert "SUPPORT_ONLY_NO_QUERY_CLAIM" in source
+    assert "formal_support_adaptation_state_only" in source
     assert "actual_full_serialized_state_bytes" in source
     assert "peak_cuda_allocated_bytes" in source
     assert "identity_single_qknn" in source
+
+
+@pytest.mark.parametrize(
+    ("field", "forged_value"),
+    [
+        ("formal_metric_claim_allowed", True),
+        ("support_query_disjointness_status", "PASS"),
+    ],
+)
+def test_post_materialization_gate_rejects_metric_or_query_disjointness_claim(
+    field: str, forged_value: object
+) -> None:
+    audit = {
+        "iq_payload_materialized": True,
+        "iq_archive_opened": True,
+        "np_load_invoked": True,
+        "formal_launch_authority": True,
+        "formal_metric_claim_allowed": False,
+        "support_query_disjointness_status": "SUPPORT_ONLY_NO_QUERY_CLAIM",
+        "signed_path_free_runtime_authorization_verified": True,
+        "runtime_authorization_schema": (
+            somph_bundle.SOMPH_FORMAL_POLICY_AUTHORIZATION_SCHEMA
+        ),
+        "phase2_clean_dataset_reachable": False,
+        "phase2_clean_cache_reachable": False,
+        "phase2_clean_control_flow_reachable": False,
+        "status": "CURRENT_PROTOCOL_REAL_INPUT_AUDIT_PASS",
+        "control_state": "CURRENT_PROTOCOL_REAL_INPUT_AUDIT_PASS",
+        "phase2_protocol_evidence_status": (
+            "CURRENT_PROTOCOL_REAL_INPUT_AUDIT_PASS"
+        ),
+        "post_materialization_audit_sha256": "9" * 64,
+    }
+    runner._require_post_materialization_authority(audit, dict(audit))
+    forged = dict(audit)
+    forged[field] = forged_value
+    with pytest.raises(
+        runner.D18RunnerError,
+        match="formal authority finalizer required before D18 selection",
+    ):
+        runner._require_post_materialization_authority(forged, audit)
 
 
 def test_candidate_surface_is_exact_and_three_scene_atomic() -> None:
@@ -482,13 +547,15 @@ def test_external_k10_authority_anchor_binds_packages_code_and_full_selection() 
     before_authority = {
         "manifest_sha256": "f" * 64,
         "formal_launch_authority": True,
-        "formal_metric_claim_allowed": True,
+        "formal_metric_claim_allowed": False,
+        "support_query_disjointness_status": "SUPPORT_ONLY_NO_QUERY_CLAIM",
         "status": "CURRENT_PROTOCOL_REAL_INPUT_AUDIT_PASS",
     }
     after_authority = {
         "manifest_sha256": "1" * 64,
         "formal_launch_authority": True,
-        "formal_metric_claim_allowed": True,
+        "formal_metric_claim_allowed": False,
+        "support_query_disjointness_status": "SUPPORT_ONLY_NO_QUERY_CLAIM",
         "status": "CURRENT_PROTOCOL_REAL_INPUT_AUDIT_PASS",
     }
     kwargs = dict(
@@ -507,6 +574,14 @@ def test_external_k10_authority_anchor_binds_packages_code_and_full_selection() 
     assert record["overlay_token"].startswith("oid_")
     assert record["source_leo_provenance_sha256"] == "a" * 64
     assert record["overlay_provenance_record_sha256"] != record["overlay_token"][4:]
+    assert first["payload"]["formal_launch_authority"] is True
+    assert first["payload"]["formal_metric_claim_allowed"] is False
+    assert (
+        first["payload"]["support_query_disjointness_status"]
+        == "SUPPORT_ONLY_NO_QUERY_CLAIM"
+    )
+    assert first["payload"]["query_opened"] is False
+    assert first["payload"]["performance_claim_allowed"] is False
     rows_by_scenario["leo_clear_weak"]["before"]["satellite_seeds"] = np.asarray(
         [999, 71310200], dtype=np.int64
     )
@@ -642,10 +717,13 @@ def _e2e_enrollment(
     return root, seal_path, sha256_file(seal_path), manifest
 
 
-def _formal_authority_payloads() -> tuple[dict, dict, dict]:
+def _path_free_authority_roots() -> dict:
     old_tx_ids = list(somph_bundle.OLD_TX_IDS)
     new_tx_ids = list(somph_bundle.NEW_TX_IDS[:5])
-    lock = {
+    return {
+        "authority_commit_sha256": "8" * 64,
+        "authority_lock_sha256": "7" * 64,
+        "authority_attestation_sha256": "9" * 64,
         "receiver": "20-1",
         "seed": 713101,
         "cache_scope": "stage2_registered",
@@ -654,8 +732,12 @@ def _formal_authority_payloads() -> tuple[dict, dict, dict]:
         "cache_sha256_by_scenario": {
             scenario: "a" * 64 for scenario in runner.FORMAL_LEO_WEAK_SCENARIOS
         },
+        "channel_config_sha256_by_scenario": {
+            scenario: "e" * 64 for scenario in runner.FORMAL_LEO_WEAK_SCENARIOS
+        },
+        "structural_receipt_sha256": "b" * 64,
         "physical_sample_scenario_assignment_policy": (
-            somph_bundle.lineage_authority.PHYSICAL_SAMPLE_SCENARIO_ASSIGNMENT_POLICY
+            runtime_trust.PHYSICAL_SAMPLE_SCENARIO_ASSIGNMENT_POLICY
         ),
         "physical_sample_ids_sha256_by_scenario": {
             scenario: "1" * 64 for scenario in runner.FORMAL_LEO_WEAK_SCENARIOS
@@ -670,38 +752,9 @@ def _formal_authority_payloads() -> tuple[dict, dict, dict]:
             scenario: "3" * 64 for scenario in runner.FORMAL_LEO_WEAK_SCENARIOS
         },
         "cache_role_inputs_root_sha256": "5" * 64,
-        "datasets": [
-            {
-                "role": "target_old",
-                "path": "E:/sealed/offline/ManySig.pkl",
-                "sha256": "6" * 64,
-                "size_bytes": 1,
-                "tx_ids": old_tx_ids,
-            },
-            {
-                "role": "target_new",
-                "path": "E:/sealed/offline/ManyTx.pkl",
-                "sha256": "7" * 64,
-                "size_bytes": 1,
-                "tx_ids": new_tx_ids,
-            },
-        ],
-        **somph_bundle.lineage_authority.PHASE2_SINGLE_OBSERVATION_CONTRACT,
-    }
-    attestation = {
-        "structural_receipt_sha256": "b" * 64,
         "dataset_authority_root_sha256": "6" * 64,
+        **runtime_trust.PHASE2_SINGLE_OBSERVATION_CONTRACT,
     }
-    commit = {
-        "authority_lock_sha256": "7" * 64,
-        "members": [
-            {
-                "name": somph_bundle.lineage_authority.AUTHORITY_ATTESTATION_NAME,
-                "sha256": "9" * 64,
-            }
-        ],
-    }
-    return lock, attestation, commit
 
 
 def _formal_policy_authorization(
@@ -709,10 +762,7 @@ def _formal_policy_authorization(
     manifest: dict,
     seal_path: Path,
     seal_sha256: str,
-    commit_sha256: str,
-    lock: dict,
-    attestation: dict,
-    commit: dict,
+    authority_roots: dict,
     policy_sha256: str,
     code_closure_sha256: str,
     package_control_roots: dict,
@@ -722,38 +772,80 @@ def _formal_policy_authorization(
         "schema": somph_bundle.SOMPH_FORMAL_POLICY_AUTHORIZATION_SCHEMA,
         "status": somph_bundle.SOMPH_FORMAL_POLICY_AUTHORIZATION_STATUS,
         "formal_launch_authority": True,
-        "formal_metric_claim_allowed": True,
+        "formal_metric_claim_allowed": False,
         "package_root_sha256": manifest["package_root_sha256"],
         "package_detached_seal_sha256": seal_sha256,
         "artifact_member_allowlist_sha256": seal["artifact_member_allowlist_sha256"],
         "manifest_sha256": seal["manifest_sha256"],
         "overlay_provenance_sha256": manifest["overlay_provenance_sha256"],
-        "authority_commit_sha256": commit_sha256,
-        "authority_lock_sha256": commit["authority_lock_sha256"],
-        "authority_attestation_sha256": "9" * 64,
+        "authority_commit_sha256": authority_roots[
+            "authority_commit_sha256"
+        ],
+        "authority_lock_sha256": authority_roots["authority_lock_sha256"],
+        "authority_attestation_sha256": authority_roots[
+            "authority_attestation_sha256"
+        ],
         "receiver": manifest["receiver"],
         "seed": manifest["seed"],
         "stage": manifest["stage"],
         "registration_state": manifest["registration_state"],
         "k_shot": manifest["k_shot"],
         "cache_scope": "stage2_registered",
-        "old_tx_ids": lock["old_tx_ids"],
-        "new_tx_ids": lock["new_tx_ids"],
-        "dataset_authority_root_sha256": attestation["dataset_authority_root_sha256"],
-        "cache_role_inputs_root_sha256": lock["cache_role_inputs_root_sha256"],
-        "physical_sample_ids_sha256_by_scenario": lock[
+        "old_tx_ids": authority_roots["old_tx_ids"],
+        "new_tx_ids": authority_roots["new_tx_ids"],
+        "cache_sha256_by_scenario": authority_roots[
+            "cache_sha256_by_scenario"
+        ],
+        "channel_config_sha256_by_scenario": authority_roots[
+            "channel_config_sha256_by_scenario"
+        ],
+        "structural_receipt_sha256": authority_roots[
+            "structural_receipt_sha256"
+        ],
+        "dataset_authority_root_sha256": authority_roots[
+            "dataset_authority_root_sha256"
+        ],
+        "cache_role_inputs_root_sha256": authority_roots[
+            "cache_role_inputs_root_sha256"
+        ],
+        "physical_sample_ids_sha256_by_scenario": authority_roots[
             "physical_sample_ids_sha256_by_scenario"
         ],
-        "physical_sample_scenario_assignment_sha256": lock[
+        "physical_sample_scenario_assignment_sha256": authority_roots[
             "physical_sample_scenario_assignment_sha256"
         ],
-        "post_channel_iq_sha256_root_by_scenario": lock[
+        "post_channel_iq_sha256_root_by_scenario": authority_roots[
             "post_channel_iq_sha256_root_by_scenario"
         ],
-        "overlay_ids_sha256_by_scenario": lock["overlay_ids_sha256_by_scenario"],
+        "overlay_ids_sha256_by_scenario": authority_roots[
+            "overlay_ids_sha256_by_scenario"
+        ],
         "preflight_code_sha256": sha256_file(Path(somph_bundle.__file__)),
         "formal_policy_sha256": policy_sha256,
         "code_closure_sha256": code_closure_sha256,
+        "physical_sample_scenario_assignment_policy": authority_roots[
+            "physical_sample_scenario_assignment_policy"
+        ],
+        "cross_scenario_physical_disjointness_audit": authority_roots[
+            "cross_scenario_physical_disjointness_audit"
+        ],
+        "single_observation_contract_audit": authority_roots[
+            "single_observation_contract_audit"
+        ],
+        "selected_physical_sample_sha256_by_scenario": {
+            scenario: f"{index + 6:x}" * 64
+            for index, scenario in enumerate(runner.FORMAL_LEO_WEAK_SCENARIOS)
+        },
+        "selected_overlay_sha256_by_scenario": {
+            scenario: f"{index + 9:x}" * 64
+            for index, scenario in enumerate(runner.FORMAL_LEO_WEAK_SCENARIOS)
+        },
+        "selected_membership_assignment_sha256": "c" * 64,
+        "support_query_disjointness_status": "SUPPORT_ONLY_NO_QUERY_CLAIM",
+        **{
+            key: authority_roots[key]
+            for key in runtime_trust.PHASE2_SINGLE_OBSERVATION_CONTRACT
+        },
         **package_control_roots,
     }
 
@@ -769,13 +861,11 @@ def _formal_policy() -> dict:
             for count in somph_bundle.FORMAL_NEW_CLASS_COUNTS
         ],
         "cache_scope": "stage2_registered",
-        "old_dataset_basename": "ManySig.pkl",
-        "new_dataset_basename": "ManyTx.pkl",
         "physical_sample_scenario_assignment_policy": (
-            somph_bundle.lineage_authority.PHYSICAL_SAMPLE_SCENARIO_ASSIGNMENT_POLICY
+            runtime_trust.PHYSICAL_SAMPLE_SCENARIO_ASSIGNMENT_POLICY
         ),
         "single_observation_contract": (
-            somph_bundle.lineage_authority.PHASE2_SINGLE_OBSERVATION_CONTRACT
+            runtime_trust.PHASE2_SINGLE_OBSERVATION_CONTRACT
         ),
         "required_code_closure_members": list(
             somph_bundle.CODE_CLOSURE_LOGICAL_MEMBERS
@@ -792,34 +882,34 @@ def _signed_policy_envelope(payload: dict) -> tuple[dict, bytes]:
         + bytes([(hashed[31] & 63) | 64]),
         "little",
     )
-    public_key = somph_bundle.lineage_authority._ed_encode(
-        somph_bundle.lineage_authority._ed_scalar_mult(
-            somph_bundle.lineage_authority._ED_B, scalar
+    public_key = runtime_trust._ed_encode(
+        runtime_trust._ed_scalar_mult(
+            runtime_trust._ED_B, scalar
         )
     )
     envelope = {
         "schema": somph_bundle.SOMPH_SIGNED_POLICY_ENVELOPE_SCHEMA,
         "domain": somph_bundle.SOMPH_SIGNED_POLICY_ENVELOPE_DOMAIN,
-        "issuer": somph_bundle.lineage_authority.PINNED_AUTHORITY_ISSUER,
-        "key_id": somph_bundle.lineage_authority.PINNED_AUTHORITY_KEY_ID,
+        "issuer": runtime_trust.PINNED_AUTHORITY_ISSUER,
+        "key_id": runtime_trust.PINNED_AUTHORITY_KEY_ID,
         **payload,
         "signature_ed25519_hex": "",
     }
     message = somph_bundle._policy_signature_message(envelope)
     nonce = int.from_bytes(
         hashlib.sha512(hashed[32:] + message).digest(), "little"
-    ) % somph_bundle.lineage_authority._ED_L
-    encoded_r = somph_bundle.lineage_authority._ed_encode(
-        somph_bundle.lineage_authority._ed_scalar_mult(
-            somph_bundle.lineage_authority._ED_B, nonce
+    ) % runtime_trust._ED_L
+    encoded_r = runtime_trust._ed_encode(
+        runtime_trust._ed_scalar_mult(
+            runtime_trust._ED_B, nonce
         )
     )
     challenge = int.from_bytes(
         hashlib.sha512(encoded_r + public_key + message).digest(), "little"
-    ) % somph_bundle.lineage_authority._ED_L
+    ) % runtime_trust._ED_L
     signature_scalar = (
         nonce + challenge * scalar
-    ) % somph_bundle.lineage_authority._ED_L
+    ) % runtime_trust._ED_L
     envelope["signature_ed25519_hex"] = (
         encoded_r + signature_scalar.to_bytes(32, "little")
     ).hex()
@@ -833,10 +923,7 @@ def _policy_inputs(
     root: Path,
     seal_path: Path,
     seal_sha256: str,
-    commit_sha256: str,
-    lock: dict,
-    attestation: dict,
-    commit: dict,
+    authority_roots: dict,
     monkeypatch: pytest.MonkeyPatch,
 ) -> dict[str, object]:
     base.mkdir(parents=True)
@@ -854,16 +941,13 @@ def _policy_inputs(
         seed=manifest["seed"],
     )
     control_roots = somph_bundle._package_control_roots(
-        manifest, provenance, new_tx_ids=lock["new_tx_ids"]
+        manifest, provenance, new_tx_ids=authority_roots["new_tx_ids"]
     )
     authorization = _formal_policy_authorization(
         manifest=manifest,
         seal_path=seal_path,
         seal_sha256=seal_sha256,
-        commit_sha256=commit_sha256,
-        lock=lock,
-        attestation=attestation,
-        commit=commit,
+        authority_roots=authority_roots,
         policy_sha256=policy_sha256,
         code_closure_sha256=code_closure_sha256,
         package_control_roots=control_roots,
@@ -872,7 +956,7 @@ def _policy_inputs(
     authorization_path.write_text(
         json.dumps(authorization, sort_keys=True), "utf-8"
     )
-    envelope, public_key = _signed_policy_envelope(
+    envelope, _public_key = _signed_policy_envelope(
         {
             "authorization_canonical_sha256": somph_bundle.sha256_bytes(
                 somph_bundle.canonical_json_bytes(authorization)
@@ -880,7 +964,9 @@ def _policy_inputs(
             "formal_policy_sha256": policy_sha256,
             "package_root_sha256": manifest["package_root_sha256"],
             "package_detached_seal_sha256": seal_sha256,
-            "authority_commit_sha256": commit_sha256,
+            "authority_commit_sha256": authority_roots[
+                "authority_commit_sha256"
+            ],
             "receiver": manifest["receiver"],
             "seed": manifest["seed"],
             "stage": manifest["stage"],
@@ -891,11 +977,6 @@ def _policy_inputs(
     )
     envelope_path = base / "signed_policy_envelope.json"
     envelope_path.write_text(json.dumps(envelope, sort_keys=True), "utf-8")
-    monkeypatch.setattr(
-        runner,
-        "preflight_somph_predictor_bundle_with_authority",
-        somph_bundle._make_test_authority_preflight(public_key),
-    )
     return {
         "formal_policy": policy_path,
         "formal_policy_authorization": authorization_path,
@@ -904,6 +985,78 @@ def _policy_inputs(
             envelope_path
         ),
     }
+
+
+@pytest.mark.parametrize("tamper", ["v1", "path"])
+def test_runner_rejects_legacy_or_pathful_authorization_before_iq_and_output(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    tamper: str,
+) -> None:
+    root, seal, seal_sha, manifest = _e2e_enrollment(
+        tmp_path / "blocked" / "enrollment_only",
+        state="before",
+        monkeypatch=monkeypatch,
+    )
+    policy = _policy_inputs(
+        tmp_path / "blocked_policy",
+        manifest=manifest,
+        root=root,
+        seal_path=seal,
+        seal_sha256=seal_sha,
+        authority_roots=_path_free_authority_roots(),
+        monkeypatch=monkeypatch,
+    )
+    authorization_path = policy["formal_policy_authorization"]
+    authorization = json.loads(authorization_path.read_text(encoding="utf-8"))
+    if tamper == "v1":
+        authorization["schema"] = (
+            "cvs.phase2.somph_formal_row_policy_authorization.v1"
+        )
+    else:
+        authorization["build_spec"] = {
+            "path": "E:/sealed/offline/cache_build_spec.json"
+        }
+    authorization_path.write_text(
+        json.dumps(authorization, sort_keys=True), encoding="utf-8"
+    )
+    monkeypatch.setattr(
+        somph_bundle,
+        "_materialize_iq",
+        lambda *_args, **_kwargs: pytest.fail("rejected authorization opened IQ"),
+    )
+    output = tmp_path / "blocked_output"
+    with pytest.raises(
+        somph_bundle.PredictorPackageError,
+        match="v2 schema|authorization status drift|forbidden reachability",
+    ):
+        runner.run(
+            before_root=root,
+            before_seal=seal,
+            expected_before_seal_sha256=seal_sha,
+            before_formal_policy=policy["formal_policy"],
+            before_formal_policy_authorization=authorization_path,
+            before_signed_policy_authorization_envelope=policy[
+                "signed_policy_authorization_envelope"
+            ],
+            expected_before_signed_policy_authorization_envelope_sha256=policy[
+                "expected_signed_policy_authorization_envelope_sha256"
+            ],
+            after_root=root,
+            after_seal=seal,
+            expected_after_seal_sha256=seal_sha,
+            after_formal_policy=policy["formal_policy"],
+            after_formal_policy_authorization=authorization_path,
+            after_signed_policy_authorization_envelope=policy[
+                "signed_policy_authorization_envelope"
+            ],
+            expected_after_signed_policy_authorization_envelope_sha256=policy[
+                "expected_signed_policy_authorization_envelope_sha256"
+            ],
+            output=output,
+            device_name="cpu",
+        )
+    assert output.exists() is False
 
 
 def test_synthetic_end_to_end_run_preserves_single_observation_k10_contract(
@@ -917,50 +1070,82 @@ def test_synthetic_end_to_end_run_preserves_single_observation_k10_contract(
     after_root, after_seal, after_seal_sha, after_manifest = _e2e_enrollment(
         after_root, state="after", monkeypatch=monkeypatch
     )
-    lock, attestation, commit = _formal_authority_payloads()
-    commit_sha256 = "8" * 64
-    before_policy = _policy_inputs(
-        tmp_path / "before_policy",
-        manifest=before_manifest,
-        root=before_root,
-        seal_path=before_seal,
-        seal_sha256=before_seal_sha,
-        commit_sha256=commit_sha256,
-        lock=lock,
-        attestation=attestation,
-        commit=commit,
-        monkeypatch=monkeypatch,
-    )
-    after_policy = _policy_inputs(
-        tmp_path / "after_policy",
-        manifest=after_manifest,
-        root=after_root,
-        seal_path=after_seal,
-        seal_sha256=after_seal_sha,
-        commit_sha256=commit_sha256,
-        lock=lock,
-        attestation=attestation,
-        commit=commit,
-        monkeypatch=monkeypatch,
-    )
-    monkeypatch.setattr(
-        somph_bundle.lineage_authority,
-        "verify_somph_lineage_authority_bundle",
-        lambda *_args, **_kwargs: (lock, attestation, commit),
-    )
     call_order: list[str] = []
-    real_authority_preflight = (
-        runner.preflight_somph_predictor_bundle_with_authority
-    )
-    real_materialize = runner.materialize_somph_enrollment_with_authority
+    mock_capability = object()
+    issued: set[object] = set()
+    manifest_by_root = {
+        before_root: before_manifest,
+        after_root: after_manifest,
+    }
 
-    def tracked_authority_preflight(root: Path, **kwargs):
-        call_order.append(f"authority:{root.parent.name}")
-        return real_authority_preflight(root, **kwargs)
+    class MockTokenSealedEvidence:
+        def __init__(self, root: Path, *, _capability: object) -> None:
+            if _capability is not mock_capability:
+                raise AssertionError("mock evidence constructor is sealed")
+            self.root = root
+            self.manifest = manifest_by_root[root]
+            self.evidence_sha256 = hashlib.sha256(
+                str(root).encode("utf-8")
+            ).hexdigest()
+            payloads = {}
+            for scenario in runner.FORMAL_LEO_WEAK_SCENARIOS:
+                with np.load(
+                    root / f"support_{scenario}.npz", allow_pickle=False
+                ) as archive:
+                    payloads[scenario] = {
+                        name: np.array(archive[name], copy=True)
+                        for name in archive.files
+                        if name != "manifest_json"
+                    }
+            self.materialized_payloads = payloads
 
-    def tracked_materialize(root: Path, *args, **kwargs):
-        call_order.append(f"materialize:{root.parent.name}")
-        return real_materialize(root, *args, **kwargs)
+    def fake_atomic(root: Path, **_kwargs):
+        root = Path(root)
+        call_order.append(f"atomic:{root.parent.name}")
+        evidence = MockTokenSealedEvidence(
+            root, _capability=mock_capability
+        )
+        issued.add(evidence)
+        return evidence
+
+    def fake_finalize(evidence):
+        if evidence not in issued:
+            raise somph_bundle.PredictorPackageError(
+                "mock finalizer requires fresh token-sealed evidence"
+            )
+        issued.remove(evidence)
+        state = evidence.manifest["registration_state"]
+        call_order.append(f"finalize:{state}")
+        return {
+            "manifest_sha256": hashlib.sha256(
+                somph_bundle.canonical_json_bytes(evidence.manifest)
+            ).hexdigest(),
+            "authority_commit_sha256": "8" * 64,
+            "iq_payload_materialized": True,
+            "iq_archive_opened": True,
+            "np_load_invoked": True,
+            "formal_launch_authority": True,
+            "formal_metric_claim_allowed": False,
+            "support_query_disjointness_status": (
+                "SUPPORT_ONLY_NO_QUERY_CLAIM"
+            ),
+            "signed_path_free_runtime_authorization_verified": True,
+            "runtime_authorization_schema": (
+                somph_bundle.SOMPH_FORMAL_POLICY_AUTHORIZATION_SCHEMA
+            ),
+            "phase2_clean_dataset_reachable": False,
+            "phase2_clean_cache_reachable": False,
+            "phase2_clean_control_flow_reachable": False,
+            "status": "CURRENT_PROTOCOL_REAL_INPUT_AUDIT_PASS",
+            "control_state": "CURRENT_PROTOCOL_REAL_INPUT_AUDIT_PASS",
+            "phase2_protocol_evidence_status": (
+                "CURRENT_PROTOCOL_REAL_INPUT_AUDIT_PASS"
+            ),
+            "post_materialization_audit_sha256": "9" * 64,
+            "verified_materialization_evidence_sha256": (
+                evidence.evidence_sha256
+            ),
+        }
 
     def fake_base_feature(_model, _device, iq: np.ndarray) -> np.ndarray:
         assert iq.shape[0] == 1
@@ -979,13 +1164,13 @@ def test_synthetic_end_to_end_run_preserves_single_observation_k10_contract(
 
     monkeypatch.setattr(
         runner,
-        "preflight_somph_predictor_bundle_with_authority",
-        tracked_authority_preflight,
+        "materialize_somph_enrollment_with_signed_authority",
+        fake_atomic,
     )
     monkeypatch.setattr(
         runner,
-        "materialize_somph_enrollment_with_authority",
-        tracked_materialize,
+        "finalize_somph_enrollment_authority_after_materialization",
+        fake_finalize,
     )
     monkeypatch.setattr(
         runner, "load_torchscript_backbone_same_fd", lambda *args, **kwargs: object()
@@ -996,42 +1181,39 @@ def test_synthetic_end_to_end_run_preserves_single_observation_k10_contract(
         before_root=before_root,
         before_seal=before_seal,
         expected_before_seal_sha256=before_seal_sha,
-        before_authority_bundle_root=tmp_path / "before_authority_bundle",
-        expected_before_authority_commit_sha256=commit_sha256,
-        before_formal_policy=before_policy["formal_policy"],
-        before_formal_policy_authorization=before_policy[
-            "formal_policy_authorization"
-        ],
-        before_signed_policy_authorization_envelope=before_policy[
-            "signed_policy_authorization_envelope"
-        ],
-        expected_before_signed_policy_authorization_envelope_sha256=before_policy[
-            "expected_signed_policy_authorization_envelope_sha256"
-        ],
+        before_formal_policy=tmp_path / "mock_before_policy.json",
+        before_formal_policy_authorization=tmp_path / "mock_before_auth.json",
+        before_signed_policy_authorization_envelope=(
+            tmp_path / "mock_before_envelope.json"
+        ),
+        expected_before_signed_policy_authorization_envelope_sha256="a" * 64,
         after_root=after_root,
         after_seal=after_seal,
         expected_after_seal_sha256=after_seal_sha,
-        after_authority_bundle_root=tmp_path / "after_authority_bundle",
-        expected_after_authority_commit_sha256=commit_sha256,
-        after_formal_policy=after_policy["formal_policy"],
-        after_formal_policy_authorization=after_policy[
-            "formal_policy_authorization"
-        ],
-        after_signed_policy_authorization_envelope=after_policy[
-            "signed_policy_authorization_envelope"
-        ],
-        expected_after_signed_policy_authorization_envelope_sha256=after_policy[
-            "expected_signed_policy_authorization_envelope_sha256"
-        ],
+        after_formal_policy=tmp_path / "mock_after_policy.json",
+        after_formal_policy_authorization=tmp_path / "mock_after_auth.json",
+        after_signed_policy_authorization_envelope=(
+            tmp_path / "mock_after_envelope.json"
+        ),
+        expected_after_signed_policy_authorization_envelope_sha256="b" * 64,
         output=output,
         device_name="cpu",
     )
     assert call_order[:4] == [
-        "authority:before",
-        "authority:after",
-        "materialize:before",
-        "materialize:after",
+        "atomic:before",
+        "atomic:after",
+        "finalize:before",
+        "finalize:after",
     ]
+    assert issued == set()
+    assert receipt["formal_launch_authority"] is True
+    assert receipt["formal_support_adaptation_state"] is True
+    assert receipt["formal_metric_claim_allowed"] is False
+    assert (
+        receipt["support_query_disjointness_status"]
+        == "SUPPORT_ONLY_NO_QUERY_CLAIM"
+    )
+    assert receipt["performance_claim_allowed"] is False
     assert receipt["query_opened"] is False
     inventory = json.loads((output / "support_inventory.json").read_text("utf-8"))
     assert len(inventory) == 3 * 11 * 10
@@ -1046,6 +1228,11 @@ def test_synthetic_end_to_end_run_preserves_single_observation_k10_contract(
     assert audit["cross_scenario_support_disjointness"]["all_pairwise_disjoint"] is True
     assert audit["runtime_access_audit"]["query_package_opened"] is False
     assert audit["runtime_access_audit"]["additional_leo_channel_state_generation"] is False
+    assert audit["formal_launch_authority"] is True
+    assert audit["formal_support_adaptation_state"] is True
+    assert audit["formal_metric_claim_allowed"] is False
+    assert audit["support_query_disjointness_status"] == "SUPPORT_ONLY_NO_QUERY_CLAIM"
+    assert audit["performance_claim_allowed"] is False
     anchor = audit["k10_selection_authority_anchor"]
     assert len(anchor["k10_selection_authority_anchor_sha256"]) == 64
     assert (
@@ -1061,72 +1248,91 @@ def test_synthetic_end_to_end_run_preserves_single_observation_k10_contract(
     assert (output / "training_log.jsonl").is_file()
     assert (output / "report.md").is_file()
     assert (output / "RECEIPT.json").is_file()
+    for scenario in runner.FORMAL_LEO_WEAK_SCENARIOS:
+        for registration_state in ("before", "after"):
+            commit = json.loads(
+                (
+                    output
+                    / "states"
+                    / scenario
+                    / registration_state
+                    / "COMMIT"
+                ).read_text("utf-8")
+            )
+            assert commit["formal_launch_authority"] is True
+            assert commit["formal_support_adaptation_state"] is True
+            assert commit["formal_metric_claim_allowed"] is False
+            assert (
+                commit["support_query_disjointness_status"]
+                == "SUPPORT_ONLY_NO_QUERY_CLAIM"
+            )
+            assert commit["query_opened"] is False
+            assert commit["performance_claim_allowed"] is False
 
 
-def test_authority_failure_never_opens_or_crc_checks_iq_archive(
+def test_synthetic_signer_cannot_open_production_atomic_iq_or_output(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    root, seal, seal_sha, _manifest = _e2e_enrollment(
+    root, seal, seal_sha, manifest = _e2e_enrollment(
         tmp_path / "blocked" / "enrollment_only",
         state="before",
         monkeypatch=monkeypatch,
     )
+    policy = _policy_inputs(
+        tmp_path / "synthetic_policy",
+        manifest=manifest,
+        root=root,
+        seal_path=seal,
+        seal_sha256=seal_sha,
+        authority_roots=_path_free_authority_roots(),
+        monkeypatch=monkeypatch,
+    )
     iq_open_calls = {"count": 0}
-    materialize_calls = {"count": 0}
 
     def forbidden_iq_open(*_args, **_kwargs):
         iq_open_calls["count"] += 1
         raise AssertionError("authority gate opened or CRC-checked IQ archive")
 
-    def forbidden_materialize(*_args, **_kwargs):
-        materialize_calls["count"] += 1
-        raise AssertionError("authority gate reached D14 IQ materializer")
-
-    def rejected_authority(*_args, **_kwargs):
-        raise ValueError("synthetic authority rejection")
-
     monkeypatch.setattr(somph_bundle, "_inspect_iq_member", forbidden_iq_open)
     monkeypatch.setattr(
-        somph_bundle.lineage_authority,
-        "verify_somph_lineage_authority_bundle",
-        rejected_authority,
-    )
-    monkeypatch.setattr(
-        runner,
-        "materialize_somph_enrollment_with_authority",
-        forbidden_materialize,
+        somph_bundle,
+        "_materialize_iq",
+        forbidden_iq_open,
     )
     output = tmp_path / "blocked_output"
     with pytest.raises(
         somph_bundle.PredictorPackageError,
-        match="external lineage authority verification failed",
+        match="signed policy authorization",
     ):
         runner.run(
             before_root=root,
             before_seal=seal,
             expected_before_seal_sha256=seal_sha,
-            before_authority_bundle_root=tmp_path / "missing_authority_bundle",
-            expected_before_authority_commit_sha256="8" * 64,
-            before_formal_policy=tmp_path / "missing_formal_policy.json",
-            before_formal_policy_authorization=tmp_path / "missing_policy.json",
-            before_signed_policy_authorization_envelope=(
-                tmp_path / "missing_policy_envelope.json"
-            ),
-            expected_before_signed_policy_authorization_envelope_sha256="9" * 64,
+            before_formal_policy=policy["formal_policy"],
+            before_formal_policy_authorization=policy[
+                "formal_policy_authorization"
+            ],
+            before_signed_policy_authorization_envelope=policy[
+                "signed_policy_authorization_envelope"
+            ],
+            expected_before_signed_policy_authorization_envelope_sha256=policy[
+                "expected_signed_policy_authorization_envelope_sha256"
+            ],
             after_root=root,
             after_seal=seal,
             expected_after_seal_sha256=seal_sha,
-            after_authority_bundle_root=tmp_path / "missing_after_authority_bundle",
-            expected_after_authority_commit_sha256="8" * 64,
-            after_formal_policy=tmp_path / "missing_after_formal_policy.json",
-            after_formal_policy_authorization=tmp_path / "missing_after_policy.json",
-            after_signed_policy_authorization_envelope=(
-                tmp_path / "missing_after_policy_envelope.json"
-            ),
-            expected_after_signed_policy_authorization_envelope_sha256="9" * 64,
+            after_formal_policy=policy["formal_policy"],
+            after_formal_policy_authorization=policy[
+                "formal_policy_authorization"
+            ],
+            after_signed_policy_authorization_envelope=policy[
+                "signed_policy_authorization_envelope"
+            ],
+            expected_after_signed_policy_authorization_envelope_sha256=policy[
+                "expected_signed_policy_authorization_envelope_sha256"
+            ],
             output=output,
             device_name="cpu",
-        )
+    )
     assert iq_open_calls["count"] == 0
-    assert materialize_calls["count"] == 0
     assert output.exists() is False

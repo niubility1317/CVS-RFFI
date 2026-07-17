@@ -14,6 +14,7 @@ if str(CODE_ROOT) not in sys.path:
     sys.path.insert(0, str(CODE_ROOT))
 
 from cvsrffi.somph_cache_build_matrix import (  # noqa: E402
+    FIXED_N607_CACHE_OUTPUT_ROOT,
     MANIFEST_NAME,
     write_cache_build_matrix,
 )
@@ -24,11 +25,17 @@ def main() -> int:
     parser.add_argument("--output-root", type=Path, required=True)
     parser.add_argument("--manysig-pkl", required=True)
     parser.add_argument("--manytx-pkl", required=True)
+    parser.add_argument(
+        "--cache-output-root",
+        default=FIXED_N607_CACHE_OUTPUT_ROOT,
+        help="Offline cache destination embedded into all 30 build specs.",
+    )
     args = parser.parse_args()
     manifest = write_cache_build_matrix(
         output_root=args.output_root,
         manysig_pkl=args.manysig_pkl,
         manytx_pkl=args.manytx_pkl,
+        cache_output_root=args.cache_output_root,
     )
     print(
         json.dumps(

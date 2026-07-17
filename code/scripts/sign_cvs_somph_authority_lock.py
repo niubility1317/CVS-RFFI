@@ -22,6 +22,7 @@ if str(CODE_ROOT) not in sys.path:
 
 from cvsrffi import somph_lineage_authority as authority  # noqa: E402
 from cvsrffi import somph_authority_lock_builder as lock_builder  # noqa: E402
+from cvsrffi import somph_cache_build_matrix as cache_matrix  # noqa: E402
 
 
 SIGNING_RECEIPT_SCHEMA = "cvs.phase2.somph_authority_signing_receipt.v2"
@@ -567,7 +568,15 @@ def _validate_production_build_authority(
         raise SomphAuthoritySigningError(
             "authority lock build receipt exact schema drift"
         )
-    expected_manifest_sha = lock_builder.FORMAL_CACHE_SPEC_MANIFEST_SHA256
+    try:
+        cache_matrix.validate_cache_build_manifest(
+            manifest,
+            manifest_root=Path(cache_spec_manifest_path).absolute().parent,
+        )
+    except cache_matrix.SomphCacheBuildMatrixError as exc:
+        raise SomphAuthoritySigningError(
+            "cache-spec manifest exact validation failed before signing"
+        ) from exc
     if (
         receipt.get("schema")
         != lock_builder.AUTHORITY_LOCK_BUILD_RECEIPT_SCHEMA
@@ -575,8 +584,9 @@ def _validate_production_build_authority(
         or receipt.get("external_authority_lock_verified") is not False
         or receipt.get("formal_launch_authority") is not False
         or receipt.get("cache_spec_manifest_sha256")
-        != expected_manifest_sha
-        or manifest_sha != expected_manifest_sha
+        != manifest_sha
+        or receipt.get("cache_spec_manifest_size_bytes")
+        != _manifest_size
         or receipt.get("authority_lock_sha256") != lock_file_sha256
         or receipt.get("authority_lock_canonical_sha256")
         != lock_canonical_sha256
@@ -786,6 +796,9 @@ def _sign_authority_lock_impl(
         ],
         expected_build_receipt_sha256=build_authority_binding[
             "authority_lock_build_receipt_sha256"
+        ],
+        expected_cache_spec_manifest_sha256=build_authority_binding[
+            "cache_spec_manifest_sha256"
         ],
     )
     try:

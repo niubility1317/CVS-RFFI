@@ -285,10 +285,10 @@ def _preflight_profile_package(
             )
         return manifest, seal, package_audit
 
+    from .somph_diagnostic_bundle_loader import preflight_somph_predictor_bundle
     from .somph_predictor_bundle import (
         APPLY_ONLY,
         ENROLLMENT_ONLY,
-        preflight_somph_predictor_bundle,
     )
 
     manifest, seal, package_audit = preflight_somph_predictor_bundle(
@@ -305,7 +305,11 @@ def _preflight_profile_package(
         raise Phase2PreRunEvidenceError(
             "SOMP-H package does not match the requested isolation profile"
         )
-    if package_audit.get("status") != "STRUCTURAL_SELF_CONSISTENCY_PASS":
+    if (
+        package_audit.get("status")
+        != "UNVERIFIED_UNDER_CURRENT_PROTOCOL_DIAGNOSTIC_ONLY"
+        or package_audit.get("diagnostic_only") is not True
+    ):
         raise Phase2PreRunEvidenceError(
             "SOMP-H package structural pre-open audit did not pass"
         )

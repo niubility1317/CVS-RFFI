@@ -280,6 +280,7 @@ def _build_cache_spec(
     seed: int,
     manysig_pkl: str,
     manytx_pkl: str,
+    cache_output_root: str,
 ) -> dict[str, Any]:
     """Build one fixed receiver/seed ``stage2_registered`` cache spec."""
 
@@ -294,7 +295,7 @@ def _build_cache_spec(
         manytx_pkl, field="manytx_pkl", expected_dataset_name="ManyTx.pkl"
     )
     root = _validate_path(
-        FIXED_N607_CACHE_OUTPUT_ROOT, field="fixed_n607_cache_output_root"
+        cache_output_root, field="cache_output_root"
     )
     cell_root = _runtime_path(root, f"rx_{_safe_receiver(receiver)}", f"seed_{seed}")
     spec = {
@@ -513,6 +514,7 @@ def write_cache_build_matrix(
     output_root: Path,
     manysig_pkl: str,
     manytx_pkl: str,
+    cache_output_root: str = FIXED_N607_CACHE_OUTPUT_ROOT,
 ) -> dict[str, Any]:
     """Write all 30 fixed specs plus a hash-bound exact manifest.
 
@@ -533,6 +535,9 @@ def write_cache_build_matrix(
     manytx = _validate_path(
         manytx_pkl, field="manytx_pkl", expected_dataset_name="ManyTx.pkl"
     )
+    runtime_cache_root = _validate_path(
+        cache_output_root, field="cache_output_root"
+    )
     root.mkdir(parents=True, exist_ok=False)
     cells: list[dict[str, Any]] = []
     for receiver in FORMAL_RECEIVERS:
@@ -542,6 +547,7 @@ def write_cache_build_matrix(
                 seed=seed,
                 manysig_pkl=manysig,
                 manytx_pkl=manytx,
+                cache_output_root=runtime_cache_root,
             )
             spec_path = (
                 root
@@ -572,7 +578,7 @@ def write_cache_build_matrix(
         "cache_builder_executed": False,
         "build_spec_schema": BUILD_SPEC_SCHEMA,
         "cache_scope": CACHE_SCOPE,
-        "cache_output_root": FIXED_N607_CACHE_OUTPUT_ROOT,
+        "cache_output_root": runtime_cache_root,
         "phase2_sample_view_policy": PHASE2_SAMPLE_VIEW_POLICY,
         "receivers": list(FORMAL_RECEIVERS),
         "development_seed": DEVELOPMENT_SEED,
@@ -649,6 +655,9 @@ def validate_cache_build_manifest(
 
     if not isinstance(payload, Mapping) or set(payload) != _MANIFEST_KEYS:
         raise SomphCacheBuildMatrixError("cache matrix manifest exact schema drift")
+    manifest_cache_output_root = _validate_path(
+        payload.get("cache_output_root"), field="cache_output_root"
+    )
     fixed = {
         "schema": SCHEMA,
         "artifact_boundary": ARTIFACT_BOUNDARY,
@@ -659,7 +668,6 @@ def validate_cache_build_manifest(
         "cache_builder_executed": False,
         "build_spec_schema": BUILD_SPEC_SCHEMA,
         "cache_scope": CACHE_SCOPE,
-        "cache_output_root": FIXED_N607_CACHE_OUTPUT_ROOT,
         "phase2_sample_view_policy": PHASE2_SAMPLE_VIEW_POLICY,
         "receivers": list(FORMAL_RECEIVERS),
         "development_seed": DEVELOPMENT_SEED,
@@ -797,6 +805,15 @@ def validate_cache_build_manifest(
         output_root = _validate_path(
             cell.get("cache_output_root"), field="cell.cache_output_root"
         )
+        expected_output_root = _runtime_path(
+            manifest_cache_output_root,
+            f"rx_{_safe_receiver(str(receiver))}",
+            f"seed_{seed}",
+        )
+        if output_root != expected_output_root:
+            raise SomphCacheBuildMatrixError(
+                "cell/manifest cache output root binding drift"
+            )
         if output_root in output_roots:
             raise SomphCacheBuildMatrixError("cache output roots are not independent")
         output_roots.add(output_root)

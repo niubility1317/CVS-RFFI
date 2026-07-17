@@ -20,6 +20,7 @@ import numpy as np
 
 from cvsrffi import somph_leo_weak_lineage_seal as structural
 from cvsrffi import somph_lineage_authority as authority
+from cvsrffi import somph_cache_build_matrix as cache_matrix
 from cvsrffi.leo_weak_cache import (
     FORMAL_LEO_WEAK_SCENARIOS,
     canonical_json_sha256,
@@ -71,6 +72,7 @@ AUTHORITY_LOCK_BUILD_RECEIPT_KEYS = {
     "external_authority_lock_verified",
     "formal_launch_authority",
 }
+# Legacy fixed-root manifest SHA retained for offline compatibility only.
 FORMAL_CACHE_SPEC_MANIFEST_SHA256 = (
     "1febf18043ec39fe599e9f6b114bb8696981c9874f2795061b6be2eec2a5290c"
 )
@@ -203,7 +205,8 @@ def _locked_cache_spec_cell(
     cache_spec_manifest_path: str | Path,
     *,
     cell_id: str,
-    expected_manifest_sha256: str,
+    expected_manifest_sha256: str | None = None,
+    require_exact_formal_manifest: bool = False,
 ) -> tuple[dict[str, Any], dict[str, Any], Path, str, int]:
     manifest_path = Path(cache_spec_manifest_path).absolute()
     try:
@@ -215,17 +218,28 @@ def _locked_cache_spec_cell(
         )
     except authority.SomphLineageAuthorityError as exc:
         raise SomphAuthorityLockBuildError(str(exc)) from exc
-    if manifest_sha != expected_manifest_sha256:
+    if (
+        expected_manifest_sha256 is not None
+        and manifest_sha != expected_manifest_sha256
+    ):
         raise SomphAuthorityLockBuildError(
             "locked cache-spec manifest SHA mismatch"
         )
+    if require_exact_formal_manifest:
+        try:
+            cache_matrix.validate_cache_build_manifest(
+                manifest,
+                manifest_root=manifest_path.parent,
+            )
+        except cache_matrix.SomphCacheBuildMatrixError as exc:
+            raise SomphAuthorityLockBuildError(
+                "locked cache-spec manifest exact validation failed"
+            ) from exc
     required_samples = manifest.get("required_samples_per_tx")
     support_pool_max_k = manifest.get("support_pool_max_k")
     query_samples = manifest.get("query_samples_per_tx")
     manifest_scope = manifest.get("cache_scope")
-    production_manifest = (
-        expected_manifest_sha256 == FORMAL_CACHE_SPEC_MANIFEST_SHA256
-    )
+    production_manifest = require_exact_formal_manifest
     if (
         manifest.get("schema")
         != "cvs.phase2.somph_registered_cache_build_matrix.v2"
@@ -699,7 +713,8 @@ def _write_somph_authority_lock_package_impl(
     exporter_path: str | Path,
     channel_code_members: Mapping[str, str | Path],
     output_root: str | Path,
-    expected_cache_spec_manifest_sha256: str,
+    expected_cache_spec_manifest_sha256: str | None = None,
+    require_exact_formal_manifest: bool = False,
 ) -> dict[str, Any]:
     """Recompute real roots and atomically publish one unsigned lock package."""
 
@@ -713,6 +728,7 @@ def _write_somph_authority_lock_package_impl(
         cache_spec_manifest_path,
         cell_id=cache_spec_cell_id,
         expected_manifest_sha256=expected_cache_spec_manifest_sha256,
+        require_exact_formal_manifest=require_exact_formal_manifest,
     )
     cache_set_path = Path(cache_set_manifest_path).absolute()
     try:
@@ -1027,7 +1043,7 @@ def write_somph_authority_lock_package(
     channel_code_members: Mapping[str, str | Path],
     output_root: str | Path,
 ) -> dict[str, Any]:
-    """Production wrapper pinned to the formal 30-cell cache-spec manifest."""
+    """Validate the actual exact 30-cell manifest and build one offline lock."""
 
     return _write_somph_authority_lock_package_impl(
         cache_set_manifest_path,
@@ -1036,7 +1052,6 @@ def write_somph_authority_lock_package(
         exporter_path=exporter_path,
         channel_code_members=channel_code_members,
         output_root=output_root,
-        expected_cache_spec_manifest_sha256=(
-            FORMAL_CACHE_SPEC_MANIFEST_SHA256
-        ),
+        expected_cache_spec_manifest_sha256=None,
+        require_exact_formal_manifest=True,
     )
