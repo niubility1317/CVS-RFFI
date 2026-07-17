@@ -113,3 +113,5 @@ D26比B3减少41.67%峰值活动参数和50%–75% optimizer steps，head时延�
 - 本地验证：58项D26/D25/C3相邻回归PASS，`py_compile`、`bash -n`、`git diff --check`PASS。
 - 远端output：`/home/szu2070436088/2510044040/CV-SincNet/runs/d26_compact_diag_20260718/output/support_screen_v2`；log：`/home/szu2070436088/2510044040/CV-SincNet/logs/d26_compact_diag_20260718/support_screen_v2.log`。
 - 精确命令：`cd /home/szu2070436088/2510044040/CV-SincNet && D26_GPU=0 bash code/scripts/launch_d26_v2_strict_bias_support_20260718.sh`。
+- 03:32 CST直连preflight再次PASS；8张RTX3090均0%利用、约10MiB显存。live inventory为`gpu_compute=[]`、`active_training_processes=[]`、`unknown_training_active=false`，允许使用GPU0。
+- 已同步runner、D26-v2核心和v2 launcher；远端SHA、`py_compile`、`bash -n`、实际FFT96/RF32 operator SHA和output不存在门均PASS。同步及验证后本地`ssh.exe`与N607 TCP22连接均为0。
