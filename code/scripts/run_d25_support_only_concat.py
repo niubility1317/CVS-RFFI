@@ -76,6 +76,7 @@ CANDIDATE_SET_D25_V4 = "d25_v4"
 CANDIDATE_SET_C3_V1 = "c3_v1"
 CANDIDATE_SET_D26_V1 = "d26_v1"
 CANDIDATE_SET_D26_V2 = "d26_v2_strictbias"
+CANDIDATE_SET_D27_V1 = "d27_v1_perclassbias"
 C3_A = "D25-C3A-DIAG-CE-CLOSEDREG"
 C3_B = "D25-C3B-DIAG-CE-NEWFIT"
 C3_C = "D25-C3C-DIAG-STRONGFLOOR-NEWFIT"
@@ -84,8 +85,12 @@ D26_A = "D26-A-COMPACT-DIAG-CLOSEDREG"
 D26_B = "D26-B-COMPACT-DIAG-NEWFIT10"
 D26_C = "D26-C-COMPACT-DIAG-NEWFIT15"
 D26_CANDIDATES = (D26_A, D26_B, D26_C)
+D27_A = "D27-A-PERCLASS-BIAS-CLOSEDREG"
+D27_B = "D27-B-PERCLASS-BIAS-NEWFIT10"
+D27_C = "D27-C-PERCLASS-BIAS-NEWFIT15"
+D27_CANDIDATES = (D27_A, D27_B, D27_C)
 CORE_COMMIT = "f349850dbd94841ae2ef8105ac76bd7a9912c128"
-D26_CORE_GIT_COMMIT = "55d69d0efa3d5ef4d43e9702058d15c20e7f95e5"
+D26_CORE_GIT_COMMIT = "67b9d2275782339e0ac07800652b997adbcca534"
 
 
 class D25RunnerError(ValueError):
@@ -142,6 +147,27 @@ def preregistered_candidates(
     }
     if candidate_set == CANDIDATE_SET_D25_V4:
         return historical
+    if candidate_set == CANDIDATE_SET_D27_V1:
+        return {
+            IDENTITY_CANDIDATE: controls[IDENTITY_CANDIDATE],
+            DIAG_CANDIDATE: controls[DIAG_CANDIDATE],
+            D25_C0: historical[D25_C0],
+            D27_A: D26CompactDiagConfig(
+                stage2b_steps=15,
+                stage2c_steps=0,
+                bias_guard_mode="per_new_class_pre_registration_old_only",
+            ),
+            D27_B: D26CompactDiagConfig(
+                stage2b_steps=15,
+                stage2c_steps=10,
+                bias_guard_mode="per_new_class_pre_registration_old_only",
+            ),
+            D27_C: D26CompactDiagConfig(
+                stage2b_steps=15,
+                stage2c_steps=15,
+                bias_guard_mode="per_new_class_pre_registration_old_only",
+            ),
+        }
     if candidate_set in (CANDIDATE_SET_D26_V1, CANDIDATE_SET_D26_V2):
         strict_bias = candidate_set == CANDIDATE_SET_D26_V2
         bias_grid = (
@@ -256,8 +282,15 @@ def _candidate_lock(
                 ),
                 "new_group_bias_grid": list(config.new_group_bias_grid),
                 "bias_guard_mode": str(config.bias_guard_mode),
+                "new_class_bias_offsets": list(
+                    getattr(config, "new_class_bias_offsets", ())
+                ),
             }
-            family = "d26_compact_diag"
+            family = (
+                "d27_per_new_class_bias"
+                if candidate_set == CANDIDATE_SET_D27_V1
+                else "d26_compact_diag"
+            )
         elif isinstance(config, MultimodalConcatConfig):
             config_row: dict[str, Any] = {
                 "block_energy": list(config.block_energy),
@@ -283,9 +316,10 @@ def _candidate_lock(
                 in (
                     C3_CANDIDATES
                     if candidate_set == CANDIDATE_SET_C3_V1
+                    else D27_CANDIDATES
+                    if candidate_set == CANDIDATE_SET_D27_V1
                     else D26_CANDIDATES
-                    if candidate_set
-                    in (CANDIDATE_SET_D26_V1, CANDIDATE_SET_D26_V2)
+                    if candidate_set in (CANDIDATE_SET_D26_V1, CANDIDATE_SET_D26_V2)
                     else D25_CANDIDATES
                 ),
             }
@@ -298,6 +332,8 @@ def _candidate_lock(
             if candidate_set == CANDIDATE_SET_D26_V1
             else "cvs.phase2.d25.candidate_lock.v4"
             if candidate_set == CANDIDATE_SET_D26_V2
+            else "cvs.phase2.d25.candidate_lock.v5"
+            if candidate_set == CANDIDATE_SET_D27_V1
             else "cvs.phase2.d25.candidate_lock.v1"
         ),
         "core_commit": CORE_COMMIT,
@@ -310,6 +346,7 @@ def _candidate_lock(
                 CANDIDATE_SET_C3_V1,
                 CANDIDATE_SET_D26_V1,
                 CANDIDATE_SET_D26_V2,
+                CANDIDATE_SET_D27_V1,
             )
             else IDENTITY_CANDIDATE
         ),
@@ -320,9 +357,14 @@ def _candidate_lock(
         CANDIDATE_SET_C3_V1,
         CANDIDATE_SET_D26_V1,
         CANDIDATE_SET_D26_V2,
+        CANDIDATE_SET_D27_V1,
     ):
         lock["candidate_set"] = candidate_set
-    if candidate_set in (CANDIDATE_SET_D26_V1, CANDIDATE_SET_D26_V2):
+    if candidate_set in (
+        CANDIDATE_SET_D26_V1,
+        CANDIDATE_SET_D26_V2,
+        CANDIDATE_SET_D27_V1,
+    ):
         # CORE_COMMIT above identifies the sealed Phase1 model lineage.  Keep
         # the D26 implementation commit separate so the receipt cannot imply
         # that the new adapter was already present in that older model commit.
@@ -605,6 +647,16 @@ def _d26_geometry(state: D26CompactDiagState) -> dict[str, Any]:
     }
 
 
+def _d26_new_class_biases(state: D26CompactDiagState) -> list[float]:
+    values = np.asarray(
+        getattr(state, "new_class_biases", np.empty(0, dtype=np.float32)),
+        dtype=np.float32,
+    )
+    if values.ndim != 1:
+        raise D25RunnerError("D26/D27 new-class bias vector drift")
+    return [float(value) for value in values.tolist()]
+
+
 def _evaluate_c3_fold(
     rows: Mapping[str, np.ndarray],
     z_id160: np.ndarray,
@@ -864,6 +916,7 @@ def _evaluate_d26_fold(
             "old_score_columns_bitwise_unchanged_after_registration": True,
             "complete_loss_trace": training_trace,
             "new_group_bias": float(after.new_group_bias),
+            "new_class_biases": _d26_new_class_biases(after),
             "new_group_bias_support_only_audit": bias_audit,
             "query_features_used_for_fit": False,
             "query_labels_used_for_fit": False,
@@ -900,6 +953,7 @@ def _evaluate_d26_fold(
         "old_support_floor_non_degradation": fit_floor_non_degradation,
         "old_support_non_degradation_pass": old_support_non_degradation,
         "new_group_bias": float(after.new_group_bias),
+        "new_class_biases": _d26_new_class_biases(after),
         "new_group_bias_support_only_audit": bias_audit,
         "training_trace": training_trace,
         "geometry_summary": _d26_geometry(after),
@@ -1128,8 +1182,10 @@ def _select_c3_candidate(
 
 
 def _select_d26_candidate(
-    folds_by_candidate: Mapping[str, Sequence[Mapping[str, Any]]]
+    folds_by_candidate: Mapping[str, Sequence[Mapping[str, Any]]],
+    eligible_candidate_ids: Sequence[str] = D26_CANDIDATES,
 ) -> tuple[str, list[dict[str, Any]]]:
+    eligible_candidate_ids = tuple(str(value) for value in eligible_candidate_ids)
     baseline_rows = list(folds_by_candidate[D25_C0])
     diagnostic_rows = list(folds_by_candidate[DIAG_CANDIDATE])
     baseline_old = _pooled_scenario_classwise(baseline_rows, "after_old")
@@ -1155,15 +1211,17 @@ def _select_d26_candidate(
             **aggregate,
             "candidate_id": candidate_id,
             "family": (
-                "d26_compact_diag"
-                if candidate_id in D26_CANDIDATES
+                "d27_per_new_class_bias"
+                if candidate_id in D27_CANDIDATES
+                else "d26_compact_diag"
+                if candidate_id in eligible_candidate_ids
                 else ("d25" if candidate_id == D25_C0 else "control")
             ),
             "fallback": candidate_id == D25_C0,
             "diagnostic_only": candidate_id == DIAG_CANDIDATE,
             "eligible_positive_route": False,
         }
-        if candidate_id not in D26_CANDIDATES:
+        if candidate_id not in eligible_candidate_ids:
             decisions.append(decision)
             continue
         candidate_old = _pooled_scenario_classwise(rows, "after_old")
@@ -1302,10 +1360,12 @@ def _apply_full_k10_d26_old_support_gate(
     selected_id: str,
     candidate_decisions: list[dict[str, Any]],
     deployment_resources: Mapping[str, Mapping[str, Mapping[str, Any]]],
+    candidate_ids: Sequence[str] = D26_CANDIDATES,
 ) -> tuple[str, str | None]:
+    candidate_ids = tuple(str(value) for value in candidate_ids)
     for decision in candidate_decisions:
         candidate_id = str(decision["candidate_id"])
-        if candidate_id not in D26_CANDIDATES:
+        if candidate_id not in candidate_ids:
             continue
         by_scenario = {
             scenario: bool(
@@ -1321,7 +1381,7 @@ def _apply_full_k10_d26_old_support_gate(
         decision["eligible_positive_route"] = bool(
             decision.get("eligible_positive_route", False) and full_pass
         )
-    if selected_id not in D26_CANDIDATES:
+    if selected_id not in candidate_ids:
         return selected_id, None
     selected_decision = next(
         row for row in candidate_decisions if row["candidate_id"] == selected_id
@@ -1596,6 +1656,7 @@ def _full_d26_state_audit(
             "old_support_floor_non_degradation_pass": floor_pass,
             "old_support_non_degradation_pass": old_support_non_degradation,
             "new_group_bias": float(after.new_group_bias),
+            "new_class_biases": _d26_new_class_biases(after),
             "new_group_bias_support_only_audit": json.loads(
                 after.bias_audit_json
             ),
@@ -1936,11 +1997,19 @@ def run(
         raise D25RunnerError("D26 training-log cardinality drift")
     if candidate_set == CANDIDATE_SET_D26_V2 and expected_rows != 90:
         raise D25RunnerError("D26-v2 training-log cardinality drift")
+    if candidate_set == CANDIDATE_SET_D27_V1 and expected_rows != 90:
+        raise D25RunnerError("D27 training-log cardinality drift")
     selected_id, candidate_decisions = (
         _select_c3_candidate(folds_by_candidate)
         if candidate_set == CANDIDATE_SET_C3_V1
-        else _select_d26_candidate(folds_by_candidate)
+        else _select_d26_candidate(
+            folds_by_candidate,
+            D27_CANDIDATES
+            if candidate_set == CANDIDATE_SET_D27_V1
+            else D26_CANDIDATES,
+        )
         if candidate_set in (CANDIDATE_SET_D26_V1, CANDIDATE_SET_D26_V2)
+        or candidate_set == CANDIDATE_SET_D27_V1
         else _select_candidate(folds_by_candidate)
     )
 
@@ -1950,6 +2019,8 @@ def run(
     geometry_ids = (
         (D25_C0,) + C3_CANDIDATES
         if candidate_set == CANDIDATE_SET_C3_V1
+        else (D25_C0,) + D27_CANDIDATES
+        if candidate_set == CANDIDATE_SET_D27_V1
         else (D25_C0,) + D26_CANDIDATES
         if candidate_set in (CANDIDATE_SET_D26_V1, CANDIDATE_SET_D26_V2)
         else D25_CANDIDATES
@@ -2021,10 +2092,19 @@ def run(
                 selected_id, candidate_decisions, deployment_resources
             )
         )
-    elif candidate_set in (CANDIDATE_SET_D26_V1, CANDIDATE_SET_D26_V2):
+    elif candidate_set in (
+        CANDIDATE_SET_D26_V1,
+        CANDIDATE_SET_D26_V2,
+        CANDIDATE_SET_D27_V1,
+    ):
         selected_id, full_k10_fallback_reason = (
             _apply_full_k10_d26_old_support_gate(
-                selected_id, candidate_decisions, deployment_resources
+                selected_id,
+                candidate_decisions,
+                deployment_resources,
+                D27_CANDIDATES
+                if candidate_set == CANDIDATE_SET_D27_V1
+                else D26_CANDIDATES,
             )
         )
 
@@ -2084,6 +2164,8 @@ def run(
         in (
             C3_CANDIDATES
             if candidate_set == CANDIDATE_SET_C3_V1
+            else D27_CANDIDATES
+            if candidate_set == CANDIDATE_SET_D27_V1
             else D26_CANDIDATES
             if candidate_set in (CANDIDATE_SET_D26_V1, CANDIDATE_SET_D26_V2)
             else D25_CANDIDATES
@@ -2096,6 +2178,7 @@ def run(
                 CANDIDATE_SET_C3_V1,
                 CANDIDATE_SET_D26_V1,
                 CANDIDATE_SET_D26_V2,
+                CANDIDATE_SET_D27_V1,
             )
             else IDENTITY_CANDIDATE
         ),
@@ -2103,6 +2186,8 @@ def run(
         "eligible_candidate_ids": list(
             C3_CANDIDATES
             if candidate_set == CANDIDATE_SET_C3_V1
+            else D27_CANDIDATES
+            if candidate_set == CANDIDATE_SET_D27_V1
             else D26_CANDIDATES
             if candidate_set in (CANDIDATE_SET_D26_V1, CANDIDATE_SET_D26_V2)
             else D25_CANDIDATES
@@ -2112,6 +2197,12 @@ def run(
             "old_and_new_floor_gain>=0.10,_per_class_drop<=0.10,_H_and_"
             "forgetting_noninferior_vs_C0;_B3_diagnostic_only"
             if candidate_set == CANDIDATE_SET_C3_V1
+            else "D27:_per-new-class_pre-registration_old-only_safety_caps,_"
+            "support-LOO_coordinate_bias_selection,_all_fold_old_support_non-"
+            "degradation,_per_scenario_pooled_old_and_new_floor_gain>=0.10,_"
+            "per_class_drop<=0.10,_H_and_forgetting_noninferior_vs_C0;_B3_"
+            "performance_reference_only"
+            if candidate_set == CANDIDATE_SET_D27_V1
             else "D26-v2:_pre-registration_old-only_per-class_and_correct-row_"
             "bias_guard,_all_fold_old_support_non_degradation,_per_scenario_"
             "pooled_old_and_new_floor_gain>=0.10,_per_class_drop<=0.10,_H_"
@@ -2160,7 +2251,12 @@ def run(
                 "phase1_core_commit": CORE_COMMIT,
                 "d26_core_git_commit": D26_CORE_GIT_COMMIT,
             }
-            if candidate_set in (CANDIDATE_SET_D26_V1, CANDIDATE_SET_D26_V2)
+            if candidate_set
+            in (
+                CANDIDATE_SET_D26_V1,
+                CANDIDATE_SET_D26_V2,
+                CANDIDATE_SET_D27_V1,
+            )
             else {}
         ),
         **candidate_lock["source_closure"],
@@ -2173,6 +2269,8 @@ def run(
         in (
             C3_CANDIDATES
             if candidate_set == CANDIDATE_SET_C3_V1
+            else D27_CANDIDATES
+            if candidate_set == CANDIDATE_SET_D27_V1
             else D26_CANDIDATES
             if candidate_set in (CANDIDATE_SET_D26_V1, CANDIDATE_SET_D26_V2)
             else D25_CANDIDATES
@@ -2249,6 +2347,7 @@ def build_parser() -> argparse.ArgumentParser:
             CANDIDATE_SET_C3_V1,
             CANDIDATE_SET_D26_V1,
             CANDIDATE_SET_D26_V2,
+            CANDIDATE_SET_D27_V1,
         ),
         default=CANDIDATE_SET_D25_V4,
     )

@@ -69,6 +69,41 @@ def test_d26_candidate_lock_matrix_and_historical_sets_are_stable() -> None:
     assert strict_lock["schema"] == "cvs.phase2.d25.candidate_lock.v4"
     assert strict_lock["candidate_set"] == runner.CANDIDATE_SET_D26_V2
 
+    d27_candidates = runner.preregistered_candidates(runner.CANDIDATE_SET_D27_V1)
+    assert tuple(d27_candidates) == (
+        runner.IDENTITY_CANDIDATE,
+        runner.DIAG_CANDIDATE,
+        runner.D25_C0,
+        runner.D27_A,
+        runner.D27_B,
+        runner.D27_C,
+    )
+    assert [
+        (d27_candidates[name].stage2b_steps, d27_candidates[name].stage2c_steps)
+        for name in runner.D27_CANDIDATES
+    ] == [(15, 0), (15, 10), (15, 15)]
+    assert all(
+        d27_candidates[name].bias_guard_mode
+        == "per_new_class_pre_registration_old_only"
+        for name in runner.D27_CANDIDATES
+    )
+    assert all(
+        d27_candidates[name].new_class_bias_offsets
+        == (0.0, -0.5, -1.0, -2.0, -4.0)
+        for name in runner.D27_CANDIDATES
+    )
+    d27_lock = runner._candidate_lock(
+        d27_candidates, runner.CANDIDATE_SET_D27_V1
+    )
+    assert d27_lock["schema"] == "cvs.phase2.d25.candidate_lock.v5"
+    assert d27_lock["candidate_set"] == runner.CANDIDATE_SET_D27_V1
+    assert d27_lock["selection_baseline"] == runner.D25_C0
+    assert all(
+        row["family"] == "d27_per_new_class_bias"
+        for row in d27_lock["candidates"]
+        if row["candidate_id"] in runner.D27_CANDIDATES
+    )
+
     assert tuple(runner.preregistered_candidates()) == (
         runner.IDENTITY_CANDIDATE,
         runner.DIAG_CANDIDATE,
@@ -104,6 +139,7 @@ def test_d26_cli_has_no_query_source_or_clean_surface() -> None:
         runner.CANDIDATE_SET_C3_V1,
         runner.CANDIDATE_SET_D26_V1,
         runner.CANDIDATE_SET_D26_V2,
+        runner.CANDIDATE_SET_D27_V1,
     )
     forbidden = ("query", "truth", "scorer", "role", "quota", "source", "clean")
     destinations = {action.dest.lower() for action in parser._actions}
@@ -190,6 +226,34 @@ def test_full_d26_resource_and_geometry_are_deployment_bounded() -> None:
     assert "prototypes" not in geometry
 
 
+def test_real_d27_fold_records_per_new_class_biases_and_old_guard() -> None:
+    rows, z_rows, fft_rows, rf_rows = _synthetic_blocks()
+    result = runner._evaluate_d26_fold(
+        rows,
+        z_rows,
+        fft_rows,
+        rf_rows,
+        old_classes=("old_0", "old_1", "old_2"),
+        new_classes=("new_0", "new_1"),
+        held_ranks=(0, 1),
+        candidate_id=runner.D27_A,
+        config=D26CompactDiagConfig(
+            stage2b_steps=1,
+            stage2c_steps=0,
+            bias_guard_mode="per_new_class_pre_registration_old_only",
+        ),
+    )
+    assert result["old_support_non_degradation_pass"] is True
+    assert result["old_score_columns_bitwise_unchanged"] is True
+    assert len(result["new_class_biases"]) == 2
+    audit = result["new_group_bias_support_only_audit"]
+    assert audit["bias_guard_mode"] == (
+        "per_new_class_pre_registration_old_only"
+    )
+    assert len(audit["selected_biases"]) == 2
+    assert result["resource"]["new_class_bias_scalar_count"] == 2
+
+
 def _metric(value: float, labels: tuple[str, ...]) -> dict[str, object]:
     return {
         "overall_accuracy": value,
@@ -246,6 +310,30 @@ def test_d26_selector_uses_c0_gates_and_b3_as_reference_only() -> None:
     assert d26["mean_H_delta_vs_B3"] < 0.0
     assert b3["diagnostic_only"] is True
     assert b3["eligible_positive_route"] is False
+
+
+def test_d27_selector_uses_explicit_per_class_bias_candidate_registry() -> None:
+    folds = {
+        runner.IDENTITY_CANDIDATE: _candidate_rows(
+            runner.IDENTITY_CANDIDATE, 0.40, support_pass=True, steps=0
+        ),
+        runner.DIAG_CANDIDATE: _candidate_rows(
+            runner.DIAG_CANDIDATE, 0.70, support_pass=True, steps=60
+        ),
+        runner.D25_C0: _candidate_rows(
+            runner.D25_C0, 0.50, support_pass=True, steps=0
+        ),
+        runner.D27_A: _candidate_rows(runner.D27_A, 0.65, support_pass=True, steps=15),
+        runner.D27_B: _candidate_rows(runner.D27_B, 0.65, support_pass=True, steps=25),
+        runner.D27_C: _candidate_rows(runner.D27_C, 0.65, support_pass=True, steps=30),
+    }
+    selected, decisions = runner._select_d26_candidate(
+        folds, runner.D27_CANDIDATES
+    )
+    assert selected == runner.D27_A
+    d27 = next(row for row in decisions if row["candidate_id"] == runner.D27_A)
+    assert d27["family"] == "d27_per_new_class_bias"
+    assert d27["eligible_positive_route"] is True
 
 
 def test_d26_full_k10_failure_revokes_selected_route() -> None:
