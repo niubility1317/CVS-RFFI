@@ -57,6 +57,8 @@ K=1不存在独立类内半径证据，所有类统一`r=1`，评分严格退化
 
 2026-07-18 07:48 CST直接preflight通过：host `dell-DSS8440`，项目根可见，8×RTX 3090均0%利用率且约10MiB显存；live inventory显示无active training process、无GPU compute context。检查后本地`ssh.exe`和TCP22 ESTABLISHED均为0。按每GPU最多2个训练进程规则，GPU0可用于本轮单个轻量support screen。
 
+仅同步runner、D33 spherical core、B3 Fisher core和launcher到对应远端`code/scripts`/`code/cvsrffi`路径。远端SHA依次为`930a565a...5b50a`、`af4da352...50423f`、`2cc05c0f...5d8ef`、`e5f30c76...ed536`；远端`py_compile`、launcher语法、唯一输出不存在检查通过，diag仍为`14ec9193...1ca`。同步与核验结束后本地SSH/TCP22连接均为0。
+
 ## 完成后回填
 
 待回填完整105行训练日志、逐候选/场景/类结果、独立held矩阵、support合法清单与哈希、资源审计、selection、RECEIPT、远端命令/PID/GPU、artifact SHA、异常与下一轮判断。
