@@ -4,7 +4,7 @@
 
 - experiment ID：`d25_multimodal_concat_support_20260717/support_screen_v1`
 - 日期：2026-07-17；operator：Codex
-- 状态：`V3_OLD_SCORE_FREEZE_FAILED_V4_LOCAL_VERIFIED`；query始终未打开，v4待同步启动。
+- 状态：`DEVELOPMENT_SUPPORT_ONLY_COMPLETE`；v4已在N607完整形成75行support-only矩阵，query始终未打开，未获得formal authority。
 - 目标：在不打开query的前提下，使用同一密封LEO_weak enrollment-only support，对D25的288维分块拼接、不确定度ground-z融合和逐块半径评分执行15fold原子筛选。
 - 假设：保留`z_id160+FFT96+RF32`完整288维，同时把块平方能量从D1的辅助分支94.12%支配修正为按维数比例`5/9、1/3、1/9`，可以保留多表征平均增益并改善旧类与新类floor稳定性。
 - 对比：`Z0_SUPPORT_ONLY`、`B3_SINGLE_IQ_DIAG_FFTRF`、`D25_C0_DIM_CONCAT`、`D25_C1_UF_GROUNDZ`、`D25_C2_BLOCK_RADIUS`。
@@ -128,3 +128,110 @@ D25候选相对Z0必须同时满足：
 - `geometry_audit.json`
 
 不得输出原始IQ、样本级特征、FP32 prototype向量、query prediction、truth sidecar或score table。
+
+## v4完成状态与证据边界
+
+- v4 PID：`3516759`；GPU0；远端运行耗时`12.3914s`，进程已正常退出。
+- 精确运行入口：`D25_GPU=0 bash code/scripts/launch_d25_concat_support_screen_20260717.sh`。
+- 远端log：`/home/szu2070436088/2510044040/CV-SincNet/logs/d25_multimodal_concat_20260717/support_screen_v4.log`。
+- 远端output：`/home/szu2070436088/2510044040/CV-SincNet/runs/d25_multimodal_concat_20260717/output/support_screen_v4`。
+- 本地证据镜像：`E:\type10-7\automation_reports\CV-SincNet\d25_multimodal_concat_support_20260717\remote_output_v4`。
+- `RECEIPT.json`确认5候选×3场景×5fold=75行；`selected_candidate=Z0_SUPPORT_ONLY`、`selected_positive_route=false`。
+- `query_opened=false`、query rows/labels均为0；formal/performance claim均为false；历史int8组件仍为`UNVERIFIED_UNDER_CURRENT_PROTOCOL`。
+- 完整stdout扫描只有最终JSON结果行，无`Traceback`、`RuntimeError`、OOM、`Killed`、warning、独立单词`NaN`或`Inf`。
+
+本节结果全部是开发support内部held-rank诊断，不是正式query准确率，不得外推为5receiver×5seed独立确认性能。
+
+## 75行联合结果
+
+| 候选 | 机制 | 注册前旧类 | 注册后旧类 | seen-new | H(old,new) | 旧类遗忘 | 对Z0非劣fold | 最差旧/新类floor | 判定 |
+|---|---|---:|---:|---:|---:|---:|---:|---:|---|
+| `Z0_SUPPORT_ONLY` | z160 identity-only prototype | 71.11% | 48.33% | 52.67% | 48.97% | 22.78pp | 15/15 | 0%/0% | 回退基线 |
+| `B3_SINGLE_IQ_DIAG_FFTRF` | 288维旧D1式诊断头 | 86.67% | 73.33% | 73.33% | 72.65% | 13.33pp | 7/15 | 0%/0% | 仅诊断，不可晋级 |
+| `D25_C0_DIM_CONCAT` | 160+96+32按维数能量拼接 | 71.67% | 50.56% | 54.00% | 50.35% | 21.11pp | 15/15 | 0%/0% | 非劣但无严格floor改善 |
+| `D25_C1_UF_GROUNDZ` | C0+不确定度ground-z旧类融合 | 65.56% | 50.00% | 42.00% | 43.81% | 15.56pp | 1/15 | 0%/0% | 拒绝直接中心融合 |
+| `D25_C2_BLOCK_RADIUS` | C1+逐块半径似然 | 61.67% | 15.56% | 65.33% | 23.67% | 46.11pp | 0/15 | 0%/0% | 拒绝当前半径评分 |
+
+C0满足15/15fold相对Z0逐类非劣，但因最差floor没有严格改善而按预注册规则不晋升。B3均值明显更高，说明同一received-IQ的FFT96/RF32确有可用身份信息；其60 optimizer steps超过正式50-step上限且旧D1辅助能量占比94.12%，因此只作为机制上界。
+
+## 逐场景结果
+
+| 候选 | LEO_weak场景 | 注册前旧类 | 注册后旧类 | seen-new | H | 遗忘 |
+|---|---|---:|---:|---:|---:|---:|
+| B3 | clear | 90.00% | 75.00% | 82.00% | 77.51% | 15.00pp |
+| B3 | low_elev | 81.67% | 70.00% | 72.00% | 70.25% | 11.67pp |
+| B3 | rain | 88.33% | 75.00% | 66.00% | 70.19% | 13.33pp |
+| C0 | clear | 73.33% | 50.00% | 56.00% | 51.78% | 23.33pp |
+| C0 | low_elev | 66.67% | 46.67% | 54.00% | 46.40% | 20.00pp |
+| C0 | rain | 75.00% | 55.00% | 52.00% | 52.87% | 20.00pp |
+| C1 | clear | 68.33% | 60.00% | 44.00% | 49.92% | 8.33pp |
+| C1 | low_elev | 56.67% | 40.00% | 46.00% | 41.06% | 16.67pp |
+| C1 | rain | 71.67% | 50.00% | 36.00% | 40.43% | 21.67pp |
+| C2 | clear | 70.00% | 21.67% | 64.00% | 30.83% | 48.33pp |
+| C2 | low_elev | 51.67% | 15.00% | 66.00% | 23.12% | 36.67pp |
+| C2 | rain | 63.33% | 10.00% | 66.00% | 17.07% | 53.33pp |
+
+## 逐类floor诊断
+
+旧类class handle与TX绑定为：`cls_75aa→14-10`、`cls_8b02→14-7`、`cls_1f33→20-15`、`cls_f8df→20-19`、`cls_a53c→6-15`、`cls_33bb→8-20`。
+
+| 候选 | 14-10 | 14-7 | 20-15 | 20-19 | 6-15 | 8-20 |
+|---|---:|---:|---:|---:|---:|---:|
+| B3注册后均值 | 70.00% | 66.67% | 90.00% | 63.33% | 60.00% | 90.00% |
+| C0注册后均值 | 13.33% | 70.00% | 86.67% | 20.00% | 23.33% | 90.00% |
+| C1注册后均值 | 50.00% | 33.33% | 83.33% | 16.67% | 26.67% | 90.00% |
+| C2注册后均值 | 0.00% | 3.33% | 20.00% | 3.33% | 0.00% | 66.67% |
+
+| 候选 | new `cls_09f8` | new `cls_1c2a` | new `cls_b8fb` | new `cls_d3af` | new `cls_f608` |
+|---|---:|---:|---:|---:|---:|
+| B3 | 40.00% | 86.67% | 76.67% | 86.67% | 76.67% |
+| C0 | 3.33% | 100.00% | 73.33% | 86.67% | 6.67% |
+| C1 | 10.00% | 83.33% | 53.33% | 53.33% | 10.00% |
+| C2 | 43.33% | 70.00% | 76.67% | 66.67% | 70.00% |
+
+主要floor不是平均域偏移，而是`14-10/20-19/6-15`旧类与`cls_09f8/cls_f608`新类的局部碰撞。后续优化必须显式优化support逐类floor和类间margin，不能只提升总体均值。
+
+## 几何与半径根因
+
+| 候选 | clear碰撞/55 | low_elev碰撞/55 | rain碰撞/55 | 最小gap范围 |
+|---|---:|---:|---:|---:|
+| C0 | 31 | 40 | 37 | -0.8772～-0.6763 |
+| C1/C2 | 18 | 18 | 20 | -0.6763～-0.4541 |
+
+ground-z融合减少了几何碰撞数，却没有改善联合分类。原因是C1/C2的融合旧类平均半径被压到clear/low/rain的`0.0195/0.0297/0.0320`，而新类半径仍为`0.2440/0.2732/0.3388`。C2直接使用独立半径似然后，半径尺度严重不对称，旧类距离惩罚被放大，新类普遍压过旧类，导致旧类遗忘升至46.11pp。结论是停止直接旧中心融合和未校准的独立半径评分；int8地面锚下一轮只作为旧类训练正则/冻结先验，不直接替换target prototype。
+
+## 资源与Pareto
+
+| 候选 | 可训练参数 | epoch/step | 持久状态 | head MAC/query | 相对qKNN MAC | K10 prototype状态比FP16单qKNN | 结论 |
+|---|---:|---:|---:|---:|---:|---:|---|
+| Z0 | 0 | 0/0 | 7,834B | 1,760 | 10.00% | 0.223× | 最轻回退 |
+| B3 | 3,456 | 20/60 | 14,618B | 3,456 | 19.64% | 未作为正式状态基线 | 超50-step，仅诊断 |
+| C0 | 0 | 0/0 | 17,616B | 3,456 | 19.64% | 0.500× | 拼接零训练基线 |
+| C1 | 0 | 0/0 | 43,044B | 3,456 | 19.64% | 1.223× | 当前dense int8逻辑状态拖累 |
+| C2 | 0 | 0/0 | 43,044B | 3,522 | 20.01% | 1.223× | 精度与状态均不取 |
+
+qKNN参考为K10、11类、288维FP16逐样本状态35,200B和17,600 MAC/query。C0将状态减半，head MAC减少80.36%；C1/C2因当前历史int8组件逻辑状态25,428B而超过qKNN，后续必须使用中心+偏移+半径的联合密封紧凑表示后再审计。
+
+| 场景 | backbone ms/physical sample | FFT96 ms/sample | RF32 ms/sample | FFT96+RF32额外开销 |
+|---|---:|---:|---:|---:|
+| clear冷启动 | 35.688 | 0.206 | 0.394 | 0.600ms |
+| low_elev稳态 | 3.143 | 0.151 | 0.392 | 0.543ms |
+| rain稳态 | 3.136 | 0.152 | 0.431 | 0.582ms |
+
+clear含首次CUDA/模型冷启动；稳态额外FFT96+RF32为约`0.56ms/physical sample`。所有算子都在同一received-IQ上计算一次，不增加support行、物理样本或LEO信道视图。
+
+## v4产物哈希
+
+| 产物 | SHA256 |
+|---|---|
+| `training_log.jsonl` | `c756b0f887a1c134a148869c8f925831c6c57e708feae1236de0d2be37af2639` |
+| `selection.json` | `05b969a2b8deefb153c98312b59e7482ef68d697640177621658333f3d45f364` |
+| `support_audit.json` | `f3627ba193f35890158f556a9ea66a945c7c25567f3f7fe23c5a77ad3e1ee04d` |
+| `resource_audit.json` | `31ece6ff1cd7ee313c81f24536490ae2c2680a8a4978be62dd9ddcafd5b482a7` |
+| `geometry_audit.json` | `92b01f0eea74311d49807a4487c26d02d91c870115df221b1ef2ac47bb70d8fc` |
+| `RECEIPT.json` | `e2119d21b38265f8cb64603c74216bd0f12f239208a1c0714725d6f86ebbe181` |
+| `support_screen_v4.stdout.log` | `feb0c9a7094058ad0f3b8bffed0bdec5f41b5718cbdb61675cbc96247c466061` |
+
+## 下一轮决策
+
+保留288维拼接主线，不降维、不构造额外view。下一候选D25-C3采用极轻量block-diagonal适配：只训练288个对角尺度，块内中心化并裁剪，Stage2-B最多20个full-batch step；Stage2-C默认0-step闭式append，可选最多30步且只训练新类suffix，总步数不超过50。优化目标必须含逐类smooth worst-floor与类间margin；旧类prototype、旧score前缀和共享对角参数在注册阶段逐字节冻结。地面int8旧类锚只作为旧类稳定正则，不直接进入最终旧中心评分。正式query仍保持完全不可达，先完成新的support-only原子筛选；只有达到预注册floor门后才允许生成新的方法锁并进入正式独立确认矩阵。

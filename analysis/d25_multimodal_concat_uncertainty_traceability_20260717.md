@@ -2,7 +2,7 @@
 
 日期：2026-07-17
 
-状态：设计锁定，代码实现前
+状态：v4首轮support-only矩阵完成；C0非劣但floor未改善，进入C3对角floor适配研发
 
 主路线：`z_id160 + FFT96 + RF32 = 288D`分块归一化拼接
 
@@ -22,7 +22,7 @@
 \Phi(x)=\left[\sqrt{\pi_z}\,N(z),\sqrt{\pi_f}\,N(f),\sqrt{\pi_r}\,N(r)\right]\in\mathbb R^{288}.
 \]
 
-因此`cos(Phi_i,Phi_j)`严格等于三个块余弦的固定加权和。后续可在support-only开发阶段测试受限块内对角阵，但不得用query选择块权重或对角参数。`0.07/0.63/0.30`保留为既有方法的损失项权重，不作为模态权重。
+因此`cos(Phi_i,Phi_j)`严格等于三个块余弦的固定加权和。后续可在support-only开发阶段测试受限块内对角阵，但不得用query选择块权重或对角参数。必须特别纠正：`项目.md`第103行的`0.07/0.63/0.30`是Phase1有标签训练池、无标签训练池和source validation相对源域全池的互斥数据比例，不是Stage2适配损失权重，也不是模态权重；C3不得挪用这组三个数字。
 
 旧类的Phase1 int8地面锚只存在于160维身份块。对旧类`c`，先在z块执行D24不确定度融合，FFT/RF块保持纯target：
 
@@ -51,10 +51,10 @@ Stage2-C追加新类后，旧类编码payload、块半径、计数、融合权�
 | D25-06 | 用户防遗忘要求 | Stage2-C追加新类后旧类状态和旧类score列冻结 | 同上、tests | verified | old-prefix、payload、score bitwise测试 | 旧类不重估radius |
 | D25-07 | K-shot要求 | K=1/5/10均合法；K=1半径使用预登记`r0` | 同上、tests | verified | K1 old-target/new三块半径测试 | 旧类融合z半径由闭式融合产生 |
 | D25-08 | floor优化 | 记录逐块半径、类间距与`gap=d(p_i,p_j)-rho_i-rho_j` | 同上 | verified | 三种pair role与gap测试 | floor hard gate仍在runner层实现 |
-| D25-09 | 对角阵探索 | 支持288维块内去均值、受限对角阵；FFT/RF不再有不同数量级边界 | 后续adapter模块 | deferred | 待基础闭式路线通过再实现 | 首轮先验证0参数拼接，避免盲目增参 |
-| D25-10 | 快速梯度更新 | Stage2-B最多50正式steps/75探索steps；Stage2-C优先0-step闭式注册 | runner | pending | 完整training log与step审计 | 正式上限以`项目.md`为准 |
+| D25-09 | 对角阵探索 | 支持288维块内去均值、受限对角阵；FFT/RF不再有不同数量级边界 | C3 adapter模块 | in-progress | C0闭式路线15/15fold非劣，已触发C3研发 | 只训练288个对角尺度，不引入dense矩阵 |
+| D25-10 | 快速梯度更新 | Stage2-B最多50正式steps/75探索steps；Stage2-C优先0-step闭式注册 | C3模块、runner | in-progress | 完整training log与step审计 | C3预算锁为Stage2-B≤20、Stage2-C≤30且总计≤50 |
 | D25-11 | query=test | fit/append接口不含query/truth/role/quota/global-assignment | 同上、tests | verified | public API签名与单样本全注册评分测试 | predictor只接受单样本特征 |
-| D25-12 | 资源Pareto | 分列head MAC、FFT `O(TlogT)`、RF32 `O(T)`、状态、临时scratch、延迟、显存 | module audit、runner report | implemented | 模块资源schema测试 | 实测延迟/显存仍待runner |
+| D25-12 | 资源Pareto | 分列head MAC、FFT `O(TlogT)`、RF32 `O(T)`、状态、临时scratch、延迟、显存 | module audit、runner report | verified | v4 `resource_audit.json`和完整报告 | C0状态17,616B、3,456 MAC；稳态FFT96+RF32约0.56ms/sample |
 | D25-13 | 压缩要求 | 默认保存FP32 target原型；FP16/int8仅作预登记Pareto消融 | module audit、D23 bank | deferred | D23格式bank已有独立回归 | D25先锁FP32几何，后做paired format ablation |
 | D25-14 | 正式协议 | 正式路线必须共同密封checkpoint、int8组件和method lock | bundle/runner/report | blocked | 需support-only正向证据后重建 | 历史int8组件仅可用于授权screen |
 | D25-15 | 实验矩阵 | support-only原子门后才进入K1/5/10和正式5RX×5seed×3scene×new5/10/20 | runner/report | blocked | 需D25基础模块与方法锁通过 | 不用平均值绕过逐类floor门 |
@@ -68,7 +68,7 @@ Stage2-C追加新类后，旧类编码payload、块半径、计数、融合权�
 1. `D25-C0-DIM-CONCAT`：固定`(5/9,1/3,1/9)`，纯target原型，0epoch。
 2. `D25-C1-UF-GROUNDZ`：C0+旧类z块D24不确定度融合；FFT/RF仍为target-only，0epoch。
 3. `D25-C2-BLOCK-RADIUS`：C1+逐块收缩半径评分，K1使用预登记`r0`。
-4. `D25-C3-DIAG-FLOOR`：只有C2通过15/15 support-fold原子非劣门后，才启用288维受限对角阵与floor-margin目标。
+4. `D25-C3-DIAG-FLOOR`：v4证据表明C2直接半径评分失败，而C0在15/15fold相对Z0非劣但floor未改善；因此C3从C0拼接几何出发启用288维受限对角阵与floor-margin目标，不继承C2评分。
 
 不恢复辅助权重4，不把地面z锚补零或伪造为地面FFT/RF原型，不把多个候选做ensemble。每个候选对每个物理support始终只产生一条288维行。
 
@@ -91,4 +91,6 @@ Stage2-C追加新类后，旧类编码payload、块半径、计数、融合权�
 - v1远端在import阶段因缺少D24文件退出，support/query均未打开；v2把D24与CIAF纳入closure，`tests/test_run_d25_support_only_concat.py`、D25、D24、CIAF共42项PASS。
 - v2在合法support首fold发现纯target旧类字典序漂移并fail closed，query未打开；v3显式绑定manifest registry，runner+D25+D24+D23共45项PASS。
 - v3发现6列与11列点积kernel导致旧score末位差并fail closed；v4分离计算old prefix/new suffix，runner+D25+D24+D23共46项PASS。
-- 当前追溯状态：13项verified、1项implemented、2项deferred、2项blocked、1项pending。最高风险项是D25-10：受限对角阵/floor梯度目标及正式50-step预算尚未接入隔离runner；当前实现严格对应0epoch闭式拼接—注册核心，不是完整训练路线。
+- v4远端完成5候选×3场景×5fold=75行，query rows/labels均为0。C0注册前旧类、注册后旧类、seen-new和H分别为71.67%、50.56%、54.00%和50.35%，相对Z0满足15/15fold非劣，但最差旧/新类floor仍为0，因此不晋升。
+- C1/C2证明直接用ground-z融合target旧中心或使用未校准独立半径似然会损害联合分类；后续int8地面锚仅作为旧类稳定正则/冻结先验，不直接替换target prototype。
+- 当前追溯状态：14项verified、2项in-progress、1项deferred、2项blocked。最高风险项仍是D25-10：C3受限对角阵/floor梯度目标和≤50-step预算正在实现，尚未接入隔离runner并形成新一轮真实support-only日志。
