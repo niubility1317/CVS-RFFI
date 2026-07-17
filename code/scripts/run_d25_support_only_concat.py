@@ -44,6 +44,15 @@ from cvsrffi.stage2_multimodal_concat_fusion import (  # noqa: E402
     predict_one as predict_one_concat,
     score_one as score_one_concat,
 )
+from cvsrffi.stage2_multimodal_diag_floor_adapter import (  # noqa: E402
+    D25C3Config,
+    D25C3LossWeights,
+    D25C3State,
+    append_stage2c_new_suffix,
+    fit_stage2b_diag_floor,
+    predict_one as predict_one_c3,
+    score_one as score_one_c3,
+)
 
 
 MODE = legacy.MODE
@@ -55,6 +64,12 @@ D25_C0 = "D25-C0-DIM-CONCAT"
 D25_C1 = "D25-C1-UF-GROUNDZ"
 D25_C2 = "D25-C2-BLOCK-RADIUS"
 D25_CANDIDATES = (D25_C0, D25_C1, D25_C2)
+CANDIDATE_SET_D25_V4 = "d25_v4"
+CANDIDATE_SET_C3_V1 = "c3_v1"
+C3_A = "D25-C3A-DIAG-CE-CLOSEDREG"
+C3_B = "D25-C3B-DIAG-CE-NEWFIT"
+C3_C = "D25-C3C-DIAG-STRONGFLOOR-NEWFIT"
+C3_CANDIDATES = (C3_A, C3_B, C3_C)
 CORE_COMMIT = "f349850dbd94841ae2ef8105ac76bd7a9912c128"
 
 
@@ -88,11 +103,13 @@ def _row_hashes(value: np.ndarray) -> list[str]:
     ]
 
 
-def preregistered_candidates() -> dict[str, object]:
-    """Return the five candidates fixed before any support materialization."""
+def preregistered_candidates(
+    candidate_set: str = CANDIDATE_SET_D25_V4,
+) -> dict[str, object]:
+    """Return the candidate set fixed before any support materialization."""
 
     controls = legacy.preregistered_candidates()
-    return {
+    historical = {
         IDENTITY_CANDIDATE: controls[IDENTITY_CANDIDATE],
         DIAG_CANDIDATE: controls[DIAG_CANDIDATE],
         D25_C0: MultimodalConcatConfig(
@@ -108,9 +125,48 @@ def preregistered_candidates() -> dict[str, object]:
             use_ground_identity_fusion=True,
         ),
     }
+    if candidate_set == CANDIDATE_SET_D25_V4:
+        return historical
+    if candidate_set != CANDIDATE_SET_C3_V1:
+        raise D25RunnerError("unknown D25 candidate set")
+    ce_weights = D25C3LossWeights(
+        equal_class_ce=1.0,
+        tail_cvar=0.0,
+        hard_negative_margin=0.0,
+        proximity=0.01,
+    )
+    strong_weights = D25C3LossWeights(
+        equal_class_ce=1.0,
+        tail_cvar=0.20,
+        hard_negative_margin=0.10,
+        proximity=0.01,
+    )
+    return {
+        IDENTITY_CANDIDATE: controls[IDENTITY_CANDIDATE],
+        DIAG_CANDIDATE: controls[DIAG_CANDIDATE],
+        D25_C0: historical[D25_C0],
+        C3_A: D25C3Config(
+            loss_weights=ce_weights,
+            stage2b_steps=20,
+            stage2c_steps=0,
+        ),
+        C3_B: D25C3Config(
+            loss_weights=ce_weights,
+            stage2b_steps=20,
+            stage2c_steps=10,
+        ),
+        C3_C: D25C3Config(
+            loss_weights=strong_weights,
+            stage2b_steps=15,
+            stage2c_steps=15,
+        ),
+    }
 
 
-def _candidate_lock(candidates: Mapping[str, object]) -> dict[str, Any]:
+def _candidate_lock(
+    candidates: Mapping[str, object],
+    candidate_set: str = CANDIDATE_SET_D25_V4,
+) -> dict[str, Any]:
     source_closure = {
         "d25_core_sha256": _sha256_file(
             CODE_ROOT / "cvsrffi" / "stage2_multimodal_concat_fusion.py"
@@ -124,9 +180,16 @@ def _candidate_lock(candidates: Mapping[str, object]) -> dict[str, Any]:
         ),
         "d25_runner_sha256": _sha256_file(Path(__file__).resolve()),
     }
+    if any(isinstance(value, D25C3Config) for value in candidates.values()):
+        source_closure["d25_c3_core_sha256"] = _sha256_file(
+            CODE_ROOT / "cvsrffi" / "stage2_multimodal_diag_floor_adapter.py"
+        )
     rows: list[dict[str, Any]] = []
     for candidate_id, config in candidates.items():
-        if isinstance(config, MultimodalConcatConfig):
+        if isinstance(config, D25C3Config):
+            config_row = config.lock_payload()
+            family = "d25_c3"
+        elif isinstance(config, MultimodalConcatConfig):
             config_row: dict[str, Any] = {
                 "block_energy": list(config.block_energy),
                 "r0_by_block": list(config.r0_by_block),
@@ -147,18 +210,27 @@ def _candidate_lock(candidates: Mapping[str, object]) -> dict[str, Any]:
                 "candidate_id": candidate_id,
                 "family": family,
                 "config": config_row,
-                "eligible_positive_route": candidate_id in D25_CANDIDATES,
+                "eligible_positive_route": candidate_id
+                in (C3_CANDIDATES if candidate_set == CANDIDATE_SET_C3_V1 else D25_CANDIDATES),
             }
         )
     lock = {
-        "schema": "cvs.phase2.d25.candidate_lock.v1",
+        "schema": (
+            "cvs.phase2.d25.candidate_lock.v2"
+            if candidate_set == CANDIDATE_SET_C3_V1
+            else "cvs.phase2.d25.candidate_lock.v1"
+        ),
         "core_commit": CORE_COMMIT,
         "held_ranks": [list(value) for value in HELD_RANKS],
         "candidates": rows,
-        "selection_baseline": IDENTITY_CANDIDATE,
+        "selection_baseline": (
+            D25_C0 if candidate_set == CANDIDATE_SET_C3_V1 else IDENTITY_CANDIDATE
+        ),
         "diagnostic_comparator": DIAG_CANDIDATE,
         "source_closure": source_closure,
     }
+    if candidate_set == CANDIDATE_SET_C3_V1:
+        lock["candidate_set"] = candidate_set
     return {**lock, "sha256": hashlib.sha256(_canonical_bytes(lock)).hexdigest()}
 
 
@@ -359,6 +431,196 @@ def _evaluate_d25_fold(
     }
 
 
+def _c3_geometry(state: D25C3State) -> dict[str, Any]:
+    prototypes = np.asarray(state.prototypes, dtype=np.float32)
+    pairs: list[dict[str, Any]] = []
+    for left in range(len(state.classes)):
+        for right in range(left + 1, len(state.classes)):
+            distance = float(
+                1.0
+                - np.dot(
+                    prototypes[left].astype(np.float32),
+                    prototypes[right].astype(np.float32),
+                )
+            )
+            role = (
+                "old_old"
+                if right < state.old_class_count
+                else ("new_new" if left >= state.old_class_count else "old_new")
+            )
+            pairs.append(
+                {
+                    "left": state.classes[left],
+                    "right": state.classes[right],
+                    "role": role,
+                    "cosine_distance": distance,
+                    "collision_below_0p05": distance < 0.05,
+                }
+            )
+    distances = [float(row["cosine_distance"]) for row in pairs]
+    return {
+        "schema": "cvs.phase2.d25_c3.prototype_geometry.v1",
+        "class_count": len(state.classes),
+        "old_class_count": state.old_class_count,
+        "pair_count": len(pairs),
+        "minimum_cosine_distance": min(distances) if distances else None,
+        "collision_count_below_0p05": sum(
+            int(bool(row["collision_below_0p05"])) for row in pairs
+        ),
+        "pairs": pairs,
+    }
+
+
+def _evaluate_c3_fold(
+    rows: Mapping[str, np.ndarray],
+    z_id160: np.ndarray,
+    fft96: np.ndarray,
+    rf32: np.ndarray,
+    *,
+    old_classes: tuple[str, ...],
+    new_classes: tuple[str, ...],
+    held_ranks: tuple[int, int],
+    candidate_id: str,
+    config: D25C3Config,
+) -> dict[str, Any]:
+    labels = np.asarray(rows["labels"]).astype(str)
+    ranks = np.asarray(rows["ranks"], dtype=np.int64)
+    held = np.isin(ranks, np.asarray(held_ranks, dtype=np.int64))
+    train = ~held
+    old = np.isin(labels, np.asarray(old_classes))
+    new = np.isin(labels, np.asarray(new_classes))
+    if (
+        int(np.sum(train & old)) != 8 * len(old_classes)
+        or int(np.sum(train & new)) != 8 * len(new_classes)
+        or int(np.sum(held & old)) != 2 * len(old_classes)
+        or int(np.sum(held & new)) != 2 * len(new_classes)
+    ):
+        raise D25RunnerError("C3 leave-two-out class symmetry drift")
+    features = build_concat288(z_id160, fft96, rf32)
+    before_fit = fit_stage2b_diag_floor(
+        features[train & old],
+        labels[train & old],
+        old_classes,
+        config=config,
+    )
+    before = before_fit.state
+    after_fit = append_stage2c_new_suffix(
+        before,
+        features[train & new],
+        labels[train & new],
+        new_classes,
+    )
+    after = after_fit.state
+    if before.classes != old_classes or after.classes != old_classes + new_classes:
+        raise D25RunnerError("C3 registered class order drift")
+    if (
+        before.old_prefix_sha256 != after.old_prefix_sha256
+        or before.shared_sha256 != after.shared_sha256
+    ):
+        raise D25RunnerError("C3 shared or old prefix changed after registration")
+
+    held_old = features[held & old]
+    held_new = features[held & new]
+    before_predictions = [predict_one_c3(before, row)[0] for row in held_old]
+    after_old_predictions = [predict_one_c3(after, row)[0] for row in held_old]
+    after_new_predictions = [predict_one_c3(after, row)[0] for row in held_new]
+    old_scores_unchanged = all(
+        np.array_equal(
+            score_one_c3(before, row),
+            score_one_c3(after, row)[: len(old_classes)],
+        )
+        for row in held_old
+    )
+    if not old_scores_unchanged:
+        raise D25RunnerError("C3 old raw score prefix changed after registration")
+
+    fit_old_features = features[train & old]
+    fit_old_labels = labels[train & old]
+    fit_before_predictions = [
+        predict_one_c3(before, row)[0] for row in fit_old_features
+    ]
+    fit_after_predictions = [
+        predict_one_c3(after, row)[0] for row in fit_old_features
+    ]
+    fit_before = legacy._metric_block(
+        fit_old_labels, fit_before_predictions, old_classes
+    )
+    fit_after = legacy._metric_block(
+        fit_old_labels, fit_after_predictions, old_classes
+    )
+    tolerance = 1.0e-12
+    fit_classwise_non_degradation = all(
+        float(fit_after["per_class_accuracy"][label]) + tolerance
+        >= float(fit_before["per_class_accuracy"][label])
+        for label in old_classes
+    )
+    fit_floor_non_degradation = (
+        float(fit_after["class_floor_accuracy"]) + tolerance
+        >= float(fit_before["class_floor_accuracy"])
+    )
+    old_support_non_degradation = bool(
+        fit_classwise_non_degradation and fit_floor_non_degradation
+    )
+
+    before_old = legacy._metric_block(
+        labels[held & old], before_predictions, old_classes
+    )
+    after_old = legacy._metric_block(
+        labels[held & old], after_old_predictions, old_classes
+    )
+    after_new = legacy._metric_block(
+        labels[held & new], after_new_predictions, new_classes
+    )
+    resource = dict(after.resource_audit())
+    resource.update(
+        {
+            "old_support_non_degradation_pass": old_support_non_degradation,
+            "old_score_columns_bitwise_unchanged_after_registration": True,
+            "complete_loss_trace": list(before_fit.training_trace)
+            + list(after_fit.training_trace),
+            "query_features_used_for_fit": False,
+            "query_labels_used_for_fit": False,
+            "source_sample_access": False,
+            "clean_sample_access": False,
+        }
+    )
+    return {
+        "candidate_id": candidate_id,
+        "held_ranks": list(held_ranks),
+        "fit_k_shot": 8,
+        "before_old": before_old,
+        "after_old": after_old,
+        "after_new": after_new,
+        "H_old_new": legacy._harmonic(
+            float(after_old["overall_accuracy"]),
+            float(after_new["overall_accuracy"]),
+        ),
+        "forgetting": float(
+            before_old["overall_accuracy"] - after_old["overall_accuracy"]
+        ),
+        "joint_floor": float(
+            min(
+                float(after_old["class_floor_accuracy"]),
+                float(after_new["class_floor_accuracy"]),
+            )
+        ),
+        "old_score_columns_bitwise_unchanged": True,
+        "old_prefix_sha256_before": before.old_prefix_sha256,
+        "old_prefix_sha256_after": after.old_prefix_sha256,
+        "shared_sha256_before": before.shared_sha256,
+        "shared_sha256_after": after.shared_sha256,
+        "fit_old_before_registration": fit_before,
+        "fit_old_after_registration": fit_after,
+        "old_support_classwise_non_degradation": fit_classwise_non_degradation,
+        "old_support_floor_non_degradation": fit_floor_non_degradation,
+        "old_support_non_degradation_pass": old_support_non_degradation,
+        "training_trace": list(before_fit.training_trace)
+        + list(after_fit.training_trace),
+        "geometry_summary": _c3_geometry(after),
+        "resource": resource,
+    }
+
+
 def _fold_guard(row: Mapping[str, Any], baseline: Mapping[str, Any]) -> bool:
     tolerance = 1.0e-12
     old_classwise = all(
@@ -446,6 +708,170 @@ def _select_candidate(
         else IDENTITY_CANDIDATE
     )
     return selected, decisions
+
+
+def _pooled_scenario_classwise(
+    rows: Sequence[Mapping[str, Any]], metric_key: str
+) -> dict[str, dict[str, float]]:
+    result: dict[str, dict[str, float]] = {}
+    for scenario in legacy.FORMAL_LEO_WEAK_SCENARIOS:
+        selected = [row for row in rows if row.get("scenario") == scenario]
+        if len(selected) != len(HELD_RANKS):
+            raise D25RunnerError("C3 pooled scenario fold cardinality drift")
+        labels = tuple(selected[0][metric_key]["per_class_accuracy"])
+        result[scenario] = {
+            label: float(
+                np.mean(
+                    [
+                        float(row[metric_key]["per_class_accuracy"][label])
+                        for row in selected
+                    ]
+                )
+            )
+            for label in labels
+        }
+    return result
+
+
+def _select_c3_candidate(
+    folds_by_candidate: Mapping[str, Sequence[Mapping[str, Any]]]
+) -> tuple[str, list[dict[str, Any]]]:
+    baseline_rows = list(folds_by_candidate[D25_C0])
+    baseline_old = _pooled_scenario_classwise(baseline_rows, "after_old")
+    baseline_new = _pooled_scenario_classwise(baseline_rows, "after_new")
+    baseline_h = float(np.mean([float(row["H_old_new"]) for row in baseline_rows]))
+    baseline_forgetting = float(
+        np.mean([float(row["forgetting"]) for row in baseline_rows])
+    )
+    decisions: list[dict[str, Any]] = []
+    eligible: list[tuple[str, float, float, float, float, int]] = []
+    for candidate_id, raw_rows in folds_by_candidate.items():
+        rows = list(raw_rows)
+        aggregate = legacy._aggregate_candidate(rows)
+        decision: dict[str, Any] = {
+            **aggregate,
+            "candidate_id": candidate_id,
+            "family": (
+                "d25_c3"
+                if candidate_id in C3_CANDIDATES
+                else ("d25" if candidate_id == D25_C0 else "control")
+            ),
+            "fallback": candidate_id == D25_C0,
+            "diagnostic_only": candidate_id == DIAG_CANDIDATE,
+            "eligible_positive_route": False,
+        }
+        if candidate_id not in C3_CANDIDATES:
+            decisions.append(decision)
+            continue
+        candidate_old = _pooled_scenario_classwise(rows, "after_old")
+        candidate_new = _pooled_scenario_classwise(rows, "after_new")
+        safety = True
+        old_floor_gain: list[float] = []
+        new_floor_gain: list[float] = []
+        for scenario in legacy.FORMAL_LEO_WEAK_SCENARIOS:
+            for label, baseline_value in baseline_old[scenario].items():
+                safety = safety and (
+                    candidate_old[scenario][label] + 1.0e-12
+                    >= baseline_value - 0.10
+                )
+            for label, baseline_value in baseline_new[scenario].items():
+                safety = safety and (
+                    candidate_new[scenario][label] + 1.0e-12
+                    >= baseline_value - 0.10
+                )
+            old_floor_gain.append(
+                min(candidate_old[scenario].values())
+                - min(baseline_old[scenario].values())
+            )
+            new_floor_gain.append(
+                min(candidate_new[scenario].values())
+                - min(baseline_new[scenario].values())
+            )
+        old_support_pass = all(
+            bool(row["old_support_non_degradation_pass"]) for row in rows
+        )
+        mean_h = float(np.mean([float(row["H_old_new"]) for row in rows]))
+        mean_forgetting = float(
+            np.mean([float(row["forgetting"]) for row in rows])
+        )
+        floor_pass = bool(
+            all(value >= 0.10 - 1.0e-12 for value in old_floor_gain)
+            and all(value >= 0.10 - 1.0e-12 for value in new_floor_gain)
+        )
+        balance_pass = bool(
+            mean_h + 1.0e-12 >= baseline_h
+            and mean_forgetting <= baseline_forgetting + 1.0e-12
+        )
+        eligible_positive = bool(
+            safety and floor_pass and balance_pass and old_support_pass
+        )
+        decision.update(
+            {
+                "pooled_per_class_safety_vs_C0_pass": safety,
+                "pooled_old_floor_gain_by_scenario": dict(
+                    zip(legacy.FORMAL_LEO_WEAK_SCENARIOS, old_floor_gain)
+                ),
+                "pooled_new_floor_gain_by_scenario": dict(
+                    zip(legacy.FORMAL_LEO_WEAK_SCENARIOS, new_floor_gain)
+                ),
+                "pooled_floor_gate_pass": floor_pass,
+                "old_support_non_degradation_all_folds": old_support_pass,
+                "mean_H_noninferior_vs_C0": mean_h + 1.0e-12 >= baseline_h,
+                "mean_forgetting_noninferior_vs_C0": mean_forgetting
+                <= baseline_forgetting + 1.0e-12,
+                "eligible_positive_route": eligible_positive,
+            }
+        )
+        decisions.append(decision)
+        if eligible_positive:
+            steps = int(rows[0]["resource"]["total_optimizer_steps"])
+            eligible.append(
+                (
+                    candidate_id,
+                    min(min(old_floor_gain), min(new_floor_gain)),
+                    float(aggregate["worst_joint_floor"]),
+                    mean_h,
+                    -mean_forgetting,
+                    -steps,
+                )
+            )
+    selected = (
+        max(eligible, key=lambda value: value[1:])[0] if eligible else D25_C0
+    )
+    return selected, decisions
+
+
+def _apply_full_k10_c3_old_support_gate(
+    selected_id: str,
+    candidate_decisions: list[dict[str, Any]],
+    deployment_resources: Mapping[str, Mapping[str, Mapping[str, Any]]],
+) -> tuple[str, str | None]:
+    for decision in candidate_decisions:
+        candidate_id = str(decision["candidate_id"])
+        if candidate_id not in C3_CANDIDATES:
+            continue
+        by_scenario = {
+            scenario: bool(
+                deployment_resources[candidate_id][scenario][
+                    "old_support_non_degradation_pass"
+                ]
+            )
+            for scenario in legacy.FORMAL_LEO_WEAK_SCENARIOS
+        }
+        full_pass = all(by_scenario.values())
+        decision["full_k10_old_support_non_degradation_by_scenario"] = by_scenario
+        decision["full_k10_old_support_non_degradation_pass"] = full_pass
+        decision["eligible_positive_route"] = bool(
+            decision.get("eligible_positive_route", False) and full_pass
+        )
+    if selected_id not in C3_CANDIDATES:
+        return selected_id, None
+    selected_decision = next(
+        row for row in candidate_decisions if row["candidate_id"] == selected_id
+    )
+    if bool(selected_decision["full_k10_old_support_non_degradation_pass"]):
+        return selected_id, None
+    return D25_C0, "FULL_K10_OLD_SUPPORT_NON_DEGRADATION_FAILED"
 
 
 def _full_d25_state_audit(
@@ -537,6 +963,97 @@ def _full_d25_state_audit(
     return resource, after.geometry_audit()
 
 
+def _full_c3_state_audit(
+    rows: Mapping[str, np.ndarray],
+    z_id160: np.ndarray,
+    fft96: np.ndarray,
+    rf32: np.ndarray,
+    *,
+    old_classes: tuple[str, ...],
+    new_classes: tuple[str, ...],
+    config: D25C3Config,
+) -> tuple[dict[str, Any], dict[str, Any]]:
+    labels = np.asarray(rows["labels"]).astype(str)
+    old = np.isin(labels, np.asarray(old_classes))
+    new = np.isin(labels, np.asarray(new_classes))
+    features = build_concat288(z_id160, fft96, rf32)
+    fit_started = time.perf_counter()
+    before_fit = fit_stage2b_diag_floor(
+        features[old], labels[old], old_classes, config=config
+    )
+    before = before_fit.state
+    after_fit = append_stage2c_new_suffix(
+        before, features[new], labels[new], new_classes
+    )
+    after = after_fit.state
+    fit_elapsed_ms = (time.perf_counter() - fit_started) * 1000.0
+    if (
+        before.old_prefix_sha256 != after.old_prefix_sha256
+        or before.shared_sha256 != after.shared_sha256
+    ):
+        raise D25RunnerError("C3 deployment frozen state drift")
+    before_old_predictions = [predict_one_c3(before, row)[0] for row in features[old]]
+    after_old_predictions = [predict_one_c3(after, row)[0] for row in features[old]]
+    before_old_metric = legacy._metric_block(
+        labels[old], before_old_predictions, old_classes
+    )
+    after_old_metric = legacy._metric_block(
+        labels[old], after_old_predictions, old_classes
+    )
+    old_support_non_degradation = all(
+        float(after_old_metric["per_class_accuracy"][label]) + 1.0e-12
+        >= float(before_old_metric["per_class_accuracy"][label])
+        for label in old_classes
+    )
+    score_elapsed_ms: list[float] = []
+    for feature in features:
+        score_started = time.perf_counter()
+        score_one_c3(after, feature)
+        score_elapsed_ms.append((time.perf_counter() - score_started) * 1000.0)
+    resource = dict(after.resource_audit())
+    registered_count = len(old_classes) + len(new_classes)
+    identity_qknn_macs = registered_count * 10 * 160
+    identity_qknn_fp16_state_bytes = registered_count * 10 * 160 * 2
+    resource.update(
+        {
+            "deployment_k_shot": 10,
+            "registered_class_count": registered_count,
+            "old_prefix_sha256": after.old_prefix_sha256,
+            "shared_sha256": after.shared_sha256,
+            "old_score_columns_bitwise_unchanged_after_registration": True,
+            "old_support_before_registration": before_old_metric,
+            "old_support_after_registration": after_old_metric,
+            "old_support_non_degradation_pass": old_support_non_degradation,
+            "identity_single_qknn_estimated_score_macs_per_query": identity_qknn_macs,
+            "identity_single_qknn_fp16_sample_state_bytes": identity_qknn_fp16_state_bytes,
+            "estimated_score_mac_ratio_vs_identity_single_qknn": float(
+                resource["estimated_head_macs_per_query"] / identity_qknn_macs
+            ),
+            "persistent_state_ratio_vs_identity_single_qknn_fp16": float(
+                resource["persistent_state_bytes"]
+                / identity_qknn_fp16_state_bytes
+            ),
+            "support_adaptation_and_registration_elapsed_ms": fit_elapsed_ms,
+            "batch1_head_latency_mean_ms": float(np.mean(score_elapsed_ms)),
+            "batch1_head_latency_p95_ms": float(
+                np.quantile(np.asarray(score_elapsed_ms, dtype=np.float64), 0.95)
+            ),
+            "batch1_head_latency_sample_count": len(score_elapsed_ms),
+            "head_peak_cuda_memory_bytes": 0,
+            "head_runtime": "numpy_cpu_fp32",
+            "complete_loss_trace": list(before_fit.training_trace)
+            + list(after_fit.training_trace),
+            "query_role_oracle_access": False,
+            "query_true_batch_class_count_access": False,
+            "query_class_quota_access": False,
+            "query_batch_global_assignment": False,
+            "source_sample_access": False,
+            "clean_sample_access": False,
+        }
+    )
+    return resource, _c3_geometry(after)
+
+
 def run(
     *,
     before_root: Path,
@@ -560,13 +1077,14 @@ def run(
     output: Path,
     device_name: str = "auto",
     mode: str = MODE,
+    candidate_set: str = CANDIDATE_SET_D25_V4,
 ) -> dict[str, Any]:
     if mode != MODE:
         raise D25RunnerError("D25 runner is development support-only")
     if output.exists():
         raise D25RunnerError("output path already exists")
-    candidates = preregistered_candidates()
-    candidate_lock = _candidate_lock(candidates)
+    candidates = preregistered_candidates(candidate_set)
+    candidate_lock = _candidate_lock(candidates, candidate_set)
 
     before_preopen_manifest = legacy._preopen_manifest(
         before_root,
@@ -761,7 +1279,19 @@ def run(
     for candidate_id, config in candidates.items():
         for scenario in legacy.FORMAL_LEO_WEAK_SCENARIOS:
             for fold_index, held_ranks in enumerate(HELD_RANKS):
-                if candidate_id in D25_CANDIDATES:
+                if isinstance(config, D25C3Config):
+                    row = _evaluate_c3_fold(
+                        scene_rows[scenario],
+                        scene_z[scenario],
+                        scene_fft[scenario],
+                        scene_rf[scenario],
+                        old_classes=old_classes,
+                        new_classes=new_classes,
+                        held_ranks=held_ranks,
+                        candidate_id=candidate_id,
+                        config=config,
+                    )
+                elif candidate_id in D25_CANDIDATES:
                     if not isinstance(config, MultimodalConcatConfig):
                         raise D25RunnerError("D25 candidate config drift")
                     row = _evaluate_d25_fold(
@@ -809,19 +1339,44 @@ def run(
         * len(legacy.FORMAL_LEO_WEAK_SCENARIOS)
         * len(HELD_RANKS)
     )
-    if len(training_log) != expected_rows or expected_rows != 75:
+    if len(training_log) != expected_rows:
         raise D25RunnerError("D25 training-log cardinality drift")
-    selected_id, candidate_decisions = _select_candidate(folds_by_candidate)
+    if candidate_set == CANDIDATE_SET_D25_V4 and expected_rows != 75:
+        raise D25RunnerError("D25 training-log cardinality drift")
+    if candidate_set == CANDIDATE_SET_C3_V1 and expected_rows != 90:
+        raise D25RunnerError("D25 training-log cardinality drift")
+    selected_id, candidate_decisions = (
+        _select_c3_candidate(folds_by_candidate)
+        if candidate_set == CANDIDATE_SET_C3_V1
+        else _select_candidate(folds_by_candidate)
+    )
 
     deployment_resources: dict[str, dict[str, Any]] = {
         candidate_id: {} for candidate_id in candidates
     }
+    geometry_ids = (
+        (D25_C0,) + C3_CANDIDATES
+        if candidate_set == CANDIDATE_SET_C3_V1
+        else D25_CANDIDATES
+    )
     geometry_matrix: dict[str, dict[str, Any]] = {
-        candidate_id: {} for candidate_id in D25_CANDIDATES
+        candidate_id: {} for candidate_id in geometry_ids
     }
     for candidate_id, config in candidates.items():
         for scenario in legacy.FORMAL_LEO_WEAK_SCENARIOS:
-            if candidate_id in D25_CANDIDATES:
+            if isinstance(config, D25C3Config):
+                resource, geometry = _full_c3_state_audit(
+                    scene_rows[scenario],
+                    scene_z[scenario],
+                    scene_fft[scenario],
+                    scene_rf[scenario],
+                    old_classes=old_classes,
+                    new_classes=new_classes,
+                    config=config,
+                )
+                deployment_resources[candidate_id][scenario] = resource
+                geometry_matrix[candidate_id][scenario] = geometry
+            elif candidate_id in D25_CANDIDATES:
                 resource, geometry = _full_d25_state_audit(
                     component,
                     scene_rows[scenario],
@@ -850,6 +1405,15 @@ def run(
                         device=device,
                     )
                 )
+
+    pre_full_k10_selected_id = selected_id
+    full_k10_fallback_reason: str | None = None
+    if candidate_set == CANDIDATE_SET_C3_V1:
+        selected_id, full_k10_fallback_reason = (
+            _apply_full_k10_c3_old_support_gate(
+                selected_id, candidate_decisions, deployment_resources
+            )
+        )
 
     elapsed = time.perf_counter() - start
     support_audit = {
@@ -901,13 +1465,30 @@ def run(
     selection = {
         "schema": "cvs.phase2.d25.selection.v1",
         "selected_candidate_id": selected_id,
-        "selected_positive_route": selected_id in D25_CANDIDATES,
+        "pre_full_k10_selected_candidate_id": pre_full_k10_selected_id,
+        "full_k10_fallback_reason": full_k10_fallback_reason,
+        "selected_positive_route": selected_id
+        in (
+            C3_CANDIDATES
+            if candidate_set == CANDIDATE_SET_C3_V1
+            else D25_CANDIDATES
+        ),
         "fallback_to_identity": selected_id == IDENTITY_CANDIDATE,
-        "selection_baseline": IDENTITY_CANDIDATE,
+        "selection_baseline": (
+            D25_C0 if candidate_set == CANDIDATE_SET_C3_V1 else IDENTITY_CANDIDATE
+        ),
         "diagnostic_comparator": DIAG_CANDIDATE,
-        "eligible_candidate_ids": list(D25_CANDIDATES),
+        "eligible_candidate_ids": list(
+            C3_CANDIDATES
+            if candidate_set == CANDIDATE_SET_C3_V1
+            else D25_CANDIDATES
+        ),
         "selection_rule": (
-            "all_15_folds_classwise_noninferior_vs_Z0_and_strict_worst_"
+            "C3:_all_fold_old_support_non_degradation,_per_scenario_pooled_"
+            "old_and_new_floor_gain>=0.10,_per_class_drop<=0.10,_H_and_"
+            "forgetting_noninferior_vs_C0;_B3_diagnostic_only"
+            if candidate_set == CANDIDATE_SET_C3_V1
+            else "all_15_folds_classwise_noninferior_vs_Z0_and_strict_worst_"
             "after_old_or_joint_floor_improvement;_B3_is_diagnostic_only"
         ),
         "candidate_lock_sha256": candidate_lock["sha256"],
@@ -931,7 +1512,9 @@ def run(
         },
     )
 
-    current_source_closure = _candidate_lock(candidates)["source_closure"]
+    current_source_closure = _candidate_lock(candidates, candidate_set)[
+        "source_closure"
+    ]
     if current_source_closure != candidate_lock["source_closure"]:
         raise D25RunnerError("D25 source closure changed after support opening")
     receipt = {
@@ -943,7 +1526,15 @@ def run(
         "source_closure_unchanged_after_support": True,
         "candidate_lock_sha256": candidate_lock["sha256"],
         "selected_candidate_id": selected_id,
-        "selected_positive_route": selected_id in D25_CANDIDATES,
+        "pre_full_k10_selected_candidate_id": pre_full_k10_selected_id,
+        "full_k10_fallback_reason": full_k10_fallback_reason,
+        "selected_positive_route": selected_id
+        in (
+            C3_CANDIDATES
+            if candidate_set == CANDIDATE_SET_C3_V1
+            else D25_CANDIDATES
+        ),
+        "candidate_set": candidate_set,
         "formal_launch_authority": False,
         "formal_metric_claim_allowed": False,
         "performance_claim_allowed": False,
@@ -1008,6 +1599,11 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--device", default="auto")
     parser.add_argument("--mode", choices=(MODE,), required=True)
+    parser.add_argument(
+        "--candidate-set",
+        choices=(CANDIDATE_SET_D25_V4, CANDIDATE_SET_C3_V1),
+        default=CANDIDATE_SET_D25_V4,
+    )
     return parser
 
 
@@ -1043,6 +1639,7 @@ def main() -> int:
         output=args.output,
         device_name=args.device,
         mode=args.mode,
+        candidate_set=args.candidate_set,
     )
     print(json.dumps(result, ensure_ascii=False, sort_keys=True))
     return 0
