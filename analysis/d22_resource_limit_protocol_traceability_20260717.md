@@ -8,7 +8,7 @@
 
 ## 项目同步
 
-`项目.md`第10.3.1节已同步为一般adapter不超过80,000参数、30epoch和256KB持久状态。第7.1节用户已授权的`support-only sparse key-layer delta`仍保持更严格的专项边界：更新原checkpoint参数不超过50,000、最多5epoch和50 optimizer step、SGD无momentum优先、FP16 patch与head合计不超过256KB。
+`项目.md`第10.3.1节已同步为一般adapter不超过80,000参数、30epoch和256KB持久状态。用户随后再次明确“5epoch太少”，因此第7.1节的`support-only sparse key-layer delta`也同步采用不超过80,000可训练参数、30epoch和50 optimizer step；仍优先SGD无momentum，FP16 patch与head合计不超过256KB。
 
 本次只修改资源口径，不改变以下硬约束：
 
