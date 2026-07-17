@@ -41,6 +41,7 @@
 - 已同步runner→`code/scripts/run_d25_support_only_concat.py`、D28核心→`code/cvsrffi/stage2_support_evidence_gate.py`、launcher→`code/scripts/launch_d28_evidence_gate_support_20260718.sh`；远端5项SHA与方法锁一致，`py_compile`、`bash -n`、output不存在门均PASS。同步与验证后本地`ssh.exe`及N607/bridge TCP22连接均为0。
 - 04:25 CST使用GPU0启动，PID=`3645546`；log=`/home/szu2070436088/2510044040/CV-SincNet/logs/d28_evidence_gate_20260718/support_screen_v1.log`，output=`/home/szu2070436088/2510044040/CV-SincNet/runs/d28_evidence_gate_20260718/output/support_screen_v1`。首次短探针显示进程仍正常运行，未作干预；每次SSH后本地连接均清零。
 - v1在16.946秒完成90/90行，D28-B/C均因OOF identity安全门15/15fold禁用并精确透传D27-B。分析发现v1的D28组合resource字段`batch1_head_latency_*`只计gate校正、漏计D27 score；同时把完整OOF审计JSON误计入星上predictor state。性能、协议、MAC与loss不受影响，但延迟/状态Pareto字段不完整。现已修复为逐样本计时`D27 score+gate correction`，并将完整OOF trace保留为外部证据、predictor只计系数/标准化/32B头；73项回归再次PASS。最终v2 runner SHA256=`685c25a34f172c17c334a10d9c45284a0fc9f0955d9fbbc294a25d85e80d64e5`，D28核心SHA256=`dd9f06bae0e8c6137fae8ebd2e14b2d0d2d33765a15815036af0ceaeb1c1db0a`，launcher SHA256=`e44dfb3cf8b6f3632ad86dcd92d9d8f63183c8ee312dc51b2254fba41dbf1d8b`；将用独立`support_screen_v2`重跑，不覆盖v1证据。
+- 04:36 CST v2远端SHA、`py_compile`、`bash -n`及output不存在门PASS；GPU0启动PID=`3652104`，log/output分别为`support_screen_v2.log`与`output/support_screen_v2`。
 
 ## 完成后补充
 
