@@ -44,7 +44,7 @@ Stage2-C追加新类后，旧类编码payload、块半径、计数、融合权�
 | ID | Source section | Requirement | Target files | Status | Verification | Notes |
 |---|---|---|---|---|---|---|
 | D25-01 | 用户最新决定 | 最终特征采用高维拼接，不压回160维 | `code/cvsrffi/stage2_multimodal_concat_fusion.py` | verified | `test_concat_is_288d...` | 默认块能量按维数比例 |
-| D25-02 | `项目.md` Phase2 | 每个物理样本只有一个LEO_weak观测；三个块不增加K或support行 | 同上、runner receipt | implemented | 资源字段与错行拒绝测试 | runner receipt仍待接入 |
+| D25-02 | `项目.md` Phase2 | 每个物理样本只有一个LEO_weak观测；三个块不增加K或support行 | 同上、runner receipt | verified | 资源字段、错行拒绝、operator lineage测试 | runner写`support_view_count=1`与`derived_support_rows=0` |
 | D25-03 | D22失败分析 | 删除D1辅助分支94.12%能量支配 | 同上 | verified | W4与D25块能量同测 | 不删除FFT96/RF32维度 |
 | D25-04 | 用户指定三层原型 | int8 ground-old仅提供身份先验；FP32 target-old做域校正；FP32 target-new纯target注册 | 同上 | verified | ground-z隔离与纯target-new测试 | ground没有FFT/RF字段 |
 | D25-05 | D24设计 | 旧类z块使用ground/target不确定度融合 | 同上 | verified | D24依赖回归与ground component替换测试 | 复用D24数学语义，不改D24历史模块 |
@@ -58,6 +58,8 @@ Stage2-C追加新类后，旧类编码payload、块半径、计数、融合权�
 | D25-13 | 压缩要求 | 默认保存FP32 target原型；FP16/int8仅作预登记Pareto消融 | module audit、D23 bank | deferred | D23格式bank已有独立回归 | D25先锁FP32几何，后做paired format ablation |
 | D25-14 | 正式协议 | 正式路线必须共同密封checkpoint、int8组件和method lock | bundle/runner/report | blocked | 需support-only正向证据后重建 | 历史int8组件仅可用于授权screen |
 | D25-15 | 实验矩阵 | support-only原子门后才进入K1/5/10和正式5RX×5seed×3scene×new5/10/20 | runner/report | blocked | 需D25基础模块与方法锁通过 | 不用平均值绕过逐类floor门 |
+| D25-16 | D25 runner设计 | 独立runner复用D19密封support控制面，但不修改历史D19 runner；固定Z0/B3/C0/C1/C2共75行 | `code/scripts/run_d25_support_only_concat.py` | verified | 候选锁、B3等价、75行矩阵测试 | B3仅diagnostic，不可晋级 |
+| D25-17 | 证据闭包 | support打开前锁定D25核心、D19 helper、D25 runner SHA，并输出6个无样本特征artifact | runner、tests | verified | source closure与artifact schema测试 | support后再次验证closure未变化 |
 
 ## 首轮候选锁
 
@@ -82,4 +84,6 @@ Stage2-C追加新类后，旧类编码payload、块半径、计数、融合权�
 - `ssr-gpu`解释器：`C:\Users\lh594\.conda\envs\ssr-gpu\python.exe`。
 - `python -m py_compile code\cvsrffi\stage2_multimodal_concat_fusion.py tests\test_stage2_multimodal_concat_fusion.py`：PASS。
 - `python -m pytest -q tests\test_stage2_multimodal_concat_fusion.py tests\test_stage2_uncertainty_proto_fusion.py tests\test_stage2_target_prototype_bank.py`：37项PASS。
-- 当前追溯状态：8项verified、2项implemented、2项deferred、2项blocked、1项pending。最高风险项是D25-10：受限对角阵/floor梯度目标及正式50-step预算尚未接入隔离runner；当前实现严格对应0epoch闭式拼接—注册核心，不是完整训练路线。
+- 新增`code/scripts/run_d25_support_only_concat.py`与`tests/test_run_d25_support_only_concat.py`；runner不提供query/truth/scorer/role/quota/global-assignment/source/clean CLI或public fit参数。
+- `python -m pytest -q tests\test_run_d25_support_only_concat.py tests\test_stage2_multimodal_concat_fusion.py tests\test_stage2_uncertainty_proto_fusion.py tests\test_stage2_target_prototype_bank.py`：44项PASS。
+- 当前追溯状态：11项verified、1项implemented、2项deferred、2项blocked、1项pending。最高风险项是D25-10：受限对角阵/floor梯度目标及正式50-step预算尚未接入隔离runner；当前实现严格对应0epoch闭式拼接—注册核心，不是完整训练路线。
