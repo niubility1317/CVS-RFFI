@@ -2,7 +2,7 @@
 
 日期：2026-07-18
 
-状态：核心、runner、launcher和65项相关回归完成，待N607 90行support-only执行。
+状态：核心、runner、launcher、65项回归及N607 90行support-only执行完成；D27-B打开中间可行域但floor门失败，不晋级。
 
 |ID|需求|实现|状态|验证|
 |---|---|---|---|---|
@@ -19,4 +19,9 @@
 |D27-11|冻结旧头|旧weight、diagonal、raw score prefix不变|verified|fold/full-K10测试|
 |D27-12|证据闭包|runner/core/operator SHA与Git提交独立记录|verified|candidate lock/launcher门|
 
-实际性能仍待N607执行，不在本地实现PASS含义内。
+## 执行结论
+
+- 90/90行、query未打开、artifact哈希闭环；最终回退C0。
+- D27-B注册前old=80.00%、注册后old=67.22%、new=47.33%、H=52.82%、forgetting=12.78pp；H和forgetting优于C0，但old/new floor仅50.00%/13.33%。
+- D27-B/C的support LOO总体约77.6%，held new仅47.33%；bias几乎全部停在各自安全cap，继续扩网格或加到15步不解决泛化。
+- D27为development support-only负筛选，不构成正式query性能。下一机制应在D27-B上增加support交叉拟合的逐样本old/new evidence gate，同时保持全部注册类一次argmax与query不可达。
