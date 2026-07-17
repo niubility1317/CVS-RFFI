@@ -85,3 +85,11 @@
 - 逐字段比较显示11个envelope绑定字段中仅`code_closure_sha256`不一致：签名envelope要求`b0b7f2c2…9606f`，远端闭包为`47096709…cd06`。
 - 本地当前三成员闭包使用`stage2_predictor_bundle.py` SHA256`bb27beaa…44aa9`，精确重建签名要求的`b0b7f2c2…9606f`；远端旧成员SHA256`8bf20101…bc05`是唯一差异。
 - v4同步该已签名闭包成员及独立v4 launcher，不修改、重签或绕过package/seal/policy/authorization；先核验闭包SHA精确等于envelope，再启动support-only筛选。
+
+### support_screen_v4启动
+
+- Git提交：`2b9ba660`；远端signed code closure=`b0b7f2c2f87e66ecbeca99779688461e7161877271dd0195e0bcf2b95cb9606f`，与envelope精确一致。
+- PID：`3314670`；状态：`RUNNING`；GPU：0；启动8秒后显存约544MiB。
+- log：`/home/szu2070436088/2510044040/CV-SincNet/logs/d20_int8_maxold_fftrf_20260717/support_screen_v4.log`。
+- output：`/home/szu2070436088/2510044040/CV-SincNet/runs/d20_int8_maxold_fftrf_20260717/output/support_screen_v4`。
+- 启动健康证据：进程命令行精确指向当前project runner与`new_5_retry3`before/after enrollment-only包；启动后log为0B且无Traceback，说明已越过manifest、method lock和signed envelope三个support前失败点。
