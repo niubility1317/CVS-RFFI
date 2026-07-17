@@ -54,7 +54,8 @@ new: u_new = s_new + b_new
 - 本轮拟提交文件：`code/cvsrffi/stage2_max_envelope_calibration.py`、`code/scripts/run_d25_support_only_concat.py`、`code/scripts/launch_d30_envelope_int8_support_20260718.sh`、两份测试、D30追溯表与本报告。
 - 源闭包SHA：runner `5bc4b2eb...bc36`；D30 core `72f933a5...a516`；DALI `c51e1c02...003e`；launcher `c416dbf0...793d`。本地脏`stage2_diag_cosine_exploration.py`不属于本轮且不得同步，launcher锁定已验证远端SHA `14ec9193...1ca`。
 - 计划远端目录：`runs/d30_envelope_int8_20260718`与`logs/d30_envelope_int8_20260718`；命令`D30_GPU=0 bash code/scripts/launch_d30_envelope_int8_support_20260718.sh`；环境`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`。
-- Git提交、N607 preflight/live inventory、远端SHA/compile/bash-n/output-absent门、GPU/PID/log/output将在下一阶段补录。
+- 实现提交：`cf988f25 feat(stage2): add D30 dual-envelope int8 screen`。提交只包含7个D30文件；工作树其余脏文件均为既有无关改动，未纳入提交。
+- N607 preflight/live inventory、远端SHA/compile/bash-n/output-absent门、GPU/PID/log/output将在下一阶段补录。
 
 ## 结果与决定
 
