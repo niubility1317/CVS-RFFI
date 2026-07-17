@@ -93,3 +93,59 @@
 - log：`/home/szu2070436088/2510044040/CV-SincNet/logs/d20_int8_maxold_fftrf_20260717/support_screen_v4.log`。
 - output：`/home/szu2070436088/2510044040/CV-SincNet/runs/d20_int8_maxold_fftrf_20260717/output/support_screen_v4`。
 - 启动健康证据：进程命令行精确指向当前project runner与`new_5_retry3`before/after enrollment-only包；启动后log为0B且无Traceback，说明已越过manifest、method lock和signed envelope三个support前失败点。
+
+## support_screen_v4完整日志结论
+
+- 结束状态：`DEVELOPMENT_SUPPORT_ONLY_COMPLETE`；耗时11.96s；5候选×15fold=75条结构化记录全部解析。
+- 证据边界：`formal_launch_authority=false`、`formal_metric_claim_allowed=false`、`performance_claim_allowed=false`、`query_opened=false`。这是开发support筛选，不是正式query性能。
+- 选择结果：`selected_candidate_id=Z0_SUPPORT_ONLY`、`selected_positive_route=false`、`fallback_to_identity=true`。
+
+|候选|before-old均值|after-old均值|seen-new均值|H均值|遗忘均值|非劣fold|最差联合floor|判定|
+|---|---:|---:|---:|---:|---:|---:|---:|---|
+|Z0 identity|71.11%|48.33%|52.67%|48.97%|22.78pp|15/15|0%|回退基线|
+|B1 int8 max-old|70.00%|48.89%|52.67%|49.11%|21.11pp|15/15|0%|无严格aggregate/floor增益|
+|B2 int8+direct max-old|70.56%|49.44%|52.67%|49.47%|21.11pp|15/15|0%|无严格aggregate/floor增益|
+|B3 fixed-IQ FFT/RF轻头|86.67%|73.33%|73.33%|72.65%|13.33pp|7/15|0%|均值大幅提升但原子非劣失败|
+|B4 B3+int8 max-old|86.67%|73.33%|73.33%|72.65%|13.33pp|7/15|0%|与B3预测完全相同，无附加增益|
+
+B3/B4相对Z0的均值增益很大：before-old+15.56pp、after-old+25.00pp、seen-new+20.67pp、H+23.68pp、遗忘减少9.44pp；但逐fold/逐类门暴露出8/15fold的原子非劣失败，且三个场景仍存在0%类别floor，所以不能推广为正路线。B4与B3完全同值说明当前Phase1 int8 max-old只保留旧列位不变，没有改变任何最终预测。
+
+|场景|B3 before-old|B3 after-old|B3 seen-new|B3 H|B3遗忘|
+|---|---:|---:|---:|---:|---:|
+|`leo_clear_weak`|90.00%|75.00%|82.00%|77.51%|15.00pp|
+|`leo_low_elev_weak`|81.67%|70.00%|72.00%|70.25%|11.67pp|
+|`leo_rain_weak`|88.33%|75.00%|66.00%|70.19%|13.33pp|
+
+|旧TX|B3注册前均值/最小|B3注册后均值/最小|注册后0%fold数|
+|---|---:|---:|---:|
+|`14-10`|90.00%/50.00%|70.00%/0%|3|
+|`14-7`|80.00%/50.00%|66.67%/0%|1|
+|`20-15`|93.33%/50.00%|90.00%/50.00%|0|
+|`20-19`|80.00%/50.00%|63.33%/50.00%|0|
+|`6-15`|86.67%/50.00%|60.00%/0%|1|
+|`8-20`|90.00%/0%|90.00%/0%|1|
+
+最主要floor对象是旧类`14-10`、`14-7`、`6-15`和`8-20`；新类中一个class handle在15fold内均值仅40%，出现4次0%fold。下一轮必须直接优化这些floor，而不是继续只追平均H。
+
+完整loss trace显示B3/B4都稳定收敛：Stage2-B的平均loss由0.9837降至0.0646，support accuracy由93.19%升至100%；Stage2-C的平均loss由5.0513降至0.3661，support accuracy由40.83%升至97.05%。因此失败不是未收敛，而是support内拟合充分后仍存在跨fold类别边界不稳和注册竞争。
+
+|候选|参数|epoch上限|optimizer steps|持久状态|head MAC/query|资源档|
+|---|---:|---:|---:|---:|---:|---|
+|Z0|0|0|0|7,834B|1,760|正式档内|
+|B1/B2|0|0|0|37,167B|2,792|正式档内|
+|B3|3,456|20|60|14,618B|3,456|仅150%探索档，steps超过正式50但低于探索75|
+|B4|3,456|20|60|51,785B|4,488|仅150%探索档，steps超过正式50但低于探索75|
+
+资源与协议审计：三场景物理sample、overlay和received-IQ hash交集均为0；每个物理support只有一个LEO观测；FFT96/RF32仅由同一received-IQ派生且不增加K；旧score列注册前后bitwise unchanged；无query行、标签、图或更新。5个artifact本地副本及SHA如下：
+
+|artifact|bytes|SHA256|
+|---|---:|---|
+|`RECEIPT.json`|1,372|`9a2ec5051c4bbad75d500b8e1e19e75dc645167cc0557c89047481b0c30d50cf`|
+|`resource_audit.json`|3,397|`7b7d5af5827ce7812820f2b3b3f3d759f024a4041ada628a8501818a99b2f4af`|
+|`selection.json`|4,943|`0732970bb1d6ccb09fec9ee8280a14d5ef61116dd93e6e4ce589f540e080442d`|
+|`support_audit.json`|308,611|`76c8511d99e854ad2602f9cd5e887836b7f9d4445dcba90023bac1831d9c083b`|
+|`training_log.jsonl`|709,006|`6d8cd1c6b7ad605059969824a21bc6786621d4a27297423c8755f83ffe8efb01`|
+
+## 下一轮target-support原型压缩要求
+
+Stage2-B旧类目标域support原型和Stage2-C新类support原型必须使用同一压缩bank规则，但不预设int8必胜。下一版并列比较FP32基线、FP16和INT8三种持久化格式：FP16通常约2×压缩且适合GPU原生计算，INT8约4×压缩但可能引入量化/反量化延迟；最终只在K10 development LEO_weak support及预登记batch=1部署代理基准上锁定性能/状态/延迟Pareto最优格式，query不得参与选择。旧类完成Stage2-B后冻结，新类在Stage2-C只追加，不重写旧类字节；资源报告必须给出实际状态字节、压缩倍数、量化误差、MAC、平均/P95延迟、临时内存和旧类bitwise freeze证据。
