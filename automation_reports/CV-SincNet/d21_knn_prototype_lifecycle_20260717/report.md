@@ -4,7 +4,7 @@
 - timestamp：2026-07-17
 - operator：Codex
 - objective：在正式Stage2-B/C `LEO_weak-only`协议下，以极轻量KNN原型生命周期同时推进目标域适应和新类注册，利用与ADV3B02共同封存的Phase1压缩中心、域偏移和P90半径改善旧类floor，并抑制5/10/20个新类下的旧类遗忘与新旧混杂。
-- current status：Phase1 exporter已以Git提交`dc8f8bda`落地并完成49项联合回归；D21 lifecycle仍在收尾基础新类追加侵入守门。N607只读预检已完成，但真实export前发现旧ADV3B02 split receipt与当前`rho_label`公式不一致，尚未启动训练或export任务。
+- current status：Phase1 exporter提交`dc8f8bda`、D21 lifecycle提交`735232d5`已落地；ADV3B02 runtime+v2组件联合bundle、外置seal/signing request与formal loader本地实现完成，61项联合回归PASS。N607只读预检已完成，但旧ADV3B02 split receipt不满足当前`rho_label`公式，正式重训/export仍等待协议口径选择。
 
 ## 假设与比较对象
 
@@ -75,10 +75,13 @@ P90使用4096-bin余弦距离直方图上沿，确定性误差上界为0.0004882
 - `conda activate ssr-gpu; python -m pytest -q tests/test_stage2_prototype_lifecycle.py tests/test_run_d21_support_only_lifecycle.py`：独立修复后21项PASS。
 - `conda activate ssr-gpu; python -m pytest -q tests/test_phase1_center_lowrank_prototype_bundle.py tests/test_phase1_geometry_streaming.py tests/test_export_adv3b02_center_lowrank_radius_component.py tests/test_stage2_prototype_lifecycle.py tests/test_run_d21_support_only_lifecycle.py`：联合回归49项PASS。
 - 第二轮对抗修复后同一联合回归为51项PASS；D21 lifecycle/runner聚焦回归为23项PASS。
+- 加入联合bundle的最终联合回归为61项PASS；joint bundle聚焦回归为10项PASS。
 - 五个D21核心Python文件`py_compile`与本轮Markdown `git diff --check`均PASS；exporter `--help`确认不再存在detached-signature参数。
 - pytest退出后存在本机已知临时junction `PermissionError`清理噪声；测试退出码均为0。
 
 独立代码审计发现并已修复两轮正式阻塞：旧support现在绑定实际内容SHA、authority receipt与before/after capsule root；基础new prototype在append前逐类及组合检查旧类support accuracy/worst margin；K1旧/新radius与boundary统一关闭；公开评估器不能自报sealed；资源上限按含COMMIT的实际落盘总字节计算。当前只声明`internal-target-score-lock`，不声称DALI已接入。Phase1组件同时改为`formal_phase2_eligible=false`且`outer_bundle_signature_required=true`的pending状态；只有真实checkpoint+v2组件+代码/配置经外层联合seal后，正式Stage2 loader才允许打开。
+
+联合bundle进一步固定8个部署成员，禁止raw `.pth`、source路径、sample feature/count和cache spec；内置固定authority公钥验签，调用方不能注入空verifier。loader复算TorchScript archive/state结构并拒绝extra file或未授权buffer；class binding采用有序语义SHA，seal/envelope与包内member均在同一字节流上完成哈希和解析。当前尚无外部authority生产签名，故只完成unsigned signing request和formal loader实现，不声称正式bundle已经发布。
 
 ## N607 Phase1 export-only计划
 
