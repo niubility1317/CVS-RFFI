@@ -34,6 +34,9 @@
 - 新增独立核心`stage2_support_evidence_gate.py`；runner新增`d28_v1_evidence_gate`固定6候选：Z0、B3、C0、D28-A无gate的D27-B、D28-B E5/delta1、D28-C E5/delta2，共90行。
 - OOF不是只拟合old/new二元标签：每个lambda都把OOF校正实际作用于D27全类score，再检查old总体、每个旧类、new总体、new class floor均不下降且至少一个新类指标严格提升；无安全lambda、退化方差、病态矩阵或权重超限均封存为disabled passthrough。
 - `ssr-gpu`相邻73项测试PASS；覆盖K1精确透传、K=5合法交叉拟合、逐行独立、old列bitwise不变、new-new顺序不变、协议API、资源上限、D28真实runner fold及D25/D26/D27历史回归。`py_compile`与`git diff --check`PASS。
+- Git实现提交：`d6e270993424c0e3ece37e7d5a5933e8bc350bca`；runner SHA256=`fe654bfd5f29ca675297af3144e9127c1227a93778e026634d4c99da2bbbcc96`；D28核心SHA256=`d18110786598c05d120fec4c278bf31de555a7b19fb00d3780d5a6c5f3e52e5f`；D27核心SHA256=`553d6361a728490c26963944df8353f1bc64bf1540b2ab6709f2f25bedd6f1ff`；launcher SHA256=`6faaf1feb282eff7a3999e28902cb0e01f12420b4860d4a4c5e19071aa8a8cbb`。
+- 本地`stage2_diag_cosine_exploration.py`有不属于本轮的未提交修改，因此不覆盖远端；launcher继续锁定D27已验证的远端operator SHA256=`14ec919395f9bf9f13214c677b1a3d640764214668d1d00e9109f5b149ec41ca`。
+- 精确远端命令：`cd /home/szu2070436088/2510044040/CV-SincNet && D28_GPU=<live-selected> bash code/scripts/launch_d28_evidence_gate_support_20260718.sh`。
 
 ## 完成后补充
 
