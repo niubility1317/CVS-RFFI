@@ -1,0 +1,68 @@
+{
+  "exact_input_allowlist": [
+    "E:\\type10-7\\automation_reports\\CV-SincNet\\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\\phase2_capsule_k10_new5\\predictor\\after\\enrollment_only\\package_manifest.json",
+    "E:\\type10-7\\automation_reports\\CV-SincNet\\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\\phase2_capsule_k10_new5\\predictor\\after\\enrollment_only\\sealed_feature_runtime.pt",
+    "E:\\type10-7\\automation_reports\\CV-SincNet\\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\\phase2_capsule_k10_new5\\predictor\\after\\enrollment_only\\support_leo_clear_weak.npz",
+    "E:\\type10-7\\automation_reports\\CV-SincNet\\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\\phase2_capsule_k10_new5\\predictor\\after\\enrollment_only\\support_leo_low_elev_weak.npz",
+    "E:\\type10-7\\automation_reports\\CV-SincNet\\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\\phase2_capsule_k10_new5\\predictor\\after\\enrollment_only\\support_leo_rain_weak.npz"
+  ],
+  "input_interface": {
+    "accepted": [
+      "enrollment_root",
+      "output_dir"
+    ],
+    "enrollment_root_required_suffix": "predictor/after/enrollment_only"
+  },
+  "input_manifest_extra_member_rejected": true,
+  "input_manifest_member_allowlist_exact": true,
+  "input_manifest_schema": "cvs.phase2.somph_predictor_bundle.v1",
+  "loaded_npz_members": [
+    "support_leo_weak_iq",
+    "support_class_indices"
+  ],
+  "observed_equals_allowlist": true,
+  "observed_input_accesses": [
+    {
+      "path": "E:\\type10-7\\automation_reports\\CV-SincNet\\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\\phase2_capsule_k10_new5\\predictor\\after\\enrollment_only\\package_manifest.json",
+      "purpose": "manifest"
+    },
+    {
+      "path": "E:\\type10-7\\automation_reports\\CV-SincNet\\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\\phase2_capsule_k10_new5\\predictor\\after\\enrollment_only\\sealed_feature_runtime.pt",
+      "purpose": "sealed_runtime",
+      "sha256": "f119e8cb3f6beda95f0d545205e91b43e4a557af2fd1d025e95d2edf2b8e6e2a"
+    },
+    {
+      "path": "E:\\type10-7\\automation_reports\\CV-SincNet\\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\\phase2_capsule_k10_new5\\predictor\\after\\enrollment_only\\support_leo_clear_weak.npz",
+      "purpose": "registered_support:leo_clear_weak",
+      "sha256": "c141271744fb9cfe0750e51700ea579ad2787524354057c8205f8c24e6c8adc7"
+    },
+    {
+      "path": "E:\\type10-7\\automation_reports\\CV-SincNet\\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\\phase2_capsule_k10_new5\\predictor\\after\\enrollment_only\\support_leo_low_elev_weak.npz",
+      "purpose": "registered_support:leo_low_elev_weak",
+      "sha256": "6b8923413c1d2b35b1f4555acab74bd028312f3ea1379a54a472db5c2f266679"
+    },
+    {
+      "path": "E:\\type10-7\\automation_reports\\CV-SincNet\\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\\phase2_capsule_k10_new5\\predictor\\after\\enrollment_only\\support_leo_rain_weak.npz",
+      "purpose": "registered_support:leo_rain_weak",
+      "sha256": "e233cb4148b0870f0349139dcafce310a3573baf0e43cc37202ce95ab95c4d21"
+    }
+  ],
+  "prediction_artifact_emitted": false,
+  "phase2_query_batch_global_assignment": false,
+  "phase2_query_class_quota_access": false,
+  "phase2_query_role_oracle_access": false,
+  "phase2_query_true_batch_class_count_access": false,
+  "query_access": false,
+  "query_calibration": false,
+  "query_candidate_ranking": false,
+  "query_early_stop": false,
+  "query_fit": false,
+  "query_iq_access": false,
+  "query_rollback": false,
+  "query_selection": false,
+  "query_token_access": false,
+  "query_truth_opened": false,
+  "schema": "cvs.phase2.d21_m6_query_unreachable_proof.v1",
+  "score_operation_available": false,
+  "truth_sidecar_access": false
+}

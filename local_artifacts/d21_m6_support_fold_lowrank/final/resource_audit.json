@@ -1,0 +1,48 @@
+{
+  "adaptation_epochs_per_fold": 5,
+  "adaptation_steps_per_fold": 5,
+  "base_parameter_shapes": {
+    "model.id_backbone.cls_head.id_proj.0.bias": [
+      160
+    ],
+    "model.id_backbone.cls_head.id_proj.0.weight": [
+      160,
+      160
+    ]
+  },
+  "candidate_trainable_parameters": {
+    "rank2": 800,
+    "rank4": 1440
+  },
+  "combined_patch_plus_int8_head_bytes_upper_bound": 3382,
+  "deployment_export_authorized": false,
+  "deployment_state_budget_arithmetic_pass": true,
+  "deployment_state_budget_bytes": 262144,
+  "exact_model_parameter_whitelist": [
+    "model.id_backbone.cls_head.id_proj.0.weight",
+    "model.id_backbone.cls_head.id_proj.0.bias"
+  ],
+  "factor_archive_sha256": "dfec8f2a8baac8745aa25730a20b05b9fb54e8341d254977ebb2929a0ef26a2b",
+  "fold_fit_count": 24,
+  "fold_fit_seconds_total": 59.663621500032605,
+  "final_patch_materialized": false,
+  "fp16_factor_payload_bytes": {
+    "rank2": 1600,
+    "rank4": 2880
+  },
+  "full_rank_weight_delta_persisted": false,
+  "int8_head_materialized_by_m6": false,
+  "int8_registered_head_bytes_pre_registered_upper_bound": 1782,
+  "maximum_allowed_steps": 50,
+  "merged_inference_added_MAC": 0,
+  "optimizer": "SGD(lr=0.05,momentum=0)",
+  "optimizer_state_persisted": false,
+  "peak_cuda_memory_bytes": 76566016,
+  "schema": "cvs.phase2.d21_m6_resources.v1",
+  "selected_fp16_factor_patch_bytes_upper_bound": 1600,
+  "selected_support_candidate_rank": 2,
+  "state_budget_claim_scope": "support-only pre-registered upper-bound audit; NO_GO forbids final refit and export",
+  "selector_lock_sha256": "251ff2fb6ac364663acfd2683645e471a561298b0031c97739ddd97cb8ea413d",
+  "support_fold_log_sha256": "5cd3d6c8aaac1df2375841c72a682c84021023b7ccb79e10756e40e316e3d721",
+  "updated_original_parameters_after_merge": 25760
+}

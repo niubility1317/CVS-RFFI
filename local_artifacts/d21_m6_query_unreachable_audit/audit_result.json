@@ -1,0 +1,33 @@
+{
+  "manifest": {
+    "status": "PASS",
+    "schema": "cvs.phase2.somph_predictor_bundle.v1",
+    "member_count": 6,
+    "exact_support_only_allowlist": true,
+    "query_content_opened": false
+  },
+  "runner": {
+    "status": "PASS",
+    "runner": "E:\\type10-7\\github_publish\\CVS-RFFI-repo\\local_artifacts\\d21_m6_support_fold_lowrank\\run_m6_support_fold_lowrank.py",
+    "cli_options": [
+      "--enrollment-root",
+      "--output-dir"
+    ],
+    "forbidden_cli_options": [],
+    "broad_root_options": [],
+    "forbidden_literal_open_targets": [],
+    "query_content_opened": false
+  },
+  "resource": {
+    "status": "PASS",
+    "updated_original_parameters": 25760,
+    "patch_plus_head_bytes": 3382,
+    "query_content_opened": false
+  },
+  "proof": {
+    "status": "PASS",
+    "checked_false_fields": 17,
+    "query_content_opened": false
+  },
+  "query_content_opened": false
+}

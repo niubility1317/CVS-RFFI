@@ -195,6 +195,14 @@ M5-lite固定SGD、momentum=0、5epoch=5step，实际非零FP16 delta为1,135/1,
 
 下一机制预注册为`M6 support-fold low-rank id-projection delta`：仅在精确`id_proj`白名单内训练rank-2/4低秩差分，使用恒等近端、旧类pair保持、新类分离和逐类CVaR的support-fold目标；rank和损失权重只能由support-fold预锁，FP16低秩patch可合并回原层，部署新增MAC为0。M6开发阶段禁止打开任何query；只有support门同时覆盖old/new floor和遗忘代理后，才允许在全新且此前未打开的测试单元执行一次隔离测试。
 
+### M6 support-only停止结果
+
+M6严格只读取`after/enrollment_only`中的三场景registered support IQ与标签。四个预注册候选`rank∈{2,4}×{balanced,old_guard}`在3场景×2个class-balanced fold上均未通过support门：基线old/new/H为48.33/46.67/47.31%，适配后为49.44/45.33/47.00%，H下降0.32pp，old/new最差类floor均为0→0。训练loss下降但held-out H下降，判定为support-fold非泛化/轻度过拟合，状态锁为`NO_GO_SUPPORT_GATE`。
+
+因此M6未执行full-support refit，未物化最终patch/head，未生成prediction或score，也未打开任何query。实际rank2/4可训练参数为800/1,440，FP16因子状态1,600/2,880B；每fit固定5epoch=5step，24个fold fit总计59.66s，峰值显存73.02MiB；若合并回原`id_proj`层，更新原参数25,760、部署新增MAC为0。独立闭包审计31项负测全部通过：runner CLI仅允许`enrollment_root/output_dir`，manifest必须精确为runtime、method lock、overlay与3个support文件共6成员；额外query/truth/scorer/apply-only、绝对路径或`..`成员均fail closed，17个query访问/拟合/选择字段均为false。
+
+证据位于`local_artifacts/d21_m6_support_fold_lowrank/`、`local_artifacts/d21_m6_query_unreachable_audit/`及`analysis/d21_m6_support_fold_lowrank_design_20260717.md`。M6证明support门可以在不消耗测试集的前提下淘汰无泛化收益的快速梯度路线；该路线不进入query测试或125确认矩阵。
+
 ## 成功与停止条件
 
 1. Phase1真实导出必须得到84个有效域×类cell、domain20中心、非零真实P90半径、严格allowlist和可复核资源审计。
