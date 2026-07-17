@@ -7,10 +7,11 @@ CAP="$BASE/phase2_capsules/rx_20_1/seed_713101/k_10/new_5_retry3"
 AUTH="$BASE/input/runtime_authorization_k10_new5"
 COMP="$PROJECT/runs/d19_ciaf_int8_proto_20260717_1039/input/int8_component"
 RUN="$PROJECT/runs/d20_int8_maxold_fftrf_20260717"
-OUTPUT="$RUN/output/support_screen_v1"
+OUTPUT="$RUN/output/support_screen_v2"
 LOG_ROOT="$PROJECT/logs/d20_int8_maxold_fftrf_20260717"
-LOG="$LOG_ROOT/support_screen_v1.log"
-PID_FILE="$RUN/support_screen_v1.pid"
+LOG="$LOG_ROOT/support_screen_v2.log"
+PID_FILE="$RUN/support_screen_v2.pid"
+PYCACHE_ROOT="$RUN/pycache_support_screen_v2"
 PYTHON=/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python
 
 if [[ -e "$OUTPUT" ]]; then
@@ -25,7 +26,7 @@ fi
 mkdir -p "$(dirname "$OUTPUT")" "$LOG_ROOT"
 cd "$PROJECT"
 
-CUDA_VISIBLE_DEVICES=0 PYTHONUNBUFFERED=1 nohup "$PYTHON" \
+CUDA_VISIBLE_DEVICES=0 PYTHONUNBUFFERED=1 PYTHONPYCACHEPREFIX="$PYCACHE_ROOT" nohup "$PYTHON" \
   code/scripts/run_d19_support_only_ciaf.py \
   --before-root "$CAP/predictor/before/enrollment_only" \
   --before-seal "$CAP/seals/before_enrollment.seal.json" \

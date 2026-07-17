@@ -35,6 +35,8 @@
 - 远端launcher：`/home/szu2070436088/2510044040/CV-SincNet/code/scripts/launch_d22_int8_support_screen_20260717.sh`
 - log：`/home/szu2070436088/2510044040/CV-SincNet/logs/d20_int8_maxold_fftrf_20260717/support_screen_v1.log`
 - output：`/home/szu2070436088/2510044040/CV-SincNet/runs/d20_int8_maxold_fftrf_20260717/output/support_screen_v1`
+- PID：`3303460`；最终状态：`LOCAL_PROTOCOL_REPAIR_REQUIRED`，support打开前执行兼容失败。
+- 启动后GPU0进程曾落地；PID现已退出，未形成目标output。
 - 预期产物：`RECEIPT.json`、`selection.json`、`support_audit.json`、`training_log.jsonl`、`resource_audit.json`。
 
 ## 成功与停止条件
@@ -48,3 +50,22 @@
 - 当前历史组件只有int8质心和scale，没有radius/offset；不得伪造source半径。
 - 检查完整training log、各fold逐类floor、旧类score列锁定、B4 new预测不变、状态/MAC/显存和`query_opened=false`。
 - 任务结束后更新本报告的PID、状态、结果表、解释与下一实验。
+
+## PID3303460完成核验：support打开前执行兼容失败
+
+- 核验时间：2026-07-17 16:22–16:25 CST；核验方式：N607 direct只读短连接。
+- PID3303460已经退出，但不是runner完成或artifact-complete。
+- 失败发生在support materialization的manifest预检阶段；精确错误为`SOMP-H bundle manifest exact schema mismatch`。
+- 预期output路径不存在`training_log.jsonl`和`selection.json`，B0–B4全部未开始，不得解释为性能负结果。
+- 进一步比对确认D18密封manifest具有当前47字段，远端源码SHA256与本地一致，但远端解释器实际载入了33字段旧bytecode；这是Python cache漂移，不是放宽schema校验的理由。
+- 另一个历史`attempt2`来自冻结source副本，进入support提取后因NumPy2/PyTorch2.1的`torch.from_numpy`ABI不兼容失败；当前Git版runner已用DLPack桥替代该路径，重跑前须完成本地窄测试。
+
+|候选|support执行状态|场景/fold结果|逐类结果|结论|
+|---|---|---|---|---|
+|B0|未开始|无|无|不可评价|
+|B1|未开始|无|无|不可评价|
+|B2|未开始|无|无|不可评价|
+|B3|未开始|无|无|不可评价|
+|B4|未开始|无|无|不可评价|
+
+重跑使用`support_screen_v2`独立output/log/PID，并为该run设置独立`PYTHONPYCACHEPREFIX`，从当前源码重新编译模块；不删除历史cache、不覆盖v1失败日志。重跑前必须验证远端新cache进程看到47字段校验器，且继续保持query、clean/source与成员allowlist边界不变。
