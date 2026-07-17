@@ -15,6 +15,7 @@ for value in (CODE, SCRIPTS):
         sys.path.insert(0, str(value))
 
 import run_d25_support_only_concat as runner  # noqa: E402
+from cvsrffi.stage2_ciaf import Int8DomainClassComponent  # noqa: E402
 from cvsrffi.stage2_multimodal_compact_diag import (  # noqa: E402
     D26CompactDiagConfig,
 )
@@ -163,6 +164,36 @@ def test_d26_candidate_lock_matrix_and_historical_sets_are_stable() -> None:
     assert d29_config["base"]["learning_rate"] > 0.0
     assert "new_group_bias_grid" in d29_config["base"]
 
+    d30_candidates = runner.preregistered_candidates(runner.CANDIDATE_SET_D30_V1)
+    assert tuple(d30_candidates) == (
+        runner.IDENTITY_CANDIDATE,
+        runner.DIAG_CANDIDATE,
+        runner.D25_C0,
+        runner.D30_A,
+        runner.D30_B,
+        runner.D30_C,
+    )
+    assert [
+        d30_candidates[name].dali.ground_weight
+        for name in runner.D30_CANDIDATES
+    ] == [0.025, 0.05, 0.10]
+    assert [
+        d30_candidates[name].envelope_objective
+        for name in runner.D30_CANDIDATES
+    ] == ["overall_first", "balance_first", "floor_first"]
+    d30_lock = runner._candidate_lock(
+        d30_candidates, runner.CANDIDATE_SET_D30_V1
+    )
+    assert d30_lock["schema"] == "cvs.phase2.d25.candidate_lock.v8"
+    assert d30_lock["candidate_set"] == runner.CANDIDATE_SET_D30_V1
+    assert "d20_dali_core_sha256" in d30_lock["source_closure"]
+    assert "d30_max_envelope_core_sha256" in d30_lock["source_closure"]
+    assert all(
+        row["family"] == "d30_b3_dali_dual_envelope"
+        for row in d30_lock["candidates"]
+        if row["candidate_id"] in runner.D30_CANDIDATES
+    )
+
     assert tuple(runner.preregistered_candidates()) == (
         runner.IDENTITY_CANDIDATE,
         runner.DIAG_CANDIDATE,
@@ -201,6 +232,7 @@ def test_d26_cli_has_no_query_source_or_clean_surface() -> None:
         runner.CANDIDATE_SET_D27_V1,
         runner.CANDIDATE_SET_D28_V1,
         runner.CANDIDATE_SET_D29_V1,
+        runner.CANDIDATE_SET_D30_V1,
     )
     forbidden = ("query", "truth", "scorer", "role", "quota", "source", "clean")
     destinations = {action.dest.lower() for action in parser._actions}
@@ -395,6 +427,98 @@ def test_real_d29_fold_is_row_local_support_only_and_resource_bounded() -> None:
     assert result["resource"]["active_adaptation_parameter_count"] <= 80_000
     assert result["release_fit_audit"]["query_rows_used"] == 0
     assert result["resource"]["estimated_row_local_scalar_ops_per_query"] <= 12
+
+
+def _synthetic_int8_component(
+    old_classes: tuple[str, ...],
+) -> Int8DomainClassComponent:
+    q = np.zeros((3, len(old_classes), 160), dtype=np.int8)
+    for domain_index in range(3):
+        for class_index in range(len(old_classes)):
+            q[domain_index, class_index, class_index] = 127
+            q[domain_index, class_index, 20 + domain_index] = domain_index + 1
+    return Int8DomainClassComponent(
+        q,
+        np.full((3, len(old_classes)), 1.0 / 127.0, dtype=np.float16),
+        np.ones((3, len(old_classes)), dtype=np.uint8),
+        old_classes,
+    )
+
+
+def test_real_d30_fold_uses_b3_geometry_dual_envelopes_and_int8_audit() -> None:
+    rows, z_rows, fft_rows, rf_rows = _synthetic_d28_blocks()
+    old_classes = ("old_0", "old_1", "old_2")
+    new_classes = ("new_0", "new_1", "new_2")
+    candidates = runner.preregistered_candidates(runner.CANDIDATE_SET_D30_V1)
+    result = runner._evaluate_d30_fold(
+        _synthetic_int8_component(old_classes),
+        rows,
+        z_rows,
+        np.zeros((len(z_rows), len(old_classes)), dtype=np.float32),
+        fft_rows,
+        rf_rows,
+        old_classes=old_classes,
+        new_classes=new_classes,
+        held_ranks=(0, 1),
+        candidate_id=runner.D30_B,
+        config=candidates[runner.D30_B],
+    )
+    assert result["fit_k_shot"] == 8
+    assert result["old_score_columns_bitwise_unchanged"] is True
+    assert result["resource"]["total_optimizer_steps"] == 25
+    assert result["resource"]["query_rows_used_for_fit"] == 0
+    assert result["resource"]["query_batch_global_assignment"] is False
+    assert result["resource"]["dense_query_graph_bytes"] == 0
+    assert result["resource"]["persistent_state_cap_pass"] is True
+    assert result["resource"]["active_adaptation_parameter_count"] <= 80_000
+    assert result["resource"]["feature_geometry"] == (
+        "b3_auxiliary_dominant_z160_fft96_rf32_v1"
+    )
+    assert result["resource"]["int8_component_loaded_and_audited"] is True
+    assert result["resource"]["int8_component_state_bytes"] > 0
+    assert result["dali_old_support_gate"]["held_rows_used"] == 0
+    assert result["max_envelope_fit_audit"]["query_rows_used"] == 0
+    before_confusion = result["new_confusion_before_envelope"]
+    after_confusion = result["new_confusion_after_envelope"]
+    assert before_confusion["new_aggregate"]["old_win"] == (
+        after_confusion["new_aggregate"]["old_win"]
+    )
+
+
+def test_d30_k1_forces_exact_base_head_passthrough() -> None:
+    assert runner._d30_enable_dali(1, True) is False
+    assert runner._d30_enable_dali(5, False) is False
+    assert runner._d30_enable_dali(5, True) is True
+
+
+def test_full_d30_resource_is_bounded_and_records_dual_confusions() -> None:
+    rows, z_rows, fft_rows, rf_rows = _synthetic_d28_blocks()
+    old_classes = ("old_0", "old_1", "old_2")
+    new_classes = ("new_0", "new_1", "new_2")
+    config = runner.preregistered_candidates(runner.CANDIDATE_SET_D30_V1)[
+        runner.D30_B
+    ]
+    resource, geometry = runner._full_d30_state_audit(
+        _synthetic_int8_component(old_classes),
+        rows,
+        z_rows,
+        np.zeros((len(z_rows), len(old_classes)), dtype=np.float32),
+        fft_rows,
+        rf_rows,
+        old_classes=old_classes,
+        new_classes=new_classes,
+        config=config,
+    )
+    assert resource["total_optimizer_steps"] == 25
+    assert resource["total_adaptation_epochs"] == 25
+    assert resource["persistent_state_cap_pass"] is True
+    assert resource["active_adaptation_parameter_count"] <= 80_000
+    assert resource["int8_component_loaded_and_audited"] is True
+    assert resource["query_rows_used_for_fit"] == 0
+    assert resource["estimated_score_mac_ratio_vs_identity_single_qknn"] < 1.0
+    before = geometry["support_confusion_before_envelope"]
+    after = geometry["support_confusion_after_envelope"]
+    assert before["new_aggregate"]["old_win"] == after["new_aggregate"]["old_win"]
 
 
 def _metric(value: float, labels: tuple[str, ...]) -> dict[str, object]:
