@@ -59,7 +59,8 @@ new: u_new = s_new + b_new
 - preflight与inventory完成后本地`ssh.exe`和ESTABLISHED TCP22均为0。计划只同步runner→`code/scripts/run_d25_support_only_concat.py`、D30 core→`code/cvsrffi/stage2_max_envelope_calibration.py`、launcher→`code/scripts/launch_d30_envelope_int8_support_20260718.sh`；其他依赖只核验远端SHA，不覆盖。
 - 远端既有依赖SHA全部匹配：DALI `c51e1c02...003e`、D29 core `68633a72...eae`、D28 core `dd9f06ba...db0a`、D27 core `553d6361...f1ff`、D25/D24/CIAF/control均匹配，保留的远端diag operator为`14ec9193...1ca`。
 - 已按计划同步3个文件；远端runner/D30 core/launcher SHA分别为`5bc4b2eb...bc36`、`72f933a5...a516`、`c416dbf0...793d`。远端`py_compile`和`bash -n`通过，`REMOTE_VERIFY_PASS_OUTPUT_ABSENT`。
-- 每次SSH/SCP后均复核本地`ssh.exe`和ESTABLISHED TCP22为0。当前满足启动门；GPU/PID/log/output将在启动阶段补录。
+- 每次SSH/SCP后均复核本地`ssh.exe`和ESTABLISHED TCP22为0。启动命令：`D30_GPU=0 bash code/scripts/launch_d30_envelope_int8_support_20260718.sh`；PID `3683614`；GPU0；log `logs/d30_envelope_int8_20260718/support_screen_v1.log`；output `runs/d30_envelope_int8_20260718/output/support_screen_v1`。
+- 运行中观测：约2分25秒时进程`Rl`、CPU约572%、CUDA显存552MiB、log仍为0B、receipt pending；这是五折support闭式坐标搜索阶段，尚无错误证据。继续短连接监控，不干预任务。
 
 ## 结果与决定
 
