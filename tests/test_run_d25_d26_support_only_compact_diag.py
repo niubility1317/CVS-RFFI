@@ -229,6 +229,41 @@ def test_d26_candidate_lock_matrix_and_historical_sets_are_stable() -> None:
         if row["candidate_id"] in runner.D31_CANDIDATES
     )
 
+    d32_candidates = runner.preregistered_candidates(runner.CANDIDATE_SET_D32_V1)
+    assert tuple(d32_candidates) == (
+        runner.IDENTITY_CANDIDATE,
+        runner.DIAG_CANDIDATE,
+        runner.D25_C0,
+        runner.D32_A,
+        runner.D32_B,
+        runner.D32_C,
+    )
+    assert [
+        d32_candidates[name].stage2c.method_id for name in runner.D32_CANDIDATES
+    ] == list(runner.D32_CANDIDATES)
+    assert [
+        d32_candidates[name].stage2c.optimizer_steps
+        for name in runner.D32_CANDIDATES
+    ] == [10, 10, 15]
+    d32_lock = runner._candidate_lock(
+        d32_candidates, runner.CANDIDATE_SET_D32_V1
+    )
+    assert d32_lock["schema"] == "cvs.phase2.d25.candidate_lock.v10"
+    assert d32_lock["candidate_set"] == runner.CANDIDATE_SET_D32_V1
+    assert runner._positive_route_candidates(runner.CANDIDATE_SET_D32_V1) == (
+        runner.D32_CANDIDATES
+    )
+    assert runner.D25_C0 not in runner._positive_route_candidates(
+        runner.CANDIDATE_SET_D32_V1
+    )
+    assert "d32_inloop_safe_cap_suffix_core_sha256" in d32_lock["source_closure"]
+    assert "d20_dali_core_sha256" in d32_lock["source_closure"]
+    assert all(
+        row["family"] == "d32_inloop_safe_cap_suffix_with_dali"
+        for row in d32_lock["candidates"]
+        if row["candidate_id"] in runner.D32_CANDIDATES
+    )
+
     assert tuple(runner.preregistered_candidates()) == (
         runner.IDENTITY_CANDIDATE,
         runner.DIAG_CANDIDATE,
@@ -269,6 +304,7 @@ def test_d26_cli_has_no_query_source_or_clean_surface() -> None:
         runner.CANDIDATE_SET_D29_V1,
         runner.CANDIDATE_SET_D30_V1,
         runner.CANDIDATE_SET_D31_V1,
+        runner.CANDIDATE_SET_D32_V1,
     )
     forbidden = ("query", "truth", "scorer", "role", "quota", "source", "clean")
     destinations = {action.dest.lower() for action in parser._actions}
@@ -639,6 +675,81 @@ def test_full_d31_resource_is_bounded_and_keeps_bundle_residency_explicit() -> N
     assert "new_to_wrong_new" in geometry["final_confusion"]
 
 
+def test_real_d32_fold_closes_safe_cap_dali_and_resource_accounting() -> None:
+    rows, z_rows, fft_rows, rf_rows = _synthetic_d28_blocks()
+    old_classes = ("old_0", "old_1", "old_2")
+    new_classes = ("new_0", "new_1", "new_2")
+    config = runner.preregistered_candidates(runner.CANDIDATE_SET_D32_V1)[
+        runner.D32_B
+    ]
+    result = runner._evaluate_d32_fold(
+        _synthetic_int8_component(old_classes),
+        rows,
+        z_rows,
+        np.zeros((len(z_rows), len(old_classes)), dtype=np.float32),
+        fft_rows,
+        rf_rows,
+        old_classes=old_classes,
+        new_classes=new_classes,
+        held_ranks=(0, 1),
+        candidate_id=runner.D32_B,
+        config=config,
+    )
+    resource = result["resource"]
+    assert resource["total_optimizer_steps"] == 25
+    assert resource["peak_trainable_parameters"] <= 2_016
+    assert resource["query_rows_used_for_fit"] == 0
+    assert resource["dense_query_graph_bytes"] == 0
+    assert resource["authorized_full_bundle_state_bytes"] > 0
+    assert resource["full_bundle_resident_combined_state_bytes"] > (
+        resource["projected_slim_active_predictor_state_bytes"]
+    )
+    assert resource["total_adaptation_macs"] == (
+        resource["stage2b_adaptation_macs"]
+        + resource["stage2c_adaptation_macs"]
+    )
+    assert resource["total_post_backbone_macs_per_query"] == (
+        resource["base_head_macs_per_query"]
+        + resource["dali_medoid_macs_per_query"]
+    )
+    assert resource["argmax_scalar_comparisons_per_query"] == 5
+    assert result["base_old_parameter_prefix_bitwise_unchanged"] is True
+    assert result["dali_max_old_preserved"] is True
+    assert len(result["training_trace"]) == 27
+
+
+def test_full_d32_resource_latency_includes_argmax_and_dual_state() -> None:
+    rows, z_rows, fft_rows, rf_rows = _synthetic_d28_blocks()
+    old_classes = ("old_0", "old_1", "old_2")
+    new_classes = ("new_0", "new_1", "new_2")
+    config = runner.preregistered_candidates(runner.CANDIDATE_SET_D32_V1)[
+        runner.D32_C
+    ]
+    resource, geometry = runner._full_d32_state_audit(
+        _synthetic_int8_component(old_classes),
+        rows,
+        z_rows,
+        np.zeros((len(z_rows), len(old_classes)), dtype=np.float32),
+        fft_rows,
+        rf_rows,
+        old_classes=old_classes,
+        new_classes=new_classes,
+        config=config,
+    )
+    assert resource["total_optimizer_steps"] == 30
+    assert resource["persistent_state_cap_pass"] is True
+    assert resource["slim_runtime_projection_only"] is True
+    assert resource["current_formal_bundle_rebuilt_as_slim_medoid"] is False
+    assert resource["batch1_head_latency_mean_ms"] > 0.0
+    assert resource["batch1_head_latency_sample_count"] == len(rows["labels"])
+    assert resource["latency_includes_argmax"] is True
+    assert resource["head_latency_scope"].endswith("plus_argmax")
+    assert resource["total_post_backbone_macs_per_query"] < (
+        resource["identity_single_qknn_macs_same_registered_count"]
+    )
+    assert geometry["support_gate"]["support_only_checkpoint_gate_pass"] is True
+
+
 def _metric(value: float, labels: tuple[str, ...]) -> dict[str, object]:
     return {
         "overall_accuracy": value,
@@ -743,6 +854,52 @@ def test_d29_selector_uses_explicit_pcsr_candidate_registry() -> None:
     d29 = next(row for row in decisions if row["candidate_id"] == selected)
     assert d29["family"] == "d29_per_class_safe_release"
     assert d29["eligible_positive_route"] is True
+
+
+def test_d32_selector_and_full_resource_gate_use_explicit_registry() -> None:
+    folds = {
+        runner.IDENTITY_CANDIDATE: _candidate_rows(
+            runner.IDENTITY_CANDIDATE, 0.40, support_pass=True, steps=0
+        ),
+        runner.DIAG_CANDIDATE: _candidate_rows(
+            runner.DIAG_CANDIDATE, 0.70, support_pass=True, steps=60
+        ),
+        runner.D25_C0: _candidate_rows(
+            runner.D25_C0, 0.50, support_pass=True, steps=0
+        ),
+        runner.D32_A: _candidate_rows(runner.D32_A, 0.65, support_pass=True, steps=25),
+        runner.D32_B: _candidate_rows(runner.D32_B, 0.65, support_pass=True, steps=25),
+        runner.D32_C: _candidate_rows(runner.D32_C, 0.65, support_pass=True, steps=30),
+    }
+    selected, decisions = runner._select_d26_candidate(
+        folds, runner.D32_CANDIDATES
+    )
+    assert selected in runner.D32_CANDIDATES
+    selected_decision = next(row for row in decisions if row["candidate_id"] == selected)
+    assert selected_decision["family"] == "d32_inloop_safe_cap_suffix_with_dali"
+    assert selected_decision["eligible_positive_route"] is True
+
+    resources = {
+        candidate_id: {
+            scenario: {
+                "old_support_non_degradation_pass": True,
+                "peak_trainable_parameters": 2_016,
+                "total_optimizer_steps": 25,
+                "persistent_state_cap_pass": True,
+                "dense_query_graph_bytes": 0,
+                "total_post_backbone_macs_per_query": 1_920,
+                "latency_includes_argmax": scenario != "leo_rain_weak",
+            }
+            for scenario in runner.legacy.FORMAL_LEO_WEAK_SCENARIOS
+        }
+        for candidate_id in runner.D32_CANDIDATES
+    }
+    gated, reason = runner._apply_full_k10_d26_old_support_gate(
+        selected, decisions, resources, runner.D32_CANDIDATES
+    )
+    assert gated == runner.D25_C0
+    assert reason == "FULL_K10_OLD_SUPPORT_OR_RESOURCE_PROTOCOL_GATE_FAILED"
+    assert selected_decision["full_k10_resource_protocol_gate_pass"] is False
 
 
 def test_d26_full_k10_failure_revokes_selected_route() -> None:

@@ -95,6 +95,14 @@ from cvsrffi.stage2_all_registered_new_suffix import (  # noqa: E402
     predict_all_registered as predict_all_d31,
     score_all_registered as score_all_d31,
 )
+from cvsrffi.stage2_inloop_safe_cap_suffix import (  # noqa: E402
+    D32Stage2CConfig,
+    D32_BIAS_RECOVERY_CAP,
+    D32_GROUP_BALANCED_CAP,
+    D32_NEW_CVAR_CAP,
+    append_stage2c_inloop_safe_cap_suffix,
+    score_all_registered as score_all_d32,
+)
 
 
 MODE = legacy.MODE
@@ -115,6 +123,7 @@ CANDIDATE_SET_D28_V1 = "d28_v1_evidence_gate"
 CANDIDATE_SET_D29_V1 = "d29_v1_pcsr"
 CANDIDATE_SET_D30_V1 = "d30_v1"
 CANDIDATE_SET_D31_V1 = "d31_v1"
+CANDIDATE_SET_D32_V1 = "d32_v1"
 C3_A = "D25-C3A-DIAG-CE-CLOSEDREG"
 C3_B = "D25-C3B-DIAG-CE-NEWFIT"
 C3_C = "D25-C3C-DIAG-STRONGFLOOR-NEWFIT"
@@ -143,6 +152,10 @@ D31_A = D31_PLAIN_BALANCED_CE
 D31_B = D31_NEW_CVAR_FLOOR
 D31_C = D31_OLD_MARGIN_PROTECTION
 D31_CANDIDATES = (D31_A, D31_B, D31_C)
+D32_A = D32_GROUP_BALANCED_CAP
+D32_B = D32_NEW_CVAR_CAP
+D32_C = D32_BIAS_RECOVERY_CAP
+D32_CANDIDATES = (D32_A, D32_B, D32_C)
 CORE_COMMIT = "f349850dbd94841ae2ef8105ac76bd7a9912c128"
 D26_CORE_GIT_COMMIT = "67b9d2275782339e0ac07800652b997adbcca534"
 
@@ -162,6 +175,8 @@ def _positive_route_candidates(candidate_set: str) -> tuple[str, ...]:
         return D30_CANDIDATES
     if candidate_set == CANDIDATE_SET_D31_V1:
         return D31_CANDIDATES
+    if candidate_set == CANDIDATE_SET_D32_V1:
+        return D32_CANDIDATES
     if candidate_set in (CANDIDATE_SET_D26_V1, CANDIDATE_SET_D26_V2):
         return D26_CANDIDATES
     return D25_CANDIDATES
@@ -252,6 +267,28 @@ class D31CandidateConfig:
             raise D25RunnerError("D31 method lock drift")
 
 
+@dataclass(frozen=True)
+class D32CandidateConfig:
+    """B3 geometry, frozen 15-step Stage2-B, and in-loop safe-cap suffix."""
+
+    base: D26CompactDiagConfig
+    stage2c: D32Stage2CConfig
+    dali: DaliConfig = DaliConfig(ground_weight=0.05, direct_weight=0.0)
+
+    def __post_init__(self) -> None:
+        self.base.validate()
+        self.dali.validate()
+        total_steps = int(self.base.stage2b_steps) + int(self.stage2c.optimizer_steps)
+        if (
+            int(self.base.stage2b_steps) != 15
+            or int(self.base.stage2c_steps) != 0
+            or total_steps > 30
+            or float(self.dali.direct_weight) != 0.0
+            or self.stage2c.method_id not in D32_CANDIDATES
+        ):
+            raise D25RunnerError("D32 method lock drift")
+
+
 def _canonical_bytes(value: Any) -> bytes:
     return json.dumps(
         value,
@@ -321,6 +358,26 @@ def preregistered_candidates(
                 stage2b_steps=15,
                 stage2c_steps=15,
                 bias_guard_mode="per_new_class_pre_registration_old_only",
+            ),
+        }
+    if candidate_set == CANDIDATE_SET_D32_V1:
+        base = D26CompactDiagConfig(
+            stage2b_steps=15,
+            stage2c_steps=0,
+            bias_guard_mode="per_new_class_pre_registration_old_only",
+        )
+        return {
+            IDENTITY_CANDIDATE: controls[IDENTITY_CANDIDATE],
+            DIAG_CANDIDATE: controls[DIAG_CANDIDATE],
+            D25_C0: historical[D25_C0],
+            D32_A: D32CandidateConfig(
+                base=base, stage2c=D32Stage2CConfig(method_id=D32_A)
+            ),
+            D32_B: D32CandidateConfig(
+                base=base, stage2c=D32Stage2CConfig(method_id=D32_B)
+            ),
+            D32_C: D32CandidateConfig(
+                base=base, stage2c=D32Stage2CConfig(method_id=D32_C)
             ),
         }
     if candidate_set == CANDIDATE_SET_D28_V1:
@@ -552,9 +609,38 @@ def _candidate_lock(
         source_closure["d31_all_registered_suffix_core_sha256"] = _sha256_file(
             CODE_ROOT / "cvsrffi" / "stage2_all_registered_new_suffix.py"
         )
+    if any(isinstance(value, D32CandidateConfig) for value in candidates.values()):
+        source_closure["d26_compact_diag_core_sha256"] = _sha256_file(
+            CODE_ROOT / "cvsrffi" / "stage2_multimodal_compact_diag.py"
+        )
+        source_closure["d20_dali_core_sha256"] = _sha256_file(
+            CODE_ROOT / "cvsrffi" / "stage2_dali.py"
+        )
+        source_closure["d32_inloop_safe_cap_suffix_core_sha256"] = _sha256_file(
+            CODE_ROOT / "cvsrffi" / "stage2_inloop_safe_cap_suffix.py"
+        )
     rows: list[dict[str, Any]] = []
     for candidate_id, config in candidates.items():
-        if isinstance(config, D31CandidateConfig):
+        if isinstance(config, D32CandidateConfig):
+            config_row = {
+                "base": {
+                    "stage2b_steps": int(config.base.stage2b_steps),
+                    "stage2c_steps": int(config.base.stage2c_steps),
+                    "bias_guard_mode": str(config.base.bias_guard_mode),
+                },
+                "feature_geometry": "b3_auxiliary_dominant_z160_fft96_rf32_v1",
+                "stage2c": config.stage2c.audit(),
+                "dali": {
+                    "ground_weight": float(config.dali.ground_weight),
+                    "direct_weight": float(config.dali.direct_weight),
+                    "fixed_medoid": True,
+                    "support_old_classwise_atomic_gate": True,
+                    "max_old_preserved": True,
+                },
+                "training_deployment_safe_cap_surface_identical": True,
+            }
+            family = "d32_inloop_safe_cap_suffix_with_dali"
+        elif isinstance(config, D31CandidateConfig):
             config_row = {
                 "base": {
                     "stage2b_steps": int(config.base.stage2b_steps),
@@ -725,6 +811,8 @@ def _candidate_lock(
                     if candidate_set == CANDIDATE_SET_D30_V1
                     else D31_CANDIDATES
                     if candidate_set == CANDIDATE_SET_D31_V1
+                    else D32_CANDIDATES
+                    if candidate_set == CANDIDATE_SET_D32_V1
                     else D26_CANDIDATES
                     if candidate_set in (CANDIDATE_SET_D26_V1, CANDIDATE_SET_D26_V2)
                     else D25_CANDIDATES
@@ -749,6 +837,8 @@ def _candidate_lock(
             if candidate_set == CANDIDATE_SET_D30_V1
             else "cvs.phase2.d25.candidate_lock.v9"
             if candidate_set == CANDIDATE_SET_D31_V1
+            else "cvs.phase2.d25.candidate_lock.v10"
+            if candidate_set == CANDIDATE_SET_D32_V1
             else "cvs.phase2.d25.candidate_lock.v1"
         ),
         "core_commit": CORE_COMMIT,
@@ -766,6 +856,7 @@ def _candidate_lock(
                 CANDIDATE_SET_D29_V1,
                 CANDIDATE_SET_D30_V1,
                 CANDIDATE_SET_D31_V1,
+                CANDIDATE_SET_D32_V1,
             )
             else IDENTITY_CANDIDATE
         ),
@@ -781,6 +872,7 @@ def _candidate_lock(
         CANDIDATE_SET_D29_V1,
         CANDIDATE_SET_D30_V1,
         CANDIDATE_SET_D31_V1,
+        CANDIDATE_SET_D32_V1,
     ):
         lock["candidate_set"] = candidate_set
     if candidate_set in (
@@ -791,6 +883,7 @@ def _candidate_lock(
         CANDIDATE_SET_D29_V1,
         CANDIDATE_SET_D30_V1,
         CANDIDATE_SET_D31_V1,
+        CANDIDATE_SET_D32_V1,
     ):
         # CORE_COMMIT above identifies the sealed Phase1 model lineage.  Keep
         # the D26 implementation commit separate so the receipt cannot imply
@@ -800,6 +893,7 @@ def _candidate_lock(
         CANDIDATE_SET_D29_V1,
         CANDIDATE_SET_D30_V1,
         CANDIDATE_SET_D31_V1,
+        CANDIDATE_SET_D32_V1,
     ):
         lock["protocol_contract"] = {
             "screen_authority": "PRE_FORMAL_SUPPORT_ONLY_INT8_SCREEN",
@@ -2140,6 +2234,92 @@ def _fit_d31_route(
     }
 
 
+def _fit_d32_route(
+    component: Any,
+    features: np.ndarray,
+    z_id160: np.ndarray,
+    direct_logits: np.ndarray,
+    labels: np.ndarray,
+    old_mask: np.ndarray,
+    new_mask: np.ndarray,
+    old_classes: tuple[str, ...],
+    new_classes: tuple[str, ...],
+    config: D32CandidateConfig,
+) -> dict[str, Any]:
+    """Fit D32 from registered support only and atomically gate DALI."""
+
+    before_fit = fit_stage2b_compact_diag(
+        features[old_mask], labels[old_mask], old_classes, config=config.base
+    )
+    before = before_fit.state
+    stage2c_fit = append_stage2c_inloop_safe_cap_suffix(
+        before,
+        features[new_mask],
+        labels[new_mask],
+        new_classes,
+        features[old_mask],
+        labels[old_mask],
+        config=config.stage2c,
+    )
+    after = stage2c_fit.state
+    if before.classes != old_classes or after.classes != old_classes + new_classes:
+        raise D25RunnerError("D32 registered class order drift")
+    if (
+        before.log_diag.tobytes() != after.log_diag.tobytes()
+        or before.weights.tobytes()
+        != after.weights[: len(old_classes)].tobytes()
+        or before.old_lock_sha256 != after.base_old_lock_sha256
+    ):
+        raise D25RunnerError("D32 mutated frozen Stage2-B state")
+    dali_old = fit_old_dali(
+        component,
+        z_id160[old_mask],
+        labels[old_mask],
+        direct_logits[old_mask],
+        config=config.dali,
+    )
+    dali_state = register_new_dali(
+        dali_old,
+        z_id160[new_mask],
+        labels[new_mask],
+        registered_classes=new_classes,
+    )
+    raw_scores = score_all_d32(after, features)
+    raw_old = raw_scores[old_mask]
+    reranked_old = _d30_rerank_matrix(
+        dali_state, raw_old, z_id160[old_mask], direct_logits[old_mask]
+    )
+    dali_gate_pass, dali_gate = _d30_old_support_gate(
+        raw_old, reranked_old, labels[old_mask], old_classes
+    )
+    dali_enabled = _d30_enable_dali(dali_state.k_shot, dali_gate_pass)
+    dali_gate.update(
+        {
+            "schema": "cvs.phase2.d32_dali_old_support_gate.v1",
+            "enabled": bool(dali_enabled),
+            "selection_rows": "fit_old_support_only",
+            "k_shot": int(dali_state.k_shot),
+            "k1_exact_base_head_passthrough": bool(int(dali_state.k_shot) == 1),
+        }
+    )
+    adjusted_scores = (
+        _d30_rerank_matrix(dali_state, raw_scores, z_id160, direct_logits)
+        if dali_enabled
+        else raw_scores.copy()
+    )
+    return {
+        "before_fit": before_fit,
+        "before": before,
+        "stage2c_fit": stage2c_fit,
+        "after": after,
+        "dali_state": dali_state,
+        "dali_enabled": bool(dali_enabled),
+        "dali_gate": dali_gate,
+        "raw_scores": raw_scores,
+        "adjusted_scores": adjusted_scores,
+    }
+
+
 def _evaluate_d30_fold(
     component: Any,
     rows: Mapping[str, np.ndarray],
@@ -2666,6 +2846,236 @@ def _evaluate_d31_fold(
     }
 
 
+def _evaluate_d32_fold(
+    component: Any,
+    rows: Mapping[str, np.ndarray],
+    z_id160: np.ndarray,
+    direct_logits: np.ndarray,
+    fft96: np.ndarray,
+    rf32: np.ndarray,
+    *,
+    old_classes: tuple[str, ...],
+    new_classes: tuple[str, ...],
+    held_ranks: tuple[int, int],
+    candidate_id: str,
+    config: D32CandidateConfig,
+) -> dict[str, Any]:
+    """Leave-two-out D32 evaluation; held rows never enter fitting or gates."""
+
+    labels = np.asarray(rows["labels"]).astype(str)
+    ranks = np.asarray(rows["ranks"], dtype=np.int64)
+    held = np.isin(ranks, np.asarray(held_ranks, dtype=np.int64))
+    train = ~held
+    old = np.isin(labels, np.asarray(old_classes))
+    new = np.isin(labels, np.asarray(new_classes))
+    if (
+        int(np.sum(train & old)) != 8 * len(old_classes)
+        or int(np.sum(train & new)) != 8 * len(new_classes)
+        or int(np.sum(held & old)) != 2 * len(old_classes)
+        or int(np.sum(held & new)) != 2 * len(new_classes)
+    ):
+        raise D25RunnerError("D32 leave-two-out class symmetry drift")
+    features = _d1_feature_from_blocks(z_id160, fft96, rf32)
+    fit = _fit_d32_route(
+        component,
+        features[train],
+        z_id160[train],
+        direct_logits[train],
+        labels[train],
+        old[train],
+        new[train],
+        old_classes,
+        new_classes,
+        config,
+    )
+    before = fit["before"]
+    after = fit["after"]
+    all_classes = old_classes + new_classes
+    before_old_predictions = predict_all_d26(
+        before, features[held & old]
+    ).astype(str).tolist()
+    held_raw = score_all_d32(after, features[held])
+    held_adjusted = (
+        _d30_rerank_matrix(
+            fit["dali_state"], held_raw, z_id160[held], direct_logits[held]
+        )
+        if fit["dali_enabled"]
+        else held_raw.copy()
+    )
+    held_labels = labels[held]
+    held_predictions = np.asarray(all_classes)[np.argmax(held_adjusted, axis=1)]
+    held_old_mask = np.isin(held_labels, np.asarray(old_classes))
+    held_new_mask = ~held_old_mask
+    before_old = legacy._metric_block(
+        labels[held & old], before_old_predictions, old_classes
+    )
+    after_old = legacy._metric_block(
+        held_labels[held_old_mask], held_predictions[held_old_mask].tolist(), old_classes
+    )
+    after_new = legacy._metric_block(
+        held_labels[held_new_mask], held_predictions[held_new_mask].tolist(), new_classes
+    )
+    fit_before_predictions = predict_all_d26(
+        before, features[train & old]
+    ).astype(str).tolist()
+    fit_predictions = np.asarray(all_classes)[np.argmax(fit["adjusted_scores"], axis=1)]
+    fit_old_mask = old[train]
+    fit_before = legacy._metric_block(
+        labels[train & old], fit_before_predictions, old_classes
+    )
+    fit_after = legacy._metric_block(
+        labels[train][fit_old_mask], fit_predictions[fit_old_mask].tolist(), old_classes
+    )
+    classwise_pass = all(
+        float(fit_after["per_class_accuracy"][name]) + 1.0e-12
+        >= float(fit_before["per_class_accuracy"][name])
+        for name in old_classes
+    )
+    floor_pass = (
+        float(fit_after["class_floor_accuracy"]) + 1.0e-12
+        >= float(fit_before["class_floor_accuracy"])
+    )
+    training_trace = list(fit["before_fit"].loss_trace) + list(
+        fit["stage2c_fit"].loss_trace
+    )
+    base_resource = dict(after.resource_audit())
+    dali_accounting = _d31_dali_state_accounting(fit["dali_state"])
+    dali_resource = dali_accounting["dali_resource"]
+    combined_resident_state = int(base_resource["persistent_state_bytes"]) + int(
+        dali_accounting["actual_current_dali_state_bytes"]
+    )
+    projected_active_state = int(base_resource["persistent_state_bytes"]) + int(
+        dali_accounting["projected_slim_dali_runtime_bytes"]
+    )
+    registered_count = len(all_classes)
+    base_head_macs = int(base_resource["estimated_macs_per_query"])
+    dali_macs = (
+        int(dali_resource["fixed_medoid_ground_macs_per_query"])
+        if fit["dali_enabled"]
+        else 0
+    )
+    total_macs = base_head_macs + dali_macs
+    identity_macs = registered_count * 10 * 160
+    argmax_ops = max(0, registered_count - 1)
+    dali_scalar_ops = 12 * len(old_classes) if fit["dali_enabled"] else 0
+    resource = {
+        **base_resource,
+        "schema": "cvs.phase2.d32_combined_resource.v1",
+        "d32_suffix_resource": base_resource,
+        **dali_accounting,
+        "dali_enabled_by_old_support_gate": bool(fit["dali_enabled"]),
+        "dali_old_support_gate": fit["dali_gate"],
+        "actual_int8_component_used_for_prediction": bool(fit["dali_enabled"]),
+        "authorized_full_bundle_state_bytes": int(
+            dali_accounting["authorized_full_bundle_state_bytes"]
+        ),
+        "full_bundle_resident_combined_state_bytes": combined_resident_state,
+        "projected_slim_active_predictor_state_bytes": projected_active_state,
+        "slim_runtime_projection_only": True,
+        "deployment_resource_primary_state_view": (
+            "projected_slim_fixed_medoid_predictor_with_full_bundle_residency_disclosed"
+        ),
+        "deployable_predictor_state_bytes_projected_slim_medoid": projected_active_state,
+        "persistent_state_bytes": combined_resident_state,
+        "persistent_state_cap_pass": combined_resident_state <= 256 * 1024,
+        "stage2b_adaptation_macs": int(
+            base_resource["estimated_stage2b_adaptation_macs"]
+        ),
+        "stage2c_adaptation_macs": int(
+            base_resource["estimated_stage2c_adaptation_macs"]
+        ),
+        "total_adaptation_macs": int(base_resource["estimated_adaptation_macs"]),
+        "base_head_macs_per_query": base_head_macs,
+        "d32_extra_scalar_bias_adds_per_query": int(
+            base_resource["estimated_scalar_bias_adds_per_query"]
+        ),
+        "dali_medoid_macs_per_query": dali_macs,
+        "argmax_scalar_comparisons_per_query": argmax_ops,
+        "total_post_backbone_macs_per_query": total_macs,
+        "estimated_macs_per_query": total_macs,
+        "estimated_row_local_scalar_ops_per_query": int(
+            base_resource["estimated_scalar_bias_adds_per_query"]
+            + dali_scalar_ops
+            + argmax_ops
+        ),
+        "identity_single_qknn_macs_same_registered_count": identity_macs,
+        "estimated_score_mac_ratio_vs_identity_single_qknn": float(
+            total_macs / identity_macs
+        ),
+        "total_optimizer_steps": int(after.stage2b_optimizer_steps)
+        + int(after.stage2c_optimizer_steps),
+        "total_adaptation_epochs": int(after.stage2b_optimizer_steps)
+        + int(after.stage2c_optimizer_steps),
+        "complete_loss_trace": training_trace,
+        "feature_geometry": "b3_auxiliary_dominant_z160_fft96_rf32_v1",
+        "old_support_non_degradation_pass": bool(classwise_pass and floor_pass),
+        "query_rows_used_for_fit": 0,
+        "query_role_oracle_access": False,
+        "query_true_batch_class_count_access": False,
+        "query_class_quota_access": False,
+        "query_batch_global_assignment": False,
+        "dense_query_graph_bytes": 0,
+        "clean_sample_access": False,
+        "source_sample_access": False,
+    }
+    confusion_raw = _d31_confusion_audit(
+        held_raw, held_labels, old_classes, new_classes
+    )
+    confusion_final = _d31_confusion_audit(
+        held_adjusted, held_labels, old_classes, new_classes
+    )
+    geometry = {
+        "schema": "cvs.phase2.d32_inloop_safe_cap_geometry.v1",
+        "feature_geometry": "b3_auxiliary_dominant_z160_fft96_rf32_v1",
+        "observed_feature_block_energy": _d30_observed_block_energy(features),
+        "old_prefix_sha256": after.old_prefix_sha256,
+        "dali_enabled": bool(fit["dali_enabled"]),
+        "dali_old_support_gate": fit["dali_gate"],
+        "raw_confusion": confusion_raw,
+        "final_confusion": confusion_final,
+        "support_gate": json.loads(after.support_gate_json),
+    }
+    final_old_scores_unchanged = np.array_equal(
+        held_raw[:, : len(old_classes)],
+        held_adjusted[:, : len(old_classes)],
+    )
+    return {
+        "candidate_id": candidate_id,
+        "held_ranks": list(held_ranks),
+        "fit_k_shot": 8,
+        "before_old": before_old,
+        "after_old": after_old,
+        "after_new": after_new,
+        "H_old_new": legacy._harmonic(
+            float(after_old["overall_accuracy"]),
+            float(after_new["overall_accuracy"]),
+        ),
+        "forgetting": float(
+            before_old["overall_accuracy"] - after_old["overall_accuracy"]
+        ),
+        "joint_floor": float(
+            min(after_old["class_floor_accuracy"], after_new["class_floor_accuracy"])
+        ),
+        "base_old_parameter_prefix_bitwise_unchanged": True,
+        "final_old_score_columns_bitwise_unchanged": bool(final_old_scores_unchanged),
+        "dali_max_old_preserved": True,
+        "old_prefix_sha256_before": before.old_lock_sha256,
+        "old_prefix_sha256_after": after.base_old_lock_sha256,
+        "fit_old_before_registration": fit_before,
+        "fit_old_after_registration": fit_after,
+        "old_support_classwise_non_degradation": classwise_pass,
+        "old_support_floor_non_degradation": floor_pass,
+        "old_support_non_degradation_pass": bool(classwise_pass and floor_pass),
+        "dali_enabled": bool(fit["dali_enabled"]),
+        "dali_old_support_gate": fit["dali_gate"],
+        "raw_confusion": confusion_raw,
+        "final_confusion": confusion_final,
+        "training_trace": training_trace,
+        "geometry_summary": geometry,
+        "resource": resource,
+    }
+
+
 def _fold_guard(row: Mapping[str, Any], baseline: Mapping[str, Any]) -> bool:
     tolerance = 1.0e-12
     old_classwise = all(
@@ -2916,7 +3326,9 @@ def _select_d26_candidate(
             **aggregate,
             "candidate_id": candidate_id,
             "family": (
-                "d31_all_registered_suffix_with_dali"
+                "d32_inloop_safe_cap_suffix_with_dali"
+                if candidate_id in D32_CANDIDATES
+                else "d31_all_registered_suffix_with_dali"
                 if candidate_id in D31_CANDIDATES
                 else "d30_b3_dali_dual_envelope"
                 if candidate_id in D30_CANDIDATES
@@ -3088,9 +3500,43 @@ def _apply_full_k10_d26_old_support_gate(
             )
             for scenario in legacy.FORMAL_LEO_WEAK_SCENARIOS
         }
-        full_pass = all(by_scenario.values())
+        resource_by_scenario = {
+            scenario: bool(
+                int(deployment_resources[candidate_id][scenario].get(
+                    "peak_trainable_parameters", 80_001
+                ))
+                <= 80_000
+                and int(deployment_resources[candidate_id][scenario].get(
+                    "total_optimizer_steps", 31
+                ))
+                <= 30
+                and bool(deployment_resources[candidate_id][scenario].get(
+                    "persistent_state_cap_pass", False
+                ))
+                and int(deployment_resources[candidate_id][scenario].get(
+                    "dense_query_graph_bytes", 1
+                ))
+                == 0
+                and "total_post_backbone_macs_per_query"
+                in deployment_resources[candidate_id][scenario]
+                and bool(deployment_resources[candidate_id][scenario].get(
+                    "latency_includes_argmax", False
+                ))
+            )
+            for scenario in legacy.FORMAL_LEO_WEAK_SCENARIOS
+        } if candidate_id in D32_CANDIDATES else {
+            scenario: True for scenario in legacy.FORMAL_LEO_WEAK_SCENARIOS
+        }
+        full_pass = all(by_scenario.values()) and all(resource_by_scenario.values())
         decision["full_k10_old_support_non_degradation_by_scenario"] = by_scenario
         decision["full_k10_old_support_non_degradation_pass"] = full_pass
+        if candidate_id in D32_CANDIDATES:
+            decision["full_k10_resource_protocol_gate_by_scenario"] = (
+                resource_by_scenario
+            )
+            decision["full_k10_resource_protocol_gate_pass"] = all(
+                resource_by_scenario.values()
+            )
         decision["eligible_positive_route"] = bool(
             decision.get("eligible_positive_route", False) and full_pass
         )
@@ -3101,7 +3547,12 @@ def _apply_full_k10_d26_old_support_gate(
     )
     if bool(selected_decision["full_k10_old_support_non_degradation_pass"]):
         return selected_id, None
-    return D25_C0, "FULL_K10_OLD_SUPPORT_NON_DEGRADATION_FAILED"
+    reason = (
+        "FULL_K10_OLD_SUPPORT_OR_RESOURCE_PROTOCOL_GATE_FAILED"
+        if selected_id in D32_CANDIDATES
+        else "FULL_K10_OLD_SUPPORT_NON_DEGRADATION_FAILED"
+    )
+    return D25_C0, reason
 
 
 def _full_d25_state_audit(
@@ -4107,6 +4558,195 @@ def _full_d31_state_audit(
     return resource, geometry
 
 
+def _full_d32_state_audit(
+    component: Any,
+    rows: Mapping[str, np.ndarray],
+    z_id160: np.ndarray,
+    direct_logits: np.ndarray,
+    fft96: np.ndarray,
+    rf32: np.ndarray,
+    *,
+    old_classes: tuple[str, ...],
+    new_classes: tuple[str, ...],
+    config: D32CandidateConfig,
+) -> tuple[dict[str, Any], dict[str, Any]]:
+    """Full K-shot D32 support audit with complete row-local latency."""
+
+    labels = np.asarray(rows["labels"]).astype(str)
+    old = np.isin(labels, np.asarray(old_classes))
+    new = np.isin(labels, np.asarray(new_classes))
+    features = _d1_feature_from_blocks(z_id160, fft96, rf32)
+    fit_started = time.perf_counter()
+    fit = _fit_d32_route(
+        component,
+        features,
+        z_id160,
+        direct_logits,
+        labels,
+        old,
+        new,
+        old_classes,
+        new_classes,
+        config,
+    )
+    fit_elapsed_ms = (time.perf_counter() - fit_started) * 1000.0
+    before = fit["before"]
+    after = fit["after"]
+    all_classes = old_classes + new_classes
+    before_predictions = predict_all_d26(before, features[old]).astype(str).tolist()
+    final_predictions = np.asarray(all_classes)[np.argmax(fit["adjusted_scores"], axis=1)]
+    before_metric = legacy._metric_block(labels[old], before_predictions, old_classes)
+    after_metric = legacy._metric_block(
+        labels[old], final_predictions[old].tolist(), old_classes
+    )
+    classwise_pass = all(
+        float(after_metric["per_class_accuracy"][name]) + 1.0e-12
+        >= float(before_metric["per_class_accuracy"][name])
+        for name in old_classes
+    )
+    floor_pass = (
+        float(after_metric["class_floor_accuracy"]) + 1.0e-12
+        >= float(before_metric["class_floor_accuracy"])
+    )
+    score_elapsed_ms: list[float] = []
+    for index, feature in enumerate(features):
+        score_started = time.perf_counter()
+        row_scores = score_all_d32(after, feature[None, :])
+        if fit["dali_enabled"]:
+            row_scores = _d30_rerank_matrix(
+                fit["dali_state"],
+                row_scores,
+                z_id160[index : index + 1],
+                direct_logits[index : index + 1],
+            )
+        _ = int(np.argmax(row_scores[0]))
+        score_elapsed_ms.append((time.perf_counter() - score_started) * 1000.0)
+    base_resource = dict(after.resource_audit())
+    accounting = _d31_dali_state_accounting(fit["dali_state"])
+    dali_resource = accounting["dali_resource"]
+    combined_resident = int(base_resource["persistent_state_bytes"]) + int(
+        accounting["actual_current_dali_state_bytes"]
+    )
+    projected_active = int(base_resource["persistent_state_bytes"]) + int(
+        accounting["projected_slim_dali_runtime_bytes"]
+    )
+    registered_count = len(all_classes)
+    identity_macs = registered_count * 10 * 160
+    base_head_macs = int(base_resource["estimated_macs_per_query"])
+    dali_macs = (
+        int(dali_resource["fixed_medoid_ground_macs_per_query"])
+        if fit["dali_enabled"]
+        else 0
+    )
+    total_macs = base_head_macs + dali_macs
+    argmax_ops = max(0, registered_count - 1)
+    dali_scalar_ops = 12 * len(old_classes) if fit["dali_enabled"] else 0
+    training_trace = list(fit["before_fit"].loss_trace) + list(
+        fit["stage2c_fit"].loss_trace
+    )
+    resource = {
+        **base_resource,
+        "schema": "cvs.phase2.d32_combined_resource.v1",
+        "d32_suffix_resource": base_resource,
+        **accounting,
+        "dali_enabled_by_old_support_gate": bool(fit["dali_enabled"]),
+        "dali_old_support_gate": fit["dali_gate"],
+        "actual_int8_component_used_for_prediction": bool(fit["dali_enabled"]),
+        "authorized_full_bundle_state_bytes": int(
+            accounting["authorized_full_bundle_state_bytes"]
+        ),
+        "full_bundle_resident_combined_state_bytes": combined_resident,
+        "projected_slim_active_predictor_state_bytes": projected_active,
+        "slim_runtime_projection_only": True,
+        "current_formal_bundle_rebuilt_as_slim_medoid": False,
+        "deployment_resource_primary_state_view": (
+            "projected_slim_fixed_medoid_predictor_with_full_bundle_residency_disclosed"
+        ),
+        "deployable_predictor_state_bytes_projected_slim_medoid": projected_active,
+        "persistent_state_bytes": combined_resident,
+        "persistent_state_cap_pass": combined_resident <= 256 * 1024,
+        "stage2b_adaptation_macs": int(
+            base_resource["estimated_stage2b_adaptation_macs"]
+        ),
+        "stage2c_adaptation_macs": int(
+            base_resource["estimated_stage2c_adaptation_macs"]
+        ),
+        "total_adaptation_macs": int(base_resource["estimated_adaptation_macs"]),
+        "base_head_macs_per_query": base_head_macs,
+        "d32_extra_scalar_bias_adds_per_query": int(
+            base_resource["estimated_scalar_bias_adds_per_query"]
+        ),
+        "dali_medoid_macs_per_query": dali_macs,
+        "argmax_scalar_comparisons_per_query": argmax_ops,
+        "total_post_backbone_macs_per_query": total_macs,
+        "estimated_macs_per_query": total_macs,
+        "estimated_row_local_scalar_ops_per_query": int(
+            base_resource["estimated_scalar_bias_adds_per_query"]
+            + dali_scalar_ops
+            + argmax_ops
+        ),
+        "identity_single_qknn_macs_same_registered_count": identity_macs,
+        "estimated_score_mac_ratio_vs_identity_single_qknn": float(
+            total_macs / identity_macs
+        ),
+        "total_optimizer_steps": int(after.stage2b_optimizer_steps)
+        + int(after.stage2c_optimizer_steps),
+        "total_adaptation_epochs": int(after.stage2b_optimizer_steps)
+        + int(after.stage2c_optimizer_steps),
+        "deployment_k_shot": 10,
+        "registered_class_count": registered_count,
+        "old_support_before_registration": before_metric,
+        "old_support_after_registration": after_metric,
+        "old_support_classwise_non_degradation_pass": classwise_pass,
+        "old_support_floor_non_degradation_pass": floor_pass,
+        "old_support_non_degradation_pass": bool(classwise_pass and floor_pass),
+        "support_adaptation_and_registration_elapsed_ms": fit_elapsed_ms,
+        "batch1_head_latency_mean_ms": float(np.mean(score_elapsed_ms)),
+        "batch1_head_latency_p95_ms": float(
+            np.quantile(np.asarray(score_elapsed_ms, dtype=np.float64), 0.95)
+        ),
+        "batch1_head_latency_sample_count": len(score_elapsed_ms),
+        "head_latency_scope": "d32_score_plus_safe_cap_bias_plus_optional_dali_plus_argmax",
+        "latency_includes_argmax": True,
+        "head_peak_cuda_memory_bytes": 0,
+        "head_runtime": "numpy_cpu_fp32",
+        "complete_loss_trace": training_trace,
+        "feature_geometry": "b3_auxiliary_dominant_z160_fft96_rf32_v1",
+        "query_rows_used_for_fit": 0,
+        "query_role_oracle_access": False,
+        "query_true_batch_class_count_access": False,
+        "query_class_quota_access": False,
+        "query_batch_global_assignment": False,
+        "dense_query_graph_bytes": 0,
+        "clean_sample_access": False,
+        "source_sample_access": False,
+    }
+    geometry = {
+        "schema": "cvs.phase2.d32_inloop_safe_cap_geometry.v1",
+        "feature_geometry": "b3_auxiliary_dominant_z160_fft96_rf32_v1",
+        "observed_feature_block_energy": _d30_observed_block_energy(features),
+        "old_prefix_sha256": after.old_prefix_sha256,
+        "dali_enabled": bool(fit["dali_enabled"]),
+        "dali_old_support_gate": fit["dali_gate"],
+        "raw_confusion": _d31_confusion_audit(
+            fit["raw_scores"], labels, old_classes, new_classes
+        ),
+        "final_confusion": _d31_confusion_audit(
+            fit["adjusted_scores"], labels, old_classes, new_classes
+        ),
+        "support_gate": json.loads(after.support_gate_json),
+        "base_old_parameter_prefix_bitwise_unchanged": True,
+        "final_old_score_columns_bitwise_unchanged": bool(
+            np.array_equal(
+                fit["raw_scores"][:, : len(old_classes)],
+                fit["adjusted_scores"][:, : len(old_classes)],
+            )
+        ),
+        "dali_max_old_preserved": True,
+    }
+    return resource, geometry
+
+
 def run(
     *,
     before_root: Path,
@@ -4332,7 +4972,21 @@ def run(
     for candidate_id, config in candidates.items():
         for scenario in legacy.FORMAL_LEO_WEAK_SCENARIOS:
             for fold_index, held_ranks in enumerate(HELD_RANKS):
-                if isinstance(config, D31CandidateConfig):
+                if isinstance(config, D32CandidateConfig):
+                    row = _evaluate_d32_fold(
+                        component,
+                        scene_rows[scenario],
+                        scene_z[scenario],
+                        scene_logits[scenario],
+                        scene_fft[scenario],
+                        scene_rf[scenario],
+                        old_classes=old_classes,
+                        new_classes=new_classes,
+                        held_ranks=held_ranks,
+                        candidate_id=candidate_id,
+                        config=config,
+                    )
+                elif isinstance(config, D31CandidateConfig):
                     row = _evaluate_d31_fold(
                         component,
                         scene_rows[scenario],
@@ -4476,6 +5130,8 @@ def run(
         raise D25RunnerError("D30 training-log cardinality drift")
     if candidate_set == CANDIDATE_SET_D31_V1 and expected_rows != 90:
         raise D25RunnerError("D31 training-log cardinality drift")
+    if candidate_set == CANDIDATE_SET_D32_V1 and expected_rows != 90:
+        raise D25RunnerError("D32 training-log cardinality drift")
     selected_id, candidate_decisions = (
         _select_c3_candidate(folds_by_candidate)
         if candidate_set == CANDIDATE_SET_C3_V1
@@ -4491,6 +5147,8 @@ def run(
             if candidate_set == CANDIDATE_SET_D30_V1
             else D31_CANDIDATES
             if candidate_set == CANDIDATE_SET_D31_V1
+            else D32_CANDIDATES
+            if candidate_set == CANDIDATE_SET_D32_V1
             else D26_CANDIDATES,
         )
         if candidate_set in (CANDIDATE_SET_D26_V1, CANDIDATE_SET_D26_V2)
@@ -4501,6 +5159,7 @@ def run(
             CANDIDATE_SET_D29_V1,
             CANDIDATE_SET_D30_V1,
             CANDIDATE_SET_D31_V1,
+            CANDIDATE_SET_D32_V1,
         )
         else _select_candidate(folds_by_candidate)
     )
@@ -4521,6 +5180,8 @@ def run(
         if candidate_set == CANDIDATE_SET_D30_V1
         else (D25_C0,) + D31_CANDIDATES
         if candidate_set == CANDIDATE_SET_D31_V1
+        else (D25_C0,) + D32_CANDIDATES
+        if candidate_set == CANDIDATE_SET_D32_V1
         else (D25_C0,) + D26_CANDIDATES
         if candidate_set in (CANDIDATE_SET_D26_V1, CANDIDATE_SET_D26_V2)
         else D25_CANDIDATES
@@ -4530,7 +5191,21 @@ def run(
     }
     for candidate_id, config in candidates.items():
         for scenario in legacy.FORMAL_LEO_WEAK_SCENARIOS:
-            if isinstance(config, D31CandidateConfig):
+            if isinstance(config, D32CandidateConfig):
+                resource, geometry = _full_d32_state_audit(
+                    component,
+                    scene_rows[scenario],
+                    scene_z[scenario],
+                    scene_logits[scenario],
+                    scene_fft[scenario],
+                    scene_rf[scenario],
+                    old_classes=old_classes,
+                    new_classes=new_classes,
+                    config=config,
+                )
+                deployment_resources[candidate_id][scenario] = resource
+                geometry_matrix[candidate_id][scenario] = geometry
+            elif isinstance(config, D31CandidateConfig):
                 resource, geometry = _full_d31_state_audit(
                     component,
                     scene_rows[scenario],
@@ -4652,6 +5327,7 @@ def run(
         CANDIDATE_SET_D29_V1,
         CANDIDATE_SET_D30_V1,
         CANDIDATE_SET_D31_V1,
+        CANDIDATE_SET_D32_V1,
     ):
         selected_id, full_k10_fallback_reason = (
             _apply_full_k10_d26_old_support_gate(
@@ -4668,6 +5344,8 @@ def run(
                 if candidate_set == CANDIDATE_SET_D30_V1
                 else D31_CANDIDATES
                 if candidate_set == CANDIDATE_SET_D31_V1
+                else D32_CANDIDATES
+                if candidate_set == CANDIDATE_SET_D32_V1
                 else D26_CANDIDATES,
             )
         )
@@ -4757,6 +5435,7 @@ def run(
                 CANDIDATE_SET_D29_V1,
                 CANDIDATE_SET_D30_V1,
                 CANDIDATE_SET_D31_V1,
+                CANDIDATE_SET_D32_V1,
             )
             else IDENTITY_CANDIDATE
         ),
@@ -4774,6 +5453,8 @@ def run(
             if candidate_set == CANDIDATE_SET_D30_V1
             else D31_CANDIDATES
             if candidate_set == CANDIDATE_SET_D31_V1
+            else D32_CANDIDATES
+            if candidate_set == CANDIDATE_SET_D32_V1
             else D26_CANDIDATES
             if candidate_set in (CANDIDATE_SET_D26_V1, CANDIDATE_SET_D26_V2)
             else D25_CANDIDATES
@@ -4816,6 +5497,14 @@ def run(
             "new_floor_gain>=0.10,_per-class_drop<=0.10,_H_and_forgetting_"
             "noninferior_vs_C0;_B3_performance_reference_only"
             if candidate_set == CANDIDATE_SET_D31_V1
+            else "D32:_B3_auxiliary-dominant_geometry,_15-step_frozen_"
+            "Stage2-B,_10/15-step_all-registered-support_in-loop_safe-cap_"
+            "new-suffix,_support-only_checkpoint_selection,_fixed-medoid_DALI_"
+            "old-internal_rerank,_complete_resource_and_argmax_latency_gate,_"
+            "all-fold_old-support_non-degradation,_per-scenario_pooled_old-and-"
+            "new-floor_gain>=0.10,_per-class-drop<=0.10,_H-and-forgetting_"
+            "noninferior_vs_C0;_B3_performance_reference_only"
+            if candidate_set == CANDIDATE_SET_D32_V1
             else "D26-v2:_pre-registration_old-only_per-class_and_correct-row_"
             "bias_guard,_all_fold_old_support_non_degradation,_per_scenario_"
             "pooled_old_and_new_floor_gain>=0.10,_per_class_drop<=0.10,_H_"
@@ -4873,6 +5562,7 @@ def run(
                 CANDIDATE_SET_D29_V1,
                 CANDIDATE_SET_D30_V1,
                 CANDIDATE_SET_D31_V1,
+                CANDIDATE_SET_D32_V1,
             )
             else {}
         ),
@@ -4961,6 +5651,7 @@ def build_parser() -> argparse.ArgumentParser:
             CANDIDATE_SET_D29_V1,
             CANDIDATE_SET_D30_V1,
             CANDIDATE_SET_D31_V1,
+            CANDIDATE_SET_D32_V1,
         ),
         default=CANDIDATE_SET_D25_V4,
     )
