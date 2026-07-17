@@ -4,7 +4,7 @@
 
 - experiment ID：`d25_multimodal_concat_support_20260717/support_screen_v1`
 - 日期：2026-07-17；operator：Codex
-- 状态：`V2_SUPPORT_FOLD_FAILED_V3_LOCAL_VERIFIED`；query始终未打开，v3待同步启动。
+- 状态：`V3_OLD_SCORE_FREEZE_FAILED_V4_LOCAL_VERIFIED`；query始终未打开，v4待同步启动。
 - 目标：在不打开query的前提下，使用同一密封LEO_weak enrollment-only support，对D25的288维分块拼接、不确定度ground-z融合和逐块半径评分执行15fold原子筛选。
 - 假设：保留`z_id160+FFT96+RF32`完整288维，同时把块平方能量从D1的辅助分支94.12%支配修正为按维数比例`5/9、1/3、1/9`，可以保留多表征平均增益并改善旧类与新类floor稳定性。
 - 对比：`Z0_SUPPORT_ONLY`、`B3_SINGLE_IQ_DIAG_FFTRF`、`D25_C0_DIM_CONCAT`、`D25_C1_UF_GROUNDZ`、`D25_C2_BLOCK_RADIUS`。
@@ -26,7 +26,7 @@
 - D25核心提交：`f349850d`。
 - D25核心SHA256：`c8789679888bee15e9e3167dcdd576458494fd471f5f83b747836720657f75c7`。
 - runner基线提交：`912e49c2`；v3 runner SHA256：`38f98b8022dd5f9b6b8d327226b2463fab125c9baf6efd7116b3fe72a96c780d`。
-- v3 D25核心SHA256：`a950d6637aced9f0cef11e1c760f39974f7df4827b5b437db582132521b1c296`。
+- v4 D25核心SHA256：`2c43008c1f14f6a6173c3680b3af8a8b4015dfde662b0d4fcfb11e74829dac1e`。
 - D24依赖SHA256：`2ed2067c4636447f9e013bab2b99d6bc94e149ed5152907fc363b7e802bd2b86`；CIAF依赖SHA256：`f46c5007cb1c0279bf2b27169ad79989eba908f32658c5a4d7f819916381aeb1`。
 - D19控制helper SHA256：`7e46db1e99ac40f4e9d7679dcb7f668553d928a0672a7bcf07022383949c8553`。
 - 本地文件：`code/cvsrffi/stage2_multimodal_concat_fusion.py`、`code/scripts/run_d25_support_only_concat.py`、`tests/test_run_d25_support_only_concat.py`、`code/scripts/launch_d25_concat_support_screen_20260717.sh`。
@@ -72,8 +72,8 @@ D25候选相对Z0必须同时满足：
 - Python：启动前重新确认；历史为`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`。
 - GPU/PID：待preflight和live inventory后确定。
 - 远端runner：`/home/szu2070436088/2510044040/CV-SincNet/code/scripts/run_d25_support_only_concat.py`。
-- 远端log：`/home/szu2070436088/2510044040/CV-SincNet/logs/d25_multimodal_concat_20260717/support_screen_v3.log`。
-- 远端output：`/home/szu2070436088/2510044040/CV-SincNet/runs/d25_multimodal_concat_20260717/output/support_screen_v3`。
+- 远端log：`/home/szu2070436088/2510044040/CV-SincNet/logs/d25_multimodal_concat_20260717/support_screen_v4.log`。
+- 远端output：`/home/szu2070436088/2510044040/CV-SincNet/runs/d25_multimodal_concat_20260717/output/support_screen_v4`。
 - 计划启动命令：`D25_GPU=<preflight后选定GPU> bash code/scripts/launch_d25_concat_support_screen_20260717.sh`。
 - 本地到远端同步映射：D25 runner、D25核心和launcher同步到相同repo相对路径；D19 helper仅校验既有远端SHA，不覆盖无关文件。
 - 23:03 CST直连preflight通过；N607项目根目录、服务器时间和8张RTX3090可见。
@@ -102,6 +102,21 @@ D25候选相对Z0必须同时满足：
 - v3修复：`fit_old_concat`新增显式`registered_classes`，无ground与ground路线都严格沿用manifest顺序；新增非字典序旧类回归。
 - v3本地验证：runner、D25、D24、D23共45项PASS；launcher `bash -n`通过。
 - v3 runner/core/launcher SHA256分别为`38f98b80...c780d`、`a950d663...c296`、`f351f0c7...89ea`；使用独立`support_screen_v3`路径保留v2证据。
+
+## v3旧列冻结失败与v4分离点积修复
+
+- v3 PID：`3513836`；已退出。
+- v3越过类序检查并完成新类append，在`D25 old score columns changed after registration`硬断言处fail closed。
+- 旧prototype、radius和old-prefix SHA未改变；根因是NumPy对注册前6列与注册后11列矩阵采用不同形状的点积kernel，旧列产生末位浮点差异。
+- 协议要求bitwise冻结，因此不放宽为容差比较。v4让旧prefix与新suffix始终分别点积后拼接，使注册前后旧列使用完全相同的6列运算形状。
+- v4新增6旧+5新随机几何bitwise回归；runner+D25+D24+D23共46项PASS。
+- v4 core/launcher SHA256分别为`2c43008c...ac1e`、`cf9d48c1...57d2`；使用独立`support_screen_v4`路径。
+
+## 三次修复回顾
+
+- v1是传递依赖未闭合，v2是纯target类序未绑定manifest，v3是score计算形状导致bitwise冻结失败；三者都没有形成完整75行矩阵，均不得作为性能证据。
+- 三次均保持LEO_weak-only、单物理样本单观测、无clean/source、无query/truth/role/quota/global assignment边界；没有为通过而放宽任何硬断言。
+- v4不增加候选、不改support、K-shot或选择门，只修复旧列确定性计算路径。若v4仍出现同一score冻结问题，将停止重复启动并转为本地/远端最小复现，而不是继续盲目重跑。
 
 ## 预期产物
 

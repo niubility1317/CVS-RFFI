@@ -61,6 +61,7 @@ Stage2-C追加新类后，旧类编码payload、块半径、计数、融合权�
 | D25-16 | D25 runner设计 | 独立runner复用D19密封support控制面，但不修改历史D19 runner；固定Z0/B3/C0/C1/C2共75行 | `code/scripts/run_d25_support_only_concat.py` | verified | 候选锁、B3等价、75行矩阵测试 | B3仅diagnostic，不可晋级 |
 | D25-17 | 证据闭包 | support打开前锁定D25核心、D24、CIAF、D19 helper、D25 runner SHA，并输出6个无样本特征artifact | runner、tests | verified | source closure与artifact schema测试 | v1发现依赖遗漏；v2补齐五成员并切独立output |
 | D25-18 | 注册顺序 | 纯target与ground旧类均严格继承manifest预注册class handle顺序，不按类名字典序重排 | D25核心、runner、tests | verified | 非字典序registry回归与runner fold检查 | v2发现；v3显式传入`registered_classes` |
+| D25-19 | 旧列确定性 | 注册前后旧类score列必须bitwise相同；旧prefix与新suffix分离点积，禁止以容差放宽 | D25核心、tests | verified | 6旧+5新随机几何bitwise回归 | v3发现形状相关末位差；v4修复 |
 
 ## 首轮候选锁
 
@@ -89,4 +90,5 @@ Stage2-C追加新类后，旧类编码payload、块半径、计数、融合权�
 - `python -m pytest -q tests\test_run_d25_support_only_concat.py tests\test_stage2_multimodal_concat_fusion.py tests\test_stage2_uncertainty_proto_fusion.py tests\test_stage2_target_prototype_bank.py`：44项PASS。
 - v1远端在import阶段因缺少D24文件退出，support/query均未打开；v2把D24与CIAF纳入closure，`tests/test_run_d25_support_only_concat.py`、D25、D24、CIAF共42项PASS。
 - v2在合法support首fold发现纯target旧类字典序漂移并fail closed，query未打开；v3显式绑定manifest registry，runner+D25+D24+D23共45项PASS。
-- 当前追溯状态：12项verified、1项implemented、2项deferred、2项blocked、1项pending。最高风险项是D25-10：受限对角阵/floor梯度目标及正式50-step预算尚未接入隔离runner；当前实现严格对应0epoch闭式拼接—注册核心，不是完整训练路线。
+- v3发现6列与11列点积kernel导致旧score末位差并fail closed；v4分离计算old prefix/new suffix，runner+D25+D24+D23共46项PASS。
+- 当前追溯状态：13项verified、1项implemented、2项deferred、2项blocked、1项pending。最高风险项是D25-10：受限对角阵/floor梯度目标及正式50-step预算尚未接入隔离runner；当前实现严格对应0epoch闭式拼接—注册核心，不是完整训练路线。

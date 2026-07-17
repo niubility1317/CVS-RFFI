@@ -788,10 +788,17 @@ def score_one(
         split_fft / np.float32(expected[1]),
         split_rf / np.float32(expected[2]),
     )
+    def prefix_stable_dot(block: np.ndarray, prototypes: np.ndarray) -> np.ndarray:
+        old_scores = block @ prototypes[: state.old_class_count].T
+        if state.class_count == state.old_class_count:
+            return np.asarray(old_scores, dtype=np.float32)
+        new_scores = block @ prototypes[state.old_class_count :].T
+        return np.concatenate([old_scores, new_scores]).astype(np.float32)
+
     similarities = (
-        blocks[0] @ state.prototype_z.T,
-        blocks[1] @ state.prototype_fft.T,
-        blocks[2] @ state.prototype_rf.T,
+        prefix_stable_dot(blocks[0], state.prototype_z),
+        prefix_stable_dot(blocks[1], state.prototype_fft),
+        prefix_stable_dot(blocks[2], state.prototype_rf),
     )
     energy = np.asarray(state.config.block_energy, dtype=np.float32)
     if state.config.score_mode == SCORE_COSINE:

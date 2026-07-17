@@ -238,6 +238,51 @@ def test_append_freezes_old_prefix_payload_and_score_columns_bitwise() -> None:
     np.testing.assert_array_equal(score_one(after, probe)[:count], scores_before)
 
 
+def test_old_score_prefix_is_bitwise_stable_with_six_old_and_five_new() -> None:
+    old_classes = tuple(f"old-{index}" for index in range(6))
+    new_classes = tuple(f"new-{index}" for index in range(5))
+    rng = np.random.default_rng(20260717)
+
+    def random_support(classes: tuple[str, ...]):
+        rows = len(classes) * 3
+        labels = [label for label in classes for _ in range(3)]
+        return (
+            rng.normal(size=(rows, Z_DIM)).astype(np.float32),
+            rng.normal(size=(rows, FFT_DIM)).astype(np.float32),
+            rng.normal(size=(rows, RF_DIM)).astype(np.float32),
+            labels,
+        )
+
+    old_z, old_fft, old_rf, old_labels = random_support(old_classes)
+    before = fit_old_concat(
+        None,
+        old_z,
+        old_fft,
+        old_rf,
+        old_labels,
+        registered_classes=old_classes,
+        config=MultimodalConcatConfig(use_ground_identity_fusion=False),
+    )
+    new_z, new_fft, new_rf, new_labels = random_support(new_classes)
+    after = append_new_classes_concat(
+        before,
+        new_z,
+        new_fft,
+        new_rf,
+        new_labels,
+        registered_classes=new_classes,
+    )
+    probe = build_concat288(
+        rng.normal(size=(1, Z_DIM)).astype(np.float32),
+        rng.normal(size=(1, FFT_DIM)).astype(np.float32),
+        rng.normal(size=(1, RF_DIM)).astype(np.float32),
+        block_energy=before.config.block_energy,
+    )[0]
+    np.testing.assert_array_equal(
+        score_one(after, probe)[: before.old_class_count], score_one(before, probe)
+    )
+
+
 def test_geometry_audit_covers_old_old_old_new_and_new_new_roles() -> None:
     before = _old_state(1)
     z, fft, rf, labels = _support(NEW, 1, offset=10)
