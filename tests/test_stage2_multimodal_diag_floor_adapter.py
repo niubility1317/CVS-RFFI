@@ -299,3 +299,11 @@ def test_query_path_has_no_explicit_float64_casts() -> None:
     for source in (transform_source, score_source, validator):
         assert "float64" not in source
     assert "astype(np.float64)" not in score_source
+
+
+def test_support_tensor_bridge_avoids_incompatible_numpy_c_api() -> None:
+    source = inspect.getsource(fit_stage2b_diag_floor) + inspect.getsource(
+        append_stage2c_new_suffix
+    )
+    assert "torch.from_numpy" not in source
+    assert ".numpy()" not in source

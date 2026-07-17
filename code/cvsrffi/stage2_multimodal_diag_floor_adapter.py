@@ -67,6 +67,24 @@ def _readonly(value: np.ndarray, dtype: Any) -> np.ndarray:
     return result
 
 
+def _torch_tensor_abi_safe(value: np.ndarray, *, dtype: torch.dtype) -> torch.Tensor:
+    """Bridge tiny support state without the NumPy C-API used by from_numpy.
+
+    N607 currently pairs NumPy 2.x with a Torch build whose from_numpy bridge
+    rejects even genuine numpy.ndarray objects.  C3 tensors are at most a few
+    tens of thousands of support scalars, so the Python-sequence bridge is a
+    bounded adaptation-time cost and never touches the per-query path.
+    """
+
+    return torch.tensor(np.asarray(value).tolist(), dtype=dtype)
+
+
+def _numpy_array_abi_safe(value: torch.Tensor, *, dtype: Any) -> np.ndarray:
+    """Return a detached CPU tensor through the ABI-independent list bridge."""
+
+    return np.asarray(value.detach().cpu().tolist(), dtype=dtype)
+
+
 def _block_slices() -> tuple[slice, slice, slice]:
     return (
         slice(0, Z_DIM),
@@ -654,8 +672,8 @@ def fit_stage2b_diag_floor(
         )
     else:
         device = torch.device("cpu")
-        x = torch.from_numpy(rows.copy()).to(device=device, dtype=torch.float32)
-        y = torch.from_numpy(label_ids).to(device=device, dtype=torch.long)
+        x = _torch_tensor_abi_safe(rows, dtype=torch.float32).to(device=device)
+        y = _torch_tensor_abi_safe(label_ids, dtype=torch.long).to(device=device)
         gamma = torch.nn.Parameter(torch.zeros(FEATURE_DIM, device=device))
         optimizer = torch.optim.Adam([gamma], lr=float(config.learning_rate))
         weights = config.loss_weights
@@ -710,10 +728,10 @@ def fit_stage2b_diag_floor(
             gradient_norm = float(torch.linalg.vector_norm(gamma.grad).item())
             optimizer.step()
             projected = project_block_centered_gamma(
-                gamma.detach().cpu().numpy(), clip=config.gamma_clip
+                _numpy_array_abi_safe(gamma, dtype=np.float32), clip=config.gamma_clip
             )
             with torch.no_grad():
-                gamma.copy_(torch.from_numpy(projected.copy()))
+                gamma.copy_(_torch_tensor_abi_safe(projected, dtype=torch.float32))
             trace.append(
                 {
                     "phase": "stage2b",
@@ -752,24 +770,23 @@ def fit_stage2b_diag_floor(
             )
         gamma_np = np.asarray(
             project_block_centered_gamma(
-                gamma.detach().cpu().numpy(), clip=config.gamma_clip
+                _numpy_array_abi_safe(gamma, dtype=np.float32), clip=config.gamma_clip
             ),
             dtype=np.float32,
         ).copy()
     adapted_np = transform_concat288(
         rows, gamma_np, block_energy=config.block_energy
     )
-    x_final = torch.from_numpy(adapted_np.copy())
-    y_final = torch.from_numpy(label_ids)
+    x_final = _torch_tensor_abi_safe(adapted_np, dtype=torch.float32)
+    y_final = _torch_tensor_abi_safe(label_ids, dtype=torch.long)
     with torch.no_grad():
         prototypes_np = (
             _class_prototypes_torch(
                 x_final, y_final, len(classes), config.block_energy
             )
             .cpu()
-            .numpy()
-            .astype(np.float32)
         )
+        prototypes_np = _numpy_array_abi_safe(prototypes_np, dtype=np.float32)
     counts = np.full(len(classes), k_shot, dtype=np.uint16)
     state = _make_state(
         classes=classes,
@@ -811,8 +828,8 @@ def append_stage2c_new_suffix(
     )
     class_index = {label: index for index, label in enumerate(new_classes)}
     label_ids = np.asarray([class_index[str(value)] for value in labels], dtype=np.int64)
-    x = torch.from_numpy(transformed.copy())
-    y = torch.from_numpy(label_ids)
+    x = _torch_tensor_abi_safe(transformed, dtype=torch.float32)
+    y = _torch_tensor_abi_safe(label_ids, dtype=torch.long)
     with torch.no_grad():
         initial_new = _class_prototypes_torch(
             x, y, len(new_classes), config.block_energy
@@ -833,7 +850,9 @@ def append_stage2c_new_suffix(
     else:
         raw_new = torch.nn.Parameter(initial_new.detach().clone())
         optimizer = torch.optim.Adam([raw_new], lr=float(config.learning_rate))
-        old_tensor = torch.from_numpy(state.prototypes[: state.old_class_count].copy())
+        old_tensor = _torch_tensor_abi_safe(
+            state.prototypes[: state.old_class_count], dtype=torch.float32
+        )
         weights = config.loss_weights
         for step in range(1, steps + 1):
             optimizer.zero_grad(set_to_none=True)
@@ -888,7 +907,7 @@ def append_stage2c_new_suffix(
             optimizer.step()
             with torch.no_grad():
                 raw_new.copy_(_project_prototype_rows(raw_new, config.block_energy))
-            suffix_current = raw_new.detach().cpu().numpy().astype(np.float32)
+            suffix_current = _numpy_array_abi_safe(raw_new, dtype=np.float32)
             trace.append(
                 {
                     "phase": "stage2c",
@@ -917,7 +936,7 @@ def append_stage2c_new_suffix(
         new_final = _project_prototype_rows(raw_new.detach(), config.block_energy)
     combined_classes = state.classes + new_classes
     combined_prototypes = np.concatenate(
-        [state.prototypes, new_final.cpu().numpy().astype(np.float32)], axis=0
+        [state.prototypes, _numpy_array_abi_safe(new_final, dtype=np.float32)], axis=0
     )
     combined_counts = np.concatenate(
         [state.support_count_by_class, np.full(len(new_classes), k_shot, dtype=np.uint16)]
