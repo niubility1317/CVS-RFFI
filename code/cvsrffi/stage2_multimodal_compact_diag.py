@@ -8,8 +8,9 @@ atomically appended new-class suffix.
 
 Prediction is one independent argmax over all registered classes.  The only
 registration calibration parameter is one scalar new-group score bias, chosen
-from a method-locked support-only grid.  Its hard guard preserves every old
-support class accuracy and every previously correct old support decision.
+from a method-locked support-only grid.  The v2 default hard guard preserves
+Stage2-B old-only per-class accuracy and every old-only-correct support row;
+the historical joint-head bias-zero guard remains an explicit config option.
 """
 
 from __future__ import annotations
@@ -34,7 +35,8 @@ ALLOWED_STAGE2C_STEPS = (0, 10, 15)
 MAX_TOTAL_STEPS = 30
 MAX_TRAINABLE_PARAMETERS = 80_000
 MAX_PERSISTENT_STATE_BYTES = 256 * 1024
-NEW_GROUP_BIAS_GRID = (-2.0, -1.0, -0.5, 0.0, 0.5)
+NEW_GROUP_BIAS_GRID = (-12.0, -8.0, -6.0, -4.0, -3.0, -2.0, -1.0, 0.0)
+BIAS_GUARD_MODES = ("joint_bias0", "pre_registration_old_only")
 SCHEMA = "cvs.phase2.d26_multimodal_compact_diag.v1"
 
 
@@ -187,11 +189,13 @@ class D26CompactDiagConfig:
     prototype_anchor_weight: float = 0.05
     diagonal_proximity_weight: float = 0.01
     new_group_bias_grid: tuple[float, ...] = NEW_GROUP_BIAS_GRID
+    bias_guard_mode: str = "pre_registration_old_only"
 
     def __post_init__(self) -> None:
         object.__setattr__(
             self, "new_group_bias_grid", tuple(float(v) for v in self.new_group_bias_grid)
         )
+        object.__setattr__(self, "bias_guard_mode", str(self.bias_guard_mode))
         self.validate()
 
     def validate(self) -> None:
@@ -219,6 +223,10 @@ class D26CompactDiagConfig:
             or not all(math.isfinite(v) for v in grid)
         ):
             raise D26CompactDiagError("D26 bias grid must be finite, unique, and contain 0")
+        if self.bias_guard_mode not in BIAS_GUARD_MODES:
+            raise D26CompactDiagError(
+                "D26 bias guard mode must be joint_bias0 or pre_registration_old_only"
+            )
 
 
 @dataclass(frozen=True)
@@ -590,40 +598,46 @@ def _select_new_group_bias(
     old_scores = _scores_np(old_rows, state.log_diag, state.weights)
     new_scores_on_old = _scores_np(old_rows, state.log_diag, new_weights)
     old_truth = _class_indices(old_labels, state.classes)
-    base_combined = np.concatenate((old_scores, new_scores_on_old), axis=1)
-    base_predictions = np.argmax(base_combined, axis=1)
-    base_correct = base_predictions == old_truth
-    per_class_base = {
-        value: float(np.mean(base_correct[old_labels == value])) for value in state.classes
+    old_only_predictions = np.argmax(old_scores, axis=1)
+    old_only_correct = old_only_predictions == old_truth
+    per_class_old_only = {
+        value: float(np.mean(old_only_correct[old_labels == value]))
+        for value in state.classes
     }
-    k_shot = int(np.sum(new_labels == new_classes[0]))
-    if k_shot == 1:
-        audit = {
-            "schema": "cvs.phase2.d26_new_group_bias_audit.v1",
-            "selection_policy": "k1_safe_zero_no_pseudo_loo",
-            "bias0_baseline_semantics": (
-                "post_registration_combined_old_plus_new_head_with_new_group_bias_zero"
-            ),
-            "bias0_is_not_stage2b_old_only_baseline": True,
-            "selected_bias": 0.0,
-            "bias_grid": list(state.config.new_group_bias_grid),
-            "old_guard_pass": True,
-            "old_correct_rows_preserved": True,
-            "per_old_class_bias0_accuracy": per_class_base,
-            "per_old_class_selected_accuracy": per_class_base,
-            "new_support_selection_rows": 0,
-            "query_rows_used": 0,
-            "registration_non_forgetting_guaranteed": False,
-            "terminal_old_support_non_degradation_gate_required": True,
-        }
-        return 0.0, audit
+    base_combined = np.concatenate((old_scores, new_scores_on_old), axis=1)
+    bias0_predictions = np.argmax(base_combined, axis=1)
+    bias0_correct = bias0_predictions == old_truth
+    per_class_bias0 = {
+        value: float(np.mean(bias0_correct[old_labels == value]))
+        for value in state.classes
+    }
 
-    transformed_new = _normalize_np(
-        new_rows * np.exp(state.log_diag.astype(np.float32))[None, :]
-    )
-    transformed_old_weights = _normalize_np(state.weights)
-    current_new_weights = _normalize_np(new_weights)
-    new_to_index = {value: index for index, value in enumerate(new_classes)}
+    guard_mode = state.config.bias_guard_mode
+    if guard_mode == "joint_bias0":
+        guard_correct = bias0_correct
+        per_class_guard = per_class_bias0
+        guard_baseline_semantics = (
+            "post_registration_combined_old_plus_new_head_with_new_group_bias_zero"
+        )
+    elif guard_mode == "pre_registration_old_only":
+        guard_correct = old_only_correct
+        per_class_guard = per_class_old_only
+        guard_baseline_semantics = "stage2b_pre_registration_old_only_head"
+    else:  # Config validation should make this unreachable; keep selection fail closed.
+        raise D26CompactDiagError("D26 bias guard mode drift")
+
+    k_shot = int(np.sum(new_labels == new_classes[0]))
+    transformed_new: np.ndarray | None = None
+    transformed_old_weights: np.ndarray | None = None
+    current_new_weights: np.ndarray | None = None
+    new_to_index: dict[str, int] | None = None
+    if k_shot > 1:
+        transformed_new = _normalize_np(
+            new_rows * np.exp(state.log_diag.astype(np.float32))[None, :]
+        )
+        transformed_old_weights = _normalize_np(state.weights)
+        current_new_weights = _normalize_np(new_weights)
+        new_to_index = {value: index for index, value in enumerate(new_classes)}
     candidates: list[tuple[tuple[float, ...], float, dict[str, Any]]] = []
     for bias in state.config.new_group_bias_grid:
         combined_old = np.concatenate(
@@ -636,13 +650,42 @@ def _select_new_group_bias(
             for value in state.classes
         }
         guard = all(
-            per_class_after[value] + 1.0e-12 >= per_class_base[value]
+            per_class_after[value] + 1.0e-12 >= per_class_guard[value]
             for value in state.classes
-        ) and bool(np.all(~base_correct | after_correct))
+        ) and bool(np.all(~guard_correct | after_correct))
+
+        evidence: dict[str, Any] = {
+            "bias": float(bias),
+            "bias_guard_mode": guard_mode,
+            "guard_baseline_semantics": guard_baseline_semantics,
+            "old_guard_pass": bool(guard),
+            "old_correct_rows_preserved": bool(
+                np.all(~guard_correct | after_correct)
+            ),
+            "guard_baseline_correct_row_count": int(np.sum(guard_correct)),
+            "selected_correct_row_count": int(np.sum(after_correct)),
+            "per_old_class_guard_baseline_accuracy": per_class_guard,
+            "per_old_class_accuracy": per_class_after,
+            "new_support_loo_evaluated": bool(k_shot > 1),
+        }
+
+        if k_shot == 1:
+            # One physical support row cannot be held out while still forming its
+            # class prototype.  Only the old-support guard may select the bias.
+            ranking = (1.0 if guard else 0.0, -abs(float(bias)))
+            candidates.append((ranking, float(bias), evidence))
+            continue
 
         loo_correct: list[bool] = []
         loo_margin: list[float] = []
         per_new: dict[str, dict[str, float | int]] = {}
+        if (
+            transformed_new is None
+            or transformed_old_weights is None
+            or current_new_weights is None
+            or new_to_index is None
+        ):
+            raise D26CompactDiagError("D26 K>1 LOO state was not initialized")
         for class_name in new_classes:
             records: list[tuple[bool, float]] = []
             class_positions = np.flatnonzero(new_labels == class_name)
@@ -677,16 +720,12 @@ def _select_new_group_bias(
         min_new_accuracy = min(float(v["loo_accuracy"]) for v in per_new.values())
         overall_new_accuracy = float(np.mean(loo_correct))
         worst_new_margin = float(min(loo_margin))
-        evidence = {
-            "bias": float(bias),
-            "old_guard_pass": bool(guard),
-            "old_correct_rows_preserved": bool(np.all(~base_correct | after_correct)),
-            "per_old_class_accuracy": per_class_after,
+        evidence.update({
             "per_new_class": per_new,
             "min_new_class_loo_accuracy": min_new_accuracy,
             "overall_new_loo_accuracy": overall_new_accuracy,
             "worst_new_loo_margin": worst_new_margin,
-        }
+        })
         ranking = (
             1.0 if guard else 0.0,
             min_new_accuracy,
@@ -696,19 +735,46 @@ def _select_new_group_bias(
         )
         candidates.append((ranking, float(bias), evidence))
     feasible = [item for item in candidates if item[2]["old_guard_pass"]]
-    selected = max(feasible, key=lambda item: item[0]) if feasible else None
-    # Bias zero is mathematically feasible; fail closed if numerical drift says otherwise.
-    if selected is None:
-        selected_bias = 0.0
-        selected_evidence = next(item[2] for item in candidates if item[1] == 0.0)
+
+    if not feasible:
+        if guard_mode == "pre_registration_old_only":
+            raise D26CompactDiagError(
+                "D26 strict bias guard found no pre-registration-old-only-safe bias"
+            )
+        # In the historical mode bias zero is its own baseline and must be feasible.
+        selected = next((item for item in candidates if item[1] == 0.0), None)
+        if selected is None or not selected[2]["old_guard_pass"]:
+            raise D26CompactDiagError("D26 historical bias-zero guard drift")
         fallback = True
-    else:
-        selected_bias = selected[1]
-        selected_evidence = selected[2]
+    elif k_shot == 1 and guard_mode == "pre_registration_old_only":
+        selected = min(feasible, key=lambda item: (abs(item[1]), item[1]))
         fallback = False
+    elif k_shot == 1:
+        # Preserve the v1 K=1 decision exactly: zero bias and no pseudo-LOO.
+        selected = next(item for item in feasible if item[1] == 0.0)
+        fallback = False
+    else:
+        selected = max(feasible, key=lambda item: item[0])
+        fallback = False
+
+    selected_bias = selected[1]
+    selected_evidence = selected[2]
+    selection_policy = (
+        "k1_closest_to_zero_with_pre_registration_old_only_guard_no_loo"
+        if k_shot == 1 and guard_mode == "pre_registration_old_only"
+        else "k1_safe_zero_no_pseudo_loo"
+        if k_shot == 1
+        else "new_support_leave_one_out_with_old_support_floor_guard"
+    )
     audit = {
         "schema": "cvs.phase2.d26_new_group_bias_audit.v1",
-        "selection_policy": "new_support_leave_one_out_with_old_support_floor_guard",
+        "selection_policy": selection_policy,
+        "bias_guard_mode": guard_mode,
+        "guard_baseline_semantics": guard_baseline_semantics,
+        "guard_baseline_correct_row_count": int(np.sum(guard_correct)),
+        "guard_baseline_support_accuracy": float(np.mean(guard_correct)),
+        "per_old_class_guard_baseline_accuracy": per_class_guard,
+        "per_old_class_old_only_accuracy": per_class_old_only,
         "bias0_baseline_semantics": (
             "post_registration_combined_old_plus_new_head_with_new_group_bias_zero"
         ),
@@ -720,22 +786,36 @@ def _select_new_group_bias(
         "old_correct_rows_preserved": bool(
             selected_evidence["old_correct_rows_preserved"]
         ),
-        "per_old_class_bias0_accuracy": per_class_base,
+        "per_old_class_bias0_accuracy": per_class_bias0,
         "per_old_class_selected_accuracy": selected_evidence[
             "per_old_class_accuracy"
         ],
-        "per_new_class": selected_evidence["per_new_class"],
-        "min_new_class_loo_accuracy": selected_evidence[
-            "min_new_class_loo_accuracy"
-        ],
-        "overall_new_loo_accuracy": selected_evidence["overall_new_loo_accuracy"],
-        "worst_new_loo_margin": selected_evidence["worst_new_loo_margin"],
-        "new_support_selection_rows": len(new_rows),
+        "new_support_loo_evaluated": bool(k_shot > 1),
+        "new_support_selection_rows": len(new_rows) if k_shot > 1 else 0,
         "query_rows_used": 0,
+        "old_guard_support_non_degradation_guaranteed": bool(
+            guard_mode == "pre_registration_old_only"
+            and selected_evidence["old_guard_pass"]
+        ),
         "registration_non_forgetting_guaranteed": False,
         "terminal_old_support_non_degradation_gate_required": True,
         "candidate_evidence": [item[2] for item in candidates],
     }
+    if k_shot > 1:
+        audit.update(
+            {
+                "per_new_class": selected_evidence["per_new_class"],
+                "min_new_class_loo_accuracy": selected_evidence[
+                    "min_new_class_loo_accuracy"
+                ],
+                "overall_new_loo_accuracy": selected_evidence[
+                    "overall_new_loo_accuracy"
+                ],
+                "worst_new_loo_margin": selected_evidence[
+                    "worst_new_loo_margin"
+                ],
+            }
+        )
     return float(selected_bias), audit
 
 
@@ -931,6 +1011,7 @@ def predict_all_registered(
 
 __all__ = [
     "ALLOWED_STAGE2C_STEPS",
+    "BIAS_GUARD_MODES",
     "D26CompactDiagConfig",
     "D26CompactDiagError",
     "D26CompactDiagFitResult",
