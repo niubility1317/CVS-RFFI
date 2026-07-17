@@ -37,14 +37,14 @@ query只接收冻结状态并对全部注册类逐样本评分，不参与protot
 
 |ID|Requirement|Target files|Status|Verification|Notes|
 |---|---|---|---|---|---|
-|D24-01|int8 ground旧类锚只读，target旧/新prototype均FP32且同一160D空间|`code/cvsrffi/stage2_uncertainty_proto_fusion.py`|pending|dtype/shape/immutability tests|不得持久化sample feature|
-|D24-02|ground radius由多域int8锚估计，target radius只由对应LEO_weak support估计|同上|pending|formula tests|K1使用锁定r0|
-|D24-03|旧类按inverse uncertainty融合，新类完全独立注册|同上|pending|closed-form reference tests|new record无ground字段|
-|D24-04|Stage2-C append-only，old target/fusion bytes与raw score列bitwise unchanged|同上；runner|pending|prefix hash/score tests|argmax可因新列竞争而变化|
-|D24-05|全类满足中心距离大于半径和加margin；失败列出collision pairs|同上；audit|pending|geometry audit tests|不自动用query修复|
+|D24-01|int8 ground旧类锚只读，target旧/新prototype均FP32且同一160D空间|`code/cvsrffi/stage2_uncertainty_proto_fusion.py`|verified|D24独立11项与CIAF联合23项PASS|API不持久化sample feature|
+|D24-02|ground radius由多域int8锚估计，target radius只由对应LEO_weak support估计|同上|verified|radius/K1 r0公式测试PASS|正式v2 ground cell radius仍待共同bundle重建|
+|D24-03|旧类按inverse uncertainty融合，新类完全独立注册|同上|verified|closed-form与target-only append测试PASS|new suffix不读取ground类锚|
+|D24-04|Stage2-C append-only，old target/fusion bytes与raw score列bitwise unchanged|同上；runner|implemented|模块prefix/hash/score测试PASS|runner artifact证据仍pending|
+|D24-05|全类满足中心距离大于半径和加margin；失败列出collision pairs|同上；audit|verified|全pair geometry/collision测试PASS|首版为cosine门；球面角门列入D25扩展|
 |D24-06|作为独立D24候选进入15fold development support筛选|`code/scripts/run_d19_support_only_ciaf.py`|pending|runner tests+N607 log|与Z0/B3同row比较|
-|D24-07|资源报告ground int8、target FP32、融合元数据、MAC、延迟、scratch|runner；resource audit|pending|formula/benchmark tests|不把dequant缓存计为免费|
-|D24-08|保持single-LEO、clean/source不可达、query-only-test及全Oracle禁令|runner；tests；report|pending|guard tests|query字段不存在于fit API|
+|D24-07|资源报告ground int8、target FP32、融合元数据、MAC、延迟、scratch|runner；resource audit|implemented|模块状态/MAC/scratch测试PASS|实测延迟与runner总资源仍pending|
+|D24-08|保持single-LEO、clean/source不可达、query-only-test及全Oracle禁令|runner；tests；report|implemented|模块public fit API无query/role/quota/source/clean输入|runner闭包仍pending|
 |D24-09|K10开发锁参后覆盖K1/K5，不从隐藏K10状态裁剪|runner/matrix|pending|K1/K5 capsule tests|每K独立从可达support建state|
 |D24-10|完整日志、逐类floor、Git提交与N607报告|active report|pending|full-log analysis|正式125前不作query性能声明|
 
