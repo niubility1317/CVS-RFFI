@@ -3,7 +3,7 @@
 ## 登记
 
 - 实验ID：`d32_inloop_safe_cap_20260718`；operator：Codex；日期：2026-07-18。
-- 状态：`REMOTE_SOURCE_CLOSURE_PASS_READY_TO_LAUNCH`。
+- 状态：`RUNNING_ON_N607`。
 - 节奏：D32是D27-D29回顾后的第3轮；本轮完成后必须在D33前执行并记录新回顾。
 - 目标：修复D31训练面与部署面不一致。每个Stage2-C forward从注册旧类support计算每个新类的安全非正bias，并在完全相同的带bias分数面上训练和部署；同时继续优化新类floor与旧类遗忘。
 - 比较：Z0、B3诊断、C0、D32-A/B/C；6候选×3场景×5折=90行。
@@ -45,6 +45,7 @@
 - 远端cwd `/home/szu2070436088/2510044040/CV-SincNet`；Python `/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`。
 - 命令：`D32_GPU=0 bash code/scripts/launch_d32_inloop_safe_cap_20260718.sh`。
 - output：`runs/d32_inloop_safe_cap_20260718/output/support_screen_v1`；log：`logs/d32_inloop_safe_cap_20260718/support_screen_v1.log`。
+- 实际启动：2026-07-18约07:05 CST，GPU0，PID `3739951`；启动后本地SSH/TCP22连接为0。landed不等于artifact完成或性能达标。
 
 ## 结果
 
