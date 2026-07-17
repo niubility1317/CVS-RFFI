@@ -1208,7 +1208,7 @@ def _evaluate_d28_fold(
     resource = dict(after.resource_audit())
     base_state_bytes = int(resource["persistent_state_bytes"])
     base_query_macs = int(resource["estimated_macs_per_query"])
-    gate_state_bytes = int(gate_resource["persistent_state_bytes"])
+    gate_state_bytes = int(gate_resource["deployable_predictor_state_bytes"])
     gate_query_macs = int(gate_resource["estimated_gate_macs_per_query"])
     resource.update(
         {
@@ -1225,6 +1225,9 @@ def _evaluate_d28_fold(
                 + gate_resource["fitted_parameter_count"]
             ),
             "persistent_state_bytes": base_state_bytes + gate_state_bytes,
+            "external_gate_evidence_audit_bytes": int(
+                gate_resource["external_evidence_audit_bytes"]
+            ),
             "persistent_state_cap_pass": (
                 base_state_bytes + gate_state_bytes <= 256 * 1024
             ),
@@ -2110,7 +2113,7 @@ def _full_d28_state_audit(
         gate_resource["estimated_gate_macs_per_query"]
     )
     combined_state = int(base_resource["persistent_state_bytes"]) + int(
-        gate_resource["persistent_state_bytes"]
+        gate_resource["deployable_predictor_state_bytes"]
     )
     resource = {
         **base_resource,
@@ -2125,6 +2128,9 @@ def _full_d28_state_audit(
             + gate_resource["fitted_parameter_count"]
         ),
         "persistent_state_bytes": combined_state,
+        "external_gate_evidence_audit_bytes": int(
+            gate_resource["external_evidence_audit_bytes"]
+        ),
         "persistent_state_cap_pass": combined_state <= 256 * 1024,
         "estimated_macs_per_query": combined_query_macs,
         "deployment_k_shot": 10,

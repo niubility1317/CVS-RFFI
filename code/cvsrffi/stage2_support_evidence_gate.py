@@ -188,6 +188,20 @@ class SupportEvidenceGateState:
             + metadata
         )
 
+    @property
+    def deployable_predictor_state_bytes(self) -> int:
+        """Bytes used by prediction, excluding the external evidence audit."""
+
+        # The registered class list already lives in the frozen D27 head.
+        # D28 deployment adds numerical gate state plus a conservative scalar
+        # and configuration header; the detailed OOF trace is report evidence.
+        return int(
+            self.coefficients.nbytes
+            + self.feature_mean.nbytes
+            + self.feature_std.nbytes
+            + 32
+        )
+
     def resource_audit(self) -> dict[str, Any]:
         new_class_count = len(self.registered_classes) - self.old_class_count
         fitted_parameters = EVIDENCE_DIM + 1 if self.enabled else 0
@@ -208,9 +222,14 @@ class SupportEvidenceGateState:
             ),
             "gradient_trainable_parameter_count": 0,
             "persistent_state_bytes": self.persistent_state_bytes,
+            "deployable_predictor_state_bytes": (
+                self.deployable_predictor_state_bytes
+            ),
+            "external_evidence_audit_bytes": len(self.audit_json.encode("utf-8")),
+            "audit_metadata_excluded_from_deployment_state": True,
             "persistent_state_cap_bytes": MAX_GATE_STATE_BYTES,
             "persistent_state_cap_pass": (
-                self.persistent_state_bytes <= MAX_GATE_STATE_BYTES
+                self.deployable_predictor_state_bytes <= MAX_GATE_STATE_BYTES
             ),
             "normalization_state_bytes": int(
                 self.feature_mean.nbytes + self.feature_std.nbytes

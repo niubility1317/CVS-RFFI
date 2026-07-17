@@ -281,6 +281,9 @@ def test_resource_and_public_api_keep_query_protocol_closed() -> None:
     assert resource["total_fitted_state_scalar_count"] == 16
     assert resource["normalization_state_bytes"] == 40
     assert resource["persistent_state_cap_pass"] is True
+    assert resource["deployable_predictor_state_bytes"] == 96
+    assert resource["external_evidence_audit_bytes"] > 0
+    assert resource["audit_metadata_excluded_from_deployment_state"] is True
     assert resource["gradient_trainable_parameter_count"] == 0
     assert resource["ridge_lambda_candidate_count"] == 3
     assert resource["closed_form_solve_count"] == 16
