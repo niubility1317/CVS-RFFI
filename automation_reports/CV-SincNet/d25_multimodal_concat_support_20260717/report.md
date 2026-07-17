@@ -4,7 +4,7 @@
 
 - experiment ID：`d25_multimodal_concat_support_20260717/support_screen_v1`
 - 日期：2026-07-17；operator：Codex
-- 状态：`LOCAL_VERIFIED_NOT_SYNCED`，尚未同步或启动N607。
+- 状态：`REMOTE_VERIFIED_READY_TO_LAUNCH`，尚未启动N607。
 - 目标：在不打开query的前提下，使用同一密封LEO_weak enrollment-only support，对D25的288维分块拼接、不确定度ground-z融合和逐块半径评分执行15fold原子筛选。
 - 假设：保留`z_id160+FFT96+RF32`完整288维，同时把块平方能量从D1的辅助分支94.12%支配修正为按维数比例`5/9、1/3、1/9`，可以保留多表征平均增益并改善旧类与新类floor稳定性。
 - 对比：`Z0_SUPPORT_ONLY`、`B3_SINGLE_IQ_DIAG_FFTRF`、`D25_C0_DIM_CONCAT`、`D25_C1_UF_GROUNDZ`、`D25_C2_BLOCK_RADIUS`。
@@ -74,7 +74,12 @@ D25候选相对Z0必须同时满足：
 - 远端output：`/home/szu2070436088/2510044040/CV-SincNet/runs/d25_multimodal_concat_20260717/output/support_screen_v1`。
 - 计划启动命令：`D25_GPU=<preflight后选定GPU> bash code/scripts/launch_d25_concat_support_screen_20260717.sh`。
 - 本地到远端同步映射：D25 runner、D25核心和launcher同步到相同repo相对路径；D19 helper仅校验既有远端SHA，不覆盖无关文件。
-- PID和GPU在N607 preflight及live inventory后补入。
+- 23:03 CST直连preflight通过；N607项目根目录、服务器时间和8张RTX3090可见。
+- live inventory：无GPU compute、无active training process；GPU0～7均约10MiB空闲状态。本轮选择GPU0。
+- 已同步并远端验证：runner `ea49bf78...8985`、核心`c8789679...75c7`、launcher `7f5bf005...d148`；既有D19 helper `7e46db1e...8553`未覆盖且哈希匹配。
+- 远端`py_compile`与launcher `bash -n`通过；同步后本地无残留N607 SSH连接。
+- 精确启动命令：`D25_GPU=0 bash code/scripts/launch_d25_concat_support_screen_20260717.sh`。
+- PID在启动后补入。
 
 ## 预期产物
 
