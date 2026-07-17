@@ -14,6 +14,7 @@
 - 资源协议提交：`c4aa43fd`；正式档80k/30epoch/50step/256KB，探索档120k/45epoch/75step/384KB。
 - runner SHA256：`7e46db1e99ac40f4e9d7679dcb7f668553d928a0672a7bcf07022383949c8553`。
 - CIAF模块SHA256：`f46c5007cb1c0279bf2b27169ad79989eba908f32658c5a4d7f819916381aeb1`。
+- Phase2合同模块本地SHA256：`3b65707f91eb7012b5cd67bd572aa7d786c07ef4414b4b4a25139732a71a0b7b`；远端旧SHA256为`b9e236014aa3cfefe2d37d10def25133fd18b6f0923fcb9edf2059a41c6515e3`，须从本地Git工作树同步至`/home/szu2070436088/2510044040/CV-SincNet/code/cvsrffi/phase2_runtime_contract.py`。
 - class binding SHA256：`bb89a1dbb831acb374fccfc596ae98b660b496b449bdca577dabb962121c901f`。
 - 历史int8组件NPZ SHA256：`3c08c823d2e8a13c4233f0060ac67c332ecc8d6e8abec7352de975fead0267d7`；manifest SHA256：`15b5e144f9af3989421d8e925c17758479c327be47e79222f6363dc63994629c`。
 - 本地`ssr-gpu`验证：`tests/test_phase1_int8_prototype_bundle.py tests/test_stage2_ciaf.py tests/test_run_d19_support_only_ciaf.py`共28项PASS。
@@ -57,7 +58,7 @@
 - PID3303460已经退出，但不是runner完成或artifact-complete。
 - 失败发生在support materialization的manifest预检阶段；精确错误为`SOMP-H bundle manifest exact schema mismatch`。
 - 预期output路径不存在`training_log.jsonl`和`selection.json`，B0–B4全部未开始，不得解释为性能负结果。
-- 进一步比对确认D18密封manifest具有当前47字段，远端源码SHA256与本地一致，但远端解释器实际载入了33字段旧bytecode；这是Python cache漂移，不是放宽schema校验的理由。
+- 进一步比对确认D18密封manifest具有当前47字段；`somph_predictor_bundle.py`远端与本地一致，但它导入的`phase2_runtime_contract.py`远端仍是12字段旧版，导致manifest总合同仅33字段。同步当前26字段合同后，manifest严格schema应恢复47字段；这不是放宽schema校验。
 - 另一个历史`attempt2`来自冻结source副本，进入support提取后因NumPy2/PyTorch2.1的`torch.from_numpy`ABI不兼容失败；当前Git版runner已用DLPack桥替代该路径，重跑前须完成本地窄测试。
 
 |候选|support执行状态|场景/fold结果|逐类结果|结论|
