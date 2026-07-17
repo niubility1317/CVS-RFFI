@@ -2,7 +2,7 @@
 
 ## 场景定义
 
-CVS的主场景是天基RFFI中的弱标注跨接收机域泛化与在轨跨域少样本适应。模型在地面训练，部署到目标卫星接收机域后只允许推理、prototype更新、轻量校准、阈值微调或小adapter更新。自2026-07-07起，Phase2主线是使用叠加简化LEO星地信道的少量目标域旧类样本和新类样本，完成目标域适应、旧类校准和新类学习；open-set/unknown拒识下沉为Phase3备用项。自2026-07-15起，Phase2数据入口严格为`LEO_weak-only`，Phase2接触不到clean样本。
+CVS的主场景是天基RFFI中的弱标注跨接收机域泛化与在轨跨域少样本适应。模型在地面训练，部署到目标卫星接收机域后只允许推理、prototype更新、轻量校准、阈值微调或小adapter更新。自2026-07-07起，Phase2主线是使用叠加简化LEO星地信道的少量目标域旧类样本和新类样本，完成目标域适应、旧类校准和新类学习；open-set/unknown拒识下沉为Phase3备用项。自2026-07-15起，Phase2目标数据入口严格为`LEO_weak-only`，Phase2接触不到clean/source原始样本。自2026-07-17起，用户特许Phase1 deployment bundle携带地面离线生成的域×类int8聚合原型模型知识，但不得上传原始IQ、样本级原始/全精度feature、exemplar、source cache或可逆样本索引。
 
 项目需要处理四个约束：
 
@@ -61,13 +61,13 @@ raw IQ -> CV-SincNet/CVS -> z_id, z_dom
 
 在轨部署阶段面对目标接收机域`R_t`。Stage2-B/C必须记录正整数`K`、support/query划分、receiver/TX split、threshold scope和satellite/LEO target view。Phase2主线row必须包含target-old和target-new目标域样本，并按简化LEO目标视图构造；unknown/open-set字段只作为Phase3备用或diagnostic metadata。
 
-> **最高优先级强约束：整个Phase2链路必须对clean物理不可达。该要求不是“最终指标不使用clean”，而是从输入校验、数据加载、support/query构造、缓存导入、特征提取、适配、注册、分类、校准、选择、回滚、排名到正式评估的每一个可执行节点，都不得打开、读取、接收、恢复、重构或受控于任何clean样本及clean-derived signal。只要clean能够影响任一参数、状态、分数、候选或决策，该run即协议无效。**
+> **最高优先级强约束：整个Phase2链路必须对clean/source原始样本物理不可达。该要求不是“最终指标不使用clean”，而是从输入校验、数据加载、support/query构造、缓存导入、特征提取、适配、注册、分类、校准、选择、回滚、排名到正式评估的每一个可执行节点，都不得打开、读取、接收、恢复或重构任何clean/source样本及样本级原始/全精度feature。唯一窄例外是下述与ADV3B02 checkpoint共同封存的域×类int8聚合原型模型知识。**
 
 Phase2的全部Stage2-A/B/C target-old、target-new及可选Phase3-backup unknown support/query、适配集、校准集、注册集、模型选择信号、回滚/排序信号和正式评估输入，都必须在进入Phase2边界之前实际叠加`leo_clear_weak`、`leo_low_elev_weak`或`leo_rain_weak`之一。Phase2不得先接收clean IQ再在内部临时叠加信道。Phase2禁止读取、缓存、恢复、重新构造clean样本，也禁止接收由clean样本派生的feature、logit、prototype、teacher、anchor、loss target、normalization statistics、adapter/head参数、阈值、bias、temperature、support选择分数、cache、sidecar、TTA触发、回滚或晋升信号。仅声明`uses_target_clean=false`不能证明全链路合规，因为它不能排除source clean及其他clean-derived signal。clean control只允许存在于Phase1或与Phase2完全隔离的离线参考流程中。
 
-Phase2只允许加载在Phase2开始前已经训练、冻结、登记并作为部署包主体交付的不可变Phase1 checkpoint；不得回读其clean训练数据或加载clean prototype/teacher/cache/normalization sidecar，也不得为了Phase2重新运行clean分支。任何会在Phase2期间参与计算或改变决策的辅助artifact都必须自身满足`LEO_weak-only`约束。
+Phase2只允许加载在任何target数据可达前已经训练、量化、冻结、登记并整体封存的不可变Phase1 deployment bundle。bundle主体为ADV3B02 checkpoint，可选包含`int8[D,C,P]`域×类对称量化质心、逐向量FP16 scale、固定registry和feature schema。原型必须由Phase1/offline多样本many-to-one聚合产生；bundle不得包含原始IQ、单样本feature、全精度prototype、exemplar、source cache、sample ID、可逆坐标、协方差、BN/Fisher/gradient或teacher输出。Phase2可临时解量化计算，但不得持久化全精度副本、更新/替换原型或从query拟合任何状态。独立可替换的prototype sidecar不属于该例外。
 
-每个launchable Phase2 row必须记录`phase2_sample_view_policy=leo_weak_only_no_clean_access`、`clean_sample_access=false`、`clean_derived_signal_access=false`、`phase2_clean_dataset_reachable=false`、`phase2_clean_cache_reachable=false`、`phase2_clean_control_flow_reachable=false`、`phase2_pretrained_artifact_policy=sealed_phase1_checkpoint_only`，以及实际`leo_*_weak`scenario、satellite seed或等价sample-level overlay provenance。验证器必须在打开任何Phase2 dataset、cache或feature artifact之前执行fail-closed可达性检查，并核对artifact provenance、生成配置、loader入口和运行命令，不能只相信manifest自声明。正式证据必须同时包含：密封推理包及detached hash/root digest、包内文件与NPZ成员精确allowlist、相对路径约束及symlink/非普通文件拒绝、同一文件描述符上的先验hash与成员审计、推理进程实际文件访问账本，以及操作系统级只读挂载/容器/独立UID或等价隔离记录。Phase1 packager可以在Phase2边界外读取raw/build spec，但这些路径、loader、truth sidecar和构建控制流不得进入推理包、candidate lock或predict plan。若只能证明逻辑未使用而没有运行时隔离证据，不得填写三个`*_reachable=false`，必须标为`LOCAL_PROTOCOL_REPAIR_REQUIRED`。缺字段、任一clean可达字段不为false、目标视图含clean、存在clean-derived signal、场景超出三个允许的`leo_*_weak`视图或无法证明实际叠加时，同样阻断matrix、runner、promotion与正式声明。历史artifact缺少运行时可达性证据时标记为`PHASE2_RUNTIME_ISOLATION_UNVERIFIED`；只有确认发生clean访问或clean-derived决策时才封存为`PROTOCOL_INVALID_FOR_PHASE2`，两者不得混写。
+每个launchable Phase2 row必须记录`phase2_sample_view_policy=leo_weak_only_no_clean_access`、`clean_sample_access=false`、`clean_derived_signal_access=false`（未授权信号）、`phase2_clean_dataset_reachable=false`、`phase2_clean_cache_reachable=false`、`phase2_clean_control_flow_reachable=false`、`phase2_unapproved_source_derived_signal_access=false`、`phase2_pretrained_artifact_policy=sealed_phase1_deployment_bundle_with_optional_int8_domain_class_prototypes_v1`和`phase2_authorized_compressed_prototype_access=true|false`，以及实际`leo_*_weak`scenario、satellite seed或等价sample-level overlay provenance。验证器必须在打开任何Phase2 dataset、cache或feature artifact之前执行fail-closed可达性检查，并核对artifact provenance、生成配置、loader入口和运行命令，不能只相信manifest自声明。正式证据必须同时包含：密封推理包及detached hash/root digest、包内文件与NPZ成员精确allowlist、相对路径约束及symlink/非普通文件拒绝、同一文件描述符上的先验hash与成员审计、推理进程实际文件访问账本，以及操作系统级只读挂载/容器/独立UID或等价隔离记录。Phase1 packager可以在Phase2边界外读取raw/build spec，但这些路径、loader、truth sidecar和构建控制流不得进入推理包、candidate lock或predict plan。若只能证明逻辑未使用而没有运行时隔离证据，必须标为`LOCAL_PROTOCOL_REPAIR_REQUIRED`。缺字段、目标view不合法、出现原始样本/样本级或全精度feature、bundle外source-derived artifact，或无法证明实际叠加时，同样阻断matrix、runner、promotion与正式声明。
 
 TTA轻量化必须固定同一物理LEO观测、support/query、checkpoint和adapter后比较1/3/5-view；不得用不同adapter或不同LEO随机扰动制造view数量差异。正式结果使用逐样本可部署决策，并报告backbone前向数、FFT数以及相对5-view的`old_acc`、`seen_new_acc`和`H_old_new`变化。
 
