@@ -37,6 +37,7 @@ from cvsrffi.phase1_int8_prototype_bundle import (  # noqa: E402
 )
 from cvsrffi.somph_predictor_bundle import (  # noqa: E402
     FORMAL_LEO_WEAK_SCENARIOS,
+    SOMPH_FORMAL_POLICY_AUTHORIZATION_SCHEMA,
     finalize_somph_enrollment_authority_after_materialization,
     materialize_somph_enrollment_with_signed_authority,
 )
@@ -51,19 +52,6 @@ from cvsrffi.stage2_diag_cosine_exploration import forward_zid160  # noqa: E402
 from cvsrffi.stage2_predictor_runtime import (  # noqa: E402
     load_torchscript_backbone_same_fd,
 )
-from run_d14_support_only_pairwise_fisher_guard import (  # noqa: E402
-    _member,
-)
-from run_d18_support_only_cmrae import (  # noqa: E402
-    _cross_scene_disjointness,
-    _manifest_binding,
-    _old_reuse,
-    _overlay_index,
-    _require_post_materialization_authority,
-    _rows_with_overlay,
-)
-
-
 MODE = "development_select_unverified_component"
 SUPPORT_QUERY_DISJOINTNESS_STATUS = "SUPPORT_ONLY_NO_QUERY_CLAIM"
 HELD_RANKS = ((0, 1), (2, 3), (4, 5), (6, 7), (8, 9))
@@ -72,6 +60,228 @@ IDENTITY_CANDIDATE = "Z0_SUPPORT_ONLY"
 
 class D19RunnerError(ValueError):
     """Raised when D19 input or protocol validation fails closed."""
+
+
+def _canonical(value: Mapping[str, Any]) -> bytes:
+    return json.dumps(
+        value, ensure_ascii=False, sort_keys=True, separators=(",", ":")
+    ).encode("utf-8")
+
+
+def _member(manifest: Mapping[str, Any], kind: str) -> Mapping[str, Any]:
+    matches = [row for row in manifest.get("members", []) if row.get("kind") == kind]
+    if len(matches) != 1:
+        raise D19RunnerError(f"sealed member missing or duplicated: {kind}")
+    return matches[0]
+
+
+def _verified_json_member(
+    root: Path, manifest: Mapping[str, Any], *, kind: str
+) -> tuple[dict[str, Any], dict[str, Any]]:
+    member = _member(manifest, kind)
+    relative = str(member.get("relative_path", ""))
+    path = (root / relative).resolve(strict=True)
+    if (
+        path.parent != root.resolve(strict=True)
+        or path.is_symlink()
+        or path.name != relative
+    ):
+        raise D19RunnerError(f"unsafe sealed member path: {kind}")
+    raw = path.read_bytes()
+    digest = hashlib.sha256(raw).hexdigest()
+    if digest != member.get("sha256") or len(raw) != int(member.get("size_bytes", -1)):
+        raise D19RunnerError(f"sealed member hash/size drift: {kind}")
+    return json.loads(raw.decode("utf-8")), {
+        "kind": kind,
+        "relative_path": relative,
+        "sha256": digest,
+        "size_bytes": len(raw),
+    }
+
+
+def _overlay_index(
+    root: Path, manifest: Mapping[str, Any]
+) -> tuple[dict[tuple[str, str, str], dict[str, Any]], dict[str, Any]]:
+    value, audit = _verified_json_member(root, manifest, kind="overlay_provenance")
+    if (
+        value.get("schema") != "cvs.phase2.somph_overlay_provenance.v1"
+        or value.get("receiver") != manifest.get("receiver")
+        or int(value.get("seed", -1)) != int(manifest.get("seed", -2))
+        or not isinstance(value.get("samples"), list)
+    ):
+        raise D19RunnerError("overlay provenance envelope drift")
+    result: dict[tuple[str, str, str], dict[str, Any]] = {}
+    overlays: set[str] = set()
+    for row in value["samples"]:
+        key = (
+            str(row.get("sample_token", "")),
+            str(row.get("post_channel_iq_sha256", "")),
+            str(row.get("scenario", "")),
+        )
+        overlay = str(row.get("overlay_token", ""))
+        if (
+            key in result
+            or key[2] not in FORMAL_LEO_WEAK_SCENARIOS
+            or len(key[1]) != 64
+            or not overlay.startswith("oid_")
+            or len(overlay) != 68
+            or overlay in overlays
+            or not isinstance(row.get("satellite_seed"), int)
+        ):
+            raise D19RunnerError("overlay provenance row drift")
+        result[key] = dict(row)
+        overlays.add(overlay)
+    audit.update({"sample_count": len(result), "unique_overlay_token_count": len(overlays)})
+    return result, audit
+
+
+def _payload_rows(
+    payload: Mapping[str, np.ndarray],
+    manifest: Mapping[str, Any],
+    *,
+    scenario: str,
+) -> dict[str, np.ndarray]:
+    handles = np.asarray(
+        [str(row["class_handle"]) for row in manifest["registered_classes"]]
+    )
+    indices = np.asarray(payload["support_class_indices"], dtype=np.int64)
+    labels = handles[indices].astype(str)
+    ranks = np.asarray(payload["support_rank_within_class"], dtype=np.int64)
+    order = np.asarray(
+        sorted(range(len(labels)), key=lambda index: (labels[index], int(ranks[index]))),
+        dtype=np.int64,
+    )
+    rows = {
+        "iq": np.asarray(payload["support_leo_weak_iq"], dtype=np.float32)[order],
+        "labels": labels[order],
+        "ranks": ranks[order],
+        "tokens": np.asarray(payload["support_tokens"]).astype(str)[order],
+        "hashes": np.asarray(payload["support_post_channel_iq_sha256"]).astype(str)[order],
+    }
+    classes, counts = np.unique(rows["labels"], return_counts=True)
+    computed = np.asarray(
+        [hashlib.sha256(np.ascontiguousarray(row).tobytes()).hexdigest() for row in rows["iq"]]
+    )
+    if (
+        rows["iq"].ndim != 3
+        or rows["iq"].shape[1] != 2
+        or not np.isfinite(rows["iq"]).all()
+        or set(counts.tolist()) != {10}
+        or any(
+            set(rows["ranks"][rows["labels"] == label].tolist()) != set(range(10))
+            for label in classes
+        )
+        or not np.array_equal(computed, rows["hashes"])
+        or len(set(rows["tokens"].tolist())) != len(rows["tokens"])
+        or len(set(rows["hashes"].tolist())) != len(rows["hashes"])
+    ):
+        raise D19RunnerError(f"strict K10 payload drift: {scenario}")
+    return rows
+
+
+def _rows_with_overlay(
+    payload: Mapping[str, np.ndarray],
+    manifest: Mapping[str, Any],
+    overlay: Mapping[tuple[str, str, str], Mapping[str, Any]],
+    *,
+    scenario: str,
+) -> dict[str, np.ndarray]:
+    rows = _payload_rows(payload, manifest, scenario=scenario)
+    raw_handles = np.asarray(
+        [str(row["class_handle"]) for row in manifest["registered_classes"]]
+    )
+    raw_labels = raw_handles[np.asarray(payload["support_class_indices"], dtype=np.int64)]
+    raw_ranks = np.asarray(payload["support_rank_within_class"], dtype=np.int64)
+    order = np.asarray(
+        sorted(range(len(raw_labels)), key=lambda i: (str(raw_labels[i]), int(raw_ranks[i]))),
+        dtype=np.int64,
+    )
+    payload_overlays = np.asarray(payload["support_overlay_tokens"]).astype(str)[order]
+    payload_seeds = np.asarray(payload["support_satellite_seeds"], dtype=np.int64)[order]
+    bound_seeds: list[int] = []
+    for index, (token, parent) in enumerate(zip(rows["tokens"], rows["hashes"])):
+        item = overlay.get((str(token), str(parent), scenario))
+        if item is None:
+            raise D19RunnerError("support row absent from overlay provenance")
+        if (
+            str(item.get("overlay_token")) != str(payload_overlays[index])
+            or int(item.get("satellite_seed", -1)) != int(payload_seeds[index])
+        ):
+            raise D19RunnerError("support NPZ/overlay binding drift")
+        bound_seeds.append(int(item["satellite_seed"]))
+    rows["overlay_tokens"] = payload_overlays
+    rows["satellite_seeds"] = np.asarray(bound_seeds, dtype=np.int64)
+    return rows
+
+
+def _manifest_binding(before: Mapping[str, Any], after: Mapping[str, Any]) -> None:
+    if (
+        before.get("receiver") != after.get("receiver")
+        or int(before.get("seed", -1)) != int(after.get("seed", -2))
+        or int(before.get("k_shot", -1)) != 10
+        or int(after.get("k_shot", -1)) != 10
+        or before.get("feature_runtime_sha256") != after.get("feature_runtime_sha256")
+        or before.get("phase1_checkpoint_sha256") != after.get("phase1_checkpoint_sha256")
+    ):
+        raise D19RunnerError("before/after package binding drift")
+    old = {str(row["class_handle"]) for row in before["registered_classes"]}
+    all_classes = {str(row["class_handle"]) for row in after["registered_classes"]}
+    if not old < all_classes:
+        raise D19RunnerError("real new-class registration set required")
+
+
+def _require_post_materialization_authority(
+    before: Mapping[str, Any], after: Mapping[str, Any]
+) -> None:
+    required = "CURRENT_PROTOCOL_REAL_INPUT_AUDIT_PASS"
+    for name, audit in (("before", before), ("after", after)):
+        if (
+            audit.get("iq_payload_materialized") is not True
+            or audit.get("formal_launch_authority") is not True
+            or audit.get("formal_metric_claim_allowed") is not False
+            or audit.get("support_query_disjointness_status")
+            != SUPPORT_QUERY_DISJOINTNESS_STATUS
+            or audit.get("runtime_authorization_schema")
+            != SOMPH_FORMAL_POLICY_AUTHORIZATION_SCHEMA
+            or audit.get("status") != required
+        ):
+            raise D19RunnerError(f"post-materialization authority drift: {name}")
+
+
+def _old_reuse(before: Mapping[str, np.ndarray], after: Mapping[str, np.ndarray]) -> None:
+    old_classes = set(np.asarray(before["labels"]).astype(str).tolist())
+    def keyed(rows: Mapping[str, np.ndarray]) -> dict[tuple[str, int], tuple[str, str, str, int]]:
+        return {
+            (str(rows["labels"][i]), int(rows["ranks"][i])): (
+                str(rows["tokens"][i]), str(rows["hashes"][i]),
+                str(rows["overlay_tokens"][i]), int(rows["satellite_seeds"][i]),
+            )
+            for i in range(len(rows["labels"]))
+            if str(rows["labels"][i]) in old_classes
+        }
+    if keyed(before) != keyed(after):
+        raise D19RunnerError("before/after old support exact reuse drift")
+
+
+def _cross_scene_disjointness(
+    rows: Mapping[str, Mapping[str, np.ndarray]]
+) -> dict[str, Any]:
+    pairs: list[dict[str, Any]] = []
+    scenarios = tuple(FORMAL_LEO_WEAK_SCENARIOS)
+    for left_index, left in enumerate(scenarios):
+        for right in scenarios[left_index + 1 :]:
+            overlap = {
+                key: len(set(rows[left][field].tolist()) & set(rows[right][field].tolist()))
+                for key, field in (
+                    ("physical_sample_id", "tokens"),
+                    ("parent_received_iq_sha256", "hashes"),
+                    ("overlay_token", "overlay_tokens"),
+                )
+            }
+            pairs.append({"left": left, "right": right, "overlap_count": overlap, "pass": not any(overlap.values())})
+    if not all(row["pass"] for row in pairs):
+        raise D19RunnerError("cross-scene support reuse")
+    return {"pairs": pairs, "all_pairwise_disjoint": True}
 
 
 def _jsonable(value: Any) -> Any:
