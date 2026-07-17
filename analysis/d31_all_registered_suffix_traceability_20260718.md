@@ -13,11 +13,11 @@ D31是D27-D29强制回顾后的第2轮探索；D30为回顾后第1轮。本表�
 |D31-07|clean/source不可达|Phase2只读取密封LEO_weak support与用户授权的不可变Phase1 int8聚合模型知识|launcher、runner、runtime audit|implemented|启动前远端闭包与runtime evidence待核验|不得读取clean、source样本或未授权衍生信号|
 |D31-08|K=1与统一K-shot|K=1执行质心注册且零梯度更新；开发K=10统一选参，后续必须覆盖K=1/5/10|D31 core、runner|verified|核心单测已覆盖K1旁路|本轮N607仍是K10 development support screen|
 |D31-09|int8原型高效使用|当前support screen对历史84-cell组件只读；正式部署目标仅保留6×160固定medoid int8锚、scale和radius，约1.34KB|runner resource、bundle rebuild|deferred|需Phase1离线重封装后形式化|1.34KB是slim medoid目标口径，不冒充当前历史组件实测resident bytes|
-|D31-10|完整实验与证据|6候选×3场景×5折=90行；输出逐类、逐receiver、floor、confusion、完整日志、资源、selection和receipt|runner、报告|implemented|N607实验尚未启动|正式5 receiver×≥5seed×3场景×2/5/10/20新类矩阵仍待正路线后执行|
+|D31-10|完整实验与证据|6候选×3场景×5折=90行；输出逐类、逐receiver、floor、confusion、完整日志、资源、selection和receipt|runner、报告|verified|v2 90/90行、1,290个D31 trace、哈希/selection/resource闭环通过|正式5 receiver×≥5seed×3场景×2/5/10/20新类矩阵仍待正路线后执行|
 |D31-11|Git与远端源闭包|本地先验证并提交；launcher校验runner、D31 core及继承依赖SHA，diag仅校验远端固定SHA而不上传|launcher、报告|verified|`bash -n`、最终runner/core SHA和`git diff --check`通过|N607同步与远端SHA仍待preflight后回填|
 
 ## 反向审计摘要
 
-- 当前状态：verified 4项、implemented 6项、deferred 1项、rejected 0项、blocked 0项。
-- 最高风险：D31能否在不牺牲旧类floor的前提下修复09f8的new→old与new→wrong-new双重错误，只能由N607完整90行support-held结果回答。
+- 当前状态：verified 5项、implemented 5项、deferred 1项、rejected 0项、blocked 0项。
+- 最高风险：v2证明D31-B仍依赖约-7logit事后bias，D31-C又以明显新类损失换旧类保护；09f8的new→old与new→wrong-new双重错误尚未解决。
 - 设计一致性：D31核心机制是严格落地；slim medoid 1.34KB仍是正式bundle重建目标，当前support screen不会把它包装成已验证部署事实。

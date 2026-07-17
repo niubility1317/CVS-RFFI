@@ -80,8 +80,86 @@
 - 峰值活动参数、optimizer step、适配MAC、逐query MAC/CPU延迟、完整历史组件与目标slim medoid两种state口径，以及相对identity-only单qKNN的Pareto变化。
 - 合法receiver/TX/support清单、唯一LEO_weak view审计、query/clean/source不可达、远端源SHA、artifact SHA和自动selection/receipt。
 
-## 结果与决定
+## 完成状态与artifact
 
-`support_screen_v1`已在20.47秒内完成90/90行，但审计发现`selection.json`因D31分支遗漏而把C0 fallback误写成`selected_positive_route=true`，同一run的RECEIPT正确写false；资源表还漏计Stage2-B MAC且缺batch-1 latency。原v1 artifact保持不可变并标记口径缺陷，不用于正路线声明。
+- `support_screen_v2`于2026-07-18约06:37 CST在GPU0、PID `3727726`完成；elapsed 19.23秒，90/90行。selection与RECEIPT均选择C0且`selected_positive_route=false`；性能字段与v1逐行一致。
+- 本地artifact：`E:\type10-7\automation_reports\CV-SincNet\d31_all_registered_suffix_20260718\remote_output_v2`。SHA：training `928ac09a...6125e`、support `304d127b...281d`、selection `31f5d4cb...55b9`、resource `84017461...734a`、geometry `4c36b902...f98`、receipt `9f820422...e6e6`；全部与RECEIPT绑定一致。
+- v1保留为不可变问题证据：其selection误写positive route、资源漏计Stage2-B MAC且缺batch-1 latency；不得用v1 selection作晋升声明。
 
-已在提交`7aef0776 fix(stage2): repair D31 selection and resource audit`中统一selection/receipt正路线集合、补入Stage2-B/总适配MAC与batch-1 latency；launcher改为唯一`support_screen_v2`输出，准备低成本证据修复复跑。v1初步联合指标表明D31-B为85.56/67.78/72.00/H69.06/遗忘17.78pp，D31-C为85.56/76.11/60.67/H66.80/遗忘9.44pp，均未超过B3联合性能且不达正式目标。
+## 联合结果
+
+以下均为development support-held结果，不是query/formal性能。每一行保持同一候选的注册前旧类、注册后旧类、新类、H和遗忘。
+
+|候选|注册前旧类|注册后旧类|seen-new|H|遗忘|最差折旧/新floor|结论|
+|---|---:|---:|---:|---:|---:|---:|---|
+|Z0|71.11%|48.33%|52.67%|48.97%|22.78pp|0%/0%|控制|
+|B3诊断|86.67%|73.33%|73.33%|72.65%|13.33pp|0%/0%|性能最高但60步、仅诊断|
+|C0|71.67%|50.56%|54.00%|50.35%|21.11pp|0%/0%|自动fallback|
+|D31-A|85.56%|65.56%|71.33%|67.35%|20.00pp|0%/0%|非正路线|
+|D31-B|85.56%|67.78%|72.00%|69.06%|17.78pp|0%/0%|D31内联合最好，仍低于B3|
+|D31-C|85.56%|76.11%|60.67%|66.80%|9.44pp|0%/0%|旧类保护增强但新类显著受损|
+
+### 三场景D31结果
+
+|候选|场景|注册前旧类|注册后旧类|seen-new|H|遗忘|pooled旧/新floor|
+|---|---|---:|---:|---:|---:|---:|---:|
+|A|clear|88.33%|70.00%|80.00%|73.94%|18.33pp|50%/60%|
+|A|low-elev|78.33%|63.33%|66.00%|64.44%|15.00pp|50%/10%|
+|A|rain|90.00%|63.33%|68.00%|63.66%|26.67pp|40%/40%|
+|B|clear|88.33%|70.00%|80.00%|73.94%|18.33pp|50%/60%|
+|B|low-elev|78.33%|66.67%|68.00%|67.19%|11.67pp|60%/10%|
+|B|rain|90.00%|66.67%|68.00%|66.06%|23.33pp|40%/40%|
+|C|clear|88.33%|80.00%|64.00%|70.70%|8.33pp|60%/30%|
+|C|low-elev|78.33%|71.67%|64.00%|67.06%|6.67pp|60%/30%|
+|C|rain|90.00%|76.67%|54.00%|62.65%|13.33pp|50%/30%|
+
+### 逐类结果
+
+|旧TX|注册前|D31-A注册后|D31-B注册后|D31-C注册后|
+|---|---:|---:|---:|---:|
+|20-15|96.67%|83.33%|90.00%|93.33%|
+|8-20|90.00%|90.00%|90.00%|90.00%|
+|14-10|83.33%|53.33%|53.33%|70.00%|
+|14-7|80.00%|56.67%|60.00%|66.67%|
+|6-15|86.67%|56.67%|56.67%|66.67%|
+|20-19|76.67%|53.33%|56.67%|70.00%|
+
+|新类handle前缀|D31-A|D31-B|D31-C|
+|---|---:|---:|---:|
+|09f8|36.67%|36.67%|36.67%|
+|1c2a|83.33%|86.67%|50.00%|
+|b8fb|70.00%|70.00%|70.00%|
+|d3af|86.67%|86.67%|83.33%|
+|f608|80.00%|80.00%|63.33%|
+
+09f8仍同时存在new→old和new→wrong-new：D31-B为11/30正确、7/30判旧、12/30判错新类，不能只靠统一新旧门控解决。
+
+## 完整训练日志诊断
+
+- D31共45个fold、1,290个逐步snapshot：A/B各405，C 480。递归数值扫描非有限值0；严格token扫描NaN/Inf/OOM/Killed/Traceback/Exception均0。
+- Stage2-B共同loss `1.02394→0.12399`，旧support准确率`94.44%→100%`、floor `80.83%→100%`。
+- A/B的Stage2-C虽然loss分别降至3.437/3.389，新support约94.67%/92.83%，但安全bias施加前旧support准确率始终为0；最终旧类主要依赖均值约-7.07/-6.63的事后非正bias恢复。
+- C把raw旧support提高到92.64%、floor 64.17%，但新support从91.17%降到77.50%、新floor从70%降到10.83%，且15/15轨迹均有loss反弹；统一old margin过强。
+- DALI在45/45折启用，但只修正一个low-elev旧类内部错误，对新类、新旧组判断及full-K10状态均无改变；约贡献+0.56pp旧类总体。
+
+## 资源与Pareto
+
+|候选|峰值活动参数|总步数|完整适配MAC|query MAC|batch-1 CPU mean/p95|当前完整bundle state|slim投影state|
+|---|---:|---:|---:|---:|---:|---:|---:|
+|A|2,016|25|15,897,600|4,416|0.230–0.425/0.265–0.432ms|52,071B|16,340B|
+|B|2,016|25|15,897,600|4,416|0.233–0.238/0.272–0.276ms|52,071B|16,340B|
+|C|2,016|30|21,124,800|4,416|0.240–0.258/0.278–0.282ms|52,082B|16,351B|
+
+- identity-only单qKNN基线为17,600 MAC/query与35,200B FP16 sample state。D31 query MAC下降74.91%；当前实际full-bundle state高47.93%，不在state Pareto；1.34KB fixed-medoid重封后的总state投影低约53.58%，但仍未落地，不能当部署实测。
+- 头部运行是NumPy CPU FP32，`head_peak_cuda_memory_bytes=0`；此值不包含ADV3B02 backbone、FFT96/RF32特征提取。每场景110行特征提取的backbone为3946/344/349ms，FFT约22/16/16ms，RF约41/41/41ms。
+
+## 协议与清单闭环
+
+- receiver `20-1`、seed `713101`、K10；旧TX为14-10、14-7、20-15、20-19、6-15、8-20，新类为不可逆handle 09f8/1c2a/b8fb/d3af/f608。artifact没有新类原始可读TX名，正式合法TX表必须从sealed manifest补映射，不能猜测。
+- 每场景60旧+50新=110行，总330行；330个唯一overlay token。每场景physical ID、parent IQ hash均110/110唯一，三场景两两重叠0；support view=1、row multiplicity=1、derived row=0、additional overlay=0。
+- query opened/rows/labels均0；角色Oracle、真实batch类别数、类别配额、全局分配均false；clean/source/cache/control-flow不可达；int8组件只读不可更新。
+- 组件仍为`UNVERIFIED_UNDER_CURRENT_PROTOCOL`，因此本轮仅是`PRE_FORMAL_SUPPORT_ONLY_INT8_SCREEN`，formal metric/performance claim均false。
+
+## 决定
+
+D31验证了全注册support+CVaR可相对D30小幅提升H约0.87pp，但没有超过B3，也没有解决floor。根因是训练时未使用最终安全bias分数面：A/B的旧类在raw训练面全崩，C又用过强统一margin牺牲新类。D32将把每类非正安全cap从step0放入每次forward，并按新类逐类控制bias预算；不继续扩大统一old margin。D32是本次回顾后的第3轮，完成后必须在D33前执行新的记录回顾。
