@@ -105,3 +105,5 @@ CUDA_VISIBLE_DEVICES=0 PYTHONPATH=code /home/szu2070436088/.conda/envs/CVS-RFFI/
 - 已确认另一个`SDG-SEI`环境为Torch1.11+NumPy1.24，虽然NumPy桥接正常，但无法加载当前TorchScript runtime，因此不更换模型环境。
 - 本地修复：D20 runner的NumPy→Torch改为DLPack、Torch→NumPy改为`tolist`后显式float32重建；导入D1 fit中唯一NumPy `as_tensor`路径仅在单线程context内临时路由到DLPack并通过`finally`恢复。该改动只修复实验运行时数据桥接，张量值、样本、LEO信道、候选、损失和超参数均不变。
 - 修复验证：相关全套37项PASS；新增测试强制禁用`torch.from_numpy`并验证DLPack的float32/int64值一致性和`torch.as_tensor`恢复。
+- 修复提交：`44c238c7 fix: bridge D20 enrollment tensors with DLPack`；runner SHA256=`7e46db1e99ac40f4e9d7679dcb7f668553d928a0672a7bcf07022383949c8553`。独立复审再次`Approve`；仅指出未来若改为同进程多线程拟合需给临时`torch.as_tensor`兼容context增加锁，当前串行CLI无竞态。
+- attempt3将从隔离闭包`runs/d20_int8_maxold_fftrf_20260717/source/code/scripts/run_d19_support_only_ciaf.py`启动，日志写入`logs/d20_int8_maxold_fftrf_20260717/k10_new5_rx20_1_seed713101_attempt3.log`；输入、候选、输出和全部hash参数不变。
