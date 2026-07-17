@@ -112,6 +112,6 @@ CUDA_VISIBLE_DEVICES=0 PYTHONPATH=code /home/szu2070436088/.conda/envs/CVS-RFFI/
 
 - 历史表中`domain index 9`为记录错误；当前代码`_component_maximin_medoid`按有效域handle运行，精确返回domain20。domain20的global max-min同类余弦为0.994498，优于domain24的0.992483；在18个真实LEO_weak旧support中心上的最小top-1 margin为0.011996，约为domain24的13倍。
 - `项目.md`已更新为`int8_domain_class_center_lowrank_residual_radius_v2`并提交`ba9c7d1`：domain20 core、R3 int8低秩域偏移、每域×类P90余弦半径共同封存。旧dense v1只作为Phase1离线压缩输入或历史诊断，不再作为正式D20/D21 payload。
-- 几何审计给出domain20+R3+96B radius逻辑payload约4,589B，随机原型argmax/margin保持99.81%，18/18真实LEO_weak support中心决策保持；这些是压缩保持，不是任务accuracy。
+- v2实现审计给出domain20+R3方向4,278B、radius 96B、含当前registry/schema总逻辑状态5,032B，相对v1稠密数值状态25,428B约缩小5.81倍；真实历史v1复压缩的mean/min cosine为0.9998432/0.9993398，最大角误差2.0821°。先前随机原型argmax/margin保持99.81%、18/18真实LEO_weak support中心决策保持仍是压缩保持，不是任务accuracy。
 - 新设计文档：`analysis/d21_knn_prototype_lifecycle_and_phase1_geometry_design_20260717.md`。旧类采用Phase1只读锚、Stage2-B target-old snapshot和Stage2-C append-only registry三层状态；新类注册只追加prototype、收缩radius和至多一条稀疏碰撞边界。
-- 用户已授权必要时重训ADV3B02获取正式原型信息。执行顺序为先尝试固定checkpoint的Phase1离线复导出；只有registry/schema不可复现、几何不稳定或正式共同bundle需要时才重训，避免改变表示后把收益来源混淆。
+- 用户已授权必要时重训ADV3B02获取正式原型信息。N607只读重建已确认旧checkpoint的`L/U/V=8400/58800/16800`，按当前`rho_label=L/(L+U)`为0.125，不能作为当前正式Phase1组件来源；旧v1及其复压缩数字保留为历史诊断/codec验证。正式路线需先澄清`项目.md`中比例口径，再从头重训合法lineage，避免把超当前标注预算的旧权重重新封装为正式证据。

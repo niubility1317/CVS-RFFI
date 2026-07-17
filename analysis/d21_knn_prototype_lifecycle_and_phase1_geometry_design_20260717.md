@@ -8,7 +8,7 @@ D21不把“域适应”理解为在Phase2持续改写同一组KNN原型，而�
 2. `Stage2-B old snapshot`：每个旧类只由当前目标receiver上已经叠加单一`leo_*_weak`信道的K个support形成目标域原型与半径；完成support-only选择后提交不可变快照。
 3. `Stage2-C append-only registry`：注册新类时只追加新类原型、半径及必要的稀疏碰撞边界；旧类原型、旧类半径、旧类打分列和已锁超参数均不得重估。
 
-永久安全主干固定为`Frozen-Append+DALI(domain20,max-old lock)`。Phase1几何先只用于旧类内部身份重排，不改变逐样本`max(old)`，因此不会重复D19强地面anchor把seen-new压至6.67%–22%的失败。域适应的主信息仍来自目标域LEO_weak support；新类注册的主信息只来自新类LEO_weak support。
+永久安全主干固定为`Frozen-Append`；`DALI(domain20,max-old lock)`是待单独接入并验证的正交候选，不得由当前D21内部target-score锁冒充。Phase1几何未来只用于旧类内部身份重排，不改变逐样本`max(old)`，因此不会重复D19强地面anchor把seen-new压至6.67%–22%的失败。域适应的主信息仍来自目标域LEO_weak support；新类注册的主信息只来自新类LEO_weak support。
 
 ## 2. 不可突破的数据边界
 
@@ -35,7 +35,7 @@ p_hat[d,c] = dequant(core[c])
 r_source[d,c] = P90_x(1-cos(z_x,p[d,c]))
 ```
 
-其中`x`只来自Phase1授权训练split，成员值在Phase1内部聚合后立即丢弃；Phase2只看到`radius_q[D,C]`和逐类FP16 scale。
+其中`x`只来自Phase1授权训练split，成员值在Phase1内部聚合后立即丢弃；Phase2只看到`radius_q[D,C]`和逐类FP16 scale。离线导出采用固定4096-bin余弦距离直方图的P90上沿，误差上界为`2/4096=0.00048828125`，直方图和cell count只存在于Phase1两遍式聚合内存，不进入bundle。
 
 domain20和domain24对应不同优化目标。domain20最大化最差同类余弦，最差余弦为0.994498；domain24最小化平均重构残差，残差能量低9.88%。D21优先旧类floor且core直接服务DALI，因此锁定domain20。domain20在18个真实LEO_weak旧类support中心上的最小top-1 margin为0.011996，domain24为0.000927，前者约为后者13倍。
 
@@ -43,13 +43,13 @@ domain20和domain24对应不同优化目标。domain20最大化最差同类余�
 
 以下仅是相对历史int8组件的几何保持审计，不是任务准确率：
 
-|表示|含96B半径的逻辑payload|随机原型argmax/margin保持|18个真实LEO_weak support中心保持|max angle|
+|表示|含96B半径的状态口径|随机原型argmax/margin保持|18个真实LEO_weak support中心保持|max angle|
 |---|---:|---:|---:|---:|
 |domain20+dense int4 residual|7,799B|99.9100%|18/18|0.9919°|
 |domain20+lowrank R2 int8|3,527B|99.6533%|18/18|2.2967°|
-|domain20+lowrank R3 int8|4,589B|99.8100%|18/18|2.0827°|
+|domain20+lowrank R3 int8|4,374B数值；5,032B含当前registry/schema|99.8100%|18/18|2.0821°|
 
-正式默认采用R3。它比R2多1,062B，但随机保持率提高0.1567pp、最大角误差下降0.214°；DALI只读core时不支付残差重建MAC。dense-int4保留为重构保真度对照，不作为最轻默认。
+正式默认采用R3。实现将每个domain×class的3维coeff共享一个FP16 scale，真实历史v1组件复压缩后方向数值payload为4,278B、半径为96B、当前registry/schema为658B，总逻辑状态5,032B；相对v1稠密数值状态25,428B约缩小5.81倍。DALI只读core时不支付残差重建MAC；重建全部13个非中心域也只需一次性37,440MAC。dense-int4保留为重构保真度对照，不作为最轻默认。
 
 ### 3.3 暂不上传的可选统计
 
@@ -91,14 +91,14 @@ DALI对每个query先计算target prototype基础分数，再用domain20 core和
 
 ### 5.1 单原型原子注册
 
-对新注册类`n`，使用其K个LEO_weak support生成单位球鲁棒中心`p_n`。所有新类先独立生成，再按class handle确定性排序后一次append，避免注册顺序影响结果。旧状态复制为只读snapshot，新状态仅附加：
+对新注册类`n`，使用其K个LEO_weak support生成单位球鲁棒中心`p_n`。所有新类先独立生成，再按class handle确定性排序，先逐类、再整体与Stage2-B旧类纯余弦snapshot比较；只有旧类逐类support accuracy和全局最差margin均不下降时才允许append。旧状态复制为只读snapshot，新状态仅附加：
 
 - 1个新类中心；
 - 1个收缩半径；
 - 至多1条稀疏局部碰撞边界；
 - K10且双模态证书通过时可附加第2个中心。
 
-注册失败不得静默改写旧状态。候选不通过support-only侵入门时依次回退：2-prototype→单prototype、碰撞修正→off、radius residual→off、鲁棒中心→spherical mean。
+注册失败不得静默改写旧状态。radius和碰撞候选不通过support-only侵入门时依次回退为off；基础单原型append若仍侵入旧类，则整次注册拒绝并保留Stage2-B snapshot。后续robust/multiproto扩展只能在同一基础append门之前比较，不能把“已追加后的pure-cosine状态”当作自我基线。
 
 ### 5.2 K依赖半径
 
@@ -109,12 +109,12 @@ lambda_r = K_eff/(K_eff+4)
 r_target^2 = lambda_r*r_empirical^2 + (1-lambda_r)*r_prior^2
 ```
 
-- K1：`K_eff=0`，完全使用Phase1全部域×旧类半径的固定global robust prior，禁止由单点产生零半径。
+- K1：无法构造self-excluded半径反事实，所有旧类和新类统一关闭radius residual与碰撞boundary，只保留纯余弦单中心；Phase1 radius仅进入审计，不进入K1打分。
 - K5：使用LOO残差，`K_eff=4`，`lambda_r=0.5`。
 - K10：使用LTO残差，`K_eff=8`，`lambda_r=0.667`。
 - K20：复用K10锁定公式，以18个LTO有效残差代入，不重新调参。
 
-半径对所有注册类使用同一公式。候选标准化证据为：
+K≥5时半径对所有注册类使用同一公式。候选标准化证据为：
 
 ```text
 q_c(z) = clip((r_c-(1-cos(z,p_c)))/max(r_c,r_floor),-1,1)
@@ -135,7 +135,7 @@ delta_n(z) = beta_b*clip(dot(v_n,z)-b_n,-h,h)
 
 该残差只附加到新类自身score：接近新类support时为正，接近碰撞旧类或另一新类时为负；旧类score列仍逐位不变。`j*`由全部注册support中心和半径的固定overlap规则确定，不读取query角色或query批次结构。每类最多1条边，状态和MAC为`O(CP)`，不存在dense query图。
 
-碰撞边界必须同时通过old→new、new→old和new→new的self-excluded support混淆门。对已知开发floor类可重点报告，但正式算法不能硬编码TX；它以每类margin/radius自动识别风险。
+碰撞边界必须同时报告old→new、new→old和new→new，并通过逐类及组合support混淆门；其中K≥5的prototype/radius候选优先使用LOO/LTO反事实，K1因不可self-exclude而全部关闭。对已知开发floor类可重点报告，但正式算法不能硬编码TX；它以每类margin/radius自动识别风险。
 
 ### 5.4 两原型只作为K10条件分支
 
@@ -171,7 +171,8 @@ s_c = tau*log(mean_m exp(cos(z,p_c,m)/tau))
 
 |路线|机制|优先级|主要价值|主要风险|
 |---|---|---:|---|---|
-|R1 Frozen-Append+DALI|单中心、旧snapshot冻结、max-old旧内重排|1|最轻、0参数、可证明不压new|不能主动修复new intrusion|
+|R1 Frozen-Append|单中心、旧snapshot冻结、基础append侵入门|1|最轻、0参数、可阻断旧状态漂移与明显new intrusion|不主动修复已通过support门但在query出现的竞争|
+|R1-DALI|domain20旧类内部max-old重排|并行候选|只改旧类内部身份且理论上不压new|尚未接入D21生产score，不能声称已锁|
 |R2 Robust Snapshot|mean/medoid/Huber/trim中support-only选择|2|改善受异常support影响的floor|小K删除验证方差高|
 |R3 Hierarchical Radius|半径prior+LOO/LTO收缩+有界残差|3|统一新旧置信尺度|无界标准化会造成尺度偏置|
 |R4 Sparse Collision Boundary|每个新类至多1个竞争方向|4|直接治理新旧/新新混杂|support过拟合时会伤new|
@@ -217,9 +218,8 @@ s_c = tau*log(mean_m exp(cos(z,p_c,m)/tau))
 
 ## 10. 当前决策
 
-1. 正式Phase1状态锁定为`domain20 core+R3 int8 residual+P90 radius`；当前估算逻辑payload约4,589B，最终以实现审计为准。
+1. 正式Phase1状态锁定为`domain20 core+R3 int8 residual+P90 radius`；当前实现审计为4,374B数值payload、5,032B含registry/schema，不含外层deployment manifest/signature。
 2. R1为永久回退主干；R2和R3是下一批主实验；R4仅在注册后混杂证据存在时启用；R5只处理K10/20稳定双模态。
 3. 旧类目标域原型只在Stage2-B变化一次；Stage2-C不因新类到来而重估。
-4. 新类原型append-only注册；K1使用global radius prior，K5/10使用收缩半径，所有类使用同式逐样本打分。
+4. 新类原型append-only注册；K1所有类统一纯余弦，K≥5仅在反事实守门通过后启用收缩半径，所有激活类使用同式逐样本打分。
 5. floor优化依赖统一的逐类稳定性和碰撞门，不硬编码query角色、类别配额或TX配额。
-
