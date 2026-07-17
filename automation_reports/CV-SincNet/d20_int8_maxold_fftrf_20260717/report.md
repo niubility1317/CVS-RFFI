@@ -67,3 +67,26 @@
 - candidate：B0–B4，共5候选×3场景×5个leave-two-out fold=75个support-only原子结果；B3/B4共享同fold基础头缓存。
 - 输出：`training_log.jsonl`、`support_audit.json`、`selection.json`、`resource_audit.json`、`RECEIPT.json`。
 - 正路线出现后才重建共同封存checkpoint+int8 bundle并进入开发query；否则直接回退/淘汰，不启动125矩阵。
++
+
+## 2026-07-17 12:27 N607启动前记录
+
+- 本地Git承载：`E:\type10-7\github_publish\CVS-RFFI-repo`；实现提交：`9f4e51692940947138ddf8afe7fa333229f90af4`；三项待同步文件均与提交一致，相关路径工作区无未提交修改。
+- 根目录`E:\type10-7`不是Git仓库；本报告同时镜像到上述Git承载面。
+- 本地验证：`ssr-gpu`环境35项相关测试PASS、`py_compile`PASS、`git diff --check`PASS、独立复审`Approve`。
+- direct N607 preflight：2026-07-17 12:27 CST PASS；8张RTX 3090均0%利用率/10MiB，无用户训练进程；项目盘剩余7.6TB。
+- GPU：0；Python：`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`；cwd：`/home/szu2070436088/2510044040/CV-SincNet`。
+- 同步映射：
+  - `code/cvsrffi/stage2_dali.py`→`/home/szu2070436088/2510044040/CV-SincNet/code/cvsrffi/stage2_dali.py`，SHA256=`c51e1c028a7b6994243001dd6fd8c47de5168822241d6c4e0fd1e9085455003e`；
+  - `code/scripts/run_d19_support_only_ciaf.py`→`/home/szu2070436088/2510044040/CV-SincNet/code/scripts/run_d19_support_only_ciaf.py`，SHA256=`f226daf8a1a0fb8160dcca030aa5df4707e1ef60af4c90c35b0785dad1c9f934`；
+  - `analysis/d19_adv3b02_class_binding_20260717.json`→`/home/szu2070436088/2510044040/CV-SincNet/runs/d20_int8_maxold_fftrf_20260717/input/class_binding.json`，SHA256=`bb89a1dbb831acb374fccfc596ae98b660b496b449bdca577dabb962121c901f`。
+- 不上传任何原始IQ、clean/source样本、样本级feature、full-precision prototype或query；int8组件复用远端既有密封研发组件，manifest SHA256=`15b5e144f9af3989421d8e925c17758479c327be47e79222f6363dc63994629c`。
+- 输入：receiver=`20-1`、seed=`713101`、K=`10`、seen-new=`5`；before/after均只指向`new_5_retry3/predictor/*/enrollment_only`，runner无query参数和scorer入口。
+- 远端输出：`runs/d20_int8_maxold_fftrf_20260717/output/k10_new5_rx20_1_seed713101`；日志：`logs/d20_int8_maxold_fftrf_20260717/k10_new5_rx20_1_seed713101.log`。
+- 精确运行命令：
+
+```bash
+CUDA_VISIBLE_DEVICES=0 PYTHONPATH=code /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u code/scripts/run_d19_support_only_ciaf.py --before-root runs/d18_formal_k10_new5_rx20_1_seed713101_20260717_085303/phase2_capsules/rx_20_1/seed_713101/k_10/new_5_retry3/predictor/before/enrollment_only --before-seal runs/d18_formal_k10_new5_rx20_1_seed713101_20260717_085303/phase2_capsules/rx_20_1/seed_713101/k_10/new_5_retry3/seals/before_enrollment.seal.json --before-seal-sha256 53ace2863c9da6c2f6cc855d602c99f581df6de3d30a9a3ecb89eb6b6f0d9f75 --before-formal-policy runs/d18_formal_k10_new5_rx20_1_seed713101_20260717_085303/input/runtime_authorization_k10_new5/formal_execution_policy.json --before-formal-policy-authorization runs/d18_formal_k10_new5_rx20_1_seed713101_20260717_085303/input/runtime_authorization_k10_new5/before_formal_policy_authorization.v2.json --before-signed-policy-authorization-envelope runs/d18_formal_k10_new5_rx20_1_seed713101_20260717_085303/input/runtime_authorization_k10_new5/before_signed_policy_authorization_envelope.v2.json --before-signed-policy-authorization-envelope-sha256 31a2ad9918f061b25d5a7ed0cc135df70ae02460c094b2f396bf314817bceb0e --after-root runs/d18_formal_k10_new5_rx20_1_seed713101_20260717_085303/phase2_capsules/rx_20_1/seed_713101/k_10/new_5_retry3/predictor/after/enrollment_only --after-seal runs/d18_formal_k10_new5_rx20_1_seed713101_20260717_085303/phase2_capsules/rx_20_1/seed_713101/k_10/new_5_retry3/seals/after_enrollment.seal.json --after-seal-sha256 c70aedf3a8f059e756806201758c1933a2f3e1ba4df415e69a1c776b1a2b50ff --after-formal-policy runs/d18_formal_k10_new5_rx20_1_seed713101_20260717_085303/input/runtime_authorization_k10_new5/formal_execution_policy.json --after-formal-policy-authorization runs/d18_formal_k10_new5_rx20_1_seed713101_20260717_085303/input/runtime_authorization_k10_new5/after_formal_policy_authorization.v2.json --after-signed-policy-authorization-envelope runs/d18_formal_k10_new5_rx20_1_seed713101_20260717_085303/input/runtime_authorization_k10_new5/after_signed_policy_authorization_envelope.v2.json --after-signed-policy-authorization-envelope-sha256 a2483d6e9c9c362d89397029ff1e43f48358be3bdb3a05d717ee112b70a0be76 --component-dir runs/d19_ciaf_int8_proto_20260717_1039/input/int8_component --component-manifest-sha256 15b5e144f9af3989421d8e925c17758479c327be47e79222f6363dc63994629c --class-binding runs/d20_int8_maxold_fftrf_20260717/input/class_binding.json --class-binding-sha256 bb89a1dbb831acb374fccfc596ae98b660b496b449bdca577dabb962121c901f --output runs/d20_int8_maxold_fftrf_20260717/output/k10_new5_rx20_1_seed713101 --device auto --mode development_select_unverified_component
+```
+
+- 成功条件：生成75个support-only fold结果；B1–B4必须15/15逐类非劣于B0并严格改善最坏旧类floor，B4还需相对B3严格改善floor且seen-new逐类结果完全相同。失败/回退时不启动query和125矩阵。
