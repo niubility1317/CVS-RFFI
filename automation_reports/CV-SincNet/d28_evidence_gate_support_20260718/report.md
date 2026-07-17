@@ -40,6 +40,7 @@
 - 04:23 CST直连preflight PASS：server time、project root和8张RTX3090可见，均0%利用、约10MiB显存；live inventory为`gpu_compute=[]`、`active_training_processes=[]`、`unknown_training_active=false`。选择GPU0，精确命令锁定为`cd /home/szu2070436088/2510044040/CV-SincNet && D28_GPU=0 bash code/scripts/launch_d28_evidence_gate_support_20260718.sh`。
 - 已同步runner→`code/scripts/run_d25_support_only_concat.py`、D28核心→`code/cvsrffi/stage2_support_evidence_gate.py`、launcher→`code/scripts/launch_d28_evidence_gate_support_20260718.sh`；远端5项SHA与方法锁一致，`py_compile`、`bash -n`、output不存在门均PASS。同步与验证后本地`ssh.exe`及N607/bridge TCP22连接均为0。
 - 04:25 CST使用GPU0启动，PID=`3645546`；log=`/home/szu2070436088/2510044040/CV-SincNet/logs/d28_evidence_gate_20260718/support_screen_v1.log`，output=`/home/szu2070436088/2510044040/CV-SincNet/runs/d28_evidence_gate_20260718/output/support_screen_v1`。首次短探针显示进程仍正常运行，未作干预；每次SSH后本地连接均清零。
+- v1在16.946秒完成90/90行，D28-B/C均因OOF identity安全门15/15fold禁用并精确透传D27-B。分析发现v1的D28组合resource字段`batch1_head_latency_*`只计gate校正、漏计D27 score；性能、协议、MAC、状态与loss不受影响，但延迟Pareto字段不完整。已修复为逐样本计时`D27 score+gate correction`，73项回归再次PASS；runner新SHA256=`d380ff5923c917a82dfde4d7090548feff1625c7bbd3470b2d23d5bdd6a412af`，v2 launcher SHA256=`c9f0d3691370aae3977e23a247a2ad9ebf998be2f55ed2684bc50009401d505e`，将用独立`support_screen_v2`重跑，不覆盖v1证据。
 
 ## 完成后补充
 

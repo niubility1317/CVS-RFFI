@@ -1225,6 +1225,9 @@ def _evaluate_d28_fold(
                 + gate_resource["fitted_parameter_count"]
             ),
             "persistent_state_bytes": base_state_bytes + gate_state_bytes,
+            "persistent_state_cap_pass": (
+                base_state_bytes + gate_state_bytes <= 256 * 1024
+            ),
             "estimated_macs_per_query": base_query_macs + gate_query_macs,
             "old_support_non_degradation_pass": old_support_non_degradation,
             "old_score_columns_bitwise_unchanged_after_registration": True,
@@ -2093,9 +2096,10 @@ def _full_d28_state_audit(
     )
     old_support_non_degradation = bool(classwise_pass and floor_pass)
     score_elapsed_ms: list[float] = []
-    for raw_score in raw_support_scores:
+    for feature in features:
         score_started = time.perf_counter()
-        apply_support_evidence_gate(gate, raw_score[None, :])
+        raw_score = score_all_d26(after, feature[None, :])
+        apply_support_evidence_gate(gate, raw_score)
         score_elapsed_ms.append((time.perf_counter() - score_started) * 1000.0)
     base_resource = dict(after.resource_audit())
     gate_resource = dict(gate.resource_audit())
