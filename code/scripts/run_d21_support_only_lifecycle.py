@@ -2,11 +2,12 @@
 """Run D21 prototype lifecycle on sealed LEO_weak enrollment support only.
 
 The CLI intentionally has no query, truth, scorer, role, quota, or batch
-assignment input.  Real execution delegates package materialization and the
-NumPy/Torch DLPack bridge to the existing D20/D19 runner.  Until a formally
-sealed v2 component with real offline P90 radii exists, callers may exercise
-only the pure synthetic/local evaluation function; this script never invents
-or substitutes a radius row.
+assignment input.  Real execution delegates target package materialization and
+the NumPy/Torch DLPack bridge to the existing D20/D19 runner, while Phase1
+knowledge is accepted only through the jointly signed ADV3B02 runtime+v2
+component deployment bundle.  A legacy target capsule lacking the outer-root,
+seal, envelope, lineage, or runtime bindings is rejected for rebuild.  This
+script never invents or substitutes a radius row.
 """
 
 from __future__ import annotations
@@ -31,17 +32,18 @@ for value in (CODE, SCRIPT_DIR):
     if str(value) not in sys.path:
         sys.path.insert(0, str(value))
 
+from cvsrffi.phase1_adv3b02_deployment_bundle import (  # noqa: E402
+    FORMAL_CONTEXT_SCHEMA,
+    VerifiedADV3B02DeploymentBundle,
+    load_formal_adv3b02_deployment_bundle,
+)
 from cvsrffi.phase1_center_lowrank_prototype_bundle import (  # noqa: E402
     CenterLowRankPrototypeComponent,
-    load_center_lowrank_component,
 )
 from cvsrffi.somph_predictor_bundle import (  # noqa: E402
     FORMAL_LEO_WEAK_SCENARIOS,
     finalize_somph_enrollment_authority_after_materialization,
     materialize_somph_enrollment_with_signed_authority,
-)
-from cvsrffi.stage2_predictor_runtime import (  # noqa: E402
-    load_torchscript_backbone_same_fd,
 )
 from cvsrffi.stage2_prototype_lifecycle import (  # noqa: E402
     FEATURE_DIM,
@@ -52,7 +54,6 @@ from cvsrffi.stage2_prototype_lifecycle import (  # noqa: E402
     score_batch,
 )
 from run_d19_support_only_ciaf import (  # noqa: E402
-    _member,
     _numpy2_torch21_as_tensor_compatibility,
     _old_reuse,
     _overlay_index,
@@ -69,6 +70,13 @@ L1 = "L1_RADIUS"
 L2 = "L2_RADIUS_BOUNDARY"
 CANDIDATE_ORDER = (L0, L1, L2)
 _RECEIPT_TOKEN_SECRET = object()
+TARGET_JOINT_BINDING_FIELDS = {
+    "phase1_adv3b02_outer_content_root_sha256",
+    "phase1_adv3b02_detached_seal_sha256",
+    "phase1_adv3b02_signature_envelope_sha256",
+    "phase1_checkpoint_lineage_sha256",
+    "feature_runtime_sha256",
+}
 
 
 class D21RunnerError(ValueError):
@@ -162,13 +170,24 @@ def component_global_median_radius_prior(
     component: CenterLowRankPrototypeComponent,
     *,
     expected_old_class_count: int,
+    formal_context: Mapping[str, Any] | None = None,
+    require_joint_formal: bool = False,
 ) -> tuple[float, dict[str, Any]]:
     """Dequantize every immutable radius row and take one deterministic median."""
 
     manifest = component.manifest
+    if require_joint_formal and (
+        not isinstance(formal_context, Mapping)
+        or formal_context.get("schema") != FORMAL_CONTEXT_SCHEMA
+        or formal_context.get("formal_phase2_eligible") is not True
+        or formal_context.get("standalone_component_formal_phase2_eligible") is not False
+        or formal_context.get("outer_signature_verified") is not True
+        or formal_context.get("detached_seal_verified") is not True
+        or formal_context.get("runtime_checkpoint_parity_verified") is not True
+    ):
+        raise D21RunnerError("joint formal Phase1 context drift")
     if (
-        not bool(manifest.get("formal_phase2_eligible"))
-        or "missing" in str(manifest.get("radius_provenance", ""))
+        "missing" in str(manifest.get("radius_provenance", ""))
         or len(component.class_registry) != int(expected_old_class_count)
         or not component.domain_registry
     ):
@@ -205,6 +224,9 @@ def component_global_median_radius_prior(
         "median_rule": "numpy_median_over_all_dequantized_domain_class_radius_rows",
         "component_update_access": False,
         "synthetic_or_substitute_radius_used": False,
+        "joint_formal_context_required": require_joint_formal,
+        "joint_formal_context_verified": bool(require_joint_formal),
+        "standalone_component_formal_claimed": False,
     }
     return prior, audit
 
@@ -369,6 +391,7 @@ def _evaluate_support_lifecycle(
     new_classes: Sequence[str],
     component: CenterLowRankPrototypeComponent,
     receipt_token: _VerifiedSupportReceiptToken,
+    formal_context: Mapping[str, Any] | None,
 ) -> dict[str, Any]:
     """Internal evaluation requiring a module-issued receipt token."""
 
@@ -378,7 +401,10 @@ def _evaluate_support_lifecycle(
     old_classes = tuple(str(value) for value in old_classes)
     new_classes = tuple(str(value) for value in new_classes)
     radius_prior, component_audit = component_global_median_radius_prior(
-        component, expected_old_class_count=len(old_classes)
+        component,
+        expected_old_class_count=len(old_classes),
+        formal_context=formal_context,
+        require_joint_formal=receipt_token.sealed,
     )
     candidate_results: dict[str, Any] = {}
     all_support = np.concatenate([old_support_z_id, new_support_z_id], axis=0)
@@ -505,6 +531,7 @@ def evaluate_support_lifecycle(
         new_classes=new_classes,
         component=component,
         receipt_token=token,
+        formal_context=None,
     )
 
 
@@ -517,11 +544,39 @@ def _manifest_binding(before: Mapping[str, Any], after: Mapping[str, Any]) -> in
         or int(before.get("seed", -1)) != int(after.get("seed", -2))
         or before.get("feature_runtime_sha256")
         != after.get("feature_runtime_sha256")
-        or before.get("phase1_checkpoint_sha256")
-        != after.get("phase1_checkpoint_sha256")
+        or before.get("phase1_checkpoint_lineage_sha256")
+        != after.get("phase1_checkpoint_lineage_sha256")
     ):
         raise D21RunnerError("before/after enrollment binding drift")
     return k_shot
+
+
+def _require_target_joint_binding(
+    surface: Mapping[str, Any],
+    *,
+    surface_name: str,
+    expected_outer_content_root_sha256: str,
+    expected_detached_seal_sha256: str,
+    expected_signature_envelope_sha256: str,
+    expected_checkpoint_lineage_sha256: str,
+    expected_runtime_sha256: str,
+) -> None:
+    expected = {
+        "phase1_adv3b02_outer_content_root_sha256": expected_outer_content_root_sha256,
+        "phase1_adv3b02_detached_seal_sha256": expected_detached_seal_sha256,
+        "phase1_adv3b02_signature_envelope_sha256": (
+            expected_signature_envelope_sha256
+        ),
+        "phase1_checkpoint_lineage_sha256": expected_checkpoint_lineage_sha256,
+        "feature_runtime_sha256": expected_runtime_sha256,
+    }
+    missing = TARGET_JOINT_BINDING_FIELDS - set(surface)
+    if missing:
+        raise D21RunnerError(
+            f"{surface_name} lacks joint Phase1 binding fields; rebuild target capsule"
+        )
+    if any(str(surface.get(key, "")).lower() != value.lower() for key, value in expected.items()):
+        raise D21RunnerError(f"{surface_name} joint Phase1 binding drift")
 
 
 def _registered_handles(manifest: Mapping[str, Any]) -> tuple[str, ...]:
@@ -639,9 +694,21 @@ def run(
     after_formal_policy_authorization: Path,
     after_signed_policy_authorization_envelope: Path,
     expected_after_signed_policy_authorization_envelope_sha256: str,
-    component_dir: Path,
+    joint_package_root: Path,
+    joint_detached_seal: Path,
+    expected_joint_detached_seal_sha256: str,
+    joint_signature_envelope: Path,
+    expected_joint_signature_envelope_sha256: str,
+    expected_checkpoint_lineage_sha256: str,
+    expected_runtime_sha256: str,
+    expected_component_pre_sign_content_root_sha256: str,
     expected_class_handle_binding_sha256: str,
-    expected_deployment_bundle_root_sha256: str,
+    expected_parity_receipt_sha256: str,
+    expected_generation_lock_sha256: str,
+    expected_method_lock_sha256: str,
+    expected_generation_config_sha256: str,
+    expected_generation_code_sha256: str,
+    expected_outer_content_root_sha256: str,
     output: Path,
     device_name: str = "auto",
     mode: str = MODE,
@@ -655,24 +722,56 @@ def run(
         after_root, after_seal, expected_seal_sha256=expected_after_seal_sha256
     )
     _manifest_binding(before_preopen, after_preopen)
+    for name, manifest in (("before target manifest", before_preopen), ("after target manifest", after_preopen)):
+        _require_target_joint_binding(
+            manifest,
+            surface_name=name,
+            expected_outer_content_root_sha256=expected_outer_content_root_sha256,
+            expected_detached_seal_sha256=expected_joint_detached_seal_sha256,
+            expected_signature_envelope_sha256=expected_joint_signature_envelope_sha256,
+            expected_checkpoint_lineage_sha256=expected_checkpoint_lineage_sha256,
+            expected_runtime_sha256=expected_runtime_sha256,
+        )
     old_classes = _registered_handles(before_preopen)
-    component = load_center_lowrank_component(
-        component_dir,
-        expected_checkpoint_sha256=str(before_preopen["phase1_checkpoint_sha256"]),
+    joint_bundle = load_formal_adv3b02_deployment_bundle(
+        joint_package_root,
+        detached_seal_path=joint_detached_seal,
+        expected_detached_seal_sha256=expected_joint_detached_seal_sha256,
+        signature_envelope_path=joint_signature_envelope,
+        expected_signature_envelope_sha256=(
+            expected_joint_signature_envelope_sha256
+        ),
+        expected_checkpoint_lineage_sha256=expected_checkpoint_lineage_sha256,
+        expected_runtime_sha256=expected_runtime_sha256,
+        expected_component_pre_sign_content_root_sha256=(
+            expected_component_pre_sign_content_root_sha256
+        ),
         expected_class_handle_binding_sha256=expected_class_handle_binding_sha256,
-        expected_deployment_bundle_root_sha256=expected_deployment_bundle_root_sha256,
+        expected_parity_receipt_sha256=expected_parity_receipt_sha256,
+        expected_generation_lock_sha256=expected_generation_lock_sha256,
+        expected_method_lock_sha256=expected_method_lock_sha256,
+        expected_generation_config_sha256=expected_generation_config_sha256,
+        expected_generation_code_sha256=expected_generation_code_sha256,
+        expected_outer_content_root_sha256=expected_outer_content_root_sha256,
     )
+    if not isinstance(joint_bundle, VerifiedADV3B02DeploymentBundle):
+        raise D21RunnerError("formal joint deployment bundle loader result drift")
+    component = joint_bundle.component
+    if tuple(component.class_registry) != old_classes:
+        raise D21RunnerError("joint component/target old-class ordered binding drift")
     component_global_median_radius_prior(
-        component, expected_old_class_count=len(old_classes)
+        component,
+        expected_old_class_count=len(old_classes),
+        formal_context=joint_bundle.formal_phase2_context,
+        require_joint_formal=True,
     )
     device = torch.device(
         "cuda:0"
         if device_name == "auto" and torch.cuda.is_available()
         else ("cpu" if device_name == "auto" else device_name)
     )
-    model = load_torchscript_backbone_same_fd(
-        before_root, _member(before_preopen, "feature_runtime"), device=device
-    )
+    model = joint_bundle.runtime.to(device)
+    model.eval()
     materialize_kwargs = (
         (
             before_root,
@@ -714,6 +813,23 @@ def run(
         after_evidence
     )
     _require_post_materialization_authority(before_authority, after_authority)
+    for name, surface in (
+        ("before materialized manifest", before_evidence.manifest),
+        ("after materialized manifest", after_evidence.manifest),
+        ("before materialization authority", before_authority),
+        ("after materialization authority", after_authority),
+    ):
+        _require_target_joint_binding(
+            surface,
+            surface_name=name,
+            expected_outer_content_root_sha256=expected_outer_content_root_sha256,
+            expected_detached_seal_sha256=expected_joint_detached_seal_sha256,
+            expected_signature_envelope_sha256=(
+                expected_joint_signature_envelope_sha256
+            ),
+            expected_checkpoint_lineage_sha256=expected_checkpoint_lineage_sha256,
+            expected_runtime_sha256=expected_runtime_sha256,
+        )
     before_capsule_root = str(before_authority.get("package_root_sha256", ""))
     after_capsule_root = str(after_authority.get("package_root_sha256", ""))
     before_receipt_sha256 = str(
@@ -774,6 +890,7 @@ def run(
             new_classes=new_classes,
             component=component,
             receipt_token=receipt_token,
+            formal_context=joint_bundle.formal_phase2_context,
         )
         extraction[scenario] = {"before_old": old_extract, "after_new": new_extract}
     output.mkdir(parents=True, exist_ok=False)
@@ -801,12 +918,15 @@ def run(
             "dali_integrated": False,
             "score_lock_claim": "internal-target-score-lock-only",
             "component_radius_substitution": False,
+            "joint_phase1_formal_context": joint_bundle.formal_phase2_context,
+            "joint_phase1_load_audit": joint_bundle.audit,
             "feature_extraction": extraction,
         },
     )
     resource_payload = {
         "schema": "cvs.phase2.d21.resource_matrix.v1",
         "component": component.resource_audit(),
+        "joint_phase1_load_audit": joint_bundle.audit,
         "by_scenario": {
             scene: {
                 candidate: row["after_resource"]
@@ -825,7 +945,11 @@ def run(
         "k_shot": k_shot,
         "query_opened": False,
         "scorer_opened": False,
-        "component_deployment_bundle_root_sha256": expected_deployment_bundle_root_sha256,
+        "phase1_joint_outer_content_root_sha256": expected_outer_content_root_sha256,
+        "phase1_joint_detached_seal_sha256": expected_joint_detached_seal_sha256,
+        "phase1_joint_signature_envelope_sha256": (
+            expected_joint_signature_envelope_sha256
+        ),
         "artifacts": {
             "lifecycle_results.json": result_sha,
             "support_audit.json": support_sha,
@@ -888,9 +1012,21 @@ def build_parser() -> argparse.ArgumentParser:
         parser.add_argument(
             f"--{state}-signed-policy-authorization-envelope-sha256", required=True
         )
-    parser.add_argument("--component-dir", type=Path, required=True)
+    parser.add_argument("--joint-package-root", type=Path, required=True)
+    parser.add_argument("--joint-detached-seal", type=Path, required=True)
+    parser.add_argument("--joint-detached-seal-sha256", required=True)
+    parser.add_argument("--joint-signature-envelope", type=Path, required=True)
+    parser.add_argument("--joint-signature-envelope-sha256", required=True)
+    parser.add_argument("--checkpoint-lineage-sha256", required=True)
+    parser.add_argument("--runtime-sha256", required=True)
+    parser.add_argument("--component-pre-sign-content-root-sha256", required=True)
     parser.add_argument("--class-handle-binding-sha256", required=True)
-    parser.add_argument("--deployment-bundle-root-sha256", required=True)
+    parser.add_argument("--parity-receipt-sha256", required=True)
+    parser.add_argument("--generation-lock-sha256", required=True)
+    parser.add_argument("--method-lock-sha256", required=True)
+    parser.add_argument("--generation-config-sha256", required=True)
+    parser.add_argument("--generation-code-sha256", required=True)
+    parser.add_argument("--outer-content-root-sha256", required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--device", default="auto")
     parser.add_argument("--mode", default=MODE, choices=[MODE])
@@ -922,9 +1058,25 @@ def main() -> None:
         expected_after_signed_policy_authorization_envelope_sha256=(
             args.after_signed_policy_authorization_envelope_sha256
         ),
-        component_dir=args.component_dir,
+        joint_package_root=args.joint_package_root,
+        joint_detached_seal=args.joint_detached_seal,
+        expected_joint_detached_seal_sha256=args.joint_detached_seal_sha256,
+        joint_signature_envelope=args.joint_signature_envelope,
+        expected_joint_signature_envelope_sha256=(
+            args.joint_signature_envelope_sha256
+        ),
+        expected_checkpoint_lineage_sha256=args.checkpoint_lineage_sha256,
+        expected_runtime_sha256=args.runtime_sha256,
+        expected_component_pre_sign_content_root_sha256=(
+            args.component_pre_sign_content_root_sha256
+        ),
         expected_class_handle_binding_sha256=args.class_handle_binding_sha256,
-        expected_deployment_bundle_root_sha256=args.deployment_bundle_root_sha256,
+        expected_parity_receipt_sha256=args.parity_receipt_sha256,
+        expected_generation_lock_sha256=args.generation_lock_sha256,
+        expected_method_lock_sha256=args.method_lock_sha256,
+        expected_generation_config_sha256=args.generation_config_sha256,
+        expected_generation_code_sha256=args.generation_code_sha256,
+        expected_outer_content_root_sha256=args.outer_content_root_sha256,
         output=args.output,
         device_name=args.device,
         mode=args.mode,

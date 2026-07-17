@@ -81,6 +81,51 @@ def test_cli_and_runner_have_no_query_or_scorer_surface() -> None:
     assert "sealed" not in inspect.signature(
         runner._synthetic_receipt_token
     ).parameters
+    assert {"component_dir", "deployment_bundle_root_sha256"}.isdisjoint(destinations)
+    assert {
+        "joint_package_root",
+        "joint_detached_seal",
+        "joint_signature_envelope",
+        "outer_content_root_sha256",
+    } <= destinations
+    run_parameters = set(inspect.signature(runner.run).parameters)
+    assert {"component_dir", "expected_deployment_bundle_root_sha256"}.isdisjoint(
+        run_parameters
+    )
+    source = inspect.getsource(runner.run)
+    assert source.index("load_formal_adv3b02_deployment_bundle") < source.index(
+        "materialize_somph_enrollment_with_signed_authority"
+    )
+
+
+def test_target_capsule_without_joint_binding_requires_rebuild() -> None:
+    with pytest.raises(runner.D21RunnerError, match="rebuild target capsule"):
+        runner._require_target_joint_binding(
+            {"feature_runtime_sha256": "d" * 64},
+            surface_name="legacy target manifest",
+            expected_outer_content_root_sha256="c" * 64,
+            expected_detached_seal_sha256="8" * 64,
+            expected_signature_envelope_sha256="9" * 64,
+            expected_checkpoint_lineage_sha256="a" * 64,
+            expected_runtime_sha256="d" * 64,
+        )
+    complete = {
+        "phase1_adv3b02_outer_content_root_sha256": "c" * 64,
+        "phase1_adv3b02_detached_seal_sha256": "8" * 64,
+        "phase1_adv3b02_signature_envelope_sha256": "9" * 64,
+        "phase1_checkpoint_lineage_sha256": "a" * 64,
+        "feature_runtime_sha256": "0" * 64,
+    }
+    with pytest.raises(runner.D21RunnerError, match="binding drift"):
+        runner._require_target_joint_binding(
+            complete,
+            surface_name="wrong runtime target manifest",
+            expected_outer_content_root_sha256="c" * 64,
+            expected_detached_seal_sha256="8" * 64,
+            expected_signature_envelope_sha256="9" * 64,
+            expected_checkpoint_lineage_sha256="a" * 64,
+            expected_runtime_sha256="d" * 64,
+        )
 
 
 def test_v2_component_binding_uses_all_radius_rows_and_rejects_substitutes() -> None:
@@ -179,13 +224,19 @@ def test_dlpack_extraction_reuses_compatibility_closure(monkeypatch) -> None:
 
 
 def test_mocked_sealed_materialization_writes_bound_commit(tmp_path, monkeypatch) -> None:
+    joint_binding = {
+        "phase1_adv3b02_outer_content_root_sha256": "c" * 64,
+        "phase1_adv3b02_detached_seal_sha256": "8" * 64,
+        "phase1_adv3b02_signature_envelope_sha256": "9" * 64,
+        "phase1_checkpoint_lineage_sha256": "a" * 64,
+        "feature_runtime_sha256": "d" * 64,
+    }
     before_manifest = {
         "kind": "before",
         "receiver": "rx0",
         "seed": 7,
         "k_shot": 1,
-        "feature_runtime_sha256": "d" * 64,
-        "phase1_checkpoint_sha256": "a" * 64,
+        **joint_binding,
         "registered_classes": [
             {"class_index": index, "class_handle": value}
             for index, value in enumerate(OLD)
@@ -204,14 +255,38 @@ def test_mocked_sealed_materialization_writes_bound_commit(tmp_path, monkeypatch
     before_root = tmp_path / "before"
     after_root = tmp_path / "after"
     component = FakeComponent(np.full((2, 3), 2.0, dtype=np.float32))
+    component.class_registry = OLD
     binding_calls = []
+
+    class FakeRuntime(torch.nn.Module):
+        def forward(self, batch):
+            return {"features": torch.zeros((len(batch), runner.FEATURE_DIM))}
+
+    formal_context = {
+        "schema": runner.FORMAL_CONTEXT_SCHEMA,
+        "formal_phase2_eligible": True,
+        "standalone_component_formal_phase2_eligible": False,
+        "outer_signature_verified": True,
+        "detached_seal_verified": True,
+        "runtime_checkpoint_parity_verified": True,
+        "outer_content_root_sha256": "c" * 64,
+    }
 
     def preopen(root, seal, *, expected_seal_sha256):
         return before_manifest if root == before_root else after_manifest
 
-    def load_component(path, **kwargs):
+    def load_joint(path, **kwargs):
         binding_calls.append(kwargs)
-        return component
+        return runner.VerifiedADV3B02DeploymentBundle(
+            runtime=FakeRuntime(),
+            component=component,
+            class_binding={},
+            parity_receipt={},
+            generation_lock={},
+            method_lock={},
+            formal_phase2_context=formal_context,
+            audit={"status": "PASS"},
+        )
 
     def materialize(root, **kwargs):
         manifest = before_manifest if root == before_root else after_manifest
@@ -242,14 +317,13 @@ def test_mocked_sealed_materialization_writes_bound_commit(tmp_path, monkeypatch
         return np.stack(rows), {"support_rows": len(rows), "mock": True}
 
     monkeypatch.setattr(runner, "_preopen_manifest", preopen)
-    monkeypatch.setattr(runner, "load_center_lowrank_component", load_component)
-    monkeypatch.setattr(runner, "load_torchscript_backbone_same_fd", lambda *a, **k: object())
-    monkeypatch.setattr(runner, "_member", lambda *a, **k: {})
+    monkeypatch.setattr(runner, "load_formal_adv3b02_deployment_bundle", load_joint)
     monkeypatch.setattr(runner, "materialize_somph_enrollment_with_signed_authority", materialize)
     monkeypatch.setattr(
         runner,
         "finalize_somph_enrollment_authority_after_materialization",
         lambda evidence: {
+            **joint_binding,
             "package_root_sha256": evidence.manifest["package_root_sha256"],
             "post_materialization_audit_sha256": (
                 "6" if evidence.manifest["kind"] == "before" else "7"
@@ -279,17 +353,40 @@ def test_mocked_sealed_materialization_writes_bound_commit(tmp_path, monkeypatch
         after_formal_policy_authorization=tmp_path / "after.authorization",
         after_signed_policy_authorization_envelope=tmp_path / "after.envelope",
         expected_after_signed_policy_authorization_envelope_sha256="4" * 64,
-        component_dir=tmp_path / "component",
+        joint_package_root=tmp_path / "joint",
+        joint_detached_seal=tmp_path / "joint.seal",
+        expected_joint_detached_seal_sha256="8" * 64,
+        joint_signature_envelope=tmp_path / "joint.envelope",
+        expected_joint_signature_envelope_sha256="9" * 64,
+        expected_checkpoint_lineage_sha256="a" * 64,
+        expected_runtime_sha256="d" * 64,
+        expected_component_pre_sign_content_root_sha256="1" * 64,
         expected_class_handle_binding_sha256="b" * 64,
-        expected_deployment_bundle_root_sha256="c" * 64,
+        expected_parity_receipt_sha256="2" * 64,
+        expected_generation_lock_sha256="3" * 64,
+        expected_method_lock_sha256="4" * 64,
+        expected_generation_config_sha256="5" * 64,
+        expected_generation_code_sha256="6" * 64,
+        expected_outer_content_root_sha256="c" * 64,
         output=output,
         device_name="cpu",
     )
     assert binding_calls == [
         {
-            "expected_checkpoint_sha256": "a" * 64,
+            "detached_seal_path": tmp_path / "joint.seal",
+            "expected_detached_seal_sha256": "8" * 64,
+            "signature_envelope_path": tmp_path / "joint.envelope",
+            "expected_signature_envelope_sha256": "9" * 64,
+            "expected_checkpoint_lineage_sha256": "a" * 64,
+            "expected_runtime_sha256": "d" * 64,
+            "expected_component_pre_sign_content_root_sha256": "1" * 64,
             "expected_class_handle_binding_sha256": "b" * 64,
-            "expected_deployment_bundle_root_sha256": "c" * 64,
+            "expected_parity_receipt_sha256": "2" * 64,
+            "expected_generation_lock_sha256": "3" * 64,
+            "expected_method_lock_sha256": "4" * 64,
+            "expected_generation_config_sha256": "5" * 64,
+            "expected_generation_code_sha256": "6" * 64,
+            "expected_outer_content_root_sha256": "c" * 64,
         }
     ]
     commit = json.loads((output / "COMMIT.json").read_text(encoding="utf-8"))
