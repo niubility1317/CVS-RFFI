@@ -65,7 +65,7 @@ phase2_pretrained_artifact_policy=sealed_phase1_deployment_bundle_with_optional_
 ## N607计划
 
 - 远端根：`/home/szu2070436088/2510044040/CV-SincNet`；Python：`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`；output/log分别位于`runs/d29_pcsr_20260718/output/support_screen_v1`与`logs/d29_pcsr_20260718/support_screen_v1.log`。
-- 启动前重新执行本地73+新增D29测试、Git/SHA闭包、N607直连preflight/live inventory、远端SHA、`py_compile`、`bash -n`及output不存在门。
+- 启动前重新执行本地66项D29及相邻回归测试、Git/SHA闭包、N607直连preflight/live inventory、远端SHA、`py_compile`、`bash -n`及output不存在门。
 
 ### 启动前live状态
 
@@ -92,6 +92,67 @@ phase2_pretrained_artifact_policy=sealed_phase1_deployment_bundle_with_optional_
 - 若筛选为正，正式阶段须在同run、相同query ID和相同推理View下同时保存注册前D27-B old-only状态与注册后D27-B+PCSR全类状态，报告`old_acc_before_increment`、`old_acc`、`min_old_class_acc`、`seen_new_acc`、`H_old_new`、`average_forgetting`、`old_adaptation_gain`、逐旧/新类结果及old→new、new→old、new→new混淆。
 - 本轮1个receiver、1个开发seed、K10、5个seen-new及support-held诊断不足以形成正式结论。正路线只能在K10 support上锁定唯一candidate/超参数后，进入5个target receiver×至少5个独立确认seed×3个互斥LEO_weak场景×嵌套真实5/10/20 seen-new TX，并补齐K1/K5/K10/K20遗忘锚点；query只能用于一次性测试和隔离评分，不得反向调参。
 
+## N607完成结果
+
+- 启动命令：`D29_GPU=0 bash code/scripts/launch_d29_pcsr_support_20260718.sh`；PID `3666336`；GPU0；运行18.8302s；状态`DEVELOPMENT_SUPPORT_ONLY_COMPLETE`；90/90行完整。
+- 最终选择：`D25-C0-DIM-CONCAT`，`selected_positive_route=false`。D29不是full-K10门失败后的回退，而是在support-held候选筛选中未形成正路线。
+- 三个D29候选在外层15折和full-K10三个场景中全部禁用：D29-A/B/C均为`0/15`外层启用、`0/3`full-K10启用，全部`T/A=0`，与D28-A/D27-B逐fold指标完全一致。
+- PCSR试验层统计解释了失败原因：每个候选209个安全试验均无新类严格增益；A/B/C分别有22/26/35个新类严格增益试验，但全部违反旧类安全。增大ρ只增加不安全试验，没有产生一个“安全且增益”的释放。
+
+|候选|注册前旧类|注册后旧类|seen-new|H|遗忘|joint floor|结论|
+|---|---:|---:|---:|---:|---:|---:|---|
+|Z0|71.11%|48.33%|52.67%|48.97%|22.78%|0.00%|identity support对照|
+|B3|86.67%|73.33%|73.33%|72.65%|13.33%|23.33%|性能诊断对照，不可选择|
+|C0|71.67%|50.56%|54.00%|50.35%|21.11%|0.00%|最终fallback|
+|D29-A/B/C|80.00%|67.22%|47.33%|52.82%|12.78%|3.33%|PCSR全禁用，等于D27-B|
+
+|D29场景|注册前旧类|注册后旧类|seen-new|H|遗忘|旧类floor|新类floor|
+|---|---:|---:|---:|---:|---:|---:|---:|
+|leo_clear_weak|81.67%|75.00%|52.00%|58.12%|6.67%|50.00%|20.00%|
+|leo_low_elev_weak|75.00%|61.67%|54.00%|56.31%|13.33%|40.00%|0.00%|
+|leo_rain_weak|83.33%|65.00%|36.00%|44.03%|18.33%|50.00%|0.00%|
+
+|角色|TX/短handle|Z0|B3|C0|D29|
+|---|---|---:|---:|---:|---:|
+|old|20-15|86.67%|90.00%|86.67%|80.00%|
+|old|8-20|90.00%|90.00%|90.00%|86.67%|
+|old|14-10|13.33%|70.00%|13.33%|56.67%|
+|old|14-7|66.67%|66.67%|70.00%|66.67%|
+|old|6-15|16.67%|60.00%|23.33%|63.33%|
+|old|20-19|16.67%|63.33%|20.00%|50.00%|
+|new|09f8|3.33%|40.00%|3.33%|13.33%|
+|new|1c2a|100.00%|86.67%|100.00%|76.67%|
+|new|b8fb|66.67%|76.67%|73.33%|63.33%|
+|new|d3af|86.67%|86.67%|86.67%|66.67%|
+|new|f608|6.67%|76.67%|6.67%|16.67%|
+
+### 稳定性与资源
+
+- 完整读取90行`training_log.jsonl`，D29三候选共1,215条训练trace；D27、D28、D29三轮全部loss/gradient/几何数值有限，无NaN、Inf、OOM、Killed、Traceback或Exception。D29的失败不是优化发散，而是support拟合与外层泛化/安全边界冲突。
+- D29组合资源：2,016活动参数、25epoch/optimizer step、3,456 head MAC/query、无dense query图、峰值CUDA显存0B；PCSR禁用时额外predictor state仍按结构计72B，组合持久状态30,932～31,004B。
+- 完整适配+注册估算为10,889,280 MAC；相对identity-only单qKNN的17,600 MAC/query，D29 head为19.636%，减少80.364%；组合状态相对35,200B identity FP16 sample-state为87.875%～88.080%，减少约11.92%～12.13%。
+- D29-A/B/C平均batch1 head latency约0.163～0.174ms，P95约0.171～0.202ms；release禁用时额外ramp算术为0。该时延覆盖D27 score+PCSR apply，但不代表完整backbone/FFT端到端时延。
+- 当前只有identity的估算MAC/FP16状态，没有同硬件identity实测时延和端到端RAM/显存；D29的head CUDA 0B也不覆盖backbone、FFT96和RF32。因此完整Pareto证据仍未满足，不能把上述比例扩展成端到端结论。
+- support capsule虽授权并验证13,608B int8 active payload，但D29 evaluator/predictor未把该component传入D27-B或PCSR计算；30.93～31.00KB组合状态也未单列int8。故本轮不能声称“int8原型辅助PCSR”，下一轮必须让授权int8旧类锚真实进入旧类适应路径并单列其状态/收益。
+- 对identity-only单qKNN，D29 head的MAC和状态比具有轻量优势；但由于准确率与floor明显不达标，不能进入性能-资源Pareto正前沿。
+
+### 协议与artifact
+
+- `support_audit.json`确认每场景110个唯一support物理样本、每样本单一LEO_weak观测、`support_view_count=1`、`support_row_multiplicity=1`、`derived_support_rows=0`、`additional_leo_overlay_count=0`；三场景的physical ID、parent IQ hash和overlay token两两无交集。
+- query/clean/source精确字段全部满足support-only边界：query opened/rows/labels均为0，query role/true batch count/quota/global assignment均为false，clean dataset/cache/control-flow不可达，source六项访问均为false。
+- Phase1组件仍为`UNVERIFIED_UNDER_CURRENT_PROTOCOL`，且三个正式claim/authority字段均为false；本节全部数字只属于development support-held机制诊断。
+
+|artifact|SHA256|
+|---|---|
+|`training_log.jsonl`|`3bb2ba276af46dd1b888ee378faa6273f07c20699e640a6e510f0b1b2af8a869`|
+|`selection.json`|`a9912ef4c2966693b625afac101c104ff86a0da3763c9ce87076d5c05bbc3ee1`|
+|`support_audit.json`|`9942a4f2f424060d83ec2887e164eb910241f322aeca8edcb2fcdfb436561dea`|
+|`resource_audit.json`|`3ffe05126a6431263147bab526f8d05bbafc288858f5d2c8751ca03015abc64b`|
+|`geometry_audit.json`|`20e52e3d18fea745dd0cdbb332a425f173d25e45bb3b2970a99f7ac690bd3ed7`|
+|`RECEIPT.json`|`9decfd46d0872a05ba40a3f99f2bb4549b0008e9ebe623493e37c6517b725791`|
+
+远端任务结束后已确认`NO_SSH_PROCESS`和`NO_ESTABLISHED_N607_TCP22`。
+
 ## D29完成后三轮retrospective门
 
 任何D30启动前，必须在本报告中记录以下检查结果：
@@ -104,3 +165,26 @@ phase2_pretrained_artifact_policy=sealed_phase1_deployment_bundle_with_optional_
 - 确认下一候选仍对域适应和新类注册同等留证，包含同run注册前/后、`old_acc`、`min_old_class_acc`、`seen_new_acc`、`H_old_new`、逐类结果和forgetting。
 - 核对组合参数、epoch、optimizer step、状态、MAC、端到端时延、峰值RAM/显存及identity-only单qKNN Pareto。
 - 记录经验、拒绝路线、剩余假设和下一轮决定；若D29为正，先共同封存checkpoint+int8并重建正式method lock；若为负，直接淘汰。D30不得利用任何query标签或正式确认结果继续调参。
+
+## D27–D29三轮retrospective（已完成）
+
+- 已重读活动目标和`项目.md`的Stage2-B/C、LEO_weak-only、单IQ单overlay、query隔离、资源与K锚点条款；已重建并搜索项目conversation index。索引未返回比当前D27–D29本地报告更直接的新决定，因此以当前Git报告与完整artifact为准。
+- 已完整读取D27、D28、D29三轮各90行training log，而不是只看最佳行或日志尾部。D27/D28/D29分别有1,140/1,215/1,215条训练trace，三轮均无非有限值。
+- D27结论：逐新类静态bias和10-step新类fit能把遗忘压到12.78%，但seen-new只有47.33%；15-step不再改善新类，反而进一步损伤旧类。继续加step不是主要解法。
+- D28结论：E5可分辨新旧support，但对所有new列共同平移无法改变new-new排序；任一能改善new的λ都会明显损伤old，因此15/15折和full-K10均关闭。
+- D29结论：逐类单侧boost具有new-new自由度，但仍会提高逐样本`max_new`；所有严格新类增益均触发至少一个旧support安全冲突，ρ从0.25增加到1.0只增加不安全试验。继续放大ρ或扫描更多相同形式宽度属于同机制重复，予以淘汰。
+- floor审计：旧类瓶颈为20-19/14-10，新类瓶颈为09f8/f608；low elevation的09f8和rain的f608均为0%。下一轮必须显式保留逐旧/新类floor和场景floor，不能只优化平均H。
+- 协议复核PASS：三轮都使用同一固定LEO_weak IQ的z160+FFT96+RF32表征，无clean/source、无query truth、无角色Oracle、无类别配额；但当前仍只是support-only且组件为`UNVERIFIED_UNDER_CURRENT_PROTOCOL`。
+- 域适应与注册同等性：D27-B继续作为target-old适应底座；任何下一层注册机制都必须同run报告注册前old-only和注册后all-class、old/new/H/逐类floor/forgetting，不能只报告新类校准。
+
+### D30下一假设
+
+不放松旧类保护，改为“max-new包络保持”的逐新类校准。对support-only OOF学到类偏移`b_c`后，逐样本计算`u_c=s_c+b_c`，再令：
+
+```text
+s'_c = u_c - max_d(u_d) + max_d(s_d), c in Y_new
+```
+
+该变换允许改变new-new排序，但严格保持每个样本的`max_new`不变；old score也不变，因此old-vs-new包络、旧类预测和遗忘在数值上保持，而不再像D28/D29那样以提高`max_new`换取新类收益。它只能修复new-new混淆，不能修复new→old错误；若support-held OOF无增益则原子旁路，并据此转向class-balanced/CVaR表征学习，而不是放松query权限或继续扫描ρ。D30仍采用K=1旁路、K≥5 shot-rank OOF、逐样本全注册类argmax、无query拟合，并增加old→new/new→old/new→new support-held混淆审计。
+
+retrospective门已满足，D30可以进入实现，但不得用任何query标签、正式确认矩阵或K1/K5/K20测试结果调参。
