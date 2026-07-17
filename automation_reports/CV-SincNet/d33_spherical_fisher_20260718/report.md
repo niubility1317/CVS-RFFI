@@ -55,6 +55,8 @@ K=1不存在独立类内半径证据，所有类统一`r=1`，评分严格退化
 - 计划远端cwd：`/home/szu2070436088/2510044040/CV-SincNet`；Python：`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`；GPU由preflight后记录。
 - 计划输出：`runs/d33_spherical_fisher_20260718/output/support_screen_v1`；日志：`logs/d33_spherical_fisher_20260718/support_screen_v1.log`。
 
+2026-07-18 07:48 CST直接preflight通过：host `dell-DSS8440`，项目根可见，8×RTX 3090均0%利用率且约10MiB显存；live inventory显示无active training process、无GPU compute context。检查后本地`ssh.exe`和TCP22 ESTABLISHED均为0。按每GPU最多2个训练进程规则，GPU0可用于本轮单个轻量support screen。
+
 ## 完成后回填
 
 待回填完整105行训练日志、逐候选/场景/类结果、独立held矩阵、support合法清单与哈希、资源审计、selection、RECEIPT、远端命令/PID/GPU、artifact SHA、异常与下一轮判断。
