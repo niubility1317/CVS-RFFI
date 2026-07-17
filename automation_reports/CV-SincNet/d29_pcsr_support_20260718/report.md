@@ -74,6 +74,7 @@ phase2_pretrained_artifact_policy=sealed_phase1_deployment_bundle_with_optional_
 - Git版本：`c179907c feat(stage2): add D29 classwise safe release screen`。
 - 计划同步映射：`code/scripts/run_d25_support_only_concat.py`→同名远端路径；`code/cvsrffi/stage2_classwise_safe_release.py`→同名远端路径；`code/scripts/launch_d29_pcsr_support_20260718.sh`→同名远端路径。远端已有D27/D25/D24/CIAF/control/diag文件仅做SHA只读验证，不覆盖。
 - 计划服务器命令：`D29_GPU=0 bash code/scripts/launch_d29_pcsr_support_20260718.sh`；Python环境`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`；PID、log、output分别为`runs/d29_pcsr_20260718/support_screen_v1.pid`、`logs/d29_pcsr_20260718/support_screen_v1.log`、`runs/d29_pcsr_20260718/output/support_screen_v1`。
+- 同步后远端验证PASS：runner/D29 core/launcher SHA分别为`9916f508...cba0`、`68633a72...eae`、`3c3026b6...66a`；D27 core与保留的diag operator分别为`553d6361...f1ff`、`14ec9193...1ca`；远端`py_compile`、`bash -n`通过，`OUTPUT_ABSENT`。
 
 ## 本地实现与验证
 
