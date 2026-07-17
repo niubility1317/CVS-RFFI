@@ -6,7 +6,7 @@
 - 时间：2026-07-18；operator：Codex。
 - 阶段：正式Stage2-B/C之前的development support-only筛选。
 - 探索节奏：D31是D27-D29强制回顾后的第2轮；D30为回顾后第1轮，因此本轮结束后仍可执行D32，第3轮完成后必须在D33前再次回顾。
-- 当前状态：`RUNNING_ON_N607`。
+- 当前状态：`V1_COMPLETE_V2_EVIDENCE_REPAIR_PENDING_LAUNCH`。
 - 目标：把D30确认有效的B3辅助主导拼接几何压入活动上限，并补上其关键机制——Stage2-C使用全部old+new注册support，让旧support成为新类权重的负证据；同时用新类CVaR优化floor，用旧类margin降低注册后遗忘。
 - 比较对象：同run内`Z0`、超步数诊断`B3`、`C0`与D31-A/B/C；同一候选必须联合报告注册前旧类、注册后旧类、seen-new、H、逐类floor和遗忘。
 
@@ -82,4 +82,6 @@
 
 ## 结果与决定
 
-待N607任务完成后回填。当前不得声称D31提升性能、达到正式阈值或形成可部署正路线。
+`support_screen_v1`已在20.47秒内完成90/90行，但审计发现`selection.json`因D31分支遗漏而把C0 fallback误写成`selected_positive_route=true`，同一run的RECEIPT正确写false；资源表还漏计Stage2-B MAC且缺batch-1 latency。原v1 artifact保持不可变并标记口径缺陷，不用于正路线声明。
+
+已在提交`7aef0776 fix(stage2): repair D31 selection and resource audit`中统一selection/receipt正路线集合、补入Stage2-B/总适配MAC与batch-1 latency；launcher改为唯一`support_screen_v2`输出，准备低成本证据修复复跑。v1初步联合指标表明D31-B为85.56/67.78/72.00/H69.06/遗忘17.78pp，D31-C为85.56/76.11/60.67/H66.80/遗忘9.44pp，均未超过B3联合性能且不达正式目标。
