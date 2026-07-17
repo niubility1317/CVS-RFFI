@@ -216,6 +216,12 @@ def test_d26_candidate_lock_matrix_and_historical_sets_are_stable() -> None:
         d31_candidates, runner.CANDIDATE_SET_D31_V1
     )
     assert d31_lock["schema"] == "cvs.phase2.d25.candidate_lock.v9"
+    assert runner._positive_route_candidates(runner.CANDIDATE_SET_D31_V1) == (
+        runner.D31_CANDIDATES
+    )
+    assert runner.D25_C0 not in runner._positive_route_candidates(
+        runner.CANDIDATE_SET_D31_V1
+    )
     assert "d31_all_registered_suffix_core_sha256" in d31_lock["source_closure"]
     assert all(
         row["family"] == "d31_all_registered_suffix_with_dali"
@@ -616,6 +622,12 @@ def test_full_d31_resource_is_bounded_and_keeps_bundle_residency_explicit() -> N
         config=config,
     )
     assert resource["total_optimizer_steps"] == 30
+    assert resource["estimated_adaptation_macs"] > (
+        resource["estimated_stage2c_adaptation_macs"]
+    )
+    assert resource["batch1_head_latency_mean_ms"] > 0.0
+    assert resource["batch1_head_latency_p95_ms"] > 0.0
+    assert resource["batch1_head_latency_sample_count"] == len(rows["labels"])
     assert resource["persistent_state_cap_pass"] is True
     assert resource["full_bundle_resident_combined_state_bytes"] > (
         resource["projected_slim_active_predictor_state_bytes"]

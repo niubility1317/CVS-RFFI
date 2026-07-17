@@ -243,6 +243,11 @@ def test_twenty_new_classes_stay_under_peak_2016_and_protocol_surface_is_closed(
     )
     assert audit["stage2c_total_new_weight_state_scalars"] == 20 * DIM
     assert audit["stage2c_optimizer_steps"] == 10
+    assert audit["estimated_adaptation_macs"] == (
+        audit["estimated_stage2b_adaptation_macs"]
+        + audit["estimated_stage2c_adaptation_macs"]
+    )
+    assert audit["estimated_stage2b_adaptation_macs"] > 0
     assert audit["persistent_state_cap_pass"] is True
     assert audit["persistent_state_bytes"] == audit["deployable_predictor_state_bytes"]
     assert audit["support_gate_external_evidence_bytes"] > 0

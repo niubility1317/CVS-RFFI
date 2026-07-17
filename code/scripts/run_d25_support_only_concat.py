@@ -147,6 +147,26 @@ CORE_COMMIT = "f349850dbd94841ae2ef8105ac76bd7a9912c128"
 D26_CORE_GIT_COMMIT = "67b9d2275782339e0ac07800652b997adbcca534"
 
 
+def _positive_route_candidates(candidate_set: str) -> tuple[str, ...]:
+    """Single source of truth for a candidate set's promotable route IDs."""
+
+    if candidate_set == CANDIDATE_SET_C3_V1:
+        return C3_CANDIDATES
+    if candidate_set == CANDIDATE_SET_D27_V1:
+        return D27_CANDIDATES
+    if candidate_set == CANDIDATE_SET_D28_V1:
+        return D28_CANDIDATES
+    if candidate_set == CANDIDATE_SET_D29_V1:
+        return D29_CANDIDATES
+    if candidate_set == CANDIDATE_SET_D30_V1:
+        return D30_CANDIDATES
+    if candidate_set == CANDIDATE_SET_D31_V1:
+        return D31_CANDIDATES
+    if candidate_set in (CANDIDATE_SET_D26_V1, CANDIDATE_SET_D26_V2):
+        return D26_CANDIDATES
+    return D25_CANDIDATES
+
+
 class D25RunnerError(ValueError):
     """Raised when the D25 support-only screen must fail closed."""
 
@@ -3988,6 +4008,18 @@ def _full_d31_state_audit(
         float(after_metric["class_floor_accuracy"]) + 1.0e-12
         >= float(before_metric["class_floor_accuracy"])
     )
+    score_elapsed_ms: list[float] = []
+    for index, feature in enumerate(features):
+        score_started = time.perf_counter()
+        row_raw = score_all_d31(after, feature[None, :])
+        if fit["dali_enabled"]:
+            _d30_rerank_matrix(
+                fit["dali_state"],
+                row_raw,
+                z_id160[index : index + 1],
+                direct_logits[index : index + 1],
+            )
+        score_elapsed_ms.append((time.perf_counter() - score_started) * 1000.0)
     base_resource = dict(after.resource_audit())
     accounting = _d31_dali_state_accounting(fit["dali_state"])
     dali_resource = accounting["dali_resource"]
@@ -4039,6 +4071,13 @@ def _full_d31_state_audit(
         "old_support_floor_non_degradation_pass": floor_pass,
         "old_support_non_degradation_pass": bool(classwise_pass and floor_pass),
         "support_adaptation_and_registration_elapsed_ms": fit_elapsed_ms,
+        "batch1_head_latency_mean_ms": float(np.mean(score_elapsed_ms)),
+        "batch1_head_latency_p95_ms": float(
+            np.quantile(np.asarray(score_elapsed_ms, dtype=np.float64), 0.95)
+        ),
+        "batch1_head_latency_sample_count": len(score_elapsed_ms),
+        "head_peak_cuda_memory_bytes": 0,
+        "head_runtime": "numpy_cpu_fp32",
         "complete_loss_trace": training_trace,
         "feature_geometry": "b3_auxiliary_dominant_z160_fft96_rf32_v1",
         "query_rows_used_for_fit": 0,
@@ -4704,21 +4743,7 @@ def run(
         "pre_full_k10_selected_candidate_id": pre_full_k10_selected_id,
         "full_k10_fallback_reason": full_k10_fallback_reason,
         "selected_positive_route": selected_id
-        in (
-            C3_CANDIDATES
-            if candidate_set == CANDIDATE_SET_C3_V1
-            else D27_CANDIDATES
-            if candidate_set == CANDIDATE_SET_D27_V1
-            else D28_CANDIDATES
-            if candidate_set == CANDIDATE_SET_D28_V1
-            else D29_CANDIDATES
-            if candidate_set == CANDIDATE_SET_D29_V1
-            else D30_CANDIDATES
-            if candidate_set == CANDIDATE_SET_D30_V1
-            else D26_CANDIDATES
-            if candidate_set in (CANDIDATE_SET_D26_V1, CANDIDATE_SET_D26_V2)
-            else D25_CANDIDATES
-        ),
+        in _positive_route_candidates(candidate_set),
         "fallback_to_identity": selected_id == IDENTITY_CANDIDATE,
         "selection_baseline": (
             D25_C0
@@ -4858,23 +4883,7 @@ def run(
         "pre_full_k10_selected_candidate_id": pre_full_k10_selected_id,
         "full_k10_fallback_reason": full_k10_fallback_reason,
         "selected_positive_route": selected_id
-        in (
-            C3_CANDIDATES
-            if candidate_set == CANDIDATE_SET_C3_V1
-            else D27_CANDIDATES
-            if candidate_set == CANDIDATE_SET_D27_V1
-            else D28_CANDIDATES
-            if candidate_set == CANDIDATE_SET_D28_V1
-            else D29_CANDIDATES
-            if candidate_set == CANDIDATE_SET_D29_V1
-            else D30_CANDIDATES
-            if candidate_set == CANDIDATE_SET_D30_V1
-            else D31_CANDIDATES
-            if candidate_set == CANDIDATE_SET_D31_V1
-            else D26_CANDIDATES
-            if candidate_set in (CANDIDATE_SET_D26_V1, CANDIDATE_SET_D26_V2)
-            else D25_CANDIDATES
-        ),
+        in _positive_route_candidates(candidate_set),
         "candidate_set": candidate_set,
         "formal_launch_authority": False,
         "formal_metric_claim_allowed": False,

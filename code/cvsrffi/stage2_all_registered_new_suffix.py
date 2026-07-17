@@ -331,7 +331,18 @@ class D31AllRegisteredSuffixState:
         total_optimizer_steps = (
             int(self.stage2b_optimizer_steps) + int(self.stage2c_optimizer_steps)
         )
+        old_support_rows = int(
+            np.sum(
+                self.support_count_by_class[:old_count], dtype=np.int64
+            )
+        )
         support_rows = int(np.sum(self.support_count_by_class, dtype=np.int64))
+        stage2b_macs = (
+            3
+            * int(self.stage2b_optimizer_steps)
+            * old_support_rows
+            * (FEATURE_DIM + old_count * FEATURE_DIM)
+        )
         stage2c_macs = (
             3
             * int(self.stage2c_optimizer_steps)
@@ -377,6 +388,8 @@ class D31AllRegisteredSuffixState:
             "estimated_macs_per_query": int(
                 FEATURE_DIM + len(self.classes) * FEATURE_DIM
             ),
+            "estimated_adaptation_macs": int(stage2b_macs + stage2c_macs),
+            "estimated_stage2b_adaptation_macs": int(stage2b_macs),
             "estimated_stage2c_adaptation_macs": int(stage2c_macs),
             "adaptation_mac_scope": (
                 "all_registered_support_forward_backward_per_chunked_new_suffix_step"
