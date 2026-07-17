@@ -21,7 +21,11 @@ from cvsrffi.somph_cache_build_matrix import (  # noqa: E402
 )
 
 
-FORBIDDEN_MEMBER_TOKENS = ("clean", "raw", "source")
+FORBIDDEN_SIGNAL_MEMBERS = {
+    f"{prefix}_{kind}.npy"
+    for prefix in ("clean", "raw", "source")
+    for kind in ("iq", "features", "logits", "prototypes")
+}
 
 
 def _sha256(path: Path) -> str:
@@ -78,12 +82,14 @@ def main() -> int:
             cache_path = cache_root / cache_set["cache_npz_by_scenario"][scenario]
             with zipfile.ZipFile(cache_path, "r") as archive:
                 member_names = archive.namelist()
-            if any(
-                token in member.lower()
-                for member in member_names
-                for token in FORBIDDEN_MEMBER_TOKENS
-            ):
-                raise ValueError(f"forbidden clean/raw/source member in {cell_id}")
+            forbidden = sorted(
+                set(member.lower() for member in member_names)
+                & FORBIDDEN_SIGNAL_MEMBERS
+            )
+            if forbidden:
+                raise ValueError(
+                    f"forbidden clean/raw/source signal member in {cell_id}: {forbidden}"
+                )
             paths.append((scenario, cache_path))
         for kind, path in paths:
             hashes.append(
@@ -125,7 +131,7 @@ def main() -> int:
         "exact_rows_per_role_tx_receiver": sorted(
             {int(audit["exact_rows_per_role_tx_receiver"]) for audit in audits}
         ),
-        "forbidden_clean_raw_source_npz_member_count": 0,
+        "forbidden_clean_raw_source_signal_member_count": 0,
         "artifact_file_count": len(hashes),
         "formal_metric_claim_allowed": False,
     }
