@@ -68,6 +68,12 @@ from cvsrffi.stage2_support_evidence_gate import (  # noqa: E402
     fit_support_evidence_gate,
     predict_with_support_evidence_gate,
 )
+from cvsrffi.stage2_classwise_safe_release import (  # noqa: E402
+    ClasswiseSafeReleaseConfig,
+    apply_classwise_safe_release,
+    fit_classwise_safe_release,
+    predict_with_classwise_safe_release,
+)
 
 
 MODE = legacy.MODE
@@ -85,6 +91,7 @@ CANDIDATE_SET_D26_V1 = "d26_v1"
 CANDIDATE_SET_D26_V2 = "d26_v2_strictbias"
 CANDIDATE_SET_D27_V1 = "d27_v1_perclassbias"
 CANDIDATE_SET_D28_V1 = "d28_v1_evidence_gate"
+CANDIDATE_SET_D29_V1 = "d29_v1_pcsr"
 C3_A = "D25-C3A-DIAG-CE-CLOSEDREG"
 C3_B = "D25-C3B-DIAG-CE-NEWFIT"
 C3_C = "D25-C3C-DIAG-STRONGFLOOR-NEWFIT"
@@ -101,6 +108,10 @@ D28_A = "D28-A-D27B-NOGATE"
 D28_B = "D28-B-E5-RIDGE-D1"
 D28_C = "D28-C-E5-RIDGE-D2"
 D28_CANDIDATES = (D28_A, D28_B, D28_C)
+D29_A = "D29-A-PCSR-RHO25-OVERALL"
+D29_B = "D29-B-PCSR-RHO50-BALANCE"
+D29_C = "D29-C-PCSR-RHO100-FLOOR"
+D29_CANDIDATES = (D29_A, D29_B, D29_C)
 CORE_COMMIT = "f349850dbd94841ae2ef8105ac76bd7a9912c128"
 D26_CORE_GIT_COMMIT = "67b9d2275782339e0ac07800652b997adbcca534"
 
@@ -126,6 +137,25 @@ class D28CandidateConfig:
             != "per_new_class_pre_registration_old_only"
         ):
             raise D25RunnerError("D28 must remain attached to locked D27-B")
+
+
+@dataclass(frozen=True)
+class D29CandidateConfig:
+    """Method-locked D27-B head plus D29 per-class safe release."""
+
+    base: D26CompactDiagConfig
+    release: ClasswiseSafeReleaseConfig
+
+    def __post_init__(self) -> None:
+        self.base.validate()
+        self.release.validate()
+        if (
+            int(self.base.stage2b_steps) != 15
+            or int(self.base.stage2c_steps) != 10
+            or self.base.bias_guard_mode
+            != "per_new_class_pre_registration_old_only"
+        ):
+            raise D25RunnerError("D29 must remain attached to locked D27-B")
 
 
 def _canonical_bytes(value: Any) -> bytes:
@@ -217,6 +247,38 @@ def preregistered_candidates(
             D28_C: D28CandidateConfig(
                 base=d27b,
                 gate=SupportEvidenceGateConfig(alpha=1.0, delta=2.0),
+            ),
+        }
+    if candidate_set == CANDIDATE_SET_D29_V1:
+        d27b = D26CompactDiagConfig(
+            stage2b_steps=15,
+            stage2c_steps=10,
+            bias_guard_mode="per_new_class_pre_registration_old_only",
+        )
+        return {
+            IDENTITY_CANDIDATE: controls[IDENTITY_CANDIDATE],
+            DIAG_CANDIDATE: controls[DIAG_CANDIDATE],
+            D25_C0: historical[D25_C0],
+            D29_A: D29CandidateConfig(
+                base=d27b,
+                release=ClasswiseSafeReleaseConfig(
+                    safety_budget=0.25,
+                    objective="overall_first",
+                ),
+            ),
+            D29_B: D29CandidateConfig(
+                base=d27b,
+                release=ClasswiseSafeReleaseConfig(
+                    safety_budget=0.50,
+                    objective="balance_first",
+                ),
+            ),
+            D29_C: D29CandidateConfig(
+                base=d27b,
+                release=ClasswiseSafeReleaseConfig(
+                    safety_budget=1.00,
+                    objective="floor_first",
+                ),
             ),
         }
     if candidate_set in (CANDIDATE_SET_D26_V1, CANDIDATE_SET_D26_V2):
@@ -323,9 +385,46 @@ def _candidate_lock(
         source_closure["d28_support_evidence_gate_core_sha256"] = _sha256_file(
             CODE_ROOT / "cvsrffi" / "stage2_support_evidence_gate.py"
         )
+    if any(isinstance(value, D29CandidateConfig) for value in candidates.values()):
+        source_closure["d26_compact_diag_core_sha256"] = _sha256_file(
+            CODE_ROOT / "cvsrffi" / "stage2_multimodal_compact_diag.py"
+        )
+        source_closure["d29_classwise_safe_release_core_sha256"] = _sha256_file(
+            CODE_ROOT / "cvsrffi" / "stage2_classwise_safe_release.py"
+        )
     rows: list[dict[str, Any]] = []
     for candidate_id, config in candidates.items():
-        if isinstance(config, D28CandidateConfig):
+        if isinstance(config, D29CandidateConfig):
+            config_row = {
+                "base": {
+                    "stage2b_steps": int(config.base.stage2b_steps),
+                    "stage2c_steps": int(config.base.stage2c_steps),
+                    "learning_rate": float(config.base.learning_rate),
+                    "weight_decay": float(config.base.weight_decay),
+                    "prototype_anchor_weight": float(
+                        config.base.prototype_anchor_weight
+                    ),
+                    "diagonal_proximity_weight": float(
+                        config.base.diagonal_proximity_weight
+                    ),
+                    "bias_guard_mode": str(config.base.bias_guard_mode),
+                    "new_group_bias_grid": list(
+                        config.base.new_group_bias_grid
+                    ),
+                    "new_class_bias_offsets": list(
+                        config.base.new_class_bias_offsets
+                    ),
+                },
+                "release": {
+                    "safety_budget": float(config.release.safety_budget),
+                    "objective": str(config.release.objective),
+                    "support_only": True,
+                    "row_local_inference": True,
+                    "coordinate_passes": int(config.release.coordinate_passes),
+                },
+            }
+            family = "d29_per_class_safe_release"
+        elif isinstance(config, D28CandidateConfig):
             config_row = {
                 "base": {
                     "stage2b_steps": int(config.base.stage2b_steps),
@@ -406,6 +505,8 @@ def _candidate_lock(
                     if candidate_set == CANDIDATE_SET_D27_V1
                     else D28_CANDIDATES
                     if candidate_set == CANDIDATE_SET_D28_V1
+                    else D29_CANDIDATES
+                    if candidate_set == CANDIDATE_SET_D29_V1
                     else D26_CANDIDATES
                     if candidate_set in (CANDIDATE_SET_D26_V1, CANDIDATE_SET_D26_V2)
                     else D25_CANDIDATES
@@ -424,6 +525,8 @@ def _candidate_lock(
             if candidate_set == CANDIDATE_SET_D27_V1
             else "cvs.phase2.d25.candidate_lock.v6"
             if candidate_set == CANDIDATE_SET_D28_V1
+            else "cvs.phase2.d25.candidate_lock.v7"
+            if candidate_set == CANDIDATE_SET_D29_V1
             else "cvs.phase2.d25.candidate_lock.v1"
         ),
         "core_commit": CORE_COMMIT,
@@ -438,6 +541,7 @@ def _candidate_lock(
                 CANDIDATE_SET_D26_V2,
                 CANDIDATE_SET_D27_V1,
                 CANDIDATE_SET_D28_V1,
+                CANDIDATE_SET_D29_V1,
             )
             else IDENTITY_CANDIDATE
         ),
@@ -450,6 +554,7 @@ def _candidate_lock(
         CANDIDATE_SET_D26_V2,
         CANDIDATE_SET_D27_V1,
         CANDIDATE_SET_D28_V1,
+        CANDIDATE_SET_D29_V1,
     ):
         lock["candidate_set"] = candidate_set
     if candidate_set in (
@@ -457,11 +562,41 @@ def _candidate_lock(
         CANDIDATE_SET_D26_V2,
         CANDIDATE_SET_D27_V1,
         CANDIDATE_SET_D28_V1,
+        CANDIDATE_SET_D29_V1,
     ):
         # CORE_COMMIT above identifies the sealed Phase1 model lineage.  Keep
         # the D26 implementation commit separate so the receipt cannot imply
         # that the new adapter was already present in that older model commit.
         lock["d26_core_git_commit"] = D26_CORE_GIT_COMMIT
+    if candidate_set == CANDIDATE_SET_D29_V1:
+        lock["protocol_contract"] = {
+            "screen_authority": "PRE_FORMAL_SUPPORT_ONLY_INT8_SCREEN",
+            "phase2_query_decision_policy": "per_sample_all_registered_classes",
+            "phase2_query_role_oracle_access": False,
+            "phase2_query_true_batch_class_count_access": False,
+            "phase2_query_class_quota_access": False,
+            "phase2_query_batch_global_assignment": False,
+            "phase2_sample_view_policy": "leo_weak_only_no_clean_access",
+            "clean_sample_access": False,
+            "clean_derived_signal_access": False,
+            "phase2_clean_dataset_reachable": False,
+            "phase2_clean_cache_reachable": False,
+            "phase2_clean_control_flow_reachable": False,
+            "phase2_source_sample_access": False,
+            "phase2_source_cache_access": False,
+            "phase2_source_label_access": False,
+            "phase2_unapproved_source_derived_signal_access": False,
+            "phase2_source_replay": False,
+            "phase2_external_source_adapter_access": False,
+            "phase2_pretrained_artifact_policy": (
+                "sealed_phase1_deployment_bundle_with_optional_int8_"
+                "domain_class_prototypes_v1"
+            ),
+            "query_opened": False,
+            "formal_launch_authority": False,
+            "formal_metric_claim_allowed": False,
+            "performance_claim_allowed": False,
+        }
     return {**lock, "sha256": hashlib.sha256(_canonical_bytes(lock)).hexdigest()}
 
 
@@ -1291,6 +1426,228 @@ def _evaluate_d28_fold(
     }
 
 
+def _evaluate_d29_fold(
+    rows: Mapping[str, np.ndarray],
+    z_id160: np.ndarray,
+    fft96: np.ndarray,
+    rf32: np.ndarray,
+    *,
+    old_classes: tuple[str, ...],
+    new_classes: tuple[str, ...],
+    held_ranks: tuple[int, int],
+    candidate_id: str,
+    config: D29CandidateConfig,
+) -> dict[str, Any]:
+    """Evaluate D29 using only the outer-fold training support rows."""
+
+    labels = np.asarray(rows["labels"]).astype(str)
+    ranks = np.asarray(rows["ranks"], dtype=np.int64)
+    held = np.isin(ranks, np.asarray(held_ranks, dtype=np.int64))
+    train = ~held
+    old = np.isin(labels, np.asarray(old_classes))
+    new = np.isin(labels, np.asarray(new_classes))
+    all_classes = old_classes + new_classes
+    if (
+        int(np.sum(train & old)) != 8 * len(old_classes)
+        or int(np.sum(train & new)) != 8 * len(new_classes)
+        or int(np.sum(held & old)) != 2 * len(old_classes)
+        or int(np.sum(held & new)) != 2 * len(new_classes)
+    ):
+        raise D25RunnerError("D29 leave-two-out class symmetry drift")
+
+    features = build_concat288(z_id160, fft96, rf32)
+    fit_old_features = features[train & old]
+    fit_old_labels = labels[train & old]
+    before_fit = fit_stage2b_compact_diag(
+        fit_old_features, fit_old_labels, old_classes, config=config.base
+    )
+    before = before_fit.state
+    after_fit = append_stage2c_d26(
+        before,
+        features[train & new],
+        labels[train & new],
+        new_classes,
+        fit_old_features,
+        fit_old_labels,
+    )
+    after = after_fit.state
+    if before.classes != old_classes or after.classes != all_classes:
+        raise D25RunnerError("D29 registered class order drift")
+    if (
+        before.old_lock_sha256 != after.old_lock_sha256
+        or before.log_diag.tobytes() != after.log_diag.tobytes()
+        or before.weights.tobytes()
+        != after.weights[: len(old_classes)].tobytes()
+    ):
+        raise D25RunnerError("D29 base mutated D27 frozen old state")
+
+    train_labels = labels[train]
+    train_ranks = _dense_fold_shot_ranks(
+        train_labels, ranks[train], all_classes
+    )
+    train_scores = score_all_d26(after, features[train])
+    release = fit_classwise_safe_release(
+        train_scores,
+        train_labels,
+        train_ranks,
+        all_classes,
+        len(old_classes),
+        config=config.release,
+    )
+
+    held_old = features[held & old]
+    held_new = features[held & new]
+    before_predictions = predict_all_d26(before, held_old).astype(str).tolist()
+    held_old_raw = score_all_d26(after, held_old)
+    held_new_raw = score_all_d26(after, held_new)
+    held_old_adjusted = apply_classwise_safe_release(release, held_old_raw)
+    held_new_adjusted = apply_classwise_safe_release(release, held_new_raw)
+    if not np.array_equal(
+        held_old_adjusted[:, : len(old_classes)],
+        held_old_raw[:, : len(old_classes)],
+    ):
+        raise D25RunnerError("D29 release changed held old score columns")
+    after_old_predictions = predict_with_classwise_safe_release(
+        release, held_old_raw
+    ).astype(str).tolist()
+    after_new_predictions = predict_with_classwise_safe_release(
+        release, held_new_raw
+    ).astype(str).tolist()
+
+    fit_before_predictions = (
+        predict_all_d26(before, fit_old_features).astype(str).tolist()
+    )
+    fit_old_raw = score_all_d26(after, fit_old_features)
+    fit_old_adjusted = apply_classwise_safe_release(release, fit_old_raw)
+    if not np.array_equal(
+        fit_old_adjusted[:, : len(old_classes)],
+        fit_old_raw[:, : len(old_classes)],
+    ):
+        raise D25RunnerError("D29 release changed fit-old score columns")
+    fit_after_predictions = predict_with_classwise_safe_release(
+        release, fit_old_raw
+    ).astype(str).tolist()
+    fit_before = legacy._metric_block(
+        fit_old_labels, fit_before_predictions, old_classes
+    )
+    fit_after = legacy._metric_block(
+        fit_old_labels, fit_after_predictions, old_classes
+    )
+    tolerance = 1.0e-12
+    fit_classwise_non_degradation = all(
+        float(fit_after["per_class_accuracy"][label]) + tolerance
+        >= float(fit_before["per_class_accuracy"][label])
+        for label in old_classes
+    )
+    fit_floor_non_degradation = (
+        float(fit_after["class_floor_accuracy"]) + tolerance
+        >= float(fit_before["class_floor_accuracy"])
+    )
+    old_support_non_degradation = bool(
+        fit_classwise_non_degradation and fit_floor_non_degradation
+    )
+    before_old = legacy._metric_block(
+        labels[held & old], before_predictions, old_classes
+    )
+    after_old = legacy._metric_block(
+        labels[held & old], after_old_predictions, old_classes
+    )
+    after_new = legacy._metric_block(
+        labels[held & new], after_new_predictions, new_classes
+    )
+    training_trace = list(before_fit.loss_trace) + list(after_fit.loss_trace)
+    release_audit = json.loads(release.audit_json)
+    release_resource = dict(release.resource_audit())
+    base_resource = dict(after.resource_audit())
+    base_state_bytes = int(base_resource["persistent_state_bytes"])
+    base_query_macs = int(base_resource["estimated_macs_per_query"])
+    release_state_bytes = int(
+        release_resource["deployable_predictor_state_bytes"]
+    )
+    release_ops = int(
+        release_resource["estimated_release_scalar_ops_per_query"]
+    )
+    resource = {
+        **base_resource,
+        "schema": "cvs.phase2.d29_combined_resource.v1",
+        "base_d27_resource": base_resource,
+        "release_resource": release_resource,
+        "release_enabled": bool(release.enabled),
+        "release_fit_audit": release_audit,
+        "release_fitted_parameter_count": int(
+            release_resource["fitted_parameter_count"]
+        ),
+        "active_adaptation_parameter_count": int(
+            base_resource["peak_trainable_parameters"]
+            + release_resource["fitted_parameter_count"]
+        ),
+        "persistent_state_bytes": base_state_bytes + release_state_bytes,
+        "external_release_evidence_audit_bytes": int(
+            release_resource["external_evidence_audit_bytes"]
+        ),
+        "persistent_state_cap_pass": (
+            base_state_bytes + release_state_bytes <= 256 * 1024
+        ),
+        "estimated_macs_per_query": base_query_macs,
+        "estimated_row_local_scalar_ops_per_query": release_ops,
+        "old_support_non_degradation_pass": old_support_non_degradation,
+        "old_score_columns_bitwise_unchanged_after_registration": True,
+        "complete_loss_trace": training_trace,
+        "new_group_bias": float(after.new_group_bias),
+        "new_class_biases": _d26_new_class_biases(after),
+        "new_group_bias_support_only_audit": json.loads(after.bias_audit_json),
+        "query_features_used_for_fit": False,
+        "query_labels_used_for_fit": False,
+        "query_role_oracle_access": False,
+        "query_true_batch_class_count_access": False,
+        "query_class_quota_access": False,
+        "query_batch_global_assignment": False,
+        "source_sample_access": False,
+        "clean_sample_access": False,
+    }
+    geometry = _d26_geometry(after)
+    geometry["schema"] = "cvs.phase2.d29_pcsr_geometry.v1"
+    geometry["release_enabled"] = bool(release.enabled)
+    geometry["release_fit_audit"] = release_audit
+    return {
+        "candidate_id": candidate_id,
+        "held_ranks": list(held_ranks),
+        "fit_k_shot": 8,
+        "before_old": before_old,
+        "after_old": after_old,
+        "after_new": after_new,
+        "H_old_new": legacy._harmonic(
+            float(after_old["overall_accuracy"]),
+            float(after_new["overall_accuracy"]),
+        ),
+        "forgetting": float(
+            before_old["overall_accuracy"] - after_old["overall_accuracy"]
+        ),
+        "joint_floor": float(
+            min(
+                float(after_old["class_floor_accuracy"]),
+                float(after_new["class_floor_accuracy"]),
+            )
+        ),
+        "old_score_columns_bitwise_unchanged": True,
+        "old_prefix_sha256_before": before.old_lock_sha256,
+        "old_prefix_sha256_after": after.old_lock_sha256,
+        "fit_old_before_registration": fit_before,
+        "fit_old_after_registration": fit_after,
+        "old_support_classwise_non_degradation": fit_classwise_non_degradation,
+        "old_support_floor_non_degradation": fit_floor_non_degradation,
+        "old_support_non_degradation_pass": old_support_non_degradation,
+        "new_group_bias": float(after.new_group_bias),
+        "new_class_biases": _d26_new_class_biases(after),
+        "new_group_bias_support_only_audit": json.loads(after.bias_audit_json),
+        "release_enabled": bool(release.enabled),
+        "release_fit_audit": release_audit,
+        "training_trace": training_trace,
+        "geometry_summary": geometry,
+        "resource": resource,
+    }
+
+
 def _fold_guard(row: Mapping[str, Any], baseline: Mapping[str, Any]) -> bool:
     tolerance = 1.0e-12
     old_classwise = all(
@@ -1541,7 +1898,9 @@ def _select_d26_candidate(
             **aggregate,
             "candidate_id": candidate_id,
             "family": (
-                "d28_support_evidence_gate"
+                "d29_per_class_safe_release"
+                if candidate_id in D29_CANDIDATES
+                else "d28_support_evidence_gate"
                 if candidate_id in D28_CANDIDATES
                 else "d27_per_new_class_bias"
                 if candidate_id in D27_CANDIDATES
@@ -2179,6 +2538,174 @@ def _full_d28_state_audit(
     return resource, geometry
 
 
+def _full_d29_state_audit(
+    rows: Mapping[str, np.ndarray],
+    z_id160: np.ndarray,
+    fft96: np.ndarray,
+    rf32: np.ndarray,
+    *,
+    old_classes: tuple[str, ...],
+    new_classes: tuple[str, ...],
+    config: D29CandidateConfig,
+) -> tuple[dict[str, Any], dict[str, Any]]:
+    labels = np.asarray(rows["labels"]).astype(str)
+    ranks = np.asarray(rows["ranks"], dtype=np.int64)
+    old = np.isin(labels, np.asarray(old_classes))
+    new = np.isin(labels, np.asarray(new_classes))
+    all_classes = old_classes + new_classes
+    features = build_concat288(z_id160, fft96, rf32)
+    fit_started = time.perf_counter()
+    before_fit = fit_stage2b_compact_diag(
+        features[old], labels[old], old_classes, config=config.base
+    )
+    before = before_fit.state
+    after_fit = append_stage2c_d26(
+        before,
+        features[new],
+        labels[new],
+        new_classes,
+        features[old],
+        labels[old],
+    )
+    after = after_fit.state
+    raw_support_scores = score_all_d26(after, features)
+    release = fit_classwise_safe_release(
+        raw_support_scores,
+        labels,
+        _dense_fold_shot_ranks(labels, ranks, all_classes),
+        all_classes,
+        len(old_classes),
+        config=config.release,
+    )
+    fit_elapsed_ms = (time.perf_counter() - fit_started) * 1000.0
+    if (
+        before.old_lock_sha256 != after.old_lock_sha256
+        or before.log_diag.tobytes() != after.log_diag.tobytes()
+        or before.weights.tobytes()
+        != after.weights[: len(old_classes)].tobytes()
+    ):
+        raise D25RunnerError("D29 deployment frozen base state drift")
+
+    before_old_predictions = (
+        predict_all_d26(before, features[old]).astype(str).tolist()
+    )
+    raw_old_scores = score_all_d26(after, features[old])
+    adjusted_old_scores = apply_classwise_safe_release(release, raw_old_scores)
+    if not np.array_equal(
+        adjusted_old_scores[:, : len(old_classes)],
+        raw_old_scores[:, : len(old_classes)],
+    ):
+        raise D25RunnerError("D29 deployment old raw score prefix drift")
+    after_old_predictions = predict_with_classwise_safe_release(
+        release, raw_old_scores
+    ).astype(str).tolist()
+    before_old_metric = legacy._metric_block(
+        labels[old], before_old_predictions, old_classes
+    )
+    after_old_metric = legacy._metric_block(
+        labels[old], after_old_predictions, old_classes
+    )
+    classwise_pass = all(
+        float(after_old_metric["per_class_accuracy"][label]) + 1.0e-12
+        >= float(before_old_metric["per_class_accuracy"][label])
+        for label in old_classes
+    )
+    floor_pass = (
+        float(after_old_metric["class_floor_accuracy"]) + 1.0e-12
+        >= float(before_old_metric["class_floor_accuracy"])
+    )
+    old_support_non_degradation = bool(classwise_pass and floor_pass)
+
+    score_elapsed_ms: list[float] = []
+    for feature in features:
+        score_started = time.perf_counter()
+        raw_score = score_all_d26(after, feature[None, :])
+        apply_classwise_safe_release(release, raw_score)
+        score_elapsed_ms.append((time.perf_counter() - score_started) * 1000.0)
+    base_resource = dict(after.resource_audit())
+    release_resource = dict(release.resource_audit())
+    registered_count = len(all_classes)
+    identity_qknn_macs = registered_count * 10 * 160
+    identity_qknn_fp16_state_bytes = registered_count * 10 * 160 * 2
+    combined_query_macs = int(base_resource["estimated_macs_per_query"])
+    release_scalar_ops = int(
+        release_resource["estimated_release_scalar_ops_per_query"]
+    )
+    combined_state = int(base_resource["persistent_state_bytes"]) + int(
+        release_resource["deployable_predictor_state_bytes"]
+    )
+    resource = {
+        **base_resource,
+        "schema": "cvs.phase2.d29_combined_resource.v1",
+        "base_d27_resource": base_resource,
+        "release_resource": release_resource,
+        "release_enabled": bool(release.enabled),
+        "release_fit_audit": json.loads(release.audit_json),
+        "release_fitted_parameter_count": int(
+            release_resource["fitted_parameter_count"]
+        ),
+        "active_adaptation_parameter_count": int(
+            base_resource["peak_trainable_parameters"]
+            + release_resource["fitted_parameter_count"]
+        ),
+        "persistent_state_bytes": combined_state,
+        "external_release_evidence_audit_bytes": int(
+            release_resource["external_evidence_audit_bytes"]
+        ),
+        "persistent_state_cap_pass": combined_state <= 256 * 1024,
+        "estimated_macs_per_query": combined_query_macs,
+        "estimated_row_local_scalar_ops_per_query": release_scalar_ops,
+        "deployment_k_shot": 10,
+        "registered_class_count": registered_count,
+        "old_prefix_sha256": after.old_lock_sha256,
+        "old_score_columns_bitwise_unchanged_after_registration": True,
+        "old_support_before_registration": before_old_metric,
+        "old_support_after_registration": after_old_metric,
+        "old_support_classwise_non_degradation_pass": classwise_pass,
+        "old_support_floor_non_degradation_pass": floor_pass,
+        "old_support_non_degradation_pass": old_support_non_degradation,
+        "new_group_bias": float(after.new_group_bias),
+        "new_class_biases": _d26_new_class_biases(after),
+        "new_group_bias_support_only_audit": json.loads(after.bias_audit_json),
+        "identity_single_qknn_estimated_score_macs_per_query": identity_qknn_macs,
+        "identity_single_qknn_fp16_sample_state_bytes": (
+            identity_qknn_fp16_state_bytes
+        ),
+        "estimated_score_mac_ratio_vs_identity_single_qknn": float(
+            combined_query_macs / identity_qknn_macs
+        ),
+        "estimated_scalar_op_ratio_vs_identity_single_qknn": float(
+            release_scalar_ops / identity_qknn_macs
+        ),
+        "persistent_state_ratio_vs_identity_single_qknn_fp16": float(
+            combined_state / identity_qknn_fp16_state_bytes
+        ),
+        "support_adaptation_and_registration_elapsed_ms": fit_elapsed_ms,
+        "batch1_head_latency_mean_ms": float(np.mean(score_elapsed_ms)),
+        "batch1_head_latency_p95_ms": float(
+            np.quantile(np.asarray(score_elapsed_ms, dtype=np.float64), 0.95)
+        ),
+        "batch1_head_latency_sample_count": len(score_elapsed_ms),
+        "head_peak_cuda_memory_bytes": 0,
+        "head_runtime": "numpy_cpu_fp32",
+        "complete_loss_trace": list(before_fit.loss_trace)
+        + list(after_fit.loss_trace),
+        "query_features_used_for_fit": False,
+        "query_labels_used_for_fit": False,
+        "query_role_oracle_access": False,
+        "query_true_batch_class_count_access": False,
+        "query_class_quota_access": False,
+        "query_batch_global_assignment": False,
+        "source_sample_access": False,
+        "clean_sample_access": False,
+    }
+    geometry = _d26_geometry(after)
+    geometry["schema"] = "cvs.phase2.d29_pcsr_geometry.v1"
+    geometry["release_enabled"] = bool(release.enabled)
+    geometry["release_fit_audit"] = json.loads(release.audit_json)
+    return resource, geometry
+
+
 def run(
     *,
     before_root: Path,
@@ -2404,7 +2931,19 @@ def run(
     for candidate_id, config in candidates.items():
         for scenario in legacy.FORMAL_LEO_WEAK_SCENARIOS:
             for fold_index, held_ranks in enumerate(HELD_RANKS):
-                if isinstance(config, D28CandidateConfig):
+                if isinstance(config, D29CandidateConfig):
+                    row = _evaluate_d29_fold(
+                        scene_rows[scenario],
+                        scene_z[scenario],
+                        scene_fft[scenario],
+                        scene_rf[scenario],
+                        old_classes=old_classes,
+                        new_classes=new_classes,
+                        held_ranks=held_ranks,
+                        candidate_id=candidate_id,
+                        config=config,
+                    )
+                elif isinstance(config, D28CandidateConfig):
                     row = _evaluate_d28_fold(
                         scene_rows[scenario],
                         scene_z[scenario],
@@ -2502,6 +3041,8 @@ def run(
         raise D25RunnerError("D27 training-log cardinality drift")
     if candidate_set == CANDIDATE_SET_D28_V1 and expected_rows != 90:
         raise D25RunnerError("D28 training-log cardinality drift")
+    if candidate_set == CANDIDATE_SET_D29_V1 and expected_rows != 90:
+        raise D25RunnerError("D29 training-log cardinality drift")
     selected_id, candidate_decisions = (
         _select_c3_candidate(folds_by_candidate)
         if candidate_set == CANDIDATE_SET_C3_V1
@@ -2511,10 +3052,13 @@ def run(
             if candidate_set == CANDIDATE_SET_D27_V1
             else D28_CANDIDATES
             if candidate_set == CANDIDATE_SET_D28_V1
+            else D29_CANDIDATES
+            if candidate_set == CANDIDATE_SET_D29_V1
             else D26_CANDIDATES,
         )
         if candidate_set in (CANDIDATE_SET_D26_V1, CANDIDATE_SET_D26_V2)
-        or candidate_set in (CANDIDATE_SET_D27_V1, CANDIDATE_SET_D28_V1)
+        or candidate_set
+        in (CANDIDATE_SET_D27_V1, CANDIDATE_SET_D28_V1, CANDIDATE_SET_D29_V1)
         else _select_candidate(folds_by_candidate)
     )
 
@@ -2528,6 +3072,8 @@ def run(
         if candidate_set == CANDIDATE_SET_D27_V1
         else (D25_C0,) + D28_CANDIDATES
         if candidate_set == CANDIDATE_SET_D28_V1
+        else (D25_C0,) + D29_CANDIDATES
+        if candidate_set == CANDIDATE_SET_D29_V1
         else (D25_C0,) + D26_CANDIDATES
         if candidate_set in (CANDIDATE_SET_D26_V1, CANDIDATE_SET_D26_V2)
         else D25_CANDIDATES
@@ -2537,7 +3083,19 @@ def run(
     }
     for candidate_id, config in candidates.items():
         for scenario in legacy.FORMAL_LEO_WEAK_SCENARIOS:
-            if isinstance(config, D28CandidateConfig):
+            if isinstance(config, D29CandidateConfig):
+                resource, geometry = _full_d29_state_audit(
+                    scene_rows[scenario],
+                    scene_z[scenario],
+                    scene_fft[scenario],
+                    scene_rf[scenario],
+                    old_classes=old_classes,
+                    new_classes=new_classes,
+                    config=config,
+                )
+                deployment_resources[candidate_id][scenario] = resource
+                geometry_matrix[candidate_id][scenario] = geometry
+            elif isinstance(config, D28CandidateConfig):
                 resource, geometry = _full_d28_state_audit(
                     scene_rows[scenario],
                     scene_z[scenario],
@@ -2616,6 +3174,7 @@ def run(
         CANDIDATE_SET_D26_V2,
         CANDIDATE_SET_D27_V1,
         CANDIDATE_SET_D28_V1,
+        CANDIDATE_SET_D29_V1,
     ):
         selected_id, full_k10_fallback_reason = (
             _apply_full_k10_d26_old_support_gate(
@@ -2626,6 +3185,8 @@ def run(
                 if candidate_set == CANDIDATE_SET_D27_V1
                 else D28_CANDIDATES
                 if candidate_set == CANDIDATE_SET_D28_V1
+                else D29_CANDIDATES
+                if candidate_set == CANDIDATE_SET_D29_V1
                 else D26_CANDIDATES,
             )
         )
@@ -2641,10 +3202,28 @@ def run(
         "query_rows_opened": 0,
         "query_labels_opened": 0,
         "support_query_disjointness_status": SUPPORT_QUERY_DISJOINTNESS_STATUS,
+        "phase2_query_decision_policy": "per_sample_all_registered_classes",
+        "phase2_query_role_oracle_access": False,
+        "phase2_query_true_batch_class_count_access": False,
+        "phase2_query_class_quota_access": False,
+        "phase2_query_batch_global_assignment": False,
         "phase2_sample_view_policy": "leo_weak_only_no_clean_access",
         "clean_sample_access": False,
         "clean_derived_signal_access": False,
+        "phase2_clean_dataset_reachable": False,
+        "phase2_clean_cache_reachable": False,
+        "phase2_clean_control_flow_reachable": False,
         "source_sample_access": False,
+        "phase2_source_sample_access": False,
+        "phase2_source_cache_access": False,
+        "phase2_source_label_access": False,
+        "phase2_unapproved_source_derived_signal_access": False,
+        "phase2_source_replay": False,
+        "phase2_external_source_adapter_access": False,
+        "phase2_pretrained_artifact_policy": (
+            "sealed_phase1_deployment_bundle_with_optional_int8_"
+            "domain_class_prototypes_v1"
+        ),
         "sample_level_source_feature_access": False,
         "authorized_int8_phase1_aggregate_component_access": True,
         "int8_component_update_access": False,
@@ -2690,6 +3269,8 @@ def run(
             if candidate_set == CANDIDATE_SET_D27_V1
             else D28_CANDIDATES
             if candidate_set == CANDIDATE_SET_D28_V1
+            else D29_CANDIDATES
+            if candidate_set == CANDIDATE_SET_D29_V1
             else D26_CANDIDATES
             if candidate_set in (CANDIDATE_SET_D26_V1, CANDIDATE_SET_D26_V2)
             else D25_CANDIDATES
@@ -2704,6 +3285,7 @@ def run(
                 CANDIDATE_SET_D26_V2,
                 CANDIDATE_SET_D27_V1,
                 CANDIDATE_SET_D28_V1,
+                CANDIDATE_SET_D29_V1,
             )
             else IDENTITY_CANDIDATE
         ),
@@ -2715,6 +3297,8 @@ def run(
             if candidate_set == CANDIDATE_SET_D27_V1
             else D28_CANDIDATES
             if candidate_set == CANDIDATE_SET_D28_V1
+            else D29_CANDIDATES
+            if candidate_set == CANDIDATE_SET_D29_V1
             else D26_CANDIDATES
             if candidate_set in (CANDIDATE_SET_D26_V1, CANDIDATE_SET_D26_V2)
             else D25_CANDIDATES
@@ -2736,6 +3320,13 @@ def run(
             "floor_gain>=0.10,_per_class_drop<=0.10,_H_and_forgetting_"
             "noninferior_vs_C0;_B3_performance_reference_only"
             if candidate_set == CANDIDATE_SET_D28_V1
+            else "D29:_D27-B_plus_support-only_shot-rank_cross-fitted_"
+            "per-class_safe_release,_old_score_columns_unchanged,_full-refit_"
+            "safety_and_strict-new-gain_or_atomic_passthrough,_all_fold_old_"
+            "support_non-degradation,_per_scenario_pooled_old_and_new_floor_"
+            "gain>=0.10,_per_class_drop<=0.10,_H_and_forgetting_noninferior_"
+            "vs_C0;_B3_performance_reference_only"
+            if candidate_set == CANDIDATE_SET_D29_V1
             else "D26-v2:_pre-registration_old-only_per-class_and_correct-row_"
             "bias_guard,_all_fold_old_support_non_degradation,_per_scenario_"
             "pooled_old_and_new_floor_gain>=0.10,_per_class_drop<=0.10,_H_"
@@ -2790,6 +3381,7 @@ def run(
                 CANDIDATE_SET_D26_V2,
                 CANDIDATE_SET_D27_V1,
                 CANDIDATE_SET_D28_V1,
+                CANDIDATE_SET_D29_V1,
             )
             else {}
         ),
@@ -2807,6 +3399,8 @@ def run(
             if candidate_set == CANDIDATE_SET_D27_V1
             else D28_CANDIDATES
             if candidate_set == CANDIDATE_SET_D28_V1
+            else D29_CANDIDATES
+            if candidate_set == CANDIDATE_SET_D29_V1
             else D26_CANDIDATES
             if candidate_set in (CANDIDATE_SET_D26_V1, CANDIDATE_SET_D26_V2)
             else D25_CANDIDATES
@@ -2885,6 +3479,7 @@ def build_parser() -> argparse.ArgumentParser:
             CANDIDATE_SET_D26_V2,
             CANDIDATE_SET_D27_V1,
             CANDIDATE_SET_D28_V1,
+            CANDIDATE_SET_D29_V1,
         ),
         default=CANDIDATE_SET_D25_V4,
     )

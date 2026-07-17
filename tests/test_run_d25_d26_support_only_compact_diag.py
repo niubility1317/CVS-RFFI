@@ -132,6 +132,37 @@ def test_d26_candidate_lock_matrix_and_historical_sets_are_stable() -> None:
         if row["candidate_id"] in runner.D28_CANDIDATES
     )
 
+    d29_candidates = runner.preregistered_candidates(runner.CANDIDATE_SET_D29_V1)
+    assert tuple(d29_candidates) == (
+        runner.IDENTITY_CANDIDATE,
+        runner.DIAG_CANDIDATE,
+        runner.D25_C0,
+        runner.D29_A,
+        runner.D29_B,
+        runner.D29_C,
+    )
+    assert d29_candidates[runner.D29_A].release.safety_budget == 0.25
+    assert d29_candidates[runner.D29_B].release.objective == "balance_first"
+    assert d29_candidates[runner.D29_C].release.safety_budget == 1.0
+    d29_lock = runner._candidate_lock(
+        d29_candidates, runner.CANDIDATE_SET_D29_V1
+    )
+    assert d29_lock["schema"] == "cvs.phase2.d25.candidate_lock.v7"
+    assert d29_lock["candidate_set"] == runner.CANDIDATE_SET_D29_V1
+    assert "d29_classwise_safe_release_core_sha256" in d29_lock["source_closure"]
+    assert all(
+        row["family"] == "d29_per_class_safe_release"
+        for row in d29_lock["candidates"]
+        if row["candidate_id"] in runner.D29_CANDIDATES
+    )
+    d29_config = next(
+        row["config"]
+        for row in d29_lock["candidates"]
+        if row["candidate_id"] == runner.D29_B
+    )
+    assert d29_config["base"]["learning_rate"] > 0.0
+    assert "new_group_bias_grid" in d29_config["base"]
+
     assert tuple(runner.preregistered_candidates()) == (
         runner.IDENTITY_CANDIDATE,
         runner.DIAG_CANDIDATE,
@@ -169,6 +200,7 @@ def test_d26_cli_has_no_query_source_or_clean_surface() -> None:
         runner.CANDIDATE_SET_D26_V2,
         runner.CANDIDATE_SET_D27_V1,
         runner.CANDIDATE_SET_D28_V1,
+        runner.CANDIDATE_SET_D29_V1,
     )
     forbidden = ("query", "truth", "scorer", "role", "quota", "source", "clean")
     destinations = {action.dest.lower() for action in parser._actions}
@@ -339,6 +371,32 @@ def test_real_d28_fold_is_row_local_support_only_and_resource_bounded() -> None:
     assert result["gate_fit_audit"]["query_rows_used"] == 0
 
 
+def test_real_d29_fold_is_row_local_support_only_and_resource_bounded() -> None:
+    rows, z_rows, fft_rows, rf_rows = _synthetic_d28_blocks()
+    candidates = runner.preregistered_candidates(runner.CANDIDATE_SET_D29_V1)
+    result = runner._evaluate_d29_fold(
+        rows,
+        z_rows,
+        fft_rows,
+        rf_rows,
+        old_classes=("old_0", "old_1", "old_2"),
+        new_classes=("new_0", "new_1", "new_2"),
+        held_ranks=(0, 1),
+        candidate_id=runner.D29_B,
+        config=candidates[runner.D29_B],
+    )
+    assert result["fit_k_shot"] == 8
+    assert result["old_score_columns_bitwise_unchanged"] is True
+    assert result["resource"]["total_optimizer_steps"] == 25
+    assert result["resource"]["query_rows_used_for_fit"] == 0
+    assert result["resource"]["query_batch_global_assignment"] is False
+    assert result["resource"]["dense_query_graph_bytes"] == 0
+    assert result["resource"]["persistent_state_cap_pass"] is True
+    assert result["resource"]["active_adaptation_parameter_count"] <= 80_000
+    assert result["release_fit_audit"]["query_rows_used"] == 0
+    assert result["resource"]["estimated_row_local_scalar_ops_per_query"] <= 12
+
+
 def _metric(value: float, labels: tuple[str, ...]) -> dict[str, object]:
     return {
         "overall_accuracy": value,
@@ -419,6 +477,30 @@ def test_d27_selector_uses_explicit_per_class_bias_candidate_registry() -> None:
     d27 = next(row for row in decisions if row["candidate_id"] == runner.D27_A)
     assert d27["family"] == "d27_per_new_class_bias"
     assert d27["eligible_positive_route"] is True
+
+
+def test_d29_selector_uses_explicit_pcsr_candidate_registry() -> None:
+    folds = {
+        runner.IDENTITY_CANDIDATE: _candidate_rows(
+            runner.IDENTITY_CANDIDATE, 0.40, support_pass=True, steps=0
+        ),
+        runner.DIAG_CANDIDATE: _candidate_rows(
+            runner.DIAG_CANDIDATE, 0.70, support_pass=True, steps=60
+        ),
+        runner.D25_C0: _candidate_rows(
+            runner.D25_C0, 0.50, support_pass=True, steps=0
+        ),
+        runner.D29_A: _candidate_rows(runner.D29_A, 0.65, support_pass=True, steps=25),
+        runner.D29_B: _candidate_rows(runner.D29_B, 0.65, support_pass=True, steps=25),
+        runner.D29_C: _candidate_rows(runner.D29_C, 0.65, support_pass=True, steps=25),
+    }
+    selected, decisions = runner._select_d26_candidate(
+        folds, runner.D29_CANDIDATES
+    )
+    assert selected in runner.D29_CANDIDATES
+    d29 = next(row for row in decisions if row["candidate_id"] == selected)
+    assert d29["family"] == "d29_per_class_safe_release"
+    assert d29["eligible_positive_route"] is True
 
 
 def test_d26_full_k10_failure_revokes_selected_route() -> None:
