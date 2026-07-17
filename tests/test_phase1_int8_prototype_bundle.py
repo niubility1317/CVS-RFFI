@@ -22,7 +22,7 @@ SOURCE_SHA = "b" * 64
 def _package() -> dict:
     generator = torch.Generator().manual_seed(17)
     proto = torch.nn.functional.normalize(torch.randn(3, 4, 8, generator=generator), dim=-1)
-    counts = torch.tensor([[5, 0, 4, 3], [2, 3, 0, 2], [1, 4, 5, 0]])
+    counts = torch.tensor([[5, 0, 4, 3], [2, 3, 0, 2], [2, 4, 5, 0]])
     proto[counts == 0] = 0
     return {"feature_key": "z_id", "tx_domain_prototypes": proto, "tx_domain_counts": counts}
 

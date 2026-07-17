@@ -124,6 +124,8 @@ def build_int8_component(
         raise ValueError("source package requires matching tx_domain_counts")
     if str(source_package.get("feature_key", "")) != "z_id":
         raise ValueError("only z_id prototypes are authorized")
+    if bool(torch.any((counts > 0) & (counts < 2))):
+        raise ValueError("every active domain-class centroid must aggregate at least two samples")
     if len(class_registry) != int(prototypes.shape[0]):
         raise ValueError("class_registry length must match prototype class dimension")
     if len(set(map(str, class_registry))) != len(class_registry):
@@ -256,6 +258,8 @@ def validate_int8_component(component_dir: str | Path) -> dict[str, Any]:
             raise ValueError("domain_class_mask must be binary")
         if bool(np.any(q[mask == 0] != 0)):
             raise ValueError("inactive prototype slots must be zero")
+        if bool(np.any(q == -128)):
+            raise ValueError("symmetric int8 payload must stay within [-127,127]")
         if not np.isfinite(scale).all() or bool(np.any(scale <= 0)):
             raise ValueError("all quantization scales must be finite and positive")
     return manifest
