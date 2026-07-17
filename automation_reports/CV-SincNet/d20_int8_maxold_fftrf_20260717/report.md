@@ -3,7 +3,7 @@
 - experiment ID：`d20_int8_maxold_fftrf_20260717`
 - timestamp：2026-07-17
 - operator：Codex
-- 当前状态：本地设计与实现验证完成；N607尚未启动
+- 当前状态：D20 attempt1/2均在首个support候选形成前因兼容问题退出；attempt3已暂停，路线升级为D21压缩几何与KNN原型生命周期设计
 - objective：在正式`项目.md`Stage2-B/Stage2-C约束下，将Phase1域×类int8原型与合法单一LEO_weak received IQ上的轻量表征适配、新类注册有机结合，优先修复旧类floor并保证int8分支不压制seen-new。
 - comparison：B0纯target centroid、B1 int8 max-old、B2 int8+同IQ logits max-old、B3单IQ FFT/RF轻头、B4轻头+max-old；最终需相对identity-only单qKNN报告MAC/延迟/显存/状态Pareto。
 
@@ -28,7 +28,7 @@
 |有效payload|13,608B|
 |当前稠密逻辑组件|25,428B|
 |NPZ压缩文件|5,363B|
-|固定max-min medoid|domain index 9|
+|固定max-min medoid|domain index 20|
 |六类最大非对角共识余弦|0.0169|
 
 ## 本地变更
@@ -106,4 +106,12 @@ CUDA_VISIBLE_DEVICES=0 PYTHONPATH=code /home/szu2070436088/.conda/envs/CVS-RFFI/
 - 本地修复：D20 runner的NumPy→Torch改为DLPack、Torch→NumPy改为`tolist`后显式float32重建；导入D1 fit中唯一NumPy `as_tensor`路径仅在单线程context内临时路由到DLPack并通过`finally`恢复。该改动只修复实验运行时数据桥接，张量值、样本、LEO信道、候选、损失和超参数均不变。
 - 修复验证：相关全套37项PASS；新增测试强制禁用`torch.from_numpy`并验证DLPack的float32/int64值一致性和`torch.as_tensor`恢复。
 - 修复提交：`44c238c7 fix: bridge D20 enrollment tensors with DLPack`；runner SHA256=`7e46db1e99ac40f4e9d7679dcb7f668553d928a0672a7bcf07022383949c8553`。独立复审再次`Approve`；仅指出未来若改为同进程多线程拟合需给临时`torch.as_tensor`兼容context增加锁，当前串行CLI无竞态。
-- attempt3将从隔离闭包`runs/d20_int8_maxold_fftrf_20260717/source/code/scripts/run_d19_support_only_ciaf.py`启动，日志写入`logs/d20_int8_maxold_fftrf_20260717/k10_new5_rx20_1_seed713101_attempt3.log`；输入、候选、输出和全部hash参数不变。
+- attempt3原计划从隔离闭包`runs/d20_int8_maxold_fftrf_20260717/source/code/scripts/run_d19_support_only_ciaf.py`启动；在用户要求先重构Phase1原型信息和KNN生命周期后已暂停，未产生attempt3日志、fold或query结果。
+
+## 2026-07-17 D21路线升级
+
+- 历史表中`domain index 9`为记录错误；当前代码`_component_maximin_medoid`按有效域handle运行，精确返回domain20。domain20的global max-min同类余弦为0.994498，优于domain24的0.992483；在18个真实LEO_weak旧support中心上的最小top-1 margin为0.011996，约为domain24的13倍。
+- `项目.md`已更新为`int8_domain_class_center_lowrank_residual_radius_v2`并提交`ba9c7d1`：domain20 core、R3 int8低秩域偏移、每域×类P90余弦半径共同封存。旧dense v1只作为Phase1离线压缩输入或历史诊断，不再作为正式D20/D21 payload。
+- 几何审计给出domain20+R3+96B radius逻辑payload约4,589B，随机原型argmax/margin保持99.81%，18/18真实LEO_weak support中心决策保持；这些是压缩保持，不是任务accuracy。
+- 新设计文档：`analysis/d21_knn_prototype_lifecycle_and_phase1_geometry_design_20260717.md`。旧类采用Phase1只读锚、Stage2-B target-old snapshot和Stage2-C append-only registry三层状态；新类注册只追加prototype、收缩radius和至多一条稀疏碰撞边界。
+- 用户已授权必要时重训ADV3B02获取正式原型信息。执行顺序为先尝试固定checkpoint的Phase1离线复导出；只有registry/schema不可复现、几何不稳定或正式共同bundle需要时才重训，避免改变表示后把收益来源混淆。
