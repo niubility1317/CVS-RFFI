@@ -1,7 +1,9 @@
 # D25同一LEO_weak接收IQ多表征拼接与不确定度注册追溯表
 
-日期：2026-07-17  
-状态：设计锁定，代码实现前  
+日期：2026-07-17
+
+状态：设计锁定，代码实现前
+
 主路线：`z_id160 + FFT96 + RF32 = 288D`分块归一化拼接
 
 ## 设计结论
@@ -73,4 +75,3 @@ Stage2-C追加新类后，旧类编码payload、块半径、计数、融合权�
 - Stage2-C后旧类prefix hash与相同输入的旧类score列bitwise不变。
 - query打开前完成候选锁；query只由隔离predictor生成不可变prediction artifact，再由独立scorer连接truth。
 - adapter、epoch/step、状态、MAC、时延、显存满足正式上限；开发放宽候选不能直接进入正式矩阵。
-
