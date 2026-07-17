@@ -20,4 +20,3 @@
 |D27-12|证据闭包|runner/core/operator SHA与Git提交独立记录|verified|candidate lock/launcher门|
 
 实际性能仍待N607执行，不在本地实现PASS含义内。
-

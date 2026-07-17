@@ -30,10 +30,10 @@
 - log：`/home/szu2070436088/2510044040/CV-SincNet/logs/d27_perclass_bias_20260718/support_screen_v1.log`。
 - 精确命令：`cd /home/szu2070436088/2510044040/CV-SincNet && D27_GPU=0 bash code/scripts/launch_d27_perclass_bias_support_20260718.sh`。
 - 只同步runner、D27核心和launcher；不覆盖远端实际FFT96/RF32 operator。启动前重新做live inventory、远端SHA、`py_compile`、`bash -n`和output不存在门。
+- 03:57 CST直连preflight PASS；8张RTX3090均0%利用、约10MiB显存。live inventory为`gpu_compute=[]`、`active_training_processes=[]`、`unknown_training_active=false`，允许使用GPU0。
 
 ## 判定与风险
 
 - 晋级同时要求15fold旧support非退化、逐场景old/new pooled floor相对C0均提升≥10pp、任一旧/新类相对C0下降不超过10pp、H与forgetting不劣于C0；B3仅性能参考。
 - 主要风险：独立安全cap仍可能对`cls_09f8/cls_f608`过严，或一次坐标搜索在LOO上乐观。若D27仍失败，依据失败分解再决定小幅support保护松弛或双原型，不继续盲扫全局bias/epoch。
 - 当前仍是development support-only筛选，`formal_metric_claim_allowed=false`；正路线才进入joint bundle method lock及正式独立确认矩阵。
-
