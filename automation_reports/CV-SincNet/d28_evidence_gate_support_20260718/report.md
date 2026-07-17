@@ -38,6 +38,7 @@
 - 本地`stage2_diag_cosine_exploration.py`有不属于本轮的未提交修改，因此不覆盖远端；launcher继续锁定D27已验证的远端operator SHA256=`14ec919395f9bf9f13214c677b1a3d640764214668d1d00e9109f5b149ec41ca`。
 - 精确远端命令：`cd /home/szu2070436088/2510044040/CV-SincNet && D28_GPU=<live-selected> bash code/scripts/launch_d28_evidence_gate_support_20260718.sh`。
 - 04:23 CST直连preflight PASS：server time、project root和8张RTX3090可见，均0%利用、约10MiB显存；live inventory为`gpu_compute=[]`、`active_training_processes=[]`、`unknown_training_active=false`。选择GPU0，精确命令锁定为`cd /home/szu2070436088/2510044040/CV-SincNet && D28_GPU=0 bash code/scripts/launch_d28_evidence_gate_support_20260718.sh`。
+- 已同步runner→`code/scripts/run_d25_support_only_concat.py`、D28核心→`code/cvsrffi/stage2_support_evidence_gate.py`、launcher→`code/scripts/launch_d28_evidence_gate_support_20260718.sh`；远端5项SHA与方法锁一致，`py_compile`、`bash -n`、output不存在门均PASS。同步与验证后本地`ssh.exe`及N607/bridge TCP22连接均为0。
 
 ## 完成后补充
 
