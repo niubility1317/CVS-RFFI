@@ -539,13 +539,18 @@ def fit_old_concat(
     support_rf32: np.ndarray,
     support_labels: Sequence[str],
     *,
+    registered_classes: Sequence[str] | None = None,
     config: MultimodalConcatConfig = MultimodalConcatConfig(),
 ) -> MultimodalConcatFusionState:
     """Fit old classes from aligned LEO_weak support; ground affects z only."""
 
     config.validate()
     blocks, labels, discovered, k_shot = _block_support(
-        support_z_id160, support_fft96, support_rf32, support_labels
+        support_z_id160,
+        support_fft96,
+        support_rf32,
+        support_labels,
+        expected_classes=registered_classes,
     )
     z_rows, fft_rows, rf_rows = blocks
     if config.use_ground_identity_fusion:
@@ -553,11 +558,22 @@ def fit_old_concat(
             raise MultimodalConcatFusionError(
                 "D25 ground identity fusion requires the immutable int8 component"
             )
-        if set(discovered) != set(component.class_registry):
+        requested = (
+            component.class_registry
+            if registered_classes is None
+            else tuple(str(value) for value in registered_classes)
+        )
+        if requested != component.class_registry or set(discovered) != set(requested):
             raise MultimodalConcatFusionError("D25 old class registry drift")
         classes = component.class_registry
     else:
-        classes = discovered
+        classes = (
+            discovered
+            if registered_classes is None
+            else tuple(str(value) for value in registered_classes)
+        )
+        if len(classes) != len(set(classes)) or set(classes) != set(discovered):
+            raise MultimodalConcatFusionError("D25 old class registry order drift")
     target_z, target_radius_z = _target_block_prototypes(
         z_rows,
         labels,

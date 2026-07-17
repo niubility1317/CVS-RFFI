@@ -253,6 +253,7 @@ def _evaluate_d25_fold(
         fft96[train & old],
         rf32[train & old],
         labels[train & old],
+        registered_classes=old_classes,
         config=config,
     )
     after = append_new_classes_concat(
@@ -468,6 +469,7 @@ def _full_d25_state_audit(
         fft96[old],
         rf32[old],
         labels[old],
+        registered_classes=old_classes,
         config=config,
     )
     after = append_new_classes_concat(

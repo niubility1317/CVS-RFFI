@@ -316,3 +316,28 @@ def test_append_rejects_overlap_k_drift_and_unbalanced_support() -> None:
             np.concatenate([rfx, rfy]),
             labels_x + labels_y,
         )
+
+
+def test_pure_target_old_fit_preserves_explicit_nonlexical_registry_order() -> None:
+    classes = ("old-c", "old-a", "old-b")
+    z, fft, rf, labels = _support(classes, 2, offset=0)
+    state = fit_old_concat(
+        None,
+        z,
+        fft,
+        rf,
+        labels,
+        registered_classes=classes,
+        config=MultimodalConcatConfig(use_ground_identity_fusion=False),
+    )
+    assert state.classes == classes
+    with pytest.raises(MultimodalConcatFusionError, match="registry"):
+        fit_old_concat(
+            None,
+            z,
+            fft,
+            rf,
+            labels,
+            registered_classes=("old-a", "old-b", "missing"),
+            config=MultimodalConcatConfig(use_ground_identity_fusion=False),
+        )
