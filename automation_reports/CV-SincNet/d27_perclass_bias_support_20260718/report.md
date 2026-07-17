@@ -31,6 +31,7 @@
 - 精确命令：`cd /home/szu2070436088/2510044040/CV-SincNet && D27_GPU=0 bash code/scripts/launch_d27_perclass_bias_support_20260718.sh`。
 - 只同步runner、D27核心和launcher；不覆盖远端实际FFT96/RF32 operator。启动前重新做live inventory、远端SHA、`py_compile`、`bash -n`和output不存在门。
 - 03:57 CST直连preflight PASS；8张RTX3090均0%利用、约10MiB显存。live inventory为`gpu_compute=[]`、`active_training_processes=[]`、`unknown_training_active=false`，允许使用GPU0。
+- 已同步runner、D27核心和launcher；远端SHA、`py_compile`、`bash -n`、实际FFT96/RF32 operator SHA及output不存在门均PASS；同步/验证后本地SSH/TCP22连接为0。
 
 ## 判定与风险
 
