@@ -17,16 +17,29 @@ cache builder, truth sidecar, scorer, or legacy loader entry point.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import re
 import stat
+import weakref
 from pathlib import Path
-from typing import Any, BinaryIO, Mapping
+from types import MappingProxyType
+from typing import Any, BinaryIO, Callable, Mapping
 
 import numpy as np
 
+from cvsrffi import leo_weak_cache
+from cvsrffi import somph_formal_matrix as formal_matrix
+from cvsrffi import somph_lineage_authority as lineage_authority
+from cvsrffi import stage2_predictor_bundle as stage2_bundle_module
 from cvsrffi.phase2_runtime_contract import PHASE2_FULL_CONTRACT
+from cvsrffi.somph_formal_matrix import (
+    FORMAL_NEW_CLASS_COUNTS,
+    FORMAL_RECEIVERS,
+    NEW_TX_IDS,
+    OLD_TX_IDS,
+)
 from cvsrffi.somph_predictor_runtime import (
     SOMPH_HEAD_CAPSULE_SCHEMA,
     expected_somph_method_lock,
@@ -36,7 +49,7 @@ from cvsrffi.stage2_predictor_bundle import (
     FORMAL_LEO_WEAK_SCENARIOS,
     OPAQUE_TOKEN_RE,
     PredictorPackageError,
-    _ensure_root,
+    _ensure_root as _base_ensure_root,
     _hash_handle,
     _json_from_handle,
     _parse_embedded_manifest,
@@ -67,6 +80,18 @@ SOMPH_BUNDLE_SEAL_SCHEMA = "cvs.phase2.somph_predictor_bundle_seal.v1"
 SOMPH_OVERLAY_PROVENANCE_SCHEMA = "cvs.phase2.somph_overlay_provenance.v1"
 SOMPH_SUPPORT_IQ_SCHEMA = "cvs.phase2.somph_registered_support_iq.v1"
 SOMPH_QUERY_IQ_SCHEMA = "cvs.phase2.somph_unlabeled_query_iq.v1"
+SOMPH_FORMAL_POLICY_AUTHORIZATION_SCHEMA = (
+    "cvs.phase2.somph_formal_row_policy_authorization.v1"
+)
+SOMPH_FORMAL_POLICY_AUTHORIZATION_STATUS = "FORMAL_ROW_POLICY_AUTHORIZED"
+SOMPH_FORMAL_POLICY_SCHEMA = "cvs.phase2.somph_formal_execution_policy.v1"
+SOMPH_FORMAL_POLICY_STATUS = "FORMAL_EXECUTION_POLICY_LOCKED"
+SOMPH_SIGNED_POLICY_ENVELOPE_SCHEMA = (
+    "cvs.phase2.somph_signed_policy_authorization_envelope.v1"
+)
+SOMPH_SIGNED_POLICY_ENVELOPE_DOMAIN = (
+    "cvs.somph.formal_policy_authorization.ed25519.v1"
+)
 
 ENROLLMENT_ONLY = "enrollment_only"
 APPLY_ONLY = "apply_only"
@@ -179,6 +204,103 @@ PROVENANCE_SAMPLE_KEYS = {
     "source_leo_cache_sha256",
     "source_leo_provenance_sha256",
 }
+FORMAL_POLICY_AUTHORIZATION_KEYS = {
+    "schema",
+    "status",
+    "formal_launch_authority",
+    "formal_metric_claim_allowed",
+    "package_root_sha256",
+    "package_detached_seal_sha256",
+    "artifact_member_allowlist_sha256",
+    "manifest_sha256",
+    "overlay_provenance_sha256",
+    "authority_commit_sha256",
+    "authority_lock_sha256",
+    "authority_attestation_sha256",
+    "receiver",
+    "seed",
+    "stage",
+    "registration_state",
+    "k_shot",
+    "cache_scope",
+    "old_tx_ids",
+    "new_tx_ids",
+    "dataset_authority_root_sha256",
+    "cache_role_inputs_root_sha256",
+    "physical_sample_ids_sha256_by_scenario",
+    "physical_sample_scenario_assignment_sha256",
+    "post_channel_iq_sha256_root_by_scenario",
+    "overlay_ids_sha256_by_scenario",
+    "preflight_code_sha256",
+    "formal_policy_sha256",
+    "code_closure_sha256",
+    "package_class_registry_sha256",
+    "package_role_registry_sha256",
+    "package_physical_sample_ids_sha256_by_scenario",
+    "package_overlay_ids_sha256_by_scenario",
+    "package_post_channel_iq_sha256_by_scenario",
+    "package_satellite_seed_sha256_by_scenario",
+    "package_materialized_assignment_sha256_by_scenario",
+    "package_sample_assignment_sha256",
+}
+FORMAL_POLICY_KEYS = {
+    "schema",
+    "status",
+    "formal_receivers",
+    "old_tx_ids",
+    "nested_new_tx_ids",
+    "cache_scope",
+    "old_dataset_basename",
+    "new_dataset_basename",
+    "physical_sample_scenario_assignment_policy",
+    "single_observation_contract",
+    "required_code_closure_members",
+}
+SIGNED_POLICY_ENVELOPE_KEYS = {
+    "schema",
+    "domain",
+    "issuer",
+    "key_id",
+    "authorization_canonical_sha256",
+    "formal_policy_sha256",
+    "package_root_sha256",
+    "package_detached_seal_sha256",
+    "authority_commit_sha256",
+    "receiver",
+    "seed",
+    "stage",
+    "registration_state",
+    "k_shot",
+    "code_closure_sha256",
+    "signature_ed25519_hex",
+}
+CODE_CLOSURE_LOGICAL_MEMBERS = (
+    "somph_predictor_bundle.py",
+    "somph_lineage_authority.py",
+    "stage2_predictor_bundle.py",
+    "somph_formal_matrix.py",
+    "leo_weak_cache.py",
+)
+RUNTIME_BINDING_KEYS = {
+    "package_root_sha256",
+    "feature_runtime_sha256",
+    "phase1_checkpoint_sha256",
+    "method_lock_sha256",
+    "preflight_anchor_sha256",
+    "code_closure_sha256",
+}
+MATERIALIZATION_RECEIPT_KEYS = {
+    "schema",
+    "status",
+    "iq_payload_materialized",
+    "materialized_scenarios",
+    "package_root_sha256",
+    "preflight_anchor_sha256",
+    "runtime_binding",
+}
+SOMPH_MATERIALIZATION_RECEIPT_SCHEMA = (
+    "cvs.phase2.somph_iq_materialization_receipt.v1"
+)
 SHA256_RE = re.compile(r"[0-9a-f]{64}")
 ROW_HANDLE_RE = re.compile(r"row_[0-9a-f]{64}")
 ENROLLMENT_BINDING_KEYS = {
@@ -205,6 +327,39 @@ def _is_sha256(value: Any) -> bool:
 
 def _is_row_handle(value: Any) -> bool:
     return isinstance(value, str) and ROW_HANDLE_RE.fullmatch(value) is not None
+
+
+def _is_reparse_or_symlink(path: Path) -> bool:
+    metadata = path.lstat()
+    attributes = getattr(metadata, "st_file_attributes", 0)
+    reparse_flag = getattr(stat, "FILE_ATTRIBUTE_REPARSE_POINT", 0)
+    return stat.S_ISLNK(metadata.st_mode) or bool(attributes & reparse_flag)
+
+
+def _reject_reparse_ancestor_chain(path: Path, *, context: str) -> Path:
+    """Reject a root reached through any symlink/junction/reparse ancestor."""
+
+    absolute = Path(os.path.abspath(path))
+    anchor = Path(absolute.anchor)
+    for candidate in (absolute, *absolute.parents):
+        if candidate == anchor:
+            break
+        try:
+            if _is_reparse_or_symlink(candidate):
+                raise PredictorPackageError(
+                    f"{context} parent symlink/reparse path rejected: {candidate}"
+                )
+        except FileNotFoundError as exc:
+            raise PredictorPackageError(
+                f"missing {context} ancestor: {candidate}"
+            ) from exc
+    return absolute
+
+
+def _ensure_root(root: Path) -> Path:
+    return _base_ensure_root(
+        _reject_reparse_ancestor_chain(root, context="SOMP-H package root")
+    )
 
 
 def _profile_kinds(profile: str) -> tuple[str, ...]:
@@ -965,6 +1120,8 @@ def _preflight(
     *,
     detached_seal_path: str | Path,
     expected_seal_sha256: str,
+    inspect_iq_members: bool = True,
+    load_npz_control_members: bool = True,
 ) -> tuple[
     dict[str, Any],
     dict[str, Any],
@@ -1043,43 +1200,54 @@ def _preflight(
     )
 
     if manifest["profile"] == APPLY_ONLY:
-        _head_arrays, head_binding, head_binding_sha256 = _load_head_capsule_member(
-            root, by_kind["head_capsule"]
-        )
         if by_kind["head_capsule"]["sha256"] != manifest["head_capsule_sha256"]:
             raise PredictorPackageError(
                 "SOMP-H apply head capsule trust root mismatch"
             )
-        _validate_enrollment_binding(head_binding, manifest=manifest)
-        if head_binding_sha256 != manifest["head_enrollment_binding_sha256"]:
-            raise PredictorPackageError(
-                "SOMP-H apply head binding trust root mismatch"
+        if load_npz_control_members:
+            _head_arrays, head_binding, head_binding_sha256 = (
+                _load_head_capsule_member(root, by_kind["head_capsule"])
             )
-        try:
-            validate_somph_head_capsule(
-                _head_arrays,
-                method_lock=method_lock,
-                expected_enrollment_binding_sha256=head_binding_sha256,
+            _validate_enrollment_binding(head_binding, manifest=manifest)
+            if head_binding_sha256 != manifest["head_enrollment_binding_sha256"]:
+                raise PredictorPackageError(
+                    "SOMP-H apply head binding trust root mismatch"
+                )
+            try:
+                validate_somph_head_capsule(
+                    _head_arrays,
+                    method_lock=method_lock,
+                    expected_enrollment_binding_sha256=head_binding_sha256,
+                )
+            except ValueError as exc:
+                raise PredictorPackageError(
+                    "SOMP-H apply head semantic validation failed before query IQ"
+                ) from exc
+            opened.append(
+                {
+                    "relative_path": by_kind["head_capsule"]["relative_path"],
+                    "sha256": by_kind["head_capsule"]["sha256"],
+                    "size_bytes": by_kind["head_capsule"]["size_bytes"],
+                    "status": "PASS",
+                    "enrollment_binding_sha256": head_binding_sha256,
+                }
             )
-        except ValueError as exc:
-            raise PredictorPackageError(
-                "SOMP-H apply head semantic validation failed before query IQ"
-            ) from exc
-        opened.append(
-            {
-                "relative_path": by_kind["head_capsule"]["relative_path"],
-                "sha256": by_kind["head_capsule"]["sha256"],
-                "size_bytes": by_kind["head_capsule"]["size_bytes"],
-                "status": "PASS",
-                "enrollment_binding_sha256": head_binding_sha256,
-            }
-        )
+        else:
+            _unused, receipt = _verify_regular_member(
+                root, by_kind["head_capsule"]
+            )
+            assert _unused is None
+            opened.append(receipt)
 
-    # This is intentionally after checkpoint, method-lock, and provenance
-    # validation.  It decompresses/CRC-checks the archives but does not np.load.
-    prefix = "support:" if manifest["profile"] == ENROLLMENT_ONLY else "query:"
-    for scenario in FORMAL_LEO_WEAK_SCENARIOS:
-        opened.append(_inspect_iq_member(root, by_kind[prefix + scenario]))
+    if inspect_iq_members:
+        # This is intentionally after checkpoint, method-lock, and provenance
+        # validation.  It decompresses/CRC-checks the archives but does not
+        # np.load.  The authority-aware entry point disables even this open.
+        prefix = (
+            "support:" if manifest["profile"] == ENROLLMENT_ONLY else "query:"
+        )
+        for scenario in FORMAL_LEO_WEAK_SCENARIOS:
+            opened.append(_inspect_iq_member(root, by_kind[prefix + scenario]))
 
     audit = {
         "schema": "cvs.phase2.somph_preopen_audit.v1",
@@ -1104,6 +1272,467 @@ def _preflight(
     return manifest, seal, audit, provenance_index
 
 
+def _external_json_with_expected_sha256(
+    path: str | Path,
+    *,
+    expected_sha256: str,
+    context: str,
+) -> tuple[dict[str, Any], str]:
+    candidate = Path(path).resolve(strict=True)
+    if Path(path).is_symlink() or not candidate.is_file():
+        raise PredictorPackageError(f"{context} must be a regular non-symlink file")
+    if not _is_sha256(expected_sha256):
+        raise PredictorPackageError(f"{context} external SHA256 is invalid")
+    with open_regular_member_same_fd(candidate.parent, candidate.name) as handle:
+        digest, _size = _hash_handle(handle)
+        if digest != expected_sha256:
+            raise PredictorPackageError(f"{context} external SHA256 mismatch")
+        payload = _json_from_handle(handle, context=context)
+    return payload, digest
+
+
+def _external_json_actual(path: str | Path, *, context: str) -> tuple[dict[str, Any], str]:
+    candidate = Path(path).resolve(strict=True)
+    if Path(path).is_symlink() or not candidate.is_file():
+        raise PredictorPackageError(f"{context} must be a regular non-symlink file")
+    with open_regular_member_same_fd(candidate.parent, candidate.name) as handle:
+        digest, _size = _hash_handle(handle)
+        payload = _json_from_handle(handle, context=context)
+    return payload, digest
+
+
+def _code_closure() -> tuple[list[dict[str, str]], str]:
+    paths = {
+        "somph_predictor_bundle.py": Path(__file__).resolve(),
+        "somph_lineage_authority.py": Path(lineage_authority.__file__).resolve(),
+        "stage2_predictor_bundle.py": Path(stage2_bundle_module.__file__).resolve(),
+        "somph_formal_matrix.py": Path(formal_matrix.__file__).resolve(),
+        "leo_weak_cache.py": Path(leo_weak_cache.__file__).resolve(),
+    }
+    if tuple(paths) != CODE_CLOSURE_LOGICAL_MEMBERS:
+        raise PredictorPackageError("SOMP-H authority code closure order drift")
+    members = [
+        {"logical_name": name, "sha256": sha256_file(path)}
+        for name, path in paths.items()
+    ]
+    return members, sha256_bytes(canonical_json_bytes(members))
+
+
+def _validate_formal_policy(policy: Mapping[str, Any]) -> None:
+    expected = {
+        "schema": SOMPH_FORMAL_POLICY_SCHEMA,
+        "status": SOMPH_FORMAL_POLICY_STATUS,
+        "formal_receivers": list(FORMAL_RECEIVERS),
+        "old_tx_ids": list(OLD_TX_IDS),
+        "nested_new_tx_ids": [
+            list(NEW_TX_IDS[:count]) for count in FORMAL_NEW_CLASS_COUNTS
+        ],
+        "cache_scope": "stage2_registered",
+        "old_dataset_basename": "ManySig.pkl",
+        "new_dataset_basename": "ManyTx.pkl",
+        "physical_sample_scenario_assignment_policy": (
+            lineage_authority.PHYSICAL_SAMPLE_SCENARIO_ASSIGNMENT_POLICY
+        ),
+        "single_observation_contract": (
+            lineage_authority.PHASE2_SINGLE_OBSERVATION_CONTRACT
+        ),
+        "required_code_closure_members": list(CODE_CLOSURE_LOGICAL_MEMBERS),
+    }
+    if set(policy) != FORMAL_POLICY_KEYS or policy != expected:
+        raise PredictorPackageError("SOMP-H actual formal policy contract drift")
+
+
+def _package_control_roots(
+    manifest: Mapping[str, Any],
+    provenance_index: Mapping[str, Mapping[str, Mapping[str, Any]]],
+    *,
+    new_tx_ids: list[str],
+) -> dict[str, Any]:
+    class_root = sha256_bytes(
+        canonical_json_bytes(manifest["registered_classes"])
+    )
+    roles = {
+        "target_old_class_count": len(OLD_TX_IDS),
+        "target_new_class_count": (
+            0 if manifest["registration_state"] == "before" else len(new_tx_ids)
+        ),
+        "registration_state": manifest["registration_state"],
+    }
+    role_root = sha256_bytes(canonical_json_bytes(roles))
+    physical_roots: dict[str, str] = {}
+    overlay_roots: dict[str, str] = {}
+    iq_roots: dict[str, str] = {}
+    seed_roots: dict[str, str] = {}
+    materialized_assignment_roots: dict[str, str] = {}
+    assignment_rows: list[dict[str, Any]] = []
+    expected_rows = manifest["registered_class_count"] * manifest["k_shot"]
+    for scenario in FORMAL_LEO_WEAK_SCENARIOS:
+        rows = provenance_index.get(scenario)
+        if not isinstance(rows, dict) or len(rows) != expected_rows:
+            raise PredictorPackageError(
+                "SOMP-H provenance row count cannot prove exact-K before IQ"
+            )
+        ordered = [rows[token] for token in sorted(rows)]
+        physical_roots[scenario] = sha256_bytes(
+            canonical_json_bytes([item["sample_token"] for item in ordered])
+        )
+        overlay_roots[scenario] = sha256_bytes(
+            canonical_json_bytes([item["overlay_token"] for item in ordered])
+        )
+        iq_roots[scenario] = sha256_bytes(
+            canonical_json_bytes(
+                [item["post_channel_iq_sha256"] for item in ordered]
+            )
+        )
+        seed_roots[scenario] = sha256_bytes(
+            canonical_json_bytes([int(item["satellite_seed"]) for item in ordered])
+        )
+        materialized_assignment_roots[scenario] = sha256_bytes(
+            canonical_json_bytes(
+                [
+                    {
+                        "sample_token": item["sample_token"],
+                        "overlay_token": item["overlay_token"],
+                        "satellite_seed": int(item["satellite_seed"]),
+                        "post_channel_iq_sha256": item[
+                            "post_channel_iq_sha256"
+                        ],
+                    }
+                    for item in ordered
+                ]
+            )
+        )
+        assignment_rows.extend(
+            {
+                key: item[key]
+                for key in (
+                    "sample_token",
+                    "scenario",
+                    "overlay_token",
+                    "satellite_seed",
+                    "post_channel_iq_sha256",
+                    "source_leo_cache_sha256",
+                    "source_leo_provenance_sha256",
+                )
+            }
+            for item in ordered
+        )
+    return {
+        "package_class_registry_sha256": class_root,
+        "package_role_registry_sha256": role_root,
+        "package_physical_sample_ids_sha256_by_scenario": physical_roots,
+        "package_overlay_ids_sha256_by_scenario": overlay_roots,
+        "package_post_channel_iq_sha256_by_scenario": iq_roots,
+        "package_satellite_seed_sha256_by_scenario": seed_roots,
+        "package_materialized_assignment_sha256_by_scenario": (
+            materialized_assignment_roots
+        ),
+        "package_sample_assignment_sha256": sha256_bytes(
+            canonical_json_bytes(assignment_rows)
+        ),
+    }
+
+
+def _policy_signature_message(envelope: Mapping[str, Any]) -> bytes:
+    signed = {key: envelope[key] for key in SIGNED_POLICY_ENVELOPE_KEYS if key != "signature_ed25519_hex"}
+    return (
+        SOMPH_SIGNED_POLICY_ENVELOPE_DOMAIN.encode("ascii")
+        + b"\x00"
+        + canonical_json_bytes(signed)
+    )
+
+
+def _make_signed_policy_envelope_verifier(
+    public_key: bytes,
+    *,
+    expected_public_key_sha256: str,
+) -> Callable[[Mapping[str, Any], Mapping[str, Any]], None]:
+    pinned_public_key = bytes(public_key)
+    pinned_public_key_sha256 = str(expected_public_key_sha256)
+    pinned_issuer = str(lineage_authority.PINNED_AUTHORITY_ISSUER)
+    pinned_key_id = str(lineage_authority.PINNED_AUTHORITY_KEY_ID)
+    if (
+        len(pinned_public_key) != 32
+        or hashlib.sha256(pinned_public_key).hexdigest()
+        != pinned_public_key_sha256
+    ):
+        raise PredictorPackageError("SOMP-H pinned policy public key SHA drift")
+
+    def verify(
+        envelope: Mapping[str, Any], expected: Mapping[str, Any]
+    ) -> None:
+        if set(envelope) != SIGNED_POLICY_ENVELOPE_KEYS:
+            raise PredictorPackageError(
+                "SOMP-H signed policy envelope exact schema drift"
+            )
+        pinned = {
+            "schema": SOMPH_SIGNED_POLICY_ENVELOPE_SCHEMA,
+            "domain": SOMPH_SIGNED_POLICY_ENVELOPE_DOMAIN,
+            "issuer": pinned_issuer,
+            "key_id": pinned_key_id,
+            **dict(expected),
+        }
+        if any(envelope.get(key) != value for key, value in pinned.items()):
+            raise PredictorPackageError(
+                "SOMP-H signed policy envelope binding drift"
+            )
+        try:
+            signature = bytes.fromhex(str(envelope["signature_ed25519_hex"]))
+        except ValueError as exc:
+            raise PredictorPackageError(
+                "SOMP-H signed policy envelope hex invalid"
+            ) from exc
+        try:
+            lineage_authority._verify_ed25519(
+                pinned_public_key,
+                _policy_signature_message(envelope),
+                signature,
+            )
+        except Exception as exc:
+            raise PredictorPackageError(
+                "SOMP-H signed policy authorization invalid"
+            ) from exc
+
+    return verify
+
+
+_DEFAULT_SIGNED_POLICY_ENVELOPE_VERIFIER = _make_signed_policy_envelope_verifier(
+    bytes.fromhex(lineage_authority.PINNED_AUTHORITY_PUBLIC_KEY_HEX),
+    expected_public_key_sha256=(
+        lineage_authority.PINNED_AUTHORITY_PUBLIC_KEY_SHA256
+    ),
+)
+
+
+def _make_test_signed_policy_envelope_verifier(
+    public_key: bytes,
+) -> Callable[[Mapping[str, Any], Mapping[str, Any]], None]:
+    """Build an explicit synthetic-key verifier without mutating trust globals."""
+
+    return _make_signed_policy_envelope_verifier(
+        bytes(public_key),
+        expected_public_key_sha256=hashlib.sha256(bytes(public_key)).hexdigest(),
+    )
+
+
+def _scenario_sha_map(value: Any, *, field: str) -> dict[str, str]:
+    if not isinstance(value, dict) or set(value) != set(FORMAL_LEO_WEAK_SCENARIOS):
+        raise PredictorPackageError(f"SOMP-H authority {field} scenario schema drift")
+    result = {str(key): str(item) for key, item in value.items()}
+    if any(not _is_sha256(item) for item in result.values()):
+        raise PredictorPackageError(f"SOMP-H authority {field} SHA256 drift")
+    return result
+
+
+def _dataset_basename(value: Any) -> str:
+    return str(value).replace("\\", "/").rsplit("/", 1)[-1]
+
+
+def _authority_member_sha256(commit: Mapping[str, Any], name: str) -> str:
+    members = commit.get("members")
+    if not isinstance(members, list):
+        raise PredictorPackageError("SOMP-H authority commit member registry missing")
+    matches = [
+        item
+        for item in members
+        if isinstance(item, dict) and item.get("name") == name
+    ]
+    if len(matches) != 1 or not _is_sha256(matches[0].get("sha256")):
+        raise PredictorPackageError("SOMP-H authority commit member binding missing")
+    return str(matches[0]["sha256"])
+
+
+def _validate_formal_lineage_authority(
+    *,
+    manifest: Mapping[str, Any],
+    seal: Mapping[str, Any],
+    provenance_index: Mapping[str, Mapping[str, Mapping[str, Any]]],
+    authority_lock: Mapping[str, Any],
+    authority_attestation: Mapping[str, Any],
+    authority_commit: Mapping[str, Any],
+    expected_authority_commit_sha256: str,
+    expected_package_detached_seal_sha256: str,
+    authorization: Mapping[str, Any],
+    authorization_sha256: str,
+    actual_formal_policy_sha256: str,
+    code_closure_sha256: str,
+    package_control_roots: Mapping[str, Any],
+) -> dict[str, Any]:
+    receiver = manifest.get("receiver")
+    seed = manifest.get("seed")
+    if receiver not in FORMAL_RECEIVERS:
+        raise PredictorPackageError(
+            "SOMP-H formal authority requires a formal receiver"
+        )
+    if (
+        authority_lock.get("receiver") != receiver
+        or authority_lock.get("seed") != seed
+        or authority_lock.get("cache_scope") != "stage2_registered"
+    ):
+        raise PredictorPackageError("SOMP-H package/authority row binding mismatch")
+    old_tx_ids = authority_lock.get("old_tx_ids")
+    new_tx_ids = authority_lock.get("new_tx_ids")
+    if old_tx_ids != list(OLD_TX_IDS):
+        raise PredictorPackageError("SOMP-H authority target-old TX set is not formal")
+    if (
+        not isinstance(new_tx_ids, list)
+        or len(new_tx_ids) not in FORMAL_NEW_CLASS_COUNTS
+        or new_tx_ids != list(NEW_TX_IDS[: len(new_tx_ids)])
+    ):
+        raise PredictorPackageError("SOMP-H authority target-new TX set is not formal")
+    registration_state = manifest.get("registration_state")
+    expected_stage = "stage2b" if registration_state == "before" else "stage2c"
+    expected_class_count = len(old_tx_ids) + (
+        0 if registration_state == "before" else len(new_tx_ids)
+    )
+    if (
+        manifest.get("stage") != expected_stage
+        or manifest.get("registered_class_count") != expected_class_count
+    ):
+        raise PredictorPackageError(
+            "SOMP-H formal registration state/class-count binding drift"
+        )
+    datasets = authority_lock.get("datasets")
+    if not isinstance(datasets, list) or len(datasets) != 2:
+        raise PredictorPackageError("SOMP-H authority dataset registry missing")
+    dataset_by_role = {
+        item.get("role"): item for item in datasets if isinstance(item, dict)
+    }
+    old_dataset = dataset_by_role.get("target_old")
+    new_dataset = dataset_by_role.get("target_new")
+    if (
+        not isinstance(old_dataset, dict)
+        or not isinstance(new_dataset, dict)
+        or _dataset_basename(old_dataset.get("path")) != "ManySig.pkl"
+        or _dataset_basename(new_dataset.get("path")) != "ManyTx.pkl"
+        or old_dataset.get("tx_ids") != old_tx_ids
+        or new_dataset.get("tx_ids") != new_tx_ids
+    ):
+        raise PredictorPackageError(
+            "SOMP-H formal authority requires ManySig-old and ManyTx-new"
+        )
+    for field, expected in lineage_authority.PHASE2_SINGLE_OBSERVATION_CONTRACT.items():
+        if authority_lock.get(field) != expected or manifest.get(field) != expected:
+            raise PredictorPackageError(
+                f"SOMP-H single-observation authority drift: {field}"
+            )
+    if (
+        authority_lock.get("physical_sample_scenario_assignment_policy")
+        != lineage_authority.PHYSICAL_SAMPLE_SCENARIO_ASSIGNMENT_POLICY
+        or authority_lock.get("cross_scenario_physical_disjointness_audit") != "PASS"
+        or authority_lock.get("single_observation_contract_audit") != "PASS"
+    ):
+        raise PredictorPackageError(
+            "SOMP-H single-observation assignment authority failed"
+        )
+    cache_sha_by_scenario = _scenario_sha_map(
+        authority_lock.get("cache_sha256_by_scenario"),
+        field="cache_sha256_by_scenario",
+    )
+    for field in (
+        "physical_sample_ids_sha256_by_scenario",
+        "post_channel_iq_sha256_root_by_scenario",
+        "overlay_ids_sha256_by_scenario",
+    ):
+        _scenario_sha_map(authority_lock.get(field), field=field)
+    if not _is_sha256(
+        authority_lock.get("physical_sample_scenario_assignment_sha256")
+    ):
+        raise PredictorPackageError("SOMP-H physical assignment SHA256 missing")
+    structural_receipt_sha256 = authority_attestation.get(
+        "structural_receipt_sha256"
+    )
+    if not _is_sha256(structural_receipt_sha256):
+        raise PredictorPackageError("SOMP-H structural receipt authority missing")
+    for scenario in FORMAL_LEO_WEAK_SCENARIOS:
+        rows = provenance_index.get(scenario)
+        if not isinstance(rows, dict) or not rows:
+            raise PredictorPackageError("SOMP-H package provenance scenario missing")
+        for item in rows.values():
+            if (
+                item.get("source_leo_cache_sha256") != cache_sha_by_scenario[scenario]
+                or item.get("source_leo_provenance_sha256")
+                != structural_receipt_sha256
+            ):
+                raise PredictorPackageError(
+                    "SOMP-H package provenance is detached from formal authority"
+                )
+    if set(authorization) != FORMAL_POLICY_AUTHORIZATION_KEYS:
+        raise PredictorPackageError(
+            "SOMP-H formal policy authorization exact schema drift"
+        )
+    attestation_sha256 = _authority_member_sha256(
+        authority_commit, lineage_authority.AUTHORITY_ATTESTATION_NAME
+    )
+    for field in (
+        "dataset_authority_root_sha256",
+        "cache_role_inputs_root_sha256",
+    ):
+        source = (
+            authority_attestation
+            if field.startswith("dataset_")
+            else authority_lock
+        )
+        if not _is_sha256(source.get(field)):
+            raise PredictorPackageError(f"SOMP-H authority {field} missing")
+    preflight_code_sha256 = sha256_file(Path(__file__).resolve())
+    if not _is_sha256(actual_formal_policy_sha256):
+        raise PredictorPackageError("SOMP-H actual formal policy SHA256 is invalid")
+    expected = {
+        "schema": SOMPH_FORMAL_POLICY_AUTHORIZATION_SCHEMA,
+        "status": SOMPH_FORMAL_POLICY_AUTHORIZATION_STATUS,
+        "formal_launch_authority": True,
+        "formal_metric_claim_allowed": True,
+        "package_root_sha256": manifest["package_root_sha256"],
+        "package_detached_seal_sha256": expected_package_detached_seal_sha256,
+        "artifact_member_allowlist_sha256": seal[
+            "artifact_member_allowlist_sha256"
+        ],
+        "manifest_sha256": seal["manifest_sha256"],
+        "overlay_provenance_sha256": manifest["overlay_provenance_sha256"],
+        "authority_commit_sha256": expected_authority_commit_sha256,
+        "authority_lock_sha256": authority_commit["authority_lock_sha256"],
+        "authority_attestation_sha256": attestation_sha256,
+        "receiver": receiver,
+        "seed": seed,
+        "stage": manifest["stage"],
+        "registration_state": manifest["registration_state"],
+        "k_shot": manifest["k_shot"],
+        "cache_scope": "stage2_registered",
+        "old_tx_ids": old_tx_ids,
+        "new_tx_ids": new_tx_ids,
+        "dataset_authority_root_sha256": authority_attestation[
+            "dataset_authority_root_sha256"
+        ],
+        "cache_role_inputs_root_sha256": authority_lock[
+            "cache_role_inputs_root_sha256"
+        ],
+        "physical_sample_ids_sha256_by_scenario": authority_lock[
+            "physical_sample_ids_sha256_by_scenario"
+        ],
+        "physical_sample_scenario_assignment_sha256": authority_lock[
+            "physical_sample_scenario_assignment_sha256"
+        ],
+        "post_channel_iq_sha256_root_by_scenario": authority_lock[
+            "post_channel_iq_sha256_root_by_scenario"
+        ],
+        "overlay_ids_sha256_by_scenario": authority_lock[
+            "overlay_ids_sha256_by_scenario"
+        ],
+        "preflight_code_sha256": preflight_code_sha256,
+        "formal_policy_sha256": actual_formal_policy_sha256,
+        "code_closure_sha256": code_closure_sha256,
+        **dict(package_control_roots),
+    }
+    if authorization != expected:
+        raise PredictorPackageError("SOMP-H formal policy authorization binding drift")
+    return {
+        "formal_policy_authorization_sha256": authorization_sha256,
+        "preflight_code_sha256": preflight_code_sha256,
+        "authority_attestation_sha256": attestation_sha256,
+    }
+
+
 def preflight_somph_predictor_bundle(
     package_root: str | Path,
     *,
@@ -1118,6 +1747,177 @@ def preflight_somph_predictor_bundle(
         expected_seal_sha256=expected_seal_sha256,
     )
     return manifest, seal, audit
+
+
+def _preflight_somph_predictor_bundle_with_authority_impl(
+    package_root: str | Path,
+    *,
+    detached_seal_path: str | Path,
+    expected_seal_sha256: str,
+    authority_bundle_root: str | Path,
+    expected_authority_commit_sha256: str,
+    formal_policy_path: str | Path,
+    formal_policy_authorization_path: str | Path,
+    signed_policy_authorization_envelope_path: str | Path,
+    expected_signed_policy_authorization_envelope_sha256: str,
+    signed_policy_verifier: Callable[
+        [Mapping[str, Any], Mapping[str, Any]], None
+    ],
+) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
+    """Authorize one formal package without opening any IQ archive.
+
+    The authority bundle proves the signed pre-overlay/cache lineage but, by
+    design, does not grant launch authority.  A separately expected policy
+    authorization must bind that lineage, this exact package/seal, the current
+    preflight code, and the formal row policy.  Every failure occurs before an
+    IQ archive is opened, CRC-inspected, decompressed, or materialized.
+    """
+
+    manifest, seal, structural_audit, provenance = _preflight(
+        package_root,
+        detached_seal_path=detached_seal_path,
+        expected_seal_sha256=expected_seal_sha256,
+        inspect_iq_members=False,
+        load_npz_control_members=False,
+    )
+    try:
+        authority_lock, authority_attestation, authority_commit = (
+            lineage_authority.verify_somph_lineage_authority_bundle(
+                authority_bundle_root,
+                expected_commit_sha256=expected_authority_commit_sha256,
+            )
+        )
+    except Exception as exc:
+        raise PredictorPackageError(
+            "SOMP-H external lineage authority verification failed"
+        ) from exc
+    policy, actual_policy_sha256 = _external_json_actual(
+        formal_policy_path, context="SOMP-H actual formal execution policy"
+    )
+    _validate_formal_policy(policy)
+    code_members, code_closure_sha256 = _code_closure()
+    authorization, _authorization_file_sha256 = _external_json_actual(
+        formal_policy_authorization_path,
+        context="SOMP-H formal row policy authorization",
+    )
+    authorization_canonical_sha256 = sha256_bytes(
+        canonical_json_bytes(authorization)
+    )
+    package_control_roots = _package_control_roots(
+        manifest,
+        provenance,
+        new_tx_ids=list(authority_lock.get("new_tx_ids", [])),
+    )
+    bindings = _validate_formal_lineage_authority(
+        manifest=manifest,
+        seal=seal,
+        provenance_index=provenance,
+        authority_lock=authority_lock,
+        authority_attestation=authority_attestation,
+        authority_commit=authority_commit,
+        expected_authority_commit_sha256=expected_authority_commit_sha256,
+        expected_package_detached_seal_sha256=expected_seal_sha256,
+        authorization=authorization,
+        authorization_sha256=authorization_canonical_sha256,
+        actual_formal_policy_sha256=actual_policy_sha256,
+        code_closure_sha256=code_closure_sha256,
+        package_control_roots=package_control_roots,
+    )
+    envelope, envelope_sha256 = _external_json_with_expected_sha256(
+        signed_policy_authorization_envelope_path,
+        expected_sha256=expected_signed_policy_authorization_envelope_sha256,
+        context="SOMP-H signed policy authorization envelope",
+    )
+    signed_policy_verifier(
+        envelope,
+        {
+            "authorization_canonical_sha256": authorization_canonical_sha256,
+            "formal_policy_sha256": actual_policy_sha256,
+            "package_root_sha256": manifest["package_root_sha256"],
+            "package_detached_seal_sha256": expected_seal_sha256,
+            "authority_commit_sha256": expected_authority_commit_sha256,
+            "receiver": manifest["receiver"],
+            "seed": manifest["seed"],
+            "stage": manifest["stage"],
+            "registration_state": manifest["registration_state"],
+            "k_shot": manifest["k_shot"],
+            "code_closure_sha256": code_closure_sha256,
+        },
+    )
+    audit = dict(structural_audit)
+    audit.update(
+        {
+            "status": "AUTHORITY_PREFLIGHT_PASS_IQ_OPEN_AUTHORIZED",
+            "iq_archive_opened": False,
+            "np_load_invoked": False,
+            "iq_payload_materialized": False,
+            "iq_open_authorized": True,
+            "phase2_protocol_evidence_status": (
+                "AUTHORITY_PREFLIGHT_PASS_IQ_OPEN_AUTHORIZED"
+            ),
+            "external_authority_lock_verified": True,
+            "authority_commit_sha256": expected_authority_commit_sha256,
+            "formal_policy_sha256": actual_policy_sha256,
+            "signed_policy_authorization_envelope_sha256": envelope_sha256,
+            "package_detached_seal_sha256": expected_seal_sha256,
+            "code_closure_members": code_members,
+            "code_closure_sha256": code_closure_sha256,
+            **package_control_roots,
+            **bindings,
+            "formal_launch_authority": False,
+            "formal_metric_claim_allowed": False,
+            "control_state": "AUTHORITY_PREFLIGHT_PASS_IQ_OPEN_AUTHORIZED",
+        }
+    )
+    audit["preflight_anchor_sha256"] = sha256_bytes(canonical_json_bytes(audit))
+    return manifest, seal, audit
+
+
+def preflight_somph_predictor_bundle_with_authority(
+    package_root: str | Path,
+    *,
+    detached_seal_path: str | Path,
+    expected_seal_sha256: str,
+    authority_bundle_root: str | Path,
+    expected_authority_commit_sha256: str,
+    formal_policy_path: str | Path,
+    formal_policy_authorization_path: str | Path,
+    signed_policy_authorization_envelope_path: str | Path,
+    expected_signed_policy_authorization_envelope_sha256: str,
+) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
+    return _preflight_somph_predictor_bundle_with_authority_impl(
+        package_root,
+        detached_seal_path=detached_seal_path,
+        expected_seal_sha256=expected_seal_sha256,
+        authority_bundle_root=authority_bundle_root,
+        expected_authority_commit_sha256=expected_authority_commit_sha256,
+        formal_policy_path=formal_policy_path,
+        formal_policy_authorization_path=formal_policy_authorization_path,
+        signed_policy_authorization_envelope_path=(
+            signed_policy_authorization_envelope_path
+        ),
+        expected_signed_policy_authorization_envelope_sha256=(
+            expected_signed_policy_authorization_envelope_sha256
+        ),
+        signed_policy_verifier=_DEFAULT_SIGNED_POLICY_ENVELOPE_VERIFIER,
+    )
+
+
+def _make_test_authority_preflight(
+    public_key: bytes,
+) -> Callable[..., tuple[dict[str, Any], dict[str, Any], dict[str, Any]]]:
+    """Return the real preflight bound to one explicit synthetic test key."""
+
+    verifier = _make_test_signed_policy_envelope_verifier(public_key)
+
+    def test_preflight(package_root: str | Path, **kwargs: Any):
+        return _preflight_somph_predictor_bundle_with_authority_impl(
+            package_root,
+            signed_policy_verifier=verifier,
+            **kwargs,
+        )
+
+    return test_preflight
 
 
 def _materialize_iq(
@@ -1280,6 +2080,438 @@ def _validate_query_payload(
         provenance=provenance,
         context=f"query:{scenario}",
     )
+
+
+def _immutable_array(value: np.ndarray) -> np.ndarray:
+    source = np.ascontiguousarray(value)
+    return np.frombuffer(source.tobytes(), dtype=source.dtype).reshape(source.shape)
+
+
+def _immutable_payloads(
+    payloads: Mapping[str, Mapping[str, np.ndarray]],
+) -> Mapping[str, Mapping[str, np.ndarray]]:
+    return MappingProxyType(
+        {
+            scenario: MappingProxyType(
+                {key: _immutable_array(value) for key, value in arrays.items()}
+            )
+            for scenario, arrays in payloads.items()
+        }
+    )
+
+
+def _validated_preflight_anchor(
+    authority_preflight_audit: Mapping[str, Any],
+) -> tuple[dict[str, Any], str]:
+    preflight = json.loads(canonical_json_bytes(authority_preflight_audit))
+    anchor = preflight.pop("preflight_anchor_sha256", None)
+    if (
+        not _is_sha256(anchor)
+        or sha256_bytes(canonical_json_bytes(preflight)) != anchor
+        or preflight.get("status")
+        != "AUTHORITY_PREFLIGHT_PASS_IQ_OPEN_AUTHORIZED"
+        or preflight.get("control_state")
+        != "AUTHORITY_PREFLIGHT_PASS_IQ_OPEN_AUTHORIZED"
+        or preflight.get("iq_open_authorized") is not True
+        or preflight.get("iq_archive_opened") is not False
+        or preflight.get("np_load_invoked") is not False
+        or preflight.get("iq_payload_materialized") is not False
+        or preflight.get("formal_launch_authority") is not False
+        or preflight.get("formal_metric_claim_allowed") is not False
+    ):
+        raise PredictorPackageError("SOMP-H authority preflight anchor invalid")
+    preflight["preflight_anchor_sha256"] = anchor
+    return preflight, anchor
+
+
+def _actual_materialized_roots(
+    payloads: Mapping[str, Mapping[str, np.ndarray]],
+    manifest: Mapping[str, Any],
+) -> dict[str, dict[str, str]]:
+    if set(payloads) != set(FORMAL_LEO_WEAK_SCENARIOS):
+        raise PredictorPackageError("SOMP-H materialized scenario set drift")
+    class_count = int(manifest["registered_class_count"])
+    k_shot = int(manifest["k_shot"])
+    expected_rows = class_count * k_shot
+    observed_tokens: set[str] = set()
+    token_roots: dict[str, str] = {}
+    overlay_roots: dict[str, str] = {}
+    iq_roots: dict[str, str] = {}
+    seed_roots: dict[str, str] = {}
+    assignment_roots: dict[str, str] = {}
+    exact_k_roots: dict[str, str] = {}
+    required_arrays = set(SUPPORT_NPZ_MEMBERS) - {"manifest_json"}
+    for scenario in FORMAL_LEO_WEAK_SCENARIOS:
+        arrays = payloads[scenario]
+        if set(arrays) != required_arrays:
+            raise PredictorPackageError("SOMP-H materialized support schema drift")
+        _validate_iq(
+            arrays["support_leo_weak_iq"],
+            arrays["support_post_channel_iq_sha256"],
+            context=f"verified-materializer:{scenario}",
+        )
+        labels = np.asarray(arrays["support_class_indices"])
+        ranks = np.asarray(arrays["support_rank_within_class"])
+        if (
+            labels.shape != (expected_rows,)
+            or ranks.shape != (expected_rows,)
+            or not np.issubdtype(labels.dtype, np.integer)
+            or not np.issubdtype(ranks.dtype, np.integer)
+        ):
+            raise PredictorPackageError("SOMP-H verified exact-K shape drift")
+        expected_pairs = {
+            (class_index, rank)
+            for class_index in range(class_count)
+            for rank in range(k_shot)
+        }
+        actual_pairs = [
+            (int(label), int(rank)) for label, rank in zip(labels, ranks)
+        ]
+        if set(actual_pairs) != expected_pairs or len(set(actual_pairs)) != expected_rows:
+            raise PredictorPackageError("SOMP-H verified exact-K assignment drift")
+        tokens = _tokens(
+            arrays["support_tokens"],
+            prefix="sid_",
+            context=f"verified-materializer:{scenario}",
+        )
+        overlays = _tokens(
+            arrays["support_overlay_tokens"],
+            prefix="oid_",
+            context=f"verified-materializer-overlay:{scenario}",
+        )
+        iq_hashes = np.asarray(
+            arrays["support_post_channel_iq_sha256"]
+        ).astype(str).tolist()
+        seeds = np.asarray(arrays["support_satellite_seeds"])
+        if (
+            len(tokens) != expected_rows
+            or len(overlays) != expected_rows
+            or seeds.shape != (expected_rows,)
+            or not np.issubdtype(seeds.dtype, np.integer)
+        ):
+            raise PredictorPackageError("SOMP-H verified support metadata drift")
+        if observed_tokens & set(tokens):
+            raise PredictorPackageError(
+                "SOMP-H verified cross-scenario physical reuse"
+            )
+        observed_tokens.update(tokens)
+        ordered = sorted(
+            zip(tokens, overlays, seeds.tolist(), iq_hashes, actual_pairs),
+            key=lambda item: item[0],
+        )
+        token_roots[scenario] = sha256_bytes(
+            canonical_json_bytes([item[0] for item in ordered])
+        )
+        overlay_roots[scenario] = sha256_bytes(
+            canonical_json_bytes([item[1] for item in ordered])
+        )
+        seed_roots[scenario] = sha256_bytes(
+            canonical_json_bytes([int(item[2]) for item in ordered])
+        )
+        iq_roots[scenario] = sha256_bytes(
+            canonical_json_bytes([item[3] for item in ordered])
+        )
+        assignment_roots[scenario] = sha256_bytes(
+            canonical_json_bytes(
+                [
+                    {
+                        "sample_token": item[0],
+                        "overlay_token": item[1],
+                        "satellite_seed": int(item[2]),
+                        "post_channel_iq_sha256": item[3],
+                    }
+                    for item in ordered
+                ]
+            )
+        )
+        exact_k_roots[scenario] = sha256_bytes(
+            canonical_json_bytes(
+                [
+                    {
+                        "sample_token": item[0],
+                        "class_index": item[4][0],
+                        "rank_within_class": item[4][1],
+                    }
+                    for item in ordered
+                ]
+            )
+        )
+    return {
+        "actual_support_token_sha256_by_scenario": token_roots,
+        "actual_overlay_ids_sha256_by_scenario": overlay_roots,
+        "actual_iq_sha256_root_by_scenario": iq_roots,
+        "actual_satellite_seed_sha256_by_scenario": seed_roots,
+        "actual_materialized_assignment_sha256_by_scenario": assignment_roots,
+        "actual_exact_k_assignment_sha256_by_scenario": exact_k_roots,
+    }
+
+
+def _require_actual_roots_match_preflight(
+    actual: Mapping[str, Mapping[str, str]],
+    preflight: Mapping[str, Any],
+) -> None:
+    pairs = (
+        (
+            "actual_support_token_sha256_by_scenario",
+            "package_physical_sample_ids_sha256_by_scenario",
+        ),
+        (
+            "actual_overlay_ids_sha256_by_scenario",
+            "package_overlay_ids_sha256_by_scenario",
+        ),
+        (
+            "actual_iq_sha256_root_by_scenario",
+            "package_post_channel_iq_sha256_by_scenario",
+        ),
+        (
+            "actual_satellite_seed_sha256_by_scenario",
+            "package_satellite_seed_sha256_by_scenario",
+        ),
+        (
+            "actual_materialized_assignment_sha256_by_scenario",
+            "package_materialized_assignment_sha256_by_scenario",
+        ),
+    )
+    if any(dict(actual[left]) != dict(preflight.get(right, {})) for left, right in pairs):
+        raise PredictorPackageError(
+            "SOMP-H actual materialized roots differ from preauthorized roots"
+        )
+
+
+def _materialization_runtime_binding(
+    manifest: Mapping[str, Any], preflight: Mapping[str, Any]
+) -> dict[str, str]:
+    return {
+        "package_root_sha256": manifest["package_root_sha256"],
+        "feature_runtime_sha256": manifest["feature_runtime_sha256"],
+        "phase1_checkpoint_sha256": manifest["phase1_checkpoint_sha256"],
+        "method_lock_sha256": manifest["method_lock_sha256"],
+        "preflight_anchor_sha256": preflight["preflight_anchor_sha256"],
+        "code_closure_sha256": preflight["code_closure_sha256"],
+    }
+
+
+def _make_verified_materialization_api():
+    capability = object()
+    issued: weakref.WeakKeyDictionary[Any, str] = weakref.WeakKeyDictionary()
+
+    class SomphMaterializedEnrollmentEvidence:
+        __slots__ = (
+            "_manifest_json",
+            "_seal_json",
+            "_preflight_json",
+            "_payloads",
+            "_binding_json",
+            "_evidence_sha256",
+            "__weakref__",
+        )
+
+        def __init__(
+            self,
+            *,
+            manifest: Mapping[str, Any],
+            seal: Mapping[str, Any],
+            preflight: Mapping[str, Any],
+            payloads: Mapping[str, Mapping[str, np.ndarray]],
+            binding: Mapping[str, Any],
+            _capability: object,
+        ) -> None:
+            if _capability is not capability:
+                raise PredictorPackageError(
+                    "SOMP-H materialized evidence requires verified materializer"
+                )
+            object.__setattr__(self, "_manifest_json", canonical_json_bytes(manifest))
+            object.__setattr__(self, "_seal_json", canonical_json_bytes(seal))
+            object.__setattr__(self, "_preflight_json", canonical_json_bytes(preflight))
+            object.__setattr__(self, "_payloads", _immutable_payloads(payloads))
+            object.__setattr__(self, "_binding_json", canonical_json_bytes(binding))
+            digest = sha256_bytes(
+                canonical_json_bytes(
+                    {
+                        "manifest_sha256": sha256_bytes(self._manifest_json),
+                        "seal_sha256": sha256_bytes(self._seal_json),
+                        "preflight_sha256": sha256_bytes(self._preflight_json),
+                        "binding_sha256": sha256_bytes(self._binding_json),
+                    }
+                )
+            )
+            object.__setattr__(self, "_evidence_sha256", digest)
+
+        @property
+        def manifest(self) -> dict[str, Any]:
+            return json.loads(self._manifest_json)
+
+        @property
+        def materialized_payloads(self) -> Mapping[str, Mapping[str, np.ndarray]]:
+            return self._payloads
+
+        @property
+        def evidence_sha256(self) -> str:
+            return self._evidence_sha256
+
+    def materialize(
+        package_root: str | Path,
+        *,
+        detached_seal_path: str | Path,
+        expected_seal_sha256: str,
+        authority_preflight_audit: Mapping[str, Any],
+    ) -> SomphMaterializedEnrollmentEvidence:
+        preflight, _anchor = _validated_preflight_anchor(
+            authority_preflight_audit
+        )
+        if expected_seal_sha256 != preflight.get(
+            "package_detached_seal_sha256"
+        ):
+            raise PredictorPackageError(
+                "SOMP-H materializer detached seal/preflight drift"
+            )
+        manifest, seal, _structural, provenance = _preflight(
+            package_root,
+            detached_seal_path=detached_seal_path,
+            expected_seal_sha256=expected_seal_sha256,
+            inspect_iq_members=False,
+            load_npz_control_members=False,
+        )
+        if (
+            manifest.get("profile") != ENROLLMENT_ONLY
+            or manifest.get("package_root_sha256")
+            != preflight.get("package_root_sha256")
+            or seal.get("manifest_sha256") != preflight.get("manifest_sha256")
+            or seal.get("package_root_sha256")
+            != manifest.get("package_root_sha256")
+        ):
+            raise PredictorPackageError("SOMP-H materializer package binding drift")
+        _members, current_code_closure = _code_closure()
+        if current_code_closure != preflight.get("code_closure_sha256"):
+            raise PredictorPackageError("SOMP-H materializer code closure drift")
+        by_kind = {item["kind"]: item for item in manifest["members"]}
+        payloads: dict[str, dict[str, np.ndarray]] = {}
+        iq_member_roots: dict[str, str] = {}
+        for scenario in FORMAL_LEO_WEAK_SCENARIOS:
+            descriptor = by_kind[f"support:{scenario}"]
+            arrays, embedded = _materialize_iq(Path(package_root), descriptor)
+            _validate_support_payload(
+                arrays,
+                embedded,
+                manifest=manifest,
+                scenario=scenario,
+                provenance=provenance[scenario],
+            )
+            payloads[scenario] = arrays
+            iq_member_roots[scenario] = descriptor["sha256"]
+        immutable_payloads = _immutable_payloads(payloads)
+        actual = _actual_materialized_roots(immutable_payloads, manifest)
+        _require_actual_roots_match_preflight(actual, preflight)
+        runtime = _materialization_runtime_binding(manifest, preflight)
+        binding = {
+            "schema": "cvs.phase2.somph_verified_materialization_evidence.v1",
+            "package_detached_seal_sha256": expected_seal_sha256,
+            "manifest_sha256": seal["manifest_sha256"],
+            "artifact_member_allowlist_sha256": seal[
+                "artifact_member_allowlist_sha256"
+            ],
+            "iq_member_sha256_by_scenario": iq_member_roots,
+            "runtime_binding": runtime,
+            **actual,
+        }
+        evidence = SomphMaterializedEnrollmentEvidence(
+            manifest=manifest,
+            seal=seal,
+            preflight=preflight,
+            payloads=immutable_payloads,
+            binding=binding,
+            _capability=capability,
+        )
+        issued[evidence] = evidence.evidence_sha256
+        return evidence
+
+    def finalize(evidence: Any) -> dict[str, Any]:
+        registered_digest = (
+            issued.pop(evidence, None)
+            if isinstance(evidence, SomphMaterializedEnrollmentEvidence)
+            else None
+        )
+        if registered_digest is None or registered_digest != getattr(
+            evidence, "_evidence_sha256", None
+        ):
+            raise PredictorPackageError(
+                "SOMP-H finalizer requires fresh token-sealed materialized evidence"
+            )
+        manifest = json.loads(evidence._manifest_json)
+        seal = json.loads(evidence._seal_json)
+        preflight, _anchor = _validated_preflight_anchor(
+            json.loads(evidence._preflight_json)
+        )
+        binding = json.loads(evidence._binding_json)
+        recomputed_digest = sha256_bytes(
+            canonical_json_bytes(
+                {
+                    "manifest_sha256": sha256_bytes(evidence._manifest_json),
+                    "seal_sha256": sha256_bytes(evidence._seal_json),
+                    "preflight_sha256": sha256_bytes(evidence._preflight_json),
+                    "binding_sha256": sha256_bytes(evidence._binding_json),
+                }
+            )
+        )
+        if recomputed_digest != evidence.evidence_sha256:
+            raise PredictorPackageError("SOMP-H materialized evidence digest drift")
+        if (
+            manifest.get("profile") != ENROLLMENT_ONLY
+            or manifest.get("package_root_sha256")
+            != preflight.get("package_root_sha256")
+            or seal.get("package_root_sha256")
+            != manifest.get("package_root_sha256")
+            or seal.get("manifest_sha256") != preflight.get("manifest_sha256")
+            or binding.get("package_detached_seal_sha256")
+            != preflight.get("package_detached_seal_sha256")
+            or binding.get("artifact_member_allowlist_sha256")
+            != preflight.get("artifact_member_allowlist_sha256")
+        ):
+            raise PredictorPackageError("SOMP-H finalizer package/seal binding drift")
+        _members, current_code_closure = _code_closure()
+        runtime = _materialization_runtime_binding(manifest, preflight)
+        if (
+            current_code_closure != preflight.get("code_closure_sha256")
+            or binding.get("runtime_binding") != runtime
+        ):
+            raise PredictorPackageError("SOMP-H finalizer code/runtime binding drift")
+        actual = _actual_materialized_roots(evidence._payloads, manifest)
+        _require_actual_roots_match_preflight(actual, preflight)
+        if any(binding.get(key) != value for key, value in actual.items()):
+            raise PredictorPackageError("SOMP-H finalizer evidence root drift")
+        final = dict(preflight)
+        final.update(
+            {
+                "status": "CURRENT_PROTOCOL_REAL_INPUT_AUDIT_PASS",
+                "control_state": "CURRENT_PROTOCOL_REAL_INPUT_AUDIT_PASS",
+                "phase2_protocol_evidence_status": (
+                    "CURRENT_PROTOCOL_REAL_INPUT_AUDIT_PASS"
+                ),
+                "iq_archive_opened": True,
+                "np_load_invoked": True,
+                "iq_payload_materialized": True,
+                "verified_materialization_evidence_sha256": (
+                    evidence.evidence_sha256
+                ),
+                **actual,
+                "runtime_binding": runtime,
+                "formal_launch_authority": True,
+                "formal_metric_claim_allowed": True,
+            }
+        )
+        final["post_materialization_audit_sha256"] = sha256_bytes(
+            canonical_json_bytes(final)
+        )
+        return final
+
+    return SomphMaterializedEnrollmentEvidence, materialize, finalize
+
+
+(
+    SomphMaterializedEnrollmentEvidence,
+    materialize_somph_enrollment_with_authority,
+    finalize_somph_enrollment_authority_after_materialization,
+) = _make_verified_materialization_api()
 
 
 def load_verified_somph_predictor_bundle(
