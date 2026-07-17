@@ -78,3 +78,10 @@
 - 只读核验显示密封method lock自身恰好含26字段且与当前合同逐项一致；失败来自远端`somph_predictor_runtime.py`仍是旧SHA`9565…`，其expected lock使用旧合同。
 - formal policy声明的三项code closure中，`somph_predictor_bundle.py`与`somph_runtime_trust.py`远端已匹配；`stage2_predictor_bundle.py`受既有签名authority约束，不在没有重建authority的情况下追随本地新版本。
 - v3仅同步当前已提交的`somph_predictor_runtime.py`和独立v3 launcher，再做无IQ method-lock原子预检；不修改D18 package、seal、policy或authorization。
+
+### support_screen_v3结果与v4闭包补齐
+
+- v3 PID`3312866`通过manifest与method-lock严格校验，随后在support打开前失败于`signed policy envelope binding drift`。
+- 逐字段比较显示11个envelope绑定字段中仅`code_closure_sha256`不一致：签名envelope要求`b0b7f2c2…9606f`，远端闭包为`47096709…cd06`。
+- 本地当前三成员闭包使用`stage2_predictor_bundle.py` SHA256`bb27beaa…44aa9`，精确重建签名要求的`b0b7f2c2…9606f`；远端旧成员SHA256`8bf20101…bc05`是唯一差异。
+- v4同步该已签名闭包成员及独立v4 launcher，不修改、重签或绕过package/seal/policy/authorization；先核验闭包SHA精确等于envelope，再启动support-only筛选。

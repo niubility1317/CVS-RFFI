@@ -7,11 +7,11 @@ CAP="$BASE/phase2_capsules/rx_20_1/seed_713101/k_10/new_5_retry3"
 AUTH="$BASE/input/runtime_authorization_k10_new5"
 COMP="$PROJECT/runs/d19_ciaf_int8_proto_20260717_1039/input/int8_component"
 RUN="$PROJECT/runs/d20_int8_maxold_fftrf_20260717"
-OUTPUT="$RUN/output/support_screen_v3"
+OUTPUT="$RUN/output/support_screen_v4"
 LOG_ROOT="$PROJECT/logs/d20_int8_maxold_fftrf_20260717"
-LOG="$LOG_ROOT/support_screen_v3.log"
-PID_FILE="$RUN/support_screen_v3.pid"
-PYCACHE_ROOT="$RUN/pycache_support_screen_v3"
+LOG="$LOG_ROOT/support_screen_v4.log"
+PID_FILE="$RUN/support_screen_v4.pid"
+PYCACHE_ROOT="$RUN/pycache_support_screen_v4"
 PYTHON=/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python
 
 if [[ -e "$OUTPUT" ]]; then
