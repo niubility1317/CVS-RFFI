@@ -67,6 +67,14 @@ phase2_pretrained_artifact_policy=sealed_phase1_deployment_bundle_with_optional_
 - 远端根：`/home/szu2070436088/2510044040/CV-SincNet`；Python：`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`；output/log分别位于`runs/d29_pcsr_20260718/output/support_screen_v1`与`logs/d29_pcsr_20260718/support_screen_v1.log`。
 - 启动前重新执行本地73+新增D29测试、Git/SHA闭包、N607直连preflight/live inventory、远端SHA、`py_compile`、`bash -n`及output不存在门。
 
+### 启动前live状态
+
+- 2026-07-18 05:11 CST直连preflight PASS：host `dell-DSS8440`，项目根可见，8张RTX 3090均为0%利用率、10MiB显存占用。
+- `n607_training_inventory.py --direct-only --pretty`：`active_training_processes=[]`、`gpu_compute=[]`、`unknown_training_active=false`；本轮计划使用GPU0，未超过每GPU最多2个训练实验的约束。
+- Git版本：`c179907c feat(stage2): add D29 classwise safe release screen`。
+- 计划同步映射：`code/scripts/run_d25_support_only_concat.py`→同名远端路径；`code/cvsrffi/stage2_classwise_safe_release.py`→同名远端路径；`code/scripts/launch_d29_pcsr_support_20260718.sh`→同名远端路径。远端已有D27/D25/D24/CIAF/control/diag文件仅做SHA只读验证，不覆盖。
+- 计划服务器命令：`D29_GPU=0 bash code/scripts/launch_d29_pcsr_support_20260718.sh`；Python环境`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`；PID、log、output分别为`runs/d29_pcsr_20260718/support_screen_v1.pid`、`logs/d29_pcsr_20260718/support_screen_v1.log`、`runs/d29_pcsr_20260718/output/support_screen_v1`。
+
 ## 本地实现与验证
 
 - 新增`code/cvsrffi/stage2_classwise_safe_release.py`：实现support-only 5-fold shot-rank OOF逐类宽度/幅度选择、全support联合安全复验、K=1精确旁路和逐行推理。
