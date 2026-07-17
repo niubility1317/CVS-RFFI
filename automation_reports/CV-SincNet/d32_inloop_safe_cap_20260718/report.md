@@ -3,7 +3,7 @@
 ## 登记
 
 - 实验ID：`d32_inloop_safe_cap_20260718`；operator：Codex；日期：2026-07-18。
-- 状态：`N607_PREFLIGHT_PASS_PENDING_SYNC`。
+- 状态：`REMOTE_SOURCE_CLOSURE_PASS_READY_TO_LAUNCH`。
 - 节奏：D32是D27-D29回顾后的第3轮；本轮完成后必须在D33前执行并记录新回顾。
 - 目标：修复D31训练面与部署面不一致。每个Stage2-C forward从注册旧类support计算每个新类的安全非正bias，并在完全相同的带bias分数面上训练和部署；同时继续优化新类floor与旧类遗忘。
 - 比较：Z0、B3诊断、C0、D32-A/B/C；6候选×3场景×5折=90行。
@@ -40,6 +40,7 @@
 
 - 2026-07-18 07:03 CST直接preflight通过：host `dell-DSS8440`，8×RTX 3090空闲，live inventory无训练进程；检查后本地SSH/TCP22连接为0。
 - 本地Git提交：`b184411c feat(stage2): add D32 in-loop safe cap route`。
+- 仅同步runner、D32 core和launcher；远端SHA分别为`7a041be0...cb156`、`a421f914...d6dcb`、`1bde1442...c2efa`。远端编译、launcher语法、唯一输出不存在和继承D31/diag SHA检查通过；连接退出后SSH/TCP22为0。
 - preflight与live inventory通过后，只同步runner、D32 core和launcher；其他依赖仅校验SHA。
 - 远端cwd `/home/szu2070436088/2510044040/CV-SincNet`；Python `/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`。
 - 命令：`D32_GPU=0 bash code/scripts/launch_d32_inloop_safe_cap_20260718.sh`。
