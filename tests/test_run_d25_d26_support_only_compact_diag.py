@@ -104,6 +104,34 @@ def test_d26_candidate_lock_matrix_and_historical_sets_are_stable() -> None:
         if row["candidate_id"] in runner.D27_CANDIDATES
     )
 
+    d28_candidates = runner.preregistered_candidates(runner.CANDIDATE_SET_D28_V1)
+    assert tuple(d28_candidates) == (
+        runner.IDENTITY_CANDIDATE,
+        runner.DIAG_CANDIDATE,
+        runner.D25_C0,
+        runner.D28_A,
+        runner.D28_B,
+        runner.D28_C,
+    )
+    assert isinstance(d28_candidates[runner.D28_A], D26CompactDiagConfig)
+    assert d28_candidates[runner.D28_A].stage2c_steps == 10
+    assert d28_candidates[runner.D28_B].gate.delta == 1.0
+    assert d28_candidates[runner.D28_C].gate.delta == 2.0
+    d28_lock = runner._candidate_lock(
+        d28_candidates, runner.CANDIDATE_SET_D28_V1
+    )
+    assert d28_lock["schema"] == "cvs.phase2.d25.candidate_lock.v6"
+    assert d28_lock["candidate_set"] == runner.CANDIDATE_SET_D28_V1
+    assert "d28_support_evidence_gate_core_sha256" in d28_lock["source_closure"]
+    assert all(
+        row["family"] in (
+            "d27_per_new_class_bias",
+            "d28_support_evidence_gate",
+        )
+        for row in d28_lock["candidates"]
+        if row["candidate_id"] in runner.D28_CANDIDATES
+    )
+
     assert tuple(runner.preregistered_candidates()) == (
         runner.IDENTITY_CANDIDATE,
         runner.DIAG_CANDIDATE,
@@ -140,6 +168,7 @@ def test_d26_cli_has_no_query_source_or_clean_surface() -> None:
         runner.CANDIDATE_SET_D26_V1,
         runner.CANDIDATE_SET_D26_V2,
         runner.CANDIDATE_SET_D27_V1,
+        runner.CANDIDATE_SET_D28_V1,
     )
     forbidden = ("query", "truth", "scorer", "role", "quota", "source", "clean")
     destinations = {action.dest.lower() for action in parser._actions}
@@ -162,6 +191,37 @@ def _synthetic_blocks() -> tuple[dict[str, np.ndarray], np.ndarray, np.ndarray, 
         z_center = rng.normal(size=160)
         fft_center = rng.normal(size=96)
         rf_center = rng.normal(size=32)
+        for rank in range(10):
+            labels.append(label)
+            ranks.append(rank)
+            z_rows.append(z_center + 0.02 * rng.normal(size=160))
+            fft_rows.append(fft_center + 0.02 * rng.normal(size=96))
+            rf_rows.append(rf_center + 0.02 * rng.normal(size=32))
+    return (
+        {"labels": np.asarray(labels), "ranks": np.asarray(ranks, dtype=np.int64)},
+        np.asarray(z_rows, dtype=np.float32),
+        np.asarray(fft_rows, dtype=np.float32),
+        np.asarray(rf_rows, dtype=np.float32),
+    )
+
+
+def _synthetic_d28_blocks(
+) -> tuple[dict[str, np.ndarray], np.ndarray, np.ndarray, np.ndarray]:
+    rng = np.random.default_rng(280718)
+    classes = tuple(f"old_{index}" for index in range(3)) + tuple(
+        f"new_{index}" for index in range(3)
+    )
+    labels: list[str] = []
+    ranks: list[int] = []
+    z_rows: list[np.ndarray] = []
+    fft_rows: list[np.ndarray] = []
+    rf_rows: list[np.ndarray] = []
+    for class_index, label in enumerate(classes):
+        # Keep group evidence learnable while retaining class-specific identity.
+        group_shift = -0.25 if class_index < 3 else 0.25
+        z_center = rng.normal(size=160) + group_shift
+        fft_center = rng.normal(size=96) + group_shift
+        rf_center = rng.normal(size=32) + group_shift
         for rank in range(10):
             labels.append(label)
             ranks.append(rank)
@@ -252,6 +312,31 @@ def test_real_d27_fold_records_per_new_class_biases_and_old_guard() -> None:
     )
     assert len(audit["selected_biases"]) == 2
     assert result["resource"]["new_class_bias_scalar_count"] == 2
+
+
+def test_real_d28_fold_is_row_local_support_only_and_resource_bounded() -> None:
+    rows, z_rows, fft_rows, rf_rows = _synthetic_d28_blocks()
+    candidates = runner.preregistered_candidates(runner.CANDIDATE_SET_D28_V1)
+    result = runner._evaluate_d28_fold(
+        rows,
+        z_rows,
+        fft_rows,
+        rf_rows,
+        old_classes=("old_0", "old_1", "old_2"),
+        new_classes=("new_0", "new_1", "new_2"),
+        held_ranks=(0, 1),
+        candidate_id=runner.D28_B,
+        config=candidates[runner.D28_B],
+    )
+    assert result["fit_k_shot"] == 8
+    assert result["old_score_columns_bitwise_unchanged"] is True
+    assert result["resource"]["total_optimizer_steps"] == 25
+    assert result["resource"]["query_rows_used_for_fit"] == 0
+    assert result["resource"]["query_batch_global_assignment"] is False
+    assert result["resource"]["dense_query_graph_bytes"] == 0
+    assert result["resource"]["persistent_state_cap_pass"] is True
+    assert result["resource"]["active_adaptation_parameter_count"] <= 80_000
+    assert result["gate_fit_audit"]["query_rows_used"] == 0
 
 
 def _metric(value: float, labels: tuple[str, ...]) -> dict[str, object]:
