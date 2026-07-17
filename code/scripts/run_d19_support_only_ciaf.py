@@ -440,25 +440,25 @@ def preregistered_candidates() -> dict[str, CiafConfig]:
             support_alpha_max=1.0,
             collision_bias_weight=0.0,
         ),
-        "A025_095_B006": CiafConfig(
-            support_alpha_min=0.25,
-            support_alpha_max=0.95,
-            collision_bias_weight=0.06,
+        "A095_100_B000": CiafConfig(
+            support_alpha_min=0.95,
+            support_alpha_max=1.00,
+            collision_bias_weight=0.0,
         ),
-        "A025_095_B012": CiafConfig(
-            support_alpha_min=0.25,
-            support_alpha_max=0.95,
-            collision_bias_weight=0.12,
+        "A090_098_B000": CiafConfig(
+            support_alpha_min=0.90,
+            support_alpha_max=0.98,
+            collision_bias_weight=0.0,
         ),
-        "A040_090_B012": CiafConfig(
-            support_alpha_min=0.40,
+        "A080_095_B000": CiafConfig(
+            support_alpha_min=0.80,
+            support_alpha_max=0.95,
+            collision_bias_weight=0.0,
+        ),
+        "A070_090_B000": CiafConfig(
+            support_alpha_min=0.70,
             support_alpha_max=0.90,
-            collision_bias_weight=0.12,
-        ),
-        "A010_080_B018": CiafConfig(
-            support_alpha_min=0.10,
-            support_alpha_max=0.80,
-            collision_bias_weight=0.18,
+            collision_bias_weight=0.0,
         ),
     }
 
