@@ -6,7 +6,7 @@
 - 时间：2026-07-18；operator：Codex。
 - 阶段：正式Stage2-B/C之前的development support-only筛选。
 - 探索节奏：D31是D27-D29强制回顾后的第2轮；D30为回顾后第1轮，因此本轮结束后仍可执行D32，第3轮完成后必须在D33前再次回顾。
-- 当前状态：`REMOTE_SOURCE_CLOSURE_PASS_READY_TO_LAUNCH`。
+- 当前状态：`RUNNING_ON_N607`。
 - 目标：把D30确认有效的B3辅助主导拼接几何压入活动上限，并补上其关键机制——Stage2-C使用全部old+new注册support，让旧support成为新类权重的负证据；同时用新类CVaR优化floor，用旧类margin降低注册后遗忘。
 - 比较对象：同run内`Z0`、超步数诊断`B3`、`C0`与D31-A/B/C；同一候选必须联合报告注册前旧类、注册后旧类、seen-new、H、逐类floor和遗忘。
 
@@ -64,6 +64,7 @@
 - 远端cwd：`/home/szu2070436088/2510044040/CV-SincNet`；Python：`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`。
 - 启动命令：`D31_GPU=0 bash code/scripts/launch_d31_all_registered_suffix_20260718.sh`。
 - run：`runs/d31_all_registered_suffix_20260718`；output：`runs/d31_all_registered_suffix_20260718/output/support_screen_v1`；log：`logs/d31_all_registered_suffix_20260718/support_screen_v1.log`；GPU、PID和启动时间待preflight后回填。
+- 实际启动：2026-07-18约06:27 CST，GPU0，PID `3722010`；启动命令成功返回，随后本地SSH进程和到N607 TCP22连接均为0。启动成功仅表示任务landed，不等于artifact完成或性能达标。
 - 每次SSH/SCP后必须确认本地`ssh.exe`与到N607 TCP22连接均已退出。
 
 ## 成功标准与需回填证据
