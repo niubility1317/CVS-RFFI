@@ -115,6 +115,10 @@ def _candidate_lock(candidates: Mapping[str, object]) -> dict[str, Any]:
         "d25_core_sha256": _sha256_file(
             CODE_ROOT / "cvsrffi" / "stage2_multimodal_concat_fusion.py"
         ),
+        "d24_uncertainty_fusion_sha256": _sha256_file(
+            CODE_ROOT / "cvsrffi" / "stage2_uncertainty_proto_fusion.py"
+        ),
+        "ciaf_sha256": _sha256_file(CODE_ROOT / "cvsrffi" / "stage2_ciaf.py"),
         "d19_control_helper_sha256": _sha256_file(
             SCRIPT_DIR / "run_d19_support_only_ciaf.py"
         ),

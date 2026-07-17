@@ -4,7 +4,7 @@
 
 - experiment ID：`d25_multimodal_concat_support_20260717/support_screen_v1`
 - 日期：2026-07-17；operator：Codex
-- 状态：`REMOTE_VERIFIED_READY_TO_LAUNCH`，尚未启动N607。
+- 状态：`V1_PREOPEN_FAILED_V2_LOCAL_VERIFIED`；v1未打开support/query，v2待同步启动。
 - 目标：在不打开query的前提下，使用同一密封LEO_weak enrollment-only support，对D25的288维分块拼接、不确定度ground-z融合和逐块半径评分执行15fold原子筛选。
 - 假设：保留`z_id160+FFT96+RF32`完整288维，同时把块平方能量从D1的辅助分支94.12%支配修正为按维数比例`5/9、1/3、1/9`，可以保留多表征平均增益并改善旧类与新类floor稳定性。
 - 对比：`Z0_SUPPORT_ONLY`、`B3_SINGLE_IQ_DIAG_FFTRF`、`D25_C0_DIM_CONCAT`、`D25_C1_UF_GROUNDZ`、`D25_C2_BLOCK_RADIUS`。
@@ -25,7 +25,8 @@
 - Git仓库：`E:\type10-7\github_publish\CVS-RFFI-repo`；根目录`E:\type10-7`不是Git仓库，本报告同步维护Git镜像。
 - D25核心提交：`f349850d`。
 - D25核心SHA256：`c8789679888bee15e9e3167dcdd576458494fd471f5f83b747836720657f75c7`。
-- runner提交：`912e49c2`；runner SHA256：`ea49bf78ac86f0baad9f5c105d36b8c3fe877c9d5271660f1ad89be105648985`。
+- runner基线提交：`912e49c2`；v2 runner SHA256：`7707bb07110fb872d8677fc2799c2439f47c9d3cf59d12ca57b6612d9f4480ef`。
+- D24依赖SHA256：`2ed2067c4636447f9e013bab2b99d6bc94e149ed5152907fc363b7e802bd2b86`；CIAF依赖SHA256：`f46c5007cb1c0279bf2b27169ad79989eba908f32658c5a4d7f819916381aeb1`。
 - D19控制helper SHA256：`7e46db1e99ac40f4e9d7679dcb7f668553d928a0672a7bcf07022383949c8553`。
 - 本地文件：`code/cvsrffi/stage2_multimodal_concat_fusion.py`、`code/scripts/run_d25_support_only_concat.py`、`tests/test_run_d25_support_only_concat.py`、`code/scripts/launch_d25_concat_support_screen_20260717.sh`。
 - 本地环境：`C:\Users\lh594\.conda\envs\ssr-gpu\python.exe`。
@@ -70,16 +71,26 @@ D25候选相对Z0必须同时满足：
 - Python：启动前重新确认；历史为`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`。
 - GPU/PID：待preflight和live inventory后确定。
 - 远端runner：`/home/szu2070436088/2510044040/CV-SincNet/code/scripts/run_d25_support_only_concat.py`。
-- 远端log：`/home/szu2070436088/2510044040/CV-SincNet/logs/d25_multimodal_concat_20260717/support_screen_v1.log`。
-- 远端output：`/home/szu2070436088/2510044040/CV-SincNet/runs/d25_multimodal_concat_20260717/output/support_screen_v1`。
+- 远端log：`/home/szu2070436088/2510044040/CV-SincNet/logs/d25_multimodal_concat_20260717/support_screen_v2.log`。
+- 远端output：`/home/szu2070436088/2510044040/CV-SincNet/runs/d25_multimodal_concat_20260717/output/support_screen_v2`。
 - 计划启动命令：`D25_GPU=<preflight后选定GPU> bash code/scripts/launch_d25_concat_support_screen_20260717.sh`。
 - 本地到远端同步映射：D25 runner、D25核心和launcher同步到相同repo相对路径；D19 helper仅校验既有远端SHA，不覆盖无关文件。
 - 23:03 CST直连preflight通过；N607项目根目录、服务器时间和8张RTX3090可见。
 - live inventory：无GPU compute、无active training process；GPU0～7均约10MiB空闲状态。本轮选择GPU0。
-- 已同步并远端验证：runner `ea49bf78...8985`、核心`c8789679...75c7`、launcher `7f5bf005...d148`；既有D19 helper `7e46db1e...8553`未覆盖且哈希匹配。
+- v1曾同步并验证：runner `ea49bf78...8985`、核心`c8789679...75c7`、launcher `7f5bf005...d148`；既有D19 helper `7e46db1e...8553`未覆盖且哈希匹配。
 - 远端`py_compile`与launcher `bash -n`通过；同步后本地无残留N607 SSH连接。
 - 精确启动命令：`D25_GPU=0 bash code/scripts/launch_d25_concat_support_screen_20260717.sh`。
 - PID在启动后补入。
+
+## v1 support前失败与v2闭包修复
+
+- v1 PID：`3508035`；进程已退出，GPU无残留任务。
+- 精确错误：`ModuleNotFoundError: No module named 'cvsrffi.stage2_uncertainty_proto_fusion'`。
+- 失败发生在Python import阶段，尚未执行manifest/materialization或打开support；output目录未形成，query始终不可达。因此v1不是性能负结果。
+- 根因：首次source closure只锁runner、D25核心和D19 helper，漏同步D25核心的D24依赖。
+- v2修复：candidate lock增加D24与CIAF SHA；launcher切换独立`support_screen_v2`日志/output/PID/pycache并校验五成员闭包，保留v1日志不覆盖。
+- v2本地验证：runner/launcher语法通过；runner+D25+D24+CIAF共42项PASS。
+- v2 launcher SHA256：`4179d1c7c398bd58736961c1a14ffc362d098a8f5ba95ddd1d471383a3d3524d`。
 
 ## 预期产物
 

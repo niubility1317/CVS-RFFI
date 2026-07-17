@@ -59,7 +59,7 @@ Stage2-C追加新类后，旧类编码payload、块半径、计数、融合权�
 | D25-14 | 正式协议 | 正式路线必须共同密封checkpoint、int8组件和method lock | bundle/runner/report | blocked | 需support-only正向证据后重建 | 历史int8组件仅可用于授权screen |
 | D25-15 | 实验矩阵 | support-only原子门后才进入K1/5/10和正式5RX×5seed×3scene×new5/10/20 | runner/report | blocked | 需D25基础模块与方法锁通过 | 不用平均值绕过逐类floor门 |
 | D25-16 | D25 runner设计 | 独立runner复用D19密封support控制面，但不修改历史D19 runner；固定Z0/B3/C0/C1/C2共75行 | `code/scripts/run_d25_support_only_concat.py` | verified | 候选锁、B3等价、75行矩阵测试 | B3仅diagnostic，不可晋级 |
-| D25-17 | 证据闭包 | support打开前锁定D25核心、D19 helper、D25 runner SHA，并输出6个无样本特征artifact | runner、tests | verified | source closure与artifact schema测试 | support后再次验证closure未变化 |
+| D25-17 | 证据闭包 | support打开前锁定D25核心、D24、CIAF、D19 helper、D25 runner SHA，并输出6个无样本特征artifact | runner、tests | verified | source closure与artifact schema测试 | v1发现依赖遗漏；v2补齐五成员并切独立output |
 
 ## 首轮候选锁
 
@@ -86,4 +86,5 @@ Stage2-C追加新类后，旧类编码payload、块半径、计数、融合权�
 - `python -m pytest -q tests\test_stage2_multimodal_concat_fusion.py tests\test_stage2_uncertainty_proto_fusion.py tests\test_stage2_target_prototype_bank.py`：37项PASS。
 - 新增`code/scripts/run_d25_support_only_concat.py`与`tests/test_run_d25_support_only_concat.py`；runner不提供query/truth/scorer/role/quota/global-assignment/source/clean CLI或public fit参数。
 - `python -m pytest -q tests\test_run_d25_support_only_concat.py tests\test_stage2_multimodal_concat_fusion.py tests\test_stage2_uncertainty_proto_fusion.py tests\test_stage2_target_prototype_bank.py`：44项PASS。
+- v1远端在import阶段因缺少D24文件退出，support/query均未打开；v2把D24与CIAF纳入closure，`tests/test_run_d25_support_only_concat.py`、D25、D24、CIAF共42项PASS。
 - 当前追溯状态：11项verified、1项implemented、2项deferred、2项blocked、1项pending。最高风险项是D25-10：受限对角阵/floor梯度目标及正式50-step预算尚未接入隔离runner；当前实现严格对应0epoch闭式拼接—注册核心，不是完整训练路线。

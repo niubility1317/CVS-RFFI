@@ -8,19 +8,23 @@ AUTH="$BASE/input/runtime_authorization_k10_new5"
 COMP="$PROJECT/runs/d19_ciaf_int8_proto_20260717_1039/input/int8_component"
 D22_RUN="$PROJECT/runs/d20_int8_maxold_fftrf_20260717"
 RUN="$PROJECT/runs/d25_multimodal_concat_20260717"
-OUTPUT="$RUN/output/support_screen_v1"
+OUTPUT="$RUN/output/support_screen_v2"
 LOG_ROOT="$PROJECT/logs/d25_multimodal_concat_20260717"
-LOG="$LOG_ROOT/support_screen_v1.log"
-PID_FILE="$RUN/support_screen_v1.pid"
-PYCACHE_ROOT="$RUN/pycache_support_screen_v1"
+LOG="$LOG_ROOT/support_screen_v2.log"
+PID_FILE="$RUN/support_screen_v2.pid"
+PYCACHE_ROOT="$RUN/pycache_support_screen_v2"
 PYTHON=/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python
 GPU="${D25_GPU:-0}"
 
 RUNNER=code/scripts/run_d25_support_only_concat.py
 CORE=code/cvsrffi/stage2_multimodal_concat_fusion.py
+D24=code/cvsrffi/stage2_uncertainty_proto_fusion.py
+CIAF=code/cvsrffi/stage2_ciaf.py
 CONTROL=code/scripts/run_d19_support_only_ciaf.py
-EXPECTED_RUNNER_SHA256=ea49bf78ac86f0baad9f5c105d36b8c3fe877c9d5271660f1ad89be105648985
+EXPECTED_RUNNER_SHA256=7707bb07110fb872d8677fc2799c2439f47c9d3cf59d12ca57b6612d9f4480ef
 EXPECTED_CORE_SHA256=c8789679888bee15e9e3167dcdd576458494fd471f5f83b747836720657f75c7
+EXPECTED_D24_SHA256=2ed2067c4636447f9e013bab2b99d6bc94e149ed5152907fc363b7e802bd2b86
+EXPECTED_CIAF_SHA256=f46c5007cb1c0279bf2b27169ad79989eba908f32658c5a4d7f819916381aeb1
 EXPECTED_CONTROL_SHA256=7e46db1e99ac40f4e9d7679dcb7f668553d928a0672a7bcf07022383949c8553
 
 verify_sha256() {
@@ -46,6 +50,8 @@ fi
 cd "$PROJECT"
 verify_sha256 "$RUNNER" "$EXPECTED_RUNNER_SHA256"
 verify_sha256 "$CORE" "$EXPECTED_CORE_SHA256"
+verify_sha256 "$D24" "$EXPECTED_D24_SHA256"
+verify_sha256 "$CIAF" "$EXPECTED_CIAF_SHA256"
 verify_sha256 "$CONTROL" "$EXPECTED_CONTROL_SHA256"
 
 mkdir -p "$(dirname "$OUTPUT")" "$LOG_ROOT"
