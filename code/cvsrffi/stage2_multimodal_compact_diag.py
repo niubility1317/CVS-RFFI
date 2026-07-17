@@ -11,6 +11,9 @@ registration calibration parameter is one scalar new-group score bias, chosen
 from a method-locked support-only grid.  The v2 default hard guard preserves
 Stage2-B old-only per-class accuracy and every old-only-correct support row;
 the historical joint-head bias-zero guard remains an explicit config option.
+D27 additionally offers an explicit per-new-class mode whose closed-form caps
+preserve those same old-only support decisions before a bounded support-LOO
+coordinate search.  Query scoring remains one all-registered-class argmax.
 """
 
 from __future__ import annotations
@@ -36,7 +39,13 @@ MAX_TOTAL_STEPS = 30
 MAX_TRAINABLE_PARAMETERS = 80_000
 MAX_PERSISTENT_STATE_BYTES = 256 * 1024
 NEW_GROUP_BIAS_GRID = (-12.0, -8.0, -6.0, -4.0, -3.0, -2.0, -1.0, 0.0)
-BIAS_GUARD_MODES = ("joint_bias0", "pre_registration_old_only")
+NEW_CLASS_BIAS_OFFSETS = (0.0, -0.5, -1.0, -2.0, -4.0)
+NEW_CLASS_BIAS_SAFETY_EPS = 1.0e-4
+BIAS_GUARD_MODES = (
+    "joint_bias0",
+    "pre_registration_old_only",
+    "per_new_class_pre_registration_old_only",
+)
 SCHEMA = "cvs.phase2.d26_multimodal_compact_diag.v1"
 
 
@@ -190,12 +199,18 @@ class D26CompactDiagConfig:
     diagonal_proximity_weight: float = 0.01
     new_group_bias_grid: tuple[float, ...] = NEW_GROUP_BIAS_GRID
     bias_guard_mode: str = "pre_registration_old_only"
+    new_class_bias_offsets: tuple[float, ...] = NEW_CLASS_BIAS_OFFSETS
 
     def __post_init__(self) -> None:
         object.__setattr__(
             self, "new_group_bias_grid", tuple(float(v) for v in self.new_group_bias_grid)
         )
         object.__setattr__(self, "bias_guard_mode", str(self.bias_guard_mode))
+        object.__setattr__(
+            self,
+            "new_class_bias_offsets",
+            tuple(float(v) for v in self.new_class_bias_offsets),
+        )
         self.validate()
 
     def validate(self) -> None:
@@ -225,7 +240,20 @@ class D26CompactDiagConfig:
             raise D26CompactDiagError("D26 bias grid must be finite, unique, and contain 0")
         if self.bias_guard_mode not in BIAS_GUARD_MODES:
             raise D26CompactDiagError(
-                "D26 bias guard mode must be joint_bias0 or pre_registration_old_only"
+                "D26 bias guard mode must be joint_bias0, "
+                "pre_registration_old_only, or "
+                "per_new_class_pre_registration_old_only"
+            )
+        offsets = self.new_class_bias_offsets
+        if (
+            not offsets
+            or 0.0 not in offsets
+            or len(set(offsets)) != len(offsets)
+            or not all(math.isfinite(v) and v <= 0.0 for v in offsets)
+        ):
+            raise D26CompactDiagError(
+                "D26 per-new-class bias offsets must be finite, unique, "
+                "non-positive, and contain 0"
             )
 
 
@@ -243,6 +271,7 @@ class D26CompactDiagState:
     old_lock_sha256: str
     bias_audit_json: str
     config: D26CompactDiagConfig
+    new_class_biases: np.ndarray | None = None
 
     def __post_init__(self) -> None:
         self.config.validate()
@@ -251,6 +280,12 @@ class D26CompactDiagState:
         weights = np.asarray(self.weights)
         counts = np.asarray(self.support_count_by_class)
         old_count = int(self.old_class_count)
+        new_class_count = len(classes) - old_count
+        new_class_biases = (
+            np.empty(0, dtype=np.float32)
+            if self.new_class_biases is None
+            else np.asarray(self.new_class_biases)
+        )
         if (
             self.schema != SCHEMA
             or not classes
@@ -274,6 +309,27 @@ class D26CompactDiagState:
             raise D26CompactDiagError("D26 state drift")
         if old_count == len(classes) and float(self.new_group_bias) != 0.0:
             raise D26CompactDiagError("pre-registration state cannot carry new bias")
+        if (
+            new_class_biases.dtype != np.float32
+            or new_class_biases.ndim != 1
+            or not np.isfinite(new_class_biases).all()
+        ):
+            raise D26CompactDiagError("D26 per-new-class bias state drift")
+        if (
+            self.config.bias_guard_mode
+            == "per_new_class_pre_registration_old_only"
+        ):
+            if (
+                new_class_biases.shape != (new_class_count,)
+                or float(self.new_group_bias) != 0.0
+            ):
+                raise D26CompactDiagError(
+                    "D26 safety-cap mode requires one bias per registered new class"
+                )
+        elif new_class_biases.shape != (0,):
+            raise D26CompactDiagError(
+                "D26 historical group-bias modes cannot carry a per-class bias vector"
+            )
         if float(np.max(np.abs(log_diag))) > LOG_DIAG_LIMIT + 1.0e-6:
             raise D26CompactDiagError("D26 log diagonal exceeds its cap")
         if _state_sha256(classes, log_diag, weights, old_count) != self.old_lock_sha256:
@@ -288,6 +344,9 @@ class D26CompactDiagState:
         object.__setattr__(self, "log_diag", _readonly(log_diag, np.float32))
         object.__setattr__(self, "weights", _readonly(weights, np.float32))
         object.__setattr__(self, "support_count_by_class", _readonly(counts, np.uint16))
+        object.__setattr__(
+            self, "new_class_biases", _readonly(new_class_biases, np.float32)
+        )
         object.__setattr__(self, "bias_audit_json", _canonical_json_bytes(audit).decode("utf-8"))
         if self.trainable_parameters > MAX_TRAINABLE_PARAMETERS:
             raise D26CompactDiagError("D26 trainable parameter cap exceeded")
@@ -313,6 +372,7 @@ class D26CompactDiagState:
             self.log_diag.nbytes
             + self.weights.nbytes
             + self.support_count_by_class.nbytes
+            + self.new_class_biases.nbytes
             + np.dtype(np.float32).itemsize
             + metadata
         )
@@ -341,6 +401,11 @@ class D26CompactDiagState:
             * self.stage2c_optimizer_steps
             * new_support_rows
             * score_macs
+        )
+        bias_audit = json.loads(self.bias_audit_json)
+        bias_selection_macs = int(bias_audit.get("estimated_bias_selection_macs", 0))
+        bias_candidate_evaluations = int(
+            bias_audit.get("bias_candidate_evaluation_count", 0)
         )
         return {
             "schema": "cvs.phase2.d26_compact_diag_resource.v1",
@@ -381,9 +446,25 @@ class D26CompactDiagState:
                 <= MAX_TOTAL_STEPS
             ),
             "estimated_macs_per_query": int(score_macs),
-            "estimated_adaptation_macs": int(stage2b_macs + stage2c_macs),
+            "bias_trainable_parameters": 0,
+            "new_group_bias_scalar_count": int(
+                class_count > self.old_class_count
+                and self.config.bias_guard_mode
+                != "per_new_class_pre_registration_old_only"
+            ),
+            "new_class_bias_scalar_count": int(self.new_class_biases.size),
+            "new_class_bias_vector_bytes": int(self.new_class_biases.nbytes),
+            "registered_bias_additions_per_query": int(
+                class_count - self.old_class_count
+            ),
+            "bias_additions_counted_as_macs": False,
+            "estimated_adaptation_macs": int(
+                stage2b_macs + stage2c_macs + bias_selection_macs
+            ),
             "estimated_stage2b_adaptation_macs": int(stage2b_macs),
             "estimated_stage2c_adaptation_macs": int(stage2c_macs),
+            "estimated_bias_selection_macs": bias_selection_macs,
+            "bias_candidate_evaluation_count": bias_candidate_evaluations,
             "dense_query_graph_bytes": 0,
             # Conservative batch-1 bound for multiplier, scaled/normalized row,
             # normalized registered weights, norms, scores, and bias workspace.
@@ -401,7 +482,6 @@ class D26CompactDiagState:
             ),
             "query_score_dtype": "float32",
             "persistent_state_dtype": "float32",
-            "new_group_bias_scalar_count": int(class_count > self.old_class_count),
             "old_support_rows": old_support_rows,
             "new_support_rows": new_support_rows,
             "support_only": True,
@@ -441,6 +521,7 @@ def _make_state(
     new_group_bias: float,
     bias_audit: dict[str, Any],
     config: D26CompactDiagConfig,
+    new_class_biases: np.ndarray | None = None,
 ) -> D26CompactDiagState:
     return D26CompactDiagState(
         schema=SCHEMA,
@@ -455,6 +536,11 @@ def _make_state(
         old_lock_sha256=_state_sha256(classes, log_diag, weights, old_class_count),
         bias_audit_json=_canonical_json_bytes(bias_audit).decode("utf-8"),
         config=config,
+        new_class_biases=(
+            None
+            if new_class_biases is None
+            else np.asarray(new_class_biases, dtype=np.float32)
+        ),
     )
 
 
@@ -819,6 +905,280 @@ def _select_new_group_bias(
     return float(selected_bias), audit
 
 
+def _select_new_class_safety_cap_bias(
+    *,
+    state: D26CompactDiagState,
+    new_weights: np.ndarray,
+    new_rows: np.ndarray,
+    new_labels: np.ndarray,
+    new_classes: tuple[str, ...],
+    old_rows: np.ndarray,
+    old_labels: np.ndarray,
+) -> tuple[np.ndarray, dict[str, Any]]:
+    """Select one support-only bias per new class under exact old-only caps."""
+
+    old_scores = _scores_np(old_rows, state.log_diag, state.weights)
+    new_scores_on_old = _scores_np(old_rows, state.log_diag, new_weights)
+    old_truth = _class_indices(old_labels, state.classes)
+    old_only_predictions = np.argmax(old_scores, axis=1)
+    old_only_correct = old_only_predictions == old_truth
+    correct_positions = np.flatnonzero(old_only_correct)
+    if len(correct_positions) == 0:
+        raise D26CompactDiagError(
+            "D27 safety-cap bias requires at least one old-only-correct guard row"
+        )
+    per_class_old_only = {
+        value: float(np.mean(old_only_correct[old_labels == value]))
+        for value in state.classes
+    }
+    winning_old_scores = old_scores[correct_positions, old_truth[correct_positions]]
+    safety_gaps = winning_old_scores[:, None] - new_scores_on_old[correct_positions]
+    limiting_local_positions = np.argmin(safety_gaps, axis=0)
+    raw_caps = np.min(safety_gaps, axis=0)
+    caps = np.asarray(raw_caps - np.float32(NEW_CLASS_BIAS_SAFETY_EPS), dtype=np.float32)
+    if not np.isfinite(caps).all():
+        raise D26CompactDiagError("D27 produced a non-finite new-class safety cap")
+
+    k_shot = int(np.sum(new_labels == new_classes[0]))
+    loo_raw_scores: np.ndarray | None = None
+    loo_truth: np.ndarray | None = None
+    if k_shot > 1:
+        transformed_new = _normalize_np(
+            new_rows * np.exp(state.log_diag.astype(np.float32))[None, :]
+        )
+        transformed_old_weights = _normalize_np(state.weights)
+        current_new_weights = _normalize_np(new_weights)
+        new_to_index = {value: index for index, value in enumerate(new_classes)}
+        raw_rows: list[np.ndarray] = []
+        truth_rows: list[int] = []
+        for position, class_name_value in enumerate(new_labels.tolist()):
+            class_name = str(class_name_value)
+            class_index = new_to_index[class_name]
+            class_positions = np.flatnonzero(new_labels == class_name)
+            remaining = class_positions[class_positions != position]
+            if len(remaining) < 1:
+                raise D26CompactDiagError("D27 K>1 LOO has no remaining prototype row")
+            loo_weight = _normalize_np(
+                transformed_new[remaining].mean(axis=0, keepdims=True)
+            )[0]
+            loo_weights = current_new_weights.copy()
+            loo_weights[class_index] = loo_weight
+            old_part = np.float32(TEMPERATURE) * (
+                transformed_new[position] @ transformed_old_weights.T
+            )
+            new_part = np.float32(TEMPERATURE) * (
+                transformed_new[position] @ loo_weights.T
+            )
+            raw_rows.append(
+                np.concatenate((old_part, new_part)).astype(np.float32, copy=False)
+            )
+            truth_rows.append(len(state.classes) + class_index)
+        loo_raw_scores = np.stack(raw_rows).astype(np.float32, copy=False)
+        loo_truth = np.asarray(truth_rows, dtype=np.int64)
+
+    def evaluate(candidate_biases: np.ndarray) -> dict[str, Any]:
+        biases = np.asarray(candidate_biases, dtype=np.float32)
+        cap_pass = bool(np.all(biases <= caps + np.float32(1.0e-7)))
+        combined_old = np.concatenate(
+            (old_scores, new_scores_on_old + biases[None, :]), axis=1
+        )
+        after_predictions = np.argmax(combined_old, axis=1)
+        after_correct = after_predictions == old_truth
+        per_class_after = {
+            value: float(np.mean(after_correct[old_labels == value]))
+            for value in state.classes
+        }
+        correct_rows_preserved = bool(np.all(~old_only_correct | after_correct))
+        per_class_guard = all(
+            per_class_after[value] + 1.0e-12 >= per_class_old_only[value]
+            for value in state.classes
+        )
+        old_guard_pass = bool(cap_pass and correct_rows_preserved and per_class_guard)
+        evidence: dict[str, Any] = {
+            "biases": [float(value) for value in biases.tolist()],
+            "cap_pass": cap_pass,
+            "old_guard_pass": old_guard_pass,
+            "old_correct_rows_preserved": correct_rows_preserved,
+            "per_old_class_accuracy": per_class_after,
+            "new_support_loo_evaluated": bool(k_shot > 1),
+        }
+        if k_shot == 1:
+            return evidence
+        if loo_raw_scores is None or loo_truth is None:
+            raise D26CompactDiagError("D27 LOO score cache was not initialized")
+        loo_scores = loo_raw_scores.copy()
+        loo_scores[:, len(state.classes) :] += biases[None, :]
+        loo_predictions = np.argmax(loo_scores, axis=1)
+        loo_correct = loo_predictions == loo_truth
+        truth_scores = loo_scores[np.arange(len(loo_scores)), loo_truth]
+        masked_scores = loo_scores.copy()
+        masked_scores[np.arange(len(masked_scores)), loo_truth] = -np.inf
+        margins = truth_scores - np.max(masked_scores, axis=1)
+        per_new = {
+            class_name: {
+                "loo_rows": int(np.sum(new_labels == class_name)),
+                "loo_accuracy": float(
+                    np.mean(loo_correct[new_labels == class_name])
+                ),
+                "worst_margin": float(np.min(margins[new_labels == class_name])),
+            }
+            for class_name in new_classes
+        }
+        evidence.update(
+            {
+                "per_new_class": per_new,
+                "min_new_class_loo_accuracy": min(
+                    float(value["loo_accuracy"]) for value in per_new.values()
+                ),
+                "overall_new_loo_accuracy": float(np.mean(loo_correct)),
+                "worst_new_loo_margin": float(np.min(margins)),
+            }
+        )
+        return evidence
+
+    coordinate_evidence: list[dict[str, Any]] = []
+    selected_biases = caps.copy()
+    if k_shot > 1:
+        for class_index, class_name in enumerate(new_classes):
+            coordinate_candidates: list[tuple[dict[str, Any], np.ndarray]] = []
+            for offset in state.config.new_class_bias_offsets:
+                candidate_biases = selected_biases.copy()
+                candidate_biases[class_index] = np.float32(
+                    caps[class_index] + np.float32(offset)
+                )
+                evidence = evaluate(candidate_biases)
+                evidence.update(
+                    {
+                        "coordinate_class": class_name,
+                        "coordinate_class_index": class_index,
+                        "offset_from_cap": float(offset),
+                    }
+                )
+                if not evidence["old_guard_pass"]:
+                    raise D26CompactDiagError(
+                        "D27 cap-bounded coordinate candidate violated old-only guard"
+                    )
+                coordinate_candidates.append((evidence, candidate_biases))
+                coordinate_evidence.append(
+                    {
+                        "coordinate_class": class_name,
+                        "coordinate_class_index": class_index,
+                        "offset_from_cap": float(offset),
+                        "biases": evidence["biases"],
+                        "cap_pass": evidence["cap_pass"],
+                        "old_guard_pass": evidence["old_guard_pass"],
+                        "old_correct_rows_preserved": evidence[
+                            "old_correct_rows_preserved"
+                        ],
+                        "min_new_class_loo_accuracy": evidence[
+                            "min_new_class_loo_accuracy"
+                        ],
+                        "overall_new_loo_accuracy": evidence[
+                            "overall_new_loo_accuracy"
+                        ],
+                        "worst_new_loo_margin": evidence[
+                            "worst_new_loo_margin"
+                        ],
+                    }
+                )
+            selected_evidence, selected_biases = max(
+                coordinate_candidates,
+                key=lambda item: (
+                    item[0]["min_new_class_loo_accuracy"],
+                    item[0]["overall_new_loo_accuracy"],
+                    item[0]["worst_new_loo_margin"],
+                ),
+            )
+            if selected_evidence["coordinate_class"] != class_name:
+                raise D26CompactDiagError("D27 coordinate selection drift")
+
+    final_evidence = evaluate(selected_biases)
+    if not final_evidence["old_guard_pass"]:
+        raise D26CompactDiagError("D27 selected bias vector violated old-only guard")
+    cap_evidence = []
+    for class_index, class_name in enumerate(new_classes):
+        limiting_position = int(
+            correct_positions[int(limiting_local_positions[class_index])]
+        )
+        cap_evidence.append(
+            {
+                "new_class": class_name,
+                "raw_min_winning_old_minus_new_score": float(raw_caps[class_index]),
+                "safety_epsilon": float(NEW_CLASS_BIAS_SAFETY_EPS),
+                "safety_cap": float(caps[class_index]),
+                "limiting_old_support_row_index": limiting_position,
+                "limiting_old_class": str(old_labels[limiting_position]),
+            }
+        )
+    new_class_count = len(new_classes)
+    cap_score_macs = len(old_rows) * (FEATURE_DIM + new_class_count * FEATURE_DIM)
+    loo_score_macs = (
+        len(new_rows)
+        * (len(state.classes) + new_class_count)
+        * FEATURE_DIM
+        if k_shot > 1
+        else 0
+    )
+    audit: dict[str, Any] = {
+        "schema": "cvs.phase2.d27_new_class_safety_cap_bias_audit.v1",
+        "selection_policy": (
+            "k1_direct_per_new_class_safety_cap_no_pseudo_loo"
+            if k_shot == 1
+            else "deterministic_per_new_class_cap_bounded_loo_coordinate_search"
+        ),
+        "bias_guard_mode": "per_new_class_pre_registration_old_only",
+        "guard_baseline_semantics": "stage2b_pre_registration_old_only_head",
+        "per_old_class_old_only_accuracy": per_class_old_only,
+        "old_only_correct_row_count": int(np.sum(old_only_correct)),
+        "safety_epsilon": float(NEW_CLASS_BIAS_SAFETY_EPS),
+        "bias_caps": [float(value) for value in caps.tolist()],
+        "bias_cap_by_new_class": {
+            class_name: float(caps[index])
+            for index, class_name in enumerate(new_classes)
+        },
+        "selected_biases": [float(value) for value in selected_biases.tolist()],
+        "selected_bias_by_new_class": {
+            class_name: float(selected_biases[index])
+            for index, class_name in enumerate(new_classes)
+        },
+        "bias_offsets": list(state.config.new_class_bias_offsets),
+        "cap_evidence": cap_evidence,
+        "old_guard_pass": True,
+        "old_correct_rows_preserved": bool(
+            final_evidence["old_correct_rows_preserved"]
+        ),
+        "per_old_class_selected_accuracy": final_evidence[
+            "per_old_class_accuracy"
+        ],
+        "old_guard_support_non_degradation_guaranteed": True,
+        "new_support_loo_evaluated": bool(k_shot > 1),
+        "new_support_selection_rows": len(new_rows) if k_shot > 1 else 0,
+        "coordinate_pass_count": 1 if k_shot > 1 else 0,
+        "bias_candidate_evaluation_count": len(coordinate_evidence),
+        "candidate_evidence": coordinate_evidence,
+        "estimated_bias_selection_macs": int(cap_score_macs + loo_score_macs),
+        "query_rows_used": 0,
+        "registration_non_forgetting_guaranteed": False,
+        "terminal_old_support_non_degradation_gate_required": True,
+    }
+    if k_shot > 1:
+        audit.update(
+            {
+                "per_new_class": final_evidence["per_new_class"],
+                "min_new_class_loo_accuracy": final_evidence[
+                    "min_new_class_loo_accuracy"
+                ],
+                "overall_new_loo_accuracy": final_evidence[
+                    "overall_new_loo_accuracy"
+                ],
+                "worst_new_loo_margin": final_evidence[
+                    "worst_new_loo_margin"
+                ],
+            }
+        )
+    return _readonly(selected_biases, np.float32), audit
+
+
 def append_stage2c_new_suffix(
     state: D26CompactDiagState,
     new_support_features: np.ndarray,
@@ -943,15 +1303,31 @@ def append_stage2c_new_suffix(
     new_weights_np = _numpy_support_bridge(
         F.normalize(new_weights, dim=1), dtype=np.float32
     )
-    selected_bias, bias_audit = _select_new_group_bias(
-        state=state,
-        new_weights=new_weights_np,
-        new_rows=new_rows,
-        new_labels=new_labels,
-        new_classes=new_classes,
-        old_rows=old_rows,
-        old_labels=old_labels,
-    )
+    selected_biases: np.ndarray | None = None
+    if (
+        state.config.bias_guard_mode
+        == "per_new_class_pre_registration_old_only"
+    ):
+        selected_bias = 0.0
+        selected_biases, bias_audit = _select_new_class_safety_cap_bias(
+            state=state,
+            new_weights=new_weights_np,
+            new_rows=new_rows,
+            new_labels=new_labels,
+            new_classes=new_classes,
+            old_rows=old_rows,
+            old_labels=old_labels,
+        )
+    else:
+        selected_bias, bias_audit = _select_new_group_bias(
+            state=state,
+            new_weights=new_weights_np,
+            new_rows=new_rows,
+            new_labels=new_labels,
+            new_classes=new_classes,
+            old_rows=old_rows,
+            old_labels=old_labels,
+        )
     classes = state.classes + new_classes
     weights = np.concatenate((state.weights, new_weights_np), axis=0).astype(np.float32)
     counts = np.concatenate(
@@ -968,6 +1344,7 @@ def append_stage2c_new_suffix(
         new_group_bias=selected_bias,
         bias_audit=bias_audit,
         config=state.config,
+        new_class_biases=selected_biases,
     )
     before_raw = _scores_np(old_rows, state.log_diag, state.weights)
     after_raw = _scores_np(
@@ -994,7 +1371,13 @@ def score_all_registered(
 
     scores = _scores_np(features, state.log_diag, state.weights)
     if len(state.classes) > state.old_class_count:
-        scores[:, state.old_class_count :] += np.float32(state.new_group_bias)
+        if (
+            state.config.bias_guard_mode
+            == "per_new_class_pre_registration_old_only"
+        ):
+            scores[:, state.old_class_count :] += state.new_class_biases[None, :]
+        else:
+            scores[:, state.old_class_count :] += np.float32(state.new_group_bias)
     return _readonly(scores, np.float32)
 
 
@@ -1019,6 +1402,8 @@ __all__ = [
     "FEATURE_DIM",
     "MAX_PERSISTENT_STATE_BYTES",
     "MAX_TRAINABLE_PARAMETERS",
+    "NEW_CLASS_BIAS_OFFSETS",
+    "NEW_CLASS_BIAS_SAFETY_EPS",
     "append_stage2c_new_suffix",
     "fit_stage2b_compact_diag",
     "predict_all_registered",

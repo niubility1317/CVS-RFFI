@@ -180,6 +180,7 @@ def test_new_group_bias_strictly_guards_pre_registration_old_only_rows() -> None
             >= audit["per_old_class_old_only_accuracy"][class_name]
         )
     assert after.new_group_bias == -4.0
+    assert after.new_class_biases.shape == (0,)
     assert predict_all_registered(after, old_guard_x).tolist() == old_guard_y.tolist()
     bias0_evidence = next(
         row for row in audit["candidate_evidence"] if row["bias"] == 0.0
@@ -244,6 +245,177 @@ def test_historical_joint_bias0_guard_mode_remains_constructible() -> None:
     assert audit["old_guard_pass"] is True
     assert audit["old_guard_support_non_degradation_guaranteed"] is False
     assert after.new_group_bias in config.new_group_bias_grid
+    assert after.new_class_biases.shape == (0,)
+
+
+def test_per_new_class_caps_mathematically_preserve_old_only_correct_rows() -> None:
+    old_classes = ("old_a", "old_b")
+    new_classes = ("new_c", "new_d")
+    old_x, old_y, old_guard_x, old_guard_y, new_x, new_y = (
+        _old_new_collision_support(2)
+    )
+    config = D26CompactDiagConfig(
+        stage2b_steps=0,
+        stage2c_steps=0,
+        bias_guard_mode="per_new_class_pre_registration_old_only",
+    )
+    before = fit_stage2b_compact_diag(old_x, old_y, old_classes, config=config).state
+    old_only_scores = score_all_registered(before, old_guard_x)
+    old_only_predictions = np.argmax(old_only_scores, axis=1)
+    old_truth = np.asarray([old_classes.index(value) for value in old_guard_y])
+    old_only_correct = old_only_predictions == old_truth
+    after = append_stage2c_new_suffix(
+        before, new_x, new_y, new_classes, old_guard_x, old_guard_y
+    ).state
+    audit = json.loads(after.bias_audit_json)
+    combined_scores = score_all_registered(after, old_guard_x)
+
+    assert old_only_correct.all()
+    assert after.new_group_bias == 0.0
+    assert after.new_class_biases.shape == (len(new_classes),)
+    assert after.new_class_biases.dtype == np.float32
+    assert not after.new_class_biases.flags.writeable
+    assert after.new_class_biases.tolist() == pytest.approx(audit["selected_biases"])
+    assert np.array_equal(combined_scores[:, : len(old_classes)], old_only_scores)
+    winning_old = old_only_scores[np.arange(len(old_truth)), old_truth]
+    assert np.all(
+        combined_scores[old_only_correct, len(old_classes) :]
+        < winning_old[old_only_correct, None]
+    )
+    assert predict_all_registered(after, old_guard_x).tolist() == old_guard_y.tolist()
+    assert audit["bias_guard_mode"] == (
+        "per_new_class_pre_registration_old_only"
+    )
+    assert audit["old_correct_rows_preserved"] is True
+    assert audit["old_guard_support_non_degradation_guaranteed"] is True
+    assert audit["new_support_loo_evaluated"] is True
+    assert audit["coordinate_pass_count"] == 1
+    assert audit["bias_candidate_evaluation_count"] == (
+        len(new_classes) * len(config.new_class_bias_offsets)
+    )
+    for candidate in audit["candidate_evidence"]:
+        assert candidate["cap_pass"] is True
+        assert candidate["old_guard_pass"] is True
+        assert np.all(
+            np.asarray(candidate["biases"]) <= np.asarray(audit["bias_caps"]) + 1e-7
+        )
+    for class_name in old_classes:
+        assert (
+            audit["per_old_class_selected_accuracy"][class_name]
+            >= audit["per_old_class_old_only_accuracy"][class_name]
+        )
+
+
+def test_per_new_class_k1_uses_caps_directly_without_pseudo_loo() -> None:
+    old_classes = ("old_a", "old_b")
+    new_classes = ("new_c", "new_d")
+    old_x, old_y, old_guard_x, old_guard_y, new_x, new_y = (
+        _old_new_collision_support(1)
+    )
+    config = D26CompactDiagConfig(
+        stage2b_steps=0,
+        stage2c_steps=0,
+        bias_guard_mode="per_new_class_pre_registration_old_only",
+    )
+    before = fit_stage2b_compact_diag(old_x, old_y, old_classes, config=config).state
+    after = append_stage2c_new_suffix(
+        before, new_x, new_y, new_classes, old_guard_x, old_guard_y
+    ).state
+    audit = json.loads(after.bias_audit_json)
+
+    assert after.new_class_biases.tolist() == pytest.approx(audit["bias_caps"])
+    assert audit["selection_policy"] == (
+        "k1_direct_per_new_class_safety_cap_no_pseudo_loo"
+    )
+    assert audit["new_support_loo_evaluated"] is False
+    assert audit["new_support_selection_rows"] == 0
+    assert audit["coordinate_pass_count"] == 0
+    assert audit["bias_candidate_evaluation_count"] == 0
+    assert audit["candidate_evidence"] == []
+    assert "per_new_class" not in audit
+    assert predict_all_registered(after, old_guard_x).tolist() == old_guard_y.tolist()
+
+
+def test_per_new_class_bias_resource_audit_counts_only_closed_form_state() -> None:
+    old_classes = ("old_a", "old_b")
+    new_classes = ("new_c", "new_d")
+    old_x, old_y, old_guard_x, old_guard_y, new_x, new_y = (
+        _old_new_collision_support(2)
+    )
+    config = D26CompactDiagConfig(
+        stage2b_steps=0,
+        stage2c_steps=0,
+        bias_guard_mode="per_new_class_pre_registration_old_only",
+    )
+    before = fit_stage2b_compact_diag(old_x, old_y, old_classes, config=config).state
+    after = append_stage2c_new_suffix(
+        before, new_x, new_y, new_classes, old_guard_x, old_guard_y
+    ).state
+    resource = after.resource_audit()
+
+    assert resource["bias_trainable_parameters"] == 0
+    assert resource["new_group_bias_scalar_count"] == 0
+    assert resource["new_class_bias_scalar_count"] == len(new_classes)
+    assert resource["new_class_bias_vector_bytes"] == len(new_classes) * 4
+    assert resource["registered_bias_additions_per_query"] == len(new_classes)
+    assert resource["bias_additions_counted_as_macs"] is False
+    assert resource["estimated_bias_selection_macs"] > 0
+    assert resource["bias_candidate_evaluation_count"] == (
+        len(new_classes) * len(config.new_class_bias_offsets)
+    )
+    assert resource["trainable_parameters"] == before.trainable_parameters
+    assert resource["estimated_macs_per_query"] == 288 + 4 * 288
+    assert resource["persistent_state_cap_pass"] is True
+    assert resource["query_rows_used_for_fit"] == 0
+    assert resource["query_role_oracle_access"] is False
+    assert resource["query_class_quota_access"] is False
+    assert resource["clean_sample_access"] is False
+    assert resource["source_sample_access"] is False
+
+
+def test_per_new_class_bias_twenty_new_classes_stays_within_state_cap() -> None:
+    old_classes = ("old_a", "old_b", "old_c")
+    new_classes = tuple(f"new_{index:02d}" for index in range(20))
+    old_x, old_y = _support(old_classes, 2, seed=140)
+    new_x, new_y = _support(new_classes, 2, seed=141)
+    config = D26CompactDiagConfig(
+        stage2b_steps=0,
+        stage2c_steps=0,
+        bias_guard_mode="per_new_class_pre_registration_old_only",
+    )
+    before = fit_stage2b_compact_diag(old_x, old_y, old_classes, config=config).state
+    after = append_stage2c_new_suffix(
+        before, new_x, new_y, new_classes, old_x, old_y
+    ).state
+    resource = after.resource_audit()
+
+    assert after.new_class_biases.shape == (20,)
+    assert resource["new_class_bias_vector_bytes"] == 80
+    assert resource["bias_candidate_evaluation_count"] == 100
+    assert resource["persistent_state_bytes"] < MAX_PERSISTENT_STATE_BYTES
+    assert resource["persistent_state_cap_pass"] is True
+
+
+def test_per_new_class_bias_fails_closed_without_old_only_correct_guard_row() -> None:
+    old_classes = ("old_a", "old_b")
+    new_classes = ("new_c", "new_d")
+    old_x, old_y, _, _, new_x, new_y = _old_new_collision_support(1)
+    wrong_old_guard_x = old_x[::-1].copy()
+    config = D26CompactDiagConfig(
+        stage2b_steps=0,
+        stage2c_steps=0,
+        bias_guard_mode="per_new_class_pre_registration_old_only",
+    )
+    before = fit_stage2b_compact_diag(old_x, old_y, old_classes, config=config).state
+    with pytest.raises(D26CompactDiagError, match="at least one old-only-correct"):
+        append_stage2c_new_suffix(
+            before,
+            new_x,
+            new_y,
+            new_classes,
+            wrong_old_guard_x,
+            old_y,
+        )
 
 
 def test_strict_k1_bias_selection_fails_closed_when_grid_has_no_safe_value() -> None:
@@ -347,6 +519,8 @@ def test_configuration_and_atomic_append_fail_closed() -> None:
         D26CompactDiagConfig(stage2b_steps=16, stage2c_steps=15)
     with pytest.raises(D26CompactDiagError, match="bias guard mode"):
         D26CompactDiagConfig(bias_guard_mode="query_selected")
+    with pytest.raises(D26CompactDiagError, match="bias offsets"):
+        D26CompactDiagConfig(new_class_bias_offsets=(0.0, 0.5))
 
     old_classes = ("old_a", "old_b")
     new_classes = ("new_c", "new_d")
