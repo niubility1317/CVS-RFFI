@@ -45,4 +45,54 @@
 
 ## 完成后补充
 
-- 待记录N607候选联合表、逐场景/逐类floor、完整loss、gate OOF与启用/回退原因、资源Pareto、artifact哈希、独立审计和下一轮决定。
+## v2完成状态与证据边界
+
+- v2 PID`3652104`正常退出，耗时18.085秒；90/90行、6件artifact和完整日志齐全。v1→v2性能及gate决策逐行精确重放，只有修正后的资源/源码闭包不同。
+- receiver=`20-1`、seed=`713101`、K=10；每个场景110个support行=6个old TX×10+5个seen-new handle×10。old物理TX为`14-10/14-7/20-15/20-19/6-15/8-20`；new注册handle为`09f8/1c2a/b8fb/d3af/f608`。每场景110个`physical_sample_id`、parent IQ及overlay token唯一，三场景两两不重叠。
+- query清单为空：`query_opened=false`、query rows/labels=0；当前指标只是support内部leave-two-rank held结果，不是正式query或独立确认性能。Phase1组件仍为`UNVERIFIED_UNDER_CURRENT_PROTOCOL`，`formal_launch_authority=false`。
+- v2 artifact SHA256：training=`cb429436e80004bc98db70dd008d956e0d6b4e0d6fe805cfb177e94adcc5a1f2`、selection=`990e26fd4842ce33a31b2a92f0878ced8d0b1491e8cf3899a3c1884748f80713`、support=`acb5129e3cc8c72b5d00cfa70e9741063184d9644b40ca92054c9803593d1e69`、resource=`8902d2206198ae1dfecb8cce06026c43c9905bf8b990f446c9a6890ef2a7598d`、geometry=`f3dfcdae3ef29ee9393fff6d5d8c08437662b2e1c0ddc6ce871b1ba090fdb3c7`、receipt=`ca52aeba76d8f757a9bdb9b4a805ffd20db87408f20dc48d2f639a88df5a1f64`。
+- 本地产物：`E:/type10-7/automation_reports/CV-SincNet/d28_evidence_gate_support_20260718/remote_output_v2`；所有JSON递归有限、无NaN/Inf，stdout无Traceback/OOM/Killed/Exception。下载后`ssh.exe`与N607/bridge TCP22连接为0。
+
+## 候选联合结果
+
+|候选|注册前old|注册后old|seen-new|H|forgetting|gate启用|判定|
+|---|---:|---:|---:|---:|---:|---:|---|
+|Z0|71.11%|48.33%|52.67%|48.97%|22.78pp|N/A|control|
+|B3诊断|86.67%|73.33%|73.33%|72.65%|13.33pp|N/A|60step性能参考|
+|C0|71.67%|50.56%|54.00%|50.35%|21.11pp|N/A|最终回退|
+|D28-A=D27-B|80.00%|67.22%|47.33%|52.82%|12.78pp|无gate|本轮基线|
+|D28-B E5/δ1|80.00%|67.22%|47.33%|52.82%|12.78pp|0/15|安全透传D27-B|
+|D28-C E5/δ2|80.00%|67.22%|47.33%|52.82%|12.78pp|0/15|安全透传D27-B|
+
+D28-B/C没有获得held增益，不是因为执行错误，而是15/15外层fold和3/3 full-K10场景均没有任何lambda通过OOF身份安全门；自动选择正确回退C0，`selected_positive_route=false`。
+
+## 逐场景与逐类floor
+
+|场景|注册前old|注册后old|new|H|forgetting|old floor|new floor|
+|---|---:|---:|---:|---:|---:|---:|---:|
+|clear|81.67%|75.00%|52.00%|58.12%|6.67pp|50.00%|20.00%|
+|low-elev|75.00%|61.67%|54.00%|56.31%|13.33pp|40.00%|0.00%|
+|rain|83.33%|65.00%|36.00%|44.03%|18.33pp|50.00%|0.00%|
+
+注册后old逐类为`14-10=56.67%`、`14-7=66.67%`、`20-15=80.00%`、`20-19=50.00%`、`6-15=63.33%`、`8-20=86.67%`。seen-new逐类为`09f8=13.33%`、`1c2a=76.67%`、`b8fb=63.33%`、`d3af=66.67%`、`f608=16.67%`；关键失败仍是low-elev的`09f8=0%`和rain的`f608=0%`。因此下一轮必须同时处理旧类域校正和弱新类floor，不能只调全局old/new平衡。
+
+## gate失败机理与完整loss
+
+- 三个lambda`0.1/1/10`的角色balanced accuracy约81.26%/80.96%/80.92%，说明E5确实含old/new证据；但δ1下平均分别造成old`-12.22/-12.22/-11.94pp`，只换来new`+6.83/+6.83/+6.17pp`和new floor`+8.33/+8.33/+7.50pp`。δ2因实际校正未触及更大clip，与δ1完全相同。
+- D27-B训练old support为100%，共同平移所有new列时，只要帮助弱新类越过边界，就会让部分旧类support被新类翻转；硬旧类非退化门正确阻断了这条Pareto交换。下一步不应放松安全门或继续扫δ/λ，而应把释放限制在“远离旧类安全域、接近某个新类”的逐类区域。
+- Stage2-B 15fold平均loss`0.554833→0.066382`，support准确率达到100%；Stage2-C `0.727749→0.256986`，无发散。失败属于support→held的边界泛化与类条件几何问题，不是梯度步数或数值稳定性问题。
+
+## 修正后的资源Pareto
+
+|候选|活动参数|step|predictor state|MAC/query|适配+注册|组合head延迟|
+|---|---:|---:|---:|---:|---:|---:|
+|D28-A=D27-B|2,016|25|约30.91KB|3,456|67.27ms|0.0679ms|
+|D28-B/C禁用gate|2,016|25|约30.94KB|3,456|约75.9ms|约0.0757ms|
+|gate若启用上界|2,022|25|D27状态+96B|3,462+少量标量运算|闭式OOF|逐行、无dense图|
+
+- 禁用gate的predictor只比D27-B增加32B启用/config头；每场景约18.5KB完整OOF trace作为外部自动化证据保存，不进入星上predictor state。
+- D28-A的query MAC为identity-only单qKNN的19.64%；相对B3，活动参数少41.67%、optimizer step少58.33%、适配MAC少61.34%，但predictor state约为B3的2.11倍且性能明显更低，尚未满足“全面优于三种对比方法”的最终目标。
+
+## 结论与D29决定
+
+D28是有效负筛选：它证明逐样本E5角色证据存在，但“所有new列共同平移”没有旧类零退化的可行点。D29转向极轻类条件安全释放：只对当前新类候选做受旧类安全域上界约束的正向残差，并用新类support亲和度决定释放；弱新类补偿仍受相同旧类上界约束。K=1继续精确退化D27-B，query接口仍不得接收标签、角色、quota或batch统计。
