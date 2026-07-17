@@ -45,6 +45,29 @@ def test_d26_candidate_lock_matrix_and_historical_sets_are_stable() -> None:
     assert "d26_compact_diag_core_sha256" in lock["source_closure"]
     assert "diag_cosine_feature_operator_sha256" in lock["source_closure"]
     assert "d25_c3_core_sha256" not in lock["source_closure"]
+    assert all(
+        candidates[name].bias_guard_mode == "joint_bias0"
+        for name in runner.D26_CANDIDATES
+    )
+
+    strict_candidates = runner.preregistered_candidates(
+        runner.CANDIDATE_SET_D26_V2
+    )
+    assert tuple(strict_candidates) == tuple(candidates)
+    assert all(
+        strict_candidates[name].bias_guard_mode
+        == "pre_registration_old_only"
+        for name in runner.D26_CANDIDATES
+    )
+    assert all(
+        min(strict_candidates[name].new_group_bias_grid) == -12.0
+        for name in runner.D26_CANDIDATES
+    )
+    strict_lock = runner._candidate_lock(
+        strict_candidates, runner.CANDIDATE_SET_D26_V2
+    )
+    assert strict_lock["schema"] == "cvs.phase2.d25.candidate_lock.v4"
+    assert strict_lock["candidate_set"] == runner.CANDIDATE_SET_D26_V2
 
     assert tuple(runner.preregistered_candidates()) == (
         runner.IDENTITY_CANDIDATE,
@@ -80,6 +103,7 @@ def test_d26_cli_has_no_query_source_or_clean_surface() -> None:
         runner.CANDIDATE_SET_D25_V4,
         runner.CANDIDATE_SET_C3_V1,
         runner.CANDIDATE_SET_D26_V1,
+        runner.CANDIDATE_SET_D26_V2,
     )
     forbidden = ("query", "truth", "scorer", "role", "quota", "source", "clean")
     destinations = {action.dest.lower() for action in parser._actions}
