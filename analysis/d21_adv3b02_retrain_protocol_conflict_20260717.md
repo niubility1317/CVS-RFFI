@@ -29,11 +29,19 @@ rho_label=L/(L+U)=0.125
 |B：当前trainer治理优先|`0.08/0.72/0.20`，`rho=0.1`|final-only|与近期Phase1合法训练族和当前代码一致，修改量较小|必须先修订`项目.md`5.1的split与selection口径；不是旧B02等价复现|
 |C：旧B02历史诊断|`0.10/0.70/0.20`，`rho=0.125`|历史joint-safe|无需重训，已有v1数据与checkpoint|只能诊断，不能formal export、seal或Stage2声明|
 
-## 推荐
+## 用户决议（2026-07-17）
 
-正式路线推荐A：它以`项目.md`显式数学准入和source-val-only选模为最高优先级，修复代码而不为迁就当前实现改写科学定义。新lineage应命名为`ADV3B02_RHO10_SRCVAL_E200_S392002`，明确不是旧checkpoint的等价复现。
+用户锁定公式优先的split与final模型权重组合：
 
-若用户更重视与近期Phase1 final-only治理一致，则选B；必须先同步修改根目录与Git承载面的`项目.md`，再修改terminal profile并启动。无论A或B，均应：
+```text
+L/U/V=0.07/0.63/0.30
+rho_label=0.07/(0.07+0.63)=0.10
+checkpoint=epoch200 final model weights
+```
+
+`项目.md`已同步修订：source validation只用于训练健康审计和最终报告，不参与checkpoint选择或回滚。新lineage命名为`ADV3B02_RHO10_FINAL_E200_S392002`，明确不是旧checkpoint的等价复现。
+
+正式实现应：
 
 - `from_scratch=true`，不得从旧B02初始化，否则新权重已继承超当前标注预算的信息；
 - 固定seed392002、200epoch、source-only、三种LEO源训练视图，不接触target receiver/support/query；
@@ -43,4 +51,4 @@ rho_label=L/(L+U)=0.125
 
 ## 启动门
 
-在用户选择A或B前，不启动正式ADV3B02重训或Phase1 export。该等待不阻断D21 lifecycle、联合bundle代码和本地对抗测试继续推进。
+在单candidate launcher、`base_bundle_retrain_v2` terminal profile、本地dry-run、Git提交、N607同步和启动报告全部验证前，不启动正式ADV3B02重训。旧checkpoint继续只作历史诊断。
