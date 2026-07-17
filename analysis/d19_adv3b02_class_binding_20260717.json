@@ -1,39 +1,55 @@
 {
-  "schema": "cvs.phase2.d19_adv3b02_class_binding.v1",
+  "schema": "cvs.phase2.d20_adv3b02_class_binding.v2",
   "checkpoint_sha256": "2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98",
   "entries": [
     {
       "class_index": 0,
+      "direct_logit_index": 0,
+      "direct_logit_weight_row_sha256": "fa5ca219179bdbb8e06044389e43c20357f445ec05cdabc9b03f466d4fbbc20e",
       "phase1_tx": "14-10",
       "registered_class_handle": "cls_75aa6d506081240f50cf3b79a0bd91714fa0084a635a472ca63194e57ec1dca2"
     },
     {
       "class_index": 1,
+      "direct_logit_index": 1,
+      "direct_logit_weight_row_sha256": "3790ed2ec6aa19305ce724c0f262a0ac47fda7bdced2634b9c6f539d54eda3d4",
       "phase1_tx": "14-7",
       "registered_class_handle": "cls_8b02d99905a8fe579368ac8e37eff51c505aaa89a646eba8892d5d800aa08416"
     },
     {
       "class_index": 2,
+      "direct_logit_index": 2,
+      "direct_logit_weight_row_sha256": "10587f133a49bf93ab234304d6e9d0721a90c02bbb9e690956aa3f63c2ce66b6",
       "phase1_tx": "20-15",
       "registered_class_handle": "cls_1f33441efa14970113b27483344b7df852a9041984b38d34ce570fafbab6689c"
     },
     {
       "class_index": 3,
+      "direct_logit_index": 3,
+      "direct_logit_weight_row_sha256": "d1e17781c33361bc5965e6c37d59034abe1ea117f498dd98942aa051bb20deba",
       "phase1_tx": "20-19",
       "registered_class_handle": "cls_f8dfc2edcccc5344f8e2535a959f13b53a1cddfd6fb22aed6e714de382b58d24"
     },
     {
       "class_index": 4,
+      "direct_logit_index": 4,
+      "direct_logit_weight_row_sha256": "dc5084ffe17838d1186610cbe1fd115238c3b9aa193257c32e8066e2e7f5fae3",
       "phase1_tx": "6-15",
       "registered_class_handle": "cls_a53ca1280d8fca58e3f4d6d1e9ddabfdab6027a941ee8c3f8c01d9d8ec945725"
     },
     {
       "class_index": 5,
+      "direct_logit_index": 5,
+      "direct_logit_weight_row_sha256": "97f1f7d0d563330baab26785cdec999e5e56cf3ae4c66e790cf78f691efa5692",
       "phase1_tx": "8-20",
       "registered_class_handle": "cls_33bbd16556c6e6305d1b7162f5ea71393afba910a922f9abca5999d5921a2d9d"
     }
   ],
   "evidence": {
+    "feature_runtime_sha256": "f119e8cb3f6beda95f0d545205e91b43e4a557af2fd1d025e95d2edf2b8e6e2a",
+    "direct_logit_head_state_key": "model.id_backbone.cls_head.head.weight",
+    "direct_logit_head_tensor_sha256": "68566d53e598bbe0d818ca2412f2c1791c9d1d9310c13d716a342a107113f7c2",
+    "runtime_row_hash_binding_status": "HASH_FIXED_RUNTIME_HEAD_ROWS_BOUND_TO_PHASE1_TX_REGISTRY",
     "phase1_prototype_metadata_checkpoint_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth",
     "phase1_prototype_artifact_sha256": "e6ef79ce0c002539317efa79c1aac605ecb660003190c41b8a4481a9a4affcbd",
     "phase2_registration_mapping_source": "offline_scorer_truth_sidecar_before_predictor_boundary",
