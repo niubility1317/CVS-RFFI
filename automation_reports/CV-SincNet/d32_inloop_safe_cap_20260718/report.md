@@ -3,7 +3,7 @@
 ## 登记
 
 - 实验ID：`d32_inloop_safe_cap_20260718`；operator：Codex；日期：2026-07-18。
-- 状态：`RUNNING_ON_N607`。
+- 状态：`V1_AUTOMATION_FIELD_REPAIR_V2_PENDING`。
 - 节奏：D32是D27-D29回顾后的第3轮；本轮完成后必须在D33前执行并记录新回顾。
 - 目标：修复D31训练面与部署面不一致。每个Stage2-C forward从注册旧类support计算每个新类的安全非正bias，并在完全相同的带bias分数面上训练和部署；同时继续优化新类floor与旧类遗忘。
 - 比较：Z0、B3诊断、C0、D32-A/B/C；6候选×3场景×5折=90行。
@@ -49,4 +49,6 @@
 
 ## 结果
 
-待实验完成后回填90行联合结果、逐类/floor/confusion、完整trace、bias/checkpoint/rollback、MAC/延迟/state、selection/receipt和artifact SHA。
+`support_screen_v1`完成计算后在selection聚合阶段因缺少历史兼容字段`old_score_columns_bitwise_unchanged`退出，未形成完整artifact；根因是D32把旧前缀与DALI后旧列拆成两个更准确字段，而共享聚合器仍要求历史别名。未将该失败解释为训练结果。
+
+已补充仅代表“raw旧分数前缀注册前后位级不变”的兼容字段，同时继续独立报告`final_old_score_columns_bitwise_unchanged`；28项定向测试通过。launcher切到唯一`support_screen_v2`，runner SHA更新为`f49f3257...a93be`，等待复跑。

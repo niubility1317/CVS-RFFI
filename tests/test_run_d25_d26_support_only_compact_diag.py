@@ -714,6 +714,7 @@ def test_real_d32_fold_closes_safe_cap_dali_and_resource_accounting() -> None:
     )
     assert resource["argmax_scalar_comparisons_per_query"] == 5
     assert result["base_old_parameter_prefix_bitwise_unchanged"] is True
+    assert result["old_score_columns_bitwise_unchanged"] is True
     assert result["dali_max_old_preserved"] is True
     assert len(result["training_trace"]) == 27
 

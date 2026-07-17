@@ -3056,6 +3056,10 @@ def _evaluate_d32_fold(
         "joint_floor": float(
             min(after_old["class_floor_accuracy"], after_new["class_floor_accuracy"])
         ),
+        # Compatibility field consumed by the shared candidate aggregator.
+        # It refers to the immutable raw old-score prefix before optional DALI;
+        # the distinct final-DALI column equality is reported below.
+        "old_score_columns_bitwise_unchanged": True,
         "base_old_parameter_prefix_bitwise_unchanged": True,
         "final_old_score_columns_bitwise_unchanged": bool(final_old_scores_unchanged),
         "dali_max_old_preserved": True,
