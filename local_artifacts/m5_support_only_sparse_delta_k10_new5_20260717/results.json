@@ -1,0 +1,963 @@
+{
+  "status": "COMPLETE_STAGE2C_DEVELOPMENT_SCREEN",
+  "method": "support-only sparse key-layer delta",
+  "receiver": "20-1",
+  "seed": 713101,
+  "k_shot": 10,
+  "seen_new_count": 5,
+  "runtime": {
+    "path": "E:\\type10-7\\automation_reports\\CV-SincNet\\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\\phase2_capsule_k10_new5\\predictor\\after\\enrollment_only\\sealed_feature_runtime.pt",
+    "sha256": "f119e8cb3f6beda95f0d545205e91b43e4a557af2fd1d025e95d2edf2b8e6e2a"
+  },
+  "whitelist_audit": {
+    "A_tail_idproj": {
+      "exact_layer_names": [
+        "model.id_backbone.cls_head.id_proj.0.weight",
+        "model.id_backbone.cls_head.id_proj.0.bias"
+      ],
+      "updated_original_parameters": 25760
+    },
+    "B_input_proj": {
+      "exact_layer_names": [
+        "model.id_backbone.t_proj.weight",
+        "model.id_backbone.t_proj.bias",
+        "model.id_backbone.f_proj.weight",
+        "model.id_backbone.f_proj.bias",
+        "model.id_backbone.freq_stats_proj.0.weight",
+        "model.id_backbone.freq_stats_proj.0.bias",
+        "model.id_backbone.pa_stats_proj.0.weight",
+        "model.id_backbone.pa_stats_proj.0.bias"
+      ],
+      "updated_original_parameters": 22080
+    },
+    "C_tail_gate": {
+      "exact_layer_names": [
+        "model.id_backbone.cls_head.id_gate.0.weight",
+        "model.id_backbone.cls_head.id_gate.0.bias"
+      ],
+      "updated_original_parameters": 25760
+    }
+  },
+  "fixed_hyperparameters": {
+    "epochs": 5,
+    "optimizer_steps": 5,
+    "optimizer": "SGD",
+    "lr": 0.001,
+    "momentum": 0.0,
+    "prototype_ce_temperature_scale": 12.0,
+    "old_pairwise_retention_weight": 1.0,
+    "new_separation_weight": 0.25,
+    "new_separation_cosine_margin": 0.2
+  },
+  "support_selection": {
+    "A_tail_idproj": {
+      "scenes": [
+        {
+          "scenario": "leo_clear_weak",
+          "before": {
+            "old_accuracy": 0.95,
+            "seen_new_accuracy": 0.0,
+            "H_old_new": 0.0,
+            "old_floor": 0.8,
+            "seen_new_floor": 0.0,
+            "per_class_index": {
+              "0": 1.0,
+              "1": 0.8,
+              "2": 1.0,
+              "3": 1.0,
+              "4": 1.0,
+              "5": 0.9
+            }
+          },
+          "after": {
+            "old_accuracy": 0.8666666666666667,
+            "seen_new_accuracy": 0.92,
+            "H_old_new": 0.8925373134328359,
+            "old_floor": 0.4,
+            "seen_new_floor": 0.6,
+            "per_class_index": {
+              "0": 0.9,
+              "1": 0.4,
+              "2": 1.0,
+              "3": 1.0,
+              "4": 1.0,
+              "5": 0.9,
+              "6": 1.0,
+              "7": 0.6,
+              "8": 1.0,
+              "9": 1.0,
+              "10": 1.0
+            }
+          },
+          "forgetting": 0.08333333333333326,
+          "resource": {
+            "before": {
+              "updated_original_parameters": 25760,
+              "epochs": 5,
+              "optimizer_steps": 5,
+              "optimizer": "SGD",
+              "momentum": 0.0,
+              "optimizer_state_persisted": false,
+              "fp16_patch_payload_bytes": 51520,
+              "training_updated_layer_macs_estimate": 23184000,
+              "training_seconds": 3.1300227000028826,
+              "peak_gpu_memory_bytes": 69279744,
+              "deployment_added_macs_after_merge": 0,
+              "fp16_patch_file_bytes": 28721,
+              "int8_head_bytes": 15600,
+              "patch_plus_head_bytes": 67120,
+              "state_within_256KB": true,
+              "knn_dot_macs_per_query": 15360
+            },
+            "after": {
+              "updated_original_parameters": 25760,
+              "epochs": 5,
+              "optimizer_steps": 5,
+              "optimizer": "SGD",
+              "momentum": 0.0,
+              "optimizer_state_persisted": false,
+              "fp16_patch_payload_bytes": 51520,
+              "training_updated_layer_macs_estimate": 42504000,
+              "training_seconds": 2.898453599991626,
+              "peak_gpu_memory_bytes": 69414912,
+              "deployment_added_macs_after_merge": 0,
+              "fp16_patch_file_bytes": 32769,
+              "int8_head_bytes": 28600,
+              "patch_plus_head_bytes": 80120,
+              "state_within_256KB": true,
+              "knn_dot_macs_per_query": 28160
+            }
+          }
+        },
+        {
+          "scenario": "leo_low_elev_weak",
+          "before": {
+            "old_accuracy": 0.8,
+            "seen_new_accuracy": 0.0,
+            "H_old_new": 0.0,
+            "old_floor": 0.6,
+            "seen_new_floor": 0.0,
+            "per_class_index": {
+              "0": 1.0,
+              "1": 0.6,
+              "2": 0.8,
+              "3": 0.8,
+              "4": 0.8,
+              "5": 0.8
+            }
+          },
+          "after": {
+            "old_accuracy": 0.7333333333333333,
+            "seen_new_accuracy": 0.72,
+            "H_old_new": 0.7266055045871559,
+            "old_floor": 0.4,
+            "seen_new_floor": 0.4,
+            "per_class_index": {
+              "0": 1.0,
+              "1": 0.4,
+              "2": 0.7,
+              "3": 0.8,
+              "4": 0.7,
+              "5": 0.8,
+              "6": 0.9,
+              "7": 0.4,
+              "8": 0.7,
+              "9": 0.9,
+              "10": 0.7
+            }
+          },
+          "forgetting": 0.06666666666666676,
+          "resource": {
+            "before": {
+              "updated_original_parameters": 25760,
+              "epochs": 5,
+              "optimizer_steps": 5,
+              "optimizer": "SGD",
+              "momentum": 0.0,
+              "optimizer_state_persisted": false,
+              "fp16_patch_payload_bytes": 51520,
+              "training_updated_layer_macs_estimate": 23184000,
+              "training_seconds": 2.2274185999995098,
+              "peak_gpu_memory_bytes": 69279744,
+              "deployment_added_macs_after_merge": 0,
+              "fp16_patch_file_bytes": 29600,
+              "int8_head_bytes": 15600,
+              "patch_plus_head_bytes": 67120,
+              "state_within_256KB": true,
+              "knn_dot_macs_per_query": 15360
+            },
+            "after": {
+              "updated_original_parameters": 25760,
+              "epochs": 5,
+              "optimizer_steps": 5,
+              "optimizer": "SGD",
+              "momentum": 0.0,
+              "optimizer_state_persisted": false,
+              "fp16_patch_payload_bytes": 51520,
+              "training_updated_layer_macs_estimate": 42504000,
+              "training_seconds": 2.537101599999005,
+              "peak_gpu_memory_bytes": 69414912,
+              "deployment_added_macs_after_merge": 0,
+              "fp16_patch_file_bytes": 31256,
+              "int8_head_bytes": 28600,
+              "patch_plus_head_bytes": 80120,
+              "state_within_256KB": true,
+              "knn_dot_macs_per_query": 28160
+            }
+          }
+        },
+        {
+          "scenario": "leo_rain_weak",
+          "before": {
+            "old_accuracy": 0.8666666666666667,
+            "seen_new_accuracy": 0.0,
+            "H_old_new": 0.0,
+            "old_floor": 0.7,
+            "seen_new_floor": 0.0,
+            "per_class_index": {
+              "0": 1.0,
+              "1": 0.7,
+              "2": 0.9,
+              "3": 0.7,
+              "4": 0.9,
+              "5": 1.0
+            }
+          },
+          "after": {
+            "old_accuracy": 0.7333333333333333,
+            "seen_new_accuracy": 0.7,
+            "H_old_new": 0.7162790697674419,
+            "old_floor": 0.3,
+            "seen_new_floor": 0.4,
+            "per_class_index": {
+              "0": 0.9,
+              "1": 0.3,
+              "2": 0.9,
+              "3": 0.7,
+              "4": 0.6,
+              "5": 1.0,
+              "6": 0.8,
+              "7": 0.4,
+              "8": 0.8,
+              "9": 0.9,
+              "10": 0.6
+            }
+          },
+          "forgetting": 0.13333333333333341,
+          "resource": {
+            "before": {
+              "updated_original_parameters": 25760,
+              "epochs": 5,
+              "optimizer_steps": 5,
+              "optimizer": "SGD",
+              "momentum": 0.0,
+              "optimizer_state_persisted": false,
+              "fp16_patch_payload_bytes": 51520,
+              "training_updated_layer_macs_estimate": 23184000,
+              "training_seconds": 2.3905802000081167,
+              "peak_gpu_memory_bytes": 69279744,
+              "deployment_added_macs_after_merge": 0,
+              "fp16_patch_file_bytes": 30487,
+              "int8_head_bytes": 15600,
+              "patch_plus_head_bytes": 67120,
+              "state_within_256KB": true,
+              "knn_dot_macs_per_query": 15360
+            },
+            "after": {
+              "updated_original_parameters": 25760,
+              "epochs": 5,
+              "optimizer_steps": 5,
+              "optimizer": "SGD",
+              "momentum": 0.0,
+              "optimizer_state_persisted": false,
+              "fp16_patch_payload_bytes": 51520,
+              "training_updated_layer_macs_estimate": 42504000,
+              "training_seconds": 2.644450299994787,
+              "peak_gpu_memory_bytes": 69414912,
+              "deployment_added_macs_after_merge": 0,
+              "fp16_patch_file_bytes": 32283,
+              "int8_head_bytes": 28600,
+              "patch_plus_head_bytes": 80120,
+              "state_within_256KB": true,
+              "knn_dot_macs_per_query": 28160
+            }
+          }
+        }
+      ],
+      "pooled_after": {
+        "old_accuracy": 0.7777777777777778,
+        "seen_new_accuracy": 0.78,
+        "H_old_new": 0.7788873038516405,
+        "old_floor": 0.36666666666666664,
+        "seen_new_floor": 0.4666666666666667,
+        "per_class_index": {
+          "0": 0.9333333333333333,
+          "1": 0.36666666666666664,
+          "2": 0.8666666666666667,
+          "3": 0.8333333333333334,
+          "4": 0.7666666666666667,
+          "5": 0.9,
+          "6": 0.9,
+          "7": 0.4666666666666667,
+          "8": 0.8333333333333334,
+          "9": 0.9333333333333333,
+          "10": 0.7666666666666667
+        }
+      },
+      "pooled_before_old_accuracy": 0.8722222222222222,
+      "pooled_forgetting": 0.09444444444444444,
+      "max_patch_plus_head_bytes": 80120
+    },
+    "B_input_proj": {
+      "scenes": [
+        {
+          "scenario": "leo_clear_weak",
+          "before": {
+            "old_accuracy": 0.95,
+            "seen_new_accuracy": 0.0,
+            "H_old_new": 0.0,
+            "old_floor": 0.8,
+            "seen_new_floor": 0.0,
+            "per_class_index": {
+              "0": 1.0,
+              "1": 0.8,
+              "2": 1.0,
+              "3": 1.0,
+              "4": 1.0,
+              "5": 0.9
+            }
+          },
+          "after": {
+            "old_accuracy": 0.8666666666666667,
+            "seen_new_accuracy": 0.92,
+            "H_old_new": 0.8925373134328359,
+            "old_floor": 0.4,
+            "seen_new_floor": 0.6,
+            "per_class_index": {
+              "0": 0.9,
+              "1": 0.4,
+              "2": 1.0,
+              "3": 1.0,
+              "4": 1.0,
+              "5": 0.9,
+              "6": 1.0,
+              "7": 0.6,
+              "8": 1.0,
+              "9": 1.0,
+              "10": 1.0
+            }
+          },
+          "forgetting": 0.08333333333333326,
+          "resource": {
+            "before": {
+              "updated_original_parameters": 22080,
+              "epochs": 5,
+              "optimizer_steps": 5,
+              "optimizer": "SGD",
+              "momentum": 0.0,
+              "optimizer_state_persisted": false,
+              "fp16_patch_payload_bytes": 44160,
+              "training_updated_layer_macs_estimate": 19872000,
+              "training_seconds": 2.6830193000059808,
+              "peak_gpu_memory_bytes": 69266432,
+              "deployment_added_macs_after_merge": 0,
+              "fp16_patch_file_bytes": 40540,
+              "int8_head_bytes": 15600,
+              "patch_plus_head_bytes": 59760,
+              "state_within_256KB": true,
+              "knn_dot_macs_per_query": 15360
+            },
+            "after": {
+              "updated_original_parameters": 22080,
+              "epochs": 5,
+              "optimizer_steps": 5,
+              "optimizer": "SGD",
+              "momentum": 0.0,
+              "optimizer_state_persisted": false,
+              "fp16_patch_payload_bytes": 44160,
+              "training_updated_layer_macs_estimate": 36432000,
+              "training_seconds": 2.454516199999489,
+              "peak_gpu_memory_bytes": 69401600,
+              "deployment_added_macs_after_merge": 0,
+              "fp16_patch_file_bytes": 40800,
+              "int8_head_bytes": 28600,
+              "patch_plus_head_bytes": 72760,
+              "state_within_256KB": true,
+              "knn_dot_macs_per_query": 28160
+            }
+          }
+        },
+        {
+          "scenario": "leo_low_elev_weak",
+          "before": {
+            "old_accuracy": 0.8,
+            "seen_new_accuracy": 0.0,
+            "H_old_new": 0.0,
+            "old_floor": 0.6,
+            "seen_new_floor": 0.0,
+            "per_class_index": {
+              "0": 1.0,
+              "1": 0.6,
+              "2": 0.8,
+              "3": 0.8,
+              "4": 0.8,
+              "5": 0.8
+            }
+          },
+          "after": {
+            "old_accuracy": 0.75,
+            "seen_new_accuracy": 0.7,
+            "H_old_new": 0.7241379310344827,
+            "old_floor": 0.5,
+            "seen_new_floor": 0.4,
+            "per_class_index": {
+              "0": 1.0,
+              "1": 0.5,
+              "2": 0.7,
+              "3": 0.8,
+              "4": 0.7,
+              "5": 0.8,
+              "6": 0.9,
+              "7": 0.4,
+              "8": 0.7,
+              "9": 0.8,
+              "10": 0.7
+            }
+          },
+          "forgetting": 0.050000000000000044,
+          "resource": {
+            "before": {
+              "updated_original_parameters": 22080,
+              "epochs": 5,
+              "optimizer_steps": 5,
+              "optimizer": "SGD",
+              "momentum": 0.0,
+              "optimizer_state_persisted": false,
+              "fp16_patch_payload_bytes": 44160,
+              "training_updated_layer_macs_estimate": 19872000,
+              "training_seconds": 2.4122689999931026,
+              "peak_gpu_memory_bytes": 69266432,
+              "deployment_added_macs_after_merge": 0,
+              "fp16_patch_file_bytes": 40361,
+              "int8_head_bytes": 15600,
+              "patch_plus_head_bytes": 59760,
+              "state_within_256KB": true,
+              "knn_dot_macs_per_query": 15360
+            },
+            "after": {
+              "updated_original_parameters": 22080,
+              "epochs": 5,
+              "optimizer_steps": 5,
+              "optimizer": "SGD",
+              "momentum": 0.0,
+              "optimizer_state_persisted": false,
+              "fp16_patch_payload_bytes": 44160,
+              "training_updated_layer_macs_estimate": 36432000,
+              "training_seconds": 2.400385600005393,
+              "peak_gpu_memory_bytes": 69401600,
+              "deployment_added_macs_after_merge": 0,
+              "fp16_patch_file_bytes": 39535,
+              "int8_head_bytes": 28600,
+              "patch_plus_head_bytes": 72760,
+              "state_within_256KB": true,
+              "knn_dot_macs_per_query": 28160
+            }
+          }
+        },
+        {
+          "scenario": "leo_rain_weak",
+          "before": {
+            "old_accuracy": 0.8666666666666667,
+            "seen_new_accuracy": 0.0,
+            "H_old_new": 0.0,
+            "old_floor": 0.7,
+            "seen_new_floor": 0.0,
+            "per_class_index": {
+              "0": 1.0,
+              "1": 0.7,
+              "2": 0.9,
+              "3": 0.7,
+              "4": 0.9,
+              "5": 1.0
+            }
+          },
+          "after": {
+            "old_accuracy": 0.7166666666666667,
+            "seen_new_accuracy": 0.7,
+            "H_old_new": 0.7082352941176471,
+            "old_floor": 0.3,
+            "seen_new_floor": 0.4,
+            "per_class_index": {
+              "0": 0.8,
+              "1": 0.3,
+              "2": 0.9,
+              "3": 0.7,
+              "4": 0.6,
+              "5": 1.0,
+              "6": 0.8,
+              "7": 0.4,
+              "8": 0.8,
+              "9": 0.9,
+              "10": 0.6
+            }
+          },
+          "forgetting": 0.15000000000000002,
+          "resource": {
+            "before": {
+              "updated_original_parameters": 22080,
+              "epochs": 5,
+              "optimizer_steps": 5,
+              "optimizer": "SGD",
+              "momentum": 0.0,
+              "optimizer_state_persisted": false,
+              "fp16_patch_payload_bytes": 44160,
+              "training_updated_layer_macs_estimate": 19872000,
+              "training_seconds": 2.4151586000079988,
+              "peak_gpu_memory_bytes": 69266432,
+              "deployment_added_macs_after_merge": 0,
+              "fp16_patch_file_bytes": 40066,
+              "int8_head_bytes": 15600,
+              "patch_plus_head_bytes": 59760,
+              "state_within_256KB": true,
+              "knn_dot_macs_per_query": 15360
+            },
+            "after": {
+              "updated_original_parameters": 22080,
+              "epochs": 5,
+              "optimizer_steps": 5,
+              "optimizer": "SGD",
+              "momentum": 0.0,
+              "optimizer_state_persisted": false,
+              "fp16_patch_payload_bytes": 44160,
+              "training_updated_layer_macs_estimate": 36432000,
+              "training_seconds": 2.5679245999926934,
+              "peak_gpu_memory_bytes": 69401600,
+              "deployment_added_macs_after_merge": 0,
+              "fp16_patch_file_bytes": 40045,
+              "int8_head_bytes": 28600,
+              "patch_plus_head_bytes": 72760,
+              "state_within_256KB": true,
+              "knn_dot_macs_per_query": 28160
+            }
+          }
+        }
+      ],
+      "pooled_after": {
+        "old_accuracy": 0.7777777777777778,
+        "seen_new_accuracy": 0.7733333333333333,
+        "H_old_new": 0.7755491881566381,
+        "old_floor": 0.4,
+        "seen_new_floor": 0.4666666666666667,
+        "per_class_index": {
+          "0": 0.9,
+          "1": 0.4,
+          "2": 0.8666666666666667,
+          "3": 0.8333333333333334,
+          "4": 0.7666666666666667,
+          "5": 0.9,
+          "6": 0.9,
+          "7": 0.4666666666666667,
+          "8": 0.8333333333333334,
+          "9": 0.9,
+          "10": 0.7666666666666667
+        }
+      },
+      "pooled_before_old_accuracy": 0.8722222222222222,
+      "pooled_forgetting": 0.09444444444444444,
+      "max_patch_plus_head_bytes": 72760
+    },
+    "C_tail_gate": {
+      "scenes": [
+        {
+          "scenario": "leo_clear_weak",
+          "before": {
+            "old_accuracy": 0.95,
+            "seen_new_accuracy": 0.0,
+            "H_old_new": 0.0,
+            "old_floor": 0.8,
+            "seen_new_floor": 0.0,
+            "per_class_index": {
+              "0": 1.0,
+              "1": 0.8,
+              "2": 1.0,
+              "3": 1.0,
+              "4": 1.0,
+              "5": 0.9
+            }
+          },
+          "after": {
+            "old_accuracy": 0.8666666666666667,
+            "seen_new_accuracy": 0.92,
+            "H_old_new": 0.8925373134328359,
+            "old_floor": 0.4,
+            "seen_new_floor": 0.6,
+            "per_class_index": {
+              "0": 0.9,
+              "1": 0.4,
+              "2": 1.0,
+              "3": 1.0,
+              "4": 1.0,
+              "5": 0.9,
+              "6": 1.0,
+              "7": 0.6,
+              "8": 1.0,
+              "9": 1.0,
+              "10": 1.0
+            }
+          },
+          "forgetting": 0.08333333333333326,
+          "resource": {
+            "before": {
+              "updated_original_parameters": 25760,
+              "epochs": 5,
+              "optimizer_steps": 5,
+              "optimizer": "SGD",
+              "momentum": 0.0,
+              "optimizer_state_persisted": false,
+              "fp16_patch_payload_bytes": 51520,
+              "training_updated_layer_macs_estimate": 23184000,
+              "training_seconds": 2.2237682999984827,
+              "peak_gpu_memory_bytes": 69279744,
+              "deployment_added_macs_after_merge": 0,
+              "fp16_patch_file_bytes": 20119,
+              "int8_head_bytes": 15600,
+              "patch_plus_head_bytes": 67120,
+              "state_within_256KB": true,
+              "knn_dot_macs_per_query": 15360
+            },
+            "after": {
+              "updated_original_parameters": 25760,
+              "epochs": 5,
+              "optimizer_steps": 5,
+              "optimizer": "SGD",
+              "momentum": 0.0,
+              "optimizer_state_persisted": false,
+              "fp16_patch_payload_bytes": 51520,
+              "training_updated_layer_macs_estimate": 42504000,
+              "training_seconds": 2.366599500004668,
+              "peak_gpu_memory_bytes": 69414912,
+              "deployment_added_macs_after_merge": 0,
+              "fp16_patch_file_bytes": 20888,
+              "int8_head_bytes": 28600,
+              "patch_plus_head_bytes": 80120,
+              "state_within_256KB": true,
+              "knn_dot_macs_per_query": 28160
+            }
+          }
+        },
+        {
+          "scenario": "leo_low_elev_weak",
+          "before": {
+            "old_accuracy": 0.8,
+            "seen_new_accuracy": 0.0,
+            "H_old_new": 0.0,
+            "old_floor": 0.6,
+            "seen_new_floor": 0.0,
+            "per_class_index": {
+              "0": 1.0,
+              "1": 0.6,
+              "2": 0.8,
+              "3": 0.8,
+              "4": 0.8,
+              "5": 0.8
+            }
+          },
+          "after": {
+            "old_accuracy": 0.7333333333333333,
+            "seen_new_accuracy": 0.72,
+            "H_old_new": 0.7266055045871559,
+            "old_floor": 0.4,
+            "seen_new_floor": 0.4,
+            "per_class_index": {
+              "0": 1.0,
+              "1": 0.4,
+              "2": 0.7,
+              "3": 0.8,
+              "4": 0.7,
+              "5": 0.8,
+              "6": 0.9,
+              "7": 0.4,
+              "8": 0.7,
+              "9": 0.9,
+              "10": 0.7
+            }
+          },
+          "forgetting": 0.06666666666666676,
+          "resource": {
+            "before": {
+              "updated_original_parameters": 25760,
+              "epochs": 5,
+              "optimizer_steps": 5,
+              "optimizer": "SGD",
+              "momentum": 0.0,
+              "optimizer_state_persisted": false,
+              "fp16_patch_payload_bytes": 51520,
+              "training_updated_layer_macs_estimate": 23184000,
+              "training_seconds": 2.5275684999942314,
+              "peak_gpu_memory_bytes": 69279744,
+              "deployment_added_macs_after_merge": 0,
+              "fp16_patch_file_bytes": 17294,
+              "int8_head_bytes": 15600,
+              "patch_plus_head_bytes": 67120,
+              "state_within_256KB": true,
+              "knn_dot_macs_per_query": 15360
+            },
+            "after": {
+              "updated_original_parameters": 25760,
+              "epochs": 5,
+              "optimizer_steps": 5,
+              "optimizer": "SGD",
+              "momentum": 0.0,
+              "optimizer_state_persisted": false,
+              "fp16_patch_payload_bytes": 51520,
+              "training_updated_layer_macs_estimate": 42504000,
+              "training_seconds": 2.399828900001012,
+              "peak_gpu_memory_bytes": 69414912,
+              "deployment_added_macs_after_merge": 0,
+              "fp16_patch_file_bytes": 17578,
+              "int8_head_bytes": 28600,
+              "patch_plus_head_bytes": 80120,
+              "state_within_256KB": true,
+              "knn_dot_macs_per_query": 28160
+            }
+          }
+        },
+        {
+          "scenario": "leo_rain_weak",
+          "before": {
+            "old_accuracy": 0.8666666666666667,
+            "seen_new_accuracy": 0.0,
+            "H_old_new": 0.0,
+            "old_floor": 0.7,
+            "seen_new_floor": 0.0,
+            "per_class_index": {
+              "0": 1.0,
+              "1": 0.7,
+              "2": 0.9,
+              "3": 0.7,
+              "4": 0.9,
+              "5": 1.0
+            }
+          },
+          "after": {
+            "old_accuracy": 0.7166666666666667,
+            "seen_new_accuracy": 0.7,
+            "H_old_new": 0.7082352941176471,
+            "old_floor": 0.3,
+            "seen_new_floor": 0.4,
+            "per_class_index": {
+              "0": 0.8,
+              "1": 0.3,
+              "2": 0.9,
+              "3": 0.7,
+              "4": 0.6,
+              "5": 1.0,
+              "6": 0.8,
+              "7": 0.4,
+              "8": 0.8,
+              "9": 0.9,
+              "10": 0.6
+            }
+          },
+          "forgetting": 0.15000000000000002,
+          "resource": {
+            "before": {
+              "updated_original_parameters": 25760,
+              "epochs": 5,
+              "optimizer_steps": 5,
+              "optimizer": "SGD",
+              "momentum": 0.0,
+              "optimizer_state_persisted": false,
+              "fp16_patch_payload_bytes": 51520,
+              "training_updated_layer_macs_estimate": 23184000,
+              "training_seconds": 2.1088405000045896,
+              "peak_gpu_memory_bytes": 69279744,
+              "deployment_added_macs_after_merge": 0,
+              "fp16_patch_file_bytes": 19354,
+              "int8_head_bytes": 15600,
+              "patch_plus_head_bytes": 67120,
+              "state_within_256KB": true,
+              "knn_dot_macs_per_query": 15360
+            },
+            "after": {
+              "updated_original_parameters": 25760,
+              "epochs": 5,
+              "optimizer_steps": 5,
+              "optimizer": "SGD",
+              "momentum": 0.0,
+              "optimizer_state_persisted": false,
+              "fp16_patch_payload_bytes": 51520,
+              "training_updated_layer_macs_estimate": 42504000,
+              "training_seconds": 2.3858816000138177,
+              "peak_gpu_memory_bytes": 69414912,
+              "deployment_added_macs_after_merge": 0,
+              "fp16_patch_file_bytes": 19370,
+              "int8_head_bytes": 28600,
+              "patch_plus_head_bytes": 80120,
+              "state_within_256KB": true,
+              "knn_dot_macs_per_query": 28160
+            }
+          }
+        }
+      ],
+      "pooled_after": {
+        "old_accuracy": 0.7722222222222223,
+        "seen_new_accuracy": 0.78,
+        "H_old_new": 0.7760916249105225,
+        "old_floor": 0.36666666666666664,
+        "seen_new_floor": 0.4666666666666667,
+        "per_class_index": {
+          "0": 0.9,
+          "1": 0.36666666666666664,
+          "2": 0.8666666666666667,
+          "3": 0.8333333333333334,
+          "4": 0.7666666666666667,
+          "5": 0.9,
+          "6": 0.9,
+          "7": 0.4666666666666667,
+          "8": 0.8333333333333334,
+          "9": 0.9333333333333333,
+          "10": 0.7666666666666667
+        }
+      },
+      "pooled_before_old_accuracy": 0.8722222222222222,
+      "pooled_forgetting": 0.09999999999999998,
+      "max_patch_plus_head_bytes": 80120
+    }
+  },
+  "selector_lock": {
+    "selected_candidate": "B_input_proj",
+    "ranking": [
+      "B_input_proj",
+      "A_tail_idproj",
+      "C_tail_gate"
+    ],
+    "evidence": "three_scenario_support_only_post_adaptation_loo",
+    "selection_key": [
+      "max_min_old_new_floor",
+      "max_H",
+      "min_forgetting",
+      "min_state",
+      "fixed_order"
+    ],
+    "query_opened_for_selection": false,
+    "same_whitelist_and_hyperparameters_across_scenes": true
+  },
+  "query_score": {
+    "selected_candidate": "B_input_proj",
+    "scenes": [
+      {
+        "scenario": "leo_clear_weak",
+        "before_old_accuracy": 0.9166666666666666,
+        "after": {
+          "old_accuracy": 0.8416666666666667,
+          "seen_new_accuracy": 0.87,
+          "H_old_new": 0.8555988315481986,
+          "old_floor": 0.7,
+          "seen_new_floor": 0.7,
+          "per_class_index": {
+            "0": 0.7,
+            "1": 0.75,
+            "2": 0.9,
+            "3": 0.9,
+            "4": 0.8,
+            "5": 1.0,
+            "6": 0.95,
+            "7": 0.7,
+            "8": 1.0,
+            "9": 0.75,
+            "10": 0.95
+          }
+        },
+        "forgetting": 0.07499999999999996
+      },
+      {
+        "scenario": "leo_low_elev_weak",
+        "before_old_accuracy": 0.75,
+        "after": {
+          "old_accuracy": 0.6583333333333333,
+          "seen_new_accuracy": 0.74,
+          "H_old_new": 0.6967818831942788,
+          "old_floor": 0.4,
+          "seen_new_floor": 0.6,
+          "per_class_index": {
+            "0": 0.8,
+            "1": 0.4,
+            "2": 0.6,
+            "3": 0.8,
+            "4": 0.65,
+            "5": 0.7,
+            "6": 0.75,
+            "7": 0.6,
+            "8": 0.85,
+            "9": 0.8,
+            "10": 0.7
+          }
+        },
+        "forgetting": 0.09166666666666667
+      },
+      {
+        "scenario": "leo_rain_weak",
+        "before_old_accuracy": 0.8166666666666667,
+        "after": {
+          "old_accuracy": 0.6833333333333333,
+          "seen_new_accuracy": 0.68,
+          "H_old_new": 0.6816625916870417,
+          "old_floor": 0.4,
+          "seen_new_floor": 0.55,
+          "per_class_index": {
+            "0": 0.9,
+            "1": 0.4,
+            "2": 0.85,
+            "3": 0.4,
+            "4": 0.65,
+            "5": 0.9,
+            "6": 0.65,
+            "7": 0.55,
+            "8": 0.85,
+            "9": 0.7,
+            "10": 0.65
+          }
+        },
+        "forgetting": 0.1333333333333333
+      }
+    ],
+    "pooled_before_old_accuracy": 0.8277777777777777,
+    "pooled_after": {
+      "old_accuracy": 0.7277777777777777,
+      "seen_new_accuracy": 0.7633333333333333,
+      "H_old_new": 0.7451316443119721,
+      "old_floor": 0.5166666666666667,
+      "seen_new_floor": 0.6166666666666667,
+      "per_class_index": {
+        "0": 0.8,
+        "1": 0.5166666666666667,
+        "2": 0.7833333333333333,
+        "3": 0.7,
+        "4": 0.7,
+        "5": 0.8666666666666667,
+        "6": 0.7833333333333333,
+        "7": 0.6166666666666667,
+        "8": 0.9,
+        "9": 0.75,
+        "10": 0.7666666666666667
+      }
+    },
+    "pooled_forgetting": 0.09999999999999998
+  },
+  "truth_sidecar": {
+    "path": "E:\\type10-7\\automation_reports\\CV-SincNet\\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\\phase2_capsule_k10_new5\\scorer\\truth_sidecar.json",
+    "sha256": "4ef7b31f2ca833fd5af4eef1680b980695eaf9c4e218cb06898a9bc15bc76036",
+    "opened_after_prediction": true
+  },
+  "protocol": {
+    "stage": "stage2c",
+    "phase2_sample_view_policy": "leo_weak_only_no_clean_access",
+    "support_only_calibration": true,
+    "query_decision_policy": "per_sample_all_registered_classes",
+    "query_role_oracle_access": false,
+    "query_true_batch_class_count_access": false,
+    "query_class_quota_access": false,
+    "query_batch_global_assignment": false
+  }
+}

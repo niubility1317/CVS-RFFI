@@ -1,0 +1,1 @@
+conda run -n ssr-gpu python local_artifacts\m5_support_only_sparse_delta_k10_new5_20260717\run_m5.py --capsule-root E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\phase2_capsule_k10_new5 --output-dir E:\type10-7\github_publish\CVS-RFFI-repo\local_artifacts\m5_support_only_sparse_delta_k10_new5_20260717 --device cuda:0

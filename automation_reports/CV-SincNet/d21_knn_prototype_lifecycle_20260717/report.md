@@ -102,10 +102,86 @@ P90使用4096-bin余弦距离直方图上沿，确定性误差上界为0.0004882
 
 ## 直接算法开发入口与旧v1边界
 
-- N607已保存D18母资产覆盖5个receiver×6个seed×3场景、旧6类＋new20、每类每场景40个唯一LEO_weak观测。固定前20条为support pool、后20条为query，可直接切K=`1/5/10/20`和new=`5/10/20`，不重建信道。
+- N607已保存D18母资产覆盖5个receiver×6个seed×3场景、旧6类＋new20、每类每场景40个唯一LEO_weak观测。正式切分不是mother数组前20/后20，而是按`SHA256(somph-offline-split-v1|receiver|seed|role|TX|sample_id)`确定性排序；每类前K条为嵌套support，固定rank20–39为query，可直接切K=`1/5/10/20`和new=`5/10/20`，不重建信道。
 - 2026-07-17 14:25 direct preflight再次PASS，GPU0～7均空闲。已将`rx20-1/seed713101`三场景母cell拉取到`E:\type10-7\automation_reports\CV-SincNet\d21_knn_prototype_lifecycle_20260717\dev_cache_rx20_1_seed713101`，总计约10.8MiB；远端资产保持只读，传输后`ssh.exe=0`且N607 TCP22连接数为0。
 - 本地另有已密封的`rx20-1/seed713101/K10/new5`before/after胶囊，可先用旧runtime做算法开发冒烟；正式确认必须在用户指定final runtime及联合int8 bundle重建后执行。
 - 旧v1 125行仅含2个seen-new类且使用dense query graph，按当前协议只能作历史诊断。其25-cell聚合为：K1 old/new/H=`67.60/58.80/61.10%`，K5=`80.03/75.60/76.93%`，K10=`83.04/81.87/82.07%`，K20=`85.67/84.87/85.04%`；对应最差旧类floor仅`6.67/25.00/20.00/35.00%`。因此本轮主攻逐类floor和注册后竞争遗忘，而不是复用v1的query图。
+
+## 2026-07-17固定接收IQ表征与极轻量适配开发结果
+
+开发单元固定为`receiver=20-1`、`seed=713101`、K10、5个真实seen-new TX和三个互斥物理样本集合的LEO_weak场景。每个物理样本只有一份固定接收IQ；`FFT96`、`RF32`和差分相位统计均由该IQ确定性计算，不生成额外LEO状态或独立训练子样本。predictor先输出truth-free逐样本预测，独立scorer随后连接truth；下表均为开发结果，不是确认矩阵或正式成功声明。
+
+### Query即测试集的硬边界
+
+本轮起把query严格视为最终测试集：方法结构、超参数、support代理选择、早停、回滚和候选排名必须在query打开前仅依赖support完成并锁定；随后只允许对锁定候选生成一次不可变prediction，再由隔离scorer读取query truth计算测试指标。query及其标签、角色、类别数、quota、顺序和测试结果不得回流到训练、适配、校准、阈值选择、方法选择或下一轮调参。此前M1b对15个软融合点生成的query Pareto统一降级为`SEALED_TEST_DIAGNOSTIC_ONLY`：只能描述已观察到的测试行为，禁止据此选择beta、offset或设计后续机制；它不构成可晋升证据。
+
+### 候选演进
+
+|candidate|机制|参数/epoch|old before|old after|old floor|seen-new|new floor|H|forgetting|状态|
+|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---|
+|L0|z_id160单质心identity|0/0|65.00%|40.83%|11.67%|53.67%|1.67%|46.38%|24.17pp|基线|
+|L2|z_id160 support-LOO old guard|0/0|64.72%|48.33%|11.67%|51.33%|1.67%|49.79%|16.39pp|低性能对照|
+|L4|z_id160每类2原型|0/0|62.78%|50.00%|13.33%|42.33%|15.00%|45.85%|12.78pp|低性能对照|
+|L5|`normalize([z_id160,8*FFT96])`、每类top1 support|0/0|83.33%|73.06%|51.67%|77.33%|63.33%|75.13%|10.28pp|0参数表征基线|
+|L5q|L5逐support向量int8＋FP16 scale|0/0|83.06%|72.78%|51.67%|76.67%|61.67%|74.67%|10.28pp|28,380B部署态|
+|L6q|L5q＋256参数support-only对角metric|256/20|88.89%|77.78%|61.67%|79.00%|51.67%|78.38%|11.11pp|当前old-floor Pareto|
+|L7q|`theta_B→theta_C`、类CVaR＋旧pair保持＋侵入hinge|256/20|88.89%|78.89%|58.33%|79.33%|51.67%|79.11%|10.00pp|当前mean/forget Pareto|
+
+L6q的变换后support码同样使用逐向量int8＋FP16 scale，对角scale以FP16持久化；量化版与其FP32预测逐项一致，Stage2-C逻辑状态28,892B。L6q每query为28,160次support点积MAC＋256次metric缩放MAC；L7q状态和query MAC相同。L8在L6q上比较`alpha*top1+(1-alpha)*class-mean`，三场景support-LOO锁定`alpha=1`，证明简单mean融合无floor收益并自动回退L6q。
+
+### 紧凑数学描述符4-arm消融
+
+|arm|维数|old after|old floor|seen-new|new floor|H|forgetting|结论|
+|---|---:|---:|---:|---:|---:|---:|---:|---|
+|A0 z＋FFT96|256|72.78%|51.67%|76.67%|61.67%|74.67%|10.28pp|最强固定描述|
+|A1 z＋FFT96＋RF32|288|73.06%|50.00%|72.33%|60.00%|72.69%|9.17pp|low-elev old floor降至25%|
+|A2 z＋FFT96＋DP32|288|66.11%|41.67%|75.33%|58.33%|70.42%|13.06pp|support→query排序失配|
+|A3 z＋FFT96＋RF32＋DP16|304|73.06%|48.33%|73.67%|56.67%|73.36%|10.83pp|维数增加但性能下降|
+
+因此不再继续堆叠RF/DP描述；固定A0＋极轻量metric是后续主表征。独立floor-aware实现对A0得到old/new/H=`75.00/82.00/78.34%`、old/new floor=`60.00/56.67%`，但遗忘13.61pp，进一步确认均值、floor和遗忘必须联合优化。
+
+### 正式seed哈希切分的K/new规模快速矩阵
+
+首个矩阵误把mother原数组前20/后20当作support/query，已在artifact首行标为`SPLIT_MISMATCH_DIAGNOSTIC`，禁止引用、比较或晋升。修复矩阵严格复现formal capsule三场景support/query逐行post-channel IQ SHA集合，6项均为`EXACT_SET_MATCH`；K10/new5 pooled old/new/H精确复现`0.7305556/0.7733333/0.7513360`。
+
+|K|new5 H|new10 H|new20 H|new5 old/new|new10 old/new|new20 old/new|
+|---:|---:|---:|---:|---:|---:|---:|
+|1|39.28%|36.83%|30.02%|39.44/39.67%|36.11/38.00%|30.28/30.33%|
+|5|67.01%|62.87%|60.26%|66.11/68.67%|62.78/63.83%|61.67/59.42%|
+|10|75.08%|72.21%|71.31%|73.06/77.33%|69.72/75.00%|68.61/74.25%|
+|20|81.52%|78.98%|78.53%|81.39/81.67%|78.33/79.67%|77.50/79.58%|
+
+K20的new5/10/20平均遗忘仍为7.78/10.83/11.67pp，最差旧类floor为55/45/40%，最差新类floor为55/40/30%。这说明增加K可稳定改善性能，但单纯top1 support注册无法消除多新类竞争，也不能满足K1非负适应增益。
+
+### 遗忘保护、稳健注册与快速模型适配
+
+下表均使用同一开发测试单元。M1b曾对多个融合点打开query，现已统一封存为`SEALED_TEST_DIAGNOSTIC_ONLY`，不得用于选择或后续调参；表中只保留其support预锁点。M5两条路线则严格先用support锁定，再只对锁定候选执行一次隔离测试。
+
+|candidate|机制|参数/epoch|old before|old after|old floor|seen-new|new floor|H|forgetting|结论|
+|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---|
+|M1|双状态old/new metric|512/20|86.67%|85.56%|75.00%|63.33%|33.33%|72.79%|1.11pp|旧类保护强，但新类塌缩|
+|M1b lock|support预锁`beta=1,offset=.02`|512/20|86.67%|86.39%|75.00%|53.00%|25.00%|65.70%|0.28pp|测试诊断封存，不晋升|
+|M2|rank4低秩残差metric|2,304/20|86.94%|78.06%|55.00%|77.00%|63.33%|77.52%|8.89pp|遗忘/new-floor Pareto|
+|M3|bagged2稳健局部注册|0/0|78.33%|70.83%|45.00%|79.00%|60.00%|74.69%|7.50pp|5,720B但old floor不足|
+|M4|合法单观测D1全类轻量头|3,456/20|74.72%|60.00%|38.33%|72.67%|45.00%|65.73%|14.72pp|support过拟合，NO-GO|
+|M5-lite|norm-affine sparse delta|1,136/5|83.06%|72.78%|51.67%|76.67%|61.67%|74.67%|10.28pp|更新无效，NO-GO|
+|M5-key|input-proj sparse delta|22,080/5|82.78%|72.78%|51.67%|76.33%|61.67%|74.51%|10.00pp|非Pareto，NO-GO|
+
+M5-lite固定SGD、momentum=0、5epoch=5step，实际非零FP16 delta为1,135/1,136，patch仅2,272B/场景，适配2.87–3.50s，峰值显存223.24MiB；delta合并回原层后推理新增MAC为0。它只改变7/660个预测，support loss仅下降约0.1%，属于适配无效而非典型过拟合。M5-key预锁定22,080参数`input projection`白名单，FP16 patch为44,160B，patch＋int8 head共72,760B，单次适配最大2.68s，峰值GPU显存69,401,600B，合并后新增MAC同样为0；相对identity-only top1，new下降0.33pp、H下降0.16pp且状态增加44,160B，不构成Pareto改进。
+
+这两条实验确认“support-only sparse key-layer delta”在资源上完全可部署，但当前更新位置没有提供有效泛化增益。后续不得依据这批query继续修改白名单或超参数；若继续快速梯度路线，必须只用尚未打开的support证据预先锁定机制，并把新的query测试留到方法锁定之后。
+
+### 当前artifact
+
+- 主开发runner与完整loss/score：`local_artifacts/d21_capsule_fast_adapt_dev_20260717/`。
+- 4-arm描述符、720条完整20epoch loss trace与逐类结果：`local_artifacts/d21_floor_explore/final4arm_smetric/`。
+- 双状态与封存软融合诊断：`local_artifacts/d21_m1_dual_state/final/`、`local_artifacts/d21_m1b_soft_fusion/final/`。
+- M5-lite norm-affine快速delta：`local_artifacts/d21_m5lite_norm_affine/final/`。
+- M5 key-projection快速delta：`local_artifacts/m5_support_only_sparse_delta_k10_new5_20260717/`。
+- 正式切分快速矩阵：`automation_reports/CV-SincNet/d21_knn_prototype_lifecycle_20260717/l5_fast_dev_formalsplit_20260717/`。
+- 错误切分禁用标记：`automation_reports/CV-SincNet/d21_knn_prototype_lifecycle_20260717/l5_fast_dev_20260717/STATUS.md`。
+
+当前未达正式门槛，不启动125确认矩阵。M1–M5已经完成并固化正负证据；任何历史多LEO副本D1结果不得回填，也不得重复打开当前query做机制或超参数优化。
 
 ## 成功与停止条件
 

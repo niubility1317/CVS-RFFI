@@ -1,0 +1,18 @@
+{
+  "selected_candidate": "B_input_proj",
+  "ranking": [
+    "B_input_proj",
+    "A_tail_idproj",
+    "C_tail_gate"
+  ],
+  "evidence": "three_scenario_support_only_post_adaptation_loo",
+  "selection_key": [
+    "max_min_old_new_floor",
+    "max_H",
+    "min_forgetting",
+    "min_state",
+    "fixed_order"
+  ],
+  "query_opened_for_selection": false,
+  "same_whitelist_and_hyperparameters_across_scenes": true
+}

@@ -1,0 +1,463 @@
+{
+  "arms": {
+    "M5lite_norm_only": {
+      "aggregate": {
+        "H_old_new": 0.7467162329615862,
+        "average_forgetting": 0.10277777777777786,
+        "min_old_class_acc": 0.5166666666666667,
+        "min_seen_new_class_acc": 0.6166666666666667,
+        "old_acc": 0.7277777777777777,
+        "old_acc_before_increment": 0.8305555555555556,
+        "per_class": {
+          "0": {
+            "accuracy": 0.8,
+            "count": 60
+          },
+          "1": {
+            "accuracy": 0.5166666666666667,
+            "count": 60
+          },
+          "10": {
+            "accuracy": 0.7666666666666667,
+            "count": 60
+          },
+          "2": {
+            "accuracy": 0.7833333333333333,
+            "count": 60
+          },
+          "3": {
+            "accuracy": 0.7,
+            "count": 60
+          },
+          "4": {
+            "accuracy": 0.7,
+            "count": 60
+          },
+          "5": {
+            "accuracy": 0.8666666666666667,
+            "count": 60
+          },
+          "6": {
+            "accuracy": 0.7833333333333333,
+            "count": 60
+          },
+          "7": {
+            "accuracy": 0.6166666666666667,
+            "count": 60
+          },
+          "8": {
+            "accuracy": 0.9166666666666666,
+            "count": 60
+          },
+          "9": {
+            "accuracy": 0.75,
+            "count": 60
+          }
+        },
+        "seen_new_acc": 0.7666666666666667
+      },
+      "scenario_rows": [
+        {
+          "H_old_new": 0.8507345739471107,
+          "average_forgetting": 0.07499999999999996,
+          "min_old_class_acc": 0.7,
+          "min_seen_new_class_acc": 0.7,
+          "old_acc": 0.8416666666666667,
+          "old_acc_before_increment": 0.9166666666666666,
+          "per_class": {
+            "0": {
+              "accuracy": 0.7,
+              "count": 20
+            },
+            "1": {
+              "accuracy": 0.75,
+              "count": 20
+            },
+            "10": {
+              "accuracy": 0.95,
+              "count": 20
+            },
+            "2": {
+              "accuracy": 0.9,
+              "count": 20
+            },
+            "3": {
+              "accuracy": 0.9,
+              "count": 20
+            },
+            "4": {
+              "accuracy": 0.8,
+              "count": 20
+            },
+            "5": {
+              "accuracy": 1.0,
+              "count": 20
+            },
+            "6": {
+              "accuracy": 0.95,
+              "count": 20
+            },
+            "7": {
+              "accuracy": 0.7,
+              "count": 20
+            },
+            "8": {
+              "accuracy": 1.0,
+              "count": 20
+            },
+            "9": {
+              "accuracy": 0.7,
+              "count": 20
+            }
+          },
+          "scenario": "leo_clear_weak",
+          "seen_new_acc": 0.86
+        },
+        {
+          "H_old_new": 0.7058823529411765,
+          "average_forgetting": 0.08333333333333337,
+          "min_old_class_acc": 0.45,
+          "min_seen_new_class_acc": 0.6,
+          "old_acc": 0.6666666666666666,
+          "old_acc_before_increment": 0.75,
+          "per_class": {
+            "0": {
+              "accuracy": 0.8,
+              "count": 20
+            },
+            "1": {
+              "accuracy": 0.45,
+              "count": 20
+            },
+            "10": {
+              "accuracy": 0.7,
+              "count": 20
+            },
+            "2": {
+              "accuracy": 0.6,
+              "count": 20
+            },
+            "3": {
+              "accuracy": 0.8,
+              "count": 20
+            },
+            "4": {
+              "accuracy": 0.65,
+              "count": 20
+            },
+            "5": {
+              "accuracy": 0.7,
+              "count": 20
+            },
+            "6": {
+              "accuracy": 0.75,
+              "count": 20
+            },
+            "7": {
+              "accuracy": 0.6,
+              "count": 20
+            },
+            "8": {
+              "accuracy": 0.9,
+              "count": 20
+            },
+            "9": {
+              "accuracy": 0.8,
+              "count": 20
+            }
+          },
+          "scenario": "leo_low_elev_weak",
+          "seen_new_acc": 0.75
+        },
+        {
+          "H_old_new": 0.6824175824175824,
+          "average_forgetting": 0.1499999999999999,
+          "min_old_class_acc": 0.35,
+          "min_seen_new_class_acc": 0.55,
+          "old_acc": 0.675,
+          "old_acc_before_increment": 0.825,
+          "per_class": {
+            "0": {
+              "accuracy": 0.9,
+              "count": 20
+            },
+            "1": {
+              "accuracy": 0.35,
+              "count": 20
+            },
+            "10": {
+              "accuracy": 0.65,
+              "count": 20
+            },
+            "2": {
+              "accuracy": 0.85,
+              "count": 20
+            },
+            "3": {
+              "accuracy": 0.4,
+              "count": 20
+            },
+            "4": {
+              "accuracy": 0.65,
+              "count": 20
+            },
+            "5": {
+              "accuracy": 0.9,
+              "count": 20
+            },
+            "6": {
+              "accuracy": 0.65,
+              "count": 20
+            },
+            "7": {
+              "accuracy": 0.55,
+              "count": 20
+            },
+            "8": {
+              "accuracy": 0.85,
+              "count": 20
+            },
+            "9": {
+              "accuracy": 0.75,
+              "count": 20
+            }
+          },
+          "scenario": "leo_rain_weak",
+          "seen_new_acc": 0.69
+        }
+      ]
+    },
+    "Z0": {
+      "aggregate": {
+        "H_old_new": 0.7467162329615862,
+        "average_forgetting": 0.10277777777777786,
+        "min_old_class_acc": 0.5166666666666667,
+        "min_seen_new_class_acc": 0.6166666666666667,
+        "old_acc": 0.7277777777777777,
+        "old_acc_before_increment": 0.8305555555555556,
+        "per_class": {
+          "0": {
+            "accuracy": 0.8,
+            "count": 60
+          },
+          "1": {
+            "accuracy": 0.5166666666666667,
+            "count": 60
+          },
+          "10": {
+            "accuracy": 0.7666666666666667,
+            "count": 60
+          },
+          "2": {
+            "accuracy": 0.7666666666666667,
+            "count": 60
+          },
+          "3": {
+            "accuracy": 0.7166666666666667,
+            "count": 60
+          },
+          "4": {
+            "accuracy": 0.7,
+            "count": 60
+          },
+          "5": {
+            "accuracy": 0.8666666666666667,
+            "count": 60
+          },
+          "6": {
+            "accuracy": 0.7833333333333333,
+            "count": 60
+          },
+          "7": {
+            "accuracy": 0.6166666666666667,
+            "count": 60
+          },
+          "8": {
+            "accuracy": 0.9,
+            "count": 60
+          },
+          "9": {
+            "accuracy": 0.7666666666666667,
+            "count": 60
+          }
+        },
+        "seen_new_acc": 0.7666666666666667
+      },
+      "scenario_rows": [
+        {
+          "H_old_new": 0.8555988315481986,
+          "average_forgetting": 0.07499999999999996,
+          "min_old_class_acc": 0.7,
+          "min_seen_new_class_acc": 0.7,
+          "old_acc": 0.8416666666666667,
+          "old_acc_before_increment": 0.9166666666666666,
+          "per_class": {
+            "0": {
+              "accuracy": 0.7,
+              "count": 20
+            },
+            "1": {
+              "accuracy": 0.75,
+              "count": 20
+            },
+            "10": {
+              "accuracy": 0.95,
+              "count": 20
+            },
+            "2": {
+              "accuracy": 0.9,
+              "count": 20
+            },
+            "3": {
+              "accuracy": 0.9,
+              "count": 20
+            },
+            "4": {
+              "accuracy": 0.8,
+              "count": 20
+            },
+            "5": {
+              "accuracy": 1.0,
+              "count": 20
+            },
+            "6": {
+              "accuracy": 0.95,
+              "count": 20
+            },
+            "7": {
+              "accuracy": 0.7,
+              "count": 20
+            },
+            "8": {
+              "accuracy": 1.0,
+              "count": 20
+            },
+            "9": {
+              "accuracy": 0.75,
+              "count": 20
+            }
+          },
+          "scenario": "leo_clear_weak",
+          "seen_new_acc": 0.87
+        },
+        {
+          "H_old_new": 0.6967818831942788,
+          "average_forgetting": 0.09166666666666667,
+          "min_old_class_acc": 0.4,
+          "min_seen_new_class_acc": 0.6,
+          "old_acc": 0.6583333333333333,
+          "old_acc_before_increment": 0.75,
+          "per_class": {
+            "0": {
+              "accuracy": 0.8,
+              "count": 20
+            },
+            "1": {
+              "accuracy": 0.4,
+              "count": 20
+            },
+            "10": {
+              "accuracy": 0.7,
+              "count": 20
+            },
+            "2": {
+              "accuracy": 0.6,
+              "count": 20
+            },
+            "3": {
+              "accuracy": 0.8,
+              "count": 20
+            },
+            "4": {
+              "accuracy": 0.65,
+              "count": 20
+            },
+            "5": {
+              "accuracy": 0.7,
+              "count": 20
+            },
+            "6": {
+              "accuracy": 0.75,
+              "count": 20
+            },
+            "7": {
+              "accuracy": 0.6,
+              "count": 20
+            },
+            "8": {
+              "accuracy": 0.85,
+              "count": 20
+            },
+            "9": {
+              "accuracy": 0.8,
+              "count": 20
+            }
+          },
+          "scenario": "leo_low_elev_weak",
+          "seen_new_acc": 0.74
+        },
+        {
+          "H_old_new": 0.6866504854368932,
+          "average_forgetting": 0.1416666666666666,
+          "min_old_class_acc": 0.4,
+          "min_seen_new_class_acc": 0.55,
+          "old_acc": 0.6833333333333333,
+          "old_acc_before_increment": 0.825,
+          "per_class": {
+            "0": {
+              "accuracy": 0.9,
+              "count": 20
+            },
+            "1": {
+              "accuracy": 0.4,
+              "count": 20
+            },
+            "10": {
+              "accuracy": 0.65,
+              "count": 20
+            },
+            "2": {
+              "accuracy": 0.8,
+              "count": 20
+            },
+            "3": {
+              "accuracy": 0.45,
+              "count": 20
+            },
+            "4": {
+              "accuracy": 0.65,
+              "count": 20
+            },
+            "5": {
+              "accuracy": 0.9,
+              "count": 20
+            },
+            "6": {
+              "accuracy": 0.65,
+              "count": 20
+            },
+            "7": {
+              "accuracy": 0.55,
+              "count": 20
+            },
+            "8": {
+              "accuracy": 0.85,
+              "count": 20
+            },
+            "9": {
+              "accuracy": 0.75,
+              "count": 20
+            }
+          },
+          "scenario": "leo_rain_weak",
+          "seen_new_acc": 0.69
+        }
+      ]
+    }
+  },
+  "prediction_sha256": "88ff60c45c4dce43b8a92738cfde6abd1c926c1a66a93d524b4bc1daf7552fa1",
+  "query_truth_joined_only_after_immutable_predictions": true,
+  "schema": "cvs.phase2.d21_m5lite_score.v1",
+  "scorer_feedback_to_predictor": false,
+  "truth_sidecar_sha256": "4ef7b31f2ca833fd5af4eef1680b980695eaf9c4e218cb06898a9bc15bc76036"
+}

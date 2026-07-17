@@ -1,0 +1,19 @@
+{
+  "selected_method": "bagged2",
+  "ranking": [
+    "bagged2",
+    "top1",
+    "top2_trimmed",
+    "medoid",
+    "radius_standardized"
+  ],
+  "evidence": "three_scenario_k10_support_loo_only",
+  "selection_key": [
+    "max_min_old_new_floor",
+    "max_H_old_new",
+    "min_forgetting",
+    "min_state_bytes",
+    "fixed_order"
+  ],
+  "query_used_for_selection": false
+}

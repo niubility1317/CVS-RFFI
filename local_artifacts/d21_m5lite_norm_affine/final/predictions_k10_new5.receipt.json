@@ -1,0 +1,203 @@
+{
+  "exact_whitelist": [
+    {
+      "name": "model.id_backbone.time_fuse.1.weight",
+      "parameters": 48,
+      "shape": [
+        48
+      ]
+    },
+    {
+      "name": "model.id_backbone.time_fuse.1.bias",
+      "parameters": 48,
+      "shape": [
+        48
+      ]
+    },
+    {
+      "name": "model.id_backbone.t1.norm.weight",
+      "parameters": 72,
+      "shape": [
+        72
+      ]
+    },
+    {
+      "name": "model.id_backbone.t1.norm.bias",
+      "parameters": 72,
+      "shape": [
+        72
+      ]
+    },
+    {
+      "name": "model.id_backbone.t2.norm.weight",
+      "parameters": 96,
+      "shape": [
+        96
+      ]
+    },
+    {
+      "name": "model.id_backbone.t2.norm.bias",
+      "parameters": 96,
+      "shape": [
+        96
+      ]
+    },
+    {
+      "name": "model.id_backbone.t3.norm.weight",
+      "parameters": 96,
+      "shape": [
+        96
+      ]
+    },
+    {
+      "name": "model.id_backbone.t3.norm.bias",
+      "parameters": 96,
+      "shape": [
+        96
+      ]
+    },
+    {
+      "name": "model.id_backbone.f1.norm.weight",
+      "parameters": 16,
+      "shape": [
+        16
+      ]
+    },
+    {
+      "name": "model.id_backbone.f1.norm.bias",
+      "parameters": 16,
+      "shape": [
+        16
+      ]
+    },
+    {
+      "name": "model.id_backbone.f2.norm.weight",
+      "parameters": 32,
+      "shape": [
+        32
+      ]
+    },
+    {
+      "name": "model.id_backbone.f2.norm.bias",
+      "parameters": 32,
+      "shape": [
+        32
+      ]
+    },
+    {
+      "name": "model.id_backbone.f3.norm.weight",
+      "parameters": 32,
+      "shape": [
+        32
+      ]
+    },
+    {
+      "name": "model.id_backbone.f3.norm.bias",
+      "parameters": 32,
+      "shape": [
+        32
+      ]
+    },
+    {
+      "name": "model.id_backbone.pa_b1.norm.weight",
+      "parameters": 48,
+      "shape": [
+        48
+      ]
+    },
+    {
+      "name": "model.id_backbone.pa_b1.norm.bias",
+      "parameters": 48,
+      "shape": [
+        48
+      ]
+    },
+    {
+      "name": "model.id_backbone.pa_b2.norm.weight",
+      "parameters": 64,
+      "shape": [
+        64
+      ]
+    },
+    {
+      "name": "model.id_backbone.pa_b2.norm.bias",
+      "parameters": 64,
+      "shape": [
+        64
+      ]
+    },
+    {
+      "name": "model.id_backbone.pa_b3.norm.weight",
+      "parameters": 64,
+      "shape": [
+        64
+      ]
+    },
+    {
+      "name": "model.id_backbone.pa_b3.norm.bias",
+      "parameters": 64,
+      "shape": [
+        64
+      ]
+    }
+  ],
+  "fixed_fft96_knn_classifier_MAC_per_query": 28160,
+  "loss_trace_sha256": "3b10f66af1a8e38ada218e898a96e580b69ad1d2a9fa69ca49337883e4efb13a",
+  "merged_inference_added_MAC": 0,
+  "optimizer": "SGD(lr=0.01,momentum=0)",
+  "optimizer_state_persisted": false,
+  "patch_dtype": "float16",
+  "patch_file_bytes": 23792,
+  "patch_payload_bytes_per_scenario": 2272,
+  "patch_sha256": "ce4be36ebd7e99219052568d783f6ccee981c076871bdc6232ed5fa999558045",
+  "peak_cuda_memory_bytes": 234079744,
+  "prediction_sha256": "88ff60c45c4dce43b8a92738cfde6abd1c926c1a66a93d524b4bc1daf7552fa1",
+  "query_batch_global_assignment": false,
+  "query_class_quota_access": false,
+  "query_role_oracle_access": false,
+  "query_true_batch_class_count_access": false,
+  "query_truth_opened": false,
+  "scenario_resources": [
+    {
+      "adaptation_epochs": 5,
+      "adaptation_seconds": 3.2640053999930387,
+      "adaptation_steps": 5,
+      "m5_classifier_ms_per_after_query": 0.0017127272727272729,
+      "m5_feature_seconds_query": 2.241743199992925,
+      "m5_feature_seconds_support": 0.10071559999778401,
+      "scenario": "leo_clear_weak",
+      "z0_classifier_ms_per_after_query": 0.0017654545454545455,
+      "z0_classifier_ms_per_before_query": 0.0013441666666666667,
+      "z0_feature_seconds_query": 2.0660333999985596,
+      "z0_feature_seconds_support": 0.6247441000014078
+    },
+    {
+      "adaptation_epochs": 5,
+      "adaptation_seconds": 2.8652181000070414,
+      "adaptation_steps": 5,
+      "m5_classifier_ms_per_after_query": 0.0014881818181818184,
+      "m5_feature_seconds_query": 2.174214700004086,
+      "m5_feature_seconds_support": 0.0959426000044914,
+      "scenario": "leo_low_elev_weak",
+      "z0_classifier_ms_per_after_query": 0.0018072727272727272,
+      "z0_classifier_ms_per_before_query": 0.0017325,
+      "z0_feature_seconds_query": 2.3685307999985525,
+      "z0_feature_seconds_support": 0.09750199998961762
+    },
+    {
+      "adaptation_epochs": 5,
+      "adaptation_seconds": 3.498589199996786,
+      "adaptation_steps": 5,
+      "m5_classifier_ms_per_after_query": 0.0016504545454545454,
+      "m5_feature_seconds_query": 2.937214199992013,
+      "m5_feature_seconds_support": 0.12051519998931326,
+      "scenario": "leo_rain_weak",
+      "z0_classifier_ms_per_after_query": 0.0019645454545454545,
+      "z0_classifier_ms_per_before_query": 0.0018,
+      "z0_feature_seconds_query": 2.5642281000036746,
+      "z0_feature_seconds_support": 0.10682709999673534
+    }
+  ],
+  "schema": "cvs.phase2.d21_m5lite_receipt.v1",
+  "trainable_parameters": 1136
+}

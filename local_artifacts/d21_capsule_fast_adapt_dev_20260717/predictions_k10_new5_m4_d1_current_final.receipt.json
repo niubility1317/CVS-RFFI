@@ -1,0 +1,50 @@
+{
+  "capsule_offline_receipt_sha256": "9a2b22646a5d5d0e7caf6f7edceafb4f396591e40926cec3f0b67d6647c1a0a4",
+  "loss_trace_relative_path": "predictions_k10_new5_m4_d1_current_final.loss_trace.json",
+  "loss_trace_sha256": "207ea6788cfc72649f8ab80aa13e7a0069103389c6bfbb76fde0322bc906778a",
+  "peak_cuda_memory_bytes": 64986112,
+  "prediction_sha256": "bdd5317a7a4a613bfa528d56ba679a401ab3ca5930edfeed74a21f8c6da0bc34",
+  "query_batch_global_assignment": false,
+  "query_class_quota_access": false,
+  "query_role_oracle_access": false,
+  "query_true_batch_class_count_access": false,
+  "query_truth_opened": false,
+  "resources": {
+    "M4_d1_a1_diag_classweights": {
+      "adaptation_epochs": 20,
+      "adaptation_forward_MAC_estimate_after": 7603200,
+      "adaptation_type": "SUPPORT_ONLY_SHARED_DIAGONAL_PLUS_REGISTERED_CLASS_WEIGHTS",
+      "classifier_ms_per_sample_mean": 0.00023831212121212122,
+      "classifier_ms_per_sample_p95": 0.0005125227272727277,
+      "dense_query_graph": false,
+      "persistent_state_bytes_after": 6912,
+      "persistent_state_bytes_before": 4032,
+      "query_classifier_MAC_after": 3456,
+      "query_classifier_MAC_before": 2016,
+      "trainable_parameters_after": 3456,
+      "trainable_parameters_before": 2016
+    }
+  },
+  "schema": "cvs.phase2.d21_m4_d1_current_capsule_receipt.v1",
+  "sealed_runtime_sha256": "f119e8cb3f6beda95f0d545205e91b43e4a557af2fd1d025e95d2edf2b8e6e2a",
+  "timings": {
+    "leo_clear_weak": {
+      "query_backbone_ms_per_sample": 9.675105909131657,
+      "query_fft96_plus_rf32_ms_per_sample": 0.43926636360331694,
+      "support_backbone_ms_per_sample": 5.6162272726810025,
+      "support_fft96_plus_rf32_ms_per_sample": 0.4820481818486852
+    },
+    "leo_low_elev_weak": {
+      "query_backbone_ms_per_sample": 0.032426363627151164,
+      "query_fft96_plus_rf32_ms_per_sample": 0.4506386363407893,
+      "support_backbone_ms_per_sample": 0.049259090949569574,
+      "support_fft96_plus_rf32_ms_per_sample": 0.49224818172991613
+    },
+    "leo_rain_weak": {
+      "query_backbone_ms_per_sample": 0.02419045459563759,
+      "query_fft96_plus_rf32_ms_per_sample": 0.6686522727250122,
+      "support_backbone_ms_per_sample": 0.04657545452408323,
+      "support_fft96_plus_rf32_ms_per_sample": 0.5740436362843453
+    }
+  }
+}

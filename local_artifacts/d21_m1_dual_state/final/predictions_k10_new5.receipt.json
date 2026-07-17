@@ -1,0 +1,3075 @@
+{
+  "dual_classifier_ms_per_sample_mean": 0.0027931598484848483,
+  "dual_classifier_ms_per_sample_p95": 0.004363477272727272,
+  "loss_trace_record_count": 90,
+  "loss_trace_sha256": "e2f31bc2d3d4b5abd983fbe9d6ebadc8cbf33fe18f9d0b213c8ef29b69eaa1fe",
+  "peak_cuda_memory_bytes": 64986112,
+  "prediction_sha256": "d1708e39875bd425949a8539cd0343b5149a6e0fe61c2bacdc8f200dfc50b4ba",
+  "query_batch_global_assignment": false,
+  "query_class_quota_access": false,
+  "query_role_oracle_access": false,
+  "query_true_batch_class_count_access": false,
+  "query_truth_opened": false,
+  "radius_calibration_lock": {
+    "grid": [
+      {
+        "config": {
+          "new_offset": 0.0,
+          "new_temperature": 0.9,
+          "old_temperature": 0.9
+        },
+        "gate_pass": false,
+        "radius_standardized": true,
+        "scenario_rows": [
+          {
+            "H_old_new": 0.5498489425981873,
+            "average_forgetting": 0.19999999999999996,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.52,
+            "old_acc": 0.5833333333333334,
+            "old_acc_before_increment": 0.7833333333333333,
+            "old_floor": 0.4,
+            "old_support_invasion_rate": 0.31666666666666665,
+            "scenario": "leo_clear_weak",
+            "seen_new_acc": 0.52
+          },
+          {
+            "H_old_new": 0.35454545454545455,
+            "average_forgetting": 0.18333333333333335,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.3,
+            "old_acc": 0.43333333333333335,
+            "old_acc_before_increment": 0.6166666666666667,
+            "old_floor": 0.0,
+            "old_support_invasion_rate": 0.55,
+            "scenario": "leo_low_elev_weak",
+            "seen_new_acc": 0.3
+          },
+          {
+            "H_old_new": 0.17404580152671756,
+            "average_forgetting": 0.0,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.12,
+            "old_acc": 0.31666666666666665,
+            "old_acc_before_increment": 0.31666666666666665,
+            "old_floor": 0.0,
+            "old_support_invasion_rate": 0.0,
+            "scenario": "leo_rain_weak",
+            "seen_new_acc": 0.12
+          }
+        ],
+        "worst_forgetting": 0.19999999999999996,
+        "worst_h": 0.17404580152671756,
+        "worst_new_floor": 0.0,
+        "worst_old_floor": 0.0
+      },
+      {
+        "config": {
+          "new_offset": 0.02,
+          "new_temperature": 0.9,
+          "old_temperature": 0.9
+        },
+        "gate_pass": false,
+        "radius_standardized": true,
+        "scenario_rows": [
+          {
+            "H_old_new": 0.5710982658959537,
+            "average_forgetting": 0.15000000000000002,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.52,
+            "old_acc": 0.6333333333333333,
+            "old_acc_before_increment": 0.7833333333333333,
+            "old_floor": 0.4,
+            "old_support_invasion_rate": 0.26666666666666666,
+            "scenario": "leo_clear_weak",
+            "seen_new_acc": 0.52
+          },
+          {
+            "H_old_new": 0.36000000000000004,
+            "average_forgetting": 0.16666666666666669,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.3,
+            "old_acc": 0.45,
+            "old_acc_before_increment": 0.6166666666666667,
+            "old_floor": 0.0,
+            "old_support_invasion_rate": 0.5333333333333333,
+            "scenario": "leo_low_elev_weak",
+            "seen_new_acc": 0.3
+          },
+          {
+            "H_old_new": 0.15200000000000002,
+            "average_forgetting": 0.0,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.1,
+            "old_acc": 0.31666666666666665,
+            "old_acc_before_increment": 0.31666666666666665,
+            "old_floor": 0.0,
+            "old_support_invasion_rate": 0.0,
+            "scenario": "leo_rain_weak",
+            "seen_new_acc": 0.1
+          }
+        ],
+        "worst_forgetting": 0.16666666666666669,
+        "worst_h": 0.15200000000000002,
+        "worst_new_floor": 0.0,
+        "worst_old_floor": 0.0
+      },
+      {
+        "config": {
+          "new_offset": 0.04,
+          "new_temperature": 0.9,
+          "old_temperature": 0.9
+        },
+        "gate_pass": false,
+        "radius_standardized": true,
+        "scenario_rows": [
+          {
+            "H_old_new": 0.5777777777777778,
+            "average_forgetting": 0.1333333333333333,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.52,
+            "old_acc": 0.65,
+            "old_acc_before_increment": 0.7833333333333333,
+            "old_floor": 0.5,
+            "old_support_invasion_rate": 0.25,
+            "scenario": "leo_clear_weak",
+            "seen_new_acc": 0.52
+          },
+          {
+            "H_old_new": 0.3652173913043478,
+            "average_forgetting": 0.15000000000000002,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.3,
+            "old_acc": 0.4666666666666667,
+            "old_acc_before_increment": 0.6166666666666667,
+            "old_floor": 0.0,
+            "old_support_invasion_rate": 0.48333333333333334,
+            "scenario": "leo_low_elev_weak",
+            "seen_new_acc": 0.3
+          },
+          {
+            "H_old_new": 0.10088495575221239,
+            "average_forgetting": 0.0,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.06,
+            "old_acc": 0.31666666666666665,
+            "old_acc_before_increment": 0.31666666666666665,
+            "old_floor": 0.0,
+            "old_support_invasion_rate": 0.0,
+            "scenario": "leo_rain_weak",
+            "seen_new_acc": 0.06
+          }
+        ],
+        "worst_forgetting": 0.15000000000000002,
+        "worst_h": 0.10088495575221239,
+        "worst_new_floor": 0.0,
+        "worst_old_floor": 0.0
+      },
+      {
+        "config": {
+          "new_offset": 0.0,
+          "new_temperature": 1.0,
+          "old_temperature": 0.9
+        },
+        "gate_pass": false,
+        "radius_standardized": true,
+        "scenario_rows": [
+          {
+            "H_old_new": 0.5777777777777778,
+            "average_forgetting": 0.1333333333333333,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.52,
+            "old_acc": 0.65,
+            "old_acc_before_increment": 0.7833333333333333,
+            "old_floor": 0.5,
+            "old_support_invasion_rate": 0.25,
+            "scenario": "leo_clear_weak",
+            "seen_new_acc": 0.52
+          },
+          {
+            "H_old_new": 0.37499999999999994,
+            "average_forgetting": 0.1166666666666667,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.3,
+            "old_acc": 0.5,
+            "old_acc_before_increment": 0.6166666666666667,
+            "old_floor": 0.2,
+            "old_support_invasion_rate": 0.43333333333333335,
+            "scenario": "leo_low_elev_weak",
+            "seen_new_acc": 0.3
+          },
+          {
+            "H_old_new": 0.10088495575221239,
+            "average_forgetting": 0.0,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.06,
+            "old_acc": 0.31666666666666665,
+            "old_acc_before_increment": 0.31666666666666665,
+            "old_floor": 0.0,
+            "old_support_invasion_rate": 0.0,
+            "scenario": "leo_rain_weak",
+            "seen_new_acc": 0.06
+          }
+        ],
+        "worst_forgetting": 0.1333333333333333,
+        "worst_h": 0.10088495575221239,
+        "worst_new_floor": 0.0,
+        "worst_old_floor": 0.0
+      },
+      {
+        "config": {
+          "new_offset": 0.02,
+          "new_temperature": 1.0,
+          "old_temperature": 0.9
+        },
+        "gate_pass": false,
+        "radius_standardized": true,
+        "scenario_rows": [
+          {
+            "H_old_new": 0.6026954177897574,
+            "average_forgetting": 0.06666666666666665,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.52,
+            "old_acc": 0.7166666666666667,
+            "old_acc_before_increment": 0.7833333333333333,
+            "old_floor": 0.5,
+            "old_support_invasion_rate": 0.16666666666666666,
+            "scenario": "leo_clear_weak",
+            "seen_new_acc": 0.52
+          },
+          {
+            "H_old_new": 0.38400000000000006,
+            "average_forgetting": 0.08333333333333337,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.3,
+            "old_acc": 0.5333333333333333,
+            "old_acc_before_increment": 0.6166666666666667,
+            "old_floor": 0.2,
+            "old_support_invasion_rate": 0.36666666666666664,
+            "scenario": "leo_low_elev_weak",
+            "seen_new_acc": 0.3
+          },
+          {
+            "H_old_new": 0.07102803738317758,
+            "average_forgetting": 0.0,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.04,
+            "old_acc": 0.31666666666666665,
+            "old_acc_before_increment": 0.31666666666666665,
+            "old_floor": 0.0,
+            "old_support_invasion_rate": 0.0,
+            "scenario": "leo_rain_weak",
+            "seen_new_acc": 0.04
+          }
+        ],
+        "worst_forgetting": 0.08333333333333337,
+        "worst_h": 0.07102803738317758,
+        "worst_new_floor": 0.0,
+        "worst_old_floor": 0.0
+      },
+      {
+        "config": {
+          "new_offset": 0.04,
+          "new_temperature": 1.0,
+          "old_temperature": 0.9
+        },
+        "gate_pass": false,
+        "radius_standardized": true,
+        "scenario_rows": [
+          {
+            "H_old_new": 0.6026954177897574,
+            "average_forgetting": 0.06666666666666665,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.52,
+            "old_acc": 0.7166666666666667,
+            "old_acc_before_increment": 0.7833333333333333,
+            "old_floor": 0.5,
+            "old_support_invasion_rate": 0.16666666666666666,
+            "scenario": "leo_clear_weak",
+            "seen_new_acc": 0.52
+          },
+          {
+            "H_old_new": 0.38400000000000006,
+            "average_forgetting": 0.08333333333333337,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.3,
+            "old_acc": 0.5333333333333333,
+            "old_acc_before_increment": 0.6166666666666667,
+            "old_floor": 0.2,
+            "old_support_invasion_rate": 0.3333333333333333,
+            "scenario": "leo_low_elev_weak",
+            "seen_new_acc": 0.3
+          },
+          {
+            "H_old_new": 0.07102803738317758,
+            "average_forgetting": 0.0,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.04,
+            "old_acc": 0.31666666666666665,
+            "old_acc_before_increment": 0.31666666666666665,
+            "old_floor": 0.0,
+            "old_support_invasion_rate": 0.0,
+            "scenario": "leo_rain_weak",
+            "seen_new_acc": 0.04
+          }
+        ],
+        "worst_forgetting": 0.08333333333333337,
+        "worst_h": 0.07102803738317758,
+        "worst_new_floor": 0.0,
+        "worst_old_floor": 0.0
+      },
+      {
+        "config": {
+          "new_offset": 0.0,
+          "new_temperature": 1.1,
+          "old_temperature": 0.9
+        },
+        "gate_pass": false,
+        "radius_standardized": true,
+        "scenario_rows": [
+          {
+            "H_old_new": 0.5967213114754099,
+            "average_forgetting": 0.08333333333333337,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.52,
+            "old_acc": 0.7,
+            "old_acc_before_increment": 0.7833333333333333,
+            "old_floor": 0.5,
+            "old_support_invasion_rate": 0.18333333333333332,
+            "scenario": "leo_clear_weak",
+            "seen_new_acc": 0.52
+          },
+          {
+            "H_old_new": 0.3495798319327731,
+            "average_forgetting": 0.08333333333333337,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.26,
+            "old_acc": 0.5333333333333333,
+            "old_acc_before_increment": 0.6166666666666667,
+            "old_floor": 0.2,
+            "old_support_invasion_rate": 0.3,
+            "scenario": "leo_low_elev_weak",
+            "seen_new_acc": 0.26
+          },
+          {
+            "H_old_new": 0.07102803738317758,
+            "average_forgetting": 0.0,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.04,
+            "old_acc": 0.31666666666666665,
+            "old_acc_before_increment": 0.31666666666666665,
+            "old_floor": 0.0,
+            "old_support_invasion_rate": 0.0,
+            "scenario": "leo_rain_weak",
+            "seen_new_acc": 0.04
+          }
+        ],
+        "worst_forgetting": 0.08333333333333337,
+        "worst_h": 0.07102803738317758,
+        "worst_new_floor": 0.0,
+        "worst_old_floor": 0.0
+      },
+      {
+        "config": {
+          "new_offset": 0.02,
+          "new_temperature": 1.1,
+          "old_temperature": 0.9
+        },
+        "gate_pass": false,
+        "radius_standardized": true,
+        "scenario_rows": [
+          {
+            "H_old_new": 0.6026954177897574,
+            "average_forgetting": 0.06666666666666665,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.52,
+            "old_acc": 0.7166666666666667,
+            "old_acc_before_increment": 0.7833333333333333,
+            "old_floor": 0.5,
+            "old_support_invasion_rate": 0.16666666666666666,
+            "scenario": "leo_clear_weak",
+            "seen_new_acc": 0.52
+          },
+          {
+            "H_old_new": 0.35645161290322586,
+            "average_forgetting": 0.050000000000000044,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.26,
+            "old_acc": 0.5666666666666667,
+            "old_acc_before_increment": 0.6166666666666667,
+            "old_floor": 0.2,
+            "old_support_invasion_rate": 0.25,
+            "scenario": "leo_low_elev_weak",
+            "seen_new_acc": 0.26
+          },
+          {
+            "H_old_new": 0.07102803738317758,
+            "average_forgetting": 0.0,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.04,
+            "old_acc": 0.31666666666666665,
+            "old_acc_before_increment": 0.31666666666666665,
+            "old_floor": 0.0,
+            "old_support_invasion_rate": 0.0,
+            "scenario": "leo_rain_weak",
+            "seen_new_acc": 0.04
+          }
+        ],
+        "worst_forgetting": 0.06666666666666665,
+        "worst_h": 0.07102803738317758,
+        "worst_new_floor": 0.0,
+        "worst_old_floor": 0.0
+      },
+      {
+        "config": {
+          "new_offset": 0.04,
+          "new_temperature": 1.1,
+          "old_temperature": 0.9
+        },
+        "gate_pass": false,
+        "radius_standardized": true,
+        "scenario_rows": [
+          {
+            "H_old_new": 0.5945945945945945,
+            "average_forgetting": 0.050000000000000044,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.5,
+            "old_acc": 0.7333333333333333,
+            "old_acc_before_increment": 0.7833333333333333,
+            "old_floor": 0.5,
+            "old_support_invasion_rate": 0.11666666666666667,
+            "scenario": "leo_clear_weak",
+            "seen_new_acc": 0.5
+          },
+          {
+            "H_old_new": 0.35968379446640314,
+            "average_forgetting": 0.033333333333333326,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.26,
+            "old_acc": 0.5833333333333334,
+            "old_acc_before_increment": 0.6166666666666667,
+            "old_floor": 0.2,
+            "old_support_invasion_rate": 0.21666666666666667,
+            "scenario": "leo_low_elev_weak",
+            "seen_new_acc": 0.26
+          },
+          {
+            "H_old_new": 0.07102803738317758,
+            "average_forgetting": 0.0,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.04,
+            "old_acc": 0.31666666666666665,
+            "old_acc_before_increment": 0.31666666666666665,
+            "old_floor": 0.0,
+            "old_support_invasion_rate": 0.0,
+            "scenario": "leo_rain_weak",
+            "seen_new_acc": 0.04
+          }
+        ],
+        "worst_forgetting": 0.050000000000000044,
+        "worst_h": 0.07102803738317758,
+        "worst_new_floor": 0.0,
+        "worst_old_floor": 0.0
+      },
+      {
+        "config": {
+          "new_offset": 0.0,
+          "new_temperature": 0.9,
+          "old_temperature": 1.0
+        },
+        "gate_pass": false,
+        "radius_standardized": true,
+        "scenario_rows": [
+          {
+            "H_old_new": 0.5265822784810127,
+            "average_forgetting": 0.25,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.52,
+            "old_acc": 0.5333333333333333,
+            "old_acc_before_increment": 0.7833333333333333,
+            "old_floor": 0.2,
+            "old_support_invasion_rate": 0.36666666666666664,
+            "scenario": "leo_clear_weak",
+            "seen_new_acc": 0.52
+          },
+          {
+            "H_old_new": 0.3230769230769231,
+            "average_forgetting": 0.2666666666666667,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.3,
+            "old_acc": 0.35,
+            "old_acc_before_increment": 0.6166666666666667,
+            "old_floor": 0.0,
+            "old_support_invasion_rate": 0.6333333333333333,
+            "scenario": "leo_low_elev_weak",
+            "seen_new_acc": 0.3
+          },
+          {
+            "H_old_new": 0.21258741258741257,
+            "average_forgetting": 0.0,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.16,
+            "old_acc": 0.31666666666666665,
+            "old_acc_before_increment": 0.31666666666666665,
+            "old_floor": 0.0,
+            "old_support_invasion_rate": 0.0,
+            "scenario": "leo_rain_weak",
+            "seen_new_acc": 0.16
+          }
+        ],
+        "worst_forgetting": 0.2666666666666667,
+        "worst_h": 0.21258741258741257,
+        "worst_new_floor": 0.0,
+        "worst_old_floor": 0.0
+      },
+      {
+        "config": {
+          "new_offset": 0.02,
+          "new_temperature": 0.9,
+          "old_temperature": 1.0
+        },
+        "gate_pass": false,
+        "radius_standardized": true,
+        "scenario_rows": [
+          {
+            "H_old_new": 0.5423312883435584,
+            "average_forgetting": 0.21666666666666667,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.52,
+            "old_acc": 0.5666666666666667,
+            "old_acc_before_increment": 0.7833333333333333,
+            "old_floor": 0.3,
+            "old_support_invasion_rate": 0.3333333333333333,
+            "scenario": "leo_clear_weak",
+            "seen_new_acc": 0.52
+          },
+          {
+            "H_old_new": 0.3488372093023256,
+            "average_forgetting": 0.2,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.3,
+            "old_acc": 0.4166666666666667,
+            "old_acc_before_increment": 0.6166666666666667,
+            "old_floor": 0.0,
+            "old_support_invasion_rate": 0.5666666666666667,
+            "scenario": "leo_low_elev_weak",
+            "seen_new_acc": 0.3
+          },
+          {
+            "H_old_new": 0.19416058394160585,
+            "average_forgetting": 0.0,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.14,
+            "old_acc": 0.31666666666666665,
+            "old_acc_before_increment": 0.31666666666666665,
+            "old_floor": 0.0,
+            "old_support_invasion_rate": 0.0,
+            "scenario": "leo_rain_weak",
+            "seen_new_acc": 0.14
+          }
+        ],
+        "worst_forgetting": 0.21666666666666667,
+        "worst_h": 0.19416058394160585,
+        "worst_new_floor": 0.0,
+        "worst_old_floor": 0.0
+      },
+      {
+        "config": {
+          "new_offset": 0.04,
+          "new_temperature": 0.9,
+          "old_temperature": 1.0
+        },
+        "gate_pass": false,
+        "radius_standardized": true,
+        "scenario_rows": [
+          {
+            "H_old_new": 0.5498489425981873,
+            "average_forgetting": 0.19999999999999996,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.52,
+            "old_acc": 0.5833333333333334,
+            "old_acc_before_increment": 0.7833333333333333,
+            "old_floor": 0.3,
+            "old_support_invasion_rate": 0.31666666666666665,
+            "scenario": "leo_clear_weak",
+            "seen_new_acc": 0.52
+          },
+          {
+            "H_old_new": 0.35454545454545455,
+            "average_forgetting": 0.18333333333333335,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.3,
+            "old_acc": 0.43333333333333335,
+            "old_acc_before_increment": 0.6166666666666667,
+            "old_floor": 0.0,
+            "old_support_invasion_rate": 0.55,
+            "scenario": "leo_low_elev_weak",
+            "seen_new_acc": 0.3
+          },
+          {
+            "H_old_new": 0.19416058394160585,
+            "average_forgetting": 0.0,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.14,
+            "old_acc": 0.31666666666666665,
+            "old_acc_before_increment": 0.31666666666666665,
+            "old_floor": 0.0,
+            "old_support_invasion_rate": 0.0,
+            "scenario": "leo_rain_weak",
+            "seen_new_acc": 0.14
+          }
+        ],
+        "worst_forgetting": 0.19999999999999996,
+        "worst_h": 0.19416058394160585,
+        "worst_new_floor": 0.0,
+        "worst_old_floor": 0.0
+      },
+      {
+        "config": {
+          "new_offset": 0.0,
+          "new_temperature": 1.0,
+          "old_temperature": 1.0
+        },
+        "gate_pass": false,
+        "radius_standardized": true,
+        "scenario_rows": [
+          {
+            "H_old_new": 0.5498489425981873,
+            "average_forgetting": 0.19999999999999996,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.52,
+            "old_acc": 0.5833333333333334,
+            "old_acc_before_increment": 0.7833333333333333,
+            "old_floor": 0.4,
+            "old_support_invasion_rate": 0.31666666666666665,
+            "scenario": "leo_clear_weak",
+            "seen_new_acc": 0.52
+          },
+          {
+            "H_old_new": 0.35454545454545455,
+            "average_forgetting": 0.18333333333333335,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.3,
+            "old_acc": 0.43333333333333335,
+            "old_acc_before_increment": 0.6166666666666667,
+            "old_floor": 0.0,
+            "old_support_invasion_rate": 0.55,
+            "scenario": "leo_low_elev_weak",
+            "seen_new_acc": 0.3
+          },
+          {
+            "H_old_new": 0.17404580152671756,
+            "average_forgetting": 0.0,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.12,
+            "old_acc": 0.31666666666666665,
+            "old_acc_before_increment": 0.31666666666666665,
+            "old_floor": 0.0,
+            "old_support_invasion_rate": 0.0,
+            "scenario": "leo_rain_weak",
+            "seen_new_acc": 0.12
+          }
+        ],
+        "worst_forgetting": 0.19999999999999996,
+        "worst_h": 0.17404580152671756,
+        "worst_new_floor": 0.0,
+        "worst_old_floor": 0.0
+      },
+      {
+        "config": {
+          "new_offset": 0.02,
+          "new_temperature": 1.0,
+          "old_temperature": 1.0
+        },
+        "gate_pass": false,
+        "radius_standardized": true,
+        "scenario_rows": [
+          {
+            "H_old_new": 0.5710982658959537,
+            "average_forgetting": 0.15000000000000002,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.52,
+            "old_acc": 0.6333333333333333,
+            "old_acc_before_increment": 0.7833333333333333,
+            "old_floor": 0.4,
+            "old_support_invasion_rate": 0.26666666666666666,
+            "scenario": "leo_clear_weak",
+            "seen_new_acc": 0.52
+          },
+          {
+            "H_old_new": 0.36000000000000004,
+            "average_forgetting": 0.16666666666666669,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.3,
+            "old_acc": 0.45,
+            "old_acc_before_increment": 0.6166666666666667,
+            "old_floor": 0.0,
+            "old_support_invasion_rate": 0.5333333333333333,
+            "scenario": "leo_low_elev_weak",
+            "seen_new_acc": 0.3
+          },
+          {
+            "H_old_new": 0.15200000000000002,
+            "average_forgetting": 0.0,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.1,
+            "old_acc": 0.31666666666666665,
+            "old_acc_before_increment": 0.31666666666666665,
+            "old_floor": 0.0,
+            "old_support_invasion_rate": 0.0,
+            "scenario": "leo_rain_weak",
+            "seen_new_acc": 0.1
+          }
+        ],
+        "worst_forgetting": 0.16666666666666669,
+        "worst_h": 0.15200000000000002,
+        "worst_new_floor": 0.0,
+        "worst_old_floor": 0.0
+      },
+      {
+        "config": {
+          "new_offset": 0.04,
+          "new_temperature": 1.0,
+          "old_temperature": 1.0
+        },
+        "gate_pass": false,
+        "radius_standardized": true,
+        "scenario_rows": [
+          {
+            "H_old_new": 0.5842696629213484,
+            "average_forgetting": 0.1166666666666667,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.52,
+            "old_acc": 0.6666666666666666,
+            "old_acc_before_increment": 0.7833333333333333,
+            "old_floor": 0.5,
+            "old_support_invasion_rate": 0.23333333333333334,
+            "scenario": "leo_clear_weak",
+            "seen_new_acc": 0.52
+          },
+          {
+            "H_old_new": 0.3652173913043478,
+            "average_forgetting": 0.15000000000000002,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.3,
+            "old_acc": 0.4666666666666667,
+            "old_acc_before_increment": 0.6166666666666667,
+            "old_floor": 0.0,
+            "old_support_invasion_rate": 0.48333333333333334,
+            "scenario": "leo_low_elev_weak",
+            "seen_new_acc": 0.3
+          },
+          {
+            "H_old_new": 0.10088495575221239,
+            "average_forgetting": 0.0,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.06,
+            "old_acc": 0.31666666666666665,
+            "old_acc_before_increment": 0.31666666666666665,
+            "old_floor": 0.0,
+            "old_support_invasion_rate": 0.0,
+            "scenario": "leo_rain_weak",
+            "seen_new_acc": 0.06
+          }
+        ],
+        "worst_forgetting": 0.15000000000000002,
+        "worst_h": 0.10088495575221239,
+        "worst_new_floor": 0.0,
+        "worst_old_floor": 0.0
+      },
+      {
+        "config": {
+          "new_offset": 0.0,
+          "new_temperature": 1.1,
+          "old_temperature": 1.0
+        },
+        "gate_pass": false,
+        "radius_standardized": true,
+        "scenario_rows": [
+          {
+            "H_old_new": 0.5777777777777778,
+            "average_forgetting": 0.1333333333333333,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.52,
+            "old_acc": 0.65,
+            "old_acc_before_increment": 0.7833333333333333,
+            "old_floor": 0.5,
+            "old_support_invasion_rate": 0.25,
+            "scenario": "leo_clear_weak",
+            "seen_new_acc": 0.52
+          },
+          {
+            "H_old_new": 0.3652173913043478,
+            "average_forgetting": 0.15000000000000002,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.3,
+            "old_acc": 0.4666666666666667,
+            "old_acc_before_increment": 0.6166666666666667,
+            "old_floor": 0.0,
+            "old_support_invasion_rate": 0.4666666666666667,
+            "scenario": "leo_low_elev_weak",
+            "seen_new_acc": 0.3
+          },
+          {
+            "H_old_new": 0.10088495575221239,
+            "average_forgetting": 0.0,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.06,
+            "old_acc": 0.31666666666666665,
+            "old_acc_before_increment": 0.31666666666666665,
+            "old_floor": 0.0,
+            "old_support_invasion_rate": 0.0,
+            "scenario": "leo_rain_weak",
+            "seen_new_acc": 0.06
+          }
+        ],
+        "worst_forgetting": 0.15000000000000002,
+        "worst_h": 0.10088495575221239,
+        "worst_new_floor": 0.0,
+        "worst_old_floor": 0.0
+      },
+      {
+        "config": {
+          "new_offset": 0.02,
+          "new_temperature": 1.1,
+          "old_temperature": 1.0
+        },
+        "gate_pass": false,
+        "radius_standardized": true,
+        "scenario_rows": [
+          {
+            "H_old_new": 0.5967213114754099,
+            "average_forgetting": 0.08333333333333337,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.52,
+            "old_acc": 0.7,
+            "old_acc_before_increment": 0.7833333333333333,
+            "old_floor": 0.5,
+            "old_support_invasion_rate": 0.18333333333333332,
+            "scenario": "leo_clear_weak",
+            "seen_new_acc": 0.52
+          },
+          {
+            "H_old_new": 0.38400000000000006,
+            "average_forgetting": 0.08333333333333337,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.3,
+            "old_acc": 0.5333333333333333,
+            "old_acc_before_increment": 0.6166666666666667,
+            "old_floor": 0.2,
+            "old_support_invasion_rate": 0.36666666666666664,
+            "scenario": "leo_low_elev_weak",
+            "seen_new_acc": 0.3
+          },
+          {
+            "H_old_new": 0.07102803738317758,
+            "average_forgetting": 0.0,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.04,
+            "old_acc": 0.31666666666666665,
+            "old_acc_before_increment": 0.31666666666666665,
+            "old_floor": 0.0,
+            "old_support_invasion_rate": 0.0,
+            "scenario": "leo_rain_weak",
+            "seen_new_acc": 0.04
+          }
+        ],
+        "worst_forgetting": 0.08333333333333337,
+        "worst_h": 0.07102803738317758,
+        "worst_new_floor": 0.0,
+        "worst_old_floor": 0.0
+      },
+      {
+        "config": {
+          "new_offset": 0.04,
+          "new_temperature": 1.1,
+          "old_temperature": 1.0
+        },
+        "gate_pass": false,
+        "radius_standardized": true,
+        "scenario_rows": [
+          {
+            "H_old_new": 0.6026954177897574,
+            "average_forgetting": 0.06666666666666665,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.52,
+            "old_acc": 0.7166666666666667,
+            "old_acc_before_increment": 0.7833333333333333,
+            "old_floor": 0.5,
+            "old_support_invasion_rate": 0.16666666666666666,
+            "scenario": "leo_clear_weak",
+            "seen_new_acc": 0.52
+          },
+          {
+            "H_old_new": 0.38400000000000006,
+            "average_forgetting": 0.08333333333333337,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.3,
+            "old_acc": 0.5333333333333333,
+            "old_acc_before_increment": 0.6166666666666667,
+            "old_floor": 0.2,
+            "old_support_invasion_rate": 0.3333333333333333,
+            "scenario": "leo_low_elev_weak",
+            "seen_new_acc": 0.3
+          },
+          {
+            "H_old_new": 0.07102803738317758,
+            "average_forgetting": 0.0,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.04,
+            "old_acc": 0.31666666666666665,
+            "old_acc_before_increment": 0.31666666666666665,
+            "old_floor": 0.0,
+            "old_support_invasion_rate": 0.0,
+            "scenario": "leo_rain_weak",
+            "seen_new_acc": 0.04
+          }
+        ],
+        "worst_forgetting": 0.08333333333333337,
+        "worst_h": 0.07102803738317758,
+        "worst_new_floor": 0.0,
+        "worst_old_floor": 0.0
+      },
+      {
+        "config": {
+          "new_offset": 0.0,
+          "new_temperature": 0.9,
+          "old_temperature": 1.1
+        },
+        "gate_pass": false,
+        "radius_standardized": true,
+        "scenario_rows": [
+          {
+            "H_old_new": 0.5009966777408638,
+            "average_forgetting": 0.3,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.52,
+            "old_acc": 0.48333333333333334,
+            "old_acc_before_increment": 0.7833333333333333,
+            "old_floor": 0.1,
+            "old_support_invasion_rate": 0.4166666666666667,
+            "scenario": "leo_clear_weak",
+            "seen_new_acc": 0.52
+          },
+          {
+            "H_old_new": 0.2727272727272727,
+            "average_forgetting": 0.3666666666666667,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.3,
+            "old_acc": 0.25,
+            "old_acc_before_increment": 0.6166666666666667,
+            "old_floor": 0.0,
+            "old_support_invasion_rate": 0.7333333333333333,
+            "scenario": "leo_low_elev_weak",
+            "seen_new_acc": 0.3
+          },
+          {
+            "H_old_new": 0.29720670391061454,
+            "average_forgetting": 0.0,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.28,
+            "old_acc": 0.31666666666666665,
+            "old_acc_before_increment": 0.31666666666666665,
+            "old_floor": 0.0,
+            "old_support_invasion_rate": 0.016666666666666666,
+            "scenario": "leo_rain_weak",
+            "seen_new_acc": 0.28
+          }
+        ],
+        "worst_forgetting": 0.3666666666666667,
+        "worst_h": 0.2727272727272727,
+        "worst_new_floor": 0.0,
+        "worst_old_floor": 0.0
+      },
+      {
+        "config": {
+          "new_offset": 0.02,
+          "new_temperature": 0.9,
+          "old_temperature": 1.1
+        },
+        "gate_pass": false,
+        "radius_standardized": true,
+        "scenario_rows": [
+          {
+            "H_old_new": 0.5098039215686274,
+            "average_forgetting": 0.2833333333333333,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.52,
+            "old_acc": 0.5,
+            "old_acc_before_increment": 0.7833333333333333,
+            "old_floor": 0.1,
+            "old_support_invasion_rate": 0.4,
+            "scenario": "leo_clear_weak",
+            "seen_new_acc": 0.52
+          },
+          {
+            "H_old_new": 0.2727272727272727,
+            "average_forgetting": 0.3666666666666667,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.3,
+            "old_acc": 0.25,
+            "old_acc_before_increment": 0.6166666666666667,
+            "old_floor": 0.0,
+            "old_support_invasion_rate": 0.7333333333333333,
+            "scenario": "leo_low_elev_weak",
+            "seen_new_acc": 0.3
+          },
+          {
+            "H_old_new": 0.29720670391061454,
+            "average_forgetting": 0.0,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.28,
+            "old_acc": 0.31666666666666665,
+            "old_acc_before_increment": 0.31666666666666665,
+            "old_floor": 0.0,
+            "old_support_invasion_rate": 0.0,
+            "scenario": "leo_rain_weak",
+            "seen_new_acc": 0.28
+          }
+        ],
+        "worst_forgetting": 0.3666666666666667,
+        "worst_h": 0.2727272727272727,
+        "worst_new_floor": 0.0,
+        "worst_old_floor": 0.0
+      },
+      {
+        "config": {
+          "new_offset": 0.04,
+          "new_temperature": 0.9,
+          "old_temperature": 1.1
+        },
+        "gate_pass": false,
+        "radius_standardized": true,
+        "scenario_rows": [
+          {
+            "H_old_new": 0.5345794392523365,
+            "average_forgetting": 0.23333333333333328,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.52,
+            "old_acc": 0.55,
+            "old_acc_before_increment": 0.7833333333333333,
+            "old_floor": 0.2,
+            "old_support_invasion_rate": 0.35,
+            "scenario": "leo_clear_weak",
+            "seen_new_acc": 0.52
+          },
+          {
+            "H_old_new": 0.30810810810810807,
+            "average_forgetting": 0.30000000000000004,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.3,
+            "old_acc": 0.31666666666666665,
+            "old_acc_before_increment": 0.6166666666666667,
+            "old_floor": 0.0,
+            "old_support_invasion_rate": 0.6666666666666666,
+            "scenario": "leo_low_elev_weak",
+            "seen_new_acc": 0.3
+          },
+          {
+            "H_old_new": 0.27305389221556886,
+            "average_forgetting": 0.0,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.24,
+            "old_acc": 0.31666666666666665,
+            "old_acc_before_increment": 0.31666666666666665,
+            "old_floor": 0.0,
+            "old_support_invasion_rate": 0.0,
+            "scenario": "leo_rain_weak",
+            "seen_new_acc": 0.24
+          }
+        ],
+        "selection_status": "SUPPORT_GATE_BLOCKED_DIAGNOSTIC",
+        "worst_forgetting": 0.30000000000000004,
+        "worst_h": 0.27305389221556886,
+        "worst_new_floor": 0.0,
+        "worst_old_floor": 0.0
+      },
+      {
+        "config": {
+          "new_offset": 0.0,
+          "new_temperature": 1.0,
+          "old_temperature": 1.1
+        },
+        "gate_pass": false,
+        "radius_standardized": true,
+        "scenario_rows": [
+          {
+            "H_old_new": 0.5265822784810127,
+            "average_forgetting": 0.25,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.52,
+            "old_acc": 0.5333333333333333,
+            "old_acc_before_increment": 0.7833333333333333,
+            "old_floor": 0.2,
+            "old_support_invasion_rate": 0.36666666666666664,
+            "scenario": "leo_clear_weak",
+            "seen_new_acc": 0.52
+          },
+          {
+            "H_old_new": 0.32999999999999996,
+            "average_forgetting": 0.25000000000000006,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.3,
+            "old_acc": 0.36666666666666664,
+            "old_acc_before_increment": 0.6166666666666667,
+            "old_floor": 0.0,
+            "old_support_invasion_rate": 0.6166666666666667,
+            "scenario": "leo_low_elev_weak",
+            "seen_new_acc": 0.3
+          },
+          {
+            "H_old_new": 0.21258741258741257,
+            "average_forgetting": 0.0,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.16,
+            "old_acc": 0.31666666666666665,
+            "old_acc_before_increment": 0.31666666666666665,
+            "old_floor": 0.0,
+            "old_support_invasion_rate": 0.0,
+            "scenario": "leo_rain_weak",
+            "seen_new_acc": 0.16
+          }
+        ],
+        "worst_forgetting": 0.25000000000000006,
+        "worst_h": 0.21258741258741257,
+        "worst_new_floor": 0.0,
+        "worst_old_floor": 0.0
+      },
+      {
+        "config": {
+          "new_offset": 0.02,
+          "new_temperature": 1.0,
+          "old_temperature": 1.1
+        },
+        "gate_pass": false,
+        "radius_standardized": true,
+        "scenario_rows": [
+          {
+            "H_old_new": 0.5423312883435584,
+            "average_forgetting": 0.21666666666666667,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.52,
+            "old_acc": 0.5666666666666667,
+            "old_acc_before_increment": 0.7833333333333333,
+            "old_floor": 0.3,
+            "old_support_invasion_rate": 0.3333333333333333,
+            "scenario": "leo_clear_weak",
+            "seen_new_acc": 0.52
+          },
+          {
+            "H_old_new": 0.35454545454545455,
+            "average_forgetting": 0.18333333333333335,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.3,
+            "old_acc": 0.43333333333333335,
+            "old_acc_before_increment": 0.6166666666666667,
+            "old_floor": 0.0,
+            "old_support_invasion_rate": 0.55,
+            "scenario": "leo_low_elev_weak",
+            "seen_new_acc": 0.3
+          },
+          {
+            "H_old_new": 0.19416058394160585,
+            "average_forgetting": 0.0,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.14,
+            "old_acc": 0.31666666666666665,
+            "old_acc_before_increment": 0.31666666666666665,
+            "old_floor": 0.0,
+            "old_support_invasion_rate": 0.0,
+            "scenario": "leo_rain_weak",
+            "seen_new_acc": 0.14
+          }
+        ],
+        "worst_forgetting": 0.21666666666666667,
+        "worst_h": 0.19416058394160585,
+        "worst_new_floor": 0.0,
+        "worst_old_floor": 0.0
+      },
+      {
+        "config": {
+          "new_offset": 0.04,
+          "new_temperature": 1.0,
+          "old_temperature": 1.1
+        },
+        "gate_pass": false,
+        "radius_standardized": true,
+        "scenario_rows": [
+          {
+            "H_old_new": 0.5642228739002934,
+            "average_forgetting": 0.16666666666666663,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.52,
+            "old_acc": 0.6166666666666667,
+            "old_acc_before_increment": 0.7833333333333333,
+            "old_floor": 0.4,
+            "old_support_invasion_rate": 0.2833333333333333,
+            "scenario": "leo_clear_weak",
+            "seen_new_acc": 0.52
+          },
+          {
+            "H_old_new": 0.35454545454545455,
+            "average_forgetting": 0.18333333333333335,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.3,
+            "old_acc": 0.43333333333333335,
+            "old_acc_before_increment": 0.6166666666666667,
+            "old_floor": 0.0,
+            "old_support_invasion_rate": 0.55,
+            "scenario": "leo_low_elev_weak",
+            "seen_new_acc": 0.3
+          },
+          {
+            "H_old_new": 0.19416058394160585,
+            "average_forgetting": 0.0,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.14,
+            "old_acc": 0.31666666666666665,
+            "old_acc_before_increment": 0.31666666666666665,
+            "old_floor": 0.0,
+            "old_support_invasion_rate": 0.0,
+            "scenario": "leo_rain_weak",
+            "seen_new_acc": 0.14
+          }
+        ],
+        "worst_forgetting": 0.18333333333333335,
+        "worst_h": 0.19416058394160585,
+        "worst_new_floor": 0.0,
+        "worst_old_floor": 0.0
+      },
+      {
+        "config": {
+          "new_offset": 0.0,
+          "new_temperature": 1.1,
+          "old_temperature": 1.1
+        },
+        "gate_pass": false,
+        "radius_standardized": true,
+        "scenario_rows": [
+          {
+            "H_old_new": 0.5498489425981873,
+            "average_forgetting": 0.19999999999999996,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.52,
+            "old_acc": 0.5833333333333334,
+            "old_acc_before_increment": 0.7833333333333333,
+            "old_floor": 0.4,
+            "old_support_invasion_rate": 0.31666666666666665,
+            "scenario": "leo_clear_weak",
+            "seen_new_acc": 0.52
+          },
+          {
+            "H_old_new": 0.35454545454545455,
+            "average_forgetting": 0.18333333333333335,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.3,
+            "old_acc": 0.43333333333333335,
+            "old_acc_before_increment": 0.6166666666666667,
+            "old_floor": 0.0,
+            "old_support_invasion_rate": 0.55,
+            "scenario": "leo_low_elev_weak",
+            "seen_new_acc": 0.3
+          },
+          {
+            "H_old_new": 0.17404580152671756,
+            "average_forgetting": 0.0,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.12,
+            "old_acc": 0.31666666666666665,
+            "old_acc_before_increment": 0.31666666666666665,
+            "old_floor": 0.0,
+            "old_support_invasion_rate": 0.0,
+            "scenario": "leo_rain_weak",
+            "seen_new_acc": 0.12
+          }
+        ],
+        "worst_forgetting": 0.19999999999999996,
+        "worst_h": 0.17404580152671756,
+        "worst_new_floor": 0.0,
+        "worst_old_floor": 0.0
+      },
+      {
+        "config": {
+          "new_offset": 0.02,
+          "new_temperature": 1.1,
+          "old_temperature": 1.1
+        },
+        "gate_pass": false,
+        "radius_standardized": true,
+        "scenario_rows": [
+          {
+            "H_old_new": 0.5710982658959537,
+            "average_forgetting": 0.15000000000000002,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.52,
+            "old_acc": 0.6333333333333333,
+            "old_acc_before_increment": 0.7833333333333333,
+            "old_floor": 0.4,
+            "old_support_invasion_rate": 0.26666666666666666,
+            "scenario": "leo_clear_weak",
+            "seen_new_acc": 0.52
+          },
+          {
+            "H_old_new": 0.36000000000000004,
+            "average_forgetting": 0.16666666666666669,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.3,
+            "old_acc": 0.45,
+            "old_acc_before_increment": 0.6166666666666667,
+            "old_floor": 0.0,
+            "old_support_invasion_rate": 0.5166666666666667,
+            "scenario": "leo_low_elev_weak",
+            "seen_new_acc": 0.3
+          },
+          {
+            "H_old_new": 0.15200000000000002,
+            "average_forgetting": 0.0,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.1,
+            "old_acc": 0.31666666666666665,
+            "old_acc_before_increment": 0.31666666666666665,
+            "old_floor": 0.0,
+            "old_support_invasion_rate": 0.0,
+            "scenario": "leo_rain_weak",
+            "seen_new_acc": 0.1
+          }
+        ],
+        "worst_forgetting": 0.16666666666666669,
+        "worst_h": 0.15200000000000002,
+        "worst_new_floor": 0.0,
+        "worst_old_floor": 0.0
+      },
+      {
+        "config": {
+          "new_offset": 0.04,
+          "new_temperature": 1.1,
+          "old_temperature": 1.1
+        },
+        "gate_pass": false,
+        "radius_standardized": true,
+        "scenario_rows": [
+          {
+            "H_old_new": 0.5905817174515235,
+            "average_forgetting": 0.09999999999999998,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.52,
+            "old_acc": 0.6833333333333333,
+            "old_acc_before_increment": 0.7833333333333333,
+            "old_floor": 0.5,
+            "old_support_invasion_rate": 0.21666666666666667,
+            "scenario": "leo_clear_weak",
+            "seen_new_acc": 0.52
+          },
+          {
+            "H_old_new": 0.3652173913043478,
+            "average_forgetting": 0.15000000000000002,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.3,
+            "old_acc": 0.4666666666666667,
+            "old_acc_before_increment": 0.6166666666666667,
+            "old_floor": 0.0,
+            "old_support_invasion_rate": 0.48333333333333334,
+            "scenario": "leo_low_elev_weak",
+            "seen_new_acc": 0.3
+          },
+          {
+            "H_old_new": 0.10088495575221239,
+            "average_forgetting": 0.0,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.06,
+            "old_acc": 0.31666666666666665,
+            "old_acc_before_increment": 0.31666666666666665,
+            "old_floor": 0.0,
+            "old_support_invasion_rate": 0.0,
+            "scenario": "leo_rain_weak",
+            "seen_new_acc": 0.06
+          }
+        ],
+        "worst_forgetting": 0.15000000000000002,
+        "worst_h": 0.10088495575221239,
+        "worst_new_floor": 0.0,
+        "worst_old_floor": 0.0
+      }
+    ],
+    "selected": {
+      "config": {
+        "new_offset": 0.04,
+        "new_temperature": 0.9,
+        "old_temperature": 1.1
+      },
+      "gate_pass": false,
+      "radius_standardized": true,
+      "scenario_rows": [
+        {
+          "H_old_new": 0.5345794392523365,
+          "average_forgetting": 0.23333333333333328,
+          "joint_floor": 0.0,
+          "new_floor": 0.0,
+          "new_support_fidelity": 0.52,
+          "old_acc": 0.55,
+          "old_acc_before_increment": 0.7833333333333333,
+          "old_floor": 0.2,
+          "old_support_invasion_rate": 0.35,
+          "scenario": "leo_clear_weak",
+          "seen_new_acc": 0.52
+        },
+        {
+          "H_old_new": 0.30810810810810807,
+          "average_forgetting": 0.30000000000000004,
+          "joint_floor": 0.0,
+          "new_floor": 0.0,
+          "new_support_fidelity": 0.3,
+          "old_acc": 0.31666666666666665,
+          "old_acc_before_increment": 0.6166666666666667,
+          "old_floor": 0.0,
+          "old_support_invasion_rate": 0.6666666666666666,
+          "scenario": "leo_low_elev_weak",
+          "seen_new_acc": 0.3
+        },
+        {
+          "H_old_new": 0.27305389221556886,
+          "average_forgetting": 0.0,
+          "joint_floor": 0.0,
+          "new_floor": 0.0,
+          "new_support_fidelity": 0.24,
+          "old_acc": 0.31666666666666665,
+          "old_acc_before_increment": 0.31666666666666665,
+          "old_floor": 0.0,
+          "old_support_invasion_rate": 0.0,
+          "scenario": "leo_rain_weak",
+          "seen_new_acc": 0.24
+        }
+      ],
+      "selection_status": "SUPPORT_GATE_BLOCKED_DIAGNOSTIC",
+      "worst_forgetting": 0.30000000000000004,
+      "worst_h": 0.27305389221556886,
+      "worst_new_floor": 0.0,
+      "worst_old_floor": 0.0
+    }
+  },
+  "raw_calibration_lock": {
+    "grid": [
+      {
+        "config": {
+          "new_offset": 0.0,
+          "new_temperature": 0.9,
+          "old_temperature": 0.9
+        },
+        "gate_pass": true,
+        "radius_standardized": false,
+        "scenario_rows": [
+          {
+            "H_old_new": 0.7503184713375797,
+            "average_forgetting": 0.0,
+            "joint_floor": 0.2,
+            "new_floor": 0.2,
+            "new_support_fidelity": 0.62,
+            "old_acc": 0.95,
+            "old_acc_before_increment": 0.95,
+            "old_floor": 0.8,
+            "old_support_invasion_rate": 0.016666666666666666,
+            "scenario": "leo_clear_weak",
+            "seen_new_acc": 0.62
+          },
+          {
+            "H_old_new": 0.7228699551569506,
+            "average_forgetting": 0.016666666666666607,
+            "joint_floor": 0.2,
+            "new_floor": 0.2,
+            "new_support_fidelity": 0.62,
+            "old_acc": 0.8666666666666667,
+            "old_acc_before_increment": 0.8833333333333333,
+            "old_floor": 0.7,
+            "old_support_invasion_rate": 0.03333333333333333,
+            "scenario": "leo_low_elev_weak",
+            "seen_new_acc": 0.62
+          },
+          {
+            "H_old_new": 0.675,
+            "average_forgetting": 0.016666666666666607,
+            "joint_floor": 0.2,
+            "new_floor": 0.2,
+            "new_support_fidelity": 0.54,
+            "old_acc": 0.9,
+            "old_acc_before_increment": 0.9166666666666666,
+            "old_floor": 0.8,
+            "old_support_invasion_rate": 0.016666666666666666,
+            "scenario": "leo_rain_weak",
+            "seen_new_acc": 0.54
+          }
+        ],
+        "selection_status": "SUPPORT_GATES_PASS",
+        "worst_forgetting": 0.016666666666666607,
+        "worst_h": 0.675,
+        "worst_new_floor": 0.2,
+        "worst_old_floor": 0.7
+      },
+      {
+        "config": {
+          "new_offset": 0.02,
+          "new_temperature": 0.9,
+          "old_temperature": 0.9
+        },
+        "gate_pass": false,
+        "radius_standardized": false,
+        "scenario_rows": [
+          {
+            "H_old_new": 0.704635761589404,
+            "average_forgetting": 0.0,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.56,
+            "old_acc": 0.95,
+            "old_acc_before_increment": 0.95,
+            "old_floor": 0.8,
+            "old_support_invasion_rate": 0.0,
+            "scenario": "leo_clear_weak",
+            "seen_new_acc": 0.56
+          },
+          {
+            "H_old_new": 0.6546318289786223,
+            "average_forgetting": 0.0,
+            "joint_floor": 0.1,
+            "new_floor": 0.1,
+            "new_support_fidelity": 0.52,
+            "old_acc": 0.8833333333333333,
+            "old_acc_before_increment": 0.8833333333333333,
+            "old_floor": 0.8,
+            "old_support_invasion_rate": 0.0,
+            "scenario": "leo_low_elev_weak",
+            "seen_new_acc": 0.52
+          },
+          {
+            "H_old_new": 0.5569620253164558,
+            "average_forgetting": 0.0,
+            "joint_floor": 0.1,
+            "new_floor": 0.1,
+            "new_support_fidelity": 0.4,
+            "old_acc": 0.9166666666666666,
+            "old_acc_before_increment": 0.9166666666666666,
+            "old_floor": 0.8,
+            "old_support_invasion_rate": 0.0,
+            "scenario": "leo_rain_weak",
+            "seen_new_acc": 0.4
+          }
+        ],
+        "worst_forgetting": 0.0,
+        "worst_h": 0.5569620253164558,
+        "worst_new_floor": 0.0,
+        "worst_old_floor": 0.8
+      },
+      {
+        "config": {
+          "new_offset": 0.04,
+          "new_temperature": 0.9,
+          "old_temperature": 0.9
+        },
+        "gate_pass": false,
+        "radius_standardized": false,
+        "scenario_rows": [
+          {
+            "H_old_new": 0.6014388489208633,
+            "average_forgetting": 0.0,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.44,
+            "old_acc": 0.95,
+            "old_acc_before_increment": 0.95,
+            "old_floor": 0.8,
+            "old_support_invasion_rate": 0.0,
+            "scenario": "leo_clear_weak",
+            "seen_new_acc": 0.44
+          },
+          {
+            "H_old_new": 0.5874055415617129,
+            "average_forgetting": 0.0,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.44,
+            "old_acc": 0.8833333333333333,
+            "old_acc_before_increment": 0.8833333333333333,
+            "old_floor": 0.8,
+            "old_support_invasion_rate": 0.0,
+            "scenario": "leo_low_elev_weak",
+            "seen_new_acc": 0.44
+          },
+          {
+            "H_old_new": 0.4520547945205479,
+            "average_forgetting": 0.0,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.3,
+            "old_acc": 0.9166666666666666,
+            "old_acc_before_increment": 0.9166666666666666,
+            "old_floor": 0.8,
+            "old_support_invasion_rate": 0.0,
+            "scenario": "leo_rain_weak",
+            "seen_new_acc": 0.3
+          }
+        ],
+        "worst_forgetting": 0.0,
+        "worst_h": 0.4520547945205479,
+        "worst_new_floor": 0.0,
+        "worst_old_floor": 0.8
+      },
+      {
+        "config": {
+          "new_offset": 0.0,
+          "new_temperature": 1.0,
+          "old_temperature": 0.9
+        },
+        "gate_pass": false,
+        "radius_standardized": false,
+        "scenario_rows": [
+          {
+            "H_old_new": 0.2130841121495327,
+            "average_forgetting": 0.0,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.12,
+            "old_acc": 0.95,
+            "old_acc_before_increment": 0.95,
+            "old_floor": 0.8,
+            "old_support_invasion_rate": 0.0,
+            "scenario": "leo_clear_weak",
+            "seen_new_acc": 0.12
+          },
+          {
+            "H_old_new": 0.3522658610271903,
+            "average_forgetting": 0.0,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.22,
+            "old_acc": 0.8833333333333333,
+            "old_acc_before_increment": 0.8833333333333333,
+            "old_floor": 0.8,
+            "old_support_invasion_rate": 0.0,
+            "scenario": "leo_low_elev_weak",
+            "seen_new_acc": 0.22
+          },
+          {
+            "H_old_new": 0.3283582089552239,
+            "average_forgetting": 0.0,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.2,
+            "old_acc": 0.9166666666666666,
+            "old_acc_before_increment": 0.9166666666666666,
+            "old_floor": 0.8,
+            "old_support_invasion_rate": 0.0,
+            "scenario": "leo_rain_weak",
+            "seen_new_acc": 0.2
+          }
+        ],
+        "worst_forgetting": 0.0,
+        "worst_h": 0.2130841121495327,
+        "worst_new_floor": 0.0,
+        "worst_old_floor": 0.8
+      },
+      {
+        "config": {
+          "new_offset": 0.02,
+          "new_temperature": 1.0,
+          "old_temperature": 0.9
+        },
+        "gate_pass": false,
+        "radius_standardized": false,
+        "scenario_rows": [
+          {
+            "H_old_new": 0.14757281553398058,
+            "average_forgetting": 0.0,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.08,
+            "old_acc": 0.95,
+            "old_acc_before_increment": 0.95,
+            "old_floor": 0.8,
+            "old_support_invasion_rate": 0.0,
+            "scenario": "leo_clear_weak",
+            "seen_new_acc": 0.08
+          },
+          {
+            "H_old_new": 0.29905956112852666,
+            "average_forgetting": 0.0,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.18,
+            "old_acc": 0.8833333333333333,
+            "old_acc_before_increment": 0.8833333333333333,
+            "old_floor": 0.8,
+            "old_support_invasion_rate": 0.0,
+            "scenario": "leo_low_elev_weak",
+            "seen_new_acc": 0.18
+          },
+          {
+            "H_old_new": 0.2724458204334365,
+            "average_forgetting": 0.0,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.16,
+            "old_acc": 0.9166666666666666,
+            "old_acc_before_increment": 0.9166666666666666,
+            "old_floor": 0.8,
+            "old_support_invasion_rate": 0.0,
+            "scenario": "leo_rain_weak",
+            "seen_new_acc": 0.16
+          }
+        ],
+        "worst_forgetting": 0.0,
+        "worst_h": 0.14757281553398058,
+        "worst_new_floor": 0.0,
+        "worst_old_floor": 0.8
+      },
+      {
+        "config": {
+          "new_offset": 0.04,
+          "new_temperature": 1.0,
+          "old_temperature": 0.9
+        },
+        "gate_pass": false,
+        "radius_standardized": false,
+        "scenario_rows": [
+          {
+            "H_old_new": 0.11287128712871286,
+            "average_forgetting": 0.0,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.06,
+            "old_acc": 0.95,
+            "old_acc_before_increment": 0.95,
+            "old_floor": 0.8,
+            "old_support_invasion_rate": 0.0,
+            "scenario": "leo_clear_weak",
+            "seen_new_acc": 0.06
+          },
+          {
+            "H_old_new": 0.270926517571885,
+            "average_forgetting": 0.0,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.16,
+            "old_acc": 0.8833333333333333,
+            "old_acc_before_increment": 0.8833333333333333,
+            "old_floor": 0.8,
+            "old_support_invasion_rate": 0.0,
+            "scenario": "leo_low_elev_weak",
+            "seen_new_acc": 0.16
+          },
+          {
+            "H_old_new": 0.14715719063545152,
+            "average_forgetting": 0.0,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.08,
+            "old_acc": 0.9166666666666666,
+            "old_acc_before_increment": 0.9166666666666666,
+            "old_floor": 0.8,
+            "old_support_invasion_rate": 0.0,
+            "scenario": "leo_rain_weak",
+            "seen_new_acc": 0.08
+          }
+        ],
+        "worst_forgetting": 0.0,
+        "worst_h": 0.11287128712871286,
+        "worst_new_floor": 0.0,
+        "worst_old_floor": 0.8
+      },
+      {
+        "config": {
+          "new_offset": 0.0,
+          "new_temperature": 1.1,
+          "old_temperature": 0.9
+        },
+        "gate_pass": false,
+        "radius_standardized": false,
+        "scenario_rows": [
+          {
+            "H_old_new": 0.0,
+            "average_forgetting": 0.0,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.0,
+            "old_acc": 0.95,
+            "old_acc_before_increment": 0.95,
+            "old_floor": 0.8,
+            "old_support_invasion_rate": 0.0,
+            "scenario": "leo_clear_weak",
+            "seen_new_acc": 0.0
+          },
+          {
+            "H_old_new": 0.07653429602888087,
+            "average_forgetting": 0.0,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.04,
+            "old_acc": 0.8833333333333333,
+            "old_acc_before_increment": 0.8833333333333333,
+            "old_floor": 0.8,
+            "old_support_invasion_rate": 0.0,
+            "scenario": "leo_low_elev_weak",
+            "seen_new_acc": 0.04
+          },
+          {
+            "H_old_new": 0.07665505226480836,
+            "average_forgetting": 0.0,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.04,
+            "old_acc": 0.9166666666666666,
+            "old_acc_before_increment": 0.9166666666666666,
+            "old_floor": 0.8,
+            "old_support_invasion_rate": 0.0,
+            "scenario": "leo_rain_weak",
+            "seen_new_acc": 0.04
+          }
+        ],
+        "worst_forgetting": 0.0,
+        "worst_h": 0.0,
+        "worst_new_floor": 0.0,
+        "worst_old_floor": 0.8
+      },
+      {
+        "config": {
+          "new_offset": 0.02,
+          "new_temperature": 1.1,
+          "old_temperature": 0.9
+        },
+        "gate_pass": false,
+        "radius_standardized": false,
+        "scenario_rows": [
+          {
+            "H_old_new": 0.0,
+            "average_forgetting": 0.0,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.0,
+            "old_acc": 0.95,
+            "old_acc_before_increment": 0.95,
+            "old_floor": 0.8,
+            "old_support_invasion_rate": 0.0,
+            "scenario": "leo_clear_weak",
+            "seen_new_acc": 0.0
+          },
+          {
+            "H_old_new": 0.0,
+            "average_forgetting": 0.0,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.0,
+            "old_acc": 0.8833333333333333,
+            "old_acc_before_increment": 0.8833333333333333,
+            "old_floor": 0.8,
+            "old_support_invasion_rate": 0.0,
+            "scenario": "leo_low_elev_weak",
+            "seen_new_acc": 0.0
+          },
+          {
+            "H_old_new": 0.07665505226480836,
+            "average_forgetting": 0.0,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.04,
+            "old_acc": 0.9166666666666666,
+            "old_acc_before_increment": 0.9166666666666666,
+            "old_floor": 0.8,
+            "old_support_invasion_rate": 0.0,
+            "scenario": "leo_rain_weak",
+            "seen_new_acc": 0.04
+          }
+        ],
+        "worst_forgetting": 0.0,
+        "worst_h": 0.0,
+        "worst_new_floor": 0.0,
+        "worst_old_floor": 0.8
+      },
+      {
+        "config": {
+          "new_offset": 0.04,
+          "new_temperature": 1.1,
+          "old_temperature": 0.9
+        },
+        "gate_pass": false,
+        "radius_standardized": false,
+        "scenario_rows": [
+          {
+            "H_old_new": 0.0,
+            "average_forgetting": 0.0,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.0,
+            "old_acc": 0.95,
+            "old_acc_before_increment": 0.95,
+            "old_floor": 0.8,
+            "old_support_invasion_rate": 0.0,
+            "scenario": "leo_clear_weak",
+            "seen_new_acc": 0.0
+          },
+          {
+            "H_old_new": 0.0,
+            "average_forgetting": 0.0,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.0,
+            "old_acc": 0.8833333333333333,
+            "old_acc_before_increment": 0.8833333333333333,
+            "old_floor": 0.8,
+            "old_support_invasion_rate": 0.0,
+            "scenario": "leo_low_elev_weak",
+            "seen_new_acc": 0.0
+          },
+          {
+            "H_old_new": 0.07665505226480836,
+            "average_forgetting": 0.0,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.04,
+            "old_acc": 0.9166666666666666,
+            "old_acc_before_increment": 0.9166666666666666,
+            "old_floor": 0.8,
+            "old_support_invasion_rate": 0.0,
+            "scenario": "leo_rain_weak",
+            "seen_new_acc": 0.04
+          }
+        ],
+        "worst_forgetting": 0.0,
+        "worst_h": 0.0,
+        "worst_new_floor": 0.0,
+        "worst_old_floor": 0.8
+      },
+      {
+        "config": {
+          "new_offset": 0.0,
+          "new_temperature": 0.9,
+          "old_temperature": 1.0
+        },
+        "gate_pass": false,
+        "radius_standardized": false,
+        "scenario_rows": [
+          {
+            "H_old_new": 0.8206759443339959,
+            "average_forgetting": 0.23333333333333328,
+            "joint_floor": 0.2,
+            "new_floor": 0.8,
+            "new_support_fidelity": 0.96,
+            "old_acc": 0.7166666666666667,
+            "old_acc_before_increment": 0.95,
+            "old_floor": 0.2,
+            "old_support_invasion_rate": 0.26666666666666666,
+            "scenario": "leo_clear_weak",
+            "seen_new_acc": 0.96
+          },
+          {
+            "H_old_new": 0.725170068027211,
+            "average_forgetting": 0.23333333333333328,
+            "joint_floor": 0.3,
+            "new_floor": 0.3,
+            "new_support_fidelity": 0.82,
+            "old_acc": 0.65,
+            "old_acc_before_increment": 0.8833333333333333,
+            "old_floor": 0.3,
+            "old_support_invasion_rate": 0.3,
+            "scenario": "leo_low_elev_weak",
+            "seen_new_acc": 0.82
+          },
+          {
+            "H_old_new": 0.6817102137767221,
+            "average_forgetting": 0.33333333333333326,
+            "joint_floor": 0.0,
+            "new_floor": 0.5,
+            "new_support_fidelity": 0.82,
+            "old_acc": 0.5833333333333334,
+            "old_acc_before_increment": 0.9166666666666666,
+            "old_floor": 0.0,
+            "old_support_invasion_rate": 0.35,
+            "scenario": "leo_rain_weak",
+            "seen_new_acc": 0.82
+          }
+        ],
+        "worst_forgetting": 0.33333333333333326,
+        "worst_h": 0.6817102137767221,
+        "worst_new_floor": 0.3,
+        "worst_old_floor": 0.0
+      },
+      {
+        "config": {
+          "new_offset": 0.02,
+          "new_temperature": 0.9,
+          "old_temperature": 1.0
+        },
+        "gate_pass": false,
+        "radius_standardized": false,
+        "scenario_rows": [
+          {
+            "H_old_new": 0.8825515947467166,
+            "average_forgetting": 0.1333333333333333,
+            "joint_floor": 0.5,
+            "new_floor": 0.8,
+            "new_support_fidelity": 0.96,
+            "old_acc": 0.8166666666666667,
+            "old_acc_before_increment": 0.95,
+            "old_floor": 0.5,
+            "old_support_invasion_rate": 0.15,
+            "scenario": "leo_clear_weak",
+            "seen_new_acc": 0.96
+          },
+          {
+            "H_old_new": 0.7272727272727272,
+            "average_forgetting": 0.21666666666666667,
+            "joint_floor": 0.3,
+            "new_floor": 0.3,
+            "new_support_fidelity": 0.8,
+            "old_acc": 0.6666666666666666,
+            "old_acc_before_increment": 0.8833333333333333,
+            "old_floor": 0.4,
+            "old_support_invasion_rate": 0.26666666666666666,
+            "scenario": "leo_low_elev_weak",
+            "seen_new_acc": 0.8
+          },
+          {
+            "H_old_new": 0.7102803738317756,
+            "average_forgetting": 0.25,
+            "joint_floor": 0.1,
+            "new_floor": 0.4,
+            "new_support_fidelity": 0.76,
+            "old_acc": 0.6666666666666666,
+            "old_acc_before_increment": 0.9166666666666666,
+            "old_floor": 0.1,
+            "old_support_invasion_rate": 0.26666666666666666,
+            "scenario": "leo_rain_weak",
+            "seen_new_acc": 0.76
+          }
+        ],
+        "worst_forgetting": 0.25,
+        "worst_h": 0.7102803738317756,
+        "worst_new_floor": 0.3,
+        "worst_old_floor": 0.1
+      },
+      {
+        "config": {
+          "new_offset": 0.04,
+          "new_temperature": 0.9,
+          "old_temperature": 1.0
+        },
+        "gate_pass": true,
+        "radius_standardized": false,
+        "scenario_rows": [
+          {
+            "H_old_new": 0.9107861060329068,
+            "average_forgetting": 0.06666666666666665,
+            "joint_floor": 0.6,
+            "new_floor": 0.8,
+            "new_support_fidelity": 0.94,
+            "old_acc": 0.8833333333333333,
+            "old_acc_before_increment": 0.95,
+            "old_floor": 0.6,
+            "old_support_invasion_rate": 0.08333333333333333,
+            "scenario": "leo_clear_weak",
+            "seen_new_acc": 0.94
+          },
+          {
+            "H_old_new": 0.7378378378378377,
+            "average_forgetting": 0.18333333333333335,
+            "joint_floor": 0.3,
+            "new_floor": 0.3,
+            "new_support_fidelity": 0.78,
+            "old_acc": 0.7,
+            "old_acc_before_increment": 0.8833333333333333,
+            "old_floor": 0.4,
+            "old_support_invasion_rate": 0.23333333333333334,
+            "scenario": "leo_low_elev_weak",
+            "seen_new_acc": 0.78
+          },
+          {
+            "H_old_new": 0.761050328227571,
+            "average_forgetting": 0.1333333333333333,
+            "joint_floor": 0.4,
+            "new_floor": 0.4,
+            "new_support_fidelity": 0.74,
+            "old_acc": 0.7833333333333333,
+            "old_acc_before_increment": 0.9166666666666666,
+            "old_floor": 0.4,
+            "old_support_invasion_rate": 0.13333333333333333,
+            "scenario": "leo_rain_weak",
+            "seen_new_acc": 0.74
+          }
+        ],
+        "worst_forgetting": 0.18333333333333335,
+        "worst_h": 0.7378378378378377,
+        "worst_new_floor": 0.3,
+        "worst_old_floor": 0.4
+      },
+      {
+        "config": {
+          "new_offset": 0.0,
+          "new_temperature": 1.0,
+          "old_temperature": 1.0
+        },
+        "gate_pass": true,
+        "radius_standardized": false,
+        "scenario_rows": [
+          {
+            "H_old_new": 0.7503184713375797,
+            "average_forgetting": 0.0,
+            "joint_floor": 0.2,
+            "new_floor": 0.2,
+            "new_support_fidelity": 0.62,
+            "old_acc": 0.95,
+            "old_acc_before_increment": 0.95,
+            "old_floor": 0.8,
+            "old_support_invasion_rate": 0.016666666666666666,
+            "scenario": "leo_clear_weak",
+            "seen_new_acc": 0.62
+          },
+          {
+            "H_old_new": 0.7228699551569506,
+            "average_forgetting": 0.016666666666666607,
+            "joint_floor": 0.2,
+            "new_floor": 0.2,
+            "new_support_fidelity": 0.62,
+            "old_acc": 0.8666666666666667,
+            "old_acc_before_increment": 0.8833333333333333,
+            "old_floor": 0.7,
+            "old_support_invasion_rate": 0.03333333333333333,
+            "scenario": "leo_low_elev_weak",
+            "seen_new_acc": 0.62
+          },
+          {
+            "H_old_new": 0.675,
+            "average_forgetting": 0.016666666666666607,
+            "joint_floor": 0.2,
+            "new_floor": 0.2,
+            "new_support_fidelity": 0.54,
+            "old_acc": 0.9,
+            "old_acc_before_increment": 0.9166666666666666,
+            "old_floor": 0.8,
+            "old_support_invasion_rate": 0.016666666666666666,
+            "scenario": "leo_rain_weak",
+            "seen_new_acc": 0.54
+          }
+        ],
+        "worst_forgetting": 0.016666666666666607,
+        "worst_h": 0.675,
+        "worst_new_floor": 0.2,
+        "worst_old_floor": 0.7
+      },
+      {
+        "config": {
+          "new_offset": 0.02,
+          "new_temperature": 1.0,
+          "old_temperature": 1.0
+        },
+        "gate_pass": false,
+        "radius_standardized": false,
+        "scenario_rows": [
+          {
+            "H_old_new": 0.704635761589404,
+            "average_forgetting": 0.0,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.56,
+            "old_acc": 0.95,
+            "old_acc_before_increment": 0.95,
+            "old_floor": 0.8,
+            "old_support_invasion_rate": 0.0,
+            "scenario": "leo_clear_weak",
+            "seen_new_acc": 0.56
+          },
+          {
+            "H_old_new": 0.6385542168674698,
+            "average_forgetting": 0.0,
+            "joint_floor": 0.1,
+            "new_floor": 0.1,
+            "new_support_fidelity": 0.5,
+            "old_acc": 0.8833333333333333,
+            "old_acc_before_increment": 0.8833333333333333,
+            "old_floor": 0.8,
+            "old_support_invasion_rate": 0.0,
+            "scenario": "leo_low_elev_weak",
+            "seen_new_acc": 0.5
+          },
+          {
+            "H_old_new": 0.5372750642673522,
+            "average_forgetting": 0.0,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.38,
+            "old_acc": 0.9166666666666666,
+            "old_acc_before_increment": 0.9166666666666666,
+            "old_floor": 0.8,
+            "old_support_invasion_rate": 0.0,
+            "scenario": "leo_rain_weak",
+            "seen_new_acc": 0.38
+          }
+        ],
+        "worst_forgetting": 0.0,
+        "worst_h": 0.5372750642673522,
+        "worst_new_floor": 0.0,
+        "worst_old_floor": 0.8
+      },
+      {
+        "config": {
+          "new_offset": 0.04,
+          "new_temperature": 1.0,
+          "old_temperature": 1.0
+        },
+        "gate_pass": false,
+        "radius_standardized": false,
+        "scenario_rows": [
+          {
+            "H_old_new": 0.5629629629629629,
+            "average_forgetting": 0.0,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.4,
+            "old_acc": 0.95,
+            "old_acc_before_increment": 0.95,
+            "old_floor": 0.8,
+            "old_support_invasion_rate": 0.0,
+            "scenario": "leo_clear_weak",
+            "seen_new_acc": 0.4
+          },
+          {
+            "H_old_new": 0.569309462915601,
+            "average_forgetting": 0.0,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.42,
+            "old_acc": 0.8833333333333333,
+            "old_acc_before_increment": 0.8833333333333333,
+            "old_floor": 0.8,
+            "old_support_invasion_rate": 0.0,
+            "scenario": "leo_low_elev_weak",
+            "seen_new_acc": 0.42
+          },
+          {
+            "H_old_new": 0.4520547945205479,
+            "average_forgetting": 0.0,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.3,
+            "old_acc": 0.9166666666666666,
+            "old_acc_before_increment": 0.9166666666666666,
+            "old_floor": 0.8,
+            "old_support_invasion_rate": 0.0,
+            "scenario": "leo_rain_weak",
+            "seen_new_acc": 0.3
+          }
+        ],
+        "worst_forgetting": 0.0,
+        "worst_h": 0.4520547945205479,
+        "worst_new_floor": 0.0,
+        "worst_old_floor": 0.8
+      },
+      {
+        "config": {
+          "new_offset": 0.0,
+          "new_temperature": 1.1,
+          "old_temperature": 1.0
+        },
+        "gate_pass": false,
+        "radius_standardized": false,
+        "scenario_rows": [
+          {
+            "H_old_new": 0.2130841121495327,
+            "average_forgetting": 0.0,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.12,
+            "old_acc": 0.95,
+            "old_acc_before_increment": 0.95,
+            "old_floor": 0.8,
+            "old_support_invasion_rate": 0.0,
+            "scenario": "leo_clear_weak",
+            "seen_new_acc": 0.12
+          },
+          {
+            "H_old_new": 0.3774480712166172,
+            "average_forgetting": 0.0,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.24,
+            "old_acc": 0.8833333333333333,
+            "old_acc_before_increment": 0.8833333333333333,
+            "old_floor": 0.8,
+            "old_support_invasion_rate": 0.0,
+            "scenario": "leo_low_elev_weak",
+            "seen_new_acc": 0.24
+          },
+          {
+            "H_old_new": 0.3283582089552239,
+            "average_forgetting": 0.0,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.2,
+            "old_acc": 0.9166666666666666,
+            "old_acc_before_increment": 0.9166666666666666,
+            "old_floor": 0.8,
+            "old_support_invasion_rate": 0.0,
+            "scenario": "leo_rain_weak",
+            "seen_new_acc": 0.2
+          }
+        ],
+        "worst_forgetting": 0.0,
+        "worst_h": 0.2130841121495327,
+        "worst_new_floor": 0.0,
+        "worst_old_floor": 0.8
+      },
+      {
+        "config": {
+          "new_offset": 0.02,
+          "new_temperature": 1.1,
+          "old_temperature": 1.0
+        },
+        "gate_pass": false,
+        "radius_standardized": false,
+        "scenario_rows": [
+          {
+            "H_old_new": 0.14757281553398058,
+            "average_forgetting": 0.0,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.08,
+            "old_acc": 0.95,
+            "old_acc_before_increment": 0.95,
+            "old_floor": 0.8,
+            "old_support_invasion_rate": 0.0,
+            "scenario": "leo_clear_weak",
+            "seen_new_acc": 0.08
+          },
+          {
+            "H_old_new": 0.3261538461538462,
+            "average_forgetting": 0.0,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.2,
+            "old_acc": 0.8833333333333333,
+            "old_acc_before_increment": 0.8833333333333333,
+            "old_floor": 0.8,
+            "old_support_invasion_rate": 0.0,
+            "scenario": "leo_low_elev_weak",
+            "seen_new_acc": 0.2
+          },
+          {
+            "H_old_new": 0.3009118541033434,
+            "average_forgetting": 0.0,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.18,
+            "old_acc": 0.9166666666666666,
+            "old_acc_before_increment": 0.9166666666666666,
+            "old_floor": 0.8,
+            "old_support_invasion_rate": 0.0,
+            "scenario": "leo_rain_weak",
+            "seen_new_acc": 0.18
+          }
+        ],
+        "worst_forgetting": 0.0,
+        "worst_h": 0.14757281553398058,
+        "worst_new_floor": 0.0,
+        "worst_old_floor": 0.8
+      },
+      {
+        "config": {
+          "new_offset": 0.04,
+          "new_temperature": 1.1,
+          "old_temperature": 1.0
+        },
+        "gate_pass": false,
+        "radius_standardized": false,
+        "scenario_rows": [
+          {
+            "H_old_new": 0.11287128712871286,
+            "average_forgetting": 0.0,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.06,
+            "old_acc": 0.95,
+            "old_acc_before_increment": 0.95,
+            "old_floor": 0.8,
+            "old_support_invasion_rate": 0.0,
+            "scenario": "leo_clear_weak",
+            "seen_new_acc": 0.06
+          },
+          {
+            "H_old_new": 0.270926517571885,
+            "average_forgetting": 0.0,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.16,
+            "old_acc": 0.8833333333333333,
+            "old_acc_before_increment": 0.8833333333333333,
+            "old_floor": 0.8,
+            "old_support_invasion_rate": 0.0,
+            "scenario": "leo_low_elev_weak",
+            "seen_new_acc": 0.16
+          },
+          {
+            "H_old_new": 0.18032786885245905,
+            "average_forgetting": 0.0,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.1,
+            "old_acc": 0.9166666666666666,
+            "old_acc_before_increment": 0.9166666666666666,
+            "old_floor": 0.8,
+            "old_support_invasion_rate": 0.0,
+            "scenario": "leo_rain_weak",
+            "seen_new_acc": 0.1
+          }
+        ],
+        "worst_forgetting": 0.0,
+        "worst_h": 0.11287128712871286,
+        "worst_new_floor": 0.0,
+        "worst_old_floor": 0.8
+      },
+      {
+        "config": {
+          "new_offset": 0.0,
+          "new_temperature": 0.9,
+          "old_temperature": 1.1
+        },
+        "gate_pass": false,
+        "radius_standardized": false,
+        "scenario_rows": [
+          {
+            "H_old_new": 0.5306532663316582,
+            "average_forgetting": 0.5833333333333333,
+            "joint_floor": 0.0,
+            "new_floor": 0.8,
+            "new_support_fidelity": 0.96,
+            "old_acc": 0.36666666666666664,
+            "old_acc_before_increment": 0.95,
+            "old_floor": 0.0,
+            "old_support_invasion_rate": 0.6166666666666667,
+            "scenario": "leo_clear_weak",
+            "seen_new_acc": 0.96
+          },
+          {
+            "H_old_new": 0.4392857142857143,
+            "average_forgetting": 0.5833333333333333,
+            "joint_floor": 0.0,
+            "new_floor": 0.3,
+            "new_support_fidelity": 0.82,
+            "old_acc": 0.3,
+            "old_acc_before_increment": 0.8833333333333333,
+            "old_floor": 0.0,
+            "old_support_invasion_rate": 0.7,
+            "scenario": "leo_low_elev_weak",
+            "seen_new_acc": 0.82
+          },
+          {
+            "H_old_new": 0.5570291777188329,
+            "average_forgetting": 0.49999999999999994,
+            "joint_floor": 0.0,
+            "new_floor": 0.5,
+            "new_support_fidelity": 0.84,
+            "old_acc": 0.4166666666666667,
+            "old_acc_before_increment": 0.9166666666666666,
+            "old_floor": 0.0,
+            "old_support_invasion_rate": 0.55,
+            "scenario": "leo_rain_weak",
+            "seen_new_acc": 0.84
+          }
+        ],
+        "worst_forgetting": 0.5833333333333333,
+        "worst_h": 0.4392857142857143,
+        "worst_new_floor": 0.3,
+        "worst_old_floor": 0.0
+      },
+      {
+        "config": {
+          "new_offset": 0.02,
+          "new_temperature": 0.9,
+          "old_temperature": 1.1
+        },
+        "gate_pass": false,
+        "radius_standardized": false,
+        "scenario_rows": [
+          {
+            "H_old_new": 0.6127659574468085,
+            "average_forgetting": 0.49999999999999994,
+            "joint_floor": 0.0,
+            "new_floor": 0.8,
+            "new_support_fidelity": 0.96,
+            "old_acc": 0.45,
+            "old_acc_before_increment": 0.95,
+            "old_floor": 0.0,
+            "old_support_invasion_rate": 0.5333333333333333,
+            "scenario": "leo_clear_weak",
+            "seen_new_acc": 0.96
+          },
+          {
+            "H_old_new": 0.5067415730337079,
+            "average_forgetting": 0.5166666666666666,
+            "joint_floor": 0.0,
+            "new_floor": 0.3,
+            "new_support_fidelity": 0.82,
+            "old_acc": 0.36666666666666664,
+            "old_acc_before_increment": 0.8833333333333333,
+            "old_floor": 0.0,
+            "old_support_invasion_rate": 0.6333333333333333,
+            "scenario": "leo_low_elev_weak",
+            "seen_new_acc": 0.82
+          },
+          {
+            "H_old_new": 0.586046511627907,
+            "average_forgetting": 0.4666666666666666,
+            "joint_floor": 0.0,
+            "new_floor": 0.5,
+            "new_support_fidelity": 0.84,
+            "old_acc": 0.45,
+            "old_acc_before_increment": 0.9166666666666666,
+            "old_floor": 0.0,
+            "old_support_invasion_rate": 0.5,
+            "scenario": "leo_rain_weak",
+            "seen_new_acc": 0.84
+          }
+        ],
+        "worst_forgetting": 0.5166666666666666,
+        "worst_h": 0.5067415730337079,
+        "worst_new_floor": 0.3,
+        "worst_old_floor": 0.0
+      },
+      {
+        "config": {
+          "new_offset": 0.04,
+          "new_temperature": 0.9,
+          "old_temperature": 1.1
+        },
+        "gate_pass": false,
+        "radius_standardized": false,
+        "scenario_rows": [
+          {
+            "H_old_new": 0.6857142857142858,
+            "average_forgetting": 0.41666666666666663,
+            "joint_floor": 0.0,
+            "new_floor": 0.8,
+            "new_support_fidelity": 0.96,
+            "old_acc": 0.5333333333333333,
+            "old_acc_before_increment": 0.95,
+            "old_floor": 0.0,
+            "old_support_invasion_rate": 0.45,
+            "scenario": "leo_clear_weak",
+            "seen_new_acc": 0.96
+          },
+          {
+            "H_old_new": 0.5948186528497409,
+            "average_forgetting": 0.41666666666666663,
+            "joint_floor": 0.0,
+            "new_floor": 0.3,
+            "new_support_fidelity": 0.82,
+            "old_acc": 0.4666666666666667,
+            "old_acc_before_increment": 0.8833333333333333,
+            "old_floor": 0.0,
+            "old_support_invasion_rate": 0.48333333333333334,
+            "scenario": "leo_low_elev_weak",
+            "seen_new_acc": 0.82
+          },
+          {
+            "H_old_new": 0.6000000000000001,
+            "average_forgetting": 0.44999999999999996,
+            "joint_floor": 0.0,
+            "new_floor": 0.5,
+            "new_support_fidelity": 0.84,
+            "old_acc": 0.4666666666666667,
+            "old_acc_before_increment": 0.9166666666666666,
+            "old_floor": 0.0,
+            "old_support_invasion_rate": 0.4666666666666667,
+            "scenario": "leo_rain_weak",
+            "seen_new_acc": 0.84
+          }
+        ],
+        "worst_forgetting": 0.44999999999999996,
+        "worst_h": 0.5948186528497409,
+        "worst_new_floor": 0.3,
+        "worst_old_floor": 0.0
+      },
+      {
+        "config": {
+          "new_offset": 0.0,
+          "new_temperature": 1.0,
+          "old_temperature": 1.1
+        },
+        "gate_pass": false,
+        "radius_standardized": false,
+        "scenario_rows": [
+          {
+            "H_old_new": 0.831496062992126,
+            "average_forgetting": 0.21666666666666667,
+            "joint_floor": 0.2,
+            "new_floor": 0.8,
+            "new_support_fidelity": 0.96,
+            "old_acc": 0.7333333333333333,
+            "old_acc_before_increment": 0.95,
+            "old_floor": 0.2,
+            "old_support_invasion_rate": 0.25,
+            "scenario": "leo_clear_weak",
+            "seen_new_acc": 0.96
+          },
+          {
+            "H_old_new": 0.7272727272727272,
+            "average_forgetting": 0.21666666666666667,
+            "joint_floor": 0.3,
+            "new_floor": 0.3,
+            "new_support_fidelity": 0.8,
+            "old_acc": 0.6666666666666666,
+            "old_acc_before_increment": 0.8833333333333333,
+            "old_floor": 0.4,
+            "old_support_invasion_rate": 0.26666666666666666,
+            "scenario": "leo_low_elev_weak",
+            "seen_new_acc": 0.8
+          },
+          {
+            "H_old_new": 0.6782608695652174,
+            "average_forgetting": 0.31666666666666665,
+            "joint_floor": 0.0,
+            "new_floor": 0.4,
+            "new_support_fidelity": 0.78,
+            "old_acc": 0.6,
+            "old_acc_before_increment": 0.9166666666666666,
+            "old_floor": 0.0,
+            "old_support_invasion_rate": 0.3333333333333333,
+            "scenario": "leo_rain_weak",
+            "seen_new_acc": 0.78
+          }
+        ],
+        "worst_forgetting": 0.31666666666666665,
+        "worst_h": 0.6782608695652174,
+        "worst_new_floor": 0.3,
+        "worst_old_floor": 0.0
+      },
+      {
+        "config": {
+          "new_offset": 0.02,
+          "new_temperature": 1.0,
+          "old_temperature": 1.1
+        },
+        "gate_pass": false,
+        "radius_standardized": false,
+        "scenario_rows": [
+          {
+            "H_old_new": 0.9200723327305605,
+            "average_forgetting": 0.06666666666666665,
+            "joint_floor": 0.6,
+            "new_floor": 0.8,
+            "new_support_fidelity": 0.96,
+            "old_acc": 0.8833333333333333,
+            "old_acc_before_increment": 0.95,
+            "old_floor": 0.6,
+            "old_support_invasion_rate": 0.08333333333333333,
+            "scenario": "leo_clear_weak",
+            "seen_new_acc": 0.96
+          },
+          {
+            "H_old_new": 0.7272727272727272,
+            "average_forgetting": 0.21666666666666667,
+            "joint_floor": 0.3,
+            "new_floor": 0.3,
+            "new_support_fidelity": 0.8,
+            "old_acc": 0.6666666666666666,
+            "old_acc_before_increment": 0.8833333333333333,
+            "old_floor": 0.4,
+            "old_support_invasion_rate": 0.26666666666666666,
+            "scenario": "leo_low_elev_weak",
+            "seen_new_acc": 0.8
+          },
+          {
+            "H_old_new": 0.7366515837104073,
+            "average_forgetting": 0.18333333333333335,
+            "joint_floor": 0.3,
+            "new_floor": 0.4,
+            "new_support_fidelity": 0.74,
+            "old_acc": 0.7333333333333333,
+            "old_acc_before_increment": 0.9166666666666666,
+            "old_floor": 0.3,
+            "old_support_invasion_rate": 0.18333333333333332,
+            "scenario": "leo_rain_weak",
+            "seen_new_acc": 0.74
+          }
+        ],
+        "worst_forgetting": 0.21666666666666667,
+        "worst_h": 0.7272727272727272,
+        "worst_new_floor": 0.3,
+        "worst_old_floor": 0.3
+      },
+      {
+        "config": {
+          "new_offset": 0.04,
+          "new_temperature": 1.0,
+          "old_temperature": 1.1
+        },
+        "gate_pass": true,
+        "radius_standardized": false,
+        "scenario_rows": [
+          {
+            "H_old_new": 0.9195652173913044,
+            "average_forgetting": 0.04999999999999993,
+            "joint_floor": 0.6,
+            "new_floor": 0.8,
+            "new_support_fidelity": 0.94,
+            "old_acc": 0.9,
+            "old_acc_before_increment": 0.95,
+            "old_floor": 0.6,
+            "old_support_invasion_rate": 0.06666666666666667,
+            "scenario": "leo_clear_weak",
+            "seen_new_acc": 0.94
+          },
+          {
+            "H_old_new": 0.7714902807775378,
+            "average_forgetting": 0.09999999999999998,
+            "joint_floor": 0.3,
+            "new_floor": 0.3,
+            "new_support_fidelity": 0.76,
+            "old_acc": 0.7833333333333333,
+            "old_acc_before_increment": 0.8833333333333333,
+            "old_floor": 0.6,
+            "old_support_invasion_rate": 0.15,
+            "scenario": "leo_low_elev_weak",
+            "seen_new_acc": 0.76
+          },
+          {
+            "H_old_new": 0.7351351351351352,
+            "average_forgetting": 0.11666666666666659,
+            "joint_floor": 0.4,
+            "new_floor": 0.4,
+            "new_support_fidelity": 0.68,
+            "old_acc": 0.8,
+            "old_acc_before_increment": 0.9166666666666666,
+            "old_floor": 0.5,
+            "old_support_invasion_rate": 0.11666666666666667,
+            "scenario": "leo_rain_weak",
+            "seen_new_acc": 0.68
+          }
+        ],
+        "worst_forgetting": 0.11666666666666659,
+        "worst_h": 0.7351351351351352,
+        "worst_new_floor": 0.3,
+        "worst_old_floor": 0.5
+      },
+      {
+        "config": {
+          "new_offset": 0.0,
+          "new_temperature": 1.1,
+          "old_temperature": 1.1
+        },
+        "gate_pass": true,
+        "radius_standardized": false,
+        "scenario_rows": [
+          {
+            "H_old_new": 0.7503184713375797,
+            "average_forgetting": 0.0,
+            "joint_floor": 0.2,
+            "new_floor": 0.2,
+            "new_support_fidelity": 0.62,
+            "old_acc": 0.95,
+            "old_acc_before_increment": 0.95,
+            "old_floor": 0.8,
+            "old_support_invasion_rate": 0.016666666666666666,
+            "scenario": "leo_clear_weak",
+            "seen_new_acc": 0.62
+          },
+          {
+            "H_old_new": 0.7228699551569506,
+            "average_forgetting": 0.016666666666666607,
+            "joint_floor": 0.2,
+            "new_floor": 0.2,
+            "new_support_fidelity": 0.62,
+            "old_acc": 0.8666666666666667,
+            "old_acc_before_increment": 0.8833333333333333,
+            "old_floor": 0.7,
+            "old_support_invasion_rate": 0.03333333333333333,
+            "scenario": "leo_low_elev_weak",
+            "seen_new_acc": 0.62
+          },
+          {
+            "H_old_new": 0.675,
+            "average_forgetting": 0.016666666666666607,
+            "joint_floor": 0.2,
+            "new_floor": 0.2,
+            "new_support_fidelity": 0.54,
+            "old_acc": 0.9,
+            "old_acc_before_increment": 0.9166666666666666,
+            "old_floor": 0.8,
+            "old_support_invasion_rate": 0.016666666666666666,
+            "scenario": "leo_rain_weak",
+            "seen_new_acc": 0.54
+          }
+        ],
+        "worst_forgetting": 0.016666666666666607,
+        "worst_h": 0.675,
+        "worst_new_floor": 0.2,
+        "worst_old_floor": 0.7
+      },
+      {
+        "config": {
+          "new_offset": 0.02,
+          "new_temperature": 1.1,
+          "old_temperature": 1.1
+        },
+        "gate_pass": false,
+        "radius_standardized": false,
+        "scenario_rows": [
+          {
+            "H_old_new": 0.704635761589404,
+            "average_forgetting": 0.0,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.56,
+            "old_acc": 0.95,
+            "old_acc_before_increment": 0.95,
+            "old_floor": 0.8,
+            "old_support_invasion_rate": 0.0,
+            "scenario": "leo_clear_weak",
+            "seen_new_acc": 0.56
+          },
+          {
+            "H_old_new": 0.6385542168674698,
+            "average_forgetting": 0.0,
+            "joint_floor": 0.1,
+            "new_floor": 0.1,
+            "new_support_fidelity": 0.5,
+            "old_acc": 0.8833333333333333,
+            "old_acc_before_increment": 0.8833333333333333,
+            "old_floor": 0.8,
+            "old_support_invasion_rate": 0.0,
+            "scenario": "leo_low_elev_weak",
+            "seen_new_acc": 0.5
+          },
+          {
+            "H_old_new": 0.5169712793733681,
+            "average_forgetting": 0.0,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.36,
+            "old_acc": 0.9166666666666666,
+            "old_acc_before_increment": 0.9166666666666666,
+            "old_floor": 0.8,
+            "old_support_invasion_rate": 0.0,
+            "scenario": "leo_rain_weak",
+            "seen_new_acc": 0.36
+          }
+        ],
+        "worst_forgetting": 0.0,
+        "worst_h": 0.5169712793733681,
+        "worst_new_floor": 0.0,
+        "worst_old_floor": 0.8
+      },
+      {
+        "config": {
+          "new_offset": 0.04,
+          "new_temperature": 1.1,
+          "old_temperature": 1.1
+        },
+        "gate_pass": false,
+        "radius_standardized": false,
+        "scenario_rows": [
+          {
+            "H_old_new": 0.5428571428571428,
+            "average_forgetting": 0.0,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.38,
+            "old_acc": 0.95,
+            "old_acc_before_increment": 0.95,
+            "old_floor": 0.8,
+            "old_support_invasion_rate": 0.0,
+            "scenario": "leo_clear_weak",
+            "seen_new_acc": 0.38
+          },
+          {
+            "H_old_new": 0.569309462915601,
+            "average_forgetting": 0.0,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.42,
+            "old_acc": 0.8833333333333333,
+            "old_acc_before_increment": 0.8833333333333333,
+            "old_floor": 0.8,
+            "old_support_invasion_rate": 0.0,
+            "scenario": "leo_low_elev_weak",
+            "seen_new_acc": 0.42
+          },
+          {
+            "H_old_new": 0.4520547945205479,
+            "average_forgetting": 0.0,
+            "joint_floor": 0.0,
+            "new_floor": 0.0,
+            "new_support_fidelity": 0.3,
+            "old_acc": 0.9166666666666666,
+            "old_acc_before_increment": 0.9166666666666666,
+            "old_floor": 0.8,
+            "old_support_invasion_rate": 0.0,
+            "scenario": "leo_rain_weak",
+            "seen_new_acc": 0.3
+          }
+        ],
+        "worst_forgetting": 0.0,
+        "worst_h": 0.4520547945205479,
+        "worst_new_floor": 0.0,
+        "worst_old_floor": 0.8
+      }
+    ],
+    "selected": {
+      "config": {
+        "new_offset": 0.0,
+        "new_temperature": 0.9,
+        "old_temperature": 0.9
+      },
+      "gate_pass": true,
+      "radius_standardized": false,
+      "scenario_rows": [
+        {
+          "H_old_new": 0.7503184713375797,
+          "average_forgetting": 0.0,
+          "joint_floor": 0.2,
+          "new_floor": 0.2,
+          "new_support_fidelity": 0.62,
+          "old_acc": 0.95,
+          "old_acc_before_increment": 0.95,
+          "old_floor": 0.8,
+          "old_support_invasion_rate": 0.016666666666666666,
+          "scenario": "leo_clear_weak",
+          "seen_new_acc": 0.62
+        },
+        {
+          "H_old_new": 0.7228699551569506,
+          "average_forgetting": 0.016666666666666607,
+          "joint_floor": 0.2,
+          "new_floor": 0.2,
+          "new_support_fidelity": 0.62,
+          "old_acc": 0.8666666666666667,
+          "old_acc_before_increment": 0.8833333333333333,
+          "old_floor": 0.7,
+          "old_support_invasion_rate": 0.03333333333333333,
+          "scenario": "leo_low_elev_weak",
+          "seen_new_acc": 0.62
+        },
+        {
+          "H_old_new": 0.675,
+          "average_forgetting": 0.016666666666666607,
+          "joint_floor": 0.2,
+          "new_floor": 0.2,
+          "new_support_fidelity": 0.54,
+          "old_acc": 0.9,
+          "old_acc_before_increment": 0.9166666666666666,
+          "old_floor": 0.8,
+          "old_support_invasion_rate": 0.016666666666666666,
+          "scenario": "leo_rain_weak",
+          "seen_new_acc": 0.54
+        }
+      ],
+      "selection_status": "SUPPORT_GATES_PASS",
+      "worst_forgetting": 0.016666666666666607,
+      "worst_h": 0.675,
+      "worst_new_floor": 0.2,
+      "worst_old_floor": 0.7
+    }
+  },
+  "resources": {
+    "L6q_single_metric": {
+      "adaptation_epochs": 10,
+      "persistent_state_bytes_after": 29404,
+      "query_classifier_MAC_after": 29184,
+      "trainable_parameters": 256
+    },
+    "M1_dual_metric": {
+      "adaptation_epochs_B_plus_C": 20,
+      "persistent_state_bytes_after": 30428,
+      "query_classifier_MAC_after": 30208,
+      "trainable_parameters": 512
+    },
+    "M1_dual_metric_radius": {
+      "adaptation_epochs_B_plus_C": 20,
+      "persistent_state_bytes_after": 30472,
+      "query_classifier_MAC_after": 30219,
+      "trainable_parameters": 512
+    }
+  },
+  "schema": "cvs.phase2.d21_m1_dual_state_receipt.v1",
+  "sealed_runtime_sha256": "f119e8cb3f6beda95f0d545205e91b43e4a557af2fd1d025e95d2edf2b8e6e2a",
+  "support_gates": {
+    "new_support_fidelity_lower_bound": 0.45,
+    "old_support_invasion_upper_bound": 0.25
+  }
+}
