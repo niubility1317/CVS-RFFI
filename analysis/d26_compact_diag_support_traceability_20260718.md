@@ -2,7 +2,7 @@
 
 日期：2026-07-18
 
-状态：v1 90行support-only已完成并定位注册score-scale故障；v2严格bias保护、runner、launcher和58项相关回归完成，待同矩阵复跑
+状态：v1/v2各90行support-only均已完成；v2证明全局标量bias无法同时保护old与new，D26不晋级并转入D27逐新类安全bias
 
 边界：复用D25已验证的单LEO_weak物理IQ support；`z160/FFT96/RF32`是同一接收IQ的一条288D拼接表征，不增加物理样本、LEO状态、support行或K。query始终不可达。
 
@@ -29,4 +29,7 @@
 - `python -m pytest -q tests\test_stage2_multimodal_compact_diag.py tests\test_run_d25_d26_support_only_compact_diag.py tests\test_stage2_multimodal_concat_fusion.py tests\test_run_d25_support_only_concat.py tests\test_stage2_multimodal_diag_floor_adapter.py tests\test_run_d25_c3_support_only_diag_floor.py`：58项PASS。
 - `py_compile`、launcher `bash -n`、`git diff --check`：PASS。
 - 独立review：未发现协议/算法高严重度阻断；发现并修复D26 Git归因与实际FFT96/RF32 operator闭包遗漏。
-- 追溯状态：12/12项实现verified；v2实际性能与N607 artifact仍待执行，不在本地实现PASS含义内。
+- v2 N607 90/90行完成、query未打开、artifact哈希闭环。D26-B从v1的old/new=23.89%/70.67%变为79.44%/8.00%，旧类保护有效但新类被系统性压制；C0继续为回退，D26不晋级。
+- 完整loss无非有限值；D26-B Stage2-B loss从0.554833降至0.066382，Stage2-C从0.727749降至0.256986，排除训练不收敛。
+- 三轮回顾已复核D25/C3/D26报告、完整日志、活动目标、项目协议和conversation index。下一路线D27用每新类独立安全bias上界及support LOO坐标选择，保持旧raw score、单IQ、query不可达和逐样本全类argmax。
+- 追溯状态：12/12项实现与v2执行证据verified；D26为development support-only负筛选，不构成正式query性能或部署成功。

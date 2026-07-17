@@ -115,3 +115,67 @@ D26比B3减少41.67%峰值活动参数和50%–75% optimizer steps，head时延�
 - 精确命令：`cd /home/szu2070436088/2510044040/CV-SincNet && D26_GPU=0 bash code/scripts/launch_d26_v2_strict_bias_support_20260718.sh`。
 - 03:32 CST直连preflight再次PASS；8张RTX3090均0%利用、约10MiB显存。live inventory为`gpu_compute=[]`、`active_training_processes=[]`、`unknown_training_active=false`，允许使用GPU0。
 - 已同步runner、D26-v2核心和v2 launcher；远端SHA、`py_compile`、`bash -n`、实际FFT96/RF32 operator SHA和output不存在门均PASS。同步及验证后本地`ssh.exe`与N607 TCP22连接均为0。
+
+## v2完成状态
+
+- PID`3622893`正常退出，耗时16.592秒；90/90行、6件固定artifact齐全，`query_opened=false`，完整日志无NaN/Inf/OOM/Traceback。
+- 最终仍选择C0，`selected_positive_route=false`。Z0/B3/C0与v1完全一致，性能变化只来自strict-bias机制。
+- artifact哈希：training=`c7807e11bbf8c86f346dad645485eff1389fb5d36010a47969f98a125f4dd8f1`、selection=`3283858844955d1f2cd37785c16e9e9566b4d0d19f00238a7a2add7e9065b28c`、support=`de7d9de6c530249d42875736c122d7f11756f0a01b6cdeaa86dc8c8c9ddfafb8`、resource=`0270d56870259ef4a0ff5ad8bf11d6fcc662563a25c7626f39064fb580704e78`、geometry=`aafedc28975d25f893b79d1cbf16a7f096b5c40bfb95cc66b8b6a29bcd204588`、receipt=`27d7e743946f5d99fffbe0274b7c4ac38bcb911377046d3b9f85014708753047`。
+- 本地完整产物：`E:/type10-7/automation_reports/CV-SincNet/d26_compact_diag_support_20260718/remote_output_v2`；下载后哈希与receipt闭环，SSH/TCP22连接为0。
+
+## v2候选联合结果
+
+|候选|注册前old|注册后old|seen-new|H|forgetting|fit-old非退化|判定|
+|---|---:|---:|---:|---:|---:|---:|---|
+|Z0|71.11%|48.33%|52.67%|48.97%|22.78pp|N/A|control|
+|B3诊断|86.67%|73.33%|73.33%|72.65%|13.33pp|N/A|60step，仅性能参考|
+|C0|71.67%|50.56%|54.00%|50.35%|21.11pp|N/A|最终回退|
+|D26-A strict|80.00%|80.00%|2.67%|4.49%|0.00pp|15/15|新类被压制|
+|D26-B strict|80.00%|79.44%|8.00%|13.38%|0.56pp|15/15|新类被压制|
+|D26-C strict|80.00%|78.33%|5.33%|9.15%|1.67pp|15/15|新类被压制|
+
+v2相对v1把D26-B注册后old提高55.56pp、forgetting降低55.56pp，但seen-new下降62.67pp、H下降19.79pp。严格旧类保护有效，却把旧类/新类平衡从“过度偏新”翻转为“过度偏旧”。
+
+## v2逐场景与逐类
+
+|候选|场景|注册前old|注册后old|new|H|forgetting|
+|---|---|---:|---:|---:|---:|---:|
+|D26-A|clear|81.67%|81.67%|2.00%|3.48%|0.00pp|
+|D26-A|low-elev|75.00%|75.00%|6.00%|9.98%|0.00pp|
+|D26-A|rain|83.33%|83.33%|0.00%|0.00%|0.00pp|
+|D26-B|clear|81.67%|81.67%|10.00%|15.45%|0.00pp|
+|D26-B|low-elev|75.00%|75.00%|8.00%|14.06%|0.00pp|
+|D26-B|rain|83.33%|81.67%|6.00%|10.62%|1.67pp|
+|D26-C|clear|81.67%|81.67%|8.00%|13.33%|0.00pp|
+|D26-C|low-elev|75.00%|75.00%|0.00%|0.00%|0.00pp|
+|D26-C|rain|83.33%|78.33%|8.00%|14.12%|5.00pp|
+
+D26-B注册后旧类逐类为`14-10=70.00%`、`14-7=80.00%`、`20-15=93.33%`、`20-19=56.67%`、`6-15=86.67%`、`8-20=90.00%`，old floor仍只有56.67%。新类逐类为`cls_09f8=0%`、`cls_1c2a=0%`、`cls_b8fb=16.67%`、`cls_d3af=23.33%`、`cls_f608=0%`，new floor为0。
+
+## v2 bias、loss与资源
+
+- D26-A选择`-12×12,-8×3`；D26-B/C均选择`-8×2,-6×11,-4×2`。三条路线15/15fold的fit-old注册前后均为100%/100%。
+- D26-B/C的selected新类support LOO总体均值49.17%，但最差新类LOO均值仍为0；全局标量bias无法同时保护旧类和五个碰撞强度不同的新类。
+- 完整loss：Stage2-B平均`0.554833→0.066382`且support acc/floor达到100%/100%；Stage2-C B/C分别`0.727749→0.256986/0.222867`，新support训练acc达到96.0%/96.67%。没有收敛故障，失败来自score校准结构。
+
+|候选|峰值参数|总step|状态|MAC/query|适配+注册|CPU FP32 head|
+|---|---:|---:|---:|---:|---:|---:|
+|D26-A|2,016|15|约35.05KB|3,456|90.00ms|0.0867ms|
+|D26-B|2,016|25|约35.05KB|3,456|103.36ms|0.0784ms|
+|D26-C|2,016|30|约35.05KB|3,456|93.14ms|0.0670ms|
+
+D26仍比B3少41.67%活动参数、至少少50% optimizer steps，MAC相同；相对identity-only单qKNN为19.64% score MAC、状态约0.996×。v2状态比v1增加约11KB，主要是完整bias候选审计，不是预测状态膨胀。
+
+## 三轮研发回顾与D27决定
+
+本回顾已重新读取活动目标、`项目.md`第7.2/9.2/9.3/10.5节，刷新并搜索项目conversation index，并复核D25、C3、D26-v1/v2报告及完整training log。
+
+|轮次|有效发现|否决原因|
+|---|---|---|
+|D25 288D拼接|同一IQ的FFT96/RF32含有效身份信息；B3达到old/new=73.33/73.33|C0无floor增益；直接半径评分造成旧类崩塌；B3为60step诊断|
+|C3共享对角/floor loss|可减轻部分旧类遗忘|共享尺度不足，new floor仍0；gamma全触顶，继续加epoch无意义|
+|D26 class-specific head|Stage2-B注册前old升至80%，2,016参数、≤30step|v1全局bias偏新使old崩塌；v2全局bias偏旧使new崩塌|
+
+下一轮D27不再改数据、不增加view、不扩backbone；保留D26-B的15+10步class-specific head，改为每个新类独立安全bias。对旧类support中Stage2-B正确行`G_old`，每个新类`j`的最大安全偏置为`b_j^safe=min_{i∈G_old}(max_c s_old,c(x_i)-s_new,j(x_i))-eps`。该上界逐新类保证旧类正确行不被任何新类翻转；K>1再只在`b_j≤b_j^safe`内用注册support LOO做少量坐标选择，目标按`min_new_class_LOO→overall_LOO→worst_margin`词典序；K=1直接使用安全上界，不伪造LOO。最终每个query仍一次面对全部注册类并独立argmax。
+
+D27只新增每个seen-new类1个FP32 bias，5类仅20B状态，参数、optimizer step和MAC相对D26基本不变。晋级门同时要求：旧support非退化、new floor不为0、H不低于C0、逐场景old/new floor共同改善；禁止用零遗忘掩盖新类失败。LEO_weak-only、单物理IQ单overlay、query不可达、无role/quota Oracle、无dense query图和只读int8组件边界全部保持不变。
