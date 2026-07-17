@@ -183,6 +183,18 @@ M5-lite固定SGD、momentum=0、5epoch=5step，实际非零FP16 delta为1,135/1,
 
 当前未达正式门槛，不启动125确认矩阵。M1–M5已经完成并固化正负证据；任何历史多LEO副本D1结果不得回填，也不得重复打开当前query做机制或超参数优化。
 
+### 三轮后回顾与下一轮锁定原则
+
+本次回顾重新对齐活动目标、`项目.md`第7.1–7.3节、项目会话索引和M1–M5完整日志。结论如下：
+
+1. 域适应和新类注册必须在同一row、同一锁定机制中等权评估，继续同时报告注册前old、注册后old/new/H、逐类floor和forgetting；只优化old或只优化new的路线均不晋升。
+2. M1证明冻结旧状态可以抑制遗忘，但跨状态校准会牺牲新类；M2证明低秩metric可改善遗忘/new floor，但仍无法修复low-elev/rain旧类floor；M3的5,720B稳健注册足够轻，却同样缺少旧类域适应能力。
+3. M4的support高分没有转化为query泛化；M5-lite和M5-key满足≤5epoch、低状态和合并后0新增MAC，却分别表现为更新无效和非Pareto。因此下一轮不能再靠扩大层白名单、学习率网格或重复测试来寻找偶然增益。
+4. 当前开发query已经作为测试集打开，现永久封存；其结果只用于本轮最终报告，不得进入后续机制、损失、超参数、阈值、早停、回滚或候选排名。M1b多点query诊断也不得作为后续设计依据。
+5. 下一轮只能在support内部使用self-excluded或class-balanced fold构造训练/验证证据，并在打开任何新query前锁定完整机制。候选仍须满足单一LEO_weak观测、无clean/source样本、无query truth/role/quota/global assignment、adapter≤50k、≤5epoch/50step快速梯度、状态≤256KB。
+
+下一机制预注册为`M6 support-fold low-rank id-projection delta`：仅在精确`id_proj`白名单内训练rank-2/4低秩差分，使用恒等近端、旧类pair保持、新类分离和逐类CVaR的support-fold目标；rank和损失权重只能由support-fold预锁，FP16低秩patch可合并回原层，部署新增MAC为0。M6开发阶段禁止打开任何query；只有support门同时覆盖old/new floor和遗忘代理后，才允许在全新且此前未打开的测试单元执行一次隔离测试。
+
 ## 成功与停止条件
 
 1. Phase1真实导出必须得到84个有效域×类cell、domain20中心、非零真实P90半径、严格allowlist和可复核资源审计。
