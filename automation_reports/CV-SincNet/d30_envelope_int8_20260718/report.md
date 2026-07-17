@@ -64,4 +64,85 @@ new: u_new = s_new + b_new
 
 ## 结果与决定
 
-- 待本地实现、N607 90行矩阵和完整日志审计完成后填写。
+### 完成状态与artifact
+
+- N607任务在175.204s完成，PID `3683614`，90/90行；receipt状态`DEVELOPMENT_SUPPORT_ONLY_COMPLETE`。自动选择仍为`D25-C0-DIM-CONCAT`，`selected_positive_route=false`，D30-A/B/C均未通过联合floor/per-class安全选择。
+- 本地回收目录：`E:\type10-7\automation_reports\CV-SincNet\d30_envelope_int8_20260718\remote_output_v1`。artifact SHA：training log `d6d5a094...952`；support audit `09482f29...3a9`；selection `84827715...cdb`；resource `82deeb04...27d`；geometry `2def70be...a0d`；receipt `08a65608...6bd`。
+- 这是development support-held结果，不是query准确率、独立确认seed或正式部署证据。组件状态仍为`UNVERIFIED_UNDER_CURRENT_PROTOCOL`，query/formal/performance claim authority均为false。
+
+### 联合结果
+
+|候选|注册前旧类|注册后旧类|seen-new|H|遗忘|最差fold旧floor|最差fold新floor|决定|
+|---|---:|---:|---:|---:|---:|---:|---:|---|
+|Z0|71.11%|48.33%|52.67%|48.97%|22.78%|0%|0%|控制|
+|B3|86.67%|73.33%|73.33%|72.65%|13.33%|0%|0%|诊断；60step超限|
+|C0|71.67%|50.56%|54.00%|50.35%|21.11%|0%|0%|自动回退|
+|D30-A/B/C|85.56%|66.67%|71.33%|68.19%|18.89%|0%|0%|三者预测指标相同；未入选|
+
+相对D29/D27-B透传结果，D30的B3几何将seen-new从47.33%提高到71.33%（+24.00pp），H从52.82%提高到68.19%（+15.37pp），注册前旧类从80.00%提高到85.56%；但注册后旧类从67.22%微降至66.67%，遗忘从12.78%增至18.89%。因此本轮有效增益来自B3辅助主导拼接和25步轻头，不是max-new校准；旧类遗忘仍是主要缺口。
+
+### D30逐场景与逐类
+
+|场景|注册前旧类|注册后旧类|seen-new|H|遗忘|旧floor|新floor|
+|---|---:|---:|---:|---:|---:|---:|---:|
+|leo_clear_weak|88.33%|68.33%|70.00%|68.29%|20.00%|40%|40%|
+|leo_low_elev_weak|78.33%|60.00%|70.00%|64.02%|18.33%|50%|0%|
+|leo_rain_weak|90.00%|71.67%|74.00%|72.27%|18.33%|50%|50%|
+
+|旧TX|注册前|注册后|遗忘|
+|---|---:|---:|---:|
+|20-15|96.67%|83.33%|13.34pp|
+|8-20|90.00%|90.00%|0pp|
+|14-10|83.33%|66.67%|16.66pp|
+|14-7|80.00%|46.67%|33.33pp|
+|6-15|86.67%|53.33%|33.34pp|
+|20-19|76.67%|60.00%|16.67pp|
+
+|seen-new短handle|准确率|new→old|new→wrong-new|包络可达上界|
+|---|---:|---:|---:|---:|
+|09f8|30.00%|33.33%|36.67%|66.67%|
+|1c2a|83.33%|13.33%|3.33%|86.67%|
+|b8fb|73.33%|13.33%|13.33%|86.67%|
+|d3af|86.67%|10.00%|3.33%|90.00%|
+|f608|83.33%|6.67%|10.00%|93.33%|
+
+09f8仍是唯一显著floor类：三场景分别40%/0%/50%。即使理想修复全部new-new混淆，当前固定跨组包络下其上界也只有66.67%，仍远低于5类92%目标；因此下一轮必须同时减少new→old和new→wrong-new，单纯组内bias不再值得继续扫描。
+
+### 机制归因
+
+- DALI int8旧类重排在45/45外折和9/9 full-K10候选×场景状态均通过旧support门并真实参与逐样本分数计算；三档0.025/0.05/0.10的预测指标完全相同，且旧support raw/reranked准确率块均未变化。该证据只能说明int8分支安全且有score-level参与，不能声称它贡献了准确率增益。
+- max-new envelope在45/45外折和9/9 full-K10状态全部原子旁路；每个候选14/15折为`oof_no_strict_new_gain`、1/15为`oof_safety_failed`，full-K10三场景均为`oof_no_strict_new_gain`，bias全0。校准前后held confusion没有任何变化。
+- D30三候选相同结果进一步证明继续扫描静态new bias或更大DALI权重价值很低。真正有效的是B3几何；真正缺失的是B3的“全部old+new support作为Stage2-C正负证据”机制。
+
+### 完整训练日志
+
+- 已读取完整90行JSONL，而非日志尾部。D30三候选各405条trace snapshot，共1,215条；每折16个Stage2-B状态（含step0）+11个Stage2-C状态（含step0），实际optimizer step仍为15+10=25。
+- D30-B折均值：Stage2-B loss从1.02394降至0.12399，old support准确率从94.44%升至100%，floor从80.83%升至100%；Stage2-C loss从0.82942降至0.22376，new support准确率从91.17%升至99.33%，floor从70.00%升至96.67%。但held seen-new只有71.33%、09f8只有30%，表现为明显support过拟合而非数值发散。
+- 全90行递归数值审计无NaN/Inf；无OOM、Killed、Traceback或Exception。
+
+### 资源与Pareto
+
+|项目|D30|B3诊断|identity-only单qKNN参考|
+|---|---:|---:|---:|
+|峰值活动参数|2,016|2,016真实峰值（artifact旧字段3,456为阶段求和）|0|
+|optimizer step|25|60|0|
+|适配MAC|10,889,280|28,166,400|0|
+|head MAC/query|4,416|3,456|17,600|
+|持久state|68,067～68,147B|14,618B|35,200B FP16 sample-state|
+|batch1 CPU head mean|0.233～0.256ms|未同口径记录|未同口径记录|
+|batch1 CPU head P95|0.266～0.280ms|未同口径记录|未同口径记录|
+
+- D30相对B3将适配MAC降低61.34%、optimizer step降低58.33%，且满足25epoch/step上限；但DALI使query MAC比B3高27.78%，当前state约为B3的4.66倍。
+- 相对identity单qKNN，D30 query MAC为25.09%，减少74.91%；但state为193.37%～193.60%，增加约93.4%，因此当前不构成资源Pareto前沿。
+- 13,608B是84个有效域×类cell的稀疏active payload（13,440B int8+168B scale）；当前运行时`Int8DomainClassComponent`按26×6稠密数组、mask与scale计25,428B，并且通用DALI state又保留了与D30 base重复的target prototypes，最终达到约68KB。下一轮应把正式部署状态缩成离线固定medoid的6×160 int8锚+scale/radius，并删除重复target prototype bank，目标把组合state降回35.2KB以下。
+- head CUDA增量记录为0B只表示NumPy CPU head，不覆盖ADV3B02 backbone、FFT96/RF32或端到端RAM/VRAM；identity同硬件时延仍缺失，不能作端到端延迟优越声明。
+
+### 协议与数据清单
+
+- receiver `20-1`，seed `713101`，K=10，旧TX为14-10、14-7、20-15、20-19、6-15、8-20；seen-new为09f8、1c2a、b8fb、d3af、f608五个密封handle。每场景60旧+50新=110行，三场景共330个physical support；query为0行。
+- 每行`support_view_count=1`、`support_row_multiplicity=1`、`derived_support_rows=0`、`additional_leo_overlay_count=0`。三场景physical sample id、parent received-IQ hash和overlay token两两0重叠；每个z160/FFT96/RF32均追溯到同一唯一接收IQ。
+- query truth/role/true batch class count/quota/global assignment全部false；clean sample/derived signal/dataset/cache/control-flow和source sample/cache/label/unapproved derived signal全部不可达。int8组件不可更新。
+
+### D31决定
+
+D30为retrospective后的第1轮。D31不再扫描静态包络bias，直接实现B3最关键但D30缺失的机制：在共享对角和旧权重冻结下，Stage2-C用全部已注册old+new support进行10步class-balanced全类CE，使旧support提供新类权重的负证据；候选再分别加入弱新类CVaR/floor项与旧类margin保护。同时把DALI部署state裁成固定medoid稀疏int8锚+scale/radius，删除重复prototype bank。D31仍保持25步、query不可用、逐样本全注册类argmax和K1旁路。

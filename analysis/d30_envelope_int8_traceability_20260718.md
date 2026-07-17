@@ -11,4 +11,4 @@
 |D30-07|clean/source不可达|只复用已密封support与授权int8模型知识；不读取clean/source/衍生信号|complete_code|protocol contract与runtime字段|
 |D30-08|极轻资源|峰值≤80k参数、≤30epoch、≤50step、≤256KB；无dense query图|complete_code|fold/full resource与58测试|
 |D30-09|floor与可达上界|逐类输出组间/组内错误及max-envelope可达上界，明确哪些floor可被组内校准修复|complete_code|校准前后confusion artifact|
-|D30-10|完整证据|合法TX/receiver/support清单、完整日志、逐类/逐receiver、资源、自动报告、Git提交|partial|本轮先完成development support-only闭包；正式矩阵后续|
+|D30-10|完整证据|合法TX/receiver/support清单、完整日志、逐类/逐receiver、资源、自动报告、Git提交|complete_development_negative|90行、artifact SHA、完整报告、Git；正式独立矩阵仍pending|
