@@ -258,3 +258,19 @@ summary完整读取D52/D45/D46/D51各105行，生成器为`code/scripts/summariz
 |量化0/0/0|0/0/0|通过|
 
 D52详细结论：旧类逐类下界、rain遗忘和old→new混淆均明显改善，证明D51的median方向确实包含有效旧类稳定信号；但base-relative范数仍过大，将决策系统性推向old，导致新类注册性能和new→old混淆恶化。停止D52公式，不扫描系数、不做clip/角色门控、不跑第二seed、不formalize、不运行125。当前最强仍为D46，且仍未满足项目要求。
+
+## 19.D53谱收缩median transport预注册
+
+D53只验证“将稳健centroid位移映射到D45判别几何”这一新机制，不是D52系数缩小版。对before/final分别使用相同公式：
+
+```text
+M_c = mean_r(x_rc); Q_c = coordinate_median_r(x_rc); U_c = Q_c - M_c
+M0 = M - mean_c(M); W0 = W_D45 - mean_c(W_D45)
+tau = ||M0||_2^2
+G = U M0^T / tau
+gamma_c = 1 - ||mean_r(x_rc / ||x_rc||_2)||_2
+DeltaW = diag(gamma) G W0
+W_D53 = W_D45 + DeltaW; b_D53 = b_D45
+```
+
+`tau`是support类均值矩阵的谱范数平方，不是超参数；`||G||_2≤||U||_2/||M0||_2`，因此映射由相对centroid扰动约束，不直接继承D52的大判别范数边界。K1/K2精确D45 fallback；不使用逆矩阵/ridge/rcond、系数扫描、clip、场景/receiver/类ID/old-new角色或query。只允许同一开发单元一次运行，完整报告要求沿用第7节；若无实质预测变化或old/new联合指标退化即停止。
