@@ -87,3 +87,11 @@ D51以wrapper形式先完成D45 fit，再从传入的正式support transformed r
   --output 'E:\type10-7\automation_reports\CV-SincNet\d51_resultant_median_centroid_residual_probe_20260719\resultant_median_centroid_residual' `
   --device auto --mode development_select_unverified_component --candidate-set d42_v1
 ```
+
+## 9.attempt0资源字段失败与修复边界
+
+首次执行在第一个fold的D45 top-level fit完成后、写入任何性能行前，由D51资源wrapper读取不存在的`resource["coefficient_dimension"]`而exit1，wall`34.958s`。输出目录已创建但无成功artifact，原样保留为`resultant_median_centroid_residual`；它不是性能失败、不能计作105行结果。
+
+修复只把feature dimension来源改为实际formal state的`len(state.log_diag_fp32)`并要求一维正长度；正式D42 state固定得到288。该修复不改变support、几何公式、系数、量化、候选、fold或任何性能路径。新增回归直接验证实际state取维和错误shape fail-close；成功复跑只允许写新目录`resultant_median_centroid_residual_retry1`。
+
+修复后D51＋D45联合`21 passed`，D42–D51全链`162 passed`，`py_compile`和`git diff --check`通过；代码复核确认修复不进入任何分数计算。

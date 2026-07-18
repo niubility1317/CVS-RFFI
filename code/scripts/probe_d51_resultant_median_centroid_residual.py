@@ -205,6 +205,13 @@ def _extra_resource(k: int, old_count: int, all_count: int, dimension: int) -> t
     return int(numeric), comparisons
 
 
+def _state_dimension(state: Any) -> int:
+    log_diag = np.asarray(getattr(state, "log_diag_fp32", None))
+    if log_diag.ndim != 1 or len(log_diag) < 1:
+        raise D51ProbeError("D51 state feature dimension drift")
+    return int(len(log_diag))
+
+
 def _install_resource_accounting(d42: Any) -> tuple[Any, Any]:
     original_macs, original_top = d45._install_d45_core_resource_accounting(d42)
     d45_top = d42.fit_d42_unified_shrinkage_lda
@@ -215,7 +222,7 @@ def _install_resource_accounting(d42: Any) -> tuple[Any, Any]:
         k = int(resource["old_k_shot"])
         old_count = len(result.before_state.classes)
         all_count = len(result.state.classes)
-        dimension = int(resource["coefficient_dimension"])
+        dimension = _state_dimension(result.state)
         numeric, comparisons = _extra_resource(k, old_count, all_count, dimension)
         resource.update(
             {

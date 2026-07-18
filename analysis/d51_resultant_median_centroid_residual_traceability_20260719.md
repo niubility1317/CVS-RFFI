@@ -14,3 +14,5 @@
 声明边界：coordinate median依赖冻结特征坐标，不宣称旋转等变；resultant只作连续离散度缩放，不是置信概率或场景标签。
 
 运行前：D51定向9项、D45＋D51联合20项、D42–D51全链161项均exit0；代码复核P0=0、P1=0。实际outer、量化和artifact状态仍待运行。
+
+attempt0在首fold资源wrapper读取不存在的`resource.coefficient_dimension`而退出，无性能行。修复改为从实际formal state的`log_diag_fp32`一维数组取288，新增直接回归；修复后D51＋D45联合21项、D42–D51全链162项通过。失败目录保留，retry1使用新目录。

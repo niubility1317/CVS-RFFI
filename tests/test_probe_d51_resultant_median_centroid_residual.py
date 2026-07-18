@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import importlib.util
 from pathlib import Path
+from types import SimpleNamespace
 
 import numpy as np
 import pytest
@@ -101,6 +102,13 @@ def test_resource_upper_bound_is_deterministic_and_under_one_million() -> None:
     assert numeric == 831_296
     assert 0 < numeric < 1_000_000
     assert comparisons == 117_504
+
+
+def test_feature_dimension_comes_from_actual_state_not_resource_dict() -> None:
+    state = SimpleNamespace(log_diag_fp32=np.zeros(288, dtype=np.float32))
+    assert d51._state_dimension(state) == 288
+    with pytest.raises(d51.D51ProbeError, match="feature dimension"):
+        d51._state_dimension(SimpleNamespace(log_diag_fp32=np.zeros((2, 2))))
 
 
 def test_formula_has_no_tunable_residual_coefficient() -> None:
