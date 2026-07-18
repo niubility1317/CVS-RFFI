@@ -38,3 +38,10 @@ D59在SPD流形中点上稳定完成，但与D45处于同一性能台阶：相�
 - 测试：`tests/test_probe_d60_crossblock_spectral_stability_shrinkage.py`。
 - 输出：`automation_reports/CV-SincNet/d60_crossblock_spectral_stability_shrinkage_probe_20260719/crossblock_spectral_stability_shrinkage`。
 - 本地`ssr-gpu`串行验证；建立detached clean worktree；本轮不访问N607。
+
+## 5.执行后追溯
+
+- 状态：`COMPLETED_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE`；105/105行、query0、60个active fit audit和inner exact-once闭包通过。
+- 指标：before91.11%、after81.11%、new83.33%、H81.45%、forgetting10.00pp、joint23.33%、min-before80%、min-after50%、min-new73.33%、混淆27/9/16。
+- 相对D46：before−1.11pp、after−0.56pp、new−1.33pp、H−0.88pp、min-after−3.33pp；仅forgetting−0.56pp，混淆三项均增加；量化final argmax变化1且margin翻转1。
+- 判定：聚合、场景、floor、混淆与量化门失败；停止D60及其threshold/rank/指数扫描，不运行125。
