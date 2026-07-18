@@ -11,22 +11,22 @@
 
 |ID|Source section|Requirement|Target files|Status|Verification|Notes|
 |---|---|---|---|---|---|---|
-|D37-01|目标§2、§3|只读取固定单次LEO弱观测形成的合法support；不访问clean/source/query|`stage2_d37_b3_preserving_int8.py`、runner|implemented|core resource audit字段；runner集成测试待完成|数据复用现有D18 `VALIDATED_ONCE` cell，不重验|
+|D37-01|目标§2、§3|只读取固定单次LEO弱观测形成的合法support；不访问clean/source/query|`stage2_d37_b3_preserving_int8.py`、runner|verified|105行support audit全量解析：一物理样本一LEO弱观测、三场景ID不交、query未打开|数据复用现有D18 `VALIDATED_ONCE` cell，不重验|
 |D37-02|目标§3|query不参与fit/选择；每个样本独立面对全部注册类|`base_score_d37_b3_preserving_int8`、`score_d37_b3_preserving_int8`|verified|`test_row_scoring_is_batch_split_and_order_invariant`、`test_scoring_never_fits_or_opens_query_state`|score API无labels/role/batch quota参数|
-|D37-03|复盘§2.2、设计§3|旧类直接来自最终B3权重，不重建另一套旧头|`fit_d37_b3_preserving_int8`|verified|`test_direct_b3_compile_preserves_old_decisions_and_byte_prefix`|共享`log_diag`为FP32算子，不是FP32 target prototype|
+|D37-03|复盘§2.2、设计§3|旧类直接来自最终强B3权重，不重建另一套旧头|`fit_d37_b3_preserving_int8`、runner接线|rejected|单测证明可保留传入旧头；真实screen证明runner传入的是82.22%的D33-FAST/Fisher旧头，不是87.78%的强B3|共享`log_diag`为FP32算子，不是FP32 target prototype；这是本轮主要接线否证|
 |D37-04|目标§2.6、设计§3|target-old/new实际预测身份均为正式int8且不存FP32 target prototype|D37 state、residual compiler|verified|dtype/readonly/error单测；geometry audit三项布尔门|采用两级残差int8＋每块FP16 scale|
 |D37-05|目标§7.8、设计§3|注册时旧类量化状态append-only，前缀逐bit不变|`old_prefix_bitwise_unchanged_d37`|verified|prefix单测覆盖未校准与校准后state|必要条件，不冒充outer held安全|
-|D37-06|目标§5|全部类使用相同公式，标签置换同构，无class ID专属规则|D37 compiler/scorer、runner selection|implemented|geometry audit；runner置换集成测试待完成|固定块和margin与class ID无关|
+|D37-06|目标§5|全部类使用相同公式，标签置换同构，无class ID专属规则|D37 compiler/scorer、runner selection|verified|geometry audit、runner置换集成测试与真实screen|固定块和margin与class ID无关|
 |D37-07|设计§3|以support-OOF硬区间联合约束旧类零侵入与新类真实类胜出|`fit_oof_feasible_offset_d37`|verified|三个margin可行例与空区间fail-closed单测|`L<=U`才返回公共offset|
-|D37-08|设计§3|A/B/C只改变固定margin`0/0.05/0.10`|`D37B3PreservingInt8Config`、runner candidate registry|implemented|core参数化单测；runner集成待完成|避免小参数盲扫和多机制混杂|
+|D37-08|设计§3|A/B/C只改变固定margin`0/0.05/0.10`|`D37B3PreservingInt8Config`、runner candidate registry|verified|core参数化单测、candidate lock与105行真实screen|避免小参数盲扫和多机制混杂|
 |D37-09|目标§6、设计§4|开发矩阵为7候选×3场景×5fold=105行，outer held不进入fit|runner、integration test|verified|真实rank-pair integration执行；D37候选锁与105行断言|候选Z0/C0/B3/D33-FAST+D37-A/B/C|
-|D37-10|目标§5、设计§4|同row报告before-old、after-old、new、H、forgetting、全部逐类floor/混淆/侵入/不可达|runner artifacts、report|pending|待105行输出及完整日志解析|不得使用边际max/min拼接|
+|D37-10|目标§5、设计§4|同row报告before-old、after-old、new、H、forgetting、全部逐类floor/混淆/侵入/不可达|runner artifacts、report|verified|105/105唯一row全量解析；报告保存候选、场景和逐类联合表|不得使用边际max/min拼接|
 |D37-11|设计§4|晋级门含量化旧头逐scene/fold/class不弱于B3、全部旧行outer侵入0、所有新类physical LOSO正margin、matched identity/B3/D33 joint/floor非劣|runner selector|verified|selection反例、全旧行侵入计数、full-K10门测试|prefix不变只作为必要门|
 |D37-12|目标§9|<=80k参数、<=30epoch、<=50step、<=256KB、无dense query graph/批优化|core resource audit、runner full audit|verified|`test_resource_caps_hold_for_registered_scale`覆盖new2/5/10/20|core当前0参数/epoch/step；最大注册规模低于状态上限|
-|D37-13|目标§11|完整training trace、selection/resource/geometry/support audit、receipt与stdout|runner|pending|待真实support screen|完整解析要求105/105且哈希闭合|
-|D37-14|AGENTS Version Management|本地修改在Git承载面、窄验证、diff审计、提交|repo/report|implemented|当前git diff/status待最终复核|根目录报告为镜像，不是独立Git仓库|
+|D37-13|目标§11|完整training trace、selection/resource/geometry/support audit、receipt与stdout|runner|verified|105/105行；五项artifact哈希与receipt一致；全部numeric finite；成功与输入路径失败stdout分离保存|receipt SHA256=`ea5d7939...06f1f2`|
+|D37-14|AGENTS Version Management|本地修改在Git承载面、窄验证、diff审计、提交|repo/report|verified|实现提交`fb2f39f0`；D37 core+integration 24 passed、D34–D37聚焦43 passed、py_compile/help/diff-check通过；结果文档独立提交|根目录报告为镜像，不是独立Git仓库|
 |D37-15|目标§10、AGENTS N607|本地验证后才同步N607；短连接、preflight、GPU/进程审计|launcher/report|deferred|当前未触碰N607|已知N607环境组合不兼容D36闭环；先完成本地同cell算法屏|
-|D37-16|目标§13|只有完整独立确认矩阵全门达标才能完成goal|confirmation artifacts/report|deferred|development support screen尚未完成|D37窄验证绝不等于目标完成|
+|D37-16|目标§13|只有完整独立确认矩阵全门达标才能完成goal|confirmation artifacts/report|deferred|D37 support screen为诊断负例，未开放query或确认矩阵|D37技术完成绝不等于目标完成|
 
 ## 遗漏陷阱反向审计
 
@@ -39,8 +39,12 @@
 ## 当前验证记录
 
 ```text
-conda run -n ssr-gpu python -m pytest tests\test_stage2_d37_b3_preserving_int8.py -q
-12 passed
+conda activate ssr-gpu
+python -m pytest tests\test_stage2_d37_b3_preserving_int8.py tests\test_run_d37_b3_preserving_int8_integration.py -q
+24 passed
+
+python -m pytest <D34-D37 focused files> -q
+43 passed
 ```
 
-当前计数：`verified=9`、`implemented=4`、`pending=2`、`deferred=2`、`rejected=0`、`blocked=0`。最高风险是D37公共offset的OOF可行区间在真实D18 cell上为空，或虽可行但outer held仍出现侵入/不可达。另有明确K1方法缺口：单物理样本不能同时作为prototype输入与自身OOF held行；D37尚无合法预锁定K1校准规则。
+当前计数：`verified=13`、`implemented=0`、`pending=0`、`deferred=2`、`rejected=1`、`blocked=0`。真实D18 cell已证实D37公共offset的OOF可行区间15/15为空：真实新类在offset前输给其他新类，公共group平移无法改变new-new排序；同时outer held仍有33/180次旧→新侵入、40/75个new class-fold不可达。D37据此定为`DEVELOPMENT_SUPPORT_ONLY_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE`。另有明确K1方法缺口：单物理样本不能同时作为prototype输入与自身OOF held行；D37尚无合法预锁定K1校准规则。
