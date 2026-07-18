@@ -50,8 +50,10 @@ metric B20仍只训练一次、20 epoch/20 optimizer steps；最终只持久化�
 - 环境：`C:\Users\lh594\.conda\envs\ssr-gpu\python.exe`，本地串行，device=`auto`。
 - Git：根目录`E:\type10-7`非Git；代码、测试、追溯与正式报告进入`github_publish/CVS-RFFI-repo`，只暂存本轮精确文件；根目录只保留报告镜像。
 
-本地预运行验证：独立代码复核无P0；其发现的K1资源P1已用分段MAC和K1无likelihood指数语义修复，两项P2以逐fold class-major held索引重算和真实full＋block K2等证据测试加固。D42–D46定向回归`82 passed`，pytest退出码0；退出后本机临时目录`pytest-current`出现既知`WinError 5`清理噪声，不影响测试结论。真实运行前还需精确暂存提交、detached clean worktree和source hash closure。
+本地预运行验证：独立代码复核无P0；其发现的K1资源P1已用分段MAC和K1无likelihood指数语义修复，两项P2以逐fold匿名类归属、train补集重算和真实full＋block K2等证据测试加固。D42–D46定向回归最初`82 passed`；attempt0暴露真实support类块顺序并非数值class ID顺序后，verifier改为读取持久化匿名类归属，逐fold验证恰含全部类一次并重算train为held精确补集，回归增至`83 passed`。pytest退出码均为0；退出后本机临时目录`pytest-current`出现既知`WinError 5`清理噪声，不影响测试结论。
 
 ## 6.运行与结果
 
-待运行后更新同一报告，包括完整105行解析、同row候选表、逐场景与逐类表、D42/D45 prediction差异、量化一致性、资源、artifact哈希、异常、判定和下一轮研发决策。
+attempt0在提交`19c23a8a`上完成105/105行、elapsed`77.0287s`、query0，但末端D46 verifier因新增的`class_index×K+fold`行序假设拒绝。真实held索引显示每fold确实每匿名类一行且全局exact-once，只是support类块顺序不等于数值class ID顺序；因此这是verifier证据模型错误，不是训练或数据协议失败。attempt0输出未删除或覆盖，原样移动保存到`classwise_inner_loo_likelihood_attempt0_verifier_partition_assumption`，且没有D46 metadata成功标记。
+
+修复提交后将以原输出名执行attempt1。完成后更新完整105行解析、同row候选表、逐场景与逐类表、D42/D45 prediction差异、量化一致性、资源、artifact哈希、异常、判定和下一轮研发决策。

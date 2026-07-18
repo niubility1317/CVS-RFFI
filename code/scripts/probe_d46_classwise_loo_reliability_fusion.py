@@ -130,6 +130,42 @@ def _classwise_likelihood_weights(
     return weights, raw_log_evidence
 
 
+def _enrich_partition_evidence(
+    partition: dict[str, Any],
+    targets: np.ndarray,
+    class_count: int,
+) -> dict[str, Any]:
+    labels = np.asarray(targets, dtype=np.int64)
+    held_by_fold = partition.get("held_support_row_indices_by_fold")
+    if not isinstance(held_by_fold, list):
+        raise D46ProbeError("D46 partition evidence missing")
+    all_indices = set(range(len(labels)))
+    held_classes_by_fold: list[list[int]] = []
+    train_indices_by_fold: list[list[int]] = []
+    for held_indices_raw in held_by_fold:
+        held_indices = [int(value) for value in held_indices_raw]
+        if any(value < 0 or value >= len(labels) for value in held_indices):
+            raise D46ProbeError("D46 held partition index drift")
+        held_classes = [int(labels[value]) for value in held_indices]
+        if sorted(held_classes) != list(range(class_count)):
+            raise D46ProbeError("D46 per-fold per-class held partition drift")
+        held_set = set(held_indices)
+        train_indices = sorted(all_indices - held_set)
+        if held_set.intersection(train_indices):
+            raise D46ProbeError("D46 train-held partition overlap")
+        held_classes_by_fold.append(held_classes)
+        train_indices_by_fold.append(train_indices)
+    enriched = dict(partition)
+    enriched.update(
+        {
+            "d46_held_class_indices_by_fold": held_classes_by_fold,
+            "d46_train_support_row_indices_by_fold": train_indices_by_fold,
+            "d46_train_indices_are_exact_held_complements": True,
+        }
+    )
+    return enriched
+
+
 def build_classwise_loo_reliability_fit(
     d42: Any,
 ) -> Callable[[np.ndarray, np.ndarray, int, int], tuple[np.ndarray, np.ndarray, dict[str, Any]]]:
@@ -183,6 +219,12 @@ def build_classwise_loo_reliability_fit(
                 block_partition_audit,
             ) = d45._inner_loo_component_ce(
                 block_fit, transformed, targets, class_count, k_shot
+            )
+            full_partition_audit = _enrich_partition_evidence(
+                full_partition_audit, targets, class_count
+            )
+            block_partition_audit = _enrich_partition_evidence(
+                block_partition_audit, targets, class_count
             )
             weights, log_evidence_array = _classwise_likelihood_weights(
                 full_per_class_ce, block_per_class_ce, k_shot
@@ -483,15 +525,36 @@ def _verify_d46_fit_audits(training_rows: list[dict[str, Any]]) -> int:
                     "d46_full_inner_partition_audit",
                     "d46_block_inner_partition_audit",
                 ):
-                    held_by_fold = audit[partition_name][
+                    partition = audit[partition_name]
+                    held_by_fold = partition[
                         "held_support_row_indices_by_fold"
                     ]
-                    for fold_index, held_indices in enumerate(held_by_fold):
-                        expected_indices = [
-                            class_index * k_shot + fold_index
-                            for class_index in range(class_count)
-                        ]
-                        if held_indices != expected_indices:
+                    held_classes_by_fold = partition.get(
+                        "d46_held_class_indices_by_fold"
+                    )
+                    train_by_fold = partition.get(
+                        "d46_train_support_row_indices_by_fold"
+                    )
+                    if (
+                        not isinstance(held_classes_by_fold, list)
+                        or len(held_classes_by_fold) != k_shot
+                        or not isinstance(train_by_fold, list)
+                        or len(train_by_fold) != k_shot
+                        or partition.get(
+                            "d46_train_indices_are_exact_held_complements"
+                        ) is not True
+                    ):
+                        raise D46ProbeError("D46 enriched partition evidence drift")
+                    all_indices = set(range(class_count * k_shot))
+                    for held_indices, held_classes, train_indices in zip(
+                        held_by_fold, held_classes_by_fold, train_by_fold
+                    ):
+                        held_set = set(held_indices)
+                        if (
+                            sorted(held_classes) != list(range(class_count))
+                            or train_indices != sorted(all_indices - held_set)
+                            or held_set.intersection(train_indices)
+                        ):
                             raise D46ProbeError(
                                 "D46 per-fold per-class held partition drift"
                             )

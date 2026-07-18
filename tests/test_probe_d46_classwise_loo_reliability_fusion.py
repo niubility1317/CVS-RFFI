@@ -136,6 +136,16 @@ def test_classwise_fused_fit_is_exact_and_label_permutation_equivariant() -> Non
     assert audit["d46_canonical_gauge"] == probe.CANONICAL_GAUGE
     assert len(audit["d46_full_component_canonical_gauge_checks"]) == k_shot + 1
     assert audit["d46_actual_inner_fold_count_used_as_likelihood_exponent"] == k_shot
+    for partition_name in (
+        "d46_full_inner_partition_audit",
+        "d46_block_inner_partition_audit",
+    ):
+        partition = audit[partition_name]
+        assert all(
+            sorted(values) == list(range(class_count))
+            for values in partition["d46_held_class_indices_by_fold"]
+        )
+        assert partition["d46_train_indices_are_exact_held_complements"] is True
 
     permutation = np.asarray([2, 0, 3, 1], dtype=np.int64)
     permuted_coef, permuted_intercept, permuted_audit = fit(
@@ -300,6 +310,12 @@ def test_k1_resource_accounting_excludes_nonexistent_inner_scoring() -> None:
                 "d46_actual_inner_fold_count_used_as_likelihood_exponent", 4
             ),
             "likelihood exponent drift",
+        ),
+        (
+            lambda rows: rows[0]["geometry_summary"]["before_covariance_audit"][
+                "d46_full_inner_partition_audit"
+            ]["d46_held_class_indices_by_fold"][0].__setitem__(0, 1),
+            "per-fold per-class held partition drift",
         ),
     ],
 )
