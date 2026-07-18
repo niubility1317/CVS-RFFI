@@ -5,7 +5,7 @@
 - 实验ID：`d40_hnbr_20260718`
 - 时间：2026-07-18（Asia/Hong_Kong）
 - 操作者：Codex`/root`
-- 当前状态：`IMPLEMENTED_LOCAL_VERIFIED_REAL_SCREEN_PENDING`
+- 当前状态：`COMPLETED_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE`
 - development cell：receiver`20-1`、seed`713101`、K10/new5、3个LEO弱场景；复用D18固定received-IQ support，query保持sealed。
 - 目标：在保留D38强Stage2-B共享metric和正式int8生命周期的同时，用0步、无可调系数的难负重心方向残差化同时改善old-old、new-new和old-new竞争。
 
@@ -115,3 +115,160 @@ D40 int8只有全部满足才可进入full-K10或N607：
 当前只完成技术实现与本地测试闭环，尚未产生真实90行performance artifact，不能把`124 passed`解释为性能晋级。
 
 根目录`E:\type10-7`不是Git仓库；Git承载面为`E:\type10-7\github_publish\CVS-RFFI-repo`，根目录同名报告仅作非版本化运行镜像。当前goal保持active，D40 development screen不能替代完整确认矩阵。
+
+## 7.真实development screen执行闭环
+
+### 7.1运行身份与命令
+
+- 执行状态：6候选×3场景×5fold=`90/90`行完成；每fold为8-shot fit、2-shot outer-held。
+- development cell：receiver`20-1`、seed`713101`、K10/new5、old6→new5密封类handle；unknown/query未打开。
+- 执行工作树：`E:\type10-7\code\snapshots\d40wt`，detached commit`65be30dd873dfc7588124c30541efe831035d347`。
+- 运行时恢复文件SHA256：`somph_predictor_bundle.py=49a05c6f…def48`、`somph_runtime_trust.py=4b1dee1d…c1f9fc`、`stage2_predictor_bundle.py=bb27beaa…944aa9`，与D39已验证运行面逐bit相同。
+- 环境：本地`ssr-gpu`、`device=auto`；receipt记录wall time`16.726s`。
+- 输出：`E:\type10-7\automation_reports\CV-SincNet\d40_hnbr_20260718\local_support_screen_d40_v1`。
+- 选择结果：`selected_candidate_id=Z0_SUPPORT_ONLY`、`selected_positive_route=false`、`query_opened=false`、`formal_metric_claim_allowed=false`、`performance_claim_allowed=false`。
+- 执行客户端在14秒返回窗口超时，stdout捕获未完成；只读landed probe随后确认无残留Python进程、6个artifact均存在且RECEIPT闭合。故不重试、不覆盖，也不伪造stdout文件。
+
+```powershell
+python E:\type10-7\code\snapshots\d40wt\code\scripts\run_d25_support_only_concat.py `
+  --before-root E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\phase2_capsule_k10_new5\predictor\before\enrollment_only `
+  --before-seal E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\phase2_capsule_k10_new5\seals\before_enrollment.seal.json --before-seal-sha256 53ace2863c9da6c2f6cc855d602c99f581df6de3d30a9a3ecb89eb6b6f0d9f75 `
+  --before-formal-policy E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\formal_execution_policy.json `
+  --before-formal-policy-authorization E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\runtime_authorization_k10_new5\before_formal_policy_authorization.v2.json `
+  --before-signed-policy-authorization-envelope E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\runtime_authorization_k10_new5\before_signed_policy_authorization_envelope.v2.json --before-signed-policy-authorization-envelope-sha256 31a2ad9918f061b25d5a7ed0cc135df70ae02460c094b2f396bf314817bceb0e `
+  --after-root E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\phase2_capsule_k10_new5\predictor\after\enrollment_only `
+  --after-seal E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\phase2_capsule_k10_new5\seals\after_enrollment.seal.json --after-seal-sha256 c70aedf3a8f059e756806201758c1933a2f3e1ba4df415e69a1c776b1a2b50ff `
+  --after-formal-policy E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\formal_execution_policy.json `
+  --after-formal-policy-authorization E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\runtime_authorization_k10_new5\after_formal_policy_authorization.v2.json `
+  --after-signed-policy-authorization-envelope E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\runtime_authorization_k10_new5\after_signed_policy_authorization_envelope.v2.json --after-signed-policy-authorization-envelope-sha256 a2483d6e9c9c362d89397029ff1e43f48358be3bdb3a05d717ee112b70a0be76 `
+  --component-dir E:\type10-7\automation_reports\CV-SincNet\d22_int8_anchor_lifecycle_20260717\input\int8_component --component-manifest-sha256 15b5e144f9af3989421d8e925c17758479c327be47e79222f6363dc63994629c `
+  --class-binding E:\type10-7\github_publish\CVS-RFFI-repo\analysis\d19_adv3b02_class_binding_20260717.json --class-binding-sha256 bb89a1dbb831acb374fccfc596ae98b660b496b449bdca577dabb962121c901f `
+  --output E:\type10-7\automation_reports\CV-SincNet\d40_hnbr_20260718\local_support_screen_d40_v1 `
+  --device auto --mode development_select_unverified_component --candidate-set d40_v1
+```
+
+## 8.完整结果
+
+### 8.1六候选同row汇总
+
+全部指标来自receiver`20-1`、seed`713101`、K10、old6→new5、3场景×5fold的同候选15行。unknown/query列均为sealed；未把不同候选的边际极值拼接为一行。
+
+|候选|机制/类别|before-old|after-old|seen-new|H|遗忘|joint floor|旧→新侵入|new-new错序|实际新→旧|unknown/query|回退/晋级判定|
+|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|---|
+|`Z0_SUPPORT_ONLY`|identity回退|71.11%|48.33%|52.67%|48.97%|22.78pp|0.00%|64/180|未记录|未记录|sealed|最终回退|
+|`D40-PROTOnet-CDA-ZID160`|ProtoNet CDA|71.11%|48.33%|52.67%|48.97%|22.78pp|0.00%|64/180|未记录|未记录|sealed|matched基线|
+|`B3_SINGLE_IQ_DIAG_FFTRF`|exact strong B3|87.78%|75.56%|72.67%|73.35%|12.22pp|23.33%|33/180|25/150|22/150|sealed|最强合法比较器|
+|`D40-D38-B-RESIDUAL-INT8-NEGATIVE`|D38-B结构负对照|87.22%|0.56%|78.67%|0.99%|86.67pp|0.00%|179/180|32/150|0/150|sealed|诊断性负|
+|`D40-HNBR-INT8`|D40正式候选|85.56%|85.00%|15.33%|25.16%|0.56pp|0.00%|2/180|33/150|127/150|sealed|不晋级|
+|`D40-HNBR-FP32-MATCHED`|精度ablation|85.56%|85.00%|15.33%|25.16%|0.56pp|0.00%|2/180|33/150|127/150|sealed|与int8同预测，不可晋级|
+
+D40确实修复了D38-B的旧类灾难：after-old从0.56%升至85.00%，旧→新侵入从179/180降至2/180，遗忘从86.67pp降至0.56pp。但它把错误方向完全翻转：150个新类held中127个由旧类取得最高分，seen-new仅15.33%，5个新类中2类为0%。因此它不是联合成功，而是从“new压倒old”切换成“old压倒new”。
+
+### 8.2逐场景strong B3与D40同row结果
+
+|候选|场景|before-old|after-old|seen-new|H|遗忘|joint floor|旧→新侵入|new-new错序|
+|---|---|---:|---:|---:|---:|---:|---:|---:|---:|
+|strong B3|`leo_clear_weak`|88.33%|75.00%|82.00%|77.51%|13.33pp|30.00%|12/60|6/50|
+|D40 int8|`leo_clear_weak`|85.00%|85.00%|16.00%|26.53%|0.00pp|0.00%|0/60|12/50|
+|strong B3|`leo_low_elev_weak`|85.00%|75.00%|70.00%|71.71%|10.00pp|20.00%|11/60|10/50|
+|D40 int8|`leo_low_elev_weak`|81.67%|81.67%|18.00%|28.81%|0.00pp|0.00%|0/60|12/50|
+|strong B3|`leo_rain_weak`|90.00%|76.67%|66.00%|70.85%|13.33pp|20.00%|10/60|9/50|
+|D40 int8|`leo_rain_weak`|90.00%|88.33%|12.00%|20.13%|1.67pp|0.00%|2/60|9/50|
+
+三个场景均出现相同方向：旧类保持与侵入显著改善，而seen-new分别下降66pp、52pp和54pp。该一致性排除“仅某一LEO场景异常”的解释。
+
+### 8.3逐类结果
+
+|类handle前缀|角色|strong B3|D40 int8|差值|
+|---|---|---:|---:|---:|
+|`1f33`|old before|96.67%|96.67%|0.00pp|
+|`33bb`|old before|90.00%|90.00%|0.00pp|
+|`75aa`|old before|90.00%|86.67%|−3.33pp|
+|`8b02`|old before|83.33%|86.67%|+3.33pp|
+|`a53c`|old before|86.67%|86.67%|0.00pp|
+|`f8df`|old before|80.00%|66.67%|−13.33pp|
+|`1f33`|old after|93.33%|96.67%|+3.33pp|
+|`33bb`|old after|90.00%|90.00%|0.00pp|
+|`75aa`|old after|73.33%|86.67%|+13.33pp|
+|`8b02`|old after|73.33%|86.67%|+13.33pp|
+|`a53c`|old after|60.00%|86.67%|+26.67pp|
+|`f8df`|old after|63.33%|63.33%|0.00pp|
+|`09f8`|seen-new|40.00%|0.00%|−40.00pp|
+|`1c2a`|seen-new|86.67%|0.00%|−86.67pp|
+|`b8fb`|seen-new|76.67%|13.33%|−63.33pp|
+|`d3af`|seen-new|86.67%|50.00%|−36.67pp|
+|`f608`|seen-new|73.33%|13.33%|−60.00pp|
+
+聚合逐类old-after都不弱于strong B3，但strict门仍在90个scene×fold×old-class单元中出现3个退化；before-old有6/90个单元退化。新类则不是局部floor问题，5类全部下降，15/15个scene×fold的seen-new都弱于strong B3。
+
+### 8.4pairwise与完整训练轨迹
+
+|new类前缀|D40 new-new错序/30|D40实际新→旧/30|正确/30|new-new margin均值|最小值|true-new对top-old均值|最小值|
+|---|---:|---:|---:|---:|---:|---:|---:|
+|`09f8`|22|30|0|−1.6801|−6.4204|−5.4715|−9.4535|
+|`1c2a`|2|30|0|2.6564|−0.5240|−3.4147|−5.5764|
+|`b8fb`|2|26|4|4.0894|−3.5158|−1.3138|−6.9090|
+|`d3af`|3|15|15|4.7014|−3.2194|−0.5772|−7.4092|
+|`f608`|4|26|4|3.0425|−1.0625|−1.8222|−4.2722|
+
+D40不是主要败在new-new排序：`1c2a`等类的new-new margin仍为正，但true-new对top-old margin在所有5类的均值均为负。D40共127/150条新held由旧类取最高分，且与FP32逐样本完全一致。这把失败定位到old/new跨阶段方向可比性，而不是新类内部排序或int8量化。
+
+完整90行全部structured numeric值finite。D38-B记录450条轨迹；D40-int8和D40-FP32各记录300条轨迹，共1050条。D40每fold恰好20条`stage2b_fullbatch_old_adaptation`，平均loss从epoch1的1.031996降至epoch20的0.102685，support accuracy从95.14%升至100%；Stage2-C恰好0个optimizer step。int8/FP32的15/15 outer prediction、15/15 before prediction及15/15训练trace均匹配，outer argmax变化总数为0。
+
+## 9.晋级门、协议与资源审计
+
+### 9.1门控结果
+
+|门|结果|证据|
+|---|---|---|
+|before-old逐类不弱且聚合严格提高|失败|85.56%对87.78%；6/90个逐类单元退化|
+|after-old/forgetting逐row不弱|失败|聚合85.00%高于75.56%、15/15 forgetting不劣，但3/90个old-class单元退化|
+|旧→新侵入≤33且严格减少|通过|2/180对33/180|
+|seen-new/new-new/floor/margin|失败|15/15行seen-new退化；33/150不小于32；最低新类0%；最低margin−6.4204|
+|H/joint floor逐row不弱且聚合严格提高|失败|15/15行H退化；7/15行joint floor退化；聚合H25.16%对73.35%，joint floor0对23.33%|
+|D40 int8/FP32一致|通过|15/15 outer、before、trace匹配；argmax变化0|
+|old prefix/lifecycle/source/query|通过|prefix逐bit不变；new只读decoded int8 old negatives；held fit=0、query row=0|
+|资源|通过|固定20/20步、Stage2-C=0、2016参数、8611B state、HNBR MAC=84960|
+
+任一核心门失败即否决；本轮多个独立性能门同时失败，故selected-only full-K10不执行，N607不访问，K/new-count/receiver/seed确认矩阵不扩展。
+
+### 9.2协议与物理身份
+
+6个候选的15个scene×fold键全部一致；每个键的held physical-token count/SHA完全matched。`support_audit.json`确认每个物理support仅有1个LEO弱观测、support view=1、derived support row=0、额外physical/overlay=0。query row/label均0；clean/source/cache/replay/sample-level feature、role Oracle、true batch class count、class quota和global assignment均不可达。`source_closure_unchanged_after_support=true`。
+
+证据边界：component provenance仍为`UNVERIFIED_UNDER_CURRENT_PROTOCOL`，`formal_phase2_eligible=false`，RECEIPT明确禁止formal/performance claim。这与development support-only诊断模式一致；本报告不得把该负结果表述为正式Phase2性能结论。
+
+### 9.3资源
+
+|资源项|D40 int8|硬门|结果|
+|---|---:|---:|---|
+|trainable parameters|2,016|≤2,016|通过|
+|adaptation epochs/optimizer steps|20/20|=20/20|通过|
+|Stage2-C optimizer steps|0|=0|通过|
+|D38 Stage2-B adaptation MAC|4,976,640|记录|通过|
+|HNBR support MAC|84,960|>0并计入|通过|
+|total adaptation MAC|5,061,600|记录|通过|
+|MAC/query|6,624|记录|通过|
+|persistent state|8,611B|≤262,144B|通过|
+|CUDA peak|22,886,912B|记录|通过|
+
+由于outer selector已经回退identity，`resource_audit.json`对D40三个场景均明确记录`full_k10_refit_performed=false`和`reason=not_globally_selected_by_outer_6x3x5_matrix`。不虚构full-K10延迟或状态结果。
+
+## 10.artifact与版本闭环
+
+|artifact|SHA256|核验|
+|---|---|---|
+|`training_log.jsonl`|`00ee05e25a5f02dc71ccd114deb9970940404aff5a18fd38e9722131ea8bb499`|与receipt一致；90行|
+|`support_audit.json`|`223d05a2367ee70be39352baa19a0e6970fd7563a308d0b9f1334d57bed9475d`|与receipt一致|
+|`selection.json`|`08cba8283a3f2715bc6094fb1e0bb00ed50fb1da43dc89ed91238bcb794543fb`|与receipt一致|
+|`resource_audit.json`|`e0592ecf1b6e2aa02389e65c501b7333a3581b05bf0777349a35158817790c06`|与receipt一致|
+|`geometry_audit.json`|`192146795b3508b26d194eb631c54983ca44a3dcd00a0acf5b23111d321715bc`|与receipt一致|
+|`RECEIPT.json`|`dc48bc494b3c9602ac3ecdd64d48a3ccbc9185f33913c614132f15752b25cdbf`|自哈希|
+
+candidate lock SHA为`978080d00a2c575e474478a78c2382edfb662c1a5b08d63d854148c5a23dfeb9`。receipt记录实际执行字节的D38 core、D40 core和Runner SHA分别为`1781cc83…ec9`、`6ea54a70…560`、`38bd12dc…717`，与isolated worktree文件实测一致。实现/本地验证提交为`bc6c3539`/`65be30dd`；本完成报告只stage D40报告与追踪文件，不纳入主工作树其他未归属改动。
+
+## 11.最终解释与下一轮约束
+
+D40完成了技术实现、真实90行support-held执行、全量日志解析和artifact闭环，但没有完成项目goal，也没有取得可晋级性能。它证明“append-only、分阶段HNBR”能保护旧类，却会制造相反的跨阶段偏置：Stage2-B old方向只相对其他old残差化，而Stage2-C new方向相对冻结old＋其他new残差化；两组方向经历不同竞争集合，却共用同一cosine temperature。结果是旧类对新held系统性占优。
+
+因此D40记为`DEVELOPMENT_SUPPORT_ONLY_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE`，不扫描投影系数，不叠加bias/radius/gate，不打开query、不访问N607、不扩展确认矩阵。下一轮如果继续检验HNBR，只能改变这一条已被证据指向的结构不对称：在Stage2-C用同一全注册类竞争集合同步重编译target-old/new，而不是保持old prefix；密封Phase1 ground int8知识仍须逐bit不变。该建议只是D41待预注册假设，不是D40结果的一部分。
