@@ -61,3 +61,38 @@ D58复用D56的68次LDA fit和held score库存，不新增LDA fit、optimizer st
 - `py_compile`通过；D58＋D56＋D46定向链33/33通过。
 - 已验证：闭式正负矩与正斜率、每类分数平移吸收、公共正尺度预测不变、类标签和support rank置换、非正分离整fit回退、K1/K2、坏score/weight闭锁、资源公式及D56/D46回归。
 - verifier从training log逐fit重算全部mu、variance、slope、intercept、held预测、actual W/b和资源，再把D58附加账本剥离后调用D56完整闭包；D58新增LDA fit和query state均为0。
+
+## 8.执行锁
+
+- 实现提交：`461f7387`；clean detached worktree：`E:\type10-7\code\snapshots\d58wt`，状态`HEAD (no branch)`；clean脚本SHA256=`961e1e8ca1fb849f997eb99d010c9c2da810000cd84f7af53b681874b851bb13`。
+- clean环境D58＋D56＋D46测试33/33通过。runtime只读复用`E:\type10-7\code\snapshots\d41wt`。
+- 主Git承载面的class-binding SHA256已验证为`bb89a1db…c901f`；不用clean checkout中因CRLF变化而不匹配的副本。
+- 本地前台串行、Conda`ssr-gpu`、`--device auto`，不访问N607。输出目录启动前不存在；只允许以下105行development命令执行一次。
+
+```powershell
+& 'C:\Users\lh594\.conda\envs\ssr-gpu\python.exe' `
+  'E:\type10-7\code\snapshots\d58wt\code\scripts\probe_d58_ovr_score_lda_calibration.py' `
+  --d58-arm ovr_score_lda_calibration `
+  --runtime-root 'E:\type10-7\code\snapshots\d41wt' `
+  --probe-root 'E:\type10-7\code\snapshots\d58wt' `
+  --before-root 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\phase2_capsule_k10_new5\predictor\before\enrollment_only' `
+  --before-seal 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\phase2_capsule_k10_new5\seals\before_enrollment.seal.json' `
+  --before-seal-sha256 53ace2863c9da6c2f6cc855d602c99f581df6de3d30a9a3ecb89eb6b6f0d9f75 `
+  --before-formal-policy 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\formal_execution_policy.json' `
+  --before-formal-policy-authorization 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\runtime_authorization_k10_new5\before_formal_policy_authorization.v2.json' `
+  --before-signed-policy-authorization-envelope 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\runtime_authorization_k10_new5\before_signed_policy_authorization_envelope.v2.json' `
+  --before-signed-policy-authorization-envelope-sha256 31a2ad9918f061b25d5a7ed0cc135df70ae02460c094b2f396bf314817bceb0e `
+  --after-root 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\phase2_capsule_k10_new5\predictor\after\enrollment_only' `
+  --after-seal 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\phase2_capsule_k10_new5\seals\after_enrollment.seal.json' `
+  --after-seal-sha256 c70aedf3a8f059e756806201758c1933a2f3e1ba4df415e69a1c776b1a2b50ff `
+  --after-formal-policy 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\formal_execution_policy.json' `
+  --after-formal-policy-authorization 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\runtime_authorization_k10_new5\after_formal_policy_authorization.v2.json' `
+  --after-signed-policy-authorization-envelope 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\runtime_authorization_k10_new5\after_signed_policy_authorization_envelope.v2.json' `
+  --after-signed-policy-authorization-envelope-sha256 a2483d6e9c9c362d89397029ff1e43f48358be3bdb3a05d717ee112b70a0be76 `
+  --component-dir 'E:\type10-7\automation_reports\CV-SincNet\d22_int8_anchor_lifecycle_20260717\input\int8_component' `
+  --component-manifest-sha256 15b5e144f9af3989421d8e925c17758479c327be47e79222f6363dc63994629c `
+  --class-binding 'E:\type10-7\github_publish\CVS-RFFI-repo\analysis\d19_adv3b02_class_binding_20260717.json' `
+  --class-binding-sha256 bb89a1dbb831acb374fccfc596ae98b660b496b449bdca577dabb962121c901f `
+  --output 'E:\type10-7\automation_reports\CV-SincNet\d58_ovr_score_lda_calibration_probe_20260719\ovr_score_lda_calibration' `
+  --device auto --mode development_select_unverified_component --candidate-set d42_v1
+```
