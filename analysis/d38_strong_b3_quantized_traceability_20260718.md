@@ -26,12 +26,12 @@
 |D38-13|开发矩阵6候选×3场景×5fold=90行；direct ADV3B02为old-only旁路锚|runner|verified|精确候选锁、cardinality、ProtoNet equivalence和0-support anchor测试|
 |D38-14|selector按scene×fold×class严格比较strong B3、identity/ProtoNet和FP32 ablation|selection|verified|逐row逐类matched门、B-int8唯一晋级与FP32 argmax反例测试|
 |D38-15|formal资源≤80k params、≤30epoch、≤50step、≤256KB|resource audit|verified|new2/5/10/20、K1/5/10/20及含registry完整状态字节测试|
-|D38-16|完整trace、selection/resource/geometry/support audit、receipt、stdout和哈希闭环|runner/report|pending|真实support screen后90/90行全量解析|
+|D38-16|完整trace、selection/resource/geometry/support audit、receipt、stdout和哈希闭环|runner/report|verified|真实screen 90/90行、1200条trace全量解析；五项artifact SHA与receipt一致|
 |D38-17|本地ssr-gpu窄验证、Git提交后才允许N607 sync|repo/report|verified|本地33/33通过、独立审查无P0–P2；实现提交`c3a55b8b`|
 |D38-18|只有完整独立确认矩阵全门达标才能完成goal|confirmation report|deferred|D38 development设计不等于目标完成|
 
 ## 当前计数与高风险
 
-`verified=13`、`implemented=3`、`pending=1`、`deferred=1`、`rejected=0`、`blocked=0`。
+`verified=14`、`implemented=3`、`pending=0`、`deferred=1`、`rejected=0`、`blocked=0`。
 
-最高风险是20步full-batch Stage2-B无法复制exact legacy strong B3的旧域优势；第二风险是CE10降低new-new错序但通过更激进的新权重扩大旧→新侵入。任一风险在matched outer-held门出现即停止D38，不用query或额外参数扫描补救。
+真实screen已否证D38：注册前87.22%接近strong B3的87.78%，但注册后D38-B旧类仅0.56%，179/180个held旧样本被新类吞噬；CE10仍有32/150条new-new错序。int8/FP32 argmax变化为0，量化不是原因。D38按停止门结束，不打开query或额外扫描；goal继续active并转向类无关whitening/radius或共享new-vs-old校准。

@@ -5,7 +5,7 @@
 - 实验ID：`d38_strong_b3_quantized_20260718`
 - 时间：2026-07-18（Asia/Hong_Kong）
 - 操作者：Codex`/root`
-- 当前状态：`IMPLEMENTED_LOCAL_VERIFIED_REAL_SCREEN_PENDING`
+- 当前状态：`COMPLETED_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE`
 - 目标：修复D37的两个直接失败源——弱Fisher旧头和new-new排序错误——在同一合法K10 development cell上检验一个正式资源上限内、target-old/new均为两级residual-int8、逐样本面对全部注册类的轻型Stage2-B/C路线。
 - 主要比较：identity-only single-qKNN、ProtoNet CDA、exact legacy strong B3 FP32、D38-A int8、D38-B int8、D38-B FP32 matched ablation；direct ADV3B02另作相同old-held样本的0-support锚。
 
@@ -161,3 +161,107 @@ python -m pytest -q tests\test_stage2_d38_strong_b3_quantized.py tests\test_run_
 实现严格遵循D38预注册机制；它不是exact legacy strong B3的复现。后者仍以原20epoch mini-batch旧头和原20step新注册作为独立FP32比较器。当前尚无真实90行性能结果，不能判断D38是否promotable。
 
 当前goal保持active。D38 development support screen不等于独立确认，更不等于完成5receivers×至少5seeds×3scenes×K×new-count正式矩阵。
+
+## 10.真实K10 support-only screen
+
+### 10.1执行与证据闭合
+
+- 运行位置：本地隔离worktree`E:\type10-7\code\snapshots\d38wt`，detached HEAD`0580a0f9`；D38实现提交`c3a55b8b`。
+- 输入：D18已验证receiver`20-1`、seed`713101`、K10/new5 cell；只读复用固定received-IQ support，未重验数据、未打开query。
+- 输出：[local_support_screen_d38_v1](E:/type10-7/automation_reports/CV-SincNet/d38_strong_b3_quantized_20260718/local_support_screen_d38_v1)；stdout为同级`local_support_screen_d38_v1.stdout.log`。
+- 本地GPU：GPU0 RTX5070Ti；启动前`2253/16303MiB`、利用率3%；运行已结束，无常驻训练任务。
+- 用时：17.9992s；90/90行，6候选×3场景×5fold；共解析1200条optimizer trace，全部finite，无Traceback/OOM/Killed/NaN/Infinity。
+- source closure：D38 core SHA256=`257c4ed21002eadb71fadd58db5b3a55994df85a42bff551398f48aa1f0925bb`；Runner SHA256=`e029b9fe5590b0995d5593dd880fc55c634622cedf3b15cc86ecef409be391cd`。
+- 为保持D18签名闭包，隔离worktree逐字节恢复3个已验证runtime文件：`somph_predictor_bundle.py=49a05c6f...def48`、`somph_runtime_trust.py=4b1dee1d...c1f9fc`、`stage2_predictor_bundle.py=bb27beaa...944aa9`。
+
+|artifact|SHA256|receipt匹配|
+|---|---|---|
+|`training_log.jsonl`|`40cd5dc05976dd3fafcceb898cd2fa3f45a630ed61353a0ff2dbbf2a53b3addb`|是|
+|`support_audit.json`|`e1b4db924689f42f303d0414afe806f32dd483b05a00f4ae2f43176d158e98c6`|是|
+|`selection.json`|`dc9e9f2992d1f4f6ce9b741520e38a56b6096116e556c0f59bb0aef995c090dc`|是|
+|`resource_audit.json`|`c2a25a9d94377b8628dad187d38451312a64357137259b16392798fdb38d1350`|是|
+|`geometry_audit.json`|`52e1e4c766760a466ec81e6f591f6a8ba4ca3ee3735e44b3fe3da0bf92365985`|是|
+|`RECEIPT.json`|`41e77429035bd17d8fe92a258e6783fc4183a69248ad36e434666d1327e68084`|自身receipt|
+
+协议审计为：`query_opened=false`、query row/label均0、clean/source access均false、role/true batch count/quota/global assignment均false、每个物理support仅1个LEO观测、support view=1、三场景physical ID/received-IQ hash/overlay token两两0重叠。
+
+实际命令使用与D37相同的D18/D22锁定输入，仅替换已提交D38 Runner、输出目录与`--candidate-set d38_v1`：
+
+```powershell
+python E:\type10-7\code\snapshots\d38wt\code\scripts\run_d25_support_only_concat.py `
+  --before-root E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\phase2_capsule_k10_new5\predictor\before\enrollment_only `
+  --before-seal E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\phase2_capsule_k10_new5\seals\before_enrollment.seal.json --before-seal-sha256 53ace2863c9da6c2f6cc855d602c99f581df6de3d30a9a3ecb89eb6b6f0d9f75 `
+  --before-formal-policy E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\formal_execution_policy.json `
+  --before-formal-policy-authorization E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\runtime_authorization_k10_new5\before_formal_policy_authorization.v2.json `
+  --before-signed-policy-authorization-envelope E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\runtime_authorization_k10_new5\before_signed_policy_authorization_envelope.v2.json --before-signed-policy-authorization-envelope-sha256 31a2ad9918f061b25d5a7ed0cc135df70ae02460c094b2f396bf314817bceb0e `
+  --after-root E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\phase2_capsule_k10_new5\predictor\after\enrollment_only `
+  --after-seal E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\phase2_capsule_k10_new5\seals\after_enrollment.seal.json --after-seal-sha256 c70aedf3a8f059e756806201758c1933a2f3e1ba4df415e69a1c776b1a2b50ff `
+  --after-formal-policy E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\formal_execution_policy.json `
+  --after-formal-policy-authorization E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\runtime_authorization_k10_new5\after_formal_policy_authorization.v2.json `
+  --after-signed-policy-authorization-envelope E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\runtime_authorization_k10_new5\after_signed_policy_authorization_envelope.v2.json --after-signed-policy-authorization-envelope-sha256 a2483d6e9c9c362d89397029ff1e43f48358be3bdb3a05d717ee112b70a0be76 `
+  --component-dir E:\type10-7\automation_reports\CV-SincNet\d22_int8_anchor_lifecycle_20260717\input\int8_component --component-manifest-sha256 15b5e144f9af3989421d8e925c17758479c327be47e79222f6363dc63994629c `
+  --class-binding E:\type10-7\github_publish\CVS-RFFI-repo\analysis\d19_adv3b02_class_binding_20260717.json --class-binding-sha256 bb89a1dbb831acb374fccfc596ae98b660b496b449bdca577dabb962121c901f `
+  --output E:\type10-7\automation_reports\CV-SincNet\d38_strong_b3_quantized_20260718\local_support_screen_d38_v1 `
+  --device auto --mode development_select_unverified_component --candidate-set d38_v1
+```
+
+### 10.2完整候选结果
+
+下表每一数值均为同一候选15个matched outer rows的均值；`joint floor`也是同row floor的均值，不拼接不同row极值。旧→新侵入分母为15fold×每fold12个held旧样本=`180`。direct ADV3B02旧类0-support旁路锚为65.56%，不构成候选row。
+
+|候选|机制/角色|before-old|after-old|seen-new|H|遗忘|joint floor|旧→新侵入|最终判定|
+|---|---|---:|---:|---:|---:|---:|---:|---:|---|
+|Z0|identity-only single-qKNN|71.11%|48.33%|52.67%|48.97%|22.78pp|0.00%|64/180|回退基线|
+|ProtoNet CDA|独立等价row|71.11%|48.33%|52.67%|48.97%|22.78pp|0.00%|64/180|与Z0逐row等价|
+|exact legacy strong B3 FP32|20epoch mini-batch＋20step注册|87.78%|75.56%|72.67%|73.35%|12.22pp|23.33%|33/180|最强合法比较器，仍非成功|
+|D38-A int8|full-batch20＋centroid|87.22%|0.00%|76.00%|0.00%|87.22pp|0.00%|180/180|结构性负结果|
+|D38-B int8|A＋new-only CE10|87.22%|0.56%|78.67%|0.99%|86.67pp|0.00%|179/180|全部关键门失败|
+|D38-B FP32|B同轨迹精度ablation|87.22%|0.56%|78.67%|0.99%|86.67pp|0.00%|179/180|与int8决策相同，不可晋级|
+
+|场景|方法|before-old|after-old|seen-new|H|旧→新侵入|new-new混淆|
+|---|---|---:|---:|---:|---:|---:|---:|
+|clear|strong B3|88.33%|75.00%|82.00%|77.51%|12/60|未单独保存pairwise|
+|clear|D38-B int8|88.33%|0.00%|82.00%|0.00%|60/60|9/50|
+|low-elev|strong B3|85.00%|75.00%|70.00%|71.71%|11/60|未单独保存pairwise|
+|low-elev|D38-B int8|83.33%|0.00%|72.00%|0.00%|60/60|14/50|
+|rain|strong B3|90.00%|76.67%|66.00%|70.85%|10/60|未单独保存pairwise|
+|rain|D38-B int8|90.00%|1.67%|82.00%|2.98%|59/60|9/50|
+
+### 10.3逐类floor与pairwise诊断
+
+下表是15fold边际逐类均值，仅用于展示通用floor失败位置；主结论仍基于上面的同row联合结果。handle仅显示SHA前缀，不映射TX身份。
+
+|旧类handle|D38-B before|D38-B after|strong B3 after|
+|---|---:|---:|---:|
+|`1f33`|96.67%|0.00%|93.33%|
+|`33bb`|90.00%|3.33%|90.00%|
+|`75aa`|90.00%|0.00%|73.33%|
+|`8b02`|80.00%|0.00%|73.33%|
+|`a53c`|86.67%|0.00%|60.00%|
+|`f8df`|80.00%|0.00%|63.33%|
+
+|新类handle|D38-B seen-new|strong B3 seen-new|D38-B new-new错序/30|D38-B平均new-new margin|
+|---|---:|---:|---:|---:|
+|`09f8`|30.00%|40.00%|21|−0.3673|
+|`1c2a`|93.33%|86.67%|2|0.9202|
+|`b8fb`|86.67%|76.67%|4|1.8939|
+|`d3af`|93.33%|86.67%|2|2.8465|
+|`f608`|90.00%|73.33%|3|1.7906|
+
+D38-A共有36/150条new-new错序；D38-B降至32/150，但`09f8`反而由19/30增至21/30，其中14次top competitor为`1c2a`。这说明CE10对多数新类有正信号，却没有修复通用最低类；不得为`09f8`定制权重、阈值或分支。
+
+### 10.4训练、量化与资源
+
+- Stage2-B：15个D38-B fold的平均loss从1.0320降至0.1027，最终support accuracy=100%；注册前old 87.22%，说明full-batch20旧头不是本次灾难性失败的首要来源。
+- Stage2-C：平均loss从7.0238降至4.1160，最终all-support accuracy仅42.80%；10步结束仍未形成可靠old/new联合边界。
+- int8 vs matched FP32：全部outer held样本argmax变化0；B-int8与B-FP32的after-old/new/H完全相同。平均量化误差约`1.22e-6`，最大约`5.27e-6`，量化不是根因。
+- 正式D38-B outer state：2016峰值trainable params、30epoch/30step、8522B持久状态（含registry）、13,340,160估算适配MAC、6624逐query head MAC、峰值CUDA分配22,886,912B；均过资源硬门。
+- 因outer矩阵已回退Z0，预注册规则禁止D38-B full-K10 refit，故没有生成其full-K10平均/P95 head latency；`resource_audit.json`明确记录`full_k10_refit_performed=false`。不得为补齐资源展示而绕过负结果停止门。
+
+### 10.5根因与停止决策
+
+D38的注册前旧头与strong B3只差0.56pp；灾难发生在新类后缀加入后。旧prefix逐bit不变，但D38-A的180/180、D38-B的179/180个held旧样本被任一新类击败，说明新类分数相对旧类严重过高。CE10只改变新类方向，未提供类无关的new-vs-old尺度/偏置校准；它提高多数新类和平均new-new margin，却不能阻止旧域被新头吞噬，也未修复最低新类。
+
+因此D38全部晋级门失败：注册前逐类不弱strong B3门失败、B>A联合门失败、matched comparator门失败、旧→新侵入门失败；仅int8/FP32一致性、旧prefix和资源协议门通过。selection按预注册规则回退Z0，query保持sealed，K1/K5/K20、125 screen和正式确认矩阵均不启动。D38到此停止，不扫epoch、lr、margin或offset，也不把本地技术完成写成性能成功。
+
+下一轮应改变一个可解释机制：优先用全部合法support按统一公式学习共享whitening/radius或单一共享new-vs-old校准量，使旧/新score尺度可比，同时继续保留new-weight判别训练；不得使用类handle定向规则。下一候选必须同时用outer-held旧→新侵入、new-new pairwise、全部逐类floor和matched strong B3约束，先通过K10 development support screen再考虑N607/query。当前goal继续active。
