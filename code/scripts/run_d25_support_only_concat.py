@@ -10,7 +10,7 @@ per physical received-IQ row and shared by the B3 diagnostic and D25 routes.
 from __future__ import annotations
 
 import argparse
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 import hashlib
 import json
 from pathlib import Path
@@ -113,6 +113,11 @@ from cvsrffi.stage2_b3_fisher_closed_form import (  # noqa: E402
     fit_b3_fisher_closed_form,
     score_b3_fisher_closed_form,
 )
+from cvsrffi.stage2_d34_collision_local_registration import (  # noqa: E402
+    D34CollisionLocalConfig,
+    fit_d34_collision_local_registration,
+    score_d34_collision_local_registration,
+)
 
 
 MODE = legacy.MODE
@@ -135,6 +140,7 @@ CANDIDATE_SET_D30_V1 = "d30_v1"
 CANDIDATE_SET_D31_V1 = "d31_v1"
 CANDIDATE_SET_D32_V1 = "d32_v1"
 CANDIDATE_SET_D33_V1 = "d33_v1"
+CANDIDATE_SET_D34_V1 = "d34_v1"
 C3_A = "D25-C3A-DIAG-CE-CLOSEDREG"
 C3_B = "D25-C3B-DIAG-CE-NEWFIT"
 C3_C = "D25-C3C-DIAG-STRONGFLOOR-NEWFIT"
@@ -172,6 +178,10 @@ D33_B = "D33-B-ADAM15-SPHERICAL-BALANCED"
 D33_C = "D33-C-ADAM15-SPHERICAL-FLOOR"
 D33_B3_FAST = "D33-B3-FAST-FISHER-SPHERICAL-BALANCED"
 D33_CANDIDATES = (D33_A, D33_B, D33_C, D33_B3_FAST)
+D34_A = "D34-A-COLLISION-LOCAL-TOP1"
+D34_B = "D34-B-COLLISION-LOCAL-TOP2-MEDOID"
+D34_C = "D34-C-COLLISION-LOCAL-ADAPTIVE-FLOOR"
+D34_CANDIDATES = (D34_A, D34_B, D34_C)
 CORE_COMMIT = "f349850dbd94841ae2ef8105ac76bd7a9912c128"
 D26_CORE_GIT_COMMIT = "67b9d2275782339e0ac07800652b997adbcca534"
 
@@ -195,6 +205,8 @@ def _positive_route_candidates(candidate_set: str) -> tuple[str, ...]:
         return D32_CANDIDATES
     if candidate_set == CANDIDATE_SET_D33_V1:
         return D33_CANDIDATES
+    if candidate_set == CANDIDATE_SET_D34_V1:
+        return D34_CANDIDATES
     if candidate_set in (CANDIDATE_SET_D26_V1, CANDIDATE_SET_D26_V2):
         return D26_CANDIDATES
     return D25_CANDIDATES
@@ -330,6 +342,18 @@ class D33CandidateConfig:
             raise D25RunnerError("unknown D33 old solver lock")
 
 
+@dataclass(frozen=True)
+class D34CandidateConfig:
+    """FAST Fisher old head plus frozen collision-local registration."""
+
+    fisher: B3FisherClosedFormConfig
+    registration: D34CollisionLocalConfig
+
+    def __post_init__(self) -> None:
+        if str(self.registration.arm) not in ("A", "B", "C"):
+            raise D25RunnerError("D34 arm lock drift")
+
+
 def _canonical_bytes(value: Any) -> bytes:
     return json.dumps(
         value,
@@ -417,6 +441,32 @@ def preregistered_candidates(
                 registration=D33SphericalRegistrationConfig(
                     selection_policy="B_balanced"
                 ),
+            ),
+        }
+    if candidate_set == CANDIDATE_SET_D34_V1:
+        fisher = B3FisherClosedFormConfig()
+        return {
+            IDENTITY_CANDIDATE: controls[IDENTITY_CANDIDATE],
+            D25_C0: historical[D25_C0],
+            DIAG_CANDIDATE: controls[DIAG_CANDIDATE],
+            D33_B3_FAST: D33CandidateConfig(
+                old_solver="b3_fisher_closed_form",
+                fisher=fisher,
+                registration=D33SphericalRegistrationConfig(
+                    selection_policy="B_balanced"
+                ),
+            ),
+            D34_A: D34CandidateConfig(
+                fisher=fisher,
+                registration=D34CollisionLocalConfig(arm="A"),
+            ),
+            D34_B: D34CandidateConfig(
+                fisher=fisher,
+                registration=D34CollisionLocalConfig(arm="B"),
+            ),
+            D34_C: D34CandidateConfig(
+                fisher=fisher,
+                registration=D34CollisionLocalConfig(arm="C"),
             ),
         }
     if candidate_set == CANDIDATE_SET_D27_V1:
@@ -709,9 +759,35 @@ def _candidate_lock(
         source_closure["d33_b3_fisher_closed_form_core_sha256"] = _sha256_file(
             CODE_ROOT / "cvsrffi" / "stage2_b3_fisher_closed_form.py"
         )
+    if any(isinstance(value, D34CandidateConfig) for value in candidates.values()):
+        source_closure["d34_collision_local_registration_core_sha256"] = (
+            _sha256_file(
+                CODE_ROOT
+                / "cvsrffi"
+                / "stage2_d34_collision_local_registration.py"
+            )
+        )
+        source_closure["d34_b3_fisher_closed_form_core_sha256"] = _sha256_file(
+            CODE_ROOT / "cvsrffi" / "stage2_b3_fisher_closed_form.py"
+        )
     rows: list[dict[str, Any]] = []
     for candidate_id, config in candidates.items():
-        if isinstance(config, D33CandidateConfig):
+        if isinstance(config, D34CandidateConfig):
+            config_row = {
+                "old_solver": "b3_fisher_closed_form",
+                "fisher": {
+                    "shrinkage_strengths": list(config.fisher.shrinkage_strengths),
+                    "variance_ridge": float(config.fisher.variance_ridge),
+                    "fisher_shrinkage": float(config.fisher.fisher_shrinkage),
+                },
+                "registration": asdict(config.registration),
+                "feature_geometry": "b3_auxiliary_dominant_z160_fft96_rf32_v1",
+                "old_score_prefix_policy": "bitwise_frozen_fast_fisher",
+                "new_prototype_storage": "symmetric_int8_plus_fp32_scale_inverse_norm",
+                "support_only_sparse_collision_graph": True,
+            }
+            family = "d34_collision_local_registration"
+        elif isinstance(config, D33CandidateConfig):
             config_row = {
                 "old_solver": config.old_solver,
                 "base": None
@@ -943,6 +1019,8 @@ def _candidate_lock(
             if candidate_set == CANDIDATE_SET_D32_V1
             else "cvs.phase2.d25.candidate_lock.v11"
             if candidate_set == CANDIDATE_SET_D33_V1
+            else "cvs.phase2.d25.candidate_lock.v12"
+            if candidate_set == CANDIDATE_SET_D34_V1
             else "cvs.phase2.d25.candidate_lock.v1"
         ),
         "core_commit": CORE_COMMIT,
@@ -962,6 +1040,7 @@ def _candidate_lock(
                 CANDIDATE_SET_D31_V1,
                 CANDIDATE_SET_D32_V1,
                 CANDIDATE_SET_D33_V1,
+                CANDIDATE_SET_D34_V1,
             )
             else IDENTITY_CANDIDATE
         ),
@@ -979,6 +1058,7 @@ def _candidate_lock(
         CANDIDATE_SET_D31_V1,
         CANDIDATE_SET_D32_V1,
         CANDIDATE_SET_D33_V1,
+        CANDIDATE_SET_D34_V1,
     ):
         lock["candidate_set"] = candidate_set
     if candidate_set in (
@@ -991,6 +1071,7 @@ def _candidate_lock(
         CANDIDATE_SET_D31_V1,
         CANDIDATE_SET_D32_V1,
         CANDIDATE_SET_D33_V1,
+        CANDIDATE_SET_D34_V1,
     ):
         # CORE_COMMIT above identifies the sealed Phase1 model lineage.  Keep
         # the D26 implementation commit separate so the receipt cannot imply
@@ -1002,6 +1083,7 @@ def _candidate_lock(
         CANDIDATE_SET_D31_V1,
         CANDIDATE_SET_D32_V1,
         CANDIDATE_SET_D33_V1,
+        CANDIDATE_SET_D34_V1,
     ):
         lock["protocol_contract"] = {
             "screen_authority": "PRE_FORMAL_SUPPORT_ONLY_INT8_SCREEN",
@@ -2563,6 +2645,183 @@ def _d33_resource(
     }
 
 
+def _fit_d34_route(
+    features: np.ndarray,
+    labels: np.ndarray,
+    old_mask: np.ndarray,
+    new_mask: np.ndarray,
+    old_classes: tuple[str, ...],
+    new_classes: tuple[str, ...],
+    config: D34CandidateConfig,
+) -> dict[str, Any]:
+    """Fit FAST once, then build a support-only sparse registration state."""
+
+    old_fit = fit_b3_fisher_closed_form(
+        features[old_mask],
+        labels[old_mask],
+        old_classes,
+        config=config.fisher,
+    )
+    old_state = old_fit.state
+    adapted, all_old_prefix = _d34_fast_unit_and_prefix(old_state, features)
+    reference_prefix = score_b3_fisher_closed_form(old_state, features)
+    if not np.array_equal(all_old_prefix, reference_prefix):
+        raise D25RunnerError("D34 FAST prefix implementation is not bitwise exact")
+    old_prefix = all_old_prefix[old_mask]
+    new_old_prefix = all_old_prefix[new_mask]
+    registration_fit = fit_d34_collision_local_registration(
+        adapted[old_mask],
+        labels[old_mask],
+        old_classes,
+        old_prefix,
+        adapted[new_mask],
+        labels[new_mask],
+        new_classes,
+        new_old_prefix,
+        config=config.registration,
+    )
+    if tuple(registration_fit.state.classes) != old_classes + new_classes:
+        raise D25RunnerError("D34 registered class order drift")
+    geometry = dict(registration_fit.geometry_audit)
+    trace: list[dict[str, Any]] = list(old_fit.solver_trace)
+    for key in (
+        "old_loso_trace",
+        "new_loso_trace",
+        "collision_edges",
+        "old_anchor_offset_trace",
+    ):
+        value = geometry.get(key, ())
+        if isinstance(value, (list, tuple)):
+            trace.extend(dict(row) for row in value if isinstance(row, Mapping))
+    return {
+        "old_fit": old_fit,
+        "old_state": old_state,
+        "registration_fit": registration_fit,
+        "after": registration_fit.state,
+        "geometry": geometry,
+        "old_resource": dict(old_fit.resource_audit),
+        "registration_resource": dict(registration_fit.resource_audit),
+        "complete_trace": trace,
+    }
+
+
+def _d34_fast_unit_and_prefix(
+    old_state: Any, features: np.ndarray
+) -> tuple[np.ndarray, np.ndarray]:
+    rows = np.asarray(features, dtype=np.float32)
+    scaled = rows * np.exp(old_state.log_diag, dtype=np.float32)[None, :]
+    norms = np.linalg.norm(scaled, axis=1, keepdims=True).astype(np.float32)
+    if bool(np.any(norms <= np.float32(1.0e-12))):
+        raise D25RunnerError("D34 zero-norm FAST-adapted feature")
+    adapted = np.asarray(scaled / norms, dtype=np.float32)
+    old_prefix = np.float32(18.0) * (adapted @ old_state.weights.T)
+    return adapted, np.asarray(old_prefix, dtype=np.float32)
+
+
+def _score_d34(fit: Mapping[str, Any], features: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+    adapted, old_prefix = _d34_fast_unit_and_prefix(fit["old_state"], features)
+    all_scores = score_d34_collision_local_registration(
+        fit["after"], adapted, old_prefix
+    )
+    return old_prefix, all_scores
+
+
+def _d34_resource(fit: Mapping[str, Any], registered_count: int) -> dict[str, Any]:
+    old_resource = dict(fit["old_resource"])
+    registration = dict(fit["registration_resource"])
+    old_state_bytes = int(old_resource["persistent_state_bytes"])
+    registration_state_bytes = int(registration["persistent_state_bytes"])
+    old_query_macs = int(old_resource["estimated_macs_per_query"])
+    registration_query_macs_average = float(
+        registration["estimated_macs_per_query_average_degree"]
+    )
+    registration_query_macs = int(
+        registration["estimated_macs_per_query_worst_degree"]
+    )
+    total_query_macs_average = old_query_macs + registration_query_macs_average
+    total_query_macs = old_query_macs + registration_query_macs
+    old_adaptation_macs = int(old_resource["estimated_adaptation_macs"])
+    registration_adaptation_macs = int(registration["estimated_adaptation_macs"])
+    state_bytes = old_state_bytes + registration_state_bytes
+    identity_macs = int(registered_count * 10 * 160)
+    geometry = dict(fit["geometry"])
+    edge_count = int(
+        registration.get(
+            "collision_edge_count",
+            geometry.get("collision_edge_count", 0),
+        )
+    )
+    unreachable_count = int(
+        registration.get(
+            "unreachable_edge_count",
+            geometry.get("unreachable_edge_count", 0),
+        )
+    )
+    old_loso_pass = bool(
+        geometry.get(
+            "old_loso_zero_intrusion_pass",
+            registration.get("old_loso_zero_intrusion_pass", False),
+        )
+    )
+    return {
+        "schema": "cvs.phase2.d34_combined_resource.v1",
+        "old_solver": "b3_fisher_closed_form",
+        "old_solver_resource": old_resource,
+        "collision_local_registration_resource": registration,
+        "peak_trainable_parameters": 0,
+        "active_closed_form_scalars": int(old_resource["active_scalars"]),
+        "trainable_parameter_cap": 50_000,
+        "trainable_parameter_cap_pass": True,
+        "total_optimizer_steps": 0,
+        "total_adaptation_epochs": 0,
+        "optimizer_step_cap": 20,
+        "optimizer_step_cap_pass": True,
+        "stage2b_adaptation_macs": old_adaptation_macs,
+        "stage2c_adaptation_macs": registration_adaptation_macs,
+        "total_adaptation_macs": old_adaptation_macs + registration_adaptation_macs,
+        "estimated_adaptation_macs": old_adaptation_macs
+        + registration_adaptation_macs,
+        "old_prefix_macs_per_query": old_query_macs,
+        "collision_local_extra_macs_per_query": registration_query_macs,
+        "collision_local_extra_macs_per_query_average_degree": (
+            registration_query_macs_average
+        ),
+        "collision_local_extra_macs_per_query_worst_degree": registration_query_macs,
+        "total_post_backbone_macs_per_query_average_degree": total_query_macs_average,
+        "total_post_backbone_macs_per_query_worst_degree": total_query_macs,
+        "total_post_backbone_macs_per_query": total_query_macs,
+        "estimated_macs_per_query": total_query_macs,
+        "argmax_scalar_comparisons_per_query": max(0, registered_count - 1),
+        "identity_single_qknn_macs_same_registered_count": identity_macs,
+        "estimated_score_mac_ratio_vs_identity_single_qknn": float(
+            total_query_macs / identity_macs
+        ),
+        "old_solver_state_bytes": old_state_bytes,
+        "collision_local_state_bytes": registration_state_bytes,
+        "persistent_state_bytes": state_bytes,
+        "persistent_state_cap_bytes": 256 * 1024,
+        "persistent_state_cap_pass": state_bytes <= 256 * 1024,
+        "active_predictor_state_bytes": state_bytes,
+        "collision_edge_count": edge_count,
+        "unreachable_edge_count": unreachable_count,
+        "old_loso_zero_intrusion_pass": old_loso_pass,
+        "actual_int8_component_used_for_prediction": False,
+        "target_new_int8_prototypes_used_for_prediction": True,
+        "dense_query_graph_bytes": 0,
+        "complete_loss_trace": list(fit["complete_trace"]),
+        "feature_geometry": "b3_auxiliary_dominant_z160_fft96_rf32_v1",
+        "query_rows_used_for_fit": 0,
+        "query_labels_used_for_fit": False,
+        "query_features_used_for_fit": False,
+        "query_role_oracle_access": False,
+        "query_true_batch_class_count_access": False,
+        "query_class_quota_access": False,
+        "query_batch_global_assignment": False,
+        "clean_sample_access": False,
+        "source_sample_access": False,
+    }
+
+
 def _evaluate_d30_fold(
     component: Any,
     rows: Mapping[str, np.ndarray],
@@ -3234,6 +3493,161 @@ def _evaluate_d33_fold(
     }
 
 
+def _evaluate_d34_fold(
+    rows: Mapping[str, np.ndarray],
+    z_id160: np.ndarray,
+    fft96: np.ndarray,
+    rf32: np.ndarray,
+    *,
+    old_classes: tuple[str, ...],
+    new_classes: tuple[str, ...],
+    held_ranks: tuple[int, int],
+    candidate_id: str,
+    config: D34CandidateConfig,
+) -> dict[str, Any]:
+    """D34 leave-two-out evidence with frozen FAST old-score columns."""
+
+    labels = np.asarray(rows["labels"]).astype(str)
+    ranks = np.asarray(rows["ranks"], dtype=np.int64)
+    held = np.isin(ranks, np.asarray(held_ranks, dtype=np.int64))
+    train = ~held
+    old = np.isin(labels, np.asarray(old_classes))
+    new = np.isin(labels, np.asarray(new_classes))
+    if (
+        int(np.sum(train & old)) != 8 * len(old_classes)
+        or int(np.sum(train & new)) != 8 * len(new_classes)
+        or int(np.sum(held & old)) != 2 * len(old_classes)
+        or int(np.sum(held & new)) != 2 * len(new_classes)
+    ):
+        raise D25RunnerError("D34 leave-two-out class symmetry drift")
+    features = _d1_feature_from_blocks(z_id160, fft96, rf32)
+    fit = _fit_d34_route(
+        features[train],
+        labels[train],
+        old[train],
+        new[train],
+        old_classes,
+        new_classes,
+        config,
+    )
+    all_classes = old_classes + new_classes
+    held_old_prefix, held_scores = _score_d34(fit, features[held])
+    if not np.array_equal(
+        held_old_prefix, held_scores[:, : len(old_classes)]
+    ):
+        raise D25RunnerError("D34 changed held old score prefix")
+    held_labels = labels[held]
+    held_predictions = np.asarray(all_classes)[np.argmax(held_scores, axis=1)]
+    held_old = np.isin(held_labels, np.asarray(old_classes))
+    held_new = ~held_old
+    before_old_predictions = np.asarray(old_classes)[
+        np.argmax(held_old_prefix[held_old], axis=1)
+    ]
+    before_old = legacy._metric_block(
+        held_labels[held_old], before_old_predictions.astype(str).tolist(), old_classes
+    )
+    after_old = legacy._metric_block(
+        held_labels[held_old], held_predictions[held_old].astype(str).tolist(), old_classes
+    )
+    after_new = legacy._metric_block(
+        held_labels[held_new], held_predictions[held_new].astype(str).tolist(), new_classes
+    )
+    before_old_correct = before_old_predictions.astype(str) == held_labels[held_old]
+    old_loso_intrusion_count = int(
+        np.sum(
+            before_old_correct
+            & (held_predictions[held_old].astype(str) != before_old_predictions.astype(str))
+        )
+    )
+
+    fit_old_prefix, fit_scores = _score_d34(fit, features[train])
+    if not np.array_equal(fit_old_prefix, fit_scores[:, : len(old_classes)]):
+        raise D25RunnerError("D34 changed fit old score prefix")
+    fit_predictions = np.asarray(all_classes)[np.argmax(fit_scores, axis=1)]
+    fit_old = old[train]
+    fit_before_predictions = np.asarray(old_classes)[
+        np.argmax(fit_old_prefix[fit_old], axis=1)
+    ]
+    fit_before = legacy._metric_block(
+        labels[train][fit_old], fit_before_predictions.astype(str).tolist(), old_classes
+    )
+    fit_after = legacy._metric_block(
+        labels[train][fit_old], fit_predictions[fit_old].astype(str).tolist(), old_classes
+    )
+    classwise_pass = all(
+        float(fit_after["per_class_accuracy"][name]) + 1.0e-12
+        >= float(fit_before["per_class_accuracy"][name])
+        for name in old_classes
+    )
+    floor_pass = (
+        float(fit_after["class_floor_accuracy"]) + 1.0e-12
+        >= float(fit_before["class_floor_accuracy"])
+    )
+    resource = _d34_resource(fit, len(all_classes))
+    core_old_loso_flag = bool(resource["old_loso_zero_intrusion_pass"])
+    old_loso_pass = old_loso_intrusion_count == 0
+    old_support_pass = bool(classwise_pass and floor_pass)
+    resource["old_support_non_degradation_pass"] = old_support_pass
+    resource["core_internal_old_loso_zero_intrusion_flag"] = core_old_loso_flag
+    resource["old_loso_intrusion_count"] = old_loso_intrusion_count
+    resource["old_loso_zero_intrusion_pass"] = old_loso_pass
+    resource["complete_loss_trace"].append(
+        {
+            "audit": "outer_leave_two_rank_old_intrusion",
+            "held_ranks": list(held_ranks),
+            "before_correct_old_count": int(np.sum(before_old_correct)),
+            "intrusion_count": old_loso_intrusion_count,
+            "zero_intrusion_pass": old_loso_pass,
+            "query_rows_used": 0,
+        }
+    )
+    geometry = {
+        **dict(fit["geometry"]),
+        "schema": "cvs.phase2.d34_collision_local_geometry.v1",
+        "feature_geometry": "b3_auxiliary_dominant_z160_fft96_rf32_v1",
+        "observed_feature_block_energy": _d30_observed_block_energy(features),
+        "arm": str(config.registration.arm),
+        "old_score_prefix_bitwise_unchanged": True,
+        "core_internal_old_loso_zero_intrusion_flag": core_old_loso_flag,
+        "old_loso_protocol": "outer_leave_two_shot_ranks_not_seen_by_fit",
+        "old_loso_intrusion_count": old_loso_intrusion_count,
+        "old_loso_zero_intrusion_pass": old_loso_pass,
+    }
+    return {
+        "candidate_id": candidate_id,
+        "held_ranks": list(held_ranks),
+        "fit_k_shot": 8,
+        "before_old": before_old,
+        "after_old": after_old,
+        "after_new": after_new,
+        "H_old_new": legacy._harmonic(
+            float(after_old["overall_accuracy"]),
+            float(after_new["overall_accuracy"]),
+        ),
+        "forgetting": float(
+            before_old["overall_accuracy"] - after_old["overall_accuracy"]
+        ),
+        "joint_floor": float(
+            min(after_old["class_floor_accuracy"], after_new["class_floor_accuracy"])
+        ),
+        "old_score_columns_bitwise_unchanged": True,
+        "old_score_prefix_bitwise_unchanged": True,
+        "old_score_prefix_bitwise_unchanged_semantics": (
+            "FAST_score_prefix_passed_unchanged_to_D34_registration"
+        ),
+        "fit_old_before_registration": fit_before,
+        "fit_old_after_registration": fit_after,
+        "old_support_classwise_non_degradation": classwise_pass,
+        "old_support_floor_non_degradation": floor_pass,
+        "old_support_non_degradation_pass": old_support_pass,
+        "old_loso_zero_intrusion_pass": old_loso_pass,
+        "old_loso_intrusion_count": old_loso_intrusion_count,
+        "collision_edge_count": int(resource["collision_edge_count"]),
+        "unreachable_edge_count": int(resource["unreachable_edge_count"]),
+        "training_trace": list(resource["complete_loss_trace"]),
+        "geometry_summary": geometry,
+        "resource": resource,
+    }
 def _evaluate_d32_fold(
     component: Any,
     rows: Mapping[str, np.ndarray],
@@ -3842,6 +4256,154 @@ def _select_d26_candidate(
     return selected, decisions
 
 
+def _select_d34_candidate(
+    folds_by_candidate: Mapping[str, Sequence[Mapping[str, Any]]],
+) -> tuple[str, list[dict[str, Any]]]:
+    """Apply D34's non-negotiable old-safety gates before joint ranking."""
+
+    decisions: list[dict[str, Any]] = []
+    eligible: list[tuple[str, float, float, float, int]] = []
+    comparator_ids = (DIAG_CANDIDATE, D33_B3_FAST)
+    comparator_rows = {
+        candidate_id: list(folds_by_candidate[candidate_id])
+        for candidate_id in comparator_ids
+    }
+    comparator_thresholds = {
+        "mean_after_old": max(
+            float(
+                np.mean(
+                    [
+                        float(row["after_old"]["overall_accuracy"])
+                        for row in rows
+                    ]
+                )
+            )
+            for rows in comparator_rows.values()
+        ),
+        "mean_after_new": max(
+            float(
+                np.mean(
+                    [
+                        float(row["after_new"]["overall_accuracy"])
+                        for row in rows
+                    ]
+                )
+            )
+            for rows in comparator_rows.values()
+        ),
+        "mean_h": max(
+            float(np.mean([float(row["H_old_new"]) for row in rows]))
+            for rows in comparator_rows.values()
+        ),
+        "mean_forgetting": min(
+            float(np.mean([float(row["forgetting"]) for row in rows]))
+            for rows in comparator_rows.values()
+        ),
+        "worst_joint_floor": max(
+            min(float(row["joint_floor"]) for row in rows)
+            for rows in comparator_rows.values()
+        ),
+    }
+    for candidate_id, raw_rows in folds_by_candidate.items():
+        rows = list(raw_rows)
+        aggregate = legacy._aggregate_candidate(rows)
+        decision: dict[str, Any] = {
+            **aggregate,
+            "candidate_id": candidate_id,
+            "family": (
+                "d34_collision_local_registration"
+                if candidate_id in D34_CANDIDATES
+                else "d33_fast_negative_control"
+                if candidate_id == D33_B3_FAST
+                else "d25"
+                if candidate_id == D25_C0
+                else "control"
+            ),
+            "fallback": candidate_id == D25_C0,
+            "diagnostic_only": candidate_id in (DIAG_CANDIDATE, D33_B3_FAST),
+            "eligible_positive_route": False,
+        }
+        if candidate_id not in D34_CANDIDATES:
+            decisions.append(decision)
+            continue
+        old_support_pass = all(
+            bool(row["old_support_non_degradation_pass"]) for row in rows
+        )
+        old_loso_pass = all(bool(row["old_loso_zero_intrusion_pass"]) for row in rows)
+        old_prefix_pass = all(
+            bool(row["old_score_prefix_bitwise_unchanged"]) for row in rows
+        )
+        worst_joint_floor = min(float(row["joint_floor"]) for row in rows)
+        worst_new_floor = min(
+            float(row["after_new"]["class_floor_accuracy"]) for row in rows
+        )
+        mean_h = float(np.mean([float(row["H_old_new"]) for row in rows]))
+        mean_after_old = float(
+            np.mean([float(row["after_old"]["overall_accuracy"]) for row in rows])
+        )
+        mean_after_new = float(
+            np.mean([float(row["after_new"]["overall_accuracy"]) for row in rows])
+        )
+        mean_forgetting = float(
+            np.mean([float(row["forgetting"]) for row in rows])
+        )
+        total_edges = int(sum(int(row["collision_edge_count"]) for row in rows))
+        unreachable_edges = int(
+            sum(int(row["unreachable_edge_count"]) for row in rows)
+        )
+        all_new_classes_reachable = unreachable_edges == 0
+        comparator_gate = bool(
+            mean_after_old + 1.0e-12 >= comparator_thresholds["mean_after_old"]
+            and mean_after_new + 1.0e-12
+            >= comparator_thresholds["mean_after_new"]
+            and mean_h > comparator_thresholds["mean_h"] + 1.0e-12
+            and mean_forgetting
+            <= comparator_thresholds["mean_forgetting"] + 1.0e-12
+            and worst_joint_floor + 1.0e-12
+            >= comparator_thresholds["worst_joint_floor"]
+        )
+        hard_gate = bool(
+            old_support_pass
+            and old_loso_pass
+            and old_prefix_pass
+            and all_new_classes_reachable
+            and comparator_gate
+        )
+        decision.update(
+            {
+                "old_support_non_degradation_all_folds": old_support_pass,
+                "old_loso_zero_intrusion_all_folds": old_loso_pass,
+                "old_score_prefix_bitwise_unchanged_all_folds": old_prefix_pass,
+                "d34_old_safety_hard_gate_pass": hard_gate,
+                "all_new_classes_reachable_all_folds": all_new_classes_reachable,
+                "d34_joint_comparator_gate_pass": comparator_gate,
+                "joint_comparator_thresholds": comparator_thresholds,
+                "rank_mean_after_old": mean_after_old,
+                "rank_mean_after_new": mean_after_new,
+                "rank_mean_forgetting": mean_forgetting,
+                "rank_worst_joint_floor": worst_joint_floor,
+                "rank_worst_new_floor": worst_new_floor,
+                "rank_mean_H_old_new": mean_h,
+                "rank_collision_edge_count": total_edges,
+                "unreachable_edge_count": unreachable_edges,
+                "eligible_positive_route": hard_gate,
+            }
+        )
+        decisions.append(decision)
+        if hard_gate:
+            eligible.append(
+                (
+                    candidate_id,
+                    worst_joint_floor,
+                    worst_new_floor,
+                    mean_h,
+                    -total_edges,
+                )
+            )
+    selected = max(eligible, key=lambda row: row[1:])[0] if eligible else D25_C0
+    return selected, decisions
+
+
 def _apply_full_k10_c3_old_support_gate(
     selected_id: str,
     candidate_decisions: list[dict[str, Any]],
@@ -3947,6 +4509,65 @@ def _apply_full_k10_d26_old_support_gate(
         else "FULL_K10_OLD_SUPPORT_NON_DEGRADATION_FAILED"
     )
     return D25_C0, reason
+
+
+def _apply_full_k10_d34_gate(
+    selected_id: str,
+    candidate_decisions: list[dict[str, Any]],
+    deployment_resources: Mapping[str, Mapping[str, Mapping[str, Any]]],
+) -> tuple[str, str | None]:
+    """Require the same D34 old-safety and deployment gates on full K10."""
+
+    for decision in candidate_decisions:
+        candidate_id = str(decision["candidate_id"])
+        if candidate_id not in D34_CANDIDATES:
+            continue
+        by_scenario: dict[str, dict[str, bool]] = {}
+        for scenario in legacy.FORMAL_LEO_WEAK_SCENARIOS:
+            resource = deployment_resources[candidate_id][scenario]
+            by_scenario[scenario] = {
+                "old_support_non_degradation": bool(
+                    resource["old_support_non_degradation_pass"]
+                ),
+                "old_score_prefix_bitwise_unchanged": bool(
+                    resource["old_score_prefix_bitwise_unchanged"]
+                ),
+                "all_new_classes_reachable": int(
+                    resource["unreachable_edge_count"]
+                )
+                == 0,
+                "resource_protocol": bool(
+                    int(resource["peak_trainable_parameters"]) <= 50_000
+                    and int(resource["total_optimizer_steps"]) <= 20
+                    and bool(resource["persistent_state_cap_pass"])
+                    and int(resource["dense_query_graph_bytes"]) == 0
+                    and bool(resource["latency_includes_argmax"])
+                    and int(resource["query_rows_used_for_fit"]) == 0
+                ),
+            }
+        fold_old_loso_pass = bool(
+            decision.get("old_loso_zero_intrusion_all_folds", False)
+        )
+        full_pass = bool(
+            fold_old_loso_pass
+            and all(all(values.values()) for values in by_scenario.values())
+        )
+        decision["full_k10_d34_gate_by_scenario"] = by_scenario
+        decision["full_k10_uses_independent_fold_old_loso_hard_gate"] = (
+            fold_old_loso_pass
+        )
+        decision["full_k10_d34_gate_pass"] = full_pass
+        decision["eligible_positive_route"] = bool(
+            decision.get("eligible_positive_route", False) and full_pass
+        )
+    if selected_id not in D34_CANDIDATES:
+        return selected_id, None
+    selected_decision = next(
+        row for row in candidate_decisions if row["candidate_id"] == selected_id
+    )
+    if bool(selected_decision["full_k10_d34_gate_pass"]):
+        return selected_id, None
+    return D25_C0, "FULL_K10_D34_OLD_SAFETY_OR_RESOURCE_GATE_FAILED"
 
 
 def _full_d25_state_audit(
@@ -5051,6 +5672,99 @@ def _full_d33_state_audit(
     return resource, geometry
 
 
+def _full_d34_state_audit(
+    rows: Mapping[str, np.ndarray],
+    z_id160: np.ndarray,
+    fft96: np.ndarray,
+    rf32: np.ndarray,
+    *,
+    old_classes: tuple[str, ...],
+    new_classes: tuple[str, ...],
+    config: D34CandidateConfig,
+) -> tuple[dict[str, Any], dict[str, Any]]:
+    """Full-K10 D34 fit, frozen-prefix proof, latency, and resource audit."""
+
+    labels = np.asarray(rows["labels"]).astype(str)
+    old = np.isin(labels, np.asarray(old_classes))
+    new = np.isin(labels, np.asarray(new_classes))
+    features = _d1_feature_from_blocks(z_id160, fft96, rf32)
+    fit_started = time.perf_counter()
+    fit = _fit_d34_route(
+        features,
+        labels,
+        old,
+        new,
+        old_classes,
+        new_classes,
+        config,
+    )
+    fit_elapsed_ms = (time.perf_counter() - fit_started) * 1000.0
+    all_classes = old_classes + new_classes
+    old_prefix, scores = _score_d34(fit, features)
+    if not np.array_equal(old_prefix, scores[:, : len(old_classes)]):
+        raise D25RunnerError("D34 full-K10 changed old score prefix")
+    predictions = np.asarray(all_classes)[np.argmax(scores, axis=1)]
+    before_predictions = np.asarray(old_classes)[np.argmax(old_prefix[old], axis=1)]
+    before_metric = legacy._metric_block(
+        labels[old], before_predictions.astype(str).tolist(), old_classes
+    )
+    after_metric = legacy._metric_block(
+        labels[old], predictions[old].astype(str).tolist(), old_classes
+    )
+    classwise_pass = all(
+        float(after_metric["per_class_accuracy"][name]) + 1.0e-12
+        >= float(before_metric["per_class_accuracy"][name])
+        for name in old_classes
+    )
+    floor_pass = (
+        float(after_metric["class_floor_accuracy"]) + 1.0e-12
+        >= float(before_metric["class_floor_accuracy"])
+    )
+    score_elapsed_ms: list[float] = []
+    for feature in features:
+        started = time.perf_counter()
+        adapted, prefix = _d34_fast_unit_and_prefix(
+            fit["old_state"], feature[None, :]
+        )
+        row_scores = score_d34_collision_local_registration(
+            fit["after"], adapted, prefix
+        )
+        _ = int(np.argmax(row_scores[0]))
+        score_elapsed_ms.append((time.perf_counter() - started) * 1000.0)
+    resource = _d34_resource(fit, len(all_classes))
+    resource.update(
+        {
+            "deployment_k_shot": 10,
+            "registered_class_count": len(all_classes),
+            "old_support_before_registration": before_metric,
+            "old_support_after_registration": after_metric,
+            "old_support_classwise_non_degradation_pass": classwise_pass,
+            "old_support_floor_non_degradation_pass": floor_pass,
+            "old_support_non_degradation_pass": bool(classwise_pass and floor_pass),
+            "old_score_prefix_bitwise_unchanged": True,
+            "support_adaptation_and_registration_elapsed_ms": fit_elapsed_ms,
+            "batch1_head_latency_mean_ms": float(np.mean(score_elapsed_ms)),
+            "batch1_head_latency_p95_ms": float(
+                np.quantile(np.asarray(score_elapsed_ms, dtype=np.float64), 0.95)
+            ),
+            "batch1_head_latency_sample_count": len(score_elapsed_ms),
+            "head_latency_scope": "FAST_prefix_plus_D34_collision_score_plus_argmax",
+            "latency_includes_argmax": True,
+            "head_peak_cuda_memory_bytes": 0,
+            "head_runtime": "numpy_cpu_fp32_int8",
+        }
+    )
+    geometry = {
+        "schema": "cvs.phase2.d34_collision_local_geometry.v1",
+        "feature_geometry": "b3_auxiliary_dominant_z160_fft96_rf32_v1",
+        "observed_feature_block_energy": _d30_observed_block_energy(features),
+        "arm": str(config.registration.arm),
+        "old_score_prefix_bitwise_unchanged": True,
+        **dict(fit["geometry"]),
+    }
+    return resource, geometry
+
+
 def _full_d32_state_audit(
     component: Any,
     rows: Mapping[str, np.ndarray],
@@ -5465,7 +6179,19 @@ def run(
     for candidate_id, config in candidates.items():
         for scenario in legacy.FORMAL_LEO_WEAK_SCENARIOS:
             for fold_index, held_ranks in enumerate(HELD_RANKS):
-                if isinstance(config, D33CandidateConfig):
+                if isinstance(config, D34CandidateConfig):
+                    row = _evaluate_d34_fold(
+                        scene_rows[scenario],
+                        scene_z[scenario],
+                        scene_fft[scenario],
+                        scene_rf[scenario],
+                        old_classes=old_classes,
+                        new_classes=new_classes,
+                        held_ranks=held_ranks,
+                        candidate_id=candidate_id,
+                        config=config,
+                    )
+                elif isinstance(config, D33CandidateConfig):
                     row = _evaluate_d33_fold(
                         scene_rows[scenario],
                         scene_z[scenario],
@@ -5639,8 +6365,12 @@ def run(
         raise D25RunnerError("D32 training-log cardinality drift")
     if candidate_set == CANDIDATE_SET_D33_V1 and expected_rows != 105:
         raise D25RunnerError("D33 training-log cardinality drift")
+    if candidate_set == CANDIDATE_SET_D34_V1 and expected_rows != 105:
+        raise D25RunnerError("D34 training-log cardinality drift")
     selected_id, candidate_decisions = (
-        _select_c3_candidate(folds_by_candidate)
+        _select_d34_candidate(folds_by_candidate)
+        if candidate_set == CANDIDATE_SET_D34_V1
+        else _select_c3_candidate(folds_by_candidate)
         if candidate_set == CANDIDATE_SET_C3_V1
         else _select_d26_candidate(
             folds_by_candidate,
@@ -5670,6 +6400,7 @@ def run(
             CANDIDATE_SET_D31_V1,
             CANDIDATE_SET_D32_V1,
             CANDIDATE_SET_D33_V1,
+            CANDIDATE_SET_D34_V1,
         )
         else _select_candidate(folds_by_candidate)
     )
@@ -5694,6 +6425,8 @@ def run(
         if candidate_set == CANDIDATE_SET_D32_V1
         else (D25_C0,) + D33_CANDIDATES
         if candidate_set == CANDIDATE_SET_D33_V1
+        else (D25_C0, D33_B3_FAST) + D34_CANDIDATES
+        if candidate_set == CANDIDATE_SET_D34_V1
         else (D25_C0,) + D26_CANDIDATES
         if candidate_set in (CANDIDATE_SET_D26_V1, CANDIDATE_SET_D26_V2)
         else D25_CANDIDATES
@@ -5703,7 +6436,19 @@ def run(
     }
     for candidate_id, config in candidates.items():
         for scenario in legacy.FORMAL_LEO_WEAK_SCENARIOS:
-            if isinstance(config, D33CandidateConfig):
+            if isinstance(config, D34CandidateConfig):
+                resource, geometry = _full_d34_state_audit(
+                    scene_rows[scenario],
+                    scene_z[scenario],
+                    scene_fft[scenario],
+                    scene_rf[scenario],
+                    old_classes=old_classes,
+                    new_classes=new_classes,
+                    config=config,
+                )
+                deployment_resources[candidate_id][scenario] = resource
+                geometry_matrix[candidate_id][scenario] = geometry
+            elif isinstance(config, D33CandidateConfig):
                 resource, geometry = _full_d33_state_audit(
                     scene_rows[scenario],
                     scene_z[scenario],
@@ -5843,6 +6588,10 @@ def run(
                 selected_id, candidate_decisions, deployment_resources
             )
         )
+    elif candidate_set == CANDIDATE_SET_D34_V1:
+        selected_id, full_k10_fallback_reason = _apply_full_k10_d34_gate(
+            selected_id, candidate_decisions, deployment_resources
+        )
     elif candidate_set in (
         CANDIDATE_SET_D26_V1,
         CANDIDATE_SET_D26_V2,
@@ -5942,13 +6691,38 @@ def run(
     support_audit_sha256 = legacy._write_json(
         output / "support_audit.json", support_audit
     )
+    selected_decision = next(
+        (
+            row
+            for row in candidate_decisions
+            if str(row["candidate_id"]) == str(selected_id)
+        ),
+        None,
+    )
+    selected_positive_route = (
+        bool(
+            selected_decision is not None
+            and selected_id in D34_CANDIDATES
+            and selected_decision.get("eligible_positive_route", False)
+        )
+        if candidate_set == CANDIDATE_SET_D34_V1
+        else selected_id in _positive_route_candidates(candidate_set)
+    )
+    eligible_candidate_ids = (
+        [
+            str(row["candidate_id"])
+            for row in candidate_decisions
+            if bool(row.get("eligible_positive_route", False))
+        ]
+        if candidate_set == CANDIDATE_SET_D34_V1
+        else list(_positive_route_candidates(candidate_set))
+    )
     selection = {
         "schema": "cvs.phase2.d25.selection.v1",
         "selected_candidate_id": selected_id,
         "pre_full_k10_selected_candidate_id": pre_full_k10_selected_id,
         "full_k10_fallback_reason": full_k10_fallback_reason,
-        "selected_positive_route": selected_id
-        in _positive_route_candidates(candidate_set),
+        "selected_positive_route": selected_positive_route,
         "fallback_to_identity": selected_id == IDENTITY_CANDIDATE,
         "selection_baseline": (
             D25_C0
@@ -5964,11 +6738,12 @@ def run(
                 CANDIDATE_SET_D31_V1,
                 CANDIDATE_SET_D32_V1,
                 CANDIDATE_SET_D33_V1,
+                CANDIDATE_SET_D34_V1,
             )
             else IDENTITY_CANDIDATE
         ),
         "diagnostic_comparator": DIAG_CANDIDATE,
-        "eligible_candidate_ids": list(_positive_route_candidates(candidate_set)),
+        "eligible_candidate_ids": eligible_candidate_ids,
         "selection_rule": (
             "C3:_all_fold_old_support_non_degradation,_per_scenario_pooled_"
             "old_and_new_floor_gain>=0.10,_per_class_drop<=0.10,_H_and_"
@@ -6007,6 +6782,12 @@ def run(
             "new_floor_gain>=0.10,_per-class_drop<=0.10,_H_and_forgetting_"
             "noninferior_vs_C0;_B3_performance_reference_only"
             if candidate_set == CANDIDATE_SET_D31_V1
+            else "D34:_FAST_Fisher_frozen_old_score_prefix,_support-only_"
+            "collision-local_sparse_registration,_old-support_non-degradation_"
+            "and_old-LOSO_zero-intrusion_hard_gates,_then_worst_joint-floor,_"
+            "worst-new-floor,_H,_and_fewer-edges_ranking,_full-K10_resource_"
+            "closure;_historical_B3_and_D33-FAST_are_negative_controls"
+            if candidate_set == CANDIDATE_SET_D34_V1
             else "D33:_B3_auxiliary-dominant_geometry,_Adam15_or_Fisher_"
             "old_diagonal,_support-only_symmetric_spherical_registration,_"
             "classwise_robust_radius_LOSO_selection,_no_int8_predictor,_"
@@ -6082,6 +6863,7 @@ def run(
                 CANDIDATE_SET_D31_V1,
                 CANDIDATE_SET_D32_V1,
                 CANDIDATE_SET_D33_V1,
+                CANDIDATE_SET_D34_V1,
             )
             else {}
         ),
@@ -6091,8 +6873,7 @@ def run(
         "selected_candidate_id": selected_id,
         "pre_full_k10_selected_candidate_id": pre_full_k10_selected_id,
         "full_k10_fallback_reason": full_k10_fallback_reason,
-        "selected_positive_route": selected_id
-        in _positive_route_candidates(candidate_set),
+        "selected_positive_route": selected_positive_route,
         "candidate_set": candidate_set,
         "formal_launch_authority": False,
         "formal_metric_claim_allowed": False,
@@ -6172,6 +6953,7 @@ def build_parser() -> argparse.ArgumentParser:
             CANDIDATE_SET_D31_V1,
             CANDIDATE_SET_D32_V1,
             CANDIDATE_SET_D33_V1,
+            CANDIDATE_SET_D34_V1,
         ),
         default=CANDIDATE_SET_D25_V4,
     )
