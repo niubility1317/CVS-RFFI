@@ -15,7 +15,7 @@ from __future__ import annotations
 import json
 import math
 from dataclasses import dataclass
-from typing import Any, Sequence
+from typing import Any, Callable, Sequence
 
 import numpy as np
 import torch
@@ -26,6 +26,7 @@ SCHEMA_INT8 = "cvs.phase2.d38.fullbatch_b3_residual_int8.v1"
 SCHEMA_FP32 = "cvs.phase2.d38.fullbatch_b3_fp32_ablation.v1"
 FEATURE_DIM = 288
 TEMPERATURE = 18.0
+D38_SCORE_TEMPERATURE = TEMPERATURE
 BLOCK_SLICES = (slice(0, 160), slice(160, 256), slice(256, 288))
 ALLOWED_NEW_CLASS_COUNTS = (2, 5, 10, 20)
 STAGE2B_STEPS = 20
@@ -393,6 +394,9 @@ def fit_d38_strong_b3_quantized(
     seed: int,
     device: torch.device | str = "cpu",
     config: D38StrongB3Config | None = None,
+    before_stage2c_hook: (
+        Callable[[D38StrongB3State, tuple[dict[str, Any], ...]], None] | None
+    ) = None,
 ) -> D38StrongB3Result:
     locked = config or D38StrongB3Config()
     old_rows, old_targets, old_registry, old_k = _support(
@@ -472,6 +476,11 @@ def fit_d38_strong_b3_quantized(
     before_state, old_deployed, old_quant = _int8_state(
         old_registry, len(old_registry), log_diag_np, old_fp32, locked.arm
     )
+    if before_stage2c_hook is not None:
+        before_stage2c_hook(
+            before_state,
+            tuple(dict(row) for row in trace),
+        )
 
     transformed_new = _transform(new_rows, log_diag_np)
     new_init = np.stack(
@@ -787,6 +796,7 @@ def pairwise_support_diagnostics_d38(
 
 
 __all__ = [
+    "D38_SCORE_TEMPERATURE",
     "D38StrongB3Config",
     "D38StrongB3QuantizedError",
     "D38StrongB3Result",

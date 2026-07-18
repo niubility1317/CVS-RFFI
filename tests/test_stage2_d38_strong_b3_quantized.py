@@ -5,6 +5,7 @@ import pytest
 import torch
 
 from cvsrffi.stage2_d38_strong_b3_quantized import (
+    D38_SCORE_TEMPERATURE,
     D38StrongB3Config,
     D38StrongB3QuantizedError,
     fit_d38_strong_b3_quantized,
@@ -13,6 +14,10 @@ from cvsrffi.stage2_d38_strong_b3_quantized import (
     predict_d38_strong_b3,
     score_d38_strong_b3,
 )
+
+
+def test_public_score_temperature_seam_is_locked() -> None:
+    assert D38_SCORE_TEMPERATURE == 18.0
 
 
 def _support(
@@ -71,6 +76,38 @@ def test_arm_b_is_20_plus_10_fullbatch_and_formal_resource_passes() -> None:
     assert result.resource_audit["optimizer_step_cap_pass"] is True
     assert result.resource_audit["persistent_state_cap_pass"] is True
     assert result.resource_audit["query_rows_used_for_fit"] == 0
+
+
+def test_before_stage2c_hook_sees_only_completed_stage2b_trace() -> None:
+    old_classes = ("old_a", "old_b")
+    new_classes = ("new_a", "new_b")
+    old_x, old_y = _support(old_classes, k=2, offset=0, seed=501)
+    new_x, new_y = _support(new_classes, k=2, offset=90, seed=502)
+    captured: list[tuple[object, tuple[dict[str, object], ...]]] = []
+
+    def hook(state, trace) -> None:
+        captured.append((state, trace))
+
+    result = fit_d38_strong_b3_quantized(
+        old_x,
+        old_y,
+        old_classes,
+        new_x,
+        new_y,
+        new_classes,
+        seed=713101,
+        config=D38StrongB3Config("B"),
+        before_stage2c_hook=hook,
+    )
+
+    assert len(captured) == 1
+    before_state, stage2b_trace = captured[0]
+    assert before_state is result.before_state
+    assert len(stage2b_trace) == 20
+    assert all(row["phase"] == "stage2b_fullbatch_old_adaptation" for row in stage2b_trace)
+    assert stage2b_trace[-1]["optimizer_step"] == 20
+    assert len(result.training_trace) == 30
+    assert result.training_trace[20]["phase"] == "stage2c_all_support_new_weight_only"
 
 
 def test_arm_a_is_centroid_only_after_20_stage2b_steps() -> None:

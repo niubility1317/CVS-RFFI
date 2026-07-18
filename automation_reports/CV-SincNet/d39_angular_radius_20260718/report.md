@@ -5,7 +5,7 @@
 - 实验ID：`d39_angular_radius_20260718`
 - 时间：2026-07-18（Asia/Hong_Kong）
 - 操作者：Codex`/root`
-- 当前状态：`DESIGN_LOCKED_IMPLEMENTATION_PENDING`
+- 当前状态：`LOCAL_IMPLEMENTATION_VERIFIED_REAL_SCREEN_PENDING`
 - development cell：receiver`20-1`、seed`713101`、K10/new5、3个LEO弱场景；只使用已验证D18固定received-IQ support，query保持sealed。
 - 目标：在不改变D38-B训练轨迹、int8原型身份和30step预算的前提下，用同一类无关公式校准全部old/new类的角距离尺度，同时改善旧→新侵入和new-new通用floor。
 
@@ -121,3 +121,37 @@ D39 int8只有全部满足以下条件才可锁定development query：
 |N607|只有本地K10 support-held硬门通过后才preflight、最小SCP并运行；D39负结果不在N607重复|
 
 当前goal保持active。D39 development screen不是独立确认，完整目标仍要求5receivers×至少5seeds×3scenes×K1/5/10/20×new2/5/10/20及全部性能、floor和资源门。
+
+## 8.本地实现、审查与版本前验证
+
+### 8.1实现范围
+
+本地实现没有增加第二个机制或超参数扫描。D39核心复用D38-B的20+10步轨迹，通过D38公开的`before_stage2c_hook`在20条Stage2-B trace闭合后、Stage2-C开始前实际物化old`m2/r0/radius`；新类radius仍在final int8新头生成后append。formal state强制`base_state.arm=B`，并保存D38 residual-int8 base、FP16 radius、FP16`r0`和schema元数据。
+
+Runner增加`d39_v1`固定六候选、candidate lock v17、90行矩阵、真实radius来源token SHA、跨候选held physical-token SHA、显式D39-int8/FP32预测与radius/r0/trace匹配、严格selector、selected-only full-K10状态/资源审计和D39专属artifact schema。只有D39-int8可晋级；任一门失败回退identity。
+
+### 8.2独立审查闭环
+
+第一次独立只读审查发现4项问题：old radius实际物化晚于Stage2-C、selector未消费显式D39-FP32候选、formal state未强制B-arm、矩阵未验证matched held物理身份。四项均在实现层修正，没有修改预注册公式或降低晋级门。第二次独立只读复审结果为`阻断=0`、`中等问题=0`，并确认full-K10 gate未使用同support拟合性能替代outer-held资格。
+
+### 8.3验证命令与结果
+
+```powershell
+python -m py_compile code\cvsrffi\stage2_d38_strong_b3_quantized.py code\cvsrffi\stage2_d39_angular_radius.py code\scripts\run_d25_support_only_concat.py
+python -m pytest -q tests\test_stage2_d38_strong_b3_quantized.py tests\test_stage2_d39_angular_radius.py tests\test_run_d39_angular_radius_integration.py
+python -m pytest -q tests\test_run_d38_strong_b3_quantized_integration.py tests\test_run_d37_b3_preserving_int8_integration.py
+git diff --check -- code/cvsrffi/stage2_d38_strong_b3_quantized.py code/scripts/run_d25_support_only_concat.py tests/test_stage2_d38_strong_b3_quantized.py
+```
+
+结果为D39相关53/53通过，D38/D37共享Runner回归17/17通过，总计70/70；`py_compile`与`git diff --check`通过。测试覆盖K1/5/10/20、new2/5/10/20、公式golden、old lifecycle、B-arm拒绝、row-local推理、真实radius来源、90行候选身份、9类selector反例、3类full gate反例和selected-only full-K10。
+
+|文件|SHA256|
+|---|---|
+|`code/cvsrffi/stage2_d38_strong_b3_quantized.py`|`89ca681356e13de62414bde7681280c5e63b4267e027f6df3ee2a762775309bd`|
+|`code/cvsrffi/stage2_d39_angular_radius.py`|`78018594de21ebdcb75822d4d14164ab4bbd4e41b231fdb71c0155854dbcd86c`|
+|`code/scripts/run_d25_support_only_concat.py`|`51f08dc7e7ac95dcd3dd8813c4da54147a19ee2854dfcc2ae6758f523af68e22`|
+|`tests/test_stage2_d38_strong_b3_quantized.py`|`de141ea3e899182904f5eee58cee8db81c78007f8e1d5f10cd11e8f38fe1d958`|
+|`tests/test_stage2_d39_angular_radius.py`|`5b1dc9f98d4c5cd5a122b30d9f2d52a9a229845ebccdabf8f9075e9b3c6e1559`|
+|`tests/test_run_d39_angular_radius_integration.py`|`4bc117736b84bf77cea25ecad28e53c2543054da411182f0b64009210b48244b`|
+
+`E:\type10-7`根目录不是Git仓库；本报告的Git承载面为`E:\type10-7\github_publish\CVS-RFFI-repo`，根目录同名报告仅作非版本化运行镜像。此处只证明技术实现与fail-closed审计通过，不证明D39性能可晋级。真实K10/new5 support-only 90行仍未运行，query保持sealed，N607未访问。
