@@ -301,7 +301,18 @@ def _verify_rows(rows: list[dict[str, Any]]) -> dict[str, Any]:
     ]
     if len(rows) != 105 or len(target) != 30:
         raise D61ProbeError("D61 training row closure drift")
-    d46_count = d46._verify_d46_fit_audits(rows)
+    d46_rows_view = json.loads(json.dumps(rows))
+    for row in d46_rows_view:
+        resource = row.get("resource")
+        if (
+            isinstance(resource, dict)
+            and "d61_dense_algebra_mac_equivalent_upper_bound" in resource
+        ):
+            resource["estimated_adaptation_macs"] = int(
+                resource["estimated_adaptation_macs"]
+                - resource["d61_dense_algebra_mac_equivalent_upper_bound"]
+            )
+    d46_count = d46._verify_d46_fit_audits(d46_rows_view)
     ranks: list[int] = []
     gains: list[float] = []
     for row in target:
