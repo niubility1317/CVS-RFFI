@@ -3,7 +3,7 @@
 ## 登记
 
 - 实验ID：`d33_spherical_fisher_20260718`；operator：Codex；日期：2026-07-18。
-- 状态：`LOCAL_VERIFIED_PRELAUNCH`。
+- 状态：`V1_PERFORMANCE_COMPLETE_RESOURCE_AUDIT_REPAIR_V2_REQUIRED`。
 - 前置回顾：D30-D32三轮回顾已完成并提交。D30静态envelope旁路、D31事后bias存在训练/部署面不一致、D32约-9内生cap在fit support安全但held泛化失败；D33停止继续扫描bias/CVaR/DALI权重。
 - 目标：用old/new统一球面centroid、robust radius和`-d/r-log(r)`评分消除跨组标尺失配，同时以对角Fisher近闭式Stage2-B降低适配MAC；域适应与新类注册保持同run、同等优先。
 - 比较：Z0、历史B3诊断、C0、D33-A/B/C、D33-B3-FAST；7候选×3场景×5折=105行。
@@ -59,6 +59,53 @@ K=1不存在独立类内半径证据，所有类统一`r=1`，评分严格退化
 
 仅同步runner、D33 spherical core、B3 Fisher core和launcher到对应远端`code/scripts`/`code/cvsrffi`路径。远端SHA依次为`930a565a...5b50a`、`af4da352...50423f`、`2cc05c0f...5d8ef`、`e5f30c76...ed536`；远端`py_compile`、launcher语法、唯一输出不存在检查通过，diag仍为`14ec9193...1ca`。同步与核验结束后本地SSH/TCP22连接均为0。
 
-## 完成后回填
+## N607 v1完成结果
 
-待回填完整105行训练日志、逐候选/场景/类结果、独立held矩阵、support合法清单与哈希、资源审计、selection、RECEIPT、远端命令/PID/GPU、artifact SHA、异常与下一轮判断。
+- 启动：GPU0、PID`3759170`；远端输出`runs/d33_spherical_fisher_20260718/output/support_screen_v1`，完成105/105行，用时20.464s。
+- 本地证据镜像：`E:\type10-7\automation_reports\CV-SincNet\d33_spherical_fisher_20260718\remote_output_v1`。`training_log.jsonl`逐行及嵌套trace均为有限数；无OOM、Killed、Traceback或异常终止。
+- RECEIPT状态为`DEVELOPMENT_SUPPORT_ONLY_COMPLETE`；selection选择C0 fallback，`selected_positive_route=false`。本轮未打开query，不能形成正式性能声明。
+
+|候选|注册前旧类总体|注册后旧类总体|seen-new总体|held均值H|遗忘|
+|---|---:|---:|---:|---:|---:|
+|Z0|71.11%|48.33%|52.67%|48.97%|22.78pp|
+|B3历史诊断|86.67%|73.33%|73.33%|72.65%|13.33pp|
+|C0|71.67%|50.56%|54.00%|50.35%|21.11pp|
+|D33-A|85.56%|71.67%|63.33%|66.15%|13.89pp|
+|D33-B|85.56%|71.11%|63.33%|65.74%|14.44pp|
+|D33-C|85.56%|71.11%|63.33%|65.74%|14.44pp|
+|D33-B3-FAST|82.22%|70.00%|59.33%|62.19%|12.22pp|
+
+D33-A逐场景为clear`73.33/70.00/H71.24/F15.00`、low-elevation`65.00/64.00/H63.00/F13.33`、rain`76.67/56.00/H64.21/F13.33`；顺序均为注册后old/new/H/forgetting，单位为百分比或pp。B/C策略在15/15折给出同一选择与同一结果，说明选择目标在当前球面几何上坍缩。FAST虽把遗忘降至12.22pp，但相对B3的H下降约10.46pp。
+
+|TX类|B3旧类|D33-A旧类|
+|---|---:|---:|
+|20-15|90.00%|93.33%|
+|8-20|90.00%|90.00%|
+|14-10|70.00%|60.00%|
+|14-7|66.67%|63.33%|
+|6-15|60.00%|63.33%|
+|20-19|63.33%|60.00%|
+
+|seen-new类handle|B3|D33-A|
+|---|---:|---:|
+|09f8|40.00%|16.67%|
+|1c2a|86.67%|90.00%|
+|b8fb|76.67%|80.00%|
+|d3af|86.67%|83.33%|
+|f608|76.67%|46.67%|
+
+所有D33候选最差单fold逐类floor均为0；D33-A的pooled场景old/new floor为clear`50/20`、low-elevation`50/0`、rain`60/30`。因此当前路线未满足support开发门禁，更不能进入正式5 receiver×5 seed确认矩阵。
+
+训练过程本身稳定：A/B/C各15/15折loss单调下降，均值`1.02394→0.12399`，fit support总体/floor均达到100%；FAST 15/15折选择完整Fisher强度1.0。失败发生在Stage2-C：对称球面重建后，A/B/C/FAST的旧类support non-degradation均为0/15折，full-K10三场景也全部为false；旧Stage2-B参数保持冻结，但最终old score columns改变。结论是“全类对称球面重注册+单半径评分”破坏旧类决策面，而非梯度优化崩溃。后续保留FAST Fisher，停止晋升当前球面Stage2-C，转向冻结旧类决策面和碰撞局部修正。
+
+## v1资源审计缺陷与v2修复
+
+v1 artifact把query MAC记录为3,212，但该公式仅计11类×`(288+4)`，漏掉每个query的288维对角变换，因此v1性能、protocol和artifact哈希有效，资源数字不可作为最终证据。v1其余实测资源仅用于诊断：A/B/C为15步、2,016 peak trainable、约121–122ms support适配；FAST为0步、约103ms；CPU FP32 batch1 head约0.095–0.100ms。`head_peak_cuda_memory_bytes=0`只表示numpy head不占CUDA显存，不代表完整主干VRAM为0。
+
+v2直接用`(u·q_int8)×1/||q_int8||`评分，不再逐query构造FP32反量化中心矩阵；每类额外密封一个FP32逆范数。统一资源公式改为：
+
+`MAC_query=288+C×(288+1+4)=288+293C`。
+
+其中计入对角变换、int8 centroid点积、每类逆范数缩放和radius score；11类为3,511MAC，相对同注册类数identity-only单qKNN的17,600MAC降低80.05%。K10 6旧+5新状态由4,408B改为4,452B；6旧+20新状态为8,952B，active参数7,854，Stage2-C适配MAC为2,572,128。该修改不改变support、特征、半径、标签权限或逐样本决策协议；直接int8评分与原临时反量化面在本地随机回归中的最大FP32差约`5.7e-6`。
+
+v2本地19项D33/Fisher/runner集成测试、`py_compile`、launcher `bash -n`与`git diff --check`已通过。下一步只同步修订后的D33 core和v2 launcher，重跑唯一`support_screen_v2`，并验证逐行预测/指标与v1一致后关闭资源证据。

@@ -140,6 +140,16 @@ def _dequantized_unit_centroids(
     return _normalize(restored)
 
 
+def _int8_inverse_norms(quantized: np.ndarray) -> np.ndarray:
+    """Return one FP32 inverse norm per int8 centroid for direct scoring."""
+
+    q_fp32 = np.asarray(quantized, dtype=np.float32)
+    norms = np.linalg.norm(q_fp32, axis=1).astype(np.float32)
+    if bool(np.any(norms <= np.float32(1.0e-12))):
+        raise D33SphericalRegistrationError("zero-norm int8 centroid")
+    return np.asarray(np.float32(1.0) / norms, dtype=np.float32)
+
+
 def _radius_scores(distances: np.ndarray, radii: np.ndarray) -> np.ndarray:
     safe = np.maximum(np.asarray(radii, dtype=np.float32), MIN_RADIUS)
     return np.asarray(
@@ -281,6 +291,7 @@ class D33SphericalRegistrationState:
     log_diag: np.ndarray
     centroids_qint8: np.ndarray
     centroid_scales: np.ndarray
+    centroid_inverse_norms: np.ndarray
     radii: np.ndarray
     support_count_by_class: np.ndarray
     selected_quantile: float
@@ -295,6 +306,7 @@ class D33SphericalRegistrationState:
         log_diag = np.asarray(self.log_diag)
         centroids_qint8 = np.asarray(self.centroids_qint8)
         centroid_scales = np.asarray(self.centroid_scales)
+        centroid_inverse_norms = np.asarray(self.centroid_inverse_norms)
         radii = np.asarray(self.radii)
         counts = np.asarray(self.support_count_by_class)
         if (
@@ -308,6 +320,8 @@ class D33SphericalRegistrationState:
             or centroids_qint8.shape != (class_count, FEATURE_DIM)
             or centroid_scales.dtype != np.float32
             or centroid_scales.shape != (class_count,)
+            or centroid_inverse_norms.dtype != np.float32
+            or centroid_inverse_norms.shape != (class_count,)
             or radii.dtype != np.float32
             or radii.shape != (class_count,)
             or counts.dtype != np.uint16
@@ -317,6 +331,8 @@ class D33SphericalRegistrationState:
             or not np.isfinite(log_diag).all()
             or not np.isfinite(centroid_scales).all()
             or bool(np.any(centroid_scales <= 0.0))
+            or not np.isfinite(centroid_inverse_norms).all()
+            or bool(np.any(centroid_inverse_norms <= 0.0))
             or not np.isfinite(radii).all()
             or self.selection_policy not in SELECTION_POLICIES
             or int(self.optimizer_steps) != 0
@@ -330,6 +346,11 @@ class D33SphericalRegistrationState:
         object.__setattr__(
             self, "centroid_scales", _readonly(centroid_scales, np.float32)
         )
+        object.__setattr__(
+            self,
+            "centroid_inverse_norms",
+            _readonly(centroid_inverse_norms, np.float32),
+        )
         object.__setattr__(self, "radii", _readonly(radii, np.float32))
         object.__setattr__(
             self, "support_count_by_class", _readonly(counts, np.uint16)
@@ -341,14 +362,17 @@ class D33SphericalRegistrationState:
             self.log_diag.size
             + self.centroids_qint8.size
             + self.centroid_scales.size
+            + self.centroid_inverse_norms.size
             + self.radii.size
         )
 
     def dequantized_centroids(self) -> np.ndarray:
         """Return temporary FP32 unit centroids used by the deployed scorer."""
 
-        return _dequantized_unit_centroids(
-            self.centroids_qint8, self.centroid_scales
+        return np.asarray(
+            np.asarray(self.centroids_qint8, dtype=np.float32)
+            * self.centroid_inverse_norms[:, None],
+            dtype=np.float32,
         )
 
 
@@ -520,6 +544,7 @@ def fit_d33_spherical_registration(
 
     centroids_fp32 = _centroids(rows, targets, class_count)
     centroids_qint8, centroid_scales = _quantize_centroids(centroids_fp32)
+    centroid_inverse_norms = _int8_inverse_norms(centroids_qint8)
     del centroids_fp32
     counts = np.full(class_count, old_k, dtype=np.uint16)
     state = D33SphericalRegistrationState(
@@ -529,6 +554,7 @@ def fit_d33_spherical_registration(
         log_diag=log_diag,
         centroids_qint8=centroids_qint8,
         centroid_scales=centroid_scales,
+        centroid_inverse_norms=centroid_inverse_norms,
         radii=np.asarray(radii, dtype=np.float32),
         support_count_by_class=counts,
         selected_quantile=selected_quantile,
@@ -544,14 +570,16 @@ def fit_d33_spherical_registration(
         0 if old_k == 1 else len(rows) * class_count * FEATURE_DIM
     )
     final_centroid_macs = 2 * len(rows) * FEATURE_DIM
+    centroid_inverse_norm_macs = class_count * FEATURE_DIM
     estimated_adaptation_macs = int(
         transform_macs
         + loso_geometry_macs
         + selection_macs
         + final_centroid_macs
+        + centroid_inverse_norm_macs
     )
     audit: dict[str, Any] = {
-        "schema": "cvs.phase2.d33_spherical_registration_resource.v1",
+        "schema": "cvs.phase2.d33_spherical_registration_resource.v2",
         "adaptation_mode": "EVAL_ONLY_CLOSED_FORM_ADAPTATION",
         "optimizer_steps": 0,
         "active_parameters": state.active_parameters,
@@ -561,10 +589,16 @@ def fit_d33_spherical_registration(
             state.log_diag.nbytes
             + state.centroids_qint8.nbytes
             + state.centroid_scales.nbytes
+            + state.centroid_inverse_norms.nbytes
             + state.radii.nbytes
         ),
         "estimated_adaptation_macs": estimated_adaptation_macs,
-        "estimated_macs_per_query": int(class_count * (FEATURE_DIM + 4)),
+        "estimated_macs_per_query": int(
+            FEATURE_DIM + class_count * (FEATURE_DIM + 5)
+        ),
+        "query_mac_accounting": (
+            "diagonal_transform_plus_int8_dot_plus_inverse_norm_scale_plus_radius_score"
+        ),
         "dense_query_graph_bytes": 0,
         "old_new_shared_transform": True,
         "old_new_shared_centroid_rule": True,
@@ -572,6 +606,9 @@ def fit_d33_spherical_registration(
         "resident_fp32_centroid_count": 0,
         "centroid_int8_bytes": int(state.centroids_qint8.nbytes),
         "centroid_scale_fp32_bytes": int(state.centroid_scales.nbytes),
+        "centroid_inverse_norm_fp32_bytes": int(
+            state.centroid_inverse_norms.nbytes
+        ),
         "old_new_shared_radius_rule": True,
         "old_new_shared_score_rule": True,
         "train_deploy_score_surface_identical": True,
@@ -605,10 +642,14 @@ def score_d33_spherical_registration(
 
     rows = _validate_rows(features, name="D33 scoring features")
     transformed = _normalize(rows * np.exp(state.log_diag)[None, :])
+    similarities = np.asarray(
+        transformed @ state.centroids_qint8.T, dtype=np.float32
+    ) * state.centroid_inverse_norms[None, :]
+    distances = np.asarray(
+        np.clip(np.float32(1.0) - similarities, 0.0, 2.0), dtype=np.float32
+    )
     return _readonly(
-        _radius_scores(
-            _angular_distance(transformed, state.dequantized_centroids()), state.radii
-        ),
+        _radius_scores(distances, state.radii),
         np.float32,
     )
 

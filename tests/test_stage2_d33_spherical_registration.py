@@ -61,8 +61,10 @@ def test_all_required_new_class_scales_are_closed_form_and_under_50k(new_count: 
     assert result.state.centroids_qint8.dtype == np.int8
     assert result.state.centroid_scales.shape == (class_count,)
     assert result.state.centroid_scales.dtype == np.float32
+    assert result.state.centroid_inverse_norms.shape == (class_count,)
+    assert result.state.centroid_inverse_norms.dtype == np.float32
     assert result.state.radii.shape == (class_count,)
-    assert result.state.active_parameters == 288 + class_count * 288 + 2 * class_count
+    assert result.state.active_parameters == 288 + class_count * 288 + 3 * class_count
     assert result.state.active_parameters < MAX_ACTIVE_PARAMETERS
     assert result.state.optimizer_steps == 0
     assert len(result.selection_trace) == 3 * 4 * 3
@@ -81,7 +83,10 @@ def test_all_required_new_class_scales_are_closed_form_and_under_50k(new_count: 
     )
     assert result.resource_audit["resident_fp32_centroid_count"] == 0
     assert result.resource_audit["persistent_state_bytes"] == (
-        288 * 4 + class_count * 288 + class_count * 4 + class_count * 4
+        288 * 4 + class_count * 288 + 3 * class_count * 4
+    )
+    assert result.resource_audit["estimated_macs_per_query"] == (
+        288 + class_count * (288 + 5)
     )
 
 
@@ -107,6 +112,7 @@ def test_three_selection_policies_are_deterministic_and_radius_capped(policy: st
     assert not first.state.radii.flags.writeable
     assert not first.state.centroids_qint8.flags.writeable
     assert not first.state.centroid_scales.flags.writeable
+    assert not first.state.centroid_inverse_norms.flags.writeable
 
 
 def test_k1_uses_uniform_radius_and_is_exactly_constant_shifted_cosine() -> None:
@@ -144,9 +150,19 @@ def test_all_classes_use_same_transformed_spherical_centroid_rule() -> None:
     ).astype(np.int8)
     restored = quantized.astype(np.float32) * scales[:, None]
     restored /= np.linalg.norm(restored, axis=1, keepdims=True)
+    inverse_norms = 1.0 / np.linalg.norm(
+        quantized.astype(np.float32), axis=1
+    ).astype(np.float32)
     np.testing.assert_array_equal(result.state.centroids_qint8, quantized)
     np.testing.assert_allclose(result.state.centroid_scales, scales, atol=2.0e-10, rtol=0.0)
+    np.testing.assert_allclose(
+        result.state.centroid_inverse_norms, inverse_norms, atol=2.0e-10, rtol=0.0
+    )
     np.testing.assert_allclose(result.state.dequantized_centroids(), restored, atol=1.0e-7)
+    direct_cosine = (transformed @ quantized.T) * inverse_norms[None, :]
+    np.testing.assert_allclose(
+        direct_cosine, transformed @ restored.T, atol=2.0e-6, rtol=0.0
+    )
     distances = np.clip(1.0 - transformed @ restored.T, 0.0, 2.0)
     manual_scores = (
         -distances / result.state.radii[None, :]
@@ -155,7 +171,7 @@ def test_all_classes_use_same_transformed_spherical_centroid_rule() -> None:
     np.testing.assert_allclose(
         score_d33_spherical_registration(result.state, rows),
         manual_scores,
-        atol=2.0e-6,
+        atol=1.0e-5,
     )
 
 
