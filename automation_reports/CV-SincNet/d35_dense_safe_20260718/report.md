@@ -42,3 +42,9 @@ D35的所有新类对每个旧winner始终有有限score；winner只索引一个
 
 - 最小同步仅3个文件：`code/cvsrffi/stage2_d35_dense_safe_registration.py`、`code/scripts/run_d25_support_only_concat.py`、`code/scripts/launch_d35_dense_safe_20260718.sh`；不上传本地有他人改动的`stage2_diag_cosine_exploration.py`，远端必须继续核验固定SHA`14ec9193...1ca`。
 - 计划cwd`/home/szu2070436088/2510044040/CV-SincNet`；Python`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`；命令`D35_GPU=0 bash code/scripts/launch_d35_dense_safe_20260718.sh`；日志`logs/d35_dense_safe_20260718/support_screen_v1.log`。
+
+## N607启动前闭环
+
+- 09:30 CST直接preflight与live inventory通过：8张RTX 3090均0%/10MiB，训练进程0；目标输出不存在；`/home`可用7.6TB；SSH/TCP22均已退出。
+- 只同步core、runner、launcher到约定同路径。远端实算SHA与本地完全一致：runner`063dfcf6...f9c13`、core`6a96b664...62c0c`、launcher`f2546a62...ac1b`；未同步diag仍为固定`14ec9193...1ca`，D33/Fisher依赖也闭合。
+- 远端launcher`bash -n`、core/runner`py_compile`通过，唯一输出仍不存在。GPU0允许新增本任务1个进程；启动后回填PID、运行状态和最终artifact。
