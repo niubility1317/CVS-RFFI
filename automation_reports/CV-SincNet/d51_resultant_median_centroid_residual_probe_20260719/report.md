@@ -53,3 +53,37 @@ D51复用D45的36次LDA、20 epoch/20 step和一个query state；新增mean/medi
 D51以wrapper形式先完成D45 fit，再从传入的正式support transformed rows/targets重算mean、coordinate median、resultant、RMS和coefficient correction；audit持久化support、base state、全部中间几何和实际FP32 state。末端verifier从持久化support独立复算，并临时还原D45 audit调用既有D45 verifier，形成新增几何＋继承分区/权重/资源双层闭包。
 
 本地验证：D51定向`9 passed`；D45＋D51联合`20 passed`；D42–D51全链`161 passed`；`py_compile`通过且退出码均0。代码复核P0=0、P1=0：K1/K2 correction严格为0；rank置换不变、class置换等变；非unit-sphere、unequal K、非有限/退化norm/RMS均fail-close；K8额外数值上界`831,296`MAC-equivalent、coordinate-median比较上界`117,504`，不新增fit/step/state。outer尚未运行。
+
+## 8.执行锁与exact command
+
+- 实现提交：`a0bbb75cbe0f6132e808fc7600816c8b4d0ff75b`；clean detached worktree`E:\type10-7\code\snapshots\d51wt`，状态仅`## HEAD (no branch)`；探针SHA256`bd35a3fa4f2614b47c4afda08fe8b90e8dcb1a768d1858bd782021a9c0d2de80`。
+- 历史runtime`E:\type10-7\code\snapshots\d41wt`只读bootstrap source closure通过；六个输入seal/envelope/manifest/binding继续使用已核验SHA`53ace286…d9f75`、`c70aedf3…b50ff`、`31a2ad99…ceb0e`、`a2483d6e…be76`、`15b5e144…629c`、`bb89a1db…c901f`。
+- 输出`E:\type10-7\automation_reports\CV-SincNet\d51_resultant_median_centroid_residual_probe_20260719\resultant_median_centroid_residual`启动前不存在。本地串行`device=auto`，不访问N607、不运行125。
+
+```powershell
+& 'C:\Users\lh594\.conda\envs\ssr-gpu\python.exe' `
+  'E:\type10-7\code\snapshots\d51wt\code\scripts\probe_d51_resultant_median_centroid_residual.py' `
+  --d51-arm resultant_median_centroid_residual `
+  --runtime-root 'E:\type10-7\code\snapshots\d41wt' `
+  --probe-root 'E:\type10-7\code\snapshots\d51wt' `
+  --before-root 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\phase2_capsule_k10_new5\predictor\before\enrollment_only' `
+  --before-seal 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\phase2_capsule_k10_new5\seals\before_enrollment.seal.json' `
+  --before-seal-sha256 53ace2863c9da6c2f6cc855d602c99f581df6de3d30a9a3ecb89eb6b6f0d9f75 `
+  --before-formal-policy 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\formal_execution_policy.json' `
+  --before-formal-policy-authorization 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\runtime_authorization_k10_new5\before_formal_policy_authorization.v2.json' `
+  --before-signed-policy-authorization-envelope 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\runtime_authorization_k10_new5\before_signed_policy_authorization_envelope.v2.json' `
+  --before-signed-policy-authorization-envelope-sha256 31a2ad9918f061b25d5a7ed0cc135df70ae02460c094b2f396bf314817bceb0e `
+  --after-root 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\phase2_capsule_k10_new5\predictor\after\enrollment_only' `
+  --after-seal 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\phase2_capsule_k10_new5\seals\after_enrollment.seal.json' `
+  --after-seal-sha256 c70aedf3a8f059e756806201758c1933a2f3e1ba4df415e69a1c776b1a2b50ff `
+  --after-formal-policy 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\formal_execution_policy.json' `
+  --after-formal-policy-authorization 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\runtime_authorization_k10_new5\after_formal_policy_authorization.v2.json' `
+  --after-signed-policy-authorization-envelope 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\runtime_authorization_k10_new5\after_signed_policy_authorization_envelope.v2.json' `
+  --after-signed-policy-authorization-envelope-sha256 a2483d6e9c9c362d89397029ff1e43f48358be3bdb3a05d717ee112b70a0be76 `
+  --component-dir 'E:\type10-7\automation_reports\CV-SincNet\d22_int8_anchor_lifecycle_20260717\input\int8_component' `
+  --component-manifest-sha256 15b5e144f9af3989421d8e925c17758479c327be47e79222f6363dc63994629c `
+  --class-binding 'E:\type10-7\github_publish\CVS-RFFI-repo\analysis\d19_adv3b02_class_binding_20260717.json' `
+  --class-binding-sha256 bb89a1dbb831acb374fccfc596ae98b660b496b449bdca577dabb962121c901f `
+  --output 'E:\type10-7\automation_reports\CV-SincNet\d51_resultant_median_centroid_residual_probe_20260719\resultant_median_centroid_residual' `
+  --device auto --mode development_select_unverified_component --candidate-set d42_v1
+```
