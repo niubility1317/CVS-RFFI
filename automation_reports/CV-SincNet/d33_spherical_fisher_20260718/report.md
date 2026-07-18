@@ -3,7 +3,7 @@
 ## 登记
 
 - 实验ID：`d33_spherical_fisher_20260718`；operator：Codex；日期：2026-07-18。
-- 状态：`V1_PERFORMANCE_COMPLETE_RESOURCE_AUDIT_REPAIR_V2_REQUIRED`。
+- 状态：`D33_COMPLETE_NEGATIVE_ROUTE_RESOURCE_EVIDENCE_CLOSED`。
 - 前置回顾：D30-D32三轮回顾已完成并提交。D30静态envelope旁路、D31事后bias存在训练/部署面不一致、D32约-9内生cap在fit support安全但held泛化失败；D33停止继续扫描bias/CVaR/DALI权重。
 - 目标：用old/new统一球面centroid、robust radius和`-d/r-log(r)`评分消除跨组标尺失配，同时以对角Fisher近闭式Stage2-B降低适配MAC；域适应与新类注册保持同run、同等优先。
 - 比较：Z0、历史B3诊断、C0、D33-A/B/C、D33-B3-FAST；7候选×3场景×5折=105行。
@@ -116,3 +116,20 @@ v2本地19项D33/Fisher/runner集成测试、`py_compile`、launcher `bash -n`�
 - `code/scripts/launch_d33_spherical_fisher_20260718.sh`→`/home/szu2070436088/2510044040/CV-SincNet/code/scripts/launch_d33_spherical_fisher_20260718.sh`
 
 runner、Fisher及全部旧依赖保持已核验SHA，不同步；diag必须继续保持`14ec9193...1ca`。远端启动命令锁为`D33_GPU=0 bash code/scripts/launch_d33_spherical_fisher_20260718.sh`，输出与日志分别为`support_screen_v2`和`support_screen_v2.log`。
+
+## N607 v2完成与最终判定
+
+- GPU0、PID`3766114`；18.246s完成105/105行。远端输出`runs/d33_spherical_fisher_20260718/output/support_screen_v2`，本地镜像`E:\type10-7\automation_reports\CV-SincNet\d33_spherical_fisher_20260718\remote_output_v2`。
+- v1/v2按candidate、scenario、fold、held ranks、注册前/后逐类指标、H、forgetting、joint floor及全部claim字段比较，105/105行完全一致；v2优化未改变任何实验判断。
+- RECEIPT仍为`DEVELOPMENT_SUPPORT_ONLY_COMPLETE`，selection仍为`D25-C0-DIM-CONCAT`且`selected_positive_route=false`，query未打开。v2所有JSON递归有限，无NaN/Inf；无OOM、Killed、Traceback。
+- artifact SHA闭合：training`86d1c333...d4549`、selection`9d336246...d6ad`、resource`8d87816b...62af`、support`4355acfd...40c4`、geometry`0302185b...9a98`；均与RECEIPT一致。
+- support仍为3场景×110=330个唯一物理IQ观测，每场景6旧×K10+5新×K10；每样本multiplicity/view均为1，新增overlay/物理样本/derived row均为0，场景间physical ID、parent IQ SHA和overlay token交集均为0。query rows/labels均为0，clean/source权限全false，逐样本all-registered、无角色Oracle、真实batch类数、quota或global assignment。
+
+|路线|优化步|peak trainable|适配MAC|MAC/query|常驻状态|batch1 mean/P95|
+|---|---:|---:|---:|---:|---:|---:|
+|D33-A/B/C|15|2,016|5,996,808|3,511|4,452B|0.0706–0.0719/0.0764–0.0781ms|
+|D33-B3-FAST|0|0|1,419,336|3,511|4,452B|0.0700–0.0701/0.0758–0.0765ms|
+
+四个D33候选的v2 batch1 mean均值为0.07070ms，相对v1临时反量化实现的0.09737ms下降27.39%；P95均值由0.11097ms降至0.07681ms，下降30.79%。相对17,600MAC/query的K10 identity-only单qKNN，D33 head为19.95%，即MAC下降80.05%。这是post-backbone numpy CPU FP32 head口径；`head_peak_cuda_memory_bytes=0`不外推为端到端模型显存。
+
+最终机制判定：D33作为资源工程闭环成功，但作为性能路线失败。保留`D33-B3-FAST`的闭式Fisher Stage2-B组件，拒绝“旧新类完全对称球面重注册+单半径LOSO”Stage2-C。下一轮必须把旧类决策面冻结为bitwise不变，只对support识别出的old-new碰撞对增加局部有限分数，并把旧类non-degradation作为候选生成与LOSO排序硬约束；同时单独提升注册前旧头，因为FAST当前注册前旧类82.22%本身不足92%目标。
