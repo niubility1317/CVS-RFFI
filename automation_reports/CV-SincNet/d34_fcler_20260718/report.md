@@ -55,6 +55,9 @@ D34成功也只解决注册抗遗忘；D33-FAST注册前旧类held总体82.22%�
 - launcher唯一输出为`support_screen_v1`；runner/core SHA已填入，测试明确禁止`__D34_*`占位符。
 - D34、D33、Fisher、D26和相邻compact路径77/77测试通过；`py_compile`、launcher`bash -n`和`git diff --check`通过。
 - 当前本地SHA：runner`e7eea547...d91a3`；D34 core`63d38fea...a4957`。`stage2_diag_cosine_exploration.py`保持用户其他改动，不纳入本轮编辑；远端仍必须核验固定SHA`14ec9193...1ca`。
+- 本轮runner与105行D34-v1执行仅覆盖K10；K1/K5在本报告中只是已锁定的设计边界，尚未纳入执行或性能证据。
+- 实现提交：`a1ac74b6 feat(stage2): add D34 collision-local registration`；该提交精确包含D34 core、共享runner增量、launcher、3个相关测试文件和本报告，不包含工作区其他历史修改。
+- 计划最小同步映射：`code/cvsrffi/stage2_d34_collision_local_registration.py`→`/home/szu2070436088/2510044040/CV-SincNet/code/cvsrffi/stage2_d34_collision_local_registration.py`；`code/scripts/run_d25_support_only_concat.py`→`/home/szu2070436088/2510044040/CV-SincNet/code/scripts/run_d25_support_only_concat.py`；`code/scripts/launch_d34_collision_local_20260718.sh`→`/home/szu2070436088/2510044040/CV-SincNet/code/scripts/launch_d34_collision_local_20260718.sh`。除这3个文件外不向N607同步任何工作区改动。
 
 ## 资源预审
 
