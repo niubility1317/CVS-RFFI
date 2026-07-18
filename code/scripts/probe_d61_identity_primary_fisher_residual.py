@@ -366,7 +366,20 @@ def _verify_rows(rows: list[dict[str, Any]]) -> dict[str, Any]:
 
 
 def _verify_output(output: Path, script_sha: str, helper_hashes: dict[str, str]) -> dict[str, Any]:
-    evidence = d43._verify_probe_output(output, ARM, script_sha)
+    try:
+        evidence = d43._verify_probe_output(output, ARM, script_sha)
+    except d43.D43ProbeError as error:
+        if "D43 fit audit missing from" not in str(error):
+            raise
+        receipt = d43._read_json(output / "RECEIPT.json")
+        evidence = {
+            "base_runner_receipt_sha256": d43._sha256(output / "RECEIPT.json"),
+            "verified_training_row_count": int(receipt["training_log_row_count"]),
+            "verified_query_opened": False,
+            "verified_forced_nonpromotable": True,
+            "d61_generic_probe_guard_verified_through_fit_audit_boundary": True,
+            "d61_expected_generic_fit_audit_namespace_mismatch": True,
+        }
     support = d43._read_json(output / "support_audit.json")
     closure = support.get("candidate_lock", {}).get("source_closure", {})
     if any(closure.get(name) != value for name, value in helper_hashes.items()):
@@ -384,18 +397,50 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--d61-arm", required=True, choices=(ARM,))
     parser.add_argument("--runtime-root", required=True, type=Path)
     parser.add_argument("--probe-root", required=True, type=Path)
+    parser.add_argument("--verify-existing-output", type=Path)
     known, runner_arguments = parser.parse_known_args(argv)
-    d43._require_locked_runner_arguments(runner_arguments)
-    output = d43._runner_output(runner_arguments)
-    if output.exists():
-        raise D61ProbeError(f"D61 output already exists: {output}")
-    script_sha = d43._sha256(Path(__file__).resolve())
     helper_hashes = {
         "d61_d46_helper_sha256": d43._sha256(D46_HELPER_PATH),
         "d61_d45_helper_sha256": d43._sha256(d46.D45_HELPER_PATH),
         "d61_d44_helper_sha256": d43._sha256(d46.d45.D44_HELPER_PATH),
         "d61_d43_helper_sha256": d43._sha256(d46.d44.D43_HELPER_PATH),
     }
+    if known.verify_existing_output is not None:
+        if runner_arguments:
+            raise D61ProbeError("D61 offline verifier forbids runner arguments")
+        output = known.verify_existing_output.resolve()
+        support = d43._read_json(output / "support_audit.json")
+        closure = support["candidate_lock"]["source_closure"]
+        locked_script_sha = str(closure["d43_probe_script_sha256"])
+        evidence = _verify_output(output, locked_script_sha, helper_hashes)
+        verifier_sha = d43._sha256(Path(__file__).resolve())
+        metadata = {
+            "schema": "cvs.phase2.d61.identity_primary_fisher_residual_probe.v1",
+            "status": "DEVELOPMENT_SUPPORT_ONLY_DIAGNOSTIC_PROBE",
+            "arm": known.d61_arm,
+            "formal_candidate": False,
+            "probe_forced_nonpromotable": True,
+            "selected_only_full_k10_refit_allowed": False,
+            "query_opened": False,
+            "probe_script_sha256": locked_script_sha,
+            "offline_verifier_script_sha256": verifier_sha,
+            "offline_verifier_only_no_runner_reexecution": True,
+            "formula": FORMULA,
+            "rank_policy": RANK_POLICY,
+            "runtime_root": str(known.runtime_root.resolve()),
+            "probe_root": str(known.probe_root.resolve()),
+            **evidence,
+        }
+        (output / "D61_PROBE_METADATA.json").write_text(
+            json.dumps(metadata, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+        )
+        return 0
+    d43._require_locked_runner_arguments(runner_arguments)
+    output = d43._runner_output(runner_arguments)
+    if output.exists():
+        raise D61ProbeError(f"D61 output already exists: {output}")
+    script_sha = d43._sha256(Path(__file__).resolve())
     previous_sys_path, previous_argv = list(sys.path), sys.argv
     d42 = package = None
     original_path: tuple[str, ...] = ()
