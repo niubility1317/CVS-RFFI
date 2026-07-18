@@ -2,7 +2,7 @@
 
 ## 1.状态与目标
 
-- 状态：`PREREGISTERED_PRE_IMPLEMENTATION`；operator Codex；当前不运行125。
+- 状态：`IMPLEMENTED_LOCAL_VALIDATED_PENDING_CLEAN_LOCK`；operator Codex；当前不运行125。
 - 固定development cell：receiver20-1、seed713101、K10/new5、3个LEO弱场景×5fold；复用`VALIDATED_ONCE p2_min_v1`，实际outer-fit K8。
 - 当前最强合法点仍为D46：before92.22%、after81.67%、new84.67%、H82.33%、forget10.56pp、min-after53.33%、min-new73.33%，不promotable。
 - D55—D57复盘已停止全部CE/离散混淆流截距修正。D58检验与这些路线正交的机制：用D46 support inner-held连续分数学习每个匿名类的一维one-vs-rest LDA仿射校准，同时改变该类系数尺度与截距。
@@ -53,3 +53,11 @@ D58复用D56的68次LDA fit和held score库存，不新增LDA fit、optimizer st
 2. 覆盖手算二类/三类、正负平移、公共正尺度、类/支持rank置换、非正分离、零方差、K1/K2、int8与D56/D46回归。
 3. `ssr-gpu`窄验证、精确Git提交、clean detached worktree锁定后，只运行一次105行development矩阵。
 4. 当前不访问N607；任何后续远端动作必须先执行规定preflight。
+
+## 7.本地实现与验证
+
+- 方法脚本：`code/scripts/probe_d58_ovr_score_lda_calibration.py`，工作树SHA256=`f971ab5acf48919d3d1d371ae0935cb1a54f0e012589f72b35bdd1bbb6c24240`。
+- 测试脚本：`tests/test_probe_d58_ovr_score_lda_calibration.py`，工作树SHA256=`7cf3762379a4f2473791fe936132a41e1af694414bc74b344e748119b4953336`。
+- `py_compile`通过；D58＋D56＋D46定向链33/33通过。
+- 已验证：闭式正负矩与正斜率、每类分数平移吸收、公共正尺度预测不变、类标签和support rank置换、非正分离整fit回退、K1/K2、坏score/weight闭锁、资源公式及D56/D46回归。
+- verifier从training log逐fit重算全部mu、variance、slope、intercept、held预测、actual W/b和资源，再把D58附加账本剥离后调用D56完整闭包；D58新增LDA fit和query state均为0。
