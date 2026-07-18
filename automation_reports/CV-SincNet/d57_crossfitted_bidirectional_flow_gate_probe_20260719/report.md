@@ -46,3 +46,39 @@ D57必须至少保持D46的before92.22%、after81.67%、new84.67%、H82.33%、fo
 - 安全闭包：每坐标分别验证positive不降与false-positive不增；联合交互不安全时清空全部mask并精确返回D46；K1/K2无条件精确返回D46。
 - 验证命令：`C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -m pytest -q tests\test_probe_d57_crossfitted_bidirectional_flow_gate.py tests\test_probe_d56_loo_confusion_flow_intercept.py tests\test_probe_d46_classwise_loo_reliability_fusion.py`。
 - 验证结果：31/31通过；覆盖安全坐标生效、联合交互原子回退、K1/K2回退、类置换等变、坏证据闭锁、D56/D46全回归链。
+
+## 7.执行锁
+
+- 实现提交：`05864827f5e9444ec89649d33f1abfa644934092`；clean detached worktree：`E:\type10-7\code\snapshots\d57wt`，执行前状态为`HEAD (no branch)`。
+- clean探针SHA256：`39efa88e4012bc742c972d19b1b714adc33632c661a9209ddc3c74d7d462d745`（Git checkout后的CRLF字节）；clean环境D57＋D56＋D46测试31/31通过。
+- runtime只读复用`E:\type10-7\code\snapshots\d41wt`；数据、seal、authorization envelope和int8组件均不重建、不修改。
+- 本地前台串行执行，Conda环境`ssr-gpu`，`--device auto`；不访问N607。launcher PID在启动时记录；Runner日志为输出目录下`training_log.jsonl`，预期还包括`metrics.jsonl`、`support_audit.json`、receipt和`D57_PROBE_METADATA.json`。
+- 输出`E:\type10-7\automation_reports\CV-SincNet\d57_crossfitted_bidirectional_flow_gate_probe_20260719\crossfitted_bidirectional_flow_gate`启动前必须不存在。只允许以下105行development命令执行一次：
+
+```powershell
+& 'C:\Users\lh594\.conda\envs\ssr-gpu\python.exe' `
+  'E:\type10-7\code\snapshots\d57wt\code\scripts\probe_d57_crossfitted_bidirectional_flow_gate.py' `
+  --d57-arm crossfitted_bidirectional_flow_gate `
+  --runtime-root 'E:\type10-7\code\snapshots\d41wt' `
+  --probe-root 'E:\type10-7\code\snapshots\d57wt' `
+  --before-root 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\phase2_capsule_k10_new5\predictor\before\enrollment_only' `
+  --before-seal 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\phase2_capsule_k10_new5\seals\before_enrollment.seal.json' `
+  --before-seal-sha256 53ace2863c9da6c2f6cc855d602c99f581df6de3d30a9a3ecb89eb6b6f0d9f75 `
+  --before-formal-policy 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\formal_execution_policy.json' `
+  --before-formal-policy-authorization 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\runtime_authorization_k10_new5\before_formal_policy_authorization.v2.json' `
+  --before-signed-policy-authorization-envelope 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\runtime_authorization_k10_new5\before_signed_policy_authorization_envelope.v2.json' `
+  --before-signed-policy-authorization-envelope-sha256 31a2ad9918f061b25d5a7ed0cc135df70ae02460c094b2f396bf314817bceb0e `
+  --after-root 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\phase2_capsule_k10_new5\predictor\after\enrollment_only' `
+  --after-seal 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\phase2_capsule_k10_new5\seals\after_enrollment.seal.json' `
+  --after-seal-sha256 c70aedf3a8f059e756806201758c1933a2f3e1ba4df415e69a1c776b1a2b50ff `
+  --after-formal-policy 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\formal_execution_policy.json' `
+  --after-formal-policy-authorization 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\runtime_authorization_k10_new5\after_formal_policy_authorization.v2.json' `
+  --after-signed-policy-authorization-envelope 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\runtime_authorization_k10_new5\after_signed_policy_authorization_envelope.v2.json' `
+  --after-signed-policy-authorization-envelope-sha256 a2483d6e9c9c362d89397029ff1e43f48358be3bdb3a05d717ee112b70a0be76 `
+  --component-dir 'E:\type10-7\automation_reports\CV-SincNet\d22_int8_anchor_lifecycle_20260717\input\int8_component' `
+  --component-manifest-sha256 15b5e144f9af3989421d8e925c17758479c327be47e79222f6363dc63994629c `
+  --class-binding 'E:\type10-7\code\snapshots\d57wt\analysis\d19_adv3b02_class_binding_20260717.json' `
+  --class-binding-sha256 bb89a1dbb831acb374fccfc596ae98b660b496b449bdca577dabb962121c901f `
+  --output 'E:\type10-7\automation_reports\CV-SincNet\d57_crossfitted_bidirectional_flow_gate_probe_20260719\crossfitted_bidirectional_flow_gate' `
+  --device auto --mode development_select_unverified_component --candidate-set d42_v1
+```
