@@ -95,3 +95,8 @@ D51以wrapper形式先完成D45 fit，再从传入的正式support transformed r
 修复只把feature dimension来源改为实际formal state的`len(state.log_diag_fp32)`并要求一维正长度；正式D42 state固定得到288。该修复不改变support、几何公式、系数、量化、候选、fold或任何性能路径。新增回归直接验证实际state取维和错误shape fail-close；成功复跑只允许写新目录`resultant_median_centroid_residual_retry1`。
 
 修复后D51＋D45联合`21 passed`，D42–D51全链`162 passed`，`py_compile`和`git diff --check`通过；代码复核确认修复不进入任何分数计算。
+
+## 10.retry1执行锁
+
+- 修复提交`f82cb192`；clean worktree`E:\type10-7\code\snapshots\d51retry1wt`，探针SHA256`12bce4b5a6380e78b4c8807a09db8329fe2e0efa30a6f309d9319d5b79fb7b34`。
+- retry1输出启动前不存在。第8节命令仅把`--probe-root`和探针路径切换到`d51retry1wt`，把`--output`切换到`resultant_median_centroid_residual_retry1`；其他输入、SHA、runtime、mode、candidate-set与device完全不变。
