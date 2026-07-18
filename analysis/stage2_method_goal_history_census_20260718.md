@@ -112,6 +112,6 @@ D19以后主报告：[D21](../automation_reports/CV-SincNet/d21_knn_prototype_li
 2. 当前最可信正信号是同一固定received IQ的规范化高维拼接和class-specific cosine head（B3），不是ground原型直接融合、半径评分或复杂hard gate。
 3. B3本身仍未解决Stage2-B/C：before-old86.67%、after-old73.33%、new73.33%，所以不能只继续修注册层。
 4. hard gate反复在“新类不可达”和“旧类侵入”两端摆动；support fit/LOO安全也不能代表held泛化。
-5. 持续floor类为旧类`14-7`、`20-19`、`6-15`，新类`09f8`、`f608`，后续必须显式优化和报告。
+5. 历史运行中出现过持续低准确率类别，但这些类ID只属于回顾性诊断证据。后续必须以覆盖全部注册类、对类标签置换保持同一形式的算法优化整体下尾，禁止围绕历史类ID建立专属规则或调参集合。
 6. ground int8适合做只读身份先验/正则/不确定度参考，不适合直接改写target原型。
 7. 拼接维度不是越多越好；必须做分块归一化、能量控制和matched ablation。D36连续margin方向可继续验证，但在有性能数据前只能算未验证设计。
