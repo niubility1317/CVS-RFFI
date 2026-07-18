@@ -5,7 +5,7 @@
 - 实验ID：`d38_strong_b3_quantized_20260718`
 - 时间：2026-07-18（Asia/Hong_Kong）
 - 操作者：Codex`/root`
-- 当前状态：`DESIGN_LOCKED_IMPLEMENTATION_PENDING`
+- 当前状态：`IMPLEMENTED_LOCAL_VERIFIED_REAL_SCREEN_PENDING`
 - 目标：修复D37的两个直接失败源——弱Fisher旧头和new-new排序错误——在同一合法K10 development cell上检验一个正式资源上限内、target-old/new均为两级residual-int8、逐样本面对全部注册类的轻型Stage2-B/C路线。
 - 主要比较：identity-only single-qKNN、ProtoNet CDA、exact legacy strong B3 FP32、D38-A int8、D38-B int8、D38-B FP32 matched ablation；direct ADV3B02另作相同old-held样本的0-support锚。
 
@@ -137,15 +137,27 @@ D38-B只有全部满足以下条件才可锁定development query：
 - 根目录`E:\type10-7`不是Git仓库。本报告镜像到根目录，Git权威副本位于本文件；开始D38设计时分支ahead origin 1605，其他大量修改/未跟踪文件均不属于D38，后续只暂存D38专属文件和共享runner最小差异。
 - N607：尚未触碰。先在`ssr-gpu`完成core/runner窄验证并提交Git；若需N607，按AGENTS.md先做direct preflight、占用审计、本地报告和最小SCP，短连接结束后核验无残留SSH/TCP22。
 
-## 9.实施与实验记录（待回填）
+## 9.实施与实验记录
 
 |项目|当前值|
 |---|---|
-|计划新增core|`code/cvsrffi/stage2_d38_strong_b3_quantized.py`|
-|计划runner接线|`code/scripts/run_d25_support_only_concat.py --candidate-set d38_v1`|
-|计划测试|core预算/量化/批顺序/标签置换/K规模测试；90行integration、matched gate、receipt/hash闭环；D34–D37聚焦回归|
+|已新增core|`code/cvsrffi/stage2_d38_strong_b3_quantized.py`：20步full-batch Stage2-B、A0/B10 Stage2-C、old/new两级residual-int8、matched FP32 ablation、逐样本scorer与pairwise诊断|
+|已接线runner|`code/scripts/run_d25_support_only_concat.py --candidate-set d38_v1`：预开封cell锁、精确90行矩阵、matched selector、full-K10审计与五项artifact哈希闭环|
+|已新增测试|`tests/test_stage2_d38_strong_b3_quantized.py`、`tests/test_run_d38_strong_b3_quantized_integration.py`|
+|本地验证|`ssr-gpu`下核心、D38 integration及D37共享Runner回归33/33通过；CUDA:0合成烟测完成30步，峰值分配显存`17124352B`|
+|独立审查|发现并修复wrong receiver/seed/new-count未fail closed和registry状态字节漏算；复审无P0–P2|
 |Git commit|待实现|
 |N607 sync/command/PID/GPU|未启动|
 |预期artifact|`training_log.jsonl`、`selection.json`、`resource_audit.json`、`geometry_audit.json`、`support_audit.json`、`RECEIPT.json`、完整stdout|
+
+实际验证命令：
+
+```powershell
+(& conda 'shell.powershell' 'hook') | Out-String | Invoke-Expression
+conda activate ssr-gpu
+python -m pytest -q tests\test_stage2_d38_strong_b3_quantized.py tests\test_run_d38_strong_b3_quantized_integration.py tests\test_run_d37_b3_preserving_int8_integration.py
+```
+
+实现严格遵循D38预注册机制；它不是exact legacy strong B3的复现。后者仍以原20epoch mini-batch旧头和原20step新注册作为独立FP32比较器。当前尚无真实90行性能结果，不能判断D38是否promotable。
 
 当前goal保持active。D38 development support screen不等于独立确认，更不等于完成5receivers×至少5seeds×3scenes×K×new-count正式矩阵。
