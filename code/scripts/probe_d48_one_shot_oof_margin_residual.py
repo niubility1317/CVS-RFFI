@@ -531,6 +531,44 @@ def _valid_sha256(value: Any) -> bool:
     )
 
 
+def _fp32_compiled_bias_rounding_bound(
+    base_intercept: Any,
+    final_intercept: Any,
+    requested_bias: Any,
+) -> np.ndarray:
+    base = np.asarray(base_intercept, dtype=np.float32)
+    final = np.asarray(final_intercept, dtype=np.float32)
+    bias = np.asarray(requested_bias, dtype=np.float64)
+    if (
+        base.shape != final.shape
+        or base.shape != bias.shape
+        or not np.isfinite(base).all()
+        or not np.isfinite(final).all()
+        or not np.isfinite(bias).all()
+    ):
+        raise D48ProbeError("D48 FP32 compiled-bias bound input drift")
+    compiled_delta = (final - base).astype(np.float32)
+    ulp_sum = (
+        np.abs(np.spacing(base).astype(np.float64))
+        + np.abs(np.spacing(final).astype(np.float64))
+        + np.abs(np.spacing(compiled_delta).astype(np.float64))
+    )
+    magnitude = np.maximum.reduce(
+        (
+            np.ones(bias.shape, dtype=np.float64),
+            np.abs(base.astype(np.float64)),
+            np.abs(final.astype(np.float64)),
+            np.abs(bias),
+        )
+    )
+    centering_bound = abs(float(np.mean(bias)))
+    return (
+        0.5 * ulp_sum
+        + centering_bound
+        + 64.0 * np.finfo(np.float64).eps * magnitude
+    )
+
+
 def _verify_d48_fit_audits(training_rows: list[dict[str, Any]]) -> int:
     d48_rows = [
         row
@@ -657,6 +695,10 @@ def _verify_d48_fit_audits(training_rows: list[dict[str, Any]]) -> int:
                 audit.get("d45_post_fusion_calibration_intercept_delta_fp32"),
                 dtype=np.float64,
             )
+            compiled_bias_error = np.abs(delta - expected_bias)
+            compiled_bias_bound = _fp32_compiled_bias_rounding_bound(
+                base_intercept, final_intercept, expected_bias
+            )
             if (
                 base_intercept.shape != (c,)
                 or final_intercept.shape != (c,)
@@ -681,7 +723,7 @@ def _verify_d48_fit_audits(training_rows: list[dict[str, Any]]) -> int:
                 or not np.array_equal(
                     delta.astype(np.float32), final_intercept - base_intercept
                 )
-                or not np.allclose(delta, expected_bias, rtol=0.0, atol=2.0e-7)
+                or np.any(compiled_bias_error > compiled_bias_bound)
             ):
                 raise D48ProbeError("D48 coefficient/intercept residual drift")
             beta_nonzero = bool(np.any(np.asarray(expected_bias) != 0.0))

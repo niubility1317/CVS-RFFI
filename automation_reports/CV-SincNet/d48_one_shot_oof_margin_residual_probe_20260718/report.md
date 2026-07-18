@@ -100,3 +100,11 @@ D48复用D45的B20、`4K+4` LDA inventory和一个query state，不新增fit、o
   --output 'E:\type10-7\automation_reports\CV-SincNet\d48_one_shot_oof_margin_residual_probe_20260718\one_shot_oof_head_margin_residual' `
   --device auto --mode development_select_unverified_component --candidate-set d42_v1
 ```
+
+## 8.首次执行失败与直接修复
+
+首次命令wall time`84.1275s`，底层runner完成并密封105/105行，receipt elapsed`74.2176s`、query0，但D48后置verifier在`D48 coefficient/intercept residual drift`处fail closed，进程exit1，因此本次不构成完成的D48性能实验，也不据此晋级或淘汰方法。失败输出保留且不覆盖：`one_shot_oof_head_margin_residual`；其中training log为11910002B，未生成D48 metadata。
+
+只读全日志定位显示：30条D48 fit audit中仅6条low-elev记录触发，所有coefficient/intercept SHA、shape、finite、coefficient bitwise unchanged和`delta_fp32==final_fp32-base_fp32`均通过；唯一失败是逻辑beta与两个独立FP32截距舍入后差值的固定`atol=2e-7`，最大误差`2.3576668e-7`。直接修复仅把该编译闭合改为逐元素FP32 ULP舍入包络：`0.5×(ulp(base)+ulp(final)+ulp(delta))+centering residual+64eps×magnitude`；逻辑beta仍由完整OOF证据逐元素重算，delta仍须与formal FP32截距差逐bit一致。算法、support、权重、beta、预测、资源和性能门均不变。修复后必须新增舍入边界反例、重跑定向与全链测试、提交新代码，并使用新输出目录`one_shot_oof_head_margin_residual_retry1`，不得覆盖失败artifact。
+
+修复后py_compile通过，D48＋D45定向`38 passed`，D42–D48全链`131 passed`；使用修复版fit verifier只读复算失败artifact的完整105行，30/30条fit audit通过。该只读复算只证明直接数值根因已修复，不补写metadata，也不把首次失败转为完成实验；retry1仍必须从提交后的新clean worktree完整重跑。独立ULP复核确认P0=0、P1=0、P2=0，并独立复跑D48`27 passed`；上界只覆盖三个0.5 ULP、centering残差和64eps项，delta逐bit与SHA绑定不变。

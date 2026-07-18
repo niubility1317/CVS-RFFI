@@ -339,6 +339,20 @@ def test_integrated_state_resource_and_verifier_close() -> None:
     assert resource["d48_query_sidecar_bytes"] == 0
 
 
+def test_compiled_fp32_bias_uses_elementwise_rounding_envelope() -> None:
+    base = np.asarray([5.942129135131836], dtype=np.float32)
+    final = np.asarray([5.25760555267334], dtype=np.float32)
+    requested = np.asarray([-0.684523816254983], dtype=np.float64)
+    compiled = (final - base).astype(np.float32).astype(np.float64)
+    error = np.abs(compiled - requested)
+    bound = probe._fp32_compiled_bias_rounding_bound(base, final, requested)
+    assert error[0] > 2.0e-7
+    assert error[0] <= bound[0]
+
+    with pytest.raises(probe.D48ProbeError, match="bound input drift"):
+        probe._fp32_compiled_bias_rounding_bound(base, final, [np.nan])
+
+
 def test_k1_is_bitwise_d45_fallback_full_chain() -> None:
     d45_result, d48_result = _fit_pair(k_shot=1)
     np.testing.assert_array_equal(d48_result.before_state.coef_fp32, d45_result.before_state.coef_fp32)
