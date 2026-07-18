@@ -37,6 +37,11 @@ class D45ProbeError(RuntimeError):
     pass
 
 
+def _array_sha256(values: np.ndarray) -> str:
+    array = np.ascontiguousarray(values)
+    return hashlib.sha256(array.tobytes(order="C")).hexdigest()
+
+
 def _class_balanced_cross_entropy(
     scores: np.ndarray,
     targets: np.ndarray,
@@ -74,6 +79,7 @@ def _inner_loo_component_ce(
     targets: np.ndarray,
     class_count: int,
     k_shot: int,
+    held_score_collector: list[np.ndarray] | None = None,
 ) -> tuple[float, list[float], dict[str, Any]]:
     rows = np.asarray(transformed, dtype=np.float64)
     labels = np.asarray(targets, dtype=np.int64)
@@ -129,6 +135,13 @@ def _inner_loo_component_ce(
         np.concatenate(held_labels, axis=0),
         class_count,
     )
+    if held_score_collector is not None:
+        held_score_array = np.stack(held_scores, axis=0).astype(
+            np.float64, copy=False
+        )
+        if held_score_array.shape != (int(k_shot), class_count, class_count):
+            raise D45ProbeError("D45 private held-score collector shape drift")
+        held_score_collector.append(held_score_array.copy())
     held_flat = [value for fold in held_indices_by_fold for value in fold]
     expected_indices = list(range(len(rows)))
     partition_audit = {
@@ -142,6 +155,20 @@ def _inner_loo_component_ce(
         "train_rows_per_fold": len(rows) - class_count,
         "held_rows_per_fold": class_count,
     }
+    if held_score_collector is not None:
+        all_indices = set(range(len(rows)))
+        partition_audit.update(
+            {
+                "private_collector_held_class_indices_by_fold": [
+                    list(range(class_count)) for _ in range(int(k_shot))
+                ],
+                "private_collector_train_support_row_indices_by_fold": [
+                    sorted(all_indices - set(held))
+                    for held in held_indices_by_fold
+                ],
+                "private_collector_train_indices_are_exact_held_complements": True,
+            }
+        )
     if (
         train_held_overlap_count != 0
         or not partition_audit["held_support_row_exact_once_coverage"]
@@ -224,6 +251,8 @@ def _build_locked_d42_full_component_fit(
 
 def build_inner_loo_reliability_fit(
     d42: Any,
+    post_fusion_calibration: Callable[..., tuple[np.ndarray, dict[str, Any]]]
+    | None = None,
 ) -> Callable[[np.ndarray, np.ndarray, int, int], tuple[np.ndarray, np.ndarray, dict[str, Any]]]:
     full_fit = _build_locked_d42_full_component_fit(d42)
     block_fit = d43.build_structured_fit(d42, "block3_centered")
@@ -258,12 +287,26 @@ def build_inner_loo_reliability_fit(
             block_partition_audit = None
             inner_fold_count = 0
             k1_equivalent_fallback = True
+            full_held_scores = None
+            block_held_scores = None
         else:
+            full_score_collector: list[np.ndarray] = []
+            block_score_collector: list[np.ndarray] = []
             full_macro_ce, full_per_class_ce, full_partition_audit = _inner_loo_component_ce(
-                full_fit, transformed, targets, class_count, k_shot
+                full_fit,
+                transformed,
+                targets,
+                class_count,
+                k_shot,
+                full_score_collector if post_fusion_calibration is not None else None,
             )
             block_macro_ce, block_per_class_ce, block_partition_audit = _inner_loo_component_ce(
-                block_fit, transformed, targets, class_count, k_shot
+                block_fit,
+                transformed,
+                targets,
+                class_count,
+                k_shot,
+                block_score_collector if post_fusion_calibration is not None else None,
             )
             full_weight, block_weight, log_evidence = _likelihood_weights(
                 full_macro_ce,
@@ -278,6 +321,18 @@ def build_inner_loo_reliability_fit(
                 raise D45ProbeError("D45 K2 unit-covariance equal-weight closure drift")
             inner_fold_count = int(k_shot)
             k1_equivalent_fallback = False
+            full_held_scores = (
+                full_score_collector[0]
+                if post_fusion_calibration is not None
+                and len(full_score_collector) == 1
+                else None
+            )
+            block_held_scores = (
+                block_score_collector[0]
+                if post_fusion_calibration is not None
+                and len(block_score_collector) == 1
+                else None
+            )
         fused_coef64 = (
             full_weight * np.asarray(full_coef, dtype=np.float64) / full_scale
             + block_weight * np.asarray(block_coef, dtype=np.float64) / block_scale
@@ -290,6 +345,32 @@ def build_inner_loo_reliability_fit(
             * np.asarray(block_intercept, dtype=np.float64)
             / block_scale
         )
+        calibration_audit: dict[str, Any] = {}
+        base_centered_coef = None
+        base_centered_intercept = None
+        if post_fusion_calibration is not None:
+            base_centered_coef, base_centered_intercept = d43._center_affine_scores(
+                fused_coef64, fused_intercept64
+            )
+            calibration_bias, calibration_audit = post_fusion_calibration(
+                full_held_scores=full_held_scores,
+                block_held_scores=block_held_scores,
+                full_weight=float(full_weight),
+                block_weight=float(block_weight),
+                full_partition=full_partition_audit,
+                block_partition=block_partition_audit,
+                k_shot=int(k_shot),
+                class_count=int(class_count),
+            )
+            calibration_bias64 = np.asarray(calibration_bias, dtype=np.float64)
+            if (
+                calibration_bias64.shape != (class_count,)
+                or not np.isfinite(calibration_bias64).all()
+                or abs(float(np.mean(calibration_bias64))) > 1.0e-12
+                or not isinstance(calibration_audit, dict)
+            ):
+                raise D45ProbeError("D45 post-fusion calibration callback drift")
+            fused_intercept64 = fused_intercept64 + calibration_bias64
         centered_coef, centered_intercept = d43._center_affine_scores(
             fused_coef64, fused_intercept64
         )
@@ -302,6 +383,45 @@ def build_inner_loo_reliability_fit(
             or not np.isfinite(intercept32).all()
         ):
             raise D45ProbeError("D45 fused affine state drift")
+        if post_fusion_calibration is not None:
+            if base_centered_coef is None or base_centered_intercept is None:
+                raise D45ProbeError("D45 calibration base-state evidence missing")
+            base_coef32 = np.asarray(base_centered_coef, dtype=np.float32)
+            base_intercept32 = np.asarray(base_centered_intercept, dtype=np.float32)
+            intercept_delta32 = intercept32 - base_intercept32
+            calibration_audit.update(
+                {
+                    "d45_post_fusion_calibration_applied_once": True,
+                    "d45_post_fusion_calibration_recomputed_rms_weight_or_margin": False,
+                    "d45_post_fusion_calibration_base_coefficient_sha256": (
+                        _array_sha256(base_coef32)
+                    ),
+                    "d45_post_fusion_calibration_final_coefficient_sha256": (
+                        _array_sha256(coef32)
+                    ),
+                    "d45_post_fusion_calibration_coefficient_fp32": (
+                        coef32.astype(np.float64).tolist()
+                    ),
+                    "d45_post_fusion_calibration_coefficient_bitwise_unchanged": (
+                        bool(np.array_equal(base_coef32, coef32))
+                    ),
+                    "d45_post_fusion_calibration_base_intercept_sha256": (
+                        _array_sha256(base_intercept32)
+                    ),
+                    "d45_post_fusion_calibration_base_intercept_fp32": (
+                        base_intercept32.astype(np.float64).tolist()
+                    ),
+                    "d45_post_fusion_calibration_final_intercept_sha256": (
+                        _array_sha256(intercept32)
+                    ),
+                    "d45_post_fusion_calibration_final_intercept_fp32": (
+                        intercept32.astype(np.float64).tolist()
+                    ),
+                    "d45_post_fusion_calibration_intercept_delta_fp32": (
+                        intercept_delta32.astype(np.float64).tolist()
+                    ),
+                }
+            )
         component_condition_numbers = [
             float(value)
             for value in (
@@ -366,6 +486,7 @@ def build_inner_loo_reliability_fit(
                 "d45_weight_scan_count": 0,
             }
         )
+        audit.update(calibration_audit)
         return coef32, intercept32, audit
 
     return fit
