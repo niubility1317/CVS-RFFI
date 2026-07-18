@@ -168,6 +168,8 @@ def _enrich_partition_evidence(
 
 def build_classwise_loo_reliability_fit(
     d42: Any,
+    reliability_strategy: Callable[..., tuple[np.ndarray, Any, dict[str, Any]]]
+    | None = None,
 ) -> Callable[[np.ndarray, np.ndarray, int, int], tuple[np.ndarray, np.ndarray, dict[str, Any]]]:
     full_base_fit = d45._build_locked_d42_full_component_fit(d42)
     block_base_fit = d43.build_structured_fit(d42, "block3_centered")
@@ -205,6 +207,16 @@ def build_classwise_loo_reliability_fit(
             block_partition_audit = None
             inner_fold_count = 0
             k1_fallback = True
+            strategy_audit = {}
+            if reliability_strategy is not None:
+                weights, log_evidence, strategy_audit = reliability_strategy(
+                    full_per_class_ce=None,
+                    block_per_class_ce=None,
+                    full_partition=None,
+                    block_partition=None,
+                    k_shot=int(k_shot),
+                    class_count=int(class_count),
+                )
         else:
             (
                 full_macro_ce,
@@ -226,9 +238,20 @@ def build_classwise_loo_reliability_fit(
             block_partition_audit = _enrich_partition_evidence(
                 block_partition_audit, targets, class_count
             )
-            weights, log_evidence_array = _classwise_likelihood_weights(
-                full_per_class_ce, block_per_class_ce, k_shot
-            )
+            strategy_audit = {}
+            if reliability_strategy is None:
+                weights, log_evidence_array = _classwise_likelihood_weights(
+                    full_per_class_ce, block_per_class_ce, k_shot
+                )
+            else:
+                weights, log_evidence_array, strategy_audit = reliability_strategy(
+                    full_per_class_ce=full_per_class_ce,
+                    block_per_class_ce=block_per_class_ce,
+                    full_partition=full_partition_audit,
+                    block_partition=block_partition_audit,
+                    k_shot=int(k_shot),
+                    class_count=int(class_count),
+                )
             if int(k_shot) == 2 and not (
                 np.allclose(
                     full_per_class_ce,
@@ -340,6 +363,7 @@ def build_classwise_loo_reliability_fit(
                 ) if int(k_shot) > 1 else None,
             }
         )
+        audit.update(strategy_audit)
         return coef32, intercept32, audit
 
     return fit
