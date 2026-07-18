@@ -5,7 +5,7 @@
 - 实验ID：`d42_unified_shrinkage_lda_20260718`
 - 时间：2026-07-18（Asia/Hong_Kong）
 - 操作者：Codex`/root`
-- 当前状态：`IMPLEMENTATION_IN_PROGRESS_SUPPORT_ONLY`
+- 当前状态：`LOCAL_IMPLEMENTATION_VERIFIED_PENDING_REAL_105_SUPPORT_ONLY`
 - development cell：receiver`20-1`、seed`713101`、K10/new5、3个LEO弱场景；复用D18的`p2_min_v1/VALIDATED_ONCE`固定received-IQ enrollment capsule，query保持sealed。
 - 目标：用同一个类对称共享判别几何同时提高Stage2-B old outer-held泛化、Stage2-C注册后old/new准确率和通用floor，避免D38–D41的两套score列失衡。
 
@@ -38,20 +38,20 @@ x=\operatorname{norm}([\operatorname{norm}(z_{160});4\operatorname{norm}([FFT_{9
 h=\operatorname{norm}(x\odot e^{\ell_B}).
 \]
 
-`\ell_B`只由old support按D38锁定的full-batch AdamW20得到：lr`0.01`、weight decay`0.002`、feature noise`0.01`、prototype anchor`0.05`、gradient clip`5`和相同block bounds；K变化不改变20个optimizer step。D42的单一主要差异是：B阶段和C阶段都不再给old/new使用不同来源的head；而是在当前全部注册类上，用相同公式拟合class-balanced自动收缩LDA。对每类support均值`\mu_c`和共享within-class covariance`\Sigma_w`，使用Ledoit-Wolf自动收缩得到`\widetilde\Sigma_w`，等先验判别函数为：
+`\ell_B`只由old support按D38锁定的full-batch AdamW20得到：lr`0.01`、weight decay`0.002`、feature noise`0.01`、prototype anchor`0.05`、gradient clip`5`和相同block bounds；K变化不改变20个optimizer step。D42的单一主要差异是：B阶段和C阶段都不再给old/new使用不同来源的head；而是在当前全部注册类上，用相同公式拟合class-balanced自动收缩LDA。具体锁定sklearn1.7.2`lsqr/shrinkage=auto`数值路径：每类support分别StandardScaler标准化、Ledoit-Wolf估计并按feature scale重标，再按等先验加权为共享within-class covariance`\widetilde\Sigma_w`；不是对pooled residual执行一次Ledoit-Wolf。等先验判别函数为：
 
 \[
 s_c(h)=h^T\widetilde\Sigma_w^{-1}\mu_c-
 \frac12\mu_c^T\widetilde\Sigma_w^{-1}\mu_c.
 \]
 
-- Stage2-B：只用old support拟合full-batch B20`\ell_B`和old-only LDA，生成before artifact；D38的new-centroid append结果不进入D42 scorer。
+- Stage2-B：使用无new参数的old-only B20 helper逐公式复现D38 full-batch轨迹，先拟合`\ell_B`并立即物化、冻结old-only D42 LDA before artifact；只有before snapshot完成后，D42 fit才首次解析new support并进入all-registry拟合。测试必须证明同seed同old support下helper的`log_diag`与D38 arm-A before逐bit一致，且改变new support不改变before artifact。
 - Stage2-C：冻结`\ell_B`，用同一row的old＋new合法support重新闭式拟合全部注册类LDA；所有类使用相同公式、相同等先验和相同收缩规则。
 - formal state将每类LDA coefficient按固定288维三block做两级residual-int8量化；intercept使用FP16，`\ell_B`使用FP32。matched FP32仅作量化ablation。
 - Phase1 ground int8只读且不参与LDA covariance/mean；entry/exit必须真实重哈希相同。
 - query逐样本读取full 288维view并同时计算全部注册类score；无query role、quota、排序、全局重排或跨query状态。
 
-不扫描shrinkage、prior、temperature、bias、threshold、rank、step或类专属参数。K1若within-class residual不足，必须使用同一自动收缩实现的确定性fail-safe，并在测试中单独闭合；不得伪造物理样本。
+不扫描shrinkage、prior、temperature、bias、threshold、rank、step或类专属参数。K1每类只有一个support、within-class covariance不可估计时，预锁定对所有类统一使用单位协方差`I`，等价于等先验nearest-centroid判别；这不是sklearn auto的隐式输出，必须在state/audit中显式标为`unit_covariance_equal_prior_nearest_centroid`，且不得复制、扰动或伪造物理样本。
 
 ## 4.预期可观察结果与停止条件
 
@@ -89,4 +89,25 @@ D42 int8只有全部满足才可进入selected-only full-K10或N607：
 - Git承载面：`E:\type10-7\github_publish\CVS-RFFI-repo`，分支`codex/cvs-rffi-release-20260626`；D42开始前HEAD为`b7fd178209d57afd6f66ed0287ce1b188840a0ee`。
 - 根目录`E:\type10-7`不是Git仓库；本报告同步镜像到根`automation_reports`，版本化权威在Git承载面。
 - 工作树已有大量用户/其他任务改动；D42只stage明确列出的新文件和Runner精确改动，不覆盖无关内容。
-- 最高风险是自动收缩LDA提高总体却继续损伤某个旧类floor；第二风险是coefficient/intercept量化改变边界；第三风险是K1 covariance退化。三者必须由逐类outer-held、matched FP32和K闭包测试直接否证。
+- 最高风险是自动收缩LDA提高总体却继续损伤某个旧类floor；第二风险是coefficient/intercept量化改变边界；第三风险是K1 covariance退化。部署语义锁定`w_c=\widetilde\Sigma_w^{-1}\mu_c`为precision-weighted target prototype：全部target-old/new`w_c`必须residual-int8，`\mu_c/\widetilde\Sigma_w`不持久化、无FP32 coefficient sidecar；FP16 intercept只是标量校准，FP32`log_diag`是共享metric。三项风险必须由逐类outer-held、matched FP32和K闭包测试直接否证。
+
+## 7.实现与本地验证
+
+|文件|用途|
+|---|---|
+|`code/cvsrffi/stage2_d42_unified_shrinkage_lda.py`|old-only B20 helper、before/final USLDA、K1单位协方差、int8/FP32 state、pairwise和资源审计|
+|`code/scripts/run_d25_support_only_concat.py`|`d42_v1`七候选105行、三类final/pairwise口径、strict selector、full-K10门和artifact闭包|
+|`tests/test_stage2_d42_unified_shrinkage_lda.py`|B20逐bit匹配、poison-new时序、sklearn数值路径、K/new-count、量化、置换和逐样本测试|
+|`tests/test_run_d42_unified_shrinkage_lda_integration.py`|105行physical闭包、12个独立selector反例、ground/source/state/resource/full-K10门测试|
+
+本地`ssr-gpu`独立验证：
+
+- 4个D42文件`python -m py_compile`通过。
+- D42核心＋Runner：`44 passed`。
+- D38/D40/D41/D42 Runner邻接回归：`68 passed`。
+- 核心子任务另执行D42＋D38 core回归：`44 passed`。
+- `git diff --check`通过；Windows pytest临时目录清理告警未改变退出码0。
+
+实现明确区分：`formal_target_vectors_int8_no_fp32_sidecar=true`只描述全部target-old/new precision-weighted prototype为residual-int8；不会把含FP16 intercept和FP32共享`log_diag`的整个state误写为int8-only。所有类别数统一由锁定sklearn covariance/means显式求`W=lstsq(Σ,μ^T)^T`，二分类不使用中心化判别轴替代类原型；运行时和candidate lock精确要求scikit-learn`1.7.2`，版本漂移fail closed。int8/FP32 margin翻转按`margin<=0`布尔边界比较，final argmax new→old与new→wrong-new互斥且合计为新类最终错误数。
+
+本阶段只证明实现、协议与证据闭包可执行，不构成性能晋级。下一步在隔离Git worktree运行真实105行development support-held矩阵；只有逐场景、逐类、floor、H、三类混淆、pairwise、量化和资源门全部通过才允许full-K10或N607。

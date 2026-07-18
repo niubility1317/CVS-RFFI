@@ -19,6 +19,7 @@ import time
 from typing import Any, Mapping, Sequence
 
 import numpy as np
+import sklearn
 import torch
 
 
@@ -173,6 +174,13 @@ from cvsrffi.stage2_d41_bec import (  # noqa: E402
     pairwise_support_diagnostics_d41,
     score_d41_bec,
 )
+from cvsrffi.stage2_d42_unified_shrinkage_lda import (  # noqa: E402
+    D42UnifiedShrinkageLDAConfig,
+    SKLEARN_RUNTIME_VERSION,
+    fit_d42_unified_shrinkage_lda,
+    pairwise_support_diagnostics_d42,
+    score_d42_unified_shrinkage_lda,
+)
 
 
 MODE = legacy.MODE
@@ -203,6 +211,7 @@ CANDIDATE_SET_D38_V1 = "d38_v1"
 CANDIDATE_SET_D39_V1 = "d39_v1"
 CANDIDATE_SET_D40_V1 = "d40_v1"
 CANDIDATE_SET_D41_V1 = "d41_v1"
+CANDIDATE_SET_D42_V1 = "d42_v1"
 D38_DEVELOPMENT_RECEIVER = "20-1"
 D38_DEVELOPMENT_SEED = 713101
 D38_DEVELOPMENT_NEW_CLASS_COUNT = 5
@@ -215,6 +224,9 @@ D40_DEVELOPMENT_NEW_CLASS_COUNT = 5
 D41_DEVELOPMENT_RECEIVER = "20-1"
 D41_DEVELOPMENT_SEED = 713101
 D41_DEVELOPMENT_NEW_CLASS_COUNT = 5
+D42_DEVELOPMENT_RECEIVER = "20-1"
+D42_DEVELOPMENT_SEED = 713101
+D42_DEVELOPMENT_NEW_CLASS_COUNT = 5
 C3_A = "D25-C3A-DIAG-CE-CLOSEDREG"
 C3_B = "D25-C3B-DIAG-CE-NEWFIT"
 C3_C = "D25-C3C-DIAG-STRONGFLOOR-NEWFIT"
@@ -314,6 +326,25 @@ D41_OLD_TO_NEW_CAP = 33
 D41_NEW_TO_OLD_CAP = 22
 D41_NEW_NEW_CAP = 25
 D41_MIN_NEW_CLASS_ACCURACY = 0.40
+D42_PROTONET_CDA = "D42-PROTOnet-CDA-ZID160"
+D42_D40_INT8 = "D42-D40-HNBR-INT8-NEGATIVE"
+D42_D41_INT8 = "D42-D41-BEC-INT8-NEGATIVE"
+D42_INT8 = "D42-USLDA-INT8"
+D42_FP32 = "D42-USLDA-FP32-MATCHED"
+D42_CANDIDATES = (
+    IDENTITY_CANDIDATE,
+    D42_PROTONET_CDA,
+    DIAG_CANDIDATE,
+    D42_D40_INT8,
+    D42_D41_INT8,
+    D42_INT8,
+    D42_FP32,
+)
+D42_OLD_TO_NEW_CAP = 33
+D42_NEW_TO_OLD_CAP = 22
+D42_NEW_TO_NEW_CAP = 19
+D42_MIN_NEW_CLASS_ACCURACY = 0.40
+D42_SKLEARN_LOCKED_VERSION = SKLEARN_RUNTIME_VERSION
 CORE_COMMIT = "f349850dbd94841ae2ef8105ac76bd7a9912c128"
 D26_CORE_GIT_COMMIT = "67b9d2275782339e0ac07800652b997adbcca534"
 
@@ -353,6 +384,8 @@ def _positive_route_candidates(candidate_set: str) -> tuple[str, ...]:
         return (D40_INT8,)
     if candidate_set == CANDIDATE_SET_D41_V1:
         return (D41_INT8,)
+    if candidate_set == CANDIDATE_SET_D42_V1:
+        return (D42_INT8,)
     if candidate_set in (CANDIDATE_SET_D26_V1, CANDIDATE_SET_D26_V2):
         return D26_CANDIDATES
     return D25_CANDIDATES
@@ -365,6 +398,8 @@ def _artifact_schema(candidate_set: str, artifact: str) -> str:
         return f"cvs.phase2.d40.{artifact}.v1"
     if candidate_set == CANDIDATE_SET_D41_V1:
         return f"cvs.phase2.d41.{artifact}.v1"
+    if candidate_set == CANDIDATE_SET_D42_V1:
+        return f"cvs.phase2.d42.{artifact}.v1"
     if candidate_set == CANDIDATE_SET_D39_V1:
         return f"cvs.phase2.d39.{artifact}.v1"
     if candidate_set == CANDIDATE_SET_D38_V1:
@@ -382,6 +417,7 @@ def _full_state_refit_required(
         CANDIDATE_SET_D39_V1,
         CANDIDATE_SET_D40_V1,
         CANDIDATE_SET_D41_V1,
+        CANDIDATE_SET_D42_V1,
     ):
         return candidate_id == selected_id
     return True
@@ -622,6 +658,18 @@ class D41CandidateConfig:
             raise D25RunnerError("D41 deployment precision drift")
 
 
+@dataclass(frozen=True)
+class D42CandidateConfig:
+    """Locked unified shrinkage-LDA route and deployment precision."""
+
+    core: D42UnifiedShrinkageLDAConfig
+    deploy_precision: str = "int8"
+
+    def __post_init__(self) -> None:
+        if self.deploy_precision not in ("int8", "fp32"):
+            raise D25RunnerError("D42 deployment precision drift")
+
+
 def _canonical_bytes(value: Any) -> bytes:
     return json.dumps(
         value,
@@ -805,6 +853,24 @@ def preregistered_candidates(
             ),
             D40_FP32: D40CandidateConfig(
                 core=D40HNBRConfig(), deploy_precision="fp32"
+            ),
+        }
+    if candidate_set == CANDIDATE_SET_D42_V1:
+        return {
+            IDENTITY_CANDIDATE: controls[IDENTITY_CANDIDATE],
+            D42_PROTONET_CDA: D38ProtoNetCDAConfig(),
+            DIAG_CANDIDATE: controls[DIAG_CANDIDATE],
+            D42_D40_INT8: D40CandidateConfig(
+                core=D40HNBRConfig(), deploy_precision="int8"
+            ),
+            D42_D41_INT8: D41CandidateConfig(
+                core=D41BECConfig(), deploy_precision="int8"
+            ),
+            D42_INT8: D42CandidateConfig(
+                core=D42UnifiedShrinkageLDAConfig(), deploy_precision="int8"
+            ),
+            D42_FP32: D42CandidateConfig(
+                core=D42UnifiedShrinkageLDAConfig(), deploy_precision="fp32"
             ),
         }
     if candidate_set == CANDIDATE_SET_D41_V1:
@@ -1223,7 +1289,10 @@ def _candidate_lock(
             CODE_ROOT / "cvsrffi" / "stage2_b3_fisher_closed_form.py"
         )
     if any(
-        isinstance(value, (D38CandidateConfig, D40CandidateConfig, D41CandidateConfig))
+        isinstance(
+            value,
+            (D38CandidateConfig, D40CandidateConfig, D41CandidateConfig, D42CandidateConfig),
+        )
         for value in candidates.values()
     ):
         source_closure["d38_strong_b3_quantized_core_sha256"] = _sha256_file(
@@ -1241,9 +1310,27 @@ def _candidate_lock(
         source_closure["d41_bec_core_sha256"] = _sha256_file(
             CODE_ROOT / "cvsrffi" / "stage2_d41_bec.py"
         )
+    if any(isinstance(value, D42CandidateConfig) for value in candidates.values()):
+        source_closure["d42_unified_shrinkage_lda_core_sha256"] = _sha256_file(
+            CODE_ROOT / "cvsrffi" / "stage2_d42_unified_shrinkage_lda.py"
+        )
     rows: list[dict[str, Any]] = []
     for candidate_id, config in candidates.items():
-        if isinstance(config, D41CandidateConfig):
+        if isinstance(config, D42CandidateConfig):
+            config_row = {
+                "core": asdict(config.core),
+                "deploy_precision": config.deploy_precision,
+                "feature_geometry": "exact_b3_288d_with_frozen_old_logdiag",
+                "stage2b": "old_support_metric20_plus_closed_form_old_lda",
+                "stage2c": "frozen_logdiag_closed_form_all_registry_lda",
+                "lda_solver": "lsqr",
+                "shrinkage": "auto",
+                "priors": "equal_class",
+                "query_view": "full_288d_only",
+                "ground_policy": "sealed_phase1_int8_entry_exit_real_rehash",
+            }
+            family = "d42_unified_shrinkage_lda"
+        elif isinstance(config, D41CandidateConfig):
             config_row = {
                 "core": asdict(config.core),
                 "deploy_precision": config.deploy_precision,
@@ -1635,6 +1722,8 @@ def _candidate_lock(
             if candidate_set == CANDIDATE_SET_D40_V1
             else "cvs.phase2.d25.candidate_lock.v19"
             if candidate_set == CANDIDATE_SET_D41_V1
+            else "cvs.phase2.d25.candidate_lock.v20"
+            if candidate_set == CANDIDATE_SET_D42_V1
             else "cvs.phase2.d25.candidate_lock.v1"
         ),
         "core_commit": CORE_COMMIT,
@@ -1683,6 +1772,7 @@ def _candidate_lock(
         CANDIDATE_SET_D39_V1,
         CANDIDATE_SET_D40_V1,
         CANDIDATE_SET_D41_V1,
+        CANDIDATE_SET_D42_V1,
     ):
         lock["candidate_set"] = candidate_set
     if candidate_set in (
@@ -1703,6 +1793,7 @@ def _candidate_lock(
         CANDIDATE_SET_D39_V1,
         CANDIDATE_SET_D40_V1,
         CANDIDATE_SET_D41_V1,
+        CANDIDATE_SET_D42_V1,
     ):
         # CORE_COMMIT above identifies the sealed Phase1 model lineage.  Keep
         # the D26 implementation commit separate so the receipt cannot imply
@@ -1722,6 +1813,7 @@ def _candidate_lock(
         CANDIDATE_SET_D39_V1,
         CANDIDATE_SET_D40_V1,
         CANDIDATE_SET_D41_V1,
+        CANDIDATE_SET_D42_V1,
     ):
         lock["protocol_contract"] = {
             "screen_authority": "PRE_FORMAL_SUPPORT_ONLY_INT8_SCREEN",
@@ -1785,6 +1877,24 @@ def _candidate_lock(
             "old_to_new_cap_exclusive": D41_OLD_TO_NEW_CAP,
             "new_to_old_cap_exclusive": D41_NEW_TO_OLD_CAP,
             "new_new_cap_exclusive": D41_NEW_NEW_CAP,
+        }
+    if candidate_set == CANDIDATE_SET_D42_V1:
+        lock["d42_formula_lock"] = {
+            "feature_geometry": "exact_b3_288d",
+            "stage2b_metric_steps": 20,
+            "stage2b_lda_fit": "old_support_closed_form",
+            "stage2c_metric_policy": "freeze_stage2b_log_diag",
+            "stage2c_lda_fit": "all_registered_support_closed_form",
+            "lda_solver": "lsqr",
+            "shrinkage": "auto",
+            "priors": "equal_class",
+            "sklearn_locked_version": D42_SKLEARN_LOCKED_VERSION,
+            "coefficient_precision": "two_level_residual_int8",
+            "intercept_precision": "fp16",
+            "old_to_new_cap_exclusive": D42_OLD_TO_NEW_CAP,
+            "new_to_old_cap_exclusive": D42_NEW_TO_OLD_CAP,
+            "new_to_new_cap_exclusive": D42_NEW_TO_NEW_CAP,
+            "query_view": "full_288d_only",
         }
     return {**lock, "sha256": hashlib.sha256(_canonical_bytes(lock)).hexdigest()}
 
@@ -2491,6 +2601,26 @@ def _require_d41_development_cell(
     ):
         raise D25RunnerError(
             "D41 preregistered development cell must be receiver 20-1, "
+            "seed 713101, K10, new5"
+        )
+
+
+def _require_d42_development_cell(
+    before_manifest: Mapping[str, Any], after_manifest: Mapping[str, Any]
+) -> None:
+    """Fail closed before support opening outside the locked D42 cell."""
+
+    old_classes = legacy._registered_handles(before_manifest)
+    all_classes = legacy._registered_handles(after_manifest)
+    if (
+        str(before_manifest.get("receiver")) != D42_DEVELOPMENT_RECEIVER
+        or int(before_manifest.get("seed", -1)) != D42_DEVELOPMENT_SEED
+        or int(before_manifest.get("k_shot", -1)) != 10
+        or all_classes[: len(old_classes)] != old_classes
+        or len(all_classes) - len(old_classes) != D42_DEVELOPMENT_NEW_CLASS_COUNT
+    ):
+        raise D25RunnerError(
+            "D42 preregistered development cell must be receiver 20-1, "
             "seed 713101, K10, new5"
         )
 
@@ -5517,6 +5647,15 @@ def _evaluate_d38_fold(
     )
     margins = np.asarray([float(row["new_new_margin"]) for row in pairwise])
     intrusion = _d37_old_to_new_intrusion_count(after_predictions, held_old, new_classes)
+    final_new_to_old = int(
+        np.sum(np.isin(after_predictions[held_new], np.asarray(old_classes)))
+    )
+    final_new_to_new = int(
+        np.sum(
+            np.isin(after_predictions[held_new], np.asarray(new_classes))
+            & (after_predictions[held_new].astype(str) != held_labels[held_new])
+        )
+    )
     argmax_changes = int(
         np.sum(np.argmax(int8_scores, axis=1) != np.argmax(fp32_scores, axis=1))
     )
@@ -5944,6 +6083,15 @@ def _evaluate_d40_fold(
         [float(row["new_old_margin"]) for row in pairwise], dtype=np.float64
     )
     intrusion = _d37_old_to_new_intrusion_count(after_predictions, held_old, new_classes)
+    final_new_to_old = int(
+        np.sum(np.isin(after_predictions[held_new], np.asarray(old_classes)))
+    )
+    final_new_to_new = int(
+        np.sum(
+            np.isin(after_predictions[held_new], np.asarray(new_classes))
+            & (after_predictions[held_new].astype(str) != held_labels[held_new])
+        )
+    )
     argmax_changes = int(
         np.sum(np.argmax(int8_scores, axis=1) != np.argmax(fp32_scores, axis=1))
     )
@@ -6020,6 +6168,11 @@ def _evaluate_d40_fold(
         "new_new_margin_mean": float(np.mean(new_new_margins)),
         "new_old_margin_min": float(np.min(new_old_margins)),
         "outer_held_new_intrusion_count": intrusion,
+        "final_argmax_old_to_new_count": intrusion,
+        "final_argmax_new_to_old_count": final_new_to_old,
+        "final_argmax_new_to_new_count": final_new_to_new,
+        "pairwise_new_to_old_misorder_count": int(np.sum(new_old_margins <= 0.0)),
+        "pairwise_new_to_new_misorder_count": int(np.sum(new_new_margins <= 0.0)),
         "old_prefix_bitwise_unchanged": prefix_unchanged,
         "old_base_prefix_bitwise_unchanged": old_base_prefix_unchanged,
         "outer_prediction_sha256": outer_prediction_sha256,
@@ -6175,6 +6328,15 @@ def _evaluate_d41_fold(
         [float(row["new_old_margin"]) for row in pairwise], dtype=np.float64
     )
     intrusion = _d37_old_to_new_intrusion_count(after_predictions, held_old, new_classes)
+    final_new_to_old = int(
+        np.sum(np.isin(after_predictions[held_new], np.asarray(old_classes)))
+    )
+    final_new_to_new = int(
+        np.sum(
+            np.isin(after_predictions[held_new], np.asarray(new_classes))
+            & (after_predictions[held_new].astype(str) != held_labels[held_new])
+        )
+    )
     before_argmax_changes = int(
         np.sum(np.argmax(before_int8_scores, axis=1) != np.argmax(before_fp32_scores, axis=1))
     )
@@ -6265,6 +6427,11 @@ def _evaluate_d41_fold(
         "outer_held_new_intrusion_count": intrusion,
         "actual_old_to_new_count": intrusion,
         "actual_new_to_old_count": int(np.sum(new_old_margins <= 0.0)),
+        "final_argmax_old_to_new_count": intrusion,
+        "final_argmax_new_to_old_count": final_new_to_old,
+        "final_argmax_new_to_new_count": final_new_to_new,
+        "pairwise_new_to_old_misorder_count": int(np.sum(new_old_margins <= 0.0)),
+        "pairwise_new_to_new_misorder_count": int(np.sum(new_new_margins <= 0.0)),
         "pairwise_support_diagnostics": pairwise,
         "new_new_confusion_count": int(np.sum(new_new_margins <= 0.0)),
         "new_new_margin_min": float(np.min(new_new_margins)),
@@ -6272,6 +6439,346 @@ def _evaluate_d41_fold(
         "new_old_margin_min": float(np.min(new_old_margins)),
         "matched_fp32_before_argmax_change_count": before_argmax_changes,
         "matched_fp32_outer_argmax_change_count": final_argmax_changes,
+        "deployment_precision": config.deploy_precision,
+        "registration_before_prediction_sha256": before_prediction_sha256,
+        "outer_prediction_sha256": outer_prediction_sha256,
+        "training_trace": [dict(item) for item in result.training_trace],
+        "source_audit": source_audit,
+        "ground_int8_audit": ground_audit,
+        "geometry_summary": geometry,
+        "resource": resource,
+    }
+
+
+def _d42_margin_vectors(
+    scores: np.ndarray,
+    labels: np.ndarray,
+    old_mask: np.ndarray,
+    new_mask: np.ndarray,
+    old_classes: tuple[str, ...],
+    new_classes: tuple[str, ...],
+) -> dict[str, np.ndarray]:
+    """Compute independent true-class margins for all three D42 error axes."""
+
+    all_classes = old_classes + new_classes
+    values = np.asarray(scores, dtype=np.float64)
+    truth = np.asarray(labels).astype(str)
+    old_new: list[float] = []
+    new_old: list[float] = []
+    new_new: list[float] = []
+    for score, handle in zip(values[old_mask], truth[old_mask], strict=True):
+        truth_index = all_classes.index(str(handle))
+        old_new.append(
+            float(score[truth_index] - np.max(score[len(old_classes) :]))
+        )
+    for score, handle in zip(values[new_mask], truth[new_mask], strict=True):
+        truth_index = all_classes.index(str(handle))
+        competing_new = np.array(score[len(old_classes) :], copy=True)
+        competing_new[truth_index - len(old_classes)] = -np.inf
+        new_old.append(float(score[truth_index] - np.max(score[: len(old_classes)])))
+        new_new.append(float(score[truth_index] - np.max(competing_new)))
+    return {
+        "old_new": np.asarray(old_new, dtype=np.float64),
+        "new_old": np.asarray(new_old, dtype=np.float64),
+        "new_new": np.asarray(new_new, dtype=np.float64),
+    }
+
+
+def _evaluate_d42_fold(
+    rows: Mapping[str, np.ndarray],
+    z_id160: np.ndarray,
+    fft96: np.ndarray,
+    rf32: np.ndarray,
+    *,
+    old_classes: tuple[str, ...],
+    new_classes: tuple[str, ...],
+    held_ranks: tuple[int, int],
+    candidate_id: str,
+    config: D42CandidateConfig,
+    seed: int,
+    ground_int8_path: Path,
+    expected_ground_int8_sha256: str,
+    device: torch.device | str = "cpu",
+    scenario: str = "unit_test_scene",
+    outer_fold: int | None = None,
+) -> dict[str, Any]:
+    """D42 outer 8-shot fit/2-shot held unified shrinkage-LDA evaluation."""
+
+    labels = np.asarray(rows["labels"]).astype(str)
+    ranks = np.asarray(rows["ranks"], dtype=np.int64)
+    tokens = np.asarray(rows["tokens"]).astype(str)
+    held = np.isin(ranks, np.asarray(held_ranks, dtype=np.int64))
+    train = ~held
+    old = np.isin(labels, np.asarray(old_classes))
+    new = np.isin(labels, np.asarray(new_classes))
+    if (
+        int(np.sum(train & old)) != 8 * len(old_classes)
+        or int(np.sum(train & new)) != 8 * len(new_classes)
+        or int(np.sum(held & old)) != 2 * len(old_classes)
+        or int(np.sum(held & new)) != 2 * len(new_classes)
+    ):
+        raise D25RunnerError("D42 leave-two-rank class symmetry drift")
+    features = _d1_feature_from_blocks(z_id160, fft96, rf32)
+    ground_entry_sha256 = _ground_int8_entry_audit(
+        ground_int8_path, expected_ground_int8_sha256
+    )
+    result = fit_d42_unified_shrinkage_lda(
+        features[train & old],
+        labels[train & old],
+        old_classes,
+        features[train & new],
+        labels[train & new],
+        new_classes,
+        seed=int(seed),
+        device=device,
+        config=config.core,
+    )
+    ground_audit = _ground_int8_exit_audit(ground_int8_path, ground_entry_sha256)
+    deployed_before = (
+        result.before_state
+        if config.deploy_precision == "int8"
+        else result.matched_fp32_before_state
+    )
+    deployed_state = (
+        result.state if config.deploy_precision == "int8" else result.matched_fp32_state
+    )
+    held_features = features[held]
+    held_labels = labels[held]
+    held_old = old[held]
+    held_new = new[held]
+    all_classes = old_classes + new_classes
+    before_scores = score_d42_unified_shrinkage_lda(
+        deployed_before, held_features[held_old]
+    )
+    after_scores = score_d42_unified_shrinkage_lda(deployed_state, held_features)
+    before_int8_scores = score_d42_unified_shrinkage_lda(
+        result.before_state, held_features[held_old]
+    )
+    before_fp32_scores = score_d42_unified_shrinkage_lda(
+        result.matched_fp32_before_state, held_features[held_old]
+    )
+    final_int8_scores = score_d42_unified_shrinkage_lda(result.state, held_features)
+    final_fp32_scores = score_d42_unified_shrinkage_lda(
+        result.matched_fp32_state, held_features
+    )
+    before_predictions = np.asarray(old_classes)[np.argmax(before_scores, axis=1)]
+    after_predictions = np.asarray(all_classes)[np.argmax(after_scores, axis=1)]
+    before_old = legacy._metric_block(
+        held_labels[held_old], before_predictions.astype(str).tolist(), old_classes
+    )
+    after_old = legacy._metric_block(
+        held_labels[held_old], after_predictions[held_old].astype(str).tolist(), old_classes
+    )
+    after_new = legacy._metric_block(
+        held_labels[held_new], after_predictions[held_new].astype(str).tolist(), new_classes
+    )
+    fold_number = (
+        int(HELD_RANKS.index(held_ranks)) if outer_fold is None else int(outer_fold)
+    )
+    pairwise = pairwise_support_diagnostics_d42(
+        deployed_state,
+        held_features,
+        held_labels,
+        tokens[held],
+        scenario=scenario,
+        outer_fold=fold_number,
+        physical_ranks=ranks[held],
+    )
+    margins = _d42_margin_vectors(
+        after_scores, held_labels, held_old, held_new, old_classes, new_classes
+    )
+    int8_margins = _d42_margin_vectors(
+        final_int8_scores, held_labels, held_old, held_new, old_classes, new_classes
+    )
+    fp32_margins = _d42_margin_vectors(
+        final_fp32_scores, held_labels, held_old, held_new, old_classes, new_classes
+    )
+    margin_sign_flips = int(
+        sum(
+            np.sum((int8_margins[name] <= 0.0) != (fp32_margins[name] <= 0.0))
+            for name in ("old_new", "new_old", "new_new")
+        )
+    )
+    intrusion = _d37_old_to_new_intrusion_count(after_predictions, held_old, new_classes)
+    final_new_to_old = int(
+        np.sum(np.isin(after_predictions[held_new], np.asarray(old_classes)))
+    )
+    final_new_to_new = int(
+        np.sum(
+            np.isin(after_predictions[held_new], np.asarray(new_classes))
+            & (after_predictions[held_new].astype(str) != held_labels[held_new])
+        )
+    )
+    final_new_error_count = int(
+        np.sum(after_predictions[held_new].astype(str) != held_labels[held_new])
+    )
+    if final_new_to_old + final_new_to_new != final_new_error_count:
+        raise D25RunnerError("D42 final new-class error partition drift")
+    before_argmax_changes = int(
+        np.sum(np.argmax(before_int8_scores, axis=1) != np.argmax(before_fp32_scores, axis=1))
+    )
+    final_argmax_changes = int(
+        np.sum(np.argmax(final_int8_scores, axis=1) != np.argmax(final_fp32_scores, axis=1))
+    )
+    max_score_error = float(
+        max(
+            np.max(np.abs(before_int8_scores - before_fp32_scores)),
+            np.max(np.abs(final_int8_scores - final_fp32_scores)),
+        )
+    )
+    source_audit = {
+        "old_source_physical_token_sha256": hashlib.sha256(
+            _canonical_bytes(sorted(tokens[train & old].tolist()))
+        ).hexdigest(),
+        "new_source_physical_token_sha256": hashlib.sha256(
+            _canonical_bytes(sorted(tokens[train & new].tolist()))
+        ).hexdigest(),
+        "old_source_row_count": int(np.sum(train & old)),
+        "new_source_row_count": int(np.sum(train & new)),
+        "old_source_held_intersection_count": len(
+            set(tokens[train & old].tolist()) & set(tokens[held].tolist())
+        ),
+        "new_source_held_intersection_count": len(
+            set(tokens[train & new].tolist()) & set(tokens[held].tolist())
+        ),
+        "old_source_new_class_row_count": int(np.sum(train & old & new)),
+        "new_source_old_class_row_count": int(np.sum(train & new & old)),
+        "held_fit_row_count": 0,
+        "query_rows_used": 0,
+        "sklearn_version": str(sklearn.__version__),
+        "sklearn_locked_version": D42_SKLEARN_LOCKED_VERSION,
+        "sklearn_version_lock_pass": str(sklearn.__version__)
+        == D42_SKLEARN_LOCKED_VERSION,
+        "lda_solver": str(result.geometry_audit["lda_solver"]),
+        "lda_shrinkage": str(result.geometry_audit["shrinkage"]),
+        "lda_priors": str(result.geometry_audit["prior_policy"]),
+    }
+    old_log_diag_bitwise_unchanged = bool(
+        np.array_equal(result.before_state.log_diag_fp32, result.state.log_diag_fp32)
+        and np.array_equal(
+            result.matched_fp32_before_state.log_diag_fp32,
+            result.matched_fp32_state.log_diag_fp32,
+        )
+    )
+    before_prediction_sha256 = hashlib.sha256(
+        _canonical_bytes(before_predictions.astype(str).tolist())
+    ).hexdigest()
+    outer_prediction_sha256 = hashlib.sha256(
+        _canonical_bytes(after_predictions.astype(str).tolist())
+    ).hexdigest()
+    resource = dict(result.resource_audit)
+    resource.update(
+        {
+            "deployment_precision": config.deploy_precision,
+            "peak_trainable_parameters": int(resource["trainable_parameters"]),
+            "total_optimizer_steps": int(resource["optimizer_steps"]),
+            "persistent_state_bytes": int(deployed_state.persistent_state_bytes),
+            "persistent_state_cap_pass": int(deployed_state.persistent_state_bytes) <= 256 * 1024,
+            "resident_fp32_target_coefficient_count": 0 if config.deploy_precision == "int8" else len(all_classes),
+            "formal_target_vectors_int8_no_fp32_sidecar": bool(
+                config.deploy_precision == "int8"
+                and deployed_state.is_int8
+                and int(result.resource_audit["resident_fp32_target_coefficient_count"]) == 0
+            ),
+            "formal_coefficients_residual_int8": bool(result.state.is_int8),
+            "coefficient_dtype": str(result.state.coef1_qint8.dtype),
+            "intercept_dtype": str(result.state.intercept_fp16.dtype),
+            "coefficient_row_count": int(result.state.coef1_qint8.shape[0]),
+            "coefficient_dimension": int(result.state.coef1_qint8.shape[1]),
+            "coefficient_shape": list(result.state.coef1_qint8.shape),
+            "intercept_shape": list(result.state.intercept_fp16.shape),
+            "registry_state_bytes": int(result.state.registry_state_bytes),
+            "lda_solver": str(result.geometry_audit["lda_solver"]),
+            "lda_shrinkage": str(result.geometry_audit["shrinkage"]),
+            "lda_priors": str(result.geometry_audit["prior_policy"]),
+            "sklearn_version": str(sklearn.__version__),
+            "sklearn_locked_version": D42_SKLEARN_LOCKED_VERSION,
+            "sklearn_version_lock_pass": str(sklearn.__version__)
+            == D42_SKLEARN_LOCKED_VERSION,
+            "query_view": str(result.geometry_audit["query_view"]),
+            "matched_fp32_before_argmax_change_count": before_argmax_changes,
+            "matched_fp32_outer_argmax_change_count": final_argmax_changes,
+            "int8_fp32_max_score_abs_error": max_score_error,
+            "int8_fp32_margin_sign_flip_count": margin_sign_flips,
+            "final_argmax_old_to_new_count": intrusion,
+            "final_argmax_new_to_old_count": final_new_to_old,
+            "final_argmax_new_to_new_count": final_new_to_new,
+            "pairwise_old_to_new_misorder_count": int(np.sum(margins["old_new"] <= 0.0)),
+            "pairwise_new_to_old_misorder_count": int(np.sum(margins["new_old"] <= 0.0)),
+            "pairwise_new_to_new_misorder_count": int(np.sum(margins["new_new"] <= 0.0)),
+            "complete_loss_trace": [dict(item) for item in result.training_trace],
+            "source_audit": source_audit,
+            "ground_int8_audit": ground_audit,
+            "clean_sample_access": False,
+            "source_sample_access": False,
+            "latency_includes_argmax": True,
+        }
+    )
+    geometry = {
+        **dict(result.geometry_audit),
+        "schema": "cvs.phase2.d42.outer_geometry.v1",
+        "observed_feature_block_energy": _d30_observed_block_energy(features),
+        "outer_held_protocol": "outer_leave_two_physical_ranks_not_seen_by_metric_or_lda",
+        "pairwise_support_diagnostics": pairwise,
+        "final_argmax_old_to_new_count": intrusion,
+        "final_argmax_new_to_old_count": final_new_to_old,
+        "final_argmax_new_to_new_count": final_new_to_new,
+        "pairwise_old_to_new_misorder_count": int(np.sum(margins["old_new"] <= 0.0)),
+        "pairwise_new_to_old_misorder_count": int(np.sum(margins["new_old"] <= 0.0)),
+        "pairwise_new_to_new_misorder_count": int(np.sum(margins["new_new"] <= 0.0)),
+        "old_new_margin_min": float(np.min(margins["old_new"])),
+        "new_old_margin_min": float(np.min(margins["new_old"])),
+        "new_new_margin_min": float(np.min(margins["new_new"])),
+        "int8_fp32_max_score_abs_error": max_score_error,
+        "int8_fp32_margin_sign_flip_count": margin_sign_flips,
+        "source_audit": source_audit,
+        "ground_int8_audit": ground_audit,
+        "registration_before_prediction_sha256": before_prediction_sha256,
+        "outer_prediction_sha256": outer_prediction_sha256,
+        "query_rows_used": 0,
+        "stage2c_log_diag_frozen": bool(result.geometry_audit["metric_frozen_during_stage2c"]),
+        "old_log_diag_bitwise_unchanged": old_log_diag_bitwise_unchanged,
+        "old_log_diag_before_sha256": hashlib.sha256(
+            np.ascontiguousarray(result.before_state.log_diag_fp32).tobytes()
+        ).hexdigest(),
+        "old_log_diag_final_sha256": hashlib.sha256(
+            np.ascontiguousarray(result.state.log_diag_fp32).tobytes()
+        ).hexdigest(),
+        "stage2b_lda_scope": "old_only",
+        "stage2c_lda_scope": "all_registered",
+        "lda_shrinkage": str(result.geometry_audit["shrinkage"]),
+        "lda_priors": str(result.geometry_audit["prior_policy"]),
+        "sklearn_version": str(sklearn.__version__),
+        "sklearn_locked_version": D42_SKLEARN_LOCKED_VERSION,
+        "sklearn_version_lock_pass": str(sklearn.__version__)
+        == D42_SKLEARN_LOCKED_VERSION,
+    }
+    return {
+        "candidate_id": candidate_id,
+        "held_ranks": list(held_ranks),
+        "fit_k_shot": 8,
+        "before_old": before_old,
+        "after_old": after_old,
+        "after_new": after_new,
+        "H_old_new": legacy._harmonic(
+            float(after_old["overall_accuracy"]), float(after_new["overall_accuracy"])
+        ),
+        "forgetting": float(before_old["overall_accuracy"] - after_old["overall_accuracy"]),
+        "joint_floor": float(min(after_old["class_floor_accuracy"], after_new["class_floor_accuracy"])),
+        "final_argmax_old_to_new_count": intrusion,
+        "final_argmax_new_to_old_count": final_new_to_old,
+        "final_argmax_new_to_new_count": final_new_to_new,
+        "pairwise_old_to_new_misorder_count": int(np.sum(margins["old_new"] <= 0.0)),
+        "pairwise_new_to_old_misorder_count": int(np.sum(margins["new_old"] <= 0.0)),
+        "pairwise_new_to_new_misorder_count": int(np.sum(margins["new_new"] <= 0.0)),
+        "old_new_margin_min": float(np.min(margins["old_new"])),
+        "new_old_margin_min": float(np.min(margins["new_old"])),
+        "new_new_margin_min": float(np.min(margins["new_new"])),
+        "pairwise_support_diagnostics": pairwise,
+        "matched_fp32_before_argmax_change_count": before_argmax_changes,
+        "matched_fp32_outer_argmax_change_count": final_argmax_changes,
+        "int8_fp32_max_score_abs_error": max_score_error,
+        "int8_fp32_margin_sign_flip_count": margin_sign_flips,
         "deployment_precision": config.deploy_precision,
         "registration_before_prediction_sha256": before_prediction_sha256,
         "outer_prediction_sha256": outer_prediction_sha256,
@@ -6347,8 +6854,43 @@ def _enrich_d40_strong_b3_pairwise(
         [float(item["new_old_margin"]) for item in pairwise], dtype=np.float64
     )
     old_predictions = np.asarray(all_classes)[np.argmax(scores_old, axis=1)]
+    new_predictions = np.asarray(all_classes)[np.argmax(scores_new, axis=1)]
     intrusion = _d37_old_to_new_intrusion_count(
         old_predictions, np.ones(len(old_predictions), dtype=bool), new_classes
+    )
+    final_new_to_old = int(np.sum(np.isin(new_predictions, np.asarray(old_classes))))
+    final_new_to_new = int(
+        np.sum(
+            np.isin(new_predictions, np.asarray(new_classes))
+            & (new_predictions.astype(str) != labels[held_new])
+        )
+    )
+    old_pairwise: list[dict[str, Any]] = []
+    for score, truth, physical_id, rank in zip(
+        scores_old,
+        labels[held_old].tolist(),
+        tokens[held_old].tolist(),
+        ranks[held_old].tolist(),
+        strict=True,
+    ):
+        truth_index = all_classes.index(str(truth))
+        top_new_index = len(old_classes) + int(np.argmax(score[len(old_classes) :]))
+        old_pairwise.append(
+            {
+                "scenario": str(scenario),
+                "outer_fold": int(outer_fold),
+                "physical_rank": int(rank),
+                "physical_sample_id": str(physical_id),
+                "true_old_handle": str(truth),
+                "top_new_handle": all_classes[top_new_index],
+                "true_old_score": float(score[truth_index]),
+                "top_new_score": float(score[top_new_index]),
+                "old_new_margin": float(score[truth_index] - score[top_new_index]),
+                "query_rows_used": 0,
+            }
+        )
+    old_new_margins = np.asarray(
+        [float(item["old_new_margin"]) for item in old_pairwise], dtype=np.float64
     )
     row.update(
         {
@@ -6356,6 +6898,14 @@ def _enrich_d40_strong_b3_pairwise(
             "pairwise_support_diagnostics": pairwise,
             "new_new_confusion_count": int(np.sum(margins <= 0.0)),
             "actual_new_to_old_count": int(np.sum(new_old_margins <= 0.0)),
+            "final_argmax_old_to_new_count": intrusion,
+            "final_argmax_new_to_old_count": final_new_to_old,
+            "final_argmax_new_to_new_count": final_new_to_new,
+            "old_to_new_pairwise_diagnostics": old_pairwise,
+            "pairwise_old_to_new_misorder_count": int(np.sum(old_new_margins <= 0.0)),
+            "pairwise_new_to_old_misorder_count": int(np.sum(new_old_margins <= 0.0)),
+            "pairwise_new_to_new_misorder_count": int(np.sum(margins <= 0.0)),
+            "old_new_margin_min": float(np.min(old_new_margins)),
             "new_new_margin_min": float(np.min(margins)),
             "new_new_margin_mean": float(np.mean(margins)),
             "new_old_margin_min": float(
@@ -6370,6 +6920,14 @@ def _enrich_d40_strong_b3_pairwise(
             "outer_held_new_intrusion_count": intrusion,
             "new_new_confusion_count": int(np.sum(margins <= 0.0)),
             "actual_new_to_old_count": int(np.sum(new_old_margins <= 0.0)),
+            "final_argmax_old_to_new_count": intrusion,
+            "final_argmax_new_to_old_count": final_new_to_old,
+            "final_argmax_new_to_new_count": final_new_to_new,
+            "old_to_new_pairwise_diagnostics": old_pairwise,
+            "pairwise_old_to_new_misorder_count": int(np.sum(old_new_margins <= 0.0)),
+            "pairwise_new_to_old_misorder_count": int(np.sum(new_old_margins <= 0.0)),
+            "pairwise_new_to_new_misorder_count": int(np.sum(margins <= 0.0)),
+            "old_new_margin_min": float(np.min(old_new_margins)),
             "new_new_margin_min": float(np.min(margins)),
             "new_old_margin_min": float(
                 min(float(item["new_old_margin"]) for item in pairwise)
@@ -6381,6 +6939,9 @@ def _enrich_d40_strong_b3_pairwise(
         {
             "pairwise_support_diagnostic_row_count": len(pairwise),
             "actual_new_to_old_count": int(np.sum(new_old_margins <= 0.0)),
+            "pairwise_old_to_new_misorder_count": int(np.sum(old_new_margins <= 0.0)),
+            "pairwise_new_to_old_misorder_count": int(np.sum(new_old_margins <= 0.0)),
+            "pairwise_new_to_new_misorder_count": int(np.sum(margins <= 0.0)),
             "query_rows_used_for_pairwise_diagnostic": 0,
         }
     )
@@ -8613,6 +9174,309 @@ def _select_d41_candidate(
     return (D41_INT8 if positive else IDENTITY_CANDIDATE), decisions
 
 
+def _validate_d42_matrix_rows(
+    folds_by_candidate: Mapping[str, Sequence[Mapping[str, Any]]],
+) -> set[tuple[str, int]]:
+    """Validate exact D42 7x3x5 rows and matched held physical identities."""
+
+    if tuple(folds_by_candidate) != D42_CANDIDATES:
+        raise D25RunnerError("D42 exact seven-candidate lock drift")
+    expected = {
+        (scenario, fold_index)
+        for scenario in legacy.FORMAL_LEO_WEAK_SCENARIOS
+        for fold_index in range(len(HELD_RANKS))
+    }
+    reference: dict[tuple[str, int], tuple[int, str]] | None = None
+    for candidate_id, rows in folds_by_candidate.items():
+        if len(rows) != 15 or any(str(row["candidate_id"]) != candidate_id for row in rows):
+            raise D25RunnerError("D42 candidate row identity/cardinality drift")
+        keys = {(str(row["scenario"]), int(row["fold_index"])) for row in rows}
+        if keys != expected or any(
+            tuple(int(value) for value in row["held_ranks"])
+            != tuple(HELD_RANKS[int(row["fold_index"])])
+            or int(row["held_physical_token_count"]) <= 0
+            or len(str(row["held_physical_token_sha256"])) != 64
+            for row in rows
+        ):
+            raise D25RunnerError("D42 scene/fold/held-rank closure drift")
+        physical = {
+            (str(row["scenario"]), int(row["fold_index"])): (
+                int(row["held_physical_token_count"]),
+                str(row["held_physical_token_sha256"]),
+            )
+            for row in rows
+        }
+        if reference is None:
+            reference = physical
+        elif physical != reference:
+            raise D25RunnerError("D42 matched held physical-token closure drift")
+    return expected
+
+
+def _select_d42_candidate(
+    folds_by_candidate: Mapping[str, Sequence[Mapping[str, Any]]],
+) -> tuple[str, list[dict[str, Any]]]:
+    """Apply frozen D42 strict aggregate/scenario/class/floor and protocol gates."""
+
+    keys = _validate_d42_matrix_rows(folds_by_candidate)
+    keyed = {
+        candidate_id: {(str(row["scenario"]), int(row["fold_index"])): row for row in rows}
+        for candidate_id, rows in folds_by_candidate.items()
+    }
+    first_key = next(iter(keys))
+    old_names = tuple(keyed[DIAG_CANDIDATE][first_key]["before_old"]["per_class_accuracy"])
+    new_names = tuple(keyed[DIAG_CANDIDATE][first_key]["after_new"]["per_class_accuracy"])
+    d42 = list(folds_by_candidate[D42_INT8])
+    b3 = list(folds_by_candidate[DIAG_CANDIDATE])
+
+    def mean(rows: Sequence[Mapping[str, Any]], field: str, metric: str | None = None) -> float:
+        if metric is None:
+            return float(np.mean([float(row[field]) for row in rows]))
+        return float(np.mean([float(row[field][metric]) for row in rows]))
+
+    def scenario_rows(rows: Sequence[Mapping[str, Any]], scenario: str) -> list[Mapping[str, Any]]:
+        return [row for row in rows if str(row["scenario"]) == scenario]
+
+    def strict_block_gate(block: str, class_names: tuple[str, ...]) -> bool:
+        return bool(
+            mean(d42, block, "overall_accuracy") > mean(b3, block, "overall_accuracy") + 1e-12
+            and mean(d42, block, "class_floor_accuracy") > mean(b3, block, "class_floor_accuracy") + 1e-12
+            and all(
+                mean(scenario_rows(d42, scenario), block, "overall_accuracy")
+                > mean(scenario_rows(b3, scenario), block, "overall_accuracy") + 1e-12
+                and mean(scenario_rows(d42, scenario), block, "class_floor_accuracy")
+                > mean(scenario_rows(b3, scenario), block, "class_floor_accuracy") + 1e-12
+                and all(
+                    float(
+                        np.mean(
+                            [
+                                float(row[block]["per_class_accuracy"][name])
+                                for row in scenario_rows(d42, scenario)
+                            ]
+                        )
+                    )
+                    > float(
+                        np.mean(
+                            [
+                                float(row[block]["per_class_accuracy"][name])
+                                for row in scenario_rows(b3, scenario)
+                            ]
+                        )
+                    )
+                    + 1e-12
+                    for name in class_names
+                )
+                for scenario in legacy.FORMAL_LEO_WEAK_SCENARIOS
+            )
+            and all(
+                float(np.mean([float(row[block]["per_class_accuracy"][name]) for row in d42]))
+                > float(np.mean([float(row[block]["per_class_accuracy"][name]) for row in b3])) + 1e-12
+                for name in class_names
+            )
+        )
+
+    before_gate = strict_block_gate("before_old", old_names)
+    after_old_gate = bool(
+        strict_block_gate("after_old", old_names)
+        and mean(d42, "forgetting") <= mean(b3, "forgetting") + 1e-12
+        and all(
+            mean(scenario_rows(d42, scenario), "forgetting")
+            <= mean(scenario_rows(b3, scenario), "forgetting") + 1e-12
+            for scenario in legacy.FORMAL_LEO_WEAK_SCENARIOS
+        )
+    )
+    new_gate = bool(
+        strict_block_gate("after_new", new_names)
+        and min(
+            float(np.mean([float(row["after_new"]["per_class_accuracy"][name]) for row in d42]))
+            for name in new_names
+        ) > D42_MIN_NEW_CLASS_ACCURACY
+    )
+    joint_gate = bool(
+        mean(d42, "H_old_new") > mean(b3, "H_old_new") + 1e-12
+        and mean(d42, "joint_floor") > mean(b3, "joint_floor") + 1e-12
+        and all(
+            mean(scenario_rows(d42, scenario), "H_old_new")
+            > mean(scenario_rows(b3, scenario), "H_old_new") + 1e-12
+            and mean(scenario_rows(d42, scenario), "joint_floor")
+            > mean(scenario_rows(b3, scenario), "joint_floor") + 1e-12
+            for scenario in legacy.FORMAL_LEO_WEAK_SCENARIOS
+        )
+    )
+    final_counts = (
+        sum(int(row["final_argmax_old_to_new_count"]) for row in d42),
+        sum(int(row["final_argmax_new_to_old_count"]) for row in d42),
+        sum(int(row["final_argmax_new_to_new_count"]) for row in d42),
+    )
+    confusion_gate = bool(
+        final_counts[0] < D42_OLD_TO_NEW_CAP
+        and final_counts[1] < D42_NEW_TO_OLD_CAP
+        and final_counts[2] < D42_NEW_TO_NEW_CAP
+    )
+    pairwise_counts = tuple(
+        sum(int(row[name]) for row in d42)
+        for name in (
+            "pairwise_old_to_new_misorder_count",
+            "pairwise_new_to_old_misorder_count",
+            "pairwise_new_to_new_misorder_count",
+        )
+    )
+    b3_pairwise_counts = tuple(
+        sum(int(row[name]) for row in b3)
+        for name in (
+            "pairwise_old_to_new_misorder_count",
+            "pairwise_new_to_old_misorder_count",
+            "pairwise_new_to_new_misorder_count",
+        )
+    )
+    pairwise_gate = bool(
+        all(left < right for left, right in zip(pairwise_counts, b3_pairwise_counts, strict=True))
+        and min(float(row["old_new_margin_min"]) for row in d42)
+        > min(float(row["old_new_margin_min"]) for row in b3) + 1e-12
+        and min(float(row["new_old_margin_min"]) for row in d42)
+        > min(float(row["new_old_margin_min"]) for row in b3) + 1e-12
+        and min(float(row["new_new_margin_min"]) for row in d42)
+        > min(float(row["new_new_margin_min"]) for row in b3) + 1e-12
+    )
+    precision_gate = all(
+        int(keyed[D42_INT8][key]["matched_fp32_before_argmax_change_count"]) == 0
+        and int(keyed[D42_INT8][key]["matched_fp32_outer_argmax_change_count"]) == 0
+        and int(keyed[D42_INT8][key]["int8_fp32_margin_sign_flip_count"]) == 0
+        and np.isfinite(float(keyed[D42_INT8][key]["int8_fp32_max_score_abs_error"]))
+        and str(keyed[D42_INT8][key]["deployment_precision"]) == "int8"
+        and str(keyed[D42_FP32][key]["deployment_precision"]) == "fp32"
+        and str(keyed[D42_INT8][key]["registration_before_prediction_sha256"])
+        == str(keyed[D42_FP32][key]["registration_before_prediction_sha256"])
+        and str(keyed[D42_INT8][key]["outer_prediction_sha256"])
+        == str(keyed[D42_FP32][key]["outer_prediction_sha256"])
+        and _canonical_bytes(keyed[D42_INT8][key]["training_trace"])
+        == _canonical_bytes(keyed[D42_FP32][key]["training_trace"])
+        for key in keys
+    )
+    lifecycle_gate = all(
+        bool(row["geometry_summary"]["old_only_metric_helper_called_once"])
+        and int(row["geometry_summary"]["old_only_metric_new_support_argument_count"]) == 0
+        and bool(row["geometry_summary"]["before_materialized_pre_stage2c"])
+        and int(row["geometry_summary"]["before_materialization_optimizer_step"]) == 20
+        and bool(row["geometry_summary"]["stage2c_log_diag_frozen"])
+        and bool(row["geometry_summary"]["old_log_diag_bitwise_unchanged"])
+        and str(row["geometry_summary"]["stage2b_lda_scope"]) == "old_only"
+        and str(row["geometry_summary"]["stage2c_lda_scope"]) == "all_registered"
+        and str(row["geometry_summary"]["lda_solver"]) == "lsqr"
+        and str(row["geometry_summary"]["lda_shrinkage"]) == "auto"
+        and str(row["geometry_summary"]["lda_priors"])
+        == "equal_1_over_registered_class_count"
+        and bool(row["geometry_summary"]["label_permutation_equivariant"])
+        and not bool(row["geometry_summary"]["class_id_specific_branch"])
+        and str(row["geometry_summary"]["query_view"]) == "full_288d_only"
+        and str(row["geometry_summary"]["sklearn_version"])
+        == D42_SKLEARN_LOCKED_VERSION
+        and str(row["geometry_summary"]["sklearn_locked_version"])
+        == D42_SKLEARN_LOCKED_VERSION
+        and bool(row["geometry_summary"]["sklearn_version_lock_pass"])
+        for row in d42
+    )
+    ground_gate = all(
+        bool(row["ground_int8_audit"]["bitwise_unchanged"])
+        and not bool(row["ground_int8_audit"]["update_access"])
+        and str(row["ground_int8_audit"]["entry_sha256"])
+        == str(row["ground_int8_audit"]["exit_sha256"])
+        and not bool(row["geometry_summary"]["ground_int8_update_access"])
+        for row in d42
+    )
+    source_gate = all(
+        int(row["source_audit"]["old_source_row_count"]) == 48
+        and int(row["source_audit"]["new_source_row_count"]) == 40
+        and int(row["source_audit"]["old_source_held_intersection_count"]) == 0
+        and int(row["source_audit"]["new_source_held_intersection_count"]) == 0
+        and int(row["source_audit"]["old_source_new_class_row_count"]) == 0
+        and int(row["source_audit"]["new_source_old_class_row_count"]) == 0
+        and int(row["source_audit"]["held_fit_row_count"]) == 0
+        and int(row["source_audit"]["query_rows_used"]) == 0
+        and str(row["source_audit"]["sklearn_version"])
+        == D42_SKLEARN_LOCKED_VERSION
+        and str(row["source_audit"]["sklearn_locked_version"])
+        == D42_SKLEARN_LOCKED_VERSION
+        and bool(row["source_audit"]["sklearn_version_lock_pass"])
+        for row in d42
+    )
+    state_gate = all(
+        bool(row["resource"]["formal_coefficients_residual_int8"])
+        and str(row["geometry_summary"]["lda_coefficient_semantics"])
+        == "precision_weighted_target_prototype_w_c_equals_sigma_inverse_mu_c"
+        and bool(row["geometry_summary"]["formal_old_target_vectors_residual_int8"])
+        and bool(row["geometry_summary"]["formal_new_target_vectors_residual_int8"])
+        and str(row["geometry_summary"]["formal_target_vector_semantics"])
+        == "precision_weighted_target_prototype"
+        and not bool(row["geometry_summary"]["class_means_persisted_in_formal_state"])
+        and not bool(row["geometry_summary"]["shared_covariance_persisted_in_formal_state"])
+        and str(row["resource"]["coefficient_dtype"]) == "int8"
+        and str(row["resource"]["intercept_dtype"]) == "float16"
+        and int(row["resource"]["resident_fp32_target_coefficient_count"]) == 0
+        and bool(row["resource"]["formal_target_vectors_int8_no_fp32_sidecar"])
+        and int(row["resource"]["coefficient_row_count"]) == 11
+        and int(row["resource"]["coefficient_dimension"]) == 288
+        and int(row["resource"]["persistent_state_bytes"]) > 0
+        and bool(row["resource"]["persistent_state_cap_pass"])
+        for row in d42
+    )
+    resource_gate = all(
+        int(row["resource"]["adaptation_epochs"]) == 20
+        and int(row["resource"]["total_optimizer_steps"]) == 20
+        and int(row["resource"]["lda_optimizer_steps"]) == 0
+        and int(row["resource"]["peak_trainable_parameters"]) <= 80_000
+        and np.isfinite(float(row["resource"]["estimated_lda_fit_macs"]))
+        and float(row["resource"]["estimated_lda_fit_macs"]) > 0.0
+        and np.isfinite(float(row["resource"]["estimated_macs_per_query"]))
+        and str(row["resource"]["sklearn_version"])
+        == D42_SKLEARN_LOCKED_VERSION
+        and str(row["resource"]["sklearn_locked_version"])
+        == D42_SKLEARN_LOCKED_VERSION
+        and bool(row["resource"]["sklearn_version_lock_pass"])
+        and int(row["resource"]["dense_query_graph_bytes"]) == 0
+        and int(row["resource"]["query_rows_used_for_fit"]) == 0
+        and not any(bool(row["resource"][name]) for name in (
+            "query_labels_used_for_fit", "query_role_oracle_access",
+            "query_true_batch_class_count_access", "query_class_quota_access",
+            "query_batch_global_assignment", "clean_sample_access", "source_sample_access",
+        ))
+        for row in d42
+    )
+    gates = {
+        "before_gate": bool(before_gate),
+        "after_old_gate": bool(after_old_gate),
+        "new_gate": bool(new_gate),
+        "joint_gate": bool(joint_gate),
+        "confusion_gate": confusion_gate,
+        "pairwise_gate": pairwise_gate,
+        "precision_gate": bool(precision_gate),
+        "lifecycle_gate": bool(lifecycle_gate),
+        "ground_gate": bool(ground_gate),
+        "source_gate": bool(source_gate),
+        "state_gate": bool(state_gate),
+        "resource_gate": bool(resource_gate),
+    }
+    positive = all(gates.values())
+    decisions: list[dict[str, Any]] = []
+    for candidate_id in D42_CANDIDATES:
+        decision = {
+            "candidate_id": candidate_id,
+            "eligible_positive_route": bool(candidate_id == D42_INT8 and positive),
+        }
+        if candidate_id == D42_INT8:
+            decision.update(gates)
+            decision.update(
+                {
+                    "final_argmax_confusion_totals": list(final_counts),
+                    "pairwise_misorder_totals": list(pairwise_counts),
+                    "b3_pairwise_misorder_totals": list(b3_pairwise_counts),
+                    "b3_h_same_row_mean": mean(b3, "H_old_new"),
+                }
+            )
+        decisions.append(decision)
+    return (D42_INT8 if positive else IDENTITY_CANDIDATE), decisions
+
+
 def _select_d38_candidate(
     folds_by_candidate: Mapping[str, Sequence[Mapping[str, Any]]],
 ) -> tuple[str, list[dict[str, Any]]]:
@@ -9308,7 +10172,7 @@ def _apply_full_k10_d39_gate(
                 and resource["target_old_int8_prototypes_used_for_prediction"]
                 and resource["target_new_int8_prototypes_used_for_prediction"]
                 and int(resource["resident_fp32_target_prototype_count"]) == 0
-                and bool(resource["formal_state_int8_only"])
+                and bool(resource["formal_target_vectors_int8_no_fp32_sidecar"])
                 and str(resource["radius_storage_dtype"]) == "float16"
                 and str(resource["r0_storage_dtype"]) == "float16"
             ),
@@ -9361,6 +10225,102 @@ def _apply_full_k10_d39_gate(
     if full_pass:
         return selected_id, None
     return IDENTITY_CANDIDATE, "FULL_K10_D39_RADIUS_PRECISION_RESOURCE_OR_PROTOCOL_GATE_FAILED"
+
+
+def _apply_full_k10_d42_gate(
+    selected_id: str,
+    candidate_decisions: list[dict[str, Any]],
+    deployment_resources: Mapping[str, Mapping[str, Mapping[str, Any]]],
+) -> tuple[str, str | None]:
+    """Require D42 selected-only full-K10 technical state/resource closure."""
+
+    if selected_id != D42_INT8:
+        return selected_id, None
+    decision = next(row for row in candidate_decisions if row["candidate_id"] == D42_INT8)
+    by_scenario: dict[str, dict[str, bool]] = {}
+    for scenario in legacy.FORMAL_LEO_WEAK_SCENARIOS:
+        resource = deployment_resources[D42_INT8][scenario]
+        ground = resource["ground_int8_audit"]
+        source = resource["source_audit"]
+        by_scenario[scenario] = {
+            "resource": bool(
+                int(resource["adaptation_epochs"]) == 20
+                and int(resource["total_optimizer_steps"]) == 20
+                and int(resource["lda_optimizer_steps"]) == 0
+                and int(resource["peak_trainable_parameters"]) <= 80_000
+                and bool(resource["persistent_state_cap_pass"])
+                and np.isfinite(float(resource["estimated_lda_fit_macs"]))
+                and float(resource["estimated_lda_fit_macs"]) > 0.0
+            ),
+            "formal_state": bool(
+                resource["deployment_precision"] == "int8"
+                and bool(resource["formal_coefficients_residual_int8"])
+                and str(resource["coefficient_dtype"]) == "int8"
+                and str(resource["intercept_dtype"]) == "float16"
+                and int(resource["resident_fp32_target_coefficient_count"]) == 0
+                and bool(resource["formal_target_vectors_int8_no_fp32_sidecar"])
+            ),
+            "precision": bool(
+                int(resource["matched_fp32_before_argmax_change_count"]) == 0
+                and int(resource["matched_fp32_full_k10_argmax_change_count"]) == 0
+                and int(resource["int8_fp32_margin_sign_flip_count"]) == 0
+                and np.isfinite(float(resource["int8_fp32_max_score_abs_error"]))
+            ),
+            "solver": bool(
+                str(resource["lda_solver"]) == "lsqr"
+                and str(resource["lda_shrinkage"]) == "auto"
+                and str(resource["lda_priors"])
+                == "equal_1_over_registered_class_count"
+                and str(resource["sklearn_version"])
+                == D42_SKLEARN_LOCKED_VERSION
+                and str(resource["sklearn_locked_version"])
+                == D42_SKLEARN_LOCKED_VERSION
+                and bool(resource["sklearn_version_lock_pass"])
+            ),
+            "query": bool(
+                str(resource["query_view"]) == "full_288d_only"
+                and int(resource["query_rows_used_for_fit"]) == 0
+                and not any(bool(resource[name]) for name in (
+                    "query_labels_used_for_fit", "query_role_oracle_access",
+                    "query_true_batch_class_count_access", "query_class_quota_access",
+                    "query_batch_global_assignment", "clean_sample_access", "source_sample_access",
+                ))
+            ),
+            "source": bool(
+                int(source["old_source_row_count"]) == 60
+                and int(source["new_source_row_count"]) == 50
+                and int(source["old_source_new_class_row_count"]) == 0
+                and int(source["new_source_old_class_row_count"]) == 0
+                and int(source["query_rows_used"]) == 0
+                and str(source["sklearn_version"])
+                == D42_SKLEARN_LOCKED_VERSION
+                and str(source["sklearn_locked_version"])
+                == D42_SKLEARN_LOCKED_VERSION
+                and bool(source["sklearn_version_lock_pass"])
+            ),
+            "ground": bool(
+                ground["bitwise_unchanged"]
+                and not ground["update_access"]
+                and str(ground["entry_sha256"]) == str(ground["exit_sha256"])
+            ),
+            "latency": bool(
+                np.isfinite(float(resource["batch1_head_latency_mean_ms"]))
+                and np.isfinite(float(resource["batch1_head_latency_p95_ms"]))
+                and int(resource["batch1_head_latency_sample_count"]) > 0
+                and bool(resource["latency_includes_argmax"])
+            ),
+            "selected_only_refit": bool(resource["full_k10_refit_only_no_candidate_change"]),
+        }
+    passed = bool(
+        decision.get("eligible_positive_route", False)
+        and all(all(values.values()) for values in by_scenario.values())
+    )
+    decision["full_k10_d42_gate_by_scenario"] = by_scenario
+    decision["full_k10_d42_gate_pass"] = passed
+    decision["eligible_positive_route"] = passed
+    if passed:
+        return selected_id, None
+    return IDENTITY_CANDIDATE, "FULL_K10_D42_STATE_PRECISION_RESOURCE_OR_PROTOCOL_GATE_FAILED"
 
 
 def _apply_full_k10_d41_gate(
@@ -11596,6 +12556,131 @@ def _full_d41_state_audit(
     return resource, geometry
 
 
+def _full_d42_state_audit(
+    rows: Mapping[str, np.ndarray],
+    z_id160: np.ndarray,
+    fft96: np.ndarray,
+    rf32: np.ndarray,
+    *,
+    old_classes: tuple[str, ...],
+    new_classes: tuple[str, ...],
+    config: D42CandidateConfig,
+    seed: int,
+    ground_int8_path: Path,
+    expected_ground_int8_sha256: str,
+    device: torch.device | str = "cpu",
+    scenario: str = "unit_test_scene",
+) -> tuple[dict[str, Any], dict[str, Any]]:
+    """Selected-only full-K10 D42 state, precision, latency and resource audit."""
+
+    labels = np.asarray(rows["labels"]).astype(str)
+    tokens = np.asarray(rows["tokens"]).astype(str)
+    old = np.isin(labels, np.asarray(old_classes))
+    new = np.isin(labels, np.asarray(new_classes))
+    if int(np.sum(old)) != 10 * len(old_classes) or int(np.sum(new)) != 10 * len(new_classes):
+        raise D25RunnerError("D42 full-K10 class symmetry drift")
+    features = _d1_feature_from_blocks(z_id160, fft96, rf32)
+    entry_sha256 = _ground_int8_entry_audit(
+        ground_int8_path, expected_ground_int8_sha256
+    )
+    started = time.perf_counter()
+    result = fit_d42_unified_shrinkage_lda(
+        features[old], labels[old], old_classes,
+        features[new], labels[new], new_classes,
+        seed=int(seed), device=device, config=config.core,
+    )
+    fit_elapsed_ms = (time.perf_counter() - started) * 1000.0
+    ground_audit = _ground_int8_exit_audit(ground_int8_path, entry_sha256)
+    deployed_state = result.state if config.deploy_precision == "int8" else result.matched_fp32_state
+    int8_scores = score_d42_unified_shrinkage_lda(result.state, features)
+    fp32_scores = score_d42_unified_shrinkage_lda(result.matched_fp32_state, features)
+    before_int8_scores = score_d42_unified_shrinkage_lda(result.before_state, features[old])
+    before_fp32_scores = score_d42_unified_shrinkage_lda(result.matched_fp32_before_state, features[old])
+    labels_all = labels
+    margins_int8 = _d42_margin_vectors(int8_scores, labels_all, old, new, old_classes, new_classes)
+    margins_fp32 = _d42_margin_vectors(fp32_scores, labels_all, old, new, old_classes, new_classes)
+    sign_flips = int(sum(
+        np.sum((margins_int8[name] <= 0.0) != (margins_fp32[name] <= 0.0))
+        for name in ("old_new", "new_old", "new_new")
+    ))
+    latency_ms: list[float] = []
+    for feature in features:
+        score_started = time.perf_counter()
+        _ = int(np.argmax(score_d42_unified_shrinkage_lda(deployed_state, feature[None, :])[0]))
+        latency_ms.append((time.perf_counter() - score_started) * 1000.0)
+    source_audit = {
+        "old_source_physical_token_sha256": hashlib.sha256(_canonical_bytes(sorted(tokens[old].tolist()))).hexdigest(),
+        "new_source_physical_token_sha256": hashlib.sha256(_canonical_bytes(sorted(tokens[new].tolist()))).hexdigest(),
+        "old_source_row_count": int(np.sum(old)),
+        "new_source_row_count": int(np.sum(new)),
+        "old_source_new_class_row_count": int(np.sum(old & new)),
+        "new_source_old_class_row_count": int(np.sum(new & old)),
+        "query_rows_used": 0,
+        "sklearn_version": str(sklearn.__version__),
+        "sklearn_locked_version": D42_SKLEARN_LOCKED_VERSION,
+        "sklearn_version_lock_pass": str(sklearn.__version__)
+        == D42_SKLEARN_LOCKED_VERSION,
+    }
+    resource = dict(result.resource_audit)
+    resource.update(
+        {
+            "deployment_precision": config.deploy_precision,
+            "deployment_k_shot": 10,
+            "peak_trainable_parameters": int(resource["trainable_parameters"]),
+            "total_optimizer_steps": int(resource["optimizer_steps"]),
+            "persistent_state_bytes": int(deployed_state.persistent_state_bytes),
+            "persistent_state_cap_pass": int(deployed_state.persistent_state_bytes) <= 256 * 1024,
+            "resident_fp32_target_coefficient_count": 0 if config.deploy_precision == "int8" else len(old_classes + new_classes),
+            "formal_target_vectors_int8_no_fp32_sidecar": bool(
+                config.deploy_precision == "int8"
+                and deployed_state.is_int8
+                and int(result.resource_audit["resident_fp32_target_coefficient_count"]) == 0
+            ),
+            "formal_coefficients_residual_int8": bool(result.state.is_int8),
+            "coefficient_dtype": str(result.state.coef1_qint8.dtype),
+            "intercept_dtype": str(result.state.intercept_fp16.dtype),
+            "coefficient_row_count": int(result.state.coef1_qint8.shape[0]),
+            "coefficient_dimension": int(result.state.coef1_qint8.shape[1]),
+            "coefficient_shape": list(result.state.coef1_qint8.shape),
+            "intercept_shape": list(result.state.intercept_fp16.shape),
+            "registry_state_bytes": int(result.state.registry_state_bytes),
+            "lda_solver": str(result.geometry_audit["lda_solver"]),
+            "lda_shrinkage": str(result.geometry_audit["shrinkage"]),
+            "lda_priors": str(result.geometry_audit["prior_policy"]),
+            "sklearn_version": str(sklearn.__version__),
+            "sklearn_locked_version": D42_SKLEARN_LOCKED_VERSION,
+            "sklearn_version_lock_pass": str(sklearn.__version__)
+            == D42_SKLEARN_LOCKED_VERSION,
+            "query_view": str(result.geometry_audit["query_view"]),
+            "matched_fp32_before_argmax_change_count": int(np.sum(np.argmax(before_int8_scores, axis=1) != np.argmax(before_fp32_scores, axis=1))),
+            "matched_fp32_full_k10_argmax_change_count": int(np.sum(np.argmax(int8_scores, axis=1) != np.argmax(fp32_scores, axis=1))),
+            "int8_fp32_max_score_abs_error": float(max(np.max(np.abs(before_int8_scores - before_fp32_scores)), np.max(np.abs(int8_scores - fp32_scores)))),
+            "int8_fp32_margin_sign_flip_count": sign_flips,
+            "source_audit": source_audit,
+            "ground_int8_audit": ground_audit,
+            "support_adaptation_and_lda_elapsed_ms": fit_elapsed_ms,
+            "batch1_head_latency_mean_ms": float(np.mean(latency_ms)),
+            "batch1_head_latency_p95_ms": float(np.quantile(latency_ms, 0.95)),
+            "batch1_head_latency_sample_count": len(latency_ms),
+            "latency_includes_argmax": True,
+            "full_k10_refit_only_no_candidate_change": True,
+            "clean_sample_access": False,
+            "source_sample_access": False,
+            "complete_loss_trace": [dict(row) for row in result.training_trace],
+        }
+    )
+    geometry = {
+        **dict(result.geometry_audit),
+        "schema": "cvs.phase2.d42.full_k10_geometry.v1",
+        "observed_feature_block_energy": _d30_observed_block_energy(features),
+        "full_k10_refit_only_no_candidate_change": True,
+        "source_audit": source_audit,
+        "ground_int8_audit": ground_audit,
+        "query_rows_used": 0,
+    }
+    return resource, geometry
+
+
 def _full_d37_state_audit(
     rows: Mapping[str, np.ndarray],
     z_id160: np.ndarray,
@@ -12122,6 +13207,10 @@ def run(
         _require_d41_development_cell(
             before_preopen_manifest, after_preopen_manifest
         )
+    if candidate_set == CANDIDATE_SET_D42_V1:
+        _require_d42_development_cell(
+            before_preopen_manifest, after_preopen_manifest
+        )
     preopen_old_classes = legacy._registered_handles(before_preopen_manifest)
     component, component_audit = legacy._load_component(
         component_dir,
@@ -12337,7 +13426,25 @@ def run(
     for candidate_id, config in candidates.items():
         for scenario in legacy.FORMAL_LEO_WEAK_SCENARIOS:
             for fold_index, held_ranks in enumerate(HELD_RANKS):
-                if isinstance(config, D41CandidateConfig):
+                if isinstance(config, D42CandidateConfig):
+                    row = _evaluate_d42_fold(
+                        scene_rows[scenario],
+                        scene_z[scenario],
+                        scene_fft[scenario],
+                        scene_rf[scenario],
+                        old_classes=old_classes,
+                        new_classes=new_classes,
+                        held_ranks=held_ranks,
+                        candidate_id=candidate_id,
+                        config=config,
+                        seed=int(before_manifest["seed"]) + fold_index,
+                        ground_int8_path=ground_int8_path,
+                        expected_ground_int8_sha256=expected_ground_int8_sha256,
+                        device=device,
+                        scenario=scenario,
+                        outer_fold=fold_index,
+                    )
+                elif isinstance(config, D41CandidateConfig):
                     row = _evaluate_d41_fold(
                         scene_rows[scenario],
                         scene_z[scenario],
@@ -12616,6 +13723,7 @@ def run(
                     CANDIDATE_SET_D39_V1,
                     CANDIDATE_SET_D40_V1,
                     CANDIDATE_SET_D41_V1,
+                    CANDIDATE_SET_D42_V1,
                 ):
                     labels = np.asarray(scene_rows[scenario]["labels"]).astype(str)
                     ranks = np.asarray(scene_rows[scenario]["ranks"], dtype=np.int64)
@@ -12634,6 +13742,7 @@ def run(
                         D39_PROTONET_CDA,
                         D40_PROTONET_CDA,
                         D41_PROTONET_CDA,
+                        D42_PROTONET_CDA,
                     ):
                         old_proto = legacy._target_support_centroids(
                             scene_z[scenario][train_mask & old_mask],
@@ -12660,6 +13769,7 @@ def run(
                         if candidate_set in (
                             CANDIDATE_SET_D40_V1,
                             CANDIDATE_SET_D41_V1,
+                            CANDIDATE_SET_D42_V1,
                         ):
                             _enrich_d40_strong_b3_pairwise(
                                 row,
@@ -12702,6 +13812,28 @@ def run(
                             row["resource"]["actual_new_to_old_count"] = int(
                                 actual_new_to_old
                             )
+                    if candidate_set == CANDIDATE_SET_D42_V1:
+                        if candidate_id == D42_D40_INT8:
+                            row["final_argmax_old_to_new_count"] = int(
+                                row["outer_held_new_intrusion_count"]
+                            )
+                        if candidate_id in (D42_D40_INT8, D42_D41_INT8):
+                            row.setdefault(
+                                "pairwise_new_to_old_misorder_count",
+                                int(row.get("actual_new_to_old_count", 0)),
+                            )
+                            row.setdefault(
+                                "pairwise_new_to_new_misorder_count",
+                                int(row["new_new_confusion_count"]),
+                            )
+                        for container in (
+                            row,
+                            row.get("geometry_summary", {}),
+                            row.get("resource", {}),
+                        ):
+                            container.pop("actual_old_to_new_count", None)
+                            container.pop("actual_new_to_old_count", None)
+                            container.pop("actual_new_to_new_count", None)
                     row["direct_adv3b02_old_only_anchor"] = _d38_direct_old_anchor(
                         scene_rows[scenario],
                         scene_logits[scenario],
@@ -12731,9 +13863,12 @@ def run(
         CANDIDATE_SET_D39_V1,
         CANDIDATE_SET_D40_V1,
         CANDIDATE_SET_D41_V1,
+        CANDIDATE_SET_D42_V1,
     ):
         protonet_candidate = (
-            D41_PROTONET_CDA
+            D42_PROTONET_CDA
+            if candidate_set == CANDIDATE_SET_D42_V1
+            else D41_PROTONET_CDA
             if candidate_set == CANDIDATE_SET_D41_V1
             else D40_PROTONET_CDA
             if candidate_set == CANDIDATE_SET_D40_V1
@@ -12777,7 +13912,7 @@ def run(
                 }
             )
             if not equivalent:
-                raise D25RunnerError("D38-D41 ProtoNet/identity equivalence audit drift")
+                raise D25RunnerError("D38-D42 ProtoNet/identity equivalence audit drift")
     expected_rows = (
         len(candidates)
         * len(legacy.FORMAL_LEO_WEAK_SCENARIOS)
@@ -12823,8 +13958,12 @@ def run(
         raise D25RunnerError("D40 training-log cardinality drift")
     if candidate_set == CANDIDATE_SET_D41_V1 and expected_rows != 90:
         raise D25RunnerError("D41 training-log cardinality drift")
+    if candidate_set == CANDIDATE_SET_D42_V1 and expected_rows != 105:
+        raise D25RunnerError("D42 training-log cardinality drift")
     selected_id, candidate_decisions = (
-        _select_d41_candidate(folds_by_candidate)
+        _select_d42_candidate(folds_by_candidate)
+        if candidate_set == CANDIDATE_SET_D42_V1
+        else _select_d41_candidate(folds_by_candidate)
         if candidate_set == CANDIDATE_SET_D41_V1
         else _select_d40_candidate(folds_by_candidate)
         if candidate_set == CANDIDATE_SET_D40_V1
@@ -12878,6 +14017,7 @@ def run(
             CANDIDATE_SET_D39_V1,
             CANDIDATE_SET_D40_V1,
             CANDIDATE_SET_D41_V1,
+            CANDIDATE_SET_D42_V1,
         )
         else _select_candidate(folds_by_candidate)
     )
@@ -12886,7 +14026,9 @@ def run(
         candidate_id: {} for candidate_id in candidates
     }
     geometry_ids = (
-        D41_CANDIDATES
+        D42_CANDIDATES
+        if candidate_set == CANDIDATE_SET_D42_V1
+        else D41_CANDIDATES
         if candidate_set == CANDIDATE_SET_D41_V1
         else D40_CANDIDATES
         if candidate_set == CANDIDATE_SET_D40_V1
@@ -12932,7 +14074,9 @@ def run(
             ):
                 deployment_resources[candidate_id][scenario] = {
                     "schema": (
-                        "cvs.phase2.d41.full_k10_not_refit.v1"
+                        "cvs.phase2.d42.full_k10_not_refit.v1"
+                        if candidate_set == CANDIDATE_SET_D42_V1
+                        else "cvs.phase2.d41.full_k10_not_refit.v1"
                         if candidate_set == CANDIDATE_SET_D41_V1
                         else "cvs.phase2.d40.full_k10_not_refit.v1"
                         if candidate_set == CANDIDATE_SET_D40_V1
@@ -12947,7 +14091,9 @@ def run(
                 }
                 geometry_matrix[candidate_id][scenario] = {
                     "schema": (
-                        "cvs.phase2.d41.full_k10_not_refit_geometry.v1"
+                        "cvs.phase2.d42.full_k10_not_refit_geometry.v1"
+                        if candidate_set == CANDIDATE_SET_D42_V1
+                        else "cvs.phase2.d41.full_k10_not_refit_geometry.v1"
                         if candidate_set == CANDIDATE_SET_D41_V1
                         else "cvs.phase2.d40.full_k10_not_refit_geometry.v1"
                         if candidate_set == CANDIDATE_SET_D40_V1
@@ -12960,7 +14106,28 @@ def run(
                     "query_rows_used": 0,
                 }
                 continue
-            if isinstance(config, D41CandidateConfig):
+            if isinstance(config, D42CandidateConfig):
+                resource, geometry = _full_d42_state_audit(
+                    scene_rows[scenario],
+                    scene_z[scenario],
+                    scene_fft[scenario],
+                    scene_rf[scenario],
+                    old_classes=old_classes,
+                    new_classes=new_classes,
+                    config=config,
+                    seed=int(before_manifest["seed"]),
+                    ground_int8_path=ground_int8_path,
+                    expected_ground_int8_sha256=expected_ground_int8_sha256,
+                    device=device,
+                    scenario=scenario,
+                )
+                resource["direct_adv3b02_old_only_anchor"] = _d38_direct_old_anchor(
+                    scene_rows[scenario], scene_logits[scenario],
+                    old_classes=old_classes, held_ranks=None,
+                )
+                deployment_resources[candidate_id][scenario] = resource
+                geometry_matrix[candidate_id][scenario] = geometry
+            elif isinstance(config, D41CandidateConfig):
                 resource, geometry = _full_d41_state_audit(
                     scene_rows[scenario],
                     scene_z[scenario],
@@ -13293,7 +14460,11 @@ def run(
 
     pre_full_k10_selected_id = selected_id
     full_k10_fallback_reason: str | None = None
-    if candidate_set == CANDIDATE_SET_D41_V1:
+    if candidate_set == CANDIDATE_SET_D42_V1:
+        selected_id, full_k10_fallback_reason = _apply_full_k10_d42_gate(
+            selected_id, candidate_decisions, deployment_resources
+        )
+    elif candidate_set == CANDIDATE_SET_D41_V1:
         selected_id, full_k10_fallback_reason = _apply_full_k10_d41_gate(
             selected_id, candidate_decisions, deployment_resources
         )
@@ -13453,6 +14624,8 @@ def run(
             CANDIDATE_SET_D39_V1,
             CANDIDATE_SET_D40_V1,
             CANDIDATE_SET_D41_V1,
+            CANDIDATE_SET_D42_V1,
+            CANDIDATE_SET_D41_V1,
         )
         else selected_id in _positive_route_candidates(candidate_set)
     )
@@ -13554,6 +14727,13 @@ def run(
             "zero_outer-old-intrusion,_physical-new-LOO,_all-registered-class_"
             "generic-floor_and_classwise_joint-comparator,_resource_closure"
             if candidate_set == CANDIDATE_SET_D36_V1
+            else "D42:_exact_seven-candidate_matched_3x5_outer_matrix,_exact-B3_"
+            "metric-B20_then_old-only/all-registry_closed-form_auto-shrinkage-"
+            "LDA,_strict-overall/scenario/class/floor-gains-vs-B3,_separate-"
+            "final-argmax-and-pairwise-three-axis-confusion,_int8-FP32-score-"
+            "argmax-margin-sign,_real-ground/source/state/resource-closure,_"
+            "selected-only-full-K10-after-all-outer-gates"
+            if candidate_set == CANDIDATE_SET_D42_V1
             else "D41:_exact_six-candidate_matched_3x5_outer_matrix,_B20-old_"
             "then_C10-all-registry_BEC,_one-physical-observation_four-fixed-"
             "math-views,_macro-CE-plus-JS,_before-vs-strong-B3,_after-vs-D40,_"
@@ -13659,6 +14839,7 @@ def run(
                 CANDIDATE_SET_D39_V1,
                 CANDIDATE_SET_D40_V1,
                 CANDIDATE_SET_D41_V1,
+                CANDIDATE_SET_D42_V1,
             )
             or selected_positive_route
             else "DEVELOPMENT_SUPPORT_ONLY_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE"
@@ -13689,6 +14870,7 @@ def run(
                 CANDIDATE_SET_D39_V1,
                 CANDIDATE_SET_D40_V1,
                 CANDIDATE_SET_D41_V1,
+                CANDIDATE_SET_D42_V1,
             )
             else {}
         ),
@@ -13700,6 +14882,16 @@ def run(
         "full_k10_fallback_reason": full_k10_fallback_reason,
         "selected_positive_route": selected_positive_route,
         "candidate_set": candidate_set,
+        **(
+            {
+                "sklearn_version": str(sklearn.__version__),
+                "sklearn_locked_version": D42_SKLEARN_LOCKED_VERSION,
+                "sklearn_version_lock_pass": str(sklearn.__version__)
+                == D42_SKLEARN_LOCKED_VERSION,
+            }
+            if candidate_set == CANDIDATE_SET_D42_V1
+            else {}
+        ),
         "formal_launch_authority": False,
         "formal_metric_claim_allowed": False,
         "performance_claim_allowed": False,
@@ -13786,6 +14978,7 @@ def build_parser() -> argparse.ArgumentParser:
             CANDIDATE_SET_D39_V1,
             CANDIDATE_SET_D40_V1,
             CANDIDATE_SET_D41_V1,
+            CANDIDATE_SET_D42_V1,
         ),
         default=CANDIDATE_SET_D25_V4,
     )
