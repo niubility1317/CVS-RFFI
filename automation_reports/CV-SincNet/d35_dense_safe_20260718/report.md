@@ -12,7 +12,7 @@
 
 完整公式和实现追踪见`analysis/d35_dense_safe_registration_traceability_20260718.md`。同一已接收LEO_weak IQ仅生成一行288维`[z160,FFT96,RF32]`拼接描述；不新增信道overlay、physical sample、support row或K。query完全关闭；clean/source样本及未授权衍生信号不可达；无角色Oracle、真实batch类数、quota、global assignment或dense query图。
 
-D35的所有新类对每个旧winner始终有有限score；winner只索引一个由旧support构造的安全阈值。A使用单mean原型；B/C使用最多2个确定性原型；C对旧floor winner加倍不确定度buffer。所有新类原型为int8+FP32 scale/inverse norm；旧FAST score前缀不修改。
+D35的所有新类对每个旧winner始终有有限score；winner只索引一个由旧support构造的安全阈值。A使用单mean原型；B/C保存最多2个确定性原型，但按`(old winner,new class)`support证据只选择其中1个，因此每个query、每个新类仍只计算一次288D int8 dot；C对旧floor winner加倍不确定度buffer。所有新类原型为int8+FP32 scale/inverse norm；旧FAST score前缀不修改。这里保证的是全局可见，是否可达仍必须由physical LOO margin证明。
 
 ## 成功标准
 
