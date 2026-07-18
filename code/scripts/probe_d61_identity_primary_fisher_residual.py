@@ -27,7 +27,7 @@ d43 = d46.d43
 
 ARM = "identity_primary_fisher_residual"
 STRUCTURE = "d46_full_block_after_shared_identity_plus_bounded_fisher_residual"
-FORMULA = "A=I+U*diag(b/(b+w))*U.T; W=W_prime*A.T"
+FORMULA = "A=I+U*diag(b/(b+w))*U.T; W=W0*A.T"
 RANK_POLICY = "machine_rank_of_centered_class_mean_matrix_without_scan"
 GAIN_TOLERANCE = 2.0e-12
 EQUIVALENCE_RELATIVE_TOLERANCE = 2.0e-6
@@ -156,17 +156,18 @@ def _wrap_component_fit(
         transform, transform_audit = _fisher_residual_transform(
             rows, labels, class_count, k_shot
         )
-        transformed = np.asarray(rows, dtype=np.float64) @ transform
-        coefficient_prime, intercept, base_audit = base_fit(
-            transformed, labels, class_count, k_shot
+        coefficient_base, intercept, base_audit = base_fit(
+            rows, labels, class_count, k_shot
         )
-        coefficient = np.asarray(coefficient_prime, dtype=np.float64) @ transform.T
+        coefficient = np.asarray(coefficient_base, dtype=np.float64) @ transform.T
         compiled32 = coefficient.astype(np.float32)
         intercept32 = np.asarray(intercept, dtype=np.float32)
         rows32 = np.asarray(rows, dtype=np.float32)
-        transformed32 = transformed.astype(np.float32)
-        prime32 = np.asarray(coefficient_prime, dtype=np.float32)
-        direct_scores = transformed32 @ prime32.T + intercept32[None, :]
+        transformed32 = (np.asarray(rows, dtype=np.float64) @ transform).astype(
+            np.float32
+        )
+        base32 = np.asarray(coefficient_base, dtype=np.float32)
+        direct_scores = transformed32 @ base32.T + intercept32[None, :]
         compiled_scores = rows32 @ compiled32.T + intercept32[None, :]
         score_drift = float(np.max(np.abs(direct_scores - compiled_scores)))
         score_scale = max(
@@ -177,7 +178,9 @@ def _wrap_component_fit(
         relative_score_drift = score_drift / score_scale
         intercept64 = np.asarray(intercept, dtype=np.float64)
         direct_scores64 = (
-            transformed @ np.asarray(coefficient_prime, dtype=np.float64).T
+            np.asarray(rows, dtype=np.float64)
+            @ transform
+            @ np.asarray(coefficient_base, dtype=np.float64).T
             + intercept64[None, :]
         )
         compiled_scores64 = (
@@ -208,6 +211,8 @@ def _wrap_component_fit(
                 "d61_probe_arm": ARM,
                 "d61_structure": STRUCTURE,
                 "d61_formula": FORMULA,
+                "d61_base_component_fit_in_original_coordinates": True,
+                "d61_covariance_coordinates_unchanged": True,
                 "d61_rank_policy": RANK_POLICY,
                 "d61_component": component,
                 "d61_identity_primary": True,
@@ -317,6 +322,8 @@ def _verify_rows(rows: list[dict[str, Any]]) -> dict[str, Any]:
                     "d61_formula": FORMULA,
                     "d61_rank_policy": RANK_POLICY,
                     "d61_component": "d46_full",
+                    "d61_base_component_fit_in_original_coordinates": True,
+                    "d61_covariance_coordinates_unchanged": True,
                     "d61_boundary_status": "identity_primary_fisher_residual_active",
                     "d61_fisher_active": True,
                     "d61_identity_primary": True,

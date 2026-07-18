@@ -78,12 +78,13 @@ def test_component_wrapper_compiles_to_one_equivalent_affine_head() -> None:
     fit = d61._wrap_component_fit(_base_fit, "unit", records)
     coefficient, intercept, audit = fit(rows, labels, 4, 5)
     transform, _ = d61._fisher_residual_transform(rows, labels, 4, 5)
-    prime, expected_intercept, _ = _base_fit(rows @ transform, labels, 4, 5)
-    expected = np.asarray(prime, dtype=np.float64) @ transform.T
+    base, expected_intercept, _ = _base_fit(rows, labels, 4, 5)
+    expected = np.asarray(base, dtype=np.float64) @ transform.T
     assert np.allclose(coefficient, expected.astype(np.float32), rtol=0.0, atol=2.0e-6)
     assert np.array_equal(intercept, expected_intercept)
     assert audit["d61_single_affine_state_only"] is True
     assert audit["d61_uses_held_or_query"] is False
+    assert audit["d61_covariance_coordinates_unchanged"] is True
     assert len(records) == 1
 
 
