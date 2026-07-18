@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import inspect
 import zipfile
 from pathlib import Path
 
@@ -21,6 +22,7 @@ from cvsrffi.stage2_predictor_bundle import (
     iq_row_sha256,
     load_verified_stage2_predictor_bundle,
     make_member_descriptor,
+    open_regular_member_same_fd,
     preflight_stage2_predictor_package,
     sha256_file,
     validate_relative_member_path,
@@ -475,6 +477,12 @@ def test_predictor_package_rejects_symlink_swap_after_seal(tmp_path: Path) -> No
 def test_relative_member_path_rejects_escape_forms(value: str) -> None:
     with pytest.raises(PredictorPackageError):
         validate_relative_member_path(value)
+
+
+def test_same_fd_open_uses_python38_compatible_no_follow_stat() -> None:
+    source = inspect.getsource(open_regular_member_same_fd)
+    assert "os.stat(candidate, follow_symlinks=False)" in source
+    assert "candidate.stat(follow_symlinks=False)" not in source
 
 
 def test_query_token_value_cannot_encode_role_or_tx(tmp_path: Path) -> None:

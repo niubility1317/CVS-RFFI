@@ -3,7 +3,7 @@
 ## 登记
 
 - 实验ID：`d36_compiled_joint_int8_20260718`；operator：Codex；日期：2026-07-18。
-- 状态：`RETRY2_LOCAL_VALIDATED_PENDING_SYNC`。
+- 状态：`RETRY3_LOCAL_VALIDATED_PENDING_SYNC`。
 - 目标：同时提升Stage2-B注册前旧类目标域适应和Stage2-C注册后新旧类平衡，避免D34新类不可达与D35旧类过度侵入。
 - 比较：Z0、D25-C0、B3、D33-FAST、D36-A/B/C；先执行K10 support-only、3场景×5个独立outer fold。query保持关闭。
 - 完整公式与协议追踪：`analysis/d36_compiled_joint_int8_calibration_traceability_20260718.md`。
@@ -129,3 +129,12 @@ PASS
 - 合成fit首次暴露`SDG-SEI`的Python缺少`str.removeprefix`；本地将唯一调用改为`startswith`+切片，并新增前缀arm锁回归。D36核心逻辑和锁定超参数不变。
 - retry2本地验证：D36 core+runner集成`17 passed`，launcher`bash -n`通过；core SHA256=`e53b164b17da0ffcdf62b2f1024c931917d6d590fc5938b6f77a388270c3e09e`。
 - retry2精确命令：`bash code/scripts/launch_d36_compiled_joint_int8_retry2_20260718.sh`；Python`/home/szu2070436088/.conda/envs/SDG-SEI/bin/python`；输出`runs/d36_compiled_joint_int8_20260718/output/support_screen_retry2`；日志`logs/d36_compiled_joint_int8_20260718/support_screen_retry2.log`；GPU0。
+
+## retry2失败与retry3兼容修复
+
+- retry2 PID`3876514`已退出，状态`FAILED_PYTHON38_BUNDLE_COMPAT_BEFORE_SUPPORT_OPEN`；日志保存在`logs/d36_compiled_joint_int8_20260718/support_screen_retry2.log`，未进入D36 fold、未产生性能artifact。
+- 失败点为Python3.8不支持`Path.stat(follow_symlinks=False)`。本地将该单点调用替换为`os.stat(candidate,follow_symlinks=False)`；仍保持不跟随符号链接，并继续用device/inode/size与已打开fd比较，安全语义不变。
+- 相关本地回归：predictor bundle、D36 core和runner integration合计`44 passed`；pytest退出码0。Windows临时目录清理打印了既有权限warning，不影响测试结论。
+- retry3继续使用已验证可完成合成D36 fit的`SDG-SEI`环境，不安装包、不修改远端环境。新同步文件为`stage2_predictor_bundle.py`与retry3 launcher。
+- predictor bundle SHA256=`0b17420162b3c9698e9e8c2fc5c5edcb374719d10c3bfcc9a8ffc20e00a63383`。
+- retry3精确命令：`bash code/scripts/launch_d36_compiled_joint_int8_retry3_20260718.sh`；输出`runs/d36_compiled_joint_int8_20260718/output/support_screen_retry3`；日志`logs/d36_compiled_joint_int8_20260718/support_screen_retry3.log`；GPU0。

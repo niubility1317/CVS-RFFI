@@ -232,7 +232,10 @@ def open_regular_member_same_fd(root: Path, relative_path: str) -> Iterator[Bina
             raise PredictorPackageError(f"missing package member: {relative}") from exc
         if stat.S_ISLNK(entry.st_mode):
             raise PredictorPackageError(f"symlink package member rejected: {relative}")
-    before = candidate.stat(follow_symlinks=False)
+    # ``Path.stat(follow_symlinks=...)`` is unavailable on the verified
+    # Python 3.8 N607 runtime. ``os.stat`` has the same no-follow contract and
+    # preserves the subsequent device/inode/size identity comparison.
+    before = os.stat(candidate, follow_symlinks=False)
     if not stat.S_ISREG(before.st_mode):
         raise PredictorPackageError(f"non-regular package member rejected: {relative}")
     flags = os.O_RDONLY | getattr(os, "O_BINARY", 0) | getattr(os, "O_NOFOLLOW", 0)
