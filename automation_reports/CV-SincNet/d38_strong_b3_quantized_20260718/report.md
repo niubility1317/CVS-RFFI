@@ -146,7 +146,7 @@ D38-B只有全部满足以下条件才可锁定development query：
 |已新增测试|`tests/test_stage2_d38_strong_b3_quantized.py`、`tests/test_run_d38_strong_b3_quantized_integration.py`|
 |本地验证|`ssr-gpu`下核心、D38 integration及D37共享Runner回归33/33通过；CUDA:0合成烟测完成30步，峰值分配显存`17124352B`|
 |独立审查|发现并修复wrong receiver/seed/new-count未fail closed和registry状态字节漏算；复审无P0–P2|
-|Git commit|实现提交`c3a55b8b`；本次报告回填提交待完成|
+|Git commit|实现`c3a55b8b`；本地验证回填`0580a0f9`；真实负结果证据`476bdf05`|
 |N607 sync/command/PID/GPU|未启动|
 |预期artifact|`training_log.jsonl`、`selection.json`、`resource_audit.json`、`geometry_audit.json`、`support_audit.json`、`RECEIPT.json`、完整stdout|
 
