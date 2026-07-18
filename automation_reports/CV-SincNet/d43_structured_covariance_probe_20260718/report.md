@@ -5,7 +5,7 @@
 - 实验ID：`d43_structured_covariance_probe_20260718`
 - 时间：2026-07-18（Asia/Hong_Kong）
 - 操作者：Codex`/root`
-- 当前状态：`PREREGISTERED_PENDING_LOCAL_15_FOLD_PROBE`
+- 当前状态：`COMPLETED_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE`
 - development cell：receiver`20-1`、seed`713101`、K10/new5、clear/low-elev/rain；复用D42同一`p2_min_v1/VALIDATED_ONCE`固定received-IQ enrollment capsule与5个physical-rank held折。
 - query：sealed；本探针无query/truth/scorer输入，不产生正式指标声明。
 
@@ -68,4 +68,136 @@ D43不再改变旧类适应器、特征、支持集、loss或注册规则，只�
 - 结果报告必须保留全部匿名类的before-old、after-old和seen-new逐类准确率及三类最低值；不得只报聚合或单独极值。
 - 本地验证：`ssr-gpu`环境串行运行单测、`py_compile`与`git diff --check`；不得并发调用Conda。
 
-当前预注册与30/30项目测试已通过；pytest结束后的Windows临时目录清理出现一次`WinError 5` atexit噪声，但测试进程exit code为0且30项全部通过。尚未运行真实arm，不构成机制有效、实验完成或性能晋级。
+## 6.真实执行与启动证据
+
+- 实现提交与隔离worktree：Git`2a1206b71f18145c18abf781358363b5aed68f81`，`E:\type10-7\code\snapshots\d43wt`，执行前`git status -sb`为detached clean。
+- 运行时：本地`ssr-gpu`绝对解释器、`device=auto`，实际metric fit落在`cuda:0`；D41 legacy worktree为`E:\type10-7\code\snapshots\d41wt`。
+- 输入：D18 K10/new5同一before/after capsule、两份seal、同一formal policy及before/after v2 authorization/envelope；D22 ground int8 component；D19 class binding。所有输入SHA与D42相同。
+- 输出：本报告目录下`full_centered_control`、`block3_centered`、`diagonal_centered`。
+- 首次full arm命令沿用D42报告的“关键CLI”摘录，遗漏8个必需policy/envelope参数，argparse在support打开前fail closed且未创建输出。补回D41成功命令中的完整8项后原arm重试成功；这属于本地启动参数不完整，不是机制或数据失败。
+- 三个arm随后串行完成，各105/105行；receipt elapsed分别`32.640s/33.314s/32.823s`。三个selector均被探针强制为identity，`selected_positive_route=false`、`query_opened=false`、`formal_metric_claim_allowed=false`、`performance_claim_allowed=false`，selected-only full-K10均未执行。
+
+完整CLI以D41报告第9节成功命令为底，只把入口换为：
+
+```powershell
+python E:\type10-7\code\snapshots\d43wt\code\scripts\probe_d43_structured_covariance.py `
+  --d43-arm <full_centered_control|block3_centered|diagonal_centered> `
+  --runtime-root E:\type10-7\code\snapshots\d41wt `
+  --probe-root E:\type10-7\code\snapshots\d43wt `
+  <D41第9节完整before/after policy+authorization+envelope、component、class-binding参数> `
+  --output E:\type10-7\automation_reports\CV-SincNet\d43_structured_covariance_probe_20260718\<arm> `
+  --device auto --mode development_select_unverified_component --candidate-set d42_v1
+```
+
+## 7.完整同row结果
+
+|实验/候选|机制/精度|before-old|after-old|seen-new|同rowH|遗忘|joint floor|最低after-old|最低seen-new|old→new/new→old/new-new|最终判定|
+|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---|---|
+|B3 reference|exact strong B3|87.78%|75.56%|72.67%|73.35%|12.22pp|23.33%|60.00%|40.00%|33/22/19|合法比较器|
+|D42 original|full covariance int8|90.56%|81.67%|81.33%|80.63%|8.89pp|23.33%|50.00%|70.00%|26/10/18|D43全精度基准|
+|full-centered|int8|91.11%|81.11%|82.67%|80.97%|10.00pp|23.33%|50.00%|73.33%|27/9/17|量化对照；按锁不参选|
+|full-centered|FP32 matched|91.11%|81.11%|82.67%|80.97%|10.00pp|23.33%|50.00%|73.33%|27/9/17|与D42 original FP32逐折prediction SHA相同|
+|3-block centered|int8|92.22%|83.89%|82.67%|82.30%|8.33pp|30.00%|56.67%|66.67%|19/10/16|聚合正信号，最低新类/场景门失败|
+|3-block centered|FP32 matched|92.22%|83.89%|82.67%|82.30%|8.33pp|30.00%|56.67%|66.67%|19/10/16|与int8 outer完全一致|
+|diagonal centered|int8|76.67%|68.33%|58.67%|61.41%|8.33pp|3.33%|40.00%|46.67%|29/23/39|全面退化|
+|diagonal centered|FP32 matched|76.11%|68.33%|58.67%|61.41%|7.78pp|3.33%|40.00%|46.67%|29/23/39|before与int8差1个argmax|
+
+3-block相对D42 original聚合改善before`+1.67pp`、after-old`+2.22pp`、seen-new`+1.33pp`、H`+1.66pp`、joint floor`+6.67pp`，遗忘下降`0.56pp`，并把final错误从26/10/18降到19/10/16；但最低seen-new从70%降到66.67%，因此不能用聚合改善掩盖新类下尾。
+
+## 8.逐场景结果
+
+|场景|方法|before-old|after-old|seen-new|同rowH|遗忘|joint floor|
+|---|---|---:|---:|---:|---:|---:|---:|
+|clear|D42|98.33%|90.00%|94.00%|91.53%|8.33pp|40.00%|
+|clear|full-centered|98.33%|90.00%|96.00%|92.70%|8.33pp|40.00%|
+|clear|3-block|98.33%|93.33%|96.00%|94.52%|5.00pp|50.00%|
+|clear|diagonal|83.33%|75.00%|70.00%|70.88%|8.33pp|0|
+|low-elev|D42|85.00%|76.67%|74.00%|73.73%|8.33pp|20.00%|
+|low-elev|full-centered|86.67%|75.00%|74.00%|72.79%|11.67pp|20.00%|
+|low-elev|3-block|88.33%|81.67%|72.00%|74.72%|6.67pp|20.00%|
+|low-elev|diagonal|70.00%|63.33%|46.00%|51.24%|6.67pp|0|
+|rain|D42|88.33%|78.33%|76.00%|76.64%|10.00pp|10.00%|
+|rain|full-centered|88.33%|78.33%|78.00%|77.41%|10.00pp|10.00%|
+|rain|3-block|90.00%|76.67%|80.00%|77.65%|13.33pp|20.00%|
+|rain|diagonal|76.67%|66.67%|60.00%|62.10%|10.00pp|10.00%|
+
+3-block的阻断单元是low-elev seen-new`72%<74%`，以及rain after-old`76.67%<78.33%`和forgetting`13.33pp>10pp`。full-centered的阻断单元是聚合after-old/forgetting，以及low-elev after-old`75%<76.67%`、H`72.79%<73.73%`、forgetting`11.67pp>8.33pp`。
+
+## 9.全部匿名类逐类结果
+
+|角色|handle前缀|D42 original|full-centered|3-block|diagonal|
+|---|---|---:|---:|---:|---:|
+|before-old|`1f33`|90.00%|90.00%|90.00%|73.33%|
+|before-old|`33bb`|93.33%|93.33%|96.67%|90.00%|
+|before-old|`75aa`|93.33%|93.33%|96.67%|90.00%|
+|before-old|`8b02`|76.67%|80.00%|80.00%|60.00%|
+|before-old|`a53c`|100.00%|100.00%|100.00%|76.67%|
+|before-old|`f8df`|90.00%|90.00%|90.00%|70.00%|
+|after-old|`1f33`|86.67%|86.67%|90.00%|73.33%|
+|after-old|`33bb`|93.33%|90.00%|93.33%|83.33%|
+|after-old|`75aa`|90.00%|90.00%|93.33%|80.00%|
+|after-old|`8b02`|50.00%|50.00%|56.67%|40.00%|
+|after-old|`a53c`|76.67%|76.67%|80.00%|63.33%|
+|after-old|`f8df`|93.33%|93.33%|90.00%|70.00%|
+|seen-new|`09f8`|70.00%|73.33%|66.67%|46.67%|
+|seen-new|`1c2a`|90.00%|90.00%|93.33%|66.67%|
+|seen-new|`b8fb`|70.00%|73.33%|76.67%|63.33%|
+|seen-new|`d3af`|86.67%|86.67%|90.00%|63.33%|
+|seen-new|`f608`|90.00%|90.00%|86.67%|53.33%|
+
+3-block改善了最低旧类`8b02`，但把新类`09f8`从70%降到66.67%；这是预注册最低新类门的直接失败，不允许为该handle增设专属分支。
+
+## 10.预注册门逐项
+
+|门|full-centered|3-block|diagonal|
+|---|---|---|---|
+|协议/lifecycle/ground/source/state/resource闭包|PASS|PASS|PASS|
+|before/final int8-FP32 argmax0变化且margin0翻转|PASS|PASS|FAIL（before1）|
+|聚合before/after/new/H不退化|FAIL|PASS|FAIL|
+|聚合forgetting不增加|FAIL|PASS|PASS|
+|最低before/after/new与joint floor不退化|PASS|FAIL（new）|FAIL|
+|final三项floor至少一项严格提高|PASS|PASS|FAIL|
+|三场景before/after/new/H/joint不退化|FAIL|FAIL|FAIL|
+|三场景forgetting不增加|FAIL|FAIL|PASS|
+|全部预注册门|FAIL|FAIL|FAIL|
+
+因此两个正式结构都被拒绝，full-centered按预注册只保留为下一轮机制证据。D43不实现正式Runner候选、不运行selected-only full-K10、不访问N607。
+
+## 11.量化、pairwise、完整训练日志与资源
+
+|方法|before/final argmax变化|margin翻转|max outer score误差|final coefficient误差|max intercept误差|final support score误差|
+|---|---|---:|---:|---:|---:|---:|
+|D42 original|1/3|3|1.0283|0.0460|0.9990|1.0273|
+|full-centered|0/0|0|0.0968|0.0152|0.0567|0.0555|
+|3-block|0/0|0|0.0654|0.0097|0.0598|0.0665|
+|diagonal|1/0|0|0.1245|0.0082|0.1199|0.1252|
+
+full-centered的FP32逐折before/final prediction SHA与D42 original FP32完全相同，证明在真实outer面公共项去除没有改变FP32决策，却把量化翻转降为0；这是D43最清晰的机制结论。FP32 support两两margin的有限精度最大漂移为full`0.00587/0.00512`、block`0.00473/0.00464`、diagonal`0.00375/0.00536`（before/final），均另行记录，没有误写为浮点逐bit等价。
+
+|方法|pairwise错序old→new/new→old/new-new|原始最低margin old→new/new→old/new-new|
+|---|---|---|
+|D42 original|31/20/19|−69.19/−139.95/−39.13|
+|full-centered|32/19/18|−69.89/−140.80/−39.08|
+|3-block|27/17/19|−87.97/−152.81/−37.26|
+|diagonal|39/41/51|−131.33/−144.17/−47.79|
+
+三个arm的int8路线各15条fit×20步=300条完整trace，全部finite且逐条与D42 B20 trace相同；FP32 matched也复用同一轨迹。每条真实outer资源仍为2016参数、20 epoch/20 step、8583B state、65,442,816 adaptation MAC、6624 MAC/query、CUDA peak22,886,912B；host FP64 covariance peak仍未实测。三种结构的最大condition number（before/final）为full`204648/132824`、block`167398/112223`、diagonal`156195/101176`。结构越简单虽降低条件数和量化误差，但diagonal丢失判别相关性并造成性能崩塌。
+
+## 12.Artifact闭包
+
+|arm|candidate lock|training log SHA/大小|support audit SHA/大小|selection SHA/大小|receipt SHA/大小|metadata SHA/大小|
+|---|---|---|---|---|---|---|
+|full-centered|`eb2f23b4…61c7af`|`46039246…8eb7b`/3,827,188B|`78814f36…d0bb7`/313,173B|`93a702ba…376a0`/2990B|`47627892…4f992`/4561B|`180eb53c…3f4e9`/2737B|
+|3-block|`62622e54…40720`|`e1a66ed1…a2872`/3,826,539B|`64d5d33b…0c8c5`/313,168B|`12e6af66…46a3a`/2991B|`9639337f…3946d`/4560B|`1cfffdf7…2795f`/2731B|
+|diagonal|`dafedbf8…fdc98`|`c520e80d…84549`/3,826,722B|`53dd0478…5f413`/313,168B|`1e75615e…e0c02`/2993B|`3730da79…78cf`/4560B|`888b3f53…54f0`/2738B|
+
+三个arm的`geometry_audit.json`均为`ae4b735a…300dc`/5132B，`resource_audit.json`均为`00f364e5…6e2b`/6498B；它们只描述未执行full-K10的共同部署面。每个metadata均反向核对base receipt和五个基础artifact，并记录探针脚本`50b2d476…8f7e5`、D41 legacy及12模块完整SHA闭包。
+
+## 13.解释与下一轮
+
+D43给出两个可复用但必须分开的事实：
+
+1. 去除类公共仿射score是有效的量化稳定机制：full FP32 outer决策与D42逐折相同，int8却从1/3个argmax变化和3个margin翻转降为全0，intercept最大误差从0.999降到0.057。
+2. 3-block提供最强聚合/旧类/混淆正信号，但硬置零全部跨块协方差会牺牲`09f8`与low-elev新类、rain旧类稳健性；纯diagonal则证明跨维相关性不可完全丢弃。
+
+下一轮最高价值机制是类对称的full-centered＋3-block-centered双几何融合：保留两套已验证0翻转state，各自用support-only、全类对称的pairwise-logit RMS做单标量归一化，再固定1:1平均；不扫描融合权重、不设置类/场景分支、不读取query。它直接利用full对新类/rain floor的保护与block对旧类/聚合的改善。该建议必须在D44另行预注册并先跑同一15折，D43本身仍是完整执行的诊断性负结果。
