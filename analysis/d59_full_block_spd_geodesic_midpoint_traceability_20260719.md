@@ -49,3 +49,11 @@ D59是development probe，强制identity selection、禁止selected-only full-K1
 - 输出：`automation_reports/CV-SincNet/d59_full_block_spd_geodesic_midpoint_probe_20260719/full_block_spd_geodesic_midpoint`
 - 环境：`C:\Users\lh594\.conda\envs\ssr-gpu\python.exe`，本地串行，`device=auto`。
 - Git：只暂存D59精确文件；执行前建立detached clean worktree并记录脚本SHA。N607本轮不访问。
+
+## 6.执行后追溯
+
+- 完成状态：`COMPLETED_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE`；105/105行、query0、60个midpoint audit闭包通过。
+- 主指标：before92.22%、after82.22%、seen-new84.00%、同rowH82.16%、forgetting10.00pp、joint23.33%、min-before80.00%、min-after53.33%、min-new70.00%、混淆24/8/16。
+- 相对D46：after+0.56pp、forgetting−0.56pp、old→new−1；seen-new−0.67pp、H−0.18pp、min-new−3.33pp、new-new+1。聚合new/H、min-new、low-elev场景与混淆门失败，final floor无严格改善。
+- D59与D45全部汇总指标相同，仅1/15个prediction SHA改变且不改变任何性能统计；说明几何中点复现已探索的同一性能台阶。
+- 判定：停止D59，不扫描geodesic位置/ridge/floor，不运行第二seed或125；详细7候选、3场景、11类、15fold、量化、资源和artifact见同名automation report。
