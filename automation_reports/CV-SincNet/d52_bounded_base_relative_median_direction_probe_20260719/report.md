@@ -67,3 +67,39 @@ b_D52,c = b_D45,c
 ## 7.性能报告承诺
 
 实验完成后，本报告必须补充：7候选总体表、3场景表、old/new逐类表、15个outer行、相对D45/D46/D51的同row差值与预测变化、混淆、完整20epoch训练轨迹摘要、几何修正范数、int8/FP32误差、资源与全部artifact SHA。不得只写缺陷或只报单项最好值。
+
+## 8.执行锁与exact command
+
+- Git承载仓库分支`codex/cvs-rffi-release-20260626`；实现提交`422dfbd9`。根目录`E:\type10-7`不是Git仓库，本报告同步保留Git版与根目录镜像。
+- clean detached worktree：`E:\type10-7\code\snapshots\d52wt`，状态`## HEAD (no branch)`；探针SHA256`32a37c732ce54bc236b999defb755f2f1c466d04a8c807241db0d169cff7846e`。
+- clean worktree内`py_compile`和D52定向10/10再次通过。
+- before/after seal SHA为`53ace286…d9f75`/`c70aedf3…b50ff`；签名授权envelope为`31a2ad99…ceb0e`/`a2483d6e…be76`；int8 manifest为`15b5e144…629c`；class binding为`bb89a1db…c901f`。全部与既有锁一致。
+- runtime root存在；输出目录启动前不存在。本地串行`device=auto`，无N607连接。
+
+```powershell
+& 'C:\Users\lh594\.conda\envs\ssr-gpu\python.exe' `
+  'E:\type10-7\code\snapshots\d52wt\code\scripts\probe_d52_bounded_base_relative_median_direction.py' `
+  --d52-arm bounded_base_relative_median_direction `
+  --runtime-root 'E:\type10-7\code\snapshots\d41wt' `
+  --probe-root 'E:\type10-7\code\snapshots\d52wt' `
+  --before-root 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\phase2_capsule_k10_new5\predictor\before\enrollment_only' `
+  --before-seal 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\phase2_capsule_k10_new5\seals\before_enrollment.seal.json' `
+  --before-seal-sha256 53ace2863c9da6c2f6cc855d602c99f581df6de3d30a9a3ecb89eb6b6f0d9f75 `
+  --before-formal-policy 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\formal_execution_policy.json' `
+  --before-formal-policy-authorization 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\runtime_authorization_k10_new5\before_formal_policy_authorization.v2.json' `
+  --before-signed-policy-authorization-envelope 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\runtime_authorization_k10_new5\before_signed_policy_authorization_envelope.v2.json' `
+  --before-signed-policy-authorization-envelope-sha256 31a2ad9918f061b25d5a7ed0cc135df70ae02460c094b2f396bf314817bceb0e `
+  --after-root 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\phase2_capsule_k10_new5\predictor\after\enrollment_only' `
+  --after-seal 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\phase2_capsule_k10_new5\seals\after_enrollment.seal.json' `
+  --after-seal-sha256 c70aedf3a8f059e756806201758c1933a2f3e1ba4df415e69a1c776b1a2b50ff `
+  --after-formal-policy 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\formal_execution_policy.json' `
+  --after-formal-policy-authorization 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\runtime_authorization_k10_new5\after_formal_policy_authorization.v2.json' `
+  --after-signed-policy-authorization-envelope 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\runtime_authorization_k10_new5\after_signed_policy_authorization_envelope.v2.json' `
+  --after-signed-policy-authorization-envelope-sha256 a2483d6e9c9c362d89397029ff1e43f48358be3bdb3a05d717ee112b70a0be76 `
+  --component-dir 'E:\type10-7\automation_reports\CV-SincNet\d22_int8_anchor_lifecycle_20260717\input\int8_component' `
+  --component-manifest-sha256 15b5e144f9af3989421d8e925c17758479c327be47e79222f6363dc63994629c `
+  --class-binding 'E:\type10-7\github_publish\CVS-RFFI-repo\analysis\d19_adv3b02_class_binding_20260717.json' `
+  --class-binding-sha256 bb89a1dbb831acb374fccfc596ae98b660b496b449bdca577dabb962121c901f `
+  --output 'E:\type10-7\automation_reports\CV-SincNet\d52_bounded_base_relative_median_direction_probe_20260719\bounded_base_relative_median_direction' `
+  --device auto --mode development_select_unverified_component --candidate-set d42_v1
+```
