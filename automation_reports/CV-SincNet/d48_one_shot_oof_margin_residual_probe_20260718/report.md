@@ -108,3 +108,10 @@ D48复用D45的B20、`4K+4` LDA inventory和一个query state，不新增fit、o
 只读全日志定位显示：30条D48 fit audit中仅6条low-elev记录触发，所有coefficient/intercept SHA、shape、finite、coefficient bitwise unchanged和`delta_fp32==final_fp32-base_fp32`均通过；唯一失败是逻辑beta与两个独立FP32截距舍入后差值的固定`atol=2e-7`，最大误差`2.3576668e-7`。直接修复仅把该编译闭合改为逐元素FP32 ULP舍入包络：`0.5×(ulp(base)+ulp(final)+ulp(delta))+centering residual+64eps×magnitude`；逻辑beta仍由完整OOF证据逐元素重算，delta仍须与formal FP32截距差逐bit一致。算法、support、权重、beta、预测、资源和性能门均不变。修复后必须新增舍入边界反例、重跑定向与全链测试、提交新代码，并使用新输出目录`one_shot_oof_head_margin_residual_retry1`，不得覆盖失败artifact。
 
 修复后py_compile通过，D48＋D45定向`38 passed`，D42–D48全链`131 passed`；使用修复版fit verifier只读复算失败artifact的完整105行，30/30条fit audit通过。该只读复算只证明直接数值根因已修复，不补写metadata，也不把首次失败转为完成实验；retry1仍必须从提交后的新clean worktree完整重跑。独立ULP复核确认P0=0、P1=0、P2=0，并独立复跑D48`27 passed`；上界只覆盖三个0.5 ULP、centering残差和64eps项，delta逐bit与SHA绑定不变。
+
+## 9.retry1执行锁
+
+- 修复提交：`c6db747cad30160813e7f9b8c98f30cd98a103fa`。
+- 新detached clean worktree：`E:\type10-7\code\snapshots\d48retry1wt`，HEAD与修复提交一致，工作树干净。
+- 新输出：`E:\type10-7\automation_reports\CV-SincNet\d48_one_shot_oof_margin_residual_probe_20260718\one_shot_oof_head_margin_residual_retry1`，启动前不存在。
+- 第7节锁定命令只允许两处路径替换：探针脚本和`--probe-root`由`d48wt`改为`d48retry1wt`，`--output`增加`_retry1`；所有D18/D19/D22输入、SHA、runtime、arm、device、mode和candidate-set逐项不变。
