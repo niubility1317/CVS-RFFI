@@ -9,6 +9,6 @@
 |失败闭锁|非正分离、零方差、非有限值整fit回退D46|反例测试|LOCAL_PASS|
 |K1/K2|精确D46 fallback|参数化测试|LOCAL_PASS|
 |资源边界|复用D56拟合，只增加矩与affine标量运算|K1/2/8公式闭包|LOCAL_PASS|
-|协议与性能|query0、105行、完整同排报告|receipt/summary/report|PENDING_RUN|
+|协议与性能|query0、105行、完整同排报告|105/105、exit0、summary SHA `6d315893…fdeb`|COMPLETE_NEGATIVE|
 
-D58为support-only、强制nonpromotable开发探针；开发门全部通过前无formal/125权限。
+D58为support-only、强制nonpromotable开发探针；30/30fit均激活但outer为80.00/74.44/69.33/H70.92，15/15折相对D46改变并全面退化。D58停止，无formal/125权限。
