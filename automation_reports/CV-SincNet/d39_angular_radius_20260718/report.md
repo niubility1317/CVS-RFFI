@@ -305,3 +305,79 @@ candidate lock SHA为`f35291ce2348f25275962cc8181915e0273d2fb2763feeaf6a1448c148
 D39完成了技术实现、90行真实support-held筛选、全量日志解析和artifact闭环，但没有完成项目goal，也没有取得可晋级性能。统一angular Gaussian半径并不能让D38-B的old/new分数可比：它轻微降低旧→新侵入，却保留new-new错误顺序，并把新旧margin压缩到接近决策边界。D39因此记为`DEVELOPMENT_SUPPORT_ONLY_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE`，回退identity，不打开query、不访问N607、不扩展到K1/K5/K20或正式确认矩阵。
 
 下一轮不得继续微调同一radius公式或叠加共享bias。D37–D39已构成三轮完整探索；在启动D40前必须先执行记录化回顾，重新核对active objective、`项目.md`、conversation index及D37/D38/D39完整报告和日志，再选择同时保护旧类与修复新类排序的单一新机制。
+
+## 13.D37–D39三轮强制技术回顾与D40锁定
+
+### 13.1回顾动作与证据面
+
+本回顾在任何D40代码或实验启动前完成。已重新读取active objective和2026-07-18版`项目.md`，刷新`E:\type10-7\conversation_index`至1005条项目记录，并检索`D37/D38/D39/strong B3/int8/angular radius/旧类侵入/new-new`及`D36/ridge/low-rank`历史。随后复核D37、D38、D39三份权威报告、`selection.json`、`support_audit.json`、`RECEIPT.json`及完整`training_log.jsonl`。
+
+全日志表面为D37 105/105行、D38 90/90行、D39 90/90行；全部structured numeric值finite，unique candidate×scenario×fold键完整。D38解析1200条optimizer trace，D39解析1350条同轨迹trace；D37的公共offset三臂均完整解析。三轮全部`query_opened=false`、`formal_metric_claim_allowed=false`、clean/source/role/quota/global assignment不可达，且`source_closure_unchanged_after_support=true`。
+
+历史普查`analysis/stage2_method_goal_history_census_20260718.md`仍把D36写为“仅设计/core单测”，但live D36报告已补齐本地105行真实负结果：D36-A/B/C的H仅57.80%/57.91%/56.82%，共同弱于strong B3。故本回顾以当前D36报告和artifact为准，不从旧普查恢复“ridge仍未实测”的过时判断。
+
+### 13.2三轮同row结果与共同根因
+
+|轮次/候选|单一机制|before-old|after-old|seen-new|H|遗忘|joint floor|侵入/排序证据|结论|
+|---|---|---:|---:|---:|---:|---:|---:|---|---|
+|D37-A/B/C|弱Fisher旧头＋两级int8＋公共new-group offset/margin|82.22%|71.11%|58.67%|62.99%|11.11pp|0%|33/180旧→新；40/75 new class-fold不可达；15/15 OOF区间为空|公共offset不能修new-new顺序，三臂等价失败|
+|D38-B|D38强Stage2-B几何＋all-support/new-weight-only CE10|87.22%|0.56%|78.67%|0.99%|86.67pp|0%|179/180旧→新；32/150 new-new错序|新方向增强但outer-held旧域被吞噬|
+|D39 int8|D38-B同轨迹＋全类angular-radius score|87.22%|2.78%|78.67%|4.94%|84.44pp|0%|174/180旧→新；32/150错序不变|只救回5个旧样本，尺度修复失败|
+|exact strong B3|合法FP32 matched比较器|87.78%|75.56%|72.67%|73.35%|12.22pp|23.33%|33/180旧→新|当前最强同row，但远未达目标|
+
+共同根因不是量化、资源或optimizer数值不稳定：D38/D39的int8与matched FP32在outer-held均0个argmax差异，量化误差约`1e-6`；全部loss有限并下降，状态和资源均通过。真正问题是support拟合目标与未见物理样本泛化错位：
+
+1. 公共offset、temperature或new-group bias只能移动整组分数，不能改变`09f8`对`1c2a`等new-new排序。
+2. D38的old support负证据足以让fit面收敛，却未约束outer-held旧样本；新类方向对未见旧物理样本系统性过强。
+3. D39从同support估计radius，只压缩margin并奖励较窄方向，没有改变32/150条错误排序，也没有恢复old/new可比分数面。
+4. 当前可保留的正信号是D38注册前87.22%的强Stage2-B几何、两级residual-int8近FP32身份、append-only生命周期和极轻资源；需要替换的是注册方向构造，而非继续调精度或标尺。
+
+当前strong B3相对K10/new5目标仍有明确差距：after-old差16.44pp，最低旧类60.00%相对88%门差28.00pp，seen-new差19.33pp；最低新类仅40.00%，且当前只是receiver`20-1`、seed`713101`、K10/new5 development support-held屏，不是独立确认。
+
+### 13.3拒绝继续重复的路线
+
+下一轮明确拒绝：公共new-group offset/margin、共享bias、类专属bias/threshold/gate、D39 radius公式微调、D38式CE10的step/lr扫描、从弱Fisher或support prototype重建旧头、ground int8直接强融合、hard visibility/release/winner门、继续增加prototype/top-k/buffer，以及用FP32或更多int8层级补救。D36的连续ridge margin、D21-M6 support-fold低秩delta和更早support ridge均已有负证据；它们不作为D40首选。support-held硬门未过前不得打开query、访问N607或扩展K1/K5/K20。
+
+### 13.4D40单一机制：append-only hard-negative barycentric residualization
+
+D40锁定为`D40-HNBR`。它复用D38的20步Stage2-B共享`log_diag`和原始类方向，不使用D38 Stage2-C的CE10，不加bias、radius、gate或新超参数。设当前注册阶段的单位基础方向为`b_c`，固定temperature`T=18`直接继承D38 scorer。对类`c`的其他同时可见基础方向计算：
+
+\[
+a_{cd}=\frac{\exp(T b_c^\top b_d)}{\sum_{j\ne c}\exp(T b_c^\top b_j)},\quad d\ne c,
+\]
+
+\[
+n_c=\operatorname{normalize}\left(\sum_{d\ne c}a_{cd}b_d\right),\quad
+\rho_c=\max(0,b_c^\top n_c),
+\]
+
+\[
+w_c=\operatorname{normalize}(b_c-\rho_c n_c).
+\]
+
+该操作把权重自动集中到与当前类最相似的难负方向，只移除正投影；没有class handle、难类名单、可调投影系数或类别专属分支。
+
+生命周期按append-only收紧：
+
+- Stage2-B在D38 old基础方向集合上同步计算HNBR，量化为target-old两级residual-int8状态；这是D40的注册前旧头，直接检验old-old混淆能否改善。
+- Stage2-C冻结上述target-old int8字节和密封ground int8组件。每个new基础方向由同一D38变换空间的合法new support中心产生；所有new类同时以“冻结old最终方向＋其余new基础方向”为难负集合计算HNBR，再两级int8量化并append。不得按注册顺序串行更新，也不得重写old prefix。
+- query只用统一`18<h(x),w_c>`对全部注册类逐样本argmax，无old/new role branch。机制对保持enrollment partition的任意类标签重命名严格等变；old/new阶段差异来自合法state provenance，不来自query真值。
+- K1每类基础方向直接由唯一合法物理support形成，随后执行相同闭式HNBR；0梯度、无伪LOO、不借用K5/K10统计。new2和近零残差必须分别有分母与fail-closed测试。
+
+该机制同时改变Stage2-B旧类方向和Stage2-C新类方向，但保留D38最有价值的共享metric、int8精度与轻量状态。它仍只是一个可证伪候选：若难负投影不能外推到outer-held，不允许在本轮扫描投影系数或叠加第二机制。
+
+### 13.5D40最小矩阵与停止门
+
+固定6候选×3场景×5fold=`90`行，每fold仍为8-shot fit、2-shot matched physical held：identity-only single-qKNN、ProtoNet CDA、exact strong B3 FP32、D38-B int8结构负对照、D40-HNBR int8、D40-HNBR FP32。direct ADV3B02继续只作相同old-held的0-support锚，不计候选行。D40 int8是唯一可晋级路线。
+
+D40只有全部满足下列条件才可进入full-K10或N607：
+
+1. before-old总体、每场景×fold×old-class均不弱于exact strong B3，15fold聚合严格提高。
+2. after-old、全部旧类floor不弱于strong B3；forgetting逐matched row不高于strong B3。
+3. old→new侵入不高于33/180且相对strong B3严格减少。
+4. seen-new逐row不弱于strong B3；new-new错序严格少于32/150，最低新类准确率与最低pairwise margin严格提高。
+5. 每个matched row的H和joint floor不弱于strong B3，15fold聚合均严格提高。
+6. D40 int8/FP32 outer-held argmax差异为0；target-old/new预测均使用正式int8状态，ground及old prefix生命周期逐bit闭合。
+7. 0个Stage2-C optimizer step，trainable parameter不超过D38 Stage2-B的2016，epoch/总step≤20/20，状态≤256KB；无dense query graph或query-dependent batch optimization。
+
+任一关键门失败即`DEVELOPMENT_SUPPORT_ONLY_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE`：回退identity，不调投影系数、不叠加bias/radius/gate，不打开query、不访问N607、不扩K或确认矩阵。若通过，本轮也只取得development正信号；完整goal仍必须完成5receivers×至少5seeds×3scenes×K1/5/10/20×new2/5/10/20确认矩阵及全部性能、floor和资源门。
