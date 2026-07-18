@@ -133,6 +133,16 @@ from cvsrffi.stage2_d36_compiled_joint_int8 import (  # noqa: E402
     score_d36_compiled_joint_int8,
     with_oof_calibration_d36_compiled_joint_int8,
 )
+from cvsrffi.stage2_d37_b3_preserving_int8 import (  # noqa: E402
+    D37B3PreservingInt8Config,
+    D37B3PreservingInt8Error,
+    OOF_SOURCE as D37_OOF_SOURCE,
+    base_score_d37_b3_preserving_int8,
+    fit_d37_b3_preserving_int8,
+    fit_oof_feasible_offset_d37,
+    old_prefix_bitwise_unchanged_d37,
+    score_d37_b3_preserving_int8,
+)
 
 
 MODE = legacy.MODE
@@ -158,6 +168,7 @@ CANDIDATE_SET_D33_V1 = "d33_v1"
 CANDIDATE_SET_D34_V1 = "d34_v1"
 CANDIDATE_SET_D35_V1 = "d35_v1"
 CANDIDATE_SET_D36_V1 = "d36_v1"
+CANDIDATE_SET_D37_V1 = "d37_v1"
 C3_A = "D25-C3A-DIAG-CE-CLOSEDREG"
 C3_B = "D25-C3B-DIAG-CE-NEWFIT"
 C3_C = "D25-C3C-DIAG-STRONGFLOOR-NEWFIT"
@@ -207,6 +218,10 @@ D36_A = "D36-A-COMPILED-JOINT-INT8"
 D36_B = "D36-B-COMPILED-JOINT-INT8-GROUND"
 D36_C = "D36-C-COMPILED-JOINT-INT8-GROUND-FLOOR"
 D36_CANDIDATES = (D36_A, D36_B, D36_C)
+D37_A = "D37-A-B3-PRESERVING-INT8-M0"
+D37_B = "D37-B-B3-PRESERVING-INT8-M005"
+D37_C = "D37-C-B3-PRESERVING-INT8-M010"
+D37_CANDIDATES = (D37_A, D37_B, D37_C)
 CORE_COMMIT = "f349850dbd94841ae2ef8105ac76bd7a9912c128"
 D26_CORE_GIT_COMMIT = "67b9d2275782339e0ac07800652b997adbcca534"
 
@@ -236,6 +251,8 @@ def _positive_route_candidates(candidate_set: str) -> tuple[str, ...]:
         return D35_CANDIDATES
     if candidate_set == CANDIDATE_SET_D36_V1:
         return D36_CANDIDATES
+    if candidate_set == CANDIDATE_SET_D37_V1:
+        return D37_CANDIDATES
     if candidate_set in (CANDIDATE_SET_D26_V1, CANDIDATE_SET_D26_V2):
         return D26_CANDIDATES
     return D25_CANDIDATES
@@ -407,6 +424,18 @@ class D36CandidateConfig:
             raise D25RunnerError("D36 arm lock drift")
 
 
+@dataclass(frozen=True)
+class D37CandidateConfig:
+    """FAST Fisher B3 head plus append-only residual-int8 registration."""
+
+    fisher: B3FisherClosedFormConfig
+    compiled: D37B3PreservingInt8Config
+
+    def __post_init__(self) -> None:
+        if str(self.compiled.arm) not in ("A", "B", "C"):
+            raise D25RunnerError("D37 arm lock drift")
+
+
 def _canonical_bytes(value: Any) -> bytes:
     return json.dumps(
         value,
@@ -520,6 +549,32 @@ def preregistered_candidates(
             D36_C: D36CandidateConfig(
                 fisher=fisher,
                 compiled=D36CompiledJointConfig(arm="C"),
+            ),
+        }
+    if candidate_set == CANDIDATE_SET_D37_V1:
+        fisher = B3FisherClosedFormConfig()
+        return {
+            IDENTITY_CANDIDATE: controls[IDENTITY_CANDIDATE],
+            D25_C0: historical[D25_C0],
+            DIAG_CANDIDATE: controls[DIAG_CANDIDATE],
+            D33_B3_FAST: D33CandidateConfig(
+                old_solver="b3_fisher_closed_form",
+                fisher=fisher,
+                registration=D33SphericalRegistrationConfig(
+                    selection_policy="B_balanced"
+                ),
+            ),
+            D37_A: D37CandidateConfig(
+                fisher=fisher,
+                compiled=D37B3PreservingInt8Config(arm="A"),
+            ),
+            D37_B: D37CandidateConfig(
+                fisher=fisher,
+                compiled=D37B3PreservingInt8Config(arm="B"),
+            ),
+            D37_C: D37CandidateConfig(
+                fisher=fisher,
+                compiled=D37B3PreservingInt8Config(arm="C"),
             ),
         }
     if candidate_set == CANDIDATE_SET_D34_V1:
@@ -889,9 +944,34 @@ def _candidate_lock(
         source_closure["d36_b3_fisher_closed_form_core_sha256"] = _sha256_file(
             CODE_ROOT / "cvsrffi" / "stage2_b3_fisher_closed_form.py"
         )
+    if any(isinstance(value, D37CandidateConfig) for value in candidates.values()):
+        source_closure["d37_b3_preserving_int8_core_sha256"] = _sha256_file(
+            CODE_ROOT / "cvsrffi" / "stage2_d37_b3_preserving_int8.py"
+        )
+        source_closure["d37_b3_fisher_closed_form_core_sha256"] = _sha256_file(
+            CODE_ROOT / "cvsrffi" / "stage2_b3_fisher_closed_form.py"
+        )
     rows: list[dict[str, Any]] = []
     for candidate_id, config in candidates.items():
-        if isinstance(config, D36CandidateConfig):
+        if isinstance(config, D37CandidateConfig):
+            config_row = {
+                "old_solver": "b3_fisher_closed_form",
+                "fisher": {
+                    "shrinkage_strengths": list(config.fisher.shrinkage_strengths),
+                    "variance_ridge": float(config.fisher.variance_ridge),
+                    "fisher_shrinkage": float(config.fisher.fisher_shrinkage),
+                },
+                "compiled": asdict(config.compiled),
+                "feature_geometry": "b3_auxiliary_dominant_z160_fft96_rf32_v1",
+                "target_old_new_prototype_storage": (
+                    "two_level_residual_int8_plus_fp16_block_scales"
+                ),
+                "old_prefix_policy": "append_only_bitwise_b3_int8_prefix",
+                "inner_crossfit": "rank_pairs_base_scores_and_physical_labels",
+                "oof_calibration": "shared_new_offset_feasible_interval",
+            }
+            family = "d37_b3_preserving_residual_int8"
+        elif isinstance(config, D36CandidateConfig):
             config_row = {
                 "old_solver": "b3_fisher_closed_form",
                 "fisher": {
@@ -1179,6 +1259,8 @@ def _candidate_lock(
             if candidate_set == CANDIDATE_SET_D35_V1
             else "cvs.phase2.d25.candidate_lock.v14"
             if candidate_set == CANDIDATE_SET_D36_V1
+            else "cvs.phase2.d25.candidate_lock.v15"
+            if candidate_set == CANDIDATE_SET_D37_V1
             else "cvs.phase2.d25.candidate_lock.v1"
         ),
         "core_commit": CORE_COMMIT,
@@ -1201,6 +1283,7 @@ def _candidate_lock(
                 CANDIDATE_SET_D34_V1,
                 CANDIDATE_SET_D35_V1,
                 CANDIDATE_SET_D36_V1,
+                CANDIDATE_SET_D37_V1,
             )
             else IDENTITY_CANDIDATE
         ),
@@ -1221,6 +1304,7 @@ def _candidate_lock(
         CANDIDATE_SET_D34_V1,
         CANDIDATE_SET_D35_V1,
         CANDIDATE_SET_D36_V1,
+        CANDIDATE_SET_D37_V1,
     ):
         lock["candidate_set"] = candidate_set
     if candidate_set in (
@@ -1236,6 +1320,7 @@ def _candidate_lock(
         CANDIDATE_SET_D34_V1,
         CANDIDATE_SET_D35_V1,
         CANDIDATE_SET_D36_V1,
+        CANDIDATE_SET_D37_V1,
     ):
         # CORE_COMMIT above identifies the sealed Phase1 model lineage.  Keep
         # the D26 implementation commit separate so the receipt cannot imply
@@ -1250,6 +1335,7 @@ def _candidate_lock(
         CANDIDATE_SET_D34_V1,
         CANDIDATE_SET_D35_V1,
         CANDIDATE_SET_D36_V1,
+        CANDIDATE_SET_D37_V1,
     ):
         lock["protocol_contract"] = {
             "screen_authority": "PRE_FORMAL_SUPPORT_ONLY_INT8_SCREEN",
@@ -3379,6 +3465,280 @@ def _d36_resource(fit: Mapping[str, Any], registered_count: int) -> dict[str, An
     }
 
 
+def _fit_d37_route(
+    features: np.ndarray,
+    labels: np.ndarray,
+    ranks: np.ndarray,
+    physical_ids: np.ndarray,
+    old_mask: np.ndarray,
+    new_mask: np.ndarray,
+    old_classes: tuple[str, ...],
+    new_classes: tuple[str, ...],
+    config: D37CandidateConfig,
+) -> dict[str, Any]:
+    """Cross-fit physical support base scores and fail closed per candidate."""
+
+    unique_ranks = tuple(sorted(int(value) for value in np.unique(ranks).tolist()))
+    physical_ids = np.asarray(physical_ids).astype(str)
+    if (
+        len(physical_ids) != len(features)
+        or len(set(physical_ids.tolist())) != len(physical_ids)
+        or any(not value for value in physical_ids.tolist())
+    ):
+        raise D25RunnerError("D37 physical support ID closure drift")
+    if len(unique_ranks) not in (8, 10):
+        raise D25RunnerError("D37 crossfit requires eight outer-train or ten full-K ranks")
+    inner_pairs = tuple(
+        (unique_ranks[index], unique_ranks[index + 1])
+        for index in range(0, len(unique_ranks), 2)
+    )
+    oof_scores: list[np.ndarray] = []
+    oof_labels: list[np.ndarray] = []
+    oof_fold_ids: list[np.ndarray] = []
+    oof_physical_ids: list[np.ndarray] = []
+    development_trace: list[dict[str, Any]] = []
+    development_macs = 0
+    for inner_index, held_pair in enumerate(inner_pairs):
+        inner_held = np.isin(ranks, np.asarray(held_pair, dtype=np.int64))
+        inner_train = ~inner_held
+        fisher_fit = fit_b3_fisher_closed_form(
+            features[inner_train & old_mask],
+            labels[inner_train & old_mask],
+            old_classes,
+            config=config.fisher,
+        )
+        inner_result = fit_d37_b3_preserving_int8(
+            features[inner_train & old_mask],
+            labels[inner_train & old_mask],
+            old_classes,
+            features[inner_train & new_mask],
+            labels[inner_train & new_mask],
+            new_classes,
+            fisher_fit.state,
+            config=config.compiled,
+        )
+        oof_scores.append(
+            base_score_d37_b3_preserving_int8(
+                inner_result.state_no_offset, features[inner_held]
+            )
+        )
+        oof_labels.append(np.asarray(labels[inner_held]).astype(str))
+        oof_fold_ids.append(
+            np.full(int(np.sum(inner_held)), inner_index, dtype=np.int64)
+        )
+        oof_physical_ids.append(np.asarray(physical_ids[inner_held]).astype(str))
+        development_macs += int(
+            fisher_fit.resource_audit["estimated_adaptation_macs"]
+        ) + int(inner_result.resource_audit["estimated_registration_macs"])
+        development_trace.extend(
+            {
+                **dict(row),
+                "scope": "inner_crossfit",
+                "inner_fold": inner_index,
+                "held_ranks": list(held_pair),
+                "query_rows_used": 0,
+            }
+            for row in inner_result.training_trace
+        )
+    base_scores = np.ascontiguousarray(np.concatenate(oof_scores, axis=0), dtype=np.float32)
+    physical_labels = np.concatenate(oof_labels, axis=0).astype(str)
+    fold_ids = np.concatenate(oof_fold_ids, axis=0).astype(np.int64)
+    ordered_physical_ids = np.concatenate(oof_physical_ids, axis=0).astype(str)
+    if (
+        len(base_scores) != len(features)
+        or base_scores.shape[1] != len(old_classes) + len(new_classes)
+        or set(physical_labels.tolist()) != set(old_classes + new_classes)
+        or len(set(ordered_physical_ids.tolist())) != len(ordered_physical_ids)
+        or len(set(fold_ids.tolist())) != len(inner_pairs)
+    ):
+        raise D25RunnerError("D37 OOF base-score/label closure drift")
+
+    fisher_fit = fit_b3_fisher_closed_form(
+        features[old_mask], labels[old_mask], old_classes, config=config.fisher
+    )
+    final_result = fit_d37_b3_preserving_int8(
+        features[old_mask],
+        labels[old_mask],
+        old_classes,
+        features[new_mask],
+        labels[new_mask],
+        new_classes,
+        fisher_fit.state,
+        config=config.compiled,
+    )
+    feasible = True
+    failure_reason: str | None = None
+    lower_bound: float | None = None
+    upper_bound: float | None = None
+    offset: float | None = None
+    try:
+        calibrated = fit_oof_feasible_offset_d37(
+            final_result.state_no_offset,
+            base_scores,
+            physical_labels,
+            oof_fold_ids=fold_ids,
+            oof_physical_ids=ordered_physical_ids,
+            source=D37_OOF_SOURCE,
+        )
+        state = calibrated.state
+        lower_bound = float(calibrated.lower_bound)
+        upper_bound = float(calibrated.upper_bound)
+        offset = float(calibrated.offset)
+        old_oof_count = int(calibrated.old_oof_count)
+        new_oof_count = int(calibrated.new_oof_count)
+        oof_fold_count = int(calibrated.fold_count)
+        oof_physical_id_sha256 = str(calibrated.physical_id_sha256)
+        oof_source = str(calibrated.source)
+    except D37B3PreservingInt8Error as exc:
+        if not any(
+            marker in str(exc)
+            for marker in (
+                "empty OOF feasible interval",
+                "OOF feasible interval contains no deployable FP16 offset",
+            )
+        ):
+            raise
+        feasible = False
+        failure_reason = str(exc)
+        state = final_result.state_no_offset
+        old_oof_count = int(np.sum(np.isin(physical_labels, np.asarray(old_classes))))
+        new_oof_count = int(len(physical_labels) - old_oof_count)
+        oof_fold_count = len(set(fold_ids.tolist()))
+        oof_physical_id_sha256 = hashlib.sha256(
+            "\n".join(sorted(ordered_physical_ids.tolist())).encode("utf-8")
+        ).hexdigest()
+        oof_source = D37_OOF_SOURCE
+    calibration_trace = {
+        "solver": "support_oof_shared_new_offset_feasible_interval",
+        "scope": "oof_calibration",
+        "arm": str(config.compiled.arm),
+        "margin": float(config.compiled.margin),
+        "feasible": feasible,
+        "lower_bound": lower_bound,
+        "upper_bound": upper_bound,
+        "offset": offset,
+        "failure_reason": failure_reason,
+        "oof_row_count": len(physical_labels),
+        "query_rows_used": 0,
+    }
+    final_trace = [
+        {**dict(row), "scope": "deploy_refit", "query_rows_used": 0}
+        for row in final_result.training_trace
+    ] + [calibration_trace]
+    return {
+        "fisher_fit": fisher_fit,
+        "before_state": final_result.before_state,
+        "state_no_offset": final_result.state_no_offset,
+        "state": state,
+        "core_result": final_result,
+        "inner_pairs": inner_pairs,
+        "oof_base_scores": base_scores,
+        "oof_labels": physical_labels,
+        "oof_fold_ids": fold_ids,
+        "oof_physical_ids": ordered_physical_ids,
+        "oof_old_row_count": old_oof_count,
+        "oof_new_row_count": new_oof_count,
+        "oof_fold_count": oof_fold_count,
+        "oof_physical_id_sha256": oof_physical_id_sha256,
+        "oof_source": oof_source,
+        "oof_feasible_interval_pass": feasible,
+        "oof_feasible_interval_lower_bound": lower_bound,
+        "oof_feasible_interval_upper_bound": upper_bound,
+        "oof_offset": offset,
+        "oof_failure_reason": failure_reason,
+        "development_trace": development_trace,
+        "complete_trace": development_trace + final_trace,
+        "development_oof_macs": development_macs,
+    }
+
+
+def _score_d37(
+    fit: Mapping[str, Any], features: np.ndarray
+) -> tuple[np.ndarray, np.ndarray]:
+    before = score_d37_b3_preserving_int8(fit["before_state"], features)
+    after = (
+        score_d37_b3_preserving_int8(fit["state"], features)
+        if bool(fit["oof_feasible_interval_pass"])
+        else base_score_d37_b3_preserving_int8(fit["state_no_offset"], features)
+    )
+    return before, after
+
+
+def _d37_resource(fit: Mapping[str, Any], registered_count: int) -> dict[str, Any]:
+    core = dict(fit["core_result"].resource_audit)
+    fisher = dict(fit["fisher_fit"].resource_audit)
+    state = fit["state"]
+    before_state = fit["before_state"]
+    query_macs = int(core["estimated_macs_per_query"])
+    identity_macs = int(registered_count * 10 * 160)
+    deploy_macs = int(fisher["estimated_adaptation_macs"]) + int(
+        core["estimated_registration_macs"]
+    )
+    return {
+        "schema": "cvs.phase2.d37_b3_preserving_int8_resource.v1",
+        "active_adapter_parameters": 0,
+        "peak_trainable_parameters": 0,
+        "trainable_parameter_cap": 80_000,
+        "trainable_parameter_cap_pass": True,
+        "total_optimizer_steps": 0,
+        "total_adaptation_epochs": 0,
+        "optimizer_step_cap": 30,
+        "optimizer_step_cap_pass": True,
+        "total_adaptation_macs": deploy_macs,
+        "estimated_adaptation_macs": deploy_macs,
+        "development_inner_crossfit_macs": int(fit["development_oof_macs"]),
+        "total_post_backbone_macs_per_query": query_macs,
+        "estimated_macs_per_query": query_macs,
+        "identity_single_qknn_macs_same_registered_count": identity_macs,
+        "estimated_score_mac_ratio_vs_identity_single_qknn": float(
+            query_macs / identity_macs
+        ),
+        "pre_registration_state_bytes": int(before_state.persistent_state_bytes),
+        "persistent_state_bytes": int(state.persistent_state_bytes),
+        "active_predictor_state_bytes": int(state.persistent_state_bytes),
+        "persistent_state_cap_bytes": 256 * 1024,
+        "persistent_state_cap_pass": int(state.persistent_state_bytes) <= 256 * 1024,
+        "resident_fp32_target_prototype_count": 0,
+        "target_old_int8_prototypes_used_for_prediction": True,
+        "target_new_int8_prototypes_used_for_prediction": True,
+        "actual_int8_component_used_for_prediction": True,
+        "old_prefix_bitwise_unchanged": bool(
+            old_prefix_bitwise_unchanged_d37(before_state, fit["state_no_offset"])
+        ),
+        "oof_calibration_row_count": int(len(fit["oof_labels"])),
+        "oof_calibration_old_row_count": int(fit["oof_old_row_count"]),
+        "oof_calibration_new_row_count": int(fit["oof_new_row_count"]),
+        "oof_crossfit_fold_count": int(fit["oof_fold_count"]),
+        "oof_physical_id_sha256": str(fit["oof_physical_id_sha256"]),
+        "oof_source": str(fit["oof_source"]),
+        "oof_feasible_interval_pass": bool(fit["oof_feasible_interval_pass"]),
+        "deployable_calibrated_state": bool(fit["oof_feasible_interval_pass"]),
+        "infeasible_state_scored_only_by_base_score_for_diagnostics": bool(
+            not fit["oof_feasible_interval_pass"]
+        ),
+        "oof_feasible_interval_lower_bound": fit["oof_feasible_interval_lower_bound"],
+        "oof_feasible_interval_upper_bound": fit["oof_feasible_interval_upper_bound"],
+        "oof_offset": fit["oof_offset"],
+        "oof_failure_reason": fit["oof_failure_reason"],
+        "inner_crossfit_fold_count": len(fit["inner_pairs"]),
+        "complete_loss_trace": list(fit["complete_trace"]),
+        "dense_query_graph_bytes": 0,
+        "query_rows_used_for_fit": 0,
+        "query_labels_used_for_fit": False,
+        "query_features_used_for_fit": False,
+        "query_role_oracle_access": False,
+        "query_true_batch_class_count_access": False,
+        "query_class_quota_access": False,
+        "query_batch_global_assignment": False,
+        "clean_sample_access": False,
+        "clean_derived_signal_access": False,
+        "source_sample_access": False,
+        "source_derived_signal_access": False,
+        "phase2_sample_view_policy": "leo_weak_only_no_clean_access",
+        "phase2_query_decision_policy": "per_sample_all_registered_classes",
+    }
+
+
 def _evaluate_d30_fold(
     component: Any,
     rows: Mapping[str, np.ndarray],
@@ -4363,6 +4723,176 @@ def _evaluate_d35_fold(
         "new_class_reachability": reachability,
         "new_physical_loso_all_reachable": all_reachable,
         "unreachable_new_class_count": int(sum(not v for v in reachability.values())),
+        "training_trace": list(resource["complete_loss_trace"]),
+        "geometry_summary": geometry,
+        "resource": resource,
+    }
+
+
+def _d37_old_to_new_intrusion_count(
+    predictions: np.ndarray,
+    old_mask: np.ndarray,
+    new_classes: tuple[str, ...],
+) -> int:
+    """Count every true-old row assigned to a newly registered class."""
+
+    values = np.asarray(predictions).astype(str)
+    mask = np.asarray(old_mask, dtype=bool)
+    if values.shape != mask.shape:
+        raise D25RunnerError("D37 intrusion prediction/mask shape drift")
+    return int(np.sum(np.isin(values[mask], np.asarray(new_classes))))
+
+
+def _evaluate_d37_fold(
+    rows: Mapping[str, np.ndarray],
+    z_id160: np.ndarray,
+    fft96: np.ndarray,
+    rf32: np.ndarray,
+    *,
+    old_classes: tuple[str, ...],
+    new_classes: tuple[str, ...],
+    held_ranks: tuple[int, int],
+    candidate_id: str,
+    config: D37CandidateConfig,
+) -> dict[str, Any]:
+    """D37 outer fold; an empty OOF interval is an audited failed row."""
+
+    labels = np.asarray(rows["labels"]).astype(str)
+    ranks = np.asarray(rows["ranks"], dtype=np.int64)
+    held = np.isin(ranks, np.asarray(held_ranks, dtype=np.int64))
+    train = ~held
+    old = np.isin(labels, np.asarray(old_classes))
+    new = np.isin(labels, np.asarray(new_classes))
+    if (
+        int(np.sum(train & old)) != 8 * len(old_classes)
+        or int(np.sum(train & new)) != 8 * len(new_classes)
+        or int(np.sum(held & old)) != 2 * len(old_classes)
+        or int(np.sum(held & new)) != 2 * len(new_classes)
+    ):
+        raise D25RunnerError("D37 leave-two-rank class symmetry drift")
+    features = _d1_feature_from_blocks(z_id160, fft96, rf32)
+    fit = _fit_d37_route(
+        features[train],
+        labels[train],
+        ranks[train],
+        np.asarray(rows["tokens"])[train],
+        old[train],
+        new[train],
+        old_classes,
+        new_classes,
+        config,
+    )
+    all_classes = old_classes + new_classes
+    before_scores, after_scores = _score_d37(fit, features[held])
+    held_labels = labels[held]
+    held_old = old[held]
+    held_new = new[held]
+    before_predictions = np.asarray(old_classes)[
+        np.argmax(before_scores[held_old], axis=1)
+    ]
+    after_predictions = np.asarray(all_classes)[np.argmax(after_scores, axis=1)]
+    before_old = legacy._metric_block(
+        held_labels[held_old], before_predictions.astype(str).tolist(), old_classes
+    )
+    after_old = legacy._metric_block(
+        held_labels[held_old], after_predictions[held_old].astype(str).tolist(), old_classes
+    )
+    after_new = legacy._metric_block(
+        held_labels[held_new], after_predictions[held_new].astype(str).tolist(), new_classes
+    )
+    b3_scores = score_b3_fisher_closed_form(
+        fit["fisher_fit"].state, features[held][held_old]
+    )
+    b3_predictions = np.asarray(old_classes)[np.argmax(b3_scores, axis=1)]
+    b3_old = legacy._metric_block(
+        held_labels[held_old], b3_predictions.astype(str).tolist(), old_classes
+    )
+    outer_intrusion = _d37_old_to_new_intrusion_count(
+        after_predictions, held_old, new_classes
+    )
+    new_loso: list[dict[str, Any]] = []
+    for local_index in np.flatnonzero(held_new).tolist():
+        target = len(old_classes) + new_classes.index(str(held_labels[local_index]))
+        scores = after_scores[local_index]
+        competitor = float(np.max(np.delete(scores, target)))
+        margin = float(scores[target] - competitor)
+        new_loso.append(
+            {
+                "held_rank": int(ranks[held][local_index]),
+                "new_class": str(held_labels[local_index]),
+                "correct": bool(np.argmax(scores) == target),
+                "margin": margin,
+            }
+        )
+    new_reachability = {
+        name: bool(values)
+        and all(bool(row["correct"]) and float(row["margin"]) > 0.0 for row in values)
+        for name in new_classes
+        for values in [[row for row in new_loso if row["new_class"] == name]]
+    }
+    resource = _d37_resource(fit, len(all_classes))
+    old_score_columns_bitwise_unchanged = bool(
+        old_prefix_bitwise_unchanged_d37(
+            fit["before_state"], fit["state_no_offset"]
+        )
+    )
+    old_score_column_max_abs_diff = float(
+        np.max(np.abs(before_scores - after_scores[:, : len(old_classes)]))
+    )
+    geometry = {
+        **dict(fit["core_result"].geometry_audit),
+        "schema": "cvs.phase2.d37_b3_preserving_int8_geometry.v1",
+        "feature_geometry": "b3_auxiliary_dominant_z160_fft96_rf32_v1",
+        "observed_feature_block_energy": _d30_observed_block_energy(features),
+        "inner_crossfit_rank_pairs": [list(pair) for pair in fit["inner_pairs"]],
+        "inner_crossfit_no_self_participation": True,
+        "oof_base_score_row_count": len(fit["oof_labels"]),
+        "oof_uses_physical_labels_only": True,
+        "oof_feasible_interval_pass": bool(fit["oof_feasible_interval_pass"]),
+        "oof_failure_reason": fit["oof_failure_reason"],
+        "outer_held_protocol": "outer_leave_two_shot_ranks_not_seen_by_fit",
+        "outer_held_new_intrusion_count": outer_intrusion,
+        "outer_held_zero_new_intrusion_pass": outer_intrusion == 0,
+        "new_physical_leave_one_out": new_loso,
+        "new_class_reachability": new_reachability,
+        "new_physical_loso_all_reachable": all(new_reachability.values()),
+    }
+    return {
+        "candidate_id": candidate_id,
+        "held_ranks": list(held_ranks),
+        "fit_k_shot": 8,
+        "before_old": before_old,
+        "after_old": after_old,
+        "after_new": after_new,
+        "b3_reference_old": b3_old,
+        "H_old_new": legacy._harmonic(
+            float(after_old["overall_accuracy"]),
+            float(after_new["overall_accuracy"]),
+        ),
+        "forgetting": float(
+            before_old["overall_accuracy"] - after_old["overall_accuracy"]
+        ),
+        "joint_floor": float(
+            min(after_old["class_floor_accuracy"], after_new["class_floor_accuracy"])
+        ),
+        "old_score_columns_bitwise_unchanged": old_score_columns_bitwise_unchanged,
+        "old_score_columns_bitwise_unchanged_semantics": (
+            "measured_append_only_target_old_int8_state_prefix"
+        ),
+        "old_score_column_max_abs_diff": old_score_column_max_abs_diff,
+        "oof_feasible_interval_pass": bool(fit["oof_feasible_interval_pass"]),
+        "oof_feasible_interval_lower_bound": fit["oof_feasible_interval_lower_bound"],
+        "oof_feasible_interval_upper_bound": fit["oof_feasible_interval_upper_bound"],
+        "oof_failure_reason": fit["oof_failure_reason"],
+        "outer_held_new_intrusion_count": outer_intrusion,
+        "outer_held_zero_new_intrusion_pass": outer_intrusion == 0,
+        "new_class_reachability": new_reachability,
+        "new_physical_loso_all_reachable": all(new_reachability.values()),
+        "unreachable_new_class_count": int(
+            sum(not value for value in new_reachability.values())
+        ),
+        "target_old_int8_prototypes_used_for_prediction": True,
+        "target_new_int8_prototypes_used_for_prediction": True,
         "training_trace": list(resource["complete_loss_trace"]),
         "geometry_summary": geometry,
         "resource": resource,
@@ -5748,6 +6278,288 @@ def _select_d36_candidate(
     return selected, decisions
 
 
+def _select_d37_candidate(
+    folds_by_candidate: Mapping[str, Sequence[Mapping[str, Any]]],
+) -> tuple[str, list[dict[str, Any]]]:
+    """Require feasible OOF intervals plus strict B3/D33 joint gates."""
+
+    comparator_ids = (IDENTITY_CANDIDATE, DIAG_CANDIDATE, D33_B3_FAST)
+    comparators = {name: list(folds_by_candidate[name]) for name in comparator_ids}
+    comparator_by_key = {
+        candidate_id: {
+            (str(row["scenario"]), int(row["fold_index"])): row
+            for row in candidate_rows
+        }
+        for candidate_id, candidate_rows in comparators.items()
+    }
+    expected_keys = set(comparator_by_key[DIAG_CANDIDATE])
+    if any(set(rows_by_key) != expected_keys for rows_by_key in comparator_by_key.values()):
+        raise D25RunnerError("D37 matched comparator row closure drift")
+    old_names = tuple(comparators[DIAG_CANDIDATE][0]["after_old"]["per_class_accuracy"])
+    new_names = tuple(comparators[DIAG_CANDIDATE][0]["after_new"]["per_class_accuracy"])
+    old_thresholds = {
+        name: max(
+            float(
+                np.mean(
+                    [
+                        float(row["after_old"]["per_class_accuracy"][name])
+                        for row in comparators[candidate_id]
+                    ]
+                )
+            )
+            for candidate_id in comparator_ids
+        )
+        for name in old_names
+    }
+    new_thresholds = {
+        name: max(
+            float(
+                np.mean(
+                    [
+                        float(row["after_new"]["per_class_accuracy"][name])
+                        for row in comparators[candidate_id]
+                    ]
+                )
+            )
+            for candidate_id in comparator_ids
+        )
+        for name in new_names
+    }
+    strong_b3_before_thresholds = {
+        name: float(
+            np.mean(
+                [
+                    float(row["before_old"]["per_class_accuracy"][name])
+                    for row in comparators[DIAG_CANDIDATE]
+                ]
+            )
+        )
+        for name in old_names
+    }
+    joint = {
+        "old": max(
+            float(np.mean([float(row["after_old"]["overall_accuracy"]) for row in comparators[cid]]))
+            for cid in comparator_ids
+        ),
+        "new": max(
+            float(np.mean([float(row["after_new"]["overall_accuracy"]) for row in comparators[cid]]))
+            for cid in comparator_ids
+        ),
+        "h": max(
+            float(np.mean([float(row["H_old_new"]) for row in comparators[cid]]))
+            for cid in comparator_ids
+        ),
+        "forgetting": min(
+            float(np.mean([float(row["forgetting"]) for row in comparators[cid]]))
+            for cid in comparator_ids
+        ),
+        "joint_floor": max(
+            min(float(row["joint_floor"]) for row in comparators[cid])
+            for cid in comparator_ids
+        ),
+    }
+    decisions: list[dict[str, Any]] = []
+    eligible: list[tuple[str, float, float, float, int]] = []
+    for candidate_id, raw_rows in folds_by_candidate.items():
+        rows = list(raw_rows)
+        aggregate = legacy._aggregate_candidate(rows)
+        decision: dict[str, Any] = {
+            **aggregate,
+            "candidate_id": candidate_id,
+            "family": (
+                "d37_b3_preserving_residual_int8"
+                if candidate_id in D37_CANDIDATES
+                else "d33_fast_negative_control"
+                if candidate_id == D33_B3_FAST
+                else "d25" if candidate_id == D25_C0 else "control"
+            ),
+            "fallback": candidate_id == D25_C0,
+            "diagnostic_only": candidate_id in comparator_ids,
+            "eligible_positive_route": False,
+        }
+        if candidate_id not in D37_CANDIDATES:
+            decisions.append(decision)
+            continue
+        mean_before = {
+            name: float(
+                np.mean(
+                    [float(row["before_old"]["per_class_accuracy"][name]) for row in rows]
+                )
+            )
+            for name in old_names
+        }
+        mean_b3_reference = {
+            name: float(
+                np.mean(
+                    [float(row["b3_reference_old"]["per_class_accuracy"][name]) for row in rows]
+                )
+            )
+            for name in old_names
+        }
+        mean_old = {
+            name: float(
+                np.mean(
+                    [float(row["after_old"]["per_class_accuracy"][name]) for row in rows]
+                )
+            )
+            for name in old_names
+        }
+        mean_new = {
+            name: float(
+                np.mean(
+                    [float(row["after_new"]["per_class_accuracy"][name]) for row in rows]
+                )
+            )
+            for name in new_names
+        }
+        row_keys = [(str(row["scenario"]), int(row["fold_index"])) for row in rows]
+        if set(row_keys) != expected_keys or len(row_keys) != len(expected_keys):
+            raise D25RunnerError("D37 candidate/matched comparator row closure drift")
+        internal_b3_gate = all(
+            float(row["before_old"]["per_class_accuracy"][name]) + 1.0e-12
+            >= float(row["b3_reference_old"]["per_class_accuracy"][name])
+            for row in rows
+            for name in old_names
+        )
+        strong_b3_gate = all(
+            float(row["before_old"]["per_class_accuracy"][name]) + 1.0e-12
+            >= float(
+                comparator_by_key[DIAG_CANDIDATE][key]["before_old"][
+                    "per_class_accuracy"
+                ][name]
+            )
+            for row, key in zip(rows, row_keys, strict=True)
+            for name in old_names
+        )
+        feasible_gate = all(bool(row["oof_feasible_interval_pass"]) for row in rows)
+        safety_gate = all(bool(row["outer_held_zero_new_intrusion_pass"]) for row in rows)
+        reachability_gate = all(bool(row["new_physical_loso_all_reachable"]) for row in rows)
+        prefix_gate = all(bool(row["old_score_columns_bitwise_unchanged"]) for row in rows)
+        int8_gate = all(
+            bool(row["target_old_int8_prototypes_used_for_prediction"])
+            and bool(row["target_new_int8_prototypes_used_for_prediction"])
+            for row in rows
+        )
+        old_floor_gate = all(
+            float(row["after_old"]["per_class_accuracy"][name]) + 1.0e-12
+            >= max(
+                float(
+                    comparator_by_key[comparator_id][key]["after_old"][
+                        "per_class_accuracy"
+                    ][name]
+                )
+                for comparator_id in comparator_ids
+            )
+            for row, key in zip(rows, row_keys, strict=True)
+            for name in old_names
+        )
+        new_floor_gate = all(
+            float(row["after_new"]["per_class_accuracy"][name]) + 1.0e-12
+            >= max(
+                float(
+                    comparator_by_key[comparator_id][key]["after_new"][
+                        "per_class_accuracy"
+                    ][name]
+                )
+                for comparator_id in comparator_ids
+            )
+            for row, key in zip(rows, row_keys, strict=True)
+            for name in new_names
+        )
+        classwise_gate = bool(old_floor_gate and new_floor_gate)
+        mean_after_old = float(np.mean([float(row["after_old"]["overall_accuracy"]) for row in rows]))
+        mean_after_new = float(np.mean([float(row["after_new"]["overall_accuracy"]) for row in rows]))
+        mean_h = float(np.mean([float(row["H_old_new"]) for row in rows]))
+        mean_forgetting = float(np.mean([float(row["forgetting"]) for row in rows]))
+        worst_joint_floor = min(float(row["joint_floor"]) for row in rows)
+        joint_gate = all(
+            float(row["after_old"]["overall_accuracy"]) + 1.0e-12
+            >= max(
+                float(comparator_by_key[cid][key]["after_old"]["overall_accuracy"])
+                for cid in comparator_ids
+            )
+            and float(row["after_new"]["overall_accuracy"]) + 1.0e-12
+            >= max(
+                float(comparator_by_key[cid][key]["after_new"]["overall_accuracy"])
+                for cid in comparator_ids
+            )
+            and float(row["H_old_new"]) + 1.0e-12
+            >= max(
+                float(comparator_by_key[cid][key]["H_old_new"])
+                for cid in comparator_ids
+            )
+            and float(row["forgetting"]) <= min(
+                float(comparator_by_key[cid][key]["forgetting"])
+                for cid in comparator_ids
+            ) + 1.0e-12
+            and float(row["joint_floor"]) + 1.0e-12
+            >= max(
+                float(comparator_by_key[cid][key]["joint_floor"])
+                for cid in comparator_ids
+            )
+            for row, key in zip(rows, row_keys, strict=True)
+        )
+        hard_gate = bool(
+            internal_b3_gate
+            and strong_b3_gate
+            and feasible_gate
+            and safety_gate
+            and reachability_gate
+            and prefix_gate
+            and int8_gate
+        )
+        positive = bool(hard_gate and classwise_gate and joint_gate)
+        decision.update(
+            {
+                "quantized_old_head_classwise_noninferior_to_b3": internal_b3_gate,
+                "quantized_old_head_classwise_noninferior_to_strong_b3": strong_b3_gate,
+                "oof_feasible_interval_all_folds": feasible_gate,
+                "outer_held_zero_new_intrusion_all_folds": safety_gate,
+                "all_new_classes_reachable_all_folds": reachability_gate,
+                "old_score_prefix_bitwise_unchanged_all_folds": prefix_gate,
+                "target_old_new_int8_gate_pass": int8_gate,
+                "d37_all_old_class_floor_gate_pass": old_floor_gate,
+                "d37_all_new_class_floor_gate_pass": new_floor_gate,
+                "d37_classwise_comparator_gate_pass": classwise_gate,
+                "d37_joint_comparator_gate_pass": joint_gate,
+                "d37_hard_gate_pass": hard_gate,
+                "mean_old_per_class_accuracy": mean_old,
+                "mean_new_per_class_accuracy": mean_new,
+                "mean_quantized_before_old_per_class_accuracy": mean_before,
+                "mean_b3_reference_old_per_class_accuracy": mean_b3_reference,
+                "strong_b3_before_per_class_thresholds": strong_b3_before_thresholds,
+                "classwise_comparator_thresholds": {
+                    "old": old_thresholds,
+                    "new": new_thresholds,
+                },
+                "joint_comparator_thresholds": joint,
+                "outer_held_new_intrusion_count": int(
+                    sum(int(row["outer_held_new_intrusion_count"]) for row in rows)
+                ),
+                "unreachable_new_class_count": int(
+                    sum(int(row["unreachable_new_class_count"]) for row in rows)
+                ),
+                "oof_infeasible_fold_count": int(
+                    sum(not bool(row["oof_feasible_interval_pass"]) for row in rows)
+                ),
+                "eligible_positive_route": positive,
+            }
+        )
+        decisions.append(decision)
+        if positive:
+            eligible.append(
+                (
+                    candidate_id,
+                    worst_joint_floor,
+                    mean_h,
+                    mean_after_new,
+                    -int(decision["outer_held_new_intrusion_count"]),
+                )
+            )
+    selected = max(eligible, key=lambda item: item[1:])[0] if eligible else D25_C0
+    return selected, decisions
+
+
 def _apply_full_k10_d34_gate(
     selected_id: str,
     candidate_decisions: list[dict[str, Any]],
@@ -5932,6 +6744,82 @@ def _apply_full_k10_d36_gate(
     if bool(selected_decision["full_k10_d36_gate_pass"]):
         return selected_id, None
     return D25_C0, "FULL_K10_D36_OOF_SAFETY_GENERIC_FLOOR_OR_RESOURCE_GATE_FAILED"
+
+
+def _apply_full_k10_d37_gate(
+    selected_id: str,
+    candidate_decisions: list[dict[str, Any]],
+    deployment_resources: Mapping[str, Mapping[str, Mapping[str, Any]]],
+) -> tuple[str, str | None]:
+    """Require feasible five-fold calibration and complete D37 deployment closure."""
+
+    for decision in candidate_decisions:
+        candidate_id = str(decision["candidate_id"])
+        if candidate_id not in D37_CANDIDATES:
+            continue
+        by_scenario: dict[str, dict[str, bool]] = {}
+        for scenario in legacy.FORMAL_LEO_WEAK_SCENARIOS:
+            resource = deployment_resources[candidate_id][scenario]
+            by_scenario[scenario] = {
+                "oof_feasible_interval": bool(resource["oof_feasible_interval_pass"]),
+                "quantized_old_head_b3_noninferior": bool(
+                    resource["quantized_old_head_classwise_noninferior_to_b3"]
+                ),
+                "old_support_non_degradation": bool(
+                    resource["old_support_non_degradation_pass"]
+                ),
+                "full_support_zero_old_to_new_intrusion": int(
+                    resource["full_support_old_to_new_intrusion_count"]
+                )
+                == 0,
+                "fivefold_crossfit_no_self_participation": bool(
+                    resource["full_k10_crossfit_fold_count"] == 5
+                    and resource["full_k10_crossfit_no_self_participation"]
+                ),
+                "old_prefix_bitwise_unchanged": bool(
+                    resource["old_prefix_bitwise_unchanged"]
+                    and resource["old_score_prefix_bitwise_unchanged"]
+                ),
+                "all_new_classes_reachable": int(
+                    resource["unreachable_new_class_count"]
+                )
+                == 0,
+                "target_old_new_int8": bool(
+                    resource["target_old_int8_prototypes_used_for_prediction"]
+                    and resource["target_new_int8_prototypes_used_for_prediction"]
+                    and int(resource["resident_fp32_target_prototype_count"]) == 0
+                ),
+                "resource_protocol": bool(
+                    int(resource["peak_trainable_parameters"]) <= 80_000
+                    and int(resource["total_optimizer_steps"]) <= 30
+                    and bool(resource["persistent_state_cap_pass"])
+                    and int(resource["dense_query_graph_bytes"]) == 0
+                    and bool(resource["latency_includes_argmax"])
+                    and int(resource["query_rows_used_for_fit"]) == 0
+                ),
+            }
+        outer_pass = bool(
+            decision.get("d37_hard_gate_pass", False)
+            and decision.get("d37_classwise_comparator_gate_pass", False)
+            and decision.get("d37_joint_comparator_gate_pass", False)
+        )
+        full_pass = bool(
+            outer_pass and all(all(values.values()) for values in by_scenario.values())
+        )
+        decision["full_k10_d37_gate_by_scenario"] = by_scenario
+        decision["full_k10_uses_outer_strict_gate"] = outer_pass
+        decision["full_k10_d37_gate_pass"] = full_pass
+        decision["eligible_positive_route"] = bool(
+            decision.get("eligible_positive_route", False) and full_pass
+        )
+    if selected_id not in D37_CANDIDATES:
+        return selected_id, None
+    selected_decision = next(
+        row for row in candidate_decisions if row["candidate_id"] == selected_id
+    )
+    if bool(selected_decision["full_k10_d37_gate_pass"]):
+        return selected_id, None
+    return D25_C0, "FULL_K10_D37_OOF_B3_SAFETY_REACHABILITY_OR_RESOURCE_GATE_FAILED"
 
 
 def _full_d25_state_audit(
@@ -7224,6 +8112,164 @@ def _full_d35_state_audit(
     return resource, geometry
 
 
+def _full_d37_state_audit(
+    rows: Mapping[str, np.ndarray],
+    z_id160: np.ndarray,
+    fft96: np.ndarray,
+    rf32: np.ndarray,
+    *,
+    old_classes: tuple[str, ...],
+    new_classes: tuple[str, ...],
+    config: D37CandidateConfig,
+) -> tuple[dict[str, Any], dict[str, Any]]:
+    """Full-K10 D37 fit with five physical rank-pair OOF folds."""
+
+    labels = np.asarray(rows["labels"]).astype(str)
+    ranks = np.asarray(rows["ranks"], dtype=np.int64)
+    old = np.isin(labels, np.asarray(old_classes))
+    new = np.isin(labels, np.asarray(new_classes))
+    features = _d1_feature_from_blocks(z_id160, fft96, rf32)
+    started = time.perf_counter()
+    fit = _fit_d37_route(
+        features,
+        labels,
+        ranks,
+        np.asarray(rows["tokens"]),
+        old,
+        new,
+        old_classes,
+        new_classes,
+        config,
+    )
+    fit_elapsed_ms = (time.perf_counter() - started) * 1000.0
+    all_classes = old_classes + new_classes
+    before_scores, after_scores = _score_d37(fit, features)
+    before_predictions = np.asarray(old_classes)[np.argmax(before_scores[old], axis=1)]
+    after_predictions = np.asarray(all_classes)[np.argmax(after_scores, axis=1)]
+    before_metric = legacy._metric_block(
+        labels[old], before_predictions.astype(str).tolist(), old_classes
+    )
+    after_metric = legacy._metric_block(
+        labels[old], after_predictions[old].astype(str).tolist(), old_classes
+    )
+    new_metric = legacy._metric_block(
+        labels[new], after_predictions[new].astype(str).tolist(), new_classes
+    )
+    b3_scores = score_b3_fisher_closed_form(fit["fisher_fit"].state, features[old])
+    b3_predictions = np.asarray(old_classes)[np.argmax(b3_scores, axis=1)]
+    b3_metric = legacy._metric_block(
+        labels[old], b3_predictions.astype(str).tolist(), old_classes
+    )
+    full_intrusion = _d37_old_to_new_intrusion_count(
+        after_predictions, old, new_classes
+    )
+    classwise_non_degradation = all(
+        float(after_metric["per_class_accuracy"][name]) + 1.0e-12
+        >= float(before_metric["per_class_accuracy"][name])
+        for name in old_classes
+    )
+    quantized_b3_noninferior = all(
+        float(before_metric["per_class_accuracy"][name]) + 1.0e-12
+        >= float(b3_metric["per_class_accuracy"][name])
+        for name in old_classes
+    )
+    new_reachability_rows: list[dict[str, Any]] = []
+    for index in np.flatnonzero(new).tolist():
+        target = len(old_classes) + new_classes.index(str(labels[index]))
+        scores = after_scores[index]
+        margin = float(scores[target] - np.max(np.delete(scores, target)))
+        new_reachability_rows.append(
+            {
+                "rank": int(ranks[index]),
+                "new_class": str(labels[index]),
+                "correct": bool(np.argmax(scores) == target),
+                "margin": margin,
+            }
+        )
+    new_reachability = {
+        name: bool(values)
+        and all(bool(row["correct"]) and float(row["margin"]) > 0.0 for row in values)
+        for name in new_classes
+        for values in [[row for row in new_reachability_rows if row["new_class"] == name]]
+    }
+    score_elapsed_ms: list[float] = []
+    for feature in features:
+        score_started = time.perf_counter()
+        row_scores = (
+            score_d37_b3_preserving_int8(fit["state"], feature[None, :])
+            if bool(fit["oof_feasible_interval_pass"])
+            else base_score_d37_b3_preserving_int8(
+                fit["state_no_offset"], feature[None, :]
+            )
+        )
+        _ = int(np.argmax(row_scores[0]))
+        score_elapsed_ms.append((time.perf_counter() - score_started) * 1000.0)
+    resource = _d37_resource(fit, len(all_classes))
+    resource.update(
+        {
+            "deployment_k_shot": 10,
+            "registered_class_count": len(all_classes),
+            "old_support_before_registration": before_metric,
+            "old_support_after_registration": after_metric,
+            "new_support_after_registration": new_metric,
+            "b3_reference_old_support": b3_metric,
+            "quantized_old_head_classwise_noninferior_to_b3": quantized_b3_noninferior,
+            "old_support_classwise_non_degradation_pass": classwise_non_degradation,
+            "old_support_floor_non_degradation_pass": float(
+                after_metric["class_floor_accuracy"]
+            )
+            + 1.0e-12
+            >= float(before_metric["class_floor_accuracy"]),
+            "old_support_non_degradation_pass": bool(
+                classwise_non_degradation
+                and full_intrusion == 0
+                and fit["oof_feasible_interval_pass"]
+            ),
+            "old_score_prefix_bitwise_unchanged": bool(
+                old_prefix_bitwise_unchanged_d37(
+                    fit["before_state"], fit["state_no_offset"]
+                )
+            ),
+            "old_score_column_max_abs_diff": float(
+                np.max(np.abs(before_scores - after_scores[:, : len(old_classes)]))
+            ),
+            "full_support_old_to_new_intrusion_count": full_intrusion,
+            "new_class_reachability": new_reachability,
+            "unreachable_new_class_count": int(
+                sum(not value for value in new_reachability.values())
+            ),
+            "full_k10_crossfit_fold_count": len(fit["inner_pairs"]),
+            "full_k10_crossfit_no_self_participation": True,
+            "support_adaptation_and_registration_elapsed_ms": fit_elapsed_ms,
+            "batch1_head_latency_mean_ms": float(np.mean(score_elapsed_ms)),
+            "batch1_head_latency_p95_ms": float(
+                np.quantile(np.asarray(score_elapsed_ms, dtype=np.float64), 0.95)
+            ),
+            "batch1_head_latency_sample_count": len(score_elapsed_ms),
+            "head_latency_scope": "D37_residual_int8_score_plus_argmax",
+            "latency_includes_argmax": True,
+            "head_peak_cuda_memory_bytes": 0,
+            "head_runtime": "numpy_cpu_fp32_int8",
+        }
+    )
+    geometry = {
+        **dict(fit["core_result"].geometry_audit),
+        "schema": "cvs.phase2.d37_b3_preserving_int8_geometry.v1",
+        "feature_geometry": "b3_auxiliary_dominant_z160_fft96_rf32_v1",
+        "observed_feature_block_energy": _d30_observed_block_energy(features),
+        "full_k10_crossfit_rank_pairs": [list(pair) for pair in fit["inner_pairs"]],
+        "full_k10_crossfit_no_self_participation": True,
+        "oof_feasible_interval_pass": bool(fit["oof_feasible_interval_pass"]),
+        "oof_feasible_interval_lower_bound": fit["oof_feasible_interval_lower_bound"],
+        "oof_feasible_interval_upper_bound": fit["oof_feasible_interval_upper_bound"],
+        "oof_failure_reason": fit["oof_failure_reason"],
+        "full_support_old_to_new_intrusion_count": full_intrusion,
+        "new_support_reachability_rows": new_reachability_rows,
+        "new_class_reachability": new_reachability,
+    }
+    return resource, geometry
+
+
 def _full_d36_state_audit(
     rows: Mapping[str, np.ndarray],
     z_id160: np.ndarray,
@@ -7767,7 +8813,19 @@ def run(
     for candidate_id, config in candidates.items():
         for scenario in legacy.FORMAL_LEO_WEAK_SCENARIOS:
             for fold_index, held_ranks in enumerate(HELD_RANKS):
-                if isinstance(config, D36CandidateConfig):
+                if isinstance(config, D37CandidateConfig):
+                    row = _evaluate_d37_fold(
+                        scene_rows[scenario],
+                        scene_z[scenario],
+                        scene_fft[scenario],
+                        scene_rf[scenario],
+                        old_classes=old_classes,
+                        new_classes=new_classes,
+                        held_ranks=held_ranks,
+                        candidate_id=candidate_id,
+                        config=config,
+                    )
+                elif isinstance(config, D36CandidateConfig):
                     row = _evaluate_d36_fold(
                         scene_rows[scenario],
                         scene_z[scenario],
@@ -7986,8 +9044,12 @@ def run(
         raise D25RunnerError("D35 training-log cardinality drift")
     if candidate_set == CANDIDATE_SET_D36_V1 and expected_rows != 105:
         raise D25RunnerError("D36 training-log cardinality drift")
+    if candidate_set == CANDIDATE_SET_D37_V1 and expected_rows != 105:
+        raise D25RunnerError("D37 training-log cardinality drift")
     selected_id, candidate_decisions = (
-        _select_d36_candidate(folds_by_candidate)
+        _select_d37_candidate(folds_by_candidate)
+        if candidate_set == CANDIDATE_SET_D37_V1
+        else _select_d36_candidate(folds_by_candidate)
         if candidate_set == CANDIDATE_SET_D36_V1
         else _select_d35_candidate(folds_by_candidate)
         if candidate_set == CANDIDATE_SET_D35_V1
@@ -8026,6 +9088,7 @@ def run(
             CANDIDATE_SET_D34_V1,
             CANDIDATE_SET_D35_V1,
             CANDIDATE_SET_D36_V1,
+            CANDIDATE_SET_D37_V1,
         )
         else _select_candidate(folds_by_candidate)
     )
@@ -8056,6 +9119,8 @@ def run(
         if candidate_set == CANDIDATE_SET_D35_V1
         else (D25_C0, D33_B3_FAST) + D36_CANDIDATES
         if candidate_set == CANDIDATE_SET_D36_V1
+        else (D25_C0, D33_B3_FAST) + D37_CANDIDATES
+        if candidate_set == CANDIDATE_SET_D37_V1
         else (D25_C0,) + D26_CANDIDATES
         if candidate_set in (CANDIDATE_SET_D26_V1, CANDIDATE_SET_D26_V2)
         else D25_CANDIDATES
@@ -8065,7 +9130,19 @@ def run(
     }
     for candidate_id, config in candidates.items():
         for scenario in legacy.FORMAL_LEO_WEAK_SCENARIOS:
-            if isinstance(config, D36CandidateConfig):
+            if isinstance(config, D37CandidateConfig):
+                resource, geometry = _full_d37_state_audit(
+                    scene_rows[scenario],
+                    scene_z[scenario],
+                    scene_fft[scenario],
+                    scene_rf[scenario],
+                    old_classes=old_classes,
+                    new_classes=new_classes,
+                    config=config,
+                )
+                deployment_resources[candidate_id][scenario] = resource
+                geometry_matrix[candidate_id][scenario] = geometry
+            elif isinstance(config, D36CandidateConfig):
                 resource, geometry = _full_d36_state_audit(
                     scene_rows[scenario],
                     scene_z[scenario],
@@ -8256,6 +9333,10 @@ def run(
         selected_id, full_k10_fallback_reason = _apply_full_k10_d36_gate(
             selected_id, candidate_decisions, deployment_resources
         )
+    elif candidate_set == CANDIDATE_SET_D37_V1:
+        selected_id, full_k10_fallback_reason = _apply_full_k10_d37_gate(
+            selected_id, candidate_decisions, deployment_resources
+        )
     elif candidate_set in (
         CANDIDATE_SET_D26_V1,
         CANDIDATE_SET_D26_V2,
@@ -8373,6 +9454,7 @@ def run(
             CANDIDATE_SET_D34_V1,
             CANDIDATE_SET_D35_V1,
             CANDIDATE_SET_D36_V1,
+            CANDIDATE_SET_D37_V1,
         )
         else selected_id in _positive_route_candidates(candidate_set)
     )
@@ -8386,6 +9468,7 @@ def run(
             CANDIDATE_SET_D34_V1,
             CANDIDATE_SET_D35_V1,
             CANDIDATE_SET_D36_V1,
+            CANDIDATE_SET_D37_V1,
         )
         else list(_positive_route_candidates(candidate_set))
     )
@@ -8413,6 +9496,7 @@ def run(
                 CANDIDATE_SET_D34_V1,
                 CANDIDATE_SET_D35_V1,
                 CANDIDATE_SET_D36_V1,
+                CANDIDATE_SET_D37_V1,
             )
             else IDENTITY_CANDIDATE
         ),
@@ -8469,6 +9553,13 @@ def run(
             "zero_outer-old-intrusion,_physical-new-LOO,_all-registered-class_"
             "generic-floor_and_classwise_joint-comparator,_resource_closure"
             if candidate_set == CANDIDATE_SET_D36_V1
+            else "D37:_B3-preserving_append-only_two-level_residual-int8_"
+            "old/new_head,_physical-rank-pair_OOF_base-scores_and-labels,_"
+            "shared-new-offset_non-empty-feasible-interval_hard-gate,_old_"
+            "prefix_bitwise-invariance,_strong-B3_and_D33-FAST_classwise_"
+            "joint-comparator,_zero-old-intrusion,_new-reachability,_full-"
+            "K10_fivefold_OOF_and_resource-closure"
+            if candidate_set == CANDIDATE_SET_D37_V1
             else "D35:_FAST_Fisher_frozen_old_score_prefix,_globally-visible_"
             "int8_dense-safe_new_registration,_fit-old_non-degradation,_outer-"
             "held_zero-new-intrusion_and_physical-new-LOO-reachability_hard_"
@@ -8553,6 +9644,7 @@ def run(
                 CANDIDATE_SET_D34_V1,
                 CANDIDATE_SET_D35_V1,
                 CANDIDATE_SET_D36_V1,
+                CANDIDATE_SET_D37_V1,
             )
             else {}
         ),
@@ -8645,6 +9737,7 @@ def build_parser() -> argparse.ArgumentParser:
             CANDIDATE_SET_D34_V1,
             CANDIDATE_SET_D35_V1,
             CANDIDATE_SET_D36_V1,
+            CANDIDATE_SET_D37_V1,
         ),
         default=CANDIDATE_SET_D25_V4,
     )
