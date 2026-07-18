@@ -109,3 +109,10 @@ v2直接用`(u·q_int8)×1/||q_int8||`评分，不再逐query构造FP32反量化
 其中计入对角变换、int8 centroid点积、每类逆范数缩放和radius score；11类为3,511MAC，相对同注册类数identity-only单qKNN的17,600MAC降低80.05%。K10 6旧+5新状态由4,408B改为4,452B；6旧+20新状态为8,952B，active参数7,854，Stage2-C适配MAC为2,572,128。该修改不改变support、特征、半径、标签权限或逐样本决策协议；直接int8评分与原临时反量化面在本地随机回归中的最大FP32差约`5.7e-6`。
 
 v2本地19项D33/Fisher/runner集成测试、`py_compile`、launcher `bash -n`与`git diff --check`已通过。下一步只同步修订后的D33 core和v2 launcher，重跑唯一`support_screen_v2`，并验证逐行预测/指标与v1一致后关闭资源证据。
+
+2026-07-18 08:04 CST v2直接preflight再次通过：host、项目根和8×RTX 3090均正常，live inventory无active training process和GPU compute context；检查后本地SSH/TCP22均为0。本地Git修复提交为`776a7ae0`；D33 core SHA为`b60ec8a2...630d4`，v2 launcher SHA为`f2b96f41...cb941`。本轮只允许以下同步映射：
+
+- `code/cvsrffi/stage2_d33_spherical_registration.py`→`/home/szu2070436088/2510044040/CV-SincNet/code/cvsrffi/stage2_d33_spherical_registration.py`
+- `code/scripts/launch_d33_spherical_fisher_20260718.sh`→`/home/szu2070436088/2510044040/CV-SincNet/code/scripts/launch_d33_spherical_fisher_20260718.sh`
+
+runner、Fisher及全部旧依赖保持已核验SHA，不同步；diag必须继续保持`14ec9193...1ca`。远端启动命令锁为`D33_GPU=0 bash code/scripts/launch_d33_spherical_fisher_20260718.sh`，输出与日志分别为`support_screen_v2`和`support_screen_v2.log`。
