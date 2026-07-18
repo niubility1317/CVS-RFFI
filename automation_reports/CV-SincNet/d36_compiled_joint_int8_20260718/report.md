@@ -10,7 +10,7 @@
 
 ## 锁定机制
 
-D36使用同一LEO_weak接收IQ的288维`z160+FFT96+RF32`拼接表征。Stage2-B用target-old support执行6step，Stage2-C用target-old+target-new support再执行6step；主臂为288维对角+rank-2算子，共1,440个瞬时可训练参数。旧/新target原型均采用单中心int8量化；B/C可把密封Phase1 int8旧类锚以不超过0.20的不确定度权重融合到旧类z160块，锚始终只读。
+D36使用同一LEO_weak接收IQ的288维B3锁定拼接表征`N([N(z160),4N([FFT96,RF32])])`。Stage2-B用target-old support执行6step，Stage2-C用target-old+target-new support再执行6step；主臂为288维对角+rank-2算子，共1,440个瞬时可训练参数。旧/新target原型均采用单中心int8量化；B/C可把密封Phase1 int8旧类锚以不超过0.20的不确定度权重融合到旧类z160块，锚始终只读。
 
 适配结束后把算子编译进每类权重并再次量化为int8。query路径不执行adapter，只对全部注册类各做一次288维dot。D36-C另用outer-fit support内部4折cross-fit生成6维score几何，固定5次class-balanced ridge IRLS学习逐样本新旧公共offset；无query拟合、角色Oracle、真实batch类数、类别quota、global assignment或dense query图。
 

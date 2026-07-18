@@ -11,10 +11,10 @@ D36同时解决两个同等重要的问题：Stage2-B旧类目标域适应不足
 令
 
 \[
-\phi(x)=\left[\sqrt{5/9}N(z_{160}),\sqrt{1/3}N(FFT_{96}),\sqrt{1/9}N(RF_{32})\right]\in\mathbb R^{288}.
+\phi(x)=N\left([N(z_{160}),4N([FFT_{96},RF_{32}])]\right)\in\mathbb R^{288}.
 \]
 
-三块能量权重固定，不按receiver、scene、fold、K或结果重选。FFT96和RF32只读取当前密封IQ，不调用LEO channel simulator，也不产生新的overlay provenance。
+该公式与当前表现最强的B3拼接几何完全一致，等价于z160块能量`1/17`、FFT96+RF32联合辅助块能量`16/17`；不引入未经实验支持的新块权重。权重不按receiver、scene、fold、K或结果重选。FFT96和RF32只读取当前密封IQ，不调用LEO channel simulator，也不产生新的overlay provenance。
 
 ## 3. 极轻联合适配器
 
