@@ -53,6 +53,7 @@ D57必须至少保持D46的before92.22%、after81.67%、new84.67%、H82.33%、fo
 - clean探针SHA256：`39efa88e4012bc742c972d19b1b714adc33632c661a9209ddc3c74d7d462d745`（Git checkout后的CRLF字节）；clean环境D57＋D56＋D46测试31/31通过。
 - runtime只读复用`E:\type10-7\code\snapshots\d41wt`；数据、seal、authorization envelope和int8组件均不重建、不修改。
 - 本地前台串行执行，Conda环境`ssr-gpu`，`--device auto`；不访问N607。launcher PID在启动时记录；Runner日志为输出目录下`training_log.jsonl`，预期还包括`metrics.jsonl`、`support_audit.json`、receipt和`D57_PROBE_METADATA.json`。
+- 2026-07-19首次启动PID12088在组件加载前被`ADV3B02 class binding SHA256 drift`拒绝，exit1；原因是最初命令误用clean checkout中的CRLF字节副本。失败后目标输出目录不存在、训练行0、无D57 Python残留，因此不是一次候选实验。唯一修复是把`class-binding`改回哈希已验证的Git承载面原字节文件；其SHA256=`bb89a1db…c901f`，其余参数完全不变。
 - 输出`E:\type10-7\automation_reports\CV-SincNet\d57_crossfitted_bidirectional_flow_gate_probe_20260719\crossfitted_bidirectional_flow_gate`启动前必须不存在。只允许以下105行development命令执行一次：
 
 ```powershell
@@ -77,7 +78,7 @@ D57必须至少保持D46的before92.22%、after81.67%、new84.67%、H82.33%、fo
   --after-signed-policy-authorization-envelope-sha256 a2483d6e9c9c362d89397029ff1e43f48358be3bdb3a05d717ee112b70a0be76 `
   --component-dir 'E:\type10-7\automation_reports\CV-SincNet\d22_int8_anchor_lifecycle_20260717\input\int8_component' `
   --component-manifest-sha256 15b5e144f9af3989421d8e925c17758479c327be47e79222f6363dc63994629c `
-  --class-binding 'E:\type10-7\code\snapshots\d57wt\analysis\d19_adv3b02_class_binding_20260717.json' `
+  --class-binding 'E:\type10-7\github_publish\CVS-RFFI-repo\analysis\d19_adv3b02_class_binding_20260717.json' `
   --class-binding-sha256 bb89a1dbb831acb374fccfc596ae98b660b496b449bdca577dabb962121c901f `
   --output 'E:\type10-7\automation_reports\CV-SincNet\d57_crossfitted_bidirectional_flow_gate_probe_20260719\crossfitted_bidirectional_flow_gate' `
   --device auto --mode development_select_unverified_component --candidate-set d42_v1
