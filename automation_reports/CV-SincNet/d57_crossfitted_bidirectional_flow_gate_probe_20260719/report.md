@@ -2,7 +2,7 @@
 
 ## 1.状态与问题
 
-- 状态：`PREREGISTERED_PRE_IMPLEMENTATION`；operator Codex；不运行125。
+- 状态：`IMPLEMENTED_LOCAL_VALIDATED_PENDING_CLEAN_LOCK`；operator Codex；不运行125。
 - 固定receiver20-1、seed713101、K10/new5、3场景×5fold development cell；复用`VALIDATED_ONCE p2_min_v1`。
 - D56把after从D46的81.67%提高到83.33%、forget从10.56pp降到8.33pp，却把new从84.67%降到80.67%、min-new从73.33%降到60.00%。D57只修复这一可观测交换，不修改D46的B20、full/block head、RMS、classwise权重、量化或query路径。
 
@@ -37,3 +37,12 @@ D57必须至少保持D46的before92.22%、after81.67%、new84.67%、H82.33%、fo
 2. 添加单类双向门、联合原子门、rank/class置换、K1/K2、无坐标顺序、资源和tamper测试。
 3. `ssr-gpu`窄验证、Git提交、clean detached worktree锁定后，只运行一次105行本地development矩阵。
 4. 当前不访问N607；若后续候选通过开发门，远端动作须先执行规定preflight。
+
+## 6.本地实现与验证
+
+- 方法脚本：`code/scripts/probe_d57_crossfitted_bidirectional_flow_gate.py`，SHA256=`e91a4c4cbe20483493aa7846ce4c789be8022b7bb757ef13159591436440bb09`。
+- 测试脚本：`tests/test_probe_d57_crossfitted_bidirectional_flow_gate.py`，SHA256=`074a8134b9ed367ce2d620dd38406a03ea28863e4a3213bab7b9c3727c221d67`。
+- 资源闭包：复用D56的68次LDA拟合库存；D57新增LDA拟合数、优化步数、query state均为0，只新增cross-fit计数、逐坐标门和联合门的标量运算/比较。
+- 安全闭包：每坐标分别验证positive不降与false-positive不增；联合交互不安全时清空全部mask并精确返回D46；K1/K2无条件精确返回D46。
+- 验证命令：`C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -m pytest -q tests\test_probe_d57_crossfitted_bidirectional_flow_gate.py tests\test_probe_d56_loo_confusion_flow_intercept.py tests\test_probe_d46_classwise_loo_reliability_fusion.py`。
+- 验证结果：31/31通过；覆盖安全坐标生效、联合交互原子回退、K1/K2回退、类置换等变、坏证据闭锁、D56/D46全回归链。
