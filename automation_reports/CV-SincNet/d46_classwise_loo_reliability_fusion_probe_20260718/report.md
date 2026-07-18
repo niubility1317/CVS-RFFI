@@ -95,7 +95,7 @@ attempt0在提交`19c23a8a`上完成105/105行、elapsed`77.0287s`、query0，�
 |low-elev|88.33%|78.33%|76.00%|75.98%|10.00pp|20.00%|60.00%|50.00%|8/5/7|
 |rain|90.00%|76.67%|80.00%|77.45%|13.33pp|10.00%|30.00%|70.00%|13/2/8|
 
-D46相对D45有2/15个outer prediction SHA变化，共改变3/330个held预测，全部在low-elev；seen-new提高0.67pp、最低new提高3.33pp、new-new混淆减少1，但after-old下降0.56pp、forgetting增加0.56pp、old→new增加1。相对D42，D46的聚合seen-new/H/floor和混淆更好，但aggregate forgetting`10.56pp>8.89pp`；low-elev forgetting`10.00pp>8.33pp`；rain after-old`76.67%<78.33%`且forgetting`13.33pp>10.00pp`，预注册门失败。
+D46相对D45有2/15个outer prediction SHA变化，共改变2/330个final argmax，全部在low-elev；另有不改变最终argmax的top-component handle变化。seen-new提高0.67pp、最低new提高3.33pp、new-new混淆减少1，但after-old下降0.56pp、forgetting增加0.56pp、old→new增加1。相对D42，D46的聚合seen-new/H/floor和混淆更好，但aggregate forgetting`10.56pp>8.89pp`；low-elev forgetting`10.00pp>8.33pp`；rain after-old`76.67%<78.33%`且forgetting`13.33pp>10.00pp`，预注册门失败。
 
 ## 9.全部匿名类×场景结果
 

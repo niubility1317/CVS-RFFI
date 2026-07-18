@@ -14,7 +14,7 @@
 |D46-08|真实105行development输出的协议、lifecycle、source、ground、state、resource与artifact闭包全部通过|probe|verified|attempt1完整verifier通过30条D46 fit row及105行总闭包；attempt0原样保留|
 |D46-09|相对D42聚合、floor、场景、forgetting、joint和混淆全部通过预锁门，且final floor至少一项严格改善|decision|rejected|forgetting10.56pp>8.89pp；rain after76.67%<78.33%、forgetting13.33pp>10.00pp；low-elev forgetting10.00pp>8.33pp|
 |D46-10|before/final int8-FP32 argmax变化与margin翻转均为0|decision|verified|真实15折为`0/0/0`，max score error0.0019155|
-|D46-11|D46相对D45的15个final held预测至少改变1个；若0个则拒绝该机制|decision|verified|2/15个outer SHA不同；3/330个held预测改变，均在low-elev|
+|D46-11|D46相对D45的15个final held预测至少改变1个；若0个则拒绝该机制|decision|verified|2/15个outer SHA不同；2/330个final argmax改变，均在low-elev；另有不改变最终argmax的top-component handle变化|
 |D46-12|探针不生成125、不访问N607；仅在另行正式化候选且开发门全过后生成125 handles|scope|verified|当前仅本地support-held开发流程|
 
 当前计数：`pending=0`、`implemented=0`、`verified=11`、`deferred=0`、`rejected=1`、`blocked=0`。
