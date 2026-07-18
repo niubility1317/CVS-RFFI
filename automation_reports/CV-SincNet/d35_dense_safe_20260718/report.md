@@ -3,7 +3,7 @@
 ## 登记
 
 - 实验ID：`d35_dense_safe_20260718`；operator：Codex；日期：2026-07-18。
-- 状态：`LOCAL_IMPLEMENTATION_IN_PROGRESS`。
+- 状态：`LOCAL_VERIFIED_PRELAUNCH`。
 - 假设：D34的主要失败来自稀疏可见性而非原型量化；把所有新类改为全winner可达，并用旧support最大残差阈值保护每个winner，可去除约`-2`的新类LOO截断，同时维持旧fit support不退化。
 - 比较：Z0、D25-C0、B3、D33-FAST、D35-A/B/C；7候选×3场景×5个独立held-rank折=105行。
 - 本轮K10-only；K1/K5只是接口边界，不是执行或性能证据。
@@ -25,3 +25,20 @@ D35的所有新类对每个旧winner始终有有限score；winner只索引一个
 ## 执行计划
 
 复用D34同一密封support与receiver/seed/scenario，不新增数据准备。完成core、runner、launcher和测试后先Git提交，再执行N607直接preflight、live inventory、最小同步、SHA闭合和唯一输出检查；计划GPU0，唯一输出`runs/d35_dense_safe_20260718/output/support_screen_v1`。完成后回填105行、逐类/场景矩阵、old intrusion、新类LOO、完整日志、资源审计、RECEIPT和Git提交。
+
+## 本地实现与验证
+
+- 路线锁提交`005819f0`，winner条件selector修订`28264f03`；core+单测提交`2112a855`；runner+launcher+集成测试提交`7b48b223`。
+- D35 core SHA`6a96b6641d40930a867d4b99fb335575daf7a47262e37f7578210e5e25c62c0c`；共享runner SHA`063dfcf6ea0182af825b4e5850a0e01d20cff9b61497a3f6948edb9498cf9c13`；launcher SHA`f2546a62b3aa0f5c06a56a827b5e631160d57fb29905491e53be459f1341ac1b`。launcher中的runner/core锁与实算一致，无占位符。
+- D35、D34、D33、Fisher和共享CLI相邻回归77/77通过；core/runner`py_compile`、launcher`bash -n`、`git diff --check`通过。
+- candidate set精确7候选×3场景×5折=105行。positive route除总体old/new/H/forgetting/joint floor外，还必须逐旧类、逐新类达到B3和D33-FAST两者中较高的均值阈值；09f8、f608、14-7和其他floor不能被总体均值掩盖。
+- runner将全局可见与LOO可达分开；full-K10门继续要求outer held旧侵入为0、全部新类LOO转正、fit旧类逐类/floor不退化、资源/协议闭合。`selected_positive_route`来自full-K10后的最终decision。
+
+20新类K10合成扩展回归仅验证资源公式：A/B/C的D35增量均为5,760MAC/query，与FAST合计7,776MAC，相对identity-only K10单qKNN的41,600下降81.31%；组合状态A为14,644B，B/C为20,584B；部署refit约1.602M/3.101M MAC，0 optimizer step。合成old LOO仍出现33/34/33次侵入，证明硬门真实生效；该回归不是性能证据。
+
+当前D35只把目标新类原型压为int8；Stage2-B仍使用FAST旧头，没有声称目标旧support int8原型路线已经闭合。若D35注册层通过，下一轮必须加入目标旧类int8原型与授权Phase1 int8锚的轻量融合，专门提升注册前旧类与floor；若D35注册层失败，则先修注册再叠加旧头，不能用未实现的旧int8原型作成功叙事。
+
+## N607计划
+
+- 最小同步仅3个文件：`code/cvsrffi/stage2_d35_dense_safe_registration.py`、`code/scripts/run_d25_support_only_concat.py`、`code/scripts/launch_d35_dense_safe_20260718.sh`；不上传本地有他人改动的`stage2_diag_cosine_exploration.py`，远端必须继续核验固定SHA`14ec9193...1ca`。
+- 计划cwd`/home/szu2070436088/2510044040/CV-SincNet`；Python`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`；命令`D35_GPU=0 bash code/scripts/launch_d35_dense_safe_20260718.sh`；日志`logs/d35_dense_safe_20260718/support_screen_v1.log`。
