@@ -409,7 +409,7 @@ def fit_d36_compiled_joint_int8(
         per_row = F.cross_entropy(logits, y_old, reduction="none")
         cvar = _class_cvar(per_row, y_old, len(old_classes))
         loss = per_row.mean() + 0.5 * cvar
-        loss = loss + 0.1 * torch.mean((d - torch.from_numpy(fisher)) ** 2)
+        loss = loss + 0.1 * torch.mean((d - torch.from_numpy(fisher.copy())) ** 2)
         if u is not None:
             loss = loss + 1.0e-3 * (torch.mean(u * u) + torch.mean(v * v))
         loss.backward()

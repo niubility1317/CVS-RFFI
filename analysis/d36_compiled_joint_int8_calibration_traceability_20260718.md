@@ -123,8 +123,8 @@ K10 support-only outer-held门固定为：
 
 1. 注册前old不低于B3的86.67%且目标为至少88%；注册后forgetting不超过3pp。
 2. 注册后old/new/H分别严格优于B3的73.33%/73.33%/72.65%，并同时报告逐场景和逐类结果。
-3. 每个outer fold任一旧类不得较其注册前退化超过10pp；重点旧类14-7、20-19不得由其他类均值掩盖。
-4. 09f8至少达到50%，f608不低于73.67%；全部新类必须有正的physical LOO margin。
+3. 每个outer fold任一旧类不得较其注册前退化超过10pp；全部旧类使用同一公式通过逐类非劣、最低类和下尾门，历史难类只用于结果解释。
+4. 全部新类使用相同的matched逐类门并具有正physical LOO margin；不得把任何历史class handle写入候选选择规则。
 5. 活动参数≤50k、总epoch≤20、optimizer step≤20、持久状态≤50kB、无dense query图；query MAC必须低于B3。
 
 任一主门失败即标记support-only负路线，不打开query、不生成正式性能声明、不扩正式125矩阵。只有K10锁定正路线后，才使用同一candidate和超参数依次执行K1/K5/K20压力测试；K5各主指标相对K10下降不超过3pp，K1必须报告注册前后old和`old_adaptation_gain≥0`。
