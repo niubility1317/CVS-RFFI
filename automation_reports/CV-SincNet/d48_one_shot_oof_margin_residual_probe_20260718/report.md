@@ -62,3 +62,41 @@ D48复用D45的B20、`4K+4` LDA inventory和一个query state，不新增fit、o
 当前本地验证：首轮D48＋D45定向`31 passed`、D42–D48全链`124 passed`；修复独立代码初审发现的2项P1和3项P2后为定向`35 passed`、全链`128 passed`；进一步闭合formal int8 coefficient实际数组/fit FP32重编译绑定和真实JSON UTF-8计数后，定向`37 passed`、全链`130 passed`，py_compile通过。第一次`conda activate`落到base Python并因无pytest退出，随后用确认的`ssr-gpu`解释器串行重跑成功，未把包装噪声计为项目失败。设计审计确认协议P0=0并锁定同score单位、one-shot无回流、mean非median和声明边界；最终独立代码复审确认P0=0、P1=0、P2=0，且HEAD与当前D45默认路径在同一K1/K5输入上的coef、intercept与完整audit canonical JSON完全一致。
 
 根目录`E:\type10-7`不是Git仓库；代码、测试、追溯和正式报告进入`github_publish/CVS-RFFI-repo`，只暂存本轮精确文件；根目录保留报告镜像。预注册提交、detached clean worktree、真实105行和完整日志判定待完成。
+
+## 7.执行预检与锁定命令
+
+- 预注册提交：`5bb494d747797ef6557531287b2236a10d1f2798`。
+- detached clean worktree：`E:\type10-7\code\snapshots\d48wt`，HEAD与预注册提交一致，`git status --porcelain`为空。
+- runtime：`E:\type10-7\code\snapshots\d41wt`；Python：`C:\Users\lh594\.conda\envs\ssr-gpu\python.exe`；本地串行，device=`auto`；N607不访问。
+- 输出目录在启动前不存在：`E:\type10-7\automation_reports\CV-SincNet\d48_one_shot_oof_margin_residual_probe_20260718\one_shot_oof_head_margin_residual`。
+- 输入SHA：before seal`53ace286…d9f75`、after seal`c70aedf3…b50ff`、before envelope`31a2ad99…ceb0e`、after envelope`a2483d6e…be76`、component manifest`15b5e144…629c`、主Git承载面D19 class binding`bb89a1db…c901f`；formal policy、before authorization、after authorization分别为`1f347d7c…fc2be`、`e7880cf8…549ed`、`03f9396c…1a70`。
+
+锁定执行命令为：
+
+```powershell
+& 'C:\Users\lh594\.conda\envs\ssr-gpu\python.exe' `
+  'E:\type10-7\code\snapshots\d48wt\code\scripts\probe_d48_one_shot_oof_margin_residual.py' `
+  --d48-arm one_shot_oof_head_margin_residual `
+  --runtime-root 'E:\type10-7\code\snapshots\d41wt' `
+  --probe-root 'E:\type10-7\code\snapshots\d48wt' `
+  --before-root 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\phase2_capsule_k10_new5\predictor\before\enrollment_only' `
+  --before-seal 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\phase2_capsule_k10_new5\seals\before_enrollment.seal.json' `
+  --before-seal-sha256 53ace2863c9da6c2f6cc855d602c99f581df6de3d30a9a3ecb89eb6b6f0d9f75 `
+  --before-formal-policy 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\formal_execution_policy.json' `
+  --before-formal-policy-authorization 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\runtime_authorization_k10_new5\before_formal_policy_authorization.v2.json' `
+  --before-signed-policy-authorization-envelope 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\runtime_authorization_k10_new5\before_signed_policy_authorization_envelope.v2.json' `
+  --before-signed-policy-authorization-envelope-sha256 31a2ad9918f061b25d5a7ed0cc135df70ae02460c094b2f396bf314817bceb0e `
+  --after-root 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\phase2_capsule_k10_new5\predictor\after\enrollment_only' `
+  --after-seal 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\phase2_capsule_k10_new5\seals\after_enrollment.seal.json' `
+  --after-seal-sha256 c70aedf3a8f059e756806201758c1933a2f3e1ba4df415e69a1c776b1a2b50ff `
+  --after-formal-policy 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\formal_execution_policy.json' `
+  --after-formal-policy-authorization 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\runtime_authorization_k10_new5\after_formal_policy_authorization.v2.json' `
+  --after-signed-policy-authorization-envelope 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\runtime_authorization_k10_new5\after_signed_policy_authorization_envelope.v2.json' `
+  --after-signed-policy-authorization-envelope-sha256 a2483d6e9c9c362d89397029ff1e43f48358be3bdb3a05d717ee112b70a0be76 `
+  --component-dir 'E:\type10-7\automation_reports\CV-SincNet\d22_int8_anchor_lifecycle_20260717\input\int8_component' `
+  --component-manifest-sha256 15b5e144f9af3989421d8e925c17758479c327be47e79222f6363dc63994629c `
+  --class-binding 'E:\type10-7\github_publish\CVS-RFFI-repo\analysis\d19_adv3b02_class_binding_20260717.json' `
+  --class-binding-sha256 bb89a1dbb831acb374fccfc596ae98b660b496b449bdca577dabb962121c901f `
+  --output 'E:\type10-7\automation_reports\CV-SincNet\d48_one_shot_oof_margin_residual_probe_20260718\one_shot_oof_head_margin_residual' `
+  --device auto --mode development_select_unverified_component --candidate-set d42_v1
+```
