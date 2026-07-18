@@ -22,7 +22,12 @@ import numpy as np
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 
 
-ARMS = ("full_centered_control", "block3_centered", "diagonal_centered")
+ARM_STRUCTURES = {
+    "full_centered_control": "full_auto_shrinkage_control",
+    "block3_centered": "three_block_z160_fft96_rf32",
+    "diagonal_centered": "diagonal_auto_shrinkage_variance",
+}
+ARMS = tuple(ARM_STRUCTURES)
 _BOOTSTRAPPED = False
 RUNTIME_LEGACY_SHA256 = (
     "f4becfa61f23bd88448e9a9673f9068cdf5d5e613999992de4b9f35cc29fefa9"
@@ -267,11 +272,7 @@ def build_structured_fit(
         eigenvalues = np.linalg.eigvalsh(covariance)
         if float(np.min(eigenvalues)) <= 0.0:
             raise D43ProbeError("D43 structured covariance is not positive definite")
-        structure_name = {
-            "full_centered_control": "full_auto_shrinkage_control",
-            "block3_centered": "three_block_z160_fft96_rf32",
-            "diagonal_centered": "diagonal_auto_shrinkage_variance",
-        }[arm]
+        structure_name = ARM_STRUCTURES[arm]
         audit = {
             "solver": "lsqr",
             "shrinkage": "auto",
@@ -534,11 +535,7 @@ def _verify_probe_output(
     ]
     if len(training_rows) != 105 or len(d43_rows) != 30:
         raise D43ProbeError("D43 training-row closure drift")
-    expected_structure = {
-        "full_centered_control": "full_auto_shrinkage_control",
-        "block3_centered": "three_block_z160_fft96_rf32",
-        "diagonal_centered": "diagonal_auto_shrinkage_variance",
-    }[arm]
+    expected_structure = ARM_STRUCTURES[arm]
     for row in d43_rows:
         if row.get("query_opened") is not False:
             raise D43ProbeError("D43 row opened query")
@@ -563,7 +560,11 @@ def _verify_probe_output(
 
 
 def _install_runner_probe_guards(
-    runner: Any, *, arm: str, probe_script_sha256: str
+    runner: Any,
+    *,
+    arm: str,
+    probe_script_sha256: str,
+    extra_source_closure: dict[str, Any] | None = None,
 ) -> None:
     """Force diagnostic-only selection and prohibit selected-only refits."""
 
@@ -588,6 +589,15 @@ def _install_runner_probe_guards(
                 ),
             }
         )
+        if extra_source_closure:
+            extra = dict(extra_source_closure)
+            collisions = sorted(set(source_closure).intersection(extra))
+            if collisions:
+                raise D43ProbeError(
+                    "D43 extra source closure overwrites reserved keys: "
+                    + ", ".join(collisions)
+                )
+            source_closure.update(extra)
         lock["source_closure"] = source_closure
         lock["d43_probe_lock"] = {
             "arm": arm,

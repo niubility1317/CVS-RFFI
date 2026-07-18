@@ -113,7 +113,10 @@ def test_probe_guards_force_identity_and_disable_full_refit() -> None:
     )
     script_sha = "a" * 64
     probe._install_runner_probe_guards(
-        runner, arm="block3_centered", probe_script_sha256=script_sha
+        runner,
+        arm="block3_centered",
+        probe_script_sha256=script_sha,
+        extra_source_closure={"extra_helper_sha256": "d" * 64},
     )
     selected, decisions = runner._select_d42_candidate({})
     assert selected == "Z0_SUPPORT_ONLY"
@@ -125,8 +128,29 @@ def test_probe_guards_force_identity_and_disable_full_refit() -> None:
     assert lock["source_closure"]["d43_probe_script_sha256"] == script_sha
     assert lock["source_closure"]["d43_runtime_legacy_sha256"] == probe.RUNTIME_LEGACY_SHA256
     assert lock["source_closure"]["d43_preloaded_runtime_module_sha256"] == probe.RUNTIME_MODULE_SHA256
+    assert lock["source_closure"]["extra_helper_sha256"] == "d" * 64
     assert lock["d43_probe_lock"]["arm"] == "block3_centered"
     assert len(lock["sha256"]) == 64
+
+
+def test_probe_guard_rejects_extra_source_closure_reserved_key_collision() -> None:
+    runner = SimpleNamespace(
+        IDENTITY_CANDIDATE="Z0_SUPPORT_ONLY",
+        _candidate_lock=lambda _candidates, _candidate_set="d25_v4": {
+            "source_closure": {"existing_sha256": "a" * 64},
+            "sha256": "old",
+        },
+        _select_d42_candidate=lambda _folds: ("Z0_SUPPORT_ONLY", []),
+        _full_state_refit_required=lambda *_args, **_kwargs: True,
+    )
+    probe._install_runner_probe_guards(
+        runner,
+        arm="block3_centered",
+        probe_script_sha256="b" * 64,
+        extra_source_closure={"existing_sha256": "c" * 64},
+    )
+    with pytest.raises(probe.D43ProbeError, match="reserved keys"):
+        runner._candidate_lock({}, "d42_v1")
 
 
 def test_runner_argument_lock_requires_exact_d42_development_mode() -> None:
