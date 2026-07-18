@@ -91,3 +91,16 @@
 成功经验：D52确认median方向包含old floor信号；D53/D54确认谱映射可把修正稳定到0.1量级；D46底座仍保持最佳new/H联合点。淘汰路线：停止全部median系数残差、base-norm缩放、谱transport及其底座替换；不扫描强度、不加clip/role/scene门控。下一轮必须回到D46，研究与centroid残差正交的新机制，优先处理rain old遗忘与low-elev new floor的共同support-margin结构，而不是继续缩放同一方向。回顾完成前及本报告提交前不启动D55。
 
 D54最终`COMPLETED_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE`；当前最强仍为D46，仍不满足项目要求，不运行125。
+
+## 10.D55类无关LOO难度截距补偿预注册
+
+D55回到未经残差修改的D46。对每类使用D46已经合法计算的full/block inner-LOO CE与其classwise融合权重：
+
+```text
+d_c = sum_g w_g,c * CE_g,c
+Delta b_c = d_c - mean_j(d_j)
+W_D55 = W_D46
+b_D55 = b_D46 + Delta b
+```
+
+高LOO-CE困难类得到正截距补偿，容易类得到负补偿；中心化保证无全局常数漂移。无系数、温度、阈值、clip、扫描、class ID、old/new角色、scene/receiver或query；K1/K2精确D46 fallback。D55只运行一次同开发单元，完整性能要求不变；若new/H/floor与old/forget不能联合改善即停止。
