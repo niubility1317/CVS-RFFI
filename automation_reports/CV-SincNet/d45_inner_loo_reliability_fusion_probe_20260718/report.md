@@ -64,21 +64,23 @@ D44固定1:1融合取得当前最高development seen-new/H并改善最低after-o
 
 |Candidate|机制/精度|before-old|after-old|seen-new|H|forgetting|joint|min before|min after|min new|old→new/new→old/new-new|结论|
 |---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|
-|D42-USLDA-INT8|D45 head-only LOO类似然全局融合/int8|92.22%|82.22%|84.00%|83.10%|10.00pp|23.33%|80.00%|53.33%|70.00%|24/8/16|负面，不晋级|
-|D42-USLDA-FP32-MATCHED|同一D45解/FP32|92.22%|82.22%|84.00%|83.10%|10.00pp|23.33%|80.00%|53.33%|70.00%|24/8/16|matched ablation|
-|D42-D40-HNBR-INT8-NEGATIVE|old-heavy HNBR/int8|85.56%|85.00%|15.33%|25.98%|0.56pp|0%|66.67%|63.33%|0%|2/0/0|新类不可达|
-|D42-D41-BEC-INT8-NEGATIVE|new-heavy BEC/int8|86.11%|20.56%|78.67%|32.59%|65.56pp|0%|76.67%|0%|36.67%|142/0/32|旧类崩溃|
-|B3_SINGLE_IQ_DIAG_FFTRF|单IQ B3比较器|87.78%|75.56%|72.67%|74.08%|12.22pp|23.33%|80.00%|60.00%|40.00%|33/22/19|弱比较器|
-|D42-PROTOnet-CDA-ZID160|ProtoNet CDA|71.11%|48.33%|52.67%|50.41%|22.78pp|0%|33.33%|13.33%|3.33%|0/0/0|负面|
-|Z0_SUPPORT_ONLY|identity/support-only control|71.11%|48.33%|52.67%|50.41%|22.78pp|0%|33.33%|13.33%|3.33%|0/0/0|control|
+|D42-USLDA-INT8|D45 head-only LOO类似然全局融合/int8|92.22%|82.22%|84.00%|82.16%|10.00pp|23.33%|80.00%|53.33%|70.00%|24/8/16|负面，不晋级|
+|D42-USLDA-FP32-MATCHED|同一D45解/FP32|92.22%|82.22%|84.00%|82.16%|10.00pp|23.33%|80.00%|53.33%|70.00%|24/8/16|matched ablation|
+|D42-D40-HNBR-INT8-NEGATIVE|old-heavy HNBR/int8|85.56%|85.00%|15.33%|25.16%|0.56pp|0%|66.67%|63.33%|0%|2/0/0|新类不可达|
+|D42-D41-BEC-INT8-NEGATIVE|new-heavy BEC/int8|86.11%|20.56%|78.67%|31.50%|65.56pp|0%|76.67%|0%|36.67%|142/0/32|旧类崩溃|
+|B3_SINGLE_IQ_DIAG_FFTRF|单IQ B3比较器|87.78%|75.56%|72.67%|73.35%|12.22pp|23.33%|80.00%|60.00%|40.00%|33/22/19|弱比较器|
+|D42-PROTOnet-CDA-ZID160|ProtoNet CDA|71.11%|48.33%|52.67%|48.97%|22.78pp|0%|33.33%|13.33%|3.33%|0/0/0|负面|
+|Z0_SUPPORT_ONLY|identity/support-only control|71.11%|48.33%|52.67%|48.97%|22.78pp|0%|33.33%|13.33%|3.33%|0/0/0|control|
 
 固定TX切分为6 old＋5 new，receiver`20-1`、seed`713101`、K10 capsule、3场景、5折；表内每行指标均来自同一candidate的15行，不拼接边际极值。无rollback/defer分支，loss为同一old-only B20共20 epoch/20 optimizer steps，closed-form LDA不增加optimizer step。
 
 |场景|before-old|after-old|seen-new|H|forgetting|joint|min after|min new|混淆|
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-|clear|98.33%|90.00%|98.00%|93.83%|8.33pp|40.00%|70.00%|90.00%|4/1/0|
-|low-elev|88.33%|80.00%|74.00%|76.88%|8.33pp|20.00%|60.00%|40.00%|7/5/8|
-|rain|90.00%|76.67%|80.00%|78.30%|13.33pp|10.00%|30.00%|70.00%|13/2/8|
+|clear|98.33%|90.00%|98.00%|93.57%|8.33pp|40.00%|70.00%|90.00%|4/1/0|
+|low-elev|88.33%|80.00%|74.00%|75.45%|8.33pp|20.00%|60.00%|40.00%|7/5/8|
+|rain|90.00%|76.67%|80.00%|77.45%|13.33pp|10.00%|30.00%|70.00%|13/2/8|
+
+本表`H`统一取15个matched row内`H_old_new`的算术均值；旧版83.10%及场景93.83/76.88/78.30%是先汇总old/new再取调和均值的pooled-H，仅保留为历史计算口径，不用于matched正式比较。
 
 相对预锁D42 original，D45提高聚合before/after/new/H及最低before/after，最低new和joint持平，混淆由26/10/18降至24/8/16；但aggregate forgetting由8.89pp升至10.00pp，rain after-old由78.33%降至76.67%，rain forgetting由10.00pp升至13.33pp，严格门失败。量化门为before/final/margin`0/0/0`，max score error`0.0016140938`，是D45唯一相对D44新增的闭合正信号。
 
