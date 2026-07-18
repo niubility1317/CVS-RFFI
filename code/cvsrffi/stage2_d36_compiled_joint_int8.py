@@ -206,6 +206,17 @@ def _class_cvar(losses: torch.Tensor, targets: torch.Tensor, count: int) -> torc
     return torch.topk(values, k=min(2, count)).values.mean()
 
 
+def _torch_copy(value: np.ndarray, dtype: torch.dtype) -> torch.Tensor:
+    """Copy small support arrays without the Torch/NumPy C-ABI bridge.
+
+    N607 currently pairs Torch 2.1 with NumPy 2.x, where ``torch.from_numpy``
+    rejects otherwise valid ``numpy.ndarray`` instances.  D36 support tensors
+    are tiny, so a Python-list copy is deterministic and avoids that ABI path.
+    """
+
+    return torch.tensor(np.asarray(value).tolist(), dtype=dtype)
+
+
 def _margin(logits: torch.Tensor, targets: torch.Tensor) -> torch.Tensor:
     true = logits[torch.arange(len(logits)), targets]
     other = logits.clone()
@@ -386,14 +397,17 @@ def fit_d36_compiled_joint_int8(
         raise D36CompiledJointInt8Error("fisher_log_diag must be finite float32[288]")
     device = torch.device("cpu")
     torch.manual_seed(36)
-    x_old = torch.from_numpy(old_x).to(device)
-    x_new = torch.from_numpy(new_x).to(device)
-    y_old = torch.from_numpy(old_y).long().to(device)
-    y_new = torch.from_numpy(new_y0 + len(old_classes)).long().to(device)
-    d = torch.tensor(fisher, dtype=torch.float32, requires_grad=True)
+    x_old = _torch_copy(old_x, torch.float32).to(device)
+    x_new = _torch_copy(new_x, torch.float32).to(device)
+    y_old = _torch_copy(old_y, torch.int64).to(device)
+    y_new = _torch_copy(new_y0 + len(old_classes), torch.int64).to(device)
+    d = _torch_copy(fisher, torch.float32).requires_grad_()
     shrink = float((old_k - 1) / (old_k + 3))
     if locked.rank:
-        basis = torch.from_numpy(np.concatenate((old_x, new_x), axis=0)[:RANK].T.copy())
+        basis = _torch_copy(
+            np.concatenate((old_x, new_x), axis=0)[:RANK].T.copy(),
+            torch.float32,
+        )
         u = (1.0e-3 * basis).requires_grad_()
         v = (1.0e-3 * torch.flip(basis, dims=[1])).requires_grad_()
     else:
@@ -409,7 +423,7 @@ def fit_d36_compiled_joint_int8(
         per_row = F.cross_entropy(logits, y_old, reduction="none")
         cvar = _class_cvar(per_row, y_old, len(old_classes))
         loss = per_row.mean() + 0.5 * cvar
-        loss = loss + 0.1 * torch.mean((d - torch.from_numpy(fisher.copy())) ** 2)
+        loss = loss + 0.1 * torch.mean((d - _torch_copy(fisher, torch.float32)) ** 2)
         if u is not None:
             loss = loss + 1.0e-3 * (torch.mean(u * u) + torch.mean(v * v))
         loss.backward()

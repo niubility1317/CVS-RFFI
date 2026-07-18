@@ -254,3 +254,14 @@ def test_d36_launcher_is_unique_and_sha_closed() -> None:
     assert "EXPECTED_D36_FISHER_SHA256=" in launcher
     assert "EXPECTED_RUNNER_SHA256=" in launcher
     assert "query" not in launcher.lower()
+
+    retry = (
+        CODE / "scripts" / "launch_d36_compiled_joint_int8_retry1_20260718.sh"
+    ).read_text(encoding="utf-8")
+    assert 'OUTPUT="$RUN/output/support_screen_retry1"' in retry
+    assert "--candidate-set d36_v1" in retry
+    assert (
+        "EXPECTED_D36_CORE_SHA256="
+        "32d8d5364c363513d9d9f54ed49575999df9a80bbc96edb06f3829ffc7f5198a"
+    ) in retry
+    assert "query" not in retry.lower()

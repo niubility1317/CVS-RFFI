@@ -181,3 +181,15 @@ def test_rejects_nonunit_input_and_fisher_drift() -> None:
     values[-1] = values[-1].astype(np.float64)
     with pytest.raises(D36CompiledJointInt8Error, match="fisher_log_diag"):
         fit_d36_compiled_joint_int8(*values)
+
+
+def test_fit_does_not_use_torch_from_numpy_abi_bridge(monkeypatch: pytest.MonkeyPatch) -> None:
+    def _reject_bridge(*_args, **_kwargs):
+        raise AssertionError("torch.from_numpy must not be used by D36")
+
+    monkeypatch.setattr(d36.torch, "from_numpy", _reject_bridge)
+    result = fit_d36_compiled_joint_int8(
+        *_fixture(), config=D36CompiledJointConfig(arm="A")
+    )
+
+    assert result.state.compiled_qint8.shape == (4, 288)

@@ -3,7 +3,7 @@
 ## 登记
 
 - 实验ID：`d36_compiled_joint_int8_20260718`；operator：Codex；日期：2026-07-18。
-- 状态：`LOCAL_VALIDATED_READY_FOR_N607_SUPPORT_ONLY_SCREEN`。
+- 状态：`RETRY1_LOCAL_VALIDATED_PENDING_SYNC`。
 - 目标：同时提升Stage2-B注册前旧类目标域适应和Stage2-C注册后新旧类平衡，避免D34新类不可达与D35旧类过度侵入。
 - 比较：Z0、D25-C0、B3、D33-FAST、D36-A/B/C；先执行K10 support-only、3场景×5个独立outer fold。query保持关闭。
 - 完整公式与协议追踪：`analysis/d36_compiled_joint_int8_calibration_traceability_20260718.md`。
@@ -110,3 +110,13 @@ PASS
 - 同步映射：本地runner、D36 core和launcher分别同步到远端同名`code/scripts`或`code/cvsrffi`路径；SHA闭合后才启动。
 
 主要风险：当前Git分支相对origin ahead 1597且工作树有大量未归属改动；本次只stage本节列出的D36文件。开发capsule不是完整`p2_min_v1`最小句柄，所以本run即使数值为正也只能决定是否继续机制研发，不能晋升到正式query确认。
+
+## 首次启动失败与retry1修复
+
+- 首次启动时间：2026-07-18 12:13 CST；PID`3869674`；GPU0；原始日志`/home/szu2070436088/2510044040/CV-SincNet/logs/d36_compiled_joint_int8_20260718/support_screen_v1.log`。
+- 首次状态：`FAILED_COMPATIBILITY_BEFORE_FIRST_FOLD_RESULT`。进程在第一个inner fit调用`torch.from_numpy(old_x)`时退出，未产生training row、selection或RECEIPT；原始PID文件和日志保留，不覆盖、不删除。
+- 根因：N607环境为NumPy2.2.5与Torch2.1.0+cu121，`torch.from_numpy`在该组合中拒绝有效`numpy.ndarray`；只读最小复现确认`torch.tensor(a.tolist(),dtype=...)`可用。
+- 本地修复：新增`_torch_copy`，对D36的小规模support、label、Fisher与rank-2 basis使用确定性Python-list复制，完全绕开Torch/NumPy C-ABI桥；新增测试将`torch.from_numpy`强制替换为异常并验证fit仍成功。
+- retry1本地验证：`conda run -n ssr-gpu python -m pytest -q tests/test_stage2_d36_compiled_joint_int8.py tests/test_run_d36_compiled_joint_int8_integration.py`→`16 passed`；`bash -n code/scripts/launch_d36_compiled_joint_int8_retry1_20260718.sh`→PASS。
+- 修复后D36 core SHA256：`32d8d5364c363513d9d9f54ed49575999df9a80bbc96edb06f3829ffc7f5198a`。
+- retry1精确命令：`bash code/scripts/launch_d36_compiled_joint_int8_retry1_20260718.sh`；输出`runs/d36_compiled_joint_int8_20260718/output/support_screen_retry1`；日志`logs/d36_compiled_joint_int8_20260718/support_screen_retry1.log`；GPU0。
