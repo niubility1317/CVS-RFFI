@@ -5,7 +5,7 @@
 - 实验ID：`d40_hnbr_20260718`
 - 时间：2026-07-18（Asia/Hong_Kong）
 - 操作者：Codex`/root`
-- 当前状态：`DESIGN_LOCKED_IMPLEMENTATION_PENDING`
+- 当前状态：`IMPLEMENTED_LOCAL_VERIFIED_REAL_SCREEN_PENDING`
 - development cell：receiver`20-1`、seed`713101`、K10/new5、3个LEO弱场景；复用D18固定received-IQ support，query保持sealed。
 - 目标：在保留D38强Stage2-B共享metric和正式int8生命周期的同时，用0步、无可调系数的难负重心方向残差化同时改善old-old、new-new和old-new竞争。
 
@@ -77,11 +77,11 @@ D40 int8只有全部满足才可进入full-K10或N607：
 4. seen-new逐row不弱于strong B3；new-new错序<32/150；最低新类准确率和最低pairwise margin严格提高。
 5. 每个matched row的H和joint floor不弱于strong B3，15fold聚合均严格提高。
 6. int8/FP32 outer-held argmax差异为0；old prefix、ground int8和source closure闭合。
-7. 0个Stage2-C optimizer step；总epoch/step≤20/20，trainable parameters≤2016，state≤256KB，无dense query graph或query-dependent batch optimization。
+7. 0个Stage2-C optimizer step；总epoch/step恰好20/20，trainable parameters≤2016，state≤256KB，HNBR support MAC为finite且严格大于0，无dense query graph或query-dependent batch optimization。
 
 任一关键门失败即`DEVELOPMENT_SUPPORT_ONLY_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE`：回退identity，不扫描投影系数，不叠加bias/radius/gate，不打开query、不访问N607、不扩K或确认矩阵。
 
-## 6.实现与验证计划
+## 6.实现与本地验证
 
 |面|锁定范围|
 |---|---|
@@ -90,5 +90,28 @@ D40 int8只有全部满足才可进入full-K10或N607：
 |Runner|`d40_v1`六候选、90行、同physical匹配、selector、selected-only full-K10和五项artifact哈希|
 |测试|公式golden、标签置换、同步性、K1/5/10/20、new2/5/10/20、近零fail-close、old prefix、int8/FP32、90行与selector/resource反例|
 |Git/N607|本地`ssr-gpu`验证并提交；只有真实K10 outer-held全门通过才preflight/SCP/N607|
+
+### 6.1实现文件
+
+|文件|用途|
+|---|---|
+|`code/cvsrffi/stage2_d38_strong_b3_quantized.py`|新增readonly transform/decode/compile/append公开接缝|
+|`code/cvsrffi/stage2_d40_hnbr.py`|D40-HNBR核心、int8/FP32状态、pairwise及资源/几何审计|
+|`code/scripts/run_d25_support_only_concat.py`|`d40_v1`六候选90行Runner、strict selector、selected-only full-K10及artifact closure|
+|`tests/test_stage2_d38_strong_b3_quantized.py`|D38公开接缝与append prefix回归|
+|`tests/test_stage2_d40_hnbr.py`|公式、同步性、int8 decoded old negative、K/new-count、状态及协议测试|
+|`tests/test_run_d40_hnbr_integration.py`|真实fold接线、exact strong B3 pairwise golden、90行/physical closure、selector与full-K10反例|
+
+### 6.2验证证据
+
+- Conda环境：`ssr-gpu`；本地CPU验证，无N607访问。
+- `python -m py_compile`覆盖上述6个实现/测试文件：通过。
+- `python -m pytest -q`覆盖D38/D39/D40 core及D36–D40 Runner integration：`124 passed`。
+- `git diff --check`覆盖上述6个文件：通过；仅有Git的LF→CRLF提示，无whitespace error。
+- 实现提交：`bc6c3539 feat(stage2): implement D40 HNBR screen`。
+- D40 core不引用D38私有符号；new HNBR实际第二次调用的冻结old negative与`before_int8`解码方向逐元素相等，人为替换matched FP32 old ablation不改变new参考方向。
+- 独立只读审查未发现blocker。审查要求的两项medium已修复：资源门改为固定20/20步且HNBR MAC>0；exact strong B3 pairwise补全函数新增独立held行、类别索引、physical token、margin与侵入golden测试。
+
+当前只完成技术实现与本地测试闭环，尚未产生真实90行performance artifact，不能把`124 passed`解释为性能晋级。
 
 根目录`E:\type10-7`不是Git仓库；Git承载面为`E:\type10-7\github_publish\CVS-RFFI-repo`，根目录同名报告仅作非版本化运行镜像。当前goal保持active，D40 development screen不能替代完整确认矩阵。
