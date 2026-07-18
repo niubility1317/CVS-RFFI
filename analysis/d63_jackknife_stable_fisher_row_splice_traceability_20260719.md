@@ -32,3 +32,12 @@ D62在匿名类别行上使用support inner-held的总体TP/FP Pareto门，取�
 - 计划测试：`tests/test_probe_d63_jackknife_stable_fisher_row_splice.py`。
 - 输出：`automation_reports/CV-SincNet/d63_jackknife_stable_fisher_row_splice_probe_20260719/jackknife_stable_fisher_row_splice`。
 - 本地`ssr-gpu`串行验证并从detached clean worktree执行；本轮不访问N607。
+
+## 6.执行后追溯
+
+- 状态：`COMPLETED_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE`；105/105行、Runner125.5655s、query0、1080个组件fit闭包通过。
+- 总体：before93.33%、after82.78%、new82.00%、H81.65%、forgetting10.56pp、joint23.33%、min-before80%、min-after53.33%、min-new63.33%、混淆21/11/16。
+- 相对D62：before/after各+0.56pp，但new−2.67pp、H−0.97pp、joint−3.33pp、min-new−10pp，new→old+3、new→new+1；跨折稳定门保护旧类的同时伤害新类。
+- 场景缺陷：clear new−2pp；low new−6pp、H−2.04pp、forget+1.67pp；rain before−1.67pp。相对D46，low forgetting+5pp且rain before−3.33pp，明确违反预注册三场景不伤害门。
+- 门控：INT8 before总体候选32行、稳定18、剔除14；final总体候选45、稳定18、剔除27；两阶段各10/15 fit激活、联合原子回退0。跨折门消除了D62的整fit原子回退，却使更多稳定旧类行同时进入，证明“support分类稳定”不等价于“注册后old/new联合稳定”。
+- 判定：停止D63，不放宽jackknife门，不做角色/场景mask，不跑第二seed/125。D62继续是当前聚合最强开发点，但仍非可晋升版本。
