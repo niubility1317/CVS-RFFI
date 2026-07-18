@@ -43,3 +43,11 @@ D61必须同时满足：105/105行、query0、所有outer/inner变换audit闭包
 - 测试：`tests/test_probe_d61_identity_primary_fisher_residual.py`。
 - 输出：`automation_reports/CV-SincNet/d61_identity_primary_fisher_residual_probe_20260719/identity_primary_fisher_residual`。
 - 本地`ssr-gpu`串行验证并使用detached clean worktree；本轮不访问N607。
+
+## 6.首次执行失败与R1修复预注册
+
+首次锁定实现`759be372`在首个真实block组件上由D43 fail closed：全局`A`先旋转288维特征，再把auto-shrinkage协方差强制截成z160/FFT96/RF32三块，所得数值矩阵触发非正定检查。未完成105行、未产生可评分结果，因此不得报告性能或据此调参；失败说明“先全局旋转、后强制分块”与D46 block组件的结构假设不兼容。
+
+R1在不增加任何超参数的前提下改变运算顺序：D46 full/block组件先在原始合法support上按既有机制拟合`W0,b0`，再从同一fit可见support独立计算上述`A`，并编译`W=W0A^T,b=b0`。等价地，D61只对每个组件的判别系数施加identity-primary共享Fisher残差，不再改变其协方差估计坐标；因此full/block原有SPD与结构保持不变。每个inner折仍只用该折train support重新计算`A`，K1仍精确D46回退，rank/gain/阈值/权重扫描仍为0，query仍为单一仿射state且额外MAC/state为0。
+
+R1沿用第4节全部性能门和停止条件；不得对残差倍数、左右乘顺序或block专用增益做第二次修补。新输出使用`identity_primary_fisher_residual_r1`，首次失败目录原样保留。

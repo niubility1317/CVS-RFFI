@@ -41,6 +41,8 @@
 
 预期artifact为training/support/selection/receipt/metadata/geometry/resource。任何变换边界、折内独立拟合、source closure、编译等价或资源闭包失败均fail closed，不允许隐式回退或调参。
 
-## 4.待完成结果
+## 4.首次执行失败
 
-运行结束后在本节写入同row总体表、分场景、逐旧类、逐新类、15fold、混淆、量化、Fisher几何、资源和判门结论；当前不作性能声明。
+锁定实现`759be372`运行33.7s后在首个真实block组件fail closed：`D43 structured covariance is not positive definite`。原因边界是全局Fisher旋转后再强制三块协方差破坏了block组件的结构假设；未完成105行、未生成可评分指标，不得把本次失败描述为性能结果。失败目录原样保留，不覆盖、不删除。
+
+R1已在追溯文档预注册：先按原坐标拟合D46 full/block组件，再把同fit support闭式估计的`A`编译进组件系数`W=W0A^T`；不再改动协方差坐标。性能门、协议门、无扫描和详细报告要求全部不变；R1另用`identity_primary_fisher_residual_r1`输出目录。
