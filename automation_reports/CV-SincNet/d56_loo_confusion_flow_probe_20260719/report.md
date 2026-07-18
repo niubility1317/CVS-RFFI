@@ -2,7 +2,7 @@
 
 ## 1.状态、目标与单一差异
 
-- 状态：`IMPLEMENTED_AND_TESTED_PRE_RUN`；operator Codex；本轮不运行125。
+- 状态：`COMPLETED_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE`；operator Codex；105/105行完成，exit0，Runner elapsed111.533s；本轮不运行125。
 - 固定development cell：receiver20-1、seed713101、K10/new5、3个`leo_*_weak`场景×5fold；复用`VALIDATED_ONCE p2_min_v1`。
 - 当前最强D46为before92.22%、after81.67%、new84.67%、H82.33%、forget10.56pp、min-after53.33%、min-new73.33%，仍未达到项目门槛。
 - D55证明raw LOO-CE不能直接作为logit截距。D56仅把D46的support内部held预测变成离散有向混淆流，不使用CE幅值、class ID、old/new角色、scene、receiver、outer-held或query。
@@ -80,3 +80,139 @@ Git承载面为`E:\type10-7\github_publish\CVS-RFFI-repo`，分支`codex/cvs-rff
   --output 'E:\type10-7\automation_reports\CV-SincNet\d56_loo_confusion_flow_probe_20260719\loo_confusion_flow_intercept' `
   --device auto --mode development_select_unverified_component --candidate-set d42_v1
 ```
+
+## 8.结论先行
+
+D56产生了清晰但不可晋级的old/new交换：相对D46，after-old从81.67%升至83.33%，forgetting从10.56pp降至8.33pp，min-after从53.33%升至56.67%，old→new减少4次；seen-new却从84.67%降至80.67%，H从82.33%降至80.95%，min-new从73.33%降至60.00%，new→old增加4次。15折中5折预测发生变化，clear5折完全不变；负交换集中在low-elev和rain。D56不晋级、不跑第二seed、不formalize、不运行125。
+
+这不是量化或优化失败。INT8与matched FP32的before/final outer argmax、support argmax和margin sign flip均为0，最大score误差0.001915；20epoch support训练正常收敛。失败机制是类对称的混淆流平衡会降低support中“过度吸收”其他类的类别分数，它确实减少old→new，但同一动作增加new→old并压低新类floor，无法同时满足Stage2-B与Stage2-C。
+
+## 9.七候选完整同排性能
+
+unknown/coverage/rollback/defer不属于本闭集support-only Runner，均为N/A。表中每行指标来自同一候选的15个outer rows，不拼接边际极值。
+
+|候选|机制|before|after|new|H|forget|joint|min-before|min-after|min-new|混淆old→new/new→old/new→new|判定|
+|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|
+|B3_SINGLE_IQ_DIAG_FFTRF|B3单IQ对角FFTRF|87.78%|75.56%|72.67%|73.35%|12.22pp|23.33%|80.00%|60.00%|40.00%|33/22/19|低于D46|
+|D42-D40-HNBR-INT8-NEGATIVE|HNBR旧负路线|85.56%|85.00%|15.33%|25.16%|0.56pp|0.00%|66.67%|63.33%|0.00%|2/0/0|新类不可达|
+|D42-D41-BEC-INT8-NEGATIVE|BEC旧负路线|86.11%|20.56%|78.67%|31.50%|65.56pp|0.00%|76.67%|0.00%|36.67%|142/0/32|旧类崩塌|
+|D42-PROTOnet-CDA-ZID160|ProtoNet-CDA|71.11%|48.33%|52.67%|48.97%|22.78pp|0.00%|33.33%|13.33%|3.33%|0/0/0|弱基线|
+|D42-USLDA-FP32-MATCHED|D56 matched FP32|91.67%|83.33%|80.67%|80.95%|8.33pp|23.33%|80.00%|56.67%|60.00%|21/12/17|与INT8一致，负结果|
+|D42-USLDA-INT8|D56混淆流平衡|91.67%|83.33%|80.67%|80.95%|8.33pp|23.33%|80.00%|56.67%|60.00%|21/12/17|主候选，old改善但new退化|
+|Z0_SUPPORT_ONLY|support-only原型|71.11%|48.33%|52.67%|48.97%|22.78pp|0.00%|33.33%|13.33%|3.33%|0/0/0|弱基线|
+
+## 10.三场景性能与行为
+
+|场景|before|after|new|H|forget|joint|min-before|min-after|min-new|混淆|相对D46表现|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|
+|leo_clear_weak|98.33%|90.00%|98.00%|93.57%|8.33pp|40.00%|90.00%|70.00%|90.00%|4/1/0|全部指标与预测完全不变|
+|leo_low_elev_weak|88.33%|78.33%|74.00%|75.10%|10.00pp|20.00%|80.00%|60.00%|40.00%|8/5/8|after不变，new−2.00pp、H−0.88pp，min-new−10pp|
+|leo_rain_weak|88.33%|81.67%|70.00%|74.17%|6.67pp|10.00%|60.00%|40.00%|50.00%|9/6/9|after+5.00pp、forget−6.67pp，但new−10.00pp、H−3.28pp、min-new−20pp|
+
+rain证明混淆流包含修复旧类遗忘的有效信号；但该信号通过压低新类竞争力实现，违反“旧域适应和新类注册同等重要”的联合门，不能作为成功版本或按角色拆分使用。
+
+## 11.逐类别性能
+
+|旧类|哈希前缀|before→after|变化|
+|---|---|---:|---:|
+|O0|cls_1f33|90.00→90.00%|0.00pp|
+|O1|cls_33bb|96.67→90.00%|-6.67pp|
+|O2|cls_75aa|93.33→90.00%|-3.33pp|
+|O3|cls_8b02|80.00→56.67%|-23.33pp，旧类floor|
+|O4|cls_a53c|100.00→80.00%|-20.00pp|
+|O5|cls_f8df|90.00→93.33%|+3.33pp|
+
+|新类|哈希前缀|seen-new|表现|
+|---|---|---:|---|
+|N0|cls_09f8|70.00%|困难类|
+|N1|cls_1c2a|93.33%|最佳|
+|N2|cls_b8fb|60.00%|全局新类floor|
+|N3|cls_d3af|90.00%|稳定|
+|N4|cls_f608|90.00%|稳定|
+
+逐场景瓶颈是low-elev N2=40%、N0=50%，rain N2=50%、N0=60%；D56没有把错误平均化为可接受的统一floor。
+
+## 12.十五折完整表现
+
+|场景|fold|before|after|new|H|forget|joint|before/after/new floor|混淆|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|clear|0|100.00%|100.00%|90.00%|94.74%|0.00pp|50.00%|100/100/50%|0/1/0|
+|clear|1|100.00%|83.33%|100.00%|90.91%|16.67pp|0.00%|100/0/100%|1/0/0|
+|clear|2|91.67%|83.33%|100.00%|90.91%|8.33pp|50.00%|50/50/100%|1/0/0|
+|clear|3|100.00%|91.67%|100.00%|95.65%|8.33pp|50.00%|100/50/100%|1/0/0|
+|clear|4|100.00%|91.67%|100.00%|95.65%|8.33pp|50.00%|100/50/100%|1/0/0|
+|low|0|91.67%|66.67%|80.00%|72.73%|25.00pp|50.00%|50/50/50%|4/1/1|
+|low|1|66.67%|58.33%|70.00%|63.64%|8.33pp|0.00%|50/50/0%|1/0/3|
+|low|2|91.67%|91.67%|70.00%|79.38%|0.00pp|0.00%|50/50/0%|0/2/1|
+|low|3|100.00%|100.00%|70.00%|82.35%|0.00pp|0.00%|100/100/0%|0/1/2|
+|low|4|91.67%|75.00%|80.00%|77.42%|16.67pp|50.00%|50/50/50%|3/1/1|
+|rain|0|83.33%|83.33%|40.00%|54.05%|0.00pp|0.00%|50/50/0%|2/2/4|
+|rain|1|91.67%|83.33%|70.00%|76.09%|8.33pp|0.00%|50/50/0%|2/3/0|
+|rain|2|91.67%|83.33%|80.00%|81.63%|8.33pp|50.00%|50/50/50%|1/0/2|
+|rain|3|91.67%|83.33%|80.00%|81.63%|8.33pp|0.00%|50/0/50%|2/0/2|
+|rain|4|83.33%|75.00%|80.00%|77.42%|8.33pp|0.00%|50/50/0%|2/1/1|
+
+## 13.与D46当前最强版本比较
+
+|指标|D46|D56|差值|
+|---|---:|---:|---:|
+|before|92.22%|91.67%|-0.56pp|
+|after|81.67%|83.33%|+1.67pp|
+|seen-new|84.67%|80.67%|-4.00pp|
+|H|82.33%|80.95%|-1.39pp|
+|forgetting|10.56pp|8.33pp|-2.22pp，改善|
+|joint|23.33%|23.33%|0.00pp|
+|min-before|min80.00%|80.00%|0.00pp|
+|min-after|53.33%|56.67%|+3.33pp|
+|min-new|73.33%|60.00%|-13.33pp|
+|混淆|25/8/15|21/12/17|-4/+4/+2|
+
+D56相对D46改变5/15个预测SHA：low fold4丢1个new正确；rain fold0丢2个new正确；rain fold1以before−8.33pp、new−20pp换after+16.67pp；rain fold3以new−10pp换after+8.33pp；rain fold4仅改变预测分布而汇总指标不变。不能用after和forget的改善覆盖这些同折损失。
+
+## 14.混淆流机制审计
+
+|阶段|每fit错误边min/mean/max|out/in degree mean|max净流|补偿L2 mean/max|单类补偿abs mean/max|
+|---|---|---:|---:|---:|---:|
+|before|1/5.07/9|0.844/0.844|5|0.0682/0.1141|0.0514/0.1042|
+|final|6/18.13/30|1.648/1.648|9|0.0747/0.1315|0.0523/0.1023|
+
+补偿和最大绝对误差before/final为6.94e-18/1.73e-17，图流守恒闭合。clear final平均错误边8、补偿L2 0.0417；low为22.8/0.0800；rain为23.6/0.1023。修正只在困难场景跨过边界，和实际5个changed rows一致。系数变化L2仅约2.6e-7，来自公共仿射重中心化舍入；机制作用来自截距流而非系数或量化。
+
+## 15.训练、量化、资源与协议
+
+- 训练：epoch1/10/20的loss mean为1.0320/0.2161/0.1027，support accuracy为95.14%/99.03%/100%，gradient norm为1.0838/0.2359/0.1354；全部20epoch的query rows合计均为0，完整逐epoch值在summary中。
+- 量化：INT8与matched FP32 before/final outer argmax0/0、support argmax0/0、margin sign flip0；score绝对误差min/mean/max为0.000530/0.001001/0.001915。
+- 资源：68次LDA fit、2,010,728,448 LDA MAC；相对D46新增32次fit、944,898,048 LDA MAC、8,080数值MAC-equivalent和1,120比较；总适配2,022,234,098 MAC。query仍为6,624 MAC，参数2,016，state8,583B，registry941B，CUDA峰值22,886,912B，20epoch/20step。
+- 协议：coefficient int8、intercept float16；query rows/features/labels/role/quota/count/global/dependent optimization均0/false；clean/source false；dense query graph0B。support混淆图不持久化到query state。
+
+额外32次inner fit使D56适配MAC接近D46的1.88倍，虽然仍满足参数、epoch、step和状态硬上限，但在性能未联合改善时没有Pareto价值。
+
+## 16.Artifact闭包
+
+输出目录：`E:\type10-7\automation_reports\CV-SincNet\d56_loo_confusion_flow_probe_20260719\loo_confusion_flow_intercept`。
+
+|artifact|bytes|SHA256|
+|---|---:|---|
+|`training_log.jsonl`|12,872,957|`4d2ed4dca07caba92f20fe1aa3eeb22391a9064d8f15fa8ae27e2b575154cb6e`|
+|`support_audit.json`|313,579|`6fa6486469cd6f1febaa4795ad18a3dbf49d784238f05bc4553a8494ca356539`|
+|`resource_audit.json`|6,498|`00f364e567e0462feb955321e6d414c0dc95493dab35d3ed00dfacd71a8d6e2b`|
+|`geometry_audit.json`|5,132|`ae4b735a45fdae38eaf8bb6bfd23e57df9d60560144027a1e3e33937556300dc`|
+|`selection.json`|2,991|`b30d5debe462c6e966c99456842f616ea4713d44d42f95e03e9c939ed8b1675f`|
+|`RECEIPT.json`|4,941|`6ee8577a916cbd2d8fb54847ecc6460907216d0d1730fc5a2f98ca789e6c514a`|
+|`D56_PROBE_METADATA.json`|1,868|`4479f3acaa382d4c1fbf7f65ac6e1ab589c257f6320024ec5430182fc0c0b2c7`|
+|`full_performance_summary.json`|116,006|`b5e99c7615117bebffb1d5288ae849677671a3daa4611afd9490ec344fecf815`|
+
+## 17.门槛、缺陷与停止动作
+
+|门槛|要求|D56|判定|
+|---|---:|---:|---|
+|K10 after|≥92%|83.33%|失败，差8.67pp|
+|K10 min-old|≥88%|56.67%|失败，差31.33pp|
+|K10 new5|≥92%|80.67%|失败，差11.33pp|
+|保持D46 new/H/min-new|≥84.67/82.33/73.33%|80.67/80.95/60.00%|全部失败|
+|forgetting不增|≤10.56pp|8.33pp|通过|
+|协议与量化|闭合且0翻转|全部闭合|通过|
+
+D56的具体缺陷是“无角色混淆质量守恒”：减少old→new的4次错误，恰好伴随new→old增加4次，另增2次new→new。该结果保留一个可复用事实——support混淆入流能识别rain旧类遗忘——但禁止把这一事实转成old/new角色门、场景门或流强度扫描。D56停止；当前最强仍是D46，不运行125。
+
+下一候选必须在统一类对称公式中直接保护每类的正样本margin和负样本吸收上界，而不是只平衡预测质量或继续加截距。D57开始前先记录D55—D57三轮节奏中的第二轮状态；完成D57后执行正式三轮回顾。
