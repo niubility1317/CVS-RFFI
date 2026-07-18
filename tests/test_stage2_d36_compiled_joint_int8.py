@@ -193,3 +193,7 @@ def test_fit_does_not_use_torch_from_numpy_abi_bridge(monkeypatch: pytest.Monkey
     )
 
     assert result.state.compiled_qint8.shape == (4, 288)
+
+
+def test_prefixed_arm_lock_does_not_require_str_removeprefix() -> None:
+    assert D36CompiledJointConfig(arm="D36-C").arm == "C"

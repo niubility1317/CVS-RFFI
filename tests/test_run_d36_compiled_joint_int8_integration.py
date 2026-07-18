@@ -265,3 +265,14 @@ def test_d36_launcher_is_unique_and_sha_closed() -> None:
         "32d8d5364c363513d9d9f54ed49575999df9a80bbc96edb06f3829ffc7f5198a"
     ) in retry
     assert "query" not in retry.lower()
+
+    retry2 = (
+        CODE / "scripts" / "launch_d36_compiled_joint_int8_retry2_20260718.sh"
+    ).read_text(encoding="utf-8")
+    assert 'OUTPUT="$RUN/output/support_screen_retry2"' in retry2
+    assert "PYTHON=/home/szu2070436088/.conda/envs/SDG-SEI/bin/python" in retry2
+    assert (
+        "EXPECTED_D36_CORE_SHA256="
+        "e53b164b17da0ffcdf62b2f1024c931917d6d590fc5938b6f77a388270c3e09e"
+    ) in retry2
+    assert "query" not in retry2.lower()

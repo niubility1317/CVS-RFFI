@@ -84,7 +84,9 @@ class D36CompiledJointConfig:
     learning_rate: float = 0.03
 
     def __post_init__(self) -> None:
-        arm = str(self.arm).upper().removeprefix("D36-")
+        arm = str(self.arm).upper()
+        if arm.startswith("D36-"):
+            arm = arm[4:]
         if arm not in {"A", "B", "C"} or float(self.learning_rate) != 0.03:
             raise D36CompiledJointInt8Error("D36 fixed arm/lr lock drift")
         object.__setattr__(self, "arm", arm)

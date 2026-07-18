@@ -3,7 +3,7 @@
 ## 登记
 
 - 实验ID：`d36_compiled_joint_int8_20260718`；operator：Codex；日期：2026-07-18。
-- 状态：`RETRY1_LOCAL_VALIDATED_PENDING_SYNC`。
+- 状态：`RETRY2_LOCAL_VALIDATED_PENDING_SYNC`。
 - 目标：同时提升Stage2-B注册前旧类目标域适应和Stage2-C注册后新旧类平衡，避免D34新类不可达与D35旧类过度侵入。
 - 比较：Z0、D25-C0、B3、D33-FAST、D36-A/B/C；先执行K10 support-only、3场景×5个独立outer fold。query保持关闭。
 - 完整公式与协议追踪：`analysis/d36_compiled_joint_int8_calibration_traceability_20260718.md`。
@@ -120,3 +120,12 @@ PASS
 - retry1本地验证：`conda run -n ssr-gpu python -m pytest -q tests/test_stage2_d36_compiled_joint_int8.py tests/test_run_d36_compiled_joint_int8_integration.py`→`16 passed`；`bash -n code/scripts/launch_d36_compiled_joint_int8_retry1_20260718.sh`→PASS。
 - 修复后D36 core SHA256：`32d8d5364c363513d9d9f54ed49575999df9a80bbc96edb06f3829ffc7f5198a`。
 - retry1精确命令：`bash code/scripts/launch_d36_compiled_joint_int8_retry1_20260718.sh`；输出`runs/d36_compiled_joint_int8_20260718/output/support_screen_retry1`；日志`logs/d36_compiled_joint_int8_20260718/support_screen_retry1.log`；GPU0。
+
+## retry1环境失败与retry2环境切换
+
+- retry1 PID`3872845`已退出，状态`FAILED_REMOTE_NUMPY_RUNTIME_BEFORE_FIRST_FOLD_RESULT`；日志保存在`logs/d36_compiled_joint_int8_20260718/support_screen_retry1.log`，未产生性能artifact。
+- retry1越过了`torch.from_numpy`阻断，但在第一次`rows.mean()`时触发`ImportError: cannot import name ERR_IGNORE from numpy.core.umath`。最小复现证明`CVS-RFFI`环境的NumPy2.2.5在Torch2.1.0导入后损坏`numpy.core._methods`，不是D36数值或数据失败。
+- 未安装、卸载或修改任何远端包。只读枚举发现现成`SDG-SEI`环境为NumPy1.24.4、Torch1.11.0+cu113，GPU可用、runner `--help`可加载、NumPy methods正常。
+- 合成fit首次暴露`SDG-SEI`的Python缺少`str.removeprefix`；本地将唯一调用改为`startswith`+切片，并新增前缀arm锁回归。D36核心逻辑和锁定超参数不变。
+- retry2本地验证：D36 core+runner集成`17 passed`，launcher`bash -n`通过；core SHA256=`e53b164b17da0ffcdf62b2f1024c931917d6d590fc5938b6f77a388270c3e09e`。
+- retry2精确命令：`bash code/scripts/launch_d36_compiled_joint_int8_retry2_20260718.sh`；Python`/home/szu2070436088/.conda/envs/SDG-SEI/bin/python`；输出`runs/d36_compiled_joint_int8_20260718/output/support_screen_retry2`；日志`logs/d36_compiled_joint_int8_20260718/support_screen_retry2.log`；GPU0。
