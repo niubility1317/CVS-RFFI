@@ -2,7 +2,7 @@
 
 ## 1.状态、目标与单一差异
 
-- 状态：`PREREGISTERED_PRE_IMPLEMENTATION`；operator Codex；本轮不运行125。
+- 状态：`IMPLEMENTED_AND_TESTED_PRE_RUN`；operator Codex；本轮不运行125。
 - 固定development cell：receiver20-1、seed713101、K10/new5、3个`leo_*_weak`场景×5fold；复用`VALIDATED_ONCE p2_min_v1`。
 - 当前最强D46为before92.22%、after81.67%、new84.67%、H82.33%、forget10.56pp、min-after53.33%、min-new73.33%，仍未达到项目门槛。
 - D55证明raw LOO-CE不能直接作为logit截距。D56仅把D46的support内部held预测变成离散有向混淆流，不使用CE幅值、class ID、old/new角色、scene、receiver、outer-held或query。
@@ -39,6 +39,8 @@ D56必须至少保持D46总体after81.67%、new84.67%、H82.33%、min-after53.33
 2. 为混淆流、零和、类置换、rank置换、K1/K2回退、单次应用、资源闭合和tamper fail-close添加定向测试。
 3. 在`ssr-gpu`下执行`py_compile`和D46＋D56窄回归；进入Git提交后，从clean detached worktree运行同一105行development矩阵。
 4. 输出和本报告完成前不启动D57；D56若失败，下一轮不得扫描流强度。
+
+本地实现已落在`code/scripts/probe_d56_loo_confusion_flow_intercept.py`，定向测试为`tests/test_probe_d56_loo_confusion_flow_intercept.py`。`py_compile`通过，D56＋D46定向回归23/23通过；覆盖混淆边流守恒、类置换、无效held score fail-close、K1/K2、固定分母、额外32次inner LDA fit及MAC/比较计数。尚未读取本轮outer结果。
 
 ## 6.版本与远端边界
 
