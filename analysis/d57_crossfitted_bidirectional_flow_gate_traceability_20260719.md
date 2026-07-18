@@ -9,6 +9,6 @@
 |类对称|无ID/role/scene/receiver/顺序|类标签置换等变测试|LOCAL_PASS|
 |K1/K2|精确D46 fallback|参数化测试|LOCAL_PASS|
 |资源边界|复用D56拟合，只增加标量门控|资源公式闭包|LOCAL_PASS|
-|协议与性能|query0、105行、完整同排报告|receipt/summary/report|PENDING_RUN|
+|协议与性能|query0、105行、完整同排报告|105/105、exit0、summary SHA `782416ea…1efb`|COMPLETE_NEGATIVE|
 
-D57为support-only、强制nonpromotable开发探针；未通过开发门前无formal/125权限。
+D57为support-only、强制nonpromotable开发探针；30/30个fit均无坐标通过双向严格门，最终精确回退D46，性能92.22/81.67/84.67/H82.33且0/15折预测变化。D57不晋级，无formal/125权限；D55—D57复盘已记录在同轮report。
