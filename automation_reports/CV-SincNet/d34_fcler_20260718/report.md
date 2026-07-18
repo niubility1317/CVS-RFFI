@@ -48,6 +48,13 @@ D34成功也只解决注册抗遗忘；D33-FAST注册前旧类held总体82.22%�
 
 待回填本地测试、Git提交、远端命令/PID/GPU、105行完整日志、逐候选/场景/类矩阵、碰撞边与不可达类、资源审计、support/query清单、artifact SHA、selection/RECEIPT及下一轮判定。
 
+## N607启动前闭环
+
+- 2026-07-18 08:54 CST直接SSH preflight通过：host`dell-DSS8440`，项目根存在；8张RTX 3090均0%利用率、10MiB显存，live inventory未发现训练进程；`/home`可用7.6TB；目标输出不存在。
+- 已只同步上节登记的3个文件。远端SHA闭合：runner`e7eea547f57fe9a15698273ebb7dc36a698ffe073e549c89567b4d7e4d0d91a3`，D34 core`63d38feaee0a899eb07c57d761b74b011442dde7d2da8b8082242361cdda4957`，launcher`65dfc262b33224ce2e517015f3a827a7d38b3d7c98c480779e71db9a74b38da3`，未同步diag仍为固定`14ec919395f9bf9f13214c677b1a3d640764214668d1d00e9109f5b149ec41ca`；其余13个依赖也逐项匹配launcher锁。
+- 远端`bash -n`、runner/core`py_compile`通过。计划命令：cwd`/home/szu2070436088/2510044040/CV-SincNet`，`D34_GPU=0 bash code/scripts/launch_d34_collision_local_20260718.sh`；Python`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`；日志`logs/d34_collision_local_20260718/support_screen_v1.log`；输出`runs/d34_collision_local_20260718/output/support_screen_v1`。
+- 启动后回填PID；GPU0最多新增本任务1个进程，预计输出105行。成功标准仍是同一行联合门而非单项最大值；任一旧类held侵入、不可达新类、协议字段缺失或资源审计不闭合都不得晋级。
+
 ## 本地实现与验证
 
 - 新增`code/cvsrffi/stage2_d34_collision_local_registration.py`：A/B/C固定arm、FAST-adapted unit rows、同尺度`18×cosine`、int8新类原型、support-only top-L碰撞边、每旧锚共享安全offset、稀疏逐样本全类score、K1无伪LOSO、真实new LOO和offset-only old LOO审计。
