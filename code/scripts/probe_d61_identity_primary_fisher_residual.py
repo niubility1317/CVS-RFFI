@@ -412,7 +412,12 @@ def main(argv: list[str] | None = None) -> int:
         support = d43._read_json(output / "support_audit.json")
         closure = support["candidate_lock"]["source_closure"]
         locked_script_sha = str(closure["d43_probe_script_sha256"])
-        evidence = _verify_output(output, locked_script_sha, helper_hashes)
+        locked_helper_hashes = {
+            name: str(closure[name]) for name in helper_hashes
+        }
+        evidence = _verify_output(
+            output, locked_script_sha, locked_helper_hashes
+        )
         verifier_sha = d43._sha256(Path(__file__).resolve())
         metadata = {
             "schema": "cvs.phase2.d61.identity_primary_fisher_residual_probe.v1",
