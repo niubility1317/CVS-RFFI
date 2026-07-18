@@ -45,3 +45,38 @@ D56必须至少保持D46总体after81.67%、new84.67%、H82.33%、min-after53.33
 ## 6.版本与远端边界
 
 Git承载面为`E:\type10-7\github_publish\CVS-RFFI-repo`，分支`codex/cvs-rffi-release-20260626`；根目录不是Git仓库，完成后镜像本报告。当前尚未访问N607；任何远端同步或执行必须先完成本地实现、测试、提交和N607只读preflight。
+
+## 7.执行锁
+
+- 实现提交：`8e6264470b2ae1b905278581e599cfb2db4d56e2`；clean detached worktree：`E:\type10-7\code\snapshots\d56wt`，状态仅`HEAD (no branch)`。
+- clean探针SHA256：`95b38dd5cc7fafabfc3a06584a1571145c8c543f63da295a40caa2b523612252`；clean环境下`py_compile`和D56＋D46测试23/23通过。
+- runtime只读复用`E:\type10-7\code\snapshots\d41wt`。before/after seal、envelope、component manifest和class binding继续锁定D46—D55同一组SHA：`53ace286…d9f75`、`c70aedf3…b50ff`、`31a2ad99…ceb0e`、`a2483d6e…be76`、`15b5e144…629c`、`bb89a1db…c901f`。
+- 输出`E:\type10-7\automation_reports\CV-SincNet\d56_loo_confusion_flow_probe_20260719\loo_confusion_flow_intercept`启动前必须不存在；本地串行`device=auto`，不访问N607、不生成125。
+
+```powershell
+& 'C:\Users\lh594\.conda\envs\ssr-gpu\python.exe' `
+  'E:\type10-7\code\snapshots\d56wt\code\scripts\probe_d56_loo_confusion_flow_intercept.py' `
+  --d56-arm loo_confusion_flow_intercept `
+  --runtime-root 'E:\type10-7\code\snapshots\d41wt' `
+  --probe-root 'E:\type10-7\code\snapshots\d56wt' `
+  --before-root 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\phase2_capsule_k10_new5\predictor\before\enrollment_only' `
+  --before-seal 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\phase2_capsule_k10_new5\seals\before_enrollment.seal.json' `
+  --before-seal-sha256 53ace2863c9da6c2f6cc855d602c99f581df6de3d30a9a3ecb89eb6b6f0d9f75 `
+  --before-formal-policy 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\formal_execution_policy.json' `
+  --before-formal-policy-authorization 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\runtime_authorization_k10_new5\before_formal_policy_authorization.v2.json' `
+  --before-signed-policy-authorization-envelope 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\runtime_authorization_k10_new5\before_signed_policy_authorization_envelope.v2.json' `
+  --before-signed-policy-authorization-envelope-sha256 31a2ad9918f061b25d5a7ed0cc135df70ae02460c094b2f396bf314817bceb0e `
+  --after-root 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\phase2_capsule_k10_new5\predictor\after\enrollment_only' `
+  --after-seal 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\phase2_capsule_k10_new5\seals\after_enrollment.seal.json' `
+  --after-seal-sha256 c70aedf3a8f059e756806201758c1933a2f3e1ba4df415e69a1c776b1a2b50ff `
+  --after-formal-policy 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\formal_execution_policy.json' `
+  --after-formal-policy-authorization 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\runtime_authorization_k10_new5\after_formal_policy_authorization.v2.json' `
+  --after-signed-policy-authorization-envelope 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\runtime_authorization_k10_new5\after_signed_policy_authorization_envelope.v2.json' `
+  --after-signed-policy-authorization-envelope-sha256 a2483d6e9c9c362d89397029ff1e43f48358be3bdb3a05d717ee112b70a0be76 `
+  --component-dir 'E:\type10-7\automation_reports\CV-SincNet\d22_int8_anchor_lifecycle_20260717\input\int8_component' `
+  --component-manifest-sha256 15b5e144f9af3989421d8e925c17758479c327be47e79222f6363dc63994629c `
+  --class-binding 'E:\type10-7\github_publish\CVS-RFFI-repo\analysis\d19_adv3b02_class_binding_20260717.json' `
+  --class-binding-sha256 bb89a1dbb831acb374fccfc596ae98b660b496b449bdca577dabb962121c901f `
+  --output 'E:\type10-7\automation_reports\CV-SincNet\d56_loo_confusion_flow_probe_20260719\loo_confusion_flow_intercept' `
+  --device auto --mode development_select_unverified_component --candidate-set d42_v1
+```
