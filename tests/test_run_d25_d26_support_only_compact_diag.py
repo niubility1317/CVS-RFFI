@@ -307,6 +307,7 @@ def test_d26_cli_has_no_query_source_or_clean_surface() -> None:
         runner.CANDIDATE_SET_D32_V1,
         runner.CANDIDATE_SET_D33_V1,
         runner.CANDIDATE_SET_D34_V1,
+        runner.CANDIDATE_SET_D35_V1,
     )
     forbidden = ("query", "truth", "scorer", "role", "quota", "source", "clean")
     destinations = {action.dest.lower() for action in parser._actions}
