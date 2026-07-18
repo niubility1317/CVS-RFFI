@@ -41,3 +41,11 @@ D61把D46的after-old从81.67%提高到83.33%、forgetting从10.56pp降到6.67%�
 - 实现：`code/scripts/probe_d62_crossfitted_fisher_row_splice.py`；测试：`tests/test_probe_d62_crossfitted_fisher_row_splice.py`。
 - 输出：`automation_reports/CV-SincNet/d62_crossfitted_fisher_row_splice_probe_20260719/crossfitted_fisher_row_splice`。
 - 本地`ssr-gpu`串行验证并使用detached clean worktree；本轮不访问N607。
+
+## 6.执行后追溯
+
+- 状态：`COMPLETED_AGGREGATE_BEST_DIAGNOSTIC_NOT_PROMOTABLE`；105/105行、Runner124.7751s、query0、1080个额外组件fit闭包通过。工具前台在124秒超时，但只读落地检查确认进程已退出且RECEIPT/metadata/105行均完整，未重启或重复执行。
+- 总体：before92.78%、after82.22%、new84.67%、H82.62%、forgetting10.56pp、joint26.67%、min-before80%、min-after53.33%、min-new73.33%、混淆23/8/15。
+- 相对D46：before+0.56pp、after+0.56pp、H+0.29pp、joint+3.33pp、old→new−2；new、forgetting和三项全局class floor不变。2/15 final prediction SHA变化，量化0/0/0。
+- 门控：INT8的before6/15 fit激活17行，final3/15 fit激活6行；before/final分别7/12个fit因联合交互原子回退。clear after+1.67pp且forget−1.67pp；low before+3.33pp但forget+3.33pp；rain before−1.67pp。三场景存在before/forget交换，违反预注册的场景不伤害门。
+- 判定：D62是当前最高聚合开发结果，但不是满足最新项目要求的可晋升版本；K10确认门仍差after9.78pp、min-old34.67pp、new5 7.33pp。不跑第二seed/125。D63只能提高inner-held门的跨折稳定性，不得扫描阈值或使用场景/角色mask。
