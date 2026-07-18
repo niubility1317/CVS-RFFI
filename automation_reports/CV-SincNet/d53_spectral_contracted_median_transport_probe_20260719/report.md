@@ -112,6 +112,10 @@ D53相对D45改变5/15行：after`-0.56pp`、new`-0.67pp`、H`-0.88pp`、forget`
 
 D53说明谱映射成功把修正缩到安全范围并基本保持D46，但没有带来联合收益：new/H下降，rain old/forget仍失败。停止该公式，不扫描谱尺度、不加逆/正则/clip或角色门控、不跑第二seed、不formalize、不运行125。当前最强仍是D46，仍未满足项目要求。
 
+## 15.D54成功经验合成预注册
+
+D54仅把D53相同的谱收缩transport叠加到当前最强D46 classwise LOO底座，公式中的`W0`改为`W_D46-mean(W_D46)`；其余`U/M0/tau/G/gamma`、K1/K2 fallback和协议边界完全不变。无融合系数、扫描、clip、role/scene/query门控。目的只检验：D46的new优势能否与D53的安全几何修正共存。相同开发单元运行一次，之后必须进行D52–D54三轮回顾；失败不进入第二seed或125。
+
 `||G||_2≤||U||_2/||M0||_2`；无pinv、ridge、rcond、alpha、阈值、clip或扫描。K1/K2在谱检查前精确D45 fallback。
 
 ## 3.协议与比较
