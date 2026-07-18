@@ -4463,6 +4463,9 @@ def _evaluate_d36_fold(
         for values in [[row for row in new_loso if row["new_class"] == name]]
     }
     resource = _d36_resource(fit, len(all_classes))
+    old_score_columns_bitwise_unchanged = bool(
+        np.array_equal(before_scores, after_scores[:, : len(old_classes)])
+    )
     geometry = {
         **dict(fit["core_result"].geometry_audit),
         "schema": "cvs.phase2.d36_compiled_joint_int8_geometry.v1",
@@ -4505,6 +4508,15 @@ def _evaluate_d36_fold(
         ),
         "joint_floor": float(
             min(after_old["class_floor_accuracy"], after_new["class_floor_accuracy"])
+        ),
+        # Compatibility field consumed by the shared candidate aggregator.
+        # D36 recompiles the target-old head, so unlike frozen-prefix routes
+        # this is measured from the actual held scores instead of assumed.
+        "old_score_columns_bitwise_unchanged": (
+            old_score_columns_bitwise_unchanged
+        ),
+        "old_score_columns_bitwise_unchanged_semantics": (
+            "measured_before_vs_after_compiled_target_old_scores"
         ),
         "outer_held_new_intrusion_count": outer_intrusion,
         "outer_held_zero_new_intrusion_pass": outer_intrusion == 0,

@@ -116,6 +116,12 @@ def test_d36_outer_fold_emits_oof_int8_and_resource_evidence() -> None:
     assert resource["persistent_state_cap_pass"] is True
     assert resource["dense_query_graph_bytes"] == 0
     assert resource["query_rows_used_for_fit"] == 0
+    assert isinstance(result["old_score_columns_bitwise_unchanged"], bool)
+    assert result["old_score_columns_bitwise_unchanged_semantics"] == (
+        "measured_before_vs_after_compiled_target_old_scores"
+    )
+    # D36 intentionally recompiles the old head across Stage2-B/C.
+    assert result["old_score_columns_bitwise_unchanged"] is False
 
 
 def _metric(value: float, names: tuple[str, ...]) -> dict[str, object]:

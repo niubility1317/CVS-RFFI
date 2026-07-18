@@ -3,7 +3,7 @@
 ## 登记
 
 - 实验ID：`d36_compiled_joint_int8_20260718`；operator：Codex；日期：2026-07-18。
-- 状态：`REMOTE_RUNTIME_BLOCKED_BEFORE_FIRST_FOLD_ACTIVE_GOAL_CONTINUES`。
+- 状态：`LOCAL_SUPPORT_ONLY_COMPLETE_NEGATIVE_D36_NOT_PROMOTABLE_ACTIVE_GOAL_CONTINUES`。
 - 目标：同时提升Stage2-B注册前旧类目标域适应和Stage2-C注册后新旧类平衡，避免D34新类不可达与D35旧类过度侵入。
 - 比较：Z0、D25-C0、B3、D33-FAST、D36-A/B/C；先执行K10 support-only、3场景×5个独立outer fold。query保持关闭。
 - 完整公式与协议追踪：`analysis/d36_compiled_joint_int8_calibration_traceability_20260718.md`。
@@ -146,3 +146,87 @@ PASS
 - N607当前两个现成环境均不能完成完整runner：`CVS-RFFI`的Python3.10/Torch2.1匹配模型，但NumPy2.2.5安装混杂；`SDG-SEI`的NumPy1.24健康，但Torch1.11无法读取模型。用户Conda包缓存只有NumPy2.2.5的Python3.10包，没有可只读覆盖的NumPy1.x包。
 - v1、retry1、retry2、retry3均在第一fold结果之前失败，不计为已完成探索轮，不得产生任何性能结论。GPU均已释放，本地SSH/TCP22连接均已退出。
 - 不再进行第四次盲目远端重启。下一技术动作应优先使用本地`ssr-gpu`与已镜像的同一开发cell验证D36算法；若必须恢复N607同runner，则需要用户授权创建或修复兼容的Python3.10+Torch2.1+NumPy1.x环境，属于远端包安装/环境变更。
+
+## 本地`ssr-gpu`完整筛选与最终结论
+
+### 执行闭包
+
+- 本地环境：`C:\Users\lh594\.conda\envs\ssr-gpu\python.exe`，Python3.10.19、Torch2.10.0+cu128、NumPy2.2.6；本地RTX5070 Ti可用。
+- D18 before/after封存TorchScript均成功加载；before为6旧类×10-shot×3场景，after为11类×10-shot×3场景。runner只读取`enrollment_only`，未触及`apply_only_staging`中的query文件。
+- 当前主工作树三文件closure为`3beb9b529b63fc6f8b553ab76706d881eda9b65490142f30c6c7a8992e49e358`，不匹配D18签名。未绕过验签，也未重签授权；从N607只读回收D18源快照到隔离worktree`E:\type10-7\code\snapshots\d36wt`：
+  - `somph_predictor_bundle.py`：`49a05c6f1f809fc221e3cb64fffe0c2f11b1b252e6cdbe86449303f8fb5def48`；
+  - `somph_runtime_trust.py`：`4b1dee1d8ffdc793f48c46c21a11b0fdf8b6ef6e3b253807cc1138011dc1f9fc`；
+  - `stage2_predictor_bundle.py`：`bb27beaa94c4245b2135b5493e1be305985e05ff9f88c01bc0b9f60955944aa9`；
+  - 三文件closure精确恢复为签名值`b0b7f2c2f87e66ecbeca99779688461e7161877271dd0195e0bcf2b95cb9606f`。
+- 只读远端源：`runs/d18_formal_k10_new5_rx20_1_seed713101_20260717_085303/source/code/cvsrffi/`；未修改远端live code、环境、数据或run。SCP结束后本地`ssh.exe=0`，到N607/bridge的`ESTABLISHED TCP22=0`。
+- 首次本地完整计算在selection聚合处发现D36行缺少共享字段`old_score_columns_bitwise_unchanged`；异常发生在RECEIPT前，保留空目录`local_support_screen_d36_v1`。runner现从实际before/after target-old score矩阵测量该字段，D36三臂均为`false`，不再错误套用冻结旧score语义。
+- 修复验证：`conda run -n ssr-gpu python -m pytest -q -p no:cacheprovider tests\test_run_d36_compiled_joint_int8_integration.py tests\test_stage2_d36_compiled_joint_int8.py`→`17 passed`。
+- 完整输出：`E:\type10-7\automation_reports\CV-SincNet\d36_compiled_joint_int8_20260718\local_support_screen_d36_v2`；运行时33.28s；`training_log.jsonl`105行全部合法，7候选各15行、3场景各35行、5个outer fold各21行；无NaN/Inf。
+- RECEIPT：`status=DEVELOPMENT_SUPPORT_ONLY_COMPLETE`、`query_opened=false`、`performance_claim_allowed=false`、`formal_metric_claim_allowed=false`、`selected_positive_route=false`；SHA256=`78e0bddc209bbcb3da13d4ed858298924ac4b5a177ef77407bbc1b3531bf71c7`。
+
+### 105行同run联合结果
+
+所有行均为receiver20-1、seed713101、K10、6旧类+5新类、3个`LEO_weak`场景×5fold。下表每个数值来自同一candidate的完整15行联合聚合，不能解释为query性能。
+
+|候选|机制/训练|注册前old|注册后old|seen-new|H|forgetting|最差joint floor|旧→新侵入|不可达类-fold|结论|
+|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---|
+|Z0|identity support-only|71.11%|48.33%|52.67%|48.97%|22.78pp|0%|0|0|控制，不晋级|
+|D25-C0|288维concat baseline|71.67%|50.56%|54.00%|50.35%|21.11pp|0%|0|0|最终fallback|
+|B3|single-IQ FFTRF诊断比较器|87.78%|75.56%|72.67%|73.35%|12.22pp|0%|0|0|同run最强比较器，仍有floor=0|
+|D33-FAST|Fisher spherical negative control|82.22%|70.00%|59.33%|62.19%|12.22pp|0%|0|0|诊断负对照|
+|D36-A|对角算子，6+6step，int8旧/新头|81.11%|65.56%|53.33%|57.80%|15.56pp|0%|28|51|所有晋级门失败|
+|D36-B|rank-2+只读ground anchor+常数offset|80.56%|62.22%|56.00%|57.91%|18.33pp|0%|32|49|所有晋级门失败|
+|D36-C|rank-2+ground anchor+5step IRLS margin|80.56%|66.11%|52.00%|56.82%|14.44pp|0%|25|53|所有晋级门失败|
+
+本轮matched comparator阈值为old75.56%、new72.67%、H73.35%、forgetting≤12.22pp、joint floor≥0%。D36-A/B/C的通用旧类floor、新类floor、逐类比较、联合比较、旧类安全和新类可达门全部失败；`eligible_candidate_ids=[]`，pre/full-K10选择均为`D25-C0-DIM-CONCAT`，没有正路线。
+
+### D36逐场景结果
+
+|候选|场景|注册前old|注册后old|seen-new|H|forgetting|最差floor|侵入|不可达类-fold|
+|---|---|---:|---:|---:|---:|---:|---:|---:|---:|
+|D36-A|clear|81.67%|63.33%|58.00%|59.83%|18.33pp|0%|11|16|
+|D36-A|low-elev|76.67%|63.33%|52.00%|56.45%|13.33pp|0%|8|18|
+|D36-A|rain|85.00%|70.00%|50.00%|57.12%|15.00pp|0%|9|17|
+|D36-B|clear|80.00%|61.67%|58.00%|59.32%|18.33pp|0%|11|16|
+|D36-B|low-elev|76.67%|56.67%|54.00%|53.74%|20.00pp|0%|11|17|
+|D36-B|rain|85.00%|68.33%|56.00%|60.66%|16.67pp|0%|10|16|
+|D36-C|clear|80.00%|58.33%|56.00%|56.59%|21.67pp|0%|13|17|
+|D36-C|low-elev|76.67%|68.33%|50.00%|55.68%|8.33pp|0%|4|18|
+|D36-C|rain|85.00%|71.67%|50.00%|58.21%|13.33pp|0%|8|18|
+
+### 全注册类逐类结果
+
+TX名称仅用于run后诊断，候选选择器只使用全部注册class handle的统一比较和floor，不读取TX角色或历史难类名称。
+
+|角色|TX|B3|D36-A|D36-B|D36-C|
+|---|---|---:|---:|---:|---:|
+|old|20-15|93.33%|70.00%|66.67%|73.33%|
+|old|8-20|90.00%|90.00%|90.00%|90.00%|
+|old|14-10|73.33%|56.67%|53.33%|53.33%|
+|old|14-7|73.33%|63.33%|63.33%|76.67%|
+|old|6-15|60.00%|53.33%|50.00%|43.33%|
+|old|20-19|63.33%|60.00%|50.00%|60.00%|
+|new|1-18|40.00%|40.00%|50.00%|50.00%|
+|new|1-16|86.67%|36.67%|36.67%|36.67%|
+|new|14-11|76.67%|66.67%|66.67%|50.00%|
+|new|8-3|86.67%|76.67%|80.00%|76.67%|
+|new|18-10|73.33%|46.67%|46.67%|46.67%|
+
+### 训练、量化与资源诊断
+
+|候选|峰值活动参数|总step|持久状态|query dot-MAC|量化误差mean范围|量化误差max|full-K10旧→新侵入总数|资源结论|
+|---|---:|---:|---:|---:|---:|---:|---:|---|
+|D36-A|288|12|3,234B|3,168|0.00918–0.01068|0.01211|15|通过|
+|D36-B|1,440|12|3,236B|3,168|0.00925–0.01071|0.01211|23|通过|
+|D36-C|1,440|12|3,246B|3,168|0.00925–0.01071|0.01211|16|通过|
+
+- 三臂outer日志合计分别含915、915、975条训练/OOF trace；所有数值有限，`query_rows_used=0`。
+- Stage2-B在inner crossfit和deploy refit的平均loss均逐step单调下降；Stage2-C同样单调下降。A臂inner Stage2-B loss从1.33694降至1.30522，Stage2-C从2.63930降至2.54417；deploy refit分别从1.38264降至1.35295、2.69535降至2.60927。B/C几乎相同。
+- loss下降没有转化为held提升：Stage2-B support accuracy基本平台，Stage2-C旧support accuracy还略降；因此不是未收敛、NaN、OOM或资源不足，而是support目标与held全类几何安全目标错位。
+- 三臂在3个场景的full-K10 gate均通过5fold OOF无self-participation、old/new int8、无FP32 target prototype、资源和query隔离；但均失败于`quantized_old_head_classwise_noninferior_to_b3=false`、`old_support_non_degradation=false`和`full_support_zero_old_to_new_intrusion=false`。
+
+### 根因与下一步
+
+D36的首要失败发生在注册前：编译后的int8 target-old头只有80.56%–81.11%，已比同run B3的87.78%低6.67–7.22pp，且所有场景的逐类B3非劣门失败。Stage2-C随后又把先前正确旧样本推入新类，并没有解决新类可达性；ground anchor和margin校准只在old/new之间移动误差，未形成通用Pareto改善。最严重的新类退化是1-16从B3的86.67%降至三臂36.67%，18-10从73.33%降至46.67%；旧类20-15、14-10、6-15也系统退化。
+
+结论为`COMPLETED_SUPPORT_ONLY_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE`。不得打开query，不得扩K1/K5/K20，也不得写成正式`p2_min_v1`性能。下一候选必须先解决“注册前编译旧头不劣于B3”这一单点，再讨论Stage2-C校准；继续加ground权重、offset或IRLS复杂度没有当前证据支持。
