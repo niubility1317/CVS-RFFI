@@ -383,6 +383,125 @@ def _state_weights(state: D38StrongB3State) -> np.ndarray:
     )
 
 
+def transform_d38_features(
+    state: D38StrongB3State, features: np.ndarray
+) -> np.ndarray:
+    """Apply the frozen D38 metric and return readonly unit feature rows."""
+
+    if not isinstance(state, D38StrongB3State):
+        raise D38StrongB3QuantizedError("D38 transform state drift")
+    rows = _rows(features, "D38 transform features")
+    return _readonly(_transform(rows, state.log_diag_fp32), np.float32)
+
+
+def decode_d38_state_weights(state: D38StrongB3State) -> np.ndarray:
+    """Return readonly normalized directions represented by a D38 state."""
+
+    if not isinstance(state, D38StrongB3State):
+        raise D38StrongB3QuantizedError("D38 decode state drift")
+    return _readonly(_state_weights(state), np.float32)
+
+
+def compile_d38_state(
+    classes: Sequence[str],
+    old_class_count: int,
+    log_diag_fp32: np.ndarray,
+    weights_fp32: np.ndarray,
+    *,
+    arm: str,
+    precision: str,
+) -> D38StrongB3State:
+    """Compile normalized directions into an immutable int8 or FP32 state."""
+
+    registry = tuple(str(value) for value in classes)
+    rows = _rows(weights_fp32, "D38 compile weights")
+    log_diag = np.asarray(log_diag_fp32)
+    normalized_arm = D38StrongB3Config(arm).arm
+    normalized_precision = str(precision).lower()
+    if (
+        len(registry) != len(rows)
+        or len(set(registry)) != len(registry)
+        or any(not value for value in registry)
+        or log_diag.dtype != np.float32
+        or log_diag.shape != (FEATURE_DIM,)
+        or not np.isfinite(log_diag).all()
+        or normalized_precision not in {"int8", "fp32"}
+    ):
+        raise D38StrongB3QuantizedError("D38 compile contract drift")
+    if normalized_precision == "int8":
+        state, _, _ = _int8_state(
+            registry,
+            int(old_class_count),
+            log_diag,
+            rows,
+            normalized_arm,
+        )
+        return state
+    return _fp32_state(
+        registry,
+        int(old_class_count),
+        log_diag,
+        rows,
+        normalized_arm,
+    )
+
+
+def append_d38_state(
+    base_state: D38StrongB3State,
+    new_classes: Sequence[str],
+    new_weights_fp32: np.ndarray,
+) -> D38StrongB3State:
+    """Append independently compiled new directions without rewriting a prefix."""
+
+    if not isinstance(base_state, D38StrongB3State):
+        raise D38StrongB3QuantizedError("D38 append state drift")
+    registry = tuple(str(value) for value in new_classes)
+    weights = _rows(new_weights_fp32, "D38 append weights")
+    if (
+        len(base_state.classes) != base_state.old_class_count
+        or len(registry) not in ALLOWED_NEW_CLASS_COUNTS
+        or len(registry) != len(weights)
+        or len(set(registry)) != len(registry)
+        or any(not value for value in registry)
+        or set(base_state.classes) & set(registry)
+    ):
+        raise D38StrongB3QuantizedError("D38 append contract drift")
+    normalized = _normalize_numpy(weights)
+    all_classes = base_state.classes + registry
+    if base_state.is_int8:
+        code1, code2, scale1, scale2, inv_norm, _ = _residual_quantize(normalized)
+        return D38StrongB3State(
+            schema=SCHEMA_INT8,
+            classes=all_classes,
+            old_class_count=base_state.old_class_count,
+            log_diag_fp32=base_state.log_diag_fp32,
+            code1_qint8=np.concatenate([base_state.code1_qint8, code1], axis=0),
+            code2_qint8=np.concatenate([base_state.code2_qint8, code2], axis=0),
+            scale1_fp16=np.concatenate([base_state.scale1_fp16, scale1], axis=0),
+            scale2_fp16=np.concatenate([base_state.scale2_fp16, scale2], axis=0),
+            inverse_norm_fp16=np.concatenate(
+                [base_state.inverse_norm_fp16, inv_norm], axis=0
+            ),
+            fp32_weights=np.zeros((0, FEATURE_DIM), dtype=np.float32),
+            arm=base_state.arm,
+        )
+    return D38StrongB3State(
+        schema=SCHEMA_FP32,
+        classes=all_classes,
+        old_class_count=base_state.old_class_count,
+        log_diag_fp32=base_state.log_diag_fp32,
+        code1_qint8=np.zeros((0, FEATURE_DIM), dtype=np.int8),
+        code2_qint8=np.zeros((0, FEATURE_DIM), dtype=np.int8),
+        scale1_fp16=np.zeros((0, len(BLOCK_SLICES)), dtype=np.float16),
+        scale2_fp16=np.zeros((0, len(BLOCK_SLICES)), dtype=np.float16),
+        inverse_norm_fp16=np.zeros(0, dtype=np.float16),
+        fp32_weights=np.concatenate(
+            [decode_d38_state_weights(base_state), normalized], axis=0
+        ),
+        arm=base_state.arm,
+    )
+
+
 def fit_d38_strong_b3_quantized(
     old_support_features: np.ndarray,
     old_support_labels: Sequence[str],
@@ -801,9 +920,13 @@ __all__ = [
     "D38StrongB3QuantizedError",
     "D38StrongB3Result",
     "D38StrongB3State",
+    "append_d38_state",
+    "compile_d38_state",
+    "decode_d38_state_weights",
     "fit_d38_strong_b3_quantized",
     "old_prefix_bitwise_unchanged_d38",
     "pairwise_support_diagnostics_d38",
     "predict_d38_strong_b3",
     "score_d38_strong_b3",
+    "transform_d38_features",
 ]

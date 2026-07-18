@@ -8,16 +8,84 @@ from cvsrffi.stage2_d38_strong_b3_quantized import (
     D38_SCORE_TEMPERATURE,
     D38StrongB3Config,
     D38StrongB3QuantizedError,
+    append_d38_state,
+    compile_d38_state,
+    decode_d38_state_weights,
     fit_d38_strong_b3_quantized,
     old_prefix_bitwise_unchanged_d38,
     pairwise_support_diagnostics_d38,
     predict_d38_strong_b3,
     score_d38_strong_b3,
+    transform_d38_features,
 )
 
 
 def test_public_score_temperature_seam_is_locked() -> None:
     assert D38_SCORE_TEMPERATURE == 18.0
+
+
+def test_public_transform_decode_compile_and_append_seams_are_readonly() -> None:
+    old_classes = ("old_a", "old_b")
+    new_classes = ("new_a", "new_b")
+    old_x, _ = _support(old_classes, k=2, offset=0, seed=900)
+    new_x, _ = _support(new_classes, k=2, offset=80, seed=901)
+    log_diag = np.zeros(288, dtype=np.float32)
+    old_weights = np.stack([old_x[:2].mean(axis=0), old_x[2:].mean(axis=0)]).astype(
+        np.float32
+    )
+    new_weights = np.stack([new_x[:2].mean(axis=0), new_x[2:].mean(axis=0)]).astype(
+        np.float32
+    )
+    before = compile_d38_state(
+        old_classes,
+        2,
+        log_diag,
+        old_weights,
+        arm="A",
+        precision="int8",
+    )
+    matched_before = compile_d38_state(
+        old_classes,
+        2,
+        log_diag,
+        old_weights,
+        arm="A",
+        precision="fp32",
+    )
+    after = append_d38_state(before, new_classes, new_weights)
+    matched_after = append_d38_state(matched_before, new_classes, new_weights)
+    transformed = transform_d38_features(before, old_x)
+    decoded = decode_d38_state_weights(after)
+
+    assert transformed.shape == old_x.shape
+    assert np.allclose(np.linalg.norm(transformed, axis=1), 1.0, atol=1e-6)
+    assert decoded.shape == (4, 288)
+    assert np.allclose(np.linalg.norm(decoded, axis=1), 1.0, atol=1e-3)
+    assert transformed.flags.writeable is False
+    assert decoded.flags.writeable is False
+    assert old_prefix_bitwise_unchanged_d38(before, after)
+    assert matched_after.is_int8 is False
+    assert matched_after.fp32_weights.shape == (4, 288)
+
+
+def test_public_append_rejects_second_append_and_registry_overlap() -> None:
+    weights = np.zeros((2, 288), dtype=np.float32)
+    weights[0, 0] = 1.0
+    weights[1, 1] = 1.0
+    before = compile_d38_state(
+        ("old_a", "old_b"),
+        2,
+        np.zeros(288, dtype=np.float32),
+        weights,
+        arm="A",
+        precision="int8",
+    )
+    after = append_d38_state(before, ("new_a", "new_b"), weights)
+
+    with pytest.raises(D38StrongB3QuantizedError):
+        append_d38_state(after, ("x", "y"), weights)
+    with pytest.raises(D38StrongB3QuantizedError):
+        append_d38_state(before, ("old_a", "new_b"), weights)
 
 
 def _support(
