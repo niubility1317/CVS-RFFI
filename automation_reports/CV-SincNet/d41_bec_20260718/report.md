@@ -5,7 +5,7 @@
 - 实验ID：`d41_bec_20260718`
 - 时间：2026-07-18（Asia/Hong_Kong）
 - 操作者：Codex`/root`
-- 当前状态：`DESIGN_LOCKED_IMPLEMENTATION_PENDING`
+- 当前状态：`IMPLEMENTED_LOCALLY_VERIFIED_REAL_SCREEN_PENDING`
 - development cell：receiver`20-1`、seed`713101`、K10/new5、3个LEO弱场景；复用同一D18固定received-IQ support，query保持sealed。
 - 目标：用同一固定received IQ上的确定性block-erasure一致性训练，同时改善Stage2-B outer-held旧类泛化与Stage2-C old/new联合方向可比性；不引入第二个LEO观测、group bias、radius、HNBR或query gate。
 
@@ -121,7 +121,7 @@ D41 int8只有全部满足才可进入selected-only full-K10或N607：
 
 任一结构、协议或资源门失败即fail closed；任一性能门失败即`DEVELOPMENT_SUPPORT_ONLY_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE`，回退identity，不调整mask、loss、optimizer、step或temperature，不打开query、不访问N607、不扩K/receiver/seed/new-count确认矩阵。
 
-## 8.实现与验证计划
+## 8.实现与本地验证
 
 |面|锁定范围|
 |---|---|
@@ -129,5 +129,26 @@ D41 int8只有全部满足才可进入selected-only full-K10或N607：
 |Runner|`d41_v1`六候选、90行、actual old→new/new→old、new-new pairwise、strict selector、selected-only full-K10与五项artifact SHA|
 |测试|view golden、JS golden、B/C参数更新范围、before不可变、ground逐bit、K1/5/10/20、new2/5/10/20、标签置换、row-local query、int8/FP32、90行physical closure与逐门反例|
 |Git/N607|本地`ssr-gpu`验证并提交；只有真实90行全部晋级门通过才preflight/SCP/N607|
+
+### 8.1本地变更
+
+|文件|用途|
+|---|---|
+|`code/cvsrffi/stage2_d41_bec.py`|D41四view、BEC损失、B20/C10生命周期、int8/FP32编译、pairwise与资源审计|
+|`code/scripts/run_d25_support_only_concat.py`|`d41_v1`六候选90行Runner、strict selector、真实ground重哈希、selected-only full-K10与artifact闭包|
+|`tests/test_stage2_d41_bec.py`|核心golden、生命周期、量化、K/new-count、置换和逐样本评分测试|
+|`tests/test_run_d41_bec_integration.py`|Runner接线、90行物理身份、12个selector独立反例、真实ground篡改和full-K10门测试|
+
+### 8.2验证证据
+
+- 在`ssr-gpu`中对上述4个文件执行`python -m py_compile`，通过。
+- 主代理串行执行D36–D41全部核心与Runner集成测试，共`187 passed`。
+- 独立Runner复核执行D38–D41集成测试，共`64 passed`；补齐D38 source closure后再次执行，仍为`64 passed`。
+- D41核心独立验证`21 passed`；D41 Runner独立验证`17 passed`，包含12个strict selector逐门反例和真实临时ground NPZ入口/出口篡改反例。
+- `git diff --check`通过；仅有Git的LF→CRLF未来转换提示。pytest退出时Windows临时目录清理报告`WinError 5`，测试退出码为0，不属于项目失败。
+
+独立审计最初发现D41 candidate source closure遗漏直接依赖的D38量化核心哈希。现已修复为D38、D40或D41任一候选存在时都封存`d38_strong_b3_quantized_core_sha256`，并由D41集成测试显式断言；support打开后的closure复核因此覆盖D38、D40、D41与Runner全部直接代码依赖。其余已核路径未发现P0/P2/P3问题。
+
+本阶段只证明实现与证据闭包可执行，不构成性能晋级。下一步必须在隔离Git worktree中运行真实90行development matrix；只有全部严格门通过才允许N607。
 
 根目录`E:\type10-7`不是Git仓库；Git承载面为`E:\type10-7\github_publish\CVS-RFFI-repo`，根目录同名报告仅作非版本化运行镜像。当前goal保持active，D41 development screen不能替代完整确认矩阵。
