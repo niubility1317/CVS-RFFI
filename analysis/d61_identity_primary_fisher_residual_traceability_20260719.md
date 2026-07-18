@@ -51,3 +51,11 @@ D61必须同时满足：105/105行、query0、所有outer/inner变换audit闭包
 R1在不增加任何超参数的前提下改变运算顺序：D46 full/block组件先在原始合法support上按既有机制拟合`W0,b0`，再从同一fit可见support独立计算上述`A`，并编译`W=W0A^T,b=b0`。等价地，D61只对每个组件的判别系数施加identity-primary共享Fisher残差，不再改变其协方差估计坐标；因此full/block原有SPD与结构保持不变。每个inner折仍只用该折train support重新计算`A`，K1仍精确D46回退，rank/gain/阈值/权重扫描仍为0，query仍为单一仿射state且额外MAC/state为0。
 
 R1沿用第4节全部性能门和停止条件；不得对残差倍数、左右乘顺序或block专用增益做第二次修补。新输出使用`identity_primary_fisher_residual_r1`，首次失败目录原样保留。
+
+## 7.R1执行后追溯
+
+- 状态：`COMPLETED_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE`；算法105/105行、Runner80.5443s、query0。初始post-run verifier因组合audit命名空间和D61附加资源MAC触发两次fail closed；离线验证器仅规范化D46资源视图并接受预期命名空间组合，不重跑runner、不改training log，最终验证30个D46 row、60个D61 outer audit和锁定source closure通过。
+- 总体：before90.00%、after83.33%、new76.00%、H78.96%、forgetting6.67pp、joint26.67%、min-before76.67%、min-after60.00%、min-new43.33%、混淆18/16/20。
+- 相对D46：after+1.67pp、forgetting−3.89pp、joint+3.33pp、min-after+6.67pp、old→new−7；但before−2.22pp、new−8.67pp、H−3.38pp、min-before−3.33pp、min-new−30.00pp，new→old+8、new→new+5。15/15 prediction变化；量化final outer argmax变化1，亦失败。
+- 机制真实激活：before rank恒5、gain均值0.7873；final rank恒10、gain均值0.6108；30个outer transform SHA全唯一，特征值边界和编译相对漂移闭包通过。
+- 判定：共享Fisher残差明显把判别面推向旧类保护，降低遗忘并提高after-old floor，但造成新类竞争能力和new floor崩塌；停止D61及其R2、倍数、左右乘、rank/gain/场景或block专用扫描，不运行125。当前最强仍为D46。
