@@ -3,7 +3,7 @@
 ## 登记
 
 - 实验ID：`d36_compiled_joint_int8_20260718`；operator：Codex；日期：2026-07-18。
-- 状态：`RETRY3_LOCAL_VALIDATED_PENDING_SYNC`。
+- 状态：`REMOTE_RUNTIME_BLOCKED_BEFORE_FIRST_FOLD_ACTIVE_GOAL_CONTINUES`。
 - 目标：同时提升Stage2-B注册前旧类目标域适应和Stage2-C注册后新旧类平衡，避免D34新类不可达与D35旧类过度侵入。
 - 比较：Z0、D25-C0、B3、D33-FAST、D36-A/B/C；先执行K10 support-only、3场景×5个独立outer fold。query保持关闭。
 - 完整公式与协议追踪：`analysis/d36_compiled_joint_int8_calibration_traceability_20260718.md`。
@@ -138,3 +138,11 @@ PASS
 - retry3继续使用已验证可完成合成D36 fit的`SDG-SEI`环境，不安装包、不修改远端环境。新同步文件为`stage2_predictor_bundle.py`与retry3 launcher。
 - predictor bundle SHA256=`0b17420162b3c9698e9e8c2fc5c5edcb374719d10c3bfcc9a8ffc20e00a63383`。
 - retry3精确命令：`bash code/scripts/launch_d36_compiled_joint_int8_retry3_20260718.sh`；输出`runs/d36_compiled_joint_int8_20260718/output/support_screen_retry3`；日志`logs/d36_compiled_joint_int8_20260718/support_screen_retry3.log`；GPU0。
+
+## retry3失败与当前运行时阻断
+
+- retry3 PID`3880691`已退出，状态`FAILED_TORCHSCRIPT_VERSION_COMPAT_BEFORE_FIRST_FOLD_RESULT`；日志保存在`logs/d36_compiled_joint_int8_20260718/support_screen_retry3.log`，仍无training row、selection或RECEIPT。
+- retry3已通过Python3.8 bundle打开，但Torch1.11加载由Torch2.1生成的TorchScript时触发`isTuple() INTERNAL ASSERT FAILED ... Expected Tuple but got String`。这不是D36适配器数值、数据split或GPU资源失败。
+- N607当前两个现成环境均不能完成完整runner：`CVS-RFFI`的Python3.10/Torch2.1匹配模型，但NumPy2.2.5安装混杂；`SDG-SEI`的NumPy1.24健康，但Torch1.11无法读取模型。用户Conda包缓存只有NumPy2.2.5的Python3.10包，没有可只读覆盖的NumPy1.x包。
+- v1、retry1、retry2、retry3均在第一fold结果之前失败，不计为已完成探索轮，不得产生任何性能结论。GPU均已释放，本地SSH/TCP22连接均已退出。
+- 不再进行第四次盲目远端重启。下一技术动作应优先使用本地`ssr-gpu`与已镜像的同一开发cell验证D36算法；若必须恢复N607同runner，则需要用户授权创建或修复兼容的Python3.10+Torch2.1+NumPy1.x环境，属于远端包安装/环境变更。
