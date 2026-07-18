@@ -18,14 +18,14 @@
 |D41-08|K1无伪物理样本；覆盖K1/5/10/20和new2/5/10/20|core/tests|verified|K与new-count参数化资源/步数测试通过|
 |D41-09|对注册类标签排列等变；无class ID/old-new query角色分支|core/tests|verified|实际registry反序重标、score列逆置与prediction handle映射通过|
 |D41-10|query只用full view，逐样本面对全部注册类argmax|score/predict|verified|row split/order不变与query full-only审计通过|
-|D41-11|保存actual old→new/new→old、new-new及两类最低margin/floor|Runner/geometry|implemented|D41、D40与exact B3同fold实际score口径已接线；真实artifact待完成|
-|D41-12|六候选×3场景×5fold=90行且held physical身份matched|candidate lock/Runner|implemented|候选锁、90行cardinality和跨候选physical SHA反例通过；真实artifact待完成|
+|D41-11|保存actual old→new/new→old、new-new及两类最低margin/floor|Runner/geometry|verified|真实90行保存D41 142/2/32、B3 33/31/25及完整pairwise margin|
+|D41-12|六候选×3场景×5fold=90行且held physical身份matched|candidate lock/Runner|verified|receipt90行；6候选每个15行，跨候选held physical SHA matched|
 |D41-13|只有D41 int8可晋级，strict逐row/逐类/聚合门全部fail closed|selector|verified|12个独立门正例与逐门反例通过|
 |D41-14|D41 int8/FP32共享参考方向，仅部署精度不同|matched ablation|verified|before/final matched argmax与trace一致性测试通过|
 |D41-15|30/30步、C=10、current peak params=3456、state≤256KB，计入四view＋JS MAC|resource|verified|current/max规模、state cap与MAC反例通过|
-|D41-16|本地验证、独立审查、Git提交、真实artifact和报告闭环|repo/report|implemented|187项串行验证通过；独立P1已修并由64项Runner回归复核；Git提交与真实artifact待完成|
+|D41-16|本地验证、独立审查、Git提交、真实artifact和报告闭环|repo/report|verified|提交91894484/7fb47ad4；187项验证、独立复核、90行artifact和六项SHA闭合|
 |D41-17|只有完整独立确认矩阵全门达标才能完成goal|confirmation report|deferred|D41 development不等于目标完成|
 
-当前计数：`pending=0`、`deferred=1`、`implemented=3`、`verified=13`、`rejected=0`、`blocked=0`。
+当前计数：`pending=0`、`deferred=1`、`implemented=0`、`verified=16`、`rejected=0`、`blocked=0`。
 
 最高风险是BEC仅降低support数学view差异却不改善outer-held物理样本；第二风险是Stage2-C联合metric更新重新引入old遗忘。两者必须由真实before/after old逐类、seen-new逐类、实际双向侵入和同rowH/floor否证，不能用support loss或JS下降替代。

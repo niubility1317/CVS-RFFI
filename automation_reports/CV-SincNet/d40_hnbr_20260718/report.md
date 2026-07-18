@@ -157,12 +157,14 @@ python E:\type10-7\code\snapshots\d40wt\code\scripts\run_d25_support_only_concat
 |---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|---|
 |`Z0_SUPPORT_ONLY`|identity回退|71.11%|48.33%|52.67%|48.97%|22.78pp|0.00%|64/180|未记录|未记录|sealed|最终回退|
 |`D40-PROTOnet-CDA-ZID160`|ProtoNet CDA|71.11%|48.33%|52.67%|48.97%|22.78pp|0.00%|64/180|未记录|未记录|sealed|matched基线|
-|`B3_SINGLE_IQ_DIAG_FFTRF`|exact strong B3|87.78%|75.56%|72.67%|73.35%|12.22pp|23.33%|33/180|25/150|22/150|sealed|最强合法比较器|
+|`B3_SINGLE_IQ_DIAG_FFTRF`|exact strong B3|87.78%|75.56%|72.67%|73.35%|12.22pp|23.33%|33/180|25/150|31/150|sealed|最强合法比较器；D41复核修正actual new→old统计|
 |`D40-D38-B-RESIDUAL-INT8-NEGATIVE`|D38-B结构负对照|87.22%|0.56%|78.67%|0.99%|86.67pp|0.00%|179/180|32/150|0/150|sealed|诊断性负|
 |`D40-HNBR-INT8`|D40正式候选|85.56%|85.00%|15.33%|25.16%|0.56pp|0.00%|2/180|33/150|127/150|sealed|不晋级|
 |`D40-HNBR-FP32-MATCHED`|精度ablation|85.56%|85.00%|15.33%|25.16%|0.56pp|0.00%|2/180|33/150|127/150|sealed|与int8同预测，不可晋级|
 
 D40确实修复了D38-B的旧类灾难：after-old从0.56%升至85.00%，旧→新侵入从179/180降至2/180，遗忘从86.67pp降至0.56pp。但它把错误方向完全翻转：150个新类held中127个由旧类取得最高分，seen-new仅15.33%，5个新类中2类为0%。因此它不是联合成功，而是从“new压倒old”切换成“old压倒new”。
+
+> D41复核勘误：D40原始`training_log.jsonl`的150条exact B3`pairwise_support_diagnostics.new_old_margin`逐条重算为`31/150`，最低margin为`-4.7121`。此前表中的`22/150`是旧解析误记；D40-HNBR的`127/150`不变。D41预注册的`<22/150`硬门保持冻结，因而比修正后的B3比较器更严格。
 
 ### 8.2逐场景strong B3与D40同row结果
 
