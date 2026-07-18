@@ -70,3 +70,39 @@ D50必须同时满足：
 D50通过D46的`reliability_strategy`入口实现，只替换support证据聚合；B20、两个LDA head、RMS、canonical affine融合、int8/FP16编译和runner均未改动。运行后verifier将从每个artifact的逐fold CE重算mean、median、D45锚点、中心偏差、post-log-odds和权重，再把audit临时还原为D46标准权重调用既有D46完整verifier，从而同时验证D50新增公式与D46分区/融合/资源闭包。D50 source closure绑定D47/D46/D45/D44/D43全部helper SHA及D50探针本身。
 
 本地验证：D50定向`8 passed`；D46＋D47＋D50联合`45 passed`；D42–D50全链`152 passed`；`py_compile`通过，所有pytest退出码为0。代码复核未发现P0/P1：K1返回D45等权fallback；K2只允许等价head；rank置换不变、class置换等变；`mean(post_log_odds)=z0`在`1e-12`内fail-close；非有限/分区/CE闭合均拒绝。当前仍未读取outer结果。
+
+## 9.执行锁与exact command
+
+- 实现提交：`003f0babd6791302bbcdcaf03a15e8cedc439c35`；clean detached worktree为`E:\type10-7\code\snapshots\d50wt`，`git status -sb`仅`## HEAD (no branch)`。
+- clean worktree探针SHA256：`65e4b31b3add10463744faf6dab9b2e74ef9a2183aba19988cba021dbd5acf53`。主工作树文本因Windows行尾转换具有不同工作树字节SHA，运行只使用上述clean artifact。
+- runtime继续只读使用历史锁定`E:\type10-7\code\snapshots\d41wt`；D50 bootstrap对12个runtime模块的内置source closure通过。首次预检在closure通过后因打印了错误诊断属性名退出，未创建输出、未执行fold；改用正确只读字段重跑通过。
+- before/after seal、before/after envelope、component manifest、class binding实际SHA依次匹配`53ace286…d9f75`、`c70aedf3…b50ff`、`31a2ad99…ceb0e`、`a2483d6e…be76`、`15b5e144…629c`、`bb89a1db…c901f`。
+- 输出`E:\type10-7\automation_reports\CV-SincNet\d50_centered_median_evidence_fusion_probe_20260719\centered_median_evidence_fusion`启动前不存在。本地串行`device=auto`；不访问N607、不生成125。
+
+```powershell
+& 'C:\Users\lh594\.conda\envs\ssr-gpu\python.exe' `
+  'E:\type10-7\code\snapshots\d50wt\code\scripts\probe_d50_centered_median_evidence_fusion.py' `
+  --d50-arm centered_median_evidence_fusion `
+  --runtime-root 'E:\type10-7\code\snapshots\d41wt' `
+  --probe-root 'E:\type10-7\code\snapshots\d50wt' `
+  --before-root 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\phase2_capsule_k10_new5\predictor\before\enrollment_only' `
+  --before-seal 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\phase2_capsule_k10_new5\seals\before_enrollment.seal.json' `
+  --before-seal-sha256 53ace2863c9da6c2f6cc855d602c99f581df6de3d30a9a3ecb89eb6b6f0d9f75 `
+  --before-formal-policy 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\formal_execution_policy.json' `
+  --before-formal-policy-authorization 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\runtime_authorization_k10_new5\before_formal_policy_authorization.v2.json' `
+  --before-signed-policy-authorization-envelope 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\runtime_authorization_k10_new5\before_signed_policy_authorization_envelope.v2.json' `
+  --before-signed-policy-authorization-envelope-sha256 31a2ad9918f061b25d5a7ed0cc135df70ae02460c094b2f396bf314817bceb0e `
+  --after-root 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\phase2_capsule_k10_new5\predictor\after\enrollment_only' `
+  --after-seal 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\phase2_capsule_k10_new5\seals\after_enrollment.seal.json' `
+  --after-seal-sha256 c70aedf3a8f059e756806201758c1933a2f3e1ba4df415e69a1c776b1a2b50ff `
+  --after-formal-policy 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\formal_execution_policy.json' `
+  --after-formal-policy-authorization 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\runtime_authorization_k10_new5\after_formal_policy_authorization.v2.json' `
+  --after-signed-policy-authorization-envelope 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\runtime_authorization_k10_new5\after_signed_policy_authorization_envelope.v2.json' `
+  --after-signed-policy-authorization-envelope-sha256 a2483d6e9c9c362d89397029ff1e43f48358be3bdb3a05d717ee112b70a0be76 `
+  --component-dir 'E:\type10-7\automation_reports\CV-SincNet\d22_int8_anchor_lifecycle_20260717\input\int8_component' `
+  --component-manifest-sha256 15b5e144f9af3989421d8e925c17758479c327be47e79222f6363dc63994629c `
+  --class-binding 'E:\type10-7\github_publish\CVS-RFFI-repo\analysis\d19_adv3b02_class_binding_20260717.json' `
+  --class-binding-sha256 bb89a1dbb831acb374fccfc596ae98b660b496b449bdca577dabb962121c901f `
+  --output 'E:\type10-7\automation_reports\CV-SincNet\d50_centered_median_evidence_fusion_probe_20260719\centered_median_evidence_fusion' `
+  --device auto --mode development_select_unverified_component --candidate-set d42_v1
+```
