@@ -27,11 +27,11 @@
 |D38-14|selector按scene×fold×class严格比较strong B3、identity/ProtoNet和FP32 ablation|selection|verified|逐row逐类matched门、B-int8唯一晋级与FP32 argmax反例测试|
 |D38-15|formal资源≤80k params、≤30epoch、≤50step、≤256KB|resource audit|verified|new2/5/10/20、K1/5/10/20及含registry完整状态字节测试|
 |D38-16|完整trace、selection/resource/geometry/support audit、receipt、stdout和哈希闭环|runner/report|pending|真实support screen后90/90行全量解析|
-|D38-17|本地ssr-gpu窄验证、Git提交后才允许N607 sync|repo/report|pending|本地33/33通过并完成独立审查；Git提交与N607 sync待执行|
+|D38-17|本地ssr-gpu窄验证、Git提交后才允许N607 sync|repo/report|verified|本地33/33通过、独立审查无P0–P2；实现提交`c3a55b8b`|
 |D38-18|只有完整独立确认矩阵全门达标才能完成goal|confirmation report|deferred|D38 development设计不等于目标完成|
 
 ## 当前计数与高风险
 
-`verified=11`、`implemented=4`、`pending=2`、`deferred=1`、`rejected=0`、`blocked=0`。
+`verified=13`、`implemented=3`、`pending=1`、`deferred=1`、`rejected=0`、`blocked=0`。
 
 最高风险是20步full-batch Stage2-B无法复制exact legacy strong B3的旧域优势；第二风险是CE10降低new-new错序但通过更激进的新权重扩大旧→新侵入。任一风险在matched outer-held门出现即停止D38，不用query或额外参数扫描补救。
