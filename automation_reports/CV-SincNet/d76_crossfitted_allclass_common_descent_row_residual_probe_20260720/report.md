@@ -7,7 +7,7 @@
 |实验ID|`d76_crossfitted_allclass_common_descent_row_residual_probe_20260720`|
 |候选|`crossfitted_allclass_common_descent_row_residual`|
 |operator|Codex `/root`|
-|状态|`PREREGISTERED_NOT_RUN`|
+|状态|`DEFERRED_BY_USER_DIRECTION_BEFORE_IMPLEMENTATION`|
 |目标|将全注册类OOF CE共同下降方向直接编译到D62最终类行，同时改善旧类适应、新类注册与通用floor|
 |比较目标|D62：`B/A/N/H/F/J=92.78/82.22/84.67/82.62/10.56/26.67%`|
 
@@ -25,3 +25,7 @@
 ## 3.版本、验证与运行占位
 
 `E:\type10-7`不是Git仓库；设计、代码、测试和完整报告进入`E:\type10-7\github_publish\CVS-RFFI-repo`。实现后补录commit、clean worktree、source SHA、完整命令、PID/GPU/log/output、105行闭包、共同下降审计、详细性能、资源、artifact和最终判定。
+
+## 4.路线变更
+
+2026-07-20用户要求优先研发更高效、创新的地面压缩原型域适应。D76尚未实现、未运行、无性能结果；保留为D77的target-only matched control，不得写成完成实验。

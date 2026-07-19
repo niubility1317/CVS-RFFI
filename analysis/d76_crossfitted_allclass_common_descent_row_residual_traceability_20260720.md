@@ -4,14 +4,18 @@
 
 |ID|来源章节|可验收要求|目标文件|状态|验证|备注|
 |---|---|---|---|---|---|---|
-|D76-R1|数学机制1—3|按物理rank执行8折K−1 equal-prior automatic-shrinkage LDA，并从88个held support形成11个类CE梯度|`code/cvsrffi/stage2_d76_allclass_common_descent.py`|pending|待单元测试与probe审计|不得读取query或类角色|
-|D76-R2|minimum-norm组合|以20次固定Frank-Wolfe、解析线搜索和并列vertex平均求class-simplex最小范数组合|`code/cvsrffi/stage2_d76_allclass_common_descent.py`|pending|待解析性质与置换等变测试|不得扫描迭代数或类权重|
-|D76-R3|解析步长与trust cap|按逐类共同下降内积及Lipschitz上界求步长，并施加类无关Frobenius cap|`code/cvsrffi/stage2_d76_allclass_common_descent.py`|pending|待逐类OOF CE非增测试|仅退化minimum-norm点允许identity fallback|
-|D76-R4|final-row集成|只在D62 final rows上编译`W'=W_D62+ΔW`，intercept不变，更新后不refit|`code/scripts/probe_d76_crossfitted_allclass_common_descent.py`|pending|待D62同行集成测试|before、D42 metric与其余链保持匹配|
-|D76-R5|量化与协议闭包|target-old/new正式int8；query独立全类argmax；clean/source/query truth/role/quota/ground访问均为0|probe、测试与run artifact|pending|待协议审计与INT8/FP32审计|复用D18 `VALIDATED_ONCE/p2_min_v1`|
-|D76-R6|开发单元|运行receiver`20-1`、seed`713101`、K10/new5、3场景×5fold、7个D42同行候选|运行脚本与7个artifact|pending|待105/105闭包|actual outer-fit K8|
-|D76-R7|完整性能与资源报告|同row报告总体、场景、11类、15fold、混淆、量化、MAC、状态、显存、日志和artifact|`automation_reports/CV-SincNet/d76_crossfitted_allclass_common_descent_row_residual_probe_20260720/report.md`|pending|待完整日志解析|失败亦必须详细报告|
-|D76-R8|晋级门|相对D62，`A/N/H/min-A/min-N`不退化、`F`不升且至少一项严格改善，混淆无交换伤害|summarizer与报告|pending|待同row差值判定|失败关闭D76，不开第二seed或125|
+|D76-R1|数学机制1—3|按物理rank执行8折K−1 equal-prior automatic-shrinkage LDA，并从88个held support形成11个类CE梯度|`code/cvsrffi/stage2_d76_allclass_common_descent.py`|deferred|未实施|用户要求优先研发地面原型域适应；D76保留为target-only matched control设计|
+|D76-R2|minimum-norm组合|以20次固定Frank-Wolfe、解析线搜索和并列vertex平均求class-simplex最小范数组合|`code/cvsrffi/stage2_d76_allclass_common_descent.py`|deferred|未实施|机制作为D77的target-only matched ablation保留|
+|D76-R3|解析步长与trust cap|按逐类共同下降内积及Lipschitz上界求步长，并施加类无关Frobenius cap|`code/cvsrffi/stage2_d76_allclass_common_descent.py`|deferred|未实施|D77继承解析安全步长并增加地面度量|
+|D76-R4|final-row集成|只在D62 final rows上编译`W'=W_D62+ΔW`，intercept不变，更新后不refit|`code/scripts/probe_d76_crossfitted_allclass_common_descent.py`|deferred|未实施|由D77地面预条件版本优先验证|
+|D76-R5|量化与协议闭包|target-old/new正式int8；query独立全类argmax；clean/source/query truth/role/quota/ground访问均为0|probe、测试与run artifact|deferred|未实施|复用D18 `VALIDATED_ONCE/p2_min_v1`的控制定义|
+|D76-R6|开发单元|运行receiver`20-1`、seed`713101`、K10/new5、3场景×5fold、7个D42同行候选|运行脚本与7个artifact|deferred|未运行|D77使用相同单元保证matched比较|
+|D76-R7|完整性能与资源报告|同row报告总体、场景、11类、15fold、混淆、量化、MAC、状态、显存、日志和artifact|`automation_reports/CV-SincNet/d76_crossfitted_allclass_common_descent_row_residual_probe_20260720/report.md`|deferred|未运行|不得把预注册写成完成实验|
+|D76-R8|晋级门|相对D62，`A/N/H/min-A/min-N`不退化、`F`不升且至少一项严格改善，混淆无交换伤害|summarizer与报告|deferred|未运行|D76不是完成版本|
+
+## 2026-07-20路线变更
+
+用户明确要求研发更创新、高效的地面原型域适应。D76在实现前暂停，保留为D77的target-only matched control设计；不删除预注册，不产生性能声明。
 
 ## 要修复的失败
 
