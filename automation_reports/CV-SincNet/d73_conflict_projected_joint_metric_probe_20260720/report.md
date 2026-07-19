@@ -138,3 +138,5 @@ R2于00:50:32完成105/105行、7个artifact和metadata，stderr 0B，probe闭�
 R3只修复审计：对base/updated final log-diagonal分别写SHA并要求不同，更新final hash和Stage2-C非冻结标志，补计metric MAC并在sanitize中对称回滚，verifier同时硬检查hash、标志与资源等式。core、metric delta、D62 refit、int8编译和预测路径均不变；使用新clean worktree与`conflict_projected_joint_metric_retry3`。
 
 R3验证与运行锁：专项9/9、主工作树D42–D73完整链377/377均通过（82.6秒）；clean worktree`E:\type10-7\code\snapshots\d73r3wt`锁定commit`7c02518e3365f102c1bde82c15473fef6f5bebbe`，专项9/9及core/probe/summarizer `py_compile`通过且worktree clean。执行SHA：probe=`8367f7fba9617067e56ed69157828ed7091a0b04f0c51f8905ec7056fd832802`、core=`bdb104ceb82c9f069499dd920b88599a455a65defdd3f622184bbe8dfbe2bd63`、D62 helper=`38ae1114a06d135bca806f470417cd28a634fec0da449888665c6843615d4a20`、summarizer=`1cf357df1a15944a921fc6f7c9d68787fa67300007ed24c7ef2a6d8205551e3e`。01:01:03检查retry3目录不存在；GPU0显存`954/16303MiB`、利用率0%。除`probe-root/script=d73r3wt`和新输出目录外，命令参数与第10节一致。
+
+R3于2026-07-20 01:02:00启动，PID`1332`；只读命令行检查与锁定参数一致，stderr 0B，转为只读监控。
