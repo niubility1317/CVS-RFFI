@@ -46,3 +46,33 @@
 - `ssr-gpu`专项7/7通过，core/probe `py_compile`通过。
 - D42–D75相邻完整链43文件、392项全部通过，用时82.2秒；显式仓内basetemp，无数据重验。
 - 实现不扫描margin阈值、rank或强度；门限仅为机器舍入界。每个target row预期8次LOO LDA、8次LOO方向、88个held support margin，optimizer/epoch仍为20/20，query额外MAC/state0。
+
+## 7.clean验证与运行锁
+
+- 实现commit=`e2fd8cf8580f3072529460295fb187b7b7a3d0dc`；clean worktree=`E:\type10-7\code\snapshots\d75wt`，detached HEAD且clean。
+- clean D42–D75相邻完整链43文件、392项全部通过，用时82.5秒；core/probe `py_compile`通过。
+- clean执行SHA：D75 core=`a41456c85437125203a54d069d90dcbebc6462df4519e77b5f4cbbed6fdbc99a`、D75 probe=`6e14688f1049b67c3da57b80d5a9636ca8e27263bc9cc508b43a69dc3147af51`、D74 helper=`427be77328700c524173689567423b861bd18dd57fb8d96d7a4fcd5c6d4e363d`、D62 helper=`38ae1114a06d135bca806f470417cd28a634fec0da449888665c6843615d4a20`。
+- 启动前输出目录不存在，无D73/D74/D75 Python任务；GPU0 RTX5070Ti显存`1097/16303MiB`、利用率0%。本轮本地执行，不访问N607。
+- 预期闭包：105行、30个target row、30次top fit、1080次D62 component execution、每个target row 8次LOO LDA和8次LOO方向；ground/query-fit/clean/source/role/quota访问0。
+- 每个target row预期新增：LOO LDA MAC`249,495,552`、LOO方向MAC上界`111,817,728`、full方向＋编译`18,190,656`；相对D62总新增`379,503,936`，总适配MAC`25,270,727,906`，query/state增量0。
+
+```powershell
+& 'C:\Users\lh594\.conda\envs\ssr-gpu\python.exe' `
+  'E:\type10-7\code\snapshots\d75wt\code\scripts\probe_d75_crossfitted_margin_safe_nuisance_projection.py' `
+  --d75-arm crossfitted_margin_safe_nuisance_projection `
+  --runtime-root 'E:\type10-7\code\snapshots\d41wt' --probe-root 'E:\type10-7\code\snapshots\d75wt' `
+  --before-root 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\phase2_capsule_k10_new5\predictor\before\enrollment_only' `
+  --before-seal 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\phase2_capsule_k10_new5\seals\before_enrollment.seal.json' --before-seal-sha256 53ace2863c9da6c2f6cc855d602c99f581df6de3d30a9a3ecb89eb6b6f0d9f75 `
+  --before-formal-policy 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\formal_execution_policy.json' `
+  --before-formal-policy-authorization 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\runtime_authorization_k10_new5\before_formal_policy_authorization.v2.json' `
+  --before-signed-policy-authorization-envelope 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\runtime_authorization_k10_new5\before_signed_policy_authorization_envelope.v2.json' --before-signed-policy-authorization-envelope-sha256 31a2ad9918f061b25d5a7ed0cc135df70ae02460c094b2f396bf314817bceb0e `
+  --after-root 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\phase2_capsule_k10_new5\predictor\after\enrollment_only' `
+  --after-seal 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\phase2_capsule_k10_new5\seals\after_enrollment.seal.json' --after-seal-sha256 c70aedf3a8f059e756806201758c1933a2f3e1ba4df415e69a1c776b1a2b50ff `
+  --after-formal-policy 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\formal_execution_policy.json' `
+  --after-formal-policy-authorization 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\runtime_authorization_k10_new5\after_formal_policy_authorization.v2.json' `
+  --after-signed-policy-authorization-envelope 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\runtime_authorization_k10_new5\after_signed_policy_authorization_envelope.v2.json' --after-signed-policy-authorization-envelope-sha256 a2483d6e9c9c362d89397029ff1e43f48358be3bdb3a05d717ee112b70a0be76 `
+  --component-dir 'E:\type10-7\automation_reports\CV-SincNet\d22_int8_anchor_lifecycle_20260717\input\int8_component' --component-manifest-sha256 15b5e144f9af3989421d8e925c17758479c327be47e79222f6363dc63994629c `
+  --class-binding 'E:\type10-7\github_publish\CVS-RFFI-repo\analysis\d19_adv3b02_class_binding_20260717.json' --class-binding-sha256 bb89a1dbb831acb374fccfc596ae98b660b496b449bdca577dabb962121c901f `
+  --output 'E:\type10-7\automation_reports\CV-SincNet\d75_crossfitted_margin_safe_nuisance_projection_probe_20260720\crossfitted_margin_safe_nuisance_projection' `
+  --device auto --mode development_select_unverified_component --candidate-set d42_v1
+```
