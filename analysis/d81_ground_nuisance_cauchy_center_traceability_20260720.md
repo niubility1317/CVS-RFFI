@@ -11,12 +11,12 @@ D81只从当前84-cell int8地面类中心构造逐类去中心的跨域质心�
 |ID|要求|目标文件|状态|验证/停止条件|
 |---|---|---|---|---|
 |D81-R1|真实84-cell组件只读，入口/出口hash一致|D81 probe/D66 loader|planned|完整run前后SHA一致|
-|D81-R2|只用逐类去中心ground漂移谱，不用类别锚点/radius/count|D81 core/probe|planned|置换不变、字段审计、真实84-cell smoke|
-|D81-R3|rank由effective rank唯一导出，无rank/scale/温度扫描|D81 core/tests|planned|`rank=ceil((sum lambda)^2/sum lambda^2)`|
-|D81-R4|每类一次Cauchy自标定权重，旧/新类同式|D81 core/tests|planned|类置换等变；无class ID/role/scene分支|
-|D81-R5|只平移z160类中心，严格保留所有类内残差/协方差|D81 core/tests|planned|FP64残差和协方差不变；FFT/RF bitwise不变|
-|D81-R6|每个outer/held fit仅用当次可见support重算|D81 probe/tests|planned|D62完整调用闭包；无held/query泄漏|
-|D81-R7|K1/K2严格identity、0新增step/parameter/query MAC|core/resource audit|planned|专项单测和完整资源审计|
+|D81-R2|只用逐类去中心ground漂移谱，不用类别锚点/radius/count|D81 core/probe|verified|真实84-cell smoke；84 cell、radius/count=false|
+|D81-R3|rank由effective rank唯一导出，无rank/scale/温度扫描|D81 core/tests|verified|真实effective rank13.6446→rank14；专项测试|
+|D81-R4|每类一次Cauchy自标定权重，旧/新类同式|D81 core/tests|verified|类置换等变；无class ID/role/scene分支|
+|D81-R5|只平移z160类中心，严格保留所有类内残差/协方差|D81 core/tests|verified|FP64残差误差≤2e−12；FFT/RF bitwise不变|
+|D81-R6|每个outer/held fit仅用当次可见support重算|D81 probe/tests|verified|合成D62完整full/block OOF闭包；无held/query输入|
+|D81-R7|K1/K2严格identity、0新增step/parameter/query MAC|core/resource audit|verified|K1/K2 bitwise identity；资源公式与专项测试|
 |D81-R8|完整开发实验20-1/new5/K10/713101、3场景×5fold、105行|run/summarizer|planned|逐类/场景/混淆/INT8-FP32/资源全量解析|
 |D81-R9|相对D62严格联合门|summarizer/report|planned|总体及每场景无退化、三类混淆不增、至少一项严格改善|
 |D81-R10|formal ground bundle需联合封存及外部authority签名|loader/report|blocked|当前只能development diagnostic|

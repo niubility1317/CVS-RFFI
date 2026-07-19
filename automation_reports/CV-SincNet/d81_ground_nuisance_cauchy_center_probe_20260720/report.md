@@ -7,7 +7,7 @@
 |实验ID|`d81_ground_nuisance_cauchy_center_probe_20260720`|
 |候选|`ground_nuisance_cauchy_center`|
 |operator|Codex`/root`|
-|状态|`PREREGISTERED_NOT_IMPLEMENTED`|
+|状态|`IMPLEMENTED_TESTED_NOT_RUN`|
 |目标|高效利用全部地面压缩原型估计support样本的跨域扰动可靠性，同时让query判别几何完全由target support决定|
 |开发单元|receiver`20-1`、new5、seed`713101`、K10(actual K8)、3场景×5fold|
 |matched baseline|D62：`B/A/N/H/F/J=92.78/82.22/84.67/82.62/10.56/26.67%`|
@@ -57,3 +57,49 @@ D77-D80已经排除了把ground质心、低秩投影或ground协方差直接放�
 ## 6.版本状态
 
 根目录`E:\type10-7`非Git仓库。实现、trace和本报告先进入独立Git worktree`E:\type10-7\code\snapshots\d81wt`，基于主发布分支提交`4dcf066b`；完成本地验证后再以精确commit闭环回主发布分支。服务器暂不使用。
+
+## 7.实现与验证
+
+|文件|用途|SHA256|
+|---|---|---|
+|`code/cvsrffi/stage2_d81_ground_nuisance_cauchy_center.py`|地面扰动谱、固定rank、support稳健中心平移|`44111f8d7ecd0ffcfbd887c09468a167e4e1134bad3c2798bd7f0f5f89c3dc7a`|
+|`code/scripts/probe_d81_ground_nuisance_cauchy_center.py`|D62全部full/block、outer/held闭包注入、资源和hash审计|`85baac449d2cd1c5b21bff63ba9b01fe95bb2025fcdfa8ee3127ae41a5e99e82`|
+
+- D81专项与合成D62全栈：11/11通过。
+- D62/D80/D81相邻链：30/30通过。
+- 真实ground smoke：84 cells，effective rank=`13.6445898983`，retained rank=`14`，保留信号trace比例=`0.7975861768`，basis SHA=`f55174f1e1479eed4bd62b927ef7b4e952f14fa03cadc0e70b315e183426ed7f`，radius/count均false。
+- 合成D62链确认每次fit的full、block及其inner-LOO都经过独立center transform；K1/K2 bitwise identity，query extra MAC=0。
+
+## 8.锁定运行命令
+
+```powershell
+& 'C:\Users\lh594\.conda\envs\ssr-gpu\python.exe' `
+  'E:\type10-7\code\snapshots\d81wt\code\scripts\probe_d81_ground_nuisance_cauchy_center.py' `
+  --d81-arm ground_nuisance_cauchy_center `
+  --ground-component-dir 'E:\type10-7\automation_reports\CV-SincNet\d22_int8_anchor_lifecycle_20260717\input\int8_component' `
+  --ground-manifest-sha256 15b5e144f9af3989421d8e925c17758479c327be47e79222f6363dc63994629c `
+  --runtime-root 'E:\type10-7\code\snapshots\d41wt' `
+  --probe-root 'E:\type10-7\code\snapshots\d81wt' `
+  --before-root 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\phase2_capsule_k10_new5\predictor\before\enrollment_only' `
+  --before-seal 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\phase2_capsule_k10_new5\seals\before_enrollment.seal.json' `
+  --before-seal-sha256 53ace2863c9da6c2f6cc855d602c99f581df6de3d30a9a3ecb89eb6b6f0d9f75 `
+  --before-formal-policy 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\formal_execution_policy.json' `
+  --before-formal-policy-authorization 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\runtime_authorization_k10_new5\before_formal_policy_authorization.v2.json' `
+  --before-signed-policy-authorization-envelope 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\runtime_authorization_k10_new5\before_signed_policy_authorization_envelope.v2.json' `
+  --before-signed-policy-authorization-envelope-sha256 31a2ad9918f061b25d5a7ed0cc135df70ae02460c094b2f396bf314817bceb0e `
+  --after-root 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\phase2_capsule_k10_new5\predictor\after\enrollment_only' `
+  --after-seal 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\phase2_capsule_k10_new5\seals\after_enrollment.seal.json' `
+  --after-seal-sha256 c70aedf3a8f059e756806201758c1933a2f3e1ba4df415e69a1c776b1a2b50ff `
+  --after-formal-policy 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\formal_execution_policy.json' `
+  --after-formal-policy-authorization 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\runtime_authorization_k10_new5\after_formal_policy_authorization.v2.json' `
+  --after-signed-policy-authorization-envelope 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\runtime_authorization_k10_new5\after_signed_policy_authorization_envelope.v2.json' `
+  --after-signed-policy-authorization-envelope-sha256 a2483d6e9c9c362d89397029ff1e43f48358be3bdb3a05d717ee112b70a0be76 `
+  --component-dir 'E:\type10-7\automation_reports\CV-SincNet\d22_int8_anchor_lifecycle_20260717\input\int8_component' `
+  --component-manifest-sha256 15b5e144f9af3989421d8e925c17758479c327be47e79222f6363dc63994629c `
+  --class-binding 'E:\type10-7\github_publish\CVS-RFFI-repo\analysis\d19_adv3b02_class_binding_20260717.json' `
+  --class-binding-sha256 bb89a1dbb831acb374fccfc596ae98b660b496b449bdca577dabb962121c901f `
+  --output 'E:\type10-7\automation_reports\CV-SincNet\d81_ground_nuisance_cauchy_center_probe_20260720\ground_nuisance_cauchy_center' `
+  --device auto --mode development_select_unverified_component --candidate-set d42_v1
+```
+
+预期105行、30个target row、1,080个D62 component fit、2,160个support-center transform。先本地运行；不使用N607。
