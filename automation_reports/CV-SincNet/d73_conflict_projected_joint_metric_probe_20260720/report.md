@@ -122,3 +122,5 @@ D42–D73相邻完整链覆盖40个文件、377项测试，全部通过，退出
 - 原失败目录`conflict_projected_joint_metric`和launcher日志保留，不覆盖。完成全链、提交与新clean worktree后，只允许使用新目录`conflict_projected_joint_metric_retry1`执行一次R1。
 
 R1验证与运行锁：主工作树40文件、377项全部通过，用时82.0秒；clean worktree`E:\type10-7\code\snapshots\d73r1wt`锁定commit`e319aa7e4c7b016e4294d361dd9117ca9914e72f`，同一377项全部通过，用时82.8秒，`py_compile`通过且worktree clean。R1执行SHA：probe=`b7d0584298285b4a05fb3d0d0dc733e210ab78ba1af4486858075a0f441e2180`、core=`bdb104ceb82c9f069499dd920b88599a455a65defdd3f622184bbe8dfbe2bd63`、D62 helper=`38ae1114a06d135bca806f470417cd28a634fec0da449888665c6843615d4a20`。00:37:42检查新输出目录不存在；GPU0显存`1106/16303MiB`、利用率0%。R1使用与第10节完全相同的数据/策略参数，只把`probe-root/script`改为`d73r1wt`、输出改为`conflict_projected_joint_metric_retry1`。
+
+R1于2026-07-20 00:38:53启动，PID`25576`。只读检查确认命令行、clean worktree、新输出目录和锁定参数一致，stderr为0B；转入只读离散监控，不再次启动。
