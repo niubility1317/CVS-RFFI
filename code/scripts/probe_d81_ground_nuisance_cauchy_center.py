@@ -36,6 +36,7 @@ core = _load("d81_ground_nuisance_center_core", CORE_PATH)
 d66, d62, d43 = d80.d66, d80.d62, d80.d43
 
 ARM = "ground_nuisance_cauchy_center"
+CONFIRMATION_SEEDS = (713102, 713103, 713104, 713105, 713106)
 STRUCTURE = "d62_with_ground_spectrum_support_only_class_center_translation"
 FORMULA = (
     "dequantize all immutable 84 ground domain-class centers; class-center the "
@@ -53,6 +54,46 @@ if ARM not in d43.ARMS:
 
 class D81ProbeError(RuntimeError):
     """Raised when D81 integration or evidence drifts."""
+
+
+def _install_confirmation_cell_guard(
+    runner_module: Any, confirmation_seed: int | None
+) -> Callable[..., Any] | None:
+    """Allow only preregistered D18 confirmation seeds on the locked D42 cell."""
+
+    if confirmation_seed is None:
+        return None
+    if confirmation_seed not in CONFIRMATION_SEEDS:
+        raise D81ProbeError(
+            f"D81 confirmation seed is not preregistered: {confirmation_seed}"
+        )
+    original = runner_module._require_d42_development_cell
+
+    def require_confirmation_cell(
+        before_manifest: dict[str, Any], after_manifest: dict[str, Any]
+    ) -> None:
+        old_classes = runner_module.legacy._registered_handles(before_manifest)
+        all_classes = runner_module.legacy._registered_handles(after_manifest)
+        if (
+            str(before_manifest.get("receiver"))
+            != runner_module.D42_DEVELOPMENT_RECEIVER
+            or str(after_manifest.get("receiver"))
+            != runner_module.D42_DEVELOPMENT_RECEIVER
+            or int(before_manifest.get("seed", -1)) != confirmation_seed
+            or int(after_manifest.get("seed", -1)) != confirmation_seed
+            or int(before_manifest.get("k_shot", -1)) != 10
+            or int(after_manifest.get("k_shot", -1)) != 10
+            or all_classes[: len(old_classes)] != old_classes
+            or len(all_classes) - len(old_classes)
+            != runner_module.D42_DEVELOPMENT_NEW_CLASS_COUNT
+        ):
+            raise runner_module.D25RunnerError(
+                "D81 confirmation cell must be receiver 20-1, "
+                f"seed {confirmation_seed}, K10, new5"
+            )
+
+    runner_module._require_d42_development_cell = require_confirmation_cell
+    return original
 
 
 def _sha256_bytes(value: bytes) -> str:
@@ -459,6 +500,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--ground-manifest-sha256", required=True)
     parser.add_argument("--runtime-root", required=True, type=Path)
     parser.add_argument("--probe-root", required=True, type=Path)
+    parser.add_argument("--d81-confirmation-seed", type=int)
     known, runner_arguments = parser.parse_known_args(argv)
     d43._require_locked_runner_arguments(runner_arguments)
     output = d43._runner_output(runner_arguments)
@@ -488,8 +530,9 @@ def main(argv: list[str] | None = None) -> int:
     previous_sys_path, previous_argv = list(sys.path), sys.argv
     d42 = package = None
     original_path: tuple[str, ...] = ()
-    original_fit = original_macs = original_top = None
+    original_fit = original_macs = original_top = original_cell_guard = None
     runner_name, exit_code = "d81_locked_d42_runner", 1
+    runner_module = None
     call_records: list[dict[str, Any]] = []
     transform_records: list[dict[str, Any]] = []
     try:
@@ -511,6 +554,9 @@ def main(argv: list[str] | None = None) -> int:
         runner_module = importlib.util.module_from_spec(runner_spec)
         sys.modules[runner_spec.name] = runner_module
         runner_spec.loader.exec_module(runner_module)
+        original_cell_guard = _install_confirmation_cell_guard(
+            runner_module, known.d81_confirmation_seed
+        )
         _install_runner_resource_accounting(runner_module)
         d43._install_runner_probe_guards(
             runner_module,
@@ -528,6 +574,8 @@ def main(argv: list[str] | None = None) -> int:
             d42._lda_fit_macs = original_macs
         if d42 is not None and original_top is not None:
             d42.fit_d42_unified_shrinkage_lda = original_top
+        if runner_module is not None and original_cell_guard is not None:
+            runner_module._require_d42_development_cell = original_cell_guard
         if package is not None:
             package.__path__[:] = list(original_path)
         sys.modules.pop(runner_name, None)
@@ -560,6 +608,12 @@ def main(argv: list[str] | None = None) -> int:
         "arm": known.d81_arm,
         "formal_candidate": False,
         "probe_forced_nonpromotable": True,
+        "evaluation_role": (
+            "independent_confirmation"
+            if known.d81_confirmation_seed is not None
+            else "development"
+        ),
+        "confirmation_seed": known.d81_confirmation_seed,
         "selected_only_full_k10_refit_allowed": False,
         "query_opened": False,
         "probe_script_sha256": script_sha,

@@ -57,3 +57,14 @@
 ## 完成结果
 
 待实验完成后补充：完整同row性能表、逐场景/逐类/混淆、量化一致性、训练日志统计、资源、异常、缺陷、最终判定与下一实验。
+
+## Capsule完成与确认入口修复
+
+- N607 unsigned authority成功：lock SHA256=`7d23365047a6ca0d6da885170b6c8fb0056586cf940619cf6450e1f893b12365`；build receipt SHA256=`ff29c1e3c98bea752a6e20e8a406df1610b2553421f430af5a279f489694c01d`。
+- 本地Ed25519 envelope SHA256=`09d97a8f70fcb40cc7540bc4941c9756ba961532fca366bf8d44a060aacf2327`；私钥未上传。
+- N607 authority commit=`59e6a6e0afcd7b519829e8e1a6ccc25ae43d07acd05815013542ee4cf6cc1c79`；exact-K row pair的同场景support/query不交、跨场景物理ID不交和before/after旧类复用审计均PASS。
+- before/after enrollment seal分别为`6c2961f6f29f74ec885a6279529c813c462209e8b2db4d8e743bcb9e5fb2754f`、`ee0050b28ed3f10f90c7a19677896cab02f1ceae50777884263643306d02c454`；runtime closure=`b0b7f2c2f87e66ecbeca99779688461e7161877271dd0195e0bcf2b95cb9606f`。
+- 第一次D81确认启动在读取query前fail-closed：继承执行器只允许开发seed713101，错误为`D42 preregistered development cell must be receiver 20-1, seed 713101, K10, new5`；退出码1、无输出目录、无性能数据。
+- 最小修复只在D81 probe增加显式`--d81-confirmation-seed`入口；允许集合固定为`713102..713106`，并同时核验before/after receiver、seed、K、旧类前缀和new5。未提供该参数时仍使用原开发单元锁，未修改D42通用执行器。
+- 修复后D81 probe SHA256=`f18dd80dd2f38312dde41e07120f43dc9cd2b78afa82b54c65fe08236e513817`；专项测试13/13 PASS，相邻D62/D80/D81链32/32 PASS，`py_compile`与`git diff --check`PASS。
+- 重跑命令在原锁定命令基础上只新增`--d81-confirmation-seed 713102`；其余capsule、ground、runtime和query边界不变。

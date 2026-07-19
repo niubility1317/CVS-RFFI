@@ -3,8 +3,10 @@ from __future__ import annotations
 import importlib.util
 from pathlib import Path
 import sys
+from types import SimpleNamespace
 
 import numpy as np
+import pytest
 
 from cvsrffi import stage2_d42_unified_shrinkage_lda as d42
 
@@ -62,6 +64,59 @@ def test_probe_does_not_claim_bundle_radius_or_count():
     source = PROBE.read_text(encoding="utf-8")
     assert '"ground_bundle_contains_sample_radius": False' in source
     assert '"ground_bundle_contains_sample_count": False' in source
+
+
+def _confirmation_runner_stub():
+    def registered_handles(manifest):
+        return tuple(manifest["registered"])
+
+    def original_guard(_before, _after):
+        raise AssertionError("development guard must be replaced")
+
+    return SimpleNamespace(
+        _require_d42_development_cell=original_guard,
+        legacy=SimpleNamespace(_registered_handles=registered_handles),
+        D42_DEVELOPMENT_RECEIVER="20-1",
+        D42_DEVELOPMENT_NEW_CLASS_COUNT=5,
+        D25RunnerError=RuntimeError,
+    )
+
+
+def _confirmation_cell(seed=713102):
+    before = {
+        "receiver": "20-1",
+        "seed": seed,
+        "k_shot": 10,
+        "registered": ("old0", "old1"),
+    }
+    after = {
+        **before,
+        "registered": (*before["registered"], "n0", "n1", "n2", "n3", "n4"),
+    }
+    return before, after
+
+
+def test_confirmation_guard_accepts_only_exact_preregistered_cell():
+    probe = _load_probe()
+    runner = _confirmation_runner_stub()
+    original = probe._install_confirmation_cell_guard(runner, 713102)
+    assert original is not None
+    runner._require_d42_development_cell(*_confirmation_cell())
+    for broken in (
+        _confirmation_cell(713103),
+        ({**_confirmation_cell()[0], "receiver": "3-19"}, _confirmation_cell()[1]),
+        (_confirmation_cell()[0], {**_confirmation_cell()[1], "k_shot": 5}),
+    ):
+        with pytest.raises(RuntimeError, match="D81 confirmation cell"):
+            runner._require_d42_development_cell(*broken)
+
+
+def test_confirmation_guard_rejects_unregistered_seed_before_install():
+    probe = _load_probe()
+    runner = _confirmation_runner_stub()
+    with pytest.raises(probe.D81ProbeError, match="not preregistered"):
+        probe._install_confirmation_cell_guard(runner, 713101)
+    assert probe._install_confirmation_cell_guard(runner, None) is None
 
 
 def test_translation_mac_inventory_matches_oof_structure():
