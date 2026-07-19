@@ -52,6 +52,9 @@ FILE_MEMBER_ALLOWLIST = {NPZ_NAME, MANIFEST_NAME, MANIFEST_SHA_NAME}
 CLASS_BINDING_SCHEMA = "phase1_tx_class_handle_binding_v1"
 PROVENANCE_STATUS = PENDING_OUTER_JOINT_SEAL
 STREAM_HASH_SCHEMA = "phase1_normalized_z_id_class_domain_ordered_stream_v1"
+PHASE1_LABELED_RATIO = 0.07
+PHASE1_UNLABELED_RATIO = 0.63
+PHASE1_SOURCE_VAL_RATIO = 0.30
 
 
 class Phase1ExportError(ValueError):
@@ -459,6 +462,14 @@ def _build_checkpoint_data_context(
         raise Phase1ExportError("checkpoint args must be a mapping")
     for key, value in checkpoint_args.items():
         setattr(data_args, str(key), value)
+    # The frozen checkpoint contributes model state and its source-domain
+    # registry, but a newly generated Phase1 deployment component must obey the
+    # current protocol rather than inherit the historical 0.10/0.70/0.20 split
+    # (whose train-only label ratio is 0.125).  These three values are locked by
+    # 项目.md to 0.07/0.63/0.30, yielding rho_label=0.1 exactly.
+    data_args.labeled_ratio = PHASE1_LABELED_RATIO
+    data_args.unlabeled_ratio = PHASE1_UNLABELED_RATIO
+    data_args.source_val_ratio = PHASE1_SOURCE_VAL_RATIO
     data_args.wisig_pkl = str(wisig_pkl)
     data_args.device = str(device)
     data_args.eval_batch_size = int(batch_size)

@@ -1,6 +1,7 @@
 import hashlib
 import json
 from pathlib import Path
+from types import SimpleNamespace
 
 import numpy as np
 import pytest
@@ -16,7 +17,11 @@ from cvsrffi.phase1_center_lowrank_prototype_bundle import (
     V1_ALLOWED_MEMBERS,
 )
 from scripts.export_adv3b02_center_lowrank_radius_component import (
+    PHASE1_LABELED_RATIO,
+    PHASE1_SOURCE_VAL_RATIO,
+    PHASE1_UNLABELED_RATIO,
     Phase1ExportError,
+    _build_checkpoint_data_context,
     build_arg_parser,
     build_v1_aggregate_payload,
     class_handle_binding_sha256,
@@ -222,6 +227,55 @@ def test_cli_requires_all_provenance_bindings() -> None:
                 "--detached-signature", "fake.sig",
             ]
         )
+
+
+def test_phase1_component_generation_uses_current_protocol_split(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    observed = {}
+
+    class FakeParser:
+        def parse_args(self, _argv):
+            return SimpleNamespace()
+
+    class FakeSSDG:
+        @staticmethod
+        def build_arg_parser():
+            return FakeParser()
+
+        @staticmethod
+        def _build_ssdg_wisig_data(args, _device):
+            observed.update(
+                labeled_ratio=args.labeled_ratio,
+                unlabeled_ratio=args.unlabeled_ratio,
+                source_val_ratio=args.source_val_ratio,
+            )
+            return {"split_info": {"rho_label": 0.1, "labeled_size": 6}}
+
+    monkeypatch.setitem(__import__("sys").modules, "SSDG", SimpleNamespace(train_ssdg=FakeSSDG))
+    checkpoint = {
+        "args": {
+            "labeled_ratio": 0.10,
+            "unlabeled_ratio": 0.70,
+            "source_val_ratio": 0.20,
+        }
+    }
+    _ssdg, data_args, _ctx = _build_checkpoint_data_context(
+        checkpoint,
+        wisig_pkl=tmp_path / "ManySig.pkl",
+        device=torch.device("cpu"),
+        batch_size=8,
+        num_workers=0,
+    )
+
+    assert observed == {
+        "labeled_ratio": PHASE1_LABELED_RATIO,
+        "unlabeled_ratio": PHASE1_UNLABELED_RATIO,
+        "source_val_ratio": PHASE1_SOURCE_VAL_RATIO,
+    }
+    assert data_args.labeled_ratio / (
+        data_args.labeled_ratio + data_args.unlabeled_ratio
+    ) == pytest.approx(0.1)
 
 
 def test_same_sum_but_different_ordered_stream_is_rejected() -> None:

@@ -9,7 +9,7 @@
 |执行者|Codex|
 |目标|从ADV3B02 Phase1合法labeled-train流中生成只读int8中心、rank-3跨域残差和p90类内半径，使Phase2能按统一公式区分“可靠地面先验”和“宽散布地面先验”，避免D83/D84只加载中心却无法改善离散预测的问题|
 |比较目标|D81地面中心Cauchy先验、D83逐cell精度加载、D84跨类共识中心|
-|当前状态|`LOCAL_VALIDATED_REMOTE_GENERATION_PENDING`|
+|当前状态|`RETRY1_LOCAL_VALIDATED_REMOTE_PENDING`|
 
 ## 机制、假设与停止条件
 
@@ -31,7 +31,7 @@
 |checkpoint SHA256|`2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98`|
 |WiSig输入|`Dataset_WigSig/ManySig.pkl`|
 |WiSig SHA256|`2b0a7a7488dd3650bcae7b1d80efbcffd1598aaa671ae6b0a0df2a24dc0f694f`|
-|Phase1比例约束|checkpoint重建split，`rho_label<=0.1`|
+|Phase1比例约束|当前协议锁定source全池`0.07/0.63/0.30`，`rho_label=0.07/(0.07+0.63)=0.1`|
 |特征|逐样本L2归一化`z_id160`|
 |统计|双遍有界流式：第一遍中心sum/count；第二遍4096-bin直方图估计p90余弦距离|
 |持久化|仅严格3文件v2组件；不保留样本特征、count、source路径或FP32中心|
@@ -54,7 +54,7 @@
 
 `python -m pytest tests/test_phase1_geometry_streaming.py tests/test_phase1_center_lowrank_prototype_bundle.py tests/test_export_adv3b02_center_lowrank_radius_component.py tests/test_phase1_adv3b02_deployment_bundle.py -q`
 
-结果：38项通过；pytest退出后的Windows临时目录清理出现`PermissionError`告警，但测试进程退出码为0且不影响项目验证。
+初版结果为38项通过；修复历史split兼容漂移后为39项通过。pytest退出后的Windows临时目录清理出现`PermissionError`告警，但测试进程退出码为0且不影响项目验证。
 
 ## N607预检与运行计划
 
@@ -62,9 +62,9 @@
 
 计划远端工作目录：`/home/szu2070436088/2510044040/CV-SincNet`
 
-计划输出目录：`runs/d85_ground_radius_v2_20260720/adv3b02_component`
+计划输出目录：`runs/d85_ground_radius_v2_20260720/adv3b02_component_retry1`
 
-计划日志：`logs/d85_ground_radius_v2_20260720/export.log`
+计划日志：`logs/d85_ground_radius_v2_20260720/export_retry1.log`
 
 计划GPU：GPU0；该任务是单次Phase1离线推理和有界统计，不启动训练。
 
@@ -76,14 +76,14 @@
 CUDA_VISIBLE_DEVICES=0 PYTHONPATH=code /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u code/scripts/export_adv3b02_center_lowrank_radius_component.py \
   --checkpoint runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth \
   --wisig-pkl Dataset_WigSig/ManySig.pkl \
-  --output runs/d85_ground_radius_v2_20260720/adv3b02_component \
+  --output runs/d85_ground_radius_v2_20260720/adv3b02_component_retry1 \
   --device cuda:0 \
   --expected-checkpoint-sha256 2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98 \
   --expected-wisig-sha256 2b0a7a7488dd3650bcae7b1d80efbcffd1598aaa671ae6b0a0df2a24dc0f694f \
   --expected-class-handle-binding-sha256 76735ae6d9b2d7e58f683635ca2644e00fbd27a515246aab9d47488c1ab5111f \
   --generation-config configs/phase1_d85_adv3b02_center_lowrank_radius.json \
-  --expected-generation-config-sha256 c12d5d23d1fb8908a6f8e02575e915ad6322ca28b6bddf2ec1bc8162662f1cd5 \
-  --expected-generation-code-sha256 69bf0820414f43cc2a37dc8b9cdb14cf2d169a013c18ffa744847adf11e53f5e \
+  --expected-generation-config-sha256 108f5cdc191f4d7b55b8b453d93f456092ff886f919e390889a8dcb0dedc186a \
+  --expected-generation-code-sha256 08efb45d6a1f3716f6073f846d1577d8d2d82838ea69f08204697216cb320042 \
   --batch-size 512 --num-workers 0 --min-samples-per-cell 2 --radius-histogram-bins 4096
 ```
 
@@ -97,10 +97,27 @@ CUDA_VISIBLE_DEVICES=0 PYTHONPATH=code /home/szu2070436088/.conda/envs/CVS-RFFI/
 
 |本地文件|SHA256|远端目标|
 |---|---|---|
-|`code/scripts/export_adv3b02_center_lowrank_radius_component.py`|`69bf0820414f43cc2a37dc8b9cdb14cf2d169a013c18ffa744847adf11e53f5e`|`code/scripts/export_adv3b02_center_lowrank_radius_component.py`|
+|`code/scripts/export_adv3b02_center_lowrank_radius_component.py`|`08efb45d6a1f3716f6073f846d1577d8d2d82838ea69f08204697216cb320042`|`code/scripts/export_adv3b02_center_lowrank_radius_component.py`|
 |`code/cvsrffi/phase1_geometry_streaming.py`|`f7eb4e5950ecaccc5fbecb25dab8d955e747d5384990ecc63100b013d7d28bf0`|`code/cvsrffi/phase1_geometry_streaming.py`|
 |`code/cvsrffi/phase1_center_lowrank_prototype_bundle.py`|`7bd410108129bbe8096e2b2c49180877adcc5160f9fc980eb1da404da5d5086c`|`code/cvsrffi/phase1_center_lowrank_prototype_bundle.py`|
-|`configs/phase1_d85_adv3b02_center_lowrank_radius.json`|`c12d5d23d1fb8908a6f8e02575e915ad6322ca28b6bddf2ec1bc8162662f1cd5`|`configs/phase1_d85_adv3b02_center_lowrank_radius.json`|
+|`configs/phase1_d85_adv3b02_center_lowrank_radius.json`|`108f5cdc191f4d7b55b8b453d93f456092ff886f919e390889a8dcb0dedc186a`|`configs/phase1_d85_adv3b02_center_lowrank_radius.json`|
+
+## 远端尝试0：协议失败关闭
+
+|字段|结果|
+|---|---|
+|PID|728539|
+|启动时间|2026-07-20 06:56:01 CST|
+|状态|`FAILED_CLOSED_PROTOCOL_SPLIT_DRIFT_NO_PERFORMANCE_RESULT`|
+|完成阶段|checkpoint和ManySig哈希验证通过；在构建source split时停止|
+|错误|历史checkpoint参数`0.10/0.70/0.20`按当前定义得到`rho_label=0.125000>0.1`|
+|输出组件|无|
+|Phase2 target/query访问|无|
+|性能指标|未进入组件生成或Stage2评估，old/new/H/forgetting均为`not_run`|
+|资源表现|未进入GPU模型遍历；没有持久化组件；日志保留于`logs/d85_ground_radius_v2_20260720/export.log`|
+|缺陷|初版导出器错误继承了历史checkpoint的数据split参数，无法生成符合最新项目协议的新聚合知识|
+
+修复策略：checkpoint只贡献冻结模型状态、source registry和其他模型参数；新生成的Phase1聚合组件强制采用当前`项目.md`规定的source全池`0.07/0.63/0.30`划分。新增单测证明历史`0.10/0.70/0.20`会被覆盖且精确得到`rho_label=0.1`，不放宽任何阈值。
 
 ## 结果表
 

@@ -3,8 +3,13 @@
   "candidate_id": "D85_ADV3B02_GROUND_RADIUS_V2",
   "checkpoint_sha256": "2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98",
   "wisig_pkl_sha256": "2b0a7a7488dd3650bcae7b1d80efbcffd1598aaa671ae6b0a0df2a24dc0f694f",
-  "phase1_labeled_split_source": "checkpoint_reconstructed_probe_train_loader",
-  "maximum_labeled_ratio": 0.1,
+  "phase1_labeled_split_source": "current_protocol_locked_source_split",
+  "source_pool_split": {
+    "labeled": 0.07,
+    "unlabeled": 0.63,
+    "validation": 0.3,
+    "rho_label": 0.1
+  },
   "feature": {
     "name": "z_id",
     "dimension": 160,
