@@ -60,3 +60,13 @@ h_c(x) = orientation_c * (g65,c(x) - center_c) / scale_c
 新增独立D68数学core、probe、专项测试和摘要，不修改D62/D65/D67历史实现或artifact。测试至少覆盖leave-one-rank-out exact-once、符号解析例、类置换、K1 D62回退、D65 lifecycle、共同affine中心化、INT8编译等价、禁止分支和资源闭包。
 
 本轮先本地实现与验证，不访问N607。代码验证后提交、建立干净worktree、复跑D42–D68完整链，再补精确105行命令和输出目录。
+
+## 7.R1真实运行前生命周期修订
+
+首版实现和D42–D68全链325/325通过后，在真实运行前复核发现：若Stage2-C用11类full support重新标定6个旧行，会改变旧行的center/scale/orientation并破坏D65最有价值的“注册后旧行冻结”性质。R1因此在任何真实性能计算前修订为：
+
+1. Stage2-B完成6个旧行的交叉拟合方向锁和full-old support统一标定，删除旧类共同affine项后冻结全部旧行字节、方向和共同项。
+2. Stage2-C仍对11类执行leave-one-rank-out，以同一匿名公式为5个新行确定方向和full-support尺度；只把新行减去Stage2-B冻结的同一个共同affine项后追加。
+3. 6个旧行在Stage2-C输出中必须FP32逐bit不变；新行与旧行均为有向标准分数，最终仍是一个全注册类affine head。query没有old/new角色输入、分支、offset或quota。
+
+此修订替代第3节中“final阶段重新编译全部`h_c`”的含义；full support统计在Stage2-C只决定新追加行，旧行只做只读诊断。它不新增超参数，也不改变cell、数据、判门或停止条件。专项测试必须新增旧行bitwise冻结断言，然后重跑完整链。

@@ -17,3 +17,7 @@ D68不读取D22地面组件，因为其manifest当前为`formal_phase2_eligible=
 ## 实验与判门
 
 开发cell固定receiver`20-1`、seed`713101`、K10/new5、三场景×五outer fold、实际K8，复用D18`VALIDATED_ONCE/p2_min_v1` enrollment-only support。相对D62必须保持总体、场景、floor、遗忘和混淆无交换并严格改善至少一项A/F/J/floor；量化变化与margin flip必须为0。真实105行后必须保留7候选、11类、15fold、方向、风险、训练、资源和artifact全账。
+
+## R1运行前修订
+
+首版代码测试揭示Stage2-C若重新标定旧行，会丢失D65的冻结优势。真实运行前将生命周期锁为：Stage2-B有向标定旧行后冻结其字节和共同affine项；Stage2-C同公式只标定并追加新行，旧行逐bit不变。该修订无角色query分支、无参数扫描，且在任何outer性能计算前登记。
