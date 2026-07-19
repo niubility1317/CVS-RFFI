@@ -1,0 +1,39 @@
+{
+  "schema": "cvs.phase1.d85_center_lowrank_radius_generation.v1",
+  "candidate_id": "D85_ADV3B02_GROUND_RADIUS_V2",
+  "checkpoint_sha256": "2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98",
+  "wisig_pkl_sha256": "2b0a7a7488dd3650bcae7b1d80efbcffd1598aaa671ae6b0a0df2a24dc0f694f",
+  "phase1_labeled_split_source": "checkpoint_reconstructed_probe_train_loader",
+  "maximum_labeled_ratio": 0.1,
+  "feature": {
+    "name": "z_id",
+    "dimension": 160,
+    "normalization": "per_sample_l2"
+  },
+  "streaming_geometry": {
+    "passes": 2,
+    "first_pass": "domain_class_centroid_sum_and_count",
+    "second_pass": "p90_cosine_distance_histogram",
+    "radius_histogram_bins": 4096,
+    "minimum_samples_per_domain_class_cell": 2,
+    "sample_feature_persistence": false,
+    "sample_count_persistence": false,
+    "full_precision_centroid_persistence": false
+  },
+  "deployment_codec": {
+    "schema": "int8_domain_class_center_lowrank_residual_radius_v2",
+    "center_quantization": "symmetric_int8_per_vector_fp16_scale",
+    "residual_rank": 3,
+    "residual_quantization": "symmetric_int8_fp16_scale",
+    "radius_quantization": "int8_fp16_scale",
+    "standalone_formal_phase2_eligible": false,
+    "required_next_state": "PENDING_OUTER_JOINT_SEAL"
+  },
+  "protocol_guards": {
+    "phase2_target_access": false,
+    "phase2_query_access": false,
+    "clean_or_raw_iq_persisted": false,
+    "sample_feature_or_exemplar_persisted": false,
+    "ground_component_read_only_after_joint_seal": true
+  }
+}
