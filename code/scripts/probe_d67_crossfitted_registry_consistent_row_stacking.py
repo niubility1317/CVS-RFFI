@@ -44,6 +44,8 @@ FORMULA = (
     "back to D62 row scale and compile one centered affine state"
 )
 INNER_FOLD_COUNT = 4
+EXPECTED_REAL_FIT_COUNT = 60
+D62_COMPONENT_RECORDS_PER_K8_FIT = 92
 if ARM not in d43.ARM_STRUCTURES:
     d43.ARM_STRUCTURES[ARM] = STRUCTURE
 if ARM not in d43.ARMS:
@@ -507,9 +509,62 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--d67-arm", required=True, choices=(ARM,))
     parser.add_argument("--runtime-root", required=True, type=Path)
     parser.add_argument("--probe-root", required=True, type=Path)
+    parser.add_argument("--verify-existing", action="store_true")
+    parser.add_argument("--executed-probe-script", type=Path)
     known, runner_arguments = parser.parse_known_args(argv)
     d43._require_locked_runner_arguments(runner_arguments)
     output = d43._runner_output(runner_arguments)
+    if known.verify_existing:
+        if known.executed_probe_script is None:
+            raise D67ProbeError("D67 existing-output verification requires executed script")
+        executed_script = known.executed_probe_script.resolve()
+        if not output.is_dir():
+            raise D67ProbeError("D67 existing output is missing")
+        metadata_path = output / "D67_PROBE_METADATA.json"
+        if metadata_path.exists():
+            raise D67ProbeError("D67 metadata already exists; refusing overwrite")
+        executed_script_sha = d43._sha256(executed_script)
+        helper_hashes = {
+            "d67_d62_helper_sha256": d43._sha256(D62_HELPER_PATH),
+            "d67_d65_helper_sha256": d43._sha256(D65_HELPER_PATH),
+            "d67_core_sha256": d43._sha256(CORE_PATH),
+        }
+        evidence = _verify_output(output, executed_script_sha, helper_hashes)
+        fit_count = int(evidence["verified_d67_fit_audit_count"])
+        if fit_count != EXPECTED_REAL_FIT_COUNT:
+            raise D67ProbeError(
+                f"D67 existing fit-audit count drift: {fit_count} != {EXPECTED_REAL_FIT_COUNT}"
+            )
+        metadata = {
+            "schema": "cvs.phase2.d67.crossfitted_registry_consistent_row_stacking_probe.v1",
+            "status": "DEVELOPMENT_SUPPORT_ONLY_DIAGNOSTIC_PROBE_POST_RUN_CLOSURE",
+            "arm": known.d67_arm,
+            "formal_candidate": False,
+            "probe_forced_nonpromotable": True,
+            "selected_only_full_k10_refit_allowed": False,
+            "query_opened": False,
+            "post_run_verifier_only": True,
+            "post_run_verifier_reason": "completed 105-row run ended after artifact write on stale 30-vs-60 fit-count assertion",
+            "executed_probe_script_path": str(executed_script),
+            "executed_probe_script_sha256": executed_script_sha,
+            "verifier_script_path": str(Path(__file__).resolve()),
+            "verifier_script_sha256": d43._sha256(Path(__file__).resolve()),
+            "formula": FORMULA,
+            "fit_audit_count": fit_count,
+            "nested_d62_component_fit_execution_count": int(
+                fit_count * D62_COMPONENT_RECORDS_PER_K8_FIT
+            ),
+            "runtime_root": str(known.runtime_root.resolve()),
+            "probe_root": str(known.probe_root.resolve()),
+            **evidence,
+        }
+        metadata_path.write_text(
+            json.dumps(metadata, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+        )
+        return 0
+    if known.executed_probe_script is not None:
+        raise D67ProbeError("D67 executed script is only valid with --verify-existing")
     if output.exists():
         raise D67ProbeError(f"D67 output already exists: {output}")
     script_sha = d43._sha256(Path(__file__).resolve())
@@ -559,12 +614,15 @@ def main(argv: list[str] | None = None) -> int:
         sys.modules.pop(runner_name, None)
     if exit_code != 0:
         return exit_code
-    if len(records) != 30:
-        raise D67ProbeError(f"D67 fit record count drift: {len(records)} != 30")
-    d62_records = state.get("d62_records", [])
-    if len(d62_records) != 2760:
+    if len(records) != EXPECTED_REAL_FIT_COUNT:
         raise D67ProbeError(
-            f"D67 nested D62 component-fit count drift: {len(d62_records)} != 2760"
+            f"D67 fit record count drift: {len(records)} != {EXPECTED_REAL_FIT_COUNT}"
+        )
+    d62_records = state.get("d62_records", [])
+    expected_d62_records = EXPECTED_REAL_FIT_COUNT * D62_COMPONENT_RECORDS_PER_K8_FIT
+    if len(d62_records) != expected_d62_records:
+        raise D67ProbeError(
+            f"D67 nested D62 component-fit count drift: {len(d62_records)} != {expected_d62_records}"
         )
     if state.get("lifecycle", {}).get("pending_old_class_count") is not None:
         raise D67ProbeError("D67 lifecycle ended with pending Stage2-B state")

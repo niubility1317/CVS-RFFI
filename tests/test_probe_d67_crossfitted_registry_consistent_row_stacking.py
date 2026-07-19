@@ -120,3 +120,12 @@ def test_probe_source_has_no_role_scene_or_threshold_weight_branch() -> None:
         "query_class_quota",
     )
     assert not any(token in source for token in forbidden)
+
+
+def test_real_runner_count_constants_cover_both_precision_paths() -> None:
+    assert d67.EXPECTED_REAL_FIT_COUNT == 60
+    assert d67.D62_COMPONENT_RECORDS_PER_K8_FIT == 92
+    assert (
+        d67.EXPECTED_REAL_FIT_COUNT * d67.D62_COMPONENT_RECORDS_PER_K8_FIT
+        == 5520
+    )

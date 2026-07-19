@@ -88,3 +88,13 @@ g_out,c(x) = center_62,c + scale_62,c * h_c(x)
 ```
 
 预期闭包：105行、30个D67 before/final fit、2,760个nested D62 component fit、每个fit四个held/train交集0的partition；query/clean/source/role/quota/global assignment访问0。任何source、lifecycle、partition、alpha、量化、资源或artifact断言失败均停止并保留原目录。
+
+## 7.首次真实运行完成与PostRun-R1计数修复
+
+- 锁定runner已完成105/105行并写出training log、support/selection/geometry/resource/receipt，runner耗时391.7147s，外层401.5s；receipt状态为`DEVELOPMENT_SUPPORT_ONLY_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE`、query未打开、selected positive route=false。
+- 外层随后在D67 metadata前退出：实现预估D67 fit调用30次，实际runner对INT8/FP32两条目标路径分别执行before/final，共60次。相应nested D62 component记录应为60×92=5,520，不是2,760。
+- 这是artifact完成后的自检计数缺陷，不是算法、数据、性能、资源或协议失败。原输出目录原样保留，禁止重复401秒计算。
+- 使用执行脚本SHA`5a6baa86...97872`只读调用原D67 verifier，已通过：105行、30条目标candidate row、60个fit audit、240个cross-fit partition，`alpha`最小/均值/最大0/0.025459/0.216726，query0；training log SHA=`30e6fdf0...e1430`，receipt SHA=`d2e4eeab...97b6d`。
+- PostRun-R1只把正常执行的预期计数修正为60/5,520，并新增`--verify-existing --executed-probe-script`模式。该模式要求既有105行输出和原执行脚本source closure完整、metadata尚不存在，只写新的D67 metadata；不拟合、不预测、不覆盖任何已有artifact。
+
+原第6节“30个fit/2,760记录”的预估现由实测调用结构更正为60个fit/5,520记录。性能仍须在PostRun-R1封存后完整解析，不能从receipt负状态或alpha分布单独判断缺陷。
