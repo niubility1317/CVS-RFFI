@@ -84,3 +84,10 @@ D66证明静态地面可靠性缩放能略微保护旧类，却压低新类与ne
 - Retry1只把D77的20步FW trace附加到不可变dataclass的`training_trace`，runner随后自然物化40步`complete_loss_trace`。公式、数据、组件、量化、资源数值和性能门不变。
 - 修复probe SHA256=`4df65ae22b04f3df99c6d2790446a062a1eaf6b40505e32703d1b05ff7582c14`；`py_compile`和专项9/9通过。
 - Retry1使用新输出`ground_preconditioned_allclass_common_descent_retry1`和独立`launcher_retry1.stdout.log`/`launcher_retry1.stderr.log`，不覆盖首次失败证据。
+
+### Retry1结果与Retry2修复
+
+- Retry1 PID`17048`于02:47:24启动、02:47:59退出；仍无training row、性能或query访问。stderr 1,231B，SHA256=`896d06462433a76507a207c591d1bc374ad92a83350d424a547457f270ac5c87`。
+- 根因：`total_optimizer_steps`和`peak_trainable_parameters`同样由runner从fit层的`optimizer_steps`与`trainable_parameters`派生，不能在fit层提前读取。
+- Retry2只在fit层更新实际存在的`optimizer_steps`、`stage2c_optimizer_steps`和`trainable_parameters`；runner继续生成`total_optimizer_steps`与`peak_trainable_parameters`。公式、数据和候选均不变。
+- Retry2 probe SHA256=`5c36b7536a7fb8d702995fba54bc258bb128e9df681d348148bc785b5d9d1d5b`；`py_compile`和专项9/9通过。使用新输出`ground_preconditioned_allclass_common_descent_retry2`。

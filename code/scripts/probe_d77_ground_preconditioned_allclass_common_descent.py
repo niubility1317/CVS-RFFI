@@ -413,18 +413,20 @@ class GroundCommonDescentRegistry:
                 resource["estimated_metric_adaptation_macs"]
                 + bounds["non_lda_total"]
             )
-            for name in ("optimizer_steps", "total_optimizer_steps"):
-                resource[name] = int(resource[name] + core.FW_ITERATIONS)
+            resource["optimizer_steps"] = int(
+                resource["optimizer_steps"] + core.FW_ITERATIONS
+            )
             resource["stage2c_optimizer_steps"] = int(
                 resource["stage2c_optimizer_steps"] + core.FW_ITERATIONS
             )
-            for name in ("trainable_parameters", "peak_trainable_parameters"):
-                resource[name] = int(resource[name] + classes)
+            resource["trainable_parameters"] = int(
+                resource["trainable_parameters"] + classes
+            )
             resource["optimizer_step_cap_pass"] = bool(
                 resource["optimizer_steps"] <= resource["optimizer_step_cap"]
             )
             resource["trainable_parameter_cap_pass"] = bool(
-                resource["peak_trainable_parameters"]
+                resource["trainable_parameters"]
                 <= resource["trainable_parameter_cap"]
             )
             resource["persistent_state_cap_pass"] = bool(
