@@ -75,3 +75,5 @@ D70–D72说明support内score/head后处理不能可靠推断outer新旧方向�
 |`tests/test_probe_d73_conflict_projected_joint_metric.py`|D62包装、资源公式、调用闭包和协议字段测试|`f769d331a0fed1a75055abea2fce7f44ac12bfba4ed7a411fa0990eb175d4d79`|
 
 专项验证命令：`python -m pytest -q tests/test_stage2_d73_conflict_projected_joint_metric.py tests/test_probe_d73_conflict_projected_joint_metric.py`，在`ssr-gpu`中通过`9/9`。首次core测试收集失败仅因测试误写为`code.cvsrffi`导入路径；改为项目既有`cvsrffi`包路径后通过，不涉及机制、公式或运行代码变化。
+
+D42–D73相邻完整链覆盖40个文件、377项测试，全部通过，退出码0，用时82.8秒。pytest在全部测试完成后的atexit清理阶段对全局`pytest-current`临时链接报`WinError 5`，不影响退出码或任何测试结果；clean worktree复验将显式使用仓内`--basetemp`消除该主机清理噪声。
