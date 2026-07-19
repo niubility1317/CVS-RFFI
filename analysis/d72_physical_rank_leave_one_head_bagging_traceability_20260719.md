@@ -33,3 +33,7 @@ D62是当前同row联合最强，但A=82.22%、min-A=53.33%，错误集中于弱
 ## 实现状态
 
 core、probe和两组测试已完成。专项11/11、D42–D72相邻37文件完整链均通过；K8资源公式锁定每top-level fit新增16次D62 leave-one fit和512次闭式component fit，optimizer step仍为20，query额外MAC/state为0。真实outer尚未执行，不能由测试推断性能。
+
+## 完成结果与三轮回顾
+
+D72真实105/105行完成：B/A/N/H/F/J=`93.33/82.78/82.67/81.59/10.56/26.67%`，min-B/A/N=`80.00/53.33/70.00%`，混淆`22/11/15`。相对D62为B/A各+0.56pp、N−2.00pp、H−1.03pp、min-N−3.33pp、new→old+3；负向关闭。D70–D72回顾确认post-hoc生命周期行、top-2 pair和leave-one完整头聚合均受support代理与outer old/new方向不一致限制；下一轮必须转向表示层联合metric学习，并先对D21-M6/D31/D36/D61去重。
