@@ -70,3 +70,13 @@ h_c(x) = orientation_c * (g65,c(x) - center_c) / scale_c
 3. 6个旧行在Stage2-C输出中必须FP32逐bit不变；新行与旧行均为有向标准分数，最终仍是一个全注册类affine head。query没有old/new角色输入、分支、offset或quota。
 
 此修订替代第3节中“final阶段重新编译全部`h_c`”的含义；full support统计在Stage2-C只决定新追加行，旧行只做只读诊断。它不新增超参数，也不改变cell、数据、判门或停止条件。专项测试必须新增旧行bitwise冻结断言，然后重跑完整链。
+
+## 8.实现与本地验证
+
+- `code/cvsrffi/stage2_d68_signed_calibration.py`：对称support验证、leave-one-rank-out exact-once、行标准化、class-balanced风险、方向解析解和单affine编译。
+- `code/scripts/probe_d68_crossfitted_signed_frozen_registry_calibration.py`：D65生命周期、8折inner expert、Stage2-B共同affine与旧行冻结、Stage2-C有向新行追加、资源与runner闭包。
+- `tests/test_stage2_d68_signed_calibration.py`与`tests/test_probe_d68_crossfitted_signed_frozen_registry_calibration.py`：10项专项，覆盖partition、解析翻转、风险下降、类置换、FP32编译、K1 D62回退、旧行bitwise冻结、禁止分支和source closure。
+- 初版专项10项中唯一失败来自合成样本精确并列时FP64/FP32 tie-break不同；中心化分数误差仍满足阈值。测试修正为严格检查中心化误差，只对非并列样本要求argmax一致；真实INT8/FP32零变化门未放宽。
+- R1专项10/10通过；显式激活`ssr-gpu`后的D42–D68完整链325/325通过，用时81.1s。pytest exit0后仍有既知Windows`pytest-current`临时链接清理权限告警，不属于测试失败。
+
+当前仅有合成/代码验证，没有outer性能结论。下一步提交实现、建立干净worktree并复跑完整链，然后登记精确真实105行命令。
