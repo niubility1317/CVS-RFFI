@@ -40,3 +40,5 @@ Stage2-B/Stage2-C注册生命周期是support registry事实，不是query角色
 ## 实现状态
 
 已实现独立core、锁定probe和10项专项测试，不修改D62/D69历史文件。专项10/10、D42–D70完整链345/345通过；完整链用时81.5s。资源审计预留每个target row额外4次inner D62、40次inner component fit以及相应LDA/Fisher/held-score/gate MAC。当前尚无outer性能，必须在提交和干净worktree复验后运行锁定105行。
+
+实现提交`10536c01`已建立干净worktree，干净D42–D70链345/345再次通过，用时82.8s。真实105行命令、source closure和预期60/30/120/2280调用闭包已在automation report锁定。

@@ -2,7 +2,7 @@
 
 ## 1.执行前登记
 
-- 实验ID：`d70_crossfitted_atomic_lifecycle_row_replacement_probe_20260719`；operator：Codex；状态：`PREREGISTERED_IMPLEMENTATION_PENDING`。
+- 实验ID：`d70_crossfitted_atomic_lifecycle_row_replacement_probe_20260719`；operator：Codex；状态：`PREREGISTERED_IMPLEMENTATION_VALIDATED_PERFORMANCE_PENDING`。
 - 当前联合最强D62：B/A/N/H/F/J=92.78/82.22/84.67/82.62/10.56/26.67，min-B/A/N=80.00/53.33/73.33，混淆23/8/15。
 - D69完整结果为92.78/81.67/74.67/77.39/11.11/30.00，min-N53.33%、混淆27/23/15；全旧行冻结跨坐标系交换已否决。D67–D69正式复盘见D69报告第15节，提交`6c5f924e`。
 - 根目录`E:\type10-7`非Git；本报告镜像、代码、测试和追踪进入`E:\type10-7\github_publish\CVS-RFFI-repo`。其他工作树改动与D70无关，只暂存D70拥有路径。
@@ -37,3 +37,33 @@ K>=2时使用两个按physical rank预定的互斥support-held fold。每折在t
 - 主工作树source SHA：core`f2e67c142ba8fbe797a019e724435a86b67db8446efb9ba49c96abb593b47459`；probe`ff74748be440648ade9c45c60d12c53ea71e149d74180b30a4c1570a257072c2`。
 
 当前只有代码/合成验证，不能声明性能。下一步提交精确文件，建立干净worktree复跑345项；干净链通过后才登记真实105行命令。
+
+## 7.干净版本与真实运行锁
+
+- 实现提交`10536c01`；干净worktree`E:\type10-7\code\snapshots\d70wt`为detached HEAD且`git status -sb`仅`## HEAD (no branch)`。
+- 干净D42–D70完整链345/345通过，用时82.8s；运行目录`E:\type10-7\local_artifacts\d70_clean_full_chain_345`。
+- 实际checkout SHA：probe`1024ce5bcc4abed430a19acda811bb0fedca422ba76206acb60984e819d87ecc`、core`94d50258db904a5e289fefe8300966435895c171961892cbb07490c4e2027003`、D62 helper`38ae1114a06d135bca806f470417cd28a634fec0da449888665c6843615d4a20`。
+- 本地运行，不用N607。输出目录登记时不存在，禁止覆盖或原目录重跑。
+
+```powershell
+& 'C:\Users\lh594\.conda\envs\ssr-gpu\python.exe' `
+  'E:\type10-7\code\snapshots\d70wt\code\scripts\probe_d70_crossfitted_atomic_lifecycle_row_replacement.py' `
+  --d70-arm crossfitted_atomic_lifecycle_row_replacement `
+  --runtime-root 'E:\type10-7\code\snapshots\d41wt' --probe-root 'E:\type10-7\code\snapshots\d70wt' `
+  --before-root 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\phase2_capsule_k10_new5\predictor\before\enrollment_only' `
+  --before-seal 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\phase2_capsule_k10_new5\seals\before_enrollment.seal.json' --before-seal-sha256 53ace2863c9da6c2f6cc855d602c99f581df6de3d30a9a3ecb89eb6b6f0d9f75 `
+  --before-formal-policy 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\formal_execution_policy.json' `
+  --before-formal-policy-authorization 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\runtime_authorization_k10_new5\before_formal_policy_authorization.v2.json' `
+  --before-signed-policy-authorization-envelope 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\runtime_authorization_k10_new5\before_signed_policy_authorization_envelope.v2.json' --before-signed-policy-authorization-envelope-sha256 31a2ad9918f061b25d5a7ed0cc135df70ae02460c094b2f396bf314817bceb0e `
+  --after-root 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\phase2_capsule_k10_new5\predictor\after\enrollment_only' `
+  --after-seal 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\phase2_capsule_k10_new5\seals\after_enrollment.seal.json' --after-seal-sha256 c70aedf3a8f059e756806201758c1933a2f3e1ba4df415e69a1c776b1a2b50ff `
+  --after-formal-policy 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\formal_execution_policy.json' `
+  --after-formal-policy-authorization 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\runtime_authorization_k10_new5\after_formal_policy_authorization.v2.json' `
+  --after-signed-policy-authorization-envelope 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\runtime_authorization_k10_new5\after_signed_policy_authorization_envelope.v2.json' --after-signed-policy-authorization-envelope-sha256 a2483d6e9c9c362d89397029ff1e43f48358be3bdb3a05d717ee112b70a0be76 `
+  --component-dir 'E:\type10-7\automation_reports\CV-SincNet\d22_int8_anchor_lifecycle_20260717\input\int8_component' --component-manifest-sha256 15b5e144f9af3989421d8e925c17758479c327be47e79222f6363dc63994629c `
+  --class-binding 'E:\type10-7\github_publish\CVS-RFFI-repo\analysis\d19_adv3b02_class_binding_20260717.json' --class-binding-sha256 bb89a1dbb831acb374fccfc596ae98b660b496b449bdca577dabb962121c901f `
+  --output 'E:\type10-7\automation_reports\CV-SincNet\d70_crossfitted_atomic_lifecycle_row_replacement_probe_20260719\crossfitted_atomic_lifecycle_row_replacement' `
+  --device auto --mode development_select_unverified_component --candidate-set d42_v1
+```
+
+预期闭包：105行、30个目标row、60个D70 fit audit、30对生命周期、120个inner D62 fit、2280条component fit。每个final audit两折覆盖88个support row exact-once；active mask必须all-class atomic safe，空mask精确D62；ground/query/clean/source/role/quota访问0。
