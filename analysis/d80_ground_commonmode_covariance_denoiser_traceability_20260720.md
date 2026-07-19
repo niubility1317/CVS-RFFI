@@ -1,35 +1,31 @@
-# D80地面公共域模态协方差去噪追溯
+# D80地面跨域质心漂移协方差追溯
 
-## 方法定位
+## 方法定位与预运行修正
 
-D77证明地面对角可靠性预条件过弱，D78/D79证明把类相关地面域切向直接写入logit会保护旧类但压制新类。D80不再使用ground类中心作anchor，也不学习class-row residual；它只从完整地面域网格提取跨类平均的公共接收机扰动子空间。
+D77的可逆地面对角坐标变换几乎被LDA抵消；D78/D79在D62后直接写入ground切向class-row residual，保护旧类但伤害新类。D80必须改变共享协方差本身，并在D62全部full/block、outer/held-support fit内一致生效，不能再做post-hoc row修补。
 
-对完整域`d`和ground类`c`的解量化中心`p_dc`，先做逐类域中心化并跨类平均：
+当前D22 v1 bundle没有radius、count或域内样本散度，只有84个int8域×类质心及scale。因此D80的合法统计是“class-centered cross-domain centroid drift covariance”，不是类内样本协方差。对`g_dc=s_dc q_dc`：
 
-`u_d=mean_c[p_dc−mean_d'(p_d'c)]`。
+`r_dc=g_dc−mean_d(g_dc)`，
 
-对`{u_d}`做SVD得到固定正交基`U`和投影`P=UU^T`。`P`只表示各ground类共同出现的接收机域扰动，不保留具体类中心或类分数。把其解释为单位噪声协方差增量`Sigma_g=I+P`，则精确逆为`Sigma_g^−1=I−0.5P`。对D62最终仿射头和全注册类等K target support均值`mu`做一次闭式编译：
+`G=sum_dc(r_dc r_dc^T)/[C_g(D−1)] + mean(s_dc^2/12)I`。
 
-`W'=W(I−0.5P)`，
-
-`b'=b+0.5WPmu`，
-
-所以`s'(x)=s(x)−0.5WP(x−mu)`，在target中心残差严格为0。全部注册类使用同一`P`、同一闭式系数0.5，不读取old/new角色或类ID，不训练、不扫描。
+ground类中心在形成`r_dc`后丢弃。每个target support fit以`lambda=(D_eff−1)/[(D_eff−1)+C(K−1)]`把trace-matched`G`和target covariance闭式收缩，再解`W=Sigma_post^−1 mu`。全部类使用同一公式；ground不输出类别分数、anchor或row residual。
 
 ## 需求到实现追溯
 
 |ID|要求|目标文件|状态|验证/停止条件|
 |---|---|---|---|---|
-|D80-R1|真实84-cell地面组件只读，入口/出口hash一致|D80 probe/loader|planned|完整域数、cell数、manifest/NPZ hash闭包|
-|D80-R2|只提取跨类平均公共域模态，不保留类中心预测分支|D80 core|planned|类置换不变、公共模态构造等价、ground score access=false|
-|D80-R3|固定`Sigma_g=I+P`及精确逆`I−0.5P`，无超参数|D80 core/tests|planned|投影幂等、特征值0.5/1、无扫描|
-|D80-R4|中心保持编译，support均值处残差严格0|D80 core/tests|planned|直接式与单仿射等价、平移不变|
-|D80-R5|所有target-old/new类同一公式，K1可定义|D80 core/tests|planned|类置换等变、无role/class branch、K1有限确定|
-|D80-R6|正式资源上限，query额外MAC/state0|probe/resource audit|planned|0 optimizer step、闭式、含ground<256KB、单仿射|
+|D80-R1|真实84-cell地面组件只读，入口/出口hash一致|D80 probe/D66 loader|verified|真实loader烟测84 cell；完整run核对入口/出口hash|
+|D80-R2|只构造逐类去中心的共享域质心漂移协方差，不声称radius/count|D80 core/probe|verified|置换不变测试；真实rank78/effective rank13.6446；radius/count=false|
+|D80-R3|固定量化底`mean(scale²/12)`，不裸逆低于量化精度的方向|D80 core/tests|verified|真实floor`5.2414e−7`，SPD测试通过|
+|D80-R4|固定自由度EB权重，所有full/block outer/held fit一致注入|D80 core/probe|verified|factory patch→build D62 closure→restore；synthetic after权重13/90|
+|D80-R5|所有target-old/new类同一公式，K1不伪造target covariance|D80 core/tests|verified|类置换等变；K1 `nu_t=0/lambda=1`有限确定|
+|D80-R6|0新增step/parameter、含ground<256KB、query额外MAC/state0|probe/resource audit|verified|源码和单测闭包；真实资源待run|
 |D80-R7|完整开发实验20-1/new5/K10/713101、3场景×5fold、105行|run/summarizer|planned|逐类/场景/混淆/INT8-FP32/资源全量解析|
-|D80-R8|相对D62严格联合门|summarizer/report|planned|`A/N/H/min-A/min-N`不退化、`F`不升、至少一项严格改善且无混淆交换|
+|D80-R8|相对D62严格联合门|summarizer/report|planned|总体及每场景无退化、三类混淆不增、INT8/FP32无翻转|
 |D80-R9|formal ground bundle需联合封存及外部authority签名|loader/report|blocked|当前只能development diagnostic|
 
 ## 停止条件
 
-不扫描投影系数、rank、中心倍率、类权重、场景权重或旧/新门。若公共模态去噪仍只保护旧类、伤害新类，或完全不改变outer决策，则关闭ground几何直接编译路线，转向重新训练Phase1 bundle时联合封存的类内协方差统计；当前未验证ground组件不得进入125或正式声明。
+不扫描`lambda`、rank、量化ridge、类权重或场景权重。若D80仍产生旧/新交换、support-held与outer错配、量化翻转或完全identity，则关闭ground协方差决策路线；不启第二seed、125或N607。专项10/10、D62/D78/D79/D80相邻34/34已通过，但测试和资源达标不替代性能成功。
