@@ -30,6 +30,7 @@ ARM_STRUCTURES = {
 ARMS = tuple(ARM_STRUCTURES)
 _BOOTSTRAPPED = False
 ALLOW_FP32_CENTERING_ARGMAX_DRIFT = False
+FP32_CENTERING_ARGMAX_AUDIT: list[dict[str, Any]] = []
 RUNTIME_LEGACY_SHA256 = (
     "f4becfa61f23bd88448e9a9673f9068cdf5d5e613999992de4b9f35cc29fefa9"
 )
@@ -178,6 +179,16 @@ def build_structured_fit(
                 np.argmax(original_scores32, axis=1)
                 != np.argmax(centered_scores32, axis=1)
             ))
+            FP32_CENTERING_ARGMAX_AUDIT.append(
+                {
+                    "arm": arm,
+                    "fallback": True,
+                    "support_rows": int(len(rows)),
+                    "changed_count": fp32_argmax_changed_count,
+                    "equivalent": fp32_argmax_equivalent,
+                    "drift_allowed": ALLOW_FP32_CENTERING_ARGMAX_DRIFT,
+                }
+            )
             if not fp32_argmax_equivalent and not ALLOW_FP32_CENTERING_ARGMAX_DRIFT:
                 raise D43ProbeError("D43 fallback FP32 centering changed support argmax")
             result_audit = dict(audit)
@@ -270,6 +281,16 @@ def build_structured_fit(
             np.argmax(uncentered_scores32, axis=1)
             != np.argmax(centered_scores32, axis=1)
         ))
+        FP32_CENTERING_ARGMAX_AUDIT.append(
+            {
+                "arm": arm,
+                "fallback": False,
+                "support_rows": int(len(rows)),
+                "changed_count": fp32_argmax_changed_count,
+                "equivalent": fp32_argmax_equivalent,
+                "drift_allowed": ALLOW_FP32_CENTERING_ARGMAX_DRIFT,
+            }
+        )
         if not fp32_argmax_equivalent and not ALLOW_FP32_CENTERING_ARGMAX_DRIFT:
             raise D43ProbeError("D43 FP32 centering changed support argmax")
         fp32_pairwise_drift = float(

@@ -579,6 +579,8 @@ def main(argv: list[str] | None = None) -> int:
     call_records: list[dict[str, Any]] = []
     try:
         d42, package, original_path = d43._bootstrap(known.runtime_root, known.probe_root)
+        if d43.FP32_CENTERING_ARGMAX_AUDIT:
+            raise D62ProbeError("D62 centering audit was not empty before run")
         if known.d62_confirmation_seed is not None:
             d43.ALLOW_FP32_CENTERING_ARGMAX_DRIFT = True
         original_fit = d42._fit_equal_prior_lda
@@ -626,6 +628,12 @@ def main(argv: list[str] | None = None) -> int:
     record_sha = hashlib.sha256(
         json.dumps(call_records, sort_keys=True, separators=(",", ":")).encode("utf-8")
     ).hexdigest()
+    centering_records = list(d43.FP32_CENTERING_ARGMAX_AUDIT)
+    centering_record_sha = hashlib.sha256(
+        json.dumps(
+            centering_records, sort_keys=True, separators=(",", ":")
+        ).encode("utf-8")
+    ).hexdigest()
     metadata = {
         "schema": "cvs.phase2.d62.crossfitted_fisher_row_splice_probe.v1",
         "status": "DEVELOPMENT_SUPPORT_ONLY_DIAGNOSTIC_PROBE",
@@ -641,6 +649,20 @@ def main(argv: list[str] | None = None) -> int:
         "fp32_centering_argmax_drift_allowed": (
             known.d62_confirmation_seed is not None
         ),
+        "fp32_centering_audit": {
+            "fit_count": len(centering_records),
+            "non_equivalent_fit_count": sum(
+                not bool(row["equivalent"]) for row in centering_records
+            ),
+            "changed_prediction_count": sum(
+                int(row["changed_count"]) for row in centering_records
+            ),
+            "max_changed_prediction_count_per_fit": max(
+                (int(row["changed_count"]) for row in centering_records),
+                default=0,
+            ),
+            "record_sha256": centering_record_sha,
+        },
         "selected_only_full_k10_refit_allowed": False,
         "query_opened": False,
         "probe_script_sha256": script_sha,
