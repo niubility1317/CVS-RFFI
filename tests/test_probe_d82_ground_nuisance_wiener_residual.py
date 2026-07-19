@@ -42,6 +42,29 @@ def test_probe_patches_all_full_block_closures_before_d62_build():
     restore_index = source.index("d43.build_structured_fit = original_builder")
     assert max(full_index, block_index) < build_index < restore_index
     assert "D82 D43 module alias identity drift" in source
+    assert "_build_machine_spd_stable_fit" in source
+
+
+def test_machine_spd_repair_is_parameter_free_and_roundoff_bounded():
+    probe = _load_probe()
+    collector = []
+
+    def component_fit(rows, labels, class_count, k_shot):
+        covariance = probe.d43._structured_covariance(
+            np.diag([1.0, -1.0e-17]), "block3_centered", (slice(0, 2),)
+        )
+        assert np.min(np.linalg.eigvalsh(covariance)) > 0.0
+        return np.ones((class_count, rows.shape[1])), np.zeros(class_count), {}
+
+    wrapped = probe._build_machine_spd_stable_fit(
+        component_fit, "block3_centered", collector
+    )
+    rows = np.ones((4, 2))
+    labels = np.array([0, 0, 1, 1])
+    _, _, audit = wrapped(rows, labels, 2, 2)
+    assert len(collector) == 1
+    assert collector[0]["jitter_over_maximum"] < 1e-12
+    assert audit["d82_machine_spd_repair_parameter_count"] == 0
 
 
 def test_probe_has_protocol_resource_and_hash_closure():
@@ -168,6 +191,5 @@ def test_synthetic_d62_stack_transforms_every_full_block_oof_fit():
     assert len(transform_records) == 4 * (shots + 1)
     assert audit["d82_probe_arm"] == probe.ARM
     assert audit["d82_query_metric_source"] == "target_support_only_d62"
-
 
 

@@ -129,6 +129,71 @@ def load_ground_basis(
     return basis, weights, combined
 
 
+def _build_machine_spd_stable_fit(
+    component_fit: Callable[..., Any],
+    component_arm: str,
+    collector: list[dict[str, Any]],
+) -> Callable[..., Any]:
+    """Repair only roundoff-scale non-SPD drift in the D43 block covariance."""
+
+    def fit(*args: Any, **kwargs: Any) -> Any:
+        original = d43._structured_covariance
+        records: list[dict[str, Any]] = []
+
+        def stabilized(*structured_args: Any, **structured_kwargs: Any) -> np.ndarray:
+            covariance = np.asarray(
+                original(*structured_args, **structured_kwargs), dtype=np.float64
+            )
+            covariance = 0.5 * (covariance + covariance.T)
+            eigenvalues = np.linalg.eigvalsh(covariance)
+            minimum = float(np.min(eigenvalues))
+            maximum = float(np.max(eigenvalues))
+            scale = max(maximum, np.finfo(np.float64).tiny)
+            tolerance = scale * covariance.shape[0] * np.finfo(np.float64).eps
+            if minimum < -np.sqrt(np.finfo(np.float64).eps) * scale:
+                raise D82ProbeError("D82 covariance has non-roundoff negative energy")
+            jitter = max(0.0, tolerance - minimum)
+            repaired = covariance + jitter * np.eye(len(covariance), dtype=np.float64)
+            repaired_minimum = float(np.min(np.linalg.eigvalsh(repaired)))
+            if repaired_minimum <= 0.0:
+                raise D82ProbeError("D82 machine SPD repair failed")
+            records.append(
+                {
+                    "component_arm": component_arm,
+                    "dimension": int(len(covariance)),
+                    "minimum_eigenvalue_before": minimum,
+                    "maximum_eigenvalue_before": maximum,
+                    "machine_tolerance": tolerance,
+                    "diagonal_jitter": jitter,
+                    "jitter_over_maximum": jitter / scale,
+                    "minimum_eigenvalue_after": repaired_minimum,
+                    "formula": "max_zero_dim_eps_lambda_max_minus_lambda_min",
+                }
+            )
+            return repaired
+
+        try:
+            d43._structured_covariance = stabilized
+            coefficient, intercept, audit = component_fit(*args, **kwargs)
+        finally:
+            d43._structured_covariance = original
+        if len(records) != 1:
+            raise D82ProbeError("D82 expected one structured covariance repair audit")
+        record = records[0]
+        collector.append(record)
+        combined = dict(audit)
+        combined.update(
+            {
+                "d82_machine_spd_repair": record,
+                "d82_machine_spd_repair_parameter_count": 0,
+                "d82_machine_spd_repair_uses_outer_held_or_query": False,
+            }
+        )
+        return coefficient, intercept, combined
+
+    return fit
+
+
 def build_d82_fit(
     d42: Any,
     basis: np.ndarray,
@@ -148,6 +213,7 @@ def build_d82_fit(
     original_fit = d42._fit_equal_prior_lda
     original_builder = d43.build_structured_fit
     transform_records: list[dict[str, Any]] = []
+    spd_records: list[dict[str, Any]] = []
     basis_audit = {
         "basis_sha256": ground_audit["d82_basis_sha256"],
         "spectral_weight_sha256": ground_audit[
@@ -172,6 +238,7 @@ def build_d82_fit(
         if d42_arg is not d42 or arm != "block3_centered":
             raise D82ProbeError("D82 unexpected structured covariance request")
         base = original_builder(d42_arg, arm)
+        base = _build_machine_spd_stable_fit(base, arm, spd_records)
         return core.build_wiener_component_fit(
             base,
             basis,
@@ -234,6 +301,13 @@ def build_d82_fit(
                 "d82_rank_scan_count": 0,
                 "d82_weight_scan_count": 0,
                 "d82_optimizer_steps": 0,
+                "d82_machine_spd_repair_enabled": True,
+                "d82_machine_spd_repair_scope": "roundoff_only_block3_covariance",
+                "d82_machine_spd_repair_count": len(spd_records),
+                "d82_machine_spd_repair_max_jitter_over_maximum": max(
+                    (record["jitter_over_maximum"] for record in spd_records),
+                    default=0.0,
+                ),
                 "d82_single_affine_state_only": True,
                 "d82_actual_coefficient_fp32": np.asarray(
                     coefficient, dtype=np.float32
@@ -661,6 +735,5 @@ def main(argv: list[str] | None = None) -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-
 
 

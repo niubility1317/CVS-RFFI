@@ -48,3 +48,11 @@ z'_i = robust_center_y + [I - U diag(1-retention) U^T](z_i - mean_y)
 ## 完成结果
 
 待运行后补充完整总体、场景、逐类、fold、混淆、量化、训练、资源、机制审计、缺陷和最终结论。
+
+## 启动异常与最小修复
+
+- 封装尝试1在Python启动前失败：嵌套PowerShell变量被外层提前展开；输出目录不存在、query未打开、无性能数据。改为单层PowerShell，实验参数不变。
+- 封装尝试2在authority preflight fail-closed：误把`apply_staging_authority.json`传给`--before/after-formal-policy`，其中本地路径字段被runtime正确拒绝；输出目录不存在、query未打开、无性能数据。改用D18的path-free`formal_execution_policy.json`，seal和签名授权不变。
+- 尝试3通过authority并进入第一个support-only fit，但在query评分前因`D43 structured covariance is not positive definite`停止；只产生不完整输出，不能报告性能。根因是Wiener残差压缩使block3协方差出现机器舍入量级的非正定漂移。
+- 最小修复只对D82的block3协方差启用闭式机器精度SPD修复：`jitter=max(0,d·eps·lambda_max-lambda_min)`；若负能量超过`sqrt(eps)·lambda_max`仍fail-closed。该修复参数数0、不读held/query、不扫描、不改变D81/D62。
+- 修复后probe SHA256=`0a3233e602c28f6cd14b2dbe78fb3a1fc73f047bd8011c8387e15b1a822f1c27`；D82专项14/14、D62/D80/D81/D82相邻链49/49 PASS，`py_compile`与`git diff --check`PASS。下一次输出使用`ground_nuisance_wiener_residual_retry1/`，保留失败目录不覆盖。
