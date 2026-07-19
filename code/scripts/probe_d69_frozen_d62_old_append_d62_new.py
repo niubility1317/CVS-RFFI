@@ -299,9 +299,9 @@ def main(argv: list[str] | None = None) -> int:
         sys.modules.pop(runner_name, None)
     if exit_code != 0:
         return exit_code
-    if lifecycle is None or lifecycle.pending or lifecycle.completed_pairs != 15:
+    if lifecycle is None or lifecycle.pending or lifecycle.completed_pairs != 30:
         raise D69ProbeError("D69 lifecycle pair closure drift")
-    if len(lifecycle.records) != 30 or len(component_records) != 30 * 36:
+    if len(lifecycle.records) != 60 or len(component_records) != 30 * 36:
         raise D69ProbeError("D69 fit execution count drift")
     evidence = _verify_output(output, script_sha, helper_hashes)
     lifecycle_sha = hashlib.sha256(

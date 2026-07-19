@@ -97,4 +97,5 @@ def test_probe_source_has_no_ground_query_or_parameter_scan() -> None:
     assert "temperature" not in source
     assert "offset" not in source
     assert "threshold" not in source
-
+    assert "lifecycle.completed_pairs != 30" in source
+    assert "len(lifecycle.records) != 60" in source

@@ -50,3 +50,9 @@ D69不读取ground：D22仍为`formal_phase2_eligible=false`和`UNVERIFIED_UNDER
 已新增纯生命周期core、锁定runner probe和10项专项测试。专项10/10通过；D42–D69完整链335/335通过，用时81.1s。before输出直接来自D62且逐bit不改，final旧FP32行来自before冻结副本，新FP32行来自joint D62 final；编译结果还要求INT8/FP32旧state全部字段逐bit不变。当前只具代码/合成证据，不能推断真实性能，必须经干净worktree复跑和锁定105行outer实验后判定。
 
 实现提交`ca1f0336e32eed9768cabc861d8981890a5ae5be`已建立干净detached worktree；干净D42–D69完整链335/335再次通过，用时83.0s。真实运行命令和输出目录已在automation report预登记，下一步只能执行该锁定105行cell。
+
+## 真实结果
+
+runner完成105/105行；初版post-run verifier把precision-specific生命周期误计为15对而非30对，独立恢复器只读验证sealed artifact并补写metadata，没有重跑runner或改变预测。D69 INT8与matched FP32完全一致：B/A/N/H/F/J=92.78/81.67/74.67/77.39/11.11/30.00，min-B/A/N=80.00/53.33/53.33，混淆27/23/15。
+
+before精确复现D62；final旧行相对joint D62 old行的系数L2差均值27.3819，新行则精确等于joint D62 new行。相对D62，A/N/H分别下降0.56/10.00/5.24pp，F恶化0.56pp，新→旧增加15；虽然J提高3.33pp，但min-N下降20pp，属于明确交换伤害。最终状态为`COMPLETED_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE`，停止直接拼接、第二seed和125。
