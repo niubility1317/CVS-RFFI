@@ -33,3 +33,7 @@ query先执行D62全类打分。若其top-2的无序pair被接受，则仅用对
 独立core、锁定D62 probe和两个测试文件已实现。D71专项12/12、D42–D71全链357/357通过；全链用时82.8s。当前证据只证明公式、状态、协议和回归闭包，尚无outer性能。提交后必须在干净worktree复验，再按automation report登记的唯一命令运行真实105行。
 
 实现提交`8599f5a4`已建立detached clean worktree；干净D42–D71全链357/357再次通过，用时83.0s。真实105行的source SHA、输出目录、命令和调用闭包已在automation report锁定。
+
+真实105/105行已完成。D71 INT8/FP32均为B/A/N/H/F/J=91.11/82.22/84.00/82.33/8.89/26.67，min-B/A/N=83.33/53.33/73.33，混淆23/9/15。相对D62，A/J/class floor不变，但B−1.67pp、N−0.67pp、H−0.29pp、new→old+1；F−1.67pp完全由B先下降造成，不是after改善。
+
+final gate只有clear的3/15折active，low/rain全部精确D62；唯一final prediction变化在clear/fold1，以new5丢1个换旧→新减少2个。状态`COMPLETED_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE`，停止top-2 pair重排及其阈值/权重/温度/kNN变体。完整候选、场景、类别、fold、pair、训练、量化、资源和artifact见automation report与`d71_full_performance_summary.json`。
