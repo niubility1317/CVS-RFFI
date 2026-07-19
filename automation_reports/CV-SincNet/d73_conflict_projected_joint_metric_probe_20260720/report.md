@@ -106,3 +106,9 @@ D42–D73相邻完整链覆盖40个文件、377项测试，全部通过，退出
   --output 'E:\type10-7\automation_reports\CV-SincNet\d73_conflict_projected_joint_metric_probe_20260720\conflict_projected_joint_metric' `
   --device auto --mode development_select_unverified_component --candidate-set d42_v1
 ```
+
+## 11.启动与监控
+
+- 2026-07-20 00:30:24启动唯一一次真实执行，PID`20132`；Python命令行与锁定命令一致，working directory为clean worktree。
+- 启动后只读检查确认PID存活、输出目录已创建，launcher stdout/stderr暂为0B；这属于Runner早期阶段，不是性能或完成证据。
+- 当前转为离散只读监控；不重试、不覆盖输出。PID退出后才解析RECEIPT、105行闭包和完整artifact。
