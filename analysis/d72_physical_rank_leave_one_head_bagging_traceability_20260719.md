@@ -29,3 +29,7 @@ D62是当前同row联合最强，但A=82.22%、min-A=53.33%，错误集中于弱
 ## 停止边界
 
 真实105行若相对D62有任何联合交换伤害，或遗忘下降仅来自before下降，则路线负向关闭；不扫描bag权重、trim比例、median、bootstrap次数、温度或场景/角色mask。D72结束后先完成D70–D72回顾，再设计D73。
+
+## 实现状态
+
+core、probe和两组测试已完成。专项11/11、D42–D72相邻37文件完整链均通过；K8资源公式锁定每top-level fit新增16次D62 leave-one fit和512次闭式component fit，optimizer step仍为20，query额外MAC/state为0。真实outer尚未执行，不能由测试推断性能。

@@ -2,7 +2,7 @@
 
 ## 1.实验登记
 
-- 实验ID：`d72_physical_rank_leave_one_head_bagging_probe_20260719`；operator：Codex；状态：`PREREGISTERED_IMPLEMENTATION_PENDING`。
+- 实验ID：`d72_physical_rank_leave_one_head_bagging_probe_20260719`；operator：Codex；状态：`IMPLEMENTED_MAIN_CHAIN_VALIDATED_CLEAN_PENDING`。
 - 当前最强D62：B/A/N/H/F/J=`92.78/82.22/84.67/82.62/10.56/26.67`，min-B/A/N=`80.00/53.33/73.33`，混淆old→new/new→old/new→new=`23/8/15`。
 - 目标：保持D62旧域metric和全注册类统一评分语义，只降低K-shot联合LDA与D62行选择对单个physical-rank的方差；同时提高注册后旧类、新类、H、joint或通用floor，不得用注册前下降伪造低遗忘。
 - development cell固定receiver`20-1`、seed`713101`、K10/new5、3场景×5outer fold；D18 capsule实际每类K8。复用`VALIDATED_ONCE/p2_min_v1` enrollment-only数据，不重新验证未变化数据。
@@ -52,3 +52,10 @@ b_bag=(1/K) sum_r b_r
   - `analysis/d72_physical_rank_leave_one_head_bagging_traceability_20260719.md`。
 - 本地验证必须显式激活`ssr-gpu`，先专项测试，再运行D42–D72相邻完整链；运行前提交、建立clean worktree、记录脚本SHA和精确命令。
 - 不访问N607；真实development cell使用本地锁定Runner。输出目录必须在启动前不存在，失败目录不覆盖。
+
+## 6.实现与主工作树验证
+
+- 已实现D72 core、独立probe及两组测试；D62、D71及历史artifact均未修改。
+- K8时每个top-level fit新增before8次＋final8次D62 leave-one联合头，共16次；两个阶段各物理rank恰好held一次，inner K7。平均后只保留一个D42 residual-int8/FP16 affine state，query额外MAC/state均为0。
+- 专项测试首轮10/11通过；唯一失败是源码文本测试把必需运行时函数名`_bootstrap`误判为算法bootstrap。断言已收窄到不存在的`bootstrap_sample_indices`，算法、数据、分区、公式和资源路径均未改变；retry1为11/11通过。
+- D42–D72相邻37文件完整链通过，退出码0，用时80.9s。覆盖exact-once、类置换等变、K1精确回退、D62继承闭包、无角色/query分支及资源计数。下一步提交实现并在clean worktree复跑。
