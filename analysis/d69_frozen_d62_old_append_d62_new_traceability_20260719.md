@@ -48,3 +48,5 @@ D69不读取ground：D22仍为`formal_phase2_eligible=false`和`UNVERIFIED_UNDER
 ## 实现验证状态
 
 已新增纯生命周期core、锁定runner probe和10项专项测试。专项10/10通过；D42–D69完整链335/335通过，用时81.1s。before输出直接来自D62且逐bit不改，final旧FP32行来自before冻结副本，新FP32行来自joint D62 final；编译结果还要求INT8/FP32旧state全部字段逐bit不变。当前只具代码/合成证据，不能推断真实性能，必须经干净worktree复跑和锁定105行outer实验后判定。
+
+实现提交`ca1f0336e32eed9768cabc861d8981890a5ae5be`已建立干净detached worktree；干净D42–D69完整链335/335再次通过，用时83.0s。真实运行命令和输出目录已在automation report预登记，下一步只能执行该锁定105行cell。

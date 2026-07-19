@@ -2,7 +2,7 @@
 
 ## 1.执行前登记
 
-- 实验ID：`d69_frozen_d62_old_append_d62_new_probe_20260719`；operator：Codex；状态：`PREREGISTERED_IMPLEMENTATION_PENDING`。
+- 实验ID：`d69_frozen_d62_old_append_d62_new_probe_20260719`；operator：Codex；状态：`PREREGISTERED_IMPLEMENTATION_VALIDATED_PERFORMANCE_PENDING`。
 - 目标：保留当前联合最强D62的绝对跨类尺度，检验D65式Stage2-B旧行冻结能否减少注册遗忘，同时由D62同族final head提供新类行。
 - 当前最强D62：B/A/N/H/F/J=92.78/82.22/84.67/82.62/10.56/26.67，min-B/A/N=80.00/53.33/73.33，混淆23/8/15。
 - D68已完成105/105行并以B/A/N/H=58.89/51.67/14.00/18.66否决；其低F=7.22是注册前B先塌陷形成的伪改善。D68最终证据提交为`19c4603b`。
@@ -48,3 +48,33 @@ b_final=concat(b_B[old],b_C[new])
 - source SHA256：core`bb59c3828ce63cdd168c00fe26a2ca82a2d7a37fade8105dc57f1dc9e6ec3bbf`；probe`f999f02523d150eb11e3cb872acd3df35271b44a4e9df8fc21cbce325c2f37a1`；未修改的D62 helper`c685e60402b5b172a0b2ed77e647e3aa506048b759f637fd88dcfb31ca114bcd`。
 
 当前只有代码和合成验证，尚无真实outer性能。下一步提交精确文件，建立干净worktree并复跑335项；真实运行前继续保持状态`PREREGISTERED_IMPLEMENTATION_VALIDATED_PERFORMANCE_PENDING`。
+
+## 7.干净版本与真实运行命令
+
+- 实现提交：`ca1f0336e32eed9768cabc861d8981890a5ae5be`；干净worktree：`E:\type10-7\code\snapshots\d69wt`，detached HEAD为该提交且建立时`git status -sb`仅`## HEAD (no branch)`。
+- 干净worktree中D42–D69完整链335/335再次通过，用时83.0s；运行目录`E:\type10-7\local_artifacts\d69_clean_full_chain_335`。
+- 本轮真实实验在本地执行，不使用SSH/SCP/N607；Python为`C:\Users\lh594\.conda\envs\ssr-gpu\python.exe`。输出目录在登记时必须不存在，禁止覆盖或失败后原目录重跑。
+- 执行source SHA：probe`f999f02523d150eb11e3cb872acd3df35271b44a4e9df8fc21cbce325c2f37a1`、D69 core`bb59c3828ce63cdd168c00fe26a2ca82a2d7a37fade8105dc57f1dc9e6ec3bbf`、D62 helper`c685e60402b5b172a0b2ed77e647e3aa506048b759f637fd88dcfb31ca114bcd`。
+
+```powershell
+& 'C:\Users\lh594\.conda\envs\ssr-gpu\python.exe' `
+  'E:\type10-7\code\snapshots\d69wt\code\scripts\probe_d69_frozen_d62_old_append_d62_new.py' `
+  --d69-arm frozen_d62_old_append_d62_new `
+  --runtime-root 'E:\type10-7\code\snapshots\d41wt' --probe-root 'E:\type10-7\code\snapshots\d69wt' `
+  --before-root 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\phase2_capsule_k10_new5\predictor\before\enrollment_only' `
+  --before-seal 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\phase2_capsule_k10_new5\seals\before_enrollment.seal.json' --before-seal-sha256 53ace2863c9da6c2f6cc855d602c99f581df6de3d30a9a3ecb89eb6b6f0d9f75 `
+  --before-formal-policy 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\formal_execution_policy.json' `
+  --before-formal-policy-authorization 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\runtime_authorization_k10_new5\before_formal_policy_authorization.v2.json' `
+  --before-signed-policy-authorization-envelope 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\runtime_authorization_k10_new5\before_signed_policy_authorization_envelope.v2.json' --before-signed-policy-authorization-envelope-sha256 31a2ad9918f061b25d5a7ed0cc135df70ae02460c094b2f396bf314817bceb0e `
+  --after-root 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\phase2_capsule_k10_new5\predictor\after\enrollment_only' `
+  --after-seal 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\phase2_capsule_k10_new5\seals\after_enrollment.seal.json' --after-seal-sha256 c70aedf3a8f059e756806201758c1933a2f3e1ba4df415e69a1c776b1a2b50ff `
+  --after-formal-policy 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\formal_execution_policy.json' `
+  --after-formal-policy-authorization 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\runtime_authorization_k10_new5\after_formal_policy_authorization.v2.json' `
+  --after-signed-policy-authorization-envelope 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\runtime_authorization_k10_new5\after_signed_policy_authorization_envelope.v2.json' --after-signed-policy-authorization-envelope-sha256 a2483d6e9c9c362d89397029ff1e43f48358be3bdb3a05d717ee112b70a0be76 `
+  --component-dir 'E:\type10-7\automation_reports\CV-SincNet\d22_int8_anchor_lifecycle_20260717\input\int8_component' --component-manifest-sha256 15b5e144f9af3989421d8e925c17758479c327be47e79222f6363dc63994629c `
+  --class-binding 'E:\type10-7\github_publish\CVS-RFFI-repo\analysis\d19_adv3b02_class_binding_20260717.json' --class-binding-sha256 bb89a1dbb831acb374fccfc596ae98b660b496b449bdca577dabb962121c901f `
+  --output 'E:\type10-7\automation_reports\CV-SincNet\d69_frozen_d62_old_append_d62_new_probe_20260719\frozen_d62_old_append_d62_new' `
+  --device auto --mode development_select_unverified_component --candidate-set d42_v1
+```
+
+预期闭包：105行、30条目标candidate row、30个D69 fit audit配对、1080个D62 component fit记录；15个Stage2-C pair完成且无pending。before精确D62，final旧行INT8/FP32 state逐bit不变，新FP32行精确joint D62；ground实际输入0，query/clean/source/role/quota/global assignment访问0。任何断言失败均停止并保留原目录。
