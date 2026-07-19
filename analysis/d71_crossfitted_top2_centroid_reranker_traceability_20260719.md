@@ -31,3 +31,5 @@ query先执行D62全类打分。若其top-2的无序pair被接受，则仅用对
 ## 实现状态
 
 独立core、锁定D62 probe和两个测试文件已实现。D71专项12/12、D42–D71全链357/357通过；全链用时82.8s。当前证据只证明公式、状态、协议和回归闭包，尚无outer性能。提交后必须在干净worktree复验，再按automation report登记的唯一命令运行真实105行。
+
+实现提交`8599f5a4`已建立detached clean worktree；干净D42–D71全链357/357再次通过，用时83.0s。真实105行的source SHA、输出目录、命令和调用闭包已在automation report锁定。

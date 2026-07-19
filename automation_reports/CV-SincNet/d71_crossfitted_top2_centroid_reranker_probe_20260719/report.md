@@ -32,3 +32,33 @@ D71始终保留D62全类joint分数，只允许经过两折support-held pair非�
 - 两个D71测试文件共12项，覆盖partition、pair registry、第三类不变、空门、K1、INT8/FP32、active gate、非法support、D62 audit包装、state identity、协议与调用闭包；12/12通过。
 - D42–D71共36个测试文件、357/357通过，用时82.8s。pytest退出后仅出现Windows临时`pytest-current`清理`PermissionError`，命令exit0且全部测试已完成，判为已知包装清理噪声。
 - 当前尚无真实outer性能；下一步提交精确D71文件，建立干净worktree并复跑357项。干净链通过后才登记105行命令。
+
+## 6.干净版本与真实运行锁
+
+- 实现提交`8599f5a4`；干净worktree`E:\type10-7\code\snapshots\d71wt`为detached HEAD，`git status -sb`仅`## HEAD (no branch)`。
+- 干净D42–D71全链357/357通过，用时83.0s；同样只有exit0后的临时pytest目录清理噪声。
+- 实际checkout SHA：probe`ed4323551f91ed2652cac1ae7969d96c43e85bc504f75dadbd8cdca6e6435986`、core`79e4f192d55673a6ca9b140ead4e881f45a611f07cc1233610937525112d7c8e`、D62 helper`38ae1114a06d135bca806f470417cd28a634fec0da449888665c6843615d4a20`。
+- 本地运行，不使用N607。输出目录已验证不存在；禁止覆盖或原目录重跑。
+
+```powershell
+& 'C:\Users\lh594\.conda\envs\ssr-gpu\python.exe' `
+  'E:\type10-7\code\snapshots\d71wt\code\scripts\probe_d71_crossfitted_top2_centroid_reranker.py' `
+  --d71-arm crossfitted_top2_centroid_reranker `
+  --runtime-root 'E:\type10-7\code\snapshots\d41wt' --probe-root 'E:\type10-7\code\snapshots\d71wt' `
+  --before-root 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\phase2_capsule_k10_new5\predictor\before\enrollment_only' `
+  --before-seal 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\phase2_capsule_k10_new5\seals\before_enrollment.seal.json' --before-seal-sha256 53ace2863c9da6c2f6cc855d602c99f581df6de3d30a9a3ecb89eb6b6f0d9f75 `
+  --before-formal-policy 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\formal_execution_policy.json' `
+  --before-formal-policy-authorization 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\runtime_authorization_k10_new5\before_formal_policy_authorization.v2.json' `
+  --before-signed-policy-authorization-envelope 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\runtime_authorization_k10_new5\before_signed_policy_authorization_envelope.v2.json' --before-signed-policy-authorization-envelope-sha256 31a2ad9918f061b25d5a7ed0cc135df70ae02460c094b2f396bf314817bceb0e `
+  --after-root 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\phase2_capsule_k10_new5\predictor\after\enrollment_only' `
+  --after-seal 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\phase2_capsule_k10_new5\seals\after_enrollment.seal.json' --after-seal-sha256 c70aedf3a8f059e756806201758c1933a2f3e1ba4df415e69a1c776b1a2b50ff `
+  --after-formal-policy 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\formal_execution_policy.json' `
+  --after-formal-policy-authorization 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\runtime_authorization_k10_new5\after_formal_policy_authorization.v2.json' `
+  --after-signed-policy-authorization-envelope 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\runtime_authorization_k10_new5\after_signed_policy_authorization_envelope.v2.json' --after-signed-policy-authorization-envelope-sha256 a2483d6e9c9c362d89397029ff1e43f48358be3bdb3a05d717ee112b70a0be76 `
+  --component-dir 'E:\type10-7\automation_reports\CV-SincNet\d22_int8_anchor_lifecycle_20260717\input\int8_component' --component-manifest-sha256 15b5e144f9af3989421d8e925c17758479c327be47e79222f6363dc63994629c `
+  --class-binding 'E:\type10-7\github_publish\CVS-RFFI-repo\analysis\d19_adv3b02_class_binding_20260717.json' --class-binding-sha256 bb89a1dbb831acb374fccfc596ae98b660b496b449bdca577dabb962121c901f `
+  --output 'E:\type10-7\automation_reports\CV-SincNet\d71_crossfitted_top2_centroid_reranker_probe_20260719\crossfitted_top2_centroid_reranker' `
+  --device auto --mode development_select_unverified_component --candidate-set d42_v1
+```
+
+预期闭包：105行、30个目标row、30次top fit、120次inner D62、2280条component fit；before/final各30个pair audit，所有partition exact-once。pair只能交换D62 top-2，ground/query-fit/clean/source/role/quota访问0。
