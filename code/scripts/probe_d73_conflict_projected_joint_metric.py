@@ -261,7 +261,7 @@ class MetricRegistry:
                 + gradient_macs
             )
             resource = dict(result.resource_audit)
-            trace = list(resource.get("complete_loss_trace", []))
+            trace = [dict(item) for item in result.training_trace]
             if int(metric_audit["stage2c_step_count"]) == 1:
                 trace.append(
                     {

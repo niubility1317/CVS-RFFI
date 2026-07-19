@@ -124,3 +124,7 @@ D42–D73相邻完整链覆盖40个文件、377项测试，全部通过，退出
 R1验证与运行锁：主工作树40文件、377项全部通过，用时82.0秒；clean worktree`E:\type10-7\code\snapshots\d73r1wt`锁定commit`e319aa7e4c7b016e4294d361dd9117ca9914e72f`，同一377项全部通过，用时82.8秒，`py_compile`通过且worktree clean。R1执行SHA：probe=`b7d0584298285b4a05fb3d0d0dc733e210ab78ba1af4486858075a0f441e2180`、core=`bdb104ceb82c9f069499dd920b88599a455a65defdd3f622184bbe8dfbe2bd63`、D62 helper=`38ae1114a06d135bca806f470417cd28a634fec0da449888665c6843615d4a20`。00:37:42检查新输出目录不存在；GPU0显存`1106/16303MiB`、利用率0%。R1使用与第10节完全相同的数据/策略参数，只把`probe-root/script`改为`d73r1wt`、输出改为`conflict_projected_joint_metric_retry1`。
 
 R1于2026-07-20 00:38:53启动，PID`25576`。只读检查确认命令行、clean worktree、新输出目录和锁定参数一致，stderr为0B；转入只读离散监控，不再次启动。
+
+R1 Runner于00:41:51完成105/105行和6个标准artifact，RECEIPT状态为`DEVELOPMENT_SUPPORT_ONLY_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE`、query未打开、elapsed=172.5498秒；随后probe末尾以`D73 cap/training trace drift`拒绝生成metadata。检查目标行发现资源步数均正确为21，但`complete_loss_trace`只有D73第21步：R1从此阶段尚为空的`resource.complete_loss_trace`起始，而非D42 dataclass内已有的20步`result.training_trace`。
+
+该目录具备评分行但缺少完整20+1训练轨迹，故仍标记`COMPLETED_RUNNER_OUTPUT_REJECTED_BY_PROBE_INCOMPLETE_TRACE`，不得据此报告或选择性能。R2唯一修复为从`result.training_trace`复制原20步再追加第21步；metric、D62 refit、int8状态、预测与资源公式不变。R1目录和stderr原样保留，R2将使用新clean worktree和`conflict_projected_joint_metric_retry2`。
