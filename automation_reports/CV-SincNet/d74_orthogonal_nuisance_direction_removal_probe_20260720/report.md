@@ -29,3 +29,14 @@
 |candidate|机制|receiver/TX|K/seed|B|A|N|H|F|J|min-B/A/N|混淆|资源|判定|
 |---|---|---|---|---:|---:|---:|---:|---:|---:|---|---|---|---|
 |D74|rank-1非可逆nuisance删除＋D62 refit|20-1/new5|K10/713101|待跑|待跑|待跑|待跑|待跑|待跑|待跑|待跑|待跑|待跑|
+
+## 5.实现锁定
+
+|文件|用途|SHA256|
+|---|---|---|
+|`code/cvsrffi/stage2_d74_orthogonal_nuisance_removal.py`|中心span、类内残差SVD、rank-1投影和不变量审计|`6584e14a918b2217e96093feb2ffefbf60009257d16674913588931b8e455444`|
+|`code/scripts/probe_d74_orthogonal_nuisance_direction_removal.py`|D62包装、`W(I−uuT)`编译、资源/source/闭包|`3661618f848f94d29c3a188d68b6eba8de22ca0ad014cb55ceb9502db81ed375`|
+|`tests/test_stage2_d74_orthogonal_nuisance_removal.py`|非可逆、中心保护、置换等变、K1/fail-closed|`b292166f4278d683251e0e5f0a7ef18158867b76b4943c5703b4062ea10f5e5d`|
+|`tests/test_probe_d74_orthogonal_nuisance_direction_removal.py`|D62继承、资源公式、调用和协议闭包|`a4053995f901adb0a35ab61ea35fbe63b9a69798cc137e851cbf2667170187e5`|
+
+`ssr-gpu`专项测试8/8通过。D74不增加optimizer step/epoch；每个K8 final fit新增36个closed-form component fit，投影方向编译后不持久化，query额外MAC/state0。
