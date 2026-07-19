@@ -204,3 +204,21 @@ clear场景接近门槛，但low-elev的新类与rain的旧类分别成为主要
 - 停止重复：不得继续扫描共享尺度alpha/rank/阈值，也不得回到旧类ground中心融合、半径似然、role offset、Procrustes/transport或query batch统计。D64–D66已完成连续三轮，下一候选前必须执行强制回顾，重新核对目标、协议、既有路线和同一运行的注册前/后指标。
 
 最终artifact位于`ground_domain_reliability_residual_resource_r1`。关键SHA：training log=`da0a0f8b...2cc19`、receipt=`a046828f...934dc`、support audit=`4a6bc4dd...ce4c5`、geometry=`ae4b735a...00dc`、resource=`00f364e5...e2b`、D66专属完整摘要=`0ab1833c...e22b9`；共8个文件，无异常、错误marker或非有限值。
+
+## 15.D64–D66三轮强制技术回顾
+
+回顾时间为2026-07-19。已重新读取active goal、`项目.md`、`STAGE2_METHOD_RESEARCH_GOAL.md`及历史普查，刷新conversation index至1005条，并检索D62–D66、ground int8/forgetting、floor/new registration。完整重读D64、D65报告；D66专属摘要对D62/D64/D65的全部105行日志逐行解析，未用聊天记忆替代artifact。
+
+|轮次|单一机制|正信号|决定性失败|停止项|
+|---|---|---|---|---|
+|D64|全部匿名pair局部Block-LDA锦标赛|min-before86.67%、min-after60%、joint43.33%|新增类扩图重写旧几何，after74.44%、forget18.33pp|pair图、pair RMS/投票/阈值|
+|D65|冻结Stage2-B协方差与旧row，Stage2-C追加新row|after86.11%、forget6.11pp、min-after70%、旧→新16|旧类尺度不适合新类，new59.33%、min-new46.67%、新→旧28|freeze强度、旧协方差直接追加、full/block扫描|
+|D66|用84个ground int8域类cell形成全类共享可靠性坐标|before93.33%、after83.33%、forget10pp、旧→新20|相对D62的new/joint/min-new退化，final门控仅3/15激活，量化1个argmax变化|共享尺度alpha/rank/阈值及旧ground中心/半径/transport|
+
+共同根因不是资源、训练不收敛或量化存储不足，而是“注册一致性、旧类保持、新类标尺”三者没有同时成立。D64允许新增类重写旧几何；D65完全冻结旧几何却让新类落入错误标尺；D66只做全局坐标加权，无法提供每类support条件校正。真正可复用的正信号是：D62仍提供最强联合基座；D65证明不可变旧决策状态能显著减少遗忘；D64证明类局部信息能提高下尾，但不能依赖registry-size pair图；D66证明ground int8只能作弱、只读统计，不应强迫进入每个后续候选。
+
+协议复核通过：下一路线继续复用同一`VALIDATED_ONCE/p2_min_v1`D18 enrollment-only support；单物理样本单LEO观测、场景/支持互斥、query零更新、clean/source不可达、全注册类逐样本决策不变。Stage2-B注册前与Stage2-C注册后必须来自同run；old/new总体、11类floor、遗忘和混淆同等判门；禁止role/class ID/scene/receiver专属规则。
+
+第四轮决定为D67`crossfitted_registry_consistent_row_stacking`：不再训练新高维adapter，而把D62联合头与D65冻结追加头都视为“对每个注册类都存在”的两个仿射专家。每个匿名类用相同的inner leave-one-physical-rank公式，先按train-support的一对多正/负均值和RMS把两个专家行变为可比较尺度，再以class-balanced held残差的闭式凸权重在`[0,1]`内连续堆叠；full support重算归一化并把权重编译为单一全类affine state。权重不读取old/new角色、class ID、场景、receiver或outer-held/query，不设阈值、温度、扫描或难类名单。主要假设是：连续匿名行融合能保留D65的旧类稳定信号，同时在D65新类标尺失配时回到D62，而不像D62硬行门或D64扩图那样重写registry几何。
+
+D67的预期观察是相对D62同时提高after/forget/min-after且保持new/H/joint/min-new；失败条件为任一主指标、场景floor或混淆发生交换伤害，或INT8出现argmax/margin翻转。最小矩阵仍为当前development cell的七候选×三场景×五fold=105行；通过前不跑第二seed或125。D67不强行携带D66 ground尺度，因为D66已给出负增量证据；若D67获得真实联合正信号，ground只能作为随后独立matched弱正则ablation，不得回流调权。
