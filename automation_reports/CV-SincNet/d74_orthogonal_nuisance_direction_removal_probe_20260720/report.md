@@ -69,3 +69,8 @@
   --output 'E:\type10-7\automation_reports\CV-SincNet\d74_orthogonal_nuisance_direction_removal_probe_20260720\orthogonal_nuisance_direction_removal' `
   --device auto --mode development_select_unverified_component --candidate-set d42_v1
 ```
+
+## 7.启动与监控
+
+- 2026-07-20 01:24:12启动唯一执行，PID`23556`；只读命令行与锁定参数一致，stderr 0B。
+- 当前只读离散监控，不重复启动；进程退出后验证105行、projection audit、RECEIPT和metadata。
