@@ -27,6 +27,7 @@ d46, d45, d44, d43 = d61.d46, d61.d46.d45, d61.d46.d44, d61.d43
 
 
 ARM = "crossfitted_fisher_row_splice"
+CONFIRMATION_SEEDS = (713102, 713103, 713104, 713105, 713106)
 STRUCTURE = "d46_base_plus_crossfitted_bidirectional_safe_d61_affine_rows"
 FORMULA = "accept_c=TP1_c>=TP0_c and FP1_c<=FP0_c and strict; atomic joint; row_c=D61 else D46"
 if ARM not in d43.ARM_STRUCTURES:
@@ -37,6 +38,46 @@ if ARM not in d43.ARMS:
 
 class D62ProbeError(RuntimeError):
     pass
+
+
+def _install_confirmation_cell_guard(
+    runner_module: Any, confirmation_seed: int | None
+) -> Callable[..., Any] | None:
+    """Allow only preregistered D18 confirmation seeds on the locked D42 cell."""
+
+    if confirmation_seed is None:
+        return None
+    if confirmation_seed not in CONFIRMATION_SEEDS:
+        raise D62ProbeError(
+            f"D62 confirmation seed is not preregistered: {confirmation_seed}"
+        )
+    original = runner_module._require_d42_development_cell
+
+    def require_confirmation_cell(
+        before_manifest: dict[str, Any], after_manifest: dict[str, Any]
+    ) -> None:
+        old_classes = runner_module.legacy._registered_handles(before_manifest)
+        all_classes = runner_module.legacy._registered_handles(after_manifest)
+        if (
+            str(before_manifest.get("receiver"))
+            != runner_module.D42_DEVELOPMENT_RECEIVER
+            or str(after_manifest.get("receiver"))
+            != runner_module.D42_DEVELOPMENT_RECEIVER
+            or int(before_manifest.get("seed", -1)) != confirmation_seed
+            or int(after_manifest.get("seed", -1)) != confirmation_seed
+            or int(before_manifest.get("k_shot", -1)) != 10
+            or int(after_manifest.get("k_shot", -1)) != 10
+            or all_classes[: len(old_classes)] != old_classes
+            or len(all_classes) - len(old_classes)
+            != runner_module.D42_DEVELOPMENT_NEW_CLASS_COUNT
+        ):
+            raise runner_module.D25RunnerError(
+                "D62 confirmation cell must be receiver 20-1, "
+                f"seed {confirmation_seed}, K10, new5"
+            )
+
+    runner_module._require_d42_development_cell = require_confirmation_cell
+    return original
 
 
 def _partitions(labels: np.ndarray, class_count: int, k_shot: int) -> list[np.ndarray]:
@@ -516,6 +557,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--d62-arm", required=True, choices=(ARM,))
     parser.add_argument("--runtime-root", required=True, type=Path)
     parser.add_argument("--probe-root", required=True, type=Path)
+    parser.add_argument("--d62-confirmation-seed", type=int)
     known, runner_arguments = parser.parse_known_args(argv)
     d43._require_locked_runner_arguments(runner_arguments)
     output = d43._runner_output(runner_arguments)
@@ -530,8 +572,9 @@ def main(argv: list[str] | None = None) -> int:
     previous_sys_path, previous_argv = list(sys.path), sys.argv
     d42 = package = None
     original_path: tuple[str, ...] = ()
-    original_fit = original_macs = original_top = None
+    original_fit = original_macs = original_top = original_cell_guard = None
     runner_name, exit_code = "d62_locked_d42_runner", 1
+    runner_module = None
     call_records: list[dict[str, Any]] = []
     try:
         d42, package, original_path = d43._bootstrap(known.runtime_root, known.probe_root)
@@ -546,6 +589,9 @@ def main(argv: list[str] | None = None) -> int:
         runner_module = importlib.util.module_from_spec(runner_spec)
         sys.modules[runner_spec.name] = runner_module
         runner_spec.loader.exec_module(runner_module)
+        original_cell_guard = _install_confirmation_cell_guard(
+            runner_module, known.d62_confirmation_seed
+        )
         d43._install_runner_probe_guards(
             runner_module,
             arm=known.d62_arm,
@@ -562,6 +608,8 @@ def main(argv: list[str] | None = None) -> int:
             d42._lda_fit_macs = original_macs
         if d42 is not None and original_top is not None:
             d42.fit_d42_unified_shrinkage_lda = original_top
+        if runner_module is not None and original_cell_guard is not None:
+            runner_module._require_d42_development_cell = original_cell_guard
         if package is not None:
             package.__path__[:] = list(original_path)
         sys.modules.pop(runner_name, None)
@@ -580,6 +628,12 @@ def main(argv: list[str] | None = None) -> int:
         "arm": known.d62_arm,
         "formal_candidate": False,
         "probe_forced_nonpromotable": True,
+        "evaluation_role": (
+            "independent_confirmation"
+            if known.d62_confirmation_seed is not None
+            else "development"
+        ),
+        "confirmation_seed": known.d62_confirmation_seed,
         "selected_only_full_k10_refit_allowed": False,
         "query_opened": False,
         "probe_script_sha256": script_sha,

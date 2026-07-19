@@ -71,3 +71,5 @@
 - 第二次启动同样在query前fail-closed：seed713102使用新的匿名class handles，而命令仍传入seed713101的binding，触发`ADV3B02 class binding contract drift`；退出码1、无输出目录、无性能数据。
 - 已按D19既有离线边界生成seed713102专属binding：`analysis/d81_seed713102_adv3b02_class_binding_20260720.json`，SHA256=`5d191dd02038c6568c9787819be5efc8067323496ef0c80c2ef825a147803b65`。6个handle严格等于before package的有序注册表；Phase1 TX、direct-logit行hash和int8地面列顺序保持不变。
 - 用原D41 `_load_component`做真实组件加载验证通过：6类、25,428B逻辑状态；mapping来源仍为`offline_scorer_truth_sidecar_before_predictor_boundary`，`query_truth_exposed_to_predictor=false`。
+- D81 seed713102完整运行成功：耗时123.27秒，105/105 training rows；receipt seed=`713102`、query未打开、source closure不变。完整性能解析前先补跑同capsule的D62 matched baseline。
+- D62 probe同样增加显式`--d62-confirmation-seed`窄入口，验证规则与D81一致，未修改通用D42执行器；脚本SHA256=`39622a58e8b1b647577aa56ffd414f3efe50ed72bc821c2e15a590ecf9da694e`。D62/D80/D81相邻测试34/34 PASS，`py_compile`与`git diff --check`PASS。

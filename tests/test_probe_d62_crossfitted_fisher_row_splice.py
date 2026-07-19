@@ -106,6 +106,52 @@ def test_formula_has_no_role_or_tunable_weight() -> None:
     assert "alpha" not in lowered and "role" not in lowered
 
 
+def _confirmation_runner_stub():
+    def registered_handles(manifest):
+        return tuple(manifest["registered"])
+
+    def original_guard(_before, _after):
+        raise AssertionError("development guard must be replaced")
+
+    return SimpleNamespace(
+        _require_d42_development_cell=original_guard,
+        legacy=SimpleNamespace(_registered_handles=registered_handles),
+        D42_DEVELOPMENT_RECEIVER="20-1",
+        D42_DEVELOPMENT_NEW_CLASS_COUNT=5,
+        D25RunnerError=RuntimeError,
+    )
+
+
+def _confirmation_cell(seed=713102):
+    before = {
+        "receiver": "20-1",
+        "seed": seed,
+        "k_shot": 10,
+        "registered": ("old0", "old1"),
+    }
+    after = {
+        **before,
+        "registered": (*before["registered"], "n0", "n1", "n2", "n3", "n4"),
+    }
+    return before, after
+
+
+def test_confirmation_guard_accepts_only_exact_preregistered_cell() -> None:
+    runner = _confirmation_runner_stub()
+    original = d62._install_confirmation_cell_guard(runner, 713102)
+    assert original is not None
+    runner._require_d42_development_cell(*_confirmation_cell())
+    with pytest.raises(RuntimeError, match="D62 confirmation cell"):
+        runner._require_d42_development_cell(*_confirmation_cell(713103))
+
+
+def test_confirmation_guard_rejects_unregistered_seed_before_install() -> None:
+    runner = _confirmation_runner_stub()
+    with pytest.raises(d62.D62ProbeError, match="not preregistered"):
+        d62._install_confirmation_cell_guard(runner, 713101)
+    assert d62._install_confirmation_cell_guard(runner, None) is None
+
+
 def test_built_fit_records_all_outer_and_inner_components() -> None:
     def base_fit(rows, labels, class_count, k_shot):
         values = np.asarray(rows, dtype=np.float64)
