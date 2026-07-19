@@ -47,3 +47,11 @@ D46/D62使用全注册类共享协方差，再按类融合full/block分数。D62
 - 测试：`tests/test_probe_d64_allpairs_blocklda_tournament.py`。
 - 输出：`automation_reports/CV-SincNet/d64_allpairs_blocklda_tournament_probe_20260719/allpairs_blocklda_tournament`。
 - 本地`ssr-gpu`验证并从detached clean worktree运行；本轮不访问N607。
+
+## 7.执行结果与路线裁决
+
+D64在修复不改变公式的状态字段闭包后完成105/105行、2100次pair fit、query0。总体before92.78%、after74.44%、new77.33%、H75.39%、forgetting18.33pp、joint43.33%、min-before86.67%、min-after60%、min-new66.67%、混淆37/16/18。相对D62，before持平且class-level min-before/min-after各提高6.67pp，但after−7.78pp、new−7.33pp、H−7.23pp、forgetting+7.78pp，三类混淆分别+14/+8/+3；三个场景均有关键指标退化。
+
+所有二类pair在support上100%正确，final编译support准确率均值99.02%，量化argmax/sign flip为0；然而held注册后显著退化。协方差条件数达到5.76e4–1.11e6，且6类到11类注册会把每个旧row从15-pair体系重写到55-pair体系。证据支持“局部pair过拟合＋registry-size不一致”，不支持量化或拟合不足解释。
+
+状态固定为`COMPLETED_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE`。停止全pair局部协方差、RMS pair权重、pair阈值、投票和full/diagonal变体；D62继续作为聚合最强开发点。下一路线必须使每类row只依赖该类support的同一类无关公式，新增类不得重写既有row，同时保持单一int8 affine query。
