@@ -40,3 +40,5 @@ development cell固定receiver`20-1`、seed`713101`、K10/new5、三场景×五o
 真实runner已完成105/105行并写出完整基础artifact，随后在metadata前因预估fit记录30、实测60而退出。原因是INT8与matched FP32目标路径各自执行before/final；每次D67 fit含92个nested D62 component记录，所以真实闭包应为60/5,520。原执行脚本SHA为`5a6baa86b29f44b7553c4d81cd898ee152ce2b52688fab09bddd131700a97872`。
 
 对既有输出调用原脚本只读verifier已通过105行、30条目标candidate row、60个fit audit、240个cross-fit partition和query0；alpha范围0～0.216726、均值0.025459。PostRun-R1只修计数并增加既有输出封存模式，不改变公式、support、预测、资源或已有artifact，也不重新运行实验。完整性能在封存后另行解析。
+
+首次封存尝试因当前主工作树与执行用干净worktree的换行字节SHA不同而在metadata前fail closed。封存器现只从`executed-probe-script`所属root读取D62、D65和D67 core并核对原candidate lock，不再错误使用当前工作树helper字节；SHA检查本身未放宽。

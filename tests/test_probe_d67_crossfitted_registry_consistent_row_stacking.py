@@ -129,3 +129,18 @@ def test_real_runner_count_constants_cover_both_precision_paths() -> None:
         d67.EXPECTED_REAL_FIT_COUNT * d67.D62_COMPONENT_RECORDS_PER_K8_FIT
         == 5520
     )
+
+
+def test_helper_hashes_are_resolved_from_the_executed_probe_root() -> None:
+    hashes = d67._helper_hashes_for_probe_root(ROOT)
+    assert hashes == {
+        "d67_d62_helper_sha256": d67.d43._sha256(
+            ROOT / "code" / "scripts" / d67.D62_HELPER_PATH.name
+        ),
+        "d67_d65_helper_sha256": d67.d43._sha256(
+            ROOT / "code" / "scripts" / d67.D65_HELPER_PATH.name
+        ),
+        "d67_core_sha256": d67.d43._sha256(
+            ROOT / "code" / "cvsrffi" / d67.CORE_PATH.name
+        ),
+    }

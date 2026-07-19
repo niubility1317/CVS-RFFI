@@ -98,3 +98,5 @@ g_out,c(x) = center_62,c + scale_62,c * h_c(x)
 - PostRun-R1只把正常执行的预期计数修正为60/5,520，并新增`--verify-existing --executed-probe-script`模式。该模式要求既有105行输出和原执行脚本source closure完整、metadata尚不存在，只写新的D67 metadata；不拟合、不预测、不覆盖任何已有artifact。
 
 原第6节“30个fit/2,760记录”的预估现由实测调用结构更正为60个fit/5,520记录。性能仍须在PostRun-R1封存后完整解析，不能从receipt负状态或alpha分布单独判断缺陷。
+
+PostRun-R1首次封存尝试在metadata写入前被source closure拒绝：当前主工作树因Git换行策略产生的D62/D65/core字节SHA与执行用干净worktree不同。修复为从`--executed-probe-script`所属probe root解析并哈希三项helper；不接受当前工作树替代执行字节，也不放宽SHA。该失败未写或覆盖任何artifact。

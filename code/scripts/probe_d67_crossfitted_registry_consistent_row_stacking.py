@@ -56,6 +56,21 @@ class D67ProbeError(RuntimeError):
     pass
 
 
+def _helper_hashes_for_probe_root(probe_root: Path) -> dict[str, str]:
+    root = probe_root.resolve()
+    return {
+        "d67_d62_helper_sha256": d43._sha256(
+            root / "code" / "scripts" / D62_HELPER_PATH.name
+        ),
+        "d67_d65_helper_sha256": d43._sha256(
+            root / "code" / "scripts" / D65_HELPER_PATH.name
+        ),
+        "d67_core_sha256": d43._sha256(
+            root / "code" / "cvsrffi" / CORE_PATH.name
+        ),
+    }
+
+
 def _d65_expert(
     d42: Any,
     rows: np.ndarray,
@@ -524,11 +539,8 @@ def main(argv: list[str] | None = None) -> int:
         if metadata_path.exists():
             raise D67ProbeError("D67 metadata already exists; refusing overwrite")
         executed_script_sha = d43._sha256(executed_script)
-        helper_hashes = {
-            "d67_d62_helper_sha256": d43._sha256(D62_HELPER_PATH),
-            "d67_d65_helper_sha256": d43._sha256(D65_HELPER_PATH),
-            "d67_core_sha256": d43._sha256(CORE_PATH),
-        }
+        executed_probe_root = executed_script.parents[2]
+        helper_hashes = _helper_hashes_for_probe_root(executed_probe_root)
         evidence = _verify_output(output, executed_script_sha, helper_hashes)
         fit_count = int(evidence["verified_d67_fit_audit_count"])
         if fit_count != EXPECTED_REAL_FIT_COUNT:
@@ -568,11 +580,7 @@ def main(argv: list[str] | None = None) -> int:
     if output.exists():
         raise D67ProbeError(f"D67 output already exists: {output}")
     script_sha = d43._sha256(Path(__file__).resolve())
-    helper_hashes = {
-        "d67_d62_helper_sha256": d43._sha256(D62_HELPER_PATH),
-        "d67_d65_helper_sha256": d43._sha256(D65_HELPER_PATH),
-        "d67_core_sha256": d43._sha256(CORE_PATH),
-    }
+    helper_hashes = _helper_hashes_for_probe_root(known.probe_root)
     previous_sys_path, previous_argv = list(sys.path), sys.argv
     d42 = package = None
     original_path: tuple[str, ...] = ()
