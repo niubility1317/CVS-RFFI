@@ -120,3 +120,38 @@ O3仍是after-old瓶颈53.33%；N0由D62的73.33%降至63.33%，构成全局min-
 ## 11.与项目门槛差距及下一步
 
 D63相对K10目标仍差after9.22pp、min-old34.67pp、new5 10.00pp；且只是一receiver、一seed开发单元，不能作正式性能声明。D63停止后必须执行D61–D63三轮回顾，重新核对目标、`项目.md`、对话索引、完整报告与日志，再选择不同机制；不得把jackknife强度改成可调阈值继续扫描。
+
+## 12.D61–D63强制技术复盘
+
+### 12.1权威文件、索引与完整日志
+
+复盘重新完整读取活动goal objective、`项目.md`、`PROJECT_PROTOCOL.md`、`PHASE2_DATA_VALIDATION_APPENDIX.md`、`STAGE2_METHOD_RESEARCH_GOAL.md`和历史普查。conversation index于2026-07-19刷新为1008条，并搜索`D63`、`crossfitted Fisher`、`D58 D59 D60 D61 D62`、`support held query 泛化 old new 注册 遗忘`。当前活动会话尚未形成可检索的D61–D63摘要，因此索引只用于排除历史重复路线，当前性能以落盘report、training log、summary和metadata为权威。
+
+我们递归枚举D61-R1、D62、D63三个run目录并完整解析全部结构化artifact。每个run均包含7个JSON、1个JSONL、105条training row、7候选、15条INT8目标row和完整epoch1–20；三轮共解析315条training row，没有JSON错误、NaN或Inf，所有目标trace的query rows总和均为0。D61/D62的完整summary stdout未出现Traceback、RuntimeError、Exception、OOM、Killed或warning marker；D63进程exit0且RECEIPT/metadata闭包。没有只读tail或抽样替代全日志解析。
+
+历史普查中“D36只有设计/core证据”已被当前D36主报告推翻：本地`ssr-gpu`105行筛选已完成，D36-A/B/C均为性能负结果。后续路线以当前报告为准，不再把D36联合对角/rank-2连续margin作为未验证候选重复执行。
+
+### 12.2三轮同row比较
+
+|版本|单一机制|before|after|new|H|forget|joint|min-before|min-after|min-new|混淆|资源/量化|判定|
+|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|---|
+|D46|类级inner-LOO full/block可靠度融合|92.22%|81.67%|84.67%|82.33%|10.56pp|23.33%|80.00%|53.33%|73.33%|25/8/15|约1.07B LDA MAC；量化0/0/0|三轮基准|
+|D61|共享identity-primary Fisher残差|90.00%|83.33%|76.00%|78.96%|6.67pp|26.67%|76.67%|60.00%|43.33%|18/16/20|约7.96B MAC；final argmax翻转1|旧类保护、新类塌缩|
+|D62|inner-held TP/FP Pareto匿名行拼接|92.78%|82.22%|84.67%|82.62%|10.56pp|26.67%|80.00%|53.33%|73.33%|23/8/15|约24.89B MAC；量化0/0/0|当前聚合最强，场景交换|
+|D63|leave-one-fold稳定Pareto行拼接|93.33%|82.78%|82.00%|81.65%|10.56pp|23.33%|80.00%|53.33%|63.33%|21/11/16|约24.89B MAC；量化0/0/0|旧类小升、新类下尾退化|
+
+D61证明共享Fisher方向能减少旧类遗忘和old→new侵入，但同一方向把N0压到43.33%，不能作为联合空间主变换。D62最有价值的正证据来自clear-fold3：after91.67%→100%、forget8.33pp→0、joint50%→100%，new保持100%；然而low forgetting恶化3.33pp、rain before下降1.67pp，说明总体support TP/FP门没有场景泛化能力。D63将154个总体候选行剔除82个并消除联合原子回退，却保留72行、比D62的46行更多；稳定的support分类行仍使N0下降10pp。三轮共同否证“继续改support安全门即可解决held old/new联合边界”。
+
+### 12.3协议与目标核对
+
+- 三轮均复用匹配`VALIDATED_ONCE/p2_min_v1`的固定接收IQ，不访问clean/source，不生成第二LEO观测。
+- 所有公式对类别置换等变，无class ID、old/new角色、场景、receiver、query真值、真实batch类数、quota或global assignment分支。
+- query逐样本面对全部注册类；query fit/use计数为0；target-old/new走同一正式int8/FP16 affine state。
+- 三轮都同时报告before-old、after-old、new、H、forgetting、全部旧/新类、三场景、15fold和混淆，没有只优化Stage2-B或只优化Stage2-C。
+- D62离K10正式门仍差after9.78pp、min-old34.67pp、new5 7.33pp；没有版本满足启动125的研发门，125继续不运行。
+
+### 12.4停止路线与下一机制
+
+停止共享Fisher全量替换、TP/FP匿名行拼接、jackknife强度/阈值扫描、角色或场景mask。结合D58–D60复盘，一并停止类score幅度/截距校准、full↔block协方差位置扫描和跨块谱扫描。D36的联合对角/rank-2梯度头也已由当前105行报告否证，不能当作未测路线重启。
+
+下一轮D64改换为全注册类连续局部判别机制：对每一对匿名类别使用完全相同的3-block auto-shrinkage二类LDA，在该pair support上以margin RMS无参数归一化，再将全部有向pair margin平均编译回每类一个affine row。它与D46的单一主要差异是“全局共享协方差＋逐类full/block权重”改为“全部pair局部协方差＋连续全pair tournament”，不是hard gate、行替换或角色路由。最终仍只有单一int8/FP16 affine state，query不保留pair图、不做联合优化。预期信号是同时降低old→new/new→old/new→new并抬升O3/N0/N2下尾；若任一场景或new/H/floor相对D62/D46受损，D64立即停止，不扫描pair阈值、投票权重或full/block变体。
