@@ -277,3 +277,21 @@ D85相对项目K10/new5目标仍缺`A=9.22pp`、`minA=34.67pp`、`N=7.33pp`；ra
 - `RECEIPT.json`：SHA256=`152e0a62c323fea39b791b375928b06315c672f90e3f3cad6620253086f9384c`。
 - `D85_PROBE_METADATA.json`：SHA256=`688d97d4f05a56ec4940a06df96a5955d1d408e96c5766de7f04b755ad7a6d02`。
 - `d85_full_performance_summary.json`：82,282B，SHA256=`789dae9bc9adf5094577958b968d7325ec5fa97cb7ce3dbac90ccc2c131a5673`。
+
+## D83–D85三轮强制技术复盘
+
+复盘时间为2026-07-20。已重新读取active goal与`项目.md`，刷新conversation index至1,008条，并检索地面压缩原型、radius、遗忘和floor；重新核对D83/D84/D85报告及三份完整105行日志，日志SHA分别为`a1771d71...5d5d24`、`679758e1...88fb3`、`b0e86081...f88ac3`。
+
+|轮次|单一机制|有效经验|决定性缺陷|停止项|
+|---|---|---|---|---|
+|D83|逐cell地面精度进入rank-14共享协方差loading|证明地面谱能稳定改变连续分数|15/15预测不变，额外114.26M MAC无收益|协方差loading强度/rank扫描|
+|D84|跨6个地面类提取14个类无关domain漂移模板，以Cauchy样本权重修正target中心|相同离散性能下，ground相关MAC较D83降80.7%|仍是全类共享平移，缺少纠错方向|继续改全局共识权重或放大平移|
+|D85|真实v2 rank-3残差+p90 radius校准domain模板|组件状态降77.13%，radius非退化且与domain drift相关|1个before接纳mask改变，但15/15最终预测仍不变|radius只压成单一domain权重、参数扫描|
+
+三轮共同结论：地面原型最有价值的信息不是旧类绝对中心，而是“合法source域内，特征沿哪些方向会漂移、漂移多宽”。D83把它变成统一协方差，D84/D85把它变成统一中心平移，都在最终类边界前被吸收。下一轮必须让地面信息直接约束support形成的分类margin，同时对旧类和新类使用同一公式；否则只能继续得到连续变化而无离散纠错。
+
+协议复核通过：下一候选仍复用相同`VALIDATED_ONCE/p2_min_v1`D18数据；地面v2组件只读，单物理样本单LEO观测不变。基于固定received IQ的feature counterfactual只能作为同一support样本的数学扰动正则，不增加K、不进入support-held划分计数；query不生成扰动、不更新状态。不得使用ground→target-new身份映射、old/new角色、query truth、class quota、clean/source样本或跨query图。
+
+第四轮锁定为D86`ground_radius_counterfactual_consistency`：从v2组件重构14个类无关domain漂移向量，并以对应跨类p90半径给每个方向确定唯一、无扫描的扰动幅度。对每个target support向量`z_i`构造对称数学扰动`z_i±sqrt(2r_d)u_d`，但仍把整组视为同一physical sample；在inner leave-one-physical-rank范围内最小化原support分类损失与对称扰动logit一致性，随后编译成单一INT8 affine head。对称正负扰动的一阶均值为0，不引入D78未中心化的类偏置；所有注册类与所有support样本同式，新类也直接受益。
+
+D86相对D85的唯一主要变化是：ground radius不再决定“相信哪个地面domain并移动target中心”，而是定义“目标分类器必须抵抗多大的合法source域方向扰动”。预期信号是outer prediction至少1/15改变，且相对D81/D85不降低N、min-N或任一场景floor，同时改善A、F、min-A或混淆；若仍0/15变化，或重现D78/D79的old提升换new下降，立即淘汰，不进行seed2/125。计算目标为ground预处理<0.5M MAC、额外训练<5% D62、query额外MAC/state=0，持久状态保持14,399B以内。
