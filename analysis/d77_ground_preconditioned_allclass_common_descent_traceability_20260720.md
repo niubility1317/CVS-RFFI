@@ -24,16 +24,22 @@ D19/D25把地面旧类中心或半径直接送入分类，造成严重old/new尺
 
 |ID|来源|可验收要求|目标文件|状态|验证|备注|
 |---|---|---|---|---|---|---|
-|D77-R1|地面统计|只读校验D19/D22 int8组件，84个有效cell；产生几何均值归一的160维正定预条件器|`code/cvsrffi/stage2_d77_ground_preconditioned_common_descent.py`、probe loader|pending|待组件SHA、只读、域/类置换测试|当前组件formal资格为false，运行只能是诊断|
-|D77-R2|OOF梯度|按8个物理rank拟合K−1 LDA，从88个held support聚合11个类CE梯度|core模块|pending|待fold闭包和有限值测试|query、outer-held、ground class role均不可达|
-|D77-R3|M-共同下降|20次固定Frank-Wolfe求M范数最小组合，并列vertex平均|core模块|pending|待确定性、类置换等变和objective trace测试|不扫描迭代数或权重|
-|D77-R4|解析安全更新|解析Lipschitz步长、类无关trust cap；每类OOF CE非增，退化点才identity fallback|core模块|pending|待逐类CE与正确数审计|无二元候选门|
-|D77-R5|D62 final-row集成|只更新D62最终行系数，intercept不变，不refit，编译INT8/FP32 matched state|`code/scripts/probe_d77_ground_preconditioned_allclass_common_descent.py`|pending|待支持分数和量化审计|before状态保持D62|
-|D77-R6|资源闭包|D42 20step＋Frank-Wolfe20step=`40<=50`；epoch20；参数<80k；组件含总状态<256KB；query额外MAC/state0|probe与artifact|pending|待精确MAC、状态和loss trace验证|地面组件25,428B计入主状态|
-|D77-R7|协议闭包|单LEO_weak、support-only、全注册类对称；clean/source/query truth/role/quota/global assignment/dense query graph访问0|probe、测试、RECEIPT|pending|待105行闭包|复用D18 `VALIDATED_ONCE/p2_min_v1`|
+|D77-R1|地面统计|只读校验D19/D22 int8组件，84个有效cell；产生几何均值归一的160维正定预条件器|`code/cvsrffi/stage2_d77_ground_preconditioned_common_descent.py`、probe loader|implemented|专项正定、几何均值、只读测试通过；真实组件闭包待run|当前组件formal资格为false，运行只能是诊断|
+|D77-R2|OOF梯度|按8个物理rank拟合K−1 LDA，从88个held support聚合11个类CE梯度|core模块|verified|合成fold、held行数、确定性和有限值测试通过|query、outer-held、ground class role均不可达|
+|D77-R3|M-共同下降|20次固定Frank-Wolfe求M范数最小组合，并列vertex平均|core模块|verified|20步trace、确定性和类置换等变测试通过|不扫描迭代数或权重|
+|D77-R4|解析安全更新|解析Lipschitz步长、类无关trust cap；每类OOF CE非增，退化点才identity fallback|core模块|verified|逐类CE非增、至少一类严格下降、K1精确回退测试通过|无二元候选门|
+|D77-R5|D62 final-row集成|只更新D62最终行系数，intercept不变，不refit，编译INT8/FP32 matched state|`code/scripts/probe_d77_ground_preconditioned_allclass_common_descent.py`|implemented|probe专项与D42–D77相邻回归通过；真实量化审计待run|before状态保持D62|
+|D77-R6|资源闭包|D42 20step＋Frank-Wolfe20step=`40<=50`；epoch20；参数<80k；组件含总状态<256KB；query额外MAC/state0|probe与artifact|implemented|MAC加总与34,011B runner覆盖测试通过；真实30行资源待run|地面组件25,428B计入主状态|
+|D77-R7|协议闭包|单LEO_weak、support-only、全注册类对称；clean/source/query truth/role/quota/global assignment/dense query graph访问0|probe、测试、RECEIPT|implemented|静态协议锁与相邻回归通过；RECEIPT待run|复用D18 `VALIDATED_ONCE/p2_min_v1`|
 |D77-R8|完整开发实验|receiver`20-1`、seed`713101`、K10/new5、3场景×5fold、7候选105行|run与summarizer|pending|待完整日志解析|actual outer-fit K8|
 |D77-R9|性能晋级门|相对D62，`A/N/H/min-A/min-N`不退化、`F`不升且至少一项严格改善；混淆无交换伤害|summarizer与报告|pending|待同row判定|失败即关闭，不开第二seed或125|
-|D77-R10|正式资格门|只有联合封存、外部authority签名通过的ground bundle才能产生formal claim|loader、报告|pending|待正式bundle artifact|当前D19组件不能满足此项|
+|D77-R10|正式资格门|只有联合封存、外部authority签名通过的ground bundle才能产生formal claim|loader、报告|blocked|当前磁盘无外部authority签名的联合bundle；probe强制`formal_candidate=false`|当前D19组件不能满足此项|
+
+## 本地实现验证
+
+- `ssr-gpu`下core/probe `py_compile`通过；专项9/9通过。
+- D42–D77相邻47文件、424项全部通过，用时85.4秒。
+- `test_run_d25_support_only_concat.py`的2个源码字符串断言在D76未修改干净worktree同样失败；D77未修改D25 runner，判定为既有基线漂移，不计作D77回归。
 
 ## 效率与创新性
 

@@ -32,3 +32,16 @@ D66证明静态地面可靠性缩放能略微保护旧类，却压低新类与ne
 ## 5.版本与运行占位
 
 `E:\type10-7`根目录不是Git仓库；代码、追溯和Git版报告进入`E:\type10-7\github_publish\CVS-RFFI-repo`，根报告镜像到本目录。实现后补录commit、clean worktree、测试、运行命令、PID/GPU、完整105行、逐场景/逐类/15fold/混淆/量化/资源表和最终判定。
+
+## 6.本地实现与验证
+
+|文件|作用|
+|---|---|
+|`code/cvsrffi/stage2_d77_ground_preconditioned_common_descent.py`|地面正定预条件器、8折OOF类梯度、20步M-Frank-Wolfe、解析步长与trust cap|
+|`code/scripts/probe_d77_ground_preconditioned_allclass_common_descent.py`|D62 final-row集成、INT8/FP32编译、协议/资源/105行闭包|
+|`tests/test_stage2_d77_ground_preconditioned_common_descent.py`|确定性、逐类CE安全、类置换等变、K1回退|
+|`tests/test_probe_d77_ground_preconditioned_allclass_common_descent.py`|公式、固定20步、MAC加总、34,011B状态和协议字段|
+
+- `ssr-gpu`下core/probe `py_compile`通过；专项9/9通过。
+- D42–D77相邻47文件、424项全部通过，用时85.4秒。
+- D25旧测试的2个源码字符串断言在D76未修改干净worktree同样失败；D77未改D25 runner，属于既有基线漂移。
