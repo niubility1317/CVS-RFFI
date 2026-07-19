@@ -44,3 +44,7 @@ b_final=concat(b_B_old,b_C_new)
 先复用receiver`20-1`、seed`713101`、K10/new5、三场景×五outer fold、实际K8的D18`VALIDATED_ONCE/p2_min_v1`support capsule，执行完整105行和15个D69 INT8＋15个matched FP32目标row。必须报告7候选、3场景、11类、15fold、训练、量化、资源和D62/D65/D66/D67/D68同排差异。
 
 D69不读取ground：D22仍为`formal_phase2_eligible=false`和`UNVERIFIED_UNDER_CURRENT_PROTOCOL`。D66已真实读取84个int8 ground cell但产生N/floor负交换，不能把ground访问次数当作性能贡献。D69的ground、query、clean/source、role、quota和跨query优化访问必须全部为0。
+
+## 实现验证状态
+
+已新增纯生命周期core、锁定runner probe和10项专项测试。专项10/10通过；D42–D69完整链335/335通过，用时81.1s。before输出直接来自D62且逐bit不改，final旧FP32行来自before冻结副本，新FP32行来自joint D62 final；编译结果还要求INT8/FP32旧state全部字段逐bit不变。当前只具代码/合成证据，不能推断真实性能，必须经干净worktree复跑和锁定105行outer实验后判定。
