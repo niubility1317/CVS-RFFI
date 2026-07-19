@@ -15,7 +15,7 @@
 
 - `p2_min_v1`、D18匹配`VALIDATED_ONCE` capsule、receiver`20-1`、seed`713101`、K10/new5、3场景×5fold，outer-fit实际K8。
 - 单LEO_weak观测、support-only、query逐样本全注册类argmax；无clean/source/query truth/role/quota/global assignment。
-- before精确D62；final在D42特征中删除一个与中心化类均值span正交的最大类内残差方向，D62 refit后把投影编译进单一int8头。
+- before精确D62；final在D42特征中删除一个与中心化类均值span正交的最大类内残差方向，冻结D62 final头并把`W(I−uuT)`编译进单一int8头。
 - rank固定1，无阈值、强度、场景、类、角色或结果扫描；地面组件输入0。
 
 ## 3.开发门
@@ -39,7 +39,7 @@
 |`tests/test_stage2_d74_orthogonal_nuisance_removal.py`|非可逆、中心保护、置换等变、K1/fail-closed|`b292166f4278d683251e0e5f0a7ef18158867b76b4943c5703b4062ea10f5e5d`|
 |`tests/test_probe_d74_orthogonal_nuisance_direction_removal.py`|D62继承、资源公式、调用和协议闭包|`a4053995f901adb0a35ab61ea35fbe63b9a69798cc137e851cbf2667170187e5`|
 
-`ssr-gpu`专项测试8/8通过。D74不增加optimizer step/epoch；每个K8 final fit新增36个closed-form component fit，投影方向编译后不持久化，query额外MAC/state0。
+`ssr-gpu`专项测试8/8通过。首次实现预期增加D62 refit，但R1因严格降秩与D43 SPD前提不兼容而改为冻结强头；R1不增加closed-form fit、optimizer step或epoch，投影方向编译后不持久化，query额外MAC/state0。
 
 ## 6.完整验证与运行锁
 
@@ -47,7 +47,7 @@
 - 主工作树与clean worktree的D42–D74相邻42文件、385项测试均通过，用时82.7/82.9秒；core/probe `py_compile`通过。
 - clean执行SHA：probe=`e65db3025fc9bd834ff530544b23f9d5b8a935e5567a8b5675b20533f7056fe4`、core=`2f098c8c3311ce0da9a62ace354c3c005d68da1161a82a265e70976d221e0f2f`、D62 helper=`38ae1114a06d135bca806f470417cd28a634fec0da449888665c6843615d4a20`。
 - 01:22:35启动前输出目录不存在；GPU0 RTX5070Ti显存`954/16303MiB`、利用率0%。本轮本地执行，不访问N607。
-- 预期闭包：105行、30目标行、30 top fit、30额外D62 final refit、1620 component execution、30份rank-1投影audit、ground/query-fit/clean/source/role/quota访问0。
+- 首次启动预期闭包已由R1替代；R1锁定为105行、30目标行、30 top fit、0额外D62 refit、1080 component execution、30份rank-1投影audit、ground/query-fit/clean/source/role/quota访问0。
 
 ```powershell
 & 'C:\Users\lh594\.conda\envs\ssr-gpu\python.exe' `
@@ -74,3 +74,10 @@
 
 - 2026-07-20 01:24:12启动唯一执行，PID`23556`；只读命令行与锁定参数一致，stderr 0B。
 - 当前只读离散监控，不重复启动；进程退出后验证105行、projection audit、RECEIPT和metadata。
+
+## 8.首次启动结构失败与R1
+
+- PID`23556`在首个outer row前失败，输出目录为空，无training log/RECEIPT/可评分结果。精确异常为D74严格降秩后的support进入D62 refit时，D43 block协方差触发`structured covariance is not positive definite`。
+- 不采用jitter或伪逆绕过正定门，因为会把非可逆机制改回近似可逆并削弱fail-closed边界。
+- R1保留同一`u/P`，冻结既有D62 final头，直接编译`W'=W(I−uuT)`；不再新增D62 fit。它不读取任何性能结果，且更直接检验“非可逆删除能否改变固定强头边界”。
+- 原空目录和launcher stderr保留；R1完成测试、commit和新clean worktree后只使用`orthogonal_nuisance_direction_removal_retry1`。

@@ -40,7 +40,7 @@ STRUCTURE = d62.STRUCTURE
 FORMULA = (
     "freeze D62 before state; in all-registered D42 support remove the single "
     "largest within-class residual direction orthogonal to the centered class-mean "
-    "span; refit D62 and compile W(I-uuT) into one int8 affine head"
+    "span; freeze the D62 final head and compile W(I-uuT) into one int8 affine head"
 )
 d43.ARM_STRUCTURES[ARM] = STRUCTURE
 if ARM not in d43.ARMS:
@@ -172,11 +172,11 @@ class ProjectionRegistry:
                 )
             )
             if projection_audit["projection_active"]:
-                fitted_w, fitted_b, fit_audit = self.base_fit(
-                    projected,
-                    all_targets,
-                    len(all_classes),
-                    all_k,
+                fitted_w = self.d42.decode_d42_coefficients(
+                    result.matched_fp32_state
+                )
+                fitted_b = np.asarray(
+                    result.matched_fp32_state.intercept_fp32, dtype=np.float32
                 )
                 direction64 = np.asarray(direction, dtype=np.float64)
                 fitted64 = np.asarray(fitted_w, dtype=np.float64)
@@ -185,10 +185,6 @@ class ProjectionRegistry:
                 )
                 compiled_w = np.asarray(compiled_w, dtype=np.float32)
                 compiled_b = np.asarray(fitted_b, dtype=np.float32)
-                self.extra_d62_fit_count += 1
-                added = _added_refit_resource(
-                    self.d42, all_k, len(all_classes)
-                )
             else:
                 compiled_w = self.d42.decode_d42_coefficients(
                     result.matched_fp32_state
@@ -196,13 +192,12 @@ class ProjectionRegistry:
                 compiled_b = np.asarray(
                     result.matched_fp32_state.intercept_fp32, dtype=np.float32
                 )
-                fit_audit = dict(result.geometry_audit["final_covariance_audit"])
-                added = {
-                    "component_fit_count": 0,
-                    "lda_fit_macs": 0,
-                    "fisher_dense_macs": 0,
-                    "gate_scalar_macs": 0,
-                }
+            added = {
+                "component_fit_count": 0,
+                "lda_fit_macs": 0,
+                "fisher_dense_macs": 0,
+                "gate_scalar_macs": 0,
+            }
             final_int8, final_fp32, quant = _compile_pair(
                 self.d42, result.state, compiled_w, compiled_b
             )
@@ -251,7 +246,6 @@ class ProjectionRegistry:
             geometry = dict(result.geometry_audit)
             geometry.update(
                 {
-                    "final_covariance_audit": fit_audit,
                     "d74_probe_arm": ARM,
                     "d74_formula": FORMULA,
                     "d74_projection_audit": projection_audit,
@@ -269,7 +263,7 @@ class ProjectionRegistry:
                     "d74_dense_query_graph_bytes": 0,
                     "metric_frozen_during_stage2c": True,
                     "stage2c_log_diag_frozen": True,
-                    "stage2c_classifier": "d74_projected_d62_joint_lda_compiled_affine",
+                    "stage2c_classifier": "d74_projected_frozen_d62_joint_lda_compiled_affine",
                     "final_coefficient_quantization_error_mean": quant[
                         "coefficient_quantization_error_mean"
                     ],
@@ -456,7 +450,7 @@ def _verify_rows(rows: list[dict[str, Any]]) -> dict[str, Any]:
             resource.get(name) != value
             for name, value in {
                 "d74_projection_removed_rank": 1,
-                "d74_additional_component_fit_count": 36,
+                "d74_additional_component_fit_count": 0,
                 "d74_query_extra_mac_equivalents": 0,
                 "d74_persistent_state_extra_bytes": 0,
                 "d74_ground_component_input_count": 0,
@@ -582,9 +576,9 @@ def main(argv: list[str] | None = None) -> int:
     if (
         registry is None
         or registry.top_fit_count != 30
-        or registry.extra_d62_fit_count != 30
+        or registry.extra_d62_fit_count != 0
         or len(registry.records) != 30
-        or len(component_records) != 1620
+        or len(component_records) != 1080
     ):
         raise D74ProbeError("D74 fit/component call closure drift")
     evidence = _verify_output(output, script_sha, helper_hashes)

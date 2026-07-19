@@ -75,8 +75,9 @@ def test_k1_refit_resource_is_zero() -> None:
 def test_probe_source_closes_calls_protocol_and_compilation() -> None:
     source = SCRIPT.read_text(encoding="utf-8")
     assert "registry.top_fit_count != 30" in source
-    assert "registry.extra_d62_fit_count != 30" in source
-    assert "len(component_records) != 1620" in source
+    assert "registry.extra_d62_fit_count != 0" in source
+    assert "len(component_records) != 1080" in source
+    assert "result.matched_fp32_state" in source
     assert '"d74_ground_component_input_count": 0' in source
     assert '"d74_query_extra_mac_equivalents": 0' in source
     assert '"d74_projection_direction_persisted": False' in source

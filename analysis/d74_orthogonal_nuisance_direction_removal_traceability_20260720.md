@@ -10,7 +10,7 @@ D73在15/15fold真实改变共享对角metric并降低旧/新support loss，但D
 
 `r_i^perp=r_i-r_iQQ^T`。
 
-令`u`为`R_perp`最大奇异值对应的唯一首个右奇异向量，并以最大绝对坐标为正固定符号。最终非可逆投影为`P=I-uu^T`。D74只在Stage2-C用`zP`重新拟合一次D62统一头`W,b`，随后编译`W'=WP`，因此query仍在原D42特征上执行一个all-registered int8仿射头。Stage2-B before状态保持D62逐位不变。K1或残差退化时精确回退D62。
+令`u`为`R_perp`最大奇异值对应的唯一首个右奇异向量，并以最大绝对坐标为正固定符号。最终非可逆投影为`P=I-uu^T`。Stage2-B before状态保持D62逐位不变。首次实现尝试在`zP`上重新拟合D62，但严格降秩与D43 block正定前提结构不兼容，在首个outer row前fail closed。R1因此冻结已拟合的D62 final统一头`W,b`并直接编译`W'=WP`；不加jitter、不把投影改回可逆，也不使用性能反馈。query仍在原D42特征上执行一个all-registered int8仿射头。K1或残差退化时精确回退D62。
 
 该公式固定删除rank-1，不扫描rank、能量阈值、收缩、场景、类、old/new角色或support门。
 
@@ -26,7 +26,7 @@ D73在15/15fold真实改变共享对角metric并降低旧/新support loss，但D
 |无query泄漏|只用outer-fit support；无outer-held/query/真值/角色|API和geometry字段|PREREGISTERED|
 |正式量化态|`WP`编译为一个residual-int8/FP16状态|量化误差和零翻转审计|PREREGISTERED|
 |地面组件|D22仍不具正式资格；输入/更新/状态0|resource字段|PREREGISTERED|
-|资源|新增1次D62 refit与1次SVD；optimizer/epoch不增加，query额外MAC/state0|resource verifier|PREREGISTERED|
+|资源|新增1次SVD和affine编译；不新增D62 fit、optimizer或epoch，query额外MAC/state0|resource verifier|R1_LOCKED|
 
 ## 与历史路线非重复性
 
