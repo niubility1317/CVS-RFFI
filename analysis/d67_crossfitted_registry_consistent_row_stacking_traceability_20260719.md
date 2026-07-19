@@ -42,3 +42,15 @@ development cell固定receiver`20-1`、seed`713101`、K10/new5、三场景×五o
 对既有输出调用原脚本只读verifier已通过105行、30条目标candidate row、60个fit audit、240个cross-fit partition和query0；alpha范围0～0.216726、均值0.025459。PostRun-R1只修计数并增加既有输出封存模式，不改变公式、support、预测、资源或已有artifact，也不重新运行实验。完整性能在封存后另行解析。
 
 首次封存尝试因当前主工作树与执行用干净worktree的换行字节SHA不同而在metadata前fail closed。封存器现只从`executed-probe-script`所属root读取D62、D65和D67 core并核对原candidate lock，不再错误使用当前工作树helper字节；SHA检查本身未放宽。
+
+## 最终性能与路线关闭
+
+PostRun-R1已从原执行root成功封存：105/105行、60个D67 fit、240个cross-fit partition、5,520个nested D62 component fit，query/clean/source/role/quota/global assignment均为0。完整摘要SHA为`6c8349aed767f2d468e953d9d4d195e86aa99cbef6ca4e93cdc372cf52b60592`。
+
+D67 INT8总体B/A/N/H/F/J为92.78/82.78/83.33/82.16/10.00/26.67，min-B/A/N为80.00/53.33/73.33，混淆22/11/14。相对D62，A+0.56pp、F−0.56pp，但N−1.33pp、H−0.47pp、new→old+3，floor无净改善；不满足无交换判门。三场景A/N/H分别为clear91.67/96.00/93.57、low80.00/74.00/75.45、rain76.67/80.00/77.45。
+
+final阶段支持内风险由D62的0.532406降至堆叠的0.524892，但D65专家风险为4.139319，`alpha`均值仅2.906%；支持代理改善没有迁移到outer联合目标。D67按预注册不读取ground int8组件；D65的低遗忘来自冻结旧决策几何，不能归因于地面原型。真实ground路线D66仍为负向，因此不把ground组件强行并入D67。
+
+最终状态为`COMPLETED_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE`。D62继续为联合最强基座，D62/D65连续行堆叠路线关闭；不扫描alpha/fold/温度/ridge/阈值，不运行第二seed或125。
+
+最终在显式激活的`ssr-gpu`环境运行D42–D67完整测试链315/315通过，用时80.9s；pytest exit0后的Windows临时链接清理权限告警不属于测试失败。
