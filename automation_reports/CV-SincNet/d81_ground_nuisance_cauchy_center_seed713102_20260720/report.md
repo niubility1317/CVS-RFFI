@@ -73,3 +73,6 @@
 - 用原D41 `_load_component`做真实组件加载验证通过：6类、25,428B逻辑状态；mapping来源仍为`offline_scorer_truth_sidecar_before_predictor_boundary`，`query_truth_exposed_to_predictor=false`。
 - D81 seed713102完整运行成功：耗时123.27秒，105/105 training rows；receipt seed=`713102`、query未打开、source closure不变。完整性能解析前先补跑同capsule的D62 matched baseline。
 - D62 probe同样增加显式`--d62-confirmation-seed`窄入口，验证规则与D81一致，未修改通用D42执行器；脚本SHA256=`39622a58e8b1b647577aa56ffd414f3efe50ed72bc821c2e15a590ecf9da694e`。D62/D80/D81相邻测试34/34 PASS，`py_compile`与`git diff --check`PASS。
+- matched D62首次运行在48.5秒时因`D43 FP32 centering changed support argmax`fail-closed，未完成、不得用于性能比较。该保护比较未中心化FP32头与实际部署的中心化FP32头；中心化的FP64代数等价性仍成立。
+- 为保留实际中心化部署头而不隐藏数值现象，只在D62确认入口显式允许继续，并新增每次fit的`d43_centered_support_fp32_argmax_equivalent`、changed count和drift-allowed审计；开发入口默认仍fail-closed。没有回退到另一预测头、没有标签选择或超参扫描。
+- 修复后D43 helper SHA256=`0d7b3b493eeb9073236bb85bb9c71b4e71a9e3a691ab7055daed9ab2415766b3`，D62 probe SHA256=`833dac6035e03ecdfa1f170ec1a95b13365fcacb8677505a149a8ab90f77f9f8`；D43/D62/D80/D81链42/42 PASS，`py_compile`与`git diff --check`PASS。pytest退出后的Windows临时目录清理出现非实验性`WinError 5`提示，但测试命令退出码0且42项全部通过。

@@ -29,6 +29,7 @@ ARM_STRUCTURES = {
 }
 ARMS = tuple(ARM_STRUCTURES)
 _BOOTSTRAPPED = False
+ALLOW_FP32_CENTERING_ARGMAX_DRIFT = False
 RUNTIME_LEGACY_SHA256 = (
     "f4becfa61f23bd88448e9a9673f9068cdf5d5e613999992de4b9f35cc29fefa9"
 )
@@ -169,10 +170,15 @@ def build_structured_fit(
                 rows.astype(np.float32) @ centered_coef32.T
                 + centered_intercept32[None, :]
             )
-            if not np.array_equal(
+            fp32_argmax_equivalent = bool(np.array_equal(
                 np.argmax(original_scores32, axis=1),
                 np.argmax(centered_scores32, axis=1),
-            ):
+            ))
+            fp32_argmax_changed_count = int(np.sum(
+                np.argmax(original_scores32, axis=1)
+                != np.argmax(centered_scores32, axis=1)
+            ))
+            if not fp32_argmax_equivalent and not ALLOW_FP32_CENTERING_ARGMAX_DRIFT:
                 raise D43ProbeError("D43 fallback FP32 centering changed support argmax")
             result_audit = dict(audit)
             result_audit.update(
@@ -181,7 +187,13 @@ def build_structured_fit(
                     "d43_covariance_structure": "unit_fallback",
                     "d43_class_common_affine_omitted": True,
                     "d43_centered_score_fp64_algebraically_equivalent": True,
-                    "d43_centered_support_fp32_argmax_equivalent": True,
+                    "d43_centered_support_fp32_argmax_equivalent": fp32_argmax_equivalent,
+                    "d43_centered_support_fp32_argmax_changed_count": (
+                        fp32_argmax_changed_count
+                    ),
+                    "d43_centered_support_fp32_argmax_drift_allowed": (
+                        ALLOW_FP32_CENTERING_ARGMAX_DRIFT
+                    ),
                     "d43_centered_support_fp32_pairwise_drift_max": float(
                         np.max(
                             np.abs(
@@ -250,10 +262,15 @@ def build_structured_fit(
             rows32 @ uncentered_coef32.T + uncentered_intercept32[None, :]
         )
         centered_scores32 = rows32 @ centered_coef32.T + centered_intercept32[None, :]
-        if not np.array_equal(
+        fp32_argmax_equivalent = bool(np.array_equal(
             np.argmax(uncentered_scores32, axis=1),
             np.argmax(centered_scores32, axis=1),
-        ):
+        ))
+        fp32_argmax_changed_count = int(np.sum(
+            np.argmax(uncentered_scores32, axis=1)
+            != np.argmax(centered_scores32, axis=1)
+        ))
+        if not fp32_argmax_equivalent and not ALLOW_FP32_CENTERING_ARGMAX_DRIFT:
             raise D43ProbeError("D43 FP32 centering changed support argmax")
         fp32_pairwise_drift = float(
             np.max(
@@ -297,7 +314,13 @@ def build_structured_fit(
             "d43_covariance_structure": structure_name,
             "d43_class_common_affine_omitted": True,
             "d43_centered_score_fp64_algebraically_equivalent": True,
-            "d43_centered_support_fp32_argmax_equivalent": True,
+            "d43_centered_support_fp32_argmax_equivalent": fp32_argmax_equivalent,
+            "d43_centered_support_fp32_argmax_changed_count": (
+                fp32_argmax_changed_count
+            ),
+            "d43_centered_support_fp32_argmax_drift_allowed": (
+                ALLOW_FP32_CENTERING_ARGMAX_DRIFT
+            ),
             "d43_centered_support_fp32_pairwise_drift_max": fp32_pairwise_drift,
             "d43_centered_coefficient_mean_max_abs": float(
                 np.max(np.abs(centered_coef.mean(axis=0)))

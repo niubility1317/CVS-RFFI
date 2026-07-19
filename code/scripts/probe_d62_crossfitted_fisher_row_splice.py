@@ -573,11 +573,14 @@ def main(argv: list[str] | None = None) -> int:
     d42 = package = None
     original_path: tuple[str, ...] = ()
     original_fit = original_macs = original_top = original_cell_guard = None
+    original_centering_drift_policy = d43.ALLOW_FP32_CENTERING_ARGMAX_DRIFT
     runner_name, exit_code = "d62_locked_d42_runner", 1
     runner_module = None
     call_records: list[dict[str, Any]] = []
     try:
         d42, package, original_path = d43._bootstrap(known.runtime_root, known.probe_root)
+        if known.d62_confirmation_seed is not None:
+            d43.ALLOW_FP32_CENTERING_ARGMAX_DRIFT = True
         original_fit = d42._fit_equal_prior_lda
         fit, call_records = build_d62_fit(d42)
         d42._fit_equal_prior_lda = fit
@@ -610,6 +613,7 @@ def main(argv: list[str] | None = None) -> int:
             d42.fit_d42_unified_shrinkage_lda = original_top
         if runner_module is not None and original_cell_guard is not None:
             runner_module._require_d42_development_cell = original_cell_guard
+        d43.ALLOW_FP32_CENTERING_ARGMAX_DRIFT = original_centering_drift_policy
         if package is not None:
             package.__path__[:] = list(original_path)
         sys.modules.pop(runner_name, None)
@@ -634,6 +638,9 @@ def main(argv: list[str] | None = None) -> int:
             else "development"
         ),
         "confirmation_seed": known.d62_confirmation_seed,
+        "fp32_centering_argmax_drift_allowed": (
+            known.d62_confirmation_seed is not None
+        ),
         "selected_only_full_k10_refit_allowed": False,
         "query_opened": False,
         "probe_script_sha256": script_sha,

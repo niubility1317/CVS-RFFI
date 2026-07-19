@@ -87,6 +87,8 @@ def test_full_centered_control_matches_d42_fp32_support_predictions() -> None:
     assert audit["d43_class_common_affine_omitted"] is True
     assert audit["sklearn_prediction_equivalent"] is True
     assert audit["d43_centered_support_fp32_argmax_equivalent"] is True
+    assert audit["d43_centered_support_fp32_argmax_changed_count"] == 0
+    assert audit["d43_centered_support_fp32_argmax_drift_allowed"] is False
     assert np.isfinite(audit["d43_centered_support_fp32_pairwise_drift_max"])
 
 

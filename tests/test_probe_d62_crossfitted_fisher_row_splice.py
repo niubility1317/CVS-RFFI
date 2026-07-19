@@ -152,6 +152,12 @@ def test_confirmation_guard_rejects_unregistered_seed_before_install() -> None:
     assert d62._install_confirmation_cell_guard(runner, None) is None
 
 
+def test_confirmation_probe_explicitly_audits_centering_roundoff() -> None:
+    source = SCRIPT.read_text(encoding="utf-8")
+    assert "ALLOW_FP32_CENTERING_ARGMAX_DRIFT = True" in source
+    assert '"fp32_centering_argmax_drift_allowed"' in source
+
+
 def test_built_fit_records_all_outer_and_inner_components() -> None:
     def base_fit(rows, labels, class_count, k_shot):
         values = np.asarray(rows, dtype=np.float64)
