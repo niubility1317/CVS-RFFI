@@ -45,3 +45,11 @@ D64在before保持92.78%，但注册后after降至74.44%、new降至77.33%、遗
 - 测试：`tests/test_probe_d65_frozen_stage2b_blocklda_append_only.py`。
 - 输出：`automation_reports/CV-SincNet/d65_frozen_stage2b_blocklda_append_only_probe_20260719/frozen_stage2b_blocklda_append_only`。
 - 本地`ssr-gpu`从detached clean worktree运行；本轮不访问N607。
+
+## 7.执行结果与路线裁决
+
+D65完成105/105行、30组冻结covariance、FP32/INT8旧row逐bit不变、query0。INT8总体before92.22%、after86.11%、new59.33%、H67.12%、forgetting6.11pp、joint16.67%、min-after70%、min-new46.67%、混淆16/28/33。相对D62，after+3.89pp、forgetting−4.44pp、min-after+16.67pp、old→new−7，但new−25.33pp、H−15.50pp、new→old+20；low/rain new仅42%/50%。
+
+FP32/INT8旧row冻结闭包完全通过，但final出现4个outer argmax变化和4个margin翻转，最大score误差1.000732。未中心化的追加式截距造成量化敏感；同时冻结旧类covariance使新类标尺在弱场景严重不足。
+
+地面int8原型只完成只读哈希审计，D65实际输入计数0；低遗忘不能归因于地面原型。状态固定为`COMPLETED_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE`。停止直接冻结旧covariance追加、freeze强度和full/block混合；D66必须先排除已测ground-anchor路线，再研究对所有类别统一的合法Phase1聚合知识域变换。
