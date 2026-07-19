@@ -69,6 +69,21 @@ def mechanism(rows: list[dict[str, Any]], metadata: dict[str, Any]) -> dict[str,
     before = [row["geometry_summary"]["before_covariance_audit"] for row in rows]
     final = [row["geometry_summary"]["final_covariance_audit"] for row in rows]
     ground = metadata["ground_audit"]
+    ground_aliases = {
+        "ground_domain_count": "d84_domain_count",
+        "ground_class_count": "d84_ground_class_count",
+        "component_formal_phase2_eligible": "ground_component_formal_phase2_eligible",
+        "component_provenance_status": "ground_component_state",
+    }
+
+    def ground_value(key: str) -> Any:
+        if key in ground:
+            return ground[key]
+        alias = ground_aliases.get(key)
+        if alias is not None and alias in ground:
+            return ground[alias]
+        raise KeyError(key)
+
     result = {
         "before": _transform_stats(before),
         "final": _transform_stats(final),
@@ -85,7 +100,7 @@ def mechanism(rows: list[dict[str, Any]], metadata: dict[str, Any]) -> dict[str,
             sum(audit["d62_final_accept_mask"]) for audit in final
         ),
         "ground": {
-            key: ground[key]
+            key: ground_value(key)
             for key in (
                 "ground_domain_count",
                 "ground_class_count",

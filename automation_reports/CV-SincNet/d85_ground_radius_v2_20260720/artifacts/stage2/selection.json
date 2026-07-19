@@ -1,0 +1,87 @@
+{
+  "candidate_decisions": [
+    {
+      "candidate_id": "Z0_SUPPORT_ONLY",
+      "d43_probe_forced_nonpromotable": true,
+      "d43_probe_pre_guard_eligible_positive_route": false,
+      "eligible_positive_route": false
+    },
+    {
+      "candidate_id": "D42-PROTOnet-CDA-ZID160",
+      "d43_probe_forced_nonpromotable": true,
+      "d43_probe_pre_guard_eligible_positive_route": false,
+      "eligible_positive_route": false
+    },
+    {
+      "candidate_id": "B3_SINGLE_IQ_DIAG_FFTRF",
+      "d43_probe_forced_nonpromotable": true,
+      "d43_probe_pre_guard_eligible_positive_route": false,
+      "eligible_positive_route": false
+    },
+    {
+      "candidate_id": "D42-D40-HNBR-INT8-NEGATIVE",
+      "d43_probe_forced_nonpromotable": true,
+      "d43_probe_pre_guard_eligible_positive_route": false,
+      "eligible_positive_route": false
+    },
+    {
+      "candidate_id": "D42-D41-BEC-INT8-NEGATIVE",
+      "d43_probe_forced_nonpromotable": true,
+      "d43_probe_pre_guard_eligible_positive_route": false,
+      "eligible_positive_route": false
+    },
+    {
+      "after_old_gate": false,
+      "b3_h_same_row_mean": 0.7335426527799082,
+      "b3_pairwise_misorder_totals": [
+        42,
+        31,
+        25
+      ],
+      "before_gate": false,
+      "candidate_id": "D42-USLDA-INT8",
+      "confusion_gate": true,
+      "d43_probe_forced_nonpromotable": true,
+      "d43_probe_pre_guard_eligible_positive_route": false,
+      "eligible_positive_route": false,
+      "final_argmax_confusion_totals": [
+        22,
+        8,
+        15
+      ],
+      "ground_gate": true,
+      "joint_gate": false,
+      "lifecycle_gate": true,
+      "new_gate": false,
+      "pairwise_gate": false,
+      "pairwise_misorder_totals": [
+        29,
+        15,
+        17
+      ],
+      "precision_gate": true,
+      "resource_gate": true,
+      "source_gate": true,
+      "state_gate": true
+    },
+    {
+      "candidate_id": "D42-USLDA-FP32-MATCHED",
+      "d43_probe_forced_nonpromotable": true,
+      "d43_probe_pre_guard_eligible_positive_route": false,
+      "eligible_positive_route": false
+    }
+  ],
+  "candidate_lock_sha256": "a516e5d29f054883acca7fc18b2c81c35acf9ddce4a60470ece5b5381a33ce23",
+  "diagnostic_comparator": "B3_SINGLE_IQ_DIAG_FFTRF",
+  "eligible_candidate_ids": [
+    "D42-USLDA-INT8"
+  ],
+  "fallback_to_identity": true,
+  "full_k10_fallback_reason": null,
+  "pre_full_k10_selected_candidate_id": "Z0_SUPPORT_ONLY",
+  "schema": "cvs.phase2.d42.selection.v1",
+  "selected_candidate_id": "Z0_SUPPORT_ONLY",
+  "selected_positive_route": false,
+  "selection_baseline": "Z0_SUPPORT_ONLY",
+  "selection_rule": "D42:_exact_seven-candidate_matched_3x5_outer_matrix,_exact-B3_metric-B20_then_old-only/all-registry_closed-form_auto-shrinkage-LDA,_strict-overall/scenario/class/floor-gains-vs-B3,_separate-final-argmax-and-pairwise-three-axis-confusion,_int8-FP32-score-argmax-margin-sign,_real-ground/source/state/resource-closure,_selected-only-full-K10-after-all-outer-gates"
+}
