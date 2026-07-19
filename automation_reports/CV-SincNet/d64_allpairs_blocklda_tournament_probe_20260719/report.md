@@ -6,8 +6,8 @@
 - 目标：以全部匿名类别pair的局部3-block二类LDA连续margin替代D46/D62的全局共享协方差与行筛选，让O3、N0、N2等局部冲突边界分别获得support-only判别方向，同时保持单次全类affine query。
 - 当前聚合最强D62：before92.78%、after82.22%、new84.67%、H82.62%、forgetting10.56pp、joint26.67%、min-before80%、min-after53.33%、min-new73.33%、混淆23/8/15；它仍有low遗忘恶化和rain-before下降，状态为不可晋升。
 - cell：receiver`20-1`、seed`713101`、K10/new5、3场景×5 outer fold、实际K8；复用匹配`VALIDATED_ONCE/p2_min_v1`的D18 capsule，不重验数据。
-- 版本：预注册`7ba296b9`；实现`4a598539`；worktree`E:\type10-7\code\snapshots\d64wt` detached clean；脚本SHA256=`b369347c7307fe64b4b4eee133dfbee7a4bf0bbba3281c898ddd56f7c22ee9e6`。
-- 本地验证：py_compile通过；D43＋D64专项测试14/14通过；D42–D64整链回归247/247通过，用时97.8s；diff check通过。
+- 版本：预注册`7ba296b9`；初始实现`4a598539`；状态契约修复`8c870efe`；worktree`E:\type10-7\code\snapshots\d64wt` detached`49a7c862` clean；当前脚本SHA256=`21b1b2bb00cb16985902e85b3f2fd4c0aac04ad61574e70cb7a80d7a202b5fb2`。
+- 本地验证：py_compile通过；修复前后D43＋D64专项测试均14/14通过；修复后D42–D64整链24个文件291/291通过，用时96.2s；diff check通过。pytest退出后仅出现Windows临时目录清理`PermissionError`，命令exit0且全部测试已通过，判为包装清理噪声。
 - 本轮只在本地确认的`C:\Users\lh594\.conda\envs\ssr-gpu\python.exe`执行，不访问N607，无远端PID/GPU/sync。
 
 ## 2.机制、协议与资源预期
@@ -44,3 +44,9 @@ D64必须与D62/D46比较总体、三场景、11类、15fold、混淆、量化�
 ## 4.待完成证据
 
 运行后必须闭合105/105行、7候选、3场景、11类、15fold、2100次pair fit、query0、FP32/INT8等价性、训练过程、适配/query资源、artifact哈希，并与D46/D61/D62/D63做同row比较。最终报告需详细说明每项性能与行为，不能只陈述缺陷。
+
+## 5.首次启动与最小修复记录
+
+- 首次启动于35.3s、产生正式性能row前退出，异常为`D42UnifiedShrinkageLDAError: D42 state drift`；没有存活Python进程，output目录无结果文件，不能据此作任何性能判断。
+- 根因：D64把pair局部结构名写入D42状态的`covariance_policy`字段，而该字段只接受受控求解器家族名。pair局部结构本已独立记录在`d43_covariance_structure`与D64审计中，因此这是状态命名空间闭包错误，不是方法公式、数据或协议失败。
+- 修复只把状态字段恢复为`sklearn_lsqr_auto_shrinkage_equal_prior`并增加结构字段并存断言；没有改变pair公式、特征、训练、候选、数据、随机种子或判门。修复提交`8c870efe`已摘入干净执行工作树`49a7c862`，在291/291整链回归后允许按第3节原命令重跑。
