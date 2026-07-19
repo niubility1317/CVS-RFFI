@@ -40,7 +40,21 @@ def test_loading_is_closed_form_parameter_free_and_spd():
     )
     assert audit["d83_hyperparameter_count"] == 0
     assert audit["d83_loading_scan_count"] == 0
+    assert audit["covariance_policy"] == "sklearn_lsqr_auto_shrinkage_equal_prior"
+    assert audit["d83_covariance_policy"] == (
+        "sklearn_lsqr_auto_plus_rank14_ground_loading"
+    )
     assert audit["d83_posterior_eigenvalue_min"] > 0.0
+    state, _ = d42._compile_state(
+        tuple(f"class{index}" for index in range(4)),
+        4,
+        np.zeros(288, dtype=np.float32),
+        coefficient,
+        intercept,
+        audit["covariance_policy"],
+        precision="fp32",
+    )
+    assert state.covariance_policy == "sklearn_lsqr_auto_shrinkage_equal_prior"
 
 
 def test_k1_has_exact_zero_loading():

@@ -138,7 +138,10 @@ def build_ground_precision_loaded_equal_lda(
             "solver": "lsqr",
             "shrinkage": "auto_plus_ground_nuisance_mean_uncertainty_loading",
             "prior_policy": "equal_1_over_registered_class_count",
-            "covariance_policy": "sklearn_lsqr_auto_plus_rank14_ground_loading",
+            # D42's serialized state keeps a closed storage-policy enum.  The
+            # D83 mechanism is carried by its dedicated audit fields below.
+            "covariance_policy": "sklearn_lsqr_auto_shrinkage_equal_prior",
+            "d83_covariance_policy": "sklearn_lsqr_auto_plus_rank14_ground_loading",
             "unit_covariance_fallback": False,
             "support_rows": int(len(rows)),
             "class_count": classes,

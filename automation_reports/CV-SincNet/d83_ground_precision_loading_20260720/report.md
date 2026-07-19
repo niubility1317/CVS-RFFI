@@ -1,6 +1,6 @@
 # D83地面干扰谱精度加载
 
-状态：`PREREGISTERED_LOCAL_VERIFIED_QUERY_NOT_OPENED`。实验ID：`d83_ground_precision_loading_20260720`；时间：2026-07-20 06:15 HKT；操作者：Codex。
+状态：`FIRST_ATTEMPT_FAIL_CLOSED_BEFORE_QUERY_SCORING_FIX_IN_PROGRESS`。实验ID：`d83_ground_precision_loading_20260720`；时间：2026-07-20 06:15 HKT；操作者：Codex。
 
 目标是修复D82“压小support方差后，LDA逆协方差反而放大干扰方向”的机制错误。D83保留D81的类对称一步Cauchy稳健中心，类内残差不变；随后仅在每个D62 full/block support-only fit的共享协方差中加入rank14地面干扰loading：
 
@@ -14,11 +14,14 @@ precision = inverse(Sigma_target + L)
 
 开发单元锁定`rx20-1/seed713101/K10(actual K8)/new5/3场景×5fold`，复用D18 `VALIDATED_ONCE` capsule、runtime authorization和D22只读84-cell int8 ground组件；不重建、不重验数据。ground仍为`UNVERIFIED`，所以只能形成开发诊断证据。成功门：相对D81的B/A/N/H/F/J、全部场景、逐类与mean-row floors、三类混淆均不回退，且A/H/F、rain或新类至少一项严格改善；否则立即判负，不启确认seed/125。
 
-本地Git worktree：`E:\type10-7\code\snapshots\d81wt`；核心SHA256=`953ed053896d189b6022036b2ddcbad8c5c0ac71a88ac8920740b2aababfb31a`；probe SHA256=`e6626edd22a745747ed09a752692c331fdfa42db2fad94e6c337135a59f59f4a`。ssr-gpu环境专项12/12、D62-D83相邻链61/61 PASS，`py_compile`与`git diff --check`PASS。
+本地Git worktree：`E:\type10-7\code\snapshots\d81wt`；修复后核心SHA256=`5ed98a00d098c51c079f6c3f77b1c02f2328edc11730fc791ce456d912d56b1d`；probe SHA256=`e6626edd22a745747ed09a752692c331fdfa42db2fad94e6c337135a59f59f4a`。首次预注册验证为专项12/12、D62-D83相邻链61/61 PASS；状态兼容修复后D42/D62/D80-D83相邻链85/85 PASS，并增加真实`_compile_state`集成断言，`py_compile`与`git diff --check`PASS。
 
 本地RTX5070Ti执行，不占N607。输出：本报告目录`ground_precision_loading/`；预计105-row日志、receipt、metadata、完整逐类/场景/资源汇总。资源门仍为params≤80k、epochs≤30、steps≤50、state≤256KB、dense query graph=false。
+
+## 首次执行失败记录
+
+2026-07-20 06:15 HKT首次真实运行在首个fold的support拟合后、`_compile_state`阶段fail-closed，`stdout.log`为空，`stderr.log`记录`D42UnifiedShrinkageLDAError: D42 state drift`，没有完整候选、query评分或性能指标，因此不得作性能结论。根因是D83把机制描述`sklearn_lsqr_auto_plus_rank14_ground_loading`写入D42封闭的注册状态存储策略字段`covariance_policy`；该字段仅接受基础解码策略，不代表D83加载机制。最小修复保持`covariance_policy=sklearn_lsqr_auto_shrinkage_equal_prior`，并新增独立审计字段`d83_covariance_policy=sklearn_lsqr_auto_plus_rank14_ground_loading`。公式、support输入、预注册判据和query边界均不改变。原失败目录永久保留，修复后的执行必须写入`ground_precision_loading_retry1/`。
 
 ## 完成结果
 
 待完整运行后补充总体、场景、逐类、混淆、量化、训练、资源、缺陷和判定。
-
