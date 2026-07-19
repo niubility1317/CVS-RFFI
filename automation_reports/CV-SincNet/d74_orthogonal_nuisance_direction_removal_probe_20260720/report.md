@@ -81,3 +81,5 @@
 - 不采用jitter或伪逆绕过正定门，因为会把非可逆机制改回近似可逆并削弱fail-closed边界。
 - R1保留同一`u/P`，冻结既有D62 final头，直接编译`W'=W(I−uuT)`；不再新增D62 fit。它不读取任何性能结果，且更直接检验“非可逆删除能否改变固定强头边界”。
 - 原空目录和launcher stderr保留；R1完成测试、commit和新clean worktree后只使用`orthogonal_nuisance_direction_removal_retry1`。
+
+R1锁定commit=`23f43510f13a8c98ce325d51f93aa1c39462037c`；专项8/8、主工作树D42–D74完整链385/385（82.7秒）通过。clean worktree=`E:\type10-7\code\snapshots\d74r1wt`，专项8/8与`py_compile`通过且clean。执行SHA：probe=`427be77328700c524173689567423b861bd18dd57fb8d96d7a4fcd5c6d4e363d`、core=`2f098c8c3311ce0da9a62ace354c3c005d68da1161a82a265e70976d221e0f2f`、D62 helper=`38ae1114a06d135bca806f470417cd28a634fec0da449888665c6843615d4a20`。01:30:53检查retry1目录不存在；GPU显存1422MiB、瞬时利用率2%，只读进程检查无Python任务，允许本地单实例启动。
