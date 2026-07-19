@@ -64,3 +64,14 @@ D70–D72说明support内score/head后处理不能可靠推断outer新旧方向�
 |candidate|机制|receiver/TX|K/seed|B old|A old|seen-new|H|forgetting|joint|min-B/A/N|混淆O→N/N→O/N→N|量化|资源|判定|
 |---|---|---|---|---:|---:|---:|---:|---:|---:|---|---|---|---|---|
 |D73|等权PCGrad单步共享metric|20-1/new5|K10/713101|待跑|待跑|待跑|待跑|待跑|待跑|待跑|待跑|待跑|待跑|待跑|
+
+## 9.实现锁定（2026-07-20 00:24）
+
+|文件|用途|SHA256|
+|---|---|---|
+|`code/cvsrffi/stage2_d73_conflict_projected_joint_metric.py`|解析leave-one prototype CE梯度、等权对称冲突投影、唯一一次metric更新与审计|`8d59e1c92887930cecebbd59e534e572299a64b875d1add559238eb9177391d5`|
+|`code/scripts/probe_d73_conflict_projected_joint_metric.py`|D62包装、统一int8编译、资源/训练/source闭包和真实Runner入口|`c2086e86d23119acb6253a9bb365b1e43c2effc27fdfe4f4eea867b1b995f5a0`|
+|`tests/test_stage2_d73_conflict_projected_joint_metric.py`|确定性、任务安全、组内类置换、K1和fail-closed测试|`623d15ebdad5e4c93c6a2c8dcf148c56019113ac204240785940c78cfceb7b64`|
+|`tests/test_probe_d73_conflict_projected_joint_metric.py`|D62包装、资源公式、调用闭包和协议字段测试|`f769d331a0fed1a75055abea2fce7f44ac12bfba4ed7a411fa0990eb175d4d79`|
+
+专项验证命令：`python -m pytest -q tests/test_stage2_d73_conflict_projected_joint_metric.py tests/test_probe_d73_conflict_projected_joint_metric.py`，在`ssr-gpu`中通过`9/9`。首次core测试收集失败仅因测试误写为`code.cvsrffi`导入路径；改为项目既有`cvsrffi`包路径后通过，不涉及机制、公式或运行代码变化。
