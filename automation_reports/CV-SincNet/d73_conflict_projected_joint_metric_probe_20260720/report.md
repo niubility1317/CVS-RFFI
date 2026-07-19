@@ -120,3 +120,5 @@ D42–D73相邻完整链覆盖40个文件、377项测试，全部通过，退出
 - 同时代码审计发现row级`complete_loss_trace`由`result.training_trace`生成；R1除去对尚不存在字段的提前更新，并把新增Stage2-C trace显式写回冻结dataclass的`training_trace`。机制公式、数据、梯度、步长、D62 refit、量化和资源数值均不变。
 - 新增源码测试锁定：包装器必须回写`training_trace=tuple(trace)`，提前更新块不得含`total_optimizer_steps`。R1专项9/9通过。
 - 原失败目录`conflict_projected_joint_metric`和launcher日志保留，不覆盖。完成全链、提交与新clean worktree后，只允许使用新目录`conflict_projected_joint_metric_retry1`执行一次R1。
+
+R1验证与运行锁：主工作树40文件、377项全部通过，用时82.0秒；clean worktree`E:\type10-7\code\snapshots\d73r1wt`锁定commit`e319aa7e4c7b016e4294d361dd9117ca9914e72f`，同一377项全部通过，用时82.8秒，`py_compile`通过且worktree clean。R1执行SHA：probe=`b7d0584298285b4a05fb3d0d0dc733e210ab78ba1af4486858075a0f441e2180`、core=`bdb104ceb82c9f069499dd920b88599a455a65defdd3f622184bbe8dfbe2bd63`、D62 helper=`38ae1114a06d135bca806f470417cd28a634fec0da449888665c6843615d4a20`。00:37:42检查新输出目录不存在；GPU0显存`1106/16303MiB`、利用率0%。R1使用与第10节完全相同的数据/策略参数，只把`probe-root/script`改为`d73r1wt`、输出改为`conflict_projected_joint_metric_retry1`。
