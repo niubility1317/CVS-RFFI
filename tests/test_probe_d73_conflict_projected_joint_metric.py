@@ -89,6 +89,11 @@ def test_probe_source_closes_protocol_resource_and_call_counts() -> None:
     assert '"d73_single_affine_state_only": True' in source
     assert '"d73_query_role_specific_branch": False' in source
     assert '"d73_uses_outer_held_or_query_for_fit": False' in source
+    assert '"d73_metric_state_changed": metric_state_changed' in source
+    assert '"metric_frozen_during_stage2c": False' in source
+    assert '"stage2c_log_diag_frozen": False' in source
+    assert '"d73_base_metric_adaptation_macs": base_metric_macs' in source
+    assert 'resource["estimated_metric_adaptation_macs"] + gradient_macs' in source
     assert "training_trace=tuple(trace)" in source
     assert "trace = [dict(item) for item in result.training_trace]" in source
     assert 'resource.get("complete_loss_trace", [])' not in source

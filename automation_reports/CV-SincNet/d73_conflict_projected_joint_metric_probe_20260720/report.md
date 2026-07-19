@@ -132,3 +132,7 @@ R1 Runner于00:41:51完成105/105行和6个标准artifact，RECEIPT状态为`DEV
 R2验证与运行锁：专项9/9、主工作树D42–D73完整链377/377均通过（82.1秒）；clean worktree`E:\type10-7\code\snapshots\d73r2wt`锁定commit`3a5e3d759eceeff69ca200fcf241385b309d6dfe`，专项9/9与`py_compile`通过且worktree clean。执行SHA：probe=`eeb297bddf103d4e009e67b4895ccfb584bfa6dbe17c1bd148f26b4fd0e37123`、core=`bdb104ceb82c9f069499dd920b88599a455a65defdd3f622184bbe8dfbe2bd63`、D62 helper=`38ae1114a06d135bca806f470417cd28a634fec0da449888665c6843615d4a20`。00:46:42检查retry2目录不存在；GPU0显存`954/16303MiB`、利用率0%。除`probe-root/script=d73r2wt`和新输出目录外，命令参数与第10节一致。
 
 R2于2026-07-20 00:47:34启动，PID`27204`；只读命令行检查与锁定参数一致，stderr 0B，转为只读监控。
+
+R2于00:50:32完成105/105行、7个artifact和metadata，stderr 0B，probe闭包通过。但在正式汇总前的生命周期审计发现：final metric实际改变，geometry却继承D42的`metric_frozen_during_stage2c=true`及旧final hash；资源也未把2,240,688个D73解析梯度MAC加入`estimated_metric_adaptation_macs`。这不会改变R2预测，却会形成错误的量化生命周期和资源声明，因此R2标记`COMPLETED_OUTPUT_REJECTED_STALE_LIFECYCLE_AUDIT`，其指标不得作为最终采纳结果。
+
+R3只修复审计：对base/updated final log-diagonal分别写SHA并要求不同，更新final hash和Stage2-C非冻结标志，补计metric MAC并在sanitize中对称回滚，verifier同时硬检查hash、标志与资源等式。core、metric delta、D62 refit、int8编译和预测路径均不变；使用新clean worktree与`conflict_projected_joint_metric_retry3`。

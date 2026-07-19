@@ -109,6 +109,12 @@ def _gradient_mac_upper_bound(
     return int(8 * rows * int(class_count) * int(dimension) + 6 * rows * int(class_count) + 16 * int(dimension))
 
 
+def _float32_sha256(value: np.ndarray) -> str:
+    return hashlib.sha256(
+        np.ascontiguousarray(value, dtype=np.float32).tobytes()
+    ).hexdigest()
+
+
 def _compile_pair(
     d42: Any,
     template: Any,
@@ -171,6 +177,11 @@ class MetricRegistry:
                     result.state.log_diag_fp32,
                 )
             )
+            base_log_diag_sha256 = _float32_sha256(result.state.log_diag_fp32)
+            updated_log_diag_sha256 = _float32_sha256(updated_log_diag)
+            metric_state_changed = base_log_diag_sha256 != updated_log_diag_sha256
+            if int(metric_audit["stage2c_step_count"]) == 1 and not metric_state_changed:
+                raise D73ProbeError("D73 active metric state did not change")
             transformed = self.d42._transform(all_features, updated_log_diag)
             if int(metric_audit["stage2c_step_count"]) == 0:
                 final_w = self.d42.decode_d42_coefficients(
@@ -224,6 +235,9 @@ class MetricRegistry:
                     "d73_probe_arm": ARM,
                     "d73_formula": FORMULA,
                     "d73_metric_audit": metric_audit,
+                    "d73_base_final_log_diag_sha256": base_log_diag_sha256,
+                    "d73_updated_final_log_diag_sha256": updated_log_diag_sha256,
+                    "d73_metric_state_changed": metric_state_changed,
                     "d73_before_state_exact_d62_unchanged": True,
                     "d73_class_id_specific_formula": False,
                     "d73_support_role_tasks_equal_priority": True,
@@ -248,6 +262,12 @@ class MetricRegistry:
                     ],
                     "final_support_score_max_abs_error": quant_error,
                     "int8_vs_fp32_final_support_argmax_change_count": quant_changes,
+                    "old_log_diag_final_sha256": updated_log_diag_sha256,
+                    "old_log_diag_bitwise_unchanged": False,
+                    "metric_frozen_during_stage2c": False,
+                    "stage2c_log_diag_frozen": False,
+                    "metric_source": "d42_stage2b_plus_d73_one_step_support_only",
+                    "stage2c_classifier": "d73_conflict_projected_metric_plus_d62_joint_lda",
                 }
             )
             dimension = int(self.d42.FEATURE_DIM)
@@ -261,6 +281,7 @@ class MetricRegistry:
                 + gradient_macs
             )
             resource = dict(result.resource_audit)
+            base_metric_macs = int(resource["estimated_metric_adaptation_macs"])
             trace = [dict(item) for item in result.training_trace]
             if int(metric_audit["stage2c_step_count"]) == 1:
                 trace.append(
@@ -309,6 +330,7 @@ class MetricRegistry:
                         added["gate_scalar_macs"]
                     ),
                     "d73_gradient_mac_equivalent_upper_bound": gradient_macs,
+                    "d73_base_metric_adaptation_macs": base_metric_macs,
                     "d73_total_added_adaptation_macs": added_total,
                     "d73_query_extra_mac_equivalents": 0,
                     "d73_persistent_state_extra_bytes": 0,
@@ -329,6 +351,9 @@ class MetricRegistry:
             )
             resource["estimated_adaptation_macs"] = int(
                 resource["estimated_adaptation_macs"] + added_total
+            )
+            resource["estimated_metric_adaptation_macs"] = int(
+                resource["estimated_metric_adaptation_macs"] + gradient_macs
             )
             for field in (
                 "adaptation_epochs",
@@ -393,6 +418,9 @@ def _sanitize_for_d62(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
         resource["estimated_adaptation_macs"] -= resource[
             "d73_total_added_adaptation_macs"
         ]
+        resource["estimated_metric_adaptation_macs"] -= resource[
+            "d73_gradient_mac_equivalent_upper_bound"
+        ]
         step_count = int(resource["d73_stage2c_step_count"])
         if step_count:
             resource["complete_loss_trace"] = resource["complete_loss_trace"][:-1]
@@ -434,6 +462,7 @@ def _verify_rows(rows: list[dict[str, Any]]) -> dict[str, Any]:
                 "d73_probe_arm": ARM,
                 "d73_formula": FORMULA,
                 "d73_before_state_exact_d62_unchanged": True,
+                "d73_metric_state_changed": True,
                 "d73_class_id_specific_formula": False,
                 "d73_support_role_tasks_equal_priority": True,
                 "d73_query_role_specific_branch": False,
@@ -443,9 +472,21 @@ def _verify_rows(rows: list[dict[str, Any]]) -> dict[str, Any]:
                 "d73_ground_component_input_count": 0,
                 "d73_single_affine_state_only": True,
                 "d73_dense_query_graph_bytes": 0,
+                "old_log_diag_bitwise_unchanged": False,
+                "metric_frozen_during_stage2c": False,
+                "stage2c_log_diag_frozen": False,
+                "metric_source": "d42_stage2b_plus_d73_one_step_support_only",
+                "stage2c_classifier": "d73_conflict_projected_metric_plus_d62_joint_lda",
             }.items()
         ):
             raise D73ProbeError("D73 geometry closure drift")
+        if (
+            geometry["d73_base_final_log_diag_sha256"]
+            == geometry["d73_updated_final_log_diag_sha256"]
+            or geometry["old_log_diag_final_sha256"]
+            != geometry["d73_updated_final_log_diag_sha256"]
+        ):
+            raise D73ProbeError("D73 metric lifecycle hash drift")
         audit = geometry["d73_metric_audit"]
         if (
             audit["status"]
@@ -475,6 +516,9 @@ def _verify_rows(rows: list[dict[str, Any]]) -> dict[str, Any]:
         if (
             int(resource["optimizer_steps"]) != 21
             or int(resource["adaptation_epochs"]) != 21
+            or int(resource["estimated_metric_adaptation_macs"])
+            != int(resource["d73_base_metric_adaptation_macs"])
+            + int(resource["d73_gradient_mac_equivalent_upper_bound"])
             or int(resource["persistent_state_bytes"]) > 256 * 1024
             or len(resource["complete_loss_trace"]) != 21
         ):
