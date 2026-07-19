@@ -20,12 +20,12 @@ D79唯一改变为：令全注册类support的变换后均值为`mu`，D78优化
 
 |ID|要求|目标文件|状态|验证/停止条件|
 |---|---|---|---|---|
-|D79-R1|复用D78真实ground tangent，84 cell、14有效域、rank13、只读|D79 core/probe|specified|入口/出口SHA、projector SHA与D78一致|
-|D79-R2|全support均值中心化，`mean_i z_i=0`，类/row置换不变|`code/cvsrffi/stage2_d79_centered_ground_tangent.py`|specified|合成精确中心、置换与确定性测试|
-|D79-R3|编译`Delta b=−DeltaW mu`，均值点残差logit严格为0|core与probe|specified|FP64/FP32误差、单仿射等价测试|
-|D79-R4|D78优化完全冻结：20步、rank13、同目标/trust、无扫描|core wrapper、source lock|specified|D78依赖SHA与audit差异锁|
-|D79-R5|资源：40step、20epoch、<80k、含ground<256KB、query额外MAC/state0|probe/artifact|specified|bias补偿仅增加`C×D`MAC上界|
-|D79-R6|协议：support-only、全类对称，无clean/source/query truth/role/quota/global assignment|probe/RECEIPT|specified|禁止访问全0|
+|D79-R1|复用D78真实ground tangent，84 cell、14有效域、rank13、只读|D79 core/probe|implemented|D78 loader/core依赖锁；真实入口/出口SHA待run|
+|D79-R2|全support均值中心化，`mean_i z_i=0`，类/row置换不变|`code/cvsrffi/stage2_d79_centered_ground_tangent.py`|verified|精确中心、确定性与全局特征平移不变测试通过|
+|D79-R3|编译`Delta b=−DeltaW mu`，均值点残差logit严格为0|core与probe|verified|直接中心式/单仿射等价、均值点零logit、K1双零测试通过|
+|D79-R4|D78优化完全冻结：20步、rank13、同目标/trust、无扫描|core wrapper、source lock|implemented|D79只包装D78 fit并增加center/bias audit；真实trace待run|
+|D79-R5|资源：40step、20epoch、<80k、含ground<256KB、query额外MAC/state0|probe/artifact|implemented|bias补偿固定增加`C×D=3168`MAC；runner状态测试通过|
+|D79-R6|协议：support-only、全类对称，无clean/source/query truth/role/quota/global assignment|probe/RECEIPT|implemented|源码锁、专项6/6、D77-D79相邻24/24通过；真实RECEIPT待run|
 |D79-R7|完整开发实验：20-1/new5/K10/713101、3场景×5fold、105行|run/summarizer|pending|完整日志、逐类/场景/混淆/量化/资源|
 |D79-R8|晋级门：相对D62，`A/N/H/min-A/min-N`不退化、`F`不升且至少一项严格改善；无混淆交换|summarizer/report|pending|失败即关闭，不开seed2/125|
 |D79-R9|formal ground bundle需联合封存及外部authority签名|loader/report|blocked|当前只能development diagnostic|
