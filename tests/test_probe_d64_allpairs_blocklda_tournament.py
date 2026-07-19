@@ -53,6 +53,8 @@ def test_exact_pair_count_and_compiled_shape() -> None:
     assert len(records) == 6
     assert audit["d64_single_affine_state_only"] is True
     assert audit["d64_pair_graph_persisted_for_query"] is False
+    assert audit["covariance_policy"] == d64.STATE_COVARIANCE_POLICY
+    assert audit["d43_covariance_structure"] == d64.STRUCTURE
     assert np.isfinite(coefficient).all() and np.isfinite(intercept).all()
 
 

@@ -27,6 +27,7 @@ SPEC.loader.exec_module(d43)
 
 ARM = "allpairs_blocklda_tournament"
 STRUCTURE = "all_pairs_three_block_auto_shrinkage_lda_rms_tournament"
+STATE_COVARIANCE_POLICY = "sklearn_lsqr_auto_shrinkage_equal_prior"
 FORMULA = (
     "for every unordered class pair fit block3 LDA; normalize oriented margin by "
     "pair-support RMS; average all incident margins into one affine row"
@@ -168,7 +169,9 @@ def build_d64_fit(d42: Any) -> tuple[Callable[..., Any], list[dict[str, Any]]]:
             "solver": "allpairs_block3_lsqr_auto_shrinkage",
             "shrinkage": "auto_per_pair",
             "prior_policy": "equal_1_over_2_with_equal_pair_tournament_average",
-            "covariance_policy": STRUCTURE,
+            # The D42 state schema records the supported solver family here;
+            # D64's pair-local structure remains explicit in the D43/D64 audit.
+            "covariance_policy": STATE_COVARIANCE_POLICY,
             "unit_covariance_fallback": bool(
                 any(audit.get("unit_covariance_fallback", False) for audit in pair_audits)
             ),
