@@ -27,3 +27,13 @@ K>=2时使用两个按physical rank预定的互斥support-held fold。每折在t
 ## 5.实施计划
 
 新增独立D70 partition/gate/lifecycle core、probe和专项测试，不修改D62/D69历史实现。先做合成partition、原子gate、置换、空mask精确fallback、K1、旧行选择、新行恒定、compiled state、禁止访问和资源闭包测试；再跑D42–D70完整链、提交、干净worktree复跑，最后才登记真实105行命令。
+
+## 6.实现与本地验证
+
+- `code/cvsrffi/stage2_d70_atomic_lifecycle.py`：两折rank partition、TP/FP计数、coordinate gate、all-class atomic gate和Stage2-B/Stage2-C配对生命周期。
+- `code/scripts/probe_d70_crossfitted_atomic_lifecycle_row_replacement.py`：复用锁定D62与D42 runner，记录60次top-level fit、30对生命周期、120次inner D62和2280条component fit；单独计入inner LDA/Fisher/held-score/gate MAC。
+- 两个测试文件共10项，覆盖partition exact-once、原子安全、置换等变、K1精确D62、选择性旧行、新行joint不变、support漂移拒绝、source closure和禁止分支。
+- 专项10/10通过；D42–D70完整链345/345通过，用时81.5s，34个测试文件，包含D42 integration20项。
+- 主工作树source SHA：core`f2e67c142ba8fbe797a019e724435a86b67db8446efb9ba49c96abb593b47459`；probe`ff74748be440648ade9c45c60d12c53ea71e149d74180b30a4c1570a257072c2`。
+
+当前只有代码/合成验证，不能声明性能。下一步提交精确文件，建立干净worktree复跑345项；干净链通过后才登记真实105行命令。

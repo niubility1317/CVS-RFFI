@@ -36,3 +36,7 @@ Stage2-B/Stage2-C注册生命周期是support registry事实，不是query角色
 - 真实outer相对D62不得交换A、N、H、J、min-A、min-N或三场景floor；至少严格改善A、F、J或任一floor才可进入第二development seed。
 - 若mask活跃但outer负交换，停止生命周期行替换路线，不扫描fold、阈值、权重或温度。若mask全空且精确D62，记录为无新增性能的安全fallback。
 - 首seed前只跑receiver`20-1`、seed`713101`、K10/new5、三场景×五fold的105行；不运行125。
+
+## 实现状态
+
+已实现独立core、锁定probe和10项专项测试，不修改D62/D69历史文件。专项10/10、D42–D70完整链345/345通过；完整链用时81.5s。资源审计预留每个target row额外4次inner D62、40次inner component fit以及相应LDA/Fisher/held-score/gate MAC。当前尚无outer性能，必须在提交和干净worktree复验后运行锁定105行。
