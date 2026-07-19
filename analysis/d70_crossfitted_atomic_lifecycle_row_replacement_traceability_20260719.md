@@ -37,8 +37,12 @@ Stage2-B/Stage2-C注册生命周期是support registry事实，不是query角色
 - 若mask活跃但outer负交换，停止生命周期行替换路线，不扫描fold、阈值、权重或温度。若mask全空且精确D62，记录为无新增性能的安全fallback。
 - 首seed前只跑receiver`20-1`、seed`713101`、K10/new5、三场景×五fold的105行；不运行125。
 
-## 实现状态
+## 实现与结果状态
 
-已实现独立core、锁定probe和10项专项测试，不修改D62/D69历史文件。专项10/10、D42–D70完整链345/345通过；完整链用时81.5s。资源审计预留每个target row额外4次inner D62、40次inner component fit以及相应LDA/Fisher/held-score/gate MAC。当前尚无outer性能，必须在提交和干净worktree复验后运行锁定105行。
+已实现独立core、锁定probe和10项专项测试，不修改D62/D69历史文件。专项10/10、D42–D70完整链345/345通过；完整链用时81.5s。资源审计预留每个target row额外4次inner D62、40次inner component fit以及相应LDA/Fisher/held-score/gate MAC。
 
 实现提交`10536c01`已建立干净worktree，干净D42–D70链345/345再次通过，用时82.8s。真实105行命令、source closure和预期60/30/120/2280调用闭包已在automation report锁定。
+
+真实105/105行已完成。INT8目标B/A/N/H/F/J=92.78/82.22/84.67/82.62/10.56/26.67，min-B/A/N=80.00/53.33/73.33，与D62所有汇总和floor完全相同；混淆为25/8/15，较D62的23/8/15多2个旧→新错误。9折触发联合原子失败精确回退，5折无行接受精确回退，只有`leo_clear_weak/fold1`接受old1一行。该折support-held TP/FP改善没有转化为outer增益。
+
+结论为`COMPLETED_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE`：原子门验证了安全回退，但生命周期旧行替换没有新增性能，并显著增加support拟合计算。停止旧行替换及其fold/阈值/权重/温度扫描；D62仍是联合最强，下一路线必须保留全类joint坐标并同时解决low/rain的old4、old5、new1、new3 floor。完整7候选、3场景、11类、15fold、训练、量化、资源与artifact见同名automation report及`d70_full_performance_summary.json`。
