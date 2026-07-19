@@ -55,3 +55,22 @@ D66名称为`ground_domain_reliability_residual`。它不把地面原型当作�
 首次真实运行完成105/105行、query0、性能与组件使用字段完整，但全日志解析发现runner在D66 top-level资源更新后又以编译仿射头大小覆盖`persistent_state_bytes`：行内同时记录组件逻辑25,428B和实际输入84，却把总状态写成仅头部8,583B。正确总状态应为8,583＋25,428=34,011B。该问题只影响资源主字段，不影响拟合、预测、量化或性能，但当前artifact不能作为最终D66资源证据。
 
 Resource-R1在D66 probe内包装锁定runner的D42 fold结果：先保留`d66_compiled_affine_state_bytes`，再写入`d66_component_inclusive_persistent_state_bytes=head+component`并同步主`persistent_state_bytes`；验证器新增严格加总等式。候选、公式、数据、性能门和所有预测路径不变。首次输出原样保留；修复运行使用新目录，不覆盖旧artifact。
+
+## Resource-R1完成证据
+
+- 修复提交`b7388395e9d905db2a8b7f01b047370b30276028`；干净worktree`E:\type10-7\code\snapshots\d66r1wt`在该提交运行D42–D66完整链，304/304通过，用时81.6s。
+- 真实运行105/105行、七候选×三场景×五fold、退出码0；runner124.4298s，query/clean/source/truth/role/quota/global assignment访问均为0。
+- 首次与R1逐行递归比较后，唯一语义变化是30行状态从仅头部8,583B修正为组件含总状态34,011B，并新增头部/总状态显式字段；15行运行时延迟不同。预测、性能、训练、量化和几何字段全部严格相同。
+- 每个D66 before/final fit实际输入84个地面域类cell；总组件拟合调用1,080次。组件入口/出口SHA均为`3c08c823...0267d7`，无更新。可靠性尺度SHA为`70a8e943...df6c`；主状态34,011B=8,583B仿射头＋25,428B地面组件，资源cap通过。
+
+## 完整性能与失效机制
+
+D66 INT8同排总体为before93.33%、after83.33%、seen-new83.33%、H82.59%、forget10.00pp、joint23.33%、min-before/min-after/min-new为80.00%/53.33%/66.67%，混淆20/9/16。匹配FP32总体相同，但15fold中有1个outer argmax变化，故量化零变化门失败。
+
+三场景分别为：clear的before/after/new/H=98.33%/91.67%/98.00%/94.44%，floor90%/70%/90%；low-elev为91.67%/81.67%/72.00%/75.88%，floor80%/60%/30%；rain为90.00%/76.67%/80.00%/77.45%，floor60%/30%/70%。旧类`14-7`和`6-15`注册后仅53.33%与73.33%；新类`cls_09f8`仅66.67%。
+
+D62门控before在8/15fold激活，final仅3/15fold激活且rain final为0/5，大部分注册后预测退回D46。地面共享尺度使D66相对D62的after+1.11pp、forget改善0.56pp、旧→新减少3次，但seen-new-1.33pp、joint-3.33pp、min-new-6.67pp，新→旧/新→错新各增加1次。它保护了部分易旧类，却不能修复困难旧类及low-elev新类floor。
+
+最终判定为`COMPLETED_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE`。K10目标缺口：after差8.67pp、最差旧类after差34.67pp、new5差8.67pp。D62仍是当前聚合联合最强开发版本；D65只在旧类保持上更强但seen-new仅59.33%，不可联合推广。D66不运行第二seed或125，并停止共享尺度扫描、旧ground中心融合、半径似然、role offset、Procrustes/transport和query batch路线。D64–D66为连续第三轮，下一候选前必须完成并记录强制回顾。
+
+完整候选、场景、11类、15fold、训练、资源、量化与artifact表见同实验`report.md`；R1 training log SHA为`da0a0f8bd9950b6bd6b7acd3fdc5b1304230db897c2040bdfb076014f5a2cc19`，D66摘要SHA为`0ab1833c8f40e7b7dce233c5a6e37a9b6a8f2961dd2e26d7cf4ada032bde22b9`。
