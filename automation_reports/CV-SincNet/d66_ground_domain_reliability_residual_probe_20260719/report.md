@@ -70,3 +70,24 @@ D66从84个有效的地面域×旧类int8聚合单元计算每个z160坐标的�
 - 完整日志解析发现资源主字段漏加地面组件：`d66_ground_component_logical_state_bytes=25,428`和`ground_int8_component_input_count=84`正确，但runner后置逻辑把`persistent_state_bytes`覆盖为仅仿射头8,583B。正确组件含总状态为34,011B，仍低于256KB。
 - 该缺陷不影响预测或性能，但首次artifact不能封为最终资源证据，先不发布最终D66性能判定。首次目录原样保留。
 - Resource-R1只修资源后置加总与硬断言，不改公式、support、候选、训练、量化或预测；新输出为`ground_domain_reliability_residual_resource_r1`，不得覆盖首次目录。
+
+## 8.Resource-R1执行前闭包
+
+- 修复提交：`b7388395e9d905db2a8b7f01b047370b30276028`。D66外层在锁定runner返回后保留仿射头状态`d66_compiled_affine_state_bytes`，并强制`persistent_state_bytes=d66_compiled_affine_state_bytes+d66_ground_component_logical_state_bytes=8,583+25,428=34,011B`；同时新增组件含总状态一致性断言和摘要字段。
+- 干净worktree：`E:\type10-7\code\snapshots\d66r1wt`，detached HEAD=`b7388395e9d905db2a8b7f01b047370b30276028`，创建后`git status -sb`仅为`## HEAD (no branch)`。
+- 干净全链验证：`C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -m pytest -q <D42-D66的26个测试文件> --basetemp local_artifacts\d66r1_clean_full_chain`，304/304通过，用时81.6s。
+- Resource-R1仍使用相同D18 enrollment-only support、receiver`20-1`、seed`713101`、K10/new5、3场景×5fold、七候选和`development_select_unverified_component`；组件manifest仍为`UNVERIFIED_UNDER_CURRENT_PROTOCOL`，不产生formal/query/performance claim，也不获得125权限。
+- 唯一允许变化的是D66脚本/source closure及资源字段；逐fold标签、预测、分数、候选、训练轨迹、量化诊断和全部性能字段必须与首次运行一致。若任何预测或性能变化，Resource-R1不得作为等价重封。
+
+Resource-R1精确命令与第6节相同，但使用：
+
+```text
+script/probe-root = E:\type10-7\code\snapshots\d66r1wt
+output = E:\type10-7\automation_reports\CV-SincNet\d66_ground_domain_reliability_residual_probe_20260719\ground_domain_reliability_residual_resource_r1
+runtime-root = E:\type10-7\code\snapshots\d41wt
+device = auto
+mode = development_select_unverified_component
+candidate-set = d42_v1
+```
+
+成功闭包：105/105行、query/clean/source/role/quota/global assignment访问为0；每行`persistent_state_bytes=34,011`、仿射头8,583B、组件25,428B且256KB cap通过；首次与R1逐fold预测和全部性能严格等价；无非有限值、异常或错误marker。完成后必须生成D66专属完整摘要并补齐总体、场景、11类、15fold、量化、训练、资源、artifact及D62/D64/D65对照表。
