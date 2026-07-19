@@ -37,3 +37,15 @@ D66名称为`ground_domain_reliability_residual`。它不把地面原型当作�
 - 新增独立D66 probe和专项测试，不修改D62历史源码与artifact。
 - 验证mask反量化、公式边界、类置换不变、组件只读、对全类统一变换、系数编译等价、K1/K2精确兼容、资源闭包与105行输出闭包。
 - 在干净worktree运行D43–D66完整相邻测试链，再启动真实105行开发实验。
+
+## 合成集成烟测归因复核
+
+初版专项4/4、D42–D66完整回归303/303通过。额外随机合成的真实D42＋D62烟测在内部inner fit触发`D42 sklearn coefficient deployment prediction drift`，但移除D66并用未改动D62在同一数据上复跑后出现完全相同的栈和错误；因此该失败来自合成集本身触发D62既有近边界fail-closed条件，不能归因于地面共享尺度，也不能作为改变预注册机制的证据。D66保留原始“全部D62拟合在共享坐标内执行、随后编译回原坐标”公式；不放宽任何D42断言。真实集成判据为锁定项目enrollment-only support上的105行fail-closed运行。
+
+## 实现与本地验证
+
+- 实现：`code/scripts/probe_d66_ground_domain_reliability_residual.py`。
+- 测试：`tests/test_probe_d66_ground_domain_reliability_residual.py`。
+- 真实组件审计：26域、6类、84个有效cell，每类14个；`r`范围0.0242749–0.9999186、均值0.7698918；`s`范围1.0120647–1.4141848、均值1.3240636、条件数1.3973265、SHA256=`70a8e94327e7100695f691d6ae49e246305036cefd92579e977e3d536c37df6c`；FFT/RF尺度逐bit为1。
+- 资源静态值：地面组件逻辑状态25,428B、瞬时反量化53,760B、一次可靠性统计58,880标量MAC；K8的before6类＋final11类共享变换应用21,760MAC，query额外MAC/state均为0。
+- `py_compile`通过；D66专项4/4通过；D42–D66完整26文件303/303通过，用时81.1s；`git diff --check`通过。
