@@ -28,3 +28,6 @@ query先执行D62全类打分。若其top-2的无序pair被接受，则仅用对
 - 相对D62必须保持aggregate、3场景、11类floor、H、forgetting、joint和混淆无交换，并至少改善A、F、J或任一floor；否则停止D71，不扫描pair阈值、权重、温度、kNN K值或场景/角色门。
 - 首轮只跑receiver`20-1`、seed`713101`、K10/new5、3场景×5fold的105行。未过development gate不跑第二seed或125。
 
+## 实现状态
+
+独立core、锁定D62 probe和两个测试文件已实现。D71专项12/12、D42–D71全链357/357通过；全链用时82.8s。当前证据只证明公式、状态、协议和回归闭包，尚无outer性能。提交后必须在干净worktree复验，再按automation report登记的唯一命令运行真实105行。

@@ -2,7 +2,7 @@
 
 ## 1.执行前登记
 
-- 实验ID：`d71_crossfitted_top2_centroid_reranker_probe_20260719`；operator：Codex；状态：`PREREGISTERED_IMPLEMENTATION_PENDING`。
+- 实验ID：`d71_crossfitted_top2_centroid_reranker_probe_20260719`；operator：Codex；状态：`IMPLEMENTED_LOCAL_CHAIN_VALIDATED_PERFORMANCE_PENDING`。
 - 比较目标D62：B/A/N/H/F/J=92.78/82.22/84.67/82.62/10.56/26.67，min-B/A/N=80.00/53.33/73.33，混淆23/8/15。
 - D70最终与D62全部汇总/floor持平，但旧→新多2次且额外计算显著；提交`e9549c7e`。旧类行替换路线停止。
 - 根目录`E:\type10-7`非Git；本报告镜像、代码、测试和追踪进入`E:\type10-7\github_publish\CVS-RFFI-repo`。只暂存D71拥有路径，不覆盖其他工作树改动。
@@ -25,3 +25,10 @@ D71始终保留D62全类joint分数，只允许经过两折support-held pair非�
 
 真实完成后必须报告7候选、3场景、11类、15fold、接受pair、held TP/FP、训练20epoch、量化、资源、artifact及D62/D65–D70同row对照。相对D62若A/N/H/J/min-A/min-N或场景floor发生交换，或没有至少一项严格改善，则状态为`COMPLETED_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE`，不跑第二seed或125，不扫描pair阈值/权重/温度。
 
+## 5.实现与本地验证
+
+- 新增`code/cvsrffi/stage2_d71_top2_centroid_reranker.py`：exact-once两折、最近中心pair方向、逐pair两类非劣门、全类TP/FP原子门、INT8/FP32稀疏pair状态和top-2交换器。
+- 新增`code/scripts/probe_d71_crossfitted_top2_centroid_reranker.py`：接入锁定D62，保留D62 base state；对before/final分别登记pair gate/state，并显式增加适配MAC、query额外计算、pair状态和非单affine口径。
+- 两个D71测试文件共12项，覆盖partition、pair registry、第三类不变、空门、K1、INT8/FP32、active gate、非法support、D62 audit包装、state identity、协议与调用闭包；12/12通过。
+- D42–D71共36个测试文件、357/357通过，用时82.8s。pytest退出后仅出现Windows临时`pytest-current`清理`PermissionError`，命令exit0且全部测试已完成，判为已知包装清理噪声。
+- 当前尚无真实outer性能；下一步提交精确D71文件，建立干净worktree并复跑357项。干净链通过后才登记105行命令。
