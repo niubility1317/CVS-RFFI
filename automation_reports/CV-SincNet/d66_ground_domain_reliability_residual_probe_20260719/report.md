@@ -29,3 +29,37 @@ D66从84个有效的地面域×旧类int8聚合单元计算每个z160坐标的�
 初版专项4/4、D42–D66完整回归303/303通过。额外随机合成的真实D42＋D62烟测在任何项目support/query打开前触发`D42 sklearn coefficient deployment prediction drift`；移除D66后，未改动D62在同一合成数据上复现完全相同错误，故不能归因于共享尺度。未放宽D42闭包断言，保留预注册的共享坐标拟合公式；真正集成判据为锁定项目enrollment-only support上的105行fail-closed运行。
 
 待补：本地变更、验证命令、Git提交、干净worktree、精确运行命令、环境、输出路径、运行时、完整结果与下一实验建议。
+
+## 5.实现、验证与版本状态
+
+- 新增`code/scripts/probe_d66_ground_domain_reliability_residual.py`：组件策略/allowlist/SHA闭包、规范registry排序、84-cell反量化、共享可靠性尺度、D62坐标注入、系数编译、资源和输出验证。
+- 新增`tests/test_probe_d66_ground_domain_reliability_residual.py`：组件只读与策略fail-closed、类置换逐bit尺度不变、尺度边界、全类统一编译等价和无角色/场景/可调分支。
+- 预注册提交`fc7c0977`；实现提交`684e110edddf5adaafe22200cb044ddd56059bcd`；实现脚本SHA将在运行artifact中自动锁定。
+- 主工作树专项4/4、D42–D66完整26文件303/303通过；干净worktree`E:\type10-7\code\snapshots\d66wt`在同一提交再次303/303通过，用时85.2s；`py_compile`和`git diff --check`通过。
+- 真实组件：26域×6类、84个有效cell，每类14个；可靠性0.0242749–0.9999186，尺度1.0120647–1.4141848，条件数1.3973265，尺度SHA256=`70a8e94327e7100695f691d6ae49e246305036cefd92579e977e3d536c37df6c`；组件逻辑状态25,428B，瞬时反量化53,760B，统计58,880MAC。
+- 本轮完全本地，不需要SSH/SCP，不占用或干预N607。Conda/Python环境为`C:\Users\lh594\.conda\envs\ssr-gpu\python.exe`；运行设备`auto`，由锁定runner记录实际GPU/CPU和峰值显存。
+
+## 6.精确运行命令
+
+```powershell
+& 'C:\Users\lh594\.conda\envs\ssr-gpu\python.exe' `
+  'E:\type10-7\code\snapshots\d66wt\code\scripts\probe_d66_ground_domain_reliability_residual.py' `
+  --d66-arm ground_domain_reliability_residual `
+  --runtime-root 'E:\type10-7\code\snapshots\d41wt' --probe-root 'E:\type10-7\code\snapshots\d66wt' `
+  --before-root 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\phase2_capsule_k10_new5\predictor\before\enrollment_only' `
+  --before-seal 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\phase2_capsule_k10_new5\seals\before_enrollment.seal.json' --before-seal-sha256 53ace2863c9da6c2f6cc855d602c99f581df6de3d30a9a3ecb89eb6b6f0d9f75 `
+  --before-formal-policy 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\formal_execution_policy.json' `
+  --before-formal-policy-authorization 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\runtime_authorization_k10_new5\before_formal_policy_authorization.v2.json' `
+  --before-signed-policy-authorization-envelope 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\runtime_authorization_k10_new5\before_signed_policy_authorization_envelope.v2.json' --before-signed-policy-authorization-envelope-sha256 31a2ad9918f061b25d5a7ed0cc135df70ae02460c094b2f396bf314817bceb0e `
+  --after-root 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\phase2_capsule_k10_new5\predictor\after\enrollment_only' `
+  --after-seal 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\phase2_capsule_k10_new5\seals\after_enrollment.seal.json' --after-seal-sha256 c70aedf3a8f059e756806201758c1933a2f3e1ba4df415e69a1c776b1a2b50ff `
+  --after-formal-policy 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\formal_execution_policy.json' `
+  --after-formal-policy-authorization 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\runtime_authorization_k10_new5\after_formal_policy_authorization.v2.json' `
+  --after-signed-policy-authorization-envelope 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\runtime_authorization_k10_new5\after_signed_policy_authorization_envelope.v2.json' --after-signed-policy-authorization-envelope-sha256 a2483d6e9c9c362d89397029ff1e43f48358be3bdb3a05d717ee112b70a0be76 `
+  --component-dir 'E:\type10-7\automation_reports\CV-SincNet\d22_int8_anchor_lifecycle_20260717\input\int8_component' --component-manifest-sha256 15b5e144f9af3989421d8e925c17758479c327be47e79222f6363dc63994629c `
+  --class-binding 'E:\type10-7\github_publish\CVS-RFFI-repo\analysis\d19_adv3b02_class_binding_20260717.json' --class-binding-sha256 bb89a1dbb831acb374fccfc596ae98b660b496b449bdca577dabb962121c901f `
+  --output 'E:\type10-7\automation_reports\CV-SincNet\d66_ground_domain_reliability_residual_probe_20260719\ground_domain_reliability_residual' `
+  --device auto --mode development_select_unverified_component --candidate-set d42_v1
+```
+
+预期输出为105行training log、support/query/selection/receipt、geometry/resource和D66 metadata。任何组件、策略、support、D42/D62、编译、资源或输出闭包失败均停止，不覆盖输出、不重跑同目录。
