@@ -16,16 +16,16 @@ ground类中心在形成`r_dc`后丢弃。每个target support fit以`lambda=(D_
 
 |ID|要求|目标文件|状态|验证/停止条件|
 |---|---|---|---|---|
-|D80-R1|真实84-cell地面组件只读，入口/出口hash一致|D80 probe/D66 loader|verified|真实loader烟测84 cell；完整run核对入口/出口hash|
+|D80-R1|真实84-cell地面组件只读，入口/出口hash一致|D80 probe/D66 loader|verified|105行run中NPZ/manifest入口出口SHA完全一致|
 |D80-R2|只构造逐类去中心的共享域质心漂移协方差，不声称radius/count|D80 core/probe|verified|置换不变测试；真实rank78/effective rank13.6446；radius/count=false|
 |D80-R3|固定量化底`mean(scale²/12)`，不裸逆低于量化精度的方向|D80 core/tests|verified|真实floor`5.2414e−7`，SPD测试通过|
 |D80-R4|固定自由度EB权重，所有full/block outer/held fit一致注入|D80 core/probe|verified|factory patch→build D62 closure→restore；synthetic after权重13/90|
 |D80-R5|所有target-old/new类同一公式，K1不伪造target covariance|D80 core/tests|verified|类置换等变；K1 `nu_t=0/lambda=1`有限确定|
-|D80-R6|0新增step/parameter、含ground<256KB、query额外MAC/state0|probe/resource audit|verified|源码和单测闭包；真实资源待run|
-|D80-R7|完整开发实验20-1/new5/K10/713101、3场景×5fold、105行|run/summarizer|planned|逐类/场景/混淆/INT8-FP32/资源全量解析|
-|D80-R8|相对D62严格联合门|summarizer/report|planned|总体及每场景无退化、三类混淆不增、INT8/FP32无翻转|
+|D80-R6|0新增step/parameter、含ground<256KB、query额外MAC/state0|probe/resource audit|verified|新增0step/0param、34,011B、query额外0、141.10M适配MAC|
+|D80-R7|完整开发实验20-1/new5/K10/713101、3场景×5fold、105行|run/summarizer|verified|完整解析105行、逐类/场景/混淆/INT8-FP32/资源|
+|D80-R8|相对D62严格联合门|summarizer/report|rejected|`A+0.56pp`但`N−0.67pp`、H`−0.18pp`、F`+0.56pp`、min-N`−3.33pp`|
 |D80-R9|formal ground bundle需联合封存及外部authority签名|loader/report|blocked|当前只能development diagnostic|
 
 ## 停止条件
 
-不扫描`lambda`、rank、量化ridge、类权重或场景权重。若D80仍产生旧/新交换、support-held与outer错配、量化翻转或完全identity，则关闭ground协方差决策路线；不启第二seed、125或N607。专项10/10、D62/D78/D79/D80相邻34/34已通过，但测试和资源达标不替代性能成功。
+不扫描`lambda`、rank、量化ridge、类权重或场景权重。D80产生旧/新交换且注册前收益未延续到注册后，最终状态为`COMPLETED_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE`；关闭ground covariance直接进入query判别度量的路线，不启第二seed、125或N607。追溯状态计数：7项`verified`、1项`rejected`、1项`blocked`。
