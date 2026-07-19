@@ -43,14 +43,14 @@ D78把地面中心的类均值剥离后，将全部域内残差压成固定低�
 |ID|来源|可验收要求|目标文件|状态|验证|备注|
 |---|---|---|---|---|---|---|
 |D78-R1|ground tangent|严格校验D19/D22 int8组件；84个cell只读；类去均值SVD；`q=min(13,numerical rank)`|`code/cvsrffi/stage2_d78_ground_tangent_worstclass_margin.py`、probe loader|verified|真实组件加载：26 registry domain、14完整有效域、84 cell、rank13、能量77.75%；正交与域/类置换测试通过|组件当前只具诊断资格|
-|D78-R2|support crossfit|8物理rank、88个held support、固定top rival、无outer/query|core|implemented|合成crossfit、确定性和K1闭包通过；真实88行待run|actual outer-fit K8|
+|D78-R2|support crossfit|8物理rank、88个held support、固定top rival、无outer/query|core|verified|30个target fit均为8折、88 held、8个唯一LDA；outer/query不可达|actual outer-fit K8|
 |D78-R3|floor objective|逐类等权top-2 logistic＋固定温度smooth-max，类置换等变|core|verified|目标单调、类置换等变与ground子空间测试通过|无old/new角色|
 |D78-R4|固定优化|20个接受步、解析初始步与确定性回溯、零行均值、类无关trust ball|core|verified|20步、确定性、零行均值与trust投影测试通过|无候选/超参扫描|
-|D78-R5|D62集成|仅对D62 final rows加`AU^T`，bias不变，不refit，INT8/FP32 matched|`code/scripts/probe_d78_ground_tangent_worstclass_margin.py`|implemented|probe专项与D42-D78邻接回归通过；真实量化审计待run|query仍为单仿射|
-|D78-R6|资源闭包|D42 20step＋D78 20step=`40<=50`；epoch20；参数<80k；含ground总状态<256KB；query额外MAC/state0|probe与artifact|implemented|143切向参数、MAC加总、34,011B和40step静态/runner覆盖测试通过；真实30行待run|ground SVD计保守MAC上界|
-|D78-R7|协议闭包|单LEO_weak、support-only、全注册类对称；clean/source/query truth/role/quota/global assignment访问0|probe、测试、RECEIPT|implemented|静态协议锁、专项9/9及D42-D78邻接47文件390项通过；RECEIPT待run|复用D18 VALIDATED_ONCE|
-|D78-R8|完整开发实验|receiver`20-1`、seed`713101`、K10/new5、3场景×5fold、7候选105行|run与summarizer|pending|待完整日志解析|先验证离散边界是否改变|
-|D78-R9|性能晋级门|相对D62，`A/N/H/min-A/min-N`不退化、`F`不升且至少一项严格改善；混淆无交换伤害|summarizer与报告|pending|待同row判定|失败即关闭，不开第二seed或125|
+|D78-R5|D62集成|仅对D62 final rows加`AU^T`，bias不变，不refit，INT8/FP32 matched|`code/scripts/probe_d78_ground_tangent_worstclass_margin.py`|verified|30个target fit、INT8/FP32 aggregate/argmax完全匹配，outer变化3/15|query仍为单仿射|
+|D78-R6|资源闭包|D42 20step＋D78 20step=`40<=50`；epoch20；参数<80k；含ground总状态<256KB；query额外MAC/state0|probe与artifact|verified|2,159参数、40step、20epoch、34,011B、query MAC6,624且D78额外query MAC/state为0|ground SVD计保守MAC上界|
+|D78-R7|协议闭包|单LEO_weak、support-only、全注册类对称；clean/source/query truth/role/quota/global assignment访问0|probe、测试、RECEIPT|verified|105行、RECEIPT与完整日志确认所有禁止访问为0；ground入口/出口SHA一致|复用D18 VALIDATED_ONCE|
+|D78-R8|完整开发实验|receiver`20-1`、seed`713101`、K10/new5、3场景×5fold、7候选105行|run与summarizer|verified|105/105行、15/15 INT8 outer row、完整stdout/stderr与artifact解析|变化集中在rain 3/5 fold|
+|D78-R9|性能晋级门|相对D62，`A/N/H/min-A/min-N`不退化、`F`不升且至少一项严格改善；混淆无交换伤害|summarizer与报告|rejected|A+2.22、F−2.22、min-A+10，但N−2.67、H−0.48、min-N−10且new→old+4|关闭D78，不开第二seed或125|
 |D78-R10|正式资格门|只有联合封存且由外部authority签名的ground bundle才能产生formal claim|loader、报告|blocked|当前无外部签名joint bundle；probe强制`formal_candidate=false`|诊断结果不得写成正式性能|
 
 ## 创新性与效率
@@ -63,3 +63,10 @@ D78把地面中心的类均值剥离后，将全部域内残差压成固定低�
 ## 停止条件
 
 若性质测试、协议闭包或资源上限失败，先修实现。若105行完成但D78相对D62没有严格联合改善，记录`COMPLETED_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE`，不扫描rank、温度、回溯步、trust radius、class weight或margin倍率。
+
+## 完成判定
+
+- 已验证：D78-R1至D78-R8，共8项。
+- 已拒绝：D78-R9，共1项；旧类保护以新类退化和混淆交换为代价。
+- 被外部证据阻塞：D78-R10，共1项；当前没有联合封存且由外部authority签名的ground bundle。
+- 实验状态：`COMPLETED_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE`。
