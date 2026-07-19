@@ -8,7 +8,7 @@
 |候选|`conflict_projected_joint_metric`|
 |时间|2026-07-20|
 |operator|Codex `/root`|
-|状态|`PREREGISTERED_NOT_RUN`|
+|状态|`COMPLETED_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE`|
 |目标|在不使用地面组件和query信息的条件下，以旧类保持/新类注册等权冲突投影的一次共享metric更新同时改善D62的注册后old与new|
 |比较目标|D62：`B/A/N/H/F/J=92.78/82.22/84.67/82.62/10.56/26.67%`|
 
@@ -63,7 +63,7 @@ D70–D72说明support内score/head后处理不能可靠推断outer新旧方向�
 
 |candidate|机制|receiver/TX|K/seed|B old|A old|seen-new|H|forgetting|joint|min-B/A/N|混淆O→N/N→O/N→N|量化|资源|判定|
 |---|---|---|---|---:|---:|---:|---:|---:|---:|---|---|---|---|---|
-|D73|等权PCGrad单步共享metric|20-1/new5|K10/713101|待跑|待跑|待跑|待跑|待跑|待跑|待跑|待跑|待跑|待跑|待跑|
+|D73|等权PCGrad单步共享metric|20-1/new5|K10/713101|92.78|82.22|84.67|82.62|10.56|26.67|80/53.33/73.33|23/8/15|0 flip|21step/8,583B|负向，不晋级|
 
 ## 9.实现锁定（2026-07-20 00:24）
 
@@ -140,3 +140,133 @@ R3只修复审计：对base/updated final log-diagonal分别写SHA并要求不�
 R3验证与运行锁：专项9/9、主工作树D42–D73完整链377/377均通过（82.6秒）；clean worktree`E:\type10-7\code\snapshots\d73r3wt`锁定commit`7c02518e3365f102c1bde82c15473fef6f5bebbe`，专项9/9及core/probe/summarizer `py_compile`通过且worktree clean。执行SHA：probe=`8367f7fba9617067e56ed69157828ed7091a0b04f0c51f8905ec7056fd832802`、core=`bdb104ceb82c9f069499dd920b88599a455a65defdd3f622184bbe8dfbe2bd63`、D62 helper=`38ae1114a06d135bca806f470417cd28a634fec0da449888665c6843615d4a20`、summarizer=`1cf357df1a15944a921fc6f7c9d68787fa67300007ed24c7ef2a6d8205551e3e`。01:01:03检查retry3目录不存在；GPU0显存`954/16303MiB`、利用率0%。除`probe-root/script=d73r3wt`和新输出目录外，命令参数与第10节一致。
 
 R3于2026-07-20 01:02:00启动，PID`1332`；只读命令行检查与锁定参数一致，stderr 0B，转为只读监控。
+
+## 13.R3完成状态与artifact闭包
+
+- PID`1332`于01:05:22前退出，Runner实测`elapsed_seconds=172.5560`，launcher stderr为0B。
+- RECEIPT=`DEVELOPMENT_SUPPORT_ONLY_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE`，`selected_candidate_id=Z0_SUPPORT_ONLY`，`selected_positive_route=false`，`query_opened=false`；无formal/performance claim。
+- 闭包：105/105行、7候选×15fold、30个目标量化/FP32行、30次top fit、30次额外D62 final refit、1620次D62 residual component execution；目标行21/21完整训练步，ground/query-fit/clean/source/query-role/quota访问0。
+- lifecycle闭包：15/15个INT8 fold的base/updated metric SHA不同，final SHA均等于updated SHA；`metric_frozen_during_stage2c=false`、`stage2c_log_diag_frozen=false`。metric MAC等式为`4,976,640+2,240,688=7,217,328`。
+- 完整摘要：`d73_r3_full_performance_summary.json`，87,448B，SHA256=`8810fb11322a83bc8f745d0d29c3cb4a51063d1e3fd587d25be8be97dc356cf9`。
+
+|artifact|字节|SHA256|
+|---|---:|---|
+|`training_log.jsonl`|14,774,335|`e111126fed3de1dc92ad7845dffd5bce42439a69012a96c8c71cbe210db9fbe3`|
+|`support_audit.json`|313,672|`b4cd3dacb1d25bc566b0621950cd6c5567815b9cea779cb05dc4a3b90803a3b4`|
+|`resource_audit.json`|6,498|`00f364e567e0462feb955321e6d414c0dc95493dab35d3ed00dfacd71a8d6e2b`|
+|`geometry_audit.json`|5,132|`ae4b735a45fdae38eaf8bb6bfd23e57df9d60560144027a1e3e33937556300dc`|
+|`selection.json`|2,992|`0bc6d11f7e1a2c26e765eefb58e12e172c6cb6b453de23f5e62be25a574173df`|
+|`RECEIPT.json`|5,030|`1f3b8bb0096f3516d4cc866c22c4316f680c84999befeb1b7618160f09d6c70f`|
+|`D73_PROBE_METADATA.json`|2,485|`d10486306c008cee30fcd4e45c46de5251ab78b12f4e8fb8ec06744e99e561a5`|
+
+## 14.同row总体结果与开发门
+
+|candidate|机制|receiver/TX|K/seed|B old|A old|seen-new|unknown|H|forgetting|joint|min-B/A/N|row-floor B/A/N|混淆O→N/N→O/N→N|coverage/rollback/defer|量化|资源|判定|
+|---|---|---|---|---:|---:|---:|---|---:|---:|---:|---|---|---|---|---|---|---|
+|D73 INT8|等权旧/新梯度单步共享metric＋D62 refit|20-1/new5|K10实际fit K8/713101|92.78|82.22|84.67|N/A，本开发单元无unknown query|82.62|10.56|26.67|80.00/53.33/73.33|73.33/50.00/46.67|23/8/15|N/A/0/0|INT8=FP32 argmax|见第21节|负向，不晋级|
+|D62 INT8|冻结D42 metric＋crossfitted Fisher row splice|20-1/new5|同上|92.78|82.22|84.67|N/A|82.62|10.56|26.67|80.00/53.33/73.33|73.33/50.00/46.67|23/8/15|N/A/0/0|INT8=FP32 argmax|更低|当前最强|
+
+D73与D62的15/15 outer prediction SHA完全相同，所有总体、场景、类、fold、floor和混淆指标逐项相同；D73开发正向门失败。相对活动K10目标：`A`差9.78pp、`min-A`差34.67pp、`new5`差7.33pp。不得运行第二seed、K1/K5/K20或125矩阵。
+
+## 15.三场景表现
+
+|场景|B|A|N|H|F|J|min-B/A/N|row-floor B/A/N|混淆O→N/N→O/N→N|主要表现|
+|---|---:|---:|---:|---:|---:|---:|---|---|---|---|
+|LEO clear weak|98.33|91.67|98.00|94.44|6.67|50.00|90.00/70.00/90.00|90.00/60.00/90.00|2/1/0|新类接近饱和，但fold1旧类floor为0|
+|LEO low elev weak|91.67|78.33|76.00|75.98|13.33|20.00|80.00/60.00/50.00|70.00/60.00/20.00|8/5/7|旧/新双向混淆，new floor明显不足|
+|LEO rain weak|88.33|76.67|80.00|77.45|11.67|10.00|60.00/30.00/70.00|60.00/30.00/30.00|13/2/8|旧类侵入新类最严重，min-A仅30%|
+
+## 16.逐类总体准确率
+
+类编号按Runner注册顺序，仅用于报告；算法不含类ID专用公式。
+
+|类|before-old|after-old|遗忘/变化|
+|---|---:|---:|---:|
+|O1|96.67|90.00|−6.67pp|
+|O2|96.67|90.00|−6.67pp|
+|O3|96.67|93.33|−3.33pp|
+|O4|80.00|53.33|−26.67pp|
+|O5|93.33|73.33|−20.00pp|
+|O6|93.33|93.33|0.00pp|
+
+|类|seen-new准确率|
+|---|---:|
+|N1|73.33|
+|N2|93.33|
+|N3|76.67|
+|N4|90.00|
+|N5|90.00|
+
+旧类最弱仍是O4=53.33%，新类最弱仍是N1=73.33%。D73没有修复D62的下尾类瓶颈。
+
+## 17.15个outer fold完整同row表
+
+|场景|fold|B|A|N|H|F|J|floor B/A/N|混淆O→N/N→O/N→N|
+|---|---:|---:|---:|---:|---:|---:|---:|---|---|
+|clear|0|100.00|100.00|90.00|94.74|0.00|50.00|100/100/50|0/1/0|
+|clear|1|100.00|83.33|100.00|90.91|16.67|0.00|100/0/100|0/0/0|
+|clear|2|91.67|83.33|100.00|90.91|8.33|50.00|50/50/100|1/0/0|
+|clear|3|100.00|100.00|100.00|100.00|0.00|100.00|100/100/100|0/0/0|
+|clear|4|100.00|91.67|100.00|95.65|8.33|50.00|100/50/100|1/0/0|
+|low|0|100.00|66.67|80.00|72.73|33.33|50.00|100/50/50|4/1/1|
+|low|1|83.33|58.33|70.00|63.64|25.00|0.00|50/50/0|1/0/3|
+|low|2|83.33|91.67|70.00|79.38|−8.33|0.00|50/50/0|0/2/1|
+|low|3|100.00|100.00|70.00|82.35|0.00|0.00|100/100/0|0/1/2|
+|low|4|91.67|75.00|90.00|81.82|16.67|50.00|50/50/50|3/1/0|
+|rain|0|83.33|83.33|60.00|69.77|0.00|0.00|50/50/0|2/0/4|
+|rain|1|100.00|66.67|90.00|76.60|33.33|0.00|100/0/50|4/1/0|
+|rain|2|91.67|83.33|80.00|81.63|8.33|50.00|50/50/50|1/0/2|
+|rain|3|83.33|75.00|90.00|81.82|8.33|0.00|50/0/50|3/0/1|
+|rain|4|83.33|75.00|80.00|77.42|8.33|0.00|50/50/0|3/1/1|
+
+## 18.机制激活、训练与为什么没有降低遗忘
+
+- 15/15个fold均生成不同的metric方向；`||delta||2=0.164399`，RMS=0.009687，最大绝对坐标变化均值0.076769。base/updated state SHA均不同，机制真实激活。
+- 旧/新任务梯度余弦全为正，范围0.7265–0.8532、均值0.8002，因此设计中的冲突投影分支0/15次激活；实际执行的是两个一致方向的等权平均。
+- leave-one prototype CE在support内同时下降：旧类均值1.53155→1.51140（−0.02014），新类1.62904→1.61128（−0.01776）。旧类prototype support准确率68.61→68.89%，新类保持61.83%。这证明优化目标被执行，但support代理改善没有转化为outer性能。
+- D42 Stage2-B训练完整保留：epoch1 loss=1.031996、support acc=95.14%、grad=1.08376；epoch20 loss=0.102685、support acc=100%、grad=0.13535。epoch21仅使用support，query rows=0。
+- D73 final D62 gate为3/15 active、共接纳7行；D62原始为3/15 active、接纳6行。新增1个row没有改变任何outer argmax。
+- 失败机理是表示重参数化被后续D62重新拟合基本吸收：共享对角metric改变了support内原型距离，但统一LDA/自动shrinkage在新坐标中重估系数，最终15fold判别边界argmax与D62完全一致。因而`F=10.56pp`没有下降，更不存在地面原型带来的遗忘收益。
+
+## 19.与近期版本的matched比较
+
+|比较|ΔB|ΔA|ΔN|ΔH|ΔF|ΔJ|Δmin-B/A/N|prediction hash变化|混淆ΔO→N/N→O/N→N|解释|
+|---|---:|---:|---:|---:|---:|---:|---|---:|---|---|
+|D73−D62|0.00|0.00|0.00|0.00|0.00|0.00|0/0/0|0/15|0/0/0|完全等价但资源更高|
+|D73−D72|−0.56|−0.56|+2.00|+1.03|0.00|0.00|0/0/+3.33|5/15|+1/−3/0|恢复D62的新类，但不是新进步|
+|D73−D71|+1.67|0.00|+0.67|+0.29|+1.67|0.00|−3.33/0/0|1/15|0/−1/0|更高B导致F数值更大，A未改善|
+|D73−D61|+2.78|−1.11|+8.67|+3.67|+3.89|0.00|+3.33/−6.67/+30.00|15/15|+5/−8/−5|D61低F来自旧类保护并牺牲新类；D73仍不达目标|
+
+## 20.量化表现
+
+- D73 INT8与matched FP32的before outer、final outer、before support、final support argmax变化均为0；margin符号翻转0。
+- 最大score绝对量化误差：fold最小0.000519、均值0.000867、最大0.001762。
+- 最差margin分布仍含明显负值：old-new最小−2.0896、new-old最小−4.8601、new-new最小−1.2095。量化不是失败原因，边界本身仍混杂。
+
+## 21.资源表现
+
+|资源|D73|D62|增量/说明|
+|---|---:|---:|---|
+|trainable parameters|2,016|2,016|峰值不增加；D73瞬时metric维度288|
+|optimizer steps/epochs|21/21|20/20|+1 Stage2-C步|
+|closed-form component fits|108|72|+36，增加50%|
+|LDA fit MAC|35,811,735,552|18,000,009,216|+17,811,726,336|
+|metric adaptation MAC|7,217,328|4,976,640|+2,240,688|
+|total adaptation MAC|46,145,052,306|24,891,223,970|+21,253,828,336，增加85.39%|
+|query MAC|6,624|6,624|额外0|
+|persistent/registry state|8,583/941B|8,583/941B|额外0|
+|peak CUDA memory|22,886,912B|22,886,912B|不增加|
+|dense query graph|0B|0B|通过|
+|ground int8 component input|0|0|D22未获正式资格|
+
+D73满足≤80k参数、≤30epoch、≤50step、≤256KB状态和无dense query graph的资源上限，但在性能完全等价D62的同时增加85.39%适配计算，因此被D62严格支配。
+
+## 22.缺陷、结论与下一步
+
+1.核心缺陷不是任务冲突：旧/新梯度高度同向，PCGrad从未激活；继续扫描投影顺序或冲突阈值没有依据。
+2.核心缺陷是目标错位/重参数化吸收：support prototype CE对metric敏感，但D62 refit把这类变化吸收，outer边界不变。
+3.旧类O4/O5和弱场景仍是主要遗忘源；D73没有使用地面压缩原型，因为D22当前不具正式资格。D66已经验证合法读取84个地面int8单元也为负，不能为降低F而越过协议。
+4.停止D73的步长、温度、PCGrad顺序、任务权重、多步、rank、场景/类/角色门和第二seed；不运行125。
+5.下一轮应避开“共享可逆metric＋重新拟合统一LDA”的等价类，直接研究不会被头部refit抵消的注册竞争信息，例如以D62固定头为教师、在类对称且query零开销条件下编译一个受约束的非可逆低维竞争残差；仍须同时约束old/new outer代理并保持ground输入0。
+
+最终判定：`COMPLETED_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE`。当前最强协议合法开发版本仍为D62，而不是D73。
