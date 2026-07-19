@@ -2,7 +2,7 @@
 
 ## 1.实验登记
 
-- 实验ID：`d72_physical_rank_leave_one_head_bagging_probe_20260719`；operator：Codex；状态：`READY_TO_RUN_LOCAL_DEVELOPMENT_CELL`。
+- 实验ID：`d72_physical_rank_leave_one_head_bagging_probe_20260719`；operator：Codex；状态：`RUNNING_LOCAL_DEVELOPMENT_CELL`。
 - 当前最强D62：B/A/N/H/F/J=`92.78/82.22/84.67/82.62/10.56/26.67`，min-B/A/N=`80.00/53.33/73.33`，混淆old→new/new→old/new→new=`23/8/15`。
 - 目标：保持D62旧域metric和全注册类统一评分语义，只降低K-shot联合LDA与D62行选择对单个physical-rank的方差；同时提高注册后旧类、新类、H、joint或通用floor，不得用注册前下降伪造低遗忘。
 - development cell固定receiver`20-1`、seed`713101`、K10/new5、3场景×5outer fold；D18 capsule实际每类K8。复用`VALIDATED_ONCE/p2_min_v1` enrollment-only数据，不重新验证未变化数据。
@@ -88,3 +88,8 @@ b_bag=(1/K) sum_r b_r
   --output 'E:\type10-7\automation_reports\CV-SincNet\d72_physical_rank_leave_one_head_bagging_probe_20260719\physical_rank_leave_one_head_bagging' `
   --device auto --mode development_select_unverified_component --candidate-set d42_v1
 ```
+
+## 8.启动与监控
+
+- 2026-07-19 23:45:21启动，PID`7996`。首次前台工具调用在14s达到工具时限并返回124，但只读进程检查确认同一精确命令的Python子进程仍存活；这不是实验失败或成功证据，没有重试、重启或覆盖输出。
+- 当前转为只读离散监控；只有PID退出后才解析输出目录、105行闭包、RECEIPT和全部artifact。若最终失败，原目录保留并按实际阶段报告。
