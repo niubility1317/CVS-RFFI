@@ -12,9 +12,10 @@ D62是当前联合最强开发基座，但after82.22%、min-after53.33%和forget
 d_i = z65_i - z62_i
 alpha_c = clip(Sum w_i d_i (t_i-z62_i) / Sum w_i d_i^2, 0, 1)
 h_c = (1-alpha_c) z62_c + alpha_c z65_c
+g_out,c = center62_c + scale62_c * h_c
 ```
 
-`t=+1/-1`；分母退化时`alpha=0`。所有类、before/final、old/new都使用同一公式；只知道Stage2-B已存在类数以合法构造D65的冻结协方差生命周期，不在query读取角色。full support重算标准化后把所有行中心化并编译成单一FP32→int8/FP16仿射状态。
+`t=+1/-1`；分母退化时`alpha=0`，映回后严格恢复D62原始行尺度。所有类、before/final、old/new都使用同一公式；只知道Stage2-B已存在类数以合法构造D65的冻结协方差生命周期，不在query读取角色。full support重算标准化后把所有行中心化并编译成单一FP32→int8/FP16仿射状态。
 
 ## 非重复与边界
 
@@ -29,3 +30,7 @@ h_c = (1-alpha_c) z62_c + alpha_c z65_c
 development cell固定receiver`20-1`、seed`713101`、K10/new5、三场景×五outer fold，实际K8。复用D18`VALIDATED_ONCE/p2_min_v1` enrollment-only support。105行矩阵必须完成，并报告七候选、三场景、11类、15fold、alpha分布、专家标准化/风险、量化、资源和协议闭包。
 
 相对D62必须在总体、场景、floor、遗忘、混淆上无交换伤害并严格改善至少一个after/forget/joint/floor指标；量化变化和margin flip必须为0。失败停止整条连续D62/D65堆叠路线，不扫描fold数、alpha温度、ridge或阈值；成功也先第二development seed，不直接125。
+
+## 实现状态
+
+已新增纯数学core、独立probe和两组测试。D67专项9/9、D42–D67完整链313/313通过；主工作树验证用时78.6s。实现保持四折held/train交集0、每个support row exact-once、闭式`alpha∈[0,1]`、K≤4 exact D62 fallback和单一affine query状态。真实105行尚未执行，不能从测试推断性能。

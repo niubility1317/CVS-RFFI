@@ -28,9 +28,10 @@ inner-held目标为正类`+1`、其他类`-1`，每类正/负总权重各0.5。�
 ```text
 alpha_c = clip(sum_i w_i d_i (target_i-z_62,i) / sum_i w_i d_i^2, 0, 1)
 h_c(x) = (1-alpha_c) z_62,c(x) + alpha_c z_65,c(x)
+g_out,c(x) = center_62,c + scale_62,c * h_c(x)
 ```
 
-若分母不大于机器精度，`alpha_c=0`，即D62。full support只重算两个专家的center/scale并使用已锁定`alpha_c`；所有`h_c`再删除类公共仿射项并编译为一个全注册类affine state。没有role/class ID/scene/receiver分支，没有阈值、温度、alpha扫描、难类名单、outer-held/query拟合或跨query操作。K≤4精确回退D62，避免不合法的小K四折估计。
+若分母不大于机器精度，`alpha_c=0`，映回后即原始D62行。full support只重算两个专家的center/scale并使用已锁定`alpha_c`；所有`g_out,c`再删除类公共仿射项并编译为一个全注册类affine state。没有role/class ID/scene/receiver分支，没有阈值、温度、alpha扫描、难类名单、outer-held/query拟合或跨query操作。K≤4精确回退D62，避免不合法的小K四折估计。
 
 ## 3.假设、判门与停止条件
 
@@ -47,3 +48,12 @@ h_c(x) = (1-alpha_c) z_62,c(x) + alpha_c z_65,c(x)
 真实运行前补齐Git提交、干净worktree、完整回归、精确命令、输出路径和资源估计。运行完成后必须在本报告补齐七候选、三场景、11类、15fold、alpha分布/专家贡献、量化、训练、资源、artifact、D62/D64/D65/D66同排对照和目标缺口；不得只报告缺陷。
 
 本轮先本地开发和验证，不访问N607。只有本地锁定候选需要大规模独立seed/matrix时，才按`AGENTS.md`执行N607 preflight、报告、Git、SCP及短连接闭环。
+
+## 5.实现与主工作树验证
+
+- `code/cvsrffi/stage2_d67_row_stacking.py`：四折rank partition、train-only一对多仿射标准化、class-balanced闭式凸权重、映回D62尺度与共同仿射中心化。
+- `code/scripts/probe_d67_crossfitted_registry_consistent_row_stacking.py`：D62/D65专家构造、Stage2-B/C lifecycle、嵌套cross-fit、审计、资源和锁定runner接线。
+- `tests/test_stage2_d67_row_stacking.py`与`tests/test_probe_d67_crossfitted_registry_consistent_row_stacking.py`：共9项D67专项，覆盖解析解、类置换、exact-once、K≤4回退、生命周期、编译等价与禁止分支。
+- `py_compile`通过；D67专项9/9通过；D42–D67完整测试链313/313通过，用时78.6s；尚未运行真实105行，当前没有性能结论。
+
+资源审计将外层D62、每stage四个inner D62、每stage五次D65专家（四inner＋一full）、标准化/闭式权重/编译全部计入适配MAC和fit数；最终持久状态仍是D42单一量化affine，D67 query额外MAC/state为0。下一步必须提交实现、建立干净worktree并复跑313项，再补精确真实命令与输出目录。
