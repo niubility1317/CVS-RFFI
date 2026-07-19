@@ -158,3 +158,25 @@ def test_formula_has_no_role_scene_or_tunable_branch() -> None:
     assert "between" in lowered and "within" in lowered and "sqrt" in lowered
     for forbidden in ("role", "scene", "receiver", "threshold", "alpha", "temperature"):
         assert forbidden not in lowered
+
+
+def test_runner_resource_accounting_includes_ground_component() -> None:
+    class Runner:
+        @staticmethod
+        def _evaluate_d42_fold(*_args, **_kwargs):
+            return {
+                "resource": {
+                    "d66_ground_int8_component_used": True,
+                    "d66_ground_component_logical_state_bytes": 25428,
+                    "persistent_state_bytes": 8583,
+                    "persistent_state_cap_bytes": 256 * 1024,
+                }
+            }
+
+    d66._install_runner_resource_accounting(Runner)
+    row = Runner._evaluate_d42_fold()
+    resource = row["resource"]
+    assert resource["d66_compiled_affine_state_bytes"] == 8583
+    assert resource["persistent_state_bytes"] == 34011
+    assert resource["d66_component_inclusive_persistent_state_bytes"] == 34011
+    assert resource["persistent_state_cap_pass"] is True

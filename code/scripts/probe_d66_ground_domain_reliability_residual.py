@@ -336,6 +336,33 @@ def _install_resource_accounting(
     return original_macs, original_top
 
 
+def _install_runner_resource_accounting(runner: Any) -> None:
+    """Include the sealed ground component after the runner sizes the affine head."""
+
+    original_evaluate = runner._evaluate_d42_fold
+
+    def evaluate(*args: Any, **kwargs: Any) -> dict[str, Any]:
+        row = original_evaluate(*args, **kwargs)
+        resource = dict(row["resource"])
+        if resource.get("d66_ground_int8_component_used") is not True:
+            return row
+        head_bytes = int(resource["persistent_state_bytes"])
+        component_bytes = int(resource["d66_ground_component_logical_state_bytes"])
+        total_bytes = head_bytes + component_bytes
+        resource.update(
+            {
+                "d66_compiled_affine_state_bytes": head_bytes,
+                "d66_component_inclusive_persistent_state_bytes": total_bytes,
+                "persistent_state_bytes": total_bytes,
+                "persistent_state_cap_pass": total_bytes
+                <= int(resource["persistent_state_cap_bytes"]),
+            }
+        )
+        return {**row, "resource": resource}
+
+    runner._evaluate_d42_fold = evaluate
+
+
 def _verify_rows(
     rows: list[dict[str, Any]], ground_audit: dict[str, Any]
 ) -> dict[str, Any]:
@@ -373,6 +400,11 @@ def _verify_rows(
             or int(resource.get("d66_query_extra_macs", -1)) != 0
             or resource.get("d66_single_affine_state_only") is not True
             or not bool(resource.get("persistent_state_cap_pass"))
+            or int(resource.get("persistent_state_bytes", -1))
+            != int(resource.get("d66_compiled_affine_state_bytes", -2))
+            + int(resource.get("d66_ground_component_logical_state_bytes", -3))
+            or int(resource.get("d66_component_inclusive_persistent_state_bytes", -1))
+            != int(resource.get("persistent_state_bytes", -2))
         ):
             raise D66ProbeError("D66 resource closure drift")
         for field in ("before_covariance_audit", "final_covariance_audit"):
@@ -497,6 +529,7 @@ def main(argv: list[str] | None = None) -> int:
         runner_module = importlib.util.module_from_spec(runner_spec)
         sys.modules[runner_spec.name] = runner_module
         runner_spec.loader.exec_module(runner_module)
+        _install_runner_resource_accounting(runner_module)
         d43._install_runner_probe_guards(
             runner_module,
             arm=known.d66_arm,

@@ -49,3 +49,9 @@ D66名称为`ground_domain_reliability_residual`。它不把地面原型当作�
 - 真实组件审计：26域、6类、84个有效cell，每类14个；`r`范围0.0242749–0.9999186、均值0.7698918；`s`范围1.0120647–1.4141848、均值1.3240636、条件数1.3973265、SHA256=`70a8e94327e7100695f691d6ae49e246305036cefd92579e977e3d536c37df6c`；FFT/RF尺度逐bit为1。
 - 资源静态值：地面组件逻辑状态25,428B、瞬时反量化53,760B、一次可靠性统计58,880标量MAC；K8的before6类＋final11类共享变换应用21,760MAC，query额外MAC/state均为0。
 - `py_compile`通过；D66专项4/4通过；D42–D66完整26文件303/303通过，用时81.1s；`git diff --check`通过。
+
+## Resource-R1审计修复
+
+首次真实运行完成105/105行、query0、性能与组件使用字段完整，但全日志解析发现runner在D66 top-level资源更新后又以编译仿射头大小覆盖`persistent_state_bytes`：行内同时记录组件逻辑25,428B和实际输入84，却把总状态写成仅头部8,583B。正确总状态应为8,583＋25,428=34,011B。该问题只影响资源主字段，不影响拟合、预测、量化或性能，但当前artifact不能作为最终D66资源证据。
+
+Resource-R1在D66 probe内包装锁定runner的D42 fold结果：先保留`d66_compiled_affine_state_bytes`，再写入`d66_component_inclusive_persistent_state_bytes=head+component`并同步主`persistent_state_bytes`；验证器新增严格加总等式。候选、公式、数据、性能门和所有预测路径不变。首次输出原样保留；修复运行使用新目录，不覆盖旧artifact。

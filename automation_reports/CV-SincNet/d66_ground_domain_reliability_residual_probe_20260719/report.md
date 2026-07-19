@@ -63,3 +63,10 @@ D66从84个有效的地面域×旧类int8聚合单元计算每个z160坐标的�
 ```
 
 预期输出为105行training log、support/query/selection/receipt、geometry/resource和D66 metadata。任何组件、策略、support、D42/D62、编译、资源或输出闭包失败均停止，不覆盖输出、不重跑同目录。
+
+## 7.首次运行与Resource-R1预注册
+
+- 首次运行完成105/105行、query0、Runner129.0378s、外层137.7s，组件入口/出口SHA、source closure和D66 metadata均通过。
+- 完整日志解析发现资源主字段漏加地面组件：`d66_ground_component_logical_state_bytes=25,428`和`ground_int8_component_input_count=84`正确，但runner后置逻辑把`persistent_state_bytes`覆盖为仅仿射头8,583B。正确组件含总状态为34,011B，仍低于256KB。
+- 该缺陷不影响预测或性能，但首次artifact不能封为最终资源证据，先不发布最终D66性能判定。首次目录原样保留。
+- Resource-R1只修资源后置加总与硬断言，不改公式、support、候选、训练、量化或预测；新输出为`ground_domain_reliability_residual_resource_r1`，不得覆盖首次目录。
