@@ -45,3 +45,34 @@ D66证明静态地面可靠性缩放能略微保护旧类，却压低新类与ne
 - `ssr-gpu`下core/probe `py_compile`通过；专项9/9通过。
 - D42–D77相邻47文件、424项全部通过，用时85.4秒。
 - D25旧测试的2个源码字符串断言在D76未修改干净worktree同样失败；D77未改D25 runner，属于既有基线漂移。
+
+## 7.运行锁
+
+- clean worktree：`E:\type10-7\code\snapshots\d77wt`，commit`0831101802b5590a848fc62ca3b569629272698d`。
+- core SHA256：`cb771f843d83b6fb11c1d373183421cd400d33a1636d4fc05d5be4fec69f603e`；probe SHA256：`198ecbd65bb91a83571bea123d1a5d28377ad5c779deaba050a56cd3ce7a51a3`。
+- 环境：`C:\Users\lh594\.conda\envs\ssr-gpu\python.exe`，`--device auto`；本地运行，不同步或启动N607。
+- 输出：`E:\type10-7\automation_reports\CV-SincNet\d77_ground_preconditioned_allclass_common_descent_probe_20260720\ground_preconditioned_allclass_common_descent`；stdout/stderr位于实验报告根。
+- 预期：105行、30个target row、30次top fit、1,080次D62 component execution；每target row8个OOF LDA、88个held行、11个类梯度、20步Frank-Wolfe；query0。
+
+```powershell
+& 'C:\Users\lh594\.conda\envs\ssr-gpu\python.exe' `
+  'E:\type10-7\code\snapshots\d77wt\code\scripts\probe_d77_ground_preconditioned_allclass_common_descent.py' `
+  --d77-arm ground_preconditioned_allclass_common_descent `
+  --ground-component-dir 'E:\type10-7\automation_reports\CV-SincNet\d22_int8_anchor_lifecycle_20260717\input\int8_component' `
+  --ground-manifest-sha256 15b5e144f9af3989421d8e925c17758479c327be47e79222f6363dc63994629c `
+  --runtime-root 'E:\type10-7\code\snapshots\d41wt' --probe-root 'E:\type10-7\code\snapshots\d77wt' `
+  --before-root 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\phase2_capsule_k10_new5\predictor\before\enrollment_only' `
+  --before-seal 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\phase2_capsule_k10_new5\seals\before_enrollment.seal.json' --before-seal-sha256 53ace2863c9da6c2f6cc855d602c99f581df6de3d30a9a3ecb89eb6b6f0d9f75 `
+  --before-formal-policy 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\formal_execution_policy.json' `
+  --before-formal-policy-authorization 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\runtime_authorization_k10_new5\before_formal_policy_authorization.v2.json' `
+  --before-signed-policy-authorization-envelope 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\runtime_authorization_k10_new5\before_signed_policy_authorization_envelope.v2.json' --before-signed-policy-authorization-envelope-sha256 31a2ad9918f061b25d5a7ed0cc135df70ae02460c094b2f396bf314817bceb0e `
+  --after-root 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\phase2_capsule_k10_new5\predictor\after\enrollment_only' `
+  --after-seal 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\phase2_capsule_k10_new5\seals\after_enrollment.seal.json' --after-seal-sha256 c70aedf3a8f059e756806201758c1933a2f3e1ba4df415e69a1c776b1a2b50ff `
+  --after-formal-policy 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\formal_execution_policy.json' `
+  --after-formal-policy-authorization 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\runtime_authorization_k10_new5\after_formal_policy_authorization.v2.json' `
+  --after-signed-policy-authorization-envelope 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\runtime_authorization_k10_new5\after_signed_policy_authorization_envelope.v2.json' --after-signed-policy-authorization-envelope-sha256 a2483d6e9c9c362d89397029ff1e43f48358be3bdb3a05d717ee112b70a0be76 `
+  --component-dir 'E:\type10-7\automation_reports\CV-SincNet\d22_int8_anchor_lifecycle_20260717\input\int8_component' --component-manifest-sha256 15b5e144f9af3989421d8e925c17758479c327be47e79222f6363dc63994629c `
+  --class-binding 'E:\type10-7\github_publish\CVS-RFFI-repo\analysis\d19_adv3b02_class_binding_20260717.json' --class-binding-sha256 bb89a1dbb831acb374fccfc596ae98b660b496b449bdca577dabb962121c901f `
+  --output 'E:\type10-7\automation_reports\CV-SincNet\d77_ground_preconditioned_allclass_common_descent_probe_20260720\ground_preconditioned_allclass_common_descent' `
+  --device auto --mode development_select_unverified_component --candidate-set d42_v1
+```
