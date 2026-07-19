@@ -87,6 +87,8 @@ def test_runner_resource_accounting_keeps_component_in_main_state() -> None:
 
 def test_source_locks_protocol_and_single_affine_state() -> None:
     source = SCRIPT.read_text(encoding="utf-8")
+    assert "trace = [dict(item) for item in result.training_trace]" in source
+    assert "training_trace=tuple(trace)" in source
     assert '"d77_ground_class_score_access": False' in source
     assert '"d77_ground_component_update_access": False' in source
     assert '"d77_query_extra_mac_equivalents": 0' in source

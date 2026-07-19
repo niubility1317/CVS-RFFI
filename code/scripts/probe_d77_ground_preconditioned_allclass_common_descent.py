@@ -316,7 +316,7 @@ class GroundCommonDescentRegistry:
             )
             head_bytes = int(final_int8.persistent_state_bytes)
             base_steps = int(result.resource_audit["optimizer_steps"])
-            trace = copy.deepcopy(result.resource_audit["complete_loss_trace"])
+            trace = [dict(item) for item in result.training_trace]
             for item in descent_audit["optimizer_objective_trace"]:
                 trace.append(
                     {
@@ -451,6 +451,7 @@ class GroundCommonDescentRegistry:
                 result,
                 state=final_int8,
                 matched_fp32_state=final_fp32,
+                training_trace=tuple(trace),
                 geometry_audit=geometry,
                 resource_audit=resource,
             )

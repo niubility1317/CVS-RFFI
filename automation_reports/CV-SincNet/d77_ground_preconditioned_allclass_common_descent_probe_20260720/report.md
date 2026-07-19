@@ -76,3 +76,11 @@ D66证明静态地面可靠性缩放能略微保护旧类，却压低新类与ne
   --output 'E:\type10-7\automation_reports\CV-SincNet\d77_ground_preconditioned_allclass_common_descent_probe_20260720\ground_preconditioned_allclass_common_descent' `
   --device auto --mode development_select_unverified_component --candidate-set d42_v1
 ```
+
+## 8.首次运行失败与Retry1修复
+
+- 02:44:22启动PID`21560`，02:44:58退出；原输出目录已创建但无artifact，stdout为0B，stderr为1,239B，SHA256=`c3fd5983191daa20be7297100640ab460be03f1b5318fb713a60221dbc709d83`。
+- 失败发生在首个D77 target fit的资源trace拼接：D42 fit结果的20步训练记录位于`result.training_trace`，而`complete_loss_trace`只在runner评估层生成。错误为`KeyError: 'complete_loss_trace'`；尚无training row、性能或query访问。
+- Retry1只把D77的20步FW trace附加到不可变dataclass的`training_trace`，runner随后自然物化40步`complete_loss_trace`。公式、数据、组件、量化、资源数值和性能门不变。
+- 修复probe SHA256=`4df65ae22b04f3df99c6d2790446a062a1eaf6b40505e32703d1b05ff7582c14`；`py_compile`和专项9/9通过。
+- Retry1使用新输出`ground_preconditioned_allclass_common_descent_retry1`和独立`launcher_retry1.stdout.log`/`launcher_retry1.stderr.log`，不覆盖首次失败证据。
