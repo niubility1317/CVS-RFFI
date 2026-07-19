@@ -39,3 +39,17 @@ D77对角预条件只降低连续CE，outer prediction变化为0/15。D78保留�
 |`tests/test_probe_d78_ground_tangent_worstclass_margin.py`|公式锁、资源上限、ground只读和协议字段|
 
 `E:\type10-7`根不是Git仓库；上述代码、追溯和本报告进入`E:\type10-7\github_publish\CVS-RFFI-repo`的Git工作流，根报告同步镜像。实现、测试、clean worktree、命令、PID、完整性能与artifact SHA将在运行前后补录。
+
+## 6.本地实现与验证
+
+- core SHA256=`0139e315e0fda570c2f96a572c61de4be68f899074eba197e18d9a856baac49f`；probe SHA256=`2c656afa386495a374103162d330b452b17f4a3748dc7ef71168315e22561669`。
+- `ssr-gpu`下core/probe/test `py_compile`通过；专项9/9通过。
+- D42-D78邻接47文件390项全部通过，用时83.4秒。pytest退出码为0；结束后的Windows临时目录`pytest-current`清理出现一次`PermissionError`，属于atexit清理噪声，不是测试失败。
+- 真实ground组件烟测：26个registry domain中14个完整有效域、84个cell；切向rank13，保留残差能量77.7513%，basis只读；组件formal资格仍为false。
+
+## 7.运行锁
+
+- clean detached worktree：`E:\type10-7\code\snapshots\d78wt`；本地`cuda:0`运行，不同步或启动N607。
+- 输出：`E:\type10-7\automation_reports\CV-SincNet\d78_ground_tangent_worstclass_margin_probe_20260720\ground_tangent_worstclass_top2_margin`；stdout/stderr独立保存在报告根。
+- 预期：105行、30个target fit、1,080个D62 component execution；每target row8个OOF LDA、88个held行、rank13、20个接受步；query0。
+- 精确运行命令沿用D77已锁定的D18 before/after capsule、seal、policy、authorization、class binding和D22 component参数，只把入口换为`probe_d78_ground_tangent_worstclass_margin.py`，增加`--d78-arm ground_tangent_worstclass_top2_margin`，并把`--output`换为上述D78独立目录。完整PowerShell进程参数与PID在启动时追加，禁止覆盖已有输出。
