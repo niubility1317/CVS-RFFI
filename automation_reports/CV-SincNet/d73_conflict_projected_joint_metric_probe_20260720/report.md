@@ -77,3 +77,32 @@ D70–D72说明support内score/head后处理不能可靠推断outer新旧方向�
 专项验证命令：`python -m pytest -q tests/test_stage2_d73_conflict_projected_joint_metric.py tests/test_probe_d73_conflict_projected_joint_metric.py`，在`ssr-gpu`中通过`9/9`。首次core测试收集失败仅因测试误写为`code.cvsrffi`导入路径；改为项目既有`cvsrffi`包路径后通过，不涉及机制、公式或运行代码变化。
 
 D42–D73相邻完整链覆盖40个文件、377项测试，全部通过，退出码0，用时82.8秒。pytest在全部测试完成后的atexit清理阶段对全局`pytest-current`临时链接报`WinError 5`，不影响退出码或任何测试结果；clean worktree复验将显式使用仓内`--basetemp`消除该主机清理噪声。
+
+## 10.clean验证与运行锁（2026-07-20 00:29）
+
+- clean worktree：`E:\type10-7\code\snapshots\d73wt`，detached HEAD=`762baecbf525db1714d73a00490f6562423a0128`，`git status -sb`仅显示`HEAD (no branch)`。
+- clean验证：D42–D73共40文件、377项全部通过，用时82.7秒；显式仓外`--basetemp`后无清理告警；D73 core/probe的`py_compile`通过。
+- 执行源SHA256：probe=`e3fd5b536528780a772d36cba9f0a86136123b3280183e127bec325d93f758b9`；core=`bdb104ceb82c9f069499dd920b88599a455a65defdd3f622184bbe8dfbe2bd63`；D62 helper=`38ae1114a06d135bca806f470417cd28a634fec0da449888665c6843615d4a20`。
+- 启动前GPU0为RTX5070Ti，显存`1106/16303MiB`、利用率0%；输出目录不存在。使用本地GPU，不访问N607。
+- 预期闭包：105行、30个target row、30次top fit、30次额外D62 final refit、1620条D62 residual component execution；每个目标行21步、ground/query-fit/clean/source/query-role/quota访问0。
+
+```powershell
+& 'C:\Users\lh594\.conda\envs\ssr-gpu\python.exe' `
+  'E:\type10-7\code\snapshots\d73wt\code\scripts\probe_d73_conflict_projected_joint_metric.py' `
+  --d73-arm conflict_projected_joint_metric `
+  --runtime-root 'E:\type10-7\code\snapshots\d41wt' --probe-root 'E:\type10-7\code\snapshots\d73wt' `
+  --before-root 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\phase2_capsule_k10_new5\predictor\before\enrollment_only' `
+  --before-seal 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\phase2_capsule_k10_new5\seals\before_enrollment.seal.json' --before-seal-sha256 53ace2863c9da6c2f6cc855d602c99f581df6de3d30a9a3ecb89eb6b6f0d9f75 `
+  --before-formal-policy 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\formal_execution_policy.json' `
+  --before-formal-policy-authorization 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\runtime_authorization_k10_new5\before_formal_policy_authorization.v2.json' `
+  --before-signed-policy-authorization-envelope 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\runtime_authorization_k10_new5\before_signed_policy_authorization_envelope.v2.json' --before-signed-policy-authorization-envelope-sha256 31a2ad9918f061b25d5a7ed0cc135df70ae02460c094b2f396bf314817bceb0e `
+  --after-root 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\phase2_capsule_k10_new5\predictor\after\enrollment_only' `
+  --after-seal 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\phase2_capsule_k10_new5\seals\after_enrollment.seal.json' --after-seal-sha256 c70aedf3a8f059e756806201758c1933a2f3e1ba4df415e69a1c776b1a2b50ff `
+  --after-formal-policy 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\formal_execution_policy.json' `
+  --after-formal-policy-authorization 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\runtime_authorization_k10_new5\after_formal_policy_authorization.v2.json' `
+  --after-signed-policy-authorization-envelope 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\runtime_authorization_k10_new5\after_signed_policy_authorization_envelope.v2.json' --after-signed-policy-authorization-envelope-sha256 a2483d6e9c9c362d89397029ff1e43f48358be3bdb3a05d717ee112b70a0be76 `
+  --component-dir 'E:\type10-7\automation_reports\CV-SincNet\d22_int8_anchor_lifecycle_20260717\input\int8_component' --component-manifest-sha256 15b5e144f9af3989421d8e925c17758479c327be47e79222f6363dc63994629c `
+  --class-binding 'E:\type10-7\github_publish\CVS-RFFI-repo\analysis\d19_adv3b02_class_binding_20260717.json' --class-binding-sha256 bb89a1dbb831acb374fccfc596ae98b660b496b449bdca577dabb962121c901f `
+  --output 'E:\type10-7\automation_reports\CV-SincNet\d73_conflict_projected_joint_metric_probe_20260720\conflict_projected_joint_metric' `
+  --device auto --mode development_select_unverified_component --candidate-set d42_v1
+```
