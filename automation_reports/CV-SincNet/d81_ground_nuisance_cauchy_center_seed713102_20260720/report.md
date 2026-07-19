@@ -68,3 +68,6 @@
 - 最小修复只在D81 probe增加显式`--d81-confirmation-seed`入口；允许集合固定为`713102..713106`，并同时核验before/after receiver、seed、K、旧类前缀和new5。未提供该参数时仍使用原开发单元锁，未修改D42通用执行器。
 - 修复后D81 probe SHA256=`f18dd80dd2f38312dde41e07120f43dc9cd2b78afa82b54c65fe08236e513817`；专项测试13/13 PASS，相邻D62/D80/D81链32/32 PASS，`py_compile`与`git diff --check`PASS。
 - 重跑命令在原锁定命令基础上只新增`--d81-confirmation-seed 713102`；其余capsule、ground、runtime和query边界不变。
+- 第二次启动同样在query前fail-closed：seed713102使用新的匿名class handles，而命令仍传入seed713101的binding，触发`ADV3B02 class binding contract drift`；退出码1、无输出目录、无性能数据。
+- 已按D19既有离线边界生成seed713102专属binding：`analysis/d81_seed713102_adv3b02_class_binding_20260720.json`，SHA256=`5d191dd02038c6568c9787819be5efc8067323496ef0c80c2ef825a147803b65`。6个handle严格等于before package的有序注册表；Phase1 TX、direct-logit行hash和int8地面列顺序保持不变。
+- 用原D41 `_load_component`做真实组件加载验证通过：6类、25,428B逻辑状态；mapping来源仍为`offline_scorer_truth_sidecar_before_predictor_boundary`，`query_truth_exposed_to_predictor=false`。
