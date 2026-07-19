@@ -57,3 +57,34 @@ g_out,c(x) = center_62,c + scale_62,c * h_c(x)
 - `py_compile`通过；D67专项9/9通过；D42–D67完整测试链313/313通过，用时78.6s；尚未运行真实105行，当前没有性能结论。
 
 资源审计将外层D62、每stage四个inner D62、每stage五次D65专家（四inner＋一full）、标准化/闭式权重/编译全部计入适配MAC和fit数；最终持久状态仍是D42单一量化affine，D67 query额外MAC/state为0。下一步必须提交实现、建立干净worktree并复跑313项，再补精确真实命令与输出目录。
+
+## 6.干净验证、版本与真实运行命令
+
+- 实现提交：`6cfef75b1dd0f82e45b5216e93b3b6b18bfd55af`。
+- 干净worktree：`E:\type10-7\code\snapshots\d67wt`，detached HEAD为上述提交，`git status -sb`仅`## HEAD (no branch)`。
+- 干净D42–D67完整链313/313通过，用时79.3s；与主工作树313/313一致。
+- 本轮本地执行，不使用SSH/SCP/N607；Python为`C:\Users\lh594\.conda\envs\ssr-gpu\python.exe`，实际设备由锁定runner记录。
+- 输出目录固定为`E:\type10-7\automation_reports\CV-SincNet\d67_crossfitted_registry_consistent_row_stacking_probe_20260719\crossfitted_registry_consistent_row_stacking`，运行前不存在；不得覆盖或在失败后原目录重跑。
+
+```powershell
+& 'C:\Users\lh594\.conda\envs\ssr-gpu\python.exe' `
+  'E:\type10-7\code\snapshots\d67wt\code\scripts\probe_d67_crossfitted_registry_consistent_row_stacking.py' `
+  --d67-arm crossfitted_registry_consistent_row_stacking `
+  --runtime-root 'E:\type10-7\code\snapshots\d41wt' --probe-root 'E:\type10-7\code\snapshots\d67wt' `
+  --before-root 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\phase2_capsule_k10_new5\predictor\before\enrollment_only' `
+  --before-seal 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\phase2_capsule_k10_new5\seals\before_enrollment.seal.json' --before-seal-sha256 53ace2863c9da6c2f6cc855d602c99f581df6de3d30a9a3ecb89eb6b6f0d9f75 `
+  --before-formal-policy 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\formal_execution_policy.json' `
+  --before-formal-policy-authorization 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\runtime_authorization_k10_new5\before_formal_policy_authorization.v2.json' `
+  --before-signed-policy-authorization-envelope 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\runtime_authorization_k10_new5\before_signed_policy_authorization_envelope.v2.json' --before-signed-policy-authorization-envelope-sha256 31a2ad9918f061b25d5a7ed0cc135df70ae02460c094b2f396bf314817bceb0e `
+  --after-root 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\phase2_capsule_k10_new5\predictor\after\enrollment_only' `
+  --after-seal 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\phase2_capsule_k10_new5\seals\after_enrollment.seal.json' --after-seal-sha256 c70aedf3a8f059e756806201758c1933a2f3e1ba4df415e69a1c776b1a2b50ff `
+  --after-formal-policy 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\formal_execution_policy.json' `
+  --after-formal-policy-authorization 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\runtime_authorization_k10_new5\after_formal_policy_authorization.v2.json' `
+  --after-signed-policy-authorization-envelope 'E:\type10-7\automation_reports\CV-SincNet\d18_formal_k10_new5_rx20_1_seed713101_20260717_085303\runtime_authorization_k10_new5\after_signed_policy_authorization_envelope.v2.json' --after-signed-policy-authorization-envelope-sha256 a2483d6e9c9c362d89397029ff1e43f48358be3bdb3a05d717ee112b70a0be76 `
+  --component-dir 'E:\type10-7\automation_reports\CV-SincNet\d22_int8_anchor_lifecycle_20260717\input\int8_component' --component-manifest-sha256 15b5e144f9af3989421d8e925c17758479c327be47e79222f6363dc63994629c `
+  --class-binding 'E:\type10-7\github_publish\CVS-RFFI-repo\analysis\d19_adv3b02_class_binding_20260717.json' --class-binding-sha256 bb89a1dbb831acb374fccfc596ae98b660b496b449bdca577dabb962121c901f `
+  --output 'E:\type10-7\automation_reports\CV-SincNet\d67_crossfitted_registry_consistent_row_stacking_probe_20260719\crossfitted_registry_consistent_row_stacking' `
+  --device auto --mode development_select_unverified_component --candidate-set d42_v1
+```
+
+预期闭包：105行、30个D67 before/final fit、2,760个nested D62 component fit、每个fit四个held/train交集0的partition；query/clean/source/role/quota/global assignment访问0。任何source、lifecycle、partition、alpha、量化、资源或artifact断言失败均停止并保留原目录。
