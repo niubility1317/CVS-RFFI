@@ -334,10 +334,11 @@ class MetricRegistry:
                 "adaptation_epochs",
                 "metric_epochs",
                 "optimizer_steps",
-                "total_optimizer_steps",
                 "metric_optimizer_steps",
                 "stage2c_optimizer_steps",
             ):
+                if field not in resource:
+                    raise D73ProbeError(f"D73 base resource missing {field}")
                 resource[field] = int(resource[field]) + step_count
             resource["adaptation_epoch_cap_pass"] = bool(
                 resource["adaptation_epochs"] <= resource["adaptation_epoch_cap"]
@@ -366,6 +367,7 @@ class MetricRegistry:
                 result,
                 state=final_int8,
                 matched_fp32_state=final_fp32,
+                training_trace=tuple(trace),
                 geometry_audit=geometry,
                 resource_audit=resource,
             )

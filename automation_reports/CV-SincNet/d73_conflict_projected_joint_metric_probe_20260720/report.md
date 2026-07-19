@@ -112,3 +112,11 @@ D42–D73相邻完整链覆盖40个文件、377项测试，全部通过，退出
 - 2026-07-20 00:30:24启动唯一一次真实执行，PID`20132`；Python命令行与锁定命令一致，working directory为clean worktree。
 - 启动后只读检查确认PID存活、输出目录已创建，launcher stdout/stderr暂为0B；这属于Runner早期阶段，不是性能或完成证据。
 - 当前转为离散只读监控；不重试、不覆盖输出。PID退出后才解析RECEIPT、105行闭包和完整artifact。
+
+## 12.首次启动失败与R1修复
+
+- PID`20132`在00:31:24前退出；输出目录保留但为空，training log、RECEIPT和任何可评分artifact均不存在。因此这是`FAILED_BEFORE_FIRST_OUTER_ROW`，不是完成实验，性能不得报告。
+- launcher stderr精确失败：wrapper在Runner生成row级`total_optimizer_steps`之前访问该字段，触发`KeyError: 'total_optimizer_steps'`。D42 result此阶段已有`optimizer_steps`，而Runner随后以它生成`total_optimizer_steps`。
+- 同时代码审计发现row级`complete_loss_trace`由`result.training_trace`生成；R1除去对尚不存在字段的提前更新，并把新增Stage2-C trace显式写回冻结dataclass的`training_trace`。机制公式、数据、梯度、步长、D62 refit、量化和资源数值均不变。
+- 新增源码测试锁定：包装器必须回写`training_trace=tuple(trace)`，提前更新块不得含`total_optimizer_steps`。R1专项9/9通过。
+- 原失败目录`conflict_projected_joint_metric`和launcher日志保留，不覆盖。完成全链、提交与新clean worktree后，只允许使用新目录`conflict_projected_joint_metric_retry1`执行一次R1。

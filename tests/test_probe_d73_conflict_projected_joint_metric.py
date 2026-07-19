@@ -89,3 +89,7 @@ def test_probe_source_closes_protocol_resource_and_call_counts() -> None:
     assert '"d73_single_affine_state_only": True' in source
     assert '"d73_query_role_specific_branch": False' in source
     assert '"d73_uses_outer_held_or_query_for_fit": False' in source
+    assert "training_trace=tuple(trace)" in source
+    increment_block = source[source.index('for field in (\n                "adaptation_epochs"'):]
+    increment_block = increment_block[: increment_block.index("resource[\"adaptation_epoch_cap_pass\"]")]
+    assert '"total_optimizer_steps"' not in increment_block
