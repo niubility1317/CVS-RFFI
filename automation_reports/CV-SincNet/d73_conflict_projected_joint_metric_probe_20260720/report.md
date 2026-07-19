@@ -130,3 +130,5 @@ R1 Runner于00:41:51完成105/105行和6个标准artifact，RECEIPT状态为`DEV
 该目录具备评分行但缺少完整20+1训练轨迹，故仍标记`COMPLETED_RUNNER_OUTPUT_REJECTED_BY_PROBE_INCOMPLETE_TRACE`，不得据此报告或选择性能。R2唯一修复为从`result.training_trace`复制原20步再追加第21步；metric、D62 refit、int8状态、预测与资源公式不变。R1目录和stderr原样保留，R2将使用新clean worktree和`conflict_projected_joint_metric_retry2`。
 
 R2验证与运行锁：专项9/9、主工作树D42–D73完整链377/377均通过（82.1秒）；clean worktree`E:\type10-7\code\snapshots\d73r2wt`锁定commit`3a5e3d759eceeff69ca200fcf241385b309d6dfe`，专项9/9与`py_compile`通过且worktree clean。执行SHA：probe=`eeb297bddf103d4e009e67b4895ccfb584bfa6dbe17c1bd148f26b4fd0e37123`、core=`bdb104ceb82c9f069499dd920b88599a455a65defdd3f622184bbe8dfbe2bd63`、D62 helper=`38ae1114a06d135bca806f470417cd28a634fec0da449888665c6843615d4a20`。00:46:42检查retry2目录不存在；GPU0显存`954/16303MiB`、利用率0%。除`probe-root/script=d73r2wt`和新输出目录外，命令参数与第10节一致。
+
+R2于2026-07-20 00:47:34启动，PID`27204`；只读命令行检查与锁定参数一致，stderr 0B，转为只读监控。
