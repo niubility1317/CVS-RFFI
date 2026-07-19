@@ -103,3 +103,11 @@ D77-D80已经排除了把ground质心、低秩投影或ground协方差直接放�
 ```
 
 预期105行、30个target row、1,080个D62 component fit、2,160个support-center transform。先本地运行；不使用N607。
+
+## 9.运行前锁定
+
+- detached实现提交：`2f6a26d3c02fa7b33ee2efc1183748f55a396fdf`；主发布分支对应实现提交：`db4013dd`。
+- worktree在锁定前为0项未提交改动；输出目录不存在，不会覆盖历史结果。
+- 本地GPU0为RTX5070Ti，检查时1,083/16,303MiB、利用率0%；本实验锁定`--device auto`，由runner记录实际runtime device与CUDA峰值。
+- 数据复用D18 matching capsule/seal/policy/authorization；方法变化不触发数据重验。
+- ground NPZ/manifest在入口和出口分别复核SHA；任何hash变化、105-row不完整、1,080 component或2,160 transform计数不匹配均判运行失败。
