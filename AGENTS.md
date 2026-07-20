@@ -16,6 +16,12 @@
 - A run ID has exactly one launch owner. Its handoff records the Git commit and file hashes, frozen candidate/matrix, exact child command, environment/CWD, output and log paths, expected artifacts, stop criteria, and retry authority. The primary agent integrates returned evidence and alone decides promotion.
 - Track separate immutable states: `LOCAL_VERIFIED` -> `LANDED` -> `RUNNING` -> `ARTIFACTS_COMPLETE` -> `ANALYZED`. Landing or process completion is not performance evidence; analysis requires complete logs and matched same-row artifacts.
 
+## Parallel Method Research
+
+- A round that jointly covers domain adaptation, classification-head design, and forgetting/floor optimization should use available subagent slots for parallel research roles instead of serial exploration. Use separate domain-adaptation/ground-knowledge, local-global head, and forgetting/floor supervision roles; the primary agent owns protocol interpretation, integration, code merge, and final promotion.
+- Method agents send intermediate summaries to the supervision agent. The supervisor checks protocol legality, K-shot identifiability, common-transform invariance, support-proxy overfitting, old/new balance, class-permutation symmetry, resources, and matched gates, and recommends merge, revision, or rejection. A method author does not self-certify from partial evidence.
+- Keep design read-only until the primary agent assigns explicit non-overlapping file ownership. After cross-review, parallelize implementation, tests, and experiment release only where responsibilities do not overlap. The primary agent integrates one frozen candidate and prevents competing edits or duplicate launches.
+
 ## Windows Shell and Command Hygiene
 
 - Prefer PowerShell 7 for complex Windows commands. Use `pwsh -NoLogo -NoProfile -Command "<command>"` when shell behavior, quoting, or UTF-8 output matters.

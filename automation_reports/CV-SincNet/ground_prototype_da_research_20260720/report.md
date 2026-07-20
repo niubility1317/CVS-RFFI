@@ -643,3 +643,5 @@ env OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 NUMEXPR_NUM_THREA
 ### 下一轮决策边界
 
 在并行研发线交叉审查完成前不实现D96。候选必须保留当前最强D81/D92几何为base，不再统一搬动support/query；优先比较两个正交方向：①coverage-gated shrinkage RDA，仅让ground共享域谱进入类无关协方差先验，所有old/new均值来自target support；②合法single-view qKNN局部头与SRDA全局头并行，使用Phase1预锁/K≥2 support-CV可靠度做整row全局融合。若两头没有互补rescue或K1只能依赖未获批ground统计，则在本轮直接否决，转向新的Phase1 redundancy-aware/domain-factorized checkpoint与共同封存bundle，不用target125反向选择格式。
+
+并行协作规则也已同步写入根目录与Git镜像`AGENTS.md`：综合方法轮默认设置域适应、分类头、反遗忘监督三条研究线，前两线必须向监督线提交中间方案；监督线检查协议、K-shot可识别性、共同变换不变性、support过拟合、old/new联合门、类置换、资源和matched证据。设计阶段只读，主线裁决后才分配不重叠代码面；实验runner与方法作者分离。
