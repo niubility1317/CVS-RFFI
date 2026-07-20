@@ -580,3 +580,20 @@ env OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 NUMEXPR_NUM_THREA
 
 - K1命令仅将`CUDA_VISIBLE_DEVICES=0`改为`1`、`--k-shot 10`改为`1`、输出改为`d95_k1_new20`；其余字节级参数相同。日志分别固定为`logs/d93_paired_ground_transport_dev_20260720/d95_k10_new20.stdout.log`和`d95_k1_new20.stdout.log`，启动器使用`start_new_session=True`，SSH仅负责短时落地并立即断开。
 - 预期输出：每行`pipeline_receipt.json`、before/after immutable prediction、fit/resource audit、scorer `diag_cosine_score.json`和COMMIT；成功标准与上一节完全一致。任何D81-base闭包失败、协方差数值失败或联合指标不达门均停止，不用125补证。
+- 17:09 CST两条子进程已落地：K10 PID=`1173317`/GPU0，K1 PID=`1173318`/GPU1。落地SSH正常退出；后续PID/GPU核验、短轮询、完整日志与artifact回收已移交实验子agent`repo_protocol_audit`，主线不重复启动或并行监控同一run ID。
+
+## 实验发布双轨工作流复盘
+
+前序低效主要来自主线同时承担方法设计、文件同步、远端启动、轮询、日志回收和指标解析，导致研发在等待GPU时停顿；另外，初始D93曾因authority版本、类顺序与opaque handle接口连续产生技术失败，说明发布交接缺少机器可核对的输入合同。自D95起固定为以下五段：
+
+|阶段|唯一责任方|最小输入|完成证据|禁止事项|
+|---|---|---|---|---|
+|1.方法研发|主线|目标、协议、历史负证据|公式、唯一主要变化、停止门|target/query反向选参|
+|2.本地冻结|主线|候选代码与测试|Git commit、diff、测试、文件SHA、预登记报告|未版本化即同步|
+|3.实验发布|单一runner子agent|冻结交接包|preflight、远端SHA/compile、PID/GPU、不可覆盖路径|主线重复启动、runner改方法|
+|4.证据回收|同一runner子agent|run ID/PID/预期artifact|完整stdout、receipt、fit/resource、score、SHA、异常扫描|只读tail冒充完整日志、失败后擅自重启|
+|5.分析决策|主线|matched artifacts与runner handoff|逐row/场景/类/资源表、缺陷、晋级或停止|用单项最大值或跨row拼接晋级|
+
+每个run ID使用状态机`LOCAL_VERIFIED→LANDED→RUNNING→ARTIFACTS_COMPLETE→ANALYZED`；只允许runner子agent改变服务器侧前三个状态，主线只在完整证据后写`ANALYZED`。交接包固定包含Git提交、文件SHA、候选/矩阵、完整子进程命令、Conda/Python/CWD、输入路径与SHA、GPU、日志/输出、预期artifact、停止门和重试权限。由此可以并行推进“服务器执行上一版”和“主线研发下一版/复盘”，同时避免双重启动与口径漂移。
+
+该协作规则已写入根目录`AGENTS.md`；根目录不是Git仓库，因此同步镜像到本Git工作树`AGENTS.md`并随本报告提交。规则仅改变工作流，不改变`项目.md`的数据协议或科学场景。

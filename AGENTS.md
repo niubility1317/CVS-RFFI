@@ -9,6 +9,13 @@
 - Phase2 follows `protocol_schema=p2_min_v1`: one randomly selected allowed LEO weak observation per physical sample; K independent support samples; scenario and support/query physical-ID separation; query-only testing; no clean/source runtime access except immutable int8 multi-sample Phase1 knowledge jointly sealed with the checkpoint; and independent all-registered-class decisions without query truth/role, true batch counts, quota or global reassignment.
 - After a builder returns matching `capsule_id`, `split_id` and `phase2_data_status=VALIDATED_ONCE`, reuse the data across methods. Revalidate only for received-IQ bytes, physical IDs, receiver/TX sets, scenario, K, support/query split or schema changes. Candidate, adapter, hyperparameter, epoch, prototype rule, method lock, model state and resource changes do not trigger data revalidation; one-time provenance/hash/allowlist/runtime checks belong to the validator appendix.
 
+## Experiment Release Delegation
+
+- Every N607 experiment release must use a dedicated subagent as the sole server-side launch owner after the primary agent finishes local implementation, focused verification, Git versioning, and report preregistration. The primary agent continues method research, code review, retrospective work, and next-candidate design while the release subagent handles the server lane.
+- The release subagent owns bounded preflight, exact-file sync, remote hash/compile verification, immutable output/log checks, detached launch, PID/GPU verification, short-connection monitoring, complete-log reading, artifact retrieval, and a structured runner handoff. It must not tune or change the method, inspect query truth before immutable prediction, restart failed jobs without explicit authorization, or intervene in unrelated workloads.
+- A run ID has exactly one launch owner. Its handoff records the Git commit and file hashes, frozen candidate/matrix, exact child command, environment/CWD, output and log paths, expected artifacts, stop criteria, and retry authority. The primary agent integrates returned evidence and alone decides promotion.
+- Track separate immutable states: `LOCAL_VERIFIED` -> `LANDED` -> `RUNNING` -> `ARTIFACTS_COMPLETE` -> `ANALYZED`. Landing or process completion is not performance evidence; analysis requires complete logs and matched same-row artifacts.
+
 ## Windows Shell and Command Hygiene
 
 - Prefer PowerShell 7 for complex Windows commands. Use `pwsh -NoLogo -NoProfile -Command "<command>"` when shell behavior, quoting, or UTF-8 output matters.
