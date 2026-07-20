@@ -566,3 +566,17 @@ K10三场景support训练均完成20epoch，loss分别为`1.026→0.111`,`1.109�
 - 资源预期：在D94的2260参数、20step、约44KB target状态、6,080额外MAC/query基础上恢复D81 ground transform；总状态仍远低于256KB，optimizer step不超过20，query仍单次逐样本线性评分。
 - 本地变更范围：`stage2_d93_query_evaluation.py`新增D95候选、D81原始loader/builder装配与闭包审计；row pipeline和125 launcher通过共享候选表自动获得该ID；测试新增候选与CLI路由断言。数据构建、authority、checkpoint、method lock和ground artifact均不变。
 - 本地验证：在`ssr-gpu`环境串行运行D93/D94/D95公式、query包装、row CLI和125 launcher联合测试，15/15通过。唯一PyTorch只读buffer warning为既有D42路径且测试内部立即clone；pytest退出后的临时symlink清理PermissionError发生在exit code 0之后，不影响测试结论。
+
+### D95远端同步与窄实验命令
+
+- Git提交：`63bbc652`；本地与远端`cvsrffi/stage2_d93_query_evaluation.py` SHA256均为`cf939b772bf6b2c206bad61cbf3ac31bc45b264f8980bd431401f2a6bbfcc92a`，远端`py_compile`通过。
+- 2026-07-20 17:02 CST直连preflight通过；启动前8张RTX 3090均为10MiB、0%利用率，未发现D93/D94/D95行进程；`/home`可用7.5TB。同步只覆盖隔离源码快照中的上述单文件，共享源码、数据、checkpoint和既有输出均未修改。
+- 工作目录：`/home/szu2070436088/2510044040/CV-SincNet`；Python：`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`；K10使用GPU0，K1使用GPU1；每个子进程CPU线程上限2。
+- K10完整子进程命令：
+
+```bash
+env OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 NUMEXPR_NUM_THREADS=2 CVSRFFI_CPU_THREADS=2 CVSRFFI_CPU_INTEROP_THREADS=1 CUDA_VISIBLE_DEVICES=0 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/runs/d93_source_snapshot_20260720:/home/szu2070436088/2510044040/CV-SincNet /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/runs/d93_source_snapshot_20260720/scripts/run_cvs_somph_diag_row_pipeline.py --cache-manifest /home/szu2070436088/2510044040/CV-SincNet/runs/d18_formal_k10_new5_rx20_1_seed713101_20260717_085303/cache_matrix/rx_20_1/seed_713101/cache_set.json --authority-bundle /home/szu2070436088/2510044040/CV-SincNet/runs/d18_formal_k10_new5_rx20_1_seed713101_20260717_085303/signed_authority_bundle --authority-commit-sha256 fdedd9cfdfbb5db9f8962ba529403042b7de7011570dff514e9a629a44695147 --phase1-checkpoint /home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth --sealed-runtime /home/szu2070436088/2510044040/CV-SincNet/runs/d18_formal_k10_new5_rx20_1_seed713101_20260717_085303/input/sealed_feature_runtime.pt --method-lock /home/szu2070436088/2510044040/CV-SincNet/runs/d18_formal_k10_new5_rx20_1_seed713101_20260717_085303/input/method_lock.json --output-root /home/szu2070436088/2510044040/CV-SincNet/runs/d93_paired_ground_transport_dev_20260720/d95_k10_new20 --receiver 20-1 --seed 713101 --k-shot 10 --new-count 20 --device cuda:0 --candidate d95_d81_coverage_residual --ground-component-dir /home/szu2070436088/2510044040/CV-SincNet/runs/d19_ciaf_int8_proto_20260717_1039/input/int8_component --ground-manifest-sha256 15b5e144f9af3989421d8e925c17758479c327be47e79222f6363dc63994629c
+```
+
+- K1命令仅将`CUDA_VISIBLE_DEVICES=0`改为`1`、`--k-shot 10`改为`1`、输出改为`d95_k1_new20`；其余字节级参数相同。日志分别固定为`logs/d93_paired_ground_transport_dev_20260720/d95_k10_new20.stdout.log`和`d95_k1_new20.stdout.log`，启动器使用`start_new_session=True`，SSH仅负责短时落地并立即断开。
+- 预期输出：每行`pipeline_receipt.json`、before/after immutable prediction、fit/resource audit、scorer `diag_cosine_score.json`和COMMIT；成功标准与上一节完全一致。任何D81-base闭包失败、协方差数值失败或联合指标不达门均停止，不用125补证。
