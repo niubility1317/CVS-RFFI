@@ -1192,6 +1192,28 @@ env OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 NUMEXPR_NUM_THREA
 
 runner必须先做规定preflight，确认r5 run/log/output均不存在、GPU5占用合规，复核配置、r4 archive、r1 ground和D19 manifest SHA，验证隔离源码的5模块SHA与配置一致；随后同步配置到不可覆盖input路径，单次detached启动并回收完整receipt。不得改候选、自动重启、使用target调参或同时启动同run ID。
 
+#### r5启动前SHA口径诊断与r6重发预登记
+
+r5在任何远端状态创建前由代码SHA硬门安全停止。r5配置中的5项SHA来自Windows工作树CRLF字节，而规定复用的r4源码来自Git archive的LF字节；模块逻辑版本相同，但原始字节SHA必然不同。r5 run/log/output均未创建，配置未上传，child未启动，GPU5及r4/r1/D19资产门均通过，SSH连接0/0。完整prelaunch handoff位于`artifacts/d99_d100_phase1_lodo_7932dbf9_20260721_r5/runner_handoff.md`，SHA256=`d65dd2617bb0d138c328bbc6a9fae3228aa5c9dcc10fa0909210044c2e28cfc8`。r5没有分类、LODO或性能结果。
+
+不修改已提交r5配置，另行冻结新run ID`d99_d100_phase1_lodo_7932dbf9_lf_20260721_r6`。r6配置位于`preregistered_inputs/d99_d100_phase1_lodo_7932dbf9_lf_20260721_r6.json`，SHA256=`8a63aaab10dceb05811af8f0aa82bfc76e45468e2603beffd419092eebe949f6`。除run ID、output路径和5个模块SHA口径外，seed、候选网格、archive、ground、checkpoint、GPU与所有方法参数均与r5逐字相同。5个LF SHA已直接从原始`source_7932dbf9.zip`成员复算，并与N607 r4解压源码一致：
+
+|模块|r6冻结LF SHA256|
+|---|---|
+|`run_d99_d100_phase1_lodo.py`|`110295caa83ab0d7717e26b17b1d4ac33423337afaa8877067f64649d06c7ea1`|
+|`stage2_d100_ra_cgspr_lgf.py`|`86c185ee13222bc0c97c4576984b9cd07f981201da4f0b62f8d4bc66970b4714`|
+|`stage2_d81_phase1_episode_scorer.py`|`54ee742c81b60e00b6c1c36d2d6bf1f0409ad10f72a25e01c2dcd589093be55d`|
+|`stage2_d99_d100_phase1_lodo.py`|`aa99b3d726338481ed7f22f4acc5cdf2cfe4b2ef420e44da6f2ff2f674841e0e`|
+|`stage2_d99_ra_cgtmk_d81.py`|`c166a5e375b0b8be5c95e678e63a6f04526474cd1a01544616829106af52f56f`|
+
+r6远端run/log根分别为`/home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_phase1_lodo_7932dbf9_lf_20260721_r6`和`/home/szu2070436088/2510044040/CV-SincNet/logs/d99_d100_phase1_lodo_7932dbf9_lf_20260721_r6`。唯一child命令为：
+
+```bash
+env OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 NUMEXPR_NUM_THREADS=2 CUDA_VISIBLE_DEVICES=5 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_phase1_export_7932dbf9_cuda0_20260721_r4/source_7932dbf9/code /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_phase1_export_7932dbf9_cuda0_20260721_r4/source_7932dbf9/code/scripts/run_d99_d100_phase1_lodo.py --config /home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_phase1_lodo_7932dbf9_lf_20260721_r6/input/d99_d100_phase1_lodo_7932dbf9_lf_20260721_r6.json --config-sha256 8a63aaab10dceb05811af8f0aa82bfc76e45468e2603beffd419092eebe949f6
+```
+
+r6仍由同一唯一runner发布，不授权自动重试。成功、停止、LODO准入和target禁止条件与r5完全相同。
+
 ### D101直接shrinkage RDA交叉审查
 
 D101定位为D99上的alternative global head，与D100二选一，不叠成第三个融合头。当前裁决为`REVISE`：只允许后续实现Phase1 nested-LODO诊断臂，尚不允许target或N607。原因不是协议违法，而是其相对D99 metric和D100 simplex ridge的独立纠错能力尚未被证实。
