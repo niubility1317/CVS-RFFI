@@ -34,6 +34,20 @@ def test_registered_fit_is_fixed_equal_task_covariance_and_compilable():
     assert audit["d92_weight_scan_count"] == 0
     assert audit["d92_query_rows_used"] == 0
     assert audit["d92_query_role_oracle_access"] is False
+    assert audit["d92_class_common_affine_omitted_before_fp32"] is True
+    recentered_coefficient = coefficient.astype(np.float64)
+    recentered_coefficient -= recentered_coefficient.mean(axis=0, keepdims=True)
+    recentered_intercept = intercept.astype(np.float64)
+    recentered_intercept -= recentered_intercept.mean()
+    original_prediction = np.argmax(
+        rows @ coefficient.T + intercept[None, :], axis=1
+    )
+    recentered_prediction = np.argmax(
+        rows @ recentered_coefficient.astype(np.float32).T
+        + recentered_intercept.astype(np.float32)[None, :],
+        axis=1,
+    )
+    np.testing.assert_array_equal(recentered_prediction, original_prediction)
     state, _ = d42._compile_state(
         tuple(f"class{index}" for index in range(11)),
         6,

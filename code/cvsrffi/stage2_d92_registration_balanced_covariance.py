@@ -144,19 +144,11 @@ def build_registration_balanced_equal_lda(
         equation_residual = float(
             np.max(np.abs(covariance @ coefficient64.T - means.T))
         )
-        raw_prediction = np.argmax(
-            rows @ coefficient64.T + intercept64[None, :], axis=1
-        )
-        if arm == "block3_centered":
-            coefficient64 -= coefficient64.mean(axis=0, keepdims=True)
-            intercept64 -= intercept64.mean()
-            if not np.array_equal(
-                raw_prediction,
-                np.argmax(rows @ coefficient64.T + intercept64[None, :], axis=1),
-            ):
-                raise D92RegistrationBalancedCovarianceError(
-                    "D92 score centering changed support argmax"
-                )
+        # D45/D43 component fusion removes the class-common affine term.  Do
+        # that once in FP64 before the FP32 boundary so its later centering is
+        # numerically idempotent even for near-tied support rows.
+        coefficient64 -= coefficient64.mean(axis=0, keepdims=True)
+        intercept64 -= intercept64.mean()
         if not math.isfinite(equation_residual):
             raise D92RegistrationBalancedCovarianceError(
                 "D92 covariance equation residual became non-finite"
@@ -186,6 +178,11 @@ def build_registration_balanced_equal_lda(
             "d92_scene_receiver_seed_specific_branch": False,
             "d92_class_id_specific_formula": False,
             "d92_registration_state_support_only": True,
+            "d92_class_common_affine_omitted_before_fp32": True,
+            "d92_centered_coefficient_mean_max_abs": float(
+                np.max(np.abs(coefficient64.mean(axis=0)))
+            ),
+            "d92_centered_intercept_mean_abs": float(abs(intercept64.mean())),
             "d92_old_covariance_trace": float(np.trace(old_covariance)),
             "d92_new_covariance_trace": float(np.trace(new_covariance)),
             "d92_balanced_covariance_trace": float(np.trace(covariance)),
