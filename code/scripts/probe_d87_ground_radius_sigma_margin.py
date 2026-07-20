@@ -21,7 +21,9 @@ D85_PATH = SCRIPT_DIR / "probe_d85_ground_radius_calibrated_consensus.py"
 CORE_PATH = CODE_ROOT / "cvsrffi" / "stage2_d87_ground_radius_sigma_margin.py"
 
 ARM = "ground_radius_sigma_margin_centered_head"
-STRUCTURE = "d62_plus_centered_v2_radius_sigma_margin_affine_residual"
+# D87 changes only the post-D62 affine head.  The before/final covariance
+# audits remain the locked D62 covariance structure and must not be relabelled.
+STRUCTURE = "d46_base_plus_crossfitted_bidirectional_safe_d61_affine_rows"
 FORMULA = (
     "load only the immutable pending-joint-seal v2 component; derive 14 "
     "class-agnostic cross-class-consensus directions and fixed amplitudes "

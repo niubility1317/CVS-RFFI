@@ -21,6 +21,7 @@ def _load_probe():
 def test_probe_lock_uses_nonquadratic_grouped_sigma_margin() -> None:
     probe = _load_probe()
     assert probe.ARM == "ground_radius_sigma_margin_centered_head"
+    assert probe.STRUCTURE == probe.d79.d62.STRUCTURE
     assert "sqrt(2*median_class_p90_radius)" in probe.FORMULA
     assert "1/2,1/4,1/4" in probe.FORMULA
     assert "physical-rank OOF" in probe.FORMULA
@@ -63,4 +64,3 @@ def test_probe_source_contains_v2_and_query_free_fail_closed_checks() -> None:
         "outer_joint_seal_verified",
     )
     assert all(token in source for token in required)
-
