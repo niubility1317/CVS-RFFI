@@ -871,6 +871,12 @@ P1还包括subprocess无timeout、`nvidia-smi`失败被静默降为`driver=None`
 
 独立复审裁决为`ACCEPT_LOCAL_PRODUCER_BLOCKED_EXTERNAL_ARTIFACTS`：producer与consumer联合`60 passed`，固定身份、Git blob、ZIP、签名正文、exact loaded-module binding及回滚闭合。当前仍缺真实reviewed 51-member lock、外部有效private key/签名receipt，以及从签名ZIP安全展开到无Git隔离根再启动诊断的runner；因此只能合入local core，不能生成authority、发布N607或作formal launch/指标声明。
 
+### signed-source隔离runner收口与实验优先级调整
+
+隔离runner第三轮独立复审裁决为`MERGE`，范围仅限可选local diagnostic tooling。此前同inode等长改写、child读取修改内容、再恢复原bytes与mtime的窗口，现由初始snapshot、held FD和current path三侧`ctime_ns`一致性检查关闭；Linux定向负例已复现并确认正确拒绝。主线在`ssr-gpu`环境复跑member-lock、isolated-runner、source-release producer和runtime diagnostic四组测试，得到`88 passed,1 skipped`、exit0；skip为Windows上不执行Linux能力负例，告警为TorchScript弃用、故意构造的duplicate ZIP fixture和pytest退出后临时目录清理噪声。
+
+根据用户最新目标，以上源码签名、review authority envelope和额外代码对齐不再作为无线信号模型研发或N607 development experiment的前置门。后续只保留Git commit、文件SHA、不可覆盖run ID和现有实验报告作为代码版本证据；模型实验的硬约束回到`p2_min_v1`：复用匹配`VALIDATED_ONCE`数据、support-only适应、query逐样本只前向、无clean/source runtime访问、无query truth/role/quota。正式论文/部署claim仍需完整产物闭合，但不得因此阻断ground-only LODO、target narrow diagnostic或matched性能验证。
+
 ## 下一轮唯一集成候选D99
 
 跨方法监督否决继续增加第三个全局头或D98式二次融合权，建议下一轮只实现`D99 RA-CGTMK-D81`：保留D81一次拟合，将D96的密度反权、`D_eff`、共享ground nuisance basis和support-only coverage certificate用于构造严格PSD低秩Mahalanobis度量，再把D97的各向同性qK分支替换为类数归一化Student-t metric-kernel。ground只改变可观测距离，不直接给旧类加分；old/new仍由同式target support注册。
