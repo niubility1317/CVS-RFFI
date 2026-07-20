@@ -269,6 +269,10 @@ def fit_ground_sigma_pareto_guard(
         base_view_delta, targets, classes, temperature, need_gradient=False
     )
     initial_clean_class = _class_means(initial[2], targets, classes)
+    clean_guard_tolerance = float(
+        4096.0 * np.finfo(np.float64).eps
+        * max(1.0, float(np.max(np.abs(initial_clean_class))))
+    )
     trust_radius = float(np.linalg.norm(base_w) / np.sqrt(classes * dimension))
     view_norm_sq = np.sum(
         np.square(projected[:, None, :] + offset_projected[None, :, :]), axis=2
@@ -308,10 +312,6 @@ def fit_ground_sigma_pareto_guard(
             tolerance = float(
                 128.0 * np.finfo(np.float64).eps * max(1.0, abs(objective))
             )
-            class_tolerance = float(
-                1024.0 * np.finfo(np.float64).eps
-                * max(1.0, float(np.max(np.abs(clean_class))))
-            )
             for backtracks in range(MAX_BACKTRACKS + 1):
                 proposal = coefficients + step * direction
                 proposal -= np.mean(proposal, axis=0, keepdims=True)
@@ -328,7 +328,10 @@ def fit_ground_sigma_pareto_guard(
                 )
                 if (
                     candidate[0] <= objective + tolerance
-                    and np.all(candidate_clean_class <= clean_class + class_tolerance)
+                    and np.all(
+                        candidate_clean_class
+                        <= initial_clean_class + clean_guard_tolerance
+                    )
                 ):
                     coefficients = proposal
                     break
@@ -362,13 +365,11 @@ def fit_ground_sigma_pareto_guard(
         base_view_delta, targets, classes, temperature, need_gradient=False
     )
     final_clean_class = _class_means(final[2], targets, classes)
-    final_tolerance = float(
-        4096.0 * np.finfo(np.float64).eps
-        * max(1.0, float(np.max(np.abs(initial_clean_class))))
-    )
     if (
         final[0] > initial[0] + 1.0e-10
-        or np.any(final_clean_class > initial_clean_class + final_tolerance)
+        or np.any(
+            final_clean_class > initial_clean_class + clean_guard_tolerance
+        )
     ):
         raise D88GroundSigmaParetoError("D88 final Pareto invariant drift")
     delta_w64 = coefficients @ basis.T
@@ -419,9 +420,9 @@ def fit_ground_sigma_pareto_guard(
         "oof_clean_ce_delta_max_class": float(np.max(clean_delta)),
         "oof_clean_ce_delta_min_class": float(np.min(clean_delta)),
         "all_class_clean_ce_nonincrease_verified": bool(
-            np.all(clean_delta <= final_tolerance)
+            np.all(clean_delta <= clean_guard_tolerance)
         ),
-        "clean_pareto_guard_tolerance": final_tolerance,
+        "clean_pareto_guard_tolerance": clean_guard_tolerance,
         "total_halfspace_projection_count": int(total_halfspace_projections),
         "zero_common_direction_step_count": int(zero_direction_steps),
         "cone_projection_sweeps_per_step_max": CONE_PROJECTION_SWEEPS,

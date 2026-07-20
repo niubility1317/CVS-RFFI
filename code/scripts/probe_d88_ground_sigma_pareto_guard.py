@@ -24,7 +24,8 @@ FORMULA = (
     "sigma descent direction onto every registered class clean-OOF CE "
     "descent halfspace with the same label-permutation-equivariant formula; "
     "accept only an objective-nonincreasing step whose exact clean OOF CE "
-    "does not increase for any class; compile the centered residual into "
+    "does not exceed the unchanged D62 baseline for any class; compile the "
+    "centered residual into "
     "the unchanged single INT8 affine head"
 )
 
