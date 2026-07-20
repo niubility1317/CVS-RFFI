@@ -930,6 +930,16 @@ D99作者已收到上述P0并在原两个独立文件中修复；修订版仍需
 
 历史“125实验”是5个receiver×5个seed×5个cell：K10/new5、K10/new10、K10/new20、K5/new20、K1/new20；每job含3个场景。它不含K20和new2。当前active objective显式要求K={1,5,10,20}与seen-new={2,5,10,20}全组合，因此正式成功矩阵应为400个job、1,200个scenario row。后续保留历史125作为可比screen，但不得再把它称完整目标矩阵；除非用户明确改变因子集合，正式成功声明必须覆盖400/1,200。
 
+## D100 RA-CGSPR-LGF本地核心
+
+D100是在并行方法监督中唯一保留的下一候选：coverage-gated D99广义余弦metric负责ground域方向，D99 Student-t头保留局部多峰/异常support，新增全类simplex dual ridge用全部注册类提供显式负证据。SRDA因与D81/D96线性协方差几何重复被拒，Bayesian vMF因与D99正样本密度高度重复且缺真实P3/P4多原型bundle而暂缓。simplex ridge对old/new每个实际类严格等权，不使用D92式任务组权重。
+
+D100从exact typed D99 INT8 bank解码support，使用D99 precision的解析平方根构造同一三block feature，以centered simplex标签闭式求解dual ridge；K1/K5/K10/K20各自冻结lambda、temperature和alpha，不允许K10外推K20。target-class weight为INT8，scale/bias为FP16；共享target-conditioned metric basis/attenuation仍是FP32，因此只能表述为“无FP32 class prototype/weight sidecar”。formal Phase1/LODO authority缺失时保持硬阻断。
+
+第一次复审发现公开融合入口接受任意caller probability，且query MAC漏算INT8权重解码。修复后唯一融合入口接收并验证exact typed D99 bank，内部调用D99 canonical raw scorer与K-specific锁温度softmax；`alpha=0`也内部生成D99概率并确认完全跳过ridge。C26/K20 query上界为：rank4 D99 1,732,160＋D100增量18,014=1,750,174 MAC；rank8 D99 2,397,760＋D100增量19,298=2,417,058 MAC。
+
+终审裁决为`ACCEPT_LOCAL_D100_BLOCKED_AUTHORITIES`，专项`15 passed`、D99+D100联合`38 passed`。rank8已知bytes小计为D100 16,268B＋D99 163,810B＋typed D81 exact head 35,746B＋ground裸数组13,860B=229,684B；但ground完整serializer、registry/resource receipt及D99/D100 LODO和external authorities未固定，所以`complete_combined_state_upper_bound_available=false`、`formal_combined_resource_claim=false`，不得用该小计宣称正式低于256KiB，也不得运行N607/target/确认矩阵。
+
 ## typed D81提交907bd620独立复审：REVISE
 
 commit`907bd620`的专项与相关联合测试共`76 passed`，但独立复审发现其核心fit改变了历史D81定义：当前实现把全部registered old/new support送入20-step metric，而真实D81只用`Y_old` support拟合一次metric，冻结后再用全部old/new support拟合最终D62/D81 head。四类独立oracle攻击结果如下，差异远大于`2e-6`，属于方法改变而非浮点噪声。
