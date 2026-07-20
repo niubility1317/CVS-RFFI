@@ -130,3 +130,11 @@ PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/runs/d92_source_snapshot_20
 - 修复：`block3`在注册前及K1/K2回退时调用原D81结构化协方差builder；仅在注册后且K>2时使用D92任务均衡协方差。
 - 新增集成测试要求K5注册前D92系数与截距和D81逐值一致；D81+D92联合回归现为23项全部通过。
 - 修复后的probe SHA256=`a04a9185e11ca851a1276004c4e2988cee0f6b61920851fe7a06ca7c740ee601`。必须使用新源码快照与新输出根完整重跑125，不能对retry1的旧指标做事后公式修正。
+
+### retry2最终候选运行登记
+
+- 代码提交：`87012f4138c1cd308468ef74e238131af949c651`；源码快照：`/home/szu2070436088/2510044040/CV-SincNet/runs/d92_source_snapshot_retry2_20260720`。
+- 输出根：`/home/szu2070436088/2510044040/CV-SincNet/runs/d92_registration_balanced_125_retry2_20260720`；日志根同名位于`logs/`。
+- matrix manifest SHA256=`b70045e7cd45a6029bc0a1a47ada0bb72d16fdb6bc7662c43bd253bfc7e4bc5c`；125作业、8分片、同一锁定5×5×5矩阵。
+- 启动器：`launch_retry2.sh`，SHA256=`b3731a619d9025f077280c6a130b68ce81252d291cfda706dee864cee23dad32`。
+- shard0–7分别绑定GPU0–7；launcher PID依次为`1105536,1105537,1105538,1105539,1105540,1105541,1105542,1105543`。每GPU启动前1项、启动后2项，CPU线程上限2。
