@@ -79,6 +79,34 @@ def test_registered_transform_preserves_auxiliary_and_unit_norm() -> None:
     np.testing.assert_allclose(original_aux, transformed_aux, atol=1e-6)
 
 
+def test_d94_coverage_shrinks_only_the_nonorthogonal_update() -> None:
+    _, ground, mask, _, target = _fixture()
+    support = np.repeat(target, 10, axis=0)
+    labels = np.repeat(np.arange(6), 10)
+    full = fit_paired_ground_transport(
+        ground,
+        mask,
+        support,
+        labels,
+        include_nuisance_scale=False,
+    )
+    covered = fit_paired_ground_transport(
+        ground,
+        mask,
+        support,
+        labels,
+        include_nuisance_scale=False,
+        coverage_controlled_update=True,
+    )
+    rho = covered.audit["target_shift_ground_nuisance_coverage"]
+    assert 0.0 <= rho <= 1.0
+    assert covered.audit["mode"] == "coverage_controlled_interaction"
+    assert covered.audit["coverage_update_scale"] == rho
+    assert covered.audit["update_spectral_norm"] <= full.audit[
+        "update_spectral_norm"
+    ] + 1.0e-12
+
+
 def test_ground_domain_and_class_permutation_preserve_transformed_geometry() -> None:
     _, ground, mask, _, target = _fixture()
     labels = np.arange(6, dtype=np.int64)

@@ -19,7 +19,11 @@ from cvsrffi.stage2_d93_paired_ground_transport import (
 CANDIDATE_D93_INTERACTION = "d93_paired_ground_transport_interaction"
 CANDIDATE_D93_SCALE = "d93_paired_ground_transport_scale"
 CANDIDATES_D93 = (CANDIDATE_D93_INTERACTION, CANDIDATE_D93_SCALE)
+CANDIDATE_D94_COVERAGE = "d94_paired_ground_transport_coverage_shrink"
+CANDIDATES_D94 = (CANDIDATE_D94_COVERAGE,)
+CANDIDATES_GROUND_TRANSPORT = (*CANDIDATES_D93, *CANDIDATES_D94)
 SCHEMA_D93 = "cvs.phase2.d93.full_query_evaluation.v1"
+SCHEMA_D94 = "cvs.phase2.d94.full_query_evaluation.v1"
 
 
 class D93QueryEvaluationError(ValueError):
@@ -128,6 +132,7 @@ def build_d93_top_level_fit(
     target_old_tx_labels: Sequence[str] | None = None,
     ground_audit: Mapping[str, Any],
     include_nuisance_scale: bool,
+    coverage_controlled_update: bool = False,
 ) -> Callable[..., D93Result]:
     """Wrap the existing D42/D62 top-level fitter with the D93 transport."""
 
@@ -184,6 +189,7 @@ def build_d93_top_level_fit(
             old_z160,
             old_targets,
             include_nuisance_scale=bool(include_nuisance_scale),
+            coverage_controlled_update=bool(coverage_controlled_update),
         )
         transformed_old = transform_registered_features(old_rows, transport)
         transformed_new = transform_registered_features(new_rows, transport)
@@ -445,13 +451,15 @@ def run_d93_query_evaluation(
 ) -> dict[str, Any]:
     """Reuse the sealed D81 I/O scaffold while replacing its method hooks."""
 
-    if str(candidate) not in CANDIDATES_D93:
-        raise D93QueryEvaluationError("unknown D93 candidate")
+    if str(candidate) not in CANDIDATES_GROUND_TRANSPORT:
+        raise D93QueryEvaluationError("unknown D93/D94 candidate")
     from scripts import probe_d81_ground_nuisance_cauchy_center as d81_probe
     from scripts import probe_d62_crossfitted_fisher_row_splice as d62_probe
     from cvsrffi import stage2_d81_query_evaluation as d81_eval
 
     include_scale = str(candidate) == CANDIDATE_D93_SCALE
+    coverage_controlled_update = str(candidate) == CANDIDATE_D94_COVERAGE
+    selected_schema = SCHEMA_D94 if coverage_controlled_update else SCHEMA_D93
     locked_target_old_tx_labels = tuple(str(item) for item in target_old_tx_labels)
     if (
         not locked_target_old_tx_labels
@@ -503,6 +511,7 @@ def run_d93_query_evaluation(
             target_old_tx_labels=locked_target_old_tx_labels,
             ground_audit=holder["audit"],
             include_nuisance_scale=include_scale,
+            coverage_controlled_update=coverage_controlled_update,
         )
         return wrapper(*args, **fit_kwargs)
 
@@ -532,7 +541,7 @@ def run_d93_query_evaluation(
         d81_eval._audit_fit = _audit_fit
         d81_eval._publish_state = publish
         d81_eval.CANDIDATE_D81 = str(candidate)
-        d81_eval.SCHEMA = SCHEMA_D93
+        d81_eval.SCHEMA = selected_schema
         result = d81_eval.run_d81_query_evaluation(**kwargs)
     finally:
         d81_probe.load_ground_basis = original["load"]
@@ -556,19 +565,26 @@ def run_d93_query_evaluation(
     )
     return {
         **dict(result),
-        "schema": SCHEMA_D93,
+        "schema": selected_schema,
         "candidate": str(candidate),
         "resource": returned_resource,
         "d93_mode": "interaction_plus_nuisance_scale"
         if include_scale
-        else "interaction_only",
+        else (
+            "coverage_controlled_interaction"
+            if coverage_controlled_update
+            else "interaction_only"
+        ),
     }
 
 
 __all__ = [
     "CANDIDATES_D93",
+    "CANDIDATES_D94",
+    "CANDIDATES_GROUND_TRANSPORT",
     "CANDIDATE_D93_INTERACTION",
     "CANDIDATE_D93_SCALE",
+    "CANDIDATE_D94_COVERAGE",
     "D93QueryEvaluationError",
     "D93Result",
     "D93State",

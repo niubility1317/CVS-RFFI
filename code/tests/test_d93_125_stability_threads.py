@@ -29,7 +29,9 @@ class D93125StabilityThreadTest(unittest.TestCase):
         action = next(
             item for item in launcher.parser()._actions if item.dest == "candidate"
         )
-        self.assertEqual(tuple(action.choices), launcher.CANDIDATES_D93)
+        self.assertEqual(
+            tuple(action.choices), launcher.CANDIDATES_GROUND_TRANSPORT
+        )
 
 
 if __name__ == "__main__":

@@ -16,7 +16,7 @@ if str(CODE_ROOT) not in sys.path:
     sys.path.insert(0, str(CODE_ROOT))
 
 from scripts import run_cvs_somph_diag_125_stability as base
-from cvsrffi.stage2_d93_query_evaluation import CANDIDATES_D93
+from cvsrffi.stage2_d93_query_evaluation import CANDIDATES_GROUND_TRANSPORT
 
 
 _GROUND_COMPONENT_DIR = ""
@@ -71,7 +71,9 @@ def _d93_job_command(
 def parser() -> argparse.ArgumentParser:
     result = base.parser()
     result.description = __doc__
-    result.add_argument("--candidate", choices=CANDIDATES_D93, required=True)
+    result.add_argument(
+        "--candidate", choices=CANDIDATES_GROUND_TRANSPORT, required=True
+    )
     result.add_argument("--ground-component-dir", required=True)
     result.add_argument("--ground-manifest-sha256", required=True)
     result.add_argument(

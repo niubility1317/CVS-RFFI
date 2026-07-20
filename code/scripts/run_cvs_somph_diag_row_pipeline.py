@@ -45,7 +45,7 @@ from cvsrffi.stage2_d92_query_evaluation import (  # noqa: E402
     run_d92_query_evaluation,
 )
 from cvsrffi.stage2_d93_query_evaluation import (  # noqa: E402
-    CANDIDATES_D93,
+    CANDIDATES_GROUND_TRANSPORT,
     run_d93_query_evaluation,
 )
 from cvsrffi.stage2_predictor_bundle import sha256_file  # noqa: E402
@@ -312,7 +312,11 @@ def run_pipeline(
         ],
     )
 
-    ground_candidates = {CANDIDATE_D81, CANDIDATE_D92, *CANDIDATES_D93}
+    ground_candidates = {
+        CANDIDATE_D81,
+        CANDIDATE_D92,
+        *CANDIDATES_GROUND_TRANSPORT,
+    }
     if candidate in ground_candidates and (
         ground_component_dir is None or ground_manifest_sha256 is None
     ):
@@ -327,7 +331,7 @@ def run_pipeline(
         evaluator_kwargs: dict[str, Any] = {}
         if candidate == CANDIDATE_D92:
             evaluator = run_d92_query_evaluation
-        elif candidate in CANDIDATES_D93:
+        elif candidate in CANDIDATES_GROUND_TRANSPORT:
             evaluator = run_d93_query_evaluation
             evaluator_kwargs["candidate"] = candidate
             evaluator_kwargs["target_old_tx_labels"] = tuple(
@@ -543,7 +547,7 @@ def parser() -> argparse.ArgumentParser:
         "--candidate",
         choices=tuple(CANDIDATES)
         + (CANDIDATE_D81, CANDIDATE_D92)
-        + tuple(CANDIDATES_D93),
+        + tuple(CANDIDATES_GROUND_TRANSPORT),
         default=CANDIDATE_D1,
     )
     result.add_argument("--ground-component-dir")

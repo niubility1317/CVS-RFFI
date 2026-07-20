@@ -223,6 +223,7 @@ def _fit_operator(
     nuisance_basis: np.ndarray,
     *,
     include_nuisance_scale: bool,
+    coverage_controlled_update: bool,
 ) -> tuple[
     np.ndarray,
     np.ndarray,
@@ -236,6 +237,12 @@ def _fit_operator(
     ground_centered = ground_centers - ground_mean[None, :]
     target_centered = target_centers - target_mean[None, :]
     residual = target_centered - ground_centered
+    projected_residual = (residual @ nuisance_basis) @ nuisance_basis.T
+    residual_energy = float(np.sum(residual**2))
+    nuisance_coverage = float(
+        np.sum(projected_residual**2) / max(EPSILON, residual_energy)
+    )
+    nuisance_coverage = float(np.clip(nuisance_coverage, 0.0, 1.0))
 
     identity_coordinates = ground_centered @ identity_basis
     nuisance_residual = residual @ nuisance_basis
@@ -263,10 +270,12 @@ def _fit_operator(
         update += nuisance_basis @ np.diag(nuisance_scale) @ nuisance_basis.T
 
     raw_update_norm = float(np.linalg.norm(update, ord=2))
-    update_scale = min(
+    spectral_cap_scale = min(
         1.0,
         MAX_UPDATE_SPECTRAL_NORM / max(EPSILON, raw_update_norm),
     )
+    coverage_scale = nuisance_coverage if coverage_controlled_update else 1.0
+    update_scale = spectral_cap_scale * coverage_scale
     update *= update_scale
     interaction *= update_scale
     nuisance_scale *= update_scale
@@ -280,14 +289,12 @@ def _fit_operator(
     predicted = ground_centers @ operator.T + translation[None, :]
     identity_translation = target_mean - ground_mean
     identity_predicted = ground_centers + identity_translation[None, :]
-    projected_residual = (residual @ nuisance_basis) @ nuisance_basis.T
-    residual_energy = float(np.sum(residual**2))
-    nuisance_coverage = float(
-        np.sum(projected_residual**2) / max(EPSILON, residual_energy)
-    )
     statistics = {
         "ridge": ridge,
         "raw_update_spectral_norm": raw_update_norm,
+        "spectral_cap_scale": float(spectral_cap_scale),
+        "coverage_controlled_update": bool(coverage_controlled_update),
+        "coverage_update_scale": float(coverage_scale),
         "update_scale": float(update_scale),
         "update_spectral_norm": float(np.linalg.norm(update, ord=2)),
         "operator_condition_number": condition,
@@ -377,6 +384,7 @@ def fit_paired_ground_transport(
     target_old_labels: np.ndarray,
     *,
     include_nuisance_scale: bool,
+    coverage_controlled_update: bool = False,
 ) -> D93PairedGroundTransport:
     """Fit D93 from immutable aggregate ground centers and target-old support."""
 
@@ -399,10 +407,19 @@ def fit_paired_ground_transport(
         identity_basis,
         nuisance_basis,
         include_nuisance_scale=bool(include_nuisance_scale),
+        coverage_controlled_update=bool(coverage_controlled_update),
     )
     audit = {
         "schema": "cvs.phase2.d93.paired_ground_transport.v1",
-        "mode": "interaction_plus_nuisance_scale" if include_nuisance_scale else "interaction_only",
+        "mode": (
+            "coverage_controlled_interaction"
+            if coverage_controlled_update
+            else (
+                "interaction_plus_nuisance_scale"
+                if include_nuisance_scale
+                else "interaction_only"
+            )
+        ),
         "k_shot": int(k_shot),
         "target_old_class_count": int(ground_centers.shape[0]),
         "target_new_support_used_for_transport_fit": False,
