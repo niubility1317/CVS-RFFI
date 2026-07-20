@@ -52,3 +52,9 @@ def test_probe_source_keeps_protocol_closure() -> None:
         "forced_nonpromotable",
     )
     assert all(token in source for token in required)
+
+
+def test_d87_descendant_resource_hook_defaults_off() -> None:
+    probe = _load_probe()
+    assert probe.d87.EXTRA_CROSSFIT_LDA_FIT_COUNT == 0
+    assert probe.d87.EXTRA_SUPPORT_MAC_UPPER_BOUND == 0

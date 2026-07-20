@@ -30,3 +30,4 @@
 - attempt0后台包装器已实际启动，但初次进程检查错误地只匹配了Miniconda路径，漏掉仍运行的Python进程；随后相同锁定命令启动attempt1。attempt1在最终写入时命中防覆盖保护并退出，未改写attempt0 artifact。attempt0随后形成105行、receipt和D91 metadata，证明模型运行完成；该并发过程不改变数据、配置或公式。
 - 对attempt0作交付前审计时发现：预测已使用共识收缩残差，但D91 audit错误继承D87未收缩残差的哈希、最终support CE；资源账本也遗漏了为共识重复执行的8次LDA fit。该artifact因此只作实现诊断，不作为最终性能证据。
 - 修复范围仅限证据闭包：重新计算收缩后残差哈希、support sigma/clean CE与argmax审计，并把重复8次LDA fit计入适配MAC；共识公式、模型输出路径、阈值（仍为零个）、20步D87拟合、数据和候选矩阵均不变。retry2使用新输出目录完整重跑。
+- retry2完成105/105和全部closure，但离线汇总发现集成层虽已把重复LDA的MAC计入`d79_crossfit_lda_fit_macs`与总适配MAC，row中的fit count仍只表示继承D79的8次，且D91拆分字段未透传。最终修复为D87默认关闭的后代资源审计钩子；D91显式记录额外8次、实际16次、额外LDA MAC与386,672个共识MAC，不改变任何预测计算。retry3用于获得自解释资源闭包。

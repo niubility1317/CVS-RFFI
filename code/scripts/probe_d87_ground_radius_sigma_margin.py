@@ -54,6 +54,11 @@ d85 = _load("d87_d85_v2_scaffold", D85_PATH)
 core = _load("d87_ground_radius_sigma_core", CORE_PATH)
 d78, d43 = d79.d78, d79.d43
 
+# Optional evidence-only extension used by descendants that execute extra
+# crossfit fits after the locked D87 fit.  The default preserves D87 exactly.
+EXTRA_CROSSFIT_LDA_FIT_COUNT = 0
+EXTRA_SUPPORT_MAC_UPPER_BOUND = 0
+
 
 def _sha256(path: Path) -> str:
     digest = hashlib.sha256()
@@ -291,6 +296,39 @@ def main(argv: list[str] | None = None) -> int:
 
     def install_resources_and_v2(runner: Any) -> None:
         original_install(runner)
+
+        if EXTRA_CROSSFIT_LDA_FIT_COUNT or EXTRA_SUPPORT_MAC_UPPER_BOUND:
+            inherited_evaluate = runner._evaluate_d42_fold
+
+            def evaluate_with_descendant_audit(*args: Any, **kwargs: Any):
+                row = inherited_evaluate(*args, **kwargs)
+                if row.get("candidate_id") not in (
+                    "D42-USLDA-INT8",
+                    "D42-USLDA-FP32-MATCHED",
+                ):
+                    return row
+                resource = dict(row["resource"])
+                inherited_count = int(resource["d79_crossfit_lda_fit_count"])
+                extra_count = int(EXTRA_CROSSFIT_LDA_FIT_COUNT)
+                actual_count = inherited_count + extra_count
+                actual_macs = int(resource["d79_crossfit_lda_fit_macs"])
+                extra_macs = int(
+                    actual_macs * extra_count / max(actual_count, 1)
+                )
+                resource.update(
+                    {
+                        "descendant_extra_crossfit_lda_fit_count": extra_count,
+                        "descendant_extra_crossfit_lda_fit_macs": extra_macs,
+                        "descendant_actual_crossfit_lda_fit_count": actual_count,
+                        "descendant_actual_crossfit_lda_fit_macs": actual_macs,
+                        "descendant_extra_support_mac_upper_bound": int(
+                            EXTRA_SUPPORT_MAC_UPPER_BOUND
+                        ),
+                    }
+                )
+                return {**row, "resource": resource}
+
+            runner._evaluate_d42_fold = evaluate_with_descendant_audit
 
         def load_component(
             component_dir: Path,

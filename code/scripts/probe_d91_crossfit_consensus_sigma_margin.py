@@ -110,6 +110,7 @@ def _verify_output(
     active = 0
     for row in target:
         audit = row["geometry_summary"]["d79_worstclass_margin_audit"]
+        resource = row["resource"]
         factor = float(audit["consensus_factor"])
         if (
             audit["schema"]
@@ -125,6 +126,9 @@ def _verify_output(
             or audit["residual_sha256"]
             == audit["d87_unshrunk_audit"]["residual_sha256"]
             and factor not in (0.0, 1.0)
+            or int(resource["descendant_extra_crossfit_lda_fit_count"]) != 8
+            or int(resource["descendant_actual_crossfit_lda_fit_count"]) != 16
+            or int(resource["descendant_extra_support_mac_upper_bound"]) != 386_672
         ):
             raise D91ProbeError("D91 consensus audit closure drift")
         factors.append(factor)
@@ -156,6 +160,8 @@ def main(argv: list[str] | None = None) -> int:
     d87.__file__ = str(Path(__file__).resolve())
     d87._verify_output = _verify_output
     d87._resource_upper_bounds = _resource_upper_bounds
+    d87.EXTRA_CROSSFIT_LDA_FIT_COUNT = 8
+    d87.EXTRA_SUPPORT_MAC_UPPER_BOUND = 386_672
     translated = ["--d87-arm", ARM, *runner_arguments]
     exit_code = int(d87.main(translated))
     if exit_code != 0:
