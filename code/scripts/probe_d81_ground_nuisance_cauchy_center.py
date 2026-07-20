@@ -249,10 +249,14 @@ def build_d81_fit(
 
 def _translation_macs(row_count: int, rank: int) -> int:
     rows, retained = int(row_count), int(rank)
+    extra_per_row_rank = int(
+        getattr(core, "TRANSLATION_EXTRA_MACS_PER_ROW_RANK", 0)
+    )
     return int(
         2 * rows * core.Z_DIM * retained
         + 5 * rows * retained
         + 3 * rows * core.Z_DIM
+        + extra_per_row_rank * rows * retained
     )
 
 

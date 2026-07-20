@@ -33,6 +33,9 @@ FORMULA = (
     "every D62 full/block OOF fit apply the unchanged D81 one-step per-target-"
     "class Cauchy support-center translation and compile one INT8 affine head"
 )
+EXTRA_SOURCE_CLOSURE: dict[str, str] = {}
+OUTPUT_METADATA_NAME = "D89_PROBE_METADATA.json"
+OUTPUT_METADATA_SCHEMA = "cvs.phase2.d89.v2_radius_cauchy_center_probe.v1"
 
 
 class D89ProbeError(RuntimeError):
@@ -217,6 +220,7 @@ def main(argv: list[str] | None = None) -> int:
         "d89_v2_codec_sha256": _sha256(d85.V2_CODEC_PATH),
         "d89_d85_scaffold_sha256": _sha256(D85_PATH),
         "d89_d81_scaffold_sha256": _sha256(D81_PATH),
+        **EXTRA_SOURCE_CLOSURE,
     }
     base.d66.NPZ_NAME = d85.v2_codec.NPZ_NAME
     base.d66.MANIFEST_NAME = d85.v2_codec.MANIFEST_NAME
@@ -236,7 +240,7 @@ def main(argv: list[str] | None = None) -> int:
     inherited_path = output / "D81_PROBE_METADATA.json"
     metadata = json.loads(inherited_path.read_text(encoding="utf-8"))
     metadata.update({
-        "schema": "cvs.phase2.d89.v2_radius_cauchy_center_probe.v1",
+        "schema": OUTPUT_METADATA_SCHEMA,
         "arm": ARM,
         "formula": FORMULA,
         "ground_v2_component_only": True,
@@ -247,7 +251,7 @@ def main(argv: list[str] | None = None) -> int:
         "d89_probe_sha256": _sha256(Path(__file__).resolve()),
         "inherited_d81_metadata_sha256": _sha256(inherited_path),
     })
-    (output / "D89_PROBE_METADATA.json").write_text(
+    (output / OUTPUT_METADATA_NAME).write_text(
         json.dumps(metadata, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
         encoding="utf-8",
     )
