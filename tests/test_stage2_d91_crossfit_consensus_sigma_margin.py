@@ -56,6 +56,9 @@ def test_consensus_is_bounded_centered_and_query_free() -> None:
     assert audit["old_new_role_specific_branch"] is False
     assert audit["class_permutation_equivariant"] is True
     assert audit["residual_frobenius"] <= audit["d87_unshrunk_residual_frobenius"] + 1e-9
+    assert audit["objective_delta"] <= 1e-10
+    if 0.0 < audit["consensus_factor"] < 1.0:
+        assert audit["residual_sha256"] != audit["d87_unshrunk_audit"]["residual_sha256"]
     np.testing.assert_allclose(delta_w.mean(axis=0), 0.0, atol=1e-7)
     np.testing.assert_allclose(delta_w @ rows.mean(axis=0) + delta_b, 0.0, atol=1e-5)
 

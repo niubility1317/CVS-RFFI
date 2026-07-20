@@ -37,7 +37,9 @@ def test_resource_increment_is_positive_and_small() -> None:
         lda_macs=1_000_000, ground_statistics_macs=216_724,
     )
     extra = bounded["total_added"] - inherited["total_added"]
-    assert 0 < extra < 10_000_000
+    assert extra > inherited["crossfit_lda_fit_macs"]
+    assert extra < 1_000_000_000
+    assert bounded["d91_consensus_crossfit_lda_fit_count"] == 8
 
 
 def test_probe_source_keeps_protocol_closure() -> None:

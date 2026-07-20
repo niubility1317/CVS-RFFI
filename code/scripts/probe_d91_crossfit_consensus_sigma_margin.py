@@ -78,10 +78,14 @@ def _resource_upper_bounds(
     per_fold_sigma_gradient = classes * classes * rank * (2 + 2 * domains)
     agreement = shots * shots * classes * rank
     extra = int(shots * per_fold_sigma_gradient + agreement)
+    repeated_lda = int(lda_macs)
+    inherited["d91_consensus_crossfit_lda_fit_count"] = shots
+    inherited["d91_consensus_crossfit_lda_fit_macs"] = repeated_lda
     inherited["d91_fold_consensus_mac_upper_bound"] = extra
     inherited["frank_wolfe_mac_upper_bound"] += extra
     inherited["non_lda_total"] += extra
-    inherited["total_added"] += extra
+    inherited["crossfit_lda_fit_macs"] += repeated_lda
+    inherited["total_added"] += repeated_lda + extra
     return inherited
 
 
@@ -118,6 +122,9 @@ def _verify_output(
             or audit["physical_group_crossfit_preserved"] is not True
             or int(audit["query_rows_used"]) != 0
             or float(audit["residual_logit_at_support_center_max_abs"]) > 1.0e-5
+            or audit["residual_sha256"]
+            == audit["d87_unshrunk_audit"]["residual_sha256"]
+            and factor not in (0.0, 1.0)
         ):
             raise D91ProbeError("D91 consensus audit closure drift")
         factors.append(factor)

@@ -24,3 +24,9 @@
 - 执行位置：本地锁定cell；不使用N607、不占用GPU、不建立SSH连接。
 - 输出根：`E:\type10-7\automation_reports\CV-SincNet\d91_crossfit_consensus_sigma_margin_20260720\crossfit_consensus_ground_sigma_margin_head`
 - 预期artifact：`training_log.jsonl`、`predictions.jsonl`、`predictions.receipt.json`、`D91_PROBE_METADATA.json`、完整性能汇总和本报告最终段。
+
+## 启动与审计修复记录
+
+- attempt0后台包装器已实际启动，但初次进程检查错误地只匹配了Miniconda路径，漏掉仍运行的Python进程；随后相同锁定命令启动attempt1。attempt1在最终写入时命中防覆盖保护并退出，未改写attempt0 artifact。attempt0随后形成105行、receipt和D91 metadata，证明模型运行完成；该并发过程不改变数据、配置或公式。
+- 对attempt0作交付前审计时发现：预测已使用共识收缩残差，但D91 audit错误继承D87未收缩残差的哈希、最终support CE；资源账本也遗漏了为共识重复执行的8次LDA fit。该artifact因此只作实现诊断，不作为最终性能证据。
+- 修复范围仅限证据闭包：重新计算收缩后残差哈希、support sigma/clean CE与argmax审计，并把重复8次LDA fit计入适配MAC；共识公式、模型输出路径、阈值（仍为零个）、20步D87拟合、数据和候选矩阵均不变。retry2使用新输出目录完整重跑。

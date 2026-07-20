@@ -75,8 +75,8 @@ def _oof_sigma_gradients(
     counterfactual_offsets: np.ndarray,
     lda_fit: LDAFit,
     temperature: float,
-) -> np.ndarray:
-    """Return one centered initial sigma-risk gradient per physical-rank fold."""
+) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+    """Return fold gradients and their exact pooled OOF evaluation tensors."""
 
     x = np.asarray(rows, dtype=np.float64)
     y = np.asarray(labels, dtype=np.int64)
@@ -87,6 +87,10 @@ def _oof_sigma_gradients(
     ranks = d87._within_class_ranks(y, classes)
     offset_projected = offsets @ basis
     gradients: list[np.ndarray] = []
+    score_rows: list[np.ndarray] = []
+    projected_rows: list[np.ndarray] = []
+    target_rows: list[np.ndarray] = []
+    view_delta_rows: list[np.ndarray] = []
     for held_rank in range(shots):
         held = ranks == held_rank
         train = ~held
@@ -125,7 +129,17 @@ def _oof_sigma_gradients(
         if gradient is None or not np.isfinite(gradient).all():
             raise D91CrossfitConsensusError("D91 non-finite fold gradient")
         gradients.append(np.asarray(gradient, dtype=np.float64))
-    return np.stack(gradients)
+        score_rows.append(base_scores)
+        projected_rows.append(projected)
+        target_rows.append(held_targets)
+        view_delta_rows.append(view_delta)
+    return (
+        np.stack(gradients),
+        np.concatenate(score_rows, axis=0),
+        np.concatenate(projected_rows, axis=0),
+        np.concatenate(target_rows, axis=0),
+        np.concatenate(view_delta_rows, axis=0),
+    )
 
 
 def fit_crossfit_consensus_sigma_margin(
@@ -167,7 +181,7 @@ def fit_crossfit_consensus_sigma_margin(
         )
         return full_w, full_b, audit
 
-    gradients = _oof_sigma_gradients(
+    gradients, base_scores, projected, targets, base_view_delta = _oof_sigma_gradients(
         rows,
         labels,
         int(class_count),
@@ -204,6 +218,46 @@ def fit_crossfit_consensus_sigma_margin(
     )
     if center_error > tolerance:
         raise D91CrossfitConsensusError("D91 centered affine compile drift")
+    basis = np.asarray(tangent_basis, dtype=np.float64)
+    coefficients = scaled_w64 @ basis
+    offset_projected = np.asarray(counterfactual_offsets, dtype=np.float64) @ basis
+    final = d87._sigma_objective(
+        coefficients,
+        projected,
+        offset_projected,
+        base_scores,
+        base_view_delta,
+        targets,
+        int(class_count),
+        float(inherited["temperature_from_initial_mean_class_sigma_ce"]),
+        need_gradient=False,
+    )
+    updated_clean_scores = base_scores + projected @ coefficients.T
+    clean_before = d87._cross_entropy(base_scores, targets)
+    clean_after = d87._cross_entropy(updated_clean_scores, targets)
+    clean_before_class = np.asarray(
+        [np.mean(clean_before[targets == index]) for index in range(int(class_count))]
+    )
+    clean_after_class = np.asarray(
+        [np.mean(clean_after[targets == index]) for index in range(int(class_count))]
+    )
+    initial_objective = float(inherited["initial_objective"])
+    d87_unshrunk = {
+        key: inherited[key]
+        for key in (
+            "final_objective",
+            "objective_delta",
+            "final_worst_class_sigma_ce",
+            "final_mean_sigma_ce",
+            "oof_clean_ce_after_mean",
+            "oof_clean_ce_delta_max_class",
+            "oof_clean_correct_after",
+            "residual_sha256",
+            "bias_residual_sha256",
+        )
+    }
+    base_prediction = np.argmax(base_scores, axis=1)
+    final_prediction = np.argmax(updated_clean_scores, axis=1)
     audit.update(
         {
             "status": (
@@ -222,8 +276,31 @@ def fit_crossfit_consensus_sigma_margin(
             "fold_gradient_cosine_max": float(np.max(gram[np.triu_indices(fold_count, 1)])),
             "mean_unit_gradient_norm": mean_direction_norm,
             "d87_unshrunk_residual_frobenius": float(np.linalg.norm(full_w)),
+            "d87_unshrunk_audit": d87_unshrunk,
+            "final_objective": float(final[0]),
+            "objective_delta": float(final[0] - initial_objective),
+            "final_worst_class_sigma_ce": float(np.max(final[1])),
+            "final_mean_sigma_ce": float(np.mean(final[3])),
+            "oof_clean_ce_after_mean": float(np.mean(clean_after_class)),
+            "oof_clean_ce_delta_max_class": float(
+                np.max(clean_after_class - clean_before_class)
+            ),
+            "oof_ce_after_mean": float(np.mean(clean_after_class)),
+            "oof_ce_delta_mean": float(
+                np.mean(clean_after_class - clean_before_class)
+            ),
+            "oof_ce_delta_max_class": float(
+                np.max(clean_after_class - clean_before_class)
+            ),
+            "oof_clean_correct_after": int(np.sum(final_prediction == targets)),
+            "oof_updated_correct_count": int(np.sum(final_prediction == targets)),
+            "support_prediction_change_count": int(
+                np.sum(final_prediction != base_prediction)
+            ),
             "residual_frobenius": float(np.linalg.norm(scaled_w64)),
             "bias_residual_frobenius": float(np.linalg.norm(scaled_b64)),
+            "residual_sha256": d87._sha256(scaled_w),
+            "bias_residual_sha256": d87._sha256(scaled_b),
             "residual_active": bool(consensus > 0.0 and np.linalg.norm(scaled_w64) > tolerance),
             "residual_logit_at_support_center_max_abs": center_error,
             "query_rows_used": 0,
