@@ -1,0 +1,12 @@
+usage: run_d81_125_stability.py [-h] --cache-root CACHE_ROOT --authority-root
+                                AUTHORITY_ROOT --phase1-checkpoint
+                                PHASE1_CHECKPOINT --sealed-runtime
+                                SEALED_RUNTIME --method-lock METHOD_LOCK
+                                --output-root OUTPUT_ROOT --device DEVICE
+                                [--shard-index SHARD_INDEX]
+                                [--shard-count {8}] [--fail-fast]
+                                [--manifest-only] --ground-component-dir
+                                GROUND_COMPONENT_DIR --ground-manifest-sha256
+                                GROUND_MANIFEST_SHA256
+                                [--cpu-threads CPU_THREADS]
+run_d81_125_stability.py: error: the following arguments are required: --device
