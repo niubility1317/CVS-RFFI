@@ -1163,6 +1163,35 @@ env OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 PYTHONPATH=/home/
 
 r4成功门沿用r3，并新增日志中model/input同为cuda0、至少完成全部33个batch或等价8400行前向、输出288D有限值和reference logits有限值。失败仍不自动重启。当前没有target性能结果。
 
+### r4 Phase1特征归档完成与r5 LODO预登记
+
+r4状态链为`LOCAL_VERIFIED→LANDED→RUNNING→ARTIFACTS_COMPLETE`。固定child在GPU0以PID`1436954`运行，时间`2026-07-21 03:25:52→03:26:04 +08:00`，exit0。执行使用提交`7932dbf9`的隔离源码、原始f119 runtime和唯一变化后的`--device cuda:0`；没有修改runtime、cache、selection、batch或特征公式，也没有访问target。
+
+|检查项|r4实际证据|结论|
+|---|---|---|
+|物理样本/单观测|8400个唯一physical ID、每ID严格1行；scenario分布2852/2820/2728|通过；未用同一IQ多信道重放|
+|特征|`features_fp32=[8400,288]`、全有限|通过|
+|参考logit|`reference_logits_fp32=[8400,6]`、全有限|通过|
+|archive成员|严格8项；生产internal verify通过|通过|
+|cache lineage|outer v1、3个inner v1、legacy=true；original=authority=`125bb312…b8d74`|通过|
+|runtime|requested/resolved device均为cuda0；SHA=`f119e8cb…e2a`|通过|
+|archive NPZ|`phase1_singleobs_feature_archive.npz`，SHA=`cdd8747d267336b48e8c555ce7e010206f042ff07c695af351541a97187fad03`|完整|
+|archive manifest|`phase1_singleobs_feature_archive.manifest.json`，SHA=`5f363bc09503f882c66aa92805657199ca57484f627c5d2805254cad07bffa15`|完整|
+
+r4只完成合法Phase1特征导出，没有D81/D99/D100分类结果，因此没有old/new/H/floor/forgetting性能可报告，不能写成方法收益。完整wrapper、输入输出SHA、分布和SSH清零证据由唯一runner回收到`artifacts/d99_d100_phase1_export_7932dbf9_cuda0_20260721_r4/runner_handoff.md`，handoff SHA256=`b62257569baba75e537627156e7eeae13bbcc236ab2d4fae6b743037261c4816`。最终状态为`ARTIFACTS_COMPLETE→ANALYZED`，SSH连接0/0。
+
+r5不可变run ID为`d99_d100_phase1_lodo_7932dbf9_20260721_r5`；冻结配置位于`preregistered_inputs/d99_d100_phase1_lodo_7932dbf9_20260721_r5.json`，SHA256=`6df14d7d17fc4fe9d3eb786001eeeedcf92d640aa190d6974a60793bf6b8e30e`。该配置逐字绑定r4 archive、r1 ground bundle、D19 D81 ground component、ADV3B02 checkpoint、5个模块SHA、seed991、metric seed713101和64候选网格。执行模式固定为`development_diagnostic`，不得产生formal声明。
+
+候选网格只在7个地面receiver之间执行nested receiver LODO，覆盖K={1,5,10,20}，不读取target。参数规模为2×1×1×2×1×1×1×2×2×2×2=64。准入规则保持不变：D99相对D81要求floor不降、balanced NLL严格改善、双向rescue非零且K1非identity；D100相对D99要求每receiver×pseudo-new pair的old/new/H/floor均不降、balanced NLL严格改善和双向rescue非零。失败K档不得进入target。
+
+r5固定使用物理GPU5，通过`CUDA_VISIBLE_DEVICES=5`向child暴露单卡并以配置中的`d81_device=cuda`运行；CPU线程均为2。唯一命令为：
+
+```bash
+env OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 NUMEXPR_NUM_THREADS=2 CUDA_VISIBLE_DEVICES=5 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_phase1_export_7932dbf9_cuda0_20260721_r4/source_7932dbf9/code /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_phase1_export_7932dbf9_cuda0_20260721_r4/source_7932dbf9/code/scripts/run_d99_d100_phase1_lodo.py --config /home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_phase1_lodo_7932dbf9_20260721_r5/input/d99_d100_phase1_lodo_7932dbf9_20260721_r5.json --config-sha256 6df14d7d17fc4fe9d3eb786001eeeedcf92d640aa190d6974a60793bf6b8e30e
+```
+
+runner必须先做规定preflight，确认r5 run/log/output均不存在、GPU5占用合规，复核配置、r4 archive、r1 ground和D19 manifest SHA，验证隔离源码的5模块SHA与配置一致；随后同步配置到不可覆盖input路径，单次detached启动并回收完整receipt。不得改候选、自动重启、使用target调参或同时启动同run ID。
+
 ### D101直接shrinkage RDA交叉审查
 
 D101定位为D99上的alternative global head，与D100二选一，不叠成第三个融合头。当前裁决为`REVISE`：只允许后续实现Phase1 nested-LODO诊断臂，尚不允许target或N607。原因不是协议违法，而是其相对D99 metric和D100 simplex ridge的独立纠错能力尚未被证实。
