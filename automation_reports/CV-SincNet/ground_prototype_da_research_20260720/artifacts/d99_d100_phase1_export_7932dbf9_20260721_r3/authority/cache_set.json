@@ -1,0 +1,94 @@
+{
+  "schema": "cvs_leo_weak_iq_cache_set_v1",
+  "artifact_stage": "phase1_offline_prechannel_export",
+  "cache_set_id": "qknn_ground_effective8_r16_e12_leoonly_20260715_v14_source_validation",
+  "cache_scope": "source_validation",
+  "phase2_sample_view_policy": "leo_weak_only_no_clean_access",
+  "clean_sample_access": false,
+  "clean_derived_signal_access": false,
+  "target_channel_view": "leo_weak_only",
+  "target_channel_scenarios": [
+    "leo_clear_weak",
+    "leo_low_elev_weak",
+    "leo_rain_weak"
+  ],
+  "output_roles": [
+    "source"
+  ],
+  "cache_npz_by_scenario": {
+    "leo_clear_weak": "leo_clear_weak.npz",
+    "leo_low_elev_weak": "leo_low_elev_weak.npz",
+    "leo_rain_weak": "leo_rain_weak.npz"
+  },
+  "cache_sha256_by_scenario": {
+    "leo_clear_weak": "18a4ed923d8438ef2d69ff4226f46281b56191409582d24e79485fd97688179f",
+    "leo_low_elev_weak": "a82f37034f27a23cb0f45ab849807b9cb13b4ce3e79d0582403ed0aa5e946712",
+    "leo_rain_weak": "2de300f81246f03c6a10a21301ec31bc3c15bf595e5aecaf2ba7667664210b4b"
+  },
+  "cache_audits": {
+    "leo_clear_weak": {
+      "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14/phase1_caches/source_validation/leo_clear_weak.npz",
+      "sha256": "18a4ed923d8438ef2d69ff4226f46281b56191409582d24e79485fd97688179f",
+      "schema": "cvs_leo_weak_iq_cache_v1",
+      "scenario": "leo_clear_weak",
+      "row_count": 8400,
+      "roles": [
+        "source"
+      ],
+      "satellite_seeds": [
+        4071391
+      ],
+      "physical_sample_ids_sha256": "d2def2acf96a9338f94b4626f77ca9b7b106a65f41615dd5c703b1b76461e1a3",
+      "post_channel_iq_sha256_root": "eb658fc62342e6f6cec36339b541190238d2da8601143cb8de529e9a9154c4f6",
+      "overlay_ids_sha256": "539ca4f877adc69ea9617c66d0809a1f64703728a759c93c7ca66eed66ddf0b3",
+      "manifest_sha256": "e098566428e59e4e1320ed42e78ff73864f15b8052460c05a5cd6ca8c0858211",
+      "forbidden_members_checked_before_iq_read": true,
+      "clean_sample_access": false,
+      "phase2_sample_view_policy": "leo_weak_only_no_clean_access"
+    },
+    "leo_low_elev_weak": {
+      "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14/phase1_caches/source_validation/leo_low_elev_weak.npz",
+      "sha256": "a82f37034f27a23cb0f45ab849807b9cb13b4ce3e79d0582403ed0aa5e946712",
+      "schema": "cvs_leo_weak_iq_cache_v1",
+      "scenario": "leo_low_elev_weak",
+      "row_count": 8400,
+      "roles": [
+        "source"
+      ],
+      "satellite_seeds": [
+        4071392
+      ],
+      "physical_sample_ids_sha256": "d2def2acf96a9338f94b4626f77ca9b7b106a65f41615dd5c703b1b76461e1a3",
+      "post_channel_iq_sha256_root": "8e389ff05b265d5e356a1d315a44586eabf1bd58b314e0198b2c5423216703ef",
+      "overlay_ids_sha256": "180824fc7a791e23f913583968ea0bcb119fe636fcb06b6174da1b97d4584f92",
+      "manifest_sha256": "811f7ca882505c836dd84fe3a7bc35a2dda0de58c4b44ad5597a1a71462d4c6b",
+      "forbidden_members_checked_before_iq_read": true,
+      "clean_sample_access": false,
+      "phase2_sample_view_policy": "leo_weak_only_no_clean_access"
+    },
+    "leo_rain_weak": {
+      "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14/phase1_caches/source_validation/leo_rain_weak.npz",
+      "sha256": "2de300f81246f03c6a10a21301ec31bc3c15bf595e5aecaf2ba7667664210b4b",
+      "schema": "cvs_leo_weak_iq_cache_v1",
+      "scenario": "leo_rain_weak",
+      "row_count": 8400,
+      "roles": [
+        "source"
+      ],
+      "satellite_seeds": [
+        4071393
+      ],
+      "physical_sample_ids_sha256": "d2def2acf96a9338f94b4626f77ca9b7b106a65f41615dd5c703b1b76461e1a3",
+      "post_channel_iq_sha256_root": "47eb3dd877fe0e966b75292b58e05a7e0b60593f73bde02abfabfa63cc3ce319",
+      "overlay_ids_sha256": "826f462dabab01972576d07d33b4653f1696333382cb7c4781af0fb6475900e0",
+      "manifest_sha256": "d0a64adcd3afd193ec64c92231d603d862044b605078265c71924151211374b6",
+      "forbidden_members_checked_before_iq_read": true,
+      "clean_sample_access": false,
+      "phase2_sample_view_policy": "leo_weak_only_no_clean_access"
+    }
+  },
+  "physical_sample_ids_sha256": "d2def2acf96a9338f94b4626f77ca9b7b106a65f41615dd5c703b1b76461e1a3",
+  "builder_sha256": "b7dff031c8348207e7b017ac7a62459e391fbc37073dbaee26ec6d51cb99ce35",
+  "build_spec_sha256": "75a7d772aa9d39b209a9ddd2b6f310189ff43107d603d9bd8573fe6dd897256f",
+  "build_spec_path_exposed_to_phase2": false
+}

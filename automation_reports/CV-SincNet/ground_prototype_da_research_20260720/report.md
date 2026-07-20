@@ -1149,6 +1149,20 @@ env OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 PYTHONPATH=/home/
 
 成功门与r2相同，并额外要求真实v1每scenario 17-member合同通过、每scenario 8400行、selection后每个physical ID只保留一个固定scenario。若出现新异常仍不自动重启；回收完整日志和产物后再决定LODO。当前状态`LOCAL_VERIFIED`，没有新性能结果。
 
+#### r3实际结果与r4 GPU0重发预登记
+
+r3状态`LOCAL_VERIFIED→LANDED→RUNNING→FAILED_DIAGNOSTIC`。真实v1三个NPZ的17-member、每场景8400行、sample ID、IQ digest、overlay ID和outer root全部通过生产loader，证明`7932dbf9`的v1修复在真实N607资产上成立。失败推进到首批TorchScript forward：历史f119 runtime内部卷积weight固着`cuda:0`，冻结命令把input放在`cuda:4`，PyTorch报设备不一致。PID`1427919`，03:07:05→03:07:08，exit1；没有archive、重启、参数修改或LODO，GPU4与SSH终态均已释放/清零。完整handoff SHA为`1cef738a544d311a7dfbebe9f1f846f6f3b78456c80887b9dc709afbac7feee4`。
+
+该异常不是模型算法、数据协议、v1内容或GPU不可用问题。`torch.jit.load(...,map_location=cuda:4)`未改写runtime内部固着的device常量；最小运行修复是在其原生`cuda:0`上同时加载weight和input，不修改runtime bytes、代码、batch、selection或特征公式。
+
+r4 run ID冻结为`d99_d100_phase1_export_7932dbf9_cuda0_20260721_r4`，继续使用提交`7932dbf9`和同一源码包SHA`40a2ecc9d01a12759d9a67693d7eaa974751bae02c05faab0dabfc580efdbd72`。远端run/log/source分别为`/home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_phase1_export_7932dbf9_cuda0_20260721_r4`、`/home/szu2070436088/2510044040/CV-SincNet/logs/d99_d100_phase1_export_7932dbf9_cuda0_20260721_r4`和`<run>/source_7932dbf9`；创建前必须不存在。所有固定输入及SHA与r3相同，唯一预登记差异是`--device cuda:0`并分配物理GPU0。
+
+```bash
+env OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_phase1_export_7932dbf9_cuda0_20260721_r4/source_7932dbf9/code /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python /home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_phase1_export_7932dbf9_cuda0_20260721_r4/source_7932dbf9/code/scripts/export_phase1_singleobs_feature_archive.py --mode development --cache-set /home/szu2070436088/2510044040/CV-SincNet/runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14/phase1_caches/source_validation/cache_set.json --cache-set-sha256 125bb312972fd82edab9b1566a1ebddcd077b9a00c5255a55da22afb453b8d74 --runtime /home/szu2070436088/2510044040/CV-SincNet/runs/d18_formal_k10_new5_rx20_1_seed713101_20260717_085303/input/sealed_feature_runtime.pt --expected-runtime-sha256 f119e8cb3f6beda95f0d545205e91b43e4a557af2fd1d025e95d2edf2b8e6e2a --class-ids 14-10,14-7,20-15,20-19,6-15,8-20 --selection-salt-receipt /home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_phase1_export_7932dbf9_cuda0_20260721_r4/input/d99_d100_phase1_selection_salt.json --selection-salt-receipt-sha256 38ffbdda293cd2eead31c481237a459581c862572041ea472b38391a1b4bddb0 --output-dir /home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_phase1_export_7932dbf9_cuda0_20260721_r4/phase1_feature_archive --device cuda:0 --batch-size 256
+```
+
+r4成功门沿用r3，并新增日志中model/input同为cuda0、至少完成全部33个batch或等价8400行前向、输出288D有限值和reference logits有限值。失败仍不自动重启。当前没有target性能结果。
+
 ### D101直接shrinkage RDA交叉审查
 
 D101定位为D99上的alternative global head，与D100二选一，不叠成第三个融合头。当前裁决为`REVISE`：只允许后续实现Phase1 nested-LODO诊断臂，尚不允许target或N607。原因不是协议违法，而是其相对D99 metric和D100 simplex ridge的独立纠错能力尚未被证实。

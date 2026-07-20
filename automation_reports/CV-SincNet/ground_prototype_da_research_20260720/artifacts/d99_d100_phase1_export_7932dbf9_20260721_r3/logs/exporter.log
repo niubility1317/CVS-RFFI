@@ -1,0 +1,60 @@
+wrapper_job=exporter
+started_at=2026-07-21T03:07:05,283113353+08:00
+child_cwd=/home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_phase1_export_7932dbf9_20260721_r3/source_7932dbf9
+gpu=cuda:4
+child_command=env OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_phase1_export_7932dbf9_20260721_r3/source_7932dbf9/code /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python /home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_phase1_export_7932dbf9_20260721_r3/source_7932dbf9/code/scripts/export_phase1_singleobs_feature_archive.py --mode development --cache-set /home/szu2070436088/2510044040/CV-SincNet/runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14/phase1_caches/source_validation/cache_set.json --cache-set-sha256 125bb312972fd82edab9b1566a1ebddcd077b9a00c5255a55da22afb453b8d74 --runtime /home/szu2070436088/2510044040/CV-SincNet/runs/d18_formal_k10_new5_rx20_1_seed713101_20260717_085303/input/sealed_feature_runtime.pt --expected-runtime-sha256 f119e8cb3f6beda95f0d545205e91b43e4a557af2fd1d025e95d2edf2b8e6e2a --class-ids 14-10\,14-7\,20-15\,20-19\,6-15\,8-20 --selection-salt-receipt /home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_phase1_export_7932dbf9_20260721_r3/input/d99_d100_phase1_selection_salt.json --selection-salt-receipt-sha256 38ffbdda293cd2eead31c481237a459581c862572041ea472b38391a1b4bddb0 --output-dir /home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_phase1_export_7932dbf9_20260721_r3/phase1_feature_archive --device cuda:4 --batch-size 256 
+Traceback (most recent call last):
+  File "/home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_phase1_export_7932dbf9_20260721_r3/source_7932dbf9/code/scripts/export_phase1_singleobs_feature_archive.py", line 1315, in <module>
+    main()
+  File "/home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_phase1_export_7932dbf9_20260721_r3/source_7932dbf9/code/scripts/export_phase1_singleobs_feature_archive.py", line 1274, in main
+    result = export_development_sha_only_phase1_singleobs_feature_archive(
+  File "/home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_phase1_export_7932dbf9_20260721_r3/source_7932dbf9/code/scripts/export_phase1_singleobs_feature_archive.py", line 1181, in export_development_sha_only_phase1_singleobs_feature_archive
+    return _export_impl(
+  File "/home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_phase1_export_7932dbf9_20260721_r3/source_7932dbf9/code/scripts/export_phase1_singleobs_feature_archive.py", line 864, in _export_impl
+    output = _forward_torchscript(
+  File "/home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_phase1_export_7932dbf9_20260721_r3/source_7932dbf9/code/scripts/export_phase1_singleobs_feature_archive.py", line 696, in _forward_torchscript
+    output = model(tensor)
+  File "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1518, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1527, in _call_impl
+    return forward_call(*args, **kwargs)
+RuntimeError: The following operation failed in the TorchScript interpreter.
+Traceback of TorchScript, serialized code (most recent call last):
+  File "code/__torch__.py", line 23, in forward
+    padded = torch.new_zeros(rows, [256, _4, int(_5)], dtype=None, layout=None, device=None, pin_memory=False)
+    _6 = torch.copy_(torch.slice(padded, 0, 0, _2), rows)
+    _7, _8, = (id_backbone).forward(hf, padded, )
+               ~~~~~~~~~~~~~~~~~~~~ <--- HERE
+    features = torch.to(_7, 6)
+    logits = torch.to(_8, 6)
+  File "code/__torch__/model.py", line 104, in forward
+    _10 = ops.prim.NumToTensor(torch.size(padded, -1))
+    _11 = torch.reshape(padded, [512, 1, int(_10)])
+    y = torch._convolution(_11, filters, None, [1], [39], [1], False, [0], 1, False, False, True, True)
+        ~~~~~~~~~~~~~~~~~~ <--- HERE
+    _12 = ops.prim.NumToTensor(torch.size(y, -1))
+    _13 = torch.reshape(y, [256, 2, 24, int(_12)])
+
+Traceback of TorchScript, original code (most recent call last):
+/home/szu2070436088/2510044040/CV-SincNet/code/model.py(288): forward_iq_pair
+/home/szu2070436088/2510044040/CV-SincNet/code/model.py(1240): _sinc_on_iq
+/home/szu2070436088/2510044040/CV-SincNet/code/model.py(1444): forward
+/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/nn/modules/module.py(1508): _slow_forward
+/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/nn/modules/module.py(1527): _call_impl
+/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/nn/modules/module.py(1518): _wrapped_call_impl
+/home/szu2070436088/2510044040/CV-SincNet/code/model_dual_cvsincnet.py(64): backbone_forward_compat
+/home/szu2070436088/2510044040/CV-SincNet/code/cvsrffi/identity_only_forward.py(32): identity_only_feature_forward
+/home/szu2070436088/2510044040/CV-SincNet/code/scripts/export_adv3b02_effective8_torchscript.py(59): forward
+/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/nn/modules/module.py(1508): _slow_forward
+/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/nn/modules/module.py(1527): _call_impl
+/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/nn/modules/module.py(1518): _wrapped_call_impl
+/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/jit/_trace.py(1065): trace_module
+/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/jit/_trace.py(798): trace
+/home/szu2070436088/2510044040/CV-SincNet/code/scripts/export_adv3b02_effective8_torchscript.py(117): _trace_and_save
+/home/szu2070436088/2510044040/CV-SincNet/code/scripts/export_adv3b02_effective8_torchscript.py(181): export
+/home/szu2070436088/2510044040/CV-SincNet/code/scripts/export_adv3b02_effective8_torchscript.py(265): main
+/home/szu2070436088/2510044040/CV-SincNet/code/scripts/export_adv3b02_effective8_torchscript.py(270): <module>
+RuntimeError: Expected all tensors to be on the same device, but found at least two devices, cuda:4 and cuda:0! (when checking argument for argument weight in method wrapper_CUDA__cudnn_convolution)
+
+ended_at=2026-07-21T03:07:08,954731261+08:00
+child_exit=1
