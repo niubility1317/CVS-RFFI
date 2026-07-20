@@ -1137,6 +1137,18 @@ r2状态链为`LOCAL_VERIFIED→LANDED→RUNNING→FAILED_DIAGNOSTIC`。prefligh
 
 作者聚焦13/13＋相邻36/36共49/49通过；独立终审`MERGE`，P0=0、P1=0，聚焦攻击6/6通过。主线复跑exporter、cache matrix和D96/D97相邻回归得到48/48通过，`py_compile`与`git diff --check`exit0；仅有既有TorchScript弃用告警和pytest退出后临时目录`WinError5`噪声。最终loader/test工作树SHA为`3fc35aeea182560fc67cd468a7615ca110b528ca210327c0620370d1b68606fb`/`9b3dd452b195b409b922442d4ec7fcadd7ba1de2bbce104fc8c3453f7f2e2be8`；exporter继续为`ab4d3c40251f2bd147e7948ced392d185d0ef7b3f45c18924e7ab1bd457dac6d`。
 
+#### r3真实v1 exporter发布预登记
+
+run ID固定为`d99_d100_phase1_export_7932dbf9_20260721_r3`，代码提交`7932dbf9`，源码包为`E:\type10-7\code\snapshots\d99_d100_phase1_export_7932dbf9_20260721_r3\source_7932dbf9.zip`，SHA256=`40a2ecc9d01a12759d9a67693d7eaa974751bae02c05faab0dabfc580efdbd72`，31,168,653B、4,342成员。远端run/log根分别为`/home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_phase1_export_7932dbf9_20260721_r3`和`/home/szu2070436088/2510044040/CV-SincNet/logs/d99_d100_phase1_export_7932dbf9_20260721_r3`，隔离源码为`<run>/source_7932dbf9`。三者必须创建前不存在；不得补写r1/r2。
+
+固定输入、salt、runtime、cache、checkpoint、class顺序、GPU4、batch256和CPU thread2与r2完全相同；继续只读复用r1 ground五文件。唯一child command为：
+
+```bash
+env OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_phase1_export_7932dbf9_20260721_r3/source_7932dbf9/code /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python /home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_phase1_export_7932dbf9_20260721_r3/source_7932dbf9/code/scripts/export_phase1_singleobs_feature_archive.py --mode development --cache-set /home/szu2070436088/2510044040/CV-SincNet/runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14/phase1_caches/source_validation/cache_set.json --cache-set-sha256 125bb312972fd82edab9b1566a1ebddcd077b9a00c5255a55da22afb453b8d74 --runtime /home/szu2070436088/2510044040/CV-SincNet/runs/d18_formal_k10_new5_rx20_1_seed713101_20260717_085303/input/sealed_feature_runtime.pt --expected-runtime-sha256 f119e8cb3f6beda95f0d545205e91b43e4a557af2fd1d025e95d2edf2b8e6e2a --class-ids 14-10,14-7,20-15,20-19,6-15,8-20 --selection-salt-receipt /home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_phase1_export_7932dbf9_20260721_r3/input/d99_d100_phase1_selection_salt.json --selection-salt-receipt-sha256 38ffbdda293cd2eead31c481237a459581c862572041ea472b38391a1b4bddb0 --output-dir /home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_phase1_export_7932dbf9_20260721_r3/phase1_feature_archive --device cuda:4 --batch-size 256
+```
+
+成功门与r2相同，并额外要求真实v1每scenario 17-member合同通过、每scenario 8400行、selection后每个physical ID只保留一个固定scenario。若出现新异常仍不自动重启；回收完整日志和产物后再决定LODO。当前状态`LOCAL_VERIFIED`，没有新性能结果。
+
 ### D101直接shrinkage RDA交叉审查
 
 D101定位为D99上的alternative global head，与D100二选一，不叠成第三个融合头。当前裁决为`REVISE`：只允许后续实现Phase1 nested-LODO诊断臂，尚不允许target或N607。原因不是协议违法，而是其相对D99 metric和D100 simplex ridge的独立纠错能力尚未被证实。
