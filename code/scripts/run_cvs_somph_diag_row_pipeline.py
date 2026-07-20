@@ -330,6 +330,9 @@ def run_pipeline(
         elif candidate in CANDIDATES_D93:
             evaluator = run_d93_query_evaluation
             evaluator_kwargs["candidate"] = candidate
+            evaluator_kwargs["target_old_tx_labels"] = tuple(
+                str(item) for item in build["old_tx_labels"]
+            )
         diagnostic = evaluator(
             before_enrollment_package_root=build["states"]["before"][
                 "enrollment_package_root"

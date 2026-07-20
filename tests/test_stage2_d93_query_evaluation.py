@@ -49,6 +49,7 @@ def test_d93_wraps_int8_target_head_and_scores_all_classes() -> None:
         ground_prototypes=ground[:, ::-1],
         ground_mask=mask[:, ::-1],
         ground_classes=old_classes[::-1],
+        target_old_tx_labels=old_classes,
         ground_audit={
             "component_manifest_sha256": "1" * 64,
             "component_npz_sha256": "2" * 64,
@@ -81,6 +82,9 @@ def test_d93_wraps_int8_target_head_and_scores_all_classes() -> None:
         ]
         is True
     )
+    assert result.geometry_audit["d93_transport_audit"][
+        "ground_to_target_binding_policy"
+    ] == "registered_target_old_tx_label_order_to_opaque_class_index"
     assert result.resource_audit["d93_optimizer_steps"] == 0
     assert result.resource_audit["persistent_state_bytes"] < 256 * 1024
     assert result.resource_audit["trainable_parameters"] < 80_000

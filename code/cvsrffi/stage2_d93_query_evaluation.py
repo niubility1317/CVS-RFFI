@@ -92,12 +92,18 @@ def build_d93_top_level_fit(
     ground_prototypes: np.ndarray,
     ground_mask: np.ndarray,
     ground_classes: Sequence[str],
+    target_old_tx_labels: Sequence[str] | None = None,
     ground_audit: Mapping[str, Any],
     include_nuisance_scale: bool,
 ) -> Callable[..., D93Result]:
     """Wrap the existing D42/D62 top-level fitter with the D93 transport."""
 
     locked_ground_classes = tuple(str(item) for item in ground_classes)
+    locked_target_old_tx_labels = (
+        tuple(str(item) for item in target_old_tx_labels)
+        if target_old_tx_labels is not None
+        else locked_ground_classes
+    )
 
     def fit(
         old_support_features: np.ndarray,
@@ -115,12 +121,16 @@ def build_d93_top_level_fit(
         if (
             len(set(old_registry)) != len(old_registry)
             or len(set(locked_ground_classes)) != len(locked_ground_classes)
-            or set(old_registry) != set(locked_ground_classes)
+            or len(set(locked_target_old_tx_labels))
+            != len(locked_target_old_tx_labels)
+            or len(old_registry) != len(locked_target_old_tx_labels)
+            or set(locked_target_old_tx_labels) != set(locked_ground_classes)
         ):
             raise D93QueryEvaluationError("D93 ground/target-old class binding drift")
         ground_index = {handle: index for index, handle in enumerate(locked_ground_classes)}
         ground_order = np.asarray(
-            [ground_index[handle] for handle in old_registry], dtype=np.int64
+            [ground_index[handle] for handle in locked_target_old_tx_labels],
+            dtype=np.int64,
         )
         ordered_ground_prototypes = np.asarray(ground_prototypes)[:, ground_order]
         ordered_ground_mask = np.asarray(ground_mask)[:, ground_order]
@@ -167,8 +177,12 @@ def build_d93_top_level_fit(
                 ground_audit["ground_int8_component_logical_state_bytes"]
             ),
             "ground_registry_reordered_to_target_old": bool(
-                old_registry != locked_ground_classes
+                locked_target_old_tx_labels != locked_ground_classes
             ),
+            "ground_to_target_binding_policy": (
+                "registered_target_old_tx_label_order_to_opaque_class_index"
+            ),
+            "ground_to_target_binding_class_count": len(old_registry),
             "target_old_new_final_prototypes_from_target_support_only": True,
             "target_support_input_is_fixed_received_iq_only": True,
             "target_clean_iq_access": False,
@@ -368,7 +382,7 @@ def _audit_fit(
 
 
 def run_d93_query_evaluation(
-    *, candidate: str, **kwargs: Any
+    *, candidate: str, target_old_tx_labels: Sequence[str], **kwargs: Any
 ) -> dict[str, Any]:
     """Reuse the sealed D81 I/O scaffold while replacing its method hooks."""
 
@@ -379,6 +393,12 @@ def run_d93_query_evaluation(
     from cvsrffi import stage2_d81_query_evaluation as d81_eval
 
     include_scale = str(candidate) == CANDIDATE_D93_SCALE
+    locked_target_old_tx_labels = tuple(str(item) for item in target_old_tx_labels)
+    if (
+        not locked_target_old_tx_labels
+        or len(set(locked_target_old_tx_labels)) != len(locked_target_old_tx_labels)
+    ):
+        raise D93QueryEvaluationError("D93 target-old TX registry drift")
     holder: dict[str, Any] = {}
     original = {
         "load": d81_probe.load_ground_basis,
@@ -421,6 +441,7 @@ def run_d93_query_evaluation(
             ground_prototypes=holder["prototypes"],
             ground_mask=holder["mask"],
             ground_classes=holder["classes"],
+            target_old_tx_labels=locked_target_old_tx_labels,
             ground_audit=holder["audit"],
             include_nuisance_scale=include_scale,
         )
