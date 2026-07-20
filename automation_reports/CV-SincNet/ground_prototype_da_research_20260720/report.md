@@ -769,7 +769,32 @@ P0阻塞是远端不存在`cvs.phase1.runtime_checkpoint_parity_receipt.v1`兼�
 
 独立复审裁决为`ACCEPT_DEVELOPMENT_ONLY`：相邻20/20测试、`py_compile`和`git diff --check`通过；脚本SHA=`e611297d04fa4cb98aebcc75d95bde198325942fc4d1e240b90f271c56f7048b`，测试SHA=`604dc4e4402fec1a83b63aa679fac9e569c5bc0e0cea9c3d2422a1913d7b0499`。允许唯一runner在Git提交后只运行development parity并封存stdout/vector/receipt SHA；该self-generated数值receipt不是external signature或formal authority，不能单独授权formal bundle、target晋级或性能结论。极端情况下第二个文件写失败只可能留下明确non-authority vector，不会留下PASS receipt。
 
-远端项目根不是Git仓库，且多个D81依赖与本地提交不同，因此第二阶段不得覆盖远端`code`。发布将从最终Git提交生成只含`code/`与`paper_reproduction/`的commit-bound隔离源码包，落入`runs/d97_phase1_singleobs_lodo_20260720_v1/source_<commit>/`；D98未提交且不会进入该包。run/log v1目标路径均已确认不存在。当前状态为`READ_ONLY_ASSET_DISCOVERY_COMPLETE / NOT_LANDED / BLOCKED_PENDING_REVIEWED_DEVELOPMENT_PARITY`。
+远端项目根不是Git仓库，且多个D81依赖与本地提交不同，因此第二阶段不得覆盖远端`code`。发布将从最终Git提交生成只含`code/`与`paper_reproduction/`的commit-bound隔离源码包，落入`runs/d97_phase1_singleobs_lodo_20260720_v1/source_<commit>/`；D98虽然作为本地研究核心进入Git，但显式排除在D97源码包之外。run/log v1目标路径均已确认不存在。当前状态为`READ_ONLY_ASSET_DISCOVERY_COMPLETE / NOT_LANDED / BLOCKED_PENDING_REVIEWED_DEVELOPMENT_PARITY`。
+
+### Development parity发布预登记
+
+独立复审通过后，冻结代码提交为`798dedfd12f2db067e10c6c280be1fe62d982841`。本地使用`git archive`从该提交生成隔离源码包`E:\type10-7\code\snapshots\d97_phase1_singleobs_lodo_20260720_v1\source_798dedfd.zip`，大小7,398,449B，SHA256=`700b4318597d7d21c3e7936a388713964bc6ec4c0461973e16d18b10ca4b164b`，共1,558个成员；必需的parity/export/LODO/D81/bundle文件全部存在，`stage2_d98_strims.py`明确排除。远端同步映射为：
+
+|本地|远端|用途|
+|---|---|---|
+|`E:\type10-7\code\snapshots\d97_phase1_singleobs_lodo_20260720_v1\source_798dedfd.zip`|`/home/szu2070436088/2510044040/CV-SincNet/runs/d97_phase1_singleobs_lodo_20260720_v1/source_798dedfd.zip`|不可变commit-bound源码包|
+|源码包内`code/scripts/verify_adv3b02_runtime_checkpoint_parity.py`，SHA=`e611297d04fa4cb98aebcc75d95bde198325942fc4d1e240b90f271c56f7048b`|解包后`source_798dedfd/code/scripts/verify_adv3b02_runtime_checkpoint_parity.py`|本阶段唯一执行脚本|
+
+本阶段只授权唯一runner执行parity，不授权feature export、LODO或target访问。重新preflight并确认GPU0可用、run/log根仍不存在后，建立独立run/log目录，核对源码包与脚本SHA，使用远端`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`从隔离源码运行：
+
+```bash
+env PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/runs/d97_phase1_singleobs_lodo_20260720_v1/source_798dedfd/code \
+/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python \
+/home/szu2070436088/2510044040/CV-SincNet/runs/d97_phase1_singleobs_lodo_20260720_v1/source_798dedfd/code/scripts/verify_adv3b02_runtime_checkpoint_parity.py \
+  --checkpoint /home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth \
+  --runtime /home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_ci_strict_matrix_20260716_v1/runtime_artifacts_v2/adv3b02_base_runtime.ts \
+  --receipt-out /home/szu2070436088/2510044040/CV-SincNet/runs/d97_phase1_singleobs_lodo_20260720_v1/locks/runtime_checkpoint_parity_receipt.json \
+  --vector-audit-out /home/szu2070436088/2510044040/CV-SincNet/runs/d97_phase1_singleobs_lodo_20260720_v1/locks/runtime_checkpoint_parity_vector_audit.json \
+  --input-len 256 --parity-seed 20260720 --parity-rows 8 \
+  --device cuda:0 --max-abs-tolerance 1e-5
+```
+
+stdout/stderr固定到`/home/szu2070436088/2510044040/CV-SincNet/logs/d97_phase1_singleobs_lodo_20260720_v1/parity_validation.out`。成功条件是进程exit0、receipt/vector/stdout均完整且SHA已回收、`resolved_device=cuda:0`、`batch_sizes=[1,8,256]`、最大delta≤`1e-5`、checkpoint/runtime SHA匹配，并用同一隔离源码再次通过exporter exact development binding。失败时不得自动重试、不得修改参数或runtime/checkpoint；返回完整日志与GPU/进程证据给主线。状态转换只允许`LOCAL_VERIFIED→LANDED→RUNNING→ARTIFACTS_COMPLETE`，本阶段不能进入`ANALYZED`性能结论。
 
 ## 下一轮唯一集成候选D99
 
