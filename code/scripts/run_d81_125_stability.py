@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 from pathlib import Path
 from typing import Any, Mapping
@@ -20,6 +21,27 @@ from cvsrffi.stage2_d81_query_evaluation import CANDIDATE_D81
 
 _GROUND_COMPONENT_DIR = ""
 _GROUND_MANIFEST_SHA256 = ""
+_CPU_THREAD_ENV_VARS = (
+    "OMP_NUM_THREADS",
+    "MKL_NUM_THREADS",
+    "OPENBLAS_NUM_THREADS",
+    "NUMEXPR_NUM_THREADS",
+    "VECLIB_MAXIMUM_THREADS",
+    "BLIS_NUM_THREADS",
+)
+
+
+def _configure_child_cpu_threads(cpu_threads: int) -> dict[str, str]:
+    """Bound CPU-only LDA/OOF work inherited by each row subprocess."""
+
+    threads = int(cpu_threads)
+    if threads <= 0:
+        raise base.StabilityLauncherError("D81 cpu thread count must be positive")
+    configured = {name: str(threads) for name in _CPU_THREAD_ENV_VARS}
+    configured["CVSRFFI_CPU_THREADS"] = str(threads)
+    configured["CVSRFFI_CPU_INTEROP_THREADS"] = "1"
+    os.environ.update(configured)
+    return configured
 
 
 def _d81_job_command(
@@ -53,6 +75,12 @@ def parser() -> argparse.ArgumentParser:
     result.description = __doc__
     result.add_argument("--ground-component-dir", required=True)
     result.add_argument("--ground-manifest-sha256", required=True)
+    result.add_argument(
+        "--cpu-threads",
+        type=int,
+        default=2,
+        help="CPU threads per D81 row for locked sklearn/numpy LDA work (default: 2)",
+    )
     return result
 
 
@@ -63,12 +91,14 @@ def main() -> int:
     _GROUND_MANIFEST_SHA256 = str(args.ground_manifest_sha256).lower()
     if len(_GROUND_MANIFEST_SHA256) != 64:
         raise base.StabilityLauncherError("D81 ground manifest SHA drift")
+    cpu_thread_env = _configure_child_cpu_threads(args.cpu_threads)
     base.CANDIDATE = CANDIDATE_D81
     base.ROW_PIPELINE = CODE_ROOT / "scripts" / "run_cvs_somph_diag_row_pipeline.py"
     if not hasattr(base, "_ORIGINAL_JOB_COMMAND"):
         base._ORIGINAL_JOB_COMMAND = base._job_command
     base._job_command = _d81_job_command
     result = base.run(args)
+    result["cpu_thread_env"] = cpu_thread_env
     print(json.dumps(result, ensure_ascii=True, sort_keys=True))
     return 0 if result["status"] in {"PASS", "MANIFEST_ONLY"} else 1
 
