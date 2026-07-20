@@ -36,6 +36,10 @@ from cvsrffi.stage2_diag_cosine_exploration import (  # noqa: E402
 from cvsrffi.stage2_diag_cosine_scorer import (  # noqa: E402
     score_diag_cosine_pair,
 )
+from cvsrffi.stage2_d81_query_evaluation import (  # noqa: E402
+    CANDIDATE_D81,
+    run_d81_query_evaluation,
+)
 from cvsrffi.stage2_predictor_bundle import sha256_file  # noqa: E402
 
 
@@ -193,6 +197,8 @@ def run_pipeline(
     new_class_count: int,
     device: str,
     candidate: str = CANDIDATE_D1,
+    ground_component_dir: str | Path | None = None,
+    ground_manifest_sha256: str | None = None,
 ) -> dict[str, Any]:
     """Run one development row without exposing scorer truth to predictors."""
 
@@ -298,53 +304,106 @@ def run_pipeline(
         ],
     )
 
+    if candidate == CANDIDATE_D81 and (
+        ground_component_dir is None or ground_manifest_sha256 is None
+    ):
+        raise SomphDiagRowPipelineError(
+            "D81 requires a locked ground component directory and manifest SHA"
+        )
     diag_results: dict[str, dict[str, Any]] = {}
     diag_bindings: dict[str, dict[str, str]] = {}
     prediction_paths: dict[str, Path] = {}
-    for state in ("before", "after"):
-        state_build = build["states"][state]
-        runtime = state_runtime[state]
-        state_diag_root = diag_root / state
-        state_diag_root.mkdir(parents=True, exist_ok=False)
-        diag_kwargs: dict[str, Any] = {}
-        if (
-            candidate == CANDIDATE_D3_SCENARIO_OLDLOCK_NEWFIT
-            and state == "after"
-        ):
-            diag_kwargs = {
-                "parent_diag_root": diag_root / "before",
-                "expected_parent_commit_sha256": diag_bindings["before"][
-                    "diag_commit_sha256"
-                ],
-            }
-        diag_results[state] = run_diag_cosine_exploration(
-            enrollment_package_root=state_build[
+    if candidate == CANDIDATE_D81:
+        d81 = run_d81_query_evaluation(
+            before_enrollment_package_root=build["states"]["before"][
                 "enrollment_package_root"
             ],
-            enrollment_seal_path=state_build[
+            before_enrollment_seal_path=build["states"]["before"][
                 "enrollment_package_seal"
             ],
-            enrollment_seal_sha256=state_build[
+            before_enrollment_seal_sha256=build["states"]["before"][
                 "enrollment_package_seal_sha256"
             ],
-            apply_package_root=runtime["apply_package_root"],
-            apply_seal_path=runtime["apply_seal_path"],
-            apply_seal_sha256=runtime["apply"][
+            before_apply_package_root=state_runtime["before"]["apply_package_root"],
+            before_apply_seal_path=state_runtime["before"]["apply_seal_path"],
+            before_apply_seal_sha256=state_runtime["before"]["apply"][
                 "package_seal_sha256"
             ],
-            output_root=state_diag_root,
-            device=device,
-            candidate=candidate,
-            **diag_kwargs,
-        )
-        prediction_paths[state] = state_diag_root / "prediction_artifact.npz"
-        diag_bindings[state] = _bind_diag_commit(
-            state=state,
-            state_diag_root=state_diag_root,
-            prediction_sha256=diag_results[state][
-                "prediction_artifact_sha256"
+            after_enrollment_package_root=build["states"]["after"][
+                "enrollment_package_root"
             ],
+            after_enrollment_seal_path=build["states"]["after"][
+                "enrollment_package_seal"
+            ],
+            after_enrollment_seal_sha256=build["states"]["after"][
+                "enrollment_package_seal_sha256"
+            ],
+            after_apply_package_root=state_runtime["after"]["apply_package_root"],
+            after_apply_seal_path=state_runtime["after"]["apply_seal_path"],
+            after_apply_seal_sha256=state_runtime["after"]["apply"][
+                "package_seal_sha256"
+            ],
+            ground_component_dir=ground_component_dir,
+            ground_manifest_sha256=str(ground_manifest_sha256),
+            output_root=diag_root,
+            device=device,
         )
+        diag_results.update(d81["states"])
+        for state in ("before", "after"):
+            state_diag_root = diag_root / state
+            prediction_paths[state] = state_diag_root / "prediction_artifact.npz"
+            diag_bindings[state] = _bind_diag_commit(
+                state=state,
+                state_diag_root=state_diag_root,
+                prediction_sha256=diag_results[state][
+                    "prediction_artifact_sha256"
+                ],
+            )
+    else:
+        for state in ("before", "after"):
+            state_build = build["states"][state]
+            runtime = state_runtime[state]
+            state_diag_root = diag_root / state
+            state_diag_root.mkdir(parents=True, exist_ok=False)
+            diag_kwargs: dict[str, Any] = {}
+            if (
+                candidate == CANDIDATE_D3_SCENARIO_OLDLOCK_NEWFIT
+                and state == "after"
+            ):
+                diag_kwargs = {
+                    "parent_diag_root": diag_root / "before",
+                    "expected_parent_commit_sha256": diag_bindings["before"][
+                        "diag_commit_sha256"
+                    ],
+                }
+            diag_results[state] = run_diag_cosine_exploration(
+                enrollment_package_root=state_build[
+                    "enrollment_package_root"
+                ],
+                enrollment_seal_path=state_build[
+                    "enrollment_package_seal"
+                ],
+                enrollment_seal_sha256=state_build[
+                    "enrollment_package_seal_sha256"
+                ],
+                apply_package_root=runtime["apply_package_root"],
+                apply_seal_path=runtime["apply_seal_path"],
+                apply_seal_sha256=runtime["apply"][
+                    "package_seal_sha256"
+                ],
+                output_root=state_diag_root,
+                device=device,
+                candidate=candidate,
+                **diag_kwargs,
+            )
+            prediction_paths[state] = state_diag_root / "prediction_artifact.npz"
+            diag_bindings[state] = _bind_diag_commit(
+                state=state,
+                state_diag_root=state_diag_root,
+                prediction_sha256=diag_results[state][
+                    "prediction_artifact_sha256"
+                ],
+            )
 
     for state, prediction_path in prediction_paths.items():
         _require_prediction(prediction_path, state=state)
@@ -460,7 +519,11 @@ def parser() -> argparse.ArgumentParser:
     result.add_argument("--k-shot", required=True, type=int)
     result.add_argument("--new-count", required=True, type=int)
     result.add_argument("--device", required=True)
-    result.add_argument("--candidate", choices=CANDIDATES, default=CANDIDATE_D1)
+    result.add_argument(
+        "--candidate", choices=tuple(CANDIDATES) + (CANDIDATE_D81,), default=CANDIDATE_D1
+    )
+    result.add_argument("--ground-component-dir")
+    result.add_argument("--ground-manifest-sha256")
     return result
 
 
@@ -480,6 +543,8 @@ def main() -> int:
         new_class_count=args.new_count,
         device=args.device,
         candidate=args.candidate,
+        ground_component_dir=args.ground_component_dir,
+        ground_manifest_sha256=args.ground_manifest_sha256,
     )
     print(json.dumps(result, ensure_ascii=True, sort_keys=True))
     return 0

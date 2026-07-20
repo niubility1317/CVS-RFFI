@@ -1286,7 +1286,7 @@ def summarize(matrix_manifest: str | Path, output_root: str | Path) -> dict[str,
             SUPPORT_PACKAGE_BINDING_STATUS
         ),
         "result_boundary": (
-            "D1 independent stability summary with strict pipeline-to-COMMIT-"
+            f"{CANDIDATE} independent stability summary with strict pipeline-to-COMMIT-"
             "to-execution-receipt-to-opened support/query member binding. "
             "Direct ADV3B02 K1 delta and paired confidence interval were not "
             "run."
