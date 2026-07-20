@@ -883,6 +883,15 @@ D99作者已收到上述P0并在原两个独立文件中修复；修订版仍需
 
 因此本轮没有target性能指标，也没有新的old/new/H/floor/forgetting结果。测试通过只证明当前local core内部一致，不能覆盖source/target权限真实性、资源上界或历史D81语义等价。
 
+### D99第三次独立复审：仍为REVISE
+
+第三轮作者把正常资源公式修正为`C=2,K1,rank1` pair kernel 1,856 MAC、query precision/norm 160 MAC、query kernel合计2,016 MAC、完整prediction call 6,336 MAC；`D=14,C=6` ground peak上界1,756,736B；K10完整receipt-bearing wire 19,182B。专项`20 passed`、D81/D96/D97/D99联合`75 passed`，typed D81也正确保持`LOCAL_CORE_BLOCKED_CORRECTED_TYPED_D81_P0`，无base-logit/probability/fuse/predict绕过。然而独立攻击仍发现两个P0：
+
+1. `ExternalPhase1ValidationReceipt`仍是无密钥自签摘要。攻击者用修改后的validation feature、`target-query-physical-*`、任意producer bytes和错误checkpoint SHA=`f`×64，重算archive/manifest/receipt后仍能load并进入margin audit。名称过滤只检查episode名称，physical ID被哈希后无法证明source语义；bank support receipt也能一并重签。
+2. resource只防止“改字段不重签”，不防内部重签。将`query_mac_upper_bound=0`、`actual_serialized_runtime_artifact_bytes=1`后重签bank receipt，score仍成功，实际serializer输出13,248B却接受声明1B。
+
+第四轮修复因此必须把external expected receipt、allowlisted producer/checkpoint/archive/manifest SHA及source-validation lifecycle写入不可由D99调用链生成的Phase1 method/deployment lock，并对实际bytes逐项核验；若真实外部authority尚无，local core必须明确阻断margin audit。resource则必须从numeric state、维度和serializer独立重算，在构造、score和serialize三个边界验证；receipt-bearing fixed point必须满足reported bytes等于实际wire，修改resource并重签仍须失败。正常资源数字通过本轮复算不等于authority和tamper门已经通过。
+
 ## typed D81提交907bd620独立复审：REVISE
 
 commit`907bd620`的专项与相关联合测试共`76 passed`，但独立复审发现其核心fit改变了历史D81定义：当前实现把全部registered old/new support送入20-step metric，而真实D81只用`Y_old` support拟合一次metric，冻结后再用全部old/new support拟合最终D62/D81 head。四类独立oracle攻击结果如下，差异远大于`2e-6`，属于方法改变而非浮点噪声。
