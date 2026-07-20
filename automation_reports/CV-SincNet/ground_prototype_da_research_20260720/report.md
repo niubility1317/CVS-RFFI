@@ -1102,6 +1102,29 @@ builder实际SHA为：NPZ`e69409268ad1215d440fd0555a4f8e2903214e95062f22a0c5f436
 
 最终文件SHA256：`leo_weak_cache.py`=`851ceeaacf8146e4c7e480d22278df9914db6051eb63c50032f9471f66d28b86`；exporter=`ab4d3c40251f2bd147e7948ced392d185d0ef7b3f45c18924e7ab1bd457dac6d`；测试=`d988183fd7a53febbf9c89663d3228c5e413321d2b77b12e24f5d07513d06499`。该修复只消除实际固定v1缓存与v2-only consumer之间的兼容缺陷，不改变缓存内容、selection salt、runtime、ground bundle、D99/D100公式或候选网格，也没有访问target。
 
+#### r2 exporter重新发布预登记
+
+|字段|值|
+|---|---|
+|run ID|`d99_d100_phase1_export_391f51ed_20260721_r2`|
+|代码提交|`391f51ed`（`Support frozen v1 Phase1 cache export`）|
+|本地源码包|`E:\type10-7\code\snapshots\d99_d100_phase1_export_391f51ed_20260721_r2\source_391f51ed.zip`|
+|源码包SHA/规模|`faad85ee50b83353015dbba51653b33975985296d0930e6ee0b2635897ff236e`；31,150,916B；4,331成员|
+|远端run根|`/home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_phase1_export_391f51ed_20260721_r2`|
+|远端log根|`/home/szu2070436088/2510044040/CV-SincNet/logs/d99_d100_phase1_export_391f51ed_20260721_r2`|
+|隔离源码根|`<run>/source_391f51ed`|
+|GPU/CPU|exporter固定GPU4、batch256、CPU thread2；不重跑builder|
+|复用产物|只读复用r1 ground NPZ/manifest/base lock及其已回收SHA，不向r1写入|
+|状态|`LOCAL_VERIFIED`，尚未LANDED/RUNNING/完成|
+
+r2只重跑上轮在loader入口失败的exporter，selection salt、source-validation cache、runtime和所有SHA不变。runner必须重新执行规定preflight，确认r2 run/log/source均不存在、GPU占用合规，复核源码包、salt、cache、runtime、checkpoint及r1 ground产物SHA；任一漂移即停止。child command冻结为：
+
+```bash
+env OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_phase1_export_391f51ed_20260721_r2/source_391f51ed/code /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python /home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_phase1_export_391f51ed_20260721_r2/source_391f51ed/code/scripts/export_phase1_singleobs_feature_archive.py --mode development --cache-set /home/szu2070436088/2510044040/CV-SincNet/runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14/phase1_caches/source_validation/cache_set.json --cache-set-sha256 125bb312972fd82edab9b1566a1ebddcd077b9a00c5255a55da22afb453b8d74 --runtime /home/szu2070436088/2510044040/CV-SincNet/runs/d18_formal_k10_new5_rx20_1_seed713101_20260717_085303/input/sealed_feature_runtime.pt --expected-runtime-sha256 f119e8cb3f6beda95f0d545205e91b43e4a557af2fd1d025e95d2edf2b8e6e2a --class-ids 14-10,14-7,20-15,20-19,6-15,8-20 --selection-salt-receipt /home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_phase1_export_391f51ed_20260721_r2/input/d99_d100_phase1_selection_salt.json --selection-salt-receipt-sha256 38ffbdda293cd2eead31c481237a459581c862572041ea472b38391a1b4bddb0 --output-dir /home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_phase1_export_391f51ed_20260721_r2/phase1_feature_archive --device cuda:4 --batch-size 256
+```
+
+采用不可覆盖`.pid/.exit/.log`detached wrapper；首个health check约90秒，若进程提前退出则先读完整日志，不自动重启。成功要求exit0、两个archive文件齐全、内部verify通过、manifest明确记录outer/inner v1、legacy=true、original/authority cache SHA均为`125bb312...d74`、runtime SHA为`f119...e2a`，并回收文件SHA与行数/receiver/day/class/scenario分布。r2完成后才生成LODO config；不得用r2 target性能选择任何参数，因为r2不读取target。
+
 ### D101直接shrinkage RDA交叉审查
 
 D101定位为D99上的alternative global head，与D100二选一，不叠成第三个融合头。当前裁决为`REVISE`：只允许后续实现Phase1 nested-LODO诊断臂，尚不允许target或N607。原因不是协议违法，而是其相对D99 metric和D100 simplex ridge的独立纠错能力尚未被证实。
