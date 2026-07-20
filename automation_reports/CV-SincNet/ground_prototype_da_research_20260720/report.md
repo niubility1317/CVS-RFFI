@@ -1253,4 +1253,14 @@ D101定位为D99上的alternative global head，与D100二选一，不叠成第�
 
 共同可逆变换后若完整重估均值和协方差，LDA margin严格不变；因此D101不得把“公共对齐”声称为收益。唯一可能产生不同决策的机制是固定ground prior、三block投影、rank≤2非可逆截断、shrinkage/ridge与量化。每个K在Phase1必须相对D100有非零disagreement、双向rescue各≥`max(5,0.1% held queries)`且各覆盖至少2个held receiver，`oracle-union(D99,D101)`比`oracle-union(D99,D100)`至少高0.25pp；每个receiver×pseudo-new pair的old/new/H/floor不得下降，balanced NLL严格改善，K1还须非identity。任一条件失败即`REJECT`，不得用target补选。
 
-只有D101完整LODO通过后，才允许一次K1/new20与K10/new20 matched窄测；相对D100同row的B-old、A-old、New、H、floor均不得下降、forgetting不得增加，且H或floor至少一项严格上升，否则不运行历史125。当前没有D101实现或性能结果。
+只有D101完整LODO通过后，才允许一次K1/new20与K10/new20 matched窄测；相对D100同row的B-old、A-old、New、H、floor均不得下降、forgetting不得增加，且H或floor至少一项严格上升，否则不运行历史125。
+
+#### D101本地核心实现与独立终审
+
+D101现已新增`code/cvsrffi/stage2_d101_shrinkage_rda.py`及`tests/test_stage2_d101_shrinkage_rda.py`，仅实现Phase1 nested-LODO可调用的解析核心，不含target runner、N607发布或125入口。唯一support入口为exact typed D99 INT8 bank；所有注册类均值从其decoded target/pseudo-target support统一计算。ground对象只抽取共享nuisance basis/spectrum和receipt，不读取或持久化ground class mean，也不直接产生old类logit/bias。K1 target covariance自由度和rank均为0；K>1 target residual rank≤2，ground rank≤4，总Woodbury rank≤6。部署状态只保存INT8线性权重、FP16分块scale/bias和闭合receipt；formal预测入口硬阻断。
+
+canonical查询路径固定为D81＋D99 base与D101 RDA的单一alpha融合，D101替换D100而不是叠成第三头。TypedD81 batch在消费前重算完整receipt，任何logit/classes/K/query receipt内存篡改均fail-closed；所有公开概率矩阵统一校验有限、shape、row sum及元素范围`[0,1]`。ground nuisance basis在D99 metric-sqrt中的变换明确标注为逐样本归一化之前的linear/first-order proxy，不声称是完整归一化映射的精确push-forward，也不把共同可逆变换称为性能来源。
+
+初审发现并修复两项P1：一是TypedD81 logit可写篡改后旧batch receipt未重算；二是公开结果对象会接受`[1.2,-0.2]`这类和为1但越界的伪概率。修复后独立聚焦攻击5/5通过，主线在`ssr-gpu`复跑D101专项与D99/D100相邻回归共70/70通过，`py_compile`和`git diff --check`均exit0。独立最终裁决为`MERGE_LOCAL_CORE_PHASE1_LODO_ONLY`，P0=0、P1=0。模块SHA=`b15702f3ca313e34d82925645a45b64e5df8c47a094bc4b64058d90106d68e3d`，测试SHA=`8aa4cdb9a136cb04c982db69899290098f06c6b99ff23a4439808dde6c45601c`。
+
+D101仍无性能结果。独立D101 LODO complementarity/逐receiver×pseudo-new门、held-LODO量化margin authority、D81持久head与完整ground wire、combined MAC和完整`≤256KiB`系统资源尚未闭合，所以当前不得进入target、N607窄测或125，也不能宣称优于D100或满足完整资源上限。下一步只允许在不读取r7/target结果选参的前提下，把D101作为D100的替代臂接入独立Phase1 nested-LODO。
