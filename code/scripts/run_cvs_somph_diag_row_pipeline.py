@@ -40,6 +40,10 @@ from cvsrffi.stage2_d81_query_evaluation import (  # noqa: E402
     CANDIDATE_D81,
     run_d81_query_evaluation,
 )
+from cvsrffi.stage2_d92_query_evaluation import (  # noqa: E402
+    CANDIDATE_D92,
+    run_d92_query_evaluation,
+)
 from cvsrffi.stage2_predictor_bundle import sha256_file  # noqa: E402
 
 
@@ -304,17 +308,22 @@ def run_pipeline(
         ],
     )
 
-    if candidate == CANDIDATE_D81 and (
+    if candidate in {CANDIDATE_D81, CANDIDATE_D92} and (
         ground_component_dir is None or ground_manifest_sha256 is None
     ):
         raise SomphDiagRowPipelineError(
-            "D81 requires a locked ground component directory and manifest SHA"
+            "D81/D92 requires a locked ground component directory and manifest SHA"
         )
     diag_results: dict[str, dict[str, Any]] = {}
     diag_bindings: dict[str, dict[str, str]] = {}
     prediction_paths: dict[str, Path] = {}
-    if candidate == CANDIDATE_D81:
-        d81 = run_d81_query_evaluation(
+    if candidate in {CANDIDATE_D81, CANDIDATE_D92}:
+        evaluator = (
+            run_d81_query_evaluation
+            if candidate == CANDIDATE_D81
+            else run_d92_query_evaluation
+        )
+        diagnostic = evaluator(
             before_enrollment_package_root=build["states"]["before"][
                 "enrollment_package_root"
             ],
@@ -348,7 +357,7 @@ def run_pipeline(
             output_root=diag_root,
             device=device,
         )
-        diag_results.update(d81["states"])
+        diag_results.update(diagnostic["states"])
         for state in ("before", "after"):
             state_diag_root = diag_root / state
             prediction_paths[state] = state_diag_root / "prediction_artifact.npz"
@@ -520,7 +529,9 @@ def parser() -> argparse.ArgumentParser:
     result.add_argument("--new-count", required=True, type=int)
     result.add_argument("--device", required=True)
     result.add_argument(
-        "--candidate", choices=tuple(CANDIDATES) + (CANDIDATE_D81,), default=CANDIDATE_D1
+        "--candidate",
+        choices=tuple(CANDIDATES) + (CANDIDATE_D81, CANDIDATE_D92),
+        default=CANDIDATE_D1,
     )
     result.add_argument("--ground-component-dir")
     result.add_argument("--ground-manifest-sha256")
