@@ -17,10 +17,10 @@ from typing import Any, Mapping
 
 import numpy as np
 
-from cvsrffi.somph_predictor_bundle import (
-    FORMAL_LEO_WEAK_SCENARIOS,
+from cvsrffi.somph_diagnostic_bundle_loader import (
     load_verified_somph_predictor_bundle,
 )
+from cvsrffi.somph_predictor_bundle import FORMAL_LEO_WEAK_SCENARIOS
 from cvsrffi.stage2_d42_unified_shrinkage_lda import (
     D42UnifiedShrinkageLDAConfig,
     fit_d42_unified_shrinkage_lda,
