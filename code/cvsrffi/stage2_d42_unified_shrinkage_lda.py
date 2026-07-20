@@ -127,6 +127,18 @@ def _transform(features: np.ndarray, log_diag: np.ndarray) -> np.ndarray:
     return _normalize_rows(rows * scale[None, :], "D42 transformed support")
 
 
+def _tensor_from_numpy(
+    value: np.ndarray, *, dtype: torch.dtype, device: torch.device
+) -> torch.Tensor:
+    if dtype == torch.float32:
+        rows = np.ascontiguousarray(value, dtype=np.float32)
+    elif dtype == torch.long:
+        rows = np.ascontiguousarray(value, dtype=np.int64)
+    else:
+        raise D42UnifiedShrinkageLDAError("D42 unsupported tensor bridge dtype")
+    return torch.frombuffer(rows, dtype=dtype).reshape(rows.shape).clone().to(device)
+
+
 def _fit_old_only_b3_metric(
     old_rows: np.ndarray,
     old_targets: np.ndarray,
@@ -142,8 +154,8 @@ def _fit_old_only_b3_metric(
         torch.cuda.set_device(device)
         torch.cuda.manual_seed_all(int(seed))
         torch.cuda.reset_peak_memory_stats(device)
-    x_old = torch.from_numpy(np.ascontiguousarray(old_rows)).clone().to(device)
-    y_old = torch.as_tensor(old_targets, dtype=torch.long, device=device)
+    x_old = _tensor_from_numpy(old_rows, dtype=torch.float32, device=device)
+    y_old = _tensor_from_numpy(old_targets, dtype=torch.long, device=device)
     prototypes = torch.stack(
         [
             F.normalize(x_old[y_old == index].mean(dim=0), dim=0)
@@ -156,8 +168,8 @@ def _fit_old_only_b3_metric(
     upper_np = np.full(FEATURE_DIM, LOG_SCALE_LIMIT, dtype=np.float32)
     lower_np[160:256] = -FFT_LOG_SCALE_LIMIT
     upper_np[160:256] = FFT_LOG_SCALE_LIMIT
-    lower = torch.from_numpy(np.ascontiguousarray(lower_np)).clone().to(device)
-    upper = torch.from_numpy(np.ascontiguousarray(upper_np)).clone().to(device)
+    lower = _tensor_from_numpy(lower_np, dtype=torch.float32, device=device)
+    upper = _tensor_from_numpy(upper_np, dtype=torch.float32, device=device)
     optimizer = torch.optim.AdamW(
         [log_diag, old_weights], lr=STAGE2B_LR, weight_decay=WEIGHT_DECAY
     )
