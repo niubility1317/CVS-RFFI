@@ -520,6 +520,9 @@ def run_d81_query_evaluation(
         raise D81QueryEvaluationError(
             f"D81 evaluation output is not an empty directory: {output}"
         )
+    output.mkdir(parents=True, exist_ok=True)
+    (output / "before").mkdir()
+    (output / "after").mkdir()
     states = {
         "before": _publish_state(
             output / "before",
