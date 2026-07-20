@@ -645,3 +645,40 @@ env OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 NUMEXPR_NUM_THREA
 在并行研发线交叉审查完成前不实现D96。候选必须保留当前最强D81/D92几何为base，不再统一搬动support/query；优先比较两个正交方向：①coverage-gated shrinkage RDA，仅让ground共享域谱进入类无关协方差先验，所有old/new均值来自target support；②合法single-view qKNN局部头与SRDA全局头并行，使用Phase1预锁/K≥2 support-CV可靠度做整row全局融合。若两头没有互补rescue或K1只能依赖未获批ground统计，则在本轮直接否决，转向新的Phase1 redundancy-aware/domain-factorized checkpoint与共同封存bundle，不用target125反向选择格式。
 
 并行协作规则也已同步写入根目录与Git镜像`AGENTS.md`：综合方法轮默认设置域适应、分类头、反遗忘监督三条研究线，前两线必须向监督线提交中间方案；监督线检查协议、K-shot可识别性、共同变换不变性、support过拟合、old/new联合门、类置换、资源和matched证据。设计阶段只读，主线裁决后才分配不重叠代码面；实验runner与方法作者分离。
+
+## D96/D97并行核心研发与交叉监督
+
+本轮不再由主线串行设计全部候选。域适应代理独立实现D96，分类头代理独立实现D97；两名作者互审对方文件，反遗忘监督代理同时做第三方准入，主线只负责协议裁决、阻断修复、测试与Git集成。四个文件的职责互不重叠：
+
+|候选|文件|主要机制|ground职责|target职责|K1行为|
+|---|---|---|---|---|---|
+|D96 RA-CGSRDA|`code/cvsrffi/stage2_d96_ra_cgsrda.py`|冗余密度反权、`D_eff`自适应rank≤4、coverage-gated共享SRDA精度、D81残差融合|只提供类无关低秩nuisance covariance与coverage基准，不直接给旧类logit|所有old/new均值只由当前row注册support构造，同一公式评分|融合权重强制0，精确回退base|
+|D97 QK-D81-LGF|`code/cvsrffi/stage2_qk_d81_lgf.py`|三block归一化、逐support/逐block INT8 qKNN、按`K_c`归一化log-mean-exp、row-global概率融合|不读取ground分类原型|old/new均保存同式target support INT8 bank，query逐样本全类argmax|默认eta=0；仅允许Phase1锁定K1 prior|
+
+首次交叉审查发现并阻断了以下实质问题：D96把实际FP32状态误报为INT8且低报约7.73倍、build/fit/fusion配置未绑定、密度权重未回算class mean、融合温度公式不标准、base/SRDA列顺序未绑定；D97未强制均衡K-shot、非零eta只靠字符串自述、base/qKNN列顺序未绑定、资源统计与INT8 margin审计不完整。主线已全部按fail-closed方向修复：
+
+- D96要求64位Phase1 receipt并计算逐字段config digest，ground build→fit→fusion必须同一digest；`max_rank`必须是真正整数且≤4；非零support-CV可靠度必须绑定64位receipt；融合改为`(1-w)base/T_base+w·aux/T_aux`并显式核对注册类顺序。
+- D96状态审计改为真实`coefficient_fp32+intercept_fp32+target_means_fp32`字节，不再宣称未实现的INT8；ground class mean与残差在density权重后重算。
+- D97要求均衡K-shot；配置绑定Phase1 receipt和margin-audit SHA；非零eta必须绑定support-CV receipt；base classes必须与bank registry精确相同。
+- D97资源面计入quantization audit序列化字节并区分点积MAC与归一化、解码、LSE、softmax等标量操作上界；新增Phase1-only FP32/INT8 logit误差、top1一致率、teacher-margin sign flip审计。
+
+本地验证使用`ssr-gpu`串行执行：
+
+```text
+conda run -n ssr-gpu python -m pytest tests/test_stage2_d96_ra_cgsrda.py tests/test_stage2_qk_d81_lgf.py
+15 passed in 0.79s
+```
+
+测试覆盖partial-domain硬失败、密度/rank闭包、all-class target-only均值、Woodbury/PSD、config漂移、整数rank、receipt绑定、K1/w0对象级精确回退、三block单位化、support顺序不变、`1/K_c`消除数量奖励、均衡K、query逐样本batch等价、类顺序闭包、持久状态和INT8 margin审计。`git diff --check`与两个核心`py_compile`均通过。当前只完成纯核心和最小验证，尚未接D81 pipeline、尚未生成真实Phase1锁、尚未访问target或N607。
+
+### Phase1 LODO输入勘察
+
+当前84-cell组件为`phase1_int8_domain_class_centroids_v1`，本地路径`E:\type10-7\automation_reports\CV-SincNet\d22_int8_anchor_lifecycle_20260717\input\int8_component`；manifest SHA=`15b5e144f9af3989421d8e925c17758479c327be47e79222f6363dc63994629c`，NPZ SHA=`3c08c823d2e8a13c4233f0060ac67c332ecc8d6e8abec7352de975fead0267d7`。NPZ只含`[26,6,160]`INT8中心、FP16 scale、mask、domain/class registry与feature schema；实际14个完整domain×6类=84个cell。
+
+|锁定项|仅当前84-cell是否足够|裁决|
+|---|---|---|
+|D96 `tau/max_rank`|是|可做14折leave-one-domain-out，按held残差重构、margin flip、`D_eff`和basis稳定性选择|
+|D96 `ridge/temp_base/temp_aux`|否|缺物理样本级类内残差、完整288D D81 logits与held support/query|
+|D97 `beta/temp/eta/K1 prior`|否|缺合法Phase1 sample-level 288D feature、独立source-validation query与D81 logits，不能用target补选|
+
+此外该组件仍标记`formal_phase2_eligible=false`和`UNVERIFIED_UNDER_CURRENT_PROTOCOL`；所以84-cell几何LODO最多产生development partial lock，不能直接授权target/N607。完整锁必须由Phase1地面独立物理样本生成receiver/day LODO预测面，并把规范JSON receipt、margin audit及其SHA与配置闭合。下一步先定位或导出该Phase1-only预测面；在此之前不接target pipeline、不发布窄实验、更不会跑125。
