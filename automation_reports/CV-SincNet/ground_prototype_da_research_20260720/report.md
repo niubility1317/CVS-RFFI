@@ -743,6 +743,8 @@ conda run -n ssr-gpu python -m pytest tests/test_stage2_d96_ra_cgsrda.py tests/t
 
 第一段N607委派仅做`READ_ONLY_ASSET_DISCOVERY`：执行规定preflight，核对GPU/进程，确认source-validation cache、已知ADV3B02 base runtime、parity receipt、checkpoint SHA、Python环境与目标输出不存在；不修改、同步或启动。资产路径和SHA返回主线后，主线生成并提交development runtime manifest、selection-salt receipt、候选网格和完整exact command，再由同一唯一runner执行`LOCAL_VERIFIED→LANDED→RUNNING`。这种两段交接避免在缺失真实runtime receipt时用猜测命令启动，同时不把development研发阻塞在尚不存在的外部formal authority上。
 
+上述Phase1流水线、D96 geometry diagnostic、专项测试与本节报告已由Git提交`e1135e5c`承载；本次N607资产发现和后续release均以该提交为唯一代码基线，D98未纳入该提交或本次同步范围。
+
 ## D98反遗忘线当前状态
 
 D98-STRIMS已经修正温度化`log_softmax`坐标，使D81与qK各自的逐样本logit平移不改变融合预测；state receipt也绑定温度、lock与head receipt。独立复审仍以4项P0否决实验集成：K1未强制`alpha=0`；generic融合入口可让概率冒充raw qK；逐fold OOF provenance仍由调用方自签，不能证明held physical未进入拟合；D81 inference receipt没有绑定实际base输出。该线继续并行修复，但不进入本次D97 N607 release，也不以24/24单测声称性能成功。
