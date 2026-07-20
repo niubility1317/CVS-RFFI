@@ -933,3 +933,7 @@ commit`907bd620`的专项与相关联合测试共`76 passed`，但独立复审�
 资源也被独立下界证伪。2old+2new K1报告fit 49,180,800 MAC，而真实D46/D62 inventory下界为97,731,960 MAC，约低报1.99倍；6old+20new K10报告101,358,592 MAC，而88个LDA component fit、D62 OOF/fisher/reliability/gate、rank21 translation、metric/geometry合计下界为11,835,007,168 MAC，约低报116.76倍。peak同样未覆盖最大D62/sklearn临时生命周期。正常wire fixed point与query MAC 8,772/40,474本身通过复算。
 
 最后，将query/fit MAC与peak改为0或将metric seed从713101改为713102，再重算wire和artifact SHA，load/verify/query仍可成功，说明resource/config仍只受内部自签保护。下一版必须从numeric state、维度、真实D46/D62 call inventory及外部Phase1/scorer lock独立推导，任何内部重签不得绕过。正式capsule producer依然不存在，所以即便local exact-fit修复通过，状态也只能保持`LOCAL_CORE_PENDING_EXTERNAL_CAPSULE_PRODUCER_AND_REVIEW`，formal query入口必须拒绝local-fit state。
+
+第三轮独立复审最终裁决为`ACCEPT_LOCAL_EXACT_FIT_PENDING_EXTERNAL_PRODUCER`。实现删除内部support排序，严格保持external sealed payload order；非排序K1/K5/K10的`log_diag/before/final`与独立历史D81 oracle最大差全部为0，输入重排由ordered row receipt在fit前拒绝。D46/D62完整资源固定点为：2old+2new K1共4个component fit、总fit 97,872,856 MAC、peak 24,272,503B、query 8,772 MAC；6old+20new K10共88个component fit、总fit 11,835,222,784 MAC、peak 142,162,891B、query 40,474 MAC。resource归零重签和seed重签均被外部lock/dimension inventory拒绝。
+
+外部formal producer仍不存在，因此两个formal query API在函数入口无条件fail-closed，不读取任何state字段；4个authority/config/state dataclass均为frozen+slots且无`__dict__`，copy/replace/字段替换不能打开正式路径。wire实际固定点锁为K1 17,743B与6old+20new K10 35,706B，旧35,709B是作者预报误差，没有人为padding。专项`30 passed`，13文件直接依赖联合实际收集`141 passed`。该裁决证明local exact-fit、wire和资源闭合，不授予external capsule authority，仍禁止N607、target narrow、125或正式性能声明。
