@@ -90,8 +90,12 @@ def build_d92_fit(
     def structured_builder(d42_arg: Any, arm: str) -> Callable[..., Any]:
         if d42_arg is not d42 or arm != "block3_centered":
             raise D92ProbeError("D92 unexpected structured covariance request")
+        # Preserve D81 exactly for the registration-before state and for the
+        # K1/K2 fallback.  Only the active registered state replaces the
+        # structured covariance with D92's task-balanced estimate.
+        baseline_block = original_builder(d42_arg, arm)
         d92_block = build_registration_balanced_equal_lda(
-            d42, original_fit, arm="block3_centered"
+            d42, baseline_block, arm="block3_centered"
         )
         return d81.core.build_robust_center_component_fit(
             collect(d92_block, arm),
