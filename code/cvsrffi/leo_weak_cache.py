@@ -37,8 +37,9 @@ PHASE2_SINGLE_OBSERVATION_CACHE_SCOPES = {
     "stage2_target_old",
     "stage2_registered",
 }
+LEGACY_V1_PHYSICAL_SAMPLE_ROOT_ID_POLICY = "role|tx|rx|day|eq|sig"
 
-_REQUIRED_ARRAY_KEYS = (
+_REQUIRED_ARRAY_KEYS_V1 = (
     "leo_weak_iq",
     "raw_labels",
     "domain_labels",
@@ -47,8 +48,6 @@ _REQUIRED_ARRAY_KEYS = (
     "day_ids",
     "eq_ids",
     "sig_ids",
-    "source_dataset_sha256",
-    "source_record_indices",
     "dataset_role",
     "channel_views",
     "sat_scenarios",
@@ -59,6 +58,38 @@ _REQUIRED_ARRAY_KEYS = (
     "overlay_ids",
     "manifest_json",
 )
+_REQUIRED_ARRAY_KEYS_V2 = (
+    *_REQUIRED_ARRAY_KEYS_V1[:8],
+    "source_dataset_sha256",
+    "source_record_indices",
+    *_REQUIRED_ARRAY_KEYS_V1[8:],
+)
+_REQUIRED_ARRAY_KEYS_BY_SCHEMA = {
+    LEO_WEAK_CACHE_SCHEMA_V1: _REQUIRED_ARRAY_KEYS_V1,
+    LEO_WEAK_CACHE_SCHEMA_V2: _REQUIRED_ARRAY_KEYS_V2,
+}
+_PHYSICAL_SAMPLE_ROOT_ID_POLICY_BY_SCHEMA = {
+    LEO_WEAK_CACHE_SCHEMA_V1: LEGACY_V1_PHYSICAL_SAMPLE_ROOT_ID_POLICY,
+    LEO_WEAK_CACHE_SCHEMA_V2: PHASE2_PHYSICAL_SAMPLE_ROOT_ID_POLICY,
+}
+_SAMPLE_OVERLAY_PROVENANCE_FIELDS_BY_SCHEMA = {
+    LEO_WEAK_CACHE_SCHEMA_V1: (
+        "sample_ids",
+        "sat_scenarios",
+        "satellite_seeds",
+        "post_channel_iq_sha256",
+        "overlay_ids",
+    ),
+    LEO_WEAK_CACHE_SCHEMA_V2: (
+        "sample_ids",
+        "source_dataset_sha256",
+        "source_record_indices",
+        "sat_scenarios",
+        "satellite_seeds",
+        "post_channel_iq_sha256",
+        "overlay_ids",
+    ),
+}
 
 _FORBIDDEN_EXACT_MEMBERS = {
     "raw_iq",
@@ -150,6 +181,25 @@ def physical_sample_id(arrays: Mapping[str, np.ndarray], index: int) -> str:
     )
 
 
+def _physical_sample_id_for_schema(
+    arrays: Mapping[str, np.ndarray], index: int, schema: str
+) -> str:
+    if schema == LEO_WEAK_CACHE_SCHEMA_V1:
+        return "|".join(
+            (
+                str(arrays["dataset_role"][index]),
+                str(arrays["tx_ids"][index]),
+                str(arrays["rx_ids"][index]),
+                str(arrays["day_ids"][index]),
+                str(arrays["eq_ids"][index]),
+                str(arrays["sig_ids"][index]),
+            )
+        )
+    if schema == LEO_WEAK_CACHE_SCHEMA_V2:
+        return physical_sample_id(arrays, index)
+    raise ValueError(f"unsupported LEO cache schema: {schema}")
+
+
 def overlay_id(
     *,
     sample_id: str,
@@ -236,15 +286,7 @@ def _require_manifest_contract(
     provenance_fields = tuple(
         str(value) for value in manifest.get("sample_overlay_provenance_fields", [])
     )
-    required_fields = (
-        "sample_ids",
-        "source_dataset_sha256",
-        "source_record_indices",
-        "sat_scenarios",
-        "satellite_seeds",
-        "post_channel_iq_sha256",
-        "overlay_ids",
-    )
+    required_fields = _SAMPLE_OVERLAY_PROVENANCE_FIELDS_BY_SCHEMA[expected_schema]
     if provenance_fields != required_fields:
         raise ValueError("LEO cache sample overlay provenance field order drift")
     channel_hash = str(manifest.get("channel_config_sha256", ""))
@@ -308,24 +350,29 @@ def load_verified_leo_weak_cache(
 
     with np.load(cache_path, allow_pickle=False) as archive:
         members = tuple(str(value) for value in archive.files)
-        forbidden = sorted(name for name in members if _is_forbidden_member(name))
-        if forbidden:
+        if "manifest_json" not in members:
             raise ValueError(
-                "LEO cache exposes forbidden raw/clean/derived members before array read: "
-                f"{forbidden}"
+                "LEO cache is missing required members: ['manifest_json']"
             )
-        missing = [key for key in _REQUIRED_ARRAY_KEYS if key not in members]
-        if missing:
-            raise ValueError(f"LEO cache is missing required members: {missing}")
         manifest = _manifest_from_archive(archive)
         observed_schema = str(manifest.get("schema", ""))
         if observed_schema not in accepted:
             raise ValueError(
                 "LEO cache manifest contract failed: ['schema']"
             )
+        required_array_keys = _REQUIRED_ARRAY_KEYS_BY_SCHEMA[observed_schema]
+        forbidden = sorted(name for name in members if _is_forbidden_member(name))
+        if forbidden:
+            raise ValueError(
+                "LEO cache exposes forbidden raw/clean/derived members before array read: "
+                f"{forbidden}"
+            )
+        missing = [key for key in required_array_keys if key not in members]
+        if missing:
+            raise ValueError(f"LEO cache is missing required members: {missing}")
         arrays = {
             key: np.asarray(archive[key])
-            for key in _REQUIRED_ARRAY_KEYS
+            for key in required_array_keys
             if key != "manifest_json"
         }
         optional_present = [
@@ -379,23 +426,26 @@ def load_verified_leo_weak_cache(
     views = np.asarray(arrays["channel_views"]).astype(str)
     seeds = np.asarray(arrays["satellite_seeds"]).astype(np.int64)
     applied = np.asarray(arrays["overlay_applied"]).astype(bool)
-    dataset_hashes = np.asarray(arrays["source_dataset_sha256"]).astype(str)
-    record_indices = np.asarray(arrays["source_record_indices"]).astype(np.int64)
     if not np.all(scenarios == scenario):
         raise ValueError("LEO cache contains a row from another scenario")
     if not np.all(views == "rx_base"):
         raise ValueError("LEO cache channel_views must be post-channel rx_base")
     if not bool(np.all(applied)):
         raise ValueError("LEO cache contains a row without overlay_applied=true")
-    if np.any(record_indices < 0):
-        raise ValueError("LEO cache source_record_indices must be nonnegative")
-    if any(
-        len(value) != 64
-        or value != value.lower()
-        or any(character not in "0123456789abcdef" for character in value)
-        for value in dataset_hashes.tolist()
-    ):
-        raise ValueError("LEO cache source_dataset_sha256 values must be lowercase hex")
+    if observed_schema == LEO_WEAK_CACHE_SCHEMA_V2:
+        dataset_hashes = np.asarray(arrays["source_dataset_sha256"]).astype(str)
+        record_indices = np.asarray(arrays["source_record_indices"]).astype(np.int64)
+        if np.any(record_indices < 0):
+            raise ValueError("LEO cache source_record_indices must be nonnegative")
+        if any(
+            len(value) != 64
+            or value != value.lower()
+            or any(character not in "0123456789abcdef" for character in value)
+            for value in dataset_hashes.tolist()
+        ):
+            raise ValueError(
+                "LEO cache source_dataset_sha256 values must be lowercase hex"
+            )
 
     channel_config_hash = str(manifest["channel_config_sha256"])
     sample_ids = np.asarray(arrays["sample_ids"]).astype(str)
@@ -405,7 +455,7 @@ def load_verified_leo_weak_cache(
     expected_iq_hashes: list[str] = []
     expected_overlay_ids: list[str] = []
     for index in range(row_count):
-        sid = physical_sample_id(arrays, index)
+        sid = _physical_sample_id_for_schema(arrays, index, observed_schema)
         iq_hash = post_channel_iq_sha256(iq[index])
         oid = overlay_id(
             sample_id=sid,
@@ -426,10 +476,15 @@ def load_verified_leo_weak_cache(
     if len(set(expected_sample_ids)) != row_count:
         raise ValueError("LEO cache contains duplicate physical sample IDs")
     physical_ids_hash = ids_sha256(expected_sample_ids)
-    if str(manifest.get("physical_sample_ids_sha256", "")) != physical_ids_hash:
+    if (
+        observed_schema == LEO_WEAK_CACHE_SCHEMA_V2
+        and str(manifest.get("physical_sample_ids_sha256", ""))
+        != physical_ids_hash
+    ):
         raise ValueError("LEO cache physical sample ID root mismatch")
 
     arrays["leo_weak_iq"] = iq
+    root_id_policy = _PHYSICAL_SAMPLE_ROOT_ID_POLICY_BY_SCHEMA[observed_schema]
     audit = {
         "path": str(cache_path),
         "sha256": sha256_file(cache_path),
@@ -445,9 +500,8 @@ def load_verified_leo_weak_cache(
         "forbidden_members_checked_before_iq_read": True,
         "clean_sample_access": False,
         "phase2_sample_view_policy": PHASE2_SAMPLE_VIEW_POLICY,
-        "phase2_physical_sample_root_id_policy": (
-            PHASE2_PHYSICAL_SAMPLE_ROOT_ID_POLICY
-        ),
+        "physical_sample_root_id_policy": root_id_policy,
+        "phase2_physical_sample_root_id_policy": root_id_policy,
     }
     if schema_compatibility_requested:
         audit.update(
@@ -604,6 +658,16 @@ def load_verified_leo_weak_cache_set(
         scenario: ids_sha256(ids_by_scenario[scenario])
         for scenario in FORMAL_LEO_WEAK_SCENARIOS
     }
+    root_id_policy_by_scenario = {
+        scenario: str(cache_audits[scenario]["physical_sample_root_id_policy"])
+        for scenario in FORMAL_LEO_WEAK_SCENARIOS
+    }
+    distinct_root_id_policies = set(root_id_policy_by_scenario.values())
+    root_id_policy = (
+        next(iter(distinct_root_id_policies))
+        if len(distinct_root_id_policies) == 1
+        else "schema_specific_by_scenario"
+    )
     assignment_root = canonical_json_sha256(
         {
             scenario: ids_by_scenario[scenario]
@@ -654,12 +718,15 @@ def load_verified_leo_weak_cache_set(
         },
         "physical_sample_ids_sha256_by_scenario": roots_by_scenario,
         "physical_sample_scenario_assignment_sha256": assignment_root,
+        "physical_sample_root_id_policy": root_id_policy,
+        "physical_sample_root_id_policy_by_scenario": root_id_policy_by_scenario,
         "cache_audits": cache_audits,
         "clean_sample_access": False,
         "phase2_sample_view_policy": PHASE2_SAMPLE_VIEW_POLICY,
         "phase2_cross_scenario_physical_sample_reuse": False,
-        "phase2_physical_sample_root_id_policy": (
-            PHASE2_PHYSICAL_SAMPLE_ROOT_ID_POLICY
+        "phase2_physical_sample_root_id_policy": root_id_policy,
+        "phase2_physical_sample_root_id_policy_by_scenario": (
+            root_id_policy_by_scenario
         ),
         "phase2_single_observation_compliant": single_observation_required,
     }

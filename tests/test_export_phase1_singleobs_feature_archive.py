@@ -21,11 +21,10 @@ from cvsrffi.leo_weak_cache import (
     LEO_WEAK_CACHE_SET_SCHEMA_V1,
     LEO_WEAK_CACHE_SET_SCHEMA_V2,
     LEO_WEAK_CACHE_STAGE,
-    PHASE2_PHYSICAL_SAMPLE_OBSERVATION_POLICY,
-    PHASE2_PHYSICAL_SAMPLE_ROOT_ID_POLICY,
     PHASE2_SAMPLE_VIEW_POLICY,
     canonical_json_sha256,
     ids_sha256,
+    load_verified_leo_weak_cache,
     load_verified_leo_weak_cache_set,
     overlay_id,
     physical_sample_id_from_values,
@@ -122,7 +121,9 @@ def _runtime_lineage(tmp_path: Path) -> tuple[Path, Path, Path, str]:
     return runtime, manifest_path, salt_path, salt_receipt["selection_salt_sha256"]
 
 
-def _identity_rows(scenario_index: int) -> tuple[np.ndarray, dict[str, np.ndarray]]:
+def _identity_rows(
+    scenario_index: int, *, schema: str = LEO_WEAK_CACHE_SCHEMA
+) -> tuple[np.ndarray, dict[str, np.ndarray]]:
     row_count = 4
     iq = (
         np.arange(row_count * 2 * 8, dtype=np.float32).reshape(row_count, 2, 8)
@@ -136,21 +137,38 @@ def _identity_rows(scenario_index: int) -> tuple[np.ndarray, dict[str, np.ndarra
     dataset_hash = hashlib.sha256(b"dataset").hexdigest()
     dataset_hashes = np.asarray([dataset_hash] * row_count)
     record_indices = np.arange(row_count, dtype=np.int64)
-    sample_ids = np.asarray(
-        [
-            physical_sample_id_from_values(
-                dataset_sha256=dataset_hash,
-                source_record_index=index,
-                role="source",
-                tx_id=str(tx[index]),
-                rx_id=str(rx[index]),
-                day_id=str(day[index]),
-                eq_id=str(eq[index]),
-                sig_id=str(sig[index]),
-            )
-            for index in range(row_count)
-        ]
-    )
+    if schema == LEO_WEAK_CACHE_SCHEMA_V1:
+        sample_ids = np.asarray(
+            [
+                "|".join(
+                    (
+                        "source",
+                        str(tx[index]),
+                        str(rx[index]),
+                        str(day[index]),
+                        str(eq[index]),
+                        str(sig[index]),
+                    )
+                )
+                for index in range(row_count)
+            ]
+        )
+    else:
+        sample_ids = np.asarray(
+            [
+                physical_sample_id_from_values(
+                    dataset_sha256=dataset_hash,
+                    source_record_index=index,
+                    role="source",
+                    tx_id=str(tx[index]),
+                    rx_id=str(rx[index]),
+                    day_id=str(day[index]),
+                    eq_id=str(eq[index]),
+                    sig_id=str(sig[index]),
+                )
+                for index in range(row_count)
+            ]
+        )
     return iq, {
         "tx_ids": tx,
         "rx_ids": rx,
@@ -170,7 +188,7 @@ def _write_verified_cache(
     *,
     schema: str = LEO_WEAK_CACHE_SCHEMA,
 ) -> tuple[list[str], np.ndarray]:
-    iq, identity = _identity_rows(scenario_index)
+    iq, identity = _identity_rows(scenario_index, schema=schema)
     sample_ids = identity["sample_ids"]
     row_count = len(sample_ids)
     channel_hash = canonical_json_sha256({"scenario": scenario, "test": True})
@@ -204,34 +222,40 @@ def _write_verified_cache(
         "overlay_applied_before_phase2": True,
         "star_ground_channel_impl": "simplified_leo_residual",
         "channel_model": "leo_residual",
-        "phase2_physical_sample_observation_policy": PHASE2_PHYSICAL_SAMPLE_OBSERVATION_POLICY,
-        "phase2_cross_scenario_physical_sample_reuse": False,
-        "phase2_additional_leo_channel_state_generation": False,
-        "phase2_post_reception_equalization_augmentation_transform_allowed": True,
-        "phase2_post_reception_view_from_fixed_received_iq_only": True,
-        "phase2_post_reception_view_counts_as_additional_physical_sample": False,
-        "phase2_physical_sample_root_id_policy": PHASE2_PHYSICAL_SAMPLE_ROOT_ID_POLICY,
-        "phase2_query_post_reception_view_fit_access": False,
         "builder_sha256": hashlib.sha256(b"builder").hexdigest(),
         "output_roles": ["source"],
-        "sample_overlay_provenance_fields": [
-            "sample_ids",
-            "source_dataset_sha256",
-            "source_record_indices",
-            "sat_scenarios",
-            "satellite_seeds",
-            "post_channel_iq_sha256",
-            "overlay_ids",
-        ],
+        "sample_overlay_provenance_fields": (
+            [
+                "sample_ids",
+                "sat_scenarios",
+                "satellite_seeds",
+                "post_channel_iq_sha256",
+                "overlay_ids",
+            ]
+            if schema == LEO_WEAK_CACHE_SCHEMA_V1
+            else [
+                "sample_ids",
+                "source_dataset_sha256",
+                "source_record_indices",
+                "sat_scenarios",
+                "satellite_seeds",
+                "post_channel_iq_sha256",
+                "overlay_ids",
+            ]
+        ),
         "channel_config_sha256": channel_hash,
         "physical_sample_ids_sha256": ids_sha256(sample_ids.astype(str).tolist()),
         "row_count": row_count,
     }
+    identity_payload = dict(identity)
+    if schema == LEO_WEAK_CACHE_SCHEMA_V1:
+        identity_payload.pop("source_dataset_sha256")
+        identity_payload.pop("source_record_indices")
     payload = {
         "leo_weak_iq": iq,
         "raw_labels": np.asarray([0, 1, 0, 1], dtype=np.int64),
         "domain_labels": np.asarray([0, 0, 1, 1], dtype=np.int64),
-        **identity,
+        **identity_payload,
         "dataset_role": np.asarray(["source"] * row_count),
         "channel_views": np.asarray(["rx_base"] * row_count),
         "sat_scenarios": np.asarray([scenario] * row_count),
@@ -738,6 +762,13 @@ def test_v1_schema_compatibility_is_explicit_exact_and_audited(tmp_path: Path) -
         LEO_WEAK_CACHE_SCHEMA_V1
     }
     assert audit["legacy_schema_compatibility"] is True
+    assert audit["physical_sample_root_id_policy"] == "role|tx|rx|day|eq|sig"
+    assert set(audit["physical_sample_root_id_policy_by_scenario"].values()) == {
+        "role|tx|rx|day|eq|sig"
+    }
+    for scenario_arrays in arrays.values():
+        assert "source_dataset_sha256" not in scenario_arrays
+        assert "source_record_indices" not in scenario_arrays
 
     with pytest.raises(ValueError, match="nonempty"):
         load_verified_leo_weak_cache_set(
@@ -785,6 +816,93 @@ def test_v1_schema_compatibility_is_explicit_exact_and_audited(tmp_path: Path) -
     )
     assert mixed_audit["outer_legacy_schema_compatibility"] is False
     assert all(mixed_audit["inner_legacy_schema_compatibility_by_scenario"].values())
+
+
+@pytest.mark.parametrize(
+    ("tamper_kind", "error_pattern"),
+    (
+        ("sample_id", "sample_ids do not match physical metadata"),
+        ("iq", "post-channel IQ digest mismatch"),
+        ("overlay_id", "overlay_ids do not match sample provenance"),
+    ),
+)
+def test_v1_compatibility_recomputes_sample_iq_and_overlay_provenance(
+    tmp_path: Path, tamper_kind: str, error_pattern: str
+) -> None:
+    cache_set, _ = _real_cache_set(
+        tmp_path / tamper_kind,
+        outer_schema=LEO_WEAK_CACHE_SET_SCHEMA_V1,
+        inner_schema=LEO_WEAK_CACHE_SCHEMA_V1,
+    )
+    set_payload = json.loads(cache_set.read_text(encoding="utf-8"))
+    scenario = FORMAL_LEO_WEAK_SCENARIOS[0]
+    inner_path = cache_set.parent / set_payload["cache_npz_by_scenario"][scenario]
+    with np.load(inner_path, allow_pickle=False) as archive:
+        inner_arrays = {
+            name: np.asarray(archive[name]).copy() for name in archive.files
+        }
+    if tamper_kind == "sample_id":
+        inner_arrays["sample_ids"][0] = "source|tampered|rx0|d0|1|0"
+    elif tamper_kind == "iq":
+        inner_arrays["leo_weak_iq"][0, 0, 0] += np.float32(1.0)
+    else:
+        inner_arrays["overlay_ids"][0] = "0" * 64
+    np.savez(inner_path, **inner_arrays)
+    set_payload["cache_sha256_by_scenario"][scenario] = _sha(inner_path)
+    cache_set.write_text(json.dumps(set_payload), encoding="utf-8")
+
+    with pytest.raises(ValueError, match=error_pattern):
+        load_verified_leo_weak_cache_set(
+            cache_set,
+            expected_scope="source_validation",
+            allowed_roles={"source"},
+            accepted_outer_schemas={LEO_WEAK_CACHE_SET_SCHEMA_V1},
+            accepted_inner_schemas={LEO_WEAK_CACHE_SCHEMA_V1},
+        )
+
+
+def test_v2_schema_contract_and_identity_remain_unchanged(tmp_path: Path) -> None:
+    cache_set, _ = _real_cache_set(tmp_path / "v2")
+    set_payload = json.loads(cache_set.read_text(encoding="utf-8"))
+    scenario = FORMAL_LEO_WEAK_SCENARIOS[0]
+    inner_path = cache_set.parent / set_payload["cache_npz_by_scenario"][scenario]
+    arrays, manifest, inner_audit = load_verified_leo_weak_cache(
+        inner_path,
+        expected_scenario=scenario,
+        allowed_roles={"source"},
+    )
+    _, expected_identity = _identity_rows(0, schema=LEO_WEAK_CACHE_SCHEMA_V2)
+    assert arrays["sample_ids"].astype(str).tolist() == expected_identity[
+        "sample_ids"
+    ].astype(str).tolist()
+    assert "source_dataset_sha256" in arrays
+    assert "source_record_indices" in arrays
+    assert manifest["sample_overlay_provenance_fields"] == [
+        "sample_ids",
+        "source_dataset_sha256",
+        "source_record_indices",
+        "sat_scenarios",
+        "satellite_seeds",
+        "post_channel_iq_sha256",
+        "overlay_ids",
+    ]
+    assert (
+        inner_audit["physical_sample_root_id_policy"]
+        == "immutable_preoverlay_lineage_token"
+    )
+
+    _, _, outer_audit = load_verified_leo_weak_cache_set(
+        cache_set,
+        expected_scope="source_validation",
+        allowed_roles={"source"},
+    )
+    assert (
+        outer_audit["physical_sample_root_id_policy"]
+        == "immutable_preoverlay_lineage_token"
+    )
+    assert set(outer_audit["physical_sample_root_id_policy_by_scenario"].values()) == {
+        "immutable_preoverlay_lineage_token"
+    }
 
 
 def test_v1_compatibility_does_not_relax_non_schema_contracts(tmp_path: Path) -> None:
