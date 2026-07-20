@@ -73,8 +73,8 @@ D62与D81在注册类数增加后均出现系统性旧类遗忘。D65表明仅�
 
 - 远端导入检查通过，6个同步文件的远端SHA256与上表逐项一致。
 - 完整清单：`matrix_manifest.json`，SHA256=`111dfd0e5ac22f0fee93e215cb536356a2dd2ea4f58eec497dfe625455f6d467`；`total_job_count=125`，8个分片各15或16个作业。
-- 已启动分片与物理GPU：shard0→GPU1(PID`1078291`)、shard1→GPU2(PID`1078292`)、shard2→GPU4(PID`1078293`)、shard5→GPU5(PID`1077037`)、shard6→GPU6(PID`1077038`)、shard7→GPU7(PID`1077039`)。
-- shard3与shard4等待GPU0/3释放一个槽后启动；当前已落地的事件均为`candidate=d92_registration_balanced_covariance`，错误日志为空。
+- 已启动分片与物理GPU：shard0→GPU1(PID`1078291`)、shard1→GPU2(PID`1078292`)、shard2→GPU4(PID`1078293`)、shard3→GPU0(PID`1080465`)、shard4→GPU3(PID`1082072`)、shard5→GPU5(PID`1077037`)、shard6→GPU6(PID`1077038`)、shard7→GPU7(PID`1077039`)。
+- 8/8分片已全部落地；每次补启动都在目标GPU仅有1项实验时执行，未超过每GPU2项。当前已落地的事件均为`candidate=d92_registration_balanced_covariance`，截至累计115条事件时错误日志为空。
 
 实际命令统一为：
 
