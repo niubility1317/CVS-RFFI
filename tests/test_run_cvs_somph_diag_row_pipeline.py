@@ -379,3 +379,39 @@ def test_parser_exposes_required_row_inputs() -> None:
         ]
     )
     assert selected.candidate == CANDIDATE_D1_B0_CAP
+
+    d93 = pipeline.parser().parse_args(
+        [
+            "--cache-manifest",
+            "cache.json",
+            "--authority-bundle",
+            "authority",
+            "--authority-commit-sha256",
+            "a" * 64,
+            "--phase1-checkpoint",
+            "checkpoint.pth",
+            "--sealed-runtime",
+            "runtime.pt",
+            "--method-lock",
+            "method.json",
+            "--output-root",
+            "output",
+            "--receiver",
+            "20-1",
+            "--seed",
+            "713101",
+            "--k-shot",
+            "1",
+            "--new-count",
+            "20",
+            "--device",
+            "cpu",
+            "--candidate",
+            "d93_paired_ground_transport_interaction",
+            "--ground-component-dir",
+            "ground",
+            "--ground-manifest-sha256",
+            "a" * 64,
+        ]
+    )
+    assert d93.candidate == "d93_paired_ground_transport_interaction"

@@ -44,6 +44,10 @@ from cvsrffi.stage2_d92_query_evaluation import (  # noqa: E402
     CANDIDATE_D92,
     run_d92_query_evaluation,
 )
+from cvsrffi.stage2_d93_query_evaluation import (  # noqa: E402
+    CANDIDATES_D93,
+    run_d93_query_evaluation,
+)
 from cvsrffi.stage2_predictor_bundle import sha256_file  # noqa: E402
 
 
@@ -308,21 +312,24 @@ def run_pipeline(
         ],
     )
 
-    if candidate in {CANDIDATE_D81, CANDIDATE_D92} and (
+    ground_candidates = {CANDIDATE_D81, CANDIDATE_D92, *CANDIDATES_D93}
+    if candidate in ground_candidates and (
         ground_component_dir is None or ground_manifest_sha256 is None
     ):
         raise SomphDiagRowPipelineError(
-            "D81/D92 requires a locked ground component directory and manifest SHA"
+            "ground candidate requires a locked component directory and manifest SHA"
         )
     diag_results: dict[str, dict[str, Any]] = {}
     diag_bindings: dict[str, dict[str, str]] = {}
     prediction_paths: dict[str, Path] = {}
-    if candidate in {CANDIDATE_D81, CANDIDATE_D92}:
-        evaluator = (
-            run_d81_query_evaluation
-            if candidate == CANDIDATE_D81
-            else run_d92_query_evaluation
-        )
+    if candidate in ground_candidates:
+        evaluator = run_d81_query_evaluation
+        evaluator_kwargs: dict[str, Any] = {}
+        if candidate == CANDIDATE_D92:
+            evaluator = run_d92_query_evaluation
+        elif candidate in CANDIDATES_D93:
+            evaluator = run_d93_query_evaluation
+            evaluator_kwargs["candidate"] = candidate
         diagnostic = evaluator(
             before_enrollment_package_root=build["states"]["before"][
                 "enrollment_package_root"
@@ -356,6 +363,7 @@ def run_pipeline(
             ground_manifest_sha256=str(ground_manifest_sha256),
             output_root=diag_root,
             device=device,
+            **evaluator_kwargs,
         )
         diag_results.update(diagnostic["states"])
         for state in ("before", "after"):
@@ -530,7 +538,9 @@ def parser() -> argparse.ArgumentParser:
     result.add_argument("--device", required=True)
     result.add_argument(
         "--candidate",
-        choices=tuple(CANDIDATES) + (CANDIDATE_D81, CANDIDATE_D92),
+        choices=tuple(CANDIDATES)
+        + (CANDIDATE_D81, CANDIDATE_D92)
+        + tuple(CANDIDATES_D93),
         default=CANDIDATE_D1,
     )
     result.add_argument("--ground-component-dir")

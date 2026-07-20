@@ -5,7 +5,7 @@
 - 研发ID：`ground_prototype_da_research_20260720`
 - 日期：2026-07-20
 - 操作者：Codex与并行研究子agent
-- 状态：方法检索与底层设计中，尚未实现或启动N607实验
+- 状态：D93本地实现与协议/数值测试已完成，待N607窄矩阵验证；尚无性能结论
 - 目标：研究如何把地面clean样本库压缩为与Phase1 checkpoint共同封存的聚合知识，并仅用一次固定LEO接收观测构成的target-old/target-new注册support学习可部署域适应，使性能尽可能逼近历史持有地面clean样本库的qKNN上界。
 - matched基线：D62、D81、D92、identity-only single-qKNN、ProtoNet CDA、direct ADV3B02；历史qKNN V42与target多view路线仅作信息上界或失败教训，不作为协议合法基线。
 
@@ -267,3 +267,65 @@ G\in\mathbb Z_8^{14\times6\times M\times160},
 - 分支：`codex/ground-prototype-da-rd`
 - 起始提交：`f65f8934`
 - 根目录`E:\type10-7`不是Git仓库；完成后只把简要索引镜像到根目录报告面，版本化主报告保存在本工作树。
+
+## D93实现与N607窄验证登记
+
+### 本轮只允许的输入
+
+D93不读取目标域或新类clean样本，不对同一物理IQ重新叠加星地信道，也不把同一received IQ的数学变换计作多个shot。Phase2唯一target输入是密封包内已经生成的一份固定`leo_*_weak received IQ`；其`z160/FFT96/RF32`来自同一次received IQ。地面端只读取多物理样本聚合后的int8 domain×class原型，不读取成员ID、样本feature、exemplar或clean IQ。最终target-old/target-new int8头只由target support产生，ground原型不直接生成query类别分数。
+
+可机检字段固定为：`target_clean_iq_access=false`、`target_new_clean_iq_access=false`、`same_physical_iq_multi_channel_views=false`、`phase2_channel_simulator_calls=0`、`ground_aggregate_prototypes_only=true`、`query_rows_used_for_transport_fit=0`。
+
+### 方法锁
+
+- 候选：`d93_paired_ground_transport_interaction`。
+- 主要差异：由6个旧类的ground聚合中心与合法target-old support中心拟合共享非正交低秩算子`B=I+U_n M V_i^T`，随后对target-old、target-new和每个query应用同一逆映射；D62头、target int8量化及全部query独立决策边界保持不变。
+- 选择理由：本轮不通过真实query比较两个D93形态。先锁定参数更少、无额外nuisance尺度项的interaction-only形态；`interaction_plus_nuisance_scale`保留为未运行消融，不能根据本轮query结果回头选择。
+- 固定超参数：`ridge_ratio=0.10`、`max_update_spectral_norm=0.50`、ground nuisance rank由地面残差participation ratio向上取整、`FFT96/RF32`保持D38/D62锁定的同received-IQ辅助块归一化与权重4。
+- 资源：闭式求解、0 optimizer step、无query batch优化、无dense query图；新增持久状态仅为FP16低秩系数/尺度与平移，正式审计须低于256KB。
+- 解释审计：逐类ground有效域数`D_eff`、stable rank、余弦距离`1e-4`近重复比例，以及target-old配对偏移在ground nuisance子空间中的覆盖率`rho`。这些值只解释正/负迁移，不参与本轮candidate、rank或阈值选择。
+
+### 压缩格式边界
+
+本轮不使用125或真实target误差选择地面压缩格式。下一代`Direct3-INT8`、`MeanINT8+TangentResidualINT4-G32`或带共享domain nuisance的`Redundancy-Aware G3-T4`，必须先用Phase1地面LODO与固定单次LEO弱伪目标锁定`M/bitwidth/rank/tau`，并确保每个原型聚合多个独立物理记录；禁止保存“每类3个单clean样本特征”。D93 target配对RMSE只用于D93算法诊断，不能进入压缩格式选择损失。
+
+### 本地实现与验证
+
+|文件|用途|
+|---|---|
+|`code/cvsrffi/stage2_d93_paired_ground_transport.py`|ground几何、配对transport、单样本变换、覆盖与冗余审计|
+|`code/cvsrffi/stage2_d93_query_evaluation.py`|复用密封D81 I/O，接入D62 target-support-only int8头与D93 scorer|
+|`code/scripts/run_cvs_somph_diag_row_pipeline.py`|D93候选行级分发|
+|`code/scripts/run_d93_125_stability.py`|冻结候选后的完整125八分片调度|
+|`tests/test_stage2_d93_paired_ground_transport.py`|K1非identity、拟合改善、资源与协议审计|
+|`tests/test_stage2_d93_query_evaluation.py`|D42/D62 int8头集成和全注册类评分|
+|`tests/test_run_cvs_somph_diag_row_pipeline.py`|行流水线CLI与分发回归|
+|`code/tests/test_d93_125_stability_threads.py`|125候选锁和CPU线程上限|
+
+本地`ssr-gpu`验证：`py_compile`通过；D93 core/query/row pipeline测试10/10通过。Pytest结束时Windows临时symlink清理产生已知`PermissionError`噪声，但进程退出码为0且测试结果为PASS；D42只读buffer警告不影响数值结果。
+
+### 预登记窄矩阵
+
+冻结同一candidate后只运行两个development诊断row，不做参数扫描：
+
+|row|receiver|seed|K|seen-new|作用|query后动作|
+|---|---|---:|---:|---:|---|---|
+|D93-dev-K10-N20|`8-8`|713101|10|20|检验旧/新/H/floor/遗忘的主工作点|只判定该冻结方法是否有正信号，不回调超参数|
+|D93-dev-K1-N20|`8-8`|713101|1|20|检验配对旧类监督能否避免D81/D92 K1逐值identity|只作K1机制诊断，不参与candidate选择|
+
+每个row内部仍覆盖三个物理ID互斥的LEO弱场景。matched比较使用同row D62/D81/D92与direct ADV3B02；每行必须报告`old_acc_before_increment`、`old_acc_after_increment`、`seen_new_acc`、`H_old_new`、`average_forgetting`、`min_old_class_acc`、逐类/混淆、`D_eff`、`rho`、配对RMSE、INT8一致性与资源。若K10的H/floor/遗忘没有联合正信号，或K1仍逐值identity/出现任一receiver旧类负增益，则D93不进入125；进入下一机制版本。若满足预登记晋级条件，冻结Git SHA后直接运行同一完整125，不再调整公式。
+
+### N607路径与待落地命令
+
+- 远端项目根：`/home/szu2070436088/2510044040/CV-SincNet`。
+- 计划隔离源码：`runs/d93_source_snapshot_20260720`。
+- 计划输出根：`runs/d93_paired_ground_transport_dev_20260720`。
+- 计划日志根：`logs/d93_paired_ground_transport_dev_20260720`。
+- Python：`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`。
+- checkpoint：`runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth`。
+- sealed runtime/method lock：`runs/d18_formal_k10_new5_rx20_1_seed713101_20260717_085303/input/`。
+- cache：`runs/d18_formal_k10_new5_rx20_1_seed713101_20260717_085303/cache_matrix/rx_8_8/seed_713101/cache_set.json`。
+- authority bundle：`runs/d81_comprehensive_125_v2auth_20260720/authority_controller/authority_final_retry1/authority_bundle_rx_8_8_seed_713101`。
+- ground组件：`runs/d19_ciaf_int8_proto_20260717_1039/input/int8_component`，manifest SHA256=`15b5e144f9af3989421d8e925c17758479c327be47e79222f6363dc63994629c`。
+
+启动前必须重新执行直连preflight、检查每GPU训练进程数、确认上述输入存在并计算`COMMIT.json` SHA256。实际GPU、PID、完整展开命令、日志和输出路径在落地后回填；每个子进程CPU线程上限2，不超过每GPU两项训练实验。
