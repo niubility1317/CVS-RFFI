@@ -41,7 +41,33 @@ D62与D81在注册类数增加后均出现系统性旧类遗忘。D65表明仅�
 
 ## N607启动信息
 
-尚未启动。完成本地验证与Git提交后填写精确的远端源快照、同步映射、SHA256、命令、Conda/Python环境、工作目录、日志、PID与GPU分配。每个子进程CPU线程上限固定为2，先检查GPU和现有进程，不干预其他任务。
+### 本地验证与版本
+
+- Git提交：`94e39f529e926a5898c8e6cb92fe555d70fede07`。
+- `ssr-gpu`中D92核心/集成测试7项通过；D81+D92联合回归22项通过。
+- `ruff`未安装，未执行该可选检查；`py_compile`和数值/集成测试均通过。
+- 远端隔离源码快照：`/home/szu2070436088/2510044040/CV-SincNet/runs/d92_source_snapshot_20260720`。
+- 远端输出根：`/home/szu2070436088/2510044040/CV-SincNet/runs/d92_registration_balanced_125_20260720`。
+- 远端日志根：`/home/szu2070436088/2510044040/CV-SincNet/logs/d92_registration_balanced_125_20260720`。
+- Python：`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`。
+
+### 同步文件与SHA256
+
+|本地相对路径|远端相对路径|SHA256|
+|---|---|---|
+|`code/cvsrffi/stage2_d92_registration_balanced_covariance.py`|`cvsrffi/stage2_d92_registration_balanced_covariance.py`|`00ad4b7990a106ceffa89b4349ccf236df739d9fbc50213239f97ace079be934`|
+|`code/cvsrffi/stage2_d92_query_evaluation.py`|`cvsrffi/stage2_d92_query_evaluation.py`|`5c4f4b86b4aba44fc9a4d8fe95b30428ae9a8c8b3da4cad3d8eeb86f6306356b`|
+|`code/scripts/probe_d92_registration_balanced_covariance.py`|`scripts/probe_d92_registration_balanced_covariance.py`|`d8c1de5e8fbda769a03f266efd57f4651e89e3004b414f584fef3add3b8a9ae6`|
+|`code/scripts/run_cvs_somph_diag_row_pipeline.py`|`scripts/run_cvs_somph_diag_row_pipeline.py`|`4556d84908f93aabfb60269449a19a43bcc0f8c2f46d915d1f7babc634797966`|
+|`code/scripts/run_d92_125_stability.py`|`scripts/run_d92_125_stability.py`|`a59e1b1d2805b5a2a49efff9e7af5e6901c5a07a124ebb3aa36e7c9a79788d3c`|
+|`code/scripts/summarize_d92_125_stability.py`|`scripts/summarize_d92_125_stability.py`|`7f69b03919ede05ec551c6f16c3645a19bb5763203567ae2f5a96e969adc0920`|
+
+### 启动前资源现场
+
+- 2026-07-20 14:08 CST直连预检通过；GPU0–4各已有2个D81行进程，GPU5–7各1个。
+- 不终止、不修改其他任务；遵守每GPU最多2项实验，首批只在GPU5–7各增加1个D92分片，其余5个分片在容量释放后补齐。
+- 每个D92子进程CPU线程上限固定为2，设备参数为`cuda:0`并通过`CUDA_VISIBLE_DEVICES`绑定物理GPU。
+- 精确PID、命令与清单SHA在实际启动后补充。
 
 ## 成功标准与风险
 
