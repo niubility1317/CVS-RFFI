@@ -898,6 +898,8 @@ D99作者已收到上述P0并在原两个独立文件中修复；修订版仍需
 
 第四轮作者新增`Phase1ValidationMethodLock`并实hash四份bytes，正常资源固定点更新为K10 wire 19,311B；专项`20 passed`、稳定相邻联合`47 passed`。第四次独立复审仍为`REVISE`。第一，真实Phase1 authority尚未provision，调用侧仍可同步构造method lock、external receipt和D99 lock并让margin audit得到`matches_phase1_lock=True`；copy/deepcopy/pickle后即使loader token identity丢失也可继续audit，说明token只能防进程内误用，不能授予权限。缺真实immutable authority envelope时，正式audit必须`formal_phase1_eligible=false`或fail-closed，不能把development自建链写成正式match。第二，bank自身resource可独立复算，但score/serialize只核metric receipt，未从dimensions重算metric resource；将`residual_covariance_mac_upper_bound=0`后同时重签metric与bank receipt，score和19,311B序列化仍成功。下一版在bank构造、score和serialize三处统一调用metric dimension公式验证，不能信任重签receipt。
 
+第五轮独立复审最终裁决为`ACCEPT_LOCAL_CORE_BLOCKED_AUTHORITIES`。仓库trusted authority envelope SHA保持`None`；任何调用侧自建method lock/receipt/D99 lock/envelope及其copy/deepcopy/pickle都无法通过formal precompute/audit，development输出强制`authority_status=BLOCKED`、`formal_phase1_eligible=false`、`matches_phase1_lock=false`、`formal_result_claimed=false`。统一metric资源验证也已在metric构造、bank构造、score和serialize四个边界从dimensions独立重算；把residual covariance MAC改为0并同时重签metric/bank fixed point仍全部拒绝。正常固定点保持query kernel 2,016 MAC、完整调用6,336 MAC、ground peak 1,756,736B、numeric logical state 15,068B、wire 19,311B。独立复审D99专项`20 passed`、稳定联合`47 passed`；主线用`ssr-gpu`环境Python复跑同一稳定联合也得到`47 passed`。该裁决只接受本地核心闭包，不授予正式Phase1 authority、corrected typed D81、N607或性能实验权限。
+
 ## typed D81提交907bd620独立复审：REVISE
 
 commit`907bd620`的专项与相关联合测试共`76 passed`，但独立复审发现其核心fit改变了历史D81定义：当前实现把全部registered old/new support送入20-step metric，而真实D81只用`Y_old` support拟合一次metric，冻结后再用全部old/new support拟合最终D62/D81 head。四类独立oracle攻击结果如下，差异远大于`2e-6`，属于方法改变而非浮点噪声。
