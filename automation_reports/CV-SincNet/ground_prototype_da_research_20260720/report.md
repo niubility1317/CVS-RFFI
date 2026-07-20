@@ -855,3 +855,33 @@ source-validation三份NPZ一致证明旧类原始label顺序`[0,1,2,3,4,5]`映�
 D99作者已形成纯核心初版，专项15/15、D81/D96/D97/D98/D99联合61/61通过，但独立复审裁决为`REVISE`，所以文件保持未提交且无性能结果。复审确认密度反权、加权几何、`D_eff`自适应rank≤4、PSD precision、class/support permutation、`1/K_c`、三block INT8 bank、K1共享尺度及逐query无状态成立；同时发现6类阻断：Student-t缺`-d·log h`尺度体积项；裸FP32中心可冒充聚合bundle；ground类可被调用方映射到new类参与coverage；margin audit接受任意features却自述Phase1-only；K10资源至少因遗漏`residual.T@residual`而低报28.07倍且resource未进入receipt；低ground coverage错误地同时关闭合法K≥2 all-class target residual metric。仓库仍无typed target D81 state，因此无public deploy fuse/predict是正确边界。
 
 D99作者已收到上述P0并在原两个独立文件中修复；修订版仍需新的独立复审。最终准入要求不变：Phase1每个K均不得降低worst-class floor，NLL必须严格改善且D81/metric-kernel双向rescue均非零；K1还必须产生非identity预测。target窄实验只允许matched K1/new20与K10/new20，同row`B-old/A-old/New`均不得下降，`H/floor`至少一项严格上升且forgetting不得增加；通过后才运行完整125，125不反向选择`rank/eta/nu/h/rho`公式。D96 standalone SRDA保留为`REVISE`，D97为`MERGE+REVISE`，D98只保留typed provenance和tail指标工具，不进入D99推理链。
+
+## D99第二次独立复审：仍为REVISE
+
+修订版专项`17 passed`，D81/D96/D97/D99联合`56 passed`，但新的独立复审仍裁决为`REVISE`，不得提交为晋级候选、发布N607或运行target窄实验。Student-t尺度体积项、typed INT8 ground local bundle、sealed `Y_old`映射、低coverage保留合法K≥2 target residual metric这4项已经修复；剩余阻断不属于一般单元测试覆盖不足，而是权限真实性和资源上界被对抗样例直接证伪。
+
+|阻断|独立攻击/实测|裁决|
+|---|---|---|
+|Phase1 validation自授权|任意raw feature、任意physical ID和任意64hex SHA可由`produce_phase1_validation_artifact`自行声明为`PHASE1_SOURCE_VALIDATION_ONLY`；名称为`target-query-*`的输入也成功通过|必须改为绑定producer、manifest、checkpoint、实际feature archive SHA和生命周期的external typed receipt；margin support bank同样需要Phase1 episode lifecycle|
+|query MAC低报|合法`C=2,K1,rank1`报告1,856 MAC，解析下界2,016 MAC，至少漏160维query侧precision transform/norm|重算完整逐query路径并加入固定对抗测试|
+|ground peak低报|合法`D=14,C=6`报告723,488B，保守同时存活数组下界1,133,088B，低报409,600B|必须覆盖全部`D×C×160`临时float64数组和真实生命周期|
+|serialized bytes低报|报告18,078B使用`resource=None`的metadata；receipt-bearing完整artifact为18,985B，低报907B|实际序列化对象必须包含resource并以完整artifact计数|
+|typed D81未接入|虽然commit`907bd620`新增typed state，D99仍是pending schema；随后独立审查又证实该typed state本身不等价于真实D81|D99第三轮只闭合自身provenance/resource；在corrected typed D81独立通过前保持fail-closed pending|
+
+因此本轮没有target性能指标，也没有新的old/new/H/floor/forgetting结果。测试通过只证明当前local core内部一致，不能覆盖source/target权限真实性、资源上界或历史D81语义等价。
+
+## typed D81提交907bd620独立复审：REVISE
+
+commit`907bd620`的专项与相关联合测试共`76 passed`，但独立复审发现其核心fit改变了历史D81定义：当前实现把全部registered old/new support送入20-step metric，而真实D81只用`Y_old` support拟合一次metric，冻结后再用全部old/new support拟合最终D62/D81 head。四类独立oracle攻击结果如下，差异远大于`2e-6`，属于方法改变而非浮点噪声。
+
+|K-shot|`log_diag`最大差|query logit最大差|判定|
+|---:|---:|---:|---|
+|1|0.197202|0.272931|FAIL|
+|5|0.270690|0.059278|FAIL|
+|10|0.304465|0.170045|FAIL|
+
+此外当前support receipt仅对调用者提供的raw arrays/labels/physical ID字符串自签，未绑定`VALIDATED_ONCE`、`capsule_id`、`split_id`、sealed row/support artifact、ordered registration state和feature-runtime/checkpoint receipt；`from_scorer()`也可接受development伪component。源码自hash只能发现漂移，不能授予外部数据权限或method-lock真实性。
+
+资源审查同样不闭合：没有真实wire serializer；logical/serialized未覆盖完整audit和receipt；peak遗漏support副本、registered feature、Torch optimizer/梯度状态及LDA内部临时量；逐query MAC遗漏raw288注册几何、归一化和INT8 decode。更严重的是每次score前后都重新读取并hash依赖源码、numeric arrays和完整audit/resource，这些文件I/O、SHA和序列化成本完全未计入query路径。
+
+修复链已冻结为：typed lifecycle artifact同时绑定old support、all-registered support、old/final registry、capsule/split/row receipt和Phase1 method-lock；只用old support拟合20-step metric，冻结后分别形成before old head与final all-class head；实际wire save/load报告完整bytes；external authority/dependency只在load-time验证一次，query只执行`typed immutable state + raw288`纯前向。至少覆盖2old+2new的K1/K5/K10独立oracle，以及6old+5/10/20new registry形状、固定old改变new不改metric、K1 fallback、伪authority/内部重签攻击、serializer往返和load后无文件I/O。修复前D97/D99均不得接入该state，更不得运行N607 target narrow或125。
