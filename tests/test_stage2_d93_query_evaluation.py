@@ -46,9 +46,9 @@ def test_d93_wraps_int8_target_head_and_scores_all_classes() -> None:
     new_y = tuple(handle for handle in new_classes for _ in range(5))
     wrapper = build_d93_top_level_fit(
         d42.fit_d42_unified_shrinkage_lda,
-        ground_prototypes=ground,
-        ground_mask=mask,
-        ground_classes=old_classes,
+        ground_prototypes=ground[:, ::-1],
+        ground_mask=mask[:, ::-1],
+        ground_classes=old_classes[::-1],
         ground_audit={
             "component_manifest_sha256": "1" * 64,
             "component_npz_sha256": "2" * 64,
@@ -75,6 +75,12 @@ def test_d93_wraps_int8_target_head_and_scores_all_classes() -> None:
     assert result.geometry_audit["formal_old_target_vectors_residual_int8"] is True
     assert result.geometry_audit["formal_new_target_vectors_residual_int8"] is True
     assert result.geometry_audit["d93_ground_direct_query_score_access"] is False
+    assert (
+        result.geometry_audit["d93_transport_audit"][
+            "ground_registry_reordered_to_target_old"
+        ]
+        is True
+    )
     assert result.resource_audit["d93_optimizer_steps"] == 0
     assert result.resource_audit["persistent_state_bytes"] < 256 * 1024
     assert result.resource_audit["trainable_parameters"] < 80_000

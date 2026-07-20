@@ -112,8 +112,18 @@ def build_d93_top_level_fit(
         config: Any = None,
     ) -> D93Result:
         old_registry = tuple(str(item) for item in old_classes)
-        if old_registry != locked_ground_classes:
+        if (
+            len(set(old_registry)) != len(old_registry)
+            or len(set(locked_ground_classes)) != len(locked_ground_classes)
+            or set(old_registry) != set(locked_ground_classes)
+        ):
             raise D93QueryEvaluationError("D93 ground/target-old class binding drift")
+        ground_index = {handle: index for index, handle in enumerate(locked_ground_classes)}
+        ground_order = np.asarray(
+            [ground_index[handle] for handle in old_registry], dtype=np.int64
+        )
+        ordered_ground_prototypes = np.asarray(ground_prototypes)[:, ground_order]
+        ordered_ground_mask = np.asarray(ground_mask)[:, ground_order]
         old_rows = np.asarray(old_support_features, dtype=np.float32)
         new_rows = np.asarray(new_support_features, dtype=np.float32)
         if (
@@ -126,8 +136,8 @@ def build_d93_top_level_fit(
         old_z160 = _normalize(old_rows[:, :160], "target-old z160").astype(np.float32)
         old_targets = _old_targets(old_support_labels, old_registry)
         transport = fit_paired_ground_transport(
-            ground_prototypes,
-            ground_mask,
+            ordered_ground_prototypes,
+            ordered_ground_mask,
             old_z160,
             old_targets,
             include_nuisance_scale=bool(include_nuisance_scale),
@@ -155,6 +165,9 @@ def build_d93_top_level_fit(
             ),
             "ground_component_logical_state_bytes": int(
                 ground_audit["ground_int8_component_logical_state_bytes"]
+            ),
+            "ground_registry_reordered_to_target_old": bool(
+                old_registry != locked_ground_classes
             ),
             "target_old_new_final_prototypes_from_target_support_only": True,
             "target_support_input_is_fixed_received_iq_only": True,

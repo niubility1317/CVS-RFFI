@@ -310,8 +310,8 @@ D93不读取目标域或新类clean样本，不对同一物理IQ重新叠加星�
 
 |row|receiver|seed|K|seen-new|作用|query后动作|
 |---|---|---:|---:|---:|---|---|
-|D93-dev-K10-N20|`8-8`|713101|10|20|检验旧/新/H/floor/遗忘的主工作点|只判定该冻结方法是否有正信号，不回调超参数|
-|D93-dev-K1-N20|`8-8`|713101|1|20|检验配对旧类监督能否避免D81/D92 K1逐值identity|只作K1机制诊断，不参与candidate选择|
+|D93-dev-K10-N20|`20-1`|713101|10|20|检验旧/新/H/floor/遗忘的主工作点|只判定该冻结方法是否有正信号，不回调超参数|
+|D93-dev-K1-N20|`20-1`|713101|1|20|检验配对旧类监督能否避免D81/D92 K1逐值identity|只作K1机制诊断，不参与candidate选择|
 
 每个row内部仍覆盖三个物理ID互斥的LEO弱场景。matched比较使用同row D62/D81/D92与direct ADV3B02；每行必须报告`old_acc_before_increment`、`old_acc_after_increment`、`seen_new_acc`、`H_old_new`、`average_forgetting`、`min_old_class_acc`、逐类/混淆、`D_eff`、`rho`、配对RMSE、INT8一致性与资源。若K10的H/floor/遗忘没有联合正信号，或K1仍逐值identity/出现任一receiver旧类负增益，则D93不进入125；进入下一机制版本。若满足预登记晋级条件，冻结Git SHA后直接运行同一完整125，不再调整公式。
 
@@ -324,8 +324,52 @@ D93不读取目标域或新类clean样本，不对同一物理IQ重新叠加星�
 - Python：`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`。
 - checkpoint：`runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth`。
 - sealed runtime/method lock：`runs/d18_formal_k10_new5_rx20_1_seed713101_20260717_085303/input/`。
-- cache：`runs/d18_formal_k10_new5_rx20_1_seed713101_20260717_085303/cache_matrix/rx_8_8/seed_713101/cache_set.json`。
-- authority bundle：`runs/d81_comprehensive_125_v2auth_20260720/authority_controller/authority_final_retry1/authority_bundle_rx_8_8_seed_713101`。
+- cache：`runs/d18_formal_k10_new5_rx20_1_seed713101_20260717_085303/cache_matrix/rx_20_1/seed_713101/cache_set.json`。
+- authority bundle：`runs/somph_stage2bc_leo_weak_cache_20260716/offline_controller/authority_bundle_rx_20_1_seed_713101`。`8-8/713101`在confirmation-only authority根中不存在，因此在访问query前改用已存在且与development seed匹配的`20-1/713101`，没有新建或重验数据。
 - ground组件：`runs/d19_ciaf_int8_proto_20260717_1039/input/int8_component`，manifest SHA256=`15b5e144f9af3989421d8e925c17758479c327be47e79222f6363dc63994629c`。
 
 启动前必须重新执行直连preflight、检查每GPU训练进程数、确认上述输入存在并计算`COMMIT.json` SHA256。实际GPU、PID、完整展开命令、日志和输出路径在落地后回填；每个子进程CPU线程上限2，不超过每GPU两项训练实验。
+
+### 远端同步与启动前现场
+
+- D93实现提交：`0e89085b292a95bb03e0756a31492dd225ef6cbd`。
+- 2026-07-20 16:04 CST直连preflight通过；8张RTX 3090均为10MiB、0%利用率，无GPU计算进程。
+- D93隔离源码由`d92_source_snapshot_retry2_20260720`复制后只覆盖下表4个文件；未修改远端共享源码。
+
+|远端隔离源码文件|SHA256|
+|---|---|
+|`cvsrffi/stage2_d93_paired_ground_transport.py`|`2ffdc866ee1f2c097b2cedd14982e53e9b9a1a4fe4f752f2516206b6eda4b8ec`|
+|`cvsrffi/stage2_d93_query_evaluation.py`|`cc7f02bb65e06f905d13c3b4acbc1fe4b7a7c7d22af1d3a5f2ae5103042ecdb5`|
+|`scripts/run_cvs_somph_diag_row_pipeline.py`|`9183c1ed86b7ae777d79de4736b443b01de11d7be2460a9f69e9f97c741b855c`|
+|`scripts/run_d93_125_stability.py`|`0694bb9da7730f1ac37b192a00bffcc6a059871c44ac81247e54e638ff2355ff`|
+
+远端4文件SHA逐项匹配且`py_compile`通过。开发authority `COMMIT.json` SHA256=`407a1dba5f666af0101ccd746a598d29f7183f884c5e4596bd54aee5199c7da3`。K10/K1输出目录在启动前均不存在。
+
+两条展开命令除`CUDA_VISIBLE_DEVICES`、`--k-shot`、输出与日志路径外完全一致：
+
+```bash
+env OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 NUMEXPR_NUM_THREADS=2 CVSRFFI_CPU_THREADS=2 CVSRFFI_CPU_INTEROP_THREADS=1 \
+CUDA_VISIBLE_DEVICES=<0-for-K10|1-for-K1> \
+PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/runs/d93_source_snapshot_20260720:/home/szu2070436088/2510044040/CV-SincNet \
+/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u \
+/home/szu2070436088/2510044040/CV-SincNet/runs/d93_source_snapshot_20260720/scripts/run_cvs_somph_diag_row_pipeline.py \
+--cache-manifest /home/szu2070436088/2510044040/CV-SincNet/runs/d18_formal_k10_new5_rx20_1_seed713101_20260717_085303/cache_matrix/rx_20_1/seed_713101/cache_set.json \
+--authority-bundle /home/szu2070436088/2510044040/CV-SincNet/runs/somph_stage2bc_leo_weak_cache_20260716/offline_controller/authority_bundle_rx_20_1_seed_713101 \
+--authority-commit-sha256 407a1dba5f666af0101ccd746a598d29f7183f884c5e4596bd54aee5199c7da3 \
+--phase1-checkpoint /home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth \
+--sealed-runtime /home/szu2070436088/2510044040/CV-SincNet/runs/d18_formal_k10_new5_rx20_1_seed713101_20260717_085303/input/sealed_feature_runtime.pt \
+--method-lock /home/szu2070436088/2510044040/CV-SincNet/runs/d18_formal_k10_new5_rx20_1_seed713101_20260717_085303/input/method_lock.json \
+--output-root /home/szu2070436088/2510044040/CV-SincNet/runs/d93_paired_ground_transport_dev_20260720/<k10_new20|k1_new20> \
+--receiver 20-1 --seed 713101 --k-shot <10|1> --new-count 20 --device cuda:0 \
+--candidate d93_paired_ground_transport_interaction \
+--ground-component-dir /home/szu2070436088/2510044040/CV-SincNet/runs/d19_ciaf_int8_proto_20260717_1039/input/int8_component \
+--ground-manifest-sha256 15b5e144f9af3989421d8e925c17758479c327be47e79222f6363dc63994629c
+```
+
+### 初始启动的技术失败与retry1
+
+初始K10/K1各自产生21行、1845B完整日志，均在`build_somph_offline_row_pair()`验证authority时以`authority commit contract drift` fail closed。两个进程已退出、GPU回到10MiB；输出中只有空的预创建子目录，没有预测、评分、optimizer step或性能指标。根因是误用了旧`cvs.phase2.somph_leo_weak_authority_commit.v1`开发bundle，而当前D92/D93消费者精确要求v2；这不是数据协议或D93算法失败。
+
+同一D18开发run已经存在与该cache共同生成的v2 `signed_authority_bundle`：`runs/d18_formal_k10_new5_rx20_1_seed713101_20260717_085303/signed_authority_bundle`，其`COMMIT.json` SHA256=`fdedd9cfdfbb5db9f8962ba529403042b7de7011570dff514e9a629a44695147`。retry1仅把两条命令的authority路径/SHA替换为该现有v2 bundle，并使用不可覆盖的新输出`retry1_k10_new20`、`retry1_k1_new20`和新日志；candidate、数据、support/query、K、超参数和代码均不变。
+
+retry1成功越过authority与密封包构建，但K10/K1均在首次D93 fit、任何query预测之前以`D93 ground/target-old class binding drift`停止。根因是地面组件类注册表按字典序保存，target-old注册表保持项目顺序；类别集合一致，仅tuple顺序不同。修复按类句柄把ground聚合原型/掩码重排到target-old顺序，继续拒绝缺类、重复类或集合漂移；该修复类置换等变，不增加类别专用规则。更新后D93联合测试12/12通过，其中集成测试显式使用逆序ground registry并验证重排审计。retry2使用新源码哈希和不可覆盖的`retry2_*`输出；数据、方法公式和超参数仍不变。
