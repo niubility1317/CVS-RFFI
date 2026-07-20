@@ -6,11 +6,11 @@ knowledge can only change a shared z160 distance; it never contributes a class
 logit or a target class mean.  Every registered class is represented by the
 same target-support construction and the query path is stateless.
 
-The current typed target-row D81 implementation is independently blocked: it
-fits its 20-step metric on all registered classes instead of sealed Y_old only.
+The typed target-row D81 local core now reproduces the historical old-only
+metric lifecycle, but its external formal capsule producer is still absent.
 Therefore this module deliberately exposes no base-logit/probability fusion or
-deploy prediction API.  The Phase1-locked eta values are sealed for a future
-corrected typed integration, while the current status remains local-core-only.
+deploy prediction API.  K20 also remains explicitly blocked until an external
+receiver-LODO K20 eta artifact is independently provisioned.
 """
 
 from __future__ import annotations
@@ -43,10 +43,10 @@ VALIDATION_MANIFEST_SCHEMA = "cvs.phase1.d99.validation_manifest.v1"
 VALIDATION_PRODUCER_ID = "d97_phase1_singleobs_lodo_validation_exporter"
 VALIDATION_LIFECYCLE = "PHASE1_SOURCE_VALIDATION_ONLY"
 DEPLOYMENT_STATUS = (
-    "LOCAL_CORE_BLOCKED_EXTERNAL_PHASE1_AUTHORITY_AND_CORRECTED_TYPED_D81_P0"
+    "LOCAL_CORE_BLOCKED_EXTERNAL_PHASE1_AND_D81_CAPSULE_AUTHORITIES"
 )
 REQUIRED_TYPED_D81_STATE_SCHEMA = (
-    "cvs.phase2.d81.typed_target_state.corrected_old_only_metric.pending"
+    "cvs.phase2.d81.typed_target_lifecycle.v2"
 )
 
 FEATURE_DIM = 288
@@ -55,7 +55,7 @@ FFT_DIM = 96
 RF_DIM = 32
 BLOCK_SLICES = (slice(0, 160), slice(160, 256), slice(256, 288))
 BLOCK_DIMS = (Z_DIM, FFT_DIM, RF_DIM)
-ALLOWED_K = (1, 5, 10)
+ALLOWED_K = (1, 5, 10, 20)
 INT8_MAX = 127.0
 EPSILON = 1.0e-12
 VALIDATION_ARCHIVE_MAGIC = b"D99-PHASE1-VALIDATION\0"
@@ -64,6 +64,10 @@ _VALIDATION_LOADER_TOKEN = object()
 # Provisioning must replace this with a separately reviewed immutable SHA; a
 # caller-supplied expected SHA can verify bytes but can never grant authority.
 TRUSTED_EXTERNAL_AUTHORITY_ENVELOPE_SHA256: str | None = None
+# No independently published receiver-LODO K20 selection artifact exists yet.
+# A caller-provided digest must not be allowed to provision this authority.
+TRUSTED_PHASE1_K20_LODO_ARTIFACT_SHA256: str | None = None
+BLOCKED_PHASE1_K20_LOCK = "BLOCKED_PHASE1_K20_LOCK"
 
 
 class D99RACGTMKError(ValueError):
@@ -207,6 +211,8 @@ class Phase1D99Lock:
     eta_k1: float
     eta_k5: float
     eta_k10: float
+    eta_k20: float
+    eta_k20_lodo_artifact_sha256: str | None
     phase1_receipt_sha256: str
     ground_aggregation_receipt_sha256: str
     ground_bundle_receipt_sha256: str
@@ -238,6 +244,7 @@ class Phase1D99Lock:
             self.eta_k1,
             self.eta_k5,
             self.eta_k10,
+            self.eta_k20,
         )
         if not all(math.isfinite(float(value)) for value in finite):
             raise D99RACGTMKError("D99 Phase1 lock values must be finite")
@@ -272,9 +279,18 @@ class Phase1D99Lock:
             raise D99RACGTMKError("D99 three-block weights must be positive and sum to one")
         if any(
             not 0.0 <= float(value) <= 1.0
-            for value in (self.eta_k1, self.eta_k5, self.eta_k10)
+            for value in (self.eta_k1, self.eta_k5, self.eta_k10, self.eta_k20)
         ):
             raise D99RACGTMKError("D99 Phase1 eta values must be in [0,1]")
+        if self.eta_k20_lodo_artifact_sha256 is not None:
+            object.__setattr__(
+                self,
+                "eta_k20_lodo_artifact_sha256",
+                _require_sha256(
+                    self.eta_k20_lodo_artifact_sha256,
+                    "eta_k20_lodo_artifact_sha256",
+                ),
+            )
         for value, name in (
             (self.phase1_receipt_sha256, "phase1_receipt_sha256"),
             (
@@ -304,7 +320,26 @@ class Phase1D99Lock:
             return float(self.eta_k5)
         if int(k_shot) == 10:
             return float(self.eta_k10)
+        if int(k_shot) == 20:
+            return float(self.eta_k20)
         raise D99RACGTMKError(f"D99 supports only K in {ALLOWED_K}")
+
+    @property
+    def k20_lock_status(self) -> str:
+        trusted = TRUSTED_PHASE1_K20_LODO_ARTIFACT_SHA256
+        if (
+            trusted is None
+            or self.eta_k20_lodo_artifact_sha256 is None
+            or self.eta_k20_lodo_artifact_sha256 != trusted
+        ):
+            return BLOCKED_PHASE1_K20_LOCK
+        return "PHASE1_K20_LODO_LOCK_PROVISIONED"
+
+
+def _bank_deployment_status(config: Phase1D99Lock, k_shot: int) -> str:
+    if int(k_shot) == 20 and config.k20_lock_status == BLOCKED_PHASE1_K20_LOCK:
+        return BLOCKED_PHASE1_K20_LOCK
+    return DEPLOYMENT_STATUS
 
 
 @dataclass(frozen=True)
@@ -1171,7 +1206,7 @@ def build_ground_geometry(
             np.min(bundle.physical_sample_count_floor_uint16)
         ),
         **ground_resource,
-        "combined_method_resource_status": "BLOCKED_CORRECTED_TYPED_D81_REVIEW_P0",
+        "combined_method_resource_status": DEPLOYMENT_STATUS,
     }
     class_means32 = _readonly(class_means, np.float32)
     basis32 = _readonly(basis, np.float32)
@@ -1330,7 +1365,9 @@ def _metric_resource_from_dimensions(
         "d99_incremental_optimizer_steps": 0,
         "trainable_parameters": 0,
         "d81_base_fit_included": False,
-        "d81_base_single_fit_resource_status": "BLOCKED_CORRECTED_TYPED_D81_REVIEW_P0",
+        "d81_base_single_fit_resource_status": (
+            "LOCAL_EXACT_PENDING_EXTERNAL_CAPSULE_PRODUCER"
+        ),
         "total_combined_resource_status": "BLOCKED_NOT_CLAIMED",
         "complete_method_resource_claim": False,
         "scope": "D99_incremental_only",
@@ -1654,6 +1691,13 @@ def fit_support_metric(
         "precision_formula": "I-B*diag(lambda/(1+lambda))*B.T",
         "full_coordinate_transport": False,
         "query_rows_used": 0,
+        "k20_phase1_lock_status": (
+            config.k20_lock_status if k_shot == 20 else "NOT_APPLICABLE"
+        ),
+        "formal_k20_eligible": bool(
+            k_shot == 20
+            and config.k20_lock_status == "PHASE1_K20_LODO_LOCK_PROVISIONED"
+        ),
     }
     resource = _metric_resource_from_dimensions(
         class_count=len(classes),
@@ -1795,7 +1839,8 @@ class TypedINT8MetricKernelBank:
                 np.asarray(self.support_counts),
             )
             or self.eta_phase1_locked != self.config.eta_for_k(self.metric.k_shot)
-            or self.deployment_status != DEPLOYMENT_STATUS
+            or self.deployment_status
+            != _bank_deployment_status(self.config, self.metric.k_shot)
         ):
             raise D99RACGTMKError("D99 typed support bank invariant drift")
         _require_sha256(self.bank_receipt_sha256, "bank_receipt_sha256")
@@ -1838,7 +1883,13 @@ def _bank_metadata(
         "phase1_locked_config": asdict(config),
         "eta_phase1_locked": config.eta_for_k(metric.k_shot),
         "quantization_audit": quantization,
-        "deployment_status": DEPLOYMENT_STATUS,
+        "deployment_status": _bank_deployment_status(config, metric.k_shot),
+        "k20_phase1_lock_status": config.k20_lock_status,
+        "k20_phase1_lock_required": metric.k_shot == 20,
+        "formal_k20_eligible": bool(
+            metric.k_shot == 20
+            and config.k20_lock_status == "PHASE1_K20_LODO_LOCK_PROVISIONED"
+        ),
         "required_typed_d81_state_schema": REQUIRED_TYPED_D81_STATE_SCHEMA,
     }
     if resource is not None:
@@ -1935,6 +1986,7 @@ def _bank_resource_from_numeric_state(
     indices: np.ndarray,
     class_scales: np.ndarray,
     metric: SupportMetricState,
+    config: Phase1D99Lock,
     actual_serialized_bytes: int,
 ) -> dict[str, Any]:
     rows = int(codes.shape[0])
@@ -1994,9 +2046,14 @@ def _bank_resource_from_numeric_state(
         "query_state_updates": 0,
         "persistent_query_batch_state_bytes": 0,
         "d81_base_fit_included": False,
-        "d81_base_single_fit_resource_status": "BLOCKED_CORRECTED_TYPED_D81_REVIEW_P0",
+        "d81_base_single_fit_resource_status": (
+            "LOCAL_EXACT_PENDING_EXTERNAL_CAPSULE_PRODUCER"
+        ),
         "total_combined_resource_status": "BLOCKED_NOT_CLAIMED",
         "complete_method_resource_claim": False,
+        "k20_phase1_lock_status": (
+            config.k20_lock_status if metric.k_shot == 20 else "NOT_APPLICABLE"
+        ),
         "scope": "D99_incremental_only",
     }
 
@@ -2021,6 +2078,7 @@ def _closed_bank_resource_receipt_artifact(
             indices=indices,
             class_scales=class_scales,
             metric=metric,
+            config=config,
             actual_serialized_bytes=actual,
         )
         receipt, artifact = _receipt_bearing_bank_artifact(
@@ -2245,6 +2303,7 @@ def build_typed_support_bank(
         bank_receipt_sha256=receipt,
         quantization_audit=quantization,
         resource_audit=resource,
+        deployment_status=_bank_deployment_status(config, k_shot),
     )
 
 
@@ -2559,6 +2618,7 @@ __all__ = [
     "ALLOWED_K",
     "AUTHORITY_ENVELOPE_SCHEMA",
     "BANK_SCHEMA",
+    "BLOCKED_PHASE1_K20_LOCK",
     "DEPLOYMENT_STATUS",
     "D99RACGTMKError",
     "ExternalGroundAggregationReceipt",
@@ -2579,6 +2639,7 @@ __all__ = [
     "SupportMetricState",
     "TypedINT8MetricKernelBank",
     "TRUSTED_EXTERNAL_AUTHORITY_ENVELOPE_SHA256",
+    "TRUSTED_PHASE1_K20_LODO_ARTIFACT_SHA256",
     "audit_quantized_margin",
     "build_ground_geometry",
     "build_typed_support_bank",

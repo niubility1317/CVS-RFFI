@@ -610,7 +610,7 @@ def test_support_permutation_is_rejected_by_external_ordered_row_receipt(exact_r
         )
 
 
-@pytest.mark.parametrize("k", [1, 5, 10])
+@pytest.mark.parametrize("k", [1, 5, 10, 20])
 def test_non_sorted_external_payload_order_matches_independent_oracle(
     tmp_path: Path, k: int
 ) -> None:
@@ -645,20 +645,64 @@ def test_non_sorted_external_payload_order_matches_independent_oracle(
     )
     query = all_support[0]
     np.testing.assert_array_equal(state.log_diag_fp32, log_diag)
-    np.testing.assert_allclose(
-        typed.score_d81_typed_local_diagnostic_old_before_logits(state, query),
-        d42.score_d42_unified_shrinkage_lda(
-            before, typed.raw_concat_to_d81_registered_feature(query)
-        ),
-        atol=2e-6, rtol=0,
+    actual_before = typed.score_d81_typed_local_diagnostic_old_before_logits(
+        state, query
     )
-    np.testing.assert_allclose(
-        typed.score_d81_typed_local_diagnostic_target_logits(state, query),
-        d42.score_d42_unified_shrinkage_lda(
-            final, typed.raw_concat_to_d81_registered_feature(query)
-        ),
-        atol=2e-6, rtol=0,
+    expected_before = d42.score_d42_unified_shrinkage_lda(
+        before, typed.raw_concat_to_d81_registered_feature(query)
     )
+    actual_final = typed.score_d81_typed_local_diagnostic_target_logits(state, query)
+    expected_final = d42.score_d42_unified_shrinkage_lda(
+        final, typed.raw_concat_to_d81_registered_feature(query)
+    )
+    np.testing.assert_allclose(actual_before, expected_before, atol=2e-6, rtol=0)
+    np.testing.assert_allclose(actual_final, expected_final, atol=2e-6, rtol=0)
+    if k == 20:
+        # The new K20 path must not merely fall under the historical tolerance:
+        # it is the same ordered D81 numerical lifecycle bit-for-bit.
+        np.testing.assert_array_equal(actual_before, expected_before)
+        np.testing.assert_array_equal(actual_final, expected_final)
+
+
+def test_six_old_twenty_new_k20_exact_inventory_wire_and_formal_block(
+    tmp_path: Path,
+) -> None:
+    scorer = _scorer(tmp_path / "resource-k20-max")
+    phase1, _ = _phase1_authority(scorer)
+    config = typed.D81TypedTargetConfig.from_scorer(scorer, phase1)
+    old_classes = tuple(f"old-{index}" for index in range(6))
+    new_classes = tuple(f"new-{index}" for index in range(20))
+    old = _support(old_classes, 20, seed=89201)
+    new = _support(new_classes, 20, seed=89202)
+    all_support = tuple(np.concatenate([old[index], new[index]]) for index in range(3))
+    row, _ = _row_authority(
+        phase1, old, all_support, old_classes, old_classes + new_classes
+    )
+    state = typed.fit_d81_typed_target_state(
+        *old, *all_support, d81_scorer=scorer, config=config,
+        phase1_authority=phase1, row_authority=row,
+    )
+    resource = state.resource_audit
+    assert typed.ALLOWED_K_SHOT == (1, 5, 10, 20)
+    assert resource["d46_base_component_fit_count"] == 84
+    assert resource["d62_additional_component_fit_count"] == 84
+    assert resource["d46_d62_component_fit_count"] == 168
+    assert resource["exact_lda_component_fit_macs"] == 8_482_848_768
+    assert resource["fisher_dense_algebra_macs"] == 16_052_649_984
+    assert resource["support_center_translation_macs_upper_bound"] == 374_016_000
+    assert resource["fit_mac_upper_bound"] == 25_096_476_544
+    assert resource["complete_fit_lifecycle_peak_bytes_upper_bound"] == 352_748_491
+    assert resource["query_mac_upper_bound_per_sample"] == 40_474
+    assert resource["head_numeric_logical_state_bytes"] == 20_032
+    raw = typed.serialize_d81_typed_target_state(state)
+    assert len(raw) == resource["total_wire_serialized_bytes"] == 35_746
+    assert resource["total_deployment_logical_bytes_including_ground"] == 25_848
+    for formal in (
+        typed.score_d81_typed_old_before_raw_logits,
+        typed.score_d81_typed_target_raw_logits,
+    ):
+        with pytest.raises(typed.D81TypedTargetStateError, match="formal query unavailable"):
+            formal(state, all_support[0][:1])
 
 
 def test_query_batch_equals_individual_and_state_tamper_fails(exact_row) -> None:

@@ -908,6 +908,28 @@ D99作者已收到上述P0并在原两个独立文件中修复；修订版仍需
 
 第五轮独立复审最终裁决为`ACCEPT_LOCAL_CORE_BLOCKED_AUTHORITIES`。仓库trusted authority envelope SHA保持`None`；任何调用侧自建method lock/receipt/D99 lock/envelope及其copy/deepcopy/pickle都无法通过formal precompute/audit，development输出强制`authority_status=BLOCKED`、`formal_phase1_eligible=false`、`matches_phase1_lock=false`、`formal_result_claimed=false`。统一metric资源验证也已在metric构造、bank构造、score和serialize四个边界从dimensions独立重算；把residual covariance MAC改为0并同时重签metric/bank fixed point仍全部拒绝。正常固定点保持query kernel 2,016 MAC、完整调用6,336 MAC、ground peak 1,756,736B、numeric logical state 15,068B、wire 19,311B。独立复审D99专项`20 passed`、稳定联合`47 passed`；主线用`ssr-gpu`环境Python复跑同一稳定联合也得到`47 passed`。该裁决只接受本地核心闭包，不授予正式Phase1 authority、corrected typed D81、N607或性能实验权限。
 
+### K20完整扩展
+
+主动目标包含K20，但此前D99与typed D81只支持K={1,5,10}，这是完整矩阵前的P0。扩展后typed D81支持K20并继续保持external ordered row；非排序K20对历史D81的`log_diag/before/final`均bit-exact。D99新增无默认值的独立`eta_k20`及K20 LODO artifact字段，禁止复制或回退`eta_k10`；仓库trusted K20 LODO SHA仍为`None`，所以任意caller SHA都只能得到`BLOCKED_PHASE1_K20_LOCK`、`formal_k20_eligible=false`。
+
+|K20固定点|数值|
+|---|---:|
+|typed D81 component fits|168（D46 84＋D62 84）|
+|typed D81 fit MAC|25,096,476,544|
+|typed D81 fit peak|352,748,491B|
+|typed D81 query MAC|40,474|
+|typed D81 head logical/wire|20,032B / 35,746B|
+|D99 bank logical/wire|159,124B / 163,810B|
+|D99 query MAC / peak|2,397,760 / 4,496,640B|
+|D81 ground＋D99 ground＋D81 head＋D99 bank persistent|198,832B（194.17KiB）|
+|距256KiB上限余量|63,312B|
+
+终审裁决为`ACCEPT_LOCAL_K20_BLOCKED_LODO_AUTHORITY`。typed专项`32 passed`、D99专项`23 passed`、稳定联合`111 passed`；主线复跑相同7文件联合亦得到`111 passed`。K20资源和状态预算通过，但真实Phase1 receiver-LODO K20 eta artifact未封存，故仍不能N607、target或确认矩阵。
+
+### 确认矩阵口径修正
+
+历史“125实验”是5个receiver×5个seed×5个cell：K10/new5、K10/new10、K10/new20、K5/new20、K1/new20；每job含3个场景。它不含K20和new2。当前active objective显式要求K={1,5,10,20}与seen-new={2,5,10,20}全组合，因此正式成功矩阵应为400个job、1,200个scenario row。后续保留历史125作为可比screen，但不得再把它称完整目标矩阵；除非用户明确改变因子集合，正式成功声明必须覆盖400/1,200。
+
 ## typed D81提交907bd620独立复审：REVISE
 
 commit`907bd620`的专项与相关联合测试共`76 passed`，但独立复审发现其核心fit改变了历史D81定义：当前实现把全部registered old/new support送入20-step metric，而真实D81只用`Y_old` support拟合一次metric，冻结后再用全部old/new support拟合最终D62/D81 head。四类独立oracle攻击结果如下，差异远大于`2e-6`，属于方法改变而非浮点噪声。

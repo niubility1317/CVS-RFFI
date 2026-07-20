@@ -4,6 +4,7 @@ from dataclasses import replace
 import copy
 import hashlib
 import inspect
+import math
 import pickle
 
 import numpy as np
@@ -25,7 +26,11 @@ TRACEABILITY_MATRIX = (
     ),
     ("D99-P0-5", "resource/serialization/receipt closure", "verified"),
     ("D99-P0-6", "low-coverage ground-only fallback", "verified"),
-    ("D99-BASE", "corrected typed D81 boundary; no generic fusion", "pending_review"),
+    (
+        "D99-BASE",
+        "typed D81 local exact-fit boundary; external capsule authority absent",
+        "verified",
+    ),
 )
 
 CLASSES = ("old-a", "old-b", "old-c", "new-x")
@@ -84,6 +89,8 @@ def _lock(
         eta_k1=0.1,
         eta_k5=0.25,
         eta_k10=0.3,
+        eta_k20=0.37,
+        eta_k20_lodo_artifact_sha256=None,
         phase1_receipt_sha256="1" * 64,
         ground_aggregation_receipt_sha256=(
             bundle.aggregation_receipt.receipt_sha256
@@ -224,6 +231,69 @@ def _fit_and_bank(
     return config, ground, metric, bank, (features, labels, physical)
 
 
+def _fit_k20_c26_development_fixture():
+    """Explicit non-authority K20 fixture for the maximal 6-old+20-new shape."""
+
+    rng = np.random.default_rng(992020)
+    domains = tuple(f"domain-{index}" for index in range(14))
+    old_classes = tuple(f"old-{index}" for index in range(6))
+    new_classes = tuple(f"new-{index}" for index in range(20))
+    classes = old_classes + new_classes
+    grid = rng.normal(size=(14, 6, d99.Z_DIM)).astype(np.float32)
+    grid /= np.linalg.norm(grid, axis=2, keepdims=True)
+    mask = np.ones((14, 6), dtype=bool)
+    scales = np.maximum(
+        np.max(np.abs(grid), axis=2) / 127.0, np.finfo(np.float16).tiny
+    ).astype(np.float16)
+    codes = np.clip(
+        np.rint(grid / scales.astype(np.float32)[:, :, None]), -127, 127
+    ).astype(np.int8)
+    bundle = d99.produce_typed_ground_aggregate_bundle(
+        codes_qint8=codes,
+        scales_fp16=scales,
+        domain_class_mask=mask,
+        physical_sample_count_floor_uint16=np.full(mask.shape, 16, dtype=np.uint16),
+        domain_ids=domains,
+        ground_old_registry=old_classes,
+        aggregation_receipt=_aggregation_receipt(),
+    )
+    config = _lock(
+        bundle=bundle,
+        ground_old_registry=old_classes,
+        eta_k20=0.37,
+        eta_k20_lodo_artifact_sha256=None,
+    )
+    ground = d99.build_ground_geometry(bundle, config=config)
+    rows, labels, physical = [], [], []
+    ground_mean = grid.mean(axis=0)
+    for class_index, class_name in enumerate(classes):
+        center = (
+            ground_mean[class_index]
+            if class_index < len(old_classes)
+            else rng.normal(size=d99.Z_DIM)
+        ).astype(np.float64)
+        center /= np.linalg.norm(center)
+        for shot in range(20):
+            z = center + 0.015 * rng.normal(size=d99.Z_DIM)
+            fft = rng.normal(size=d99.FFT_DIM)
+            rf = rng.normal(size=d99.RF_DIM)
+            fft[class_index % d99.FFT_DIM] += 3.0
+            rf[class_index % d99.RF_DIM] += 2.0
+            rows.append(np.concatenate([z, fft, rf]).astype(np.float32))
+            labels.append(class_name)
+            physical.append(f"physical-{class_name}-{shot}")
+    values = (
+        np.stack(rows), np.asarray(labels), np.asarray(physical)
+    )
+    metric = d99.fit_support_metric(
+        ground, *values, classes, old_classes, config=config
+    )
+    bank = d99.build_typed_support_bank(
+        metric, *values, classes, config=config
+    )
+    return bundle, config, ground, metric, bank, values, old_classes, classes
+
+
 def _validation_source(
     support_receipt_sha256: str,
     validation_features: np.ndarray,
@@ -334,11 +404,11 @@ def _load_validation_artifact(source, config) -> d99.Phase1ValidationArtifact:
     )
 
 
-def test_traceability_matrix_marks_only_corrected_typed_d81_as_pending() -> None:
+def test_traceability_matrix_has_no_pending_local_core_item() -> None:
     assert len(TRACEABILITY_MATRIX) == 7
     assert all(status in {"implemented", "verified", "pending_review"} for _id, _requirement, status in TRACEABILITY_MATRIX)
     pending = [item for item in TRACEABILITY_MATRIX if item[2] == "pending_review"]
-    assert pending == [TRACEABILITY_MATRIX[-1]]
+    assert pending == []
 
 
 def test_ground_builder_is_density_aware_rank_bounded_and_aggregate_only() -> None:
@@ -819,7 +889,7 @@ def test_resource_closure_is_incremental_and_optimizer_free() -> None:
     assert resource["optimizer_steps_scope"] == "D99_incremental_only"
     assert resource["d81_base_fit_included"] is False
     assert resource["d81_base_single_fit_resource_status"] == (
-        "BLOCKED_CORRECTED_TYPED_D81_REVIEW_P0"
+        "LOCAL_EXACT_PENDING_EXTERNAL_CAPSULE_PRODUCER"
     )
     assert resource["total_combined_resource_status"] == "BLOCKED_NOT_CLAIMED"
     assert resource["complete_method_resource_claim"] is False
@@ -961,10 +1031,11 @@ def test_d14_c6_ground_peak_counts_all_live_dense_float64_arrays() -> None:
 
 def test_public_surface_has_no_generic_fuse_or_base_logit_entry() -> None:
     assert d99.DEPLOYMENT_STATUS == (
-        "LOCAL_CORE_BLOCKED_EXTERNAL_PHASE1_AUTHORITY_AND_CORRECTED_TYPED_D81_P0"
+        "LOCAL_CORE_BLOCKED_EXTERNAL_PHASE1_AND_D81_CAPSULE_AUTHORITIES"
     )
-    assert d99.REQUIRED_TYPED_D81_STATE_SCHEMA.endswith("pending")
-    assert "corrected_old_only_metric" in d99.REQUIRED_TYPED_D81_STATE_SCHEMA
+    assert d99.REQUIRED_TYPED_D81_STATE_SCHEMA == (
+        "cvs.phase2.d81.typed_target_lifecycle.v2"
+    )
     assert not any("fuse" in name or "predict" in name for name in d99.__all__)
     for name in d99.__all__:
         function = getattr(d99, name, None)
@@ -981,3 +1052,144 @@ def test_public_surface_has_no_generic_fuse_or_base_logit_entry() -> None:
                 "old_classes",
                 "new_classes",
             }
+
+
+@pytest.fixture(scope="module")
+def k20_c26_development():
+    return _fit_k20_c26_development_fixture()
+
+
+def test_k20_lock_is_explicit_independent_and_blocked_without_lodo_artifact() -> None:
+    signature = inspect.signature(d99.Phase1D99Lock)
+    assert signature.parameters["eta_k20"].default is inspect.Parameter.empty
+    assert (
+        signature.parameters["eta_k20_lodo_artifact_sha256"].default
+        is inspect.Parameter.empty
+    )
+    config = _lock(eta_k20=0.37, eta_k20_lodo_artifact_sha256=None)
+    assert config.eta_for_k(20) == pytest.approx(0.37)
+    assert config.eta_k20 != config.eta_k10
+    assert config.k20_lock_status == d99.BLOCKED_PHASE1_K20_LOCK
+    assert d99.TRUSTED_PHASE1_K20_LODO_ARTIFACT_SHA256 is None
+    changed = _lock(eta_k20=0.41, eta_k20_lodo_artifact_sha256=None)
+    assert changed.eta_for_k(20) == pytest.approx(0.41)
+    assert changed.eta_for_k(10) == pytest.approx(0.3)
+    assert changed.lock_digest != config.lock_digest
+    # A caller-supplied digest cannot self-provision missing external authority.
+    forged = _lock(eta_k20_lodo_artifact_sha256="f" * 64)
+    assert forged.k20_lock_status == d99.BLOCKED_PHASE1_K20_LOCK
+
+
+def test_k20_c26_bank_one_over_k_scale_resource_wire_and_persistent_budget(
+    k20_c26_development,
+) -> None:
+    bundle, config, _ground, metric, bank, values, _old, classes = k20_c26_development
+    resource = bank.resource_audit
+    assert d99.ALLOWED_K == (1, 5, 10, 20)
+    assert metric.k_shot == 20
+    assert metric.fit_audit["k20_phase1_lock_status"] == d99.BLOCKED_PHASE1_K20_LOCK
+    assert metric.fit_audit["formal_k20_eligible"] is False
+    assert bank.support_counts == (20,) * 26
+    assert bank.eta_phase1_locked == pytest.approx(config.eta_k20)
+    assert bank.deployment_status == d99.BLOCKED_PHASE1_K20_LOCK
+    assert bank.quantization_audit["class_count_normalization"] == "logsumexp_minus_log_Kc"
+    assert bank.quantization_audit["class_scale_source"] == "support_only_uniform_class_formula"
+    assert np.all(bank.class_scales_fp16 > 0)
+
+    decoded = d99.decode_support_bank(bank)
+    query = values[0][:1]
+    distance = d99._pair_distance_squared(
+        d99.normalize_feature_blocks(query).astype(np.float64),
+        decoded.astype(np.float64), metric, config,
+    )
+    local = distance[:, bank.class_indices_int16 == 0]
+    h = float(bank.class_scales_fp16[0])
+    kernel = (
+        -config.kernel_volume_gamma * config.kernel_effective_dim * math.log(h)
+        - 0.5 * (config.student_nu + config.kernel_effective_dim)
+        * np.log1p(local / (config.student_nu * h * h))
+    )
+    maximum = np.max(kernel, axis=1, keepdims=True)
+    expected_class0 = maximum[:, 0] + np.log(
+        np.sum(np.exp(kernel - maximum), axis=1)
+    ) - math.log(20)
+    logits = d99.score_metric_kernel_raw_logits(bank, query)
+    np.testing.assert_allclose(logits[:, 0], expected_class0, atol=2e-6, rtol=0)
+
+    assert resource["logical_runtime_numeric_state_bytes"] == 159_124
+    assert resource["actual_serialized_runtime_artifact_bytes"] == 163_810
+    assert resource["support_fit_mac_upper_bound"] == 14_112_000
+    assert resource["support_fit_dense_linear_algebra_flop_upper_bound"] == 36_956_160
+    assert resource["support_decode_normalize_mac_per_prediction_call"] == 748_800
+    assert resource["query_kernel_pair_mac_upper_bound"] == 1_647_360
+    assert resource["query_precision_norm_mac_upper_bound"] == 160
+    assert resource["query_kernel_mac_upper_bound"] == 1_647_520
+    assert resource["query_mac_upper_bound"] == 2_397_760
+    assert resource["peak_transient_bytes_upper_bound"] == 4_496_640
+    assert resource["k20_phase1_lock_status"] == d99.BLOCKED_PHASE1_K20_LOCK
+    wire = d99._serialize_receipt_bearing_bank(bank)
+    assert len(wire) == 163_810
+    assert b'"deployment_status":"BLOCKED_PHASE1_K20_LOCK"' in wire
+
+    ground_bundle_numeric = sum(
+        value.nbytes
+        for value in (
+            bundle.codes_qint8,
+            bundle.scales_fp16,
+            bundle.domain_class_mask,
+            bundle.physical_sample_count_floor_uint16,
+        )
+    )
+    assert ground_bundle_numeric == 13_860
+    complete_ground_typed_d81_d99_persistent = (
+        5_816 + ground_bundle_numeric + 20_032
+        + resource["logical_runtime_numeric_state_bytes"]
+    )
+    assert complete_ground_typed_d81_d99_persistent == 198_832
+    assert complete_ground_typed_d81_d99_persistent < 256 * 1024
+    assert len(classes) == 26
+
+
+def test_k20_c26_support_order_class_permutation_batch_and_receipt_regression(
+    k20_c26_development,
+) -> None:
+    _bundle_value, config, ground, metric, bank, values, old_classes, classes = (
+        k20_c26_development
+    )
+    features, labels, physical = values
+    reverse = np.arange(len(features))[::-1]
+    reordered_metric = d99.fit_support_metric(
+        ground, features[reverse], labels[reverse], physical[reverse],
+        classes, old_classes, config=config,
+    )
+    reordered_bank = d99.build_typed_support_bank(
+        reordered_metric, features[reverse], labels[reverse], physical[reverse],
+        classes, config=config,
+    )
+    assert reordered_metric.metric_receipt_sha256 == metric.metric_receipt_sha256
+    assert reordered_bank.bank_receipt_sha256 == bank.bank_receipt_sha256
+    np.testing.assert_array_equal(reordered_bank.codes_qint8, bank.codes_qint8)
+
+    permutation = np.roll(np.arange(len(classes)), 7)
+    permuted_classes = tuple(classes[index] for index in permutation)
+    permuted_metric = d99.fit_support_metric(
+        ground, features, labels, physical, permuted_classes, old_classes,
+        config=config,
+    )
+    permuted_bank = d99.build_typed_support_bank(
+        permuted_metric, features, labels, physical, permuted_classes, config=config,
+    )
+    query = features[:3]
+    together = d99.score_metric_kernel_raw_logits(bank, query)
+    separate = np.concatenate(
+        [d99.score_metric_kernel_raw_logits(bank, query[index:index + 1])
+         for index in range(len(query))],
+        axis=0,
+    )
+    np.testing.assert_array_equal(together, separate)
+    np.testing.assert_allclose(
+        d99.score_metric_kernel_raw_logits(permuted_bank, query),
+        together[:, permutation], atol=2e-6, rtol=0,
+    )
+    assert d99._verify_metric_numeric_resource(metric) is True
+    assert d99._verify_bank_numeric_resource_and_receipt(bank) is True

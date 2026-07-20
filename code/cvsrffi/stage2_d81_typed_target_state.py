@@ -42,7 +42,7 @@ PHASE1_AUTHORITY_SCHEMA = "cvs.phase1.d81.external_authority.v1"
 ROW_AUTHORITY_SCHEMA = "cvs.phase2.d81.external_row_authority.v1"
 DEPLOYMENT_STATUS = "LOCAL_CORE_PENDING_EXTERNAL_CAPSULE_PRODUCER_AND_REVIEW"
 PROTOCOL_SCHEMA = "p2_min_v1"
-ALLOWED_K_SHOT = (1, 5, 10)
+ALLOWED_K_SHOT = (1, 5, 10, 20)
 MAGIC = b"D81TYP2\x00"
 ARRAY_ORDER = (
     "log_diag_fp32",
@@ -476,7 +476,7 @@ def _support_closure(
         raise D81TypedTargetStateError(f"{scope} support closure drift")
     counts = tuple(sum(label == class_id for label in text_labels) for class_id in classes)
     if len(set(counts)) != 1 or counts[0] not in ALLOWED_K_SHOT:
-        raise D81TypedTargetStateError(f"{scope} must be balanced K1/K5/K10")
+        raise D81TypedTargetStateError(f"{scope} must be balanced K1/K5/K10/K20")
     rank = {value: index for index, value in enumerate(classes)}
     # The external capsule order is authoritative.  No class, physical-ID, or
     # lexical canonicalization is allowed after the row receipt is sealed.
