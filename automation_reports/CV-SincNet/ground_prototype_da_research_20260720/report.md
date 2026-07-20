@@ -793,7 +793,7 @@ P0阻塞是远端不存在`cvs.phase1.runtime_checkpoint_parity_receipt.v1`兼�
 
 该阻断属于发布预登记字节口径修复，不是实验失败或参数重试。下一次继续前只接受已landed且整体SHA匹配的同一ZIP，并要求远端关键成员逐项匹配上表；不得重打包、覆盖或放宽哈希门。
 
-本阶段只授权唯一runner执行parity，不授权feature export、LODO或target访问。重新preflight并确认GPU0可用、run/log根仍不存在后，建立独立run/log目录，核对源码包与脚本SHA，使用远端`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`从隔离源码运行：
+本阶段只授权唯一runner执行parity，不授权feature export、LODO、runtime manifest生成、exporter binding或target访问。重新preflight并确认GPU0可用、已landed run/log状态与报告一致且locks为空后，核对源码包与脚本SHA。固定CWD为`/home/szu2070436088/2510044040/CV-SincNet/runs/d97_phase1_singleobs_lodo_20260720_v1/source_798dedfd`，使用远端`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`从隔离源码运行：
 
 ```bash
 env PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/runs/d97_phase1_singleobs_lodo_20260720_v1/source_798dedfd/code \
@@ -807,7 +807,44 @@ env PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/runs/d97_phase1_singleo
   --device cuda:0 --max-abs-tolerance 1e-5
 ```
 
-stdout/stderr固定到`/home/szu2070436088/2510044040/CV-SincNet/logs/d97_phase1_singleobs_lodo_20260720_v1/parity_validation.out`。成功条件是进程exit0、receipt/vector/stdout均完整且SHA已回收、`resolved_device=cuda:0`、`batch_sizes=[1,8,256]`、最大delta≤`1e-5`、checkpoint/runtime SHA匹配，并用同一隔离源码再次通过exporter exact development binding。失败时不得自动重试、不得修改参数或runtime/checkpoint；返回完整日志与GPU/进程证据给主线。状态转换只允许`LOCAL_VERIFIED→LANDED→RUNNING→ARTIFACTS_COMPLETE`，本阶段不能进入`ANALYZED`性能结论。
+detached wrapper固定使用上述CWD和child command；wrapper PID写入`/home/szu2070436088/2510044040/CV-SincNet/runs/d97_phase1_singleobs_lodo_20260720_v1/parity_validation.pid`，child退出码以不可覆盖方式写入同目录`parity_validation.exit`。runner必须记录launch PID、`nvidia-smi`中的GPU0进程、完整cmdline、CWD、启动时间和完成时间；每次短SSH后验证本地`ssh.exe`与N607/bridge TCP22均为0。
+
+本阶段成功条件仅是进程exit0、receipt/vector/stdout/exit-status均完整且SHA已回收、`resolved_device=cuda:0`、`batch_sizes=[1,8,256]`、最大delta≤`1e-5`、checkpoint/runtime SHA匹配。不得在远端临时生成runtime manifest或调用exporter binding。主线回收真实receipt SHA后，才在本地用`apply_patch`生成runtime manifest、selection-salt、grid与后续config，完成本地exact binding、测试和Git提交，再交由同一runner执行下一阶段。失败时不得自动重试、不得修改参数或runtime/checkpoint；返回完整日志、PID/exit和GPU/断连证据给主线。状态转换只允许`LOCAL_VERIFIED→LANDED→RUNNING→ARTIFACTS_COMPLETE`，本阶段不能进入`ANALYZED`性能结论。
+
+### Development parity执行结果
+
+本轮最终状态为`PARITY_NUMERICAL_GATE_FAIL / NOT_ARTIFACTS_COMPLETE`，不是性能结果。第一次landing因CRLF/LF预登记SHA口径错误在脚本执行前正确停止；修订报告提交`131815384686fda6cd9e7dd72b5cdb877644bb7b`锁定archive成员SHA后，唯一runner使用同一已landed包启动一次parity，未重试、未改seed/threshold/runtime，也未运行export、LODO、runtime manifest、binding或target访问。
+
+|状态|证据|
+|---|---|
+|`LOCAL_VERIFIED`|Git提交、ZIP整体和关键成员SHA通过|
+|`LANDED`|隔离源码落地，D98/D99均不在包，`py_compile`通过|
+|`RUNNING`|wrapper PID=`1241943`，GPU0；child使用绝对脚本/资产路径和固定`PYTHONPATH`|
+|`ARTIFACTS_COMPLETE`|未达到；exit=`1`，locks成员数0，无receipt/vector|
+
+实际child CWD记录为`/home/szu2070436088`，而非后来补充预登记的隔离source CWD；但脚本、checkpoint、runtime、output均使用绝对路径，且脚本按`__file__`重建`REPO_ROOT/CODE_ROOT`，所以该偏差需要记录但没有证据表明它造成数值差异。实际Python为`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`，设备为`cuda:0`，参数为`input_len=256/parity_seed=20260720/parity_rows=8/tolerance=1e-5`。完成后GPU0恢复0%/10MiB且无计算进程。
+
+|batch|feature最大绝对差|logit最大绝对差|门槛|裁决|
+|---:|---:|---:|---:|---|
+|1|0|0|`1e-5`|通过|
+|8|`1.0484457015991211e-4`|`2.4023056030273438e-3`|`1e-5`|失败|
+|256|`1.3887882232666016e-4`|`2.3717880249023438e-3`|`1e-5`|失败|
+
+失败证据回收到`E:\type10-7\code\snapshots\d97_phase1_singleobs_lodo_20260720_v1\remote_artifacts`：
+
+|文件|字节|SHA256|
+|---|---:|---|
+|`parity_validation.out`|1,139|`763e35354d67aae203ce217b7717662ce7b6136b30a69de1208efb686c138a66`|
+|`parity_validation.pid`|8|`bf7102f72c23778c6033e5183d35f9dc3585d3a1d0166f613077c3148d0def91`|
+|`parity_validation.exitcode`|2|`4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865`|
+
+历史b202生成日志曾报告同一checkpoint重建`missing/unexpected/skipped=0`、`input_len=256`，且其历史单batch探针中`base_eager_vs_torchscript_feature/logit=0/0`。历史PASS只覆盖旧seed、单batch8和旧脚本门，不能覆盖本次`[1,8,256]`新固定探针。当前形态最像batch>1时eager与traced TorchScript使用不同CUDA数值路径，约`1e-4`的z误差经分类头放大到约`2.4e-3`；仍不能排除当前eager重建代码/依赖与历史导出环境漂移。不得通过换seed、放宽阈值或CPU运行把它改成PASS。
+
+source-validation三份NPZ一致证明旧类原始label顺序`[0,1,2,3,4,5]`映射为`[14-10,14-7,20-15,20-19,6-15,8-20]`；独立mapping artifact SHA=`97af6115b51a6a3252e22315e40183c4c3efd7ccfeb1f16a61710028f72fda7f`和strict plan使用相同顺序。后续runtime manifest必须同时绑定checkpoint SHA、mapping SHA和该顺序，不能只依赖NPZ首次出现顺序。
+
+第二个已在Git allowlist中的历史runtime为`f119e8cb3f6beda95f0d545205e91b43e4a557af2fd1d025e95d2edf2b8e6e2a`，远端4,613,201B、CPU TorchScript加载成功、forward同为`(Tensor,Tensor)`，D18 method lock与row log把它和同一checkpoint SHA配对；但未找到独立生成命令或checkpoint→runtime parity receipt。它只能进入新的、事先提交的v2软件实现验证，不能因b202失败自动切换或继承历史PASS。
+
+协议合法的下一步先是non-authority数值诊断：固定现有seed/batch/threshold，比较eager↔eager、runtime↔runtime、fresh trace↔eager/旧runtime，以及CPU/CUDA、deterministic、TF32、cuDNN设置和PyTorch/CUDA/cuDNN版本；不写PASS receipt。若旧runtime存在稳定语义差异，则拒绝绑定并从冻结checkpoint+代码生成新的不可覆盖runtime，再重新通过原`[1,8,256]/1e-5`门。正式D97 Phase1 export继续阻断。
 
 ## 下一轮唯一集成候选D99
 
@@ -815,4 +852,6 @@ stdout/stderr固定到`/home/szu2070436088/2510044040/CV-SincNet/logs/d97_phase1
 
 其核心收缩为：ground权重同时受`rho`、target偏移能量、`D_eff`和旧类support数量控制；target within-class basis按全部注册类平衡估计且rank≤4，K1时严格为0；最终非正交`P_z=Sigma_z^{-1}`只降低已知nuisance方向权重，不执行D93式全坐标transport。Student-t局部头保留`1/K_c`归一化，并用Phase1冻结的共享/类内尺度抑制异常support与过宽类别侵入。D81与metric-kernel只使用Phase1 receiver-LODO冻结的`eta_K`做一次row-global融合，target阶段不做K折D81重训，也不学习classwise alpha。
 
-D99尚无实现或性能结果。准入要求比D97更严格：Phase1每个K均不得降低worst-class floor，NLL必须严格改善且D81/metric-kernel双向rescue均非零；K1还必须产生非identity预测。target窄实验只允许matched K1/new20与K10/new20，同row`B-old/A-old/New`均不得下降，`H/floor`至少一项严格上升且forgetting不得增加；通过后才运行完整125，125不反向选择`rank/eta/nu/h/rho`公式。D96 standalone SRDA保留为`REVISE`，D97为`MERGE+REVISE`，D98只保留typed provenance和tail指标工具，不进入D99推理链。
+D99作者已形成纯核心初版，专项15/15、D81/D96/D97/D98/D99联合61/61通过，但独立复审裁决为`REVISE`，所以文件保持未提交且无性能结果。复审确认密度反权、加权几何、`D_eff`自适应rank≤4、PSD precision、class/support permutation、`1/K_c`、三block INT8 bank、K1共享尺度及逐query无状态成立；同时发现6类阻断：Student-t缺`-d·log h`尺度体积项；裸FP32中心可冒充聚合bundle；ground类可被调用方映射到new类参与coverage；margin audit接受任意features却自述Phase1-only；K10资源至少因遗漏`residual.T@residual`而低报28.07倍且resource未进入receipt；低ground coverage错误地同时关闭合法K≥2 all-class target residual metric。仓库仍无typed target D81 state，因此无public deploy fuse/predict是正确边界。
+
+D99作者已收到上述P0并在原两个独立文件中修复；修订版仍需新的独立复审。最终准入要求不变：Phase1每个K均不得降低worst-class floor，NLL必须严格改善且D81/metric-kernel双向rescue均非零；K1还必须产生非identity预测。target窄实验只允许matched K1/new20与K10/new20，同row`B-old/A-old/New`均不得下降，`H/floor`至少一项严格上升且forgetting不得增加；通过后才运行完整125，125不反向选择`rank/eta/nu/h/rho`公式。D96 standalone SRDA保留为`REVISE`，D97为`MERGE+REVISE`，D98只保留typed provenance和tail指标工具，不进入D99推理链。
