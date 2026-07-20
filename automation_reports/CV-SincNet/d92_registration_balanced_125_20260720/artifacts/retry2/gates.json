@@ -1,0 +1,844 @@
+{
+  "direct_ADV3B02_K1": {
+    "every_receiver_delta_ge_0": null,
+    "overall_delta_ge_0p02": null,
+    "paired_95ci_lower_gt_0": null,
+    "pass": null,
+    "status": "MISSING_NOT_RUN"
+  },
+  "executed_performance_gates_pass": false,
+  "executed_performance_status": "FAIL",
+  "k10_absolute": {
+    "10": {
+      "b_old_acc": 0.861111111111111,
+      "b_pooled_old_class_floor": 0.7333333333333333,
+      "c_old_acc": 0.7253333333333333,
+      "c_pooled_old_class_floor": 0.4826666666666667,
+      "checks": {
+        "b_old_acc_ge_0p92": false,
+        "b_pooled_old_class_floor_ge_0p88": false,
+        "c_old_acc_ge_0p92": false,
+        "c_pooled_old_class_floor_ge_0p88": false,
+        "seen_new_acc_ge_0.90": false
+      },
+      "h_old_new": 0.6899105407478333,
+      "pass": false,
+      "row_count": 75,
+      "seen_new_acc": 0.6635333333333333
+    },
+    "20": {
+      "b_old_acc": 0.861111111111111,
+      "b_pooled_old_class_floor": 0.7333333333333333,
+      "c_old_acc": 0.7133333333333334,
+      "c_pooled_old_class_floor": 0.47333333333333333,
+      "checks": {
+        "b_old_acc_ge_0p92": false,
+        "b_pooled_old_class_floor_ge_0p88": false,
+        "c_old_acc_ge_0p92": false,
+        "c_pooled_old_class_floor_ge_0p88": false,
+        "seen_new_acc_ge_0.86": false
+      },
+      "h_old_new": 0.6945507271729209,
+      "pass": false,
+      "row_count": 75,
+      "seen_new_acc": 0.6815
+    },
+    "5": {
+      "b_old_acc": 0.861111111111111,
+      "b_pooled_old_class_floor": 0.7333333333333333,
+      "c_old_acc": 0.7618888888888888,
+      "c_pooled_old_class_floor": 0.5446666666666666,
+      "checks": {
+        "b_old_acc_ge_0p92": false,
+        "b_pooled_old_class_floor_ge_0p88": false,
+        "c_old_acc_ge_0p92": false,
+        "c_pooled_old_class_floor_ge_0p88": false,
+        "seen_new_acc_ge_0.92": false
+      },
+      "h_old_new": 0.7466778255527917,
+      "pass": false,
+      "row_count": 75,
+      "seen_new_acc": 0.7413333333333334
+    }
+  },
+  "k1_old_adaptation_gain": {
+    "checks": {
+      "every_receiver_old_adaptation_gain_ge_0": false,
+      "overall_old_adaptation_gain_ge_0": false
+    },
+    "overall_mean": -0.24111111111111108,
+    "pass": false,
+    "receiver_mean": {
+      "20-1": -0.28444444444444444,
+      "3-19": -0.20388888888888887,
+      "7-14": -0.27444444444444444,
+      "7-7": -0.23555555555555555,
+      "8-8": -0.20722222222222222
+    },
+    "row_count": 75
+  },
+  "k5_matched_new20": {
+    "all_four_metrics_drop_le_3pp": false,
+    "comparison_count": 75,
+    "comparisons": [
+      {
+        "c_old_acc_drop_pp": 0.8333333333333304,
+        "c_old_floor_drop_pp": 9.999999999999998,
+        "h_old_new_drop_pp": 3.1794222254825533,
+        "pass": false,
+        "receiver": "20-1",
+        "scenario": "leo_clear_weak",
+        "seed": 713102,
+        "seen_new_acc_drop_pp": 5.000000000000004
+      },
+      {
+        "c_old_acc_drop_pp": 8.333333333333337,
+        "c_old_floor_drop_pp": 10.000000000000004,
+        "h_old_new_drop_pp": 5.026233616782239,
+        "pass": false,
+        "receiver": "20-1",
+        "scenario": "leo_low_elev_weak",
+        "seed": 713102,
+        "seen_new_acc_drop_pp": 2.2499999999999964
+      },
+      {
+        "c_old_acc_drop_pp": 10.83333333333334,
+        "c_old_floor_drop_pp": 20.0,
+        "h_old_new_drop_pp": 7.306381282348184,
+        "pass": false,
+        "receiver": "20-1",
+        "scenario": "leo_rain_weak",
+        "seed": 713102,
+        "seen_new_acc_drop_pp": 4.5000000000000036
+      },
+      {
+        "c_old_acc_drop_pp": 12.5,
+        "c_old_floor_drop_pp": 25.0,
+        "h_old_new_drop_pp": 11.416997450731603,
+        "pass": false,
+        "receiver": "20-1",
+        "scenario": "leo_clear_weak",
+        "seed": 713103,
+        "seen_new_acc_drop_pp": 10.499999999999998
+      },
+      {
+        "c_old_acc_drop_pp": 15.833333333333337,
+        "c_old_floor_drop_pp": 10.0,
+        "h_old_new_drop_pp": 15.143595890309358,
+        "pass": false,
+        "receiver": "20-1",
+        "scenario": "leo_low_elev_weak",
+        "seed": 713103,
+        "seen_new_acc_drop_pp": 14.249999999999996
+      },
+      {
+        "c_old_acc_drop_pp": 11.66666666666667,
+        "c_old_floor_drop_pp": 15.000000000000002,
+        "h_old_new_drop_pp": 8.686797518914313,
+        "pass": false,
+        "receiver": "20-1",
+        "scenario": "leo_rain_weak",
+        "seed": 713103,
+        "seen_new_acc_drop_pp": 6.000000000000005
+      },
+      {
+        "c_old_acc_drop_pp": 25.0,
+        "c_old_floor_drop_pp": 35.0,
+        "h_old_new_drop_pp": 17.16816126880605,
+        "pass": false,
+        "receiver": "20-1",
+        "scenario": "leo_clear_weak",
+        "seed": 713104,
+        "seen_new_acc_drop_pp": 9.999999999999998
+      },
+      {
+        "c_old_acc_drop_pp": 9.999999999999998,
+        "c_old_floor_drop_pp": 0.0,
+        "h_old_new_drop_pp": 12.406454513663368,
+        "pass": false,
+        "receiver": "20-1",
+        "scenario": "leo_low_elev_weak",
+        "seed": 713104,
+        "seen_new_acc_drop_pp": 14.249999999999996
+      },
+      {
+        "c_old_acc_drop_pp": 8.333333333333337,
+        "c_old_floor_drop_pp": 0.0,
+        "h_old_new_drop_pp": 7.158618153400598,
+        "pass": false,
+        "receiver": "20-1",
+        "scenario": "leo_rain_weak",
+        "seed": 713104,
+        "seen_new_acc_drop_pp": 6.25
+      },
+      {
+        "c_old_acc_drop_pp": 13.33333333333333,
+        "c_old_floor_drop_pp": 4.999999999999993,
+        "h_old_new_drop_pp": 9.810766281202298,
+        "pass": false,
+        "receiver": "20-1",
+        "scenario": "leo_clear_weak",
+        "seed": 713105,
+        "seen_new_acc_drop_pp": 7.000000000000006
+      },
+      {
+        "c_old_acc_drop_pp": 18.333333333333336,
+        "c_old_floor_drop_pp": 20.0,
+        "h_old_new_drop_pp": 12.06276026174895,
+        "pass": false,
+        "receiver": "20-1",
+        "scenario": "leo_low_elev_weak",
+        "seed": 713105,
+        "seen_new_acc_drop_pp": 6.75
+      },
+      {
+        "c_old_acc_drop_pp": 5.833333333333335,
+        "c_old_floor_drop_pp": 9.999999999999998,
+        "h_old_new_drop_pp": 8.16074787083837,
+        "pass": false,
+        "receiver": "20-1",
+        "scenario": "leo_rain_weak",
+        "seed": 713105,
+        "seen_new_acc_drop_pp": 10.249999999999993
+      },
+      {
+        "c_old_acc_drop_pp": 1.6666666666666607,
+        "c_old_floor_drop_pp": -9.999999999999998,
+        "h_old_new_drop_pp": 5.519736464817104,
+        "pass": false,
+        "receiver": "20-1",
+        "scenario": "leo_clear_weak",
+        "seed": 713106,
+        "seen_new_acc_drop_pp": 8.750000000000002
+      },
+      {
+        "c_old_acc_drop_pp": 9.999999999999998,
+        "c_old_floor_drop_pp": 25.0,
+        "h_old_new_drop_pp": 12.539479225154404,
+        "pass": false,
+        "receiver": "20-1",
+        "scenario": "leo_low_elev_weak",
+        "seed": 713106,
+        "seen_new_acc_drop_pp": 14.500000000000002
+      },
+      {
+        "c_old_acc_drop_pp": 15.000000000000002,
+        "c_old_floor_drop_pp": 30.000000000000004,
+        "h_old_new_drop_pp": 14.939543322571936,
+        "pass": false,
+        "receiver": "20-1",
+        "scenario": "leo_rain_weak",
+        "seed": 713106,
+        "seen_new_acc_drop_pp": 14.749999999999996
+      },
+      {
+        "c_old_acc_drop_pp": 7.499999999999996,
+        "c_old_floor_drop_pp": 0.0,
+        "h_old_new_drop_pp": 9.005204889182783,
+        "pass": false,
+        "receiver": "3-19",
+        "scenario": "leo_clear_weak",
+        "seed": 713102,
+        "seen_new_acc_drop_pp": 10.249999999999998
+      },
+      {
+        "c_old_acc_drop_pp": 8.333333333333337,
+        "c_old_floor_drop_pp": 20.0,
+        "h_old_new_drop_pp": 8.90088541861247,
+        "pass": false,
+        "receiver": "3-19",
+        "scenario": "leo_low_elev_weak",
+        "seed": 713102,
+        "seen_new_acc_drop_pp": 8.999999999999996
+      },
+      {
+        "c_old_acc_drop_pp": 4.166666666666674,
+        "c_old_floor_drop_pp": 15.0,
+        "h_old_new_drop_pp": 6.534867772491543,
+        "pass": false,
+        "receiver": "3-19",
+        "scenario": "leo_rain_weak",
+        "seed": 713102,
+        "seen_new_acc_drop_pp": 8.250000000000002
+      },
+      {
+        "c_old_acc_drop_pp": 7.499999999999996,
+        "c_old_floor_drop_pp": 0.0,
+        "h_old_new_drop_pp": 7.94599699887284,
+        "pass": false,
+        "receiver": "3-19",
+        "scenario": "leo_clear_weak",
+        "seed": 713103,
+        "seen_new_acc_drop_pp": 7.750000000000002
+      },
+      {
+        "c_old_acc_drop_pp": -0.8333333333333304,
+        "c_old_floor_drop_pp": 0.0,
+        "h_old_new_drop_pp": 6.889292442679213,
+        "pass": false,
+        "receiver": "3-19",
+        "scenario": "leo_low_elev_weak",
+        "seed": 713103,
+        "seen_new_acc_drop_pp": 12.25
+      },
+      {
+        "c_old_acc_drop_pp": 8.333333333333332,
+        "c_old_floor_drop_pp": 15.000000000000002,
+        "h_old_new_drop_pp": 8.57446104353643,
+        "pass": false,
+        "receiver": "3-19",
+        "scenario": "leo_rain_weak",
+        "seed": 713103,
+        "seen_new_acc_drop_pp": 8.500000000000002
+      },
+      {
+        "c_old_acc_drop_pp": 13.33333333333333,
+        "c_old_floor_drop_pp": 35.0,
+        "h_old_new_drop_pp": 12.36120796822412,
+        "pass": false,
+        "receiver": "3-19",
+        "scenario": "leo_clear_weak",
+        "seed": 713104,
+        "seen_new_acc_drop_pp": 11.500000000000005
+      },
+      {
+        "c_old_acc_drop_pp": 2.499999999999991,
+        "c_old_floor_drop_pp": -14.999999999999996,
+        "h_old_new_drop_pp": 10.150924764471958,
+        "pass": false,
+        "receiver": "3-19",
+        "scenario": "leo_low_elev_weak",
+        "seed": 713104,
+        "seen_new_acc_drop_pp": 13.749999999999996
+      },
+      {
+        "c_old_acc_drop_pp": -4.1666666666666625,
+        "c_old_floor_drop_pp": 0.0,
+        "h_old_new_drop_pp": 5.775508966998332,
+        "pass": false,
+        "receiver": "3-19",
+        "scenario": "leo_rain_weak",
+        "seed": 713104,
+        "seen_new_acc_drop_pp": 11.5
+      },
+      {
+        "c_old_acc_drop_pp": 2.500000000000002,
+        "c_old_floor_drop_pp": 4.999999999999999,
+        "h_old_new_drop_pp": 4.357908587398896,
+        "pass": false,
+        "receiver": "3-19",
+        "scenario": "leo_clear_weak",
+        "seed": 713105,
+        "seen_new_acc_drop_pp": 6.0
+      },
+      {
+        "c_old_acc_drop_pp": 2.500000000000002,
+        "c_old_floor_drop_pp": 4.999999999999999,
+        "h_old_new_drop_pp": 7.119383452086664,
+        "pass": false,
+        "receiver": "3-19",
+        "scenario": "leo_low_elev_weak",
+        "seed": 713105,
+        "seen_new_acc_drop_pp": 8.999999999999996
+      },
+      {
+        "c_old_acc_drop_pp": 0.0,
+        "c_old_floor_drop_pp": 15.0,
+        "h_old_new_drop_pp": 5.7274887563395165,
+        "pass": false,
+        "receiver": "3-19",
+        "scenario": "leo_rain_weak",
+        "seed": 713105,
+        "seen_new_acc_drop_pp": 8.500000000000002
+      },
+      {
+        "c_old_acc_drop_pp": 4.999999999999993,
+        "c_old_floor_drop_pp": 0.0,
+        "h_old_new_drop_pp": 8.958371040723978,
+        "pass": false,
+        "receiver": "3-19",
+        "scenario": "leo_clear_weak",
+        "seed": 713106,
+        "seen_new_acc_drop_pp": 11.750000000000005
+      },
+      {
+        "c_old_acc_drop_pp": 4.999999999999999,
+        "c_old_floor_drop_pp": 5.000000000000002,
+        "h_old_new_drop_pp": 12.960296029602963,
+        "pass": false,
+        "receiver": "3-19",
+        "scenario": "leo_low_elev_weak",
+        "seed": 713106,
+        "seen_new_acc_drop_pp": 18.25
+      },
+      {
+        "c_old_acc_drop_pp": 4.999999999999993,
+        "c_old_floor_drop_pp": 10.0,
+        "h_old_new_drop_pp": 7.480877103518613,
+        "pass": false,
+        "receiver": "3-19",
+        "scenario": "leo_rain_weak",
+        "seed": 713106,
+        "seen_new_acc_drop_pp": 8.500000000000002
+      },
+      {
+        "c_old_acc_drop_pp": 0.0,
+        "c_old_floor_drop_pp": 20.0,
+        "h_old_new_drop_pp": 5.23498963908583,
+        "pass": false,
+        "receiver": "7-14",
+        "scenario": "leo_clear_weak",
+        "seed": 713102,
+        "seen_new_acc_drop_pp": 9.500000000000009
+      },
+      {
+        "c_old_acc_drop_pp": 4.999999999999993,
+        "c_old_floor_drop_pp": 0.0,
+        "h_old_new_drop_pp": 6.232842316705723,
+        "pass": false,
+        "receiver": "7-14",
+        "scenario": "leo_low_elev_weak",
+        "seed": 713102,
+        "seen_new_acc_drop_pp": 7.750000000000002
+      },
+      {
+        "c_old_acc_drop_pp": 15.000000000000002,
+        "c_old_floor_drop_pp": 30.000000000000004,
+        "h_old_new_drop_pp": 11.641366223908921,
+        "pass": false,
+        "receiver": "7-14",
+        "scenario": "leo_rain_weak",
+        "seed": 713102,
+        "seen_new_acc_drop_pp": 8.249999999999991
+      },
+      {
+        "c_old_acc_drop_pp": 5.833333333333335,
+        "c_old_floor_drop_pp": 10.000000000000004,
+        "h_old_new_drop_pp": 6.488670194568391,
+        "pass": false,
+        "receiver": "7-14",
+        "scenario": "leo_clear_weak",
+        "seed": 713103,
+        "seen_new_acc_drop_pp": 7.250000000000001
+      },
+      {
+        "c_old_acc_drop_pp": 19.166666666666664,
+        "c_old_floor_drop_pp": 35.0,
+        "h_old_new_drop_pp": 13.868174629362029,
+        "pass": false,
+        "receiver": "7-14",
+        "scenario": "leo_low_elev_weak",
+        "seed": 713103,
+        "seen_new_acc_drop_pp": 7.250000000000001
+      },
+      {
+        "c_old_acc_drop_pp": 12.5,
+        "c_old_floor_drop_pp": 15.000000000000002,
+        "h_old_new_drop_pp": 9.525082104449723,
+        "pass": false,
+        "receiver": "7-14",
+        "scenario": "leo_rain_weak",
+        "seed": 713103,
+        "seen_new_acc_drop_pp": 6.75
+      },
+      {
+        "c_old_acc_drop_pp": 15.000000000000002,
+        "c_old_floor_drop_pp": 15.000000000000002,
+        "h_old_new_drop_pp": 8.773177582427182,
+        "pass": false,
+        "receiver": "7-14",
+        "scenario": "leo_clear_weak",
+        "seed": 713104,
+        "seen_new_acc_drop_pp": 1.5000000000000013
+      },
+      {
+        "c_old_acc_drop_pp": 12.5,
+        "c_old_floor_drop_pp": 10.000000000000004,
+        "h_old_new_drop_pp": 10.030739528706201,
+        "pass": false,
+        "receiver": "7-14",
+        "scenario": "leo_low_elev_weak",
+        "seed": 713104,
+        "seen_new_acc_drop_pp": 7.750000000000002
+      },
+      {
+        "c_old_acc_drop_pp": 10.000000000000009,
+        "c_old_floor_drop_pp": 10.0,
+        "h_old_new_drop_pp": 9.700323818523348,
+        "pass": false,
+        "receiver": "7-14",
+        "scenario": "leo_rain_weak",
+        "seed": 713104,
+        "seen_new_acc_drop_pp": 9.249999999999991
+      },
+      {
+        "c_old_acc_drop_pp": 4.166666666666674,
+        "c_old_floor_drop_pp": 4.999999999999999,
+        "h_old_new_drop_pp": 6.543560158671003,
+        "pass": false,
+        "receiver": "7-14",
+        "scenario": "leo_clear_weak",
+        "seed": 713105,
+        "seen_new_acc_drop_pp": 9.250000000000004
+      },
+      {
+        "c_old_acc_drop_pp": 11.666666666666659,
+        "c_old_floor_drop_pp": 20.0,
+        "h_old_new_drop_pp": 8.227570362815417,
+        "pass": false,
+        "receiver": "7-14",
+        "scenario": "leo_low_elev_weak",
+        "seed": 713105,
+        "seen_new_acc_drop_pp": 5.000000000000004
+      },
+      {
+        "c_old_acc_drop_pp": 6.666666666666665,
+        "c_old_floor_drop_pp": -4.999999999999999,
+        "h_old_new_drop_pp": 8.868536672529414,
+        "pass": false,
+        "receiver": "7-14",
+        "scenario": "leo_rain_weak",
+        "seed": 713105,
+        "seen_new_acc_drop_pp": 11.5
+      },
+      {
+        "c_old_acc_drop_pp": 12.5,
+        "c_old_floor_drop_pp": 5.000000000000004,
+        "h_old_new_drop_pp": 11.091165178297357,
+        "pass": false,
+        "receiver": "7-14",
+        "scenario": "leo_clear_weak",
+        "seed": 713106,
+        "seen_new_acc_drop_pp": 9.750000000000004
+      },
+      {
+        "c_old_acc_drop_pp": 9.999999999999998,
+        "c_old_floor_drop_pp": 24.999999999999996,
+        "h_old_new_drop_pp": 11.149068322981371,
+        "pass": false,
+        "receiver": "7-14",
+        "scenario": "leo_low_elev_weak",
+        "seed": 713106,
+        "seen_new_acc_drop_pp": 12.5
+      },
+      {
+        "c_old_acc_drop_pp": 4.1666666666666625,
+        "c_old_floor_drop_pp": 0.0,
+        "h_old_new_drop_pp": 7.221297381640568,
+        "pass": false,
+        "receiver": "7-14",
+        "scenario": "leo_rain_weak",
+        "seed": 713106,
+        "seen_new_acc_drop_pp": 10.999999999999998
+      },
+      {
+        "c_old_acc_drop_pp": 1.6666666666666718,
+        "c_old_floor_drop_pp": 10.000000000000009,
+        "h_old_new_drop_pp": 4.71656606523001,
+        "pass": false,
+        "receiver": "7-7",
+        "scenario": "leo_clear_weak",
+        "seed": 713102,
+        "seen_new_acc_drop_pp": 6.75
+      },
+      {
+        "c_old_acc_drop_pp": 9.999999999999998,
+        "c_old_floor_drop_pp": 19.999999999999996,
+        "h_old_new_drop_pp": 6.617707058343547,
+        "pass": false,
+        "receiver": "7-7",
+        "scenario": "leo_low_elev_weak",
+        "seed": 713102,
+        "seen_new_acc_drop_pp": 4.0000000000000036
+      },
+      {
+        "c_old_acc_drop_pp": 5.000000000000004,
+        "c_old_floor_drop_pp": 15.0,
+        "h_old_new_drop_pp": 8.591868354806188,
+        "pass": false,
+        "receiver": "7-7",
+        "scenario": "leo_rain_weak",
+        "seed": 713102,
+        "seen_new_acc_drop_pp": 11.749999999999993
+      },
+      {
+        "c_old_acc_drop_pp": -1.6666666666666718,
+        "c_old_floor_drop_pp": -4.999999999999993,
+        "h_old_new_drop_pp": 4.349788142891587,
+        "pass": false,
+        "receiver": "7-7",
+        "scenario": "leo_clear_weak",
+        "seed": 713103,
+        "seen_new_acc_drop_pp": 9.000000000000007
+      },
+      {
+        "c_old_acc_drop_pp": 12.5,
+        "c_old_floor_drop_pp": 9.999999999999998,
+        "h_old_new_drop_pp": 13.487269576936022,
+        "pass": false,
+        "receiver": "7-7",
+        "scenario": "leo_low_elev_weak",
+        "seed": 713103,
+        "seen_new_acc_drop_pp": 14.000000000000002
+      },
+      {
+        "c_old_acc_drop_pp": 12.5,
+        "c_old_floor_drop_pp": 15.000000000000002,
+        "h_old_new_drop_pp": 10.785720313950552,
+        "pass": false,
+        "receiver": "7-7",
+        "scenario": "leo_rain_weak",
+        "seed": 713103,
+        "seen_new_acc_drop_pp": 8.999999999999996
+      },
+      {
+        "c_old_acc_drop_pp": 4.999999999999993,
+        "c_old_floor_drop_pp": 0.0,
+        "h_old_new_drop_pp": 7.910079628097721,
+        "pass": false,
+        "receiver": "7-7",
+        "scenario": "leo_clear_weak",
+        "seed": 713104,
+        "seen_new_acc_drop_pp": 10.250000000000004
+      },
+      {
+        "c_old_acc_drop_pp": 10.83333333333334,
+        "c_old_floor_drop_pp": 14.999999999999996,
+        "h_old_new_drop_pp": 9.834106290056043,
+        "pass": false,
+        "receiver": "7-7",
+        "scenario": "leo_low_elev_weak",
+        "seed": 713104,
+        "seen_new_acc_drop_pp": 9.000000000000007
+      },
+      {
+        "c_old_acc_drop_pp": 5.833333333333335,
+        "c_old_floor_drop_pp": -4.999999999999999,
+        "h_old_new_drop_pp": 10.765846787300903,
+        "pass": false,
+        "receiver": "7-7",
+        "scenario": "leo_rain_weak",
+        "seed": 713104,
+        "seen_new_acc_drop_pp": 14.749999999999996
+      },
+      {
+        "c_old_acc_drop_pp": 7.499999999999996,
+        "c_old_floor_drop_pp": 20.0,
+        "h_old_new_drop_pp": 9.686836324801885,
+        "pass": false,
+        "receiver": "7-7",
+        "scenario": "leo_clear_weak",
+        "seed": 713105,
+        "seen_new_acc_drop_pp": 11.5
+      },
+      {
+        "c_old_acc_drop_pp": 5.833333333333335,
+        "c_old_floor_drop_pp": 5.000000000000004,
+        "h_old_new_drop_pp": 9.356824171251555,
+        "pass": false,
+        "receiver": "7-7",
+        "scenario": "leo_low_elev_weak",
+        "seed": 713105,
+        "seen_new_acc_drop_pp": 11.750000000000005
+      },
+      {
+        "c_old_acc_drop_pp": 9.166666666666668,
+        "c_old_floor_drop_pp": 20.0,
+        "h_old_new_drop_pp": 10.738141440275983,
+        "pass": false,
+        "receiver": "7-7",
+        "scenario": "leo_rain_weak",
+        "seed": 713105,
+        "seen_new_acc_drop_pp": 12.0
+      },
+      {
+        "c_old_acc_drop_pp": 15.833333333333332,
+        "c_old_floor_drop_pp": 30.0,
+        "h_old_new_drop_pp": 9.670287114089128,
+        "pass": false,
+        "receiver": "7-7",
+        "scenario": "leo_clear_weak",
+        "seed": 713106,
+        "seen_new_acc_drop_pp": 4.0000000000000036
+      },
+      {
+        "c_old_acc_drop_pp": 9.999999999999998,
+        "c_old_floor_drop_pp": 25.000000000000007,
+        "h_old_new_drop_pp": 7.442163033818005,
+        "pass": false,
+        "receiver": "7-7",
+        "scenario": "leo_low_elev_weak",
+        "seed": 713106,
+        "seen_new_acc_drop_pp": 5.000000000000004
+      },
+      {
+        "c_old_acc_drop_pp": 14.166666666666671,
+        "c_old_floor_drop_pp": 10.000000000000004,
+        "h_old_new_drop_pp": 8.332479905657442,
+        "pass": false,
+        "receiver": "7-7",
+        "scenario": "leo_rain_weak",
+        "seed": 713106,
+        "seen_new_acc_drop_pp": 3.499999999999992
+      },
+      {
+        "c_old_acc_drop_pp": 5.000000000000004,
+        "c_old_floor_drop_pp": 5.000000000000004,
+        "h_old_new_drop_pp": 6.834556978084727,
+        "pass": false,
+        "receiver": "8-8",
+        "scenario": "leo_clear_weak",
+        "seed": 713102,
+        "seen_new_acc_drop_pp": 8.999999999999996
+      },
+      {
+        "c_old_acc_drop_pp": 0.0,
+        "c_old_floor_drop_pp": 0.0,
+        "h_old_new_drop_pp": 4.446578078742536,
+        "pass": false,
+        "receiver": "8-8",
+        "scenario": "leo_low_elev_weak",
+        "seed": 713102,
+        "seen_new_acc_drop_pp": 9.249999999999991
+      },
+      {
+        "c_old_acc_drop_pp": 8.333333333333325,
+        "c_old_floor_drop_pp": 4.999999999999999,
+        "h_old_new_drop_pp": 8.173444429483666,
+        "pass": false,
+        "receiver": "8-8",
+        "scenario": "leo_rain_weak",
+        "seed": 713102,
+        "seen_new_acc_drop_pp": 7.9999999999999964
+      },
+      {
+        "c_old_acc_drop_pp": 4.999999999999993,
+        "c_old_floor_drop_pp": 14.999999999999996,
+        "h_old_new_drop_pp": 4.654681168645503,
+        "pass": false,
+        "receiver": "8-8",
+        "scenario": "leo_clear_weak",
+        "seed": 713103,
+        "seen_new_acc_drop_pp": 4.249999999999998
+      },
+      {
+        "c_old_acc_drop_pp": 4.1666666666666625,
+        "c_old_floor_drop_pp": -25.0,
+        "h_old_new_drop_pp": 5.400488470691755,
+        "pass": false,
+        "receiver": "8-8",
+        "scenario": "leo_low_elev_weak",
+        "seed": 713103,
+        "seen_new_acc_drop_pp": 6.25
+      },
+      {
+        "c_old_acc_drop_pp": 2.500000000000002,
+        "c_old_floor_drop_pp": 5.000000000000002,
+        "h_old_new_drop_pp": 6.310779064184735,
+        "pass": false,
+        "receiver": "8-8",
+        "scenario": "leo_rain_weak",
+        "seed": 713103,
+        "seen_new_acc_drop_pp": 10.499999999999998
+      },
+      {
+        "c_old_acc_drop_pp": 6.666666666666665,
+        "c_old_floor_drop_pp": 15.0,
+        "h_old_new_drop_pp": 9.508933930643671,
+        "pass": false,
+        "receiver": "8-8",
+        "scenario": "leo_clear_weak",
+        "seed": 713104,
+        "seen_new_acc_drop_pp": 13.249999999999995
+      },
+      {
+        "c_old_acc_drop_pp": 1.6666666666666607,
+        "c_old_floor_drop_pp": -5.0,
+        "h_old_new_drop_pp": 5.139074291007151,
+        "pass": false,
+        "receiver": "8-8",
+        "scenario": "leo_low_elev_weak",
+        "seed": 713104,
+        "seen_new_acc_drop_pp": 9.250000000000004
+      },
+      {
+        "c_old_acc_drop_pp": 4.166666666666674,
+        "c_old_floor_drop_pp": 4.999999999999999,
+        "h_old_new_drop_pp": 8.413978634299424,
+        "pass": false,
+        "receiver": "8-8",
+        "scenario": "leo_rain_weak",
+        "seed": 713104,
+        "seen_new_acc_drop_pp": 13.750000000000007
+      },
+      {
+        "c_old_acc_drop_pp": 8.333333333333337,
+        "c_old_floor_drop_pp": 20.000000000000007,
+        "h_old_new_drop_pp": 5.69516274753984,
+        "pass": false,
+        "receiver": "8-8",
+        "scenario": "leo_clear_weak",
+        "seed": 713105,
+        "seen_new_acc_drop_pp": 3.500000000000003
+      },
+      {
+        "c_old_acc_drop_pp": 7.500000000000007,
+        "c_old_floor_drop_pp": 9.999999999999998,
+        "h_old_new_drop_pp": 10.62996011349152,
+        "pass": false,
+        "receiver": "8-8",
+        "scenario": "leo_low_elev_weak",
+        "seed": 713105,
+        "seen_new_acc_drop_pp": 14.500000000000002
+      },
+      {
+        "c_old_acc_drop_pp": 0.0,
+        "c_old_floor_drop_pp": 0.0,
+        "h_old_new_drop_pp": 5.321437385112127,
+        "pass": false,
+        "receiver": "8-8",
+        "scenario": "leo_rain_weak",
+        "seed": 713105,
+        "seen_new_acc_drop_pp": 11.250000000000004
+      },
+      {
+        "c_old_acc_drop_pp": 6.666666666666665,
+        "c_old_floor_drop_pp": 20.0,
+        "h_old_new_drop_pp": 7.753238043699984,
+        "pass": false,
+        "receiver": "8-8",
+        "scenario": "leo_clear_weak",
+        "seed": 713106,
+        "seen_new_acc_drop_pp": 8.999999999999996
+      },
+      {
+        "c_old_acc_drop_pp": 3.3333333333333326,
+        "c_old_floor_drop_pp": -4.999999999999999,
+        "h_old_new_drop_pp": 8.154318742723554,
+        "pass": false,
+        "receiver": "8-8",
+        "scenario": "leo_low_elev_weak",
+        "seed": 713106,
+        "seen_new_acc_drop_pp": 12.750000000000005
+      },
+      {
+        "c_old_acc_drop_pp": 5.833333333333335,
+        "c_old_floor_drop_pp": 4.999999999999999,
+        "h_old_new_drop_pp": 7.976923058235319,
+        "pass": false,
+        "receiver": "8-8",
+        "scenario": "leo_rain_weak",
+        "seed": 713106,
+        "seen_new_acc_drop_pp": 10.250000000000004
+      }
+    ],
+    "worst_drop_pp": {
+      "c_old_acc": 25.0,
+      "c_old_floor": 35.0,
+      "h_old_new": 17.16816126880605,
+      "seen_new_acc": 18.25
+    }
+  },
+  "overall_status": "INCOMPLETE_DIRECT_ADV3B02_NOT_RUN_PERFORMANCE_FAIL",
+  "schema": "cvs.phase2.somph_diag_125_gates.v1"
+}
