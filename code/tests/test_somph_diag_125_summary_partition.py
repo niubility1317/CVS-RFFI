@@ -43,6 +43,30 @@ class SomphDiag125SummaryPartitionTest(unittest.TestCase):
                 by_scenario, {"a", "b", "c", "d"}, context="row:after"
             )
 
+    def test_accepts_explicit_diagnostic_preopen_state(self):
+        self.assertTrue(
+            self.summary._preopen_status_is_coherent(
+                {
+                    "status": "UNVERIFIED_UNDER_CURRENT_PROTOCOL_DIAGNOSTIC_ONLY",
+                    "diagnostic_only": True,
+                    "formal_launch_authority": False,
+                    "formal_metric_claim_allowed": False,
+                }
+            )
+        )
+
+    def test_rejects_incoherent_diagnostic_preopen_state(self):
+        self.assertFalse(
+            self.summary._preopen_status_is_coherent(
+                {
+                    "status": "UNVERIFIED_UNDER_CURRENT_PROTOCOL_DIAGNOSTIC_ONLY",
+                    "diagnostic_only": True,
+                    "formal_launch_authority": True,
+                    "formal_metric_claim_allowed": False,
+                }
+            )
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

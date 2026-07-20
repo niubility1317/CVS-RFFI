@@ -480,6 +480,18 @@ def _require_exact_scenario_partition(
         )
 
 
+def _preopen_status_is_coherent(audit: Mapping[str, Any]) -> bool:
+    status = audit.get("status")
+    if status == "STRUCTURAL_SELF_CONSISTENCY_PASS":
+        return True
+    return bool(
+        status == "UNVERIFIED_UNDER_CURRENT_PROTOCOL_DIAGNOSTIC_ONLY"
+        and audit.get("diagnostic_only") is True
+        and audit.get("formal_launch_authority") is False
+        and audit.get("formal_metric_claim_allowed") is False
+    )
+
+
 def _job_root(matrix_root: Path, job: Mapping[str, Any]) -> Path:
     return matrix_root / "jobs" / str(job["job_id"])
 
@@ -502,7 +514,7 @@ def _query_member_sha_from_receipt(
         not isinstance(apply, dict)
         or apply.get("schema") != "cvs.phase2.somph_preopen_audit.v1"
         or apply.get("profile") != "apply_only"
-        or apply.get("status") != "STRUCTURAL_SELF_CONSISTENCY_PASS"
+        or not _preopen_status_is_coherent(apply)
         or apply.get("hash_and_member_audit_same_file_descriptor") is not True
         or apply.get("iq_payload_materialized") is not True
         or apply.get("package_root_sha256") != expected_root
@@ -629,7 +641,7 @@ def _support_member_sha_from_receipt(
         not isinstance(enrollment, dict)
         or enrollment.get("schema") != "cvs.phase2.somph_preopen_audit.v1"
         or enrollment.get("profile") != "enrollment_only"
-        or enrollment.get("status") != "STRUCTURAL_SELF_CONSISTENCY_PASS"
+        or not _preopen_status_is_coherent(enrollment)
         or enrollment.get("hash_and_member_audit_same_file_descriptor") is not True
         or enrollment.get("iq_payload_materialized") is not True
         or not isinstance(expected_root, str)
