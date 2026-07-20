@@ -1222,6 +1222,29 @@ r6没有完成任何K1/K5/K10/K20候选，也没有D81/D99/D100的old/new/H/floo
 
 本地最小修复位于`stage2_d81_phase1_episode_scorer.py`：新增纯正规化函数，仅当CUDA device缺少逻辑索引时映射为`cuda:0`，CPU和显式索引设备保持不变；外部release schema、D81 receipt的配置字符串、metric seed、方法公式和候选均不改变。fake-metric回归证明冻结`cuda`实际传给D42前变为`cuda:0`且不需要本机GPU；D81 scorer与LODO runner相邻回归`12 passed`，`py_compile`和`git diff --check`均exit0。pytest退出后的Windows临时目录`PermissionError`为既有清理噪声，主体exit0。
 
+#### r7 CUDA正规化源码重发预登记
+
+|字段|冻结值|
+|---|---|
+|run ID|`d99_d100_phase1_lodo_d6efa5ad_cudafix_20260721_r7`|
+|源码提交|`d6efa5ad`（`Normalize D81 CUDA device for LODO`）|
+|本地源码包|`E:\type10-7\code\snapshots\d99_d100_phase1_lodo_d6efa5ad_cudafix_20260721_r7\source_d6efa5ad.zip`|
+|源码包SHA/规模|`701e124fbb53046c9361995f2a6141841853153eabaef2d6865ce3187bd5b82a`；31,216,534B；4380成员|
+|冻结配置|`preregistered_inputs/d99_d100_phase1_lodo_d6efa5ad_cudafix_20260721_r7.json`|
+|配置SHA|`3241eb36d4f774f6e3751af7f7682060ce0a0e8204de18227870c133cebdb4e2`|
+|GPU/CPU|物理GPU5；`CUDA_VISIBLE_DEVICES=5`；CPU thread2|
+|状态|`LOCAL_VERIFIED`；尚未LANDED/RUNNING|
+
+源码包已在独立本地目录完整解压，并在`ssr-gpu`环境中从该LF源码直接运行release config validator：精确schema通过、64候选通过、5个模块SHA与配置逐项一致。r7不改变r6的archive、ground、checkpoint、seed、候选网格、准入规则或target禁止条件；唯一代码变化是无索引CUDA设备在D81调用D42前正规化为逻辑`cuda:0`。
+
+r7远端run/log/source分别为`/home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_phase1_lodo_d6efa5ad_cudafix_20260721_r7`、`/home/szu2070436088/2510044040/CV-SincNet/logs/d99_d100_phase1_lodo_d6efa5ad_cudafix_20260721_r7`和`<run>/source_d6efa5ad`。唯一child命令为：
+
+```bash
+env OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 NUMEXPR_NUM_THREADS=2 CUDA_VISIBLE_DEVICES=5 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_phase1_lodo_d6efa5ad_cudafix_20260721_r7/source_d6efa5ad/code /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_phase1_lodo_d6efa5ad_cudafix_20260721_r7/source_d6efa5ad/code/scripts/run_d99_d100_phase1_lodo.py --config /home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_phase1_lodo_d6efa5ad_cudafix_20260721_r7/input/d99_d100_phase1_lodo_d6efa5ad_cudafix_20260721_r7.json --config-sha256 3241eb36d4f774f6e3751af7f7682060ce0a0e8204de18227870c133cebdb4e2
+```
+
+唯一runner必须重新direct preflight，确认r7 run/log/source/output均不存在、GPU5占用合规，上传源码ZIP和配置并复核整体/成员SHA，安全解压后再运行`py_compile/import/config validator`。只允许一次不可覆盖detached启动，不授权自动重试；若成功则读取完整LODO receipt并逐K报告所有指标与缺陷，若失败则保留完整诊断且不能写成方法负结果。
+
 ### D101直接shrinkage RDA交叉审查
 
 D101定位为D99上的alternative global head，与D100二选一，不叠成第三个融合头。当前裁决为`REVISE`：只允许后续实现Phase1 nested-LODO诊断臂，尚不允许target或N607。原因不是协议违法，而是其相对D99 metric和D100 simplex ridge的独立纠错能力尚未被证实。
