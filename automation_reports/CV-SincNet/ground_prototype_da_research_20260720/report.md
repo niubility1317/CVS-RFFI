@@ -1125,6 +1125,18 @@ env OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 PYTHONPATH=/home/
 
 采用不可覆盖`.pid/.exit/.log`detached wrapper；首个health check约90秒，若进程提前退出则先读完整日志，不自动重启。成功要求exit0、两个archive文件齐全、内部verify通过、manifest明确记录outer/inner v1、legacy=true、original/authority cache SHA均为`125bb312...d74`、runtime SHA为`f119...e2a`，并回收文件SHA与行数/receiver/day/class/scenario分布。r2完成后才生成LODO config；不得用r2 target性能选择任何参数，因为r2不读取target。
 
+#### r2实际结果与真实v1成员合同修复
+
+r2状态链为`LOCAL_VERIFIED→LANDED→RUNNING→FAILED_DIAGNOSTIC`。preflight、GPU空闲、固定输入、r1 ground五文件、ZIP整体SHA及本地ZIP成员↔远端解压成员均通过；Windows worktree CRLF SHA与Git archive LF成员SHA的差异已按两种口径记录，不是执行代码漂移。exporter PID`1414309`于02:38:12启动、02:38:14结束，exit1；GPU4恢复0%/10MiB。没有archive、重启、builder、LODO或target访问，SSH/连接终态均为0。
+
+失败原因是首轮兼容测试把v1构造成“v2成员＋v1 schema”。真实v1 NPZ具有17个历史成员，不含v2新增的`source_dataset_sha256`和`source_record_indices`；当前loader在schema分支前仍共用v2 required members，因而报缺少这两项。完整handoff见`artifacts/d99_d100_phase1_export_391f51ed_20260721_r2/runner_handoff.md`，SHA`69d9973979a85635881ba5a9e676242688f8208a2b0c8d732ccac80738b39b55`；结构审计见同目录`v1_cache_structure_audit.md`，SHA`a34f295fee180baba6d748182d35aec082b5684187a7276076abcd8537bb68bf`。
+
+只读结构审计证明三个NPZ均为8400行、精确相同17-member顺序；v1 physical ID可由现有`dataset_role|tx|rx|day|eq|sig`逐行复算，每场景8400个ID均唯一，三场景顺序相同，root=`d2def2acf96a9338f94b4626f77ca9b7b106a65f41615dd5c703b1b76461e1a3`，与inner manifest、outer manifest和cache audits一致。IQ内容未下载；每个NPZ的冻结SHA保护内容，原存`post_channel_iq_sha256`和overlay root可继续由生产loader逐行复算验证。
+
+第二次本地修复直接对照升级前Git实现`454c1a61^:code/cvsrffi/leo_weak_cache.py`，恢复schema-specific合同：v1精确17-member、旧physical ID和5字段provenance；v2继续19-member、dataset SHA/index身份和7字段provenance。loader先只读取`manifest_json`确定已允许schema，再检查全部forbidden/required成员，之后才物化IQ；v1/v2都逐行重算sample ID、IQ digest、overlay ID、唯一性和outer root。audit按schema记录root policy，v1不再错误声称v2`immutable_preoverlay_lineage_token`。SHA-only固定cache allowlist、formal/普通development v2-only均保持不变。
+
+作者聚焦13/13＋相邻36/36共49/49通过；独立终审`MERGE`，P0=0、P1=0，聚焦攻击6/6通过。主线复跑exporter、cache matrix和D96/D97相邻回归得到48/48通过，`py_compile`与`git diff --check`exit0；仅有既有TorchScript弃用告警和pytest退出后临时目录`WinError5`噪声。最终loader/test工作树SHA为`3fc35aeea182560fc67cd468a7615ca110b528ca210327c0620370d1b68606fb`/`9b3dd452b195b409b922442d4ec7fcadd7ba1de2bbce104fc8c3453f7f2e2be8`；exporter继续为`ab4d3c40251f2bd147e7948ced392d185d0ef7b3f45c18924e7ab1bd457dac6d`。
+
 ### D101直接shrinkage RDA交叉审查
 
 D101定位为D99上的alternative global head，与D100二选一，不叠成第三个融合头。当前裁决为`REVISE`：只允许后续实现Phase1 nested-LODO诊断臂，尚不允许target或N607。原因不是协议违法，而是其相对D99 metric和D100 simplex ridge的独立纠错能力尚未被证实。
