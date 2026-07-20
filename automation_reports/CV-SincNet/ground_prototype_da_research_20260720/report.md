@@ -877,6 +877,33 @@ P1还包括subprocess无timeout、`nvidia-smi`失败被静默降为`driver=None`
 
 根据用户最新目标，以上源码签名、review authority envelope和额外代码对齐不再作为无线信号模型研发或N607 development experiment的前置门。后续只保留Git commit、文件SHA、不可覆盖run ID和现有实验报告作为代码版本证据；模型实验的硬约束回到`p2_min_v1`：复用匹配`VALIDATED_ONCE`数据、support-only适应、query逐样本只前向、无clean/source runtime访问、无query truth/role/quota。正式论文/部署claim仍需完整产物闭合，但不得因此阻断ground-only LODO、target narrow diagnostic或matched性能验证。
 
+### D99/D100实验优先发布预注册
+
+N607于2026-07-21 00:07 CST完成只读preflight：8张GPU均为0%利用率、10MiB显存占用且无compute process；未发现D81/D99/D100或Phase2目标进程。远端环境固定为`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`，Torch2.1.0+cu121；每次短SSH结束后本地`ssh.exe`及N607/bridge TCP22连接均为0。历史完整125位于`runs/d81_comprehensive_125_v2auth_retry9_20260720`；下表两条精确matched窄基线来自`runs/d93_paired_ground_transport_dev_20260720/matched_d81_k{1,10}_new20`，同数据、同checkpoint/runtime/method-lock，无需重复计算。
+
+|matched D81 cell|B-old|A-old|min-old|seen-new|H|forgetting|
+|---|---:|---:|---:|---:|---:|---:|
+|receiver20-1/seed713101/K1/new20|61.667|37.500|13.333|27.583|31.786|24.167|
+|receiver20-1/seed713101/K10/new20|87.222|69.722|48.333|68.917|69.317|17.500|
+
+第一阶段先运行固定Phase1 encoder/ground basis上的receiver-level pseudo-target LODO，分别冻结K1/K5/K10/K20的D99与D100参数；D99的held receiver ground row会删除，但固定D81 global basis不随fold删除，因此不得将其表述为“全方法严格ground-domain外留一”。无额外authority时允许输出`NONFORMAL_LODO_DIAGNOSTIC`，但不得读取target/query或反向用target性能选择参数。
+
+LODO预注册64候选：`eta=[0.25,0.5]`、`shared_h0=[0.35,0.5]`、`T99=[0.85,1.0]`、`lambda=[0.08,0.2]`、`Tridge=[0.85,1.0]`、`alpha=[0.2,0.35]`；`nu=3`、`gamma=1`、`scale_prior=2`、`scale_min/max=0.5/2`固定。非搜索research prior固定为`density_tau=0.2`、ground/target rank=`2/2`、coverage floor=`0.01`、energy scale=`0.01/0.01`、shrinkage prior=`2`、ground/target weight cap=`0.8/0.6`、kernel effective dim=`12`、三block权重=`0.7/0.2/0.1`。这些值是target访问前的development预注册，不是LODO选出的最优值；base lock中的非正式占位SHA不代表已完成formal margin、validation或D81 lock。
+
+地面bundle由D19的14条有效day-domain×class INT8聚合中心在Phase1离线侧压缩为7个receiver×class中心：固定pair解量化、每条L2归一化、`0.5/0.5`球面均值、再L2归一化和per-vector INT8重编码。使用等权而非另一个cache的样本数，避免把非成员计数冒充prototype membership；`physical_sample_count_floor=2`只表示每个输出由两条独立day-domain聚合项合成，不能声明精确物理样本数。bundle保存TX registry，不保存成员ID、sample feature、raw/clean IQ或target/query row。
+
+第二阶段发布2个真实narrow job：K1/new20与K10/new20，均为receiver20-1、seed713101、三场景；每个job内部同时产生D81、D99、D100三候选的严格同row预测与指标。GPU0运行K1，GPU1运行K10，每job CPU thread=2，GPU2-7留空；不再把D99/D100拆成4个重复job。run ID和完整命令在query adapter及LODO独立复审、Git提交后写入本节再交sole launch subagent。每个job必须输出同row B/A/min-old/min-new/min-all/New/H/F、全注册balanced accuracy、逐场景、逐类、三类混淆、INT8量化、资源和prediction artifact；无论正负都完整分析，不以单指标极值替代同row判断。
+
+### D99/D100发布实现终审
+
+最终实现由三条独立复核链收口。LODO要求D99相对D81同时满足worst floor不降、balanced NLL严格改善超过`1e-6`、D81↔Student-t双向rescue非零；K1还必须至少改变一个D81预测。D100相对D99要求每个receiver×pseudo-new pair的floor、pseudo-old、pseudo-new、H均不降、balanced NLL严格改善超过`1e-6`且D99↔ridge双向rescue非零。D99失败则该K不产锁；D100失败但D99通过时保留D99、alpha强制为0并标D100不晋级。最终LODO独立裁决为`MERGE`，专项`51/51`通过。
+
+query adapter使用唯一canonical D81→D99→D100公式，完整校验LODO fixed point、7域ground bundle、base prior、D81组件与checkpoint；兼容N607真实D19 v1 class binding，确定性升级为typed v2并同时记录raw SHA。逐query batch size固定1，全部prediction artifact完成后才读取truth；输出min-old、min-new、min-all、全注册balanced accuracy、三场景、逐类、混淆、量化和资源。线程参数在NumPy等导入前解析，同时支持`--cpu-threads N`与`--cpu-threads=N`，并显式限制Torch/threadpool。独立裁决为`MERGE`，最终联合`89/89`通过。
+
+输入链新增两项明确nonformal工具：`f119` runtime的SHA-only Phase1 exporter，以及D19 14条day-domain聚合中心压缩为7条receiver中心的builder。formal exporter仍强制合法parity SHA；development exporter固定parity为null。ground builder调用完整D19 validator、固定6个TX与14条active row、检查FP16 scale和INT8范围，输出development ground schema/status及nonformal prior wrapper；同一wrapper可被Phase1 runner和narrow runner严格解析，formal入口拒绝。最终集成独立裁决为`MERGE`，builder→narrow lock digest一致。
+
+主线在`ssr-gpu`环境对8个关键测试文件复跑得到`86 passed`、exit0；随后wrapper集成与formal parity定向复跑`14 passed`、exit0。唯一附带信息仍为TorchScript弃用告警和pytest退出后的Windows临时目录`WinError 5`清理噪声，未影响测试退出码。数据无关selection salt已写入`preregistered_inputs/d99_d100_phase1_selection_salt.json`；其bundle ID绑定f119 runtime SHA、ADV3B02 checkpoint、6个TX顺序和288D特征维度，`target_access=false`。
+
 ## 下一轮唯一集成候选D99
 
 跨方法监督否决继续增加第三个全局头或D98式二次融合权，建议下一轮只实现`D99 RA-CGTMK-D81`：保留D81一次拟合，将D96的密度反权、`D_eff`、共享ground nuisance basis和support-only coverage certificate用于构造严格PSD低秩Mahalanobis度量，再把D97的各向同性qK分支替换为类数归一化Student-t metric-kernel。ground只改变可观测距离，不直接给旧类加分；old/new仍由同式target support注册。

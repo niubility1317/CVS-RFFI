@@ -82,6 +82,7 @@ def _d99_lock(
     bundle: d99.Phase1GroundAggregateBundle,
     *,
     old_classes: tuple[str, ...] = OLD_CLASSES,
+    eta: float | None = None,
 ) -> d99.Phase1D99Lock:
     return d99.Phase1D99Lock(
         density_tau=0.2,
@@ -103,10 +104,10 @@ def _d99_lock(
         z_weight=0.7,
         fft_weight=0.2,
         rf_weight=0.1,
-        eta_k1=0.1,
-        eta_k5=0.2,
-        eta_k10=0.3,
-        eta_k20=0.35,
+        eta_k1=0.1 if eta is None else eta,
+        eta_k5=0.2 if eta is None else eta,
+        eta_k10=0.3 if eta is None else eta,
+        eta_k20=0.35 if eta is None else eta,
         eta_k20_lodo_artifact_sha256=None,
         phase1_receipt_sha256="1" * 64,
         ground_aggregation_receipt_sha256=bundle.aggregation_receipt.receipt_sha256,
@@ -183,13 +184,14 @@ def _bank(
     degenerate_ground: bool = False,
     domains: int = 7,
     seed: int = 10100,
+    eta: float | None = None,
 ):
     bundle = _ground_bundle(
         old_classes=old_classes,
         domains=domains,
         degenerate=degenerate_ground,
     )
-    config = _d99_lock(bundle, old_classes=old_classes)
+    config = _d99_lock(bundle, old_classes=old_classes, eta=eta)
     ground = d99.build_ground_geometry(bundle, config=config)
     features, labels, physical = _support(classes, k_shot, seed=seed)
     if support_order is not None:
@@ -358,6 +360,82 @@ def test_alpha_zero_is_internal_exact_d99_control_and_skips_ridge(monkeypatch):
     assert audit["ridge_branch_evaluated"] is False
     assert audit["d99_canonical_typed_scorer_used"] is True
     assert not hasattr(d100, "fuse_with_d99_probabilities")
+
+
+@pytest.mark.parametrize("k_shot", d100.ALLOWED_K)
+@pytest.mark.parametrize("eta", (0.0, 1.0))
+def test_canonical_typed_d81_d99_eta_endpoints_are_exact(k_shot: int, eta: float):
+    _bundle_value, config, _ground, _metric, bank, support = _bank(
+        k_shot, eta=eta, seed=10400 + k_shot
+    )
+    state = d100.build_simplex_ridge_state(
+        bank, config=_d100_lock(config, alpha=0.0)
+    )
+    query = np.ascontiguousarray(support[0][: min(7, len(support[0]))], dtype=np.float32)
+    rng = np.random.default_rng(10500 + k_shot)
+    d81_logits = rng.normal(size=(len(query), len(bank.classes))).astype(np.float32)
+    typed = d100.bind_typed_d81_logits(
+        d81_logits,
+        query,
+        bank.classes,
+        k_shot,
+        source_schema="cvs.phase1.d81.episode_scorer.v1",
+        source_receipt_sha256="9" * 64,
+    )
+    result = d100.canonical_fuse_typed_d81_d99_d100(
+        state,
+        bank,
+        typed,
+        query,
+        evaluate_complementarity_branch=True,
+    )
+    expected = (
+        result.d81_probability_fp32
+        if eta == 0.0
+        else result.student_t_probability_fp32
+    )
+    assert np.array_equal(result.d99_probability_fp32, expected)
+    assert np.array_equal(result.fused_probability_fp32, expected)
+    assert result.ridge_probability_fp32 is not None
+    assert result.audit["eta_phase1_locked"] == eta
+    assert result.audit["typed_d81_batch_receipt_sha256"] == typed.batch_receipt_sha256
+
+
+@pytest.mark.parametrize("k_shot", d100.ALLOWED_K)
+@pytest.mark.parametrize("alpha", (0.0, 1.0))
+def test_canonical_alpha_endpoints_and_query_binding_are_exact(
+    k_shot: int, alpha: float
+):
+    _bundle_value, config, _ground, _metric, bank, support = _bank(
+        k_shot, eta=0.4, seed=10600 + k_shot
+    )
+    state = d100.build_simplex_ridge_state(
+        bank, config=_d100_lock(config, alpha=alpha)
+    )
+    query = np.ascontiguousarray(support[0][: min(6, len(support[0]))], dtype=np.float32)
+    logits = np.zeros((len(query), len(bank.classes)), dtype=np.float32)
+    typed = d100.bind_typed_d81_logits(
+        logits,
+        query,
+        bank.classes,
+        k_shot,
+        source_schema="cvs.phase2.d81.typed_target_lifecycle.v2",
+        source_receipt_sha256="8" * 64,
+    )
+    result = d100.canonical_fuse_typed_d81_d99_d100(
+        state, bank, typed, query, evaluate_complementarity_branch=True
+    )
+    expected = (
+        result.d99_probability_fp32
+        if alpha == 0.0
+        else result.ridge_probability_fp32
+    )
+    assert expected is not None
+    assert np.array_equal(result.fused_probability_fp32, expected)
+    tampered = query.copy()
+    tampered[0, 0] += np.float32(1e-3)
+    with pytest.raises(d100.D100RACGSPRError, match="query/typed D81 receipt"):
+        d100.canonical_fuse_typed_d81_d99_d100(state, bank, typed, tampered)
 
 
 def test_typed_d99_bank_binding_and_tamper_rejection():

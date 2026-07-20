@@ -19,6 +19,7 @@ from cvsrffi.stage2_d96_d97_phase1_lodo import (
     _exporter_array_sha256,
     _quantize_support,
     _resolve_support_only_eta,
+    _validate_feature_archive_manifest,
     build_receiver_lodo_episodes,
     canonical_sha256,
     normalize_three_blocks,
@@ -309,6 +310,21 @@ def test_exact_formal_exporter_manifest_can_create_full_lock(
     assert receipt["full_phase1_lock"] is True
     assert receipt["development_lock_frozen"] is False
     assert receipt["formal_target_claim_allowed"] is True
+
+
+def test_formal_exporter_manifest_requires_parity_receipt_sha(tmp_path: Path) -> None:
+    arrays = _archive()
+    archive, manifest, _manifest_sha = _write_exporter_v2(
+        tmp_path, arrays, status=EXPORTER_FORMAL_STATUS
+    )
+    payload = json.loads(manifest.read_text(encoding="utf-8"))
+    payload["inputs"]["runtime_checkpoint_parity_receipt_sha256"] = None
+    manifest.write_text(json.dumps(payload, sort_keys=True), encoding="utf-8")
+    validated = validate_feature_archive(archive)
+    with pytest.raises(ValueError, match="outer authority closure"):
+        _validate_feature_archive_manifest(
+            manifest, _sha(manifest), validated=validated
+        )
 
 
 def test_diagnostic_generic_inmemory_and_alias_bypasses_are_rejected(

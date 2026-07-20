@@ -462,6 +462,85 @@ def test_production_loader_torchscript_consumer_roundtrip_and_threeblock_golden(
     assert manifest["resolved_device"] == "cpu"
 
 
+def test_development_sha_only_runtime_exports_nonformal_archive(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    runtime, manifest_path, legacy_salt_path, _salt = _runtime_lineage(
+        tmp_path / "runtime"
+    )
+    cache_set, _sources = _real_cache_set(tmp_path / "cache")
+    runtime_sha = _sha(runtime)
+    monkeypatch.setattr(
+        module,
+        "KNOWN_DEVELOPMENT_ADV3B02_RUNTIME_SHA256",
+        frozenset({runtime_sha}),
+    )
+    monkeypatch.setattr(
+        d97,
+        "KNOWN_DEVELOPMENT_ADV3B02_RUNTIME_SHA256",
+        frozenset({runtime_sha}),
+    )
+    binding = module._load_known_runtime_sha_only(runtime, runtime_sha, ["tx0", "tx1"])
+    salt_receipt = {
+        "schema": module.SELECTION_SALT_RECEIPT_SCHEMA,
+        "status": "SEALED_BEFORE_TARGET_ACCESS",
+        "artifact_stage": "phase1_offline_before_target_access",
+        "bundle_id": binding["bundle_id"],
+        "phase1_checkpoint_sha256": module.BASE_CHECKPOINT_SHA256,
+        "selection_salt_sha256": hashlib.sha256(b"sha-only-selection").hexdigest(),
+        "target_access": False,
+    }
+    salt_path = tmp_path / "sha_only_salt.json"
+    salt_path.write_text(json.dumps(salt_receipt, sort_keys=True), encoding="utf-8")
+    result = module.export_development_sha_only_phase1_singleobs_feature_archive(
+        cache_set_path=cache_set,
+        cache_set_sha256=_sha(cache_set),
+        runtime_path=runtime,
+        expected_runtime_sha256=runtime_sha,
+        class_ids=["tx0", "tx1"],
+        selection_salt_receipt_path=salt_path,
+        selection_salt_receipt_sha256=_sha(salt_path),
+        output_dir=tmp_path / "sha_only_output",
+        device="cpu",
+        batch_size=8,
+    )
+    manifest = json.loads(Path(result["manifest_path"]).read_text(encoding="utf-8"))
+    assert result["formal_archive"] is False
+    assert manifest["status"] == module.DEVELOPMENT_STATUS
+    assert manifest["inputs"]["runtime_authority_mode"] == (
+        module.DEVELOPMENT_SHA_ONLY_AUTHORITY_MODE
+    )
+    assert manifest["inputs"]["runtime_checkpoint_parity_receipt_sha256"] is None
+    validated = d97.validate_feature_archive(result["archive_path"])
+    receipt = d97._validate_feature_archive_manifest(
+        result["manifest_path"], result["manifest_sha256"], validated=validated
+    )
+    assert receipt["development_lock_frozen"] is True
+    assert receipt["full_phase1_lock"] is False
+
+    runtime_manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    legacy = module.export_development_phase1_singleobs_feature_archive(
+        cache_set_path=cache_set,
+        cache_set_sha256=_sha(cache_set),
+        runtime_manifest_path=manifest_path,
+        runtime_manifest_sha256=_sha(manifest_path),
+        expected_runtime_sha256=runtime_sha,
+        expected_parity_receipt_sha256=runtime_manifest["runtime_export_receipt"][
+            "sha256"
+        ],
+        selection_salt_receipt_path=legacy_salt_path,
+        selection_salt_receipt_sha256=_sha(legacy_salt_path),
+        output_dir=tmp_path / "legacy_development_output",
+        device="cpu",
+        batch_size=8,
+    )
+    assert legacy["formal_archive"] is False
+    assert Path(legacy["archive_path"]).is_file()
+
+    with pytest.raises(module.Phase1SingleObservationArchiveError, match="known SHA-bound"):
+        module._load_known_runtime_sha_only(runtime, "0" * 64, ["tx0", "tx1"])
+
+
 def test_selection_determinism_missing_scene_and_identity_drift(tmp_path: Path) -> None:
     args = _diagnostic_args(tmp_path)
     cache_set, arrays, loader = _fake_cache(tmp_path / "fake")

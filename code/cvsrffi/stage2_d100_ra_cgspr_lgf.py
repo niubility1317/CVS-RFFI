@@ -34,6 +34,8 @@ RESOURCE_SCHEMA = "cvs.phase2.d100.resource_closure.v1"
 QUANTIZATION_SCHEMA = "cvs.phase2.d100.int8_margin_audit.v1"
 COMPLEMENTARITY_SCHEMA = "cvs.phase1.d100.complementarity_audit.v1"
 COMBINED_RESOURCE_SCHEMA = "cvs.phase2.d100.combined_wire_budget.v1"
+D81_LOGIT_BATCH_SCHEMA = "cvs.phase2.d100.typed_d81_logit_batch.v1"
+CANONICAL_FUSION_SCHEMA = "cvs.phase2.d100.canonical_d81_d99_d100_fusion.v1"
 WIRE_MAGIC = b"D100-RA-CGSPR-LGF\0"
 FEATURE_DIM = 288
 Z_DIM = 160
@@ -928,6 +930,303 @@ def _softmax(logits: np.ndarray, temperature: float) -> np.ndarray:
     return _readonly(probabilities, np.float32)
 
 
+def _typed_d81_batch_payload(
+    *,
+    classes: tuple[str, ...],
+    k_shot: int,
+    logits: np.ndarray,
+    query_feature_receipt: Mapping[str, Any],
+    source_schema: str,
+    source_receipt_sha256: str,
+) -> dict[str, Any]:
+    return {
+        "schema": D81_LOGIT_BATCH_SCHEMA,
+        "classes": list(classes),
+        "k_shot": int(k_shot),
+        "logits_fp32": _array_receipt(logits),
+        "query_feature_receipt": dict(query_feature_receipt),
+        "source_schema": str(source_schema),
+        "source_receipt_sha256": source_receipt_sha256,
+        "query_labels_input": False,
+        "query_state_updates": 0,
+    }
+
+
+@dataclass(frozen=True, slots=True)
+class TypedD81LogitBatch:
+    """Receipt-bound D81 logits for the exact query feature rows."""
+
+    classes: tuple[str, ...]
+    k_shot: int
+    logits_fp32: np.ndarray
+    query_feature_receipt: Mapping[str, Any]
+    source_schema: str
+    source_receipt_sha256: str
+    batch_receipt_sha256: str
+    schema: str = D81_LOGIT_BATCH_SCHEMA
+
+    def __post_init__(self) -> None:
+        classes = _classes(self.classes)
+        logits = np.asarray(self.logits_fp32)
+        query_receipt = dict(self.query_feature_receipt)
+        source_schema = str(self.source_schema)
+        source_receipt = _require_sha256(
+            self.source_receipt_sha256, "typed D81 source receipt"
+        )
+        if (
+            self.schema != D81_LOGIT_BATCH_SCHEMA
+            or int(self.k_shot) not in ALLOWED_K
+            or logits.dtype != np.float32
+            or logits.ndim != 2
+            or logits.shape[1] != len(classes)
+            or len(logits) < 1
+            or not np.isfinite(logits).all()
+            or not source_schema
+            or set(query_receipt) != {"dtype", "shape", "nbytes", "sha256"}
+            or query_receipt.get("dtype") != np.dtype(np.float32).str
+            or query_receipt.get("shape") != [len(logits), FEATURE_DIM]
+            or query_receipt.get("nbytes") != len(logits) * FEATURE_DIM * 4
+        ):
+            raise D100RACGSPRError("typed D81 logit batch invariant drift")
+        _require_sha256(query_receipt.get("sha256", ""), "typed D81 query receipt")
+        expected = _canonical_sha256(
+            _typed_d81_batch_payload(
+                classes=classes,
+                k_shot=int(self.k_shot),
+                logits=logits,
+                query_feature_receipt=query_receipt,
+                source_schema=source_schema,
+                source_receipt_sha256=source_receipt,
+            )
+        )
+        if self.batch_receipt_sha256 != expected:
+            raise D100RACGSPRError("typed D81 logit batch receipt drift")
+        object.__setattr__(self, "classes", classes)
+        object.__setattr__(self, "k_shot", int(self.k_shot))
+        object.__setattr__(self, "logits_fp32", _readonly(logits, np.float32))
+        object.__setattr__(self, "query_feature_receipt", MappingProxyType(query_receipt))
+        object.__setattr__(self, "source_schema", source_schema)
+        object.__setattr__(self, "source_receipt_sha256", source_receipt)
+
+
+def bind_typed_d81_logits(
+    logits: np.ndarray,
+    query_features: np.ndarray,
+    classes: Sequence[str],
+    k_shot: int,
+    *,
+    source_schema: str,
+    source_receipt_sha256: str,
+) -> TypedD81LogitBatch:
+    """Bind D81 outputs to exact raw288 query rows before canonical fusion."""
+
+    class_registry = _classes(classes)
+    query = np.asarray(query_features)
+    values = np.asarray(logits)
+    if (
+        query.dtype != np.float32
+        or query.ndim != 2
+        or query.shape[1] != FEATURE_DIM
+        or not np.isfinite(query).all()
+        or values.dtype != np.float32
+        or values.shape != (len(query), len(class_registry))
+        or not np.isfinite(values).all()
+    ):
+        raise D100RACGSPRError("typed D81 binding requires float32 logits/query rows")
+    query_receipt = _array_receipt(query)
+    source_receipt = _require_sha256(source_receipt_sha256, "typed D81 source receipt")
+    payload = _typed_d81_batch_payload(
+        classes=class_registry,
+        k_shot=int(k_shot),
+        logits=values,
+        query_feature_receipt=query_receipt,
+        source_schema=str(source_schema),
+        source_receipt_sha256=source_receipt,
+    )
+    return TypedD81LogitBatch(
+        classes=class_registry,
+        k_shot=int(k_shot),
+        logits_fp32=values,
+        query_feature_receipt=query_receipt,
+        source_schema=str(source_schema),
+        source_receipt_sha256=source_receipt,
+        batch_receipt_sha256=_canonical_sha256(payload),
+    )
+
+
+@dataclass(frozen=True, slots=True)
+class D100CanonicalFusionResult:
+    d81_probability_fp32: np.ndarray
+    student_t_probability_fp32: np.ndarray
+    d99_probability_fp32: np.ndarray
+    ridge_probability_fp32: np.ndarray | None
+    fused_probability_fp32: np.ndarray
+    prediction: np.ndarray
+    audit: Mapping[str, Any]
+
+    def __post_init__(self) -> None:
+        arrays = (
+            self.d81_probability_fp32,
+            self.student_t_probability_fp32,
+            self.d99_probability_fp32,
+            self.fused_probability_fp32,
+        )
+        ridge = self.ridge_probability_fp32
+        if (
+            any(np.asarray(value).dtype != np.float32 for value in arrays)
+            or any(np.asarray(value).shape != np.asarray(arrays[0]).shape for value in arrays)
+            or self.prediction.shape != (len(arrays[0]),)
+            or (
+                ridge is not None
+                and np.asarray(ridge).shape != np.asarray(arrays[0]).shape
+            )
+            or any(not np.isfinite(np.asarray(value)).all() for value in arrays)
+            or any(np.any(np.asarray(value) < 0.0) for value in arrays)
+            or any(
+                not np.allclose(np.sum(np.asarray(value), axis=1), 1.0, atol=2e-6)
+                for value in arrays
+            )
+            or (
+                ridge is not None
+                and (
+                    np.asarray(ridge).dtype != np.float32
+                    or not np.isfinite(np.asarray(ridge)).all()
+                    or np.any(np.asarray(ridge) < 0.0)
+                    or not np.allclose(
+                        np.sum(np.asarray(ridge), axis=1), 1.0, atol=2e-6
+                    )
+                )
+            )
+        ):
+            raise D100RACGSPRError("canonical fusion result shape drift")
+        for name in (
+            "d81_probability_fp32",
+            "student_t_probability_fp32",
+            "d99_probability_fp32",
+            "fused_probability_fp32",
+        ):
+            object.__setattr__(self, name, _readonly(getattr(self, name), np.float32))
+        if self.ridge_probability_fp32 is not None:
+            object.__setattr__(
+                self,
+                "ridge_probability_fp32",
+                _readonly(self.ridge_probability_fp32, np.float32),
+            )
+        prediction = np.asarray(self.prediction, dtype=str).copy()
+        prediction.setflags(write=False)
+        object.__setattr__(self, "prediction", prediction)
+        object.__setattr__(self, "audit", MappingProxyType(dict(self.audit)))
+
+
+def canonical_fuse_typed_d81_d99_d100(
+    state: D100SimplexRidgeState,
+    bank: d99.TypedINT8MetricKernelBank,
+    typed_d81: TypedD81LogitBatch,
+    query_features: np.ndarray,
+    *,
+    evaluate_complementarity_branch: bool = False,
+) -> D100CanonicalFusionResult:
+    """Apply the sole D81→D99→D100 probability formula.
+
+    ``evaluate_complementarity_branch`` is a Phase1 diagnostic flag.  It may
+    evaluate the ridge branch when alpha is zero so LODO can audit rescue, but
+    never changes the returned fused probability.
+    """
+
+    if not _query_ready_state(state):
+        raise D100RACGSPRError("canonical fusion state verification failed")
+    if type(bank) is not d99.TypedINT8MetricKernelBank:
+        raise D100RACGSPRError("canonical fusion requires an exact typed D99 bank")
+    if type(typed_d81) is not TypedD81LogitBatch:
+        raise D100RACGSPRError("canonical fusion requires an exact typed D81 batch")
+    if (
+        bank.bank_receipt_sha256 != state.d99_bank_receipt_sha256
+        or bank.classes != state.classes
+        or bank.metric.k_shot != state.k_shot
+        or bank.config.lock_digest != state.d99_lock_digest
+        or bank.deployment_status != state.source_bank_deployment_status
+        or typed_d81.classes != state.classes
+        or typed_d81.k_shot != state.k_shot
+    ):
+        raise D100RACGSPRError("canonical D81/D99/D100 binding drift")
+    query = np.asarray(query_features)
+    if (
+        query.dtype != np.float32
+        or query.ndim != 2
+        or query.shape != (len(typed_d81.logits_fp32), FEATURE_DIM)
+        or not np.isfinite(query).all()
+        or _array_receipt(query) != dict(typed_d81.query_feature_receipt)
+    ):
+        raise D100RACGSPRError("canonical query/typed D81 receipt drift")
+    d81_probability = _softmax(typed_d81.logits_fp32, 1.0)
+    student_t_probability = _softmax(
+        d99.score_metric_kernel_raw_logits(bank, query), state.d99_temperature
+    )
+    eta = float(bank.eta_phase1_locked)
+    if eta == 0.0:
+        probability99 = _readonly(d81_probability, np.float32)
+    elif eta == 1.0:
+        probability99 = _readonly(student_t_probability, np.float32)
+    else:
+        probability99 = _readonly(
+            (1.0 - eta) * d81_probability.astype(np.float64)
+            + eta * student_t_probability.astype(np.float64),
+            np.float32,
+        )
+    evaluate_ridge = bool(state.alpha > 0.0 or evaluate_complementarity_branch)
+    ridge_probability = (
+        _softmax(score_simplex_ridge_logits(state, query), state.temperature)
+        if evaluate_ridge
+        else None
+    )
+    if state.alpha == 0.0:
+        fused = _readonly(probability99, np.float32)
+    elif state.alpha == 1.0:
+        if ridge_probability is None:
+            raise AssertionError("alpha=1 requires ridge probability")
+        fused = _readonly(ridge_probability, np.float32)
+    else:
+        if ridge_probability is None:
+            raise AssertionError("nonzero alpha requires ridge probability")
+        fused = _readonly(
+            (1.0 - state.alpha) * probability99.astype(np.float64)
+            + state.alpha * ridge_probability.astype(np.float64),
+            np.float32,
+        )
+    prediction = np.asarray(state.classes, dtype=str)[np.argmax(fused, axis=1)]
+    audit = {
+        "schema": CANONICAL_FUSION_SCHEMA,
+        "typed_d81_batch_receipt_sha256": typed_d81.batch_receipt_sha256,
+        "typed_d81_source_schema": typed_d81.source_schema,
+        "typed_d81_source_receipt_sha256": typed_d81.source_receipt_sha256,
+        "d99_bank_receipt_sha256": bank.bank_receipt_sha256,
+        "d100_state_receipt_sha256": state.state_receipt_sha256,
+        "eta_phase1_locked": eta,
+        "d99_temperature_phase1_locked": float(state.d99_temperature),
+        "alpha_phase1_locked": float(state.alpha),
+        "ridge_temperature_phase1_locked": float(state.temperature),
+        "formula": (
+            "p99=(1-eta_K)*softmax(D81)+eta_K*softmax(StudentT/T99);"
+            "p100=(1-alpha_K)*p99+alpha_K*softmax(ridge/TR)"
+        ),
+        "student_t_branch_evaluated": True,
+        "ridge_branch_evaluated": evaluate_ridge,
+        "complementarity_diagnostic_requested": bool(evaluate_complementarity_branch),
+        "query_batch_dependency": False,
+        "query_state_updates": 0,
+        "formal_phase2_eligible": False,
+    }
+    return D100CanonicalFusionResult(
+        d81_probability_fp32=d81_probability,
+        student_t_probability_fp32=student_t_probability,
+        d99_probability_fp32=probability99,
+        ridge_probability_fp32=ridge_probability,
+        fused_probability_fp32=fused,
+        prediction=prediction,
+        audit=audit,
+    )
+
+
 def fuse_with_typed_d99_bank(
     state: D100SimplexRidgeState,
     bank: d99.TypedINT8MetricKernelBank,
@@ -1091,11 +1390,15 @@ def predict_formal(*_args: Any, **_kwargs: Any) -> None:
 __all__ = [
     "ALLOWED_K",
     "D100RACGSPRError",
+    "D100CanonicalFusionResult",
     "D100SimplexRidgeState",
     "Phase1D100Lock",
+    "TypedD81LogitBatch",
     "STATE_LIMIT_BYTES",
     "audit_combined_wire_budget",
     "build_simplex_ridge_state",
+    "bind_typed_d81_logits",
+    "canonical_fuse_typed_d81_d99_d100",
     "complementarity_audit",
     "fuse_with_typed_d99_bank",
     "generalized_precision_sqrt_transform",

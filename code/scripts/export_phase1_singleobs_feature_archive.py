@@ -52,6 +52,9 @@ SOURCE_VALIDATION_ROLES = {"source"}
 FORMAL_STATUS = "FORMAL_PHASE1_TEMPORARY_ASSET"
 DEVELOPMENT_STATUS = "DEVELOPMENT_PHASE1_TEMPORARY_ASSET"
 DIAGNOSTIC_STATUS = "TEST_DIAGNOSTIC_NOT_FORMAL"
+DEVELOPMENT_SHA_ONLY_AUTHORITY_MODE = (
+    "development_known_adv3b02_runtime_sha_no_parity"
+)
 KNOWN_DEVELOPMENT_ADV3B02_RUNTIME_SHA256 = frozenset(
     {
         "b2021ca1ac97848a8cfda353a4070530bfa41bc08a711f746f329bd2d8d870d9",
@@ -294,6 +297,64 @@ def _load_runtime_binding(
             else "test_diagnostic_self_described_runtime"
         ),
         "authority_binding_sha256": _sha256_file(runtime_manifest_path),
+        "formal_outer_content_root_sha256": None,
+        "detached_seal_sha256": None,
+        "signature_envelope_sha256": None,
+    }
+
+
+def _load_known_runtime_sha_only(
+    runtime_path: str | Path,
+    expected_runtime_sha256: str,
+    class_ids: tuple[str, ...] | list[str],
+) -> dict[str, Any]:
+    """Bind a known frozen runtime for a non-formal Phase1 diagnostic export."""
+
+    path = Path(runtime_path).resolve()
+    runtime_sha = _require_sha256(
+        expected_runtime_sha256, name="expected development runtime"
+    )
+    classes = tuple(str(value) for value in class_ids)
+    if (
+        runtime_sha not in KNOWN_DEVELOPMENT_ADV3B02_RUNTIME_SHA256
+        or not path.is_file()
+        or path.is_symlink()
+        or _sha256_file(path) != runtime_sha
+    ):
+        raise Phase1SingleObservationArchiveError(
+            "development runtime is not a known SHA-bound ADV3B02 runtime"
+        )
+    if len(classes) < 2 or any(not value for value in classes) or len(set(classes)) != len(classes):
+        raise Phase1SingleObservationArchiveError(
+            "development runtime class registry drift"
+        )
+    binding = {
+        "mode": DEVELOPMENT_SHA_ONLY_AUTHORITY_MODE,
+        "checkpoint_sha256": BASE_CHECKPOINT_SHA256,
+        "runtime_sha256": runtime_sha,
+        "class_ids": list(classes),
+        "feature_dims": {
+            "input_channels": 2,
+            "z160": FEATURE_DIM,
+            "checkpoint_reference_logits": len(classes),
+            "features": JOINT_DIM,
+        },
+    }
+    binding_sha = hashlib.sha256(_canonical_json_bytes(binding)).hexdigest()
+    return {
+        "manifest": None,
+        "manifest_path": None,
+        "manifest_sha256": None,
+        "bundle_id": binding_sha,
+        "checkpoint_sha256": BASE_CHECKPOINT_SHA256,
+        "runtime_path": path,
+        "runtime_sha256": runtime_sha,
+        "runtime_receipt_path": None,
+        "runtime_receipt_sha256": None,
+        "feature_dims": binding["feature_dims"],
+        "class_ids": classes,
+        "authority_mode": DEVELOPMENT_SHA_ONLY_AUTHORITY_MODE,
+        "authority_binding_sha256": binding_sha,
         "formal_outer_content_root_sha256": None,
         "detached_seal_sha256": None,
         "signature_envelope_sha256": None,
@@ -1026,6 +1087,44 @@ def export_development_phase1_singleobs_feature_archive(
     )
 
 
+def export_development_sha_only_phase1_singleobs_feature_archive(
+    *,
+    cache_set_path: str | Path,
+    cache_set_sha256: str,
+    runtime_path: str | Path,
+    expected_runtime_sha256: str,
+    class_ids: tuple[str, ...] | list[str],
+    selection_salt_receipt_path: str | Path,
+    selection_salt_receipt_sha256: str,
+    output_dir: str | Path,
+    device: str = "cuda:0",
+    batch_size: int = 256,
+) -> dict[str, Any]:
+    """Export Phase1 features from a known runtime without a parity claim.
+
+    This mode is deliberately development-only.  It records the exact runtime
+    SHA and class registry, emits no parity receipt, and cannot become a formal
+    Phase1 or target result.
+    """
+
+    runtime = _load_known_runtime_sha_only(
+        runtime_path, expected_runtime_sha256, class_ids
+    )
+    return _export_impl(
+        cache_set_path=cache_set_path,
+        cache_set_sha256=cache_set_sha256,
+        runtime=runtime,
+        selection_salt_receipt_path=selection_salt_receipt_path,
+        selection_salt_receipt_sha256=selection_salt_receipt_sha256,
+        output_dir=output_dir,
+        device=device,
+        batch_size=batch_size,
+        mode="development",
+        forward_callback=None,
+        cache_loader=load_verified_leo_weak_cache_set,
+    )
+
+
 def _export_test_diagnostic_not_formal(
     *,
     forward_callback: ForwardCallback,
@@ -1053,6 +1152,11 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument("--cache-set-sha256", required=True)
     parser.add_argument("--runtime-manifest", type=Path)
     parser.add_argument("--runtime-manifest-sha256")
+    parser.add_argument("--runtime", type=Path)
+    parser.add_argument(
+        "--class-ids",
+        help="Comma-separated frozen class handles for development SHA-only export",
+    )
     parser.add_argument("--package-root", type=Path)
     parser.add_argument("--detached-seal", type=Path)
     parser.add_argument("--signature-envelope", type=Path)
@@ -1091,13 +1195,28 @@ def main() -> None:
         "batch_size": args.batch_size,
     }
     if args.mode == "development":
-        result = export_development_phase1_singleobs_feature_archive(
-            **common,
-            runtime_manifest_path=args.runtime_manifest,
-            runtime_manifest_sha256=args.runtime_manifest_sha256,
-            expected_runtime_sha256=args.expected_runtime_sha256,
-            expected_parity_receipt_sha256=args.expected_parity_receipt_sha256,
-        )
+        if args.runtime is not None:
+            if args.runtime_manifest is not None or args.runtime_manifest_sha256 is not None:
+                raise Phase1SingleObservationArchiveError(
+                    "development runtime and runtime manifest are mutually exclusive"
+                )
+            class_ids = tuple(
+                value.strip() for value in str(args.class_ids or "").split(",") if value.strip()
+            )
+            result = export_development_sha_only_phase1_singleobs_feature_archive(
+                **common,
+                runtime_path=args.runtime,
+                expected_runtime_sha256=args.expected_runtime_sha256,
+                class_ids=class_ids,
+            )
+        else:
+            result = export_development_phase1_singleobs_feature_archive(
+                **common,
+                runtime_manifest_path=args.runtime_manifest,
+                runtime_manifest_sha256=args.runtime_manifest_sha256,
+                expected_runtime_sha256=args.expected_runtime_sha256,
+                expected_parity_receipt_sha256=args.expected_parity_receipt_sha256,
+            )
     else:
         result = export_phase1_singleobs_feature_archive(
             **common,

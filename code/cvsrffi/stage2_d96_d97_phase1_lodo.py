@@ -564,7 +564,6 @@ def _validate_feature_archive_manifest(
     sha_fields = (
         "cache_set_sha256",
         "runtime_authority_binding_sha256",
-        "runtime_checkpoint_parity_receipt_sha256",
         "runtime_sha256",
         "phase1_checkpoint_sha256",
         "bundle_id",
@@ -603,6 +602,9 @@ def _validate_feature_archive_manifest(
         if (
             inputs.get("runtime_authority_mode")
             != "formal_adv3b02_outer_bundle"
+            or not _is_sha256(
+                inputs.get("runtime_checkpoint_parity_receipt_sha256")
+            )
             or any(
                 not _is_sha256(inputs.get(name))
                 for name in (
@@ -616,11 +618,25 @@ def _validate_feature_archive_manifest(
         ):
             raise ValueError("formal feature archive lacks outer authority closure")
     else:
+        development_mode = inputs.get("runtime_authority_mode")
+        parity_sha = inputs.get("runtime_checkpoint_parity_receipt_sha256")
         if (
-            inputs.get("runtime_authority_mode")
-            != "development_known_adv3b02_runtime_sha"
+            development_mode
+            not in {
+                "development_known_adv3b02_runtime_sha",
+                "development_known_adv3b02_runtime_sha_no_parity",
+            }
             or inputs.get("runtime_sha256")
             not in KNOWN_DEVELOPMENT_ADV3B02_RUNTIME_SHA256
+            or (
+                development_mode == "development_known_adv3b02_runtime_sha"
+                and not _is_sha256(parity_sha)
+            )
+            or (
+                development_mode
+                == "development_known_adv3b02_runtime_sha_no_parity"
+                and parity_sha is not None
+            )
             or inputs.get("formal_outer_content_root_sha256") is not None
             or inputs.get("detached_seal_sha256") is not None
             or inputs.get("signature_envelope_sha256") is not None
