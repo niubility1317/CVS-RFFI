@@ -64,6 +64,7 @@ def main() -> int:
     if len(_GROUND_MANIFEST_SHA256) != 64:
         raise base.StabilityLauncherError("D81 ground manifest SHA drift")
     base.CANDIDATE = CANDIDATE_D81
+    base.ROW_PIPELINE = CODE_ROOT / "scripts" / "run_cvs_somph_diag_row_pipeline.py"
     if not hasattr(base, "_ORIGINAL_JOB_COMMAND"):
         base._ORIGINAL_JOB_COMMAND = base._job_command
     base._job_command = _d81_job_command
