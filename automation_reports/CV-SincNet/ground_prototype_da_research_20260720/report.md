@@ -778,7 +778,20 @@ P0阻塞是远端不存在`cvs.phase1.runtime_checkpoint_parity_receipt.v1`兼�
 |本地|远端|用途|
 |---|---|---|
 |`E:\type10-7\code\snapshots\d97_phase1_singleobs_lodo_20260720_v1\source_798dedfd.zip`|`/home/szu2070436088/2510044040/CV-SincNet/runs/d97_phase1_singleobs_lodo_20260720_v1/source_798dedfd.zip`|不可变commit-bound源码包|
-|源码包内`code/scripts/verify_adv3b02_runtime_checkpoint_parity.py`，SHA=`e611297d04fa4cb98aebcc75d95bde198325942fc4d1e240b90f271c56f7048b`|解包后`source_798dedfd/code/scripts/verify_adv3b02_runtime_checkpoint_parity.py`|本阶段唯一执行脚本|
+|源码包内`code/scripts/verify_adv3b02_runtime_checkpoint_parity.py`，commit/archive字节SHA=`bfc55243a33fd956087e1ff352932064ef0291ebd6a5026be77995c95c8e3169`|解包后`source_798dedfd/code/scripts/verify_adv3b02_runtime_checkpoint_parity.py`|本阶段唯一执行脚本|
+
+首次LANDED哈希门正确停止：ZIP整体SHA、大小、成员数、D98排除和`py_compile`均通过，但报告最初误把Windows工作树CRLF脚本SHA`e611297d...`当成commit-bound发布SHA；`git archive`内LF字节及远端解包脚本均为`bfc55243...`。没有parity进程被启动，locks为空，SSH/TCP22已清零。新发布权威改为ZIP成员字节而非工作树字节，完整关键成员如下：
+
+|ZIP成员|commit/archive字节SHA256|
+|---|---|
+|`code/scripts/verify_adv3b02_runtime_checkpoint_parity.py`|`bfc55243a33fd956087e1ff352932064ef0291ebd6a5026be77995c95c8e3169`|
+|`code/scripts/export_phase1_singleobs_feature_archive.py`|`b23496b72019257febeab1beae30692498b43d92f16be5bb3d4bb8e8a3ab25bd`|
+|`code/scripts/run_d97_phase1_lodo_selection.py`|`1daa990d00cc33e916758030bc8d94b0ac57ebad8a50887289f0b191c583e945`|
+|`code/cvsrffi/stage2_d81_phase1_episode_scorer.py`|`54ee742c81b60e00b6c1c36d2d6bf1f0409ad10f72a25e01c2dcd589093be55d`|
+|`code/cvsrffi/stage2_d96_d97_phase1_lodo.py`|`8ea89935a18a3852a8fa388c531ec18495fe87b3edf7597870ecdeb9776ae18a`|
+|`code/cvsrffi/phase1_adv3b02_deployment_bundle.py`|`075a575f0dfe85e1201960b089fd7c33deee1d5ad247613ed0b35e0c5ffa2c84`|
+
+该阻断属于发布预登记字节口径修复，不是实验失败或参数重试。下一次继续前只接受已landed且整体SHA匹配的同一ZIP，并要求远端关键成员逐项匹配上表；不得重打包、覆盖或放宽哈希门。
 
 本阶段只授权唯一runner执行parity，不授权feature export、LODO或target访问。重新preflight并确认GPU0可用、run/log根仍不存在后，建立独立run/log目录，核对源码包与脚本SHA，使用远端`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`从隔离源码运行：
 
