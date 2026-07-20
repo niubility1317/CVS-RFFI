@@ -907,3 +907,19 @@ commit`907bd620`的专项与相关联合测试共`76 passed`，但独立复审�
 资源审查同样不闭合：没有真实wire serializer；logical/serialized未覆盖完整audit和receipt；peak遗漏support副本、registered feature、Torch optimizer/梯度状态及LDA内部临时量；逐query MAC遗漏raw288注册几何、归一化和INT8 decode。更严重的是每次score前后都重新读取并hash依赖源码、numeric arrays和完整audit/resource，这些文件I/O、SHA和序列化成本完全未计入query路径。
 
 修复链已冻结为：typed lifecycle artifact同时绑定old support、all-registered support、old/final registry、capsule/split/row receipt和Phase1 method-lock；只用old support拟合20-step metric，冻结后分别形成before old head与final all-class head；实际wire save/load报告完整bytes；external authority/dependency只在load-time验证一次，query只执行`typed immutable state + raw288`纯前向。至少覆盖2old+2new的K1/K5/K10独立oracle，以及6old+5/10/20new registry形状、固定old改变new不改metric、K1 fallback、伪authority/内部重签攻击、serializer往返和load后无文件I/O。修复前D97/D99均不得接入该state，更不得运行N607 target narrow或125。
+
+### typed D81修复版独立复审：仍为REVISE
+
+修复作者已将fit改为old-only metric与before-old/all-final head，并在字典序fixture上得到K1/K5/K10 oracle差异全0；专项`24 passed`、D42+D81 scorer+typed+D99联合`76 passed`。但独立审查用非排序sealed payload证伪严格等价：typed内部按class+physical ID重排，而历史D81保持capsule payload order；固定噪声由此绑定到不同物理行。
+
+|K-shot|`log_diag`最大差|before logit最大差|final logit最大差|
+|---:|---:|---:|---:|
+|1|0|0|0|
+|5|0.171410412|0.002393246|0.001184523|
+|10|0.117926039|0.002886534|0.005068243|
+
+历史D81等价优先，external row receipt必须显式绑定ordered support row/physical/feature root；fit保持该顺序，old/all中的old行逐项同序同bytes。输入重排应因row receipt不匹配被拒绝，不能在typed内部另行canonical排序后仍声称D81。
+
+资源也被独立下界证伪。2old+2new K1报告fit 49,180,800 MAC，而真实D46/D62 inventory下界为97,731,960 MAC，约低报1.99倍；6old+20new K10报告101,358,592 MAC，而88个LDA component fit、D62 OOF/fisher/reliability/gate、rank21 translation、metric/geometry合计下界为11,835,007,168 MAC，约低报116.76倍。peak同样未覆盖最大D62/sklearn临时生命周期。正常wire fixed point与query MAC 8,772/40,474本身通过复算。
+
+最后，将query/fit MAC与peak改为0或将metric seed从713101改为713102，再重算wire和artifact SHA，load/verify/query仍可成功，说明resource/config仍只受内部自签保护。下一版必须从numeric state、维度、真实D46/D62 call inventory及外部Phase1/scorer lock独立推导，任何内部重签不得绕过。正式capsule producer依然不存在，所以即便local exact-fit修复通过，状态也只能保持`LOCAL_CORE_PENDING_EXTERNAL_CAPSULE_PRODUCER_AND_REVIEW`，formal query入口必须拒绝local-fit state。
