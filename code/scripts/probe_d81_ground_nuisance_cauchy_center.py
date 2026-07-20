@@ -47,6 +47,7 @@ FORMULA = (
     "center while preserving within-class residuals and FFT96/RF32; fit the locked "
     "target-support D62 metric and compile one INT8 affine head"
 )
+EXTRA_SOURCE_CLOSURE: dict[str, str] = {}
 d43.ARM_STRUCTURES[ARM] = STRUCTURE
 if ARM not in d43.ARMS:
     d43.ARMS = tuple((*d43.ARMS, ARM))
@@ -526,6 +527,7 @@ def main(argv: list[str] | None = None) -> int:
         "d81_d43_helper_sha256": d43._sha256(
             d62.d61.d46.d44.D43_HELPER_PATH
         ),
+        **EXTRA_SOURCE_CLOSURE,
     }
     previous_sys_path, previous_argv = list(sys.path), sys.argv
     d42 = package = None
