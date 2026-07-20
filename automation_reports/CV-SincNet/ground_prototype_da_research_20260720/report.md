@@ -859,6 +859,10 @@ source-validation三份NPZ一致证明旧类原始label顺序`[0,1,2,3,4,5]`映�
 
 P1还包括subprocess无timeout、`nvidia-smi`失败被静默降为`driver=None`、缺总orchestrator耗时/host peak以及per-channel quantization registry不完整。第三轮修复继续保持development diagnostic only，不访问数据、不输出runtime晋级结论。
 
+第三轮作者补充canonical origin、独立trace-builder、既有SOMP-H Ed25519公钥、Git dirty根和worker证据后，专项与联合`30 passed`，但第三次独立复审仍为`REVISE`。实测在worker/trace-builder的JSON parse与后续文件hash之间替换文件，内存payload和记录SHA来自不同bytes仍被接受；删除`asset_lineage.runtime_origin`后validator也继续接受。完整origin对象必须由固定arm contract重算并核对canonical/copy路径、scope和origin receipt，所有文件必须单次`read_bytes()`后用同一bytes完成parse/hash/length/stdout绑定。
+
+签名source archive也尚未绑定实际执行源码：父进程验证的是archive SHA/commit，worker实际import当前工作树；dirty/untracked只记录不阻断，无`.git`也可继续，实际依赖未逐成员对照signed archive manifest。下一版必须从已验证archive隔离执行，或逐一闭合实际import dependency的path/SHA/size并拒绝路径逃逸、symlink、缺失和额外执行依赖。既有SOMP-H公钥是真实信任根，f119/b202 lineage SHA也有历史实物，但仓库当前没有任何真实`cvs.development.source_archive_commit_receipt.v1`签名receipt，只有源码和测试fixture。因此工具必须显式`BLOCKED_MISSING_SIGNED_SOURCE_RECEIPT`；单元测试的签名fixture不能变成N607发布授权。
+
 ## 下一轮唯一集成候选D99
 
 跨方法监督否决继续增加第三个全局头或D98式二次融合权，建议下一轮只实现`D99 RA-CGTMK-D81`：保留D81一次拟合，将D96的密度反权、`D_eff`、共享ground nuisance basis和support-only coverage certificate用于构造严格PSD低秩Mahalanobis度量，再把D97的各向同性qK分支替换为类数归一化Student-t metric-kernel。ground只改变可观测距离，不直接给旧类加分；old/new仍由同式target support注册。
