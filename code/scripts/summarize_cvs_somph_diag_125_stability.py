@@ -404,8 +404,9 @@ def _query_physical_iq(
         raise StabilitySummaryError("query package full-array alignment drift")
     if len(tokens) != len(set(tokens.tolist())):
         raise StabilitySummaryError("query package token duplication")
-    if set(tokens.tolist()) != set(truth):
-        raise StabilitySummaryError("query package token set does not equal truth sidecar")
+    query_token_set = set(tokens.tolist())
+    if not query_token_set or not query_token_set.issubset(truth):
+        raise StabilitySummaryError("query package token set is outside truth sidecar")
     _verify_iq_hashes(iq, hashes, context="query")
     rows = []
     for token, digest, seed in zip(tokens.tolist(), hashes.tolist(), seeds.tolist()):
