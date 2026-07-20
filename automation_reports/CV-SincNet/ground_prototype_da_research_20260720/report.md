@@ -943,3 +943,11 @@ commit`907bd620`的专项与相关联合测试共`76 passed`，但独立复审�
 第三轮独立复审最终裁决为`ACCEPT_LOCAL_EXACT_FIT_PENDING_EXTERNAL_PRODUCER`。实现删除内部support排序，严格保持external sealed payload order；非排序K1/K5/K10的`log_diag/before/final`与独立历史D81 oracle最大差全部为0，输入重排由ordered row receipt在fit前拒绝。D46/D62完整资源固定点为：2old+2new K1共4个component fit、总fit 97,872,856 MAC、peak 24,272,503B、query 8,772 MAC；6old+20new K10共88个component fit、总fit 11,835,222,784 MAC、peak 142,162,891B、query 40,474 MAC。resource归零重签和seed重签均被外部lock/dimension inventory拒绝。
 
 外部formal producer仍不存在，因此两个formal query API在函数入口无条件fail-closed，不读取任何state字段；4个authority/config/state dataclass均为frozen+slots且无`__dict__`，copy/replace/字段替换不能打开正式路径。wire实际固定点锁为K1 17,743B与6old+20new K10 35,706B，旧35,709B是作者预报误差，没有人为padding。专项`30 passed`，13文件直接依赖联合实际收集`141 passed`。该裁决证明local exact-fit、wire和资源闭合，不授予external capsule authority，仍禁止N607、target narrow、125或正式性能声明。
+
+### method-free Phase2 data authority producer
+
+扩展元数据搜索没有找到真实同时包含`VALIDATED_ONCE+p2_min_v1+capsule_id+split_id`的receipt。现有D18 cache、D81 matrix和SOMP-H envelope可证明单LEO弱观测、固定received-IQ、registry prefix及若干物理不复用事实，但其schema和formal范围不足，不能直接冒充typed D81 row authority。因此新增metadata-only producer，只读取predictor manifest、detached seal、offline audit和data-validation COMMIT四个控制JSON，不打开support/query/cache/truth payload，不重建IQ或split。
+
+第一次复审发现总support数不能证明逐类exact-K、Stage2-B registry root逻辑错误及capsule/split职责混叠。修复后每个scenario按final registry闭合逐类count和physical root，并逐类强制`count==K`；Stage2-B要求old/final registry与root相同，Stage2-C要求strict prefix且root不同。`capsule_id`只绑定receiver、scenario、role-agnostic physical/received-IQ内容根和单观测事实，不含seed、K或support/query角色；`split_id`绑定capsule、K、method-free registry identity和角色化physical split，不含seed、token或模型/package句柄。实际`Path.open`守卫证明writer仅读取四个控制JSON。
+
+第二轮复审裁决为`ACCEPT_LOCAL_PRODUCER_BLOCKED_SIGNED_UPSTREAM`；主线专项`10 passed`、相邻bundle/builder联合`46 passed`。输出固定为`UPSTREAM_COMMIT_BLOCKED_UNSIGNED_NOT_FORMAL`与`UNVERIFIED_UNSIGNED`，上游VALIDATED_ONCE只记录为未验证声明，formal data/launch/metric全部为false。local producer可进入Git，但真实signed upstream COMMIT/envelope出现前不得接typed formal consumer、N607 target或性能声明。
