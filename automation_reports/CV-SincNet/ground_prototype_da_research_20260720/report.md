@@ -750,4 +750,29 @@ conda run -n ssr-gpu python -m pytest tests/test_stage2_d96_ra_cgsrda.py tests/t
 
 ## D98反遗忘线当前状态
 
-D98-STRIMS已经修正温度化`log_softmax`坐标，使D81与qK各自的逐样本logit平移不改变融合预测；state receipt也绑定温度、lock与head receipt。独立复审仍以4项P0否决实验集成：K1未强制`alpha=0`；generic融合入口可让概率冒充raw qK；逐fold OOF provenance仍由调用方自签，不能证明held physical未进入拟合；D81 inference receipt没有绑定实际base输出。该线继续并行修复，但不进入本次D97 N607 release，也不以24/24单测声称性能成功。
+D98-STRIMS第二轮作者修复后，新的独立复审结论为`ACCEPT_LOCAL_CORE_ONLY`。专项`11 passed`，D81+D97+D98联合`39 passed`；K1强制`alpha=0`且不调用OOF producer，合法K5/K10路径在模块内按physical ID形成exact complement，并实际调用typed D81 scorer和D97 INT8 raw head；重复/空physical ID、非均衡K、class permutation、logit gauge、温度/receipt漂移均有fail-closed测试。当前公开API没有generic probability/logit fuse或deploy inference入口，状态保持`LOCAL_CORE_PENDING_TYPED_D81_INTEGRATION`。
+
+但它有三项实验阻断。第一，仍无typed target D81 inference，私有数学fuse不能绑定真实target D81 state/logits、class registry和列顺序。第二，每个support OOF fold都会调用包含20个optimizer steps的D81 scorer，端到端K5至少100步、K10至少200步，超过探索75步硬门；D98局部`resource_audit.optimizer_steps=0`不能代表组合方法总资源。第三，Python私有capability只是API约定，不是认证边界；独立审查可读取私有token、注入任意logit/fold record并重算receipt后被fit接受。因此D98只作为本地数学核心与tail/intrusion/retention诊断工具进入Git，不得进入当前D97 release、N607 target窄实验或125，也不能声称已有性能收益。下一次复审必须同时补typed target D81闭环、消除任意数组推理旁路并把完整OOF资源压回硬门。
+
+## N607第一阶段只读资产发现
+
+唯一实验runner已完成`READ_ONLY_ASSET_DISCOVERY`，未同步、未启动、未写远端。规定的`N607`直连preflight通过；主机为`dell-DSS8440`，8张RTX3090均为0%利用率且无训练计算进程。每次短连接后均确认本地`ssh.exe`退出、到N607和bridge的TCP22连接为0。
+
+|资产|远端绝对路径|SHA256|核验|
+|---|---|---|---|
+|Phase1 source-validation cache set|`/home/szu2070436088/2510044040/CV-SincNet/runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14/phase1_caches/source_validation/cache_set.json`|`125bb312972fd82edab9b1566a1ebddcd077b9a00c5255a55da22afb453b8d74`|匹配；三份single-LEO NPZ均存在，实际IQ布局为`[N,2,256]`|
+|ADV3B02 base runtime|`/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_ci_strict_matrix_20260716_v1/runtime_artifacts_v2/adv3b02_base_runtime.ts`|`b2021ca1ac97848a8cfda353a4070530bfa41bc08a711f746f329bd2d8d870d9`|匹配；CPU只读加载成功，输入经256-row padding后返回`(z160,logits)`|
+|ADV3B02 checkpoint|`/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth`|`2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98`|匹配；历史checkpoint audit记录`input_len=256`|
+|历史parity receipt|`/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_ci_strict_matrix_20260716_v1/runtime_artifacts_v2/runtime_parity_receipt.json`|`db8635b986bcaea6cbe6f954e90e5ed37b9fb6042876628392db96fe82be42f4`|历史PASS，但schema为`cvs.adv3b02_effective8_torchscript_parity.v1`，不能冒充新exporter所需receipt|
+
+P0阻塞是远端不存在`cvs.phase1.runtime_checkpoint_parity_receipt.v1`兼容receipt和runtime manifest。历史receipt缺checkpoint lineage、parity vector root、TorchScript archive/state structure roots等字段，不能通过改名或人工补字段进入D97。主线因此新增development-only验证器：从真实ADV3B02 checkpoint重建eager model，对既有allowlisted base runtime执行显式`input_len=256/parity_seed/parity_rows/tolerance≤1e-5`的确定性数值比较，同时由既有deployment bundle代码重算runtime结构根；只有比较通过才以不可覆盖方式写出精确receipt。该工具明确不产生外部签名或formal authority，目前专项3/3通过，仍在独立复审，尚未同步。
+
+远端项目根不是Git仓库，且多个D81依赖与本地提交不同，因此第二阶段不得覆盖远端`code`。发布将从最终Git提交生成只含`code/`与`paper_reproduction/`的commit-bound隔离源码包，落入`runs/d97_phase1_singleobs_lodo_20260720_v1/source_<commit>/`；D98未提交且不会进入该包。run/log v1目标路径均已确认不存在。当前状态为`READ_ONLY_ASSET_DISCOVERY_COMPLETE / NOT_LANDED / BLOCKED_PENDING_REVIEWED_DEVELOPMENT_PARITY`。
+
+## 下一轮唯一集成候选D99
+
+跨方法监督否决继续增加第三个全局头或D98式二次融合权，建议下一轮只实现`D99 RA-CGTMK-D81`：保留D81一次拟合，将D96的密度反权、`D_eff`、共享ground nuisance basis和support-only coverage certificate用于构造严格PSD低秩Mahalanobis度量，再把D97的各向同性qK分支替换为类数归一化Student-t metric-kernel。ground只改变可观测距离，不直接给旧类加分；old/new仍由同式target support注册。
+
+其核心收缩为：ground权重同时受`rho`、target偏移能量、`D_eff`和旧类support数量控制；target within-class basis按全部注册类平衡估计且rank≤4，K1时严格为0；最终非正交`P_z=Sigma_z^{-1}`只降低已知nuisance方向权重，不执行D93式全坐标transport。Student-t局部头保留`1/K_c`归一化，并用Phase1冻结的共享/类内尺度抑制异常support与过宽类别侵入。D81与metric-kernel只使用Phase1 receiver-LODO冻结的`eta_K`做一次row-global融合，target阶段不做K折D81重训，也不学习classwise alpha。
+
+D99尚无实现或性能结果。准入要求比D97更严格：Phase1每个K均不得降低worst-class floor，NLL必须严格改善且D81/metric-kernel双向rescue均非零；K1还必须产生非identity预测。target窄实验只允许matched K1/new20与K10/new20，同row`B-old/A-old/New`均不得下降，`H/floor`至少一项严格上升且forgetting不得增加；通过后才运行完整125，125不反向选择`rank/eta/nu/h/rho`公式。D96 standalone SRDA保留为`REVISE`，D97为`MERGE+REVISE`，D98只保留typed provenance和tail指标工具，不进入D99推理链。
