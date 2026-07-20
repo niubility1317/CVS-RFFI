@@ -1076,3 +1076,28 @@ env PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_phase1_in
 - LODO固定比较K={1,5,10,20}。D99必须相对D81同时满足worst floor不降、balanced NLL改善`>1e-6`、双向rescue非零，K1还必须产生非identity预测；D100必须相对D99在每个receiver×pseudo-new pair的floor/old/new/H均不降、balanced NLL改善`>1e-6`且双向rescue非零。
 - LODO不合格的K不得用target补选。合格后只发布receiver20-1、seed713101的K1/new20与K10/new20 matched narrow；每job内部同row输出D81/D99/D100。窄实验通过后才进入历史125 screen，再根据完整目标要求进入400 job/1,200 scenario row确认矩阵。
 - 这一阶段没有target性能指标。任何启动、完成或测试通过都不能写成性能成功；每个完成版本必须随后补齐B/A/min-old/min-new/min-all/New/H/F、逐场景、逐receiver、逐类、混淆、量化和资源表，并详细解释缺陷。
+
+### 第一阶段实际结果：exporter schema不兼容，builder完成
+
+唯一runner已完成一次且仅一次落地，状态链为`LOCAL_VERIFIED→LANDED→RUNNING→STOPPED_EXPORTER_INPUT_SCHEMA_MISMATCH`，未达到`ARTIFACTS_COMPLETE`。2026-07-21T01:38:18+08:00规定preflight通过；8张RTX3090均0%利用率、10MiB且无compute app，所有固定输入SHA匹配。源码4,314成员安全解压、目标脚本`py_compile/import`通过。实际PID为exporter`1390812`/GPU4、builder`1390814`/CPU；两者均在隔离源码CWD运行，结束后PID消失、GPU4恢复0%/10MiB，SSH和N607/bridge TCP22连接均为0。
+
+|child|exit|完成内容|缺陷/结论|
+|---|---:|---|---|
+|Phase1 exporter|1|在cache loader入口完成外层manifest读取|固定source-validation cache为`cvs_leo_weak_iq_cache_set_v1`，代码只接受`..._v2`，报`LEO cache-set manifest contract failed: ['schema']`；未进入runtime前向，未创建archive|
+|D99 ground builder|0|7 receiver×6 class bundle、aggregation spec、base lock、manifest、result五文件齐全，typed load和lock digest复核通过|development/nonformal；mean/min requantization cosine为0.9999880195/0.9999678135，说明量化重构稳定，但尚无分类或transport性能|
+
+builder实际SHA为：NPZ`e69409268ad1215d440fd0555a4f8e2903214e95062f22a0c5f436fb2b799bd4`，manifest`f92a1bd6e936c4e661517da73ee39cc5e94f77b796f50587dd33f6c0d2da8f0d`，base lock`7481c351a3114432df0c06c8527b1f625c15c05b1e3aed89000098b26f022a9e`，aggregation spec`f4db8091aeb7204bb4a641d02810c19acbb9fc002ec8e82c82fd9f4fe2820efe`，result`b9c0213f9dbbd2f438ab31541ac4404d852388bd42fbe439b9a768fbf87714c2`。typed bundle SHA为`78904ed3c569f79815021ef76cc9e46bb42fd0a06c7bb1e91483237e2606ce78`，narrow loader lock digest为`9d12c638176e0bc7dfa2d27664f737e606ec2064eb8d280a9a059d91c2122063`。
+
+完整wrapper、child command、PID/GPU/CWD、输入/输出SHA和异常证据见`artifacts/d99_d100_phase1_inputs_aa3a0266_20260721_r1/runner_handoff.md`，handoff SHA256为`594cba875bd47dc491d557732c00f4ebd27442f629e5a3f4dfdc14281cdef184`。本run没有target性能指标，不能给出old/new/H/floor/forgetting，也不能启动LODO；四个feature archive字段明确为`UNAVAILABLE_EXPORTER_EXIT_1`。runner没有重启、转换schema、改参数、换run ID或访问target。
+
+修复范围冻结为：默认/formal cache loader继续只接受v2；仅development SHA-only exporter显式接受实际v1 outer+inner schema，其他manifest字段、NPZ成员、role、physical ID、IQ hash、overlay和cache SHA验证不放宽。修复必须本地测试、提交、重新预登记并使用全新不可覆盖run ID，禁止向本run补写。
+
+### D101直接shrinkage RDA交叉审查
+
+D101定位为D99上的alternative global head，与D100二选一，不叠成第三个融合头。当前裁决为`REVISE`：只允许后续实现Phase1 nested-LODO诊断臂，尚不允许target或N607。原因不是协议违法，而是其相对D99 metric和D100 simplex ridge的独立纠错能力尚未被证实。
+
+冻结结构使用D99 metric-sqrt后的288D三block特征。所有old/new类均值只来自同row support，使用同一共享协方差、等先验、温度和判别式。K1不估计target协方差方向，只用sealed三block各向同性先验和coverage-gated ground共享谱；K>1只估计3个block residual scalar及最多2个target residual方向，Woodbury小逆rank≤6，0 optimizer、0 query update。C=26时D101增量INT8核心payload约7.75KB，已复用D99特征时增量query约7,514MAC；实际wire、共享D99状态、完整fit peak与INT8 margin审计仍须实现后实测，不能把payload估算写成正式资源结论。
+
+共同可逆变换后若完整重估均值和协方差，LDA margin严格不变；因此D101不得把“公共对齐”声称为收益。唯一可能产生不同决策的机制是固定ground prior、三block投影、rank≤2非可逆截断、shrinkage/ridge与量化。每个K在Phase1必须相对D100有非零disagreement、双向rescue各≥`max(5,0.1% held queries)`且各覆盖至少2个held receiver，`oracle-union(D99,D101)`比`oracle-union(D99,D100)`至少高0.25pp；每个receiver×pseudo-new pair的old/new/H/floor不得下降，balanced NLL严格改善，K1还须非identity。任一条件失败即`REJECT`，不得用target补选。
+
+只有D101完整LODO通过后，才允许一次K1/new20与K10/new20 matched窄测；相对D100同row的B-old、A-old、New、H、floor均不得下降、forgetting不得增加，且H或floor至少一项严格上升，否则不运行历史125。当前没有D101实现或性能结果。
