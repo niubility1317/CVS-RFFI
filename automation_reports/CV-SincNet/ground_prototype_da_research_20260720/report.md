@@ -1016,3 +1016,63 @@ commit`907bd620`的专项与相关联合测试共`76 passed`，但独立复审�
 第一次复审发现总support数不能证明逐类exact-K、Stage2-B registry root逻辑错误及capsule/split职责混叠。修复后每个scenario按final registry闭合逐类count和physical root，并逐类强制`count==K`；Stage2-B要求old/final registry与root相同，Stage2-C要求strict prefix且root不同。`capsule_id`只绑定receiver、scenario、role-agnostic physical/received-IQ内容根和单观测事实，不含seed、K或support/query角色；`split_id`绑定capsule、K、method-free registry identity和角色化physical split，不含seed、token或模型/package句柄。实际`Path.open`守卫证明writer仅读取四个控制JSON。
 
 第二轮复审裁决为`ACCEPT_LOCAL_PRODUCER_BLOCKED_SIGNED_UPSTREAM`；主线专项`10 passed`、相邻bundle/builder联合`46 passed`。输出固定为`UPSTREAM_COMMIT_BLOCKED_UNSIGNED_NOT_FORMAL`与`UNVERIFIED_UNSIGNED`，上游VALIDATED_ONCE只记录为未验证声明，formal data/launch/metric全部为false。local producer可进入Git，但真实signed upstream COMMIT/envelope出现前不得接typed formal consumer、N607 target或性能声明。
+
+## D99/D100实验优先发布交接（2026-07-21）
+
+本节取代上文把额外签名、authority envelope或数据握手作为无线信号模型development实验前置门的旧结论。用户已明确该工作是无线信号域适应、分类头和类增量学习研发，与网络安全任务无关；本轮只执行现有`p2_min_v1`科学协议和实验约束。Phase1 LODO不访问target；后续target narrow复用匹配`VALIDATED_ONCE`数据，query保持逐样本只前向。development结果必须标为nonformal，但不得再因缺少额外代码签名或重复数据握手而阻断算法实验。
+
+### 不可变发布身份
+
+|字段|值|
+|---|---|
+|实验ID|`d99_d100_phase1_inputs_aa3a0266_20260721_r1`|
+|登记时间|`2026-07-21 01:34:31 +08:00`|
+|operator|主线Codex；N607唯一launch owner为`n607_d99_d100_release_prep`子agent|
+|目标|导出固定单LEO弱观测Phase1特征archive并构建7 receiver×6 class的D99地面聚合bundle，为K1/K5/K10/K20 receiver-level pseudo-target LODO冻结D99/D100参数|
+|比较目标|D81 exact Phase1 episode scorer；D99相对D81；D100相对D99|
+|Git提交|`aa3a02662b5609d633fdf2ce1bcfde4c3bab0efb`（`Add D99 D100 Phase2 experiment pipeline`）|
+|本地Git状态|登记时clean，分支`codex/ground-prototype-da-rd`|
+|源码归档|`E:\type10-7\code\snapshots\d99_d100_phase1_inputs_aa3a0266_20260721_r1\source_aa3a0266.zip`|
+|源码归档SHA256|`5185e2847b09191419ea58c010c214e6954faea8c6ebde31880dc39e1bc4640c`|
+|源码归档规模|31,121,736B；4,314个Git成员|
+|selection salt|`preregistered_inputs/d99_d100_phase1_selection_salt.json`|
+|selection salt SHA256|`38ffbdda293cd2eead31c481237a459581c862572041ea472b38391a1b4bddb0`|
+|状态|`LOCAL_VERIFIED`；尚未声称`LANDED`、`RUNNING`或性能收益|
+
+本提交涉及D99/D100 LODO、query adapter、ground builder、development exporter、canonical D100融合及对应测试共18个文件。主线合并回归为`86 passed`，wrapper/formal定向回归为`14 passed`；LODO独立审查51/51、query adapter联合89/89、builder/exporter独立13/13，均为exit0。测试只证明实现一致性，不代替真实Phase1或target性能证据。
+
+### N607固定输入
+
+|输入|远端路径|预期SHA256|
+|---|---|---|
+|source-validation cache set|`/home/szu2070436088/2510044040/CV-SincNet/runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14/phase1_caches/source_validation/cache_set.json`|`125bb312972fd82edab9b1566a1ebddcd077b9a00c5255a55da22afb453b8d74`|
+|ADV3B02 runtime|`/home/szu2070436088/2510044040/CV-SincNet/runs/d18_formal_k10_new5_rx20_1_seed713101_20260717_085303/input/sealed_feature_runtime.pt`|`f119e8cb3f6beda95f0d545205e91b43e4a557af2fd1d025e95d2edf2b8e6e2a`|
+|ADV3B02 checkpoint|`/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth`|`2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98`；由selection salt和LODO config逐字绑定|
+|D19 ground component|`/home/szu2070436088/2510044040/CV-SincNet/runs/d19_ciaf_int8_proto_20260717_1039/input/int8_component`|manifest `15b5e144f9af3989421d8e925c17758479c327be47e79222f6363dc63994629c`；NPZ `3c08c823d2e8a13c4233f0060ac67c332ecc8d6e8abec7352de975fead0267d7`|
+|Python|`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`|Torch`2.1.0+cu121`|
+
+远端不可覆盖根为`/home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_phase1_inputs_aa3a0266_20260721_r1`，日志根为`/home/szu2070436088/2510044040/CV-SincNet/logs/d99_d100_phase1_inputs_aa3a0266_20260721_r1`，隔离源码根为前者下的`source_aa3a0266`。runner必须先执行规定的`tools/n607_ssh_preflight.ps1`，复核GPU/进程和所有输入SHA，确认三个远端根均不存在后才可创建；若任一路径已存在则停止，不覆盖、不续写、不自动换ID。
+
+### 预登记child command
+
+Phase1 exporter固定GPU4、batch size256：
+
+```bash
+env PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_phase1_inputs_aa3a0266_20260721_r1/source_aa3a0266/code /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python /home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_phase1_inputs_aa3a0266_20260721_r1/source_aa3a0266/code/scripts/export_phase1_singleobs_feature_archive.py --mode development --cache-set /home/szu2070436088/2510044040/CV-SincNet/runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14/phase1_caches/source_validation/cache_set.json --cache-set-sha256 125bb312972fd82edab9b1566a1ebddcd077b9a00c5255a55da22afb453b8d74 --runtime /home/szu2070436088/2510044040/CV-SincNet/runs/d18_formal_k10_new5_rx20_1_seed713101_20260717_085303/input/sealed_feature_runtime.pt --expected-runtime-sha256 f119e8cb3f6beda95f0d545205e91b43e4a557af2fd1d025e95d2edf2b8e6e2a --class-ids 14-10,14-7,20-15,20-19,6-15,8-20 --selection-salt-receipt /home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_phase1_inputs_aa3a0266_20260721_r1/input/d99_d100_phase1_selection_salt.json --selection-salt-receipt-sha256 38ffbdda293cd2eead31c481237a459581c862572041ea472b38391a1b4bddb0 --output-dir /home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_phase1_inputs_aa3a0266_20260721_r1/phase1_feature_archive --device cuda:4 --batch-size 256
+```
+
+ground builder固定读取D19聚合组件，不读取clean/raw IQ：
+
+```bash
+env PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_phase1_inputs_aa3a0266_20260721_r1/source_aa3a0266/code /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python /home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_phase1_inputs_aa3a0266_20260721_r1/source_aa3a0266/code/scripts/build_d99_receiver_ground_bundle.py --source-component-dir /home/szu2070436088/2510044040/CV-SincNet/runs/d19_ciaf_int8_proto_20260717_1039/input/int8_component --source-manifest-sha256 15b5e144f9af3989421d8e925c17758479c327be47e79222f6363dc63994629c --output-dir /home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_phase1_inputs_aa3a0266_20260721_r1/d99_receiver_ground_bundle
+```
+
+两个child均由runner用不可覆盖的`.pid/.exit/.log`包装为detached job；实际wrapper命令、PID、CWD、GPU、开始/结束时间必须回填本报告。预期exporter产物为`phase1_singleobs_feature_archive.npz`与`phase1_singleobs_feature_archive.manifest.json`；builder产物为`d99_ground_bundle_dev.npz`、`d99_ground_bundle_dev.manifest.json`、`d99_ground_aggregation_spec.json`、`d99_base_method_lock_dev.json`和`build_result.json`。所有产物完成且内部复核通过后才生成绑定真实产物SHA的LODO config；不得提前猜写archive/bundle SHA。
+
+### 成功、停止和后续准入
+
+- 第一阶段成功：源码、salt和固定输入SHA一致；远端隔离源码`py_compile`通过；两个child exit0；输出目录完整且manifest/NPZ互相校验；短连接结束后本地SSH连接清零。
+- 第一阶段停止：输入SHA漂移、目标路径已存在、GPU占用超过每GPU两训练任务、脚本异常、产物不完整或内部校验失败。不得覆盖、重启或修改候选参数。
+- LODO固定比较K={1,5,10,20}。D99必须相对D81同时满足worst floor不降、balanced NLL改善`>1e-6`、双向rescue非零，K1还必须产生非identity预测；D100必须相对D99在每个receiver×pseudo-new pair的floor/old/new/H均不降、balanced NLL改善`>1e-6`且双向rescue非零。
+- LODO不合格的K不得用target补选。合格后只发布receiver20-1、seed713101的K1/new20与K10/new20 matched narrow；每job内部同row输出D81/D99/D100。窄实验通过后才进入历史125 screen，再根据完整目标要求进入400 job/1,200 scenario row确认矩阵。
+- 这一阶段没有target性能指标。任何启动、完成或测试通过都不能写成性能成功；每个完成版本必须随后补齐B/A/min-old/min-new/min-all/New/H/F、逐场景、逐receiver、逐类、混淆、量化和资源表，并详细解释缺陷。
