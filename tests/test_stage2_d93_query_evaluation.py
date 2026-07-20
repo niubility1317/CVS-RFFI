@@ -4,6 +4,8 @@ import numpy as np
 
 from cvsrffi import stage2_d42_unified_shrinkage_lda as d42
 from cvsrffi.stage2_d93_query_evaluation import (
+    CANDIDATES_GROUND_TRANSPORT,
+    CANDIDATE_D95_D81_RESIDUAL,
     _build_guarded_d93_base_fit,
     build_d93_top_level_fit,
     predict_d93,
@@ -17,6 +19,11 @@ class D43ProbeError(RuntimeError):
 
 def _normalize(rows: np.ndarray) -> np.ndarray:
     return rows / np.linalg.norm(rows, axis=1, keepdims=True)
+
+
+def test_d95_d81_residual_is_a_locked_ground_transport_candidate() -> None:
+    assert CANDIDATE_D95_D81_RESIDUAL == "d95_d81_coverage_residual"
+    assert CANDIDATE_D95_D81_RESIDUAL in CANDIDATES_GROUND_TRANSPORT
 
 
 def test_d93_wraps_int8_target_head_and_scores_all_classes() -> None:

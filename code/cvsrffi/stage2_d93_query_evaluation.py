@@ -21,9 +21,16 @@ CANDIDATE_D93_SCALE = "d93_paired_ground_transport_scale"
 CANDIDATES_D93 = (CANDIDATE_D93_INTERACTION, CANDIDATE_D93_SCALE)
 CANDIDATE_D94_COVERAGE = "d94_paired_ground_transport_coverage_shrink"
 CANDIDATES_D94 = (CANDIDATE_D94_COVERAGE,)
-CANDIDATES_GROUND_TRANSPORT = (*CANDIDATES_D93, *CANDIDATES_D94)
+CANDIDATE_D95_D81_RESIDUAL = "d95_d81_coverage_residual"
+CANDIDATES_D95 = (CANDIDATE_D95_D81_RESIDUAL,)
+CANDIDATES_GROUND_TRANSPORT = (
+    *CANDIDATES_D93,
+    *CANDIDATES_D94,
+    *CANDIDATES_D95,
+)
 SCHEMA_D93 = "cvs.phase2.d93.full_query_evaluation.v1"
 SCHEMA_D94 = "cvs.phase2.d94.full_query_evaluation.v1"
+SCHEMA_D95 = "cvs.phase2.d95.full_query_evaluation.v1"
 
 
 class D93QueryEvaluationError(ValueError):
@@ -133,6 +140,7 @@ def build_d93_top_level_fit(
     ground_audit: Mapping[str, Any],
     include_nuisance_scale: bool,
     coverage_controlled_update: bool = False,
+    base_method: str = "guarded_d62",
 ) -> Callable[..., D93Result]:
     """Wrap the existing D42/D62 top-level fitter with the D93 transport."""
 
@@ -232,6 +240,8 @@ def build_d93_top_level_fit(
             "transport_applied_to_target_new": True,
             "transport_applied_to_query_by_state": True,
             "fft96_rf32_transport_policy": "identity_same_received_iq_auxiliary",
+            "base_method": str(base_method),
+            "d95_d81_base_required": bool(base_method == "d81_ground_nuisance"),
         }
         geometry = {
             **dict(base.geometry_audit),
@@ -274,6 +284,7 @@ def build_d93_top_level_fit(
                 "query_dependent_batch_optimization": False,
                 "dense_query_graph_bytes": 0,
                 "formal_target_vectors_int8_no_fp32_sidecar": True,
+                "d95_d81_base_used": bool(base_method == "d81_ground_nuisance"),
             }
         )
         trace = (
@@ -382,6 +393,44 @@ def _audit_fit(
         raise D93QueryEvaluationError("D93 support-only transport closure drift")
     before = result.geometry_audit["before_covariance_audit"]
     after = result.geometry_audit["final_covariance_audit"]
+    d95_d81_base_used = transport.get("base_method") == "d81_ground_nuisance"
+    if d95_d81_base_used:
+        required_d81 = (
+            "d81_ground_int8_component_used",
+            "d81_ground_component_update_access",
+            "d81_old_new_role_specific_branch",
+            "d81_class_id_specific_formula",
+            "d81_uses_outer_held_or_query",
+            "d81_query_rows_used",
+            "d81_single_affine_state_only",
+        )
+        for covariance_audit, expected_count in (
+            (before, old_count),
+            (after, class_count),
+        ):
+            d81_transform = covariance_audit.get("d81_transform_audit", {})
+            if (
+                any(name not in covariance_audit for name in required_d81)
+                or covariance_audit["d81_ground_int8_component_used"] is not True
+                or covariance_audit["d81_ground_component_update_access"]
+                is not False
+                or covariance_audit["d81_old_new_role_specific_branch"]
+                is not False
+                or covariance_audit["d81_class_id_specific_formula"] is not False
+                or covariance_audit["d81_uses_outer_held_or_query"] is not False
+                or int(covariance_audit["d81_query_rows_used"]) != 0
+                or covariance_audit["d81_single_affine_state_only"] is not True
+                or int(d81_transform.get("class_count", -1)) != int(expected_count)
+                or int(d81_transform.get("k_shot", -1)) != int(k_shot)
+                or d81_transform.get("uses_outer_held_or_query") is not False
+                or float(
+                    d81_transform.get("within_class_residual_max_abs_error", 1.0)
+                )
+                > 2.0e-12
+                or float(d81_transform.get("fft96_rf32_max_abs_error", 1.0))
+                != 0.0
+            ):
+                raise D93QueryEvaluationError("D95 D81-base closure drift")
     return {
         "scenario": str(scenario),
         "k_shot": int(k_shot),
@@ -433,6 +482,13 @@ def _audit_fit(
         "d93_ground_to_target_binding_policy": str(
             transport["ground_to_target_binding_policy"]
         ),
+        "d95_d81_base_used": bool(d95_d81_base_used),
+        "d95_before_center_shift_l2_max": float(
+            before.get("d81_transform_audit", {}).get("center_shift_l2_max", 0.0)
+        ),
+        "d95_after_center_shift_l2_max": float(
+            after.get("d81_transform_audit", {}).get("center_shift_l2_max", 0.0)
+        ),
         "d93_k1_nonidentity": bool(
             int(k_shot) != 1
             or float(transport["update_spectral_norm"]) > 1.0e-8
@@ -452,14 +508,22 @@ def run_d93_query_evaluation(
     """Reuse the sealed D81 I/O scaffold while replacing its method hooks."""
 
     if str(candidate) not in CANDIDATES_GROUND_TRANSPORT:
-        raise D93QueryEvaluationError("unknown D93/D94 candidate")
+        raise D93QueryEvaluationError("unknown D93/D94/D95 candidate")
     from scripts import probe_d81_ground_nuisance_cauchy_center as d81_probe
     from scripts import probe_d62_crossfitted_fisher_row_splice as d62_probe
     from cvsrffi import stage2_d81_query_evaluation as d81_eval
 
     include_scale = str(candidate) == CANDIDATE_D93_SCALE
-    coverage_controlled_update = str(candidate) == CANDIDATE_D94_COVERAGE
-    selected_schema = SCHEMA_D94 if coverage_controlled_update else SCHEMA_D93
+    use_d81_base = str(candidate) == CANDIDATE_D95_D81_RESIDUAL
+    coverage_controlled_update = str(candidate) in (
+        CANDIDATE_D94_COVERAGE,
+        CANDIDATE_D95_D81_RESIDUAL,
+    )
+    selected_schema = (
+        SCHEMA_D95
+        if use_d81_base
+        else (SCHEMA_D94 if coverage_controlled_update else SCHEMA_D93)
+    )
     locked_target_old_tx_labels = tuple(str(item) for item in target_old_tx_labels)
     if (
         not locked_target_old_tx_labels
@@ -484,17 +548,40 @@ def run_d93_query_evaluation(
         prototypes, mask, classes, audit = _load_ground_component(
             component_dir, manifest_sha
         )
+        if use_d81_base:
+            d81_basis, d81_weights, d81_audit = original["load"](
+                component_dir, manifest_sha, feature_dim
+            )
+        else:
+            d81_basis, d81_weights, d81_audit = None, None, None
         holder.update(
             {
                 "prototypes": prototypes,
                 "mask": mask,
                 "classes": classes,
                 "audit": audit,
+                "d81_basis": d81_basis,
+                "d81_weights": d81_weights,
+                "d81_audit": d81_audit,
             }
         )
         return prototypes, mask, audit
 
     def build(module: Any, _prototypes: Any, _mask: Any, _audit: Any):
+        if use_d81_base:
+            if any(
+                holder.get(name) is None
+                for name in ("d81_basis", "d81_weights", "d81_audit")
+            ):
+                raise D93QueryEvaluationError("D95 D81 ground loader ordering drift")
+            base_fit, call_records, transform_records = original["build"](
+                module,
+                holder["d81_basis"],
+                holder["d81_weights"],
+                holder["d81_audit"],
+            )
+            holder["base_fit"] = base_fit
+            return base_fit, call_records, transform_records
         base_fit, call_records = _build_guarded_d93_base_fit(module, d62_probe)
         holder["base_fit"] = base_fit
         return base_fit, call_records, []
@@ -512,6 +599,7 @@ def run_d93_query_evaluation(
             ground_audit=holder["audit"],
             include_nuisance_scale=include_scale,
             coverage_controlled_update=coverage_controlled_update,
+            base_method=("d81_ground_nuisance" if use_d81_base else "guarded_d62"),
         )
         return wrapper(*args, **fit_kwargs)
 
@@ -571,9 +659,13 @@ def run_d93_query_evaluation(
         "d93_mode": "interaction_plus_nuisance_scale"
         if include_scale
         else (
-            "coverage_controlled_interaction"
-            if coverage_controlled_update
-            else "interaction_only"
+            "d81_base_plus_coverage_controlled_residual"
+            if use_d81_base
+            else (
+                "coverage_controlled_interaction"
+                if coverage_controlled_update
+                else "interaction_only"
+            )
         ),
     }
 
@@ -581,10 +673,12 @@ def run_d93_query_evaluation(
 __all__ = [
     "CANDIDATES_D93",
     "CANDIDATES_D94",
+    "CANDIDATES_D95",
     "CANDIDATES_GROUND_TRANSPORT",
     "CANDIDATE_D93_INTERACTION",
     "CANDIDATE_D93_SCALE",
     "CANDIDATE_D94_COVERAGE",
+    "CANDIDATE_D95_D81_RESIDUAL",
     "D93QueryEvaluationError",
     "D93Result",
     "D93State",

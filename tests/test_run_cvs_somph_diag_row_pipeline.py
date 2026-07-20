@@ -415,3 +415,39 @@ def test_parser_exposes_required_row_inputs() -> None:
         ]
     )
     assert d93.candidate == "d93_paired_ground_transport_interaction"
+
+    d95 = pipeline.parser().parse_args(
+        [
+            "--cache-manifest",
+            "cache.json",
+            "--authority-bundle",
+            "authority",
+            "--authority-commit-sha256",
+            "a" * 64,
+            "--phase1-checkpoint",
+            "checkpoint.pth",
+            "--sealed-runtime",
+            "runtime.pt",
+            "--method-lock",
+            "method.json",
+            "--output-root",
+            "output",
+            "--receiver",
+            "20-1",
+            "--seed",
+            "713101",
+            "--k-shot",
+            "10",
+            "--new-count",
+            "20",
+            "--device",
+            "cpu",
+            "--candidate",
+            "d95_d81_coverage_residual",
+            "--ground-component-dir",
+            "ground",
+            "--ground-manifest-sha256",
+            "a" * 64,
+        ]
+    )
+    assert d95.candidate == "d95_d81_coverage_residual"

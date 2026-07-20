@@ -553,3 +553,16 @@ K10三场景support训练均完成20epoch，loss分别为`1.026→0.111`,`1.109�
 资源审计：trainable parameters=2260，adaptation epochs/steps=20/20，K10状态峰值44,414B，ground逻辑状态25,428B，新增transport每query 6,080MAC，score矩阵时延0.01369ms/query，峰值CUDA分配约20.95MiB；K1对应44,419B和0.01318ms/query。无dense query图、无query优化或角色/配额访问、每物理IQ仅一个接收观测、target clean/source访问均为false、Phase2信道模拟调用为0。K10 INT8与FP32 support argmax变化1次，K1为0次。
 
 最终状态：`D94_COMPLETED_NARROW_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE`。D94不运行125。失败机制不是没有使用地面原型，而是低覆盖ground transport替代了D81已有的收缩判别结构；下一版D95保留完整D81为base，仅把coverage-controlled非正交项作为小残差应用于其输入空间。
+
+## D95 D81-base coverage residual预登记
+
+- 候选ID：`d95_d81_coverage_residual`；schema=`cvs.phase2.d95.full_query_evaluation.v1`。
+- 核心假设：D81已经提供当前最可靠的ground-spectrum收缩中心与D62判别头；D93/D94失败来自整体替换该结构。D95先对同一固定LEO弱support/query应用D94的coverage-controlled小残差，再在变换后的support上完整执行D81，不删除D81的ground nuisance basis、Cauchy中心平移、full/block/held闭包或正式INT8线性头。
+- 地面知识职责分离：D94残差只表达ground-old与target-old support之间、且落在ground nuisance span内的共享偏移；D81只把不可变ground聚合域谱作为target support判别的收缩先验。ground均不直接给旧类query加分，最终old/new权重全部由合法target support编译。
+- 无新增可调量：沿用D94唯一公式`α=ρ`、既有0.5谱范数安全上限和冻结D81；无ρ阈值、残差权重扫描、receiver/场景/类别分支或125反向选择。
+- 协议边界：只读sealed Phase1 checkpoint、现有84个INT8多样本聚合ground cell与当前row的单LEO弱support；不读clean/source、query真值/角色/配额，不做query拟合、同物理IQ多信道view、Phase2信道模拟或全局重分配。
+- 主要风险：对support/query共同施加小非正交变换后，D81的中心平移与D62协方差可能近似吸收该变化，产生零增益；也可能改变D81稳健权重并退化。实现必须审计D81在before/after全部full/block/held fit中实际执行，不能把D95误跑成D94。
+- 最小矩阵：同一`20-1/713101`、K10/new20与K1/new20各一次，复用既有matched D81。K10相对D81要求`H`和最低旧类均提高且New下降不超过1pp；K1不得降低old/floor。任一失败则不进入125。
+- 资源预期：在D94的2260参数、20step、约44KB target状态、6,080额外MAC/query基础上恢复D81 ground transform；总状态仍远低于256KB，optimizer step不超过20，query仍单次逐样本线性评分。
+- 本地变更范围：`stage2_d93_query_evaluation.py`新增D95候选、D81原始loader/builder装配与闭包审计；row pipeline和125 launcher通过共享候选表自动获得该ID；测试新增候选与CLI路由断言。数据构建、authority、checkpoint、method lock和ground artifact均不变。
+- 本地验证：在`ssr-gpu`环境串行运行D93/D94/D95公式、query包装、row CLI和125 launcher联合测试，15/15通过。唯一PyTorch只读buffer warning为既有D42路径且测试内部立即clone；pytest退出后的临时symlink清理PermissionError发生在exit code 0之后，不影响测试结论。
