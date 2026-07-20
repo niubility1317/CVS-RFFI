@@ -423,7 +423,10 @@ def fit_ground_sigma_pareto_guard(
         "oof_clean_ce_delta_max_class": float(np.max(clean_delta)),
         "oof_clean_ce_delta_min_class": float(np.min(clean_delta)),
         "all_class_clean_ce_nonincrease_verified": bool(
-            np.all(clean_delta <= clean_guard_tolerance)
+            np.all(
+                final_clean_class
+                <= initial_clean_class + clean_guard_tolerance
+            )
         ),
         "clean_pareto_guard_tolerance": clean_guard_tolerance,
         "total_halfspace_projection_count": int(total_halfspace_projections),
