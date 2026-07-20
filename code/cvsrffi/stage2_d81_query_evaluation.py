@@ -42,6 +42,7 @@ from cvsrffi.stage2_predictor_runtime import load_torchscript_backbone_same_fd
 
 CANDIDATE_D81 = "d81_ground_nuisance_cauchy_center"
 SCHEMA = "cvs.phase2.d81.full_query_evaluation.v1"
+D81_ALLOWED_SKLEARN_RUNTIME_VERSIONS = ("1.7.0", "1.7.2")
 
 
 class D81QueryEvaluationError(ValueError):
@@ -386,7 +387,13 @@ def run_d81_query_evaluation(
     d81_fit, call_records, transform_records = probe.build_d81_fit(
         d42, basis, spectral_weights, ground_audit
     )
+    sklearn_runtime_version = str(d42.sklearn.__version__)
+    if sklearn_runtime_version not in D81_ALLOWED_SKLEARN_RUNTIME_VERSIONS:
+        raise D81QueryEvaluationError(
+            f"D81 sklearn runtime is not supported: {sklearn_runtime_version}"
+        )
     original_fit = d42._fit_equal_prior_lda
+    original_sklearn_runtime_version = d42.SKLEARN_RUNTIME_VERSION
     before_tokens: list[np.ndarray] = []
     before_scenarios: list[np.ndarray] = []
     before_predictions: list[np.ndarray] = []
@@ -401,6 +408,7 @@ def run_d81_query_evaluation(
     peak_state_bytes = 0
     try:
         d42._fit_equal_prior_lda = d81_fit
+        d42.SKLEARN_RUNTIME_VERSION = sklearn_runtime_version
         for scenario_index, scenario in enumerate(FORMAL_LEO_WEAK_SCENARIOS):
             support_x, support_y, class_indices, support_count = _support_features(
                 after_support[scenario],
@@ -420,7 +428,9 @@ def run_d81_query_evaluation(
                 all_classes[len(old_classes) :],
                 seed=int(after_manifest["seed"]) + scenario_index,
                 device=runtime_device,
-                config=D42UnifiedShrinkageLDAConfig(),
+                config=D42UnifiedShrinkageLDAConfig(
+                    sklearn_runtime_version=sklearn_runtime_version
+                ),
             )
             fit_audit.append(
                 _audit_fit(
@@ -467,6 +477,7 @@ def run_d81_query_evaluation(
             after_query_forward_count += after_count
     finally:
         d42._fit_equal_prior_lda = original_fit
+        d42.SKLEARN_RUNTIME_VERSION = original_sklearn_runtime_version
     if _sha256_file(Path(ground_component_dir) / probe.d66.NPZ_NAME) != ground_audit[
         "component_npz_sha256"
     ]:
@@ -479,6 +490,7 @@ def run_d81_query_evaluation(
         "ground_component_logical_state_bytes": int(ground_audit["ground_int8_component_logical_state_bytes"]),
         "ground_component_input_count": int(ground_audit["ground_component_input_count"]),
         "ground_component_update_access": False,
+        "sklearn_runtime_version": sklearn_runtime_version,
         "support_backbone_forward_count": int(support_forward_count),
         "before_query_backbone_forward_count": int(before_query_forward_count),
         "after_query_backbone_forward_count": int(after_query_forward_count),
