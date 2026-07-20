@@ -452,6 +452,34 @@ def _query_package_tokens(path: Path, *, expected_sha256: str) -> set[str]:
     return set(tokens.tolist())
 
 
+def _require_exact_scenario_partition(
+    tokens_by_scenario: Mapping[str, set[str]],
+    expected_truth_tokens: set[str],
+    *,
+    context: str,
+) -> None:
+    """Require disjoint scenario slices whose union exactly covers truth."""
+
+    observed: set[str] = set()
+    for scenario in FORMAL_LEO_WEAK_SCENARIOS:
+        tokens = tokens_by_scenario.get(scenario, set())
+        if not tokens or not tokens.issubset(expected_truth_tokens):
+            raise StabilitySummaryError(
+                f"immutable prediction/truth scenario coverage drift: "
+                f"{context}:{scenario}"
+            )
+        if observed.intersection(tokens):
+            raise StabilitySummaryError(
+                f"immutable prediction scenario overlap drift: "
+                f"{context}:{scenario}"
+            )
+        observed.update(tokens)
+    if observed != expected_truth_tokens:
+        raise StabilitySummaryError(
+            f"immutable prediction/truth exact coverage drift: {context}"
+        )
+
+
 def _job_root(matrix_root: Path, job: Mapping[str, Any]) -> Path:
     return matrix_root / "jobs" / str(job["job_id"])
 
@@ -729,20 +757,15 @@ def _audit_job(
         query_binding_by_state[state] = {}
         prediction_tokens_by_state[state] = {}
         per_tx_rows.extend(state_tx)
+        expected_truth_tokens = (
+            old_truth_tokens if state == "before" else all_truth_tokens
+        )
         for scenario in FORMAL_LEO_WEAK_SCENARIOS:
             prediction_tokens = set(
                 prediction["query_tokens"][
                     prediction["scenarios"] == scenario
                 ].tolist()
             )
-            expected_truth_tokens = (
-                old_truth_tokens if state == "before" else all_truth_tokens
-            )
-            if prediction_tokens != expected_truth_tokens:
-                raise StabilitySummaryError(
-                    f"immutable prediction/truth exact coverage drift: "
-                    f"{job['job_id']}:{state}:{scenario}"
-                )
             prediction_tokens_by_state[state][scenario] = prediction_tokens
             expected_query_sha = _query_member_sha_from_receipt(
                 root=root,
@@ -789,6 +812,11 @@ def _audit_job(
                 scored["h_old_new"],
                 field=f"{job['job_id']}:{state}:{scenario}:H",
             )
+        _require_exact_scenario_partition(
+            prediction_tokens_by_state[state],
+            expected_truth_tokens,
+            context=f"{job['job_id']}:{state}",
+        )
     for scenario in FORMAL_LEO_WEAK_SCENARIOS:
         before_tokens = prediction_tokens_by_state["before"][scenario]
         after_tokens = prediction_tokens_by_state["after"][scenario]
