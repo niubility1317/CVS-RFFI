@@ -159,6 +159,15 @@ def raw_concat_to_d81_registered_feature(value: np.ndarray) -> np.ndarray:
     return np.ascontiguousarray(combined / combined_norm, dtype=np.float32)
 
 
+def _indexed_runtime_device(value: str | torch.device) -> torch.device:
+    """Give CUDA an explicit logical index before legacy D42 calls set_device."""
+
+    device = torch.device(value)
+    if device.type == "cuda" and device.index is None:
+        return torch.device("cuda:0")
+    return device
+
+
 @dataclass(frozen=True)
 class D81Phase1EpisodeScorer:
     nuisance_basis_fp64: np.ndarray
@@ -351,7 +360,7 @@ class D81Phase1EpisodeScorer:
                 self.spectral_weights_fp64,
                 _thaw(self.ground_audit),
             )
-            runtime_device = torch.device(self.device)
+            runtime_device = _indexed_runtime_device(self.device)
             log_diag, trace, _resource = d42._fit_old_only_b3_metric(
                 d81_support,
                 targets,

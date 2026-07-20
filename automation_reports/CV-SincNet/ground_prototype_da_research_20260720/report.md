@@ -1214,6 +1214,14 @@ env OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 NUMEXPR_NUM_THREA
 
 r6仍由同一唯一runner发布，不授权自动重试。成功、停止、LODO准入和target禁止条件与r5完全相同。
 
+#### r6实际结果：D81无索引CUDA设备失败
+
+r6状态链为`LOCAL_VERIFIED→LANDED→RUNNING→ARTIFACTS_COMPLETE_DIAGNOSTIC_FAILURE_NOT_ANALYZABLE`。所有preflight、GPU5、配置、r4 archive、r1 ground、D19和5个LF模块SHA门均通过；唯一child PID`1447845`，exit1，未重试。失败发生于首个LODO episode进入D81 metric fit时：release schema允许并冻结`d81_device="cuda"`，`torch.device("cuda")`的index为None，而历史D42调用`torch.cuda.set_device(device)`要求显式索引，报`ValueError: Expected a torch.device with a specified index or an integer, but got:cuda`。
+
+r6没有完成任何K1/K5/K10/K20候选，也没有D81/D99/D100的old/new/H/floor/NLL/rescue或资源指标，因此不能判定方法正负。output目录未生成；GPU5恢复0%/10MiB，远端PID退出，SSH进程/连接均为0。完整handoff位于`artifacts/d99_d100_phase1_lodo_7932dbf9_lf_20260721_r6/runner_handoff.md`，SHA256=`b711dcf7689a21a1fb7f22f65cd9bb3ca9eb913821924df16a2f3c2cf43bd827`。
+
+本地最小修复位于`stage2_d81_phase1_episode_scorer.py`：新增纯正规化函数，仅当CUDA device缺少逻辑索引时映射为`cuda:0`，CPU和显式索引设备保持不变；外部release schema、D81 receipt的配置字符串、metric seed、方法公式和候选均不改变。fake-metric回归证明冻结`cuda`实际传给D42前变为`cuda:0`且不需要本机GPU；D81 scorer与LODO runner相邻回归`12 passed`，`py_compile`和`git diff --check`均exit0。pytest退出后的Windows临时目录`PermissionError`为既有清理噪声，主体exit0。
+
 ### D101直接shrinkage RDA交叉审查
 
 D101定位为D99上的alternative global head，与D100二选一，不叠成第三个融合头。当前裁决为`REVISE`：只允许后续实现Phase1 nested-LODO诊断臂，尚不允许target或N607。原因不是协议违法，而是其相对D99 metric和D100 simplex ridge的独立纠错能力尚未被证实。

@@ -1,0 +1,20 @@
+Traceback (most recent call last):
+  File "/home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_phase1_export_7932dbf9_cuda0_20260721_r4/source_7932dbf9/code/scripts/run_d99_d100_phase1_lodo.py", line 385, in <module>
+    main()
+  File "/home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_phase1_export_7932dbf9_cuda0_20260721_r4/source_7932dbf9/code/scripts/run_d99_d100_phase1_lodo.py", line 381, in main
+    print(json.dumps(run_from_config(args.config, args.config_sha256), sort_keys=True))
+  File "/home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_phase1_export_7932dbf9_cuda0_20260721_r4/source_7932dbf9/code/scripts/run_d99_d100_phase1_lodo.py", line 327, in run_from_config
+    receipt = run_phase1_d99_d100_lodo(
+  File "/home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_phase1_export_7932dbf9_cuda0_20260721_r4/source_7932dbf9/code/cvsrffi/stage2_d99_d100_phase1_lodo.py", line 1241, in run_phase1_d99_d100_lodo
+    logits = base_scorer(
+  File "/home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_phase1_export_7932dbf9_cuda0_20260721_r4/source_7932dbf9/code/cvsrffi/stage2_d81_phase1_episode_scorer.py", line 355, in __call__
+    log_diag, trace, _resource = d42._fit_old_only_b3_metric(
+  File "/home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_phase1_export_7932dbf9_cuda0_20260721_r4/source_7932dbf9/code/cvsrffi/stage2_d42_unified_shrinkage_lda.py", line 154, in _fit_old_only_b3_metric
+    torch.cuda.set_device(device)
+  File "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/cuda/__init__.py", line 402, in set_device
+    device = _get_device_index(device)
+  File "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/cuda/_utils.py", line 39, in _get_device_index
+    return _torch_get_device_index(device, optional, allow_cpu)
+  File "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/_utils.py", line 787, in _get_device_index
+    raise ValueError(
+ValueError: Expected a torch.device with a specified index or an integer, but got:cuda

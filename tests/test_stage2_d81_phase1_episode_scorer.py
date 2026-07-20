@@ -16,7 +16,7 @@ from cvsrffi.stage2_diag_cosine_exploration import (
 )
 
 
-def _scorer() -> D81Phase1EpisodeScorer:
+def _scorer(*, device: str = "cpu") -> D81Phase1EpisodeScorer:
     basis = np.eye(160, 3, dtype=np.float64)
     return D81Phase1EpisodeScorer(
         nuisance_basis_fp64=basis,
@@ -24,6 +24,7 @@ def _scorer() -> D81Phase1EpisodeScorer:
         ground_manifest_sha256="1" * 64,
         ground_component_npz_sha256="2" * 64,
         ground_audit={"ground_component_input_count": 84},
+        device=device,
     )
 
 
@@ -106,7 +107,7 @@ def test_exact_support_fit_compiles_int8_and_scores_query_only(
 ) -> None:
     from scripts import probe_d81_ground_nuisance_cauchy_center as probe
 
-    scorer = _scorer()
+    scorer = _scorer(device="cuda")
     support = np.zeros((4, 288), dtype=np.float32)
     support[:, 0] = [1.0, 0.9, -1.0, -0.9]
     support[:, 160] = 1.0
@@ -136,6 +137,7 @@ def test_exact_support_fit_compiles_int8_and_scores_query_only(
     def fake_metric(rows, targets, class_count, *, seed, device):
         captures["metric_rows"] = np.array(rows, copy=True)
         captures["seed"] = seed
+        captures["device"] = str(device)
         trace = tuple({"epoch": index} for index in range(d42.METRIC_EPOCHS))
         return np.zeros(288, dtype=np.float32), trace, {}
 
@@ -159,6 +161,7 @@ def test_exact_support_fit_compiles_int8_and_scores_query_only(
     assert scores.shape == (3, 2)
     assert captures["precision"] == "int8"
     assert captures["seed"] == scorer.metric_seed
+    assert captures["device"] == "cuda:0"
     np.testing.assert_allclose(
         captures["metric_rows"], raw_concat_to_d81_registered_feature(support)
     )
