@@ -1092,6 +1092,16 @@ builder实际SHA为：NPZ`e69409268ad1215d440fd0555a4f8e2903214e95062f22a0c5f436
 
 修复范围冻结为：默认/formal cache loader继续只接受v2；仅development SHA-only exporter显式接受实际v1 outer+inner schema，其他manifest字段、NPZ成员、role、physical ID、IQ hash、overlay和cache SHA验证不放宽。修复必须本地测试、提交、重新预登记并使用全新不可覆盖run ID，禁止向本run补写。
 
+#### v1精确兼容修复
+
+修复只修改`leo_weak_cache.py`、Phase1 exporter及其测试。底层loader新增显式且受限的outer/inner schema集合参数，默认值仍是v2-only；空集、字符串冒充集合和未知schema全部拒绝。formal与runtime-manifest development入口继续使用默认v2-only。只有SHA-only development入口使用内部固定的v1-only loader，并在任何cache文件读取和loader调用前要求cache-set SHA精确等于已冻结历史值`125bb312972fd82edab9b1566a1ebddcd077b9a00c5255a55da22afb453b8d74`。因此第二份自洽v1、v2重标v1或重算全部inner/outer SHA均不能到达loader。
+
+通过SHA门后仍逐项执行原有NPZ成员allowlist、forbidden member、role、IQ digest、physical ID、overlay ID、inner SHA、场景顺序和cross-scenario检查。输出manifest保持`DEVELOPMENT_PHASE1_TEMPORARY_ASSET`/nonformal，并记录outer/inner observed schema、legacy compatibility、original SHA和authority SHA，后两者必须相等。
+
+独立首审发现“仅锁schema但未锁历史lineage”的P1并以另一份完整有效v1cache攻击证实；加入固定SHA allowlist后终审为`MERGE`，P0=0、P1=0，聚焦攻击2/2通过。作者聚焦及相邻25/25通过；主线在`ssr-gpu`直接Python环境复跑exporter与cache matrix得到31/31通过，`py_compile`和`git diff --check`均exit0。附带信息仅为TorchScript弃用告警和pytest退出后的Windows临时目录`WinError5`清理噪声，主体exit0。
+
+最终文件SHA256：`leo_weak_cache.py`=`851ceeaacf8146e4c7e480d22278df9914db6051eb63c50032f9471f66d28b86`；exporter=`ab4d3c40251f2bd147e7948ced392d185d0ef7b3f45c18924e7ab1bd457dac6d`；测试=`d988183fd7a53febbf9c89663d3228c5e413321d2b77b12e24f5d07513d06499`。该修复只消除实际固定v1缓存与v2-only consumer之间的兼容缺陷，不改变缓存内容、selection salt、runtime、ground bundle、D99/D100公式或候选网格，也没有访问target。
+
 ### D101直接shrinkage RDA交叉审查
 
 D101定位为D99上的alternative global head，与D100二选一，不叠成第三个融合头。当前裁决为`REVISE`：只允许后续实现Phase1 nested-LODO诊断臂，尚不允许target或N607。原因不是协议违法，而是其相对D99 metric和D100 simplex ridge的独立纠错能力尚未被证实。

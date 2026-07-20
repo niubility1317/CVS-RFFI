@@ -15,13 +15,18 @@ import torch
 from cvsrffi.leo_weak_cache import (
     FORMAL_LEO_WEAK_SCENARIOS,
     LEO_WEAK_CACHE_SCHEMA,
+    LEO_WEAK_CACHE_SCHEMA_V1,
+    LEO_WEAK_CACHE_SCHEMA_V2,
     LEO_WEAK_CACHE_SET_SCHEMA,
+    LEO_WEAK_CACHE_SET_SCHEMA_V1,
+    LEO_WEAK_CACHE_SET_SCHEMA_V2,
     LEO_WEAK_CACHE_STAGE,
     PHASE2_PHYSICAL_SAMPLE_OBSERVATION_POLICY,
     PHASE2_PHYSICAL_SAMPLE_ROOT_ID_POLICY,
     PHASE2_SAMPLE_VIEW_POLICY,
     canonical_json_sha256,
     ids_sha256,
+    load_verified_leo_weak_cache_set,
     overlay_id,
     physical_sample_id_from_values,
     post_channel_iq_sha256,
@@ -158,7 +163,13 @@ def _identity_rows(scenario_index: int) -> tuple[np.ndarray, dict[str, np.ndarra
     }
 
 
-def _write_verified_cache(path: Path, scenario: str, scenario_index: int) -> tuple[list[str], np.ndarray]:
+def _write_verified_cache(
+    path: Path,
+    scenario: str,
+    scenario_index: int,
+    *,
+    schema: str = LEO_WEAK_CACHE_SCHEMA,
+) -> tuple[list[str], np.ndarray]:
     iq, identity = _identity_rows(scenario_index)
     sample_ids = identity["sample_ids"]
     row_count = len(sample_ids)
@@ -178,7 +189,7 @@ def _write_verified_cache(path: Path, scenario: str, scenario_index: int) -> tup
         ]
     )
     manifest = {
-        "schema": LEO_WEAK_CACHE_SCHEMA,
+        "schema": schema,
         "artifact_stage": LEO_WEAK_CACHE_STAGE,
         "phase2_sample_view_policy": PHASE2_SAMPLE_VIEW_POLICY,
         "clean_sample_access": False,
@@ -234,7 +245,12 @@ def _write_verified_cache(path: Path, scenario: str, scenario_index: int) -> tup
     return sample_ids.astype(str).tolist(), iq
 
 
-def _real_cache_set(tmp_path: Path) -> tuple[Path, dict[str, np.ndarray]]:
+def _real_cache_set(
+    tmp_path: Path,
+    *,
+    outer_schema: str = LEO_WEAK_CACHE_SET_SCHEMA,
+    inner_schema: str = LEO_WEAK_CACHE_SCHEMA,
+) -> tuple[Path, dict[str, np.ndarray]]:
     tmp_path.mkdir(parents=True, exist_ok=True)
     mapping: dict[str, str] = {}
     hashes: dict[str, str] = {}
@@ -242,14 +258,14 @@ def _real_cache_set(tmp_path: Path) -> tuple[Path, dict[str, np.ndarray]]:
     shared_ids = None
     for index, scenario in enumerate(FORMAL_LEO_WEAK_SCENARIOS):
         path = tmp_path / f"{scenario}.npz"
-        ids, iq = _write_verified_cache(path, scenario, index)
+        ids, iq = _write_verified_cache(path, scenario, index, schema=inner_schema)
         shared_ids = ids if shared_ids is None else shared_ids
         assert ids == shared_ids
         mapping[scenario] = path.name
         hashes[scenario] = _sha(path)
         selected_sources[scenario] = iq
     manifest = {
-        "schema": LEO_WEAK_CACHE_SET_SCHEMA,
+        "schema": outer_schema,
         "artifact_stage": LEO_WEAK_CACHE_STAGE,
         "phase2_sample_view_policy": PHASE2_SAMPLE_VIEW_POLICY,
         "clean_sample_access": False,
@@ -468,7 +484,11 @@ def test_development_sha_only_runtime_exports_nonformal_archive(
     runtime, manifest_path, legacy_salt_path, _salt = _runtime_lineage(
         tmp_path / "runtime"
     )
-    cache_set, _sources = _real_cache_set(tmp_path / "cache")
+    cache_set, _sources = _real_cache_set(
+        tmp_path / "cache",
+        outer_schema=LEO_WEAK_CACHE_SET_SCHEMA_V1,
+        inner_schema=LEO_WEAK_CACHE_SCHEMA_V1,
+    )
     runtime_sha = _sha(runtime)
     monkeypatch.setattr(
         module,
@@ -479,6 +499,12 @@ def test_development_sha_only_runtime_exports_nonformal_archive(
         d97,
         "KNOWN_DEVELOPMENT_ADV3B02_RUNTIME_SHA256",
         frozenset({runtime_sha}),
+    )
+    cache_set_sha = _sha(cache_set)
+    monkeypatch.setattr(
+        module,
+        "KNOWN_DEVELOPMENT_SOURCE_VALIDATION_CACHE_SET_SHA256",
+        frozenset({cache_set_sha}),
     )
     binding = module._load_known_runtime_sha_only(runtime, runtime_sha, ["tx0", "tx1"])
     salt_receipt = {
@@ -494,7 +520,7 @@ def test_development_sha_only_runtime_exports_nonformal_archive(
     salt_path.write_text(json.dumps(salt_receipt, sort_keys=True), encoding="utf-8")
     result = module.export_development_sha_only_phase1_singleobs_feature_archive(
         cache_set_path=cache_set,
-        cache_set_sha256=_sha(cache_set),
+        cache_set_sha256=cache_set_sha,
         runtime_path=runtime,
         expected_runtime_sha256=runtime_sha,
         class_ids=["tx0", "tx1"],
@@ -511,6 +537,17 @@ def test_development_sha_only_runtime_exports_nonformal_archive(
         module.DEVELOPMENT_SHA_ONLY_AUTHORITY_MODE
     )
     assert manifest["inputs"]["runtime_checkpoint_parity_receipt_sha256"] is None
+    assert manifest["selection"]["cache_set_observed_schema"] == LEO_WEAK_CACHE_SET_SCHEMA_V1
+    assert set(manifest["selection"]["cache_inner_observed_schema_by_scenario"].values()) == {
+        LEO_WEAK_CACHE_SCHEMA_V1
+    }
+    assert manifest["selection"]["cache_legacy_schema_compatibility"] is True
+    assert manifest["selection"]["source_validation_cache_set_original_sha256"] == (
+        cache_set_sha
+    )
+    assert manifest["selection"]["source_validation_cache_set_authority_sha256"] == (
+        cache_set_sha
+    )
     validated = d97.validate_feature_archive(result["archive_path"])
     receipt = d97._validate_feature_archive_manifest(
         result["manifest_path"], result["manifest_sha256"], validated=validated
@@ -519,9 +556,10 @@ def test_development_sha_only_runtime_exports_nonformal_archive(
     assert receipt["full_phase1_lock"] is False
 
     runtime_manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    v2_cache_set, _ = _real_cache_set(tmp_path / "v2-cache")
     legacy = module.export_development_phase1_singleobs_feature_archive(
-        cache_set_path=cache_set,
-        cache_set_sha256=_sha(cache_set),
+        cache_set_path=v2_cache_set,
+        cache_set_sha256=_sha(v2_cache_set),
         runtime_manifest_path=manifest_path,
         runtime_manifest_sha256=_sha(manifest_path),
         expected_runtime_sha256=runtime_sha,
@@ -537,8 +575,301 @@ def test_development_sha_only_runtime_exports_nonformal_archive(
     assert legacy["formal_archive"] is False
     assert Path(legacy["archive_path"]).is_file()
 
+    with pytest.raises(
+        module.Phase1SingleObservationArchiveError,
+        match="not a known SHA-bound development lineage",
+    ):
+        module.export_development_sha_only_phase1_singleobs_feature_archive(
+            cache_set_path=v2_cache_set,
+            cache_set_sha256=_sha(v2_cache_set),
+            runtime_path=runtime,
+            expected_runtime_sha256=runtime_sha,
+            class_ids=["tx0", "tx1"],
+            selection_salt_receipt_path=salt_path,
+            selection_salt_receipt_sha256=_sha(salt_path),
+            output_dir=tmp_path / "sha_only_v2_forbidden",
+            device="cpu",
+            batch_size=8,
+        )
+
+    custom_loader_called = False
+
+    def custom_loader(*_args, **_kwargs):
+        nonlocal custom_loader_called
+        custom_loader_called = True
+        raise AssertionError("custom loader must be rejected before invocation")
+
+    with pytest.raises(
+        module.Phase1SingleObservationArchiveError, match="forbids injected"
+    ):
+        module._export_impl(
+            cache_set_path=cache_set,
+            cache_set_sha256=_sha(cache_set),
+            runtime=binding,
+            selection_salt_receipt_path=salt_path,
+            selection_salt_receipt_sha256=_sha(salt_path),
+            output_dir=tmp_path / "custom_loader_forbidden",
+            device="cpu",
+            batch_size=8,
+            mode="development",
+            forward_callback=None,
+            cache_loader=custom_loader,
+        )
+    assert custom_loader_called is False
+
     with pytest.raises(module.Phase1SingleObservationArchiveError, match="known SHA-bound"):
         module._load_known_runtime_sha_only(runtime, "0" * 64, ["tx0", "tx1"])
+
+
+def test_sha_only_cache_authority_is_exact_allowlisted_lineage(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    assert module.KNOWN_DEVELOPMENT_SOURCE_VALIDATION_CACHE_SET_SHA256 == frozenset(
+        {"125bb312972fd82edab9b1566a1ebddcd077b9a00c5255a55da22afb453b8d74"}
+    )
+
+    runtime, _runtime_manifest, _legacy_salt, _salt = _runtime_lineage(
+        tmp_path / "runtime"
+    )
+    runtime_sha = _sha(runtime)
+    monkeypatch.setattr(
+        module,
+        "KNOWN_DEVELOPMENT_ADV3B02_RUNTIME_SHA256",
+        frozenset({runtime_sha}),
+    )
+    allowed_cache_set, _ = _real_cache_set(
+        tmp_path / "allowed-cache",
+        outer_schema=LEO_WEAK_CACHE_SET_SCHEMA_V1,
+        inner_schema=LEO_WEAK_CACHE_SCHEMA_V1,
+    )
+    unknown_cache_set, _ = _real_cache_set(
+        tmp_path / "unknown-cache",
+        outer_schema=LEO_WEAK_CACHE_SET_SCHEMA_V1,
+        inner_schema=LEO_WEAK_CACHE_SCHEMA_V1,
+    )
+    unknown_payload = json.loads(unknown_cache_set.read_text(encoding="utf-8"))
+    unknown_cache_set.write_text(
+        json.dumps(unknown_payload, indent=2), encoding="utf-8"
+    )
+    allowed_sha = _sha(allowed_cache_set)
+    unknown_sha = _sha(unknown_cache_set)
+    assert unknown_sha != allowed_sha
+    monkeypatch.setattr(
+        module,
+        "KNOWN_DEVELOPMENT_SOURCE_VALIDATION_CACHE_SET_SHA256",
+        frozenset({allowed_sha}),
+    )
+    binding = module._load_known_runtime_sha_only(runtime, runtime_sha, ["tx0", "tx1"])
+    salt_receipt = {
+        "schema": module.SELECTION_SALT_RECEIPT_SCHEMA,
+        "status": "SEALED_BEFORE_TARGET_ACCESS",
+        "artifact_stage": "phase1_offline_before_target_access",
+        "bundle_id": binding["bundle_id"],
+        "phase1_checkpoint_sha256": module.BASE_CHECKPOINT_SHA256,
+        "selection_salt_sha256": hashlib.sha256(b"cache-authority-attack").hexdigest(),
+        "target_access": False,
+    }
+    salt_path = tmp_path / "sha_only_salt.json"
+    salt_path.write_text(json.dumps(salt_receipt, sort_keys=True), encoding="utf-8")
+
+    loader_called = False
+    original_loader = module._load_verified_v1_only_source_validation_cache_set
+
+    def observed_loader(*args, **kwargs):
+        nonlocal loader_called
+        loader_called = True
+        return original_loader(*args, **kwargs)
+
+    monkeypatch.setattr(
+        module,
+        "_load_verified_v1_only_source_validation_cache_set",
+        observed_loader,
+    )
+    with pytest.raises(
+        module.Phase1SingleObservationArchiveError,
+        match="not a known SHA-bound development lineage",
+    ):
+        module._export_impl(
+            cache_set_path=unknown_cache_set,
+            cache_set_sha256=unknown_sha,
+            runtime=binding,
+            selection_salt_receipt_path=salt_path,
+            selection_salt_receipt_sha256=_sha(salt_path),
+            output_dir=tmp_path / "unknown-cache-output",
+            device="cpu",
+            batch_size=8,
+            mode="development",
+            forward_callback=None,
+            cache_loader=observed_loader,
+        )
+    assert loader_called is False
+
+
+def test_v1_schema_compatibility_is_explicit_exact_and_audited(tmp_path: Path) -> None:
+    v1_set, _ = _real_cache_set(
+        tmp_path / "v1",
+        outer_schema=LEO_WEAK_CACHE_SET_SCHEMA_V1,
+        inner_schema=LEO_WEAK_CACHE_SCHEMA_V1,
+    )
+    with pytest.raises(ValueError, match="schema"):
+        load_verified_leo_weak_cache_set(
+            v1_set,
+            expected_scope="source_validation",
+            allowed_roles={"source"},
+        )
+    with pytest.raises(ValueError, match="schema"):
+        load_verified_leo_weak_cache_set(
+            v1_set,
+            expected_scope="source_validation",
+            allowed_roles={"source"},
+            accepted_outer_schemas={LEO_WEAK_CACHE_SET_SCHEMA_V1},
+        )
+    arrays, payload, audit = load_verified_leo_weak_cache_set(
+        v1_set,
+        expected_scope="source_validation",
+        allowed_roles={"source"},
+        accepted_outer_schemas={LEO_WEAK_CACHE_SET_SCHEMA_V1},
+        accepted_inner_schemas={LEO_WEAK_CACHE_SCHEMA_V1},
+    )
+    assert tuple(arrays) == FORMAL_LEO_WEAK_SCENARIOS
+    assert payload["schema"] == LEO_WEAK_CACHE_SET_SCHEMA_V1
+    assert audit["outer_observed_schema"] == LEO_WEAK_CACHE_SET_SCHEMA_V1
+    assert set(audit["inner_observed_schema_by_scenario"].values()) == {
+        LEO_WEAK_CACHE_SCHEMA_V1
+    }
+    assert audit["legacy_schema_compatibility"] is True
+
+    with pytest.raises(ValueError, match="nonempty"):
+        load_verified_leo_weak_cache_set(
+            v1_set,
+            expected_scope="source_validation",
+            allowed_roles={"source"},
+            accepted_outer_schemas=set(),
+            accepted_inner_schemas={LEO_WEAK_CACHE_SCHEMA_V1},
+        )
+    with pytest.raises(ValueError, match="unknown"):
+        load_verified_leo_weak_cache_set(
+            v1_set,
+            expected_scope="source_validation",
+            allowed_roles={"source"},
+            accepted_outer_schemas={"cvs_leo_weak_iq_cache_set_custom"},
+            accepted_inner_schemas={LEO_WEAK_CACHE_SCHEMA_V1},
+        )
+    with pytest.raises(ValueError, match="nonempty"):
+        load_verified_leo_weak_cache_set(
+            v1_set,
+            expected_scope="source_validation",
+            allowed_roles={"source"},
+            accepted_outer_schemas={LEO_WEAK_CACHE_SET_SCHEMA_V1},
+            accepted_inner_schemas=set(),
+        )
+    with pytest.raises(ValueError, match="unknown"):
+        load_verified_leo_weak_cache_set(
+            v1_set,
+            expected_scope="source_validation",
+            allowed_roles={"source"},
+            accepted_outer_schemas={LEO_WEAK_CACHE_SET_SCHEMA_V1},
+            accepted_inner_schemas={"cvs_leo_weak_iq_cache_custom"},
+        )
+
+    mixed_set, _ = _real_cache_set(
+        tmp_path / "mixed",
+        outer_schema=LEO_WEAK_CACHE_SET_SCHEMA_V2,
+        inner_schema=LEO_WEAK_CACHE_SCHEMA_V1,
+    )
+    _, _, mixed_audit = load_verified_leo_weak_cache_set(
+        mixed_set,
+        expected_scope="source_validation",
+        allowed_roles={"source"},
+        accepted_inner_schemas={LEO_WEAK_CACHE_SCHEMA_V1},
+    )
+    assert mixed_audit["outer_legacy_schema_compatibility"] is False
+    assert all(mixed_audit["inner_legacy_schema_compatibility_by_scenario"].values())
+
+
+def test_v1_compatibility_does_not_relax_non_schema_contracts(tmp_path: Path) -> None:
+    outer_tampered, _ = _real_cache_set(
+        tmp_path / "outer-tampered",
+        outer_schema=LEO_WEAK_CACHE_SET_SCHEMA_V1,
+        inner_schema=LEO_WEAK_CACHE_SCHEMA_V1,
+    )
+    outer_payload = json.loads(outer_tampered.read_text(encoding="utf-8"))
+    outer_payload["clean_sample_access"] = True
+    outer_tampered.write_text(json.dumps(outer_payload), encoding="utf-8")
+    with pytest.raises(ValueError, match="clean_sample_access"):
+        load_verified_leo_weak_cache_set(
+            outer_tampered,
+            expected_scope="source_validation",
+            allowed_roles={"source"},
+            accepted_outer_schemas={LEO_WEAK_CACHE_SET_SCHEMA_V1},
+            accepted_inner_schemas={LEO_WEAK_CACHE_SCHEMA_V1},
+        )
+
+    inner_tampered, _ = _real_cache_set(
+        tmp_path / "inner-tampered",
+        outer_schema=LEO_WEAK_CACHE_SET_SCHEMA_V1,
+        inner_schema=LEO_WEAK_CACHE_SCHEMA_V1,
+    )
+    set_payload = json.loads(inner_tampered.read_text(encoding="utf-8"))
+    scenario = FORMAL_LEO_WEAK_SCENARIOS[0]
+    inner_path = inner_tampered.parent / set_payload["cache_npz_by_scenario"][scenario]
+    with np.load(inner_path, allow_pickle=False) as archive:
+        inner_arrays = {name: np.asarray(archive[name]) for name in archive.files}
+    inner_manifest = json.loads(str(inner_arrays["manifest_json"].reshape(-1)[0]))
+    inner_manifest["contains_clean_rows"] = True
+    inner_arrays["manifest_json"] = np.asarray(json.dumps(inner_manifest, sort_keys=True))
+    np.savez(inner_path, **inner_arrays)
+    set_payload["cache_sha256_by_scenario"][scenario] = _sha(inner_path)
+    inner_tampered.write_text(json.dumps(set_payload), encoding="utf-8")
+    with pytest.raises(ValueError, match="contains_clean_rows"):
+        load_verified_leo_weak_cache_set(
+            inner_tampered,
+            expected_scope="source_validation",
+            allowed_roles={"source"},
+            accepted_outer_schemas={LEO_WEAK_CACHE_SET_SCHEMA_V1},
+            accepted_inner_schemas={LEO_WEAK_CACHE_SCHEMA_V1},
+        )
+
+
+def test_formal_and_runtime_manifest_development_remain_v2_only(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    v1_set, _ = _real_cache_set(
+        tmp_path / "v1",
+        outer_schema=LEO_WEAK_CACHE_SET_SCHEMA_V1,
+        inner_schema=LEO_WEAK_CACHE_SCHEMA_V1,
+    )
+    formal_args, _ = _formal_args(tmp_path / "formal", monkeypatch)
+    formal_args.update(cache_set_path=v1_set, cache_set_sha256=_sha(v1_set))
+    with pytest.raises(ValueError, match="schema"):
+        module.export_phase1_singleobs_feature_archive(**formal_args)
+
+    runtime, runtime_manifest_path, salt_path, _ = _runtime_lineage(
+        tmp_path / "development"
+    )
+    runtime_sha = _sha(runtime)
+    monkeypatch.setattr(
+        module,
+        "KNOWN_DEVELOPMENT_ADV3B02_RUNTIME_SHA256",
+        frozenset({runtime_sha}),
+    )
+    runtime_manifest = json.loads(runtime_manifest_path.read_text(encoding="utf-8"))
+    with pytest.raises(ValueError, match="schema"):
+        module.export_development_phase1_singleobs_feature_archive(
+            cache_set_path=v1_set,
+            cache_set_sha256=_sha(v1_set),
+            runtime_manifest_path=runtime_manifest_path,
+            runtime_manifest_sha256=_sha(runtime_manifest_path),
+            expected_runtime_sha256=runtime_sha,
+            expected_parity_receipt_sha256=runtime_manifest["runtime_export_receipt"][
+                "sha256"
+            ],
+            selection_salt_receipt_path=salt_path,
+            selection_salt_receipt_sha256=_sha(salt_path),
+            output_dir=tmp_path / "development-v1-forbidden",
+            device="cpu",
+            batch_size=8,
+        )
 
 
 def test_selection_determinism_missing_scene_and_identity_drift(tmp_path: Path) -> None:

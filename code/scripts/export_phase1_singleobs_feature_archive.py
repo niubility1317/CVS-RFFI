@@ -24,6 +24,8 @@ for candidate in (str(REPO_ROOT), str(CODE_ROOT)):
 
 from cvsrffi.leo_weak_cache import (  # noqa: E402
     FORMAL_LEO_WEAK_SCENARIOS,
+    LEO_WEAK_CACHE_SCHEMA_V1,
+    LEO_WEAK_CACHE_SET_SCHEMA_V1,
     load_verified_leo_weak_cache_set,
 )
 from cvsrffi import phase1_adv3b02_deployment_bundle as deployment_bundle  # noqa: E402
@@ -61,6 +63,9 @@ KNOWN_DEVELOPMENT_ADV3B02_RUNTIME_SHA256 = frozenset(
         "f119e8cb3f6beda95f0d545205e91b43e4a557af2fd1d025e95d2edf2b8e6e2a",
     }
 )
+KNOWN_DEVELOPMENT_SOURCE_VALIDATION_CACHE_SET_SHA256 = frozenset(
+    {"125bb312972fd82edab9b1566a1ebddcd077b9a00c5255a55da22afb453b8d74"}
+)
 OUTPUT_MEMBER_ALLOWLIST = (
     "features",
     "labels",
@@ -79,6 +84,23 @@ class Phase1SingleObservationArchiveError(ValueError):
 
 ForwardCallback = Callable[[np.ndarray], tuple[np.ndarray, np.ndarray] | Mapping[str, Any]]
 CacheLoader = Callable[..., tuple[dict[str, dict[str, np.ndarray]], dict[str, Any], dict[str, Any]]]
+
+
+def _load_verified_v1_only_source_validation_cache_set(
+    manifest_path: str | Path,
+    *,
+    expected_scope: str,
+    allowed_roles: set[str],
+) -> tuple[dict[str, dict[str, np.ndarray]], dict[str, Any], dict[str, Any]]:
+    """Load the one historical source-validation cache lineage, never v2."""
+
+    return load_verified_leo_weak_cache_set(
+        manifest_path,
+        expected_scope=expected_scope,
+        allowed_roles=allowed_roles,
+        accepted_outer_schemas=frozenset({LEO_WEAK_CACHE_SET_SCHEMA_V1}),
+        accepted_inner_schemas=frozenset({LEO_WEAK_CACHE_SCHEMA_V1}),
+    )
 
 
 def _sha256_file(path: Path) -> str:
@@ -770,6 +792,19 @@ def _export_impl(
 ) -> dict[str, Any]:
     if mode not in {"formal", "development", "diagnostic"}:
         raise Phase1SingleObservationArchiveError("unknown Phase1 export mode")
+    if mode == "formal":
+        if forward_callback is not None or cache_loader is not load_verified_leo_weak_cache_set:
+            raise Phase1SingleObservationArchiveError("formal export forbids injected loaders/forward")
+    elif mode == "development":
+        expected_loader = (
+            _load_verified_v1_only_source_validation_cache_set
+            if runtime.get("authority_mode") == DEVELOPMENT_SHA_ONLY_AUTHORITY_MODE
+            else load_verified_leo_weak_cache_set
+        )
+        if forward_callback is not None or cache_loader is not expected_loader:
+            raise Phase1SingleObservationArchiveError(
+                "development export forbids injected loaders/forward"
+            )
     cache_path = Path(cache_set_path).resolve()
     salt_receipt_path = Path(selection_salt_receipt_path).resolve()
     salt = _load_selection_salt(
@@ -778,6 +813,20 @@ def _export_impl(
         runtime_binding=runtime,
     )
     expected_cache_sha = _require_sha256(cache_set_sha256, name="cache-set")
+    source_validation_cache_authority_sha: str | None = None
+    if runtime.get("authority_mode") == DEVELOPMENT_SHA_ONLY_AUTHORITY_MODE:
+        source_validation_cache_authority_sha = next(
+            (
+                known_sha
+                for known_sha in KNOWN_DEVELOPMENT_SOURCE_VALIDATION_CACHE_SET_SHA256
+                if known_sha == expected_cache_sha
+            ),
+            None,
+        )
+        if source_validation_cache_authority_sha is None:
+            raise Phase1SingleObservationArchiveError(
+                "source-validation cache-set is not a known SHA-bound development lineage"
+            )
     if not cache_path.is_file() or _sha256_file(cache_path) != expected_cache_sha:
         raise Phase1SingleObservationArchiveError("source-validation cache-set SHA256 drift")
     arrays_by_scenario, cache_payload, cache_audit = cache_loader(
@@ -785,6 +834,15 @@ def _export_impl(
         expected_scope=SOURCE_VALIDATION_SCOPE,
         allowed_roles=SOURCE_VALIDATION_ROLES,
     )
+    if runtime.get("authority_mode") == DEVELOPMENT_SHA_ONLY_AUTHORITY_MODE and (
+        cache_audit.get("outer_observed_schema") != LEO_WEAK_CACHE_SET_SCHEMA_V1
+        or set(cache_audit.get("inner_observed_schema_by_scenario", {}).values())
+        != {LEO_WEAK_CACHE_SCHEMA_V1}
+        or cache_audit.get("legacy_schema_compatibility") is not True
+    ):
+        raise Phase1SingleObservationArchiveError(
+            "SHA-only source-validation cache must be exact legacy v1"
+        )
     if cache_payload.get("cache_scope") != SOURCE_VALIDATION_SCOPE:
         raise Phase1SingleObservationArchiveError("cache-set is not source_validation")
     cache_hashes = _verify_cache_hashes(cache_path, expected_cache_sha, cache_payload)
@@ -796,8 +854,6 @@ def _export_impl(
         raise Phase1SingleObservationArchiveError("cache labels/runtime class registry drift")
     runtime_device, resolved_device = _resolve_device(device)
     if mode == "formal":
-        if forward_callback is not None or cache_loader is not load_verified_leo_weak_cache_set:
-            raise Phase1SingleObservationArchiveError("formal export forbids injected loaders/forward")
         output = _forward_loaded_runtime(
             runtime["model"],
             selected_iq,
@@ -805,10 +861,6 @@ def _export_impl(
             batch_size=batch_size,
         )
     elif mode == "development":
-        if forward_callback is not None or cache_loader is not load_verified_leo_weak_cache_set:
-            raise Phase1SingleObservationArchiveError(
-                "development export forbids injected loaders/forward"
-            )
         output = _forward_torchscript(
             runtime["runtime_path"],
             runtime["runtime_sha256"],
@@ -956,6 +1008,22 @@ def _export_impl(
         "formal_archive": mode == "formal",
         "development_archive": mode == "development",
     }
+    if runtime.get("authority_mode") == DEVELOPMENT_SHA_ONLY_AUTHORITY_MODE:
+        manifest["selection"].update(
+            {
+                "source_validation_cache_set_original_sha256": expected_cache_sha,
+                "source_validation_cache_set_authority_sha256": (
+                    source_validation_cache_authority_sha
+                ),
+                "cache_set_observed_schema": cache_audit.get("outer_observed_schema"),
+                "cache_inner_observed_schema_by_scenario": cache_audit.get(
+                    "inner_observed_schema_by_scenario"
+                ),
+                "cache_legacy_schema_compatibility": bool(
+                    cache_audit.get("legacy_schema_compatibility", False)
+                ),
+            }
+        )
     _write_new(manifest_path, _canonical_json_bytes(manifest) + b"\n")
     verify_phase1_singleobs_archive(archive_path, manifest)
     return {
@@ -1121,7 +1189,7 @@ def export_development_sha_only_phase1_singleobs_feature_archive(
         batch_size=batch_size,
         mode="development",
         forward_callback=None,
-        cache_loader=load_verified_leo_weak_cache_set,
+        cache_loader=_load_verified_v1_only_source_validation_cache_set,
     )
 
 

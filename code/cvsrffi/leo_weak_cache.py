@@ -14,8 +14,18 @@ FORMAL_LEO_WEAK_SCENARIOS = (
     "leo_rain_weak",
 )
 PHASE2_SAMPLE_VIEW_POLICY = "leo_weak_only_no_clean_access"
-LEO_WEAK_CACHE_SCHEMA = "cvs_leo_weak_iq_cache_v2"
-LEO_WEAK_CACHE_SET_SCHEMA = "cvs_leo_weak_iq_cache_set_v2"
+LEO_WEAK_CACHE_SCHEMA_V1 = "cvs_leo_weak_iq_cache_v1"
+LEO_WEAK_CACHE_SCHEMA_V2 = "cvs_leo_weak_iq_cache_v2"
+LEO_WEAK_CACHE_SET_SCHEMA_V1 = "cvs_leo_weak_iq_cache_set_v1"
+LEO_WEAK_CACHE_SET_SCHEMA_V2 = "cvs_leo_weak_iq_cache_set_v2"
+LEO_WEAK_CACHE_SCHEMA = LEO_WEAK_CACHE_SCHEMA_V2
+LEO_WEAK_CACHE_SET_SCHEMA = LEO_WEAK_CACHE_SET_SCHEMA_V2
+LEO_WEAK_CACHE_SCHEMAS = frozenset(
+    {LEO_WEAK_CACHE_SCHEMA_V1, LEO_WEAK_CACHE_SCHEMA_V2}
+)
+LEO_WEAK_CACHE_SET_SCHEMAS = frozenset(
+    {LEO_WEAK_CACHE_SET_SCHEMA_V1, LEO_WEAK_CACHE_SET_SCHEMA_V2}
+)
 LEO_WEAK_CACHE_STAGE = "phase1_offline_prechannel_export"
 PHASE2_PHYSICAL_SAMPLE_OBSERVATION_POLICY = (
     "single_leo_weak_observation_per_physical_sample"
@@ -188,11 +198,12 @@ def _manifest_from_archive(archive: np.lib.npyio.NpzFile) -> dict[str, Any]:
 def _require_manifest_contract(
     manifest: Mapping[str, Any],
     *,
+    expected_schema: str,
     expected_scenario: str,
     observed_roles: set[str],
 ) -> None:
     required = {
-        "schema": LEO_WEAK_CACHE_SCHEMA,
+        "schema": str(expected_schema),
         "artifact_stage": LEO_WEAK_CACHE_STAGE,
         "phase2_sample_view_policy": PHASE2_SAMPLE_VIEW_POLICY,
         "clean_sample_access": False,
@@ -244,11 +255,32 @@ def _require_manifest_contract(
         raise ValueError("LEO cache builder_sha256 is missing")
 
 
+def _validated_schema_set(
+    values: Iterable[str] | None,
+    *,
+    default: frozenset[str],
+    known: frozenset[str],
+    context: str,
+) -> frozenset[str]:
+    if values is None:
+        return default
+    if isinstance(values, (str, bytes)):
+        raise ValueError(f"{context} accepted schemas must be an explicit collection")
+    accepted = frozenset(str(value) for value in values)
+    if not accepted:
+        raise ValueError(f"{context} accepted schemas must be nonempty")
+    unknown = accepted - known
+    if unknown:
+        raise ValueError(f"{context} accepted schemas contain unknown values: {sorted(unknown)}")
+    return accepted
+
+
 def load_verified_leo_weak_cache(
     path: str | Path,
     *,
     expected_scenario: str,
     allowed_roles: Iterable[str],
+    accepted_schemas: Iterable[str] | None = None,
 ) -> tuple[dict[str, np.ndarray], dict[str, Any], dict[str, Any]]:
     """Load one sealed cache after member-list and sample-level verification.
 
@@ -266,6 +298,13 @@ def load_verified_leo_weak_cache(
     allowed = {str(value) for value in allowed_roles}
     if not allowed:
         raise ValueError("allowed_roles must be nonempty")
+    schema_compatibility_requested = accepted_schemas is not None
+    accepted = _validated_schema_set(
+        accepted_schemas,
+        default=frozenset({LEO_WEAK_CACHE_SCHEMA_V2}),
+        known=LEO_WEAK_CACHE_SCHEMAS,
+        context="LEO cache",
+    )
 
     with np.load(cache_path, allow_pickle=False) as archive:
         members = tuple(str(value) for value in archive.files)
@@ -279,6 +318,11 @@ def load_verified_leo_weak_cache(
         if missing:
             raise ValueError(f"LEO cache is missing required members: {missing}")
         manifest = _manifest_from_archive(archive)
+        observed_schema = str(manifest.get("schema", ""))
+        if observed_schema not in accepted:
+            raise ValueError(
+                "LEO cache manifest contract failed: ['schema']"
+            )
         arrays = {
             key: np.asarray(archive[key])
             for key in _REQUIRED_ARRAY_KEYS
@@ -324,6 +368,7 @@ def load_verified_leo_weak_cache(
         )
     _require_manifest_contract(
         manifest,
+        expected_schema=observed_schema,
         expected_scenario=scenario,
         observed_roles=observed_roles,
     )
@@ -388,7 +433,7 @@ def load_verified_leo_weak_cache(
     audit = {
         "path": str(cache_path),
         "sha256": sha256_file(cache_path),
-        "schema": LEO_WEAK_CACHE_SCHEMA,
+        "schema": observed_schema,
         "scenario": scenario,
         "row_count": row_count,
         "roles": sorted(observed_roles),
@@ -404,6 +449,15 @@ def load_verified_leo_weak_cache(
             PHASE2_PHYSICAL_SAMPLE_ROOT_ID_POLICY
         ),
     }
+    if schema_compatibility_requested:
+        audit.update(
+            {
+                "observed_schema": observed_schema,
+                "legacy_schema_compatibility": (
+                    observed_schema == LEO_WEAK_CACHE_SCHEMA_V1
+                ),
+            }
+        )
     return arrays, dict(manifest), audit
 
 
@@ -417,6 +471,8 @@ def load_verified_leo_weak_cache_set(
     *,
     expected_scope: str,
     allowed_roles: Iterable[str],
+    accepted_outer_schemas: Iterable[str] | None = None,
+    accepted_inner_schemas: Iterable[str] | None = None,
 ) -> tuple[
     dict[str, dict[str, np.ndarray]],
     dict[str, Any],
@@ -426,10 +482,28 @@ def load_verified_leo_weak_cache_set(
     payload = json.loads(path.read_text(encoding="utf-8-sig"))
     if not isinstance(payload, dict):
         raise TypeError("LEO cache-set manifest must be a JSON object")
+    schema_compatibility_requested = (
+        accepted_outer_schemas is not None or accepted_inner_schemas is not None
+    )
+    accepted_outer = _validated_schema_set(
+        accepted_outer_schemas,
+        default=frozenset({LEO_WEAK_CACHE_SET_SCHEMA_V2}),
+        known=LEO_WEAK_CACHE_SET_SCHEMAS,
+        context="LEO cache-set outer",
+    )
+    accepted_inner = _validated_schema_set(
+        accepted_inner_schemas,
+        default=frozenset({LEO_WEAK_CACHE_SCHEMA_V2}),
+        known=LEO_WEAK_CACHE_SCHEMAS,
+        context="LEO cache-set inner",
+    )
+    observed_outer_schema = str(payload.get("schema", ""))
+    if observed_outer_schema not in accepted_outer:
+        raise ValueError("LEO cache-set manifest contract failed: ['schema']")
     scope = str(expected_scope)
     single_observation_required = scope in PHASE2_SINGLE_OBSERVATION_CACHE_SCOPES
     required = {
-        "schema": LEO_WEAK_CACHE_SET_SCHEMA,
+        "schema": observed_outer_schema,
         "artifact_stage": LEO_WEAK_CACHE_STAGE,
         "phase2_sample_view_policy": PHASE2_SAMPLE_VIEW_POLICY,
         "clean_sample_access": False,
@@ -466,6 +540,7 @@ def load_verified_leo_weak_cache_set(
 
     arrays_by_scenario: dict[str, dict[str, np.ndarray]] = {}
     cache_audits: dict[str, Any] = {}
+    inner_schemas_by_scenario: dict[str, str] = {}
     ids_by_scenario: dict[str, list[str]] = {}
     roles_by_scenario: dict[str, list[str]] = {}
     allowed = {str(value) for value in allowed_roles}
@@ -474,11 +549,13 @@ def load_verified_leo_weak_cache_set(
         expected_hash = str(hash_map[scenario])
         if len(expected_hash) != 64 or sha256_file(cache_path) != expected_hash:
             raise ValueError(f"LEO cache-set file hash mismatch for {scenario}")
-        arrays, _manifest, audit = load_verified_leo_weak_cache(
+        arrays, inner_manifest, audit = load_verified_leo_weak_cache(
             cache_path,
             expected_scenario=scenario,
             allowed_roles=allowed,
+            accepted_schemas=(accepted_inner if accepted_inner_schemas is not None else None),
         )
+        inner_schemas_by_scenario[scenario] = str(inner_manifest.get("schema", ""))
         current_ids = np.asarray(arrays["sample_ids"]).astype(str).tolist()
         current_roles = np.asarray(arrays["dataset_role"]).astype(str).tolist()
         ids_by_scenario[scenario] = current_ids
@@ -592,4 +669,26 @@ def load_verified_leo_weak_cache_set(
         )
     else:
         audit["phase2_cross_scenario_physical_sample_reuse"] = True
+    if schema_compatibility_requested:
+        inner_legacy = {
+            scenario: inner_schemas_by_scenario[scenario]
+            == LEO_WEAK_CACHE_SCHEMA_V1
+            for scenario in FORMAL_LEO_WEAK_SCENARIOS
+        }
+        audit.update(
+            {
+                "schema": observed_outer_schema,
+                "observed_schema": observed_outer_schema,
+                "outer_observed_schema": observed_outer_schema,
+                "inner_observed_schema_by_scenario": inner_schemas_by_scenario,
+                "outer_legacy_schema_compatibility": (
+                    observed_outer_schema == LEO_WEAK_CACHE_SET_SCHEMA_V1
+                ),
+                "inner_legacy_schema_compatibility_by_scenario": inner_legacy,
+                "legacy_schema_compatibility": bool(
+                    observed_outer_schema == LEO_WEAK_CACHE_SET_SCHEMA_V1
+                    or any(inner_legacy.values())
+                ),
+            }
+        )
     return arrays_by_scenario, payload, audit
