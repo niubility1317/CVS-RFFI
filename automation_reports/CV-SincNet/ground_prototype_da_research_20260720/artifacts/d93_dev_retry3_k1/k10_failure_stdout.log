@@ -1,0 +1,28 @@
+/home/szu2070436088/2510044040/CV-SincNet/runs/d93_source_snapshot_20260720/cvsrffi/stage2_d42_unified_shrinkage_lda.py:139: UserWarning: The given buffer is not writable, and PyTorch does not support non-writable tensors. This means you can write to the underlying (supposedly non-writable) buffer using the tensor. You may want to copy the buffer to protect its data or make it writable before converting it to a tensor. This type of warning will be suppressed for the rest of this program. (Triggered internally at ../torch/csrc/utils/tensor_new.cpp:1508.)
+  return torch.frombuffer(rows, dtype=dtype).reshape(rows.shape).clone().to(device)
+Traceback (most recent call last):
+  File "/home/szu2070436088/2510044040/CV-SincNet/runs/d93_source_snapshot_20260720/scripts/run_cvs_somph_diag_row_pipeline.py", line 578, in <module>
+    raise SystemExit(main())
+  File "/home/szu2070436088/2510044040/CV-SincNet/runs/d93_source_snapshot_20260720/scripts/run_cvs_somph_diag_row_pipeline.py", line 556, in main
+    result = run_pipeline(
+  File "/home/szu2070436088/2510044040/CV-SincNet/runs/d93_source_snapshot_20260720/scripts/run_cvs_somph_diag_row_pipeline.py", line 336, in run_pipeline
+    diagnostic = evaluator(
+  File "/home/szu2070436088/2510044040/CV-SincNet/runs/d93_source_snapshot_20260720/cvsrffi/stage2_d93_query_evaluation.py", line 477, in run_d93_query_evaluation
+    result = d81_eval.run_d81_query_evaluation(**kwargs)
+  File "/home/szu2070436088/2510044040/CV-SincNet/runs/d93_source_snapshot_20260720/cvsrffi/stage2_d81_query_evaluation.py", line 422, in run_d81_query_evaluation
+    result = fit_d42_unified_shrinkage_lda(
+  File "/home/szu2070436088/2510044040/CV-SincNet/runs/d93_source_snapshot_20260720/cvsrffi/stage2_d93_query_evaluation.py", line 448, in top_fit
+    return wrapper(*args, **fit_kwargs)
+  File "/home/szu2070436088/2510044040/CV-SincNet/runs/d93_source_snapshot_20260720/cvsrffi/stage2_d93_query_evaluation.py", line 157, in fit
+    base = base_top_level_fit(
+  File "/home/szu2070436088/2510044040/CV-SincNet/runs/d93_source_snapshot_20260720/cvsrffi/stage2_d42_unified_shrinkage_lda.py", line 696, in fit_d42_unified_shrinkage_lda
+    before_coef, before_intercept, before_lda = _fit_equal_prior_lda(
+  File "/home/szu2070436088/2510044040/CV-SincNet/runs/d93_source_snapshot_20260720/scripts/probe_d62_crossfitted_fisher_row_splice.py", line 294, in fit
+    base_coef, base_intercept, base_audit = base_fit(
+  File "/home/szu2070436088/2510044040/CV-SincNet/runs/d93_source_snapshot_20260720/scripts/probe_d46_classwise_loo_reliability_fusion.py", line 190, in fit
+    block_coef, block_intercept, block_audit = block_fit(
+  File "/home/szu2070436088/2510044040/CV-SincNet/runs/d93_source_snapshot_20260720/scripts/probe_d46_classwise_loo_reliability_fusion.py", line 52, in fit
+    coefficients, intercept, audit = component_fit(
+  File "/home/szu2070436088/2510044040/CV-SincNet/runs/d93_source_snapshot_20260720/scripts/probe_d43_structured_covariance.py", line 312, in fit
+    raise D43ProbeError("D43 structured covariance is not positive definite")
+d44_d43_probe_helper.D43ProbeError: D43 structured covariance is not positive definite

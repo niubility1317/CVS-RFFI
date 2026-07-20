@@ -4,10 +4,15 @@ import numpy as np
 
 from cvsrffi import stage2_d42_unified_shrinkage_lda as d42
 from cvsrffi.stage2_d93_query_evaluation import (
+    _build_guarded_d93_base_fit,
     build_d93_top_level_fit,
     predict_d93,
     score_d93,
 )
+
+
+class D43ProbeError(RuntimeError):
+    pass
 
 
 def _normalize(rows: np.ndarray) -> np.ndarray:
@@ -88,3 +93,32 @@ def test_d93_wraps_int8_target_head_and_scores_all_classes() -> None:
     assert result.resource_audit["d93_optimizer_steps"] == 0
     assert result.resource_audit["persistent_state_bytes"] < 256 * 1024
     assert result.resource_audit["trainable_parameters"] < 80_000
+
+
+def test_d93_guarded_base_uses_locked_d42_only_for_exact_pd_failure() -> None:
+    class Module:
+        @staticmethod
+        def _fit_equal_prior_lda(*args, **kwargs):
+            del args, kwargs
+            return np.ones((2, 3)), np.zeros(2), {"covariance_policy": "locked_d42"}
+
+    class D62Probe:
+        @staticmethod
+        def build_d62_fit(module):
+            del module
+
+            def fail(*args, **kwargs):
+                del args, kwargs
+                raise D43ProbeError(
+                    "D43 structured covariance is not positive definite"
+                )
+
+            return fail, []
+
+    guarded, records = _build_guarded_d93_base_fit(Module, D62Probe)
+    coefficients, intercept, audit = guarded(None, None, 2, 10)
+    assert records == []
+    assert coefficients.shape == (2, 3)
+    assert intercept.shape == (2,)
+    assert audit["d93_d43_nonpositive_definite_observed"] is True
+    assert audit["d93_fallback_query_rows_used"] == 0

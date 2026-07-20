@@ -375,3 +375,50 @@ PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/runs/d93_source_snapshot_20
 retry1成功越过authority与密封包构建，但K10/K1均在首次D93 fit、任何query预测之前以`D93 ground/target-old class binding drift`停止。根因是地面组件类注册表按字典序保存，target-old注册表保持项目顺序；类别集合一致，仅tuple顺序不同。修复按类句柄把ground聚合原型/掩码重排到target-old顺序，继续拒绝缺类、重复类或集合漂移；该修复类置换等变，不增加类别专用规则。更新后D93联合测试12/12通过，其中集成测试显式使用逆序ground registry并验证重排审计。retry2使用新源码哈希和不可覆盖的`retry2_*`输出；数据、方法公式和超参数仍不变。
 
 retry2再次在首次fit前停止并揭示更精确的接口事实：target predictor内部类注册表是opaque class handle，而ground组件注册表是TX标签，二者不能直接按字符串比较。`offline_build_receipt.json`确认双方实际旧TX集合均为`14-10,14-7,20-15,20-19,6-15,8-20`，且顺序与opaque class index 0至5一一对应。最终修复由行流水线把合法注册support清单中的`old_tx_labels`传给D93，执行`registered_target_old_tx_label_order_to_opaque_class_index`绑定；仍精确拒绝缺类、重复类、长度或ground集合漂移，不读取query角色/真值。该修复后联合测试12/12通过。retry3继续使用不可覆盖新目录。
+
+### retry3 K1完整性能与K10技术失败
+
+retry3 K1/new20已完成全行和三个场景的不可变预测后评分，score SHA256=`05557a8fc06f6ce86713035343ebb02cc2f37525ee414a6010caeea9579a1f75`。K10在任何query预测前因变换后D62内部D43 block协方差非正定停止；其28行、3187B日志已完整读取，没有NaN、Inf、OOM或Killed。K10没有性能结果，不能与K1拼接，也不能把技术失败视为算法性能。
+
+K1同一行联合指标如下，单位为百分比：
+
+|candidate|receiver/seed|K/new|B-old|A-old|Min-old before→after|New|H|F|判定|
+|---|---|---|---:|---:|---:|---:|---:|---:|---|
+|D93 interaction|20-1/713101|1/20|55.556|33.333|20.000→8.333|28.167|30.533|22.222|真实负信号，不晋级125|
+
+场景分层：
+
+|场景|A-old|New|H|old→new|new→old|
+|---|---:|---:|---:|---:|---:|
+|clear|33.333|37.500|35.294|57.500|9.250|
+|low-elev|30.833|19.250|23.702|50.833|11.750|
+|rain|35.833|27.750|31.278|56.667|10.250|
+
+旧类逐类结果：
+
+|旧TX|before|after|遗忘pp|
+|---|---:|---:|---:|
+|14-10|55.000|38.333|16.667|
+|14-7|20.000|8.333|11.667|
+|20-15|85.000|46.667|38.333|
+|20-19|38.333|15.000|23.333|
+|6-15|50.000|16.667|33.333|
+|8-20|85.000|75.000|10.000|
+
+新类逐类准确率：
+
+|新TX|Acc|新TX|Acc|新TX|Acc|新TX|Acc|
+|---|---:|---|---:|---|---:|---|---:|
+|1-16|23.333|1-18|23.333|1-8|35.000|10-10|18.333|
+|11-19|23.333|13-14|8.333|14-11|23.333|16-19|13.333|
+|18-10|11.667|18-8|51.667|19-13|23.333|19-6|50.000|
+|19-8|48.333|19-9|18.333|2-16|16.667|2-5|41.667|
+|20-12|18.333|3-8|21.667|4-10|35.000|8-3|58.333|
+
+K1的三场景transport都不是identity：更新谱范数为`0.5000/0.5000/0.4909`，条件数为`1.741/1.711/1.702`；配对RMSE相对仅平移从`0.0580/0.0858/0.0636`降到`0.0522/0.0816/0.0591`。然而D42 support训练20epoch全部保持100% support accuracy，loss分别从`0.6516→0.0331`、`0.3287→0.00433`、`0.4876→0.0131`，held query却很差，说明主要缺陷是单shot support过拟合和ground子空间外推不足，而不是没有优化或没有使用ground。
+
+地面84个有效cell对应每类14个名义域，但由ground-only审计得到的`D_eff`仅为`[2.307,3.814,4.302,2.543,2.139,4.207]`，stable rank为`[1.600,2.325,2.629,1.705,1.508,2.949]`；说明84个cell的独立域信息远少于名义数量。余弦距离`1e-4`下近重复pair比例虽仅0至2.20%，但更宽尺度上的低participation ratio已经表明强相关冗余。当前nuisance全局participation ratio=`13.640`、保留rank=14，可能相对每类有效域数过高，是K1外推不稳的重要机制线索。
+
+资源审计：trainable parameters=2260，adaptation epochs/steps=20/20，状态峰值44,419B，ground逻辑状态25,428B，新增transport每query 6,080MAC，总score时延0.0120ms/query，峰值CUDA分配约20.42MiB；无dense query图、无query优化、每query一次backbone/FFT、target clean访问为false、同物理IQ多信道view为false、Phase2信道模拟调用为0。INT8与FP32 support argmax变化为0。
+
+K10修复不调整transport。只在捕获精确`D43 structured covariance is not positive definite`时回退到原D42 auto-shrinkage等先验头；其它异常继续fail closed。该回退只读support、query行数为0，并新增coverage、`D_eff`、stable-rank和近重复审计。修复后本地联合测试13/13通过；K10必须以新输出完整重跑。

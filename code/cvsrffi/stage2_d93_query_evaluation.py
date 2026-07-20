@@ -86,6 +86,39 @@ def _old_targets(labels: Sequence[str], registry: Sequence[str]) -> np.ndarray:
     return values
 
 
+def _build_guarded_d93_base_fit(
+    module: Any, d62_probe: Any
+) -> tuple[Callable[..., Any], list[dict[str, Any]]]:
+    """Use D62 unless transformed support triggers its exact D43 PD failure."""
+
+    locked_d42_fit = module._fit_equal_prior_lda
+    primary_fit, call_records = d62_probe.build_d62_fit(module)
+
+    def fit(*args: Any, **kwargs: Any):
+        try:
+            return primary_fit(*args, **kwargs)
+        except RuntimeError as exc:
+            if (
+                exc.__class__.__name__ != "D43ProbeError"
+                or str(exc) != "D43 structured covariance is not positive definite"
+            ):
+                raise
+            coefficients, intercept, audit = locked_d42_fit(*args, **kwargs)
+            guarded_audit = dict(audit)
+            guarded_audit.update(
+                {
+                    "d93_support_covariance_fallback": (
+                        "locked_d42_auto_shrinkage_on_exact_d43_nonpositive_definite"
+                    ),
+                    "d93_d43_nonpositive_definite_observed": True,
+                    "d93_fallback_query_rows_used": 0,
+                }
+            )
+            return coefficients, intercept, guarded_audit
+
+    return fit, call_records
+
+
 def build_d93_top_level_fit(
     base_top_level_fit: Callable[..., d42.D42UnifiedShrinkageLDAResult],
     *,
@@ -368,6 +401,32 @@ def _audit_fit(
         "d93_translation_only_rmse": float(
             transport["translation_only_rmse"]
         ),
+        "d93_target_shift_ground_nuisance_coverage": float(
+            transport["target_shift_ground_nuisance_coverage"]
+        ),
+        "d93_target_shift_out_of_ground_nuisance_energy_ratio": float(
+            transport["target_shift_out_of_ground_nuisance_energy_ratio"]
+        ),
+        "d93_ground_effective_domain_count_by_class": list(
+            transport["ground_effective_domain_count_by_class"]
+        ),
+        "d93_ground_stable_rank_by_class": list(
+            transport["ground_stable_rank_by_class"]
+        ),
+        "d93_ground_near_duplicate_pair_fraction_by_class": list(
+            transport[
+                "ground_near_duplicate_pair_fraction_cosine_eps_1e_4_by_class"
+            ]
+        ),
+        "d93_ground_nuisance_participation_ratio": float(
+            transport["nuisance_participation_ratio"]
+        ),
+        "d93_ground_nuisance_retained_rank": int(
+            transport["nuisance_retained_rank"]
+        ),
+        "d93_ground_to_target_binding_policy": str(
+            transport["ground_to_target_binding_policy"]
+        ),
         "d93_k1_nonidentity": bool(
             int(k_shot) != 1
             or float(transport["update_spectral_norm"]) > 1.0e-8
@@ -428,7 +487,7 @@ def run_d93_query_evaluation(
         return prototypes, mask, audit
 
     def build(module: Any, _prototypes: Any, _mask: Any, _audit: Any):
-        base_fit, call_records = d62_probe.build_d62_fit(module)
+        base_fit, call_records = _build_guarded_d93_base_fit(module, d62_probe)
         holder["base_fit"] = base_fit
         return base_fit, call_records, []
 
