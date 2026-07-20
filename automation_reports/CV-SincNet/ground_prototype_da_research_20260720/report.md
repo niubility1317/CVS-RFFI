@@ -846,6 +846,19 @@ source-validation三份NPZ一致证明旧类原始label顺序`[0,1,2,3,4,5]`映�
 
 协议合法的下一步先是non-authority数值诊断：固定现有seed/batch/threshold，比较eager↔eager、runtime↔runtime、fresh trace↔eager/旧runtime，以及CPU/CUDA、deterministic、TF32、cuDNN设置和PyTorch/CUDA/cuDNN版本；不写PASS receipt。若旧runtime存在稳定语义差异，则拒绝绑定并从冻结checkpoint+代码生成新的不可覆盖runtime，再重新通过原`[1,8,256]/1e-5`门。正式D97 Phase1 export继续阻断。
 
+### non-authority runtime诊断第二次独立复审：REVISE
+
+诊断修订版专项`12 passed`，与parity/exporter联合`22 passed`，但独立二审仍为`REVISE`，不得提交、发布N607或据此选择runtime。已确认双arm SHA限制、固定`[1,8,256]` probe、canonical exclusive写、eager/existing/fresh tensor根、CPU不可授权及无PASS receipt均成立；剩余P0如下：
+
+|阻断|证据|修复要求|
+|---|---|---|
+|arm lineage不完整|`RUNTIME_ARMS`只有SHA和自描述字符串；相同bytes复制到任意path仍可继承b202/f119身份，f119也未绑定D18 method-lock/row-log SHA|预锁canonical origin path与真实lineage artifact SHA，隔离副本必须保留origin receipt|
+|进程隔离不足|deterministic子进程虽在启动前收到CUBLAS，但父orchestrator顶层仍import Torch/相关依赖；fresh trace在每个comparison worker中内联生成|父进程不得import Torch并证明CUDA未初始化；独立trace-builder先生成immutable fresh runtime，comparison worker只读|
+|dependency/Git根不完整|漏`model_dual_cvsincnet.py`、两个paper reproduction模块、runtime trust/prototype/predictor bundle及`train_ssdg.py`加载模块；只报HEAD不报dirty/untracked，ZIP无`.git`时接受caller声明|闭合实际import依赖，绑定source archive；记录HEAD/status/dirty/untracked/diff roots，不能由caller自授权commit|
+|worker→final非fail-closed|父进程先parse文件再重读hash，存在TOCTOU；stdout summary未与artifact SHA/bytes闭合；fake launcher无launch audit仍能生成final|同一stable bytes同时parse+hash；强制校验stdout、launch audit、mode/scope/device/CUBLAS/source/env/fresh roots|
+
+P1还包括subprocess无timeout、`nvidia-smi`失败被静默降为`driver=None`、缺总orchestrator耗时/host peak以及per-channel quantization registry不完整。第三轮修复继续保持development diagnostic only，不访问数据、不输出runtime晋级结论。
+
 ## 下一轮唯一集成候选D99
 
 跨方法监督否决继续增加第三个全局头或D98式二次融合权，建议下一轮只实现`D99 RA-CGTMK-D81`：保留D81一次拟合，将D96的密度反权、`D_eff`、共享ground nuisance basis和support-only coverage certificate用于构造严格PSD低秩Mahalanobis度量，再把D97的各向同性qK分支替换为类数归一化Student-t metric-kernel。ground只改变可观测距离，不直接给旧类加分；old/new仍由同式target support注册。
