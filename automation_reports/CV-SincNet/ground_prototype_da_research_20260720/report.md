@@ -739,9 +739,12 @@ conda run -n ssr-gpu python -m pytest tests/test_stage2_d96_ra_cgsrda.py tests/t
 |`code/scripts/export_phase1_singleobs_feature_archive.py`|`fe995a960a9cf56752a9ec010331b222f8cc81fb1a6969b0c19a5a28cbbec962`|单物理样本单LEO Phase1临时特征导出|`code/scripts/export_phase1_singleobs_feature_archive.py`|
 |`code/cvsrffi/stage2_d81_phase1_episode_scorer.py`|`05dc600ea169ce9deb629ff4c764179cffda7eded16280ae6914bf4d950c0ef4`|真实D81-before episode head|`code/cvsrffi/stage2_d81_phase1_episode_scorer.py`|
 |`code/cvsrffi/stage2_d96_d97_phase1_lodo.py`|`b636f9d3a5270b7cbc0f81b63204dfad9899394a5b043aa347012bd18785b913`|receiver-LODO与development lock|`code/cvsrffi/stage2_d96_d97_phase1_lodo.py`|
+|`code/scripts/run_d97_phase1_lodo_selection.py`|`293ae9987bf70e8647152416894c549518a97b8661fbaf6d57d5677f0fc2beee`|SHA绑定配置驱动的不可覆盖D97 LODO命令行runner|`code/scripts/run_d97_phase1_lodo_selection.py`|
 |`code/scripts/run_d96_ground_geometry_lodo.py`|`cf89a0e27091a4bfb7618099be9b31b8583d7685f67b17d2b5a2d09e573bc4d2`|D96 diagnostic-only geometry复现|本次不必同步|
 
 第一段N607委派仅做`READ_ONLY_ASSET_DISCOVERY`：执行规定preflight，核对GPU/进程，确认source-validation cache、已知ADV3B02 base runtime、parity receipt、checkpoint SHA、Python环境与目标输出不存在；不修改、同步或启动。资产路径和SHA返回主线后，主线生成并提交development runtime manifest、selection-salt receipt、候选网格和完整exact command，再由同一唯一runner执行`LOCAL_VERIFIED→LANDED→RUNNING`。这种两段交接避免在缺失真实runtime receipt时用猜测命令启动，同时不把development研发阻塞在尚不存在的外部formal authority上。
+
+为避免第二阶段临时拼接远端多行Python，主线新增`run_d97_phase1_lodo_selection.py`：它只接受附带SHA256的精确JSON配置，绑定D81 scorer/LODO模块SHA、ADV3B02 checkpoint、archive/ground manifest、候选网格、seed、device和不可覆盖输出目录；内部构造真实`D81Phase1EpisodeScorer`，输出完整receipt与小型release summary，并对已有输出fail-closed。新增专项3项与D81 scorer/selector组合回归共`23 passed`，脚本`py_compile`与`git diff --check`通过；pytest退出后的Windows临时symlink `PermissionError`仍是已知清理噪声，主体exit code为0。
 
 上述Phase1流水线、D96 geometry diagnostic、专项测试与本节报告已由Git提交`e1135e5c`承载；本次N607资产发现和后续release均以该提交为唯一代码基线，D98未纳入该提交或本次同步范围。
 
