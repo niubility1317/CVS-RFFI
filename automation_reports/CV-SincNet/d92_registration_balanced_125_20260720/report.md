@@ -69,6 +69,31 @@ D62与D81在注册类数增加后均出现系统性旧类遗忘。D65表明仅�
 - 每个D92子进程CPU线程上限固定为2，设备参数为`cuda:0`并通过`CUDA_VISIBLE_DEVICES`绑定物理GPU。
 - 精确PID、命令与清单SHA在实际启动后补充。
 
+### 清单与分片启动
+
+- 远端导入检查通过，6个同步文件的远端SHA256与上表逐项一致。
+- 完整清单：`matrix_manifest.json`，SHA256=`111dfd0e5ac22f0fee93e215cb536356a2dd2ea4f58eec497dfe625455f6d467`；`total_job_count=125`，8个分片各15或16个作业。
+- 已启动分片与物理GPU：shard0→GPU1(PID`1078291`)、shard1→GPU2(PID`1078292`)、shard2→GPU4(PID`1078293`)、shard5→GPU5(PID`1077037`)、shard6→GPU6(PID`1077038`)、shard7→GPU7(PID`1077039`)。
+- shard3与shard4等待GPU0/3释放一个槽后启动；当前已落地的事件均为`candidate=d92_registration_balanced_covariance`，错误日志为空。
+
+实际命令统一为：
+
+```bash
+CUDA_VISIBLE_DEVICES=<gpu> \
+PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/runs/d92_source_snapshot_20260720:/home/szu2070436088/2510044040/CV-SincNet \
+/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u \
+/home/szu2070436088/2510044040/CV-SincNet/runs/d92_source_snapshot_20260720/scripts/run_d92_125_stability.py \
+  --cache-root /home/szu2070436088/2510044040/CV-SincNet/runs/d18_formal_k10_new5_rx20_1_seed713101_20260717_085303/cache_matrix \
+  --authority-root /home/szu2070436088/2510044040/CV-SincNet/runs/d81_comprehensive_125_v2auth_20260720/authority_controller/authority_final_retry1 \
+  --phase1-checkpoint /home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth \
+  --sealed-runtime /home/szu2070436088/2510044040/CV-SincNet/runs/d18_formal_k10_new5_rx20_1_seed713101_20260717_085303/input/sealed_feature_runtime.pt \
+  --method-lock /home/szu2070436088/2510044040/CV-SincNet/runs/d18_formal_k10_new5_rx20_1_seed713101_20260717_085303/input/method_lock.json \
+  --output-root /home/szu2070436088/2510044040/CV-SincNet/runs/d92_registration_balanced_125_20260720 \
+  --ground-component-dir /home/szu2070436088/2510044040/CV-SincNet/runs/d19_ciaf_int8_proto_20260717_1039/input/int8_component \
+  --ground-manifest-sha256 15b5e144f9af3989421d8e925c17758479c327be47e79222f6363dc63994629c \
+  --cpu-threads 2 --shard-index <0..7> --shard-count 8 --device cuda:0
+```
+
 ## 成功标准与风险
 
 - 方法晋级必须看完整125矩阵的联合指标，不能用单个格点或边际最大值替代。
