@@ -112,3 +112,13 @@ PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/runs/d92_source_snapshot_20
 - 修复：D92在协方差求解后先以FP64去除类公共系数/截距，再越过FP32边界，使D45/D43后续中心化近似幂等；公式、0.5/0.5任务权重、支持访问面和查询边界不变。
 - 修复后D81+D92联合回归22项再次通过；新增测试显式验证FP32再次中心化不改变支持argmax。
 - 修复后核心文件SHA256=`6fe550bc4c181a25f244e4ee68aeba5fe081d810f645aa67adc13706d05d5d12`。同步、单行技术闭合验证和新的完整125输出根将在后续记录。
+
+### retry1完整125
+
+- 修复提交：`7913e84ffcaadb59fa8fa57608fff7dce3b4ef45`；独立源码快照：`/home/szu2070436088/2510044040/CV-SincNet/runs/d92_source_snapshot_retry1_20260720`。
+- 原失败行技术闭合验证已通过：pipeline receipt SHA256=`404b30c5a806c5a6bfee4852a856b95391347fbdb44f3007e2130443534e2f67`，score SHA256=`572621389578e9860ee3cb2c449ba9947507626669e06d54752265261a6da7d6`；该单行不进入性能结论。
+- 新输出根：`/home/szu2070436088/2510044040/CV-SincNet/runs/d92_registration_balanced_125_retry1_20260720`；日志根：`/home/szu2070436088/2510044040/CV-SincNet/logs/d92_registration_balanced_125_retry1_20260720`。
+- 新清单SHA256=`fc9867ba7ab2c4af01bc1ea18e34747cf77bbebd73afcdbbd0ac0aa020ac8ced`，仍为125作业、8分片、相同5×5×5矩阵。
+- 版本化启动器：`launch_retry1.sh`，SHA256=`d63ad90f56fb45c8124d8cb1d0278f0e985f71a2fe85c6eee12cfdd8723e0667`。
+- retry1分片/GPU/PID：0/0/`1091654`、1/1/`1091655`、2/2/`1091656`、3/3/`1091657`、4/4/`1091658`、5/5/`1091659`、6/6/`1091660`、7/7/`1091661`。每个GPU启动前均只有1项现存实验，启动后不超过2项；CPU线程上限2。
+- 首轮落地探针：8个launcher均存活，20条事件，0失败；显存约1.1GB/GPU，GPU计算阶段可见利用率51%。
