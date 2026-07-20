@@ -356,6 +356,9 @@ def fit_ground_sigma_pareto_guard(
             "clean_ce_max_class_delta_step": float(
                 np.max(candidate_clean_class - clean_class)
             ),
+            "clean_ce_max_class_delta_vs_initial": float(
+                np.max(candidate_clean_class - initial_clean_class)
+            ),
             "sigma_ce_mean_before": float(np.mean(sigma_loss)),
             **cone_audit,
         })

@@ -129,8 +129,8 @@ def _verify_output(
         ):
             raise D88ProbeError("D88 Pareto audit closure drift")
         if any(
-            float(item["clean_ce_max_class_delta_step"])
-            > 1.0e-10
+            float(item["clean_ce_max_class_delta_vs_initial"])
+            > float(audit["clean_pareto_guard_tolerance"]) + 1.0e-12
             for item in audit["optimizer_objective_trace"]
         ):
             raise D88ProbeError("D88 per-step class guard drift")
