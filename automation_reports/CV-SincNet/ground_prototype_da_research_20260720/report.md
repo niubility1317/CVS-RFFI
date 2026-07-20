@@ -682,3 +682,67 @@ conda run -n ssr-gpu python -m pytest tests/test_stage2_d96_ra_cgsrda.py tests/t
 |D97 `beta/temp/eta/K1 prior`|否|缺合法Phase1 sample-level 288D feature、独立source-validation query与D81 logits，不能用target补选|
 
 此外该组件仍标记`formal_phase2_eligible=false`和`UNVERIFIED_UNDER_CURRENT_PROTOCOL`；所以84-cell几何LODO最多产生development partial lock，不能直接授权target/N607。完整锁必须由Phase1地面独立物理样本生成receiver/day LODO预测面，并把规范JSON receipt、margin audit及其SHA与配置闭合。下一步先定位或导出该Phase1-only预测面；在此之前不接target pipeline、不发布窄实验、更不会跑125。
+
+## 并行研发—监督—实验发布工作流v2
+
+从本轮起不再采用“主agent设计→实现→实验→分析”的单链串行方式。并行单元按证据职责拆分，任何一条方法线都不能自行宣布晋级：
+
+|并行单元|当前对象|独立交付|必须接受的监督|停止/交接点|
+|---|---|---|---|---|
+|域适应线|D96冗余感知ground nuisance/SRDA、Phase1单观测exporter|数学机制、纯核心、geometry/coverage证据、exporter与测试|分类头作者做接口互审；反遗忘监督检查低coverage负迁移、old/new对称和协议闭包|本地验证与审查通过后交主线集成；不自行启动N607|
+|分类头线|D97 D81+INT8 qK局部—全局头、receiver-LODO锁|部署等价量化、support-only融合、真实D81 episode scorer闭包|域适应作者检查特征几何；反遗忘监督检查融合是否损害floor/forgetting|形成完整Phase1 lock receipt后交实验runner|
+|反遗忘线|D98 STRIMS连续尾部风险收缩|class-symmetric support-OOF可靠度、CVaR floor/侵入/retention目标、K1精确回退|同时监督D96/D97；主线检查与D97是否重复融合|纯核心通过后只作为独立matched列，不偷换D97结果|
+|主线|协议裁决、接口集成、Git与同row晋级|阻断越界、合并代码、全套本地测试、版本提交、结果联合判决|不得绕过独立监督结论|释放一个不可变Git提交和runner handoff包|
+|实验runner|N607 Phase1 export/LODO、target窄实验、通过后125|preflight、同步SHA、命令/PID/GPU/log/artifact、完整指标|只执行已预登记提交；不改算法/参数；主线不重复启动|实验落地后继续监控和回收；研发线同时进入下一候选|
+
+协作节拍固定为：作者A提交中间设计给作者B和监督线→作者B检查部署接口与可识别性→监督线按协议、old/new联合门、floor、forgetting和资源给出P0/P1→主线只合并无P0版本→runner在服务器运行上一版时三条研发线并行研究下一版。远端执行与本地研发因此重叠，但同一run ID只有一个runner拥有启动权；完整125始终是晋级后的确认，不是选参工具。
+
+## D96地面几何LODO诊断结果
+
+主线修复了独立监督指出的raw/normalized中心不一致：basis训练与held residual现在都相对density-weighted raw class center计算，只有重构后的余弦分类中心做归一化。专项测试`6 passed`，`git diff --check`通过；Windows pytest退出阶段仍出现既有临时symlink `WinError 5`噪声，但主体exit code为0。
+
+|候选|tau分位数|实际tau|请求/有效rank|平均投影误差|最差折投影误差|最差折解释率|平均basis稳定度|BA/floor|harmful flip|裁决|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|
+|D96 geometry diagnostic|0.25|0.937973|4/4|0.757930|0.926472|7.353%|0.958735|1.000/1.000|0|`PARTIAL_PHASE1_GEOMETRY_SELECTION_DIAGNOSTIC`|
+
+分类指标饱和且所有候选均无flip，不能区分transport有效性；最差折只解释7.353%域残差，反而再次证明现有地面域子空间覆盖不足。产物明确保持`full_phase1_lock=false`、`geometry_effectiveness_pass=false`、`target_admission_authorized=false`。因此`tau=0.937973/rank4`只记录为84-cell几何诊断结果，不能写入正式target method lock，也不能触发125。
+
+## 当前交叉监督阻断与修复队列
+
+|对象|独立审查状态|主要缺陷|当前动作|
+|---|---|---|---|
+|D96 geometry LODO|`YES_AS_DIAGNOSTIC_ONLY`|无任务效果门；覆盖解释率低|保留诊断，不晋级；raw-center P1已修复|
+|Phase1 single-observation exporter|`NOT_READY_FOR_REMOTE_PHASE1_EXPORT`|初版输出几何与D97不等价；测试callback可绕过sealed runtime；缺ADV3B02 checkpoint→runtime lineage|域适应线修复精确consumer schema、正式路径禁止注入、runtime manifest闭包和Phase2排除声明|
+|D81 Phase1 episode scorer|交叉审查中|初版未绑定实现依赖SHA、sklearn/runtime/checkpoint且ground audit浅可变|域适应线加深不可变状态与完整依赖receipt，分类头锁定器拒绝普通callback冒名|
+|D97 receiver-LODO selector|交叉审查中|初版量化/三block/`/beta`不等价、K5/K10直接用`eta_max`、任意callback可冒充D81|分类头线改为部署INT8选参、support内部OOF可靠度和真实scorer receipt闭包|
+|D98 STRIMS|设计通过，纯核心实现中|尚无本地/真实性能证据|反遗忘线独立实现；只消费D81与qK原始logit，禁止二次融合|
+
+当前没有N607发布或target预测。只有exporter、D81 scorer、D97 LODO三者完成同一schema/receipt闭包并通过独立复审后，才由新的实验runner执行Phase1离线export和receiver-LODO；方法作者与主线均不抢占其启动权。
+
+## Phase1单观测流水线第二轮独立审查与修复
+
+第一次端到端审查虽然跑通26项测试，但仍发现4个可导致错误正式声明的缺陷：自描述runtime manifest可伪造ADV3B02 lineage；selector可把generic/diagnostic manifest写成`full_phase1_lock=true`；任意余弦callback可复制字段冒充D81；D81 scorer直接把qK使用的raw concat288当作历史D81 registered feature。主线据此否决初版远端发布，修订后由同一审查线实现、主线再独立运行45项组合回归。
+
+|对象|第二轮修复|当前状态|
+|---|---|---|
+|Phase1 exporter|formal模式复用既有`phase1_adv3b02_deployment_bundle.py`外部联合bundle verifier；development模式只允许预登记的真实ADV3B02 runtime SHA与parity receipt，TinyRuntime仅能进入test diagnostic；输出8成员精确allowlist和formal/development生命周期|`READY_FOR_DEVELOPMENT_N607_ASSET_DISCOVERY`；本机无真实runtime，尚未端到端导出|
+|D81 episode scorer|要求精确`D81Phase1EpisodeScorer`类型与完整依赖receipt；fit/query都把raw concat288恢复为`normalize([normalize(z160),4·normalize(FFT96‖RF32)])`，qK仍保留三block等能量几何|本地真实D22 K1 smoke输出`[12,6]`有限FP32，scorer receipt稳定|
+|D97 receiver-LODO selector|只接受exporter v2 manifest文件及预期SHA；核对精确成员、formal/development状态、特征语义、runtime lineage和Phase2禁入生命周期；删除generic/in-memory正式旁路|development产物固定`full_phase1_lock=false`、`development_lock_frozen=true`、`formal_target_claim_allowed=false`|
+|support-only融合|K1只使用Phase1先验；K5/K10每个shot index留出每类1个独立physical support，D81与INT8 qK都只在其余support上拟合，calibration/evaluation标签不参与eta|selector专项12/12通过；候选网格不重复拟合D81|
+
+主线组合验证命令使用`ssr-gpu`解释器串行执行，结果`45 passed`；`py_compile`和`git diff --check`均通过。警告仅包括TorchScript弃用提示与pytest退出阶段既有Windows临时symlink `PermissionError`，命令exit code为0。
+
+### 本次N607 development release候选文件
+
+|本地文件|SHA256|用途|计划远端相对路径|
+|---|---|---|---|
+|`code/scripts/export_phase1_singleobs_feature_archive.py`|`fe995a960a9cf56752a9ec010331b222f8cc81fb1a6969b0c19a5a28cbbec962`|单物理样本单LEO Phase1临时特征导出|`code/scripts/export_phase1_singleobs_feature_archive.py`|
+|`code/cvsrffi/stage2_d81_phase1_episode_scorer.py`|`05dc600ea169ce9deb629ff4c764179cffda7eded16280ae6914bf4d950c0ef4`|真实D81-before episode head|`code/cvsrffi/stage2_d81_phase1_episode_scorer.py`|
+|`code/cvsrffi/stage2_d96_d97_phase1_lodo.py`|`b636f9d3a5270b7cbc0f81b63204dfad9899394a5b043aa347012bd18785b913`|receiver-LODO与development lock|`code/cvsrffi/stage2_d96_d97_phase1_lodo.py`|
+|`code/scripts/run_d96_ground_geometry_lodo.py`|`cf89a0e27091a4bfb7618099be9b31b8583d7685f67b17d2b5a2d09e573bc4d2`|D96 diagnostic-only geometry复现|本次不必同步|
+
+第一段N607委派仅做`READ_ONLY_ASSET_DISCOVERY`：执行规定preflight，核对GPU/进程，确认source-validation cache、已知ADV3B02 base runtime、parity receipt、checkpoint SHA、Python环境与目标输出不存在；不修改、同步或启动。资产路径和SHA返回主线后，主线生成并提交development runtime manifest、selection-salt receipt、候选网格和完整exact command，再由同一唯一runner执行`LOCAL_VERIFIED→LANDED→RUNNING`。这种两段交接避免在缺失真实runtime receipt时用猜测命令启动，同时不把development研发阻塞在尚不存在的外部formal authority上。
+
+## D98反遗忘线当前状态
+
+D98-STRIMS已经修正温度化`log_softmax`坐标，使D81与qK各自的逐样本logit平移不改变融合预测；state receipt也绑定温度、lock与head receipt。独立复审仍以4项P0否决实验集成：K1未强制`alpha=0`；generic融合入口可让概率冒充raw qK；逐fold OOF provenance仍由调用方自签，不能证明held physical未进入拟合；D81 inference receipt没有绑定实际base输出。该线继续并行修复，但不进入本次D97 N607 release，也不以24/24单测声称性能成功。
