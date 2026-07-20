@@ -597,3 +597,49 @@ env OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 NUMEXPR_NUM_THREA
 每个run ID使用状态机`LOCAL_VERIFIED→LANDED→RUNNING→ARTIFACTS_COMPLETE→ANALYZED`；只允许runner子agent改变服务器侧前三个状态，主线只在完整证据后写`ANALYZED`。交接包固定包含Git提交、文件SHA、候选/矩阵、完整子进程命令、Conda/Python/CWD、输入路径与SHA、GPU、日志/输出、预期artifact、停止门和重试权限。由此可以并行推进“服务器执行上一版”和“主线研发下一版/复盘”，同时避免双重启动与口径漂移。
 
 该协作规则已写入根目录`AGENTS.md`；根目录不是Git仓库，因此同步镜像到本Git工作树`AGENTS.md`并随本报告提交。规则仅改变工作流，不改变`项目.md`的数据协议或科学场景。
+
+## D93—D95三轮正式技术复盘
+
+复盘前已重新完整读取active goal与2026-07-20版`项目.md`，刷新项目conversation index至1001条并检索`D81/D92/D93/D94/D95/ground prototype/coverage/qKNN/SRDA/forgetting`。主线再次完整读取本报告、D81完整125、D92完整125、D95 runner handoff，以及本目录全部9份D81/D93/D94/D95 stdout；D95 K10的32行Traceback与D93首次K10的失败栈均确认是同一D43非正定族，D93 retry4采用精确D42回退后才形成可比较结果，D95没有回退且未产生query预测。
+
+### 同row与完整125因果表
+
+|方法/证据面|K/new|B-old|A-old|Min-old|New|H|F|相对可信基线的结论|
+|---|---|---:|---:|---:|---:|---:|---:|---|
+|D81完整125|10/20|86.111|68.711|38.067|68.803|68.591|17.400|原合法轻量ground基线；绝对门全失败|
+|D92完整125|10/20|86.111|71.333|42.667|68.150|69.555|14.778|当前完整125联合最强：old/floor/H改善，但New下降0.653pp|
+|D81 matched dev|10/20|87.222|69.722|48.333|68.917|69.317|17.500|D93—D95唯一同row比较基线|
+|D93 full interaction|10/20|83.611|61.111|43.333|66.083|63.500|22.500|相对D81：A−8.611、New−2.833、H−5.817、F+5.000pp|
+|D94 coverage shrink|10/20|82.500|61.667|46.667|65.333|63.447|20.833|相对D93只恢复A0.556/floor3.334，仍相对D81全面为负|
+|D81 matched dev|1/20|61.667|37.500|13.333|27.583|31.786|24.167|K1同row基线|
+|D93 interaction|1/20|55.556|33.333|8.333|28.167|30.533|22.222|遗忘下降是假象：before先低6.111pp|
+|D94 coverage shrink|1/20|56.389|33.333|8.333|28.167|30.533|23.056|A/floor/H仍负；New仅+0.583pp|
+|D95 D81-base residual|1/20|56.389|33.333|8.333|28.167|30.533|23.056|与D94性能相同；D81 K1分支identity，无法恢复base|
+|D95 D81-base residual|10/20|—|—|—|—|—|—|D43在query前失败，无性能结果|
+
+当前最强的完整125方法仍是D92，而不是D93—D95；但D92距离K10/new20目标仍差A-old20.667pp、Min-old45.333pp、New17.850pp，且K1逐值无作用，因此也只是`COMPLETED_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE`。D93—D95只属于单receiver/seed development窄诊断，且ground组件`formal_launch_authority=false`，不得替代完整125或正式确认结论。
+
+### 三轮共同成功经验与已证伪路线
+
+|结论|证据|下一轮约束|
+|---|---|---|
+|显式读取地面原型并不等于有效适应|D93/D94/D95均真实读84个cell、非identity、资源与协议闭包通过，但held query退化|每个ground机制必须证明任务margin/纠错收益，不能以重构、RMSE或非identity晋级|
+|域覆盖是首要可辨识瓶颈|D93/D94 K10 `rho=0.144—0.227`；D95 K1 `rho=0.105—0.204`，77.3%—89.5%偏移在ground span外|coverage低时ground只能进入弱协方差/可靠度先验，不能搬动整个坐标系|
+|84个名义cell高度冗余|每类`D_eff=2.139—4.302`、stable rank1.508—2.949，而全局保留rank14|下一代bundle按冗余密度加权与自适应rank；当前bundle不得强行解释14个独立域|
+|support训练目标不是held泛化证据|D93/D94的20epoch最终support accuracy均100%，loss充分下降，query却全面负迁移|下一候选优先闭式/解析头；support-CV只能决定可靠度，不能当性能晋级|
+|共同非正交变换会破坏可靠base|D93替换D81后退化；D95叠加小残差后K1仍复现D94，K10触发数值失败|停止全坐标重写；保留D81/D92分支，用并行证据头或只作用协方差先验的残差|
+|不能以较低before换取“较低遗忘”|D93—D95 K1的F少1.1—1.9pp，但before低5.3—6.1pp且after低4.2pp|反遗忘门同时锁定B、A、floor、New和H；F只作同row联合指标|
+|注册竞争是真实可修复但有交换代价|D92 K10/new20稳定提高A2.622/floor4.600/H0.964并降低F2.622pp，New下降0.653pp|保留task-balanced covariance正信号，但新类必须有独立局部证据或统一校准防止被old保护挤压|
+
+已否决第四轮继续尝试：更强ground→target全矩阵/更高rank transport、按receiver/场景调`rho`阈值、以D43回退后再把D95视为同一候选、ground旧类直接logit/原型融合、同物理IQ多信道view、query伪标签/图/OT/quota，以及只通过support loss选择残差强度。D95 K10的数值修复只能作为实现消融，不能在K1已违反性能门后获得重试晋级资格。
+
+### 协议、Stage2-B/C与资源复核
+
+- D93—D95均使用固定单LEO弱received IQ，support/query view count=1；FFT96/RF32只来自同一接收IQ数学表征；clean/source、query truth/role/count/quota、query fit、dense query graph和Phase2信道模拟均为0/false。
+- final target-old/new均为INT8统一头，无FP32 sidecar；ground只读且不更新，不直接给旧类query打分。D93—D95科学访问面未发现越界，但当前ground artifact缺formal launch authority，所以性能只能写development diagnostic。
+- 三轮均同时报告注册前/后旧类、New、H、F、全部旧/新逐类与场景；没有把单一old改善、New改善或边际最大值作为晋级。
+- 参数2260、20epoch/20step、峰值状态约44KB、额外6,080MAC/query、无query图均满足资源门；性能而非资源是停止原因。
+
+### 下一轮决策边界
+
+在并行研发线交叉审查完成前不实现D96。候选必须保留当前最强D81/D92几何为base，不再统一搬动support/query；优先比较两个正交方向：①coverage-gated shrinkage RDA，仅让ground共享域谱进入类无关协方差先验，所有old/new均值来自target support；②合法single-view qKNN局部头与SRDA全局头并行，使用Phase1预锁/K≥2 support-CV可靠度做整row全局融合。若两头没有互补rescue或K1只能依赖未获批ground统计，则在本轮直接否决，转向新的Phase1 redundancy-aware/domain-factorized checkpoint与共同封存bundle，不用target125反向选择格式。
