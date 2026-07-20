@@ -37,3 +37,7 @@ python code/scripts/probe_d89_v2_radius_cauchy_center.py --d89-arm v2_radius_rel
 ```
 
 预期输出包括`training_log.jsonl`、`support_audit.json`、`resource_audit.json`、`geometry_audit.json`、`selection.json`、`RECEIPT.json`、`D81_PROBE_METADATA.json`与`D89_PROBE_METADATA.json`。成功执行要求105/105行、目标INT8/FP32各15行、source closure不变、query未打开；性能晋级另按预注册停止门判断。
+
+## 启动记录
+
+- attempt0于2026-07-20 09:16 CST在进入runner、打开数据或创建输出目录前失败：`UnboundLocalError: resource referenced before assignment`。根因是probe读取manifest的`reconstruction_rmse`时，`resource_audit()`赋值位于其后；这是本地集成顺序错误，不构成实验性能证据，输入与公式锁不变。

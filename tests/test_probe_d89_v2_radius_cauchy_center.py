@@ -28,3 +28,11 @@ def test_probe_formula_and_parser_lock() -> None:
     ])
     assert known.d89_arm == module.ARM
     assert remaining == ["--output", "unused"]
+
+
+def test_probe_reads_component_resource_before_spectrum() -> None:
+    source = SCRIPT.read_text(encoding="utf-8")
+    resource_offset = source.index("resource = component.resource_audit()")
+    rmse_offset = source.index('resource["reconstruction_rmse"]')
+    spectrum_offset = source.index("core.radius_reliability_ground_spectrum(")
+    assert resource_offset < rmse_offset < spectrum_offset

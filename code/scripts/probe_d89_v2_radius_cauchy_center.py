@@ -103,11 +103,11 @@ def main(argv: list[str] | None = None) -> int:
     radius = np.stack(
         [component.radius_for_domain(domain) for domain in component.domain_registry]
     )
+    resource = component.resource_audit()
     reconstruction_rmse = float(resource["reconstruction_rmse"])
     basis, weights, spectrum_audit = core.radius_reliability_ground_spectrum(
         prototypes, radius, reconstruction_rmse
     )
-    resource = component.resource_audit()
     statistics_macs = int(
         resource["all_residual_domain_enrollment_reconstruction_macs"]
         + radius.size * (10 * 160 + 8)
