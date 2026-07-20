@@ -160,6 +160,7 @@ def main(argv: list[str] | None = None) -> int:
     d87.FORMULA = FORMULA
     d87.CORE_PATH = CORE_PATH
     d87.core = core
+    d87.__file__ = str(Path(__file__).resolve())
     d87._verify_output = _verify_output
     d87._resource_upper_bounds = _resource_upper_bounds
 
