@@ -1382,3 +1382,51 @@ env OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 NUMEXPR_NUM_THREA
 sole runner必须先执行直连preflight，确认精确输入存在且SHA匹配、run/log/output均不存在、GPU1不超过每卡两项训练任务；随后只允许一次不可覆盖detached启动。远端runner LF SHA256必须为`4d8ebf9750a0b4a4f8a3b2643cc20fb8e35733f1c9b1d0a6386fd74fa1b87a2b`，不能使用Windows CRLF工作树SHA。预期产物包括`narrow_receipt.json`、D81/D99/D100的before/after不可变prediction、三份score与detailed score、offline build/registration pair、INT8和资源audit。所有prediction完成后才允许truth join。初版`d99_k10_new20_narrow_d6efa5ad_20260721_r8`只存在于报告提交`37a7cd93`且从未创建远端状态；本次修订只统一既有K10发布槽、线程上限和不可覆盖run ID，不改变方法或数据。
 
 晋级门按同row冻结：D99相对D81的`old_acc_before_increment`、`old_acc_after_increment`、`seen_new_acc`均不得下降，`H_old_new`与全部注册类floor至少一项严格提高，forgetting不得增加；同时逐场景、逐类和old→new/new→old混淆不能出现未解释的集中崩溃。任何一项失败则标记`D99_COMPLETED_NARROW_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE`，不运行D99历史125；全部通过才发布固定125，且不回调`eta/nu/h/rank/rho`。
+
+#### r8实际结果：当前row opaque handle绑定技术失败
+
+r8唯一启动一次，状态链为`LOCAL_VERIFIED→LANDED→RUNNING(瞬时)→FAILED_PRE_PREDICTION_BINDING_DRIFT`。wrapper PID`1588355`、Python PID`1588357`均已退出，exit1；物理GPU1恢复`0%/10MiB`，SSH进程和N607/bridge TCP22连接均为0。完整日志1,344B，SHA256=`92cbfef67fcffb6209da60511bcae1c66b30dfe32e766b82e5f5ea8cc54b203c`。
+
+唯一异常为`D99D100QueryEvaluationError: class binding TX/handle bijection drift`。当前row before manifest的6个opaque handles与历史D20 binding中的handles不同；但6个Phase1 TX、TX顺序、class/direct-logit index、checkpoint和类数均匹配。opaque handle本来就是row-specific，旧实现错误地把历史handle当作跨row永久身份。该失败发生在D81/D99/D100任何query prediction之前：candidate prediction数0、score/detailed数0、`narrow_receipt.json`不存在。因此r8不是性能结果，不能报告B/A/New/H/floor/forgetting，也不能标记算法负结果。
+
+已完成的partial仅包括offline row build、before/after enrollment/apply seal和registration pair。`offline_build_receipt.json` SHA256=`60d9936355eff135ac513599b25ef122b959a11d43b9cb7b9e49ffd663f6fed3`，`registration_pair.final.json` SHA256=`4048db7ce58d830c0d33d9642d229e84dd26058dcd1cb4497b27dce970146525`，row manifest仍为`8f83db32662da701f36099536bd775a4d33fc5a7f1a01c613b6291d9163aac56`。完整53文件、29,194,421B证据已保存到`artifacts/d99_d100_narrow_rx20_1_seed713101_k10_new20_d6efa5ad_20260721_r8/`；原远端run/log保留且不得覆盖或重试。
+
+#### r9最小修复、双重验证与重发预登记
+
+修改前review确认D93已经采用正确语义：稳定身份是Phase1 TX顺序，当前row的opaque handle由当前合法注册表提供。r9只修改D99 query evaluator、narrow runner和两份相邻测试：D20 binding继续锁定checkpoint、6个Phase1 TX、class/direct-logit index和TX顺序，但不再要求历史opaque handle等于当前row handle；当前row的`old_tx_labels`与当前6个opaque handles按同一类索引一一绑定。仍精确拒绝缺类、重复TX/handle、checkpoint漂移、TX顺序漂移和raw/typed语义漂移；不读取query真值、old/new query角色或类别配额。
+
+|字段|r9冻结值|
+|---|---|
+|run ID|`d99_d100_narrow_rx20_1_seed713101_k10_new20_88db56d3_20260721_r9`|
+|代码提交|`88db56d3`（`Bind D99 target TXs to current row handles`）|
+|修改文件|`stage2_d99_d100_query_evaluation.py`、`run_d99_d100_narrow.py`及两份相邻测试|
+|工作树验证|`ssr-gpu`专项15/15通过；`git diff --check`通过|
+|精确发布源码验证|从提交`88db56d3`生成Git archive，解压后的LF源码再次15/15通过|
+|源码ZIP|`E:\type10-7\code\snapshots\d99_d100_narrow_88db56d3_20260721_r9\source_88db56d3.zip`|
+|ZIP SHA/规模|`b57c879dd8e0c38faf9ab63c2c463e83a16e48dc96a0cf7a1ee25bbc42650de4`；32,809,184B；4,402成员|
+|GPU/CPU|物理GPU1、内部`cuda:0`；CPU thread2、interop1|
+|状态|`LOCAL_VERIFIED_REVIEW_PASSED`；尚未同步或启动|
+
+远端release根冻结为`/home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_narrow_rx20_1_seed713101_k10_new20_88db56d3_20260721_r9`，源码ZIP同步到该根并解压为`source_88db56d3`；不可覆盖output为`<run>/output`，log根为`/home/szu2070436088/2510044040/CV-SincNet/logs/d99_d100_narrow_rx20_1_seed713101_k10_new20_88db56d3_20260721_r9`。r9除源码、run/log/output路径外，全部数据、checkpoint、runtime、method lock、ground、LODO、receiver、seed、K、new-count、候选和参数与r8逐字相同。
+
+```bash
+env OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 NUMEXPR_NUM_THREADS=2 VECLIB_MAXIMUM_THREADS=2 BLIS_NUM_THREADS=2 CVSRFFI_CPU_THREADS=2 CVSRFFI_CPU_INTEROP_THREADS=1 CUDA_VISIBLE_DEVICES=1 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_narrow_rx20_1_seed713101_k10_new20_88db56d3_20260721_r9/source_88db56d3/code /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_narrow_rx20_1_seed713101_k10_new20_88db56d3_20260721_r9/source_88db56d3/code/scripts/run_d99_d100_narrow.py --cache-manifest /home/szu2070436088/2510044040/CV-SincNet/runs/d18_formal_k10_new5_rx20_1_seed713101_20260717_085303/cache_matrix/rx_20_1/seed_713101/cache_set.json --authority-bundle /home/szu2070436088/2510044040/CV-SincNet/runs/d18_formal_k10_new5_rx20_1_seed713101_20260717_085303/signed_authority_bundle --authority-commit-sha256 fdedd9cfdfbb5db9f8962ba529403042b7de7011570dff514e9a629a44695147 --phase1-checkpoint /home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth --sealed-runtime /home/szu2070436088/2510044040/CV-SincNet/runs/d18_formal_k10_new5_rx20_1_seed713101_20260717_085303/input/sealed_feature_runtime.pt --method-lock /home/szu2070436088/2510044040/CV-SincNet/runs/d18_formal_k10_new5_rx20_1_seed713101_20260717_085303/input/method_lock.json --d81-ground-component-dir /home/szu2070436088/2510044040/CV-SincNet/runs/d19_ciaf_int8_proto_20260717_1039/input/int8_component --d81-ground-manifest-sha256 15b5e144f9af3989421d8e925c17758479c327be47e79222f6363dc63994629c --d99-ground-bundle-npz /home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_phase1_inputs_aa3a0266_20260721_r1/d99_receiver_ground_bundle/d99_ground_bundle_dev.npz --d99-ground-manifest /home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_phase1_inputs_aa3a0266_20260721_r1/d99_receiver_ground_bundle/d99_ground_bundle_dev.manifest.json --base-d99-lock /home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_phase1_inputs_aa3a0266_20260721_r1/d99_receiver_ground_bundle/d99_base_method_lock_dev.json --phase1-lodo-json /home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_phase1_lodo_d6efa5ad_cudafix_20260721_r7/output/d99_d100_phase1_lodo_blocked_diagnostic.json --class-binding-json /home/szu2070436088/2510044040/CV-SincNet/runs/d20_int8_maxold_fftrf_20260717/input/class_binding.json --class-binding-sha256 bb89a1dbb831acb374fccfc596ae98b660b496b449bdca577dabb962121c901f --output-root /home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_narrow_rx20_1_seed713101_k10_new20_88db56d3_20260721_r9/output --receiver 20-1 --seed 713101 --k-shot 10 --new-count 20 --device cuda:0 --cpu-threads 2
+```
+
+独立review已裁决`P0=0、P1=0、MERGE`。专项15/15通过，独立负向攻击5/5通过，`git diff --check`通过。审查确认稳定身份是checkpoint绑定的6个Phase1 TX及`class_index/direct_logit_index`顺序，当前opaque handle只在当前sealed row内有效；修复没有读取query真值/角色，评分仍在预测密封后进行。sole runner现在可执行direct preflight、源码ZIP同步/整体SHA与关键文件SHA核验、隔离源码`py_compile/import`、不可覆盖单次detached启动。r9不授权自动重试。成功与性能晋级门完全沿用r8，不因技术修复放宽。
+
+#### 固定代码修改链
+
+后续每次修改采用以下v2链：
+
+1. 修改前先冻结“一个根因、一个主要机制差异、一个预期可观察结果、一个停止条件”，并核对真实artifact、历史正确实现和输入/输出语义；不在同一提交混入算法、数据、runner和报告重构。
+2. 先写能复现当前失败的最小反例，再写不变量攻击：顺序置换、重复项、缺项、checkpoint漂移、row-specific handle变化、K/类数边界和truth/role不可达。
+3. 作者只提交最小非重叠diff；适配层只负责语义转换，核心方法不感知历史路径、opaque handle或scorer truth。
+4. 本地按“专项单测→相邻集成→协议负例→`git diff --check`”四层验证；失败只修最早失败边界，不顺手改超参数或候选机制。
+5. Git提交后，从精确commit生成LF archive并在解压源码复跑同一验证，防止工作树、CRLF、未跟踪文件或远端源码漂移。
+6. 独立review只读裁决P0/P1/P2，作者不得自证；P0/P1未清零不发布。
+7. 报告预登记冻结run ID、commit/SHA、单一变化、matched baseline、矩阵、GPU/CPU、输出路径和晋级门；唯一runner只负责N607落地与证据回收。
+8. 结果按三态分流：无prediction是技术集成失败，只修直接失败项；有完整prediction但门失败是算法负结果，回到机制设计；窄测全部通过才进入125，125通过后仍需完整400-job/1200-scenario确认。
+9. 每个完成版本必须同row报告B-old、A-old、seen-new、H、forgetting、全部注册类floor、逐类/逐receiver/逐场景混淆及资源；总体均值不能掩盖局部退化。
+
+技术失败不得冒充算法负结果；作者不得自证晋级；不得用多轮源码签名、authority或数据握手替代无线信号算法实验。

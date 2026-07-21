@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "/home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_phase1_lodo_d6efa5ad_cudafix_20260721_r7/source_d6efa5ad/code/scripts/run_d99_d100_narrow.py", line 511, in <module>
+    raise SystemExit(main())
+  File "/home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_phase1_lodo_d6efa5ad_cudafix_20260721_r7/source_d6efa5ad/code/scripts/run_d99_d100_narrow.py", line 505, in main
+    value = run(parser().parse_args())
+  File "/home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_phase1_lodo_d6efa5ad_cudafix_20260721_r7/source_d6efa5ad/code/scripts/run_d99_d100_narrow.py", line 381, in run
+    result = run_d99_d100_query_evaluation(
+  File "/home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_phase1_lodo_d6efa5ad_cudafix_20260721_r7/source_d6efa5ad/code/cvsrffi/stage2_d99_d100_query_evaluation.py", line 493, in run_d99_d100_query_evaluation
+    tx_to_handle, handle_to_tx = class_binding_maps(
+  File "/home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_phase1_lodo_d6efa5ad_cudafix_20260721_r7/source_d6efa5ad/code/cvsrffi/stage2_d99_d100_query_evaluation.py", line 213, in class_binding_maps
+    raise D99D100QueryEvaluationError("class binding TX/handle bijection drift")
+cvsrffi.stage2_d99_d100_query_evaluation.D99D100QueryEvaluationError: class binding TX/handle bijection drift
