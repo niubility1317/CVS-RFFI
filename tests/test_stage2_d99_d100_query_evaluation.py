@@ -63,6 +63,35 @@ def _lodo() -> dict:
     return {**unsigned, "receipt_sha256": evaluation.lodo.canonical_sha256(unsigned)}
 
 
+def _support_payload(
+    classes: tuple[str, ...], *, k_shot: int, order: tuple[int, ...] | None = None
+) -> dict[str, np.ndarray]:
+    pairs = [
+        (class_index, rank)
+        for class_index in range(len(classes))
+        for rank in range(k_shot)
+    ]
+    if order is not None:
+        pairs = [pairs[index] for index in order]
+    tokens = np.asarray(
+        [f"sample-{class_index}-{rank}" for class_index, rank in pairs], dtype=str
+    )
+    iq = np.stack(
+        [
+            np.full((2, 4), class_index * 10 + rank, dtype=np.float32)
+            for class_index, rank in pairs
+        ]
+    )
+    return {
+        "support_rank_within_class": np.asarray([rank for _, rank in pairs], dtype=np.int64),
+        "support_class_indices": np.asarray(
+            [class_index for class_index, _ in pairs], dtype=np.int64
+        ),
+        "support_tokens": tokens,
+        "support_leo_weak_iq": iq,
+    }
+
+
 def test_lodo_parameters_are_k_specific_phase1_only_and_immutable() -> None:
     selected = evaluation.locked_parameters_from_lodo(_lodo(), k_shot=10)
     assert selected["eta"] == pytest.approx(0.2)
@@ -189,6 +218,145 @@ def test_class_binding_bijection_and_order_are_exact() -> None:
             old_handles=handles,
             target_old_tx_labels=tuple(f"tx-{index}" for index in range(1, 6)) + ("tx-0",),
         )
+
+
+def test_shared_support_features_use_one_forward_and_allow_before_permutation(
+    monkeypatch,
+) -> None:
+    old_classes = ("old-0", "old-1")
+    all_classes = old_classes + ("new-0",)
+    before = _support_payload(old_classes, k_shot=2, order=(3, 0, 2, 1))
+    after = _support_payload(all_classes, k_shot=2)
+    calls = []
+
+    def forward(_model, iq, *, device, batch_size):
+        calls.append((np.asarray(iq).copy(), device, batch_size))
+        return np.arange(len(iq), dtype=np.float32)[:, None]
+
+    def register(iq, zid):
+        return np.concatenate(
+            [np.asarray(iq).reshape(len(iq), -1), np.asarray(zid)], axis=1
+        ).astype(np.float32)
+
+    monkeypatch.setattr(evaluation, "forward_zid160", forward)
+    monkeypatch.setattr(evaluation, "registered_feature", register)
+    result = evaluation._shared_before_after_support_features(
+        before,
+        after,
+        model=object(),
+        runtime_device="cuda",
+        old_class_handles=old_classes,
+        all_class_handles=all_classes,
+        k_shot=2,
+    )
+    old_x, old_y, old_ids, old_indices, all_x, all_y, all_ids, all_indices, audit = result
+    assert len(calls) == 1
+    assert np.array_equal(calls[0][0], after["support_leo_weak_iq"])
+    assert tuple(old_ids) == tuple(before["support_tokens"])
+    positions = {token: index for index, token in enumerate(all_ids.tolist())}
+    aligned = np.asarray([positions[token] for token in old_ids.tolist()])
+    assert np.array_equal(old_x, all_x[aligned])
+    assert np.array_equal(old_y, np.asarray(old_classes)[old_indices])
+    assert np.array_equal(all_y, np.asarray(all_classes)[all_indices])
+    assert audit == {
+        "support_forward_count": 1,
+        "old_support_feature_reused_from_after": True,
+        "old_support_raw_iq_exact": True,
+        "old_support_count": 4,
+        "all_support_count": 6,
+    }
+
+
+@pytest.mark.parametrize(
+    "mutation,error",
+    (
+        ("duplicate_token", "assignment/token"),
+        ("missing_token", "token set"),
+        ("index_drift", "exact reuse"),
+        ("iq_drift", "exact reuse"),
+        ("dtype_drift", "assignment/token"),
+        ("selected_nonfinite", "assignment/token"),
+        ("negative_rank", "assignment/token"),
+        ("duplicate_rank", "assignment/token"),
+    ),
+)
+def test_shared_support_features_reject_identity_and_kshot_drift(
+    monkeypatch, mutation, error
+) -> None:
+    old_classes = ("old-0", "old-1")
+    all_classes = old_classes + ("new-0",)
+    before = _support_payload(old_classes, k_shot=2)
+    after = _support_payload(all_classes, k_shot=2)
+    if mutation == "duplicate_token":
+        before["support_tokens"][1] = before["support_tokens"][0]
+    elif mutation == "missing_token":
+        before["support_tokens"][1] = "unknown-physical-sample"
+    elif mutation == "index_drift":
+        before["support_class_indices"] = before["support_class_indices"][::-1].copy()
+        before["support_rank_within_class"] = before["support_rank_within_class"][::-1].copy()
+    elif mutation == "iq_drift":
+        before["support_leo_weak_iq"][0, 0, 0] += np.float32(1.0)
+    elif mutation == "dtype_drift":
+        before["support_leo_weak_iq"] = before["support_leo_weak_iq"].astype(np.float64)
+    elif mutation == "selected_nonfinite":
+        before["support_leo_weak_iq"][0, 0, 0] = np.float32(np.nan)
+    elif mutation == "negative_rank":
+        before["support_rank_within_class"][0] = -1
+    elif mutation == "duplicate_rank":
+        before["support_rank_within_class"][1] = before["support_rank_within_class"][0]
+    monkeypatch.setattr(
+        evaluation,
+        "forward_zid160",
+        lambda *_args, **_kwargs: (_ for _ in ()).throw(
+            AssertionError("drift must fail before support forward")
+        ),
+    )
+    with pytest.raises(evaluation.D99D100QueryEvaluationError, match=error):
+        evaluation._shared_before_after_support_features(
+            before,
+            after,
+            model=object(),
+            runtime_device="cuda",
+            old_class_handles=old_classes,
+            all_class_handles=all_classes,
+            k_shot=2,
+        )
+
+
+def test_inactive_high_rank_nonfinite_iq_does_not_affect_active_k(monkeypatch) -> None:
+    old_classes = ("old-0", "old-1")
+    all_classes = old_classes + ("new-0",)
+    before = _support_payload(old_classes, k_shot=3)
+    after = _support_payload(all_classes, k_shot=3)
+    before["support_leo_weak_iq"][before["support_rank_within_class"] == 2] = np.nan
+    after["support_leo_weak_iq"][after["support_rank_within_class"] == 2] = np.inf
+    forwarded = []
+
+    def forward(_model, iq, *, device, batch_size):
+        forwarded.append(np.asarray(iq).copy())
+        return np.zeros((len(iq), 1), dtype=np.float32)
+
+    monkeypatch.setattr(evaluation, "forward_zid160", forward)
+    monkeypatch.setattr(
+        evaluation,
+        "registered_feature",
+        lambda iq, zid: np.concatenate(
+            [np.asarray(iq).reshape(len(iq), -1), np.asarray(zid)], axis=1
+        ).astype(np.float32),
+    )
+    result = evaluation._shared_before_after_support_features(
+        before,
+        after,
+        model=object(),
+        runtime_device="cuda",
+        old_class_handles=old_classes,
+        all_class_handles=all_classes,
+        k_shot=2,
+    )
+    assert len(forwarded) == 1
+    assert forwarded[0].shape[0] == len(all_classes) * 2
+    assert np.isfinite(forwarded[0]).all()
+    assert result[-1]["all_support_count"] == len(all_classes) * 2
 
 
 def test_active_k_configs_do_not_require_or_claim_inactive_k_locks(monkeypatch) -> None:

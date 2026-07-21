@@ -327,33 +327,117 @@ def _require_cross_state_lock(
     return old_classes, classes, k_shot
 
 
-def _support_features(
+def _support_rows(
     payload: Mapping[str, np.ndarray],
     *,
-    model: Any,
-    runtime_device: Any,
     class_handles: tuple[str, ...],
     k_shot: int,
-) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     ranks = np.asarray(payload["support_rank_within_class"], dtype=np.int64)
     indices = np.asarray(payload["support_class_indices"], dtype=np.int64)
     tokens = np.asarray(payload["support_tokens"]).astype(str)
+    raw_iq = np.asarray(payload["support_leo_weak_iq"])
     mask = ranks < int(k_shot)
+    selected_pairs = list(zip(indices[mask].tolist(), ranks[mask].tolist()))
+    expected_pairs = {
+        (class_index, rank)
+        for class_index in range(len(class_handles))
+        for rank in range(int(k_shot))
+    }
     if (
         ranks.shape != indices.shape
         or tokens.shape != ranks.shape
         or ranks.ndim != 1
-        or int(np.sum(mask)) != len(class_handles) * int(k_shot)
-        or len(set(tokens[mask].tolist())) != int(np.sum(mask))
-        or int(indices[mask].min()) != 0
-        or int(indices[mask].max()) != len(class_handles) - 1
+        or raw_iq.dtype != np.float32
+        or raw_iq.ndim < 2
+        or raw_iq.shape[0] != len(ranks)
     ):
         raise D99D100QueryEvaluationError("support assignment/token drift")
-    iq = np.asarray(payload["support_leo_weak_iq"], dtype=np.float32)[mask]
-    zid = forward_zid160(model, iq, device=runtime_device, batch_size=64)
-    features = registered_feature(iq, zid)
+    iq = np.ascontiguousarray(raw_iq[mask])
+    if (
+        not np.isfinite(iq).all()
+        or int(np.sum(mask)) != len(class_handles) * int(k_shot)
+        or len(set(tokens[mask].tolist())) != int(np.sum(mask))
+        or len(selected_pairs) != len(set(selected_pairs))
+        or set(selected_pairs) != expected_pairs
+    ):
+        raise D99D100QueryEvaluationError("support assignment/token drift")
     labels = np.asarray(class_handles, dtype=str)[indices[mask]]
-    return features, labels, tokens[mask], indices[mask]
+    return iq, labels, tokens[mask], indices[mask], ranks[mask]
+
+
+def _shared_before_after_support_features(
+    before_payload: Mapping[str, np.ndarray],
+    after_payload: Mapping[str, np.ndarray],
+    *,
+    model: Any,
+    runtime_device: Any,
+    old_class_handles: tuple[str, ...],
+    all_class_handles: tuple[str, ...],
+    k_shot: int,
+) -> tuple[
+    np.ndarray,
+    np.ndarray,
+    np.ndarray,
+    np.ndarray,
+    np.ndarray,
+    np.ndarray,
+    np.ndarray,
+    np.ndarray,
+    Mapping[str, Any],
+]:
+    old_iq, old_y, old_ids, old_indices, old_ranks = _support_rows(
+        before_payload, class_handles=old_class_handles, k_shot=k_shot
+    )
+    all_iq, all_y, all_ids, all_indices, all_ranks = _support_rows(
+        after_payload, class_handles=all_class_handles, k_shot=k_shot
+    )
+    old_mask = all_indices < len(old_class_handles)
+    after_old_ids = all_ids[old_mask]
+    if (
+        len(after_old_ids) != len(old_ids)
+        or len(set(after_old_ids.tolist())) != len(after_old_ids)
+        or set(after_old_ids.tolist()) != set(old_ids.tolist())
+    ):
+        raise D99D100QueryEvaluationError("before/after old support token set drift")
+    after_position = {token: index for index, token in enumerate(all_ids.tolist())}
+    aligned_positions = np.asarray(
+        [after_position[token] for token in old_ids.tolist()], dtype=np.int64
+    )
+    aligned_iq = np.ascontiguousarray(all_iq[aligned_positions])
+    if (
+        not np.all(old_mask[aligned_positions])
+        or not np.array_equal(all_indices[aligned_positions], old_indices)
+        or not np.array_equal(all_ranks[aligned_positions], old_ranks)
+        or not np.array_equal(all_y[aligned_positions], old_y)
+        or aligned_iq.shape != old_iq.shape
+        or aligned_iq.dtype != old_iq.dtype
+        or aligned_iq.tobytes(order="C") != old_iq.tobytes(order="C")
+    ):
+        raise D99D100QueryEvaluationError("before/after old support exact reuse drift")
+    zid = forward_zid160(model, all_iq, device=runtime_device, batch_size=64)
+    all_x = registered_feature(all_iq, zid)
+    old_x = np.ascontiguousarray(all_x[aligned_positions])
+    if not np.array_equal(old_x, all_x[aligned_positions]):
+        raise AssertionError("old support feature reuse must be exact")
+    audit = {
+        "support_forward_count": 1,
+        "old_support_feature_reused_from_after": True,
+        "old_support_raw_iq_exact": True,
+        "old_support_count": len(old_ids),
+        "all_support_count": len(all_ids),
+    }
+    return (
+        old_x,
+        old_y,
+        old_ids,
+        old_indices,
+        all_x,
+        all_y,
+        all_ids,
+        all_indices,
+        audit,
+    )
 
 
 def _query_features(
@@ -642,27 +726,26 @@ def run_d99_d100_query_evaluation(
                 raise D99D100QueryEvaluationError(
                     "before query tokens must be the exact old-query subset of after"
                 )
-            old_x, old_y, old_ids, old_indices = _support_features(
+            (
+                old_x,
+                old_y,
+                old_ids,
+                old_indices,
+                all_x,
+                all_y,
+                all_ids,
+                all_indices,
+                support_reuse_audit,
+            ) = _shared_before_after_support_features(
                 before_support[scenario],
-                model=model,
-                runtime_device=runtime_device,
-                class_handles=old_classes,
-                k_shot=k_shot,
-            )
-            all_x, all_y, all_ids, all_indices = _support_features(
                 after_support[scenario],
                 model=model,
                 runtime_device=runtime_device,
-                class_handles=classes,
+                old_class_handles=old_classes,
+                all_class_handles=classes,
                 k_shot=k_shot,
             )
             old_mask = all_indices < len(old_classes)
-            if (
-                not np.array_equal(all_ids[old_mask], old_ids)
-                or not np.array_equal(all_y[old_mask], old_y)
-                or not np.allclose(all_x[old_mask], old_x, atol=1e-6, rtol=0.0)
-            ):
-                raise D99D100QueryEvaluationError("before/after old support is not identical")
             result81 = fit_d42_unified_shrinkage_lda(
                 old_x,
                 old_y,
@@ -873,7 +956,12 @@ def run_d99_d100_query_evaluation(
                     "query_batch_dependency": False,
                 }
             scenario_audits.append(
-                {"scenario": scenario, "d81": audit81, "states": state_audit}
+                {
+                    "scenario": scenario,
+                    "d81": audit81,
+                    "support_reuse": support_reuse_audit,
+                    "states": state_audit,
+                }
             )
     finally:
         d42._fit_equal_prior_lda = original_fit
