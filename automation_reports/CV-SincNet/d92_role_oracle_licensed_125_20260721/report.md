@@ -176,3 +176,16 @@ retry1完成895/895文件SHA、七个冻结文件SHA、显式probe import、`py_
 - logs：`/home/szu2070436088/2510044040/CV-SincNet/logs/d92_role_oracle_licensed_125_retry2_20260721`
 - 新增无数据深层入口门：`PYTHONPATH=<source>/code <python> -c "import scripts.run_cvs_somph_diag_row_pipeline"`及row pipeline`--help`必须通过，确保完整子进程import链已封闭；不得用真实target row做smoke或选择。
 - 仍由同一唯一N607发布owner执行。retry2失败后不授权自动retry。
+
+## 125完成后的reference审计修正预注册
+
+retry2实验本体已完成`125/125 JOB_COMPLETE`、`0 FAILED`。在尚未运行性能summarizer、尚未读取Oracle九项指标时，collector发现fresh与历史D92 retry2的opaque registration/state/prediction文件SHA不一致；进一步只读审计确认两者125/125 row的`diag_cosine_score.json`稳定语义子树完全相同，差异仅来自每次运行重新封装的opaque token、physical-ID binding及其派生SHA。
+
+用户要求的配对单位是同一次fresh run内同版本、同row、同seed、同support/state/score的无Oracle臂与Role-Oracle臂，而不是fresh artifact必须与历史run逐字节相同。因此在查看性能结果前冻结以下修正：
+
+- 仍硬拒绝receiver/seed/K/new-count、row manifest、authority、checkpoint、runtime、method lock或历史D92稳定语义分数的任何漂移。
+- 强制同run两臂共享query token、registry、model-state SHA、score-contract SHA和逐query score-vector SHA；这是本次配对成立的核心门。
+- 历史`registration_pair/state/prediction`原始SHA逐项匹配率改为显式审计字段，不再作为同run配对成立门；不得将其表述为bit-exact。
+- 历史D92稳定语义比较固定为`before`、`after`、`old_forgetting_pp`、`per_old_class_floor_before/after`及两个truth不可反馈布尔字段，必须125/125完全相等。
+- 本修正只改变collector/summarizer的审计语义，不重跑模型、不修改任何prediction、不接触Oracle性能指标，最终仍为`LICENSED_ORACLE_UPPER_BOUND_NON_PROMOTABLE`。
+- 独立语义审计结果：`125/125`相等、`0`不一致；结果SHA256=`9be499a77bc746f83d13fc4166ec2a88ad6f75d29096a5e065feb6c1c320d924`，semantic rows root SHA256=`b0056f517cdc613f75794561fe94c4c2de928769fa31cc17ad70a70661cbe19f`。

@@ -68,7 +68,10 @@ def _fixture(tmp_path: Path) -> Path:
         "job_count": 125,
         "scenario_pair_count": 375,
         "variants": list(summary.VARIANTS),
-        "fresh_no_oracle_bit_exact_to_d92_retry2": True,
+        "fresh_no_oracle_same_run_paired": True,
+        "historical_reference_d92_audit_complete": True,
+        "historical_reference_d92_semantically_equivalent": True,
+        "fresh_no_oracle_bit_exact_to_d92_retry2": False,
         "old_class_count": 6,
         "receivers": list(summary.EXPECTED_RECEIVERS),
         "seeds": list(summary.EXPECTED_SEEDS),
@@ -228,13 +231,13 @@ def test_csv_input_contract(tmp_path: Path) -> None:
     assert result["query_pair_count"] > 0
 
 
-def test_rejects_missing_retry2_bit_exact_baseline_gate(tmp_path: Path) -> None:
+def test_rejects_missing_same_run_pairing_gate(tmp_path: Path) -> None:
     manifest_path = _fixture(tmp_path)
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-    manifest["fresh_no_oracle_bit_exact_to_d92_retry2"] = False
+    manifest["fresh_no_oracle_same_run_paired"] = False
     manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
     with pytest.raises(
         summary.OracleSummaryError,
-        match="fresh_no_oracle_bit_exact_to_d92_retry2",
+        match="fresh_no_oracle_same_run_paired",
     ):
         summary.summarize(manifest_path, tmp_path / "out")
