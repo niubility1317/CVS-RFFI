@@ -44,6 +44,16 @@ from cvsrffi.stage2_d92_query_evaluation import (  # noqa: E402
     CANDIDATE_D92,
     run_d92_query_evaluation,
 )
+from cvsrffi.stage2_d92_licensed_role_oracle import (  # noqa: E402
+    project_and_seal_d92_role_only_capsule,
+)
+from cvsrffi.stage2_d92_role_oracle_query_evaluation import (  # noqa: E402
+    CANDIDATE_D92_ROLE_ORACLE,
+    run_d92_role_oracle_query_evaluation,
+)
+from cvsrffi.stage2_d92_role_oracle_records import (  # noqa: E402
+    build_d92_role_oracle_row_records,
+)
 from cvsrffi.stage2_predictor_bundle import sha256_file  # noqa: E402
 
 
@@ -186,6 +196,44 @@ def _bind_diag_commit(
     }
 
 
+def _bind_role_oracle_commit(
+    *, state: str, state_diag_root: Path, prediction_sha256: str
+) -> dict[str, str]:
+    receipt, receipt_sha256, receipt_size = _read_json_snapshot(
+        state_diag_root / "execution_receipt.json",
+        name=f"{state} licensed Oracle execution receipt",
+    )
+    commit, commit_sha256, _commit_size = _read_json_snapshot(
+        state_diag_root / "COMMIT.json", name=f"{state} licensed Oracle COMMIT"
+    )
+    if (
+        receipt.get("schema")
+        != "cvs.phase2.d92.licensed_role_oracle.execution_receipt.v1"
+        or receipt.get("status")
+        != "LICENSED_ORACLE_UPPER_BOUND_NON_PROMOTABLE"
+        or receipt.get("formal_protocol_valid") is not False
+        or receipt.get("promotion_eligible") is not False
+        or commit.get("schema")
+        != "cvs.phase2.d92.licensed_role_oracle.commit.v1"
+        or commit.get("execution_receipt_sha256") != receipt_sha256
+        or commit.get("prediction_artifact_sha256") != prediction_sha256
+        or not any(
+            isinstance(item, dict)
+            and item.get("relative_path") == "execution_receipt.json"
+            and item.get("sha256") == receipt_sha256
+            and int(item.get("size_bytes", -1)) == receipt_size
+            for item in commit.get("members", [])
+        )
+    ):
+        raise SomphDiagRowPipelineError(
+            f"{state} licensed Oracle COMMIT/execution receipt binding drift"
+        )
+    return {
+        "diag_commit_sha256": commit_sha256,
+        "execution_receipt_sha256": receipt_sha256,
+    }
+
+
 def run_pipeline(
     *,
     cache_set_manifest_path: str | Path,
@@ -308,16 +356,89 @@ def run_pipeline(
         ],
     )
 
-    if candidate in {CANDIDATE_D81, CANDIDATE_D92} and (
+    if candidate in {
+        CANDIDATE_D81,
+        CANDIDATE_D92,
+        CANDIDATE_D92_ROLE_ORACLE,
+    } and (
         ground_component_dir is None or ground_manifest_sha256 is None
     ):
         raise SomphDiagRowPipelineError(
-            "D81/D92 requires a locked ground component directory and manifest SHA"
+            "D81/D92/Role-Oracle requires a locked ground component and manifest SHA"
         )
     diag_results: dict[str, dict[str, Any]] = {}
     diag_bindings: dict[str, dict[str, str]] = {}
     prediction_paths: dict[str, Path] = {}
-    if candidate in {CANDIDATE_D81, CANDIDATE_D92}:
+    oracle_prediction_paths: dict[str, Path] = {}
+    oracle_diag_bindings: dict[str, dict[str, str]] = {}
+    role_capsule_result: dict[str, Any] | None = None
+    paired_diagnostic: dict[str, Any] | None = None
+    if candidate == CANDIDATE_D92_ROLE_ORACLE:
+        role_capsule_path = control_root / "licensed_role_only_capsule.json"
+
+        def delayed_role_capsule_factory() -> tuple[Path, dict[str, Any]]:
+            result = project_and_seal_d92_role_only_capsule(
+                build["truth_sidecar"], role_capsule_path
+            )
+            return role_capsule_path, result
+
+        paired_diagnostic = run_d92_role_oracle_query_evaluation(
+            before_enrollment_package_root=build["states"]["before"][
+                "enrollment_package_root"
+            ],
+            before_enrollment_seal_path=build["states"]["before"][
+                "enrollment_package_seal"
+            ],
+            before_enrollment_seal_sha256=build["states"]["before"][
+                "enrollment_package_seal_sha256"
+            ],
+            before_apply_package_root=state_runtime["before"]["apply_package_root"],
+            before_apply_seal_path=state_runtime["before"]["apply_seal_path"],
+            before_apply_seal_sha256=state_runtime["before"]["apply"][
+                "package_seal_sha256"
+            ],
+            after_enrollment_package_root=build["states"]["after"][
+                "enrollment_package_root"
+            ],
+            after_enrollment_seal_path=build["states"]["after"][
+                "enrollment_package_seal"
+            ],
+            after_enrollment_seal_sha256=build["states"]["after"][
+                "enrollment_package_seal_sha256"
+            ],
+            after_apply_package_root=state_runtime["after"]["apply_package_root"],
+            after_apply_seal_path=state_runtime["after"]["apply_seal_path"],
+            after_apply_seal_sha256=state_runtime["after"]["apply"][
+                "package_seal_sha256"
+            ],
+            ground_component_dir=ground_component_dir,
+            ground_manifest_sha256=str(ground_manifest_sha256),
+            role_capsule_factory=delayed_role_capsule_factory,
+            output_root=diag_root,
+            device=device,
+        )
+        role_capsule_result = dict(paired_diagnostic["role_capsule_projection"])
+        diag_results.update(paired_diagnostic["baseline_states"])
+        for state in ("before", "after"):
+            baseline_root = diag_root / "baseline" / state
+            oracle_root = diag_root / "oracle" / state
+            prediction_paths[state] = baseline_root / "prediction_artifact.npz"
+            oracle_prediction_paths[state] = oracle_root / "prediction_artifact.npz"
+            diag_bindings[state] = _bind_diag_commit(
+                state=state,
+                state_diag_root=baseline_root,
+                prediction_sha256=diag_results[state][
+                    "prediction_artifact_sha256"
+                ],
+            )
+            oracle_diag_bindings[state] = _bind_role_oracle_commit(
+                state=state,
+                state_diag_root=oracle_root,
+                prediction_sha256=paired_diagnostic["oracle_states"][state][
+                    "prediction_artifact_sha256"
+                ],
+            )
+    elif candidate in {CANDIDATE_D81, CANDIDATE_D92}:
         evaluator = (
             run_d81_query_evaluation
             if candidate == CANDIDATE_D81
@@ -416,6 +537,8 @@ def run_pipeline(
 
     for state, prediction_path in prediction_paths.items():
         _require_prediction(prediction_path, state=state)
+    for state, prediction_path in oracle_prediction_paths.items():
+        _require_prediction(prediction_path, state=f"licensed-oracle-{state}")
 
     score_path = scorer_root / "diag_cosine_score.json"
     score = score_diag_cosine_pair(
@@ -425,11 +548,40 @@ def run_pipeline(
         output_path=score_path,
         candidate=candidate,
     )
+    oracle_score: dict[str, Any] | None = None
+    oracle_score_path: Path | None = None
+    row_records: dict[str, Any] | None = None
+    if candidate == CANDIDATE_D92_ROLE_ORACLE:
+        oracle_score_path = scorer_root / "licensed_role_oracle_score.json"
+        oracle_score = score_diag_cosine_pair(
+            before_prediction_path=oracle_prediction_paths["before"],
+            after_prediction_path=oracle_prediction_paths["after"],
+            truth_sidecar_path=build["truth_sidecar"],
+            output_path=oracle_score_path,
+            candidate=CANDIDATE_D92_ROLE_ORACLE,
+        )
+        row_records = build_d92_role_oracle_row_records(
+            paired_evaluation_root=diag_root,
+            truth_sidecar_path=build["truth_sidecar"],
+            output_path=scorer_root / "paired_query_records.jsonl",
+            row_id=(
+                f"rx_{str(receiver).replace('-', '_')}__seed_{seed}"
+                f"__k_{k_shot}__new_{new_class_count}"
+            ),
+            receiver=receiver,
+            seed=seed,
+            k_shot=k_shot,
+            new_class_count=new_class_count,
+        )
 
     receipt = {
         "schema": PIPELINE_SCHEMA,
         "status": "DEVELOPMENT_ROW_COMPLETE",
-        "claim_scope": "development_only_not_formal_confirmation",
+        "claim_scope": (
+            "licensed_role_oracle_upper_bound_only"
+            if candidate == CANDIDATE_D92_ROLE_ORACLE
+            else "development_only_not_formal_confirmation"
+        ),
         "formal_launch_authority": False,
         "receiver": receiver,
         "seed": seed,
@@ -451,6 +603,21 @@ def run_pipeline(
         "phase2_sample_view_policy": "leo_weak_only_no_clean_access",
         "truth_sidecar_exposed_to_predictor": False,
         "truth_join_started_after_both_immutable_predictions": True,
+        **(
+            {
+                "role_only_capsule_exposed_to_licensed_decoder": True,
+                "specific_tx_truth_exposed_to_licensed_decoder": False,
+                "licensed_role_projection_started_after_baseline_commit": True,
+                "specific_tx_truth_scoring_join_started_after_both_predictions": True,
+                "licensed_protocol_deviation": "query_old_new_role_oracle_only",
+                "ground_component_dir": str(Path(ground_component_dir).resolve()),
+                "ground_manifest_sha256": str(ground_manifest_sha256).lower(),
+                "formal_protocol_valid": False,
+                "promotion_eligible": False,
+            }
+            if candidate == CANDIDATE_D92_ROLE_ORACLE
+            else {}
+        ),
         "registration_pair_final_path": str(final_pair_path),
         "registration_pair_final_sha256": sha256_file(final_pair_path),
         "states": {
@@ -498,6 +665,39 @@ def run_pipeline(
         },
         "score_path": str(score_path),
         "score_artifact_sha256": score["score_artifact_sha256"],
+        **(
+            {
+                "result_label": "LICENSED_ORACLE_UPPER_BOUND_NON_PROMOTABLE",
+                "role_capsule": role_capsule_result,
+                "paired_receipt_sha256": paired_diagnostic[
+                    "paired_receipt_sha256"
+                ],
+                "oracle_states": {
+                    state: {
+                        "prediction_artifact_sha256": paired_diagnostic[
+                            "oracle_states"
+                        ][state]["prediction_artifact_sha256"],
+                        "diag_commit_sha256": oracle_diag_bindings[state][
+                            "diag_commit_sha256"
+                        ],
+                        "execution_receipt_sha256": oracle_diag_bindings[state][
+                            "execution_receipt_sha256"
+                        ],
+                        "shared_score_matrix_sha256": paired_diagnostic[
+                            "oracle_states"
+                        ][state]["shared_score_matrix_sha256"],
+                    }
+                    for state in ("before", "after")
+                },
+                "oracle_score_path": str(oracle_score_path),
+                "oracle_score_artifact_sha256": oracle_score[
+                    "score_artifact_sha256"
+                ],
+                "paired_query_records": row_records,
+            }
+            if candidate == CANDIDATE_D92_ROLE_ORACLE
+            else {}
+        ),
         "final_pair_schema": final_pair["schema"],
     }
     receipt_path = output / "pipeline_receipt.json"
@@ -530,7 +730,8 @@ def parser() -> argparse.ArgumentParser:
     result.add_argument("--device", required=True)
     result.add_argument(
         "--candidate",
-        choices=tuple(CANDIDATES) + (CANDIDATE_D81, CANDIDATE_D92),
+        choices=tuple(CANDIDATES)
+        + (CANDIDATE_D81, CANDIDATE_D92, CANDIDATE_D92_ROLE_ORACLE),
         default=CANDIDATE_D1,
     )
     result.add_argument("--ground-component-dir")
