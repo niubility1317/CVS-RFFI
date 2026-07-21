@@ -191,7 +191,7 @@ def test_class_binding_bijection_and_order_are_exact() -> None:
         )
 
 
-def test_d100_config_is_complete_and_bound_to_d99_digest() -> None:
+def test_active_k_configs_do_not_require_or_claim_inactive_k_locks(monkeypatch) -> None:
     signature_fields = {field.name for field in fields(d99.Phase1D99Lock)}
     values = {
         name: "b" * 64
@@ -227,11 +227,56 @@ def test_d100_config_is_complete_and_bound_to_d99_digest() -> None:
     )
     base = d99.Phase1D99Lock(**values)
     receipt = _lodo()
-    config99 = evaluation._d99_config(base, _parameters(), receipt)
+    for inactive_k in (1, 5, 20):
+        del receipt["locked_parameters_by_k"][str(inactive_k)]
+        del receipt["selected_by_k"][str(inactive_k)]
+    receipt["locked_parameters_by_k"]["10"]["alpha"] = 0.0
+    receipt["selected_by_k"]["10"]["selected"]["effective_parameters"][
+        "alpha"
+    ] = 0.0
+    receipt["selected_by_k"]["10"]["selected"]["alpha_forced_zero"] = True
+    unsigned = {key: value for key, value in receipt.items() if key != "receipt_sha256"}
+    receipt["receipt_sha256"] = evaluation.lodo.canonical_sha256(unsigned)
+
+    calls = []
+    original = evaluation.locked_parameters_from_lodo
+
+    def observed(value, *, k_shot):
+        calls.append(int(k_shot))
+        return original(value, k_shot=k_shot)
+
+    monkeypatch.setattr(evaluation, "locked_parameters_from_lodo", observed)
+    parameters, config99, config100 = evaluation._active_k_configs(
+        base, receipt, active_k=10, phase2_authority_sha256="a" * 64
+    )
+    assert calls == [10]
     assert config99.eta_k10 == pytest.approx(0.2)
-    config100 = evaluation._d100_config(config99, receipt, "a" * 64)
+    assert (config99.eta_k1, config99.eta_k5, config99.eta_k20) == pytest.approx(
+        (base.eta_k1, base.eta_k5, base.eta_k20)
+    )
     assert config100.d99_phase1_lock_digest == config99.lock_digest
-    assert config100.values_for_k(10) == pytest.approx((0.2, 4.0, 2.0, 0.4))
+    assert config100.values_for_k(10) == pytest.approx((0.2, 4.0, 2.0, 0.0))
+    for inactive_k in (1, 5, 20):
+        assert config100.values_for_k(inactive_k) == (1.0, 1.0, 1.0, 0.0)
+    bank = SimpleNamespace(metric=SimpleNamespace(k_shot=10))
+    evaluation._validate_active_k_state_binding(
+        bank, config100, parameters, active_k=10
+    )
+    wrong_bank = SimpleNamespace(metric=SimpleNamespace(k_shot=5))
+    with pytest.raises(evaluation.D99D100QueryEvaluationError, match="bank active-K"):
+        evaluation._validate_active_k_state_binding(
+            wrong_bank, config100, parameters, active_k=10
+        )
+    for missing_active_k in (1, 20):
+        with pytest.raises(
+            evaluation.D99D100QueryEvaluationError, match="K-specific"
+        ):
+            evaluation._active_k_configs(
+                base,
+                receipt,
+                active_k=missing_active_k,
+                phase2_authority_sha256="a" * 64,
+            )
 
 
 def test_lodo_binding_rejects_fourteen_domain_bundle_and_any_receipt_drift() -> None:

@@ -370,8 +370,12 @@ def _query_features(
 def _d99_config(
     base: d99.Phase1D99Lock,
     parameters: Mapping[str, float],
-    receipt: Mapping[str, Any],
+    *,
+    active_k: int,
 ) -> d99.Phase1D99Lock:
+    k_shot = int(active_k)
+    if k_shot not in ALLOWED_K:
+        raise D99D100QueryEvaluationError("active K is not supported")
     updates: dict[str, Any] = {
         "student_nu": parameters["student_nu"],
         "kernel_volume_gamma": parameters["kernel_volume_gamma"],
@@ -379,20 +383,23 @@ def _d99_config(
         "scale_prior_strength": parameters["scale_prior_strength"],
         "scale_min_ratio": parameters["scale_min_ratio"],
         "scale_max_ratio": parameters["scale_max_ratio"],
+        f"eta_k{k_shot}": parameters["eta"],
     }
-    for k in ALLOWED_K:
-        updates[f"eta_k{k}"] = locked_parameters_from_lodo(
-            receipt, k_shot=k
-        )["eta"]
     return replace(base, **updates)
 
 
 def _d100_config(
     config99: d99.Phase1D99Lock,
-    receipt: Mapping[str, Any],
+    parameters: Mapping[str, float],
+    *,
+    active_k: int,
+    phase1_lodo_receipt_sha256: str,
     phase2_authority_sha256: str,
 ) -> d100.Phase1D100Lock:
-    lodo_sha = str(receipt.get("receipt_sha256", "")).lower()
+    k_shot = int(active_k)
+    if k_shot not in ALLOWED_K:
+        raise D99D100QueryEvaluationError("active K is not supported")
+    lodo_sha = str(phase1_lodo_receipt_sha256).lower()
     authority_sha = str(phase2_authority_sha256).lower()
     if any(
         len(value) != 64 or any(character not in "0123456789abcdef" for character in value)
@@ -401,11 +408,20 @@ def _d100_config(
         raise D99D100QueryEvaluationError("LODO receipt SHA drift")
     values: dict[str, Any] = {}
     for k in ALLOWED_K:
-        parameters = locked_parameters_from_lodo(receipt, k_shot=k)
-        values[f"lambda_k{k}"] = parameters["lambda0"]
-        values[f"temperature_k{k}"] = parameters["ridge_temperature"]
-        values[f"d99_temperature_k{k}"] = parameters["d99_temperature"]
-        values[f"alpha_k{k}"] = parameters["alpha"]
+        row = (
+            (
+                parameters["lambda0"],
+                parameters["ridge_temperature"],
+                parameters["d99_temperature"],
+                parameters["alpha"],
+            )
+            if k == k_shot
+            else (1.0, 1.0, 1.0, 0.0)
+        )
+        values[f"lambda_k{k}"] = row[0]
+        values[f"temperature_k{k}"] = row[1]
+        values[f"d99_temperature_k{k}"] = row[2]
+        values[f"alpha_k{k}"] = row[3]
     return d100.Phase1D100Lock(
         **values,
         d99_phase1_lock_digest=config99.lock_digest,
@@ -413,6 +429,44 @@ def _d100_config(
         external_phase2_authority_sha256=authority_sha,
         quantization_margin_audit_sha256=config99.quantization_margin_audit_sha256,
     )
+
+
+def _active_k_configs(
+    base: d99.Phase1D99Lock,
+    receipt: Mapping[str, Any],
+    *,
+    active_k: int,
+    phase2_authority_sha256: str,
+) -> tuple[Mapping[str, float], d99.Phase1D99Lock, d100.Phase1D100Lock]:
+    parameters = locked_parameters_from_lodo(receipt, k_shot=int(active_k))
+    config99 = _d99_config(base, parameters, active_k=int(active_k))
+    config100 = _d100_config(
+        config99,
+        parameters,
+        active_k=int(active_k),
+        phase1_lodo_receipt_sha256=str(receipt.get("receipt_sha256", "")),
+        phase2_authority_sha256=phase2_authority_sha256,
+    )
+    return parameters, config99, config100
+
+
+def _validate_active_k_state_binding(
+    bank: d99.TypedINT8MetricKernelBank,
+    config100: d100.Phase1D100Lock,
+    parameters: Mapping[str, float],
+    *,
+    active_k: int,
+) -> None:
+    expected = (
+        float(parameters["lambda0"]),
+        float(parameters["ridge_temperature"]),
+        float(parameters["d99_temperature"]),
+        float(parameters["alpha"]),
+    )
+    if int(bank.metric.k_shot) != int(active_k):
+        raise D99D100QueryEvaluationError("D99 bank active-K binding drift")
+    if config100.values_for_k(int(active_k)) != expected:
+        raise D99D100QueryEvaluationError("D100 active-K parameter binding drift")
 
 
 def _publish_prediction(
@@ -500,7 +554,6 @@ def run_d99_d100_query_evaluation(
     old_classes, classes, k_shot = _require_cross_state_lock(
         before_manifest, before_apply, after_manifest, after_apply
     )
-    parameters = locked_parameters_from_lodo(phase1_lodo_receipt, k_shot=k_shot)
     receipt_sha = str(phase1_lodo_receipt.get("receipt_sha256", "")).lower()
     tx_to_handle, handle_to_tx = class_binding_maps(
         class_binding_payload,
@@ -515,7 +568,12 @@ def run_d99_d100_query_evaluation(
         raise D99D100QueryEvaluationError("class binding source schema audit drift")
     old_internal = tuple(handle_to_tx[value] for value in old_classes)
     internal_classes = old_internal + classes[len(old_classes) :]
-    config99 = _d99_config(base_d99_config, parameters, phase1_lodo_receipt)
+    parameters, config99, config100 = _active_k_configs(
+        base_d99_config,
+        phase1_lodo_receipt,
+        active_k=k_shot,
+        phase2_authority_sha256=phase2_authority_sha256,
+    )
     if tuple(d99_ground_bundle.ground_old_registry) != old_internal:
         raise D99D100QueryEvaluationError("D99 ground-old registry does not match row old classes")
     if (
@@ -524,9 +582,6 @@ def run_d99_d100_query_evaluation(
         != config99.ground_aggregation_receipt_sha256
     ):
         raise D99D100QueryEvaluationError("D99 ground bundle/base lock receipt drift")
-    config100 = _d100_config(
-        config99, phase1_lodo_receipt, phase2_authority_sha256
-    )
     ground99 = d99.build_ground_geometry(d99_ground_bundle, config=config99)
     runtime_device = _device(device)
     model = load_torchscript_backbone_same_fd(
@@ -674,6 +729,9 @@ def run_d99_d100_query_evaluation(
                     physical_ids,
                     registry,
                     config=config99,
+                )
+                _validate_active_k_state_binding(
+                    bank, config100, parameters, active_k=k_shot
                 )
                 state100 = d100.build_simplex_ridge_state(bank, config=config100)
                 query_x, tokens = _query_features(
@@ -849,6 +907,19 @@ def run_d99_d100_query_evaluation(
         "old_output_handle_registry": list(old_classes),
         "phase1_d99_config": asdict(config99),
         "phase1_d100_config": asdict(config100),
+        "phase1_parameter_lock_scope": {
+            "parameter_lock_scope": "ACTIVE_K_ONLY",
+            "active_k": int(k_shot),
+            "inactive_k": [int(k) for k in ALLOWED_K if int(k) != int(k_shot)],
+            "inactive_d99_eta_source": "BASE_LOCK_VALUE_UNMODIFIED_UNUSED_THIS_ROW",
+            "inactive_d100_fields": "DATA_INDEPENDENT_INERT_PLACEHOLDER_UNUSED_THIS_ROW",
+            "inactive_d100_placeholder": {
+                "lambda": 1.0,
+                "temperature": 1.0,
+                "d99_temperature": 1.0,
+                "alpha": 0.0,
+            },
+        },
         "query_truth_present_in_predictor": False,
         "query_truth_used_for_fit": False,
         "query_state_updates": 0,
