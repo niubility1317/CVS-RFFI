@@ -73,14 +73,14 @@ real seen-new TX counts: 2, 5, 10, 20
 
 本目标中的“域适应”必须包含对星地/接收机偏移的显式估计与表示校正。仅修改qKNN距离、prototype打分、协方差、分类温度、融合权重、类别bias、RDA/SRDA头或old/new校准，不得单独作为下一轮主候选，也不得据此宣称已解决P0-2星地偏移。分类头可以作为联合方法的第二模块和matched ablation，但不能持续替代表示层域适应研发。
 
-本目标锁定问题、协议、资源和证据标准，不锁死最终算法路线。`z_dom`引导的低秩残差、轻量adapter/LoRA/FiLM、support-only统计对齐、受约束metric/covariance adaptation、Phase1 meta-DG先验、Bayesian transport等均可作为候选；允许根据合法Phase1 LODO、support-held代理和冻结窄验证证据修改、组合或淘汰。`z_dom`是应优先审计和利用的高价值候选，不是唯一获准路线；任何替代路线仍必须具有可独立消融的域偏移估计或表示/metric适配机制，不能退化为只调分类分数。
+本目标锁定问题、协议、资源和证据标准，不锁死最终算法路线。`z_id`和`z_dom`是同等级的快速域适应空间与后续识别组件，不预设其中任何一个优先、固定或仅作辅助。`z_id/z_dom`单支适配、联合适配、交叉条件化、规范化融合、轻量adapter/LoRA/FiLM、support-only统计对齐、受约束metric/covariance adaptation、Phase1 meta-DG先验、Bayesian transport等均可作为候选；允许根据合法Phase1 LODO、support-held代理和冻结窄验证证据修改、组合或淘汰。任何路线仍必须具有可独立消融的域偏移估计或表示/metric适配机制，不能退化为只调分类分数。
 
 各根因、机制边界与晋级证据固定如下。主agent必须在候选预登记和完成报告中标明本轮实际处理了哪些行；仅改分类头最多能直接处理P0-3、P0-5和P1-1，不能据此声称处理了P0-2：
 
 | 优先级/根因 | 已知失败表现 | 主解决机制 | 禁止替代或常见误区 | 必须观察的晋级证据 |
 |---|---|---|---|---|
 | P0-1：注册前target-old判别margin不足 | before-old本身约86%，部分旧类远低于总体均值；新类加入前已存在弱类 | target-old support参与的`z_dom`条件化表示校正；全类class-balanced LOO；弱coverage时identity收缩 | 只在注册后给旧类加bias或ground logit；只优化总体old均值 | 同row注册前old、逐旧类margin、最低旧类和每receiver均不恶化；改善不是由old专属加分产生 |
-| P0-2：星地/接收机偏移未被识别和消除 | D93/D94的ground中心transport可support拟合100%但query下降；ground nuisance coverage低 | 优先审计`z_dom`及地面聚合知识，也允许其他support-only表示/metric域适应；使用全部合法target support估计目标域并进行低自由度、可回退校正 | 把仅调分类分数、共同正交不变换或完整重估后不改变几何的操作称为域适应；使用query更新 | C相对A独立正收益；对应机制的置乱/identity负对照失效；报告coverage/适配幅度、receiver/scene增益和回退行为 |
+| P0-2：星地/接收机偏移未被识别和消除 | D93/D94的ground中心transport可support拟合100%但query下降；ground nuisance coverage低 | 同时探索`z_id-only`、`z_dom-only`和joint `z_id+z_dom`快速域适应，也允许其他support-only表示/metric路线；使用全部合法target support进行低自由度、可回退校正 | 把仅调分类分数、共同正交不变换或完整重估后不改变几何的操作称为域适应；使用query更新 | 域适应相对原始基线独立正收益；三种表示路线matched消融、对应置乱/identity负对照、适配幅度、receiver/scene增益和回退完整 |
 | P0-3：新类注册改写全部类别竞争边界 | old保护常伴随new下降，new释放又造成old侵入 | 域适应后的target-support qKNN局部头+SRDA全局头；所有类统一均值、温度和先验；ground仅作共享协方差/关系正则 | ground旧类原型直接投票；old/new角色专属bias、阈值或quota | 同rowafter-old、seen-new、`H_old_new`、old→new/new→old混淆同时改善，不能跨row拼最好值 |
 | P0-4：K-shot下高维适配不可辨识、support-query失配 | 高维变换support准确率极高但held query负迁移；K1无法估计类内散度 | rank≤4/6的解析ridge或少步小参数更新；K≥2 support cross-fit；K1使用Phase1冻结映射和support域上下文 | K1训练深adapter；全矩阵仿射；用development/confirmation query早停或选rank | support-held与锁定query方向一致；报告fit/held gap、rank、参数norm、步数；K1非identity且每receiver不为负 |
 | P0-5：旧类下尾和逐类不均匀严重 | 同一row旧类可从约40%到接近97%，总体均值掩盖floor | 覆盖全部注册类的class-balanced LOO、soft-CVaR/下尾风险、support半径校准；局部头保留弱类多峰，SRDA稳定全局边界 | 按TX ID定向保护历史难类；只提升平均old；用新类损失换旧类floor | 报告全部逐类、最低旧/新类、下尾分位数、CVaR及每类混淆；floor提高且seen-new/H不下降 |
@@ -99,18 +99,18 @@ real seen-new TX counts: 2, 5, 10, 20
 
 只有C相对A在support-held代理及锁定窄验证中表现出可复核正信号，才能把D相对B的增益归因于域适应。若C失败，必须报告表示覆盖、参数可辨识性、逐receiver/scene/类结果和负对照，修改域适应机制；不能跳过C而继续只迭代B。125 screen不得用于选择域适应rank、loss、coverage公式或分类头超参数。
 
-### 4.1 第一优先：研发显式support-only域适应，优先但不限于`z_dom`
+### 4.1 第一优先：同时探索`z_id`、`z_dom`及其联合快速域适应
 
-ADV3B02的身份表示以`z_id=feat_joint`为主，域表示以`z_dom=feat_imp`为主。应优先检验`z_dom`能否作为receiver/channel/noise扰动传感器、条件变量或可快速适配的域坐标；不得未经验证就把它直接拼接进身份logit、把`dom_head`的argmax当作目标域真值或按receiver ID建立专属分支。若`z_dom`路线经完整审计不成立，可转向其他合法的support-only表示或metric域适应，并保留同等级别的独立域适应消融。
+ADV3B02提供`z_id=feat_joint`和`z_dom=feat_imp`。虽然两支训练职责不同，但二者都可能同时包含身份与域信息，因此都必须作为快速域适应和最终识别的候选组件，而不是预设`z_id`只负责识别、`z_dom`只负责条件化。研发必须在matched条件下至少比较：`DA-id`仅适配/识别`z_id`、`DA-dom`仅适配/识别`z_dom`、`DA-joint`联合适配并融合两支。允许concat、gated fusion、cross-conditioning、product-of-experts、局部—全局双头或其他受约束融合，但必须做分块归一化、能量/温度控制和单支/联合消融。不得把`dom_head`的argmax当作目标域真值，也不得按receiver ID建立专属分支。
 
-采用`z_dom`路线时，Phase1应先完成效用审计，并按候选所需生成与checkpoint共同封存的新bundle状态：
+Phase1应分别及联合审计`z_id/z_dom`，并按候选所需生成与checkpoint共同封存的bundle状态：
 
-- 在合法地面LODO上报告`z_dom`的domain敏感度、TX身份泄漏、有效rank、`D_eff`和跨域稳定性；
+- 在合法地面LODO上分别报告`z_id/z_dom`的TX可分性、domain敏感度、交叉泄漏、有效rank、`D_eff`和跨域稳定性；
 - 从多物理样本聚合的地面`z_id/z_dom`域×类统计学习`z_dom→z_id`低秩污染映射、奇异值、半径和coverage证书；不得保存样本级feature、成员ID、可逆归属或独立sidecar；
 - 低秩rank只能由Phase1 LODO固定，建议上限4或6，并满足`r <= floor(D_eff)-1`；84个名义domain×class中心不得直接当作84个独立域方向；
-- 必须包含permuted/random `z_dom`负对照，证明收益来自域信息而不是增加参数。
+- 必须包含random/permuted `z_id`、random/permuted `z_dom`及关闭cross-branch交互的负对照，证明收益来自对应表示与联合机制而不是增加参数。
 
-若已选择的候选确实需要而当前Phase1 bundle缺少聚合`z_dom`或`z_id/z_dom`交叉统计，应按`项目.md`构建合法、不可替换、共同封存的新bundle并更新`bundle_id`；固定received-IQ capsule和split不变时不得触发数据重验。也允许选择不需要新增bundle状态的其他合法域适应，但必须证明其域适应机制独立于分类头并通过C对A消融。禁止因为现有bundle只方便修改分类头，就完全跳过域适应候选。
+若已选择的候选确实需要而当前Phase1 bundle缺少聚合`z_id`、`z_dom`或二者交叉统计，应按`项目.md`构建合法、不可替换、共同封存的新bundle并更新`bundle_id`；固定received-IQ capsule和split不变时不得触发数据重验。也允许选择不需要新增bundle状态的其他合法域适应，但必须证明其域适应机制独立于分类头。禁止因为现有bundle只方便其中一支或分类头，就跳过另一支及联合适配消融。
 
 Phase2域适应只能使用当前row合法target support；旧类和新类support均可按类平衡参与估计共享目标域状态。候选可联合使用`z_id/z_dom`、同一固定received IQ的合法数学view和sealed ground聚合知识，但没有ground新类原型，ground知识不得直接给旧类增加logit。任何路线都必须估计适配可信度、限制自由度并提供identity/target-support-only回退；不能在低可辨识或域覆盖不足时强制外推。
 
@@ -124,7 +124,7 @@ Phase2域适应只能使用当前row合法target support；旧类和新类suppor
 
 Sinc/HF共享stem、source分类头和早期大卷积块默认从冻结对照开始，因为它们自由度高；但目标不永久禁止更新任何具体层。可在`<=80,000`总参数和`<=50`步内，根据support cross-fit、梯度冲突、欠拟合及matched ablation证据选择更新`z_dom`、`z_id`、末端私有block、轻量归一化/门控或其他子集。任何扩大更新范围都必须预登记、保留更小更新范围对照并报告参数/梯度/更新norm，不得无消融地全主干微调。
 
-K1也允许快速更新共享的极小`z_dom`适配参数：利用当前row全部注册类support及同一固定received IQ的合法数学view，进行闭式更新或最多5步强收缩更新；不得估计高维类内协方差。K>=2允许support cross-fit下闭式ridge或最多30步联合更新。所有K仍受总计`<=50` optimizer steps约束，并必须报告各模块参数量、梯度norm、更新norm及冻结参考回退结果。
+K1也允许快速更新共享的极小`z_id`、`z_dom`或joint适配参数：利用当前row全部注册类support及同一固定received IQ的合法数学view，进行闭式更新或最多5步强收缩更新；不得估计高维类内协方差。K>=2允许support cross-fit下闭式ridge或最多30步联合更新。所有K仍受总计`<=50` optimizer steps约束，并必须分别报告两支及联合模块的参数量、梯度norm、更新norm和冻结参考回退结果。
 
 ### 4.2 第二优先：提高Stage2-B旧域表示与通用floor
 
