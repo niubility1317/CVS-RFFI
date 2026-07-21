@@ -1588,3 +1588,20 @@ D99相对同row D81：old-before=`-6.3889pp`、old-after=`-23.8889pp`、seen-new
 本轮r10、r11、r12形成的工程教训分别是：active-K运行时不得预构造被Phase1拒绝的inactive-K锁；同一support身份应先以token/label/index/raw IQ字节闭合并只前向一次；发布进程探针不得用会匹配自身长命令的裸`pgrep`。方法教训是：Phase1 LODO晋级不能替代真实target窄证据；support-fit达到100%不能证明query泛化；重构地面原型或domain×class中心的高余弦保真不能替代`D_eff`、coverage、margin和最终old/new/floor证据。
 
 下一代码链冻结为`typed dual-feature input→A(identity z_id＋single-qKNN)→B(identity z_id＋RDA/SRDA head)→C-id→C-dom→C-joint→D(best C＋B head)`。每个patch只能改变一个因果变量，修改前写唯一差异、禁止输入、identity等式和资源上界；修改后由非作者独立review，要求P0=0、P1=0，再运行专项/相邻回归、真实checkpoint smoke并形成独立Git commit。机器回执必须满足`C.classifier_hash==A.classifier_hash`、`B.DA_hash==identity_hash`、`D.DA_hash==best_C.DA_hash`和`D.head_hash==B.head_hash`。六臂冻结前不再访问target query或发布N607目标实验。
+
+#### Patch 0：同一received-IQ双特征runtime本地实现
+
+Patch 0新增`dual_feature_forward.py`、dual TorchScript exporter/parity verifier及3个专项测试，不修改既有identity runtime、D99/D101或target runner。一次固定received-IQ前向只执行`id_backbone`、`dom_backbone`和`dom_enhancer`，输出`z_id160`、`z_dom160`和`tx_logits`；不序列化、不执行、不读取`dom_head/adv_head/tx_adv_head`。runtime固定`capacity=256`、输入长度和TX宽度，checkpoint/adapter各只读取一次为bytes，同一bytes同时用于SHA和`BytesIO`加载；candidate verifier绑定checkpoint、adapter、runtime、export receipt四类SHA，并对batch1/mid/256执行三输出parity。
+
+作者修复前的交叉review发现3个P1：trace后T未锁定、checkpoint/adapter存在路径级swap-restore窗口、verifier不能证明禁用head不存在。修复后非作者复审为`P0=0、P1=0、P2=2、MERGE_NONFORMAL_CORE`；32/32最小复审通过。两个保留P2为：正式authority前应让runtime bytes快照贯穿export parity与SHA，且verifier自身应执行T±1和batch257负探针。当前代码明确`formal_phase2_eligible=false`、`bundle_created=false`，不授权target或N607。
+
+主线在`ssr-gpu`中将Patch 0、Patch A候选与旧identity/export/parity/bundle、D81/D99/D101相邻链合并复跑，`py_compile`通过、154/154测试通过，进程exit0。TorchScript弃用/TracerWarning和pytest Temp atexit权限告警均未改变exit0；动态输入边界由trace外层script验证，不依赖trace内被常量化的Python条件。
+
+|文件|SHA256|
+|---|---|
+|`code/cvsrffi/dual_feature_forward.py`|`eeaca06f84f5771c90dfb92e6bbbc4980f2772e9fcdf80d54e06fee387afd815`|
+|`code/scripts/export_adv3b02_dual_feature_torchscript.py`|`339a4c11320cd78a137030103eb4ebfe0095ca9f97e4291e19e385fabf6ebabc`|
+|`code/scripts/verify_adv3b02_dual_runtime_checkpoint_parity.py`|`92eafc2e93c525e9d9c05592f6e31aeab4bb9816c1c61a69bb1b3d0187cbfed3`|
+|`tests/test_dual_feature_forward.py`|`4683a9aa7e163d48a3946d23102add54eca5b81506f9c1a511ca672d906980f8`|
+|`tests/test_export_adv3b02_dual_feature_torchscript.py`|`9afa96ea72945a0ad500aee0666e967ac4da6a37ed9b3e0c5343dd157735826c`|
+|`tests/test_verify_adv3b02_dual_runtime_checkpoint_parity.py`|`2589fb0046a0cdc71260445378f3f2b7d113bf926f5bb43dc97042ee89a1e9cb`|
