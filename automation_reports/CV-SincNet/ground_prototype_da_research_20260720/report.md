@@ -1503,6 +1503,14 @@ env OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 NUMEXPR_NUM_THREA
 
 r11除active-K配置组装和新不可覆盖路径外，与r10的数据、checkpoint、runtime、method lock、ground、LODO、receiver、seed、K、new-count、候选和超参数完全相同。晋级门仍为D99相对同row D81的B-old/A-old/New均不下降，H或全部注册类floor至少一项严格提高，forgetting不增加，并检查逐场景、逐类和双向混淆；失败则不运行125，通过才进入固定历史125。
 
+#### r11实际结果：重复GPU前向被误用作support身份断言
+
+r11唯一启动一次、无重试。状态链为`LOCAL_VERIFIED_REVIEW_PASSED→SOURCE_LANDED_VERIFIED→PY_COMPILE_IMPORT_PASSED→LANDED→RUNNING(瞬时)→FAILED_PRE_PREDICTION_GPU_FORWARD_NUMERIC_IDENTITY`。wrapper PID=`1626048`、Python PID=`1626050`，均已退出，exit1。完整日志1,155B，SHA256=`c95b08e92fb241bd58f388de33ef6992cacd7fa75bd9fbd0f569a0be4d38b7fe`。partial output为49文件、29,193,186B；prediction=0、score/detailed=0、无`narrow_receipt.json`。offline receipt SHA=`1a458181c7136055480393692cf4fbb1f215aefdc5ef9dc3a0c855d62084a464`，registration pair SHA=`ce715fccab94aeef0abe7b769cbf5b14f2c0079a22a3d313bdaf331910866c4d`。完整证据已回收至根报告artifact目录，r11远端路径保留且不得复用；GPU1、进程、SSH和TCP22已清零。
+
+三层只读诊断证明数据完全一致：每场景before/after旧support均60条、token无重复，ID序列与集合完全相同；class index、opaque label序列完全相同，每类10条；按token对齐后原始IQ逐字节相同且max_abs=0。clear/low/rain的IQ SHA分别为`e9644e19…2469`、`3e7d0c93…0ddf`、`ad199840…6320`，两侧一致。真实差异仅来自重复GPU forward：`leo_clear_weak`相同IQ的z160 max_abs=`5.14984130859375e-05`、registered feature max_abs=`2.56318598985672e-05`，超过旧硬编码`atol=1e-6`；low/rain本次为0。loader和forward均为eval/no-grad，但runtime未承诺bit-level重复确定性。
+
+因此r11不是support集合漂移或D99性能负结果。r12修复不能根据target观测选择更宽容差，而应删除重复计算：先用token/class/index/raw IQ原始字节完成before/after旧support精确闭合，再只对after全注册support做一次GPU forward，before旧特征从同一次结果按稳定token映射取得。这样同时减少旧support重复前向、数值非确定性和GPU开销；任何token、label、index或IQ字节漂移仍fail closed。
+
 #### D101 Shrinkage RDA nested LODO实现状态
 
 D101 Phase1 nested receiver LODO实现与测试已独立提交为`fd38b861`。最终独立终审为`P0=0、P1=0、MERGE`；主线在`ssr-gpu`复跑D101专项、RDA core、D99/D100 LODO和D100相邻测试共70/70通过。它精确绑定D99/D100/D101顶层冻结候选网格，支持全失败及mixed partial的可验证`REJECT` receipt，真实执行K1 alpha=0 fallback数值路径，并拒绝删除、重排、重复候选后重签。该提交当前只有Phase1 LODO核心证据，尚未创建release wrapper、尚未运行N607或target，不构成性能结果。
