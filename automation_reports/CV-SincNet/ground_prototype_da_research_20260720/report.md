@@ -1620,3 +1620,41 @@ Patch A新增独立`stage2_zid_student_t_qknn.py`及其测试，不导入或融�
 |`tests/test_stage2_zid_student_t_qknn.py`|`a7c349b99917f2dc388ace3d99ae9f5a4cf2346566f7c1405b68e513baef099f`|
 
 Patch A当前仅完成本地组件和审计，不构成target性能、Phase1 LODO晋级、bundle或N607发布。下一步Patch B必须只消费该公开typed z_id bank，在identity metric不变的条件下增加Shrinkage RDA全局头，并保证`alpha=0`时概率、预测、dtype和A输出SHA逐元素相同。
+
+#### 失败经验总复盘与L0–L10代码修改链
+
+前述失败不能笼统归因于“地面原型无效”。D93在ground coverage仅约0.144–0.227时对全坐标施加transport并替换强base，matched K10相对D81的old、new、H和floor均下降；D94只缩小错误方向幅度，没有修正方向。D99同时改变ground metric、Student-t局部头和D81融合，真实target r12中old-after、seen-new、H和floor分别相对D81下降23.8889pp、24.7500pp、24.3325pp和15.0000pp，forgetting增加17.5000pp，无法定位单一失败机制。D100在K10的融合系数为0，预测与D99完全相同，证明“再加一个全局头”不自动形成互补纠错。r10/r11等prediction=0的运行属于接口或重复GPU前向技术失败，不得混写成算法负结果。
+
+Patch B首轮又暴露出另一类错误：公式和19项正常测试均正确，但Phase1锁未绑定A config、identity metric及ground prior/source/rank；state、ground prior和resource只在构造时验SHA，内存篡改或联合重签可绕过。第二轮修复入口receipt后，监督review继续复现`bool/string`数值类型别名；第三轮数学review进一步指出fit/quant指标即使类型正确也只是builder自述，普通self-hash无法证明其真实性。最终代码明确把三类诊断降级为`builder_reported_non_authoritative_not_for_promotion`，正式LODO必须从绑定输入现场重算并由外层authority封存。
+
+|层|唯一输入/输出|必须通过的门|禁止项|
+|---|---|---|---|
+|L0因果臂合同|项目协议、A基线→A/B/C-id/C-dom/C-joint/D唯一delta|每臂只改一个机制，冻结identity等式、允许依赖和资源上界|把metric、kernel、transport和fusion重新混成D99式候选|
+|L1 typed输入闭合|A bank、active-K support、sealed ground prior和Phase1 lock→validated inputs|classes/K/registry/receipt精确绑定；A config/identity和ground prior/source/rank预锁|inactive-K依赖、clean/source/query、跨row opaque handle复用|
+|L2纯数学核|decoded support和class-agnostic prior→FP64 teacher state|K1 target residual DOF/rank精确为0；target rank≤2、ground rank≤4；Woodbury=dense|在数学核混入量化、query、角色分支和I/O|
+|L3编译量化|teacher state→INT8 weight＋FP16 scale/bias|独立held-LODO量化top1、margin sign flip和large-margin flip门|把support-fit诊断当Phase1 authority或保留FP32 sidecar|
+|L4 sealed state/wire|精确A/ground/lock绑定＋compiled arrays→byte-exact B wire|每个public consumer重验receipt；exact JSON/Python类型；恶意wire、内存篡改和错配fail closed|“有SHA就可信”、可替换先验、caller自报bytes/MAC|
+|L5逐query融合|同一A bank＋B state＋单条z_id→A/RDA/fused probability|alpha仅Phase1冻结；alpha0跳过RDA且bit-exact A；query permutation/chunk等价|query置信度调alpha、伪标签、图、quota和batch统计|
+|L6 Phase1 nested LODO|合法Phase1 single-observation archive→每K独立lock和外部receipt|独立runner现场重算fit/quant/resource；双向rescue、NLL、old/new/H/floor/forgetting联合门|用builder诊断、真实target或125选择alpha/rank/formula|
+|L7本地集成与发布前review|精确Git commit和冻结matrix→LOCAL_VERIFIED handoff|修改前合同review；修改后diff、专项、相邻回归、独立P0/P1清零|远端直接改、多个agent并改同文件、技术失败冒充性能失败|
+|L8 matched target窄验证|冻结六臂、同row K1/K10/new20/3场景→完整prediction与truth后连接|B-old/A-old/New/H/floor/min-old/min-new均不退，forgetting不增；逐类逐场景审计|根据窄结果回调任何科学参数|
+|L9历史125 screen|唯一冻结候选→125完整稳定性结果|125只验证泛化稳定性，保持所有同row指标和资源审计|用125筛候选、rank、bitwidth、alpha或门|
+|L10完整确认|通过125的同一commit→1,200评价单元|5 receiver×5 seed×3 scene×4K×4 new-count，无代码/lock漂移|把125称为完整目标矩阵|
+
+#### Patch B：纯identity z_id160 qKNN＋Shrinkage RDA本地核心
+
+Patch B新增`stage2_zid_srda_fusion.py`及其专项测试，只消费Patch A公开typed bank；不导入D81/D99/D100/D101，不读取z_dom、FFT/RF、receiver/TX、old/new角色、query truth或query-fit输入。RDA均值全部来自当前row全部注册类target support；ground仅提供Phase1 LODO封存的class-agnostic共享协方差basis/spectrum，不提供class mean、bias或旧类logit。K1时target scatter、nres和target rank均精确为0；K≥2使用class-balanced scatter，target positive rank≤2、ground rank≤4、总Woodbury rank≤6。融合系数`alpha_phase1`只由Phase1冻结；未实现support-CV或K−1 bank，因为Patch A合法active K仅为1/5/10/20，构造K−1 bank会破坏既有typed合同。
+
+三轮独立review依次发现并修复：①state/ground内存可写后receipt未重验、Phase1锁未绑定A/ground、combined resource可拼接错row；②strict wire接受同步重签的state alpha bool、temperature string、lock sigma string和audit shrinkage string；③fit/quant合理数值可联合重签，self-hash不能充当性能真实性证明，B state中的A wire bytes也不可独立验证。最终所有serialize/fuse/resource入口重验state，decode/build重验ground prior；A config、identity metric和ground prior/source/rank全部进入Phase1锁；wire拒绝duplicate key、NaN、shape overflow、payload bitflip、截断/尾随、非canonical JSON和超过16MB总长；A wire字段从B state删除，combined resource从实际绑定A/B对象现场重算。
+
+最终独立结论为：数学审计`P0=0、P1=0、P2=0、MERGE_NONFORMAL_ONLY`；监督审计`P0=0、P1=0、P2=3、MERGE_NONFORMAL_CORE`。保留P2是尚未逐项参数化所有wire拒绝分支、nested eigenvalue list仅浅冻结但public consumer会拒绝篡改、A component/Phase1/p2_min_v1真实authority仍由上层sealed admission核验。Patch B明确`formal_phase2_eligible=false`、`bundle_created=false`，当前提交不授权target、N607、125或正式性能结论。
+
+|C/K/ground|B numeric arrays|B实际wire|A实际wire|component numeric sum|B linear-head MAC/query|build-support量化一致率|诊断authority|
+|---|---:|---:|---:|---:|---:|---:|---|
+|26/20/off|4,264B|8,704B|88,046B|89,596B|4,160|99.6154%|不可用于晋级的builder diagnostic|
+
+上表来自固定随机本地资源探针，只是实现/资源表现，不是分类性能；其中B MAC只覆盖compiled RDA linear matmul，不含bias、softmax、fusion、hash、decode、normalize、序列化或端到端latency。完整combined wire container仍不存在，因此只能称component resource evidence，不能称deployment resource closed。最终文件SHA256：core=`8aef42e14518911284c781493a9c1b1331735ef63264a8d650bdda3176112439`，test=`b2667134896f8b19d5b831bb96d4e3ff92ad75fb25512112b11a54f451f8a8df`；专项28/28与`py_compile`通过。本节所在Git commit即Patch B版本authority。
+
+Patch B下一步不是直接发布target，而是先实现独立Phase1 LODO runner：冻结每K候选和Git/config/A/ground receipts；只读合法Phase1 single-observation archive；从原始绑定输入现场重算fit、held-pseudo-query量化margin、A/RDA/B预测、双向rescue、NLL、old/new/H/floor/forgetting和资源；产出immutable外部receipt。只有matched LODO性能门、独立量化门、K1因果门和现场资源门全部通过，才允许生成六臂target窄验证release config。
+
+提交前最终回归在`ssr-gpu`中覆盖Patch A/B、D81 typed/episode/ground、D99/D100 query/LODO和D101 RDA/LODO，共183/183通过，进程exit0；`git diff --check`通过。pytest结束后访问`pytest-current`的Windows Temp `PermissionError`仍为已知atexit清理噪声，不改变测试结论。
