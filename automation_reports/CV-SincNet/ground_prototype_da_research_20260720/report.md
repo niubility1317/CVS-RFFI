@@ -1468,3 +1468,41 @@ wrapper PID=`1608261`、Python PID=`1608263`，均已退出，exit1。完整日�
 唯一异常是K10 row已在入口成功取得K10锁后，`_d99_config`仍遍历全部`ALLOWED_K`并首先调用`locked_parameters_from_lodo(..., k_shot=1)`。r7的K1因LODO floor失败而按设计没有封存可发布锁，因此抛出`D99D100QueryEvaluationError: K-specific LODO parameters are missing`。这不是缺数据、N607故障或D99性能负结果，而是active-K runtime错误预构造inactive-K配置。
 
 修复边界冻结为：K10只消费已验证K10参数，不能复制K10参数到K1，也不能读取被拒K1记录；K1作为active row时仍必须fail closed。任何修复先经过active-K语义pre-review，再以最小query evaluator＋相邻测试提交；方法超参数、数据、checkpoint、LODO、候选和target row保持不变。r11须使用新commit、新不可覆盖run ID和新报告预登记。
+
+#### r11 active-K最小修复与第三次目标窄实验预登记
+
+r11方法提交为`dac89ae5`（`Bind D99 query config to active K only`），只修改`stage2_d99_d100_query_evaluation.py`和其相邻测试。入口对当前row只调用一次`locked_parameters_from_lodo(active_k)`；D99只覆盖active K的eta与该row公共参数，inactive eta保持base原值且不宣称LODO锁；D100仅active K使用同一锁参数，inactive K固定数据无关占位`lambda=1,temperature=1,d99_temperature=1,alpha=0`并标记为本row未使用。每次构建D100 state前同时验证`bank.metric.k_shot==active_k`和active参数逐项相等。K1/K20作为active row但缺锁时仍fail closed；K20原有artifact门未改变。
+
+独立pre/post review均通过，post裁决`P0=0、P1=0、P2=2、MERGE`。两个非阻断P2为active-K audit缺直接序列化断言、K20缺artifact的显式相邻回归可继续补强；静态路径确认均未绕过，且不影响本次K10窄测。工作树`py_compile`通过，query evaluator＋narrow runner＋D100 core为46/46；从精确提交生成archive并在解压源码复跑相同编译与46/46，exit0。pytest结束后的Windows Temp `PermissionError`是已知atexit清理噪声，pytest进程exit0。
+
+|字段|r11冻结值|
+|---|---|
+|run ID|`d99_d100_narrow_rx20_1_seed713101_k10_new20_dac89ae5_20260721_r11`|
+|方法提交|`dac89ae5`|
+|唯一机制变化|runtime只组装并消费当前row的K10锁；不读取K1/K5/K20 inactive锁|
+|源码ZIP|`E:\type10-7\code\snapshots\d99_d100_narrow_dac89ae5_20260721_r11\source_dac89ae5.zip`|
+|ZIP SHA/规模|`613d03a71f14f859ec1feba3647defab7b1816cc6862f75ddab3d329a1219847`；32,821,939B；4,408成员|
+|精确archive复测|`py_compile`通过；46/46通过|
+|远端run/output|`/home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_narrow_rx20_1_seed713101_k10_new20_dac89ae5_20260721_r11`及其`output`|
+|远端log|`/home/szu2070436088/2510044040/CV-SincNet/logs/d99_d100_narrow_rx20_1_seed713101_k10_new20_dac89ae5_20260721_r11`|
+|GPU/CPU|物理GPU1、内部`cuda:0`；CPU thread2、interop1|
+|重试|不授权；只启动一次|
+
+|关键ZIP成员|bytes|原始字节SHA256|
+|---|---:|---|
+|`code/cvsrffi/stage2_d99_d100_query_evaluation.py`|43,884|`1fd87f77ccabab418062be7874a2bbe1779e2922a17194c3f314b4b32ba3fa09`|
+|`code/scripts/run_d99_d100_narrow.py`|22,571|`8e05f189336bfe327b24b3a4108a3cf84949dd789e992220175364f09a4435dc`|
+|`tests/test_stage2_d99_d100_query_evaluation.py`|12,877|`d2599183c6d32655f1a37ec82e9e875defe2945db17d8bbd338e2bc80667dcec`|
+|`tests/test_run_d99_d100_narrow.py`|8,914|`7cbe3f02a3eb0e80fcf477a9c0c11c98a0e0131e2f087b1efe322be439f5e1fc`|
+
+唯一child命令冻结为：
+
+```bash
+env OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 NUMEXPR_NUM_THREADS=2 VECLIB_MAXIMUM_THREADS=2 BLIS_NUM_THREADS=2 CVSRFFI_CPU_THREADS=2 CVSRFFI_CPU_INTEROP_THREADS=1 CUDA_VISIBLE_DEVICES=1 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_narrow_rx20_1_seed713101_k10_new20_dac89ae5_20260721_r11/source_dac89ae5/code /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_narrow_rx20_1_seed713101_k10_new20_dac89ae5_20260721_r11/source_dac89ae5/code/scripts/run_d99_d100_narrow.py --cache-manifest /home/szu2070436088/2510044040/CV-SincNet/runs/d18_formal_k10_new5_rx20_1_seed713101_20260717_085303/cache_matrix/rx_20_1/seed_713101/cache_set.json --authority-bundle /home/szu2070436088/2510044040/CV-SincNet/runs/d18_formal_k10_new5_rx20_1_seed713101_20260717_085303/signed_authority_bundle --authority-commit-sha256 fdedd9cfdfbb5db9f8962ba529403042b7de7011570dff514e9a629a44695147 --phase1-checkpoint /home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth --sealed-runtime /home/szu2070436088/2510044040/CV-SincNet/runs/d18_formal_k10_new5_rx20_1_seed713101_20260717_085303/input/sealed_feature_runtime.pt --method-lock /home/szu2070436088/2510044040/CV-SincNet/runs/d18_formal_k10_new5_rx20_1_seed713101_20260717_085303/input/method_lock.json --d81-ground-component-dir /home/szu2070436088/2510044040/CV-SincNet/runs/d19_ciaf_int8_proto_20260717_1039/input/int8_component --d81-ground-manifest-sha256 15b5e144f9af3989421d8e925c17758479c327be47e79222f6363dc63994629c --d99-ground-bundle-npz /home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_phase1_inputs_aa3a0266_20260721_r1/d99_receiver_ground_bundle/d99_ground_bundle_dev.npz --d99-ground-manifest /home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_phase1_inputs_aa3a0266_20260721_r1/d99_receiver_ground_bundle/d99_ground_bundle_dev.manifest.json --base-d99-lock /home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_phase1_inputs_aa3a0266_20260721_r1/d99_receiver_ground_bundle/d99_base_method_lock_dev.json --phase1-lodo-json /home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_phase1_lodo_d6efa5ad_cudafix_20260721_r7/output/d99_d100_phase1_lodo_blocked_diagnostic.json --class-binding-json /home/szu2070436088/2510044040/CV-SincNet/runs/d20_int8_maxold_fftrf_20260717/input/class_binding.json --class-binding-sha256 bb89a1dbb831acb374fccfc596ae98b660b496b449bdca577dabb962121c901f --output-root /home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_narrow_rx20_1_seed713101_k10_new20_dac89ae5_20260721_r11/output --receiver 20-1 --seed 713101 --k-shot 10 --new-count 20 --device cuda:0 --cpu-threads 2
+```
+
+r11除active-K配置组装和新不可覆盖路径外，与r10的数据、checkpoint、runtime、method lock、ground、LODO、receiver、seed、K、new-count、候选和超参数完全相同。晋级门仍为D99相对同row D81的B-old/A-old/New均不下降，H或全部注册类floor至少一项严格提高，forgetting不增加，并检查逐场景、逐类和双向混淆；失败则不运行125，通过才进入固定历史125。
+
+#### D101 Shrinkage RDA nested LODO实现状态
+
+D101 Phase1 nested receiver LODO实现与测试已独立提交为`fd38b861`。最终独立终审为`P0=0、P1=0、MERGE`；主线在`ssr-gpu`复跑D101专项、RDA core、D99/D100 LODO和D100相邻测试共70/70通过。它精确绑定D99/D100/D101顶层冻结候选网格，支持全失败及mixed partial的可验证`REJECT` receipt，真实执行K1 alpha=0 fallback数值路径，并拒绝删除、重排、重复候选后重签。该提交当前只有Phase1 LODO核心证据，尚未创建release wrapper、尚未运行N607或target，不构成性能结果。
