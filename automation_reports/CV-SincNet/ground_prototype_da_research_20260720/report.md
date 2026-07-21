@@ -1511,6 +1511,42 @@ r11唯一启动一次、无重试。状态链为`LOCAL_VERIFIED_REVIEW_PASSED→
 
 因此r11不是support集合漂移或D99性能负结果。r12修复不能根据target观测选择更宽容差，而应删除重复计算：先用token/class/index/raw IQ原始字节完成before/after旧support精确闭合，再只对after全注册support做一次GPU forward，before旧特征从同一次结果按稳定token映射取得。这样同时减少旧support重复前向、数值非确定性和GPU开销；任何token、label、index或IQ字节漂移仍fail closed。
 
+#### r12单次support前向修复与第四次目标窄实验预登记
+
+r12只修复r11已证实的重复GPU前向集成缺陷，不改变D81/D99/D100算法、数据、checkpoint、bundle、LODO锁、receiver、seed、K、new-count、候选或超参数。before/after旧support先按稳定token、class index、rank、label和raw IQ C-order原始字节完成精确双射；随后仅对after全注册support执行一次GPU forward，before-old特征从同一次`all_x`按token位置映射复用。任何active-K缺项、重复项、非有限IQ或身份/字节漂移仍在forward前fail closed；inactive高rank数据不进入当前K的计算或有限性门。
+
+|字段|r12冻结值|
+|---|---|
+|run ID|`d99_d100_narrow_rx20_1_seed713101_k10_new20_3e4c54f6_20260721_r12`|
+|方法提交|`3e4c54f6effe7ce8e21f5f34307b66dbd878a3ec`（`Reuse one support feature realization`）|
+|修改文件|`code/cvsrffi/stage2_d99_d100_query_evaluation.py`、`tests/test_stage2_d99_d100_query_evaluation.py`|
+|独立终审|`P0=0`、`P1=0`、`MERGE`|
+|工作树验证|`ssr-gpu`中`py_compile`通过；query evaluator＋narrow runner＋D100 core为56/56，exit0|
+|源码ZIP|`E:\type10-7\code\snapshots\d99_d100_narrow_3e4c54f6_20260721_r12\source_3e4c54f6.zip`|
+|ZIP SHA/规模|`d230e6c547d34cf261b79410239d542cdc46d8df5755648b2d0ca2b9d6dcccda`；32,849,576B；4,410成员|
+|精确archive复测|解压源码`py_compile`通过；相同56/56通过，exit0；pytest结束后的Windows Temp `PermissionError`仍为已知atexit清理噪声|
+|远端run/output|`/home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_narrow_rx20_1_seed713101_k10_new20_3e4c54f6_20260721_r12`及其`output`|
+|远端log|`/home/szu2070436088/2510044040/CV-SincNet/logs/d99_d100_narrow_rx20_1_seed713101_k10_new20_3e4c54f6_20260721_r12`|
+|GPU/CPU|物理GPU1、内部`cuda:0`；CPU thread2、interop1|
+|重试|不授权；唯一release subagent只允许一次不可覆盖启动|
+
+|关键ZIP成员|bytes|原始字节SHA256|
+|---|---:|---|
+|`code/cvsrffi/stage2_d99_d100_query_evaluation.py`|46,789|`00ce54324c155e22d0c688e9e432289edf792a1a6cdd796ad30d1726a2ceac03`|
+|`code/scripts/run_d99_d100_narrow.py`|22,571|`8e05f189336bfe327b24b3a4108a3cf84949dd789e992220175364f09a4435dc`|
+|`tests/test_stage2_d99_d100_query_evaluation.py`|19,460|`b935eab84f7d50d0e3fb08057e3c077bee2687c5a34449699829833d37d00eb8`|
+|`tests/test_run_d99_d100_narrow.py`|8,914|`7cbe3f02a3eb0e80fcf477a9c0c11c98a0e0131e2f087b1efe322be439f5e1fc`|
+
+唯一child命令冻结为：
+
+```bash
+env OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 NUMEXPR_NUM_THREADS=2 VECLIB_MAXIMUM_THREADS=2 BLIS_NUM_THREADS=2 CVSRFFI_CPU_THREADS=2 CVSRFFI_CPU_INTEROP_THREADS=1 CUDA_VISIBLE_DEVICES=1 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_narrow_rx20_1_seed713101_k10_new20_3e4c54f6_20260721_r12/source_3e4c54f6/code /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_narrow_rx20_1_seed713101_k10_new20_3e4c54f6_20260721_r12/source_3e4c54f6/code/scripts/run_d99_d100_narrow.py --cache-manifest /home/szu2070436088/2510044040/CV-SincNet/runs/d18_formal_k10_new5_rx20_1_seed713101_20260717_085303/cache_matrix/rx_20_1/seed_713101/cache_set.json --authority-bundle /home/szu2070436088/2510044040/CV-SincNet/runs/d18_formal_k10_new5_rx20_1_seed713101_20260717_085303/signed_authority_bundle --authority-commit-sha256 fdedd9cfdfbb5db9f8962ba529403042b7de7011570dff514e9a629a44695147 --phase1-checkpoint /home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth --sealed-runtime /home/szu2070436088/2510044040/CV-SincNet/runs/d18_formal_k10_new5_rx20_1_seed713101_20260717_085303/input/sealed_feature_runtime.pt --method-lock /home/szu2070436088/2510044040/CV-SincNet/runs/d18_formal_k10_new5_rx20_1_seed713101_20260717_085303/input/method_lock.json --d81-ground-component-dir /home/szu2070436088/2510044040/CV-SincNet/runs/d19_ciaf_int8_proto_20260717_1039/input/int8_component --d81-ground-manifest-sha256 15b5e144f9af3989421d8e925c17758479c327be47e79222f6363dc63994629c --d99-ground-bundle-npz /home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_phase1_inputs_aa3a0266_20260721_r1/d99_receiver_ground_bundle/d99_ground_bundle_dev.npz --d99-ground-manifest /home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_phase1_inputs_aa3a0266_20260721_r1/d99_receiver_ground_bundle/d99_ground_bundle_dev.manifest.json --base-d99-lock /home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_phase1_inputs_aa3a0266_20260721_r1/d99_receiver_ground_bundle/d99_base_method_lock_dev.json --phase1-lodo-json /home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_phase1_lodo_d6efa5ad_cudafix_20260721_r7/output/d99_d100_phase1_lodo_blocked_diagnostic.json --class-binding-json /home/szu2070436088/2510044040/CV-SincNet/runs/d20_int8_maxold_fftrf_20260717/input/class_binding.json --class-binding-sha256 bb89a1dbb831acb374fccfc596ae98b660b496b449bdca577dabb962121c901f --output-root /home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_narrow_rx20_1_seed713101_k10_new20_3e4c54f6_20260721_r12/output --receiver 20-1 --seed 713101 --k-shot 10 --new-count 20 --device cuda:0 --cpu-threads 2
+```
+
+r12的同row保留门按更新目标收紧：D99相对D81的`old_acc_before_increment`、`old_acc_after_increment`、`seen_new_acc`、`H_old_new`、全部注册类floor、最低旧类和最低新类均不得下降，`H_old_new`或全部注册类floor至少一项严格提高，forgetting不得增加，并检查逐场景、逐类和old→new/new→old集中崩溃。无完整prediction仍只算技术集成失败；完整prediction未过门则标记`D99_COMPLETED_NARROW_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE`。即使全部通过，也只把D99保留为后续联合设计的legacy候选证据，不能由r12单独授权当前目标的125，且不能回调任何参数。
+
+更新后的总目标要求每轮另有头固定的`C-id/C-dom/C-joint`显式域适应消融。D99同时改变z_id metric、Student-t局部头及与D81的融合，因此r12只用于完成既有冻结候选的真实target迁移证据，不能单独充当新目标中的纯`C-id`因果臂。D101依赖D99 bank/mapped feature后构造RDA，也不能单独充当identity/no-DA的纯B臂。新一轮将另行冻结A/B/C-id/C-dom/C-joint/D，并由该完整窄矩阵统一决定是否授权125；125通过后完整确认按5 receivers×5 seeds×3 scenes×4K×4 new-count＝1,200评价单元执行，不能把125写成完整矩阵。
+
 #### D101 Shrinkage RDA nested LODO实现状态
 
 D101 Phase1 nested receiver LODO实现与测试已独立提交为`fd38b861`。最终独立终审为`P0=0、P1=0、MERGE`；主线在`ssr-gpu`复跑D101专项、RDA core、D99/D100 LODO和D100相邻测试共70/70通过。它精确绑定D99/D100/D101顶层冻结候选网格，支持全失败及mixed partial的可验证`REJECT` receipt，真实执行K1 alpha=0 fallback数值路径，并拒绝删除、重排、重复候选后重签。该提交当前只有Phase1 LODO核心证据，尚未创建release wrapper、尚未运行N607或target，不构成性能结果。
