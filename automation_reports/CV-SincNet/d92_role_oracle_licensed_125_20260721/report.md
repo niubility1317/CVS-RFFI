@@ -146,3 +146,18 @@ Oracle decoder不新增fit、backbone前向、score MAC、optimizer step或持�
 ## 完成后结果表
 
 待完整125 artifact回收后填写。无论性能多高，最终判定保持`LICENSED_ORACLE_UPPER_BOUND_NON_PROMOTABLE`。
+
+## 首次发布技术失败与retry1预注册
+
+首次run已在N607真实启动8个shard（GPU0–7，PID`1828208`–`1828215`），但125/125 row均在方法执行前因发布快照漏同步既有`code/scripts/probe_d92_registration_balanced_covariance.py`而失败：`125 JOB_START / 0 JOB_COMPLETE / 125 JOB_FAILED`。进程均自然退出，未kill、未覆盖、未修改方法；该run标记为`TECHNICAL_RELEASE_FAILURE / NO_PERFORMANCE_RESULT`，不得解释为方法性能。
+
+现预注册不可覆盖技术retry1：
+
+- retry run ID：`d92_role_oracle_licensed_125_retry1_20260721`
+- Git方法提交仍为`0184952cf7283632b0330727bd1bfe6b3026e44e`；方法、参数、矩阵、数据和结果标签不变。
+- 唯一修复：把该提交中完整已跟踪`code/cvsrffi`与`code/scripts`按原结构同步至新源码快照，禁止使用未提交`sitecustomize.py`或远端代码修改。
+- 新源码快照：`/home/szu2070436088/2510044040/CV-SincNet/runs/d92_role_oracle_source_retry1_20260721`
+- 新输出根：`/home/szu2070436088/2510044040/CV-SincNet/runs/d92_role_oracle_licensed_125_retry1_20260721`
+- 新日志根：`/home/szu2070436088/2510044040/CV-SincNet/logs/d92_role_oracle_licensed_125_retry1_20260721`
+- 启动前新增门：远端显式导入`from scripts import probe_d92_registration_balanced_covariance`，并执行完整launcher dry import；失败则不得launch。
+- 仍由同一个N607发布agent独占run；主agent不并发启动。retry1只授权这一项打包修复，不授权方法修改、调参或失败后的再次自动retry。
