@@ -1556,3 +1556,35 @@ D101 Phase1 nested receiver LODO实现与测试已独立提交为`fd38b861`。�
 D101 development-only release wrapper及其测试已独立提交为`47053bc50d96a0223c6814220091cf2ff4d50f7e`。wrapper SHA256为`ae0c8d9fcf2dda6f2218914a7d83ba8e6e1d8167cae56b1c26532dbf2bd2d932`，测试SHA256为`eb8b562e88584511c6452d2a95e3e047a8fa40171437528bc54ea2efb32ed894`。独立终审为`P0=0`、`P1=0`、`MERGE`，非阻断P2是`result.json`未内嵌wrapper自身SHA；外部Git提交、配置中的D101 code registry和报告仍负责入口身份闭合。
 
 主线在`ssr-gpu`中对wrapper、D101 LODO/RDA core、D99/D100 LODO runner和D100相邻模块复跑80/80，`py_compile`通过；仅有既有pytest Temp atexit清理噪声且进程exit0。当前仍未生成D101冻结release config、未运行N607、未访问target，也没有old/new/H/floor/forgetting性能。由于D101强制在D99 mapped bank后构造RDA，它只能作为D99联合分类头的Phase1诊断，不能充当更新目标中的identity/no-DA纯B臂，也不能授权target或125。
+
+#### r12实际结果：D99/D100完整目标窄实验显著负收益，拒绝125
+
+r12唯一真实child完成并返回`exit.code=0`。状态链为`LOCAL_VERIFIED→LANDED→START_SSH_SELF_MATCH_PRE_CHILD→RUNNING→ARTIFACTS_COMPLETE→ANALYZED`。真实child前，一次只读gate误写evaluator检查路径而失败，另一次启动SSH中的裸`pgrep`把自身长shell命令误识别为既有进程；两次均未创建日志、output或child，未改变冻结child命令，真实child启动数仍为0。经只读确认后，在同一run ID、同一源码和同一冻结命令下执行唯一一次真实child。wrapper PID=`1659913`、child PID=`1659921`，物理GPU1、`CUDA_VISIBLE_DEVICES=1`、内部`cuda:0`；曾观测GPU计算进程占用552MiB。真实child退出较快，发布侧未及时捕获live CWD/cmdline，因此只保留启动命令和PID/GPU证据，不伪造live观测。实验结束后GPU1、本地SSH进程和TCP22连接均清零。
+
+远端run为`/home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_narrow_rx20_1_seed713101_k10_new20_3e4c54f6_20260721_r12`，远端log为`/home/szu2070436088/2510044040/CV-SincNet/logs/d99_d100_narrow_rx20_1_seed713101_k10_new20_3e4c54f6_20260721_r12`。`runner.log`完整1行、3,337B，SHA256=`da21e128…`；`narrow_receipt.json` SHA256=`5f29f81d…`。3个候选均生成before/after prediction，共6个NPZ；每个before为360条旧类query，每个after为1,560条全部注册类query，score、detailed和evaluation audit齐全。结果级42个文件、4,557,133B已回收到`E:\type10-7\automation_reports\CV-SincNet\ground_prototype_da_research_20260720\artifacts\d99_d100_narrow_rx20_1_seed713101_k10_new20_3e4c54f6_20260721_r12`，未回收数据、truth sidecar、checkpoint或sealed runtime。
+
+|候选|机制/类别|receiver|K/new|old-before|old-after|seen-new|H|registered BA|all-floor|min-old|min-new|forgetting|结论|
+|---|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|
+|D81|matched强基线|20-1|10/20|87.2222%|69.7222%|68.9167%|69.3171%|69.1026%|15.0000%|48.3333%|15.0000%|17.5000pp|保留同row比较基线|
+|D99|ground-guided metric＋Student-t＋D81融合|20-1|10/20|80.8333%|45.8333%|44.1667%|44.9846%|44.5513%|0.0000%|10.0000%|0.0000%|35.0000pp|显著负收益，拒绝|
+|D100|D99＋RDA/ridge候选，但`alpha_K10=0`|20-1|10/20|80.8333%|45.8333%|44.1667%|44.9846%|44.5513%|0.0000%|10.0000%|0.0000%|35.0000pp|与D99预测完全相同，不是独立纠错|
+
+D99相对同row D81：old-before=`-6.3889pp`、old-after=`-23.8889pp`、seen-new=`-24.7500pp`、H=`-24.3325pp`、registered BA=`-24.5513pp`、all-floor=`-15.0000pp`、min-old=`-38.3333pp`、min-new=`-15.0000pp`、forgetting=`+17.5000pp`。损害在注册前已经出现，因此不能仅归因于新类加入后的边界挤压。D100的`alpha_K10=0`，before/after prediction SHA均与D99完全相同，未产生第二头纠错证据。
+
+|场景|ground coverage rho|ground weight|D99 old-after|D99 seen-new|D99 H|
+|---|---:|---:|---:|---:|---:|
+|`leo_clear_weak`|0.06243|0.04736|45.0000%|40.5000%|42.6316%|
+|`leo_low_elev_weak`|0.01645|0.01266|49.1667%|49.2500%|49.2083%|
+|`leo_rain_weak`|0.06535|0.05003|43.3333%|42.7500%|43.0397%|
+
+三场景old-support配对残差能量中约1.6%–6.5%投影到当前ground nuisance子空间，其余support-derived residual能量位于该子空间的正交补。`rho`只是由合法old support得到的coverage proxy，不代表全部target query偏移。该结果不能证明“合规地面聚合知识无用”，但明确否定了D99这种低coverage proxy下同时改变metric、Student-t局部头和D81融合的使用方式。后续ground知识只能提供共享方向、协方差先验和coverage证书；`rho`低时必须精确回退identity，不能直接提高旧类logit。
+
+协议审计为`support_only_fit=true`、`single_leo_weak_observation_only=true`、`query_batch_dependency=false`、`query_state_updates=0`，truth只在全部不可变prediction形成后由独立scorer连接。每场景after的D99已知persistent numeric state=`130,444B`，D100组合已知值=`140,716B`；D99 incremental query MAC estimate=`866,880`，D99＋D81 total query MAC upper bound=`882,144/query`。虽然已知numeric state低于256KiB，但`complete_serialized_state_total_available=false`，不能宣称完整部署资源闭合；`d99_deployment_status=LOCAL_CORE_BLOCKED_EXTERNAL_PHASE1_AND_D81_CAPSULE_AUTHORITIES`，formal eligible仍为false。
+
+最终裁决：`ARTIFACTS_COMPLETE/ANALYZED/DEVELOPMENT_DIAGNOSTIC_NEGATIVE_REJECT_125`。D99/D100停止target调参，不进入125；D101不得冒充纯B/RDA头。下一轮必须先冻结`A/B/C-id/C-dom/C-joint/D`六个因果臂，再做一次K1/new20与K10/new20、3场景的matched窄实验。125仅是冻结方法的稳定性screen，不能选参；通过后仍需5 receivers×5 seeds×3 scenes×4K×4 new-count＝1,200评价单元的完整确认。
+
+#### 三轮失败复盘与下一代码链冻结
+
+本轮r10、r11、r12形成的工程教训分别是：active-K运行时不得预构造被Phase1拒绝的inactive-K锁；同一support身份应先以token/label/index/raw IQ字节闭合并只前向一次；发布进程探针不得用会匹配自身长命令的裸`pgrep`。方法教训是：Phase1 LODO晋级不能替代真实target窄证据；support-fit达到100%不能证明query泛化；重构地面原型或domain×class中心的高余弦保真不能替代`D_eff`、coverage、margin和最终old/new/floor证据。
+
+下一代码链冻结为`typed dual-feature input→A(identity z_id＋single-qKNN)→B(identity z_id＋RDA/SRDA head)→C-id→C-dom→C-joint→D(best C＋B head)`。每个patch只能改变一个因果变量，修改前写唯一差异、禁止输入、identity等式和资源上界；修改后由非作者独立review，要求P0=0、P1=0，再运行专项/相邻回归、真实checkpoint smoke并形成独立Git commit。机器回执必须满足`C.classifier_hash==A.classifier_hash`、`B.DA_hash==identity_hash`、`D.DA_hash==best_C.DA_hash`和`D.head_hash==B.head_hash`。六臂冻结前不再访问target query或发布N607目标实验。
