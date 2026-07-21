@@ -1401,7 +1401,7 @@ r8唯一启动一次，状态链为`LOCAL_VERIFIED→LANDED→RUNNING(瞬时)→
 |代码提交|`88db56d3`（`Bind D99 target TXs to current row handles`）|
 |修改文件|`stage2_d99_d100_query_evaluation.py`、`run_d99_d100_narrow.py`及两份相邻测试|
 |工作树验证|`ssr-gpu`专项15/15通过；`git diff --check`通过|
-|精确发布源码验证|从提交`88db56d3`生成Git archive，解压后的LF源码再次15/15通过|
+|精确发布源码验证|从提交`88db56d3`生成Git archive，解压后的原始blob字节源码再次15/15通过；EOL只作信息记录，不作为源码身份|
 |源码ZIP|`E:\type10-7\code\snapshots\d99_d100_narrow_88db56d3_20260721_r9\source_88db56d3.zip`|
 |ZIP SHA/规模|`b57c879dd8e0c38faf9ab63c2c463e83a16e48dc96a0cf7a1ee25bbc42650de4`；32,809,184B；4,402成员|
 |GPU/CPU|物理GPU1、内部`cuda:0`；CPU thread2、interop1|
@@ -1423,10 +1423,38 @@ env OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 NUMEXPR_NUM_THREA
 2. 先写能复现当前失败的最小反例，再写不变量攻击：顺序置换、重复项、缺项、checkpoint漂移、row-specific handle变化、K/类数边界和truth/role不可达。
 3. 作者只提交最小非重叠diff；适配层只负责语义转换，核心方法不感知历史路径、opaque handle或scorer truth。
 4. 本地按“专项单测→相邻集成→协议负例→`git diff --check`”四层验证；失败只修最早失败边界，不顺手改超参数或候选机制。
-5. Git提交后，从精确commit生成LF archive并在解压源码复跑同一验证，防止工作树、CRLF、未跟踪文件或远端源码漂移。
+5. Git提交后，从精确commit生成保留原始blob字节的archive并在解压源码复跑同一验证；源码身份由archive整体SHA和关键成员原始字节SHA共同绑定，EOL只作信息记录，不另造规范性门。
 6. 独立review只读裁决P0/P1/P2，作者不得自证；P0/P1未清零不发布。
 7. 报告预登记冻结run ID、commit/SHA、单一变化、matched baseline、矩阵、GPU/CPU、输出路径和晋级门；唯一runner只负责N607落地与证据回收。
 8. 结果按三态分流：无prediction是技术集成失败，只修直接失败项；有完整prediction但门失败是算法负结果，回到机制设计；窄测全部通过才进入125，125通过后仍需完整400-job/1200-scenario确认。
 9. 每个完成版本必须同row报告B-old、A-old、seen-new、H、forgetting、全部注册类floor、逐类/逐receiver/逐场景混淆及资源；总体均值不能掩盖局部退化。
 
 技术失败不得冒充算法负结果；作者不得自证晋级；不得用多轮源码签名、authority或数据握手替代无线信号算法实验。
+
+#### r9发布前停止与r10原始字节链修正
+
+r9没有启动child。状态固定为`LOCAL_VERIFIED→SOURCE_LANDED→STOPPED_PRE_CHILD_RELEASE_PACKAGE_LINE_ENDING_ASSERTION`。direct preflight、11项冻结输入SHA、GPU1空闲、run/output/log初始不存在均已通过；本地与远端ZIP均为32,809,184B、4,402成员，SHA256=`b57c879dd8e0c38faf9ab63c2c463e83a16e48dc96a0cf7a1ee25bbc42650de4`，archive成员与远端解压成员逐项一致。r9远端只保留ZIP和解压源码，`output`与log目录不存在、匹配进程0、GPU1=`0%/10MiB`、SSH/TCP22连接0。r9路径不得复用。
+
+停止原因是本报告此前错误声明“Git archive必须LF-only”。项目规则只要求通过stdin发送给远端bash的多行脚本使用LF，不要求Python Git blob/archive统一LF。冻结ZIP中的四个关键文件与已审提交原始blob一致，均为纯CRLF；Python支持该EOL。真实源码权威链应为`commit 88db56d3→原始Git blob→b57c…ZIP成员→远端解压成员`，每层核原始字节SHA，而不是把EOL当身份。该停止发生在`py_compile/import`与任何prediction之前，不是N607运行失败或性能结果。
+
+|关键成员|bytes|原始字节SHA256|EOL信息|
+|---|---:|---|---|
+|`code/cvsrffi/stage2_d99_d100_query_evaluation.py`|41,476|`c9e3a25e72c01484e36aed85e4c40bd53e94523e2fa193d0964f832ca094c1a2`|923个CRLF，0个lone CR|
+|`code/scripts/run_d99_d100_narrow.py`|22,571|`8e05f189336bfe327b24b3a4108a3cf84949dd789e992220175364f09a4435dc`|512个CRLF，0个lone CR|
+|`tests/test_stage2_d99_d100_query_evaluation.py`|10,936|`076ede6c3913d7a9bcfe5fcb328777724348f46a75167df7e6fe86a802c1373f`|291个CRLF，0个lone CR|
+|`tests/test_run_d99_d100_narrow.py`|8,914|`7cbe3f02a3eb0e80fcf477a9c0c11c98a0e0131e2f087b1efe322be439f5e1fc`|246个CRLF，0个lone CR|
+
+r10冻结如下：
+
+|字段|冻结值|
+|---|---|
+|run ID|`d99_d100_narrow_rx20_1_seed713101_k10_new20_88db56d3_20260721_r10`|
+|方法代码|`88db56d36be3e7fc7b67e34145eab69a51fda5df`，与r9完全相同|
+|源码ZIP|沿用本地同一未修改、未重打包的`source_88db56d3.zip`；SHA/bytes/成员数仍为`b57c…50de4`/32,809,184/4,402|
+|唯一变化|删除无项目依据的LF-only前置断言，改为整体ZIP＋四关键成员原始字节SHA＋`py_compile/import`闭合|
+|独立review|P0=0、P1=0、`MERGE`|
+|远端run/output|`/home/szu2070436088/2510044040/CV-SincNet/runs/d99_d100_narrow_rx20_1_seed713101_k10_new20_88db56d3_20260721_r10`及其`output`|
+|远端log|`/home/szu2070436088/2510044040/CV-SincNet/logs/d99_d100_narrow_rx20_1_seed713101_k10_new20_88db56d3_20260721_r10`|
+|启动策略|重新direct preflight；新路径同步同一ZIP；核整体与成员原始SHA；`py_compile/import`通过后只启动一次；不自动重试|
+
+r10的child命令只把r9命令中的run/source/output路径替换为r10路径。数据、checkpoint、runtime、method lock、ground、LODO、receiver=`20-1`、seed=`713101`、K=`10`、new-count=`20`、GPU/CPU、D81/D99/D100候选和全部超参数逐字不变。若任一ZIP/member SHA、成员数、compile或import偏差，继续fail closed；不因删除错误EOL门而放宽真实源码漂移检查。
