@@ -1,6 +1,6 @@
 # Stage2轻型域适应与新类注册研发目标
 
-版本：2026-07-18
+版本：2026-07-21
 状态：active goal定义
 数据协议引用：`protocol_schema=p2_min_v1`
 
@@ -69,23 +69,70 @@ real seen-new TX counts: 2, 5, 10, 20
 
 ## 4. 研发路线优先级
 
-### 4.1 第一优先：先提高Stage2-B旧域头
+### 4.0 强制路线纠偏：域适应不是分类头改名
+
+本目标中的“域适应”必须包含对星地/接收机偏移的显式估计与表示校正。仅修改qKNN距离、prototype打分、协方差、分类温度、融合权重、类别bias、RDA/SRDA头或old/new校准，不得单独作为下一轮主候选，也不得据此宣称已解决P0-2星地偏移。分类头可以作为联合方法的第二模块和matched ablation，但不能持续替代表示层域适应研发。
+
+各根因、机制边界与晋级证据固定如下。主agent必须在候选预登记和完成报告中标明本轮实际处理了哪些行；仅改分类头最多能直接处理P0-3、P0-5和P1-1，不能据此声称处理了P0-2：
+
+| 优先级/根因 | 已知失败表现 | 主解决机制 | 禁止替代或常见误区 | 必须观察的晋级证据 |
+|---|---|---|---|---|
+| P0-1：注册前target-old判别margin不足 | before-old本身约86%，部分旧类远低于总体均值；新类加入前已存在弱类 | target-old support参与的`z_dom`条件化表示校正；全类class-balanced LOO；弱coverage时identity收缩 | 只在注册后给旧类加bias或ground logit；只优化总体old均值 | 同row注册前old、逐旧类margin、最低旧类和每receiver均不恶化；改善不是由old专属加分产生 |
+| P0-2：星地/接收机偏移未被识别和消除 | D93/D94的ground中心transport可support拟合100%但query下降；ground nuisance coverage低 | Phase1聚合`z_id/z_dom`学习低秩污染映射；Phase2用全部合法target support估计域上下文；逐样本非正交残差与coverage-controlled shrinkage | 把RDA/SRDA、qKNN距离、共同正交变换或完整重估后不改变几何的变换称为域适应；使用query更新 | C相对A独立正收益；`z_dom`置乱负对照失效；报告coverage、解释率、适配norm、receiver/scene增益和低coverage回退 |
+| P0-3：新类注册改写全部类别竞争边界 | old保护常伴随new下降，new释放又造成old侵入 | 域适应后的target-support qKNN局部头+SRDA全局头；所有类统一均值、温度和先验；ground仅作共享协方差/关系正则 | ground旧类原型直接投票；old/new角色专属bias、阈值或quota | 同rowafter-old、seen-new、`H_old_new`、old→new/new→old混淆同时改善，不能跨row拼最好值 |
+| P0-4：K-shot下高维适配不可辨识、support-query失配 | 高维变换support准确率极高但held query负迁移；K1无法估计类内散度 | rank≤4/6的解析ridge或少步小参数更新；K≥2 support cross-fit；K1使用Phase1冻结映射和support域上下文 | K1训练深adapter；全矩阵仿射；用development/confirmation query早停或选rank | support-held与锁定query方向一致；报告fit/held gap、rank、参数norm、步数；K1非identity且每receiver不为负 |
+| P0-5：旧类下尾和逐类不均匀严重 | 同一row旧类可从约40%到接近97%，总体均值掩盖floor | 覆盖全部注册类的class-balanced LOO、soft-CVaR/下尾风险、support半径校准；局部头保留弱类多峰，SRDA稳定全局边界 | 按TX ID定向保护历史难类；只提升平均old；用新类损失换旧类floor | 报告全部逐类、最低旧/新类、下尾分位数、CVaR及每类混淆；floor提高且seen-new/H不下降 |
+| P1-1：类内多峰被单中心抹平 | 单均值对局部mode和异常shot敏感，部分qKNN类仍有可救援局部证据 | target-support qKNN/Student-t归一化局部混合；合法ground多原型只作弱关系/协方差先验 | 对多原型裸max或不除以数量；ground多原型覆盖target-new；用单clean样本伪装原型 | qKNN与SRDA的disagreement、双向rescue、oracle-union、逐类误差重叠和prototype-count公平性 |
+| P1-2：receiver/scenario异质性 | 某些receiver及rain/low-elevation显著更差，单一row级transport外推失败 | `z_dom`逐样本条件化，按类平衡聚合row域上下文；Phase1 LODO/meta-DG提高可外推方向 | receiver ID专属参数；同一clean IQ多信道重放；强制所有场景使用同一非收缩偏移 | 五receiver×三scene分解、coverage-收益关系、各receiver old gain≥0及最差scene不恶化 |
+| P1-3：K1现有方法退化为identity | 无类内方差、无法LOO，现有适配器不更新或过拟合 | Phase1预锁解析域映射和可靠度；K1仅估计全类域上下文/coverage并执行一次低秩校正 | 伪造K1类内协方差；从query估计温度、BN或熵；K1多步深微调 | 相对direct ADV3B02总体≥+2pp、paired CI下界>0、每receiver≥0，并报告适配幅度 |
+| P1-4：地面聚合知识冗余且任务信息错配 | 84个domain×class中心重构余弦很高但预测不变，`D_eff`远低于名义数量 | 密度反权重、共享domain nuisance basis、类均值+切空间局部残差、coverage证书；rank随`D_eff`自适应 | 逐个重构84中心并把高余弦当成功；强行固定rank；保存成员或单样本feature | `D_eff`、stable rank、LODO transport误差、margin flip、逻辑/序列化字节和相对现有bundle的任务收益 |
+| P2：量化与资源误差 | INT8/INT4可能造成小margin样本翻转，但不是当前星地偏移主因 | margin-aware量化、量化前后同row预测一致性、INT8正式状态；仅在表示/分类机制正收益后压缩 | 用量化调参替代域适应；只报告重构余弦；FP32结果直接作为正式候选 | top1一致率、margin sign flip、old/new/H/floor差值、状态字节、MAC、平均/P95时延 |
+
+每轮联合研发至少包含四个正交matched候选：
+
+1. `A=原始合法baseline`；
+2. `B=仅分类头改进`；
+3. `C=仅显式域适应，分类头保持A不变`；
+4. `D=显式域适应+分类头联合`。
+
+只有C相对A在support-held代理及锁定窄验证中表现出可复核正信号，才能把D相对B的增益归因于域适应。若C失败，必须报告表示覆盖、参数可辨识性、逐receiver/scene/类结果和负对照，修改域适应机制；不能跳过C而继续只迭代B。125 screen不得用于选择域适应rank、loss、coverage公式或分类头超参数。
+
+### 4.1 第一优先：使用`z_dom`进行显式support-only表示层域适应
+
+ADV3B02的身份表示以`z_id=feat_joint`为主，域表示以`z_dom=feat_imp`为主。`z_dom`只作为receiver/channel/noise扰动传感器和条件变量，不直接拼接进身份分类logit，不把`dom_head`的argmax当作目标域真值，也不按receiver ID建立专属分支。
+
+Phase1必须先完成`z_dom`效用审计并生成与checkpoint共同封存的新bundle状态：
+
+- 在合法地面LODO上报告`z_dom`的domain敏感度、TX身份泄漏、有效rank、`D_eff`和跨域稳定性；
+- 从多物理样本聚合的地面`z_id/z_dom`域×类统计学习`z_dom→z_id`低秩污染映射、奇异值、半径和coverage证书；不得保存样本级feature、成员ID、可逆归属或独立sidecar；
+- 低秩rank只能由Phase1 LODO固定，建议上限4或6，并满足`r <= floor(D_eff)-1`；84个名义domain×class中心不得直接当作84个独立域方向；
+- 必须包含permuted/random `z_dom`负对照，证明收益来自域信息而不是增加参数。
+
+若当前Phase1 bundle缺少聚合`z_dom`或`z_id/z_dom`交叉统计，先按`项目.md`构建新的合法、不可替换、共同封存bundle并更新`bundle_id`；固定received-IQ capsule和split不变时不得触发数据重验。禁止因为现有bundle只方便修改分类头，就以继续改head替代该Phase1产物。
+
+Phase2只使用当前row合法target support，从同一固定received IQ同时提取`z_id/z_dom`，按类先聚合、再对全部已注册旧类和新类等权聚合目标域上下文。新类support可以参与估计共享目标域状态，但没有ground新类原型，ground知识不得直接给旧类增加logit。根据目标域偏移在封存`z_dom`子空间中的投影覆盖连续收缩校正量；低coverage时退化到identity/target-support-only，不强制外推ground方向。
+
+首个主候选只允许更新`z_id`后的低秩残差adapter或不超过三个分支标量gate；冻结`z_dom`分支、Sinc/HF共享stem、早期时间/频率/PA卷积和source分类头。K1不进行高维梯度微调，只使用Phase1冻结解析映射及support估计的域上下文/coverage；K>=2才允许support cross-fit下的闭式ridge或最多20步小参数更新。只有最终`z_id`残差显示稳定正收益后，才可尝试`time/frequency/PA`末端投影或`id_proj/joint_proj/id_gate`的rank-2 LoRA；不得从全主干微调开始。
+
+### 4.2 第二优先：提高Stage2-B旧域表示与通用floor
 
 当前可复核最强比较器B3约为注册前old86.67%、注册后old73.33%、new73.33%，说明域适应和注册均未解决。下一路线必须先在support-held old proxy和旧类floor代理上超过B3，再扩展注册机制；冻结后才在真实held query评估，不再以继续叠加hard visibility gate替代旧域适应研发。
 
-优先尝试同一固定接收IQ上的规范化拼接表征：`z_id160 + FFT96 + RF32`，并做分块L2归一化、能量/温度可学习缩放和matched ablation。维度增加不是目的；只有support-held代理性能与proxy Pareto改善才进入冻结query评估，真实held query只用于screen/晋升判断，不再调参或修改候选。
+同一固定received IQ上的`z_id160 + FFT96 + RF32`只能作为接收后辅助数学表征和matched ablation，必须分块L2归一化并控制能量。不得把维度增加、共同正交变换或完整重估后几何不变的变换写成域适应成功。域适应的可观察机制必须来自`z_dom`条件化的逐样本非正交残差、受限metric、coverage-controlled ground先验或其他能实际改变support-query判别几何的合法机制。
 
-### 4.2 第二优先：连续联合适配与注册
+### 4.3 第三优先：连续联合适配、局部—全局分类与注册
 
 在一个全注册类空间内联合训练target-old和target-new support：
 
 - ground old int8聚合知识只作只读身份先验、正则或不确定度参考，不直接覆盖target原型；
 - target-old原型负责域校正，target-new原型独立注册；最终部署的target-old和target-new原型均须量化，优先int8；FP16/FP32只作为matched精度/速度/状态ablation，按Pareto证明最终格式；
-- 采用class-specific cosine head、正值对角度量加极低秩残差或其他低参数连续变换；
+- 域适应后再采用qKNN/Student-t局部头与SRDA全局头的matched对比和support-only融合；qKNN保留类内多峰，SRDA提供类平衡共享协方差边界，ground只提供coverage-controlled共享先验；
+- 所有旧类和新类的分类均值都来自当前target support，所有类使用同一公式、先验和温度；不得按old/new角色直接增加分数；
 - loss同时包含old support分类、new support分类、ground-anchor弱正则、类内半径收缩、类间`margin > radius_i + radius_j`、old/new collision惩罚及adapter幅度正则；
+- 为解决旧类严重不均匀，开发代理必须加入覆盖全部已注册类的class-balanced LOO和soft-CVaR/下尾风险项，并报告全部逐类准确率、最低旧类、最低新类和下尾分位数；
 - 只允许support梯度，使用快速闭式或少步梯度更新；不用binary visibility/hard release作为主学习机制。
 
-### 4.3 遗忘保护
+### 4.4 遗忘保护
 
 - 注册前冻结一份旧类决策状态作为teacher/anchor，仅用于support侧蒸馏与参数位移约束；
 - 对每个旧类按support不确定度决定target校正与ground int8先验的融合强度；
