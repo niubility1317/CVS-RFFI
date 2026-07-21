@@ -161,3 +161,18 @@ Oracle decoder不新增fit、backbone前向、score MAC、optimizer step或持�
 - 新日志根：`/home/szu2070436088/2510044040/CV-SincNet/logs/d92_role_oracle_licensed_125_retry1_20260721`
 - 启动前新增门：远端显式导入`from scripts import probe_d92_registration_balanced_covariance`，并执行完整launcher dry import；失败则不得launch。
 - 仍由同一个N607发布agent独占run；主agent不并发启动。retry1只授权这一项打包修复，不授权方法修改、调参或失败后的再次自动retry。
+
+## retry1技术失败与retry2预注册
+
+retry1完成895/895文件SHA、七个冻结文件SHA、显式probe import、`py_compile`、launcher help和`bash -n`后，在GPU0–7以PID`1837491`–`1837498`启动；但125/125 row在子row pipeline入口因漏同步Git跟踪的代码根级`training_controls.py`统一失败，仍为`0 COMPLETE`。该run同样只标记`TECHNICAL_RELEASE_FAILURE / NO_PERFORMANCE_RESULT`，不是方法性能失败。
+
+现预注册不可覆盖技术retry2：
+
+- run ID：`d92_role_oracle_licensed_125_retry2_20260721`
+- 方法提交仍为`0184952cf7283632b0330727bd1bfe6b3026e44e`，只扩大冻结发布包覆盖面，不改代码、参数、矩阵、数据或声明边界。
+- 同步该提交的完整Git跟踪`code/`树：1244文件、工作树原始字节约60.85MiB；逐文件SHA必须1244/1244通过。
+- source：`/home/szu2070436088/2510044040/CV-SincNet/runs/d92_role_oracle_source_retry2_20260721`
+- output：`/home/szu2070436088/2510044040/CV-SincNet/runs/d92_role_oracle_licensed_125_retry2_20260721`
+- logs：`/home/szu2070436088/2510044040/CV-SincNet/logs/d92_role_oracle_licensed_125_retry2_20260721`
+- 新增无数据深层入口门：`PYTHONPATH=<source>/code <python> -c "import scripts.run_cvs_somph_diag_row_pipeline"`及row pipeline`--help`必须通过，确保完整子进程import链已封闭；不得用真实target row做smoke或选择。
+- 仍由同一唯一N607发布owner执行。retry2失败后不授权自动retry。
