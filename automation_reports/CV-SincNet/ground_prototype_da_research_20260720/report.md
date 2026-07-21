@@ -1458,3 +1458,13 @@ r10冻结如下：
 |启动策略|重新direct preflight；新路径同步同一ZIP；核整体与成员原始SHA；`py_compile/import`通过后只启动一次；不自动重试|
 
 r10的child命令只把r9命令中的run/source/output路径替换为r10路径。数据、checkpoint、runtime、method lock、ground、LODO、receiver=`20-1`、seed=`713101`、K=`10`、new-count=`20`、GPU/CPU、D81/D99/D100候选和全部超参数逐字不变。若任一ZIP/member SHA、成员数、compile或import偏差，继续fail closed；不因删除错误EOL门而放宽真实源码漂移检查。
+
+#### r10实际结果：active-K配置错误读取未封存K1锁
+
+r10唯一启动一次且没有重试。状态链为`LOCAL_VERIFIED_REVIEW_PASSED→SOURCE_LANDED_VERIFIED→PY_COMPILE_IMPORT_PASSED→LANDED→RUNNING(瞬时)→FAILED_PRE_PREDICTION_LODO_K1_CONFIG_DRIFT`。源码ZIP、四关键成员原始SHA、远端`py_compile`和两模块import均通过，证明r9的EOL修正有效，r10失败与源码传输无关。
+
+wrapper PID=`1608261`、Python PID=`1608263`，均已退出，exit1。完整日志2,155B，SHA256=`e89bc0f9619ef8daf698c362317c8a6911899ab8a6eedddcc1d32d1badfff591`。partial output为49文件、29,193,188B；candidate prediction=0、score/detailed=0、`narrow_receipt.json`不存在。`offline_build_receipt.json` SHA256=`33174dd7d4055f743de674370b5f60a7fb6143be1488dab806eedd049f0008b0`，`registration_pair.final.json` SHA256=`118a61e1ad4c2c1ee08db40a60ee6737868f2d2a956b2dafde76d77a40b5e8ee`。完整回收证据保存在根报告artifact目录`artifacts/d99_d100_narrow_rx20_1_seed713101_k10_new20_88db56d3_20260721_r10/`。远端run/source/output/log全部保留且不得覆盖或复用；GPU1、匹配进程、SSH和TCP22连接均已清零。
+
+唯一异常是K10 row已在入口成功取得K10锁后，`_d99_config`仍遍历全部`ALLOWED_K`并首先调用`locked_parameters_from_lodo(..., k_shot=1)`。r7的K1因LODO floor失败而按设计没有封存可发布锁，因此抛出`D99D100QueryEvaluationError: K-specific LODO parameters are missing`。这不是缺数据、N607故障或D99性能负结果，而是active-K runtime错误预构造inactive-K配置。
+
+修复边界冻结为：K10只消费已验证K10参数，不能复制K10参数到K1，也不能读取被拒K1记录；K1作为active row时仍必须fail closed。任何修复先经过active-K语义pre-review，再以最小query evaluator＋相邻测试提交；方法超参数、数据、checkpoint、LODO、候选和target row保持不变。r11须使用新commit、新不可覆盖run ID和新报告预登记。
