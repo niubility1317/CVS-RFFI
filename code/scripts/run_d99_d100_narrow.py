@@ -401,6 +401,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         class_binding_bytes=class_binding_raw,
         class_binding_sha256=class_binding_sha,
         class_binding_source_schema=str(raw_class_binding.get("schema", "")),
+        target_old_tx_labels=tuple(str(value) for value in build["old_tx_labels"]),
         phase2_authority_sha256=args.authority_commit_sha256,
         output_root=prediction_root,
         device=args.device,

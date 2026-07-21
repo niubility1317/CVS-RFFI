@@ -157,6 +157,7 @@ def test_real_d19_v1_shape_is_deterministically_typed_and_raw_sha_bound() -> Non
             "2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98"
         ),
         old_handles=handles,
+        target_old_tx_labels=("14-10", "14-7", "20-15", "20-19", "6-15", "8-20"),
     )
     assert tuple(tx_to_handle) == (
         "14-10",

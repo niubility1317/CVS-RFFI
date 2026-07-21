@@ -165,18 +165,29 @@ def test_class_binding_bijection_and_order_are_exact() -> None:
         payload_bytes=raw,
         checkpoint_sha256="c" * 64,
         old_handles=handles,
+        target_old_tx_labels=tuple(f"tx-{index}" for index in range(6)),
     )
     assert tuple(handle_to_tx[handle] for handle in handles) == tuple(
         f"tx-{index}" for index in range(6)
     )
     permuted = handles[1:] + handles[:1]
-    with pytest.raises(evaluation.D99D100QueryEvaluationError, match="bijection"):
+    remapped, _ = evaluation.class_binding_maps(
+        payload,
+        payload_sha256=sha,
+        payload_bytes=raw,
+        checkpoint_sha256="c" * 64,
+        old_handles=permuted,
+        target_old_tx_labels=tuple(f"tx-{index}" for index in range(6)),
+    )
+    assert tuple(remapped.values()) == permuted
+    with pytest.raises(evaluation.D99D100QueryEvaluationError, match="TX order"):
         evaluation.class_binding_maps(
             payload,
             payload_sha256=sha,
             payload_bytes=raw,
             checkpoint_sha256="c" * 64,
-            old_handles=permuted,
+            old_handles=handles,
+            target_old_tx_labels=tuple(f"tx-{index}" for index in range(1, 6)) + ("tx-0",),
         )
 
 

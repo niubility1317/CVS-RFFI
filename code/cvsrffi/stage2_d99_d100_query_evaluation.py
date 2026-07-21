@@ -170,8 +170,9 @@ def class_binding_maps(
     payload_bytes: bytes | None = None,
     checkpoint_sha256: str,
     old_handles: Sequence[str],
+    target_old_tx_labels: Sequence[str],
 ) -> tuple[Mapping[str, str], Mapping[str, str]]:
-    """Validate the fixed six-way Phase1 TX to opaque old-handle binding."""
+    """Bind fixed Phase1 TX order to the current row's opaque old handles."""
 
     claimed_sha = str(payload_sha256).lower()
     raw = _canonical_bytes(payload) if payload_bytes is None else bytes(payload_bytes)
@@ -195,25 +196,35 @@ def class_binding_maps(
     ):
         raise D99D100QueryEvaluationError("class binding schema/checkpoint drift")
     expected_handles = tuple(str(value) for value in old_handles)
-    if len(set(expected_handles)) != 6:
+    locked_target_tx = tuple(str(value) for value in target_old_tx_labels)
+    if (
+        len(expected_handles) != 6
+        or len(set(expected_handles)) != 6
+        or len(locked_target_tx) != 6
+        or len(set(locked_target_tx)) != 6
+    ):
         raise D99D100QueryEvaluationError("old handle registry drift")
     ordered = sorted(entries, key=lambda row: int(row.get("class_index", -1)))
     if [int(row.get("class_index", -1)) for row in ordered] != list(range(6)):
         raise D99D100QueryEvaluationError("class binding class index drift")
-    tx_to_handle: dict[str, str] = {}
+    phase1_tx_order: list[str] = []
+    historical_handles: list[str] = []
     for index, row in enumerate(ordered):
         tx = str(row.get("phase1_tx", ""))
-        handle = str(row.get("registered_class_handle", ""))
+        historical_handle = str(row.get("registered_class_handle", ""))
         if (
             int(row.get("direct_logit_index", -1)) != index
             or not tx
-            or handle != expected_handles[index]
-            or tx in tx_to_handle
+            or not historical_handle
+            or tx in phase1_tx_order
+            or historical_handle in historical_handles
         ):
-            raise D99D100QueryEvaluationError("class binding TX/handle bijection drift")
-        tx_to_handle[tx] = handle
-    if len(set(tx_to_handle.values())) != 6:
-        raise D99D100QueryEvaluationError("class binding handle bijection drift")
+            raise D99D100QueryEvaluationError("class binding Phase1 registry drift")
+        phase1_tx_order.append(tx)
+        historical_handles.append(historical_handle)
+    if tuple(phase1_tx_order) != locked_target_tx:
+        raise D99D100QueryEvaluationError("class binding target-old TX order drift")
+    tx_to_handle = dict(zip(locked_target_tx, expected_handles, strict=True))
     handle_to_tx = {handle: tx for tx, handle in tx_to_handle.items()}
     return MappingProxyType(tx_to_handle), MappingProxyType(handle_to_tx)
 
@@ -453,6 +464,7 @@ def run_d99_d100_query_evaluation(
     class_binding_bytes: bytes,
     class_binding_sha256: str,
     class_binding_source_schema: str,
+    target_old_tx_labels: Sequence[str],
     phase2_authority_sha256: str,
     output_root: str | Path,
     device: str,
@@ -496,6 +508,7 @@ def run_d99_d100_query_evaluation(
         payload_bytes=class_binding_bytes,
         checkpoint_sha256=str(after_manifest["phase1_checkpoint_sha256"]),
         old_handles=old_classes,
+        target_old_tx_labels=target_old_tx_labels,
     )
     raw_binding_payload = json.loads(class_binding_bytes.decode("utf-8"))
     if raw_binding_payload.get("schema") != class_binding_source_schema:
