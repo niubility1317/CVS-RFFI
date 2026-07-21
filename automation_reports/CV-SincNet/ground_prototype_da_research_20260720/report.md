@@ -1658,3 +1658,39 @@ Patch B新增`stage2_zid_srda_fusion.py`及其专项测试，只消费Patch A公
 Patch B下一步不是直接发布target，而是先实现独立Phase1 LODO runner：冻结每K候选和Git/config/A/ground receipts；只读合法Phase1 single-observation archive；从原始绑定输入现场重算fit、held-pseudo-query量化margin、A/RDA/B预测、双向rescue、NLL、old/new/H/floor/forgetting和资源；产出immutable外部receipt。只有matched LODO性能门、独立量化门、K1因果门和现场资源门全部通过，才允许生成六臂target窄验证release config。
 
 提交前最终回归在`ssr-gpu`中覆盖Patch A/B、D81 typed/episode/ground、D99/D100 query/LODO和D101 RDA/LODO，共183/183通过，进程exit0；`git diff --check`通过。pytest结束后访问`pytest-current`的Windows Temp `PermissionError`仍为已知atexit清理噪声，不改变测试结论。
+
+#### 分享设计吸收裁决与Patch C-id v0本地诊断核心
+
+2026-07-22针对用户提供的ChatGPT分享对话完成域适配、分类头和遗忘/floor监督三路交叉审查。分享设计中可吸收的主干是：将receiver公共偏移、sample-level LEO/channel扰动和TX身份残差分开建模；以类内散度和类间保护构造低秩nuisance subspace；只对所有类共享的低秩方向做软抑制；身份memory与decision head分离。该方向与当前`A(identity z_id＋single-qKNN)→B(identity z_id＋SRDA)`因果链兼容。首轮明确不吸收vMF替换、local scaling、hubness、PoE、类特异QDA、碰撞重编译、partial equalization、`U_H`或`24 rx＋72 id`的FFT96改造，因为这些机制会同时改变kernel、表示、校准或融合，重演D99无法归因的混合失败。
+
+监督最终裁决为`REVISE`：C-id v0只按`MERGE_LOCAL_DIAGNOSTIC`落地；主方案仍是C-dom receiver-context correction，但必须等待新的Phase1共同封存bundle，禁止复用D99/ground bundle或换名进入target。新bundle至少需要在合法Phase1 single-observation archive上经nested receiver/day LODO封存`U_R^dom`、rank≤4的`z_dom→z_id`交叉映射、中心/尺度、`D_eff`、coverage、LOCO一致性和Phase1锁定的收缩规则。Phase2届时只允许从当前row全部注册类support按类均衡估计共享receiver context；K1只能估该共享context，不能估类内scatter或sample-channel basis。首版C-dom仍不引入`U_H`、partial equalization和FFT96重构。
+
+C-id v0实现冻结为：
+
+\[
+S_W=\frac1C\sum_c\frac1{K-1}\sum_k(z_{c,k}-\bar z_c)(z_{c,k}-\bar z_c)^\top,
+\quad
+G=S_W-\beta S_B,
+\quad r\le2,
+\]
+
+从`G`的正特征方向中，仅保留类内能量达到Phase1锁阈值且`within/(within+between)`达到预锁nuisance比例的方向`U`，再通过Patch A已有typed metric闭合`M=I-U^T diag(a)U`。当前实现不另行变换或重建support bank，Patch A的INT8量化、class bandwidth、Student-t核、`logsumexp-log K_c`、temperature和逐query全类打分公式全部保持不变。`attenuation`、rank上限、between guard和选择阈值只能来自Phase1 nested LODO lock；该锁同时绑定精确Patch A config lock digest与identity metric receipt，不能只凭同一K替换temperature/bandwidth等A参数。target侧为零优化步。支持行顺序、注册表顺序和类名重命名不改变几何；输入表面不含query、receiver、role、scenario、ground或source。
+
+K1执行严格可辨识回退：target类内scatter、rank和update均为0，并返回Patch A逐值相同的`identity_rank0` metric。该回退是协议正确性，不代表C-id通过P1-3的K1非identity目标；K1非identity只能由未来C-dom的Phase1冻结cross-map实现。K≥2若没有同时满足类内能量和类间保护的方向，同样精确回退identity。任何coverage、condition或receipt不满足上层封存要求时不得发布target。
+
+|文件|用途|SHA256|
+|---|---|---|
+|`code/cvsrffi/stage2_zid_support_nuisance_metric.py`|C-id Phase1锁、class-balanced解析解、rank≤2 PSD软抑制、K1/无方向identity回退及typed audit|`d859cba8e1affa0f663157c81bb5c5d4c923a72eec707ad0e8ad329a9db9b636`|
+|`tests/test_stage2_zid_support_nuisance_metric.py`|K1回退、低秩方向、类/行置换、类名重命名、Patch A bank不变、无合法方向回退、禁用输入表面和fail-closed测试|`c4b9a7e0b5c91c084d4d85f79ad49fd60e48909b2df518635bf1a43d73c8601c`|
+
+本地验证在`ssr-gpu`中串行执行：
+
+```text
+conda run -n ssr-gpu python -m pytest -q tests/test_stage2_zid_support_nuisance_metric.py tests/test_stage2_zid_student_t_qknn.py tests/test_stage2_zid_srda_fusion.py
+.................................................................. [100%]
+67 passed, exit 0
+```
+
+`python -m compileall`通过。独立代码审查首轮发现并修复2项Important：①C-id锁原先只比较active K，现已共同绑定Patch A config lock digest与identity metric receipt；②SHA验证原先会把64位整数转为字符串，现已要求全部receipt/digest为精确`str`。相应的同K不同temperature、错误identity receipt以及非字符串SHA测试均已加入，修复后无Critical或未解决Important。`ssr-gpu`未安装`ruff`，因此未获得ruff证据；这不是测试失败，后续以`git diff --check`、专项/相邻回归和人工diff审查闭合。本节没有运行target/N607实验，没有生成bundle，也没有授权K1、D、125或正式性能晋级。
+
+后续顺序冻结为：①实现独立Phase1 nested LODO runner，并对C-id加入`eta=0`、support标签置乱、随机/置乱`U`负对照；②只有C-id在held receiver/pseudo-new联合门上相对A无old/new/H/floor/min-class退化、forgetting不增且balanced NLL改善，才允许一次预登记`K10/new20×3 scenes`机制诊断；③并行研发新的C-dom Phase1 bundle；④C-id与C-dom分别对A取得独立正收益前，C-joint与D保持`HOLD`。D未来只能采用`best-C qKNN expert＋固定B-RDA(raw z_id) expert`，不得让B在C变换后重新拟合却仍声称`D.head_hash==B.head_hash`。
