@@ -1550,3 +1550,9 @@ r12的同row保留门按更新目标收紧：D99相对D81的`old_acc_before_incr
 #### D101 Shrinkage RDA nested LODO实现状态
 
 D101 Phase1 nested receiver LODO实现与测试已独立提交为`fd38b861`。最终独立终审为`P0=0、P1=0、MERGE`；主线在`ssr-gpu`复跑D101专项、RDA core、D99/D100 LODO和D100相邻测试共70/70通过。它精确绑定D99/D100/D101顶层冻结候选网格，支持全失败及mixed partial的可验证`REJECT` receipt，真实执行K1 alpha=0 fallback数值路径，并拒绝删除、重排、重复候选后重签。该提交当前只有Phase1 LODO核心证据，尚未创建release wrapper、尚未运行N607或target，不构成性能结果。
+
+#### D101 Phase1 LODO wrapper收口
+
+D101 development-only release wrapper及其测试已独立提交为`47053bc50d96a0223c6814220091cf2ff4d50f7e`。wrapper SHA256为`ae0c8d9fcf2dda6f2218914a7d83ba8e6e1d8167cae56b1c26532dbf2bd2d932`，测试SHA256为`eb8b562e88584511c6452d2a95e3e047a8fa40171437528bc54ea2efb32ed894`。独立终审为`P0=0`、`P1=0`、`MERGE`，非阻断P2是`result.json`未内嵌wrapper自身SHA；外部Git提交、配置中的D101 code registry和报告仍负责入口身份闭合。
+
+主线在`ssr-gpu`中对wrapper、D101 LODO/RDA core、D99/D100 LODO runner和D100相邻模块复跑80/80，`py_compile`通过；仅有既有pytest Temp atexit清理噪声且进程exit0。当前仍未生成D101冻结release config、未运行N607、未访问target，也没有old/new/H/floor/forgetting性能。由于D101强制在D99 mapped bank后构造RDA，它只能作为D99联合分类头的Phase1诊断，不能充当更新目标中的identity/no-DA纯B臂，也不能授权target或125。
