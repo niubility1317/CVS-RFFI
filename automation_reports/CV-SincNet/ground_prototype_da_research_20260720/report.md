@@ -1605,3 +1605,18 @@ Patch 0新增`dual_feature_forward.py`、dual TorchScript exporter/parity verifi
 |`tests/test_dual_feature_forward.py`|`4683a9aa7e163d48a3946d23102add54eca5b81506f9c1a511ca672d906980f8`|
 |`tests/test_export_adv3b02_dual_feature_torchscript.py`|`9afa96ea72945a0ad500aee0666e967ac4da6a37ed9b3e0c5343dd157735826c`|
 |`tests/test_verify_adv3b02_dual_runtime_checkpoint_parity.py`|`2589fb0046a0cdc71260445378f3f2b7d113bf926f5bb43dc97042ee89a1e9cb`|
+
+#### Patch A：纯z_id160 identity Student-t single-qKNN基线
+
+Patch A新增独立`stage2_zid_student_t_qknn.py`及其测试，不导入或融合D81/D99/D100/D101，不读取`z_dom`、FFT/RF、ground class mean、query label或old/new角色。所有注册类共享同一Phase1锁、INT8 support bank、FP16逐向量scale和normalized Student-t `logsumexp-log(K_c)`公式；rank0 metric严格是identity，作为后续C-id固定分类头。非identity metric只为未来C-id保留共享PSD接口，必须携带typed provenance，fit scope仅允许`phase1_lodo`或`target_support_only`且`query_rows_used_for_fit=0`。
+
+首轮作者自测22/22通过后，非作者review发现3个P1和1个P2：FP32 teacher错误复用INT8 bank的FP16带宽、MAC被误称为upper bound、metric来源声明缺少typed provenance、wire缺少严格loader。修复后第二轮非作者复审为`P0=0、P1=0、P2=0、MERGE`；专项30/30、D81/D99/D101相邻回归71/71、`py_compile`均通过。量化审计现在从full-precision support独立重算teacher带宽；wire严格拒绝截断、尾随字节、header/数组顺序、dtype/shape和payload篡改，并对identity/rank2执行byte-exact roundtrip。
+
+最大`C=26,K=20,rank=2`探针包含520条support：numeric arrays=`85,660B`；两次独立provenance payload探针的实际wire为`88,718–88,719B`，该范围是实测值而非全局上界；persistent decoded cache=`0B`。matmul-only审计为每次score固定`S*r*d=166,400MAC`，每query可变部分`S*d+r*d+S*r=84,560MAC`；明确不包含hash、decode、normalize、reduction、elementwise、exp/log和serialization，也不宣称端到端MAC上界或实测latency。上层sealed capsule/admission仍须解析并核验typed provenance所绑定的真实source receipt；本模块只封存来源SHA，不自行读取外部文件。
+
+|文件|SHA256|
+|---|---|
+|`code/cvsrffi/stage2_zid_student_t_qknn.py`|`f7bc2ab7e6f9457085973099431db934edfa840ba37e904288ff4720726101e2`|
+|`tests/test_stage2_zid_student_t_qknn.py`|`a7c349b99917f2dc388ace3d99ae9f5a4cf2346566f7c1405b68e513baef099f`|
+
+Patch A当前仅完成本地组件和审计，不构成target性能、Phase1 LODO晋级、bundle或N607发布。下一步Patch B必须只消费该公开typed z_id bank，在identity metric不变的条件下增加Shrinkage RDA全局头，并保证`alpha=0`时概率、预测、dtype和A输出SHA逐元素相同。
