@@ -149,6 +149,37 @@ def test_r04_r05_r07_score_geometry_omega_floor_and_permutation():
     assert svrn.eta_receipt["receipt_sha256"] == eta["receipt_sha256"]
 
 
+def test_r3_inactive_bcr_deployment_zero_identity_and_active_wire_stability():
+    rows, labels, ids = support()
+    inactive = core.build_branch_state(rows, labels, REAL_CLASS_IDS, ids, qknn_config=qlock(), branch="raw")
+    assert inactive.bcrr_receipt["omega_q"] == 0.0
+    assert not np.any(inactive.bcr_weight_codes_qint8) and np.all(inactive.bcr_weight_scales_fp16 > 0)
+    audit = inactive.quantization_audit["bcr"]
+    assert audit["top1_agreement"] == 1.0 and audit["large_margin_flip_count"] == 0
+    assert audit["max_abs_logit_error"] == 0.0 and audit["teacher_margin_mean"] == 0.0
+    qknn, fused = core.score_branch_logits(inactive, rows[:3])
+    assert np.array_equal(fused, qknn)
+    wire = core.serialize_branch_state(inactive)
+    assert core.serialize_branch_state(core.deserialize_branch_state(wire)) == wire
+    forged = json.loads(wire.decode("ascii"))
+    forged["bcr_weight_codes_qint8"] = core._encode_array(np.ones_like(inactive.bcr_weight_codes_qint8))
+    with pytest.raises(core.SVRNBCRStateError, match="inactive BCR"):
+        core.deserialize_branch_state(core._canon(forged))
+    receipt = dict(inactive.bcrr_receipt)
+    receipt["omega_star"] = receipt["omega_q"] = 1.0 / core.BCRR_DENOMINATOR
+    receipt["receipt_sha256"] = core._digest(core._bcrr_body(receipt))
+    original = core.make_bcrr_receipt
+    core.make_bcrr_receipt = lambda **kwargs: core.verify_bcrr_receipt(
+        receipt, branch=kwargs["branch"], support_sha256=kwargs["support_sha256"],
+    )
+    try:
+        active = core.build_branch_state(rows, labels, REAL_CLASS_IDS, ids, qknn_config=qlock(), branch="raw")
+    finally:
+        core.make_bcrr_receipt = original
+    assert np.any(active.bcr_weight_codes_qint8)
+    assert hashlib.sha256(core.serialize_branch_state(active)).hexdigest() == "a0996811b9b88da7a71489d26dfa473525f56b71581e19db75ccad63e454025c"
+
+
 def test_r05_r06_positive_safe_omega_uses_24_step_bisection_and_floor():
     rows, labels, _ = support()
     indices = np.repeat(np.arange(len(REAL_CLASS_IDS), dtype=np.int16), 5)

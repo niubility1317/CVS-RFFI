@@ -725,6 +725,8 @@ class SVRNBranchState:
         ):
             raise SVRNBCRStateError("BCR INT8 weight state drift")
         verify_bcrr_receipt(self.bcrr_receipt, branch=self.branch, support_sha256=self.branch_support_sha256)
+        if float(self.bcrr_receipt["omega_q"]) == 0.0 and np.any(codes != 0):
+            raise SVRNBCRStateError("inactive BCR must serialize zero INT8 codes")
         audit = dict(self.quantization_audit)
         if set(audit) != {"qknn", "bcr"}:
             raise SVRNBCRStateError("branch quantization audit schema drift")
@@ -857,9 +859,14 @@ def build_branch_state(
         branch=branch, support_sha256=branch_sha, classes=classes,
         indices=bank.class_indices_int16, h=h, qknn_config=qknn_config, active_k=qknn_config.active_k,
     )
-    codes, scales, decoded_weights = _quantize_columns(deploy_weights)
-    teacher_logits = h @ deploy_weights
-    student_logits = h @ decoded_weights.astype(np.float64)
+    if float(bcrr["omega_q"]) == 0.0:
+        codes = np.zeros((Z_DIM, len(classes)), dtype=np.int8)
+        scales = np.ones((len(classes),), dtype=np.float16)
+        teacher_logits = student_logits = np.zeros((len(h), len(classes)), dtype=np.float64)
+    else:
+        codes, scales, decoded_weights = _quantize_columns(deploy_weights)
+        teacher_logits = h @ deploy_weights
+        student_logits = h @ decoded_weights.astype(np.float64)
     bcr_audit = _bcr_quant_audit(teacher_logits, student_logits)
     qknn_audit = audit_int8_margin(bank, transformed, support_labels, transformed, metric=metric)
     if qknn_audit["top1_agreement"] < MIN_TOP1_AGREEMENT or qknn_audit["margin_sign_flip_count"] != 0:

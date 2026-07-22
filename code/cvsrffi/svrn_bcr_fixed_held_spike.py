@@ -1,4 +1,4 @@
-"""K=5 held falsifier for frozen ``SVRN-qKNN-BCRR/r2``.
+"""K=5 held falsifier for frozen ``SVRN-qKNN-BCRR/r3``.
 
 ``build`` alone reads the immutable r8 archive and writes a separately sealed
 truth sidecar.  ``predict`` accepts only opaque query IDs and z_id.  ``score``
@@ -54,7 +54,9 @@ from cvsrffi.stage2_svrn_bcr import (
 )
 from cvsrffi.stage2_zid_student_t_qknn import Phase1ZIDStudentTLock, Z_DIM
 
-CANDIDATE_REVISION = "SVRN-qKNN-BCRR/r2-held"
+CANDIDATE_REVISION = "SVRN-qKNN-BCRR/r3-held"
+# r3 changes only inactive BCR deployment; inherit the byte-identical r2 qKNN lock.
+QKNN_CONTRACT_REVISION = "SVRN-qKNN-BCRR/r2-held"
 SCOPE = "PHASE1_HELD_PROXY_NON_PROMOTABLE"
 SCHEMA = "cvs.stage2.svrn_bcrr.fixed_held.v2"
 ARMS = ("M0", "M_DA", "M_OTHER", "M_JOINT")
@@ -83,7 +85,7 @@ def _digest(value: Any) -> str:
 def _qknn_lock(coverage_sha256: str) -> Phase1ZIDStudentTLock:
     coverage = _sha_text(coverage_sha256, "coverage_sha256")
     authority = {
-        "candidate": CANDIDATE_REVISION,
+        "candidate": QKNN_CONTRACT_REVISION,
         "design_commit": "407144dd714270bd8305595176dfcf921246b75d",
         "coverage_sha256": coverage,
         "K": K,
