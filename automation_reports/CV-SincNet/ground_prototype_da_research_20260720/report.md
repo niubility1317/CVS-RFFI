@@ -1788,3 +1788,31 @@ I_{syn}(H)=H_{JOINT}-H_{DA}-H_{HEAD}+H_{M0}>0.
 本节状态为`IMPLEMENTING→LOCAL_VERIFIED_NONFORMAL_CORE`，不是`LANDED`、`ARTIFACTS_COMPLETE`、target performance或promotable success。没有生成prediction，因此不存在old/new/H/BA/floor/forgetting或协同收益数值；代码测试、support fit、量化误差和资源探针均不能替代性能结果。未创建target bundle、未访问N607、未发布run，也未建立125 screen。
 
 下一唯一artifact是只读合法Phase1 single-observation archive的nested receiver/day LODO/LOCO runner及其held receipt：先在K1/K5/K10分别冻结RCHM basis/cross-map/gates和BPP先验/六分量量化阈值，再产出同一held row的`M0/M_DA/M_HEAD/M_JOINT`四臂。只有该artifact同时证明DA、head各自独立正收益，`I_syn(H_old_new)>0`，old/new双向wrong→correct救援超过correct→wrong，min-old/min-new/floor不降、forgetting不增、top1一致率≥99.5%、large-margin flip=0且资源仍过门，才允许生成target bundle并登记N607窄实验；否则按对应falsifier停止该revision。
+
+#### `JOINT-RCHM-BPP/r1f` Phase1 held入口审计与双表征归档spike
+
+2026-07-22在本地非正式核心闭合后，主线先审计下一artifact的真实输入，而未直接编写held runner。既有`cvs.phase1.single_leo_feature_archive.v2`历史运行声明8400行、6类、7个receiver、4天和3场景，但当前本地只有manifest，没有5.17MB NPZ；其`features[8400,288]`仅为`z_id160+FFT96+RF32`，没有冻结RCHM必需的`z_dom160`，也未保存被选观测的权威`overlay_id`。此外，本地快照中的manifest、selection receipt和cache-set因换行转换出现字节SHA漂移，只能用于语义审计，不能送入严格loader。上述缺口不是数据协议失败，也没有触发数据重验：received IQ、物理ID、receiver/TX、场景、K、support/query划分和`p2_min_v1`均未改变。
+
+三路审查中，runner架构草案曾假定旧archive可直接复用；数据实物审计否定该假设。监督对“立即实现nested receiver/day held runner”的唯一裁决为`REJECT`：缺少真实NPZ、`z_dom160`和可验证的receiver×day×TX覆盖时，不得生成held prediction或性能结论。随后把唯一允许动作缩小为development-only双表征单观测归档`FEASIBILITY_SPIKE`；监督裁决`MERGE`，不改变冻结RCHM/BPP/joint核心、旧exporter、cache、allowlist或authority。
+
+##### 冻结归档合同
+
+- 每个由既有selection salt选中的source-validation received-IQ只进入一次Patch0 dual runtime调用，同次返回`z_id160`、`z_dom160`和`tx_logits`；不持久化IQ。
+- NPZ精确成员顺序为`z_id,z_dom,tx_logits,labels,receiver_ids,day_ids,physical_ids,scenario_names,class_ids,observation_ids`；`observation_ids`逐行原样复制所选场景中已验证的`overlay_ids`，不得重算或用physical ID替代。
+- 输入闭包绑定cache-set及三场景NPZ SHA、selection-salt receipt、runtime role/runtime SHA、export receipt、parity receipt、checkpoint/adapter SHA、input length和三输出schema。
+- 生产路径只复用既有v1-only source-validation loader和既有known-SHA allowlist，不放宽为v1/v2通吃；输出保持`formal_phase2_eligible=false`、`bundle_created=false`。
+- 有序`class_ids`作为显式缓存标签注册表进入composite manifest。现有runtime receipts不能证明`tx_logits`列到类别的映射，因此`tx_logits`只保留为raw checkpoint column-index审计，`held_runner_tx_logits_allowed=false`；后续held方法不得按类解释或消费它。
+- 输出先在同父唯一staging目录完整写入并验收，再单次rename发布；任一写入、SHA、schema、shape、dtype、有限性、唯一性或语义检查失败时，只清理本次staging，最终目录保持不存在且不可覆盖。
+
+##### 实现、独立review与验证
+
+本轮只新增`code/scripts/export_phase1_singleobs_dual_feature_archive.py`和`tests/test_export_phase1_singleobs_dual_feature_archive.py`。首轮review为`P0=0,P1=3→REVISE`，修复了未冻结class registry、未显式封存三场景SHA和非原子双文件发布；第二轮为`P0=0,P1=2→REVISE`，进一步修复真实r4的v1 cache不能通过默认v2 loader、以及独立verifier未检查三场景SHA mapping。最终非作者复审为`P0=0,P1=0,P2=0→MERGE`。
+
+主线首次尝试`conda activate ssr-gpu`时非交互PowerShell未加载Conda hook，实际落到base Python并报缺少pytest；该命令没有运行项目测试，记为环境激活噪声。显式加载`F:\App\miniconda3\shell\condabin\conda-hook.ps1`后，确认解释器为`C:\Users\lh594\.conda\envs\ssr-gpu\python.exe`，随后`py_compile`通过，并串行复跑新归档、旧单表征归档、Patch0 dual exporter和dual parity四组测试，结果`44 passed`、exit0。TorchScript弃用/trace警告及pytest临时目录atexit权限提示均未改变exit0。
+
+|文件|SHA256|
+|---|---|
+|`code/scripts/export_phase1_singleobs_dual_feature_archive.py`|`264ec80d68c4468d086fc96ba4e134ab429a007f457a0c57ec365aca2efa3b32`|
+|`tests/test_export_phase1_singleobs_dual_feature_archive.py`|`cce3ece0dc8f97737c0a9a7b8b5101baca8abb6f560a17a6e29d57daba7ca31f`|
+
+本节状态为`FEASIBILITY_SPIKE_LOCAL_VERIFIED`，不是`LANDED`、真实archive、held evaluation或性能结果；prediction仍为0，状态保持`NO_PERFORMANCE_RESULT`。下一唯一artifact是在新的不可覆盖run报告中，由单一`gpt-5.6-terra high` runner在N607生成并回收：strict ADV3B02 base dual runtime/export/parity receipts、真实8400行双表征archive/manifest，以及不读取特征值的receiver×day×TX计数与fold可行性receipt。只有这些实物逐项闭合后，才重新审查held runner；当前不生成target bundle、不访问target/query、不运行125。
