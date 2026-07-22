@@ -2017,3 +2017,24 @@ run=`svrn_qknn_bcrr_k5_held_r2_165ca031_20260723`经direct N607/GPU0/PID538739�
 scorefix1在direct preflight后、任何远端写入前因truth外部SHA录入少一个`3`而被阻断；N607与本地回收文件均确认真实SHA=`9745068bc5961ebe90f6305c672cacc8ce338d745579e1c97d4ea503cb3d06d8`。该run未创建remote root、未同步、未启动，无PID/exit/log/score/marker，状态=`BLOCKED_PRE_LAUNCH / NO_PERFORMANCE_RESULT`。唯一修复为更正此64位SHA；不修改方法、父artifact、prediction或评分。
 
 全新不可覆盖run=`svrn_qknn_bcrr_k5_scorefix2_b0baa0dc_20260723_071226`已预注册，wrapper Git提交=`56e746ea7f7ed406336c4c3f2264e3c132d80ea6`，wrapper SHA=`c72510be802254a969494dc4fb7c99a750f748b94eb49a33a81b8999ad0c097b`，`bash -n`通过，独立review=`MERGE / P0=0 / P1=0`。Git冻结后立即交唯一Terra runner；仍只生成父18个prediction对应的72行正式score，不重建数据或prediction。
+
+##### `SVRN-qKNN-BCRR/r3`正式K5 held性能裁决
+
+scorefix2经direct N607/GPU0/PID559507单次启动后自然exit0；父prediction=18、正式score=72、marker与父四artifact/内部truth/prediction COMMIT/源码/wrapper SHA全部闭合。score SHA=`c3ac8b462009675e316929e82df58d6c53dd47ec4bf51ef426c2f96da8b738fe`。独立分析解码144个logit块和144份neighbor receipt，从prediction＋truth逐样本复算72行全部标量、逐类和transition，与score最大绝对差=`2.22e-16`。
+
+|arm|old-before|old-after|old gain|seen-new|H|BA|floor|min-old|min-new|forgetting|old→new|new→old|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|M0|0.817038|0.785392|-0.031647|0.781784|0.747766|0.781784|0.419908|0.446988|0.781784|0.031647|0.042596|0.218216|
+|M_DA|0.817038|0.785392|-0.031647|0.781784|0.747766|0.781784|0.419908|0.446988|0.781784|0.031647|0.042596|0.218216|
+|M_OTHER|0.820042|0.797489|-0.022553|0.793192|0.764833|0.793192|0.476318|0.493128|0.793192|0.022553|0.040127|0.206808|
+|M_JOINT|0.820042|0.797489|-0.022553|0.793192|0.764833|0.793192|0.476318|0.493128|0.793192|0.022553|0.040127|0.206808|
+
+OTHER相对M0取得old-after`+0.012098`、seen-new`+0.011408`、H`+0.017067`、floor`+0.056410`并把forgetting降低`0.009093`；96次wrong→correct、18次correct→wrong，净`+78`，其中old净`+65`、new净`+13`。但SVRN的18/18行η均为0，DA邻居和prediction变化均为0，故`M_DA=M0`、`M_JOINT=M_OTHER`，mean`I_syn=0`、正slice=`0/18`、正scene=`0/3`。量化、state、MAC、时延、显存和coverage全部通过。
+
+最终状态=`ARTIFACTS_COMPLETE -> ANALYZED / COMPLETED_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE`，不运行125。失败是DA全identity和联合退化为OTHER的机制负结果，不是artifact、scorer或BCRR失败；BCRR的真实独立正收益保留为下一联合候选的可复用资产。
+
+##### 下一联合候选接口结论
+
+`RBSC-qKNN-BPDC/r1`一次监督裁决=`REVISE / P0=3 / P1=3 / NOT_DESIGN_FROZEN`：RBSC尚未闭合为qKNN可消费的确定性metric/bandwidth state，新BPDC的RSS归一化与query积分尺度也不一致，禁止实现。随后两次只读直接复用审计均STOP：D92只封存LDA coefficient/intercept，无法恢复qKNN的rank≤8 typed PSD metric；D101与既有SRDA同样只封存线性分类头而非qKNN metric。因此不能把历史方法头直接拼接后声称`DA＋qKNN＋OTHER`。
+
+当前唯一下一设计artifact为`RBSC-TM-qKNN-BPP/r0`方法卡：保留D92的old/new各0.5类内协方差思想，但显式生成现有qKNN schema可消费的rank≤8 typed metric；qKNN bank/bandwidth与CID-BPP算法、先验、selector和量化门全部复用。它仍处于只读`DESIGN_DRAFT`编写阶段，必须经一次独立FEASIBILITY_REVIEW达到MERGE才允许实现；未冻结前不修改方法代码或发布实验。
