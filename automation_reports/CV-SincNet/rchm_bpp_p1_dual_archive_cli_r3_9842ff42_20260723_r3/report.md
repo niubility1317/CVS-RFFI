@@ -7,7 +7,7 @@
 - 主agent:`/root`；唯一N607 runner:`PENDING_GPT_5_6_TERRA_HIGH`
 - candidate:`P1-DUAL-ARCHIVE-GEOFF/r2.1-CLI`
 - protocol:`p2_min_v1`；数据状态:`VALIDATED_ONCE_REUSED`
-- 当前状态:`LOCAL_VERIFIED / NOT_LANDED / NO_PERFORMANCE_RESULT`
+- 当前状态:`ANALYZED / TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
 - retry:`NO`
 
 本run不改变received IQ字节、physical ID、receiver/TX集合、scene、K、support/query split或protocol schema，因此不重复数据验证。唯一技术delta是将五个archive CLI路径参数显式映射到既有函数`*_path`契约；不改变archive内容、runtime、manifest、coverage门、权限或方法机制。
@@ -102,19 +102,28 @@ coverage冻结门：row=8400、unique physical=8400、unique observation=8400、
 
 |字段|结果|
 |---|---|
-|release-control Git commit|`PENDING`|
-|runner/route|`PENDING`|
-|preflight/GPU|`PENDING`|
-|remote ZIP/wrapper/member SHA|`PENDING`|
-|remote compile/bash|`PENDING`|
-|PID/CWD/cmdline|`PENDING`|
-|child exit/marker|`PENDING`|
-|parity receipt/vector|`NOT_GENERATED`|
+|release-control Git commit|`6fa015c27bc8048603b59f87d0a46514348eece4`（主agent负责提交本报告更新）|
+|runner/route|`/root/geoff_r21_n607_runner / direct N607`|
+|preflight/GPU|`PASS / GPU0`；启动前GPU0-7均0%/10MiB且无compute app|
+|remote ZIP/wrapper/member SHA|`PASS / 6ae7adf4...c0cd18f26 / b2075fc2...fcd9b38 / 4439`|
+|remote compile/bash|`PASS / 6项源码SHA匹配、py_compile、bash -n`|
+|PID/CWD/cmdline|`371059`；`runs/rchm_bpp_p1_dual_archive_cli_r3_9842ff42_20260723_r3`；`nohup env CUDA_VISIBLE_DEVICES=0 bash input/run_pipeline.sh`|
+|child exit/marker|`1 / PIPELINE_ARTIFACTS_COMPLETE=ABSENT`|
+|parity receipt/vector|`PASS / cvs.phase1.adv3b02_dual_runtime_checkpoint_parity_receipt.v2 / eea06edf...635acb / vector root=86a9a69e...5c44a4 / batch=[1,8,256] / calls=3 / maxabs=0`|
 |archive/manifest|`NOT_GENERATED`|
 |coverage receipt|`NOT_GENERATED`|
 |prediction count|`0`|
-|回收路径/SHA|`PENDING`|
-|最终状态|`LOCAL_VERIFIED / NO_PERFORMANCE_RESULT`|
+|回收路径/SHA|`recovered/`；详见第7节|
+|最终状态|`ANALYZED / TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`|
 
 coverage通过后，主agent将以其真实SHA冻结最小held性能矩阵并使用另一个全新run ID发布；本技术run不包含性能预测。
 
+## 7.自然退出、回收与结论
+
+唯一启动于`2026-07-23`经direct N607完成，GPU0、wrapper PID=`371059`、child Python PID=`371110`。启动后自然exit=`1`，未retry、restart、远端编辑或干预其他作业。失败前export与base parity均输出`PASS`，随后archive入口在`export_phase1_singleobs_dual_feature_archive.py:386`的`model(torch.from_numpy(chunk).to(device))`自然抛出`TypeError: expected np.ndarray (got numpy.ndarray)`；调用链为`619→main`、`615→export_phase1_singleobs_dual_feature_archive`、`551→_forward_once_per_selected_iq_batch`、`386`。
+
+|candidate/run|机制|GPU/seed|export与parity|archive/coverage|预测|同row结论|
+|---|---|---|---|---|---|---|
+|`P1-DUAL-ARCHIVE-GEOFF/r2.1-CLI`/`rchm_bpp_p1_dual_archive_cli_r3_9842ff42_20260723_r3`|Phase1双表征runtime导出、archive、只读coverage|GPU0/20260721|export schema=`cvs.phase1.adv3b02_dual_feature_torchscript_export.v2`，SHA=`302faad0068346d1b9f7f509bc631928ed701b519b4a114edc1728d9215b7b64`，maxabs=`2.384185791015625e-06`≤`1e-5`；base parity schema=`cvs.phase1.adv3b02_dual_runtime_checkpoint_parity_receipt.v2`，SHA=`eea06edf8631caad44c05687ffe16eafb23a75ccd5ddbcdb0b1d423578635acb`，batch=`[1,8,256]`、calls=`3`、maxabs=`0`|archive、manifest、coverage、sha256sums、completion marker均未生成；8400/6/7/4/3/168/min/K余量无可用receipt|`0`|`ANALYZED / TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`|
+
+回收清单已落至`recovered/`，本地SHA与远端一致：`pipeline.log=79685b4b8cbbf399c1abbb4a84e0dcc56d1a8222b625facbfdfee25a0b027875`，`pipeline.exit=4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865`，`pipeline.pid=9872e40fd04e96c73cf0fb2bc4eed7a31b23a2d688b5722aaa51c987a45ab0e8`，`base_dual_runtime.pt=8ae25df6e088e73ac276eee7d37767d4ec28b7da1f084c475943a5af75e1c29a`，`candidate_dual_runtime.pt=7ba7b4f3b72c5d32a3b0e924ab59187496d4ad19fb819a947c356b6c1a35c883`，`dual_export_receipt.json=302faad0068346d1b9f7f509bc631928ed701b519b4a114edc1728d9215b7b64`，`base_parity_receipt.json=eea06edf8631caad44c05687ffe16eafb23a75ccd5ddbcdb0b1d423578635acb`，`base_parity_vector.json=c667fff8d33a4ec447ac58bf179a08d515df71a65bd1116074b9a4fe7929bde7`。远端定向清单确认无prediction文件。没有archive/manifest/coverage/sha256sums/completion marker可回收，故不存在8400、6、7、4、3、168、min cell或K余量的coverage证据。
