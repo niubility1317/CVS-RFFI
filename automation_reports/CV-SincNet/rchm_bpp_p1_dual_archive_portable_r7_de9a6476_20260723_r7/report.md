@@ -4,9 +4,9 @@
 
 - run_id:`rchm_bpp_p1_dual_archive_portable_r7_de9a6476_20260723_r7`
 - candidate:`P1-DUAL-ARCHIVE-GEOFF/r2.2-BUFFER`
-- 主agent:`/root`；唯一N607 runner:`PENDING_GPT_5_6_TERRA_HIGH`
+- 主agent:`/root`；唯一N607 runner:`/root/r7_n607_runner`
 - protocol:`p2_min_v1`；数据状态:`VALIDATED_ONCE_REUSED`
-- 当前状态:`LOCAL_VERIFIED / NOT_LANDED / NO_PERFORMANCE_RESULT`
+- 当前状态:`TECHNICAL_FAILURE / PRELAUNCH_P1 / NOT_RUNNING / NO_PERFORMANCE_RESULT`
 - retry:`NO`
 
 本run不改变方法、源码ZIP字节、received IQ、physical ID、receiver/TX、scene、K、support/query split或protocol schema，不重复数据验证。相对r6的唯一release delta是取消对N607本地Git对象库的冗余依赖：本地已独立证明3918/3918个ZIP文件与`de9a6476`Git blob一致；远端只需核验同一ZIP整体SHA、安全prefix/路径和解包后6项运行关键源码SHA，即可传递该闭包。GEOFF、buffer transport、阈值、输入、命令、archive和coverage门均不变。
@@ -69,3 +69,23 @@ coverage硬门保持：row=8400、unique physical=8400、unique observation=8400
 |最终状态|`LOCAL_VERIFIED / NO_PERFORMANCE_RESULT`|
 
 coverage真实通过后，主agent立即以其真实SHA冻结并发布最小held四臂性能矩阵。
+
+## 7.r7实际runner终态回填
+
+本节覆盖第6节中的`PENDING`字段。runner遵守`retry=NO`，在首个P1预启动门失败后立即停止；没有启动、修复、重试或触及held/target/125。
+
+|字段|实测结果|
+|---|---|
+|release-control Git commit|`b333489439ee374d64c6d4a3b7cd696398b9088f`|
+|PRECHECK|direct N607通过；初始run root不存在；8张RTX3090均为10MiB、无同名进程；`/home`可用约7.5T|
+|SYNC/SHA/LAYOUT|ZIP与wrapper精确SCP完成；远端ZIP大小`33093737`、SHA=`282c4f085266f6e95345ce66e82178ee08ab3950ce9e7efb2c2c72572edb9127`；布局`4443`entries/`3918`files/唯一`source_de9a6476/`/路径穿越符号链接重名均为`0`|
+|layout回执|远端`<run-root>/zip_layout_receipt.json`；SHA=`eb424a5457702bdf5285b131e4839a3078a0b94f9734c9a60cfd23593ebbe60e`；已回收为同目录`zip_layout_receipt.remote.json`|
+|首个P1根因|安全解包后，`source_de9a6476/code/scripts/export_phase1_singleobs_dual_feature_archive.py`实际SHA=`b3748fe8468e1927c803c9b55d6d1c231ec15043e297d7676d36c921516e7dc0`，不等于冻结预期`31a6a464f470ae9bdb6cbc8814581ff6c73403d5c99b497a224b3f783831fe64`；预启动命令exit=`72`|
+|源码/外部资产/compile|wrapper SHA门已通过；第1项源码SHA失败后`set -e`停止，剩余5项源码、4项外部资产、`py_compile`与`bash -n`均未执行，不得推定通过|
+|PID/GPU/exit|未启动；`pipeline.pid`、`pipeline.exit`、`pipeline.log`均不存在；无GPU分配、无自然child exit|
+|parity/archive/coverage|均未生成；`output/`不存在|
+|prediction|`0`|
+|remote路径|`/home/szu2070436088/2510044040/CV-SincNet/runs/rchm_bpp_p1_dual_archive_portable_r7_de9a6476_20260723_r7`|
+|最终裁决|`TECHNICAL_FAILURE / PRELAUNCH_P1 / NOT_RUNNING / NO_PERFORMANCE_RESULT`|
+
+该失败说明：在远端已验证ZIP整体SHA与完整性、且布局检查通过的前提下，冻结ZIP内至少该运行关键源码字节与r7预期SHA不一致。该run永久停止，不能据此生成性能或发布结论。
