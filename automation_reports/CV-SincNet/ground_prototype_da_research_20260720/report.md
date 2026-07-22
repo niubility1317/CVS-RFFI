@@ -1848,3 +1848,9 @@ run ID冻结为`rchm_bpp_p1_dual_archive_9ca1a59a_20260722_r1`，方法源提交
 同一设计波次的DA草案使用Phase1 dual archive拟合robust receiver context、`z_dom→z_id`低秩cross-map与27个预注册family，HEAD草案使用统一全类Patch A/BPP、nested receiver/day/class/pseudo-new隔离、K1/K5/K10锁和FP32/FP64量化teacher。独立Sol-max联合监督裁决为`REVISE`，未生成`DESIGN_FROZEN`且禁止实现。首个静态falsifier已触发：inner C4→C5在core的`D_eff≥6`合同下before和after均为identity，无法选择任何nonidentity DA family或证明correct context优于zero/permuted；使用outer C6选择又会污染held证据。
 
 同次监督还要求下一revision闭合从split receipt到Q/R/B typed locks的确定性总函数、`b0`统计与正根存在条件、C5/C6充分统计/未归一化logit/posterior口径、整row回退、量化state销毁以及真实wire/MAC/时延/显存。当前唯一获准的下一artifact不变：先由GEOFF/r2新run生成真实dual archive、manifest和只读coverage receipt；没有这些实物前不进入第二设计波次、不写method fitter、不产生prediction。
+
+##### GEOFF/r2新run发布冻结
+
+全新run ID为`rchm_bpp_p1_dual_archive_geoff_r2_ca5d0c4b_20260722_r2`，方法提交为`ca5d0c4bcf8fb295cdfb70e067f9009617bb3a5f`，release-control提交为`d45f4cc22ac379c287ad09baed53fe07cdb791d2`。commit-bound Git archive SHA256=`5adbef8a1ebf2f0846132226f702e95648c99334a0ba5296b7487e45095e4778`，wrapper SHA256=`e1f497a757d54cef95a9559ac3de910a26cf2d9a3d0407d3cc865b628847afcf`；根报告与Git镜像逐字节一致。
+
+独立最终发布审查为`P0=0,P1=0,P2=0→MERGE`。冻结run只执行GEOFF/r2 base parity→base dual archive→元数据coverage，export/parity/archive使用v2 contract，coverage保持既有v1合同；`1e-5`、batch1/8/256、每batch三次调用、8400行/168cell/K10余量和全部资产SHA均不变。不重复数据验证、不访问target/query/held/125，retry=`NO`；技术完成也只标记`ARTIFACTS_COMPLETE / NO_PERFORMANCE_RESULT`。

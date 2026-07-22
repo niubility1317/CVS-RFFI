@@ -9,7 +9,7 @@
 - objective:在N607同一Torch/CUDA/device合同下执行`P1-DUAL-ARCHIVE-GEOFF/r2`，生成strict ADV3B02 base/candidate dual runtime、独立base parity receipt/vector、8400行Phase1 single-observation dual archive/manifest及只读coverage receipt。
 - hypothesis:在首次JIT边界前fail-closed设置并严格回读`graph_executor_optimize=false`，可消除r1的TorchScript CUDA冷/热执行计划漂移，同时保持batch1/8/256、三输出、三次runtime调用的`maxabs≤1e-5`冻结门。
 - matched failure:`rchm_bpp_p1_dual_archive_9ca1a59a_20260722_r1`永久为`TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`；其256行maxabs为`z_id=1.9640e-4`、`z_dom=5.0431e-4`、`tx_logits=3.2592e-3`，未生成parity receipt、archive、coverage或prediction。本run使用全新ID，绝不复用r1目录。
-- 当前状态:`LOCAL_PREREGISTERED / NOT_LANDED / NO_PERFORMANCE_RESULT`
+- 当前状态:`LOCAL_VERIFIED / NOT_LANDED / NO_PERFORMANCE_RESULT`
 
 ## 2.冻结范围与禁止项
 
@@ -92,7 +92,7 @@ coverage硬常量保持r1冻结口径：总行数=8400，unique physical=8400，
 
 |字段|结果|
 |---|---|
-|release-control Git commit|`PENDING`|
+|release-control Git commit|`d45f4cc22ac379c287ad09baed53fe07cdb791d2`|
 |runner/route|`PENDING`|
 |preflight/GPU|`PENDING`|
 |remote ZIP/wrapper/member SHA|`PENDING`|
@@ -103,4 +103,4 @@ coverage硬常量保持r1冻结口径：总行数=8400，unique physical=8400，
 |archive/manifest|`NOT_GENERATED`|
 |coverage同row结果|`NOT_GENERATED`|
 |回收路径/SHA|`PENDING`|
-|最终状态|`LOCAL_PREREGISTERED / NO_PERFORMANCE_RESULT`|
+|最终状态|`LOCAL_VERIFIED / NO_PERFORMANCE_RESULT`|
