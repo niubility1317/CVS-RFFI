@@ -158,6 +158,22 @@ def test_cli_argument_names_match_export_contract(monkeypatch: pytest.MonkeyPatc
     signature.bind(**values)
 
 
+def test_archive_runtime_transport_does_not_require_torch_from_numpy(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    args, _arrays = _args(tmp_path, monkeypatch)
+
+    def unavailable_numpy_bridge(*_args, **_kwargs):
+        raise TypeError("expected np.ndarray (got numpy.ndarray)")
+
+    monkeypatch.setattr(torch, "from_numpy", unavailable_numpy_bridge)
+    result = module.export_phase1_singleobs_dual_feature_archive(**args)
+    with np.load(result["archive_path"], allow_pickle=False) as archive:
+        assert archive["z_id"].dtype == np.float32
+        assert archive["z_dom"].dtype == np.float32
+        assert archive["tx_logits"].dtype == np.float32
+
+
 def test_development_archive_preserves_explicit_registry_and_selected_overlay_ids(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     args, arrays = _args(tmp_path, monkeypatch)
     result = module.export_phase1_singleobs_dual_feature_archive(**args)

@@ -382,8 +382,13 @@ def _forward_once_per_selected_iq_batch(runtime: Mapping[str, Any], rows: np.nda
     invocations = 0
     with torch.no_grad():
         for start in range(0, len(rows), int(batch_size)):
-            chunk = np.ascontiguousarray(rows[start:start + int(batch_size)], dtype=np.float32)
-            values = model(torch.from_numpy(chunk).to(device))
+            chunk = np.array(
+                rows[start:start + int(batch_size)], dtype=np.float32, order="C", copy=True
+            )
+            tensor = torch.frombuffer(
+                memoryview(chunk), dtype=torch.float32, count=int(chunk.size)
+            ).reshape(tuple(chunk.shape)).clone()
+            values = model(tensor.to(device))
             invocations += 1
             if not isinstance(values, (tuple, list)) or len(values) != 3:
                 raise Phase1SingleobsDualArchiveError("dual runtime must return three outputs in one call")
@@ -392,7 +397,9 @@ def _forward_once_per_selected_iq_batch(runtime: Mapping[str, Any], rows: np.nda
             )):
                 if not torch.is_tensor(value) or value.dtype != torch.float32 or tuple(value.shape) != (len(chunk), width) or not bool(torch.isfinite(value).all().item()):
                     raise Phase1SingleobsDualArchiveError(f"dual runtime {name} output drift")
-                outputs[output_index].append(value.detach().cpu().numpy().astype(np.float32, copy=False))
+                outputs[output_index].append(
+                    np.asarray(value.detach().cpu().tolist(), dtype=np.float32)
+                )
     if _sha256_file(runtime["path"]) != runtime["sha256"]:
         raise Phase1SingleobsDualArchiveError("runtime changed during export")
     return tuple(np.ascontiguousarray(np.concatenate(parts), dtype=np.float32) for parts in outputs) + (invocations,)  # type: ignore[return-value]
