@@ -1916,3 +1916,41 @@ runner期间完成的下一候选只读spike把`JOINT-CID-BPP/r0`裁为`MERGE_SP
 M_JOINT相对M_HEAD的H为+0.003265、old-after为+0.001766、seen-new为+0.002096、floor为+0.002416、forgetting为-0.000339；相对M_DA的H为+0.032212。可是M_DA相对M0仅净增加1个正确old决策，floor/min-old各下降0.000942且forgetting增加0.000353。`I_syn`为正4/18、零13/18、负1/18；clear均值为负、rain为0，只有low-elev为正。逐类收益主要由`20-19`救援贡献，相对M0另5个旧类after accuracy下降。
 
 因此技术闭环通过但性能预注册门失败，最终裁决=`ANALYZED / COMPLETED_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE`；不得事后放宽“DA、HEAD各自正收益且安全”的门，不运行125。本轮runner期间只读准备的下一候选`SVRN-BCR/r0`被监督裁为REVISE：必须把M_HEAD gate严格绑定raw support、M_JOINT gate严格绑定SVRN support后再冻结，以避免两臂互读破坏因果隔离。
+
+##### `SVRN-BCR/r1` DESIGN_FROZEN
+
+独立监督结果为`P0=0，P1=0→MERGE`。r0唯一P0为共享head-enable同时读取raw与SVRN两支；r1将其拆为branch-local `g_raw/g_svrn`。监督同时把不同量纲logit margin比较冻结为尺度不变score margin，并删除不必要的Phase1 selector。当前状态=`DESIGN_FROZEN→IMPLEMENTING`。
+
+|ID|冻结要求|实现归属|验证|
+|---|---|---|---|
+|S01|只读immutable bundle、合法support及冻结常数；不读query truth/role/quota/clean/source|held模块|predict输入负例与truth密封|
+|S02|SVRN固定`κ=2.5,η∈{0,.25,.5}`，并列取小|state模块|常数/receipt篡改拒绝|
+|S03|mask固定`j mod5∈{0,1}`、保留率0.8；同物理ID全部view同步LOO|state模块|physical-ID排除测试|
+|S04|双向选择一致且逐类方向不弱于η0才启用，否则identity|state模块|一致/回退构造例|
+|S05|K1固定`η=0,g_raw=g_svrn=0`；K5/K10分别4/9个同类LOO中心|state模块|K1/K5专项测试|
+|S06|BCR固定`D_ii=1/K`、centered Y、`λ0=1`和统一全类ridge|state模块|闭式/置换/退化测试|
+|S07|raw/SVRN各自拟合qKNN、BCR和gate，不共享enable、统计或对方SHA|两模块|`g_raw≠g_svrn`隔离测试|
+|S08|gate前固定`N(s)=(s-mean(s))/(||s-mean(s)||₂+1e-12)`|state模块|零范数/非有限回退|
+|S09|`δ=m(N(BCR),y)-m(N(qKNN),y)`；逐类方向median≥0且全体median>0才开gate|state模块|边界/严格不等式测试|
+|S10|四臂固定M0/Qraw、M_DA/Qsvrn、M_HEAD/raw switch、M_JOINT/svrn switch|held模块|四臂精确logit测试|
+|S11|Switch为hard switch；两gate失败互不影响|state模块|独立false-path测试|
+|S12|receipt封存mask、η-grid/tie-break、λ0、gate公式、branch SHA、逐类δ和fallback|两模块|wire篡改fail-closed|
+|S13|M_DA/M_JOINT共享η receipt；HEAD只绑raw gate；JOINT只绑svrn gate|held模块|跨支SHA负例|
+|S14|support bank和BCR权重int8封存；top1≥99.5%、large-margin flip=0|state模块|FP32/int8一致性与sidecar拒绝|
+|S15|`d=160,C≤40`、参数0、optimizer step0、state≤256KB|两模块|resource ledger测试|
+|S16|BCR LOO复用一次分解/rank-one downdate或等价闭式，禁止逐support完整`d³`|state模块|MAC ledger/调用计数|
+|S17|同r8句柄、rx1-1/K5、6 pseudo-new×3 scene=18 slice/72 row；SVRN专属封包|held模块|build/predict/score闭环|
+|S18|η全identity或DA零变化、两gate全关或HEAD无救援、单组件伤害保护指标即判负|scorer/report|同row停止门|
+|S19|JOINT不弱于DA/HEAD、mean`I_syn>0`且收益不只来自单class/scene才可进125|scorer/report|18-slice/scene分布|
+|S20|代码范围仅新增2个模块＋1个专项测试|Git diff|路径allowlist|
+|S21|不新增Phase1 selector，不改数据、encoder、qKNN、CID、r8或runner控制面|Git diff|路径/依赖审计|
+
+SVRN公式固定为`LN(z)=(z-mean(z))/sqrt(mean((z-mean(z))²)+1e-6)`，`Rκ(z)=||z||₂·clip(LN(z),-κ,κ)/(||clip(LN(z),-κ,κ)||₂+1e-6)`，`Tη=(1-η)z+ηRκ(z)`。BCR固定为`W=(HᵀDH+λI)^-1HᵀDY`，`λ=tr(HᵀDH)/d`。四臂实验只用于机制证伪；mask只能解释为稳定性探针，不声明物理频带、接收机维度或真实域因子发现。
+
+冻结文件范围：
+
+- `code/cvsrffi/stage2_svrn_bcr.py`
+- `code/cvsrffi/svrn_bcr_fixed_held_spike.py`
+- `tests/test_svrn_bcr_fixed_held_spike.py`
+
+最小held falsifier保持rx1-1/K5/18 slice/72 row及完整old-before、old-after、seen-new、H、BA、floor、min-old、min-new、forgetting、双向混淆、逐类/scene、gate/fallback、int8、state、MAC、mean/P95和VRAM；未达到S18/S19即`COMPLETED_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE`，不运行125。
