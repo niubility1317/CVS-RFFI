@@ -4,9 +4,9 @@
 
 - run_id:`rchm_bpp_p1_dual_archive_blobexact_r6_de9a6476_20260723_r6`
 - candidate:`P1-DUAL-ARCHIVE-GEOFF/r2.2-BUFFER`
-- 主agent:`/root`；唯一N607 runner:`PENDING_GPT_5_6_TERRA_HIGH`
+- 主agent:`/root`；唯一N607 runner:`/root/r6_n607_runner`
 - protocol:`p2_min_v1`；数据状态:`VALIDATED_ONCE_REUSED`
-- 当前状态:`LOCAL_VERIFIED / NOT_LANDED / NO_PERFORMANCE_RESULT`
+- 当前状态:`TECHNICAL_FAILURE / NOT_LANDED / NO_PERFORMANCE_RESULT`
 - retry:`NO`
 
 本run不改变方法、received IQ、physical ID、receiver/TX、scene、K、support/query split或protocol schema，不重复数据验证。相对r5的唯一release delta是以`git -c core.autocrlf=false archive --prefix=source_de9a6476/`生成ZIP，同时闭合正确顶层根和原始Git blob字节；GEOFF、buffer transport、阈值、输入、命令、archive和coverage门全部不变。
@@ -58,15 +58,24 @@ coverage硬门保持：row=8400、unique physical=8400、unique observation=8400
 
 |字段|结果|
 |---|---|
-|release-control Git commit|`PENDING`|
-|route/GPU/PID|`PENDING`|
-|remote SHA/blob/layout/compile|`PENDING`|
-|exit/marker|`PENDING`|
+|release-control Git commit|`35ade1735494351cdcda04d1210bd0a3d3660b00`|
+|route/GPU/PID|`direct N607；GPU0-7均0%/10MiB；未启动，无PID`|
+|remote SHA/blob/layout/compile|`未同步；远端项目根非Git工作树，无法以commit de9a6476复核3918个blob`|
+|exit/marker|`precheck exit=128；无pipeline.exit/marker`|
 |parity receipt|`NOT_GENERATED`|
 |archive/manifest|`NOT_GENERATED`|
 |coverage|`NOT_GENERATED`|
 |prediction count|`0`|
-|回收路径/SHA|`PENDING`|
-|最终状态|`LOCAL_VERIFIED / NO_PERFORMANCE_RESULT`|
+|回收路径/SHA|`无远端artifact；本地冻结输入SHA见上`|
+|最终状态|`TECHNICAL_FAILURE(P1:远端blob闭包硬门不可执行) / NO_PERFORMANCE_RESULT`|
 
 coverage真实通过后，主agent立即以其真实SHA冻结并发布最小held四臂性能矩阵。
+
+## 7.r6一次性N607发布终态（2026-07-23）
+
+- 已按规定执行`tools\\n607_ssh_preflight.ps1`，direct N607身份、项目可见性和GPU探针通过；预检后本地无残留`ssh.exe`或到N607端口22的已建立连接。
+- 二次只读远端预检确认run根`/home/szu2070436088/2510044040/CV-SincNet/runs/rchm_bpp_p1_dual_archive_blobexact_r6_de9a6476_20260723_r6`不存在；磁盘`/home`可用7.5TB；GPU0-7均0%利用率、10MiB显存，无相关训练进程。
+- 首个根因：`git -C /home/szu2070436088/2510044040/CV-SincNet cat-file -t de9a6476e60428ba89d243af63f1eca6229d52c6`返回`fatal: not a git repository`并使预检exit=`128`。冻结发布目录仅包含`source_de9a6476.zip`，未附带可在无Git对象库环境中验证的3918项blob清单，故远端“ZIP SHA/prefix/blob闭包”合同不能完整执行。
+- 按P1即停和retry=`NO`：未创建远端run目录，未SCP，未解包，未执行外部资产/源码SHA、`py_compile`或`bash -n`，未启动pipeline。PID=`NOT_STARTED`，GPU=`NONE`，pipeline exit/marker=`NOT_CREATED`。
+- parity receipt、dual archive、archive manifest、coverage receipt和`sha256sums.txt`均`NOT_GENERATED`；prediction数量=`0`。本地冻结ZIP仍为`282c4f085266f6e95345ce66e82178ee08ab3950ce9e7efb2c2c72572edb9127`（33,093,737B），但未有远端副本或artifact可回收。
+- 裁决：`TECHNICAL_FAILURE / P1_REMOTE_GIT_OBJECT_CLOSURE_UNAVAILABLE / NOT_LANDED / NO_PERFORMANCE_RESULT`。本次唯一发布尝试已终止；不得以该run_id重试。
