@@ -1,35 +1,32 @@
-# SVRN-qKNN-BCRR/r3评分闭合发布报告
+# SVRN-qKNN-BCRR/r3评分闭合第二次发布报告
 
-- run_id:`svrn_qknn_bcrr_k5_scorefix1_b0baa0dc_20260723_070006`
-- candidate/revision:`SVRN-qKNN-BCRR/r3-scorefix1`
+- run_id:`svrn_qknn_bcrr_k5_scorefix2_b0baa0dc_20260723_071226`
+- candidate/revision:`SVRN-qKNN-BCRR/r3-scorefix2-release`
 - lifecycle:`LOCAL_VERIFIED / RELEASE_PREREGISTERED`
 - operator:主agent`/root`；唯一N607 runner:`PENDING_GPT_5_6_TERRA_HIGH`
 - method Git commit:`b0baa0dc328ec7fe7a8d5870f35bdee256c9b686`
-- runner wrapper Git commit:`7ac9805d58860da0b98512f695c14e357c0182cb`
+- runner wrapper Git commit:`56e746ea7f7ed406336c4c3f2264e3c132d80ea6`
 - frozen parent prediction run:`svrn_qknn_bcrr_k5_held_r2_165ca031_20260723`
 - protocol:`p2_min_v1 / VALIDATED_ONCE`；复用GEOFF/r8及父run封存artifact，不重验数据
 
-## 1.目标与唯一delta
+## 1.父发布阻断与唯一修复
 
-父run已生成18个完整prediction，但旧评分器把canonical JSON按键排序后的mapping迭代顺序误当成四臂语义顺序，因此score阶段技术失败。完整只读检查证明36个before/after mapping均精确包含`M0/M_DA/M_OTHER/M_JOINT`，prediction`COMMIT`、row/query绑定、logit shape/finite、argmax和neighbor receipt均闭合。
+父score-only发布`svrn_qknn_bcrr_k5_scorefix1_b0baa0dc_20260723_070006`在direct preflight后、任何远端写入前被安全阻断：父`truth.json`实测外部SHA为`9745068bc5961ebe90f6305c672cacc8ce338d745579e1c97d4ea503cb3d06d8`，而旧wrapper误录为少一个`3`的值。其余packet/query/prediction SHA均匹配。
 
-本run唯一delta是评分器将四臂检查从tuple顺序等值改为精确键集合等值，并继续按冻结`ARMS`顺序评分。缺臂或多臂即使重签`COMMIT`仍fail-closed。方法、prediction、truth、query、qKNN、SVRN、BCRR、状态、参数、资源公式和停止门均不变。
-
-本run只读父run的四个固定artifact，生成正式`score.json`。不重新build、predict、选择方法、调参或更新任何状态。
+父发布未创建remote root、未SCP、未解包、未启动，无GPU/PID/exit/log/score/marker，状态为`BLOCKED_PRE_LAUNCH / NO_PERFORMANCE_RESULT`。本run使用全新不可覆盖run ID，唯一delta是把wrapper/report中的truth外部SHA改为本地回收文件与N607实测一致的64位值；方法、源码ZIP、父四artifact、内部truth SHA、prediction COMMIT、评分规则和停止门不变。
 
 ## 2.本地最低门
 
 |项目|结果|
 |---|---|
-|`ssr-gpu` py_compile|PASS|
-|聚焦协议/状态/四臂测试|`9 passed`|
-|canonical往返评分|PASS；72行|
-|删臂/多臂重签负例|PASS；均拒绝|
-|父prediction直接评分|PASS；18个slice、72个score row|
+|父truth本地SHA复核|`9745068bc5961ebe90f6305c672cacc8ce338d745579e1c97d4ea503cb3d06d8`；64位|
+|N607只读父truth SHA|与本地一致|
+|wrapper根/Git镜像|字节一致|
+|wrapper语法|`bash -n`PASS|
+|方法专项|`ssr-gpu`下py_compile PASS、`9 passed`；方法commit未变|
 |独立review|`MERGE / P0=0 / P1=0`|
-|方法Git状态|提交后clean|
 
-一般性的内部query SHA增强被独立review记为P2，不阻塞本run：score不读取query；wrapper在评分前对父packet/truth/query/prediction四个绝对路径逐一校验固定SHA，报告同时封存四SHA。
+本run仍只读父run四个固定artifact并生成正式`score.json`；不重新build、predict、选择方法、调参或更新任何状态。
 
 ## 3.源码与wrapper
 
@@ -41,8 +38,7 @@
 |ZIP内core|`aa5401306cab361cdb06a41b7c11af3dc8b1aea0a00fe9e75b475c5d283deaf4`|
 |ZIP内held|`1e71fd2934360a3d3f1082e4a3841bc307334807bc3496455b7c9b29d2366366`|
 |ZIP内test|`ef0fee40e393b3917e83d0dc955053f599989067b500c55253a7a67cdad2445a`|
-|wrapper SHA256|`f1fd6a0381b89b9f2c38c84d4db4637db846e72dbf804e8e091bec39f9268892`|
-|wrapper语法|`bash -n`PASS|
+|wrapper SHA256|`c72510be802254a969494dc4fb7c99a750f748b94eb49a33a81b8999ad0c097b`|
 
 ## 4.父artifact冻结绑定
 
@@ -52,20 +48,20 @@
 |输入|外部SHA256|内部绑定|
 |---|---|---|
 |`output/packet.json`|`ef15a8488d40ac70d129db9ac15c796418b4afe5fa64624883eab0f66fd4e95b`|packet SHA:`b503fc1d60e50785d9c2eec941e1f12b495aaf45a193b7f99857e80b46ee2b31`|
-|`output/truth.json`|`9745068bc5961ebe90f6305c672cacc8ce338d745579e1c97d4ea503cbd06d8`|truth SHA:`637e845fec201627118181a5eb256861b86e76880c101d1b6a5452563cce64b4`|
+|`output/truth.json`|`9745068bc5961ebe90f6305c672cacc8ce338d745579e1c97d4ea503cb3d06d8`|truth SHA:`637e845fec201627118181a5eb256861b86e76880c101d1b6a5452563cce64b4`|
 |`output/query.npz`|`be089f42be790a73cd7a95d68cb13956a64735019b10f6cd4ba32199c33c56c9`|仅做父集合外部SHA绑定；score不读取|
 |`output/prediction.json`|`0f9313e632884e9987caaa262e2e7d261338bfe9b7f84beae85753571b72e06e`|COMMIT:`2524a1aa291cb05ed055625c496f8abc12fc692b57736070334b65ce1c68211a`|
 
 ## 5.N607冻结执行合同
 
-- remote root:`/home/szu2070436088/2510044040/CV-SincNet/runs/svrn_qknn_bcrr_k5_scorefix1_b0baa0dc_20260723_070006`
+- remote root:`/home/szu2070436088/2510044040/CV-SincNet/runs/svrn_qknn_bcrr_k5_scorefix2_b0baa0dc_20260723_071226`
 - Python:`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`
 - source root:`<remote-root>/source_b0baa0dc`
 - 唯一启动:`CUDA_VISIBLE_DEVICES=<runner-selected> nohup bash ./run_pipeline.sh > logs/pipeline.log 2>&1 < /dev/null &`
 - retry:`NO`；不得远端编辑、重建prediction、调参、kill/restart或运行125
 - 预期artifact:`score.json`、`parent_sha256sums.txt`、`sha256sums.txt`、`complete.marker`、PID、exit和完整log
 - 预期数量:父prediction slice=18；新score row=72；arm=`M0/M_DA/M_OTHER/M_JOINT`
-- 预期marker:`SVRN_QKNN_BCRR_K5_SCOREFIX1_ARTIFACTS_COMPLETE`
+- 预期marker:`SVRN_QKNN_BCRR_K5_SCOREFIX2_ARTIFACTS_COMPLETE`
 
 唯一runner必须完成direct preflight、remote root不存在/GPU/进程/磁盘检查、ZIP/wrapper/source/父四artifact SHA、单根布局、远端`py_compile`/import和`bash -n`，随后只启动一次并以短连接监控、完整回收artifact。
 
@@ -85,12 +81,3 @@
 ## 7.完成后更新
 
 runner回填route、GPU/PID/exit、远端parity、artifact数量与SHA。artifact完整后由独立分析agent复算全部72行、同row表、18个slice、3个scene、逐类、transition、量化和资源证据，并给出正式裁决。
-
-## 8.Runner执行记录（2026-07-23）
-
-- route/preflight:`direct N607`；本地只读direct preflight通过，project root与8张GPU可见；每次短连接后确认本地无`ssh.exe`残留及无到N607:22的ESTABLISHED连接。
-- launch admission:目标remote root不存在；GPU0--7均0%/10MiB且无compute process；目标相关进程不存在；`/home`剩余7.5T。
-- 首个阻断根因:父`output/truth.json`远端实测SHA256为`9745068bc5961ebe90f6305c672cacc8ce338d745579e1c97d4ea503cb3d06d8`，与冻结合同/wrapper要求的`9745068bc5961ebe90f6305c672cacc8ce338d745579e1c97d4ea503cbd06d8`不一致。其余三个父artifact外部SHA与冻结值一致。
-- action:`NO_LAUNCH`。为保持唯一启动与字节精确合同，未创建remote root、未SCP、未解包、未执行远端校验、未分配GPU、未启动或重试；无PID、exit、score artifact或retrieved文件。
-- lifecycle/verdict:`LOCAL_VERIFIED / RELEASE_PREREGISTERED -> BLOCKED_PRE_LAUNCH`；`NO_PERFORMANCE_RESULT`。须由主agent核对并重新冻结父truth artifact链后另行授权，当前run不得启动。
-- version note:本报告目录位于`E:\type10-7`根承载面，根目录不是Git仓库；按runner授权仅更新本地报告，不修改Git镜像。

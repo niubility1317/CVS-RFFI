@@ -2013,3 +2013,7 @@ run=`svrn_qknn_bcrr_k5_held_r2_165ca031_20260723`经direct N607/GPU0/PID538739�
 唯一修复把四臂校验改为精确键集合相等，并继续按冻结`ARMS`顺序评分；缺臂或多臂即使重签COMMIT仍拒绝。`ssr-gpu`下py_compile及专项`9 passed`，父prediction直接产生72行score；独立review裁决=`MERGE / P0=0 / P1=0`。方法、prediction、truth、query、qKNN、SVRN、BCRR、状态、参数、资源公式和停止门均未改变。修复提交=`b0baa0dc328ec7fe7a8d5870f35bdee256c9b686`。
 
 全新score-only run=`svrn_qknn_bcrr_k5_scorefix1_b0baa0dc_20260723_070006`已预注册。它在启动前对父packet/truth/query/prediction四个绝对路径逐一校验上述固定SHA，另验truth内部SHA=`637e845fec201627118181a5eb256861b86e76880c101d1b6a5452563cce64b4`和prediction COMMIT=`2524a1aa291cb05ed055625c496f8abc12fc692b57736070334b65ce1c68211a`，随后只读生成72行正式score；禁止重新build、predict、调参、数据重验、retry或125。源码ZIP SHA=`21538751f8e1cdc53d0cb127588f0a239ed9250890eba89ea1b49b93d96ed3ef`，wrapper Git提交=`7ac9805d58860da0b98512f695c14e357c0182cb`，wrapper SHA=`f1fd6a0381b89b9f2c38c84d4db4637db846e72dbf804e8e091bec39f9268892`，`bash -n`通过。正式score、完整log和匹配SHA闭合前，本地只读评分仅为诊断，不作性能裁决。
+
+scorefix1在direct preflight后、任何远端写入前因truth外部SHA录入少一个`3`而被阻断；N607与本地回收文件均确认真实SHA=`9745068bc5961ebe90f6305c672cacc8ce338d745579e1c97d4ea503cb3d06d8`。该run未创建remote root、未同步、未启动，无PID/exit/log/score/marker，状态=`BLOCKED_PRE_LAUNCH / NO_PERFORMANCE_RESULT`。唯一修复为更正此64位SHA；不修改方法、父artifact、prediction或评分。
+
+全新不可覆盖run=`svrn_qknn_bcrr_k5_scorefix2_b0baa0dc_20260723_071226`已预注册，wrapper Git提交=`56e746ea7f7ed406336c4c3f2264e3c132d80ea6`，wrapper SHA=`c72510be802254a969494dc4fb7c99a750f748b94eb49a33a81b8999ad0c097b`，`bash -n`通过，独立review=`MERGE / P0=0 / P1=0`。Git冻结后立即交唯一Terra runner；仍只生成父18个prediction对应的72行正式score，不重建数据或prediction。
