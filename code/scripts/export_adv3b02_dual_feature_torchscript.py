@@ -49,10 +49,15 @@ from paper_reproduction.scripts.train_export_cvs_support_lora_adapter import (  
 )
 
 
-EXPORT_SCHEMA = "cvs.phase1.adv3b02_dual_feature_torchscript_export.v1"
+EXPORT_SCHEMA = "cvs.phase1.adv3b02_dual_feature_torchscript_export.v2"
 RUNTIME_OUTPUT_SCHEMA = "adv3b02.dual_feature_runtime.zid160_zdom160_txlogits.v1"
 FEATURE_DIM = 160
 RUNTIME_BATCH_CAPACITY = 256
+FRESH_PARITY_BATCH_SIZES = (1, 8, RUNTIME_BATCH_CAPACITY)
+MAX_ABS_TOLERANCE = 1.0e-5
+EXECUTION_CONTRACT_POLICY = "graph_executor_optimize=false"
+EXECUTION_CONTRACT_SETTER = "torch._C._set_graph_executor_optimize"
+EXECUTION_CONTRACT_GETTER = "torch._C._get_graph_executor_optimize"
 FORBIDDEN_RUNTIME_TOKENS = ("dom_head", "adv_head", "tx_adv_head")
 RUNTIME_COMPONENT_ALLOWLIST = (
     "runtime.id_backbone",
@@ -219,6 +224,54 @@ def _sha256_bytes(value: bytes) -> str:
     return hashlib.sha256(value).hexdigest()
 
 
+def _canonical_json_bytes(value: Any) -> bytes:
+    return json.dumps(value, ensure_ascii=True, sort_keys=True, separators=(",", ":"), allow_nan=False).encode("utf-8")
+
+
+def _execution_contract_preimage(device: torch.device) -> dict[str, Any]:
+    return {"policy": EXECUTION_CONTRACT_POLICY, "setter": EXECUTION_CONTRACT_SETTER, "getter": EXECUTION_CONTRACT_GETTER, "readback": False, "torch_version": str(torch.__version__), "cuda_version": torch.version.cuda, "cuda_device": str(device), "max_abs": MAX_ABS_TOLERANCE}
+
+
+def _seal_graph_executor_optimize_false(device: torch.device) -> dict[str, Any]:
+    """Fail closed unless the frozen graph-executor policy is observable."""
+    torch_c = getattr(torch, "_C", None)
+    setter = getattr(torch_c, "_set_graph_executor_optimize", None)
+    getter = getattr(torch_c, "_get_graph_executor_optimize", None)
+    if not callable(setter) or not callable(getter):
+        raise RuntimeError("graph executor optimize control API is unavailable")
+    try:
+        setter(False)
+        readback = getter()
+    except Exception as exc:
+        raise RuntimeError("graph executor optimize control failed") from exc
+    if type(readback) is not bool or readback is not False:
+        raise RuntimeError("graph executor optimize readback must be exactly False")
+    preimage = _execution_contract_preimage(device)
+    contract = dict(preimage)
+    contract["contract_sha256"] = _sha256_bytes(_canonical_json_bytes(preimage))
+    return contract
+
+
+def _validate_execution_contract(contract: Any, *, device: torch.device) -> dict[str, Any]:
+    if not isinstance(contract, dict):
+        raise ValueError("execution contract must be an object")
+    expected = _execution_contract_preimage(device)
+    if set(contract) != set(expected) | {"contract_sha256"}:
+        raise ValueError("execution contract key set drift")
+    if any(contract.get(key) != value for key, value in expected.items()):
+        raise ValueError("execution contract live value drift")
+    expected_sha = _sha256_bytes(_canonical_json_bytes(expected))
+    if contract.get("contract_sha256") != expected_sha:
+        raise ValueError("execution contract canonical SHA drift")
+    return dict(contract)
+
+
+def _recheck_execution_contract(contract: dict[str, Any], *, device: torch.device) -> None:
+    _validate_execution_contract(contract, device=device)
+    if _seal_graph_executor_optimize_false(device) != contract:
+        raise RuntimeError("execution contract changed at TorchScript boundary")
+
+
 def _load_checkpoint_bytes(value: bytes) -> Any:
     try:
         return torch.load(io.BytesIO(value), map_location="cpu", weights_only=False)
@@ -323,15 +376,18 @@ def _max_abs(left: torch.Tensor, right: torch.Tensor, *, field: str) -> float:
 
 
 def _trace_and_save(
-    wrapper: nn.Module, example: torch.Tensor, output: Path
+    wrapper: nn.Module, example: torch.Tensor, output: Path, *, execution_contract: dict[str, Any] | None = None,
 ) -> torch.jit.ScriptModule:
     if output.exists():
         raise FileExistsError(f"refusing to overwrite TorchScript runtime: {output}")
     output.parent.mkdir(parents=True, exist_ok=True)
     wrapper.eval()
+    contract = _seal_graph_executor_optimize_false(example.device) if execution_contract is None else _validate_execution_contract(execution_contract, device=example.device)
+    _recheck_execution_contract(contract, device=example.device)
     traced = torch.jit.trace(wrapper, example, strict=False, check_trace=False)
     if not isinstance(wrapper, ADV3B02DualFeatureRuntime):
         raise TypeError("dual trace requires the exact sealed runtime wrapper")
+    _recheck_execution_contract(contract, device=example.device)
     validated = torch.jit.script(
         _InputValidatedRuntime(
             traced,
@@ -339,9 +395,11 @@ def _trace_and_save(
             expected_tx_classes=wrapper.expected_tx_classes,
         ).eval()
     )
+    _recheck_execution_contract(contract, device=example.device)
     torch.jit.save(validated, output)
     if not output.is_file() or output.stat().st_size < 1:
         raise RuntimeError(f"TorchScript export is empty: {output}")
+    _recheck_execution_contract(contract, device=example.device)
     return torch.jit.load(str(output), map_location=example.device).eval()
 
 
@@ -358,6 +416,25 @@ def _compare_triplet(
             left[2], right[2], field=f"{prefix}.tx_logits"
         ),
     }
+
+
+def _fresh_eager_runtime_audit(eager: nn.Module, runtime: nn.Module, *, device: torch.device, input_len: int, expected_tx_classes: int, parity_seed: int) -> tuple[dict[str, Any], float]:
+    """Measure fresh inputs without a runtime warm-up, three calls per batch."""
+    rows: list[dict[str, Any]] = []
+    maximum = 0.0
+    for batch_size in FRESH_PARITY_BATCH_SIZES:
+        generator = torch.Generator(device="cpu")
+        generator.manual_seed(int(parity_seed) + int(batch_size))
+        probes = torch.randn(int(batch_size), 2, int(input_len), generator=generator, dtype=torch.float32).to(device)
+        eager_values = _run(eager, probes, expected_tx_classes=expected_tx_classes)
+        calls: dict[str, dict[str, float]] = {}
+        for call_index in (1, 2, 3):
+            runtime_values = _run(runtime, probes, expected_tx_classes=expected_tx_classes)
+            deltas = {name.removeprefix("eager_vs_runtime_"): value for name, value in _compare_triplet(eager_values, runtime_values, prefix="eager_vs_runtime").items()}
+            calls[str(call_index)] = deltas
+            maximum = max(maximum, *deltas.values())
+        rows.append({"batch_size": int(batch_size), "generator_seed": int(parity_seed) + int(batch_size), "eager_vs_runtime_by_call": calls})
+    return {"batch_sizes": list(FRESH_PARITY_BATCH_SIZES), "runtime_calls_per_batch": 3, "rows": rows}, maximum
 
 
 def export(args: argparse.Namespace) -> dict[str, Any]:
@@ -387,12 +464,13 @@ def export(args: argparse.Namespace) -> dict[str, Any]:
     adapter_sha = _sha256_bytes(adapter_bytes)
     if checkpoint_sha != BASE_CHECKPOINT_SHA256:
         raise ValueError("checkpoint is not the strict ADV3B02 base")
-    if isinstance(args.parity_rows, bool) or not 2 <= int(args.parity_rows) <= 255:
-        raise ValueError("parity_rows must be in [2,255]")
-    if not 0.0 < float(args.max_abs_tolerance) <= 1.0e-4:
-        raise ValueError("TorchScript parity tolerance must be in (0,1e-4]")
+    if isinstance(args.parity_rows, bool) or int(args.parity_rows) != 8:
+        raise ValueError("parity_rows must be exactly 8 for the frozen fresh-batch audit")
+    if not 0.0 < float(args.max_abs_tolerance) <= MAX_ABS_TOLERANCE:
+        raise ValueError("TorchScript parity tolerance must be in (0,1e-5]")
 
     device = _resolve_device(str(args.device))
+    execution_contract = _seal_graph_executor_optimize_false(device)
     checkpoint = _load_checkpoint_bytes(checkpoint_bytes)
     base_model, base_audit = build_exact_ssdg_model_from_checkpoint(
         checkpoint, input_len=int(args.input_len), device=device
@@ -468,30 +546,27 @@ def export(args: argparse.Namespace) -> dict[str, Any]:
     ).to(device).eval()
     merged = _run(merged_wrapper, probes, expected_tx_classes=tx_classes)
 
-    base_script = _trace_and_save(base_wrapper, trace_example, outputs[0])
-    candidate_script = _trace_and_save(merged_wrapper, trace_example, outputs[1])
-    base_eager = _run(base_wrapper, probes, expected_tx_classes=tx_classes)
-    base_loaded = _run(base_script, probes, expected_tx_classes=tx_classes)
-    candidate_loaded = _run(
-        candidate_script, probes, expected_tx_classes=tx_classes
-    )
+    base_script = _trace_and_save(base_wrapper, trace_example, outputs[0], execution_contract=execution_contract)
+    candidate_script = _trace_and_save(merged_wrapper, trace_example, outputs[1], execution_contract=execution_contract)
+    base_fresh_audit, base_fresh_maximum = _fresh_eager_runtime_audit(base_wrapper, base_script, device=device, input_len=int(args.input_len), expected_tx_classes=tx_classes, parity_seed=int(args.parity_seed))
+    candidate_fresh_audit, candidate_fresh_maximum = _fresh_eager_runtime_audit(merged_wrapper, candidate_script, device=device, input_len=int(args.input_len), expected_tx_classes=tx_classes, parity_seed=int(args.parity_seed))
     diagnostics = {
         **_compare_triplet(injected, merged, prefix="injected_vs_merged"),
-        **_compare_triplet(base_eager, base_loaded, prefix="base_eager_vs_runtime"),
-        **_compare_triplet(merged, candidate_loaded, prefix="merged_vs_runtime"),
+        "base_fresh_eager_vs_runtime": base_fresh_audit,
+        "candidate_fresh_eager_vs_runtime": candidate_fresh_audit,
     }
-    failed = {
-        key: value
-        for key, value in diagnostics.items()
-        if value > float(args.max_abs_tolerance)
-    }
-    if failed:
-        raise ValueError(f"ADV3B02 dual TorchScript parity failed: {failed}")
+    injected_maximum = max(value for key, value in diagnostics.items() if key.startswith("injected_vs_merged_"))
+    maximum = max(injected_maximum, base_fresh_maximum, candidate_fresh_maximum)
+    if maximum > float(args.max_abs_tolerance):
+        raise ValueError("ADV3B02 dual TorchScript parity failed: " f"maximum={maximum}, diagnostics={diagnostics}")
     receipt = {
         "schema": EXPORT_SCHEMA,
         "status": "PASS",
         "artifact_stage": "phase1_offline_dual_runtime_export_without_bundle",
         "runtime_output_schema": RUNTIME_OUTPUT_SCHEMA,
+        "execution_contract": execution_contract,
+        "execution_contract_sha256": execution_contract["contract_sha256"],
+        "max_abs_tolerance": MAX_ABS_TOLERANCE,
         "checkpoint_sha256": checkpoint_sha,
         "adapter_state_sha256": adapter_sha,
         "base_runtime_sha256": sha256_file(outputs[0]),
@@ -519,6 +594,7 @@ def export(args: argparse.Namespace) -> dict[str, Any]:
         "bundle_created": False,
         "bundle_id": None,
         "diagnostics": diagnostics,
+        "max_abs_output_delta": maximum,
         "checkpoint_load_audit": base_audit,
         "effective8_delta_audit": delta_audit,
         "effective8_merge_audit": merge_audit,
@@ -558,7 +634,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--parity-seed", type=int, default=20260721)
     parser.add_argument("--parity-rows", type=int, default=8)
     parser.add_argument("--runtime-batch-size", type=int, default=256)
-    parser.add_argument("--max-abs-tolerance", type=float, default=1.0e-4)
+    parser.add_argument("--max-abs-tolerance", type=float, default=MAX_ABS_TOLERANCE)
     return parser.parse_args()
 
 

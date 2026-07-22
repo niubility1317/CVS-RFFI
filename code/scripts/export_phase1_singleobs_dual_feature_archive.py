@@ -19,6 +19,7 @@ from typing import Any, Mapping
 import uuid
 
 import numpy as np
+import torch
 
 
 CODE_ROOT = Path(__file__).resolve().parents[1]
@@ -38,8 +39,12 @@ from cvsrffi.leo_weak_cache import (  # noqa: E402
 from scripts.export_adv3b02_dual_feature_torchscript import (  # noqa: E402
     EXPORT_SCHEMA,
     FEATURE_DIM,
+    MAX_ABS_TOLERANCE,
     RUNTIME_BATCH_CAPACITY,
     RUNTIME_OUTPUT_SCHEMA,
+    _recheck_execution_contract,
+    _seal_graph_executor_optimize_false,
+    _validate_execution_contract,
 )
 from scripts.export_phase1_singleobs_feature_archive import (  # noqa: E402
     BASE_CHECKPOINT_SHA256,
@@ -54,7 +59,7 @@ from scripts.verify_adv3b02_dual_runtime_checkpoint_parity import (  # noqa: E40
 )
 
 
-SCHEMA = "cvs.phase1.singleobs_dual_feature_archive.v1"
+SCHEMA = "cvs.phase1.singleobs_dual_feature_archive.v2"
 NPZ_NAME = "phase1_singleobs_dual_feature_archive.npz"
 MANIFEST_NAME = "phase1_singleobs_dual_feature_archive.manifest.json"
 MEMBERS = (
@@ -193,6 +198,8 @@ def _load_runtime_closure(
     export_receipt_sha256: str,
     parity_receipt_path: str | Path,
     parity_receipt_sha256: str,
+    device: torch.device,
+    execution_contract: dict[str, Any],
 ) -> dict[str, Any]:
     if runtime_role not in RUNTIME_ROLES:
         raise Phase1SingleobsDualArchiveError("runtime role must be base or candidate")
@@ -208,6 +215,11 @@ def _load_runtime_closure(
     )
     role_runtime_key = f"{runtime_role}_runtime_sha256"
     dimensions = export.get("feature_dimensions")
+    try:
+        export_contract = _validate_execution_contract(export.get("execution_contract"), device=device)
+        parity_contract = _validate_execution_contract(parity.get("execution_contract"), device=device)
+    except (TypeError, ValueError) as exc:
+        raise Phase1SingleobsDualArchiveError("runtime execution contract drift") from exc
     if (
         export.get("schema") != EXPORT_SCHEMA
         or export.get("status") != "PASS"
@@ -220,6 +232,8 @@ def _load_runtime_closure(
         or export.get("formal_phase2_eligible") is not False
         or export.get("bundle_created") is not False
         or export.get("bundle_id") is not None
+        or export.get("execution_contract_sha256") != export_contract["contract_sha256"]
+        or export.get("max_abs_tolerance") != MAX_ABS_TOLERANCE
         or not isinstance(export.get("expected_input_len"), int)
         or isinstance(export.get("expected_input_len"), bool)
         or int(export["expected_input_len"]) <= 0
@@ -243,12 +257,17 @@ def _load_runtime_closure(
         or parity.get("expected_input_len") != export["expected_input_len"]
         or parity.get("expected_tx_classes") != dimensions["tx_logits"]
         or parity.get("runtime_batch_capacity") != RUNTIME_BATCH_CAPACITY
-        or parity.get("runtime_invocations_per_parity_batch") != 1
+        or parity.get("runtime_invocations_per_parity_batch") != 3
         or parity.get("formal_phase2_eligible") is not False
         or parity.get("bundle_created") is not False
         or parity.get("bundle_id") is not None
+        or parity.get("execution_contract_sha256") != parity_contract["contract_sha256"]
+        or parity.get("max_abs_tolerance") != MAX_ABS_TOLERANCE
+        or parity.get("runtime_calls_per_batch") != 3
     ):
         raise Phase1SingleobsDualArchiveError("role/runtime/export/parity closure drift")
+    if export_contract != parity_contract or export_contract != execution_contract:
+        raise Phase1SingleobsDualArchiveError("execution contract cross-receipt drift")
     try:
         maximum = float(parity.get("max_abs_output_delta"))
     except (TypeError, ValueError) as exc:
@@ -266,6 +285,8 @@ def _load_runtime_closure(
         "input_len": int(export["expected_input_len"]),
         "tx_classes": int(dimensions["tx_logits"]),
         "max_abs_output_delta": maximum,
+        "execution_contract": execution_contract,
+        "execution_contract_sha256": execution_contract["contract_sha256"],
     }
 
 
@@ -345,7 +366,6 @@ def _resolve_device(value: str) -> Any:
 
 
 def _forward_once_per_selected_iq_batch(runtime: Mapping[str, Any], rows: np.ndarray, *, device: Any, batch_size: int) -> tuple[np.ndarray, np.ndarray, np.ndarray, int]:
-    import torch
 
     if isinstance(batch_size, bool) or not 1 <= int(batch_size) <= RUNTIME_BATCH_CAPACITY:
         raise Phase1SingleobsDualArchiveError("batch_size must be in [1,256]")
@@ -353,6 +373,10 @@ def _forward_once_per_selected_iq_batch(runtime: Mapping[str, Any], rows: np.nda
         if hashlib.sha256(handle.read()).hexdigest() != runtime["sha256"]:
             raise Phase1SingleobsDualArchiveError("runtime changed before load")
         handle.seek(0)
+        try:
+            _recheck_execution_contract(runtime["execution_contract"], device=device)
+        except (RuntimeError, TypeError, ValueError) as exc:
+            raise Phase1SingleobsDualArchiveError("runtime execution contract recheck failed") from exc
         model = torch.jit.load(handle, map_location=device).eval()
     outputs: list[list[np.ndarray]] = [[], [], []]
     invocations = 0
@@ -420,6 +444,16 @@ def verify_phase1_singleobs_dual_feature_archive(archive_path: str | Path, manif
     ):
         raise Phase1SingleobsDualArchiveError("manifest legacy cache lineage drift")
     tx_width = int(inputs["tx_logits_width"])
+    declared_contract = inputs.get("execution_contract")
+    if not isinstance(declared_contract, Mapping):
+        raise Phase1SingleobsDualArchiveError("manifest execution contract drift")
+    try:
+        declared_device = torch.device(str(declared_contract.get("cuda_device")))
+        execution_contract = _validate_execution_contract(declared_contract, device=declared_device)
+    except (RuntimeError, TypeError, ValueError) as exc:
+        raise Phase1SingleobsDualArchiveError("manifest execution contract drift") from exc
+    if inputs.get("execution_contract_sha256") != execution_contract["contract_sha256"]:
+        raise Phase1SingleobsDualArchiveError("manifest execution contract SHA drift")
     for name, width in (("z_id", FEATURE_DIM), ("z_dom", FEATURE_DIM), ("tx_logits", tx_width)):
         value = arrays[name]
         if value.dtype != np.float32 or value.shape != (row_count, width) or not np.isfinite(value).all():
@@ -457,7 +491,9 @@ def export_phase1_singleobs_dual_feature_archive(
     device: str = "cuda:0", batch_size: int = RUNTIME_BATCH_CAPACITY,
 ) -> dict[str, Any]:
     """Export a new, immutable development-only archive from verified inputs."""
-    runtime = _load_runtime_closure(runtime_path=runtime_path, runtime_sha256=runtime_sha256, runtime_role=runtime_role, export_receipt_path=export_receipt_path, export_receipt_sha256=export_receipt_sha256, parity_receipt_path=parity_receipt_path, parity_receipt_sha256=parity_receipt_sha256)
+    runtime_device = _resolve_device(device)
+    execution_contract = _seal_graph_executor_optimize_false(runtime_device)
+    runtime = _load_runtime_closure(runtime_path=runtime_path, runtime_sha256=runtime_sha256, runtime_role=runtime_role, export_receipt_path=export_receipt_path, export_receipt_sha256=export_receipt_sha256, parity_receipt_path=parity_receipt_path, parity_receipt_sha256=parity_receipt_sha256, device=runtime_device, execution_contract=execution_contract)
     salt = _load_selection_salt(selection_salt_receipt_path, selection_salt_receipt_sha256, checkpoint_sha=runtime["checkpoint_sha256"])
     cache_path = Path(cache_set_path).resolve()
     expected_cache = _sha256(cache_set_sha256, name="cache-set")
@@ -512,7 +548,7 @@ def export_phase1_singleobs_dual_feature_archive(
     registry = _class_registry(class_ids, logit_width=runtime["tx_classes"])
     if set(metadata["labels"].astype(str).tolist()) != set(registry):
         raise Phase1SingleobsDualArchiveError("cache labels do not exactly match explicit class_ids")
-    z_id, z_dom, tx_logits, invocations = _forward_once_per_selected_iq_batch(runtime, selected_iq, device=_resolve_device(device), batch_size=batch_size)
+    z_id, z_dom, tx_logits, invocations = _forward_once_per_selected_iq_batch(runtime, selected_iq, device=runtime_device, batch_size=batch_size)
     arrays = {
         "z_id": z_id, "z_dom": z_dom, "tx_logits": tx_logits,
         "labels": metadata["labels"], "receiver_ids": metadata["receiver_ids"],
@@ -538,7 +574,7 @@ def export_phase1_singleobs_dual_feature_archive(
         "class_registry_sha256": _class_registry_sha256(registry),
         "tx_logits_semantics": "raw_checkpoint_column_index_only_unbound_to_class_ids",
         "held_runner_tx_logits_allowed": False,
-        "inputs": {"cache_set_sha256": expected_cache, "cache_npz_sha256_by_scenario": cache_npz_hashes, "cache_outer_observed_schema": cache_audit["outer_observed_schema"], "cache_inner_observed_schema_by_scenario": cache_audit["inner_observed_schema_by_scenario"], "cache_legacy_schema_compatibility": cache_audit["legacy_schema_compatibility"], "selection_salt_receipt_sha256": salt["sha256"], "runtime_role": runtime["role"], "runtime_sha256": runtime["sha256"], "export_receipt_sha256": runtime["export_receipt_sha256"], "parity_receipt_sha256": runtime["parity_receipt_sha256"], "checkpoint_sha256": runtime["checkpoint_sha256"], "adapter_state_sha256": runtime["adapter_state_sha256"], "input_len": runtime["input_len"], "tx_logits_width": runtime["tx_classes"], "runtime_output_schema": RUNTIME_OUTPUT_SCHEMA},
+        "inputs": {"cache_set_sha256": expected_cache, "cache_npz_sha256_by_scenario": cache_npz_hashes, "cache_outer_observed_schema": cache_audit["outer_observed_schema"], "cache_inner_observed_schema_by_scenario": cache_audit["inner_observed_schema_by_scenario"], "cache_legacy_schema_compatibility": cache_audit["legacy_schema_compatibility"], "selection_salt_receipt_sha256": salt["sha256"], "runtime_role": runtime["role"], "runtime_sha256": runtime["sha256"], "export_receipt_sha256": runtime["export_receipt_sha256"], "parity_receipt_sha256": runtime["parity_receipt_sha256"], "checkpoint_sha256": runtime["checkpoint_sha256"], "adapter_state_sha256": runtime["adapter_state_sha256"], "input_len": runtime["input_len"], "tx_logits_width": runtime["tx_classes"], "runtime_output_schema": RUNTIME_OUTPUT_SCHEMA, "execution_contract": runtime["execution_contract"], "execution_contract_sha256": runtime["execution_contract_sha256"]},
         "selection": {"selection_salt_sha256": salt["selection_salt_sha256"], "scenario_order": list(FORMAL_LEO_WEAK_SCENARIOS), "selected_observations_per_physical_id": 1, "observation_ids": "verbatim_verified_selected_overlay_ids"},
         "runtime_audit": {"same_iq_outputs": ["z_id", "z_dom", "tx_logits"], "single_runtime_call_per_selected_iq_batch": True, "runtime_invocations": invocations, "batch_size": int(batch_size)},
         "row_count": int(len(selected_iq)), "cache_loader_audit_sha256": hashlib.sha256(_canonical_json(cache_audit)).hexdigest(),

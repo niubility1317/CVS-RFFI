@@ -4,8 +4,8 @@
 
 - run_id:`rchm_bpp_p1_dual_archive_9ca1a59a_20260722_r1`
 - 预注册时间:`2026-07-22T21:58:13+08:00`
-- 主agent:`/root`；唯一实验runner:`gpt-5.6-terra high`，待委派
-- 当前状态:`LOCAL_VERIFIED`
+- 主agent:`/root`；唯一实验runner:`/root/rchm_dual_archive_runner`（`gpt-5.6-terra high`，已完成）
+- 当前状态:`TECHNICAL_FAILURE`
 - 候选:`JOINT-RCHM-BPP/r1f`
 - 方法提交:`9ca1a59a7522393c43ee09c7f95dde6588cd8f4a`
 - retry授权:`NO`
@@ -110,16 +110,16 @@ wrapper在写coverage receipt、SHA清单和完成marker前硬断言：总行数
 
 ## 8.完成后回填
 
-- runner handoff:待回填
-- preflight/route:待回填
-- GPU/PID/process:待回填
-- 远端SHA/compile:待回填
-- child exit/marker:待回填
-- artifact清单与本地回收路径:待回填
-- coverage同row结果:待回填
-- 异常:待回填
-- 最终状态:`LOCAL_VERIFIED / NO_PERFORMANCE_RESULT`
-- 下一步:仅在全部技术与coverage条件满足后，重新提交held runner可行性监督。
+- runner handoff:`/root/rchm_dual_archive_runner`；唯一启动次数=`1`；retry=`NO`；方法commit=`9ca1a59a7522393c43ee09c7f95dde6588cd8f4a`；release-control commit=`7bec37f4aa7f0e99cc46b30a3c1be7e464e97848`。
+- preflight/route:2026-07-22T22:28:54+08:00本地direct只读preflight通过：`N607`直连身份、项目根、服务器时间与8张GPU可见；未使用bridge。每次SSH/SCP后均核验本机无`ssh.exe`残留、无到`172.31.111.215:22`或`172.31.105.18:22`的ESTABLISHED连接。
+- GPU/PID/process:只读落地门确认run根不存在、8张GPU无compute进程；GPU0分配前仍无compute进程。精确run根:`/home/szu2070436088/2510044040/CV-SincNet/runs/rchm_bpp_p1_dual_archive_9ca1a59a_20260722_r1`。按冻结模板启动一次，launcher PID=`316120`，原子`pipeline.pid=316120`已落地；后续自然退出，无残留匹配进程或GPU compute进程。
+- 远端SHA/compile:本地与远端ZIP SHA256均为`95127701d2c9f9989fcc6409b1e069e232f2d3e3654611d92e9ac2abe26937a0`；本地与远端wrapper SHA256均为`eb4e591f875434bb7e7f4c90b6a020435f3d7f356b4e05a33091231438210ffd`。安全解包后6个冻结源文件SHA均匹配，远端`py_compile`与`bash -n`通过；checkpoint、adapter、v1 cache、selection salt SHA均与第4节匹配。
+- child exit/marker:child exit=`1`；`PIPELINE_ARTIFACTS_COMPLETE`不存在。dual export receipt=`PASS`，但base runtime/checkpoint parity在256行超过冻结`1e-5`容差：`z_id=0.0001963973045349121`、`z_dom=0.0005043148994445801`、`tx_logits=0.0032591819763183594`，因此在archive前硬停止。
+- artifact清单与本地回收路径:已回收至`E:/type10-7/automation_reports/CV-SincNet/rchm_bpp_p1_dual_archive_9ca1a59a_20260722_r1/retrieved/`：`logs/pipeline.log` SHA256=`547ed302716f021c5c9880fbb26144b0a97778f377be7fd6d75dceaafd0bc026`；`logs/pipeline.pid` SHA256=`4044e5344876db3dd589f50cdf2ace132f91a5d3a054a6d1385eb9092066efab`；`logs/pipeline.exit` SHA256=`4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865`；`output/runtime/base_dual_runtime.pt` SHA256=`b13f78b2da617279603e4b29a96b84baa6dd7361c245acaa4daf403e8744b364`；`output/runtime/candidate_dual_runtime.pt` SHA256=`e0f6706275e1af6f77a48248c97662170ee71aff86ff19176e9a0a0dbe9f4ed0`；`output/runtime/dual_export_receipt.json` SHA256=`a25d678fedc715a2b72e6e99fead549af3f438974f717d9efe4b7078e4bbf1d7`。
+- coverage同row结果:未生成。`coverage_receipt.json`、archive NPZ/manifest、`base_parity_receipt.json`/vector、`sha256sums.txt`均因parity硬门失败而不存在；因此总行、unique physical/observation、classes、receivers、days、scenes、168cell、zero/min/max与K1/K5/K10 remaining均为`NOT_GENERATED`，不得推断或补填。
+- 异常:冻结wrapper的parity硬门失败；未访问target/query、未运行held/125、未调参、未kill/restart、未重试。此run根已含不可变输入和部分output，禁止复用；若要修复或再次执行，必须经授权创建新run ID并重新预注册。
+- 最终状态:`TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
+- 下一步:主agent已完成冻结parity差异的本地诊断；本run不进入held runner可行性监督，也不产生任何算法性能或promotion结论。
 
 ## 9.发布审查闭环
 
@@ -127,3 +127,20 @@ wrapper在写coverage receipt、SHA清单和完成marker前硬断言：总行数
 - 最小修订:在完成marker前硬断言全部预注册coverage常量；校正发布树路径；wrapper以`BASHPID`临时文件加`mv`原子写PID；冻结两阶段目录顺序；使用带默认空值的`CUDA_VISIBLE_DEVICES`展开。
 - 本地验证:root/Git镜像逐字节一致，`bash -n`通过，embedded Python compile通过；synthetic coverage正例1个、row-count/zero-cell/K10-min负例3个均按预期；unset CUDA负例退出码70。
 - 复审裁决:`P0=0,P1=0,P2=0→MERGE`。该MERGE只授权按本报告发布Phase1归档run，不是算法性能或promotion认证。
+
+## 10.技术失败诊断与后续边界
+
+- 失败形状:独立verifier按batch 1/8/256依次调用时，maxabs从全0增长到`z_id=1.9640e-4`、`z_dom=5.0431e-4`、`tx_logits=3.2592e-3`；它在`1e-5`硬门处停止，未写parity receipt/vector、archive或coverage。
+- 根因诊断:SHA绑定base runtime在本地CUDA相同256行fresh第1→2次出现`5.90e-6/1.96e-5/1.47e-4`漂移，第2→3次全0；首图含843个`prim::profile`节点，热图为0；CPU全0；仅关闭graph executor optimization后CUDA连续三次全0。现有证据支持TorchScript CUDA冷/热执行计划切换，不支持checkpoint、dtype、device或dual-feature语义错位。
+- 结果边界:现有artifact没有逐行checkpoint/runtime parity vector，不能推断top1、距离排序或真实语义等价；本run永久保持`TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。
+- 技术revision:`P1-DUAL-ARCHIVE-GEOFF/r2`经独立监督`MERGE`并进入`DESIGN_FROZEN`。唯一delta是在export、verify和archive consumer首次JIT边界前fail-closed封存并回读`graph_executor_optimize=false`，升级v2 execution contract并绑定精确Torch/CUDA版本和contract SHA。
+- 门限不变:三输出在fresh batch1/8/256的checkpoint-vs-runtime及runtime第1/2/3次均须`maxabs≤1e-5`；不得warm-up取热结果、放宽容差、恢复优化路径或接受旧v1 receipt。
+- 后续:只允许本地实现、测试、独立review和新Git提交；若再发布，必须使用全新不可覆盖run ID。本run不进入held复审。
+
+## 11.GEOFF/r2本地实现闭环与旧解包树边界
+
+- 实现范围:正式Git工作树中的dual runtime export、独立checkpoint parity、dual archive consumer及三份对应测试；schema升级到v2，封存并严格回读`graph_executor_optimize=false`，绑定Torch/CUDA/device、`max_abs=1e-5`和canonical contract SHA；fresh batch1/8/256均执行runtime第1/2/3次，不warm-up、不放宽门限。
+- 本地验证:`ssr-gpu`下`py_compile`通过，35项GEOFF专项及相邻dual-forward/joint core合计`48 passed`、exit0；r1回收candidate runtime的无数据CUDA探针在batch1/8/256上第1↔2、第1↔3三输出最大差均为0。弃用/trace警告及pytest临时目录清理权限提示不改变exit0。
+- 独立审查:首轮`P0=0,P1=1,P2=0→REVISE`，唯一P1是receipt实际调用3次却同时声明1次和3次；verifier、archive consumer、fixture及正式断言经4行修复统一为3，复审`P0=0,P1=0,P2=0→MERGE`。该MERGE只授权新Git提交和后续新run预注册，不改变本run的技术失败状态。
+- 本地源边界:旧解包树`E:/type10-7/code/snapshots/rchm_bpp_p1_dual_archive_9ca1a59a_20260722_r1/source_9ca1a59a/`中的6个GEOFF源码/测试文件已与不可变ZIP成员SHA不同，标记为`CONTAMINATED_LOCAL_EXTRACTION / DO_NOT_RELEASE`。原ZIP SHA256仍为`95127701d2c9f9989fcc6409b1e069e232f2d3e3654611d92e9ac2abe26937a0`，远端r1源未变；后续只能从新Git提交生成新archive并使用新run ID。
+- 时间:`2026-07-22T23:28:56+08:00`；prediction、archive、coverage仍为0/未生成，本run永久保持`TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。

@@ -1822,3 +1822,29 @@ I_{syn}(H)=H_{JOINT}-H_{DA}-H_{HEAD}+H_{M0}>0.
 run ID冻结为`rchm_bpp_p1_dual_archive_9ca1a59a_20260722_r1`，方法源提交为`9ca1a59a7522393c43ee09c7f95dde6588cd8f4a`，Git归档SHA256为`95127701d2c9f9989fcc6409b1e069e232f2d3e3654611d92e9ac2abe26937a0`。强制run报告与wrapper已同时保存在根目录report面和本Git镜像；wrapper SHA256为`eb4e591f875434bb7e7f4c90b6a020435f3d7f356b4e05a33091231438210ffd`。
 
 首轮独立发布审查发现coverage只记录不阻断、清单路径漂移、PID/目录顺序不闭合和`set -u` GPU变量错误路径，裁决`P0=1,P1=4→REVISE`。最小修订后，`bash -n`、embedded Python compile、synthetic coverage正例1个与row-count/zero-cell/K10-min负例3个、unset CUDA退出70均通过；复审为`P0=0,P1=0,P2=0→MERGE`。当前仅达到`LOCAL_VERIFIED / NO_PERFORMANCE_RESULT`，尚未访问N607；下一步由该run ID的唯一Terra runner执行preflight、落地、运行、短连接监控和artifact回收。
+
+##### 双表征归档r1远端技术失败与GEOFF/r2冻结
+
+唯一runner经direct preflight在GPU0启动`rchm_bpp_p1_dual_archive_9ca1a59a_20260722_r1`一次；远端ZIP、wrapper、6个源文件、checkpoint、adapter、v1 cache和selection salt SHA、解包、`py_compile`及`bash -n`全部闭合。child exit=1：export receipt为PASS，但独立base runtime/checkpoint parity在batch1/8/256呈0→非零，256行maxabs为`z_id=1.9640e-4`、`z_dom=5.0431e-4`、`tx_logits=3.2592e-3`，超过冻结`1e-5`，因此archive、coverage和prediction均未生成。状态永久为`TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`，原run ID禁止复用。
+
+回收runtime的本地无数据探针把根因定位为TorchScript CUDA graph executor冷/热执行计划切换：相同256行fresh第1→2次漂移、2→3次全0，首图含843个`prim::profile`、后续图为0；CPU稳定，仅关闭graph executor optimization后CUDA连续三次全0。`P1-DUAL-ARCHIVE-GEOFF/r2`经独立监督`MERGE`并`DESIGN_FROZEN`：唯一delta是在export、verify和archive consumer的首次JIT边界前fail-closed封存并回读`graph_executor_optimize=false`，升级v2 contract并绑定精确Torch/CUDA版本和SHA；`1e-5`不放宽，batch1/8/256的eager-vs-runtime及runtime连续3次均需通过。任何API/readback/version/hash/数值/语义门失败都停止且不得生成archive。
+
+##### r1f held-runner静态监督裁决
+
+真实archive缺失期间只读草案发现当前6类合同与冻结`D_eff≥6`冲突：pseudo-new LOCO后的before只有5类，所有K下必然`effective_class_identity`，故结构上`M_DA=M0`、`M_JOINT=M_HEAD`；after到6类才可能启用RCHM，registration forgetting会同时混入类别竞争与DA开关变化。三个core还只提供Phase2 consumer，没有从archive确定性拟合Patch A bank/qKNN锁、RCHM basis/cross-map/gates和BPP先验/量化门的Phase1算法。
+
+独立监督对“直接实现r1f held runner”的裁决为`REVISE`。这不是协议违法或性能负结果，而是因果与接口不可辨识；必须创建下一candidate revision并完整重走`DESIGN_DRAFT→FEASIBILITY_REVIEW→DESIGN_FROZEN→IMPLEMENTING`。当前r1f core只能作为只读消费组件复用；before须明确登记为identity结构null，`I_syn`只在after计算，forgetting只声明端到端注册转移，且Phase1 lock-fitting算法、`(K,C=5/6)`锁语义、zero/permuted context负对照和量化teacher必须在任何held prediction前冻结。唯一运行侧下一artifact仍是GEOFF/r2成功生成的真实archive/manifest/coverage receipt。
+
+##### GEOFF/r2实现、复审与发布源边界
+
+`P1-DUAL-ARCHIVE-GEOFF/r2`已在正式Git工作树实现，范围严格为dual runtime export、独立checkpoint parity、dual archive consumer及三份对应测试。实现把export/parity/archive schema升级到v2，首次JIT边界前fail-closed设置并严格回读`graph_executor_optimize=false`，把Torch版本、CUDA版本、设备、`max_abs=1e-5`和canonical contract SHA封入并交叉核验；fresh batch1/8/256均对同一eager输出执行runtime第1/2/3次比较，容差未放宽。
+
+主线在显式加载Conda hook后的`ssr-gpu`环境完成`py_compile`、35项GEOFF专项与dual-forward/joint core相邻回归，最终`48 passed`、exit0；TorchScript弃用/trace警告及pytest临时目录清理权限提示均未改变exit0。对r1回收candidate runtime的本地无数据CUDA探针严格回读`False`，batch1/8/256的第1↔2和第1↔3三输出最大差全部为0。首轮独立Terra审查为`P0=0,P1=1,P2=0→REVISE`：v2 receipt实际执行3次却同时声明`runtime_invocations_per_parity_batch=1`。最小4行修复把verifier、archive consumer、fixture和正式断言统一为3；复审为`P0=0,P1=0,P2=0→MERGE`。这只证明本地技术实现闭合，不是archive、prediction或性能结果。
+
+旧r1本地解包树`E:/type10-7/code/snapshots/rchm_bpp_p1_dual_archive_9ca1a59a_20260722_r1/source_9ca1a59a/`在一次被主线及时阻断的错误实现落点中有6个GEOFF源码/测试文件与不可变ZIP成员SHA不同，现标记为`CONTAMINATED_LOCAL_EXTRACTION / DO_NOT_RELEASE`。原ZIP SHA256仍为`95127701d2c9f9989fcc6409b1e069e232f2d3e3654611d92e9ac2abe26937a0`，远端r1源未变；后续发布只能从新Git提交重新生成archive，不能复用该解包树或原run ID。
+
+##### JOINT-RCHM-BPP/r2a一次可行性监督
+
+同一设计波次的DA草案使用Phase1 dual archive拟合robust receiver context、`z_dom→z_id`低秩cross-map与27个预注册family，HEAD草案使用统一全类Patch A/BPP、nested receiver/day/class/pseudo-new隔离、K1/K5/K10锁和FP32/FP64量化teacher。独立Sol-max联合监督裁决为`REVISE`，未生成`DESIGN_FROZEN`且禁止实现。首个静态falsifier已触发：inner C4→C5在core的`D_eff≥6`合同下before和after均为identity，无法选择任何nonidentity DA family或证明correct context优于zero/permuted；使用outer C6选择又会污染held证据。
+
+同次监督还要求下一revision闭合从split receipt到Q/R/B typed locks的确定性总函数、`b0`统计与正根存在条件、C5/C6充分统计/未归一化logit/posterior口径、整row回退、量化state销毁以及真实wire/MAC/时延/显存。当前唯一获准的下一artifact不变：先由GEOFF/r2新run生成真实dual archive、manifest和只读coverage receipt；没有这些实物前不进入第二设计波次、不写method fitter、不产生prediction。

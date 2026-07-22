@@ -89,6 +89,7 @@ def _write_export_receipt(
     adapter: Path,
     runtime: Path,
 ) -> None:
+    execution_contract = dual_export._seal_graph_executor_optimize_false(torch.device("cpu"))
     payload = {
         "schema": dual_export.EXPORT_SCHEMA,
         "status": "PASS",
@@ -108,6 +109,9 @@ def _write_export_receipt(
             dual_export.FORBIDDEN_RUNTIME_TOKENS
         ),
         "effective8_target_modules": list(dual_export.EFFECTIVE8_TARGET_MODULES),
+        "execution_contract": execution_contract,
+        "execution_contract_sha256": execution_contract["contract_sha256"],
+        "max_abs_tolerance": 1.0e-5,
         "formal_phase2_eligible": False,
         "bundle_created": False,
     }
@@ -195,7 +199,7 @@ def _verify(
         vector_audit_out=vectors,
         input_len=160,
         parity_seed=5,
-        parity_rows=7,
+        parity_rows=8,
         device="cpu",
     )
 
@@ -251,7 +255,7 @@ def test_candidate_parity_binds_export_and_closes_three_batches(
     payload = json.loads(receipt.read_text(encoding="utf-8"))
     vector_payload = json.loads(vectors.read_text(encoding="utf-8"))
     assert result["status"] == "PASS"
-    assert result["batch_sizes"] == [1, 7, 256]
+    assert result["batch_sizes"] == [1, 8, 256]
     assert result["max_abs_output_delta"] == 0.0
     assert payload["expected_input_len"] == 160
     assert payload["expected_tx_classes"] == 3
@@ -260,13 +264,18 @@ def test_candidate_parity_binds_export_and_closes_three_batches(
         "forbidden_runtime_components_absent"
     ] is True
     assert payload["export_receipt_sha256"] == _sha(export_receipt)
+    assert payload["schema"] == parity.RECEIPT_SCHEMA
+    assert payload["execution_contract_sha256"] == payload["execution_contract"]["contract_sha256"]
+    assert payload["runtime_invocations_per_parity_batch"] == 3
+    assert payload["runtime_calls_per_batch"] == 3
     assert counts == {
         "checkpoint": 1,
         "adapter state": 1,
         "runtime": 1,
         "export receipt": 1,
     }
-    assert [row["batch_size"] for row in vector_payload["rows"]] == [1, 7, 256]
+    assert [row["batch_size"] for row in vector_payload["rows"]] == [1, 8, 256]
+    assert all(len(row["runtime_calls"]) == 3 for row in vector_payload["rows"])
     preimage = {
         key: value
         for key, value in vector_payload.items()
@@ -329,6 +338,7 @@ def test_runtime_output_contract_rejects_drift(bad_field: str) -> None:
 @pytest.mark.parametrize(
     ("field", "replacement"),
     [
+        ("schema", "cvs.phase1.adv3b02_dual_feature_torchscript_export.v1"),
         ("candidate_runtime_sha256", "0" * 64),
         ("feature_keys", {"z_id": "feat", "z_dom": "feat_imp"}),
         ("checkpoint_sha256", "0" * 64),
@@ -430,7 +440,7 @@ def test_verifier_rejects_checkpoint_cuda_and_overwrite(
             vector_audit_out=tmp_path / "cuda_vectors.json",
             input_len=160,
             parity_seed=1,
-            parity_rows=2,
+            parity_rows=8,
             device="cuda:0",
         )
 

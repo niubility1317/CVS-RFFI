@@ -264,15 +264,21 @@ def test_export_writes_bound_nonformal_metadata(
         export_receipt_out=tmp_path / "export.json",
         device="cpu",
         parity_seed=17,
-        parity_rows=4,
+        parity_rows=8,
         runtime_batch_size=256,
-        max_abs_tolerance=1.0e-4,
+        max_abs_tolerance=1.0e-5,
     )
     result = dual_export.export(args)
     payload = json.loads(args.export_receipt_out.read_text(encoding="utf-8"))
     assert result["status"] == "PASS"
     assert payload["status"] == "PASS"
     assert payload["runtime_output_schema"] == dual_export.RUNTIME_OUTPUT_SCHEMA
+    assert payload["schema"] == dual_export.EXPORT_SCHEMA
+    assert payload["max_abs_tolerance"] == 1.0e-5
+    assert payload["execution_contract_sha256"] == payload["execution_contract"]["contract_sha256"]
+    assert payload["execution_contract"]["readback"] is False
+    assert payload["diagnostics"]["base_fresh_eager_vs_runtime"]["batch_sizes"] == [1, 8, 256]
+    assert payload["diagnostics"]["base_fresh_eager_vs_runtime"]["runtime_calls_per_batch"] == 3
     assert payload["feature_keys"] == {"z_id": "feat_joint", "z_dom": "feat_imp"}
     assert payload["feature_dimensions"] == {
         "z_id": 160,
@@ -325,3 +331,26 @@ def test_export_refuses_overwrite(tmp_path: Path) -> None:
 def test_export_requires_sealed_runtime_capacity_256() -> None:
     with pytest.raises(ValueError, match="exactly 256"):
         dual_export.export(argparse.Namespace(runtime_batch_size=255))
+
+
+def test_execution_contract_rejects_live_or_canonical_drift() -> None:
+    contract = dual_export._seal_graph_executor_optimize_false(torch.device("cpu"))
+    assert dual_export._validate_execution_contract(contract, device=torch.device("cpu")) == contract
+    altered = dict(contract); altered["readback"] = True
+    with pytest.raises(ValueError, match="live value drift"):
+        dual_export._validate_execution_contract(altered, device=torch.device("cpu"))
+    altered = dict(contract); altered["contract_sha256"] = "0" * 64
+    with pytest.raises(ValueError, match="canonical SHA"):
+        dual_export._validate_execution_contract(altered, device=torch.device("cpu"))
+
+
+@pytest.mark.parametrize("readback", [True, None])
+def test_execution_contract_fails_closed_on_api_readback(readback, monkeypatch: pytest.MonkeyPatch) -> None:
+    class _FakeTorchC:
+        @staticmethod
+        def _set_graph_executor_optimize(_value): return None
+        @staticmethod
+        def _get_graph_executor_optimize(): return readback
+    monkeypatch.setattr(dual_export.torch, "_C", _FakeTorchC())
+    with pytest.raises(RuntimeError, match="readback"):
+        dual_export._seal_graph_executor_optimize_false(torch.device("cpu"))

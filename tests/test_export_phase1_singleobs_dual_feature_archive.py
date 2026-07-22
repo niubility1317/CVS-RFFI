@@ -48,6 +48,7 @@ def _lineage(tmp_path: Path, *, runtime_role: str = "candidate") -> dict[str, ob
     runtime = tmp_path / "dual.ts"
     torch.jit.save(torch.jit.trace(_TinyDualRuntime().eval(), torch.zeros(2, 2, 8)), runtime)
     adapter_sha = hashlib.sha256(b"adapter").hexdigest()
+    execution_contract = module._seal_graph_executor_optimize_false(torch.device("cpu"))
     export = _write_json(tmp_path / "export.json", {
         "schema": module.EXPORT_SCHEMA, "status": "PASS", "runtime_output_schema": module.RUNTIME_OUTPUT_SCHEMA,
         "checkpoint_sha256": module.BASE_CHECKPOINT_SHA256, "adapter_state_sha256": adapter_sha,
@@ -55,13 +56,20 @@ def _lineage(tmp_path: Path, *, runtime_role: str = "candidate") -> dict[str, ob
         "candidate_runtime_sha256": _sha(runtime) if runtime_role == "candidate" else hashlib.sha256(b"other").hexdigest(),
         "expected_input_len": 8, "runtime_batch_capacity": 256, "feature_dimensions": {"z_id": 160, "z_dom": 160, "tx_logits": 2},
         "formal_phase2_eligible": False, "bundle_created": False, "bundle_id": None,
+        "execution_contract": execution_contract,
+        "execution_contract_sha256": execution_contract["contract_sha256"],
+        "max_abs_tolerance": 1.0e-5,
     })
     parity = _write_json(tmp_path / "parity.json", {
         "schema": module.PARITY_RECEIPT_SCHEMA, "status": "PASS", "runtime_output_schema": module.RUNTIME_OUTPUT_SCHEMA,
         "checkpoint_lineage_sha256": module.BASE_CHECKPOINT_SHA256, "adapter_state_sha256": adapter_sha,
         "runtime_sha256": _sha(runtime), "export_receipt_sha256": _sha(export), "runtime_role": runtime_role,
         "expected_input_len": 8, "expected_tx_classes": 2, "runtime_batch_capacity": 256,
-        "runtime_invocations_per_parity_batch": 1, "max_abs_output_delta": 0.0,
+        "runtime_invocations_per_parity_batch": 3, "max_abs_output_delta": 0.0,
+        "runtime_calls_per_batch": 3,
+        "execution_contract": execution_contract,
+        "execution_contract_sha256": execution_contract["contract_sha256"],
+        "max_abs_tolerance": 1.0e-5,
         "formal_phase2_eligible": False, "bundle_created": False, "bundle_id": None,
     })
     salt = _write_json(tmp_path / "salt.json", {
@@ -146,6 +154,7 @@ def test_development_archive_preserves_explicit_registry_and_selected_overlay_id
     assert scenarios == expected_scenarios
     assert observation_ids == [f"overlay-{scenario}-{value}" for scenario, value in zip(scenarios, physical)]
     assert manifest["formal_phase2_eligible"] is False
+    assert manifest["schema"] == module.SCHEMA
     assert manifest["access_audit"]["received_iq_persisted"] is False
     assert manifest["tx_logits_semantics"] == "raw_checkpoint_column_index_only_unbound_to_class_ids"
     assert manifest["held_runner_tx_logits_allowed"] is False
@@ -153,6 +162,7 @@ def test_development_archive_preserves_explicit_registry_and_selected_overlay_id
     assert manifest["inputs"]["cache_outer_observed_schema"] == module.LEO_WEAK_CACHE_SET_SCHEMA_V1
     assert manifest["inputs"]["cache_legacy_schema_compatibility"] is True
     assert manifest["runtime_audit"] == {"same_iq_outputs": ["z_id", "z_dom", "tx_logits"], "single_runtime_call_per_selected_iq_batch": True, "runtime_invocations": 2, "batch_size": 2}
+    assert manifest["inputs"]["execution_contract_sha256"] == manifest["inputs"]["execution_contract"]["contract_sha256"]
     assert set(manifest["array_sha256"]) == set(module.MEMBERS)
     module.verify_phase1_singleobs_dual_feature_archive(result["archive_path"], manifest)
 
@@ -260,6 +270,10 @@ def test_runtime_call_count_atomic_cleanup_and_semantic_tamper_fail_closed(tmp_p
     manifest["artifact"]["sha256"] = _sha(semantic)
     with pytest.raises(module.Phase1SingleobsDualArchiveError, match="physical"):
         module.verify_phase1_singleobs_dual_feature_archive(semantic, manifest)
+
+    legacy = json.loads(json.dumps(manifest)); legacy["schema"] = "cvs.phase1.singleobs_dual_feature_archive.v1"
+    with pytest.raises(module.Phase1SingleobsDualArchiveError, match="registry"):
+        module.verify_phase1_singleobs_dual_feature_archive(result["archive_path"], legacy)
 
     args, _ = _args(tmp_path / "atomic", monkeypatch)
     monkeypatch.setattr(module, "verify_phase1_singleobs_dual_feature_archive", lambda *_args, **_kwargs: (_ for _ in ()).throw(RuntimeError("verify failed")))

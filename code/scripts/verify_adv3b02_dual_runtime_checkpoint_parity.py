@@ -44,15 +44,20 @@ from scripts.export_adv3b02_dual_feature_torchscript import (  # noqa: E402
     ADV3B02DualFeatureRuntime,
     EXPORT_SCHEMA,
     FEATURE_DIM,
+    FRESH_PARITY_BATCH_SIZES,
     FORBIDDEN_RUNTIME_TOKENS,
+    MAX_ABS_TOLERANCE,
     RUNTIME_BATCH_CAPACITY,
     RUNTIME_COMPONENT_ALLOWLIST,
     RUNTIME_OUTPUT_SCHEMA,
+    _recheck_execution_contract,
+    _seal_graph_executor_optimize_false,
+    _validate_execution_contract,
 )
 
 
-RECEIPT_SCHEMA = "cvs.phase1.adv3b02_dual_runtime_checkpoint_parity_receipt.v1"
-VECTOR_SCHEMA = "cvs.phase1.adv3b02_dual_runtime_parity_vector_audit.v1"
+RECEIPT_SCHEMA = "cvs.phase1.adv3b02_dual_runtime_checkpoint_parity_receipt.v2"
+VECTOR_SCHEMA = "cvs.phase1.adv3b02_dual_runtime_parity_vector_audit.v2"
 RUNTIME_ROLES = ("base", "candidate")
 
 
@@ -124,9 +129,14 @@ def _validate_export_binding(
     adapter_sha: str,
     runtime_sha: str,
     input_len: int,
-) -> int:
+    device: torch.device,
+) -> tuple[int, dict[str, Any]]:
     runtime_key = f"{runtime_role}_runtime_sha256"
     dimensions = payload.get("feature_dimensions")
+    try:
+        execution_contract = _validate_execution_contract(payload.get("execution_contract"), device=device)
+    except (TypeError, ValueError) as exc:
+        raise ADV3B02DualRuntimeParityError("export execution contract drift") from exc
     if (
         payload.get("schema") != EXPORT_SCHEMA
         or payload.get("status") != "PASS"
@@ -146,6 +156,8 @@ def _validate_export_binding(
         != list(FORBIDDEN_RUNTIME_TOKENS)
         or payload.get("effective8_target_modules")
         != list(EFFECTIVE8_TARGET_MODULES)
+        or payload.get("execution_contract_sha256") != execution_contract["contract_sha256"]
+        or payload.get("max_abs_tolerance") != MAX_ABS_TOLERANCE
         or not isinstance(dimensions, dict)
         or dimensions.get("z_id") != FEATURE_DIM
         or dimensions.get("z_dom") != FEATURE_DIM
@@ -156,7 +168,7 @@ def _validate_export_binding(
         raise ADV3B02DualRuntimeParityError(
             "export receipt/runtime/checkpoint/adapter/allowlist binding drift"
         )
-    return int(dimensions["tx_logits"])
+    return int(dimensions["tx_logits"]), execution_contract
 
 
 def _audit_runtime_components(runtime: torch.jit.ScriptModule) -> dict[str, Any]:
@@ -339,11 +351,11 @@ def verify_dual_runtime_checkpoint(
         raise ADV3B02DualRuntimeParityError("runtime_role must be base or candidate")
     if isinstance(input_len, bool) or int(input_len) <= 0:
         raise ADV3B02DualRuntimeParityError("input_len must be positive")
-    if isinstance(parity_rows, bool) or not 2 <= int(parity_rows) <= 255:
+    if isinstance(parity_rows, bool) or int(parity_rows) != 8:
         raise ADV3B02DualRuntimeParityError(
-            "parity_rows must be an intermediate batch in [2,255]"
+            "parity_rows must be exactly 8 for the frozen fresh-batch audit"
         )
-    if not 0.0 < float(max_abs_tolerance) <= 1.0e-5:
+    if not 0.0 < float(max_abs_tolerance) <= MAX_ABS_TOLERANCE:
         raise ADV3B02DualRuntimeParityError("tolerance must be in (0,1e-5]")
     if (
         receipt_path == vector_path
@@ -369,16 +381,20 @@ def verify_dual_runtime_checkpoint(
     if checkpoint_sha != BASE_CHECKPOINT_SHA256:
         raise ADV3B02DualRuntimeParityError("checkpoint is not strict ADV3B02")
     export_receipt = _parse_export_receipt(export_receipt_bytes)
-    expected_tx_classes = _validate_export_binding(
+    runtime_device = _resolve_device(device)
+    live_execution_contract = _seal_graph_executor_optimize_false(runtime_device)
+    expected_tx_classes, export_execution_contract = _validate_export_binding(
         export_receipt,
         runtime_role=runtime_role,
         checkpoint_sha=checkpoint_sha,
         adapter_sha=adapter_sha,
         runtime_sha=runtime_sha,
         input_len=int(input_len),
+        device=runtime_device,
     )
+    if export_execution_contract != live_execution_contract:
+        raise ADV3B02DualRuntimeParityError("export execution contract does not close to live contract")
 
-    runtime_device = _resolve_device(device)
     checkpoint_value = _load_checkpoint_bytes(checkpoint_bytes)
     model, checkpoint_audit = build_exact_ssdg_model_from_checkpoint(
         checkpoint_value,
@@ -419,6 +435,7 @@ def verify_dual_runtime_checkpoint(
         runtime_batch_size=RUNTIME_BATCH_CAPACITY,
     ).to(runtime_device).eval()
     try:
+        _recheck_execution_contract(live_execution_contract, device=runtime_device)
         scripted = torch.jit.load(
             io.BytesIO(runtime_bytes), map_location=runtime_device
         ).eval()
@@ -428,8 +445,8 @@ def verify_dual_runtime_checkpoint(
         ) from exc
     component_audit = _audit_runtime_components(scripted)
 
-    batch_sizes = tuple(sorted({1, int(parity_rows), 256}))
-    diagnostics: dict[str, dict[str, float]] = {}
+    batch_sizes = FRESH_PARITY_BATCH_SIZES
+    diagnostics: dict[str, dict[str, dict[str, float]]] = {}
     vector_rows: list[dict[str, Any]] = []
     maximum = 0.0
     for batch_size in batch_sizes:
@@ -448,24 +465,19 @@ def verify_dual_runtime_checkpoint(
             rows=int(batch_size),
             expected_tx_classes=expected_tx_classes,
         )
-        runtime_values = _runtime_outputs(
-            scripted(probes),
-            rows=int(batch_size),
-            expected_tx_classes=expected_tx_classes,
-        )
-        batch_diagnostics = {
-            "z_id": _max_abs(
-                eager_values[0], runtime_values[0], f"z_id.batch{batch_size}"
-            ),
-            "z_dom": _max_abs(
-                eager_values[1], runtime_values[1], f"z_dom.batch{batch_size}"
-            ),
-            "tx_logits": _max_abs(
-                eager_values[2], runtime_values[2], f"tx_logits.batch{batch_size}"
-            ),
-        }
+        runtime_calls: list[dict[str, Any]] = []
+        batch_diagnostics: dict[str, dict[str, float]] = {}
+        for call_index in (1, 2, 3):
+            runtime_values = _runtime_outputs(scripted(probes), rows=int(batch_size), expected_tx_classes=expected_tx_classes)
+            call_diagnostics = {
+                "z_id": _max_abs(eager_values[0], runtime_values[0], f"z_id.batch{batch_size}.call{call_index}"),
+                "z_dom": _max_abs(eager_values[1], runtime_values[1], f"z_dom.batch{batch_size}.call{call_index}"),
+                "tx_logits": _max_abs(eager_values[2], runtime_values[2], f"tx_logits.batch{batch_size}.call{call_index}"),
+            }
+            batch_diagnostics[str(call_index)] = call_diagnostics
+            maximum = max(maximum, *call_diagnostics.values())
+            runtime_calls.append({"call_index": call_index, "runtime_z_id": _array_receipt(runtime_values[0]), "runtime_z_dom": _array_receipt(runtime_values[1]), "runtime_tx_logits": _array_receipt(runtime_values[2]), "max_abs_delta": call_diagnostics})
         diagnostics[str(batch_size)] = batch_diagnostics
-        maximum = max(maximum, *batch_diagnostics.values())
         vector_rows.append(
             {
                 "batch_size": int(batch_size),
@@ -474,10 +486,8 @@ def verify_dual_runtime_checkpoint(
                 "checkpoint_z_id": _array_receipt(eager_values[0]),
                 "checkpoint_z_dom": _array_receipt(eager_values[1]),
                 "checkpoint_tx_logits": _array_receipt(eager_values[2]),
-                "runtime_z_id": _array_receipt(runtime_values[0]),
-                "runtime_z_dom": _array_receipt(runtime_values[1]),
-                "runtime_tx_logits": _array_receipt(runtime_values[2]),
-                "max_abs_delta": batch_diagnostics,
+                "runtime_calls": runtime_calls,
+                "max_abs_delta_by_runtime_call": batch_diagnostics,
             }
         )
     if maximum > float(max_abs_tolerance):
@@ -496,6 +506,10 @@ def verify_dual_runtime_checkpoint(
         "runtime_batch_capacity": RUNTIME_BATCH_CAPACITY,
         "resolved_device": str(runtime_device),
         "runtime_role": runtime_role,
+        "execution_contract": live_execution_contract,
+        "execution_contract_sha256": live_execution_contract["contract_sha256"],
+        "max_abs_tolerance": MAX_ABS_TOLERANCE,
+        "runtime_calls_per_batch": 3,
         "rows": vector_rows,
     }
     parity_vector_root = deployment_bundle.sha256_bytes(
@@ -512,12 +526,16 @@ def verify_dual_runtime_checkpoint(
         "runtime_sha256": runtime_sha,
         "export_receipt_sha256": export_receipt_sha,
         "runtime_role": runtime_role,
+        "execution_contract": live_execution_contract,
+        "execution_contract_sha256": live_execution_contract["contract_sha256"],
+        "max_abs_tolerance": MAX_ABS_TOLERANCE,
         "expected_input_len": int(input_len),
         "expected_tx_classes": expected_tx_classes,
         "runtime_batch_capacity": RUNTIME_BATCH_CAPACITY,
         "max_abs_output_delta": maximum,
         "parity_vector_root_sha256": parity_vector_root,
-        "runtime_invocations_per_parity_batch": 1,
+        "runtime_invocations_per_parity_batch": 3,
+        "runtime_calls_per_batch": 3,
         "runtime_component_audit": component_audit,
         "formal_phase2_eligible": False,
         "bundle_created": False,
