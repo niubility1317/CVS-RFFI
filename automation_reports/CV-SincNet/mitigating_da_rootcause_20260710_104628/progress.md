@@ -53,3 +53,12 @@
 - 11:20 CST直接N607 preflight通过。实时inventory和GPU UUID/PID映射确认GPU0-7各仅1个compute进程，全部属于无关`phase1_dgleo_jointp0_leoweak8r2_20260713`；本实验精确进程匹配为0。
 - 仅SCP新launcher到远端同路径；远端SHA256与本地`df9de171051e97d23787aaf91bbc62a11193cdb9eb9922d37ea9085c990bc1de`一致，远端`bash -n`通过，未产生任何wave run/log目录。
 - 未启动任何wave；所有SSH/SCP后本地`ssh.exe`和N607/bridge TCP22连接均为0。
+- 11:25:58 CST执行wave1本地direct preflight并通过；项目根、远端身份和8张RTX3090可见。
+- 11:26:35 CST短SSH门控确认GPU0-7各恰有1个无关`phase1_dgleo` compute进程，本实验相关进程为0，`/home`剩余7.6TB，wave1/2/3的run/log目录均不存在。
+- wave1门控SSH退出后确认本地`ssh.exe=0`且N607/bridge TCP22 `ESTABLISHED=0`。
+- 约11:27 CST启动wave1的8个Proposed-only run；launcher manifest记录GPU0-7与PID`3723051/3723121/3723603/3723673/3723741/3723811/3723882/3723954`，8项均通过内置3秒`startup_alive`检查。
+- 11:31:35 CST五分钟健康检查确认8个PID存活、每GPU恰有2个compute进程、无错误marker；0字节日志经进程态复核为持续CPU/GPU运行而非僵尸，未据此判定完成。
+- 约11:36-11:38 CST wave1全部8项完成且PID退出。远端完整性校验确认manifest 8行、8个`results.json`、8个完整`.out`、每项20+20epoch、JSON/`.out`语义一致、无Traceback/RuntimeError/OOM/Killed/NaN等marker。
+- 首次完整性脚本错误地要求diagnostic template row使用普通`completed`状态；修正为合法`completed_diagnostic_only`后8/8通过，该误判不是实验错误。
+- 已拉取wave1 manifest、8个JSON和8个`.out`到`remote_artifacts_full_multiseed/wave1`；每次SCP后均确认无残留SSH连接。本地再次完成文件数、SHA256、有限数值和全部epoch解析校验。
+- 11:42:46 CST wave2 direct preflight通过。短SSH复核wave1 manifest/results/logs均为8且无存活PID，wave2 run/log目录不存在；GPU0-7各仅1个无关compute进程，本实验相关进程为0，`/home`可用约7.54TiB。门控SSH后连接清理为0。

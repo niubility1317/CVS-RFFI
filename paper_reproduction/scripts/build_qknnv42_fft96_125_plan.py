@@ -153,6 +153,9 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
                         "new_class_count": new_count,
                         "old_class_labels": old_labels,
                         "new_class_labels": list(new_labels),
+                        "reference_new_class_labels": (
+                            list(nested[20]) if new_count == 0 else []
+                        ),
                         "target_cache_set": cache_set,
                         "predictor_package_root": str(package_parent / "predictor"),
                         "scorer_root": str(package_parent / "scorer"),
@@ -236,8 +239,9 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
         "view_policy": "one_preoverlaid_leo_weak_view_per_scenario",
         "bundle_definition": (
             "5 receivers x 5 matched-history seeds x 5 K values; every bundle "
-            "contains one physical old-only Stage2-B package and three physical "
-            "Stage2-C packages for nested new5/new10/new20"
+            "contains one physical Stage2-B package with an old-only registry/support "
+            "and unregistered Y_new^20 reference query, plus three physical Stage2-C "
+            "packages for nested new5/new10/new20"
         ),
         "independent_confirmation_claim_allowed": False,
         "result_boundary": (

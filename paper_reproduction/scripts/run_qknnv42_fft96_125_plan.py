@@ -130,7 +130,12 @@ def _build_package(
             ["--new-class-labels", ",".join(package["new_class_labels"])]
         )
     else:
-        command.append("--stage2b-mixed-cache-old-query-only")
+        command.extend(
+            [
+                "--stage2b-reference-new-class-labels",
+                ",".join(package["reference_new_class_labels"]),
+            ]
+        )
     result = _run_json(command, cwd=project_root)
     receipt = {
         "schema": "cvs.phase2.qknnv42_fft96_package_build_receipt.v1",
@@ -140,6 +145,12 @@ def _build_package(
         "registration_state": package["registration_state"],
         "source_free_repack": True,
         "source_adapter_or_head_copied": False,
+        "reference_new_class_labels": list(
+            package["reference_new_class_labels"]
+        ),
+        "reference_new_class_count": len(
+            package["reference_new_class_labels"]
+        ),
         "predictor_package_root_sha256": result["predictor_package_root_sha256"],
         "predictor_package_seal_sha256": result["predictor_package_seal_sha256"],
         "scoring_manifest_sha256": result["scoring_manifest_sha256"],
@@ -155,7 +166,8 @@ def _ensure_pre_run_evidence(
     *,
     project_root: Path,
     runtime_closure_root: Path,
-    bwrap: Path,
+    landlock_launcher: Path,
+    landlock_policy_module: Path,
     strace: Path,
     python_executable: Path,
     system_read_roots: list[Path],
@@ -168,7 +180,10 @@ def _ensure_pre_run_evidence(
         raise RuntimeError("partial pre-run evidence root exists")
     command = [
         sys.executable,
-        str(project_root / "code/scripts/build_cvs_stage2_pre_run_evidence.py"),
+        str(
+            project_root
+            / "code/scripts/build_cvs_stage2_landlock_pre_run_evidence.py"
+        ),
         "--runtime-closure-root",
         str(runtime_closure_root),
         "--predictor-package-root",
@@ -179,8 +194,10 @@ def _ensure_pre_run_evidence(
         receipt["predictor_package_seal_sha256"],
         "--output-root",
         str(evidence_root),
-        "--bwrap-executable",
-        str(bwrap),
+        "--landlock-launcher",
+        str(landlock_launcher),
+        "--landlock-policy-module",
+        str(landlock_policy_module),
         "--strace-executable",
         str(strace),
         "--python-executable",
@@ -211,7 +228,8 @@ def _run_state_cell(
     *,
     project_root: Path,
     runtime_closure_root: Path,
-    bwrap: Path,
+    landlock_launcher: Path,
+    landlock_policy_module: Path,
     strace: Path,
     python_executable: Path,
     system_read_roots: list[Path],
@@ -234,7 +252,8 @@ def _run_state_cell(
         package_receipt,
         project_root=project_root,
         runtime_closure_root=runtime_closure_root,
-        bwrap=bwrap,
+        landlock_launcher=landlock_launcher,
+        landlock_policy_module=landlock_policy_module,
         strace=strace,
         python_executable=python_executable,
         system_read_roots=system_read_roots,
@@ -270,9 +289,11 @@ def _run_state_cell(
     )
     isolated_command = [
         sys.executable,
-        str(project_root / "code/scripts/run_cvs_stage2_bwrap_isolated.py"),
-        "--bwrap",
-        str(bwrap),
+        str(project_root / "code/scripts/run_cvs_stage2_landlock_isolated.py"),
+        "--landlock-launcher",
+        str(landlock_launcher),
+        "--landlock-policy-module",
+        str(landlock_policy_module),
         "--strace",
         str(strace),
         "--runtime-closure-root",
@@ -399,7 +420,7 @@ def _write_smoke_receipt(
         "schema": "cvs.phase2.qknnv42_fft96_real_smoke_receipt.v1",
         "status": "PASS",
         "bundle_id": plan["smoke_bundle_id"],
-        "real_bwrap_strace_state_cell_count": len(receipts),
+        "real_landlock_seccomp_strace_state_cell_count": len(receipts),
         "all_filesystem_access_ledgers_pass": True,
         "state_cell_receipt_sha256": {
             receipt["cell_id"]: _sha256(
@@ -429,7 +450,10 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
     common = {
         "project_root": project_root,
         "runtime_closure_root": runtime_closure_root,
-        "bwrap": Path(args.bwrap).resolve(strict=True),
+        "landlock_launcher": Path(args.landlock_launcher).resolve(strict=True),
+        "landlock_policy_module": Path(
+            args.landlock_policy_module
+        ).resolve(strict=True),
         "strace": Path(args.strace).resolve(strict=True),
         "python_executable": Path(args.python_executable).resolve(strict=True),
         "system_read_roots": system_read_roots,
@@ -447,7 +471,10 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
                     receipt,
                     project_root=project_root,
                     runtime_closure_root=runtime_closure_root,
-                    bwrap=common["bwrap"],
+                    landlock_launcher=common["landlock_launcher"],
+                    landlock_policy_module=common[
+                        "landlock_policy_module"
+                    ],
                     strace=common["strace"],
                     python_executable=common["python_executable"],
                     system_read_roots=system_read_roots,
@@ -512,7 +539,8 @@ def parse_args() -> argparse.Namespace:
         required=True,
     )
     parser.add_argument("--runtime-closure-root", type=Path, required=True)
-    parser.add_argument("--bwrap", type=Path, required=True)
+    parser.add_argument("--landlock-launcher", type=Path, required=True)
+    parser.add_argument("--landlock-policy-module", type=Path, required=True)
     parser.add_argument("--strace", type=Path, required=True)
     parser.add_argument("--python-executable", type=Path, required=True)
     parser.add_argument("--system-read-root", action="append", required=True)

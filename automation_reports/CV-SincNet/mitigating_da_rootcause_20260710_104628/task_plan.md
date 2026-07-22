@@ -4,7 +4,7 @@
 Explain the large WiSig reproduction gap with paper-to-code and full-log evidence, implement only paper-aligned fixes, and validate them locally and on N607.
 
 ## Current Phase
-Phase 5: in_progress
+Phase 6: in_progress
 
 ## Phases
 
@@ -38,6 +38,13 @@ Phase 5: in_progress
 - [x] Commit intended Git-backed changes without touching unrelated edits.
 - [x] Run N607 preflight, verify one unrelated process per GPU and no related process, then sync and verify only the new launcher without launching a wave.
 
+### Phase 6: Full multiseed execution and aggregation
+- [x] Complete wave1 with preflight, startup gates, discrete monitoring, artifact pull, hash verification, and full-log parsing.
+- [ ] Complete wave2 only after wave1 artifact completeness is verified.
+- [ ] Complete wave3 only after wave2 artifact completeness is verified.
+- [ ] Aggregate the three seeds by profile and task, keeping standard and diagnostic template results separate.
+- [ ] Update report, progress, findings, and traceability; run consistency checks and commit only owned report files.
+
 ## Errors Encountered
 
 | Error | Attempt | Resolution |
@@ -52,3 +59,6 @@ Phase 5: in_progress
 | Broad recursive launcher scan hit an access-denied `.pytest_cache` path | 1 | Repeat with explicit cache exclusions and per-directory access handling |
 | First full-matrix launcher review returned NO-GO | 1 | Add no-clobber run/log/manifest checks, a launch lock, cross-wave/GPU capacity guards, and a validated 20-row expected matrix; independent re-review returned GO |
 | Pytest could not scan the user temp root for 8 `tmp_path` setups | 1 | Rerun the full 62-test set with a workspace-local `--basetemp` and cache disabled; all 62 passed and the temporary directory was removed |
+| Codex `shell_command` could not spawn the WindowsApps `pwsh.exe` alias in this runner session | 1 | Use the persistent Node command runner with explicit `powershell.exe`, `ssh`, `scp`, and `git` executables; no project or remote mutation occurred in the failed calls |
+| First wave1 completeness script required diagnostic rows to use ordinary `completed` status | 1 | Accept the fail-closed `completed_diagnostic_only` row status only for the template profile while still requiring `execution_status=completed`; corrected check passed 8/8 |
+| First local wave1 SCP cleanup probe used `tasklist.exe`, which is denied in the sandbox | 1 | Use read-only Windows PowerShell `Get-Process`/`Get-NetTCPConnection` after every bounded SCP; all transfers completed with zero residual connections |

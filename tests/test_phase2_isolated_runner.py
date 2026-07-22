@@ -168,6 +168,29 @@ def test_execve_parser_reports_only_successful_additional_processes() -> None:
     ]
 
 
+def test_bound_exec_requires_predictor_in_python_script_position() -> None:
+    python = "/system/python"
+    predictor = "/runtime/code/scripts/run_cvs_stage2_predictor.py"
+    trace = "\n".join(
+        [
+            (
+                f'execve("{python}", ["{python}", "/controller/launcher.py", '
+                f'"--predictor-entry", "{predictor}"], 0x0) = 0'
+            ),
+            f'execve("{python}", ["{python}", "{predictor}"], 0x0) = 0',
+            'openat(AT_FDCWD, "/sealed/request.json", O_RDONLY) = 3',
+        ]
+    )
+    suffix = isolated_runner._predictor_trace_suffix(
+        trace,
+        expected_executable=python,
+        expected_entrypoint=predictor,
+    )
+    assert suffix == (
+        'openat(AT_FDCWD, "/sealed/request.json", O_RDONLY) = 3\n'
+    )
+
+
 def test_execve_parser_fails_closed_on_incomplete_resumed_trace() -> None:
     with pytest.raises(Phase2IsolatedRunnerError, match="unfinished execve"):
         parse_successful_execve_trace(

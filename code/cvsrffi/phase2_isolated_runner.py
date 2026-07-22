@@ -192,10 +192,18 @@ def _trace_pid_and_body(line: str) -> tuple[str, str]:
     return "main", line
 
 
-def _predictor_trace_suffix(text: str, *, expected_executable: str | Path) -> str:
-    """Drop outer strace/bwrap setup calls and retain the predictor phase."""
-
+def _bound_exec_index(
+    text: str,
+    *,
+    expected_executable: str | Path,
+    expected_entrypoint: str | Path | None = None,
+) -> int:
     expected = posixpath.normpath(str(expected_executable).replace("\\", "/"))
+    expected_entry = (
+        None
+        if expected_entrypoint is None
+        else posixpath.normpath(str(expected_entrypoint).replace("\\", "/"))
+    )
     lines = text.splitlines()
     for index, raw_line in enumerate(lines):
         _pid, body = _trace_pid_and_body(raw_line)
@@ -208,12 +216,40 @@ def _predictor_trace_suffix(text: str, *, expected_executable: str | Path) -> st
         quoted = _QUOTED_RE.findall(body[exec_match.start() : result_match.start() + 1])
         if not quoted:
             raise Phase2IsolatedRunnerError("successful execve has no parseable executable path")
-        executable = posixpath.normpath(
-            _decode_strace_string(quoted[0]).replace("\\", "/")
+        decoded = [
+            posixpath.normpath(_decode_strace_string(token).replace("\\", "/"))
+            for token in quoted
+        ]
+        # strace quotes the exec path first, followed by argv[0], argv[1], ...
+        # The fixed Python script must occupy argv[1].  Searching every argv
+        # token is unsafe because the trusted launcher itself carries the
+        # predictor path as a --predictor-entry argument.
+        entrypoint_matches = (
+            expected_entry is None
+            or (len(decoded) >= 3 and decoded[2] == expected_entry)
         )
-        if executable == expected:
-            return "\n".join(lines[index + 1 :]) + ("\n" if index + 1 < len(lines) else "")
+        if decoded[0] == expected and entrypoint_matches:
+            return index
     raise Phase2IsolatedRunnerError("strace did not observe the bound predictor Python execve")
+
+
+def _predictor_trace_suffix(
+    text: str,
+    *,
+    expected_executable: str | Path,
+    expected_entrypoint: str | Path | None = None,
+) -> str:
+    """Drop outer isolation setup calls and retain the predictor phase."""
+
+    lines = text.splitlines()
+    index = _bound_exec_index(
+        text,
+        expected_executable=expected_executable,
+        expected_entrypoint=expected_entrypoint,
+    )
+    return "\n".join(lines[index + 1 :]) + (
+        "\n" if index + 1 < len(lines) else ""
+    )
 
 
 def _complete_trace_lines(text: str) -> list[tuple[int, str]]:

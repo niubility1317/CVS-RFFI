@@ -34,6 +34,12 @@ from cvsrffi.somph_predictor_bundle import (
     FORMAL_LEO_WEAK_SCENARIOS,
 )
 from cvsrffi.stage2_predictor_runtime import load_torchscript_backbone_same_fd
+from cvsrffi.stage2_single_observation_floorlock import (
+    SupportEqualizerState,
+    derive_post_reception_views,
+    fit_support_equalizer,
+    transform_query_features,
+)
 
 
 EPS = 1.0e-8
@@ -56,11 +62,19 @@ CANDIDATE_D1 = "d1_historical_diag_fftrf"
 CANDIDATE_D1_B0_CAP = "d1_b0_cap_diag_fftrf"
 CANDIDATE_D2 = "d2_fixed_proto_diag_fftrf"
 CANDIDATE_D3_SCENARIO_OLDLOCK_NEWFIT = "d3_scenario_oldlock_newfit"
+CANDIDATE_D4A_SCENARIO_ATOMIC_FLOORLOCK = (
+    "d4a_single_observation_scenario_atomic_floorlock"
+)
+CANDIDATE_D4B_SCENARIO_OLDLOCK_NEWREG_FLOOR = (
+    "d4b_single_observation_scenario_oldlock_newreg_floor"
+)
 CANDIDATES = (
     CANDIDATE_D1,
     CANDIDATE_D1_B0_CAP,
     CANDIDATE_D2,
     CANDIDATE_D3_SCENARIO_OLDLOCK_NEWFIT,
+    CANDIDATE_D4A_SCENARIO_ATOMIC_FLOORLOCK,
+    CANDIDATE_D4B_SCENARIO_OLDLOCK_NEWREG_FLOOR,
 )
 
 
@@ -89,6 +103,37 @@ class ScenarioDiagCosineState:
     bias: np.ndarray
     new_offset: np.ndarray
     old_class_count: int
+    trace: tuple[dict[str, Any], ...]
+    resource: dict[str, Any]
+
+
+@dataclass(frozen=True)
+class ScenarioAtomicPrototypeState:
+    candidate: str
+    scenarios: np.ndarray
+    classes: np.ndarray
+    equalizer_states: tuple[SupportEqualizerState, ...]
+    log_scale: np.ndarray
+    weights: np.ndarray
+    bias: np.ndarray
+    support_lineage: tuple[dict[str, Any], ...]
+    trace: tuple[dict[str, Any], ...]
+    resource: dict[str, Any]
+
+
+@dataclass(frozen=True)
+class ScenarioAtomicOldLockState:
+    candidate: str
+    scenarios: np.ndarray
+    classes: np.ndarray
+    equalizer_states: tuple[SupportEqualizerState, ...]
+    log_scale: np.ndarray
+    weights: np.ndarray
+    bias: np.ndarray
+    new_scale: np.ndarray
+    new_offset: np.ndarray
+    old_class_count: int
+    support_lineage: tuple[dict[str, Any], ...]
     trace: tuple[dict[str, Any], ...]
     resource: dict[str, Any]
 
@@ -351,6 +396,14 @@ def fit_diag_cosine_state(
     if candidate == CANDIDATE_D3_SCENARIO_OLDLOCK_NEWFIT:
         raise DiagCosineExplorationError(
             "D3 requires scenario-specific before/after orchestration"
+        )
+    if candidate == CANDIDATE_D4A_SCENARIO_ATOMIC_FLOORLOCK:
+        raise DiagCosineExplorationError(
+            "D4a requires scenario-atomic orchestration"
+        )
+    if candidate == CANDIDATE_D4B_SCENARIO_OLDLOCK_NEWREG_FLOOR:
+        raise DiagCosineExplorationError(
+            "D4b requires scenario-specific before/after parent orchestration"
         )
     class_to_index = {label: index for index, label in enumerate(classes.tolist())}
     targets_np = np.asarray([class_to_index[label] for label in labels], dtype=np.int64)
@@ -630,6 +683,1040 @@ def _scenario_predict(
     return state.classes[np.argmax(logits, axis=1)]
 
 
+def _require_scenario_atomic_lineage(
+    values_by_scenario: Mapping[str, tuple[np.ndarray, np.ndarray]],
+    *,
+    context: str,
+) -> None:
+    token_sets: list[set[str]] = []
+    hash_sets: list[set[str]] = []
+    for scenario in FORMAL_LEO_WEAK_SCENARIOS:
+        if scenario not in values_by_scenario:
+            raise DiagCosineExplorationError(
+                f"D4a {context} scenario coverage drift"
+            )
+        tokens, hashes = values_by_scenario[scenario]
+        token_values = np.asarray(tokens).astype(str)
+        hash_values = np.asarray(hashes).astype(str)
+        if (
+            token_values.ndim != 1
+            or hash_values.shape != token_values.shape
+            or len(token_values) < 1
+            or len(set(token_values.tolist())) != len(token_values)
+            or len(set(hash_values.tolist())) != len(hash_values)
+            or any(
+                len(value) != 64
+                or any(character not in "0123456789abcdef" for character in value)
+                for value in hash_values.tolist()
+            )
+        ):
+            raise DiagCosineExplorationError(
+                f"D4a {context} single-observation lineage drift"
+            )
+        token_sets.append(set(token_values.tolist()))
+        hash_sets.append(set(hash_values.tolist()))
+    for left in range(len(token_sets)):
+        for right in range(left + 1, len(token_sets)):
+            if token_sets[left] & token_sets[right]:
+                raise DiagCosineExplorationError(
+                    f"D4a {context} token reuse across scenarios is forbidden"
+                )
+            if hash_sets[left] & hash_sets[right]:
+                raise DiagCosineExplorationError(
+                    f"D4a {context} received-IQ reuse across scenarios is forbidden"
+                )
+
+
+def _fit_d4a_scenario_atomic(
+    support_by_scenario: Mapping[
+        str, tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]
+    ],
+) -> ScenarioAtomicPrototypeState:
+    """Fit one independent support-only equalizer/prototype state per scenario."""
+
+    lineage_inputs = {
+        scenario: (values[2], values[3])
+        for scenario, values in support_by_scenario.items()
+    }
+    _require_scenario_atomic_lineage(lineage_inputs, context="support")
+    classes: np.ndarray | None = None
+    equalizers: list[SupportEqualizerState] = []
+    log_scales: list[np.ndarray] = []
+    weights: list[np.ndarray] = []
+    biases: list[np.ndarray] = []
+    trace: list[dict[str, Any]] = []
+    support_lineage: list[dict[str, Any]] = []
+    floor_by_scenario: dict[str, Any] = {}
+    started = time.perf_counter()
+    for scenario_index, scenario in enumerate(FORMAL_LEO_WEAK_SCENARIOS):
+        features, labels, tokens, hashes = support_by_scenario[scenario]
+        feature_rows = np.asarray(features, dtype=np.float32)
+        label_rows = np.asarray(labels).astype(str)
+        token_rows = np.asarray(tokens).astype(str)
+        hash_rows = np.asarray(hashes).astype(str)
+        try:
+            fitted = fit_support_equalizer(
+                feature_rows,
+                label_rows,
+                parent_received_iq_sha256=hash_rows.tolist(),
+                physical_sample_ids=token_rows.tolist(),
+                operator_id="d4a_diag_fixed_received_iq_feature_v1",
+                view_seed=713101 + scenario_index,
+            )
+        except ValueError as error:
+            raise DiagCosineExplorationError(
+                f"D4a support-only equalizer failed: {error}"
+            ) from error
+        scenario_classes = np.asarray(sorted(set(label_rows.tolist())))
+        if classes is None:
+            classes = scenario_classes
+        elif not np.array_equal(classes, scenario_classes):
+            raise DiagCosineExplorationError(
+                "D4a registered class set drifts across scenarios"
+            )
+        base_features = fitted.support_views.features[:, 0, :]
+        scenario_weights = np.stack(
+            [
+                _normalize(
+                    base_features[label_rows == class_handle].mean(
+                        axis=0, keepdims=True
+                    )
+                )[0]
+                for class_handle in scenario_classes.tolist()
+            ]
+        ).astype(np.float32)
+        equalizers.append(fitted.state)
+        log_scales.append(fitted.state.log_scale)
+        weights.append(scenario_weights)
+        biases.append(np.zeros(len(scenario_classes), dtype=np.float32))
+        floor_by_scenario[scenario] = fitted.loo_floor_statistics
+        for lineage_row in fitted.support_views.lineages:
+            for lineage in lineage_row:
+                support_lineage.append(
+                    {
+                        "scope": "support",
+                        "scenario": scenario,
+                        **lineage.as_dict(),
+                    }
+                )
+        trace.append(
+            {
+                "phase": "target_support_only_scenario_atomic_closed_form",
+                "scenario": scenario,
+                "scenario_index": scenario_index,
+                "physical_support_rows": int(len(feature_rows)),
+                "representation_views_per_sample": 3,
+                "views_count_as_additional_physical_samples": False,
+                "overall_loo_accuracy": float(
+                    fitted.loo_floor_statistics["overall_loo_accuracy"]
+                ),
+                "min_class_loo_accuracy": float(
+                    fitted.loo_floor_statistics["min_class_loo_accuracy"]
+                ),
+                "worst_class_q10_margin": float(
+                    fitted.loo_floor_statistics["worst_class_q10_margin"]
+                ),
+                "worst_class_margin": float(
+                    fitted.loo_floor_statistics["worst_class_margin"]
+                ),
+            }
+        )
+    assert classes is not None
+    feature_dim = int(log_scales[0].shape[0])
+    trainable_parameters = int(
+        sum(state.trainable_parameters for state in equalizers)
+    )
+    persistent_state_bytes = int(
+        sum(state.persistent_state_bytes for state in equalizers)
+        + np.stack(weights).nbytes
+        + np.stack(biases).nbytes
+    )
+    if trainable_parameters > 80_000:
+        raise DiagCosineExplorationError(
+            "D4a scenario-atomic trainable parameter cap exceeded"
+        )
+    if persistent_state_bytes > MAX_PERSISTENT_STATE_BYTES:
+        raise DiagCosineExplorationError(
+            "D4a scenario-atomic persistent state cap exceeded"
+        )
+    class_count = int(len(classes))
+    head_macs_per_query = int(feature_dim + class_count * feature_dim)
+    resource = {
+        "schema": "cvs.phase2.diag_cosine_resource.v1",
+        "adaptation_objective": (
+            "target_support_only_scenario_atomic_closed_form_equalized_prototype"
+        ),
+        "adaptation_mode": "EVAL_ONLY_CLOSED_FORM_ADAPTATION",
+        "candidate": CANDIDATE_D4A_SCENARIO_ATOMIC_FLOORLOCK,
+        "classifier_state_policy": (
+            "scenario_atomic_support_only_equalized_cosine_prototypes"
+        ),
+        "class_bias_enabled": False,
+        "class_bias_trainable_parameters": 0,
+        "log_scale_bounds": {
+            "all_features": [-0.35, 0.35],
+        },
+        "support_only": True,
+        "scenario_atomic_fit": True,
+        "cross_scenario_support_concat": False,
+        "query_rows_used_for_fit": 0,
+        "query_labels_used_for_fit": False,
+        "query_features_used_for_fit": False,
+        "query_role_oracle_access": False,
+        "query_true_batch_class_count_access": False,
+        "query_class_quota_access": False,
+        "query_batch_global_assignment": False,
+        "query_query_graph_used": False,
+        "source_sample_access": False,
+        "source_cache_access": False,
+        "source_derived_signal_access": False,
+        "clean_sample_access": False,
+        "clean_derived_signal_access": False,
+        "trainable_parameters": trainable_parameters,
+        "persistent_state_bytes": persistent_state_bytes,
+        "feature_dim": feature_dim,
+        "class_count": class_count,
+        "adaptation_epochs": 0,
+        "optimizer_steps": 0,
+        "closed_form_solves": len(FORMAL_LEO_WEAK_SCENARIOS),
+        "support_enrollment_rows": int(
+            sum(
+                len(support_by_scenario[scenario][0])
+                for scenario in FORMAL_LEO_WEAK_SCENARIOS
+            )
+        ),
+        "support_view_count": 3,
+        "query_view_count": 1,
+        "post_reception_operator_id": (
+            "d4a_diag_fixed_received_iq_feature_v1"
+        ),
+        "view_seed_by_scenario": {
+            scenario: 713101 + index
+            for index, scenario in enumerate(FORMAL_LEO_WEAK_SCENARIOS)
+        },
+        "estimated_adaptation_macs": 0,
+        "estimated_macs_per_query": head_macs_per_query,
+        "dense_query_graph_bytes": 0,
+        "adaptation_latency_sec": float(time.perf_counter() - started),
+        "peak_cuda_memory_bytes": 0,
+        "runtime_device": "cpu_closed_form_numpy",
+        "loo_floor_statistics_by_scenario": floor_by_scenario,
+        "phase2_physical_sample_observation_policy": (
+            "single_leo_weak_observation_per_physical_sample"
+        ),
+        "phase2_cross_scenario_physical_sample_reuse": False,
+        "phase2_additional_leo_channel_state_generation": False,
+        "phase2_post_reception_view_from_fixed_received_iq_only": True,
+        "phase2_post_reception_view_counts_as_additional_physical_sample": False,
+    }
+    return ScenarioAtomicPrototypeState(
+        candidate=CANDIDATE_D4A_SCENARIO_ATOMIC_FLOORLOCK,
+        scenarios=np.asarray(FORMAL_LEO_WEAK_SCENARIOS),
+        classes=classes,
+        equalizer_states=tuple(equalizers),
+        log_scale=np.stack(log_scales).astype(np.float32),
+        weights=np.stack(weights).astype(np.float32),
+        bias=np.stack(biases).astype(np.float32),
+        support_lineage=tuple(support_lineage),
+        trace=tuple(trace),
+        resource=resource,
+    )
+
+
+def _d4a_scenario_predict(
+    state: ScenarioAtomicPrototypeState,
+    scenario: str,
+    query_x: np.ndarray,
+    *,
+    query_tokens: np.ndarray,
+    query_post_channel_iq_sha256: np.ndarray,
+) -> tuple[np.ndarray, tuple[dict[str, Any], ...]]:
+    """Inference-only D4a prediction for one scenario."""
+
+    matches = np.flatnonzero(state.scenarios.astype(str) == str(scenario))
+    if len(matches) != 1:
+        raise DiagCosineExplorationError("D4a scenario state lookup drift")
+    index = int(matches[0])
+    try:
+        transformed = transform_query_features(
+            state.equalizer_states[index],
+            np.asarray(query_x, dtype=np.float32),
+            parent_received_iq_sha256=(
+                np.asarray(query_post_channel_iq_sha256).astype(str).tolist()
+            ),
+            physical_sample_ids=np.asarray(query_tokens).astype(str).tolist(),
+            view_names=("base",),
+        )
+    except ValueError as error:
+        raise DiagCosineExplorationError(
+            f"D4a query inference-only transform failed: {error}"
+        ) from error
+    base = transformed.features[:, 0, :]
+    logits = TEMPERATURE * (
+        _normalize(base) @ _normalize(state.weights[index]).T
+    )
+    logits += state.bias[index][None, :]
+    lineage = tuple(
+        {
+            "scope": "query",
+            "scenario": scenario,
+            **row[0].as_dict(),
+        }
+        for row in transformed.lineages
+    )
+    return state.classes[np.argmax(logits, axis=1)], lineage
+
+
+def _readonly_float32(value: np.ndarray) -> np.ndarray:
+    result = np.ascontiguousarray(value, dtype=np.float32)
+    result.setflags(write=False)
+    return result
+
+
+def _locked_equalizer_state(
+    log_scale: np.ndarray,
+    *,
+    scenario_index: int,
+) -> SupportEqualizerState:
+    locked_scale = _readonly_float32(log_scale)
+    metadata_bytes = len(
+        _canonical_json_bytes(
+            {
+                "schema": "cvs.phase2.d4a_single_observation_equalizer.v1",
+                "feature_dim": int(len(locked_scale)),
+                "operator_id": "d4a_diag_fixed_received_iq_feature_v1",
+                "view_seed": 713101 + int(scenario_index),
+                "view_sigma": 0.01,
+                "equalizer_shrinkage": 0.25,
+                "max_abs_log_scale": 0.35,
+                "query_rows_used_for_fit": 0,
+                "query_updates": 0,
+            }
+        )
+    )
+    return SupportEqualizerState(
+        schema="cvs.phase2.d4a_single_observation_equalizer.v1",
+        feature_dim=int(len(locked_scale)),
+        log_scale=locked_scale,
+        operator_id="d4a_diag_fixed_received_iq_feature_v1",
+        view_seed=713101 + int(scenario_index),
+        view_sigma=0.01,
+        equalizer_shrinkage=0.25,
+        max_abs_log_scale=0.35,
+        trainable_parameters=int(len(locked_scale)),
+        persistent_state_bytes=int(locked_scale.nbytes + metadata_bytes),
+        support_rows_used_for_fit=0,
+        support_physical_samples_used_for_fit=0,
+    )
+
+
+def _fit_d4b_before(
+    support_by_scenario: Mapping[
+        str, tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]
+    ],
+) -> ScenarioAtomicOldLockState:
+    """Build the immutable per-scenario old head used as the after parent."""
+
+    base = _fit_d4a_scenario_atomic(support_by_scenario)
+    scenario_count = len(FORMAL_LEO_WEAK_SCENARIOS)
+    d4b_persistent_state_bytes = int(
+        base.resource["persistent_state_bytes"]
+        + 2 * scenario_count * np.dtype(np.float32).itemsize
+        + np.dtype(np.int64).itemsize
+    )
+    if d4b_persistent_state_bytes > MAX_PERSISTENT_STATE_BYTES:
+        raise DiagCosineExplorationError(
+            "D4b before persistent state cap exceeded"
+        )
+    resource = {
+        **base.resource,
+        "candidate": CANDIDATE_D4B_SCENARIO_OLDLOCK_NEWREG_FLOOR,
+        "adaptation_objective": (
+            "target_support_only_scenario_atomic_old_head_parent"
+        ),
+        "classifier_state_policy": (
+            "scenario_atomic_old_equalizer_and_prototypes_parent_state"
+        ),
+        "old_head_bitwise_locked": False,
+        "parent_commit_required": False,
+        "new_registration_support_rows": 0,
+        "support_floor_guard_by_scenario": {},
+        "forgetting_guard_policy": "before_state_only_not_applicable",
+        "persistent_state_bytes": d4b_persistent_state_bytes,
+    }
+    return ScenarioAtomicOldLockState(
+        candidate=CANDIDATE_D4B_SCENARIO_OLDLOCK_NEWREG_FLOOR,
+        scenarios=base.scenarios,
+        classes=base.classes,
+        equalizer_states=base.equalizer_states,
+        log_scale=base.log_scale,
+        weights=base.weights,
+        bias=base.bias,
+        new_scale=np.ones(scenario_count, dtype=np.float32),
+        new_offset=np.zeros(scenario_count, dtype=np.float32),
+        old_class_count=len(base.classes),
+        support_lineage=base.support_lineage,
+        trace=tuple(
+            {
+                **row,
+                "phase": "target_support_only_scenario_old_head_parent",
+            }
+            for row in base.trace
+        ),
+        resource=resource,
+    )
+
+
+def _new_prototypes(
+    equalized_views: np.ndarray,
+    labels: np.ndarray,
+    new_classes: np.ndarray,
+    *,
+    mode: str,
+) -> np.ndarray:
+    if mode not in {"base", "three_view_mean"}:
+        raise DiagCosineExplorationError("D4b new prototype mode drift")
+    result: list[np.ndarray] = []
+    for class_handle in new_classes.tolist():
+        class_views = equalized_views[labels == class_handle]
+        rows = (
+            class_views[:, 0, :]
+            if mode == "base"
+            else class_views.reshape(-1, class_views.shape[-1])
+        )
+        result.append(_normalize(rows.mean(axis=0, keepdims=True))[0])
+    return np.stack(result).astype(np.float32)
+
+
+def _d4b_support_guard(
+    *,
+    equalized_views: np.ndarray,
+    labels: np.ndarray,
+    old_classes: np.ndarray,
+    new_classes: np.ndarray,
+    old_weights: np.ndarray,
+    old_bias: np.ndarray,
+) -> tuple[np.ndarray, float, float, dict[str, Any]]:
+    """Choose a new-head representation and calibration from support LOO only."""
+
+    old_to_index = {
+        class_handle: index
+        for index, class_handle in enumerate(old_classes.tolist())
+    }
+    new_to_index = {
+        class_handle: index
+        for index, class_handle in enumerate(new_classes.tolist())
+    }
+    old_mask = np.isin(labels, old_classes)
+    new_mask = np.isin(labels, new_classes)
+    if not np.any(old_mask) or not np.any(new_mask):
+        raise DiagCosineExplorationError(
+            "D4b after support must contain old and new registered classes"
+        )
+    if any(not np.any(labels == value) for value in old_classes.tolist()):
+        raise DiagCosineExplorationError(
+            "D4b after support misses an old class required by the floor guard"
+        )
+    if any(not np.any(labels == value) for value in new_classes.tolist()):
+        raise DiagCosineExplorationError(
+            "D4b after support misses a new registered class"
+        )
+
+    old_features = equalized_views[old_mask, 0, :]
+    old_labels = labels[old_mask]
+    old_logits = TEMPERATURE * (
+        _normalize(old_features) @ _normalize(old_weights).T
+    ) + old_bias[None, :]
+    old_truth = np.asarray(
+        [old_to_index[value] for value in old_labels.tolist()], dtype=np.int64
+    )
+    old_before_prediction = np.argmax(old_logits, axis=1)
+    old_before_correct = old_before_prediction == old_truth
+
+    candidates: list[tuple[tuple[float, ...], dict[str, Any]]] = []
+    for mode_index, mode in enumerate(("base", "three_view_mean")):
+        full_new_weights = _new_prototypes(
+            equalized_views, labels, new_classes, mode=mode
+        )
+        for scale in (0.75, 1.0, 1.25):
+            old_to_new_logits = float(scale) * TEMPERATURE * (
+                _normalize(old_features) @ _normalize(full_new_weights).T
+            )
+            if np.any(old_before_correct):
+                correct_rows = np.flatnonzero(old_before_correct)
+                required = np.max(
+                    np.max(old_to_new_logits[correct_rows], axis=1)
+                    - old_logits[correct_rows, old_truth[correct_rows]]
+                    + 1.0e-6
+                )
+                offset = max(0.0, float(required))
+            else:
+                offset = 0.0
+            combined_old = np.concatenate(
+                (
+                    old_logits,
+                    old_to_new_logits - float(offset),
+                ),
+                axis=1,
+            )
+            old_after_prediction = np.argmax(combined_old, axis=1)
+            old_after_correct = old_after_prediction == old_truth
+
+            per_old_class: dict[str, dict[str, Any]] = {}
+            for class_handle in old_classes.tolist():
+                mask = old_labels == class_handle
+                before_accuracy = float(np.mean(old_before_correct[mask]))
+                after_accuracy = float(np.mean(old_after_correct[mask]))
+                per_old_class[class_handle] = {
+                    "support_rows": int(np.sum(mask)),
+                    "before_support_accuracy": before_accuracy,
+                    "after_support_accuracy": after_accuracy,
+                    "support_forgetting": before_accuracy - after_accuracy,
+                    "before_correct_after_intruded": int(
+                        np.sum(old_before_correct[mask] & ~old_after_correct[mask])
+                    ),
+                }
+
+            new_records: dict[str, list[tuple[bool, float]]] = {
+                value: [] for value in new_classes.tolist()
+            }
+            for true_class in new_classes.tolist():
+                class_indices = np.flatnonzero(labels == true_class)
+                if len(class_indices) >= 2:
+                    evaluations = [
+                        (int(index), 0) for index in class_indices.tolist()
+                    ]
+                else:
+                    evaluations = [
+                        (int(class_indices[0]), view_index)
+                        for view_index in range(equalized_views.shape[1])
+                    ]
+                for sample_index, view_index in evaluations:
+                    row = equalized_views[sample_index, view_index]
+                    loo_weights: list[np.ndarray] = []
+                    for class_handle in new_classes.tolist():
+                        candidate_indices = np.flatnonzero(
+                            labels == class_handle
+                        )
+                        if class_handle == true_class and len(class_indices) >= 2:
+                            candidate_indices = candidate_indices[
+                                candidate_indices != sample_index
+                            ]
+                            class_views = equalized_views[candidate_indices]
+                            prototype_rows = (
+                                class_views[:, 0, :]
+                                if mode == "base"
+                                else class_views.reshape(
+                                    -1, class_views.shape[-1]
+                                )
+                            )
+                        elif class_handle == true_class:
+                            remaining_views = [
+                                index
+                                for index in range(equalized_views.shape[1])
+                                if index != view_index
+                            ]
+                            prototype_rows = equalized_views[
+                                sample_index, remaining_views, :
+                            ]
+                        else:
+                            class_views = equalized_views[candidate_indices]
+                            prototype_rows = (
+                                class_views[:, 0, :]
+                                if mode == "base"
+                                else class_views.reshape(
+                                    -1, class_views.shape[-1]
+                                )
+                            )
+                        loo_weights.append(
+                            _normalize(
+                                prototype_rows.mean(axis=0, keepdims=True)
+                            )[0]
+                        )
+                    old_row_logits = TEMPERATURE * (
+                        _normalize(row[None, :]) @ _normalize(old_weights).T
+                    )[0] + old_bias
+                    new_row_logits = float(scale) * TEMPERATURE * (
+                        _normalize(row[None, :])
+                        @ _normalize(np.stack(loo_weights)).T
+                    )[0] - float(offset)
+                    combined = np.concatenate(
+                        (old_row_logits, new_row_logits)
+                    )
+                    truth_index = len(old_classes) + new_to_index[true_class]
+                    other = np.delete(combined, truth_index)
+                    new_records[true_class].append(
+                        (
+                            int(np.argmax(combined)) == truth_index,
+                            float(combined[truth_index] - np.max(other)),
+                        )
+                    )
+
+            per_new_class: dict[str, dict[str, Any]] = {}
+            all_new_records: list[tuple[bool, float]] = []
+            for class_handle, records in new_records.items():
+                all_new_records.extend(records)
+                margins = np.asarray(
+                    [value[1] for value in records], dtype=np.float64
+                )
+                per_new_class[class_handle] = {
+                    "loo_mode": (
+                        "leave_one_physical_sample_out"
+                        if int(np.sum(labels == class_handle)) >= 2
+                        else "leave_one_view_out_k1"
+                    ),
+                    "physical_support_rows": int(
+                        np.sum(labels == class_handle)
+                    ),
+                    "evaluation_rows": len(records),
+                    "loo_accuracy": float(
+                        np.mean([value[0] for value in records])
+                    ),
+                    "mean_margin": float(np.mean(margins)),
+                    "worst_margin": float(np.min(margins)),
+                }
+            min_new_accuracy = min(
+                value["loo_accuracy"] for value in per_new_class.values()
+            )
+            overall_new_accuracy = float(
+                np.mean([value[0] for value in all_new_records])
+            )
+            worst_new_margin = min(
+                value["worst_margin"] for value in per_new_class.values()
+            )
+            max_old_forgetting = max(
+                value["support_forgetting"]
+                for value in per_old_class.values()
+            )
+            guard_pass = (
+                max_old_forgetting <= 0.0
+                and all(
+                    value["before_correct_after_intruded"] == 0
+                    for value in per_old_class.values()
+                )
+            )
+            evidence = {
+                "schema": "cvs.phase2.d4b_support_floor_guard.v1",
+                "support_only": True,
+                "query_rows_used": 0,
+                "prototype_mode": mode,
+                "new_logit_scale": float(scale),
+                "new_logit_offset": float(offset),
+                "old_head_bitwise_locked": True,
+                "old_head_update_count": 0,
+                "new_prototype_source": "after_registered_new_support_only",
+                "calibration_source": "after_registered_support_loo_only",
+                "per_old_class": per_old_class,
+                "per_new_class": per_new_class,
+                "min_old_class_before_support_accuracy": min(
+                    value["before_support_accuracy"]
+                    for value in per_old_class.values()
+                ),
+                "min_old_class_after_support_accuracy": min(
+                    value["after_support_accuracy"]
+                    for value in per_old_class.values()
+                ),
+                "worst_old_class_support_forgetting": float(
+                    max_old_forgetting
+                ),
+                "mean_old_class_support_forgetting": float(
+                    np.mean(
+                        [
+                            value["support_forgetting"]
+                            for value in per_old_class.values()
+                        ]
+                    )
+                ),
+                "min_new_class_loo_accuracy": float(min_new_accuracy),
+                "overall_new_loo_accuracy": float(overall_new_accuracy),
+                "worst_new_class_loo_margin": float(worst_new_margin),
+                "floor_guard_pass": bool(guard_pass),
+            }
+            ranking = (
+                1.0 if guard_pass else 0.0,
+                float(min_new_accuracy),
+                float(overall_new_accuracy),
+                float(worst_new_margin),
+                -float(offset),
+                -abs(float(scale) - 1.0),
+                -float(mode_index),
+            )
+            candidates.append(
+                (
+                    ranking,
+                    {
+                        "weights": full_new_weights,
+                        "scale": float(scale),
+                        "offset": float(offset),
+                        "evidence": evidence,
+                    },
+                )
+            )
+    selected = max(candidates, key=lambda item: item[0])[1]
+    if not selected["evidence"]["floor_guard_pass"]:
+        raise DiagCosineExplorationError(
+            "D4b support-only old-class floor guard is infeasible"
+        )
+    return (
+        np.asarray(selected["weights"], dtype=np.float32),
+        float(selected["scale"]),
+        float(selected["offset"]),
+        dict(selected["evidence"]),
+    )
+
+
+def _fit_d4b_after(
+    parent: ScenarioAtomicOldLockState,
+    support_by_scenario: Mapping[
+        str, tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]
+    ],
+) -> ScenarioAtomicOldLockState:
+    """Append support-only new prototypes while locking every old-state bit."""
+
+    _require_scenario_atomic_lineage(
+        {
+            scenario: (values[2], values[3])
+            for scenario, values in support_by_scenario.items()
+        },
+        context="support",
+    )
+    old_classes = parent.classes.astype(str)
+    registered_classes: np.ndarray | None = None
+    new_classes: np.ndarray | None = None
+    all_weights: list[np.ndarray] = []
+    all_biases: list[np.ndarray] = []
+    all_new_scales: list[float] = []
+    all_new_offsets: list[float] = []
+    support_lineage: list[dict[str, Any]] = []
+    trace: list[dict[str, Any]] = []
+    guards: dict[str, Any] = {}
+    started = time.perf_counter()
+    for scenario_index, scenario in enumerate(FORMAL_LEO_WEAK_SCENARIOS):
+        features, labels, tokens, hashes = support_by_scenario[scenario]
+        feature_rows = np.asarray(features, dtype=np.float32)
+        label_rows = np.asarray(labels).astype(str)
+        token_rows = np.asarray(tokens).astype(str)
+        hash_rows = np.asarray(hashes).astype(str)
+        scenario_classes = np.asarray(sorted(set(label_rows.tolist())))
+        scenario_new_classes = np.asarray(
+            sorted(set(scenario_classes.tolist()) - set(old_classes.tolist()))
+        )
+        if (
+            not set(old_classes.tolist()).issubset(
+                set(scenario_classes.tolist())
+            )
+            or len(scenario_new_classes) < 1
+        ):
+            raise DiagCosineExplorationError(
+                "D4b after registry must strictly extend the parent old classes"
+            )
+        joined = np.concatenate((old_classes, scenario_new_classes))
+        if registered_classes is None:
+            registered_classes = joined
+            new_classes = scenario_new_classes
+        elif not np.array_equal(registered_classes, joined):
+            raise DiagCosineExplorationError(
+                "D4b after registered class set drifts across scenarios"
+            )
+        try:
+            derived = derive_post_reception_views(
+                feature_rows,
+                parent_received_iq_sha256=hash_rows.tolist(),
+                physical_sample_ids=token_rows.tolist(),
+                operator_id=parent.equalizer_states[
+                    scenario_index
+                ].operator_id,
+                view_seed=parent.equalizer_states[scenario_index].view_seed,
+                sigma=parent.equalizer_states[scenario_index].view_sigma,
+            )
+        except ValueError as error:
+            raise DiagCosineExplorationError(
+                f"D4b after support view derivation failed: {error}"
+            ) from error
+        equalized_views = _normalize(
+            (
+                derived.features
+                * np.exp(parent.log_scale[scenario_index])[None, None, :]
+            ).reshape(-1, feature_rows.shape[1])
+        ).reshape(derived.features.shape)
+        new_weights, new_scale, new_offset, guard = _d4b_support_guard(
+            equalized_views=equalized_views,
+            labels=label_rows,
+            old_classes=old_classes,
+            new_classes=scenario_new_classes,
+            old_weights=parent.weights[scenario_index],
+            old_bias=parent.bias[scenario_index],
+        )
+        guards[scenario] = guard
+        all_weights.append(
+            np.concatenate(
+                (parent.weights[scenario_index], new_weights), axis=0
+            )
+        )
+        all_biases.append(
+            np.concatenate(
+                (
+                    parent.bias[scenario_index],
+                    np.zeros(len(scenario_new_classes), dtype=np.float32),
+                )
+            )
+        )
+        all_new_scales.append(new_scale)
+        all_new_offsets.append(new_offset)
+        for lineage_row in derived.lineages:
+            for lineage in lineage_row:
+                support_lineage.append(
+                    {
+                        "scope": "support",
+                        "scenario": scenario,
+                        **lineage.as_dict(),
+                    }
+                )
+        trace.append(
+            {
+                "phase": (
+                    "target_support_only_scenario_new_registration_floor_guard"
+                ),
+                "scenario": scenario,
+                "scenario_index": scenario_index,
+                "physical_support_rows": int(len(feature_rows)),
+                "new_registration_physical_support_rows": int(
+                    np.sum(np.isin(label_rows, scenario_new_classes))
+                ),
+                "old_head_update_count": 0,
+                "new_logit_scale": float(new_scale),
+                "new_logit_offset": float(new_offset),
+                "min_old_class_after_support_accuracy": float(
+                    guard["min_old_class_after_support_accuracy"]
+                ),
+                "worst_old_class_support_forgetting": float(
+                    guard["worst_old_class_support_forgetting"]
+                ),
+                "min_new_class_loo_accuracy": float(
+                    guard["min_new_class_loo_accuracy"]
+                ),
+                "worst_new_class_loo_margin": float(
+                    guard["worst_new_class_loo_margin"]
+                ),
+                "floor_guard_pass": bool(guard["floor_guard_pass"]),
+            }
+        )
+    assert registered_classes is not None and new_classes is not None
+    weights_np = np.stack(all_weights).astype(np.float32)
+    bias_np = np.stack(all_biases).astype(np.float32)
+    new_scale_np = np.asarray(all_new_scales, dtype=np.float32)
+    new_offset_np = np.asarray(all_new_offsets, dtype=np.float32)
+    if (
+        not np.array_equal(parent.log_scale, parent.log_scale.copy())
+        or not np.array_equal(
+            weights_np[:, : len(old_classes)], parent.weights
+        )
+        or not np.array_equal(
+            bias_np[:, : len(old_classes)], parent.bias
+        )
+    ):
+        raise DiagCosineExplorationError("D4b parent old head mutation detected")
+    registry_state_bytes = len(
+        _canonical_json_bytes(registered_classes.tolist())
+    )
+    persistent_state_bytes = int(
+        sum(
+            state.persistent_state_bytes
+            for state in parent.equalizer_states
+        )
+        + weights_np.nbytes
+        + bias_np.nbytes
+        + new_scale_np.nbytes
+        + new_offset_np.nbytes
+        + registry_state_bytes
+        + np.dtype(np.int64).itemsize
+    )
+    if persistent_state_bytes > MAX_PERSISTENT_STATE_BYTES:
+        raise DiagCosineExplorationError(
+            "D4b scenario-atomic persistent state cap exceeded"
+        )
+    feature_dim = int(parent.log_scale.shape[1])
+    class_count = int(len(registered_classes))
+    new_class_count = int(len(new_classes))
+    resource = {
+        "schema": "cvs.phase2.diag_cosine_resource.v1",
+        "adaptation_objective": (
+            "scenario_atomic_old_head_lock_support_only_new_registration_floor"
+        ),
+        "adaptation_mode": "EVAL_ONLY_CLOSED_FORM_ADAPTATION",
+        "candidate": CANDIDATE_D4B_SCENARIO_OLDLOCK_NEWREG_FLOOR,
+        "classifier_state_policy": (
+            "parent_old_equalizer_prototypes_bias_bitwise_locked_"
+            "support_only_new_prototypes"
+        ),
+        "class_bias_enabled": False,
+        "new_class_bias_policy": "zero_bias_support_loo_scale_offset_only",
+        "log_scale_bounds": {"all_features": [-0.35, 0.35]},
+        "support_only": True,
+        "scenario_atomic_fit": True,
+        "cross_scenario_support_concat": False,
+        "old_head_bitwise_locked": True,
+        "old_head_update_count": 0,
+        "parent_commit_required": True,
+        "new_prototype_source": "after_registered_new_support_only",
+        "calibration_source": "after_registered_support_loo_only",
+        "query_rows_used_for_fit": 0,
+        "query_labels_used_for_fit": False,
+        "query_features_used_for_fit": False,
+        "query_role_oracle_access": False,
+        "query_true_batch_class_count_access": False,
+        "query_class_quota_access": False,
+        "query_batch_global_assignment": False,
+        "query_query_graph_used": False,
+        "source_sample_access": False,
+        "source_cache_access": False,
+        "source_derived_signal_access": False,
+        "clean_sample_access": False,
+        "clean_derived_signal_access": False,
+        "trainable_parameters": 0,
+        "inherited_locked_equalizer_parameters": int(
+            parent.log_scale.size
+        ),
+        "registered_new_class_state_floats": int(
+            len(FORMAL_LEO_WEAK_SCENARIOS)
+            * new_class_count
+            * feature_dim
+        ),
+        "persistent_state_bytes": persistent_state_bytes,
+        "feature_dim": feature_dim,
+        "class_count": class_count,
+        "old_class_count": len(old_classes),
+        "new_class_count": new_class_count,
+        "adaptation_epochs": 0,
+        "optimizer_steps": 0,
+        "closed_form_solves": len(FORMAL_LEO_WEAK_SCENARIOS),
+        "support_enrollment_rows": int(
+            sum(
+                len(support_by_scenario[scenario][0])
+                for scenario in FORMAL_LEO_WEAK_SCENARIOS
+            )
+        ),
+        "new_registration_support_rows": int(
+            sum(
+                np.sum(
+                    np.isin(
+                        np.asarray(
+                            support_by_scenario[scenario][1]
+                        ).astype(str),
+                        new_classes,
+                    )
+                )
+                for scenario in FORMAL_LEO_WEAK_SCENARIOS
+            )
+        ),
+        "support_view_count": 3,
+        "query_view_count": 1,
+        "post_reception_operator_id": (
+            "d4a_diag_fixed_received_iq_feature_v1"
+        ),
+        "estimated_adaptation_macs": 0,
+        "estimated_macs_per_query": int(
+            feature_dim + class_count * feature_dim
+        ),
+        "dense_query_graph_bytes": 0,
+        "adaptation_latency_sec": float(time.perf_counter() - started),
+        "peak_cuda_memory_bytes": 0,
+        "runtime_device": "cpu_closed_form_numpy",
+        "support_floor_guard_by_scenario": guards,
+        "worst_old_class_support_forgetting": float(
+            max(
+                guard["worst_old_class_support_forgetting"]
+                for guard in guards.values()
+            )
+        ),
+        "min_new_class_loo_accuracy": float(
+            min(
+                guard["min_new_class_loo_accuracy"]
+                for guard in guards.values()
+            )
+        ),
+        "floor_guard_pass": all(
+            guard["floor_guard_pass"] for guard in guards.values()
+        ),
+        "phase2_physical_sample_observation_policy": (
+            "single_leo_weak_observation_per_physical_sample"
+        ),
+        "phase2_cross_scenario_physical_sample_reuse": False,
+        "phase2_additional_leo_channel_state_generation": False,
+        "phase2_post_reception_view_from_fixed_received_iq_only": True,
+        "phase2_post_reception_view_counts_as_additional_physical_sample": False,
+    }
+    return ScenarioAtomicOldLockState(
+        candidate=CANDIDATE_D4B_SCENARIO_OLDLOCK_NEWREG_FLOOR,
+        scenarios=parent.scenarios.copy(),
+        classes=registered_classes,
+        equalizer_states=parent.equalizer_states,
+        log_scale=parent.log_scale.copy(),
+        weights=weights_np,
+        bias=bias_np,
+        new_scale=new_scale_np,
+        new_offset=new_offset_np,
+        old_class_count=len(old_classes),
+        support_lineage=tuple(support_lineage),
+        trace=tuple(trace),
+        resource=resource,
+    )
+
+
+def _d4b_scenario_predict(
+    state: ScenarioAtomicOldLockState,
+    scenario: str,
+    query_x: np.ndarray,
+    *,
+    query_tokens: np.ndarray,
+    query_post_channel_iq_sha256: np.ndarray,
+) -> tuple[np.ndarray, tuple[dict[str, Any], ...]]:
+    """Inference-only all-registered-class D4b prediction for one query row."""
+
+    matches = np.flatnonzero(state.scenarios.astype(str) == str(scenario))
+    if len(matches) != 1:
+        raise DiagCosineExplorationError("D4b scenario state lookup drift")
+    index = int(matches[0])
+    try:
+        transformed = transform_query_features(
+            state.equalizer_states[index],
+            np.asarray(query_x, dtype=np.float32),
+            parent_received_iq_sha256=np.asarray(
+                query_post_channel_iq_sha256
+            ).astype(str).tolist(),
+            physical_sample_ids=np.asarray(query_tokens).astype(str).tolist(),
+            view_names=("base",),
+        )
+    except ValueError as error:
+        raise DiagCosineExplorationError(
+            f"D4b query inference-only transform failed: {error}"
+        ) from error
+    base = transformed.features[:, 0, :]
+    old_logits = TEMPERATURE * (
+        _normalize(base)
+        @ _normalize(state.weights[index, : state.old_class_count]).T
+    ) + state.bias[index, : state.old_class_count][None, :]
+    if state.old_class_count < len(state.classes):
+        new_logits = float(state.new_scale[index]) * TEMPERATURE * (
+            _normalize(base)
+            @ _normalize(state.weights[index, state.old_class_count :]).T
+        )
+        new_logits += state.bias[index, state.old_class_count :][None, :]
+        new_logits -= float(state.new_offset[index])
+        logits = np.concatenate((old_logits, new_logits), axis=1)
+    else:
+        logits = old_logits
+    lineage = tuple(
+        {
+            "scope": "query",
+            "scenario": scenario,
+            **row[0].as_dict(),
+        }
+        for row in transformed.lineages
+    )
+    return state.classes[np.argmax(logits, axis=1)], lineage
+
+
 def _read_readonly_regular_bytes(path: Path) -> bytes:
     source = path.resolve(strict=True)
     if path.is_symlink() or source.is_symlink() or not source.is_file():
@@ -825,6 +1912,207 @@ def _load_parent_scenario_state(
         "parent_old_classes_sha256": hashlib.sha256(
             _canonical_json_bytes(classes.tolist())
         ).hexdigest(),
+    }
+
+
+def _load_parent_d4b_state(
+    *,
+    parent_diag_root: str | Path,
+    expected_parent_commit_sha256: str,
+    enrollment_manifest: Mapping[str, Any],
+    apply_manifest: Mapping[str, Any],
+) -> tuple[ScenarioAtomicOldLockState, dict[str, str]]:
+    """Load a D4b before state through a read-only commit-bound closure."""
+
+    raw_root = Path(parent_diag_root)
+    root = raw_root.resolve(strict=True)
+    if raw_root.is_symlink() or not root.is_dir():
+        raise DiagCosineExplorationError(
+            "D4b parent diag root must be a regular directory"
+        )
+    commit_raw = _read_readonly_regular_bytes(root / "COMMIT.json")
+    commit_sha256 = hashlib.sha256(commit_raw).hexdigest()
+    if commit_sha256 != str(expected_parent_commit_sha256).lower():
+        raise DiagCosineExplorationError("D4b parent COMMIT SHA256 mismatch")
+    try:
+        commit = json.loads(commit_raw.decode("utf-8-sig"))
+    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise DiagCosineExplorationError(
+            "D4b parent COMMIT JSON drift"
+        ) from exc
+    if (
+        not isinstance(commit, dict)
+        or commit.get("schema")
+        != "cvs.phase2.diag_cosine_exploration_commit.v1"
+    ):
+        raise DiagCosineExplorationError("D4b parent COMMIT schema drift")
+    receipt_member = _parent_member(commit, "execution_receipt.json")
+    state_member = _parent_member(commit, "diag_cosine_state.npz")
+    receipt_raw = _read_readonly_regular_bytes(
+        root / "execution_receipt.json"
+    )
+    if (
+        len(receipt_raw) != receipt_member["size_bytes"]
+        or hashlib.sha256(receipt_raw).hexdigest() != receipt_member["sha256"]
+        or commit.get("execution_receipt_sha256") != receipt_member["sha256"]
+    ):
+        raise DiagCosineExplorationError(
+            "D4b parent execution receipt binding drift"
+        )
+    try:
+        receipt = json.loads(receipt_raw.decode("utf-8-sig"))
+    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise DiagCosineExplorationError(
+            "D4b parent execution receipt JSON drift"
+        ) from exc
+    required_matches = {
+        "stage": "stage2b",
+        "registration_state": "before",
+        "receiver": enrollment_manifest["receiver"],
+        "seed": enrollment_manifest["seed"],
+        "k_shot": enrollment_manifest["k_shot"],
+        "row_handle": apply_manifest["row_handle"],
+        "row_manifest_sha256": apply_manifest["row_manifest_sha256"],
+        "phase1_checkpoint_sha256": enrollment_manifest[
+            "phase1_checkpoint_sha256"
+        ],
+        "feature_runtime_sha256": enrollment_manifest[
+            "feature_runtime_sha256"
+        ],
+        "method_lock_sha256": enrollment_manifest["method_lock_sha256"],
+    }
+    resource = receipt.get("resource", {}) if isinstance(receipt, dict) else {}
+    if (
+        not isinstance(receipt, dict)
+        or receipt.get("schema")
+        != "cvs.phase2.diag_cosine_exploration_receipt.v1"
+        or receipt.get("candidate", {}).get("name")
+        != CANDIDATE_D4B_SCENARIO_OLDLOCK_NEWREG_FLOOR
+        or any(
+            receipt.get(key) != value
+            for key, value in required_matches.items()
+        )
+        or any(
+            receipt.get(key) != value
+            for key, value in PHASE2_FULL_CONTRACT.items()
+        )
+        or receipt.get("query_truth_present_in_predictor") is not False
+        or not isinstance(resource, dict)
+        or resource.get("scenario_atomic_fit") is not True
+        or resource.get("cross_scenario_support_concat") is not False
+        or resource.get("query_rows_used_for_fit") != 0
+        or resource.get("query_labels_used_for_fit") is not False
+        or resource.get("query_features_used_for_fit") is not False
+        or resource.get("query_role_oracle_access") is not False
+        or resource.get("query_true_batch_class_count_access") is not False
+        or resource.get("query_class_quota_access") is not False
+        or resource.get("query_batch_global_assignment") is not False
+        or resource.get("post_reception_operator_id")
+        != "d4a_diag_fixed_received_iq_feature_v1"
+        or receipt.get("artifacts", {}).get("diag_cosine_state.npz")
+        != state_member["sha256"]
+    ):
+        raise DiagCosineExplorationError(
+            "D4b parent execution receipt lineage drift"
+        )
+    state_raw = _read_readonly_regular_bytes(root / "diag_cosine_state.npz")
+    if (
+        len(state_raw) != state_member["size_bytes"]
+        or hashlib.sha256(state_raw).hexdigest() != state_member["sha256"]
+    ):
+        raise DiagCosineExplorationError(
+            "D4b parent scenario state binding drift"
+        )
+    try:
+        with np.load(io.BytesIO(state_raw), allow_pickle=False) as archive:
+            expected_members = (
+                "scenarios",
+                "classes",
+                "log_scale",
+                "weights",
+                "bias",
+                "new_scale",
+                "new_offset",
+                "old_class_count",
+            )
+            if tuple(archive.files) != expected_members:
+                raise DiagCosineExplorationError(
+                    "D4b parent scenario state exact schema drift"
+                )
+            scenarios = archive["scenarios"].astype(str)
+            classes = archive["classes"].astype(str)
+            log_scale = archive["log_scale"].astype(np.float32)
+            weights = archive["weights"].astype(np.float32)
+            bias = archive["bias"].astype(np.float32)
+            new_scale = archive["new_scale"].astype(np.float32)
+            new_offset = archive["new_offset"].astype(np.float32)
+            old_class_count = int(
+                archive["old_class_count"].reshape(-1)[0]
+            )
+    except (OSError, ValueError, KeyError) as exc:
+        raise DiagCosineExplorationError(
+            "D4b parent scenario state NPZ drift"
+        ) from exc
+    scenario_count = len(FORMAL_LEO_WEAK_SCENARIOS)
+    if (
+        scenarios.tolist() != list(FORMAL_LEO_WEAK_SCENARIOS)
+        or classes.ndim != 1
+        or len(classes) < 2
+        or log_scale.shape != (scenario_count, weights.shape[2])
+        or weights.shape
+        != (scenario_count, len(classes), log_scale.shape[1])
+        or bias.shape != (scenario_count, len(classes))
+        or new_scale.shape != (scenario_count,)
+        or new_offset.shape != (scenario_count,)
+        or old_class_count != len(classes)
+        or not np.allclose(new_scale, 1.0)
+        or not np.allclose(new_offset, 0.0)
+        or not all(
+            np.isfinite(value).all()
+            for value in (
+                log_scale,
+                weights,
+                bias,
+                new_scale,
+                new_offset,
+            )
+        )
+    ):
+        raise DiagCosineExplorationError(
+            "D4b parent scenario state shape/value drift"
+        )
+    equalizers = tuple(
+        _locked_equalizer_state(
+            log_scale[scenario_index],
+            scenario_index=scenario_index,
+        )
+        for scenario_index in range(scenario_count)
+    )
+    state = ScenarioAtomicOldLockState(
+        candidate=CANDIDATE_D4B_SCENARIO_OLDLOCK_NEWREG_FLOOR,
+        scenarios=scenarios,
+        classes=classes,
+        equalizer_states=equalizers,
+        log_scale=_readonly_float32(log_scale),
+        weights=_readonly_float32(weights),
+        bias=_readonly_float32(bias),
+        new_scale=_readonly_float32(new_scale),
+        new_offset=_readonly_float32(new_offset),
+        old_class_count=old_class_count,
+        support_lineage=(),
+        trace=(),
+        resource={},
+    )
+    return state, {
+        "parent_diag_commit_sha256": commit_sha256,
+        "parent_execution_receipt_sha256": receipt_member["sha256"],
+        "parent_state_sha256": state_member["sha256"],
+        "parent_old_classes_sha256": hashlib.sha256(
+            _canonical_json_bytes(classes.tolist())
+        ).hexdigest(),
+        "parent_old_state_policy": (
+            "scenario_atomic_bitwise_locked_commit_bound"
+        ),
     }
 
 
@@ -1411,27 +2699,46 @@ def run_diag_cosine_exploration(
     )
     _validate_matched_packages(enrollment_manifest, apply_manifest)
     registration_state = str(enrollment_manifest["registration_state"])
-    if candidate == CANDIDATE_D3_SCENARIO_OLDLOCK_NEWFIT:
+    if candidate in {
+        CANDIDATE_D3_SCENARIO_OLDLOCK_NEWFIT,
+        CANDIDATE_D4B_SCENARIO_OLDLOCK_NEWREG_FLOOR,
+    }:
         if registration_state == "before" and (
             parent_diag_root is not None
             or expected_parent_commit_sha256 is not None
         ):
             raise DiagCosineExplorationError(
-                "D3 before state must not receive a parent diag closure"
+                f"{candidate} before state must not receive a parent diag closure"
             )
         if registration_state == "after" and (
             parent_diag_root is None
             or expected_parent_commit_sha256 is None
         ):
             raise DiagCosineExplorationError(
-                "D3 after state requires a parent diag COMMIT closure"
+                f"{candidate} after state requires a parent diag COMMIT closure"
+            )
+        if (
+            candidate == CANDIDATE_D4B_SCENARIO_OLDLOCK_NEWREG_FLOOR
+            and (
+                (
+                    registration_state == "before"
+                    and enrollment_manifest["stage"] != "stage2b"
+                )
+                or (
+                    registration_state == "after"
+                    and enrollment_manifest["stage"] != "stage2c"
+                )
+            )
+        ):
+            raise DiagCosineExplorationError(
+                "D4b requires Stage2-B before and Stage2-C after"
             )
     elif (
         parent_diag_root is not None
         or expected_parent_commit_sha256 is not None
     ):
         raise DiagCosineExplorationError(
-            "parent diag closure is reserved for D3 old-lock"
+            "parent diag closure is reserved for D3/D4b old-lock"
         )
     runtime_device = _device(device)
     model = load_torchscript_backbone_same_fd(
@@ -1447,6 +2754,9 @@ def run_diag_cosine_exploration(
     support_features: list[np.ndarray] = []
     support_labels: list[np.ndarray] = []
     support_by_scenario: dict[str, tuple[np.ndarray, np.ndarray]] = {}
+    d4a_support_by_scenario: dict[
+        str, tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]
+    ] = {}
     support_forward_count = 0
     for scenario in FORMAL_LEO_WEAK_SCENARIOS:
         payload = enrollment_payloads[scenario]
@@ -1471,6 +2781,20 @@ def run_diag_cosine_exploration(
             scenario_features,
             scenario_labels,
         )
+        if candidate in {
+            CANDIDATE_D4A_SCENARIO_ATOMIC_FLOORLOCK,
+            CANDIDATE_D4B_SCENARIO_OLDLOCK_NEWREG_FLOOR,
+        }:
+            support_tokens = np.asarray(payload["support_tokens"]).astype(str)[mask]
+            support_hashes = np.asarray(
+                payload["support_post_channel_iq_sha256"]
+            ).astype(str)[mask]
+            d4a_support_by_scenario[scenario] = (
+                scenario_features,
+                scenario_labels,
+                support_tokens,
+                support_hashes,
+            )
         support_forward_count += int(len(iq))
     parent_closure: dict[str, str] = {}
     if candidate == CANDIDATE_D3_SCENARIO_OLDLOCK_NEWFIT:
@@ -1495,6 +2819,24 @@ def run_diag_cosine_exploration(
                 seed=int(enrollment_manifest["seed"]),
                 device=runtime_device,
             )
+    elif candidate == CANDIDATE_D4B_SCENARIO_OLDLOCK_NEWREG_FLOOR:
+        if registration_state == "before":
+            state = _fit_d4b_before(d4a_support_by_scenario)
+        else:
+            parent_d4b, parent_closure = _load_parent_d4b_state(
+                parent_diag_root=parent_diag_root,
+                expected_parent_commit_sha256=str(
+                    expected_parent_commit_sha256
+                ),
+                enrollment_manifest=enrollment_manifest,
+                apply_manifest=apply_manifest,
+            )
+            state = _fit_d4b_after(
+                parent_d4b,
+                d4a_support_by_scenario,
+            )
+    elif candidate == CANDIDATE_D4A_SCENARIO_ATOMIC_FLOORLOCK:
+        state = _fit_d4a_scenario_atomic(d4a_support_by_scenario)
     else:
         fit_x = np.concatenate(support_features, axis=0)
         fit_y = np.concatenate(support_labels, axis=0)
@@ -1509,18 +2851,58 @@ def run_diag_cosine_exploration(
     query_tokens: list[np.ndarray] = []
     scenarios: list[np.ndarray] = []
     predicted_handles: list[np.ndarray] = []
+    query_view_lineage: list[dict[str, Any]] = []
     query_forward_count = 0
+    if candidate in {
+        CANDIDATE_D4A_SCENARIO_ATOMIC_FLOORLOCK,
+        CANDIDATE_D4B_SCENARIO_OLDLOCK_NEWREG_FLOOR,
+    }:
+        _require_scenario_atomic_lineage(
+            {
+                scenario: (
+                    np.asarray(query_payloads[scenario]["query_tokens"]).astype(str),
+                    np.asarray(
+                        query_payloads[scenario][
+                            "query_post_channel_iq_sha256"
+                        ]
+                    ).astype(str),
+                )
+                for scenario in FORMAL_LEO_WEAK_SCENARIOS
+            },
+            context="query",
+        )
     scoring_started = time.perf_counter()
     for scenario in FORMAL_LEO_WEAK_SCENARIOS:
         payload = query_payloads[scenario]
         iq = np.asarray(payload["query_leo_weak_iq"], dtype=np.float32)
         zid = forward_zid160(model, iq, device=runtime_device, batch_size=1)
         features = registered_feature(iq, zid)
-        predicted = (
-            _scenario_predict(state, scenario, features)
-            if isinstance(state, ScenarioDiagCosineState)
-            else predict_diag_cosine(state, features)
-        )
+        if isinstance(state, ScenarioAtomicOldLockState):
+            predicted, lineage = _d4b_scenario_predict(
+                state,
+                scenario,
+                features,
+                query_tokens=np.asarray(payload["query_tokens"]).astype(str),
+                query_post_channel_iq_sha256=np.asarray(
+                    payload["query_post_channel_iq_sha256"]
+                ).astype(str),
+            )
+            query_view_lineage.extend(lineage)
+        elif isinstance(state, ScenarioAtomicPrototypeState):
+            predicted, lineage = _d4a_scenario_predict(
+                state,
+                scenario,
+                features,
+                query_tokens=np.asarray(payload["query_tokens"]).astype(str),
+                query_post_channel_iq_sha256=np.asarray(
+                    payload["query_post_channel_iq_sha256"]
+                ).astype(str),
+            )
+            query_view_lineage.extend(lineage)
+        elif isinstance(state, ScenarioDiagCosineState):
+            predicted = _scenario_predict(state, scenario, features)
+        else:
+            predicted = predict_diag_cosine(state, features)
         query_tokens.append(np.asarray(payload["query_tokens"]).astype(str))
         scenarios.append(np.asarray([scenario] * len(iq)))
         predicted_handles.append(predicted.astype(str))
@@ -1528,7 +2910,30 @@ def run_diag_cosine_exploration(
     scoring_elapsed = time.perf_counter() - scoring_started
 
     output = _output_root(output_root)
-    if isinstance(state, ScenarioDiagCosineState):
+    if isinstance(state, ScenarioAtomicOldLockState):
+        state_sha256 = _write_npz_new(
+            output / "diag_cosine_state.npz",
+            scenarios=state.scenarios.astype(str),
+            classes=state.classes.astype(str),
+            log_scale=state.log_scale.astype(np.float32),
+            weights=state.weights.astype(np.float32),
+            bias=state.bias.astype(np.float32),
+            new_scale=state.new_scale.astype(np.float32),
+            new_offset=state.new_offset.astype(np.float32),
+            old_class_count=np.asarray(
+                [state.old_class_count], dtype=np.int64
+            ),
+        )
+    elif isinstance(state, ScenarioAtomicPrototypeState):
+        state_sha256 = _write_npz_new(
+            output / "diag_cosine_state.npz",
+            scenarios=state.scenarios.astype(str),
+            classes=state.classes.astype(str),
+            log_scale=state.log_scale.astype(np.float32),
+            weights=state.weights.astype(np.float32),
+            bias=state.bias.astype(np.float32),
+        )
+    elif isinstance(state, ScenarioDiagCosineState):
         state_sha256 = _write_npz_new(
             output / "diag_cosine_state.npz",
             scenarios=state.scenarios.astype(str),
@@ -1561,6 +2966,26 @@ def run_diag_cosine_exploration(
         scenarios=np.concatenate(scenarios).astype(str),
         predicted_class_handles=np.concatenate(predicted_handles).astype(str),
     )
+    view_lineage_sha256: str | None = None
+    if isinstance(
+        state, (ScenarioAtomicPrototypeState, ScenarioAtomicOldLockState)
+    ):
+        view_lineage_sha256 = _write_json_new(
+            output / "view_lineage.json",
+            {
+                "schema": (
+                    "cvs.phase2.d4b_view_lineage.v1"
+                    if isinstance(state, ScenarioAtomicOldLockState)
+                    else "cvs.phase2.d4a_view_lineage.v1"
+                ),
+                "candidate": candidate,
+                "support": list(state.support_lineage),
+                "query": query_view_lineage,
+                "views_count_as_additional_physical_samples": False,
+                "additional_leo_channel_state_generation": False,
+                "cross_scenario_physical_sample_reuse": False,
+            },
+        )
     resource = {
         **state.resource,
         "serialized_persistent_state_bytes": int(serialized_state_bytes),
@@ -1575,6 +3000,7 @@ def run_diag_cosine_exploration(
     }
     receipt = {
         "schema": "cvs.phase2.diag_cosine_exploration_receipt.v1",
+        "diagnostic_only": True,
         "status": "DEVELOPMENT_EXPLORATION_COMPLETE",
         "formal_launch_authority": False,
         "formal_metric_claim_allowed": False,
@@ -1610,6 +3036,18 @@ def run_diag_cosine_exploration(
         "phase2_source_replay": False,
         "phase2_external_source_adapter_access": False,
         "phase2_pretrained_artifact_policy": "sealed_phase1_checkpoint_only",
+        "phase2_physical_sample_observation_policy": (
+            "single_leo_weak_observation_per_physical_sample"
+        ),
+        "phase2_cross_scenario_physical_sample_reuse": False,
+        "phase2_additional_leo_channel_state_generation": False,
+        "phase2_post_reception_equalization_augmentation_transform_allowed": True,
+        "phase2_post_reception_view_from_fixed_received_iq_only": True,
+        "phase2_post_reception_view_counts_as_additional_physical_sample": False,
+        "phase2_physical_sample_root_id_policy": (
+            "immutable_preoverlay_lineage_token"
+        ),
+        "phase2_query_post_reception_view_fit_access": False,
         "phase2_query_decision_policy": "per_sample_all_registered_classes",
         "phase2_query_role_oracle_access": False,
         "phase2_query_true_batch_class_count_access": False,
@@ -1623,7 +3061,7 @@ def run_diag_cosine_exploration(
             "name": candidate,
             "auxiliary_feature": "same_row_fft96_plus_gain_normalized_rf32",
             "auxiliary_weight": AUXILIARY_WEIGHT,
-            "adaptation_epochs": ADAPTATION_EPOCHS,
+            "adaptation_epochs": state.resource["adaptation_epochs"],
             "query_view_count": 1,
             "classifier_state_policy": state.resource[
                 "classifier_state_policy"
@@ -1631,11 +3069,30 @@ def run_diag_cosine_exploration(
             "class_bias_enabled": state.resource["class_bias_enabled"],
             "log_scale_bounds": state.resource["log_scale_bounds"],
             "old_head_bitwise_locked": (
-                candidate == CANDIDATE_D3_SCENARIO_OLDLOCK_NEWFIT
+                candidate
+                in {
+                    CANDIDATE_D3_SCENARIO_OLDLOCK_NEWFIT,
+                    CANDIDATE_D4B_SCENARIO_OLDLOCK_NEWREG_FLOOR,
+                }
                 and registration_state == "after"
+            ),
+            "scenario_atomic_fit": state.resource.get(
+                "scenario_atomic_fit", False
+            ),
+            "cross_scenario_support_concat": state.resource.get(
+                "cross_scenario_support_concat"
             ),
             "new_class_bias_policy": state.resource.get(
                 "new_class_bias_policy"
+            ),
+            "support_floor_guard": state.resource.get(
+                "support_floor_guard_by_scenario"
+            ),
+            "worst_old_class_support_forgetting": state.resource.get(
+                "worst_old_class_support_forgetting"
+            ),
+            "min_new_class_loo_accuracy": state.resource.get(
+                "min_new_class_loo_accuracy"
             ),
         },
         "resource": resource,
@@ -1647,6 +3104,11 @@ def run_diag_cosine_exploration(
             "diag_cosine_state.npz": state_sha256,
             "loss_trace.json": trace_sha256,
             "prediction_artifact.npz": prediction_sha256,
+            **(
+                {"view_lineage.json": view_lineage_sha256}
+                if view_lineage_sha256 is not None
+                else {}
+            ),
         },
     }
     receipt_sha256 = _write_json_new(output / "execution_receipt.json", receipt)
@@ -1660,6 +3122,7 @@ def run_diag_cosine_exploration(
     ]
     commit = {
         "schema": "cvs.phase2.diag_cosine_exploration_commit.v1",
+        "diagnostic_only": True,
         "members": members,
         "artifact_root_sha256": hashlib.sha256(
             _canonical_json_bytes(members)
@@ -1689,10 +3152,14 @@ __all__ = [
     "CANDIDATE_D1_B0_CAP",
     "CANDIDATE_D2",
     "CANDIDATE_D3_SCENARIO_OLDLOCK_NEWFIT",
+    "CANDIDATE_D4A_SCENARIO_ATOMIC_FLOORLOCK",
+    "CANDIDATE_D4B_SCENARIO_OLDLOCK_NEWREG_FLOOR",
     "CANDIDATES",
     "DiagCosineExplorationError",
     "DiagCosineState",
     "ScenarioDiagCosineState",
+    "ScenarioAtomicPrototypeState",
+    "ScenarioAtomicOldLockState",
     "fit_diag_cosine_state",
     "forward_zid160",
     "log_scale_bounds",
