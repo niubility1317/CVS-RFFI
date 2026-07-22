@@ -1889,3 +1889,13 @@ RCHM在C6的18/18个slice均建立rank1非标量metric，但`M_DA-M0`的6630次a
 独立`gpt-5.6-sol high`结果审计重算18个slice、72个arm-row和6630次query，与score最大差`2.22e-16`，确认全部算术、同row绑定和停止裁决无误；审计结论为`P0=0，P1=0→MERGE_REPORT`。
 
 runner期间完成的下一候选只读spike把`JOINT-CID-BPP/r0`裁为`MERGE_SPIKE`，但尚非`DESIGN_FROZEN`：它用K5 support-only C-id替换RCHM并保留BPP，必须先由独立监督闭合outer-train/nested LODO锁及C-id/BPP残差重复收缩，MERGE前不修改代码或发布实验。
+
+##### `JOINT-CID-BPP/r0-spike`可行性冻结
+
+独立联合监督裁决为`MERGE`，仅批准`DESIGN_FROZEN_FOR_FEASIBILITY_SPIKE→IMPLEMENTING`，不批准target、125或性能晋级。四臂固定为`M0=qKNN(identity)`、`M_DA=qKNN(C-id)`、`M_HEAD=BPP(identity)`、`M_JOINT=BPP(C-id)`；四臂共享同一K5 support bank、query、注册表和Patch A锁，`M_DA`与`M_JOINT`必须复用同一metric receipt，BPP只允许按该metric重编译RSS/projection/logdet，`a0/b0/T`、算法及量化门与`M_HEAD`相同。
+
+每个outer pseudo-new lock先排除coverage确定的完整held receiver和当前pseudo-new class；该并集的全部physical ID、18个outer row ID及support/query ID以显式列表和SHA进入receipt。候选参数只可在剩余receiver×pseudo-new×scene的Phase1 nested LODO内选择，禁止读取outer held特征、标签或结果。预注册family为`(rank,attenuation,beta,min_fraction,min_energy)`：`F00=(1,.25,.5,.60,1e-7)`、`F01=(1,.50,.5,.60,1e-7)`、`F02=(1,.50,1.0,.75,1e-7)`、`F03=(2,.25,.5,.60,1e-7)`、`F04=(2,.50,.5,.60,1e-7)`、`F05=(2,.50,1.0,.60,1e-7)`、`F06=(2,.50,1.0,.75,1e-7)`、`F07=(2,.65,1.0,.75,1e-7)`；不得追加或删除family。
+
+选择顺序冻结为：最大化`min(mean(H_joint-H_M0),mean(H_joint-H_DA),mean(H_joint-H_HEAD))`，再依次最大化mean`I_syn`、mean joint floor、最小化mean joint forgetting、降低rank、降低attenuation、按family ID稳定决胜。每个inner episode和outer row均执行5个同步leave-one-shot方向jackknife；若任一子拟合无方向，或最小归一化projector overlap低于预锁`0.50`，整row、query无关地精确回退identity。Phase1 receipt另报告jackknife query预测一致率、INT8 teacher top1一致率和large-margin flip；低于`99.5%`或large-margin flip非0则本revision停止。
+
+冻结改动仅允许新增`code/cvsrffi/cid_bpp_phase1_nested_lodo.py`、`code/cvsrffi/cid_bpp_fixed_held_spike.py`和`tests/test_cid_bpp_fixed_held_spike.py`；既有C-id、BPP、R2A、archive、coverage和数据代码不得修改。最低held证据仍为同一18 slice、72个同row arm结果及完整prediction；若nonidentity C-id的`M_DA-M0`为零argmax变化、`M_JOINT=M_HEAD`、mean`I_syn≤0`，或联合臂损害old/new/min/floor并增加forgetting，则立即`COMPLETED_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE`，不运行125。
