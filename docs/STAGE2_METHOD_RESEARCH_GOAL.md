@@ -1,139 +1,175 @@
-# Stage2轻型域适应与新类注册研发目标
+# Stage2域适应与分类头联合研发目标
 
-版本：2026-07-18
-状态：active goal定义
-数据协议引用：`protocol_schema=p2_min_v1`
+版本：2026-07-22
+状态：可直接作为新`/goal`目标Prompt
+协议：`protocol_schema=p2_min_v1`
+初始化文档：`docs/STAGE2_RESEARCH_AGENT_INIT.md`
 
-## 1. 单一总目标
+## 1. 单一目标
 
-基于ADV3B02 final checkpoint，研发并验证可逐样本部署的极轻型Phase2方法，使Stage2-B旧类目标域适应与Stage2-C新类注册同等有效，并同时解决多新类条件下的旧类遗忘、old/new混淆和持续floor类。开发阶段只用注册support选择方法与统一超参数；query等同测试集，只用于最终评分。
+在`E:\type10-7`中，严格遵循当前`AGENTS.md`、`项目.md`和`p2_min_v1`，基于ADV3B02 final checkpoint持续研发、实现并验证可逐样本部署的极轻型Phase2方法。方法必须同时包含：
 
-数据合法性只通过`p2_min_v1`的`VALIDATED_ONCE capsule_id/split_id`引用，不在本目标重复建设准入、hash或authority系统。固定接收IQ、物理ID和split未变化时，直接进行方法研发与实验。
+1. 显式域适应：利用合法target support、`z_id=feat_joint`、`z_dom=feat_imp`及与checkpoint共同封存的Phase1聚合知识，校正目标接收机与LEO弱信道偏移；
+2. 统一分类头：在全部实际注册旧类与新类中，联合利用局部qKNN证据和全局Shrinkage RDA/SRDA证据；
+3. 联合协同：域适应与分类头必须分别产生独立正收益，联合方法还必须证明正交于简单相加的协同增益，即`1+1>2`。
 
-## 2. 成功判据
+工作重心放在方法设计、最小因果实现、Phase1 LODO、锁定窄实验和真实N607证据。不得把大部分时间消耗在重复数据验证、authority/hash重建、跨run原始SHA对齐、报告格式重构或无关文献扩展上。普通负结果不是停止理由；只有新增数据权限、改变科学场景、干预用户现有任务或其他高影响动作才请求用户授权。
 
-### 2.1 K10主门槛
+## 2. 当前研发起点
 
-在锁定候选的独立确认矩阵上同时达到：
+不得从头重造方法。沿用以下已审查代码链：
 
-- target-old注册后总体准确率`old_acc_after_increment ≥ 92%`；
-- 每个旧类确认集准确率`min_old_class_acc ≥ 88%`；
-- `seen_new_acc ≥ 92%`，当真实seen-new TX数为5；
-- `seen_new_acc ≥ 90%`，当真实seen-new TX数为10；
-- `seen_new_acc ≥ 86%`，当真实seen-new TX数为20；
-- 同row报告`old_acc_before_increment`、`old_acc_after_increment`、`seen_new_acc`、`H_old_new`和逐类混淆，不能跨row拼接最好值。
+- `A`：Patch A，纯`z_id160` identity Student-t single-qKNN；
+- `B`：Patch B，在A不变的前提下增加raw-`z_id` Shrinkage RDA/SRDA全局头；
+- `C-id`：Patch C-id v0，K≥2从合法support估计rank≤2的类内—类间保护nuisance metric；K1严格identity；
+- `C-dom`：下一主研发项。新Phase1共同封存bundle提供`z_dom→z_id`低秩cross-map和receiver nuisance basis；Phase2由全部注册类support估计类无关receiver context；
+- `C-joint`：仅在C-id和C-dom分别超过A后，联合去除共享receiver偏移与剩余sample/channel扰动；
+- `D`：最佳C的局部qKNN expert＋与B完全相同的raw-`z_id` SRDA expert，使用Phase1锁定或合法support-only可靠度融合。
 
-真实seen-new TX数2也必须评估和报告，但不另造用户未指定的绝对门槛；它用于小规模注册机制诊断。
+已有证据必须作为机制边界，而不是重复探索：
 
-### 2.2 K5与K1/K20
+- D92证明注册均衡协方差头可改善old/floor，但会牺牲new；分类头有价值，却没有解决域偏移；
+- D93/D94在ground coverage仅约`0.144–0.227`时搬动整体坐标，support达到100%仍使held query退化；不得再做全坐标transport或以support-fit自证；
+- D99在Phase1 LODO出现正信号，但真实target K10相对D81的old-after、seen-new、H和floor均下降约24pp；不得把Phase1代理等同target泛化，也不得一次混改metric、kernel和fusion；
+- D100的有效融合系数为0，预测与D99相同；增加第二个头不自动产生互补；
+- Role-Oracle只证明跨角色竞争存在较大上限，不得作为协议合法方法、参数选择信号或晋级证据。
 
-- K5在每种新类规模和每个核心指标上相对matched K10下降不超过3pp；
-- K1、K5、K10、K20全部执行同row注册前/后遗忘评估；
-- K1总体与每个receiver的`old_adaptation_gain=old_acc_after_increment-old_acc_before_increment ≥ 0`；
-- K1在相同旧类query上明显优于直接ADV3B02旧类头：总体paired差值至少+2pp、matched paired 95% CI下界大于0、每receiver不为负；
-- K5/K10/K20的平均遗忘不得高于matched identity-only单qKNN；
-- K20用于检查support增加后是否饱和或反向遗忘，不能参与开发选参。
+## 3. 主方法：Coverage-Coupled Cross-Branch DA＋SRDA
 
-### 2.3 floor与混淆
+### 3.1 C-dom共享receiver-context适应
 
-必须同时优化总体均值和全部实际注册类中的最低类，禁止用均值掩盖floor，也禁止把floor目标收缩成若干历史难类。开发代理、loss和正式评价必须覆盖当前row的全部旧类与全部已注册新类，并使用类别身份无关的共享规则。
+Phase1仅从合法single-observation source archive学习并封存：
 
-算法可以依据每类合法support，通过同一公式估计prototype半径、不确定度、校准强度或更新幅度；不得读取TX/class ID来选择机制，不得为具体类别设置白名单、专属分支、专属loss权重、专属阈值或专属超参数。历史报告中的难类只能用于解释失败和检验通用方法是否改善下尾，不能作为定向调参集合。
+- `z_dom`中的receiver/domain basis`U_R^dom`；
+- rank≤4的`z_dom→z_id`cross-map`W_dom→id`；
+- 中心、尺度、奇异值、`D_eff`、LODO/LOCO稳定性和coverage证书；
+- Phase1锁定的收缩、rank和identity回退规则。
 
-候选必须降低两类失败：新类不可达和新类侵入旧类。不得再以support拟合100%、support侵入为0或LOO安全单独证明held query安全。
+`U_R^dom`、`W_dom→id`及其coverage证书必须作为int8多物理样本聚合Phase1知识共同封存，或由该int8聚合知识确定性重建；不得保存sample-level feature、成员ID、归属清单、可替换FP16/FP32 sidecar或target访问后生成的Phase1组件。
 
-## 3. 开发与确认设计
-
-### 3.1 开发锁定
-
-- 只在预登记development seed、K10工作点，使用注册support内部预登记的leave-one-physical-sample-out或nested support-held代理选择一套候选、表征组合、adapter结构、loss、epoch和所有超参数；
-- support内部开发代理同时覆盖Stage2-B旧类、模拟Stage2-C后的旧类/新类、调和均值、最低类和遗忘风险；真实development query与confirmation query都必须在候选和超参数完全锁定后只预测、评分一次，不得据结果继续调参；
-- K1/K5/K20及独立确认seed不能反向调参；
-- target query标签、角色、类别数量或指标不能参与拟合、早停、rollback、路由或候选选择。
-
-### 3.2 独立确认矩阵
-
-锁定后覆盖：
+Phase2只用当前row全部已注册旧类与新类support，按类别平衡估计共享receiver context`r_t`。K1只能估计该跨类共享context，不能估计类内scatter或sample-channel basis。校正采用低秩、非正交、强收缩残差：
 
 ```text
-target receivers: 5
-confirmation seeds: at least 5, independent from development
-LEO scenes: leo_clear_weak, leo_low_elev_weak, leo_rain_weak
-K: 1, 5, 10, 20
-real seen-new TX counts: 2, 5, 10, 20
+z_id' = z_id - q_dom * W_dom→id * r_t
 ```
 
-若合法目标接收机或真实新TX覆盖不足，可使用未进入Phase1的其他WiSig/ManySig接收机或TX子集；仍须引用合法`p2_min_v1` capsule，且不得使用clean样本。
+`q_dom`只能由Phase1可靠度、support-only coverage和预锁定数值条件共同决定。coverage低、LOCO不稳或receipt不闭合时，`q_dom=0`并逐值回退identity。不得使用receiver ID、TX ID、query角色、query置信度或场景真值设置`q_dom`。
 
-历史“125任务”保留为候选稳定性screen：运行`5 receivers × 5 independent confirmation seeds × 5 evaluation slices = 125 jobs`。五个slice固定为`K10/new5`、`K10/new10`、`K10/new20`、`K5/new20`和`K1/new20`；每个job内部都评估三个LEO场景。比较方法作为同一job/同一数据上的matched候选列或配套结果，不构成125的第五轴。125 screen不能替代完整K1/5/10/20×new2/5/10/20正式矩阵。
+### 3.2 C-id剩余nuisance适应
 
-## 4. 研发路线优先级
+K≥2时，C-id从`z_id`合法support的类平衡类内scatter与类间保护中提取rank≤2方向，只做PSD软抑制；K1严格回退identity。C-id只负责receiver context校正后的剩余sample/channel扰动，不重复学习C-dom共享方向。C-joint必须报告两支子空间重叠、更新norm及关闭cross-map消融。
 
-### 4.1 第一优先：先提高Stage2-B旧域头
+### 3.3 B分类头
 
-当前可复核最强比较器B3约为注册前old86.67%、注册后old73.33%、new73.33%，说明域适应和注册均未解决。下一路线必须先在support-held old proxy和旧类floor代理上超过B3，再扩展注册机制；冻结后才在真实held query评估，不再以继续叠加hard visibility gate替代旧域适应研发。
+B保持Patch A局部Student-t qKNN不变，并增加全注册类统一SRDA头：
 
-优先尝试同一固定接收IQ上的规范化拼接表征：`z_id160 + FFT96 + RF32`，并做分块L2归一化、能量/温度可学习缩放和matched ablation。维度增加不是目的；只有support-held代理性能与proxy Pareto改善才进入冻结query评估，真实held query只用于screen/晋升判断，不再调参或修改候选。
+- 所有旧类和新类均值只来自当前row target support；
+- ground只通过共同封存的int8多样本聚合知识提供class-agnostic共享协方差basis/spectrum，不提供旧类class mean、bias或logit；
+- K1不估target covariance方向；K≥2只允许class-balanced scatter和极低rank residual；
+- qKNN与SRDA必须在Phase1 LODO中证明非零disagreement、双向rescue、NLL改善和worst-class不退，才允许融合；
+- 融合权重不得从query估计。K1使用Phase1锁定权重；K≥2可使用预登记support cross-fit可靠度。
 
-### 4.2 第二优先：连续联合适配与注册
+### 3.4 D联合协同
 
-在一个全注册类空间内联合训练target-old和target-new support：
+D不得把B在C变换后重新拟合却仍声称是同一B。冻结结构为：
 
-- ground old int8聚合知识只作只读身份先验、正则或不确定度参考，不直接覆盖target原型；
-- target-old原型负责域校正，target-new原型独立注册；最终部署的target-old和target-new原型均须量化，优先int8；FP16/FP32只作为matched精度/速度/状态ablation，按Pareto证明最终格式；
-- 采用class-specific cosine head、正值对角度量加极低秩残差或其他低参数连续变换；
-- loss同时包含old support分类、new support分类、ground-anchor弱正则、类内半径收缩、类间`margin > radius_i + radius_j`、old/new collision惩罚及adapter幅度正则；
-- 只允许support梯度，使用快速闭式或少步梯度更新；不用binary visibility/hard release作为主学习机制。
+- local expert：最佳C变换后的Patch A qKNN；
+- global expert：与B逐值相同的raw-`z_id` SRDA；
+- fusion：与B逐值相同的融合公式、温度、权重来源、support可靠度函数和持久状态；D相对B唯一允许的变化是local logits来自最佳C。`q_dom=q_id=0`时D必须精确回退B；D的全局融合系数`alpha_global=0`时必须精确回退最佳C局部expert；B自身的`alpha_global=0`时必须精确回退A。
 
-### 4.3 遗忘保护
-
-- 注册前冻结一份旧类决策状态作为teacher/anchor，仅用于support侧蒸馏与参数位移约束；
-- 对每个旧类按support不确定度决定target校正与ground int8先验的融合强度；
-- 新类追加必须是append-only class state，不重写ground int8组件；
-- 用support-held/leave-one-physical-sample-out风险约束连续margin，但其只作开发代理，不能替代query确认；
-- 若发生“新类不可达”或“旧类侵入”，优先修正连续几何、校准和loss，不再增加多层hard gate。
-
-## 5. 资源与部署约束
-
-首选Pareto目标：adapter可训练参数不超过50k、适配不超过20epoch、持久化增量状态尽量低于256KB。
-
-正式硬上限：
+对主指标`m∈{H_old_new,soft-CVaR/floor}`定义协同项：
 
 ```text
-trainable adapter parameters ≤ 80,000
-adaptation epochs ≤ 30
-optimizer steps ≤ 50
-persistent incremental state ≤ 256 KB
-dense query graph = false
-query-dependent batch optimization = false
+Δ_syn(m) = [m(D)-m(B)] - [m(C*)-m(A)]
 ```
 
-为机制探索允许单独使用150%档：不超过120k参数、45epoch、75 optimizer steps和384KB。探索档不能进入正式确认或部署Pareto；正路线必须压缩回正式档再重验。
+Phase1 LODO中要求`Δ_syn>0`且paired 95% CI下界>0；锁定target窄实验要求两个主指标的`Δ_syn>0`且D同时不弱于B和C*；最终125/1200确认要求paired mean `Δ_syn>0`且95% CI下界>0。若C*没有独立超过A，或D只复制最佳单支，则不得声称联合优化成功。
 
-相对identity-only单qKNN报告增量MAC、平均/P95时延、峰值显存、backbone/FFT前向次数和状态字节。三种强制matched对比方法固定为`identity-only single-qKNN`、`ProtoNet CDA`和最强合法target-support-only轻适应基线；direct ADV3B02另作0-support性能/资源锚。目标是在性能达标后，使新增adapter/注册状态和适配计算低于三种对比方法；不虚构“比direct ADV3B02的0-support状态更少”的要求。
+## 4. 强制六臂与负对照
 
-## 6. 执行节奏与止损
+每轮冻结以下同row因果臂，禁止省略或混改：
 
-1. 直接复用`VALIDATED_ONCE`数据，先做最窄matched开发实验；不因算法变化重做数据封装。
-2. 每个新机制必须回答它修复的是旧域不足、floor、新类不可达、旧类侵入还是量化/资源；没有机制假设不启动大矩阵。
-3. 连续三个完成的探索轮后做一次技术复盘，审查完整日志、逐类/逐receiver结果和同row注册前后性能，再决定第四轮。
-4. 只在开发seed显著优于B3并改善floor后启动125 screen；通过screen后才进入完整独立确认矩阵。
-5. 兼容性、loader或报告问题只做最小修复，不把外围工程包装成研发完成。
+|臂|唯一变化|分类头|
+|---|---|---|
+|A|identity `z_id`|Patch A single-qKNN|
+|B|只增加SRDA|A＋raw-`z_id` SRDA|
+|C-id|只增加`z_id` nuisance DA|与A逐值相同|
+|C-dom|只增加`z_dom→z_id` receiver-context DA|与A逐值相同|
+|C-joint|C-id＋C-dom|与A逐值相同|
+|D|最佳C局部expert＋固定B全局expert|联合头|
 
-开发与确认实验以N607为主要计算承载面，但所有修改必须本地先行并按`AGENTS.md`同步；N607不改变`p2_min_v1`输入权限、query只测试和无Oracle边界。
+机器回执必须满足：
 
-## 7. 完成证据
+```text
+C.classifier_hash == A.classifier_hash
+B.DA_hash == identity_hash
+D.DA_hash == best_C.DA_hash
+D.global_head_hash == B.global_head_hash
+D.fusion_hash == B.fusion_hash
+```
 
-完成必须同时包含：
+至少包含：identity/no-adaptation、random/permuted`z_id`、random/permuted`z_dom`、关闭cross-map、关闭ground prior、coverage回退和共同正交变换负对照。共同可逆变换后若完整重估均值/协方差，LDA margin不变；不得把这种“对齐完成”写成收益来源。
 
-- 合法TX/receiver/scenario/K/support-query清单及`capsule_id/split_id`；
-- 每个run的锁定candidate、seed、配置、checkpoint/bundle ID和完整训练/闭式求解日志；
-- 同row注册前/后old、seen-new、`H_old_new`、遗忘、所有逐类和逐receiver结果；
-- 注册前Stage2-B对target-new只报告`not-yet-enrolled reference`，例如被旧类吸收率或score margin，不得称为`seen_new_acc`；注册后Stage2-C才报告`seen_new_acc`，并同时保留before-reference与after结果；
-- 5 receivers×至少5 seeds×3 scenes的独立确认矩阵，覆盖K1/5/10/20及真实新类2/5/10/20；
-- target-old与target-new原型量化格式、量化误差、状态字节和append-only生命周期；
-- adapter参数、epoch/step、MAC、平均/P95时延、峰值显存、前向次数、持久状态的资源审计；
-- 相对上述三种强制matched对比方法及direct ADV3B02锚的同row Pareto表；
-- 自动化报告、异常/失败说明、可复现命令和Git提交。
+## 5. 数据协议硬边界
 
-只有技术证据齐全且上述性能门槛全部通过，才能标记目标完成；完成实验矩阵但性能未达标，应明确记为`COMPLETED_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE`，不能改写为成功。
+Phase2只能读取：immutable Phase1 deployment bundle、匹配`VALIDATED_ONCE`的固定单LEO弱观测capsule、当前row合法target-old/target-new K-shot support与标签、query访问前锁定的数据无关配置。
+
+必须保持：
+
+- 一个物理IQ仅有一次随机允许的LEO弱信道观测；K-shot是K个独立物理support；
+- support/query物理ID互斥，三个场景的物理ID集合互斥；
+- 不访问clean/raw/source样本、sample-level source feature、source replay或可替换sidecar；
+- query逐样本面对全部注册类，只前向和一次评分；不得更新任何状态；
+- 禁止query伪标签、熵最小化、图、OT/Hungarian、quota、角色Oracle和batch reassignment；
+- ground知识只能作为共享域/协方差/不确定度先验，不能直接给旧类加分或覆盖target prototype；
+- target-old和target-new正式状态均采用int8，无FP32 sidecar。
+
+匹配的`capsule_id/split_id/schema=p2_min_v1/VALIDATED_ONCE`只核对一次。只有received IQ字节、physical ID、receiver/TX集合、scenario、K、support-query划分或schema改变时重验；方法、adapter、head、超参数、checkpoint推理状态、bundle、资源或报告变化不得触发数据重建。
+
+## 6. 高效研发顺序
+
+1. 完成B独立Phase1 nested LODO runner与外部authority receipt；不得用builder自报fit/quant/resource晋级。
+2. 并行完成C-id LODO与新的C-dom Phase1 bundle/LODO；两支都保持A分类头。
+3. C-id和C-dom必须分别相对A在old/new/H/floor/min-class/NLL/forgetting联合门上取得独立正收益，才进入C-joint。
+4. 只有B与最佳C都独立通过，才构建D并检验`Δ_syn`。
+5. 冻结六臂后，仅运行预登记K1/new20与K10/new20、三个场景、代表receiver的matched窄实验；不得根据结果回调rank、`q`、alpha、loss或bundle格式。
+6. 窄实验全部通过才运行历史125稳定性screen；125不选参。
+7. 125通过后，以同一commit运行`5 receivers×5 seeds×3 scenes×K{1,5,10,20}×new{2,5,10,20}=1200`评价单元完整确认。
+
+用户显式要求某个未过窄门方法跑125时，可以作为诊断执行，但必须预标记`COMPLETED_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE`，不得据结果改参或晋级。
+
+## 7. 性能与资源门
+
+每个版本必须同时报告注册前old、注册后old、old adaptation gain、seen-new、H、BA、全部注册类floor、min-old、min-new、forgetting、old→new/new→old和完整逐类/receiver/scene/K/seed结果；不得只说明缺陷或拼接不同row极值。
+
+K10完整确认硬门：
+
+- `old_acc_after_increment≥92%`；
+- `min_old_class_acc≥88%`；
+- `seen_new_acc(new5)≥92%`；
+- `seen_new_acc(new10)≥90%`；
+- `seen_new_acc(new20)≥86%`。
+
+同时满足：K5核心指标相对matched K10下降≤3pp；K1总体及每receiver old adaptation gain≥0；K1相对direct ADV3B02至少+2pp且paired 95% CI下界>0；K5/K10/K20遗忘不高于matched identity qKNN；D相对B/C*的old/new/H/min-old/min-new均不降、forgetting不增；`Δ_syn`通过。
+
+资源硬门：trainable parameters≤80000、adaptation epochs≤30、optimizer steps≤50、persistent incremental state≤256KB、dense query graph=false、query-dependent batch optimization=false。正式int8要求top1一致率≥99.5%、大margin flip=0，并报告实际wire、MAC、平均/P95时延、峰值显存和前向次数。
+
+## 8. 无用工作永久禁区
+
+除非触发明确例外，不得进行：
+
+- 重复建设或人工追溯已经`VALIDATED_ONCE`的数据、hash、allowlist、authority和准入系统；
+- 把D18数据句柄、D81/D92基线、D93/D94 transport等不同对象混称为“版本”；
+- 要求跨run row-specific opaque handle或封装artifact原始SHA bit-exact；跨run只比较稳定语义，raw SHA仅审计；
+- 用125、Role-Oracle、development query或confirmation query选择候选、rank、量化格式、alpha、阈值或回退；
+- support accuracy=100%、prototype重构余弦高、代码测试通过、进程启动或资源达标即宣称性能成功；
+- 连续只改qKNN/RDA/温度/协方差/融合却声称完成域适应；
+- 再做全坐标transport、共同正交变换或无coverage回退的ground强先验；
+- 在没有disagreement和双向rescue证据时继续堆叠第三个头或固定凸融合；
+- 多个agent重复读取全量历史、修改同一文件、独立启动同一run ID或主agent线性等待N607。
+
+## 9. 完成条件
+
+只有六臂因果证据、Phase1 LODO、锁定target窄实验、125、1200单元完整确认、协议证据、int8生命周期、资源审计、matched baselines、完整日志、报告、复现命令和Git提交全部存在且性能门全部通过，才能标记完成。
+
+完成实验但性能未达标时，必须记录`COMPLETED_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE`并返回下一单一机制假设。无prediction的运行只能记录`TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`，不得混入算法结论。
