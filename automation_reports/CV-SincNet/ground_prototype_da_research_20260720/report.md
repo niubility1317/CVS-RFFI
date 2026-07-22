@@ -1866,7 +1866,26 @@ run ID冻结为`rchm_bpp_p1_dual_archive_9ca1a59a_20260722_r1`，方法源提交
 |R2A-T3|独立review P1-1|CLI复用既有dual archive verifier，核验manifest schema、成员顺序、array/NPZ SHA|同上|verified|最小三字段manifest必须拒绝|不重复received-IQ数据验证|
 |R2A-T4|独立review P1-1|显式读取并验封coverage receipt，绑定receipt SHA、archive SHA、manifest SHA及冻结coverage schema|同上|verified|伪造coverage SHA/schema/绑定必须拒绝|coverage只作held选择盐和准入收据|
 |R2A-T5|独立review P1-2|在SVD执行点实际限制并核验BLAS线程为1，记录NumPy和BLAS/LAPACK实现/版本|同上|verified|receipt必须来自实时执行面|不改变SVD/rank机制|
-|R2A-T6|提交门|补齐上述正负例并运行专项、相邻core回归、真实checkpoint无query smoke|专项测试及后续run report|local_verified|`ssr-gpu`合计19项通过；真实archive smoke待r8 artifact|不得用测试宣称性能|
+|R2A-T6|提交门|补齐上述正负例并运行专项、相邻core回归、真实checkpoint无query smoke|专项测试及后续run report|verified|`ssr-gpu`合计19项通过；N607真实archive build→无标签predict→score exit0|不得用测试宣称性能|
 |R2A-T7|冻结证据包与当前性能优先指令|按`H_JOINT-H_DA-H_HEAD+H_M0`计算同row`I_syn`，并输出old adaptation gain、逐类、receiver、scene、K及双向混淆|scorer及专项测试|verified|四臂同row公式精确断言|只修正证据输出，不改变decision geometry|
 
 独立复审确认prediction已严格绑定同一logits的逐行argmax，重签COMMIT不能掩盖prediction篡改；最终裁决为`P0=0，P1=0→MERGE`。当前仅达到本地实现门，不构成archive、coverage、prediction或性能结果。
+
+##### `R2A-FIXED-XCOV-BPP-K5/v1.1`真实held结果与停止裁决
+
+冻结实现commit为`8b163af1c3f43d94ef1f546da2306b43533c5046`，release-control commit为`e0707fb90c932067517210dadc74843818e7d9e5`。唯一N607 run ID为`r2a_fixed_xcov_bpp_k5_held_r1_8b163af1_20260723`；direct/GPU0/PID420304自然exit0，prediction=18 slices，score=72/72 rows。prediction SHA=`eb9593769100dba20451b5aa1b7d49999a2754cdaf6c2337dd6f6e854da2e7df`，score SHA=`bf6e5f55c8c8d33e754184b30af3fb6a36b142a173156d8ff3e9cc3b0d201222`；query NPZ只含1105个唯一`query_ids`和`z_id160 float32`，truth/COMMIT/argmax及全部artifact SHA独立复核通过。
+
+|arm|old-before|old-after|seen-new|H|BA|floor|min-old|min-new|forgetting|old→new|new→old|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|`M0`|0.817038|0.785392|0.781784|0.747766|0.781784|0.419908|0.446988|0.781784|0.031647|0.042596|0.218216|
+|`M_DA`|0.817038|0.785392|0.781784|0.747766|0.781784|0.419908|0.446988|0.781784|0.031647|0.042596|0.218216|
+|`M_HEAD`|0.799448|0.779418|0.776255|0.752412|0.776255|0.462804|0.486391|0.776255|0.020031|0.043620|0.223745|
+|`M_JOINT`|0.799448|0.779418|0.776255|0.752412|0.776255|0.462804|0.486391|0.776255|0.020031|0.043620|0.223745|
+
+RCHM在C6的18/18个slice均建立rank1非标量metric，但`M_DA-M0`的6630次after argmax变化为0；`M_JOINT-M_HEAD`仅1次wrong→wrong标签互换，所有准确率指标仍完全相同。18/18个slice的`I_syn(H)`均精确为0。BPP相对M0虽然把mean H提高0.004646、floor提高0.042896并把forgetting降低0.011616，但old-after、seen-new、BA和min-new同时下降，且old/new wrong→correct分别为225/45，低于correct→wrong的265/53。
+
+最终裁决为`ANALYZED / COMPLETED_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE`：该revision因DA决策退化、联合不优于HEAD及协同量为0而停止，不发布target窄实验，不运行125。完整18-row、逐场景/逐类、量化、MAC/state及缺失latency/VRAM边界见该run报告。
+
+独立`gpt-5.6-sol high`结果审计重算18个slice、72个arm-row和6630次query，与score最大差`2.22e-16`，确认全部算术、同row绑定和停止裁决无误；审计结论为`P0=0，P1=0→MERGE_REPORT`。
+
+runner期间完成的下一候选只读spike把`JOINT-CID-BPP/r0`裁为`MERGE_SPIKE`，但尚非`DESIGN_FROZEN`：它用K5 support-only C-id替换RCHM并保留BPP，必须先由独立监督闭合outer-train/nested LODO锁及C-id/BPP残差重复收缩，MERGE前不修改代码或发布实验。
