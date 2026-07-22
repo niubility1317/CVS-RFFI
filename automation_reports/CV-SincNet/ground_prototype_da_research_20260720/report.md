@@ -1993,3 +1993,11 @@ SVRN公式固定为`LN(z)=(z-mean(z))/sqrt(mean((z-mean(z))²)+1e-6)`，`Rκ(z)=
 本地`ssr-gpu`证据：3文件`py_compile`通过；专项`8 passed`；相邻qKNN/R2A/CID回归`40 passed`，仅有pytest临时目录清理PermissionError的P2环境噪声。真实GEOFF/r8 support-only smoke在receiver=`1-1`、scene=`leo_clear_weak`、C5=25条真实support上通过：query/truth fit rows均为0，canonical ID映射25/25，wire state=30,060B，optimizer step=0；该row的`η=ω_raw=ω_svrn=0`只证明identity回退可运行，不是性能结论。
 
 第一次独立review发现receiver别名、量化安全和邻居证据P1；均在原3文件内修复。第二次独立review裁决=`MERGE / P0=0 / P1=0`，允许Git提交及N607发布；K10专项和显式前向次数为P2，不阻塞。下一步仅为提交当前实现、建立全新不可覆盖run ID/report并交唯一Terra runner复用同一r8 archive/coverage执行18 prediction/72 score，未过性能门不得运行125。
+
+##### `SVRN-qKNN-BCRR/r2`首次N607技术失败与`r3`冻结修订
+
+方法提交=`922293b1cc2e15a2f595fc124074bae217ae427e`，发布合同提交=`8894912b1b54897bb1386df44df6ad3d7977574c`。run=`svrn_qknn_bcrr_k5_held_r1_922293b1_20260723`经direct N607/GPU0/PID520750单次启动后自然exit1；wrapper、source和GEOFF/r8四项绑定均通过，但build阶段触发`BCR INT8 teacher gate failed`，prediction=0、score=0，裁决=`TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`，无retry和125。
+
+完整72-branch只读复算将根因锁定为：仅`14-10/leo_low_elev_weak/C5`的raw/SVRN两支失败，二者`eta=0、omega_q=0`；所有active BCR支均通过原INT8门。`r3`唯一delta是在`omega_q=0`时部署零qint8 BCR codes＋正fp16 scale，并在反序列化强制该不变量；active路径、0.995门、margin门、receipt、融合和资源不变。真实r8无query复测72/72通过，44 active/28 inactive、failure0；原两支agreement=1、flip=0、error=0。独立设计监督和代码review均为`MERGE / P0=0 / P1=0`；方法提交=`165ca03133a8fc724ecccd37e4a55e09a0596dff`。
+
+下一run已预注册为`svrn_qknn_bcrr_k5_held_r2_165ca031_20260723`，继续复用同一GEOFF/r8 archive/coverage，目标仍是18 prediction/72 score的M0/M_DA/M_OTHER/M_JOINT同row性能矩阵。support-only复测的18行`eta`均为0是强负信号但不是性能结果；必须由新run产生完整prediction后按预登记门裁决，失败不得进入125。

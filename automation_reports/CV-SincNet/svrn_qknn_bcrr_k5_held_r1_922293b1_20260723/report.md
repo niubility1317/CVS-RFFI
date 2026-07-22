@@ -2,8 +2,8 @@
 
 - run_id:`svrn_qknn_bcrr_k5_held_r1_922293b1_20260723`
 - candidate/revision:`SVRN-qKNN-BCRR/r2`
-- lifecycle:`PREREGISTERED / NOT_LANDED / NO_PERFORMANCE_RESULT`
-- operator:主agent`/root`；唯一N607 runner:`PENDING_GPT_5_6_TERRA_HIGH`
+- lifecycle:`TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
+- operator:主agent`/root`；唯一N607 runner:`gpt-5.6-terra high`
 - method Git commit:`922293b1cc2e15a2f595fc124074bae217ae427e`
 - design-freeze Git commit:`407144dd714270bd8305595176dfcf921246b75d`
 - protocol:`p2_min_v1 / VALIDATED_ONCE`；复用GEOFF/r8，不重验数据
@@ -67,3 +67,13 @@ runner必须完成direct preflight、run root不存在/GPU/进程/磁盘检查�
 ## 6.完成后分析要求
 
 必须独立复算18×4同row指标、logits→argmax、truth/prediction绑定和SHA；报告old-before、old-after、old adaptation gain、seen-new、H、BA、floor、min-old、min-new、forgetting、old→new/new→old、逐类、scene、K、receiver、η/ω、coverage、邻居变化、量化margin、state、MAC、mean/P95、VRAM以及`I_syn`。不得拼接不同row极值或把进程完成当作性能成功。
+
+## 7.唯一runner终态与根因
+
+- route/direct preflight:`PASS`；未使用bridge；GPU0；PID=`520750`；进程自然退出，exit=`1`。
+- wrapper、source ZIP、3个源码锚点和GEOFF/r8 parity/archive/manifest/coverage SHA全部匹配；远端`bash -n`、`py_compile`与import通过。
+- 完整日志首错及终止错误:`cvsrffi.stage2_svrn_bcr.SVRNBCRStateError: BCR INT8 teacher gate failed`；发生于build阶段。
+- artifact:`output/`未创建；prediction=`0/18`，score=`0/72`，marker不存在；不得作性能判断或进入125。
+- 回收SHA:`pipeline.pid=0fb02ed4580a8f03877d339ab06b97e715e15b6d13cd66dfac64e369cc2478a4`；`pipeline.exit=4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865`；`pipeline.log=7384699048db44dabdb5098b6d3dd27791ae7c73664ad6930178f22f262c4be7`。
+- 无retry/restart/kill/远端编辑/调参/125；最终无本地`ssh.exe`或N607/bridge TCP22连接。
+- 唯一根因：实现对`omega_q=0`的inactive BCR residual仍量化并审计未部署FP权重；72-branch只读复算仅2支失败，均为`14-10/leo_low_elev_weak/C5`且`eta=0、omega_q=0`。技术修订已进入`SVRN-qKNN-BCRR/r3`，不放宽active INT8门。
