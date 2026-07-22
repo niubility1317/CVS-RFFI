@@ -1899,3 +1899,20 @@ runner期间完成的下一候选只读spike把`JOINT-CID-BPP/r0`裁为`MERGE_SP
 选择顺序冻结为：最大化`min(mean(H_joint-H_M0),mean(H_joint-H_DA),mean(H_joint-H_HEAD))`，再依次最大化mean`I_syn`、mean joint floor、最小化mean joint forgetting、降低rank、降低attenuation、按family ID稳定决胜。每个inner episode和outer row均执行5个同步leave-one-shot方向jackknife；若任一子拟合无方向，或最小归一化projector overlap低于预锁`0.50`，整row、query无关地精确回退identity。Phase1 receipt另报告jackknife query预测一致率、INT8 teacher top1一致率和large-margin flip；低于`99.5%`或large-margin flip非0则本revision停止。
 
 冻结改动仅允许新增`code/cvsrffi/cid_bpp_phase1_nested_lodo.py`、`code/cvsrffi/cid_bpp_fixed_held_spike.py`和`tests/test_cid_bpp_fixed_held_spike.py`；既有C-id、BPP、R2A、archive、coverage和数据代码不得修改。最低held证据仍为同一18 slice、72个同row arm结果及完整prediction；若nonidentity C-id的`M_DA-M0`为零argmax变化、`M_JOINT=M_HEAD`、mean`I_syn≤0`，或联合臂损害old/new/min/floor并增加forgetting，则立即`COMPLETED_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE`，不运行125。
+
+##### `JOINT-CID-BPP/r0-spike-tech1`真实held结果与停止裁决
+
+原r1在prediction前因verifier没有接受预注册的`jackknife_overlap→identity`fallback而exit1，prediction=0，严格记为`TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。修订commit=`e3aa2da5af520e493d40ec343b913ce24e7629dd`只修复fallback验证分支，没有改变fit、family、metric、BPP、数据或四臂；N607同环境packet verifier回执SHA=`b153049167629c4ccd1932934d5149d1868183dd4dcfb530a6d0df98f70113b3`并在launch前PASS。
+
+新run ID=`cid_bpp_k5_held_r2_e3aa2da5_20260723`，direct/GPU0/PID475079/exit0，prediction=18、score=72。独立复算canonical seal、truth/prediction绑定、144个logit argmax和72行全部score，最大差=`0.0`。archive/coverage继续复用r8，未改变任何需要重验的数据协议输入。
+
+|arm|old-before|old-after|old gain|seen-new|H|BA|floor|min-old|min-new|forgetting|old→new|new→old|I_syn|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|M0|0.817038|0.785392|-0.031647|0.781784|0.747766|0.781784|0.419908|0.446988|0.781784|0.031647|0.042596|0.218216|0.003168|
+|M_DA|0.817570|0.785570|-0.031999|0.781784|0.747863|0.781962|0.418967|0.446046|0.781784|0.031999|0.042774|0.218216|0.003168|
+|M_HEAD|0.824655|0.804355|-0.020299|0.799331|0.776810|0.799034|0.531354|0.543206|0.799331|0.020299|0.038612|0.200669|0.003168|
+|M_JOINT|0.826082|0.806121|-0.019961|0.801428|0.780075|0.801013|0.533770|0.545614|0.801428|0.019961|0.038095|0.198572|0.003168|
+
+M_JOINT相对M_HEAD的H为+0.003265、old-after为+0.001766、seen-new为+0.002096、floor为+0.002416、forgetting为-0.000339；相对M_DA的H为+0.032212。可是M_DA相对M0仅净增加1个正确old决策，floor/min-old各下降0.000942且forgetting增加0.000353。`I_syn`为正4/18、零13/18、负1/18；clear均值为负、rain为0，只有low-elev为正。逐类收益主要由`20-19`救援贡献，相对M0另5个旧类after accuracy下降。
+
+因此技术闭环通过但性能预注册门失败，最终裁决=`ANALYZED / COMPLETED_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE`；不得事后放宽“DA、HEAD各自正收益且安全”的门，不运行125。本轮runner期间只读准备的下一候选`SVRN-BCR/r0`被监督裁为REVISE：必须把M_HEAD gate严格绑定raw support、M_JOINT gate严格绑定SVRN support后再冻结，以避免两臂互读破坏因果隔离。
