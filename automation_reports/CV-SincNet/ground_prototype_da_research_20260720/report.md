@@ -1954,3 +1954,34 @@ SVRN公式固定为`LN(z)=(z-mean(z))/sqrt(mean((z-mean(z))²)+1e-6)`，`Rκ(z)=
 - `tests/test_svrn_bcr_fixed_held_spike.py`
 
 最小held falsifier保持rx1-1/K5/18 slice/72 row及完整old-before、old-after、seen-new、H、BA、floor、min-old、min-new、forgetting、双向混淆、逐类/scene、gate/fallback、int8、state、MAC、mean/P95和VRAM；未达到S18/S19即`COMPLETED_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE`，不运行125。
+
+##### 主路线纠偏与`SVRN-qKNN-BCRR/r2` DESIGN_FROZEN
+
+用户随后冻结主路线为`domain adaptation＋qKNN＋other`：qKNN必须始终承担全部注册旧类/新类的统一逐样本决策，other只能解决剩余误差，不得用第二head替代qKNN。因此`SVRN-BCR/r1`在Git提交和N607发布前停止，状态=`SUPERSEDED_BEFORE_COMMIT / NO_PERFORMANCE_RESULT`；其未提交SVRN、BCR、int8和held封包实现仅作为r2工程复用基础，不形成方法证据。
+
+本波次比较两张卡：`SVRN-qKNN-BCRR/r2`复用SVRN与BCR但改为连续qKNN残差；`CSRDA-qKNN-LDC/r0`复用D92/RDA经验。独立监督裁决A=`MERGE(P0=0,P1=0)`，B=`REVISE(P0=0,P1=4)`；B的未闭合项为条件数符号/退化回退、LDC幅度`m`未定义、重新引入hard gate、K5奇偶fold缺类。唯一冻结候选为A。
+
+|ID|`SVRN-qKNN-BCRR/r2`冻结要求|
+|---|---|
+|R01|DA固定为既有SVRN `Tη`，`η∈{0,.25,.5}`，双向masked-view一致且逐类不劣才启用|
+|R02|K1固定`η=0,ω_raw=ω_svrn=0`；K5首个falsifier；K10只确认不改公式|
+|R03|qKNN始终使用INT8 support bank、全注册类同式、逐query独立竞争|
+|R04|对logit固定`N(s)=sqrt(C)(s-mean(s))/||s-mean(s)||₂`；退化时仅当前query回退qKNN|
+|R05|OTHER固定`F=N(Q)+ω[N(B)-N(Q)]`，`0≤ω≤0.5`，qKNN权重始终不低于BCR|
+|R06|raw/SVRN各自在同物理ID LOO双向cross-view逐类非增损失安全集中求`ω*`；branch间不互读|
+|R07|部署权重固定`ω_q=floor(254ω*)/254`；量化后复核安全集，失败仅该branch回退0|
+|R08|M0=`Q_raw`，M_DA=`Q_svrn`，M_OTHER=`F_raw`，M_JOINT=`F_svrn`|
+|R09|M_DA/M_JOINT共享同一SVRN receipt；M0/M_OTHER共享同一raw qKNN receipt|
+|R10|BCRR不得改变qKNN bank、邻居ID、顺序或kernel；只允许融合后的argmax变化|
+|R11|DA必须报告邻居、argmax、wrong→correct、correct→wrong和净正确变化|
+|R12|M_DA总净正确>0且old/new净变化各自不负；M_OTHER必须有独立正收益|
+|R13|单组件和JOINT必须保护old-before/after/gain、seen-new、H、BA、floor、min-old/min-new、forgetting及双混淆|
+|R14|mean`I_syn(H)>0`、正协同slice≥9/18、正scene均值≥2/3，否则判负|
+|R15|任一性能门失败即`COMPLETED_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE`，不得运行125|
+|R16|state≤256KB、optimizer step≤50、无query graph/批优化、正式state无FP32 sidecar|
+|R17|int8 top1≥99.5%、large-margin flip=0，并报告state、MAC、mean/P95、VRAM和前向次数|
+|R18|最小held固定rx1-1/K5/6 pseudo-new×3 scene=18 prediction/72 score|
+|R19|唯一代码delta为把未提交r1 hard-switch改成branch-local连续BCRR并完成四臂接线|
+|R20|只允许现有3个候选文件，不改数据、encoder、qKNN、CID、r8、coverage或runner控制面|
+
+冻结文件仍为`code/cvsrffi/stage2_svrn_bcr.py`、`code/cvsrffi/svrn_bcr_fixed_held_spike.py`、`tests/test_svrn_bcr_fixed_held_spike.py`。r2复用r1已完成的SVRN、BCR fit/score、INT8 wire和专属sealed held骨架；必须删除hard switch及`g_raw/g_svrn`，新增尺度不变residual、连续`ω`安全集和量化向下取整。核心输入或适应规则再变化必须创建r3并重新审查。
