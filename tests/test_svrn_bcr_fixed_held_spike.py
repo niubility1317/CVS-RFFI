@@ -295,6 +295,12 @@ def test_s01_s12_prediction_truth_wire_and_order_negatives(built):
     with pytest.raises(held.SVRNBCRFixedHeldError): held.predict_packet(bad, ids, zid)
     bad_prediction = copy.deepcopy(prediction); bad_prediction["rows"][0], bad_prediction["rows"][1] = bad_prediction["rows"][1], bad_prediction["rows"][0]; resign_prediction(bad_prediction)
     with pytest.raises(held.SVRNBCRFixedHeldError): held.score_packet(packet, bad_prediction, truth, commit=bad_prediction["COMMIT"], truth_sha256=truth["truth_sha256"])
+    canonical_prediction = json.loads(held._canon(prediction).decode("ascii"))
+    assert held.score_packet(packet, canonical_prediction, truth, commit=canonical_prediction["COMMIT"], truth_sha256=truth["truth_sha256"])
+    bad_prediction = copy.deepcopy(prediction); bad_prediction["rows"][0]["after"].pop("M_OTHER"); resign_prediction(bad_prediction)
+    with pytest.raises(held.SVRNBCRFixedHeldError): held.score_packet(packet, bad_prediction, truth, commit=bad_prediction["COMMIT"], truth_sha256=truth["truth_sha256"])
+    bad_prediction = copy.deepcopy(prediction); bad_prediction["rows"][0]["after"]["M_FAKE"] = copy.deepcopy(bad_prediction["rows"][0]["after"]["M0"]); resign_prediction(bad_prediction)
+    with pytest.raises(held.SVRNBCRFixedHeldError): held.score_packet(packet, bad_prediction, truth, commit=bad_prediction["COMMIT"], truth_sha256=truth["truth_sha256"])
     bad_truth = copy.deepcopy(truth); row = bad_truth["rows"][0]; key = next(iter(row["query_labels"])); value = row["query_labels"].pop(key); row["query_labels"]["forged-query-id"] = value; resign_truth(bad_truth)
     with pytest.raises(held.SVRNBCRFixedHeldError): held.score_packet(packet, prediction, bad_truth, commit=prediction["COMMIT"], truth_sha256=bad_truth["truth_sha256"])
 

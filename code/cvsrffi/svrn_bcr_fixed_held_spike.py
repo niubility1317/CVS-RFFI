@@ -529,7 +529,7 @@ def _verify_prediction(packet: Mapping[str, Any], prediction: Mapping[str, Any],
         if set(row) != {"row_id", "query_ids", "before", "after"} or packet_row is None or row["row_id"] in found or row["query_ids"] != packet_row["query_ids"]:
             raise SVRNBCRFixedHeldError("prediction row/query binding drift")
         for stage, classes in (("before", packet_row["old_classes"]), ("after", packet["classes"])):
-            if tuple(row[stage]) != ARMS: raise SVRNBCRFixedHeldError("prediction four-arm order drift")
+            if set(row[stage]) != set(ARMS): raise SVRNBCRFixedHeldError("prediction four-arm coverage drift")
             neighbor_by_arm = {}
             for arm in ARMS:
                 value = row[stage][arm]
