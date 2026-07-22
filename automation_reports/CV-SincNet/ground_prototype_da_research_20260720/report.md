@@ -1854,3 +1854,19 @@ run ID冻结为`rchm_bpp_p1_dual_archive_9ca1a59a_20260722_r1`，方法源提交
 全新run ID为`rchm_bpp_p1_dual_archive_geoff_r2_ca5d0c4b_20260722_r2`，方法提交为`ca5d0c4bcf8fb295cdfb70e067f9009617bb3a5f`，release-control提交为`d45f4cc22ac379c287ad09baed53fe07cdb791d2`。commit-bound Git archive SHA256=`5adbef8a1ebf2f0846132226f702e95648c99334a0ba5296b7487e45095e4778`，wrapper SHA256=`e1f497a757d54cef95a9559ac3de910a26cf2d9a3d0407d3cc865b628847afcf`；根报告与Git镜像逐字节一致。
 
 独立最终发布审查为`P0=0,P1=0,P2=0→MERGE`。冻结run只执行GEOFF/r2 base parity→base dual archive→元数据coverage，export/parity/archive使用v2 contract，coverage保持既有v1合同；`1e-5`、batch1/8/256、每batch三次调用、8400行/168cell/K10余量和全部资产SHA均不变。不重复数据验证、不访问target/query/held/125，retry=`NO`；技术完成也只标记`ARTIFACTS_COMPLETE / NO_PERFORMANCE_RESULT`。
+
+##### `R2A-FIXED-XCOV-BPP-K5/v1.1`实现追踪
+
+本候选保持既有`DESIGN_FROZEN`机制、K5、18个held slice及`M0/M_DA/M_HEAD/M_JOINT`四臂不变。独立代码审查发现truth封存、prediction行完整性、真实dual archive/coverage绑定及BLAS执行收据尚未闭合，裁决`P0=2，P1=2→REVISE`；以下是提交前唯一允许的修复范围，不增加候选结构、阈值或数据权限。
+
+|ID|来源|要求|目标文件|状态|验证|备注|
+|---|---|---|---|---|---|---|
+|R2A-T1|独立review P0-1|校验truth schema、`truth_sha256`、packet绑定及18行逐row/query标签闭包|`code/cvsrffi/r2a_fixed_held_four_arm.py`、专项测试|verified|篡改truth后必须fail-closed|scorer才可解封truth|
+|R2A-T2|独立review P0-2|prediction必须与packet的18个row一一对应、唯一、顺序及四臂结构完整，并绑定logits argmax|同上|verified|复制单row或篡改prediction并重签COMMIT必须拒绝|不得以72项数量代替row闭包|
+|R2A-T3|独立review P1-1|CLI复用既有dual archive verifier，核验manifest schema、成员顺序、array/NPZ SHA|同上|verified|最小三字段manifest必须拒绝|不重复received-IQ数据验证|
+|R2A-T4|独立review P1-1|显式读取并验封coverage receipt，绑定receipt SHA、archive SHA、manifest SHA及冻结coverage schema|同上|verified|伪造coverage SHA/schema/绑定必须拒绝|coverage只作held选择盐和准入收据|
+|R2A-T5|独立review P1-2|在SVD执行点实际限制并核验BLAS线程为1，记录NumPy和BLAS/LAPACK实现/版本|同上|verified|receipt必须来自实时执行面|不改变SVD/rank机制|
+|R2A-T6|提交门|补齐上述正负例并运行专项、相邻core回归、真实checkpoint无query smoke|专项测试及后续run report|local_verified|`ssr-gpu`合计19项通过；真实archive smoke待r8 artifact|不得用测试宣称性能|
+|R2A-T7|冻结证据包与当前性能优先指令|按`H_JOINT-H_DA-H_HEAD+H_M0`计算同row`I_syn`，并输出old adaptation gain、逐类、receiver、scene、K及双向混淆|scorer及专项测试|verified|四臂同row公式精确断言|只修正证据输出，不改变decision geometry|
+
+独立复审确认prediction已严格绑定同一logits的逐行argmax，重签COMMIT不能掩盖prediction篡改；最终裁决为`P0=0，P1=0→MERGE`。当前仅达到本地实现门，不构成archive、coverage、prediction或性能结果。
