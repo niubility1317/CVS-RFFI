@@ -5,12 +5,16 @@
 - run_id:`rchm_bpp_p1_dual_archive_buffer_r4_de9a6476_20260723_r4`
 - 预注册时间:`2026-07-23T01:05:00+08:00`
 - candidate:`P1-DUAL-ARCHIVE-GEOFF/r2.2-BUFFER`
-- 主agent:`/root`；唯一N607 runner:`PENDING_GPT_5_6_TERRA_HIGH`
+- 主agent:`/root`；唯一N607 runner:`/root/r4_n607_runner`
 - protocol:`p2_min_v1`；数据状态:`VALIDATED_ONCE_REUSED`
-- 当前状态:`LOCAL_VERIFIED / NOT_LANDED / NO_PERFORMANCE_RESULT`
+- 当前状态:`LANDED_INPUTS / TECHNICAL_FAILURE / NOT_LAUNCHED / NO_PERFORMANCE_RESULT`
 - retry:`NO`
 
 本run不改变received IQ、physical ID、receiver/TX、scene、K、support/query split或protocol schema，不重复数据验证。唯一delta是在archive一次性离线批处理内，用标准buffer把C连续native-float32数组送入Torch，并用Python binary64中转将已核验float32输出写回NumPy；选择、batch、runtime调用、数值、manifest、coverage门和权限均不变。
+
+发布前预检:`2026-07-23T00:56:24+08:00`直连N607通过；固定run路径不存在；GPU0-7均空闲；`/home`可用约7.48TiB；将用`CUDA_VISIBLE_DEVICES=0`启动一次且不retry。
+
+发布终态:`2026-07-23`。ZIP与wrapper已精确同步，远端ZIP SHA=`ec3c418cc7225504322fedf4a4bdb9c124d470e30d762d81519a9e98ff8a9f0d`、wrapper SHA=`bcf7193141c98fa3787189a7242376db18c6d07de82847ae3c10feb30ebf3fec`均匹配。唯一远端包布局验证以exit=`1`终止，首个根因是冻结ZIP前五个成员为`.gitattributes`、`.gitignore`、`AGENTS.md`、`README.md`、`analysis/`，没有`source_de9a6476/`前缀；而冻结wrapper要求`<run-root>/source_de9a6476`。为避免错误解包或修改冻结输入，未执行解包、compile或pipeline launch，且不retry。
 
 ## 2.matched failure与假设
 
@@ -69,16 +73,15 @@ coverage硬门保持：row=8400、unique physical=8400、unique observation=8400
 
 |字段|结果|
 |---|---|
-|release-control Git commit|`PENDING`|
-|route/GPU/PID|`PENDING`|
-|remote SHA/compile|`PENDING`|
-|exit/marker|`PENDING`|
+|release-control Git commit|`e2c06c560277922dabbab1d4de80707a4f6bb6d6`|
+|route/GPU/PID|`direct N607 / GPU0仅预留未分配 / 无PID`|
+|remote SHA/compile|`ZIP与wrapper SHA均匹配；ZIP缺少source_de9a6476/根；未解包、未compile`|
+|exit/marker|`package-layout verifier exit=1；pipeline未启动；无pipeline.exit`|
 |export/parity|`NOT_GENERATED`|
 |archive/manifest|`NOT_GENERATED`|
 |coverage|`NOT_GENERATED`|
 |prediction count|`0`|
-|回收路径/SHA|`PENDING`|
-|最终状态|`LOCAL_VERIFIED / NO_PERFORMANCE_RESULT`|
+|回收路径/SHA|`无可回收pipeline artifact；本地/远端冻结输入SHA见上`|
+|最终状态|`LANDED_INPUTS / TECHNICAL_FAILURE / NOT_LAUNCHED / NO_PERFORMANCE_RESULT`|
 
 coverage真实通过后，主agent立即以其SHA冻结并发布最小held四臂性能矩阵。
-
