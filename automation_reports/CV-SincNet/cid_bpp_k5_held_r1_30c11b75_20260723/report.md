@@ -4,10 +4,10 @@
 
 - run ID：`cid_bpp_k5_held_r1_30c11b75_20260723`
 - 时间：`2026-07-23 03:31:37 +08:00`
-- operator：主agent；N607唯一runner待指派`gpt-5.6-terra high`
+- operator：主agent；N607唯一runner`gpt-5.6-terra high`
 - candidate：`JOINT-CID-BPP/r0-spike`
 - scope：`PHASE1_HELD_PROXY_NON_PROMOTABLE`
-- 当前状态：`LOCAL_VERIFIED / NO_PERFORMANCE_RESULT`
+- 当前状态：`TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
 - 方法Git commit：`30c11b75f8c132b1655b7601dcda4eeb4337b301`
 - 设计冻结commit：`52c4d9b42839309d9d2ef5c38701f197289324c6`
 
@@ -75,3 +75,26 @@ held receiver由coverage SHA确定为`1-1`。每个outer lock完整排除该rece
 ## 8.风险与完成后检查
 
 主要风险是完整8-family×inner LODO计算较慢、C-id发生整row identity回退、C-id与BPP重复收缩、或量化/资源门fail-closed。完成后必须完整读取log与全部artifact，独立重算18×4同row指标、argmax、receipt和哈希；进程落地或exit0本身不构成性能成功。
+
+## 9.N607执行结果
+
+|route|GPU|PID|exit|prediction|score rows|archive/coverage|状态|
+|---|---:|---:|---:|---:|---:|---|---|
+|direct|0|458576|1|0|0|复用r8且远端SHA通过|`TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`|
+
+新run root在创建前不存在；direct preflight、GPU占用、ZIP/wrapper/source以及r8 parity/archive/manifest/coverage远端SHA、单根解包、`bash -n`、`py_compile`和import均通过。只启动一次，未重试、未改参、未重启。完整回收目录为`E:/type10-7/automation_reports/CV-SincNet/cid_bpp_k5_held_r1_30c11b75_20260723/retrieved/`；无残留SSH连接。
+
+|回收文件|SHA256|
+|---|---|
+|`logs/pipeline.log`|`ba34a22ac401285ab3d12d1f923d52dd0e73b3c7d0709ac0b7dbd83aa9938925`|
+|`pipeline.pid`|`8985e828f0a4e41ab1526a6dcb1d9a72c381be1c35dbe7b9463c5ed322cc3818`|
+|`pipeline.exit`|`4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865`|
+|`output/packet.json`|`e7132ea454927782acf976c5baa0ed960c37f722791ca45f6c1c7e40d6f1bcc8`|
+|`output/query.npz`|`be089f42be790a73cd7a95d68cb13956a64735019b10f6cd4ba32199c33c56c9`|
+|`output/truth.json`|`87c37bc8af7d83400a641e87b81602ac7eeb3e8e12b2dc8e26e1f8b597a81a4e`|
+
+失败发生在predict前的packet固定绑定校验：真实row1（pseudo-new=`14-10`、scene=`leo_low_elev_weak`、c5/C4）因5-shot jackknife minimum overlap=`0.48330831581426453<0.50`合法回退为canonical rank0 identity，wire因此`provenance=null`；verifier却无条件要求C-id support provenance。该state的support/class/K/qKNN/BPP/bank receipt全部匹配。
+
+唯一技术修订冻结为fallback-aware verifier：非fallback继续强制support provenance；`jackknife_no_direction/jackknife_overlap`强制null provenance、rank0及identity metric receipt。它不改变任何方法数值、query、数据或协议。原run不可复用；修订通过真实packet无query smoke、专项测试、独立P0/P1 review和Git提交后，必须使用全新run ID发布。
+
+本机`ssr-gpu`已用r8真实archive的该row 25条C4 support进行无query重建，复现overlap=`0.4833083158142645`、`jackknife_overlap`、rank0、null provenance和identity receipt一致。回收的N607 packet含其他非fallback低秩metric，其receipt受N607数值环境绑定，本机在到达新分支前拒绝该wire；因此新run的唯一剩余P1是在同一N607环境、launch前对上述packet执行当前Git提交的完整`_verify_packet`并封存PASS receipt，失败即停止且不得启动。

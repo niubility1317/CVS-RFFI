@@ -96,6 +96,16 @@ def test_packet_negative_bpp_quant_resource_and_jackknife_fallback(built,monkeyp
   nested.FAMILIES=(original[0],); q,_=build_packet(a,coverage_sha256=SHA,artifact_binding=BINDING)
  finally:nested.FAMILIES=original
  assert all(r["c6"]["resource"]["jackknife_fallback"]=="jackknife_no_direction" for r in q["rows"])
+ spike._verify_packet(q)
+ low_overlap=[np.outer(v,v) for v in np.eye(spike.K,spike.Z_DIM)]
+ monkeypatch.setattr(spike,"_projectors",lambda *_:low_overlap)
+ try:
+  nested.FAMILIES=(original[0],); low,_=build_packet(a,coverage_sha256=SHA,artifact_binding=BINDING)
+ finally:nested.FAMILIES=original
+ assert all(r[s]["resource"]["jackknife_fallback"]=="jackknife_overlap" for r in low["rows"] for s in ("c5","c6"))
+ spike._verify_packet(low)
+ bad=copy.deepcopy(low); bad["rows"][0]["c6"]["resource"]["jackknife_fallback"]="none"; resign_packet(bad)
+ with pytest.raises(CIDBPPFixedHeldError):spike._verify_packet(bad)
 
 def test_predict_truth_and_row_reorder_negatives(built):
  a,p,t,ids,z,pred=built
