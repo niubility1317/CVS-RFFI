@@ -1694,3 +1694,46 @@ conda run -n ssr-gpu python -m pytest -q tests/test_stage2_zid_support_nuisance_
 `python -m compileall`通过。独立代码审查首轮发现并修复2项Important：①C-id锁原先只比较active K，现已共同绑定Patch A config lock digest与identity metric receipt；②SHA验证原先会把64位整数转为字符串，现已要求全部receipt/digest为精确`str`。相应的同K不同temperature、错误identity receipt以及非字符串SHA测试均已加入，修复后无Critical或未解决Important。`ssr-gpu`未安装`ruff`，因此未获得ruff证据；这不是测试失败，后续以`git diff --check`、专项/相邻回归和人工diff审查闭合。本节没有运行target/N607实验，没有生成bundle，也没有授权K1、D、125或正式性能晋级。
 
 后续顺序冻结为：①实现独立Phase1 nested LODO runner，并对C-id加入`eta=0`、support标签置乱、随机/置乱`U`负对照；②只有C-id在held receiver/pseudo-new联合门上相对A无old/new/H/floor/min-class退化、forgetting不增且balanced NLL改善，才允许一次预登记`K10/new20×3 scenes`机制诊断；③并行研发新的C-dom Phase1 bundle；④C-id与C-dom分别对A取得独立正收益前，C-joint与D保持`HOLD`。D未来只能采用`best-C qKNN expert＋固定B-RDA(raw z_id) expert`，不得让B在C变换后重新拟合却仍声称`D.head_hash==B.head_hash`。
+
+#### 开放方法设计波次与`JOINT-RCHM-BPP/r1f`冻结
+
+2026-07-22在完整复核本报告、当前治理文档和用户给出的[Phase2设计对话](https://chatgpt.com/share/6a60a592-a60c-83ec-bfe6-eecd9780dac4)后，分别完成域适应、统一分类头和联合可行性监督。该设计波次保持只读，没有重验`VALIDATED_ONCE`数据，没有修改数据builder、Patch0、Patch A/B/C-id，也没有启动本地性能实验或N607任务。分享方案中吸收receiver公共因素、sample-level不确定性、类均衡support估计和身份/决策分离；不直接吸收多视图、partial equalization、hubness、PoE或整套联合包。若共享平移、正交变换、等比缩放或完整协方差重估可抵消decision geometry，则不把它计为有效域适应。
+
+##### 方法卡1：`JOINT-RCHM-BPP/r1f`
+
+- 状态：`DESIGN_DRAFT→FEASIBILITY_REVIEW(MERGE)→DESIGN_FROZEN`，是本波次唯一优先候选；没有target或promotable性能含义。
+- 机制：Phase1通过nested receiver/day LODO共同封存TX低可解码的receiver basis、`z_dom→metric`cross-map、class-agnostic BPP先验`a0/b0/T_KC`及全部门限。Phase2从当前row全部注册类support类均衡估计共享receiver context，生成`M(c)=I+U diag(a(c))U^T`的非等值低秩PSD metric；统一分类头以类均值、RSS和Phase1 inverse-Gamma先验给所有old/new类计算同式Bayesian posterior-predictive Student-t似然。
+- 协议与可辨识性：只读共同封存bundle、当前row support标签及逐query的`z_id/z_dom`，query不更新状态；无clean/source、query truth、role、quota或全局重分配。`D_eff≥6`且`r≤min(4,floor((D_eff-2)/2))`；K1只靠跨类公共context启用最多rank2，BPP的`RSS=0`并完全收缩到Phase1先验；K5/K10只降低context方差并启用类内RSS，不增加DA自由度。
+- 几何与互补性：只允许能改变方向残差、类内半径和margin相对关系的非等值各向异性metric；receiver公共轴向失真由DA处理，类密度、support噪声及old/new竞争由BPP处理。类名、注册表和support行置换必须等价，所有类使用uniform prior和同一公式。
+- 回退与风险：coverage、manifold distance、leave-one-class-out稳定性、condition或int8任一不过门，必须在评分前整行bit-exact回到identity scorer；不得以角色、类别或query置信度选择回退。主要风险是context混入TX残差、BPP先验误校准、K1有效样本不足和int8 margin翻转。
+- 资源冻结：Phase2新增参数和optimizer step均为0；combined wire≤128KiB，support build≤0.34MMAC，联合后处理≤8kMAC/query；每query只允许一次冻结dual forward和一次score，无第三次前向、图或batch优化。
+- falsifier：正确receiver context不优于zero/permuted context；`M≠I`但margin/prediction不变；`I_syn(H_old_new)≤0`；联合臂弱于任一单组件；old/new/min-old/min-new/floor任一下降、forgetting增加；top1一致率<99.5%、large-margin flip>0或资源超帽，均立即拒绝该revision。
+
+##### 方法卡2：`JOINT-RCHM-SKR/r0`
+
+- 状态：`FEASIBILITY_REVIEW(REJECT)`，不生成冻结revision，不允许改代码或发布实验。
+- 机制：沿用RCHM metric，以全类centroid Gram矩阵和ridge逆形成simplex kernel/ridge统一头；能改变全类decision boundary，但每次注册新类会重算全局逆矩阵并漂移全部旧类score。
+- 协议/可辨识性：输入表面可在`p2_min_v1`内闭合，K1也可由RCHM跨类context产生非identity几何；但扩类稳定性、类置换等价和old-score保持尚未成立。
+- 资源/风险/falsifier：C=26时理论上可运行，但`O(C²)`state、`O(C³)`fit及完整wire/时延未闭合。任何扩类后旧类score漂移、floor下降、联合不优于单组件或`I_syn≤0`即停止。
+
+##### 方法卡3：`JOINT-FNP-BPP/r0`
+
+- 状态：`FEASIBILITY_REVIEW(REVISE)`，保留方法族但当前revision不落地。
+- 机制：新Phase1 encoder为每份received IQ输出rank≤4的sample-level nuisance variance，Phase2用`Σ_q+Σ_s`的Woodbury precision边缘化query-support异方差，再以BPP统一分类。
+- 协议/可辨识性：只读冻结variance head/basis、support embedding/variance和query自身临时variance，不用query batch或状态更新；K1因variance来自冻结单样本预测器而可非identity，K5/K10仅增加独立证据。
+- 风险/资源/falsifier：pairwise异方差可能与BPP类半径重复解释同一噪声，新encoder总MAC/时延和TX身份泄漏门未闭合。必须先补zero/permuted variance、BPP radius masking、标签不可解码和完整int8生命周期；若variance可解码TX、联合只改善NLL而不产生argmax双向救援、`I_syn≤0`或资源超门即拒绝。
+
+##### 方法卡4：`JOINT-FNP-SKR/r0`
+
+- 状态：`FEASIBILITY_REVIEW(REJECT)`，不生成冻结revision。
+- 原因：同时引入新encoder、pairwise likelihood和扩类全局逆矩阵，不能维持单一主要delta；sample-level DA可辨识性尚未证明时又叠加old-score漂移、floor和`O(C³)`fit风险。只有FNP可归因性与SKR扩类稳定性分别形成新revision并独立过门后，才可重新讨论该组合。
+
+##### 冻结四态、证据包和下一步
+
+`JOINT-RCHM-BPP/r1f`使用同一support/raw bank冻结四态：`M0=(identity metric,Patch A head)`、`M_DA=(RCHM metric,Patch A head)`、`M_HEAD=(identity metric,BPP head)`、`M_JOINT=(RCHM metric,BPP head)`。唯一协同主指标为：
+
+\[
+I_{syn}(H)=H_{JOINT}-H_{DA}-H_{HEAD}+H_{M0}>0.
+\]
+
+同时要求DA与head各自至少有独立正收益，联合臂产生old与new两个方向的wrong→correct救援，且各方向wrong→correct均超过correct→wrong；不得用平均值掩盖min-old、min-new或全类floor退化。首个实现范围冻结为新增RCHM纯核、BPP纯头、joint receipt和相应协议/bit-exact/int8/resource测试；第二步才实现只读合法Phase1 single-observation archive的nested receiver/day LODO/LOCO runner。未取得完整Phase1 held四态证据前，不生成target bundle、不发布N607，也不以本地fit、量化重构或代码测试声称性能成功。
