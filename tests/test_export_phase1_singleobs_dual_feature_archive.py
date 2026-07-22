@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import importlib.util
+import inspect
 import json
 from pathlib import Path
 import sys
@@ -135,6 +136,26 @@ def _args(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> tuple[dict[str, ob
         "parity_receipt_path": lineage["parity"], "parity_receipt_sha256": _sha(lineage["parity"]), "class_ids": ("tx0", "tx1"),
         "output_dir": tmp_path / "out", "device": "cpu", "batch_size": 2,
     }, arrays
+
+
+def test_cli_argument_names_match_export_contract(monkeypatch: pytest.MonkeyPatch) -> None:
+    argv = [
+        str(SCRIPT),
+        "--cache-set", "cache.json", "--cache-set-sha256", "0" * 64,
+        "--selection-salt-receipt", "salt.json", "--selection-salt-receipt-sha256", "1" * 64,
+        "--runtime", "runtime.ts", "--runtime-sha256", "2" * 64, "--runtime-role", "base",
+        "--export-receipt", "export.json", "--export-receipt-sha256", "3" * 64,
+        "--parity-receipt", "parity.json", "--parity-receipt-sha256", "4" * 64,
+        "--class-ids", "tx0,tx1", "--output-dir", "archive", "--device", "cpu",
+    ]
+    monkeypatch.setattr(sys, "argv", argv)
+    values = vars(module._parse_args())
+    values["class_ids"] = tuple(
+        value.strip() for value in str(values["class_ids"]).split(",") if value.strip()
+    )
+    signature = inspect.signature(module.export_phase1_singleobs_dual_feature_archive)
+    assert set(values) == set(signature.parameters)
+    signature.bind(**values)
 
 
 def test_development_archive_preserves_explicit_registry_and_selected_overlay_ids(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:

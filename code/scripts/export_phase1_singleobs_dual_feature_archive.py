@@ -598,11 +598,11 @@ def export_phase1_singleobs_dual_feature_archive(
 
 def _parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--cache-set", type=Path, required=True); parser.add_argument("--cache-set-sha256", required=True)
-    parser.add_argument("--selection-salt-receipt", type=Path, required=True); parser.add_argument("--selection-salt-receipt-sha256", required=True)
-    parser.add_argument("--runtime", type=Path, required=True); parser.add_argument("--runtime-sha256", required=True); parser.add_argument("--runtime-role", choices=RUNTIME_ROLES, required=True)
-    parser.add_argument("--export-receipt", type=Path, required=True); parser.add_argument("--export-receipt-sha256", required=True)
-    parser.add_argument("--parity-receipt", type=Path, required=True); parser.add_argument("--parity-receipt-sha256", required=True)
+    parser.add_argument("--cache-set", dest="cache_set_path", type=Path, required=True); parser.add_argument("--cache-set-sha256", required=True)
+    parser.add_argument("--selection-salt-receipt", dest="selection_salt_receipt_path", type=Path, required=True); parser.add_argument("--selection-salt-receipt-sha256", required=True)
+    parser.add_argument("--runtime", dest="runtime_path", type=Path, required=True); parser.add_argument("--runtime-sha256", required=True); parser.add_argument("--runtime-role", choices=RUNTIME_ROLES, required=True)
+    parser.add_argument("--export-receipt", dest="export_receipt_path", type=Path, required=True); parser.add_argument("--export-receipt-sha256", required=True)
+    parser.add_argument("--parity-receipt", dest="parity_receipt_path", type=Path, required=True); parser.add_argument("--parity-receipt-sha256", required=True)
     parser.add_argument("--class-ids", required=True, help="Ordered comma-separated class registry; not a tx-logit column mapping")
     parser.add_argument("--output-dir", type=Path, required=True); parser.add_argument("--device", default="cuda:0"); parser.add_argument("--batch-size", type=int, default=RUNTIME_BATCH_CAPACITY)
     return parser.parse_args()
