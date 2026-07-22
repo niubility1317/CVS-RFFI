@@ -55,6 +55,7 @@ runner同步并验证当前Git source后，必须在启动wrapper前对原packet
 
 |artifact|值|
 |---|---|
+|release contract commit|`77a41240a26851726092f6c5789e394cbe341055`|
 |Git archive|`E:/type10-7/code/snapshots/cid_bpp_k5_held_r2_e3aa2da5_20260723/source_e3aa2da5.zip`|
 |ZIP SHA256|`0638a944abc939ebdafcf2c57cd5e06e40676113d4a55eefe0c2b771f75166d8`|
 |ZIP size/files|`33,268,292 bytes / 4,469 entries`|
