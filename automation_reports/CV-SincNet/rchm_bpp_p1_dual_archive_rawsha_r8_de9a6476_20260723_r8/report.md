@@ -67,3 +67,24 @@ parity保持schema v2、batch=`[1,8,256]`、每batch3次调用、三输出maxabs
 |最终状态|`LOCAL_VERIFIED / NO_PERFORMANCE_RESULT`|
 
 全部通过也只能标记`ARTIFACTS_COMPLETE / NO_PERFORMANCE_RESULT`；coverage真实通过后立即冻结并发布最小held四臂性能矩阵。
+
+## 6.N607一次性执行终态
+
+- 执行时间：2026-07-23；唯一N607 runner：`/root/r8_n607_runner`；retry：`NO`。
+- 直接预检通过：run root启动前不存在；8张RTX3090均空闲；`/home`可用空间7.5TB；未发现其他训练进程。
+- 本地与远端封包核验通过：ZIP=`282c4f085266f6e95345ce66e82178ee08ab3950ce9e7efb2c2c72572edb9127`、33,093,737B、4443 entries/3918 files；wrapper=`ccccabbd786223dea6f89505b4b87f0bdbfaf06260180a13f28c2fa24c4ce614`。远端安全布局、6项raw源码SHA、4项外部资产SHA、`py_compile`、`bash -n`全部通过；未执行远端Git门。
+- 唯一detached launch：`CUDA_VISIBLE_DEVICES=0 nohup bash ./run_pipeline.sh`；PID=`405693`；GPU=`0`；自然exit=`0`。未重试、未重启、未干预其他作业。
+- 远端run root：`/home/szu2070436088/2510044040/CV-SincNet/runs/rchm_bpp_p1_dual_archive_rawsha_r8_de9a6476_20260723_r8`；日志：`logs/pipeline.log`；输出：`output/`。
+
+|同一run结果行|技术证据|结果/摘要|SHA256|裁决|
+|---|---|---|---|---|
+|`rchm_bpp_p1_dual_archive_rawsha_r8_de9a6476_20260723_r8`|base parity receipt|`PASS`；schema v2；batch`[1,8,256]`；每batch3次调用；`max_abs_output_delta=0.0<=1e-5`|`b93219c40b79be8ecdf8c0a51d77710d8119f8899331ae7e2518b77adfeac60b`|通过|
+|同上|archive与manifest|8400行；archive=`DEVELOPMENT_ONLY_NOT_FORMAL`|archive:`dd2a2b0c8ab1a1d8edbeed81e78ffb79c253240998a9ac2404b75699f4ca68d0`；manifest:`34213331d20594dceface61680ab0fea8ffc40ee72d7e13c844763c70fef26d4`|技术归档完成|
+|同上|coverage receipt|8400 physical/observation各自唯一；6类/7 receiver/4 day/3 scenario；168 cells；zero=0；min=32；K1/K5/K10余量=31/27/22；`feature_arrays_read=[]`；`held_fold_selected=false`|`c6e25ebeaed32b577e3321e78cd569acff934a7c804d0cb621b26e68f26d0c17`|通过，但仅描述性覆盖|
+|同上|prediction|未生成任何prediction artifact|`0`|无性能结果|
+
+### 终态与回收
+
+终态：`ARTIFACTS_COMPLETE / NO_PERFORMANCE_RESULT`。该run只完成Phase1离线dual runtime、archive和coverage技术证据；无held/target/query/125执行，不能作为性能、Stage2或可推广方法结论。
+
+已回收的小型证据位于根报告同run目录的`retrieved/`：`pipeline.pid`、`pipeline.exit`、`pipeline.log`、`dual_export_receipt.json`、`base_parity_receipt.json`、`base_parity_vector.json`、archive manifest、`coverage_receipt.json`和`sha256sums.txt`。本地复核的receipt/manifest/coverage文件SHA均与远端清单一致；完整archive保留在远端且SHA已验封。
