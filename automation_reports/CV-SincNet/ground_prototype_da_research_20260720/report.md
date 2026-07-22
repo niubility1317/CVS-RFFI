@@ -1985,3 +1985,11 @@ SVRN公式固定为`LN(z)=(z-mean(z))/sqrt(mean((z-mean(z))²)+1e-6)`，`Rκ(z)=
 |R20|只允许现有3个候选文件，不改数据、encoder、qKNN、CID、r8、coverage或runner控制面|
 
 冻结文件仍为`code/cvsrffi/stage2_svrn_bcr.py`、`code/cvsrffi/svrn_bcr_fixed_held_spike.py`、`tests/test_svrn_bcr_fixed_held_spike.py`。r2复用r1已完成的SVRN、BCR fit/score、INT8 wire和专属sealed held骨架；必须删除hard switch及`g_raw/g_svrn`，新增尺度不变residual、连续`ω`安全集和量化向下取整。核心输入或适应规则再变化必须创建r3并重新审查。
+
+##### `SVRN-qKNN-BCRR/r2`本地闭合
+
+状态=`LOCAL_VERIFIED`。唯一实现delta仍在上述3个候选文件：SVRN保留为DA，qKNN始终先完成全注册类逐query竞争，BCR改为`0≤ω≤0.5`的连续残差；四臂固定为M0/M_DA/M_OTHER/M_JOINT。cross-view安全拟合对destination support和BCR权重使用正式qint8＋fp16 scale解码路径，`ω_q=floor(254ω*)/254`后逐方向逐类复核CE；state封存canonical bank row到support physical ID的映射，truth-free prediction封存邻居顺序并证明M0=M_OTHER、M_DA=M_JOINT及BCRR邻居变化为0。
+
+本地`ssr-gpu`证据：3文件`py_compile`通过；专项`8 passed`；相邻qKNN/R2A/CID回归`40 passed`，仅有pytest临时目录清理PermissionError的P2环境噪声。真实GEOFF/r8 support-only smoke在receiver=`1-1`、scene=`leo_clear_weak`、C5=25条真实support上通过：query/truth fit rows均为0，canonical ID映射25/25，wire state=30,060B，optimizer step=0；该row的`η=ω_raw=ω_svrn=0`只证明identity回退可运行，不是性能结论。
+
+第一次独立review发现receiver别名、量化安全和邻居证据P1；均在原3文件内修复。第二次独立review裁决=`MERGE / P0=0 / P1=0`，允许Git提交及N607发布；K10专项和显式前向次数为P2，不阻塞。下一步仅为提交当前实现、建立全新不可覆盖run ID/report并交唯一Terra runner复用同一r8 archive/coverage执行18 prediction/72 score，未过性能门不得运行125。
