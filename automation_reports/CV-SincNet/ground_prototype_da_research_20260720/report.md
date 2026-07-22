@@ -1816,3 +1816,9 @@ I_{syn}(H)=H_{JOINT}-H_{DA}-H_{HEAD}+H_{M0}>0.
 |`tests/test_export_phase1_singleobs_dual_feature_archive.py`|`cce3ece0dc8f97737c0a9a7b8b5101baca8abb6f560a17a6e29d57daba7ca31f`|
 
 本节状态为`FEASIBILITY_SPIKE_LOCAL_VERIFIED`，不是`LANDED`、真实archive、held evaluation或性能结果；prediction仍为0，状态保持`NO_PERFORMANCE_RESULT`。下一唯一artifact是在新的不可覆盖run报告中，由单一`gpt-5.6-terra high` runner在N607生成并回收：strict ADV3B02 base dual runtime/export/parity receipts、真实8400行双表征archive/manifest，以及不读取特征值的receiver×day×TX计数与fold可行性receipt。只有这些实物逐项闭合后，才重新审查held runner；当前不生成target bundle、不访问target/query、不运行125。
+
+##### 双表征归档run本地发布冻结
+
+run ID冻结为`rchm_bpp_p1_dual_archive_9ca1a59a_20260722_r1`，方法源提交为`9ca1a59a7522393c43ee09c7f95dde6588cd8f4a`，Git归档SHA256为`95127701d2c9f9989fcc6409b1e069e232f2d3e3654611d92e9ac2abe26937a0`。强制run报告与wrapper已同时保存在根目录report面和本Git镜像；wrapper SHA256为`eb4e591f875434bb7e7f4c90b6a020435f3d7f356b4e05a33091231438210ffd`。
+
+首轮独立发布审查发现coverage只记录不阻断、清单路径漂移、PID/目录顺序不闭合和`set -u` GPU变量错误路径，裁决`P0=1,P1=4→REVISE`。最小修订后，`bash -n`、embedded Python compile、synthetic coverage正例1个与row-count/zero-cell/K10-min负例3个、unset CUDA退出70均通过；复审为`P0=0,P1=0,P2=0→MERGE`。当前仅达到`LOCAL_VERIFIED / NO_PERFORMANCE_RESULT`，尚未访问N607；下一步由该run ID的唯一Terra runner执行preflight、落地、运行、短连接监控和artifact回收。
