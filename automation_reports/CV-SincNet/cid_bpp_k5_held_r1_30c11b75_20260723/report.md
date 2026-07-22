@@ -45,6 +45,7 @@ held receiver由coverage SHA确定为`1-1`。每个outer lock完整排除该rece
 
 |artifact|值|
 |---|---|
+|release contract commit|`919712f199053b11077c19ef760139c98dabb105`|
 |Git archive|`E:/type10-7/code/snapshots/cid_bpp_k5_held_r1_30c11b75_20260723/source_30c11b75.zip`|
 |ZIP SHA256|`f974e841075aa14fe37e94b1d7c6d0359da8b8e96dc4bb60372726a9ec0d54fe`|
 |ZIP size/files|`33,260,749 bytes / 4,466 entries`|
