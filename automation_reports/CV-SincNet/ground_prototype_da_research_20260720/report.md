@@ -1737,3 +1737,54 @@ I_{syn}(H)=H_{JOINT}-H_{DA}-H_{HEAD}+H_{M0}>0.
 \]
 
 同时要求DA与head各自至少有独立正收益，联合臂产生old与new两个方向的wrong→correct救援，且各方向wrong→correct均超过correct→wrong；不得用平均值掩盖min-old、min-new或全类floor退化。首个实现范围冻结为新增RCHM纯核、BPP纯头、joint receipt和相应协议/bit-exact/int8/resource测试；第二步才实现只读合法Phase1 single-observation archive的nested receiver/day LODO/LOCO runner。未取得完整Phase1 held四态证据前，不生成target bundle、不发布N607，也不以本地fit、量化重构或代码测试声称性能成功。
+
+#### `JOINT-RCHM-BPP/r1f`本地非正式核心闭合
+
+2026-07-22在`DESIGN_FROZEN`后进入`IMPLEMENTING`，只新增下列6个文件；未修改Patch0、Patch A、Patch B、C-id、数据builder、protocol schema或任何既有科学规则，未触发数据重验：
+
+- `code/cvsrffi/stage2_receiver_context_hypermetric.py`：只读Phase1 RCHM锁、类均衡receiver context、预算感知rank收缩、整行identity回退和实际build MAC账本。
+- `code/cvsrffi/stage2_bayesian_predictive_head.py`：全部注册类共式Bayesian posterior-predictive Student-t头，K1完全收缩到Phase1先验，K>1使用metric-specific RSS。
+- `code/cvsrffi/stage2_joint_rchm_bpp.py`：同一support bank的`M0/M_DA/M_HEAD/M_JOINT`四臂、typed wire、外部expected SHA、递归receipt、锁绑定和资源审计。
+- `tests/test_stage2_receiver_context_hypermetric.py`、`tests/test_stage2_bayesian_predictive_head.py`、`tests/test_stage2_joint_rchm_bpp.py`：协议负例、置换/分块等价、回退、wire攻击、int8/FP16生命周期和资源边界。
+
+实现保持`formal_phase2_eligible=false`和`bundle_created=false`。Phase2新增可训练参数为0、optimizer step为0；support bank、target context、metric basis、BPP类均值和充分统计量只以INT8/FP16进入持久化wire，无可评分FP32 sidecar。每条query只读冻结state并独立在全部注册类上评分，不读query truth、role、真实batch类数、quota、clean/source或其他query。
+
+##### 关键实现闭包
+
+- RCHM仅用当前row全部注册类support的类均衡`z_dom`均值形成公共context；coverage、有效类数、manifold、LOCO、quantization或condition不过门时，评分前整行回到identity。`attempted_rank`和`execution_stage`进入RCHM receipt，使condition回退也保留回退前已执行的Gram成本。
+- 冻结规则只要求`r≤4`。资源选择在执行超帽rank前完成；最大压力探针`C26/K20/p8`自动收缩到rank3。这里的K20仅用于本地资源上界压力测试，不是`p2_min_v1`下K1/K5/K10的方法选择或性能证据。
+- BPP保留完整multivariate Student-t类条件式；所有old/new类使用uniform prior和同一公式。Phase2不再执行target support×all-class teacher/compiled评分；只保存6个不同量纲、分别限幅的non-authoritative compiled-stat误差。Phase1 held top1、margin和quantization receipt仍是独立权威绑定，不能由该support诊断替代。
+- typed wire反序列化必须提供外部expected wire SHA、qKNN锁、RCHM锁和BPP锁，才能重建完整四臂可评分state。fixed record顺序、未知/缺失/重复字段、shape溢出、NaN、截断、尾随、bitflip、共同重签和内存篡改均fail-closed。
+
+##### 独立审查与裁决
+
+实现审查没有一次性放行。首轮修复了Student-t公式、typed wire和INT8持久化；第二轮发现support全类teacher/compiled诊断使真实build下界达到`9,690,912MAC`，裁决`REVISE`。删除该target诊断并完整计入3次Gram后，rank4压力行仍需`341,792MAC`而超过冻结帽，因此改为预算感知rank3。下一轮又修复condition identity回退的历史Gram账本及“单teacher阈值混合不同量纲”的语义错误。最终独立监督结果为：`P0=0，P1=0，P2=1(non-blocking)→MERGE_NONFORMAL_CORE`；唯一P2是六分量测试复用已篡改state，随后已改为每分量fresh合法nonidentity state并精确匹配具名gate错误，专项回归通过。
+
+##### 本地验证与资源证据
+
+验证环境：`ssr-gpu`。主流程串行执行3个新增core的`python -m py_compile`，再执行新增3组和Patch A/C-id相邻2组测试，最终结果为`52 passed`。首条PowerShell包装命令因外层提前展开`$env`/`$LASTEXITCODE`产生包装噪声；按本项目规则串行重跑后命令干净退出0，未把包装噪声当成项目成败。
+
+|本地压力对象|effective rank|完整wire|support build|BPP后处理/query|结论|
+|---|---:|---:|---:|---:|---|
+|C26/K20/p8|3|110,951B|255,232MAC|4,718MAC|三项均过冻结帽；仅资源压力证据|
+|condition identity探针|0，attempted rank=1|已完成typed roundtrip|1,632MAC|identity BPP路径|保留context、cross和2次已执行Gram|
+|pre-build effective-class identity探针|0|已完成typed roundtrip|1,280MAC|identity BPP路径|只执行context projection|
+
+最大压力对象的实际matmul ledger为：`1×160×8`receiver projection、`1×8×4`cross-map、两次`3×3×160`metric Gram、`520×3×160`共享support projection和一次`3×3×160`BPP logdet Gram。build期把`_metric_d2`替换为强制抛错后仍能成功构建，证明不再隐藏执行`520×160×26`全类评分。MAC口径是具名matmul执行账本，不包含add/reduction/elementwise/log/hash/serialization，也不等同端到端latency；本轮没有GPU latency、峰值显存或target性能测量，因此不能作资源部署或性能晋级结论。
+
+新增文件SHA256：
+
+|文件|SHA256|
+|---|---|
+|`stage2_receiver_context_hypermetric.py`|`7c08a53bf0c38be45475f04e1e5ddb99b2bcdc8501bacfec17e489d94d13b58a`|
+|`stage2_bayesian_predictive_head.py`|`5ba59f9fcf6b6f8177c51b73950670b2c35cc88721ea0e0b42f1b86309457b07`|
+|`stage2_joint_rchm_bpp.py`|`05dbb835a77f0dddd28ee8e2a2141d4ee3eaab1ca6d619ca54900b4fa9e108d3`|
+|`test_stage2_receiver_context_hypermetric.py`|`e822490d20cbe9b351412366166e581df49865b2605b66f63f07f71c29efeb34`|
+|`test_stage2_bayesian_predictive_head.py`|`6761ac55d8667d566376901e67a32bf1aec1e8af42bc104b981783183ef6d11f`|
+|`test_stage2_joint_rchm_bpp.py`|`23a40ad14b98c9f2031edfaed8703f468ae4e12f198c932406b5f042b4081760`|
+
+##### 证据边界与下一artifact
+
+本节状态为`IMPLEMENTING→LOCAL_VERIFIED_NONFORMAL_CORE`，不是`LANDED`、`ARTIFACTS_COMPLETE`、target performance或promotable success。没有生成prediction，因此不存在old/new/H/BA/floor/forgetting或协同收益数值；代码测试、support fit、量化误差和资源探针均不能替代性能结果。未创建target bundle、未访问N607、未发布run，也未建立125 screen。
+
+下一唯一artifact是只读合法Phase1 single-observation archive的nested receiver/day LODO/LOCO runner及其held receipt：先在K1/K5/K10分别冻结RCHM basis/cross-map/gates和BPP先验/六分量量化阈值，再产出同一held row的`M0/M_DA/M_HEAD/M_JOINT`四臂。只有该artifact同时证明DA、head各自独立正收益，`I_syn(H_old_new)>0`，old/new双向wrong→correct救援超过correct→wrong，min-old/min-new/floor不降、forgetting不增、top1一致率≥99.5%、large-margin flip=0且资源仍过门，才允许生成target bundle并登记N607窄实验；否则按对应falsifier停止该revision。
