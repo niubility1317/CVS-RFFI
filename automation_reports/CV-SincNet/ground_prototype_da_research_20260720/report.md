@@ -2001,3 +2001,15 @@ SVRN公式固定为`LN(z)=(z-mean(z))/sqrt(mean((z-mean(z))²)+1e-6)`，`Rκ(z)=
 完整72-branch只读复算将根因锁定为：仅`14-10/leo_low_elev_weak/C5`的raw/SVRN两支失败，二者`eta=0、omega_q=0`；所有active BCR支均通过原INT8门。`r3`唯一delta是在`omega_q=0`时部署零qint8 BCR codes＋正fp16 scale，并在反序列化强制该不变量；active路径、0.995门、margin门、receipt、融合和资源不变。真实r8无query复测72/72通过，44 active/28 inactive、failure0；原两支agreement=1、flip=0、error=0。独立设计监督和代码review均为`MERGE / P0=0 / P1=0`；方法提交=`165ca03133a8fc724ecccd37e4a55e09a0596dff`。
 
 下一run已预注册为`svrn_qknn_bcrr_k5_held_r2_165ca031_20260723`，继续复用同一GEOFF/r8 archive/coverage，目标仍是18 prediction/72 score的M0/M_DA/M_OTHER/M_JOINT同row性能矩阵。support-only复测的18行`eta`均为0是强负信号但不是性能结果；必须由新run产生完整prediction后按预登记门裁决，失败不得进入125。
+
+##### `SVRN-qKNN-BCRR/r3`第二次N607技术失败
+
+run=`svrn_qknn_bcrr_k5_held_r2_165ca031_20260723`经direct N607/GPU0/PID538739单次启动后自然exit1。wrapper、源码ZIP、方法文件及GEOFF/r8 parity/archive/manifest/coverage SHA全部通过；build和predict完成并生成18个prediction slice，但score阶段报`prediction four-arm order drift`，score=0，因此仍严格裁决为`TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`，未运行125。
+
+回收的packet/truth/query/prediction外部SHA分别为`ef15a8488d40ac70d129db9ac15c796418b4afe5fa64624883eab0f66fd4e95b`、`9745068bc5961ebe90f6305c672cacc8ce338d745579e1c97d4ea503cbd06d8`、`be089f42be790a73cd7a95d68cb13956a64735019b10f6cd4ba32199c33c56c9`、`0f9313e632884e9987caaa262e2e7d261338bfe9b7f84beae85753571b72e06e`。完整只读审计确认canonical JSON将mapping键排序为`M0/M_DA/M_JOINT/M_OTHER`，而冻结`ARMS`为`M0/M_DA/M_OTHER/M_JOINT`；36个before/after mapping均精确包含四臂，prediction COMMIT、row/query绑定、144个logit、argmax及neighbor receipt均通过。唯一根因是评分器错误地把JSON mapping迭代顺序当成语义顺序。
+
+##### `SVRN-qKNN-BCRR/r3-scorefix1`发布冻结
+
+唯一修复把四臂校验改为精确键集合相等，并继续按冻结`ARMS`顺序评分；缺臂或多臂即使重签COMMIT仍拒绝。`ssr-gpu`下py_compile及专项`9 passed`，父prediction直接产生72行score；独立review裁决=`MERGE / P0=0 / P1=0`。方法、prediction、truth、query、qKNN、SVRN、BCRR、状态、参数、资源公式和停止门均未改变。修复提交=`b0baa0dc328ec7fe7a8d5870f35bdee256c9b686`。
+
+全新score-only run=`svrn_qknn_bcrr_k5_scorefix1_b0baa0dc_20260723_070006`已预注册。它在启动前对父packet/truth/query/prediction四个绝对路径逐一校验上述固定SHA，另验truth内部SHA=`637e845fec201627118181a5eb256861b86e76880c101d1b6a5452563cce64b4`和prediction COMMIT=`2524a1aa291cb05ed055625c496f8abc12fc692b57736070334b65ce1c68211a`，随后只读生成72行正式score；禁止重新build、predict、调参、数据重验、retry或125。源码ZIP SHA=`21538751f8e1cdc53d0cb127588f0a239ed9250890eba89ea1b49b93d96ed3ef`，wrapper Git提交=`7ac9805d58860da0b98512f695c14e357c0182cb`，wrapper SHA=`f1fd6a0381b89b9f2c38c84d4db4637db846e72dbf804e8e091bec39f9268892`，`bash -n`通过。正式score、完整log和匹配SHA闭合前，本地只读评分仅为诊断，不作性能裁决。
