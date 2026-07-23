@@ -290,12 +290,18 @@ def load_comparison_leo_cache_set(
     }
 
 
+def _comparison_reference_arrays(arrays_by_scenario):
+    """Preserve the legacy alignment helper's return-value contract."""
+
+    return arrays_by_scenario[FORMAL_LEO_WEAK_SCENARIOS[0]]
+
+
 def main() -> int:
     base_builder.load_verified_leo_weak_cache_set = load_comparison_leo_cache_set
     # N607 may carry the legacy alignment-named gate while the Git release
     # surface carries the newer physical-independence gate. Both encode
     # Stage2-main-method cross-scenario policy and are out of scope here.
-    base_builder._assert_scenario_alignment = lambda _arrays: None
+    base_builder._assert_scenario_alignment = _comparison_reference_arrays
     base_builder._assert_scenario_physical_independence = lambda _arrays: None
     base_builder._reject_predictor_truth_leaks = (
         reject_predictor_truth_leaks_structurally

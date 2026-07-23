@@ -13,6 +13,7 @@ from cvsrffi.leo_weak_cache import (
     sha256_file,
 )
 from paper_reproduction.scripts.build_adv3b02_paper_full_ci_bundle import (
+    _comparison_reference_arrays,
     load_comparison_inner_leo_cache,
     load_comparison_leo_cache_set,
 )
@@ -86,7 +87,7 @@ def test_comparison_bundle_relaxes_only_set_level_protocol_and_keeps_leo_check()
     assert "load_comparison_inner_leo_cache(" in source
     assert "new_class_leo_iq_verified" in source
     assert "load_verified_leo_weak_cache_set =" in source
-    assert "_assert_scenario_alignment = lambda" in source
+    assert "_assert_scenario_alignment = _comparison_reference_arrays" in source
     assert "_assert_scenario_physical_independence = lambda" in source
     assert "stage2_main_method_protocol_exempt_new_class_leo_required" in source
 
@@ -218,3 +219,4 @@ def test_comparison_set_loader_verifies_outer_hash_and_preserves_ids(tmp_path):
         ]
         for scenario in arrays
     )
+    assert _comparison_reference_arrays(arrays) is arrays["leo_clear_weak"]
