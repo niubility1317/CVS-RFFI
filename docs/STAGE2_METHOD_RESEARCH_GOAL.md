@@ -341,8 +341,8 @@ K10完整确认硬门：
 3.一个设计波次后只冻结一个模型DA主候选。设计冻结后只实现一个主要机制delta。
 4.本地在`ssr-gpu`完成专项测试、协议负例、真实checkpoint无query smoke、ground-off消融、INT8部署等价、diff review和Git提交。
 5.允许使用Phase1 LODO/LOCO、source validation和合法held proxy冻结模型结构与超参数；这些代理不得替代target性能，也不得读取target query选参。
-6.冻结候选第一次正式N607性能发布运行既有完整125稳定性screen：`5 receivers×5 seeds×{K10/new5,K10/new10,K10/new20,K5/new20,K1/new20}`，每job覆盖3个LEO弱场景，并在同一commit输出`M0/M_DA_NG/M_DA/M_OTHER/M_JOINT`。
-7.125只能验证冻结候选，不得用于选择层、rank、loss、step、ground格式、OTHER、量化、阈值或fallback。任何机制变化必须创建新revision并重新审查。
+6.每个冻结候选、每个revision的任何正式N607性能发布都必须直接运行既有完整125稳定性screen：`5 receivers×5 seeds×{K10/new5,K10/new10,K10/new20,K5/new20,K1/new20}`，每job覆盖3个LEO弱场景，并在同一commit输出`M0/M_DA_NG/M_DA/M_OTHER/M_JOINT`。不得先发布单receiver、单seed、单K、单scene或其他有利子集；这些局部入口只能用于本地专项测试、协议负例和真实checkpoint无query smoke，不能形成独立N607性能run或方法裁决。
+7.每次完整125只能验证一个已冻结revision，不得用于选择层、rank、loss、step、ground格式、OTHER、量化、阈值或fallback。任何机制变化必须创建新revision、重新审查并以新的不可覆盖run ID重新执行完整125；不同revision不得拼接结果。
 8.125通过后，以同一commit运行`5 receivers×5 seeds×3 scenes×K{1,5,10,20}×new{2,5,10,20}=1200`评价单元完整确认。
 9.每次正式性能发布都必须把冻结矩阵按不可变row/job ID确定性分片，并通过共享动态队列调度到N607的GPU0–7；在8张GPU均可安全使用时，每张卡至少分配一个worker，尽量让8卡同时工作，并通过最长任务优先或等价负载均衡减少尾部空转。
 10.发布前记录8张GPU的已有进程、显存和可用slot。默认每卡最多2个训练进程；不得杀死、暂停或迁移无关任务。若部分GPU已满，只使用其余安全slot并排队等待，不得为追求8卡占用而超配，也不得因此缩窄正式矩阵。

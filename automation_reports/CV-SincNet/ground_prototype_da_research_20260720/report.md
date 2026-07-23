@@ -2078,6 +2078,52 @@ OTHER相对M0取得old-after`+0.012098`、seen-new`+0.011408`、H`+0.017067`、f
 
 用户后续明确要求每次正式性能发布均直接覆盖完整125，以避免只在有利K、receiver、scene或seed上取得成绩。因此，本节从现在起以该要求覆盖RB18及更早“先发K5窄实验、通过后再运行125”的发布顺序；RB01–RB17的方法、状态、量化、资源和因果合同不变，不重新打开设计波次。K5/rx1-1/18-slice模块只保留为本地实现、协议负例和无query smoke入口，不再形成独立N607性能run。
 
-当前正式首发矩阵固定为`5 target receivers×5 independent seeds×5 registration slices=125 jobs`，切片为`(K10,new5)`、`(K10,new10)`、`(K10,new20)`、`(K5,new20)`、`(K1,new20)`；每个job覆盖3个LEO weak场景并输出同row的`M0/M_DA/M_OTHER/M_JOINT`，预期闭合`375 prediction slices/1500 score rows`。必须一次性报告aggregate、逐类、receiver、scene、K、seed、new-count、transition、coverage、量化和资源；不得以旧的K={1,2,5,10,20} matched-history bundle或任一有利子集冒充本目标完整125。
+当前正式首发矩阵固定为`5 target receivers×5 independent seeds×5 registration slices=125 jobs`，切片为`(K10,new5)`、`(K10,new10)`、`(K10,new20)`、`(K5,new20)`、`(K1,new20)`；每个job覆盖3个LEO weak场景。模型DA目标生效后输出同row的`M0/M_DA_NG/M_DA/M_OTHER/M_JOINT`，预期闭合`375 prediction slices/1875 score rows`。必须一次性报告aggregate、逐类、receiver、scene、K、seed、new-count、transition、coverage、量化和资源；不得以旧的K={1,2,5,10,20} matched-history bundle或任一有利子集冒充本目标完整125。
 
 性能停止门按完整矩阵执行：M_DA净正确决策必须为正且old/new净变化均非负，M_OTHER必须独立为正，JOINT mean H必须严格胜两个单臂，mean`I_syn>0`，正协同至少188/375个scene slice且至少2/3个scene均值为正；old-before、old-after、old adaptation gain、seen-new、H、BA、floor、min-old、min-new不得下降，forgetting及old→new/new→old不得增加。任一失败均形成完整prediction和同row诊断后裁为`COMPLETED_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE`；没有完整prediction只能裁为`TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。125只作冻结候选的全面性能验证，不得用于回调结构、rank、omega、阈值、量化或fallback。
+
+##### 快速模型DA主线纠偏与`DSSC_ZDOM_JG_QKNN_R4_BCRR/design-r1f` DESIGN_FROZEN
+
+实时目标已改为地面压缩知识驱动的快速模型域适应＋qKNN＋唯一OTHER。`RBSC-TM-qKNN-BCRR/r1`因此在提交和N607发布前停止，状态=`SUPERSEDED_BEFORE_COMMIT / NO_PERFORMANCE_RESULT`；其RBSC数学和完整125骨架只保留为reference，不再计作模型DA。目标文档及traceability已由commit=`e19190eb7634d9d8b055e39a7e9219e455aba5bb`建立基线；用户随后进一步冻结为：每个候选、每个revision的任何正式N607性能发布都直接运行完整125，局部行仅可作为本地专项、协议负例和真实checkpoint无query smoke，不得形成独立性能run或方法裁决。
+
+并行方法波次比较了`DSSC_ZDOM_JG_QKNN_R4`与receiver/LEO双因子RDA，同时审查qKNN/OTHER复用。联合监督最终裁决=`MERGE / P0=0 / P1=0`；唯一冻结候选为`DSSC_ZDOM_JG_QKNN_R4_BCRR/design-r1f`，状态=`DESIGN_FROZEN -> IMPLEMENTING`。BCRR是唯一OTHER；双因子RDA、RBSC、BPP和SRDA均不进入本revision。
+
+|ID|冻结合同|
+|---|---|
+|D01|五臂固定为`M0/M_DA_NG/M_DA/M_OTHER/M_JOINT`，不得缺臂、换序或增加第六臂。|
+|D02|`M_DA_NG`与`M_DA`使用相同rank-4 adapter、dual-view、optimizer、step、S_B/S_C与量化路径；唯一差异是ground prior mask。两臂都必须产生非零merged delta。|
+|D03|adapter仅为写入实际`id_gate.0→joint_proj.0`的共享四系数rank-4 weight delta；merge后query只走identity backbone的`feat_joint`路径，不调用domain backbone，`ΔMAC_query(adapter)=0`。|
+|D04|S_B只读old support；S_C从S_B继续并对全部registered classes逐类等权。query不进入fit、early stop、fallback、BCRR权重或候选选择。|
+|D05|每scene使用两两不交的物理ID、独立K-shot、独立adapter和BCRR state；历史三LEO重复support接口永久删除。|
+|D06|dual-view只允许同一fixed received IQ的原始view与固定RMS归一化数学view；它不增加K，qKNN bank只存原始view adapted feature。|
+|D07|唯一训练目标为对称class-balanced cross-view prototype CE，加`M_DA`的ground-center ridge；删除`M_T/tail/sep/mem`及其他loss。|
+|D08|K1只估计4个row-global系数，S_B/S_C固定2/3步；K5/K10固定25/25步。SGD固定`lr=0.02`、`weight_decay=1e-4`、无momentum。|
+|D09|ground old multiprototype每类1至3个、每prototype至少2个互不重复Phase1物理样本；`z_id/z_dom`主体INT8＋FP16 scale，无成员ID或FP32 sidecar。|
+|D10|class-shared domain basis独立封存、rank≤4、INT8；不能沿用或改名旧ground组件。bundle与lock都声明`ground_old_multiprototype_enabled=true`。|
+|D11|ground只初始化/约束共享adapter，不直接投票、增加old logit或生成new/unknown状态；新bundle只改变`bundle_id`，不触发Phase2数据重验。|
+|D12|qKNN始终对全部注册类逐query统一竞争；`M0/M_OTHER`共享raw qKNN receipt，`M_DA/M_JOINT`逐字节共享adapter及adapted qKNN receipt。|
+|D13|BCRR固定`F=N(Q)+omega[N(B)-N(Q)]`、`0≤omega≤0.5`并branch-local support-only拟合；K1固定`omega=0`，不允许全局协同门。|
+|D14|正式state总wire≤256KiB；adapter按rank`[0,1]/[2,3]`两组保存INT8 code＋组内共享FP16 scale且无FP32 sidecar；报告ground、adapter、qKNN、BCRR、INT8一致性、build/predict mean/P95、VRAM、完整forward数及MAC。|
+|D15|held artifact必须证明feature、neighbor、argmax和wrong→correct/correct→wrong变化；只有数值微变不构成DA成功。|
+|D16|科学代码范围固定为一个方法模块、一个Phase1 bundle builder、一个完整125 runner和一个专项测试；不修改现有模型、qKNN、BCRR、数据builder或scorer。|
+|D17|每个冻结revision的每次正式N607性能发布均固定完整125：`125 jobs×3 scenes×5 arms=375 prediction slices/1875 score rows`，8GPU动态队列，不先发窄性能run。|
+|D18|125只验证冻结候选；缺prediction为`TECHNICAL_FAILURE`，完成但任一独立DA、ground、OTHER、JOINT、协同、性能、资源或协议门失败即`COMPLETED_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE`。|
+
+实现第一步为本地Phase1新bundle与无query`FEASIBILITY_SPIKE`：复用GEOFF/r8 Phase1 archive生成joint-sealed bundle，验证prototype物理计数、INT8 round-trip、basis rank、checkpoint/bundle/lock绑定；随后用合法support-only smoke证明`M_DA_NG`与`M_DA`均产生非零merged delta、identity-backbone-only`feat_joint`变化和qKNN邻居变化，且fit query rows=0。任一项失败即停止，不发布N607，也不重验Phase2数据；全部通过后只完成专项、协议负例、真实checkpoint smoke、独立P0/P1 review、Git提交和新run报告，随后直接发布完整125。
+
+##### `DSSC_ZDOM_JG_QKNN_R4_BCRR/design-r1f`本地技术闭合
+
+本revision只修改冻结的4个科学文件，没有修改既有模型、qKNN、BCRR、数据builder、GEOFF/r8 coverage或scorer。完整125 runner对每个row的10个prediction artifact、2个prediction receipt、11个score artifact和2个launcher log逐项重算SHA，并闭合row identity、old count、token唯一性、三scene计数、五臂matched token/order、score→prediction绑定、same-row summary/full metrics、forgetting和15行精确计数；专项测试实际生成、删除和篡改artifact验证拒绝路径。base model全部冻结，只有4个共享adapter系数可训练；五臂实际只执行3次qKNN和2次BCRR，不以重复计算伪增资源。
+
+复用的GEOFF/r8输入均为既有`VALIDATED_ONCE`资产，没有重复数据验证：coverage SHA=`c6e25ebeaed32b577e3321e78cd569acff934a7c804d0cb621b26e68f26d0c17`，Phase1 archive SHA=`dd2a2b0c8ab1a1d8edbeed81e78ffb79c253240998a9ac2404b75699f4ca68d0`，manifest SHA=`34213331d20594dceface61680ab0fea8ffc40ee72d7e13c844763c70fef26d4`，checkpoint SHA=`2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98`，parity receipt SHA=`b93219c40b79be8ecdf8c0a51d77710d8119f8899331ae7e2518b77adfeac60b`。最终method lock SHA=`7663bbc4b7b199d98caa85b7736547a6927a2c7eb8e6a4de636967edca1e9c10`，新ground bundle SHA=`109724913cac4f82ff58359b927a7f1e7f7e7d233c0bfd0d05d323f94b1b12da`；bundle含18个old multiprototype、rank4共享domain basis、INT8主体＋FP16 scale，builder记录`query_rows_used=0`。
+
+第一版adapter单共享scale在真实ground S_C的110条support上产生1个低margin top1差异，部署一致率仅`0.99090904`，因此没有发布。改变的唯一部署schema是按rank`[0,1]/[2,3]`分为两个连续组，各保存INT8 code与FP16 scale；真实复测ground S_C一致率升为`0.99999994`、large-margin flip=0、最大logit误差=`0.000752494`。独立首轮代码review随后发现全零组的原scale floor转换FP16后会下溢为0；修复为最小正FP16子正规，并增加零组正scale＋load/round-trip专项负例。该修复不改变输入、loss、adapter方向、训练步数、qKNN或fallback，不构成新revision。
+
+最终真实checkpoint support-only无query smoke根目录为`E:\type10-7\automation_reports\CV-SincNet\dssc_r1f_local_smoke_20260723_140134`，receipt SHA=`0d84219d5c325a0695a73225d880295fdfe99334034971daab4ed57f16008cab`。诊断包只加载before/after enrollment support，`query_packages_loaded=false`、`query_rows_used_for_fit=0`；注册类由6增至11，S_B/S_C分别使用60/110条support。
+
+|branch|S_B delta norm|S_C delta norm|S_B/S_C steps|S_B INT8 top1|S_C INT8 top1|large-margin flip|merged|可训练参数|
+|---|---:|---:|---:|---:|---:|---:|---|---:|
+|M_DA_NG/no-ground|0.0716443|0.1405842|25/25|1.0|0.99999994|0|true|4|
+|M_DA/ground|3.8354450|3.9354210|25/25|1.0|0.99999994|0|true|4|
+
+`ssr-gpu`最终`py_compile`通过，专项与协议负例`21/21 passed`。独立终审确认artifact/hash/row闭合门未被INT8修订绕过，零系数组产生正FP16 scale并可load/round-trip，canonical lock精确封存两组格式；裁决=`MERGE / P0=0 / P1=0`。当前状态=`LOCAL_VERIFIED / NO_PERFORMANCE_RESULT`。以上均为技术证据，不是目标域性能；下一步只允许Git提交、建立全新不可覆盖完整125 run报告并交唯一Terra runner发布，不再追加静态设计、控制面或数据验证。
