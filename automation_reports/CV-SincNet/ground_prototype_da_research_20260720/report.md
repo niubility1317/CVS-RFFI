@@ -2306,6 +2306,10 @@ r3完整125 run=`adv3b02_ts_drqknn_bcrr_r3_q2f32_bcr2_zidtotal1_full125_aa22820c
 
 当前状态=`LOCAL_VERIFIED / NO_PERFORMANCE_RESULT`。下一步只允许提交r4、建立全新不可覆盖完整125 run报告并交唯一Terra runner发布；启动后必须健康检查，系统性零prediction故障立即止损。DATA_PROTOCOL=`PRESENT_REUSED / NOT_REVALIDATED`。
 
+##### `r4-bcr3`完整125预注册
+
+科学提交=`802534eb8036fb8a31f060fd55af5050d0fe7961`；全新run=`adv3b02_ts_drqknn_bcrr_r4_q2f32_bcr3_zidtotal1_full125_802534eb_20260724_033904`，状态=`PREREGISTERED / NOT_LANDED / NO_PERFORMANCE_RESULT`。发布源码包SHA=`e340bcc9c908223f9f0cdd003a88924dddc12b117b43cbc287fa4626b6d17c89`，含3980个safe regular raw Git blob，path-set SHA=`e2b3c999af049d1f872c3b91c1044b8ceac71f135ec39d01140e8ac5e77a89e0`，missing/extra/raw mismatch/unsafe均为0；method lock SHA继续为`0496594db4a82efbbf17ec3d67ebc3fb1f0c7ced41b542a5a0bde3482e704523`。唯一Terra runner负责direct preflight、同步、远端验证、唯一detach、即时健康检查、完整监控与artifact回收；不得重验数据、复用parent或按partial性能早停。DATA_PROTOCOL=`PRESENT_REUSED / NOT_REVALIDATED`。
+
 ##### `r3-q2f32`完整125预注册
 
 科学提交=`aa22820cfbefe45b020c7e6190a53a7237b290b7`；全新run=`adv3b02_ts_drqknn_bcrr_r3_q2f32_bcr2_zidtotal1_full125_aa22820c_20260724_023120`，状态=`PREREGISTERED / NOT_LAUNCHED / NO_PERFORMANCE_RESULT`。源码包SHA=`0d57496c87356676780fa8486e00c1cb670ed04e4231f905764fe9f2be16f174`，含3977个Git blob，path-set SHA=`91bba4b94ca45076fcc8e864eaa124de69ec6d001fecac1080420539496482ae`，逐blob不匹配0。唯一Terra runner负责direct preflight、同步、远端验证、唯一detach、即时健康检查、完整监控和artifact回收；不得重验数据、复用parent或按性能早停。`DATA_PROTOCOL=PRESENT_REUSED / NOT_REVALIDATED`。
