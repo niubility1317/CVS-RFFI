@@ -2351,3 +2351,9 @@ archive/coverage/parity=`ABSENT/ABSENT/ABSENT`。最小非query evidence共42文
 当前状态=`LOCAL_VERIFIED / NO_PERFORMANCE_RESULT`。下一步只允许Git提交、建立全新不可覆盖run报告并交唯一Terra runner执行GPU0–7完整125；不得修复同波第二fingerprint、重验数据、扩展方法delta或增加发布门。
 
 `DATA_PROTOCOL=PRESENT_REUSED / NOT_REVALIDATED`
+
+##### `r5-qzero1`完整125预注册
+
+科学提交=`1b2359b455f0466019a98caa7e51cb165f5463be`。全新不可覆盖run=`adv3b02_ts_drqknn_bcrr_r5_q2f32_bcr3_zidtotal1_qzero1_full125_1b2359b4_20260724_050526`已建立，状态=`PREREGISTERED / NOT_LANDED / NO_PERFORMANCE_RESULT`。发布源码包SHA=`bdbbed80f36f06145bc8da72a3493f7cb358716ab49bb16a304a5b01ed643054`，含3,983个safe regular raw Git blob，path-set SHA=`5a451a362af3c456adcc93d79fd88bd59aa773c659772294b0a669ab3026b9e8`，missing/extra/raw mismatch=`0/0/0`；method lock SHA继续为`0496594db4a82efbbf17ec3d67ebc3fb1f0c7ced41b542a5a0bde3482e704523`。下一步由唯一Terra runner执行direct preflight、精确同步、远端验证、唯一detach、GPU0–7完整125、即时健康检查和artifact回收；首个技术失败令125不可达时立即止损，不得自然退出或读取partial性能。
+
+`DATA_PROTOCOL=PRESENT_REUSED / NOT_REVALIDATED`
