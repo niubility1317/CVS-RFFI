@@ -67,6 +67,7 @@ SCOPE_ROLES = {
     "source_validation": {"source"},
     "stage2_target_old": {"target_old"},
     "stage2_registered": {"target_old", "target_new"},
+    "external_comparison_registered": {"target_old", "target_new"},
 }
 
 

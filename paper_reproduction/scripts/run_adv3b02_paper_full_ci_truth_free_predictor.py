@@ -141,6 +141,7 @@ def _load_base_state(
     *,
     device: torch.device,
     old_count: int,
+    expected_total_capacity: int,
 ) -> dict[str, Any]:
     roles = {item["artifact_role"]: item for item in manifest["members"]}
     descriptor = roles["head"]
@@ -148,6 +149,12 @@ def _load_base_state(
         state = torch.load(handle, map_location="cpu", weights_only=False)
     schema = state.get("schema")
     if schema == "cvs.adv3b02.official_repo_base_state.v2":
+        if int(state.get("total_capacity", 0)) != int(
+            expected_total_capacity
+        ):
+            raise ValueError(
+                "official-repo base state total capacity drift"
+            )
         if int(state.get("base_sample_count", 0)) != 8400:
             raise ValueError("official-repo base state requires exactly 8400 rows")
         if (
@@ -160,6 +167,17 @@ def _load_base_state(
             state.get("mopc_hr"), dict
         ):
             raise ValueError("official-repo method base states are missing")
+        classifier_weight = state["mopc_hr"].get("classifier_weight")
+        classifier_bias = state["mopc_hr"].get("classifier_bias")
+        if (
+            not torch.is_tensor(classifier_weight)
+            or not torch.is_tensor(classifier_bias)
+            or int(classifier_weight.shape[0]) != int(expected_total_capacity)
+            or int(classifier_bias.shape[0]) != int(expected_total_capacity)
+        ):
+            raise ValueError(
+                "official-repo MoPC classifier capacity drift"
+            )
         return {
             "csil": state["csil"],
             "mopc_hr": state["mopc_hr"],
@@ -167,6 +185,7 @@ def _load_base_state(
                 "schema": schema,
                 "checkpoint_sha256": state.get("checkpoint_sha256"),
                 "base_sample_count": int(state["base_sample_count"]),
+                "total_capacity": int(state["total_capacity"]),
                 "base_class_counts": list(state.get("base_class_counts", [])),
                 "csil_base_train_sample_count": int(
                     state["csil_base_train_sample_count"]
@@ -255,7 +274,11 @@ def predict(args: argparse.Namespace) -> dict[str, Any]:
     output_dir = Path(args.output_dir).resolve()
     output_dir.mkdir(parents=True, exist_ok=False)
     base_state = _load_base_state(
-        package_root, manifest, device=device, old_count=old_count
+        package_root,
+        manifest,
+        device=device,
+        old_count=old_count,
+        expected_total_capacity=int(args.expected_total_capacity),
     )
     opened_roles = ["checkpoint", "head"]
     fitted_by_scenario = {}
@@ -508,6 +531,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--expected-seal-sha256", required=True)
     parser.add_argument("--method", choices=METHODS, required=True)
     parser.add_argument("--old-class-count", type=int, default=6)
+    parser.add_argument("--expected-total-capacity", type=int, required=True)
     parser.add_argument("--k-shot", type=int, choices=(1, 5, 10, 20), required=True)
     parser.add_argument("--seed", type=int, required=True)
     parser.add_argument("--row-id", required=True)

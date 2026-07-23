@@ -23,6 +23,7 @@ from cvsrffi.leo_weak_cache import (  # noqa: E402
     canonical_json_sha256,
     ids_sha256,
     overlay_id,
+    physical_sample_id,
     post_channel_iq_sha256,
     sha256_file,
 )
@@ -65,6 +66,19 @@ _COMPARISON_PROVENANCE_FIELDS = (
     "post_channel_iq_sha256",
     "overlay_ids",
 )
+_COMPARISON_OPTIONAL_MEMBERS = (
+    "source_dataset_sha256",
+    "source_record_indices",
+)
+_COMPARISON_CURRENT_PROVENANCE_FIELDS = (
+    "sample_ids",
+    "source_dataset_sha256",
+    "source_record_indices",
+    "sat_scenarios",
+    "satellite_seeds",
+    "post_channel_iq_sha256",
+    "overlay_ids",
+)
 
 
 def _comparison_manifest(archive: np.lib.npyio.NpzFile) -> dict:
@@ -98,16 +112,25 @@ def load_comparison_inner_leo_cache(
 
     with np.load(path, allow_pickle=False) as archive:
         members = tuple(str(value) for value in archive.files)
-        if set(members) != set(_COMPARISON_CACHE_MEMBERS):
-            missing = sorted(set(_COMPARISON_CACHE_MEMBERS) - set(members))
-            extra = sorted(set(members) - set(_COMPARISON_CACHE_MEMBERS))
+        required = set(_COMPARISON_CACHE_MEMBERS)
+        allowed_members = required | set(_COMPARISON_OPTIONAL_MEMBERS)
+        if not required.issubset(members) or not set(members).issubset(
+            allowed_members
+        ):
+            missing = sorted(required - set(members))
+            extra = sorted(set(members) - allowed_members)
             raise ValueError(
                 f"comparison LEO cache member drift: missing={missing}, extra={extra}"
+            )
+        optional_present = set(members) & set(_COMPARISON_OPTIONAL_MEMBERS)
+        if optional_present not in (set(), set(_COMPARISON_OPTIONAL_MEMBERS)):
+            raise ValueError(
+                "comparison LEO source-lineage members must be both absent or both present"
             )
         manifest = _comparison_manifest(archive)
         arrays = {
             key: np.asarray(archive[key])
-            for key in _COMPARISON_CACHE_MEMBERS
+            for key in members
             if key != "manifest_json"
         }
 
@@ -153,10 +176,41 @@ def load_comparison_inner_leo_cache(
         raise ValueError("comparison LEO manifest scenario list drift")
     if {str(v) for v in manifest.get("output_roles", [])} != observed_roles:
         raise ValueError("comparison LEO manifest output_roles drift")
-    if tuple(
+    provenance_fields = tuple(
         str(v) for v in manifest.get("sample_overlay_provenance_fields", [])
-    ) != _COMPARISON_PROVENANCE_FIELDS:
+    )
+    if provenance_fields not in (
+        _COMPARISON_PROVENANCE_FIELDS,
+        _COMPARISON_CURRENT_PROVENANCE_FIELDS,
+    ):
         raise ValueError("comparison LEO provenance fields drift")
+    has_current_lineage = all(
+        key in arrays for key in _COMPARISON_OPTIONAL_MEMBERS
+    )
+    if (
+        provenance_fields == _COMPARISON_CURRENT_PROVENANCE_FIELDS
+    ) != has_current_lineage:
+        raise ValueError(
+            "comparison LEO provenance fields and source-lineage members disagree"
+        )
+    if has_current_lineage:
+        dataset_hashes = np.asarray(arrays["source_dataset_sha256"]).astype(str)
+        record_indices = np.asarray(
+            arrays["source_record_indices"], dtype=np.int64
+        )
+        if not all(
+            len(value) == 64
+            and value == value.lower()
+            and all(char in "0123456789abcdef" for char in value)
+            for value in dataset_hashes.tolist()
+        ):
+            raise ValueError(
+                "comparison LEO source_dataset_sha256 values must be lowercase hex"
+            )
+        if bool(np.any(record_indices < 0)):
+            raise ValueError(
+                "comparison LEO source_record_indices must be nonnegative"
+            )
     if int(manifest.get("row_count", -1)) != row_count:
         raise ValueError("comparison LEO manifest row_count drift")
 
@@ -175,6 +229,14 @@ def load_comparison_inner_leo_cache(
     if len(channel_hash) != 64:
         raise ValueError("comparison LEO channel_config_sha256 is missing")
     sample_ids = np.asarray(arrays["sample_ids"]).astype(str)
+    if has_current_lineage:
+        expected_sample_ids = [
+            physical_sample_id(arrays, index) for index in range(row_count)
+        ]
+        if sample_ids.tolist() != expected_sample_ids:
+            raise ValueError(
+                "comparison LEO sample_ids do not match physical metadata"
+            )
     iq_hashes = np.asarray(arrays["post_channel_iq_sha256"]).astype(str)
     overlay_ids = np.asarray(arrays["overlay_ids"]).astype(str)
     expected_iq_hashes = [post_channel_iq_sha256(row) for row in iq]
@@ -225,7 +287,10 @@ def load_comparison_inner_leo_cache(
         "manifest_sha256": canonical_json_sha256(manifest),
         "comparison_source_lineage_arrays_required": False,
         "new_class_leo_iq_verified": bool(np.any(new_mask)),
-        "exact_legacy_member_set_verified": True,
+        "exact_legacy_member_set_verified": not any(
+            key in arrays for key in _COMPARISON_OPTIONAL_MEMBERS
+        ),
+        "current_source_lineage_members_verified": has_current_lineage,
     }
     return arrays, dict(manifest), audit
 
@@ -246,6 +311,12 @@ def load_comparison_leo_cache_set(
 
     path = Path(manifest_path).resolve(strict=True)
     payload = json.loads(path.read_text(encoding="utf-8-sig"))
+    if str(payload.get("cache_scope", "")) != str(expected_scope):
+        raise ValueError(
+            "comparison cache scope drift: "
+            f"observed={payload.get('cache_scope')!r}, "
+            f"expected={expected_scope!r}"
+        )
     scenario_map = dict(payload.get("cache_npz_by_scenario", {}))
     hash_map = dict(payload.get("cache_sha256_by_scenario", {}))
     if tuple(scenario_map) != FORMAL_LEO_WEAK_SCENARIOS:
