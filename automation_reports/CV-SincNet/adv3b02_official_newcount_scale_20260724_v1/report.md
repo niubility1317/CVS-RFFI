@@ -5,7 +5,7 @@
 - 实验ID：`adv3b02_official_newcount_scale_20260724_v1`
 - 日期：2026-07-24
 - 操作者：Codex主代理；N607发布子代理`no_leo_n607_release`
-- 当前状态：`LOCAL_VERIFIED / REVIEW_APPROVED / NOT_LANDED`
+- 当前状态：`GIT_COMMITTED / REVIEW_APPROVED / NOT_LANDED`
 - 目标：减少新类数量并运行多组正式LEO实验，同时覆盖论文给出的增量类数量。
 - Git承载面：`E:\type10-7\github_publish\CVS-RFFI-repo`
 - 说明：`E:\type10-7`根目录不是Git仓库，本报告同步到上述Git承载面。
@@ -133,6 +133,9 @@ Conda包装环境问题；随后按项目规则串行使用`conda run -n ssr-gpu
 
 第四轮独立审查结果：`P0=0,P1=0,P2=0 / APPROVE`。该批准仅表示本地
 release实现达到提交和N607发布门槛，不表示已landed、实验已完成或性能可推广。
+
+- release实现commit：`3b8e9988f2213df1435b4a63e5e88b0e7b77a8ff`
+- 提交范围：37个文件，新增3999行、删除77行。
 
 ## N607发布预注册
 
