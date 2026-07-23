@@ -5,7 +5,7 @@
 - run ID：`dssc_zdom_jg_qknn_r4_bcrr_full125_r1f_849fa342_20260723_141937`
 - 创建时间：`2026-07-23T14:19:37+08:00`
 - candidate：`DSSC_ZDOM_JG_QKNN_R4_BCRR/design-r1f`
-- 当前状态：`RUNNING / NO_PERFORMANCE_RESULT`
+- 当前状态：`TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
 - 方法Git提交：`849fa342cd46cb8294b5d9b4f5358cea630d0643`
 - 发布报告Git提交：以包含本文件的后续提交为准；不改变方法提交。
 - sole launch owner：`/root/dssc_r1f_full125_runner`（`gpt-5.6-terra high`）；主agent未并发启动本run。
@@ -87,9 +87,12 @@ runner只使用短连接监控，不杀进程、不自动重启、不修改方�
 - landed：`PASS`。direct preflight、远端run-root不可覆盖检查、5项上传输入、checkpoint/runtime SHA和4文件`py_compile`均通过。
 - remote PID：`742449`；启动5秒后主launcher存活。
 - GPU：`0,1,2,3,4,5,6,7`；启动前每GPU既有compute=1，新增后仍满足每GPU不超过2个训练进程。
-- remote exit：`RUNNING`；`matrix_manifest.json`已生成，`matrix_exit.json`尚未生成。
+- remote exit：PID`742449`自然退出；`matrix_exit.complete=false`，未retry。
 - parity receipt：`PRESENT_REUSED / b93219c40b79be8ecdf8c0a51d77710d8119f8899331ae7e2518b77adfeac60b`
 - archive：`PRESENT_REUSED / dd2a2b0c8ab1a1d8edbeed81e78ffb79c253240998a9ac2404b75699f4ca68d0`；manifest=`34213331d20594dceface61680ab0fea8ffc40ee72d7e13c844763c70fef26d4`
 - coverage：`PRESENT_REUSED / c6e25ebeaed32b577e3321e78cd569acff934a7c804d0cb621b26e68f26d0c17`
-- prediction/score：运行中，尚未形成完整计数。
-- 最终性能表与裁决：待artifact完整后回填
+- prediction/score：`0/0`；launcher receipt=`125`，row receipt=`0`，`aggregate_index.json`不存在。
+- 根因：125/125子任务均return1；119份日志在任何prediction前触发TorchScript隐式CUDA0与row GPU不一致，另6份GPU0日志越过该点后触发PyTorch2.1＋NumPy2的ndarray桥接错误。两者均为runner运行时边界，不是性能结果。
+- artifact：`matrix_manifest.json` SHA=`887d9eb6d4bcb12cbcb41cac0d16f4ca351666761cdd7762c37726be542246b5`；`matrix_exit.json` SHA=`0d5afa20f99b921be4c3981f9d276b23d04b483a2abd9192798be7354b69c262`；主stderr SHA=`6b6298e387401a984a84364ab603576fef31dc57cfb757af0e3a81832e93e132`；回收inventory=`5071 files / 3,298,701,836 bytes / 636f37f586d86a6af14c5bfb25e999a7cc18d5dee06d6bc234a8723ef7aadd5b`。
+- handoff：`E:\type10-7\automation_reports\CV-SincNet\dssc_zdom_jg_qknn_r4_bcrr_full125_r1f_849fa342_20260723_141937\runner_handoff_technical_failure`
+- 最终性能表与裁决：无prediction，禁止性能裁决；正式状态=`TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。

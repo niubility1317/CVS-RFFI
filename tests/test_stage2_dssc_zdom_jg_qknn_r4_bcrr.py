@@ -8,6 +8,7 @@ import sys
 import numpy as np
 import pytest
 import torch
+from torch import nn
 
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
@@ -676,3 +677,36 @@ def test_frozen_five_arm_lpt_full125_launcher(tmp_path):
     assert runner._parse_gpu_ids("0,2,7") == (0, 2, 7)
     with pytest.raises(runner.DSSCLauncherError):
         runner._parse_gpu_ids("0,0")
+
+
+def test_row_device_binding_sets_and_reads_back_indexed_cuda(monkeypatch):
+    selected = []
+    monkeypatch.setattr(torch.cuda, "is_available", lambda: True)
+    monkeypatch.setattr(torch.cuda, "device_count", lambda: 8)
+    monkeypatch.setattr(torch.cuda, "set_device", lambda value: selected.append(value.index))
+    monkeypatch.setattr(torch.cuda, "current_device", lambda: selected[-1])
+    runner._activate_row_device("cuda:5")
+    assert selected == [5]
+    with pytest.raises(runner.DSSCLauncherError, match="indexed CUDA"):
+        runner._activate_row_device("cpu")
+
+
+def test_numpy2_safe_identity_feature_boundary_avoids_as_tensor(monkeypatch):
+    class DummyBackbone(nn.Module):
+        def forward(self, rows, **_kwargs):
+            return {"feat_joint": rows.reshape(len(rows), -1)[:, :160]}
+
+    class DummyModel:
+        id_backbone = DummyBackbone()
+        id_feature_key = "feat_joint"
+
+    def forbidden(*_args, **_kwargs):
+        raise AssertionError("ndarray C-API bridge must remain unreachable")
+
+    monkeypatch.setattr(torch, "as_tensor", forbidden)
+    iq = np.arange(2 * 2 * 256, dtype=np.float32).reshape(2, 2, 256)
+    result = runner._id_feature(DummyModel(), iq, device="cpu")
+    assert result.shape == (2, 160)
+    assert result.dtype == np.float32
+    assert np.isfinite(result).all()
+    assert np.allclose(np.linalg.norm(result, axis=1), 1.0, atol=1e-6)

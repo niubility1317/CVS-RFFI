@@ -2127,3 +2127,9 @@ OTHER相对M0取得old-after`+0.012098`、seen-new`+0.011408`、H`+0.017067`、f
 |M_DA/ground|3.8354450|3.9354210|25/25|1.0|0.99999994|0|true|4|
 
 `ssr-gpu`最终`py_compile`通过，专项与协议负例`21/21 passed`。独立终审确认artifact/hash/row闭合门未被INT8修订绕过，零系数组产生正FP16 scale并可load/round-trip，canonical lock精确封存两组格式；裁决=`MERGE / P0=0 / P1=0`。当前状态=`LOCAL_VERIFIED / NO_PERFORMANCE_RESULT`。以上均为技术证据，不是目标域性能；下一步只允许Git提交、建立全新不可覆盖完整125 run报告并交唯一Terra runner发布，不再追加静态设计、控制面或数据验证。
+
+##### `DSSC_ZDOM_JG_QKNN_R4_BCRR/design-r1f`首次完整125技术失败与techfix1
+
+方法提交=`849fa342cd46cb8294b5d9b4f5358cea630d0643`，首发run=`dssc_zdom_jg_qknn_r4_bcrr_full125_r1f_849fa342_20260723_141937`。direct N607 preflight、源码/input/checkpoint/runtime SHA、4文件编译、coverage/archive/parity绑定和GPU安全slot均通过；PID=`742449`在GPU0–7启动后自然退出，未retry。125份launcher receipt全部return1，row receipt/prediction/score分别为`0/0/0`，所以状态严格为`TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。
+
+完整回收的125份stderr显示两个共同运行时边界：119份非GPU0任务在sealed TorchScript前向时将内部默认CUDA0张量与row GPU混用；6份GPU0任务越过该点后，在runner自身`torch.as_tensor(ndarray)`处触发N607的PyTorch2.1＋NumPy2桥接失败。techfix1只在row打开sealed runtime前执行并读回`torch.cuda.set_device(row GPU)`，同时把runner全部ndarray→Tensor边界改为contiguous FP32 buffer→clone→device、Tensor→NumPy改为`tolist`→FP32；候选、五臂、矩阵、输入、loss、adapter、qKNN、BCRR、INT8和decision geometry均不变。新增CUDA设备负例与NumPy2桥接攻击后，本地`py_compile`通过，专项`23/23 passed`；真实ADV3B02 checkpoint＋sealed enrollment support无query smoke输出`[2,160]`有限FP32、两行norm均为1、query rows=0。独立终审=`MERGE / P0=0 / P1=0`。新run启动前还须在N607 GPU1执行零IQ/noquery兼容smoke；该技术smoke不产生prediction或性能结果。

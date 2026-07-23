@@ -154,27 +154,67 @@ def _exact_adv3b02(checkpoint_path: str | Path, *, device: str):
     return model.eval(), {"checkpoint_sha256": CHECKPOINT_SHA256, "missing_keys": 0, "unexpected_keys": 0, "inference_runtime": "exact_state_dict_rebuild"}
 
 
+def _activate_row_device(device: str) -> None:
+    """Bind implicit CUDA allocations before any sealed runtime is opened."""
+    import torch
+
+    resolved = torch.device(device)
+    if (
+        resolved.type != "cuda"
+        or resolved.index is None
+        or not torch.cuda.is_available()
+        or resolved.index < 0
+        or resolved.index >= torch.cuda.device_count()
+    ):
+        raise DSSCLauncherError("formal row requires an available indexed CUDA device")
+    torch.cuda.set_device(resolved)
+    if torch.cuda.current_device() != resolved.index:
+        raise DSSCLauncherError("formal row CUDA current-device binding failed")
+
+
+def _numpy_float32_tensor(values: Any, *, device: str):
+    """Cross the PyTorch-2.1/NumPy-2 boundary without the ndarray C API."""
+    import torch
+
+    source = np.array(values, dtype=np.float32, order="C", copy=True)
+    return (
+        torch.frombuffer(source, dtype=torch.float32)
+        .reshape(source.shape)
+        .clone()
+        .to(torch.device(device))
+    )
+
+
+def _tensor_float32_numpy(value: Any) -> np.ndarray:
+    """Return FP32 NumPy through the list boundary used by the sealed runtime."""
+    return np.asarray(value.detach().cpu().tolist(), dtype=np.float32)
+
+
 def _feature(model: Any, iq: np.ndarray, *, device: str) -> np.ndarray:
     import torch
-    value = torch.as_tensor(np.asarray(iq, np.float32), device=device)
+    value = _numpy_float32_tensor(iq, device=device)
     with torch.no_grad():
         result = model(value, return_aux=True)
     if not isinstance(result, Mapping) or not torch.is_tensor(result.get("z_id")):
         raise DSSCLauncherError("exact dual model did not expose z_id")
-    return torch.nn.functional.normalize(result["z_id"], dim=1).detach().cpu().numpy().astype(np.float32)
+    return _tensor_float32_numpy(
+        torch.nn.functional.normalize(result["z_id"], dim=1)
+    )
 
 
 def _id_feature(model: Any, iq: np.ndarray, *, device: str) -> np.ndarray:
     """Query path: identity backbone only; domain backbone is unreachable."""
     import torch
     from model_dual_cvsincnet import backbone_forward_compat
-    value = torch.as_tensor(np.asarray(iq, np.float32), device=device)
+    value = _numpy_float32_tensor(iq, device=device)
     with torch.no_grad():
         aux = backbone_forward_compat(model.id_backbone, value, y=None, return_aux=True, domain_labels=None)
     key = str(model.id_feature_key)
     if not isinstance(aux, Mapping) or not torch.is_tensor(aux.get(key)):
         raise DSSCLauncherError("identity-only query path did not expose feat_joint")
-    return torch.nn.functional.normalize(aux[key], dim=1).detach().cpu().numpy().astype(np.float32)
+    return _tensor_float32_numpy(
+        torch.nn.functional.normalize(aux[key], dim=1)
+    )
 
 
 def _timed_id_feature(
@@ -369,12 +409,12 @@ def _stage_predictions(*, state: str, scenario: str, enrollment_payload: Mapping
         if int(old_indices.sum()) != len(old_registry) * a.k_shot:
             raise DSSCLauncherError("after state lacks the exact old support prefix")
         ng_b = cache["ng_adapter"]
-        _ng, ng_receipt = adapt_support_only(ng_model, torch.as_tensor(support_iq, device=a.device), labels, registry, k_shot=a.k_shot, stage="S_C", bundle=None, ground_enabled=False, support_physical_ids=support_tokens, continue_adapter=ng_b, merge=True)
+        _ng, ng_receipt = adapt_support_only(ng_model, _numpy_float32_tensor(support_iq, device=a.device), labels, registry, k_shot=a.k_shot, stage="S_C", bundle=None, ground_enabled=False, support_physical_ids=support_tokens, continue_adapter=ng_b, merge=True)
         g_b = cache["g_adapter"]
-        g_adapter, g_receipt = adapt_support_only(g_model, torch.as_tensor(support_iq, device=a.device), labels, registry, k_shot=a.k_shot, stage="S_C", bundle=bundle, ground_enabled=True, ground_old_registry=old_registry, support_physical_ids=support_tokens, continue_adapter=g_b, merge=True)
+        g_adapter, g_receipt = adapt_support_only(g_model, _numpy_float32_tensor(support_iq, device=a.device), labels, registry, k_shot=a.k_shot, stage="S_C", bundle=bundle, ground_enabled=True, ground_old_registry=old_registry, support_physical_ids=support_tokens, continue_adapter=g_b, merge=True)
     else:
-        ng_adapter, ng_receipt = adapt_support_only(ng_model, torch.as_tensor(fit_iq, device=a.device), fit_labels, fit_registry, k_shot=a.k_shot, stage="S_B", bundle=None, ground_enabled=False, support_physical_ids=fit_tokens, merge=False)
-        g_adapter, g_receipt = adapt_support_only(g_model, torch.as_tensor(fit_iq, device=a.device), fit_labels, fit_registry, k_shot=a.k_shot, stage="S_B", bundle=bundle, ground_enabled=True, ground_old_registry=old_registry, support_physical_ids=fit_tokens, merge=False)
+        ng_adapter, ng_receipt = adapt_support_only(ng_model, _numpy_float32_tensor(fit_iq, device=a.device), fit_labels, fit_registry, k_shot=a.k_shot, stage="S_B", bundle=None, ground_enabled=False, support_physical_ids=fit_tokens, merge=False)
+        g_adapter, g_receipt = adapt_support_only(g_model, _numpy_float32_tensor(fit_iq, device=a.device), fit_labels, fit_registry, k_shot=a.k_shot, stage="S_B", bundle=bundle, ground_enabled=True, ground_old_registry=old_registry, support_physical_ids=fit_tokens, merge=False)
     adaptation_wall_ms = 1000.0 * (time.perf_counter() - adapt_started)
     if state == "before":
         ng_deployed_model, ng_deployed_adapter = _deployed_s1_snapshot(source_adapter=ng_adapter, bundle=None, ground_enabled=False, a=a)
@@ -744,6 +784,7 @@ def _score_arms(output: Path, build: Mapping[str, Any], publications: Mapping[st
 def run_row(a: argparse.Namespace) -> dict[str, Any]:
     if a.k_shot not in (1, 5, 10) or (a.k_shot, a.new_class_count) not in SLICES:
         raise DSSCLauncherError("row is outside frozen full125 slice set")
+    _activate_row_device(a.device)
     output = Path(a.output_root)
     if output.exists():
         raise DSSCLauncherError("row output must be a fresh path")
