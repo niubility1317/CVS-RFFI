@@ -82,7 +82,7 @@ query_decision_policy = per_sample_all_registered_classes
 
 ## Stage2权限
 
-本节及前述Phase2最小数据协议只约束Stage2主方法及其内部候选。CSIL、MoPC-HR等外部论文对比方法可按原论文完整流程使用base/source数据、历史统计、训练批次和评估流程，也不受主方法资源预算约束；对比方法唯一必须继承的数据条件是全部新类注册及新类评测样本叠加并记录LEO星地信道。对比方法须披露权限差异，其结果不能作为主方法协议合规证据。
+本节及前述Phase2最小数据协议只约束Stage2主方法及其内部候选。CSIL、MoPC-HR等外部论文对比方法可按原论文完整流程使用base/source数据、历史统计、训练批次和评估流程，也不受主方法资源预算约束。正式对比默认要求全部新类注册及新类评测样本叠加并记录LEO星地信道；经用户显式要求，可另跑仅用于归因的matched无LEO新类诊断，保持方法、物理样本ID、support/query划分、K-shot、seed和旧类评测条件不变，只替换同一新类物理记录的未叠加IQ。该诊断必须标为`DIAGNOSTIC_NEW_CLASS_NO_LEO_NON_FORMAL`并与正式LEO结果隔离，不能用于CVS卫星场景性能声明、方法晋级或Stage2协议有效性证明。对比方法须披露权限差异，其结果不能作为主方法协议合规证据。
 
 | 阶段 | target信息 | 任务 |
 |---|---|---|
