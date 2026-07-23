@@ -1,5 +1,6 @@
 import copy
 
+import numpy as np
 import torch
 from torch import nn
 
@@ -9,6 +10,9 @@ from paper_reproduction.cvs_aligned.adv3b02_paper_full_ci import (
     fit_mopc_hr_paper_full,
     predict_after,
     zero_bias_logits,
+)
+from paper_reproduction.scripts.run_adv3b02_paper_full_ci_truth_free_predictor import (
+    _tensor,
 )
 
 
@@ -26,6 +30,17 @@ class TinyBackbone(nn.Module):
 
 def feature_fn(backbone, x):
     return backbone(x)
+
+
+def test_predictor_tensor_conversion_does_not_require_numpy_c_bridge(monkeypatch):
+    def fail_from_numpy(_value):
+        raise TypeError("simulated dual NumPy runtime")
+
+    monkeypatch.setattr(torch, "from_numpy", fail_from_numpy)
+    value = np.asarray([[1.25, -2.5]], dtype=np.float32)
+    result = _tensor(value, dtype=torch.float32, device=torch.device("cpu"))
+    assert result.dtype == torch.float32
+    assert torch.equal(result, torch.tensor([[1.25, -2.5]], dtype=torch.float32))
 
 
 def support(class_count, shots=2, dim=6):

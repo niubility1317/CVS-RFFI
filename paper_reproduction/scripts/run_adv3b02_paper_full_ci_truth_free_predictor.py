@@ -60,7 +60,11 @@ def _tensor(value: np.ndarray, *, dtype: torch.dtype, device: torch.device) -> t
         array = array.astype(np.int64, copy=False)
     else:
         raise TypeError(dtype)
-    return torch.from_numpy(array).clone().to(device=device, dtype=dtype)
+    # N607 currently pairs NumPy 2.2.5 with Torch 2.1.0; its NumPy C bridge
+    # rejects genuine ndarrays. The buffer protocol avoids that ABI boundary.
+    # clone() owns the storage before the local NumPy array leaves scope.
+    tensor = torch.frombuffer(memoryview(array), dtype=dtype)
+    return tensor.reshape(array.shape).clone().to(device=device, dtype=dtype)
 
 
 def _selected_support(arrays: Mapping[str, np.ndarray], *, k_shot: int):
