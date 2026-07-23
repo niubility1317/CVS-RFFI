@@ -2038,3 +2038,38 @@ OTHER相对M0取得old-after`+0.012098`、seen-new`+0.011408`、H`+0.017067`、f
 `RBSC-qKNN-BPDC/r1`一次监督裁决=`REVISE / P0=3 / P1=3 / NOT_DESIGN_FROZEN`：RBSC尚未闭合为qKNN可消费的确定性metric/bandwidth state，新BPDC的RSS归一化与query积分尺度也不一致，禁止实现。随后两次只读直接复用审计均STOP：D92只封存LDA coefficient/intercept，无法恢复qKNN的rank≤8 typed PSD metric；D101与既有SRDA同样只封存线性分类头而非qKNN metric。因此不能把历史方法头直接拼接后声称`DA＋qKNN＋OTHER`。
 
 当前唯一下一设计artifact为`RBSC-TM-qKNN-BPP/r0`方法卡：保留D92的old/new各0.5类内协方差思想，但显式生成现有qKNN schema可消费的rank≤8 typed metric；qKNN bank/bandwidth与CID-BPP算法、先验、selector和量化门全部复用。它仍处于只读`DESIGN_DRAFT`编写阶段，必须经一次独立FEASIBILITY_REVIEW达到MERGE才允许实现；未冻结前不修改方法代码或发布实验。
+
+##### `RBSC-TM-qKNN-BPP/r0`可行性监督与停止点
+
+独立监督裁决=`REVISE / P0=1 / NOT_DESIGN_FROZEN`，因此本revision不实现、不发布N607。唯一P0是作者卡让`M_OTHER/M_JOINT`直接以BPP predictive logits完成argmax，qKNN只提供bank/config/metric；这重复违反已冻结的“qKNN始终承担全部注册类统一逐query决策，OTHER不得以第二head替代qKNN”主路线。共享bank或typed metric不能把BPP替代头重新定义为`qKNN＋OTHER`，修复必须创建新revision并重新审查。
+
+可复用结论仅限RBSC-TM的数学与接口可行性：非标量rank≤8 SPD metric会改变M-cosine、邻居排序及可能的argmax，identity bandwidth不会抵消；对最终qint8 basis和fp16 attenuation复算谱界可把condition约束在4以内。尚需在新revision闭合的P1包括：完整9/18 slice与2/3 scene协同门及全指标保护门；把非identity qKNN每次调用的support projection `CKDr`计入实际MAC；候选专属teacher-vs-deployment INT8证据；覆盖D=160 eigensolver误差的tie容差；把before隔离改写为builder只接收old support的可验证接口契约。
+
+下一只读候选改为`RBSC-TM-qKNN-BCRR/r1`：RBSC-TM仅替换正式结果中18/18行退化identity的SVRN DA，OTHER完整复用已在同row取得净正确`+78`的连续qKNN残差BCRR，禁止BPP或其他第二head接管最终分类。新卡仍须一次独立FEASIBILITY_REVIEW达到MERGE后才可进入实现。
+
+##### `RBSC-TM-qKNN-BCRR/r1` DESIGN_FROZEN
+
+独立监督裁决=`MERGE / P0=0 / P1=0`。作者提出的principal-sqrt等价性和联合INT8生命周期均已由不可变合同闭合，无需第二设计波次。当前状态=`DESIGN_FROZEN -> IMPLEMENTING / NO_PERFORMANCE_RESULT`；历史BCRR净正确`+78`只证明OTHER值得复用，不构成本候选DA或联合性能证据。
+
+|ID|冻结合同|
+|---|---|
+|RB01|candidate固定为`RBSC-TM-qKNN-BCRR/r1`；before四臂=`QI,QI,FI,FI`，after=`QI,QM,FI,FM`。|
+|RB02|M0/M_OTHER共享identity qKNN receipt；M_DA/M_JOINT共享同一RBSC qKNN metric receipt。|
+|RB03|qKNN bank、registry、Phase1 K lock及`class_scales_fp16`四臂共享，不重建bank或bandwidth；BCRR仅以`omega<=0.5`加入连续残差。|
+|RB04|RBSC只读当前row support、support标签、typed old/new registry和既有Phase1 bundle；query不得进入fit、audit、fallback或state。|
+|RB05|before builder只接收old registry/support，要求`new_classes=[]`并封存独立physical-ID SHA；before RBSC恒identity。|
+|RB06|after old/new非空、互斥且并集等于registry；先组内按类等权平均类内scatter，再令old/new各权重0.5。|
+|RB07|K1不计算协方差，metric rank0且`omega_I=omega_M=0`；K5首验；K10只按同式确认。|
+|RB08|`delta_eig=64*[160*eps64/(1-160*eps64)]*max(1,||S/tau||2)`；跨`lambda=1`或rank8边界的cluster整体丢弃，可保留cluster必须整体进入。|
+|RB09|保留cluster按spectral projector、坐标轴升序和两遍MGS生成规范基；cluster内用block mean eigenvalue统一算attenuation；孤立向量按最大绝对坐标最小索引定号。|
+|RB10|basis qint8后以实际`B_q`和预量化fp16 attenuation算penalty谱半径`p`；只允许一次公共缩放`gamma=min(1,nextafter_fp16(0.75,0)/p)`。最终fp16重算condition不严格小于4则identity，禁止强度扫描。|
+|RB11|metric SHA须在本地/N607一致；tie、半量化边界或SHA不稳定只允许identity，不得更换solver结果。|
+|RB12|principal sqrt必须由实际序列化`M_q=I-B_q^Tdiag(a_q)B_q`构造，并验证对称、SPD及`L_q L_q≈M_q`；禁止用未量化正交basis近似。|
+|RB13|RBSC BCR只用`H_M=row_norm(X_q L_q)`拟合；部署先计算`L_q W`再按列qint8/fp16封存。由于`N(B)`消去query共有正尺度，该折叠与在`H_M`评分严格等价。|
+|RB14|BCRR conditional support-only LOO固定该branch实际metric和formal bank `class_scales_fp16`；每折只删除held physical ID的邻居与BCR训练行，禁止重拟合metric/bandwidth或读取另一branch。|
+|RB15|共同bank audit失败为技术失败；metric qKNN audit失败只令RBSC精确回identity并绑定raw state；对应BCR/fusion audit失败只令该branch `omega=0`；query退化仅该query回对应qKNN。|
+|RB16|teacher固定为FP64 support、未量化metric/weights和连续`omega*`；deployment必须从序列化bytes反解。所有audit只用support masked/LOO，qKNN与fusion均要求top1≥99.5%、large-margin flip=0。|
+|RB17|共享计算保守per-query MAC=`2Nd+Ndr+dr+Nr+2dC`，`Ndr`逐query计费；K5/C6/r8=`51,440`、K10=`99,680`。参数0、optimizer step0、无持久FP32 sidecar、总wire≤256KiB、numpy CPU、VRAM0，并实测build/predict mean/P95。|
+|RB18|K5固定复用GEOFF/r8、rx1-1、18 prediction/72同row score。DA净正确≤0、old/new任一净负、OTHER不独立正、JOINT mean H不严格胜两单臂、mean`I_syn≤0`、正slice<9/18、正scene<2/3，或任一old-before/after/gain、seen-new、BA、floor、min-old/min-new、forgetting、双混淆、INT8、condition、state、MAC、时延、协议门失败，均判负且不运行125。|
+
+冻结代码范围仅为`code/cvsrffi/stage2_rbsc_tm_bcrr.py`、`code/cvsrffi/rbsc_tm_bcrr_fixed_held_spike.py`、`tests/test_rbsc_tm_bcrr_fixed_held_spike.py`。不得修改既有qKNN、SVRN-BCRR、数据、GEOFF/r8、coverage或scorer；run报告只承载实验元数据，不扩大方法delta。
