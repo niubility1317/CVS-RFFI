@@ -42,6 +42,8 @@ MATRIX_COUNTS = {"jobs": 125, "scene_slices": 375, "score_rows": 1500, "arm_stat
 LAUNCHER_SCHEMA = "cvs.stage2.adv3b02.full125.artifact_validator.r4_q2f32_bcr3_zidtotal1"
 FORMAL_GPU_IDS = tuple(range(8))
 ROW_STATES = ("before", "after")
+_PROC_CMDLINE_CAPTURE_ATTEMPTS = 50
+_PROC_CMDLINE_CAPTURE_RETRY_SECONDS = 0.01
 SCENE_METRIC_KEYS = {
     "query_count",
     "old_acc",
@@ -1189,6 +1191,30 @@ def _process_group_is_alive(process_group_id: int) -> bool:
     return True
 
 
+def _read_nonempty_posix_cmdline(
+    process: subprocess.Popen[bytes], proc_cmd: Path
+) -> list[str]:
+    """Read post-exec cmdline, retrying only the transient empty /proc state."""
+    for attempt in range(_PROC_CMDLINE_CAPTURE_ATTEMPTS):
+        raw_cmdline = proc_cmd.read_bytes()
+        observed_cmdline = [
+            item.decode("utf-8", errors="strict")
+            for item in raw_cmdline.split(b"\0")
+            if item
+        ]
+        if observed_cmdline:
+            return observed_cmdline
+        if process.poll() is not None:
+            raise ADV3B02LauncherError(
+                "run-owned PID exited before cmdline evidence at launch"
+            )
+        if attempt + 1 < _PROC_CMDLINE_CAPTURE_ATTEMPTS:
+            time.sleep(_PROC_CMDLINE_CAPTURE_RETRY_SECONDS)
+    raise ADV3B02LauncherError(
+        "run-owned PID cmdline evidence remained empty after bounded launch retry"
+    )
+
+
 def _capture_run_owned_process_identity(
     process: subprocess.Popen[bytes],
     *,
@@ -1214,11 +1240,7 @@ def _capture_run_owned_process_identity(
     proc_cmd = Path(f"/proc/{pid}/cmdline")
     if not proc_cwd.exists() or not proc_cmd.exists():
         raise ADV3B02LauncherError("run-owned PID evidence absent at launch")
-    observed_cmdline = [
-        item.decode("utf-8", errors="strict")
-        for item in proc_cmd.read_bytes().split(b"\0")
-        if item
-    ]
+    observed_cmdline = _read_nonempty_posix_cmdline(process, proc_cmd)
     return _validate_run_owned_process_identity(
         pid=pid,
         command=command,

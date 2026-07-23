@@ -2249,6 +2249,58 @@ def test_run_owned_process_identity_rejects_cwd_cmdline_group_and_root_drift(
             )
 
 
+def test_posix_cmdline_capture_retries_only_empty_startup_reads(tmp_path, monkeypatch):
+    proc_cmd = tmp_path / "cmdline"
+    reads = [b"", b"\0", b"python\0row\0"]
+    sleeps = []
+
+    class LiveProcess:
+        def poll(self):
+            return None
+
+    def read_bytes(path):
+        assert path == proc_cmd
+        return reads.pop(0)
+
+    monkeypatch.setattr(Path, "read_bytes", read_bytes)
+    monkeypatch.setattr(runner.time, "sleep", lambda seconds: sleeps.append(seconds))
+
+    assert runner._read_nonempty_posix_cmdline(LiveProcess(), proc_cmd) == ["python", "row"]
+    assert sleeps == [runner._PROC_CMDLINE_CAPTURE_RETRY_SECONDS] * 2
+
+
+def test_posix_cmdline_capture_fails_closed_when_process_exits(tmp_path, monkeypatch):
+    proc_cmd = tmp_path / "cmdline"
+
+    class ExitedProcess:
+        def poll(self):
+            return 1
+
+    monkeypatch.setattr(Path, "read_bytes", lambda path: b"")
+
+    with pytest.raises(runner.ADV3B02LauncherError, match="exited before cmdline"):
+        runner._read_nonempty_posix_cmdline(ExitedProcess(), proc_cmd)
+
+
+def test_posix_cmdline_capture_fails_closed_after_bounded_empty_retry(
+    tmp_path, monkeypatch
+):
+    proc_cmd = tmp_path / "cmdline"
+    sleeps = []
+
+    class LiveProcess:
+        def poll(self):
+            return None
+
+    monkeypatch.setattr(runner, "_PROC_CMDLINE_CAPTURE_ATTEMPTS", 3)
+    monkeypatch.setattr(Path, "read_bytes", lambda path: b"")
+    monkeypatch.setattr(runner.time, "sleep", lambda seconds: sleeps.append(seconds))
+
+    with pytest.raises(runner.ADV3B02LauncherError, match="remained empty"):
+        runner._read_nonempty_posix_cmdline(LiveProcess(), proc_cmd)
+    assert sleeps == [runner._PROC_CMDLINE_CAPTURE_RETRY_SECONDS] * 2
+
+
 @pytest.mark.skipif(os.name == "nt", reason="formal N607 process-tree semantics are POSIX")
 def test_posix_root_exit_still_cleans_grandchild_and_preserves_unrelated_sentinel():
     result = runner.run_posix_root_grandchild_unrelated_sentinel()
