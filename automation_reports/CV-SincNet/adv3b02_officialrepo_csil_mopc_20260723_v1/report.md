@@ -18,7 +18,11 @@
 |---|---|
 | Python编译 | PASS |
 | 官方数值fixture | 8/8 PASS |
-| 相关runner/plan回归 | 24/24 PASS |
+| 相关runner/plan回归 | 25/25 PASS |
 | `git diff --check` | PASS |
 
-待本地独立审查、Git commit和N607 smoke完成后补充精确hash、远端路径、命令、PID、GPU、完整结果表及结论。
+独立base复核曾发现首版误吸收`v4_4`的指纹正交深度实验项。该版本未发布；
+修正后采用`v4_3`标准`trainNetwork`交叉熵、默认单次shuffle、保留尾批和
+L2=0.01，并新增base尾批fixture。
+
+待N607 smoke完成后补充精确hash、远端路径、命令、PID、GPU、完整结果表及结论。

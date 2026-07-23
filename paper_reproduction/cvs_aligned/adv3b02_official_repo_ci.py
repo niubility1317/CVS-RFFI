@@ -203,12 +203,6 @@ class MoPCModel(nn.Module):
         return self.fc(features), features
 
 
-def _orthogonality_depth(fingerprints: torch.Tensor) -> torch.Tensor:
-    unit = F.normalize(fingerprints, dim=1)
-    lower = torch.tril(unit @ unit.t(), diagonal=-1)
-    return lower.sum().abs()
-
-
 def _manual_sgdm_step(
     model: nn.Module,
     velocity: dict[str, torch.Tensor],
@@ -266,29 +260,22 @@ def build_csil_base_state(
         fc_bias=fc_bias,
         fingerprints=fingerprints,
     ).train()
-    batches, effective_batch, adapted = _drop_last_batches(
-        len(source_x),
-        requested_batch=int(batch_size),
-        epochs=int(epochs),
-        device=source_x.device,
-        seed=int(seed) + 11,
+    generator = torch.Generator(device=source_x.device).manual_seed(int(seed) + 11)
+    # MATLAB trainNetwork's default Shuffle="once": one permutation is reused
+    # across epochs. Its final incomplete mini-batch is retained.
+    order = torch.randperm(len(source_x), generator=generator, device=source_x.device)
+    optimizer = torch.optim.SGD(
+        model.parameters(), lr=0.01, momentum=0.9, weight_decay=0.01
     )
-    velocity = {
-        name: torch.zeros_like(parameter)
-        for name, parameter in model.named_parameters()
-    }
-    for _epoch, _iteration, indices in batches:
-        model.zero_grad(set_to_none=True)
-        loss = F.cross_entropy(model(source_x[indices]), source_y[indices])
-        loss = loss + _orthogonality_depth(model.fingerprints)
-        loss.backward()
-        _manual_sgdm_step(
-            model,
-            velocity,
-            learning_rate=0.01,
-            momentum=0.9,
-            l2_factor=0.01,
-        )
+    optimizer_steps = 0
+    for _epoch in range(int(epochs)):
+        for start in range(0, len(source_x), int(batch_size)):
+            indices = order[start : start + int(batch_size)]
+            optimizer.zero_grad(set_to_none=True)
+            loss = F.cross_entropy(model(source_x[indices]), source_y[indices])
+            loss.backward()
+            optimizer.step()
+            optimizer_steps += 1
     model.eval()
     fisher = csil_fisher_from_model(model, source_x)
     return {
@@ -300,9 +287,11 @@ def build_csil_base_state(
         "fc_bias": model.fc_bf_fp.bias.detach().cpu(),
         "fingerprints": model.fingerprints.detach().cpu(),
         "fisher": {key: value.detach().cpu() for key, value in fisher.items()},
-        "optimizer_steps": len(batches),
-        "effective_batch": effective_batch,
-        "small_k_adaptation": adapted,
+        "optimizer_steps": optimizer_steps,
+        "effective_batch": int(batch_size),
+        "tail_batch_retained": len(source_x) % int(batch_size) != 0,
+        "shuffle": "once",
+        "small_k_adaptation": False,
     }
 
 

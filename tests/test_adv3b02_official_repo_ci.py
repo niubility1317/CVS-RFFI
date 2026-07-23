@@ -2,6 +2,7 @@ import torch
 
 from paper_reproduction.cvs_aligned.adv3b02_official_repo_ci import (
     _manual_sgdm_step,
+    build_csil_base_state,
     csil_distillation,
     csil_ewc,
     csil_official_fisher_objective,
@@ -167,3 +168,22 @@ def test_mopc_increment_uses_classifier_query_and_kd_is_diagnostic_only():
     assert state.resource["effective_batch_size"] == 8
     assert state.resource["kd_in_total_loss"] is False
     assert "knowledge_distillation_not_in_total" in state.loss_trace[0]
+
+
+def test_csil_base_keeps_trainnetwork_once_shuffle_and_tail_batch():
+    backbone = _dummy_backbone()
+    source_x = torch.randn(5, 2)
+    source_y = torch.tensor([0, 0, 1, 1, 1])
+    state = build_csil_base_state(
+        backbone,
+        source_x,
+        source_y,
+        feature_fn=_feature_fn,
+        old_count=2,
+        seed=23,
+        epochs=2,
+        batch_size=4,
+    )
+    assert state["optimizer_steps"] == 4
+    assert state["tail_batch_retained"] is True
+    assert state["shuffle"] == "once"
