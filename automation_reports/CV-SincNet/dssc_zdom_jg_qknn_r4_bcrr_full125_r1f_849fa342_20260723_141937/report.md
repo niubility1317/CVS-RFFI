@@ -5,10 +5,10 @@
 - run ID：`dssc_zdom_jg_qknn_r4_bcrr_full125_r1f_849fa342_20260723_141937`
 - 创建时间：`2026-07-23T14:19:37+08:00`
 - candidate：`DSSC_ZDOM_JG_QKNN_R4_BCRR/design-r1f`
-- 当前状态：`LOCAL_VERIFIED / PREREGISTERED / NO_PERFORMANCE_RESULT`
+- 当前状态：`RUNNING / NO_PERFORMANCE_RESULT`
 - 方法Git提交：`849fa342cd46cb8294b5d9b4f5358cea630d0643`
 - 发布报告Git提交：以包含本文件的后续提交为准；不改变方法提交。
-- sole launch owner：待指派的`gpt-5.6-terra high`实验runner；主agent不得并发启动本run。
+- sole launch owner：`/root/dssc_r1f_full125_runner`（`gpt-5.6-terra high`）；主agent未并发启动本run。
 - retry：`false`。任何技术失败都不得覆盖本run root；需要修复时必须新revision或新run ID。
 
 ## 目标与假设
@@ -84,11 +84,12 @@ runner只使用短连接监控，不杀进程、不自动重启、不修改方�
 
 ## Runner回填区
 
-- landed：待回填
-- remote PID：待回填
-- remote exit：待回填
-- parity receipt：`PRESENT_REUSED / 待远端SHA确认`
-- archive：`PRESENT_REUSED / 待远端锁绑定确认`
-- coverage：`PRESENT_REUSED / 待远端SHA确认`
-- prediction/score：`0/0（尚未启动）`
+- landed：`PASS`。direct preflight、远端run-root不可覆盖检查、5项上传输入、checkpoint/runtime SHA和4文件`py_compile`均通过。
+- remote PID：`742449`；启动5秒后主launcher存活。
+- GPU：`0,1,2,3,4,5,6,7`；启动前每GPU既有compute=1，新增后仍满足每GPU不超过2个训练进程。
+- remote exit：`RUNNING`；`matrix_manifest.json`已生成，`matrix_exit.json`尚未生成。
+- parity receipt：`PRESENT_REUSED / b93219c40b79be8ecdf8c0a51d77710d8119f8899331ae7e2518b77adfeac60b`
+- archive：`PRESENT_REUSED / dd2a2b0c8ab1a1d8edbeed81e78ffb79c253240998a9ac2404b75699f4ca68d0`；manifest=`34213331d20594dceface61680ab0fea8ffc40ee72d7e13c844763c70fef26d4`
+- coverage：`PRESENT_REUSED / c6e25ebeaed32b577e3321e78cd569acff934a7c804d0cb621b26e68f26d0c17`
+- prediction/score：运行中，尚未形成完整计数。
 - 最终性能表与裁决：待artifact完整后回填
