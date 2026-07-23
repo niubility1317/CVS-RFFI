@@ -6,7 +6,7 @@
 - 创建时间：`2026-07-23T15:50:58+08:00`
 - operator：主agent；sole launch owner：`/root/dssc_pkgfix1_independent_review`（`gpt-5.6-terra high`）
 - candidate：`DSSC_ZDOM_JG_QKNN_R4_BCRR/design-r1f`；implementation tag=`techfix2`
-- 状态：`RUNNING / NO_PERFORMANCE_RESULT`
+- 状态：`TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
 - 科学方法提交：`849fa342cd46cb8294b5d9b4f5358cea630d0643`
 - techfix2代码与source package提交：`b77cc6c463b3ee7be6c93392171e6c99cdc21432`
 - 报告Git承载：本文件由独立report-only提交纳入版本库，不包含于上述source ZIP；准确提交以`git log -1 -- <本报告路径>`为准
@@ -86,13 +86,19 @@ env PYTHONPATH=<run>/source/code OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NU
 |source/input/checkpoint/runtime SHA|`PASS`；ZIP整体、3,958/3,958 raw Git blob、runner/test条目、4项input、checkpoint/runtime与`py_compile`闭合|
 |GPU1隔离smoke|`PASS`；`CUDA_VISIBLE_DEVICES=1`、`device_count=1/current_device=0`、logical `cuda:0`、zeroIQ `[2,2,256]→[2,160]`有限FP32、NumPy2 byte-equal、target/query/prediction=0|
 |GPU安全slot与实际`--gpu-ids`|GPU0–7启动前均无compute process；实际`0,1,2,3,4,5,6,7`|
-|PID / launch exit|wrapper PID=`796973`，matrix PID=`796975`；唯一启动时间=`2026-07-23T08:16:38Z`；`launcher.exit`尚不存在|
-|自然完成exit|待回填|
-|launcher receipt / row receipt|启动后首个短连接为`32 / 0`；首批作业运行中|
+|PID / launch exit|wrapper PID=`796973`，matrix PID=`796975`；唯一启动时间=`2026-07-23T08:16:38Z`|
+|自然完成exit|`1`；PID均已消失，matching process=`0`，未kill/restart/retry|
+|launcher receipt / row receipt|`125 / 0`；125个job唯一且全部为`TECHNICAL_FAILURE`，returncode均为1|
 |prediction slice / score row|0 / 0|
 |archive / parity / coverage|`PRESENT_REUSED`；archive=`dd2a2b0…`、manifest=`34213331…`、parity=`b93219c4…`、coverage=`c6e25ebe…`，只做冻结SHA/receipt绑定，不重验内容|
-|最终状态|`RUNNING / NO_PERFORMANCE_RESULT`|
+|最终状态|`TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`；不可作性能或推广判断|
 
-启动后短连接核验：wrapper与matrix进程均存活，CWD均为冻结run的`source`目录，cmdline完整绑定本run matrix入口与冻结输入；8张GPU均出现本run Python worker，显存约592–596MiB、利用率18%–23%。顶层stdout/stderr当时均为0B且无错误。每次SSH结束后本地`ssh.exe=0`，到N607及bridge的`ESTABLISHED:22=0`。retry、kill、restart均为0；以上只证明技术进程已落地，不是prediction或性能结果。
+启动后短连接核验：wrapper与matrix进程均存活，CWD均为冻结run的`source`目录，cmdline完整绑定本run matrix入口与冻结输入；8张GPU均出现本run Python worker，显存约592–596MiB、利用率18%–23%。每个worker通过`CUDA_VISIBLE_DEVICES=<physical_gpu>`绑定物理GPU0–7之一，并在进程内使用逻辑`cuda:0`；最终分配为GPU0/1/2各15个job、GPU3–7各16个job，因此并非只使用物理GPU0。每次SSH结束后本地`ssh.exe=0`，到N607及bridge的`ESTABLISHED:22=0`。
 
-完成后在本报告追加同row五臂性能表、逐receiver/scene/K/seed/new-count、逐类、transition、coverage、量化、资源、异常与最终`MERGE/REVISE/REJECT`或性能裁决。
+## 终局技术失败与回收证据
+
+125个job均在首个typed qKNN/BCRR state构建阶段、任何query预测之前失败。唯一根因是sealed registry采用old-prefix/new-append的opaque顺序，而共享`stage2_svrn_bcr._registry`要求全局字符串字典序；其抛出`SVRNBCRStateError: registered class registry drift`，随后被包装为`DSSCStateError: typed real qKNN/BCRR build failed: registered class registry drift`。125份stderr的SHA256均为`30b024f3b0191d09fc68f88c1ec0e4106ec446900a808dd387f13de621555b1c`，stdout均为空。`matrix_exit.complete=false`，125个returncode全为1，`aggregate_index.json`不存在。
+
+本地回收目录为根目录非Git报告树下的`retrieved/`：共387个文件；`retrieval_sha256.txt`覆盖386项，复核`missing=0/mismatch=0/extra=0`。该SHA清单自身SHA256=`8bee21d93f4c30355cca2ada39c9c75a4eaefff9ee965d3199c30bf2d7ebe076`，`final_runner_inventory.json`SHA256=`ab2bc3e4fa4909f9f5eedd99344a97e8718aea8fc0953f90672a25ce050bebf1`。远端失败中间staging树原样保留；GPU0–7已释放且无本run compute process。
+
+本run只有launcher receipt，没有row receipt、prediction、score或archive/coverage新生成物；既有GEOFF/r8 archive、manifest、parity和coverage只被绑定复用，没有重新验证数据。故正式裁决固定为`TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`，不得补写任何性能表、I_syn或推广结论。下一revision只允许修复registry类轴接口并以新commit、新不可覆盖run ID重新发布完整125。
