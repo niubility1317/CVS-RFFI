@@ -94,7 +94,7 @@ def _build_package(
             sys.executable,
             str(
                 project_root
-                / "paper_reproduction/scripts/build_adv3b02_ci_predictor_bundle.py"
+                / "paper_reproduction/scripts/build_adv3b02_paper_full_ci_bundle.py"
             ),
             "--target-cache-set",
             package["target_cache_set"],

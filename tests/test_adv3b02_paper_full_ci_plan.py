@@ -62,3 +62,14 @@ def test_predictor_source_has_no_truth_or_channel_resampling_surface():
     assert "satellite_channel" not in source
     assert "query_rows_used_for_training\": 0" in source
     assert "query_members_opened_before_model_lock\": False" in source
+
+
+def test_comparison_bundle_relaxes_only_set_level_protocol_and_keeps_leo_check():
+    source = (
+        Path(__file__).resolve().parents[1]
+        / "paper_reproduction/scripts/build_adv3b02_paper_full_ci_bundle.py"
+    ).read_text(encoding="utf-8")
+    assert "load_verified_leo_weak_cache(" in source
+    assert "new_class_leo_iq_verified" in source
+    assert "load_verified_leo_weak_cache_set =" in source
+    assert "stage2_main_method_protocol_exempt_new_class_leo_required" in source

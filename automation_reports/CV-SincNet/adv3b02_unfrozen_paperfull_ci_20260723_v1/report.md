@@ -27,3 +27,5 @@
 `E:\type10-7\automation_reports\CV-SincNet\adv3b02_unfrozen_paperfull_ci_20260723_v1\report.md`。
 
 本地实现提交：`f8a6195e feat: add full CSIL and MoPC ADV3B02 baselines`。26项focused test、真实ADV3B02 checkpoint严格重建/反传、`py_compile`和`git diff --check`均通过。
+
+N607 attempt1在训练前被旧主方法cache-set门禁拒绝，0/4cell、无性能结果；comparison-only builder修复保留内层LEO IQ/overlay/SHA验证，只移除已由用户取消的set-level主方法门禁。attempt2使用全新v2 run root。
