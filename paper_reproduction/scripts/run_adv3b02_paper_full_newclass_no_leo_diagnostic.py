@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run a matched diagnostic with raw new-class IQ and unchanged LEO old-class IQ.
+"""Run a matched diagnostic with raw new-class and unchanged old-class IQ.
 
 This is deliberately not a Stage2 or formal CVS scenario runner. It reuses the
 v7 physical cache rows and split rule, replaces only ``target_new`` IQ with the
