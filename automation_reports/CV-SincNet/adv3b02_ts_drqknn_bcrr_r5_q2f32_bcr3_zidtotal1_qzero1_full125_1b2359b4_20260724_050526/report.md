@@ -5,7 +5,7 @@
 - Git commit：`1b2359b455f0466019a98caa7e51cb165f5463be`
 - 创建时间：`2026-07-24T05:05:26+08:00`
 - operator：主agent；唯一N607 launch owner为单一`gpt-5.6-terra high`runner
-- 状态：`PREREGISTERED / NOT_LANDED / NO_PERFORMANCE_RESULT`
+- 状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
 - parent run：`adv3b02_ts_drqknn_bcrr_r4_q2f32_bcr3_zidtotal1_procbindfix1_full125_467b8aa5_20260724_035813`
 - parent终态：`STOPPED_EARLY_DETERMINISTIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
 
@@ -66,9 +66,27 @@ PYTHONPATH=<run>/source/code /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python
 |---|---|
 |Git commit|`1b2359b455f0466019a98caa7e51cb165f5463be`|
 |run ID|`adv3b02_ts_drqknn_bcrr_r5_q2f32_bcr3_zidtotal1_qzero1_full125_1b2359b4_20260724_050526`|
-|remote PID/exit|`NOT_LAUNCHED / NOT_AVAILABLE`|
-|prediction/score|`0/1000 / 0/1500`|
+|remote PID/exit|`1551147 / runner-stopped after first failed row`|
+|prediction/score|`392/1000 / 588/1500`|
 |archive/coverage/parity|`NOT_GENERATED / NOT_GENERATED / NOT_GENERATED`|
-|性能裁决|`PENDING_FULL125`|
+|性能裁决|`NO_PERFORMANCE_RESULT`|
 
 `DATA_PROTOCOL=PRESENT_REUSED / NOT_REVALIDATED`
+
+## Runner落地与预启动证据
+
+- 发布状态：`LANDED / PRELAUNCH_VERIFIED / NO_PERFORMANCE_RESULT`。
+- direct预检：本地`N607`配置与身份文件有效，但直连在banner exchange阶段被拒绝；确认本地无遗留`ssh.exe`或N607 TCP22连接后，按固定`lab bridge`路径完成有界操作。
+- 远端新run根：创建前为`ABSENT`，已创建为`/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_ts_drqknn_bcrr_r5_q2f32_bcr3_zidtotal1_qzero1_full125_1b2359b4_20260724_050526`；Python、checkpoint、sealed runtime、cache和authority均存在；GPU0–7启动前均为`0%`、`10/24576MiB`。
+- 精确同步与安全解包：ZIP SHA=`bdbbed80f36f06145bc8da72a3493f7cb358716ab49bb16a304a5b01ed643054`、method lock SHA=`0496594db4a82efbbf17ec3d67ebc3fb1f0c7ced41b542a5a0bde3482e704523`；3983个safe regular blob、raw bytes=`231188363`、path-set SHA=`5a451a362af3c456adcc93d79fd88bd59aa773c659772294b0a669ab3026b9e8`，远端解包后复核一致。
+- 远端预启动验证：指定三文件`py_compile`通过；冻结`posix-sentinel`通过，run-owned root process group清零且unrelated sentinel保持存活。
+
+## Runner终止与最小失败证据
+
+- 最终技术状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。该run不满足完整125，不作性能读取、分析或方法裁决。
+- 首个失败：`adv3b02_r5_q2f32_bcr3_qzero1_rx_7-14_s_713102_k_10_n_10`，failure fingerprint=`ADV3B02StateError: affine actual branch audit/state drift`，failure code=`TECHNICAL_EXCEPTION`，prediction发布前计数=`0`，query fit rows=`0`，failure receipt SHA=`48f3afe42562a1be23ce512b6ef68011783cb115c2bd6121db62b1189a18d6e3`。
+- 停止时技术计数：submitted launcher logs=`51`；succeeded row receipt=`49/125`；failed marker=`1`；active=`0`；prediction=`392/1000`；logical score=`588/1500`。首个失败已使125/125不可达，因此停止后续派发并结束已验证的本run进程组。
+- 终止控制审计：首次失败检测时计数为submitted=`42`、receipt=`33`、prediction=`264`。进程绑定采集后，首个停止辅助命令因shell语法错误而未发送信号，第二个因瞬态已退出PID的严格校验提前返回；第三个命令才向matrix PGID发送`TERM`，随后对已验证row PGID执行终止。该控制延迟使最终submitted达到`51`，已如实保留；未重新启动、未重试、未修改方法或读取性能。
+- 进程与GPU：matrix PID/PGID=`1551147/1551147`，启动CWD=`<run>/source/code`；对该PGID及当时每个已核验CWD/cmdline属于`<run>`的row PGID依次`TERM`后必要时`KILL`。最终run-owned process scan为空，run-owned GPU process scan为空；所有远端连接均完成本地SSH/TCP22清理。
+- completion/archive/coverage/parity均未生成，这是技术早停的预期结果。`qzero count`仅允许从完整artifact读取，本run为`NOT_AVAILABLE_IN_INCOMPLETE_ARTIFACTS`。
+- 已回收最小失败证据至`recovered_failure/`：失败row launcher log、matrix runtime manifest、stdout/stderr、runner exit receipt；共5文件、92,871B，inventory SHA=`45637f642cb34a4927a4827c91ec002ead68f210c57fe7c6ccd9a311b5f01ebe`；未回收或读取部分性能产物。

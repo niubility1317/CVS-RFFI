@@ -2357,3 +2357,11 @@ archive/coverage/parity=`ABSENT/ABSENT/ABSENT`。最小非query evidence共42文
 科学提交=`1b2359b455f0466019a98caa7e51cb165f5463be`。全新不可覆盖run=`adv3b02_ts_drqknn_bcrr_r5_q2f32_bcr3_zidtotal1_qzero1_full125_1b2359b4_20260724_050526`已建立，状态=`PREREGISTERED / NOT_LANDED / NO_PERFORMANCE_RESULT`。发布源码包SHA=`bdbbed80f36f06145bc8da72a3493f7cb358716ab49bb16a304a5b01ed643054`，含3,983个safe regular raw Git blob，path-set SHA=`5a451a362af3c456adcc93d79fd88bd59aa773c659772294b0a669ab3026b9e8`，missing/extra/raw mismatch=`0/0/0`；method lock SHA继续为`0496594db4a82efbbf17ec3d67ebc3fb1f0c7ced41b542a5a0bde3482e704523`。下一步由唯一Terra runner执行direct preflight、精确同步、远端验证、唯一detach、GPU0–7完整125、即时健康检查和artifact回收；首个技术失败令125不可达时立即止损，不得自然退出或读取partial性能。
 
 `DATA_PROTOCOL=PRESENT_REUSED / NOT_REVALIDATED`
+
+##### `r5-qzero1`完整125技术止损
+
+run=`adv3b02_ts_drqknn_bcrr_r5_q2f32_bcr3_zidtotal1_qzero1_full125_1b2359b4_20260724_050526`通过固定bridge落地、源码/lock SHA、安全解包、`py_compile`与POSIX sentinel后，以matrix PID/PGID=`1551147/1551147`在GPU0–7唯一启动。首个失败row=`7-14/713102/K10/new10`在Stage2-C append的`ActualBankBranchState.__post_init__`触发`affine actual branch audit/state drift`，prediction前计数0、query fit rows=0；完整125已不可达，runner停止派发并只终止本run。
+
+终态submitted/succeeded/failed/active=`51/49/1/0`，prediction/score=`392/1000、588/1500`，禁止partial性能解读；completion/archive/coverage/parity均ABSENT，run-owned process、GPU process和SSH均清零。failure receipt SHA=`48f3afe42562a1be23ce512b6ef68011783cb115c2bd6121db62b1189a18d6e3`；最小失败证据5文件、92,871B，inventory SHA=`45637f642cb34a4927a4827c91ec002ead68f210c57fe7c6ccd9a311b5f01ebe`。裁决=`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。下一步只修复该actual-branch audit/state唯一首源，完成专项回归、独立review、新commit和新run；不得扩大科学delta或重验数据。
+
+`DATA_PROTOCOL=PRESENT_REUSED / NOT_REVALIDATED`

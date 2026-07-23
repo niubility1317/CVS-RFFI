@@ -1,0 +1,18 @@
+ADV3B02_ROW_FAILURE_JSON={"candidate":"ADV3B02-TS-DRQKNN-BCRR/r5-q2f32-bcr3-zidtotal1-qzero1","exception_message":"affine actual branch audit/state drift","exception_type":"ADV3B02StateError","failure_code":"TECHNICAL_EXCEPTION","job_id":"adv3b02_r5_q2f32_bcr3_qzero1_rx_7-14_s_713102_k_10_n_10","p0_protocol_or_safety":false,"prediction_artifact_count_at_failure":0,"query_rows_used_for_fit":0,"receipt_sha256":"48f3afe42562a1be23ce512b6ef68011783cb115c2bd6121db62b1189a18d6e3","schema":"cvs.stage2.adv3b02.row_failure.v1"}
+Traceback (most recent call last):
+  File "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_ts_drqknn_bcrr_r5_q2f32_bcr3_zidtotal1_qzero1_full125_1b2359b4_20260724_050526/source/code/scripts/run_adv3b02_ts_drqknn_bcrr_125.py", line 2234, in <module>
+    raise SystemExit(main())
+  File "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_ts_drqknn_bcrr_r5_q2f32_bcr3_zidtotal1_qzero1_full125_1b2359b4_20260724_050526/source/code/scripts/run_adv3b02_ts_drqknn_bcrr_125.py", line 2208, in main
+    result = run_row(args)
+  File "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_ts_drqknn_bcrr_r5_q2f32_bcr3_zidtotal1_qzero1_full125_1b2359b4_20260724_050526/source/code/scripts/run_adv3b02_ts_drqknn_bcrr_125.py", line 1043, in run_row
+    dual_after, append_receipt = append_stage2_c(before_states["M_DA"], new_support_zid=repaired_all_zid[new_mask], new_support_zdom=all_zdom[new_mask], new_support_labels=tuple(label for label, keep in zip(all_labels, new_mask) if keep), new_registered_classes=tuple(label for label in registry if label not in set(old_registry)), new_support_physical_tokens=tuple(token for token, keep in zip(all_tokens, new_mask) if keep), after_full_teacher_zid=repaired_all_zid, after_full_teacher_physical_tokens=all_tokens, after_support_repair_receipt=after_repair_receipt)
+  File "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_ts_drqknn_bcrr_r5_q2f32_bcr3_zidtotal1_qzero1_full125_1b2359b4_20260724_050526/source/code/cvsrffi/stage2_adv3b02_ts_drqknn_bcrr.py", line 1697, in append_stage2_c
+    bank = _append_bank(old_state.id_bank, new_zid, labels, tokens, new_classes,
+  File "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_ts_drqknn_bcrr_r5_q2f32_bcr3_zidtotal1_qzero1_full125_1b2359b4_20260724_050526/source/code/cvsrffi/stage2_adv3b02_ts_drqknn_bcrr.py", line 1439, in _append_bank
+    branch = _make_actual_branch(bank, old.metric, wire, teacher, labels, tokens, audit,
+  File "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_ts_drqknn_bcrr_r5_q2f32_bcr3_zidtotal1_qzero1_full125_1b2359b4_20260724_050526/source/code/cvsrffi/stage2_adv3b02_ts_drqknn_bcrr.py", line 990, in _make_actual_branch
+    return ActualBankBranchState(
+  File "<string>", line 15, in __init__
+  File "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_ts_drqknn_bcrr_r5_q2f32_bcr3_zidtotal1_qzero1_full125_1b2359b4_20260724_050526/source/code/cvsrffi/stage2_adv3b02_ts_drqknn_bcrr.py", line 733, in __post_init__
+    raise ADV3B02StateError("affine actual branch audit/state drift")
+cvsrffi.stage2_adv3b02_ts_drqknn_bcrr.ADV3B02StateError: affine actual branch audit/state drift
