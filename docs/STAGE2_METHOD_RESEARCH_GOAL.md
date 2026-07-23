@@ -20,7 +20,7 @@
 
 域适应可以改变encoder、输入前端、normalization、轻量adapter、support-conditioned表示、metric、邻域权重或概率状态。它必须具有明确的域偏移机制，并在held query上产生可观测的邻居贡献、margin、argmax或净正确决策变化；只有loss下降、support fit提高、metric非identity或logit数值变化不构成DA成功。RDA/SRDA、receiver nuisance correction、support-conditioned adapter、normalization、metric learning和合法Phase1新表征均可公平进入候选。
 
-当前下一优先revision固定为`ADV3B02-TS-DRQKNN-BCRR/r2-affine`：保留ADV3B02的`z_id`与`z_dom`双分支；`z_dom`只在每个候选类内部条件化`z_id`Student-t qKNN证据，最终跨类决策始终由`z_id`qKNN完成；BCRR是唯一OTHER。r2把四臂共同support codec冻结为逐向量仿射INT8，并修复完整FP32 teacher审计与系统故障增量停派。该冻结只约束本revision，不把双qKNN、固定rank、仿射codec或BCRR升级为后续所有方法的全局必经路线。
+当前下一优先revision固定为`ADV3B02-TS-DRQKNN-BCRR/r2-affine-bcr2`：保留ADV3B02的`z_id`与`z_dom`双分支；`z_dom`只在每个候选类内部条件化`z_id`Student-t qKNN证据，最终跨类决策始终由`z_id`qKNN完成；BCRR是唯一OTHER。该revision保留逐向量仿射INT8 support codec、完整FP32 teacher审计和系统故障增量停派，并把BCR权重部署格式冻结为固定两级INT8残差codec。该冻结只约束本revision，不把双qKNN、固定rank、仿射codec、两级残差或BCRR升级为后续所有方法的全局必经路线。
 
 最终目标是：
 
@@ -175,11 +175,13 @@ K5是当前双qKNN候选的首个正式DA falsifier；K10用于确认相同机�
 
 `ADV3B02-TS-DRQKNN-BCRR/r1`在实现终审和真实checkpoint support-only检查中暴露两项P0：after INT8审计用decoded-old代替完整FP32 teacher，且125调度一次性提交全部row、不能在系统性技术故障时立即停派；共享对称INT8 qKNN还在seed713104 after clear/low-elev触门。r1没有N607 prediction或性能结果，现为`SUPERSEDED_TECHNICAL_REVISION / NO_PERFORMANCE_RESULT`。
 
-当前`ADV3B02-TS-DRQKNN-BCRR/r2-affine`已完成一个新设计波次并由独立监督裁定`MERGE / P0=0 / P1=0`，状态为`DESIGN_FROZEN`。它保持r1的DA、双注册、qKNN、BCRR和四臂因果结构，只把四臂共同support codec升级为固定逐向量仿射INT8，并把量化门实现纠正为本文件既有的`top1>=99.5%`且large-margin flip为0；同时冻结完整FP32 after-teacher和有界增量派发健康退出。
+`ADV3B02-TS-DRQKNN-BCRR/r2-affine`完成代码终审后，在真实checkpoint no-query smoke中被BCR权重INT8门立即证伪：现有按类列对称codec在54个support state中失败15个，固定按类列仿射失败9个，固定按特征行仿射失败12个；三者large-margin flip均为0，但top1未达99.5%，因此均不得发布，状态为`SUPERSEDED_BEFORE_COMMIT / NO_PERFORMANCE_RESULT`。
+
+当前`ADV3B02-TS-DRQKNN-BCRR/r2-affine-bcr2`已按`DESIGN_DRAFT -> FEASIBILITY_REVIEW -> DESIGN_FROZEN`完成唯一技术revision，并进入`LOCAL_VERIFIED / NO_PERFORMANCE_RESULT`。它保持r2的DA、双注册、qKNN、BCRR公式、`omega`、四臂、K、fallback、完整FP32 teacher和健康退出不变；唯一delta是把BCR权重部署格式改为固定两级按类列对称INT8残差codec。最终独立终审裁决为`MERGE / P0=0 / P1=0`。真实checkpoint的3seed×before/after×3scene×K1/K5/K10共54个support-only state中，BCR最低top1、any flip总数、large-margin flip总数分别为1.0、0、0，最大权重误差为`1.45e-5`；qKNN最低top1为`0.996154`且large-margin flip为0；C=26时BCR权重wire为8424B，完整state最大116755B。以上仅为技术就绪证据，不是性能结果。
 
 冻结的域状态使用target-old support构造`S_W-S_B`的固定2槽可靠方向；support与query对每个候选类都减同一`mu_c`，不得混用全局中心；`alpha_K=0.5*(K-1)/K*(rho_1+rho_2)/2`且`0<=alpha<0.5`。`z_dom`只形成类内权重，最终score必须复用基础`z_id`Student-t qKNN的同一INT8 bank、`h_c`、`nu`和kernel。K1或数值异常时逐值回到M0。
 
-BCRR是唯一OTHER：raw与dual branch分别用自身同步physical-ID support-LOO logits按同一冻结规则拟合`omega`，但共享同一`z_id`BCR状态；不得读取query或直接读取`z_dom`。仿射codec只读support，固定保存INT8 codes、FP16 scale和FP16 offset，每条support相对单scale增加2B；不得使用query、truth、角色、quota或scene专属codec。现有DSSC、RDA/SRDA、RBSC、C-id、MRIOR和JG保留为普通matched reference或后续候选资产，不与本revision混塞。
+BCRR是唯一OTHER：raw与dual branch分别用自身同步physical-ID support-LOO logits按同一冻结规则拟合`omega`，但共享同一`z_id`BCR状态；不得读取query或直接读取`z_dom`。support仿射codec固定保存INT8 codes、FP16 scale和FP16 offset。BCR权重固定使用`plane1=Q(W)`、`plane2=Q(W-decode(plane1))`，部署仅从两层INT8 codes和FP16 scales重建；层数、scale floor、round/clip和顺序不得按K、scene、类别角色或审计结果切换。不得使用query、truth、角色、quota或scene专属codec。现有DSSC、RDA/SRDA、RBSC、C-id、MRIOR和JG保留为普通matched reference或后续候选资产，不与本revision混塞。
 
 ## 6.方法卡与可行性门
 

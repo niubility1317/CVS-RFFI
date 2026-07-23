@@ -2207,3 +2207,27 @@ techfix4 run=`dssc_zdom_jg_qknn_r4_bcrr_full125_r1f_techfix4_20c1cd0a_20260723_1
 后续从既有partial run只读回收3个失败seed的before/after enrollment support，共30文件、8,364,333B、库存SHA=`76b8d7237863848ff667b31aa9a61e8dae55a7b63730923a9637e4238ff01101`，query/truth文件数均为0。真实checkpoint重放把seed713104 raw的首次正式失败精确定位为clear/after；clear、low-elev、rain after现行审计分别为`0.996154/1`、`0.992308/2`、`1.000000/0`。V/H/D分解证明low-elev由INT8 support向量量化主导。Q1、固定2轮L2单scale和固定`10×16`分块codec均按立即falsifier失败；其中block16使seed713104 rain-after退化为`0.992308/2`，不实施也不搜索其它block。
 
 唯一新revision=`ADV3B02-TS-DRQKNN-BCRR/r2-affine`。固定逐向量仿射INT8在3seed×before/after×3scene共18个support-only包上的最低top1为`259/260=0.996154`；仅713105、713106 rain-after各1个any flip，teacher margin为`0.005615/0.003006`、row最大logit误差为`0.124130/0.093048`，按目标文档既有`teacher_margin>2×row_max_error`定义的large-margin flip均为0。独立可行性监督裁决=`MERGE / P0=0 / P1=0`，只批准实现：四臂共享INT8 code＋FP16 scale＋FP16 offset；after必须用完整未量化FP32 support作FP64 teacher；125必须有界增量派发并在两个无prediction同fingerprint row后立即停派和只终止本run。DA、双qKNN、BCRR、K、场景、矩阵和性能门不变。完整合同见`docs/ADV3B02_TS_DRQKNN_BCRR_R2_AFFINE_DESIGN_FROZEN.md`；当前状态=`DESIGN_FROZEN -> IMPLEMENTING / NO_PERFORMANCE_RESULT`。
+
+##### `ADV3B02-TS-DRQKNN-BCRR/r2-affine-bcr2`本地技术闭合
+
+`r2-affine`完成原定实现和首轮终审后，在真实checkpoint support-only无query smoke中被BCR权重INT8门立即证伪，未提交、未发布、未产生prediction或性能结果。3seed×before/after×3scene×K1/K5/K10共54个state中，既有按类列对称codec失败15个，固定按类列仿射失败9个，固定按特征行仿射失败12个；三者large-margin flip均为0，但top1未达到冻结门，因此状态为`SUPERSEDED_BEFORE_COMMIT / NO_PERFORMANCE_RESULT`。
+
+后继`r2-affine-bcr2`只把BCR权重部署格式改为固定两级按类列对称INT8残差codec：`plane1=Q(W)`、`plane2=Q(W-decode(plane1))`，部署只从两层INT8 codes＋FP16 scales求和重建。层数、plane顺序、shape、canonical class order、ties-to-even、clip、最小正FP16子正规scale、四组raw byte SHA和实际wire bytes均由receipt绑定；无FP32权重或残差sidecar。DA、双qKNN、BCRR拟合、`omega`、四臂、K、fallback、输入和125矩阵均未改变。
+
+首轮独立终审发现P1：BCR状态门仍沿用`top1>=99.5%`且未显式绑定any flip。最小修复后，构建门和dataclass均要求`top1==1.0`、`any_margin_flip_count==0`、`large_margin_flip_count==0`，并新增严格门与字段篡改负例；复审最终裁决=`MERGE / P0=0 / P1=0`。
+
+|本地闭合项|结果|
+|---|---|
+|候选＋相邻DSSC回归|`91 passed,1 skipped`；唯一skip为Windows上的POSIX root-grandchild-sentinel，N607启动前必须实跑|
+|`py_compile`/`git diff --check`|PASS|
+|method SHA256|`92b58bf8280c3f9de4f6ea5f9abd427be0f90e3cf84b9697765ce4ec57155bfe`|
+|runner SHA256|`59323ddc202c5f1f8c3bd43698907874b67fcbb0ef8b083ab43987a3bb65caa7`|
+|test SHA256|`e8e736085c72b64b994c823d2307fde93d4ac70171ec8f66d82a0e85455d5fd4`|
+|真实support-only state|54/54 PASS；3seed×2 registration state×3scene×K{1,5,10}|
+|BCR INT8|最低top1=`1.0`；any/large flip总数=`0/0`；最大权重误差=`1.4497655e-5`|
+|qKNN INT8|最低top1=`0.9961538462`；large-margin flip总数=`0`|
+|资源|C=26 BCR权重wire=`8424B`；完整state最大=`116755B<=256KiB`|
+|协议面|`query_file_count=0`、`truth_file_count=0`、`query_packages_loaded=false`、`query_rows_used_for_fit=0`|
+|smoke receipt|`E:\type10-7\automation_reports\CV-SincNet\ground_prototype_da_research_20260720\artifacts\adv3b02_r2_affine_bcr2_real_checkpoint_support_only_smoke_20260723T134738Z.json`；SHA256=`8789320f05c29141f1e6f1f0021cd1cf373e6153864b26977b4183d7f825d6e1`|
+
+当前状态=`LOCAL_VERIFIED / NO_PERFORMANCE_RESULT`。下一步只允许Git提交、建立全新不可覆盖完整125 run报告并交唯一Terra runner执行direct preflight、精确同步、远端hash/compile、POSIX sentinel、唯一detach、健康检查、监控和artifact回收；不得复用失败run、缩窄矩阵、重验数据或把本地技术证据写成性能成功。
