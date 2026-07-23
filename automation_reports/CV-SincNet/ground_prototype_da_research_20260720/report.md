@@ -2322,6 +2322,12 @@ run=`adv3b02_ts_drqknn_bcrr_r4_q2f32_bcr3_zidtotal1_full125_802534eb_20260724_03
 
 `DATA_PROTOCOL=PRESENT_REUSED / NOT_REVALIDATED`
 
+##### `r6-matchedaudit1-prepfix1`全新完整125预注册
+
+release-prep commit=`04ebcf06ffa5a010c6c952d568033273d06d7954`；scientific commit保持`a526d6b53f10829e96c61aabc9489c9dbd1bfb44`。全新不可覆盖run=`adv3b02_ts_drqknn_bcrr_r6_matchedaudit1_prepfix1_full125_a526d6b5_20260724_064819`，复用原raw Git blob包SHA=`b8cd7f4dd8c646c94df0fff1c3cef695799e501180c3edec9be82434dbf4f3f5`和method lock SHA=`0496594db4a82efbbf17ec3d67ebc3fb1f0c7ced41b542a5a0bde3482e704523`。唯一发布准备delta是runner只预建`input/source/logs`并保持`artifacts`ABSENT，由matrix首次创建；方法、矩阵、数据、命令和资源均不变。状态=`PREREGISTERED / NOT_LANDED / NO_PERFORMANCE_RESULT`。
+
+`DATA_PROTOCOL=PRESENT_REUSED / NOT_REVALIDATED`
+
 ##### `r4-bcr3-procbindfix1`完整125确定性技术止损
 
 run=`adv3b02_ts_drqknn_bcrr_r4_q2f32_bcr3_zidtotal1_procbindfix1_full125_467b8aa5_20260724_035813`通过N607 POSIX sentinel并唯一启动matrix PID=`1509653`，GPU0–7均进入动态队列且首个合法prediction健康通过。随后历史r3同row`rx_8-8/713105/K10/new20`在after-query的`M0 qKNN`归一化处以`feature row has zero or non-finite L2 norm`、0 prediction再次确定复现；冻结run无retry，完整125已不可闭合，故主agent指令立即停止dispatch并只终止本run。终态启动45、成功35、失败2、活动8；prediction/score=`280/1000、420/1500`，禁止partial性能解读；matrix及8个已绑定row PGID、GPU计算进程和SSH/TCP22均清零。
