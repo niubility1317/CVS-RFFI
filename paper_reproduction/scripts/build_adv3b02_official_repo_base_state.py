@@ -158,6 +158,10 @@ def build(args: argparse.Namespace) -> dict:
             "csil": "8ce8637daf4dc60eeb1c56bff64c050c5b2353e9",
             "mopc_hr": "ae6554316ad1a2175920e330133a2f103408bf78",
         },
+        "base_initialization_adaptation": (
+            "official_encoder_replaced_by_pretrained_ADV3B02_checkpoint_then_"
+            "full_source_base_training"
+        ),
         "raw_exemplars_stored": False,
     }
     output = Path(args.output)
@@ -176,6 +180,9 @@ def build(args: argparse.Namespace) -> dict:
         "source_receiver_count": len(receivers),
         "source_day_count": 2,
         "total_capacity": int(args.total_capacity),
+        "base_initialization_adaptation": state[
+            "base_initialization_adaptation"
+        ],
         "csil_optimizer_steps": int(csil["optimizer_steps"]),
         "mopc_optimizer_steps": int(mopc["optimizer_steps"]),
         "checkpoint_load_audit": load_audit,

@@ -135,6 +135,10 @@
 - 用80条样本或target-old fallback代替完整source base状态；
 - 让query参与训练、选择、早停或重跑。
 
+两个方法的原始编码器均由预训练ADV3B02替换，并在8400条source上执行各自base
+训练。该项固定标记为`BASE_MODEL_INITIALIZATION_ADAPTATION`；它是用户指定
+ADV3B02接口的必要变化，不得描述为原论文编码器逐结构复现。
+
 ## 5.实现前parity门禁
 
 1.CSIL Fisher、EWC、固定`/32`KD、SGDM衰减更新逐值fixture。

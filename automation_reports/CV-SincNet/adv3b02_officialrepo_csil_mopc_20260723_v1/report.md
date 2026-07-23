@@ -10,6 +10,7 @@
 - 正式矩阵：2方法×5receiver×5seed×4K×4新类数=800cell，每cell 3场景
 - 正式LEO：新类support/query均叠加固定LEO弱信道
 - matched无LEO：仅作`DIAGNOSTIC_NEW_CLASS_NO_LEO_NON_FORMAL`
+- base编码器：`BASE_MODEL_INITIALIZATION_ADAPTATION`，预训练ADV3B02替换原编码器后按各官方trainer在8400条source上训练
 - 详细方法锁：`analysis/official_repo_execution_lock_csil_mopc_hr_20260723.md`
 
 本地验证：
