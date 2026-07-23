@@ -179,7 +179,7 @@ K5是当前双qKNN候选的首个正式DA falsifier；K10用于确认相同机�
 
 parent`ADV3B02-TS-DRQKNN-BCRR/r2-affine-bcr2`已完成本地技术闭合，但首次发布因冻结Python缺`pytest`而在launch前终止；POSIX sentinel修复后的第二个完整125又在首波健康检查中暴露两个系统性技术故障：before实际bank binding被validator错误要求为`None`，以及K10新类support raw`z_id`出现严格零向量。第二run已只终止本run，launcher/matrix PID=`1214101/1214105`、exit=`143`，合法完整row=`0/125`，终态=`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_COMPLETE_PERFORMANCE_RESULT`；partial prediction/score只作诊断，不形成性能结论。
 
-当前`ADV3B02-TS-DRQKNN-BCRR/r2-affine-bcr2-zidtotal1`已完成一个设计波次：监督首裁`REVISE`，采纳唯一最小规则`finite_exact_zero_singleton_class_medoid_v1`后终裁=`MERGE / P0=0 / P1=0`，状态=`DESIGN_FROZEN -> IMPLEMENTING / NO_PERFORMANCE_RESULT`。真实失败包同checkpoint精确复现1个K10新类零行且同类9个peer有效；近当前750个support-only包、67,650个support前向共2个同型零行，均可由同类实际medoid辨识，K1/K5、整类失效和`z_dom`失效均为0。该扫描读取query/truth为0，只支持技术可行性，不是性能证据。完整冻结合同见`docs/ADV3B02_TS_DRQKNN_BCRR_R2_AFFINE_BCR2_ZIDTOTAL1_DESIGN_FROZEN.md`。
+当前`ADV3B02-TS-DRQKNN-BCRR/r2-affine-bcr2-zidtotal1`已完成一个设计波次：监督首裁`REVISE`，采纳唯一最小规则`finite_exact_zero_singleton_class_medoid_v1`后终裁=`MERGE / P0=0 / P1=0`。实现、真实checkpoint support-only无query smoke和独立代码review均已闭合，状态=`LOCAL_VERIFIED / NO_PERFORMANCE_RESULT`；独立终审=`MERGE / P0=0 / P1=0 / P2=1`，唯一P2不影响正式runner。真实失败包同checkpoint精确复现1个K10新类零行且同类9个peer有效；近当前750个support-only包、67,650个support前向共2个同型零行，均可由同类实际medoid辨识，K1/K5、整类失效和`z_dom`失效均为0。真实smoke三场景repair count=`0/1/0`，正常行bitwise不变，query/truth读取为0；该证据只支持技术闭合，不是性能证据。完整冻结合同见`docs/ADV3B02_TS_DRQKNN_BCRR_R2_AFFINE_BCR2_ZIDTOTAL1_DESIGN_FROZEN.md`。
 
 冻结的域状态使用target-old support构造`S_W-S_B`的固定2槽可靠方向；support与query对每个候选类都减同一`mu_c`，不得混用全局中心；`alpha_K=0.5*(K-1)/K*(rho_1+rho_2)/2`且`0<=alpha<0.5`。`z_dom`只形成类内权重，最终score必须复用基础`z_id`Student-t qKNN的同一INT8 bank、`h_c`、`nu`和kernel。K1或数值异常时逐值回到M0。
 

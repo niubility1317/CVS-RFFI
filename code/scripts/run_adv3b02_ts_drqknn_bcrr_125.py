@@ -30,8 +30,8 @@ import numpy as np
 from cvsrffi.stage2_adv3b02_ts_drqknn_bcrr import (
     ADV3B02StateError, ARMS, CANDIDATE, SCENES, append_stage2_c, build_four_arm_states,
     build_four_arm_states_from_dual, domain_weight_audit,
-    head_bypass_forward, predict_four_arms, state_receipt,
-    verify_stage2_c_append_receipt,
+    head_bypass_forward, predict_four_arms, repair_finite_exact_zero_singleton_class_medoid,
+    state_receipt, verify_stage2_c_append_receipt, verify_zid_repair_receipt,
 )
 
 
@@ -39,7 +39,7 @@ RECEIVERS = ("20-1", "3-19", "7-14", "7-7", "8-8")
 SEEDS = (713102, 713103, 713104, 713105, 713106)
 SLICES = ((10, 5), (10, 10), (10, 20), (5, 20), (1, 20))
 MATRIX_COUNTS = {"jobs": 125, "scene_slices": 375, "score_rows": 1500, "arm_state_prediction_artifacts": 1000}
-LAUNCHER_SCHEMA = "cvs.stage2.adv3b02.full125.artifact_validator.r2_affine_bcr2"
+LAUNCHER_SCHEMA = "cvs.stage2.adv3b02.full125.artifact_validator.r2_affine_bcr2_zidtotal1"
 FORMAL_GPU_IDS = tuple(range(8))
 ROW_STATES = ("before", "after")
 SCENE_METRIC_KEYS = {
@@ -309,15 +309,15 @@ def _validate_runtime_scene_state_receipts(
             or item["branch_qknn_wire_sha256"] != item["raw_qknn_sha256"]
             or type(item.get("int8_audit_sha256")) is not str
             or len(item["int8_audit_sha256"]) != 64
-            or (
-                item["state"] == "before"
-                and item.get("branch_actual_bank_binding_sha256") is not None
-            )
-            or (
-                item["state"] == "after"
-                and (
-                    type(item.get("branch_actual_bank_binding_sha256")) is not str
-                    or len(item["branch_actual_bank_binding_sha256"]) != 64
+            or any(
+                type(item.get(name)) is not str
+                or len(item[name]) != 64
+                or item[name] != item[name].lower()
+                or any(character not in "0123456789abcdef" for character in item[name])
+                for name in (
+                    "branch_actual_bank_binding_sha256",
+                    "branch_teacher_support_sha256",
+                    "branch_support_repair_receipt_sha256",
                 )
             )
             or type(item.get("state_wire_bytes")) is not int
@@ -353,6 +353,15 @@ def _validate_runtime_scene_state_receipts(
             or item["peak_cuda_memory_bytes"] < 0
         ):
             raise ADV3B02LauncherError("row runtime state/resource receipt drift")
+        try:
+            repair = verify_zid_repair_receipt(item.get("support_repair_receipt"))
+        except Exception as exc:
+            raise ADV3B02LauncherError("row runtime z_id repair receipt drift") from exc
+        if (
+            repair["receipt_sha256"] != item["branch_support_repair_receipt_sha256"]
+            or repair["unit_output_support_sha256"] != item["branch_teacher_support_sha256"]
+        ):
+            raise ADV3B02LauncherError("row runtime repair/teacher binding drift")
         delta = item.get("raw_vs_dual")
         weight = item.get("domain_weights")
         if (
@@ -423,6 +432,12 @@ def _validate_append_receipts(
             != after["branch_qknn_wire_sha256"]
             or append["after_branch_actual_bank_binding_sha256"]
             != after["branch_actual_bank_binding_sha256"]
+            or append["after_branch_teacher_support_sha256"]
+            != after["branch_teacher_support_sha256"]
+            or append["after_support_repair_receipt_sha256"]
+            != after["branch_support_repair_receipt_sha256"]
+            or append["after_support_repair_unit_output_sha256"]
+            != after["branch_teacher_support_sha256"]
             or append["after_int8_audit_sha256"]
             != after["int8_audit_sha256"]
         ):
@@ -800,6 +815,11 @@ def _runtime_state_receipt(
         "branch_actual_bank_binding_sha256": sealed[
             "branch_actual_bank_binding_sha256"
         ],
+        "branch_teacher_support_sha256": sealed["branch_teacher_support_sha256"],
+        "branch_support_repair_receipt_sha256": sealed[
+            "branch_support_repair_receipt_sha256"
+        ],
+        "support_repair_receipt": sealed["support_repair_receipt"],
         "int8_audit_sha256": sealed["int8_audit_sha256"],
         "raw_state_bytes": int(sealed["raw_state_bytes"]),
         "dual_domain_state_bytes": int(sealed["dual_domain_state_bytes"]),
@@ -919,7 +939,10 @@ def run_row(a: argparse.Namespace) -> Mapping[str, Any]:
         query_zid, query_zdom, query_bypass = _runtime_feature(model, before_query, device=a.device, checkpoint_sha256=exact_receipt["checkpoint_sha256"])
         before_feature_ms = 1000.0 * (time.perf_counter() - feature_started)
         started = time.perf_counter()
-        before_states = build_four_arm_states(support_zid=old_zid, support_zdom=old_zdom, support_labels=old_labels, registered_classes=tuple(old_registry), support_physical_tokens=old_tokens)
+        repaired_old_zid, before_repair_receipt = repair_finite_exact_zero_singleton_class_medoid(
+            old_zid, old_labels, tuple(old_registry), old_tokens
+        )
+        before_states = build_four_arm_states(support_zid=repaired_old_zid, support_zdom=old_zdom, support_labels=old_labels, registered_classes=tuple(old_registry), support_physical_tokens=old_tokens, support_repair_receipt=before_repair_receipt)
         before_build_ms = 1000.0 * (time.perf_counter() - started)
         started = time.perf_counter()
         before_logits = predict_four_arms(before_states, query_zid=query_zid, query_zdom=query_zdom)
@@ -955,7 +978,10 @@ def run_row(a: argparse.Namespace) -> Mapping[str, Any]:
         all_zid, all_zdom, all_bypass = _runtime_feature(model, all_iq, device=a.device, checkpoint_sha256=exact_receipt["checkpoint_sha256"])
         after_zid, after_zdom, after_bypass = _runtime_feature(model, after_query, device=a.device, checkpoint_sha256=exact_receipt["checkpoint_sha256"])
         after_feature_ms = 1000.0 * (time.perf_counter() - feature_started)
-        dual_after, append_receipt = append_stage2_c(before_states["M_DA"], new_support_zid=all_zid[new_mask], new_support_zdom=all_zdom[new_mask], new_support_labels=tuple(label for label, keep in zip(all_labels, new_mask) if keep), new_registered_classes=tuple(label for label in registry if label not in set(old_registry)), new_support_physical_tokens=tuple(token for token, keep in zip(all_tokens, new_mask) if keep), after_full_teacher_zid=all_zid, after_full_teacher_physical_tokens=all_tokens)
+        repaired_all_zid, after_repair_receipt = repair_finite_exact_zero_singleton_class_medoid(
+            all_zid, all_labels, tuple(registry), all_tokens
+        )
+        dual_after, append_receipt = append_stage2_c(before_states["M_DA"], new_support_zid=repaired_all_zid[new_mask], new_support_zdom=all_zdom[new_mask], new_support_labels=tuple(label for label, keep in zip(all_labels, new_mask) if keep), new_registered_classes=tuple(label for label in registry if label not in set(old_registry)), new_support_physical_tokens=tuple(token for token, keep in zip(all_tokens, new_mask) if keep), after_full_teacher_zid=repaired_all_zid, after_full_teacher_physical_tokens=all_tokens, after_support_repair_receipt=after_repair_receipt)
         started = time.perf_counter()
         after_states = build_four_arm_states_from_dual(dual_after)
         after_build_ms = 1000.0 * (time.perf_counter() - started)

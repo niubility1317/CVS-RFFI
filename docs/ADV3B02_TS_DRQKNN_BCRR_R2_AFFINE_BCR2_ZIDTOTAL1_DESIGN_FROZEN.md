@@ -2,7 +2,7 @@
 
 ## 状态与边界
 
-- 状态：`DESIGN_FROZEN -> IMPLEMENTING / NO_PERFORMANCE_RESULT`
+- 状态：`LOCAL_VERIFIED / NO_PERFORMANCE_RESULT`
 - parent：`ADV3B02-TS-DRQKNN-BCRR/r2-affine-bcr2`
 - 可行性监督：首裁`REVISE`；采纳唯一最小修订后终裁`MERGE / P0=0 / P1=0`
 - 协议：继续复用`p2_min_v1`、GEOFF/r8 archive/manifest/coverage，不修改received IQ、物理ID、receiver/TX、场景、K、support/query split或schema，不触发数据重验
@@ -53,3 +53,11 @@ repair receipt必须绑定规则、K、输入/输出/单位化输出SHA、零行
 - qKNN/BCRR INT8门、Stage2-C旧前缀、state bytes、query MAC和无query smoke保持原合同。
 - 真实失败support-only包必须精确修复1行、其余259行不变并通过完整state门；任一冻结条件失败即停止本revision。
 - 独立代码review必须达到`P0=0、P1=0`；随后以新Git commit和全新不可覆盖run ID发布完整125，不复用parent，不发布窄性能子集。
+
+## 本地实现闭合
+
+- 实现严格限制在冻结的method、正式125 runner和专项test三文件；DA、双qKNN、BCRR、四臂、K、数据和资源门未改变。
+- `ssr-gpu`下候选与相邻DSSC回归共`103 passed,3 skipped`，3项仅为Windows不执行的POSIX专项；`py_compile`和`git diff --check`通过。
+- 真实checkpoint support-only无query smoke覆盖before/after三场景：repair count=`0/1/0`，正常行bitwise不变，teacher/actual-bank/append binding、旧INT8前缀和BCR/qKNN门全部闭合；query/truth读取均为0。
+- smoke receipt SHA256=`a2bd0ed6a4c5dc57c906c6a5439fb5b0b118893d00e35f09fb5f33dd8a609cad`；after state bytes=`116764/116765/116764`，未增加query MAC或optimizer step。
+- 独立Terra代码review=`MERGE / P0=0 / P1=0 / P2=1`。唯一P2仅涉及非formal调用者省略repair receipt的默认API路径；正式runner显式一次生成并全链复用receipt，不阻塞本次完整125发布。

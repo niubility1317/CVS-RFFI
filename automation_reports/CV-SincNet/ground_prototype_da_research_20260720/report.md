@@ -2241,3 +2241,11 @@ techfix4 run=`dssc_zdom_jg_qknn_r4_bcrr_full125_r1f_techfix4_20c1cd0a_20260723_1
 zero-norm失败row的3个after enrollment support包、manifest、seal和log已只读回收，共6文件、2,259,730B，inventory SHA=`30eba2d673cd823d4f8b0c123ce41d9281012a4d8414dfa45fff519e4705601f`，无query/truth。IQ均为有限非零FP32`[260,2,256]`；同checkpoint精确复现`leo_low_elev_weak`的class index23、rank5 raw`z_id`为160维全零，同类其余9行有效。近当前750个support-only包、67,650个support前向共发现2个同型零行，均为K10新类单零且有9个同类有效peer；`z_dom`零行、K1/K5零行和整类失效均为0。该结果只证明极窄技术总化可行，不是性能证据。
 
 新revision=`ADV3B02-TS-DRQKNN-BCRR/r2-affine-bcr2-zidtotal1`完成`DESIGN_DRAFT -> FEASIBILITY_REVIEW -> DESIGN_FROZEN`。监督首裁`REVISE`；主agent接受唯一最小修订后终裁=`MERGE / P0=0 / P1=0`。规则`finite_exact_zero_singleton_class_medoid_v1`只允许K5/K10中类内恰1个逐分量严格零行复制同类实际球面medoid；正常行bitwise不变，K1、多零/全零、NaN/Inf和微小非零均失败关闭。每scene/state只生成一次输出与receipt，并把单位化输出SHA绑定到FP32 teacher、actual bank、dual qKNN、BCRR和Stage2-C完整teacher；before/after实际binding均须小写64位hex，after还须匹配append receipt。DA、qKNN、BCRR、四臂、K、state bytes、query MAC、数据和完整125均不变。完整合同见`docs/ADV3B02_TS_DRQKNN_BCRR_R2_AFFINE_BCR2_ZIDTOTAL1_DESIGN_FROZEN.md`；当前状态=`DESIGN_FROZEN -> IMPLEMENTING / NO_PERFORMANCE_RESULT`。
+
+##### `ADV3B02/r2-affine-bcr2-zidtotal1`本地技术闭合
+
+冻结三文件实现已完成。`ssr-gpu`下`tests/test_stage2_adv3b02_ts_drqknn_bcrr.py`与相邻`tests/test_stage2_dssc_zdom_jg_qknn_r4_bcrr.py`共收集106项，结果=`103 passed,3 skipped`；3项仅为Windows不执行的POSIX专项，主体exit0。两核心文件`py_compile`和`git diff --check`通过。独立Terra终审=`MERGE / P0=0 / P1=0 / P2=1`；P2只涉及非formal默认API省略receipt的调用路径，正式runner显式预修复并一次生成/全链复用，不阻塞提交和发布。
+
+真实checkpoint SHA=`2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98`的support-only无query smoke复用第二次失败run只读回收的before/after enrollment support，未打开query或truth。after三场景repair count=`0/1/0`，before全为0；所有正常行bitwise不变，teacher-repair digest、actual-bank binding、after append binding、旧INT8 code/domain bytes、qKNN与BCR门均通过。qKNN和BCR support top1在before/after均为1.0，large-margin flip均为0；after state bytes=`116764/116765/116764`。receipt=`automation_reports/CV-SincNet/ground_prototype_da_research_20260720/artifacts/adv3b02_r2_affine_bcr2_zidtotal1_real_checkpoint_support_only_smoke_20260723T153414Z.json`，SHA256=`a2bd0ed6a4c5dc57c906c6a5439fb5b0b118893d00e35f09fb5f33dd8a609cad`。
+
+当前状态=`LOCAL_VERIFIED / NO_PERFORMANCE_RESULT`。下一步只允许把上述实现、测试、冻结文档、目标和证据提交到Git，随后以全新不可覆盖run ID发布GPU0–7完整125；不得复用parent、缩窄性能矩阵、重验数据或新增发布门。启动后唯一runner必须执行首波健康检查；系统性技术故障立即停派并只终止本run。

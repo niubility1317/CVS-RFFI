@@ -39,16 +39,18 @@ from cvsrffi.stage2_zid_student_t_qknn import (
 )
 
 
-CANDIDATE = "ADV3B02-TS-DRQKNN-BCRR/r2-affine-bcr2"
-SCHEMA = "cvs.stage2.adv3b02.ts_drqknn_bcrr.r2_affine_bcr2"
+CANDIDATE = "ADV3B02-TS-DRQKNN-BCRR/r2-affine-bcr2-zidtotal1"
+SCHEMA = "cvs.stage2.adv3b02.ts_drqknn_bcrr.r2_affine_bcr2_zidtotal1"
 Z_DIM = 160
 RANK = 2
 ARMS = ("M0", "M_DA", "M_OTHER", "M_JOINT")
 SCENES = ("leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak")
 K_VALUES = (1, 5, 10)
 MAX_WIRE_BYTES = 256 * 1024
-APPEND_RECEIPT_SCHEMA = "cvs.stage2.adv3b02.append_receipt.r2_bcr2"
-ACTUAL_BRANCH_SCHEMA = "cvs.stage2.adv3b02.actual_bank_branch.r2_affine_bcr2"
+APPEND_RECEIPT_SCHEMA = "cvs.stage2.adv3b02.append_receipt.r2_bcr2_zidtotal1"
+ACTUAL_BRANCH_SCHEMA = "cvs.stage2.adv3b02.actual_bank_branch.r2_affine_bcr2_zidtotal1"
+ZID_REPAIR_SCHEMA = "cvs.stage2.adv3b02.zid_repair_receipt.v1"
+ZID_REPAIR_RULE = "finite_exact_zero_singleton_class_medoid_v1"
 AFFINE_BANK_SCHEMA = "cvs.stage2.adv3b02.affine_int8_bank.r2"
 AFFINE_WIRE_SCHEMA = "cvs.stage2.adv3b02.affine_int8_wire.r2"
 BCR_WEIGHT_CODEC = "fixed_two_plane_per_class_symmetric_int8_fp16_scale_v1"
@@ -246,6 +248,151 @@ def _require_sha256(value: Any, *, name: str) -> str:
     return value
 
 
+_ZID_REPAIR_RECEIPT_FIELDS = {
+    "schema", "rule", "k_shot", "input_support_sha256",
+    "output_support_sha256", "unit_output_support_sha256",
+    "zero_row_token_root_sha256", "donor_token_root_sha256",
+    "class_repair_counts", "normal_rows_bitwise_preserved",
+    "repaired_row_count", "query_rows_used_for_fit", "receipt_sha256",
+}
+
+
+def _canonical_support_positions(labels: tuple[str, ...], tokens: tuple[str, ...]) -> list[int]:
+    return sorted(range(len(tokens)), key=lambda index: (labels[index], tokens[index]))
+
+
+def _unit_support_token_binding_sha256(
+    support_zid: np.ndarray, tokens: tuple[str, ...]
+) -> str:
+    """Order-invariant support teacher binding: token plus normalized row."""
+    positions = sorted(range(len(tokens)), key=lambda index: tokens[index])
+    payload = [
+        (tokens[index], _unit(support_zid[index : index + 1]).tobytes().hex())
+        for index in positions
+    ]
+    return sha256_bytes(_canon(payload))
+
+
+def verify_zid_repair_receipt(receipt: Mapping[str, Any]) -> Mapping[str, Any]:
+    """Fail closed on the sealed support-only raw-z_id repair evidence."""
+    value = dict(receipt) if isinstance(receipt, Mapping) else {}
+    if set(value) != _ZID_REPAIR_RECEIPT_FIELDS:
+        raise ADV3B02StateError("z_id repair receipt schema drift")
+    for name in _ZID_REPAIR_RECEIPT_FIELDS:
+        if name.endswith("_sha256"):
+            _require_sha256(value[name], name=name)
+    counts = value["class_repair_counts"]
+    if (
+        value["schema"] != ZID_REPAIR_SCHEMA
+        or value["rule"] != ZID_REPAIR_RULE
+        or type(value["k_shot"]) is not int
+        or value["k_shot"] not in K_VALUES
+        or type(counts) is not dict
+        or not counts
+        or any(type(key) is not str or type(item) is not int or item < 0 for key, item in counts.items())
+        or type(value["normal_rows_bitwise_preserved"]) is not bool
+        or value["normal_rows_bitwise_preserved"] is not True
+        or type(value["repaired_row_count"]) is not int
+        or value["repaired_row_count"] < 0
+        or value["repaired_row_count"] != sum(counts.values())
+        or value["query_rows_used_for_fit"] != 0
+    ):
+        raise ADV3B02StateError("z_id repair receipt value drift")
+    body = {key: value[key] for key in value if key != "receipt_sha256"}
+    if value["receipt_sha256"] != sha256_bytes(_canon(body)):
+        raise ADV3B02StateError("z_id repair receipt SHA drift")
+    return value
+
+
+def repair_finite_exact_zero_singleton_class_medoid(
+    support_zid: np.ndarray,
+    support_labels: Sequence[Any] | np.ndarray,
+    registered_classes: Sequence[Any] | np.ndarray,
+    support_physical_tokens: Sequence[Any] | np.ndarray,
+) -> tuple[np.ndarray, dict[str, Any]]:
+    """Repair only the frozen finite exact-zero K5/K10 singleton condition."""
+    source = _rows(support_zid, name="raw z_id repair support")
+    labels = typed_tokens(support_labels, name="raw z_id repair labels")
+    classes = typed_tokens(registered_classes, name="raw z_id repair classes", unique=True)
+    tokens = typed_tokens(support_physical_tokens, name="raw z_id repair physical tokens", unique=True)
+    if len(source) != len(labels) or len(labels) != len(tokens) or any(item not in classes for item in labels):
+        raise ADV3B02StateError("raw z_id repair support layout drift")
+    k_shot = _balanced_k(labels, classes)
+    zero_rows = np.all(source == np.float32(0.0), axis=1)
+    norms = np.linalg.norm(source.astype(np.float64), axis=1)
+    if np.any((~zero_rows) & (norms <= 1.0e-12)):
+        raise ADV3B02StateError("raw z_id repair rejects tiny nonzero support")
+    repaired = np.array(source, dtype=np.float32, copy=True, order="C")
+    repaired_counts = {item: 0 for item in classes}
+    zero_tokens: list[str] = []
+    donor_tokens: list[str] = []
+    for class_handle in classes:
+        members = [index for index, label in enumerate(labels) if label == class_handle]
+        zeros = [index for index in members if bool(zero_rows[index])]
+        if not zeros:
+            continue
+        if k_shot not in (5, 10) or len(zeros) != 1:
+            raise ADV3B02StateError("raw z_id repair requires one exact zero in K5/K10 class")
+        peers = [index for index in members if index not in zeros]
+        if len(peers) != k_shot - 1 or any(norms[index] <= 1.0e-12 for index in peers):
+            raise ADV3B02StateError("raw z_id repair lacks finite nonzero same-class peers")
+        peers = sorted(peers, key=lambda index: tokens[index])
+        unit = source[np.asarray(peers, np.intp)].astype(np.float64)
+        unit /= np.linalg.norm(unit, axis=1, keepdims=True)
+        cosine_sums = np.sum(unit @ unit.T, axis=1) - 1.0
+        donor_local = 0
+        for index in range(1, len(peers)):
+            if cosine_sums[index] > cosine_sums[donor_local]:
+                donor_local = index
+        zero_index = zeros[0]
+        donor_index = peers[donor_local]
+        repaired[zero_index] = source[donor_index]
+        repaired_counts[class_handle] = 1
+        zero_tokens.append(tokens[zero_index])
+        donor_tokens.append(tokens[donor_index])
+    normal = ~zero_rows
+    body = {
+        "schema": ZID_REPAIR_SCHEMA,
+        "rule": ZID_REPAIR_RULE,
+        "k_shot": k_shot,
+        "input_support_sha256": sha256_bytes(np.ascontiguousarray(source).tobytes()),
+        "output_support_sha256": sha256_bytes(np.ascontiguousarray(repaired).tobytes()),
+        "unit_output_support_sha256": _unit_support_token_binding_sha256(repaired, tokens),
+        "zero_row_token_root_sha256": sha256_bytes(_canon(sorted(zero_tokens))),
+        "donor_token_root_sha256": sha256_bytes(_canon(sorted(donor_tokens))),
+        "class_repair_counts": repaired_counts,
+        "normal_rows_bitwise_preserved": bool(
+            np.ascontiguousarray(source[normal]).tobytes()
+            == np.ascontiguousarray(repaired[normal]).tobytes()
+        ),
+        "repaired_row_count": int(np.sum(zero_rows)),
+        "query_rows_used_for_fit": 0,
+    }
+    receipt = {**body, "receipt_sha256": sha256_bytes(_canon(body))}
+    return repaired, dict(verify_zid_repair_receipt(receipt))
+
+
+def _validate_repaired_support_for_state(
+    receipt: Mapping[str, Any], *, support_zid: np.ndarray,
+    labels: tuple[str, ...], classes: tuple[str, ...], tokens: tuple[str, ...],
+    require_output_support_sha256: bool = True,
+) -> Mapping[str, Any]:
+    value = verify_zid_repair_receipt(receipt)
+    if (
+        value["k_shot"] != _balanced_k(labels, classes)
+        or set(value["class_repair_counts"]) != set(classes)
+        or (
+            require_output_support_sha256
+            and value["output_support_sha256"]
+            != sha256_bytes(np.ascontiguousarray(support_zid).tobytes())
+        )
+        or value["unit_output_support_sha256"]
+        != _unit_support_token_binding_sha256(support_zid, tokens)
+    ):
+        raise ADV3B02StateError("z_id repair/state teacher binding drift")
+    return value
+
+
 @dataclass(frozen=True)
 class AffineINT8ZIDSupportBank:
     """Candidate-local r2 support bank.  No symmetric-codec object is usable at runtime."""
@@ -378,6 +525,7 @@ class ActualBankBranchState:
     bcr_lambda: float
     quantization_audit: Mapping[str, Any]
     actual_bank_binding_receipt: Mapping[str, Any]
+    support_repair_receipt: Mapping[str, Any]
 
     def __post_init__(self) -> None:
         audit = dict(self.quantization_audit)
@@ -401,8 +549,10 @@ class ActualBankBranchState:
                 or int(audit["bcr"].get("large_margin_flip_count", -1)) != 0):
             raise ADV3B02StateError("affine actual branch audit/state drift")
         receipt = dict(self.actual_bank_binding_receipt)
+        repair = verify_zid_repair_receipt(self.support_repair_receipt)
         required = {"schema", "qknn_wire_sha256", "bank_receipt_sha256", "metric_receipt_sha256",
                     "support_token_root_sha256", "teacher_support_sha256", "bcr_weight_codes_sha256",
+                    "support_repair_receipt_sha256",
                     "bcr_weight_scales_sha256", "bcr_weight_residual_codes_sha256",
                     "bcr_weight_residual_scales_sha256", "bcr_weight_codec", "bcr_weight_plane_count",
                     "bcr_weight_plane_order", "bcr_weight_code_dtype", "bcr_weight_scale_dtype",
@@ -414,6 +564,8 @@ class ActualBankBranchState:
         if (set(receipt) != required or receipt.get("schema") != ACTUAL_BRANCH_SCHEMA
                 or receipt.get("receipt_sha256") != sha256_bytes(_canon(body))
                 or receipt.get("qknn_wire_sha256") != sha256_bytes(self.qknn_wire)
+                or receipt.get("teacher_support_sha256") != repair["unit_output_support_sha256"]
+                or receipt.get("support_repair_receipt_sha256") != repair["receipt_sha256"]
                 or receipt.get("support_token_root_sha256") != sha256_bytes(_canon(list(self.support_physical_ids_canonical)))
                 or receipt.get("bcr_weight_codes_sha256") != sha256_bytes(np.ascontiguousarray(self.bcr_weight_codes_qint8).tobytes())
                 or receipt.get("bcr_weight_scales_sha256") != sha256_bytes(np.ascontiguousarray(self.bcr_weight_scales_fp16).tobytes())
@@ -570,7 +722,13 @@ def _affine_margin_audit(bank: AffineINT8ZIDSupportBank, teacher_support: np.nda
 
 
 def _make_actual_branch(bank: AffineINT8ZIDSupportBank, metric: TypedSharedPSDMetric, wire: bytes,
-                        teacher: np.ndarray, labels: tuple[str, ...], tokens: tuple[str, ...], audit: Mapping[str, Any]) -> ActualBankBranchState:
+                        teacher: np.ndarray, labels: tuple[str, ...], tokens: tuple[str, ...], audit: Mapping[str, Any],
+                        support_repair_receipt: Mapping[str, Any]) -> ActualBankBranchState:
+    repair = _validate_repaired_support_for_state(
+        support_repair_receipt, support_zid=np.asarray(teacher, np.float32),
+        labels=labels, classes=tuple(sorted(bank.classes)), tokens=tokens,
+        require_output_support_sha256=False,
+    )
     decoded = _affine_dequantize_rows(bank.codes_qint8, bank.scales_fp16, bank.offsets_fp16).astype(np.float64)
     weights, analytic_loo, lam, _ = _existing_bcr_ridge_fit_and_loo(decoded, bank.class_indices_int16, bank.active_k)
     wc, ws, rwc, rws, dw = _quantize_bcr_weights_two_plane(weights)
@@ -604,7 +762,8 @@ def _make_actual_branch(bank: AffineINT8ZIDSupportBank, metric: TypedSharedPSDMe
     directional = {v: {"qknn_sha256": sha256_bytes(np.ascontiguousarray(qscore[v]).tobytes()), "bcr_sha256": sha256_bytes(np.ascontiguousarray(bscore[v]).tobytes())} for v in _BCR_DIRECTIONS}
     body = {"schema": ACTUAL_BRANCH_SCHEMA, "qknn_wire_sha256": sha256_bytes(wire), "bank_receipt_sha256": bank.bank_receipt_sha256,
             "metric_receipt_sha256": metric.metric_receipt_sha256, "support_token_root_sha256": sha256_bytes(_canon(list(tokens))),
-            "teacher_support_sha256": sha256_bytes(np.ascontiguousarray(_unit(teacher)).tobytes()), "bcr_weight_codes_sha256": sha256_bytes(np.ascontiguousarray(wc).tobytes()),
+            "teacher_support_sha256": _unit_support_token_binding_sha256(teacher, tokens),
+            "support_repair_receipt_sha256": repair["receipt_sha256"], "bcr_weight_codes_sha256": sha256_bytes(np.ascontiguousarray(wc).tobytes()),
             "bcr_weight_scales_sha256": sha256_bytes(np.ascontiguousarray(ws).tobytes()),
             "bcr_weight_residual_codes_sha256": sha256_bytes(np.ascontiguousarray(rwc).tobytes()),
             "bcr_weight_residual_scales_sha256": sha256_bytes(np.ascontiguousarray(rws).tobytes()),
@@ -622,7 +781,7 @@ def _make_actual_branch(bank: AffineINT8ZIDSupportBank, metric: TypedSharedPSDMe
     return ActualBankBranchState(
         wire, tokens, wc, ws, rwc, rws, float(lam),
         {"qknn": dict(audit), "bcr": bcr_audit},
-        {**body, "receipt_sha256": sha256_bytes(_canon(body))},
+        {**body, "receipt_sha256": sha256_bytes(_canon(body))}, dict(repair),
     )
 
 
@@ -636,7 +795,8 @@ def phase1_qknn_lock(k_shot: int) -> Phase1ZIDStudentTLock:
 def build_int8_qknn_state(features: np.ndarray, labels: Sequence[Any] | np.ndarray,
                           registered_classes: Sequence[Any] | np.ndarray,
                           physical_tokens: Sequence[Any] | np.ndarray, *,
-                          qknn_lock: Phase1ZIDStudentTLock | None = None) -> Int8QKNNState:
+                          qknn_lock: Phase1ZIDStudentTLock | None = None,
+                          support_repair_receipt: Mapping[str, Any] | None = None) -> Int8QKNNState:
     """Build the fixed affine deployment bank from support only."""
     source = _rows(features, name="support z_id")
     classes = typed_tokens(registered_classes, name="registered classes", unique=True)
@@ -645,6 +805,15 @@ def build_int8_qknn_state(features: np.ndarray, labels: Sequence[Any] | np.ndarr
     if len(source) != len(labs) or len(labs) != len(tokens) or any(item not in classes for item in labs):
         raise ADV3B02StateError("typed qKNN support labels/features/tokens drift")
     k_shot = _balanced_k(labs, classes)
+    if support_repair_receipt is None:
+        source, repair = repair_finite_exact_zero_singleton_class_medoid(
+            source, labs, classes, tokens
+        )
+    else:
+        repair = _validate_repaired_support_for_state(
+            support_repair_receipt, support_zid=source, labels=labs,
+            classes=classes, tokens=tokens,
+        )
     lock = phase1_qknn_lock(k_shot) if qknn_lock is None else qknn_lock
     if type(lock) is not Phase1ZIDStudentTLock or lock.active_k != k_shot:
         raise ADV3B02StateError("typed qKNN Phase1 lock/K drift")
@@ -670,7 +839,7 @@ def build_int8_qknn_state(features: np.ndarray, labels: Sequence[Any] | np.ndarr
     metric = identity_shared_psd_metric(config=lock)
     wire = _serialize_affine_bank(bank)
     audit = _affine_margin_audit(bank, ordered, ordered_labels, ordered)
-    branch = _make_actual_branch(bank, metric, wire, ordered, ordered_labels, ordered_tokens, audit)
+    branch = _make_actual_branch(bank, metric, wire, ordered, ordered_labels, ordered_tokens, audit, repair)
     return Int8QKNNState(branch, bank, metric, wire, classes, ordered_labels, ordered_tokens)
 
 
@@ -855,7 +1024,8 @@ def _reorder_to_bank(rows: np.ndarray, tokens: tuple[str, ...], bank: Int8QKNNSt
 def build_stage2_b_state(*, support_zid: np.ndarray, support_zdom: np.ndarray,
                          support_labels: Sequence[Any] | np.ndarray,
                          registered_classes: Sequence[Any] | np.ndarray,
-                         support_physical_tokens: Sequence[Any] | np.ndarray) -> DualQKNNState:
+                         support_physical_tokens: Sequence[Any] | np.ndarray,
+                         support_repair_receipt: Mapping[str, Any] | None = None) -> DualQKNNState:
     """Fit the only legal Stage2-B state from target-old support."""
     labels = typed_tokens(support_labels, name="S_B support labels")
     classes = typed_tokens(registered_classes, name="S_B registered classes", unique=True)
@@ -864,7 +1034,8 @@ def build_stage2_b_state(*, support_zid: np.ndarray, support_zdom: np.ndarray,
     zdom = _unit(_rows(support_zdom, name="S_B z_dom"))
     if len(zid) != len(zdom) or len(zid) != len(labels) or len(labels) != len(tokens):
         raise ADV3B02StateError("S_B dual support layout drift")
-    bank = build_int8_qknn_state(zid, labels, classes, tokens)
+    bank = build_int8_qknn_state(zid, labels, classes, tokens,
+                                 support_repair_receipt=support_repair_receipt)
     ordered_dom = _reorder_to_bank(zdom, tokens, bank)
     q, a, rho, alpha, centres = _fit_fixed_two_slot(ordered_dom, bank.labels, bank.classes, k_shot=bank.k_shot)
     codes, scales = _quantize_rows(ordered_dom)
@@ -876,7 +1047,8 @@ def build_stage2_b_state(*, support_zid: np.ndarray, support_zdom: np.ndarray,
 
 def _append_bank(old: Int8QKNNState, new_zid: np.ndarray, new_labels: tuple[str, ...],
                  new_tokens: tuple[str, ...], new_classes: tuple[str, ...], *,
-                 complete_teacher_by_token: Mapping[str, np.ndarray]) -> Int8QKNNState:
+                 complete_teacher_by_token: Mapping[str, np.ndarray],
+                 support_repair_receipt: Mapping[str, Any]) -> Int8QKNNState:
     if any(item in old.classes for item in new_classes) or any(item not in new_classes for item in new_labels):
         raise ADV3B02StateError("Stage2-C must append wholly new registered classes")
     if set(old.support_tokens) & set(new_tokens):
@@ -915,7 +1087,8 @@ def _append_bank(old: Int8QKNNState, new_zid: np.ndarray, new_labels: tuple[str,
         raise ADV3B02StateError("Stage2-C complete FP32 teacher/token closure drift")
     teacher = np.stack([complete_teacher_by_token[token] for token in tokens]).astype(np.float32)
     audit = _affine_margin_audit(bank, teacher, labels, teacher)
-    branch = _make_actual_branch(bank, old.metric, wire, teacher, labels, tokens, audit)
+    branch = _make_actual_branch(bank, old.metric, wire, teacher, labels, tokens, audit,
+                                 support_repair_receipt)
     result = Int8QKNNState(branch, bank, old.metric, wire, classes, labels, tokens)
     n = old.bank.support_row_count
     if (not np.array_equal(result.bank.codes_qint8[:n], old.bank.codes_qint8)
@@ -1015,6 +1188,9 @@ _APPEND_RECEIPT_FIELDS = {
     "after_qknn_wire_sha256",
     "after_metric_receipt_sha256",
     "after_branch_actual_bank_binding_sha256",
+    "after_branch_teacher_support_sha256",
+    "after_support_repair_receipt_sha256",
+    "after_support_repair_unit_output_sha256",
     "after_int8_audit",
     "after_int8_audit_sha256",
     "after_support_row_count",
@@ -1082,6 +1258,8 @@ def verify_stage2_c_append_receipt(
         or value["old_alpha_before"] != value["old_alpha_after"]
         or value["frozen_old_digest_in_after"]
         != value["old_domain_digest_before"]
+        or value["after_branch_teacher_support_sha256"]
+        != value["after_support_repair_unit_output_sha256"]
     ):
         raise ADV3B02StateError("Stage2-C frozen old-state receipt drift")
     body = {key: value[key] for key in value if key != "receipt_sha256"}
@@ -1095,7 +1273,8 @@ def append_stage2_c(old_state: DualQKNNState, *, new_support_zid: np.ndarray,
                     new_registered_classes: Sequence[Any] | np.ndarray,
                     new_support_physical_tokens: Sequence[Any] | np.ndarray,
                     after_full_teacher_zid: np.ndarray,
-                    after_full_teacher_physical_tokens: Sequence[Any] | np.ndarray) -> tuple[DualQKNNState, dict[str, Any]]:
+                    after_full_teacher_physical_tokens: Sequence[Any] | np.ndarray,
+                    after_support_repair_receipt: Mapping[str, Any] | None = None) -> tuple[DualQKNNState, dict[str, Any]]:
     """Append new classes without refitting Q/A/alpha or rewriting old banks."""
     if old_state.domain.stage != "S_B" or old_state.domain.old_class_count != len(old_state.id_bank.classes):
         raise ADV3B02StateError("Stage2-C requires one frozen Stage2-B old state")
@@ -1108,12 +1287,39 @@ def append_stage2_c(old_state: DualQKNNState, *, new_support_zid: np.ndarray,
     full_tokens = typed_tokens(after_full_teacher_physical_tokens, name="S_C complete teacher physical tokens", unique=True)
     if len(full_teacher) != len(full_tokens):
         raise ADV3B02StateError("S_C complete teacher row/token layout drift")
+    old_label_by_token = dict(zip(old_state.id_bank.support_tokens, old_state.id_bank.labels))
+    new_label_by_token = dict(zip(tokens, labels))
+    full_labels_list: list[str] = []
+    for token in full_tokens:
+        if token in old_label_by_token:
+            full_labels_list.append(old_label_by_token[token])
+        elif token in new_label_by_token:
+            full_labels_list.append(new_label_by_token[token])
+        else:
+            raise ADV3B02StateError("S_C complete teacher label/token closure drift")
+    full_labels = tuple(full_labels_list)
+    all_classes = old_state.id_bank.classes + new_classes
+    if after_support_repair_receipt is None:
+        full_teacher, repair = repair_finite_exact_zero_singleton_class_medoid(
+            full_teacher, full_labels, all_classes, full_tokens
+        )
+    else:
+        repair = _validate_repaired_support_for_state(
+            after_support_repair_receipt, support_zid=full_teacher,
+            labels=full_labels, classes=all_classes, tokens=full_tokens,
+        )
     teacher_by_token = {token: full_teacher[i] for i, token in enumerate(full_tokens)}
     expected_teacher_tokens = set(old_state.id_bank.support_tokens) | set(tokens)
     if set(teacher_by_token) != expected_teacher_tokens:
         raise ADV3B02StateError("S_C teacher must contain exactly the full old+new support")
-    bank = _append_bank(old_state.id_bank, new_support_zid, labels, tokens, new_classes,
-                        complete_teacher_by_token=teacher_by_token)
+    supplied_new_zid = _rows(new_support_zid, name="S_C supplied new z_id")
+    expected_new_zid = np.stack([teacher_by_token[token] for token in tokens]).astype(np.float32)
+    if not np.array_equal(supplied_new_zid, expected_new_zid):
+        raise ADV3B02StateError("S_C supplied new z_id/full teacher token binding drift")
+    new_zid = expected_new_zid
+    bank = _append_bank(old_state.id_bank, new_zid, labels, tokens, new_classes,
+                        complete_teacher_by_token=teacher_by_token,
+                        support_repair_receipt=repair)
     token_positions = {token: index for index, token in enumerate(tokens)}
     appended_tokens = bank.support_tokens[len(old_state.id_bank.support_tokens):]
     if set(appended_tokens) != set(tokens):
@@ -1221,6 +1427,15 @@ def append_stage2_c(old_state: DualQKNNState, *, new_support_zid: np.ndarray,
         "after_metric_receipt_sha256": result.id_bank.metric.metric_receipt_sha256,
         "after_branch_actual_bank_binding_sha256": branch.actual_bank_binding_receipt[
             "receipt_sha256"
+        ],
+        "after_branch_teacher_support_sha256": branch.actual_bank_binding_receipt[
+            "teacher_support_sha256"
+        ],
+        "after_support_repair_receipt_sha256": branch.actual_bank_binding_receipt[
+            "support_repair_receipt_sha256"
+        ],
+        "after_support_repair_unit_output_sha256": branch.support_repair_receipt[
+            "unit_output_support_sha256"
         ],
         "after_int8_audit": dict(after_int8_audit),
         "after_int8_audit_sha256": sha256_bytes(_canon(after_int8_audit)),
@@ -1653,11 +1868,13 @@ def bcrr_fused_logits(qknn_scores: np.ndarray, query_zid: np.ndarray, state: BCR
 def build_four_arm_states(*, support_zid: np.ndarray, support_zdom: np.ndarray,
                           support_labels: Sequence[Any] | np.ndarray,
                           registered_classes: Sequence[Any] | np.ndarray,
-                          support_physical_tokens: Sequence[Any] | np.ndarray) -> Mapping[str, Any]:
+                          support_physical_tokens: Sequence[Any] | np.ndarray,
+                          support_repair_receipt: Mapping[str, Any] | None = None) -> Mapping[str, Any]:
     """Seal four arms; paired arms share the exact raw or dual qKNN object."""
     dual = build_stage2_b_state(support_zid=support_zid, support_zdom=support_zdom,
                                 support_labels=support_labels, registered_classes=registered_classes,
-                                support_physical_tokens=support_physical_tokens)
+                                support_physical_tokens=support_physical_tokens,
+                                support_repair_receipt=support_repair_receipt)
     raw = dual.id_bank
     raw_qscore, bscore = _raw_directional_loo(raw)
     dual_qscore = _directional_dual_loo(dual, raw_qscore)
@@ -1740,6 +1957,7 @@ def state_receipt(states: Mapping[str, Any]) -> dict[str, Any]:
     branch_binding = getattr(
         raw.branch_state, "actual_bank_binding_receipt", None
     )
+    repair_receipt = raw.branch_state.support_repair_receipt
     payload = {"candidate": CANDIDATE, "schema": SCHEMA, "arms": list(ARMS), "query_rows_used_for_fit": 0,
                "raw_qknn_sha256": raw.digest, "dual_qknn_sha256": dual.digest,
                "branch_qknn_wire_sha256": sha256_bytes(raw.branch_state.qknn_wire),
@@ -1748,6 +1966,9 @@ def state_receipt(states: Mapping[str, Any]) -> dict[str, Any]:
                    if branch_binding is None
                    else branch_binding["receipt_sha256"]
                ),
+               "branch_teacher_support_sha256": branch_binding["teacher_support_sha256"],
+               "branch_support_repair_receipt_sha256": branch_binding["support_repair_receipt_sha256"],
+               "support_repair_receipt": dict(repair_receipt),
                "M0_M_OTHER_raw_state_byte_shared": True, "M_DA_M_JOINT_dual_state_byte_shared": True,
                "raw_bcrr": dict(other.receipt), "dual_bcrr": dict(joint.receipt),
                "int8": dict(dual.int8_audit_receipt),

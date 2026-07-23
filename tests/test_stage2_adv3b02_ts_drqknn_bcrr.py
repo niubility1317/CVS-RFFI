@@ -23,7 +23,7 @@ if str(ROOT) not in sys.path:
 import cvsrffi.stage2_adv3b02_ts_drqknn_bcrr as adv
 from cvsrffi.stage2_adv3b02_ts_drqknn_bcrr import (
     ADV3B02StateError, ARMS, CANDIDATE, SCENES, append_stage2_c,
-    build_four_arm_states, build_stage2_b_state, head_bypass_forward,
+    build_four_arm_states, build_four_arm_states_from_dual, build_stage2_b_state, head_bypass_forward,
     predict_four_arms, resource_formula, state_receipt, typed_tokens,
 )
 from scripts import run_adv3b02_ts_drqknn_bcrr_125 as runner
@@ -63,6 +63,166 @@ def _nuisance_support(k, classes=("old_a", "old_b"), seed=2):
                 1.0,
             )
     return zid, zdom, labels, tokens
+
+
+def _repair_support(k, *, seed=41):
+    rng = np.random.default_rng(seed + k)
+    labels = ("class_a",) * k + ("class_b",) * k
+    tokens = tuple(
+        [f"class_a:token:{k - index:02d}" for index in range(k)]
+        + [f"class_b:token:{index:02d}" for index in range(k)]
+    )
+    rows = rng.normal(size=(2 * k, 160)).astype(np.float32)
+    rows[2 if k > 2 else 0] = 0.0
+    return rows, labels, tokens
+
+
+@pytest.mark.parametrize("k_shot", [5, 10])
+def test_finite_exact_zero_singleton_class_medoid_repairs_only_same_class(k_shot):
+    source, labels, tokens = _repair_support(k_shot)
+    repaired, receipt = adv.repair_finite_exact_zero_singleton_class_medoid(
+        source, labels, ("class_a", "class_b"), tokens
+    )
+    assert receipt["rule"] == "finite_exact_zero_singleton_class_medoid_v1"
+    assert receipt["repaired_row_count"] == 1
+    assert receipt["class_repair_counts"] == {"class_a": 1, "class_b": 0}
+    assert receipt["normal_rows_bitwise_preserved"] is True
+    assert np.array_equal(source[np.arange(len(source)) != 2], repaired[np.arange(len(source)) != 2])
+    peers = [index for index, label in enumerate(labels) if label == "class_a" and index != 2]
+    assert any(np.array_equal(repaired[2], source[index]) for index in peers)
+    assert not any(np.array_equal(repaired[2], source[index]) for index in range(k_shot, 2 * k_shot))
+    assert adv.verify_zid_repair_receipt(receipt)["receipt_sha256"] == receipt["receipt_sha256"]
+
+
+@pytest.mark.parametrize("failure", ["k1", "multiple_zero", "all_zero", "nan", "inf", "tiny_nonzero"])
+def test_finite_exact_zero_repair_rejects_all_frozen_noneligible_inputs(failure):
+    k_shot = 1 if failure == "k1" else 5
+    source, labels, tokens = _repair_support(k_shot)
+    if failure == "multiple_zero":
+        source[3] = 0.0
+    elif failure == "all_zero":
+        source[:k_shot] = 0.0
+    elif failure == "nan":
+        source[3, 0] = np.nan
+    elif failure == "inf":
+        source[3, 0] = np.inf
+    elif failure == "tiny_nonzero":
+        source[3] = np.float32(1.0e-14)
+    with pytest.raises(ADV3B02StateError, match="raw z_id repair"):
+        adv.repair_finite_exact_zero_singleton_class_medoid(
+            source, labels, ("class_a", "class_b"), tokens
+        )
+
+
+def test_finite_exact_zero_repair_is_support_order_and_class_order_equivalent():
+    source, labels, tokens = _repair_support(5)
+    repaired, receipt = adv.repair_finite_exact_zero_singleton_class_medoid(
+        source, labels, ("class_a", "class_b"), tokens
+    )
+    order = np.asarray([7, 1, 9, 3, 0, 6, 8, 2, 5, 4], np.intp)
+    permuted, permuted_receipt = adv.repair_finite_exact_zero_singleton_class_medoid(
+        source[order], tuple(labels[index] for index in order),
+        ("class_b", "class_a"), tuple(tokens[index] for index in order)
+    )
+    by_token = {tokens[index]: repaired[index] for index in range(len(tokens))}
+    assert all(np.array_equal(permuted[index], by_token[tokens[source_index]]) for index, source_index in enumerate(order))
+    assert permuted_receipt["unit_output_support_sha256"] == receipt["unit_output_support_sha256"]
+    assert permuted_receipt["zero_row_token_root_sha256"] == receipt["zero_row_token_root_sha256"]
+    assert permuted_receipt["donor_token_root_sha256"] == receipt["donor_token_root_sha256"]
+
+
+def test_finite_exact_zero_repair_breaks_medoid_ties_by_physical_token():
+    source = np.ones((10, 160), dtype=np.float32)
+    source[0] = 0.0
+    for index, scale in enumerate((4.0, 2.0, 3.0, 1.0), start=1):
+        source[index] = 0.0
+        source[index, 0] = scale
+    labels = ("class_a",) * 5 + ("class_b",) * 5
+    tokens = ("zero", "z", "a", "b", "c") + tuple(f"other:{i}" for i in range(5))
+    repaired, _receipt = adv.repair_finite_exact_zero_singleton_class_medoid(
+        source, labels, ("class_a", "class_b"), tokens
+    )
+    assert np.array_equal(repaired[0], source[2])
+
+
+def test_real_repair_receipt_runtime_and_append_validator_closure_with_interleaved_classes():
+    rng = np.random.default_rng(818)
+    old_labels = ("old_a",) * 5 + ("old_b",) * 5
+    old_tokens = tuple(f"old:{index:02d}" for index in range(10))
+    old_zid = rng.normal(size=(10, 160)).astype(np.float32)
+    old_zdom = rng.normal(size=(10, 160)).astype(np.float32)
+    repaired_old, before_repair = adv.repair_finite_exact_zero_singleton_class_medoid(
+        old_zid, old_labels, ("old_a", "old_b"), old_tokens
+    )
+    before = build_four_arm_states(
+        support_zid=repaired_old, support_zdom=old_zdom, support_labels=old_labels,
+        registered_classes=("old_a", "old_b"), support_physical_tokens=old_tokens,
+        support_repair_receipt=before_repair,
+    )
+    new_labels = ("new_a",) * 5 + ("new_z",) * 5
+    new_tokens = tuple(f"new:{index:02d}" for index in range(10))
+    new_zid = rng.normal(size=(10, 160)).astype(np.float32)
+    new_zid[3] = 0.0
+    new_zdom = rng.normal(size=(10, 160)).astype(np.float32)
+    full_rows = np.empty((20, 160), np.float32)
+    full_labels = []
+    full_tokens = []
+    for index in range(10):
+        full_rows[2 * index] = old_zid[index]
+        full_rows[2 * index + 1] = new_zid[index]
+        full_labels.extend((old_labels[index], new_labels[index]))
+        full_tokens.extend((old_tokens[index], new_tokens[index]))
+    repaired_full, after_repair = adv.repair_finite_exact_zero_singleton_class_medoid(
+        full_rows, tuple(full_labels), ("old_a", "old_b", "new_a", "new_z"), tuple(full_tokens)
+    )
+    full_by_token = {token: repaired_full[index] for index, token in enumerate(full_tokens)}
+    repaired_new = np.stack([full_by_token[token] for token in new_tokens]).astype(np.float32)
+    after_dual, append = append_stage2_c(
+        before["M_DA"], new_support_zid=repaired_new, new_support_zdom=new_zdom,
+        new_support_labels=new_labels, new_registered_classes=("new_a", "new_z"),
+        new_support_physical_tokens=new_tokens, after_full_teacher_zid=repaired_full,
+        after_full_teacher_physical_tokens=tuple(full_tokens),
+        after_support_repair_receipt=after_repair,
+    )
+    after = build_four_arm_states_from_dual(after_dual)
+    query_zid = rng.normal(size=(4, 160)).astype(np.float32)
+    query_zdom = rng.normal(size=(4, 160)).astype(np.float32)
+    before_runtime = runner._runtime_state_receipt(
+        scene=SCENES[0], state_name="before", states=before,
+        logits=predict_four_arms(before, query_zid=query_zid, query_zdom=query_zdom),
+        query_zdom=query_zdom, feature_latency_ms=0.0, build_latency_ms=0.0,
+        predict_latency_ms=0.0, peak_cuda_memory_bytes=0,
+    )
+    after_runtime = runner._runtime_state_receipt(
+        scene=SCENES[0], state_name="after", states=after,
+        logits=predict_four_arms(after, query_zid=query_zid, query_zdom=query_zdom),
+        query_zdom=query_zdom, feature_latency_ms=0.0, build_latency_ms=0.0,
+        predict_latency_ms=0.0, peak_cuda_memory_bytes=0,
+    )
+    assert before_runtime["branch_teacher_support_sha256"] == before_repair["unit_output_support_sha256"]
+    assert after_runtime["branch_teacher_support_sha256"] == after_repair["unit_output_support_sha256"]
+    runtime_rows = []
+    for scene in SCENES:
+        for template in (before_runtime, after_runtime):
+            runtime_rows.append({**template, "scene": scene})
+    runtime_by_scene_state = runner._validate_runtime_scene_state_receipts(runtime_rows)
+    runner._validate_append_receipts(
+        {scene: append for scene in SCENES}, runtime_by_scene_state=runtime_by_scene_state
+    )
+    bad_runtime_rows = copy.deepcopy(runtime_rows)
+    bad_runtime_rows[0]["branch_actual_bank_binding_sha256"] = "A" * 64
+    with pytest.raises(runner.ADV3B02LauncherError, match="runtime state/resource"):
+        runner._validate_runtime_scene_state_receipts(bad_runtime_rows)
+    bad_new = repaired_new.copy()
+    bad_new[0, 0] = np.float32(bad_new[0, 0] + 1.0)
+    with pytest.raises(ADV3B02StateError, match="supplied new z_id/full teacher"):
+        append_stage2_c(
+            before["M_DA"], new_support_zid=bad_new, new_support_zdom=new_zdom,
+            new_support_labels=new_labels, new_registered_classes=("new_a", "new_z"),
+            new_support_physical_tokens=new_tokens, after_full_teacher_zid=repaired_full,
+            after_full_teacher_physical_tokens=tuple(full_tokens),
+            after_support_repair_receipt=after_repair,
+        )
 
 
 def test_typed_tokens_rejects_implicit_identifier_coercion():
@@ -727,14 +887,30 @@ def _fake_after_int8_audit():
     }
 
 
+def _fake_repair_receipt():
+    rows = np.ones((10, 160), dtype=np.float32)
+    _repaired, receipt = adv.repair_finite_exact_zero_singleton_class_medoid(
+        rows,
+        ("fixture_a",) * 5 + ("fixture_b",) * 5,
+        ("fixture_a", "fixture_b"),
+        tuple(f"fixture_token_{index}" for index in range(10)),
+    )
+    return receipt
+
+
+def _fixture_sha(value):
+    return adv.sha256_bytes(value.encode("utf-8"))
+
+
 def _fake_append_receipt():
     audit = _fake_after_int8_audit()
+    repair = _fake_repair_receipt()
     body = {
         "schema": adv.APPEND_RECEIPT_SCHEMA,
         "stage": "S_C",
         "query_rows_used_for_fit": 0,
-        "old_state_sha256": "b" * 64,
-        "after_state_sha256": "d" * 64,
+        "old_state_sha256": _fixture_sha("before dual state"),
+        "after_state_sha256": _fixture_sha("after dual state"),
         "old_domain_digest_before": "1" * 64,
         "frozen_old_digest_in_after": "1" * 64,
         "old_domain_prefix_sha256_before": "2" * 64,
@@ -763,9 +939,12 @@ def _fake_append_receipt():
         "old_alpha_after": 0.25,
         "old_q_a_alpha_refit": False,
         "after_bank_receipt_sha256": "9" * 64,
-        "after_qknn_wire_sha256": "e" * 64,
+        "after_qknn_wire_sha256": _fixture_sha("after raw qknn"),
         "after_metric_receipt_sha256": "a" * 64,
-        "after_branch_actual_bank_binding_sha256": "c" * 64,
+        "after_branch_actual_bank_binding_sha256": _fixture_sha("after actual binding"),
+        "after_branch_teacher_support_sha256": repair["unit_output_support_sha256"],
+        "after_support_repair_receipt_sha256": repair["receipt_sha256"],
+        "after_support_repair_unit_output_sha256": repair["unit_output_support_sha256"],
         "after_int8_audit": audit,
         "after_int8_audit_sha256": adv.sha256_bytes(adv._canon(audit)),
         "after_support_row_count": 10,
@@ -777,6 +956,7 @@ def _fake_append_receipt():
 
 def _runtime_rows():
     audit_sha = _fake_append_receipt()["after_int8_audit_sha256"]
+    repair = _fake_repair_receipt()
     rows = []
     for scene in SCENES:
         for state in ("before", "after"):
@@ -785,17 +965,20 @@ def _runtime_rows():
                     "scene": scene,
                     "state": state,
                     "raw_qknn_sha256": (
-                        "a" * 64 if state == "before" else "e" * 64
+                        _fixture_sha("before raw qknn") if state == "before" else _fixture_sha("after raw qknn")
                     ),
                     "dual_qknn_sha256": (
-                        "b" * 64 if state == "before" else "d" * 64
+                        _fixture_sha("before dual state") if state == "before" else _fixture_sha("after dual state")
                     ),
                     "branch_qknn_wire_sha256": (
-                        "a" * 64 if state == "before" else "e" * 64
+                        _fixture_sha("before raw qknn") if state == "before" else _fixture_sha("after raw qknn")
                     ),
-                    "branch_actual_bank_binding_sha256": (
-                        None if state == "before" else "c" * 64
+                    "branch_actual_bank_binding_sha256": _fixture_sha(
+                        f"{state} actual binding"
                     ),
+                    "branch_teacher_support_sha256": repair["unit_output_support_sha256"],
+                    "branch_support_repair_receipt_sha256": repair["receipt_sha256"],
+                    "support_repair_receipt": repair,
                     "int8_audit_sha256": (
                         "0" * 64 if state == "before" else audit_sha
                     ),
