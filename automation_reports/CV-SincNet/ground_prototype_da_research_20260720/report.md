@@ -2389,3 +2389,17 @@ r5首个失败row已用同一真实checkpoint和enrollment-only before/after sup
 科学提交=`a526d6b53f10829e96c61aabc9489c9dbd1bfb44`。全新不可覆盖run=`adv3b02_ts_drqknn_bcrr_r6_matchedaudit1_full125_a526d6b5_20260724_062228`已建立，状态=`PREREGISTERED / NOT_LANDED / NO_PERFORMANCE_RESULT`。raw Git blob发布包SHA=`b8cd7f4dd8c646c94df0fff1c3cef695799e501180c3edec9be82434dbf4f3f5`，含3,990个safe regular blob，raw bytes=`231,313,953B`，path-set SHA=`a8dc44a0d837b05579d8f0485651036bb0c20b2f755ecb2b4adf0a0e7a14e109`，missing/extra/raw mismatch/unsafe=`0/0/0/0`；method lock SHA继续为`0496594db4a82efbbf17ec3d67ebc3fb1f0c7ced41b542a5a0bde3482e704523`。下一步由唯一Terra runner执行direct preflight、精确同步、远端验证、唯一detach、GPU0–7完整125、即时健康检查和artifact回收；不得重验数据或按partial性能早停。
 
 `DATA_PROTOCOL=PRESENT_REUSED / NOT_REVALIDATED`
+
+##### `r6-matchedaudit1`首次完整125启动级止损
+
+run=`adv3b02_ts_drqknn_bcrr_r6_matchedaudit1_full125_a526d6b5_20260724_062228`完成direct预检、raw blob/lock同步、安全解包、远端SHA、`py_compile`与POSIX sentinel后，唯一matrix PID=`1592872`立即以exit=`1`退出。submitted/succeeded/failed/active=`0/0/0/0`，prediction/score=`0/1000、0/1500`，completion/archive/coverage/parity均ABSENT；无row child、无GPU进程、本run进程与SSH均清零。状态=`TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。
+
+唯一首源是发布准备误先创建`<run>/artifacts`，而冻结matrix要求其`--run-root`首次进入时不存在。这是runner目录生命周期错误，不是方法、数据或性能结果。本run不复用；下一步只修正新run的目录契约，使runner仅预建run根、input/source/logs而把fresh artifacts交给matrix创建，经独立review和新报告提交后用新run ID重发，r6科学提交`a526d6b5`保持不变。
+
+`DATA_PROTOCOL=PRESENT_REUSED / NOT_REVALIDATED`
+
+##### `r6-matchedaudit1` release-prep独立review
+
+独立裁决=`MERGE / P0=0 / P1=0 / P2=0`。冻结launcher代码正确，无需方法或runner代码delta。新run只预建run根下的input/source/logs，保持`<run>/artifacts`严格ABSENT并由matrix child首次创建；旧run永久保留。新报告必须区分report-only `release_prep_commit`、scientific commit=`a526d6b5`和source package=`b8cd7f4d`，不重打科学包、不重验数据。
+
+`DATA_PROTOCOL=PRESENT_REUSED / NOT_REVALIDATED`

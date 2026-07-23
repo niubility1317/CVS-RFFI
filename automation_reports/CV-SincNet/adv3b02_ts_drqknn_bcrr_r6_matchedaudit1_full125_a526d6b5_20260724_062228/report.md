@@ -70,3 +70,34 @@ PYTHONPATH=<run>/source/code /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python
 
 `DATA_PROTOCOL=PRESENT_REUSED / NOT_REVALIDATED`
 
+## 唯一runner落地与启动级技术闭合
+
+- `2026-07-24T06:33+08:00`：direct N607只读预检通过；项目根可见，GPU0–7均为空闲，磁盘剩余`7.5T`。远端run根在创建前为`ABSENT`，未复用旧run。
+- 精确同步两份冻结input后，远端ZIP SHA=`b8cd7f4dd8c646c94df0fff1c3cef695799e501180c3edec9be82434dbf4f3f5`、method lock SHA=`0496594db4a82efbbf17ec3d67ebc3fb1f0c7ced41b542a5a0bde3482e704523`；安全解包为`3990`个regular blob、`231313953B`，无unsafe path/symlink/目录项/重复路径；关键源码SHA、checkpoint SHA=`2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98`、sealed runtime SHA=`f119e8cb3f6beda95f0d545205e91b43e4a557af2fd1d025e95d2edf2b8e6e2a`一致。`py_compile`和冻结POSIX进程树sentinel通过。
+- 唯一启动尝试主PID=`1592872`，exit=`1`；启动后无本run子进程、无GPU占用。stderr唯一异常为`ADV3B02LauncherError: matrix root must be fresh`，位于`run_matrix`第1697行。
+- 首源：runner在预建run目录时错误预创建了`<run>/artifacts`，而冻结matrix将该路径作为必须不存在的`--run-root`。这是启动准备错误，不是方法、数据、协议或性能故障；无row提交、无prediction、无score、无receipt、无completion/archive/coverage/parity。
+- 本run不得复用或重启；已回收最小失败证据到本地报告目录：`matrix.stdout.log` SHA=`e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855`、`matrix.stderr.log` SHA=`109d6c3342a04b69c9a4a874eb085a4bfe87d6c8615802fd4fae72dc6df5504e`、`matrix.exit` SHA=`4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865`、`matrix.pid` SHA=`ab74a9e87abe2844e212525de40ec8edfa8f3b80cab491ee94f9072d202358b2`。
+
+|字段|终态|
+|---|---|
+|remote PID/exit|`1592872 / 1`|
+|submitted/succeeded/failed/active|`0 / 0 / 0 / 0`|
+|prediction/score|`0/1000 / 0/1500`|
+|completion/archive/coverage/parity|`ABSENT / ABSENT / ABSENT / ABSENT`|
+|状态|`TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`|
+|性能可分析性|否；未产生任何性能artifact|
+
+下一步仅允许修正共享runner的预建目录规则、专项回归、独立review、Git提交与全新不可覆盖run ID发布；不得改变r6方法、矩阵、数据或协议。
+
+## release-prep独立review
+
+独立裁决=`MERGE / P0=0 / P1=0 / P2=0`。冻结launcher的fresh-root契约正确，无需修改方法或runner代码。新run的唯一目录修正规则为：
+
+1.本地报告根和远端`<run>`在创建前均必须ABSENT；
+2.唯一runner只预建`<run>/input`、`<run>/source`和`<run>/logs`；
+3.启动前`<run>/artifacts`必须ABSENT，禁止占位、touch、验证器输出或预写manifest；
+4.child CWD仍为`<run>/source/code`，`--run-root=<run>/artifacts`，由matrix首次创建；
+5.PID、stdout、stderr和exit只写入`<run>/logs`；
+6.scientific commit=`a526d6b5`、source package=`b8cd7f4d`、command、matrix和数据均不变。
+
+任一fresh-root、CWD/cmdline、package/源码或PID绑定不符即停止为`TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`，不得重试同一run ID。
