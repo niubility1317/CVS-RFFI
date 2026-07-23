@@ -26,7 +26,7 @@
 
 ## 协议、矩阵与资源
 
-- `protocol_schema=p2_min_v1`；复用既有`VALIDATED_ONCE`和GEOFF/r8 archive/manifest/parity/coverage，不重复数据验证。
+- `DATA_PROTOCOL=PRESENT_REUSED / NOT_REVALIDATED`；继续复用`p2_min_v1`、`VALIDATED_ONCE`和GEOFF/r8既有证据。
 - receivers：`20-1/3-19/7-14/7-7/8-8`；seeds：`713102/713103/713104/713105/713106`。
 - slices：`(K10,new5)/(K10,new10)/(K10,new20)/(K5,new20)/(K1,new20)`；每job覆盖3个`leo_*_weak`场景。
 - 完整基数：125 jobs、375 scene slices、1500 score rows、1000 arm-state prediction artifacts。
@@ -91,7 +91,7 @@ PYTHONPATH=<run>/source/code /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python
 
 技术完整要求125/125 row receipt、375/375 scene slice、1500/1500 score row和1000/1000 prediction artifact。完整后必须同row报告old-before、old-after、old adaptation gain、seen-new、H、BA、floor、min-old、min-new、forgetting、old→new/new→old、逐类/receiver/scene/K/seed/new-count、DA净正确变化、coverage、量化margin、MAC、时延、显存、state bytes和`I_syn`。
 
-立即证伪保持冻结：`M_DA`无净正确增益、`M_OTHER`无独立正收益、`M_JOINT.H<=max(M_DA.H,M_OTHER.H)`、mean `I_syn<=0`、联合臂损害old/seen-new/floor/min-old/min-new或增加forgetting、正协同不足9/18 slice或不足2/3 scene，均不得推广。完成prediction但不达门标记`COMPLETED_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE`；无完整prediction只能标记`TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。
+立即证伪保持冻结：`M_DA`无净正确增益、`M_OTHER`无独立正收益、`M_JOINT.H<=max(M_DA.H,M_OTHER.H)`、mean `I_syn<=0`、联合臂损害old/seen-new/floor/min-old/min-new或增加forgetting、正协同不足188/375个scene slice或不足2/3个scene均值为正，均不得推广。完成prediction但不达门标记`COMPLETED_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE`；无完整prediction只能标记`TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。
 
 ## 执行记录
 
