@@ -51,6 +51,7 @@ CSIL和MoPC-HR两个不同cell均在prediction前产生同一确定性异常
 本地`ssr-gpu`验证：诊断脚本`py_compile`通过；no-LEO诊断、官方ADV3B02、
 CSIL和MoPC-HR四个相关测试文件共`31 passed`；`git diff --check`通过。
 独立复审：`P0=0,P1=0,P2=0 / APPROVE`。
+release提交：`04519d64978e41aa285737434b869230513ce8f8`。
 
 出现P0或两个不同row在prediction前同一确定性异常指纹时停止精确run-owned树；
 绝不按性能停止。fresh-run retry未授权。终态必须核验800 cells、2400同row场景记录、
