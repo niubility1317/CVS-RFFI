@@ -107,4 +107,84 @@ v2需对修正后的25份spec重新完成规范化哈希、schema、ManyTx实际
 
 | candidate_id | 方法 | receiver | 新类数 | K | seed | 场景 | old_acc | seen_new_acc | H_old_new | forgetting/per-class old | loss摘要 | coverage | 结论 |
 |---|---|---|---:|---:|---:|---|---:|---:|---:|---|---|---|---|
-| 待运行 | — | — | — | — | — | — | — | — | — | — | — | — | `NOT_ANALYZED` |
+| v2-cache-wave1 | — | — | — | — | — | — | — | — | — | — | — | `0/8 cache` | `STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT` |
+
+## N607运行闭环（2026-07-24）
+
+### 最终状态
+
+`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
+
+v2在首个8-cache wave中触发重复确定性异常指纹。余17套cache、25套parity、
+base26/base31、CSIL/MoPC-HR smoke和700-cell完整矩阵均未启动；未读取任何性能值，
+未创建或启动v3。
+
+### 发布门与启动收据
+
+| 检查项 | 结果 |
+|---|---|
+| direct preflight | PASS |
+| v1活跃进程 | 0 |
+| v2 run/log预检查 | 均不存在 |
+| ManyTx真实路径 | `test -f .../CV-SincNet/Dataset_WigSig/ManyTx.pkl` PASS |
+| 磁盘 | `/home`可用7.5TB |
+| delta commit | `016ec587911dacedc2662a68b1e717446064138e` |
+| 方法release commit | `3b8e9988f2213df1435b4a63e5e88b0e7b77a8ff` |
+| v2 manifest字节SHA256 | `a4f2cd1777ed51a1a1a723136a5699ec48a3956904100ef69ffb23ff34911166`，远端匹配 |
+| cache spec | 25/25 canonical hash PASS；25/25 schema PASS |
+| v1/旧错误路径残留 | 0 |
+| 既有运行脚本哈希 | 与v1冻结release值一致 |
+
+首wave固定执行manifest前8条命令，最大并发8，每张GPU一个v2 cache builder。
+主PID为`1303191`，PID、启动时间、完整cmdline和CWD
+`/home/szu2070436088/2510044040/CV-SincNet`已真实写入
+`cache_wave1_launch_receipt.txt`。直属builder PID为
+`1303195,1303197,1303199,1303201,1303202,1303205,1303207,1303208`，
+设备分别为`cuda:0`至`cuda:7`。
+
+### 系统性技术失败
+
+| 观测项 | 结果 |
+|---|---|
+| launched/completed/succeeded/failed | `8/8/0/8` |
+| cache set | 0 |
+| prediction/score | 0/0 |
+| 停止后v2活跃PID | 0 |
+| 停止后GPU | 8卡均0%利用率；另一个正式run的既有上下文约693MiB/卡，未干预 |
+| 日志 | `cache_wave1.log`，SHA256=`2808e0596c0b64f2cd93c771c2460cbb8d875ac793434549e1929ff98c99127b` |
+| launch receipt | SHA256=`6e9adbc23b27fc45a4e854b1c81deb8b91603012825ca853f2e86afcc2c4225e` |
+
+8个不同spec均在生成cache/prediction前产生同一异常：
+
+```text
+TypeError: _build_wisig_dataset() got an unexpected keyword argument
+'exclude_source_record_indices'
+```
+
+只读根因定位确认：
+
+- 同步后的`code/scripts/build_cvs_leo_weak_iq_cache.py`调用
+  `_build_wisig_dataset(...,exclude_source_record_indices=...)`；
+- 本地Git承载版本`code/export_spaceborne_features.py`支持该参数，
+  SHA256=`9e0ed8cefd8c652abd0b57a0e3baeebddc03cef16f215e3cf1004f1270552662`；
+- N607现存`code/export_spaceborne_features.py`不支持该参数，
+  SHA256=`dfcb3bac4b8974ecc9b41b73fb0b4c3c020b80f867b59870f78181f7a8257ee7`。
+
+因此v2失败原因是缓存builder与其远端运行时依赖版本不一致，不是ManyTx路径、LEO数据、
+CSIL或MoPC-HR方法性能问题。调度器和8个子进程均自行退出，无需发送SIGTERM/SIGKILL；
+所有run/log产物保留。
+
+### 阶段状态
+
+| 阶段 | 状态 |
+|---|---|
+| preflight/sync/hash/schema | PASS |
+| cache wave1 | FAIL，8/8同指纹 |
+| 剩余17套cache | NOT_STARTED |
+| parity 25/25 | NOT_STARTED |
+| base26/base31 | NOT_STARTED |
+| CSIL/MoPC-HR smoke | NOT_STARTED |
+| formal 200+500 cells | NOT_STARTED |
+
+fresh-run自动重试未授权。若需继续，必须把完整缓存builder运行时依赖纳入本地审查、
+Git冻结和精确同步清单，再使用新的非覆盖run ID；不得恢复或覆盖v2。

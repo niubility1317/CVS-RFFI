@@ -34,6 +34,14 @@ def _canonical_sha256(payload: object) -> str:
     return hashlib.sha256(encoded).hexdigest()
 
 
+def _file_sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
 def _write_new(path: Path, payload: object) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("x", encoding="utf-8", newline="\n") as handle:
@@ -60,8 +68,10 @@ def build(args: argparse.Namespace) -> dict:
                     f"{args.experiment_id}_{_safe(receiver)}_seed_{seed}_new25"
                 ),
                 "cache_scope": "external_comparison_registered",
-                "phase2_sample_view_policy": "leo_weak_only_no_clean_access",
-                "clean_sample_access": False,
+                "phase2_sample_view_policy": (
+                    "target_old_received_iq_target_new_leo_weak"
+                ),
+                "clean_sample_access": True,
                 "clean_derived_signal_access": False,
                 "star_ground_channel_impl": "simplified_leo_residual",
                 "role_specs": [
@@ -72,6 +82,7 @@ def build(args: argparse.Namespace) -> dict:
                         "rxs": receiver,
                         "days": "0",
                         "max_samples_per_tx": 50,
+                        "apply_leo_overlay": False,
                     },
                     {
                         "role": "target_new",
@@ -80,6 +91,7 @@ def build(args: argparse.Namespace) -> dict:
                         "rxs": receiver,
                         "days": "0",
                         "max_samples_per_tx": 50,
+                        "apply_leo_overlay": True,
                     },
                 ],
                 "dataset_seed": seed,
@@ -103,12 +115,14 @@ def build(args: argparse.Namespace) -> dict:
                 / f"seed_{seed}.json"
             )
             _write_new(output_dir / relative, spec)
+            spec_path = output_dir / relative
             specs.append(
                 {
                     "receiver": receiver,
                     "seed": seed,
                     "relative_path": relative.as_posix(),
-                    "content_sha256": _canonical_sha256(spec),
+                    "content_sha256": _file_sha256(spec_path),
+                    "canonical_content_sha256": _canonical_sha256(spec),
                     "cache_set_manifest": str(leaf / "cache_set.json"),
                 }
             )
@@ -143,7 +157,7 @@ def build(args: argparse.Namespace) -> dict:
                     "--expanded-scope",
                     "external_comparison_registered",
                     "--preserved-class-labels",
-                    ",".join((*OLD, *NEW25[:20])),
+                    ",".join(NEW25[:20]),
                     "--output",
                     str(
                         parity_root
@@ -165,7 +179,7 @@ def build(args: argparse.Namespace) -> dict:
         "commands": commands,
         "parity_commands": parity_commands,
         "required_parity_gate": (
-            "old6+first20 sample_ids and post_channel_iq_sha256 must match "
+            "first20 new-class sample_ids and post_channel_iq_sha256 must match "
             "the prior official-repo cache for every receiver/seed/scenario"
         ),
     }

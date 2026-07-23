@@ -151,16 +151,14 @@ def build(args: argparse.Namespace) -> dict:
                 "external comparison plans require a parity reference cache root"
             )
         if (
-            len(parity_preserved_labels) != 26
-            or len(set(parity_preserved_labels)) != 26
-            or tuple(parity_preserved_labels[:6]) != tuple(old)
+            len(parity_preserved_labels) != 20
+            or len(set(parity_preserved_labels)) != 20
             or len(parity_reference_new20) != 20
             or len(set(parity_reference_new20)) != 20
-            or tuple(parity_preserved_labels[6:])
-            != parity_reference_new20
+            or tuple(parity_preserved_labels) != parity_reference_new20
         ):
             raise ValueError(
-                "external comparison parity requires exact old6+first20 labels"
+                "external comparison parity requires exact first20 new labels"
             )
     artifact_paths = {
         "base_checkpoint": Path(args.base_checkpoint).resolve(strict=True),

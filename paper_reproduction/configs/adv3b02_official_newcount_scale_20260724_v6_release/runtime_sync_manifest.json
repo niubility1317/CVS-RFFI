@@ -1,0 +1,24 @@
+{
+  "schema": "cvs.adv3b02.runtime_sync_manifest.v3",
+  "experiment_id": "adv3b02_official_newcount_scale_20260724_v6",
+  "status": "LOCAL_VERIFIED",
+  "required_runtime_files": {
+    "code/cvsrffi/leo_weak_cache.py": "35ff780ac008c4789725f88cb4350ac6f3ba83f75bb4fe0a844583aba1f20a9a",
+    "code/export_spaceborne_features.py": "9e0ed8cefd8c652abd0b57a0e3baeebddc03cef16f215e3cf1004f1270552662",
+    "code/scripts/build_cvs_leo_weak_iq_cache.py": "65ec0ccb1270fa89d93614322a259ef3402e0ec936fb827687bb971976909f21",
+    "paper_reproduction/scripts/build_adv3b02_official_scale_cache_specs.py": "c24bc073466a134919bb08149a8a8858a4f0f58d11f40ccbfc397258c10bab35",
+    "paper_reproduction/scripts/build_adv3b02_paper_full_ci_bundle.py": "b83c6d55b92fe9e164d5b11fa0c80d8d7403661576b0a72ab63436389b77c19e",
+    "paper_reproduction/scripts/build_adv3b02_paper_full_ci_plan.py": "01a710d9871780533184dff172163e3092ba158c25484512b8a1d653e46da50d",
+    "paper_reproduction/scripts/run_adv3b02_paper_full_ci_plan.py": "545f828a4dea815b0825e8d745f4a86bed6fe7a044dc8c74658b8a2b2ed934b2",
+    "paper_reproduction/scripts/verify_adv3b02_official_scale_cache_parity.py": "cda55aae2c4d90ead3e35c6a4d721cacf7a89935fc987cef0b1a36ab15e4f527"
+  },
+  "release_manifest_sha256": "3895da69d0542496388781661d4d6900cf1bfc1f65cf012d8d72254fd5691649",
+  "release_gates": [
+    "25/25 byte content_sha256 match",
+    "25/25 canonical_content_sha256 match",
+    "old rows unmodified and overlay false",
+    "new rows LEO-overlaid and overlay true",
+    "comparison loader locks mixed sample view policy and current lineage",
+    "new20 parity receipt requires exactly 1000 rows per scenario"
+  ]
+}

@@ -33,6 +33,7 @@ for candidate in (str(REPO_ROOT), str(CODE_ROOT)):
 
 from cvsrffi.eval import apply_sat_channel_for_scenario  # noqa: E402
 from cvsrffi.leo_weak_cache import (  # noqa: E402
+    EXTERNAL_COMPARISON_SAMPLE_VIEW_POLICY,
     FORMAL_LEO_WEAK_SCENARIOS,
     LEO_WEAK_CACHE_SCHEMA,
     LEO_WEAK_CACHE_SET_SCHEMA,
@@ -96,10 +97,18 @@ def validate_build_spec(spec: Mapping[str, Any]) -> dict[str, Any]:
     )
     if spec.get("schema") != expected_schema:
         raise ValueError(f"build spec schema must be {expected_schema}")
-    if spec.get("phase2_sample_view_policy") != PHASE2_SAMPLE_VIEW_POLICY:
-        raise ValueError("build spec phase2_sample_view_policy drift")
-    if spec.get("clean_sample_access") is not False:
-        raise ValueError("build spec must declare clean_sample_access=false")
+    expected_view_policy = (
+        EXTERNAL_COMPARISON_SAMPLE_VIEW_POLICY
+        if scope == "external_comparison_registered"
+        else PHASE2_SAMPLE_VIEW_POLICY
+    )
+    if spec.get("phase2_sample_view_policy") != expected_view_policy:
+        raise ValueError("build spec sample view policy drift")
+    expected_clean_access = scope == "external_comparison_registered"
+    if spec.get("clean_sample_access") is not expected_clean_access:
+        raise ValueError(
+            "build spec clean_sample_access must match its cache scope"
+        )
     if spec.get("clean_derived_signal_access") is not False:
         raise ValueError("build spec must declare clean_derived_signal_access=false")
     single_observation_contract = {
@@ -139,6 +148,9 @@ def validate_build_spec(spec: Mapping[str, Any]) -> dict[str, Any]:
         for key in ("role", "pkl", "tx_ids", "rxs"):
             if not str(item.get(key, "")).strip():
                 raise ValueError(f"role spec is missing {key}")
+        apply_overlay = item.get("apply_leo_overlay", True)
+        if not isinstance(apply_overlay, bool):
+            raise ValueError("role apply_leo_overlay must be boolean")
         if scope in {"stage2_target_old", "stage2_registered"}:
             if str(item.get("days", "")) != "0,1,2":
                 raise ValueError(
@@ -152,6 +164,18 @@ def validate_build_spec(spec: Mapping[str, Any]) -> dict[str, Any]:
                     "single-observation formal cache requires 120 physical samples "
                     "per TX before scenario partition"
                 )
+    overlay_by_role = {
+        str(item["role"]): bool(item.get("apply_leo_overlay", True))
+        for item in role_specs
+    }
+    if scope == "external_comparison_registered":
+        if overlay_by_role != {"target_old": False, "target_new": True}:
+            raise ValueError(
+                "external comparison requires unmodified target_old and "
+                "LEO-overlaid target_new rows"
+            )
+    elif not all(overlay_by_role.values()):
+        raise ValueError("formal cache scopes require LEO overlay for every role")
     seeds = dict(spec.get("satellite_seed_by_scenario", {}))
     outputs = dict(spec.get("out_npz_by_scenario", {}))
     if tuple(seeds) != FORMAL_LEO_WEAK_SCENARIOS:
@@ -542,7 +566,12 @@ def _build_one_scenario(
         role_datasets
     ):
         role = str(role_spec["role"])
-        role_seed = int(base_seed) + role_index * 1_000_003
+        apply_overlay = bool(role_spec.get("apply_leo_overlay", True))
+        role_seed = (
+            int(base_seed) + role_index * 1_000_003
+            if apply_overlay
+            else -1
+        )
         role_seed_map[role] = role_seed
         generator = make_torch_generator(device, role_seed)
         loader = DataLoader(
@@ -558,21 +587,24 @@ def _build_one_scenario(
                 raise ValueError("WiSig cache builder expects (x,y,d,meta) batches")
             x, y, domain, meta = batch
             x = x.to(device, non_blocking=True)
-            leo, channel_meta = apply_sat_channel_for_scenario(
-                x,
-                str(scenario),
-                argparse.Namespace(
-                    sat_fs_hz=float(spec.get("sat_fs_hz", 25e6)),
-                    sat_fc_hz=float(spec.get("sat_fc_hz", 2.462e9)),
-                ),
-                gen=generator,
-                return_meta=True,
-            )
-            if not isinstance(channel_meta, Mapping):
-                raise RuntimeError("LEO overlay did not return channel metadata")
-            if str(channel_meta.get("channel_model", "")) != "leo_residual":
-                raise RuntimeError("LEO overlay metadata channel_model drift")
-            channel_meta_keys.update(str(key) for key in channel_meta)
+            if apply_overlay:
+                leo, channel_meta = apply_sat_channel_for_scenario(
+                    x,
+                    str(scenario),
+                    argparse.Namespace(
+                        sat_fs_hz=float(spec.get("sat_fs_hz", 25e6)),
+                        sat_fc_hz=float(spec.get("sat_fc_hz", 2.462e9)),
+                    ),
+                    gen=generator,
+                    return_meta=True,
+                )
+                if not isinstance(channel_meta, Mapping):
+                    raise RuntimeError("LEO overlay did not return channel metadata")
+                if str(channel_meta.get("channel_model", "")) != "leo_residual":
+                    raise RuntimeError("LEO overlay metadata channel_model drift")
+                channel_meta_keys.update(str(key) for key in channel_meta)
+            else:
+                leo = x
             leo_np = leo.detach().cpu().float().numpy().astype(np.float32)
             count = int(leo_np.shape[0])
             meta_tx = _meta_to_list(meta, "tx", count)
@@ -620,10 +652,12 @@ def _build_one_scenario(
             buffers["eq_ids"].extend(meta_eq)
             buffers["sig_ids"].extend(meta_sig)
             buffers["dataset_role"].extend([role] * count)
-            buffers["channel_views"].extend(["rx_base"] * count)
+            buffers["channel_views"].extend(
+                ["rx_base" if apply_overlay else "unmodified_received_iq"] * count
+            )
             buffers["sat_scenarios"].extend([str(scenario)] * count)
             buffers["satellite_seeds"].extend([role_seed] * count)
-            buffers["overlay_applied"].extend([True] * count)
+            buffers["overlay_applied"].extend([apply_overlay] * count)
             observed += count
         if observed != int(len(dataset)):
             raise RuntimeError(
@@ -635,20 +669,34 @@ def _build_one_scenario(
     if len(sample_ids) != len(set(sample_ids)):
         raise ValueError("cache builder encountered duplicate physical sample IDs")
     row_count = len(sample_ids)
+    target_new_only_overlay = (
+        str(spec["cache_scope"]) == "external_comparison_registered"
+    )
     manifest = {
         "schema": LEO_WEAK_CACHE_SCHEMA,
         "artifact_stage": LEO_WEAK_CACHE_STAGE,
-        "phase2_sample_view_policy": PHASE2_SAMPLE_VIEW_POLICY,
-        "clean_sample_access": False,
+        "phase2_sample_view_policy": (
+            EXTERNAL_COMPARISON_SAMPLE_VIEW_POLICY
+            if target_new_only_overlay
+            else PHASE2_SAMPLE_VIEW_POLICY
+        ),
+        "clean_sample_access": target_new_only_overlay,
         "clean_derived_signal_access": False,
-        "contains_post_channel_iq_only": True,
-        "contains_clean_rows": False,
-        "target_channel_view": "leo_weak_only",
+        "contains_post_channel_iq_only": not target_new_only_overlay,
+        "contains_clean_rows": target_new_only_overlay,
+        "target_channel_view": (
+            "mixed_old_received_new_leo_weak"
+            if target_new_only_overlay
+            else "leo_weak_only"
+        ),
         "target_channel_scenarios": [str(scenario)],
         "scenario": str(scenario),
         "iq_array_key": "leo_weak_iq",
         "raw_or_clean_iq_key_present": False,
         "overlay_applied_before_phase2": True,
+        "overlay_role_policy": (
+            "target_new_only" if target_new_only_overlay else "all_roles"
+        ),
         "star_ground_channel_impl": "simplified_leo_residual",
         "channel_model": "leo_residual",
         "channel_config": _json_safe(channel_config),
@@ -740,6 +788,7 @@ def _build_one_scenario(
         out_path,
         expected_scenario=str(scenario),
         allowed_roles=manifest["output_roles"],
+        allow_target_new_only_overlay=target_new_only_overlay,
     )
     audit["physical_sample_ids"] = sample_ids
     return audit
@@ -813,10 +862,25 @@ def build_cache_set(spec_path: str | Path, *, device: torch.device) -> dict[str,
         "artifact_stage": LEO_WEAK_CACHE_STAGE,
         "cache_set_id": str(spec.get("cache_set_id", path.stem)),
         "cache_scope": str(spec["cache_scope"]),
-        "phase2_sample_view_policy": PHASE2_SAMPLE_VIEW_POLICY,
-        "clean_sample_access": False,
+        "phase2_sample_view_policy": (
+            EXTERNAL_COMPARISON_SAMPLE_VIEW_POLICY
+            if str(spec["cache_scope"]) == "external_comparison_registered"
+            else PHASE2_SAMPLE_VIEW_POLICY
+        ),
+        "clean_sample_access": (
+            str(spec["cache_scope"]) == "external_comparison_registered"
+        ),
         "clean_derived_signal_access": False,
-        "target_channel_view": "leo_weak_only",
+        "target_channel_view": (
+            "mixed_old_received_new_leo_weak"
+            if str(spec["cache_scope"]) == "external_comparison_registered"
+            else "leo_weak_only"
+        ),
+        "overlay_role_policy": (
+            "target_new_only"
+            if str(spec["cache_scope"]) == "external_comparison_registered"
+            else "all_roles"
+        ),
         "target_channel_scenarios": list(FORMAL_LEO_WEAK_SCENARIOS),
         "output_roles": output_roles,
         "cache_npz_by_scenario": {

@@ -1,4 +1,6 @@
 import argparse
+import importlib.util
+import inspect
 import json
 import sys
 from pathlib import Path
@@ -41,6 +43,23 @@ CODE_SCRIPTS = Path(__file__).resolve().parents[1] / "code" / "scripts"
 if str(CODE_SCRIPTS) not in sys.path:
     sys.path.insert(0, str(CODE_SCRIPTS))
 from build_cvs_leo_weak_iq_cache import validate_build_spec
+
+
+def test_real_wisig_builder_supports_cache_exclusion_contract():
+    exporter_path = (
+        Path(__file__).resolve().parents[1]
+        / "code"
+        / "export_spaceborne_features.py"
+    )
+    spec = importlib.util.spec_from_file_location(
+        "adv3b02_real_export_spaceborne_features_contract",
+        exporter_path,
+    )
+    assert spec is not None and spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    signature = inspect.signature(module._build_wisig_dataset)
+    assert "exclude_source_record_indices" in signature.parameters
 
 
 def test_paper_full_plan_has_complete_matrix_and_locked_methods(tmp_path):
@@ -120,8 +139,7 @@ def test_official_scale_plan_supports_single_method_and_paper_counts(tmp_path):
             cache_parity_root=str(tmp_path / "parity"),
             parity_reference_cache_root=str(tmp_path / "reference"),
             parity_preserved_class_labels=",".join(
-                [f"o{i}" for i in range(6)]
-                + [f"n{i}" for i in range(20)]
+                [f"n{i}" for i in range(20)]
             ),
             run_root=str(tmp_path / "run"),
             target_cache_root=str(tmp_path / "cache"),
@@ -502,8 +520,10 @@ def test_external_comparison_cache_scope_accepts_target_roles_and_day0():
     spec = {
         "schema": "cvs_leo_weak_iq_cache_build_spec_v1",
         "cache_scope": "external_comparison_registered",
-        "phase2_sample_view_policy": "leo_weak_only_no_clean_access",
-        "clean_sample_access": False,
+        "phase2_sample_view_policy": (
+            "target_old_received_iq_target_new_leo_weak"
+        ),
+        "clean_sample_access": True,
         "clean_derived_signal_access": False,
         "star_ground_channel_impl": "simplified_leo_residual",
         "role_specs": [
@@ -514,6 +534,7 @@ def test_external_comparison_cache_scope_accepts_target_roles_and_day0():
                 "rxs": "20-1",
                 "days": "0",
                 "max_samples_per_tx": 50,
+                "apply_leo_overlay": False,
             },
             {
                 "role": "target_new",
@@ -522,6 +543,7 @@ def test_external_comparison_cache_scope_accepts_target_roles_and_day0():
                 "rxs": "20-1",
                 "days": "0",
                 "max_samples_per_tx": 50,
+                "apply_leo_overlay": True,
             },
         ],
         "satellite_seed_by_scenario": {
@@ -560,6 +582,20 @@ def test_scale_cache_specs_cover_25_receiver_seed_cells(tmp_path):
         "20-16",
         "11-10",
     ]
+    spec = json.loads(
+        (tmp_path / manifest["specs"][0]["relative_path"]).read_text(
+            encoding="utf-8"
+        )
+    )
+    overlay_by_role = {
+        item["role"]: item["apply_leo_overlay"]
+        for item in spec["role_specs"]
+    }
+    assert overlay_by_role == {"target_old": False, "target_new": True}
+    assert spec["clean_sample_access"] is True
+    assert manifest["parity_commands"][0][
+        manifest["parity_commands"][0].index("--preserved-class-labels") + 1
+    ].split(",") == manifest["new25_class_labels"][:20]
     assert (tmp_path / "cache_specs_manifest.json").is_file()
 
 
@@ -736,13 +772,13 @@ def test_manual_formal_authority_flip_cannot_bypass_smoke(tmp_path):
 def test_scale_cache_parity_gate_detects_post_channel_hash_drift(
     tmp_path, monkeypatch
 ):
-    labels = [f"tx-{index}" for index in range(26)]
+    labels = [f"tx-{index}" for index in range(20)]
     rows = {
         scenario: {
             "tx_ids": np.asarray(labels),
-            "sample_ids": np.asarray([f"sample-{index}" for index in range(26)]),
+            "sample_ids": np.asarray([f"sample-{index}" for index in range(20)]),
             "post_channel_iq_sha256": np.asarray(
-                [f"{index:064x}" for index in range(26)]
+                [f"{index:064x}" for index in range(20)]
             ),
         }
         for scenario in ("leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak")
@@ -829,6 +865,58 @@ def test_package_parity_receipt_rejects_wrong_preserved_labels(tmp_path):
                 "cache_parity_reference_cache_set": str(reference),
             },
         )
+
+
+def test_package_parity_receipt_accepts_new20_row_count(tmp_path):
+    reference = tmp_path / "reference.json"
+    expanded = tmp_path / "expanded.json"
+    reference.write_text("reference", encoding="utf-8")
+    expanded.write_text("expanded", encoding="utf-8")
+    expected_labels = [f"class-{index}" for index in range(20)]
+    receipt_path = tmp_path / "parity.json"
+    receipt_path.write_text(
+        json.dumps(
+            {
+                "schema": "cvs.adv3b02.official_scale_cache_parity_receipt.v1",
+                "status": "PASS",
+                "reference_cache_set": str(reference.resolve()),
+                "reference_cache_set_sha256": sha256_file(reference),
+                "expanded_cache_set": str(expanded.resolve()),
+                "expanded_cache_set_sha256": sha256_file(expanded),
+                "preserved_class_labels": expected_labels,
+                "verified_fields": [
+                    "tx_ids",
+                    "sample_ids",
+                    "post_channel_iq_sha256",
+                ],
+                "scenario_receipts": {
+                    scenario: {
+                        "row_count": 1000,
+                        "sample_ids_sha256": "a" * 64,
+                        "post_channel_iq_sha256_root": "b" * 64,
+                    }
+                    for scenario in (
+                        "leo_clear_weak",
+                        "leo_low_elev_weak",
+                        "leo_rain_weak",
+                    )
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+    receipt = _verify_cache_parity_receipt(
+        {
+            "expected_cache_scope": "external_comparison_registered",
+            "parity_preserved_class_labels": expected_labels,
+        },
+        {
+            "cache_parity_receipt": str(receipt_path),
+            "target_cache_set": str(expanded),
+            "cache_parity_reference_cache_set": str(reference),
+        },
+    )
+    assert receipt is not None and receipt["status"] == "PASS"
 
 
 def test_comparison_final_bundle_validator_keeps_strict_per_scenario_checks(

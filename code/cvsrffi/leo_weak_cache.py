@@ -14,6 +14,9 @@ FORMAL_LEO_WEAK_SCENARIOS = (
     "leo_rain_weak",
 )
 PHASE2_SAMPLE_VIEW_POLICY = "leo_weak_only_no_clean_access"
+EXTERNAL_COMPARISON_SAMPLE_VIEW_POLICY = (
+    "target_old_received_iq_target_new_leo_weak"
+)
 LEO_WEAK_CACHE_SCHEMA = "cvs_leo_weak_iq_cache_v2"
 LEO_WEAK_CACHE_SET_SCHEMA = "cvs_leo_weak_iq_cache_set_v2"
 LEO_WEAK_CACHE_STAGE = "phase1_offline_prechannel_export"
@@ -190,20 +193,34 @@ def _require_manifest_contract(
     *,
     expected_scenario: str,
     observed_roles: set[str],
+    allow_target_new_only_overlay: bool = False,
 ) -> None:
     required = {
         "schema": LEO_WEAK_CACHE_SCHEMA,
         "artifact_stage": LEO_WEAK_CACHE_STAGE,
-        "phase2_sample_view_policy": PHASE2_SAMPLE_VIEW_POLICY,
-        "clean_sample_access": False,
+        "phase2_sample_view_policy": (
+            EXTERNAL_COMPARISON_SAMPLE_VIEW_POLICY
+            if allow_target_new_only_overlay
+            else PHASE2_SAMPLE_VIEW_POLICY
+        ),
+        "clean_sample_access": allow_target_new_only_overlay,
         "clean_derived_signal_access": False,
-        "contains_post_channel_iq_only": True,
-        "contains_clean_rows": False,
-        "target_channel_view": "leo_weak_only",
+        "contains_post_channel_iq_only": not allow_target_new_only_overlay,
+        "contains_clean_rows": allow_target_new_only_overlay,
+        "target_channel_view": (
+            "mixed_old_received_new_leo_weak"
+            if allow_target_new_only_overlay
+            else "leo_weak_only"
+        ),
         "scenario": str(expected_scenario),
         "iq_array_key": "leo_weak_iq",
         "raw_or_clean_iq_key_present": False,
         "overlay_applied_before_phase2": True,
+        "overlay_role_policy": (
+            "target_new_only"
+            if allow_target_new_only_overlay
+            else "all_roles"
+        ),
         "star_ground_channel_impl": "simplified_leo_residual",
         "channel_model": "leo_residual",
     }
@@ -249,6 +266,7 @@ def load_verified_leo_weak_cache(
     *,
     expected_scenario: str,
     allowed_roles: Iterable[str],
+    allow_target_new_only_overlay: bool = False,
 ) -> tuple[dict[str, np.ndarray], dict[str, Any], dict[str, Any]]:
     """Load one sealed cache after member-list and sample-level verification.
 
@@ -326,6 +344,7 @@ def load_verified_leo_weak_cache(
         manifest,
         expected_scenario=scenario,
         observed_roles=observed_roles,
+        allow_target_new_only_overlay=allow_target_new_only_overlay,
     )
     if int(manifest.get("row_count", -1)) != row_count:
         raise ValueError("LEO cache manifest row_count drift")
@@ -338,10 +357,26 @@ def load_verified_leo_weak_cache(
     record_indices = np.asarray(arrays["source_record_indices"]).astype(np.int64)
     if not np.all(scenarios == scenario):
         raise ValueError("LEO cache contains a row from another scenario")
-    if not np.all(views == "rx_base"):
-        raise ValueError("LEO cache channel_views must be post-channel rx_base")
-    if not bool(np.all(applied)):
-        raise ValueError("LEO cache contains a row without overlay_applied=true")
+    if allow_target_new_only_overlay:
+        new_mask = roles == "target_new"
+        old_mask = roles == "target_old"
+        if not bool(np.any(new_mask)) or not bool(np.any(old_mask)):
+            raise ValueError("mixed comparison cache requires old and new rows")
+        if not bool(
+            np.all(applied[new_mask])
+            and np.all(~applied[old_mask])
+            and np.all(views[new_mask] == "rx_base")
+            and np.all(views[old_mask] == "unmodified_received_iq")
+        ):
+            raise ValueError(
+                "mixed comparison cache overlay roles/views do not match "
+                "target_new_only policy"
+            )
+    else:
+        if not np.all(views == "rx_base"):
+            raise ValueError("LEO cache channel_views must be post-channel rx_base")
+        if not bool(np.all(applied)):
+            raise ValueError("LEO cache contains a row without overlay_applied=true")
     if np.any(record_indices < 0):
         raise ValueError("LEO cache source_record_indices must be nonnegative")
     if any(
@@ -398,8 +433,12 @@ def load_verified_leo_weak_cache(
         "overlay_ids_sha256": ids_sha256(expected_overlay_ids),
         "manifest_sha256": canonical_json_sha256(manifest),
         "forbidden_members_checked_before_iq_read": True,
-        "clean_sample_access": False,
-        "phase2_sample_view_policy": PHASE2_SAMPLE_VIEW_POLICY,
+        "clean_sample_access": allow_target_new_only_overlay,
+        "phase2_sample_view_policy": (
+            EXTERNAL_COMPARISON_SAMPLE_VIEW_POLICY
+            if allow_target_new_only_overlay
+            else PHASE2_SAMPLE_VIEW_POLICY
+        ),
         "phase2_physical_sample_root_id_policy": (
             PHASE2_PHYSICAL_SAMPLE_ROOT_ID_POLICY
         ),

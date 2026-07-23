@@ -436,12 +436,15 @@ def _verify_cache_parity_receipt(
         package["cache_parity_reference_cache_set"]
     ).resolve(strict=True)
     scenario_receipts = receipt.get("scenario_receipts")
+    expected_rows_per_scenario = (
+        len(plan["parity_preserved_class_labels"]) * 50
+    )
     valid_scenario_receipts = (
         isinstance(scenario_receipts, dict)
         and tuple(scenario_receipts)
         == ("leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak")
         and all(
-            int(value.get("row_count", -1)) == 1300
+            int(value.get("row_count", -1)) == expected_rows_per_scenario
             and len(str(value.get("sample_ids_sha256", ""))) == 64
             and len(str(value.get("post_channel_iq_sha256_root", ""))) == 64
             for value in scenario_receipts.values()

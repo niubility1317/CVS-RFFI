@@ -20,6 +20,7 @@ for value in (str(REPO_ROOT), str(CODE_ROOT), str(SCRIPT_ROOT)):
 import build_cvs_stage2_predictor_bundle as base_builder  # noqa: E402
 from cvsrffi.leo_weak_cache import (  # noqa: E402
     FORMAL_LEO_WEAK_SCENARIOS,
+    LEO_WEAK_CACHE_SCHEMA,
     canonical_json_sha256,
     ids_sha256,
     overlay_id,
@@ -154,15 +155,37 @@ def load_comparison_inner_leo_cache(
             "comparison LEO cache role leakage: "
             f"observed={sorted(observed_roles)}, allowed={sorted(allowed)}"
         )
+    overlay_role_policy = str(
+        manifest.get("overlay_role_policy", "all_roles")
+    )
+    if overlay_role_policy not in {"all_roles", "target_new_only"}:
+        raise ValueError("comparison LEO overlay role policy drift")
+    target_new_only_overlay = overlay_role_policy == "target_new_only"
+    observed_schema = str(manifest.get("schema", ""))
+    if observed_schema not in {
+        "cvs_leo_weak_iq_cache_v1",
+        LEO_WEAK_CACHE_SCHEMA,
+    }:
+        raise ValueError("comparison LEO cache schema drift")
     required_manifest = {
-        "schema": "cvs_leo_weak_iq_cache_v1",
         "artifact_stage": "phase1_offline_prechannel_export",
-        "contains_post_channel_iq_only": True,
+        "contains_post_channel_iq_only": not target_new_only_overlay,
         "raw_or_clean_iq_key_present": False,
         "overlay_applied_before_phase2": True,
         "scenario": scenario,
         "iq_array_key": "leo_weak_iq",
     }
+    if target_new_only_overlay:
+        required_manifest.update(
+            {
+                "clean_sample_access": True,
+                "contains_clean_rows": True,
+                "target_channel_view": "mixed_old_received_new_leo_weak",
+                "phase2_sample_view_policy": (
+                    "target_old_received_iq_target_new_leo_weak"
+                ),
+            }
+        )
     failed = [
         key
         for key, expected in required_manifest.items()
@@ -193,6 +216,8 @@ def load_comparison_inner_leo_cache(
         raise ValueError(
             "comparison LEO provenance fields and source-lineage members disagree"
         )
+    if observed_schema == LEO_WEAK_CACHE_SCHEMA and not has_current_lineage:
+        raise ValueError("current comparison cache requires source lineage")
     if has_current_lineage:
         dataset_hashes = np.asarray(arrays["source_dataset_sha256"]).astype(str)
         record_indices = np.asarray(
@@ -220,10 +245,25 @@ def load_comparison_inner_leo_cache(
     applied = np.asarray(arrays["overlay_applied"]).astype(bool)
     if not np.all(scenarios == scenario):
         raise ValueError("comparison cache mixes LEO scenarios")
-    if not np.all(views == "rx_base"):
-        raise ValueError("comparison cache contains a non-rx_base channel view")
-    if not bool(np.all(applied)):
-        raise ValueError("comparison cache contains a row without LEO overlay")
+    new_mask = roles == "target_new"
+    old_mask = roles == "target_old"
+    if target_new_only_overlay:
+        if not bool(np.any(new_mask)) or not bool(np.any(old_mask)):
+            raise ValueError("mixed comparison cache requires old and new rows")
+        if not bool(
+            np.all(applied[new_mask])
+            and np.all(~applied[old_mask])
+            and np.all(views[new_mask] == "rx_base")
+            and np.all(views[old_mask] == "unmodified_received_iq")
+        ):
+            raise ValueError(
+                "comparison cache violates target_new_only overlay policy"
+            )
+    else:
+        if not np.all(views == "rx_base"):
+            raise ValueError("comparison cache contains a non-rx_base channel view")
+        if not bool(np.all(applied)):
+            raise ValueError("comparison cache contains a row without LEO overlay")
 
     channel_hash = str(manifest.get("channel_config_sha256", ""))
     if len(channel_hash) != 64:
@@ -266,7 +306,6 @@ def load_comparison_inner_leo_cache(
         if str(manifest.get(key, "")) != observed:
             raise ValueError(f"comparison LEO manifest root mismatch: {key}")
 
-    new_mask = roles == "target_new"
     if "target_new" in allowed and not bool(np.any(new_mask)):
         raise ValueError("comparison LEO cache has no target_new rows")
     if bool(np.any(new_mask)) and not bool(
@@ -285,8 +324,13 @@ def load_comparison_inner_leo_cache(
         "satellite_seeds": sorted(set(int(value) for value in seeds.tolist())),
         **roots,
         "manifest_sha256": canonical_json_sha256(manifest),
-        "comparison_source_lineage_arrays_required": False,
+        "comparison_source_lineage_arrays_required": (
+            observed_schema == LEO_WEAK_CACHE_SCHEMA
+        ),
         "new_class_leo_iq_verified": bool(np.any(new_mask)),
+        "old_class_unmodified_received_iq_verified": bool(
+            target_new_only_overlay and np.any(old_mask)
+        ),
         "exact_legacy_member_set_verified": not any(
             key in arrays for key in _COMPARISON_OPTIONAL_MEMBERS
         ),

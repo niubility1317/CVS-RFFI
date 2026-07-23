@@ -1,0 +1,45 @@
+{
+  "schema": "cvs_leo_weak_iq_cache_build_spec_v1",
+  "cache_set_id": "adv3b02_official_newcount_scale_20260724_v6_8_8_seed_713104_new25",
+  "cache_scope": "external_comparison_registered",
+  "phase2_sample_view_policy": "target_old_received_iq_target_new_leo_weak",
+  "clean_sample_access": true,
+  "clean_derived_signal_access": false,
+  "star_ground_channel_impl": "simplified_leo_residual",
+  "role_specs": [
+    {
+      "role": "target_old",
+      "pkl": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManyTx.pkl",
+      "tx_ids": "14-10,14-7,20-15,20-19,6-15,8-20",
+      "rxs": "8-8",
+      "days": "0",
+      "max_samples_per_tx": 50,
+      "apply_leo_overlay": false
+    },
+    {
+      "role": "target_new",
+      "pkl": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManyTx.pkl",
+      "tx_ids": "1-16,1-18,18-10,14-11,8-3,18-8,10-10,16-19,20-12,4-10,13-14,2-5,1-8,19-13,19-9,3-8,19-8,11-19,2-16,19-6,13-19,18-14,20-4,20-16,11-10",
+      "rxs": "8-8",
+      "days": "0",
+      "max_samples_per_tx": 50,
+      "apply_leo_overlay": true
+    }
+  ],
+  "dataset_seed": 713104,
+  "satellite_seed_by_scenario": {
+    "leo_clear_weak": 7131040,
+    "leo_low_elev_weak": 7131041,
+    "leo_rain_weak": 7131042
+  },
+  "out_npz_by_scenario": {
+    "leo_clear_weak": "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v6/target_cache_new25/rx_8_8/seed_713104/leo_clear_weak.npz",
+    "leo_low_elev_weak": "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v6/target_cache_new25/rx_8_8/seed_713104/leo_low_elev_weak.npz",
+    "leo_rain_weak": "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v6/target_cache_new25/rx_8_8/seed_713104/leo_rain_weak.npz"
+  },
+  "out_manifest": "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v6/target_cache_new25/rx_8_8/seed_713104/cache_set.json",
+  "batch_size": 256,
+  "wisig_out_len": 256,
+  "wisig_equalized": "1",
+  "wisig_domain": "rx_day"
+}

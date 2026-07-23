@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 
 import numpy as np
+import pytest
 import torch
 from torch.utils.data import Dataset
 
@@ -152,6 +153,93 @@ def test_builder_writes_only_verified_post_channel_iq(
         with np.load(tmp_path / f"{scenario}.npz", allow_pickle=False) as archive:
             assert "raw_iq" not in archive.files
             assert all(not key.startswith("clean") for key in archive.files)
+
+
+def test_external_comparison_overlays_new_rows_only(
+    tmp_path: Path, monkeypatch
+) -> None:
+    overlay_batches = []
+
+    class _RoleTiny(_TinyWiSig):
+        def __getitem__(self, index: int):
+            x, y, domain, meta = super().__getitem__(index)
+            meta["tx"] = f"{self.role}_tx{index}"
+            return x, y, domain, meta
+
+    def fake_overlay(x, scenario, args, *, gen, return_meta):
+        overlay_batches.append(x.detach().cpu().clone())
+        return x + 0.5, {"channel_model": "leo_residual"}
+
+    monkeypatch.setattr(builder, "apply_sat_channel_for_scenario", fake_overlay)
+    safe_info = {"dataset_sha256": "a" * 64}
+    role_datasets = [
+        (
+            {"role": "target_old", "apply_leo_overlay": False},
+            _RoleTiny("target_old"),
+            safe_info,
+            tmp_path / "fake.pkl",
+        ),
+        (
+            {"role": "target_new", "apply_leo_overlay": True},
+            _RoleTiny("target_new"),
+            safe_info,
+            tmp_path / "fake.pkl",
+        ),
+    ]
+    out = tmp_path / "mixed.npz"
+    audit = builder._build_one_scenario(
+        scenario="leo_clear_weak",
+        base_seed=123,
+        role_datasets=role_datasets,
+        spec={"cache_scope": "external_comparison_registered"},
+        out_path=out,
+        builder_sha256="b" * 64,
+        device=torch.device("cpu"),
+    )
+    assert audit["row_count"] == 4
+    from paper_reproduction.scripts.build_adv3b02_paper_full_ci_bundle import (
+        load_comparison_inner_leo_cache,
+    )
+
+    comparison_arrays, _, comparison_audit = load_comparison_inner_leo_cache(
+        out,
+        expected_scenario="leo_clear_weak",
+        allowed_roles={"target_old", "target_new"},
+    )
+    assert comparison_audit["old_class_unmodified_received_iq_verified"] is True
+    assert comparison_audit["new_class_leo_iq_verified"] is True
+    assert comparison_arrays["leo_weak_iq"].shape[0] == 4
+    with np.load(out, allow_pickle=False) as archive:
+        tampered_payload = {
+            key: np.asarray(archive[key]) for key in archive.files
+        }
+    tampered_manifest = json.loads(
+        str(np.asarray(tampered_payload["manifest_json"]).reshape(-1)[0])
+    )
+    tampered_manifest["phase2_sample_view_policy"] = PHASE2_SAMPLE_VIEW_POLICY
+    tampered_payload["manifest_json"] = np.asarray(
+        json.dumps(tampered_manifest, sort_keys=True)
+    )
+    tampered = tmp_path / "mixed_policy_tampered.npz"
+    np.savez(tampered, **tampered_payload)
+    with pytest.raises(ValueError, match="manifest contract"):
+        load_comparison_inner_leo_cache(
+            tampered,
+            expected_scenario="leo_clear_weak",
+            allowed_roles={"target_old", "target_new"},
+        )
+    assert len(overlay_batches) == 1
+    with np.load(out, allow_pickle=False) as archive:
+        roles = np.asarray(archive["dataset_role"]).astype(str)
+        applied = np.asarray(archive["overlay_applied"]).astype(bool)
+        views = np.asarray(archive["channel_views"]).astype(str)
+        iq = np.asarray(archive["leo_weak_iq"])
+        assert np.all(~applied[roles == "target_old"])
+        assert np.all(applied[roles == "target_new"])
+        assert np.all(views[roles == "target_old"] == "unmodified_received_iq")
+        assert np.all(views[roles == "target_new"] == "rx_base")
+        assert np.allclose(iq[roles == "target_old", 0, 0], [1.0, 2.0])
+        assert np.allclose(iq[roles == "target_new", 0, 0], [1.5, 2.5])
 
 
 def test_build_spec_rejects_target_cache_without_both_registered_roles() -> None:

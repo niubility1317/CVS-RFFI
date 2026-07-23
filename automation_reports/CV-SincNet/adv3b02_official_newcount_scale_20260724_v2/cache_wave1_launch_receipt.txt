@@ -1,0 +1,2 @@
+1303191 1303190 五 7月 24 01:12:54 2026 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -c import concurrent.futures,json,subprocess,sys; m=json.load(open("runs/adv3b02_official_newcount_scale_20260724_v2/plan/cache_specs_manifest.json")); f=lambda z: subprocess.run([sys.executable]+z[1][1:-1]+["cuda:"+str(z[0]%8)],check=True).returncode; r=list(concurrent.futures.ThreadPoolExecutor(max_workers=8).map(f,list(enumerate(m["commands"][:8])))); print("CACHE_WAVE1_COMPLETE",len(r),sum(r),flush=True)
+/home/szu2070436088/2510044040/CV-SincNet

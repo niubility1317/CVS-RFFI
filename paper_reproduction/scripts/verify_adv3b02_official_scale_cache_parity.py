@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fail closed unless expanded LEO caches preserve old6+first20 rows exactly."""
+"""Fail closed unless expanded caches preserve first20 new-class LEO rows."""
 
 from __future__ import annotations
 
@@ -44,8 +44,8 @@ def verify(args: argparse.Namespace) -> dict:
         for value in str(args.preserved_class_labels).split(",")
         if value.strip()
     )
-    if len(preserved_labels) != 26 or len(set(preserved_labels)) != 26:
-        raise ValueError("parity gate requires exactly 26 unique preserved labels")
+    if len(preserved_labels) != 20 or len(set(preserved_labels)) != 20:
+        raise ValueError("parity gate requires exactly 20 unique new-class labels")
     allowed_roles = {"target_old", "target_new"}
     reference, _reference_manifest, _reference_audit = (
         load_comparison_leo_cache_set(
