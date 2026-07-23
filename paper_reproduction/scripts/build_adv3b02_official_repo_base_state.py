@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import math
 import os
 import sys
 from pathlib import Path
@@ -95,28 +96,25 @@ def build(args: argparse.Namespace) -> dict:
         rx_keep=rx_keep,
         day_keep=[0, 1],
         domain="rx",
-        max_samples_per_combo=2 * int(args.samples_per_combo),
+        max_samples_per_combo=int(args.samples_per_combo),
         sample_strategy="front",
         seed=int(args.seed),
     )
-    grouped: dict[tuple[int, int, int, int], list[tuple[int, int]]] = {}
-    for index, item in enumerate(full_dataset.index):
-        key = (
-            int(item.day_i),
-            int(item.tx_i),
-            int(item.rx_i),
-            int(item.eq_i),
+    pool_count = len(full_dataset)
+    expected = (
+        len(old_labels) * len(receivers) * 2 * int(args.samples_per_combo)
+    )
+    if pool_count != expected or expected != 8400:
+        raise ValueError(
+            f"official base requires exactly 8400 source-pool rows, got {pool_count}"
         )
-        grouped.setdefault(key, []).append((int(item.sig_i), int(index)))
-    train_selected = []
-    fisher_selected = []
-    per_combo = int(args.samples_per_combo)
-    for key in sorted(grouped):
-        ordered = [index for _sig, index in sorted(grouped[key])]
-        if len(ordered) < 2 * per_combo:
-            raise ValueError(f"source group {key} has only {len(ordered)} rows")
-        train_selected.extend(ordered[:per_combo])
-        fisher_selected.extend(ordered[per_combo : 2 * per_combo])
+    split_generator = torch.Generator().manual_seed(int(args.seed) + 5)
+    shuffled = torch.randperm(pool_count, generator=split_generator).tolist()
+    # makeDataTensor.m:
+    # train=1:ceil(.7*N)-1, validation=ceil(.7*N):N in MATLAB indexing.
+    split_point_one_based = int(math.ceil(0.7 * pool_count))
+    train_selected = shuffled[: split_point_one_based - 1]
+    fisher_selected = shuffled[split_point_one_based - 1 :]
     dataset = WiSigSubsetDataset(
         full_dataset, train_selected, split_source="official_base_source_train"
     )
@@ -149,21 +147,21 @@ def build(args: argparse.Namespace) -> dict:
             )
         return torch.cat(iq_rows).to(device), torch.cat(label_rows).to(device)
 
+    all_dataset = WiSigSubsetDataset(
+        full_dataset,
+        list(range(pool_count)),
+        split_source="official_mopc_full_source_base",
+    )
     source_x, source_y = materialize(dataset)
     fisher_x, fisher_y = materialize(fisher_dataset)
-    expected = (
-        len(old_labels) * len(receivers) * 2 * int(args.samples_per_combo)
-    )
-    if len(source_y) != expected or expected != 8400:
-        raise ValueError(
-            f"official base requires exactly 8400 rows, got {len(source_y)}"
-        )
-    counts = torch.bincount(source_y, minlength=len(old_labels))
+    all_x, all_y = materialize(all_dataset)
+    counts = torch.bincount(all_y, minlength=len(old_labels))
     if counts.tolist() != [1400] * len(old_labels):
-        raise ValueError(f"source class coverage drift: {counts.tolist()}")
+        raise ValueError(f"source pool class coverage drift: {counts.tolist()}")
+    train_counts = torch.bincount(source_y, minlength=len(old_labels))
     fisher_counts = torch.bincount(fisher_y, minlength=len(old_labels))
-    if len(fisher_y) != expected or fisher_counts.tolist() != [1400] * len(old_labels):
-        raise ValueError("CSIL Fisher source-validation coverage drift")
+    if bool(torch.any(train_counts == 0)) or bool(torch.any(fisher_counts == 0)):
+        raise ValueError("CSIL train/Fisher class coverage drift")
     if set(train_selected) & set(fisher_selected):
         raise ValueError("source train/Fisher validation overlap")
 
@@ -178,8 +176,8 @@ def build(args: argparse.Namespace) -> dict:
     )
     mopc = build_mopc_base_state(
         backbone,
-        source_x,
-        source_y,
+        all_x,
+        all_y,
         feature_fn=feature_fn,
         old_count=len(old_labels),
         total_capacity=int(args.total_capacity),
@@ -192,8 +190,10 @@ def build(args: argparse.Namespace) -> dict:
         "source_receiver_labels": receivers,
         "source_days": [0, 1],
         "source_train_samples_per_combo": int(args.samples_per_combo),
-        "base_sample_count": int(len(source_y)),
+        "base_sample_count": int(len(all_y)),
         "base_class_counts": counts.cpu().tolist(),
+        "csil_base_train_sample_count": int(len(source_y)),
+        "csil_base_train_class_counts": train_counts.cpu().tolist(),
         "fisher_sample_count": int(len(fisher_y)),
         "fisher_class_counts": fisher_counts.cpu().tolist(),
         "source_train_fisher_disjoint": True,
@@ -224,6 +224,10 @@ def build(args: argparse.Namespace) -> dict:
         "output_sha256": _sha256(output),
         "base_sample_count": state["base_sample_count"],
         "base_class_counts": state["base_class_counts"],
+        "csil_base_train_sample_count": state["csil_base_train_sample_count"],
+        "csil_base_train_class_counts": state[
+            "csil_base_train_class_counts"
+        ],
         "fisher_sample_count": state["fisher_sample_count"],
         "fisher_class_counts": state["fisher_class_counts"],
         "source_train_fisher_disjoint": True,

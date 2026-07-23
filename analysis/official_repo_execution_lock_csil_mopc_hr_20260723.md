@@ -64,8 +64,9 @@
 
 ### 2.4base状态
 
-80条旧状态无效。正式状态必须由8400条source训练样本重建；CSIL Fisher另用
-与训练物理记录互斥的8400条source validation样本，并包含：
+80条旧状态无效。正式状态必须由8400条source池重建。MoPC-HR按其trainer使用
+全部8400条base训练；CSIL按`makeDataTensor.m`的精确下标将同一已打乱池切成
+5879条base train和2521条互斥`cX` Fisher validation，并包含：
 
 - CSIL专属训练后ADV3B02状态；
 - base `fc_bf_fp`权重与bias；

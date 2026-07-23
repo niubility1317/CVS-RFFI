@@ -151,10 +151,11 @@ def _load_base_state(
         if int(state.get("base_sample_count", 0)) != 8400:
             raise ValueError("official-repo base state requires exactly 8400 rows")
         if (
-            int(state.get("fisher_sample_count", 0)) != 8400
+            int(state.get("csil_base_train_sample_count", 0)) != 5879
+            or int(state.get("fisher_sample_count", 0)) != 2521
             or state.get("source_train_fisher_disjoint") is not True
         ):
-            raise ValueError("official CSIL Fisher validation split drift")
+            raise ValueError("official CSIL 70/30 train/Fisher split drift")
         if not isinstance(state.get("csil"), dict) or not isinstance(
             state.get("mopc_hr"), dict
         ):
@@ -167,6 +168,9 @@ def _load_base_state(
                 "checkpoint_sha256": state.get("checkpoint_sha256"),
                 "base_sample_count": int(state["base_sample_count"]),
                 "base_class_counts": list(state.get("base_class_counts", [])),
+                "csil_base_train_sample_count": int(
+                    state["csil_base_train_sample_count"]
+                ),
                 "fisher_sample_count": int(state["fisher_sample_count"]),
                 "fisher_class_counts": list(state.get("fisher_class_counts", [])),
                 "source_train_fisher_disjoint": True,

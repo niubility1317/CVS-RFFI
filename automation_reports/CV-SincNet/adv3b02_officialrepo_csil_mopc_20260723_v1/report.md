@@ -6,7 +6,7 @@
 - 日期：2026-07-23
 - 状态：`LOCAL_IMPLEMENTATION_REVIEW`
 - 执行策略：`OFFICIAL_CODE_EXECUTION_SEMANTICS`
-- 正式base：8400条source train；CSIL Fisher另用互斥8400条source validation
+- 正式base池：8400条；MoPC-HR全量训练，CSIL按官方下标切5879条train/2521条互斥Fisher validation
 - 正式矩阵：2方法×5receiver×5seed×4K×4新类数=800cell，每cell 3场景
 - 正式LEO：新类support/query均叠加固定LEO弱信道
 - matched无LEO：仅作`DIAGNOSTIC_NEW_CLASS_NO_LEO_NON_FORMAL`
