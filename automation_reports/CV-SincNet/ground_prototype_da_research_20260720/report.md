@@ -2277,3 +2277,7 @@ run=`adv3b02_ts_drqknn_bcrr_r2_affine_bcr2_zidtotal1_full125_21ffdabf_20260723_2
 实现严格限定在ADV method、runner revision schema和专项测试；正式runner的matrix、调度、健康门、scorer以及DA/qKNN/BCRR公式均无变化。`ssr-gpu`下3文件`py_compile`通过；目标测试`72 passed、3 Windows POSIX skipped、0 failed`，相邻DSSC测试`36 passed、0 failed`，`git diff --check`通过。K5/K10×无零/单零的affine bank wire、codes/scales/offsets、两级BCR部署权重和固定query logits均与parent逐字节一致；unit teacher误传、1 ULP raw漂移、token错配和float64输入均失败关闭。
 
 真实checkpoint support-only smoke复用两个原触发row的只读before enrollment包，覆盖2 row×3 scene=6个state，全部teacher/repair binding闭合；query/truth/apply打开数均为0，fit query rows=0。receipt SHA=`b5e232d48fc07dbb1c744133204265e4b0d6634ef1ff299142bb23180c051474`。独立Terra终审=`MERGE / P0=0 / P1=0 / P2=2`；schema header增加9B但数组主体、MAC和256KiB门不变，commit-bound golden可后补且不得延迟实验。当前状态=`LOCAL_VERIFIED / NO_PERFORMANCE_RESULT`，下一步只允许精确Git提交、新不可覆盖run报告和完整125发布。
+
+##### `bindfix1`完整125预注册
+
+技术修复提交=`00b810006af0d48d457a1afe2a37d6b10d24a4b9`。全新不可覆盖run=`adv3b02_ts_drqknn_bcrr_r2_affine_bcr2_zidtotal1_bindfix1_full125_00b81000_20260724_005555`已建立，状态=`PREREGISTERED / NOT_LAUNCHED / NO_PERFORMANCE_RESULT`。发布源码包SHA=`c64da0582288b39f4f4479cbac078a4d3370fdfe73ea4abe572060cfd5c4d9de`，含3975个safe regular Git blob，path-set SHA=`05a30d6eec75b8faf0972ce3cb36d1e19ef35b40c8b2281275cea0ea464e7fd7`，逐blob不匹配0；method lock SHA继续为`0496594db4a82efbbf17ec3d67ebc3fb1f0c7ced41b542a5a0bde3482e704523`。本run固定GPU0–7完整125和即时健康检查；不得复用parent、重复数据验证或按partial性能早停。
