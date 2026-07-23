@@ -6,7 +6,7 @@
 - 创建时间：`2026-07-23T15:50:58+08:00`
 - operator：主agent；sole launch owner：`/root/dssc_pkgfix1_independent_review`（`gpt-5.6-terra high`）
 - candidate：`DSSC_ZDOM_JG_QKNN_R4_BCRR/design-r1f`；implementation tag=`techfix2`
-- 状态：`LOCAL_VERIFIED / PREREGISTERED / NO_PERFORMANCE_RESULT`
+- 状态：`RUNNING / NO_PERFORMANCE_RESULT`
 - 科学方法提交：`849fa342cd46cb8294b5d9b4f5358cea630d0643`
 - techfix2代码与source package提交：`b77cc6c463b3ee7be6c93392171e6c99cdc21432`
 - 报告Git承载：本文件由独立report-only提交纳入版本库，不包含于上述source ZIP；准确提交以`git log -1 -- <本报告路径>`为准
@@ -81,16 +81,18 @@ env PYTHONPATH=<run>/source/code OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NU
 
 |字段|当前值|
 |---|---|
-|direct/bridge preflight|待回填|
-|远端root不可覆盖检查|待回填|
-|source/input/checkpoint/runtime SHA|待回填|
-|GPU1隔离smoke|待回填|
-|GPU安全slot与实际`--gpu-ids`|待回填|
-|PID / launch exit|待回填|
+|direct/bridge preflight|`PASS / direct`；未使用bridge|
+|远端root不可覆盖检查|先确认`ABSENT`后排他创建，`PASS`|
+|source/input/checkpoint/runtime SHA|`PASS`；ZIP整体、3,958/3,958 raw Git blob、runner/test条目、4项input、checkpoint/runtime与`py_compile`闭合|
+|GPU1隔离smoke|`PASS`；`CUDA_VISIBLE_DEVICES=1`、`device_count=1/current_device=0`、logical `cuda:0`、zeroIQ `[2,2,256]→[2,160]`有限FP32、NumPy2 byte-equal、target/query/prediction=0|
+|GPU安全slot与实际`--gpu-ids`|GPU0–7启动前均无compute process；实际`0,1,2,3,4,5,6,7`|
+|PID / launch exit|wrapper PID=`796973`，matrix PID=`796975`；唯一启动时间=`2026-07-23T08:16:38Z`；`launcher.exit`尚不存在|
 |自然完成exit|待回填|
-|launcher receipt / row receipt|0 / 0|
+|launcher receipt / row receipt|启动后首个短连接为`32 / 0`；首批作业运行中|
 |prediction slice / score row|0 / 0|
-|archive / parity / coverage|`PRESENT_REUSED / PRESENT_REUSED / PRESENT_REUSED`；待远端SHA确认|
-|最终状态|`PREREGISTERED / NO_PERFORMANCE_RESULT`|
+|archive / parity / coverage|`PRESENT_REUSED`；archive=`dd2a2b0…`、manifest=`34213331…`、parity=`b93219c4…`、coverage=`c6e25ebe…`，只做冻结SHA/receipt绑定，不重验内容|
+|最终状态|`RUNNING / NO_PERFORMANCE_RESULT`|
+
+启动后短连接核验：wrapper与matrix进程均存活，CWD均为冻结run的`source`目录，cmdline完整绑定本run matrix入口与冻结输入；8张GPU均出现本run Python worker，显存约592–596MiB、利用率18%–23%。顶层stdout/stderr当时均为0B且无错误。每次SSH结束后本地`ssh.exe=0`，到N607及bridge的`ESTABLISHED:22=0`。retry、kill、restart均为0；以上只证明技术进程已落地，不是prediction或性能结果。
 
 完成后在本报告追加同row五臂性能表、逐receiver/scene/K/seed/new-count、逐类、transition、coverage、量化、资源、异常与最终`MERGE/REVISE/REJECT`或性能裁决。
