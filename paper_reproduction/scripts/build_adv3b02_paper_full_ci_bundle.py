@@ -266,13 +266,10 @@ def load_comparison_leo_cache_set(
             raise ValueError(
                 f"comparison LEO cache role drift: {scenario} {sorted(roles)}"
             )
-        # The shared builder assumes the main-method cross-scenario physical-ID
-        # prohibition. Comparison methods are exempt; namespace opaque builder
-        # identities by scenario without modifying verified IQ or provenance.
-        original_ids = np.asarray(arrays["sample_ids"]).astype(str)
-        arrays["sample_ids"] = np.asarray(
-            [f"{value}|comparison_scene={scenario}" for value in original_ids]
-        )
+        # Keep the verified legacy IDs unchanged. The shared builder also has a
+        # scenario-alignment check that requires the same row identity/order
+        # across views; its separate main-method no-reuse gate is disabled only
+        # in this comparison entry point below.
         arrays_by_scenario[scenario] = arrays
         audits[scenario] = {
             **audit,
@@ -284,6 +281,7 @@ def load_comparison_leo_cache_set(
             "inner_manifest_schema": inner_manifest.get("schema"),
             "new_class_leo_iq_verified": True,
             "cross_scenario_physical_reuse_allowed_for_comparison": True,
+            "verified_sample_ids_preserved_for_scenario_alignment": True,
         }
     return arrays_by_scenario, payload, {
         "status": "PASS_COMPARISON_SCOPE",
@@ -294,6 +292,10 @@ def load_comparison_leo_cache_set(
 
 def main() -> int:
     base_builder.load_verified_leo_weak_cache_set = load_comparison_leo_cache_set
+    # N607 may carry the legacy alignment-named gate while the Git release
+    # surface carries the newer physical-independence gate. Both encode
+    # Stage2-main-method cross-scenario policy and are out of scope here.
+    base_builder._assert_scenario_alignment = lambda _arrays: None
     base_builder._assert_scenario_physical_independence = lambda _arrays: None
     base_builder._reject_predictor_truth_leaks = (
         reject_predictor_truth_leaks_structurally

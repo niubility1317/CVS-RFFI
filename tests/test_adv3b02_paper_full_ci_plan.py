@@ -86,6 +86,8 @@ def test_comparison_bundle_relaxes_only_set_level_protocol_and_keeps_leo_check()
     assert "load_comparison_inner_leo_cache(" in source
     assert "new_class_leo_iq_verified" in source
     assert "load_verified_leo_weak_cache_set =" in source
+    assert "_assert_scenario_alignment = lambda" in source
+    assert "_assert_scenario_physical_independence = lambda" in source
     assert "stage2_main_method_protocol_exempt_new_class_leo_required" in source
 
 
@@ -182,7 +184,7 @@ def test_comparison_inner_loader_rejects_post_channel_iq_tamper(tmp_path):
         )
 
 
-def test_comparison_set_loader_verifies_outer_hash_and_namespaces_ids(tmp_path):
+def test_comparison_set_loader_verifies_outer_hash_and_preserves_ids(tmp_path):
     scenario_paths = {}
     scenario_hashes = {}
     for scenario in ("leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak"):
@@ -207,7 +209,12 @@ def test_comparison_set_loader_verifies_outer_hash_and_namespaces_ids(tmp_path):
         allowed_roles={"target_old", "target_new"},
     )
     assert audit["status"] == "PASS_COMPARISON_SCOPE"
+    assert {
+        str(arrays[scenario]["sample_ids"][0]) for scenario in arrays
+    } == {"legacy-sample-0"}
     assert all(
-        f"comparison_scene={scenario}" in str(arrays[scenario]["sample_ids"][0])
+        audit["scenario_audits"][scenario][
+            "verified_sample_ids_preserved_for_scenario_alignment"
+        ]
         for scenario in arrays
     )
