@@ -2383,3 +2383,9 @@ r5首个失败row已用同一真实checkpoint和enrollment-only before/after sup
 真实checkpoint SHA=`2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98`的本地`cuda:0` support-only smoke复用原失败row`7-14/713102/K10/new10`，三scene的matched qKNN top1均为1.0，any/large flip均为0；旧prefix全部字段逐字节保留，wire均为`102,153B<256KiB`，query/truth打开数与fit query rows均为0。状态=`LOCAL_VERIFIED / NO_PERFORMANCE_RESULT`；下一步只允许Git提交、新不可覆盖run报告和GPU0–7完整125发布。
 
 `DATA_PROTOCOL=PRESENT_REUSED / NOT_REVALIDATED`
+
+##### `r6-matchedaudit1`完整125预注册
+
+科学提交=`a526d6b53f10829e96c61aabc9489c9dbd1bfb44`。全新不可覆盖run=`adv3b02_ts_drqknn_bcrr_r6_matchedaudit1_full125_a526d6b5_20260724_062228`已建立，状态=`PREREGISTERED / NOT_LANDED / NO_PERFORMANCE_RESULT`。raw Git blob发布包SHA=`b8cd7f4dd8c646c94df0fff1c3cef695799e501180c3edec9be82434dbf4f3f5`，含3,990个safe regular blob，raw bytes=`231,313,953B`，path-set SHA=`a8dc44a0d837b05579d8f0485651036bb0c20b2f755ecb2b4adf0a0e7a14e109`，missing/extra/raw mismatch/unsafe=`0/0/0/0`；method lock SHA继续为`0496594db4a82efbbf17ec3d67ebc3fb1f0c7ced41b542a5a0bde3482e704523`。下一步由唯一Terra runner执行direct preflight、精确同步、远端验证、唯一detach、GPU0–7完整125、即时健康检查和artifact回收；不得重验数据或按partial性能早停。
+
+`DATA_PROTOCOL=PRESENT_REUSED / NOT_REVALIDATED`
