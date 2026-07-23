@@ -111,7 +111,7 @@ PYTHONPATH=<run>/source/code /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python
 
 ### 首个可定位根因
 
-首个可定位失败row为`dssc_r1f_rx_20-1_s_713102_k_10_n_20`的`before/leo_clear_weak`。固定包的IQ输入本身均非零；冻结原始模型的`raw_support`60条、`raw_query`120条均无零范数，ground模型的`ground_support`60条也无零范数。经S_B ground adapter部署后的`ground_query`120条中有2条零范数（最小范数`0.0`，首个索引`7`），随后在`predict_five_arms`的ground qKNN评分路径`_svrn_scores -> score_zid_student_t_logits -> normalize_zid_rows`触发`z_id rows contain a zero-norm vector`。该ground路径由`M_OTHER/M_JOINT`共享；该row尚未形成任何prediction或性能指标。
+首个可定位失败row为`dssc_r1f_rx_20-1_s_713102_k_10_n_20`的`before/leo_clear_weak`。固定包的IQ输入本身均非零；冻结原始模型的`raw_support`60条、`raw_query`120条均无零范数，ground模型的`ground_support`60条也无零范数。经S_B ground adapter部署后的`ground_query`120条中有2条零范数（最小范数`0.0`，首个索引`7`），随后在`predict_five_arms`的ground qKNN评分路径`_svrn_scores -> score_zid_student_t_logits -> normalize_zid_rows`触发`z_id rows contain a zero-norm vector`。该ground路径由`M_DA/M_JOINT`共享；该row尚未形成任何prediction或性能指标。
 
 对同一固定包的归一化前`feat_joint`直接复核确认这不是归一化伪影：ground S_B部署模型的support 60条为`0`零向量、最小范数`0.01040600147`；query120条为`2`零向量，索引`[7,19]`、最小范数`0.0`。因此首个产生点是ground S_B adapter部署后模型的query输出端，而不是IQ输入或support。
 

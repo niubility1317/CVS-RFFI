@@ -45,6 +45,7 @@ from cvsrffi.stage2_dssc_zdom_jg_qknn_r4_bcrr import (
     qknn_neighbor_receipt,
     predict_five_arms,
     resource_receipt,
+    totalize_adapted_zid,
     sha256_file,
     typed_tokens,
     validate_method_lock,
@@ -287,6 +288,167 @@ def test_five_arm_prediction_uses_three_qknn_and_two_bcrr_calls(monkeypatch):
     )
     assert set(result) == set(ARMS)
     assert calls == {"qknn": 1, "qknn_bcrr": 2}
+
+
+def _five_arm_feature_fixture(seed=4110):
+    rng = np.random.default_rng(seed)
+    labels = ("old_a", "old_b")
+    raw_support = rng.normal(size=(2, 160)).astype(np.float32)
+    ng_support = rng.normal(size=(2, 160)).astype(np.float32)
+    ground_support = rng.normal(size=(2, 160)).astype(np.float32)
+    raw_query = rng.normal(size=(4, 160)).astype(np.float32)
+    ng_query = rng.normal(size=(4, 160)).astype(np.float32)
+    ground_query = rng.normal(size=(4, 160)).astype(np.float32)
+    states = build_five_arm_states(
+        raw_support_features=raw_support,
+        ng_support_features=ng_support,
+        ground_support_features=ground_support,
+        support_labels=labels,
+        registered_classes=labels,
+        support_physical_ids=("p0", "p1"),
+        k_shot=1,
+        qknn_lock=_qlock(1),
+    )
+    return {
+        "labels": labels,
+        "raw_support": raw_support,
+        "ng_support": ng_support,
+        "ground_support": ground_support,
+        "raw_query": raw_query,
+        "ng_query": ng_query,
+        "ground_query": ground_query,
+        "states": states,
+    }
+
+
+def test_zid_zero_norm_totalization_replaces_only_zero_rows_and_records_scope():
+    rng = np.random.default_rng(4111)
+    raw = rng.normal(size=(3, 160)).astype(np.float32)
+    adapted = rng.normal(size=(3, 160)).astype(np.float32)
+    adapted[1].fill(0.0)
+    raw_before = raw.tobytes()
+    result, receipt = totalize_adapted_zid(
+        adapted, raw, branch="ground", scope="query", state="after",
+        scene="leo_rain_weak",
+    )
+    assert result[0].tobytes() == adapted[0].tobytes()
+    assert result[2].tobytes() == adapted[2].tobytes()
+    assert result[1].tobytes() == raw[1].tobytes()
+    assert raw.tobytes() == raw_before
+    assert receipt.as_dict() == {
+        "revision": "r1f-techfix4",
+        "branch": "ground",
+        "scope": "query",
+        "state": "after",
+        "scene": "leo_rain_weak",
+        "row_count": 3,
+        "replaced_count": 1,
+        "rate": 1 / 3,
+        "raw_valid": True,
+        "query_truth_used": False,
+        "state_updated": False,
+    }
+
+
+@pytest.mark.parametrize("bad_raw", ["zero", "nan"])
+def test_zid_zero_norm_totalization_rejects_invalid_raw_rows(bad_raw):
+    raw = np.ones((2, 160), np.float32)
+    adapted = raw.copy()
+    if bad_raw == "zero":
+        raw[0].fill(0.0)
+    else:
+        raw[0, 0] = np.nan
+    with pytest.raises(DSSCStateError, match="raw z_id.*totalization"):
+        totalize_adapted_zid(
+            adapted, raw, branch="no_ground", scope="support", state="before",
+            scene="leo_clear_weak",
+        )
+
+
+def test_zid_totalization_no_zero_path_keeps_five_arm_logits_exact():
+    values = _five_arm_feature_fixture()
+    baseline = predict_five_arms(
+        values["states"], raw_query_features=values["raw_query"],
+        ng_query_features=values["ng_query"],
+        ground_query_features=values["ground_query"],
+    )
+    ng_support, _ = totalize_adapted_zid(
+        values["ng_support"], values["raw_support"], branch="no_ground",
+        scope="support", state="before", scene="leo_clear_weak",
+    )
+    ground_support, _ = totalize_adapted_zid(
+        values["ground_support"], values["raw_support"], branch="ground",
+        scope="support", state="before", scene="leo_clear_weak",
+    )
+    ng_query, _ = totalize_adapted_zid(
+        values["ng_query"], values["raw_query"], branch="no_ground",
+        scope="query", state="before", scene="leo_clear_weak",
+    )
+    ground_query, _ = totalize_adapted_zid(
+        values["ground_query"], values["raw_query"], branch="ground",
+        scope="query", state="before", scene="leo_clear_weak",
+    )
+    totalized_states = build_five_arm_states(
+        raw_support_features=values["raw_support"],
+        ng_support_features=ng_support,
+        ground_support_features=ground_support,
+        support_labels=values["labels"], registered_classes=values["labels"],
+        support_physical_ids=("p0", "p1"), k_shot=1, qknn_lock=_qlock(1),
+    )
+    totalized = predict_five_arms(
+        totalized_states, raw_query_features=values["raw_query"],
+        ng_query_features=ng_query, ground_query_features=ground_query,
+    )
+    for arm in ARMS:
+        np.testing.assert_array_equal(totalized[arm], baseline[arm])
+
+
+def test_zid_totalization_is_row_local_under_query_reorder_and_single_query():
+    values = _five_arm_feature_fixture(4112)
+    values["ground_query"][1].fill(0.0)
+    ground_query, _ = totalize_adapted_zid(
+        values["ground_query"], values["raw_query"], branch="ground",
+        scope="query", state="after", scene="leo_low_elev_weak",
+    )
+    whole = predict_five_arms(
+        values["states"], raw_query_features=values["raw_query"],
+        ng_query_features=values["ng_query"], ground_query_features=ground_query,
+    )
+    order = np.asarray([2, 0, 3, 1])
+    reordered = predict_five_arms(
+        values["states"], raw_query_features=values["raw_query"][order],
+        ng_query_features=values["ng_query"][order],
+        ground_query_features=ground_query[order],
+    )
+    inverse = np.argsort(order)
+    for arm in ARMS:
+        np.testing.assert_array_equal(whole[arm], reordered[arm][inverse])
+        for index in range(len(ground_query)):
+            single = predict_five_arms(
+                values["states"], raw_query_features=values["raw_query"][index : index + 1],
+                ng_query_features=values["ng_query"][index : index + 1],
+                ground_query_features=ground_query[index : index + 1],
+            )
+            np.testing.assert_array_equal(whole[arm][index : index + 1], single[arm])
+
+
+def test_ground_query_zero_totalization_keeps_all_five_arms_out_of_qknn_zero_norm():
+    values = _five_arm_feature_fixture(4113)
+    values["ground_query"][0].fill(0.0)
+    ground_query, receipt = totalize_adapted_zid(
+        values["ground_query"], values["raw_query"], branch="ground",
+        scope="query", state="after", scene="leo_rain_weak",
+    )
+    assert receipt.replaced_count == 1
+    assert np.linalg.norm(ground_query[0]) > 1.0e-12
+    result = predict_five_arms(
+        values["states"], raw_query_features=values["raw_query"],
+        ng_query_features=values["ng_query"], ground_query_features=ground_query,
+    )
+    assert set(result) == set(ARMS)
+    assert qknn_neighbor_receipt(values["states"]["M_DA"], ground_query)[
+        "query_rows_used_for_fit"
+    ] == 0
 
 
 def test_nonlexical_registry_projects_legacy_class_axis_back_to_sealed_handles():

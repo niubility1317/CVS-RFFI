@@ -2181,3 +2181,19 @@ BCRR是唯一OTHER，raw/dual branch分别以自身同步physical-ID support-LOO
 techfix3新run=`dssc_zdom_jg_qknn_r4_bcrr_full125_r1f_techfix3_3bc31826_20260723_165358`经direct preflight、5项landing、7项SHA、3,959个Git blob、GPU1 zeroIQ和非字典序registry无query smoke后唯一启动PID=`826851`，自然exit=`1`。发布准备误先创建空`<run>/artifacts`，而matrix要求`--run-root`不存在，因此入口立即fail-closed；launcher/row/prediction/score=`0/125,0/125,0/375,0/1875`。这不是方法、数据、registry、GPU或性能失败；状态=`TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。archive、coverage和parity均为`PRESENT_REUSED / NOT_GENERATED`。
 
 全新不可覆盖release run=`dssc_zdom_jg_qknn_r4_bcrr_full125_r1f_techfix3_releasefix1_3bc31826_20260723_172109`已预注册。源码commit/package、五臂、矩阵和全部科学SHA不变；唯一发布修正是只预建`input/source/logs`，detach前强制确认`<run>/artifacts`为`ABSENT`并由matrix自行创建。该run仍由唯一Terra runner执行完整GPU0–7 125，不复用或重启parent，不重验数据。
+
+##### releasefix1系统性技术止损与`r1f-techfix4`本地闭合
+
+releasefix1唯一launcher PID=`837838`。首波共创建28个job目录，20份launcher receipt均以同一异常指纹`ZIDStudentTQKNNError: z_id rows contain a zero-norm vector`结束，且仍为`0/125`row receipt、`0/375`prediction、`0/1875`score。用户纠偏后，runner先核对parent-child/CWD/cmdline归属，仅对11个本run PID发送`TERM`；随后本run进程数为0，GPU0–7均回到`0%/10MiB`，本地SSH/TCP22残留为0。因TERM中断负责写exit的wrapper，`launcher.exit=ABSENT`，不得伪造exit code。最终状态=`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。回收1,415个文件、807,299,279B，远端/本地规范化inventory SHA一致=`8cefe68543c174b69dc30e966e3a937e5b3b77149943dec8a103ca0355134eae`。
+
+首失败row=`20-1/713102/K10/new20`的未归一化诊断把首源定位到`before/leo_clear_weak`的S_B ground adapter部署模型query输出：ground support 60条零向量`0`、最小范数`0.01040600147`；ground query 120条零向量`2`，索引`[7,19]`；raw support/query均无零向量且IQ非零。错误随后才在ground qKNN的`_svrn_scores→score_zid_student_t_logits→normalize_zid_rows`触发，影响共享该分支的`M_DA/M_JOINT`评分路径。该证据不含任何prediction或性能结论。
+
+目标文档已在commit=`442f976e`加入实验健康检查：完整125仍是唯一性能矩阵，但若P0协议/安全错误发生，或至少2个不同row在无prediction时出现相同确定性异常指纹，唯一runner必须停止继续派发并只终止本run，禁止等待其余row自然失败；健康检查只读进程、GPU、exit、异常指纹和artifact闭合，不得按准确率早停。技术修复必须新commit、新run ID，失败run不得续跑或覆盖。
+
+`DSSC/r1f-techfix4`经独立可行性监督`MERGE / P0=0 / P1=0`后冻结：no-ground/ground的support/query若adapted`z_id`逐行范数`<=1e-12`，只替换为同IQ、同row的raw`z_id`；非零adapted行字节不变，raw必须为finite FP32且每行范数`>1e-12`，否则fail-closed。规则在K1/K5/K10、before/after完全相同，不读取truth/role、不更新state、不跨query、不设覆盖率阈值；替换数/率作为coverage与科学负证据保留。adapter、loss、qKNN、BCRR、五臂和125矩阵均不变。
+
+实现只修改DSSC方法模块、正式125 runner和直接专项测试。`ssr-gpu`下直接测试`36/36 passed`、`git diff --check`通过；独立Terra终审=`MERGE / P0=0 / P1=0`。真实checkpoint SHA=`2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98`的support-only无query smoke只打开首失败row的60条`20-1/leo_clear/K10` enrollment support：S_B ground adapter 25步，raw/ground最小范数约1，替换`0/60`，6类正式qKNN state构建成功，`query_packages_loaded=false`、`query_rows_used_for_fit=0`。当前状态=`LOCAL_VERIFIED / NO_PERFORMANCE_RESULT`；下一步只允许Git提交、建立全新不可覆盖techfix4完整125报告并交唯一Terra runner发布。
+
+##### `ADV3B02-TS-DRQKNN-BCRR/r1`首次实现独立review
+
+作者自测8项通过后，独立Terra review裁决=`REVISE / P0=3 / P1=3`，禁止提交或发布。P0为：类内散度错误使用`/K`而非冻结的`/(K-1)`；raw/dual BCRR把同一full-view LOO复制到两个direction，未实现既有same-physical-ID masked-view逐direction/逐class安全规则；125 validator只信`score_row_count=12`常量，空指标JSON也能被标为完成。P1为Stage2-C旧domain receipt恒真、测试未覆盖上述公式/双方向LOO、row未封存实际CUDA namespace。主agent另发现BCR deployment的canonical列未显式映射回sealed registry axis。当前三文件仅在原冻结范围内修订，DSSC techfix4发布不等待该候选，也不混入其未跟踪代码。

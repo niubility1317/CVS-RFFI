@@ -47,7 +47,7 @@ from cvsrffi.stage2_dssc_zdom_jg_qknn_r4_bcrr import (
     build_five_arm_states, bundle_wire_bytes, load_ground_bundle,
     canonical_method_lock,
     predict_five_arms, qknn_lock_from_method_lock, qknn_neighbor_receipt,
-    resource_receipt, typed_tokens, validate_method_lock,
+    resource_receipt, totalize_adapted_zid, typed_tokens, validate_method_lock,
 )
 
 CHECKPOINT_SHA256 = PHASE1_CHECKPOINT_SHA256
@@ -457,6 +457,22 @@ def _stage_predictions(*, state: str, scenario: str, enrollment_payload: Mapping
     ground_query, ground_query_ms = _timed_id_feature(
         feature_g, query_iq, device=a.device
     )
+    ng_support, ng_support_totalization = totalize_adapted_zid(
+        ng_support, raw_support, branch="no_ground", scope="support",
+        state=state, scene=scenario,
+    )
+    ground_support, ground_support_totalization = totalize_adapted_zid(
+        ground_support, raw_support, branch="ground", scope="support",
+        state=state, scene=scenario,
+    )
+    ng_query, ng_query_totalization = totalize_adapted_zid(
+        ng_query, raw_query, branch="no_ground", scope="query",
+        state=state, scene=scenario,
+    )
+    ground_query, ground_query_totalization = totalize_adapted_zid(
+        ground_query, raw_query, branch="ground", scope="query",
+        state=state, scene=scenario,
+    )
     states = build_five_arm_states(raw_support_features=raw_support, ng_support_features=ng_support, ground_support_features=ground_support, support_labels=fit_labels, registered_classes=fit_registry, support_physical_ids=fit_tokens, k_shot=a.k_shot, qknn_lock=qknn_lock)
     prediction_started = time.perf_counter()
     logits = predict_five_arms(states, raw_query_features=raw_query, ng_query_features=ng_query, ground_query_features=ground_query)
@@ -630,6 +646,16 @@ def _stage_predictions(*, state: str, scenario: str, enrollment_payload: Mapping
         "S_C": None if state == "before" else {"ground": s_c_g, "no_ground": s_c_ng},
         "ng_delta_nonzero": bool(ng_receipt["delta_norm"] > 0),
         "ground_delta_nonzero": bool(g_receipt["delta_norm"] > 0),
+        "z_id_zero_norm_totalization": {
+            "no_ground": {
+                "support": ng_support_totalization.as_dict(),
+                "query": ng_query_totalization.as_dict(),
+            },
+            "ground": {
+                "support": ground_support_totalization.as_dict(),
+                "query": ground_query_totalization.as_dict(),
+            },
+        },
         "feature_drift": {
             "raw_to_no_ground": _feature_drift(raw_query, ng_query),
             "raw_to_ground": _feature_drift(raw_query, ground_query),

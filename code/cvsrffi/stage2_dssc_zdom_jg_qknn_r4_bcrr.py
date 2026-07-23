@@ -51,10 +51,95 @@ ADAPTER_SCALE_GROUPS = ((0, 1), (2, 3))
 MIN_ADAPTER_FP16_SCALE = float(
     np.nextafter(np.float16(0.0), np.float16(1.0))
 )
+ZID_ZERO_NORM_TOTALIZATION_REVISION = "r1f-techfix4"
+_ZID_ZERO_NORM_EPSILON = 1.0e-12
 
 
 class DSSCStateError(ValueError):
     """Raised when a frozen r1f type, state, or protocol invariant drifts."""
+
+
+@dataclass(frozen=True)
+class ZIDZeroNormTotalizationReceipt:
+    """Immutable audit record for the row-local adapted-z_id identity fallback."""
+
+    revision: str
+    branch: str
+    scope: str
+    state: str
+    scene: str
+    row_count: int
+    replaced_count: int
+    rate: float
+    raw_valid: bool
+    query_truth_used: bool = False
+    state_updated: bool = False
+
+    def as_dict(self) -> dict[str, Any]:
+        return {
+            "revision": self.revision,
+            "branch": self.branch,
+            "scope": self.scope,
+            "state": self.state,
+            "scene": self.scene,
+            "row_count": self.row_count,
+            "replaced_count": self.replaced_count,
+            "rate": self.rate,
+            "raw_valid": self.raw_valid,
+            "query_truth_used": self.query_truth_used,
+            "state_updated": self.state_updated,
+        }
+
+
+def totalize_adapted_zid(
+    adapted_zid: np.ndarray,
+    raw_zid: np.ndarray,
+    *,
+    branch: str,
+    scope: str,
+    state: str,
+    scene: str,
+    revision: str = ZID_ZERO_NORM_TOTALIZATION_REVISION,
+) -> tuple[np.ndarray, ZIDZeroNormTotalizationReceipt]:
+    """Replace only zero-norm adapted rows with same-IQ raw ``z_id`` rows.
+
+    This is a strict row-local totalization, not a fit or a gate: it sees no
+    labels, roles, truth, other queries, or mutable runtime state.  Raw M0
+    features are validated here but never modified by this helper.
+    """
+    if revision != ZID_ZERO_NORM_TOTALIZATION_REVISION:
+        raise DSSCStateError("z_id totalization revision drift")
+    if branch not in ("no_ground", "ground"):
+        raise DSSCStateError("z_id totalization branch must be no_ground/ground")
+    if scope not in ("support", "query"):
+        raise DSSCStateError("z_id totalization scope must be support/query")
+    if state not in ("before", "after") or scene not in SCENES:
+        raise DSSCStateError("z_id totalization state/scene drift")
+    adapted = _rows(adapted_zid, name="adapted z_id for totalization")
+    raw = _rows(raw_zid, name="raw z_id for totalization")
+    if adapted.shape != raw.shape:
+        raise DSSCStateError("adapted/raw z_id totalization shape drift")
+    raw_norm = np.linalg.norm(raw.astype(np.float64), axis=1)
+    if np.any(raw_norm <= _ZID_ZERO_NORM_EPSILON):
+        raise DSSCStateError("raw z_id totalization requires every row norm > 1e-12")
+    adapted_norm = np.linalg.norm(adapted.astype(np.float64), axis=1)
+    replace = adapted_norm <= _ZID_ZERO_NORM_EPSILON
+    # Copy first so that all nonzero rows retain their exact float32 bytes.
+    totalized = adapted.copy()
+    totalized[replace] = raw[replace]
+    count = int(np.count_nonzero(replace))
+    receipt = ZIDZeroNormTotalizationReceipt(
+        revision=revision,
+        branch=branch,
+        scope=scope,
+        state=state,
+        scene=scene,
+        row_count=int(len(totalized)),
+        replaced_count=count,
+        rate=float(count / len(totalized)) if len(totalized) else 0.0,
+        raw_valid=True,
+    )
+    return totalized, receipt
 
 
 def _canon(value: Any) -> bytes:
@@ -1083,10 +1168,11 @@ def resource_receipt(*, bundle: GroundBundle, qknn: QKNNState, bcrr: BCRRState, 
 
 
 __all__ = ["ADAPTER_SCALE_GROUPS", "ARMS", "BCRR_MAX_OMEGA", "BCRRState", "BUNDLE_SCHEMA", "CANDIDATE", "DSSCStateError", "GroundBundle", "MIN_ADAPTER_FP16_SCALE",
-           "GEOFF_R8_COVERAGE_SHA256", "MAX_WIRE_BYTES", "PHASE1_ARCHIVE_MANIFEST_SHA256", "PHASE1_ARCHIVE_SHA256",
-           "PHASE1_CHECKPOINT_SHA256", "PHASE1_PARITY_RECEIPT_SHA256", "QKNNState", "RANK", "SCENES",
-           "SEALED_RUNTIME_SHA256", "SGD_LR", "SGD_WEIGHT_DECAY", "SOMPH_PACKAGE_LOCK_SHA256", "Z_DIM", "adapt_support_only",
-           "adaptation_steps", "attach_rank4_adapter", "bcrr_fused_logits", "build_five_arm_states", "build_ground_bundle_arrays", "build_qknn_state",
-           "bundle_wire_bytes", "canonical_method_lock", "fit_bcrr_support_only", "load_ground_bundle", "qknn_logits", "qknn_neighbor_receipt",
-           "predict_five_arms", "qknn_lock_from_method_lock", "resource_receipt", "rms_view", "sha256_file", "typed_tokens",
-           "validate_method_lock"]
+            "GEOFF_R8_COVERAGE_SHA256", "MAX_WIRE_BYTES", "PHASE1_ARCHIVE_MANIFEST_SHA256", "PHASE1_ARCHIVE_SHA256",
+            "PHASE1_CHECKPOINT_SHA256", "PHASE1_PARITY_RECEIPT_SHA256", "QKNNState", "RANK", "SCENES",
+            "SEALED_RUNTIME_SHA256", "SGD_LR", "SGD_WEIGHT_DECAY", "SOMPH_PACKAGE_LOCK_SHA256", "Z_DIM", "adapt_support_only",
+            "adaptation_steps", "attach_rank4_adapter", "bcrr_fused_logits", "build_five_arm_states", "build_ground_bundle_arrays", "build_qknn_state",
+            "bundle_wire_bytes", "canonical_method_lock", "fit_bcrr_support_only", "load_ground_bundle", "qknn_logits", "qknn_neighbor_receipt",
+            "predict_five_arms", "qknn_lock_from_method_lock", "resource_receipt", "rms_view", "sha256_file", "typed_tokens",
+            "totalize_adapted_zid", "validate_method_lock", "ZIDZeroNormTotalizationReceipt",
+            "ZID_ZERO_NORM_TOTALIZATION_REVISION"]
