@@ -2322,6 +2322,14 @@ run=`adv3b02_ts_drqknn_bcrr_r4_q2f32_bcr3_zidtotal1_full125_802534eb_20260724_03
 
 `DATA_PROTOCOL=PRESENT_REUSED / NOT_REVALIDATED`
 
+##### `r4-bcr3-procbindfix1`完整125确定性技术止损
+
+run=`adv3b02_ts_drqknn_bcrr_r4_q2f32_bcr3_zidtotal1_procbindfix1_full125_467b8aa5_20260724_035813`通过N607 POSIX sentinel并唯一启动matrix PID=`1509653`，GPU0–7均进入动态队列且首个合法prediction健康通过。随后历史r3同row`rx_8-8/713105/K10/new20`在after-query的`M0 qKNN`归一化处以`feature row has zero or non-finite L2 norm`、0 prediction再次确定复现；冻结run无retry，完整125已不可闭合，故主agent指令立即停止dispatch并只终止本run。终态启动45、成功35、失败2、活动8；prediction/score=`280/1000、420/1500`，禁止partial性能解读；matrix及8个已绑定row PGID、GPU计算进程和SSH/TCP22均清零。
+
+archive/coverage/parity=`ABSENT/ABSENT/ABSENT`。最小非query evidence共42文件、4,892,987B，SHA=`a9524861dd2151ec4666368e14310e4bed3b3238d4e9d7de928021d9d490de9b`。另一个row出现独立actual-branch audit drift，按唯一首源规则不在本revision合并。裁决=`STOPPED_EARLY_DETERMINISTIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`；下一步只修复零/非有限query feature首源并以新commit、新run ID重发。
+
+`DATA_PROTOCOL=PRESENT_REUSED / NOT_REVALIDATED`
+
 ##### `r4-bcr3-procbindfix1`完整125预注册
 
 共享runner技术修复提交=`467b8aa561f41eada827c48588e8c6598b49eed0`；科学方法仍为r4 commit=`802534eb8036fb8a31f060fd55af5050d0fe7961`。独立review=`MERGE / P0=0 / P1=0 / P2=0`；新run=`adv3b02_ts_drqknn_bcrr_r4_q2f32_bcr3_zidtotal1_procbindfix1_full125_467b8aa5_20260724_035813`已预注册。raw Git blob包SHA=`0d4bb25384972d62250c9467778745bc3d80daac378cf5e0b29d48708ea86108`，含3,981个safe regular blob，path-set SHA=`8ad180b9260df0e881fd48bfb6facf8968cb464cf59dbe8eb48f03a7deacae76`，raw mismatch=0。下一步由唯一Terra runner执行N607冻结POSIX sentinel、唯一detach、GPU0–7完整125、即时健康检查和artifact回收；不增加测试、gate或数据验证。

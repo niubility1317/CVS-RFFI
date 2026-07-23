@@ -6,7 +6,7 @@
 - release-fix Git commit：`467b8aa561f41eada827c48588e8c6598b49eed0`
 - 创建时间：`2026-07-24T03:58:13+08:00`
 - operator：主agent；唯一N607 launch owner为单一`gpt-5.6-terra high`runner
-- 状态：`PREREGISTERED / NOT_LANDED / NO_PERFORMANCE_RESULT`
+- 状态：`STOPPED_EARLY_DETERMINISTIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
 - parent run：`adv3b02_ts_drqknn_bcrr_r4_q2f32_bcr3_zidtotal1_full125_802534eb_20260724_033904`
 - parent终态：`RELEASE_BLOCKED_PRELAUNCH_SYSTEMIC_RUNNER_SAFETY_FAILURE / NO_PERFORMANCE_RESULT`
 
@@ -71,8 +71,24 @@ PYTHONPATH=<run>/source/code /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python
 |---|---|
 |Git commit|`467b8aa561f41eada827c48588e8c6598b49eed0`|
 |run ID|`adv3b02_ts_drqknn_bcrr_r4_q2f32_bcr3_zidtotal1_procbindfix1_full125_467b8aa5_20260724_035813`|
-|remote PID/exit|`NOT_LANDED / NOT_LAUNCHED`|
-|prediction/score|`0/1000`；`0/1500`|
-|最终裁决|`PREREGISTERED / NO_PERFORMANCE_RESULT`|
+|remote PID/exit|`matrix PID=1509653；TERM后确认matrix及8个已绑定row PGID均退出；OS退出码不可回收（detached进程由health stop终止）`|
+|prediction/score|`280/1000`；`420/1500 logical score row`|
+|archive/coverage/parity|`ABSENT / ABSENT / ABSENT`|
+|最终裁决|`STOPPED_EARLY_DETERMINISTIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`|
+
+`DATA_PROTOCOL=PRESENT_REUSED / NOT_REVALIDATED`
+
+## N607实际发布、健康检查与止损回收
+
+- direct preflight通过，GPU0–7初始空闲；远端run根先确认`ABSENT`，再仅创建`input/source/logs`。
+- 已核对两个发布输入、checkpoint和sealed runtime SHA；安全解包`3,981`个文件、`231,151,918B`原始字节和冻结path-set；关键`py_compile`通过。
+- POSIX sentinel通过：root退出后的grandchild被正确清理、无关sentinel保持存活。完整125唯一detach后，matrix/wrapper PID=`1509653`，CWD、cmdline、PGID和run root绑定均匹配；首波8个row分别落到GPU0–7。
+- 首个合法prediction在健康检查中产生；停止前共启动`45`个row，其中成功`35`、技术失败`2`、被健康止损前仍活动`8`。成功row产生`280`份prediction和`420`个logical score row，均不足完整125，禁止任何partial性能解读。
+- 触发首源为历史r3已复现的零prediction异常：`rx_8-8/seed_713105/K10/new20`，`ADV3B02StateError: feature row has zero or non-finite L2 norm`，failure receipt SHA=`26af9288be0046fade8a54bcf20e005d75223a5d5ccfca0e8976742aa4c4178c`；该row的`query_rows_used_for_fit=0`且`p0_protocol_or_safety=false`。同run另有独立`rx_7-14/seed_713102/K10/new10`的`affine actual branch audit/state drift`失败，receipt SHA=`7a85cd496170d5f0e309c191bdfc2889f43fa4ecc969369c6cc059530ecb52b8`。
+- 主agent指令下，runner先记录matrix及8个row的PID/CWD/cmdline/PGID绑定，再停止dispatch并仅向该run的matrix与row PGID发送TERM；`LIVE_AFTER=0`、GPU计算进程清零。绑定receipt SHA=`c84671e954277db593c6c4c0188a5fef03ce1cb579333fea80e3b377e370f3c2`；终止receipt SHA=`948bb4731375641992bc6249154f126264166b38742c3505229333ad3d4b3f3c`。
+- `archive/coverage/parity`均未生成。已仅回收两条failure launcher log、matrix manifest、绑定/终止receipt及其before/after enrollment-only support、receipt和seal到本地`failure_evidence/`；未回收或读取query、truth、prediction或partial性能。
+- failure evidence共42个文件、4,892,987B，合成SHA=`a9524861dd2151ec4666368e14310e4bed3b3238d4e9d7de928021d9d490de9b`。本地`ssh.exe`和至N607 TCP22连接均已清零。
+
+下一步只定位并修复首源零/非有限query feature；第二个actual-branch audit指纹不在同一revision合并。修复须新commit、新run ID和完整125重发，不得复用本run或重验数据。
 
 `DATA_PROTOCOL=PRESENT_REUSED / NOT_REVALIDATED`
