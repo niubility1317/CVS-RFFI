@@ -7,7 +7,7 @@
 - implementation revision：`r1f-techfix4`
 - 创建时间：`2026-07-23T18:13:53+08:00`
 - operator：主agent；N607唯一launch owner必须为单一`gpt-5.6-terra high`runner
-- 状态：`PREREGISTERED / LOCAL_VERIFIED / NO_PERFORMANCE_RESULT`
+- 状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
 - Git commit：`20c1cd0a00c568fe2a23726d13d1b3a7ba3bd6ba`
 - parent failure：`dssc_zdom_jg_qknn_r4_bcrr_full125_r1f_techfix3_releasefix1_3bc31826_20260723_172109`
 - parent终态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`；不得续跑或覆盖
@@ -106,13 +106,37 @@ PYTHONPATH=<run>/source/code /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python
 
 |字段|当前值|
 |---|---|
-|remote PID|`PENDING`|
-|launcher exit|`PENDING`|
+|remote PID|`875331`，已按健康门停止并确认run进程为0|
+|launcher exit|`ABSENT`，TERM中断wrapper后未生成，不虚构exit code|
 |parity receipt|`PRESENT_REUSED`|
 |archive/manifest|`PRESENT_REUSED`|
 |coverage|`PRESENT_REUSED`|
 |row/prediction/score|`0/125 / 0/375 / 0/1875`|
-|最终裁决|`PENDING / NO_PERFORMANCE_RESULT`|
+|最终裁决|`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`|
 
 没有完整prediction只能是技术结果，不能形成性能或promotable声明。
 
+## N607runner执行记录
+
+- `2026-07-23T18:19:53+08:00`：direct只读预检通过；项目根可见，GPU0–7均为`0%/10MiB`，本地SSH/TCP22连接已确认清零。
+- `2026-07-23T18:20:xx+08:00`：run根创建前确认为`ABSENT`；checkpoint=`2699eedc...`、sealed runtime=`f119e8cb...`精确匹配；cache/authority根存在且无其他训练进程。仅创建`input/`、`source/`、`logs/`；根`artifacts/`保持`ABSENT`。
+- `2026-07-23T18:22:xx+08:00`：5个冻结输入已同步且远端SHA均匹配；source ZIP SHA=`72c7d770...`、3962项、压缩完整性及安全路径检查通过。解包后方法、runner、测试SHA分别为`d5eddeb...`、`fdec029...`、`2b42ed7...`；固定远端Python的`py_compile`通过；8卡zero-IQ合成smoke通过，`predictions=0`、`queries=0`。
+- `2026-07-23T18:23:55+08:00`：满足唯一detach前技术门槛；下一步只按本报告冻结命令启动并执行首波健康检查，不按任何性能值干预。
+- `2026-07-23T18:24:xx+08:00`：唯一detach已完成，launcher PID=`875331`、PPID=`1`、CWD=`<run>/source/code`，cmdline与冻结命令匹配；`artifacts/matrix_manifest.json`由matrix原子创建。首波8个worker已起；其`CUDA_VISIBLE_DEVICES`为`0,1,2,4,3,5,7,6`，各worker的进程内`cuda:0`因此分别映射至GPU0–7。
+- `2026-07-23T18:25:xx+08:00`：首波持续运行约96秒，8卡均有约`859MiB`显存与17–25%利用率；当前`row receipt/prediction/score=0/125 / 0/375 / 0/1875`，无row exit、无stderr异常指纹。继续按首个row退出与首波完成门槛检查，不读取性能指标。
+- `2026-07-23T18:32:xx+08:00`：首波健康检查触发预注册系统技术失败停止条件。不同row`20-1/seed713104`、`20-1/seed713105`、`20-1/seed713106`均在任何prediction前以同一确定性指纹失败：`DSSCStateError: typed real qKNN/BCRR build failed: qKNN INT8 teacher gate failed`。当时`row receipt/prediction/score=0/125 / 0/375 / 0/1875`；未读取准确率、H或其它性能值。
+- `2026-07-23T18:32:xx+08:00`：已先逐一核对launcher PID=`875331`及8个活动子PID的CWD/cmdline均绑定`<run>/source/code`和本run根，再仅向该parent及其子PID发送`TERM`以停止继续派发。复核：run-owned live process=`0`，GPU0–7均`0%/10MiB`，本地SSH/TCP22残留=`0`；未需要升级信号。`launcher.exit`未生成，partial artifacts/logs保留并完成选择性回收。
+
+## 终态
+
+`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
+
+本run没有完整prediction、score或row receipt闭合，不能进行性能分析、比较或promotable声明。后续修复必须在本地完成、独立复审并以全新run ID重新发布；不得续跑、覆盖或重标此run。
+
+## 失败取证与回收
+
+三条失败均发生在第一个`leo_clear_weak/before`组合、prediction发布前：seed713104在`raw`branch失败，seed713105和713106在`ground`branch失败。完整调用链均为`stage2_svrn_bcr.py:873`→`stage2_dssc...py:1043/1044`→`run...py:476/892/1597/1603`；stderr SHA分别为`21400d583a1d3878e971981a9f1e89d0eec946727ac27cbe17160d91693e0300`、`694752e84586b30fe7766485d6e9841731f25f52d524b25ed91fdedca4f62662`、`694752e84586b30fe7766485d6e9841731f25f52d524b25ed91fdedca4f62662`。
+
+触发条件可证实为`top1_agreement<0.995`或`margin_sign_flip_count!=0`，但失败路径在审计receipt写盘前抛出；partial artifacts中audit/INT8文件和`top1_agreement`字段均为0。因此不能从本run恢复具体审计值，后续必须用全新support-only不可变诊断取得，不能推断或回填。
+
+远端完整库存为557 files，SHA=`334b8377be84194c23f42abf4952f117ab684a604ab439ace2715f986f7c62ad`；本地选择性回收41 files，SHA=`c840156609f0e774fdc2029f0f865255033a27d993b1cde1a5416a1c3a4c20aa`。回收包含matrix日志、25个launcher日志、matrix manifest及3个失败row的16个JSON，逐项SHA匹配；未复制重复runtime或checkpoint。
