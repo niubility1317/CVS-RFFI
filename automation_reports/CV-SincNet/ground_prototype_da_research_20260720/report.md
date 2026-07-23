@@ -2197,3 +2197,5 @@ releasefix1唯一launcher PID=`837838`。首波共创建28个job目录，20份la
 ##### `ADV3B02-TS-DRQKNN-BCRR/r1`首次实现独立review
 
 作者自测8项通过后，独立Terra review裁决=`REVISE / P0=3 / P1=3`，禁止提交或发布。P0为：类内散度错误使用`/K`而非冻结的`/(K-1)`；raw/dual BCRR把同一full-view LOO复制到两个direction，未实现既有same-physical-ID masked-view逐direction/逐class安全规则；125 validator只信`score_row_count=12`常量，空指标JSON也能被标为完成。P1为Stage2-C旧domain receipt恒真、测试未覆盖上述公式/双方向LOO、row未封存实际CUDA namespace。主agent另发现BCR deployment的canonical列未显式映射回sealed registry axis。当前三文件仅在原冻结范围内修订，DSSC techfix4发布不等待该候选，也不混入其未跟踪代码。
+
+`DSSC/r1f-techfix4`实现已提交为`20c1cd0a00c568fe2a23726d13d1b3a7ba3bd6ba`。全新完整125 run=`dssc_zdom_jg_qknn_r4_bcrr_full125_r1f_techfix4_20c1cd0a_20260723_181353`；raw Git blob source ZIP SHA=`72c7d770e45c62b195407fa350450bef3eb874da343a929588fe6dd43871c306`，3,962个entry路径与HEAD一致且全量字节不匹配数为0。run报告已预注册，下一步由唯一Terra runner执行N607 preflight、同步、远端验证、唯一detach、首波健康检查、完整125监控与artifact回收。
