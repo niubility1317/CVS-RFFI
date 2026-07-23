@@ -7,7 +7,7 @@
 - Git commit：`166c1afcf16afe404bc14c4914ca5e08976b729e`
 - 创建时间：`2026-07-23T21:57:44+08:00`
 - operator：主agent；N607唯一launch owner必须为单一`gpt-5.6-terra high`runner
-- 状态：`PREREGISTERED / NOT_LAUNCHED / NO_PERFORMANCE_RESULT`
+- 状态：`BLOCKED_PRE_LAUNCH / NO_PERFORMANCE_RESULT`
 - parent技术失败：`dssc_zdom_jg_qknn_r4_bcrr_full125_r1f_techfix4_20c1cd0a_20260723_181353`
 - parent终态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`；不得续跑、复用或覆盖
 
@@ -103,16 +103,20 @@ detach wrapper必须把PID写入`logs/launcher.pid`、child stdout/stderr写入`
 
 |字段|当前值|
 |---|---|
-|remote PID|`PENDING`|
-|launcher exit|`PENDING`|
+|remote PID|`NONE（未detach）`|
+|launcher exit|`ABSENT（未启动）`|
 |parity receipt|`PRESENT_REUSED / NOT_GENERATED`|
 |archive/manifest|`PRESENT_REUSED / NOT_GENERATED`|
 |coverage|`PRESENT_REUSED / NOT_GENERATED`|
 |row/prediction/score|`0/125 / 0/1000 / 0/1500`|
-|最终裁决|`PENDING`|
+|最终裁决|`BLOCKED_PRE_LAUNCH / NO_PERFORMANCE_RESULT`|
 
 没有完整prediction只能标记`TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`；完整prediction但性能未达门标记`COMPLETED_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE`。不得把preflight、PID、测试、support fit或量化审计当作性能成功。
 
 ## N607 runner执行记录
 
-- `PENDING`。
+- `2026-07-23T22:06:50+08:00`：direct只读preflight PASS。N607项目根可见；GPU0–7均为RTX3090、`0%`利用率、`10/24576MiB`占用；本地无残留`ssh.exe`或到N607/lab bridge的已建立SSH连接。
+- `2026-07-23T22:08+08:00`：确认远端run根初始ABSENT、磁盘可用约`7.99TB`、无GPU compute process后，仅创建`input/`、`source/`、`logs/`；`artifacts/`保持ABSENT。同步恰好两份冻结输入：`source_166c1afc_rawblob_deflated.zip=d01b8e8c7ac01d0e02f639a726cc0845f22fa33dd75c999688170264ba3b01f3`，`somph_method_lock.json=0496594db4a82efbbf17ec3d67ebc3fb1f0c7ced41b542a5a0bde3482e704523`。
+- `2026-07-23T22:09+08:00`：空`source/`受限解包通过，三个冻结文件远端SHA分别为`92b58bf8280c3f9de4f6ea5f9abd427be0f90e3cf84b9697765ce4ec57155bfe`、`59323ddc202c5f1f8c3bd43698907874b67fcbb0ef8b083ab43987a3bb65caa7`、`e8e736085c72b64b994c823d2307fde93d4ac70171ec8f66d82a0e85455d5fd4`，与本报告一致；冻结Python对method/runner执行`py_compile`通过。
+- `2026-07-23T22:10+08:00`：强制POSIX sentinel命令`PYTHONPATH=<run>/source/code /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -m pytest tests/test_stage2_adv3b02_ts_drqknn_bcrr.py::test_posix_root_exit_still_cleans_grandchild_and_preserves_unrelated_sentinel -q`失败，原始确定性错误：`No module named pytest`。复核同一冻结Python为`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`，`importlib.util.find_spec("pytest") is None`，服务器无`pytest`可执行入口；未安装、未切换环境、未绕过测试。
+- 终态：`BLOCKED_PRE_LAUNCH / NO_PERFORMANCE_RESULT`。未执行detach；`remote PID=NONE`、`launcher exit=ABSENT`；row/prediction/score=`0/125 / 0/1000 / 0/1500`；无health fingerprint、无run-owned进程、无新archive/coverage/parity。parity/archive/manifest/coverage均为冻结复用输入，未重新生成。保留远端`input/`与`source/`以及本地报告，`artifacts/`仍ABSENT；本机SSH连接已清理。

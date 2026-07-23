@@ -18,6 +18,7 @@ import signal
 import stat
 import subprocess
 import sys
+import tempfile
 import threading
 import time
 from concurrent.futures import FIRST_COMPLETED, ThreadPoolExecutor, wait
@@ -1363,6 +1364,192 @@ def _termination_receipt_confirmed(receipt: Mapping[str, Any] | None) -> bool:
     )
 
 
+def _best_effort_posix_sentinel_cleanup(
+    *,
+    process_group_ids: tuple[int | None, ...],
+    processes: tuple[subprocess.Popen[bytes] | None, ...],
+) -> tuple[str, ...]:
+    """Clean self-created sentinel processes without masking later cleanup."""
+    cleanup_errors: list[str] = []
+    for process_group_id in process_group_ids:
+        if process_group_id is None:
+            continue
+        try:
+            if _process_group_is_alive(process_group_id):
+                os.killpg(process_group_id, signal.SIGKILL)
+        except ProcessLookupError:
+            pass
+        except Exception as exc:
+            cleanup_errors.append(
+                "process_group_"
+                + str(process_group_id)
+                + ": "
+                + type(exc).__name__
+                + ": "
+                + str(exc)
+            )
+    for process in processes:
+        if process is None:
+            continue
+        try:
+            if process.poll() is None:
+                try:
+                    process.wait(timeout=5)
+                except subprocess.TimeoutExpired:
+                    process.kill()
+                    process.wait(timeout=5)
+        except Exception as exc:
+            cleanup_errors.append(
+                "process_"
+                + str(process.pid)
+                + ": "
+                + type(exc).__name__
+                + ": "
+                + str(exc)
+            )
+    return tuple(cleanup_errors)
+
+
+def run_posix_root_grandchild_unrelated_sentinel() -> dict[str, Any]:
+    """Prove POSIX cleanup kills only a run-owned root process group.
+
+    This is a frozen-runner self-check for hosts that do not ship pytest.  It
+    creates two independent process groups: a run-owned root which creates a
+    grandchild and exits, and an unrelated sentinel.  The checked termination
+    path must remove the surviving grandchild without affecting the sentinel.
+    """
+    if os.name == "nt":
+        raise ADV3B02LauncherError("posix-sentinel requires a POSIX host")
+    root_process: subprocess.Popen[bytes] | None = None
+    sentinel: subprocess.Popen[bytes] | None = None
+    target_process_group_id: int | None = None
+    sentinel_process_group_id: int | None = None
+    try:
+        with tempfile.TemporaryDirectory(prefix="adv3b02-posix-sentinel-") as temp_dir:
+            temp_root = Path(temp_dir)
+            matrix_root = temp_root / "matrix"
+            output_root = matrix_root / "jobs" / "tree_row"
+            child_pid_path = temp_root / "grandchild.pid"
+            child_script = "import time;time.sleep(60)"
+            root_script = (
+                "import pathlib,subprocess,sys,time;"
+                "child=subprocess.Popen([sys.executable,'-c',sys.argv[2]]);"
+                "pathlib.Path(sys.argv[1]).write_text(str(child.pid),encoding='utf-8');"
+                "time.sleep(1)"
+            )
+            command = [
+                sys.executable,
+                "-c",
+                root_script,
+                str(child_pid_path),
+                child_script,
+                "--output-root",
+                str(output_root),
+            ]
+            sentinel = subprocess.Popen(
+                [sys.executable, "-c", child_script],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+                start_new_session=True,
+            )
+            sentinel_process_group_id = os.getpgid(sentinel.pid)
+            root_process = subprocess.Popen(
+                command,
+                cwd=Path.cwd(),
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+                start_new_session=True,
+            )
+            # start_new_session makes the root PID its own process-group ID.
+            # Keep that self-created group for finally cleanup before /proc
+            # ownership capture, which can itself fail or race with root exit.
+            target_process_group_id = root_process.pid
+            ownership = _capture_run_owned_process_identity(
+                root_process,
+                command=command,
+                output_root=str(output_root),
+                matrix_root=matrix_root,
+                expected_cwd=Path.cwd(),
+            )
+            if int(ownership["process_group_id"]) != target_process_group_id:
+                raise ADV3B02LauncherError("posix-sentinel root lacks independent process group")
+            if os.getpgid(sentinel.pid) != sentinel_process_group_id:
+                raise ADV3B02LauncherError("posix-sentinel unrelated sentinel lacks independent process group")
+            if sentinel_process_group_id == target_process_group_id:
+                raise ADV3B02LauncherError("posix-sentinel process groups are not independent")
+            deadline = time.monotonic() + 5.0
+            while not child_pid_path.is_file() and time.monotonic() < deadline:
+                time.sleep(0.05)
+            if not child_pid_path.is_file():
+                raise ADV3B02LauncherError("posix-sentinel grandchild PID was not published")
+            grandchild_pid = int(child_pid_path.read_text(encoding="utf-8"))
+            if os.getpgid(grandchild_pid) != target_process_group_id:
+                raise ADV3B02LauncherError("posix-sentinel grandchild escaped target process group")
+            if root_process.wait(timeout=5) != 0:
+                raise ADV3B02LauncherError("posix-sentinel root did not exit cleanly")
+            if not _process_group_is_alive(target_process_group_id):
+                raise ADV3B02LauncherError("posix-sentinel grandchild did not survive root exit")
+            receipt = _terminate_run_owned_process_tree(
+                root_process,
+                {
+                    "pid": root_process.pid,
+                    "cmdline": command,
+                    "output_root": str(output_root),
+                    "ownership_evidence": ownership,
+                },
+                matrix_root=matrix_root,
+                expected_cwd=Path.cwd(),
+            )
+            if not receipt.get("root_already_exited"):
+                raise ADV3B02LauncherError("posix-sentinel did not observe root already exited")
+            if not receipt.get("tree_exit_confirmed"):
+                raise ADV3B02LauncherError("posix-sentinel target process group survived cleanup")
+            if _process_group_is_alive(target_process_group_id):
+                raise ADV3B02LauncherError("posix-sentinel target process group remains alive")
+            deadline = time.monotonic() + 5.0
+            while time.monotonic() < deadline:
+                try:
+                    os.kill(grandchild_pid, 0)
+                except ProcessLookupError:
+                    break
+                time.sleep(0.05)
+            else:
+                raise ADV3B02LauncherError("posix-sentinel grandchild survived target cleanup")
+            if sentinel.poll() is not None:
+                raise ADV3B02LauncherError("posix-sentinel unrelated sentinel was terminated")
+            return {
+                "mode": "posix-sentinel",
+                "root_already_exited": True,
+                "tree_exit_confirmed": True,
+                "target_process_group_id": target_process_group_id,
+                "grandchild_pid": grandchild_pid,
+                "unrelated_sentinel_alive": True,
+            }
+    finally:
+        primary_exception_active = sys.exc_info()[0] is not None
+        cleanup_errors = _best_effort_posix_sentinel_cleanup(
+            process_group_ids=(target_process_group_id, sentinel_process_group_id),
+            processes=(root_process, sentinel),
+        )
+        if cleanup_errors:
+            cleanup_message = "posix-sentinel cleanup failed: " + "; ".join(
+                cleanup_errors
+            )
+            if not primary_exception_active:
+                raise ADV3B02LauncherError(cleanup_message)
+            primary_exception = sys.exc_info()[1]
+            try:
+                add_note = getattr(primary_exception, "add_note", None)
+                if callable(add_note):
+                    add_note(cleanup_message)
+                else:
+                    sys.stderr.write(cleanup_message + "\n")
+                    sys.stderr.flush()
+            except Exception:
+                # The primary failure must remain visible even if audit output fails.
+                pass
+
+
 def _terminate_run_owned_process_tree_checked(
     process: subprocess.Popen[bytes],
     entry: Mapping[str, Any],
@@ -1888,6 +2075,7 @@ def main() -> int:
     sub = parser.add_subparsers(dest="mode", required=True)
     plan = sub.add_parser("plan"); plan.add_argument("--run-root", required=True)
     validate = sub.add_parser("validate"); validate.add_argument("--run-root", required=True)
+    sub.add_parser("posix-sentinel")
     def common(item: argparse.ArgumentParser) -> None:
         item.add_argument("--phase1-checkpoint", required=True); item.add_argument("--sealed-runtime", required=True)
         item.add_argument("--package-method-lock", required=True)
@@ -1903,6 +2091,7 @@ def main() -> int:
     args = parser.parse_args()
     if args.mode == "plan": result = {"manifest_sha256": write_plan_new(run_root=args.run_root), "counts": MATRIX_COUNTS}
     elif args.mode == "validate": result = validate_matrix_artifacts(run_root=args.run_root)
+    elif args.mode == "posix-sentinel": result = run_posix_root_grandchild_unrelated_sentinel()
     elif args.mode == "row":
         try:
             result = run_row(args)

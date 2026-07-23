@@ -1040,7 +1040,7 @@ def test_runner_exposes_real_row_and_matrix_entrypoints():
     environment["PYTHONPATH"] = str(ROOT / "code")
     result = subprocess.run([sys.executable, str(ROOT / "code" / "scripts" / "run_adv3b02_ts_drqknn_bcrr_125.py"), "--help"], check=False, capture_output=True, text=True, env=environment)
     assert result.returncode == 0
-    assert "{plan,validate,row,matrix}" in result.stdout
+    assert "{plan,validate,posix-sentinel,row,matrix}" in result.stdout
 
 
 def _health_jobs(tmp_path, count=12):
@@ -1605,78 +1605,109 @@ def test_run_owned_process_identity_rejects_cwd_cmdline_group_and_root_drift(
 
 
 @pytest.mark.skipif(os.name == "nt", reason="formal N607 process-tree semantics are POSIX")
-def test_posix_root_exit_still_cleans_grandchild_and_preserves_unrelated_sentinel(
-    tmp_path,
+def test_posix_root_exit_still_cleans_grandchild_and_preserves_unrelated_sentinel():
+    result = runner.run_posix_root_grandchild_unrelated_sentinel()
+    assert result["root_already_exited"] is True
+    assert result["tree_exit_confirmed"] is True
+    assert result["unrelated_sentinel_alive"] is True
+    assert result["target_process_group_id"] != result["grandchild_pid"]
+
+
+def test_posix_sentinel_cleanup_continues_after_first_group_error(monkeypatch):
+    killed_groups = []
+
+    class FakeProcess:
+        def __init__(self, pid):
+            self.pid = pid
+            self.wait_calls = 0
+
+        def poll(self):
+            return None
+
+        def wait(self, timeout):
+            self.wait_calls += 1
+            return 0
+
+    first = FakeProcess(101)
+    second = FakeProcess(202)
+
+    monkeypatch.setattr(runner, "_process_group_is_alive", lambda _: True)
+    monkeypatch.setattr(runner.signal, "SIGKILL", 9, raising=False)
+
+    def killpg(process_group_id, _signal):
+        killed_groups.append(process_group_id)
+        if process_group_id == 11:
+            raise OSError("injected first cleanup failure")
+
+    monkeypatch.setattr(runner.os, "killpg", killpg, raising=False)
+    errors = runner._best_effort_posix_sentinel_cleanup(
+        process_group_ids=(11, 22), processes=(first, second)
+    )
+    assert killed_groups == [11, 22]
+    assert first.wait_calls == 1
+    assert second.wait_calls == 1
+    assert len(errors) == 1
+    assert "process_group_11" in errors[0]
+
+
+@pytest.mark.skipif(os.name == "nt", reason="formal N607 process-tree semantics are POSIX")
+def test_posix_sentinel_capture_failure_cleans_created_process_groups(
+    monkeypatch, capsys
 ):
-    matrix_root = tmp_path / "matrix"
-    output_root = matrix_root / "jobs" / "tree_row"
-    child_pid_path = tmp_path / "grandchild.pid"
-    script = (
-        "import pathlib,subprocess,sys,time;"
-        "child=subprocess.Popen([sys.executable,'-c','import time;time.sleep(60)']);"
-        "pathlib.Path(sys.argv[1]).write_text(str(child.pid),encoding='utf-8');"
-        "time.sleep(1)"
+    created = []
+    original_popen = runner.subprocess.Popen
+
+    def tracked_popen(*args, **kwargs):
+        process = original_popen(*args, **kwargs)
+        created.append(process)
+        return process
+
+    monkeypatch.setattr(runner.subprocess, "Popen", tracked_popen)
+
+    def injected_capture(*args, **kwargs):
+        time.sleep(1.2)
+        raise runner.ADV3B02LauncherError("injected capture failure")
+
+    original_cleanup = runner._best_effort_posix_sentinel_cleanup
+
+    def cleanup_with_injected_secondary_error(**kwargs):
+        return original_cleanup(**kwargs) + ("injected secondary cleanup failure",)
+
+    monkeypatch.setattr(runner, "_capture_run_owned_process_identity", injected_capture)
+    monkeypatch.setattr(
+        runner,
+        "_best_effort_posix_sentinel_cleanup",
+        cleanup_with_injected_secondary_error,
     )
-    command = [
-        sys.executable,
-        "-c",
-        script,
-        str(child_pid_path),
-        "--output-root",
-        str(output_root),
-    ]
-    sentinel = subprocess.Popen(
-        [sys.executable, "-c", "import time;time.sleep(60)"],
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL,
-        start_new_session=True,
-    )
-    root_process = subprocess.Popen(
-        command,
-        cwd=ROOT,
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL,
-        start_new_session=True,
-    )
-    try:
-        ownership = runner._capture_run_owned_process_identity(
-            root_process,
-            command=command,
-            output_root=str(output_root),
-            matrix_root=matrix_root,
-            expected_cwd=ROOT,
+    with pytest.raises(
+        runner.ADV3B02LauncherError, match="injected capture failure"
+    ) as captured:
+        runner.run_posix_root_grandchild_unrelated_sentinel()
+    assert len(created) == 2
+    assert created[1].returncode == 0
+    assert all(process.poll() is not None for process in created)
+    assert all(not runner._process_group_is_alive(process.pid) for process in created)
+    if callable(getattr(captured.value, "add_note", None)):
+        assert any(
+            "injected secondary cleanup failure" in note
+            for note in getattr(captured.value, "__notes__", ())
         )
-        deadline = time.monotonic() + 5.0
-        while not child_pid_path.is_file() and time.monotonic() < deadline:
-            time.sleep(0.05)
-        assert child_pid_path.is_file()
-        grandchild_pid = int(child_pid_path.read_text(encoding="utf-8"))
-        assert root_process.wait(timeout=5) == 0
-        assert runner._process_group_is_alive(int(ownership["process_group_id"]))
-        receipt = runner._terminate_run_owned_process_tree(
-            root_process,
-            {
-                "pid": root_process.pid,
-                "cmdline": command,
-                "output_root": str(output_root),
-                "ownership_evidence": ownership,
-            },
-            matrix_root=matrix_root,
-            expected_cwd=ROOT,
-        )
-        assert receipt["root_already_exited"] is True
-        assert receipt["tree_exit_confirmed"] is True
-        assert not runner._process_group_is_alive(root_process.pid)
-        with pytest.raises(ProcessLookupError):
-            os.kill(grandchild_pid, 0)
-        assert sentinel.poll() is None
-    finally:
-        if root_process.poll() is None:
-            os.killpg(root_process.pid, signal.SIGKILL)
-            root_process.wait(timeout=5)
-        if sentinel.poll() is None:
-            os.killpg(sentinel.pid, signal.SIGKILL)
-            sentinel.wait(timeout=5)
+    else:
+        assert "injected secondary cleanup failure" in capsys.readouterr().err
+
+
+@pytest.mark.skipif(os.name == "nt", reason="formal N607 process-tree semantics are POSIX")
+def test_posix_sentinel_normal_cleanup_error_fails_closed(monkeypatch):
+    original_cleanup = runner._best_effort_posix_sentinel_cleanup
+
+    def cleanup_with_injected_error(**kwargs):
+        return original_cleanup(**kwargs) + ("injected cleanup failure",)
+
+    monkeypatch.setattr(
+        runner, "_best_effort_posix_sentinel_cleanup", cleanup_with_injected_error
+    )
+    with pytest.raises(runner.ADV3B02LauncherError, match="cleanup failed"):
+        runner.run_posix_root_grandchild_unrelated_sentinel()
 
 
 def test_structured_failure_marker_separates_p0_from_ordinary_technical(tmp_path):
