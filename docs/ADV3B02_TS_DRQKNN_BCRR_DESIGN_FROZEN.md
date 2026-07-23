@@ -1,4 +1,6 @@
-# ADV3B02-TS-DRQKNN-BCRR/r1选择性吸收与DESIGN_FROZEN
+# ADV3B02-TS-DRQKNN-BCRR/r1选择性吸收与DESIGN_FROZEN（已被r2-affine替代）
+
+> 终态：`SUPERSEDED_TECHNICAL_REVISION / NO_PERFORMANCE_RESULT`。r1在实现终审和真实checkpoint support-only检查中暴露after teacher自指、125无系统故障停派及共享对称INT8门失败；后续唯一活动设计见`docs/ADV3B02_TS_DRQKNN_BCRR_R2_AFFINE_DESIGN_FROZEN.md`。本文件只保留历史设计，不再授权实现或发布。
 
 ## 1.身份与裁决
 

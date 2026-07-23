@@ -135,8 +135,14 @@ PYTHONPATH=<run>/source/code /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python
 
 ## 失败取证与回收
 
-三条失败均发生在第一个`leo_clear_weak/before`组合、prediction发布前：seed713104在`raw`branch失败，seed713105和713106在`ground`branch失败。完整调用链均为`stage2_svrn_bcr.py:873`→`stage2_dssc...py:1043/1044`→`run...py:476/892/1597/1603`；stderr SHA分别为`21400d583a1d3878e971981a9f1e89d0eec946727ac27cbe17160d91693e0300`、`694752e84586b30fe7766485d6e9841731f25f52d524b25ed91fdedca4f62662`、`694752e84586b30fe7766485d6e9841731f25f52d524b25ed91fdedca4f62662`。
+三条失败均发生在统一prediction发布前：seed713104可证实在`raw`branch失败，seed713105和713106可证实在`ground`branch失败。runner在全部6个scene/state调用完成后才统一写prediction，stderr又未持久化scene/state上下文，因此0 prediction不能把失败定位为第一个`leo_clear_weak/before`组合。完整调用链均为`stage2_svrn_bcr.py:873`→`stage2_dssc...py:1043/1044`→`run...py:476/892/1597/1603`；stderr SHA分别为`21400d583a1d3878e971981a9f1e89d0eec946727ac27cbe17160d91693e0300`、`694752e84586b30fe7766485d6e9841731f25f52d524b25ed91fdedca4f62662`、`694752e84586b30fe7766485d6e9841731f25f52d524b25ed91fdedca4f62662`。
 
 触发条件可证实为`top1_agreement<0.995`或`margin_sign_flip_count!=0`，但失败路径在审计receipt写盘前抛出；partial artifacts中audit/INT8文件和`top1_agreement`字段均为0。因此不能从本run恢复具体审计值，后续必须用全新support-only不可变诊断取得，不能推断或回填。
 
 远端完整库存为557 files，SHA=`334b8377be84194c23f42abf4952f117ab684a604ab439ace2715f986f7c62ad`；本地选择性回收41 files，SHA=`c840156609f0e774fdc2029f0f865255033a27d993b1cde1a5416a1c3a4c20aa`。回收包含matrix日志、25个launcher日志、matrix manifest及3个失败row的16个JSON，逐项SHA匹配；未复制重复runtime或checkpoint。
+
+### support-only定位与量化修法证伪
+
+后续只从远端既有partial run回收3个失败seed的before/after enrollment包；30个文件、8,364,333B，库存SHA=`76b8d7237863848ff667b31aa9a61e8dae55a7b63730923a9637e4238ff01101`，manifest、seal和member SHA/size全部闭合，query/truth文件数均为0。冻结checkpoint本地重放把seed713104的正式首次失败精确定位为`leo_clear_weak/after/raw`。现行部署在clear/low-elev/rain after分别为`0.996154/1`、`0.992308/2`、`1.000000/0`；V/H/D分解表明low-elev由INT8 support向量量化主导，clear为INT8向量与FP16 bandwidth交互。
+
+`Q1`和固定2轮无标签L2单scale量化均未清零已知flip。固定`10×16`分块INT8虽降低重构误差，却使seed713104 rain-after退化为`0.992308/2`，并在713105、713106 rain-after各保留1个flip，已按预注册停止条件REJECT。逐向量仿射INT8在18个`3 seeds×before/after×3 scenes`support-only包上的最低top1为`0.996154`，两条剩余翻转的teacher margin仅`0.005615/0.003006`，large-margin flip均为0；该证据只进入新revision可行性审查，不是性能结果，不修改或复用本run。
