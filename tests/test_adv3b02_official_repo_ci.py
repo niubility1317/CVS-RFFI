@@ -122,9 +122,9 @@ def test_csil_increment_freezes_backbone_and_old_head_blocks():
         }
     }
     old_x = torch.randn(4, 2)
-    new_x = torch.randn(10, 2) + 2
+    new_x = torch.randn(40, 2) + 2
     support_x = torch.cat([old_x, new_x])
-    support_y = torch.tensor([0, 0, 1, 1] + [2] * 10)
+    support_y = torch.tensor([0, 0, 1, 1] + [2] * 40)
     state = fit_csil_official_repo(
         backbone,
         support_x,
@@ -153,8 +153,8 @@ def test_mopc_increment_uses_classifier_query_and_kd_is_diagnostic_only():
             "old_prototypes": torch.randn(2, 3),
         }
     }
-    support_x = torch.randn(12, 2)
-    support_y = torch.tensor([0, 0, 1, 1] + [2] * 8)
+    support_x = torch.randn(24, 2)
+    support_y = torch.tensor([0, 0, 1, 1] + [2] * 20)
     state = fit_mopc_hr_official_repo(
         backbone,
         support_x,
@@ -165,9 +165,38 @@ def test_mopc_increment_uses_classifier_query_and_kd_is_diagnostic_only():
         base_state=base,
     )
     assert state.resource["optimizer_steps"] == 20
-    assert state.resource["effective_batch_size"] == 8
+    assert state.resource["effective_batch_size"] == 16
     assert state.resource["kd_in_total_loss"] is False
     assert "knowledge_distillation_not_in_total" in state.loss_trace[0]
+
+
+def test_mopc_small_k_preserves_official_zero_step_drop_last():
+    backbone = _dummy_backbone()
+    classifier = torch.nn.Linear(3, 4)
+    base = {
+        "mopc_hr": {
+            "backbone_state": backbone.state_dict(),
+            "classifier_weight": classifier.weight.detach().clone(),
+            "classifier_bias": classifier.bias.detach().clone(),
+            "old_prototypes": torch.randn(2, 3),
+        }
+    }
+    support_x = torch.randn(12, 2)
+    support_y = torch.tensor([0, 0, 1, 1] + [2] * 8)
+    state = fit_mopc_hr_official_repo(
+        backbone,
+        support_x,
+        support_y,
+        feature_fn=_feature_fn,
+        old_count=2,
+        seed=23,
+        base_state=base,
+    )
+    assert state.resource["optimizer_steps"] == 0
+    assert state.resource["effective_batch_size"] == 16
+    assert state.resource["small_k_execution_adaptation"] is False
+    assert state.resource["official_zero_step_due_to_drop_last"] is True
+    assert state.loss_trace == []
 
 
 def test_csil_base_keeps_trainnetwork_once_shuffle_and_tail_batch():

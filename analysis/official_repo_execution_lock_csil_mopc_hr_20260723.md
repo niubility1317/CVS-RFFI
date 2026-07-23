@@ -50,9 +50,8 @@
 - 冻结ADV3B02旧特征提取器、旧`fc_bf_fp`行和旧Fingerprint块；只更新新增
   `fc_bf_fp`行、bias和新增Fingerprint块。
 - 官方全局随机60%训练切分和floor丢尾在K-shot小样本上可能产生0步。
-  CVS完整K矩阵只能增加明确披露的`SMALL_K_EXECUTION_ADAPTATION`：
-  训练集不足1条时保留至少1条，batch取`min(20,N_train)`；其余情况保持
-  floor丢尾。
+  正式复现保留该行为，不补样本、不缩batch，并逐cell记录
+  `official_zero_step_due_to_drop_last`。
 
 ### 2.3损失与Fisher
 
@@ -132,7 +131,6 @@
 - 原编码器替换为ADV3B02的160维`z_id`；
 - 类别数和标签映射；
 - 正式运行的新类support/query叠加固定LEO弱信道；
-- K-shot导致官方`drop_last`零步时的最小非零batch处理；
 - 修复MoPC-HR中不存在的`self.args.batch_size`和硬编码256维；
 - query延迟到模型状态锁定后打开。
 

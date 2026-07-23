@@ -1,8 +1,9 @@
 """Official-repository execution semantics on the ADV3B02 interface.
 
 This module keeps the public trainers' numerically active behavior. The only
-method adaptations are the ADV3B02 feature interface, CVS class cardinality,
-and an explicitly reported non-zero mini-batch fallback for very small K.
+method adaptations are the ADV3B02 feature interface and CVS class cardinality.
+The public fixed-batch/drop-last behavior is retained, including zero optimizer
+steps when a K-shot increment is smaller than one complete batch.
 """
 
 from __future__ import annotations
@@ -63,10 +64,10 @@ def _drop_last_batches(
     device: torch.device,
     seed: int,
 ) -> tuple[list[tuple[int, int, torch.Tensor]], int, bool]:
-    if rows <= 0:
-        raise ValueError("training rows must be positive")
-    effective_batch = min(int(requested_batch), int(rows))
-    small_k_adaptation = effective_batch != int(requested_batch)
+    if rows < 0:
+        raise ValueError("training rows must be non-negative")
+    effective_batch = int(requested_batch)
+    small_k_adaptation = False
     generator = torch.Generator(device=device).manual_seed(int(seed))
     result = []
     iteration = 0
@@ -502,9 +503,7 @@ def fit_csil_official_repo(
     order = torch.randperm(len(new_x_all), generator=generator, device=support_x.device)
     official_cut = int(math.floor(0.6 * len(order)))
     train_count = official_cut - 1
-    small_k_split_adaptation = train_count < 1
-    if small_k_split_adaptation:
-        train_count = 1
+    small_k_split_adaptation = False
     train_indices = order[:train_count]
     train_x = new_x_all[train_indices]
     train_y = new_y_all[train_indices]
@@ -587,6 +586,7 @@ def fit_csil_official_repo(
             "small_k_execution_adaptation": bool(
                 small_k_split_adaptation or small_k_batch_adaptation
             ),
+            "official_zero_step_due_to_drop_last": len(trace) == 0,
             "new_dimension": new_count,
             "new_fingerprint_initialization": initialization,
             "class_cardinality_initialization_adaptation": cardinality_adaptation,
@@ -718,6 +718,7 @@ def fit_mopc_hr_official_repo(
             "requested_batch_size": 16,
             "effective_batch_size": effective_batch,
             "small_k_execution_adaptation": small_k_adaptation,
+            "official_zero_step_due_to_drop_last": len(trace) == 0,
             "increment_size": increment_size,
             "class_schedule_adaptation": increment_size not in (25, 10, 5, 3),
             "hierarchical_regularization": "per_parameter_unsquared_l2",
