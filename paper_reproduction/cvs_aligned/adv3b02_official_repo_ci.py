@@ -472,12 +472,24 @@ def fit_csil_official_repo(
     new_x_all = support_x[new_mask]
     new_y_all = support_y[new_mask]
     with torch.no_grad():
-        expanded = model.pre_fingerprint(new_x_all)
         ids = torch.arange(int(old_count), total_count, device=support_x.device)
-        new_means = _class_means(expanded, new_y_all, ids)
-        model.fingerprints[old_count:, old_count:] = F.normalize(
-            new_means[:, old_count:], dim=1
-        )
+        if new_count <= int(old_count):
+            # CSIL.m computes new fingerprints from the pre-expansion
+            # fc_bf_fp response and takes its final newClassesNum coordinates.
+            prior_response = before.pre_fingerprint(new_x_all)
+            new_means = _class_means(prior_response, new_y_all, ids)
+            new_block = new_means[:, -new_count:]
+            initialization = "official_pre_expansion_tail_coordinates"
+            cardinality_adaptation = False
+        else:
+            # The public code has no defined slice when newClassesNum exceeds
+            # the previous output width. Use the newly allocated coordinates.
+            expanded = model.pre_fingerprint(new_x_all)
+            new_means = _class_means(expanded, new_y_all, ids)
+            new_block = new_means[:, old_count:]
+            initialization = "expanded_new_coordinates"
+            cardinality_adaptation = True
+        model.fingerprints[old_count:, old_count:] = F.normalize(new_block, dim=1)
     generator = torch.Generator(device=support_x.device).manual_seed(int(seed) + 79)
     order = torch.randperm(len(new_x_all), generator=generator, device=support_x.device)
     official_cut = int(math.floor(0.6 * len(order)))
@@ -568,6 +580,8 @@ def fit_csil_official_repo(
                 small_k_split_adaptation or small_k_batch_adaptation
             ),
             "new_dimension": new_count,
+            "new_fingerprint_initialization": initialization,
+            "class_cardinality_initialization_adaptation": cardinality_adaptation,
             "query_decision": "zero_bias_all_registered_argmax",
         },
     )

@@ -11,6 +11,7 @@
 - 正式LEO：新类support/query均叠加固定LEO弱信道
 - matched无LEO：仅作`DIAGNOSTIC_NEW_CLASS_NO_LEO_NON_FORMAL`
 - base编码器：`BASE_MODEL_INITIALIZATION_ADAPTATION`，预训练ADV3B02替换原编码器后按各官方trainer在8400条source上训练
+- CSIL新10/新20：`CLASS_CARDINALITY_INITIALIZATION_ADAPTATION`，因为新增类数超过官方扩展前旧输出宽度6
 - 详细方法锁：`analysis/official_repo_execution_lock_csil_mopc_hr_20260723.md`
 
 本地验证：
@@ -19,7 +20,7 @@
 |---|---|
 | Python编译 | PASS |
 | 官方数值fixture | 8/8 PASS |
-| 相关runner/plan回归 | 25/25 PASS |
+| 相关runner/plan回归 | 26/26 PASS |
 | `git diff --check` | PASS |
 
 独立base复核曾发现首版误吸收`v4_4`的指纹正交深度实验项。该版本未发布；

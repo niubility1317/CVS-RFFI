@@ -38,6 +38,10 @@
   新块来自新类support的`fc_bf_fp`响应均值归一化。
 - 零偏置输出为`5*cosine+5`，数值稳定项为`(1e-9)^2`。
 
+官方初始化从扩展前`fc_bf_fp`响应截取最后`m`个坐标，仅在`m≤C`时有定义。
+本矩阵新2/新5严格采用该路径；新10/新20超过旧类宽度6，使用扩展后的新增坐标，
+并标记`CLASS_CARDINALITY_INITIALIZATION_ADAPTATION`。
+
 ### 2.2增量训练
 
 - 3epoch，batch20，初始学习率0.01，时间衰减0.01，momentum0.9。

@@ -187,3 +187,39 @@ def test_csil_base_keeps_trainnetwork_once_shuffle_and_tail_batch():
     assert state["optimizer_steps"] == 4
     assert state["tail_batch_retained"] is True
     assert state["shuffle"] == "once"
+
+
+def test_csil_discloses_cardinality_initialization_adaptation():
+    backbone = _dummy_backbone()
+    fc_weight = torch.randn(2, 3)
+    fc_bias = torch.zeros(2)
+    fingerprints = torch.eye(2)
+    fisher = {
+        "fingerprints": torch.ones(2, 2),
+        "backbone.weight": torch.ones_like(backbone.weight),
+        "backbone.bias": torch.ones_like(backbone.bias),
+        "fc_bf_fp.weight": torch.ones_like(fc_weight),
+        "fc_bf_fp.bias": torch.ones_like(fc_bias),
+    }
+    base = {
+        "csil": {
+            "backbone_state": backbone.state_dict(),
+            "fc_weight": fc_weight,
+            "fc_bias": fc_bias,
+            "fingerprints": fingerprints,
+            "fisher": fisher,
+        }
+    }
+    support_x = torch.randn(19, 2)
+    support_y = torch.tensor([0, 0, 1, 1] + [2] * 5 + [3] * 5 + [4] * 5)
+    state = fit_csil_official_repo(
+        backbone,
+        support_x,
+        support_y,
+        feature_fn=_feature_fn,
+        old_count=2,
+        seed=29,
+        base_state=base,
+    )
+    assert state.resource["class_cardinality_initialization_adaptation"] is True
+    assert state.resource["new_dimension"] == 3
