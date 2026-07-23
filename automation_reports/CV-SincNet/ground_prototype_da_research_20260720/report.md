@@ -2321,3 +2321,9 @@ run=`adv3b02_ts_drqknn_bcrr_r4_q2f32_bcr3_zidtotal1_full125_802534eb_20260724_03
 唯一技术delta=`procbindfix1`：共享runner只对空`cmdline`短时有界重读；非空cmdline、CWD或PGID不匹配仍立即fail-closed，进程退出或窗口耗尽仍失败。不得改变r4科学机制、四臂、125矩阵、数据、scorer或健康策略；完成专项回归、独立P0/P1 review和新commit后，以全新不可覆盖run ID立即重发完整125。
 
 `DATA_PROTOCOL=PRESENT_REUSED / NOT_REVALIDATED`
+
+##### `r4-bcr3-procbindfix1`完整125预注册
+
+共享runner技术修复提交=`467b8aa561f41eada827c48588e8c6598b49eed0`；科学方法仍为r4 commit=`802534eb8036fb8a31f060fd55af5050d0fe7961`。独立review=`MERGE / P0=0 / P1=0 / P2=0`；新run=`adv3b02_ts_drqknn_bcrr_r4_q2f32_bcr3_zidtotal1_procbindfix1_full125_467b8aa5_20260724_035813`已预注册。raw Git blob包SHA=`0d4bb25384972d62250c9467778745bc3d80daac378cf5e0b29d48708ea86108`，含3,981个safe regular blob，path-set SHA=`8ad180b9260df0e881fd48bfb6facf8968cb464cf59dbe8eb48f03a7deacae76`，raw mismatch=0。下一步由唯一Terra runner执行N607冻结POSIX sentinel、唯一detach、GPU0–7完整125、即时健康检查和artifact回收；不增加测试、gate或数据验证。
+
+`DATA_PROTOCOL=PRESENT_REUSED / NOT_REVALIDATED`
