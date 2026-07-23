@@ -20,7 +20,7 @@
 
 域适应可以改变encoder、输入前端、normalization、轻量adapter、support-conditioned表示、metric、邻域权重或概率状态。它必须具有明确的域偏移机制，并在held query上产生可观测的邻居贡献、margin、argmax或净正确决策变化；只有loss下降、support fit提高、metric非identity或logit数值变化不构成DA成功。RDA/SRDA、receiver nuisance correction、support-conditioned adapter、normalization、metric learning和合法Phase1新表征均可公平进入候选。
 
-当前下一优先revision固定为`ADV3B02-TS-DRQKNN-BCRR/r2-affine-bcr2-zidtotal1-bindfix1`：保留ADV3B02的`z_id`与`z_dom`双分支、BCRR和`finite_exact_zero_singleton_class_medoid_v1`，只修复repair receipt绑定`N(raw)`而actual branch错误绑定`N(N(raw))`的FP32非幂等技术缺陷。affine bank、qKNN wire、BCR部署权重和prediction必须逐字节不变；DA、四臂、K、数据、资源和完整125均不变。该冻结只约束本revision，不把双qKNN、固定rank、仿射codec、两级残差、BCRR或零行总化升级为后续所有方法的全局必经路线。
+当前下一优先revision固定为`ADV3B02-TS-DRQKNN-BCRR/r3-q2f32-bcr2-zidtotal1`：保留ADV3B02的`z_id/z_dom`双qKNN、BCRR和既有repair，只把未通过正式support门的一平面qKNN bank升级为固定affine INT8主平面＋INT8 residual平面，并以双FP16补偿保存raw-support闭式class bandwidth。禁止FP32 target sidecar、第三平面、动态codec、阈值或fallback；DA、四臂、K、数据和完整125不变。该冻结只约束本revision，不把双qKNN、固定rank、该codec、BCRR或repair升级为后续所有方法的全局必经路线。
 
 最终目标是：
 
@@ -184,6 +184,8 @@ parent`ADV3B02-TS-DRQKNN-BCRR/r2-affine-bcr2`已完成本地技术闭合，但�
 其完整125发布在两个不同K10/new20 row上暴露相同`teacher binding drift`并按健康门止损。根因是repair receipt绑定一次单位化`N(raw)`，而actual branch对已单位化teacher再次调用raw helper，绑定`N(N(raw))`；FP32单位化并非严格字节幂等。新techfix=`.../zidtotal1-bindfix1`已完成单一可行性波次并冻结：`MERGE_TECHFIX / 当前P0=0、P1=1；实现目标P0=0、P1=0`。只把repair后的raw teacher传入audit/branch，各消费点单位化一次；bank、BCR权重、prediction、协议和资源必须不变。完整合同见`docs/ADV3B02_TS_DRQKNN_BCRR_R2_AFFINE_BCR2_ZIDTOTAL1_BINDFIX1_DESIGN_FROZEN.md`。
 
 `zidtotal1-bindfix1`现已达到`LOCAL_VERIFIED / NO_PERFORMANCE_RESULT`。`ssr-gpu`下目标与相邻DSSC合计`108 passed、3 Windows POSIX skipped、0 failed`；两个原触发row×3个scene的真实checkpoint support-only smoke为6/6 state与binding通过，query/truth/apply打开0。独立终审=`MERGE / P0=0 / P1=0 / P2=2`；P2只涉及revision header增加9B和后续golden增强，不阻塞新不可覆盖完整125发布。
+
+其新完整125在29个成功row后由两个Stage2-C row触发同一`affine actual branch audit/state drift`并止损，状态=`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`，partial性能未读取。本地support-only分解确认首源是一平面qKNN codec与旧bandwidth精度在小margin处使top1低于0.995；BCR门正常。新revision=`r3-q2f32-bcr2-zidtotal1`固定两INT8平面＋双FP16 bandwidth，已达到`LOCAL_VERIFIED / NO_PERFORMANCE_RESULT`：目标测试`77 passed、3 Windows POSIX skipped`、相邻DSSC`36 passed`，真实checkpoint 12个before/after state的qKNN/BCR top1均为1、翻转0，最大wire=`159,691B`；独立Terra终裁=`MERGE / P0=0 / P1=0`。完整合同见`docs/ADV3B02_TS_DRQKNN_BCRR_R3_Q2F32_BCR2_ZIDTOTAL1_DESIGN_FROZEN.md`。
 
 冻结的域状态使用target-old support构造`S_W-S_B`的固定2槽可靠方向；support与query对每个候选类都减同一`mu_c`，不得混用全局中心；`alpha_K=0.5*(K-1)/K*(rho_1+rho_2)/2`且`0<=alpha<0.5`。`z_dom`只形成类内权重，最终score必须复用基础`z_id`Student-t qKNN的同一INT8 bank、`h_c`、`nu`和kernel。K1或数值异常时逐值回到M0。
 

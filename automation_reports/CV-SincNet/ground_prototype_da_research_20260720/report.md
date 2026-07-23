@@ -2281,3 +2281,13 @@ run=`adv3b02_ts_drqknn_bcrr_r2_affine_bcr2_zidtotal1_full125_21ffdabf_20260723_2
 ##### `bindfix1`完整125预注册
 
 技术修复提交=`00b810006af0d48d457a1afe2a37d6b10d24a4b9`。全新不可覆盖run=`adv3b02_ts_drqknn_bcrr_r2_affine_bcr2_zidtotal1_bindfix1_full125_00b81000_20260724_005555`已建立，状态=`PREREGISTERED / NOT_LAUNCHED / NO_PERFORMANCE_RESULT`。发布源码包SHA=`c64da0582288b39f4f4479cbac078a4d3370fdfe73ea4abe572060cfd5c4d9de`，含3975个safe regular Git blob，path-set SHA=`05a30d6eec75b8faf0972ce3cb36d1e19ef35b40c8b2281275cea0ea464e7fd7`，逐blob不匹配0；method lock SHA继续为`0496594db4a82efbbf17ec3d67ebc3fb1f0c7ced41b542a5a0bde3482e704523`。本run固定GPU0–7完整125和即时健康检查；不得复用parent、重复数据验证或按partial性能早停。
+
+该run最终在submitted38、成功29时由两个Stage2-C row触发`ActualBankBranchState.__post_init__:550`的同一`affine actual branch audit/state drift`并止损；prediction/score=`232/348`只作技术计数，未读取性能，终态进程/GPU/SSH均清零。状态=`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`；`DATA_PROTOCOL=PRESENT_REUSED / NOT_REVALIDATED`。
+
+本地用两触发row的before/after enrollment-only包和真实checkpoint复算，确定一平面codec在160条after support上产生1个小margin翻转，top1=`0.99375`、large flip=`0`，BCR top1=`1.0`、flip=`0`。单独增加residual平面仍失败；固定affine INT8主平面＋INT8 residual平面＋双FP16 class bandwidth后，2 row×3 scene的qKNN top1=`1.0`、large flip=`0`，BCR top1=`1.0`、flip=`0`，最大logit误差`0.00108–0.00181`，额外state最多42,172B。独立监督先`REVISE/P0=1`否决FP32 target sidecar，改为双FP16补偿后终裁=`MERGE/P0=0/P1=0`；新revision=`ADV3B02-TS-DRQKNN-BCRR/r3-q2f32-bcr2-zidtotal1`进入`DESIGN_FROZEN -> IMPLEMENTING`。
+
+##### `r3-q2f32`本地闭合
+
+实现只修改ADV3B02方法模块、正式125 runner revision标识和直接专项测试；DA、BCRR、四臂、K、repair、scorer、矩阵与健康门未改。`ssr-gpu`下目标测试`77 passed、3 Windows POSIX skipped、0 failed`，相邻DSSC`36 passed`，`py_compile`与`git diff --check`通过。独立review发现并闭合一项P1：完整解码bandwidth列表不得作为audit sidecar持久化，现仅保留不可逆SHA和类数；最终裁决=`MERGE / P0=0 / P1=0`。
+
+最新真实checkpoint support-only smoke覆盖两触发row×三scene×before/after共12个state，qKNN与BCR top1均为`1.0`、翻转0，最大qKNN logit误差=`0.001622`，最大实际wire=`159,691B<256KiB`；query/truth/apply打开数与fit query rows均为0。状态=`LOCAL_VERIFIED / NO_PERFORMANCE_RESULT`，下一步只允许Git提交、新不可覆盖run报告和GPU0–7完整125发布。`DATA_PROTOCOL=PRESENT_REUSED / NOT_REVALIDATED`。

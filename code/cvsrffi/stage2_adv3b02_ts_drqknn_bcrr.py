@@ -1,4 +1,4 @@
-"""Support-only ADV3B02 TS-DRQKNN-BCRR/r2-affine primitives.
+"""Support-only ADV3B02 TS-DRQKNN-BCRR/r3-q2f32 primitives.
 
 This module is deliberately a small, typed runtime.  It has no capsule
 builder, truth-side scorer, receiver/TX input, query-label input, optimizer,
@@ -11,7 +11,7 @@ import hashlib
 import json
 import math
 import struct
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from typing import Any, Mapping, Sequence
 
 import numpy as np
@@ -39,20 +39,26 @@ from cvsrffi.stage2_zid_student_t_qknn import (
 )
 
 
-CANDIDATE = "ADV3B02-TS-DRQKNN-BCRR/r2-affine-bcr2-zidtotal1-bindfix1"
-SCHEMA = "cvs.stage2.adv3b02.ts_drqknn_bcrr.r2_affine_bcr2_zidtotal1_bindfix1"
+CANDIDATE = "ADV3B02-TS-DRQKNN-BCRR/r3-q2f32-bcr2-zidtotal1"
+SCHEMA = "cvs.stage2.adv3b02.ts_drqknn_bcrr.r3_q2f32_bcr2_zidtotal1"
 Z_DIM = 160
 RANK = 2
 ARMS = ("M0", "M_DA", "M_OTHER", "M_JOINT")
 SCENES = ("leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak")
 K_VALUES = (1, 5, 10)
 MAX_WIRE_BYTES = 256 * 1024
-APPEND_RECEIPT_SCHEMA = "cvs.stage2.adv3b02.append_receipt.r2_bcr2_zidtotal1_bindfix1"
-ACTUAL_BRANCH_SCHEMA = "cvs.stage2.adv3b02.actual_bank_branch.r2_affine_bcr2_zidtotal1_bindfix1"
+APPEND_RECEIPT_SCHEMA = "cvs.stage2.adv3b02.append_receipt.r3_q2f32_bcr2_zidtotal1"
+ACTUAL_BRANCH_SCHEMA = "cvs.stage2.adv3b02.actual_bank_branch.r3_q2f32_bcr2_zidtotal1"
 ZID_REPAIR_SCHEMA = "cvs.stage2.adv3b02.zid_repair_receipt.v1"
 ZID_REPAIR_RULE = "finite_exact_zero_singleton_class_medoid_v1"
-AFFINE_BANK_SCHEMA = "cvs.stage2.adv3b02.affine_int8_bank.r2"
-AFFINE_WIRE_SCHEMA = "cvs.stage2.adv3b02.affine_int8_wire.r2"
+AFFINE_BANK_SCHEMA = "cvs.stage2.adv3b02.affine_int8_bank.r3_q2f32"
+AFFINE_WIRE_SCHEMA = "cvs.stage2.adv3b02.affine_int8_wire.r3_q2f32"
+SUPPORT_CODEC = "affine_int8_fp16_scale_offset_plus_symmetric_int8_fp16_residual_v1"
+SUPPORT_PLANE_ORDER = ("affine_base", "symmetric_residual")
+SUPPORT_ROUNDING = "numpy_rint_ties_to_even"
+SUPPORT_CLIP = (-127, 127)
+SUPPORT_RESIDUAL_SCALE_FLOOR = float(np.finfo(np.float16).smallest_subnormal)
+CLASS_BANDWIDTH_CODEC = "fp16_hi_plus_fp16_lo_v1"
 BCR_WEIGHT_CODEC = "fixed_two_plane_per_class_symmetric_int8_fp16_scale_v1"
 BCR_WEIGHT_PLANE_ORDER = ("plane1_teacher", "plane2_residual_after_plane1_decode")
 BCR_WEIGHT_CODE_DTYPE = "int8"
@@ -150,7 +156,9 @@ def _affine_quantize_rows(value: np.ndarray) -> tuple[np.ndarray, np.ndarray, np
     return np.ascontiguousarray(codes), np.ascontiguousarray(scales), np.ascontiguousarray(offsets)
 
 
-def _affine_dequantize_rows(codes: np.ndarray, scales: np.ndarray, offsets: np.ndarray) -> np.ndarray:
+def _affine_decode_base_rows(
+    codes: np.ndarray, scales: np.ndarray, offsets: np.ndarray
+) -> np.ndarray:
     if (codes.dtype != np.int8 or codes.ndim != 2 or codes.shape[1] != Z_DIM
             or scales.dtype != np.dtype("<f2") or offsets.dtype != np.dtype("<f2")
             or scales.shape != (len(codes),) or offsets.shape != (len(codes),)
@@ -160,7 +168,110 @@ def _affine_dequantize_rows(codes: np.ndarray, scales: np.ndarray, offsets: np.n
     decoded = codes.astype(np.float32) * scales.astype(np.float32)[:, None] + offsets.astype(np.float32)[:, None]
     if not np.isfinite(decoded).all():
         raise ADV3B02StateError("affine INT8 decoded support is nonfinite")
-    return _unit(decoded)
+    return np.ascontiguousarray(decoded)
+
+
+def _quantize_support_residual(
+    residual: np.ndarray,
+) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    value = _rows(np.asarray(residual), name="affine support residual")
+    scales = np.asarray(
+        np.maximum(
+            np.max(np.abs(value), axis=1) / 127.0,
+            SUPPORT_RESIDUAL_SCALE_FLOOR,
+        ),
+        dtype="<f2",
+    )
+    if (
+        scales.shape != (len(value),)
+        or not np.isfinite(scales).all()
+        or np.any(scales < np.float16(SUPPORT_RESIDUAL_SCALE_FLOOR))
+    ):
+        raise ADV3B02StateError("support residual FP16 scale closure failed")
+    codes = np.clip(
+        np.rint(value / scales.astype(np.float32)[:, None]),
+        SUPPORT_CLIP[0],
+        SUPPORT_CLIP[1],
+    ).astype(np.int8)
+    decoded = codes.astype(np.float32) * scales.astype(np.float32)[:, None]
+    return (
+        np.ascontiguousarray(codes),
+        np.ascontiguousarray(scales),
+        np.ascontiguousarray(decoded),
+    )
+
+
+def _affine_quantize_rows_two_plane(
+    value: np.ndarray,
+) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+    raw = _rows(value, name="two-plane affine z_id support")
+    teacher = _unit(raw)
+    codes, scales, offsets = _affine_quantize_rows(raw)
+    base = _affine_decode_base_rows(codes, scales, offsets)
+    residual_codes, residual_scales, _ = _quantize_support_residual(
+        np.asarray(teacher - base, np.float32)
+    )
+    return codes, scales, offsets, residual_codes, residual_scales
+
+
+def _affine_dequantize_rows(
+    codes: np.ndarray,
+    scales: np.ndarray,
+    offsets: np.ndarray,
+    residual_codes: np.ndarray,
+    residual_scales: np.ndarray,
+) -> np.ndarray:
+    base = _affine_decode_base_rows(codes, scales, offsets)
+    if (
+        residual_codes.dtype != np.int8
+        or residual_codes.shape != base.shape
+        or residual_scales.dtype != np.dtype("<f2")
+        or residual_scales.shape != (len(base),)
+        or np.any(residual_codes == np.int8(-128))
+        or not np.isfinite(residual_scales).all()
+        or np.any(residual_scales < np.float16(SUPPORT_RESIDUAL_SCALE_FLOOR))
+    ):
+        raise ADV3B02StateError("support residual INT8 row state shape/dtype drift")
+    deployed = np.asarray(
+        base
+        + residual_codes.astype(np.float32)
+        * residual_scales.astype(np.float32)[:, None],
+        np.float32,
+    )
+    if not np.isfinite(deployed).all():
+        raise ADV3B02StateError("two-plane affine INT8 decode became nonfinite")
+    return _unit(deployed)
+
+
+def _split_class_bandwidths(value: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+    raw = np.asarray(value, np.float32)
+    if raw.ndim != 1 or not len(raw) or not np.isfinite(raw).all() or np.any(raw <= 0.0):
+        raise ADV3B02StateError("raw class bandwidth must be finite positive [C]")
+    hi = np.asarray(raw, dtype="<f2")
+    lo = np.asarray(raw - hi.astype(np.float32), dtype="<f2")
+    _reconstruct_class_bandwidths(hi, lo)
+    return np.ascontiguousarray(hi), np.ascontiguousarray(lo)
+
+
+def _reconstruct_class_bandwidths(
+    hi: np.ndarray, lo: np.ndarray
+) -> np.ndarray:
+    if (
+        hi.dtype != np.dtype("<f2")
+        or lo.dtype != np.dtype("<f2")
+        or hi.ndim != 1
+        or lo.shape != hi.shape
+        or not len(hi)
+        or not np.isfinite(hi).all()
+        or not np.isfinite(lo).all()
+    ):
+        raise ADV3B02StateError("dual-FP16 class bandwidth state drift")
+    deployed = np.asarray(
+        hi.astype(np.float32) + lo.astype(np.float32), np.float32
+    )
+    if not np.isfinite(deployed).all() or np.any(deployed <= 0.0):
+        raise ADV3B02StateError("dual-FP16 class bandwidth decode failed")
+    return np.ascontiguousarray(deployed)
 
 
 def _quantize_bcr_weight_plane(
@@ -395,15 +506,18 @@ def _validate_repaired_support_for_state(
 
 @dataclass(frozen=True)
 class AffineINT8ZIDSupportBank:
-    """Candidate-local r2 support bank.  No symmetric-codec object is usable at runtime."""
+    """Candidate-local fixed two-plane support bank."""
 
     classes: tuple[str, ...]
     support_counts: tuple[int, ...]
     codes_qint8: np.ndarray
     scales_fp16: np.ndarray
     offsets_fp16: np.ndarray
+    residual_codes_qint8: np.ndarray
+    residual_scales_fp16: np.ndarray
     class_indices_int16: np.ndarray
-    class_scales_fp16: np.ndarray
+    class_scale_hi_fp16: np.ndarray
+    class_scale_lo_fp16: np.ndarray
     active_k: int
     config: Phase1ZIDStudentTLock
     config_lock_digest: str
@@ -421,15 +535,26 @@ class AffineINT8ZIDSupportBank:
                 or self.scales_fp16.dtype != np.dtype("<f2")
                 or self.offsets_fp16.dtype != np.dtype("<f2")
                 or self.scales_fp16.shape != (n,) or self.offsets_fp16.shape != (n,)
+                or self.residual_codes_qint8.dtype != np.int8
+                or self.residual_codes_qint8.shape != (n, Z_DIM)
+                or self.residual_scales_fp16.dtype != np.dtype("<f2")
+                or self.residual_scales_fp16.shape != (n,)
                 or self.class_indices_int16.dtype != np.dtype("<i2")
                 or self.class_indices_int16.shape != (n,)
-                or self.class_scales_fp16.dtype != np.dtype("<f2")
-                or self.class_scales_fp16.shape != (len(self.classes),)
+                or self.class_scale_hi_fp16.dtype != np.dtype("<f2")
+                or self.class_scale_lo_fp16.dtype != np.dtype("<f2")
+                or self.class_scale_hi_fp16.shape != (len(self.classes),)
+                or self.class_scale_lo_fp16.shape != (len(self.classes),)
                 or np.any(self.codes_qint8 == np.int8(-128))
+                or np.any(self.residual_codes_qint8 == np.int8(-128))
                 or not np.isfinite(self.scales_fp16).all() or np.any(self.scales_fp16 <= 0.0)
-                or not np.isfinite(self.offsets_fp16).all() or not np.isfinite(self.class_scales_fp16).all()
-                or np.any(self.class_scales_fp16 <= 0.0)):
+                or not np.isfinite(self.offsets_fp16).all()
+                or not np.isfinite(self.residual_scales_fp16).all()
+                or np.any(self.residual_scales_fp16 < np.float16(SUPPORT_RESIDUAL_SCALE_FLOOR))):
             raise ADV3B02StateError("affine bank invariant drift")
+        _reconstruct_class_bandwidths(
+            self.class_scale_hi_fp16, self.class_scale_lo_fp16
+        )
         counts = tuple(int(np.sum(self.class_indices_int16 == i)) for i in range(len(self.classes)))
         if (counts != self.support_counts or any(v != self.active_k for v in counts)
                 or np.any(self.class_indices_int16 < 0) or np.any(self.class_indices_int16 >= len(self.classes))):
@@ -445,14 +570,27 @@ class AffineINT8ZIDSupportBank:
     def support_row_count(self) -> int:
         return len(self.codes_qint8)
 
+    def deployed_class_scales(self) -> np.ndarray:
+        return _reconstruct_class_bandwidths(
+            self.class_scale_hi_fp16, self.class_scale_lo_fp16
+        )
+
 
 def _affine_bank_payload(bank: AffineINT8ZIDSupportBank) -> dict[str, Any]:
-    return {"schema": AFFINE_BANK_SCHEMA, "classes": list(bank.classes), "support_counts": list(bank.support_counts),
+    return {"schema": AFFINE_BANK_SCHEMA, "support_codec": SUPPORT_CODEC,
+            "support_plane_order": list(SUPPORT_PLANE_ORDER),
+            "support_rounding": SUPPORT_ROUNDING, "support_clip": list(SUPPORT_CLIP),
+            "support_residual_scale_floor": SUPPORT_RESIDUAL_SCALE_FLOOR,
+            "class_bandwidth_codec": CLASS_BANDWIDTH_CODEC,
+            "classes": list(bank.classes), "support_counts": list(bank.support_counts),
             "codes_sha256": sha256_bytes(np.ascontiguousarray(bank.codes_qint8).tobytes()),
             "scales_sha256": sha256_bytes(np.ascontiguousarray(bank.scales_fp16).tobytes()),
             "offsets_sha256": sha256_bytes(np.ascontiguousarray(bank.offsets_fp16).tobytes()),
+            "residual_codes_sha256": sha256_bytes(np.ascontiguousarray(bank.residual_codes_qint8).tobytes()),
+            "residual_scales_sha256": sha256_bytes(np.ascontiguousarray(bank.residual_scales_fp16).tobytes()),
             "class_indices_sha256": sha256_bytes(np.ascontiguousarray(bank.class_indices_int16).tobytes()),
-            "class_scales_sha256": sha256_bytes(np.ascontiguousarray(bank.class_scales_fp16).tobytes()),
+            "class_scale_hi_sha256": sha256_bytes(np.ascontiguousarray(bank.class_scale_hi_fp16).tobytes()),
+            "class_scale_lo_sha256": sha256_bytes(np.ascontiguousarray(bank.class_scale_lo_fp16).tobytes()),
             "active_k": bank.active_k, "config_lock_digest": bank.config_lock_digest,
             "quantization_audit": dict(bank.quantization_audit), "query_rows_used_for_fit": 0}
 
@@ -469,15 +607,22 @@ def _serialize_affine_bank(bank: AffineINT8ZIDSupportBank) -> bytes:
                      "config_lock_digest": bank.config_lock_digest, "bank_receipt_sha256": bank.bank_receipt_sha256,
                      "quantization_audit": dict(bank.quantization_audit), "query_state_updates": 0,
                      "endianness": "little"})
-    arrays = ("codes_qint8", bank.codes_qint8.astype("|i1"), "scales_fp16", bank.scales_fp16.astype("<f2"),
-              "offsets_fp16", bank.offsets_fp16.astype("<f2"), "class_indices_int16", bank.class_indices_int16.astype("<i2"),
-              "class_scales_fp16", bank.class_scales_fp16.astype("<f2"))
-    return b"ADV3B02A2\0" + struct.pack("<I", len(header)) + header + b"".join(_affine_wire_array(arrays[i], arrays[i + 1]) for i in range(0, len(arrays), 2))
+    arrays = (
+        "codes_qint8", bank.codes_qint8.astype("|i1"),
+        "scales_fp16", bank.scales_fp16.astype("<f2"),
+        "offsets_fp16", bank.offsets_fp16.astype("<f2"),
+        "residual_codes_qint8", bank.residual_codes_qint8.astype("|i1"),
+        "residual_scales_fp16", bank.residual_scales_fp16.astype("<f2"),
+        "class_indices_int16", bank.class_indices_int16.astype("<i2"),
+        "class_scale_hi_fp16", bank.class_scale_hi_fp16.astype("<f2"),
+        "class_scale_lo_fp16", bank.class_scale_lo_fp16.astype("<f2"),
+    )
+    return b"ADV3B02A3\0" + struct.pack("<I", len(header)) + header + b"".join(_affine_wire_array(arrays[i], arrays[i + 1]) for i in range(0, len(arrays), 2))
 
 
 def _decode_affine_wire(wire: bytes, bank: AffineINT8ZIDSupportBank) -> np.ndarray:
     """Fail-closed little-endian decode used by every deployed qKNN score."""
-    if type(wire) is not bytes or not wire.startswith(b"ADV3B02A2\0") or len(wire) < 14:
+    if type(wire) is not bytes or not wire.startswith(b"ADV3B02A3\0") or len(wire) < 14:
         raise ADV3B02StateError("affine wire magic/truncation drift")
     header_size = struct.unpack("<I", wire[10:14])[0]
     if 14 + header_size >= len(wire):
@@ -490,9 +635,16 @@ def _decode_affine_wire(wire: bytes, bank: AffineINT8ZIDSupportBank) -> np.ndarr
             or header.get("bank_receipt_sha256") != bank.bank_receipt_sha256
             or tuple(header.get("classes", ())) != bank.classes):
         raise ADV3B02StateError("affine wire header binding drift")
-    cursor = 14 + header_size; expected = (("codes_qint8", "|i1", bank.codes_qint8.shape),
-        ("scales_fp16", "<f2", bank.scales_fp16.shape), ("offsets_fp16", "<f2", bank.offsets_fp16.shape),
-        ("class_indices_int16", "<i2", bank.class_indices_int16.shape), ("class_scales_fp16", "<f2", bank.class_scales_fp16.shape))
+    cursor = 14 + header_size; expected = (
+        ("codes_qint8", "|i1", bank.codes_qint8.shape),
+        ("scales_fp16", "<f2", bank.scales_fp16.shape),
+        ("offsets_fp16", "<f2", bank.offsets_fp16.shape),
+        ("residual_codes_qint8", "|i1", bank.residual_codes_qint8.shape),
+        ("residual_scales_fp16", "<f2", bank.residual_scales_fp16.shape),
+        ("class_indices_int16", "<i2", bank.class_indices_int16.shape),
+        ("class_scale_hi_fp16", "<f2", bank.class_scale_hi_fp16.shape),
+        ("class_scale_lo_fp16", "<f2", bank.class_scale_lo_fp16.shape),
+    )
     fields: dict[str, np.ndarray] = {}
     for name, dtype, shape in expected:
         if cursor + 2 > len(wire): raise ADV3B02StateError("affine wire field truncation")
@@ -508,10 +660,20 @@ def _decode_affine_wire(wire: bytes, bank: AffineINT8ZIDSupportBank) -> np.ndarr
         fields[name] = np.frombuffer(wire[cursor:cursor + payload_size], dtype=np.dtype(dtype)).reshape(shape).copy(); cursor += payload_size
     if cursor != len(wire): raise ADV3B02StateError("affine wire trailing bytes drift")
     if (not np.array_equal(fields["codes_qint8"], bank.codes_qint8) or not np.array_equal(fields["scales_fp16"], bank.scales_fp16)
-            or not np.array_equal(fields["offsets_fp16"], bank.offsets_fp16) or not np.array_equal(fields["class_indices_int16"], bank.class_indices_int16)
-            or not np.array_equal(fields["class_scales_fp16"], bank.class_scales_fp16)):
+            or not np.array_equal(fields["offsets_fp16"], bank.offsets_fp16)
+            or not np.array_equal(fields["residual_codes_qint8"], bank.residual_codes_qint8)
+            or not np.array_equal(fields["residual_scales_fp16"], bank.residual_scales_fp16)
+            or not np.array_equal(fields["class_indices_int16"], bank.class_indices_int16)
+            or not np.array_equal(fields["class_scale_hi_fp16"], bank.class_scale_hi_fp16)
+            or not np.array_equal(fields["class_scale_lo_fp16"], bank.class_scale_lo_fp16)):
         raise ADV3B02StateError("affine serialized bytes/bank mismatch")
-    return _affine_dequantize_rows(fields["codes_qint8"], fields["scales_fp16"], fields["offsets_fp16"])
+    return _affine_dequantize_rows(
+        fields["codes_qint8"],
+        fields["scales_fp16"],
+        fields["offsets_fp16"],
+        fields["residual_codes_qint8"],
+        fields["residual_scales_fp16"],
+    )
 
 
 @dataclass(frozen=True)
@@ -678,9 +840,11 @@ def _score_support(*, support: np.ndarray, indices: np.ndarray, counts: tuple[in
 
 
 def _score_affine_bank(bank: AffineINT8ZIDSupportBank, query: np.ndarray) -> np.ndarray:
-    return _score_support(support=_affine_dequantize_rows(bank.codes_qint8, bank.scales_fp16, bank.offsets_fp16),
+    return _score_support(support=_affine_dequantize_rows(
+                              bank.codes_qint8, bank.scales_fp16, bank.offsets_fp16,
+                              bank.residual_codes_qint8, bank.residual_scales_fp16),
                           indices=bank.class_indices_int16, counts=bank.support_counts,
-                          class_scales=bank.class_scales_fp16, query=query, config=bank.config)
+                          class_scales=bank.deployed_class_scales(), query=query, config=bank.config)
 
 
 def _affine_margin_audit(bank: AffineINT8ZIDSupportBank, teacher_support: np.ndarray,
@@ -709,15 +873,19 @@ def _affine_margin_audit(bank: AffineINT8ZIDSupportBank, teacher_support: np.nda
     # not merely the teacher winner/runner-up pair reversing.
     any_flip = np.argmax(fp, axis=1) != np.argmax(deployed, axis=1)
     large_flip = any_flip & (margin > 2.0 * maxerr)
-    return {"schema": "cvs.phase2.zid_student_t_qknn.margin_audit.v2_affine", "validation_row_count": int(len(fp)),
+    bank_scales = bank.deployed_class_scales()
+    return {"schema": "cvs.phase2.zid_student_t_qknn.margin_audit.v3_q2f32", "validation_row_count": int(len(fp)),
             "logit_abs_error_mean": float(np.mean(np.abs(fp - deployed))), "logit_abs_error_max": float(np.max(np.abs(fp - deployed))),
             "top1_agreement": float(np.mean(np.argmax(fp, axis=1) == np.argmax(deployed, axis=1))),
             "teacher_margin_mean": float(np.mean(margin)), "quantized_teacher_margin_mean": float(np.mean(deployment_margin)),
             "any_margin_flip_count": int(np.sum(any_flip)), "any_margin_flip_rate": float(np.mean(any_flip)),
             "large_margin_flip_count": int(np.sum(large_flip)), "large_margin_flip_rate": float(np.mean(large_flip)),
             "fp32_teacher_bandwidth_source": "complete_unquantized_FP32_all_support", "fp32_teacher_support_sha256": sha256_bytes(np.ascontiguousarray(teacher.astype(np.float32)).tobytes()),
-            "int8_bank_class_scales": [float(v) for v in bank.class_scales_fp16],
-            "teacher_bank_bandwidth_abs_delta_max": float(np.max(np.abs(tscale - bank.class_scales_fp16.astype(np.float64)))),
+            "int8_bank_class_scales_sha256": sha256_bytes(
+                np.ascontiguousarray(bank_scales.astype("<f4")).tobytes()
+            ),
+            "int8_bank_class_scale_count": int(len(bank_scales)),
+            "teacher_bank_bandwidth_abs_delta_max": float(np.max(np.abs(tscale - bank_scales.astype(np.float64)))),
             "query_rows_used_for_fit": 0, "state_updates": 0}
 
 
@@ -732,7 +900,13 @@ def _make_actual_branch(bank: AffineINT8ZIDSupportBank, metric: TypedSharedPSDMe
         labels=labels, classes=tuple(sorted(bank.classes)), tokens=tokens,
         require_output_support_sha256=False,
     )
-    decoded = _affine_dequantize_rows(bank.codes_qint8, bank.scales_fp16, bank.offsets_fp16).astype(np.float64)
+    decoded = _affine_dequantize_rows(
+        bank.codes_qint8,
+        bank.scales_fp16,
+        bank.offsets_fp16,
+        bank.residual_codes_qint8,
+        bank.residual_scales_fp16,
+    ).astype(np.float64)
     weights, analytic_loo, lam, _ = _existing_bcr_ridge_fit_and_loo(decoded, bank.class_indices_int16, bank.active_k)
     wc, ws, rwc, rws, dw = _quantize_bcr_weights_two_plane(weights)
     bcr_teacher_logits = _unit(raw_teacher).astype(np.float64) @ weights
@@ -827,19 +1001,41 @@ def build_int8_qknn_state(features: np.ndarray, labels: Sequence[Any] | np.ndarr
     ordered_labels = tuple(labs[i] for i in positions)
     ordered_tokens = tuple(tokens[i] for i in positions)
     indices = np.asarray([canonical_classes.index(v) for v in ordered_labels], dtype="<i2")
-    codes, scales, offsets = _affine_quantize_rows(ordered_unit)
-    decoded = _affine_dequantize_rows(codes, scales, offsets)
-    class_scales = np.asarray(_existing_identity_class_scales(decoded, indices, len(canonical_classes), lock), dtype="<f2")
+    codes, scales, offsets, residual_codes, residual_scales = (
+        _affine_quantize_rows_two_plane(ordered_raw)
+    )
+    raw_class_scales = np.asarray(
+        _existing_identity_class_scales(
+            ordered_unit, indices, len(canonical_classes), lock
+        ),
+        np.float32,
+    )
+    class_scale_hi, class_scale_lo = _split_class_bandwidths(raw_class_scales)
     counts = tuple(int(np.sum(indices == i)) for i in range(len(canonical_classes)))
-    quantization = {"schema": AFFINE_BANK_SCHEMA, "codec": "affine_int8_code_fp16_scale_fp16_offset",
+    quantization = {"schema": AFFINE_BANK_SCHEMA, "codec": SUPPORT_CODEC,
+                    "plane_order": list(SUPPORT_PLANE_ORDER),
+                    "rounding": SUPPORT_ROUNDING, "clip": list(SUPPORT_CLIP),
+                    "residual_scale_floor": SUPPORT_RESIDUAL_SCALE_FLOOR,
+                    "class_bandwidth_codec": CLASS_BANDWIDTH_CODEC,
                     "support_only": True, "query_rows_used_for_fit": 0,
                     "codes_sha256": sha256_bytes(codes.tobytes()), "scales_sha256": sha256_bytes(scales.tobytes()),
-                    "offsets_sha256": sha256_bytes(offsets.tobytes()), "endianness": "little"}
-    seed_bank = AffineINT8ZIDSupportBank(canonical_classes, counts, codes, scales, offsets, indices, class_scales,
-                                         k_shot, lock, lock.lock_digest, quantization, "0" * 64)
+                    "offsets_sha256": sha256_bytes(offsets.tobytes()),
+                    "residual_codes_sha256": sha256_bytes(residual_codes.tobytes()),
+                    "residual_scales_sha256": sha256_bytes(residual_scales.tobytes()),
+                    "class_scale_hi_sha256": sha256_bytes(class_scale_hi.tobytes()),
+                    "class_scale_lo_sha256": sha256_bytes(class_scale_lo.tobytes()),
+                    "endianness": "little"}
+    seed_bank = AffineINT8ZIDSupportBank(
+        canonical_classes, counts, codes, scales, offsets, residual_codes,
+        residual_scales, indices, class_scale_hi, class_scale_lo, k_shot, lock,
+        lock.lock_digest, quantization, "0" * 64,
+    )
     receipt = sha256_bytes(_canon(_affine_bank_payload(seed_bank)))
-    bank = AffineINT8ZIDSupportBank(canonical_classes, counts, codes, scales, offsets, indices, class_scales,
-                                    k_shot, lock, lock.lock_digest, quantization, receipt)
+    bank = AffineINT8ZIDSupportBank(
+        canonical_classes, counts, codes, scales, offsets, residual_codes,
+        residual_scales, indices, class_scale_hi, class_scale_lo, k_shot, lock,
+        lock.lock_digest, quantization, receipt,
+    )
     metric = identity_shared_psd_metric(config=lock)
     wire = _serialize_affine_bank(bank)
     audit = _affine_margin_audit(
@@ -853,7 +1049,7 @@ def build_int8_qknn_state(features: np.ndarray, labels: Sequence[Any] | np.ndarr
 
 def qknn_logits(state: Int8QKNNState, query_zid: np.ndarray) -> np.ndarray:
     canonical = _score_support(support=state.features(), indices=state.bank.class_indices_int16,
-                               counts=state.bank.support_counts, class_scales=state.bank.class_scales_fp16,
+                               counts=state.bank.support_counts, class_scales=state.bank.deployed_class_scales(),
                                query=_rows(query_zid, name="query z_id"), config=state.bank.config)
     return canonical[:, np.asarray([state.bank.classes.index(item) for item in state.classes], np.intp)]
 
@@ -1067,33 +1263,66 @@ def _append_bank(old: Int8QKNNState, new_zid: np.ndarray, new_labels: tuple[str,
     if _balanced_k(new_labels, new_classes) != old.k_shot:
         raise ADV3B02StateError("Stage2-C new support K differs from frozen old state")
     classes = old.classes + new_classes
-    all_bank_classes = tuple(sorted(old.bank.classes + tuple(new_classes)))
+    all_bank_classes = old.bank.classes + tuple(sorted(new_classes))
     old_labels = tuple(old.bank.classes[int(i)] for i in old.bank.class_indices_int16.tolist())
     order = sorted(range(len(new_tokens)), key=lambda i: (new_labels[i], new_tokens[i]))
-    new_codes, new_scales, new_offsets = _affine_quantize_rows(new[np.asarray(order, np.intp)])
+    new_ordered_raw = np.ascontiguousarray(new[np.asarray(order, np.intp)])
+    new_codes, new_scales, new_offsets, new_residual_codes, new_residual_scales = (
+        _affine_quantize_rows_two_plane(new_ordered_raw)
+    )
     labels = old_labels + tuple(new_labels[i] for i in order)
     tokens = old.support_tokens + tuple(new_tokens[i] for i in order)
+    if set(complete_teacher_by_token) != set(tokens):
+        raise ADV3B02StateError("Stage2-C complete FP32 teacher/token closure drift")
+    teacher = np.stack(
+        [complete_teacher_by_token[token] for token in tokens]
+    ).astype(np.float32)
+    teacher_unit = _unit(teacher)
     indices = np.asarray([all_bank_classes.index(v) for v in labels], dtype="<i2")
     codes = np.concatenate((old.bank.codes_qint8, new_codes), axis=0)
     scales = np.concatenate((old.bank.scales_fp16, new_scales), axis=0).astype("<f2")
     offsets = np.concatenate((old.bank.offsets_fp16, new_offsets), axis=0).astype("<f2")
+    residual_codes = np.concatenate(
+        (old.bank.residual_codes_qint8, new_residual_codes), axis=0
+    ).astype(np.int8)
+    residual_scales = np.concatenate(
+        (old.bank.residual_scales_fp16, new_residual_scales), axis=0
+    ).astype("<f2")
     counts = tuple(int(np.sum(indices == i)) for i in range(len(all_bank_classes)))
-    decoded = _affine_dequantize_rows(codes, scales, offsets)
-    cscale = np.asarray(_existing_identity_class_scales(decoded, indices, len(all_bank_classes), old.bank.config), dtype="<f2")
-    # Class bandwidth depends only on within-class supports; keep the sealed old prefix exact.
-    for item in old.bank.classes:
-        cscale[all_bank_classes.index(item)] = old.bank.class_scales_fp16[old.bank.classes.index(item)]
-    quant = {"schema": AFFINE_BANK_SCHEMA, "codec": "affine_int8_code_fp16_scale_fp16_offset", "support_only": True,
+    raw_class_scales = np.asarray(
+        _existing_identity_class_scales(
+            teacher_unit, indices, len(all_bank_classes), old.bank.config
+        ),
+        np.float32,
+    )
+    class_scale_hi, class_scale_lo = _split_class_bandwidths(raw_class_scales)
+    old_class_count = len(old.bank.classes)
+    class_scale_hi[:old_class_count] = old.bank.class_scale_hi_fp16
+    class_scale_lo[:old_class_count] = old.bank.class_scale_lo_fp16
+    quant = {"schema": AFFINE_BANK_SCHEMA, "codec": SUPPORT_CODEC,
+             "plane_order": list(SUPPORT_PLANE_ORDER),
+             "rounding": SUPPORT_ROUNDING, "clip": list(SUPPORT_CLIP),
+             "residual_scale_floor": SUPPORT_RESIDUAL_SCALE_FLOOR,
+             "class_bandwidth_codec": CLASS_BANDWIDTH_CODEC, "support_only": True,
              "query_rows_used_for_fit": 0, "codes_sha256": sha256_bytes(codes.tobytes()), "scales_sha256": sha256_bytes(scales.tobytes()),
-             "offsets_sha256": sha256_bytes(offsets.tobytes()), "endianness": "little"}
-    provisional = AffineINT8ZIDSupportBank(all_bank_classes, counts, codes, scales, offsets, indices, cscale, old.k_shot, old.bank.config,
-                                           old.bank.config_lock_digest, quant, "0" * 64)
-    bank = AffineINT8ZIDSupportBank(all_bank_classes, counts, codes, scales, offsets, indices, cscale, old.k_shot, old.bank.config,
-                                    old.bank.config_lock_digest, quant, sha256_bytes(_canon(_affine_bank_payload(provisional))))
+             "offsets_sha256": sha256_bytes(offsets.tobytes()),
+             "residual_codes_sha256": sha256_bytes(residual_codes.tobytes()),
+             "residual_scales_sha256": sha256_bytes(residual_scales.tobytes()),
+             "class_scale_hi_sha256": sha256_bytes(class_scale_hi.tobytes()),
+             "class_scale_lo_sha256": sha256_bytes(class_scale_lo.tobytes()),
+             "endianness": "little"}
+    provisional = AffineINT8ZIDSupportBank(
+        all_bank_classes, counts, codes, scales, offsets, residual_codes,
+        residual_scales, indices, class_scale_hi, class_scale_lo, old.k_shot,
+        old.bank.config, old.bank.config_lock_digest, quant, "0" * 64,
+    )
+    bank = replace(
+        provisional,
+        bank_receipt_sha256=sha256_bytes(
+            _canon(_affine_bank_payload(provisional))
+        ),
+    )
     wire = _serialize_affine_bank(bank)
-    if set(complete_teacher_by_token) != set(tokens):
-        raise ADV3B02StateError("Stage2-C complete FP32 teacher/token closure drift")
-    teacher = np.stack([complete_teacher_by_token[token] for token in tokens]).astype(np.float32)
     audit = _affine_margin_audit(bank, teacher, labels, teacher)
     branch = _make_actual_branch(bank, old.metric, wire, teacher, labels, tokens, audit,
                                  support_repair_receipt)
@@ -1101,8 +1330,12 @@ def _append_bank(old: Int8QKNNState, new_zid: np.ndarray, new_labels: tuple[str,
     n = old.bank.support_row_count
     if (not np.array_equal(result.bank.codes_qint8[:n], old.bank.codes_qint8)
             or not np.array_equal(result.bank.scales_fp16[:n], old.bank.scales_fp16)
-            or not np.array_equal(result.bank.offsets_fp16[:n], old.bank.offsets_fp16)):
-        raise ADV3B02StateError("Stage2-C changed frozen affine old INT8 bytes")
+            or not np.array_equal(result.bank.offsets_fp16[:n], old.bank.offsets_fp16)
+            or not np.array_equal(result.bank.residual_codes_qint8[:n], old.bank.residual_codes_qint8)
+            or not np.array_equal(result.bank.residual_scales_fp16[:n], old.bank.residual_scales_fp16)
+            or not np.array_equal(result.bank.class_scale_hi_fp16[:old_class_count], old.bank.class_scale_hi_fp16)
+            or not np.array_equal(result.bank.class_scale_lo_fp16[:old_class_count], old.bank.class_scale_lo_fp16)):
+        raise ADV3B02StateError("Stage2-C changed frozen two-plane old INT8 bytes")
     return result
 
 
@@ -1152,7 +1385,8 @@ _QKNN_MARGIN_AUDIT_FIELDS = {
     "large_margin_flip_rate",
     "fp32_teacher_bandwidth_source",
     "fp32_teacher_support_sha256",
-    "int8_bank_class_scales",
+    "int8_bank_class_scales_sha256",
+    "int8_bank_class_scale_count",
     "teacher_bank_bandwidth_abs_delta_max",
     "query_rows_used_for_fit",
     "state_updates",
@@ -1177,12 +1411,21 @@ _APPEND_RECEIPT_FIELDS = {
     "old_int8_scales_sha256_after",
     "old_int8_offsets_sha256_before",
     "old_int8_offsets_sha256_after",
-    "old_int8_class_scales_sha256_before",
-    "old_int8_class_scales_sha256_after",
+    "old_int8_residual_codes_sha256_before",
+    "old_int8_residual_codes_sha256_after",
+    "old_int8_residual_scales_sha256_before",
+    "old_int8_residual_scales_sha256_after",
+    "old_int8_class_scale_hi_sha256_before",
+    "old_int8_class_scale_hi_sha256_after",
+    "old_int8_class_scale_lo_sha256_before",
+    "old_int8_class_scale_lo_sha256_after",
     "old_int8_codes_preserved",
     "old_int8_scales_preserved",
     "old_int8_offsets_preserved",
-    "old_int8_class_scales_preserved",
+    "old_int8_residual_codes_preserved",
+    "old_int8_residual_scales_preserved",
+    "old_int8_class_scale_hi_preserved",
+    "old_int8_class_scale_lo_preserved",
     "old_q_sha256_before",
     "old_q_sha256_after",
     "old_a_sha256_before",
@@ -1222,7 +1465,7 @@ def verify_stage2_c_append_receipt(
         type(audit) is not dict
         or set(audit) != _QKNN_MARGIN_AUDIT_FIELDS
         or audit.get("schema")
-        != "cvs.phase2.zid_student_t_qknn.margin_audit.v2_affine"
+        != "cvs.phase2.zid_student_t_qknn.margin_audit.v3_q2f32"
         or type(value["after_support_row_count"]) is not int
         or value["after_support_row_count"] <= 0
         or audit.get("validation_row_count")
@@ -1233,8 +1476,7 @@ def verify_stage2_c_append_receipt(
         or audit.get("large_margin_flip_count") != 0
         or type(value["after_class_count"]) is not int
         or value["after_class_count"] < 2
-        or len(audit.get("int8_bank_class_scales", ()))
-        != value["after_class_count"]
+        or audit.get("int8_bank_class_scale_count") != value["after_class_count"]
         or value["after_int8_audit_sha256"] != sha256_bytes(_canon(audit))
     ):
         raise ADV3B02StateError("Stage2-C actual after-bank audit drift")
@@ -1244,8 +1486,20 @@ def verify_stage2_c_append_receipt(
         ("old_int8_scales_sha256_before", "old_int8_scales_sha256_after"),
         ("old_int8_offsets_sha256_before", "old_int8_offsets_sha256_after"),
         (
-            "old_int8_class_scales_sha256_before",
-            "old_int8_class_scales_sha256_after",
+            "old_int8_residual_codes_sha256_before",
+            "old_int8_residual_codes_sha256_after",
+        ),
+        (
+            "old_int8_residual_scales_sha256_before",
+            "old_int8_residual_scales_sha256_after",
+        ),
+        (
+            "old_int8_class_scale_hi_sha256_before",
+            "old_int8_class_scale_hi_sha256_after",
+        ),
+        (
+            "old_int8_class_scale_lo_sha256_before",
+            "old_int8_class_scale_lo_sha256_after",
         ),
         ("old_q_sha256_before", "old_q_sha256_after"),
         ("old_a_sha256_before", "old_a_sha256_after"),
@@ -1260,7 +1514,10 @@ def verify_stage2_c_append_receipt(
         or value["old_int8_codes_preserved"] is not True
         or value["old_int8_scales_preserved"] is not True
         or value["old_int8_offsets_preserved"] is not True
-        or value["old_int8_class_scales_preserved"] is not True
+        or value["old_int8_residual_codes_preserved"] is not True
+        or value["old_int8_residual_scales_preserved"] is not True
+        or value["old_int8_class_scale_hi_preserved"] is not True
+        or value["old_int8_class_scale_lo_preserved"] is not True
         or value["old_q_a_alpha_refit"] is not False
         or any(value[left] != value[right] for left, right in equal_hash_pairs)
         or value["old_alpha_before"] != value["old_alpha_after"]
@@ -1349,14 +1606,12 @@ def append_stage2_c(old_state: DualQKNNState, *, new_support_zid: np.ndarray,
     old_prefix_before = _old_domain_prefix_bytes(old_domain)
     old_prefix_after = _old_domain_prefix_bytes(result.domain)
     old_rows = old_state.id_bank.bank.support_row_count
-    after_old_class_scales = np.asarray(
-        [
-            result.id_bank.bank.class_scales_fp16[
-                result.id_bank.bank.classes.index(item)
-            ]
-            for item in old_state.id_bank.bank.classes
-        ],
-        np.float16,
+    old_class_count = len(old_state.id_bank.bank.classes)
+    after_old_class_scale_hi = np.ascontiguousarray(
+        result.id_bank.bank.class_scale_hi_fp16[:old_class_count]
+    )
+    after_old_class_scale_lo = np.ascontiguousarray(
+        result.id_bank.bank.class_scale_lo_fp16[:old_class_count]
     )
     branch = result.id_bank.branch_state
     if type(branch) is not ActualBankBranchState:
@@ -1391,11 +1646,29 @@ def append_stage2_c(old_state: DualQKNNState, *, new_support_zid: np.ndarray,
         "old_int8_offsets_sha256_after": _array_sha256(
             result.id_bank.bank.offsets_fp16[:old_rows]
         ),
-        "old_int8_class_scales_sha256_before": _array_sha256(
-            old_state.id_bank.bank.class_scales_fp16
+        "old_int8_residual_codes_sha256_before": _array_sha256(
+            old_state.id_bank.bank.residual_codes_qint8
         ),
-        "old_int8_class_scales_sha256_after": _array_sha256(
-            after_old_class_scales
+        "old_int8_residual_codes_sha256_after": _array_sha256(
+            result.id_bank.bank.residual_codes_qint8[:old_rows]
+        ),
+        "old_int8_residual_scales_sha256_before": _array_sha256(
+            old_state.id_bank.bank.residual_scales_fp16
+        ),
+        "old_int8_residual_scales_sha256_after": _array_sha256(
+            result.id_bank.bank.residual_scales_fp16[:old_rows]
+        ),
+        "old_int8_class_scale_hi_sha256_before": _array_sha256(
+            old_state.id_bank.bank.class_scale_hi_fp16
+        ),
+        "old_int8_class_scale_hi_sha256_after": _array_sha256(
+            after_old_class_scale_hi
+        ),
+        "old_int8_class_scale_lo_sha256_before": _array_sha256(
+            old_state.id_bank.bank.class_scale_lo_fp16
+        ),
+        "old_int8_class_scale_lo_sha256_after": _array_sha256(
+            after_old_class_scale_lo
         ),
         "old_int8_codes_preserved": bool(
             np.array_equal(
@@ -1415,10 +1688,28 @@ def append_stage2_c(old_state: DualQKNNState, *, new_support_zid: np.ndarray,
                 result.id_bank.bank.offsets_fp16[:old_rows],
             )
         ),
-        "old_int8_class_scales_preserved": bool(
+        "old_int8_residual_codes_preserved": bool(
             np.array_equal(
-                old_state.id_bank.bank.class_scales_fp16,
-                after_old_class_scales,
+                old_state.id_bank.bank.residual_codes_qint8,
+                result.id_bank.bank.residual_codes_qint8[:old_rows],
+            )
+        ),
+        "old_int8_residual_scales_preserved": bool(
+            np.array_equal(
+                old_state.id_bank.bank.residual_scales_fp16,
+                result.id_bank.bank.residual_scales_fp16[:old_rows],
+            )
+        ),
+        "old_int8_class_scale_hi_preserved": bool(
+            np.array_equal(
+                old_state.id_bank.bank.class_scale_hi_fp16,
+                after_old_class_scale_hi,
+            )
+        ),
+        "old_int8_class_scale_lo_preserved": bool(
+            np.array_equal(
+                old_state.id_bank.bank.class_scale_lo_fp16,
+                after_old_class_scale_lo,
             )
         ),
         "old_q_sha256_before": _array_sha256(old_domain.q),
@@ -1483,7 +1774,11 @@ def _typed_bank_kernel_terms(state: Int8QKNNState, query: np.ndarray, *, class_i
     support = state.features()[positions].astype(np.float64)
     distance = np.maximum(2.0 * (1.0 - np.clip(support @ query.astype(np.float64), -1.0, 1.0)), 0.0)
     config = bank.config
-    h = float(bank.class_scales_fp16[bank.classes.index(state.classes[class_index])])
+    h = float(
+        bank.deployed_class_scales()[
+            bank.classes.index(state.classes[class_index])
+        ]
+    )
     return np.asarray(
         -config.kernel_volume_gamma * config.kernel_effective_dim * math.log(h)
         -0.5 * (config.student_nu + config.kernel_effective_dim)
@@ -1960,6 +2255,17 @@ def state_receipt(states: Mapping[str, Any]) -> dict[str, Any]:
         + raw.branch_state.bcr_weight_residual_codes_qint8.nbytes
         + raw.branch_state.bcr_weight_residual_scales_fp16.nbytes
     )
+    support_residual_bytes = (
+        raw.bank.residual_codes_qint8.nbytes
+        + raw.bank.residual_scales_fp16.nbytes
+    )
+    class_bandwidth_bytes = (
+        raw.bank.class_scale_hi_fp16.nbytes
+        + raw.bank.class_scale_lo_fp16.nbytes
+    )
+    support_codec_extra_bytes = (
+        support_residual_bytes + raw.bank.class_scale_lo_fp16.nbytes
+    )
     raw_state_bytes = len(raw.wire_bytes()) + bcr_bytes
     dual_domain_bytes = len(dual.domain.wire_bytes())
     branch_binding = getattr(
@@ -1987,6 +2293,12 @@ def state_receipt(states: Mapping[str, Any]) -> dict[str, Any]:
                "bcr_weight_wire_bytes": bcr_bytes,
                "bcr_weight_codec": BCR_WEIGHT_CODEC,
                "bcr_weight_plane_count": 2,
+               "support_codec": SUPPORT_CODEC,
+               "support_plane_count": 2,
+               "support_residual_wire_bytes": support_residual_bytes,
+               "class_bandwidth_codec": CLASS_BANDWIDTH_CODEC,
+               "class_bandwidth_wire_bytes": class_bandwidth_bytes,
+               "support_codec_extra_state_bytes": support_codec_extra_bytes,
                "dual_domain_state_bytes": dual_domain_bytes,
                "wire_bytes": raw_state_bytes + dual_domain_bytes}
     if payload["wire_bytes"] > MAX_WIRE_BYTES:

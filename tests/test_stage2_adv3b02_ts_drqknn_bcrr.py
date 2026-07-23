@@ -101,63 +101,17 @@ def _bindfix_support(k_shot, *, with_zero):
     return rows, labels, tokens
 
 
-def _parent_decision_reference(source, labels, classes, tokens):
-    """Reproduce the parent decision path without its broken teacher binding."""
-    k_shot = adv._balanced_k(labels, classes)
-    lock = adv.phase1_qknn_lock(k_shot)
-    canonical_classes = tuple(sorted(classes))
+def _ordered_support_reference(source, labels, tokens):
     positions = sorted(range(len(tokens)), key=lambda index: (labels[index], tokens[index]))
     ordered_raw = np.ascontiguousarray(source[np.asarray(positions, np.intp)])
     ordered_unit = adv._unit(ordered_raw)
     ordered_labels = tuple(labels[index] for index in positions)
     ordered_tokens = tuple(tokens[index] for index in positions)
-    indices = np.asarray(
-        [canonical_classes.index(value) for value in ordered_labels], dtype="<i2"
-    )
-    codes, scales, offsets = adv._affine_quantize_rows(ordered_unit)
-    decoded = adv._affine_dequantize_rows(codes, scales, offsets)
-    class_scales = np.asarray(
-        adv._existing_identity_class_scales(
-            decoded, indices, len(canonical_classes), lock
-        ),
-        dtype="<f2",
-    )
-    counts = tuple(
-        int(np.sum(indices == index)) for index in range(len(canonical_classes))
-    )
-    quantization = {
-        "schema": adv.AFFINE_BANK_SCHEMA,
-        "codec": "affine_int8_code_fp16_scale_fp16_offset",
-        "support_only": True,
-        "query_rows_used_for_fit": 0,
-        "codes_sha256": adv.sha256_bytes(codes.tobytes()),
-        "scales_sha256": adv.sha256_bytes(scales.tobytes()),
-        "offsets_sha256": adv.sha256_bytes(offsets.tobytes()),
-        "endianness": "little",
-    }
-    provisional = adv.AffineINT8ZIDSupportBank(
-        canonical_classes, counts, codes, scales, offsets, indices, class_scales,
-        k_shot, lock, lock.lock_digest, quantization, "0" * 64,
-    )
-    bank = replace(
-        provisional,
-        bank_receipt_sha256=adv.sha256_bytes(adv._canon(adv._affine_bank_payload(provisional))),
-    )
-    wire = adv._serialize_affine_bank(bank)
-    weights, _loo, _lam, _extra = adv._existing_bcr_ridge_fit_and_loo(
-        decoded.astype(np.float64), indices, k_shot
-    )
-    wc, ws, rwc, rws, deployed_weights = adv._quantize_bcr_weights_two_plane(
-        weights
-    )
     return {
-        "bank": bank,
-        "wire": wire,
         "ordered_raw": ordered_raw,
         "ordered_unit": ordered_unit,
         "ordered_labels": ordered_labels,
         "ordered_tokens": ordered_tokens,
-        "bcr": (wc, ws, rwc, rws, deployed_weights),
     }
 
 
@@ -231,7 +185,7 @@ def test_finite_exact_zero_repair_breaks_medoid_ties_by_physical_token():
 
 @pytest.mark.parametrize("k_shot", [5, 10])
 @pytest.mark.parametrize("with_zero", [False, True])
-def test_bindfix1_raw_teacher_closes_non_idempotent_repair_and_preserves_decisions(
+def test_q2f32_raw_teacher_closes_non_idempotent_repair_and_two_plane_state(
     k_shot, with_zero
 ):
     single = adv._unit(_non_idempotent_zid_row()[None, :])
@@ -254,50 +208,59 @@ def test_bindfix1_raw_teacher_closes_non_idempotent_repair_and_preserves_decisio
     state = adv.build_int8_qknn_state(
         repaired, labels, classes, tokens, support_repair_receipt=receipt
     )
-    reference = _parent_decision_reference(repaired, labels, classes, tokens)
+    reference = _ordered_support_reference(repaired, labels, tokens)
+    bank = state.bank
     branch = state.branch_state
     assert (
         branch.actual_bank_binding_receipt["teacher_support_sha256"]
         == receipt["unit_output_support_sha256"]
     )
-    assert state.qknn_wire == reference["wire"]
-    np.testing.assert_array_equal(state.bank.codes_qint8, reference["bank"].codes_qint8)
-    np.testing.assert_array_equal(state.bank.scales_fp16, reference["bank"].scales_fp16)
-    np.testing.assert_array_equal(state.bank.offsets_fp16, reference["bank"].offsets_fp16)
-    for actual, expected in zip(
-        (
-            branch.bcr_weight_codes_qint8,
-            branch.bcr_weight_scales_fp16,
-            branch.bcr_weight_residual_codes_qint8,
-            branch.bcr_weight_residual_scales_fp16,
+    assert bank.residual_codes_qint8.dtype == np.int8
+    assert bank.residual_codes_qint8.shape == bank.codes_qint8.shape
+    assert bank.residual_scales_fp16.dtype == np.dtype("<f2")
+    assert np.all(
+        bank.residual_scales_fp16
+        >= np.float16(adv.SUPPORT_RESIDUAL_SCALE_FLOOR)
+    )
+    base = adv._affine_decode_base_rows(
+        bank.codes_qint8, bank.scales_fp16, bank.offsets_fp16
+    )
+    manual = adv._unit(
+        base
+        + bank.residual_codes_qint8.astype(np.float32)
+        * bank.residual_scales_fp16.astype(np.float32)[:, None]
+    )
+    np.testing.assert_array_equal(state.features(), manual)
+
+    indices = np.asarray(
+        [bank.classes.index(item) for item in reference["ordered_labels"]],
+        dtype="<i2",
+    )
+    raw_bandwidth = np.asarray(
+        adv._existing_identity_class_scales(
+            reference["ordered_unit"], indices, len(bank.classes), bank.config
         ),
-        reference["bcr"][:4],
-    ):
-        np.testing.assert_array_equal(actual, expected)
+        np.float32,
+    )
+    deployed_bandwidth = bank.deployed_class_scales()
+    assert bank.class_scale_hi_fp16.dtype == np.dtype("<f2")
+    assert bank.class_scale_lo_fp16.dtype == np.dtype("<f2")
+    assert np.max(np.abs(raw_bandwidth - deployed_bandwidth)) <= (
+        adv.SUPPORT_RESIDUAL_SCALE_FLOOR
+    )
 
     query = np.random.default_rng(8800 + k_shot).normal(
         size=(7, 160)
     ).astype(np.float32)
-    np.testing.assert_array_equal(
-        adv._score_affine_bank(state.bank, query),
-        adv._score_affine_bank(reference["bank"], query),
-    )
-    deployed = (
-        branch.bcr_weight_codes_qint8.astype(np.float32)
-        * branch.bcr_weight_scales_fp16.astype(np.float32)[None, :]
-        + branch.bcr_weight_residual_codes_qint8.astype(np.float32)
-        * branch.bcr_weight_residual_scales_fp16.astype(np.float32)[None, :]
-    )
-    np.testing.assert_array_equal(deployed, reference["bcr"][4])
-    np.testing.assert_array_equal(
-        np.asarray(adv._unit(query).astype(np.float32) @ deployed, np.float32),
-        np.asarray(
-            adv._unit(query).astype(np.float32) @ reference["bcr"][4], np.float32
-        ),
-    )
+    assert np.isfinite(adv._score_affine_bank(bank, query)).all()
+    assert branch.quantization_audit["qknn"]["top1_agreement"] >= 0.995
+    assert branch.quantization_audit["qknn"]["large_margin_flip_count"] == 0
+    assert branch.quantization_audit["bcr"]["top1_agreement"] == 1.0
+    assert branch.quantization_audit["bcr"]["any_margin_flip_count"] == 0
+    assert branch.quantization_audit["bcr"]["large_margin_flip_count"] == 0
 
 
-def test_bindfix1_teacher_binding_is_permutation_equivalent_and_tamper_closed():
+def test_q2f32_teacher_binding_is_permutation_equivalent_and_tamper_closed():
     source, labels, tokens = _bindfix_support(5, with_zero=False)
     classes = ("class_a", "class_b")
     repaired, receipt = adv.repair_finite_exact_zero_singleton_class_medoid(
@@ -326,12 +289,26 @@ def test_bindfix1_teacher_binding_is_permutation_equivalent_and_tamper_closed():
     )
     for left, right in zip(
         (
+            normal.bank.codes_qint8,
+            normal.bank.scales_fp16,
+            normal.bank.offsets_fp16,
+            normal.bank.residual_codes_qint8,
+            normal.bank.residual_scales_fp16,
+            normal.bank.class_scale_hi_fp16,
+            normal.bank.class_scale_lo_fp16,
             normal.branch_state.bcr_weight_codes_qint8,
             normal.branch_state.bcr_weight_scales_fp16,
             normal.branch_state.bcr_weight_residual_codes_qint8,
             normal.branch_state.bcr_weight_residual_scales_fp16,
         ),
         (
+            permuted.bank.codes_qint8,
+            permuted.bank.scales_fp16,
+            permuted.bank.offsets_fp16,
+            permuted.bank.residual_codes_qint8,
+            permuted.bank.residual_scales_fp16,
+            permuted.bank.class_scale_hi_fp16,
+            permuted.bank.class_scale_lo_fp16,
             permuted.branch_state.bcr_weight_codes_qint8,
             permuted.branch_state.bcr_weight_scales_fp16,
             permuted.branch_state.bcr_weight_residual_codes_qint8,
@@ -345,7 +322,7 @@ def test_bindfix1_teacher_binding_is_permutation_equivalent_and_tamper_closed():
         adv._score_affine_bank(permuted.bank, query),
     )
 
-    reference = _parent_decision_reference(repaired, labels, classes, tokens)
+    reference = _ordered_support_reference(repaired, labels, tokens)
     make_args = (
         normal.bank,
         normal.metric,
@@ -661,7 +638,18 @@ def test_stage2_c_is_append_only_and_preserves_old_bytes():
     state, old_values = _state(5)
     zid, zdom, labels, tokens = _support(5, ("new_c",), 22)
     before_domain = state.domain.wire_bytes()
-    before_codes = state.id_bank.bank.codes_qint8.copy()
+    old_bank = state.id_bank.bank
+    before_rows = (
+        old_bank.codes_qint8.copy(),
+        old_bank.scales_fp16.copy(),
+        old_bank.offsets_fp16.copy(),
+        old_bank.residual_codes_qint8.copy(),
+        old_bank.residual_scales_fp16.copy(),
+    )
+    before_class_scales = (
+        old_bank.class_scale_hi_fp16.copy(),
+        old_bank.class_scale_lo_fp16.copy(),
+    )
     after, receipt = append_stage2_c(state, new_support_zid=zid, new_support_zdom=zdom,
                                      new_support_labels=labels, new_registered_classes=("new_c",),
                                      new_support_physical_tokens=tokens,
@@ -669,9 +657,37 @@ def test_stage2_c_is_append_only_and_preserves_old_bytes():
                                      after_full_teacher_physical_tokens=old_values[3] + tokens)
     assert after.domain.stage == "S_C" and after.id_bank.classes == ("old_a", "old_b", "new_c")
     assert state.domain.wire_bytes() == before_domain
-    np.testing.assert_array_equal(after.id_bank.bank.codes_qint8[:len(before_codes)], before_codes)
+    old_rows = old_bank.support_row_count
+    for actual, expected in zip(
+        (
+            after.id_bank.bank.codes_qint8[:old_rows],
+            after.id_bank.bank.scales_fp16[:old_rows],
+            after.id_bank.bank.offsets_fp16[:old_rows],
+            after.id_bank.bank.residual_codes_qint8[:old_rows],
+            after.id_bank.bank.residual_scales_fp16[:old_rows],
+        ),
+        before_rows,
+    ):
+        np.testing.assert_array_equal(actual, expected)
+    for actual, expected in zip(
+        (
+            after.id_bank.bank.class_scale_hi_fp16[:len(old_bank.classes)],
+            after.id_bank.bank.class_scale_lo_fp16[:len(old_bank.classes)],
+        ),
+        before_class_scales,
+    ):
+        np.testing.assert_array_equal(actual, expected)
     assert receipt["old_q_a_alpha_refit"] is False
-    assert receipt["old_int8_codes_preserved"] and receipt["old_int8_scales_preserved"]
+    for field in (
+        "old_int8_codes_preserved",
+        "old_int8_scales_preserved",
+        "old_int8_offsets_preserved",
+        "old_int8_residual_codes_preserved",
+        "old_int8_residual_scales_preserved",
+        "old_int8_class_scale_hi_preserved",
+        "old_int8_class_scale_lo_preserved",
+    ):
+        assert receipt[field] is True
     assert receipt["old_domain_bytes_preserved"]
     assert (
         receipt["old_domain_prefix_sha256_before"]
@@ -724,6 +740,10 @@ def test_stage2_c_actual_bank_closes_wire_bcr_loo_and_full_int8_audit(k_shot):
     )
     assert adv._serialize_affine_bank(after.id_bank.bank) == after.id_bank.qknn_wire
     assert after.id_bank.bank.offsets_fp16.dtype == np.dtype("<f2")
+    assert after.id_bank.bank.residual_codes_qint8.dtype == np.int8
+    assert after.id_bank.bank.residual_scales_fp16.dtype == np.dtype("<f2")
+    assert after.id_bank.bank.class_scale_hi_fp16.dtype == np.dtype("<f2")
+    assert after.id_bank.bank.class_scale_lo_fp16.dtype == np.dtype("<f2")
     branch = after.id_bank.branch_state
     assert type(branch) is adv.ActualBankBranchState
     assert branch.qknn_wire == after.id_bank.qknn_wire
@@ -846,6 +866,10 @@ def test_affine_wire_is_little_endian_bound_and_fail_closed():
     bank = state.id_bank
     assert bank.bank.scales_fp16.dtype == np.dtype("<f2")
     assert bank.bank.offsets_fp16.dtype == np.dtype("<f2")
+    assert bank.bank.residual_codes_qint8.dtype == np.int8
+    assert bank.bank.residual_scales_fp16.dtype == np.dtype("<f2")
+    assert bank.bank.class_scale_hi_fp16.dtype == np.dtype("<f2")
+    assert bank.bank.class_scale_lo_fp16.dtype == np.dtype("<f2")
     np.testing.assert_allclose(
         bank.features(),
         adv._decode_affine_wire(bank.qknn_wire, bank.bank),
@@ -856,6 +880,19 @@ def test_affine_wire_is_little_endian_bound_and_fail_closed():
     broken[-1] ^= 1
     with pytest.raises(ADV3B02StateError, match="serialized bytes|wire"):
         replace(bank, qknn_wire=bytes(broken))
+    residual_codes = bank.bank.residual_codes_qint8.copy()
+    residual_codes[0, 0] = np.int8(
+        int(residual_codes[0, 0])
+        + (1 if residual_codes[0, 0] < 127 else -1)
+    )
+    with pytest.raises(ADV3B02StateError, match="receipt"):
+        replace(bank.bank, residual_codes_qint8=residual_codes)
+    class_scale_lo = bank.bank.class_scale_lo_fp16.copy()
+    class_scale_lo[0] = np.nextafter(
+        class_scale_lo[0], np.float16(np.inf), dtype=np.float16
+    )
+    with pytest.raises(ADV3B02StateError, match="receipt"):
+        replace(bank.bank, class_scale_lo_fp16=class_scale_lo)
 
 
 def test_affine_full26k10_state_stays_inside_hard_limit():
@@ -867,6 +904,10 @@ def test_affine_full26k10_state_stays_inside_hard_limit():
     )
     receipt = state_receipt(states)
     assert receipt["wire_bytes"] <= 256 * 1024
+    assert receipt["support_codec"] == adv.SUPPORT_CODEC
+    assert receipt["support_plane_count"] == 2
+    assert receipt["class_bandwidth_codec"] == adv.CLASS_BANDWIDTH_CODEC
+    assert receipt["support_codec_extra_state_bytes"] == 42172
     # Two int8 [160,C] planes plus two FP16 [C] scale vectors.
     assert receipt["bcr_weight_wire_bytes"] == 8424
     assert receipt["bcr_weight_codec"] == adv.BCR_WEIGHT_CODEC
@@ -885,7 +926,98 @@ def test_affine_codec_rejects_zero_range_underflow_and_nonfinite_decode(monkeypa
     with pytest.raises(ADV3B02StateError, match="FP16"):
         adv._affine_quantize_rows(np.ones((1, 160), np.float32))
     with pytest.raises(ADV3B02StateError, match="shape/dtype"):
-        adv._affine_dequantize_rows(np.zeros((1, 160), np.int8), np.asarray([np.inf], "<f2"), np.zeros(1, "<f2"))
+        adv._affine_dequantize_rows(
+            np.zeros((1, 160), np.int8),
+            np.asarray([np.inf], "<f2"),
+            np.zeros(1, "<f2"),
+            np.zeros((1, 160), np.int8),
+            np.asarray([adv.SUPPORT_RESIDUAL_SCALE_FLOOR], "<f2"),
+        )
+
+
+def test_q2f32_codec_roundtrip_scale_floor_and_no_fp32_sidecar():
+    residual_codes, residual_scales, residual = (
+        adv._quantize_support_residual(np.zeros((3, 160), np.float32))
+    )
+    assert not np.any(residual_codes)
+    assert not np.any(residual)
+    assert np.all(
+        residual_scales == np.float16(adv.SUPPORT_RESIDUAL_SCALE_FLOOR)
+    )
+
+    source = np.random.default_rng(7801).normal(size=(7, 160)).astype(np.float32)
+    codes, scales, offsets, residual_codes, residual_scales = (
+        adv._affine_quantize_rows_two_plane(source)
+    )
+    base = adv._unit(adv._affine_decode_base_rows(codes, scales, offsets))
+    deployed = adv._affine_dequantize_rows(
+        codes, scales, offsets, residual_codes, residual_scales
+    )
+    teacher = adv._unit(source)
+    manual = adv._unit(
+        adv._affine_decode_base_rows(codes, scales, offsets)
+        + residual_codes.astype(np.float32)
+        * residual_scales.astype(np.float32)[:, None]
+    )
+    np.testing.assert_array_equal(deployed, manual)
+    assert np.max(np.abs(teacher - deployed)) <= np.max(np.abs(teacher - base))
+
+    field_names = {item.name for item in fields(adv.AffineINT8ZIDSupportBank)}
+    assert {
+        "codes_qint8",
+        "scales_fp16",
+        "offsets_fp16",
+        "residual_codes_qint8",
+        "residual_scales_fp16",
+        "class_scale_hi_fp16",
+        "class_scale_lo_fp16",
+    } <= field_names
+    assert not {
+        "support_fp32",
+        "residual_fp32",
+        "class_scales_fp32",
+        "class_scales_fp16",
+    } & field_names
+
+    zid, zdom, labels, tokens = _support(5, seed=7802)
+    states = build_four_arm_states(
+        support_zid=zid,
+        support_zdom=zdom,
+        support_labels=labels,
+        registered_classes=("old_a", "old_b"),
+        support_physical_tokens=tokens,
+    )
+    audit = states["M0"].branch_state.quantization_audit["qknn"]
+    assert "int8_bank_class_scales" not in audit
+    assert audit["int8_bank_class_scale_count"] == len(states["M0"].bank.classes)
+    assert len(audit["int8_bank_class_scales_sha256"]) == 64
+    persisted = state_receipt(states)["int8"]
+    assert "int8_bank_class_scales" not in persisted
+    assert persisted["int8_bank_class_scale_count"] == len(states["M0"].bank.classes)
+
+
+@pytest.mark.parametrize("k_shot", [1, 5, 10])
+def test_q2f32_uses_one_fixed_two_plane_codec_for_all_frozen_k(k_shot):
+    state, _ = _state(k_shot, seed=7805 + k_shot)
+    bank = state.id_bank.bank
+    assert bank.active_k == k_shot
+    assert bank.quantization_audit["codec"] == adv.SUPPORT_CODEC
+    assert bank.quantization_audit["plane_order"] == list(adv.SUPPORT_PLANE_ORDER)
+    assert bank.residual_codes_qint8.shape == bank.codes_qint8.shape
+    assert state.id_bank.branch_state.quantization_audit["qknn"][
+        "top1_agreement"
+    ] >= 0.995
+
+
+def test_dual_fp16_class_bandwidth_reconstructs_build_only_fp32_value():
+    raw = np.asarray(
+        [0.093750044, 0.12503129, 0.33329296, 1.2344999], np.float32
+    )
+    hi, lo = adv._split_class_bandwidths(raw)
+    deployed = adv._reconstruct_class_bandwidths(hi, lo)
+    assert hi.dtype == np.dtype("<f2")
+    assert lo.dtype == np.dtype("<f2")
+    assert np.max(np.abs(raw - deployed)) <= adv.SUPPORT_RESIDUAL_SCALE_FLOOR
 
 
 def test_affine_codec_uses_ieee_ties_to_even(monkeypatch):
@@ -1104,7 +1236,7 @@ def _scene_metrics(state, count):
 
 def _fake_after_int8_audit():
     return {
-        "schema": "cvs.phase2.zid_student_t_qknn.margin_audit.v2_affine",
+        "schema": "cvs.phase2.zid_student_t_qknn.margin_audit.v3_q2f32",
         "validation_row_count": 10,
         "logit_abs_error_mean": 0.01,
         "logit_abs_error_max": 0.02,
@@ -1117,7 +1249,8 @@ def _fake_after_int8_audit():
         "large_margin_flip_rate": 0.0,
         "fp32_teacher_bandwidth_source": "complete_unquantized_FP32_all_support",
         "fp32_teacher_support_sha256": "b" * 64,
-        "int8_bank_class_scales": [0.5, 0.5],
+        "int8_bank_class_scales_sha256": "c" * 64,
+        "int8_bank_class_scale_count": 2,
         "teacher_bank_bandwidth_abs_delta_max": 0.0,
         "query_rows_used_for_fit": 0,
         "state_updates": 0,
@@ -1160,12 +1293,21 @@ def _fake_append_receipt():
         "old_int8_scales_sha256_after": "4" * 64,
         "old_int8_offsets_sha256_before": "a" * 64,
         "old_int8_offsets_sha256_after": "a" * 64,
-        "old_int8_class_scales_sha256_before": "5" * 64,
-        "old_int8_class_scales_sha256_after": "5" * 64,
+        "old_int8_residual_codes_sha256_before": "b" * 64,
+        "old_int8_residual_codes_sha256_after": "b" * 64,
+        "old_int8_residual_scales_sha256_before": "c" * 64,
+        "old_int8_residual_scales_sha256_after": "c" * 64,
+        "old_int8_class_scale_hi_sha256_before": "5" * 64,
+        "old_int8_class_scale_hi_sha256_after": "5" * 64,
+        "old_int8_class_scale_lo_sha256_before": "d" * 64,
+        "old_int8_class_scale_lo_sha256_after": "d" * 64,
         "old_int8_codes_preserved": True,
         "old_int8_scales_preserved": True,
         "old_int8_offsets_preserved": True,
-        "old_int8_class_scales_preserved": True,
+        "old_int8_residual_codes_preserved": True,
+        "old_int8_residual_scales_preserved": True,
+        "old_int8_class_scale_hi_preserved": True,
+        "old_int8_class_scale_lo_preserved": True,
         "old_q_sha256_before": "6" * 64,
         "old_q_sha256_after": "6" * 64,
         "old_a_sha256_before": "7" * 64,

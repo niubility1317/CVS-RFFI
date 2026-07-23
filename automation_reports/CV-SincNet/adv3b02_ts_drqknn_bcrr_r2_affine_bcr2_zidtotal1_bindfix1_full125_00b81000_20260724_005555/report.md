@@ -7,9 +7,15 @@
 - scientific Git commit：`00b810006af0d48d457a1afe2a37d6b10d24a4b9`
 - 创建时间：`2026-07-24T00:55:55+08:00`
 - operator：主agent；N607唯一launch owner为单一`gpt-5.6-terra high`runner
-- 状态：`PREREGISTERED / NOT_LAUNCHED / NO_PERFORMANCE_RESULT`
+- 状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
 - parent run：`adv3b02_ts_drqknn_bcrr_r2_affine_bcr2_zidtotal1_full125_21ffdabf_20260723_234716`
 - parent终态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`；本run不得复用、续跑或覆盖parent
+
+## 唯一runner执行记录
+
+- direct preflight通过，GPU0–7空闲；远端run根先确认为`ABSENT`，输入、安全解包、关键源码、`py_compile`和POSIX sentinel均通过。
+- 唯一detach：wrapper PID/PGID=`1298387/1298387`，matrix PID=`1298389`；首次health为launched=`8`、failed=`0`、异常指纹=`none`。
+- 首波8个row成功，方法越过parent的teacher-binding故障点；随后两个Stage2-C row在prediction前触发同一actual-branch audit故障，协调器健康止损。
 
 ## 目标、机制与matched四臂
 
@@ -98,10 +104,27 @@ PYTHONPATH=<run>/source/code /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python
 |字段|当前值|
 |---|---|
 |Git commit|`00b810006af0d48d457a1afe2a37d6b10d24a4b9`|
-|remote PID/PGID|`PENDING`|
-|launcher/matrix exit|`PENDING`|
+|remote PID/PGID|`1298387/1298387`；matrix PID=`1298389`|
+|launcher/matrix exit|launcher exit=`1`；wrapper/matrix均已退出|
 |parity receipt|`PRESENT_REUSED / NOT_GENERATED`；SHA=`b93219c40b79be8ecdf8c0a51d77710d8119f8899331ae7e2518b77adfeac60b`|
 |archive/manifest|`PRESENT_REUSED / NOT_GENERATED`；SHA=`dd2a2b0c8ab1a1d8edbeed81e78ffb79c253240998a9ac2404b75699f4ca68d0`/`34213331d20594dceface61680ab0fea8ffc40ee72d7e13c844763c70fef26d4`|
 |coverage|`PRESENT_REUSED / NOT_GENERATED`；SHA=`c6e25ebeaed32b577e3321e78cd569acff934a7c804d0cb621b26e68f26d0c17`|
-|row/prediction/score|`0/125`；`0/1000`；`0/1500`|
-|最终裁决|`PREREGISTERED / NOT_LAUNCHED / NO_PERFORMANCE_RESULT`|
+|row/prediction/score|submitted/completed=`38/38`，success=`29`，failed/terminated=`9`，never submitted=`87`；partial prediction=`232`，partial score=`348`|
+|最终裁决|`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`|
+
+## 终态技术故障闭环
+
+|触发row|条件|prediction/query fit|首源|
+|---|---|---|---|
+|`adv3b02_r2_affine_bcr2_rx_8-8_s_713105_k_10_n_20`|receiver=`8-8`，seed=`713105`，K10/new20|`0/0`|`append_stage2_c -> _append_bank -> _make_actual_branch -> ActualBankBranchState.__post_init__:550`|
+|`adv3b02_r2_affine_bcr2_rx_7-14_s_713102_k_10_n_10`|receiver=`7-14`，seed=`713102`，K10/new10|`0/0`|同上|
+
+- 本run进程、GPU compute、本地SSH/TCP22均为0；38条termination receipt均验证归属和进程树退出。
+- partial prediction/score严禁读取或形成性能结论。`DATA_PROTOCOL=PRESENT_REUSED / NOT_REVALIDATED`。
+- enrollment-only诊断包只含两触发row的before/after三场景support，query/truth/apply/prediction/score条目为0。
+
+## 主agent首源定位与下一revision
+
+真实checkpoint support-only复算确定：一平面affine qKNN在K10/new10的160条after support上有1个小margin翻转，top1=`0.99375`、large flip=`0`；BCR top1=`1.0`、flip=`0`。单独增加residual平面仍失败。固定affine INT8主平面＋INT8 residual平面＋双FP16 class bandwidth后，两个触发row×3场景的qKNN top1=`1.0`、large flip=`0`，BCR top1=`1.0`、flip=`0`，最大logit误差`0.00108–0.00181`；未读取query/truth。
+
+独立监督否决FP32 target sidecar后，对双FP16补偿终裁=`MERGE / P0=0 / P1=0`。下一revision=`ADV3B02-TS-DRQKNN-BCRR/r3-q2f32-bcr2-zidtotal1`，只修改qKNN部署codec；本run不得retry或覆盖。
