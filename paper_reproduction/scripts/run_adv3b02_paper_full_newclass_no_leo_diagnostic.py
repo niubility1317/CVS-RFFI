@@ -245,6 +245,11 @@ def _load_model(
     if schema == "cvs.adv3b02.official_repo_base_state.v2":
         if int(state.get("base_sample_count", 0)) != 8400:
             raise ValueError("official-repo base state requires exactly 8400 rows")
+        if (
+            int(state.get("fisher_sample_count", 0)) != 8400
+            or state.get("source_train_fisher_disjoint") is not True
+        ):
+            raise ValueError("official CSIL Fisher validation split drift")
         base_state = {"csil": state["csil"], "mopc_hr": state["mopc_hr"]}
     elif schema == "cvs.adv3b02.paper_full_base_state.v1":
         base_state = {
@@ -259,6 +264,10 @@ def _load_model(
     receipt = {
         "schema": schema,
         "base_sample_count": int(state.get("base_sample_count", 0)),
+        "fisher_sample_count": int(state.get("fisher_sample_count", 0)),
+        "source_train_fisher_disjoint": bool(
+            state.get("source_train_fisher_disjoint", False)
+        ),
         "source_receiver_labels": list(state.get("source_receiver_labels", [])),
         "checkpoint_load_audit": load_audit,
     }

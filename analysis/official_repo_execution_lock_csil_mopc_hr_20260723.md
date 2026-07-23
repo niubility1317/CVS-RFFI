@@ -64,7 +64,8 @@
 
 ### 2.4base状态
 
-80条旧状态无效。正式状态必须由8400条source样本重建，并包含：
+80条旧状态无效。正式状态必须由8400条source训练样本重建；CSIL Fisher另用
+与训练物理记录互斥的8400条source validation样本，并包含：
 
 - CSIL专属训练后ADV3B02状态；
 - base `fc_bf_fp`权重与bias；

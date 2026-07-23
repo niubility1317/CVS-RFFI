@@ -24,6 +24,7 @@ for value in (str(REPO_ROOT), str(CODE_ROOT)):
 
 from cvsrffi.checkpoint_loading import build_exact_ssdg_model_from_checkpoint  # noqa: E402
 from cvsrffi.phase2_candidate_capsule import BASE_CHECKPOINT_SHA256  # noqa: E402
+from dataset_wisig import WiSigCompactDataset, WiSigSubsetDataset  # noqa: E402
 from model_dual_cvsincnet import backbone_forward_compat  # noqa: E402
 from paper_reproduction.common.wisig_runtime import (  # noqa: E402
     collate_wisig,
@@ -33,7 +34,6 @@ from paper_reproduction.cvs_aligned.adv3b02_official_repo_ci import (  # noqa: E
     build_csil_base_state,
     build_mopc_base_state,
 )
-from paper_reproduction.cvs_aligned.evaluate import _make_source_dataset  # noqa: E402
 
 
 def _sha256(path: Path) -> str:
@@ -79,40 +79,78 @@ def build(args: argparse.Namespace) -> dict:
     if len(old_labels) != 6 or len(receivers) != 7:
         raise ValueError("official base old-class/source-receiver lock drift")
     payload = load_wisig_compact_pkl(Path(args.manysig_pkl))
-    config = {
-        "target_old_tx_labels": old_labels,
-        "source_receiver_labels": receivers,
-        "source_days": [0, 1],
-        "equalized": int(args.equalized),
-        "source_train_samples_per_combo": int(args.samples_per_combo),
-        "seed": int(args.seed),
-    }
-    dataset = _make_source_dataset(config, payload)
-    loader = DataLoader(
-        dataset,
-        batch_size=int(args.load_batch_size),
-        shuffle=False,
-        drop_last=False,
-        collate_fn=collate_wisig,
-    )
     tx_lookup = {
         str(label): index for index, label in enumerate(payload.get("tx_list", []))
     }
+    tx_keep = [tx_lookup[label] for label in old_labels]
+    rx_lookup = {
+        str(label): index for index, label in enumerate(payload.get("rx_list", []))
+    }
+    rx_keep = [rx_lookup[label] for label in receivers]
+    full_dataset = WiSigCompactDataset(
+        payload,
+        out_len=256,
+        equalized=int(args.equalized),
+        tx_keep=tx_keep,
+        rx_keep=rx_keep,
+        day_keep=[0, 1],
+        domain="rx",
+        max_samples_per_combo=2 * int(args.samples_per_combo),
+        sample_strategy="front",
+        seed=int(args.seed),
+    )
+    grouped: dict[tuple[int, int, int, int], list[tuple[int, int]]] = {}
+    for index, item in enumerate(full_dataset.index):
+        key = (
+            int(item.day_i),
+            int(item.tx_i),
+            int(item.rx_i),
+            int(item.eq_i),
+        )
+        grouped.setdefault(key, []).append((int(item.sig_i), int(index)))
+    train_selected = []
+    fisher_selected = []
+    per_combo = int(args.samples_per_combo)
+    for key in sorted(grouped):
+        ordered = [index for _sig, index in sorted(grouped[key])]
+        if len(ordered) < 2 * per_combo:
+            raise ValueError(f"source group {key} has only {len(ordered)} rows")
+        train_selected.extend(ordered[:per_combo])
+        fisher_selected.extend(ordered[per_combo : 2 * per_combo])
+    dataset = WiSigSubsetDataset(
+        full_dataset, train_selected, split_source="official_base_source_train"
+    )
+    fisher_dataset = WiSigSubsetDataset(
+        full_dataset,
+        fisher_selected,
+        split_source="official_csil_fisher_source_validation",
+    )
     compact = {
         tx_lookup[label]: index for index, label in enumerate(old_labels)
     }
-    iq_rows = []
-    label_rows = []
-    for batch in loader:
-        iq_rows.append(batch["iq"].float())
-        label_rows.append(
-            torch.tensor(
-                [compact[int(value)] for value in batch["label"].tolist()],
-                dtype=torch.long,
-            )
+
+    def materialize(selected_dataset):
+        loader = DataLoader(
+            selected_dataset,
+            batch_size=int(args.load_batch_size),
+            shuffle=False,
+            drop_last=False,
+            collate_fn=collate_wisig,
         )
-    source_x = torch.cat(iq_rows).to(device)
-    source_y = torch.cat(label_rows).to(device)
+        iq_rows = []
+        label_rows = []
+        for batch in loader:
+            iq_rows.append(batch["iq"].float())
+            label_rows.append(
+                torch.tensor(
+                    [compact[int(value)] for value in batch["label"].tolist()],
+                    dtype=torch.long,
+                )
+            )
+        return torch.cat(iq_rows).to(device), torch.cat(label_rows).to(device)
+
+    source_x, source_y = materialize(dataset)
+    fisher_x, fisher_y = materialize(fisher_dataset)
     expected = (
         len(old_labels) * len(receivers) * 2 * int(args.samples_per_combo)
     )
@@ -123,6 +161,11 @@ def build(args: argparse.Namespace) -> dict:
     counts = torch.bincount(source_y, minlength=len(old_labels))
     if counts.tolist() != [1400] * len(old_labels):
         raise ValueError(f"source class coverage drift: {counts.tolist()}")
+    fisher_counts = torch.bincount(fisher_y, minlength=len(old_labels))
+    if len(fisher_y) != expected or fisher_counts.tolist() != [1400] * len(old_labels):
+        raise ValueError("CSIL Fisher source-validation coverage drift")
+    if set(train_selected) & set(fisher_selected):
+        raise ValueError("source train/Fisher validation overlap")
 
     csil = build_csil_base_state(
         backbone,
@@ -131,6 +174,7 @@ def build(args: argparse.Namespace) -> dict:
         feature_fn=feature_fn,
         old_count=len(old_labels),
         seed=int(args.seed),
+        fisher_x=fisher_x,
     )
     mopc = build_mopc_base_state(
         backbone,
@@ -150,6 +194,9 @@ def build(args: argparse.Namespace) -> dict:
         "source_train_samples_per_combo": int(args.samples_per_combo),
         "base_sample_count": int(len(source_y)),
         "base_class_counts": counts.cpu().tolist(),
+        "fisher_sample_count": int(len(fisher_y)),
+        "fisher_class_counts": fisher_counts.cpu().tolist(),
+        "source_train_fisher_disjoint": True,
         "total_capacity": int(args.total_capacity),
         "csil": csil,
         "mopc_hr": mopc,
@@ -177,6 +224,9 @@ def build(args: argparse.Namespace) -> dict:
         "output_sha256": _sha256(output),
         "base_sample_count": state["base_sample_count"],
         "base_class_counts": state["base_class_counts"],
+        "fisher_sample_count": state["fisher_sample_count"],
+        "fisher_class_counts": state["fisher_class_counts"],
+        "source_train_fisher_disjoint": True,
         "source_receiver_count": len(receivers),
         "source_day_count": 2,
         "total_capacity": int(args.total_capacity),

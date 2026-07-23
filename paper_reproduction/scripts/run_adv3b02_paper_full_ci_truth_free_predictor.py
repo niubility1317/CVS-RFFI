@@ -150,6 +150,11 @@ def _load_base_state(
     if schema == "cvs.adv3b02.official_repo_base_state.v2":
         if int(state.get("base_sample_count", 0)) != 8400:
             raise ValueError("official-repo base state requires exactly 8400 rows")
+        if (
+            int(state.get("fisher_sample_count", 0)) != 8400
+            or state.get("source_train_fisher_disjoint") is not True
+        ):
+            raise ValueError("official CSIL Fisher validation split drift")
         if not isinstance(state.get("csil"), dict) or not isinstance(
             state.get("mopc_hr"), dict
         ):
@@ -162,6 +167,9 @@ def _load_base_state(
                 "checkpoint_sha256": state.get("checkpoint_sha256"),
                 "base_sample_count": int(state["base_sample_count"]),
                 "base_class_counts": list(state.get("base_class_counts", [])),
+                "fisher_sample_count": int(state["fisher_sample_count"]),
+                "fisher_class_counts": list(state.get("fisher_class_counts", [])),
+                "source_train_fisher_disjoint": True,
                 "source_receiver_labels": list(
                     state.get("source_receiver_labels", [])
                 ),

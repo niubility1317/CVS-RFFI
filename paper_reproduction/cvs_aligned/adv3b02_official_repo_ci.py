@@ -236,6 +236,7 @@ def build_csil_base_state(
     seed: int,
     epochs: int = 20,
     batch_size: int = 128,
+    fisher_x: torch.Tensor | None = None,
 ) -> dict[str, Any]:
     torch.manual_seed(int(seed))
     with torch.no_grad():
@@ -277,7 +278,8 @@ def build_csil_base_state(
             optimizer.step()
             optimizer_steps += 1
     model.eval()
-    fisher = csil_fisher_from_model(model, source_x)
+    fisher_rows = source_x if fisher_x is None else fisher_x
+    fisher = csil_fisher_from_model(model, fisher_rows)
     return {
         "backbone_state": {
             key: value.detach().cpu()
@@ -291,6 +293,12 @@ def build_csil_base_state(
         "effective_batch": int(batch_size),
         "tail_batch_retained": len(source_x) % int(batch_size) != 0,
         "shuffle": "once",
+        "fisher_sample_count": int(len(fisher_rows)),
+        "fisher_split": (
+            "source_train_fallback"
+            if fisher_x is None
+            else "disjoint_source_validation"
+        ),
         "small_k_adaptation": False,
     }
 
