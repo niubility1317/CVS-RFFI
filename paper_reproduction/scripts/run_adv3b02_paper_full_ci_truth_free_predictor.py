@@ -37,11 +37,20 @@ from cvsrffi.stage2_predictor_bundle import (  # noqa: E402
 from model_dual_cvsincnet import backbone_forward_compat  # noqa: E402
 from paper_reproduction.cvs_aligned.adv3b02_ci_heads import prototype_baseline  # noqa: E402
 from paper_reproduction.cvs_aligned.adv3b02_paper_full_ci import (  # noqa: E402
-    METHODS,
+    METHODS as LEGACY_METHODS,
     fit_paper_full,
-    predict_after,
-    predict_before,
+    predict_after as predict_after_legacy,
+    predict_before as predict_before_legacy,
 )
+from paper_reproduction.cvs_aligned.adv3b02_official_repo_ci import (  # noqa: E402
+    METHODS as OFFICIAL_METHODS,
+    fit_official_repo,
+    predict_after as predict_after_official,
+    predict_before as predict_before_official,
+)
+
+
+METHODS = LEGACY_METHODS + OFFICIAL_METHODS
 
 
 def _write_json_new(path: Path, value: Mapping[str, Any] | list[Any]) -> None:
@@ -137,7 +146,34 @@ def _load_base_state(
     descriptor = roles["head"]
     with open_regular_member_same_fd(package_root, descriptor["relative_path"]) as handle:
         state = torch.load(handle, map_location="cpu", weights_only=False)
-    if state.get("schema") != "cvs.adv3b02.paper_full_base_state.v1":
+    schema = state.get("schema")
+    if schema == "cvs.adv3b02.official_repo_base_state.v2":
+        if int(state.get("base_sample_count", 0)) != 8400:
+            raise ValueError("official-repo base state requires exactly 8400 rows")
+        if not isinstance(state.get("csil"), dict) or not isinstance(
+            state.get("mopc_hr"), dict
+        ):
+            raise ValueError("official-repo method base states are missing")
+        return {
+            "csil": state["csil"],
+            "mopc_hr": state["mopc_hr"],
+            "receipt": {
+                "schema": schema,
+                "checkpoint_sha256": state.get("checkpoint_sha256"),
+                "base_sample_count": int(state["base_sample_count"]),
+                "base_class_counts": list(state.get("base_class_counts", [])),
+                "source_receiver_labels": list(
+                    state.get("source_receiver_labels", [])
+                ),
+                "official_repo_commits": dict(
+                    state.get("official_repo_commits", {})
+                ),
+                "raw_exemplars_stored": bool(
+                    state.get("raw_exemplars_stored", True)
+                ),
+            },
+        }
+    if schema != "cvs.adv3b02.paper_full_base_state.v1":
         raise ValueError("paper-full base state schema drift")
     if len(state.get("old_class_labels", [])) != int(old_count):
         raise ValueError("paper-full base state old-class count drift")
@@ -243,16 +279,28 @@ def predict(args: argparse.Namespace) -> dict[str, Any]:
         )
         checkpoint_audits.append({"scenario": scenario, **audit})
         started = time.perf_counter()
-        fitted = fit_paper_full(
-            method,
-            backbone,
-            support_x,
-            support_y,
-            feature_fn=feature_fn,
-            old_count=old_count,
-            seed=int(args.seed) + scenario_index * 1009,
-            base_state=base_state,
-        )
+        if method in OFFICIAL_METHODS:
+            fitted = fit_official_repo(
+                method,
+                backbone,
+                support_x,
+                support_y,
+                feature_fn=feature_fn,
+                old_count=old_count,
+                seed=int(args.seed) + scenario_index * 1009,
+                base_state=base_state,
+            )
+        else:
+            fitted = fit_paper_full(
+                method,
+                backbone,
+                support_x,
+                support_y,
+                feature_fn=feature_fn,
+                old_count=old_count,
+                seed=int(args.seed) + scenario_index * 1009,
+                base_state=base_state,
+            )
         if device.type == "cuda":
             torch.cuda.synchronize(device)
         resource = {
@@ -328,8 +376,12 @@ def predict(args: argparse.Namespace) -> dict[str, Any]:
         query_x = _tensor(query_iq, dtype=torch.float32, device=device)
         fitted = fitted_by_scenario[scenario]
         support_x, support_y, feature_fn = support_by_scenario[scenario]
-        candidate_before = predict_before(fitted, query_x)
-        candidate_after = predict_after(fitted, query_x)
+        if method in OFFICIAL_METHODS:
+            candidate_before = predict_before_official(fitted, query_x)
+            candidate_after = predict_after_official(fitted, query_x)
+        else:
+            candidate_before = predict_before_legacy(fitted, query_x)
+            candidate_after = predict_after_legacy(fitted, query_x)
         support_features, _ = _forward_direct(
             fitted.teacher_backbone,
             feature_fn,

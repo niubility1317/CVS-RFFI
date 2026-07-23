@@ -38,9 +38,16 @@ from cvsrffi.checkpoint_loading import (  # noqa: E402
 from dataset_wisig import WiSigCompactDataset, load_wisig_compact_pkl  # noqa: E402
 from model_dual_cvsincnet import backbone_forward_compat  # noqa: E402
 from paper_reproduction.cvs_aligned.adv3b02_paper_full_ci import (  # noqa: E402
+    METHODS as LEGACY_METHODS,
     fit_paper_full,
-    predict_after,
-    predict_before,
+    predict_after as predict_after_legacy,
+    predict_before as predict_before_legacy,
+)
+from paper_reproduction.cvs_aligned.adv3b02_official_repo_ci import (  # noqa: E402
+    METHODS as OFFICIAL_METHODS,
+    fit_official_repo,
+    predict_after as predict_after_official,
+    predict_before as predict_before_official,
 )
 from paper_reproduction.scripts.run_adv3b02_paper_full_ci_truth_free_predictor import (  # noqa: E402
     _tensor,
@@ -234,14 +241,23 @@ def _load_model(
         return feature.float(), logits.float()
 
     state = torch.load(base_state_path, map_location="cpu", weights_only=False)
-    if state.get("schema") != "cvs.adv3b02.paper_full_base_state.v1":
+    schema = state.get("schema")
+    if schema == "cvs.adv3b02.official_repo_base_state.v2":
+        if int(state.get("base_sample_count", 0)) != 8400:
+            raise ValueError("official-repo base state requires exactly 8400 rows")
+        base_state = {"csil": state["csil"], "mopc_hr": state["mopc_hr"]}
+    elif schema == "cvs.adv3b02.paper_full_base_state.v1":
+        base_state = {
+            "old_fingerprints": state["old_fingerprints"].to(device),
+            "old_prototypes": state["old_prototypes"].to(device),
+            "fisher": {
+                name: value.to(device) for name, value in state["fisher"].items()
+            },
+        }
+    else:
         raise ValueError("paper-full base-state schema drift")
-    base_state = {
-        "old_fingerprints": state["old_fingerprints"].to(device),
-        "old_prototypes": state["old_prototypes"].to(device),
-        "fisher": {name: value.to(device) for name, value in state["fisher"].items()},
-    }
     receipt = {
+        "schema": schema,
         "base_sample_count": int(state.get("base_sample_count", 0)),
         "source_receiver_labels": list(state.get("source_receiver_labels", [])),
         "checkpoint_load_audit": load_audit,
@@ -387,26 +403,47 @@ def run_cell(
             dtype=torch.long,
             device=device,
         )
-        fitted = fit_paper_full(
-            str(cell["method"]),
-            copy.deepcopy(backbone),
-            support_x,
-            support_y_tensor,
-            feature_fn=feature_fn,
-            old_count=len(old_labels),
-            seed=int(cell["seed"]),
-            base_state=base_state,
-        )
+        method = str(cell["method"])
+        if method in OFFICIAL_METHODS:
+            fitted = fit_official_repo(
+                method,
+                copy.deepcopy(backbone),
+                support_x,
+                support_y_tensor,
+                feature_fn=feature_fn,
+                old_count=len(old_labels),
+                seed=int(cell["seed"]),
+                base_state=base_state,
+            )
+        elif method in LEGACY_METHODS:
+            fitted = fit_paper_full(
+                method,
+                copy.deepcopy(backbone),
+                support_x,
+                support_y_tensor,
+                feature_fn=feature_fn,
+                old_count=len(old_labels),
+                seed=int(cell["seed"]),
+                base_state=base_state,
+            )
+        else:
+            raise ValueError("unsupported comparison method")
         query_x = _tensor(
             np.asarray(mixed_iq_by_scenario[scenario], dtype=np.float32)[query_idx],
             dtype=torch.float32,
             device=device,
         )
+        if method in OFFICIAL_METHODS:
+            before_tensor = predict_before_official(fitted, query_x)
+            after_tensor = predict_after_official(fitted, query_x)
+        else:
+            before_tensor = predict_before_legacy(fitted, query_x)
+            after_tensor = predict_after_legacy(fitted, query_x)
         before = np.asarray(
-            predict_before(fitted, query_x).detach().cpu().tolist(), dtype=np.int64
+            before_tensor.detach().cpu().tolist(), dtype=np.int64
         )
         after = np.asarray(
-            predict_after(fitted, query_x).detach().cpu().tolist(), dtype=np.int64
+            after_tensor.detach().cpu().tolist(), dtype=np.int64
         )
         truth = np.asarray(
             [int(row["registered_class_index"]) for row in query_records],
@@ -545,7 +582,12 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         "completed_cell_ids": completed,
         "base_state_receipt": base_receipt,
         "channel_replacement_audits": replacement_audits,
-        "same_v7_base_state_required": True,
+        "base_state_authority": (
+            "official_repo_full_source_8400"
+            if base_receipt.get("schema")
+            == "cvs.adv3b02.official_repo_base_state.v2"
+            else "legacy_v7_base_state"
+        ),
         "formal_cvs_claim_allowed": False,
     }
     receipt_path = output_root / f"shard_{int(args.shard_index)}_receipt.json"

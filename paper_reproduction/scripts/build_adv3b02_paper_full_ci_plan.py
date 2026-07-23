@@ -11,6 +11,7 @@ from pathlib import Path
 
 
 METHODS = ("csil_paper_full", "mopc_hr_paper_full")
+OFFICIAL_METHODS = ("csil_official_repo", "mopc_hr_official_repo")
 NEW_COUNTS = (2, 5, 10, 20)
 SCENARIOS = ("leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak")
 
@@ -37,6 +38,11 @@ def _write_new(path: Path, payload: dict) -> None:
 
 
 def build(args: argparse.Namespace) -> dict:
+    methods = tuple(
+        value for value in str(getattr(args, "methods", "")).split(",") if value
+    ) or METHODS
+    if methods not in (METHODS, OFFICIAL_METHODS):
+        raise ValueError("methods must be the legacy or official-repository pair")
     split_path = Path(args.class_split).resolve(strict=True)
     split = json.loads(split_path.read_text(encoding="utf-8-sig"))
     old = [str(value) for value in split["target_old_tx_labels"]]
@@ -95,7 +101,7 @@ def build(args: argparse.Namespace) -> dict:
                         "build_receipt": str(package_parent / "package_build_receipt.json"),
                     }
                 )
-                for method in METHODS:
+                for method in methods:
                     for k_shot in k_values:
                         cell_id = f"{package_id}__{method}__k_{k_shot}"
                         cells.append(
@@ -112,10 +118,10 @@ def build(args: argparse.Namespace) -> dict:
                         )
     smoke_cell_ids = [
         f"rx_20_1__seed_713101__new_2__{method}__k_1"
-        for method in METHODS
+        for method in methods
     ] + [
         f"rx_20_1__seed_713101__new_20__{method}__k_20"
-        for method in METHODS
+        for method in methods
     ]
     smoke_sha = None
     launch_authority = False
@@ -154,7 +160,12 @@ def build(args: argparse.Namespace) -> dict:
         "query_evaluated_after_training": True,
         "backbone": "ADV3B02",
         "backbone_uniformly_frozen": False,
-        "methods": list(METHODS),
+        "methods": list(methods),
+        "execution_semantics": (
+            "OFFICIAL_CODE_EXECUTION_SEMANTICS"
+            if methods == OFFICIAL_METHODS
+            else "LEGACY_PAPER_CODE_HYBRID"
+        ),
         "receivers": receivers,
         "seeds": seeds,
         "k_values": k_values,
@@ -185,6 +196,38 @@ def build(args: argparse.Namespace) -> dict:
                 "lambda_max": 1.0,
             },
         },
+        "official_code_execution_lock": (
+            {
+                "csil": {
+                    "entry": "ContinualLearning/WorkStage/CSIL.m",
+                    "base_epochs": 20,
+                    "base_batch_size": 128,
+                    "increment_epochs": 3,
+                    "increment_batch_size": 20,
+                    "backbone_frozen_during_increment": True,
+                    "new_dimension": "new_class_count",
+                    "fisher_objective": "mean_log_shifted_softmax_then_exp_grad_squared",
+                    "kd": "sum_squared_divide_32_weight_0.2",
+                    "ewc": "sum_fisher_squared_delta_divide_2",
+                },
+                "mopc_hr": {
+                    "entry": "MoPC_HR_trainer.py",
+                    "base_epochs": 20,
+                    "increment_epochs": 20,
+                    "batch_size": 16,
+                    "hr": "per_parameter_unsquared_l2",
+                    "hr_effective_coefficient": 1.0,
+                    "prototype_similarity": "raw_dot_then_softmax",
+                    "prototype_logit_temperature": 2.0,
+                    "kd_in_total_loss": False,
+                    "query_decision": "all_registered_classifier_logits",
+                },
+                "base_sample_count_required": 8400,
+                "small_k_execution_adaptation_disclosed": True,
+            }
+            if methods == OFFICIAL_METHODS
+            else None
+        ),
         "artifacts": artifacts,
         "class_split_sha256": _sha256(split_path),
         "packages": packages,
@@ -208,6 +251,11 @@ def build(args: argparse.Namespace) -> dict:
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--experiment-id", required=True)
+    parser.add_argument(
+        "--methods",
+        default=",".join(METHODS),
+        help="comma-separated locked method pair",
+    )
     parser.add_argument("--run-root", required=True)
     parser.add_argument("--target-cache-root", required=True)
     parser.add_argument("--class-split", type=Path, required=True)

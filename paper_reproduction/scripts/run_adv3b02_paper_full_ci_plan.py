@@ -14,6 +14,7 @@ from typing import Any, Sequence
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 METHODS = ("csil_paper_full", "mopc_hr_paper_full")
+OFFICIAL_METHODS = ("csil_official_repo", "mopc_hr_official_repo")
 
 
 def _sha256(path: Path) -> str:
@@ -52,7 +53,7 @@ def _load_plan(path: Path) -> dict[str, Any]:
     plan = json.loads(path.read_text(encoding="utf-8-sig"))
     if plan.get("schema") != "cvs.phase2.adv3b02_paper_full_ci_plan.v1":
         raise ValueError("paper-full plan schema drift")
-    if tuple(plan.get("methods", [])) != METHODS:
+    if tuple(plan.get("methods", [])) not in (METHODS, OFFICIAL_METHODS):
         raise ValueError("paper-full methods drift")
     if plan.get("counts") != {"packages": 100, "cells": 800, "scenario_rows": 2400}:
         raise ValueError("paper-full matrix counts drift")
