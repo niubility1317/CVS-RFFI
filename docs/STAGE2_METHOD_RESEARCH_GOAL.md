@@ -332,10 +332,11 @@ K10完整确认硬门：
 8.首次完整125取得联合正收益后，只能以预注册的新seed和全新run ID运行另一份完整125确认；不得用第一次125选择结构、rank、`alpha`、量化、阈值或fallback。
 9.每次正式性能发布都必须把冻结矩阵按不可变row/job ID确定性分片，并通过共享动态队列调度到N607的GPU0–7；在8张GPU均可安全使用时，每张卡至少分配一个worker，尽量让8卡同时工作，并通过最长任务优先或等价负载均衡减少尾部空转。
 10.发布前记录8张GPU的已有进程、显存和可用slot。默认每卡最多2个训练进程；不得杀死、暂停或迁移无关任务。若部分GPU已满，只使用其余安全slot并排队等待，不得为追求8卡占用而超配，也不得因此缩窄正式矩阵。
-11.同一run ID只有一个实验runner负责preflight、精确同步、远端校验、启动、短连接监控和artifact回收。runner必须在报告中记录逐GPU的job分配、并发上限、启动/结束时间、利用率或可观测替代量、失败重排和尾部空闲原因；单job失败只按冻结retry规则重入队列，不能改变方法或参数。
-12.服务器runner执行上一revision期间，主agent继续下一DA候选的只读设计、实现准备和历史复盘，不线性等待N607。
+11.同一run ID只有一个实验runner负责preflight、精确同步、远端校验、启动、实验健康检查、短连接监控和artifact回收。runner必须在报告中记录逐GPU的job分配、并发上限、启动/结束时间、利用率或可观测替代量、失败重排和尾部空闲原因；单job失败只按冻结retry规则重入队列，不能改变方法或参数。
+12.完整125是性能证据矩阵，不是要求技术故障自然跑完。正式启动后必须先执行首波健康检查：只读取PID/parent-child/CWD/cmdline、GPU利用率与显存、row exit、异常指纹、prediction/score数量和artifact闭合，不得读取准确率或据性能早停。若任一P0协议/安全错误发生，或至少2个不同row在没有prediction时出现相同确定性异常指纹，runner必须立即停止继续派发，核对进程归属后终止且仅终止本run进程，确认GPU释放与SSH残留为0，并回收partial日志及失败row；不得等待其余row自然失败。技术修复必须经过本地专项测试、独立P0/P1 review、Git提交和全新不可覆盖run ID，禁止原run续跑或覆盖。
+13.服务器runner执行上一revision期间，主agent继续下一DA候选的只读设计、实现准备和历史复盘，不线性等待N607。
 
-没有完整prediction只能标记`TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。完成prediction但性能未达门标记`COMPLETED_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE`，记录被证伪假设后立即进入下一revision；不得在同一revision上根据query结果补丁式调参。
+没有完整prediction只能标记`TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。因系统性技术故障触发健康止损时同时标记`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE`，记录停止阈值、异常指纹、已启动/完成/失败row和prediction/score数量；该状态不是性能结果。完成prediction但性能未达门标记`COMPLETED_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE`，记录被证伪假设后立即进入下一revision；不得在同一revision上根据query结果补丁式调参。
 
 ## 12.研发自由、重入与停止边界
 

@@ -66,3 +66,53 @@ parent已经证明source/input/checkpoint/runtime SHA、3,959个Git blob、py_co
 |launcher/row/prediction/score|`0/125 / 0/125 / 0/375 / 0/1875`|
 |parity/archive/coverage generation|`NO / NO / NO`；只复用冻结artifact|
 |最终状态|`PREREGISTERED / NO_PERFORMANCE_RESULT`|
+
+## Runner执行记录
+
+- `2026-07-23T17:24:57+08:00`：direct只读preflight通过；身份为`szu2070436088@dell-DSS8440`，项目根可见，GPU0-7均为`0%/10MiB`。
+- `2026-07-23T17:25:xx+08:00`：落地前安全门：全新远端run根`ABSENT`、外部cache/authority/checkpoint/runtime均`PRESENT`、`/home`剩余约7.5T；未发现同一DSSC runner。根目录`E:\type10-7`不是Git仓库；本报告按授权仅更新非Git承载面，Git镜像由主agent负责。
+- 下步：创建且仅创建`<run>`、`input/`、`source/`、`logs/`，精确同步冻结5文件并核验SHA/3,959 entries/`py_compile`，随后GPU1进行zeroIQ与非字典序registry技术smoke。
+
+## Runner落地与技术smoke证据
+
+- landing：远端仅创建`<run>/input`、`<run>/source`、`<run>/logs`。5个冻结输入SHA与预注册表一致；source ZIP为`3,959` entries；runner/method/test-entry SHA分别为`ab29bb5c...f55b`、`d087030f...7bc1`、`b95224be...d0bb`，远端`py_compile`通过。
+- GPU1技术smoke：`PASS`。物理GPU1经`CUDA_VISIBLE_DEVICES=1`映射为逻辑`cuda:0`；冻结checkpoint的zeroIQ身份特征形状为`[1,160]`；纯合成support构造的非字典序sealed registry为`old_z,new_m,old_a`；`query_rows_used=0`。`<run>/artifacts`在smoke前后均不存在。
+- smoke日志保留在`<run>/logs/gpu1_technical_smoke.log`。其中前两段是runner侧临时封装诊断（本地引号转义、退化零support被qKNN teacher gate拒绝）；均未读取真实query、未产生prediction/artifacts、未启动矩阵。最终最小技术断言通过后才允许进入正式启动门。
+
+## 唯一正式启动命令（待实时门后detach）
+
+```text
+cd <run>/source/code
+PYTHONPATH=<run>/source/code /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python scripts/run_dssc_zdom_jg_qknn_r4_bcrr_125.py matrix --phase1-checkpoint /home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth --sealed-runtime /home/szu2070436088/2510044040/CV-SincNet/runs/d18_formal_k10_new5_rx20_1_seed713101_20260717_085303/input/sealed_feature_runtime.pt --package-method-lock <run>/input/somph_method_lock.json --dssc-method-lock <run>/input/dssc_method_lock.json --ground-bundle <run>/input/phase1_dssc_zdom_jg_ground_bundle.npz --coverage-receipt <run>/input/coverage_receipt.json --cache-root /home/szu2070436088/2510044040/CV-SincNet/runs/d18_formal_k10_new5_rx20_1_seed713101_20260717_085303/cache_matrix --authority-root /home/szu2070436088/2510044040/CV-SincNet/runs/d81_comprehensive_125_v2auth_20260720/authority_controller/authority_final_retry1 --run-root <run>/artifacts --gpu-ids 0,1,2,3,4,5,6,7
+```
+
+该命令只会在最后一次`test ! -e <run>/artifacts`记录`PASS`后detach一次。预期`launcher.pid`、`launcher.exit`、`matrix.stdout.log`、`matrix.stderr.log`以及由matrix原子创建的`artifacts/`；launch不是性能结论。
+
+## 启动回填
+
+- `ARTIFACTS_PREDETACH_ABSENT=PASS`已写入`logs/pre_detach_artifacts_gate.log`，随后唯一detach完成，launcher PID=`837838`。
+- 首次短连接健康检查：PID存活，`launcher.exit`尚不存在；`artifacts/`已由matrix创建；GPU0-7均出现约`18-22%`利用率和约`609-611MiB`显存占用。标准输出/错误输出当时尚无内容，未观察到traceback或性能指标。
+- 当前状态：`RUNNING / NO_PERFORMANCE_RESULT`。继续以短连接监控自然exit；不得以启动或GPU占用宣称性能成功。
+
+## 停止、回收与技术失败闭环
+
+用户在运行期间明确要求立即止损。先只读核定主PID`837838`及其子bash、matrix Python和row Python的父子关系、CWD和命令行；仅对这11个可证明属于本run的PID发送`TERM`。5秒后本run进程数为0，GPU0-7均回到`0%/10MiB`，无需升级信号，未影响其他任务。
+
+|字段|最终证据|
+|---|---|
+|运行终态|`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`；用户授权TERM停止，非自然exit|
+|主PID|`837838`；已终止且复核不存在|
+|启动/完成|28个job目录已创建；20/125份launcher receipt自然完成，均为`TECHNICAL_FAILURE`；其余已启动row在止损时中断|
+|row/prediction/score|`0/125`row receipt；`0/375`prediction；`0/1875`score|
+|matrix汇总|`matrix_manifest.json`存在，SHA=`d24ac53df79405e9f9820de6d5dc867635106e8d7b0c3eb059f791fbbffde94b`；`matrix_exit.json`、`aggregate_index.json`不存在|
+|launcher exit|`launcher.pid`已回收；因TERM中断wrapper，`launcher.exit`不存在|
+|parity/archive/coverage|均为冻结复用物；本run未生成parity/archive/coverage|
+|回收|已拉回`logs/`、`launcher.pid`和部分`artifacts/`至`remote_artifacts/`：1,415个文件、807,299,279B；远端与本地规范化SHA inventory均为`8cefe68543c174b69dc30e966e3a937e5b3b77149943dec8a103ca0355134eae`|
+
+### 首个可定位根因
+
+首个可定位失败row为`dssc_r1f_rx_20-1_s_713102_k_10_n_20`的`before/leo_clear_weak`。固定包的IQ输入本身均非零；冻结原始模型的`raw_support`60条、`raw_query`120条均无零范数，ground模型的`ground_support`60条也无零范数。经S_B ground adapter部署后的`ground_query`120条中有2条零范数（最小范数`0.0`，首个索引`7`），随后在`predict_five_arms`的ground qKNN评分路径`_svrn_scores -> score_zid_student_t_logits -> normalize_zid_rows`触发`z_id rows contain a zero-norm vector`。该ground路径由`M_OTHER/M_JOINT`共享；该row尚未形成任何prediction或性能指标。
+
+对同一固定包的归一化前`feat_joint`直接复核确认这不是归一化伪影：ground S_B部署模型的support 60条为`0`零向量、最小范数`0.01040600147`；query120条为`2`零向量，索引`[7,19]`、最小范数`0.0`。因此首个产生点是ground S_B adapter部署后模型的query输出端，而不是IQ输入或support。
+
+因此本run只证明技术失败已被安全停止并完整保留部分证据，不提供任何性能结论、方法比较或promotable声明。
