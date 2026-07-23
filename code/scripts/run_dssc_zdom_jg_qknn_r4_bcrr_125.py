@@ -55,6 +55,13 @@ RECEIVERS = ("20-1", "3-19", "7-14", "7-7", "8-8")
 SEEDS = (713102, 713103, 713104, 713105, 713106)
 SLICES = ((10, 5), (10, 10), (10, 20), (5, 20), (1, 20))
 QUERY_PER_TX = 20
+LAUNCHER_RECEIPT_SCHEMA = (
+    "cvs.dssc.full125.launcher_receipt.cuda_namespace.v1"
+)
+ROW_DEVICE_NAMESPACE_EXECUTION_SCHEMA = (
+    "cvs.dssc.full125.row_device_namespace.execution.v1"
+)
+ROW_LOGICAL_DEVICE = "cuda:0"
 
 
 class DSSCLauncherError(ValueError):
@@ -154,22 +161,42 @@ def _exact_adv3b02(checkpoint_path: str | Path, *, device: str):
     return model.eval(), {"checkpoint_sha256": CHECKPOINT_SHA256, "missing_keys": 0, "unexpected_keys": 0, "inference_runtime": "exact_state_dict_rebuild"}
 
 
-def _activate_row_device(device: str) -> None:
+def _activate_row_device(device: str) -> dict[str, Any]:
     """Bind implicit CUDA allocations before any sealed runtime is opened."""
     import torch
 
     resolved = torch.device(device)
+    device_count = int(torch.cuda.device_count())
     if (
         resolved.type != "cuda"
         or resolved.index is None
         or not torch.cuda.is_available()
         or resolved.index < 0
-        or resolved.index >= torch.cuda.device_count()
+        or resolved.index >= device_count
     ):
         raise DSSCLauncherError("formal row requires an available indexed CUDA device")
     torch.cuda.set_device(resolved)
-    if torch.cuda.current_device() != resolved.index:
+    current_device = int(torch.cuda.current_device())
+    if current_device != resolved.index:
         raise DSSCLauncherError("formal row CUDA current-device binding failed")
+    visible = os.environ.get("CUDA_VISIBLE_DEVICES")
+    visible_physical_gpu_id = (
+        int(visible)
+        if (
+            type(visible) is str
+            and visible.isdecimal()
+            and str(int(visible)) == visible
+        )
+        else None
+    )
+    return {
+        "schema": ROW_DEVICE_NAMESPACE_EXECUTION_SCHEMA,
+        "cuda_visible_devices": visible,
+        "visible_physical_gpu_id": visible_physical_gpu_id,
+        "requested_logical_device": str(resolved),
+        "torch_cuda_device_count": device_count,
+        "torch_cuda_current_device": current_device,
+    }
 
 
 def _numpy_float32_tensor(values: Any, *, device: str):
@@ -784,7 +811,10 @@ def _score_arms(output: Path, build: Mapping[str, Any], publications: Mapping[st
 def run_row(a: argparse.Namespace) -> dict[str, Any]:
     if a.k_shot not in (1, 5, 10) or (a.k_shot, a.new_class_count) not in SLICES:
         raise DSSCLauncherError("row is outside frozen full125 slice set")
-    _activate_row_device(a.device)
+    device_namespace_execution = _activate_row_device(a.device)
+    _validate_formal_row_device_namespace_execution(
+        device_namespace_execution
+    )
     output = Path(a.output_root)
     if output.exists():
         raise DSSCLauncherError("row output must be a fresh path")
@@ -870,6 +900,7 @@ def run_row(a: argparse.Namespace) -> dict[str, Any]:
         "qknn_lock_digest": qknn_lock.lock_digest,
         "query_truth_in_predictor": False,
         "query_rows_used_for_fit": 0,
+        "device_namespace_execution": device_namespace_execution,
         "full_metrics": scores,
         "prediction_sha256_by_state_arm": publications,
         "prediction_receipt_sha256_by_state": prediction_receipts,
@@ -961,6 +992,7 @@ def _validate_completed_row_receipt(
     receipt: Mapping[str, Any],
     *,
     expected_hashes: Mapping[str, str],
+    launcher_device_namespace: Mapping[str, Any],
 ) -> None:
     expected = {
         "candidate": CANDIDATE,
@@ -1003,6 +1035,10 @@ def _validate_completed_row_receipt(
         receipt.get(key) != value for key, value in expected.items()
     ):
         raise DSSCLauncherError("row receipt identity/hash closure drift")
+    _validate_row_launcher_device_namespace_binding(
+        receipt.get("device_namespace_execution"),
+        launcher_device_namespace,
+    )
     row_root = Path(str(job["output_root"]))
     if not row_root.is_dir() or row_root.is_symlink():
         raise DSSCLauncherError("completed row root is absent or not a regular directory")
@@ -1163,29 +1199,37 @@ def _validate_launcher_receipt(
     job: Mapping[str, Any],
     *,
     allowed_gpu_ids: Sequence[int],
-) -> None:
+) -> dict[str, Any]:
     job_id = str(job["job_id"])
     launcher_root = root / "launcher"
     receipt_path = launcher_root / f"{job_id}.launcher_receipt.json"
     if not receipt_path.is_file() or receipt_path.is_symlink():
         raise DSSCLauncherError("completed subprocess has no launcher receipt")
     receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
-    gpu_id = receipt.get("gpu_id")
+    device_namespace = receipt.get("device_namespace")
+    physical_gpu_id = (
+        device_namespace.get("physical_gpu_id")
+        if type(device_namespace) is dict
+        else None
+    )
     if (
-        receipt.get("candidate") != CANDIDATE
+        receipt.get("schema") != LAUNCHER_RECEIPT_SCHEMA
+        or receipt.get("candidate") != CANDIDATE
         or receipt.get("job_id") != job_id
         or receipt.get("status") != "ROW_PROCESS_COMPLETE"
         or receipt.get("returncode") != 0
-        or type(gpu_id) is not int
-        or gpu_id not in allowed_gpu_ids
-        or receipt.get("device") != f"cuda:{gpu_id}"
+        or type(physical_gpu_id) is not int
+        or physical_gpu_id not in allowed_gpu_ids
+        or device_namespace != _row_device_namespace(physical_gpu_id)
         or receipt.get("exception") is not None
         or receipt.get("schedule_cost") != job["schedule_cost"]
         or not isinstance(receipt.get("duration_seconds"), (int, float))
         or not np.isfinite(receipt["duration_seconds"])
         or receipt["duration_seconds"] < 0
     ):
-        raise DSSCLauncherError("launcher receipt identity/exit/GPU closure drift")
+        raise DSSCLauncherError(
+            "launcher receipt identity/exit/GPU namespace closure drift"
+        )
     for stream in ("stdout", "stderr"):
         expected_path = launcher_root / f"{job_id}.{stream}.log"
         actual_path = Path(str(receipt.get(f"{stream}_path", "")))
@@ -1196,6 +1240,120 @@ def _validate_launcher_receipt(
             or receipt.get(f"{stream}_sha256") != sha256_file(expected_path)
         ):
             raise DSSCLauncherError("launcher log artifact/hash closure drift")
+    return dict(device_namespace)
+
+
+def _row_device_namespace(physical_gpu_id: int) -> dict[str, Any]:
+    if type(physical_gpu_id) is not int or physical_gpu_id < 0:
+        raise DSSCLauncherError(
+            "row physical GPU ID must be a nonnegative integer"
+        )
+    return {
+        "physical_gpu_id": physical_gpu_id,
+        "logical_device": ROW_LOGICAL_DEVICE,
+        "cuda_visible_devices": str(physical_gpu_id),
+    }
+
+
+def _expected_row_device_namespace_execution(
+    physical_gpu_id: int,
+) -> dict[str, Any]:
+    _row_device_namespace(physical_gpu_id)
+    return {
+        "schema": ROW_DEVICE_NAMESPACE_EXECUTION_SCHEMA,
+        "cuda_visible_devices": str(physical_gpu_id),
+        "visible_physical_gpu_id": physical_gpu_id,
+        "requested_logical_device": ROW_LOGICAL_DEVICE,
+        "torch_cuda_device_count": 1,
+        "torch_cuda_current_device": 0,
+    }
+
+
+def _validate_formal_row_device_namespace_execution(
+    evidence: Mapping[str, Any],
+) -> None:
+    physical_gpu_id = (
+        evidence.get("visible_physical_gpu_id")
+        if type(evidence) is dict
+        else None
+    )
+    if (
+        type(physical_gpu_id) is not int
+        or evidence
+        != _expected_row_device_namespace_execution(physical_gpu_id)
+    ):
+        raise DSSCLauncherError(
+            "formal row CUDA namespace execution evidence drift"
+        )
+
+
+def _validate_row_launcher_device_namespace_binding(
+    row_execution: Any,
+    launcher_namespace: Mapping[str, Any],
+) -> None:
+    physical_gpu_id = (
+        launcher_namespace.get("physical_gpu_id")
+        if type(launcher_namespace) is dict
+        else None
+    )
+    if (
+        type(physical_gpu_id) is not int
+        or launcher_namespace != _row_device_namespace(physical_gpu_id)
+        or row_execution
+        != _expected_row_device_namespace_execution(physical_gpu_id)
+    ):
+        raise DSSCLauncherError(
+            "launcher/row CUDA namespace execution binding drift"
+        )
+
+
+def _row_subprocess_environment(physical_gpu_id: int) -> dict[str, str]:
+    device_namespace = _row_device_namespace(physical_gpu_id)
+    environment = os.environ.copy()
+    environment["CUDA_VISIBLE_DEVICES"] = device_namespace[
+        "cuda_visible_devices"
+    ]
+    return environment
+
+
+def _row_subprocess_command(
+    job: Mapping[str, Any], a: argparse.Namespace
+) -> list[str]:
+    return [
+        sys.executable,
+        str(Path(__file__).resolve()),
+        "row",
+        "--cache-manifest",
+        str(job["cache_manifest"]),
+        "--authority-bundle",
+        str(job["authority_bundle"]),
+        "--authority-commit-sha256",
+        str(job["authority_commit_sha256"]),
+        "--phase1-checkpoint",
+        a.phase1_checkpoint,
+        "--sealed-runtime",
+        a.sealed_runtime,
+        "--package-method-lock",
+        a.package_method_lock,
+        "--dssc-method-lock",
+        a.dssc_method_lock,
+        "--ground-bundle",
+        a.ground_bundle,
+        "--coverage-receipt",
+        a.coverage_receipt,
+        "--output-root",
+        str(job["output_root"]),
+        "--receiver",
+        str(job["receiver"]),
+        "--seed",
+        str(job["seed"]),
+        "--k-shot",
+        str(job["k_shot"]),
+        "--new-class-count",
+        str(job["new_class_count"]),
+        "--device",
+        ROW_LOGICAL_DEVICE,
+    ]
 
 
 def run_matrix(a: argparse.Namespace) -> dict[str, Any]:
@@ -1273,11 +1431,11 @@ def run_matrix(a: argparse.Namespace) -> dict[str, Any]:
     }
     _write_json_new(root / "matrix_manifest.json", manifest)
     available: queue.Queue[int] = queue.Queue()
-    for gpu in gpu_ids:
-        available.put(gpu)
+    for physical_gpu in gpu_ids:
+        available.put(physical_gpu)
 
     def one(job: Mapping[str, Any]) -> tuple[str, int]:
-        gpu = available.get()
+        physical_gpu = available.get()
         job_id = str(job["job_id"])
         launcher_root = root / "launcher"
         stdout_path = launcher_root / f"{job_id}.stdout.log"
@@ -1288,7 +1446,8 @@ def run_matrix(a: argparse.Namespace) -> dict[str, Any]:
         returncode = 125
         exception_text: str | None = None
         try:
-            command = [sys.executable, str(Path(__file__).resolve()), "row", "--cache-manifest", str(job["cache_manifest"]), "--authority-bundle", str(job["authority_bundle"]), "--authority-commit-sha256", str(job["authority_commit_sha256"]), "--phase1-checkpoint", a.phase1_checkpoint, "--sealed-runtime", a.sealed_runtime, "--package-method-lock", a.package_method_lock, "--dssc-method-lock", a.dssc_method_lock, "--ground-bundle", a.ground_bundle, "--coverage-receipt", a.coverage_receipt, "--output-root", str(job["output_root"]), "--receiver", str(job["receiver"]), "--seed", str(job["seed"]), "--k-shot", str(job["k_shot"]), "--new-class-count", str(job["new_class_count"]), "--device", f"cuda:{gpu}"]
+            command = _row_subprocess_command(job, a)
+            environment = _row_subprocess_environment(physical_gpu)
             launcher_root.mkdir(parents=True, exist_ok=True)
             out_fd = os.open(
                 stdout_path,
@@ -1314,6 +1473,7 @@ def run_matrix(a: argparse.Namespace) -> dict[str, Any]:
                     check=False,
                     stdout=stdout_handle,
                     stderr=stderr_handle,
+                    env=environment,
                 ).returncode
         except BaseException as exc:
             exception_text = f"{type(exc).__name__}: {exc}"
@@ -1324,13 +1484,13 @@ def run_matrix(a: argparse.Namespace) -> dict[str, Any]:
                 if log_path.is_file():
                     os.chmod(log_path, stat.S_IREAD)
             launcher_receipt = {
+                "schema": LAUNCHER_RECEIPT_SCHEMA,
                 "candidate": CANDIDATE,
                 "job_id": job_id,
                 "status": "ROW_PROCESS_COMPLETE"
                 if returncode == 0
                 else "TECHNICAL_FAILURE",
-                "gpu_id": gpu,
-                "device": f"cuda:{gpu}",
+                "device_namespace": _row_device_namespace(physical_gpu),
                 "start_utc": start_utc,
                 "end_utc": end_utc,
                 "duration_seconds": float(time.perf_counter() - start_tick),
@@ -1349,7 +1509,7 @@ def run_matrix(a: argparse.Namespace) -> dict[str, Any]:
             try:
                 _write_json_new(receipt_path, launcher_receipt)
             finally:
-                available.put(gpu)
+                available.put(physical_gpu)
         return job_id, int(returncode)
 
     with ThreadPoolExecutor(max_workers=len(gpu_ids)) as pool:
@@ -1361,13 +1521,18 @@ def run_matrix(a: argparse.Namespace) -> dict[str, Any]:
     receipts = []
     try:
         for job in jobs:
-            _validate_launcher_receipt(root, job, allowed_gpu_ids=gpu_ids)
+            launcher_device_namespace = _validate_launcher_receipt(
+                root, job, allowed_gpu_ids=gpu_ids
+            )
             receipt_path = Path(str(job["output_root"])) / "row_receipt.json"
             if not receipt_path.is_file():
                 raise DSSCLauncherError("completed subprocess has no row receipt")
             receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
             _validate_completed_row_receipt(
-                job, receipt, expected_hashes=expected_hashes
+                job,
+                receipt,
+                expected_hashes=expected_hashes,
+                launcher_device_namespace=launcher_device_namespace,
             )
             receipts.append(receipt)
     except BaseException as exc:

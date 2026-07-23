@@ -6,9 +6,10 @@
 - 创建时间：`2026-07-23T15:06:24+08:00`
 - operator：主agent；sole launch owner：`/root/dssc_pkgfix1_independent_review`（独立复核完成后切换为本run唯一`gpt-5.6-terra high`runner）
 - candidate：`DSSC_ZDOM_JG_QKNN_R4_BCRR/design-r1f`；implementation tag=`techfix1`；package tag=`pkgfix1`
-- 状态：`LOCAL_VERIFIED / PREREGISTERED / NO_PERFORMANCE_RESULT`
+- 状态：`BLOCKED_PRE_LAUNCH / NO_PERFORMANCE_RESULT`
 - 科学方法提交：`849fa342cd46cb8294b5d9b4f5358cea630d0643`
 - 技术修复提交：`f02dd8b063437c0916af8bb5e9b39416b3d13f17`
+- 发布控制提交：`d63dd28d2102607a1604687d2c6ec67438f4eeb7`
 - parent预启动失败run：`dssc_zdom_jg_qknn_r4_bcrr_full125_r1f_techfix1_f02dd8b0_20260723_145208`
 - retry=`false`；本run使用全新不可覆盖root，不复用parent。
 
@@ -73,10 +74,10 @@ env PYTHONPATH=<run>/source/code OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NU
 
 ## Runner回填
 
-- GPU1兼容smoke：待回填
-- landed/PID/GPU：待回填
-- exit：待回填
-- archive/parity/coverage：`PRESENT_REUSED / 待远端确认`
+- GPU1兼容smoke：`FAIL`；已读回`current_device=1`并以`map_location=cuda:1`加载sealed runtime，但零IQ前向检测input=`cuda:1`、TorchScript convolution filters=`cuda:0`
+- landed/PID/GPU：direct preflight、不可覆盖root创建、5文件landing、远端全部冻结SHA、ZIP条目SHA与`py_compile`均PASS；未产生PID，未占用新增GPU槽
+- exit：完整125启动命令未执行；无`launcher.pid`、无`artifacts`、无本run进程；retry=`false`
+- archive/parity/coverage：`PRESENT_REUSED`；coverage输入及checkpoint/runtime远端SHA均PASS，archive/parity未生成或修改
 - prediction/score：`0/0（未启动）`
 - 风险：GPU并存负载、TorchScript设备绑定、NumPy2桥接；均只按冻结技术门观察，不改变科学设置。
-- 最终裁决：待回填
+- 最终裁决：`BLOCKED_PRE_LAUNCH / NO_PERFORMANCE_RESULT`；不得复用本run，下一技术修订改为每物理GPU独立逻辑`cuda:0`命名空间

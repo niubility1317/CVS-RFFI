@@ -1,6 +1,7 @@
 import argparse
 import copy
 import json
+import os
 from pathlib import Path
 import stat
 import sys
@@ -424,7 +425,7 @@ def test_coverage_receipt_rejects_wrong_sha(tmp_path):
         runner._validate_coverage_receipt(receipt)
 
 
-def _materialized_row_receipt(job, expected):
+def _materialized_row_receipt(job, expected, *, physical_gpu_id=2):
     row_root = Path(job["output_root"])
     row_root.mkdir(parents=True)
     publications = {}
@@ -547,6 +548,10 @@ def _materialized_row_receipt(job, expected):
         ).lock_digest,
         "query_truth_in_predictor": False,
         "query_rows_used_for_fit": 0,
+        "device_namespace_execution":
+            runner._expected_row_device_namespace_execution(
+                physical_gpu_id
+            ),
         "full_metrics": metrics,
         "prediction_sha256_by_state_arm": publications,
         "prediction_receipt_sha256_by_state": prediction_receipts,
@@ -578,8 +583,12 @@ def test_full125_receipt_validation_recomputes_artifacts_and_rejects_tamper(tmp_
         "geoff_r8_coverage_sha256": GEOFF_R8_COVERAGE_SHA256,
     }
     valid = _materialized_row_receipt(job, expected)
+    launcher_namespace = runner._row_device_namespace(2)
     runner._validate_completed_row_receipt(
-        job, valid, expected_hashes=expected
+        job,
+        valid,
+        expected_hashes=expected,
+        launcher_device_namespace=launcher_namespace,
     )
     for key, replacement in (
         ("receiver", "7-7"),
@@ -590,13 +599,54 @@ def test_full125_receipt_validation_recomputes_artifacts_and_rejects_tamper(tmp_
         tampered[key] = replacement
         with pytest.raises(runner.DSSCLauncherError):
             runner._validate_completed_row_receipt(
-                job, tampered, expected_hashes=expected
+                job,
+                tampered,
+                expected_hashes=expected,
+                launcher_device_namespace=launcher_namespace,
             )
+    for field, replacement in (
+        ("schema", "cvs.dssc.full125.row_device_namespace.invalid"),
+        ("cuda_visible_devices", "5"),
+        ("visible_physical_gpu_id", 5),
+        ("requested_logical_device", "cuda:1"),
+        ("torch_cuda_device_count", 8),
+        ("torch_cuda_current_device", 1),
+    ):
+        tampered = copy.deepcopy(valid)
+        tampered["device_namespace_execution"][field] = replacement
+        with pytest.raises(runner.DSSCLauncherError, match="namespace"):
+            runner._validate_completed_row_receipt(
+                job,
+                tampered,
+                expected_hashes=expected,
+                launcher_device_namespace=launcher_namespace,
+            )
+    missing_namespace = copy.deepcopy(valid)
+    del missing_namespace["device_namespace_execution"]
+    with pytest.raises(runner.DSSCLauncherError, match="namespace"):
+        runner._validate_completed_row_receipt(
+            job,
+            missing_namespace,
+            expected_hashes=expected,
+            launcher_device_namespace=launcher_namespace,
+        )
+    with pytest.raises(runner.DSSCLauncherError, match="namespace"):
+        runner._validate_completed_row_receipt(
+            job,
+            valid,
+            expected_hashes=expected,
+            launcher_device_namespace=runner._row_device_namespace(5),
+        )
     missing = runner._prediction_artifact_path(Path(job["output_root"]), "after", "M_JOINT")
     missing.chmod(stat.S_IWRITE)
     missing.unlink()
     with pytest.raises(runner.DSSCLauncherError, match="artifact/hash"):
-        runner._validate_completed_row_receipt(job, valid, expected_hashes=expected)
+        runner._validate_completed_row_receipt(
+            job,
+            valid,
+            expected_hashes=expected,
+            launcher_device_namespace=launcher_namespace,
+        )
 
 
 def test_launcher_receipt_recomputes_log_hashes(tmp_path):
@@ -614,11 +664,11 @@ def test_launcher_receipt_recomputes_log_hashes(tmp_path):
     runner._write_json_new(
         launcher / f"{job['job_id']}.launcher_receipt.json",
         {
+            "schema": runner.LAUNCHER_RECEIPT_SCHEMA,
             "candidate": CANDIDATE,
             "job_id": job["job_id"],
             "status": "ROW_PROCESS_COMPLETE",
-            "gpu_id": 2,
-            "device": "cuda:2",
+            "device_namespace": runner._row_device_namespace(2),
             "duration_seconds": 1.0,
             "returncode": 0,
             "stdout_path": str(stdout),
@@ -633,6 +683,91 @@ def test_launcher_receipt_recomputes_log_hashes(tmp_path):
     stdout.chmod(stat.S_IWRITE)
     stdout.write_bytes(b"tampered\n")
     with pytest.raises(runner.DSSCLauncherError, match="log artifact/hash"):
+        runner._validate_launcher_receipt(root, job, allowed_gpu_ids=(2,))
+
+
+def test_row_subprocess_command_and_environment_isolate_physical_gpu(
+    monkeypatch, tmp_path
+):
+    monkeypatch.setenv("CUDA_VISIBLE_DEVICES", "6,7")
+    job = {
+        "cache_manifest": tmp_path / "cache_set.json",
+        "authority_bundle": tmp_path / "authority",
+        "authority_commit_sha256": "a" * 64,
+        "output_root": tmp_path / "row",
+        "receiver": "20-1",
+        "seed": 713102,
+        "k_shot": 5,
+        "new_class_count": 20,
+    }
+    args = argparse.Namespace(
+        phase1_checkpoint="checkpoint.pth",
+        sealed_runtime="sealed_runtime.pt",
+        package_method_lock="somph_method_lock.json",
+        dssc_method_lock="dssc_method_lock.json",
+        ground_bundle="ground_bundle.npz",
+        coverage_receipt="coverage_receipt.json",
+    )
+    command = runner._row_subprocess_command(job, args)
+    environment_2 = runner._row_subprocess_environment(2)
+    environment_5 = runner._row_subprocess_environment(5)
+    device_index = command.index("--device")
+    assert command[device_index + 1] == runner.ROW_LOGICAL_DEVICE == "cuda:0"
+    assert command.count("--device") == 1
+    assert environment_2 is not environment_5
+    assert environment_2["CUDA_VISIBLE_DEVICES"] == "2"
+    assert environment_5["CUDA_VISIBLE_DEVICES"] == "5"
+    assert os.environ["CUDA_VISIBLE_DEVICES"] == "6,7"
+    environment_2["CUDA_VISIBLE_DEVICES"] = "changed"
+    assert environment_5["CUDA_VISIBLE_DEVICES"] == "5"
+
+
+@pytest.mark.parametrize(
+    ("field", "replacement"),
+    (
+        ("schema", "cvs.dssc.full125.launcher_receipt.invalid"),
+        ("physical_gpu_id", 5),
+        ("logical_device", "cuda:2"),
+        ("cuda_visible_devices", "5"),
+    ),
+)
+def test_launcher_receipt_rejects_cuda_namespace_drift(
+    tmp_path, field, replacement
+):
+    root = tmp_path / "matrix"
+    launcher = root / "launcher"
+    launcher.mkdir(parents=True)
+    job = {
+        "job_id": "dssc_r1f_rx_20-1_s_713102_k_5_n_20",
+        "schedule_cost": {"cost": 1},
+    }
+    stdout = launcher / f"{job['job_id']}.stdout.log"
+    stderr = launcher / f"{job['job_id']}.stderr.log"
+    stdout_sha = runner._write_bytes_new(stdout, b"complete\n")
+    stderr_sha = runner._write_bytes_new(stderr, b"")
+    receipt = {
+        "schema": runner.LAUNCHER_RECEIPT_SCHEMA,
+        "candidate": CANDIDATE,
+        "job_id": job["job_id"],
+        "status": "ROW_PROCESS_COMPLETE",
+        "device_namespace": runner._row_device_namespace(2),
+        "duration_seconds": 1.0,
+        "returncode": 0,
+        "stdout_path": str(stdout),
+        "stdout_sha256": stdout_sha,
+        "stderr_path": str(stderr),
+        "stderr_sha256": stderr_sha,
+        "exception": None,
+        "schedule_cost": job["schedule_cost"],
+    }
+    if field == "schema":
+        receipt[field] = replacement
+    else:
+        receipt["device_namespace"][field] = replacement
+    runner._write_json_new(
+        launcher / f"{job['job_id']}.launcher_receipt.json", receipt
+    )
+    with pytest.raises(runner.DSSCLauncherError, match="GPU namespace"):
         runner._validate_launcher_receipt(root, job, allowed_gpu_ids=(2,))
 
 
@@ -689,6 +824,23 @@ def test_row_device_binding_sets_and_reads_back_indexed_cuda(monkeypatch):
     assert selected == [5]
     with pytest.raises(runner.DSSCLauncherError, match="indexed CUDA"):
         runner._activate_row_device("cpu")
+
+
+def test_row_device_execution_evidence_uses_environment_and_torch_observation(
+    monkeypatch,
+):
+    selected = []
+    monkeypatch.setenv("CUDA_VISIBLE_DEVICES", "4")
+    monkeypatch.setattr(torch.cuda, "is_available", lambda: True)
+    monkeypatch.setattr(torch.cuda, "device_count", lambda: 1)
+    monkeypatch.setattr(
+        torch.cuda, "set_device", lambda value: selected.append(value.index)
+    )
+    monkeypatch.setattr(torch.cuda, "current_device", lambda: selected[-1])
+    evidence = runner._activate_row_device("cuda:0")
+    assert selected == [0]
+    assert evidence == runner._expected_row_device_namespace_execution(4)
+    runner._validate_formal_row_device_namespace_execution(evidence)
 
 
 def test_numpy2_safe_identity_feature_boundary_avoids_as_tensor(monkeypatch):

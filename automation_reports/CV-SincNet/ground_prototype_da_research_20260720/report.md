@@ -2133,3 +2133,13 @@ OTHER相对M0取得old-after`+0.012098`、seen-new`+0.011408`、H`+0.017067`、f
 方法提交=`849fa342cd46cb8294b5d9b4f5358cea630d0643`，首发run=`dssc_zdom_jg_qknn_r4_bcrr_full125_r1f_849fa342_20260723_141937`。direct N607 preflight、源码/input/checkpoint/runtime SHA、4文件编译、coverage/archive/parity绑定和GPU安全slot均通过；PID=`742449`在GPU0–7启动后自然退出，未retry。125份launcher receipt全部return1，row receipt/prediction/score分别为`0/0/0`，所以状态严格为`TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。
 
 完整回收的125份stderr显示两个共同运行时边界：119份非GPU0任务在sealed TorchScript前向时将内部默认CUDA0张量与row GPU混用；6份GPU0任务越过该点后，在runner自身`torch.as_tensor(ndarray)`处触发N607的PyTorch2.1＋NumPy2桥接失败。techfix1只在row打开sealed runtime前执行并读回`torch.cuda.set_device(row GPU)`，同时把runner全部ndarray→Tensor边界改为contiguous FP32 buffer→clone→device、Tensor→NumPy改为`tolist`→FP32；候选、五臂、矩阵、输入、loss、adapter、qKNN、BCRR、INT8和decision geometry均不变。新增CUDA设备负例与NumPy2桥接攻击后，本地`py_compile`通过，专项`23/23 passed`；真实ADV3B02 checkpoint＋sealed enrollment support无query smoke输出`[2,160]`有限FP32、两行norm均为1、query rows=0。独立终审=`MERGE / P0=0 / P1=0`。新run启动前还须在N607 GPU1执行零IQ/noquery兼容smoke；该技术smoke不产生prediction或性能结果。
+
+##### techfix1 pkgfix1预启动失败与techfix2闭合
+
+新run=`dssc_zdom_jg_qknn_r4_bcrr_full125_r1f_techfix1_pkgfix1_f02dd8b0_20260723_150624`使用不可覆盖远端root。direct preflight、源码与5项输入landing、全部冻结SHA、ZIP条目SHA及`py_compile`均通过；但GPU1零IQ/noquery smoke在`current_device=1`且`map_location=cuda:1`时仍发现TorchScript convolution filters位于`cuda:0`。因此完整125命令未执行，无PID、无新增GPU占用、无archive/coverage/prediction/score产物，最终状态=`BLOCKED_PRE_LAUNCH / NO_PERFORMANCE_RESULT`，本run不得复用。
+
+techfix2不把任务收缩到物理GPU0，而是保持GPU0–7共8个并行worker：父launcher为每个row设置唯一`CUDA_VISIBLE_DEVICES=<physical_gpu>`，该子进程只看见一张物理卡并统一以逻辑`cuda:0`加载TorchScript和运行row。LPT动态队列、每物理GPU同时1个本run worker、125项矩阵、五臂、输入、参数、loss、adapter、qKNN、BCRR、INT8和全部科学哈希均不变。
+
+首轮独立review发现P1：launcher收据记录了预期映射，但row不可变收据未回绑实际子进程命名空间。修订后，row在CUDA激活时从实际环境与PyTorch读取`CUDA_VISIBLE_DEVICES`、physical GPU、requested logical device、`device_count`及`current_device`；正式row严格要求单卡命名空间、`cuda:0`、`device_count=1/current_device=0`，并把固定schema evidence写入create-once row receipt。matrix最终验收将launcher的physical/visible/logical映射与row evidence逐字段交叉绑定，缺失或任一漂移均失败关闭。
+
+`ssr-gpu`下runner与专项测试`py_compile`通过，专项及设备命名空间负例`29/29 passed`，`git diff --check`通过；pytest退出后的Windows临时符号链接清理告警不影响退出码0。独立复审最终裁决=`MERGE / P0=0 / P1=0`。当前状态=`LOCAL_VERIFIED / NO_PERFORMANCE_RESULT`；下一步仅为Git提交、生成raw Git blob源码包、建立全新不可覆盖完整125 run报告并交唯一Terra runner发布。
