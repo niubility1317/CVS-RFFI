@@ -1,4 +1,4 @@
-"""Support-only ADV3B02 TS-DRQKNN-BCRR/r4-q2f32-bcr3 primitives.
+"""Support-only ADV3B02 TS-DRQKNN-BCRR/r5-q2f32-bcr3-zidtotal1-qzero1 primitives.
 
 This module is deliberately a small, typed runtime.  It has no capsule
 builder, truth-side scorer, receiver/TX input, query-label input, optimizer,
@@ -39,7 +39,11 @@ from cvsrffi.stage2_zid_student_t_qknn import (
 )
 
 
-CANDIDATE = "ADV3B02-TS-DRQKNN-BCRR/r4-q2f32-bcr3-zidtotal1"
+CANDIDATE = "ADV3B02-TS-DRQKNN-BCRR/r5-q2f32-bcr3-zidtotal1-qzero1"
+# This is a query-only prediction revision.  The state and codec schemas below
+# deliberately remain the r4 schemas: qzero1 neither changes nor persists
+# support, domain, BCRR, or INT8 state.
+PREDICTION_REVISION = "qzero1"
 SCHEMA = "cvs.stage2.adv3b02.ts_drqknn_bcrr.r4_q2f32_bcr3_zidtotal1"
 Z_DIM = 160
 RANK = 2
@@ -1080,6 +1084,86 @@ def qknn_logits(state: Int8QKNNState, query_zid: np.ndarray) -> np.ndarray:
                                counts=state.bank.support_counts, class_scales=state.bank.deployed_class_scales(),
                                query=_rows(query_zid, name="query z_id"), config=state.bank.config)
     return canonical[:, np.asarray([state.bank.classes.index(item) for item in state.classes], np.intp)]
+
+
+def _query_zid_exact_zero_mask(query_zid: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+    """Validate qzero1's input partition without normalizing exact-zero rows."""
+    zid = _rows(query_zid, name="query z_id")
+    zero_mask = np.all(zid == np.float32(0.0), axis=1)
+    norms = np.linalg.norm(zid.astype(np.float64), axis=1)
+    if not np.isfinite(norms).all() or np.any((~zero_mask) & (norms <= 1.0e-12)):
+        raise ADV3B02StateError("query z_id rejects tiny nonzero or nonfinite L2 norm")
+    return zid, zero_mask
+
+
+def _zero_query_analytic_logits(state: Int8QKNNState) -> np.ndarray:
+    """Student-t qKNN's frozen no-direction score at cos=0 and distance=2."""
+    h = state.bank.deployed_class_scales().astype(np.float64)
+    config = state.bank.config
+    if h.shape != (len(state.bank.classes),) or not np.isfinite(h).all() or np.any(h <= 0.0):
+        raise ADV3B02StateError("zero-query class bandwidth state drift")
+    canonical = np.asarray(
+        -config.kernel_volume_gamma * config.kernel_effective_dim * np.log(h)
+        -0.5 * (config.student_nu + config.kernel_effective_dim)
+        * np.log1p(2.0 / (config.student_nu * h * h)),
+        np.float32,
+    )
+    if not np.isfinite(canonical).all():
+        raise ADV3B02StateError("zero-query Student-t logits nonfinite")
+    return np.ascontiguousarray(
+        canonical[
+            np.asarray(
+                [state.bank.classes.index(item) for item in state.classes],
+                np.intp,
+            )
+        ]
+    )
+
+
+def _zero_class_tie_key(state: Int8QKNNState, class_handle: str) -> tuple[bytes, tuple[bytes, ...]]:
+    """Canonical label-free qzero hard-tie key for one deployed class payload."""
+    canonical_index = state.bank.classes.index(class_handle)
+    positions = np.flatnonzero(
+        state.bank.class_indices_int16 == canonical_index
+    ).astype(np.intp)
+    if len(positions) != state.bank.active_k:
+        raise ADV3B02StateError("zero-query class payload/cardinality drift")
+    positions = np.asarray(
+        sorted(positions.tolist(), key=lambda index: state.support_tokens[index].encode("utf-8")),
+        np.intp,
+    )
+    bank = state.bank
+    payload = b"".join(
+        (
+            np.ascontiguousarray(bank.codes_qint8[positions], dtype=np.int8).tobytes(),
+            np.ascontiguousarray(bank.scales_fp16[positions], dtype="<f2").tobytes(),
+            np.ascontiguousarray(bank.offsets_fp16[positions], dtype="<f2").tobytes(),
+            np.ascontiguousarray(bank.residual_codes_qint8[positions], dtype=np.int8).tobytes(),
+            np.ascontiguousarray(bank.residual_scales_fp16[positions], dtype="<f2").tobytes(),
+            np.ascontiguousarray(bank.class_scale_hi_fp16[canonical_index:canonical_index + 1], dtype="<f2").tobytes(),
+            np.ascontiguousarray(bank.class_scale_lo_fp16[canonical_index:canonical_index + 1], dtype="<f2").tobytes(),
+        )
+    )
+    tokens = tuple(state.support_tokens[index].encode("utf-8") for index in positions)
+    return payload, tokens
+
+
+def _zero_row_argmax(state: Int8QKNNState, scores: np.ndarray) -> tuple[int, bool]:
+    """Resolve only an exact qzero hard tie without labels, axis, or query data."""
+    row = np.asarray(scores, np.float32)
+    if row.ndim != 1 or row.shape != (len(state.classes),) or not np.isfinite(row).all():
+        raise ADV3B02StateError("zero-query tie score layout drift")
+    maximum = np.max(row)
+    ties = np.flatnonzero(row == maximum).astype(np.intp)
+    if not len(ties):
+        raise ADV3B02StateError("zero-query hard tie maximum drift")
+    if len(ties) == 1:
+        return int(ties[0]), False
+    keyed = [(_zero_class_tie_key(state, state.classes[index]), int(index)) for index in ties]
+    keys = [item[0] for item in keyed]
+    if len(set(keys)) != len(keys):
+        raise ADV3B02StateError("zero-query hard tie class payload collision")
+    return min(keyed, key=lambda item: item[0])[1], True
 
 
 def int8_audit(state: Int8QKNNState, _original_support_zid: np.ndarray | None = None) -> dict[str, Any]:
@@ -2261,11 +2345,77 @@ def predict_four_arms(states: Mapping[str, Any], *, query_zid: np.ndarray,
     raw = states["M0"]; dual = states["M_DA"]; other_bank, other_bcrr = states["M_OTHER"]; joint_dual, joint_bcrr = states["M_JOINT"]
     if not isinstance(raw, Int8QKNNState) or not isinstance(dual, DualQKNNState) or other_bank is not raw or joint_dual is not dual:
         raise ADV3B02StateError("four-arm matched branch sharing drift")
-    m0 = qknn_logits(raw, query_zid)
-    mda = dual_qknn_logits(dual, query_zid, query_zdom)
-    other = bcrr_fused_logits(m0, query_zid, other_bcrr, bank=raw)
-    joint = bcrr_fused_logits(mda, query_zid, joint_bcrr, bank=dual.id_bank)
-    return {"M0": m0, "M_DA": mda, "M_OTHER": other, "M_JOINT": joint}
+    zid, zero_mask = _query_zid_exact_zero_mask(query_zid)
+    zdom = _rows(query_zdom, name="query z_dom")
+    if len(zid) != len(zdom):
+        raise ADV3B02StateError("four-arm query z_id/z_dom row count drift")
+    # Preserve the parent implementation byte-for-byte for its ordinary case.
+    if not np.any(zero_mask):
+        m0 = qknn_logits(raw, zid)
+        mda = dual_qknn_logits(dual, zid, zdom)
+        other = bcrr_fused_logits(m0, zid, other_bcrr, bank=raw)
+        joint = bcrr_fused_logits(mda, zid, joint_bcrr, bank=dual.id_bank)
+        return {"M0": m0, "M_DA": mda, "M_OTHER": other, "M_JOINT": joint}
+    if raw.classes != dual.id_bank.classes:
+        raise ADV3B02StateError("zero-query four-arm class-axis drift")
+    row_count, class_count = len(zid), len(raw.classes)
+    result = {
+        arm: np.empty((row_count, class_count), np.float32)
+        for arm in ARMS
+    }
+    normal_mask = ~zero_mask
+    if np.any(normal_mask):
+        normal_zid = zid[normal_mask]
+        normal_zdom = zdom[normal_mask]
+        m0 = qknn_logits(raw, normal_zid)
+        mda = dual_qknn_logits(dual, normal_zid, normal_zdom)
+        other = bcrr_fused_logits(m0, normal_zid, other_bcrr, bank=raw)
+        joint = bcrr_fused_logits(mda, normal_zid, joint_bcrr, bank=dual.id_bank)
+        for arm, scores in (("M0", m0), ("M_DA", mda), ("M_OTHER", other), ("M_JOINT", joint)):
+            result[arm][normal_mask] = scores
+    zero_scores = _zero_query_analytic_logits(raw)
+    for arm in ARMS:
+        # Every arm receives an independent byte-for-byte copy of the same
+        # M0 analytic extension; no z_dom or BCRR path is evaluated here.
+        result[arm][zero_mask] = zero_scores
+    if any(not np.array_equal(result["M0"][zero_mask], result[arm][zero_mask]) for arm in ARMS[1:]):
+        raise ADV3B02StateError("zero-query four-arm equality drift")
+    return {arm: np.ascontiguousarray(result[arm]) for arm in ARMS}
+
+
+def predict_four_arms_with_predictions(
+    states: Mapping[str, Any], *, query_zid: np.ndarray, query_zdom: np.ndarray
+) -> tuple[Mapping[str, np.ndarray], Mapping[str, np.ndarray], Mapping[str, Any]]:
+    """Return scores plus qzero-aware class-axis decisions and audit-only counts."""
+    zid, zero_mask = _query_zid_exact_zero_mask(query_zid)
+    logits = predict_four_arms(states, query_zid=zid, query_zdom=query_zdom)
+    raw = states["M0"]
+    if not isinstance(raw, Int8QKNNState):
+        raise ADV3B02StateError("zero-query prediction raw-state drift")
+    predictions = {
+        arm: np.asarray(np.argmax(np.asarray(logits[arm], np.float32), axis=1), np.intp)
+        for arm in ARMS
+    }
+    exact_tie_count = 0
+    if np.any(zero_mask):
+        for row_index in np.flatnonzero(zero_mask):
+            selected, was_tie = _zero_row_argmax(raw, logits["M0"][row_index])
+            exact_tie_count += int(was_tie)
+            for arm in ARMS:
+                predictions[arm][row_index] = selected
+        if any(
+            not np.array_equal(logits["M0"][zero_mask], logits[arm][zero_mask])
+            or not np.array_equal(predictions["M0"][zero_mask], predictions[arm][zero_mask])
+            for arm in ARMS[1:]
+        ):
+            raise ADV3B02StateError("zero-query prediction all-arm equality drift")
+    count = int(np.sum(zero_mask))
+    return logits, predictions, {
+        "query_zid_exact_zero_count": count,
+        "query_zid_exact_zero_rate": float(count / len(zid)),
+        "query_zid_exact_tie_count": int(exact_tie_count),
+        "zero_rows_all_arms_equal": True,
+    }
 
 
 def resource_formula(*, class_count: int, k_shot: int) -> dict[str, int]:
@@ -2360,5 +2510,5 @@ __all__ = ["ACTUAL_BRANCH_SCHEMA", "ADV3B02StateError", "APPEND_RECEIPT_SCHEMA",
            "Int8QKNNState", "K_VALUES", "MAX_WIRE_BYTES", "RANK", "SCENES", "Z_DIM",
            "append_stage2_c", "bcrr_fused_logits", "build_four_arm_states", "build_four_arm_states_from_dual", "build_int8_qknn_state",
            "build_stage2_b_state", "domain_weight_audit", "dual_qknn_logits", "fit_bcrr_branch", "head_bypass_forward", "int8_audit",
-           "predict_four_arms", "qknn_logits", "resource_formula", "sha256_bytes", "state_receipt", "typed_tokens",
+           "predict_four_arms", "predict_four_arms_with_predictions", "qknn_logits", "resource_formula", "sha256_bytes", "state_receipt", "typed_tokens",
            "verify_stage2_c_append_receipt"]

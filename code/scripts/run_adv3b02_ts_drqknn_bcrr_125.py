@@ -30,7 +30,7 @@ import numpy as np
 from cvsrffi.stage2_adv3b02_ts_drqknn_bcrr import (
     ADV3B02StateError, ARMS, CANDIDATE, SCENES, append_stage2_c, build_four_arm_states,
     build_four_arm_states_from_dual, domain_weight_audit,
-    head_bypass_forward, predict_four_arms, repair_finite_exact_zero_singleton_class_medoid,
+    head_bypass_forward, predict_four_arms_with_predictions, repair_finite_exact_zero_singleton_class_medoid,
     state_receipt, verify_stage2_c_append_receipt, verify_zid_repair_receipt,
 )
 
@@ -39,7 +39,7 @@ RECEIVERS = ("20-1", "3-19", "7-14", "7-7", "8-8")
 SEEDS = (713102, 713103, 713104, 713105, 713106)
 SLICES = ((10, 5), (10, 10), (10, 20), (5, 20), (1, 20))
 MATRIX_COUNTS = {"jobs": 125, "scene_slices": 375, "score_rows": 1500, "arm_state_prediction_artifacts": 1000}
-LAUNCHER_SCHEMA = "cvs.stage2.adv3b02.full125.artifact_validator.r4_q2f32_bcr3_zidtotal1"
+LAUNCHER_SCHEMA = "cvs.stage2.adv3b02.full125.artifact_validator.r5_q2f32_bcr3_zidtotal1_qzero1"
 FORMAL_GPU_IDS = tuple(range(8))
 ROW_STATES = ("before", "after")
 _PROC_CMDLINE_CAPTURE_ATTEMPTS = 50
@@ -216,7 +216,7 @@ def write_prediction_new(path: str | Path, *, query_tokens: np.ndarray,
 
 
 def job_id(receiver: str, seed: int, k_shot: int, new_class_count: int) -> str:
-    return f"adv3b02_r4_q2f32_bcr3_rx_{receiver}_s_{seed}_k_{k_shot}_n_{new_class_count}"
+    return f"adv3b02_r5_q2f32_bcr3_qzero1_rx_{receiver}_s_{seed}_k_{k_shot}_n_{new_class_count}"
 
 
 def matrix_jobs(*, run_root: str | Path) -> list[dict[str, Any]]:
@@ -366,6 +366,15 @@ def _validate_runtime_scene_state_receipts(
             raise ADV3B02LauncherError("row runtime repair/teacher binding drift")
         delta = item.get("raw_vs_dual")
         weight = item.get("domain_weights")
+        qzero = {
+            name: item.get(name)
+            for name in (
+                "query_zid_exact_zero_count",
+                "query_zid_exact_zero_rate",
+                "query_zid_exact_tie_count",
+                "zero_rows_all_arms_equal",
+            )
+        }
         if (
             type(delta) is not dict
             or set(delta)
@@ -400,6 +409,22 @@ def _validate_runtime_scene_state_receipts(
             )
             or not _finite_number(weight["max_weight_span"])
             or not _finite_number(weight["mean_weight_span"])
+            or type(qzero["query_zid_exact_zero_count"]) is not int
+            or qzero["query_zid_exact_zero_count"] < 0
+            or qzero["query_zid_exact_zero_count"] > delta["query_rows"]
+            or type(qzero["query_zid_exact_tie_count"]) is not int
+            or qzero["query_zid_exact_tie_count"] < 0
+            or qzero["query_zid_exact_tie_count"]
+            > qzero["query_zid_exact_zero_count"]
+            or not _finite_number(qzero["query_zid_exact_zero_rate"])
+            or not np.isclose(
+                float(qzero["query_zid_exact_zero_rate"]),
+                float(qzero["query_zid_exact_zero_count"])
+                / float(delta["query_rows"]),
+                rtol=0.0,
+                atol=0.0,
+            )
+            or qzero["zero_rows_all_arms_equal"] is not True
         ):
             raise ADV3B02LauncherError("row raw/dual audit receipt drift")
     if seen != expected_pairs:
@@ -794,7 +819,9 @@ def _runtime_state_receipt(
     state_name: str,
     states: Mapping[str, Any],
     logits: Mapping[str, np.ndarray],
+    query_zid: np.ndarray,
     query_zdom: np.ndarray,
+    prediction_runtime: Mapping[str, Any],
     feature_latency_ms: float,
     build_latency_ms: float,
     predict_latency_ms: float,
@@ -808,6 +835,29 @@ def _runtime_state_receipt(
     delta = np.abs(raw - dual)
     margin_delta = np.abs(_top_margin(raw) - _top_margin(dual))
     dual_state = states["M_DA"]
+    zid = np.asarray(query_zid, np.float32)
+    zero_mask = np.all(zid == np.float32(0.0), axis=1)
+    qzero = dict(prediction_runtime)
+    expected_qzero = {
+        "query_zid_exact_zero_count",
+        "query_zid_exact_zero_rate",
+        "query_zid_exact_tie_count",
+        "zero_rows_all_arms_equal",
+    }
+    if set(qzero) != expected_qzero:
+        raise ADV3B02LauncherError("qzero runtime receipt schema drift")
+    if int(qzero["query_zid_exact_zero_count"]) != int(np.sum(zero_mask)):
+        raise ADV3B02LauncherError("qzero runtime count drift")
+    domain_audit = (
+        domain_weight_audit(dual_state, np.asarray(query_zdom, np.float32)[~zero_mask])
+        if np.any(~zero_mask)
+        else {
+            "query_class_rows": 0,
+            "nonuniform_rows": 0,
+            "max_weight_span": 0.0,
+            "mean_weight_span": 0.0,
+        }
+    )
     return {
         "scene": scene,
         "state": state_name,
@@ -845,7 +895,8 @@ def _runtime_state_receipt(
             "margin_changed_count": int(np.sum(margin_delta > 0.0)),
             "max_abs_score_delta": float(np.max(delta)),
         },
-        "domain_weights": domain_weight_audit(dual_state, query_zdom),
+        "domain_weights": domain_audit,
+        **qzero,
     }
 
 
@@ -947,7 +998,11 @@ def run_row(a: argparse.Namespace) -> Mapping[str, Any]:
         before_states = build_four_arm_states(support_zid=repaired_old_zid, support_zdom=old_zdom, support_labels=old_labels, registered_classes=tuple(old_registry), support_physical_tokens=old_tokens, support_repair_receipt=before_repair_receipt)
         before_build_ms = 1000.0 * (time.perf_counter() - started)
         started = time.perf_counter()
-        before_logits = predict_four_arms(before_states, query_zid=query_zid, query_zdom=query_zdom)
+        before_logits, before_predictions, before_qzero_runtime = (
+            predict_four_arms_with_predictions(
+                before_states, query_zid=query_zid, query_zdom=query_zdom
+            )
+        )
         before_predict_ms = 1000.0 * (time.perf_counter() - started)
         runtime_receipts.append(
             _runtime_state_receipt(
@@ -955,7 +1010,9 @@ def run_row(a: argparse.Namespace) -> Mapping[str, Any]:
                 state_name="before",
                 states=before_states,
                 logits=before_logits,
+                query_zid=query_zid,
                 query_zdom=query_zdom,
+                prediction_runtime=before_qzero_runtime,
                 feature_latency_ms=before_feature_ms,
                 build_latency_ms=before_build_ms,
                 predict_latency_ms=before_predict_ms,
@@ -966,7 +1023,7 @@ def run_row(a: argparse.Namespace) -> Mapping[str, Any]:
         )
         bypass_receipts.extend((bypass, query_bypass))
         for arm in ARMS:
-            rows["before"][arm].append((np.asarray(before_query_tokens), np.asarray([scene] * len(before_query_tokens)), np.asarray(old_registry)[np.argmax(before_logits[arm], axis=1)]))
+            rows["before"][arm].append((np.asarray(before_query_tokens), np.asarray([scene] * len(before_query_tokens)), np.asarray(old_registry)[before_predictions[arm]]))
         all_iq, all_labels, all_tokens = dssc._support(ae[scene], tuple(registry), a.k_shot)
         after_query, after_query_tokens = dssc._query(aq[scene])
         new_mask = np.asarray([label not in set(old_registry) for label in all_labels], bool)
@@ -988,7 +1045,11 @@ def run_row(a: argparse.Namespace) -> Mapping[str, Any]:
         after_states = build_four_arm_states_from_dual(dual_after)
         after_build_ms = 1000.0 * (time.perf_counter() - started)
         started = time.perf_counter()
-        after_logits = predict_four_arms(after_states, query_zid=after_zid, query_zdom=after_zdom)
+        after_logits, after_predictions, after_qzero_runtime = (
+            predict_four_arms_with_predictions(
+                after_states, query_zid=after_zid, query_zdom=after_zdom
+            )
+        )
         after_predict_ms = 1000.0 * (time.perf_counter() - started)
         runtime_receipts.append(
             _runtime_state_receipt(
@@ -996,7 +1057,9 @@ def run_row(a: argparse.Namespace) -> Mapping[str, Any]:
                 state_name="after",
                 states=after_states,
                 logits=after_logits,
+                query_zid=after_zid,
                 query_zdom=after_zdom,
+                prediction_runtime=after_qzero_runtime,
                 feature_latency_ms=after_feature_ms,
                 build_latency_ms=after_build_ms,
                 predict_latency_ms=after_predict_ms,
@@ -1008,7 +1071,7 @@ def run_row(a: argparse.Namespace) -> Mapping[str, Any]:
         append_receipts[scene] = append_receipt
         bypass_receipts.extend((all_bypass, after_bypass))
         for arm in ARMS:
-            rows["after"][arm].append((np.asarray(after_query_tokens), np.asarray([scene] * len(after_query_tokens)), np.asarray(registry)[np.argmax(after_logits[arm], axis=1)]))
+            rows["after"][arm].append((np.asarray(after_query_tokens), np.asarray([scene] * len(after_query_tokens)), np.asarray(registry)[after_predictions[arm]]))
         if append_receipt["old_q_a_alpha_refit"] or not append_receipt["old_int8_codes_preserved"]:
             raise ADV3B02P0Error(
                 "STATE_PROTOCOL_DRIFT", "Stage2-C append-only receipt drift"

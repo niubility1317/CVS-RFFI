@@ -2335,3 +2335,19 @@ archive/coverage/parity=`ABSENT/ABSENT/ABSENT`。最小非query evidence共42文
 共享runner技术修复提交=`467b8aa561f41eada827c48588e8c6598b49eed0`；科学方法仍为r4 commit=`802534eb8036fb8a31f060fd55af5050d0fe7961`。独立review=`MERGE / P0=0 / P1=0 / P2=0`；新run=`adv3b02_ts_drqknn_bcrr_r4_q2f32_bcr3_zidtotal1_procbindfix1_full125_467b8aa5_20260724_035813`已预注册。raw Git blob包SHA=`0d4bb25384972d62250c9467778745bc3d80daac378cf5e0b29d48708ea86108`，含3,981个safe regular blob，path-set SHA=`8ad180b9260df0e881fd48bfb6facf8968cb464cf59dbe8eb48f03a7deacae76`，raw mismatch=0。下一步由唯一Terra runner执行N607冻结POSIX sentinel、唯一detach、GPU0–7完整125、即时健康检查和artifact回收；不增加测试、gate或数据验证。
 
 `DATA_PROTOCOL=PRESENT_REUSED / NOT_REVALIDATED`
+
+##### `r5-qzero1`设计冻结
+
+首源trace闭合为after-query的finite`z_id`范数`<=1e-12`，support路径三场景780条真实checkpoint重放全部正常。`ADV3B02-TS-DRQKNN-BCRR/r5-q2f32-bcr3-zidtotal1-qzero1`经一次监督裁决=`MERGE / P0=0 / P1=0 / P2=0`并进入`DESIGN_FROZEN -> IMPLEMENTING`。唯一delta只接受componentwise exact-zero query，以父Student-t在`cos=0/distance=2`的解析分数完成全注册类竞争；该row四臂逐字节相同且`I_syn=0`，正常query逐字节继承parent，tiny-nonzero和nonfinite继续fail。精确平局只用既有support bank标签无关payload和opaque token键，不读query token/truth/role。设计合同见`docs/ADV3B02_TS_DRQKNN_BCRR_R5_Q2F32_BCR3_ZIDTOTAL1_QZERO1_DESIGN_FROZEN.md`。
+
+`DATA_PROTOCOL=PRESENT_REUSED / NOT_REVALIDATED`
+
+##### `r5-qzero1`本地闭合
+
+冻结实现只修改ADV3B02方法、正式125 runner的revision/零行runtime receipt及直接专项测试；state/codec/append、prediction/scorer格式、完整125矩阵、健康策略、DA、qKNN与BCRR公式均未扩展。finite componentwise exact-zero query按冻结Student-t解析式完成全注册类竞争，四臂共享同一logit与标签无关精确平局；正常query严格沿parent路径，tiny-nonzero和nonfinite继续失败关闭。
+
+`ssr-gpu`下目标测试完整通过（89 passed、3 Windows POSIX skipped），随后针对独立review两项修订的最小复测为7 passed；三文件`py_compile`与`git diff --check`通过。真实checkpoint三scene×before/after共6个support-only state smoke通过，未读取query或truth。独立review初裁`REVISE / P0=0 / P1=1 / P2=1`；只补充`zero_count<=query_rows`防篡改闭合和混合zero/normal query行重排回归后，终裁=`MERGE / P0=0 / P1=0 / P2=0`。
+
+当前状态=`LOCAL_VERIFIED / NO_PERFORMANCE_RESULT`。下一步只允许Git提交、建立全新不可覆盖run报告并交唯一Terra runner执行GPU0–7完整125；不得修复同波第二fingerprint、重验数据、扩展方法delta或增加发布门。
+
+`DATA_PROTOCOL=PRESENT_REUSED / NOT_REVALIDATED`

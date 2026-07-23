@@ -24,7 +24,7 @@ import cvsrffi.stage2_adv3b02_ts_drqknn_bcrr as adv
 from cvsrffi.stage2_adv3b02_ts_drqknn_bcrr import (
     ADV3B02StateError, ARMS, CANDIDATE, SCENES, append_stage2_c,
     build_four_arm_states, build_four_arm_states_from_dual, build_stage2_b_state, head_bypass_forward,
-    predict_four_arms, resource_formula, state_receipt, typed_tokens,
+    predict_four_arms, predict_four_arms_with_predictions, resource_formula, state_receipt, typed_tokens,
 )
 from scripts import run_adv3b02_ts_drqknn_bcrr_125 as runner
 from scripts import run_dssc_zdom_jg_qknn_r4_bcrr_125 as dssc_runner
@@ -405,16 +405,22 @@ def test_real_repair_receipt_runtime_and_append_validator_closure_with_interleav
     after = build_four_arm_states_from_dual(after_dual)
     query_zid = rng.normal(size=(4, 160)).astype(np.float32)
     query_zdom = rng.normal(size=(4, 160)).astype(np.float32)
+    before_logits, _before_predictions, before_qzero = predict_four_arms_with_predictions(
+        before, query_zid=query_zid, query_zdom=query_zdom
+    )
     before_runtime = runner._runtime_state_receipt(
         scene=SCENES[0], state_name="before", states=before,
-        logits=predict_four_arms(before, query_zid=query_zid, query_zdom=query_zdom),
-        query_zdom=query_zdom, feature_latency_ms=0.0, build_latency_ms=0.0,
+        logits=before_logits, query_zid=query_zid, query_zdom=query_zdom,
+        prediction_runtime=before_qzero, feature_latency_ms=0.0, build_latency_ms=0.0,
         predict_latency_ms=0.0, peak_cuda_memory_bytes=0,
+    )
+    after_logits, _after_predictions, after_qzero = predict_four_arms_with_predictions(
+        after, query_zid=query_zid, query_zdom=query_zdom
     )
     after_runtime = runner._runtime_state_receipt(
         scene=SCENES[0], state_name="after", states=after,
-        logits=predict_four_arms(after, query_zid=query_zid, query_zdom=query_zdom),
-        query_zdom=query_zdom, feature_latency_ms=0.0, build_latency_ms=0.0,
+        logits=after_logits, query_zid=query_zid, query_zdom=query_zdom,
+        prediction_runtime=after_qzero, feature_latency_ms=0.0, build_latency_ms=0.0,
         predict_latency_ms=0.0, peak_cuda_memory_bytes=0,
     )
     assert before_runtime["branch_teacher_support_sha256"] == before_repair["unit_output_support_sha256"]
@@ -431,6 +437,16 @@ def test_real_repair_receipt_runtime_and_append_validator_closure_with_interleav
     bad_runtime_rows[0]["branch_actual_bank_binding_sha256"] = "A" * 64
     with pytest.raises(runner.ADV3B02LauncherError, match="runtime state/resource"):
         runner._validate_runtime_scene_state_receipts(bad_runtime_rows)
+    bad_qzero_rows = copy.deepcopy(runtime_rows)
+    bad_qzero_rows[0]["query_zid_exact_zero_count"] = (
+        bad_qzero_rows[0]["raw_vs_dual"]["query_rows"] + 1
+    )
+    bad_qzero_rows[0]["query_zid_exact_zero_rate"] = (
+        float(bad_qzero_rows[0]["query_zid_exact_zero_count"])
+        / float(bad_qzero_rows[0]["raw_vs_dual"]["query_rows"])
+    )
+    with pytest.raises(runner.ADV3B02LauncherError, match="raw/dual audit"):
+        runner._validate_runtime_scene_state_receipts(bad_qzero_rows)
     bad_new = repaired_new.copy()
     bad_new[0, 0] = np.float32(bad_new[0, 0] + 1.0)
     with pytest.raises(ADV3B02StateError, match="supplied new z_id/full teacher"):
@@ -468,6 +484,140 @@ def test_fixed_two_slot_candidate_centres_and_k1_exact_identity():
     np.testing.assert_array_equal(result["M0"], typed)
     np.testing.assert_array_equal(result["M_DA"], result["M0"])
     np.testing.assert_array_equal(result["M_JOINT"], result["M_OTHER"])
+
+
+@pytest.mark.parametrize("k_shot", [1, 5, 10])
+def test_qzero_analytic_extension_is_four_arm_equal_and_normal_parent_exact(k_shot):
+    _dual, values = _state(k_shot, seed=6120 + k_shot)
+    states = build_four_arm_states(
+        support_zid=values[0], support_zdom=values[1], support_labels=values[2],
+        registered_classes=("old_a", "old_b"), support_physical_tokens=values[3],
+    )
+    rng = np.random.default_rng(7200 + k_shot)
+    normal_zid = rng.normal(size=(3, 160)).astype(np.float32)
+    normal_zdom = rng.normal(size=(3, 160)).astype(np.float32)
+    raw, dual = states["M0"], states["M_DA"]
+    raw_bcrr, dual_bcrr = states["M_OTHER"][1], states["M_JOINT"][1]
+    parent_m0 = adv.qknn_logits(raw, normal_zid)
+    parent_mda = adv.dual_qknn_logits(dual, normal_zid, normal_zdom)
+    parent_other = adv.bcrr_fused_logits(parent_m0, normal_zid, raw_bcrr, bank=raw)
+    parent_joint = adv.bcrr_fused_logits(parent_mda, normal_zid, dual_bcrr, bank=dual.id_bank)
+    parent = {"M0": parent_m0, "M_DA": parent_mda, "M_OTHER": parent_other, "M_JOINT": parent_joint}
+    observed = predict_four_arms(states, query_zid=normal_zid, query_zdom=normal_zdom)
+    for arm in ARMS:
+        np.testing.assert_array_equal(observed[arm], parent[arm])
+
+    mixed_zid = np.vstack((normal_zid[:1], np.zeros((1, 160), np.float32), normal_zid[1:]))
+    mixed_zdom = np.vstack((normal_zdom[:1], np.zeros((1, 160), np.float32), normal_zdom[1:]))
+    logits, predictions, runtime = predict_four_arms_with_predictions(
+        states, query_zid=mixed_zid, query_zdom=mixed_zdom
+    )
+    for arm in ARMS:
+        np.testing.assert_array_equal(logits[arm][[0, 2, 3]], parent[arm])
+        assert np.isfinite(logits[arm][1]).all()
+    for arm in ARMS[1:]:
+        assert logits[arm][1].tobytes() == logits["M0"][1].tobytes()
+        assert predictions[arm][1] == predictions["M0"][1]
+    h = raw.bank.deployed_class_scales().astype(np.float64)
+    config = raw.bank.config
+    canonical = np.asarray(
+        -config.kernel_volume_gamma * config.kernel_effective_dim * np.log(h)
+        -0.5 * (config.student_nu + config.kernel_effective_dim)
+        * np.log1p(2.0 / (config.student_nu * h * h)), np.float32,
+    )
+    expected_zero = canonical[np.asarray([raw.bank.classes.index(item) for item in raw.classes], np.intp)]
+    np.testing.assert_array_equal(logits["M0"][1], expected_zero)
+    assert runtime["query_zid_exact_zero_count"] == 1
+    assert runtime["query_zid_exact_zero_rate"] == 0.25
+    assert runtime["query_zid_exact_tie_count"] in (0, 1)
+    assert runtime["zero_rows_all_arms_equal"] is True
+
+
+def test_qzero_mixed_query_row_permutation_is_exactly_equivariant():
+    _dual, values = _state(5, seed=7281)
+    states = build_four_arm_states(
+        support_zid=values[0], support_zdom=values[1], support_labels=values[2],
+        registered_classes=("old_a", "old_b"), support_physical_tokens=values[3],
+    )
+    rng = np.random.default_rng(7282)
+    normal_zid = rng.normal(size=(3, 160)).astype(np.float32)
+    normal_zdom = rng.normal(size=(3, 160)).astype(np.float32)
+    query_zid = np.vstack((
+        normal_zid[:1], np.zeros((1, 160), np.float32),
+        normal_zid[1:2], np.zeros((1, 160), np.float32), normal_zid[2:],
+    ))
+    query_zdom = np.vstack((
+        normal_zdom[:1], np.zeros((1, 160), np.float32),
+        normal_zdom[1:2], np.zeros((1, 160), np.float32), normal_zdom[2:],
+    ))
+    logits, predictions, qzero = predict_four_arms_with_predictions(
+        states, query_zid=query_zid, query_zdom=query_zdom
+    )
+    permutation = np.asarray((4, 1, 3, 0, 2), np.intp)
+    reordered_logits, reordered_predictions, reordered_qzero = (
+        predict_four_arms_with_predictions(
+            states,
+            query_zid=query_zid[permutation],
+            query_zdom=query_zdom[permutation],
+        )
+    )
+    inverse = np.argsort(permutation)
+    for arm in ARMS:
+        np.testing.assert_array_equal(reordered_logits[arm][inverse], logits[arm])
+        np.testing.assert_array_equal(
+            reordered_predictions[arm][inverse], predictions[arm]
+        )
+    assert reordered_qzero == qzero
+
+
+def test_qzero_rejects_tiny_nonzero_and_nonfinite_query_rows():
+    _dual, values = _state(5, seed=7331)
+    states = build_four_arm_states(
+        support_zid=values[0], support_zdom=values[1], support_labels=values[2],
+        registered_classes=("old_a", "old_b"), support_physical_tokens=values[3],
+    )
+    zdom = np.ones((1, 160), np.float32)
+    tiny = np.zeros((1, 160), np.float32); tiny[0, 0] = np.float32(1.0e-13)
+    with pytest.raises(ADV3B02StateError, match="tiny nonzero"):
+        predict_four_arms(states, query_zid=tiny, query_zdom=zdom)
+    for value in (np.nan, np.inf):
+        bad = np.zeros((1, 160), np.float32); bad[0, 0] = value
+        with pytest.raises(ADV3B02StateError, match="query z_id"):
+            predict_four_arms(states, query_zid=bad, query_zdom=zdom)
+    with pytest.raises(ADV3B02StateError, match="query z_dom"):
+        predict_four_arms(states, query_zid=np.zeros((1, 160), np.float32), query_zdom=np.full((1, 160), np.nan, np.float32))
+
+
+def test_qzero_exact_tie_uses_payload_and_tokens_not_label_or_axis(monkeypatch):
+    zid, zdom, labels, tokens = _support(5, ("old_a", "old_b"), seed=7411)
+    left = build_four_arm_states(
+        support_zid=zid, support_zdom=zdom, support_labels=labels,
+        registered_classes=("old_a", "old_b"), support_physical_tokens=tokens,
+    )
+    renamed_labels = tuple("beta" if item == "old_a" else "alpha" for item in labels)
+    right = build_four_arm_states(
+        support_zid=zid, support_zdom=zdom, support_labels=renamed_labels,
+        registered_classes=("alpha", "beta"), support_physical_tokens=tokens,
+    )
+    monkeypatch.setattr(
+        adv, "_zero_query_analytic_logits",
+        lambda state: np.zeros((len(state.classes),), np.float32),
+    )
+    zero = np.zeros((1, 160), np.float32)
+    zdom_query = np.ones((1, 160), np.float32)
+    _ll, left_prediction, left_runtime = predict_four_arms_with_predictions(
+        left, query_zid=zero, query_zdom=zdom_query
+    )
+    _rl, right_prediction, right_runtime = predict_four_arms_with_predictions(
+        right, query_zid=zero, query_zdom=zdom_query
+    )
+    left_handle = left["M0"].classes[left_prediction["M0"][0]]
+    right_handle = right["M0"].classes[right_prediction["M0"][0]]
+    assert {"old_a": "beta", "old_b": "alpha"}[left_handle] == right_handle
+    assert left_runtime["query_zid_exact_tie_count"] == right_runtime["query_zid_exact_tie_count"] == 1
+    monkeypatch.setattr(adv, "_zero_class_tie_key", lambda *_args: (b"same", (b"same",)))
+    with pytest.raises(ADV3B02StateError, match="payload collision"):
+        predict_four_arms_with_predictions(left, query_zid=zero, query_zdom=zdom_query)
 
 
 @pytest.mark.parametrize("k_shot", [5, 10])
@@ -1468,6 +1618,10 @@ def _runtime_rows():
                         "max_weight_span": 0.2,
                         "mean_weight_span": 0.05,
                     },
+                    "query_zid_exact_zero_count": 0,
+                    "query_zid_exact_zero_rate": 0.0,
+                    "query_zid_exact_tie_count": 0,
+                    "zero_rows_all_arms_equal": True,
                 }
             )
     return rows
