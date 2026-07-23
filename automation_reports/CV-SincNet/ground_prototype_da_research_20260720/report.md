@@ -2143,3 +2143,15 @@ techfix2不把任务收缩到物理GPU0，而是保持GPU0–7共8个并行worke
 首轮独立review发现P1：launcher收据记录了预期映射，但row不可变收据未回绑实际子进程命名空间。修订后，row在CUDA激活时从实际环境与PyTorch读取`CUDA_VISIBLE_DEVICES`、physical GPU、requested logical device、`device_count`及`current_device`；正式row严格要求单卡命名空间、`cuda:0`、`device_count=1/current_device=0`，并把固定schema evidence写入create-once row receipt。matrix最终验收将launcher的physical/visible/logical映射与row evidence逐字段交叉绑定，缺失或任一漂移均失败关闭。
 
 `ssr-gpu`下runner与专项测试`py_compile`通过，专项及设备命名空间负例`29/29 passed`，`git diff --check`通过；pytest退出后的Windows临时符号链接清理告警不影响退出码0。独立复审最终裁决=`MERGE / P0=0 / P1=0`。当前状态=`LOCAL_VERIFIED / NO_PERFORMANCE_RESULT`；下一步仅为Git提交、生成raw Git blob源码包、建立全新不可覆盖完整125 run报告并交唯一Terra runner发布。
+
+##### 公共receiver切向低秩基路线可行性审查
+
+用户提出的精确链路此前没有完整实现：历史方法没有同时执行“类专属球面Log→公共切空间平行移动→按source receiver跨类RobustMean→SVD低秩基→target-old闭式系数→Exp先验”。但其核心假设已有相邻反证。D78/D79的ground切向基改善old与min-old时分别损害new、min-new并增加new→old；D93把ground公共低秩方向经target-old闭式拟合后统一作用于old/new/query，K10相对matched D81的old-after/new/H分别下降`8.611/2.833/5.817pp`、forgetting增加`5pp`，coverage仅`0.144～0.227`；D94只加入coverage连续缩放后，K10 old-after/new/H仍下降`8.056/3.583/5.870pp`。因此，不能把“球面低秩分解”本身当作已证明有效，也不能重复直接transport或old-prior投票。
+
+原式存在三个硬缺陷。第一，`Log_{p_c}(p_{c,r})`分别位于不同`T_{p_c}S^{d-1}`，必须先沿唯一最短测地线平行移动到共同Fréchet切空间，闭合cut-locus、近对跖点、再投影、等类权RobustMean及`B→BR`子空间旋转不变性。第二，共同平移或正交变换不会改变统一qKNN距离与排序，只有DSSC adapter产生的非等距表示变化并实际改变neighbor、margin或argmax才算DA。第三，只把Exp结果用作old原型、old logit或qKNN bank会重演D78/D79的old/new交换；ground先验不得投票。
+
+唯一保留的新假设暂记为`DSSC_TANGENT_PRIOR_QKNN_BCRR/design-draft-r0`：只用“公共Fréchet切空间rank≤4先验＋中心化且尺度归一的Gram关系loss＋连续收缩/fallback”替换当前DSSC ground-center ridge。DSSC rank-4真实模型adapter、dual-view、optimizer、S_B/S_C、全部注册类逐类等权task loss、INT8 merge、qKNN和BCRR均保持不变；`M_DA_NG/M_DA`唯一差异仍是ground块，`M_JOINT`逐字节复用`M_DA` adapter/qKNN state后才加入BCRR。
+
+target-old闭式系数只允许读取当前row合法support。K1下6个旧类可代数估计至多4个row-global系数，但单类不确定度只能来自Phase1 LODO/LOCO证书与跨类残差；K5/K10才可加入support散度。连续收缩固定为`alpha=coverage×confidence×LODO_reliability∈[0,1]`，且confidence随不确定度单调下降；秩亏、病态、Fréchet不唯一、近对跖点或不确定度不可得时精确ground-off。Phase1持久状态只能是共同封存的INT8 basis、公共点/类中心、半径与FP16 scale；不得保存FP32 Log/Exp、系数、先验或receiver成员sidecar。query额外adapter MAC必须保持0，总wire仍须≤256KiB。
+
+独立监督裁决=`REVISE / P0=2 / P1=3`，不授权实现或N607。下一步仅允许一个本地无query`FEASIBILITY_SPIKE`：Phase1-only验证类/receiver置换、全局正交和`B→BR`等价及Fréchet fallback；在一个合法support-only capsule上固定K1/K5/K10记录rank、条件数、alpha来源和fallback；ground-on必须相对ground-off产生非零DSSC delta及至少一个support-LOO neighbor或margin变化；最后以实际INT8/FP16序列化重算等价性、state、训练MAC/时延和query增量MAC。任一K伪造不确定度、三个K全部identity、只有公共正交漂移或真basis不优于置乱basis即停止该draft。当前完整125 run与其source package不因本节改变。
