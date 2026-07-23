@@ -2291,3 +2291,7 @@ run=`adv3b02_ts_drqknn_bcrr_r2_affine_bcr2_zidtotal1_full125_21ffdabf_20260723_2
 实现只修改ADV3B02方法模块、正式125 runner revision标识和直接专项测试；DA、BCRR、四臂、K、repair、scorer、矩阵与健康门未改。`ssr-gpu`下目标测试`77 passed、3 Windows POSIX skipped、0 failed`，相邻DSSC`36 passed`，`py_compile`与`git diff --check`通过。独立review发现并闭合一项P1：完整解码bandwidth列表不得作为audit sidecar持久化，现仅保留不可逆SHA和类数；最终裁决=`MERGE / P0=0 / P1=0`。
 
 最新真实checkpoint support-only smoke覆盖两触发row×三scene×before/after共12个state，qKNN与BCR top1均为`1.0`、翻转0，最大qKNN logit误差=`0.001622`，最大实际wire=`159,691B<256KiB`；query/truth/apply打开数与fit query rows均为0。状态=`LOCAL_VERIFIED / NO_PERFORMANCE_RESULT`，下一步只允许Git提交、新不可覆盖run报告和GPU0–7完整125发布。`DATA_PROTOCOL=PRESENT_REUSED / NOT_REVALIDATED`。
+
+##### `r3-q2f32`完整125预注册
+
+科学提交=`aa22820cfbefe45b020c7e6190a53a7237b290b7`；全新run=`adv3b02_ts_drqknn_bcrr_r3_q2f32_bcr2_zidtotal1_full125_aa22820c_20260724_023120`，状态=`PREREGISTERED / NOT_LAUNCHED / NO_PERFORMANCE_RESULT`。源码包SHA=`0d57496c87356676780fa8486e00c1cb670ed04e4231f905764fe9f2be16f174`，含3977个Git blob，path-set SHA=`91bba4b94ca45076fcc8e864eaa124de69ec6d001fecac1080420539496482ae`，逐blob不匹配0。唯一Terra runner负责direct preflight、同步、远端验证、唯一detach、即时健康检查、完整监控和artifact回收；不得重验数据、复用parent或按性能早停。`DATA_PROTOCOL=PRESENT_REUSED / NOT_REVALIDATED`。
