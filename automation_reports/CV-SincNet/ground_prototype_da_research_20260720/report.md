@@ -2251,3 +2251,11 @@ zero-norm失败row的3个after enrollment support包、manifest、seal和log已�
 当前状态=`LOCAL_VERIFIED / NO_PERFORMANCE_RESULT`。下一步只允许把上述实现、测试、冻结文档、目标和证据提交到Git，随后以全新不可覆盖run ID发布GPU0–7完整125；不得复用parent、缩窄性能矩阵、重验数据或新增发布门。启动后唯一runner必须执行首波健康检查；系统性技术故障立即停派并只终止本run。
 
 科学实现已提交为`21ffdabf01af01b6cd2cfaf9db96e8b021812a26`。全新不可覆盖run=`adv3b02_ts_drqknn_bcrr_r2_affine_bcr2_zidtotal1_full125_21ffdabf_20260723_234716`已预注册；3972个HEAD raw Git blob发布包SHA=`152a9344f7ba2d13b3e94d613247ae18d9b9243be17db9a02667f8110fa923f4`，path-set SHA=`99294479ff2c6d2e37daed137ec630af387b53bd2111a934e5b1eebf7185209b`，全量字节不匹配0。状态转为`PREREGISTERED / NOT_LANDED / NO_PERFORMANCE_RESULT`，下一步只交唯一Terra runner执行direct preflight、精确同步、远端验证、唯一detach、健康检查、完整监控与artifact回收。
+
+##### `zidtotal1`完整125系统性binding止损
+
+run=`adv3b02_ts_drqknn_bcrr_r2_affine_bcr2_zidtotal1_full125_21ffdabf_20260723_234716`完成全部落地门并在GPU0–7唯一启动，launcher/matrix PID=`1255272/1255274`，真实exit=`1`。两个不同K10/new20 row均在0 prediction处以同一`z_id repair/state teacher binding drift`退出后，内置健康门立即停派并只终止本run；submitted/launched/completed=`15/15/15`，成功6、失败9、未提交110。本run只有18个scene slice、48份prediction和72个score row，严格标记`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`，禁止分析partial性能。
+
+首源为`_validate_repaired_support_for_state`，调用链闭合到`_make_actual_branch -> build_int8_qknn_state -> build_stage2_b_state -> build_four_arm_states -> run_row`；两个触发row均`query_rows_used_for_fit=0`。15份termination receipt均验证归属并确认进程树退出，终态GPU和本run进程清零。最小回收inventory SHA=`f0b6e9d35251b9e7ec563e4b68ad13e05de9481c9251f603c61c62520cb043af`，bundle SHA=`aac5db16cc40986b3b6556125f9902f9f468ad0652d20f9f71af382f7f21b3cd`；archive/manifest/parity/coverage均为`PRESENT_REUSED / NOT_GENERATED`，未重验数据。下一步只允许本地精确复现binding差异、独立review、最小techfix、新Git提交和全新不可覆盖完整125，不得续跑原run。
+
+同一唯一runner随后只读回收两个触发row的before enrollment support-only包，共10文件、1,062,814B，inventory SHA=`e7ac7e500661f9bb485759ac9f5e76bae1bb37253a0cafe46ad6bd52eb1ddf9b`；query/truth/apply/after回收数均为0。本地RTX5070Ti与CPU重放因硬件数值差异未触发该hash drift，但正式N607两个不同row的确定失败和代码双重单位化路径已经闭合；后续测试必须加入构造的稀疏FP32非幂等单位化向量，不能只依赖本地硬件输出。
