@@ -10,5 +10,8 @@ Git承载镜像。完整预登记与最终结果应与根目录`automation_repor
 - 矩阵：5receiver×5seed×4new count×4K×2method=800cell，三个旧类LEO切片共2400行。
 - base-state：与v7相同且`base_sample_count=80`，因此本轮只隔离新类信道。
 - 本地验证：`py_compile`PASS；focused pytest`2 passed`。
+- 本地Git commit：`9112401d7ac617f02b9ef959d6fa840addc28095`。
+- runner SHA256：`516cef3874bf92281df963671f11ffd11a6f961f84ea8567f81bd5fb1d98f575`。
+- focused test SHA256：`cbb190027bd6fda9e46a10b485854aa253c587ed722e6e537b754c9d41ed5066`。
 - 远端run root：`/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_paperfull_newclass_no_leo_20260723_v1`
 - 最终结果：待N607完成后同步回填。
