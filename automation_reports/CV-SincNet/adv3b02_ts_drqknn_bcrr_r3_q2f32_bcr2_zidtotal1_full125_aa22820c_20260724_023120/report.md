@@ -5,7 +5,7 @@
 - scientific Git commit：`aa22820cfbefe45b020c7e6190a53a7237b290b7`
 - 创建时间：`2026-07-24T02:31:20+08:00`
 - operator：主agent；唯一N607 launch owner为单一`gpt-5.6-terra high`runner
-- 状态：`PREREGISTERED / NOT_LAUNCHED / NO_PERFORMANCE_RESULT`
+- 状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
 - parent run：`adv3b02_ts_drqknn_bcrr_r2_affine_bcr2_zidtotal1_bindfix1_full125_00b81000_20260724_005555`
 - parent终态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
 
@@ -53,6 +53,35 @@ PYTHONPATH=<run>/source/code /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python
 
 日志固定为`<run>/logs/matrix.stdout.log`、`<run>/logs/matrix.stderr.log`和`<run>/logs/matrix.exit`。runner先执行direct preflight、精确同步、远端源码/输入hash、`py_compile`、POSIX sentinel和run根不可覆盖检查，再唯一detach一次并立即健康检查。任一row出现无合法prediction且完整125已不可能闭合时立即停止继续派发，并只终止已核验属于本run的进程树；不得retry、调参、覆盖或按性能值早停。
 
+## N607 landing证据
+
+- direct preflight于`2026-07-24 02:36:49 CST`通过：N607时间、项目根、Python`3.10.19`、8块GPU和约`8.17TB`可用空间均可见；run根创建前为ABSENT。
+- 创建后的不可覆盖run根仅含`input/`和`logs/`；正式`artifacts/`在启动前仍为ABSENT。
+- GPU0–7各有1个无关paper-reproduction worker，显存约`664–668MiB`；记录PID依次为`1426882/1428333/1428215/1425785/1428815/1427613/1428283/1427623`。本run按每GPU新增1个worker发布，不干预无关进程。
+- 两个输入的远端size/SHA与发布表一致。源码包安全解包为3977个regular blob、`229,014,478B`，path-set SHA=`91bba4b94ca45076fcc8e864eaa124de69ec6d001fecac1080420539496482ae`，raw mismatch=`0`。
+- 四个关键源码SHA、checkpoint SHA和sealed runtime SHA全部与冻结值一致；cache与authority只做既有路径存在性检查，未重复数据/authority/coverage验证。
+- 远端`py_compile`通过；POSIX sentinel返回tree exit confirmed、unrelated sentinel alive，且run根无sentinel/tamper残留。
+- 所有landing SSH/SCP均已退出，本地未残留指向N607或lab bridge的SSH进程/TCP22连接。
+
+## 唯一detach与首轮health
+
+- 唯一detach时间：`2026-07-24T02:47:10.542425+08:00`；启动前8块GPU均无compute进程，`artifacts/`和所有launcher receipt均为ABSENT。
+- launcher PID/PGID=`1460785/1460785`；matrix PID/PGID=`1460786/1460785`；两者CWD、cmdline、run root和冻结child command精确绑定，当前exit=`PENDING`。
+- 首轮health时间：`2026-07-24T02:47:39+08:00`。8个run-owned row worker已分别落到GPU0–7，PID为`1460885/1460889/1460893/1460892/1460894/1460891/1460895/1460896`，每卡约`678MiB`。
+- `matrix_runtime_manifest.json`已生成，candidate/schema、125jobs、375scene slices、1000prediction和1500score的冻结期望一致，`query_truth_in_predictor=false`。
+- 首轮已派8个job，parent failure=`0`，row receipt/prediction/score=`0/0/0`；stdout/stderr与8个launcher log均未出现异常。该时点仅证明健康启动，不构成性能结果。
+
+## 健康停止与最小证据回收
+
+- 首个不可恢复失败于`2026-07-24 02:57:03+08:00`闭合：`adv3b02_r3_q2f32_bcr2_rx_8-8_s_713103_k_10_n_20`，`prediction=0`、`score=0`，异常为`ADV3B02StateError: affine BCR INT8 audit gate failed`。结构化marker为`TECHNICAL_EXCEPTION`、`p0_protocol_or_safety=false`、`query_rows_used_for_fit=0`。
+- 触发时为launched/closed/success/failed/active=`27/19/18/1/8`。按预注册的单row零prediction健康门立即停止，不等待第二个相同指纹。
+- 停止并发期间另有`adv3b02_r3_q2f32_bcr2_rx_8-8_s_713105_k_10_n_20`闭合为零prediction失败，异常为`ADV3B02StateError: feature row has zero or non-finite L2 norm`。它不是触发停止所需的第二个证据。
+- matrix PID`1460786`先收到定向`SIGTERM`以停止继续派发；随后仅向8个已核验CWD/cmdline/output-root/PGID属于本run的row进程组发送`SIGTERM`。无需`SIGKILL`，launcher PID`1460785`、matrix和所有run-owned row进程均已退出，`matrix.exit=-15`。
+- 停止后launched/closed/success/failed/canceled-inflight=`34/26/24/2/8`；partial prediction=`192/1000`、partial score row=`288/1500`。矩阵未闭合，任何partial score均不得用于性能判断。
+- 停止后run-root匹配进程为`0`、本run GPU PID为`0`、SSH/TCP22连接为`0`。GPU0–7随后出现的8个PID均绑定无关paper-reproduction任务，未干预。
+- `matrix_runtime_completion.json`、正式archive、coverage和parity receipt均未生成；因此终态只能是`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。
+- 仅回收首失败row的before/after enrollment-only三scene support、package/provenance manifest、before/after enrollment seal和失败log，共13个member、`2,099,755B`。技术证据包为`first_failure_enrollment_only_evidence.tgz`，SHA256=`bc41af2a6ca835f131607166921e3a29c19ed2f76da203bb740f32df9ae4bf5e`；明确排除query、truth、apply、prediction和score。
+
 ## 性能裁决
 
 完整后必须同row报告old-before、old-after、DA old gain、seen-new、H、BA、floor、min-old、min-new、forgetting、old→new/new→old、逐类/receiver/scene/K/seed/new-count、量化margin、MAC、时延、显存、state bytes和`I_syn`。
@@ -64,9 +93,9 @@ PYTHONPATH=<run>/source/code /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python
 |字段|当前值|
 |---|---|
 |Git commit|`aa22820cfbefe45b020c7e6190a53a7237b290b7`|
-|remote PID/PGID|`PENDING`|
-|launcher/matrix exit|`PENDING`|
-|prediction/score|`0/1000`；`0/1500`|
-|最终裁决|`PREREGISTERED / NOT_LAUNCHED / NO_PERFORMANCE_RESULT`|
+|remote PID/PGID|launcher=`1460785/1460785`；matrix=`1460786/1460785`；均已退出|
+|launcher/matrix exit|matrix=`-15`；launcher已退出|
+|prediction/score|partial=`192/1000`；`288/1500`，不可作性能结果|
+|最终裁决|`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`|
 
 `DATA_PROTOCOL=PRESENT_REUSED / NOT_REVALIDATED`
