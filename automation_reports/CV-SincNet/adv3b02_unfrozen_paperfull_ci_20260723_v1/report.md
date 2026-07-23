@@ -25,3 +25,5 @@
 
 完整逐项追踪、验证命令和后续N607证据同时维护于工作区主报告：
 `E:\type10-7\automation_reports\CV-SincNet\adv3b02_unfrozen_paperfull_ci_20260723_v1\report.md`。
+
+本地实现提交：`f8a6195e feat: add full CSIL and MoPC ADV3B02 baselines`。26项focused test、真实ADV3B02 checkpoint严格重建/反传、`py_compile`和`git diff --check`均通过。
