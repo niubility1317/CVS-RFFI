@@ -2073,3 +2073,11 @@ OTHER相对M0取得old-after`+0.012098`、seen-new`+0.011408`、H`+0.017067`、f
 |RB18|K5固定复用GEOFF/r8、rx1-1、18 prediction/72同row score。DA净正确≤0、old/new任一净负、OTHER不独立正、JOINT mean H不严格胜两单臂、mean`I_syn≤0`、正slice<9/18、正scene<2/3，或任一old-before/after/gain、seen-new、BA、floor、min-old/min-new、forgetting、双混淆、INT8、condition、state、MAC、时延、协议门失败，均判负且不运行125。|
 
 冻结代码范围仅为`code/cvsrffi/stage2_rbsc_tm_bcrr.py`、`code/cvsrffi/rbsc_tm_bcrr_fixed_held_spike.py`、`tests/test_rbsc_tm_bcrr_fixed_held_spike.py`。不得修改既有qKNN、SVRN-BCRR、数据、GEOFF/r8、coverage或scorer；run报告只承载实验元数据，不扩大方法delta。
+
+##### 用户完整125发布策略覆盖
+
+用户后续明确要求每次正式性能发布均直接覆盖完整125，以避免只在有利K、receiver、scene或seed上取得成绩。因此，本节从现在起以该要求覆盖RB18及更早“先发K5窄实验、通过后再运行125”的发布顺序；RB01–RB17的方法、状态、量化、资源和因果合同不变，不重新打开设计波次。K5/rx1-1/18-slice模块只保留为本地实现、协议负例和无query smoke入口，不再形成独立N607性能run。
+
+当前正式首发矩阵固定为`5 target receivers×5 independent seeds×5 registration slices=125 jobs`，切片为`(K10,new5)`、`(K10,new10)`、`(K10,new20)`、`(K5,new20)`、`(K1,new20)`；每个job覆盖3个LEO weak场景并输出同row的`M0/M_DA/M_OTHER/M_JOINT`，预期闭合`375 prediction slices/1500 score rows`。必须一次性报告aggregate、逐类、receiver、scene、K、seed、new-count、transition、coverage、量化和资源；不得以旧的K={1,2,5,10,20} matched-history bundle或任一有利子集冒充本目标完整125。
+
+性能停止门按完整矩阵执行：M_DA净正确决策必须为正且old/new净变化均非负，M_OTHER必须独立为正，JOINT mean H必须严格胜两个单臂，mean`I_syn>0`，正协同至少188/375个scene slice且至少2/3个scene均值为正；old-before、old-after、old adaptation gain、seen-new、H、BA、floor、min-old、min-new不得下降，forgetting及old→new/new→old不得增加。任一失败均形成完整prediction和同row诊断后裁为`COMPLETED_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE`；没有完整prediction只能裁为`TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。125只作冻结候选的全面性能验证，不得用于回调结构、rank、omega、阈值、量化或fallback。
