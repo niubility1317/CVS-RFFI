@@ -82,6 +82,8 @@ query_decision_policy = per_sample_all_registered_classes
 
 ## Stage2权限
 
+本节及前述Phase2最小数据协议只约束Stage2主方法及其内部候选。CSIL、MoPC-HR等外部论文对比方法可按原论文完整流程使用base/source数据、历史统计、训练批次和评估流程，也不受主方法资源预算约束；对比方法唯一必须继承的数据条件是全部新类注册及新类评测样本叠加并记录LEO星地信道。对比方法须披露权限差异，其结果不能作为主方法协议合规证据。
+
 | 阶段 | target信息 | 任务 |
 |---|---|---|
 | Stage2-A | 无target TX标签 | zero-label target reference/diagnostic |
