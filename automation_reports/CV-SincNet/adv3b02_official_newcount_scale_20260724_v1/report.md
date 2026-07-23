@@ -171,6 +171,86 @@ release实现达到提交和N607发布门槛，不表示已landed、实验已完
 |---|---|---|---:|---:|---:|---|---:|---:|---:|---|---|---|---|
 | 待运行 | — | — | — | — | — | — | — | — | — | — | — | — | `NOT_ANALYZED` |
 
+## N607运行闭环（2026-07-24）
+
+### 最终状态
+
+`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
+
+本run在正式缓存构建门触发系统性技术失败。未执行parity、base31、CSIL/MoPC-HR
+smoke或700-cell完整矩阵，不存在可分析或可推广的性能结果，也未授权在原run中修改路径后重试。
+
+### 落地与固定版本核验
+
+| 检查项 | 结果 |
+|---|---|
+| N607直连预检 | PASS；8张RTX3090空闲 |
+| 目标目录预检查 | run root与log root均不存在 |
+| 项目盘 | `/home`剩余7.5TB，使用率28% |
+| release实现 | `3b8e9988f2213df1435b4a63e5e88b0e7b77a8ff` |
+| 报告状态commit | `5d0a7fd0efbc99bd1d3c9f30fc566a3140f14861` |
+| 运行脚本/两份split/release manifest | 远端SHA256全部等于冻结值 |
+| Python编译 | 7个同步脚本`py_compile PASS` |
+| cache spec | 25/25规范化JSON内容哈希PASS |
+
+manifest中的`content_sha256`按`sort_keys=True,separators=(",",":")`计算规范化JSON，
+不是格式化文件的原始字节哈希；远端25份spec按该定义全部通过。
+
+### 缓存构建启动与系统性失败
+
+缓存构建使用冻结manifest中的25条命令，调度器最大并发8，每张GPU至多1个构建子进程。
+启动入口为：
+
+```text
+cd /home/szu2070436088/2510044040/CV-SincNet &&
+nohup /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -c
+"读取runs/.../plan/cache_specs_manifest.json，以ThreadPoolExecutor(max_workers=8)执行固定commands，
+仅把device轮转为cuda:0..cuda:7"
+> logs/adv3b02_official_newcount_scale_20260724_v1/cache_build.log 2>&1 &
+```
+
+PID收据写入子句因shell后台运算优先级在项目目录外执行而失败，因此没有保存启动瞬间主PID；
+随后按疑似landed规则检查，确认调度器确已执行并已退出，未进行重复启动。
+
+| 观测项 | 结果 |
+|---|---|
+| spec总数 | 25 |
+| 可观测子进程失败指纹数 | 12 |
+| 成功cache set | 0 |
+| `cache_set.json` | 0 |
+| prediction/score | 0/0 |
+| 活跃run-owned PID（停止后） | 0 |
+| GPU（停止后） | 8卡均0%利用率、10MiB显存 |
+| 日志 | `cache_build.log`，136行，SHA256=`f0eafaf61f65b29dff3cf5eeadb773b3394d7b0aac34bd6c1c80209387a76d4e` |
+
+归一化确定性异常指纹：
+
+```text
+FileNotFoundError: input dataset is missing:
+/home/szu2070436088/2510044040/Dataset_WigSig/ManyTx.pkl
+```
+
+冻结spec中的上述路径不存在，而只读检查确认项目目录内
+`/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManyTx.pkl`存在。
+至少两个不同固定命令在生成任何缓存/prediction前产生同一指纹，满足预注册系统性技术失败停止规则。
+调度器已自行退出，无需发送SIGTERM/SIGKILL；未删除或覆盖任何产物。
+
+### 阶段结果
+
+| 阶段 | 状态 | 说明 |
+|---|---|---|
+| preflight | PASS | 直连、项目根、GPU、磁盘正常 |
+| sync/hash/compile | PASS | 固定release远端一致 |
+| cache build | FAIL | 冻结ManyTx绝对路径不存在 |
+| parity 25/25 | NOT_STARTED | cache门未通过 |
+| base26/base31 | NOT_STARTED | 不允许越过cache/parity门 |
+| CSIL smoke | NOT_STARTED | 无真实smoke收据 |
+| MoPC-HR smoke | NOT_STARTED | 无真实smoke收据 |
+| full 200+500 cells | NOT_STARTED | 无性能结果 |
+
+如需继续，必须先在本地修正缓存规格的数据路径并重新完成独立审查、Git提交和哈希冻结，
+再创建新的非覆盖run ID；不得恢复、覆盖或重标记本run。
+
 ## 风险与解释限制
 
 - MoPC-HR仅对齐论文增量数量，不对齐论文初始类数；相关结果不得表述为完整原论文数据集复现。

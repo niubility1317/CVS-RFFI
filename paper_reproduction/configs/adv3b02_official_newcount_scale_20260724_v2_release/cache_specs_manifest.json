@@ -1,0 +1,842 @@
+{
+  "schema": "cvs.adv3b02.official_scale_cache_specs.v1",
+  "experiment_id": "adv3b02_official_newcount_scale_20260724_v2",
+  "status": "LOCAL_GENERATED_NOT_EXECUTED",
+  "receivers": [
+    "20-1",
+    "3-19",
+    "7-14",
+    "7-7",
+    "8-8"
+  ],
+  "seeds": [
+    713101,
+    713102,
+    713103,
+    713104,
+    713105
+  ],
+  "old_class_labels": [
+    "14-10",
+    "14-7",
+    "20-15",
+    "20-19",
+    "6-15",
+    "8-20"
+  ],
+  "new25_class_labels": [
+    "1-16",
+    "1-18",
+    "18-10",
+    "14-11",
+    "8-3",
+    "18-8",
+    "10-10",
+    "16-19",
+    "20-12",
+    "4-10",
+    "13-14",
+    "2-5",
+    "1-8",
+    "19-13",
+    "19-9",
+    "3-8",
+    "19-8",
+    "11-19",
+    "2-16",
+    "19-6",
+    "13-19",
+    "18-14",
+    "20-4",
+    "20-16",
+    "11-10"
+  ],
+  "paper_increment_counts": [
+    25,
+    10,
+    5,
+    3
+  ],
+  "specs": [
+    {
+      "receiver": "20-1",
+      "seed": 713101,
+      "relative_path": "cache_specs/rx_20_1/seed_713101.json",
+      "content_sha256": "26e015a451195b30c9d1d7c9caa147446c0332a302c14d2a11ba97054191f97f",
+      "cache_set_manifest": "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/target_cache_new25/rx_20_1/seed_713101/cache_set.json"
+    },
+    {
+      "receiver": "20-1",
+      "seed": 713102,
+      "relative_path": "cache_specs/rx_20_1/seed_713102.json",
+      "content_sha256": "f8482fdaf72dc628b29c8e859670e86819c13c8b779fd0a6d3e806f1afba2074",
+      "cache_set_manifest": "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/target_cache_new25/rx_20_1/seed_713102/cache_set.json"
+    },
+    {
+      "receiver": "20-1",
+      "seed": 713103,
+      "relative_path": "cache_specs/rx_20_1/seed_713103.json",
+      "content_sha256": "49b31d716307f58705dada86198770127b37d1ca68fa5a3113d959f9db379b65",
+      "cache_set_manifest": "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/target_cache_new25/rx_20_1/seed_713103/cache_set.json"
+    },
+    {
+      "receiver": "20-1",
+      "seed": 713104,
+      "relative_path": "cache_specs/rx_20_1/seed_713104.json",
+      "content_sha256": "0679ab073c700e5cdb2bb590342922f42b26351126774845c6dfc0b7e47bf86c",
+      "cache_set_manifest": "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/target_cache_new25/rx_20_1/seed_713104/cache_set.json"
+    },
+    {
+      "receiver": "20-1",
+      "seed": 713105,
+      "relative_path": "cache_specs/rx_20_1/seed_713105.json",
+      "content_sha256": "5e73b4b96c90a4ef3e3e0361abe83e21cc6400c43065a67a5b08a9021a8aaade",
+      "cache_set_manifest": "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/target_cache_new25/rx_20_1/seed_713105/cache_set.json"
+    },
+    {
+      "receiver": "3-19",
+      "seed": 713101,
+      "relative_path": "cache_specs/rx_3_19/seed_713101.json",
+      "content_sha256": "c2ec2a6c5b00fe613ada0ce035d924eb365cbe8eabbf9a83ba655abc71cd1008",
+      "cache_set_manifest": "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/target_cache_new25/rx_3_19/seed_713101/cache_set.json"
+    },
+    {
+      "receiver": "3-19",
+      "seed": 713102,
+      "relative_path": "cache_specs/rx_3_19/seed_713102.json",
+      "content_sha256": "a052a8112aff7a02b01b466f39e1b48f1d526fd418befa74d746a6408d958642",
+      "cache_set_manifest": "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/target_cache_new25/rx_3_19/seed_713102/cache_set.json"
+    },
+    {
+      "receiver": "3-19",
+      "seed": 713103,
+      "relative_path": "cache_specs/rx_3_19/seed_713103.json",
+      "content_sha256": "528d90c331875b88445da00336143950459c181b3909b68834335ea57ef83e3e",
+      "cache_set_manifest": "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/target_cache_new25/rx_3_19/seed_713103/cache_set.json"
+    },
+    {
+      "receiver": "3-19",
+      "seed": 713104,
+      "relative_path": "cache_specs/rx_3_19/seed_713104.json",
+      "content_sha256": "b27d6fd3c81d8d0878d1c37c4450fbf1e6ef79f155c053ce39370a91b70c4441",
+      "cache_set_manifest": "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/target_cache_new25/rx_3_19/seed_713104/cache_set.json"
+    },
+    {
+      "receiver": "3-19",
+      "seed": 713105,
+      "relative_path": "cache_specs/rx_3_19/seed_713105.json",
+      "content_sha256": "ec5d4f624e072b46187d44b3262763ad028b62a75e0a4db4dee426b29b178e39",
+      "cache_set_manifest": "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/target_cache_new25/rx_3_19/seed_713105/cache_set.json"
+    },
+    {
+      "receiver": "7-14",
+      "seed": 713101,
+      "relative_path": "cache_specs/rx_7_14/seed_713101.json",
+      "content_sha256": "ad420ba5c1e478a817727c69604bc37f7746bc59af63771cb0b7b695c4b8522d",
+      "cache_set_manifest": "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/target_cache_new25/rx_7_14/seed_713101/cache_set.json"
+    },
+    {
+      "receiver": "7-14",
+      "seed": 713102,
+      "relative_path": "cache_specs/rx_7_14/seed_713102.json",
+      "content_sha256": "4c2193459b980bc41b62605b796611e1f6ba0aa4e3ac3e2be1642532cb4b9ecf",
+      "cache_set_manifest": "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/target_cache_new25/rx_7_14/seed_713102/cache_set.json"
+    },
+    {
+      "receiver": "7-14",
+      "seed": 713103,
+      "relative_path": "cache_specs/rx_7_14/seed_713103.json",
+      "content_sha256": "14581ec852e7f2f0daa2638276132e8d3907b7cc1d41fc774d4cb2f5b3918ed2",
+      "cache_set_manifest": "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/target_cache_new25/rx_7_14/seed_713103/cache_set.json"
+    },
+    {
+      "receiver": "7-14",
+      "seed": 713104,
+      "relative_path": "cache_specs/rx_7_14/seed_713104.json",
+      "content_sha256": "f6084a08031206985f7c6b7823335a2f3813122fe48d291c0784809a27b2a5cd",
+      "cache_set_manifest": "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/target_cache_new25/rx_7_14/seed_713104/cache_set.json"
+    },
+    {
+      "receiver": "7-14",
+      "seed": 713105,
+      "relative_path": "cache_specs/rx_7_14/seed_713105.json",
+      "content_sha256": "7cf28ae1e1c1f5320bed19e6673fa5c8f1739163379e9298ac8d924d453e96a9",
+      "cache_set_manifest": "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/target_cache_new25/rx_7_14/seed_713105/cache_set.json"
+    },
+    {
+      "receiver": "7-7",
+      "seed": 713101,
+      "relative_path": "cache_specs/rx_7_7/seed_713101.json",
+      "content_sha256": "091e529868a1cf7b10c03c2a089178f173ce6846adb1276ca4534153e2654a55",
+      "cache_set_manifest": "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/target_cache_new25/rx_7_7/seed_713101/cache_set.json"
+    },
+    {
+      "receiver": "7-7",
+      "seed": 713102,
+      "relative_path": "cache_specs/rx_7_7/seed_713102.json",
+      "content_sha256": "a83f02a888bd1d129aa1857fe3e42b763aa409782cc1b89365f4306b94f19263",
+      "cache_set_manifest": "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/target_cache_new25/rx_7_7/seed_713102/cache_set.json"
+    },
+    {
+      "receiver": "7-7",
+      "seed": 713103,
+      "relative_path": "cache_specs/rx_7_7/seed_713103.json",
+      "content_sha256": "134ac5cae5a486108d6448c6149b8fa2b2853b896ce7794699dfad4191074cb8",
+      "cache_set_manifest": "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/target_cache_new25/rx_7_7/seed_713103/cache_set.json"
+    },
+    {
+      "receiver": "7-7",
+      "seed": 713104,
+      "relative_path": "cache_specs/rx_7_7/seed_713104.json",
+      "content_sha256": "7f187e75f4c5993155b04dc446b5a77f3f7aa59a6c6173ac8fb6e69703732ce5",
+      "cache_set_manifest": "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/target_cache_new25/rx_7_7/seed_713104/cache_set.json"
+    },
+    {
+      "receiver": "7-7",
+      "seed": 713105,
+      "relative_path": "cache_specs/rx_7_7/seed_713105.json",
+      "content_sha256": "4a05cd17a69d0e3f17f42363b16ace4671d89f886f2a4a24ace6b5cffd27a237",
+      "cache_set_manifest": "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/target_cache_new25/rx_7_7/seed_713105/cache_set.json"
+    },
+    {
+      "receiver": "8-8",
+      "seed": 713101,
+      "relative_path": "cache_specs/rx_8_8/seed_713101.json",
+      "content_sha256": "40f125da13ac58515b9b41bda65344ede7f42d7de08d3a84f06a60caed3d8e8f",
+      "cache_set_manifest": "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/target_cache_new25/rx_8_8/seed_713101/cache_set.json"
+    },
+    {
+      "receiver": "8-8",
+      "seed": 713102,
+      "relative_path": "cache_specs/rx_8_8/seed_713102.json",
+      "content_sha256": "067813f4f9bda4c5922057a0e125419619e2695f3d85d7cb042a348b072a64b7",
+      "cache_set_manifest": "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/target_cache_new25/rx_8_8/seed_713102/cache_set.json"
+    },
+    {
+      "receiver": "8-8",
+      "seed": 713103,
+      "relative_path": "cache_specs/rx_8_8/seed_713103.json",
+      "content_sha256": "880c14a356686ddcf6b6fe86fe5dc7ca15d0618baac06bde50a832a90b2bb8a5",
+      "cache_set_manifest": "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/target_cache_new25/rx_8_8/seed_713103/cache_set.json"
+    },
+    {
+      "receiver": "8-8",
+      "seed": 713104,
+      "relative_path": "cache_specs/rx_8_8/seed_713104.json",
+      "content_sha256": "6c97aa4804dbba104cab68f41296680de331f5e93c952091229938dbf4de238c",
+      "cache_set_manifest": "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/target_cache_new25/rx_8_8/seed_713104/cache_set.json"
+    },
+    {
+      "receiver": "8-8",
+      "seed": 713105,
+      "relative_path": "cache_specs/rx_8_8/seed_713105.json",
+      "content_sha256": "fa1f872d3c37d46770ed86e4d6e59bc1b04c50c409b097f9bfa91647cd1b0829",
+      "cache_set_manifest": "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/target_cache_new25/rx_8_8/seed_713105/cache_set.json"
+    }
+  ],
+  "commands": [
+    [
+      "python",
+      "code/scripts/build_cvs_leo_weak_iq_cache.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/plan/cache_specs/rx_20_1/seed_713101.json",
+      "--device",
+      "cuda:0"
+    ],
+    [
+      "python",
+      "code/scripts/build_cvs_leo_weak_iq_cache.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/plan/cache_specs/rx_20_1/seed_713102.json",
+      "--device",
+      "cuda:0"
+    ],
+    [
+      "python",
+      "code/scripts/build_cvs_leo_weak_iq_cache.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/plan/cache_specs/rx_20_1/seed_713103.json",
+      "--device",
+      "cuda:0"
+    ],
+    [
+      "python",
+      "code/scripts/build_cvs_leo_weak_iq_cache.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/plan/cache_specs/rx_20_1/seed_713104.json",
+      "--device",
+      "cuda:0"
+    ],
+    [
+      "python",
+      "code/scripts/build_cvs_leo_weak_iq_cache.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/plan/cache_specs/rx_20_1/seed_713105.json",
+      "--device",
+      "cuda:0"
+    ],
+    [
+      "python",
+      "code/scripts/build_cvs_leo_weak_iq_cache.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/plan/cache_specs/rx_3_19/seed_713101.json",
+      "--device",
+      "cuda:0"
+    ],
+    [
+      "python",
+      "code/scripts/build_cvs_leo_weak_iq_cache.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/plan/cache_specs/rx_3_19/seed_713102.json",
+      "--device",
+      "cuda:0"
+    ],
+    [
+      "python",
+      "code/scripts/build_cvs_leo_weak_iq_cache.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/plan/cache_specs/rx_3_19/seed_713103.json",
+      "--device",
+      "cuda:0"
+    ],
+    [
+      "python",
+      "code/scripts/build_cvs_leo_weak_iq_cache.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/plan/cache_specs/rx_3_19/seed_713104.json",
+      "--device",
+      "cuda:0"
+    ],
+    [
+      "python",
+      "code/scripts/build_cvs_leo_weak_iq_cache.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/plan/cache_specs/rx_3_19/seed_713105.json",
+      "--device",
+      "cuda:0"
+    ],
+    [
+      "python",
+      "code/scripts/build_cvs_leo_weak_iq_cache.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/plan/cache_specs/rx_7_14/seed_713101.json",
+      "--device",
+      "cuda:0"
+    ],
+    [
+      "python",
+      "code/scripts/build_cvs_leo_weak_iq_cache.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/plan/cache_specs/rx_7_14/seed_713102.json",
+      "--device",
+      "cuda:0"
+    ],
+    [
+      "python",
+      "code/scripts/build_cvs_leo_weak_iq_cache.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/plan/cache_specs/rx_7_14/seed_713103.json",
+      "--device",
+      "cuda:0"
+    ],
+    [
+      "python",
+      "code/scripts/build_cvs_leo_weak_iq_cache.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/plan/cache_specs/rx_7_14/seed_713104.json",
+      "--device",
+      "cuda:0"
+    ],
+    [
+      "python",
+      "code/scripts/build_cvs_leo_weak_iq_cache.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/plan/cache_specs/rx_7_14/seed_713105.json",
+      "--device",
+      "cuda:0"
+    ],
+    [
+      "python",
+      "code/scripts/build_cvs_leo_weak_iq_cache.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/plan/cache_specs/rx_7_7/seed_713101.json",
+      "--device",
+      "cuda:0"
+    ],
+    [
+      "python",
+      "code/scripts/build_cvs_leo_weak_iq_cache.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/plan/cache_specs/rx_7_7/seed_713102.json",
+      "--device",
+      "cuda:0"
+    ],
+    [
+      "python",
+      "code/scripts/build_cvs_leo_weak_iq_cache.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/plan/cache_specs/rx_7_7/seed_713103.json",
+      "--device",
+      "cuda:0"
+    ],
+    [
+      "python",
+      "code/scripts/build_cvs_leo_weak_iq_cache.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/plan/cache_specs/rx_7_7/seed_713104.json",
+      "--device",
+      "cuda:0"
+    ],
+    [
+      "python",
+      "code/scripts/build_cvs_leo_weak_iq_cache.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/plan/cache_specs/rx_7_7/seed_713105.json",
+      "--device",
+      "cuda:0"
+    ],
+    [
+      "python",
+      "code/scripts/build_cvs_leo_weak_iq_cache.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/plan/cache_specs/rx_8_8/seed_713101.json",
+      "--device",
+      "cuda:0"
+    ],
+    [
+      "python",
+      "code/scripts/build_cvs_leo_weak_iq_cache.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/plan/cache_specs/rx_8_8/seed_713102.json",
+      "--device",
+      "cuda:0"
+    ],
+    [
+      "python",
+      "code/scripts/build_cvs_leo_weak_iq_cache.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/plan/cache_specs/rx_8_8/seed_713103.json",
+      "--device",
+      "cuda:0"
+    ],
+    [
+      "python",
+      "code/scripts/build_cvs_leo_weak_iq_cache.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/plan/cache_specs/rx_8_8/seed_713104.json",
+      "--device",
+      "cuda:0"
+    ],
+    [
+      "python",
+      "code/scripts/build_cvs_leo_weak_iq_cache.py",
+      "--spec",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/plan/cache_specs/rx_8_8/seed_713105.json",
+      "--device",
+      "cuda:0"
+    ]
+  ],
+  "parity_commands": [
+    [
+      "python",
+      "paper_reproduction/scripts/verify_adv3b02_official_scale_cache_parity.py",
+      "--reference-cache-set",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14/phase1_caches/target/rx_20_1/seed_713101/cache_set.json",
+      "--expanded-cache-set",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/target_cache_new25/rx_20_1/seed_713101/cache_set.json",
+      "--reference-scope",
+      "stage2_registered",
+      "--expanded-scope",
+      "external_comparison_registered",
+      "--preserved-class-labels",
+      "14-10,14-7,20-15,20-19,6-15,8-20,1-16,1-18,18-10,14-11,8-3,18-8,10-10,16-19,20-12,4-10,13-14,2-5,1-8,19-13,19-9,3-8,19-8,11-19,2-16,19-6",
+      "--output",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/cache_parity/rx_20_1/seed_713101.json"
+    ],
+    [
+      "python",
+      "paper_reproduction/scripts/verify_adv3b02_official_scale_cache_parity.py",
+      "--reference-cache-set",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14/phase1_caches/target/rx_20_1/seed_713102/cache_set.json",
+      "--expanded-cache-set",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/target_cache_new25/rx_20_1/seed_713102/cache_set.json",
+      "--reference-scope",
+      "stage2_registered",
+      "--expanded-scope",
+      "external_comparison_registered",
+      "--preserved-class-labels",
+      "14-10,14-7,20-15,20-19,6-15,8-20,1-16,1-18,18-10,14-11,8-3,18-8,10-10,16-19,20-12,4-10,13-14,2-5,1-8,19-13,19-9,3-8,19-8,11-19,2-16,19-6",
+      "--output",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/cache_parity/rx_20_1/seed_713102.json"
+    ],
+    [
+      "python",
+      "paper_reproduction/scripts/verify_adv3b02_official_scale_cache_parity.py",
+      "--reference-cache-set",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14/phase1_caches/target/rx_20_1/seed_713103/cache_set.json",
+      "--expanded-cache-set",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/target_cache_new25/rx_20_1/seed_713103/cache_set.json",
+      "--reference-scope",
+      "stage2_registered",
+      "--expanded-scope",
+      "external_comparison_registered",
+      "--preserved-class-labels",
+      "14-10,14-7,20-15,20-19,6-15,8-20,1-16,1-18,18-10,14-11,8-3,18-8,10-10,16-19,20-12,4-10,13-14,2-5,1-8,19-13,19-9,3-8,19-8,11-19,2-16,19-6",
+      "--output",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/cache_parity/rx_20_1/seed_713103.json"
+    ],
+    [
+      "python",
+      "paper_reproduction/scripts/verify_adv3b02_official_scale_cache_parity.py",
+      "--reference-cache-set",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14/phase1_caches/target/rx_20_1/seed_713104/cache_set.json",
+      "--expanded-cache-set",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/target_cache_new25/rx_20_1/seed_713104/cache_set.json",
+      "--reference-scope",
+      "stage2_registered",
+      "--expanded-scope",
+      "external_comparison_registered",
+      "--preserved-class-labels",
+      "14-10,14-7,20-15,20-19,6-15,8-20,1-16,1-18,18-10,14-11,8-3,18-8,10-10,16-19,20-12,4-10,13-14,2-5,1-8,19-13,19-9,3-8,19-8,11-19,2-16,19-6",
+      "--output",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/cache_parity/rx_20_1/seed_713104.json"
+    ],
+    [
+      "python",
+      "paper_reproduction/scripts/verify_adv3b02_official_scale_cache_parity.py",
+      "--reference-cache-set",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14/phase1_caches/target/rx_20_1/seed_713105/cache_set.json",
+      "--expanded-cache-set",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/target_cache_new25/rx_20_1/seed_713105/cache_set.json",
+      "--reference-scope",
+      "stage2_registered",
+      "--expanded-scope",
+      "external_comparison_registered",
+      "--preserved-class-labels",
+      "14-10,14-7,20-15,20-19,6-15,8-20,1-16,1-18,18-10,14-11,8-3,18-8,10-10,16-19,20-12,4-10,13-14,2-5,1-8,19-13,19-9,3-8,19-8,11-19,2-16,19-6",
+      "--output",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/cache_parity/rx_20_1/seed_713105.json"
+    ],
+    [
+      "python",
+      "paper_reproduction/scripts/verify_adv3b02_official_scale_cache_parity.py",
+      "--reference-cache-set",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14/phase1_caches/target/rx_3_19/seed_713101/cache_set.json",
+      "--expanded-cache-set",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/target_cache_new25/rx_3_19/seed_713101/cache_set.json",
+      "--reference-scope",
+      "stage2_registered",
+      "--expanded-scope",
+      "external_comparison_registered",
+      "--preserved-class-labels",
+      "14-10,14-7,20-15,20-19,6-15,8-20,1-16,1-18,18-10,14-11,8-3,18-8,10-10,16-19,20-12,4-10,13-14,2-5,1-8,19-13,19-9,3-8,19-8,11-19,2-16,19-6",
+      "--output",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/cache_parity/rx_3_19/seed_713101.json"
+    ],
+    [
+      "python",
+      "paper_reproduction/scripts/verify_adv3b02_official_scale_cache_parity.py",
+      "--reference-cache-set",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14/phase1_caches/target/rx_3_19/seed_713102/cache_set.json",
+      "--expanded-cache-set",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/target_cache_new25/rx_3_19/seed_713102/cache_set.json",
+      "--reference-scope",
+      "stage2_registered",
+      "--expanded-scope",
+      "external_comparison_registered",
+      "--preserved-class-labels",
+      "14-10,14-7,20-15,20-19,6-15,8-20,1-16,1-18,18-10,14-11,8-3,18-8,10-10,16-19,20-12,4-10,13-14,2-5,1-8,19-13,19-9,3-8,19-8,11-19,2-16,19-6",
+      "--output",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/cache_parity/rx_3_19/seed_713102.json"
+    ],
+    [
+      "python",
+      "paper_reproduction/scripts/verify_adv3b02_official_scale_cache_parity.py",
+      "--reference-cache-set",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14/phase1_caches/target/rx_3_19/seed_713103/cache_set.json",
+      "--expanded-cache-set",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/target_cache_new25/rx_3_19/seed_713103/cache_set.json",
+      "--reference-scope",
+      "stage2_registered",
+      "--expanded-scope",
+      "external_comparison_registered",
+      "--preserved-class-labels",
+      "14-10,14-7,20-15,20-19,6-15,8-20,1-16,1-18,18-10,14-11,8-3,18-8,10-10,16-19,20-12,4-10,13-14,2-5,1-8,19-13,19-9,3-8,19-8,11-19,2-16,19-6",
+      "--output",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/cache_parity/rx_3_19/seed_713103.json"
+    ],
+    [
+      "python",
+      "paper_reproduction/scripts/verify_adv3b02_official_scale_cache_parity.py",
+      "--reference-cache-set",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14/phase1_caches/target/rx_3_19/seed_713104/cache_set.json",
+      "--expanded-cache-set",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/target_cache_new25/rx_3_19/seed_713104/cache_set.json",
+      "--reference-scope",
+      "stage2_registered",
+      "--expanded-scope",
+      "external_comparison_registered",
+      "--preserved-class-labels",
+      "14-10,14-7,20-15,20-19,6-15,8-20,1-16,1-18,18-10,14-11,8-3,18-8,10-10,16-19,20-12,4-10,13-14,2-5,1-8,19-13,19-9,3-8,19-8,11-19,2-16,19-6",
+      "--output",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/cache_parity/rx_3_19/seed_713104.json"
+    ],
+    [
+      "python",
+      "paper_reproduction/scripts/verify_adv3b02_official_scale_cache_parity.py",
+      "--reference-cache-set",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14/phase1_caches/target/rx_3_19/seed_713105/cache_set.json",
+      "--expanded-cache-set",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/target_cache_new25/rx_3_19/seed_713105/cache_set.json",
+      "--reference-scope",
+      "stage2_registered",
+      "--expanded-scope",
+      "external_comparison_registered",
+      "--preserved-class-labels",
+      "14-10,14-7,20-15,20-19,6-15,8-20,1-16,1-18,18-10,14-11,8-3,18-8,10-10,16-19,20-12,4-10,13-14,2-5,1-8,19-13,19-9,3-8,19-8,11-19,2-16,19-6",
+      "--output",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/cache_parity/rx_3_19/seed_713105.json"
+    ],
+    [
+      "python",
+      "paper_reproduction/scripts/verify_adv3b02_official_scale_cache_parity.py",
+      "--reference-cache-set",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14/phase1_caches/target/rx_7_14/seed_713101/cache_set.json",
+      "--expanded-cache-set",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/target_cache_new25/rx_7_14/seed_713101/cache_set.json",
+      "--reference-scope",
+      "stage2_registered",
+      "--expanded-scope",
+      "external_comparison_registered",
+      "--preserved-class-labels",
+      "14-10,14-7,20-15,20-19,6-15,8-20,1-16,1-18,18-10,14-11,8-3,18-8,10-10,16-19,20-12,4-10,13-14,2-5,1-8,19-13,19-9,3-8,19-8,11-19,2-16,19-6",
+      "--output",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/cache_parity/rx_7_14/seed_713101.json"
+    ],
+    [
+      "python",
+      "paper_reproduction/scripts/verify_adv3b02_official_scale_cache_parity.py",
+      "--reference-cache-set",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14/phase1_caches/target/rx_7_14/seed_713102/cache_set.json",
+      "--expanded-cache-set",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/target_cache_new25/rx_7_14/seed_713102/cache_set.json",
+      "--reference-scope",
+      "stage2_registered",
+      "--expanded-scope",
+      "external_comparison_registered",
+      "--preserved-class-labels",
+      "14-10,14-7,20-15,20-19,6-15,8-20,1-16,1-18,18-10,14-11,8-3,18-8,10-10,16-19,20-12,4-10,13-14,2-5,1-8,19-13,19-9,3-8,19-8,11-19,2-16,19-6",
+      "--output",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/cache_parity/rx_7_14/seed_713102.json"
+    ],
+    [
+      "python",
+      "paper_reproduction/scripts/verify_adv3b02_official_scale_cache_parity.py",
+      "--reference-cache-set",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14/phase1_caches/target/rx_7_14/seed_713103/cache_set.json",
+      "--expanded-cache-set",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/target_cache_new25/rx_7_14/seed_713103/cache_set.json",
+      "--reference-scope",
+      "stage2_registered",
+      "--expanded-scope",
+      "external_comparison_registered",
+      "--preserved-class-labels",
+      "14-10,14-7,20-15,20-19,6-15,8-20,1-16,1-18,18-10,14-11,8-3,18-8,10-10,16-19,20-12,4-10,13-14,2-5,1-8,19-13,19-9,3-8,19-8,11-19,2-16,19-6",
+      "--output",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/cache_parity/rx_7_14/seed_713103.json"
+    ],
+    [
+      "python",
+      "paper_reproduction/scripts/verify_adv3b02_official_scale_cache_parity.py",
+      "--reference-cache-set",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14/phase1_caches/target/rx_7_14/seed_713104/cache_set.json",
+      "--expanded-cache-set",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/target_cache_new25/rx_7_14/seed_713104/cache_set.json",
+      "--reference-scope",
+      "stage2_registered",
+      "--expanded-scope",
+      "external_comparison_registered",
+      "--preserved-class-labels",
+      "14-10,14-7,20-15,20-19,6-15,8-20,1-16,1-18,18-10,14-11,8-3,18-8,10-10,16-19,20-12,4-10,13-14,2-5,1-8,19-13,19-9,3-8,19-8,11-19,2-16,19-6",
+      "--output",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/cache_parity/rx_7_14/seed_713104.json"
+    ],
+    [
+      "python",
+      "paper_reproduction/scripts/verify_adv3b02_official_scale_cache_parity.py",
+      "--reference-cache-set",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14/phase1_caches/target/rx_7_14/seed_713105/cache_set.json",
+      "--expanded-cache-set",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/target_cache_new25/rx_7_14/seed_713105/cache_set.json",
+      "--reference-scope",
+      "stage2_registered",
+      "--expanded-scope",
+      "external_comparison_registered",
+      "--preserved-class-labels",
+      "14-10,14-7,20-15,20-19,6-15,8-20,1-16,1-18,18-10,14-11,8-3,18-8,10-10,16-19,20-12,4-10,13-14,2-5,1-8,19-13,19-9,3-8,19-8,11-19,2-16,19-6",
+      "--output",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/cache_parity/rx_7_14/seed_713105.json"
+    ],
+    [
+      "python",
+      "paper_reproduction/scripts/verify_adv3b02_official_scale_cache_parity.py",
+      "--reference-cache-set",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14/phase1_caches/target/rx_7_7/seed_713101/cache_set.json",
+      "--expanded-cache-set",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/target_cache_new25/rx_7_7/seed_713101/cache_set.json",
+      "--reference-scope",
+      "stage2_registered",
+      "--expanded-scope",
+      "external_comparison_registered",
+      "--preserved-class-labels",
+      "14-10,14-7,20-15,20-19,6-15,8-20,1-16,1-18,18-10,14-11,8-3,18-8,10-10,16-19,20-12,4-10,13-14,2-5,1-8,19-13,19-9,3-8,19-8,11-19,2-16,19-6",
+      "--output",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/cache_parity/rx_7_7/seed_713101.json"
+    ],
+    [
+      "python",
+      "paper_reproduction/scripts/verify_adv3b02_official_scale_cache_parity.py",
+      "--reference-cache-set",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14/phase1_caches/target/rx_7_7/seed_713102/cache_set.json",
+      "--expanded-cache-set",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/target_cache_new25/rx_7_7/seed_713102/cache_set.json",
+      "--reference-scope",
+      "stage2_registered",
+      "--expanded-scope",
+      "external_comparison_registered",
+      "--preserved-class-labels",
+      "14-10,14-7,20-15,20-19,6-15,8-20,1-16,1-18,18-10,14-11,8-3,18-8,10-10,16-19,20-12,4-10,13-14,2-5,1-8,19-13,19-9,3-8,19-8,11-19,2-16,19-6",
+      "--output",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/cache_parity/rx_7_7/seed_713102.json"
+    ],
+    [
+      "python",
+      "paper_reproduction/scripts/verify_adv3b02_official_scale_cache_parity.py",
+      "--reference-cache-set",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14/phase1_caches/target/rx_7_7/seed_713103/cache_set.json",
+      "--expanded-cache-set",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/target_cache_new25/rx_7_7/seed_713103/cache_set.json",
+      "--reference-scope",
+      "stage2_registered",
+      "--expanded-scope",
+      "external_comparison_registered",
+      "--preserved-class-labels",
+      "14-10,14-7,20-15,20-19,6-15,8-20,1-16,1-18,18-10,14-11,8-3,18-8,10-10,16-19,20-12,4-10,13-14,2-5,1-8,19-13,19-9,3-8,19-8,11-19,2-16,19-6",
+      "--output",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/cache_parity/rx_7_7/seed_713103.json"
+    ],
+    [
+      "python",
+      "paper_reproduction/scripts/verify_adv3b02_official_scale_cache_parity.py",
+      "--reference-cache-set",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14/phase1_caches/target/rx_7_7/seed_713104/cache_set.json",
+      "--expanded-cache-set",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/target_cache_new25/rx_7_7/seed_713104/cache_set.json",
+      "--reference-scope",
+      "stage2_registered",
+      "--expanded-scope",
+      "external_comparison_registered",
+      "--preserved-class-labels",
+      "14-10,14-7,20-15,20-19,6-15,8-20,1-16,1-18,18-10,14-11,8-3,18-8,10-10,16-19,20-12,4-10,13-14,2-5,1-8,19-13,19-9,3-8,19-8,11-19,2-16,19-6",
+      "--output",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/cache_parity/rx_7_7/seed_713104.json"
+    ],
+    [
+      "python",
+      "paper_reproduction/scripts/verify_adv3b02_official_scale_cache_parity.py",
+      "--reference-cache-set",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14/phase1_caches/target/rx_7_7/seed_713105/cache_set.json",
+      "--expanded-cache-set",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/target_cache_new25/rx_7_7/seed_713105/cache_set.json",
+      "--reference-scope",
+      "stage2_registered",
+      "--expanded-scope",
+      "external_comparison_registered",
+      "--preserved-class-labels",
+      "14-10,14-7,20-15,20-19,6-15,8-20,1-16,1-18,18-10,14-11,8-3,18-8,10-10,16-19,20-12,4-10,13-14,2-5,1-8,19-13,19-9,3-8,19-8,11-19,2-16,19-6",
+      "--output",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/cache_parity/rx_7_7/seed_713105.json"
+    ],
+    [
+      "python",
+      "paper_reproduction/scripts/verify_adv3b02_official_scale_cache_parity.py",
+      "--reference-cache-set",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14/phase1_caches/target/rx_8_8/seed_713101/cache_set.json",
+      "--expanded-cache-set",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/target_cache_new25/rx_8_8/seed_713101/cache_set.json",
+      "--reference-scope",
+      "stage2_registered",
+      "--expanded-scope",
+      "external_comparison_registered",
+      "--preserved-class-labels",
+      "14-10,14-7,20-15,20-19,6-15,8-20,1-16,1-18,18-10,14-11,8-3,18-8,10-10,16-19,20-12,4-10,13-14,2-5,1-8,19-13,19-9,3-8,19-8,11-19,2-16,19-6",
+      "--output",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/cache_parity/rx_8_8/seed_713101.json"
+    ],
+    [
+      "python",
+      "paper_reproduction/scripts/verify_adv3b02_official_scale_cache_parity.py",
+      "--reference-cache-set",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14/phase1_caches/target/rx_8_8/seed_713102/cache_set.json",
+      "--expanded-cache-set",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/target_cache_new25/rx_8_8/seed_713102/cache_set.json",
+      "--reference-scope",
+      "stage2_registered",
+      "--expanded-scope",
+      "external_comparison_registered",
+      "--preserved-class-labels",
+      "14-10,14-7,20-15,20-19,6-15,8-20,1-16,1-18,18-10,14-11,8-3,18-8,10-10,16-19,20-12,4-10,13-14,2-5,1-8,19-13,19-9,3-8,19-8,11-19,2-16,19-6",
+      "--output",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/cache_parity/rx_8_8/seed_713102.json"
+    ],
+    [
+      "python",
+      "paper_reproduction/scripts/verify_adv3b02_official_scale_cache_parity.py",
+      "--reference-cache-set",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14/phase1_caches/target/rx_8_8/seed_713103/cache_set.json",
+      "--expanded-cache-set",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/target_cache_new25/rx_8_8/seed_713103/cache_set.json",
+      "--reference-scope",
+      "stage2_registered",
+      "--expanded-scope",
+      "external_comparison_registered",
+      "--preserved-class-labels",
+      "14-10,14-7,20-15,20-19,6-15,8-20,1-16,1-18,18-10,14-11,8-3,18-8,10-10,16-19,20-12,4-10,13-14,2-5,1-8,19-13,19-9,3-8,19-8,11-19,2-16,19-6",
+      "--output",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/cache_parity/rx_8_8/seed_713103.json"
+    ],
+    [
+      "python",
+      "paper_reproduction/scripts/verify_adv3b02_official_scale_cache_parity.py",
+      "--reference-cache-set",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14/phase1_caches/target/rx_8_8/seed_713104/cache_set.json",
+      "--expanded-cache-set",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/target_cache_new25/rx_8_8/seed_713104/cache_set.json",
+      "--reference-scope",
+      "stage2_registered",
+      "--expanded-scope",
+      "external_comparison_registered",
+      "--preserved-class-labels",
+      "14-10,14-7,20-15,20-19,6-15,8-20,1-16,1-18,18-10,14-11,8-3,18-8,10-10,16-19,20-12,4-10,13-14,2-5,1-8,19-13,19-9,3-8,19-8,11-19,2-16,19-6",
+      "--output",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/cache_parity/rx_8_8/seed_713104.json"
+    ],
+    [
+      "python",
+      "paper_reproduction/scripts/verify_adv3b02_official_scale_cache_parity.py",
+      "--reference-cache-set",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14/phase1_caches/target/rx_8_8/seed_713105/cache_set.json",
+      "--expanded-cache-set",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/target_cache_new25/rx_8_8/seed_713105/cache_set.json",
+      "--reference-scope",
+      "stage2_registered",
+      "--expanded-scope",
+      "external_comparison_registered",
+      "--preserved-class-labels",
+      "14-10,14-7,20-15,20-19,6-15,8-20,1-16,1-18,18-10,14-11,8-3,18-8,10-10,16-19,20-12,4-10,13-14,2-5,1-8,19-13,19-9,3-8,19-8,11-19,2-16,19-6",
+      "--output",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v2/cache_parity/rx_8_8/seed_713105.json"
+    ]
+  ],
+  "required_parity_gate": "old6+first20 sample_ids and post_channel_iq_sha256 must match the prior official-repo cache for every receiver/seed/scenario"
+}

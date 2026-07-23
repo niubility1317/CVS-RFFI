@@ -1,0 +1,136 @@
+Traceback (most recent call last):
+  File "/home/szu2070436088/2510044040/CV-SincNet/code/scripts/build_cvs_leo_weak_iq_cache.py", line 905, in <module>
+    raise SystemExit(main())
+  File "/home/szu2070436088/2510044040/CV-SincNet/code/scripts/build_cvs_leo_weak_iq_cache.py", line 899, in main
+    result = build_cache_set(args.spec, device=device)
+  File "/home/szu2070436088/2510044040/CV-SincNet/code/scripts/build_cvs_leo_weak_iq_cache.py", line 758, in build_cache_set
+    role_datasets, exclusion_audit = _build_role_datasets(
+  File "/home/szu2070436088/2510044040/CV-SincNet/code/scripts/build_cvs_leo_weak_iq_cache.py", line 284, in _build_role_datasets
+    raise FileNotFoundError(f"input dataset is missing: {pkl_path}")
+FileNotFoundError: input dataset is missing: /home/szu2070436088/2510044040/Dataset_WigSig/ManyTx.pkl
+Traceback (most recent call last):
+  File "/home/szu2070436088/2510044040/CV-SincNet/code/scripts/build_cvs_leo_weak_iq_cache.py", line 905, in <module>
+    raise SystemExit(main())
+  File "/home/szu2070436088/2510044040/CV-SincNet/code/scripts/build_cvs_leo_weak_iq_cache.py", line 899, in main
+    result = build_cache_set(args.spec, device=device)
+  File "/home/szu2070436088/2510044040/CV-SincNet/code/scripts/build_cvs_leo_weak_iq_cache.py", line 758, in build_cache_set
+    role_datasets, exclusion_audit = _build_role_datasets(
+  File "/home/szu2070436088/2510044040/CV-SincNet/code/scripts/build_cvs_leo_weak_iq_cache.py", line 284, in _build_role_datasets
+    raise FileNotFoundError(f"input dataset is missing: {pkl_path}")
+FileNotFoundError: input dataset is missing: /home/szu2070436088/2510044040/Dataset_WigSig/ManyTx.pkl
+Traceback (most recent call last):
+  File "/home/szu2070436088/2510044040/CV-SincNet/code/scripts/build_cvs_leo_weak_iq_cache.py", line 905, in <module>
+    raise SystemExit(main())
+  File "/home/szu2070436088/2510044040/CV-SincNet/code/scripts/build_cvs_leo_weak_iq_cache.py", line 899, in main
+    result = build_cache_set(args.spec, device=device)
+  File "/home/szu2070436088/2510044040/CV-SincNet/code/scripts/build_cvs_leo_weak_iq_cache.py", line 758, in build_cache_set
+    role_datasets, exclusion_audit = _build_role_datasets(
+  File "/home/szu2070436088/2510044040/CV-SincNet/code/scripts/build_cvs_leo_weak_iq_cache.py", line 284, in _build_role_datasets
+    raise FileNotFoundError(f"input dataset is missing: {pkl_path}")
+FileNotFoundError: input dataset is missing: /home/szu2070436088/2510044040/Dataset_WigSig/ManyTx.pkl
+Traceback (most recent call last):
+  File "/home/szu2070436088/2510044040/CV-SincNet/code/scripts/build_cvs_leo_weak_iq_cache.py", line 905, in <module>
+    raise SystemExit(main())
+  File "/home/szu2070436088/2510044040/CV-SincNet/code/scripts/build_cvs_leo_weak_iq_cache.py", line 899, in main
+    result = build_cache_set(args.spec, device=device)
+  File "/home/szu2070436088/2510044040/CV-SincNet/code/scripts/build_cvs_leo_weak_iq_cache.py", line 758, in build_cache_set
+    role_datasets, exclusion_audit = _build_role_datasets(
+  File "/home/szu2070436088/2510044040/CV-SincNet/code/scripts/build_cvs_leo_weak_iq_cache.py", line 284, in _build_role_datasets
+    raise FileNotFoundError(f"input dataset is missing: {pkl_path}")
+FileNotFoundError: input dataset is missing: /home/szu2070436088/2510044040/Dataset_WigSig/ManyTx.pkl
+Traceback (most recent call last):
+  File "/home/szu2070436088/2510044040/CV-SincNet/code/scripts/build_cvs_leo_weak_iq_cache.py", line 905, in <module>
+Traceback (most recent call last):
+  File "/home/szu2070436088/2510044040/CV-SincNet/code/scripts/build_cvs_leo_weak_iq_cache.py", line 905, in <module>
+    raise SystemExit(main())
+  File "/home/szu2070436088/2510044040/CV-SincNet/code/scripts/build_cvs_leo_weak_iq_cache.py", line 899, in main
+Traceback (most recent call last):
+    raise SystemExit(main())
+  File "/home/szu2070436088/2510044040/CV-SincNet/code/scripts/build_cvs_leo_weak_iq_cache.py", line 899, in main
+  File "/home/szu2070436088/2510044040/CV-SincNet/code/scripts/build_cvs_leo_weak_iq_cache.py", line 905, in <module>
+    result = build_cache_set(args.spec, device=device)
+    result = build_cache_set(args.spec, device=device)
+  File "/home/szu2070436088/2510044040/CV-SincNet/code/scripts/build_cvs_leo_weak_iq_cache.py", line 758, in build_cache_set
+  File "/home/szu2070436088/2510044040/CV-SincNet/code/scripts/build_cvs_leo_weak_iq_cache.py", line 758, in build_cache_set
+    raise SystemExit(main())
+  File "/home/szu2070436088/2510044040/CV-SincNet/code/scripts/build_cvs_leo_weak_iq_cache.py", line 899, in main
+    role_datasets, exclusion_audit = _build_role_datasets(
+  File "/home/szu2070436088/2510044040/CV-SincNet/code/scripts/build_cvs_leo_weak_iq_cache.py", line 284, in _build_role_datasets
+    role_datasets, exclusion_audit = _build_role_datasets(
+  File "/home/szu2070436088/2510044040/CV-SincNet/code/scripts/build_cvs_leo_weak_iq_cache.py", line 284, in _build_role_datasets
+    result = build_cache_set(args.spec, device=device)
+  File "/home/szu2070436088/2510044040/CV-SincNet/code/scripts/build_cvs_leo_weak_iq_cache.py", line 758, in build_cache_set
+    raise FileNotFoundError(f"input dataset is missing: {pkl_path}")
+FileNotFoundError: input dataset is missing: /home/szu2070436088/2510044040/Dataset_WigSig/ManyTx.pkl
+    raise FileNotFoundError(f"input dataset is missing: {pkl_path}")
+FileNotFoundError: input dataset is missing: /home/szu2070436088/2510044040/Dataset_WigSig/ManyTx.pkl
+    role_datasets, exclusion_audit = _build_role_datasets(
+  File "/home/szu2070436088/2510044040/CV-SincNet/code/scripts/build_cvs_leo_weak_iq_cache.py", line 284, in _build_role_datasets
+    raise FileNotFoundError(f"input dataset is missing: {pkl_path}")
+FileNotFoundError: input dataset is missing: /home/szu2070436088/2510044040/Dataset_WigSig/ManyTx.pkl
+Traceback (most recent call last):
+  File "/home/szu2070436088/2510044040/CV-SincNet/code/scripts/build_cvs_leo_weak_iq_cache.py", line 905, in <module>
+    raise SystemExit(main())
+  File "/home/szu2070436088/2510044040/CV-SincNet/code/scripts/build_cvs_leo_weak_iq_cache.py", line 899, in main
+    result = build_cache_set(args.spec, device=device)
+  File "/home/szu2070436088/2510044040/CV-SincNet/code/scripts/build_cvs_leo_weak_iq_cache.py", line 758, in build_cache_set
+    role_datasets, exclusion_audit = _build_role_datasets(
+  File "/home/szu2070436088/2510044040/CV-SincNet/code/scripts/build_cvs_leo_weak_iq_cache.py", line 284, in _build_role_datasets
+    raise FileNotFoundError(f"input dataset is missing: {pkl_path}")
+FileNotFoundError: input dataset is missing: /home/szu2070436088/2510044040/Dataset_WigSig/ManyTx.pkl
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/concurrent/futures/_base.py", line 621, in result_iterator
+    yield _result_or_cancel(fs.pop())
+  File "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/concurrent/futures/_base.py", line 319, in _result_or_cancel
+    return fut.result(timeout)
+  File "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/concurrent/futures/_base.py", line 458, in result
+    return self.__get_result()
+  File "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/concurrent/futures/_base.py", line 403, in __get_result
+    raise self._exception
+  File "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/concurrent/futures/thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "<string>", line 1, in <lambda>
+  File "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/subprocess.py", line 526, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python', 'code/scripts/build_cvs_leo_weak_iq_cache.py', '--spec', '/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v1/plan/cache_specs/rx_20_1/seed_713101.json', '--device', 'cuda:0']' returned non-zero exit status 1.
+Traceback (most recent call last):
+  File "/home/szu2070436088/2510044040/CV-SincNet/code/scripts/build_cvs_leo_weak_iq_cache.py", line 905, in <module>
+    raise SystemExit(main())
+  File "/home/szu2070436088/2510044040/CV-SincNet/code/scripts/build_cvs_leo_weak_iq_cache.py", line 899, in main
+    result = build_cache_set(args.spec, device=device)
+  File "/home/szu2070436088/2510044040/CV-SincNet/code/scripts/build_cvs_leo_weak_iq_cache.py", line 758, in build_cache_set
+    role_datasets, exclusion_audit = _build_role_datasets(
+  File "/home/szu2070436088/2510044040/CV-SincNet/code/scripts/build_cvs_leo_weak_iq_cache.py", line 284, in _build_role_datasets
+    raise FileNotFoundError(f"input dataset is missing: {pkl_path}")
+FileNotFoundError: input dataset is missing: /home/szu2070436088/2510044040/Dataset_WigSig/ManyTx.pkl
+Traceback (most recent call last):
+  File "/home/szu2070436088/2510044040/CV-SincNet/code/scripts/build_cvs_leo_weak_iq_cache.py", line 905, in <module>
+    raise SystemExit(main())
+  File "/home/szu2070436088/2510044040/CV-SincNet/code/scripts/build_cvs_leo_weak_iq_cache.py", line 899, in main
+    result = build_cache_set(args.spec, device=device)
+  File "/home/szu2070436088/2510044040/CV-SincNet/code/scripts/build_cvs_leo_weak_iq_cache.py", line 758, in build_cache_set
+    role_datasets, exclusion_audit = _build_role_datasets(
+  File "/home/szu2070436088/2510044040/CV-SincNet/code/scripts/build_cvs_leo_weak_iq_cache.py", line 284, in _build_role_datasets
+    raise FileNotFoundError(f"input dataset is missing: {pkl_path}")
+FileNotFoundError: input dataset is missing: /home/szu2070436088/2510044040/Dataset_WigSig/ManyTx.pkl
+Traceback (most recent call last):
+  File "/home/szu2070436088/2510044040/CV-SincNet/code/scripts/build_cvs_leo_weak_iq_cache.py", line 905, in <module>
+    raise SystemExit(main())
+  File "/home/szu2070436088/2510044040/CV-SincNet/code/scripts/build_cvs_leo_weak_iq_cache.py", line 899, in main
+    result = build_cache_set(args.spec, device=device)
+  File "/home/szu2070436088/2510044040/CV-SincNet/code/scripts/build_cvs_leo_weak_iq_cache.py", line 758, in build_cache_set
+    role_datasets, exclusion_audit = _build_role_datasets(
+  File "/home/szu2070436088/2510044040/CV-SincNet/code/scripts/build_cvs_leo_weak_iq_cache.py", line 284, in _build_role_datasets
+    raise FileNotFoundError(f"input dataset is missing: {pkl_path}")
+FileNotFoundError: input dataset is missing: /home/szu2070436088/2510044040/Dataset_WigSig/ManyTx.pkl
+Traceback (most recent call last):
+  File "/home/szu2070436088/2510044040/CV-SincNet/code/scripts/build_cvs_leo_weak_iq_cache.py", line 905, in <module>
+    raise SystemExit(main())
+  File "/home/szu2070436088/2510044040/CV-SincNet/code/scripts/build_cvs_leo_weak_iq_cache.py", line 899, in main
+    result = build_cache_set(args.spec, device=device)
+  File "/home/szu2070436088/2510044040/CV-SincNet/code/scripts/build_cvs_leo_weak_iq_cache.py", line 758, in build_cache_set
+    role_datasets, exclusion_audit = _build_role_datasets(
+  File "/home/szu2070436088/2510044040/CV-SincNet/code/scripts/build_cvs_leo_weak_iq_cache.py", line 284, in _build_role_datasets
+    raise FileNotFoundError(f"input dataset is missing: {pkl_path}")
+FileNotFoundError: input dataset is missing: /home/szu2070436088/2510044040/Dataset_WigSig/ManyTx.pkl
