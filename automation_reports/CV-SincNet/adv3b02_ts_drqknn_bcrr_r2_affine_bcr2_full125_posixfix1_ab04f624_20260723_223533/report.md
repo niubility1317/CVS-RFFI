@@ -7,7 +7,7 @@
 - Git commit：`ab04f62483826d84c713dda79b7a337c999e9d38`
 - 创建时间：`2026-07-23T22:35:33+08:00`
 - operator：主agent；N607唯一launch owner为单一`gpt-5.6-terra high`runner
-- 状态：`PREREGISTERED / NOT_LAUNCHED / NO_PERFORMANCE_RESULT`
+- 状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_COMPLETE_PERFORMANCE_RESULT`
 - parent run：`adv3b02_ts_drqknn_bcrr_r2_affine_bcr2_full125_166c1afc_20260723_215744`
 - parent终态：`BLOCKED_PRE_LAUNCH / NO_PERFORMANCE_RESULT`；冻结Python无`pytest`，未detach、无PID、无prediction；本run不得复用或覆盖parent
 
@@ -92,16 +92,27 @@ PYTHONPATH=<run>/source/code /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python
 
 |字段|当前值|
 |---|---|
-|remote PID|`PENDING`|
-|launcher exit|`PENDING`|
+|remote PID|`1214101`；matrix PID=`1214105`|
+|launcher exit|`143（SIGTERM健康止损）`|
 |parity receipt|`PRESENT_REUSED / NOT_GENERATED`|
 |archive/manifest|`PRESENT_REUSED / NOT_GENERATED`|
 |coverage|`PRESENT_REUSED / NOT_GENERATED`|
-|row/prediction/score|`0/125 / 0/1000 / 0/1500`|
-|最终裁决|`PENDING`|
+|row/prediction/score|合法完整row=`0/125`；partial prediction artifact=`64/1000`；partial logical score row=`96/1500`|
+|最终裁决|`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_COMPLETE_PERFORMANCE_RESULT`|
 
 没有完整prediction只能标记`TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`；完整prediction但性能未达门标记`COMPLETED_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE`。
 
 ## N607 runner执行记录
 
-- `PENDING`。
+- `2026-07-23T22:39:11+08:00`：direct只读preflight PASS；run根初始ABSENT，GPU0–7均无compute process、各`10/24576MiB`，磁盘可用约`7.99TB`。仅创建`input/`、`source/`、`logs/`，`artifacts/`保持ABSENT。
+- 同步恰好两份冻结input。远端source zip SHA=`4603cca6c8153173615bf68087bda45c5b34cb7bc8a0146be9d01439ff2f1e47`，method lock SHA=`0496594db4a82efbbf17ec3d67ebc3fb1f0c7ced41b542a5a0bde3482e704523`；zip=`3969`成员，path-set SHA=`44e7520c962b161c23f82c963ec850963bd7741af92329508a643506bf186ee0`。安全解包、三文件SHA、`py_compile`、checkpoint SHA=`2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98`和runtime SHA=`f119e8cb3f6beda95f0d545205e91b43e4a557af2fd1d025e95d2edf2b8e6e2a`全部通过。
+- 冻结Python直接执行`posix-sentinel`，exit=`0`；JSON证据：root PID/target PGID=`1213516`、grandchild PID=`1213517`、`root_already_exited=true`、`tree_exit_confirmed=true`、`unrelated_sentinel_alive=true`。随后再次确认`artifacts/`ABSENT。
+- 唯一detach wrapper使用`nohup setsid /bin/bash -c '<记录launcher.pid；前台执行冻结child command；原子写launcher.exit>' >logs/matrix.stdout.log 2>logs/matrix.stderr.log < /dev/null &`；未retry。launcher PID=`1214101`、matrix PID=`1214105`、PGID=`1214101`，CWD=`<run>/source/code`，cmdline与本报告冻结child command及run-root精确绑定。8个row worker各自独立PGID，`CUDA_VISIBLE_DEVICES`映射到GPU0–7，首检每卡约`674–678MiB`。
+- 技术停止触发：4个不同row在生成8个prediction后均因`row runtime state/resource receipt drift`无法形成合法row completion，继续执行已不可能达到`ARTIFACTS_COMPLETE`。这不是按准确率、H或其它性能值早停。止损完成前累计形成8个同指纹row和1个零范数row：
+  - resource drift rows：`rx_20-1/seed_713102–713106/K10/new20`中的5个row，以及`rx_3-19/seed_713103–713105/K10/new20`中的3个row；
+  - zero-norm row：`adv3b02_r2_affine_bcr2_rx_3-19_s_713102_k_10_n_20`，prediction=`0`，异常为`feature row has zero or non-finite L2 norm`，发生在Stage2-C新类`z_id` support的`_affine_quantize_rows->_unit`。
+- 首个resource drift row为`adv3b02_r2_affine_bcr2_rx_20-1_s_713102_k_10_n_20`。实际runtime receipt在3个`before` scene均给出非空`branch_actual_bank_binding_sha256`（分别以`82fb8449...`、`a7adc8d7...`、`8ebc40a8...`开头），而validator硬要求`before`值为`None`；其它复核项（wire bytes求和、rank、alpha、latency和显存）通过。这是actual receipt与validator期望的确定差异。
+- 停止时launcher logs=`17`，结构化失败marker=`9`，已生成row receipt=`8`但均未通过最终validator，合法完整row=`0`；在途=`8`、未派发=`108`；partial prediction artifact=`64`、partial score artifact=`32`、receipt声明的logical score rows=`96`。这些partial产物仅作技术诊断，不形成性能结果。
+- 先向matrix PID=`1214105`发送有界`SIGTERM`停止派发，再对已核验CWD/cmdline/output-root属于本run的worker PGID发送`SIGTERM`；清理派发竞态中新出现的PGID=`1218475`。launcher真实exit=`143`。最终本run进程数=`0`，GPU0–7均回到`10MiB`，没有干预无关作业；全部logs、prediction、score、receipt和marker原地保留。
+- 远端技术停止receipt：`logs/technical_stop_receipt.json`，SHA=`a205c2ed056157ecdc2a71f993a8a610d58c2a98ecf67a69583ed9743d79b644`。parity/archive/manifest/coverage均为`PRESENT_REUSED / NOT_GENERATED`。
+- 最小诊断已回收到`E:\type10-7\automation_reports\CV-SincNet\adv3b02_ts_drqknn_bcrr_r2_affine_bcr2_full125_posixfix1_ab04f624_20260723_223533\retrieved`：24个证据文件、135,787B；`inventory.tsv` SHA=`52fc90f4b58c469ce44fae1dd6e475f9b4ffa07253d39c56813fe88fba5fd823`。每次SSH/SCP后均确认本地无残留SSH进程。
