@@ -5,11 +5,11 @@
 - run ID：`dssc_zdom_jg_qknn_r4_bcrr_full125_r1f_techfix1_f02dd8b0_20260723_145208`
 - 创建时间：`2026-07-23T14:52:08+08:00`
 - candidate：`DSSC_ZDOM_JG_QKNN_R4_BCRR/design-r1f`；implementation tag=`techfix1`
-- 状态：`LOCAL_VERIFIED / PREREGISTERED / NO_PERFORMANCE_RESULT`
+- 状态：`BLOCKED_PRE_LAUNCH / NO_PERFORMANCE_RESULT`
 - 科学方法提交：`849fa342cd46cb8294b5d9b4f5358cea630d0643`
 - 技术修复提交：`f02dd8b063437c0916af8bb5e9b39416b3d13f17`
 - parent技术失败run：`dssc_zdom_jg_qknn_r4_bcrr_full125_r1f_849fa342_20260723_141937`
-- sole launch owner：待指派`gpt-5.6-terra high`runner；retry=`false`。
+- sole launch owner：`/root/dssc_r1f_techfix1_full125_runner`（`gpt-5.6-terra high`）；retry=`false`，未启动。
 
 ## 唯一修复与验证
 
@@ -46,7 +46,7 @@ parent run的125个row在prediction前全部失败：119个为sealed TorchScript
 |Phase1 archive/manifest|`dd2a2b0c8ab1a1d8edbeed81e78ffb79c253240998a9ac2404b75699f4ca68d0` / `34213331d20594dceface61680ab0fea8ffc40ee72d7e13c844763c70fef26d4`|
 |parity receipt|`b93219c40b79be8ecdf8c0a51d77710d8119f8899331ae7e2518b77adfeac60b`|
 
-techfix runner SHA=`943e9d030ac85745067a9beb775ab3dae5078fa0cba6fc9f05288222ffcde754`；测试SHA=`16d3860131033f9877537b8ef6910e89f00cbe0ef53c92003d1ccb73b849ca5d`。本run不生成、不修改、不重验数据；archive、parity、coverage均为`PRESENT_REUSED`。
+报告预登记的工作树LF字节SHA为：techfix runner=`943e9d030ac85745067a9beb775ab3dae5078fa0cba6fc9f05288222ffcde754`；测试=`16d3860131033f9877537b8ef6910e89f00cbe0ef53c92003d1ccb73b849ca5d`。实际source ZIP条目使用CRLF字节，runner条目SHA=`1e4d1396cdd7a660a5417a905d021e2c3375ac54e8583fc4c755e5a98ebd5562`，测试条目SHA=`72d4c7c1ac7780ca3594b7ee5818d668dcc1ae0b8bdd78a3056432ec626d4756`；两份文件逐行归一化后与工作树完全一致，但预登记没有区分工作树和发布包字节，导致启动前P0 hash gate失败。本run不生成、不修改、不重验数据；archive、parity、coverage均为`PRESENT_REUSED`。
 
 ## N607发布合同
 
@@ -69,9 +69,9 @@ env PYTHONPATH=<run>/source/code OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NU
 
 技术完成必须有125 row receipt、375 prediction、1875 score、完整`matrix_exit/aggregate_index`及真实artifact/hash/row闭合；否则为`TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。性能必须同row报告old-before/after、old gain、seen-new、H、BA、floor、min-old/new、forgetting、双向混淆、逐类/receiver/scene/K/seed、coverage、量化、MAC、时延、显存和state。M_DA/M_OTHER无独立正收益、JOINT不胜两者、mean`I_syn<=0`、正协同<188/375或<2/3 scene、任一保护指标退化、协议/INT8/资源失败，均判`COMPLETED_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE`，不得用125反向调参。
 
-- N607 GPU1兼容smoke：待回填
-- landed/PID/GPU：待回填
-- exit：待回填
-- archive/parity/coverage：`PRESENT_REUSED / 待远端确认`
+- N607 GPU1兼容smoke：未执行；P0 hash gate失败后停止
+- landed/PID/GPU：source ZIP＋4项input已landed；无PID、未占用新增GPU槽
+- exit：未执行启动命令；无`launcher.pid`、无`artifacts`、无本run进程
+- archive/parity/coverage：archive/parity未继续核验；coverage输入SHA=`c6e25ebeaed32b577e3321e78cd569acff934a7c804d0cb621b26e68f26d0c17`
 - prediction/score：`0/0（未启动）`
-- 最终裁决：待回填
+- 最终裁决：`BLOCKED_PRE_LAUNCH / NO_PERFORMANCE_RESULT`；全新run修正发布包SHA声明，不复用本run
