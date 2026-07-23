@@ -2155,3 +2155,13 @@ techfix2不把任务收缩到物理GPU0，而是保持GPU0–7共8个并行worke
 target-old闭式系数只允许读取当前row合法support。K1下6个旧类可代数估计至多4个row-global系数，但单类不确定度只能来自Phase1 LODO/LOCO证书与跨类残差；K5/K10才可加入support散度。连续收缩固定为`alpha=coverage×confidence×LODO_reliability∈[0,1]`，且confidence随不确定度单调下降；秩亏、病态、Fréchet不唯一、近对跖点或不确定度不可得时精确ground-off。Phase1持久状态只能是共同封存的INT8 basis、公共点/类中心、半径与FP16 scale；不得保存FP32 Log/Exp、系数、先验或receiver成员sidecar。query额外adapter MAC必须保持0，总wire仍须≤256KiB。
 
 独立监督裁决=`REVISE / P0=2 / P1=3`，不授权实现或N607。下一步仅允许一个本地无query`FEASIBILITY_SPIKE`：Phase1-only验证类/receiver置换、全局正交和`B→BR`等价及Fréchet fallback；在一个合法support-only capsule上固定K1/K5/K10记录rank、条件数、alpha来源和fallback；ground-on必须相对ground-off产生非零DSSC delta及至少一个support-LOO neighbor或margin变化；最后以实际INT8/FP16序列化重算等价性、state、训练MAC/时延和query增量MAC。任一K伪造不确定度、三个K全部identity、只有公共正交漂移或真basis不优于置乱basis即停止该draft。当前完整125 run与其source package不因本节改变。
+
+##### `DSSC_ZDOM_JG_QKNN_R4_BCRR/design-r1f`techfix2终局与registry techfix3闭合
+
+techfix2完整125 run=`dssc_zdom_jg_qknn_r4_bcrr_full125_r1f_techfix2_b77cc6c4_20260723_155058`经direct N607单次启动，wrapper PID=`796973`、matrix PID=`796975`，最终自然exit=`1`；未kill、restart或retry。GPU0–7均实际参与，子进程各自通过`CUDA_VISIBLE_DEVICES=<physical_gpu>`只看见一张物理卡并使用逻辑`cuda:0`，最终GPU0/1/2各执行15个job、GPU3–7各执行16个job，因此不是只使用物理GPU0。
+
+终局artifact为125/125份launcher receipt、0份row receipt、0 prediction、0 score；125个returncode全为1，stderr SHA256全部为`30b024f3b0191d09fc68f88c1ec0e4106ec446900a808dd387f13de621555b1c`。统一根因是sealed opaque registry采用old-prefix/new-append顺序，而共享SVRN state builder要求全局字典序，在任何query预测前抛出`registered class registry drift`。因此裁决固定为`TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`，不可填写性能或协同结论。387个回收文件已逐项验SHA，`missing=0/mismatch=0/extra=0`；archive、manifest、parity和coverage仍只复用冻结SHA，没有重复数据验证。
+
+techfix3只在DSSC→legacy SVRN接口内部把类轴投影到字典序，qKNN、BCRR及五臂出口再精确逆置换回原sealed registry。类集合、support、距离、BCRR公式、参数、五臂、runner和method lock均不变；`BCRRState`保留旧三参数位置兼容，缺少显式sealed classes的旧对象只能从canonical bank恢复，否则fail-closed。`ssr-gpu`下实现、测试和正式runner的`py_compile`通过，专项`30/30 passed`，`git diff --check`通过；pytest退出时只有已知Windows临时目录清理权限提示，主体exit0。独立Terra终审=`MERGE / P0=0 / P1=0`。
+
+真实checkpoint opaque-registry无query smoke使用SHA=`2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98`及`20-1/leo_clear_weak/K10`的11类110条enrollment support：strict重建`missing=0/unexpected=0`，`z_id`为有限FP32`[110,160]`；sealed registry非字典序，内部bank为字典序，三个qKNN state对外均保持sealed顺序，五臂state构建完成；`query_packages_loaded=false`、`query_rows_used=0`。下一步只允许提交techfix3、建立新不可覆盖完整125 run报告并交唯一Terra runner发布。

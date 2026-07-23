@@ -914,6 +914,32 @@ class QKNNState:
     lock: Phase1ZIDStudentTLock
 
 
+def _canonical_registered_axis(classes: Sequence[str]) -> tuple[str, ...]:
+    """Return the legacy runtime's deterministic class axis without changing handles."""
+    return tuple(sorted(classes))
+
+
+def _restore_registered_axis(classes: Sequence[str], scores: np.ndarray) -> np.ndarray:
+    """Project legacy canonical score columns back to the sealed registry order."""
+    values = np.asarray(scores)
+    sealed = tuple(classes)
+    canonical = _canonical_registered_axis(sealed)
+    if values.ndim != 2 or values.shape[1] != len(canonical):
+        raise DSSCStateError("qKNN score/class-axis drift")
+    inverse = np.asarray([canonical.index(name) for name in sealed], np.intp)
+    return values[:, inverse]
+
+
+def _canonicalize_registered_axis(classes: Sequence[str], scores: np.ndarray) -> np.ndarray:
+    """Map sealed-order score columns to the legacy runtime's canonical axis."""
+    values = np.asarray(scores)
+    sealed = tuple(classes)
+    if values.ndim != 2 or values.shape[1] != len(sealed):
+        raise DSSCStateError("qKNN score/class-axis drift")
+    source = np.asarray([sealed.index(name) for name in _canonical_registered_axis(sealed)], np.intp)
+    return values[:, source]
+
+
 def build_qknn_state(features: np.ndarray, labels: Sequence[Any] | np.ndarray, registered_classes: Sequence[Any] | np.ndarray,
                      physical_tokens: Sequence[Any] | np.ndarray, *, k_shot: int | None = None,
                      qknn_lock: Phase1ZIDStudentTLock | None = None) -> QKNNState:
@@ -928,7 +954,8 @@ def build_qknn_state(features: np.ndarray, labels: Sequence[Any] | np.ndarray, r
     if type(qknn_lock) is not Phase1ZIDStudentTLock or qknn_lock.active_k != active:
         raise DSSCStateError("formal qKNN requires the exact active-K lock from DSSC method lock")
     lock=qknn_lock
-    try: branch=_build_svrn_branch(rows,list(values),list(classes),list(tokens),qknn_config=lock,branch="raw")
+    canonical_classes = _canonical_registered_axis(classes)
+    try: branch=_build_svrn_branch(rows,list(values),list(canonical_classes),list(tokens),qknn_config=lock,branch="raw")
     except Exception as exc: raise DSSCStateError(f"typed real qKNN/BCRR build failed: {exc}") from exc
     return QKNNState(classes,tokens,branch,lock)
 
@@ -939,7 +966,7 @@ def qknn_logits(state: QKNNState, features: np.ndarray) -> np.ndarray:
     if state.branch_state.branch != "raw" or float(state.branch_state.eta) != 0.0:
         raise DSSCStateError("DSSC qKNN only permits the identity raw branch")
     bank, metric = deserialize_typed_zid_runtime_state(state.branch_state.qknn_wire)
-    return score_zid_student_t_logits(bank, rows, metric=metric)
+    return _restore_registered_axis(state.classes, score_zid_student_t_logits(bank, rows, metric=metric))
 
 
 def qknn_neighbor_receipt(state: QKNNState, features: np.ndarray) -> Mapping[str, Any]:
@@ -959,19 +986,35 @@ class BCRRState:
     branch_state: Any
     omega: float
     receipt: Mapping[str, Any]
+    classes: tuple[str, ...] | None = None
+
+
+def _bcrr_registered_axis(state: BCRRState) -> tuple[str, ...]:
+    if state.classes is not None:
+        return typed_tokens(state.classes, name="BCRR classes", unique=True)
+    try:
+        bank, _metric = deserialize_typed_zid_runtime_state(state.branch_state.qknn_wire)
+        classes = typed_tokens(bank.classes, name="legacy BCRR bank classes", unique=True)
+    except Exception as exc:
+        raise DSSCStateError("legacy BCRR class-axis recovery failed") from exc
+    if classes != _canonical_registered_axis(classes):
+        raise DSSCStateError("legacy BCRR bank class-axis is not canonical")
+    return classes
 
 
 def fit_bcrr_support_only(state: QKNNState, features: np.ndarray, *, k_shot: int) -> BCRRState:
     if k_shot != state.lock.active_k: raise DSSCStateError("BCRR lock K drift")
     _rows(features,name="BCRR support z_id")
     receipt=state.branch_state.bcrr_receipt
-    return BCRRState(state.branch_state,float(receipt["omega_q"]),receipt)
+    return BCRRState(state.branch_state,float(receipt["omega_q"]),receipt,classes=state.classes)
 
 
 def bcrr_fused_logits(qknn: np.ndarray, query_features: np.ndarray, state: BCRRState) -> np.ndarray:
     q=np.asarray(qknn,np.float32); raw,fused=_svrn_scores(state.branch_state,_rows(query_features,name="BCRR query z_id"))
-    if q.shape!=raw.shape or not np.allclose(q,raw,rtol=0.0,atol=1.0e-6): raise DSSCStateError("BCRR must fuse the same real qKNN branch")
-    return fused
+    classes = _bcrr_registered_axis(state)
+    q_canonical = _canonicalize_registered_axis(classes, q)
+    if q_canonical.shape!=raw.shape or not np.allclose(q_canonical,raw,rtol=0.0,atol=1.0e-6): raise DSSCStateError("BCRR must fuse the same real qKNN branch")
+    return _restore_registered_axis(classes, fused)
 
 
 def build_five_arm_states(*, raw_support_features: np.ndarray, ng_support_features: np.ndarray,
@@ -1000,7 +1043,10 @@ def predict_five_arms(states: Mapping[str, Any], *, raw_query_features: np.ndarr
     q0, other = _svrn_scores(raw.branch_state, raw_rows)
     qng = qknn_logits(ng, ng_query_features)
     qg, joint = _svrn_scores(ground.branch_state, ground_rows)
-    return {"M0":q0,"M_DA_NG":qng,"M_DA":qg,"M_OTHER":other,"M_JOINT":joint}
+    return {"M0":_restore_registered_axis(raw.classes,q0),"M_DA_NG":qng,
+            "M_DA":_restore_registered_axis(ground.classes,qg),
+            "M_OTHER":_restore_registered_axis(raw.classes,other),
+            "M_JOINT":_restore_registered_axis(ground.classes,joint)}
 
 
 def resource_receipt(*, bundle: GroundBundle, qknn: QKNNState, bcrr: BCRRState, adapter: Rank4Adapter | None,

@@ -19,6 +19,7 @@ import cvsrffi.stage2_dssc_zdom_jg_qknn_r4_bcrr as dssc_module
 from cvsrffi.stage2_dssc_zdom_jg_qknn_r4_bcrr import (
     ADAPTER_SCALE_GROUPS,
     ARMS,
+    BCRRState,
     CANDIDATE,
     DSSCStateError,
     GEOFF_R8_COVERAGE_SHA256,
@@ -32,6 +33,7 @@ from cvsrffi.stage2_dssc_zdom_jg_qknn_r4_bcrr import (
     SOMPH_PACKAGE_LOCK_SHA256,
     adapt_support_only,
     attach_rank4_adapter,
+    bcrr_fused_logits,
     build_ground_bundle_arrays,
     build_five_arm_states,
     build_qknn_state,
@@ -285,6 +287,70 @@ def test_five_arm_prediction_uses_three_qknn_and_two_bcrr_calls(monkeypatch):
     )
     assert set(result) == set(ARMS)
     assert calls == {"qknn": 1, "qknn_bcrr": 2}
+
+
+def test_nonlexical_registry_projects_legacy_class_axis_back_to_sealed_handles():
+    rng = np.random.default_rng(411)
+    registry = ("old_z", "new_m", "old_a")
+    canonical = tuple(sorted(registry))
+    labels = registry
+    raw = rng.normal(size=(3, 160)).astype(np.float32)
+    ng = rng.normal(size=(3, 160)).astype(np.float32)
+    ground = rng.normal(size=(3, 160)).astype(np.float32)
+    common = {
+        "raw_support_features": raw,
+        "ng_support_features": ng,
+        "ground_support_features": ground,
+        "support_labels": labels,
+        "support_physical_ids": ("p0", "p1", "p2"),
+        "k_shot": 1,
+        "qknn_lock": _qlock(1),
+    }
+    sealed_states = build_five_arm_states(
+        **common, registered_classes=registry
+    )
+    control_states = build_five_arm_states(
+        **common, registered_classes=canonical
+    )
+    sealed = predict_five_arms(
+        sealed_states,
+        raw_query_features=raw,
+        ng_query_features=ng,
+        ground_query_features=ground,
+    )
+    control = predict_five_arms(
+        control_states,
+        raw_query_features=raw,
+        ng_query_features=ng,
+        ground_query_features=ground,
+    )
+    control_to_sealed = [canonical.index(name) for name in registry]
+    assert sealed_states["M0"].classes == registry
+    for arm in ARMS:
+        np.testing.assert_allclose(
+            sealed[arm], control[arm][:, control_to_sealed], rtol=0.0,
+            atol=1.0e-6,
+        )
+        sealed_handles = np.asarray(registry)[np.argmax(sealed[arm], axis=1)]
+        control_handles = np.asarray(canonical)[np.argmax(control[arm], axis=1)]
+        assert tuple(sealed_handles) == tuple(control_handles)
+    np.testing.assert_allclose(
+        bcrr_fused_logits(
+            sealed["M0"], raw, sealed_states["M_OTHER"][1]
+        ),
+        sealed["M_OTHER"], rtol=0.0, atol=1.0e-6,
+    )
+    fitted_control = control_states["M_OTHER"][1]
+    legacy_control = BCRRState(
+        fitted_control.branch_state,
+        fitted_control.omega,
+        fitted_control.receipt,
+    )
+    assert legacy_control.classes is None
+    np.testing.assert_allclose(
+        bcrr_fused_logits(control["M0"], raw, legacy_control),
+        control["M_OTHER"], rtol=0.0, atol=1.0e-6,
+    )
 
 
 class Tiny(torch.nn.Module):
