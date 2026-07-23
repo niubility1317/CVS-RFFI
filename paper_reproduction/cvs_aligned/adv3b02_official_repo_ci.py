@@ -608,6 +608,7 @@ def fit_mopc_hr_official_repo(
     ).to(support_x.device)
     before = copy.deepcopy(model).eval()
     total_count = int(torch.unique(support_y).numel())
+    increment_size = total_count - int(old_count)
     new_mask = support_y >= int(old_count)
     stage_x = support_x[new_mask]
     stage_y = support_y[new_mask]
@@ -709,6 +710,8 @@ def fit_mopc_hr_official_repo(
             "requested_batch_size": 16,
             "effective_batch_size": effective_batch,
             "small_k_execution_adaptation": small_k_adaptation,
+            "increment_size": increment_size,
+            "class_schedule_adaptation": increment_size not in (25, 10, 5, 3),
             "hierarchical_regularization": "per_parameter_unsquared_l2",
             "prototype_similarity": "raw_dot_then_softmax",
             "prototype_logit_temperature": 2.0,

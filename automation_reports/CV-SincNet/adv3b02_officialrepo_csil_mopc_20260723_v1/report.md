@@ -12,6 +12,7 @@
 - matched无LEO：仅作`DIAGNOSTIC_NEW_CLASS_NO_LEO_NON_FORMAL`
 - base编码器：`BASE_MODEL_INITIALIZATION_ADAPTATION`，预训练ADV3B02替换原编码器后按各官方trainer在8400条source上训练
 - CSIL新10/新20：`CLASS_CARDINALITY_INITIALIZATION_ADAPTATION`，因为新增类数超过官方扩展前旧输出宽度6
+- MoPC-HR新2/新20：`CLASS_SCHEDULE_ADAPTATION`，官方main展示的间隔为25/10/5/3
 - 详细方法锁：`analysis/official_repo_execution_lock_csil_mopc_hr_20260723.md`
 
 本地验证：
