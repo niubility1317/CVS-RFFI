@@ -39,6 +39,9 @@ from paper_reproduction.scripts.verify_adv3b02_official_scale_cache_parity impor
 from paper_reproduction.scripts.build_adv3b02_official_scale_cache_specs import (
     build as build_scale_cache_specs,
 )
+from paper_reproduction.scripts.build_adv3b02_official_scale_cache_reuse_manifest import (
+    build as build_scale_cache_reuse_manifest,
+)
 CODE_SCRIPTS = Path(__file__).resolve().parents[1] / "code" / "scripts"
 if str(CODE_SCRIPTS) not in sys.path:
     sys.path.insert(0, str(CODE_SCRIPTS))
@@ -599,6 +602,28 @@ def test_scale_cache_specs_cover_25_receiver_seed_cells(tmp_path):
     assert (tmp_path / "cache_specs_manifest.json").is_file()
 
 
+def test_scale_cache_reuse_manifest_has_no_cache_build_commands(tmp_path):
+    output = tmp_path / "reuse.json"
+    manifest = build_scale_cache_reuse_manifest(
+        argparse.Namespace(
+            experiment_id="official_scale_v7",
+            source_experiment_id="official_scale_v6",
+            reused_cache_root="/remote/v6/cache",
+            remote_integrity_root="/remote/v7/integrity",
+            output=output,
+        )
+    )
+    assert manifest["reuse_policy"] == "READ_ONLY_NO_CACHE_REBUILD"
+    assert len(manifest["entries"]) == 25
+    assert len(manifest["integrity_commands"]) == 25
+    assert "commands" not in manifest
+    first = manifest["integrity_commands"][0]
+    assert first[first.index("--mode") + 1] == "same_cache_new20_integrity"
+    assert first[first.index("--reference-cache-set") + 1] == first[
+        first.index("--expanded-cache-set") + 1
+    ]
+
+
 def test_comparison_inner_loader_rejects_post_channel_iq_tamper(tmp_path):
     path = tmp_path / "legacy.npz"
     _write_legacy_comparison_cache(path, "leo_clear_weak")
@@ -813,6 +838,118 @@ def test_scale_cache_parity_gate_detects_post_channel_hash_drift(
                 output=tmp_path / "receipt.json",
             )
         )
+
+
+def test_same_cache_integrity_rejects_distinct_resolved_paths(tmp_path):
+    reference_path = tmp_path / "reference.json"
+    expanded_path = tmp_path / "expanded.json"
+    reference_path.write_text("{}", encoding="utf-8")
+    expanded_path.write_text("{}", encoding="utf-8")
+    with pytest.raises(ValueError, match="identical resolved cache paths"):
+        verify_scale_cache_parity(
+            argparse.Namespace(
+                reference_cache_set=reference_path,
+                expanded_cache_set=expanded_path,
+                preserved_class_labels=",".join(
+                    f"class-{index}" for index in range(20)
+                ),
+                reference_scope="external_comparison_registered",
+                expanded_scope="external_comparison_registered",
+                mode="same_cache_new20_integrity",
+                output=tmp_path / "receipt.json",
+            )
+        )
+
+
+def test_historical_parity_rejects_identical_resolved_paths(tmp_path):
+    cache_set = tmp_path / "cache_set.json"
+    cache_set.write_text("{}", encoding="utf-8")
+    with pytest.raises(ValueError, match="distinct resolved cache paths"):
+        verify_scale_cache_parity(
+            argparse.Namespace(
+                reference_cache_set=cache_set,
+                expanded_cache_set=cache_set,
+                preserved_class_labels=",".join(
+                    f"class-{index}" for index in range(20)
+                ),
+                reference_scope="stage2_registered",
+                expanded_scope="external_comparison_registered",
+                mode="historical_reference",
+                output=tmp_path / "receipt.json",
+            )
+        )
+
+
+def test_package_rejects_unknown_cache_verification_mode(tmp_path):
+    cache_set = tmp_path / "cache_set.json"
+    cache_set.write_text("cache", encoding="utf-8")
+    with pytest.raises(ValueError, match="unsupported cache verification mode"):
+        _verify_cache_parity_receipt(
+            {
+                "expected_cache_scope": "external_comparison_registered",
+                "cache_verification_mode": "unknown_mode",
+                "parity_preserved_class_labels": [
+                    f"class-{index}" for index in range(20)
+                ],
+            },
+            {
+                "cache_parity_receipt": str(cache_set),
+                "target_cache_set": str(cache_set),
+                "cache_parity_reference_cache_set": str(cache_set),
+            },
+        )
+
+
+def test_package_accepts_same_cache_new20_integrity_receipt(tmp_path):
+    cache_set = tmp_path / "cache_set.json"
+    cache_set.write_text("cache", encoding="utf-8")
+    expected_labels = [f"class-{index}" for index in range(20)]
+    receipt_path = tmp_path / "integrity.json"
+    receipt_path.write_text(
+        json.dumps(
+            {
+                "schema": "cvs.adv3b02.same_cache_new20_integrity_receipt.v1",
+                "verification_mode": "same_cache_new20_integrity",
+                "status": "PASS",
+                "reference_cache_set": str(cache_set.resolve()),
+                "reference_cache_set_sha256": sha256_file(cache_set),
+                "expanded_cache_set": str(cache_set.resolve()),
+                "expanded_cache_set_sha256": sha256_file(cache_set),
+                "preserved_class_labels": expected_labels,
+                "verified_fields": [
+                    "tx_ids",
+                    "sample_ids",
+                    "post_channel_iq_sha256",
+                ],
+                "scenario_receipts": {
+                    scenario: {
+                        "row_count": 1000,
+                        "sample_ids_sha256": "a" * 64,
+                        "post_channel_iq_sha256_root": "b" * 64,
+                    }
+                    for scenario in (
+                        "leo_clear_weak",
+                        "leo_low_elev_weak",
+                        "leo_rain_weak",
+                    )
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+    receipt = _verify_cache_parity_receipt(
+        {
+            "expected_cache_scope": "external_comparison_registered",
+            "cache_verification_mode": "same_cache_new20_integrity",
+            "parity_preserved_class_labels": expected_labels,
+        },
+        {
+            "cache_parity_receipt": str(receipt_path),
+            "target_cache_set": str(cache_set),
+            "cache_parity_reference_cache_set": str(cache_set),
+        },
+    )
+    assert receipt is not None and receipt["status"] == "PASS"
 
 
 def test_package_parity_receipt_rejects_wrong_preserved_labels(tmp_path):

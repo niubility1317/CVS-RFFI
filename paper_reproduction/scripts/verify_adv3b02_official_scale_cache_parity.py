@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fail closed unless expanded caches preserve first20 new-class LEO rows."""
+"""Verify either historical first20 parity or current-cache first20 integrity."""
 
 from __future__ import annotations
 
@@ -39,6 +39,34 @@ def _write_new(path: Path, payload: dict) -> None:
 def verify(args: argparse.Namespace) -> dict:
     reference_path = Path(args.reference_cache_set).resolve(strict=True)
     expanded_path = Path(args.expanded_cache_set).resolve(strict=True)
+    mode = str(getattr(args, "mode", "historical_reference"))
+    if mode not in {"historical_reference", "same_cache_new20_integrity"}:
+        raise ValueError("unsupported cache verification mode")
+    if mode == "same_cache_new20_integrity":
+        if reference_path != expanded_path:
+            raise ValueError(
+                "same-cache integrity requires identical resolved cache paths"
+            )
+        if (
+            str(args.reference_scope) != "external_comparison_registered"
+            or str(args.expanded_scope) != "external_comparison_registered"
+        ):
+            raise ValueError(
+                "same-cache integrity requires external comparison scope"
+            )
+    else:
+        if reference_path == expanded_path:
+            raise ValueError(
+                "historical parity requires distinct resolved cache paths"
+            )
+        if (
+            str(args.reference_scope) != "stage2_registered"
+            or str(args.expanded_scope) != "external_comparison_registered"
+        ):
+            raise ValueError(
+                "historical parity requires stage2 reference and external "
+                "comparison expanded scopes"
+            )
     preserved_labels = tuple(
         value.strip()
         for value in str(args.preserved_class_labels).split(",")
@@ -109,7 +137,12 @@ def verify(args: argparse.Namespace) -> dict:
             ),
         }
     receipt = {
-        "schema": "cvs.adv3b02.official_scale_cache_parity_receipt.v1",
+        "schema": (
+            "cvs.adv3b02.same_cache_new20_integrity_receipt.v1"
+            if mode == "same_cache_new20_integrity"
+            else "cvs.adv3b02.official_scale_cache_parity_receipt.v1"
+        ),
+        "verification_mode": mode,
         "status": "PASS",
         "reference_cache_set": str(reference_path),
         "reference_cache_set_sha256": sha256_file(reference_path),
@@ -142,6 +175,11 @@ def parse_args() -> argparse.Namespace:
         default="external_comparison_registered",
     )
     parser.add_argument("--preserved-class-labels", required=True)
+    parser.add_argument(
+        "--mode",
+        choices=("historical_reference", "same_cache_new20_integrity"),
+        default="historical_reference",
+    )
     parser.add_argument("--output", type=Path, required=True)
     return parser.parse_args()
 

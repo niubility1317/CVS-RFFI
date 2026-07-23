@@ -426,6 +426,14 @@ def _verify_cache_parity_receipt(
 ) -> dict[str, Any] | None:
     if plan["expected_cache_scope"] != "external_comparison_registered":
         return None
+    verification_mode = str(
+        plan.get("cache_verification_mode", "historical_reference")
+    )
+    if verification_mode not in {
+        "historical_reference",
+        "same_cache_new20_integrity",
+    }:
+        raise ValueError("unsupported cache verification mode")
     raw = package.get("cache_parity_receipt")
     if not raw:
         raise ValueError("external comparison package misses cache parity receipt")
@@ -439,6 +447,21 @@ def _verify_cache_parity_receipt(
     expected_rows_per_scenario = (
         len(plan["parity_preserved_class_labels"]) * 50
     )
+    expected_schema = (
+        "cvs.adv3b02.same_cache_new20_integrity_receipt.v1"
+        if verification_mode == "same_cache_new20_integrity"
+        else "cvs.adv3b02.official_scale_cache_parity_receipt.v1"
+    )
+    same_cache_paths_valid = (
+        (
+            verification_mode == "same_cache_new20_integrity"
+            and reference_cache == target_cache
+        )
+        or (
+            verification_mode == "historical_reference"
+            and reference_cache != target_cache
+        )
+    )
     valid_scenario_receipts = (
         isinstance(scenario_receipts, dict)
         and tuple(scenario_receipts)
@@ -451,8 +474,9 @@ def _verify_cache_parity_receipt(
         )
     )
     if (
-        receipt.get("schema")
-        != "cvs.adv3b02.official_scale_cache_parity_receipt.v1"
+        receipt.get("schema") != expected_schema
+        or receipt.get("verification_mode", "historical_reference")
+        != verification_mode
         or receipt.get("status") != "PASS"
         or Path(str(receipt.get("expanded_cache_set", ""))).resolve()
         != target_cache
@@ -465,6 +489,7 @@ def _verify_cache_parity_receipt(
         != plan["parity_preserved_class_labels"]
         or receipt.get("verified_fields")
         != ["tx_ids", "sample_ids", "post_channel_iq_sha256"]
+        or not same_cache_paths_valid
         or not valid_scenario_receipts
     ):
         raise ValueError("cache parity receipt does not authorize package build")

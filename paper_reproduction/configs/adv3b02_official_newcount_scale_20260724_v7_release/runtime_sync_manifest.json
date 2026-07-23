@@ -1,0 +1,26 @@
+{
+  "schema": "cvs.adv3b02.runtime_sync_manifest.v4",
+  "experiment_id": "adv3b02_official_newcount_scale_20260724_v7",
+  "status": "LOCAL_VERIFIED_INDEPENDENT_REVIEW_APPROVED",
+  "required_runtime_files": {
+    "paper_reproduction/scripts/build_adv3b02_official_scale_cache_reuse_manifest.py": "d687ee85835a49f7d975568c34333d9e537719f53062a5f2e809874491669564",
+    "paper_reproduction/scripts/verify_adv3b02_official_scale_cache_parity.py": "72afa344a592a97ca7b99c51c429d63715efe189880fa36c0e9f78b2c5672a1e",
+    "paper_reproduction/scripts/build_adv3b02_paper_full_ci_plan.py": "24595e544f66755bcd1057953e424d45776422ea60c7793c3984a9dccec0def9",
+    "paper_reproduction/scripts/run_adv3b02_paper_full_ci_plan.py": "0d743412f0f0f8c8e53f5eab4f5483006f573a0216fa75ffe962719e784bf5f9",
+    "paper_reproduction/scripts/build_adv3b02_paper_full_ci_bundle.py": "b83c6d55b92fe9e164d5b11fa0c80d8d7403661576b0a72ab63436389b77c19e",
+    "paper_reproduction/scripts/build_adv3b02_official_repo_base_state.py": "c110ad16d2b65c28e8ad43f05e1ce9d9bb3bcc4e1233260ec39af65748e30059",
+    "paper_reproduction/scripts/run_adv3b02_paper_full_ci_truth_free_predictor.py": "fe09708d98095f4f7783e761f39c6ce446cdc387c635e7e834a68a8a6487e404",
+    "paper_reproduction/configs/cvs_official_csil_newcount_1_3_20_split_20260724.json": "52ddbe24d20739c02cae36b78b06354dd7c545e2f7939b2c9825bb659ed9512c",
+    "paper_reproduction/configs/cvs_official_mopc_paper_newcount_split_20260724.json": "f5986274d835f1247a6ec67e05d8b2c7b5b6f890cd60288a55a045cf4d3ebcbf",
+    "paper_reproduction/configs/adv3b02_official_newcount_scale_20260724_v7_release/cache_reuse_manifest.json": "ceaa38274b30c489e770b90581f85dd1052714c15d9162ac4f7202ee0562ced0"
+  },
+  "release_gates": [
+    "reuse v6 cache read-only; do not rebuild or overwrite",
+    "25/25 same-cache new20 integrity receipts",
+    "CSIL new counts 1,3,20: 300 cells and 900 scenario rows",
+    "MoPC-HR new counts 1,3,5,10,25: 500 cells and 1500 scenario rows",
+    "official ADV3B02 base is trained separately at total capacities 26 and 31",
+    "method smoke must pass before the complete 800-cell matrix",
+    "no performance-based early stop"
+  ]
+}

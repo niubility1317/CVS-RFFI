@@ -134,6 +134,14 @@ def build(args: argparse.Namespace) -> dict:
     parity_reference_root = (
         Path(parity_reference_root_raw) if parity_reference_root_raw else None
     )
+    cache_verification_mode = str(
+        getattr(args, "cache_verification_mode", "historical_reference")
+    )
+    if cache_verification_mode not in {
+        "historical_reference",
+        "same_cache_new20_integrity",
+    }:
+        raise ValueError("unsupported cache verification mode")
     parity_preserved_labels = tuple(
         value.strip()
         for value in str(
@@ -149,6 +157,20 @@ def build(args: argparse.Namespace) -> dict:
         if parity_reference_root is None:
             raise ValueError(
                 "external comparison plans require a parity reference cache root"
+            )
+        if (
+            cache_verification_mode == "same_cache_new20_integrity"
+            and parity_reference_root.resolve() != Path(args.target_cache_root).resolve()
+        ):
+            raise ValueError(
+                "same-cache integrity requires the target cache as reference"
+            )
+        if (
+            cache_verification_mode == "historical_reference"
+            and parity_reference_root.resolve() == Path(args.target_cache_root).resolve()
+        ):
+            raise ValueError(
+                "historical parity requires a distinct reference cache root"
             )
         if (
             len(parity_preserved_labels) != 20
@@ -277,6 +299,7 @@ def build(args: argparse.Namespace) -> dict:
         "new_class_counts": list(new_counts),
         "required_total_capacity": required_total_capacity,
         "expected_cache_scope": expected_cache_scope,
+        "cache_verification_mode": cache_verification_mode,
         "parity_preserved_class_labels": list(parity_preserved_labels),
         "scenarios": list(SCENARIOS),
         "support_pool_max_k": 20,
@@ -429,6 +452,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--target-cache-root", required=True)
     parser.add_argument("--cache-parity-root")
     parser.add_argument("--parity-reference-cache-root")
+    parser.add_argument(
+        "--cache-verification-mode",
+        choices=("historical_reference", "same_cache_new20_integrity"),
+        default="historical_reference",
+    )
     parser.add_argument("--parity-preserved-class-labels", default="")
     parser.add_argument("--class-split", type=Path, required=True)
     parser.add_argument("--base-checkpoint", required=True)
