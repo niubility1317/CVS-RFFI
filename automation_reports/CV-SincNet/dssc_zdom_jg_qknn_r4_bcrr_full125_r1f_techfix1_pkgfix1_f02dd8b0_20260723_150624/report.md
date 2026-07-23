@@ -4,7 +4,7 @@
 
 - run ID：`dssc_zdom_jg_qknn_r4_bcrr_full125_r1f_techfix1_pkgfix1_f02dd8b0_20260723_150624`
 - 创建时间：`2026-07-23T15:06:24+08:00`
-- operator：主agent；sole launch owner：`/root/dssc_r1f_techfix1_pkgfix1_full125_runner`（唯一`gpt-5.6-terra high`runner）
+- operator：主agent；sole launch owner：`/root/dssc_pkgfix1_independent_review`（独立复核完成后切换为本run唯一`gpt-5.6-terra high`runner）
 - candidate：`DSSC_ZDOM_JG_QKNN_R4_BCRR/design-r1f`；implementation tag=`techfix1`；package tag=`pkgfix1`
 - 状态：`LOCAL_VERIFIED / PREREGISTERED / NO_PERFORMANCE_RESULT`
 - 科学方法提交：`849fa342cd46cb8294b5d9b4f5358cea630d0643`
