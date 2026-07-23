@@ -77,6 +77,90 @@ def _repair_support(k, *, seed=41):
     return rows, labels, tokens
 
 
+def _non_idempotent_zid_row():
+    row = np.zeros(160, dtype=np.float32)
+    row[51] = np.float32(0.005807257257401943)
+    row[63] = np.float32(0.0019984093960374594)
+    return row
+
+
+def _bindfix_support(k_shot, *, with_zero):
+    rng = np.random.default_rng(9700 + k_shot)
+    labels = ("class_a",) * k_shot + ("class_b",) * k_shot
+    tokens = tuple(
+        [f"class_a:token:{index:02d}" for index in range(k_shot)]
+        + [f"class_b:token:{index:02d}" for index in range(k_shot)]
+    )
+    rows = rng.normal(size=(2 * k_shot, 160)).astype(np.float32)
+    non_idempotent = _non_idempotent_zid_row()
+    if with_zero:
+        rows[0] = 0.0
+        rows[1:k_shot] = non_idempotent
+    else:
+        rows[0] = non_idempotent
+    return rows, labels, tokens
+
+
+def _parent_decision_reference(source, labels, classes, tokens):
+    """Reproduce the parent decision path without its broken teacher binding."""
+    k_shot = adv._balanced_k(labels, classes)
+    lock = adv.phase1_qknn_lock(k_shot)
+    canonical_classes = tuple(sorted(classes))
+    positions = sorted(range(len(tokens)), key=lambda index: (labels[index], tokens[index]))
+    ordered_raw = np.ascontiguousarray(source[np.asarray(positions, np.intp)])
+    ordered_unit = adv._unit(ordered_raw)
+    ordered_labels = tuple(labels[index] for index in positions)
+    ordered_tokens = tuple(tokens[index] for index in positions)
+    indices = np.asarray(
+        [canonical_classes.index(value) for value in ordered_labels], dtype="<i2"
+    )
+    codes, scales, offsets = adv._affine_quantize_rows(ordered_unit)
+    decoded = adv._affine_dequantize_rows(codes, scales, offsets)
+    class_scales = np.asarray(
+        adv._existing_identity_class_scales(
+            decoded, indices, len(canonical_classes), lock
+        ),
+        dtype="<f2",
+    )
+    counts = tuple(
+        int(np.sum(indices == index)) for index in range(len(canonical_classes))
+    )
+    quantization = {
+        "schema": adv.AFFINE_BANK_SCHEMA,
+        "codec": "affine_int8_code_fp16_scale_fp16_offset",
+        "support_only": True,
+        "query_rows_used_for_fit": 0,
+        "codes_sha256": adv.sha256_bytes(codes.tobytes()),
+        "scales_sha256": adv.sha256_bytes(scales.tobytes()),
+        "offsets_sha256": adv.sha256_bytes(offsets.tobytes()),
+        "endianness": "little",
+    }
+    provisional = adv.AffineINT8ZIDSupportBank(
+        canonical_classes, counts, codes, scales, offsets, indices, class_scales,
+        k_shot, lock, lock.lock_digest, quantization, "0" * 64,
+    )
+    bank = replace(
+        provisional,
+        bank_receipt_sha256=adv.sha256_bytes(adv._canon(adv._affine_bank_payload(provisional))),
+    )
+    wire = adv._serialize_affine_bank(bank)
+    weights, _loo, _lam, _extra = adv._existing_bcr_ridge_fit_and_loo(
+        decoded.astype(np.float64), indices, k_shot
+    )
+    wc, ws, rwc, rws, deployed_weights = adv._quantize_bcr_weights_two_plane(
+        weights
+    )
+    return {
+        "bank": bank,
+        "wire": wire,
+        "ordered_raw": ordered_raw,
+        "ordered_unit": ordered_unit,
+        "ordered_labels": ordered_labels,
+        "ordered_tokens": ordered_tokens,
+        "bcr": (wc, ws, rwc, rws, deployed_weights),
+    }
+
+
 @pytest.mark.parametrize("k_shot", [5, 10])
 def test_finite_exact_zero_singleton_class_medoid_repairs_only_same_class(k_shot):
     source, labels, tokens = _repair_support(k_shot)
@@ -145,11 +229,164 @@ def test_finite_exact_zero_repair_breaks_medoid_ties_by_physical_token():
     assert np.array_equal(repaired[0], source[2])
 
 
+@pytest.mark.parametrize("k_shot", [5, 10])
+@pytest.mark.parametrize("with_zero", [False, True])
+def test_bindfix1_raw_teacher_closes_non_idempotent_repair_and_preserves_decisions(
+    k_shot, with_zero
+):
+    single = adv._unit(_non_idempotent_zid_row()[None, :])
+    double = adv._unit(single)
+    assert single[0, 51].view(np.uint32) == np.uint32(1064440170)
+    assert double[0, 51].view(np.uint32) == np.uint32(1064440169)
+    assert not np.array_equal(single, double)
+
+    source, labels, tokens = _bindfix_support(k_shot, with_zero=with_zero)
+    classes = ("class_a", "class_b")
+    repaired, receipt = adv.repair_finite_exact_zero_singleton_class_medoid(
+        source, labels, classes, tokens
+    )
+    assert receipt["repaired_row_count"] == int(with_zero)
+    if with_zero:
+        assert np.array_equal(repaired[0], source[1])
+    else:
+        assert np.array_equal(repaired, source)
+
+    state = adv.build_int8_qknn_state(
+        repaired, labels, classes, tokens, support_repair_receipt=receipt
+    )
+    reference = _parent_decision_reference(repaired, labels, classes, tokens)
+    branch = state.branch_state
+    assert (
+        branch.actual_bank_binding_receipt["teacher_support_sha256"]
+        == receipt["unit_output_support_sha256"]
+    )
+    assert state.qknn_wire == reference["wire"]
+    np.testing.assert_array_equal(state.bank.codes_qint8, reference["bank"].codes_qint8)
+    np.testing.assert_array_equal(state.bank.scales_fp16, reference["bank"].scales_fp16)
+    np.testing.assert_array_equal(state.bank.offsets_fp16, reference["bank"].offsets_fp16)
+    for actual, expected in zip(
+        (
+            branch.bcr_weight_codes_qint8,
+            branch.bcr_weight_scales_fp16,
+            branch.bcr_weight_residual_codes_qint8,
+            branch.bcr_weight_residual_scales_fp16,
+        ),
+        reference["bcr"][:4],
+    ):
+        np.testing.assert_array_equal(actual, expected)
+
+    query = np.random.default_rng(8800 + k_shot).normal(
+        size=(7, 160)
+    ).astype(np.float32)
+    np.testing.assert_array_equal(
+        adv._score_affine_bank(state.bank, query),
+        adv._score_affine_bank(reference["bank"], query),
+    )
+    deployed = (
+        branch.bcr_weight_codes_qint8.astype(np.float32)
+        * branch.bcr_weight_scales_fp16.astype(np.float32)[None, :]
+        + branch.bcr_weight_residual_codes_qint8.astype(np.float32)
+        * branch.bcr_weight_residual_scales_fp16.astype(np.float32)[None, :]
+    )
+    np.testing.assert_array_equal(deployed, reference["bcr"][4])
+    np.testing.assert_array_equal(
+        np.asarray(adv._unit(query).astype(np.float32) @ deployed, np.float32),
+        np.asarray(
+            adv._unit(query).astype(np.float32) @ reference["bcr"][4], np.float32
+        ),
+    )
+
+
+def test_bindfix1_teacher_binding_is_permutation_equivalent_and_tamper_closed():
+    source, labels, tokens = _bindfix_support(5, with_zero=False)
+    classes = ("class_a", "class_b")
+    repaired, receipt = adv.repair_finite_exact_zero_singleton_class_medoid(
+        source, labels, classes, tokens
+    )
+    normal = adv.build_int8_qknn_state(
+        repaired, labels, classes, tokens, support_repair_receipt=receipt
+    )
+    order = np.asarray([7, 1, 9, 3, 0, 6, 8, 2, 5, 4], np.intp)
+    permuted_rows = repaired[order]
+    permuted_labels = tuple(labels[index] for index in order)
+    permuted_tokens = tuple(tokens[index] for index in order)
+    permuted_rows, permuted_receipt = (
+        adv.repair_finite_exact_zero_singleton_class_medoid(
+            permuted_rows, permuted_labels, ("class_b", "class_a"), permuted_tokens
+        )
+    )
+    permuted = adv.build_int8_qknn_state(
+        permuted_rows, permuted_labels, ("class_b", "class_a"), permuted_tokens,
+        support_repair_receipt=permuted_receipt,
+    )
+    assert normal.qknn_wire == permuted.qknn_wire
+    assert (
+        normal.branch_state.actual_bank_binding_receipt["teacher_support_sha256"]
+        == permuted.branch_state.actual_bank_binding_receipt["teacher_support_sha256"]
+    )
+    for left, right in zip(
+        (
+            normal.branch_state.bcr_weight_codes_qint8,
+            normal.branch_state.bcr_weight_scales_fp16,
+            normal.branch_state.bcr_weight_residual_codes_qint8,
+            normal.branch_state.bcr_weight_residual_scales_fp16,
+        ),
+        (
+            permuted.branch_state.bcr_weight_codes_qint8,
+            permuted.branch_state.bcr_weight_scales_fp16,
+            permuted.branch_state.bcr_weight_residual_codes_qint8,
+            permuted.branch_state.bcr_weight_residual_scales_fp16,
+        ),
+    ):
+        np.testing.assert_array_equal(left, right)
+    query = np.random.default_rng(991).normal(size=(6, 160)).astype(np.float32)
+    np.testing.assert_array_equal(
+        adv._score_affine_bank(normal.bank, query),
+        adv._score_affine_bank(permuted.bank, query),
+    )
+
+    reference = _parent_decision_reference(repaired, labels, classes, tokens)
+    make_args = (
+        normal.bank,
+        normal.metric,
+        normal.qknn_wire,
+    )
+    make_kwargs = {
+        "labels": reference["ordered_labels"],
+        "tokens": reference["ordered_tokens"],
+        "audit": normal.branch_state.quantization_audit["qknn"],
+        "support_repair_receipt": receipt,
+    }
+    with pytest.raises(ADV3B02StateError, match="teacher binding drift"):
+        adv._make_actual_branch(
+            *make_args, reference["ordered_unit"], **make_kwargs
+        )
+    one_ulp = reference["ordered_raw"].copy()
+    one_ulp[0, 51] = np.nextafter(
+        one_ulp[0, 51], np.float32(np.inf), dtype=np.float32
+    )
+    with pytest.raises(ADV3B02StateError, match="teacher binding drift"):
+        adv._make_actual_branch(*make_args, one_ulp, **make_kwargs)
+    wrong_tokens = list(reference["ordered_tokens"])
+    wrong_tokens[0], wrong_tokens[1] = wrong_tokens[1], wrong_tokens[0]
+    with pytest.raises(ADV3B02StateError, match="teacher binding drift"):
+        adv._make_actual_branch(
+            *make_args,
+            reference["ordered_raw"],
+            **{**make_kwargs, "tokens": tuple(wrong_tokens)},
+        )
+    with pytest.raises(ADV3B02StateError, match="must be float32"):
+        adv._make_actual_branch(
+            *make_args, reference["ordered_raw"].astype(np.float64), **make_kwargs
+        )
+
+
 def test_real_repair_receipt_runtime_and_append_validator_closure_with_interleaved_classes():
     rng = np.random.default_rng(818)
     old_labels = ("old_a",) * 5 + ("old_b",) * 5
     old_tokens = tuple(f"old:{index:02d}" for index in range(10))
     old_zid = rng.normal(size=(10, 160)).astype(np.float32)
+    old_zid[0] = _non_idempotent_zid_row()
     old_zdom = rng.normal(size=(10, 160)).astype(np.float32)
     repaired_old, before_repair = adv.repair_finite_exact_zero_singleton_class_medoid(
         old_zid, old_labels, ("old_a", "old_b"), old_tokens

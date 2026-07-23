@@ -20,7 +20,7 @@
 
 域适应可以改变encoder、输入前端、normalization、轻量adapter、support-conditioned表示、metric、邻域权重或概率状态。它必须具有明确的域偏移机制，并在held query上产生可观测的邻居贡献、margin、argmax或净正确决策变化；只有loss下降、support fit提高、metric非identity或logit数值变化不构成DA成功。RDA/SRDA、receiver nuisance correction、support-conditioned adapter、normalization、metric learning和合法Phase1新表征均可公平进入候选。
 
-当前下一优先revision固定为`ADV3B02-TS-DRQKNN-BCRR/r2-affine-bcr2-zidtotal1`：保留ADV3B02的`z_id`与`z_dom`双分支；`z_dom`只在每个候选类内部条件化`z_id`Student-t qKNN证据，最终跨类决策始终由`z_id`qKNN完成；BCRR是唯一OTHER。该revision继续使用逐向量仿射INT8 support codec、完整FP32 teacher审计、固定两级INT8残差BCR权重codec和系统故障增量停派；唯一科学输入边界delta是对K5/K10中“类内恰1个逐分量严格为0的support raw z_id”执行一次support-only实际peer球面medoid复制，K1、多零、非有限或微小非零均失败关闭。该冻结只约束本revision，不把双qKNN、固定rank、仿射codec、两级残差、BCRR或零行总化升级为后续所有方法的全局必经路线。
+当前下一优先revision固定为`ADV3B02-TS-DRQKNN-BCRR/r2-affine-bcr2-zidtotal1-bindfix1`：保留ADV3B02的`z_id`与`z_dom`双分支、BCRR和`finite_exact_zero_singleton_class_medoid_v1`，只修复repair receipt绑定`N(raw)`而actual branch错误绑定`N(N(raw))`的FP32非幂等技术缺陷。affine bank、qKNN wire、BCR部署权重和prediction必须逐字节不变；DA、四臂、K、数据、资源和完整125均不变。该冻结只约束本revision，不把双qKNN、固定rank、仿射codec、两级残差、BCRR或零行总化升级为后续所有方法的全局必经路线。
 
 最终目标是：
 
@@ -180,6 +180,10 @@ K5是当前双qKNN候选的首个正式DA falsifier；K10用于确认相同机�
 parent`ADV3B02-TS-DRQKNN-BCRR/r2-affine-bcr2`已完成本地技术闭合，但首次发布因冻结Python缺`pytest`而在launch前终止；POSIX sentinel修复后的第二个完整125又在首波健康检查中暴露两个系统性技术故障：before实际bank binding被validator错误要求为`None`，以及K10新类support raw`z_id`出现严格零向量。第二run已只终止本run，launcher/matrix PID=`1214101/1214105`、exit=`143`，合法完整row=`0/125`，终态=`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_COMPLETE_PERFORMANCE_RESULT`；partial prediction/score只作诊断，不形成性能结论。
 
 当前`ADV3B02-TS-DRQKNN-BCRR/r2-affine-bcr2-zidtotal1`已完成一个设计波次：监督首裁`REVISE`，采纳唯一最小规则`finite_exact_zero_singleton_class_medoid_v1`后终裁=`MERGE / P0=0 / P1=0`。实现、真实checkpoint support-only无query smoke和独立代码review均已闭合，状态=`LOCAL_VERIFIED / NO_PERFORMANCE_RESULT`；独立终审=`MERGE / P0=0 / P1=0 / P2=1`，唯一P2不影响正式runner。真实失败包同checkpoint精确复现1个K10新类零行且同类9个peer有效；近当前750个support-only包、67,650个support前向共2个同型零行，均可由同类实际medoid辨识，K1/K5、整类失效和`z_dom`失效均为0。真实smoke三场景repair count=`0/1/0`，正常行bitwise不变，query/truth读取为0；该证据只支持技术闭合，不是性能证据。完整冻结合同见`docs/ADV3B02_TS_DRQKNN_BCRR_R2_AFFINE_BCR2_ZIDTOTAL1_DESIGN_FROZEN.md`。
+
+其完整125发布在两个不同K10/new20 row上暴露相同`teacher binding drift`并按健康门止损。根因是repair receipt绑定一次单位化`N(raw)`，而actual branch对已单位化teacher再次调用raw helper，绑定`N(N(raw))`；FP32单位化并非严格字节幂等。新techfix=`.../zidtotal1-bindfix1`已完成单一可行性波次并冻结：`MERGE_TECHFIX / 当前P0=0、P1=1；实现目标P0=0、P1=0`。只把repair后的raw teacher传入audit/branch，各消费点单位化一次；bank、BCR权重、prediction、协议和资源必须不变。完整合同见`docs/ADV3B02_TS_DRQKNN_BCRR_R2_AFFINE_BCR2_ZIDTOTAL1_BINDFIX1_DESIGN_FROZEN.md`。
+
+`zidtotal1-bindfix1`现已达到`LOCAL_VERIFIED / NO_PERFORMANCE_RESULT`。`ssr-gpu`下目标与相邻DSSC合计`108 passed、3 Windows POSIX skipped、0 failed`；两个原触发row×3个scene的真实checkpoint support-only smoke为6/6 state与binding通过，query/truth/apply打开0。独立终审=`MERGE / P0=0 / P1=0 / P2=2`；P2只涉及revision header增加9B和后续golden增强，不阻塞新不可覆盖完整125发布。
 
 冻结的域状态使用target-old support构造`S_W-S_B`的固定2槽可靠方向；support与query对每个候选类都减同一`mu_c`，不得混用全局中心；`alpha_K=0.5*(K-1)/K*(rho_1+rho_2)/2`且`0<=alpha<0.5`。`z_dom`只形成类内权重，最终score必须复用基础`z_id`Student-t qKNN的同一INT8 bank、`h_c`、`nu`和kernel。K1或数值异常时逐值回到M0。
 

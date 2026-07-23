@@ -39,16 +39,16 @@ from cvsrffi.stage2_zid_student_t_qknn import (
 )
 
 
-CANDIDATE = "ADV3B02-TS-DRQKNN-BCRR/r2-affine-bcr2-zidtotal1"
-SCHEMA = "cvs.stage2.adv3b02.ts_drqknn_bcrr.r2_affine_bcr2_zidtotal1"
+CANDIDATE = "ADV3B02-TS-DRQKNN-BCRR/r2-affine-bcr2-zidtotal1-bindfix1"
+SCHEMA = "cvs.stage2.adv3b02.ts_drqknn_bcrr.r2_affine_bcr2_zidtotal1_bindfix1"
 Z_DIM = 160
 RANK = 2
 ARMS = ("M0", "M_DA", "M_OTHER", "M_JOINT")
 SCENES = ("leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak")
 K_VALUES = (1, 5, 10)
 MAX_WIRE_BYTES = 256 * 1024
-APPEND_RECEIPT_SCHEMA = "cvs.stage2.adv3b02.append_receipt.r2_bcr2_zidtotal1"
-ACTUAL_BRANCH_SCHEMA = "cvs.stage2.adv3b02.actual_bank_branch.r2_affine_bcr2_zidtotal1"
+APPEND_RECEIPT_SCHEMA = "cvs.stage2.adv3b02.append_receipt.r2_bcr2_zidtotal1_bindfix1"
+ACTUAL_BRANCH_SCHEMA = "cvs.stage2.adv3b02.actual_bank_branch.r2_affine_bcr2_zidtotal1_bindfix1"
 ZID_REPAIR_SCHEMA = "cvs.stage2.adv3b02.zid_repair_receipt.v1"
 ZID_REPAIR_RULE = "finite_exact_zero_singleton_class_medoid_v1"
 AFFINE_BANK_SCHEMA = "cvs.stage2.adv3b02.affine_int8_bank.r2"
@@ -722,19 +722,22 @@ def _affine_margin_audit(bank: AffineINT8ZIDSupportBank, teacher_support: np.nda
 
 
 def _make_actual_branch(bank: AffineINT8ZIDSupportBank, metric: TypedSharedPSDMetric, wire: bytes,
-                        teacher: np.ndarray, labels: tuple[str, ...], tokens: tuple[str, ...], audit: Mapping[str, Any],
+                        raw_teacher_zid: np.ndarray, labels: tuple[str, ...], tokens: tuple[str, ...], audit: Mapping[str, Any],
                         support_repair_receipt: Mapping[str, Any]) -> ActualBankBranchState:
+    raw_teacher = _rows(raw_teacher_zid, name="actual branch raw teacher z_id")
+    if len(raw_teacher) != len(labels) or len(labels) != len(tokens):
+        raise ADV3B02StateError("actual branch raw teacher layout drift")
     repair = _validate_repaired_support_for_state(
-        support_repair_receipt, support_zid=np.asarray(teacher, np.float32),
+        support_repair_receipt, support_zid=raw_teacher,
         labels=labels, classes=tuple(sorted(bank.classes)), tokens=tokens,
         require_output_support_sha256=False,
     )
     decoded = _affine_dequantize_rows(bank.codes_qint8, bank.scales_fp16, bank.offsets_fp16).astype(np.float64)
     weights, analytic_loo, lam, _ = _existing_bcr_ridge_fit_and_loo(decoded, bank.class_indices_int16, bank.active_k)
     wc, ws, rwc, rws, dw = _quantize_bcr_weights_two_plane(weights)
-    bcr_teacher_logits = _unit(teacher).astype(np.float64) @ weights
+    bcr_teacher_logits = _unit(raw_teacher).astype(np.float64) @ weights
     bcr_deployed_logits = (
-        _unit(teacher).astype(np.float64) @ dw.astype(np.float64)
+        _unit(raw_teacher).astype(np.float64) @ dw.astype(np.float64)
     )
     bcr_audit = dict(
         _existing_bcr_quant_audit(bcr_teacher_logits, bcr_deployed_logits)
@@ -762,7 +765,7 @@ def _make_actual_branch(bank: AffineINT8ZIDSupportBank, metric: TypedSharedPSDMe
     directional = {v: {"qknn_sha256": sha256_bytes(np.ascontiguousarray(qscore[v]).tobytes()), "bcr_sha256": sha256_bytes(np.ascontiguousarray(bscore[v]).tobytes())} for v in _BCR_DIRECTIONS}
     body = {"schema": ACTUAL_BRANCH_SCHEMA, "qknn_wire_sha256": sha256_bytes(wire), "bank_receipt_sha256": bank.bank_receipt_sha256,
             "metric_receipt_sha256": metric.metric_receipt_sha256, "support_token_root_sha256": sha256_bytes(_canon(list(tokens))),
-            "teacher_support_sha256": _unit_support_token_binding_sha256(teacher, tokens),
+            "teacher_support_sha256": _unit_support_token_binding_sha256(raw_teacher, tokens),
             "support_repair_receipt_sha256": repair["receipt_sha256"], "bcr_weight_codes_sha256": sha256_bytes(np.ascontiguousarray(wc).tobytes()),
             "bcr_weight_scales_sha256": sha256_bytes(np.ascontiguousarray(ws).tobytes()),
             "bcr_weight_residual_codes_sha256": sha256_bytes(np.ascontiguousarray(rwc).tobytes()),
@@ -819,11 +822,12 @@ def build_int8_qknn_state(features: np.ndarray, labels: Sequence[Any] | np.ndarr
         raise ADV3B02StateError("typed qKNN Phase1 lock/K drift")
     canonical_classes = tuple(sorted(classes))
     positions = sorted(range(len(tokens)), key=lambda i: (labs[i], tokens[i]))
-    ordered = _unit(source[np.asarray(positions, np.intp)])
+    ordered_raw = np.ascontiguousarray(source[np.asarray(positions, np.intp)])
+    ordered_unit = _unit(ordered_raw)
     ordered_labels = tuple(labs[i] for i in positions)
     ordered_tokens = tuple(tokens[i] for i in positions)
     indices = np.asarray([canonical_classes.index(v) for v in ordered_labels], dtype="<i2")
-    codes, scales, offsets = _affine_quantize_rows(ordered)
+    codes, scales, offsets = _affine_quantize_rows(ordered_unit)
     decoded = _affine_dequantize_rows(codes, scales, offsets)
     class_scales = np.asarray(_existing_identity_class_scales(decoded, indices, len(canonical_classes), lock), dtype="<f2")
     counts = tuple(int(np.sum(indices == i)) for i in range(len(canonical_classes)))
@@ -838,8 +842,12 @@ def build_int8_qknn_state(features: np.ndarray, labels: Sequence[Any] | np.ndarr
                                     k_shot, lock, lock.lock_digest, quantization, receipt)
     metric = identity_shared_psd_metric(config=lock)
     wire = _serialize_affine_bank(bank)
-    audit = _affine_margin_audit(bank, ordered, ordered_labels, ordered)
-    branch = _make_actual_branch(bank, metric, wire, ordered, ordered_labels, ordered_tokens, audit, repair)
+    audit = _affine_margin_audit(
+        bank, ordered_raw, ordered_labels, ordered_unit
+    )
+    branch = _make_actual_branch(
+        bank, metric, wire, ordered_raw, ordered_labels, ordered_tokens, audit, repair
+    )
     return Int8QKNNState(branch, bank, metric, wire, classes, ordered_labels, ordered_tokens)
 
 

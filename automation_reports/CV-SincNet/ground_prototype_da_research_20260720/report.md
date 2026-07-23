@@ -2259,3 +2259,21 @@ run=`adv3b02_ts_drqknn_bcrr_r2_affine_bcr2_zidtotal1_full125_21ffdabf_20260723_2
 首源为`_validate_repaired_support_for_state`，调用链闭合到`_make_actual_branch -> build_int8_qknn_state -> build_stage2_b_state -> build_four_arm_states -> run_row`；两个触发row均`query_rows_used_for_fit=0`。15份termination receipt均验证归属并确认进程树退出，终态GPU和本run进程清零。最小回收inventory SHA=`f0b6e9d35251b9e7ec563e4b68ad13e05de9481c9251f603c61c62520cb043af`，bundle SHA=`aac5db16cc40986b3b6556125f9902f9f468ad0652d20f9f71af382f7f21b3cd`；archive/manifest/parity/coverage均为`PRESENT_REUSED / NOT_GENERATED`，未重验数据。下一步只允许本地精确复现binding差异、独立review、最小techfix、新Git提交和全新不可覆盖完整125，不得续跑原run。
 
 同一唯一runner随后只读回收两个触发row的before enrollment support-only包，共10文件、1,062,814B，inventory SHA=`e7ac7e500661f9bb485759ac9f5e76bae1bb37253a0cafe46ad6bd52eb1ddf9b`；query/truth/apply/after回收数均为0。本地RTX5070Ti与CPU重放因硬件数值差异未触发该hash drift，但正式N607两个不同row的确定失败和代码双重单位化路径已经闭合；后续测试必须加入构造的稀疏FP32非幂等单位化向量，不能只依赖本地硬件输出。
+
+##### `zidtotal1-bindfix1`设计冻结
+
+设`N(x)=float32(float64(x)/||x||₂)`。独立只读诊断证明现有receipt绑定`N(raw)`，而before actual branch绑定`N(N(raw))`；构造稀疏160维FP32行可稳定产生1 ULP差异。监督裁决=`MERGE_TECHFIX / 当前P0=0、P1=1；实现目标P0=0、P1=0`。唯一修复是让`build_int8_qknn_state`同时保留`ordered_raw`和原`ordered_unit`：bank仍由`ordered_unit`构造，audit与actual branch接收`ordered_raw`并各自仅单位化一次。禁止容差比较、跳过验证、raw/unit自动猜测或复制receipt SHA。
+
+冻结不变量为affine bank codes/scales/offsets、qKNN wire、metric、BCR部署权重和固定query prediction逐字节不变；只允许audit/binding/state receipt身份变化。改动范围只含ADV method、现有专项test、candidate/schema及文档/报告，正式runner矩阵与调度不改。实现必须通过非幂等向量、K5/K10无零/单零、置换、1 ULP/token错配、interleaved append、决策不变和两个触发row三场景真实checkpoint support-only无query smoke；独立review达到`P0=0、P1=0`后才提交和发布全新完整125。
+
+##### 并行下一模型DA联合卡监督结论
+
+服务器执行期间只读形成`DSSC-SBF-ADV3B02-DRQKNN-BCRR/design-r0`：以当前ADV双qKNN＋BCRR为parent，只增加DSSC Stage2-B四系数rank-4真实模型adapter，Stage2-C冻结adapter并append。作者卡不自证；独立Sol-max监督裁决=`REVISE / P0=2 / P1=3 / NO_PERFORMANCE_RESULT`，未进入实现或N607。
+
+两项P0为：①现有DSSC fit硬编码legacy direct-return，尚不能证明正式可微head-bypass只更新4个系数且`z_dom`逐字节不变；②作者以已含ADV域适应的`M0_dual`计算`I_syn`，不能证明完整DA与OTHER协同。最小r1只能改为五输出`M0=raw z_id qKNN / R_ADV=raw dual qKNN / M_DA=adapted dual qKNN / M_OTHER=raw z_id qKNN+BCRR / M_JOINT=adapted dual qKNN+BCRR`，`I_syn`仍只用四个M臂；K1必须adapter与ADV双qKNN均identity。另须先闭合可微head-bypass、复合repair receipt、实际`<=256KiB`wire和K5/K10 decision geometry变化的无query spike。该草案不使用当前run partial性能，也不影响bindfix1优先级。
+
+##### `zidtotal1-bindfix1`本地闭合与发布裁决
+
+实现严格限定在ADV method、runner revision schema和专项测试；正式runner的matrix、调度、健康门、scorer以及DA/qKNN/BCRR公式均无变化。`ssr-gpu`下3文件`py_compile`通过；目标测试`72 passed、3 Windows POSIX skipped、0 failed`，相邻DSSC测试`36 passed、0 failed`，`git diff --check`通过。K5/K10×无零/单零的affine bank wire、codes/scales/offsets、两级BCR部署权重和固定query logits均与parent逐字节一致；unit teacher误传、1 ULP raw漂移、token错配和float64输入均失败关闭。
+
+真实checkpoint support-only smoke复用两个原触发row的只读before enrollment包，覆盖2 row×3 scene=6个state，全部teacher/repair binding闭合；query/truth/apply打开数均为0，fit query rows=0。receipt SHA=`b5e232d48fc07dbb1c744133204265e4b0d6634ef1ff299142bb23180c051474`。独立Terra终审=`MERGE / P0=0 / P1=0 / P2=2`；schema header增加9B但数组主体、MAC和256KiB门不变，commit-bound golden可后补且不得延迟实验。当前状态=`LOCAL_VERIFIED / NO_PERFORMANCE_RESULT`，下一步只允许精确Git提交、新不可覆盖run报告和完整125发布。
