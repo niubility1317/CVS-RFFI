@@ -1,4 +1,4 @@
-"""Support-only ADV3B02 TS-DRQKNN-BCRR/r3-q2f32 primitives.
+"""Support-only ADV3B02 TS-DRQKNN-BCRR/r4-q2f32-bcr3 primitives.
 
 This module is deliberately a small, typed runtime.  It has no capsule
 builder, truth-side scorer, receiver/TX input, query-label input, optimizer,
@@ -39,16 +39,16 @@ from cvsrffi.stage2_zid_student_t_qknn import (
 )
 
 
-CANDIDATE = "ADV3B02-TS-DRQKNN-BCRR/r3-q2f32-bcr2-zidtotal1"
-SCHEMA = "cvs.stage2.adv3b02.ts_drqknn_bcrr.r3_q2f32_bcr2_zidtotal1"
+CANDIDATE = "ADV3B02-TS-DRQKNN-BCRR/r4-q2f32-bcr3-zidtotal1"
+SCHEMA = "cvs.stage2.adv3b02.ts_drqknn_bcrr.r4_q2f32_bcr3_zidtotal1"
 Z_DIM = 160
 RANK = 2
 ARMS = ("M0", "M_DA", "M_OTHER", "M_JOINT")
 SCENES = ("leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak")
 K_VALUES = (1, 5, 10)
 MAX_WIRE_BYTES = 256 * 1024
-APPEND_RECEIPT_SCHEMA = "cvs.stage2.adv3b02.append_receipt.r3_q2f32_bcr2_zidtotal1"
-ACTUAL_BRANCH_SCHEMA = "cvs.stage2.adv3b02.actual_bank_branch.r3_q2f32_bcr2_zidtotal1"
+APPEND_RECEIPT_SCHEMA = "cvs.stage2.adv3b02.append_receipt.r4_q2f32_bcr3_zidtotal1"
+ACTUAL_BRANCH_SCHEMA = "cvs.stage2.adv3b02.actual_bank_branch.r4_q2f32_bcr3_zidtotal1"
 ZID_REPAIR_SCHEMA = "cvs.stage2.adv3b02.zid_repair_receipt.v1"
 ZID_REPAIR_RULE = "finite_exact_zero_singleton_class_medoid_v1"
 AFFINE_BANK_SCHEMA = "cvs.stage2.adv3b02.affine_int8_bank.r3_q2f32"
@@ -59,8 +59,12 @@ SUPPORT_ROUNDING = "numpy_rint_ties_to_even"
 SUPPORT_CLIP = (-127, 127)
 SUPPORT_RESIDUAL_SCALE_FLOOR = float(np.finfo(np.float16).smallest_subnormal)
 CLASS_BANDWIDTH_CODEC = "fp16_hi_plus_fp16_lo_v1"
-BCR_WEIGHT_CODEC = "fixed_two_plane_per_class_symmetric_int8_fp16_scale_v1"
-BCR_WEIGHT_PLANE_ORDER = ("plane1_teacher", "plane2_residual_after_plane1_decode")
+BCR_WEIGHT_CODEC = "fixed_three_plane_per_class_symmetric_int8_fp16_scale_v1"
+BCR_WEIGHT_PLANE_ORDER = (
+    "plane1_teacher",
+    "plane2_residual_after_plane1_decode",
+    "plane3_residual_after_float32_plane1_plus_plane2_decode",
+)
 BCR_WEIGHT_CODE_DTYPE = "int8"
 BCR_WEIGHT_SCALE_DTYPE = "<f2"
 BCR_WEIGHT_ROUNDING = "numpy_rint_ties_to_even"
@@ -314,24 +318,28 @@ def _quantize_bcr_weight_plane(
     )
 
 
-def _quantize_bcr_weights_two_plane(
+def _quantize_bcr_weights_three_plane(
     weights: np.ndarray,
-) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
-    """Fixed two-plane INT8 residual codec; never adapts its plane count."""
+) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+    """Fixed three-plane INT8 residual codec with frozen float32 accumulation."""
     teacher = np.asarray(weights, np.float64)
     plane1_codes, plane1_scales, plane1 = _quantize_bcr_weight_plane(teacher)
-    residual = teacher - plane1.astype(np.float64)
-    plane2_codes, plane2_scales, plane2 = _quantize_bcr_weight_plane(residual)
-    deployed = np.asarray(
-        plane1.astype(np.float32) + plane2.astype(np.float32), np.float32
-    )
+    d1 = np.asarray(plane1, np.float32)
+    residual2 = teacher - d1.astype(np.float64)
+    plane2_codes, plane2_scales, plane2 = _quantize_bcr_weight_plane(residual2)
+    d2 = np.asarray(d1 + plane2.astype(np.float32), np.float32)
+    residual3 = teacher - d2.astype(np.float64)
+    plane3_codes, plane3_scales, plane3 = _quantize_bcr_weight_plane(residual3)
+    deployed = np.asarray(d2 + plane3.astype(np.float32), np.float32)
     if not np.isfinite(deployed).all():
-        raise ADV3B02StateError("two-plane BCR weight decode became nonfinite")
+        raise ADV3B02StateError("three-plane BCR weight decode became nonfinite")
     return (
         plane1_codes,
         plane1_scales,
         plane2_codes,
         plane2_scales,
+        plane3_codes,
+        plane3_scales,
         np.ascontiguousarray(deployed),
     )
 
@@ -684,6 +692,8 @@ class ActualBankBranchState:
     bcr_weight_scales_fp16: np.ndarray
     bcr_weight_residual_codes_qint8: np.ndarray
     bcr_weight_residual_scales_fp16: np.ndarray
+    bcr_weight_residual2_codes_qint8: np.ndarray
+    bcr_weight_residual2_scales_fp16: np.ndarray
     bcr_lambda: float
     quantization_audit: Mapping[str, Any]
     actual_bank_binding_receipt: Mapping[str, Any]
@@ -704,6 +714,13 @@ class ActualBankBranchState:
                 or self.bcr_weight_residual_scales_fp16.shape != self.bcr_weight_scales_fp16.shape
                 or not np.isfinite(self.bcr_weight_residual_scales_fp16).all()
                 or np.any(self.bcr_weight_residual_scales_fp16 <= 0.0)
+                or self.bcr_weight_residual2_codes_qint8.dtype != np.int8
+                or self.bcr_weight_residual2_codes_qint8.shape != self.bcr_weight_codes_qint8.shape
+                or np.any(self.bcr_weight_residual2_codes_qint8 == np.int8(-128))
+                or self.bcr_weight_residual2_scales_fp16.dtype != np.dtype("<f2")
+                or self.bcr_weight_residual2_scales_fp16.shape != self.bcr_weight_scales_fp16.shape
+                or not np.isfinite(self.bcr_weight_residual2_scales_fp16).all()
+                or np.any(self.bcr_weight_residual2_scales_fp16 <= 0.0)
                 or set(audit) != {"qknn", "bcr"} or float(audit["qknn"].get("top1_agreement", -1.0)) < .995
                 or int(audit["qknn"].get("large_margin_flip_count", -1)) != 0
                 or float(audit["bcr"].get("top1_agreement", -1.0)) != 1.0
@@ -716,7 +733,8 @@ class ActualBankBranchState:
                     "support_token_root_sha256", "teacher_support_sha256", "bcr_weight_codes_sha256",
                     "support_repair_receipt_sha256",
                     "bcr_weight_scales_sha256", "bcr_weight_residual_codes_sha256",
-                    "bcr_weight_residual_scales_sha256", "bcr_weight_codec", "bcr_weight_plane_count",
+                    "bcr_weight_residual_scales_sha256", "bcr_weight_residual2_codes_sha256",
+                    "bcr_weight_residual2_scales_sha256", "bcr_weight_codec", "bcr_weight_plane_count",
                     "bcr_weight_plane_order", "bcr_weight_code_dtype", "bcr_weight_scale_dtype",
                     "bcr_weight_rounding", "bcr_weight_clip", "bcr_weight_scale_floor",
                     "bcr_weight_shape", "bcr_weight_class_order", "bcr_weight_wire_bytes",
@@ -733,8 +751,10 @@ class ActualBankBranchState:
                 or receipt.get("bcr_weight_scales_sha256") != sha256_bytes(np.ascontiguousarray(self.bcr_weight_scales_fp16).tobytes())
                 or receipt.get("bcr_weight_residual_codes_sha256") != sha256_bytes(np.ascontiguousarray(self.bcr_weight_residual_codes_qint8).tobytes())
                 or receipt.get("bcr_weight_residual_scales_sha256") != sha256_bytes(np.ascontiguousarray(self.bcr_weight_residual_scales_fp16).tobytes())
+                or receipt.get("bcr_weight_residual2_codes_sha256") != sha256_bytes(np.ascontiguousarray(self.bcr_weight_residual2_codes_qint8).tobytes())
+                or receipt.get("bcr_weight_residual2_scales_sha256") != sha256_bytes(np.ascontiguousarray(self.bcr_weight_residual2_scales_fp16).tobytes())
                 or receipt.get("bcr_weight_codec") != BCR_WEIGHT_CODEC
-                or receipt.get("bcr_weight_plane_count") != 2
+                or receipt.get("bcr_weight_plane_count") != 3
                 or receipt.get("bcr_weight_plane_order") != list(BCR_WEIGHT_PLANE_ORDER)
                 or receipt.get("bcr_weight_code_dtype") != BCR_WEIGHT_CODE_DTYPE
                 or receipt.get("bcr_weight_scale_dtype") != BCR_WEIGHT_SCALE_DTYPE
@@ -749,6 +769,8 @@ class ActualBankBranchState:
                     + self.bcr_weight_scales_fp16.nbytes
                     + self.bcr_weight_residual_codes_qint8.nbytes
                     + self.bcr_weight_residual_scales_fp16.nbytes
+                    + self.bcr_weight_residual2_codes_qint8.nbytes
+                    + self.bcr_weight_residual2_scales_fp16.nbytes
                 )
                 or receipt.get("qknn_audit_sha256") != sha256_bytes(_canon(audit["qknn"]))
                 or receipt.get("bcr_audit_sha256") != sha256_bytes(_canon(audit["bcr"]))
@@ -786,8 +808,10 @@ class Int8QKNNState:
                 or binding.get("bcr_weight_scales_sha256") != sha256_bytes(np.ascontiguousarray(self.branch_state.bcr_weight_scales_fp16).tobytes())
                 or binding.get("bcr_weight_residual_codes_sha256") != sha256_bytes(np.ascontiguousarray(self.branch_state.bcr_weight_residual_codes_qint8).tobytes())
                 or binding.get("bcr_weight_residual_scales_sha256") != sha256_bytes(np.ascontiguousarray(self.branch_state.bcr_weight_residual_scales_fp16).tobytes())
+                or binding.get("bcr_weight_residual2_codes_sha256") != sha256_bytes(np.ascontiguousarray(self.branch_state.bcr_weight_residual2_codes_qint8).tobytes())
+                or binding.get("bcr_weight_residual2_scales_sha256") != sha256_bytes(np.ascontiguousarray(self.branch_state.bcr_weight_residual2_scales_fp16).tobytes())
                 or binding.get("bcr_weight_codec") != BCR_WEIGHT_CODEC
-                or binding.get("bcr_weight_plane_count") != 2
+                or binding.get("bcr_weight_plane_count") != 3
                 or binding.get("bcr_weight_plane_order") != list(BCR_WEIGHT_PLANE_ORDER)
                 or binding.get("bcr_weight_code_dtype") != BCR_WEIGHT_CODE_DTYPE
                 or binding.get("bcr_weight_scale_dtype") != BCR_WEIGHT_SCALE_DTYPE
@@ -801,6 +825,8 @@ class Int8QKNNState:
                     + self.branch_state.bcr_weight_scales_fp16.nbytes
                     + self.branch_state.bcr_weight_residual_codes_qint8.nbytes
                     + self.branch_state.bcr_weight_residual_scales_fp16.nbytes
+                    + self.branch_state.bcr_weight_residual2_codes_qint8.nbytes
+                    + self.branch_state.bcr_weight_residual2_scales_fp16.nbytes
                 )
                 or binding.get("qknn_audit_sha256") != sha256_bytes(_canon(dict(self.branch_state.quantization_audit["qknn"])))
                 or binding.get("bcr_audit_sha256") != sha256_bytes(_canon(dict(self.branch_state.quantization_audit["bcr"])) )):
@@ -908,7 +934,7 @@ def _make_actual_branch(bank: AffineINT8ZIDSupportBank, metric: TypedSharedPSDMe
         bank.residual_scales_fp16,
     ).astype(np.float64)
     weights, analytic_loo, lam, _ = _existing_bcr_ridge_fit_and_loo(decoded, bank.class_indices_int16, bank.active_k)
-    wc, ws, rwc, rws, dw = _quantize_bcr_weights_two_plane(weights)
+    wc, ws, rwc, rws, r2wc, r2ws, dw = _quantize_bcr_weights_three_plane(weights)
     bcr_teacher_logits = _unit(raw_teacher).astype(np.float64) @ weights
     bcr_deployed_logits = (
         _unit(raw_teacher).astype(np.float64) @ dw.astype(np.float64)
@@ -921,12 +947,12 @@ def _make_actual_branch(bank: AffineINT8ZIDSupportBank, metric: TypedSharedPSDMe
     )
     bcr_audit.update({
         "codec": BCR_WEIGHT_CODEC,
-        "plane_count": 2,
+        "plane_count": 3,
         "plane_order": list(BCR_WEIGHT_PLANE_ORDER),
         "any_margin_flip_count": int(np.sum(bcr_any_flip)),
         "any_margin_flip_rate": float(np.mean(bcr_any_flip)),
         "weight_max_abs_error": float(np.max(np.abs(weights - dw.astype(np.float64)))),
-        "weight_wire_bytes": int(wc.nbytes + ws.nbytes + rwc.nbytes + rws.nbytes),
+        "weight_wire_bytes": int(wc.nbytes + ws.nbytes + rwc.nbytes + rws.nbytes + r2wc.nbytes + r2ws.nbytes),
     })
     if (float(bcr_audit.get("top1_agreement", 0.0)) != 1.0
             or int(bcr_audit.get("any_margin_flip_count", -1)) != 0
@@ -944,7 +970,9 @@ def _make_actual_branch(bank: AffineINT8ZIDSupportBank, metric: TypedSharedPSDMe
             "bcr_weight_scales_sha256": sha256_bytes(np.ascontiguousarray(ws).tobytes()),
             "bcr_weight_residual_codes_sha256": sha256_bytes(np.ascontiguousarray(rwc).tobytes()),
             "bcr_weight_residual_scales_sha256": sha256_bytes(np.ascontiguousarray(rws).tobytes()),
-            "bcr_weight_codec": BCR_WEIGHT_CODEC, "bcr_weight_plane_count": 2,
+            "bcr_weight_residual2_codes_sha256": sha256_bytes(np.ascontiguousarray(r2wc).tobytes()),
+            "bcr_weight_residual2_scales_sha256": sha256_bytes(np.ascontiguousarray(r2ws).tobytes()),
+            "bcr_weight_codec": BCR_WEIGHT_CODEC, "bcr_weight_plane_count": 3,
             "bcr_weight_plane_order": list(BCR_WEIGHT_PLANE_ORDER),
             "bcr_weight_code_dtype": BCR_WEIGHT_CODE_DTYPE,
             "bcr_weight_scale_dtype": BCR_WEIGHT_SCALE_DTYPE,
@@ -952,11 +980,11 @@ def _make_actual_branch(bank: AffineINT8ZIDSupportBank, metric: TypedSharedPSDMe
             "bcr_weight_clip": list(BCR_WEIGHT_CLIP),
             "bcr_weight_scale_floor": BCR_WEIGHT_SCALE_FLOOR,
             "bcr_weight_shape": list(wc.shape), "bcr_weight_class_order": list(bank.classes),
-            "bcr_weight_wire_bytes": int(wc.nbytes + ws.nbytes + rwc.nbytes + rws.nbytes),
+            "bcr_weight_wire_bytes": int(wc.nbytes + ws.nbytes + rwc.nbytes + rws.nbytes + r2wc.nbytes + r2ws.nbytes),
             "bcr_analytic_loo_sha256": sha256_bytes(np.ascontiguousarray(analytic_loo).tobytes()),
             "directional_loo_sha256": directional, "qknn_audit_sha256": sha256_bytes(_canon(dict(audit))), "bcr_audit_sha256": sha256_bytes(_canon(bcr_audit)), "query_rows_used_for_fit": 0}
     return ActualBankBranchState(
-        wire, tokens, wc, ws, rwc, rws, float(lam),
+        wire, tokens, wc, ws, rwc, rws, r2wc, r2ws, float(lam),
         {"qknn": dict(audit), "bcr": bcr_audit},
         {**body, "receipt_sha256": sha256_bytes(_canon(body))}, dict(repair),
     )
@@ -2140,11 +2168,17 @@ def bcrr_fused_logits(qknn_scores: np.ndarray, query_zid: np.ndarray, state: BCR
         return scores.copy()
     features = normalize_zid_rows(_rows(query_zid, name="BCRR query z_id"))
     branch = bank.branch_state
-    weights = (
+    d1 = np.asarray(
         branch.bcr_weight_codes_qint8.astype(np.float32)
-        * branch.bcr_weight_scales_fp16.astype(np.float32)[None, :]
-        + branch.bcr_weight_residual_codes_qint8.astype(np.float32)
-        * branch.bcr_weight_residual_scales_fp16.astype(np.float32)[None, :]
+        * branch.bcr_weight_scales_fp16.astype(np.float32)[None, :], np.float32
+    )
+    d2 = np.asarray(
+        d1 + branch.bcr_weight_residual_codes_qint8.astype(np.float32)
+        * branch.bcr_weight_residual_scales_fp16.astype(np.float32)[None, :], np.float32
+    )
+    weights = np.asarray(
+        d2 + branch.bcr_weight_residual2_codes_qint8.astype(np.float32)
+        * branch.bcr_weight_residual2_scales_fp16.astype(np.float32)[None, :], np.float32
     )
     bcr = np.asarray(features @ weights, np.float32)
     # Existing BCR weight columns are canonical typed-bank order, whereas the
@@ -2254,6 +2288,8 @@ def state_receipt(states: Mapping[str, Any]) -> dict[str, Any]:
         + raw.branch_state.bcr_weight_scales_fp16.nbytes
         + raw.branch_state.bcr_weight_residual_codes_qint8.nbytes
         + raw.branch_state.bcr_weight_residual_scales_fp16.nbytes
+        + raw.branch_state.bcr_weight_residual2_codes_qint8.nbytes
+        + raw.branch_state.bcr_weight_residual2_scales_fp16.nbytes
     )
     support_residual_bytes = (
         raw.bank.residual_codes_qint8.nbytes
@@ -2292,7 +2328,7 @@ def state_receipt(states: Mapping[str, Any]) -> dict[str, Any]:
                "raw_state_bytes": raw_state_bytes,
                "bcr_weight_wire_bytes": bcr_bytes,
                "bcr_weight_codec": BCR_WEIGHT_CODEC,
-               "bcr_weight_plane_count": 2,
+               "bcr_weight_plane_count": 3,
                "support_codec": SUPPORT_CODEC,
                "support_plane_count": 2,
                "support_residual_wire_bytes": support_residual_bytes,

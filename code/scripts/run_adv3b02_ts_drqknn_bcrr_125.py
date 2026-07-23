@@ -39,7 +39,7 @@ RECEIVERS = ("20-1", "3-19", "7-14", "7-7", "8-8")
 SEEDS = (713102, 713103, 713104, 713105, 713106)
 SLICES = ((10, 5), (10, 10), (10, 20), (5, 20), (1, 20))
 MATRIX_COUNTS = {"jobs": 125, "scene_slices": 375, "score_rows": 1500, "arm_state_prediction_artifacts": 1000}
-LAUNCHER_SCHEMA = "cvs.stage2.adv3b02.full125.artifact_validator.r3_q2f32_bcr2_zidtotal1"
+LAUNCHER_SCHEMA = "cvs.stage2.adv3b02.full125.artifact_validator.r4_q2f32_bcr3_zidtotal1"
 FORMAL_GPU_IDS = tuple(range(8))
 ROW_STATES = ("before", "after")
 SCENE_METRIC_KEYS = {
@@ -214,7 +214,7 @@ def write_prediction_new(path: str | Path, *, query_tokens: np.ndarray,
 
 
 def job_id(receiver: str, seed: int, k_shot: int, new_class_count: int) -> str:
-    return f"adv3b02_r3_q2f32_bcr2_rx_{receiver}_s_{seed}_k_{k_shot}_n_{new_class_count}"
+    return f"adv3b02_r4_q2f32_bcr3_rx_{receiver}_s_{seed}_k_{k_shot}_n_{new_class_count}"
 
 
 def matrix_jobs(*, run_root: str | Path) -> list[dict[str, Any]]:

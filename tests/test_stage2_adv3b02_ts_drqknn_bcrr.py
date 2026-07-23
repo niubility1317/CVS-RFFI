@@ -185,7 +185,7 @@ def test_finite_exact_zero_repair_breaks_medoid_ties_by_physical_token():
 
 @pytest.mark.parametrize("k_shot", [5, 10])
 @pytest.mark.parametrize("with_zero", [False, True])
-def test_q2f32_raw_teacher_closes_non_idempotent_repair_and_two_plane_state(
+def test_q2f32_raw_teacher_closes_non_idempotent_repair_and_three_plane_bcr_state(
     k_shot, with_zero
 ):
     single = adv._unit(_non_idempotent_zid_row()[None, :])
@@ -300,6 +300,8 @@ def test_q2f32_teacher_binding_is_permutation_equivalent_and_tamper_closed():
             normal.branch_state.bcr_weight_scales_fp16,
             normal.branch_state.bcr_weight_residual_codes_qint8,
             normal.branch_state.bcr_weight_residual_scales_fp16,
+            normal.branch_state.bcr_weight_residual2_codes_qint8,
+            normal.branch_state.bcr_weight_residual2_scales_fp16,
         ),
         (
             permuted.bank.codes_qint8,
@@ -313,6 +315,8 @@ def test_q2f32_teacher_binding_is_permutation_equivalent_and_tamper_closed():
             permuted.branch_state.bcr_weight_scales_fp16,
             permuted.branch_state.bcr_weight_residual_codes_qint8,
             permuted.branch_state.bcr_weight_residual_scales_fp16,
+            permuted.branch_state.bcr_weight_residual2_codes_qint8,
+            permuted.branch_state.bcr_weight_residual2_scales_fp16,
         ),
     ):
         np.testing.assert_array_equal(left, right)
@@ -751,7 +755,16 @@ def test_stage2_c_actual_bank_closes_wire_bcr_loo_and_full_int8_audit(k_shot):
     assert binding["bank_receipt_sha256"] == after.id_bank.bank.bank_receipt_sha256
     assert binding["metric_receipt_sha256"] == after.id_bank.metric.metric_receipt_sha256
     assert binding["bcr_weight_codec"] == adv.BCR_WEIGHT_CODEC
-    assert binding["bcr_weight_plane_count"] == 2
+    assert binding["bcr_weight_plane_count"] == 3
+    for name in (
+        "bcr_weight_codes_sha256",
+        "bcr_weight_scales_sha256",
+        "bcr_weight_residual_codes_sha256",
+        "bcr_weight_residual_scales_sha256",
+        "bcr_weight_residual2_codes_sha256",
+        "bcr_weight_residual2_scales_sha256",
+    ):
+        assert len(binding[name]) == 64
     assert binding["bcr_weight_plane_order"] == list(adv.BCR_WEIGHT_PLANE_ORDER)
     assert binding["bcr_weight_code_dtype"] == "int8"
     assert binding["bcr_weight_scale_dtype"] == "<f2"
@@ -765,6 +778,8 @@ def test_stage2_c_actual_bank_closes_wire_bcr_loo_and_full_int8_audit(k_shot):
         + branch.bcr_weight_scales_fp16.nbytes
         + branch.bcr_weight_residual_codes_qint8.nbytes
         + branch.bcr_weight_residual_scales_fp16.nbytes
+        + branch.bcr_weight_residual2_codes_qint8.nbytes
+        + branch.bcr_weight_residual2_scales_fp16.nbytes
     )
     assert branch.quantization_audit["bcr"]["top1_agreement"] == 1.0
     assert branch.quantization_audit["bcr"]["any_margin_flip_count"] == 0
@@ -796,6 +811,10 @@ def test_int8_qknn_post_init_fails_closed_on_branch_bank_and_audit_drift():
         ),
         bcr_weight_codes_qint8=branch.bcr_weight_codes_qint8,
         bcr_weight_scales_fp16=branch.bcr_weight_scales_fp16,
+        bcr_weight_residual_codes_qint8=branch.bcr_weight_residual_codes_qint8,
+        bcr_weight_residual_scales_fp16=branch.bcr_weight_residual_scales_fp16,
+        bcr_weight_residual2_codes_qint8=branch.bcr_weight_residual2_codes_qint8,
+        bcr_weight_residual2_scales_fp16=branch.bcr_weight_residual2_scales_fp16,
         quantization_audit=branch.quantization_audit,
     )
     with pytest.raises(ADV3B02StateError, match="affine qKNN"):
@@ -908,10 +927,51 @@ def test_affine_full26k10_state_stays_inside_hard_limit():
     assert receipt["support_plane_count"] == 2
     assert receipt["class_bandwidth_codec"] == adv.CLASS_BANDWIDTH_CODEC
     assert receipt["support_codec_extra_state_bytes"] == 42172
-    # Two int8 [160,C] planes plus two FP16 [C] scale vectors.
-    assert receipt["bcr_weight_wire_bytes"] == 8424
+    # Three int8 [160,C] planes plus three FP16 [C] scale vectors.
+    assert receipt["bcr_weight_wire_bytes"] == 12636
     assert receipt["bcr_weight_codec"] == adv.BCR_WEIGHT_CODEC
-    assert receipt["bcr_weight_plane_count"] == 2
+    assert receipt["bcr_weight_plane_count"] == 3
+
+
+@pytest.mark.parametrize("k_shot,class_count", [(1, 6), (5, 11), (10, 16), (10, 26)])
+def test_bcr3_append_preserves_old_prefix_and_fixed_three_plane_state(k_shot, class_count):
+    old, old_values = _state(k_shot, seed=7900 + class_count)
+    new_classes = tuple(f"new_{index:02d}" for index in range(class_count - 2))
+    zid, zdom, labels, tokens = _support(
+        k_shot, classes=new_classes, seed=8000 + class_count
+    )
+    after, append_receipt = append_stage2_c(
+        old,
+        new_support_zid=zid,
+        new_support_zdom=zdom,
+        new_support_labels=labels,
+        new_registered_classes=new_classes,
+        new_support_physical_tokens=tokens,
+        after_full_teacher_zid=np.concatenate((old_values[0], zid)),
+        after_full_teacher_physical_tokens=old_values[3] + tokens,
+    )
+    branch = after.id_bank.branch_state
+    binding = branch.actual_bank_binding_receipt
+    assert after.id_bank.k_shot == k_shot
+    assert len(after.id_bank.classes) == class_count
+    assert append_receipt["old_domain_bytes_preserved"] is True
+    assert append_receipt["old_int8_codes_preserved"] is True
+    assert binding["bcr_weight_plane_count"] == 3
+    assert binding["bcr_weight_wire_bytes"] == 486 * class_count
+    for codes, scales in (
+        (branch.bcr_weight_codes_qint8, branch.bcr_weight_scales_fp16),
+        (branch.bcr_weight_residual_codes_qint8, branch.bcr_weight_residual_scales_fp16),
+        (branch.bcr_weight_residual2_codes_qint8, branch.bcr_weight_residual2_scales_fp16),
+    ):
+        assert codes.shape == (160, class_count)
+        assert codes.dtype == np.int8 and scales.dtype == np.dtype("<f2")
+        assert scales.shape == (class_count,)
+    states = build_four_arm_states_from_dual(after)
+    receipt = state_receipt(states)
+    assert states["M_OTHER"][0] is states["M0"]
+    assert states["M_JOINT"][0] is states["M_DA"]
+    assert receipt["bcr_weight_wire_bytes"] == 486 * class_count
+    assert receipt["wire_bytes"] <= adv.MAX_WIRE_BYTES
 
 
 def test_affine_codec_rejects_zero_range_underflow_and_nonfinite_decode(monkeypatch):
@@ -1038,38 +1098,45 @@ def test_affine_codec_declares_ieee_ties_to_even_rounding():
     )
 
 
-def test_bcr_two_plane_codec_uses_fixed_residual_formula_and_rounded_wire_types():
+def test_bcr_three_plane_codec_uses_fixed_d2_residual_formula_and_rounded_wire_types():
     weights = np.zeros((160, 2), np.float64)
     weights[:8, 0] = (-127.0, 127.0, 0.5, 1.5, 2.5, -0.5, -1.5, -2.5)
     weights[:8, 1] = (127.0, -127.0, -0.5, -1.5, -2.5, 0.5, 1.5, 2.5)
-    p1c, p1s, p2c, p2s, deployed = adv._quantize_bcr_weights_two_plane(weights)
-    first = p1c.astype(np.float32) * p1s.astype(np.float32)[None, :]
-    residual = weights - first.astype(np.float64)
-    ep2c, ep2s, ep2 = adv._quantize_bcr_weight_plane(residual)
-    assert p1c.dtype == np.int8 and p2c.dtype == np.int8
-    assert p1s.dtype == np.dtype("<f2") and p2s.dtype == np.dtype("<f2")
+    p1c, p1s, p2c, p2s, p3c, p3s, deployed = adv._quantize_bcr_weights_three_plane(weights)
+    d1 = np.asarray(p1c.astype(np.float32) * p1s.astype(np.float32)[None, :], np.float32)
+    residual2 = weights - d1.astype(np.float64)
+    ep2c, ep2s, ep2 = adv._quantize_bcr_weight_plane(residual2)
+    d2 = np.asarray(d1 + ep2.astype(np.float32), np.float32)
+    residual3 = weights - d2.astype(np.float64)
+    ep3c, ep3s, ep3 = adv._quantize_bcr_weight_plane(residual3)
+    assert p1c.dtype == np.int8 and p2c.dtype == np.int8 and p3c.dtype == np.int8
+    assert p1s.dtype == np.dtype("<f2") and p2s.dtype == np.dtype("<f2") and p3s.dtype == np.dtype("<f2")
     assert p1c[:8, 0].tolist() == [-127, 127, 0, 2, 2, 0, -2, -2]
     np.testing.assert_array_equal(p2c, ep2c)
     np.testing.assert_array_equal(p2s, ep2s)
-    np.testing.assert_allclose(deployed, first + ep2, rtol=0.0, atol=0.0)
+    np.testing.assert_array_equal(p3c, ep3c)
+    np.testing.assert_array_equal(p3s, ep3s)
+    np.testing.assert_array_equal(deployed, np.asarray(d2 + ep3.astype(np.float32), np.float32))
     assert adv.BCR_WEIGHT_PLANE_ORDER == (
         "plane1_teacher", "plane2_residual_after_plane1_decode",
+        "plane3_residual_after_float32_plane1_plus_plane2_decode",
     )
     assert adv.BCR_WEIGHT_ROUNDING == "numpy_rint_ties_to_even"
     assert adv.BCR_WEIGHT_CLIP == (-127, 127)
 
 
-def test_bcr_two_plane_codec_uses_fp16_subnormal_floor_without_fp32_sidecar():
-    codes, scales, residual_codes, residual_scales, decoded = (
-        adv._quantize_bcr_weights_two_plane(np.zeros((160, 2), np.float64))
+def test_bcr_three_plane_codec_uses_fp16_subnormal_floor_without_fp32_sidecar():
+    codes, scales, residual_codes, residual_scales, residual2_codes, residual2_scales, decoded = (
+        adv._quantize_bcr_weights_three_plane(np.zeros((160, 2), np.float64))
     )
     floor = np.finfo(np.float16).smallest_subnormal
-    assert np.all(scales == floor) and np.all(residual_scales == floor)
-    assert not np.any(codes) and not np.any(residual_codes) and not np.any(decoded)
+    assert np.all(scales == floor) and np.all(residual_scales == floor) and np.all(residual2_scales == floor)
+    assert not np.any(codes) and not np.any(residual_codes) and not np.any(residual2_codes) and not np.any(decoded)
     field_names = {item.name for item in fields(adv.ActualBankBranchState)}
     assert "bcr_weight_codes_qint8" in field_names
     assert "bcr_weight_residual_codes_qint8" in field_names
-    assert not {"bcr_weights", "bcr_weight_fp32", "bcr_weight_residual_fp32"} & field_names
+    assert "bcr_weight_residual2_codes_qint8" in field_names
+    assert not {"bcr_weights", "bcr_weight_fp32", "bcr_weight_residual_fp32", "bcr_weight_residual2_fp32"} & field_names
 
 
 def test_affine_audit_detects_third_class_argmax_overtake(monkeypatch):
@@ -1120,6 +1187,16 @@ def test_actual_branch_rejects_bcr_audit_and_weight_binding_tamper():
     residual_scales[0] = np.float16(float(residual_scales[0]) * 1.5)
     with pytest.raises(ADV3B02StateError, match="receipt"):
         replace(branch, bcr_weight_residual_scales_fp16=residual_scales)
+    residual2_codes = branch.bcr_weight_residual2_codes_qint8.copy()
+    residual2_codes[0, 0] = np.int8(
+        int(residual2_codes[0, 0]) + (1 if residual2_codes[0, 0] < 127 else -1)
+    )
+    with pytest.raises(ADV3B02StateError, match="receipt"):
+        replace(branch, bcr_weight_residual2_codes_qint8=residual2_codes)
+    residual2_scales = branch.bcr_weight_residual2_scales_fp16.copy()
+    residual2_scales[0] = np.float16(float(residual2_scales[0]) * 1.5)
+    with pytest.raises(ADV3B02StateError, match="receipt"):
+        replace(branch, bcr_weight_residual2_scales_fp16=residual2_scales)
     bad_order = {
         **branch.actual_bank_binding_receipt,
         "bcr_weight_class_order": list(reversed(branch.actual_bank_binding_receipt["bcr_weight_class_order"])),
@@ -1132,7 +1209,7 @@ def test_actual_branch_rejects_bcr_audit_and_weight_binding_tamper():
         replace(state.id_bank, branch_state=ordered_branch)
 
 
-def test_bcr_two_plane_runtime_gate_rejects_subpercent_nonperfect_top1(monkeypatch):
+def test_bcr_three_plane_runtime_gate_rejects_subpercent_nonperfect_top1(monkeypatch):
     zid, _zdom, labels, tokens = _support(5, classes=("a", "b"), seed=82)
 
     def permissive_legacy_audit(_teacher, _student):
@@ -1155,7 +1232,7 @@ def test_bcr_two_plane_runtime_gate_rejects_subpercent_nonperfect_top1(monkeypat
         )
 
 
-def test_bcrr_deployment_reconstructs_exactly_the_two_int8_planes():
+def test_bcrr_deployment_reconstructs_exactly_the_three_int8_planes():
     zid, zdom, labels, tokens = _nuisance_support(5, classes=("zeta", "alpha"), seed=13)
     states = build_four_arm_states(
         support_zid=zid,
@@ -1170,11 +1247,17 @@ def test_bcrr_deployment_reconstructs_exactly_the_two_int8_planes():
     qknn = adv.qknn_logits(bank, query)
     observed = adv.bcrr_fused_logits(qknn, query, bcrr, bank=bank)
     branch = bank.branch_state
-    weights = (
+    d1 = np.asarray(
         branch.bcr_weight_codes_qint8.astype(np.float32)
-        * branch.bcr_weight_scales_fp16.astype(np.float32)[None, :]
-        + branch.bcr_weight_residual_codes_qint8.astype(np.float32)
-        * branch.bcr_weight_residual_scales_fp16.astype(np.float32)[None, :]
+        * branch.bcr_weight_scales_fp16.astype(np.float32)[None, :], np.float32
+    )
+    d2 = np.asarray(
+        d1 + branch.bcr_weight_residual_codes_qint8.astype(np.float32)
+        * branch.bcr_weight_residual_scales_fp16.astype(np.float32)[None, :], np.float32
+    )
+    weights = np.asarray(
+        d2 + branch.bcr_weight_residual2_codes_qint8.astype(np.float32)
+        * branch.bcr_weight_residual2_scales_fp16.astype(np.float32)[None, :], np.float32
     )
     bcr = adv.normalize_zid_rows(query) @ weights
     bcr = bcr[:, [bank.bank.classes.index(item) for item in bank.classes]]

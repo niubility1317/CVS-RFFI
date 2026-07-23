@@ -2292,6 +2292,20 @@ run=`adv3b02_ts_drqknn_bcrr_r2_affine_bcr2_zidtotal1_full125_21ffdabf_20260723_2
 
 最新真实checkpoint support-only smoke覆盖两触发row×三scene×before/after共12个state，qKNN与BCR top1均为`1.0`、翻转0，最大qKNN logit误差=`0.001622`，最大实际wire=`159,691B<256KiB`；query/truth/apply打开数与fit query rows均为0。状态=`LOCAL_VERIFIED / NO_PERFORMANCE_RESULT`，下一步只允许Git提交、新不可覆盖run报告和GPU0–7完整125发布。`DATA_PROTOCOL=PRESENT_REUSED / NOT_REVALIDATED`。
 
+##### `r3-q2f32`系统性BCR量化止损与`r4-bcr3`本地闭合
+
+r3完整125 run=`adv3b02_ts_drqknn_bcrr_r3_q2f32_bcr2_zidtotal1_full125_aa22820c_20260724_023120`唯一launcher/matrix PID=`1460785/1460786`。不同row在prediction前出现技术异常后，runner只终止本run；matrix真实exit=`-15`，终态run-owned process、GPU PID和本地SSH均为0。最终launched34、success24、failed2、canceled8，partial prediction/score row=`192/288`，严格不读取性能。archive、coverage和parity未生成，状态=`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。
+
+首个失败row为`8-8/713103/K10/new20`，在Stage2-C 26类状态构建时触发`affine BCR INT8 audit gate failed`；失败点的query/truth/apply/prediction/score读取数均为0。回收的enrollment-only证据包SHA=`bc41af2a6ca835f131607166921e3a29c19ed2f76da203bb740f32df9ae4bf5e`。同波另有一个zero/nonfinite feature异常，按“唯一首源”规则不与本revision合并；若新run再次触发，它将作为下一独立技术首源处理。
+
+`ADV3B02-TS-DRQKNN-BCRR/r4-q2f32-bcr3-zidtotal1`经一次可行性监督裁决=`MERGE / P0=0 / P1=0`。唯一delta是把BCR权重从固定两平面扩展为固定三平面逐类对称INT8残差编码；第三残差严格相对实际float32 `D2=(Q1+Q2)`计算，部署按`(Q1+Q2)+Q3`同序重建。FP64 teacher、ridge/analytic LOO、BCRR `omega`、DA、qKNN、四臂、数据、scorer、runner调度和健康门均不变；禁止动态plane、阈值、fallback、plane4和FP32 sidecar。完整合同见`docs/ADV3B02_TS_DRQKNN_BCRR_R4_Q2F32_BCR3_ZIDTOTAL1_DESIGN_FROZEN.md`。
+
+本地`ssr-gpu`完整专项=`81 passed、3 Windows POSIX skipped、0 failed`，相邻DSSC=`36 passed`，`py_compile`和`git diff --check`通过。独立Terra终审=`MERGE / P0=0 / P1=0 / P2=0`。K1/K5/K10的parent/r4只读对比中，qKNN wire、bank codes、metric、BCR lambda、analytic/directional LOO、raw/dual `omega`和domain alpha逐项相等。
+
+真实checkpoint SHA=`2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98`的support-only CUDA smoke复用首失败row三scene enrollment包，覆盖before/after共6个state；BCR top1均为1.0，any/large flip均为0。26类最坏logit误差=`6.58e-8`，BCR wire=`12,636B`，最大总state=`163,903B<256KiB`。第三平面C26解码实测mean=`20.50µs`、P95=`31.8µs`，每次新增4,160次乘法和4,160次加法；query/truth读取和fit query rows均为0。
+
+当前状态=`LOCAL_VERIFIED / NO_PERFORMANCE_RESULT`。下一步只允许提交r4、建立全新不可覆盖完整125 run报告并交唯一Terra runner发布；启动后必须健康检查，系统性零prediction故障立即止损。DATA_PROTOCOL=`PRESENT_REUSED / NOT_REVALIDATED`。
+
 ##### `r3-q2f32`完整125预注册
 
 科学提交=`aa22820cfbefe45b020c7e6190a53a7237b290b7`；全新run=`adv3b02_ts_drqknn_bcrr_r3_q2f32_bcr2_zidtotal1_full125_aa22820c_20260724_023120`，状态=`PREREGISTERED / NOT_LAUNCHED / NO_PERFORMANCE_RESULT`。源码包SHA=`0d57496c87356676780fa8486e00c1cb670ed04e4231f905764fe9f2be16f174`，含3977个Git blob，path-set SHA=`91bba4b94ca45076fcc8e864eaa124de69ec6d001fecac1080420539496482ae`，逐blob不匹配0。唯一Terra runner负责direct preflight、同步、远端验证、唯一detach、即时健康检查、完整监控和artifact回收；不得重验数据、复用parent或按性能早停。`DATA_PROTOCOL=PRESENT_REUSED / NOT_REVALIDATED`。
