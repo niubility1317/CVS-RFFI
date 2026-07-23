@@ -2175,3 +2175,9 @@ techfix3只在DSSC→legacy SVRN接口内部把类轴投影到字典序，qKNN�
 BCRR是唯一OTHER，raw/dual branch分别以自身同步physical-ID support-LOO logits拟合`omega`，但共享同一`z_id`BCR状态和预锁规则；不得读取query或直接读取`z_dom`。四臂固定为`M0/M_DA/M_OTHER/M_JOINT`，完整125闭合`125 jobs/375 scene slices/1500 score rows/1000 arm-state prediction artifacts`。DSSC保留为matched reference，不与本revision的DA臂混塞。
 
 选择性吸收结果：保留双分支、双注册、target-old冻结/new append、INT8 support bank、类内归一化和BCRR；拒绝直接双余弦、hard membership gate、ground投票、domain→ID transport、第二分类头和Stage2 optimizer；选择性rescue与Phase1双episodic重训延期。冻结代码范围仅新增method module、完整125 runner和专项test；不修改模型、既有qKNN/BCRR、数据、coverage、authority或scorer。完整公式、runtime合同、资源门和falsifier记录于`docs/ADV3B02_TS_DRQKNN_BCRR_DESIGN_FROZEN.md`。
+
+##### DSSC techfix3发布目录失败与releasefix1
+
+techfix3新run=`dssc_zdom_jg_qknn_r4_bcrr_full125_r1f_techfix3_3bc31826_20260723_165358`经direct preflight、5项landing、7项SHA、3,959个Git blob、GPU1 zeroIQ和非字典序registry无query smoke后唯一启动PID=`826851`，自然exit=`1`。发布准备误先创建空`<run>/artifacts`，而matrix要求`--run-root`不存在，因此入口立即fail-closed；launcher/row/prediction/score=`0/125,0/125,0/375,0/1875`。这不是方法、数据、registry、GPU或性能失败；状态=`TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。archive、coverage和parity均为`PRESENT_REUSED / NOT_GENERATED`。
+
+全新不可覆盖release run=`dssc_zdom_jg_qknn_r4_bcrr_full125_r1f_techfix3_releasefix1_3bc31826_20260723_172109`已预注册。源码commit/package、五臂、矩阵和全部科学SHA不变；唯一发布修正是只预建`input/source/logs`，detach前强制确认`<run>/artifacts`为`ABSENT`并由matrix自行创建。该run仍由唯一Terra runner执行完整GPU0–7 125，不复用或重启parent，不重验数据。

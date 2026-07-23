@@ -85,13 +85,27 @@ env PYTHONPATH=<run>/source/code OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NU
 
 |字段|当前值|
 |---|---|
-|direct/bridge preflight|`PENDING`|
-|remote root immutable check|`PENDING`|
-|source/input/checkpoint/runtime SHA|`PENDING`|
-|GPU1 zeroIQ＋nonlexical noquery smoke|`PENDING`|
-|remote PID/exit|`PENDING / PENDING`|
+|direct/bridge preflight|`DIRECT PASS`；bridge未使用|
+|remote root immutable check|`PASS`；创建前`ABSENT`|
+|source/input/checkpoint/runtime SHA|`PASS`；7项冻结SHA|
+|GPU1 zeroIQ＋nonlexical noquery smoke|`PASS`；物理GPU1→逻辑`cuda:0`，无query|
+|remote PID/exit|`826851 / 1`；自然退出|
 |prediction/score|`0 / 0`|
 |archive/coverage generation|`NO / NO`；只复用冻结artifact|
-|最终状态与裁决|`PREREGISTERED / NO_PERFORMANCE_RESULT`|
+|最终状态与裁决|`TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`|
 
-已知风险只剩真实完整矩阵的运行时与性能证伪；任一技术失败保留完整artifact并自然退出，不修补同一run。若完整prediction形成，则必须完成同row性能分析，负结果也不得省略。
+## Runner回填：自然技术失败闭合
+
+- direct preflight、remote root不存在性、5项landing、7项冻结SHA、3,959个safe regular ZIP entry、runner/method/test entry和`py_compile`全部通过。
+- GPU1 smoke通过：物理GPU1隔离为逻辑`cuda:0`；zeroIQ真实checkpoint/sealed runtime前向输出有限FP32`[1,160]`；非字典序五臂state及逆置换通过；未打开query package，`query_rows_used_for_fit=0`。
+- 唯一detach PID=`826851`，3秒后自然exit=`1`；未kill、restart或retry。GPU0–7退出后均`0%/10MiB`且无compute process；本地SSH残留为0。
+- 根因：发布准备预先创建了空`<run>/artifacts`，而matrix的`--run-root`合同要求该路径不存在，入口立即报`matrix run root must be new and cannot be overwritten`。失败发生在row、query和GPU子任务之前，不是方法、registry、数据、checkpoint、runtime或性能失败。
+
+|回收项|SHA256|
+|---|---|
+|`launcher.pid`|`424b2e6824a0e10cdf071dc6ce3e72fa5068e8ff6c72e215fe63d31b13459ec3`|
+|`launcher.exit`|`4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865`|
+|`matrix.stderr.log`|`9fac51e67f434b6e38d896986616ae4bbe50ebbd99be977092cec4a1d46ddb4c`|
+|`matrix.stdout.log`|`e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855`|
+
+artifact计数：launcher=`0/125`、row=`0/125`、prediction=`0/375`、score=`0/1875`、`matrix_exit/aggregate=0/0`、remote artifact files=`0`。parity/archive/coverage均为`PRESENT_REUSED / NOT_GENERATED`；remote run保留且本run禁止复用。最终状态严格为`TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。
