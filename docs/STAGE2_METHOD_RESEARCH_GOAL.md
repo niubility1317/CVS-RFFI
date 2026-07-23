@@ -1,60 +1,58 @@
-# Stage2地面压缩知识驱动的星上快速模型域适应＋qKNN＋互补机制研发目标
+# Stage2域适应＋qKNN＋互补机制研发目标
 
 版本：2026-07-23
-修订：模型级快速域适应、Stage2-B/C状态机、地面压缩原型、K1正收益、MRIOR超越、联合协同与N607八卡并行发布
+修订：开放域适应、`z_id/z_dom`双qKNN、统一旧类/新类决策、单一OTHER、完整125与N607八卡并行发布
 状态：可直接作为新`/goal`目标Prompt
 协议：`protocol_schema=p2_min_v1`
 初始化文档：`docs/STAGE2_RESEARCH_AGENT_INIT.md`
 
 ## 1.单一目标
 
-在`E:\type10-7`中，严格遵循实时`AGENTS.md`、`项目.md`和`p2_min_v1`，研发可在星上稀缺计算资源下运行的Stage2快速模型域适应方法。候选必须同时利用：
-
-1.在任何target访问前与Phase1 checkpoint共同封存的INT8多样本聚合地面旧类知识；
-2.Stage2-B提供的少量有标签目标域旧类support；
-3.Stage2-C新增的少量有标签目标域新类support。
+在`E:\type10-7`中，严格遵循实时`AGENTS.md`、`项目.md`和`p2_min_v1`，研发可在星上稀缺计算资源下运行的Stage2域适应方法。候选至少使用Phase1不可变deployment bundle和当前row合法target support；地面压缩知识、模型adapter、typed metric、domain-factorized表示及概率先验均为可选资产，不得把任一资产写成所有revision的必经路线。
 
 主路线固定为：
 
 ```text
-地面压缩知识驱动的快速模型域适应
+真正降低目标receiver、LEO场景、信道或表征偏移的域适应
 ＋qKNN统一旧类/新类分类
 ＋一个针对剩余误差的互补机制
 ```
 
-域适应必须训练或调节基底模型的实际推理路径，使encoder、输入前端、normalization或轻量adapter适应Phase1未见目标接收机。只修改距离metric、协方差、分类头、prototype、logit或score，不单独计作本目标所称的“模型域适应”；RDA/SRDA、C-id、RCHM、SVRN、RBSC和BCRR可以作为OTHER、正则、先验或对照，但不能替代快速模型适应主线。
+域适应可以改变encoder、输入前端、normalization、轻量adapter、support-conditioned表示、metric、邻域权重或概率状态。它必须具有明确的域偏移机制，并在held query上产生可观测的邻居贡献、margin、argmax或净正确决策变化；只有loss下降、support fit提高、metric非identity或logit数值变化不构成DA成功。RDA/SRDA、receiver nuisance correction、support-conditioned adapter、normalization、metric learning和合法Phase1新表征均可公平进入候选。
+
+当前下一优先revision固定为`ADV3B02-TS-DRQKNN-BCRR/r1`：保留ADV3B02的`z_id`与`z_dom`双分支；`z_dom`只在每个候选类内部条件化`z_id`Student-t qKNN证据，最终跨类决策始终由`z_id`qKNN完成；BCRR是唯一OTHER。该冻结只约束本revision，不把双qKNN、固定rank或BCRR升级为后续所有方法的全局必经路线。
 
 最终目标是：
 
-- Stage2-B的K10旧类目标域适应显著优于同row matched`MRIOR-SDA`；
-- K1总体产生正适应收益，且每个目标receiver不出现负适应；
+- Stage2-B的K5/K10域适应单组件相对同row`M0`产生真实净正确决策增益，并在receiver与scene分层上稳定；
+- K1在不可辨识时精确identity或强收缩，不伪造单shot DA收益；
 - Stage2-C加入新类后同时保护旧类、提高seen-new、H、floor和最差类，降低forgetting及双向混淆；
-- `M_JOINT`严格优于模型DA单组件和OTHER单组件，证明`1+1>2`；
-- 在模型参数、optimizer step、持久state、MAC、时延、显存和INT8生命周期上满足星上部署约束；
+- `M_JOINT`严格优于DA单组件和OTHER单组件，且mean`I_syn>0`，证明`1+1>2`；
+- 在参数、optimizer step、持久state、MAC、时延、显存和INT8生命周期上满足星上部署约束；
 - 持续以新revision实验推进，直到达到本文件性能与资源门，或得到足以证明当前Phase1 bundle/encoder信息不足的可复现实验证据。
 
 工作重心是方法、实现和真实N607性能。不得把大部分时间消耗在已经`VALIDATED_ONCE`的数据重验、authority/hash重建、跨run opaque SHA对齐、控制面扩展、报告格式重构或无关文献综述上。
 
 ## 2.三个模块的严格定义
 
-### 2.1快速模型域适应
+### 2.1域适应
 
-模型DA必须满足以下定义：
+域适应必须满足以下定义：
 
-- 使用当前row合法support产生新的模型参数、低秩delta、条件化参数或模型内部统计；
-- 该状态进入query的encoder或输入推理路径，而不是只进入最终分类score；
-- 适应后模型冻结，query只能逐样本前向，不能继续训练、选择、回滚或更新；
-- 必须报告更新层、冻结层、trainable parameters、loss、step、适配时延、参数delta、表征变化和邻居变化；
-- 参数发生变化、support loss下降或support accuracy提高都不等于成功，必须转化为held query净正确决策和正式指标收益。
+- 只用不可变Phase1 bundle和当前row合法support产生冻结的表示、模型、metric、邻域或概率状态；
+- query只能逐样本读取该状态，不能继续fit、选择、回滚或更新；
+- 必须说明目标域偏移假设、可辨识自由度、连续收缩或identity fallback；
+- 必须报告feature、neighbor、身份邻居贡献、margin、argmax及wrong→correct/correct→wrong变化；
+- 只有正式held query净正确决策和同row指标收益才能证明DA有效。
 
-模型DA的信息面保持开放。任何由`项目.md`允许、能在Phase2合法读取或由当前固定received IQ合法计算的信息都应进入候选审查范围，包括：
+域适应的信息面保持开放。任何由`项目.md`允许、能在Phase2合法读取或由当前固定received IQ合法计算的信息都应进入候选审查范围，包括：
 
 - checkpoint内部identity/domain分支、`z_id`、`z_dom`及合法中间表征；
 - 与checkpoint共同封存的domain classifier、domain basis、normalization统计和adapter/meta-learning先验；
 - INT8 domain×class聚合中心、地面压缩多原型、半径、聚合方差、低秩残差和量化尺度；
 - Stage2-B的target-old support IQ、标签、注册表和由同一received IQ计算的FFT、均衡或其他数学表征；
 - Stage2-C新增的target-new support IQ、标签、注册表和同received-IQ合法表征；
-- receiver/domain handle、K、scene及不包含query真值的数据无关配置，但不得据具体receiver/TX建立专属规则。
+- K、scene及不包含query真值的数据无关冻结配置；receiver/TX标签不得作为target拟合或决策输入。
 
 候选不要求机械叠加所有资产，但方法卡必须列出`legal_asset_inventory`、`assets_used`、`assets_not_used_and_reason`，防止在已有domain branch、地面压缩知识或适配先验可用时无依据地退化为只调分类头。任何新Phase1 encoder、domain-factorized branch或bundle只要使用合法Phase1数据、在target访问前冻结并接受matched比较，也可进入研发。
 
@@ -66,6 +64,8 @@
 - 微型IQ residual frontend或receiver-response correction；
 - Phase1预训练的domain-factorized adapter，由地面压缩知识和target support只估计少量系数；
 - 在合法Phase1数据上重新训练、target访问前冻结的新encoder/bundle。
+
+还允许低秩RDA/SRDA、receiver nuisance basis correction、support-conditioned metric、双qKNN类内条件化、核方法、闭式概率状态和混合专家，只要最终仍满足统一全类逐query竞争并证明真实DA收益。
 
 完整解冻基底模型不是默认路线。任何大范围更新必须证明其资源和K-shot可辨识性优于轻量替代方案。
 
@@ -97,17 +97,17 @@ OTHER不得以第二个分类头替代qKNN。若使用线性、概率或ridge输
 
 ## 3.Stage2-B/C状态机
 
-同一row必须显式形成三个不可混淆的模型状态：
+同一row必须显式形成三个不可混淆的适应状态：
 
 ```text
 S0 = immutable Phase1 deployment bundle
-S_B = Adapt(S0, ground_aggregate, target_old_support)
-S_C = ContinueOrRefit(S_B, ground_aggregate, target_old_support, target_new_support)
+S_B = FitOrAdapt(S0, optional_ground_state, target_old_support)
+S_C = AppendOrContinue(S_B, target_old_support, target_new_support)
 ```
 
 ### 3.1Stage2-B
 
-Stage2-B只允许读取：Phase1 bundle、共同封存的地面压缩旧类知识和`Y_old`的K-shot目标域support。任务是快速适应未见目标接收机并评估旧类。
+Stage2-B只允许读取：Phase1 bundle、候选明确使用的共同封存知识和`Y_old`的K-shot目标域support。任务是适应未见目标receiver并评估旧类。
 
 必须使用同一旧类query和同一qKNN规则报告：
 
@@ -121,30 +121,24 @@ Stage2-B只允许读取：Phase1 bundle、共同封存的地面压缩旧类知�
 
 Stage2-C新增`Y_new`的K-shot有标签support。候选必须在设计冻结前选择并锁定一种状态更新方式：
 
-1.冻结`S_B`，只用适应后的encoder编码新类support并注册qKNN；或
-2.以old/new每类等权的support执行一次有界继续适应，形成`S_C`，随后冻结模型并重建统一qKNN。
+1.冻结`S_B`的DA状态，只编码并append新类support到统一qKNN；或
+2.以old/new每类等权support执行一次预注册的有界继续适应，形成`S_C`后重建统一qKNN。
 
-若选择继续适应，必须使用全部注册类相同的loss和更新规则；可以知道注册状态，但query预测不得读取真实old/new角色。新类不能获得地面预置身份原型，地面知识只能通过共享domain先验、旧类锚定或类无关适应结构帮助新类。
+若选择继续适应，必须使用全部注册类相同的loss和更新规则；可以知道注册状态，但query预测不得读取真实old/new角色。新类不能获得地面预置身份原型，Phase1知识只能通过共享domain先验、旧类锚定或类无关适应结构帮助新类。
 
 Stage2-C必须在同一row报告注册前old、注册后old、seen-new、H、BA、floor、min-old、min-new、forgetting、old→new和new→old；不得用Stage2-B旧类提升替代Stage2-C成功。
 
-### 3.3K1可辨识性
+### 3.3K1/K5/K10可辨识性
 
-K1不能默认回退identity。方法必须说明地面压缩知识如何提供单shot无法估计的先验，例如：
+K1不得估计类内散度、类专属高维协方差或无约束模型参数。若候选的DA自由度在K1下不可辨识，必须精确identity或按Phase1预锁规则强收缩；K1用于验证安全回退，不要求伪造DA收益。
 
-- receiver/domain nuisance basis；
-- adapter参数低维子空间；
-- normalization或FiLM先验；
-- 旧类关系、半径或协方差收缩；
-- meta-learned的一步更新方向。
+K5是当前双qKNN候选的首个正式DA falsifier；K10用于确认相同机制，不得增加rank、改变`alpha`、重新选择kernel或放宽fallback。Stage2-C的新增类只能按冻结规则append，不得重拟合Stage2-B的旧类域basis、旧bank前缀或收缩强度。
 
-K1不得估计类专属高维协方差或无约束全模型参数。若某个参数在K1下不可辨识，必须由Phase1预锁规则确定、强收缩或删除，而不是把整个模型DA关闭。
-
-## 4.地面压缩知识的作用与边界
+## 4.Phase1压缩知识的可选作用与边界
 
 允许的ground状态只能是target访问前由多个独立Phase1物理样本聚合、INT8量化并与checkpoint共同封存的模型知识。它可以包含旧类多中心、domain×class聚合中心、半径、低秩domain basis、聚合方差或adapter先验，但不得包含raw/clean IQ、单样本feature、成员ID、可逆索引、source replay或独立可替换sidecar。
 
-使用地面旧类压缩多原型的正式候选必须由新的Phase1 bundle与method lock同时声明`ground_old_multiprototype_enabled=true`，并锁定`bundle_id`、每类原型上限、聚合规则、INT8格式、尺度、权重和半径。缺少该合规组件时不得在Phase2回读地面样本或临时重建；该候选应标记为bundle依赖未满足并转入新bundle的Phase1冻结流程，现有bundle的target-only路线只能作为`M_DA_NG`对照，不能冒充完成了本目标的ground驱动模型DA。
+若正式候选使用地面旧类压缩多原型，必须由Phase1 bundle与method lock共同声明并锁定`bundle_id`、聚合规则、INT8格式、尺度、权重和半径。缺少该组件时不得在Phase2回读地面样本或临时重建；不使用ground的合法target-support DA仍可作为独立候选，不再强制增加`M_DA_NG`臂。
 
 地面知识优先用于：
 
@@ -162,31 +156,28 @@ K1不得估计类专属高维协方差或无约束全模型参数。若某个参
 
 ### 5.1可复用正信号
 
-- `MRIOR-SDA`在25个严格K10 Stage2-B matched row上的old均值为`84.5000%`，高于direct ADV3B02的`75.2111%`和identity qKNN的`77.6333%`。它是模型DA性能reference，但尚无新类联合证据，且计算开销高。
-- `JG_R8_LR020`只训练6400个低秩参数、5epoch、最多50step，适配约1.3385s/row；old为`78.8222%`，相对identity qKNN提升`1.1889pp`，95% CI为`[0.6218,1.7560]pp`。它证明轻量星上模型适应能够产生真实收益，但floor仅`55.0667%`且没有Stage2-C证据。
-- D92在K10/new20上相对D81提高注册后old`2.622pp`、min-old`4.600pp`、H`0.964pp`并降低forgetting`2.622pp`，但seen-new下降`0.653pp`。该结果只作为old/new竞争的OTHER经验，不计模型DA成功。
-- BCRR在K5 held四臂中取得净正确`+78`，但SVRN模型分支18/18行identity、`I_syn=0`。BCRR可复用为OTHER，不能替代模型适应。
+- `MRIOR-SDA`和`JG_R8_LR020`证明模型级适应可改善目标域old，但都缺少完整统一旧类/新类协同证据，保留为matched reference而非唯一主路线。
+- D92证明RDA实例可改善old、floor和forgetting，但会损害seen-new；新DA必须避免old/new交换。
+- BCRR在K5 held四臂中相对M0取得old-after`+0.012098`、seen-new`+0.011408`、H`+0.017067`、floor`+0.056410`并使forgetting降低`0.009093`；96次wrong→correct、18次correct→wrong，净`+78`。它是当前可复用OTHER正信号，不构成DA或联合成功。
+- 真实ADV3B02 support-only探针确认同SHA checkpoint可在head-bypass路径输出有限`z_id/z_dom[*,160]`；对`z_dom`做类中心残差与TX抑制后，K5/K10可形成rank≤2非均匀域邻域，K1精确identity。该证据只证明可实现性，不是性能结果。
 
 ### 5.2已证伪边界
 
-- RCHM虽改变logit但6630个argmax零变化；共同metric变化不能冒充模型DA。
+- R2A/RCHM虽改变metric或logit，但可能几乎不改变邻居、argmax或净正确决策；数值变化不能冒充DA成功。
 - C-id只有净正确`+1`，同时损害floor和forgetting；极小metric收益不能晋级。
 - D93/D94的ground→target全坐标transport在coverage不足时全面负迁移；不能继续提高rank或变换强度。
 - D81真实读取84个ground cell，但K1严格恒等；地面知识只做support中心可靠度不足以实现单shot模型适应。
+- D62证明hard gate和大面积fallback会让方法实际失效；优先采用连续收缩、条件数限制和渐进identity回退。
+- 原始`z_dom`具有明显TX泄漏，禁止直接双余弦跨类融合、第二domain分类头或按TX/receiver专属规则决策。
 - support accuracy、重构RMSE、LODO正信号、模型参数变化、代码测试或进程exit0都不是held性能成功。
 
-### 5.3当前候选重分类
+### 5.3当前唯一下一候选
 
-`RBSC-TM-qKNN-BCRR`、RDA/SRDA、C-id、RCHM和SVRN归入metric/OTHER/reference线。它们可以完成已冻结的诊断或作为联合组件，但不得阻塞下一波快速模型DA候选，也不得被报告为满足本目标的DA主线。
+`ADV3B02-TS-DRQKNN-BCRR/r1`已经完成一个设计波次并由独立监督裁定`MERGE / P0=0 / P1=0`，状态为`DESIGN_FROZEN`。本revision选择性吸收外部ADV3B02设计报告：保留`z_id/z_dom`双分支、双注册、target-old域状态冻结、新类append、INT8 support bank和类内归一化；拒绝直接双余弦、hard membership gate、domain rescue、ground投票、低秩transport、Phase1重训和第二分类头。
 
-下一设计波次优先比较：
+冻结的域状态使用target-old support构造`S_W-S_B`的固定2槽可靠方向；support与query对每个候选类都减同一`mu_c`，不得混用全局中心；`alpha_K=0.5*(K-1)/K*(rho_1+rho_2)/2`且`0<=alpha<0.5`。`z_dom`只形成类内权重，最终score必须复用基础`z_id`Student-t qKNN的同一INT8 bank、`h_c`、`nu`和kernel。K1或数值异常时逐值回到M0。
 
-1.`Ground-MRIOR-Lite-qKNN`：保留MRIOR有效目标，将更新限制在末端LoRA/adapter，并用ground关系或domain basis约束；
-2.`Ground-JG-qKNN/r1`：复用JG轻量骨架，改为class-balanced/worst-group support目标并加入旧类表征锚定；
-3.`Ground-FiLM-qKNN`：由ground domain basis和target support估计少量FiLM/normalization参数；
-4.`Ground-IQAdapter-qKNN`：冻结ADV3B02，只训练微型接收机响应residual frontend。
-
-至少形成2张方法卡，经一次可行性波次只冻结一个优先模型DA候选。
+BCRR是唯一OTHER：raw与dual branch分别用自身同步physical-ID support-LOO logits按同一冻结规则拟合`omega`，但共享同一`z_id`BCR状态；不得读取query或直接读取`z_dom`。现有DSSC、RDA/SRDA、RBSC、C-id、MRIOR和JG保留为普通matched reference或后续候选资产，不与本revision混塞。
 
 ## 6.方法卡与可行性门
 
@@ -200,33 +191,32 @@ DESIGN_DRAFT -> FEASIBILITY_REVIEW -> DESIGN_FROZEN -> IMPLEMENTING
 
 ```text
 candidate_id / revision
-base_model_and_exact_trainable_blocks
+domain_adaptation_mechanism
+base_model_and_optional_trainable_blocks
 legal_asset_inventory
 assets_used
 assets_not_used_and_reason
 stage2b_adaptation_state_transition
 stage2c_adaptation_state_transition
-ground_aggregate_usage
 target_old_and_new_support_usage
-adaptation_loss_and_update_schedule
 qknn_decision_rule
 additional_complementary_mechanism
-why_model_da_qknn_other_are_complementary
+why_da_qknn_other_are_complementary
 K1/K5/K10_identifiability
+decision_geometry_change
 old_new_forgetting_protection
 resource_and_int8_lifecycle
-matched_mrior_comparison
 minimal_falsifier_and_fallback
 files_interfaces_and_dependencies
 ```
 
 可行性讨论必须在一个设计波次内回答：
 
-1.数据、domain branch、ground、support、query和状态读写是否合法，是否遗漏了可产生互补证据的合法资产；
-2.K1/K5/K10下可训练自由度是否可辨识；
-3.适应是否真正改变encoder表征、邻居顺序、margin或argmax，而非被qKNN共同变换不变性抵消；
+1.数据、domain branch、可选ground、support、query和状态读写是否合法；
+2.K1/K5/K10下拟合自由度是否可辨识；
+3.适应是否真正改变表示、邻居贡献、margin或argmax，而非被共同变换或完整重估抵消；
 4.Stage2-B适应如何迁移到Stage2-C，新增类是否导致旧类漂移；
-5.ground先验解决的误差、模型DA解决的误差和OTHER解决的误差是否互补；
+5.DA解决的域偏移与OTHER解决的剩余分类误差是否互补；
 6.coverage不足、support噪声、old/new冲突和量化误差时如何连续收缩或回退；
 7.训练参数、step、state、MAC、时延、显存和optimizer清理是否可部署；
 8.需要修改的文件、接口和依赖是否闭合；
@@ -238,15 +228,14 @@ files_interfaces_and_dependencies
 
 qKNN作为共同分类底座。可拆分候选默认使用以下状态：
 
-|状态|模型适应|ground知识|qKNN|OTHER|用途|
-|---|---|---|---|---|---|
-|`M0`|关闭|不进入target更新|基础qKNN|关闭|冻结encoder基准|
-|`M_DA_NG`|开启|关闭|同一qKNN|关闭|目标support-only模型适应|
-|`M_DA`|开启|开启|同一qKNN|关闭|证明ground＋support模型适应贡献|
-|`M_OTHER`|关闭|不进入target更新|同一qKNN|开启|隔离互补机制|
-|`M_JOINT`|开启|开启|同一qKNN|开启|检验联合与交互|
+|状态|域适应|qKNN|OTHER|用途|
+|---|---|---|---|---|
+|`M0`|关闭|基础`z_id`qKNN|关闭|共同基准|
+|`M_DA`|开启|候选DA＋统一qKNN|关闭|证明真实域适应贡献|
+|`M_OTHER`|关闭|基础qKNN|开启|隔离剩余误差机制|
+|`M_JOINT`|开启|与M_DA逐字节共享DA/qKNN state|开启|检验联合与交互|
 
-若ground已内生于Phase1 adapter而不能在不改变模型的情况下关闭，必须预注册matched surrogate、parameter freeze、loss masking或stop-gradient干预。不得伪造无意义对照。
+天然耦合候选可使用parameter freeze、stop-gradient、loss masking或matched surrogate，但不得为凑臂数制造无信息实验。当前双qKNN revision固定四臂，不增加`M_DA_NG`或第二分类头。
 
 主协同量固定为：
 
@@ -256,12 +245,11 @@ I_syn = H(M_JOINT) - H(M_DA) - H(M_OTHER) + H(M0)
 
 其中：
 
-- `M_DA_NG>M0`证明target support快速模型适应本身有效；
-- `M_DA>M_DA_NG`证明地面压缩知识提供额外价值；
+- `M_DA>M0`证明候选域适应本身有效；
 - `M_OTHER>M0`证明互补机制独立有效；
 - `M_JOINT>max(M_DA,M_OTHER)`且`I_syn>0`证明联合协同。
 
-machine receipt必须绑定适应前后模型state、trainable block、ground component、support physical ID、optimizer schedule、qKNN bank、OTHER状态、随机性、capsule/split/row/seed和query policy。模型DA与JOINT必须复用相同适应state，不能分别训练后挑选有利版本。
+machine receipt必须绑定DA state、support physical ID、qKNN bank、OTHER状态、随机性、capsule/split/row/seed和query policy；若存在训练，还必须绑定trainable block和optimizer schedule。M_DA与M_JOINT必须复用相同DA/qKNN state，不能分别拟合后挑选有利版本。
 
 ## 8.数据协议硬边界
 
@@ -274,23 +262,22 @@ Phase2只能读取：immutable Phase1 deployment bundle、匹配`VALIDATED_ONCE`
 - 不访问clean/raw/source样本、sample-level source feature、source replay或可替换sidecar；
 - query不参与训练、loss、early stop、模型选择、温度、回退或状态更新；
 - 禁止query伪标签、熵最小化、图、OT/Hungarian、quota、角色Oracle和batch reassignment；
-- ground知识只来自target访问前共同封存的INT8多样本聚合组件，不增加K；
-- Stage2-C新类没有ground身份原型，只能通过共享模型适应和自身support注册；
-- target生成的adapter delta、qKNN bank和OTHER状态必须进入正式INT8/FP16-scale生命周期，无常驻FP32 sidecar；
+- 若使用ground知识，它只能来自target访问前共同封存的INT8多样本聚合组件，不增加K；
+- Stage2-C新类没有ground身份原型，只能通过共享DA规则和自身support注册；
+- target生成的DA state、qKNN bank和OTHER状态必须进入正式INT8/FP16-scale生命周期，无常驻FP32 sidecar；
 - optimizer、gradient、momentum和训练临时量在适应完成后删除，不计入query持久state但必须计入训练峰值资源。
 
 匹配的`capsule_id/split_id/schema=p2_min_v1/VALIDATED_ONCE`只核对一次。只有received IQ字节、physical ID、receiver/TX集合、scenario、K、support/query划分或schema改变时重验；方法、adapter、loss、head、超参数、checkpoint推理状态、bundle、资源或报告变化不得触发数据重建。
 
 ## 9.性能晋级门
 
-### 9.1Stage2-B模型DA门
+### 9.1Stage2-B域适应门
 
-- K10`M_DA`或`M_JOINT`的old accuracy必须严格高于matched MRIOR-SDA；
-- paired mean差值必须大于0且95% CI下界大于0；
-- 相对direct ADV3B02、identity qKNN和JG_R8_LR020均报告同row差值；
-- K1总体old adaptation gain必须大于0，每个receiver均不小于0；
-- K1相对direct ADV3B02至少`+2pp`且paired 95% CI下界大于0；
-- K5核心指标相对matched K10下降不得超过`3pp`。
+- K5/K10的`M_DA`相对M0必须产生净正确决策正收益，old/new净变化均不得为负；
+- 必须产生可观测的domain neighbor、identity contribution、margin或argmax变化，不能只有logit漂移；
+- 必须报告相对direct ADV3B02、identity qKNN、DSSC和其他可用matched reference的同row差值；
+- receiver和scene分层不得由单一有利slice主导；
+- K1按冻结合同精确identity，`M_DA=M0`且`M_JOINT=M_OTHER`，只验证安全回退。
 
 ### 9.2Stage2-C联合门
 
@@ -304,7 +291,6 @@ K10完整确认硬门：
 
 同时要求：
 
-- ground开启相对`M_DA_NG`不损害old、new、floor和forgetting，并在H或floor至少一项严格提高；
 - `M_DA`与`M_OTHER`相对`M0`均有净正确决策正收益，old/new净变化各自不负；
 - `M_JOINT`的old-before、old-after、old adaptation gain、seen-new、H、BA、floor、min-old和min-new均不低于两个单组件；
 - `M_JOINT`的forgetting、old→new和new→old均不高于两个单组件；
@@ -313,7 +299,7 @@ K10完整确认硬门：
 
 ### 9.3完整报告
 
-每个完成候选必须报告同一row的：注册前old、注册后old、old adaptation gain、seen-new、H、BA、全部注册类floor、min-old、min-new、forgetting、old→new、新→old、逐类、receiver、scene、K和seed结果；同时报告ground-on/off、模型参数变化、feature drift、邻居变化、support fit、held query、量化margin、MAC、时延、显存、state bytes和optimizer step。
+每个完成候选必须报告同一row的：注册前old、注册后old、old adaptation gain、seen-new、H、BA、全部注册类floor、min-old、min-new、forgetting、old→new、新→old、逐类、receiver、scene、K和seed结果；同时报告DA coverage、feature/domain-neighbor/identity-contribution变化、support fit、held query、量化margin、MAC、时延、显存、state bytes和optimizer step。若候选使用ground或训练，再报告ground-on/off和模型参数变化。
 
 不得只报平均值、只说明缺陷、拼接不同run极值，或把support fit、重构误差、代码测试和进程启动当成性能成功。
 
@@ -330,24 +316,24 @@ K10完整确认硬门：
 - 正式INT8 top1一致率`>=99.5%`；
 - large-margin flip=`0`。
 
-模型DA还必须相对MRIOR报告：适配wall time、训练MAC、训练峰值显存、可训练参数和持久delta。优先目标是在K10 Stage2-B性能显著高于MRIOR的同时，将适配wall time控制在matched MRIOR的25%以内；若硬件或历史artifact无法形成同口径比值，必须报告绝对时间并说明缺口，不能省略资源比较。
+每个DA还必须报告build/fit wall time、计算MAC、峰值显存、可训练参数、optimizer step和持久state；相对可用matched reference给出同口径资源差值。闭式0参数候选也必须报告实际双分支forward增量，不能把参数为0等同于计算免费。
 
 每个适应run必须分别记录训练期峰值资源和部署期持久资源。INT8/FP16-scale adapter从序列化bytes反解后必须复算模型输出、qKNN top1和margin；不能以未量化teacher结果替代部署结果。
 
 ## 11.高效研发与实验顺序
 
 1.完整读取初始化栈、当前唯一活动报告和Git状态，输出不超过20行上下文卡。
-2.并行形成至少2张快速模型DA方法卡、1张qKNN/OTHER卡和1份联合监督结论；metric-only候选不占用模型DA名额。
-3.一个设计波次后只冻结一个模型DA主候选。设计冻结后只实现一个主要机制delta。
-4.本地在`ssr-gpu`完成专项测试、协议负例、真实checkpoint无query smoke、ground-off消融、INT8部署等价、diff review和Git提交。
+2.根据候选结构并行形成2–4张互不重复的方法卡和1份联合监督结论；模型、metric、概率或双qKNN候选按同一DA证据门公平审查。
+3.一个设计波次后只冻结一个优先候选。设计冻结后只实现一个主要机制delta。
+4.本地在`ssr-gpu`完成专项测试、协议负例、真实checkpoint无query smoke、INT8部署等价、diff review和Git提交；只在机制需要时增加ground-off或parameter-freeze消融。
 5.允许使用Phase1 LODO/LOCO、source validation和合法held proxy冻结模型结构与超参数；这些代理不得替代target性能，也不得读取target query选参。
-6.每个冻结候选、每个revision的任何正式N607性能发布都必须直接运行既有完整125稳定性screen：`5 receivers×5 seeds×{K10/new5,K10/new10,K10/new20,K5/new20,K1/new20}`，每job覆盖3个LEO弱场景，并在同一commit输出`M0/M_DA_NG/M_DA/M_OTHER/M_JOINT`。不得先发布单receiver、单seed、单K、单scene或其他有利子集；这些局部入口只能用于本地专项测试、协议负例和真实checkpoint无query smoke，不能形成独立N607性能run或方法裁决。
+6.每个冻结候选、每个revision的任何正式N607性能发布都必须直接运行完整125：`5 receivers×5 seeds×{K10/new5,K10/new10,K10/new20,K5/new20,K1/new20}`，每job覆盖3个LEO弱场景。当前双qKNN候选同一commit输出`M0/M_DA/M_OTHER/M_JOINT`，闭合`125 jobs/375 scene slices/1500 score rows/1000 arm-state prediction artifacts`。不得先发布单receiver、单seed、单K、单scene或其他有利子集；局部入口只能用于本地专项、协议负例和真实checkpoint无query smoke。
 7.每次完整125只能验证一个已冻结revision，不得用于选择层、rank、loss、step、ground格式、OTHER、量化、阈值或fallback。任何机制变化必须创建新revision、重新审查并以新的不可覆盖run ID重新执行完整125；不同revision不得拼接结果。
-8.125通过后，以同一commit运行`5 receivers×5 seeds×3 scenes×K{1,5,10,20}×new{2,5,10,20}=1200`评价单元完整确认。
+8.首次完整125取得联合正收益后，只能以预注册的新seed和全新run ID运行另一份完整125确认；不得用第一次125选择结构、rank、`alpha`、量化、阈值或fallback。
 9.每次正式性能发布都必须把冻结矩阵按不可变row/job ID确定性分片，并通过共享动态队列调度到N607的GPU0–7；在8张GPU均可安全使用时，每张卡至少分配一个worker，尽量让8卡同时工作，并通过最长任务优先或等价负载均衡减少尾部空转。
 10.发布前记录8张GPU的已有进程、显存和可用slot。默认每卡最多2个训练进程；不得杀死、暂停或迁移无关任务。若部分GPU已满，只使用其余安全slot并排队等待，不得为追求8卡占用而超配，也不得因此缩窄正式矩阵。
 11.同一run ID只有一个实验runner负责preflight、精确同步、远端校验、启动、短连接监控和artifact回收。runner必须在报告中记录逐GPU的job分配、并发上限、启动/结束时间、利用率或可观测替代量、失败重排和尾部空闲原因；单job失败只按冻结retry规则重入队列，不能改变方法或参数。
-12.服务器runner执行上一revision期间，主agent继续下一模型DA候选的只读设计和历史复盘，不线性等待N607。
+12.服务器runner执行上一revision期间，主agent继续下一DA候选的只读设计、实现准备和历史复盘，不线性等待N607。
 
 没有完整prediction只能标记`TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。完成prediction但性能未达门标记`COMPLETED_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE`，记录被证伪假设后立即进入下一revision；不得在同一revision上根据query结果补丁式调参。
 
@@ -367,7 +353,7 @@ additional_cost
 
 默认停止以下无效工作：
 
-- 把metric、协方差、prototype或score变化重新命名为模型DA；
+- 只有metric、协方差、prototype或score数值变化，却没有邻居贡献、argmax或净正确决策变化；
 - 用旧类Stage2-B正收益替代Stage2-C新类注册和反遗忘；
 - K1整体identity fallback后仍声明单shot适应；
 - ground旧类原型直接加分并压制新类；
@@ -377,21 +363,21 @@ additional_cost
 - 重复建设已`VALIDATED_ONCE`的数据、hash、allowlist、authority或准入系统；
 - 多个agent修改同一方法文件、启动同一run ID或由方法作者自我认证。
 
-如果连续3个完成revision都未使模型DA单组件产生正净正确决策，必须做一次记录化复盘：区分encoder不可适应、ground信息不足、K-shot不可辨识、loss与held泛化不一致或资源限制过强，再决定修改模型DA族、训练目标或Phase1 bundle。该复盘不授权访问新数据或用query调参。
+如果连续3个完成revision都未使DA单组件产生正净正确决策，必须做一次记录化复盘：区分表示信息不足、domain branch泄漏、K-shot不可辨识、适应机制与held泛化不一致或资源限制过强，再决定修改DA族、训练目标或Phase1 bundle。该复盘不授权访问新数据或用query调参。
 
 ## 13.完成条件
 
 只有以下证据全部存在并通过，才能标记目标完成：
 
-- 快速模型DA方法卡、可行性审查和`DESIGN_FROZEN`；
-- Stage2-B和Stage2-C状态机、ground-on/off及联合因果证据；
-- K1正收益与逐receiver不负；
-- K10 Stage2-B显著优于matched MRIOR-SDA；
+- 域适应方法卡、可行性审查和`DESIGN_FROZEN`；
+- Stage2-B和Stage2-C状态机及联合因果证据；
+- K1安全回退、K5首证伪与K10确认；
+- DA单组件在receiver/scene分层上产生真实净正确决策正收益；
 - Stage2-C绝对性能门、floor、forgetting和双向混淆门；
 - `M_JOINT`严格优于单组件且协同CI通过；
-- 完整125稳定性screen和1200单元确认；
-- ground、adapter、qKNN和OTHER的INT8生命周期；
-- 训练期与部署期资源审计；
+- 至少一份完整125性能验证及预注册完整125确认；
+- DA state、qKNN和OTHER的INT8生命周期；
+- fit/build期与部署期资源审计；
 - 完整日志、报告、复现命令和Git提交。
 
 未达到上述条件时，研发目标保持开放。每个负结果必须形成可证伪结论和下一单一机制假设，继续实验推进，而不是以代码完成、资源达标或局部平均值结束研发。

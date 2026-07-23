@@ -2165,3 +2165,13 @@ techfix2完整125 run=`dssc_zdom_jg_qknn_r4_bcrr_full125_r1f_techfix2_b77cc6c4_2
 techfix3只在DSSC→legacy SVRN接口内部把类轴投影到字典序，qKNN、BCRR及五臂出口再精确逆置换回原sealed registry。类集合、support、距离、BCRR公式、参数、五臂、runner和method lock均不变；`BCRRState`保留旧三参数位置兼容，缺少显式sealed classes的旧对象只能从canonical bank恢复，否则fail-closed。`ssr-gpu`下实现、测试和正式runner的`py_compile`通过，专项`30/30 passed`，`git diff --check`通过；pytest退出时只有已知Windows临时目录清理权限提示，主体exit0。独立Terra终审=`MERGE / P0=0 / P1=0`。
 
 真实checkpoint opaque-registry无query smoke使用SHA=`2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98`及`20-1/leo_clear_weak/K10`的11类110条enrollment support：strict重建`missing=0/unexpected=0`，`z_id`为有限FP32`[110,160]`；sealed registry非字典序，内部bank为字典序，三个qKNN state对外均保持sealed顺序，五臂state构建完成；`query_packages_loaded=false`、`query_rows_used=0`。下一步只允许提交techfix3、建立新不可覆盖完整125 run报告并交唯一Terra runner发布。
+
+##### 下一实验路线`ADV3B02-TS-DRQKNN-BCRR/r1` DESIGN_FROZEN
+
+用户指定下一实验必须保留`z_id/z_dom`双qKNN核心，并只选择性吸收`ADV3B02_双分支双注册qKNN快速适应设计报告_20260723.md`。独立Sol-max监督最终裁决=`MERGE / P0=0 / P1=0`；候选状态=`DESIGN_FROZEN`，当前DSSC完整125不因下一设计改变。
+
+冻结机制为：Phase1同SHA ADV3B02 checkpoint通过head-bypass路径输出`z_id/z_dom`；Stage2-B用target-old support在`z_dom`中拟合TX抑制的rank≤2类内域邻域，只重加权每个候选类内部的`z_id`Student-t qKNN证据，最终跨类竞争仍由`z_id`qKNN完成；Stage2-C冻结旧`Q/A/alpha/mu_c/bank`并只append新类。support与query都按候选类减同一`mu_c`，固定2槽`rho`使弱方向连续衰减；K1或数值异常时逐值identity。
+
+BCRR是唯一OTHER，raw/dual branch分别以自身同步physical-ID support-LOO logits拟合`omega`，但共享同一`z_id`BCR状态和预锁规则；不得读取query或直接读取`z_dom`。四臂固定为`M0/M_DA/M_OTHER/M_JOINT`，完整125闭合`125 jobs/375 scene slices/1500 score rows/1000 arm-state prediction artifacts`。DSSC保留为matched reference，不与本revision的DA臂混塞。
+
+选择性吸收结果：保留双分支、双注册、target-old冻结/new append、INT8 support bank、类内归一化和BCRR；拒绝直接双余弦、hard membership gate、ground投票、domain→ID transport、第二分类头和Stage2 optimizer；选择性rescue与Phase1双episodic重训延期。冻结代码范围仅新增method module、完整125 runner和专项test；不修改模型、既有qKNN/BCRR、数据、coverage、authority或scorer。完整公式、runtime合同、资源门和falsifier记录于`docs/ADV3B02_TS_DRQKNN_BCRR_DESIGN_FROZEN.md`。
