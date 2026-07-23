@@ -16,6 +16,7 @@ from paper_reproduction.scripts.build_adv3b02_paper_full_ci_bundle import (
     _comparison_reference_arrays,
     load_comparison_inner_leo_cache,
     load_comparison_leo_cache_set,
+    load_verified_comparison_stage2_predictor_bundle,
 )
 from paper_reproduction.scripts.build_adv3b02_paper_full_ci_plan import build
 from paper_reproduction.scripts.run_adv3b02_paper_full_ci_plan import _load_plan
@@ -87,6 +88,7 @@ def test_comparison_bundle_relaxes_only_set_level_protocol_and_keeps_leo_check()
     assert "load_comparison_inner_leo_cache(" in source
     assert "new_class_leo_iq_verified" in source
     assert "load_verified_leo_weak_cache_set =" in source
+    assert "load_verified_stage2_predictor_bundle = (" in source
     assert "_assert_scenario_alignment = _comparison_reference_arrays" in source
     assert "_assert_scenario_physical_independence = lambda" in source
     assert "stage2_main_method_protocol_exempt_new_class_leo_required" in source
@@ -220,3 +222,51 @@ def test_comparison_set_loader_verifies_outer_hash_and_preserves_ids(tmp_path):
         for scenario in arrays
     )
     assert _comparison_reference_arrays(arrays) is arrays["leo_clear_weak"]
+
+
+def test_comparison_final_bundle_validator_keeps_strict_per_scenario_checks(
+    monkeypatch,
+):
+    calls = []
+
+    def fake_strict(
+        package_root,
+        *,
+        detached_seal_path,
+        expected_seal_sha256,
+        scenario=None,
+    ):
+        calls.append(scenario)
+        manifest = {"package": str(package_root), "version": 1}
+        audit = {
+            "seal": {"sha256": expected_seal_sha256},
+            "sample_level_post_channel_iq_sha256_status": "PASS",
+        }
+        return (
+            {scenario: {"support": np.asarray([scenario])}},
+            {scenario: {"query": np.asarray([scenario])}},
+            manifest,
+            audit,
+        )
+
+    monkeypatch.setattr(
+        "paper_reproduction.scripts.build_adv3b02_paper_full_ci_bundle."
+        "_strict_stage2_bundle_loader",
+        fake_strict,
+    )
+    support, query, manifest, audit = (
+        load_verified_comparison_stage2_predictor_bundle(
+            "bundle",
+            detached_seal_path="seal.json",
+            expected_seal_sha256="a" * 64,
+        )
+    )
+    assert calls == ["leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak"]
+    assert tuple(support) == tuple(calls)
+    assert tuple(query) == tuple(calls)
+    assert manifest["version"] == 1
+    assert audit["sample_level_post_channel_iq_sha256_status"] == "PASS"
+    assert (
+        audit["cross_scenario_physical_sample_token_disjointness"]
+        == "EXEMPT_EXTERNAL_COMPARISON_BASELINE"
+    )

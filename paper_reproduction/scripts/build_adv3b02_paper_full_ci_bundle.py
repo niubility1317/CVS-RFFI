@@ -29,6 +29,9 @@ from cvsrffi.leo_weak_cache import (  # noqa: E402
 from paper_reproduction.scripts.build_adv3b02_ci_predictor_bundle import (  # noqa: E402
     reject_predictor_truth_leaks_structurally,
 )
+from cvsrffi.stage2_predictor_bundle import (  # noqa: E402
+    load_verified_stage2_predictor_bundle as _strict_stage2_bundle_loader,
+)
 
 
 def _resolve(manifest_path: Path, raw: str) -> Path:
@@ -296,8 +299,79 @@ def _comparison_reference_arrays(arrays_by_scenario):
     return arrays_by_scenario[FORMAL_LEO_WEAK_SCENARIOS[0]]
 
 
+def load_verified_comparison_stage2_predictor_bundle(
+    package_root,
+    *,
+    detached_seal_path,
+    expected_seal_sha256,
+    scenario=None,
+):
+    """Run the strict final validator one scenario at a time, then merge.
+
+    Per-scenario strict validation preserves the package seal, member hashes,
+    shapes, support/query disjointness, LEO IQ digests, and scenario contract.
+    Only the Stage2-main-method prohibition on reusing one physical row across
+    different channel views is excluded for these external baselines.
+    """
+
+    if scenario is not None:
+        return _strict_stage2_bundle_loader(
+            package_root,
+            detached_seal_path=detached_seal_path,
+            expected_seal_sha256=expected_seal_sha256,
+            scenario=scenario,
+        )
+
+    support_by_scenario = {}
+    query_by_scenario = {}
+    scenario_audits = {}
+    reference_manifest = None
+    reference_manifest_hash = None
+    reference_seal_hash = None
+    for value in FORMAL_LEO_WEAK_SCENARIOS:
+        support, query, manifest, audit = _strict_stage2_bundle_loader(
+            package_root,
+            detached_seal_path=detached_seal_path,
+            expected_seal_sha256=expected_seal_sha256,
+            scenario=value,
+        )
+        manifest_hash = canonical_json_sha256(manifest)
+        seal_hash = canonical_json_sha256(audit.get("seal", {}))
+        if reference_manifest is None:
+            reference_manifest = manifest
+            reference_manifest_hash = manifest_hash
+            reference_seal_hash = seal_hash
+        elif (
+            manifest_hash != reference_manifest_hash
+            or seal_hash != reference_seal_hash
+        ):
+            raise ValueError("comparison final bundle manifest/seal drift")
+        support_by_scenario[value] = support[value]
+        query_by_scenario[value] = query[value]
+        scenario_audits[value] = audit
+    return (
+        support_by_scenario,
+        query_by_scenario,
+        reference_manifest,
+        {
+            "status": "PASS_COMPARISON_PER_SCENARIO_STRICT_VALIDATION",
+            "iq_payload_materialized": True,
+            "materialized_scenarios": list(FORMAL_LEO_WEAK_SCENARIOS),
+            "sample_level_post_channel_iq_sha256_status": "PASS",
+            "cross_scenario_physical_sample_token_disjointness": (
+                "EXEMPT_EXTERNAL_COMPARISON_BASELINE"
+            ),
+            "scenario_audits": scenario_audits,
+            "seal": scenario_audits[FORMAL_LEO_WEAK_SCENARIOS[0]]["seal"],
+        },
+    )
+
+
 def main() -> int:
     base_builder.load_verified_leo_weak_cache_set = load_comparison_leo_cache_set
+    base_builder.load_verified_stage2_predictor_bundle = (
+        load_verified_comparison_stage2_predictor_bundle
+    )
     # N607 may carry the legacy alignment-named gate while the Git release
     # surface carries the newer physical-independence gate. Both encode
     # Stage2-main-method cross-scenario policy and are out of scope here.
