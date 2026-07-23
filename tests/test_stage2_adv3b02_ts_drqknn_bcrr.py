@@ -850,6 +850,143 @@ def test_stage2_c_is_append_only_and_preserves_old_bytes():
     assert receipt["old_domain_prefix_bytes"] > 0
 
 
+@pytest.mark.parametrize("k_shot", [1, 5, 10])
+def test_stage2_c_qknn_audit_uses_frozen_old_decode_and_new_fp32(monkeypatch, k_shot):
+    old, old_values = _state(k_shot, seed=426 + k_shot)
+    zid, zdom, labels, tokens = _support(k_shot, ("new_c",), 427 + k_shot)
+    full_old = old_values[0].copy()
+    # Simulate the observed Stage2-C re-extraction drift.  It remains legal
+    # input for the complete teacher/repair binding but must not become the
+    # qKNN teacher for the frozen Stage2-B prefix.
+    full_old[:, 0] += np.float32(6.81e-4)
+    seen = {}
+    original = adv._affine_margin_audit
+
+    def capture(bank, teacher_support, support_labels, validation, **kwargs):
+        seen["support"] = np.asarray(teacher_support).copy()
+        seen["scales"] = np.asarray(kwargs["teacher_class_scales"]).copy()
+        seen["source"] = kwargs["teacher_bandwidth_source"]
+        return original(bank, teacher_support, support_labels, validation, **kwargs)
+
+    monkeypatch.setattr(adv, "_affine_margin_audit", capture)
+    after, _receipt = append_stage2_c(
+        old,
+        new_support_zid=zid,
+        new_support_zdom=zdom,
+        new_support_labels=labels,
+        new_registered_classes=("new_c",),
+        new_support_physical_tokens=tokens,
+        after_full_teacher_zid=np.concatenate((full_old, zid)),
+        after_full_teacher_physical_tokens=old_values[3] + tokens,
+    )
+    old_rows = old.id_bank.bank.support_row_count
+    frozen_old = adv._affine_dequantize_rows(
+        old.id_bank.bank.codes_qint8,
+        old.id_bank.bank.scales_fp16,
+        old.id_bank.bank.offsets_fp16,
+        old.id_bank.bank.residual_codes_qint8,
+        old.id_bank.bank.residual_scales_fp16,
+    )
+    np.testing.assert_array_equal(seen["support"][:old_rows], frozen_old)
+    assert not np.array_equal(seen["support"][:old_rows], full_old)
+    new_order = sorted(range(len(tokens)), key=lambda i: (labels[i], tokens[i]))
+    np.testing.assert_array_equal(
+        seen["support"][old_rows:], zid[np.asarray(new_order, np.intp)]
+    )
+    old_class_count = len(old.id_bank.bank.classes)
+    np.testing.assert_array_equal(
+        seen["scales"][:old_class_count], old.id_bank.bank.deployed_class_scales()
+    )
+    matched_indices = np.asarray(
+        [after.id_bank.bank.classes.index(item) for item in after.id_bank.labels],
+        dtype=np.int16,
+    )
+    expected_scales = np.asarray(
+        adv._existing_identity_class_scales(
+            adv._unit(seen["support"]),
+            matched_indices,
+            len(after.id_bank.bank.classes),
+            after.id_bank.bank.config,
+        ),
+        np.float32,
+    )
+    expected_scales[:old_class_count] = old.id_bank.bank.deployed_class_scales()
+    np.testing.assert_array_equal(seen["scales"], expected_scales)
+    assert seen["source"] == "matched_frozen_old_bank_plus_new_FP32"
+    assert after.int8_audit_receipt["top1_agreement"] >= .995
+    assert after.int8_audit_receipt["large_margin_flip_count"] == 0
+
+
+@pytest.mark.parametrize(
+    "tamper",
+    (
+        "codes_zero",
+        "scales_x8",
+        "offsets_plus_0_25",
+        "residual_codes_127",
+        "residual_scales_x8",
+        "class_scale_hi_x2",
+        "class_scale_lo_plus_1e3",
+    ),
+)
+def test_stage2_c_qknn_matched_audit_rejects_new_support_codec_tamper(
+    monkeypatch, tamper
+):
+    old, old_values = _state(5, seed=428)
+    zid, zdom, labels, tokens = _support(5, ("new_c",), 429)
+    if tamper in {
+        "codes_zero",
+        "scales_x8",
+        "offsets_plus_0_25",
+        "residual_codes_127",
+        "residual_scales_x8",
+    }:
+        original_codec = adv._affine_quantize_rows_two_plane
+
+        def corrupt_every_codec_call(rows):
+            codes, scales, offsets, residual_codes, residual_scales = original_codec(rows)
+            # This corruption is stable for every production-helper call; the
+            # append reference must therefore not share the helper.
+            if tamper == "codes_zero":
+                codes = np.zeros_like(codes)
+            elif tamper == "scales_x8":
+                scales = np.asarray(scales * 8.0, dtype="<f2")
+            elif tamper == "offsets_plus_0_25":
+                offsets = np.asarray(offsets + 0.25, dtype="<f2")
+            elif tamper == "residual_codes_127":
+                residual_codes = np.full_like(residual_codes, np.int8(127))
+            else:
+                residual_scales = np.asarray(residual_scales * 8.0, dtype="<f2")
+            return codes, scales, offsets, residual_codes, residual_scales
+
+        monkeypatch.setattr(
+            adv, "_affine_quantize_rows_two_plane", corrupt_every_codec_call
+        )
+    else:
+        original_split = adv._split_class_bandwidths
+
+        def corrupt_every_bandwidth_call(value):
+            high, low = original_split(value)
+            if tamper == "class_scale_hi_x2":
+                high = np.asarray(high * 2.0, dtype="<f2")
+            else:
+                low = np.asarray(low.astype(np.float32) + 1.0e-3, dtype="<f2")
+            return high, low
+
+        monkeypatch.setattr(adv, "_split_class_bandwidths", corrupt_every_bandwidth_call)
+    with pytest.raises(ADV3B02StateError, match="Stage2-C new suffix codec drift"):
+        append_stage2_c(
+            old,
+            new_support_zid=zid,
+            new_support_zdom=zdom,
+            new_support_labels=labels,
+            new_registered_classes=("new_c",),
+            new_support_physical_tokens=tokens,
+            after_full_teacher_zid=np.concatenate((old_values[0], zid)),
+            after_full_teacher_physical_tokens=old_values[3] + tokens,
+        )
+
+
 def test_stage2_c_nonlex_new_registry_keeps_zid_zdom_token_row_alignment():
     old, old_values = _state(5, classes=("zeta", "alpha"), seed=31)
     zid, zdom, labels, tokens = _support(

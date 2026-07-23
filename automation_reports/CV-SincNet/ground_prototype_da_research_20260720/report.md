@@ -2365,3 +2365,21 @@ run=`adv3b02_ts_drqknn_bcrr_r5_q2f32_bcr3_zidtotal1_qzero1_full125_1b2359b4_2026
 终态submitted/succeeded/failed/active=`51/49/1/0`，prediction/score=`392/1000、588/1500`，禁止partial性能解读；completion/archive/coverage/parity均ABSENT，run-owned process、GPU process和SSH均清零。failure receipt SHA=`48f3afe42562a1be23ce512b6ef68011783cb115c2bd6121db62b1189a18d6e3`；最小失败证据5文件、92,871B，inventory SHA=`45637f642cb34a4927a4827c91ec002ead68f210c57fe7c6ccd9a311b5f01ebe`。裁决=`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。下一步只修复该actual-branch audit/state唯一首源，完成专项回归、独立review、新commit和新run；不得扩大科学delta或重验数据。
 
 `DATA_PROTOCOL=PRESENT_REUSED / NOT_REVALIDATED`
+
+##### `r6-matchedaudit1`唯一首源与设计冻结
+
+r5首个失败row已用同一真实checkpoint和enrollment-only before/after support在本地精确复现。失败字段仅为clear场景qKNN量化审计top1=`159/160=0.99375`、any flip=`1`、large flip=`0`；low-elev与rain通过，BCR top1=`1.0`且flip=`0`。旧support物理样本未变，但Stage2-C after批次重算的60行旧特征与Stage2-B before特征0/60逐字节相等，最大绝对差约`6.81e-4`。原append审计错误地以after重算旧特征作为teacher审计冻结的before旧bank。确定性Q3 support残差模拟仍保留同一flip，故拒绝增加第三support平面或放宽阈值。
+
+新revision=`ADV3B02-TS-DRQKNN-BCRR/r6-matchedaudit1`经独立监督终裁=`MERGE_TECHFIX / P0=0 / P1=0 / P2=0`并进入`DESIGN_FROZEN -> IMPLEMENTING`。唯一delta是append审计使用“冻结旧bank解码前缀＋当前新类FP32 support”的matched teacher；旧类bandwidth继承已部署hi/lo，新类仍按父公式估计并完整审计现有q2编码。部署bank、state wire、BCRR、DA、qKNN四臂、prediction/scorer、runner和125矩阵均不变，持久state、query MAC与optimizer step增量为0。完整合同见`docs/ADV3B02_TS_DRQKNN_BCRR_R6_MATCHEDAUDIT1_DESIGN_FROZEN.md`。
+
+`DATA_PROTOCOL=PRESENT_REUSED / NOT_REVALIDATED`
+
+##### `r6-matchedaudit1`本地闭合
+
+实现只修改ADV3B02方法与直接专项测试；模块candidate更新为r6，但`PREDICTION_REVISION=qzero1`、state/schema、runner、scorer、矩阵和预测公式均不变。首次独立review发现一项P1：仅以top1/large-margin门无法保证所有new suffix codec字段失败关闭。补丁未增加阈值或控制面，而是在append构建期用独立冻结公式从current new FP32 support重算codes/scales/offsets/residual codes/residual scales及class bandwidth hi/lo，并与实际new suffix七字段逐字节闭合；七种稳定字段篡改全部失败关闭。
+
+`ssr-gpu`下方法测试共103个测试点，结果=`100 passed / 3 Windows POSIX skipped / 0 failed`；`py_compile`与`git diff --check`通过。独立终审额外完成K1/K5/K10专项14项及K1/K5/K10×1/2/4个新类×20 seeds共180例production/reference逐字段bitwise对拍，最终裁决=`MERGE / P0=0 / P1=0 / P2=0`。
+
+真实checkpoint SHA=`2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98`的本地`cuda:0` support-only smoke复用原失败row`7-14/713102/K10/new10`，三scene的matched qKNN top1均为1.0，any/large flip均为0；旧prefix全部字段逐字节保留，wire均为`102,153B<256KiB`，query/truth打开数与fit query rows均为0。状态=`LOCAL_VERIFIED / NO_PERFORMANCE_RESULT`；下一步只允许Git提交、新不可覆盖run报告和GPU0–7完整125发布。
+
+`DATA_PROTOCOL=PRESENT_REUSED / NOT_REVALIDATED`

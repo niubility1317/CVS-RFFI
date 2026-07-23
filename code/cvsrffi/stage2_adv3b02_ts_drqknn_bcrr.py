@@ -1,4 +1,4 @@
-"""Support-only ADV3B02 TS-DRQKNN-BCRR/r5-q2f32-bcr3-zidtotal1-qzero1 primitives.
+"""Support-only ADV3B02 TS-DRQKNN-BCRR/r6-matchedaudit1 primitives.
 
 This module is deliberately a small, typed runtime.  It has no capsule
 builder, truth-side scorer, receiver/TX input, query-label input, optimizer,
@@ -39,7 +39,7 @@ from cvsrffi.stage2_zid_student_t_qknn import (
 )
 
 
-CANDIDATE = "ADV3B02-TS-DRQKNN-BCRR/r5-q2f32-bcr3-zidtotal1-qzero1"
+CANDIDATE = "ADV3B02-TS-DRQKNN-BCRR/r6-matchedaudit1"
 # This is a query-only prediction revision.  The state and codec schemas below
 # deliberately remain the r4 schemas: qzero1 neither changes nor persists
 # support, domain, BCRR, or INT8 state.
@@ -878,7 +878,9 @@ def _score_affine_bank(bank: AffineINT8ZIDSupportBank, query: np.ndarray) -> np.
 
 
 def _affine_margin_audit(bank: AffineINT8ZIDSupportBank, teacher_support: np.ndarray,
-                         support_labels: tuple[str, ...], validation: np.ndarray) -> dict[str, Any]:
+                         support_labels: tuple[str, ...], validation: np.ndarray, *,
+                         teacher_class_scales: np.ndarray | None = None,
+                         teacher_bandwidth_source: str = "complete_unquantized_FP32_all_support") -> dict[str, Any]:
     teacher = _unit(_rows(teacher_support, name="full FP32 affine teacher")).astype(np.float64)
     labels = typed_tokens(support_labels, name="affine teacher labels")
     if len(labels) != len(teacher):
@@ -887,7 +889,19 @@ def _affine_margin_audit(bank: AffineINT8ZIDSupportBank, teacher_support: np.nda
     counts = tuple(int(np.sum(indices == i)) for i in range(len(bank.classes)))
     if counts != bank.support_counts:
         raise ADV3B02StateError("affine teacher class-count drift")
-    tscale = _existing_identity_class_scales(teacher, indices, len(bank.classes), bank.config)
+    if teacher_class_scales is None:
+        tscale = _existing_identity_class_scales(
+            teacher, indices, len(bank.classes), bank.config
+        )
+    else:
+        tscale = np.asarray(teacher_class_scales, np.float64)
+        if (
+            tscale.ndim != 1
+            or tscale.shape != (len(bank.classes),)
+            or not np.isfinite(tscale).all()
+            or np.any(tscale <= 0.0)
+        ):
+            raise ADV3B02StateError("affine teacher class bandwidth drift")
     fp = _score_support(support=teacher, indices=indices, counts=counts, class_scales=tscale,
                         query=validation, config=bank.config).astype(np.float64)
     deployed = _score_affine_bank(bank, validation).astype(np.float64)
@@ -910,7 +924,7 @@ def _affine_margin_audit(bank: AffineINT8ZIDSupportBank, teacher_support: np.nda
             "teacher_margin_mean": float(np.mean(margin)), "quantized_teacher_margin_mean": float(np.mean(deployment_margin)),
             "any_margin_flip_count": int(np.sum(any_flip)), "any_margin_flip_rate": float(np.mean(any_flip)),
             "large_margin_flip_count": int(np.sum(large_flip)), "large_margin_flip_rate": float(np.mean(large_flip)),
-            "fp32_teacher_bandwidth_source": "complete_unquantized_FP32_all_support", "fp32_teacher_support_sha256": sha256_bytes(np.ascontiguousarray(teacher.astype(np.float32)).tobytes()),
+            "fp32_teacher_bandwidth_source": teacher_bandwidth_source, "fp32_teacher_support_sha256": sha256_bytes(np.ascontiguousarray(teacher.astype(np.float32)).tobytes()),
             "int8_bank_class_scales_sha256": sha256_bytes(
                 np.ascontiguousarray(bank_scales.astype("<f4")).tobytes()
             ),
@@ -1361,6 +1375,112 @@ def build_stage2_b_state(*, support_zid: np.ndarray, support_zdom: np.ndarray,
     return DualQKNNState(bank, domain, int8_audit(bank, ordered_zid))
 
 
+def _reference_new_suffix_codec(
+    new_ordered_raw: np.ndarray,
+    new_ordered_labels: tuple[str, ...],
+    new_class_order: tuple[str, ...],
+    config: Phase1ZIDStudentTLock,
+) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+    """Independent frozen-formula reference for Stage2-C's new suffix only."""
+    raw = np.asarray(new_ordered_raw, np.float32)
+    if (
+        raw.ndim != 2
+        or raw.shape[1] != Z_DIM
+        or not len(raw)
+        or not np.isfinite(raw).all()
+        or set(new_ordered_labels) != set(new_class_order)
+    ):
+        raise ADV3B02StateError("Stage2-C new suffix reference input drift")
+    norms = np.linalg.norm(raw.astype(np.float64), axis=1, keepdims=True)
+    if not np.isfinite(norms).all() or np.any(norms <= 1.0e-12):
+        raise ADV3B02StateError("Stage2-C new suffix reference norm drift")
+    teacher = np.asarray(raw.astype(np.float64) / norms, np.float32)
+    lo = np.min(teacher, axis=1).astype(np.float32)
+    hi = np.max(teacher, axis=1).astype(np.float32)
+    span = hi - lo
+    if not np.isfinite(span).all() or np.any(span <= 0.0):
+        raise ADV3B02StateError("Stage2-C new suffix reference affine range drift")
+    scales = np.asarray(span / 254.0, dtype="<f2")
+    offsets = np.asarray((hi + lo) / 2.0, dtype="<f2")
+    if (
+        not np.isfinite(scales).all()
+        or np.any(scales <= 0.0)
+        or not np.isfinite(offsets).all()
+    ):
+        raise ADV3B02StateError("Stage2-C new suffix reference affine closure drift")
+    codes = np.clip(
+        np.rint(
+            (teacher - offsets.astype(np.float32)[:, None])
+            / scales.astype(np.float32)[:, None]
+        ),
+        SUPPORT_CLIP[0],
+        SUPPORT_CLIP[1],
+    ).astype(np.int8)
+    base = np.asarray(
+        codes.astype(np.float32) * scales.astype(np.float32)[:, None]
+        + offsets.astype(np.float32)[:, None],
+        np.float32,
+    )
+    residual = np.asarray(teacher - base, np.float32)
+    residual_scales = np.asarray(
+        np.maximum(
+            np.max(np.abs(residual), axis=1) / 127.0,
+            SUPPORT_RESIDUAL_SCALE_FLOOR,
+        ),
+        dtype="<f2",
+    )
+    if (
+        not np.isfinite(residual_scales).all()
+        or np.any(residual_scales < np.float16(SUPPORT_RESIDUAL_SCALE_FLOOR))
+    ):
+        raise ADV3B02StateError("Stage2-C new suffix reference residual closure drift")
+    residual_codes = np.clip(
+        np.rint(residual / residual_scales.astype(np.float32)[:, None]),
+        SUPPORT_CLIP[0],
+        SUPPORT_CLIP[1],
+    ).astype(np.int8)
+    indices = np.asarray(
+        [new_class_order.index(label) for label in new_ordered_labels], dtype="<i2"
+    )
+    counts = tuple(int(np.sum(indices == index)) for index in range(len(new_class_order)))
+    if any(count != config.active_k for count in counts):
+        raise ADV3B02StateError("Stage2-C new suffix reference class-count drift")
+    if config.active_k == 1:
+        bandwidth = np.full(len(new_class_order), config.shared_h0, dtype=np.float64)
+    else:
+        values = []
+        for index in range(len(new_class_order)):
+            local = teacher[indices == index].astype(np.float64)
+            cosine = np.clip(local @ local.T, -1.0, 1.0)
+            distance = np.maximum(2.0 * (1.0 - cosine), 0.0)
+            empirical = float(np.mean(distance[np.triu_indices(config.active_k, 1)]))
+            shrunk = (
+                empirical + config.scale_prior_strength * config.shared_h0**2
+            ) / (1.0 + config.scale_prior_strength)
+            values.append(
+                np.clip(
+                    math.sqrt(max(shrunk, 1.0e-12)),
+                    config.shared_h0 * config.scale_min_ratio,
+                    config.shared_h0 * config.scale_max_ratio,
+                )
+            )
+        bandwidth = np.asarray(values, np.float64)
+    raw_bandwidth = np.asarray(bandwidth, np.float32)
+    bandwidth_hi = np.asarray(raw_bandwidth, dtype="<f2")
+    bandwidth_lo = np.asarray(
+        raw_bandwidth - bandwidth_hi.astype(np.float32), dtype="<f2"
+    )
+    return (
+        np.ascontiguousarray(codes),
+        np.ascontiguousarray(scales),
+        np.ascontiguousarray(offsets),
+        np.ascontiguousarray(residual_codes),
+        np.ascontiguousarray(residual_scales),
+        np.ascontiguousarray(bandwidth_hi),
+        np.ascontiguousarray(bandwidth_lo),
+    )
+
+
 def _append_bank(old: Int8QKNNState, new_zid: np.ndarray, new_labels: tuple[str, ...],
                  new_tokens: tuple[str, ...], new_classes: tuple[str, ...], *,
                  complete_teacher_by_token: Mapping[str, np.ndarray],
@@ -1434,17 +1554,84 @@ def _append_bank(old: Int8QKNNState, new_zid: np.ndarray, new_labels: tuple[str,
             _canon(_affine_bank_payload(provisional))
         ),
     )
+    # Recompute the new suffix from its current legal FP32 support rather than
+    # trusting the just-assembled bank payload.  This is intentionally a
+    # construction-time closure only: old deployed bytes remain immutable and
+    # no FP32 sidecar is persisted or reachable from query inference.
+    new_class_order = tuple(sorted(new_classes))
+    (
+        expected_new_codes,
+        expected_new_scales,
+        expected_new_offsets,
+        expected_new_residual_codes,
+        expected_new_residual_scales,
+        expected_new_class_scale_hi,
+        expected_new_class_scale_lo,
+    ) = _reference_new_suffix_codec(
+        new_ordered_raw,
+        tuple(new_labels[i] for i in order),
+        new_class_order,
+        old.bank.config,
+    )
+    old_rows = old.bank.support_row_count
+    if (
+        not np.array_equal(bank.codes_qint8[old_rows:], expected_new_codes)
+        or not np.array_equal(bank.scales_fp16[old_rows:], expected_new_scales)
+        or not np.array_equal(bank.offsets_fp16[old_rows:], expected_new_offsets)
+        or not np.array_equal(
+            bank.residual_codes_qint8[old_rows:], expected_new_residual_codes
+        )
+        or not np.array_equal(
+            bank.residual_scales_fp16[old_rows:], expected_new_residual_scales
+        )
+        or not np.array_equal(
+            bank.class_scale_hi_fp16[old_class_count:], expected_new_class_scale_hi
+        )
+        or not np.array_equal(
+            bank.class_scale_lo_fp16[old_class_count:], expected_new_class_scale_lo
+        )
+    ):
+        raise ADV3B02StateError("Stage2-C new suffix codec drift")
     wire = _serialize_affine_bank(bank)
-    audit = _affine_margin_audit(bank, teacher, labels, teacher)
+    # The deployed Stage2-B prefix cannot be audited against a later re-extract
+    # of those old support rows: their batch-dependent float32 values are not
+    # part of the frozen bank lifecycle.  Keep the complete after teacher for
+    # token/label/repair binding above, but audit the actual deployed old prefix
+    # against its own two-plane decode.  New classes remain the current FP32
+    # support and therefore still exercise the append codec end-to-end.
+    matched_old_teacher = _affine_dequantize_rows(
+        old.bank.codes_qint8,
+        old.bank.scales_fp16,
+        old.bank.offsets_fp16,
+        old.bank.residual_codes_qint8,
+        old.bank.residual_scales_fp16,
+    )
+    matched_teacher = np.concatenate(
+        (matched_old_teacher, new_ordered_raw), axis=0
+    ).astype(np.float32)
+    matched_class_scales = np.asarray(
+        _existing_identity_class_scales(
+            _unit(matched_teacher), indices, len(all_bank_classes), old.bank.config
+        ),
+        np.float32,
+    )
+    matched_class_scales[:old_class_count] = old.bank.deployed_class_scales()
+    audit = _affine_margin_audit(
+        bank,
+        matched_teacher,
+        labels,
+        matched_teacher,
+        teacher_class_scales=matched_class_scales,
+        teacher_bandwidth_source="matched_frozen_old_bank_plus_new_FP32",
+    )
     branch = _make_actual_branch(bank, old.metric, wire, teacher, labels, tokens, audit,
                                  support_repair_receipt)
     result = Int8QKNNState(branch, bank, old.metric, wire, classes, labels, tokens)
-    n = old.bank.support_row_count
-    if (not np.array_equal(result.bank.codes_qint8[:n], old.bank.codes_qint8)
-            or not np.array_equal(result.bank.scales_fp16[:n], old.bank.scales_fp16)
-            or not np.array_equal(result.bank.offsets_fp16[:n], old.bank.offsets_fp16)
-            or not np.array_equal(result.bank.residual_codes_qint8[:n], old.bank.residual_codes_qint8)
-            or not np.array_equal(result.bank.residual_scales_fp16[:n], old.bank.residual_scales_fp16)
+    if (not np.array_equal(result.bank.codes_qint8[:old_rows], old.bank.codes_qint8)
+            or not np.array_equal(result.bank.scales_fp16[:old_rows], old.bank.scales_fp16)
+            or not np.array_equal(result.bank.offsets_fp16[:old_rows], old.bank.offsets_fp16)
+            or not np.array_equal(result.bank.residual_codes_qint8[:old_rows], old.bank.residual_codes_qint8)
+            or not np.array_equal(result.bank.residual_scales_fp16[:old_rows], old.bank.residual_scales_fp16)
             or not np.array_equal(result.bank.class_scale_hi_fp16[:old_class_count], old.bank.class_scale_hi_fp16)
             or not np.array_equal(result.bank.class_scale_lo_fp16[:old_class_count], old.bank.class_scale_lo_fp16)):
         raise ADV3B02StateError("Stage2-C changed frozen two-plane old INT8 bytes")
