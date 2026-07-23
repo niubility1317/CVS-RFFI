@@ -1,0 +1,87 @@
+{
+  "exception_fingerprint_count": 0,
+  "failure_count": 0,
+  "files": {
+    "cell_summary_same_row.csv": "085976f354f34a2d3253a19ba4621ac04f2fc43ea2819b9a8300be5da9dbfb5c",
+    "formal_rows.csv": "7d2597a9ff0d4060ad68fa60caac5b35eea88bb0eeca8aa2eaddbcea3f15fee1",
+    "summary_by_method_new_k.csv": "4ab09aac0cc299eb981b81010e4fdc76ceac9585532c8d4479ce6ccdaed8b9dd"
+  },
+  "methods": [
+    {
+      "completed_cells": 300,
+      "completed_scenario_rows": 900,
+      "expected_cells": 300,
+      "expected_scenario_rows": 900,
+      "k_values": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "method_label": "CSIL",
+      "new_class_counts": [
+        1,
+        3,
+        20
+      ],
+      "plan_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v7/plan/csil_authorized_plan.json",
+      "plan_sha256": "2fbc95e2ed3e9283c83950da9c8c4e497d00e0fcb3ff161d54ddacad28d48a55",
+      "receivers": [
+        "20-1",
+        "3-19",
+        "7-14",
+        "7-7",
+        "8-8"
+      ],
+      "seeds": [
+        713101,
+        713102,
+        713103,
+        713104,
+        713105
+      ],
+      "status": "ARTIFACTS_COMPLETE"
+    },
+    {
+      "completed_cells": 500,
+      "completed_scenario_rows": 1500,
+      "expected_cells": 500,
+      "expected_scenario_rows": 1500,
+      "k_values": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "method_label": "MoPC-HR",
+      "new_class_counts": [
+        1,
+        3,
+        5,
+        10,
+        25
+      ],
+      "plan_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_official_newcount_scale_20260724_v7/plan/mopc_authorized_plan.json",
+      "plan_sha256": "7f132df2112cc8c9ca2cf6cda70ceb808c569f7a58bf8280b4f2398f6674cd1f",
+      "receivers": [
+        "20-1",
+        "3-19",
+        "7-14",
+        "7-7",
+        "8-8"
+      ],
+      "seeds": [
+        713101,
+        713102,
+        713103,
+        713104,
+        713105
+      ],
+      "status": "ARTIFACTS_COMPLETE"
+    }
+  ],
+  "schema": "cvs.adv3b02.official_newcount_v7.analysis_audit.v1",
+  "status": "ARTIFACTS_COMPLETE",
+  "total_cells": 800,
+  "total_scenario_rows": 2400
+}

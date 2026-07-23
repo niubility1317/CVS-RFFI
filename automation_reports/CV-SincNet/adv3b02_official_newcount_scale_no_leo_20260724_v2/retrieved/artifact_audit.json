@@ -1,0 +1,75 @@
+{
+  "failures": [],
+  "files": {
+    "cell_summary_same_row.csv": "f9536150ef51a370d1ded9fe774ba1c99f2b24ff705696f6abd1953552398a68",
+    "no_leo_formal_rows.csv": "c64aaa2c422252e5351cd9efe21410ff77899756e1992564ba2c88a3692c201f",
+    "same_row_delta.csv": "a98e3280483f6a2591538324b153719b88e9ae2358caf57c5fa849d22ded7727",
+    "summary_by_method_new.csv": "e92787ace23cf7d16b2bb30bd95b6bd68b04203523079531364391d456100e32",
+    "summary_by_method_new_k.csv": "d6294901facc2e80bb4a52b871a6b2b0d3b5a0332834e5bfbaab52010b6d4b1c"
+  },
+  "formal_cvs_claim_allowed": false,
+  "method_audits": [
+    {
+      "completed_cells": 300,
+      "expected_cells": 300,
+      "method_label": "CSIL",
+      "scenario_rows": 900,
+      "shard_completed_counts": [
+        38,
+        38,
+        38,
+        38,
+        37,
+        37,
+        37,
+        37
+      ],
+      "shard_completed_total": 300,
+      "status": "ARTIFACTS_COMPLETE",
+      "unique_receipt_hashes": 300
+    },
+    {
+      "completed_cells": 500,
+      "expected_cells": 500,
+      "method_label": "MoPC-HR",
+      "scenario_rows": 1500,
+      "shard_completed_counts": [
+        63,
+        63,
+        63,
+        63,
+        62,
+        62,
+        62,
+        62
+      ],
+      "shard_completed_total": 500,
+      "status": "ARTIFACTS_COMPLETE",
+      "unique_receipt_hashes": 500
+    }
+  ],
+  "replacement_summary": {
+    "csil": {
+      "all_new_rows_replaced_raw": true,
+      "all_old_rows_unchanged": true,
+      "cache_audit_entries": 600,
+      "lookup_entries": 40,
+      "same_raw_new_sha_across_scenarios": true,
+      "unique_cache_sets": 25
+    },
+    "mopc": {
+      "all_new_rows_replaced_raw": true,
+      "all_old_rows_unchanged": true,
+      "cache_audit_entries": 600,
+      "lookup_entries": 40,
+      "same_raw_new_sha_across_scenarios": true,
+      "unique_cache_sets": 25
+    }
+  },
+  "result_claim": "DIAGNOSTIC_NEW_CLASS_NO_LEO_NON_FORMAL",
+  "same_row_delta_rows": 2400,
+  "schema": "cvs.adv3b02.newclass_no_leo_v2.analysis_audit.v1",
+  "status": "ARTIFACTS_COMPLETE",
+  "total_cells": 800,
+  "total_scenario_rows": 2400
+}

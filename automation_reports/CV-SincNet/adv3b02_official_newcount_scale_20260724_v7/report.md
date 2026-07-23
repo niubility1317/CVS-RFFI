@@ -76,8 +76,42 @@ GPU最多每卡两个训练进程；实际PID、GPU、命令、日志和输出�
 出现P0协议/安全错误，或至少两个不同row在prediction前产生同一确定性异常指纹时，
 停止该精确run-owned进程树并保留产物；绝不因准确率、H、BA或其他性能低而停止。
 
-## 结果表占位
+## 运行结果
 
 | candidate_id | 方法 | receiver | 新类数 | K | seed | 场景 | old_acc | seen_new_acc | H_old_new | forgetting | loss/adapter摘要 | coverage/rollback/defer | 结论 |
 |---|---|---|---:|---:|---:|---|---:|---:|---:|---|---|---|---|
-| 待运行 | — | — | — | — | — | — | — | — | — | — | — | — | `NOT_ANALYZED` |
+| v7-complete | CSIL+MoPC-HR | 5个 | 多个 | 1/5/10/20 | 5个 | 3个 | 见下表 | 见下表 | 见下表 | 见下表 | 官方完整方法 | 800/800 | `ANALYZED` |
+
+## N607执行结果（LEO参考组）
+
+- 状态：`ARTIFACTS_COMPLETE / ANALYZED`。
+- 缓存完整性：25/25个receiver/seed收据通过；旧类原始接收IQ保持不变，新类使用LEO弱星地信道。
+- 官方base：CSIL base26与MoPC-HR base31均完成并通过严格校验；SHA256分别为`635becd7db2d8041a669cb0ef922429c42ba389846f2252c7cfe4e0f3510a07e`和`306c8dfc767bad93f78f24b675b1c20058629eda8f3153bdf98d03ab6ae26202`。
+- 烟测：CSIL 2/2、MoPC-HR 2/2通过，失败0，异常指纹0。
+- 完整矩阵：CSIL 300/300 cells、900/900场景行；MoPC-HR 500/500 cells、1500/1500场景行。16个shard均`PASS`退出，失败0，异常指纹0。
+- 逐cell closure：800份cell receipt、800份prediction、800份formal score完成；预测SHA、评分SHA、三场景覆盖和receipt唯一性全部通过。
+- 同row分析制品：`retrieved/formal_rows.csv`、`retrieved/cell_summary_same_row.csv`、`retrieved/summary_by_method_new_k.csv`和`retrieved/artifact_audit.json`。
+
+跨K、receiver、seed和场景的同row均值如下：
+
+| 方法 | 新类数 | old_acc_after | seen_new_acc | H_old_new | forgetting |
+|---|---:|---:|---:|---:|---:|
+| CSIL | 1 | 0.83700 | 0.00000 | 0.00000 | 0.00000 |
+| CSIL | 3 | 0.62794 | 0.08511 | 0.00034 | 0.20906 |
+| CSIL | 20 | 0.38164 | 0.04075 | 0.03417 | 0.45536 |
+| MoPC-HR | 1 | 0.80789 | 0.24133 | 0.18173 | 0.06678 |
+| MoPC-HR | 3 | 0.72667 | 0.30478 | 0.28525 | 0.14800 |
+| MoPC-HR | 5 | 0.61392 | 0.34373 | 0.31784 | 0.26075 |
+| MoPC-HR | 10 | 0.57506 | 0.24148 | 0.26343 | 0.29961 |
+| MoPC-HR | 25 | 0.56386 | 0.16420 | 0.21083 | 0.31081 |
+
+这些结果只描述LEO参考组。特别是CSIL在多个新类数/K组合中出现`seen_new_acc=0`，不能用旧类准确率单项替代注册后联合性能。
+
+## 新类不叠加LEO诊断
+
+- 目标语义：复用相同physical IDs和split，仅把`target_new`恢复为LEO overlay前的ManyTx原始IQ；`target_old`原始接收IQ保持不变。
+- 声明边界：`DIAGNOSTIC_NEW_CLASS_NO_LEO_NON_FORMAL`，不属于正式CVS/阶段二结果。
+- 首次烟测状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。
+- 触发条件：CSIL与MoPC-HR两个不同烟测cell在prediction前产生相同确定性异常`ValueError: '1-16' is not in list`；完成cell 0，prediction 0。
+- 根因：启动参数错误地传入基座训练文件`Dataset_WigSig/ManySig.pkl`；专用no-LEO脚本及冻结cache spec要求`Dataset_WigSig/ManyTx.pkl`。
+- 处理：两进程均已退出，未启动800-cell完整诊断矩阵；日志与空输出保留，未覆盖、未原路径重试。修正后的独立v2 run见`adv3b02_official_newcount_scale_no_leo_20260724_v2`。
