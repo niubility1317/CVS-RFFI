@@ -2,6 +2,20 @@ import argparse
 import json
 from pathlib import Path
 
+import numpy as np
+import pytest
+
+from cvsrffi.leo_weak_cache import (
+    canonical_json_sha256,
+    ids_sha256,
+    overlay_id,
+    post_channel_iq_sha256,
+    sha256_file,
+)
+from paper_reproduction.scripts.build_adv3b02_paper_full_ci_bundle import (
+    load_comparison_inner_leo_cache,
+    load_comparison_leo_cache_set,
+)
 from paper_reproduction.scripts.build_adv3b02_paper_full_ci_plan import build
 from paper_reproduction.scripts.run_adv3b02_paper_full_ci_plan import _load_plan
 
@@ -69,7 +83,131 @@ def test_comparison_bundle_relaxes_only_set_level_protocol_and_keeps_leo_check()
         Path(__file__).resolve().parents[1]
         / "paper_reproduction/scripts/build_adv3b02_paper_full_ci_bundle.py"
     ).read_text(encoding="utf-8")
-    assert "load_verified_leo_weak_cache(" in source
+    assert "load_comparison_inner_leo_cache(" in source
     assert "new_class_leo_iq_verified" in source
     assert "load_verified_leo_weak_cache_set =" in source
     assert "stage2_main_method_protocol_exempt_new_class_leo_required" in source
+
+
+def _write_legacy_comparison_cache(path: Path, scenario: str) -> None:
+    iq = np.arange(4 * 2 * 8, dtype=np.float32).reshape(4, 2, 8)
+    sample_ids = np.asarray([f"legacy-sample-{index}" for index in range(4)])
+    roles = np.asarray(["target_old", "target_old", "target_new", "target_new"])
+    seeds = np.asarray([11, 12, 13, 14], dtype=np.int64)
+    channel_hash = canonical_json_sha256({"scenario": scenario})
+    iq_hashes = [post_channel_iq_sha256(row) for row in iq]
+    overlays = [
+        overlay_id(
+            sample_id=sample_ids[index],
+            scenario=scenario,
+            satellite_seed=int(seeds[index]),
+            channel_config_sha256=channel_hash,
+            iq_sha256=iq_hashes[index],
+        )
+        for index in range(4)
+    ]
+    manifest = {
+        "schema": "cvs_leo_weak_iq_cache_v1",
+        "artifact_stage": "phase1_offline_prechannel_export",
+        "contains_post_channel_iq_only": True,
+        "raw_or_clean_iq_key_present": False,
+        "overlay_applied_before_phase2": True,
+        "target_channel_scenarios": [scenario],
+        "scenario": scenario,
+        "iq_array_key": "leo_weak_iq",
+        "output_roles": ["target_old", "target_new"],
+        "row_count": 4,
+        "channel_config_sha256": channel_hash,
+        "physical_sample_ids_sha256": ids_sha256(sample_ids.tolist()),
+        "post_channel_iq_sha256_root": ids_sha256(iq_hashes),
+        "overlay_ids_sha256": ids_sha256(overlays),
+        "sample_overlay_provenance_fields": [
+            "sample_ids",
+            "sat_scenarios",
+            "satellite_seeds",
+            "post_channel_iq_sha256",
+            "overlay_ids",
+        ],
+    }
+    np.savez_compressed(
+        path,
+        leo_weak_iq=iq,
+        raw_labels=np.asarray([0, 1, 2, 3], dtype=np.int64),
+        domain_labels=np.zeros(4, dtype=np.int64),
+        tx_ids=np.asarray(["a", "b", "c", "d"]),
+        rx_ids=np.asarray(["r"] * 4),
+        day_ids=np.asarray(["d"] * 4),
+        eq_ids=np.asarray(["e"] * 4),
+        sig_ids=np.asarray(["s"] * 4),
+        dataset_role=roles,
+        channel_views=np.asarray(["rx_base"] * 4),
+        sat_scenarios=np.asarray([scenario] * 4),
+        satellite_seeds=seeds,
+        overlay_applied=np.ones(4, dtype=bool),
+        sample_ids=sample_ids,
+        post_channel_iq_sha256=np.asarray(iq_hashes),
+        overlay_ids=np.asarray(overlays),
+        manifest_json=np.asarray(json.dumps(manifest, sort_keys=True)),
+    )
+
+
+def test_comparison_inner_loader_verifies_legacy_leo_without_source_indices(tmp_path):
+    path = tmp_path / "legacy.npz"
+    _write_legacy_comparison_cache(path, "leo_clear_weak")
+    arrays, manifest, audit = load_comparison_inner_leo_cache(
+        path,
+        expected_scenario="leo_clear_weak",
+        allowed_roles={"target_old", "target_new"},
+    )
+    assert "source_dataset_sha256" not in arrays
+    assert "source_record_indices" not in arrays
+    assert manifest["schema"] == "cvs_leo_weak_iq_cache_v1"
+    assert audit["new_class_leo_iq_verified"] is True
+    assert audit["exact_legacy_member_set_verified"] is True
+
+
+def test_comparison_inner_loader_rejects_post_channel_iq_tamper(tmp_path):
+    path = tmp_path / "legacy.npz"
+    _write_legacy_comparison_cache(path, "leo_clear_weak")
+    with np.load(path, allow_pickle=False) as archive:
+        payload = {key: np.asarray(archive[key]) for key in archive.files}
+    payload["leo_weak_iq"] = payload["leo_weak_iq"].copy()
+    payload["leo_weak_iq"][2, 0, 0] += 1.0
+    np.savez_compressed(path, **payload)
+    with pytest.raises(ValueError, match="IQ digest mismatch"):
+        load_comparison_inner_leo_cache(
+            path,
+            expected_scenario="leo_clear_weak",
+            allowed_roles={"target_old", "target_new"},
+        )
+
+
+def test_comparison_set_loader_verifies_outer_hash_and_namespaces_ids(tmp_path):
+    scenario_paths = {}
+    scenario_hashes = {}
+    for scenario in ("leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak"):
+        cache = tmp_path / f"{scenario}.npz"
+        _write_legacy_comparison_cache(cache, scenario)
+        scenario_paths[scenario] = cache.name
+        scenario_hashes[scenario] = sha256_file(cache)
+    manifest_path = tmp_path / "set.json"
+    manifest_path.write_text(
+        json.dumps(
+            {
+                "schema": "cvs_leo_weak_iq_cache_set_v1",
+                "cache_npz_by_scenario": scenario_paths,
+                "cache_sha256_by_scenario": scenario_hashes,
+            }
+        ),
+        encoding="utf-8",
+    )
+    arrays, _manifest, audit = load_comparison_leo_cache_set(
+        manifest_path,
+        expected_scope="stage2_registered",
+        allowed_roles={"target_old", "target_new"},
+    )
+    assert audit["status"] == "PASS_COMPARISON_SCOPE"
+    assert all(
+        f"comparison_scene={scenario}" in str(arrays[scenario]["sample_ids"][0])
+        for scenario in arrays
+    )
