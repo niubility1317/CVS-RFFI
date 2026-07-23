@@ -20,7 +20,7 @@
 
 域适应可以改变encoder、输入前端、normalization、轻量adapter、support-conditioned表示、metric、邻域权重或概率状态。它必须具有明确的域偏移机制，并在held query上产生可观测的邻居贡献、margin、argmax或净正确决策变化；只有loss下降、support fit提高、metric非identity或logit数值变化不构成DA成功。RDA/SRDA、receiver nuisance correction、support-conditioned adapter、normalization、metric learning和合法Phase1新表征均可公平进入候选。
 
-当前下一优先revision固定为`ADV3B02-TS-DRQKNN-BCRR/r2-affine-bcr2`：保留ADV3B02的`z_id`与`z_dom`双分支；`z_dom`只在每个候选类内部条件化`z_id`Student-t qKNN证据，最终跨类决策始终由`z_id`qKNN完成；BCRR是唯一OTHER。该revision保留逐向量仿射INT8 support codec、完整FP32 teacher审计和系统故障增量停派，并把BCR权重部署格式冻结为固定两级INT8残差codec。该冻结只约束本revision，不把双qKNN、固定rank、仿射codec、两级残差或BCRR升级为后续所有方法的全局必经路线。
+当前下一优先revision固定为`ADV3B02-TS-DRQKNN-BCRR/r2-affine-bcr2-zidtotal1`：保留ADV3B02的`z_id`与`z_dom`双分支；`z_dom`只在每个候选类内部条件化`z_id`Student-t qKNN证据，最终跨类决策始终由`z_id`qKNN完成；BCRR是唯一OTHER。该revision继续使用逐向量仿射INT8 support codec、完整FP32 teacher审计、固定两级INT8残差BCR权重codec和系统故障增量停派；唯一科学输入边界delta是对K5/K10中“类内恰1个逐分量严格为0的support raw z_id”执行一次support-only实际peer球面medoid复制，K1、多零、非有限或微小非零均失败关闭。该冻结只约束本revision，不把双qKNN、固定rank、仿射codec、两级残差、BCRR或零行总化升级为后续所有方法的全局必经路线。
 
 最终目标是：
 
@@ -177,7 +177,9 @@ K5是当前双qKNN候选的首个正式DA falsifier；K10用于确认相同机�
 
 `ADV3B02-TS-DRQKNN-BCRR/r2-affine`完成代码终审后，在真实checkpoint no-query smoke中被BCR权重INT8门立即证伪：现有按类列对称codec在54个support state中失败15个，固定按类列仿射失败9个，固定按特征行仿射失败12个；三者large-margin flip均为0，但top1未达99.5%，因此均不得发布，状态为`SUPERSEDED_BEFORE_COMMIT / NO_PERFORMANCE_RESULT`。
 
-当前`ADV3B02-TS-DRQKNN-BCRR/r2-affine-bcr2`已按`DESIGN_DRAFT -> FEASIBILITY_REVIEW -> DESIGN_FROZEN`完成唯一技术revision，并进入`LOCAL_VERIFIED / NO_PERFORMANCE_RESULT`。它保持r2的DA、双注册、qKNN、BCRR公式、`omega`、四臂、K、fallback、完整FP32 teacher和健康退出不变；唯一delta是把BCR权重部署格式改为固定两级按类列对称INT8残差codec。最终独立终审裁决为`MERGE / P0=0 / P1=0`。真实checkpoint的3seed×before/after×3scene×K1/K5/K10共54个support-only state中，BCR最低top1、any flip总数、large-margin flip总数分别为1.0、0、0，最大权重误差为`1.45e-5`；qKNN最低top1为`0.996154`且large-margin flip为0；C=26时BCR权重wire为8424B，完整state最大116755B。以上仅为技术就绪证据，不是性能结果。
+parent`ADV3B02-TS-DRQKNN-BCRR/r2-affine-bcr2`已完成本地技术闭合，但首次发布因冻结Python缺`pytest`而在launch前终止；POSIX sentinel修复后的第二个完整125又在首波健康检查中暴露两个系统性技术故障：before实际bank binding被validator错误要求为`None`，以及K10新类support raw`z_id`出现严格零向量。第二run已只终止本run，launcher/matrix PID=`1214101/1214105`、exit=`143`，合法完整row=`0/125`，终态=`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_COMPLETE_PERFORMANCE_RESULT`；partial prediction/score只作诊断，不形成性能结论。
+
+当前`ADV3B02-TS-DRQKNN-BCRR/r2-affine-bcr2-zidtotal1`已完成一个设计波次：监督首裁`REVISE`，采纳唯一最小规则`finite_exact_zero_singleton_class_medoid_v1`后终裁=`MERGE / P0=0 / P1=0`，状态=`DESIGN_FROZEN -> IMPLEMENTING / NO_PERFORMANCE_RESULT`。真实失败包同checkpoint精确复现1个K10新类零行且同类9个peer有效；近当前750个support-only包、67,650个support前向共2个同型零行，均可由同类实际medoid辨识，K1/K5、整类失效和`z_dom`失效均为0。该扫描读取query/truth为0，只支持技术可行性，不是性能证据。完整冻结合同见`docs/ADV3B02_TS_DRQKNN_BCRR_R2_AFFINE_BCR2_ZIDTOTAL1_DESIGN_FROZEN.md`。
 
 冻结的域状态使用target-old support构造`S_W-S_B`的固定2槽可靠方向；support与query对每个候选类都减同一`mu_c`，不得混用全局中心；`alpha_K=0.5*(K-1)/K*(rho_1+rho_2)/2`且`0<=alpha<0.5`。`z_dom`只形成类内权重，最终score必须复用基础`z_id`Student-t qKNN的同一INT8 bank、`h_c`、`nu`和kernel。K1或数值异常时逐值回到M0。
 

@@ -2231,3 +2231,13 @@ techfix4 run=`dssc_zdom_jg_qknn_r4_bcrr_full125_r1f_techfix4_20c1cd0a_20260723_1
 |smoke receipt|`E:\type10-7\automation_reports\CV-SincNet\ground_prototype_da_research_20260720\artifacts\adv3b02_r2_affine_bcr2_real_checkpoint_support_only_smoke_20260723T134738Z.json`；SHA256=`8789320f05c29141f1e6f1f0021cd1cf373e6153864b26977b4183d7f825d6e1`|
 
 当前状态=`LOCAL_VERIFIED / NO_PERFORMANCE_RESULT`。下一步只允许Git提交、建立全新不可覆盖完整125 run报告并交唯一Terra runner执行direct preflight、精确同步、远端hash/compile、POSIX sentinel、唯一detach、健康检查、监控和artifact回收；不得复用失败run、缩窄矩阵、重验数据或把本地技术证据写成性能成功。
+
+##### `ADV3B02/r2-affine-bcr2`第二次系统性技术止损与`zidtotal1`设计冻结
+
+完整125 run=`adv3b02_ts_drqknn_bcrr_r2_affine_bcr2_full125_posixfix1_ab04f624_20260723_223533`经direct preflight、源码/hash、checkpoint/runtime、冻结Python `posix-sentinel`及GPU0–7映射验证后唯一启动；launcher PID=`1214101`、matrix PID=`1214105`。首波形成8个各含8份prediction的row，但最终validator错误要求before的`branch_actual_bank_binding_sha256=None`，与实际state在before/after均生成binding的合同矛盾；另一个K10/new20 row在Stage2-C新类support raw`z_id`仿射量化前因严格零向量失败。继续执行已不可能达到`ARTIFACTS_COMPLETE`，runner按用户要求健康止损且只终止本run，真实exit=`143`，run进程清零，GPU0–7回到各10MiB。
+
+终态=`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_COMPLETE_PERFORMANCE_RESULT`：合法完整row=`0/125`；partial prediction artifact=`64`、partial score artifact=`32`、logical score row=`96`，均不得形成性能结论。parity/archive/coverage=`PRESENT_REUSED / NOT_GENERATED`。24个最小诊断文件已回收，inventory SHA=`52fc90f4b58c469ce44fae1dd6e475f9b4ffa07253d39c56813fe88fba5fd823`；运行终态已提交为`bf2dd31b`。
+
+zero-norm失败row的3个after enrollment support包、manifest、seal和log已只读回收，共6文件、2,259,730B，inventory SHA=`30eba2d673cd823d4f8b0c123ce41d9281012a4d8414dfa45fff519e4705601f`，无query/truth。IQ均为有限非零FP32`[260,2,256]`；同checkpoint精确复现`leo_low_elev_weak`的class index23、rank5 raw`z_id`为160维全零，同类其余9行有效。近当前750个support-only包、67,650个support前向共发现2个同型零行，均为K10新类单零且有9个同类有效peer；`z_dom`零行、K1/K5零行和整类失效均为0。该结果只证明极窄技术总化可行，不是性能证据。
+
+新revision=`ADV3B02-TS-DRQKNN-BCRR/r2-affine-bcr2-zidtotal1`完成`DESIGN_DRAFT -> FEASIBILITY_REVIEW -> DESIGN_FROZEN`。监督首裁`REVISE`；主agent接受唯一最小修订后终裁=`MERGE / P0=0 / P1=0`。规则`finite_exact_zero_singleton_class_medoid_v1`只允许K5/K10中类内恰1个逐分量严格零行复制同类实际球面medoid；正常行bitwise不变，K1、多零/全零、NaN/Inf和微小非零均失败关闭。每scene/state只生成一次输出与receipt，并把单位化输出SHA绑定到FP32 teacher、actual bank、dual qKNN、BCRR和Stage2-C完整teacher；before/after实际binding均须小写64位hex，after还须匹配append receipt。DA、qKNN、BCRR、四臂、K、state bytes、query MAC、数据和完整125均不变。完整合同见`docs/ADV3B02_TS_DRQKNN_BCRR_R2_AFFINE_BCR2_ZIDTOTAL1_DESIGN_FROZEN.md`；当前状态=`DESIGN_FROZEN -> IMPLEMENTING / NO_PERFORMANCE_RESULT`。
