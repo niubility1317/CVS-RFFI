@@ -5,7 +5,7 @@
 - scientific Git commit：`802534eb8036fb8a31f060fd55af5050d0fe7961`
 - 创建时间：`2026-07-24T03:39:04+08:00`
 - operator：主agent；唯一N607 launch owner为单一`gpt-5.6-terra high`runner
-- 状态：`PREREGISTERED / NOT_LANDED / NO_PERFORMANCE_RESULT`
+- 状态：`RELEASE_BLOCKED_PRELAUNCH_SYSTEMIC_RUNNER_SAFETY_FAILURE / NO_PERFORMANCE_RESULT`
 - parent run：`adv3b02_ts_drqknn_bcrr_r3_q2f32_bcr2_zidtotal1_full125_aa22820c_20260724_023120`
 - parent终态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
 
@@ -74,9 +74,20 @@ PYTHONPATH=<run>/source/code /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python
 |---|---|
 |Git commit|`802534eb8036fb8a31f060fd55af5050d0fe7961`|
 |run ID|`adv3b02_ts_drqknn_bcrr_r4_q2f32_bcr3_zidtotal1_full125_802534eb_20260724_033904`|
-|remote PID/exit|`NOT_LANDED / NOT_LAUNCHED`|
+|remote PID/exit|`NOT_LAUNCHED / NOT_APPLICABLE`|
 |prediction/score|`0/1000`；`0/1500`|
-|最终裁决|`PREREGISTERED / NO_PERFORMANCE_RESULT`|
+|最终裁决|`RELEASE_BLOCKED_PRELAUNCH_SYSTEMIC_RUNNER_SAFETY_FAILURE / NO_PERFORMANCE_RESULT`|
 
 `DATA_PROTOCOL=PRESENT_REUSED / NOT_REVALIDATED`
 
+## N607预启动阻塞终态
+
+唯一Terra runner完成direct只读preflight、不可覆盖run根建立、输入同步、远端SHA核对、安全解包和关键文件`py_compile`。源码包在远端还原为3,980个safe regular raw Git blob、231,138,377B，path-set与本地冻结值一致；方法代码尚未进入正式矩阵执行。
+
+detach前冻结POSIX sentinel在`Popen`后首次绑定子进程身份时失败，异常为`ADV3B02LauncherError: run-owned PID cmdline binding drift`。只读定位表明`/proc/<pid>/cmdline`在子进程`exec`完成前可瞬时返回空字节，当前捕获函数仅读取一次并把该瞬态空值当成命令漂移。该问题同样可能随机影响正式row，因此按P0运行安全首源在启动前阻塞；没有放宽身份校验、没有跳过sentinel，也没有启动或终止正式矩阵。
+
+远端run根仅包含`input/source/logs`；`artifacts`保持ABSENT。launcher PID、matrix PID和正式exit均不存在；prediction=`0/1000`、logical score row=`0/1500`；archive、coverage和parity均未生成。run-owned进程、GPU任务以及本地SSH/TCP22残留均为0。
+
+唯一允许的修复是共享runner对“空`/proc/<pid>/cmdline`”执行短时有界重读；任何非空命令、CWD或PGID不匹配仍须立即fail-closed，进程提前退出或重试耗尽仍失败。修复须经过专项回归、独立P0/P1 review、新Git提交和全新不可覆盖run ID；本run不得复用。
+
+`DATA_PROTOCOL=PRESENT_REUSED / NOT_REVALIDATED`

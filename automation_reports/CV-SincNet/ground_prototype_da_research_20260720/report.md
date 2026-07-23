@@ -2313,3 +2313,11 @@ r3完整125 run=`adv3b02_ts_drqknn_bcrr_r3_q2f32_bcr2_zidtotal1_full125_aa22820c
 ##### `r3-q2f32`完整125预注册
 
 科学提交=`aa22820cfbefe45b020c7e6190a53a7237b290b7`；全新run=`adv3b02_ts_drqknn_bcrr_r3_q2f32_bcr2_zidtotal1_full125_aa22820c_20260724_023120`，状态=`PREREGISTERED / NOT_LAUNCHED / NO_PERFORMANCE_RESULT`。源码包SHA=`0d57496c87356676780fa8486e00c1cb670ed04e4231f905764fe9f2be16f174`，含3977个Git blob，path-set SHA=`91bba4b94ca45076fcc8e864eaa124de69ec6d001fecac1080420539496482ae`，逐blob不匹配0。唯一Terra runner负责direct preflight、同步、远端验证、唯一detach、即时健康检查、完整监控和artifact回收；不得重验数据、复用parent或按性能早停。`DATA_PROTOCOL=PRESENT_REUSED / NOT_REVALIDATED`。
+
+##### `r4-bcr3`完整125预启动阻塞与共享runner`procbindfix1`
+
+run=`adv3b02_ts_drqknn_bcrr_r4_q2f32_bcr3_zidtotal1_full125_802534eb_20260724_033904`完成direct preflight、源码/input同步、安全解包、远端SHA和`py_compile`，但在detach前冻结POSIX sentinel因`Popen`后瞬时空`/proc/<pid>/cmdline`触发`ADV3B02LauncherError: run-owned PID cmdline binding drift`。正式矩阵未启动，launcher/matrix PID和exit均不存在，prediction/score=`0/0`，archive/coverage/parity未生成；run根仅有`input/source/logs`且`artifacts`为ABSENT，终态GPU、本run进程和SSH/TCP22残留均为0。裁决=`RELEASE_BLOCKED_PRELAUNCH_SYSTEMIC_RUNNER_SAFETY_FAILURE / NO_PERFORMANCE_RESULT`。
+
+唯一技术delta=`procbindfix1`：共享runner只对空`cmdline`短时有界重读；非空cmdline、CWD或PGID不匹配仍立即fail-closed，进程退出或窗口耗尽仍失败。不得改变r4科学机制、四臂、125矩阵、数据、scorer或健康策略；完成专项回归、独立P0/P1 review和新commit后，以全新不可覆盖run ID立即重发完整125。
+
+`DATA_PROTOCOL=PRESENT_REUSED / NOT_REVALIDATED`
