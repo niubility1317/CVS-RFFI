@@ -2409,3 +2409,11 @@ run=`adv3b02_ts_drqknn_bcrr_r6_matchedaudit1_full125_a526d6b5_20260724_062228`�
 独立裁决=`MERGE / P0=0 / P1=0 / P2=0`。冻结launcher代码正确，无需方法或runner代码delta。新run只预建run根下的input/source/logs，保持`<run>/artifacts`严格ABSENT并由matrix child首次创建；旧run永久保留。新报告必须区分report-only `release_prep_commit`、scientific commit=`a526d6b5`和source package=`b8cd7f4d`，不重打科学包、不重验数据。
 
 `DATA_PROTOCOL=PRESENT_REUSED / NOT_REVALIDATED`
+
+##### `GRB-JP4/r1-sealed`设计冻结
+
+下一DA候选=`GRB-JP4-ADV-DRQKNN-BCRR/r1-sealed`完成`DESIGN_DRAFT -> FEASIBILITY_REVIEW -> DESIGN_FROZEN`，独立终裁=`MERGE / P0=0 / P1=0 / P2=0`。唯一科学delta是在r6双qKNN＋BCRR链前增加Phase1 ground q4约束的`joint_proj.0.weight`闭式rank≤4增量；K1严格identity，K5/K10按固定ridge与连续condition/norm shrink拟合4个共享系数，低rank/低coverage不得中止row。五臂为`M0/M_DA_NG/M_DA/M_OTHER/M_JOINT`，正式实验直接完整125。
+
+正式ground只允许`P_g/L_g/R`的INT8＋FP16 scale聚合状态，并须沿既有8-member joint-seal、固定authority、production signature和method lock与checkpoint共同封存；不新建authority/validator/receipt，不重验Phase2数据。现有unverified/unsigned artifact仅保留为no-query spike证据。完整合同见`docs/GRB_JP4_ADV_DRQKNN_BCRR_R1_SEALED_DESIGN_FROZEN.md`。
+
+`DATA_PROTOCOL=PRESENT_REUSED / NOT_REVALIDATED`

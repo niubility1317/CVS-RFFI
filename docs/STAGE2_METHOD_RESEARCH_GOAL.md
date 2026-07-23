@@ -20,7 +20,7 @@
 
 域适应可以改变encoder、输入前端、normalization、轻量adapter、support-conditioned表示、metric、邻域权重或概率状态。它必须具有明确的域偏移机制，并在held query上产生可观测的邻居贡献、margin、argmax或净正确决策变化；只有loss下降、support fit提高、metric非identity或logit数值变化不构成DA成功。RDA/SRDA、receiver nuisance correction、support-conditioned adapter、normalization、metric learning和合法Phase1新表征均可公平进入候选。
 
-当前下一优先revision固定为`ADV3B02-TS-DRQKNN-BCRR/r3-q2f32-bcr2-zidtotal1`：保留ADV3B02的`z_id/z_dom`双qKNN、BCRR和既有repair，只把未通过正式support门的一平面qKNN bank升级为固定affine INT8主平面＋INT8 residual平面，并以双FP16补偿保存raw-support闭式class bandwidth。禁止FP32 target sidecar、第三平面、动态codec、阈值或fallback；DA、四臂、K、数据和完整125不变。该冻结只约束本revision，不把双qKNN、固定rank、该codec、BCRR或repair升级为后续所有方法的全局必经路线。
+当前性能验证lane固定为`ADV3B02-TS-DRQKNN-BCRR/r6-matchedaudit1`：保留ADV3B02的`z_id/z_dom`双qKNN、BCRR和既有repair，完整125正在验证其四臂真实性能。该run完成后，下一方法revision固定为`GRB-JP4-ADV-DRQKNN-BCRR/r1-sealed`：只在r6共享执行链前增加Phase1 ground q4约束的`joint_proj.0.weight`闭式低秩模型增量，并增加原样r6 ground-off对照`M_DA_NG`。不得把JP4、固定q4、ground或BCRR写成后续所有方法的全局必经路线。
 
 最终目标是：
 
@@ -190,6 +190,10 @@ parent`ADV3B02-TS-DRQKNN-BCRR/r2-affine-bcr2`已完成本地技术闭合，但�
 冻结的域状态使用target-old support构造`S_W-S_B`的固定2槽可靠方向；support与query对每个候选类都减同一`mu_c`，不得混用全局中心；`alpha_K=0.5*(K-1)/K*(rho_1+rho_2)/2`且`0<=alpha<0.5`。`z_dom`只形成类内权重，最终score必须复用基础`z_id`Student-t qKNN的同一INT8 bank、`h_c`、`nu`和kernel。K1或数值异常时逐值回到M0。
 
 BCRR是唯一OTHER：raw与dual branch分别用自身同步physical-ID support-LOO logits按同一冻结规则拟合`omega`，但共享同一`z_id`BCR状态；不得读取query或直接读取`z_dom`。support仿射codec固定保存INT8 codes、FP16 scale和FP16 offset。BCR权重固定使用`plane1=Q(W)`、`plane2=Q(W-decode(plane1))`，部署仅从两层INT8 codes和FP16 scales重建；层数、scale floor、round/clip和顺序不得按K、scene、类别角色或审计结果切换。不得使用query、truth、角色、quota或scene专属codec。现有DSSC、RDA/SRDA、RBSC、C-id、MRIOR和JG保留为普通matched reference或后续候选资产，不与本revision混塞。
+
+`ADV3B02-TS-DRQKNN-BCRR/r6-matchedaudit1`已完成方法、专项测试、真实checkpoint无query smoke、独立review和Git提交；当前唯一完整125 run为`adv3b02_ts_drqknn_bcrr_r6_matchedaudit1_prepfix1_full125_a526d6b5_20260724_064819`。它只回答r6四臂性能，不得用partial结果选方法或拼接最优值。
+
+`GRB-JP4-ADV-DRQKNN-BCRR/r1-sealed`完成一个设计波次并经独立监督终裁=`MERGE / P0=0 / P1=0 / P2=0`。K1严格identity；K5/K10只估计4个共享系数，以Phase1 ground公共域变化q4和checkpoint右因子形成`joint_proj.0.weight`的rank≤4增量。`M_DA_NG`逐字节复用r6 no-ground双qKNN，`M_OTHER`继续为BCRR。正式资产必须通过既有joint-seal、固定authority、production signature和method lock共同封存；当前unverified/unsigned artifact禁止进入正式run。完整合同见`docs/GRB_JP4_ADV_DRQKNN_BCRR_R1_SEALED_DESIGN_FROZEN.md`。
 
 ## 6.方法卡与可行性门
 
