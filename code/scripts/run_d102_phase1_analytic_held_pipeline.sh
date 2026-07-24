@@ -2,7 +2,7 @@
 set -euo pipefail
 umask 077
 
-RUN_ID="d102_rb_metabias4_phase1_analytic_held_20260724_r1"
+RUN_ID="d102_rb_metabias4_phase1_analytic_held_20260724_r2"
 PROJECT_ROOT="/home/szu2070436088/2510044040/CV-SincNet"
 RUN_ROOT="$PROJECT_ROOT/runs/$RUN_ID"
 SOURCE_ROOT="$RUN_ROOT/source"
@@ -22,7 +22,7 @@ CACHE_SET_SHA="125bb312972fd82edab9b1566a1ebddcd077b9a00c5255a55da22afb453b8d74"
 SELECTION_SALT_SHA="38ffbdda293cd2eead31c481237a459581c862572041ea472b38391a1b4bddb0"
 DUAL_ARCHIVE_SHA="dd2a2b0c8ab1a1d8edbeed81e78ffb79c253240998a9ac2404b75699f4ca68d0"
 RUNTIME_SHA="e1b21bee74941dfb550b67698a75f485937bc39431ed7859baaa20d44a4899f3"
-METHOD_LOCK_SHA="9e6d271c59338fb9d0057adaa614f5f0fdbabb41dcd8ac049c911e4441016b96"
+METHOD_LOCK_SHA="9640267c2913e452a89be39e1b41e8b19d3371499afbed1efe8c9e3b7ad0e52f"
 
 [[ -n "${CUDA_VISIBLE_DEVICES:-}" ]] || {
   printf 'CUDA_VISIBLE_DEVICES must be assigned by the runner\n' >&2
@@ -79,15 +79,15 @@ check_sha "$SELECTION_SALT" "$SELECTION_SALT_SHA"
 check_sha "$DUAL_ARCHIVE" "$DUAL_ARCHIVE_SHA"
 check_sha "$METHOD_LOCK" "$METHOD_LOCK_SHA"
 check_sha "$SOURCE_ROOT/code/cvsrffi/phase1_rb_metabias4_bundle.py" \
-  "a88fafc8c948e2ecfe223baa9f84012f831d88b8423f5a3c5c5e65d80db3fb06"
+  "7e2eb67a592a94de8be1091c29b6df796d8122ffe76b3a7424e985d694ae8c5f"
 check_sha "$SOURCE_ROOT/code/cvsrffi/rb_metabias4_phase1_held_falsifier.py" \
-  "c6cb5ee21f7311bf3000d9061d8ff800d2eb2c8fe99af4d4d583b9c7fdaf7fba"
+  "a40b6979cea27c3b5f089ce3c57afae92798727da45fa70408081ad80fe92df5"
 check_sha "$SOURCE_ROOT/code/scripts/build_phase1_rb_metabias4_bundle.py" \
-  "192d1ae58f5f089fb9273b2e6b01bc0382e0533b21928aeafbf8a7ebf721671a"
+  "9b0857a7e4df19321c6ba36ca230fea040ae1a96749a06dd419361fc458a1f1b"
 check_sha "$SOURCE_ROOT/code/scripts/run_rb_metabias4_phase1_held.py" \
-  "acf77060cf48ca3f7906b57e3c7e289df7832eba48b161e51d741bfc1d4bef3f"
+  "8e401086c135fbb5deed0f9e53b73df60e98ce3bc6c05b302ee6fbabfda3c3b8"
 check_sha "$SOURCE_ROOT/code/scripts/export_phase1_jp4_tap_archive.py" \
-  "4665f206ddb1d89650c6746ff93306c61720d76caef606b4eece264fed17f73a"
+  "196deaf7c8ebb70a021fb21da8788a85ba8c02fbd334fa7b460127341b06daaa"
 
 temporary="$LOG_ROOT/pipeline.pid.tmp.$$"
 printf '%s\n' "$BASHPID" > "$temporary"
