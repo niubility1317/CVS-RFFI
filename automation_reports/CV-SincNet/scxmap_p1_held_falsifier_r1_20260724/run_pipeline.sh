@@ -8,6 +8,7 @@ EXPECTED_RUN_ROOT="${ROOT}/runs/${RUN_ID}"
 RUN_ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
 PYTHON="/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python"
 SOURCE_ROOT="${RUN_ROOT}/source"
+RELEASE_RECEIPT="${RUN_ROOT}/release_receipt.json"
 R8_ROOT="${ROOT}/runs/rchm_bpp_p1_dual_archive_rawsha_r8_de9a6476_20260723_r8"
 ARCHIVE="${R8_ROOT}/output/archive/phase1_singleobs_dual_feature_archive.npz"
 MANIFEST="${R8_ROOT}/output/archive/phase1_singleobs_dual_feature_archive.manifest.json"
@@ -15,6 +16,10 @@ COVERAGE="${R8_ROOT}/output/coverage_receipt.json"
 CHECKPOINT="${ROOT}/runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth"
 MODULE_FILE="${SOURCE_ROOT}/code/cvsrffi/scxmap_phase1_held_falsifier.py"
 TRANSFORM_FILE="${SOURCE_ROOT}/code/cvsrffi/stage2_scxmap_transform.py"
+R2_FILE="${SOURCE_ROOT}/code/cvsrffi/r2a_fixed_held_four_arm.py"
+QKNN_FILE="${SOURCE_ROOT}/code/cvsrffi/stage2_zid_student_t_qknn.py"
+EXPORTER_FILE="${SOURCE_ROOT}/code/scripts/export_phase1_singleobs_dual_feature_archive.py"
+BASELINE_FILE="${SOURCE_ROOT}/code/baseline_origin_sat_view.py"
 OUTPUT_ROOT="${RUN_ROOT}/output"
 EXIT_FILE="${RUN_ROOT}/pipeline.exit"
 
@@ -47,14 +52,56 @@ require_sha256() {
 trap write_exit EXIT
 [[ -x "${PYTHON}" ]] || die "python_missing:${PYTHON}" 70
 : "${CUDA_VISIBLE_DEVICES:?CUDA_VISIBLE_DEVICES must bind one runner-selected GPU}"
+: "${RELEASE_RECEIPT_SHA256:?RELEASE_RECEIPT_SHA256 must freeze the local handoff receipt}"
+[[ "${CUDA_VISIBLE_DEVICES}" =~ ^[0-7]$ ]] || die "single_gpu_binding_drift:${CUDA_VISIBLE_DEVICES}" 65
 [[ ! -e "${OUTPUT_ROOT}" ]] || die "immutable_output_exists:${OUTPUT_ROOT}" 73
 
 require_sha256 "ce4edb7badaa1fe39efb324e8ec3f3d7f191f54051918f6028381f529a5df976" "${MODULE_FILE}"
 require_sha256 "8298ed9f879715e77805e48d2272a7fa640a758554dec18f6f3e189187626944" "${TRANSFORM_FILE}"
+require_sha256 "51e5d187805ed5f58d7088431e9f99d878fd5687fbecc08cd9140e51963e2bc8" "${R2_FILE}"
+require_sha256 "19d25bf311c3a4f32ff38bd74ae03205e71bf5b44feaead8a134fa8502fac297" "${QKNN_FILE}"
 require_sha256 "dd2a2b0c8ab1a1d8edbeed81e78ffb79c253240998a9ac2404b75699f4ca68d0" "${ARCHIVE}"
 require_sha256 "34213331d20594dceface61680ab0fea8ffc40ee72d7e13c844763c70fef26d4" "${MANIFEST}"
 require_sha256 "c6e25ebeaed32b577e3321e78cd569acff934a7c804d0cb621b26e68f26d0c17" "${COVERAGE}"
 require_sha256 "2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98" "${CHECKPOINT}"
+require_sha256 "${RELEASE_RECEIPT_SHA256}" "${RELEASE_RECEIPT}"
+
+"${PYTHON}" -c 'import hashlib,json,os,pathlib,re,sys
+receipt_path=pathlib.Path(sys.argv[1]).resolve()
+run_root=pathlib.Path(sys.argv[2]).resolve()
+receipt=json.loads(receipt_path.read_text(encoding="utf-8"))
+expected={"schema","run_id","release_commit","source_archive","files"}
+assert set(receipt)==expected
+assert receipt["schema"]=="cvs.scxmap-held.release-receipt.v1"
+assert receipt["run_id"]=="scxmap_p1_held_falsifier_r1_20260724"
+assert re.fullmatch(r"[0-9a-f]{40}",receipt["release_commit"])
+archive=receipt["source_archive"]
+assert set(archive)=={"relative_path","sha256","size_bytes"}
+assert re.fullmatch(r"[0-9a-f]{64}",archive["sha256"])
+assert isinstance(archive["size_bytes"],int) and archive["size_bytes"]>0
+files=receipt["files"]
+assert isinstance(files,dict) and len(files)>=7
+def checked(relative,expected_sha,expected_size=None):
+    assert isinstance(relative,str) and relative and not relative.startswith(("/", "\\"))
+    path=(run_root/relative).resolve()
+    assert os.path.commonpath((str(run_root),str(path)))==str(run_root)
+    assert path.is_file() and not path.is_symlink()
+    data=path.read_bytes()
+    assert hashlib.sha256(data).hexdigest()==expected_sha
+    if expected_size is not None: assert len(data)==expected_size
+checked(archive["relative_path"],archive["sha256"],archive["size_bytes"])
+for relative,sha in files.items():
+    assert re.fullmatch(r"[0-9a-f]{64}",sha)
+    checked(relative,sha)
+print("release_commit="+receipt["release_commit"])
+print("release_file_count="+str(len(files)))' "${RELEASE_RECEIPT}" "${RUN_ROOT}" || die "release_receipt_validation_failed" 75
+
+[[ -d "${SOURCE_ROOT}" && ! -L "${SOURCE_ROOT}" ]] || die "source_root_drift" 76
+if find "${SOURCE_ROOT}" -type f -perm /222 -print -quit | grep -q .; then
+  die "source_tree_is_writable" 76
+fi
+require_sha256 "31a6a464f470ae9bdb6cbc8814581ff6c73403d5c99b497a224b3f783831fe64" "${EXPORTER_FILE}"
+require_sha256 "5df3db9184f627ed8d3f5076cfdca401f0f32d20e1f0ddb95787549dc8180eec" "${BASELINE_FILE}"
 
 mkdir -p -- "${OUTPUT_ROOT}"
 export PYTHONPATH="${SOURCE_ROOT}/code"

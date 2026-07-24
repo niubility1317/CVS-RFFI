@@ -68,7 +68,7 @@ SCXMAP从类内中心化Phase1样本学习rank4的`z_dom→z_id`接收域残差�
 
 ## Git与发布输入
 
-本地Git工作树：`E:\type10-7\code\snapshots\cdom_scxmap_d92_glf_r1_wt`，分支`codex/cdom-scxmap-d92-glf-r1`。实现与预注册精选commit为`f4dcb950`；最终report-only release commit由runner handoff记录。禁止`git add -A`和GitHub上传。
+本地Git工作树：`E:\type10-7\code\snapshots\cdom_scxmap_d92_glf_r1_wt`，分支`codex/cdom-scxmap-d92-glf-r1`。实现与预注册精选commit为`f4dcb950`；release-surface修复commit、source archive与外部release receipt将在二次复核通过后冻结。禁止`git add -A`和GitHub上传。
 
 N607既有只读输入：
 
@@ -84,7 +84,7 @@ N607既有只读输入：
 |字段|冻结值|
 |---|---|
 |run root|`/home/szu2070436088/2510044040/CV-SincNet/runs/scxmap_p1_held_falsifier_r1_20260724`|
-|source|`<run>/source`，由精选Git commit归档安全解包，只读|
+|source|`<run>/source`，由冻结Git commit归档安全解包；所有文件去除写权限，pipeline启动时fail-close复核|
 |output|`<run>/output`，启动前必须不存在|
 |log|`/home/szu2070436088/2510044040/CV-SincNet/logs/scxmap_p1_held_falsifier_r1_20260724`|
 |环境|`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`|
@@ -94,12 +94,12 @@ N607既有只读输入：
 
 冻结child命令：
 
-`CUDA_VISIBLE_DEVICES=<runner-selected> bash /home/szu2070436088/2510044040/CV-SincNet/runs/scxmap_p1_held_falsifier_r1_20260724/run_pipeline.sh`
+`CUDA_VISIBLE_DEVICES=<single-0-to-7> RELEASE_RECEIPT_SHA256=<frozen-sha256> bash /home/szu2070436088/2510044040/CV-SincNet/runs/scxmap_p1_held_falsifier_r1_20260724/run_pipeline.sh`
 
 ## 健康控制、风险与完结标准
 
 - P0协议/安全错误立即停止。
-- 两个不同阶段产生相同确定性异常指纹且尚无prediction时，停止该run；不得因accuracy、H或其他性能数值停止。
+- 这是单一进程内的54-row原子pipeline，不按row独立dispatch；任一build、predict、score或artifact技术阶段首次非零即由`set -e`停止，保留partial artifact并标记`NO_PERFORMANCE_RESULT`。不得因accuracy、H或其他性能数值停止。
 - 只有54/54 row、prediction与COMMIT、独立score、build receipt双向绑定和全部SHA闭合才进入`ARTIFACTS_COMPLETE`。
 - 不覆盖既有run或输出；失败run保留全部partial artifact，修复必须使用新run ID。
 - 主要风险是Phase1代理对目标D92空间外推失败、DA产生非零参数但不改argmax，以及aggregate掩盖特定场景/伪新类负迁移；分层门用于直接证伪这些情况。
