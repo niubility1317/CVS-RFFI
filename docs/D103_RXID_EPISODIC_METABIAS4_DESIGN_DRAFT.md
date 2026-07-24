@@ -1,6 +1,6 @@
 # D103-RXID-Episodic-MetaBias4-qKNN设计草案
 
-状态：`FEASIBILITY_REVIEW / REVISION_2 / TARGET25_NO_GO`
+状态：`FEASIBILITY_REVIEW / REVISION_2_REJECTED / TARGET25_NO_GO`
 
 日期：2026-07-24
 
@@ -87,6 +87,13 @@ query不参与拟合、选择、回滚、阈值、温度、bank、MetaBias或qKN
 
 每个probe fold必须在outer训练面内部按physical ID固定划分互斥的probe-train/probe-test，并对receiver、day和TX做同一配平。线性probe的正则、RBF probe的核宽/正则、容量、seed、tie-break和缺类失败规则在任何outer结果产生前冻结。outer probe结果只允许一次性接受或拒绝当前candidate；若据此修改loss、网格、阈值、probe或资产布局，必须创建新的candidate/version和`REENTRY_CARD`，不得在D103内部循环调参。
 
+probe划分固定使用`SHA256(candidate_id|receiver|day|TX|physical_id|probe_v1)`排序，每个receiver×day×TX cell前60%进入probe-train、后40%进入probe-test，不足5个物理样本即该fold失败。容量集合固定为：
+
+- 标准化32维`r`上的多项logistic regression，`C∈{0.1,1,10}`；
+- RBF SVM，`C∈{1,10}`、`gamma∈{0.5/32,1/32,2/32}`；
+- class weight=`balanced`，最大2,000次迭代，seed=`103713`；
+- 对全部容量取最大test balanced accuracy，任一fold的mean或max超过25%即拒绝。
+
 ### 3.4 跨day receiver保持
 
 receiver对比学习的正对必须满足：
@@ -143,7 +150,24 @@ receiver对比学习的正对必须满足：
 
 最终deployment asset使用全部source训练数据，按同一固定内部选择算法重新选参和训练；outer结果只决定是否拒绝整个方法，不决定最终超参。
 
-### 4.2 class-LOCO外层
+### 4.2 固定训练常量
+
+本candidate使用singleton配置，不从outer或Target性能选超参：
+
+- seed=`103713`；
+- Adam，learning rate=`1e-3`；
+- 每fit固定20epoch×20meta step，共400step；
+- 每step使用同一个K1/K5/K10三episode组合；
+- balanced batch每个receiver×day×TX cell取2个互异物理样本；
+- `μ=0.1`、`τ=0.1`；
+- `λ_TX=λ_RX=λ_V=λ_O=1.0`；
+- MMD核`gamma∈{0.5,1.0,2.0}`并取均值；
+- qKNN训练温度固定为`0.2`；
+- 不做基于loss或性能的early stopping。
+
+leave-one-day只作预注册的稳定性审计，不进行网格或阈值选择。若任一day子fold不满足门，直接拒绝当前candidate；不得用其结果更换上述常量。
+
+### 4.3 class-LOCO外层
 
 共7×6=42个receiver×class双留出fold。每个fold同时留出一个receiver和一个class：
 
@@ -154,7 +178,7 @@ receiver对比学习的正对必须满足：
 
 LOCO的“留类”不声称从基础checkpoint中删除Phase1历史知识，只验证D103新增资产和更新是否对未参与其学习的class产生负迁移。
 
-### 4.3 K1统计可识别性
+### 4.4 K1统计可识别性
 
 K1的每类singleton只计一个物理样本；由同一received-IQ产生的任何数学view不得增加rank或样本数。每个K1 fold必须同时记录并通过：
 
@@ -167,7 +191,17 @@ K1的每类singleton只计一个物理样本；由同一received-IQ产生的任�
 - 独立query OOF的BA、floor、H、old/new net correct尾部；
 - support自拟合指标不得作为保护或晋级证据。
 
-最小奇异值、condition、先验占比和稳定性阈值只由outer训练面内部确定。K1不可辨识时输出协议完整的M0安全预测并标记`INACTIVE_NON_PROMOTABLE`；该fold不能计为D103成功，也不能用identity结果冲淡失败率。任一正式K1 fold inactive即拒绝整个D103实例。
+数值门在任何outer结果前固定为：
+
+- data information rank=`4`；
+- `min_singular_value(A_data)≥0.05`；
+- `condition(Λ0+A_data)≤10`；
+- `prior_fraction≤0.80`；
+- `||a||_2≥1e-4`且不超过冻结ellipsoid；
+- 合法view开/关的top1 agreement≥99.5%、large-margin flip=0；
+- 独立episode间系数方向余弦的中位数≥0.80。
+
+K1不可辨识时输出协议完整的M0安全预测并标记`INACTIVE_NON_PROMOTABLE`；该fold不能计为D103成功，也不能用identity结果冲淡失败率。任一正式K1 fold inactive即拒绝整个D103实例。
 
 ## 5.资产、量化与资源
 
@@ -193,19 +227,20 @@ Phase2 bundle必须继续满足项目的不可变、多样本聚合、共同封�
 
 ### 5.2 资源预注册
 
-参数规模暂估为`U5120+B640+t112+Λ112+σ28=6012`个Phase1学习参数；这不是完整资源结论。
+最终全source fit的参数规模为`U5120+B640+t112+Λ112+σ28=6012`个Phase1学习参数；留一个receiver的微探针有24个cell，共5,976个参数。
 
-设计冻结前先用不接触outer结果的本地三步短探针实测并锁定：
+本地三步微探针实测：
 
-- 单fold峰值GPU显存；
-- 单meta step墙钟时间；
-- 单个fit和完整流程的最坏GPU时；
-- tap缓存、checkpoint和bundle磁盘占用；
-- 失败时保留的最小artifact集合。
+- 设备：RTX5070Ti，PyTorch2.10.0+cu128；
+- 3次warmup+3次计时，代表step同时包含K1/K5/K10 episode、MMD、receiver contrastive、VICReg和反向传播；
+- 平均0.276916秒/meta step；
+- 峰值allocated21.74MiB、reserved26.00MiB；
+- 288行balanced batch、24个receiver×day cell；
+- loss全部finite。
 
-完整流程预算必须覆盖7个receiver outer fold、42个receiver×class双留出fold、每fold内部网格/leave-one-day选择、MMD核、线性和RBF probe、量化验证、M0/D102 matched评估、最终全source重训及失败artifact，不能只按49个最终fit估算。
+完整流程按每个outer fold执行4个leave-one-day fit+1个outer fit，共`49×5=245`个fit，再加1个全source最终fit，总计246fit、98,400meta step。按本机实测为7.569GPUh；对N607采用3倍设备/实现安全因子并再加35%的probe、量化、M0/D102 matched评估、I/O和失败artifact开销，估算30.655GPUh，冻结总上限为36GPUh。
 
-冻结后的正式上限必须写成数值。超出总GPU时、峰值显存、artifact或Phase2 state/MAC任一上限时，停止本run并记`NO_PERFORMANCE_RESULT`；不得减少fold、epoch、K或LOCO覆盖来换取完成。
+冻结峰值显存上限为4GiB/fit、完整run-root磁盘上限为20GiB。超出36GPUh、4GiB/fit、20GiB/artifact或Phase2 state/MAC任一上限时，停止本run并记`NO_PERFORMANCE_RESULT`；不得减少fold、epoch、K或LOCO覆盖来换取完成。
 
 Phase2目标仍为0 trainable parameter、0 optimizer step、总state<80KiB且post-backbone MAC/query≤262,144；完整support编码、bank matching、两次统一重编码和4维求解均计入。
 
@@ -262,8 +297,8 @@ K≥2的head约束必须按physical ID cross-fit；K1只能使用Phase1冻结cap
 
 1. 独立复审确认P0=0、P1=0；
 2. 通过真实tap只读检查确认跨day配对和nested fold可构造；
-3. 用本地短探针给出单step资源实测，并据冻结训练计划计算完整流程GPU时、峰值显存和失败封口；
-4. 冻结超参网格、内部选择算法、所有数值门和tie-break；
+3. 独立复核微探针资源外推、36GPUh/4GiB/20GiB上限和失败封口；
+4. 独立复核singleton训练常量、probe容量、全部数值门和tie-break；
 5. 建立D103需求—代码—测试—artifact追踪表；
 6. 明确实现文件、测试文件、runner和非覆盖run ID。
 
@@ -281,3 +316,16 @@ K≥2的head约束必须按physical ID cross-fit；K1只能使用Phase1冻结cap
 - 只输出资源/可构造性JSON。
 
 微探针不得接触target、capsule、正式query或Target25，不得计算BA、TX通过率、LOCO性能，不得保存`U/B/bank`或deployment bundle，也不得据微探针结果调loss、超参、阈值或候选。结果只能决定完整D103训练在资源上“可行/不可行”，不能作为方法或性能证据。
+
+## 10.Revision2终审裁决
+
+Revision2独立终审为`P0=0、P1=6 / NO_GO_TO_DESIGN_FROZEN`。本稿作为被拒绝的设计记录保留，后续修改必须使用新candidate/version和`REENTRY_CARD`，不得覆盖以下问题：
+
+1. 微探针误把tap成员`z_id`绑定为`z_dom`，K1机械rank/condition证据无效；
+2. 正式训练没有把`L_s=0.07`、`U_s=0.63`、source-val=`0.30`的梯度和证伪权限写死；
+3. singleton常量、probe容量和K1数值门在首次微探针后才写入，不能由原candidate自证；
+4. 资源外推未解决inner leave-one-receiver文字与246fit算式的矛盾，且未实测临时磁盘；
+5. 双probe聚合轴、candidate ID和量化ABI仍未完全冻结；
+6. 追踪表、正式文件清单、runner和非覆盖run ID尚未闭合。
+
+首次微探针的0.276916秒/meta step和26.00MiB reserved只能作为160维代表计算的资源shape近似；其K1最小奇异值和condition不得进入D103可识别性结论。
