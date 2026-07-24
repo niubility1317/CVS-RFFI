@@ -30,6 +30,8 @@
 - 本地定向测试：`47 passed`；定向+计划+相邻集成：`54 passed`。
 - 手工外部CWD验证：从`E:\type10-7`执行runner `--help`成功。
 - 独立修复复审：`P0=0,P1=0 / APPROVE`；确认仅修启动/import边界，方法、矩阵、LEO/query和训练参数均未改变。
+- import修复提交：`da3e2ca186d06b6308fa2ec5eb31890c1ac145cc`。
+- 修复后runner SHA256：`0753c760a54eb5c59af4a524c62e3a1ac9abcdd50bd22580ab2844283f7f23bb`。
 
 ## N607预注册
 
