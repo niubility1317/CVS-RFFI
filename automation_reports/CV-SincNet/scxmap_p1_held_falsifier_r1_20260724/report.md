@@ -68,7 +68,7 @@ SCXMAP从类内中心化Phase1样本学习rank4的`z_dom→z_id`接收域残差�
 
 ## Git与发布输入
 
-本地Git工作树：`E:\type10-7\code\snapshots\cdom_scxmap_d92_glf_r1_wt`，分支`codex/cdom-scxmap-d92-glf-r1`。实现与预注册commit为`f4dcb950`；冻结发布源码commit为`e60167522fae600e03a303d06be0132a2b1b5e31`。源码归档`source_e6016752.zip`为35917612B，SHA256=`c916352c0ce6f931e6dfebf6c5bd6a8f08b4f21ae277cd04d144fa5daed171e7`；外部`release_receipt.json` SHA256=`0975d48994fa2756145c5e3da3d5e0fde54f651fb4331bb6e4e92f01b06fd484`，逐项绑定10个运行、实现、设计与测试文件。入口脚本归档字节SHA256=`6d31d4b34ad980deb20790ac3f234dfcf8f564ebf1b9c7eb99b36a2659a66e7a`。入口会在验证整包后自行安全解包全部4578项、逐项复核解包字节，并对所有目录和文件递归去写权限。禁止`git add -A`和GitHub上传。
+本地Git工作树：`E:\type10-7\code\snapshots\cdom_scxmap_d92_glf_r1_wt`，分支`codex/cdom-scxmap-d92-glf-r1`。实现与预注册commit为`f4dcb950`；冻结发布源码commit为`e60167522fae600e03a303d06be0132a2b1b5e31`。源码归档`source_e6016752.zip`为35917612B，SHA256=`c916352c0ce6f931e6dfebf6c5bd6a8f08b4f21ae277cd04d144fa5daed171e7`；外部`release_receipt.json` SHA256=`0975d48994fa2756145c5e3da3d5e0fde54f651fb4331bb6e4e92f01b06fd484`，逐项绑定10个运行、实现、设计与测试文件。入口脚本归档字节SHA256=`6d31d4b34ad980deb20790ac3f234dfcf8f564ebf1b9c7eb99b36a2659a66e7a`。所有源码、设计、测试和入口SHA均按ZIP原始entry字节计算；Windows工作树可能因行尾转换产生不同SHA，绝不用于N607同步、运行或审计。入口会在验证整包后自行安全解包全部4578项、逐项复核解包字节，并对所有目录和文件递归去写权限。独立release-surface终审为`P0=0、P1=0、P2=1`；P2仅为上述字节口径说明且现已明确。允许landing仅限Phase1-held proxy，Target25仍硬禁。禁止`git add -A`和GitHub上传。
 
 N607既有只读输入：
 
