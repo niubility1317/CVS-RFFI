@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from pathlib import Path
 from types import SimpleNamespace
 
 import numpy as np
@@ -90,3 +91,42 @@ def test_bound_file_rejects_hash_drift(tmp_path):
     value.write_bytes(b"abc")
     with pytest.raises(tap.Phase1JP4TapArchiveError, match="SHA256 drift"):
         tap._regular_bound(value, "0" * 64, "value")
+
+
+def test_exact_sha_bound_checkpoint_has_audited_torch21_legacy_path(
+    monkeypatch, tmp_path
+):
+    calls = []
+    source = tmp_path / "checkpoint.pth"
+    source.write_bytes(b"frozen")
+
+    def fake_load(path, *, map_location, weights_only=False):
+        calls.append((Path(path), map_location, weights_only))
+        return {"state_dict": {}}
+
+    monkeypatch.delattr(tap.torch.serialization, "safe_globals", raising=False)
+    monkeypatch.setattr(tap.torch, "load", fake_load)
+    monkeypatch.setattr(tap, "_sha_file", lambda _path: tap.BASE_CHECKPOINT_SHA256)
+    checkpoint, audit = tap._load_exact_sha_bound_checkpoint(
+        source, tap.BASE_CHECKPOINT_SHA256
+    )
+    assert checkpoint == {"state_dict": {}}
+    assert calls == [(source, "cpu", False)]
+    assert audit["policy"] == "legacy_pickle_exact_frozen_sha_only"
+    assert audit["safe_globals_available"] is False
+    assert audit["weights_only"] is False
+    assert audit["caller_selected_checkpoint_allowed"] is False
+    assert (
+        audit["exact_frozen_checkpoint_sha256_required"]
+        == tap.BASE_CHECKPOINT_SHA256
+    )
+
+
+def test_legacy_checkpoint_path_rejects_nonfrozen_sha(monkeypatch, tmp_path):
+    source = tmp_path / "checkpoint.pth"
+    source.write_bytes(b"not-frozen")
+    monkeypatch.setattr(tap, "_sha_file", lambda _path: "0" * 64)
+    with pytest.raises(
+        tap.Phase1JP4TapArchiveError, match="exact frozen SHA256"
+    ):
+        tap._load_exact_sha_bound_checkpoint(source, "0" * 64)

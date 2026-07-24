@@ -114,6 +114,45 @@ def _regular_bound(path: str | Path, expected: str, name: str) -> Path:
     return value
 
 
+def _load_exact_sha_bound_checkpoint(
+    path: Path, expected_sha256: str
+) -> tuple[Mapping[str, Any], dict[str, Any]]:
+    """Load the already SHA-allowlisted checkpoint across supported Torch versions."""
+
+    expected = _require_sha(expected_sha256, "checkpoint SHA256")
+    if expected != BASE_CHECKPOINT_SHA256 or _sha_file(path) != expected:
+        raise Phase1JP4TapArchiveError(
+            "legacy-compatible checkpoint load requires exact frozen SHA256"
+        )
+    safe_globals = getattr(torch.serialization, "safe_globals", None)
+    if safe_globals is not None:
+        with safe_globals([SatViewStage]):
+            checkpoint = torch.load(path, map_location="cpu", weights_only=True)
+        policy = "weights_only_with_explicit_safe_globals"
+        weights_only = True
+    else:
+        # Torch 2.1 on N607 predates safe_globals.  This compatibility path is
+        # allowed only after _regular_bound has byte-matched the frozen
+        # BASE_CHECKPOINT_SHA256; arbitrary or caller-selected pickle bytes
+        # never reach this function.
+        try:
+            checkpoint = torch.load(path, map_location="cpu", weights_only=False)
+        except TypeError:
+            checkpoint = torch.load(path, map_location="cpu")
+        policy = "legacy_pickle_exact_frozen_sha_only"
+        weights_only = False
+    if not isinstance(checkpoint, Mapping):
+        raise Phase1JP4TapArchiveError("checkpoint load did not return a mapping")
+    return checkpoint, {
+        "policy": policy,
+        "torch_version": str(torch.__version__),
+        "safe_globals_available": safe_globals is not None,
+        "weights_only": weights_only,
+        "exact_frozen_checkpoint_sha256_required": BASE_CHECKPOINT_SHA256,
+        "caller_selected_checkpoint_allowed": False,
+    }
+
+
 def _write_json_new(path: Path, payload: Mapping[str, Any]) -> None:
     with path.open("x", encoding="utf-8", newline="\n") as handle:
         json.dump(
@@ -281,12 +320,9 @@ def export_phase1_jp4_tap_archive(
     ):
         raise Phase1JP4TapArchiveError("tap export requires an explicit available CUDA device")
 
-    with torch.serialization.safe_globals([SatViewStage]):
-        checkpoint = torch.load(
-            checkpoint_file, map_location="cpu", weights_only=True
-        )
-    if not isinstance(checkpoint, Mapping):
-        raise Phase1JP4TapArchiveError("checkpoint safe load did not return a mapping")
+    checkpoint, checkpoint_load_audit = _load_exact_sha_bound_checkpoint(
+        checkpoint_file, expected_checkpoint
+    )
     model, rebuild_audit = build_exact_ssdg_model_from_checkpoint(
         checkpoint, input_len=256, device=runtime_device
     )
@@ -404,6 +440,7 @@ def export_phase1_jp4_tap_archive(
                 "batch_size": int(batch_size),
                 "runtime_invocations": calls,
                 "rebuild_audit": rebuild_audit,
+                "checkpoint_load_audit": checkpoint_load_audit,
                 "strict_hook_exact_bytes": True,
                 "eager_reference_z_id_max_abs": maximum,
             },
