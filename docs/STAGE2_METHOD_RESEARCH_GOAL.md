@@ -20,7 +20,7 @@
 
 域适应可以改变encoder、输入前端、normalization、轻量adapter、support-conditioned表示、metric、邻域权重或概率状态。它必须具有明确的域偏移机制，并在held query上产生可观测的邻居贡献、margin、argmax或净正确决策变化；只有loss下降、support fit提高、metric非identity或logit数值变化不构成DA成功。RDA/SRDA、receiver nuisance correction、support-conditioned adapter、normalization、metric learning和合法Phase1新表征均可公平进入候选。
 
-当前性能验证lane固定为`ADV3B02-TS-DRQKNN-BCRR/r6-matchedaudit1`：保留ADV3B02的`z_id/z_dom`双qKNN、BCRR和既有repair，完整125正在验证其四臂真实性能。该run完成后，下一方法revision固定为`GRB-JP4-ADV-DRQKNN-BCRR/r1-sealed`：只在r6共享执行链前增加Phase1 ground q4约束的`joint_proj.0.weight`闭式低秩模型增量，并增加原样r6 ground-off对照`M_DA_NG`。不得把JP4、固定q4、ground或BCRR写成后续所有方法的全局必经路线。
+`ADV3B02-TS-DRQKNN-BCRR/r8-bcrmaskidentity1`完整125已以`REJECT / COMPLETED_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE`结束。当前唯一性能验证lane为`GRB-JP4-ADV-DRQKNN-BCRR/r1-sealed`：只在r8共享执行链前增加Phase1 ground q4约束的`joint_proj.0.weight`闭式低秩模型增量，并增加原样r8 ground-off对照`M_DA_NG`。方法核心已在Git commit`71c62803`闭合，下一动作是production-signed资产、薄5臂runner和N607完整125，不再扩展静态设计。不得把JP4、固定q4、ground或BCRR写成后续所有方法的全局必经路线。
 
 最终目标是：
 
@@ -171,29 +171,13 @@ K5是当前双qKNN候选的首个正式DA falsifier；K10用于确认相同机�
 - 原始`z_dom`具有明显TX泄漏，禁止直接双余弦跨类融合、第二domain分类头或按TX/receiver专属规则决策。
 - support accuracy、重构RMSE、LODO正信号、模型参数变化、代码测试或进程exit0都不是held性能成功。
 
-### 5.3当前唯一下一候选
+### 5.3当前实验裁决与唯一下一候选
 
-`ADV3B02-TS-DRQKNN-BCRR/r1`在实现终审和真实checkpoint support-only检查中暴露两项P0：after INT8审计用decoded-old代替完整FP32 teacher，且125调度一次性提交全部row、不能在系统性技术故障时立即停派；共享对称INT8 qKNN还在seed713104 after clear/low-elev触门。r1没有N607 prediction或性能结果，现为`SUPERSEDED_TECHNICAL_REVISION / NO_PERFORMANCE_RESULT`。
+完整r8运行`adv3b02_ts_drqknn_bcrr_r8_bcrmaskidentity1_artifactsfresh1_full125_0dbfcfe4_20260724_090452`已完成125/125row、1000/1000prediction和1500/1500逻辑score。四臂结果表明：`M_DA`相对`M0`的old-after仅`+0.0378pp`，但seen-new`-0.0460pp`、H`-0.0272pp`、floor`-0.0267pp`、min-new`-0.0400pp`且forgetting`+0.0222pp`；`M_OTHER`注册后与`M0`的157,500个query决策完全相同，`M_JOINT`与`M_DA`完全相同，`I_syn=0`覆盖375/375slice。裁决为`REJECT / COMPLETED_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE`，该revision不再补丁或重跑。
 
-`ADV3B02-TS-DRQKNN-BCRR/r2-affine`完成代码终审后，在真实checkpoint no-query smoke中被BCR权重INT8门立即证伪：现有按类列对称codec在54个support state中失败15个，固定按类列仿射失败9个，固定按特征行仿射失败12个；三者large-margin flip均为0，但top1未达99.5%，因此均不得发布，状态为`SUPERSEDED_BEFORE_COMMIT / NO_PERFORMANCE_RESULT`。
+历史partial run已回收并在Git commit`01c2a9c9`形成诊断证据：r4、r5、r6分别具有35、49、124个合法完成row和280/392/992个prediction；r6的124个共同cell与完整r8逐项一致，已足以提前诊断同一负趋势。partial仅用于覆盖偏差明确的诊断，不用于晋级、调参或替代完整125；今后每次健康止损必须立即统计已完成row，不得丢弃已有性能。
 
-parent`ADV3B02-TS-DRQKNN-BCRR/r2-affine-bcr2`已完成本地技术闭合，但首次发布因冻结Python缺`pytest`而在launch前终止；POSIX sentinel修复后的第二个完整125又在首波健康检查中暴露两个系统性技术故障：before实际bank binding被validator错误要求为`None`，以及K10新类support raw`z_id`出现严格零向量。第二run已只终止本run，launcher/matrix PID=`1214101/1214105`、exit=`143`，合法完整row=`0/125`，终态=`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_COMPLETE_PERFORMANCE_RESULT`；partial prediction/score只作诊断，不形成性能结论。
-
-当前`ADV3B02-TS-DRQKNN-BCRR/r2-affine-bcr2-zidtotal1`已完成一个设计波次：监督首裁`REVISE`，采纳唯一最小规则`finite_exact_zero_singleton_class_medoid_v1`后终裁=`MERGE / P0=0 / P1=0`。实现、真实checkpoint support-only无query smoke和独立代码review均已闭合，状态=`LOCAL_VERIFIED / NO_PERFORMANCE_RESULT`；独立终审=`MERGE / P0=0 / P1=0 / P2=1`，唯一P2不影响正式runner。真实失败包同checkpoint精确复现1个K10新类零行且同类9个peer有效；近当前750个support-only包、67,650个support前向共2个同型零行，均可由同类实际medoid辨识，K1/K5、整类失效和`z_dom`失效均为0。真实smoke三场景repair count=`0/1/0`，正常行bitwise不变，query/truth读取为0；该证据只支持技术闭合，不是性能证据。完整冻结合同见`docs/ADV3B02_TS_DRQKNN_BCRR_R2_AFFINE_BCR2_ZIDTOTAL1_DESIGN_FROZEN.md`。
-
-其完整125发布在两个不同K10/new20 row上暴露相同`teacher binding drift`并按健康门止损。根因是repair receipt绑定一次单位化`N(raw)`，而actual branch对已单位化teacher再次调用raw helper，绑定`N(N(raw))`；FP32单位化并非严格字节幂等。新techfix=`.../zidtotal1-bindfix1`已完成单一可行性波次并冻结：`MERGE_TECHFIX / 当前P0=0、P1=1；实现目标P0=0、P1=0`。只把repair后的raw teacher传入audit/branch，各消费点单位化一次；bank、BCR权重、prediction、协议和资源必须不变。完整合同见`docs/ADV3B02_TS_DRQKNN_BCRR_R2_AFFINE_BCR2_ZIDTOTAL1_BINDFIX1_DESIGN_FROZEN.md`。
-
-`zidtotal1-bindfix1`现已达到`LOCAL_VERIFIED / NO_PERFORMANCE_RESULT`。`ssr-gpu`下目标与相邻DSSC合计`108 passed、3 Windows POSIX skipped、0 failed`；两个原触发row×3个scene的真实checkpoint support-only smoke为6/6 state与binding通过，query/truth/apply打开0。独立终审=`MERGE / P0=0 / P1=0 / P2=2`；P2只涉及revision header增加9B和后续golden增强，不阻塞新不可覆盖完整125发布。
-
-其新完整125在29个成功row后由两个Stage2-C row触发同一`affine actual branch audit/state drift`并止损，状态=`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`，partial性能未读取。本地support-only分解确认首源是一平面qKNN codec与旧bandwidth精度在小margin处使top1低于0.995；BCR门正常。新revision=`r3-q2f32-bcr2-zidtotal1`固定两INT8平面＋双FP16 bandwidth，已达到`LOCAL_VERIFIED / NO_PERFORMANCE_RESULT`：目标测试`77 passed、3 Windows POSIX skipped`、相邻DSSC`36 passed`，真实checkpoint 12个before/after state的qKNN/BCR top1均为1、翻转0，最大wire=`159,691B`；独立Terra终裁=`MERGE / P0=0 / P1=0`。完整合同见`docs/ADV3B02_TS_DRQKNN_BCRR_R3_Q2F32_BCR2_ZIDTOTAL1_DESIGN_FROZEN.md`。
-
-冻结的域状态使用target-old support构造`S_W-S_B`的固定2槽可靠方向；support与query对每个候选类都减同一`mu_c`，不得混用全局中心；`alpha_K=0.5*(K-1)/K*(rho_1+rho_2)/2`且`0<=alpha<0.5`。`z_dom`只形成类内权重，最终score必须复用基础`z_id`Student-t qKNN的同一INT8 bank、`h_c`、`nu`和kernel。K1或数值异常时逐值回到M0。
-
-BCRR是唯一OTHER：raw与dual branch分别用自身同步physical-ID support-LOO logits按同一冻结规则拟合`omega`，但共享同一`z_id`BCR状态；不得读取query或直接读取`z_dom`。support仿射codec固定保存INT8 codes、FP16 scale和FP16 offset。BCR权重固定使用`plane1=Q(W)`、`plane2=Q(W-decode(plane1))`，部署仅从两层INT8 codes和FP16 scales重建；层数、scale floor、round/clip和顺序不得按K、scene、类别角色或审计结果切换。不得使用query、truth、角色、quota或scene专属codec。现有DSSC、RDA/SRDA、RBSC、C-id、MRIOR和JG保留为普通matched reference或后续候选资产，不与本revision混塞。
-
-`ADV3B02-TS-DRQKNN-BCRR/r6-matchedaudit1`已完成方法、专项测试、真实checkpoint无query smoke、独立review和Git提交；当前唯一完整125 run为`adv3b02_ts_drqknn_bcrr_r6_matchedaudit1_prepfix1_full125_a526d6b5_20260724_064819`。它只回答r6四臂性能，不得用partial结果选方法或拼接最优值。
-
-`GRB-JP4-ADV-DRQKNN-BCRR/r1-sealed`完成一个设计波次并经独立监督终裁=`MERGE / P0=0 / P1=0 / P2=0`。K1严格identity；K5/K10只估计4个共享系数，以Phase1 ground公共域变化q4和checkpoint右因子形成`joint_proj.0.weight`的rank≤4增量。`M_DA_NG`逐字节复用r6 no-ground双qKNN，`M_OTHER`继续为BCRR。正式资产必须通过既有joint-seal、固定authority、production signature和method lock共同封存；当前unverified/unsigned artifact禁止进入正式run。完整合同见`docs/GRB_JP4_ADV_DRQKNN_BCRR_R1_SEALED_DESIGN_FROZEN.md`。
+当前唯一下一候选`GRB-JP4-ADV-DRQKNN-BCRR/r1-sealed`经独立终审=`MERGE / P0=0 / P1=0 / P2=0`并已提交Git commit`71c62803`。K1严格identity；K5/K10只估计4个共享系数，以Phase1 ground公共域变化q4和checkpoint右因子形成`joint_proj.0.weight`的rank≤4增量。五臂固定为`M0/M_DA_NG/M_DA/M_OTHER/M_JOINT`；`M_DA_NG`复用r8 no-ground双qKNN，`M_OTHER`继续为BCRR。发布只剩production-signed联合bundle、薄5臂runner、最小专项回归和新不可覆盖N607完整125；不得再增加设计波次、authority体系、数据复验或非必要控制面。完整合同见`docs/GRB_JP4_ADV_DRQKNN_BCRR_R1_SEALED_DESIGN_FROZEN.md`。
 
 ## 6.方法卡与可行性门
 
@@ -352,7 +336,7 @@ K10完整确认硬门：
 12.完整125是性能证据矩阵，不是要求技术故障自然跑完。正式启动后必须先执行首波健康检查：只读取PID/parent-child/CWD/cmdline、GPU利用率与显存、row exit、异常指纹、prediction/score数量和artifact闭合，不得读取准确率或据性能早停。若任一P0协议/安全错误发生，或至少2个不同row在没有prediction时出现相同确定性异常指纹，runner必须立即停止继续派发，核对进程归属后终止且仅终止本run进程，确认GPU释放与SSH残留为0，并回收partial日志及失败row；不得等待其余row自然失败。技术修复必须经过本地专项测试、独立P0/P1 review、Git提交和全新不可覆盖run ID，禁止原run续跑或覆盖。
 13.服务器runner执行上一revision期间，主agent继续下一DA候选的只读设计、实现准备和历史复盘，不线性等待N607。
 
-没有完整prediction只能标记`TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。因系统性技术故障触发健康止损时同时标记`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE`，记录停止阈值、异常指纹、已启动/完成/失败row和prediction/score数量；该状态不是性能结果。完成prediction但性能未达门标记`COMPLETED_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE`，记录被证伪假设后立即进入下一revision；不得在同一revision上根据query结果补丁式调参。
+只有合法prediction数量为0时才标记`TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。因系统性技术故障触发健康止损时仍须立即停止继续派发并标记`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE`；但凡已生成不可变prediction或已绑定score，必须回收并统计为`PARTIAL_DIAGNOSTIC_BIASED_NOT_PROMOTABLE`，报告实际完成row、prediction/score数量、receiver、scene、K、new-count和seed覆盖、同row四臂指标及覆盖选择偏差。只有prediction而没有score时，优先在不重新运行predictor的前提下使用冻结scorer完成合法truth后绑定；确实无法绑定时明确标记`PARTIAL_PREDICTIONS_UNSCORED`。partial结果不得晋级、选方法、选rank、调阈值、拼接极值或替代完整125，但不得因矩阵未完成而拒绝读取已经付出计算得到的性能证据。完成全部prediction但性能未达门标记`COMPLETED_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE`，记录被证伪假设后立即进入下一revision；不得在同一revision上根据query结果补丁式调参。
 
 ## 12.研发自由、重入与停止边界
 
