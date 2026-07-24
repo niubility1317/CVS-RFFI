@@ -22,6 +22,7 @@ from cvsrffi.rxid_metabias4_feasibility_probe import (  # noqa: E402
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("--tap-archive", type=Path, required=True)
+    parser.add_argument("--dual-archive", type=Path, required=True)
     parser.add_argument("--output-json", type=Path, required=True)
     parser.add_argument("--device", default="cuda:0")
     return parser.parse_args()
@@ -29,7 +30,11 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> int:
     args = parse_args()
-    result = run_probe(args.tap_archive.resolve(), args.device)
+    result = run_probe(
+        args.tap_archive.resolve(),
+        args.dual_archive.resolve(),
+        args.device,
+    )
     validate_result_shape(result)
     write_probe_json(result, args.output_json.resolve())
     print(args.output_json.resolve())

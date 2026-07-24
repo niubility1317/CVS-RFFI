@@ -10,6 +10,7 @@ from __future__ import annotations
 import hashlib
 import json
 import math
+import tempfile
 import time
 from dataclasses import dataclass
 from pathlib import Path
@@ -17,11 +18,17 @@ from typing import Any, Mapping, Sequence
 
 import numpy as np
 
+from .phase1_rb_metabias4_bundle import (
+    RBMetaBias4BundleError,
+    merge_verified_phase1_tap_and_dual_archives,
+)
 
 SCHEMA = "cvs.d103.rxid_metabias4.feasibility_probe_non_performance.v1"
+CANDIDATE_ID = "D103-R1-RXID-DUALSPLIT-MB4"
 FROZEN_TAP_SHA256 = "c6807d9156ab3ac8f7005707a3bd7eec342d2e4f0a43d4b96d5ea8a9574ec4c1"
-INNER_HELD_RECEIVER = "1-1"
-EPISODE_RECEIVER = "1-19"
+FROZEN_DUAL_SHA256 = "dd2a2b0c8ab1a1d8edbeed81e78ffb79c253240998a9ac2404b75699f4ca68d0"
+INNER_HELD_RECEIVER = "14-7"
+EPISODE_RECEIVER = "18-2"
 BALANCED_SAMPLES_PER_CELL = 2
 K_VALUES = (1, 5, 10)
 WARMUP_STEPS = 3
@@ -55,31 +62,40 @@ def _text_rows(values: np.ndarray) -> np.ndarray:
     return np.asarray(values).astype(str)
 
 
-def load_frozen_tap(path: Path, expected_sha256: str = FROZEN_TAP_SHA256) -> ProbeArrays:
-    actual_sha256 = file_sha256(path)
-    if actual_sha256 != expected_sha256:
+def load_frozen_archives(
+    tap_path: Path,
+    dual_path: Path,
+    expected_tap_sha256: str = FROZEN_TAP_SHA256,
+    expected_dual_sha256: str = FROZEN_DUAL_SHA256,
+) -> ProbeArrays:
+    actual_tap_sha256 = file_sha256(tap_path)
+    actual_dual_sha256 = file_sha256(dual_path)
+    if actual_tap_sha256 != expected_tap_sha256:
         raise D103FeasibilityError(
-            f"tap sha256 mismatch: expected={expected_sha256}, actual={actual_sha256}"
+            f"tap sha256 mismatch: expected={expected_tap_sha256}, actual={actual_tap_sha256}"
         )
-    with np.load(path, allow_pickle=False) as archive:
-        required = {
-            "z_id",
-            "pre_relu",
-            "receiver_ids",
-            "day_ids",
-            "labels",
-            "physical_ids",
-        }
-        missing = sorted(required.difference(archive.files))
-        if missing:
-            raise D103FeasibilityError(f"tap missing arrays: {missing}")
+    if actual_dual_sha256 != expected_dual_sha256:
+        raise D103FeasibilityError(
+            f"dual sha256 mismatch: expected={expected_dual_sha256}, actual={actual_dual_sha256}"
+        )
+    with (
+        np.load(tap_path, allow_pickle=False) as tap_archive,
+        np.load(dual_path, allow_pickle=False) as dual_archive,
+    ):
+        try:
+            merged = merge_verified_phase1_tap_and_dual_archives(
+                {name: tap_archive[name] for name in tap_archive.files},
+                {name: dual_archive[name] for name in dual_archive.files},
+            )
+        except RBMetaBias4BundleError as error:
+            raise D103FeasibilityError(f"tap/dual row binding failed: {error}") from error
         arrays = ProbeArrays(
-            z_dom=np.asarray(archive["z_id"], dtype=np.float32),
-            pre_relu=np.asarray(archive["pre_relu"], dtype=np.float32),
-            receiver_ids=_text_rows(archive["receiver_ids"]),
-            day_ids=_text_rows(archive["day_ids"]),
-            labels=_text_rows(archive["labels"]),
-            physical_ids=_text_rows(archive["physical_ids"]),
+            z_dom=np.asarray(merged["z_dom"], dtype=np.float32),
+            pre_relu=np.asarray(merged["pre_relu"], dtype=np.float32),
+            receiver_ids=_text_rows(merged["receiver_ids"]),
+            day_ids=_text_rows(merged["day_ids"]),
+            labels=_text_rows(merged["labels"]),
+            physical_ids=_text_rows(merged["physical_ids"]),
         )
     row_count = arrays.z_dom.shape[0]
     if arrays.z_dom.shape != (row_count, 160) or arrays.pre_relu.shape != (row_count, 160):
@@ -494,6 +510,27 @@ def _torch_probe(
     peak_allocated = int(torch.cuda.max_memory_allocated(device))
     peak_reserved = int(torch.cuda.max_memory_reserved(device))
 
+    with tempfile.TemporaryDirectory(prefix="d103_r1_probe_") as temporary:
+        checkpoint_path = Path(temporary) / "representative_zero_state.pt"
+        zero_state = {
+            "raw_w": torch.zeros_like(raw_w, device="cpu"),
+            "basis": torch.zeros_like(basis, device="cpu"),
+            "bank_t": torch.zeros_like(bank_t, device="cpu"),
+            "log_precision": torch.zeros_like(log_precision, device="cpu"),
+            "log_sigma": torch.zeros_like(log_sigma, device="cpu"),
+            "adam_first_moment": [
+                torch.zeros_like(value, device="cpu") for value in parameters
+            ],
+            "adam_second_moment": [
+                torch.zeros_like(value, device="cpu") for value in parameters
+            ],
+        }
+        torch.save(zero_state, checkpoint_path)
+        temporary_checkpoint_bytes = int(checkpoint_path.stat().st_size)
+        temporary_peak_bytes = int(
+            sum(path.stat().st_size for path in Path(temporary).rglob("*") if path.is_file())
+        )
+
     return {
         "device": str(device),
         "device_name": torch.cuda.get_device_name(device),
@@ -507,13 +544,17 @@ def _torch_probe(
         "mean_seconds_per_meta_step": float(elapsed / TIMED_STEPS),
         "peak_allocated_bytes": peak_allocated,
         "peak_reserved_bytes": peak_reserved,
+        "temporary_checkpoint_bytes": temporary_checkpoint_bytes,
+        "temporary_directory_peak_bytes": temporary_peak_bytes,
+        "temporary_state_contains_learned_values": False,
+        "temporary_state_deleted_before_return": not checkpoint_path.exists(),
         "warmup_loss_finite": bool(np.isfinite(warmup_losses).all()),
         "timed_loss_finite": bool(np.isfinite(timed_losses).all()),
     }
 
 
-def run_probe(tap_path: Path, device: str = "cuda:0") -> dict[str, Any]:
-    arrays = load_frozen_tap(tap_path)
+def run_probe(tap_path: Path, dual_path: Path, device: str = "cuda:0") -> dict[str, Any]:
+    arrays = load_frozen_archives(tap_path, dual_path)
     pair_summary = cross_day_pair_summary(
         arrays.receiver_ids,
         arrays.day_ids,
@@ -526,6 +567,7 @@ def run_probe(tap_path: Path, device: str = "cuda:0") -> dict[str, Any]:
     resource = _torch_probe(arrays, batch_indices, projector, device)
     return {
         "schema": SCHEMA,
+        "candidate_id": CANDIDATE_ID,
         "status": "FEASIBILITY_PROBE_NON_PERFORMANCE",
         "claim_semantics": "RESOURCE_AND_CONSTRUCTABILITY_ONLY",
         "performance_metrics_computed": False,
@@ -539,6 +581,13 @@ def run_probe(tap_path: Path, device: str = "cuda:0") -> dict[str, Any]:
             "row_count": int(arrays.z_dom.shape[0]),
             "feature_width": int(arrays.z_dom.shape[1]),
             "physical_id_unique": bool(np.unique(arrays.physical_ids).size == arrays.z_dom.shape[0]),
+        },
+        "dual": {
+            "path": str(dual_path),
+            "sha256": file_sha256(dual_path),
+            "z_dom_width": int(arrays.z_dom.shape[1]),
+            "tap_dual_row_binding_verified": True,
+            "z_id_parity_verified": True,
         },
         "fixed_inner_fold": {
             "held_receiver": INNER_HELD_RECEIVER,
@@ -579,6 +628,8 @@ def write_probe_json(result: Mapping[str, Any], output_path: Path) -> None:
 def validate_result_shape(result: Mapping[str, Any]) -> None:
     if result.get("schema") != SCHEMA:
         raise D103FeasibilityError("unexpected probe schema")
+    if result.get("candidate_id") != CANDIDATE_ID:
+        raise D103FeasibilityError("unexpected candidate ID")
     if result.get("status") != "FEASIBILITY_PROBE_NON_PERFORMANCE":
         raise D103FeasibilityError("unexpected probe status")
     for field in (
@@ -597,12 +648,19 @@ def validate_result_shape(result: Mapping[str, Any]) -> None:
     resource = result["resource_measurement"]
     if not resource["warmup_loss_finite"] or not resource["timed_loss_finite"]:
         raise D103FeasibilityError("resource probe produced non-finite loss")
+    if (
+        resource.get("temporary_state_contains_learned_values") is not False
+        or resource.get("temporary_state_deleted_before_return") is not True
+    ):
+        raise D103FeasibilityError("temporary disk probe boundary violated")
 
 
 __all__ = [
     "BALANCED_SAMPLES_PER_CELL",
+    "CANDIDATE_ID",
     "D103FeasibilityError",
     "EPISODE_RECEIVER",
+    "FROZEN_DUAL_SHA256",
     "FROZEN_TAP_SHA256",
     "INNER_HELD_RECEIVER",
     "K_VALUES",
@@ -613,7 +671,7 @@ __all__ = [
     "fixed_balanced_indices",
     "k1_matrix_mechanics",
     "linear_tx_nullspace",
-    "load_frozen_tap",
+    "load_frozen_archives",
     "run_probe",
     "validate_result_shape",
     "write_probe_json",
