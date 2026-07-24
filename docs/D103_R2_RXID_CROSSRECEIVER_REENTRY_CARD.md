@@ -1,6 +1,6 @@
 # D103-R2-RXID-CROSSRECEIVER-MB4重入卡
 
-状态：`DESIGN_DRAFT / FEASIBILITY_REVIEW / N607_NO_GO / TARGET25_NO_GO`
+状态：`DESIGN_DRAFT_REV1 / FEASIBILITY_REVIEW / N607_NO_GO / TARGET25_NO_GO`
 
 日期：2026-07-24
 
@@ -26,9 +26,11 @@ R2只修复Phase1元任务的可达性，不改动TX零空间、MMD、receiver/d
 ## 4.matched held比较
 
 - source-val每个held receiver×class按physical ID升序；前K条为support，其余为query，M0、D102、D103逐行共用。
-- M0为未适配z_id typed qKNN；D102仅以已封存且明确`PHASE1_HELD_FALSIFIER_REJECT`的数值bundle执行`infer/apply`诊断路径，不伪造promotion lock；D103使用对应outer fit的INT8 bundle。
+- M0为未适配z_id typed qKNN；D103使用对应outer fit的INT8 bundle。
+- D102 comparator不得复用单一full-source bundle。held runner在打开source-val scorer数组前，只从同一`L_s`为7个receiver outer和42个receiver×class outer分别构建49个fold-specific解析bundle；D102与D103使用完全相同的held receiver/class排除面。每个D102 bundle必须封存content root、outer spec、`L_s`物理ID root、构建代码SHA和以下父证据：method lock SHA256=`9640267c2913e452a89be39e1b41e8b19d3371499afbed1efe8c9e3b7ad0e52f`、原拒绝receipt SHA256=`01a45e11fe519389071cf1eb279d293c958fc4fa48e0ed4c51bea9ff20c536b2`。生成这些诊断bundle不读取`U_s`、source-val、Target或正式query。
+- D102 scorer只允许调用已审计的`infer_metabias4_coefficient/apply_metabias4`数值路径；不得生成、修改或伪造promotion lock。每行输出必须携带`DIAGNOSTIC_REJECTED_D102_COMPARATOR_NON_PROMOTABLE`、fold content root和原拒绝receipt SHA；D102原拒绝状态不改变。
 - `joint_score=(balanced_accuracy+per_class_floor)/2`。D103每行BA、floor、net-correct均不得低于M0，且63行平均joint必须严格高于matched D102。
-- 4个leave-one-day fit在同一K1 support上各自产生系数；其与outer-fit系数的方向余弦中位数必须≥0.80。INT8/FP32 held-query top1 agreement≥99.5%，large-margin flip=0。
+- 4个leave-one-day fit在同一K1 support上各自产生实际160维pre-ReLU位移`s_day=B_day a_day`，outer fit产生`s_outer=B_outer a_outer`。直接比较4维`a`被禁止；`cos(s_day,s_outer)`的中位数必须≥0.80，任一位移范数`<1e-4`均fail closed。INT8/FP32 held-query top1 agreement≥99.5%，large-margin flip=0。
 - D102拒绝状态不改变；它只作为同row诊断比较器，不获得Target资格。
 
 ## 5.可行性摘要（冻结前，16行）
@@ -43,13 +45,13 @@ R2只修复Phase1元任务的可达性，不改动TX零空间、MMD、receiver/d
 8.R2不改变246fit与98,400step总量。
 9.每fit计算量因query16→4只下降，不提高冻结资源上限。
 10.GPUh上限仍30、显存4GiB、run root20GiB。
-11.D102 comparator已有精确数值bundle，可作非晋级matched诊断。
+11.D102按49个outer spec从同一`L_s`预先构建fold-specific非晋级诊断bundle。
 12.Stage2保持0 optimizer step、query fit rows=0。
 13.U_s类型仍无TX/pre_relu字段。
-14.任何K1 inactive、day cosine、TX probe、量化或资源失败均整实例reject。
+14.任何K1 inactive、160维shift cosine、TX probe、量化或资源失败均整实例reject。
 15.当前仅允许独立设计复审与本地实现。
 16.未获独立`P0=0/P1=0`前禁止N607与Target25。
 
 ## 6.冻结与发布条件
 
-独立审查必须确认跨receiver episode不改变receiver-held因果边界、query4不是结果驱动选择、D102拒绝bundle仅作诊断且不冒充合法asset。审查通过后状态才可进入`DESIGN_FROZEN / IMPLEMENTING_LOCAL_ONLY`；完整真实checkpoint无正式query smoke、全部测试、Git commit和release复审通过前，仍为`N607_NO_GO / TARGET25_NO_GO`。
+独立审查必须确认跨receiver episode不改变receiver-held因果边界、query4不是结果驱动选择、160维shift余弦消除latent gauge、49个D102 fold-specific诊断bundle与D103具有相同排除面且不冒充合法asset。审查通过后状态才可进入`DESIGN_FROZEN / IMPLEMENTING_LOCAL_ONLY`；完整真实checkpoint无正式query smoke、全部测试、Git commit和release复审通过前，仍为`N607_NO_GO / TARGET25_NO_GO`。
