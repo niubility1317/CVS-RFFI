@@ -1,6 +1,6 @@
 # D103-R2-RXID-CROSSRECEIVER-MB4重入卡
 
-状态：`DESIGN_DRAFT_REV1 / FEASIBILITY_REVIEW / N607_NO_GO / TARGET25_NO_GO`
+状态：`DESIGN_FROZEN / IMPLEMENTING_LOCAL_ONLY / N607_NO_GO / TARGET25_NO_GO`
 
 日期：2026-07-24
 
@@ -55,3 +55,5 @@ R2只修复Phase1元任务的可达性，不改动TX零空间、MMD、receiver/d
 ## 6.冻结与发布条件
 
 独立审查必须确认跨receiver episode不改变receiver-held因果边界、query4不是结果驱动选择、160维shift余弦消除latent gauge、49个D102 fold-specific诊断bundle与D103具有相同排除面且不冒充合法asset。审查通过后状态才可进入`DESIGN_FROZEN / IMPLEMENTING_LOCAL_ONLY`；完整真实checkpoint无正式query smoke、全部测试、Git commit和release复审通过前，仍为`N607_NO_GO / TARGET25_NO_GO`。
+
+commit-bound Revision复审针对`7136605f`得到`P0=0、P1=0 / GO: DESIGN_FROZEN→IMPLEMENTING_LOCAL_ONLY`。该裁决只授权本地实现；未提交文件不属于已验证证据，也不授权N607或Target25。

@@ -1,6 +1,6 @@
 # D103-R2需求—实现—测试—artifact追踪
 
-状态：`DESIGN_DRAFT_REV1 / FEASIBILITY_REVIEW / N607_NO_GO / TARGET25_NO_GO`
+状态：`DESIGN_FROZEN / IMPLEMENTING_LOCAL_ONLY / N607_NO_GO / TARGET25_NO_GO`
 
 |ID|需求|设计依据|实现文件|验证或artifact|当前状态|
 |---|---|---|---|---|---|
