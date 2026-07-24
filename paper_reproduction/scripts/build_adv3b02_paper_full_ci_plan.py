@@ -78,6 +78,15 @@ def validate_adapter_release_matrix(
         raise ValueError("MoPC v2 adapter release is locked to new-count 25")
 
 
+def validate_adapter_required_capacity(
+    methods: tuple[str, ...], required_total_capacity: int
+) -> None:
+    if CSIL_CVS_ADAPTER in methods and int(required_total_capacity) != 26:
+        raise ValueError("CSIL v2 adapter release requires base capacity 26")
+    if set(methods) & MOPC_CVS_ADAPTERS and int(required_total_capacity) != 31:
+        raise ValueError("MoPC v2 adapter release requires base capacity 31")
+
+
 def build(args: argparse.Namespace) -> dict:
     methods = tuple(
         value.strip()
@@ -145,6 +154,7 @@ def build(args: argparse.Namespace) -> dict:
     )
     if required_total_capacity < len(old) + new_counts[-1]:
         raise ValueError("required total capacity is smaller than the class registry")
+    validate_adapter_required_capacity(methods, required_total_capacity)
     expected_cache_scope = str(
         getattr(args, "expected_cache_scope", "stage2_registered")
     )

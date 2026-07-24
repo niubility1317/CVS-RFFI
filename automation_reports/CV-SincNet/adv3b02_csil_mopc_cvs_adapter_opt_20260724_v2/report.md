@@ -2,7 +2,7 @@
 
 - 实验ID：`adv3b02_csil_mopc_cvs_adapter_opt_20260724_v2`
 - 日期：2026-07-24
-- 状态：`LOCAL_VERIFIED / RELEASE_READY`
+- 状态：`STOPPED_AT_SMOKE_GATE / NO_PERFORMANCE_RESULT`
 - 操作者：Codex主代理；N607唯一运行代理：`no_leo_n607_release`
 - 目标：在不改变v1已冻结方法、参数、数据和矩阵的前提下，修复plan runner从仓库外CWD启动时的模块导入错误，并完成LEO正式优化实验。
 - 前序run：v1因两个不同smoke在prediction前同指纹`ModuleNotFoundError: paper_reproduction`而合规停止，0 cell/0 prediction/0 score，属于`NO_PERFORMANCE_RESULT`。
@@ -40,6 +40,21 @@
 - run root：`runs/adv3b02_csil_mopc_cvs_adapter_opt_20260724_v2`
 - log root：`logs/adv3b02_csil_mopc_cvs_adapter_opt_20260724_v2`
 - 复用只读base26：`runs/adv3b02_official_newcount_scale_20260724_v7/base26/official_repo_base_state.pt`
+
+## N607落地与烟测结论
+
+- direct preflight通过；8张RTX 3090空闲，`/home`可用7.5TB，v2 run/log在落地前均不存在。
+- 最小runner修复远端SHA256为`0753c760a54eb5c59af4a524c62e3a1ac9abcdd50bd22580ab2844283f7f23bb`；从repo外`/tmp`执行绝对路径`--help`成功，`py_compile`通过。
+- CSIL pre-smoke plan：50 packages/200 cells/600场景行，SHA256=`6c867f335173e23eb6bad2aadddbe652536242a1851dada7ad9e8be2eb39d33a`。
+- MoPC pre-smoke plan：25 packages/200 cells/600场景行，SHA256=`c6e4b9e5a3962c5c9ed46802dfcda7249847499ce978168b05a4ceae6052ff97`。
+- CSIL smoke PID=`1770796`，GPU0；MoPC smoke PID=`1770797`，GPU1；两者PID/CWD/cmdline均已记录。
+- CSIL首个cell在prediction前失败：`ValueError: official-repo base state total capacity drift`。计划容量9与复用base26的容量语义未闭合。
+- MoPC首个single-stage adapter cell已生成prediction artifact，但runner随后因`ValueError: paper-full predictor status drift`拒绝；adapter诊断status与runner只接受的`FORMAL_COMPARISON_BASELINE`不一致。
+- CSIL完成cell/预测/评分为0/0/0；MoPC完整cell/评分为0/0，存在1份未评分、未形成cell receipt的partial prediction。禁止将其解释为性能结果。
+- 两个smoke PID均自行退出，smoke receipt均不存在，因此未生成authority plan，400-cell/1200-row完整矩阵未启动。
+- 两个异常指纹不同，不触发“两个row同指纹”的进程树终止条款；但smoke authority gate明确失败，发布不能继续。
+- v2是本次唯一授权fresh retry，不自动创建v3。所有partial artifact和日志保留，状态为`STOPPED_AT_SMOKE_GATE / NO_PERFORMANCE_RESULT`。
+- 回收文件位于`retrieved/`：两份smoke日志、两份pre-smoke plan、launch receipt、MoPC partial predictor receipt与loss trace。
 - 复用只读base31：`runs/adv3b02_official_newcount_scale_20260724_v7/base31/official_repo_base_state.pt`
 - 先执行CSIL/MoPC各自真实checkpoint smoke；通过后才生成authority plan并启动完整矩阵。
 - 预期每cell产生prediction、score、predictor receipt、enrollment receipt、loss trace和row exit闭环。

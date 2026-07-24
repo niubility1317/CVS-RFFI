@@ -20,6 +20,7 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 from paper_reproduction.scripts.build_adv3b02_paper_full_ci_plan import (
+    validate_adapter_required_capacity,
     validate_adapter_release_matrix,
 )
 
@@ -31,6 +32,14 @@ OFFICIAL_METHODS = (
     "mopc_hr_official_repo_cvs_adapter",
     "mopc_hr_official_repo_sequential5_cvs_adapter",
 )
+
+
+def _expected_method_status(method: str) -> str:
+    if "sequential5" in method:
+        return "ORDERED_ARRIVAL_DIAGNOSTIC"
+    if method.endswith("_cvs_adapter"):
+        return "FORMAL_COMPARISON_INTERFACE_ADAPTER"
+    return "FORMAL_COMPARISON_BASELINE"
 
 
 def _sha256(path: Path) -> str:
@@ -122,6 +131,7 @@ def _load_plan(path: Path) -> dict[str, Any]:
     required_capacity = int(plan.get("required_total_capacity", 0))
     if required_capacity <= 0:
         raise ValueError("paper-full required total capacity missing")
+    validate_adapter_required_capacity(methods, required_capacity)
     if plan.get("expected_cache_scope") not in {
         "stage2_registered",
         "external_comparison_registered",
@@ -545,7 +555,7 @@ def _verify_smoke_authority(
                     cell_receipt_hashes.get(cell_id)
                     == _sha256(cell_receipt_path)
                     and cell_receipt.get("status")
-                    == "FORMAL_COMPARISON_BASELINE"
+                    == _expected_method_status(str(cells[cell_id]["method"]))
                     and cell_receipt.get("cell_id") == cell_id
                     and cell_receipt.get("prediction_artifact_sha256")
                     == _sha256(
@@ -688,7 +698,7 @@ def _run_cell(
     cell_receipt = output_root / "cell_receipt.json"
     if cell_receipt.is_file():
         value = json.loads(cell_receipt.read_text(encoding="utf-8-sig"))
-        if value.get("status") != "FORMAL_COMPARISON_BASELINE":
+        if value.get("status") != _expected_method_status(str(cell["method"])):
             raise ValueError("existing paper-full cell receipt status drift")
         return value
     if output_root.exists():
@@ -726,7 +736,8 @@ def _run_cell(
         health_plan=plan,
         row_id=cell["cell_id"],
     )
-    if predictor.get("status") != "FORMAL_COMPARISON_BASELINE":
+    expected_status = _expected_method_status(str(cell["method"]))
+    if predictor.get("status") != expected_status:
         raise ValueError("paper-full predictor status drift")
     scoring_root = output_root / "scoring"
     scoring_root.mkdir(parents=True, exist_ok=False)
@@ -760,7 +771,7 @@ def _run_cell(
         raise ValueError("cell scorer did not produce three scenario rows")
     receipt = {
         "schema": "cvs.phase2.adv3b02_paper_full_ci_cell_receipt.v1",
-        "status": "FORMAL_COMPARISON_BASELINE",
+        "status": expected_status,
         **{
             key: cell[key]
             for key in (

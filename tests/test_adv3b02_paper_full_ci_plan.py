@@ -26,9 +26,11 @@ from paper_reproduction.scripts.build_adv3b02_paper_full_ci_bundle import (
 )
 from paper_reproduction.scripts.build_adv3b02_paper_full_ci_plan import (
     build,
+    validate_adapter_required_capacity,
     validate_adapter_release_matrix,
 )
 from paper_reproduction.scripts.run_adv3b02_paper_full_ci_plan import (
+    _expected_method_status,
     _load_plan,
     _update_health_state,
     _verify_cache_parity_receipt,
@@ -245,6 +247,18 @@ def test_v2_adapter_matrix_is_fail_closed_in_builder_and_runner(tmp_path):
         ("csil_official_repo_corefix_cvs_adapter",),
         (1, 3),
     )
+    validate_adapter_required_capacity(
+        ("csil_official_repo_corefix_cvs_adapter",), 26
+    )
+    validate_adapter_required_capacity(
+        ("mopc_hr_official_repo_cvs_adapter", sequential), 31
+    )
+    with pytest.raises(ValueError, match="base capacity 26"):
+        validate_adapter_required_capacity(
+            ("csil_official_repo_corefix_cvs_adapter",), 9
+        )
+    with pytest.raises(ValueError, match="base capacity 31"):
+        validate_adapter_required_capacity((sequential,), 25)
     with pytest.raises(ValueError, match="cannot mix"):
         validate_adapter_release_matrix(
             ("csil_official_repo", "csil_official_repo_corefix_cvs_adapter"),
@@ -278,6 +292,17 @@ def test_adapter_predictor_receipt_semantics_are_machine_distinct():
     assert sequential[1] == "ORDERED_ARRIVAL_DIAGNOSTIC"
     assert adapter[0].endswith("predictor_receipt.v2")
     assert sequential[2].startswith("ORDERED_ARRIVAL_DIAGNOSTIC")
+    assert _expected_method_status("csil_official_repo") == strict[1]
+    assert (
+        _expected_method_status("csil_official_repo_corefix_cvs_adapter")
+        == adapter[1]
+    )
+    assert (
+        _expected_method_status(
+            "mopc_hr_official_repo_sequential5_cvs_adapter"
+        )
+        == sequential[1]
+    )
 
 
 def test_plan_runner_imports_from_outside_repository_cwd(tmp_path):
