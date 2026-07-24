@@ -1,14 +1,14 @@
 """Official-repository execution semantics on the ADV3B02 interface.
 
-This module keeps the public trainers' numerically active behavior. The only
-method adaptations are the ADV3B02 feature interface and CVS class cardinality.
-The public fixed-batch/drop-last behavior is retained, including zero optimizer
-steps when a K-shot increment is smaller than one complete batch.
+This module keeps the public trainers' numerically active behavior. Explicit
+CVS adapter names isolate small-K execution and ordered-arrival adaptations
+from the repository-faithful entry points.
 """
 
 from __future__ import annotations
 
 import copy
+import hashlib
 import math
 from dataclasses import dataclass
 from typing import Any, Callable, Mapping
@@ -19,7 +19,18 @@ from torch import nn
 
 
 FeatureFn = Callable[[nn.Module, torch.Tensor], tuple[torch.Tensor, torch.Tensor]]
-METHODS = ("csil_official_repo", "mopc_hr_official_repo")
+STRICT_METHODS = ("csil_official_repo", "mopc_hr_official_repo")
+CSIL_CVS_ADAPTER = "csil_official_repo_corefix_cvs_adapter"
+MOPC_CVS_ADAPTER = "mopc_hr_official_repo_cvs_adapter"
+MOPC_SEQUENTIAL5_CVS_ADAPTER = (
+    "mopc_hr_official_repo_sequential5_cvs_adapter"
+)
+METHODS = STRICT_METHODS + (
+    CSIL_CVS_ADAPTER,
+    MOPC_CVS_ADAPTER,
+    MOPC_SEQUENTIAL5_CVS_ADAPTER,
+)
+MECHANISM_SCHEMA = "cvs.phase2.adv3b02_official_corefix_adapter.v2"
 
 
 def zero_bias_logits(
@@ -63,11 +74,16 @@ def _drop_last_batches(
     epochs: int,
     device: torch.device,
     seed: int,
+    adapt_small_k: bool = False,
 ) -> tuple[list[tuple[int, int, torch.Tensor]], int, bool]:
     if rows < 0:
         raise ValueError("training rows must be non-negative")
-    effective_batch = int(requested_batch)
-    small_k_adaptation = False
+    effective_batch = (
+        int(rows)
+        if bool(adapt_small_k) and 0 < int(rows) < int(requested_batch)
+        else int(requested_batch)
+    )
+    small_k_adaptation = effective_batch != int(requested_batch)
     generator = torch.Generator(device=device).manual_seed(int(seed))
     result = []
     iteration = 0
@@ -81,6 +97,11 @@ def _drop_last_batches(
                 (epoch + 1, iteration, order[start : start + effective_batch])
             )
     return result, effective_batch, small_k_adaptation
+
+
+def _tensor_sha256(value: torch.Tensor) -> str:
+    payload = value.detach().cpu().contiguous().numpy().tobytes()
+    return hashlib.sha256(payload).hexdigest()
 
 
 def csil_official_fisher_objective(probabilities: torch.Tensor) -> torch.Tensor:
@@ -438,6 +459,9 @@ def fit_csil_official_repo(
     old_count: int,
     seed: int,
     base_state: Mapping[str, Any],
+    adapt_small_k: bool = False,
+    fix_official_fingerprint_mask: bool = False,
+    method_name: str = "csil_official_repo",
 ) -> OfficialState:
     base = base_state["csil"]
     backbone = copy.deepcopy(backbone)
@@ -505,6 +529,14 @@ def fit_csil_official_repo(
     train_count = official_cut - 1
     small_k_split_adaptation = False
     train_indices = order[:train_count]
+    expected_new_ids = set(range(int(old_count), total_count))
+    official_train_ids = set(
+        int(value) for value in new_y_all[train_indices].detach().cpu().tolist()
+    )
+    missing_after_official_split = sorted(expected_new_ids - official_train_ids)
+    if bool(adapt_small_k) and missing_after_official_split:
+        train_indices = order
+        small_k_split_adaptation = True
     train_x = new_x_all[train_indices]
     train_y = new_y_all[train_indices]
     batches, effective_batch, small_k_batch_adaptation = _drop_last_batches(
@@ -513,6 +545,7 @@ def fit_csil_official_repo(
         epochs=3,
         device=support_x.device,
         seed=int(seed) + 83,
+        adapt_small_k=bool(adapt_small_k),
     )
     fisher = {
         key: value.to(support_x.device) for key, value in base["fisher"].items()
@@ -530,6 +563,8 @@ def fit_csil_official_repo(
     }
     masks["fc_bf_fp.weight"][old_count:] = 1
     masks["fc_bf_fp.bias"][old_count:] = 1
+    if bool(fix_official_fingerprint_mask):
+        masks["fingerprints"][:old_count, :old_count] = 1
     masks["fingerprints"][old_count:, old_count:] = 1
     trace = []
     model.train()
@@ -569,13 +604,18 @@ def fit_csil_official_repo(
         )
     model.eval()
     return OfficialState(
-        method="csil_official_repo",
+        method=str(method_name),
         before_model=before,
         current_model=model,
         old_count=int(old_count),
         total_count=total_count,
         loss_trace=trace,
         resource={
+            "mechanism_schema": (
+                MECHANISM_SCHEMA
+                if bool(fix_official_fingerprint_mask) or bool(adapt_small_k)
+                else "cvs.adv3b02.official_repo_execution.v1"
+            ),
             "official_repo_commit": "8ce8637daf4dc60eeb1c56bff64c050c5b2353e9",
             "official_entry": "ContinualLearning/WorkStage/CSIL.m",
             "backbone_frozen_incremental": True,
@@ -586,10 +626,24 @@ def fit_csil_official_repo(
             "small_k_execution_adaptation": bool(
                 small_k_split_adaptation or small_k_batch_adaptation
             ),
+            "full_support_class_coverage_adapter": small_k_split_adaptation,
+            "missing_class_ids_after_official_split": missing_after_official_split,
+            "training_class_ids": sorted(
+                set(int(value) for value in train_y.detach().cpu().tolist())
+            ),
             "official_zero_step_due_to_drop_last": len(trace) == 0,
             "new_dimension": new_count,
             "new_fingerprint_initialization": initialization,
             "class_cardinality_initialization_adaptation": cardinality_adaptation,
+            "official_fingerprint_mask_corefix": bool(
+                fix_official_fingerprint_mask
+            ),
+            "fingerprint_mask_blocks": {
+                "old_old": int(bool(fix_official_fingerprint_mask)),
+                "old_new": 0,
+                "new_old": 0,
+                "new_new": 1,
+            },
             "query_decision": "zero_bias_all_registered_argmax",
         },
     )
@@ -604,6 +658,8 @@ def fit_mopc_hr_official_repo(
     old_count: int,
     seed: int,
     base_state: Mapping[str, Any],
+    adapt_small_k: bool = False,
+    method_name: str = "mopc_hr_official_repo",
 ) -> OfficialState:
     base = base_state["mopc_hr"]
     backbone = copy.deepcopy(backbone)
@@ -626,6 +682,7 @@ def fit_mopc_hr_official_repo(
         epochs=20,
         device=support_x.device,
         seed=int(seed) + 101,
+        adapt_small_k=bool(adapt_small_k),
     )
     historical = base["old_prototypes"].to(support_x.device)
     reference = copy.deepcopy(model).eval()
@@ -651,16 +708,17 @@ def fit_mopc_hr_official_repo(
         )
         kd = -(previous_prob * current_log_prob).sum(dim=1).mean()
         ce = F.cross_entropy(logits[:, :total_count], stage_y[indices])
-        sample_count = len(indices)
+        real_batch_size = len(indices)
+        proto_aug_count = 16
         sampled_classes = torch.randint(
             0,
             int(old_count),
-            (sample_count,),
+            (proto_aug_count,),
             device=support_x.device,
             generator=generator,
         )
         noise = torch.randn(
-            (sample_count, historical.shape[1]),
+            (proto_aug_count, historical.shape[1]),
             device=support_x.device,
             dtype=historical.dtype,
             generator=generator,
@@ -681,6 +739,8 @@ def fit_mopc_hr_official_repo(
             {
                 "epoch": epoch,
                 "iteration": iteration,
+                "real_batch_size": real_batch_size,
+                "proto_aug_count": proto_aug_count,
                 "cross_entropy": float(ce.detach()),
                 "knowledge_distillation_not_in_total": float(kd.detach()),
                 "prototype_augmentation": float(proto.detach()),
@@ -702,7 +762,7 @@ def fit_mopc_hr_official_repo(
         )
         corrected = torch.cat([corrected_old, current_new], dim=0)
     return OfficialState(
-        method="mopc_hr_official_repo",
+        method=str(method_name),
         before_model=before,
         current_model=model,
         old_count=int(old_count),
@@ -710,6 +770,11 @@ def fit_mopc_hr_official_repo(
         loss_trace=trace,
         corrected_prototypes=corrected,
         resource={
+            "mechanism_schema": (
+                MECHANISM_SCHEMA
+                if bool(adapt_small_k)
+                else "cvs.adv3b02.official_repo_execution.v1"
+            ),
             "official_repo_commit": "ae6554316ad1a2175920e330133a2f103408bf78",
             "official_entry": "MoPC_HR_trainer.py",
             "backbone_frozen_incremental": False,
@@ -717,6 +782,8 @@ def fit_mopc_hr_official_repo(
             "epochs": 20,
             "requested_batch_size": 16,
             "effective_batch_size": effective_batch,
+            "real_batch_size": effective_batch if len(trace) else 0,
+            "proto_aug_count_per_step": 16,
             "small_k_execution_adaptation": small_k_adaptation,
             "official_zero_step_due_to_drop_last": len(trace) == 0,
             "increment_size": increment_size,
@@ -726,6 +793,117 @@ def fit_mopc_hr_official_repo(
             "prototype_logit_temperature": 2.0,
             "kd_in_total_loss": False,
             "query_decision": "current_model_all_registered_classifier_logits",
+        },
+    )
+
+
+def fit_mopc_hr_official_repo_sequential5(
+    backbone: nn.Module,
+    support_x: torch.Tensor,
+    support_y: torch.Tensor,
+    *,
+    feature_fn: FeatureFn,
+    old_count: int,
+    seed: int,
+    base_state: Mapping[str, Any],
+) -> OfficialState:
+    total_count = int(torch.unique(support_y).numel())
+    new_count = total_count - int(old_count)
+    if new_count <= 0 or new_count % 5:
+        raise ValueError("sequential5 requires a positive multiple of five new classes")
+    class_order = list(range(int(old_count), total_count))
+    current_base = {
+        key: value for key, value in base_state["mopc_hr"].items()
+    }
+    initial_before = None
+    current_state = None
+    all_trace: list[dict[str, Any]] = []
+    stage_receipts = []
+    previous_corrected_sha256 = None
+    for stage_index, start in enumerate(range(0, new_count, 5), start=1):
+        stage_old_count = int(old_count) + start
+        stage_total_count = stage_old_count + 5
+        stage_mask = support_y < stage_total_count
+        input_prototypes = current_base["old_prototypes"].to(support_x.device)
+        input_sha256 = _tensor_sha256(input_prototypes)
+        if (
+            previous_corrected_sha256 is not None
+            and input_sha256 != previous_corrected_sha256
+        ):
+            raise RuntimeError("sequential MoPC prototype hash-chain drift")
+        current_state = fit_mopc_hr_official_repo(
+            backbone,
+            support_x[stage_mask],
+            support_y[stage_mask],
+            feature_fn=feature_fn,
+            old_count=stage_old_count,
+            seed=int(seed) + stage_index * 10007,
+            base_state={"mopc_hr": current_base},
+            adapt_small_k=True,
+            method_name=MOPC_SEQUENTIAL5_CVS_ADAPTER,
+        )
+        if initial_before is None:
+            initial_before = current_state.before_model
+        if current_state.corrected_prototypes is None:
+            raise RuntimeError("sequential MoPC stage misses corrected prototypes")
+        output_sha256 = _tensor_sha256(current_state.corrected_prototypes)
+        stage_class_ids = class_order[start : start + 5]
+        stage_receipts.append(
+            {
+                "stage_index": stage_index,
+                "old_count_before_stage": stage_old_count,
+                "registered_count_after_stage": stage_total_count,
+                "stage_class_ids": stage_class_ids,
+                "prototype_input_sha256": input_sha256,
+                "prototype_output_sha256": output_sha256,
+                "prototype_input_matches_previous_output": (
+                    previous_corrected_sha256 is None
+                    or input_sha256 == previous_corrected_sha256
+                ),
+                **current_state.resource,
+            }
+        )
+        all_trace.extend(
+            {"stage_index": stage_index, **row}
+            for row in current_state.loss_trace
+        )
+        current_base = {
+            "backbone_state": {
+                key: value.detach().cpu()
+                for key, value in current_state.current_model.backbone.state_dict().items()
+            },
+            "classifier_weight": current_state.current_model.fc.weight.detach().cpu(),
+            "classifier_bias": current_state.current_model.fc.bias.detach().cpu(),
+            "old_prototypes": current_state.corrected_prototypes.detach().cpu(),
+        }
+        previous_corrected_sha256 = output_sha256
+    if current_state is None or initial_before is None:
+        raise RuntimeError("sequential MoPC produced no stages")
+    return OfficialState(
+        method=MOPC_SEQUENTIAL5_CVS_ADAPTER,
+        before_model=initial_before,
+        current_model=current_state.current_model,
+        old_count=int(old_count),
+        total_count=total_count,
+        loss_trace=all_trace,
+        corrected_prototypes=current_state.corrected_prototypes,
+        resource={
+            "mechanism_schema": MECHANISM_SCHEMA,
+            "official_repo_commit": "ae6554316ad1a2175920e330133a2f103408bf78",
+            "official_entry": "MoPC_HR_trainer.py",
+            "claim_boundary": (
+                "ORDERED_ARRIVAL_DIAGNOSTIC/SEQUENTIAL_CVS_ADAPTER"
+            ),
+            "class_order": class_order,
+            "class_order_sealed_before_query": True,
+            "stage_size": 5,
+            "stage_count": len(stage_receipts),
+            "stages": stage_receipts,
+            "optimizer_steps": len(all_trace),
+            "backbone_frozen_incremental": False,
+            "prototype_correction_consumed_by_later_stage": len(stage_receipts) > 1,
+            "query_decision": "current_model_all_registered_classifier_logits",
+            "kd_in_total_loss": False,
         },
     )
 
@@ -751,8 +929,43 @@ def fit_official_repo(
             seed=seed,
             base_state=base_state,
         )
+    if method == CSIL_CVS_ADAPTER:
+        return fit_csil_official_repo(
+            backbone,
+            support_x,
+            support_y,
+            feature_fn=feature_fn,
+            old_count=old_count,
+            seed=seed,
+            base_state=base_state,
+            adapt_small_k=True,
+            fix_official_fingerprint_mask=True,
+            method_name=method,
+        )
     if method == "mopc_hr_official_repo":
         return fit_mopc_hr_official_repo(
+            backbone,
+            support_x,
+            support_y,
+            feature_fn=feature_fn,
+            old_count=old_count,
+            seed=seed,
+            base_state=base_state,
+        )
+    if method == MOPC_CVS_ADAPTER:
+        return fit_mopc_hr_official_repo(
+            backbone,
+            support_x,
+            support_y,
+            feature_fn=feature_fn,
+            old_count=old_count,
+            seed=seed,
+            base_state=base_state,
+            adapt_small_k=True,
+            method_name=method,
+        )
+    if method == MOPC_SEQUENTIAL5_CVS_ADAPTER:
+        return fit_mopc_hr_official_repo_sequential5(
             backbone,
             support_x,
             support_y,
@@ -766,7 +979,7 @@ def fit_official_repo(
 
 @torch.no_grad()
 def predict_before(state: OfficialState, query_x: torch.Tensor) -> torch.Tensor:
-    if state.method == "csil_official_repo":
+    if state.method.startswith("csil_"):
         return state.before_model(query_x).argmax(1)
     logits, _ = state.before_model(query_x)
     return logits[:, : state.old_count].argmax(1)
@@ -774,7 +987,7 @@ def predict_before(state: OfficialState, query_x: torch.Tensor) -> torch.Tensor:
 
 @torch.no_grad()
 def predict_after(state: OfficialState, query_x: torch.Tensor) -> torch.Tensor:
-    if state.method == "csil_official_repo":
+    if state.method.startswith("csil_"):
         return state.current_model(query_x).argmax(1)
     logits, _ = state.current_model(query_x)
     return logits[:, : state.total_count].argmax(1)

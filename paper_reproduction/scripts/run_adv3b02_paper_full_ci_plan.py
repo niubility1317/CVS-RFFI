@@ -14,10 +14,20 @@ from contextlib import contextmanager
 from pathlib import Path
 from typing import Any, Sequence
 
+from paper_reproduction.scripts.build_adv3b02_paper_full_ci_plan import (
+    validate_adapter_release_matrix,
+)
+
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 METHODS = ("csil_paper_full", "mopc_hr_paper_full")
-OFFICIAL_METHODS = ("csil_official_repo", "mopc_hr_official_repo")
+OFFICIAL_METHODS = (
+    "csil_official_repo",
+    "mopc_hr_official_repo",
+    "csil_official_repo_corefix_cvs_adapter",
+    "mopc_hr_official_repo_cvs_adapter",
+    "mopc_hr_official_repo_sequential5_cvs_adapter",
+)
 
 
 def _sha256(path: Path) -> str:
@@ -89,6 +99,8 @@ def _load_plan(path: Path) -> dict[str, Any]:
         and all(value in OFFICIAL_METHODS for value in methods)
     ):
         raise ValueError("paper-full methods drift")
+    new_counts = tuple(int(value) for value in plan.get("new_class_counts", []))
+    validate_adapter_release_matrix(methods, new_counts)
     packages = plan.get("packages")
     cells = plan.get("cells")
     if not isinstance(packages, list) or not isinstance(cells, list):

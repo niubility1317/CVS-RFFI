@@ -11,7 +11,18 @@ from pathlib import Path
 
 
 METHODS = ("csil_paper_full", "mopc_hr_paper_full")
-OFFICIAL_METHODS = ("csil_official_repo", "mopc_hr_official_repo")
+OFFICIAL_METHODS = (
+    "csil_official_repo",
+    "mopc_hr_official_repo",
+    "csil_official_repo_corefix_cvs_adapter",
+    "mopc_hr_official_repo_cvs_adapter",
+    "mopc_hr_official_repo_sequential5_cvs_adapter",
+)
+CSIL_CVS_ADAPTER = "csil_official_repo_corefix_cvs_adapter"
+MOPC_CVS_ADAPTERS = {
+    "mopc_hr_official_repo_cvs_adapter",
+    "mopc_hr_official_repo_sequential5_cvs_adapter",
+}
 NEW_COUNTS = (2, 5, 10, 20)
 SCENARIOS = ("leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak")
 
@@ -45,6 +56,28 @@ def _write_new(path: Path, payload: dict) -> None:
         os.fsync(handle.fileno())
 
 
+def validate_adapter_release_matrix(
+    methods: tuple[str, ...], new_counts: tuple[int, ...]
+) -> None:
+    if (
+        "mopc_hr_official_repo_sequential5_cvs_adapter" in methods
+        and any(value % 5 for value in new_counts)
+    ):
+        raise ValueError("sequential5 requires new-counts divisible by five")
+    adapter_methods = set(methods) & ({CSIL_CVS_ADAPTER} | MOPC_CVS_ADAPTERS)
+    if not adapter_methods:
+        return
+    if set(methods) != adapter_methods:
+        raise ValueError("v2 adapter methods cannot mix with historical method names")
+    if CSIL_CVS_ADAPTER in adapter_methods:
+        if adapter_methods != {CSIL_CVS_ADAPTER} or new_counts != (1, 3):
+            raise ValueError(
+                "CSIL v2 adapter release is locked to method-only new-counts 1,3"
+            )
+    elif not adapter_methods <= MOPC_CVS_ADAPTERS or new_counts != (25,):
+        raise ValueError("MoPC v2 adapter release is locked to new-count 25")
+
+
 def build(args: argparse.Namespace) -> dict:
     methods = tuple(
         value.strip()
@@ -74,6 +107,7 @@ def build(args: argparse.Namespace) -> dict:
         raise ValueError(
             "new-counts must be unique positive values in ascending order"
         )
+    validate_adapter_release_matrix(methods, new_counts)
     split_path = Path(args.class_split).resolve(strict=True)
     split = json.loads(split_path.read_text(encoding="utf-8-sig"))
     old = [str(value) for value in split["target_old_tx_labels"]]

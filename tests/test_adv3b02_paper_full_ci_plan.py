@@ -23,7 +23,10 @@ from paper_reproduction.scripts.build_adv3b02_paper_full_ci_bundle import (
     load_comparison_leo_cache_set,
     load_verified_comparison_stage2_predictor_bundle,
 )
-from paper_reproduction.scripts.build_adv3b02_paper_full_ci_plan import build
+from paper_reproduction.scripts.build_adv3b02_paper_full_ci_plan import (
+    build,
+    validate_adapter_release_matrix,
+)
 from paper_reproduction.scripts.run_adv3b02_paper_full_ci_plan import (
     _load_plan,
     _update_health_state,
@@ -32,6 +35,7 @@ from paper_reproduction.scripts.run_adv3b02_paper_full_ci_plan import (
 )
 from paper_reproduction.scripts.run_adv3b02_paper_full_ci_truth_free_predictor import (
     _load_base_state,
+    _method_receipt_semantics,
 )
 from paper_reproduction.scripts.verify_adv3b02_official_scale_cache_parity import (
     verify as verify_scale_cache_parity,
@@ -223,6 +227,56 @@ def test_official_scale_plan_rejects_duplicate_method(tmp_path):
                 output=tmp_path / "plan.json",
             )
         )
+
+
+def test_v2_adapter_matrix_is_fail_closed_in_builder_and_runner(tmp_path):
+    sequential = "mopc_hr_official_repo_sequential5_cvs_adapter"
+    with pytest.raises(ValueError, match="divisible by five"):
+        validate_adapter_release_matrix((sequential,), (3,))
+    validate_adapter_release_matrix(
+        (
+            "mopc_hr_official_repo_cvs_adapter",
+            sequential,
+        ),
+        (25,),
+    )
+    validate_adapter_release_matrix(
+        ("csil_official_repo_corefix_cvs_adapter",),
+        (1, 3),
+    )
+    with pytest.raises(ValueError, match="cannot mix"):
+        validate_adapter_release_matrix(
+            ("csil_official_repo", "csil_official_repo_corefix_cvs_adapter"),
+            (1, 3),
+        )
+    invalid_plan = tmp_path / "invalid_sequential_plan.json"
+    invalid_plan.write_text(
+        json.dumps(
+            {
+                "schema": "cvs.phase2.adv3b02_paper_full_ci_plan.v1",
+                "methods": [sequential],
+                "new_class_counts": [3],
+            }
+        ),
+        encoding="utf-8",
+    )
+    with pytest.raises(ValueError, match="divisible by five"):
+        _load_plan(invalid_plan)
+
+
+def test_adapter_predictor_receipt_semantics_are_machine_distinct():
+    strict = _method_receipt_semantics("csil_official_repo")
+    adapter = _method_receipt_semantics(
+        "csil_official_repo_corefix_cvs_adapter"
+    )
+    sequential = _method_receipt_semantics(
+        "mopc_hr_official_repo_sequential5_cvs_adapter"
+    )
+    assert strict[1] == "FORMAL_COMPARISON_BASELINE"
+    assert adapter[1] == "FORMAL_COMPARISON_INTERFACE_ADAPTER"
+    assert sequential[1] == "ORDERED_ARRIVAL_DIAGNOSTIC"
+    assert adapter[0].endswith("predictor_receipt.v2")
+    assert sequential[2].startswith("ORDERED_ARRIVAL_DIAGNOSTIC")
 
 
 def test_smoke_receipt_binds_plan_contract_artifacts_and_predictor(tmp_path):

@@ -53,6 +53,26 @@ from paper_reproduction.cvs_aligned.adv3b02_official_repo_ci import (  # noqa: E
 METHODS = LEGACY_METHODS + OFFICIAL_METHODS
 
 
+def _method_receipt_semantics(method: str) -> tuple[str, str, str]:
+    if "sequential5" in method:
+        return (
+            "cvs.phase2.adv3b02_official_corefix_adapter_predictor_receipt.v2",
+            "ORDERED_ARRIVAL_DIAGNOSTIC",
+            "ORDERED_ARRIVAL_DIAGNOSTIC/SEQUENTIAL_CVS_ADAPTER",
+        )
+    if method.endswith("_cvs_adapter"):
+        return (
+            "cvs.phase2.adv3b02_official_corefix_adapter_predictor_receipt.v2",
+            "FORMAL_COMPARISON_INTERFACE_ADAPTER",
+            "OFFICIAL_CORE_CVS_INTERFACE_ADAPTER",
+        )
+    return (
+        "cvs.phase2.adv3b02_paper_full_ci_predictor_receipt.v1",
+        "FORMAL_COMPARISON_BASELINE",
+        "formal_paper_method_comparison_baseline",
+    )
+
+
 def _write_json_new(path: Path, value: Mapping[str, Any] | list[Any]) -> None:
     with path.open("x", encoding="utf-8", newline="\n") as handle:
         json.dump(value, handle, ensure_ascii=False, sort_keys=True, indent=2)
@@ -472,11 +492,12 @@ def predict(args: argparse.Namespace) -> dict[str, Any]:
         shared_view_counts=np.ones(sum(len(v) for v in token_rows), dtype=np.uint8),
     )
     _write_json_new(output_dir / "loss_trace.json", loss_trace)
+    receipt_schema, receipt_status, claim_boundary = _method_receipt_semantics(method)
     receipt = {
-        "schema": "cvs.phase2.adv3b02_paper_full_ci_predictor_receipt.v1",
-        "status": "FORMAL_COMPARISON_BASELINE",
+        "schema": receipt_schema,
+        "status": receipt_status,
         "method": method,
-        "method_claim_boundary": "formal_paper_method_comparison_baseline",
+        "method_claim_boundary": claim_boundary,
         "row_id": str(args.row_id),
         "receiver": manifest["receiver"],
         "seed": int(args.seed),
@@ -485,7 +506,15 @@ def predict(args: argparse.Namespace) -> dict[str, Any]:
         "old_class_count": old_count,
         "registered_class_count": len(class_handles),
         "backbone": "ADV3B02",
-        "backbone_frozen": False,
+        "base_backbone_fully_trained": True,
+        "incremental_backbone_frozen": all(
+            bool(item.get("backbone_frozen_incremental", False))
+            for item in resources
+        ),
+        "backbone_frozen": all(
+            bool(item.get("backbone_frozen_incremental", False))
+            for item in resources
+        ),
         "candidate_resources_by_scenario": resources,
         "peak_cuda_memory_bytes": (
             int(torch.cuda.max_memory_allocated(device)) if device.type == "cuda" else 0

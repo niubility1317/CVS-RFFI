@@ -1,6 +1,9 @@
 import torch
 
 from paper_reproduction.cvs_aligned.adv3b02_official_repo_ci import (
+    CSIL_CVS_ADAPTER,
+    MOPC_CVS_ADAPTER,
+    MOPC_SEQUENTIAL5_CVS_ADAPTER,
     _manual_sgdm_step,
     build_csil_base_state,
     csil_distillation,
@@ -8,6 +11,7 @@ from paper_reproduction.cvs_aligned.adv3b02_official_repo_ci import (
     csil_official_fisher_objective,
     fit_csil_official_repo,
     fit_mopc_hr_official_repo,
+    fit_official_repo,
     mopc_correct_prototypes,
     mopc_parameter_hr,
     zero_bias_logits,
@@ -100,7 +104,7 @@ def test_mopc_correction_is_raw_dot_softmax_not_cosine():
     assert not torch.allclose(actual, cosine_result)
 
 
-def test_csil_increment_freezes_backbone_and_old_head_blocks():
+def test_csil_historical_entry_preserves_old_fingerprint_frozen_diagnostic():
     backbone = _dummy_backbone()
     fc_weight = torch.tensor([[1.0, 0.0, 0.0], [0.0, 1.0, 0.0]])
     fc_bias = torch.zeros(2)
@@ -139,7 +143,16 @@ def test_csil_increment_freezes_backbone_and_old_head_blocks():
         assert torch.equal(state.current_model.backbone.state_dict()[key], value)
     assert torch.equal(state.current_model.fc_bf_fp.weight[:2], fc_weight)
     assert torch.equal(state.current_model.fingerprints[:2, :2], fingerprints)
+    assert torch.count_nonzero(state.current_model.fingerprints[:2, 2:]) == 0
+    assert torch.count_nonzero(state.current_model.fingerprints[2:, :2]) == 0
+    assert state.resource["fingerprint_mask_blocks"] == {
+        "old_old": 0,
+        "old_new": 0,
+        "new_old": 0,
+        "new_new": 1,
+    }
     assert state.current_model.fc_bf_fp.weight.shape[0] == 3
+    assert state.resource["official_fingerprint_mask_corefix"] is False
 
 
 def test_mopc_increment_uses_classifier_query_and_kd_is_diagnostic_only():
@@ -167,6 +180,10 @@ def test_mopc_increment_uses_classifier_query_and_kd_is_diagnostic_only():
     assert state.resource["optimizer_steps"] == 20
     assert state.resource["effective_batch_size"] == 16
     assert state.resource["kd_in_total_loss"] is False
+    assert (
+        state.resource["mechanism_schema"]
+        == "cvs.adv3b02.official_repo_execution.v1"
+    )
     assert "knowledge_distillation_not_in_total" in state.loss_trace[0]
 
 
@@ -197,6 +214,118 @@ def test_mopc_small_k_preserves_official_zero_step_drop_last():
     assert state.resource["small_k_execution_adaptation"] is False
     assert state.resource["official_zero_step_due_to_drop_last"] is True
     assert state.loss_trace == []
+
+
+def test_csil_cvs_adapter_uses_full_support_for_per_class_coverage():
+    backbone = _dummy_backbone()
+    fc_weight = torch.randn(3, 3)
+    fc_bias = torch.zeros(3)
+    fingerprints = torch.eye(3)
+    fisher = {
+        "fingerprints": torch.ones(3, 3),
+        "backbone.weight": torch.ones_like(backbone.weight),
+        "backbone.bias": torch.ones_like(backbone.bias),
+        "fc_bf_fp.weight": torch.ones_like(fc_weight),
+        "fc_bf_fp.bias": torch.ones_like(fc_bias),
+    }
+    support_x = torch.randn(6, 2)
+    support_y = torch.arange(6)
+    state = fit_official_repo(
+        CSIL_CVS_ADAPTER,
+        backbone,
+        support_x,
+        support_y,
+        feature_fn=_feature_fn,
+        old_count=3,
+        seed=31,
+        base_state={
+            "csil": {
+                "backbone_state": backbone.state_dict(),
+                "fc_weight": fc_weight,
+                "fc_bias": fc_bias,
+                "fingerprints": fingerprints,
+                "fisher": fisher,
+            }
+        },
+    )
+    assert state.method == CSIL_CVS_ADAPTER
+    assert state.resource["full_support_class_coverage_adapter"] is True
+    assert state.resource["training_class_ids"] == [3, 4, 5]
+    assert state.resource["effective_batch_size"] == 3
+    assert state.resource["optimizer_steps"] == 3
+    assert state.resource["official_fingerprint_mask_corefix"] is True
+    assert not torch.equal(state.current_model.fingerprints[:3, :3], fingerprints)
+    assert torch.count_nonzero(state.current_model.fingerprints[:3, 3:]) == 0
+    assert torch.count_nonzero(state.current_model.fingerprints[3:, :3]) == 0
+
+
+def test_mopc_cvs_adapter_shrinks_real_batch_but_keeps_16_proto_aug():
+    backbone = _dummy_backbone()
+    classifier = torch.nn.Linear(3, 3)
+    support_x = torch.randn(7, 2)
+    support_y = torch.tensor([0, 1] + [2] * 5)
+    state = fit_official_repo(
+        MOPC_CVS_ADAPTER,
+        backbone,
+        support_x,
+        support_y,
+        feature_fn=_feature_fn,
+        old_count=2,
+        seed=37,
+        base_state={
+            "mopc_hr": {
+                "backbone_state": backbone.state_dict(),
+                "classifier_weight": classifier.weight.detach().clone(),
+                "classifier_bias": classifier.bias.detach().clone(),
+                "old_prototypes": torch.randn(2, 3),
+            }
+        },
+    )
+    assert state.resource["optimizer_steps"] == 20
+    assert state.resource["effective_batch_size"] == 5
+    assert state.resource["real_batch_size"] == 5
+    assert state.resource["proto_aug_count_per_step"] == 16
+    assert state.resource["mechanism_schema"].endswith(
+        "official_corefix_adapter.v2"
+    )
+    assert {
+        (row["real_batch_size"], row["proto_aug_count"])
+        for row in state.loss_trace
+    } == {(5, 16)}
+
+
+def test_mopc_sequential5_consumes_previous_corrected_prototypes():
+    backbone = _dummy_backbone()
+    classifier = torch.nn.Linear(3, 12)
+    support_x = torch.randn(12, 2)
+    support_y = torch.arange(12)
+    state = fit_official_repo(
+        MOPC_SEQUENTIAL5_CVS_ADAPTER,
+        backbone,
+        support_x,
+        support_y,
+        feature_fn=_feature_fn,
+        old_count=2,
+        seed=41,
+        base_state={
+            "mopc_hr": {
+                "backbone_state": backbone.state_dict(),
+                "classifier_weight": classifier.weight.detach().clone(),
+                "classifier_bias": classifier.bias.detach().clone(),
+                "old_prototypes": torch.randn(2, 3),
+            }
+        },
+    )
+    stages = state.resource["stages"]
+    assert state.method == MOPC_SEQUENTIAL5_CVS_ADAPTER
+    assert state.resource["stage_count"] == 2
+    assert state.resource["class_order"] == list(range(2, 12))
+    assert state.resource["prototype_correction_consumed_by_later_stage"] is True
+    assert stages[1]["prototype_input_sha256"] == stages[0]["prototype_output_sha256"]
+    assert all(
+        stage["prototype_input_matches_previous_output"] for stage in stages
+    )
+    assert [stage["optimizer_steps"] for stage in stages] == [20, 20]
 
 
 def test_csil_base_keeps_trainnetwork_once_shuffle_and_tail_batch():
