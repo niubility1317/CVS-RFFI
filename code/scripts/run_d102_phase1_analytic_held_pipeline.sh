@@ -2,7 +2,7 @@
 set -euo pipefail
 umask 077
 
-RUN_ID="d102_rb_metabias4_phase1_analytic_held_20260724_r2"
+RUN_ID="d102_rb_metabias4_phase1_analytic_held_20260724_r3"
 PROJECT_ROOT="/home/szu2070436088/2510044040/CV-SincNet"
 RUN_ROOT="$PROJECT_ROOT/runs/$RUN_ID"
 SOURCE_ROOT="$RUN_ROOT/source"
@@ -87,7 +87,7 @@ check_sha "$SOURCE_ROOT/code/scripts/build_phase1_rb_metabias4_bundle.py" \
 check_sha "$SOURCE_ROOT/code/scripts/run_rb_metabias4_phase1_held.py" \
   "8e401086c135fbb5deed0f9e53b73df60e98ce3bc6c05b302ee6fbabfda3c3b8"
 check_sha "$SOURCE_ROOT/code/scripts/export_phase1_jp4_tap_archive.py" \
-  "196deaf7c8ebb70a021fb21da8788a85ba8c02fbd334fa7b460127341b06daaa"
+  "b2baa319e1434ff4d2ebff7d96e8da833b954ec9b6b02ebedd6ffbd12a286ad1"
 
 temporary="$LOG_ROOT/pipeline.pid.tmp.$$"
 printf '%s\n' "$BASHPID" > "$temporary"
