@@ -68,7 +68,7 @@ SCXMAP从类内中心化Phase1样本学习rank4的`z_dom→z_id`接收域残差�
 
 ## Git与发布输入
 
-本地Git工作树：`E:\type10-7\code\snapshots\cdom_scxmap_d92_glf_r1_wt`，分支`codex/cdom-scxmap-d92-glf-r1`。实现与预注册精选commit为`f4dcb950`；release-surface修复commit、source archive与外部release receipt将在二次复核通过后冻结。禁止`git add -A`和GitHub上传。
+本地Git工作树：`E:\type10-7\code\snapshots\cdom_scxmap_d92_glf_r1_wt`，分支`codex/cdom-scxmap-d92-glf-r1`。实现与预注册commit为`f4dcb950`；冻结发布源码commit为`b0cfc44bf0b2726e2486a4114af692bf0b47bf49`。源码归档`source_b0cfc44b.zip`为35916465B，SHA256=`2ceea78175190bc49620a437c3b68ef406d4f0cd9769cf88c7878f62b71849fe`；外部`release_receipt.json` SHA256=`0163300b11b9193051b7f9be2ac2c2358e6ac03995030a627b5967a8da27de91`，逐项绑定10个运行、实现、设计与测试文件。入口脚本归档字节SHA256=`f6bdc3e17298d835443b6d8462b638d8016802654a9109b9f8947cd4a9ab82c2`。禁止`git add -A`和GitHub上传。
 
 N607既有只读输入：
 
@@ -89,12 +89,12 @@ N607既有只读输入：
 |log|`/home/szu2070436088/2510044040/CV-SincNet/logs/scxmap_p1_held_falsifier_r1_20260724`|
 |环境|`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`|
 |GPU|由独立runner选择1张不超过占用上限的GPU，并映射为进程内`cuda:0`|
-|入口|`automation_reports/CV-SincNet/scxmap_p1_held_falsifier_r1_20260724/run_pipeline.sh`|
+|入口|从同一冻结归档的`automation_reports/CV-SincNet/scxmap_p1_held_falsifier_r1_20260724/run_pipeline.sh`复制到`<run>/run_pipeline.sh`|
 |预期产物|real-support smoke、packet、truth、query、build receipt、prediction、score、SHA清单、完成marker和exit|
 
 冻结child命令：
 
-`CUDA_VISIBLE_DEVICES=<single-0-to-7> RELEASE_RECEIPT_SHA256=<frozen-sha256> bash /home/szu2070436088/2510044040/CV-SincNet/runs/scxmap_p1_held_falsifier_r1_20260724/run_pipeline.sh`
+`CUDA_VISIBLE_DEVICES=<single-0-to-7> RELEASE_RECEIPT_SHA256=0163300b11b9193051b7f9be2ac2c2358e6ac03995030a627b5967a8da27de91 bash /home/szu2070436088/2510044040/CV-SincNet/runs/scxmap_p1_held_falsifier_r1_20260724/run_pipeline.sh`
 
 ## 健康控制、风险与完结标准
 
