@@ -2955,7 +2955,7 @@ def test_health_stop_preserves_completed_row_partial_counts(tmp_path, monkeypatc
     completion = json.loads(
         (run_root / "matrix_runtime_completion.json").read_text(encoding="utf-8")
     )
-    assert completion["performance_status"] == "NO_PERFORMANCE_RESULT"
+    assert completion["performance_status"] == "PARTIAL_DIAGNOSTIC_BIASED_NOT_PROMOTABLE"
     assert completion["counts"] == {
         "jobs": 1,
         "scene_slices": 3,

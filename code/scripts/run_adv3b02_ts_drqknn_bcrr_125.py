@@ -22,8 +22,9 @@ import tempfile
 import threading
 import time
 from concurrent.futures import FIRST_COMPLETED, ThreadPoolExecutor, wait
+from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Mapping
+from typing import Any, Callable, Mapping
 
 import numpy as np
 
@@ -66,6 +67,26 @@ class ADV3B02P0Error(ADV3B02LauncherError):
             raise ValueError("unknown ADV3B02 P0 failure code")
         super().__init__(message)
         self.failure_code = failure_code
+
+
+@dataclass(frozen=True)
+class MatrixRowRunner:
+    """Small extension point for a sibling sealed row implementation.
+
+    The shared parent remains the sole owner of process binding, dynamic GPU
+    scheduling, P0/repeated-fingerprint stopping and partial closure.  A
+    sibling supplies only its row executable, immutable extra arguments and
+    its own artifact validators.
+    """
+
+    candidate: str
+    schema: str
+    counts: Mapping[str, int]
+    runtime_jobs: Callable[[argparse.Namespace], list[dict[str, Any]]]
+    row_script: str
+    extra_row_args: Callable[[argparse.Namespace, Mapping[str, Any]], list[str]]
+    validate_row: Callable[[Mapping[str, Any], Mapping[str, Any]], None]
+    validate_matrix: Callable[[str | Path], Mapping[str, Any]]
 
 
 ROW_FAILURE_MARKER_PREFIX = "ADV3B02_ROW_FAILURE_JSON="
@@ -116,12 +137,13 @@ def _classify_row_exception(exc: Exception) -> tuple[str, bool]:
 
 
 def _row_failure_marker_payload(
-    *, job_id_value: str, exc: Exception, prediction_count: int
+    *, job_id_value: str, exc: Exception, prediction_count: int,
+    candidate: str = CANDIDATE,
 ) -> dict[str, Any]:
     failure_code, p0 = _classify_row_exception(exc)
     body = {
         "schema": ROW_FAILURE_SCHEMA,
-        "candidate": CANDIDATE,
+        "candidate": candidate,
         "job_id": str(job_id_value),
         "failure_code": failure_code,
         "p0_protocol_or_safety": p0,
@@ -134,7 +156,7 @@ def _row_failure_marker_payload(
 
 
 def _validate_row_failure_marker(
-    value: Any, *, expected_job_id: str
+    value: Any, *, expected_job_id: str, candidate: str = CANDIDATE,
 ) -> dict[str, Any]:
     required = {
         "schema", "candidate", "job_id", "failure_code", "p0_protocol_or_safety",
@@ -147,7 +169,7 @@ def _validate_row_failure_marker(
     if (
         set(payload) != required
         or payload.get("schema") != ROW_FAILURE_SCHEMA
-        or payload.get("candidate") != CANDIDATE
+        or payload.get("candidate") != candidate
         or payload.get("job_id") != expected_job_id
         or code not in P0_FAILURE_CODES | {TECHNICAL_FAILURE_CODE}
         or payload.get("p0_protocol_or_safety") != (code in P0_FAILURE_CODES)
@@ -161,7 +183,7 @@ def _validate_row_failure_marker(
 
 
 def _read_row_failure_marker(
-    log_path: str | Path, *, expected_job_id: str
+    log_path: str | Path, *, expected_job_id: str, candidate: str = CANDIDATE,
 ) -> dict[str, Any] | None:
     lines = Path(log_path).read_text(encoding="utf-8", errors="replace").splitlines()
     encoded = [line[len(ROW_FAILURE_MARKER_PREFIX):] for line in lines if line.startswith(ROW_FAILURE_MARKER_PREFIX)]
@@ -173,7 +195,9 @@ def _read_row_failure_marker(
         value = json.loads(encoded[0])
     except json.JSONDecodeError as exc:
         raise ADV3B02LauncherError("structured row failure marker JSON drift") from exc
-    return _validate_row_failure_marker(value, expected_job_id=expected_job_id)
+    return _validate_row_failure_marker(
+        value, expected_job_id=expected_job_id, candidate=candidate
+    )
 
 
 def sha256_file(path: str | Path) -> str:
@@ -231,14 +255,18 @@ def matrix_jobs(*, run_root: str | Path) -> list[dict[str, Any]]:
     return sorted(jobs, key=lambda item: (-(item["k_shot"] * (10 + item["new_class_count"])), -item["new_class_count"], item["job_id"]))
 
 
-def prediction_path(row_root: str | Path, state: str, arm: str) -> Path:
-    if state not in ("before", "after") or arm not in ARMS:
+def prediction_path(
+    row_root: str | Path, state: str, arm: str, *, allowed_arms: tuple[str, ...] = ARMS
+) -> Path:
+    if state not in ("before", "after") or arm not in allowed_arms:
         raise ADV3B02LauncherError("prediction artifact identity drift")
     return Path(row_root) / "predictions" / state / arm / "prediction_artifact.npz"
 
 
-def score_path(row_root: str | Path, arm: str) -> Path:
-    if arm not in ARMS:
+def score_path(
+    row_root: str | Path, arm: str, *, allowed_arms: tuple[str, ...] = ARMS
+) -> Path:
+    if arm not in allowed_arms:
         raise ADV3B02LauncherError("score artifact arm drift")
     return Path(row_root) / "scorer" / f"{arm}.score.json"
 
@@ -900,14 +928,21 @@ def _runtime_state_receipt(
     }
 
 
-def _score_real_row(row_root: Path, *, truth_sidecar: str | Path, publications: Mapping[str, Mapping[str, str]]) -> dict[str, str]:
+def _score_real_row(
+    row_root: Path,
+    *,
+    truth_sidecar: str | Path,
+    publications: Mapping[str, Mapping[str, str]],
+    arms: tuple[str, ...] = ARMS,
+    candidate: str = CANDIDATE,
+) -> dict[str, str]:
     """Open truth only after all eight prediction artifacts have been sealed."""
     from cvsrffi.stage2_diag_cosine_scorer import score_diag_cosine_pair
     scores: dict[str, str] = {}
-    for arm in ARMS:
+    for arm in arms:
         base = row_root / "scorer" / f"{arm}.base_score.json"
-        scored = score_diag_cosine_pair(before_prediction_path=prediction_path(row_root, "before", arm), after_prediction_path=prediction_path(row_root, "after", arm), truth_sidecar_path=truth_sidecar, output_path=base, candidate=CANDIDATE)
-        scores[arm] = write_json_new(score_path(row_root, arm), {**scored, "arm": arm,
+        scored = score_diag_cosine_pair(before_prediction_path=prediction_path(row_root, "before", arm, allowed_arms=arms), after_prediction_path=prediction_path(row_root, "after", arm, allowed_arms=arms), truth_sidecar_path=truth_sidecar, output_path=base, candidate=candidate)
+        scores[arm] = write_json_new(score_path(row_root, arm, allowed_arms=arms), {**scored, "arm": arm,
                                       "query_truth_joined_after_prediction": True,
                                       "before_prediction_sha256": publications["before"][arm],
                                       "after_prediction_sha256": publications["after"][arm]})
@@ -1692,7 +1727,27 @@ def _terminate_run_owned_process_tree_checked(
     return dict(receipt)
 
 
-def run_matrix(a: argparse.Namespace) -> Mapping[str, Any]:
+def run_matrix(
+    a: argparse.Namespace, *, row_runner: MatrixRowRunner | None = None
+) -> Mapping[str, Any]:
+    if row_runner is None:
+        row_runner = MatrixRowRunner(
+            candidate=CANDIDATE,
+            schema=LAUNCHER_SCHEMA,
+            counts=MATRIX_COUNTS,
+            runtime_jobs=_runtime_jobs,
+            row_script=str(Path(__file__).resolve()),
+            extra_row_args=lambda _a, _job: [],
+            validate_row=validate_row_artifacts,
+            validate_matrix=lambda root: validate_matrix_artifacts(run_root=root),
+        )
+    candidate = row_runner.candidate
+    schema = row_runner.schema
+    expected_counts = dict(row_runner.counts)
+    if set(expected_counts) != set(MATRIX_COUNTS) or any(
+        type(value) is not int or value <= 0 for value in expected_counts.values()
+    ):
+        raise ADV3B02LauncherError("row-runner matrix count contract drift")
     root = Path(a.run_root)
     if root.exists(): raise ADV3B02LauncherError("matrix root must be fresh")
     try:
@@ -1702,12 +1757,12 @@ def run_matrix(a: argparse.Namespace) -> Mapping[str, Any]:
     if gpu_ids != FORMAL_GPU_IDS:
         raise ADV3B02LauncherError("formal matrix GPU list must be exactly 0-7")
     gpu_audit = _audit_formal_physical_gpus()
-    jobs = _runtime_jobs(a); root.mkdir(parents=True)
+    jobs = row_runner.runtime_jobs(a); root.mkdir(parents=True)
     launcher_log_root = root / "launcher_logs"
     launcher_log_root.mkdir()
     parent_failure_root = root / "matrix_parent_failures"
     parent_failure_root.mkdir()
-    write_json_new(root / "matrix_runtime_manifest.json", {"schema": LAUNCHER_SCHEMA, "candidate": CANDIDATE, "jobs": jobs, "counts": MATRIX_COUNTS, "gpu_ids": list(gpu_ids), "gpu_audit": gpu_audit, "dynamic_workers": len(gpu_ids), "mapping_policy": "dynamic_free_worker_physical_gpu_to_CUDA_VISIBLE_DEVICES_then_cuda:0", "query_truth_in_predictor": False, "launch_capability": True})
+    write_json_new(root / "matrix_runtime_manifest.json", {"schema": schema, "candidate": candidate, "jobs": jobs, "counts": expected_counts, "gpu_ids": list(gpu_ids), "gpu_audit": gpu_audit, "dynamic_workers": len(gpu_ids), "mapping_policy": "dynamic_free_worker_physical_gpu_to_CUDA_VISIBLE_DEVICES_then_cuda:0", "query_truth_in_predictor": False, "launch_capability": True})
     available: queue.Queue[int] = queue.Queue()
     for gpu in gpu_ids: available.put(gpu)
     stop_event = threading.Event()
@@ -1727,8 +1782,8 @@ def run_matrix(a: argparse.Namespace) -> Mapping[str, Any]:
     ) -> dict[str, str]:
         path = parent_failure_root / f"{job['job_id']}.json"
         payload = {
-            "schema": LAUNCHER_SCHEMA,
-            "candidate": CANDIDATE,
+            "schema": schema,
+            "candidate": candidate,
             "job_id": str(job["job_id"]),
             "gpu": gpu,
             "failure_marker": dict(marker),
@@ -1760,7 +1815,7 @@ def run_matrix(a: argparse.Namespace) -> Mapping[str, Any]:
         try:
             command = [
                 sys.executable,
-                str(Path(__file__).resolve()),
+                row_runner.row_script,
                 "row",
                 "--cache-manifest",
                 job["cache_manifest"],
@@ -1774,6 +1829,7 @@ def run_matrix(a: argparse.Namespace) -> Mapping[str, Any]:
                 a.sealed_runtime,
                 "--package-method-lock",
                 a.package_method_lock,
+                *row_runner.extra_row_args(a, job),
                 "--output-root",
                 job["output_root"],
                 "--receiver",
@@ -1856,7 +1912,7 @@ def run_matrix(a: argparse.Namespace) -> Mapping[str, Any]:
                 if code == 0:
                     try:
                         receipt = json.loads((Path(job["output_root"]) / "row_receipt.json").read_text(encoding="utf-8"))
-                        validate_row_artifacts(job, receipt)
+                        row_runner.validate_row(job, receipt)
                     except Exception as exc:
                         parent_exc = ADV3B02P0Error(
                             "ROW_PROTOCOL_OR_ARTIFACT_DRIFT",
@@ -1871,6 +1927,7 @@ def run_matrix(a: argparse.Namespace) -> Mapping[str, Any]:
                             prediction_count=_count_prediction_artifacts(
                                 job["output_root"]
                             ),
+                            candidate=candidate,
                         )
                         log_handle.write(
                             (
@@ -1889,7 +1946,7 @@ def run_matrix(a: argparse.Namespace) -> Mapping[str, Any]:
                 active_children.pop(str(job["job_id"]), None)
             try:
                 failure_marker = _read_row_failure_marker(
-                    log_path, expected_job_id=str(job["job_id"])
+                    log_path, expected_job_id=str(job["job_id"]), candidate=candidate
                 )
             except Exception as exc:
                 raise ADV3B02P0Error(
@@ -1988,6 +2045,7 @@ def run_matrix(a: argparse.Namespace) -> Mapping[str, Any]:
                 job_id_value=str(job["job_id"]),
                 exc=failure_exc,
                 prediction_count=prediction_count,
+                candidate=candidate,
             )
             fingerprint = _normalized_exception_fingerprint(
                 failure_exc, prediction_count=prediction_count
@@ -2086,6 +2144,7 @@ def run_matrix(a: argparse.Namespace) -> Mapping[str, Any]:
                         prediction_count=_count_prediction_artifacts(
                             job["output_root"]
                         ),
+                        candidate=candidate,
                     )
                     p0 = True
                     child_pid = None
@@ -2166,19 +2225,27 @@ def run_matrix(a: argparse.Namespace) -> Mapping[str, Any]:
               "parent_failure_receipts": parent_failure_receipts,
               "cancelled_pending": cancelled_pending,
               "never_submitted": len(jobs) - launched}
+    partial_performance = (
+        "PARTIAL_DIAGNOSTIC_BIASED_NOT_PROMOTABLE"
+        if (
+            partial_counts["arm_state_prediction_artifacts"] > 0
+            or partial_counts["score_rows"] > 0
+        )
+        else "NO_PERFORMANCE_RESULT"
+    )
     if systemic is not None:
-        write_json_new(root / "matrix_runtime_completion.json", {"candidate": CANDIDATE, "status": "STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE", "performance_status": "NO_PERFORMANCE_RESULT", "counts": partial_counts, "returncodes": result, "physical_gpu_by_job": physical_gpu_by_job, "launcher_log_by_job": launcher_log_by_job, "health": health})
+        write_json_new(root / "matrix_runtime_completion.json", {"candidate": candidate, "status": "STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE", "performance_status": partial_performance, "counts": partial_counts, "returncodes": result, "physical_gpu_by_job": physical_gpu_by_job, "launcher_log_by_job": launcher_log_by_job, "health": health})
         raise ADV3B02LauncherError("systemic pre-prediction row failure; dispatch stopped")
     if any(result.values()):
-        write_json_new(root / "matrix_runtime_completion.json", {"candidate": CANDIDATE, "status": "TECHNICAL_FAILURE", "performance_status": "NO_PERFORMANCE_RESULT", "counts": partial_counts, "returncodes": result, "physical_gpu_by_job": physical_gpu_by_job, "launcher_log_by_job": launcher_log_by_job, "health": health})
+        write_json_new(root / "matrix_runtime_completion.json", {"candidate": candidate, "status": "TECHNICAL_FAILURE", "performance_status": partial_performance, "counts": partial_counts, "returncodes": result, "physical_gpu_by_job": physical_gpu_by_job, "launcher_log_by_job": launcher_log_by_job, "health": health})
         raise ADV3B02LauncherError("one or more full125 rows failed")
     receipts = []
     for job in jobs:
-        receipt = json.loads((Path(job["output_root"]) / "row_receipt.json").read_text(encoding="utf-8")); validate_row_artifacts(job, receipt); receipts.append(receipt)
+        receipt = json.loads((Path(job["output_root"]) / "row_receipt.json").read_text(encoding="utf-8")); row_runner.validate_row(job, receipt); receipts.append(receipt)
     counts = {"jobs": len(receipts), "scene_slices": sum(item["scene_slice_count"] for item in receipts), "score_rows": sum(item["score_row_count"] for item in receipts), "arm_state_prediction_artifacts": sum(item["prediction_artifact_count"] for item in receipts)}
-    if counts != MATRIX_COUNTS: raise ADV3B02LauncherError("full125 runtime artifact cardinality drift")
-    write_json_new(root / "matrix_runtime_completion.json", {"candidate": CANDIDATE, "status": "ARTIFACTS_COMPLETE", "counts": counts, "returncodes": result, "physical_gpu_by_job": physical_gpu_by_job, "launcher_log_by_job": launcher_log_by_job, "health": health})
-    return validate_matrix_artifacts(run_root=root)
+    if counts != expected_counts: raise ADV3B02LauncherError("full125 runtime artifact cardinality drift")
+    write_json_new(root / "matrix_runtime_completion.json", {"candidate": candidate, "status": "ARTIFACTS_COMPLETE", "counts": counts, "returncodes": result, "physical_gpu_by_job": physical_gpu_by_job, "launcher_log_by_job": launcher_log_by_job, "health": health})
+    return row_runner.validate_matrix(root)
 
 
 def main() -> int:
