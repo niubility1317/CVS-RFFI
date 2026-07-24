@@ -99,7 +99,7 @@ N607既有只读输入：
 ## 健康控制、风险与完结标准
 
 - P0协议/安全错误立即停止。
-- 这是单一进程内的安全解包＋54-row原子pipeline，不按row独立dispatch；source已存在、ZIP重复/越界/符号链接/特殊entry、解包后任一目录或文件可写、任一build/predict/score/artifact技术阶段首次非零，均由`set -e`停止，保留partial artifact并标记`NO_PERFORMANCE_RESULT`。不得因accuracy、H或其他性能数值停止。
+- 这是单一进程内的安全解包＋54-row原子pipeline，不按row独立dispatch；所有Python子进程显式移除`PYTHONOPTIMIZE`，安全解包器使用隔离模式并要求`sys.flags.optimize==0`。source已存在、ZIP重复/越界/符号链接/特殊entry、解包后任一目录或文件可写、任一build/predict/score/artifact技术阶段首次非零，均由`set -e`停止，保留partial artifact并标记`NO_PERFORMANCE_RESULT`。不得因accuracy、H或其他性能数值停止。
 - 只有54/54 row、prediction与COMMIT、独立score、build receipt双向绑定和全部SHA闭合才进入`ARTIFACTS_COMPLETE`。
 - 不覆盖既有run或输出；失败run保留全部partial artifact，修复必须使用新run ID。
 - 主要风险是Phase1代理对目标D92空间外推失败、DA产生非零参数但不改argmax，以及aggregate掩盖特定场景/伪新类负迁移；分层门用于直接证伪这些情况。

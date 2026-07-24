@@ -47,10 +47,16 @@ require_sha256() {
   [[ "${actual}" == "${expected}" ]] || die "sha256_drift:${path}:${actual}" 72
 }
 
+safe_python() {
+  env -u PYTHONOPTIMIZE "${PYTHON}" "$@"
+}
+
 [[ "${RUN_ROOT}" == "${EXPECTED_RUN_ROOT}" ]] || die "run_root_drift:${RUN_ROOT}" 64
 [[ ! -e "${EXIT_FILE}" ]] || die "immutable_exit_receipt_exists" 74
 trap write_exit EXIT
 [[ -x "${PYTHON}" ]] || die "python_missing:${PYTHON}" 70
+safe_python -I -c 'import sys; raise SystemExit(0 if sys.flags.optimize == 0 else 78)' \
+  || die "python_optimize_must_be_zero" 78
 : "${CUDA_VISIBLE_DEVICES:?CUDA_VISIBLE_DEVICES must bind one runner-selected GPU}"
 : "${RELEASE_RECEIPT_SHA256:?RELEASE_RECEIPT_SHA256 must freeze the local handoff receipt}"
 [[ "${CUDA_VISIBLE_DEVICES}" =~ ^[0-7]$ ]] || die "single_gpu_binding_drift:${CUDA_VISIBLE_DEVICES}" 65
@@ -63,7 +69,7 @@ require_sha256 "c6e25ebeaed32b577e3321e78cd569acff934a7c804d0cb621b26e68f26d0c17
 require_sha256 "2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98" "${CHECKPOINT}"
 require_sha256 "${RELEASE_RECEIPT_SHA256}" "${RELEASE_RECEIPT}"
 
-"${PYTHON}" -c 'import hashlib,json,os,pathlib,re,stat,sys,zipfile
+safe_python -I -c 'import hashlib,json,os,pathlib,re,stat,sys,zipfile
 receipt_path=pathlib.Path(sys.argv[1]).resolve()
 run_root=pathlib.Path(sys.argv[2]).resolve()
 source_root=(run_root/"source").resolve()
@@ -156,7 +162,7 @@ BUILD_RECEIPT="${OUTPUT_ROOT}/build_receipt.json"
 PREDICTION="${OUTPUT_ROOT}/prediction.json"
 SCORE="${OUTPUT_ROOT}/score.json"
 
-"${PYTHON}" -m cvsrffi.scxmap_phase1_held_falsifier support-smoke \
+safe_python -m cvsrffi.scxmap_phase1_held_falsifier support-smoke \
   --archive "${ARCHIVE}" \
   --manifest "${MANIFEST}" \
   --coverage "${COVERAGE}" \
@@ -165,7 +171,7 @@ SCORE="${OUTPUT_ROOT}/score.json"
   --checkpoint-sha256 "2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98" \
   --output "${SMOKE}"
 
-"${PYTHON}" -m cvsrffi.scxmap_phase1_held_falsifier build \
+safe_python -m cvsrffi.scxmap_phase1_held_falsifier build \
   --archive "${ARCHIVE}" \
   --manifest "${MANIFEST}" \
   --coverage "${COVERAGE}" \
@@ -176,18 +182,18 @@ SCORE="${OUTPUT_ROOT}/score.json"
   --build-receipt "${BUILD_RECEIPT}"
 
 BUILD_RECEIPT_SHA256="$(sha256sum -- "${BUILD_RECEIPT}" | awk '{print $1}')"
-TRUTH_SHA256="$("${PYTHON}" -c 'import json,sys; print(json.load(open(sys.argv[1], encoding="utf-8"))["truth_sha256"])' "${TRUTH}")"
+TRUTH_SHA256="$(safe_python -c 'import json,sys; print(json.load(open(sys.argv[1], encoding="utf-8"))["truth_sha256"])' "${TRUTH}")"
 
-"${PYTHON}" -m cvsrffi.scxmap_phase1_held_falsifier predict \
+safe_python -m cvsrffi.scxmap_phase1_held_falsifier predict \
   --packet "${PACKET}" \
   --query "${QUERY}" \
   --build-receipt "${BUILD_RECEIPT}" \
   --build-receipt-sha256 "${BUILD_RECEIPT_SHA256}" \
   --output "${PREDICTION}"
 
-PREDICTION_COMMIT="$("${PYTHON}" -c 'import json,sys; print(json.load(open(sys.argv[1], encoding="utf-8"))["COMMIT"])' "${PREDICTION}")"
+PREDICTION_COMMIT="$(safe_python -c 'import json,sys; print(json.load(open(sys.argv[1], encoding="utf-8"))["COMMIT"])' "${PREDICTION}")"
 
-"${PYTHON}" -m cvsrffi.scxmap_phase1_held_falsifier score \
+safe_python -m cvsrffi.scxmap_phase1_held_falsifier score \
   --packet "${PACKET}" \
   --prediction "${PREDICTION}" \
   --truth "${TRUTH}" \
@@ -198,7 +204,7 @@ PREDICTION_COMMIT="$("${PYTHON}" -c 'import json,sys; print(json.load(open(sys.a
   --commit "${PREDICTION_COMMIT}" \
   --output "${SCORE}"
 
-"${PYTHON}" -c 'import json,sys; d=json.load(open(sys.argv[1], encoding="utf-8")); assert len(d["metrics"])==54; assert [x["K"] for x in d["summary_by_K"]]==[1,5,10]; assert d["formal_phase2_eligible"] is False; assert d["bundle_created"] is False; assert d["target25_release_authorized"] is False; assert isinstance(d["proxy_gate_pass"], bool); print("score_rows=54"); print("target25_release_authorized=false"); print("proxy_gate_pass="+str(d["proxy_gate_pass"]).lower())' "${SCORE}"
+safe_python -c 'import json,sys; d=json.load(open(sys.argv[1], encoding="utf-8")); assert len(d["metrics"])==54; assert [x["K"] for x in d["summary_by_K"]]==[1,5,10]; assert d["formal_phase2_eligible"] is False; assert d["bundle_created"] is False; assert d["target25_release_authorized"] is False; assert isinstance(d["proxy_gate_pass"], bool); print("score_rows=54"); print("target25_release_authorized=false"); print("proxy_gate_pass="+str(d["proxy_gate_pass"]).lower())' "${SCORE}"
 
 sha256sum -- "${SMOKE}" "${PACKET}" "${TRUTH}" "${QUERY}" "${BUILD_RECEIPT}" "${PREDICTION}" "${SCORE}" > "${OUTPUT_ROOT}/sha256sums.txt"
 printf '%s\n' "SCXMAP_HELD_ARTIFACTS_COMPLETE" > "${OUTPUT_ROOT}/complete.marker"
