@@ -26,6 +26,7 @@
 |G18|K1必须提升|K1的M_DA或M_JOINT相对同rowM0必须在H、A-old或min-old上产生严格正收益，且old/new保护项不恶化|同上|verified|K1同row因果门|不再接受整体identity作为目标完成证据|
 |G19|优先域适应并复用D62/D92|下一revision优先改变模型/表示DA，以D62、D92和统一qKNN作为头部对照，不继续仅调分类头|同上|verified|候选卡与四臂检查|关注弱类、ground压缩知识与target-old/new support联合使用|
 |G20|无远端Git发布|只允许本地Git版本化和N607文件同步；不push、不建PR、不上传GitHub|同上|verified|版本与发布条款检查|本地commit用于复现，不属于上传操作|
+|G21|新类support参与适应|Stage2-C允许在固定Phase1 basis/rank/schedule上用old/new类等权support进行一次有界继续适应，随后统一重编码全部support并重建qKNN|同上|verified|S_B→S_C状态机检查|不得用query、新类数量或角色专属公式改变自由度|
 
 ## 反向审计
 

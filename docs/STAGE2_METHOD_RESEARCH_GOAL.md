@@ -132,7 +132,7 @@ Stage2-C必须在同一row报告注册前old、注册后old、seen-new、H、BA�
 
 K1不得估计类内散度、类专属高维协方差或无约束模型参数。候选必须把自由度压缩到由Phase1预锁类无关domain basis、合法地面多样本聚合知识和当前row跨类关系可辨识的范围；若最终只能identity，则该revision在K1目标上失败。K1的正收益必须来自同row旧/新保护下的真实query决策，不得由support fit或较低before伪造。
 
-K5是当前双qKNN候选的首个正式DA falsifier；K10用于确认相同机制，不得增加rank、改变`alpha`、重新选择kernel或放宽fallback。Stage2-C的新增类只能按冻结规则append，不得重拟合Stage2-B的旧类域basis、旧bank前缀或收缩强度。
+K5是当前双qKNN候选的首个正式DA falsifier；K10用于确认相同机制，不得增加rank、改变`alpha`、重新选择kernel或放宽fallback。Stage2-C可以在Phase1预锁basis、rank、loss、step和收缩公式不变的条件下，以old/new每类等权support执行一次有界继续适应；随后必须用同一`S_C`模型统一重编码全部old/new support并重建qKNN。不得从query、新类数量或真实old/new角色派生专属自由度、权重或超参数。
 
 ## 4.Phase1压缩知识的可选作用与边界
 
