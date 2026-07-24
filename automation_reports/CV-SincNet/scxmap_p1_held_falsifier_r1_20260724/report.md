@@ -7,7 +7,7 @@
 |实验ID|`scxmap_p1_held_falsifier_r1_20260724`|
 |日期|2026-07-24|
 |操作者|Codex主代理；N607唯一launch owner待交接|
-|当前状态|`LOCAL_VERIFIED / REVIEW_APPROVED / PREREGISTERED / NOT_LANDED`|
+|当前状态|`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT / LANDED_AND_EXITED`|
 |目标|在打开任何目标25矩阵前，用Phase1未见接收机留出代理证伪SCXMAP是否产生稳定净纠错|
 |候选|`C-DOM-SCXMAP-D92-GLF/r1`|
 |claim范围|`PHASE1_HELD_PROXY_NON_PROMOTABLE`；不是D92完整288维四臂证据，不是目标性能结果|
@@ -104,3 +104,13 @@ N607既有只读输入：
 - 不覆盖既有run或输出；失败run保留全部partial artifact，修复必须使用新run ID。
 - 主要风险是Phase1代理对目标D92空间外推失败、DA产生非零参数但不改argmax，以及aggregate掩盖特定场景/伪新类负迁移；分层门用于直接证伪这些情况。
 - 完成后在本报告追加逐K、K×scene、K×pseudo-new、active-beta、tie rows、wrong→correct/correct→wrong、资源和最终裁决。不同证据范围不得与D62/D92/SVRN完整125绝对值直接混排。
+
+## N607运行终态
+
+2026-07-24 17:00:33 CST在GPU0启动，PID=`1985281`；17:00:38 CST以exit=`1`退出。发布ZIP、收据、入口、4578项安全解包和source只读检查均通过，首个失败阶段为real-checkpoint support-only smoke：
+
+`AttributeError: module 'torch.serialization' has no attribute 'safe_globals'`
+
+N607为Torch`2.1.0+cu121`，虽然`torch.load`支持`weights_only=True`，但不存在`safe_globals/add_safe_globals/clear_safe_globals/get_safe_globals`；直接对原checkpoint执行`weights_only=True`也以`Unsupported class baseline_origin_sat_view.SatViewStage`安全拒绝。未调用`weights_only=False`，不修改私有allowlist。归一化异常指纹为`support-smoke|AttributeError|torch.serialization.safe_globals_missing|torch-2.1.0+cu121`。
+
+54行build/predict/score均未开始，output文件数为0；不存在performance、逐K、beta、tie或资源结论。GPU0已释放，本run进程为0，SSH与TCP22残留为0；远端原件保留。取回证据见根目录同ID报告的`retrieved/`：`pipeline.log` SHA256=`29bf722107101261d8c6b104a2a94ccb71052659c06b7b8b25afa80ed740c3fd`，`pipeline.exit`内容为`1`且SHA256=`4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865`。原run禁止续跑；兼容修复必须本地验证、独立复核并使用新run ID。

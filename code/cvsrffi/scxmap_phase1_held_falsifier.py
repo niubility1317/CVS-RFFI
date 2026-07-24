@@ -20,6 +20,7 @@ from typing import Any, Mapping, Sequence
 import numpy as np
 
 from cvsrffi import r2a_fixed_held_four_arm as r2
+from cvsrffi.safe_checkpoint_state import verify_safe_checkpoint_receipt
 from cvsrffi.stage2_scxmap_transform import (
     FittedSCXMapState,
     Phase1SCXMapLock,
@@ -1159,6 +1160,10 @@ def real_checkpoint_support_only_smoke(
     coverage_sha256: str,
     checkpoint_path: str | Path,
     checkpoint_sha256: str,
+    safe_checkpoint_path: str | Path,
+    safe_checkpoint_sha256: str,
+    safe_checkpoint_receipt_path: str | Path,
+    safe_checkpoint_receipt_sha256: str,
 ) -> dict[str, Any]:
     """Exercise SCXMAP on real support without reading query rows or truth."""
 
@@ -1167,6 +1172,8 @@ def real_checkpoint_support_only_smoke(
         "manifest": Path(manifest_path),
         "coverage": Path(coverage_path),
         "checkpoint": Path(checkpoint_path),
+        "safe_checkpoint": Path(safe_checkpoint_path),
+        "safe_checkpoint_receipt": Path(safe_checkpoint_receipt_path),
     }
     for name, value in paths.items():
         if value.is_symlink() or not value.is_file():
@@ -1225,31 +1232,18 @@ def real_checkpoint_support_only_smoke(
         coverage_sha256=expected_coverage,
     )
 
-    # weights_only plus an explicit project enum allowlist avoids arbitrary
-    # checkpoint unpickling while still proving the real checkpoint is readable.
-    import torch
-    from baseline_origin_sat_view import SatViewStage
-
-    with torch.serialization.safe_globals([SatViewStage]):
-        checkpoint = torch.load(
-            paths["checkpoint"], map_location="cpu", weights_only=True
-        )
+    checkpoint, checkpoint_audit = verify_safe_checkpoint_receipt(
+        checkpoint_path=paths["safe_checkpoint"],
+        checkpoint_sha256=safe_checkpoint_sha256,
+        receipt_path=paths["safe_checkpoint_receipt"],
+        receipt_sha256=safe_checkpoint_receipt_sha256,
+        expected_source_sha256=expected_checkpoint,
+    )
     if (
-        not isinstance(checkpoint, Mapping)
-        or not isinstance(checkpoint.get("model"), Mapping)
-        or not isinstance(checkpoint.get("ema_model"), Mapping)
-        or not checkpoint["model"]
-        or set(checkpoint["model"]) != set(checkpoint["ema_model"])
+        not checkpoint["model"]
+        or tuple(checkpoint["model"]) != tuple(checkpoint["ema_model"])
     ):
-        raise SCXMapHeldError("support smoke checkpoint state schema drift")
-    tensor_count = 0
-    parameter_count = 0
-    for state_name in ("model", "ema_model"):
-        for value in checkpoint[state_name].values():
-            if not isinstance(value, torch.Tensor) or not torch.isfinite(value).all():
-                raise SCXMapHeldError("support smoke checkpoint tensor drift")
-            tensor_count += 1
-            parameter_count += int(value.numel())
+        raise SCXMapHeldError("support smoke safe checkpoint state schema drift")
 
     receivers = tuple(sorted(set(archive["receiver_ids"].tolist())))
     held_receiver = r2._coverage_receiver(receivers, expected_coverage)
@@ -1302,8 +1296,11 @@ def real_checkpoint_support_only_smoke(
         "truth_access": False,
         "checkpoint_weights_only": True,
         "checkpoint_sha256": expected_checkpoint,
-        "checkpoint_tensor_count": tensor_count,
-        "checkpoint_parameter_count_model_plus_ema": parameter_count,
+        "safe_checkpoint_audit": checkpoint_audit,
+        "checkpoint_tensor_count": checkpoint_audit["tensor_count"],
+        "checkpoint_parameter_count_model_plus_ema": checkpoint_audit[
+            "parameter_count_model_plus_ema"
+        ],
         "input_artifact_binding": binding,
         "archive_array_sha_verified": True,
         "live_export_runtime_contract_invoked": False,
@@ -1374,6 +1371,10 @@ def main() -> None:
         "coverage-sha256",
         "checkpoint",
         "checkpoint-sha256",
+        "safe-checkpoint",
+        "safe-checkpoint-sha256",
+        "safe-checkpoint-receipt",
+        "safe-checkpoint-receipt-sha256",
         "output",
     ):
         smoke.add_argument("--" + name, required=True)
@@ -1456,6 +1457,10 @@ def main() -> None:
             coverage_sha256=args.coverage_sha256,
             checkpoint_path=args.checkpoint,
             checkpoint_sha256=args.checkpoint_sha256,
+            safe_checkpoint_path=args.safe_checkpoint,
+            safe_checkpoint_sha256=args.safe_checkpoint_sha256,
+            safe_checkpoint_receipt_path=args.safe_checkpoint_receipt,
+            safe_checkpoint_receipt_sha256=args.safe_checkpoint_receipt_sha256,
         )
         _write_new(args.output, _canon(result) + b"\n")
 
