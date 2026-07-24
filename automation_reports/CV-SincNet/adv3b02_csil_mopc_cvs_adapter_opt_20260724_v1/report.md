@@ -101,3 +101,13 @@
 - 第二轮实现复审：`P0=0,P1=1`；修复strict MoPC内部resource schema误标v2。
 - 最终独立发布复审：`P0=0,P1=0 / APPROVE`。
 - 终审后最终代码真实checkpoint no-query smoke再次`PASS`：两方法resource均为v2，CSIL 3步覆盖3类，MoPC 20步且5/16，query打开0行。
+
+## Git与发布绑定
+
+- 实现提交：`76bbc9ca2286f80010bcc41da32707c3b50395d9`。
+- `adv3b02_official_repo_ci.py`：`079ca15bf3815746f18c83cfd7f5288bd80984cdff056a44932a817aa89235b5`。
+- `build_adv3b02_paper_full_ci_plan.py`：`806ada61e185f49ae7c9fe29f08dd4c42b5acefe9fa2956a3145203d710bd9b4`。
+- `run_adv3b02_paper_full_ci_plan.py`：`0f0c9816c329869ee295f6b67981df35dc63a81d8ed8511c8a0802a68b91afe5`。
+- `run_adv3b02_paper_full_ci_truth_free_predictor.py`：`45183207aa0541ac577c76c8f32fe8a03aeb4d1da47330c61767a7191edca64b`。
+- CSIL split：`005a9129015e23430029fa26ae93f2f416c9fb9b60f7dbf81cf113b06f9e3327`。
+- MoPC split：`e811611e675a7d6bf87351b9726c3743ed92f2673a5d85c705647a087e6c524f`。
