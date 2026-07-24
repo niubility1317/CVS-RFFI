@@ -1,0 +1,331 @@
+{
+  "balanced_batch": {
+    "physical_id_unique": true,
+    "rows": 288,
+    "samples_per_receiver_day_tx_cell": 2
+  },
+  "candidate_id": "D103-R1-RXID-DUALSPLIT-MB4",
+  "capsule_access": false,
+  "claim_semantics": "RESOURCE_AND_CONSTRUCTABILITY_ONLY",
+  "deployment_asset_saved": false,
+  "dual": {
+    "path": "E:\\type10-7\\automation_reports\\CV-SincNet\\d103_rxid_r1_feasibility_20260724\\source_inputs\\phase1_singleobs_dual_feature_archive.npz",
+    "sha256": "dd2a2b0c8ab1a1d8edbeed81e78ffb79c253240998a9ac2404b75699f4ca68d0",
+    "tap_dual_row_binding_verified": true,
+    "z_dom_width": 160,
+    "z_id_parity_verified": true
+  },
+  "fixed_inner_fold": {
+    "constants_tuned_from_probe": false,
+    "episode_receiver": "18-2",
+    "held_receiver": "14-7",
+    "outer_results_read": false
+  },
+  "forbidden_outputs_absent": {
+    "balanced_accuracy": true,
+    "deployment_bundle": true,
+    "learned_b": true,
+    "learned_bank": true,
+    "learned_u": true,
+    "loco_performance": true,
+    "tx_probe_accuracy": true
+  },
+  "formal_query_access": false,
+  "k1_matrix_mechanics": {
+    "condition_number": 1.2893060312981295,
+    "max_singular_value": 1.3841515755004932,
+    "min_singular_value": 1.073563251780393,
+    "rank": 4,
+    "registered_class_count": 6,
+    "support_physical_count": 6,
+    "views_counted_as_additional_k": 0
+  },
+  "pair_constructability": {
+    "all_receiver_tx_cross_day_constructible": true,
+    "per_receiver": {
+      "1-1": {
+        "day_count": 4,
+        "tx": {
+          "14-10": {
+            "cross_day_constructible": true,
+            "day_count": 4,
+            "physical_count": 176
+          },
+          "14-7": {
+            "cross_day_constructible": true,
+            "day_count": 4,
+            "physical_count": 199
+          },
+          "20-15": {
+            "cross_day_constructible": true,
+            "day_count": 4,
+            "physical_count": 212
+          },
+          "20-19": {
+            "cross_day_constructible": true,
+            "day_count": 4,
+            "physical_count": 191
+          },
+          "6-15": {
+            "cross_day_constructible": true,
+            "day_count": 4,
+            "physical_count": 214
+          },
+          "8-20": {
+            "cross_day_constructible": true,
+            "day_count": 4,
+            "physical_count": 203
+          }
+        },
+        "tx_count": 6
+      },
+      "1-19": {
+        "day_count": 4,
+        "tx": {
+          "14-10": {
+            "cross_day_constructible": true,
+            "day_count": 4,
+            "physical_count": 218
+          },
+          "14-7": {
+            "cross_day_constructible": true,
+            "day_count": 4,
+            "physical_count": 195
+          },
+          "20-15": {
+            "cross_day_constructible": true,
+            "day_count": 4,
+            "physical_count": 189
+          },
+          "20-19": {
+            "cross_day_constructible": true,
+            "day_count": 4,
+            "physical_count": 187
+          },
+          "6-15": {
+            "cross_day_constructible": true,
+            "day_count": 4,
+            "physical_count": 214
+          },
+          "8-20": {
+            "cross_day_constructible": true,
+            "day_count": 4,
+            "physical_count": 214
+          }
+        },
+        "tx_count": 6
+      },
+      "14-7": {
+        "day_count": 4,
+        "tx": {
+          "14-10": {
+            "cross_day_constructible": true,
+            "day_count": 4,
+            "physical_count": 197
+          },
+          "14-7": {
+            "cross_day_constructible": true,
+            "day_count": 4,
+            "physical_count": 208
+          },
+          "20-15": {
+            "cross_day_constructible": true,
+            "day_count": 4,
+            "physical_count": 195
+          },
+          "20-19": {
+            "cross_day_constructible": true,
+            "day_count": 4,
+            "physical_count": 203
+          },
+          "6-15": {
+            "cross_day_constructible": true,
+            "day_count": 4,
+            "physical_count": 196
+          },
+          "8-20": {
+            "cross_day_constructible": true,
+            "day_count": 4,
+            "physical_count": 199
+          }
+        },
+        "tx_count": 6
+      },
+      "18-2": {
+        "day_count": 4,
+        "tx": {
+          "14-10": {
+            "cross_day_constructible": true,
+            "day_count": 4,
+            "physical_count": 208
+          },
+          "14-7": {
+            "cross_day_constructible": true,
+            "day_count": 4,
+            "physical_count": 205
+          },
+          "20-15": {
+            "cross_day_constructible": true,
+            "day_count": 4,
+            "physical_count": 196
+          },
+          "20-19": {
+            "cross_day_constructible": true,
+            "day_count": 4,
+            "physical_count": 201
+          },
+          "6-15": {
+            "cross_day_constructible": true,
+            "day_count": 4,
+            "physical_count": 195
+          },
+          "8-20": {
+            "cross_day_constructible": true,
+            "day_count": 4,
+            "physical_count": 181
+          }
+        },
+        "tx_count": 6
+      },
+      "19-2": {
+        "day_count": 4,
+        "tx": {
+          "14-10": {
+            "cross_day_constructible": true,
+            "day_count": 4,
+            "physical_count": 212
+          },
+          "14-7": {
+            "cross_day_constructible": true,
+            "day_count": 4,
+            "physical_count": 206
+          },
+          "20-15": {
+            "cross_day_constructible": true,
+            "day_count": 4,
+            "physical_count": 199
+          },
+          "20-19": {
+            "cross_day_constructible": true,
+            "day_count": 4,
+            "physical_count": 212
+          },
+          "6-15": {
+            "cross_day_constructible": true,
+            "day_count": 4,
+            "physical_count": 188
+          },
+          "8-20": {
+            "cross_day_constructible": true,
+            "day_count": 4,
+            "physical_count": 198
+          }
+        },
+        "tx_count": 6
+      },
+      "2-1": {
+        "day_count": 4,
+        "tx": {
+          "14-10": {
+            "cross_day_constructible": true,
+            "day_count": 4,
+            "physical_count": 214
+          },
+          "14-7": {
+            "cross_day_constructible": true,
+            "day_count": 4,
+            "physical_count": 216
+          },
+          "20-15": {
+            "cross_day_constructible": true,
+            "day_count": 4,
+            "physical_count": 203
+          },
+          "20-19": {
+            "cross_day_constructible": true,
+            "day_count": 4,
+            "physical_count": 210
+          },
+          "6-15": {
+            "cross_day_constructible": true,
+            "day_count": 4,
+            "physical_count": 179
+          },
+          "8-20": {
+            "cross_day_constructible": true,
+            "day_count": 4,
+            "physical_count": 208
+          }
+        },
+        "tx_count": 6
+      },
+      "2-19": {
+        "day_count": 4,
+        "tx": {
+          "14-10": {
+            "cross_day_constructible": true,
+            "day_count": 4,
+            "physical_count": 175
+          },
+          "14-7": {
+            "cross_day_constructible": true,
+            "day_count": 4,
+            "physical_count": 171
+          },
+          "20-15": {
+            "cross_day_constructible": true,
+            "day_count": 4,
+            "physical_count": 206
+          },
+          "20-19": {
+            "cross_day_constructible": true,
+            "day_count": 4,
+            "physical_count": 196
+          },
+          "6-15": {
+            "cross_day_constructible": true,
+            "day_count": 4,
+            "physical_count": 214
+          },
+          "8-20": {
+            "cross_day_constructible": true,
+            "day_count": 4,
+            "physical_count": 197
+          }
+        },
+        "tx_count": 6
+      }
+    }
+  },
+  "performance_metrics_computed": false,
+  "resource_measurement": {
+    "balanced_batch_rows": 288,
+    "cell_count": 24,
+    "device": "cuda:0",
+    "device_name": "NVIDIA GeForce RTX 5070 Ti",
+    "mean_seconds_per_meta_step": 0.25681270000010653,
+    "parameter_count": 5976,
+    "peak_allocated_bytes": 22796800,
+    "peak_reserved_bytes": 27262976,
+    "temporary_checkpoint_bytes": 77168,
+    "temporary_directory_peak_bytes": 77168,
+    "temporary_state_contains_learned_values": false,
+    "temporary_state_deleted_before_return": true,
+    "timed_loss_finite": true,
+    "timed_steps": 3,
+    "timed_total_seconds": 0.7704381000003195,
+    "torch_version": "2.10.0+cu128",
+    "warmup_loss_finite": true,
+    "warmup_steps": 3
+  },
+  "schema": "cvs.d103.rxid_metabias4.feasibility_probe_non_performance.v1",
+  "status": "FEASIBILITY_PROBE_NON_PERFORMANCE",
+  "tap": {
+    "feature_width": 160,
+    "path": "E:\\type10-7\\automation_reports\\CV-SincNet\\d102_rb_metabias4_phase1held_target25_20260724\\retrieved_d102_analytic_held_r6\\output\\tap\\phase1_jp4_tap_archive.npz",
+    "physical_id_unique": true,
+    "row_count": 8400,
+    "sha256": "c6807d9156ab3ac8f7005707a3bd7eec342d2e4f0a43d4b96d5ea8a9574ec4c1"
+  },
+  "target_access": false
+}

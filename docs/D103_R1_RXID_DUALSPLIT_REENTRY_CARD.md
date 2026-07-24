@@ -10,6 +10,8 @@
 
 新candidate固定为`D103-R1-RXID-DUALSPLIT-MB4`。本卡在任何R1微探针运行前冻结输入、常量、probe、资源公式和量化ABI；R1不得读取Revision2的K1数值或据新probe改参。
 
+R1保留Revision2未被终审否定的科学机制：冻结基础checkpoint；以`r=Norm(Uz_dom)`做类无关domain表示；以`z(a)=Norm(ReLU(pre_relu+Ba))`做rank-4 MetaBias；Phase2继续使用D102同一类对称4维闭式support求解、box→ellipsoid约束、全部support统一重编码和typed INT8 Student-t qKNN。R1唯一方法变化发生在Phase1：线性TX零空间、多尺度MMD、跨day/cross-TX receiver自监督和K1/K5/K10 receiver-held元任务共同学习`U/B/bank`。Phase2仍为0 optimizer step，query逐样本只读并面对全部注册类。
+
 ## 2.R1输入和固定inner fold
 
 |字段|冻结值|
