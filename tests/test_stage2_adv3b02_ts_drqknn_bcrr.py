@@ -185,7 +185,7 @@ def test_finite_exact_zero_repair_breaks_medoid_ties_by_physical_token():
 
 @pytest.mark.parametrize("k_shot", [5, 10])
 @pytest.mark.parametrize("with_zero", [False, True])
-def test_q2f32_raw_teacher_closes_non_idempotent_repair_and_three_plane_bcr_state(
+def test_q3support1_raw_teacher_closes_non_idempotent_repair_and_three_plane_bcr_state(
     k_shot, with_zero
 ):
     single = adv._unit(_non_idempotent_zid_row()[None, :])
@@ -222,13 +222,25 @@ def test_q2f32_raw_teacher_closes_non_idempotent_repair_and_three_plane_bcr_stat
         bank.residual_scales_fp16
         >= np.float16(adv.SUPPORT_RESIDUAL_SCALE_FLOOR)
     )
+    assert bank.residual2_codes_qint8.dtype == np.int8
+    assert bank.residual2_codes_qint8.shape == bank.codes_qint8.shape
+    assert bank.residual2_scales_fp16.dtype == np.dtype("<f2")
+    assert np.all(
+        bank.residual2_scales_fp16
+        >= np.float16(adv.SUPPORT_RESIDUAL_SCALE_FLOOR)
+    )
     base = adv._affine_decode_base_rows(
         bank.codes_qint8, bank.scales_fp16, bank.offsets_fp16
     )
-    manual = adv._unit(
+    d2 = np.asarray(
         base
         + bank.residual_codes_qint8.astype(np.float32)
-        * bank.residual_scales_fp16.astype(np.float32)[:, None]
+        * bank.residual_scales_fp16.astype(np.float32)[:, None], np.float32
+    )
+    manual = adv._unit(
+        d2
+        + bank.residual2_codes_qint8.astype(np.float32)
+        * bank.residual2_scales_fp16.astype(np.float32)[:, None]
     )
     np.testing.assert_array_equal(state.features(), manual)
 
@@ -260,7 +272,7 @@ def test_q2f32_raw_teacher_closes_non_idempotent_repair_and_three_plane_bcr_stat
     assert branch.quantization_audit["bcr"]["large_margin_flip_count"] == 0
 
 
-def test_q2f32_teacher_binding_is_permutation_equivalent_and_tamper_closed():
+def test_q3support1_teacher_binding_is_permutation_equivalent_and_tamper_closed():
     source, labels, tokens = _bindfix_support(5, with_zero=False)
     classes = ("class_a", "class_b")
     repaired, receipt = adv.repair_finite_exact_zero_singleton_class_medoid(
@@ -294,6 +306,8 @@ def test_q2f32_teacher_binding_is_permutation_equivalent_and_tamper_closed():
             normal.bank.offsets_fp16,
             normal.bank.residual_codes_qint8,
             normal.bank.residual_scales_fp16,
+            normal.bank.residual2_codes_qint8,
+            normal.bank.residual2_scales_fp16,
             normal.bank.class_scale_hi_fp16,
             normal.bank.class_scale_lo_fp16,
             normal.branch_state.bcr_weight_codes_qint8,
@@ -309,6 +323,8 @@ def test_q2f32_teacher_binding_is_permutation_equivalent_and_tamper_closed():
             permuted.bank.offsets_fp16,
             permuted.bank.residual_codes_qint8,
             permuted.bank.residual_scales_fp16,
+            permuted.bank.residual2_codes_qint8,
+            permuted.bank.residual2_scales_fp16,
             permuted.bank.class_scale_hi_fp16,
             permuted.bank.class_scale_lo_fp16,
             permuted.branch_state.bcr_weight_codes_qint8,
@@ -799,6 +815,8 @@ def test_stage2_c_is_append_only_and_preserves_old_bytes():
         old_bank.offsets_fp16.copy(),
         old_bank.residual_codes_qint8.copy(),
         old_bank.residual_scales_fp16.copy(),
+        old_bank.residual2_codes_qint8.copy(),
+        old_bank.residual2_scales_fp16.copy(),
     )
     before_class_scales = (
         old_bank.class_scale_hi_fp16.copy(),
@@ -819,6 +837,8 @@ def test_stage2_c_is_append_only_and_preserves_old_bytes():
             after.id_bank.bank.offsets_fp16[:old_rows],
             after.id_bank.bank.residual_codes_qint8[:old_rows],
             after.id_bank.bank.residual_scales_fp16[:old_rows],
+            after.id_bank.bank.residual2_codes_qint8[:old_rows],
+            after.id_bank.bank.residual2_scales_fp16[:old_rows],
         ),
         before_rows,
     ):
@@ -838,6 +858,8 @@ def test_stage2_c_is_append_only_and_preserves_old_bytes():
         "old_int8_offsets_preserved",
         "old_int8_residual_codes_preserved",
         "old_int8_residual_scales_preserved",
+        "old_int8_residual2_codes_preserved",
+        "old_int8_residual2_scales_preserved",
         "old_int8_class_scale_hi_preserved",
         "old_int8_class_scale_lo_preserved",
     ):
@@ -886,6 +908,8 @@ def test_stage2_c_qknn_audit_uses_frozen_old_decode_and_new_fp32(monkeypatch, k_
         old.id_bank.bank.offsets_fp16,
         old.id_bank.bank.residual_codes_qint8,
         old.id_bank.bank.residual_scales_fp16,
+        old.id_bank.bank.residual2_codes_qint8,
+        old.id_bank.bank.residual2_scales_fp16,
     )
     np.testing.assert_array_equal(seen["support"][:old_rows], frozen_old)
     assert not np.array_equal(seen["support"][:old_rows], full_old)
@@ -925,6 +949,8 @@ def test_stage2_c_qknn_audit_uses_frozen_old_decode_and_new_fp32(monkeypatch, k_
         "offsets_plus_0_25",
         "residual_codes_127",
         "residual_scales_x8",
+        "residual2_codes_127",
+        "residual2_scales_x8",
         "class_scale_hi_x2",
         "class_scale_lo_plus_1e3",
     ),
@@ -938,13 +964,16 @@ def test_stage2_c_qknn_matched_audit_rejects_new_support_codec_tamper(
         "codes_zero",
         "scales_x8",
         "offsets_plus_0_25",
-        "residual_codes_127",
-        "residual_scales_x8",
+            "residual_codes_127",
+            "residual_scales_x8",
+            "residual2_codes_127",
+            "residual2_scales_x8",
     }:
         original_codec = adv._affine_quantize_rows_two_plane
 
         def corrupt_every_codec_call(rows):
-            codes, scales, offsets, residual_codes, residual_scales = original_codec(rows)
+            (codes, scales, offsets, residual_codes, residual_scales,
+             residual2_codes, residual2_scales) = original_codec(rows)
             # This corruption is stable for every production-helper call; the
             # append reference must therefore not share the helper.
             if tamper == "codes_zero":
@@ -955,9 +984,14 @@ def test_stage2_c_qknn_matched_audit_rejects_new_support_codec_tamper(
                 offsets = np.asarray(offsets + 0.25, dtype="<f2")
             elif tamper == "residual_codes_127":
                 residual_codes = np.full_like(residual_codes, np.int8(127))
-            else:
+            elif tamper == "residual_scales_x8":
                 residual_scales = np.asarray(residual_scales * 8.0, dtype="<f2")
-            return codes, scales, offsets, residual_codes, residual_scales
+            elif tamper == "residual2_codes_127":
+                residual2_codes = np.full_like(residual2_codes, np.int8(127))
+            else:
+                residual2_scales = np.asarray(residual2_scales * 8.0, dtype="<f2")
+            return (codes, scales, offsets, residual_codes, residual_scales,
+                    residual2_codes, residual2_scales)
 
         monkeypatch.setattr(
             adv, "_affine_quantize_rows_two_plane", corrupt_every_codec_call
@@ -1174,6 +1208,8 @@ def test_affine_wire_is_little_endian_bound_and_fail_closed():
     assert bank.bank.offsets_fp16.dtype == np.dtype("<f2")
     assert bank.bank.residual_codes_qint8.dtype == np.int8
     assert bank.bank.residual_scales_fp16.dtype == np.dtype("<f2")
+    assert bank.bank.residual2_codes_qint8.dtype == np.int8
+    assert bank.bank.residual2_scales_fp16.dtype == np.dtype("<f2")
     assert bank.bank.class_scale_hi_fp16.dtype == np.dtype("<f2")
     assert bank.bank.class_scale_lo_fp16.dtype == np.dtype("<f2")
     np.testing.assert_allclose(
@@ -1193,6 +1229,13 @@ def test_affine_wire_is_little_endian_bound_and_fail_closed():
     )
     with pytest.raises(ADV3B02StateError, match="receipt"):
         replace(bank.bank, residual_codes_qint8=residual_codes)
+    residual2_codes = bank.bank.residual2_codes_qint8.copy()
+    residual2_codes[0, 0] = np.int8(
+        int(residual2_codes[0, 0])
+        + (1 if residual2_codes[0, 0] < 127 else -1)
+    )
+    with pytest.raises(ADV3B02StateError, match="receipt"):
+        replace(bank.bank, residual2_codes_qint8=residual2_codes)
     class_scale_lo = bank.bank.class_scale_lo_fp16.copy()
     class_scale_lo[0] = np.nextafter(
         class_scale_lo[0], np.float16(np.inf), dtype=np.float16
@@ -1211,9 +1254,9 @@ def test_affine_full26k10_state_stays_inside_hard_limit():
     receipt = state_receipt(states)
     assert receipt["wire_bytes"] <= 256 * 1024
     assert receipt["support_codec"] == adv.SUPPORT_CODEC
-    assert receipt["support_plane_count"] == 2
+    assert receipt["support_plane_count"] == 3
     assert receipt["class_bandwidth_codec"] == adv.CLASS_BANDWIDTH_CODEC
-    assert receipt["support_codec_extra_state_bytes"] == 42172
+    assert receipt["support_codec_extra_state_bytes"] == 84292
     # Three int8 [160,C] planes plus three FP16 [C] scale vectors.
     assert receipt["bcr_weight_wire_bytes"] == 12636
     assert receipt["bcr_weight_codec"] == adv.BCR_WEIGHT_CODEC
@@ -1279,10 +1322,12 @@ def test_affine_codec_rejects_zero_range_underflow_and_nonfinite_decode(monkeypa
             np.zeros(1, "<f2"),
             np.zeros((1, 160), np.int8),
             np.asarray([adv.SUPPORT_RESIDUAL_SCALE_FLOOR], "<f2"),
+            np.zeros((1, 160), np.int8),
+            np.asarray([adv.SUPPORT_RESIDUAL_SCALE_FLOOR], "<f2"),
         )
 
 
-def test_q2f32_codec_roundtrip_scale_floor_and_no_fp32_sidecar():
+def test_q3support1_codec_roundtrip_scale_floor_and_no_fp32_sidecar():
     residual_codes, residual_scales, residual = (
         adv._quantize_support_residual(np.zeros((3, 160), np.float32))
     )
@@ -1293,18 +1338,24 @@ def test_q2f32_codec_roundtrip_scale_floor_and_no_fp32_sidecar():
     )
 
     source = np.random.default_rng(7801).normal(size=(7, 160)).astype(np.float32)
-    codes, scales, offsets, residual_codes, residual_scales = (
+    (codes, scales, offsets, residual_codes, residual_scales,
+     residual2_codes, residual2_scales) = (
         adv._affine_quantize_rows_two_plane(source)
     )
     base = adv._unit(adv._affine_decode_base_rows(codes, scales, offsets))
     deployed = adv._affine_dequantize_rows(
-        codes, scales, offsets, residual_codes, residual_scales
+        codes, scales, offsets, residual_codes, residual_scales,
+        residual2_codes, residual2_scales,
     )
     teacher = adv._unit(source)
-    manual = adv._unit(
+    d2 = np.asarray(
         adv._affine_decode_base_rows(codes, scales, offsets)
         + residual_codes.astype(np.float32)
-        * residual_scales.astype(np.float32)[:, None]
+        * residual_scales.astype(np.float32)[:, None], np.float32
+    )
+    manual = adv._unit(
+        d2 + residual2_codes.astype(np.float32)
+        * residual2_scales.astype(np.float32)[:, None]
     )
     np.testing.assert_array_equal(deployed, manual)
     assert np.max(np.abs(teacher - deployed)) <= np.max(np.abs(teacher - base))
@@ -1316,6 +1367,8 @@ def test_q2f32_codec_roundtrip_scale_floor_and_no_fp32_sidecar():
         "offsets_fp16",
         "residual_codes_qint8",
         "residual_scales_fp16",
+        "residual2_codes_qint8",
+        "residual2_scales_fp16",
         "class_scale_hi_fp16",
         "class_scale_lo_fp16",
     } <= field_names
@@ -1344,13 +1397,14 @@ def test_q2f32_codec_roundtrip_scale_floor_and_no_fp32_sidecar():
 
 
 @pytest.mark.parametrize("k_shot", [1, 5, 10])
-def test_q2f32_uses_one_fixed_two_plane_codec_for_all_frozen_k(k_shot):
+def test_q3support1_uses_one_fixed_three_plane_codec_for_all_frozen_k(k_shot):
     state, _ = _state(k_shot, seed=7805 + k_shot)
     bank = state.id_bank.bank
     assert bank.active_k == k_shot
     assert bank.quantization_audit["codec"] == adv.SUPPORT_CODEC
     assert bank.quantization_audit["plane_order"] == list(adv.SUPPORT_PLANE_ORDER)
     assert bank.residual_codes_qint8.shape == bank.codes_qint8.shape
+    assert bank.residual2_codes_qint8.shape == bank.codes_qint8.shape
     assert state.id_bank.branch_state.quantization_audit["qknn"][
         "top1_agreement"
     ] >= 0.995
@@ -1606,7 +1660,7 @@ def _scene_metrics(state, count):
 
 def _fake_after_int8_audit():
     return {
-        "schema": "cvs.phase2.zid_student_t_qknn.margin_audit.v3_q2f32",
+        "schema": "cvs.phase2.zid_student_t_qknn.margin_audit.v4_q3support1",
         "validation_row_count": 10,
         "logit_abs_error_mean": 0.01,
         "logit_abs_error_max": 0.02,
@@ -1667,6 +1721,10 @@ def _fake_append_receipt():
         "old_int8_residual_codes_sha256_after": "b" * 64,
         "old_int8_residual_scales_sha256_before": "c" * 64,
         "old_int8_residual_scales_sha256_after": "c" * 64,
+        "old_int8_residual2_codes_sha256_before": "e" * 64,
+        "old_int8_residual2_codes_sha256_after": "e" * 64,
+        "old_int8_residual2_scales_sha256_before": "f" * 64,
+        "old_int8_residual2_scales_sha256_after": "f" * 64,
         "old_int8_class_scale_hi_sha256_before": "5" * 64,
         "old_int8_class_scale_hi_sha256_after": "5" * 64,
         "old_int8_class_scale_lo_sha256_before": "d" * 64,
@@ -1676,6 +1734,8 @@ def _fake_append_receipt():
         "old_int8_offsets_preserved": True,
         "old_int8_residual_codes_preserved": True,
         "old_int8_residual_scales_preserved": True,
+        "old_int8_residual2_codes_preserved": True,
+        "old_int8_residual2_scales_preserved": True,
         "old_int8_class_scale_hi_preserved": True,
         "old_int8_class_scale_lo_preserved": True,
         "old_q_sha256_before": "6" * 64,
