@@ -1,6 +1,6 @@
 # GRB-JP4-CFM-qKNN-D92/r2-sharedK1设计冻结
 
-状态：`DESIGN_FROZEN / INDEPENDENT_REVIEW_P0_0_P1_0_P2_0 / NOT_IMPLEMENTED / NOT_RELEASED`
+状态：`DESIGN_FROZEN / RESOURCE_CONTRACT_ERRATUM_REVIEW_P0_0_P1_0_P2_0 / NOT_IMPLEMENTED / NOT_RELEASED`
 
 ## 研究问题
 
@@ -26,7 +26,7 @@
 14.每个K及K×scene/K×pseudo-new都要求真实neighbor/argmax变化和净纠错。
 15.所有门同时保护old/new、H或floor、逐类旧类和forgetting，K1另需LOCO稳定。
 16.四主臂各自完整state≤256KiB，post-backbone≤262,144 MAC/query，不跨臂抵扣。
-17.JP4 wire≤4096B；最大K10/new20新增support计算<65M MAC；合入后query额外0 MAC。
+17.JP4 update-factor wire≤4096B；ground多原型及其scale、权重、半径、证书和必要metadata另行完整计入每个DA臂的262,144B总state；最大K10/new20新增support计算<65M MAC；合入后query额外0 MAC。
 18.held通过后才运行seed713102的5 receiver×5 slice=25 jobs；失败则不访问Target25。
 
 ## Phase1冻结知识
@@ -257,7 +257,8 @@ D92公式、0.5旧类/0.5新类权重及score标定不得从held或Target25结�
 
 |资源|上限或估算|
 |---|---:|
-|JP4 payload|约2,914B；硬上限4,096B|
+|JP4 update-factor wire|包含`L_g/R/a/theta`及必要scale/receipt；硬上限4,096B|
+|ground wire|包含全部多原型code、scale、权重、半径、证书及必要metadata；无4,096B子门，但必须完整计入每个DA臂总state|
 |`M0`|完整qKNN state≤262,144B；post-backbone≤262,144 MAC/query|
 |`M92`|完整D92均值、系数、量化与score state≤262,144B；post-backbone≤262,144 MAC/query|
 |`M_DA`|完整qKNN＋JP4 state≤262,144B；post-backbone≤262,144 MAC/query|
@@ -270,7 +271,9 @@ D92公式、0.5旧类/0.5新类权重及score标定不得从held或Target25结�
 |合入后JP4 query额外计算|0 MAC|
 |qKNN头|≤42,466 MAC/query|
 
-`M0`计base qKNN全部state/MAC；`M92`计完整D92状态与score MAC；`M_DA`计base qKNN＋JP4；`M_DA92`计完整D92＋JP4。ground摘要、JP4 code/scale及head统计必须计入对应DA臂。backbone公共MAC单列，不混入post-backbone硬门。任一臂超限即`RESOURCE_FAIL/NO_PROMOTION`，不得通过降rank、删类、coverage回退或Target结果驱动压缩补救。
+`M0`计base qKNN全部state/MAC；`M92`计完整D92状态与score MAC；`M_DA`计base qKNN＋JP4；`M_DA92`计完整D92＋JP4。实现必须分别报告`update_factor_wire_bytes`、`ground_wire_bytes`、`total_component_bytes`和每个DA臂的`full_arm_state_bytes`。ground摘要、JP4 code/scale及head统计必须计入对应DA臂；`M_DA`与`M_DA92`分别独立满足总state硬门，不得共享抵扣。backbone公共MAC单列，不混入post-backbone硬门。任一臂超限即`RESOURCE_FAIL/NO_PROMOTION`，不得通过降rank、删类、coverage回退或Target结果驱动压缩补救。
+
+资源契约勘误：冻结后实现前发现，最坏18个ground原型code本身为2,880B，与`L_g/R`合计已超过4,096B，旧“JP4 wire/payload≤4,096B”表述内部不可满足。上述勘误只把4,096B子门精确定义为update-factor wire；ground仍完整进入每个DA臂262,144B总state硬门，不改变科学方法、数据访问、拟合、四臂、held门或Target门。独立勘误审查=`P0=0/P1=0/P2=0`。
 
 禁止保留FP32 ground、Jacobian、θ或权重差分sidecar；θ只以INT8 code＋FP16 scale持久化，运行前合入冻结权重并生成receipt。
 

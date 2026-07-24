@@ -8,4 +8,6 @@
 
 最终快速终审`P0=0、P1=0、P2=0`，批准进入本地实现；不授权N607或Target25。
 
+实现前发现旧4,096B子门与最坏18个ground多原型的实际payload冲突。冻结后资源契约勘误已把该子门限定为`update-factor wire`；ground wire另行完整计入`M_DA/M_DA92`各自262,144B总state。实现必须分别报告`update_factor_wire_bytes/ground_wire_bytes/total_component_bytes/full_arm_state_bytes`。独立勘误审查=`P0=0、P1=0、P2=0`，科学方法、held门和Target门不变。修订后冻结文档SHA256=`616e3bccdfc8ec97de213caa747faa9110e7a5b07c77040d09b1e92d07f54a2c`。
+
 实现追踪共16项：F01–F14为pending，F15独立代码/release审查与F16 Target25为deferred。最高风险是F04严格OOF增量求解和F07同一量化θ跨qKNN/D92头闭包；完整表见根目录权威报告。
