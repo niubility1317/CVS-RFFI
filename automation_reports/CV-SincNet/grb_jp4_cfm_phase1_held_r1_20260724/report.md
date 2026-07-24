@@ -12,4 +12,4 @@
 
 实现前发现旧4,096B子门与最坏18个ground多原型的实际payload冲突。冻结后资源契约勘误已把该子门限定为`update-factor wire`；ground wire另行完整计入`M_DA/M_DA92`各自262,144B总state。实现必须分别报告`update_factor_wire_bytes/ground_wire_bytes/total_component_bytes/full_arm_state_bytes`。独立勘误审查=`P0=0、P1=0、P2=0`，科学方法、held门和Target门不变。修订后冻结文档SHA256=`616e3bccdfc8ec97de213caa747faa9110e7a5b07c77040d09b1e92d07f54a2c`。
 
-实现追踪最终为verified=6、blocked=6、rejected=4。旧`68 passed`和真实checkpoint smoke在严格physical-LOO修正后已失效；当前排除Held evaluator的窄验证为`60 passed`，独立复核为基础组件`40 passed`、Stage2组件`18 passed`，Held falsifier因资源gate为`9 ERROR`，没有性能结果。最终独立release审查为`P0=0、P1=7、P2=0`：除资源超限和support MAC漏算外，ground-off正式API、D92 fold常量自证、row级执行/调度、外部COMMIT sidecar以及Git/协议承载均未闭合。代码只作为被否决研究原型保存，不授权N607，不同步公开协议，不访问Target25。完整审查与资源表见根目录权威报告。
+实现追踪最终为verified=6、blocked=6、rejected=4。旧`68 passed`和真实checkpoint smoke在严格physical-LOO修正后已失效；当前排除Held evaluator的窄验证为`60 passed`，独立复核为基础组件`40 passed`、Stage2组件`18 passed`，Held falsifier因资源gate为`9 ERROR`，没有性能结果。最终独立release审查为`P0=0、P1=7、P2=0`：除资源超限和support MAC漏算外，ground-off正式API、D92 fold常量自证、row级执行/调度、外部COMMIT sidecar以及公开协议承载均未闭合。代码已作为被否决研究原型保存在本地提交`1ed87d66`，不授权N607，不同步公开协议，不访问Target25。完整审查与资源表见根目录权威报告。
