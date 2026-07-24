@@ -56,8 +56,8 @@ trap write_exit EXIT
 [[ "${CUDA_VISIBLE_DEVICES}" =~ ^[0-7]$ ]] || die "single_gpu_binding_drift:${CUDA_VISIBLE_DEVICES}" 65
 [[ ! -e "${OUTPUT_ROOT}" ]] || die "immutable_output_exists:${OUTPUT_ROOT}" 73
 
-require_sha256 "ce4edb7badaa1fe39efb324e8ec3f3d7f191f54051918f6028381f529a5df976" "${MODULE_FILE}"
-require_sha256 "8298ed9f879715e77805e48d2272a7fa640a758554dec18f6f3e189187626944" "${TRANSFORM_FILE}"
+require_sha256 "c54383a5e8df4ce353ccaeacf3232eace6b85c34e33c405725f13fddac3f22d0" "${MODULE_FILE}"
+require_sha256 "cdf3f67c24631c1e3023b490826af1c1571412d05a0894e608b261cd89ccc247" "${TRANSFORM_FILE}"
 require_sha256 "51e5d187805ed5f58d7088431e9f99d878fd5687fbecc08cd9140e51963e2bc8" "${R2_FILE}"
 require_sha256 "19d25bf311c3a4f32ff38bd74ae03205e71bf5b44feaead8a134fa8502fac297" "${QKNN_FILE}"
 require_sha256 "dd2a2b0c8ab1a1d8edbeed81e78ffb79c253240998a9ac2404b75699f4ca68d0" "${ARCHIVE}"
