@@ -20,3 +20,7 @@ r1在N607 Torch`2.1.0+cu121`的real-checkpoint support-only smoke因不存在公
 |K10|M0/M_DA|85.8505|83.6620|83.6377|82.8873|65.8135|2.1885|0|0|0|FAIL|
 
 `proxy_gate_pass=false`：9个K×scene与18个K×pseudo-new分层全部失败。48/54行beta非零，17,580/19,782条注册后query的margin变化，但K5/K10的argmax变化为0；K1仅8次变化，wrong→correct=0、correct→wrong=7。持久状态4,873–4,909B；fit/query matrix MAC总计1,866,240/25,637,472；优化步和query-fit行均为0。结论是完整、合法的Phase1-held proxy阴性证据：淘汰SCXMAP，不创建bundle，不开放Target25，不做fresh retry。完整权威报告与14个回收文件保存在根目录同run路径。
+
+## 三轮回顾
+
+已按`AGENTS.md`在第四轮前重读当前目标、`项目.md`、项目会话索引及SVRN/ADV3B02/SCXMAP完整日志与结构化结果。三轮均为技术完整、科学阴性：SVRN完整125相对D62的old-after/new/H下降`21.36/35.64/31.84pp`；ADV3B02完整125的M_DA仅Δold/new/H=`+0.0378/-0.0460/-0.0272pp`且`I_syn(H)=0`；SCXMAP虽48/54行beta非零、17,580条margin变化，但K5/K10决策不变、K1只有破坏。下一候选必须直接证明neighbor/argmax净纠错、old/new同权收益和全注册类floor提升；保留D92＋原始qKNN matched control，禁止继续调SCXMAP beta/rank或重演共同变换。Target25固定seed=`713102`，只有新候选通过Phase1-held和独立审查后才能发布。当前未冻结下一方法、未授权第四轮N607实验。
