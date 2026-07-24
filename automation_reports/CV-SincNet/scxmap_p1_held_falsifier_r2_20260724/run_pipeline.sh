@@ -145,8 +145,8 @@ print("release_archive_entry_count="+str(len(infos)))' "${RELEASE_RECEIPT}" "${R
 if find "${SOURCE_ROOT}" -perm /222 -print -quit | grep -q .; then
   die "source_tree_is_writable" 76
 fi
-require_sha256 "TO_BE_FROZEN" "${MODULE_FILE}"
-require_sha256 "TO_BE_FROZEN" "${SAFE_MODULE_FILE}"
+require_sha256 "a934e107dbf11fcae76c0c3947e611512f2109d0e04a410844a6aec7d2478561" "${MODULE_FILE}"
+require_sha256 "8d06197055976df6d1deaba3c080466cc5a93d1f07e61723d59f36474730b9f6" "${SAFE_MODULE_FILE}"
 require_sha256 "cdf3f67c24631c1e3023b490826af1c1571412d05a0894e608b261cd89ccc247" "${TRANSFORM_FILE}"
 require_sha256 "51e5d187805ed5f58d7088431e9f99d878fd5687fbecc08cd9140e51963e2bc8" "${R2_FILE}"
 require_sha256 "19d25bf311c3a4f32ff38bd74ae03205e71bf5b44feaead8a134fa8502fac297" "${QKNN_FILE}"
