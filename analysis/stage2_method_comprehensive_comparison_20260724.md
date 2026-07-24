@@ -97,19 +97,24 @@ SCXMAP的48/54行拟合出非零beta，17,580/19,782条query margin改变，但K
 |ADV3B02-r8|0|0/0|max 206,394B|总延迟含fit/score，不能当纯query latency|无optimizer路径|资源通过，DA/OTHER/协同失活|
 |SCXMAP|0|闭式beta|4,907B smoke|1,296 MAC/query|6,480–64,800 MAC/held行|资源小但决策净伤害|
 |GRB-JP4-CFM|4维update|闭式/LOO|M_DA92 284,775B|设计目标≤262,144 MAC/query|严格LOO漏算|release门未闭合|
+|D102解析初始化器|0|闭式4维solve|numeric 7,248B；bundle目录12,691B|未获Target授权|真实source-held 8,400行|资源通过；TX泄漏和LOCO门拒绝|
 
-## 6.当前唯一研发候选
+## 6.D102真实Phase1-held结果
 
-`D102-RB-MetaBias4-qKNN`当前为`DESIGN_DRAFT`，尚无性能数据。
+`D102-RB-MetaBias4-qKNN`的解析SVD初始化实例已完成真实checkpoint、8,400条source weak-IQ的Phase1-held诊断。该run为`ARTIFACTS_COMPLETE / PHASE1_HELD_FALSIFIER_REJECT / TARGET25_BLOCKED`，不是Target性能。
 
-1. Phase1以receiver-held episodic方式训练rank-4类无关receiver-bias basis`B∈R^(160×4)`和类无关domain meta bank。
-2. 冻结backbone；在`joint_proj.0`的ReLU前执行`z_a=Norm(ReLU(u+Ba))`，使不同样本的ReLU mask和归一化几何发生输入相关变化。
-3. 每个target-old/target-new support以同一公式产生4维meta-observation和precision。
-4. Stage2-B对old类每类等权闭式求`a_B`；Stage2-C以完全相同loss、rank、solve和trust约束，对全部old/new类每类等权闭式求`a_C`。
-5. 用同一`a_C`统一重编码全部support并重建一个typed INT8 Student-t qKNN；query只读、逐样本、全注册类竞争。
-6. K1不估计类内散度；每个类singleton提供一个Phase1预定义的4维meta-observation，因此6/11/16/26个类票可约束4维系数。若Phase1-held不能证明可辨识和净纠错，则直接证伪。
-7. 预计Phase2为0 trainable parameter、0 optimizer step、总state<80KB、support额外<4M MAC；`Ba`可合入偏置，query额外MAC可为0。
-8. 必须先通过Phase1-held：K1严格正、K5/K10 old/new净正确均非负、非共同变换、INT8 top1≥99.5%、large-margin flip=0。
-9. 通过后才运行固定`5receiver×seed713102×5slice=25`的DA-only矩阵；M0/M_DA为因果主臂，D62/D92只作非门控历史或matched诊断，不把已证伪BCRR包装成OTHER。
+|K|mean base BA|mean adapted BA|ΔBA(pp)|mean base floor|mean adapted floor|Δfloor(pp)|净纠正|BA退化receiver|
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|1|86.2383%|86.2974%|+0.0591|67.3244%|67.3958%|+0.0714|+5|1/7|
+|5|85.2488%|85.2846%|+0.0358|60.8350%|61.0500%|+0.2150|+3|0/7|
+|10|85.1000%|85.1540%|+0.0540|62.2650%|62.7312%|+0.4662|+4|1/7|
 
-该候选针对三项已知失败逐一改变假设：用连续precision替代D62 hard fallback；用全类每类等权替代D92角色0.5/0.5；在真实网络ReLU前改变输入相关几何，而不是重复SCXMAP的post-feature标量修正。
+结果证明pre-ReLU MetaBias确实改变决策：K1/K5/K10分别有9/3/17条argmax变化和467/382/381个ReLU mask flip，平均BA、floor及净纠正均为正。但联合门仍失败：
+
+- TX泄漏probe mean BA=35.1190%，max BA=50.3199%，显著高于25%上限；
+- class-LOCO 42个K1 fold中9个BA退化，且9个fold的net correct均为负；
+- receiver-held K1和K10各有1/7个receiver退化，不能用边际均值覆盖；
+- 当前Phase1只是解析初始化器，不是设计冻结的episodic gradient trainer；
+- bundle虽仅7,248B numeric state、28个bank cell，但`formal_phase2_eligible=false`。
+
+因此D102解析实例关闭，固定Target25不运行。下一轮不得只缩小trust radius或放宽门限；应实现带receiver-held/class-LOCO监督和显式TX不变约束的Phase1训练版本，并重新从source-held门开始。D62/D92仍只作历史或非门控matched诊断，BCRR不重新进入。

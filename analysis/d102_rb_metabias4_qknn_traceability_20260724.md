@@ -3,17 +3,17 @@
 |ID|要求|设计位置|当前状态|验证门|
 |---|---|---|---|---|
 |D102-01|唯一表示级DA delta|设计冻结§1、§6|design-frozen|无D62/D92/BCRR训练项|
-|D102-02|Phase1 class-free MetaBias资产|§3、§4|analytic-initializer-only|receiver-held、class-LOCO、TX泄漏、置换；episodic trainer仍阻断|
+|D102-02|Phase1 class-free MetaBias资产|§3、§4|analytic-initializer-rejected|真实source-held完成；episodic trainer仍未实现|
 |D102-03|每个聚合≥2物理样本|§3.2|local-verified|aggregation receipt和负测|
 |D102-04|禁止raw z_dom直接匹配|§3.1|local-verified|固定U、量化、TX probe|
 |D102-05|唯一4维解析求解|§5|local-verified|Λ0正定、确定性box+ellipsoid映射|
 |D102-06|S_C old/new逐类等权|§5|local-verified|class permutation和new-count负测|
-|D102-07|K1可辨识审计|§5|local-verified-pending-real-held|information rank、prior fraction、净纠错|
-|D102-08|非共同变换|§6、§7|local-verified-pending-real-held|mask、pairwise、neighbor、margin、argmax|
+|D102-07|K1可辨识审计|§5|real-held-rejected|平均净纠正+5，但1/7 receiver退化|
+|D102-08|非共同变换|§6、§7|real-held-verified|真实mask和argmax变化存在，但不是晋级证据|
 |D102-09|query只读和全类竞争|§2.2、§6|local-verified|重复query、无truth/role/quota输入|
 |D102-10|INT8和资源闭合|§7|partial-local-verified|合成top1/state/MAC通过；真实held teacher/INT8仍阻断|
-|D102-11|Target25 DA-only|§8|release-blocked|25job/75scene/100prediction/150score|
-|D102-12|当前声明边界|§8|verified-design|DA_COMPONENT_FALSIFIER_NON_PROMOTABLE|
+|D102-11|Target25 DA-only|§8|no-go|TX泄漏和LOCO门拒绝，未启动|
+|D102-12|当前声明边界|§8|verified-reject|PHASE1_SOURCE_ONLY_NOT_TARGET_PERFORMANCE|
 
 ## 独立设计评审
 
@@ -29,3 +29,15 @@
 - class-LOCO覆盖每个excluded class×每个held receiver的K1 fold；每行adapted balanced accuracy均不得低于raw qKNN，并进入总门控。
 - 独立实现复审结论：limited diagnostic范围`P0=0、P1=0、GO`；Target25仍为`NO-GO`。episodic trainer和真实held teacher/INT8预测等价均为Target25的P1阻断项。
 - 余下P2为两个显式负例测试：构造`mean≤25%但max>25%`的TX fold和单个LOCO退化并断言总状态REJECT；现有测试已验证公式、覆盖数和门控布尔值。
+
+## N607 r6真实证据
+
+- run：`d102_rb_metabias4_phase1_analytic_held_20260724_r6`，commit`b963bc32`，pipeline exit=0。
+- tap：8,400行、33次forward、eager/reference z_id maxabs=0、strict hook bytes=true。
+- K1：BA86.2383%→86.2974%，floor+0.0714pp，net correct+5，但1/7 receiver退化。
+- K5：BA85.2488%→85.2846%，floor+0.2150pp，net correct+3，0/7 receiver退化。
+- K10：BA85.1000%→85.1540%，floor+0.4662pp，net correct+4，但1/7 receiver退化。
+- TX泄漏：mean BA35.1190%，max BA50.3199%>25%，拒绝。
+- class-LOCO：42个fold完整，9个BA退化且9/9 net correct<0，拒绝。
+- bundle：numeric state7,248B、28个bank cell、class-cell物理样本32–66；`formal_phase2_eligible=false`。
+- 终态：`ARTIFACTS_COMPLETE / PHASE1_HELD_FALSIFIER_REJECT / TARGET25_BLOCKED`。
