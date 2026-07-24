@@ -68,7 +68,7 @@ SCXMAP从类内中心化Phase1样本学习rank4的`z_dom→z_id`接收域残差�
 
 ## Git与发布输入
 
-本地Git工作树：`E:\type10-7\code\snapshots\cdom_scxmap_d92_glf_r1_wt`，分支`codex/cdom-scxmap-d92-glf-r1`。精选commit将在提交后补记；禁止`git add -A`和GitHub上传。
+本地Git工作树：`E:\type10-7\code\snapshots\cdom_scxmap_d92_glf_r1_wt`，分支`codex/cdom-scxmap-d92-glf-r1`。实现与预注册精选commit为`f4dcb950`；最终report-only release commit由runner handoff记录。禁止`git add -A`和GitHub上传。
 
 N607既有只读输入：
 
