@@ -68,7 +68,7 @@ SCXMAP从类内中心化Phase1样本学习rank4的`z_dom→z_id`接收域残差�
 
 ## Git与发布输入
 
-本地Git工作树：`E:\type10-7\code\snapshots\cdom_scxmap_d92_glf_r1_wt`，分支`codex/cdom-scxmap-d92-glf-r1`。实现与预注册commit为`f4dcb950`；冻结发布源码commit为`8410c3180e0e257da1205a3b8948495085c34cf0`。源码归档`source_8410c318.zip`为35917388B，SHA256=`7e1417e332183df927a6f4ad4ff716141740835c19b46b8f8dd23366b78371cc`；外部`release_receipt.json` SHA256=`79913954cb3b401da8649e212b2ec5bc9d9a74267e30cc3a243afd60cff103f5`，逐项绑定10个运行、实现、设计与测试文件。入口脚本归档字节SHA256=`d85a0c7330bfc9ade159dcd80d5f309106dec9e8b0be67d66e65cda1e6319b7a`。入口会在验证整包后自行安全解包全部4578项、逐项复核解包字节，并对所有目录和文件递归去写权限。禁止`git add -A`和GitHub上传。
+本地Git工作树：`E:\type10-7\code\snapshots\cdom_scxmap_d92_glf_r1_wt`，分支`codex/cdom-scxmap-d92-glf-r1`。实现与预注册commit为`f4dcb950`；冻结发布源码commit为`e60167522fae600e03a303d06be0132a2b1b5e31`。源码归档`source_e6016752.zip`为35917612B，SHA256=`c916352c0ce6f931e6dfebf6c5bd6a8f08b4f21ae277cd04d144fa5daed171e7`；外部`release_receipt.json` SHA256=`0975d48994fa2756145c5e3da3d5e0fde54f651fb4331bb6e4e92f01b06fd484`，逐项绑定10个运行、实现、设计与测试文件。入口脚本归档字节SHA256=`6d31d4b34ad980deb20790ac3f234dfcf8f564ebf1b9c7eb99b36a2659a66e7a`。入口会在验证整包后自行安全解包全部4578项、逐项复核解包字节，并对所有目录和文件递归去写权限。禁止`git add -A`和GitHub上传。
 
 N607既有只读输入：
 
@@ -94,7 +94,7 @@ N607既有只读输入：
 
 冻结child命令：
 
-`CUDA_VISIBLE_DEVICES=<single-0-to-7> RELEASE_RECEIPT_SHA256=79913954cb3b401da8649e212b2ec5bc9d9a74267e30cc3a243afd60cff103f5 bash /home/szu2070436088/2510044040/CV-SincNet/runs/scxmap_p1_held_falsifier_r1_20260724/run_pipeline.sh`
+`CUDA_VISIBLE_DEVICES=<single-0-to-7> RELEASE_RECEIPT_SHA256=0975d48994fa2756145c5e3da3d5e0fde54f651fb4331bb6e4e92f01b06fd484 bash /home/szu2070436088/2510044040/CV-SincNet/runs/scxmap_p1_held_falsifier_r1_20260724/run_pipeline.sh`
 
 ## 健康控制、风险与完结标准
 
