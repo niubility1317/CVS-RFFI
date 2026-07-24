@@ -1,7 +1,7 @@
 # Stage2域适应＋qKNN＋互补机制研发目标
 
-版本：2026-07-23
-修订：开放域适应、`z_id/z_dom`双qKNN、统一旧类/新类决策、单一OTHER、完整125与N607八卡并行发布
+版本：2026-07-24
+修订：优先域适应、D62/D92＋统一qKNN、弱类保护、单seed 25-row迭代验证与N607八卡并行发布
 状态：可直接作为新`/goal`目标Prompt
 协议：`protocol_schema=p2_min_v1`
 初始化文档：`docs/STAGE2_RESEARCH_AGENT_INIT.md`
@@ -20,12 +20,12 @@
 
 域适应可以改变encoder、输入前端、normalization、轻量adapter、support-conditioned表示、metric、邻域权重或概率状态。它必须具有明确的域偏移机制，并在held query上产生可观测的邻居贡献、margin、argmax或净正确决策变化；只有loss下降、support fit提高、metric非identity或logit数值变化不构成DA成功。RDA/SRDA、receiver nuisance correction、support-conditioned adapter、normalization、metric learning和合法Phase1新表征均可公平进入候选。
 
-`ADV3B02-TS-DRQKNN-BCRR/r8-bcrmaskidentity1`完整125已以`REJECT / COMPLETED_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE`结束。当前唯一性能验证lane为`GRB-JP4-ADV-DRQKNN-BCRR/r1-sealed`：只在r8共享执行链前增加Phase1 ground q4约束的`joint_proj.0.weight`闭式低秩模型增量，并增加原样r8 ground-off对照`M_DA_NG`。方法核心已在Git commit`71c62803`闭合，下一动作是production-signed资产、薄5臂runner和N607完整125，不再扩展静态设计。不得把JP4、固定q4、ground或BCRR写成后续所有方法的全局必经路线。
+`ADV3B02-TS-DRQKNN-BCRR/r8-bcrmaskidentity1`完整125已以`REJECT / COMPLETED_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE`结束。后续`GRB-JP4-CFM-qKNN-D92/r2-sharedK1`在本地release审查中因K10`M_DA92=284,775B`、support MAC漏算、ground-off/D92 fold闭包和row执行面未闭合而以`LOCAL_FEASIBILITY_REJECTED / NO_PERFORMANCE_RESULT`结束，未登陆N607。下一候选必须以D62/D92为头部对照，优先改变真正的模型或表示域适应机制，并通过单seed 25-row矩阵验证。不得把JP4、固定q4、ground或BCRR写成后续所有方法的全局必经路线。
 
 最终目标是：
 
 - Stage2-B的K5/K10域适应单组件相对同row`M0`产生真实净正确决策增益，并在receiver与scene分层上稳定；
-- K1在不可辨识时精确identity或强收缩，不伪造单shot DA收益；
+- K1必须利用target-old/new单样本关系、Phase1预锁类无关domain先验或合法地面聚合知识形成可辨识的强收缩更新，并相对同row M0取得严格正收益；整体identity只能作为失败时的安全回退，不能满足目标；
 - Stage2-C加入新类后同时保护旧类、提高seen-new、H、floor和最差类，降低forgetting及双向混淆；
 - `M_JOINT`严格优于DA单组件和OTHER单组件，且mean`I_syn>0`，证明`1+1>2`；
 - 在参数、optimizer step、持久state、MAC、时延、显存和INT8生命周期上满足星上部署约束；
@@ -130,7 +130,7 @@ Stage2-C必须在同一row报告注册前old、注册后old、seen-new、H、BA�
 
 ### 3.3K1/K5/K10可辨识性
 
-K1不得估计类内散度、类专属高维协方差或无约束模型参数。若候选的DA自由度在K1下不可辨识，必须精确identity或按Phase1预锁规则强收缩；K1用于验证安全回退，不要求伪造DA收益。
+K1不得估计类内散度、类专属高维协方差或无约束模型参数。候选必须把自由度压缩到由Phase1预锁类无关domain basis、合法地面多样本聚合知识和当前row跨类关系可辨识的范围；若最终只能identity，则该revision在K1目标上失败。K1的正收益必须来自同row旧/新保护下的真实query决策，不得由support fit或较低before伪造。
 
 K5是当前双qKNN候选的首个正式DA falsifier；K10用于确认相同机制，不得增加rank、改变`alpha`、重新选择kernel或放宽fallback。Stage2-C的新增类只能按冻结规则append，不得重拟合Stage2-B的旧类域basis、旧bank前缀或收缩强度。
 
@@ -171,13 +171,13 @@ K5是当前双qKNN候选的首个正式DA falsifier；K10用于确认相同机�
 - 原始`z_dom`具有明显TX泄漏，禁止直接双余弦跨类融合、第二domain分类头或按TX/receiver专属规则决策。
 - support accuracy、重构RMSE、LODO正信号、模型参数变化、代码测试或进程exit0都不是held性能成功。
 
-### 5.3当前实验裁决与唯一下一候选
+### 5.3当前实验裁决与下一候选边界
 
 完整r8运行`adv3b02_ts_drqknn_bcrr_r8_bcrmaskidentity1_artifactsfresh1_full125_0dbfcfe4_20260724_090452`已完成125/125row、1000/1000prediction和1500/1500逻辑score。四臂结果表明：`M_DA`相对`M0`的old-after仅`+0.0378pp`，但seen-new`-0.0460pp`、H`-0.0272pp`、floor`-0.0267pp`、min-new`-0.0400pp`且forgetting`+0.0222pp`；`M_OTHER`注册后与`M0`的157,500个query决策完全相同，`M_JOINT`与`M_DA`完全相同，`I_syn=0`覆盖375/375slice。裁决为`REJECT / COMPLETED_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE`，该revision不再补丁或重跑。
 
 历史partial run已回收并在Git commit`01c2a9c9`形成诊断证据：r4、r5、r6分别具有35、49、124个合法完成row和280/392/992个prediction；r6的124个共同cell与完整r8逐项一致，已足以提前诊断同一负趋势。partial仅用于覆盖偏差明确的诊断，不用于晋级、调参或替代完整125；今后每次健康止损必须立即统计已完成row，不得丢弃已有性能。
 
-当前唯一下一候选`GRB-JP4-ADV-DRQKNN-BCRR/r1-sealed`经独立终审=`MERGE / P0=0 / P1=0 / P2=0`并已提交Git commit`71c62803`。K1严格identity；K5/K10只估计4个共享系数，以Phase1 ground公共域变化q4和checkpoint右因子形成`joint_proj.0.weight`的rank≤4增量。五臂固定为`M0/M_DA_NG/M_DA/M_OTHER/M_JOINT`；`M_DA_NG`复用r8 no-ground双qKNN，`M_OTHER`继续为BCRR。发布只剩production-signed联合bundle、薄5臂runner、最小专项回归和新不可覆盖N607完整125；不得再增加设计波次、authority体系、数据复验或非必要控制面。完整合同见`docs/GRB_JP4_ADV_DRQKNN_BCRR_R1_SEALED_DESIGN_FROZEN.md`。
+`GRB-JP4-CFM-qKNN-D92/r2-sharedK1`最终实现/release审查为`P0=0、P1=7、P2=0`，状态已关闭。其严格physical-LOO修正可保留为工程教训，但资源门和正式执行面未闭合，不能修补后直接发布。下一候选在一个设计波次内只冻结一个主要DA机制；必须解释其相对GRB改变了什么可辨识假设，为什么能在K1产生正收益，并证明不会重现D62大面积fallback、D92新类交换或低coverage全坐标搬运。
 
 ## 6.方法卡与可行性门
 
@@ -277,14 +277,14 @@ Phase2只能读取：immutable Phase1 deployment bundle、匹配`VALIDATED_ONCE`
 - 必须产生可观测的domain neighbor、identity contribution、margin或argmax变化，不能只有logit漂移；
 - 必须报告相对direct ADV3B02、identity qKNN、DSSC和其他可用matched reference的同row差值；
 - receiver和scene分层不得由单一有利slice主导；
-- K1按冻结合同精确identity，`M_DA=M0`且`M_JOINT=M_OTHER`，只验证安全回退。
+- K1的`M_DA`或`M_JOINT`必须相对同row M0在H、A-old或min-old上严格提高，old/new保护项不得恶化；identity仅记为安全失败，不满足K1目标。
 
 ### 9.2Stage2-C联合门
 
 K10完整确认硬门：
 
 - `old_acc_after_increment>=92%`；
-- `min_old_class_acc>=88%`；
+- `min_old_class_acc>=85%`；
 - `seen_new_acc(new5)>=92%`；
 - `seen_new_acc(new10)>=90%`；
 - `seen_new_acc(new20)>=86%`。
@@ -294,8 +294,10 @@ K10完整确认硬门：
 - `M_DA`与`M_OTHER`相对`M0`均有净正确决策正收益，old/new净变化各自不负；
 - `M_JOINT`的old-before、old-after、old adaptation gain、seen-new、H、BA、floor、min-old和min-new均不低于两个单组件；
 - `M_JOINT`的forgetting、old→new和new→old均不高于两个单组件；
-- mean`I_syn>0`，首次完整125中正协同至少覆盖188/375个scene slice，至少2/3个scene均值为正；
+- mean`I_syn>0`，单seed 25-row中正协同至少覆盖38/75个scene slice，至少2/3个scene均值为正；
 - 最终确认中paired mean`I_syn>0`且95% CI下界大于0。
+
+K5/new20相对matched K10/new20的A-old、min-old、seen-new和H平均衰减均不得超过5pp。K1必须取得前述严格正收益，不能以identity或较低before造成的较低forgetting冒充改善。
 
 ### 9.3完整报告
 
@@ -327,16 +329,16 @@ K10完整确认硬门：
 3.一个设计波次后只冻结一个优先候选。设计冻结后只实现一个主要机制delta。
 4.本地在`ssr-gpu`完成专项测试、协议负例、真实checkpoint无query smoke、INT8部署等价、diff review和Git提交；只在机制需要时增加ground-off或parameter-freeze消融。
 5.允许使用Phase1 LODO/LOCO、source validation和合法held proxy冻结模型结构与超参数；这些代理不得替代target性能，也不得读取target query选参。
-6.每个冻结候选、每个revision的任何正式N607性能发布都必须直接运行完整125：`5 receivers×5 seeds×{K10/new5,K10/new10,K10/new20,K5/new20,K1/new20}`，每job覆盖3个LEO弱场景。当前双qKNN候选同一commit输出`M0/M_DA/M_OTHER/M_JOINT`，闭合`125 jobs/375 scene slices/1500 score rows/1000 arm-state prediction artifacts`。不得先发布单receiver、单seed、单K、单scene或其他有利子集；局部入口只能用于本地专项、协议负例和真实checkpoint无query smoke。
-7.每次完整125只能验证一个已冻结revision，不得用于选择层、rank、loss、step、ground格式、OTHER、量化、阈值或fallback。任何机制变化必须创建新revision、重新审查并以新的不可覆盖run ID重新执行完整125；不同revision不得拼接结果。
-8.首次完整125取得联合正收益后，只能以预注册的新seed和全新run ID运行另一份完整125确认；不得用第一次125选择结构、rank、`alpha`、量化、阈值或fallback。
+6.每个冻结候选、每个revision的正式N607性能发布固定为单个预注册seed的25-row矩阵：`5 receivers×1 seed×{K10/new5,K10/new10,K10/new20,K5/new20,K1/new20}`，每job覆盖3个LEO弱场景。四臂候选应闭合`25 jobs/75 scene slices/300 logical score rows/200 arm-state prediction artifacts`。不得只发单receiver、单K、单scene或其他有利子集；局部入口只能用于本地专项、协议负例和真实checkpoint无query smoke。
+7.每次25-row只能验证一个已冻结revision，不得用于选择层、rank、loss、step、ground格式、OTHER、量化、阈值或fallback。任何机制变化必须创建新revision、重新审查并使用新的不可覆盖run ID；不同revision不得拼接结果。
+8.首次25-row达到全部门后，只能以预注册的新seed和全新run ID运行另一份25-row确认；不得用第一次25-row选择结构、rank、`alpha`、量化、阈值或fallback。
 9.每次正式性能发布都必须把冻结矩阵按不可变row/job ID确定性分片，并通过共享动态队列调度到N607的GPU0–7；在8张GPU均可安全使用时，每张卡至少分配一个worker，尽量让8卡同时工作，并通过最长任务优先或等价负载均衡减少尾部空转。
 10.发布前记录8张GPU的已有进程、显存和可用slot。默认每卡最多2个训练进程；不得杀死、暂停或迁移无关任务。若部分GPU已满，只使用其余安全slot并排队等待，不得为追求8卡占用而超配，也不得因此缩窄正式矩阵。
 11.同一run ID只有一个实验runner负责preflight、精确同步、远端校验、启动、实验健康检查、短连接监控和artifact回收。runner必须在报告中记录逐GPU的job分配、并发上限、启动/结束时间、利用率或可观测替代量、失败重排和尾部空闲原因；单job失败只按冻结retry规则重入队列，不能改变方法或参数。
-12.完整125是性能证据矩阵，不是要求技术故障自然跑完。正式启动后必须先执行首波健康检查：只读取PID/parent-child/CWD/cmdline、GPU利用率与显存、row exit、异常指纹、prediction/score数量和artifact闭合，不得读取准确率或据性能早停。若任一P0协议/安全错误发生，或至少2个不同row在没有prediction时出现相同确定性异常指纹，runner必须立即停止继续派发，核对进程归属后终止且仅终止本run进程，确认GPU释放与SSH残留为0，并回收partial日志及失败row；不得等待其余row自然失败。技术修复必须经过本地专项测试、独立P0/P1 review、Git提交和全新不可覆盖run ID，禁止原run续跑或覆盖。
+12.完整25-row是当前性能证据矩阵，不是要求技术故障自然跑完。正式启动后必须先执行首波健康检查：只读取PID/parent-child/CWD/cmdline、GPU利用率与显存、row exit、异常指纹、prediction/score数量和artifact闭合，不得读取准确率或据性能早停。若任一P0协议/安全错误发生，或至少2个不同row在没有prediction时出现相同确定性异常指纹，runner必须立即停止继续派发，核对进程归属后终止且仅终止本run进程，确认GPU释放与SSH残留为0，并回收partial日志及失败row；不得等待其余row自然失败。技术修复必须经过本地专项测试、独立P0/P1 review、本地Git提交和全新不可覆盖run ID，禁止原run续跑或覆盖。
 13.服务器runner执行上一revision期间，主agent继续下一DA候选的只读设计、实现准备和历史复盘，不线性等待N607。
 
-只有合法prediction数量为0时才标记`TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。因系统性技术故障触发健康止损时仍须立即停止继续派发并标记`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE`；但凡已生成不可变prediction或已绑定score，必须回收并统计为`PARTIAL_DIAGNOSTIC_BIASED_NOT_PROMOTABLE`，报告实际完成row、prediction/score数量、receiver、scene、K、new-count和seed覆盖、同row四臂指标及覆盖选择偏差。只有prediction而没有score时，优先在不重新运行predictor的前提下使用冻结scorer完成合法truth后绑定；确实无法绑定时明确标记`PARTIAL_PREDICTIONS_UNSCORED`。partial结果不得晋级、选方法、选rank、调阈值、拼接极值或替代完整125，但不得因矩阵未完成而拒绝读取已经付出计算得到的性能证据。完成全部prediction但性能未达门标记`COMPLETED_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE`，记录被证伪假设后立即进入下一revision；不得在同一revision上根据query结果补丁式调参。
+只有合法prediction数量为0时才标记`TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。因系统性技术故障触发健康止损时仍须立即停止继续派发并标记`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE`；但凡已生成不可变prediction或已绑定score，必须回收并统计为`PARTIAL_DIAGNOSTIC_BIASED_NOT_PROMOTABLE`，报告实际完成row、prediction/score数量、receiver、scene、K、new-count和seed覆盖、同row四臂指标及覆盖选择偏差。只有prediction而没有score时，优先在不重新运行predictor的前提下使用冻结scorer完成合法truth后绑定；确实无法绑定时明确标记`PARTIAL_PREDICTIONS_UNSCORED`。partial结果不得晋级、选方法、选rank、调阈值、拼接极值或替代完整25-row，但不得因矩阵未完成而拒绝读取已经付出计算得到的性能证据。完成全部prediction但性能未达门标记`COMPLETED_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE`，记录被证伪假设后立即进入下一revision；不得在同一revision上根据query结果补丁式调参。
 
 ## 12.研发自由、重入与停止边界
 
@@ -356,11 +358,11 @@ additional_cost
 
 - 只有metric、协方差、prototype或score数值变化，却没有邻居贡献、argmax或净正确决策变化；
 - 用旧类Stage2-B正收益替代Stage2-C新类注册和反遗忘；
-- K1整体identity fallback后仍声明单shot适应；
+- K1整体identity fallback后仍声明达到本轮单shot提升目标；
 - ground旧类原型直接加分并压制新类；
 - 在低coverage下强制高rank ground→target全坐标transport；
 - 用support loss、100% support accuracy、LODO单点或重构RMSE晋级；
-- 用125、Role-Oracle、development query或confirmation query反向选参；
+- 用25-row、Role-Oracle、development query或confirmation query反向选参；
 - 重复建设已`VALIDATED_ONCE`的数据、hash、allowlist、authority或准入系统；
 - 多个agent修改同一方法文件、启动同一run ID或由方法作者自我认证。
 
@@ -372,11 +374,11 @@ additional_cost
 
 - 域适应方法卡、可行性审查和`DESIGN_FROZEN`；
 - Stage2-B和Stage2-C状态机及联合因果证据；
-- K1安全回退、K5首证伪与K10确认；
+- K1严格正收益、K5衰减不超过5pp与K10确认；
 - DA单组件在receiver/scene分层上产生真实净正确决策正收益；
 - Stage2-C绝对性能门、floor、forgetting和双向混淆门；
 - `M_JOINT`严格优于单组件且协同CI通过；
-- 至少一份完整125性能验证及预注册完整125确认；
+- 至少一份完整25-row性能验证及预注册新seed 25-row确认；
 - DA state、qKNN和OTHER的INT8生命周期；
 - fit/build期与部署期资源审计；
 - 完整日志、报告、复现命令和Git提交。

@@ -1,6 +1,6 @@
 # Stage2快速模型域适应目标修订追踪
 
-日期：2026-07-23
+日期：2026-07-24
 目标文件：`docs/STAGE2_METHOD_RESEARCH_GOAL.md`
 依据：用户对Stage2-B/C、地面压缩原型、星上快速模型域适应、K1正收益、MRIOR超越和联合协同的最新定义。
 
@@ -17,10 +17,15 @@
 |G09|联合1+1>2|隔离模型DA、无ground DA、OTHER和JOINT贡献，并计算`I_syn`|同上|verified|消融表与公式检查|天然耦合方法允许等价干预|
 |G10|星上资源稀缺|限制训练参数、step、state和int8生命周期，并要求相对MRIOR资源优势|同上|verified|资源门检查|删除optimizer后只保留部署delta|
 |G11|完整性能证据|报告old-before/after、gain、new、H、BA、floor、min、forgetting、混淆和分层|同上|verified|指标清单检查|不得拼接跨run极值|
-|G12|实验驱动直到达标|设计冻结后快速实现；每个候选/revision的任何正式性能发布均直接运行完整125，局部行只作本地技术验证；通过后完整确认，负结果进入下一revision|同上|verified|研发顺序与run矩阵检查|125不得用于反向选参，不得先发有利子集|
+|G12|实验驱动直到达标|设计冻结后快速实现；每个candidate/revision只运行单个预注册seed的25-row矩阵；通过后用新seed再运行一份25-row确认，负结果进入下一revision|同上|verified|研发顺序与run矩阵检查|25-row不得用于反向选参或补丁式调参|
 |G13|当前路线重分类|RBSC/C-id/RCHM/SVRN等metric路线只作OTHER/reference，不算快速模型DA主线|同上|verified|当前起点检查|下一波必须优先模型适应方法卡|
 |G14|DA纳入一切合法可用信息|候选必须审查domain branch、`z_dom`、地面压缩原型、domain basis、聚合统计、adapter先验和同received-IQ合法表征|同上|verified|合法资产清单检查|允许选择性使用，但必须说明未采用理由|
 |G15|每次发布充分利用N607八卡|正式矩阵确定性分片并动态调度到GPU0–7；安全可用时8卡齐用，每卡不超过2个训练进程且不干预已有任务|同上|verified|发布与调度条款检查|资源不足时排队等待，不得缩窄矩阵；报告逐GPU分配与利用情况|
+|G16|最新K10绝对门|A-old≥92%、min-old≥85%、new5≥92%、new10≥90%、new20≥86%|同上|verified|性能门逐项检查|min-old以全部实际旧类的最低准确率定义|
+|G17|K5衰减限制|K5/new20相对matched K10/new20的A-old、min-old、seen-new和H衰减均不超过5pp|同上|verified|paired切片门|不能以平均H掩盖弱类坍塌|
+|G18|K1必须提升|K1的M_DA或M_JOINT相对同rowM0必须在H、A-old或min-old上产生严格正收益，且old/new保护项不恶化|同上|verified|K1同row因果门|不再接受整体identity作为目标完成证据|
+|G19|优先域适应并复用D62/D92|下一revision优先改变模型/表示DA，以D62、D92和统一qKNN作为头部对照，不继续仅调分类头|同上|verified|候选卡与四臂检查|关注弱类、ground压缩知识与target-old/new support联合使用|
+|G20|无远端Git发布|只允许本地Git版本化和N607文件同步；不push、不建PR、不上传GitHub|同上|verified|版本与发布条款检查|本地commit用于复现，不属于上传操作|
 
 ## 反向审计
 
@@ -29,6 +34,8 @@
 - [x] Stage2-B和Stage2-C的数据输入、状态转换、预测边界与指标均闭合。
 - [x] K1、MRIOR、ground-off、模型DA、OTHER和JOINT门均可证伪。
 - [x] 资源限制覆盖训练期、持久state、量化和query路径。
-- [x] 每个候选/revision的任何正式性能发布均为完整125；局部行仅用于本地专项、协议负例和无query smoke，不形成N607性能run。
+- [x] 每个候选/revision的正式性能发布均为单seed 25-row；通过后以新seed再做25-row确认。
 - [x] 每次正式发布在安全边界内尽量并行使用N607八卡，且不以并行不足缩窄冻结矩阵。
+- [x] K10绝对门、K5≤5pp衰减门和K1严格提升门均已写入。
+- [x] 仅本地Git版本化与N607同步，禁止push、PR和GitHub上传。
 - [x] Git提交范围只包含本次目标文档和追踪记录，未纳入并发RBSC实现文件。
