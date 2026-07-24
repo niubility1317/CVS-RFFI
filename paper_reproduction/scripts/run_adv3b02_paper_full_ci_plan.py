@@ -14,12 +14,15 @@ from contextlib import contextmanager
 from pathlib import Path
 from typing import Any, Sequence
 
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
 from paper_reproduction.scripts.build_adv3b02_paper_full_ci_plan import (
     validate_adapter_release_matrix,
 )
 
-
-REPO_ROOT = Path(__file__).resolve().parents[2]
 METHODS = ("csil_paper_full", "mopc_hr_paper_full")
 OFFICIAL_METHODS = (
     "csil_official_repo",

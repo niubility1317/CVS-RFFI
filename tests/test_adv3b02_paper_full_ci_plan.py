@@ -2,6 +2,7 @@ import argparse
 import importlib.util
 import inspect
 import json
+import subprocess
 import sys
 from pathlib import Path
 
@@ -277,6 +278,24 @@ def test_adapter_predictor_receipt_semantics_are_machine_distinct():
     assert sequential[1] == "ORDERED_ARRIVAL_DIAGNOSTIC"
     assert adapter[0].endswith("predictor_receipt.v2")
     assert sequential[2].startswith("ORDERED_ARRIVAL_DIAGNOSTIC")
+
+
+def test_plan_runner_imports_from_outside_repository_cwd(tmp_path):
+    script = (
+        Path(__file__).resolve().parents[1]
+        / "paper_reproduction"
+        / "scripts"
+        / "run_adv3b02_paper_full_ci_plan.py"
+    )
+    completed = subprocess.run(
+        [sys.executable, str(script), "--help"],
+        cwd=tmp_path,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert completed.returncode == 0, completed.stderr
+    assert "--plan" in completed.stdout
 
 
 def test_smoke_receipt_binds_plan_contract_artifacts_and_predictor(tmp_path):

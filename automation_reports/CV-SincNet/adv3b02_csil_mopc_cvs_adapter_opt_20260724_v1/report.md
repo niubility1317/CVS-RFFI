@@ -2,7 +2,7 @@
 
 - 实验ID：`adv3b02_csil_mopc_cvs_adapter_opt_20260724_v1`
 - 日期：2026-07-24
-- 状态：`LOCAL_VERIFIED`
+- 状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
 - 目标：修复外部对比方法接入CVS K-shot与单阶段注册时的执行失配，同时保持CSIL和MoPC-HR官方核心方法不变。
 - 比较基线：`adv3b02_official_newcount_scale_20260724_v7`的同receiver、seed、K、physical ID和LEO场景结果。
 
@@ -111,3 +111,30 @@
 - `run_adv3b02_paper_full_ci_truth_free_predictor.py`：`45183207aa0541ac577c76c8f32fe8a03aeb4d1da47330c61767a7191edca64b`。
 - CSIL split：`005a9129015e23430029fa26ae93f2f416c9fb9b60f7dbf81cf113b06f9e3327`。
 - MoPC split：`e811611e675a7d6bf87351b9726c3743ed92f2673a5d85c705647a087e6c524f`。
+
+## N607发布预注册
+
+- CWD：`/home/szu2070436088/2510044040/CV-SincNet`。
+- Python：`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`。
+- run root：`runs/adv3b02_csil_mopc_cvs_adapter_opt_20260724_v1`。
+- log root：`logs/adv3b02_csil_mopc_cvs_adapter_opt_20260724_v1`。
+- direct preflight：PASS；8张RTX 3090空闲；`/home`可用7.5TB；run/log落地前均不存在。
+- base26 SHA：`635becd7db2d8041a669cb0ef922429c42ba389846f2252c7cfe4e0f3510a07e`。
+- base31 SHA：`306c8dfc767bad93f78f24b675b1c20058629eda8f3153bdf98d03ab6ae26202`。
+- 六个发布文件已精确同步到同名远端路径，远端SHA全部匹配，`py_compile`通过。
+- 远端`CVS-RFFI`环境未安装pytest，服务器未发现可用`ssr-gpu` pytest环境；未擅自安装依赖。该项记录为远端测试工具限制，不是项目测试失败；本地替代门为`53 passed`。
+- CSIL pre-smoke plan：`plan/csil_pre_smoke.json`，SHA256=`bb88d8a33143bd445575ad11d37d0b34634db44fc10c27d0b398c091a50d3328`，50 packages/200 cells/600场景行。
+- MoPC pre-smoke plan：`plan/mopc_pre_smoke.json`，SHA256=`c39f36f3951c7b8e173c6527835b785c350208440fb3a3f116dda03ac412bc77`，25 packages/200 cells/600场景行。
+- smoke命令统一使用`run_adv3b02_paper_full_ci_plan.py --stage smoke --shard-index 0 --shard-count 1`，CSIL使用GPU0，MoPC使用GPU1；日志分别为`smoke_csil.log`和`smoke_mopc.log`。
+- smoke通过后由原plan builder绑定smoke receipt生成`csil_authorized.json`和`mopc_authorized.json`，再以8 shards执行完整矩阵；PID、CWD、cmdline、GPU和日志写入run root。
+
+## N607烟测技术停止
+
+- CSIL smoke PID：`1763601`；MoPC smoke PID：`1763602`。两者CWD均为`/home/szu2070436088/2510044040/CV-SincNet`，命令、GPU0/1和日志已写入`smoke_launch_receipt.txt`。
+- 两个不同方法入口均在prediction前产生相同确定性异常：`ModuleNotFoundError: No module named 'paper_reproduction'`。
+- 失败发生在`run_adv3b02_paper_full_ci_plan.py`导入`paper_reproduction.scripts.build_adv3b02_paper_full_ci_plan`时；当前直接脚本启动路径没有把repo root加入模块搜索路径。
+- 完成cell：0；prediction：0；score：0；failure receipt：0；smoke receipt：0。
+- 两个PID均自行退出，未生成带authority的正式plan，400-cell完整矩阵从未启动。
+- 该结果属于启动器系统性技术失败，不是方法性能结果；不得读取或推断准确率、H或遗忘。
+- fresh retry未授权；v1路径与现有plan/log全部保留，未覆盖、未修复、未重试。若修复后重新发布，必须完成本地验证和独立复审，并使用新的不可覆盖run ID。
+- 回收证据位于`retrieved/smoke_csil.log`、`retrieved/smoke_mopc.log`、两份pre-smoke plan和`retrieved/smoke_launch_receipt.txt`。
