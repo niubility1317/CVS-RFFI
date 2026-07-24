@@ -59,6 +59,13 @@ def test_forward_taps_preserves_batch_order_and_counts(monkeypatch):
         return SimpleNamespace(z_id=z_id, hidden=hidden, pre_relu=pre)
 
     monkeypatch.setattr(tap, "strict_zid_with_hook", fake_forward)
+    monkeypatch.setattr(
+        tap.torch,
+        "from_numpy",
+        lambda *_args, **_kwargs: (_ for _ in ()).throw(
+            AssertionError("Torch NumPy C bridge must not be used")
+        ),
+    )
     z_id, hidden, pre, calls = tap._forward_taps(
         object(), rows, device=torch.device("cpu"), batch_size=4
     )
@@ -84,6 +91,11 @@ def test_joint_linear_requires_exact_real_layer_shape():
     model.id_backbone.cls_head.joint_proj[0] = torch.nn.Linear(12, 7)
     with pytest.raises(tap.Phase1JP4TapArchiveError, match="weight contract"):
         tap._joint_linear(model)
+
+
+def test_exporter_source_has_no_torch_numpy_bridge():
+    source = Path(tap.__file__).read_text(encoding="utf-8")
+    assert ".numpy(" not in source
 
 
 def test_bound_file_rejects_hash_drift(tmp_path):

@@ -20,6 +20,8 @@ from cvsrffi.stage2_grb_jp4_adv_drqknn_bcrr import (
     GRBJP4SpikeError,
     GroundReceiverBasis,
     StrictForward,
+    _float32_tensor_to_numpy_without_torch_numpy_bridge,
+    _tensor_bytes_equal,
     _append_stage2_c_development_only,
     build_five_arm_state_view,
     _build_stage2_b_state_development_only,
@@ -29,6 +31,28 @@ from cvsrffi.stage2_grb_jp4_adv_drqknn_bcrr import (
     prepare_support_for_jp4_fit,
     resource_receipt,
 )
+
+
+def test_tap_tensor_conversion_preserves_float32_without_numpy_bridge():
+    expected = np.asarray(
+        [[-3.5, -0.0, 0.125, 1.0], [2.75, 65504.0, -7.0, 0.0]],
+        dtype=np.float32,
+    )
+    tensor = torch.tensor(expected.tolist(), dtype=torch.float32)
+    observed = _float32_tensor_to_numpy_without_torch_numpy_bridge(tensor)
+    assert observed.dtype == np.float32
+    assert observed.flags.c_contiguous
+    assert np.array_equal(
+        observed.view(np.uint32), expected.view(np.uint32)
+    )
+
+
+def test_tensor_byte_equality_rejects_signed_zero():
+    positive = torch.tensor([0.0, 1.0], dtype=torch.float32)
+    negative = torch.tensor([-0.0, 1.0], dtype=torch.float32)
+    assert torch.equal(positive, negative)
+    assert _tensor_bytes_equal(positive, negative) is False
+    assert _tensor_bytes_equal(positive, positive.clone()) is True
 
 
 def _sha(value: bytes) -> str:

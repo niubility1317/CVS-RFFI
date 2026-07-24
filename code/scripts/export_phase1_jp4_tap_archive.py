@@ -42,6 +42,7 @@ from cvsrffi.leo_weak_cache import (  # noqa: E402
 )
 from cvsrffi.phase2_candidate_capsule import BASE_CHECKPOINT_SHA256  # noqa: E402
 from cvsrffi.stage2_grb_jp4_adv_drqknn_bcrr import (  # noqa: E402
+    _float32_tensor_to_numpy_without_torch_numpy_bridge,
     strict_zid_with_hook,
 )
 from scripts.export_phase1_singleobs_dual_feature_archive import (  # noqa: E402
@@ -197,10 +198,20 @@ def _forward_taps(
     outputs: list[list[np.ndarray]] = [[], [], []]
     calls = 0
     for start in range(0, len(rows), int(batch_size)):
-        chunk = np.ascontiguousarray(
-            rows[start : start + int(batch_size)], dtype=np.float32
+        chunk = np.array(
+            rows[start : start + int(batch_size)],
+            dtype=np.float32,
+            order="C",
+            copy=True,
         )
-        tensor = torch.from_numpy(chunk).to(device=device, dtype=torch.float32)
+        tensor = (
+            torch.frombuffer(
+                memoryview(chunk), dtype=torch.float32, count=int(chunk.size)
+            )
+            .reshape(tuple(chunk.shape))
+            .clone()
+        )
+        tensor = tensor.to(device=device, dtype=torch.float32)
         forward = strict_zid_with_hook(model, tensor)
         calls += 1
         for target, value, shape in (
@@ -328,8 +339,8 @@ def export_phase1_jp4_tap_archive(
     )
     model.to(runtime_device).eval()
     linear = _joint_linear(model)
-    joint_weight = np.ascontiguousarray(
-        linear.weight.detach().cpu().numpy(), dtype=np.float32
+    joint_weight = _float32_tensor_to_numpy_without_torch_numpy_bridge(
+        linear.weight
     )
 
     salt = _load_selection_salt(
@@ -441,6 +452,9 @@ def export_phase1_jp4_tap_archive(
                 "runtime_invocations": calls,
                 "rebuild_audit": rebuild_audit,
                 "checkpoint_load_audit": checkpoint_load_audit,
+                "numpy_bridge_policy": (
+                    "input_frombuffer_clone_output_tensor_tolist_float32"
+                ),
                 "strict_hook_exact_bytes": True,
                 "eager_reference_z_id_max_abs": maximum,
             },

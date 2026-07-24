@@ -796,6 +796,29 @@ class StrictForward:
     execution_path: str = "eager_forward_hook"
 
 
+def _float32_tensor_to_numpy_without_torch_numpy_bridge(
+    value: torch.Tensor,
+) -> np.ndarray:
+    """Preserve float32 values when Torch and NumPy use incompatible C-ABI state."""
+
+    tensor = value.detach().cpu()
+    if tensor.dtype != torch.float32 or not bool(torch.isfinite(tensor).all().item()):
+        raise GRBJP4SpikeError("tap tensor must be finite float32")
+    return np.ascontiguousarray(
+        np.asarray(tensor.tolist(), dtype=np.float32), dtype=np.float32
+    )
+
+
+def _tensor_bytes_equal(left: torch.Tensor, right: torch.Tensor) -> bool:
+    """Compare tensor payload bytes, including signed zero, without NumPy."""
+
+    if left.dtype != right.dtype or tuple(left.shape) != tuple(right.shape):
+        return False
+    left_bytes = left.detach().cpu().contiguous().view(torch.uint8)
+    right_bytes = right.detach().cpu().contiguous().view(torch.uint8)
+    return bool(torch.equal(left_bytes, right_bytes))
+
+
 def strict_zid_with_hook(model: Any, iq: torch.Tensor) -> StrictForward:
     """Execute either the eager hook or sealed TorchScript functional tap."""
 
@@ -852,11 +875,11 @@ def strict_zid_with_hook(model: Any, iq: torch.Tensor) -> StrictForward:
                 "TorchScript GRB functional tap is not byte-bound to joint_proj.0/ReLU"
             )
         return StrictForward(
-            np.ascontiguousarray(z_id.detach().cpu().numpy(), dtype=np.float32),
-            np.ascontiguousarray(hidden.detach().cpu().numpy(), dtype=np.float32),
-            np.ascontiguousarray(pre_relu.detach().cpu().numpy(), dtype=np.float32),
+            _float32_tensor_to_numpy_without_torch_numpy_bridge(z_id),
+            _float32_tensor_to_numpy_without_torch_numpy_bridge(hidden),
+            _float32_tensor_to_numpy_without_torch_numpy_bridge(pre_relu),
             True,
-            np.ascontiguousarray(z_dom.detach().cpu().numpy(), dtype=np.float32),
+            _float32_tensor_to_numpy_without_torch_numpy_bridge(z_dom),
             "torchscript_exported_functional_tap",
         )
 
@@ -888,26 +911,21 @@ def strict_zid_with_hook(model: Any, iq: torch.Tensor) -> StrictForward:
     z = aux.get("feat_joint") if isinstance(aux, dict) else None
     if not torch.is_tensor(z) or not all(k in caught for k in ("hidden", "pre_relu", "joint")):
         raise GRBJP4SpikeError("formal feat_joint/hook capture is incomplete")
-    if z is not caught["joint"] and not torch.equal(z, caught["joint"]):
-        raise GRBJP4SpikeError("formal feat_joint differs from post-ReLU hook")
-    exact_bytes = (
-        np.ascontiguousarray(z.detach().cpu().numpy()).tobytes()
-        == np.ascontiguousarray(caught["joint"].cpu().numpy()).tobytes()
-    )
+    exact_bytes = z is caught["joint"] or _tensor_bytes_equal(z, caught["joint"])
     if not exact_bytes:
         raise GRBJP4SpikeError("formal feat_joint hook byte binding drift")
     zdom = None
     if isinstance(aux, dict):
         for key in ("feat_dom", "feat_domain", "z_dom"):
             if torch.is_tensor(aux.get(key)):
-                zdom = np.ascontiguousarray(
-                    aux[key].detach().cpu().numpy(), dtype=np.float32
+                zdom = _float32_tensor_to_numpy_without_torch_numpy_bridge(
+                    aux[key]
                 )
                 break
     return StrictForward(
-        np.ascontiguousarray(z.detach().cpu().numpy(), dtype=np.float32),
-        np.ascontiguousarray(caught["hidden"].cpu().numpy(), dtype=np.float32),
-        np.ascontiguousarray(caught["pre_relu"].cpu().numpy(), dtype=np.float32),
+        _float32_tensor_to_numpy_without_torch_numpy_bridge(z),
+        _float32_tensor_to_numpy_without_torch_numpy_bridge(caught["hidden"]),
+        _float32_tensor_to_numpy_without_torch_numpy_bridge(caught["pre_relu"]),
         True,
         zdom,
         "eager_forward_hook",
