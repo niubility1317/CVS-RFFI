@@ -131,3 +131,8 @@
 - `retrieved/analysis_v1/summary_delta_vs_v7_by_method_new_k.csv`
 - `retrieved/analysis_v1/per_old_class_summary_by_method_new_k.csv`
 - `retrieved/logs/`内18份完整日志及两份launch receipt
+
+### Git证据收口
+
+- 结果报告与受控分析证据提交：`c5c564a9a5fdce3881a24f719d6ba594cd47604a`。
+- launch receipt尾部空白规范化提交：`882bee72b9d63e0703d18c166d122ea868d42b7e`；最终`git diff --check`通过。
