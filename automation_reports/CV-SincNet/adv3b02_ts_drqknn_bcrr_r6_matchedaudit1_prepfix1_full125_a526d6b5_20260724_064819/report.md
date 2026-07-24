@@ -98,3 +98,18 @@ PYTHONPATH=<run>/source/code /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python
 - 反事实（均相对teacher-support+teacher-scale）：Q2+teacher-scale仍top1=`0.9923076923076923`、any/large=`1/0`、MAE/max=`0.00013331379410783215/0.001354217529296875`；teacher+deployed-scale为top1=`1.0`、any/large=`0/0`、MAE/max=`4.512177416558802e-06/3.0517578125e-05`；Q2+deployed-scale仍top1=`0.9923076923076923`、any/large=`1/0`、MAE/max=`0.00013472314417009522/0.0013523101806640625`；Q3+deployed-scale为top1=`1.0`、any/large=`0/0`、MAE/max=`4.8025119939499356e-06/6.103515625e-05`。
 - 唯一归因：deployed-scale不是首源；Q2 support量化在teacher/deployed两种scale下均保留同一flip，Q3 residual层消除该flip。该结论仅描述构造器量化审计，不是正式性能结论或方法修改。
 - 证据位于`recovered_failure/affineqdiag4/`：JSON SHA256=`86f158a8cc473c06bc6957f637f3135913008496cd014be0a19724fff899e995`，stderr SHA256=`96100647189db07b7d924d6904e57f889d535213a4addf0aab84b3ecd3d40e83`。GPU0–7终检为`0%/10MiB`，SSH清理完成。
+
+## 124/125部分矩阵性能补充
+
+2026-07-24按新增双层结果规则补充`PARTIAL_MATRIX_DIAGNOSTIC`。本节不改变本run的正式终态：完整125仍为`TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`；但124个成功row的已生成score可用于带覆盖边界的研发诊断。
+
+|arm|old-before|old-after|old gain|seen-new|H|BA|floor|min-old|min-new|forgetting|old→new|new→old|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|M0|72.610%|43.082%|-29.527pp|23.538%|29.318%|29.232%|2.312%|11.223%|2.634%|29.527pp|44.046%|29.320%|
+|M_DA|72.668%|43.123%|-29.545pp|23.491%|29.291%|29.231%|2.285%|11.250%|2.594%|29.545pp|44.066%|29.333%|
+|M_OTHER|73.143%|43.082%|-30.060pp|23.538%|29.318%|29.232%|2.312%|11.223%|2.634%|30.060pp|44.046%|29.320%|
+|M_JOINT|73.114%|43.123%|-29.991pp|23.491%|29.291%|29.231%|2.285%|11.250%|2.594%|29.991pp|44.066%|29.333%|
+
+诊断结论：`M_DA−M0`的H为-0.0268pp；`M_OTHER`注册后与`M0`逐项相同；`M_JOINT`注册后与`M_DA`逐项相同；372/372个场景slice的`I_syn=0`。因此该高覆盖部分矩阵已经能够证伪当前revision的独立DA收益、OTHER收益和联合协同。
+
+r6缺失cell为`receiver=20-1,seed=713102,K=5,new=20`。后续完整r8补齐该cell；r6与r8共有的124个row在四臂old-after、seen-new、H、BA、floor、min-old和min-new上全部逐项相同。完整跨run、receiver、scene、K、seed和new-count统计见`automation_reports/CV-SincNet/adv3b02_partial_crossrun_20260724_1005/report.md`。
