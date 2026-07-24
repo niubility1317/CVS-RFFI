@@ -20,6 +20,8 @@
 4. 未修改`adv3b02_official_repo_ci.py`、predictor训练/判决、LEO IQ入口、query打开顺序、loss或优化器。
 5. 本地定向+计划+相邻集成：`54 passed`；`git diff --check`通过。
 6. 独立复审：`P0=0,P1=0 / APPROVE`。
+7. 修复提交：`f120d4931febc2fffabe193233a0294bca15fd90`。
+8. builder SHA256：`d012dfa4b9efb503167cef756519e61a9e51a790d6d5f9cb5eab5ac213f0698b`；runner SHA256：`827aa78bdabba7c648b57d5a3075a6402885aa2ff99f2b2818bb599c14fed836`。
 
 ## 冻结矩阵与容量
 
