@@ -2,7 +2,7 @@
 
 状态：`DESIGN_FROZEN`
 
-监督裁决：`MERGE / P0=0 / P1=0 / P2=0`
+监督状态：`DESIGN_FROZEN / AWAITING_INDEPENDENT_REVIEW`。本冻结文档不构成`MERGE`、`P0=0`、`P1=0`或`P2=0`结论；这些结论只能由固定可审diff上的独立review签发。
 
 协议：`p2_min_v1`
 
@@ -23,6 +23,8 @@ D93/D94的ground→target全坐标transport负结论继续有效。本revision�
 - 当前row固定LEO弱观测的target-old support；
 - Stage2-C当前row的新类support；
 - r6既有qKNN、BCRR、GEOFF/r8 archive与coverage执行接口。
+
+每次正式入口必须重新验证既有outer bundle的固定authority signature、detached seal和全部成员SHA，并由该次同文件描述符验证直接重新materialize runtime；正式fit不得消费调用方内存中可替换的runtime、component或协调receipt字段。当前live runtime的结构/parity、method lock、checkpoint与GRB组件只以该次重验的8-member outer bundle为准；该要求不新增authority、gate或sidecar。
 
 禁止输入包括raw/clean/source IQ、单样本source feature、成员或physical ID列表、source replay、独立可替换sidecar、目标receiver标签、query、query view、query truth/role、真实batch类计数、class quota和跨query图。当前`inputs_unverified/phase2_zid_prototypes.pt`只能保留为非正式spike证据，不得进入正式run。
 
@@ -90,6 +92,8 @@ K1按当前活动目标精确identity：`theta=0`。K5是首个正式falsifier�
 
 Stage2-C不重新拟合JP4、ground basis、theta、ridge、shrink、旧bank或BCRR旧状态。新类support只经同一适配模型编码并append；新类没有ground身份原型。每个query独立面对全部注册旧类和新类。
 
+`VerifiedADV3B02DeploymentBundle`只能由已完成外部authority signature、detached seal和member SHA验证的production factory构造。`FormalGRBJP4State`的public constructor必须拒绝直接调用，正式runner只通过fit/append orchestrator生成状态；该API限制用于防止普通误用，不把Python同进程任意反射、monkeypatch或closure introspection伪装成不可绕过的authority边界。真正的P0/P1接受条件是：每次fit重新验证外部签名链和全部成员，append/predict每次核对当前runtime对象身份、完整TorchScript方法图、全部parameter/buffer状态指纹、bundle与method-lock绑定、同row class/token/IQ闭包、state coordinator hash和真实弱引用生命周期。复制一个逐字段相同且通过全部内容验证的对象不产生新的科学状态；任何runtime语义、support、class、token、JP4、qKNN、BCRR、resource或lifecycle字段变化都必须失败关闭。仅有相同`joint_proj.0.weight`但forward语义不同的runtime不得进入正式生命周期。
+
 ## 6.五臂与互补机制
 
 |arm|JP4|qKNN|BCRR|
@@ -117,9 +121,10 @@ I_syn = H(M_JOINT) - H(M_DA) - H(M_OTHER) + H(M0)
 - JP4含metadata/hash的wire上限：4,096B。
 - parent r6最大state：159,691B；联合上限：163,787B，小于256KiB。
 - FP16合并scratch上限：102,400B；不得同时保留第二份完整模型权重。
+- formal入口必须先消费调用方Verified bundle持有的runtime，再materialize重验runtime；FP32 teacher、INT8 deployed和返回base runtime之间均采用release→reload单所有权转换。每次release必须以真实TorchScript对象的弱引用已失活为证据；保留任何外部runtime引用时必须失败关闭。materialize/release/reload次数与最大live实例数只能由这些实际弱引用观测导出并写入resource receipt，禁止手填或硬编码推断。
 - 合并后每query额外adapter MAC：0；r6在`C=26,K=10`的head MAC继续为42,466。
 - 一次性support forward、解析Jacobian、4×4求解、weight merge MAC、fit时延、query时延、峰值显存和总state必须进入既有resource receipt。
-- INT8要求top1 parity≥0.995、large-margin flip=0；失败属于技术失败，不得作为性能结果。
+- INT8 theta要求只在support端以FP32 theta teacher和INT8 theta deployed表征执行同一冻结teacher-support qKNN决策审计，`top1 agreement≥0.995`且`large-margin flip=0`；审计不得读取query，结果及support/hash/state绑定进入formal fit-state和resource receipt，失败属于技术失败，不得作为性能结果。
 
 ## 8.完整125与立即证伪
 
