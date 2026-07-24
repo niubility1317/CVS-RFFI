@@ -1,10 +1,10 @@
 # D103-R2需求—实现—测试—artifact追踪
 
-状态：`DESIGN_DRAFT_REV2 / FEASIBILITY_REVIEW / N607_NO_GO / TARGET25_NO_GO`
+状态：`DESIGN_DRAFT_REV3 / FEASIBILITY_REVIEW / N607_NO_GO / TARGET25_NO_GO`
 
 |ID|需求|设计依据|实现文件|验证或artifact|当前状态|
 |---|---|---|---|---|---|
-|R2-01|全局精确0.07/0.63/0.30正式分离归档|重入卡§3|`code/cvsrffi/rxid_metabias4_source_archive.py`、`code/scripts/export_d103_r1_source_splits.py`|真实smoke发现逐小单元取整为504/5448/2448，禁止正式发布；待实现588/5292/2520最大缺口配额|revision-pending|
+|R2-01|全局精确0.07/0.63/0.30正式分离归档|重入卡§3|`code/cvsrffi/rxid_metabias4_source_archive.py`、`code/scripts/export_d103_r1_source_splits.py`|待实现42个receiver×TX各14条L、day 2–4、任一leave-day后K10可达；U=5292、V=2520|revision-pending|
 |R2-02|跨receiver K1/K5/K10元任务|重入卡§2|待修订`rxid_metabias4_phase1_trainer.py`|真实计数min10/max13；修订后真实一步smoke|pending|
 |R2-03|R1其余Phase1机制保持|重入卡§2|现有trainer|TX-null/MMD/selfsup/VICReg测试|implemented|
 |R2-04|M0/D102/D103 matched scorer|重入卡§4|计划held runner|同support/query；49个`L_s` fold-specific D102诊断bundle；原reject receipt绑定|pending|

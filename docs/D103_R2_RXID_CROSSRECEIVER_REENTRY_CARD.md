@@ -1,6 +1,6 @@
 # D103-R2-RXID-CROSSRECEIVER-MB4重入卡
 
-状态：`DESIGN_DRAFT_REV2 / FEASIBILITY_REVIEW / N607_NO_GO / TARGET25_NO_GO`
+状态：`DESIGN_DRAFT_REV3 / FEASIBILITY_REVIEW / N607_NO_GO / TARGET25_NO_GO`
 
 日期：2026-07-24
 
@@ -24,9 +24,9 @@ R2只修复Phase1元任务的可达性，不改动TX零空间、MMD、receiver/d
 新建`source_train`全源池LEO-weak缓存；固定seed103713沿用项目按TX×receiver×day分组、组内按物理ID排序后随机置换的语义，但禁止对168个小单元分别取整后接受比例漂移。builder执行冻结的全局最大缺口配额：
 
 1.全局目标必须精确为`N×0.07/N×0.63/N×0.30`；N=8400时必须为588/5292/2520，否则拒绝。
-2.每个TX×receiver×day单元先预留`L_s≥2、U_s≥1、source-val≥1`。
-3.每个receiver×TX跨4天的`L_s`总数再补足到≥10；补配按`ideal_count-current_count`最大者优先，平手按TX、receiver、day字典序。
-4.继续按相同最大缺口规则把`L_s`补到全局588、`U_s`补到5292；source-val取剩余2520。任何单元容量、总量、互斥或union失败即拒绝。
+2.42个receiver×TX组各自精确分配14条`L_s`，合计588；组内4天每day必须为2–4条。先每day预留2条，再按`0.07×cell_size-current_count`最大者补到14，平手按day字典序，且单day cap=4。由此删除任一天后仍至少保留10条K10 support。
+3.每个TX×receiver×day单元同时预留`U_s≥1、source-val≥1`。
+4.按`0.63×cell_size-current_count`最大者优先、TX/receiver/day字典序tie，把`U_s`补到全局5292；source-val取剩余2520。任何单元容量、42组×任一leave-day K10可达性、总量、互斥或union失败即拒绝。
 
 `L_s`可含TX和pre_relu；`U_s`归档结构禁止TX和pre_relu；source-val真实数组只在`scorer_only`目录，fit仅得到`{row_count,content_sha256}`seal。禁止把历史`source_validation development only`归档改名为正式训练输入。上述配额修订发生在任何性能结果和正式归档前；其目的仅是服从固定比例并保持K10可达。
 
@@ -63,4 +63,4 @@ R2只修复Phase1元任务的可达性，不改动TX零空间、MMD、receiver/d
 
 独立审查必须确认跨receiver episode不改变receiver-held因果边界、query4不是结果驱动选择、160维shift余弦消除latent gauge、49个D102 fold-specific诊断bundle与D103具有相同排除面且不冒充合法asset。审查通过后状态才可进入`DESIGN_FROZEN / IMPLEMENTING_LOCAL_ONLY`；完整真实checkpoint无正式query smoke、全部测试、Git commit和release复审通过前，仍为`N607_NO_GO / TARGET25_NO_GO`。
 
-commit-bound Revision复审针对`7136605f`得到`P0=0、P1=0 / GO: DESIGN_FROZEN→IMPLEMENTING_LOCAL_ONLY`。后续真实split smoke发现逐小单元取整不满足全局精确比例，因此本卡进入Rev2短复审；上一裁决不自动覆盖新增配额算法。未提交文件不属于已验证证据，也不授权N607或Target25。
+commit-bound Revision复审针对`7136605f`得到`P0=0、P1=0 / GO: DESIGN_FROZEN→IMPLEMENTING_LOCAL_ONLY`。后续真实split smoke发现逐小单元取整不满足全局精确比例；Rev2审查又发现leave-one-day后K10未保证，因此本卡进入Rev3短复审。上一裁决不自动覆盖新增配额算法。未提交文件不属于已验证证据，也不授权N607或Target25。
