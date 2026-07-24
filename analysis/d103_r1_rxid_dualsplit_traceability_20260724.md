@@ -1,6 +1,6 @@
 # D103-R1需求—实现—测试—artifact追踪
 
-状态：`DESIGN_REVIEW_PENDING`
+状态：`DESIGN_FROZEN / IMPLEMENTING_LOCAL_ONLY`
 
 |ID|需求|设计依据|实现文件|验证或artifact|当前状态|
 |---|---|---|---|---|---|

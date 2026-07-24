@@ -1,6 +1,6 @@
 # D103-R1-RXID-DUALSPLIT-MB4重入卡
 
-状态：`REENTRY_CARD / FEASIBILITY_PROBE_PREREGISTERED / TARGET25_NO_GO`
+状态：`DESIGN_FROZEN / IMPLEMENTING_LOCAL_ONLY / N607_NO_GO / TARGET25_NO_GO`
 
 日期：2026-07-24
 
@@ -124,3 +124,9 @@ typed qKNN继续使用Student-ν=`3.0`、effective dim=`160`、shared h0=`0.2`�
 - 不含学习值且立即删除的代表临时checkpoint字节数。
 
 禁止BA、TX准确率、LOCO性能、source-val训练、Target/capsule/query访问、deployment asset或任何基于结果的调参。R1微探针代码和本卡必须先进入本地Git commit，之后才允许运行。
+
+## 10.独立冻结裁决
+
+commit-bound终审在`c713b551`上得到`P0=0、P1=0 / GO: DESIGN_FROZEN→IMPLEMENTING_LOCAL_ONLY`。冻结规范由本卡、Revision2中未被否定的机制和`analysis/d103_r1_rxid_dualsplit_traceability_20260724.md`共同组成。
+
+本裁决不授权N607或Target25。正式trainer、bundle、Stage2 wrapper、held falsifier、负测、真实checkpoint no-query smoke和独立release复审未全部完成前，状态始终为`N607_NO_GO / TARGET25_NO_GO / NO_PERFORMANCE_CLAIM`。
