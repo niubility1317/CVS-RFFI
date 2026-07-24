@@ -1,0 +1,6 @@
+PID=1778189
+/home/szu2070436088/2510044040/CV-SincNet
+bash -lc cd /home/szu2070436088/2510044040/CV-SincNet && exec /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python paper_reproduction/scripts/run_adv3b02_paper_full_ci_plan.py --plan runs/adv3b02_csil_mopc_cvs_adapter_opt_20260724_v3/plan/csil_pre_smoke.json --project-root /home/szu2070436088/2510044040/CV-SincNet --stage smoke --device cuda:0 
+PID=1778190
+/home/szu2070436088/2510044040/CV-SincNet
+bash -lc cd /home/szu2070436088/2510044040/CV-SincNet && exec /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python paper_reproduction/scripts/run_adv3b02_paper_full_ci_plan.py --plan runs/adv3b02_csil_mopc_cvs_adapter_opt_20260724_v3/plan/mopc_pre_smoke.json --project-root /home/szu2070436088/2510044040/CV-SincNet --stage smoke --device cuda:1 

@@ -1,0 +1,30 @@
+{
+  "actual_cells": 400,
+  "audit_tool_note": "Initial transient audit asserted leo_urban_weak instead of frozen leo_rain_weak and stopped before reading cell payloads; corrected against both authorized plans. Experiment artifacts were not modified.",
+  "cell_receipts": 400,
+  "comparison_note": "Sequential5 versus v7 single-stage is diagnostic reference only, not method-equivalent.",
+  "created_utc": "2026-07-24T03:52:18.358870+00:00",
+  "formal_rows": 1200,
+  "frozen_scenarios": [
+    "leo_clear_weak",
+    "leo_low_elev_weak",
+    "leo_rain_weak"
+  ],
+  "full_completed_cells": 400,
+  "full_failed_cells": 0,
+  "full_logs": 16,
+  "mechanism_checks": {
+    "csil_resources": 600,
+    "mopc_sequential_resources": 300,
+    "mopc_single_resources": 300,
+    "sequential_stages": 1500
+  },
+  "plan_cells": 400,
+  "prediction_artifacts": 400,
+  "predictor_receipts": 400,
+  "query_rows_used_for_training_total": 0,
+  "schema": "cvs.adv3b02_adapter_v3_artifact_audit.v1",
+  "scoring_receipts": 400,
+  "smoke_logs": 2,
+  "status": "PASS"
+}
