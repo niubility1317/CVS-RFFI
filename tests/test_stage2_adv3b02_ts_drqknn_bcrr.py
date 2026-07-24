@@ -722,8 +722,15 @@ def test_directional_dual_loo_uses_both_masked_views_and_k_minus_one_mass():
         registered_classes=("old_a", "old_b"),
         support_physical_tokens=tokens,
     )
-    raw_qscore, bscore = adv._raw_directional_loo(dual.id_bank)
-    dual_qscore = adv._directional_dual_loo(dual, raw_qscore)
+    raw_qscore, bscore, exact_masked_degenerate = adv._raw_directional_loo(
+        dual.id_bank
+    )
+    assert exact_masked_degenerate is False
+    dual_qscore = adv._directional_dual_loo(
+        dual,
+        raw_qscore,
+        exact_masked_degenerate=exact_masked_degenerate,
+    )
     assert set(raw_qscore) == set(dual_qscore) == {"0_to_1", "1_to_0"}
     assert not np.array_equal(raw_qscore["0_to_1"], raw_qscore["1_to_0"])
     assert not np.array_equal(dual_qscore["0_to_1"], dual_qscore["1_to_0"])
@@ -749,6 +756,83 @@ def test_directional_dual_loo_uses_both_masked_views_and_k_minus_one_mass():
     )
     assert len(weights) == dual.id_bank.k_shot - 1
     assert np.sum(weights) == pytest.approx(1.0, abs=1.0e-12)
+
+
+@pytest.mark.parametrize("k_shot", [5, 10])
+def test_exact_masked_view_degeneracy_is_explicit_identity(
+    monkeypatch, k_shot
+):
+    def exact_masked_failure(*_args, **_kwargs):
+        raise adv.SVRNBCRStateError("BCRR masked cross-view degeneracy")
+
+    monkeypatch.setattr(
+        adv, "_existing_bcr_cross_view_loo", exact_masked_failure
+    )
+    zid, zdom, labels, tokens = _nuisance_support(k_shot)
+    states = build_four_arm_states(
+        support_zid=zid,
+        support_zdom=zdom,
+        support_labels=labels,
+        registered_classes=("old_a", "old_b"),
+        support_physical_tokens=tokens,
+    )
+    raw = states["M0"]
+    other_bcrr = states["M_OTHER"][1]
+    joint_bcrr = states["M_JOINT"][1]
+    for branch in (other_bcrr, joint_bcrr):
+        assert branch.omega == 0.0
+        assert (
+            branch.receipt["omega_prelocked_safety"]["fallback"]
+            == "score_normalization_degenerate"
+        )
+    zero = np.zeros((len(labels), 2), np.float64)
+    zero_sha = adv.sha256_bytes(np.ascontiguousarray(zero).tobytes())
+    actual_directional = raw.branch_state.actual_bank_binding_receipt[
+        "directional_loo_sha256"
+    ]
+    for direction in ("0_to_1", "1_to_0"):
+        assert actual_directional[direction] == {
+            "qknn_sha256": zero_sha,
+            "bcr_sha256": zero_sha,
+        }
+        assert other_bcrr.receipt["directional_logits_sha256"][direction] == {
+            "qknn_sha256": zero_sha,
+            "bcr_sha256": zero_sha,
+        }
+        assert joint_bcrr.receipt["directional_logits_sha256"][direction] == {
+            "qknn_sha256": zero_sha,
+            "bcr_sha256": zero_sha,
+        }
+    query_zid = np.random.default_rng(812).normal(
+        size=(7, 160)
+    ).astype(np.float32)
+    query_zdom = np.random.default_rng(813).normal(
+        size=(7, 160)
+    ).astype(np.float32)
+    scores = predict_four_arms(
+        states, query_zid=query_zid, query_zdom=query_zdom
+    )
+    np.testing.assert_array_equal(scores["M_OTHER"], scores["M0"])
+    np.testing.assert_array_equal(scores["M_JOINT"], scores["M_DA"])
+
+
+def test_nonmatching_bcrr_error_remains_fail_closed(monkeypatch):
+    def other_failure(*_args, **_kwargs):
+        raise adv.SVRNBCRStateError("BCRR masked cross-view degeneracy drift")
+
+    monkeypatch.setattr(adv, "_existing_bcr_cross_view_loo", other_failure)
+    zid, zdom, labels, tokens = _nuisance_support(5)
+    with pytest.raises(
+        adv.SVRNBCRStateError,
+        match="BCRR masked cross-view degeneracy drift",
+    ):
+        build_stage2_b_state(
+            support_zid=zid,
+            support_zdom=zdom,
+            support_labels=labels,
+            registered_classes=("old_a", "old_b"),
+            support_physical_tokens=tokens,
+        )
 
 
 def test_class_and_support_order_permutation_preserve_handle_predictions():

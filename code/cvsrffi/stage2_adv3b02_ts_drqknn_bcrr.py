@@ -1,4 +1,4 @@
-"""Support-only ADV3B02 TS-DRQKNN-BCRR/r7-q3support1 primitives.
+"""Support-only ADV3B02 TS-DRQKNN-BCRR/r8-bcrmaskidentity1 primitives.
 
 This module is deliberately a small, typed runtime.  It has no capsule
 builder, truth-side scorer, receiver/TX input, query-label input, optimizer,
@@ -23,6 +23,7 @@ from cvsrffi.stage2_dssc_zdom_jg_qknn_r4_bcrr import (
 from cvsrffi.stage2_svrn_bcr import (
     BCRR_DENOMINATOR,
     BCRR_MAX_OMEGA,
+    SVRNBCRStateError,
     _bcr_quant_audit as _existing_bcr_quant_audit,
     _cross_view_loo_scores as _existing_bcr_cross_view_loo,
     _masked_views as _existing_bcr_masked_views,
@@ -39,19 +40,19 @@ from cvsrffi.stage2_zid_student_t_qknn import (
 )
 
 
-CANDIDATE = "ADV3B02-TS-DRQKNN-BCRR/r7-q3support1"
-# qzero1 remains query-only; r7-q3support1 changes only the persisted z_id
-# support codec and its seals, never support semantics or decision formulae.
+CANDIDATE = "ADV3B02-TS-DRQKNN-BCRR/r8-bcrmaskidentity1"
+# qzero1 remains query-only; r8 adds one exact support-side BCRR identity
+# fallback and leaves the deployed support codec and decision formulae fixed.
 PREDICTION_REVISION = "qzero1"
-SCHEMA = "cvs.stage2.adv3b02.ts_drqknn_bcrr.r7_q3support1_bcr3_zidtotal1"
+SCHEMA = "cvs.stage2.adv3b02.ts_drqknn_bcrr.r8_bcrmaskidentity1_q3support1_bcr3_zidtotal1"
 Z_DIM = 160
 RANK = 2
 ARMS = ("M0", "M_DA", "M_OTHER", "M_JOINT")
 SCENES = ("leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak")
 K_VALUES = (1, 5, 10)
 MAX_WIRE_BYTES = 256 * 1024
-APPEND_RECEIPT_SCHEMA = "cvs.stage2.adv3b02.append_receipt.r7_q3support1_bcr3_zidtotal1"
-ACTUAL_BRANCH_SCHEMA = "cvs.stage2.adv3b02.actual_bank_branch.r7_q3support1_bcr3_zidtotal1"
+APPEND_RECEIPT_SCHEMA = "cvs.stage2.adv3b02.append_receipt.r8_bcrmaskidentity1_q3support1_bcr3_zidtotal1"
+ACTUAL_BRANCH_SCHEMA = "cvs.stage2.adv3b02.actual_bank_branch.r8_bcrmaskidentity1_q3support1_bcr3_zidtotal1"
 ZID_REPAIR_SCHEMA = "cvs.stage2.adv3b02.zid_repair_receipt.v1"
 ZID_REPAIR_RULE = "finite_exact_zero_singleton_class_medoid_v1"
 AFFINE_BANK_SCHEMA = "cvs.stage2.adv3b02.affine_int8_bank.r4_q3support1"
@@ -1023,7 +1024,12 @@ def _make_actual_branch(bank: AffineINT8ZIDSupportBank, metric: TypedSharedPSDMe
     if bank.active_k == 1:
         shape = (bank.support_row_count, len(bank.classes)); qscore = {v: np.zeros(shape) for v in _BCR_DIRECTIONS}; bscore = {v: np.zeros(shape) for v in _BCR_DIRECTIONS}
     else:
-        qscore, bscore = _existing_bcr_cross_view_loo(decoded, bank.class_indices_int16.astype(np.intp), bank.classes, bank.config)
+        qscore, bscore, _ = _directional_loo_or_exact_mask_identity(
+            decoded,
+            bank.class_indices_int16.astype(np.intp),
+            bank.classes,
+            bank.config,
+        )
     directional = {v: {"qknn_sha256": sha256_bytes(np.ascontiguousarray(qscore[v]).tobytes()), "bcr_sha256": sha256_bytes(np.ascontiguousarray(bscore[v]).tobytes())} for v in _BCR_DIRECTIONS}
     body = {"schema": ACTUAL_BRANCH_SCHEMA, "qknn_wire_sha256": sha256_bytes(wire), "bank_receipt_sha256": bank.bank_receipt_sha256,
             "metric_receipt_sha256": metric.metric_receipt_sha256, "support_token_root_sha256": sha256_bytes(_canon(list(tokens))),
@@ -2261,11 +2267,41 @@ def domain_weight_audit(
 
 
 _BCR_DIRECTIONS = ("0_to_1", "1_to_0")
+_BCR_MASKED_VIEW_DEGENERACY = "BCRR masked cross-view degeneracy"
+
+
+def _directional_loo_or_exact_mask_identity(
+    features: np.ndarray,
+    indices: np.ndarray,
+    classes: Sequence[str],
+    config: Phase1ZIDStudentTLock,
+) -> tuple[dict[str, np.ndarray], dict[str, np.ndarray], bool]:
+    """Return the existing probe or one exact support-side identity marker."""
+    try:
+        qscore, bscore = _existing_bcr_cross_view_loo(
+            features, indices, classes, config
+        )
+    except SVRNBCRStateError as exc:
+        if str(exc) != _BCR_MASKED_VIEW_DEGENERACY:
+            raise
+        shape = (len(features), len(classes))
+        return (
+            {
+                name: np.zeros(shape, np.float64)
+                for name in _BCR_DIRECTIONS
+            },
+            {
+                name: np.zeros(shape, np.float64)
+                for name in _BCR_DIRECTIONS
+            },
+            True,
+        )
+    return qscore, bscore, False
 
 
 def _raw_directional_loo(
     state: Int8QKNNState,
-) -> tuple[dict[str, np.ndarray], dict[str, np.ndarray]]:
+) -> tuple[dict[str, np.ndarray], dict[str, np.ndarray], bool]:
     """Directly reuse the existing two-direction BCR safety probe."""
     canonical_classes = tuple(state.bank.classes)
     shape = (len(state.labels), len(canonical_classes))
@@ -2274,13 +2310,16 @@ def _raw_directional_loo(
         return (
             {name: zero.copy() for name in _BCR_DIRECTIONS},
             {name: zero.copy() for name in _BCR_DIRECTIONS},
+            False,
         )
     try:
-        qscore, bscore = _existing_bcr_cross_view_loo(
+        qscore, bscore, exact_masked_degenerate = (
+            _directional_loo_or_exact_mask_identity(
             state.features().astype(np.float64),
             np.asarray(state.bank.class_indices_int16, np.intp),
             canonical_classes,
             state.bank.config,
+            )
         )
     except Exception as exc:
         raise ADV3B02StateError(
@@ -2289,6 +2328,7 @@ def _raw_directional_loo(
     return (
         {name: np.asarray(qscore[name], np.float64) for name in _BCR_DIRECTIONS},
         {name: np.asarray(bscore[name], np.float64) for name in _BCR_DIRECTIONS},
+        exact_masked_degenerate,
     )
 
 
@@ -2328,6 +2368,8 @@ def _renormalized_domain_loo_weights(
 def _directional_dual_loo(
     state: DualQKNNState,
     raw_qscore: Mapping[str, np.ndarray],
+    *,
+    exact_masked_degenerate: bool = False,
 ) -> dict[str, np.ndarray]:
     """Recompute dual qKNN on the exact existing masked-view LOO directions."""
     bank = state.id_bank
@@ -2335,6 +2377,20 @@ def _directional_dual_loo(
     expected_shape = (len(bank.labels), len(canonical_classes))
     if set(raw_qscore) != set(_BCR_DIRECTIONS):
         raise ADV3B02StateError("raw directional qKNN probe schema drift")
+    if type(exact_masked_degenerate) is not bool:
+        raise ADV3B02StateError("raw directional degeneracy marker drift")
+    if exact_masked_degenerate:
+        if bank.k_shot == 1:
+            raise ADV3B02StateError("K1 cannot carry masked-view degeneracy")
+        if any(
+            np.asarray(raw_qscore[name]).shape != expected_shape
+            for name in _BCR_DIRECTIONS
+        ):
+            raise ADV3B02StateError("raw directional qKNN probe shape drift")
+        return {
+            name: np.zeros(expected_shape, np.float64)
+            for name in _BCR_DIRECTIONS
+        }
     if bank.k_shot == 1 or state.domain.alpha == 0.0:
         result = {
             name: np.asarray(raw_qscore[name], np.float64).copy()
@@ -2617,8 +2673,12 @@ def build_four_arm_states(*, support_zid: np.ndarray, support_zdom: np.ndarray,
                                 support_physical_tokens=support_physical_tokens,
                                 support_repair_receipt=support_repair_receipt)
     raw = dual.id_bank
-    raw_qscore, bscore = _raw_directional_loo(raw)
-    dual_qscore = _directional_dual_loo(dual, raw_qscore)
+    raw_qscore, bscore, exact_masked_degenerate = _raw_directional_loo(raw)
+    dual_qscore = _directional_dual_loo(
+        dual,
+        raw_qscore,
+        exact_masked_degenerate=exact_masked_degenerate,
+    )
     raw_bcrr = fit_bcrr_branch(
         id_bank=raw,
         directional_qscore=raw_qscore,
@@ -2641,8 +2701,12 @@ def build_four_arm_states_from_dual(dual: DualQKNNState) -> Mapping[str, Any]:
     if dual.domain.stage != "S_C":
         raise ADV3B02StateError("Stage2-C four-arm closure requires an appended dual state")
     raw = dual.id_bank
-    raw_qscore, bscore = _raw_directional_loo(raw)
-    dual_qscore = _directional_dual_loo(dual, raw_qscore)
+    raw_qscore, bscore, exact_masked_degenerate = _raw_directional_loo(raw)
+    dual_qscore = _directional_dual_loo(
+        dual,
+        raw_qscore,
+        exact_masked_degenerate=exact_masked_degenerate,
+    )
     raw_bcrr = fit_bcrr_branch(
         id_bank=raw,
         directional_qscore=raw_qscore,
