@@ -2,7 +2,7 @@
 set -euo pipefail
 umask 077
 
-RUN_ID="d102_rb_metabias4_phase1_analytic_held_20260724_r3"
+RUN_ID="d102_rb_metabias4_phase1_analytic_held_20260724_r4"
 PROJECT_ROOT="/home/szu2070436088/2510044040/CV-SincNet"
 RUN_ROOT="$PROJECT_ROOT/runs/$RUN_ID"
 SOURCE_ROOT="$RUN_ROOT/source"
@@ -82,12 +82,14 @@ check_sha "$SOURCE_ROOT/code/cvsrffi/phase1_rb_metabias4_bundle.py" \
   "7e2eb67a592a94de8be1091c29b6df796d8122ffe76b3a7424e985d694ae8c5f"
 check_sha "$SOURCE_ROOT/code/cvsrffi/rb_metabias4_phase1_held_falsifier.py" \
   "a40b6979cea27c3b5f089ce3c57afae92798727da45fa70408081ad80fe92df5"
+check_sha "$SOURCE_ROOT/code/cvsrffi/stage2_grb_jp4_adv_drqknn_bcrr.py" \
+  "a39128d067337c72dbd47a59fa24ef6f5930171359e4a7d5c092ed13956f33c3"
 check_sha "$SOURCE_ROOT/code/scripts/build_phase1_rb_metabias4_bundle.py" \
   "9b0857a7e4df19321c6ba36ca230fea040ae1a96749a06dd419361fc458a1f1b"
 check_sha "$SOURCE_ROOT/code/scripts/run_rb_metabias4_phase1_held.py" \
   "8e401086c135fbb5deed0f9e53b73df60e98ce3bc6c05b302ee6fbabfda3c3b8"
 check_sha "$SOURCE_ROOT/code/scripts/export_phase1_jp4_tap_archive.py" \
-  "b2baa319e1434ff4d2ebff7d96e8da833b954ec9b6b02ebedd6ffbd12a286ad1"
+  "6269e13f0b87597ebff7647e9d3634ce42e155632d23d28bd8a1578a714b81e9"
 
 temporary="$LOG_ROOT/pipeline.pid.tmp.$$"
 printf '%s\n' "$BASHPID" > "$temporary"
