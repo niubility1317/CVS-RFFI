@@ -24,6 +24,7 @@ if str(ROOT) not in sys.path:
 
 from cvsrffi.rxid_metabias4_held_falsifier import build_complete_fit_plan  # noqa: E402
 from cvsrffi.rxid_metabias4_held_execution import (  # noqa: E402
+    canonical_sha256,
     sha256_file,
     validate_teacher_fit_manifest,
 )
@@ -386,6 +387,11 @@ async def _run(args: argparse.Namespace) -> int:
         "unlabeled_archive": sha256_file(args.unlabeled_archive),
         "source_val_seal": sha256_file(args.source_val_seal),
     }
+    expected_input_manifest_sha = {
+        "labeled_manifest": sha256_file(args.labeled_manifest),
+        "unlabeled_manifest": sha256_file(args.unlabeled_manifest),
+        "source_val_manifest": sha256_file(args.source_val_manifest),
+    }
     manifest_errors: list[dict[str, str]] = []
     access_receipts: list[str] = []
     for result in results:
@@ -430,6 +436,12 @@ async def _run(args: argparse.Namespace) -> int:
         and not manifest_errors
         and len(access_receipts) == 246
     )
+    first_wave_fit_ids = {
+        spec.fit_id for spec in plan[: min(len(lanes), len(plan))]
+    }
+    first_wave_results = [
+        row for row in results if row["fit_id"] in first_wave_fit_ids
+    ]
     status = (
         "ARTIFACTS_COMPLETE"
         if (
@@ -480,8 +492,22 @@ async def _run(args: argparse.Namespace) -> int:
             "systemic_exception_fingerprint": systemic_fingerprint,
             "fit_manifest_validation_pass": fit_manifest_validation_pass,
             "fit_access_receipt_count": len(access_receipts),
+            "fit_access_receipt_sha256_root": canonical_sha256(
+                sorted(access_receipts)
+            ),
             "fit_input_sha256": expected_input_sha,
+            "fit_input_manifest_sha256": expected_input_manifest_sha,
             "fit_manifest_errors": manifest_errors,
+            "matrix_plan_sha256": sha256_file(output / "matrix_plan.json"),
+            "result_fit_ids_unique": (
+                len({row["fit_id"] for row in results}) == len(results)
+            ),
+            "first_wave_planned_fit_ids": sorted(first_wave_fit_ids),
+            "first_wave_completed_results": first_wave_results,
+            "first_wave_complete": (
+                len(first_wave_results) == len(first_wave_fit_ids)
+                and all(row["returncode"] == 0 for row in first_wave_results)
+            ),
             "systemic_stop_records": stop_records,
             "performance_result": False,
             "results": results,

@@ -10,6 +10,7 @@ from cvsrffi.stage2_d104_held_execution import (
     D104HeldExecutionError,
     predict_d104_matched_row,
     score_d104_prediction_artifact,
+    validate_d104_prediction_artifact_without_truth,
 )
 
 
@@ -109,3 +110,37 @@ def test_d104_truth_side_rejects_tamper() -> None:
         score_d104_prediction_artifact(
             changed, [f"c{i % 6}" for i in range(24)]
         )
+
+
+@pytest.mark.parametrize(
+    "field",
+    (
+        "prediction",
+        "inner_receipt",
+        "method_lock",
+        "registry_order",
+        "query_id",
+        "support_root",
+        "resource_query_mac",
+    ),
+)
+def test_d104_truth_blind_validator_rejects_each_seal_tamper(field) -> None:
+    changed = copy.deepcopy(_row(5))
+    if field == "prediction":
+        changed["arm_predictions"]["M_HEAD"][0] = "c5"
+    elif field == "inner_receipt":
+        changed["prediction_receipt_sha256"] = "0" * 64
+    elif field == "method_lock":
+        changed["method_lock_sha256"] = "0" * 64
+    elif field == "registry_order":
+        changed["registered_classes"][0:2] = reversed(
+            changed["registered_classes"][0:2]
+        )
+    elif field == "query_id":
+        changed["query_physical_ids"][0] = "tampered-query"
+    elif field == "support_root":
+        changed["support_physical_id_root_sha256"] = "0" * 64
+    else:
+        changed["resource_receipts"]["head_effect"]["query_mac_delta"] = 1
+    with pytest.raises(D104HeldExecutionError):
+        validate_d104_prediction_artifact_without_truth(changed)

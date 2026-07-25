@@ -4,11 +4,34 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 from pathlib import Path
 
 
 POST_RESOURCE_ANALYSIS_RESERVE_BYTES = 16 * 1024**2
+GPU_HOUR_LIMIT = 30.0
+PEAK_MEMORY_LIMIT = 4 * 1024**3
+DISK_LIMIT = 20 * 1024**3
+
+
+def _canonical_sha256(value: object) -> str:
+    payload = json.dumps(
+        value,
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+        allow_nan=False,
+    ).encode("utf-8")
+    return hashlib.sha256(payload).hexdigest()
+
+
+def _sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as stream:
+        for chunk in iter(lambda: stream.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
 
 
 def parse_args() -> argparse.Namespace:
@@ -21,9 +44,8 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> int:
     args = parse_args()
-    status = json.loads(
-        args.matrix_status.resolve(strict=True).read_text(encoding="utf-8")
-    )
+    matrix_status_path = args.matrix_status.resolve(strict=True)
+    status = json.loads(matrix_status_path.read_text(encoding="utf-8"))
     root = args.run_root.resolve(strict=True)
     output = args.output_json.resolve()
     if output.exists() or output.is_symlink():
@@ -46,17 +68,32 @@ def main() -> int:
         measured_run_root_bytes + POST_RESOURCE_ANALYSIS_RESERVE_BYTES
     )
     receipt = {
+        "schema": "cvs.d103_r2.rxid_crossreceiver.runner_resources.v1",
+        "status": "RUNNER_RESOURCES_COMPLETE",
+        "matrix_status_sha256": _sha256_file(matrix_status_path),
         "total_gpu_hours": float(status["total_gpu_hours"]),
         "peak_memory_bytes": int(status["peak_memory_bytes"]),
         "run_root_bytes": int(run_root_bytes),
         "completed_fit_count": 246,
         "completed_meta_steps": 98_400,
+        "limits": {
+            "total_gpu_hours": GPU_HOUR_LIMIT,
+            "peak_memory_bytes": PEAK_MEMORY_LIMIT,
+            "run_root_bytes": DISK_LIMIT,
+        },
     }
-    output.parent.mkdir(parents=True, exist_ok=True)
-    output.write_text(
-        json.dumps(receipt, sort_keys=True, indent=2, allow_nan=False) + "\n",
-        encoding="utf-8",
+    receipt["passes_runner_resource_gate"] = bool(
+        receipt["total_gpu_hours"] <= GPU_HOUR_LIMIT
+        and receipt["peak_memory_bytes"] <= PEAK_MEMORY_LIMIT
+        and receipt["run_root_bytes"] <= DISK_LIMIT
     )
+    receipt["receipt_sha256"] = _canonical_sha256(receipt)
+    output.parent.mkdir(parents=True, exist_ok=True)
+    with output.open("x", encoding="utf-8", newline="\n") as stream:
+        stream.write(
+            json.dumps(receipt, sort_keys=True, indent=2, allow_nan=False)
+            + "\n"
+        )
     print(output)
     return 0
 

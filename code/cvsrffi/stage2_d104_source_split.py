@@ -400,7 +400,10 @@ def partition_d104_source_rows(
         "overlap_count": 0,
         "union_complete": True,
         "historical_queries_excluded_from_new_source_val_only": True,
-        "query_truth_used_by_selector": False,
+        "source_labels_used_for_stratified_split": True,
+        "query_truth_used_for_method_selection": False,
+        "query_truth_used_for_performance_selection": False,
+        "source_val_performance_computed": False,
         "target_access": False,
         "cells": cell_receipts,
     }

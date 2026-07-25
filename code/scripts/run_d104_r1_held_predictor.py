@@ -18,6 +18,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from cvsrffi.rxid_metabias4_held_execution import (  # noqa: E402
+    canonical_sha256,
     compile_teacher_bundle,
     package_id,
     sha256_file,
@@ -30,7 +31,10 @@ from cvsrffi.stage2_d104_held_execution import (  # noqa: E402
     predict_d104_matched_row,
 )
 from cvsrffi.stage2_d104_rxid_angq import ARMS  # noqa: E402
-from cvsrffi.stage2_d104_source_split import SPLIT_ID  # noqa: E402
+from cvsrffi.stage2_d104_source_split import (  # noqa: E402
+    CANDIDATE_ID,
+    SPLIT_ID,
+)
 
 
 PACKAGE_KEYS = {
@@ -137,26 +141,83 @@ def main() -> int:
     if output.exists() or output.is_symlink():
         raise FileExistsError(f"immutable D104 prediction root exists: {output}")
     package_manifest = _read_json(package_root / "package_manifest.json")
+    package_manifest_path = package_root / "package_manifest.json"
+    package_manifest_sha = sha256_file(package_manifest_path)
     tx_path = package_root / "tx_probe_receipt.json"
     tx = _read_json(tx_path)
     receivers = tuple(package_manifest["receiver_ids"])
     classes = tuple(package_manifest["class_ids"])
     days = tuple(package_manifest["day_ids"])
     if (
-        package_manifest.get("split_id") != SPLIT_ID
+        set(package_manifest)
+        != {
+            "schema",
+            "candidate_id",
+            "split_id",
+            "receiver_ids",
+            "class_ids",
+            "day_ids",
+            "package_count",
+            "packages",
+            "registered_class_root_sha256",
+            "source_val_scorer_manifest_sha256",
+            "source_val_scorer_archive_sha256",
+            "truth_input_seal_sha256",
+            "query_truth_present",
+            "target_access",
+            "formal_query_state_updates",
+        }
+        or package_manifest.get("schema")
+        != "cvs.d104_r1.rxid_angq.held_packages.v2"
+        or package_manifest.get("candidate_id") != CANDIDATE_ID
+        or package_manifest.get("split_id") != SPLIT_ID
         or package_manifest.get("package_count") != 21
+        or not isinstance(package_manifest.get("packages"), list)
+        or len(package_manifest["packages"]) != 21
         or package_manifest.get("query_truth_present") is not False
+        or package_manifest.get("target_access") is not False
+        or package_manifest.get("formal_query_state_updates") != 0
         or tx.get("fold_count") != 7
         or len(receivers) != 7
         or len(classes) != 6
         or len(days) != 4
+        or canonical_sha256(list(classes))
+        != package_manifest.get("registered_class_root_sha256")
     ):
         raise ValueError("D104 predictor input coverage drift")
+    package_rows = package_manifest["packages"]
+    if any(
+        not isinstance(row, dict)
+        or set(row)
+        != {
+            "package_id",
+            "held_receiver",
+            "K",
+            "path",
+            "sha256",
+            "support_physical_id_root_sha256",
+            "query_physical_id_root_sha256",
+            "query_truth_present",
+            "support_query_physical_disjoint",
+        }
+        for row in package_rows
+    ):
+        raise ValueError("D104 predictor package row closure drift")
     package_by_key = {
-        (row["held_receiver"], int(row["K"])): row
-        for row in package_manifest["packages"]
+        (str(row["held_receiver"]), int(row["K"])): row
+        for row in package_rows
     }
-    if len(package_by_key) != 21:
+    expected_package_keys = {
+        (receiver, k_shot)
+        for receiver in receivers
+        for k_shot in (1, 5, 10)
+    }
+    if (
+        len(package_by_key) != 21
+        or set(package_by_key) != expected_package_keys
+        or len({str(row["package_id"]) for row in package_rows}) != 21
+        or len({str(row["path"]) for row in package_rows}) != 21
+    ):
         raise ValueError("D104 predictor package identity drift")
     plan = build_complete_fit_plan(receivers, classes, days)
     outer = {
@@ -192,13 +253,33 @@ def main() -> int:
     tx_sha = sha256_file(tx_path)
     for receiver, held_class, k_shot in row_specs:
         package_row = package_by_key[(receiver, k_shot)]
-        package_path = package_root / package_row["path"]
-        if sha256_file(package_path) != package_row["sha256"]:
+        raw_package_path = Path(str(package_row["path"]))
+        package_path = (package_root / raw_package_path).resolve(strict=True)
+        if (
+            raw_package_path.is_absolute()
+            or not package_path.is_relative_to(package_root)
+            or package_row["package_id"] != package_id(receiver, k_shot)
+            or package_row["query_truth_present"] is not False
+            or package_row["support_query_physical_disjoint"] is not True
+            or sha256_file(package_path) != package_row["sha256"]
+        ):
             raise ValueError("D104 package SHA drift")
         with np.load(package_path, allow_pickle=False) as archive:
             if set(archive.files) != PACKAGE_KEYS:
                 raise ValueError("D104 package member closure drift")
             package = {name: np.array(archive[name], copy=True) for name in archive.files}
+        support_ids = package["support_physical_ids"].astype(str).tolist()
+        query_ids = package["query_physical_ids"].astype(str).tolist()
+        if (
+            package["registered_classes"].astype(str).tolist()
+            != list(classes)
+            or canonical_sha256(support_ids)
+            != package_row["support_physical_id_root_sha256"]
+            or canonical_sha256(query_ids)
+            != package_row["query_physical_id_root_sha256"]
+            or set(support_ids).intersection(query_ids)
+        ):
+            raise ValueError("D104 package registry/root/disjointness drift")
         outer_bundle = _load_bundle(
             fits_root,
             outer[(receiver, held_class)].fit_id,
@@ -249,6 +330,17 @@ def main() -> int:
             d103_outer_bundle=outer_bundle,
             d103_day_bundles=day_bundles,
         )
+        if (
+            artifact["method_lock_sha256"] != args.method_lock_sha256
+            or artifact["phase1_method_lock_sha256"]
+            != args.method_lock_sha256
+            or artifact["registered_classes"] != list(classes)
+            or artifact["support_physical_id_root_sha256"]
+            != package_row["support_physical_id_root_sha256"]
+            or artifact["query_physical_id_root_sha256"]
+            != package_row["query_physical_id_root_sha256"]
+        ):
+            raise ValueError("D104 row/package/method binding drift")
         row_id = package_id(f"{receiver}\0{held_class or ''}", k_shot)
         artifact_path = row_root / f"{row_id}.json"
         _write_json_new(artifact_path, artifact)
@@ -261,6 +353,22 @@ def main() -> int:
                 "path": str(Path("rows") / artifact_path.name),
                 "sha256": sha256_file(artifact_path),
                 "arm_prediction_receipts": artifact["arm_prediction_receipts"],
+                "prediction_receipt_sha256": artifact[
+                    "prediction_receipt_sha256"
+                ],
+                "scorer_input_seal_sha256": artifact[
+                    "scorer_input_seal_sha256"
+                ],
+                "method_lock_sha256": artifact["method_lock_sha256"],
+                "registered_class_root_sha256": artifact[
+                    "registered_class_root_sha256"
+                ],
+                "support_physical_id_root_sha256": artifact[
+                    "support_physical_id_root_sha256"
+                ],
+                "query_physical_id_root_sha256": artifact[
+                    "query_physical_id_root_sha256"
+                ],
                 "int8_gate_pass": bool(
                     artifact["int8_audit"]["passes_d104_int8_gate"]
                 ),
@@ -286,6 +394,16 @@ def main() -> int:
         "arm_row_prediction_unit_count": len(arm_receipts),
         "rows": rows,
         "day_stability_rows": stability_rows,
+        "package_manifest_sha256": package_manifest_sha,
+        "truth_input_seal_sha256": package_manifest[
+            "truth_input_seal_sha256"
+        ],
+        "method_lock_sha256": args.method_lock_sha256,
+        "registered_classes": list(classes),
+        "registered_class_root_sha256": canonical_sha256(list(classes)),
+        "scorer_input_root_sha256": canonical_sha256(
+            [row["scorer_input_seal_sha256"] for row in rows]
+        ),
         "all_arm_prediction_receipts_unique": len(set(arm_receipts)) == 252,
         "query_truth_access": False,
         "target_access": False,

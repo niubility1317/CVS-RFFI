@@ -16,10 +16,13 @@ from .rxid_metabias4_held_execution import (
 from .stage2_d104_rxid_angq import (
     ARMS,
     D104RXIDANGQError,
+    INT8_AUDIT_SCHEMA,
     audit_d104_four_arm_int8,
     build_d104_prediction_artifact,
     fit_d104_four_arm_state,
 )
+from .stage2_d104_angq_qknn import RESOURCE_SCHEMA
+from .stage2_d104_source_split import SPLIT_ID
 
 
 SCHEMA = "cvs.d104_r1.rxid_angq.held_execution.v1"
@@ -39,6 +42,231 @@ def _plain(value: Any) -> Any:
     if isinstance(value, np.generic):
         return value.item()
     return value
+
+
+def _require_sha256(value: Any, name: str) -> str:
+    text = str(value)
+    if (
+        len(text) != 64
+        or any(character not in "0123456789abcdef" for character in text)
+    ):
+        raise D104HeldExecutionError(f"{name} must be a lowercase SHA256")
+    return text
+
+
+def _scorer_input_payload(prediction: Mapping[str, Any]) -> dict[str, Any]:
+    """Return the truth-free fields the independent scorer is allowed to read."""
+
+    return {
+        "schema": prediction.get("schema"),
+        "split_id": prediction.get("split_id"),
+        "held_receiver": prediction.get("held_receiver"),
+        "held_class": prediction.get("held_class"),
+        "K": prediction.get("K"),
+        "registered_classes": prediction.get("registered_classes"),
+        "registered_class_root_sha256": prediction.get(
+            "registered_class_root_sha256"
+        ),
+        "support_physical_id_root_sha256": prediction.get(
+            "support_physical_id_root_sha256"
+        ),
+        "query_physical_ids": prediction.get("query_physical_ids"),
+        "query_physical_id_root_sha256": prediction.get(
+            "query_physical_id_root_sha256"
+        ),
+        "support_query_physical_disjoint": prediction.get(
+            "support_query_physical_disjoint"
+        ),
+        "arm_predictions": prediction.get("arm_predictions"),
+        "arm_prediction_receipts": prediction.get(
+            "arm_prediction_receipts"
+        ),
+        "method_lock_sha256": prediction.get("method_lock_sha256"),
+        "row_method_lock_sha256": prediction.get("row_method_lock_sha256"),
+        "phase1_method_lock_sha256": prediction.get(
+            "phase1_method_lock_sha256"
+        ),
+        "state_receipt_sha256": prediction.get("state_receipt_sha256"),
+        "d103_bundle_content_root_sha256": prediction.get(
+            "d103_bundle_content_root_sha256"
+        ),
+        "resource_receipts": prediction.get("resource_receipts"),
+        "int8_audit": prediction.get("int8_audit"),
+        "query_truth_present": prediction.get("query_truth_present"),
+        "query_rows_used_for_fit": prediction.get("query_rows_used_for_fit"),
+        "query_state_updates": prediction.get("query_state_updates"),
+        "all_registered_classes_compete": prediction.get(
+            "all_registered_classes_compete"
+        ),
+        "per_query_independent": prediction.get("per_query_independent"),
+        "target25_authorized": prediction.get("target25_authorized"),
+    }
+
+
+def validate_d104_prediction_artifact_without_truth(
+    prediction: Mapping[str, Any],
+) -> dict[str, Any]:
+    """Fully validate one sealed D104 row without opening held truth."""
+
+    if not isinstance(prediction, Mapping):
+        raise D104HeldExecutionError("D104 prediction must be an object")
+    classes = tuple(
+        str(value) for value in prediction.get("registered_classes", ())
+    )
+    query_ids = tuple(
+        str(value) for value in prediction.get("query_physical_ids", ())
+    )
+    arms = prediction.get("arm_predictions")
+    receipts = prediction.get("arm_prediction_receipts")
+    resources = prediction.get("resource_receipts")
+    int8 = prediction.get("int8_audit")
+    if (
+        prediction.get("schema") != SCHEMA + ".prediction"
+        or prediction.get("split_id") != SPLIT_ID
+        or len(classes) != 6
+        or len(set(classes)) != 6
+        or not query_ids
+        or len(set(query_ids)) != len(query_ids)
+        or not isinstance(arms, Mapping)
+        or tuple(arms) != ARMS
+        or not isinstance(receipts, Mapping)
+        or tuple(receipts) != ARMS
+        or not isinstance(resources, Mapping)
+        or set(resources) != {"head_effect", "joint_effect"}
+        or not isinstance(int8, Mapping)
+        or int8.get("schema")
+        != INT8_AUDIT_SCHEMA + ".four_arm"
+        or int8.get("passes_d104_int8_gate") is not True
+        or int8.get("query_truth_read") is not False
+        or int8.get("query_state_updates") != 0
+        or int8.get("target25_authorized") is not False
+        or prediction.get("query_truth_present") is not False
+        or prediction.get("query_rows_used_for_fit") != 0
+        or prediction.get("query_state_updates") != 0
+        or prediction.get("all_registered_classes_compete") is not True
+        or prediction.get("per_query_independent") is not True
+        or prediction.get("target25_authorized") is not False
+        or prediction.get("support_query_physical_disjoint") is not True
+    ):
+        raise D104HeldExecutionError("D104 truth-free row closure drift")
+    if (
+        canonical_sha256(
+            {
+                key: value
+                for key, value in int8.items()
+                if key != "receipt_sha256"
+            }
+        )
+        != int8.get("receipt_sha256")
+        or any(
+            not isinstance(int8.get(arm), Mapping)
+            or int8[arm].get("passes_end_to_end_gate") is not True
+            or float(int8[arm].get("top1_agreement", -1.0)) < 0.995
+            or int(
+                int8[arm].get(
+                    "teacher_winner_margin_flip_count",
+                    -1,
+                )
+            )
+            != 0
+            for arm in ("M_HEAD", "M_JOINT")
+        )
+    ):
+        raise D104HeldExecutionError("D104 row INT8 receipt drift")
+    for name in (
+        "registered_class_root_sha256",
+        "support_physical_id_root_sha256",
+        "query_physical_id_root_sha256",
+        "method_lock_sha256",
+        "row_method_lock_sha256",
+        "phase1_method_lock_sha256",
+        "state_receipt_sha256",
+        "d103_bundle_content_root_sha256",
+        "scorer_input_seal_sha256",
+        "prediction_receipt_sha256",
+    ):
+        _require_sha256(prediction.get(name), name)
+    if (
+        canonical_sha256(list(classes))
+        != prediction["registered_class_root_sha256"]
+        or canonical_sha256(list(query_ids))
+        != prediction["query_physical_id_root_sha256"]
+    ):
+        raise D104HeldExecutionError("D104 registry/query root drift")
+    for arm in ARMS:
+        values = arms[arm]
+        if (
+            not isinstance(values, list)
+            or len(values) != len(query_ids)
+            or any(str(value) not in classes for value in values)
+            or canonical_sha256(
+                {
+                    "held_receiver": str(prediction["held_receiver"]),
+                    "held_class": prediction["held_class"],
+                    "K": int(prediction["K"]),
+                    "arm": arm,
+                    "query_physical_ids": list(query_ids),
+                    "predictions": values,
+                }
+            )
+            != receipts[arm]
+        ):
+            raise D104HeldExecutionError("D104 arm prediction receipt drift")
+    for receipt in resources.values():
+        if (
+            not isinstance(receipt, Mapping)
+            or receipt.get("schema")
+            != RESOURCE_SCHEMA
+            or receipt.get("passes_d104_resource_gate") is not True
+            or receipt.get("numeric_bank_array_bytes_delta") != 0
+            or receipt.get("query_mac_delta") != 0
+            or receipt.get("passes_peak_temporary_bytes_gate") is not True
+            or receipt.get("passes_wire_bytes_gate") is not True
+            or canonical_sha256(
+                {
+                    key: value
+                    for key, value in receipt.items()
+                    if key != "receipt_sha256"
+                }
+            )
+            != receipt.get("receipt_sha256")
+        ):
+            raise D104HeldExecutionError("D104 row resource receipt drift")
+    if (
+        canonical_sha256(_scorer_input_payload(prediction))
+        != prediction["scorer_input_seal_sha256"]
+        or canonical_sha256(
+            {
+                key: value
+                for key, value in prediction.items()
+                if key != "prediction_receipt_sha256"
+            }
+        )
+        != prediction["prediction_receipt_sha256"]
+    ):
+        raise D104HeldExecutionError("D104 truth-free prediction seal drift")
+    return {
+        "registered_classes": list(classes),
+        "registered_class_root_sha256": prediction[
+            "registered_class_root_sha256"
+        ],
+        "support_physical_id_root_sha256": prediction[
+            "support_physical_id_root_sha256"
+        ],
+        "query_physical_id_root_sha256": prediction[
+            "query_physical_id_root_sha256"
+        ],
+        "method_lock_sha256": prediction["method_lock_sha256"],
+        "phase1_method_lock_sha256": prediction[
+            "phase1_method_lock_sha256"
+        ],
+        "scorer_input_seal_sha256": prediction[
+            "scorer_input_seal_sha256"
+        ],
+        "prediction_receipt_sha256": prediction[
+            "prediction_receipt_sha256"
+        ],
+    }
 
 
 def predict_d104_matched_row(
@@ -136,11 +364,18 @@ def predict_d104_matched_row(
     )
     artifact: dict[str, Any] = {
         "schema": SCHEMA + ".prediction",
+        "split_id": SPLIT_ID,
         "held_receiver": str(held_receiver),
         "held_class": None if held_class is None else str(held_class),
         "K": k_shot,
         "registered_classes": list(classes),
+        "registered_class_root_sha256": canonical_sha256(list(classes)),
+        "support_physical_id_root_sha256": canonical_sha256(
+            list(support_ids)
+        ),
         "query_physical_ids": list(query_ids),
+        "query_physical_id_root_sha256": canonical_sha256(list(query_ids)),
+        "support_query_physical_disjoint": True,
         "arm_predictions": prediction["arm_predictions"],
         "arm_prediction_receipts": {
             arm: canonical_sha256(
@@ -156,7 +391,9 @@ def predict_d104_matched_row(
             for arm in ARMS
         },
         "state_receipt_sha256": state.state_receipt_sha256,
-        "method_lock_sha256": state.method_lock["method_lock_sha256"],
+        "method_lock_sha256": d103_outer_bundle.method_lock_sha256,
+        "row_method_lock_sha256": state.method_lock["method_lock_sha256"],
+        "phase1_method_lock_sha256": d103_outer_bundle.method_lock_sha256,
         "d103_bundle_content_root_sha256": (
             d103_outer_bundle.content_root_sha256
         ),
@@ -182,7 +419,11 @@ def predict_d104_matched_row(
         )
     ):
         raise D104HeldExecutionError("D104 row prediction closure failed")
+    artifact["scorer_input_seal_sha256"] = canonical_sha256(
+        _scorer_input_payload(artifact)
+    )
     artifact["prediction_receipt_sha256"] = canonical_sha256(artifact)
+    validate_d104_prediction_artifact_without_truth(artifact)
     return artifact, stability
 
 
@@ -224,6 +465,7 @@ def score_d104_prediction_artifact(
 ) -> dict[str, Any]:
     """Score one already-sealed four-arm row on the independent truth side."""
 
+    validate_d104_prediction_artifact_without_truth(prediction)
     truth = np.asarray(tuple(str(value) for value in truth_labels), dtype=str)
     classes = tuple(str(value) for value in prediction.get("registered_classes", ()))
     arms = prediction.get("arm_predictions")
@@ -357,4 +599,5 @@ __all__ = [
     "SCHEMA",
     "predict_d104_matched_row",
     "score_d104_prediction_artifact",
+    "validate_d104_prediction_artifact_without_truth",
 ]

@@ -287,6 +287,9 @@ def main() -> int:
         "day_ids": list(days),
         "package_count": len(package_rows),
         "packages": package_rows,
+        "registered_class_root_sha256": canonical_sha256(list(classes)),
+        "source_val_scorer_manifest_sha256": sha256_file(manifest_path),
+        "source_val_scorer_archive_sha256": sha256_file(archive_path),
         "query_truth_present": False,
         "target_access": False,
         "formal_query_state_updates": 0,
@@ -298,10 +301,29 @@ def main() -> int:
         "packages": truth_rows,
         "predictor_access": False,
     }
+    truth_input_seal = {
+        "schema": "cvs.d104_r1.rxid_angq.truth_input_seal.v1",
+        "split_id": SPLIT_ID,
+        "package_count": len(truth_rows),
+        "package_ids": [row["package_id"] for row in truth_rows],
+        "query_physical_id_roots": {
+            row["package_id"]: canonical_sha256(row["query_physical_ids"])
+            for row in truth_rows
+        },
+        "truth_package_root_sha256": canonical_sha256(truth_rows),
+        "source_val_scorer_manifest_sha256": sha256_file(manifest_path),
+        "source_val_scorer_archive_sha256": sha256_file(archive_path),
+        "predictor_truth_access": False,
+    }
     _write_new(output / "tx_probe_receipt.json", tx_receipt)
-    _write_new(output / "package_manifest.json", package_manifest)
     scorer_root = output / "scorer_only"
     scorer_root.mkdir()
+    truth_input_seal_path = scorer_root / "truth_input_seal.json"
+    _write_new(truth_input_seal_path, truth_input_seal)
+    package_manifest["truth_input_seal_sha256"] = sha256_file(
+        truth_input_seal_path
+    )
+    _write_new(output / "package_manifest.json", package_manifest)
     _write_new(scorer_root / "truth.json", truth)
     print(output / "package_manifest.json")
     return 0

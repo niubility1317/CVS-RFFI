@@ -90,7 +90,10 @@ def test_d104_split_exact_deterministic_and_closed(monkeypatch) -> None:
     assert receipt["four_day_labeled_range"] == [2, 4]
     assert receipt["leave_day_labeled_range"] == [10, 12]
     assert receipt["overlap_count"] == 0
-    assert receipt["query_truth_used_by_selector"] is False
+    assert receipt["source_labels_used_for_stratified_split"] is True
+    assert receipt["query_truth_used_for_method_selection"] is False
+    assert receipt["query_truth_used_for_performance_selection"] is False
+    assert receipt["source_val_performance_computed"] is False
     selected = set(np.concatenate(tuple(first.values())).tolist())
     excluded_rows = {
         index for index, value in enumerate(physical.tolist()) if value in historical
