@@ -4,7 +4,7 @@
 
 根目录正式报告：`E:\type10-7\automation_reports\CV-SincNet\d104_r1_angq_feasibility_20260725\report.md`
 
-报告SHA256：`92cd5e167aae5305036ab67072d95b8ad881031287a1a925f50abb08dd0faf08`
+报告SHA256：`1f68633ce40adb27bd23f70bb7a79bc660d1fce1eb053673782be3a9b98dcbc7`
 
 |项目|证据|结论|
 |---|---|---|
@@ -25,6 +25,8 @@
 |实现首轮release复审|commit`2006564f`|`NO_GO / P0=0/P1=4/P2=3`；未同步、未启动|
 |release修复|当前待提交差异；D103/D104相关测试93项通过|补齐truth-before-open内部封印、整数指标/效应重算、split/matrix/scorer/root绑定、首波与runner资源receipt；待独立复审|
 |release终审|commit`e28f13b7`|`GO / P0=0/P1=0/P2=2`；代码release解锁，N607仍因GPU栈阻塞|
+|P2闭包终审|commit`266a2341`|`GO / P0=0/P1=0/P2=0`；正式release代码闭合|
+|N607实时preflight|direct；2026-07-25 22:38 HKT|driver`535.309.01`、NVML`580.173.02`、`nvidia-smi`exit18；`NO_GO_GPU_STACK_BLOCKED`，零远端写入|
 
 D104只改变typed qKNN的逐support量化尺度选择。D103跨receiver MetaBias4、Phase1机制、全类统一Student-t评分、query隔离和资源门均不改变。旧非部署同构r4结果已撤回。
 
