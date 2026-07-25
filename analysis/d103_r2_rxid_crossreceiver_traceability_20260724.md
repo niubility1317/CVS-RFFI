@@ -1,6 +1,6 @@
 # D103-R2需求—实现—测试—artifact追踪
 
-状态：`DESIGN_FROZEN_REV3 / IMPLEMENTING_LOCAL_ONLY / N607_NO_GO / TARGET25_NO_GO`
+状态：`IMPLEMENTED_LOCAL / RELEASE_REVIEW_GO / PREREGISTERED_INPUT_HASH_RESOLUTION / N607_LAUNCH_NO_GO / TARGET25_NO_GO`
 
 |ID|需求|设计依据|实现文件|验证或artifact|当前状态|
 |---|---|---|---|---|---|
@@ -15,4 +15,4 @@
 
 首轮独立release审查结论为`P0=1/P1=4/P2=2`，已逐项修正：K1活动性和INT8一致性只读support，不再读held query；246个fit逐一验证outer身份、输入SHA、访问ledger和teacher数组聚合SHA；D102父method lock和原拒绝receipt按冻结值精确匹配；truth-side scorer在打开truth前创建唯一事件并要求63行共同绑定；异常指纹规范化且停机保存精确进程/GPU证据；磁盘按当前树加16MiB后续分析凭据预留计费。
 
-验证汇总：D103定向61项通过，`python -m py_compile`覆盖全部新增核心与入口并通过，`git diff --check`通过；其中资源终结器实测按当前run-root加16MiB后续分析凭据预留计费；解析系数与既有D102闭式FP16逐bit一致；development-only真实checkpoint特征400step无query-truth smoke通过（119.75s、K1 support=6、query=354、D103 ACTIVE、未计算性能）。无筛选全仓测试因既有`tomllib`缺失和`tests/`、`code/tests/`同名模块收集冲突未进入执行，隔离后的主`tests/`面在10分钟上限内未完成。当前仍需独立release复审和Git commit，完成前保持`N607_NO_GO / TARGET25_NO_GO`。
+验证汇总：实现commit=`59978e44`；独立复审index SHA256=`30c8c98ff8fcdf2915f4c2e797c605cecc98d138e95ad3b0bc6e542faf9fdc9b`；`REVIEW_GO / P0=0 / P1=0 / P2=2`。D103定向61项通过，`python -m py_compile`覆盖36个新增/修改Python文件并通过，`git diff --cached --check`通过；其中资源终结器实测按当前run-root加16MiB后续分析凭据预留计费；解析系数与既有D102闭式FP16逐bit一致。当前代码development-only真实checkpoint特征400step无query-truth smoke再次通过（39.125s、K1 support=6、query=354、D103 ACTIVE、未计算性能）。已建立`d103_r2_rxid_phase1held_20260725_r1`预注册；首次N607交接仅允许实时解析`source_train`cache SHA和资源/冲突状态，写回并提交前禁止sync和启动，故保持`N607_LAUNCH_NO_GO / TARGET25_NO_GO`。
