@@ -90,10 +90,19 @@ def _top1_and_margin_flips(
     teacher_logits: np.ndarray,
     candidate_logits: np.ndarray,
 ) -> dict[str, float | int]:
-    order = np.argsort(teacher_logits, axis=1, kind="stable")
-    winner = order[:, -1]
-    runner_up = order[:, -2]
+    if (
+        teacher_logits.ndim != 2
+        or candidate_logits.shape != teacher_logits.shape
+        or teacher_logits.shape[1] < 2
+        or not np.isfinite(teacher_logits).all()
+        or not np.isfinite(candidate_logits).all()
+    ):
+        raise ValueError("finite matched logits with at least two classes required")
+    winner = np.argmax(teacher_logits, axis=1)
+    runner_logits = np.array(teacher_logits, copy=True)
     row = np.arange(len(teacher_logits))
+    runner_logits[row, winner] = -np.inf
+    runner_up = np.argmax(runner_logits, axis=1)
     candidate_margin = (
         candidate_logits[row, winner] - candidate_logits[row, runner_up]
     )
@@ -123,31 +132,11 @@ def _angular_grid_decode(
     selected = np.empty(len(rows), dtype=np.float64)
     cosines = np.empty(len(rows), dtype=np.float64)
     for row_index, row in enumerate(rows):
-        base_scale = float(np.max(np.abs(row))) / 127.0
         best_cosine = -np.inf
         best_decoded = None
         best_factor = None
         for factor in factors:
-            scale16 = np.float16(
-                max(
-                    base_scale * float(factor),
-                    float(np.finfo(np.float16).tiny),
-                )
-            )
-            if scale16 <= 0.0 or not np.isfinite(scale16):
-                continue
-            codes = np.clip(
-                np.rint(row / np.float32(scale16)),
-                -127,
-                127,
-            ).astype(np.int8)
-            raw = (
-                codes.astype(np.float32)
-                * np.float32(scale16)
-            )
-            if not np.isfinite(raw).all() or float(np.linalg.norm(raw)) <= 0.0:
-                continue
-            candidate = normalize_zid_rows(raw[None, :])[0]
+            _, _, candidate = _quantize_row_at_factor(row, float(factor))
             cosine = float(
                 np.dot(
                     row.astype(np.float64),
@@ -164,6 +153,45 @@ def _angular_grid_decode(
         selected[row_index] = best_factor
         cosines[row_index] = best_cosine
     return decoded, selected, cosines
+
+
+def _quantize_row_at_factor(
+    row: np.ndarray,
+    factor: float,
+) -> tuple[np.float16, np.ndarray, np.ndarray]:
+    """Deploy-isomorphic quantization of one normalized support row."""
+
+    row32 = np.asarray(row, dtype=np.float32)
+    if (
+        row32.ndim != 1
+        or row32.size == 0
+        or not np.isfinite(row32).all()
+        or not np.isfinite(factor)
+        or factor <= 0.0
+    ):
+        raise ValueError("finite row and positive finite factor required")
+    normalized = normalize_zid_rows(row32[None, :])[0]
+    base_scale = float(np.max(np.abs(normalized))) / 127.0
+    scale16 = np.float16(
+        max(
+            base_scale * float(factor),
+            float(np.finfo(np.float16).tiny),
+        )
+    )
+    if scale16 <= 0.0 or not np.isfinite(scale16):
+        raise ValueError("ANGQ scale underflow or non-finite value")
+    codes = np.clip(
+        np.rint(normalized / np.float32(scale16)),
+        -127,
+        127,
+    ).astype(np.int8)
+    if np.any(codes == np.int8(-128)):
+        raise ValueError("ANGQ emitted forbidden INT8 code -128")
+    raw = codes.astype(np.float32) * np.float32(scale16)
+    if not np.isfinite(raw).all() or float(np.linalg.norm(raw)) <= 0.0:
+        raise ValueError("ANGQ reconstruction is non-finite or zero norm")
+    decoded = normalize_zid_rows(raw[None, :])[0]
+    return scale16, codes, decoded
 
 
 def _int8_component_audit(
@@ -293,6 +321,15 @@ def _int8_component_audit(
         config=state.bank.config,
         metric=state.metric,
     )
+    fp32_angular_bandwidth = _score_with_support(
+        support=support,
+        class_indices=indices,
+        support_counts=counts,
+        class_scales=angular_scales,
+        query=query,
+        config=state.bank.config,
+        metric=state.metric,
+    )
     return {
         "diagnostic_only_no_state_change": True,
         "query_truth_read": False,
@@ -320,6 +357,12 @@ def _int8_component_audit(
             ),
             "with_recomputed_fp16_bandwidth": _top1_and_margin_flips(
                 teacher, angular_deployed_bandwidth
+            ),
+            "direction_only_shared_angular_fp16_bandwidth": (
+                _top1_and_margin_flips(
+                    fp32_angular_bandwidth,
+                    angular_deployed_bandwidth,
+                )
             ),
         },
     }

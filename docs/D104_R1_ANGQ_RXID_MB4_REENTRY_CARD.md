@@ -1,6 +1,6 @@
 # D104-R1-ANGQ-RXID-MB4重入卡
 
-状态：`DESIGN_DRAFT_REV2 / FEASIBILITY_REVIEW / N607_NO_GO / TARGET25_NO_GO`
+状态：`DESIGN_DRAFT_REV3 / FEASIBILITY_REVIEW / N607_NO_GO / TARGET25_NO_GO`
 
 日期：2026-07-25
 
@@ -79,10 +79,10 @@ source-held继续执行49个outer、196个leave-day和1个final fit，共246fit/
 - 63个row逐行通过端到端ANGQ/FP32 top1一致≥99.5%且teacher-winner/teacher-runner-up量化margin≤0的计数为0；禁止用合并分母掩盖失败。top1采用冻结registry顺序的stable-first argmax；agreement分母为该row全部query。K1另保留support-only活动receipt，held-query审计不得反向改变状态；
 - K1 rank=4、min singular value≥0.05、condition≤10、prior fraction≤0.80、coefficient norm≥1e-4、4个实际160维shift余弦中位数≥0.80；
 - 每行`M_HEAD−M0`与`M_JOINT−M_HEAD`的BA、floor、net-correct均不得为负；正确数和net-correct用精确整数，BA/floor由整数分子分母重算，序列化浮点只允许`abs_tol=1e-12`；
-- 63行平均joint要求`M_HEAD>M0`且`M_JOINT>M_HEAD`；该门命名为“逐行非劣+任意严格增益”，不声称已证明最小实际效果量；
+- `joint_score=(balanced_accuracy+per_class_floor)/2`，不得从BA、floor或net-correct中事后选择标量；63-row mean joint_score要求`M_HEAD>M0`且`M_JOINT>M_HEAD`。net-correct只作为逐行精确整数非退化门；四个简单效应、两个平均主效应和交互均分别报告BA、per-class floor、joint_score和net-correct。该门命名为“逐行非劣+任意严格增益”，不声称已证明最小实际效果量；
 - TX probe≤25%，全部覆盖、访问、序列化、资源和异常门通过；
-- 资源按流式单候选实现：每候选160个norm MAC+160个cosine MAC，`adaptation_mac_per_support=101×320=32320`；round/clip、除法、decode乘法和归一化除法另记`adaptation_elementwise_ops_per_support=101×640=64640`。K10最多60条support，因此`adaptation_mac_total≤1,939,200`、`adaptation_elementwise_ops_total≤3,878,400`、`peak_temporary_bytes≤16KiB`（不含调用方输入与最终bank）；
-- `state_bytes_before/after/delta`与`query_mac_before/after/delta`逐row发布；ANGQ要求`state_bytes_delta=0`、`query_mac_delta=0`，数组成员、shape和dtype不变；
+- 资源按流式单候选实现：每候选160个norm MAC+160个cosine MAC，`adaptation_mac_per_support=101×320=32320`；vector-elementwise口径只计每元素量化除法、round/clip、decode乘法和归一化除法，`adaptation_vector_elementwise_ops_per_support=101×640=64640`。另逐support报告一次maxabs reduction和base-scale除法，逐候选报告factor乘法、FP16 cast、scale下限比较、norm sqrt、有限/零范数检查和best-candidate比较；这些scalar/reduction ops不混入640，必须作为分类计数receipt发布。K10最多60条support，因此`adaptation_mac_total≤1,939,200`、`adaptation_vector_elementwise_ops_total≤3,878,400`、`peak_temporary_bytes≤16KiB`（不含调用方输入与最终bank）；
+- `numeric_bank_array_bytes_before/after/delta`、`actual_serialized_state_bytes_before/after/delta`、`metadata_bytes_before/after/delta`与`query_mac_before/after/delta`逐row发布；ANGQ要求`numeric_bank_array_bytes_delta=0`、`query_mac_delta=0`，数值bank数组成员、shape和dtype不变；可变JSON quantization audit/header导致的metadata与actual serialized字节差必须单列，并继续通过既有总wire上限，不要求其delta为0；
 - 任一门失败即拒绝整个D104，不扫描网格、阈值、角色mask、场景mask或选择性回退。
 
 held接受只产生`TARGET25_GATE_ELIGIBLE`，不自动启动Target。Target25固定5receiver×1seed×5slice=25行，按用户目标同row报告K10/K5/K1的old-before、old-after、per-old-class floor、seen-new、H、forgetting和资源；不得从25行选择有利子集。
@@ -112,7 +112,7 @@ held接受只产生`TARGET25_GATE_ELIGIBLE`，不自动启动Target。Target25�
 
 ## 8.当前development-only证据
 
-- 8400行部署同构support几何审计：`local_d104_r1_support_geometry_audit_20260725.json`，SHA256=`8f4f6a650a4f7607e0f0753aa47efbb20100b5006a0906d721241c60a4cb445b`；7575行严格改善、825行相同、0行退化；未读取query或truth。
-- 两条既有失败K10行重放：`local_d104_r1_k10_deploy_isomorphic_angq_probe_20260725_r5.json`，SHA256=`ee7b239e7bdb8878cd3efbc8d4ba32922ec2b4bef13d3056e55a8da8fb422fb7`；`1-1`的ANGQ审计为300/300、0翻转，`2-1`为310/310、0翻转；重新计算FP16带宽后不变。
+- 原8400行审计读取了绑定tap全池，其中包含2478条历史诊断query物理行；旧artifact的`query_features_used=0`声明已撤回。修订artifact为`local_d104_r1_support_geometry_audit_20260725_r6.json`，SHA256=`4f3196be35aca3da1f9ec83a7420825ca1cdfced4fe42a9e5dd29000a735eb18`；显式记录`query_argument_used=false`、`new_formal_held_query_features_used=0`、`historical_diagnostic_query_features_in_input=2478`、旧query ID root和`query_role_used_by_algorithm=false`。它仍不是新held或正式性能证据。
+- 两条既有失败K10行重放：`local_d104_r1_k10_deploy_isomorphic_angq_probe_20260725_r6.json`，SHA256=`560ae5b8cae3723153d54e654847a4454ca8b42e21664abde92e43a4d83df68c`；`1-1`的ANGQ端到端及共享ANGQ FP16带宽方向审计均为300/300、0翻转，`2-1`均为310/310、0翻转。
 - 上述两条query特征已参与机制可行性诊断，因此不得作为D104接受证据。旧未部署同构的r4网格结果已撤回，不用于公式、保证、复审或晋级。
 - 当前仍无BA、floor、H、旧类/新类准确率或Target证据；这些数值不能从重构余弦或量化一致性推断。

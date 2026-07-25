@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Development-only support geometry audit for D104 ANGQ.
+"""Development-only fixed-tap geometry audit for D104 ANGQ.
 
-The audit compares legacy and deploy-isomorphic ANGQ reconstruction on caller-
-owned support candidates. It does not accept labels, query rows, or truth.
+The bound tap contains historically exposed diagnostic rows. The algorithm
+does not receive their role, labels, new formal held rows, or truth.
 """
 
 from __future__ import annotations
@@ -29,6 +29,15 @@ from probe_d103_r2_outer_geometry_local import (  # noqa: E402
     _angular_grid_decode,
 )
 
+EXPECTED_TAP_SHA256 = (
+    "c6807d9156ab3ac8f7005707a3bd7eec342d2e4f0a43d4b96d5ea8a9574ec4c1"
+)
+EXPECTED_TAP_ROWS = 8400
+HISTORICAL_DIAGNOSTIC_QUERY_COUNT = 2478
+HISTORICAL_DIAGNOSTIC_QUERY_ID_ROOT_SHA256 = (
+    "036456779eea6594f2330f2e9a96cceda580088b0d451982198e3056f762854d"
+)
+
 
 def _sha256(path: Path) -> str:
     digest = hashlib.sha256()
@@ -51,8 +60,13 @@ def main() -> int:
     output = args.output_json.resolve()
     if output.exists() or output.is_symlink():
         raise FileExistsError(f"immutable audit output exists: {output}")
+    tap_sha256 = _sha256(tap_path)
+    if tap_sha256 != EXPECTED_TAP_SHA256:
+        raise ValueError("D104 geometry audit tap SHA drift")
     with np.load(tap_path, allow_pickle=False) as archive:
         support = np.asarray(archive["z_id"], dtype=np.float32)
+    if len(support) != EXPECTED_TAP_ROWS:
+        raise ValueError("D104 geometry audit tap row-count drift")
     normalized = normalize_zid_rows(support)
     started = time.monotonic()
     _, _, legacy = _quantize_rows(normalized)
@@ -62,10 +76,10 @@ def main() -> int:
         axis=1,
     )
     result = {
-        "schema": "cvs.d104_r1.angq.support_geometry_local_audit.v1",
+        "schema": "cvs.d104_r1.angq.support_geometry_local_audit.v2",
         "status": "DEVELOPMENT_ONLY_SUPPORT_GEOMETRY_COMPLETE",
         "candidate": "D104-R1-ANGQ-RXID-MB4",
-        "tap_archive_sha256": _sha256(tap_path),
+        "tap_archive_sha256": tap_sha256,
         "row_count": int(len(normalized)),
         "legacy_cosine_min": float(np.min(legacy_cosine)),
         "legacy_cosine_mean": float(np.mean(legacy_cosine)),
@@ -92,7 +106,15 @@ def main() -> int:
             )
         ),
         "elapsed_seconds": time.monotonic() - started,
-        "query_features_used": 0,
+        "query_argument_used": False,
+        "new_formal_held_query_features_used": 0,
+        "historical_diagnostic_query_features_in_input": (
+            HISTORICAL_DIAGNOSTIC_QUERY_COUNT
+        ),
+        "historical_diagnostic_query_id_root_sha256": (
+            HISTORICAL_DIAGNOSTIC_QUERY_ID_ROOT_SHA256
+        ),
+        "query_role_used_by_algorithm": False,
         "query_truth_read": False,
         "query_state_updates": 0,
         "performance_computed": False,

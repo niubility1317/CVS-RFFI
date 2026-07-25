@@ -37,6 +37,42 @@ def test_outer_geometry_probe_module_imports_component_dependencies() -> None:
             axis=1,
         )
         assert np.all(cosines >= legacy_cosines - 1.0e-12)
+        normalized_rows = probe.normalize_zid_rows(rows)
+        legacy_codes, legacy_scales, legacy_decoded = probe._quantize_rows(
+            normalized_rows
+        )
+        for index, normalized_row in enumerate(normalized_rows):
+            scale16, codes, c1_decoded = probe._quantize_row_at_factor(
+                normalized_row,
+                1.0,
+            )
+            assert scale16.tobytes() == legacy_scales[index].tobytes()
+            assert np.array_equal(codes, legacy_codes[index])
+            assert np.array_equal(c1_decoded, legacy_decoded[index])
+            assert not np.any(codes == np.int8(-128))
+        basis = np.zeros((1, 160), dtype=np.float32)
+        basis[0, 0] = 1.0
+        _, basis_factor, _ = probe._angular_grid_decode(basis)
+        assert basis_factor.tolist() == [0.75]
+        for bad_row, bad_factor in (
+            (np.zeros(160, dtype=np.float32), 1.0),
+            (np.full(160, np.nan, dtype=np.float32), 1.0),
+            (normalized_rows[0], 0.0),
+        ):
+            try:
+                probe._quantize_row_at_factor(bad_row, bad_factor)
+            except ValueError:
+                pass
+            else:
+                raise AssertionError("invalid ANGQ input did not fail closed")
+        tie_audit = probe._top1_and_margin_flips(
+            np.asarray([[2.0, 2.0, 1.0]], dtype=np.float64),
+            np.asarray([[3.0, 2.0, 1.0]], dtype=np.float64),
+        )
+        assert tie_audit == {
+            "top1_agreement": 1.0,
+            "teacher_winner_margin_flip_count": 0,
+        }
     finally:
         sys.path.remove(str(script_root))
 
