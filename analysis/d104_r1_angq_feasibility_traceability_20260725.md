@@ -1,10 +1,10 @@
 # D104-R1-ANGQ-RXID-MB4可行性追踪
 
-状态：`DESIGN_REENTRY_REQUIRED / IMPLEMENTATION_PAUSED / N607_NO_GO / TARGET25_NO_GO / NO_PERFORMANCE_RESULT`
+状态：`DESIGN_FROZEN / IMPLEMENTING_LOCAL_ONLY / N607_NO_GO / TARGET25_NO_GO / NO_PERFORMANCE_RESULT`
 
 根目录正式报告：`E:\type10-7\automation_reports\CV-SincNet\d104_r1_angq_feasibility_20260725\report.md`
 
-报告SHA256：`a791f2f90734e9e604597ac64cf7561ac251a7c9712a7221ca384de9eb1d57bd`
+报告SHA256：`5e2956563599aa8f462acc28146772155aa937e79c0da751aeda63f829e5f868`
 
 |项目|证据|结论|
 |---|---|---|
@@ -19,7 +19,8 @@
 |正式资格|第三轮独立复审`P0=0/P1=0`|正式本地实现解锁；N607、正式source-held和Target25仍禁止|
 |身份修复re-entry|真实2478-ID canonical root=`7870604d...b558`；旧`036456...854d`不可复算|独立裁决`P0=0/P1=1/P2=1`；split升v2并新增自描述manifest，复审前暂停实现|
 |身份修复首轮复审|commit`a54e4284`|`P0=0/P1=2/P2=2`；要求硬锁输入/代码/registry/package身份并修正标签使用声明|
-|身份修复补丁|manifest r3＋10项定向测试|已硬锁tap/dual/代码/source-val/support/package身份，使用排他写入并拆分标签用途；等待再次复审|
+|身份修复补丁|commit`73e4cbd7`；manifest r3；8项pytest＋1项py_compile|硬锁tap/dual/代码/source-val/support/package身份，使用排他写入并拆分标签用途|
+|身份修复终审|commit`73e4cbd7`|`P0=0/P1=0/P2=1`；恢复`DESIGN_FROZEN / IMPLEMENTING_LOCAL_ONLY`；N607/source-held/Target仍NO_GO|
 
 D104只改变typed qKNN的逐support量化尺度选择。D103跨receiver MetaBias4、Phase1机制、全类统一Student-t评分、query隔离和资源门均不改变。旧非部署同构r4结果已撤回。
 
@@ -38,6 +39,6 @@ D104只改变typed qKNN的逐support量化尺度选择。D103跨receiver MetaBia
 |D104-RT-05|复审P2-1|绑定8400行执行`c=1`的scale/code/decoded逐位等价；正式路径无重复输入归一化|`code/scripts/verify_d104_angq_c1_full_tap.py`、对应测试|verified_local|8400行scale/code/decoded变化0|旧tap含2478条历史诊断query，只用于ABI回归|
 |D104-RT-06|项目§5.3–§6|非法dtype/shape/零范数/非有限值/不平衡K/角色或query参数均fail closed|`tests/test_stage2_d104_angq_qknn.py`|verified_local|协议负测|类标签置换等价|
 |D104-RT-07|重入卡§3|实现M0/M_DA/M_HEAD/M_JOINT四臂method lock与同row预测闭合|`code/cvsrffi/stage2_d104_rxid_angq.py`|verified_local|四臂单元测试＋真实特征K5烟测|M_DA不得按行回退为晋级臂|
-|D104-RT-08|重入卡§4|实现新source split builder与63×4=252个prediction单元runner|builder/runner/validator|paused_reentry|split closure＋manifest-only＋artifact validator|身份修复复审后恢复|
+|D104-RT-08|重入卡§4|实现新source split builder与63×4=252个prediction单元runner|builder/runner/validator|in_progress|split closure＋manifest-only＋artifact validator|身份修复已以P0=0/P1=0恢复实现|
 |D104-RT-09|AGENTS release readiness|真实checkpoint no-query smoke、协议负测和独立release复审|测试、报告与release追踪|partial|真实K5 400-step烟测通过；release复审待完成|完成前N607保持NO_GO|
 |D104-RT-10|AGENTS N607发布|本地Git提交后由专职runner执行N607预检、同步、25矩阵与证据回收|正式run报告|blocked|N607 GPU栈恢复＋runner handoff|当前driver/NVML不匹配；本地实现仍可推进|

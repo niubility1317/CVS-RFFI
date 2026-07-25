@@ -110,7 +110,7 @@ held接受只产生`TARGET25_GATE_ELIGIBLE`，不自动启动Target。Target25�
 
 ## 7.进入实现的条件
 
-第三轮独立复审对HEAD`3419ac20`的主体裁决为`P0=0/P1=0`，曾允许进入`DESIGN_FROZEN / IMPLEMENTING_LOCAL_ONLY`；N607与Target始终未授权。实现阶段发现旧query root无法从真实2478-ID集合按项目canonical编码复算，独立监督裁决`P0=0/P1=1/P2=1`，状态暂退为`DESIGN_REENTRY_REQUIRED / IMPLEMENTATION_PAUSED / N607_NO_GO / TARGET25_NO_GO`。本卡完成活动root、manifest和split ID身份修复后，必须对修订commit再次独立复审达到`P0=0/P1=0`，才恢复实现。ANGQ公式、四臂、资源门和性能门没有改变。
+第三轮独立复审对HEAD`3419ac20`的主体裁决为`P0=0/P1=0`，曾允许进入`DESIGN_FROZEN / IMPLEMENTING_LOCAL_ONLY`；N607与Target始终未授权。实现阶段发现旧query root无法从真实2478-ID集合按项目canonical编码复算，独立监督裁决`P0=0/P1=1/P2=1`，状态暂退为`DESIGN_REENTRY_REQUIRED / IMPLEMENTATION_PAUSED / N607_NO_GO / TARGET25_NO_GO`。身份修复commit`a54e4284`和补丁commit`73e4cbd7`完成活动root、manifest、split ID、输入/代码硬锁、标签用途声明与负测；终审裁决`P0=0/P1=0/P2=1`，恢复`DESIGN_FROZEN / IMPLEMENTING_LOCAL_ONLY`。唯一P2为追踪表测试计数文字，已更正为8项pytest＋1项py_compile。ANGQ公式、四臂、资源门和性能门没有改变；N607、正式source-held性能和Target仍不授权。
 
 ## 8.当前development-only证据
 
