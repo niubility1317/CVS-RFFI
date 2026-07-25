@@ -46,7 +46,7 @@
 
 development-only真实tap/dual外层几何探针完成7fit/2800step和21个无真值K1/K5/K10预测行，三个K均7/7 ACTIVE，但K10的`1-1`和`2-1`分别只有298/300和309/310的INT8/FP32一致，合计3次teacher-winner翻转，当前正式门会拒绝。分量诊断证明单尺度支持向量INT8编码是唯一根因，FP16类带宽不是根因。固定support-only角度网格在两行均恢复100%一致、0翻转，但它是R2冻结后新机制，不能原地修改本release。
 
-因此本run保持未落地、未启动和无性能结果；即使GPU栈恢复，也不得按旧release启动。后续必须以新candidate、新run ID、独立设计复审和新held证据重入。根目录正式报告当前SHA256=`8437180824f8ab13b1224e3ac5e2801b4ae9c812e96a27ccbb5e6538d3910e72`。
+因此本run保持未落地、未启动和无性能结果；即使GPU栈恢复，也不得按旧release启动。后续必须以新candidate、新run ID、独立设计复审和新held证据重入。本地诊断实现commit=`160fa5c4`，未push。根目录正式报告当前SHA256=`d70297f280637fd89c228e2c38acc01eca01a6a490762dfcccc8e9425fc7752c`。
 
 ## 当前启动阻塞
 
