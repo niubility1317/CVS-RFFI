@@ -1,10 +1,10 @@
 # D104-R1-ANGQ-RXID-MB4可行性追踪
 
-状态：`DESIGN_FROZEN / IMPLEMENTATION_REPAIRED_PENDING_INDEPENDENT_REREVIEW / N607_NO_GO / TARGET25_NO_GO / NO_PERFORMANCE_RESULT`
+状态：`DESIGN_FROZEN / RELEASE_CODE_GO / N607_GPU_STACK_BLOCKED / TARGET25_NO_GO / NO_PERFORMANCE_RESULT`
 
 根目录正式报告：`E:\type10-7\automation_reports\CV-SincNet\d104_r1_angq_feasibility_20260725\report.md`
 
-报告SHA256：`76dfdc4988de507d18051a56623327527838f0bce51242f017f1662e4bc62f00`
+报告SHA256：`98384f0b5a12a8ad758db9f6be9aa0e1a573b5c77b0a43cd96c9ba72d703fdbf`
 
 |项目|证据|结论|
 |---|---|---|
@@ -24,6 +24,7 @@
 |正式实现|commit`2006564f`；104项测试|246-fit、21包、63row、252arm-row、truth-side scorer与gate落地|
 |实现首轮release复审|commit`2006564f`|`NO_GO / P0=0/P1=4/P2=3`；未同步、未启动|
 |release修复|当前待提交差异；D103/D104相关测试93项通过|补齐truth-before-open内部封印、整数指标/效应重算、split/matrix/scorer/root绑定、首波与runner资源receipt；待独立复审|
+|release终审|commit`e28f13b7`|`GO / P0=0/P1=0/P2=2`；代码release解锁，N607仍因GPU栈阻塞|
 
 D104只改变typed qKNN的逐support量化尺度选择。D103跨receiver MetaBias4、Phase1机制、全类统一Student-t评分、query隔离和资源门均不改变。旧非部署同构r4结果已撤回。
 
