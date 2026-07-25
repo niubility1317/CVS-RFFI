@@ -28,6 +28,15 @@ def test_outer_geometry_probe_module_imports_component_dependencies() -> None:
         assert np.allclose(np.linalg.norm(decoded, axis=1), 1.0)
         assert np.all((factors >= 0.75) & (factors <= 1.25))
         assert np.all(cosines > 0.999)
+        _, _, legacy = probe._quantize_rows(
+            probe.normalize_zid_rows(rows)
+        )
+        normalized = probe.normalize_zid_rows(rows).astype(np.float64)
+        legacy_cosines = np.sum(
+            normalized * legacy.astype(np.float64),
+            axis=1,
+        )
+        assert np.all(cosines >= legacy_cosines - 1.0e-12)
     finally:
         sys.path.remove(str(script_root))
 

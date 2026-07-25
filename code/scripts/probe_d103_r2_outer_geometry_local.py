@@ -49,6 +49,7 @@ from cvsrffi.stage2_rxid_metabias4 import (  # noqa: E402
 )
 from cvsrffi.stage2_zid_student_t_qknn import (  # noqa: E402
     _identity_class_scales,
+    _quantize_rows,
     _score_with_support,
     decode_zid_support_bank,
     normalize_zid_rows,
@@ -116,9 +117,9 @@ def _angular_grid_decode(
 
     rows = normalize_zid_rows(
         np.asarray(support, dtype=np.float32)
-    ).astype(np.float64)
+    )
     factors = np.linspace(0.75, 1.25, 101, dtype=np.float64)
-    decoded = np.empty_like(rows)
+    decoded = np.empty_like(rows, dtype=np.float32)
     selected = np.empty(len(rows), dtype=np.float64)
     cosines = np.empty(len(rows), dtype=np.float64)
     for row_index, row in enumerate(rows):
@@ -127,18 +128,32 @@ def _angular_grid_decode(
         best_decoded = None
         best_factor = None
         for factor in factors:
-            scale = base_scale * float(factor)
+            scale16 = np.float16(
+                max(
+                    base_scale * float(factor),
+                    float(np.finfo(np.float16).tiny),
+                )
+            )
+            if scale16 <= 0.0 or not np.isfinite(scale16):
+                continue
             codes = np.clip(
-                np.rint(row / scale),
+                np.rint(row / np.float32(scale16)),
                 -127,
                 127,
             ).astype(np.int8)
-            candidate = codes.astype(np.float64) * scale
-            norm = float(np.linalg.norm(candidate))
-            if norm <= 0.0 or not np.isfinite(norm):
+            raw = (
+                codes.astype(np.float32)
+                * np.float32(scale16)
+            )
+            if not np.isfinite(raw).all() or float(np.linalg.norm(raw)) <= 0.0:
                 continue
-            candidate /= norm
-            cosine = float(np.dot(row, candidate))
+            candidate = normalize_zid_rows(raw[None, :])[0]
+            cosine = float(
+                np.dot(
+                    row.astype(np.float64),
+                    candidate.astype(np.float64),
+                )
+            )
             if cosine > best_cosine:
                 best_cosine = cosine
                 best_decoded = candidate
