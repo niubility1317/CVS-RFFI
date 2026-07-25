@@ -61,7 +61,7 @@ M_DA不具晋级资格不等于从主效应与交互分析中删除。晋级仍�
 
 ## 4.新held证据与数据边界
 
-旧development probe已读取旧source-val的query特征和预测但从未读取其标签。D104不得用这些query物理ID做接受证据。旧query排除清单固定count=2478、root SHA256=`036456779eea6594f2330f2e9a96cceda580088b0d451982198e3056f762854d`。新source split固定`split_id=d104_source_seed104713_v1`、salt=`D104-R1-ANGQ-RXID-MB4|source-split|104713|v1`：
+旧development probe已读取旧source-val的query特征和预测但从未读取其标签。D104不得用这些query物理ID做接受证据。旧query排除清单固定count=2478；活动canonical list root SHA256=`7870604d8ddba8268ba127065d4eaf1142931660d95411c9633c2ffa59d6b558`。规范编码为对排序ID列表执行`json.dumps(list,ensure_ascii=False,sort_keys=True,separators=(",",":"),allow_nan=False)`后取UTF-8 SHA256，不含尾换行。旧值`036456779eea6594f2330f2e9a96cceda580088b0d451982198e3056f762854d`标记为`WITHDRAWN_UNREPRODUCIBLE_LEGACY_ROOT`，不得参与builder或gate。活动自描述manifest为`d104_historical_query_exclusion_manifest_v2_20260725_r2.json`，文件SHA256=`cf7cad3f6e62a300241a7ad1871e509717b0cafaef7400f46067b72eee31a31f`。新source split固定`split_id=d104_source_seed104713_v2`；为保持预注册成员选择不因身份修复而改变，salt仍为`D104-R1-ANGQ-RXID-MB4|source-split|104713|v1`：
 
 1.每个receiver×TX×day cell排除旧query清单后，按`SHA256(salt|held|receiver|TX|day|physical_id)`升序取前15条进入新source-val；168×15=2520。
 2.剩余5880行构成新训练池；历史诊断暴露ID允许进入L_s/U_s并标记`historical_diagnostic_exposed=true`，但永久禁止再次作为独立held证据。
@@ -69,6 +69,8 @@ M_DA不具晋级资格不等于从主效应与交互分析中删除。晋级仍�
 4.其余全部进入U_s；必须得到L=588/U=5292/source-val=2520、4day L计数2–4、任一leave-day L=10–12、互斥和union闭合，否则拒绝。
 
 只读容量审计已确认：排除2478个旧query后有5922个候选，168个cell的候选min/max=22/46；每cell取15在数量上可构造。该结果只证明容量，不是split builder正确性或held性能证据。
+
+manifest必须同时固定2478个排序query ID、42个排序support ID、support/query交集0、tap/dual SHA、旧source split schema与count、7个receiver、6类、K=1、每receiver package root、派生代码路径和SHA。builder实际读取ID集合并复算root；缺失、重复、增删单ID、错误root、输入SHA或派生代码SHA漂移均fail closed。
 
 本次物理ID角色变化按`AGENTS.md`触发一次builder验证；它不改变或重验Target的`p2_min_v1` capsule。D104公式、网格和四臂必须在新split ID及物理ID明细打开前进入Git并通过独立设计复审。
 
@@ -108,11 +110,11 @@ held接受只产生`TARGET25_GATE_ELIGIBLE`，不自动启动Target。Target25�
 
 ## 7.进入实现的条件
 
-第三轮独立复审对HEAD`3419ac20`的主体裁决为`P0=0/P1=0`，允许进入`DESIGN_FROZEN / IMPLEMENTING_LOCAL_ONLY`；N607与Target仍不授权。正式实现还必须增加绑定8400行的c=1 scale/code/decoded逐位等价断言，并保证输入只归一化一次。
+第三轮独立复审对HEAD`3419ac20`的主体裁决为`P0=0/P1=0`，曾允许进入`DESIGN_FROZEN / IMPLEMENTING_LOCAL_ONLY`；N607与Target始终未授权。实现阶段发现旧query root无法从真实2478-ID集合按项目canonical编码复算，独立监督裁决`P0=0/P1=1/P2=1`，状态暂退为`DESIGN_REENTRY_REQUIRED / IMPLEMENTATION_PAUSED / N607_NO_GO / TARGET25_NO_GO`。本卡完成活动root、manifest和split ID身份修复后，必须对修订commit再次独立复审达到`P0=0/P1=0`，才恢复实现。ANGQ公式、四臂、资源门和性能门没有改变。
 
 ## 8.当前development-only证据
 
-- 原8400行审计读取了绑定tap全池，其中包含2478条历史诊断query物理行；旧artifact的`query_features_used=0`声明已撤回。修订artifact为`local_d104_r1_support_geometry_audit_20260725_r6.json`，SHA256=`4f3196be35aca3da1f9ec83a7420825ca1cdfced4fe42a9e5dd29000a735eb18`；显式记录`query_argument_used=false`、`new_formal_held_query_features_used=0`、`historical_diagnostic_query_features_in_input=2478`、旧query ID root和`query_role_used_by_algorithm=false`。它仍不是新held或正式性能证据。
+- 原8400行审计读取了绑定tap全池，其中包含2478条历史诊断query物理行；旧artifact的`query_features_used=0`声明已撤回。`local_d104_r1_support_geometry_audit_20260725_r6.json`中的root值已标记为不可复算旧值，该artifact不得再证明排除集合身份；其7575/825/0几何数值仍仅属development诊断。身份修复后的不覆盖artifact为`local_d104_r1_support_geometry_audit_20260725_r7.json`，SHA256=`93016ec162ab3b8edc16b3e24bb3d1fb5615895eb4621e70291e1ba6a5639f3e`，记录活动canonical root、规范编码和撤回旧值。它仍不是新held或正式性能证据。
 - 两条既有失败K10行重放：`local_d104_r1_k10_deploy_isomorphic_angq_probe_20260725_r6.json`，SHA256=`560ae5b8cae3723153d54e654847a4454ca8b42e21664abde92e43a4d83df68c`；`1-1`的ANGQ端到端及共享ANGQ FP16带宽方向审计均为300/300、0翻转，`2-1`均为310/310、0翻转。
 - 上述两条query特征已参与机制可行性诊断，因此不得作为D104接受证据。旧未部署同构的r4网格结果已撤回，不用于公式、保证、复审或晋级。
 - 当前仍无BA、floor、H、旧类/新类准确率或Target证据；这些数值不能从重构余弦或量化一致性推断。

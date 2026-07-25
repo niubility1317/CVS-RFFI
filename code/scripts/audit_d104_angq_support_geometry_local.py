@@ -35,6 +35,9 @@ EXPECTED_TAP_SHA256 = (
 EXPECTED_TAP_ROWS = 8400
 HISTORICAL_DIAGNOSTIC_QUERY_COUNT = 2478
 HISTORICAL_DIAGNOSTIC_QUERY_ID_ROOT_SHA256 = (
+    "7870604d8ddba8268ba127065d4eaf1142931660d95411c9633c2ffa59d6b558"
+)
+WITHDRAWN_UNREPRODUCIBLE_LEGACY_ROOT_SHA256 = (
     "036456779eea6594f2330f2e9a96cceda580088b0d451982198e3056f762854d"
 )
 
@@ -113,6 +116,12 @@ def main() -> int:
         ),
         "historical_diagnostic_query_id_root_sha256": (
             HISTORICAL_DIAGNOSTIC_QUERY_ID_ROOT_SHA256
+        ),
+        "historical_diagnostic_query_id_root_encoding": (
+            "canonical_sha256(sorted_query_physical_id_list)"
+        ),
+        "withdrawn_unreproducible_legacy_root_sha256": (
+            WITHDRAWN_UNREPRODUCIBLE_LEGACY_ROOT_SHA256
         ),
         "query_role_used_by_algorithm": False,
         "query_truth_read": False,
