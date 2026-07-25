@@ -61,7 +61,7 @@ M_DA不具晋级资格不等于从主效应与交互分析中删除。晋级仍�
 
 ## 4.新held证据与数据边界
 
-旧development probe已读取旧source-val的query特征和预测但从未读取其标签。D104不得用这些query物理ID做接受证据。旧query排除清单固定count=2478；活动canonical list root SHA256=`7870604d8ddba8268ba127065d4eaf1142931660d95411c9633c2ffa59d6b558`。规范编码为对排序ID列表执行`json.dumps(list,ensure_ascii=False,sort_keys=True,separators=(",",":"),allow_nan=False)`后取UTF-8 SHA256，不含尾换行。旧值`036456779eea6594f2330f2e9a96cceda580088b0d451982198e3056f762854d`标记为`WITHDRAWN_UNREPRODUCIBLE_LEGACY_ROOT`，不得参与builder或gate。活动自描述manifest为`d104_historical_query_exclusion_manifest_v2_20260725_r2.json`，文件SHA256=`cf7cad3f6e62a300241a7ad1871e509717b0cafaef7400f46067b72eee31a31f`。新source split固定`split_id=d104_source_seed104713_v2`；为保持预注册成员选择不因身份修复而改变，salt仍为`D104-R1-ANGQ-RXID-MB4|source-split|104713|v1`：
+旧development probe已读取旧source-val的query特征和预测但从未读取其标签。D104不得用这些query物理ID做接受证据。旧query排除清单固定count=2478；活动canonical list root SHA256=`7870604d8ddba8268ba127065d4eaf1142931660d95411c9633c2ffa59d6b558`。规范编码为对排序ID列表执行`json.dumps(list,ensure_ascii=False,sort_keys=True,separators=(",",":"),allow_nan=False)`后取UTF-8 SHA256，不含尾换行。旧值`036456779eea6594f2330f2e9a96cceda580088b0d451982198e3056f762854d`标记为`WITHDRAWN_UNREPRODUCIBLE_LEGACY_ROOT`，不得参与builder或gate。活动自描述manifest为`d104_historical_query_exclusion_manifest_v2_20260725_r3.json`，文件SHA256=`3fd07b7afcb53b12a08df1643efae80c52917c893cc7453104e68932dc1f5b26`；生成器`code/scripts/build_d104_historical_query_manifest.py`冻结SHA256=`dd9a13e908bdb4f607c1c257e5d8a36f5530219d7157dfa87343629b391a9b7d`。新source split固定`split_id=d104_source_seed104713_v2`；为保持预注册成员选择不因身份修复而改变，salt仍为`D104-R1-ANGQ-RXID-MB4|source-split|104713|v1`：
 
 1.每个receiver×TX×day cell排除旧query清单后，按`SHA256(salt|held|receiver|TX|day|physical_id)`升序取前15条进入新source-val；168×15=2520。
 2.剩余5880行构成新训练池；历史诊断暴露ID允许进入L_s/U_s并标记`historical_diagnostic_exposed=true`，但永久禁止再次作为独立held证据。
@@ -70,7 +70,7 @@ M_DA不具晋级资格不等于从主效应与交互分析中删除。晋级仍�
 
 只读容量审计已确认：排除2478个旧query后有5922个候选，168个cell的候选min/max=22/46；每cell取15在数量上可构造。该结果只证明容量，不是split builder正确性或held性能证据。
 
-manifest必须同时固定2478个排序query ID、42个排序support ID、support/query交集0、tap/dual SHA、旧source split schema与count、7个receiver、6类、K=1、每receiver package root、派生代码路径和SHA。builder实际读取ID集合并复算root；缺失、重复、增删单ID、错误root、输入SHA或派生代码SHA漂移均fail closed。
+manifest必须同时固定2478个排序query ID、42个排序support ID、support/query交集0、tap/dual SHA、旧source split schema与count、旧source-val root、7个receiver、6类、K=1、每receiver package root、派生代码路径和SHA。manifest生成器硬锁上述预期身份并在写出前逐项拒绝漂移；后续builder实际读取ID集合并复算root，缺失、重复、增删单ID、错误root、输入SHA或派生代码SHA漂移均fail closed。旧source-val标签用于按类重建K1 support/query集合，必须记录`source_val_labels_used_for_package_reconstruction=true`；这些标签不传给预测器、不计算预测、不评分，也不构成新held性能访问。
 
 本次物理ID角色变化按`AGENTS.md`触发一次builder验证；它不改变或重验Target的`p2_min_v1` capsule。D104公式、网格和四臂必须在新split ID及物理ID明细打开前进入Git并通过独立设计复审。
 

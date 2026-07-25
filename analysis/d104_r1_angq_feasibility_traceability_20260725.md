@@ -4,7 +4,7 @@
 
 根目录正式报告：`E:\type10-7\automation_reports\CV-SincNet\d104_r1_angq_feasibility_20260725\report.md`
 
-报告SHA256：`59e2e58a14664299961c8350e314f04467e31c959fc0a51cbf54468140fabe00`
+报告SHA256：`a791f2f90734e9e604597ac64cf7561ac251a7c9712a7221ca384de9eb1d57bd`
 
 |项目|证据|结论|
 |---|---|---|
@@ -18,6 +18,8 @@
 |定向验证|13项pytest通过；2脚本py_compile通过；diff check通过|不替代held性能|
 |正式资格|第三轮独立复审`P0=0/P1=0`|正式本地实现解锁；N607、正式source-held和Target25仍禁止|
 |身份修复re-entry|真实2478-ID canonical root=`7870604d...b558`；旧`036456...854d`不可复算|独立裁决`P0=0/P1=1/P2=1`；split升v2并新增自描述manifest，复审前暂停实现|
+|身份修复首轮复审|commit`a54e4284`|`P0=0/P1=2/P2=2`；要求硬锁输入/代码/registry/package身份并修正标签使用声明|
+|身份修复补丁|manifest r3＋10项定向测试|已硬锁tap/dual/代码/source-val/support/package身份，使用排他写入并拆分标签用途；等待再次复审|
 
 D104只改变typed qKNN的逐support量化尺度选择。D103跨receiver MetaBias4、Phase1机制、全类统一Student-t评分、query隔离和资源门均不改变。旧非部署同构r4结果已撤回。
 
