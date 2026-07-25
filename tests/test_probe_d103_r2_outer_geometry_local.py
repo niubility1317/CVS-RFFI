@@ -1,0 +1,52 @@
+from __future__ import annotations
+
+from pathlib import Path
+import subprocess
+import sys
+
+import numpy as np
+
+
+def test_outer_geometry_probe_module_imports_component_dependencies() -> None:
+    script_root = Path(__file__).resolve().parents[1] / "code" / "scripts"
+    sys.path.insert(0, str(script_root))
+    try:
+        import probe_d103_r2_outer_geometry_local as probe
+
+        assert callable(probe.frozen_qknn)
+        assert callable(probe._int8_component_audit)
+        rows = np.zeros((2, 160), dtype=np.float32)
+        rows[0, :3] = np.asarray([1.0, 0.2, -0.1], dtype=np.float32)
+        rows[1, :4] = np.asarray(
+            [0.7, -0.4, 0.2, 0.1],
+            dtype=np.float32,
+        )
+        decoded, factors, cosines = probe._angular_grid_decode(rows)
+        assert decoded.shape == rows.shape
+        assert factors.shape == (2,)
+        assert cosines.shape == (2,)
+        assert np.allclose(np.linalg.norm(decoded, axis=1), 1.0)
+        assert np.all((factors >= 0.75) & (factors <= 1.25))
+        assert np.all(cosines > 0.999)
+    finally:
+        sys.path.remove(str(script_root))
+
+
+def test_outer_geometry_probe_cli_is_truth_free() -> None:
+    script = (
+        Path(__file__).resolve().parents[1]
+        / "code"
+        / "scripts"
+        / "probe_d103_r2_outer_geometry_local.py"
+    )
+    result = subprocess.run(
+        [sys.executable, str(script), "--help"],
+        capture_output=True,
+        text=True,
+    )
+    assert result.returncode == 0
+    assert "--tap-archive" in result.stdout
+    assert "--dual-archive" in result.stdout
+    assert "--held-receiver" in result.stdout
+    assert "--k-values" in result.stdout
+    assert "truth" not in result.stdout.lower()

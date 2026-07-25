@@ -1,6 +1,6 @@
 # D103-R2正式Phase1-held预注册交接
 
-状态：`PREREGISTERED / INPUTS_BOUND / N607_GPU_STACK_BLOCKED / N607_LAUNCH_NO_GO / TARGET25_NO_GO`
+状态：`LOCAL_INT8_GATE_RISK_CONFIRMED / RELEASE_REENTRY_REQUIRED / N607_GPU_STACK_BLOCKED / N607_LAUNCH_NO_GO / TARGET25_NO_GO`
 
 实验ID：`d103_r2_rxid_phase1held_20260725_r1`
 
@@ -40,7 +40,13 @@
 - 最终`ssh.exe=0`，N607和bridge的ESTABLISHED连接均为0；
 - 未sync、mkdir、创建run-root、启动或停止任何进程。
 
-完整逐路径表在根目录正式报告中。输入绑定与release hardening均已进入本地Git提交；当前禁止sync和启动的独立原因是N607 GPU栈阻塞。第二次direct只读复检仍得到同一535.309.01/580.173.02不匹配和`nvidia-smi`exit18，未执行sync、mkdir、remote compile或launch；结束后SSH连接全部清理。根目录报告当前SHA256=`4c1091dd4688d86f997961f71d9836dce6e6e48718758c5559239b1be467a431`；内容未改变候选、矩阵、输入SHA、停止规则或启动门。
+完整逐路径表在根目录正式报告中。输入绑定与release hardening均已进入本地Git提交；第二次direct只读复检仍得到同一535.309.01/580.173.02不匹配和`nvidia-smi`exit18，未执行sync、mkdir、remote compile或launch；结束后SSH连接全部清理。
+
+## 本地truth-free量化风险复核
+
+development-only真实tap/dual外层几何探针完成7fit/2800step和21个无真值K1/K5/K10预测行，三个K均7/7 ACTIVE，但K10的`1-1`和`2-1`分别只有298/300和309/310的INT8/FP32一致，合计3次teacher-winner翻转，当前正式门会拒绝。分量诊断证明单尺度支持向量INT8编码是唯一根因，FP16类带宽不是根因。固定support-only角度网格在两行均恢复100%一致、0翻转，但它是R2冻结后新机制，不能原地修改本release。
+
+因此本run保持未落地、未启动和无性能结果；即使GPU栈恢复，也不得按旧release启动。后续必须以新candidate、新run ID、独立设计复审和新held证据重入。根目录正式报告当前SHA256=`8437180824f8ab13b1224e3ac5e2801b4ae9c812e96a27ccbb5e6538d3910e72`。
 
 ## 当前启动阻塞
 

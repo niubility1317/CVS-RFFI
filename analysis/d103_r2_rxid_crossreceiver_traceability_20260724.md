@@ -1,6 +1,6 @@
 # D103-R2需求—实现—测试—artifact追踪
 
-状态：`IMPLEMENTED_LOCAL / RELEASE_REVIEW_GO / PREREGISTERED_INPUTS_BOUND / N607_GPU_STACK_BLOCKED / N607_LAUNCH_NO_GO / TARGET25_NO_GO`
+状态：`IMPLEMENTED_LOCAL / TRUTH_FREE_INT8_GATE_RISK_CONFIRMED / RELEASE_REENTRY_REQUIRED / N607_GPU_STACK_BLOCKED / N607_LAUNCH_NO_GO / TARGET25_NO_GO`
 
 |ID|需求|设计依据|实现文件|验证或artifact|当前状态|
 |---|---|---|---|---|---|
@@ -9,10 +9,12 @@
 |R2-03|R1其余Phase1机制保持|重入卡§2|现有trainer|TX-null/MMD/selfsup/VICReg测试|implemented|
 |R2-04|M0/D102/D103 matched scorer|重入卡§4|held execution、D102 builder、predictor、truth-side scorer|同support/query；49个L_s fold-specific D102诊断bundle；63行truth-free预测；独立评分；合成全路径测试通过|implemented-local-verified|
 |R2-05|4 leave-day实际shift方向门|重入卡§4|held execution、predictor、gate|196个day fit计划；49个K1 outer逐项计算`cos(B_day a_day,B_outer a_outer)`；近零fail closed；测试通过|implemented-local-verified|
-|R2-06|K1数值、INT8和双TX probe门|R1卡§5–7；R2卡§4|Stage2、bundle、prepare、falsifier|失败TX探针保留真实诊断预测但拒绝部署序列化；7fold×9capacity TX探针；INT8和K1门测试通过|implemented-local-verified|
+|R2-06|K1数值、INT8和双TX probe门|R1卡§5–7；R2卡§4|Stage2、bundle、prepare、falsifier|失败TX探针保留真实诊断预测但拒绝部署序列化；7fold×9capacity TX探针；本地21行truth-free复核发现K10两个receiver共3次INT8翻转，R2 release撤回|reentry-required|
 |R2-07|246fit/98,400step非覆盖runner|R2卡§5|fit matrix、完整held pipeline|每GPU 1–2 lane；两行同规范化异常指纹停止dispatch；终止前绑定PID/CWD/cmdline/run-root，先定向SIGTERM、后仅对仍存活的已绑定PID升级；保存前后进程树、GPU快照、逐fit日志和资源receipt；本地静态/定向验证通过|implemented-awaiting-release-review|
 |R2-08|Target25严格25行单seed|用户当前口径|计划gate后matrix|5receiver×1seed×5slice；held gate前禁止|blocked|
 
 首轮独立release审查结论为`P0=1/P1=4/P2=2`，已逐项修正：K1活动性和INT8一致性只读support，不再读held query；246个fit逐一验证outer身份、输入SHA、访问ledger和teacher数组聚合SHA；D102父method lock和原拒绝receipt按冻结值精确匹配；truth-side scorer在打开truth前创建唯一事件并要求63行共同绑定；异常指纹规范化且停机保存精确进程/GPU证据；磁盘按当前树加16MiB后续分析凭据预留计费。
 
 验证汇总：核心实现commit=`59978e44`，release hardening增量commit/当前HEAD=`80f58ce5`；首轮独立复审index SHA256=`30c8c98ff8fcdf2915f4c2e797c605cecc98d138e95ad3b0bc6e542faf9fdc9b`、`P0=0/P1=0/P2=2`；增量独立复审index SHA256=`298dd85d3f8258f0942c7a09e1fb842a51bff1c2ab817a9a43833fd124a89cad`、`GO / P0=0/P1=0/P2=0`。D103定向67项通过，`python -m py_compile`覆盖36个新增/修改Python文件并通过，`git diff --cached --check`通过；同指纹第二次触发、仅终止预绑定PID、正式63行身份矩阵、resolved路径唯一和truth前全artifact预验证均有行为负测。其中资源终结器实测按当前run-root加16MiB后续分析凭据预留计费；解析系数与既有D102闭式FP16逐bit一致。当前代码development-only真实checkpoint特征400step无query-truth smoke再次通过（39.125s、K1 support=6、query=354、D103 ACTIVE、未计算性能）。`source_train`cache SHA已只读绑定为`d719808ceaed07c13f6c8d8053acf910a61904243ec1d47c28cc4e4b679cffd2`，三场景和五项冻结输入全匹配；首次检查18个远端release目标全部`ABSENT`，增量后必须重新检查。但N607内核驱动535.309.01与用户态NVML580.173.02不匹配，`nvidia-smi`exit18，逐卡进程/util/显存不可取信；未sync或启动，保持`N607_GPU_STACK_BLOCKED / N607_LAUNCH_NO_GO / TARGET25_NO_GO`。
+
+后续truth-free七receiver复核共7fit/2800step、21行，三个K均7/7 ACTIVE；K10在`1-1`和`2-1`分别出现2和1次INT8/FP32 teacher-winner翻转，当前正式门必拒绝。分量诊断把全部误差定位到单尺度支持向量INT8编码，FP16类带宽不是根因。固定support-only角度网格在两行均达到100%一致、0翻转，但属于冻结后新机制，只能进入新candidate重入，禁止原地改R2。当前无BA/floor/H/Target结果，旧N607命令撤销。
