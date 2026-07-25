@@ -4,7 +4,7 @@
 
 根目录正式报告：`E:\type10-7\automation_reports\CV-SincNet\d104_r1_angq_feasibility_20260725\report.md`
 
-报告SHA256：`98384f0b5a12a8ad758db9f6be9aa0e1a573b5c77b0a43cd96c9ba72d703fdbf`
+报告SHA256：`92cd5e167aae5305036ab67072d95b8ad881031287a1a925f50abb08dd0faf08`
 
 |项目|证据|结论|
 |---|---|---|
@@ -56,3 +56,5 @@ D104只改变typed qKNN的逐support量化尺度选择。D103跨receiver MetaBia
 |D104-RF-03|D104未绑定D103实际矩阵输入与访问闭包|不可覆盖`run_input_binding.json`绑定split、L/U/source-val、历史排除、checkpoint/runtime/method lock、scorer、matrix plan和246-fit access root|root/path/SHA逐字段复核|
 |D104-RF-04|split标签用途声明错误|source标签用于receiver×TX×day分层明确为true；方法选择、性能选择、source-val性能均false|真实split r2 metadata SHA=`1bf60470…1e67`；publisher SHA=`4a1e23cc…da21`|
 |D104-RF-05|P2路径、负测和首波证据不足|精确21包身份/路径闭包、7类封印负测、首波16-fit、唯一fit ID、matrix plan、access root和runner resource schema|D103/D104相关测试93项通过|
+|D104-RF-06|终审P2：缺少row method lock直接篡改负测|在truth-blind validator参数化负测中直接篡改`row_method_lock_sha256`|verified；聚焦15项通过|
+|D104-RF-07|终审P2：正式入口允许1worker或非冻结GPU组合|D104正式pipeline CLI只接受`gpus=0,1,2,3,4,5,6,7`和`workers_per_gpu=2`，错误配置在读取split和创建run root前失败|verified；D103/D104相关测试96项通过|

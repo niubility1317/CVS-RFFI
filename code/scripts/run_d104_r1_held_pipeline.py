@@ -13,6 +13,7 @@ from typing import Sequence
 
 
 ROOT = Path(__file__).resolve().parents[1]
+FROZEN_GPUS = "0,1,2,3,4,5,6,7"
 
 
 def _read_object(path: Path) -> dict[str, object]:
@@ -58,8 +59,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--runtime-sha256", required=True)
     parser.add_argument("--method-lock-sha256", required=True)
     parser.add_argument("--python", type=Path, default=Path(sys.executable))
-    parser.add_argument("--gpus", default="0,1,2,3,4,5,6,7")
-    parser.add_argument("--workers-per-gpu", type=int, choices=(1, 2), default=2)
+    parser.add_argument("--gpus", choices=(FROZEN_GPUS,), default=FROZEN_GPUS)
+    parser.add_argument("--workers-per-gpu", type=int, choices=(2,), default=2)
     parser.add_argument("--run-root", type=Path, required=True)
     return parser.parse_args()
 

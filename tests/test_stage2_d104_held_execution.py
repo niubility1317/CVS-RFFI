@@ -118,6 +118,7 @@ def test_d104_truth_side_rejects_tamper() -> None:
         "prediction",
         "inner_receipt",
         "method_lock",
+        "row_method_lock",
         "registry_order",
         "query_id",
         "support_root",
@@ -132,6 +133,8 @@ def test_d104_truth_blind_validator_rejects_each_seal_tamper(field) -> None:
         changed["prediction_receipt_sha256"] = "0" * 64
     elif field == "method_lock":
         changed["method_lock_sha256"] = "0" * 64
+    elif field == "row_method_lock":
+        changed["row_method_lock_sha256"] = "0" * 64
     elif field == "registry_order":
         changed["registered_classes"][0:2] = reversed(
             changed["registered_classes"][0:2]
