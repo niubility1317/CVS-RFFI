@@ -40,7 +40,7 @@
 - 最终`ssh.exe=0`，N607和bridge的ESTABLISHED连接均为0；
 - 未sync、mkdir、创建run-root、启动或停止任何进程。
 
-完整逐路径表在根目录正式报告中。输入绑定与release hardening均已进入本地Git提交；当前禁止sync和启动的独立原因是N607 GPU栈阻塞。根目录报告在2026-07-25对这项状态说明作了文字校正，当前SHA256=`925470bf1fa63086ecf65d28737fefb7ece5f35f1b38a0490bdb5ac900cb8bd0`；内容未改变候选、矩阵、输入SHA、停止规则或启动门。
+完整逐路径表在根目录正式报告中。输入绑定与release hardening均已进入本地Git提交；当前禁止sync和启动的独立原因是N607 GPU栈阻塞。第二次direct只读复检仍得到同一535.309.01/580.173.02不匹配和`nvidia-smi`exit18，未执行sync、mkdir、remote compile或launch；结束后SSH连接全部清理。根目录报告当前SHA256=`4c1091dd4688d86f997961f71d9836dce6e6e48718758c5559239b1be467a431`；内容未改变候选、矩阵、输入SHA、停止规则或启动门。
 
 ## 当前启动阻塞
 

@@ -180,7 +180,7 @@ D91最容易被误读。它完成的是105个训练候选row和15个outer性能r
 |D98 STRIMS|本地研究core|仅实现/监督证据|无Target性能|
 |D99—D101|Phase1 LODO、bundle与后续模型DA设计链|存在局部实现、技术失败或非正式诊断，但未形成可与D62/D92同口径的完整Target125结果|不进入性能排名|
 |D102 RB-MetaBias4-qKNN解析实例|真实Phase1-held，非Target|K1/K5/K10平均ΔBA=`+0.0591/+0.0358/+0.0540pp`；TX probe与class-LOCO门失败|Target25阻断，解析实例关闭|
-|D103-R2 RXID-CROSSRECEIVER-MB4|Phase1-held正式release，本地验证完成|source-only 8400→588/5292/2520；246fit、98,400step；计划63性能行和49稳定性行；67项定向测试、36文件编译、真实tap/dual 400step无query-truth smoke通过；独立复审P0/P1/P2=`0/0/0`|N607内核驱动535.309.01与用户态NVML580.173.02不匹配，尚未sync或启动；`N607_GPU_STACK_BLOCKED / TARGET25_NO_GO / NO_PERFORMANCE_RESULT`|
+|D103-R2 RXID-CROSSRECEIVER-MB4|Phase1-held正式release，本地验证完成|source-only 8400→588/5292/2520；246fit、98,400step；计划63性能行和49稳定性行；67项定向测试、36文件编译、真实tap/dual 400step无query-truth smoke通过；独立复审P0/P1/P2=`0/0/0`|两次direct只读复检均确认N607内核驱动535.309.01与用户态NVML580.173.02不匹配；尚未sync或启动；`N607_GPU_STACK_BLOCKED / TARGET25_NO_GO / NO_PERFORMANCE_RESULT`|
 
 ## 8.最终排名、答案与下一步
 
