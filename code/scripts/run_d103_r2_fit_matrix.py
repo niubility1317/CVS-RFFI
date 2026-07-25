@@ -111,6 +111,104 @@ def _gpu_snapshot() -> dict[str, Any]:
     return {"available": result.returncode == 0, "rows": rows}
 
 
+def _record_failure_fingerprint(
+    fingerprints: Counter[str], fingerprint: str | None
+) -> str | None:
+    if not fingerprint:
+        return None
+    normalized = str(fingerprint)
+    fingerprints[normalized] += 1
+    return normalized if fingerprints[normalized] >= 2 else None
+
+
+async def _stop_bound_run_process_tree(
+    process: asyncio.subprocess.Process,
+    *,
+    fit_root: Path,
+    expected_cwd: Path,
+    gpu_lane: str,
+) -> dict[str, Any]:
+    """Stop only the exact observed process tree bound to one immutable fit."""
+
+    escalated_pids: list[int] = []
+    descendant_pids = _descendant_pids(process.pid)
+    observations = [
+        _process_observation(pid)
+        for pid in [process.pid, *descendant_pids]
+    ]
+    bound_pids = {
+        int(observation["pid"])
+        for observation in observations
+        if (
+            observation["alive"]
+            and observation["cwd"] == str(expected_cwd.resolve())
+            and str(fit_root.resolve())
+            in "\0".join(observation["cmdline"])
+        )
+    }
+    alive_pids = {
+        int(observation["pid"])
+        for observation in observations
+        if observation["alive"]
+    }
+    binding_pass = alive_pids == bound_pids
+    signaled_pids: list[int] = []
+    ordered_pids = [*reversed(descendant_pids), process.pid]
+    for owned_pid in ordered_pids:
+        if owned_pid in bound_pids:
+            try:
+                os.kill(owned_pid, signal.SIGTERM)
+                signaled_pids.append(owned_pid)
+            except ProcessLookupError:
+                pass
+    deadline = time.monotonic() + 10.0
+    while time.monotonic() < deadline and any(
+        _process_observation(pid)["alive"] for pid in bound_pids
+    ):
+        await asyncio.sleep(0.2)
+    for owned_pid in ordered_pids:
+        if (
+            owned_pid in bound_pids
+            and _process_observation(owned_pid)["alive"]
+        ):
+            try:
+                os.kill(owned_pid, signal.SIGKILL)
+                escalated_pids.append(owned_pid)
+            except ProcessLookupError:
+                pass
+    if process.pid in bound_pids:
+        try:
+            await asyncio.wait_for(process.wait(), timeout=10.0)
+        except asyncio.TimeoutError:
+            pass
+    await asyncio.sleep(1.0)
+    post = [
+        _process_observation(pid)
+        for pid in [process.pid, *descendant_pids]
+    ]
+    gpu_snapshot = _gpu_snapshot()
+    gpu_pids = {
+        int(row["pid"]) for row in gpu_snapshot.get("rows", [])
+    }
+    return {
+        "gpu_lane": str(gpu_lane),
+        "gpu_snapshot": gpu_snapshot,
+        "pre_stop_process_tree": observations,
+        "run_owned_binding_pass": binding_pass,
+        "bound_run_owned_pids": sorted(bound_pids),
+        "unbound_live_pids": sorted(alive_pids - bound_pids),
+        "graceful_termination_sent": bool(signaled_pids),
+        "graceful_termination_pids": signaled_pids,
+        "kill_escalation_used": bool(escalated_pids),
+        "kill_escalation_pids": escalated_pids,
+        "post_stop_process_tree": post,
+        "all_run_owned_pids_stopped": not any(
+            row["alive"] for row in post if row["pid"] in bound_pids
+        ),
+        "stopped_pids_still_on_gpu": sorted(bound_pids & gpu_pids),
+    }
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("--labeled-archive", type=Path, required=True)
@@ -213,99 +311,14 @@ async def _run(args: argparse.Namespace) -> int:
                 returncode = await process.wait()
             except asyncio.CancelledError:
                 if process.returncode is None:
-                    escalated_pids: list[int] = []
-                    fit_root = (fits_root / spec.fit_id).resolve()
-                    descendant_pids = _descendant_pids(process.pid)
-                    observations = [
-                        _process_observation(pid)
-                        for pid in [process.pid, *descendant_pids]
-                    ]
-                    bound_pids = {
-                        int(observation["pid"])
-                        for observation in observations
-                        if (
-                            observation["alive"]
-                            and observation["cwd"] == str(ROOT.parent.resolve())
-                            and str(fit_root)
-                            in "\0".join(observation["cmdline"])
-                        )
-                    }
-                    alive_pids = {
-                        int(observation["pid"])
-                        for observation in observations
-                        if observation["alive"]
-                    }
-                    binding_pass = alive_pids == bound_pids
-                    signaled_pids: list[int] = []
-                    for owned_pid in [
-                        *reversed(descendant_pids),
-                        process.pid,
-                    ]:
-                        if owned_pid in bound_pids:
-                            try:
-                                os.kill(owned_pid, signal.SIGTERM)
-                                signaled_pids.append(owned_pid)
-                            except ProcessLookupError:
-                                pass
-                    deadline = time.monotonic() + 10.0
-                    while time.monotonic() < deadline and any(
-                        _process_observation(pid)["alive"]
-                        for pid in bound_pids
-                    ):
-                        await asyncio.sleep(0.2)
-                    for owned_pid in [
-                        *reversed(descendant_pids),
-                        process.pid,
-                    ]:
-                        if (
-                            owned_pid in bound_pids
-                            and _process_observation(owned_pid)["alive"]
-                        ):
-                            try:
-                                os.kill(owned_pid, signal.SIGKILL)
-                                escalated_pids.append(owned_pid)
-                            except ProcessLookupError:
-                                pass
-                    if process.pid in bound_pids:
-                        try:
-                            await asyncio.wait_for(
-                                process.wait(), timeout=10.0
-                            )
-                        except asyncio.TimeoutError:
-                            pass
-                    await asyncio.sleep(1.0)
-                    post = [
-                        _process_observation(pid)
-                        for pid in [process.pid, *descendant_pids]
-                    ]
-                    gpu = _gpu_snapshot()
-                    gpu_pids = {
-                        int(row["pid"]) for row in gpu.get("rows", [])
-                    }
+                    record = await _stop_bound_run_process_tree(
+                        process,
+                        fit_root=(fits_root / spec.fit_id).resolve(),
+                        expected_cwd=ROOT.parent.resolve(),
+                        gpu_lane=gpu,
+                    )
                     stop_records.append(
-                        {
-                            "fit_id": spec.fit_id,
-                            "gpu": gpu,
-                            "pre_stop_process_tree": observations,
-                            "run_owned_binding_pass": binding_pass,
-                            "bound_run_owned_pids": sorted(bound_pids),
-                            "unbound_live_pids": sorted(
-                                alive_pids - bound_pids
-                            ),
-                            "graceful_termination_sent": bool(signaled_pids),
-                            "graceful_termination_pids": signaled_pids,
-                            "kill_escalation_used": bool(escalated_pids),
-                            "kill_escalation_pids": escalated_pids,
-                            "post_stop_process_tree": post,
-                            "all_run_owned_pids_stopped": not any(
-                                row["alive"]
-                                for row in post
-                                if row["pid"] in bound_pids
-                            ),
-                            "stopped_pids_still_on_gpu": sorted(
-                                bound_pids & gpu_pids
-                            ),
-                        }
+                        {"fit_id": spec.fit_id, **record}
                     )
                 raise
         fingerprint = None
@@ -341,9 +354,11 @@ async def _run(args: argparse.Namespace) -> int:
                 }
             )
             if returncode != 0 and fingerprint:
-                fingerprints[str(fingerprint)] += 1
-                if fingerprints[str(fingerprint)] >= 2:
-                    systemic_fingerprint = str(fingerprint)
+                repeated = _record_failure_fingerprint(
+                    fingerprints, str(fingerprint)
+                )
+                if repeated is not None:
+                    systemic_fingerprint = repeated
             if systemic_fingerprint is None and queue:
                 next_spec = queue.pop(0)
                 next_task = asyncio.create_task(launch(next_spec, gpu))

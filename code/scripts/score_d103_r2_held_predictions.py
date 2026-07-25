@@ -8,7 +8,7 @@ import json
 from pathlib import Path
 import sys
 import time
-from typing import Any
+from typing import Any, Mapping
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -16,6 +16,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from cvsrffi.rxid_metabias4_held_execution import (  # noqa: E402
+    package_id,
     score_prediction_artifact,
     sha256_file,
 )
@@ -54,6 +55,122 @@ def main() -> int:
     manifest = _read_json(prediction_manifest_path)
     prediction_manifest_sha = sha256_file(prediction_manifest_path)
     prediction_manifest_mtime_ns = prediction_manifest_path.stat().st_mtime_ns
+    rows = manifest.get("rows")
+    day_stability_rows = manifest.get("day_stability_rows")
+    if (
+        set(manifest)
+        != {
+            "schema",
+            "row_count",
+            "rows",
+            "day_stability_rows",
+            "query_truth_access",
+            "target_access",
+            "formal_query_access",
+            "sealed_at_unix_ns",
+        }
+        or manifest.get("schema")
+        != "cvs.d103_r2.rxid_crossreceiver.held_predictions.v1"
+        or manifest.get("row_count") != 63
+        or manifest.get("query_truth_access") is not False
+        or manifest.get("target_access") is not False
+        or manifest.get("formal_query_access") is not False
+        or not isinstance(rows, list)
+        or len(rows) != 63
+        or not isinstance(day_stability_rows, list)
+        or len(day_stability_rows) != 49
+    ):
+        raise ValueError("prediction coverage drift before truth open")
+    actual_keys: list[tuple[str, str | None, int]] = []
+    for row in rows:
+        if (
+            not isinstance(row, Mapping)
+            or set(row)
+            != {
+                "held_receiver",
+                "held_class",
+                "K",
+                "package_id",
+                "path",
+                "sha256",
+            }
+            or not isinstance(row.get("held_receiver"), str)
+            or not str(row["held_receiver"])
+            or (
+                row.get("held_class") is not None
+                and (
+                    not isinstance(row.get("held_class"), str)
+                    or not str(row["held_class"])
+                )
+            )
+            or type(row.get("K")) is not int
+            or int(row["K"]) not in (1, 5, 10)
+        ):
+            raise ValueError("prediction manifest row closure drift")
+        actual_keys.append(
+            (
+                str(row["held_receiver"]),
+                (
+                    None
+                    if row["held_class"] is None
+                    else str(row["held_class"])
+                ),
+                int(row["K"]),
+            )
+        )
+    receivers = sorted({key[0] for key in actual_keys})
+    classes = sorted(
+        {key[1] for key in actual_keys if key[1] is not None}
+    )
+    expected_keys = {
+        (receiver, None, k_shot)
+        for receiver in receivers
+        for k_shot in (1, 5, 10)
+    } | {
+        (receiver, class_id, 1)
+        for receiver in receivers
+        for class_id in classes
+    }
+    if (
+        len(receivers) != 7
+        or len(classes) != 6
+        or len(set(actual_keys)) != 63
+        or set(actual_keys) != expected_keys
+    ):
+        raise ValueError("prediction identity matrix drift before truth open")
+
+    prevalidated_rows: list[tuple[Mapping[str, Any], dict[str, Any]]] = []
+    seen_artifact_paths: set[Path] = set()
+    prediction_package_ids: set[str] = set()
+    for row in rows:
+        raw_path = str(row["path"])
+        expected_sha = str(row["sha256"])
+        artifact_path = (prediction_root / raw_path).resolve(strict=True)
+        if (
+            Path(raw_path).is_absolute()
+            or not artifact_path.is_relative_to(prediction_root)
+            or artifact_path in seen_artifact_paths
+            or len(expected_sha) != 64
+            or any(ch not in "0123456789abcdef" for ch in expected_sha)
+            or artifact_path.stat().st_mtime_ns > prediction_manifest_mtime_ns
+            or sha256_file(artifact_path) != expected_sha
+        ):
+            raise ValueError("prediction artifact was not sealed before truth open")
+        artifact = _read_json(artifact_path)
+        if (
+            artifact.get("held_receiver") != row["held_receiver"]
+            or artifact.get("held_class") != row["held_class"]
+            or artifact.get("K") != row["K"]
+            or str(row["package_id"])
+            != package_id(str(row["held_receiver"]), int(row["K"]))
+            ):
+            raise ValueError("prediction package identity drift before truth open")
+        seen_artifact_paths.add(artifact_path)
+        prediction_package_ids.add(str(row["package_id"]))
+        prevalidated_rows.append((row, artifact))
+    if len(prediction_package_ids) != 21:
+        raise ValueError("prediction package coverage drift before truth open")
+
     event_time_ns = time.time_ns()
     if prediction_manifest_mtime_ns >= event_time_ns:
         raise ValueError("prediction manifest was not committed before truth open")
@@ -71,27 +188,44 @@ def main() -> int:
         encoding="utf-8",
     )
     truth = _read_json(truth_path)
+    truth_packages = truth.get("packages")
     if (
-        manifest.get("row_count") != 63
-        or manifest.get("query_truth_access") is not False
+        set(truth)
+        != {"schema", "package_count", "packages", "predictor_access"}
+        or truth.get("schema")
+        != "cvs.d103_r2.rxid_crossreceiver.held_truth.v1"
         or truth.get("package_count") != 21
         or truth.get("predictor_access") is not False
+        or not isinstance(truth_packages, list)
+        or len(truth_packages) != 21
     ):
         raise ValueError("prediction/truth coverage drift")
-    truth_by_package = {row["package_id"]: row for row in truth["packages"]}
+    truth_by_package = {
+        str(row["package_id"]): row for row in truth_packages
+    }
+    if (
+        any(
+            not isinstance(row, Mapping)
+            or set(row)
+            != {
+                "package_id",
+                "query_physical_ids",
+                "query_truth_labels",
+            }
+            for row in truth_packages
+        )
+        or
+        len(truth_by_package) != 21
+        or set(truth_by_package) != prediction_package_ids
+    ):
+        raise ValueError("prediction/truth package identity drift")
     performance_rows = []
     agreement = []
     flips = []
     state_bytes = []
     query_mac = []
-    for row in manifest["rows"]:
-        artifact_path = prediction_root / row["path"]
-        if artifact_path.stat().st_mtime_ns > prediction_manifest_mtime_ns:
-            raise ValueError("prediction row was modified after manifest commit")
-        if sha256_file(artifact_path) != row["sha256"]:
-            raise ValueError("prediction artifact SHA drift")
-        artifact = _read_json(artifact_path)
-        truth_row = truth_by_package[row["package_id"]]
+    for row, artifact in prevalidated_rows:
+        truth_row = truth_by_package[str(row["package_id"])]
         if artifact["query_physical_ids"] != truth_row["query_physical_ids"]:
             raise ValueError("truth-side physical row alignment drift")
         scored = score_prediction_artifact(
@@ -116,7 +250,7 @@ def main() -> int:
     result = {
         "schema": "cvs.d103_r2.rxid_crossreceiver.held_scores.v1",
         "performance_rows": performance_rows,
-        "day_stability_rows": manifest["day_stability_rows"],
+        "day_stability_rows": day_stability_rows,
         "quantization_receipt": {
             "top1_agreement": min(agreement),
             "large_margin_flip_count": sum(flips),
