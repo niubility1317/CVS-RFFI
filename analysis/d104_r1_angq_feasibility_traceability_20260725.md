@@ -4,7 +4,7 @@
 
 根目录正式报告：`E:\type10-7\automation_reports\CV-SincNet\d104_r1_angq_feasibility_20260725\report.md`
 
-报告SHA256：`5e2956563599aa8f462acc28146772155aa937e79c0da751aeda63f829e5f868`
+报告SHA256：`812e4c480b8b6770d2acf52e37ffcae1f2973b4d963a1281151bb33ec2b79e62`
 
 |项目|证据|结论|
 |---|---|---|
@@ -39,6 +39,6 @@ D104只改变typed qKNN的逐support量化尺度选择。D103跨receiver MetaBia
 |D104-RT-05|复审P2-1|绑定8400行执行`c=1`的scale/code/decoded逐位等价；正式路径无重复输入归一化|`code/scripts/verify_d104_angq_c1_full_tap.py`、对应测试|verified_local|8400行scale/code/decoded变化0|旧tap含2478条历史诊断query，只用于ABI回归|
 |D104-RT-06|项目§5.3–§6|非法dtype/shape/零范数/非有限值/不平衡K/角色或query参数均fail closed|`tests/test_stage2_d104_angq_qknn.py`|verified_local|协议负测|类标签置换等价|
 |D104-RT-07|重入卡§3|实现M0/M_DA/M_HEAD/M_JOINT四臂method lock与同row预测闭合|`code/cvsrffi/stage2_d104_rxid_angq.py`|verified_local|四臂单元测试＋真实特征K5烟测|M_DA不得按行回退为晋级臂|
-|D104-RT-08|重入卡§4|实现新source split builder与63×4=252个prediction单元runner|builder/runner/validator|in_progress|split closure＋manifest-only＋artifact validator|身份修复已以P0=0/P1=0恢复实现|
-|D104-RT-09|AGENTS release readiness|真实checkpoint no-query smoke、协议负测和独立release复审|测试、报告与release追踪|partial|真实K5 400-step烟测通过；release复审待完成|完成前N607保持NO_GO|
+|D104-RT-08|重入卡§4|实现新source split builder与63×4=252个prediction单元runner|builder/runner/validator|verified_local|真实split metadata＋不可覆盖publisher＋252 receipt/scorer/gate测试|首次打开truth前封存全部prediction|
+|D104-RT-09|AGENTS release readiness|真实checkpoint no-query smoke、协议负测和独立release复审|测试、报告与release追踪|partial|真实K5 400-step烟测、v2 split单fit400-step、104项pytest通过；release复审待完成|完成前N607保持NO_GO|
 |D104-RT-10|AGENTS N607发布|本地Git提交后由专职runner执行N607预检、同步、25矩阵与证据回收|正式run报告|blocked|N607 GPU栈恢复＋runner handoff|当前driver/NVML不匹配；本地实现仍可推进|
