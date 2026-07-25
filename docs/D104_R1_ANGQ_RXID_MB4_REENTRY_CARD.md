@@ -1,6 +1,6 @@
 # D104-R1-ANGQ-RXID-MB4重入卡
 
-状态：`DESIGN_DRAFT_REV3 / FEASIBILITY_REVIEW / N607_NO_GO / TARGET25_NO_GO`
+状态：`DESIGN_FROZEN / IMPLEMENTING_LOCAL_ONLY / N607_NO_GO / TARGET25_NO_GO`
 
 日期：2026-07-25
 
@@ -12,7 +12,7 @@
 
 ## 2.冻结的ANGQ公式
 
-对每个由合法support产生的160维单位向量\(x\)，固定候选集合：
+正式runtime对合法support批量执行一次`normalize64→32`，随后每个候选不得再次归一化输入；只对候选解码向量执行归一化。对每个160维单位向量\(x\)，固定候选集合：
 
 \[
 C=\{0.75+0.005j\mid j=0,\ldots,100\}.
@@ -81,7 +81,7 @@ source-held继续执行49个outer、196个leave-day和1个final fit，共246fit/
 - 每行`M_HEAD−M0`与`M_JOINT−M_HEAD`的BA、floor、net-correct均不得为负；正确数和net-correct用精确整数，BA/floor由整数分子分母重算，序列化浮点只允许`abs_tol=1e-12`；
 - `joint_score=(balanced_accuracy+per_class_floor)/2`，不得从BA、floor或net-correct中事后选择标量；63-row mean joint_score要求`M_HEAD>M0`且`M_JOINT>M_HEAD`。net-correct只作为逐行精确整数非退化门；四个简单效应、两个平均主效应和交互均分别报告BA、per-class floor、joint_score和net-correct。该门命名为“逐行非劣+任意严格增益”，不声称已证明最小实际效果量；
 - TX probe≤25%，全部覆盖、访问、序列化、资源和异常门通过；
-- 资源按流式单候选实现：每候选160个norm MAC+160个cosine MAC，`adaptation_mac_per_support=101×320=32320`；vector-elementwise口径只计每元素量化除法、round/clip、decode乘法和归一化除法，`adaptation_vector_elementwise_ops_per_support=101×640=64640`。另逐support报告一次maxabs reduction和base-scale除法，逐候选报告factor乘法、FP16 cast、scale下限比较、norm sqrt、有限/零范数检查和best-candidate比较；这些scalar/reduction ops不混入640，必须作为分类计数receipt发布。K10最多60条support，因此`adaptation_mac_total≤1,939,200`、`adaptation_vector_elementwise_ops_total≤3,878,400`、`peak_temporary_bytes≤16KiB`（不含调用方输入与最终bank）；
+- 资源按流式单候选实现：每候选160个norm MAC+160个cosine MAC，`adaptation_mac_per_support=101×320=32320`；总量公式为`32320×registered_class_count×K`。vector-elementwise口径只计每元素量化除法、round/clip、decode乘法和归一化除法，`adaptation_vector_elementwise_ops_per_support=101×640=64640`，总量为`64640×registered_class_count×K`。另逐support报告一次maxabs reduction和base-scale除法，逐候选报告factor乘法、FP16 cast、scale下限比较、norm sqrt、有限/零范数检查和best-candidate比较；这些scalar/reduction ops不混入640，必须作为分类计数receipt发布。`adaptation_mac_total≤1,939,200`与`adaptation_vector_elementwise_ops_total≤3,878,400`只对应C=6、K10实例；其他注册类数按公式重算。`peak_temporary_bytes≤16KiB`（不含调用方输入与最终bank）；
 - `numeric_bank_array_bytes_before/after/delta`、`actual_serialized_state_bytes_before/after/delta`、`metadata_bytes_before/after/delta`与`query_mac_before/after/delta`逐row发布；ANGQ要求`numeric_bank_array_bytes_delta=0`、`query_mac_delta=0`，数值bank数组成员、shape和dtype不变；可变JSON quantization audit/header导致的metadata与actual serialized字节差必须单列，并继续通过既有总wire上限，不要求其delta为0；
 - 任一门失败即拒绝整个D104，不扫描网格、阈值、角色mask、场景mask或选择性回退。
 
@@ -108,7 +108,7 @@ held接受只产生`TARGET25_GATE_ELIGIBLE`，不自动启动Target。Target25�
 
 ## 7.进入实现的条件
 
-独立复审必须确认：ANGQ没有用query选择尺度；四臂归因不混淆DA与head；新held query与旧诊断query物理ID不相交；FP16尺度、ties-to-even和归一化解码数值语义闭合；端到端与方向归因审计分离；252个arm-row在truth前闭合；适配资源与state/query delta可执行；D103-R2旧run命令永久撤回。只有`P0=0/P1=0`后才能从`DESIGN_DRAFT`进入`DESIGN_FROZEN / IMPLEMENTING_LOCAL_ONLY`。
+第三轮独立复审对HEAD`3419ac20`的主体裁决为`P0=0/P1=0`，允许进入`DESIGN_FROZEN / IMPLEMENTING_LOCAL_ONLY`；N607与Target仍不授权。正式实现还必须增加绑定8400行的c=1 scale/code/decoded逐位等价断言，并保证输入只归一化一次。
 
 ## 8.当前development-only证据
 
