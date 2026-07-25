@@ -1,10 +1,12 @@
-# Stage2自研方法全面对比（2026-07-24）
+# Stage2自研方法全面对比（更新至2026-07-25）
 
 ## 1.比较口径
 
 本表只纳入符合`项目.md`中`p2_min_v1`输入、查询隔离、逐样本全注册类竞争和声明边界的方法。性能必须来自同一候选、同一row绑定的注册前旧类、注册后旧类、seen-new、`H_old_new`、floor和遗忘；不同矩阵的数值只分层展示，不作直接冠军排序。
 
 当前目标为：K10时注册后旧类≥92%、最低旧类≥85%、new5/new10/new20分别≥92%/90%/86%；K5相对matched K10/new20的注册后旧类、最低旧类、seen-new和H衰减均≤5pp；K1相对同row M0必须产生严格正收益，且旧/新保护项不恶化。
+
+2026-07-25复核说明：D62、D81、D92、SVRN-qKNN-BCRR/r4.2和ADV3B02-r8均重新读取完整报告及结构化汇总；D91重新读取完整105行训练日志汇总、15行outer性能和D62配对哈希；D103-R2重新读取当前正式预注册报告。下文继续严格区分完整125、开发15、Phase1-held和无性能结果，不把不同证据面混排为一个冠军榜。
 
 证据层级：
 
@@ -178,7 +180,7 @@ D91最容易被误读。它完成的是105个训练候选row和15个outer性能r
 |D98 STRIMS|本地研究core|仅实现/监督证据|无Target性能|
 |D99—D101|Phase1 LODO、bundle与后续模型DA设计链|存在局部实现、技术失败或非正式诊断，但未形成可与D62/D92同口径的完整Target125结果|不进入性能排名|
 |D102 RB-MetaBias4-qKNN解析实例|真实Phase1-held，非Target|K1/K5/K10平均ΔBA=`+0.0591/+0.0358/+0.0540pp`；TX probe与class-LOCO门失败|Target25阻断，解析实例关闭|
-|D103-R1 RXID-DUALSPLIT-MB4|设计冻结、本地实现中|当前只有双archive绑定、资源估算与协议实现证据|`N607_NO_GO / TARGET25_NO_GO / NO_PERFORMANCE_RESULT`|
+|D103-R2 RXID-CROSSRECEIVER-MB4|Phase1-held正式release，本地验证完成|source-only 8400→588/5292/2520；246fit、98,400step；计划63性能行和49稳定性行；67项定向测试、36文件编译、真实tap/dual 400step无query-truth smoke通过；独立复审P0/P1/P2=`0/0/0`|N607内核驱动535.309.01与用户态NVML580.173.02不匹配，尚未sync或启动；`N607_GPU_STACK_BLOCKED / TARGET25_NO_GO / NO_PERFORMANCE_RESULT`|
 
 ## 8.最终排名、答案与下一步
 
@@ -193,6 +195,29 @@ D91最容易被误读。它完成的是105个训练候选row和15个outer性能r
 
 ADV3B02-r8的M0/M_DA完整125也低于前三名，且M_DA相对M0的H为−0.027pp；它保留为外部/基础对照，不作为当前自研最优方法。
 
+### 8.1.1 K5衰减和K1要求
+
+K5表中的数值是matched K10/new20减K5/new20，单位为pp；当前要求四项均≤5pp。负值表示K5反而更高，但不能抵消其他指标或绝对性能失败。
+
+|方法|A-old衰减|Min-old衰减|seen-new衰减|H衰减|K5裁决|
+|---|---:|---:|---:|---:|---|
+|D62|7.29|7.07|9.50|8.54|FAIL|
+|D81|7.31|7.27|9.51|8.56|FAIL|
+|D92|7.62|9.47|9.27|8.60|FAIL|
+|SVRN-qKNN-BCRR/r4.2|1.19|−1.67|1.88|2.25|仅衰减数值通过；绝对A-old=41.59%、Min-old=10.80%、seen-new=15.42%、H=22.15%，整体拒绝|
+
+K1/new20同口径结果：
+
+|方法|A-old|Min-old|seen-new|H|旧类注册内变化|K1机制裁决|
+|---|---:|---:|---:|---:|---:|---|
+|D62|44.03|14.20|27.15|33.41|−24.11pp|75/75场景状态精确fallback，无正收益|
+|D81|44.03|14.20|27.15|33.41|−24.11pp|历史基线，不能满足K1正收益|
+|D92|44.03|14.20|27.15|33.41|−24.11pp|与D81逐值一致，K1协方差头严格identity|
+|SVRN-qKNN-BCRR/r4.2|32.41|8.93|14.67|20.07|−33.67pp|大幅阴性|
+|ADV3B02-r8 M_DA对M0|同M0|同M0|同M0|同M0|DA增益0|K1为0/48,000个预测变化，严格identity|
+
+因此，SVRN“低K5衰减”只是低基线下的稳定低性能；D62/D81/D92又同时违反K5和K1门。当前完整125中没有方法满足活动目标。
+
 ### 8.2结论
 
 1. 当前没有任何方法达到活动性能目标。D92只是“现有合法完整125中相对最好”，不是成功版本。
@@ -200,7 +225,8 @@ ADV3B02-r8的M0/M_DA完整125也低于前三名，且M_DA相对M0的H为−0.027
 3. D91不是D62的升级版。它的开发单元结果与D62逐预测相同，且没有完整125，因此不能与D92、D81、D62、SVRN放在同一稳定性排名中。
 4. SVRN-qKNN-BCRR的125已经完成，不应重复运行。其修复了技术零向量问题，但性能相对D62是明确且成规模的负结果。
 5. 历史最可靠的机制信号只有两类：D92的任务均衡协方差能提高注册后旧类和floor；D81/D89的ground可靠度中心能以极低覆盖率产生少量无交换纠错。前者伤害new，后者覆盖不足，二者都不能直接作为已成功方案合并。
-6. 下一候选必须先在Phase1-held证明TX不变性、receiver/class外推和K1正收益，再进入固定Target25；只有Target25同row联合通过，才值得重新消耗完整125。
+6. 当前下一候选已经冻结为D103-R2。它必须先在63个Phase1-held性能行和49个K1稳定性行上证明TX不变性、receiver/class外推、实际160维shift与K1正收益，才可能开放固定Target25；目前N607 GPU栈阻塞，尚无任何D103性能值。
+7. D103-R2即使通过held门，也只获得`Target25_GATE_ELIGIBLE`，不等于性能晋级；只有后续Target25同row联合通过，才值得重新消耗完整125。
 
 ### 8.3主要证据入口
 
@@ -213,6 +239,6 @@ ADV3B02-r8的M0/M_DA完整125也低于前三名，且M_DA相对M0的H为−0.027
 |SVRN完整125|`automation_reports/CV-SincNet/svrn_qknn_bcrr_125_r4_retry2_20260724/report.md`|
 |D93—D101研发链|`automation_reports/CV-SincNet/ground_prototype_da_research_20260720/report.md`|
 |D102真实Phase1-held|`automation_reports/CV-SincNet/d102_rb_metabias4_phase1held_target25_20260724/report.md`|
-|D103-R1当前状态|`automation_reports/CV-SincNet/d103_rxid_r1_feasibility_20260724/report.md`|
+|D103-R2当前状态|`automation_reports/CV-SincNet/d103_r2_rxid_phase1held_20260725_r1/report.md`|
 
-本次对比更新只修改本文件；未访问N607、未启动或重复运行实验。Markdown差异已通过`git diff --check`，D62、D81、D91、D92和SVRN的主指标均从上述现有完成产物复核。
+本次对比更新修改本文件和D103-R2版本化预注册交接，并对根目录正式报告的一处过时状态文字作同步校正；未访问N607、未启动或重复运行实验。Markdown差异已通过`git diff --check`，D62、D81、D91、D92和SVRN的主指标均从上述现有完成产物复核。
