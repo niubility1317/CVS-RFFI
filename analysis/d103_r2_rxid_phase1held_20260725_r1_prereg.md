@@ -9,10 +9,13 @@
 ## Release证据
 
 - candidate：`D103-R2-RXID-CROSSRECEIVER-MB4`
-- 实现commit：`59978e44`
+- 核心实现commit：`59978e44`
+- release hardening增量commit/当前HEAD：`80f58ce5`
 - 独立复审index SHA256：`30c8c98ff8fcdf2915f4c2e797c605cecc98d138e95ad3b0bc6e542faf9fdc9b`
-- release复审：`REVIEW_GO / P0=0 / P1=0 / P2=2`
-- 本地验证：61项D103定向测试通过；36个Python文件编译解析通过；真实tap/dual 400step无query-truth smoke通过。
+- 首轮release复审：`REVIEW_GO / P0=0 / P1=0 / P2=2`
+- 增量release复审index SHA256：`298dd85d3f8258f0942c7a09e1fb842a51bff1c2ab817a9a43833fd124a89cad`
+- 增量release复审：`GO / P0=0 / P1=0 / P2=0`
+- 本地验证：67项D103定向测试通过；36个Python文件编译解析通过；真实tap/dual 400step无query-truth smoke通过。
 - 无Git push或远程Git上传。
 
 ## 冻结实验
@@ -31,13 +34,13 @@
 - `source_train/cache_set.json`SHA256=`d719808ceaed07c13f6c8d8053acf910a61904243ec1d47c28cc4e4b679cffd2`；
 - `cache_scope=source_train`、`roles=[source]`，3个`leo_*_weak`成员存在、非symlink且实际SHA与manifest全部一致；
 - selection salt、base runtime、dual export receipt、base parity receipt和checkpoint五项实际SHA全部等于冻结值；
-- commit`59978e44`的18个远端release目标全部`ABSENT`，无覆盖冲突；
+- 首次检查时18个远端release目标全部`ABSENT`；增量commit`80f58ce5`改变两个脚本SHA，GPU恢复后必须重新检查全部18路径；
 - `/home`可用8,138,337,734,656B；
 - 未发现GPU设备使用者或目标训练进程，但不能替代NVML进程表；
 - 最终`ssh.exe=0`，N607和bridge的ESTABLISHED连接均为0；
 - 未sync、mkdir、创建run-root、启动或停止任何进程。
 
-完整逐路径表在根目录正式报告中；绑定GPU阻塞状态后的当前报告SHA256=`e6c7bf8ed2ac220f386e8517280dd9a140408cc5487ee23d69a0065a059edb6a`。
+完整逐路径表在根目录正式报告中；绑定release hardening和GPU阻塞状态后的当前报告SHA256=`d5c2747b3dcff4f2976863a2dae14c42678988f7befc2d9d7b8413f998d5c444`。
 
 ## 当前启动阻塞
 
