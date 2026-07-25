@@ -1,6 +1,6 @@
 # D103-R2正式Phase1-held预注册交接
 
-状态：`PREREGISTERED / INPUT_HASH_RESOLUTION_ONLY / N607_LAUNCH_NO_GO / TARGET25_NO_GO`
+状态：`PREREGISTERED / INPUTS_BOUND / N607_GPU_STACK_BLOCKED / N607_LAUNCH_NO_GO / TARGET25_NO_GO`
 
 实验ID：`d103_r2_rxid_phase1held_20260725_r1`
 
@@ -25,14 +25,26 @@
 - 每GPU最多2个worker；总GPU时≤30、显存≤4GiB/fit、run-root≤20GiB。
 - 不读取Target；held接受前`TARGET25_NO_GO`。
 
-## 首次N607交接权限
+## 首次N607只读交接结果
 
-唯一运行代理`scxmap_held_n607_runner`首次只允许执行direct preflight、GPU/进程/磁盘检查、冻结输入路径/SHA核对和远端同名release文件冲突检查。必须只读解析：
+- route：direct N607成功；bridge未使用；
+- `source_train/cache_set.json`SHA256=`d719808ceaed07c13f6c8d8053acf910a61904243ec1d47c28cc4e4b679cffd2`；
+- `cache_scope=source_train`、`roles=[source]`，3个`leo_*_weak`成员存在、非symlink且实际SHA与manifest全部一致；
+- selection salt、base runtime、dual export receipt、base parity receipt和checkpoint五项实际SHA全部等于冻结值；
+- commit`59978e44`的18个远端release目标全部`ABSENT`，无覆盖冲突；
+- `/home`可用8,138,337,734,656B；
+- 未发现GPU设备使用者或目标训练进程，但不能替代NVML进程表；
+- 最终`ssh.exe=0`，N607和bridge的ESTABLISHED连接均为0；
+- 未sync、mkdir、创建run-root、启动或停止任何进程。
 
-`/home/szu2070436088/2510044040/CV-SincNet/runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14/phase1_caches/source_train/cache_set.json`
+完整逐路径表在根目录正式报告中；绑定GPU阻塞状态后的当前报告SHA256=`e6c7bf8ed2ac220f386e8517280dd9a140408cc5487ee23d69a0065a059edb6a`。
 
-的当前SHA256并返回主代理。该SHA写回完整报告并提交前，禁止sync、创建run-root或启动进程。
+## 当前启动阻塞
 
-## 停止规则
+N607内核驱动=`535.309.01`，`/usr/bin/nvidia-smi`运行时解析NVML=`580.173.02`，返回`Driver/library version mismatch`、exit18。清除`LD_LIBRARY_PATH/CUDA_HOME`后仍失败，系统目录没有535.309.01匹配库。逐卡GPU利用率、显存和计算进程表无法形成可信证据，因此保持`N607_LAUNCH_NO_GO`。
+
+本轮不修改symlink、包、内核模块、服务，不重启。GPU栈由服务器维护面恢复后，唯一运行代理必须重新执行完整preflight和占用检查；在此之前禁止sync和启动。
+
+## 预注册停止规则
 
 不依据性能停止。仅在P0协议/安全错误，或两个不同fit在prediction前产生同一规范化确定性异常指纹时，停止dispatch并终止三重绑定的本run PID。保留全部partial artifacts，不自动重试，不覆盖原run。
