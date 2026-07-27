@@ -2,7 +2,7 @@
 
 日期：2026-07-27
 
-修订：v6，补充Stage2-A旧类准确率参考，并消除`B-old/A-old`阶段歧义
+修订：v7，补充逐式符号、维度和运算说明
 
 证据状态：`EVIDENCE_BOUND_TECHNICAL_REPORT`
 
@@ -23,6 +23,8 @@ $$
 +
 \frac{1}{2}\boldsymbol{\Sigma}_{\mathrm{n}}.
 $$
+
+**本式符号说明：**\(\boldsymbol{\Sigma}_{\mathrm{bal}}\)是旧/新任务均衡共享协方差；\(\boldsymbol{\Sigma}_{\mathrm{o}}\)和\(\boldsymbol{\Sigma}_{\mathrm{n}}\)分别是旧类任务与新类任务内部估计的协方差；下标\(\mathrm{bal}\)、\(\mathrm{o}\)、\(\mathrm{n}\)分别表示balanced、old和new；系数\(1/2\)表示两个任务固定等权。
 
 全部旧类与新类仍由同一个等先验LDA仿射头竞争。D92不读取query真值、query的old/new角色、query批次类别数、类别配额或跨query关系，也不根据receiver、LEO场景、seed、新类数或具体TX标识切换公式。
 
@@ -88,6 +90,15 @@ $$
 \{C_{\mathrm{o}}+1,\ldots,C_{\mathrm{o}}+C_{\mathrm{n}}\}.
 $$
 
+**式中各符号的含义：**
+
+- \(\mathcal Y_{\mathrm o}\)：旧类标签集合；花体\(\mathcal Y\)表示集合，下标\(\mathrm o\)表示old。
+- \(\mathcal Y_{\mathrm n}\)：新类标签集合；下标\(\mathrm n\)表示new。
+- \(C_{\mathrm o}\)和\(C_{\mathrm n}\)：旧类数量和新类数量。
+- \(\{1,\ldots,C_{\mathrm o}\}\)：从1到\(C_{\mathrm o}\)的全部整数标签。
+- \(\{C_{\mathrm o}+1,\ldots,C_{\mathrm o}+C_{\mathrm n}\}\)：紧接旧类编号之后的新类整数标签。
+- \(c\)：后文用于表示任意一个类别标签的索引。
+
 全部已注册类别为
 
 $$
@@ -98,6 +109,13 @@ $$
 C=C_{\mathrm{o}}+C_{\mathrm{n}}.
 $$
 
+**式中各符号和运算的含义：**
+
+- \(\mathcal Y\)：完成当前阶段注册后，分类器需要同时竞争的全部类别集合。
+- \(\cup\)：集合并运算，把旧类集合与新类集合合并；两个集合按协议互不重叠。
+- \(C\)：全部已注册类别数量。
+- \(C=C_{\mathrm o}+C_{\mathrm n}\)：总类别数等于旧类数与新类数之和。
+
 当前正式矩阵固定
 
 $$
@@ -107,6 +125,12 @@ C_{\mathrm{n}}\in\{5,10,20\},
 \qquad
 C\in\{11,16,26\}.
 $$
+
+**式中各符号的含义：**
+
+- \(C_{\mathrm o}=6\)：正式矩阵始终包含6个旧类。
+- \(C_{\mathrm n}\in\{5,10,20\}\)：每个实验slice分别注册5、10或20个新类；符号\(\in\)表示“属于该候选集合”。
+- \(C\in\{11,16,26\}\)：对应总类别数分别为\(6+5\)、\(6+10\)和\(6+20\)。
 
 “旧”和“新”只描述类别是否在Phase1出现过。D92不会在query推理时读取query的真实old/new角色。
 
@@ -124,6 +148,16 @@ $$
 c\in\mathcal{Y}.
 $$
 
+**式中各符号的含义：**
+
+- \(\mathcal S_c\)：类别\(c\)的support集合。
+- \(\mathbf x_{c,k}\)：类别\(c\)的第\(k\)个固定接收IQ样本。
+- \(c\)：该support样本的可见类别标签，同时也是类别索引。
+- \(k\)：类内shot索引，从1到\(K\)。
+- \(K\)：每个类别可用的独立物理support样本数。
+- \(\{(\mathbf x_{c,k},c)\}_{k=1}^{K}\)：把该类别的K个“样本—标签”有序记录收集成集合。
+- \(c\in\mathcal Y\)：每个已注册类别都按相同规则构造support集合。
+
 完整support集合为
 
 $$
@@ -134,6 +168,14 @@ $$
 N_{\mathrm{s}}=CK.
 $$
 
+**式中各符号和运算的含义：**
+
+- \(\mathcal S\)：全部已注册类别support的总集合。
+- \(\bigcup_{c\in\mathcal Y}\)：遍历所有类别\(c\)，对各\(\mathcal S_c\)执行集合并。
+- \(N_{\mathrm s}\)：总support样本数。
+- \(C\)：注册类别总数；\(K\)：每类shot数。
+- \(N_{\mathrm s}=CK\)：在每类都恰有\(K\)个support时，总样本数为类别数乘每类样本数。
+
 query集合写为
 
 $$
@@ -141,6 +183,14 @@ $$
 =
 \{\mathbf{x}^{(q)}_j\}_{j=1}^{N_{\mathrm{q}}}.
 $$
+
+**式中各符号的含义：**
+
+- \(\mathcal Q\)：只用于最终测试的query集合。
+- \(\mathbf x_j^{(q)}\)：第\(j\)个query的固定接收IQ；上标\((q)\)表示query，不是指数。
+- \(j\)：query样本索引。
+- \(N_{\mathrm q}\)：query样本总数。
+- 本式没有写出query标签，因为预测器不能读取query真值；标签只由独立scorer在预测artifact形成后连接。
 
 构造D92状态时只能访问\(\mathcal{S}\)及其标签。query真值、query类别配额、真实old/new角色和query批次类别构成均不可见。
 
@@ -159,7 +209,14 @@ $$
 \right),
 $$
 
-其中\(\mathcal{B}_{\mathrm{P1}}\)是不可变Phase1部署bundle，\(\Gamma\)是不依赖数据内容的锁定配置，\(\mathcal{A}\)是D92的support-only状态构造算法。
+**式中各符号的含义：**
+
+- \(\Theta_{\mathrm{D92}}\)：注册完成后可供query推理使用的D92状态，包括最终仿射系数、截距、量化尺度和必要元数据。
+- \(\mathcal A(\cdot)\)：D92的support-only状态构造算法。
+- \(\mathcal B_{\mathrm{P1}}\)：在任何target访问前封存的不可变Phase1部署bundle。
+- \(\mathcal S\)：当前row合法可见的带标签support集合。
+- \(\Gamma\)：不依赖当前support/query内容的锁定算法配置。
+- 等号表示\(\Theta_{\mathrm{D92}}\)完全由这三类合法输入构造，不包含query真值或clean/source运行时输入。
 
 对每个query，D92执行
 
@@ -170,9 +227,21 @@ $$
 s_c\!\left(\mathbf{x}^{(q)}_j;\Theta_{\mathrm{D92}}\right).
 $$
 
+**式中各符号和运算的含义：**
+
+- \(\widehat y_j\)：模型对第\(j\)个query输出的预测类别；帽号表示估计值而非真值。
+- \(\arg\max\)：返回使后续分数最大的类别索引。
+- \(c\in\mathcal Y\)：候选范围是全部已注册类别，而不是预先知道的old或new子集。
+- \(s_c(\cdot)\)：类别\(c\)的判别分数函数，分数越大表示模型越倾向类别\(c\)。
+- \(\mathbf x_j^{(q)}\)：第\(j\)个query接收IQ。
+- 分号后的\(\Theta_{\mathrm{D92}}\)：计算分数时使用的已注册D92状态。
+- \(j\)：query索引；\(c\)：候选类别索引。
+
 这是逐样本、全注册类、单次\(\arg\max\)决策，不存在先判断old/new角色再进入不同分类器的过程。
 
 ## 3.符号、维度与含义
+
+本报告采用“全局符号表+逐式就地说明”两层结构。下表便于统一检索；后文每个独立公式块下方仍重复给出该式涉及的变量、上下标、维度、算子和固定常数。核心特征映射使用逐项清单；连续推导和数值例子使用模块内完整符号说明，因此读者不需要返回本节才能读懂公式。
 
 ### 3.1 集合和计数符号
 
@@ -340,6 +409,8 @@ C=11,
 K=10.
 $$
 
+**本式符号说明：**\(C_{\mathrm o}\)、\(C_{\mathrm n}\)、\(C\)分别是旧类数、新类数和总类数；\(K\)是每类support数，\(N_{\mathrm s}=CK\)是support总数；\(\mathbf x\in\mathbb C^L\)是长度为\(L\)的复IQ向量，\(x_t=I_t+\mathrm jQ_t\)把第\(t\)个采样写成I/Q形式；\(\mathbf Z\in\mathbb R^{N_{\mathrm s}\times288}\)是全部support的288维特征矩阵。
+
 这表示系统已经认识6个旧发射机，现在要注册5个新发射机；每个类别有10条带标签support IQ。support总数为
 
 $$
@@ -351,6 +422,8 @@ CK
 =
 110.
 $$
+
+**本式符号说明：**\(C_{\mathrm o}\)、\(C_{\mathrm n}\)、\(C\)分别是旧类数、新类数和总类数；\(K\)是每类support数，\(N_{\mathrm s}=CK\)是support总数；\(\mathbf x\in\mathbb C^L\)是长度为\(L\)的复IQ向量，\(x_t=I_t+\mathrm jQ_t\)把第\(t\)个采样写成I/Q形式；\(\mathbf Z\in\mathbb R^{N_{\mathrm s}\times288}\)是全部support的288维特征矩阵。
 
 一条IQ不是一张图片，而是一串复数基带采样：
 
@@ -370,6 +443,8 @@ $$
 x_t=I_t+\mathrm{j}Q_t.
 $$
 
+**本式符号说明：**\(C_{\mathrm o}\)、\(C_{\mathrm n}\)、\(C\)分别是旧类数、新类数和总类数；\(K\)是每类support数，\(N_{\mathrm s}=CK\)是support总数；\(\mathbf x\in\mathbb C^L\)是长度为\(L\)的复IQ向量，\(x_t=I_t+\mathrm jQ_t\)把第\(t\)个采样写成I/Q形式；\(\mathbf Z\in\mathbb R^{N_{\mathrm s}\times288}\)是全部support的288维特征矩阵。
+
 \(I_t\)和\(Q_t\)分别是同相、正交分量。模块一把每条IQ变成288维向量，所以110条support形成
 
 $$
@@ -377,6 +452,8 @@ $$
 \in
 \mathbb{R}^{110\times288}.
 $$
+
+**本式符号说明：**\(C_{\mathrm o}\)、\(C_{\mathrm n}\)、\(C\)分别是旧类数、新类数和总类数；\(K\)是每类support数，\(N_{\mathrm s}=CK\)是support总数；\(\mathbf x\in\mathbb C^L\)是长度为\(L\)的复IQ向量，\(x_t=I_t+\mathrm jQ_t\)把第\(t\)个采样写成I/Q形式；\(\mathbf Z\in\mathbb R^{N_{\mathrm s}\times288}\)是全部support的288维特征矩阵。
 
 后续模块不再直接操作原始IQ，而是在\(\mathbf{Z}\)及其标签上完成中心估计、协方差估计、判别头构造和support内部安全选择。
 
@@ -438,17 +515,23 @@ $$
 \sqrt{17}.
 $$
 
+**本式符号说明：**本模块中的\(\mathbf x\)是固定接收IQ，\(I_t,Q_t\)是第\(t\)个I/Q采样，\(L\)是序列长度；\(E_\theta\)是参数\(\theta\)冻结的身份编码器，\(\mathbf f^{\mathrm{id}}\)、\(\mathbf f^{\mathrm{fft}}\)、\(\mathbf f^{\mathrm{rf}}\)、\(\mathbf f^{\mathrm{aux}}\)分别是160维身份、96维频谱、32维RF统计和128维辅助特征；\(\mathcal N_\varepsilon\)是带\(\varepsilon=10^{-8}\)保护的二范数归一化，\(\Phi_\theta\)是完整特征映射，\(\mathbf z\in\mathbb R^{288}\)是最终联合特征；常数4是锁定的辅助块权重。
+
 所以最终身份块范数为
 
 $$
 \frac{1}{\sqrt{17}},
 $$
 
+**本式符号说明：**本模块中的\(\mathbf x\)是固定接收IQ，\(I_t,Q_t\)是第\(t\)个I/Q采样，\(L\)是序列长度；\(E_\theta\)是参数\(\theta\)冻结的身份编码器，\(\mathbf f^{\mathrm{id}}\)、\(\mathbf f^{\mathrm{fft}}\)、\(\mathbf f^{\mathrm{rf}}\)、\(\mathbf f^{\mathrm{aux}}\)分别是160维身份、96维频谱、32维RF统计和128维辅助特征；\(\mathcal N_\varepsilon\)是带\(\varepsilon=10^{-8}\)保护的二范数归一化，\(\Phi_\theta\)是完整特征映射，\(\mathbf z\in\mathbb R^{288}\)是最终联合特征；常数4是锁定的辅助块权重。
+
 辅助块范数为
 
 $$
 \frac{4}{\sqrt{17}}.
 $$
+
+**本式符号说明：**本模块中的\(\mathbf x\)是固定接收IQ，\(I_t,Q_t\)是第\(t\)个I/Q采样，\(L\)是序列长度；\(E_\theta\)是参数\(\theta\)冻结的身份编码器，\(\mathbf f^{\mathrm{id}}\)、\(\mathbf f^{\mathrm{fft}}\)、\(\mathbf f^{\mathrm{rf}}\)、\(\mathbf f^{\mathrm{aux}}\)分别是160维身份、96维频谱、32维RF统计和128维辅助特征；\(\mathcal N_\varepsilon\)是带\(\varepsilon=10^{-8}\)保护的二范数归一化，\(\Phi_\theta\)是完整特征映射，\(\mathbf z\in\mathbb R^{288}\)是最终联合特征；常数4是锁定的辅助块权重。
 
 这说明固定权重4不是“把辅助特征简单放大四倍后就结束”，而是在最终单位球面上规定两个大块的相对几何。权重不由当前query或测试准确率决定。
 
@@ -471,6 +554,16 @@ $$
 \varepsilon=10^{-8}.
 $$
 
+**式中各符号的含义：**
+
+- \(\mathbf{v}\)：等待归一化的任意实数特征向量；粗体表示它含有多个坐标，不是一个标量。
+- \(\mathcal{N}_{\varepsilon}(\cdot)\)：带数值保护的\(L_2\)归一化算子；输出方向与输入相同，正常情况下输出向量的\(L_2\)范数为1。
+- \(\lVert\mathbf{v}\rVert_2=\sqrt{\sum_jv_j^2}\)：向量\(\mathbf{v}\)的欧氏范数，也就是所有坐标平方和的平方根。
+- \(v_j\)：\(\mathbf{v}\)的第\(j\)个坐标；下标\(j\)只用于遍历向量维度。
+- \(\max(a,b)\)：取标量\(a\)和\(b\)中较大的一个。
+- \(\varepsilon\)：防止除零和极小分母的数值保护常数；当前固定为\(10^{-8}\)，不从support或query学习。
+- \(10^{-8}\)：十的负八次方，即\(0.00000001\)。
+
 对任意固定接收IQ\(\mathbf{x}\)，冻结编码器首先产生160维身份特征
 
 $$
@@ -479,6 +572,15 @@ $$
 E_{\theta}(\mathbf{x})
 \in\mathbb{R}^{160}.
 $$
+
+**式中各符号的含义：**
+
+- \(\mathbf{x}\)：一个物理样本经过唯一一次LEO弱信道叠加后封存的固定接收IQ；它是本式的输入。
+- \(E_{\theta}(\cdot)\)：冻结的ADV3B02身份编码器；只执行前向特征提取，不在Stage2更新参数。
+- \(\theta\)：编码器在Phase1训练后封存的参数集合；Stage2-A/B/C均不通过support或query修改它。
+- \(\mathbf{f}^{\mathrm{id}}\)：编码器输出的身份特征向量；上标\(\mathrm{id}\)表示identity。
+- \(\mathbb{R}^{160}\)：160维实数向量空间；因此\(\mathbf{f}^{\mathrm{id}}\)包含160个实数坐标。
+- \(160\)：身份特征块的固定维数，不是样本数、类别数或K-shot中的\(K\)。
 
 对同一IQ计算FFT96和RF32原始描述
 
@@ -489,6 +591,14 @@ $$
 \mathbf{f}^{\mathrm{rf}}
 \in\mathbb{R}^{32}.
 $$
+
+**式中各符号的含义：**
+
+- \(\mathbf{f}^{\mathrm{fft}}\)：由同一个固定接收IQ计算的96维FFT对数幅度谱描述；上标\(\mathrm{fft}\)表示频域特征。
+- \(\mathbf{f}^{\mathrm{rf}}\)：由同一个固定接收IQ计算的32维射频统计描述；上标\(\mathrm{rf}\)表示radio-frequency statistics。
+- \(\mathbb{R}^{96}\)：96维实数向量空间；FFT96最终保留96个频谱坐标。
+- \(\mathbb{R}^{32}\)：32维实数向量空间；RF32最终保留32个统计坐标。
+- 两个向量都由\(\mathbf{x}\)确定性计算，不产生第二份物理观测，也不增加K-shot计数。
 
 辅助块先拼接并整体归一化：
 
@@ -504,6 +614,15 @@ $$
 \right)
 \in\mathbb{R}^{128}.
 $$
+
+**式中各符号和运算的含义：**
+
+- \(\mathbf{f}^{\mathrm{aux}}\)：FFT96与RF32组成的辅助特征块；上标\(\mathrm{aux}\)表示auxiliary。
+- \(\begin{bmatrix}\mathbf{f}^{\mathrm{fft}};\mathbf{f}^{\mathrm{rf}}\end{bmatrix}\)：沿坐标轴进行纵向拼接；先放96个FFT坐标，再放32个RF坐标，不执行加法或平均。
+- \(128=96+32\)：辅助块总维数。
+- \(\mathcal{N}_{\varepsilon}\)：前面定义的带保护\(L_2\)归一化；它对拼接后的整个128维向量统一归一化，而不是分别改变FFT96和RF32的方向。
+- \(\varepsilon=10^{-8}\)：归一化分母的保护常数。
+- \(\mathbb{R}^{128}\)：128维实数向量空间。
 
 当前锁定几何把辅助块乘以固定权重4，再与归一化身份块拼接，最后对288维向量整体归一化：
 
@@ -525,6 +644,20 @@ $$
 \in\mathbb{R}^{288},
 $$
 
+**式中各符号和运算的含义：**
+
+- \(\mathbf{z}\)：D92实际送入稳健中心、协方差估计和LDA分类头的最终联合特征。
+- \(\Phi_{\theta}(\cdot)\)：从固定接收IQ到288维联合特征的完整确定性映射；它包含冻结身份编码、FFT96、RF32、块拼接、固定缩放和两级归一化。
+- \(\mathbf{x}\)：唯一固定的接收IQ输入。
+- \(\theta\)：冻结身份编码器参数；下标\(\theta\)说明\(\Phi\)内部调用\(E_{\theta}\)，不表示整个FFT/RF流程都含可训练参数。
+- \(\mathcal{N}_{\varepsilon}(\mathbf{f}^{\mathrm{id}})\)：先把160维身份块单独归一化，使其进入外层拼接前的范数为1。
+- \(\mathbf{f}^{\mathrm{aux}}\)：已经由FFT96和RF32拼接并归一化的128维辅助块。
+- \(4\mathbf{f}^{\mathrm{aux}}\)：把辅助块的每个坐标乘以固定标量4；此处的4是预先锁定的几何权重，不是类别数、K-shot数或根据query选择的参数。
+- \(\begin{bmatrix}\mathcal{N}_{\varepsilon}(\mathbf{f}^{\mathrm{id}});4\mathbf{f}^{\mathrm{aux}}\end{bmatrix}\)：将160维身份块与128维加权辅助块纵向拼接。
+- 外层\(\mathcal{N}_{\varepsilon}\)：对完整288维拼接向量再次做\(L_2\)归一化，得到单位范数联合特征。
+- \(288=160+128=160+96+32\)：最终联合特征维数。
+- \(\mathbb{R}^{288}\)：288维实数向量空间。
+
 最终块切片仍记为
 
 $$
@@ -534,6 +667,14 @@ $$
 \qquad
 \mathbf{z}^{\mathrm{rf}}\in\mathbb{R}^{32}.
 $$
+
+**式中各符号的含义：**
+
+- \(\mathbf{z}^{\mathrm{id}}\)：最终联合特征\(\mathbf{z}\)的前160个坐标，对应归一化后身份块。
+- \(\mathbf{z}^{\mathrm{fft}}\)：\(\mathbf{z}\)中随后96个坐标，对应经过辅助块归一化、固定权重4和外层归一化共同缩放后的FFT部分。
+- \(\mathbf{z}^{\mathrm{rf}}\)：\(\mathbf{z}\)中最后32个坐标，对应经过相同辅助块和外层处理后的RF统计部分。
+- 上标\(\mathrm{id}\)、\(\mathrm{fft}\)和\(\mathrm{rf}\)只标记坐标来源，不表示三个独立物理观测。
+- \(\mathbb{R}^{160}\)、\(\mathbb{R}^{96}\)和\(\mathbb{R}^{32}\)分别给出三个切片的实数维度。
 
 因此，“160+96+32”描述的是最终向量的块边界，不表示三个块未经缩放直接裸拼接。固定权重4是当前部署几何的一部分，不由query或125结果按row选择。
 
@@ -546,6 +687,14 @@ u_t=I_t+\mathrm{j}Q_t,
 \qquad
 t=1,\ldots,L.
 $$
+
+**式中各符号的含义：**
+
+- \(u_t\)：固定接收IQ在第\(t\)个采样时刻的复数样本。
+- \(I_t\)和\(Q_t\)：第\(t\)个样本的同相分量和正交分量，二者都是实数。
+- \(\mathrm{j}\)：虚数单位，满足\(\mathrm{j}^2=-1\)。
+- \(t\)：时域采样点索引，从1依次取到\(L\)。
+- \(L\)：单条IQ记录包含的复采样点总数。
 
 先去除复均值并做RMS归一化：
 
@@ -569,6 +718,16 @@ u_t-\bar{u}
 }.
 $$
 
+**式中各符号和运算的含义：**
+
+- \(u_t^{(0)}\)：去除复均值并完成RMS归一化后的第\(t\)个复IQ样本；上标\((0)\)表示FFT预处理状态，不表示零次幂。
+- \(\bar u=L^{-1}\sum_{t=1}^{L}u_t\)：整条IQ记录的复数样本均值。
+- \(u_t-\bar u\)：去除直流分量后的复数样本。
+- \(|u_t-\bar u|\)：复数样本的幅值。
+- \(\sum_{t=1}^{L}\)：对全部\(L\)个采样点求和。
+- 根号内的平均平方幅值：去均值IQ的平均功率；其平方根是RMS幅值。
+- \(\max(\cdot,\varepsilon)\)：保证归一化分母不小于\(\varepsilon=10^{-8}\)。
+
 施加Hann窗\(h_t\)，计算中心化频谱
 
 $$
@@ -583,6 +742,16 @@ u_t^{(0)}h_t
 \right]_k.
 $$
 
+**式中各符号和运算的含义：**
+
+- \(h_t\)：长度为\(L\)的Hann窗在第\(t\)个采样点的窗值，用于减小有限长度截断造成的频谱泄漏。
+- \(u_t^{(0)}h_t\)：加窗后的复IQ序列。
+- \(\operatorname{FFT}(\cdot)\)：离散快速傅里叶变换，把长度\(L\)的时域序列变换到频域。
+- \(\operatorname{fftshift}(\cdot)\)：把零频分量移动到频谱中央。
+- \(U_k\)：移频后频谱的第\(k\)个复数频点。
+- \(k\)：频率bin索引，不是K-shot中的大写\(K\)。
+- \([\cdot]_k\)：从完整频谱向量中取出第\(k\)个坐标。
+
 取对数幅度
 
 $$
@@ -593,6 +762,14 @@ v_k
 1+\left|U_k\right|
 \right),
 $$
+
+**式中各符号和运算的含义：**
+
+- \(v_k\)：第\(k\)个频点经过对数压缩后的实数幅度。
+- \(U_k\)：上一式得到的第\(k\)个复数频谱系数。
+- \(|U_k|\)：频谱系数的幅值，不包含复相位。
+- \(\log(\cdot)\)：自然对数。
+- 常数1：保证当\(|U_k|=0\)时对数输入仍为1，从而得到有限值0。
 
 然后在归一化频率轴上用线性插值重采样到96点，得到\(\mathbf{r}^{\mathrm{fft}}\in\mathbb{R}^{96}\)。最后删除96维均值并归一化：
 
@@ -609,6 +786,18 @@ $$
 \mathbf{1}
 \right).
 $$
+
+**式中各符号和运算的含义：**
+
+- \(\mathbf{r}^{\mathrm{fft}}\)：把原始对数幅度频谱沿频率轴线性插值到96点后得到的实数向量。
+- \(\mathbf1\in\mathbb R^{96}\)：96维全一向量。
+- \(\mathbf1^{\mathsf T}\mathbf r^{\mathrm{fft}}\)：96个频谱坐标之和。
+- \((\mathbf1^{\mathsf T}\mathbf r^{\mathrm{fft}})/96\)：96个频谱坐标的算术平均值。
+- 平均值乘\(\mathbf1\)：把同一个平均值复制到96个坐标。
+- 括号内的减法：删除FFT96的公共均值，只保留相对频谱形状。
+- \(\mathcal N_\varepsilon\)：对去均值后的96维向量做带数值保护的\(L_2\)归一化。
+- \(\mathbf f^{\mathrm{fft}}\)：最终FFT96特征。
+- 上标\({\mathsf T}\)：矩阵或向量转置。
 
 这条路径对同一固定IQ只执行一次，不重新叠加LEO信道。
 
@@ -641,6 +830,14 @@ $$
 \mathbf{r}^{\mathrm{rf}}
 \right).
 $$
+
+**式中各符号和运算的含义：**
+
+- \(\mathbf r^{\mathrm{rf}}\in\mathbb R^{32}\)：归一化前的32维射频统计向量，其固定坐标顺序已列在上表。
+- \(\mathcal N_\varepsilon\)：带\(\varepsilon=10^{-8}\)分母保护的\(L_2\)归一化。
+- \(\mathbf f^{\mathrm{rf}}\in\mathbb R^{32}\)：归一化后的RF32输出。
+- 上标\(\mathrm{rf}\)：表示射频统计来源，不表示另一个接收机或另一次信道观测。
+- 本式的归一化删除整体尺度，但不会消除32个统计量之间的相关性或冗余。
 
 RF32对整体增益具有归一化不变性，但仍保留IQ不平衡、幅度分布、高阶矩和短时相关结构。
 
@@ -707,6 +904,8 @@ E_2=0.2,
 E_3=1.2.
 $$
 
+**本式符号说明：**\(c\)是类别索引，\(k\)是类内shot索引，\(K\)是每类support数；\(\mathbf z^{\mathrm{id}}_{c,k}\)是身份块，\(\bar{\mathbf z}^{\mathrm{id}}_c\)是普通类均值，\(\mathbf e_{c,k}\)是类内残差；\(\mathbf G\)是封存扰动协方差，\(\sigma_q^2\)是量化噪声底，\(\mathbf G_+\)是去噪对称矩阵，\(\lambda_j,\mathbf u_j\)是第\(j\)个特征值和单位特征向量，\(r_{\mathrm{eff}},r\)是有效秩和保留秩，\(\mathbf U\)是扰动基，\(\rho_j\)是谱权重；\(\mathbf h_{c,k}\)、\(E_{c,k}\)、\(\tau_c\)分别是投影、扰动能量和类内能量尺度，\(a_{c,k}\)、\(\omega_{c,k}\)是未归一化和归一化Cauchy权重，\(\mathbf m_c^{\mathrm{rob}}\)、\(\boldsymbol\delta_c\)、\(\widetilde{\mathbf z}_{c,k}\)是稳健中心、中心平移和稳健化联合特征。
+
 类别能量尺度为
 
 $$
@@ -717,6 +916,8 @@ $$
 0.5.
 $$
 
+**本式符号说明：**\(c\)是类别索引，\(k\)是类内shot索引，\(K\)是每类support数；\(\mathbf z^{\mathrm{id}}_{c,k}\)是身份块，\(\bar{\mathbf z}^{\mathrm{id}}_c\)是普通类均值，\(\mathbf e_{c,k}\)是类内残差；\(\mathbf G\)是封存扰动协方差，\(\sigma_q^2\)是量化噪声底，\(\mathbf G_+\)是去噪对称矩阵，\(\lambda_j,\mathbf u_j\)是第\(j\)个特征值和单位特征向量，\(r_{\mathrm{eff}},r\)是有效秩和保留秩，\(\mathbf U\)是扰动基，\(\rho_j\)是谱权重；\(\mathbf h_{c,k}\)、\(E_{c,k}\)、\(\tau_c\)分别是投影、扰动能量和类内能量尺度，\(a_{c,k}\)、\(\omega_{c,k}\)是未归一化和归一化Cauchy权重，\(\mathbf m_c^{\mathrm{rob}}\)、\(\boldsymbol\delta_c\)、\(\widetilde{\mathbf z}_{c,k}\)是稳健中心、中心平移和稳健化联合特征。
+
 未归一化Cauchy权重为
 
 $$
@@ -726,6 +927,8 @@ a_1
 \approx0.833,
 $$
 
+**本式符号说明：**\(c\)是类别索引，\(k\)是类内shot索引，\(K\)是每类support数；\(\mathbf z^{\mathrm{id}}_{c,k}\)是身份块，\(\bar{\mathbf z}^{\mathrm{id}}_c\)是普通类均值，\(\mathbf e_{c,k}\)是类内残差；\(\mathbf G\)是封存扰动协方差，\(\sigma_q^2\)是量化噪声底，\(\mathbf G_+\)是去噪对称矩阵，\(\lambda_j,\mathbf u_j\)是第\(j\)个特征值和单位特征向量，\(r_{\mathrm{eff}},r\)是有效秩和保留秩，\(\mathbf U\)是扰动基，\(\rho_j\)是谱权重；\(\mathbf h_{c,k}\)、\(E_{c,k}\)、\(\tau_c\)分别是投影、扰动能量和类内能量尺度，\(a_{c,k}\)、\(\omega_{c,k}\)是未归一化和归一化Cauchy权重，\(\mathbf m_c^{\mathrm{rob}}\)、\(\boldsymbol\delta_c\)、\(\widetilde{\mathbf z}_{c,k}\)是稳健中心、中心平移和稳健化联合特征。
+
 $$
 a_2
 =
@@ -733,12 +936,16 @@ a_2
 \approx0.714,
 $$
 
+**本式符号说明：**\(c\)是类别索引，\(k\)是类内shot索引，\(K\)是每类support数；\(\mathbf z^{\mathrm{id}}_{c,k}\)是身份块，\(\bar{\mathbf z}^{\mathrm{id}}_c\)是普通类均值，\(\mathbf e_{c,k}\)是类内残差；\(\mathbf G\)是封存扰动协方差，\(\sigma_q^2\)是量化噪声底，\(\mathbf G_+\)是去噪对称矩阵，\(\lambda_j,\mathbf u_j\)是第\(j\)个特征值和单位特征向量，\(r_{\mathrm{eff}},r\)是有效秩和保留秩，\(\mathbf U\)是扰动基，\(\rho_j\)是谱权重；\(\mathbf h_{c,k}\)、\(E_{c,k}\)、\(\tau_c\)分别是投影、扰动能量和类内能量尺度，\(a_{c,k}\)、\(\omega_{c,k}\)是未归一化和归一化Cauchy权重，\(\mathbf m_c^{\mathrm{rob}}\)、\(\boldsymbol\delta_c\)、\(\widetilde{\mathbf z}_{c,k}\)是稳健中心、中心平移和稳健化联合特征。
+
 $$
 a_3
 =
 \frac{1}{1+1.2/0.5}
 \approx0.294.
 $$
+
+**本式符号说明：**\(c\)是类别索引，\(k\)是类内shot索引，\(K\)是每类support数；\(\mathbf z^{\mathrm{id}}_{c,k}\)是身份块，\(\bar{\mathbf z}^{\mathrm{id}}_c\)是普通类均值，\(\mathbf e_{c,k}\)是类内残差；\(\mathbf G\)是封存扰动协方差，\(\sigma_q^2\)是量化噪声底，\(\mathbf G_+\)是去噪对称矩阵，\(\lambda_j,\mathbf u_j\)是第\(j\)个特征值和单位特征向量，\(r_{\mathrm{eff}},r\)是有效秩和保留秩，\(\mathbf U\)是扰动基，\(\rho_j\)是谱权重；\(\mathbf h_{c,k}\)、\(E_{c,k}\)、\(\tau_c\)分别是投影、扰动能量和类内能量尺度，\(a_{c,k}\)、\(\omega_{c,k}\)是未归一化和归一化Cauchy权重，\(\mathbf m_c^{\mathrm{rob}}\)、\(\boldsymbol\delta_c\)、\(\widetilde{\mathbf z}_{c,k}\)是稳健中心、中心平移和稳健化联合特征。
 
 归一化后约为
 
@@ -749,6 +956,8 @@ $$
 0.452,\ 0.388,\ 0.160
 \right].
 $$
+
+**本式符号说明：**\(c\)是类别索引，\(k\)是类内shot索引，\(K\)是每类support数；\(\mathbf z^{\mathrm{id}}_{c,k}\)是身份块，\(\bar{\mathbf z}^{\mathrm{id}}_c\)是普通类均值，\(\mathbf e_{c,k}\)是类内残差；\(\mathbf G\)是封存扰动协方差，\(\sigma_q^2\)是量化噪声底，\(\mathbf G_+\)是去噪对称矩阵，\(\lambda_j,\mathbf u_j\)是第\(j\)个特征值和单位特征向量，\(r_{\mathrm{eff}},r\)是有效秩和保留秩，\(\mathbf U\)是扰动基，\(\rho_j\)是谱权重；\(\mathbf h_{c,k}\)、\(E_{c,k}\)、\(\tau_c\)分别是投影、扰动能量和类内能量尺度，\(a_{c,k}\)、\(\omega_{c,k}\)是未归一化和归一化Cauchy权重，\(\mathbf m_c^{\mathrm{rob}}\)、\(\boldsymbol\delta_c\)、\(\widetilde{\mathbf z}_{c,k}\)是稳健中心、中心平移和稳健化联合特征。
 
 第三条样本没有被删除，但它对中心的贡献从普通平均的\(1/3\)降至约0.160。这个例子只解释Cauchy机制，不是某个正式实验row的真实能量。
 
@@ -763,6 +972,8 @@ $$
 -\sigma_{\mathrm{q}}^2\mathbf{I}_{160}.
 $$
 
+**本式符号说明：**\(c\)是类别索引，\(k\)是类内shot索引，\(K\)是每类support数；\(\mathbf z^{\mathrm{id}}_{c,k}\)是身份块，\(\bar{\mathbf z}^{\mathrm{id}}_c\)是普通类均值，\(\mathbf e_{c,k}\)是类内残差；\(\mathbf G\)是封存扰动协方差，\(\sigma_q^2\)是量化噪声底，\(\mathbf G_+\)是去噪对称矩阵，\(\lambda_j,\mathbf u_j\)是第\(j\)个特征值和单位特征向量，\(r_{\mathrm{eff}},r\)是有效秩和保留秩，\(\mathbf U\)是扰动基，\(\rho_j\)是谱权重；\(\mathbf h_{c,k}\)、\(E_{c,k}\)、\(\tau_c\)分别是投影、扰动能量和类内能量尺度，\(a_{c,k}\)、\(\omega_{c,k}\)是未归一化和归一化Cauchy权重，\(\mathbf m_c^{\mathrm{rob}}\)、\(\boldsymbol\delta_c\)、\(\widetilde{\mathbf z}_{c,k}\)是稳健中心、中心平移和稳健化联合特征。
+
 对\(\mathbf{G}_{+}\)做特征分解：
 
 $$
@@ -770,6 +981,8 @@ $$
 =
 \lambda_j\mathbf{u}_j.
 $$
+
+**本式符号说明：**\(c\)是类别索引，\(k\)是类内shot索引，\(K\)是每类support数；\(\mathbf z^{\mathrm{id}}_{c,k}\)是身份块，\(\bar{\mathbf z}^{\mathrm{id}}_c\)是普通类均值，\(\mathbf e_{c,k}\)是类内残差；\(\mathbf G\)是封存扰动协方差，\(\sigma_q^2\)是量化噪声底，\(\mathbf G_+\)是去噪对称矩阵，\(\lambda_j,\mathbf u_j\)是第\(j\)个特征值和单位特征向量，\(r_{\mathrm{eff}},r\)是有效秩和保留秩，\(\mathbf U\)是扰动基，\(\rho_j\)是谱权重；\(\mathbf h_{c,k}\)、\(E_{c,k}\)、\(\tau_c\)分别是投影、扰动能量和类内能量尺度，\(a_{c,k}\)、\(\omega_{c,k}\)是未归一化和归一化Cauchy权重，\(\mathbf m_c^{\mathrm{rob}}\)、\(\boldsymbol\delta_c\)、\(\widetilde{\mathbf z}_{c,k}\)是稳健中心、中心平移和稳健化联合特征。
 
 只保留数值上为正的特征值。正谱的participation-ratio有效秩为
 
@@ -783,6 +996,8 @@ r_{\mathrm{eff}}
 }.
 $$
 
+**本式符号说明：**\(c\)是类别索引，\(k\)是类内shot索引，\(K\)是每类support数；\(\mathbf z^{\mathrm{id}}_{c,k}\)是身份块，\(\bar{\mathbf z}^{\mathrm{id}}_c\)是普通类均值，\(\mathbf e_{c,k}\)是类内残差；\(\mathbf G\)是封存扰动协方差，\(\sigma_q^2\)是量化噪声底，\(\mathbf G_+\)是去噪对称矩阵，\(\lambda_j,\mathbf u_j\)是第\(j\)个特征值和单位特征向量，\(r_{\mathrm{eff}},r\)是有效秩和保留秩，\(\mathbf U\)是扰动基，\(\rho_j\)是谱权重；\(\mathbf h_{c,k}\)、\(E_{c,k}\)、\(\tau_c\)分别是投影、扰动能量和类内能量尺度，\(a_{c,k}\)、\(\omega_{c,k}\)是未归一化和归一化Cauchy权重，\(\mathbf m_c^{\mathrm{rob}}\)、\(\boldsymbol\delta_c\)、\(\widetilde{\mathbf z}_{c,k}\)是稳健中心、中心平移和稳健化联合特征。
+
 实际保留秩不经target扫描，而固定为
 
 $$
@@ -790,6 +1005,8 @@ r
 =
 \left\lceil r_{\mathrm{eff}}\right\rceil.
 $$
+
+**本式符号说明：**\(c\)是类别索引，\(k\)是类内shot索引，\(K\)是每类support数；\(\mathbf z^{\mathrm{id}}_{c,k}\)是身份块，\(\bar{\mathbf z}^{\mathrm{id}}_c\)是普通类均值，\(\mathbf e_{c,k}\)是类内残差；\(\mathbf G\)是封存扰动协方差，\(\sigma_q^2\)是量化噪声底，\(\mathbf G_+\)是去噪对称矩阵，\(\lambda_j,\mathbf u_j\)是第\(j\)个特征值和单位特征向量，\(r_{\mathrm{eff}},r\)是有效秩和保留秩，\(\mathbf U\)是扰动基，\(\rho_j\)是谱权重；\(\mathbf h_{c,k}\)、\(E_{c,k}\)、\(\tau_c\)分别是投影、扰动能量和类内能量尺度，\(a_{c,k}\)、\(\omega_{c,k}\)是未归一化和归一化Cauchy权重，\(\mathbf m_c^{\mathrm{rob}}\)、\(\boldsymbol\delta_c\)、\(\widetilde{\mathbf z}_{c,k}\)是稳健中心、中心平移和稳健化联合特征。
 
 取最大的\(r\)个正特征方向构成
 
@@ -802,6 +1019,8 @@ $$
 \in\mathbb{R}^{160\times r},
 $$
 
+**本式符号说明：**\(c\)是类别索引，\(k\)是类内shot索引，\(K\)是每类support数；\(\mathbf z^{\mathrm{id}}_{c,k}\)是身份块，\(\bar{\mathbf z}^{\mathrm{id}}_c\)是普通类均值，\(\mathbf e_{c,k}\)是类内残差；\(\mathbf G\)是封存扰动协方差，\(\sigma_q^2\)是量化噪声底，\(\mathbf G_+\)是去噪对称矩阵，\(\lambda_j,\mathbf u_j\)是第\(j\)个特征值和单位特征向量，\(r_{\mathrm{eff}},r\)是有效秩和保留秩，\(\mathbf U\)是扰动基，\(\rho_j\)是谱权重；\(\mathbf h_{c,k}\)、\(E_{c,k}\)、\(\tau_c\)分别是投影、扰动能量和类内能量尺度，\(a_{c,k}\)、\(\omega_{c,k}\)是未归一化和归一化Cauchy权重，\(\mathbf m_c^{\mathrm{rob}}\)、\(\boldsymbol\delta_c\)、\(\widetilde{\mathbf z}_{c,k}\)是稳健中心、中心平移和稳健化联合特征。
+
 对应归一化谱权重为
 
 $$
@@ -811,6 +1030,8 @@ $$
 \qquad
 \sum_{j=1}^{r}\rho_j=1.
 $$
+
+**本式符号说明：**\(c\)是类别索引，\(k\)是类内shot索引，\(K\)是每类support数；\(\mathbf z^{\mathrm{id}}_{c,k}\)是身份块，\(\bar{\mathbf z}^{\mathrm{id}}_c\)是普通类均值，\(\mathbf e_{c,k}\)是类内残差；\(\mathbf G\)是封存扰动协方差，\(\sigma_q^2\)是量化噪声底，\(\mathbf G_+\)是去噪对称矩阵，\(\lambda_j,\mathbf u_j\)是第\(j\)个特征值和单位特征向量，\(r_{\mathrm{eff}},r\)是有效秩和保留秩，\(\mathbf U\)是扰动基，\(\rho_j\)是谱权重；\(\mathbf h_{c,k}\)、\(E_{c,k}\)、\(\tau_c\)分别是投影、扰动能量和类内能量尺度，\(a_{c,k}\)、\(\omega_{c,k}\)是未归一化和归一化Cauchy权重，\(\mathbf m_c^{\mathrm{rob}}\)、\(\boldsymbol\delta_c\)、\(\widetilde{\mathbf z}_{c,k}\)是稳健中心、中心平移和稳健化联合特征。
 
 \(\mathbf{U}\)只表达“哪些身份特征方向容易受地面域变化影响”，不包含某个旧类的prototype、样本feature或类别得分。
 
@@ -824,6 +1045,8 @@ $$
 \right\}_{k=1}^{K},
 $$
 
+**本式符号说明：**\(c\)是类别索引，\(k\)是类内shot索引，\(K\)是每类support数；\(\mathbf z^{\mathrm{id}}_{c,k}\)是身份块，\(\bar{\mathbf z}^{\mathrm{id}}_c\)是普通类均值，\(\mathbf e_{c,k}\)是类内残差；\(\mathbf G\)是封存扰动协方差，\(\sigma_q^2\)是量化噪声底，\(\mathbf G_+\)是去噪对称矩阵，\(\lambda_j,\mathbf u_j\)是第\(j\)个特征值和单位特征向量，\(r_{\mathrm{eff}},r\)是有效秩和保留秩，\(\mathbf U\)是扰动基，\(\rho_j\)是谱权重；\(\mathbf h_{c,k}\)、\(E_{c,k}\)、\(\tau_c\)分别是投影、扰动能量和类内能量尺度，\(a_{c,k}\)、\(\omega_{c,k}\)是未归一化和归一化Cauchy权重，\(\mathbf m_c^{\mathrm{rob}}\)、\(\boldsymbol\delta_c\)、\(\widetilde{\mathbf z}_{c,k}\)是稳健中心、中心平移和稳健化联合特征。
+
 普通均值为
 
 $$
@@ -834,6 +1057,8 @@ $$
 \mathbf{z}^{\mathrm{id}}_{c,k},
 $$
 
+**本式符号说明：**\(c\)是类别索引，\(k\)是类内shot索引，\(K\)是每类support数；\(\mathbf z^{\mathrm{id}}_{c,k}\)是身份块，\(\bar{\mathbf z}^{\mathrm{id}}_c\)是普通类均值，\(\mathbf e_{c,k}\)是类内残差；\(\mathbf G\)是封存扰动协方差，\(\sigma_q^2\)是量化噪声底，\(\mathbf G_+\)是去噪对称矩阵，\(\lambda_j,\mathbf u_j\)是第\(j\)个特征值和单位特征向量，\(r_{\mathrm{eff}},r\)是有效秩和保留秩，\(\mathbf U\)是扰动基，\(\rho_j\)是谱权重；\(\mathbf h_{c,k}\)、\(E_{c,k}\)、\(\tau_c\)分别是投影、扰动能量和类内能量尺度，\(a_{c,k}\)、\(\omega_{c,k}\)是未归一化和归一化Cauchy权重，\(\mathbf m_c^{\mathrm{rob}}\)、\(\boldsymbol\delta_c\)、\(\widetilde{\mathbf z}_{c,k}\)是稳健中心、中心平移和稳健化联合特征。
+
 样本残差为
 
 $$
@@ -842,6 +1067,8 @@ $$
 \mathbf{z}^{\mathrm{id}}_{c,k}
 -\bar{\mathbf{z}}^{\mathrm{id}}_c.
 $$
+
+**本式符号说明：**\(c\)是类别索引，\(k\)是类内shot索引，\(K\)是每类support数；\(\mathbf z^{\mathrm{id}}_{c,k}\)是身份块，\(\bar{\mathbf z}^{\mathrm{id}}_c\)是普通类均值，\(\mathbf e_{c,k}\)是类内残差；\(\mathbf G\)是封存扰动协方差，\(\sigma_q^2\)是量化噪声底，\(\mathbf G_+\)是去噪对称矩阵，\(\lambda_j,\mathbf u_j\)是第\(j\)个特征值和单位特征向量，\(r_{\mathrm{eff}},r\)是有效秩和保留秩，\(\mathbf U\)是扰动基，\(\rho_j\)是谱权重；\(\mathbf h_{c,k}\)、\(E_{c,k}\)、\(\tau_c\)分别是投影、扰动能量和类内能量尺度，\(a_{c,k}\)、\(\omega_{c,k}\)是未归一化和归一化Cauchy权重，\(\mathbf m_c^{\mathrm{rob}}\)、\(\boldsymbol\delta_c\)、\(\widetilde{\mathbf z}_{c,k}\)是稳健中心、中心平移和稳健化联合特征。
 
 ### 6.3 地面扰动谱能量
 
@@ -854,6 +1081,8 @@ $$
 \in\mathbb{R}^{r}.
 $$
 
+**本式符号说明：**\(c\)是类别索引，\(k\)是类内shot索引，\(K\)是每类support数；\(\mathbf z^{\mathrm{id}}_{c,k}\)是身份块，\(\bar{\mathbf z}^{\mathrm{id}}_c\)是普通类均值，\(\mathbf e_{c,k}\)是类内残差；\(\mathbf G\)是封存扰动协方差，\(\sigma_q^2\)是量化噪声底，\(\mathbf G_+\)是去噪对称矩阵，\(\lambda_j,\mathbf u_j\)是第\(j\)个特征值和单位特征向量，\(r_{\mathrm{eff}},r\)是有效秩和保留秩，\(\mathbf U\)是扰动基，\(\rho_j\)是谱权重；\(\mathbf h_{c,k}\)、\(E_{c,k}\)、\(\tau_c\)分别是投影、扰动能量和类内能量尺度，\(a_{c,k}\)、\(\omega_{c,k}\)是未归一化和归一化Cauchy权重，\(\mathbf m_c^{\mathrm{rob}}\)、\(\boldsymbol\delta_c\)、\(\widetilde{\mathbf z}_{c,k}\)是稳健中心、中心平移和稳健化联合特征。
+
 样本的加权扰动能量定义为
 
 $$
@@ -862,6 +1091,8 @@ E_{c,k}
 \sum_{j=1}^{r}
 \rho_j h_{c,k,j}^{2}.
 $$
+
+**本式符号说明：**\(c\)是类别索引，\(k\)是类内shot索引，\(K\)是每类support数；\(\mathbf z^{\mathrm{id}}_{c,k}\)是身份块，\(\bar{\mathbf z}^{\mathrm{id}}_c\)是普通类均值，\(\mathbf e_{c,k}\)是类内残差；\(\mathbf G\)是封存扰动协方差，\(\sigma_q^2\)是量化噪声底，\(\mathbf G_+\)是去噪对称矩阵，\(\lambda_j,\mathbf u_j\)是第\(j\)个特征值和单位特征向量，\(r_{\mathrm{eff}},r\)是有效秩和保留秩，\(\mathbf U\)是扰动基，\(\rho_j\)是谱权重；\(\mathbf h_{c,k}\)、\(E_{c,k}\)、\(\tau_c\)分别是投影、扰动能量和类内能量尺度，\(a_{c,k}\)、\(\omega_{c,k}\)是未归一化和归一化Cauchy权重，\(\mathbf m_c^{\mathrm{rob}}\)、\(\boldsymbol\delta_c\)、\(\widetilde{\mathbf z}_{c,k}\)是稳健中心、中心平移和稳健化联合特征。
 
 类别内能量尺度为
 
@@ -872,6 +1103,8 @@ $$
 \sum_{k=1}^{K}
 E_{c,k}.
 $$
+
+**本式符号说明：**\(c\)是类别索引，\(k\)是类内shot索引，\(K\)是每类support数；\(\mathbf z^{\mathrm{id}}_{c,k}\)是身份块，\(\bar{\mathbf z}^{\mathrm{id}}_c\)是普通类均值，\(\mathbf e_{c,k}\)是类内残差；\(\mathbf G\)是封存扰动协方差，\(\sigma_q^2\)是量化噪声底，\(\mathbf G_+\)是去噪对称矩阵，\(\lambda_j,\mathbf u_j\)是第\(j\)个特征值和单位特征向量，\(r_{\mathrm{eff}},r\)是有效秩和保留秩，\(\mathbf U\)是扰动基，\(\rho_j\)是谱权重；\(\mathbf h_{c,k}\)、\(E_{c,k}\)、\(\tau_c\)分别是投影、扰动能量和类内能量尺度，\(a_{c,k}\)、\(\omega_{c,k}\)是未归一化和归一化Cauchy权重，\(\mathbf m_c^{\mathrm{rob}}\)、\(\boldsymbol\delta_c\)、\(\widetilde{\mathbf z}_{c,k}\)是稳健中心、中心平移和稳健化联合特征。
 
 \(E_{c,k}\)越大，表示该support样本相对本类中心的偏移越集中在已知扰动方向上。
 
@@ -887,6 +1120,8 @@ a_{c,k}
 }.
 $$
 
+**本式符号说明：**\(c\)是类别索引，\(k\)是类内shot索引，\(K\)是每类support数；\(\mathbf z^{\mathrm{id}}_{c,k}\)是身份块，\(\bar{\mathbf z}^{\mathrm{id}}_c\)是普通类均值，\(\mathbf e_{c,k}\)是类内残差；\(\mathbf G\)是封存扰动协方差，\(\sigma_q^2\)是量化噪声底，\(\mathbf G_+\)是去噪对称矩阵，\(\lambda_j,\mathbf u_j\)是第\(j\)个特征值和单位特征向量，\(r_{\mathrm{eff}},r\)是有效秩和保留秩，\(\mathbf U\)是扰动基，\(\rho_j\)是谱权重；\(\mathbf h_{c,k}\)、\(E_{c,k}\)、\(\tau_c\)分别是投影、扰动能量和类内能量尺度，\(a_{c,k}\)、\(\omega_{c,k}\)是未归一化和归一化Cauchy权重，\(\mathbf m_c^{\mathrm{rob}}\)、\(\boldsymbol\delta_c\)、\(\widetilde{\mathbf z}_{c,k}\)是稳健中心、中心平移和稳健化联合特征。
+
 归一化后
 
 $$
@@ -899,6 +1134,8 @@ $$
 \sum_{k=1}^{K}\omega_{c,k}=1.
 $$
 
+**本式符号说明：**\(c\)是类别索引，\(k\)是类内shot索引，\(K\)是每类support数；\(\mathbf z^{\mathrm{id}}_{c,k}\)是身份块，\(\bar{\mathbf z}^{\mathrm{id}}_c\)是普通类均值，\(\mathbf e_{c,k}\)是类内残差；\(\mathbf G\)是封存扰动协方差，\(\sigma_q^2\)是量化噪声底，\(\mathbf G_+\)是去噪对称矩阵，\(\lambda_j,\mathbf u_j\)是第\(j\)个特征值和单位特征向量，\(r_{\mathrm{eff}},r\)是有效秩和保留秩，\(\mathbf U\)是扰动基，\(\rho_j\)是谱权重；\(\mathbf h_{c,k}\)、\(E_{c,k}\)、\(\tau_c\)分别是投影、扰动能量和类内能量尺度，\(a_{c,k}\)、\(\omega_{c,k}\)是未归一化和归一化Cauchy权重，\(\mathbf m_c^{\mathrm{rob}}\)、\(\boldsymbol\delta_c\)、\(\widetilde{\mathbf z}_{c,k}\)是稳健中心、中心平移和稳健化联合特征。
+
 稳健身份中心为
 
 $$
@@ -909,6 +1146,8 @@ $$
 \mathbf{z}^{\mathrm{id}}_{c,k}.
 $$
 
+**本式符号说明：**\(c\)是类别索引，\(k\)是类内shot索引，\(K\)是每类support数；\(\mathbf z^{\mathrm{id}}_{c,k}\)是身份块，\(\bar{\mathbf z}^{\mathrm{id}}_c\)是普通类均值，\(\mathbf e_{c,k}\)是类内残差；\(\mathbf G\)是封存扰动协方差，\(\sigma_q^2\)是量化噪声底，\(\mathbf G_+\)是去噪对称矩阵，\(\lambda_j,\mathbf u_j\)是第\(j\)个特征值和单位特征向量，\(r_{\mathrm{eff}},r\)是有效秩和保留秩，\(\mathbf U\)是扰动基，\(\rho_j\)是谱权重；\(\mathbf h_{c,k}\)、\(E_{c,k}\)、\(\tau_c\)分别是投影、扰动能量和类内能量尺度，\(a_{c,k}\)、\(\omega_{c,k}\)是未归一化和归一化Cauchy权重，\(\mathbf m_c^{\mathrm{rob}}\)、\(\boldsymbol\delta_c\)、\(\widetilde{\mathbf z}_{c,k}\)是稳健中心、中心平移和稳健化联合特征。
+
 类中心平移量为
 
 $$
@@ -917,6 +1156,8 @@ $$
 \mathbf{m}^{\mathrm{rob}}_c
 -\bar{\mathbf{z}}^{\mathrm{id}}_c.
 $$
+
+**本式符号说明：**\(c\)是类别索引，\(k\)是类内shot索引，\(K\)是每类support数；\(\mathbf z^{\mathrm{id}}_{c,k}\)是身份块，\(\bar{\mathbf z}^{\mathrm{id}}_c\)是普通类均值，\(\mathbf e_{c,k}\)是类内残差；\(\mathbf G\)是封存扰动协方差，\(\sigma_q^2\)是量化噪声底，\(\mathbf G_+\)是去噪对称矩阵，\(\lambda_j,\mathbf u_j\)是第\(j\)个特征值和单位特征向量，\(r_{\mathrm{eff}},r\)是有效秩和保留秩，\(\mathbf U\)是扰动基，\(\rho_j\)是谱权重；\(\mathbf h_{c,k}\)、\(E_{c,k}\)、\(\tau_c\)分别是投影、扰动能量和类内能量尺度，\(a_{c,k}\)、\(\omega_{c,k}\)是未归一化和归一化Cauchy权重，\(\mathbf m_c^{\mathrm{rob}}\)、\(\boldsymbol\delta_c\)、\(\widetilde{\mathbf z}_{c,k}\)是稳健中心、中心平移和稳健化联合特征。
 
 最终只平移本类所有support的身份特征块：
 
@@ -931,6 +1172,8 @@ $$
 \end{bmatrix}.
 $$
 
+**本式符号说明：**\(c\)是类别索引，\(k\)是类内shot索引，\(K\)是每类support数；\(\mathbf z^{\mathrm{id}}_{c,k}\)是身份块，\(\bar{\mathbf z}^{\mathrm{id}}_c\)是普通类均值，\(\mathbf e_{c,k}\)是类内残差；\(\mathbf G\)是封存扰动协方差，\(\sigma_q^2\)是量化噪声底，\(\mathbf G_+\)是去噪对称矩阵，\(\lambda_j,\mathbf u_j\)是第\(j\)个特征值和单位特征向量，\(r_{\mathrm{eff}},r\)是有效秩和保留秩，\(\mathbf U\)是扰动基，\(\rho_j\)是谱权重；\(\mathbf h_{c,k}\)、\(E_{c,k}\)、\(\tau_c\)分别是投影、扰动能量和类内能量尺度，\(a_{c,k}\)、\(\omega_{c,k}\)是未归一化和归一化Cauchy权重，\(\mathbf m_c^{\mathrm{rob}}\)、\(\boldsymbol\delta_c\)、\(\widetilde{\mathbf z}_{c,k}\)是稳健中心、中心平移和稳健化联合特征。
+
 ### 6.5 为什么只平移类中心
 
 平移后类别均值变为稳健中心，但类内残差严格不变：
@@ -942,6 +1185,8 @@ $$
 \mathbf{z}^{\mathrm{id}}_{c,k}
 -\bar{\mathbf{z}}^{\mathrm{id}}_c.
 $$
+
+**本式符号说明：**\(c\)是类别索引，\(k\)是类内shot索引，\(K\)是每类support数；\(\mathbf z^{\mathrm{id}}_{c,k}\)是身份块，\(\bar{\mathbf z}^{\mathrm{id}}_c\)是普通类均值，\(\mathbf e_{c,k}\)是类内残差；\(\mathbf G\)是封存扰动协方差，\(\sigma_q^2\)是量化噪声底，\(\mathbf G_+\)是去噪对称矩阵，\(\lambda_j,\mathbf u_j\)是第\(j\)个特征值和单位特征向量，\(r_{\mathrm{eff}},r\)是有效秩和保留秩，\(\mathbf U\)是扰动基，\(\rho_j\)是谱权重；\(\mathbf h_{c,k}\)、\(E_{c,k}\)、\(\tau_c\)分别是投影、扰动能量和类内能量尺度，\(a_{c,k}\)、\(\omega_{c,k}\)是未归一化和归一化Cauchy权重，\(\mathbf m_c^{\mathrm{rob}}\)、\(\boldsymbol\delta_c\)、\(\widetilde{\mathbf z}_{c,k}\)是稳健中心、中心平移和稳健化联合特征。
 
 因此，该步骤不会人为压缩或扩张类内散布，也不会修改FFT96和RF32。它只改变“类别位于特征空间的什么位置”，不改变“类别内部样本如何围绕中心分布”。
 
@@ -955,6 +1200,8 @@ $$
 \widetilde{\mathbf{z}}_{c,k}=\mathbf{z}_{c,k}.
 $$
 
+**本式符号说明：**\(c\)是类别索引，\(k\)是类内shot索引，\(K\)是每类support数；\(\mathbf z^{\mathrm{id}}_{c,k}\)是身份块，\(\bar{\mathbf z}^{\mathrm{id}}_c\)是普通类均值，\(\mathbf e_{c,k}\)是类内残差；\(\mathbf G\)是封存扰动协方差，\(\sigma_q^2\)是量化噪声底，\(\mathbf G_+\)是去噪对称矩阵，\(\lambda_j,\mathbf u_j\)是第\(j\)个特征值和单位特征向量，\(r_{\mathrm{eff}},r\)是有效秩和保留秩，\(\mathbf U\)是扰动基，\(\rho_j\)是谱权重；\(\mathbf h_{c,k}\)、\(E_{c,k}\)、\(\tau_c\)分别是投影、扰动能量和类内能量尺度，\(a_{c,k}\)、\(\omega_{c,k}\)是未归一化和归一化Cauchy权重，\(\mathbf m_c^{\mathrm{rob}}\)、\(\boldsymbol\delta_c\)、\(\widetilde{\mathbf z}_{c,k}\)是稳健中心、中心平移和稳健化联合特征。
+
 原因不是计算失败，而是1或2个样本不足以稳定区分“身份中心偏移”和“类内扰动离群”。D92宁可保持恒等映射，也不从极少support制造伪稳健性。
 
 ## 7.模块三：旧/新任务均衡的自动收缩协方差
@@ -967,17 +1214,23 @@ $$
 \Sigma_{ij}>0
 $$
 
+**本式符号说明：**\(c,k\)是类别与shot索引，\(K\)是每类样本数，\(p=288\)是特征维数；\(\widetilde{\mathbf z}_{c,k}\)是稳健化support，\(\boldsymbol\mu_c\)是类均值，\(\mathbf D_c\)是逐维标准差对角矩阵，\(\mathbf u_{c,k}\)是标准化残差，\(\mathbf S_c^{(u)}\)是标准化经验协方差，\(\alpha_c\)是自动收缩强度，\(\zeta_c\)是平均方差，\(\mathbf I_p\)是单位矩阵，\(\widehat{\boldsymbol\Sigma}_c^{\mathrm{LW}}\)是类内Ledoit–Wolf协方差；\(\boldsymbol\Sigma_{\mathrm o}\)、\(\boldsymbol\Sigma_{\mathrm n}\)、\(\boldsymbol\Sigma_{\mathrm{bal}}\)是旧任务、新任务和等权共享协方差，\(\boldsymbol\Sigma_{\mathrm{full}}\)、\(\boldsymbol\Sigma_{\mathrm{blk}}\)是full与三块结构，\(\lambda_{\min}\)是最小特征值。
+
 表示第\(i\)维和第\(j\)维倾向同向变化；
 
 $$
 \Sigma_{ij}<0
 $$
 
+**本式符号说明：**\(c,k\)是类别与shot索引，\(K\)是每类样本数，\(p=288\)是特征维数；\(\widetilde{\mathbf z}_{c,k}\)是稳健化support，\(\boldsymbol\mu_c\)是类均值，\(\mathbf D_c\)是逐维标准差对角矩阵，\(\mathbf u_{c,k}\)是标准化残差，\(\mathbf S_c^{(u)}\)是标准化经验协方差，\(\alpha_c\)是自动收缩强度，\(\zeta_c\)是平均方差，\(\mathbf I_p\)是单位矩阵，\(\widehat{\boldsymbol\Sigma}_c^{\mathrm{LW}}\)是类内Ledoit–Wolf协方差；\(\boldsymbol\Sigma_{\mathrm o}\)、\(\boldsymbol\Sigma_{\mathrm n}\)、\(\boldsymbol\Sigma_{\mathrm{bal}}\)是旧任务、新任务和等权共享协方差，\(\boldsymbol\Sigma_{\mathrm{full}}\)、\(\boldsymbol\Sigma_{\mathrm{blk}}\)是full与三块结构，\(\lambda_{\min}\)是最小特征值。
+
 表示两维倾向反向变化；
 
 $$
 \Sigma_{ij}\approx0
 $$
+
+**本式符号说明：**\(c,k\)是类别与shot索引，\(K\)是每类样本数，\(p=288\)是特征维数；\(\widetilde{\mathbf z}_{c,k}\)是稳健化support，\(\boldsymbol\mu_c\)是类均值，\(\mathbf D_c\)是逐维标准差对角矩阵，\(\mathbf u_{c,k}\)是标准化残差，\(\mathbf S_c^{(u)}\)是标准化经验协方差，\(\alpha_c\)是自动收缩强度，\(\zeta_c\)是平均方差，\(\mathbf I_p\)是单位矩阵，\(\widehat{\boldsymbol\Sigma}_c^{\mathrm{LW}}\)是类内Ledoit–Wolf协方差；\(\boldsymbol\Sigma_{\mathrm o}\)、\(\boldsymbol\Sigma_{\mathrm n}\)、\(\boldsymbol\Sigma_{\mathrm{bal}}\)是旧任务、新任务和等权共享协方差，\(\boldsymbol\Sigma_{\mathrm{full}}\)、\(\boldsymbol\Sigma_{\mathrm{blk}}\)是full与三块结构，\(\lambda_{\min}\)是最小特征值。
 
 表示当前统计中没有明显线性联动。
 
@@ -1025,6 +1278,8 @@ $$
 23.08\%,
 $$
 
+**本式符号说明：**\(c,k\)是类别与shot索引，\(K\)是每类样本数，\(p=288\)是特征维数；\(\widetilde{\mathbf z}_{c,k}\)是稳健化support，\(\boldsymbol\mu_c\)是类均值，\(\mathbf D_c\)是逐维标准差对角矩阵，\(\mathbf u_{c,k}\)是标准化残差，\(\mathbf S_c^{(u)}\)是标准化经验协方差，\(\alpha_c\)是自动收缩强度，\(\zeta_c\)是平均方差，\(\mathbf I_p\)是单位矩阵，\(\widehat{\boldsymbol\Sigma}_c^{\mathrm{LW}}\)是类内Ledoit–Wolf协方差；\(\boldsymbol\Sigma_{\mathrm o}\)、\(\boldsymbol\Sigma_{\mathrm n}\)、\(\boldsymbol\Sigma_{\mathrm{bal}}\)是旧任务、新任务和等权共享协方差，\(\boldsymbol\Sigma_{\mathrm{full}}\)、\(\boldsymbol\Sigma_{\mathrm{blk}}\)是full与三块结构，\(\lambda_{\min}\)是最小特征值。
+
 新类任务总权重为
 
 $$
@@ -1032,6 +1287,8 @@ $$
 \approx
 76.92\%.
 $$
+
+**本式符号说明：**\(c,k\)是类别与shot索引，\(K\)是每类样本数，\(p=288\)是特征维数；\(\widetilde{\mathbf z}_{c,k}\)是稳健化support，\(\boldsymbol\mu_c\)是类均值，\(\mathbf D_c\)是逐维标准差对角矩阵，\(\mathbf u_{c,k}\)是标准化残差，\(\mathbf S_c^{(u)}\)是标准化经验协方差，\(\alpha_c\)是自动收缩强度，\(\zeta_c\)是平均方差，\(\mathbf I_p\)是单位矩阵，\(\widehat{\boldsymbol\Sigma}_c^{\mathrm{LW}}\)是类内Ledoit–Wolf协方差；\(\boldsymbol\Sigma_{\mathrm o}\)、\(\boldsymbol\Sigma_{\mathrm n}\)、\(\boldsymbol\Sigma_{\mathrm{bal}}\)是旧任务、新任务和等权共享协方差，\(\boldsymbol\Sigma_{\mathrm{full}}\)、\(\boldsymbol\Sigma_{\mathrm{blk}}\)是full与三块结构，\(\lambda_{\min}\)是最小特征值。
 
 D92先在任务内部平均，再令
 
@@ -1042,6 +1299,8 @@ $$
 +
 0.5\boldsymbol{\Sigma}_{\mathrm{n}},
 $$
+
+**本式符号说明：**\(c,k\)是类别与shot索引，\(K\)是每类样本数，\(p=288\)是特征维数；\(\widetilde{\mathbf z}_{c,k}\)是稳健化support，\(\boldsymbol\mu_c\)是类均值，\(\mathbf D_c\)是逐维标准差对角矩阵，\(\mathbf u_{c,k}\)是标准化残差，\(\mathbf S_c^{(u)}\)是标准化经验协方差，\(\alpha_c\)是自动收缩强度，\(\zeta_c\)是平均方差，\(\mathbf I_p\)是单位矩阵，\(\widehat{\boldsymbol\Sigma}_c^{\mathrm{LW}}\)是类内Ledoit–Wolf协方差；\(\boldsymbol\Sigma_{\mathrm o}\)、\(\boldsymbol\Sigma_{\mathrm n}\)、\(\boldsymbol\Sigma_{\mathrm{bal}}\)是旧任务、新任务和等权共享协方差，\(\boldsymbol\Sigma_{\mathrm{full}}\)、\(\boldsymbol\Sigma_{\mathrm{blk}}\)是full与三块结构，\(\lambda_{\min}\)是最小特征值。
 
 所以新增类别只改变新类任务内部估计，不会把旧类任务的总统计权重继续压低。
 
@@ -1059,6 +1318,8 @@ $$
 \widetilde{\mathbf{z}}_{c,k}
 \in\mathbb{R}^{288}.
 $$
+
+**本式符号说明：**\(c,k\)是类别与shot索引，\(K\)是每类样本数，\(p=288\)是特征维数；\(\widetilde{\mathbf z}_{c,k}\)是稳健化support，\(\boldsymbol\mu_c\)是类均值，\(\mathbf D_c\)是逐维标准差对角矩阵，\(\mathbf u_{c,k}\)是标准化残差，\(\mathbf S_c^{(u)}\)是标准化经验协方差，\(\alpha_c\)是自动收缩强度，\(\zeta_c\)是平均方差，\(\mathbf I_p\)是单位矩阵，\(\widehat{\boldsymbol\Sigma}_c^{\mathrm{LW}}\)是类内Ledoit–Wolf协方差；\(\boldsymbol\Sigma_{\mathrm o}\)、\(\boldsymbol\Sigma_{\mathrm n}\)、\(\boldsymbol\Sigma_{\mathrm{bal}}\)是旧任务、新任务和等权共享协方差，\(\boldsymbol\Sigma_{\mathrm{full}}\)、\(\boldsymbol\Sigma_{\mathrm{blk}}\)是full与三块结构，\(\lambda_{\min}\)是最小特征值。
 
 旧类和新类使用同一均值公式。方法中不存在某个具体TX的专属中心规则。
 
@@ -1080,6 +1341,8 @@ $$
 \right).
 $$
 
+**本式符号说明：**\(c,k\)是类别与shot索引，\(K\)是每类样本数，\(p=288\)是特征维数；\(\widetilde{\mathbf z}_{c,k}\)是稳健化support，\(\boldsymbol\mu_c\)是类均值，\(\mathbf D_c\)是逐维标准差对角矩阵，\(\mathbf u_{c,k}\)是标准化残差，\(\mathbf S_c^{(u)}\)是标准化经验协方差，\(\alpha_c\)是自动收缩强度，\(\zeta_c\)是平均方差，\(\mathbf I_p\)是单位矩阵，\(\widehat{\boldsymbol\Sigma}_c^{\mathrm{LW}}\)是类内Ledoit–Wolf协方差；\(\boldsymbol\Sigma_{\mathrm o}\)、\(\boldsymbol\Sigma_{\mathrm n}\)、\(\boldsymbol\Sigma_{\mathrm{bal}}\)是旧任务、新任务和等权共享协方差，\(\boldsymbol\Sigma_{\mathrm{full}}\)、\(\boldsymbol\Sigma_{\mathrm{blk}}\)是full与三块结构，\(\lambda_{\min}\)是最小特征值。
+
 标准化空间中的经验协方差为
 
 $$
@@ -1089,6 +1352,8 @@ $$
 \sum_{k=1}^{K}
 \mathbf{u}_{c,k}\mathbf{u}_{c,k}^{\mathsf T}.
 $$
+
+**本式符号说明：**\(c,k\)是类别与shot索引，\(K\)是每类样本数，\(p=288\)是特征维数；\(\widetilde{\mathbf z}_{c,k}\)是稳健化support，\(\boldsymbol\mu_c\)是类均值，\(\mathbf D_c\)是逐维标准差对角矩阵，\(\mathbf u_{c,k}\)是标准化残差，\(\mathbf S_c^{(u)}\)是标准化经验协方差，\(\alpha_c\)是自动收缩强度，\(\zeta_c\)是平均方差，\(\mathbf I_p\)是单位矩阵，\(\widehat{\boldsymbol\Sigma}_c^{\mathrm{LW}}\)是类内Ledoit–Wolf协方差；\(\boldsymbol\Sigma_{\mathrm o}\)、\(\boldsymbol\Sigma_{\mathrm n}\)、\(\boldsymbol\Sigma_{\mathrm{bal}}\)是旧任务、新任务和等权共享协方差，\(\boldsymbol\Sigma_{\mathrm{full}}\)、\(\boldsymbol\Sigma_{\mathrm{blk}}\)是full与三块结构，\(\lambda_{\min}\)是最小特征值。
 
 Ledoit–Wolf估计器自动确定\(\alpha_c\in[0,1]\)，形成
 
@@ -1108,6 +1373,8 @@ $$
 \left(\mathbf{S}^{(u)}_c\right)}{p}.
 $$
 
+**本式符号说明：**\(c,k\)是类别与shot索引，\(K\)是每类样本数，\(p=288\)是特征维数；\(\widetilde{\mathbf z}_{c,k}\)是稳健化support，\(\boldsymbol\mu_c\)是类均值，\(\mathbf D_c\)是逐维标准差对角矩阵，\(\mathbf u_{c,k}\)是标准化残差，\(\mathbf S_c^{(u)}\)是标准化经验协方差，\(\alpha_c\)是自动收缩强度，\(\zeta_c\)是平均方差，\(\mathbf I_p\)是单位矩阵，\(\widehat{\boldsymbol\Sigma}_c^{\mathrm{LW}}\)是类内Ledoit–Wolf协方差；\(\boldsymbol\Sigma_{\mathrm o}\)、\(\boldsymbol\Sigma_{\mathrm n}\)、\(\boldsymbol\Sigma_{\mathrm{bal}}\)是旧任务、新任务和等权共享协方差，\(\boldsymbol\Sigma_{\mathrm{full}}\)、\(\boldsymbol\Sigma_{\mathrm{blk}}\)是full与三块结构，\(\lambda_{\min}\)是最小特征值。
+
 再恢复原始特征尺度：
 
 $$
@@ -1117,6 +1384,8 @@ $$
 \widehat{\boldsymbol{\Sigma}}^{(u)}_c
 \mathbf{D}_c.
 $$
+
+**本式符号说明：**\(c,k\)是类别与shot索引，\(K\)是每类样本数，\(p=288\)是特征维数；\(\widetilde{\mathbf z}_{c,k}\)是稳健化support，\(\boldsymbol\mu_c\)是类均值，\(\mathbf D_c\)是逐维标准差对角矩阵，\(\mathbf u_{c,k}\)是标准化残差，\(\mathbf S_c^{(u)}\)是标准化经验协方差，\(\alpha_c\)是自动收缩强度，\(\zeta_c\)是平均方差，\(\mathbf I_p\)是单位矩阵，\(\widehat{\boldsymbol\Sigma}_c^{\mathrm{LW}}\)是类内Ledoit–Wolf协方差；\(\boldsymbol\Sigma_{\mathrm o}\)、\(\boldsymbol\Sigma_{\mathrm n}\)、\(\boldsymbol\Sigma_{\mathrm{bal}}\)是旧任务、新任务和等权共享协方差，\(\boldsymbol\Sigma_{\mathrm{full}}\)、\(\boldsymbol\Sigma_{\mathrm{blk}}\)是full与三块结构，\(\lambda_{\min}\)是最小特征值。
 
 这与当前实现中`StandardScaler→ledoit_wolf→rescale`的`shrinkage="auto"`语义一致。这里的\(\alpha_c\)由当前类support的协方差估计问题自动确定，不通过query结果或125矩阵扫描选择。
 
@@ -1132,6 +1401,8 @@ $$
 \widehat{\boldsymbol{\Sigma}}^{\mathrm{LW}}_c.
 $$
 
+**本式符号说明：**\(c,k\)是类别与shot索引，\(K\)是每类样本数，\(p=288\)是特征维数；\(\widetilde{\mathbf z}_{c,k}\)是稳健化support，\(\boldsymbol\mu_c\)是类均值，\(\mathbf D_c\)是逐维标准差对角矩阵，\(\mathbf u_{c,k}\)是标准化残差，\(\mathbf S_c^{(u)}\)是标准化经验协方差，\(\alpha_c\)是自动收缩强度，\(\zeta_c\)是平均方差，\(\mathbf I_p\)是单位矩阵，\(\widehat{\boldsymbol\Sigma}_c^{\mathrm{LW}}\)是类内Ledoit–Wolf协方差；\(\boldsymbol\Sigma_{\mathrm o}\)、\(\boldsymbol\Sigma_{\mathrm n}\)、\(\boldsymbol\Sigma_{\mathrm{bal}}\)是旧任务、新任务和等权共享协方差，\(\boldsymbol\Sigma_{\mathrm{full}}\)、\(\boldsymbol\Sigma_{\mathrm{blk}}\)是full与三块结构，\(\lambda_{\min}\)是最小特征值。
+
 新类任务协方差为
 
 $$
@@ -1141,6 +1412,8 @@ $$
 \sum_{c\in\mathcal{Y}_{\mathrm{n}}}
 \widehat{\boldsymbol{\Sigma}}^{\mathrm{LW}}_c.
 $$
+
+**本式符号说明：**\(c,k\)是类别与shot索引，\(K\)是每类样本数，\(p=288\)是特征维数；\(\widetilde{\mathbf z}_{c,k}\)是稳健化support，\(\boldsymbol\mu_c\)是类均值，\(\mathbf D_c\)是逐维标准差对角矩阵，\(\mathbf u_{c,k}\)是标准化残差，\(\mathbf S_c^{(u)}\)是标准化经验协方差，\(\alpha_c\)是自动收缩强度，\(\zeta_c\)是平均方差，\(\mathbf I_p\)是单位矩阵，\(\widehat{\boldsymbol\Sigma}_c^{\mathrm{LW}}\)是类内Ledoit–Wolf协方差；\(\boldsymbol\Sigma_{\mathrm o}\)、\(\boldsymbol\Sigma_{\mathrm n}\)、\(\boldsymbol\Sigma_{\mathrm{bal}}\)是旧任务、新任务和等权共享协方差，\(\boldsymbol\Sigma_{\mathrm{full}}\)、\(\boldsymbol\Sigma_{\mathrm{blk}}\)是full与三块结构，\(\lambda_{\min}\)是最小特征值。
 
 先在各任务内部进行类别等权汇总，意味着旧类任务的统计权重不会随着新类数量从5增加到20而被自动稀释。
 
@@ -1160,11 +1433,15 @@ $$
 }
 $$
 
+**本式符号说明：**\(c,k\)是类别与shot索引，\(K\)是每类样本数，\(p=288\)是特征维数；\(\widetilde{\mathbf z}_{c,k}\)是稳健化support，\(\boldsymbol\mu_c\)是类均值，\(\mathbf D_c\)是逐维标准差对角矩阵，\(\mathbf u_{c,k}\)是标准化残差，\(\mathbf S_c^{(u)}\)是标准化经验协方差，\(\alpha_c\)是自动收缩强度，\(\zeta_c\)是平均方差，\(\mathbf I_p\)是单位矩阵，\(\widehat{\boldsymbol\Sigma}_c^{\mathrm{LW}}\)是类内Ledoit–Wolf协方差；\(\boldsymbol\Sigma_{\mathrm o}\)、\(\boldsymbol\Sigma_{\mathrm n}\)、\(\boldsymbol\Sigma_{\mathrm{bal}}\)是旧任务、新任务和等权共享协方差，\(\boldsymbol\Sigma_{\mathrm{full}}\)、\(\boldsymbol\Sigma_{\mathrm{blk}}\)是full与三块结构，\(\lambda_{\min}\)是最小特征值。
+
 更一般地，若直接把全部类别混在一起等先验估计，则旧类任务总权重为\(C_{\mathrm{o}}/C\)，新类任务总权重为\(C_{\mathrm{n}}/C\)。当\(C_{\mathrm{o}}=6,C_{\mathrm{n}}=20\)时，旧类任务只占
 
 $$
 \frac{6}{26}\approx23.08\%.
 $$
+
+**本式符号说明：**\(c,k\)是类别与shot索引，\(K\)是每类样本数，\(p=288\)是特征维数；\(\widetilde{\mathbf z}_{c,k}\)是稳健化support，\(\boldsymbol\mu_c\)是类均值，\(\mathbf D_c\)是逐维标准差对角矩阵，\(\mathbf u_{c,k}\)是标准化残差，\(\mathbf S_c^{(u)}\)是标准化经验协方差，\(\alpha_c\)是自动收缩强度，\(\zeta_c\)是平均方差，\(\mathbf I_p\)是单位矩阵，\(\widehat{\boldsymbol\Sigma}_c^{\mathrm{LW}}\)是类内Ledoit–Wolf协方差；\(\boldsymbol\Sigma_{\mathrm o}\)、\(\boldsymbol\Sigma_{\mathrm n}\)、\(\boldsymbol\Sigma_{\mathrm{bal}}\)是旧任务、新任务和等权共享协方差，\(\boldsymbol\Sigma_{\mathrm{full}}\)、\(\boldsymbol\Sigma_{\mathrm{blk}}\)是full与三块结构，\(\lambda_{\min}\)是最小特征值。
 
 D92把两个任务的总权重固定为50%和50%，而不是让类别数量决定任务重要性。这一等权是方法定义，不是从query准确率拟合的超参数。
 
@@ -1177,6 +1454,8 @@ $$
 =
 \boldsymbol{\Sigma}_{\mathrm{bal}}.
 $$
+
+**本式符号说明：**\(c,k\)是类别与shot索引，\(K\)是每类样本数，\(p=288\)是特征维数；\(\widetilde{\mathbf z}_{c,k}\)是稳健化support，\(\boldsymbol\mu_c\)是类均值，\(\mathbf D_c\)是逐维标准差对角矩阵，\(\mathbf u_{c,k}\)是标准化残差，\(\mathbf S_c^{(u)}\)是标准化经验协方差，\(\alpha_c\)是自动收缩强度，\(\zeta_c\)是平均方差，\(\mathbf I_p\)是单位矩阵，\(\widehat{\boldsymbol\Sigma}_c^{\mathrm{LW}}\)是类内Ledoit–Wolf协方差；\(\boldsymbol\Sigma_{\mathrm o}\)、\(\boldsymbol\Sigma_{\mathrm n}\)、\(\boldsymbol\Sigma_{\mathrm{bal}}\)是旧任务、新任务和等权共享协方差，\(\boldsymbol\Sigma_{\mathrm{full}}\)、\(\boldsymbol\Sigma_{\mathrm{blk}}\)是full与三块结构，\(\lambda_{\min}\)是最小特征值。
 
 block3结构使用投影算子\(\mathcal{P}_{\mathrm{blk}}\)，只保留三个特征块内部的协方差：
 
@@ -1195,6 +1474,8 @@ $$
 \end{bmatrix}.
 $$
 
+**本式符号说明：**\(c,k\)是类别与shot索引，\(K\)是每类样本数，\(p=288\)是特征维数；\(\widetilde{\mathbf z}_{c,k}\)是稳健化support，\(\boldsymbol\mu_c\)是类均值，\(\mathbf D_c\)是逐维标准差对角矩阵，\(\mathbf u_{c,k}\)是标准化残差，\(\mathbf S_c^{(u)}\)是标准化经验协方差，\(\alpha_c\)是自动收缩强度，\(\zeta_c\)是平均方差，\(\mathbf I_p\)是单位矩阵，\(\widehat{\boldsymbol\Sigma}_c^{\mathrm{LW}}\)是类内Ledoit–Wolf协方差；\(\boldsymbol\Sigma_{\mathrm o}\)、\(\boldsymbol\Sigma_{\mathrm n}\)、\(\boldsymbol\Sigma_{\mathrm{bal}}\)是旧任务、新任务和等权共享协方差，\(\boldsymbol\Sigma_{\mathrm{full}}\)、\(\boldsymbol\Sigma_{\mathrm{blk}}\)是full与三块结构，\(\lambda_{\min}\)是最小特征值。
+
 两种结构分别表达“相信跨块相关性”和“只相信块内相关性”。D92保留两者，随后由support内证据按类别融合。
 
 ### 7.7 正定性门禁
@@ -1210,6 +1491,8 @@ $$
 }{2}.
 $$
 
+**本式符号说明：**\(c,k\)是类别与shot索引，\(K\)是每类样本数，\(p=288\)是特征维数；\(\widetilde{\mathbf z}_{c,k}\)是稳健化support，\(\boldsymbol\mu_c\)是类均值，\(\mathbf D_c\)是逐维标准差对角矩阵，\(\mathbf u_{c,k}\)是标准化残差，\(\mathbf S_c^{(u)}\)是标准化经验协方差，\(\alpha_c\)是自动收缩强度，\(\zeta_c\)是平均方差，\(\mathbf I_p\)是单位矩阵，\(\widehat{\boldsymbol\Sigma}_c^{\mathrm{LW}}\)是类内Ledoit–Wolf协方差；\(\boldsymbol\Sigma_{\mathrm o}\)、\(\boldsymbol\Sigma_{\mathrm n}\)、\(\boldsymbol\Sigma_{\mathrm{bal}}\)是旧任务、新任务和等权共享协方差，\(\boldsymbol\Sigma_{\mathrm{full}}\)、\(\boldsymbol\Sigma_{\mathrm{blk}}\)是full与三块结构，\(\lambda_{\min}\)是最小特征值。
+
 若最小特征值不满足
 
 $$
@@ -1218,6 +1501,8 @@ $$
 \boldsymbol{\Sigma}
 \right)>0,
 $$
+
+**本式符号说明：**\(c,k\)是类别与shot索引，\(K\)是每类样本数，\(p=288\)是特征维数；\(\widetilde{\mathbf z}_{c,k}\)是稳健化support，\(\boldsymbol\mu_c\)是类均值，\(\mathbf D_c\)是逐维标准差对角矩阵，\(\mathbf u_{c,k}\)是标准化残差，\(\mathbf S_c^{(u)}\)是标准化经验协方差，\(\alpha_c\)是自动收缩强度，\(\zeta_c\)是平均方差，\(\mathbf I_p\)是单位矩阵，\(\widehat{\boldsymbol\Sigma}_c^{\mathrm{LW}}\)是类内Ledoit–Wolf协方差；\(\boldsymbol\Sigma_{\mathrm o}\)、\(\boldsymbol\Sigma_{\mathrm n}\)、\(\boldsymbol\Sigma_{\mathrm{bal}}\)是旧任务、新任务和等权共享协方差，\(\boldsymbol\Sigma_{\mathrm{full}}\)、\(\boldsymbol\Sigma_{\mathrm{blk}}\)是full与三块结构，\(\lambda_{\min}\)是最小特征值。
 
 则当前fit失败闭合，不使用伪逆悄悄改变方法语义。
 
@@ -1233,6 +1518,8 @@ $$
 \lVert\mathbf{q}-\boldsymbol{\mu}_c\rVert_2^2.
 $$
 
+**本式符号说明：**\(\mathbf q\)是query特征，\(c\)是候选类别，\(\boldsymbol\mu_c\)是类均值，\(\boldsymbol\Sigma\)是共享协方差，\((\cdot)^{-1}\)表示逆或等价线性求解；\(p(\mathbf z\mid y=c)\)是类条件密度，\(\mathcal N\)是高斯分布，\(\pi_c=1/C\)是等类别先验；\(\mathbf w_c,b_c\)是类别仿射系数和截距，\(s_c\)是判别分数，\(\mathbf W\)是所有类别系数矩阵，\(\mathbf M\)是类均值矩阵；横线量\(\bar{\mathbf w},\bar b\)是跨类平均，\(\arg\max\)返回最大分数类别。
+
 它把所有方向看成同样可靠。LDA使用协方差修正距离：
 
 $$
@@ -1244,6 +1531,8 @@ $$
 \mathbf{q}-\boldsymbol{\mu}_c
 \right),
 $$
+
+**本式符号说明：**\(\mathbf q\)是query特征，\(c\)是候选类别，\(\boldsymbol\mu_c\)是类均值，\(\boldsymbol\Sigma\)是共享协方差，\((\cdot)^{-1}\)表示逆或等价线性求解；\(p(\mathbf z\mid y=c)\)是类条件密度，\(\mathcal N\)是高斯分布，\(\pi_c=1/C\)是等类别先验；\(\mathbf w_c,b_c\)是类别仿射系数和截距，\(s_c\)是判别分数，\(\mathbf W\)是所有类别系数矩阵，\(\mathbf M\)是类均值矩阵；横线量\(\bar{\mathbf w},\bar b\)是跨类平均，\(\arg\max\)返回最大分数类别。
 
 变化剧烈、噪声大的方向会被\(\boldsymbol{\Sigma}^{-1}\)减弱，稳定方向会获得更高判别作用。
 
@@ -1287,6 +1576,8 @@ $$
 \end{bmatrix},
 $$
 
+**本式符号说明：**\(\mathbf q\)是query特征，\(c\)是候选类别，\(\boldsymbol\mu_c\)是类均值，\(\boldsymbol\Sigma\)是共享协方差，\((\cdot)^{-1}\)表示逆或等价线性求解；\(p(\mathbf z\mid y=c)\)是类条件密度，\(\mathcal N\)是高斯分布，\(\pi_c=1/C\)是等类别先验；\(\mathbf w_c,b_c\)是类别仿射系数和截距，\(s_c\)是判别分数，\(\mathbf W\)是所有类别系数矩阵，\(\mathbf M\)是类均值矩阵；横线量\(\bar{\mathbf w},\bar b\)是跨类平均，\(\arg\max\)返回最大分数类别。
+
 共享协方差为
 
 $$
@@ -1298,6 +1589,8 @@ $$
 \end{bmatrix}.
 $$
 
+**本式符号说明：**\(\mathbf q\)是query特征，\(c\)是候选类别，\(\boldsymbol\mu_c\)是类均值，\(\boldsymbol\Sigma\)是共享协方差，\((\cdot)^{-1}\)表示逆或等价线性求解；\(p(\mathbf z\mid y=c)\)是类条件密度，\(\mathcal N\)是高斯分布，\(\pi_c=1/C\)是等类别先验；\(\mathbf w_c,b_c\)是类别仿射系数和截距，\(s_c\)是判别分数，\(\mathbf W\)是所有类别系数矩阵，\(\mathbf M\)是类均值矩阵；横线量\(\bar{\mathbf w},\bar b\)是跨类平均，\(\arg\max\)返回最大分数类别。
+
 第一维方差是2，说明它比第二维更不稳定。逆协方差为
 
 $$
@@ -1308,6 +1601,8 @@ $$
 0&1
 \end{bmatrix},
 $$
+
+**本式符号说明：**\(\mathbf q\)是query特征，\(c\)是候选类别，\(\boldsymbol\mu_c\)是类均值，\(\boldsymbol\Sigma\)是共享协方差，\((\cdot)^{-1}\)表示逆或等价线性求解；\(p(\mathbf z\mid y=c)\)是类条件密度，\(\mathcal N\)是高斯分布，\(\pi_c=1/C\)是等类别先验；\(\mathbf w_c,b_c\)是类别仿射系数和截距，\(s_c\)是判别分数，\(\mathbf W\)是所有类别系数矩阵，\(\mathbf M\)是类均值矩阵；横线量\(\bar{\mathbf w},\bar b\)是跨类平均，\(\arg\max\)返回最大分数类别。
 
 所以
 
@@ -1325,6 +1620,8 @@ $$
 \end{bmatrix}.
 $$
 
+**本式符号说明：**\(\mathbf q\)是query特征，\(c\)是候选类别，\(\boldsymbol\mu_c\)是类均值，\(\boldsymbol\Sigma\)是共享协方差，\((\cdot)^{-1}\)表示逆或等价线性求解；\(p(\mathbf z\mid y=c)\)是类条件密度，\(\mathcal N\)是高斯分布，\(\pi_c=1/C\)是等类别先验；\(\mathbf w_c,b_c\)是类别仿射系数和截距，\(s_c\)是判别分数，\(\mathbf W\)是所有类别系数矩阵，\(\mathbf M\)是类均值矩阵；横线量\(\bar{\mathbf w},\bar b\)是跨类平均，\(\arg\max\)返回最大分数类别。
+
 第一维的判别贡献被减半。这就是“用协方差把高波动方向降权”的含义。实际D92在288维空间中一次求出全部\(C\)个\(\mathbf{w}_c\)，不会为每条query重新求逆。
 
 ### 8.1 高斯共享协方差假设
@@ -1341,6 +1638,8 @@ p(\mathbf{z}\mid y=c)
 \right).
 $$
 
+**本式符号说明：**\(\mathbf q\)是query特征，\(c\)是候选类别，\(\boldsymbol\mu_c\)是类均值，\(\boldsymbol\Sigma\)是共享协方差，\((\cdot)^{-1}\)表示逆或等价线性求解；\(p(\mathbf z\mid y=c)\)是类条件密度，\(\mathcal N\)是高斯分布，\(\pi_c=1/C\)是等类别先验；\(\mathbf w_c,b_c\)是类别仿射系数和截距，\(s_c\)是判别分数，\(\mathbf W\)是所有类别系数矩阵，\(\mathbf M\)是类均值矩阵；横线量\(\bar{\mathbf w},\bar b\)是跨类平均，\(\arg\max\)返回最大分数类别。
+
 所有类别先验固定为
 
 $$
@@ -1348,6 +1647,8 @@ $$
 =
 \frac{1}{C}.
 $$
+
+**本式符号说明：**\(\mathbf q\)是query特征，\(c\)是候选类别，\(\boldsymbol\mu_c\)是类均值，\(\boldsymbol\Sigma\)是共享协方差，\((\cdot)^{-1}\)表示逆或等价线性求解；\(p(\mathbf z\mid y=c)\)是类条件密度，\(\mathcal N\)是高斯分布，\(\pi_c=1/C\)是等类别先验；\(\mathbf w_c,b_c\)是类别仿射系数和截距，\(s_c\)是判别分数，\(\mathbf W\)是所有类别系数矩阵，\(\mathbf M\)是类均值矩阵；横线量\(\bar{\mathbf w},\bar b\)是跨类平均，\(\arg\max\)返回最大分数类别。
 
 等先验避免support数量、历史类别频率或真实query类别比例改变决策边界。
 
@@ -1370,6 +1671,8 @@ s_c(\mathbf{q})
 \log\pi_c.
 $$
 
+**本式符号说明：**\(\mathbf q\)是query特征，\(c\)是候选类别，\(\boldsymbol\mu_c\)是类均值，\(\boldsymbol\Sigma\)是共享协方差，\((\cdot)^{-1}\)表示逆或等价线性求解；\(p(\mathbf z\mid y=c)\)是类条件密度，\(\mathcal N\)是高斯分布，\(\pi_c=1/C\)是等类别先验；\(\mathbf w_c,b_c\)是类别仿射系数和截距，\(s_c\)是判别分数，\(\mathbf W\)是所有类别系数矩阵，\(\mathbf M\)是类均值矩阵；横线量\(\bar{\mathbf w},\bar b\)是跨类平均，\(\arg\max\)返回最大分数类别。
+
 定义
 
 $$
@@ -1378,6 +1681,8 @@ $$
 \boldsymbol{\Sigma}^{-1}
 \boldsymbol{\mu}_c,
 $$
+
+**本式符号说明：**\(\mathbf q\)是query特征，\(c\)是候选类别，\(\boldsymbol\mu_c\)是类均值，\(\boldsymbol\Sigma\)是共享协方差，\((\cdot)^{-1}\)表示逆或等价线性求解；\(p(\mathbf z\mid y=c)\)是类条件密度，\(\mathcal N\)是高斯分布，\(\pi_c=1/C\)是等类别先验；\(\mathbf w_c,b_c\)是类别仿射系数和截距，\(s_c\)是判别分数，\(\mathbf W\)是所有类别系数矩阵，\(\mathbf M\)是类均值矩阵；横线量\(\bar{\mathbf w},\bar b\)是跨类平均，\(\arg\max\)返回最大分数类别。
 
 $$
 b_c
@@ -1391,6 +1696,8 @@ b_c
 \log\pi_c,
 $$
 
+**本式符号说明：**\(\mathbf q\)是query特征，\(c\)是候选类别，\(\boldsymbol\mu_c\)是类均值，\(\boldsymbol\Sigma\)是共享协方差，\((\cdot)^{-1}\)表示逆或等价线性求解；\(p(\mathbf z\mid y=c)\)是类条件密度，\(\mathcal N\)是高斯分布，\(\pi_c=1/C\)是等类别先验；\(\mathbf w_c,b_c\)是类别仿射系数和截距，\(s_c\)是判别分数，\(\mathbf W\)是所有类别系数矩阵，\(\mathbf M\)是类均值矩阵；横线量\(\bar{\mathbf w},\bar b\)是跨类平均，\(\arg\max\)返回最大分数类别。
+
 即可写成
 
 $$
@@ -1398,6 +1705,8 @@ s_c(\mathbf{q})
 =
 \mathbf{q}^{\mathsf T}\mathbf{w}_c+b_c.
 $$
+
+**本式符号说明：**\(\mathbf q\)是query特征，\(c\)是候选类别，\(\boldsymbol\mu_c\)是类均值，\(\boldsymbol\Sigma\)是共享协方差，\((\cdot)^{-1}\)表示逆或等价线性求解；\(p(\mathbf z\mid y=c)\)是类条件密度，\(\mathcal N\)是高斯分布，\(\pi_c=1/C\)是等类别先验；\(\mathbf w_c,b_c\)是类别仿射系数和截距，\(s_c\)是判别分数，\(\mathbf W\)是所有类别系数矩阵，\(\mathbf M\)是类均值矩阵；横线量\(\bar{\mathbf w},\bar b\)是跨类平均，\(\arg\max\)返回最大分数类别。
 
 实现不显式计算\(\boldsymbol{\Sigma}^{-1}\)，而是求解线性方程
 
@@ -1419,6 +1728,8 @@ $$
 \end{bmatrix}.
 $$
 
+**本式符号说明：**\(\mathbf q\)是query特征，\(c\)是候选类别，\(\boldsymbol\mu_c\)是类均值，\(\boldsymbol\Sigma\)是共享协方差，\((\cdot)^{-1}\)表示逆或等价线性求解；\(p(\mathbf z\mid y=c)\)是类条件密度，\(\mathcal N\)是高斯分布，\(\pi_c=1/C\)是等类别先验；\(\mathbf w_c,b_c\)是类别仿射系数和截距，\(s_c\)是判别分数，\(\mathbf W\)是所有类别系数矩阵，\(\mathbf M\)是类均值矩阵；横线量\(\bar{\mathbf w},\bar b\)是跨类平均，\(\arg\max\)返回最大分数类别。
+
 直接求解通常比先形成逆矩阵再相乘更稳定。
 
 ### 8.3 删除类别公共仿射项
@@ -1435,6 +1746,8 @@ $$
 \frac{1}{C}\sum_{c=1}^{C}b_c,
 $$
 
+**本式符号说明：**\(\mathbf q\)是query特征，\(c\)是候选类别，\(\boldsymbol\mu_c\)是类均值，\(\boldsymbol\Sigma\)是共享协方差，\((\cdot)^{-1}\)表示逆或等价线性求解；\(p(\mathbf z\mid y=c)\)是类条件密度，\(\mathcal N\)是高斯分布，\(\pi_c=1/C\)是等类别先验；\(\mathbf w_c,b_c\)是类别仿射系数和截距，\(s_c\)是判别分数，\(\mathbf W\)是所有类别系数矩阵，\(\mathbf M\)是类均值矩阵；横线量\(\bar{\mathbf w},\bar b\)是跨类平均，\(\arg\max\)返回最大分数类别。
+
 $$
 \mathbf{w}_c
 \leftarrow
@@ -1444,6 +1757,8 @@ b_c
 \leftarrow
 b_c-\bar{b}.
 $$
+
+**本式符号说明：**\(\mathbf q\)是query特征，\(c\)是候选类别，\(\boldsymbol\mu_c\)是类均值，\(\boldsymbol\Sigma\)是共享协方差，\((\cdot)^{-1}\)表示逆或等价线性求解；\(p(\mathbf z\mid y=c)\)是类条件密度，\(\mathcal N\)是高斯分布，\(\pi_c=1/C\)是等类别先验；\(\mathbf w_c,b_c\)是类别仿射系数和截距，\(s_c\)是判别分数，\(\mathbf W\)是所有类别系数矩阵，\(\mathbf M\)是类均值矩阵；横线量\(\bar{\mathbf w},\bar b\)是跨类平均，\(\arg\max\)返回最大分数类别。
 
 因为
 
@@ -1460,6 +1775,8 @@ $$
 +b_c-\bar{b}
 \right],
 $$
+
+**本式符号说明：**\(\mathbf q\)是query特征，\(c\)是候选类别，\(\boldsymbol\mu_c\)是类均值，\(\boldsymbol\Sigma\)是共享协方差，\((\cdot)^{-1}\)表示逆或等价线性求解；\(p(\mathbf z\mid y=c)\)是类条件密度，\(\mathcal N\)是高斯分布，\(\pi_c=1/C\)是等类别先验；\(\mathbf w_c,b_c\)是类别仿射系数和截距，\(s_c\)是判别分数，\(\mathbf W\)是所有类别系数矩阵，\(\mathbf M\)是类均值矩阵；横线量\(\bar{\mathbf w},\bar b\)是跨类平均，\(\arg\max\)返回最大分数类别。
 
 这一操作不改变FP64理论决策，却消除了任意score gauge，便于不同几何分支稳定融合。
 
@@ -1503,6 +1820,8 @@ $$
 \ell_{\mathrm{blk}}=0.35.
 $$
 
+**本式符号说明：**\(h\in\{\mathrm{full},\mathrm{blk}\}\)是几何分支，\(i,c,j\)分别是support、目标类别和求和类别索引；\(s_{i,c}^{(h)}\)是分支logit，\(\widetilde s_{i,c}^{(h)}\)是跨类中心化logit，\(r_h\)是其RMS尺度；\(t\)是shot秩，\(\mathcal H_t\)是第\(t\)秩留出集合，\(\mathcal S_{-t}\)是训练子集；\(\ell_{c,h}^{\mathrm{LOO}}\)是类别级留一交叉熵，\(\eta_{c,h}\)是由负交叉熵softmax得到的分支权重，\(K\)控制证据强度；\(\mathbf w_c^{(0)},b_c^{(0)}\)是融合后的基线仿射行。
+
 两个未归一化证据为
 
 $$
@@ -1512,12 +1831,16 @@ $$
 \approx0.368,
 $$
 
+**本式符号说明：**\(h\in\{\mathrm{full},\mathrm{blk}\}\)是几何分支，\(i,c,j\)分别是support、目标类别和求和类别索引；\(s_{i,c}^{(h)}\)是分支logit，\(\widetilde s_{i,c}^{(h)}\)是跨类中心化logit，\(r_h\)是其RMS尺度；\(t\)是shot秩，\(\mathcal H_t\)是第\(t\)秩留出集合，\(\mathcal S_{-t}\)是训练子集；\(\ell_{c,h}^{\mathrm{LOO}}\)是类别级留一交叉熵，\(\eta_{c,h}\)是由负交叉熵softmax得到的分支权重，\(K\)控制证据强度；\(\mathbf w_c^{(0)},b_c^{(0)}\)是融合后的基线仿射行。
+
 $$
 \exp(-5\times0.35)
 =
 \exp(-1.75)
 \approx0.174.
 $$
+
+**本式符号说明：**\(h\in\{\mathrm{full},\mathrm{blk}\}\)是几何分支，\(i,c,j\)分别是support、目标类别和求和类别索引；\(s_{i,c}^{(h)}\)是分支logit，\(\widetilde s_{i,c}^{(h)}\)是跨类中心化logit，\(r_h\)是其RMS尺度；\(t\)是shot秩，\(\mathcal H_t\)是第\(t\)秩留出集合，\(\mathcal S_{-t}\)是训练子集；\(\ell_{c,h}^{\mathrm{LOO}}\)是类别级留一交叉熵，\(\eta_{c,h}\)是由负交叉熵softmax得到的分支权重，\(K\)控制证据强度；\(\mathbf w_c^{(0)},b_c^{(0)}\)是融合后的基线仿射行。
 
 归一化后：
 
@@ -1528,10 +1851,14 @@ $$
 \approx0.679,
 $$
 
+**本式符号说明：**\(h\in\{\mathrm{full},\mathrm{blk}\}\)是几何分支，\(i,c,j\)分别是support、目标类别和求和类别索引；\(s_{i,c}^{(h)}\)是分支logit，\(\widetilde s_{i,c}^{(h)}\)是跨类中心化logit，\(r_h\)是其RMS尺度；\(t\)是shot秩，\(\mathcal H_t\)是第\(t\)秩留出集合，\(\mathcal S_{-t}\)是训练子集；\(\ell_{c,h}^{\mathrm{LOO}}\)是类别级留一交叉熵，\(\eta_{c,h}\)是由负交叉熵softmax得到的分支权重，\(K\)控制证据强度；\(\mathbf w_c^{(0)},b_c^{(0)}\)是融合后的基线仿射行。
+
 $$
 \eta_{\mathrm{blk}}
 \approx0.321.
 $$
+
+**本式符号说明：**\(h\in\{\mathrm{full},\mathrm{blk}\}\)是几何分支，\(i,c,j\)分别是support、目标类别和求和类别索引；\(s_{i,c}^{(h)}\)是分支logit，\(\widetilde s_{i,c}^{(h)}\)是跨类中心化logit，\(r_h\)是其RMS尺度；\(t\)是shot秩，\(\mathcal H_t\)是第\(t\)秩留出集合，\(\mathcal S_{-t}\)是训练子集；\(\ell_{c,h}^{\mathrm{LOO}}\)是类别级留一交叉熵，\(\eta_{c,h}\)是由负交叉熵softmax得到的分支权重，\(K\)控制证据强度；\(\mathbf w_c^{(0)},b_c^{(0)}\)是融合后的基线仿射行。
 
 于是该类别的最终判别行约有67.9%来自full，32.1%来自block3。另一类别可能得到相反权重，因此这是逐类别融合，不是全局模型选择。这个数值例子只用于解释公式。
 
@@ -1551,6 +1878,8 @@ s_{i,c}^{(h)}
 +b_c^{(h)}.
 $$
 
+**本式符号说明：**\(h\in\{\mathrm{full},\mathrm{blk}\}\)是几何分支，\(i,c,j\)分别是support、目标类别和求和类别索引；\(s_{i,c}^{(h)}\)是分支logit，\(\widetilde s_{i,c}^{(h)}\)是跨类中心化logit，\(r_h\)是其RMS尺度；\(t\)是shot秩，\(\mathcal H_t\)是第\(t\)秩留出集合，\(\mathcal S_{-t}\)是训练子集；\(\ell_{c,h}^{\mathrm{LOO}}\)是类别级留一交叉熵，\(\eta_{c,h}\)是由负交叉熵softmax得到的分支权重，\(K\)控制证据强度；\(\mathbf w_c^{(0)},b_c^{(0)}\)是融合后的基线仿射行。
+
 先对每一行删除类别均值：
 
 $$
@@ -1561,6 +1890,8 @@ s_{i,c}^{(h)}
 \frac{1}{C}
 \sum_{j=1}^{C}s_{i,j}^{(h)}.
 $$
+
+**本式符号说明：**\(h\in\{\mathrm{full},\mathrm{blk}\}\)是几何分支，\(i,c,j\)分别是support、目标类别和求和类别索引；\(s_{i,c}^{(h)}\)是分支logit，\(\widetilde s_{i,c}^{(h)}\)是跨类中心化logit，\(r_h\)是其RMS尺度；\(t\)是shot秩，\(\mathcal H_t\)是第\(t\)秩留出集合，\(\mathcal S_{-t}\)是训练子集；\(\ell_{c,h}^{\mathrm{LOO}}\)是类别级留一交叉熵，\(\eta_{c,h}\)是由负交叉熵softmax得到的分支权重，\(K\)控制证据强度；\(\mathbf w_c^{(0)},b_c^{(0)}\)是融合后的基线仿射行。
 
 分支RMS尺度为
 
@@ -1576,6 +1907,8 @@ r_h
 \right)^2
 }.
 $$
+
+**本式符号说明：**\(h\in\{\mathrm{full},\mathrm{blk}\}\)是几何分支，\(i,c,j\)分别是support、目标类别和求和类别索引；\(s_{i,c}^{(h)}\)是分支logit，\(\widetilde s_{i,c}^{(h)}\)是跨类中心化logit，\(r_h\)是其RMS尺度；\(t\)是shot秩，\(\mathcal H_t\)是第\(t\)秩留出集合，\(\mathcal S_{-t}\)是训练子集；\(\ell_{c,h}^{\mathrm{LOO}}\)是类别级留一交叉熵，\(\eta_{c,h}\)是由负交叉熵softmax得到的分支权重，\(K\)控制证据强度；\(\mathbf w_c^{(0)},b_c^{(0)}\)是融合后的基线仿射行。
 
 后续使用\(s_{i,c}^{(h)}/r_h\)，防止某个分支仅因logit绝对尺度更大而获得更高权重。
 
@@ -1593,6 +1926,8 @@ $$
 t=1,\ldots,K.
 $$
 
+**本式符号说明：**\(h\in\{\mathrm{full},\mathrm{blk}\}\)是几何分支，\(i,c,j\)分别是support、目标类别和求和类别索引；\(s_{i,c}^{(h)}\)是分支logit，\(\widetilde s_{i,c}^{(h)}\)是跨类中心化logit，\(r_h\)是其RMS尺度；\(t\)是shot秩，\(\mathcal H_t\)是第\(t\)秩留出集合，\(\mathcal S_{-t}\)是训练子集；\(\ell_{c,h}^{\mathrm{LOO}}\)是类别级留一交叉熵，\(\eta_{c,h}\)是由负交叉熵softmax得到的分支权重，\(K\)控制证据强度；\(\mathbf w_c^{(0)},b_c^{(0)}\)是融合后的基线仿射行。
+
 第\(t\)折训练集合为
 
 $$
@@ -1600,6 +1935,8 @@ $$
 =
 \mathcal{S}\setminus\mathcal{H}_t.
 $$
+
+**本式符号说明：**\(h\in\{\mathrm{full},\mathrm{blk}\}\)是几何分支，\(i,c,j\)分别是support、目标类别和求和类别索引；\(s_{i,c}^{(h)}\)是分支logit，\(\widetilde s_{i,c}^{(h)}\)是跨类中心化logit，\(r_h\)是其RMS尺度；\(t\)是shot秩，\(\mathcal H_t\)是第\(t\)秩留出集合，\(\mathcal S_{-t}\)是训练子集；\(\ell_{c,h}^{\mathrm{LOO}}\)是类别级留一交叉熵，\(\eta_{c,h}\)是由负交叉熵softmax得到的分支权重，\(K\)控制证据强度；\(\mathbf w_c^{(0)},b_c^{(0)}\)是融合后的基线仿射行。
 
 每一折都只用\(\mathcal{S}_{-t}\)重新计算稳健中心、协方差和仿射头，然后预测\(\mathcal{H}_t\)。每个support样本恰好作为held样本一次。
 
@@ -1628,6 +1965,8 @@ s_{c,t,j}^{(h)}/r_h
 }.
 $$
 
+**本式符号说明：**\(h\in\{\mathrm{full},\mathrm{blk}\}\)是几何分支，\(i,c,j\)分别是support、目标类别和求和类别索引；\(s_{i,c}^{(h)}\)是分支logit，\(\widetilde s_{i,c}^{(h)}\)是跨类中心化logit，\(r_h\)是其RMS尺度；\(t\)是shot秩，\(\mathcal H_t\)是第\(t\)秩留出集合，\(\mathcal S_{-t}\)是训练子集；\(\ell_{c,h}^{\mathrm{LOO}}\)是类别级留一交叉熵，\(\eta_{c,h}\)是由负交叉熵softmax得到的分支权重，\(K\)控制证据强度；\(\mathbf w_c^{(0)},b_c^{(0)}\)是融合后的基线仿射行。
+
 把\(-K\ell_{c,h}^{\mathrm{LOO}}\)解释为类别\(c\)在分支\(h\)上的对数证据，可靠性权重为
 
 $$
@@ -1647,6 +1986,8 @@ $$
 }.
 $$
 
+**本式符号说明：**\(h\in\{\mathrm{full},\mathrm{blk}\}\)是几何分支，\(i,c,j\)分别是support、目标类别和求和类别索引；\(s_{i,c}^{(h)}\)是分支logit，\(\widetilde s_{i,c}^{(h)}\)是跨类中心化logit，\(r_h\)是其RMS尺度；\(t\)是shot秩，\(\mathcal H_t\)是第\(t\)秩留出集合，\(\mathcal S_{-t}\)是训练子集；\(\ell_{c,h}^{\mathrm{LOO}}\)是类别级留一交叉熵，\(\eta_{c,h}\)是由负交叉熵softmax得到的分支权重，\(K\)控制证据强度；\(\mathbf w_c^{(0)},b_c^{(0)}\)是融合后的基线仿射行。
+
 因此
 
 $$
@@ -1654,6 +1995,8 @@ $$
 +\eta_{c,\mathrm{blk}}
 =1.
 $$
+
+**本式符号说明：**\(h\in\{\mathrm{full},\mathrm{blk}\}\)是几何分支，\(i,c,j\)分别是support、目标类别和求和类别索引；\(s_{i,c}^{(h)}\)是分支logit，\(\widetilde s_{i,c}^{(h)}\)是跨类中心化logit，\(r_h\)是其RMS尺度；\(t\)是shot秩，\(\mathcal H_t\)是第\(t\)秩留出集合，\(\mathcal S_{-t}\)是训练子集；\(\ell_{c,h}^{\mathrm{LOO}}\)是类别级留一交叉熵，\(\eta_{c,h}\)是由负交叉熵softmax得到的分支权重，\(K\)控制证据强度；\(\mathbf w_c^{(0)},b_c^{(0)}\)是融合后的基线仿射行。
 
 ### 9.5 类别级仿射融合
 
@@ -1669,6 +2012,8 @@ $$
 \frac{\mathbf{w}^{(\mathrm{blk})}_c}{r_{\mathrm{blk}}},
 $$
 
+**本式符号说明：**\(h\in\{\mathrm{full},\mathrm{blk}\}\)是几何分支，\(i,c,j\)分别是support、目标类别和求和类别索引；\(s_{i,c}^{(h)}\)是分支logit，\(\widetilde s_{i,c}^{(h)}\)是跨类中心化logit，\(r_h\)是其RMS尺度；\(t\)是shot秩，\(\mathcal H_t\)是第\(t\)秩留出集合，\(\mathcal S_{-t}\)是训练子集；\(\ell_{c,h}^{\mathrm{LOO}}\)是类别级留一交叉熵，\(\eta_{c,h}\)是由负交叉熵softmax得到的分支权重，\(K\)控制证据强度；\(\mathbf w_c^{(0)},b_c^{(0)}\)是融合后的基线仿射行。
+
 $$
 b^{(0)}_c
 =
@@ -1678,6 +2023,8 @@ b^{(0)}_c
 \eta_{c,\mathrm{blk}}
 \frac{b^{(\mathrm{blk})}_c}{r_{\mathrm{blk}}}.
 $$
+
+**本式符号说明：**\(h\in\{\mathrm{full},\mathrm{blk}\}\)是几何分支，\(i,c,j\)分别是support、目标类别和求和类别索引；\(s_{i,c}^{(h)}\)是分支logit，\(\widetilde s_{i,c}^{(h)}\)是跨类中心化logit，\(r_h\)是其RMS尺度；\(t\)是shot秩，\(\mathcal H_t\)是第\(t\)秩留出集合，\(\mathcal S_{-t}\)是训练子集；\(\ell_{c,h}^{\mathrm{LOO}}\)是类别级留一交叉熵，\(\eta_{c,h}\)是由负交叉熵softmax得到的分支权重，\(K\)控制证据强度；\(\mathbf w_c^{(0)},b_c^{(0)}\)是融合后的基线仿射行。
 
 融合权重只来自当前row的support留一结果；它不读取outer held、query或truth-side指标。
 
@@ -1736,6 +2083,8 @@ $$
 \nu=0.01,
 $$
 
+**本式符号说明：**\(\boldsymbol\mu_c\)和\(\bar{\boldsymbol\mu}\)是类均值与跨类均值，\(\mathbf M_0\)是中心化类均值矩阵；\(\mathbf L\mathbf S\mathbf V^{\mathsf T}\)是其SVD，\(\mathbf v_j\)是第\(j\)个右奇异方向，\(r_F\)是保留Fisher秩；\(\beta_j,\nu_j,\gamma_j\)是该方向的类间能量、类内能量和有界增益，\(\mathbf A\)是残差变换；上标\((R)\)表示应用该变换后的候选，\(TP_c,FP_c\)是真阳性和假阳性计数，\(g_c\in\{0,1\}\)是逐类门，\(\mathbb1[\cdot]\)是指示函数，\(\land,\lor\)分别是逻辑与和逻辑或，\((*)\)表示最终选中的仿射行。
+
 则
 
 $$
@@ -1746,11 +2095,15 @@ $$
 0.9.
 $$
 
+**本式符号说明：**\(\boldsymbol\mu_c\)和\(\bar{\boldsymbol\mu}\)是类均值与跨类均值，\(\mathbf M_0\)是中心化类均值矩阵；\(\mathbf L\mathbf S\mathbf V^{\mathsf T}\)是其SVD，\(\mathbf v_j\)是第\(j\)个右奇异方向，\(r_F\)是保留Fisher秩；\(\beta_j,\nu_j,\gamma_j\)是该方向的类间能量、类内能量和有界增益，\(\mathbf A\)是残差变换；上标\((R)\)表示应用该变换后的候选，\(TP_c,FP_c\)是真阳性和假阳性计数，\(g_c\in\{0,1\}\)是逐类门，\(\mathbb1[\cdot]\)是指示函数，\(\land,\lor\)分别是逻辑与和逻辑或，\((*)\)表示最终选中的仿射行。
+
 该方向在\(\mathbf{A}\)中的尺度为
 
 $$
 1+\gamma=1.9.
 $$
+
+**本式符号说明：**\(\boldsymbol\mu_c\)和\(\bar{\boldsymbol\mu}\)是类均值与跨类均值，\(\mathbf M_0\)是中心化类均值矩阵；\(\mathbf L\mathbf S\mathbf V^{\mathsf T}\)是其SVD，\(\mathbf v_j\)是第\(j\)个右奇异方向，\(r_F\)是保留Fisher秩；\(\beta_j,\nu_j,\gamma_j\)是该方向的类间能量、类内能量和有界增益，\(\mathbf A\)是残差变换；上标\((R)\)表示应用该变换后的候选，\(TP_c,FP_c\)是真阳性和假阳性计数，\(g_c\in\{0,1\}\)是逐类门，\(\mathbb1[\cdot]\)是指示函数，\(\land,\lor\)分别是逻辑与和逻辑或，\((*)\)表示最终选中的仿射行。
 
 它的类间差异大、类内噪声小，所以接近最大增强。若另一方向
 
@@ -1760,6 +2113,8 @@ $$
 \nu=0.18,
 $$
 
+**本式符号说明：**\(\boldsymbol\mu_c\)和\(\bar{\boldsymbol\mu}\)是类均值与跨类均值，\(\mathbf M_0\)是中心化类均值矩阵；\(\mathbf L\mathbf S\mathbf V^{\mathsf T}\)是其SVD，\(\mathbf v_j\)是第\(j\)个右奇异方向，\(r_F\)是保留Fisher秩；\(\beta_j,\nu_j,\gamma_j\)是该方向的类间能量、类内能量和有界增益，\(\mathbf A\)是残差变换；上标\((R)\)表示应用该变换后的候选，\(TP_c,FP_c\)是真阳性和假阳性计数，\(g_c\in\{0,1\}\)是逐类门，\(\mathbb1[\cdot]\)是指示函数，\(\land,\lor\)分别是逻辑与和逻辑或，\((*)\)表示最终选中的仿射行。
+
 则
 
 $$
@@ -1767,6 +2122,8 @@ $$
 \qquad
 1+\gamma=1.1.
 $$
+
+**本式符号说明：**\(\boldsymbol\mu_c\)和\(\bar{\boldsymbol\mu}\)是类均值与跨类均值，\(\mathbf M_0\)是中心化类均值矩阵；\(\mathbf L\mathbf S\mathbf V^{\mathsf T}\)是其SVD，\(\mathbf v_j\)是第\(j\)个右奇异方向，\(r_F\)是保留Fisher秩；\(\beta_j,\nu_j,\gamma_j\)是该方向的类间能量、类内能量和有界增益，\(\mathbf A\)是残差变换；上标\((R)\)表示应用该变换后的候选，\(TP_c,FP_c\)是真阳性和假阳性计数，\(g_c\in\{0,1\}\)是逐类门，\(\mathbb1[\cdot]\)是指示函数，\(\land,\lor\)分别是逻辑与和逻辑或，\((*)\)表示最终选中的仿射行。
 
 该方向主要反映类内波动，只得到轻微增强。
 
@@ -1805,6 +2162,8 @@ $$
 \boldsymbol{\mu}_c.
 $$
 
+**本式符号说明：**\(\boldsymbol\mu_c\)和\(\bar{\boldsymbol\mu}\)是类均值与跨类均值，\(\mathbf M_0\)是中心化类均值矩阵；\(\mathbf L\mathbf S\mathbf V^{\mathsf T}\)是其SVD，\(\mathbf v_j\)是第\(j\)个右奇异方向，\(r_F\)是保留Fisher秩；\(\beta_j,\nu_j,\gamma_j\)是该方向的类间能量、类内能量和有界增益，\(\mathbf A\)是残差变换；上标\((R)\)表示应用该变换后的候选，\(TP_c,FP_c\)是真阳性和假阳性计数，\(g_c\in\{0,1\}\)是逐类门，\(\mathbb1[\cdot]\)是指示函数，\(\land,\lor\)分别是逻辑与和逻辑或，\((*)\)表示最终选中的仿射行。
+
 对\(\mathbf{M}_0\)做SVD：
 
 $$
@@ -1815,6 +2174,8 @@ $$
 \mathbf{V}^{\mathsf T}.
 $$
 
+**本式符号说明：**\(\boldsymbol\mu_c\)和\(\bar{\boldsymbol\mu}\)是类均值与跨类均值，\(\mathbf M_0\)是中心化类均值矩阵；\(\mathbf L\mathbf S\mathbf V^{\mathsf T}\)是其SVD，\(\mathbf v_j\)是第\(j\)个右奇异方向，\(r_F\)是保留Fisher秩；\(\beta_j,\nu_j,\gamma_j\)是该方向的类间能量、类内能量和有界增益，\(\mathbf A\)是残差变换；上标\((R)\)表示应用该变换后的候选，\(TP_c,FP_c\)是真阳性和假阳性计数，\(g_c\in\{0,1\}\)是逐类门，\(\mathbb1[\cdot]\)是指示函数，\(\land,\lor\)分别是逻辑与和逻辑或，\((*)\)表示最终选中的仿射行。
+
 保留机器精度判定为非零的\(r_F\leq C-1\)个右奇异方向：
 
 $$
@@ -1824,6 +2185,8 @@ $$
 \mathbf{v}_1&\cdots&\mathbf{v}_{r_F}
 \end{bmatrix}.
 $$
+
+**本式符号说明：**\(\boldsymbol\mu_c\)和\(\bar{\boldsymbol\mu}\)是类均值与跨类均值，\(\mathbf M_0\)是中心化类均值矩阵；\(\mathbf L\mathbf S\mathbf V^{\mathsf T}\)是其SVD，\(\mathbf v_j\)是第\(j\)个右奇异方向，\(r_F\)是保留Fisher秩；\(\beta_j,\nu_j,\gamma_j\)是该方向的类间能量、类内能量和有界增益，\(\mathbf A\)是残差变换；上标\((R)\)表示应用该变换后的候选，\(TP_c,FP_c\)是真阳性和假阳性计数，\(g_c\in\{0,1\}\)是逐类门，\(\mathbb1[\cdot]\)是指示函数，\(\land,\lor\)分别是逻辑与和逻辑或，\((*)\)表示最终选中的仿射行。
 
 ### 10.2 类间能量、类内能量与有界增益
 
@@ -1842,6 +2205,8 @@ $$
 \right]^2.
 $$
 
+**本式符号说明：**\(\boldsymbol\mu_c\)和\(\bar{\boldsymbol\mu}\)是类均值与跨类均值，\(\mathbf M_0\)是中心化类均值矩阵；\(\mathbf L\mathbf S\mathbf V^{\mathsf T}\)是其SVD，\(\mathbf v_j\)是第\(j\)个右奇异方向，\(r_F\)是保留Fisher秩；\(\beta_j,\nu_j,\gamma_j\)是该方向的类间能量、类内能量和有界增益，\(\mathbf A\)是残差变换；上标\((R)\)表示应用该变换后的候选，\(TP_c,FP_c\)是真阳性和假阳性计数，\(g_c\in\{0,1\}\)是逐类门，\(\mathbb1[\cdot]\)是指示函数，\(\land,\lor\)分别是逻辑与和逻辑或，\((*)\)表示最终选中的仿射行。
+
 类内能量为
 
 $$
@@ -1858,6 +2223,8 @@ $$
 \right]^2.
 $$
 
+**本式符号说明：**\(\boldsymbol\mu_c\)和\(\bar{\boldsymbol\mu}\)是类均值与跨类均值，\(\mathbf M_0\)是中心化类均值矩阵；\(\mathbf L\mathbf S\mathbf V^{\mathsf T}\)是其SVD，\(\mathbf v_j\)是第\(j\)个右奇异方向，\(r_F\)是保留Fisher秩；\(\beta_j,\nu_j,\gamma_j\)是该方向的类间能量、类内能量和有界增益，\(\mathbf A\)是残差变换；上标\((R)\)表示应用该变换后的候选，\(TP_c,FP_c\)是真阳性和假阳性计数，\(g_c\in\{0,1\}\)是逐类门，\(\mathbb1[\cdot]\)是指示函数，\(\land,\lor\)分别是逻辑与和逻辑或，\((*)\)表示最终选中的仿射行。
+
 Fisher增益定义为
 
 $$
@@ -1867,6 +2234,8 @@ $$
 \qquad
 0\leq\gamma_j\leq1.
 $$
+
+**本式符号说明：**\(\boldsymbol\mu_c\)和\(\bar{\boldsymbol\mu}\)是类均值与跨类均值，\(\mathbf M_0\)是中心化类均值矩阵；\(\mathbf L\mathbf S\mathbf V^{\mathsf T}\)是其SVD，\(\mathbf v_j\)是第\(j\)个右奇异方向，\(r_F\)是保留Fisher秩；\(\beta_j,\nu_j,\gamma_j\)是该方向的类间能量、类内能量和有界增益，\(\mathbf A\)是残差变换；上标\((R)\)表示应用该变换后的候选，\(TP_c,FP_c\)是真阳性和假阳性计数，\(g_c\in\{0,1\}\)是逐类门，\(\mathbb1[\cdot]\)是指示函数，\(\land,\lor\)分别是逻辑与和逻辑或，\((*)\)表示最终选中的仿射行。
 
 构造identity-primary变换
 
@@ -1883,6 +2252,8 @@ $$
 \mathbf{V}_{r_F}^{\mathsf T}.
 $$
 
+**本式符号说明：**\(\boldsymbol\mu_c\)和\(\bar{\boldsymbol\mu}\)是类均值与跨类均值，\(\mathbf M_0\)是中心化类均值矩阵；\(\mathbf L\mathbf S\mathbf V^{\mathsf T}\)是其SVD，\(\mathbf v_j\)是第\(j\)个右奇异方向，\(r_F\)是保留Fisher秩；\(\beta_j,\nu_j,\gamma_j\)是该方向的类间能量、类内能量和有界增益，\(\mathbf A\)是残差变换；上标\((R)\)表示应用该变换后的候选，\(TP_c,FP_c\)是真阳性和假阳性计数，\(g_c\in\{0,1\}\)是逐类门，\(\mathbb1[\cdot]\)是指示函数，\(\land,\lor\)分别是逻辑与和逻辑或，\((*)\)表示最终选中的仿射行。
+
 \(\mathbf{A}\)的特征值位于\([1,2]\)，所以它只增强类间相对稳定的方向，不会删除原始坐标或无限放大某个方向。
 
 ### 10.3 将残差变换编译进仿射头
@@ -1894,6 +2265,8 @@ $$
 =
 \mathbf{q}^{\mathsf T}\mathbf{A},
 $$
+
+**本式符号说明：**\(\boldsymbol\mu_c\)和\(\bar{\boldsymbol\mu}\)是类均值与跨类均值，\(\mathbf M_0\)是中心化类均值矩阵；\(\mathbf L\mathbf S\mathbf V^{\mathsf T}\)是其SVD，\(\mathbf v_j\)是第\(j\)个右奇异方向，\(r_F\)是保留Fisher秩；\(\beta_j,\nu_j,\gamma_j\)是该方向的类间能量、类内能量和有界增益，\(\mathbf A\)是残差变换；上标\((R)\)表示应用该变换后的候选，\(TP_c,FP_c\)是真阳性和假阳性计数，\(g_c\in\{0,1\}\)是逐类门，\(\mathbb1[\cdot]\)是指示函数，\(\land,\lor\)分别是逻辑与和逻辑或，\((*)\)表示最终选中的仿射行。
 
 再使用该分支的基础头打分，则
 
@@ -1916,6 +2289,8 @@ $$
 \mathbf{A}\mathbf{w}^{(h)}_c,
 $$
 
+**本式符号说明：**\(\boldsymbol\mu_c\)和\(\bar{\boldsymbol\mu}\)是类均值与跨类均值，\(\mathbf M_0\)是中心化类均值矩阵；\(\mathbf L\mathbf S\mathbf V^{\mathsf T}\)是其SVD，\(\mathbf v_j\)是第\(j\)个右奇异方向，\(r_F\)是保留Fisher秩；\(\beta_j,\nu_j,\gamma_j\)是该方向的类间能量、类内能量和有界增益，\(\mathbf A\)是残差变换；上标\((R)\)表示应用该变换后的候选，\(TP_c,FP_c\)是真阳性和假阳性计数，\(g_c\in\{0,1\}\)是逐类门，\(\mathbb1[\cdot]\)是指示函数，\(\land,\lor\)分别是逻辑与和逻辑或，\((*)\)表示最终选中的仿射行。
+
 矩阵行向量形式为
 
 $$
@@ -1925,11 +2300,15 @@ $$
 \mathbf{A}^{\mathsf T}.
 $$
 
+**本式符号说明：**\(\boldsymbol\mu_c\)和\(\bar{\boldsymbol\mu}\)是类均值与跨类均值，\(\mathbf M_0\)是中心化类均值矩阵；\(\mathbf L\mathbf S\mathbf V^{\mathsf T}\)是其SVD，\(\mathbf v_j\)是第\(j\)个右奇异方向，\(r_F\)是保留Fisher秩；\(\beta_j,\nu_j,\gamma_j\)是该方向的类间能量、类内能量和有界增益，\(\mathbf A\)是残差变换；上标\((R)\)表示应用该变换后的候选，\(TP_c,FP_c\)是真阳性和假阳性计数，\(g_c\in\{0,1\}\)是逐类门，\(\mathbb1[\cdot]\)是指示函数，\(\land,\lor\)分别是逻辑与和逻辑或，\((*)\)表示最终选中的仿射行。
+
 残差候选不会直接沿用基础分支的融合权重。D92在相同support留一划分上重新计算残差分支交叉熵
 
 $$
 \ell_{c,h}^{(R,\mathrm{LOO})},
 $$
+
+**本式符号说明：**\(\boldsymbol\mu_c\)和\(\bar{\boldsymbol\mu}\)是类均值与跨类均值，\(\mathbf M_0\)是中心化类均值矩阵；\(\mathbf L\mathbf S\mathbf V^{\mathsf T}\)是其SVD，\(\mathbf v_j\)是第\(j\)个右奇异方向，\(r_F\)是保留Fisher秩；\(\beta_j,\nu_j,\gamma_j\)是该方向的类间能量、类内能量和有界增益，\(\mathbf A\)是残差变换；上标\((R)\)表示应用该变换后的候选，\(TP_c,FP_c\)是真阳性和假阳性计数，\(g_c\in\{0,1\}\)是逐类门，\(\mathbb1[\cdot]\)是指示函数，\(\land,\lor\)分别是逻辑与和逻辑或，\((*)\)表示最终选中的仿射行。
 
 再得到残差分支权重
 
@@ -1950,6 +2329,8 @@ $$
 }.
 $$
 
+**本式符号说明：**\(\boldsymbol\mu_c\)和\(\bar{\boldsymbol\mu}\)是类均值与跨类均值，\(\mathbf M_0\)是中心化类均值矩阵；\(\mathbf L\mathbf S\mathbf V^{\mathsf T}\)是其SVD，\(\mathbf v_j\)是第\(j\)个右奇异方向，\(r_F\)是保留Fisher秩；\(\beta_j,\nu_j,\gamma_j\)是该方向的类间能量、类内能量和有界增益，\(\mathbf A\)是残差变换；上标\((R)\)表示应用该变换后的候选，\(TP_c,FP_c\)是真阳性和假阳性计数，\(g_c\in\{0,1\}\)是逐类门，\(\mathbb1[\cdot]\)是指示函数，\(\land,\lor\)分别是逻辑与和逻辑或，\((*)\)表示最终选中的仿射行。
+
 令\(r_h^{(R)}\)为残差分支的support类中心化logit RMS，完整残差候选行为
 
 $$
@@ -1964,6 +2345,8 @@ r_h^{(R)}
 },
 $$
 
+**本式符号说明：**\(\boldsymbol\mu_c\)和\(\bar{\boldsymbol\mu}\)是类均值与跨类均值，\(\mathbf M_0\)是中心化类均值矩阵；\(\mathbf L\mathbf S\mathbf V^{\mathsf T}\)是其SVD，\(\mathbf v_j\)是第\(j\)个右奇异方向，\(r_F\)是保留Fisher秩；\(\beta_j,\nu_j,\gamma_j\)是该方向的类间能量、类内能量和有界增益，\(\mathbf A\)是残差变换；上标\((R)\)表示应用该变换后的候选，\(TP_c,FP_c\)是真阳性和假阳性计数，\(g_c\in\{0,1\}\)是逐类门，\(\mathbb1[\cdot]\)是指示函数，\(\land,\lor\)分别是逻辑与和逻辑或，\((*)\)表示最终选中的仿射行。
+
 $$
 b^{(R)}_c
 =
@@ -1976,6 +2359,8 @@ r_h^{(R)}
 }.
 $$
 
+**本式符号说明：**\(\boldsymbol\mu_c\)和\(\bar{\boldsymbol\mu}\)是类均值与跨类均值，\(\mathbf M_0\)是中心化类均值矩阵；\(\mathbf L\mathbf S\mathbf V^{\mathsf T}\)是其SVD，\(\mathbf v_j\)是第\(j\)个右奇异方向，\(r_F\)是保留Fisher秩；\(\beta_j,\nu_j,\gamma_j\)是该方向的类间能量、类内能量和有界增益，\(\mathbf A\)是残差变换；上标\((R)\)表示应用该变换后的候选，\(TP_c,FP_c\)是真阳性和假阳性计数，\(g_c\in\{0,1\}\)是逐类门，\(\mathbb1[\cdot]\)是指示函数，\(\land,\lor\)分别是逻辑与和逻辑或，\((*)\)表示最终选中的仿射行。
+
 因此，基础候选与Fisher残差候选各自拥有support校准后的full/block融合权重。变换和融合全部编译进仿射行，部署时仍然只保留最终一个头，不需要保存第二套query特征变换网络。
 
 ### 10.4 逐类Pareto安全门
@@ -1986,11 +2371,15 @@ $$
 TP_c^{(0)},\qquad FP_c^{(0)}.
 $$
 
+**本式符号说明：**\(\boldsymbol\mu_c\)和\(\bar{\boldsymbol\mu}\)是类均值与跨类均值，\(\mathbf M_0\)是中心化类均值矩阵；\(\mathbf L\mathbf S\mathbf V^{\mathsf T}\)是其SVD，\(\mathbf v_j\)是第\(j\)个右奇异方向，\(r_F\)是保留Fisher秩；\(\beta_j,\nu_j,\gamma_j\)是该方向的类间能量、类内能量和有界增益，\(\mathbf A\)是残差变换；上标\((R)\)表示应用该变换后的候选，\(TP_c,FP_c\)是真阳性和假阳性计数，\(g_c\in\{0,1\}\)是逐类门，\(\mathbb1[\cdot]\)是指示函数，\(\land,\lor\)分别是逻辑与和逻辑或，\((*)\)表示最终选中的仿射行。
+
 只替换类别\(c\)这一行后，计数记为
 
 $$
 TP_c^{(R)},\qquad FP_c^{(R)}.
 $$
+
+**本式符号说明：**\(\boldsymbol\mu_c\)和\(\bar{\boldsymbol\mu}\)是类均值与跨类均值，\(\mathbf M_0\)是中心化类均值矩阵；\(\mathbf L\mathbf S\mathbf V^{\mathsf T}\)是其SVD，\(\mathbf v_j\)是第\(j\)个右奇异方向，\(r_F\)是保留Fisher秩；\(\beta_j,\nu_j,\gamma_j\)是该方向的类间能量、类内能量和有界增益，\(\mathbf A\)是残差变换；上标\((R)\)表示应用该变换后的候选，\(TP_c,FP_c\)是真阳性和假阳性计数，\(g_c\in\{0,1\}\)是逐类门，\(\mathbb1[\cdot]\)是指示函数，\(\land,\lor\)分别是逻辑与和逻辑或，\((*)\)表示最终选中的仿射行。
 
 类别\(c\)的初始接受条件为
 
@@ -2015,6 +2404,8 @@ FP_c^{(R)}<FP_c^{(0)}
 \right].
 $$
 
+**本式符号说明：**\(\boldsymbol\mu_c\)和\(\bar{\boldsymbol\mu}\)是类均值与跨类均值，\(\mathbf M_0\)是中心化类均值矩阵；\(\mathbf L\mathbf S\mathbf V^{\mathsf T}\)是其SVD，\(\mathbf v_j\)是第\(j\)个右奇异方向，\(r_F\)是保留Fisher秩；\(\beta_j,\nu_j,\gamma_j\)是该方向的类间能量、类内能量和有界增益，\(\mathbf A\)是残差变换；上标\((R)\)表示应用该变换后的候选，\(TP_c,FP_c\)是真阳性和假阳性计数，\(g_c\in\{0,1\}\)是逐类门，\(\mathbb1[\cdot]\)是指示函数，\(\land,\lor\)分别是逻辑与和逻辑或，\((*)\)表示最终选中的仿射行。
+
 上式用逻辑“与”连接三个条件；写成文字就是：真阳性不下降、假阳性不增加，并且至少一项严格改善。
 
 ### 10.5 原子联合检查
@@ -2033,17 +2424,23 @@ FP_c^{(0)},
 \forall c\in\mathcal{Y}.
 $$
 
+**本式符号说明：**\(\boldsymbol\mu_c\)和\(\bar{\boldsymbol\mu}\)是类均值与跨类均值，\(\mathbf M_0\)是中心化类均值矩阵；\(\mathbf L\mathbf S\mathbf V^{\mathsf T}\)是其SVD，\(\mathbf v_j\)是第\(j\)个右奇异方向，\(r_F\)是保留Fisher秩；\(\beta_j,\nu_j,\gamma_j\)是该方向的类间能量、类内能量和有界增益，\(\mathbf A\)是残差变换；上标\((R)\)表示应用该变换后的候选，\(TP_c,FP_c\)是真阳性和假阳性计数，\(g_c\in\{0,1\}\)是逐类门，\(\mathbb1[\cdot]\)是指示函数，\(\land,\lor\)分别是逻辑与和逻辑或，\((*)\)表示最终选中的仿射行。
+
 若任一类别违反条件，则全部Fisher残差行原子回滚：
 
 $$
 g_c=0,\qquad\forall c.
 $$
 
+**本式符号说明：**\(\boldsymbol\mu_c\)和\(\bar{\boldsymbol\mu}\)是类均值与跨类均值，\(\mathbf M_0\)是中心化类均值矩阵；\(\mathbf L\mathbf S\mathbf V^{\mathsf T}\)是其SVD，\(\mathbf v_j\)是第\(j\)个右奇异方向，\(r_F\)是保留Fisher秩；\(\beta_j,\nu_j,\gamma_j\)是该方向的类间能量、类内能量和有界增益，\(\mathbf A\)是残差变换；上标\((R)\)表示应用该变换后的候选，\(TP_c,FP_c\)是真阳性和假阳性计数，\(g_c\in\{0,1\}\)是逐类门，\(\mathbb1[\cdot]\)是指示函数，\(\land,\lor\)分别是逻辑与和逻辑或，\((*)\)表示最终选中的仿射行。
+
 若联合检查通过，则
 
 $$
 g_c=g_c^{\mathrm{init}}.
 $$
+
+**本式符号说明：**\(\boldsymbol\mu_c\)和\(\bar{\boldsymbol\mu}\)是类均值与跨类均值，\(\mathbf M_0\)是中心化类均值矩阵；\(\mathbf L\mathbf S\mathbf V^{\mathsf T}\)是其SVD，\(\mathbf v_j\)是第\(j\)个右奇异方向，\(r_F\)是保留Fisher秩；\(\beta_j,\nu_j,\gamma_j\)是该方向的类间能量、类内能量和有界增益，\(\mathbf A\)是残差变换；上标\((R)\)表示应用该变换后的候选，\(TP_c,FP_c\)是真阳性和假阳性计数，\(g_c\in\{0,1\}\)是逐类门，\(\mathbb1[\cdot]\)是指示函数，\(\land,\lor\)分别是逻辑与和逻辑或，\((*)\)表示最终选中的仿射行。
 
 最终分类头逐类取
 
@@ -2056,6 +2453,8 @@ $$
 \end{cases}
 $$
 
+**本式符号说明：**\(\boldsymbol\mu_c\)和\(\bar{\boldsymbol\mu}\)是类均值与跨类均值，\(\mathbf M_0\)是中心化类均值矩阵；\(\mathbf L\mathbf S\mathbf V^{\mathsf T}\)是其SVD，\(\mathbf v_j\)是第\(j\)个右奇异方向，\(r_F\)是保留Fisher秩；\(\beta_j,\nu_j,\gamma_j\)是该方向的类间能量、类内能量和有界增益，\(\mathbf A\)是残差变换；上标\((R)\)表示应用该变换后的候选，\(TP_c,FP_c\)是真阳性和假阳性计数，\(g_c\in\{0,1\}\)是逐类门，\(\mathbb1[\cdot]\)是指示函数，\(\land,\lor\)分别是逻辑与和逻辑或，\((*)\)表示最终选中的仿射行。
+
 $$
 b^{(*)}_c
 =
@@ -2064,6 +2463,8 @@ b^{(R)}_c,&g_c=1,\\
 b^{(0)}_c,&g_c=0.
 \end{cases}
 $$
+
+**本式符号说明：**\(\boldsymbol\mu_c\)和\(\bar{\boldsymbol\mu}\)是类均值与跨类均值，\(\mathbf M_0\)是中心化类均值矩阵；\(\mathbf L\mathbf S\mathbf V^{\mathsf T}\)是其SVD，\(\mathbf v_j\)是第\(j\)个右奇异方向，\(r_F\)是保留Fisher秩；\(\beta_j,\nu_j,\gamma_j\)是该方向的类间能量、类内能量和有界增益，\(\mathbf A\)是残差变换；上标\((R)\)表示应用该变换后的候选，\(TP_c,FP_c\)是真阳性和假阳性计数，\(g_c\in\{0,1\}\)是逐类门，\(\mathbb1[\cdot]\)是指示函数，\(\land,\lor\)分别是逻辑与和逻辑或，\((*)\)表示最终选中的仿射行。
 
 随后再次删除类别公共仿射项并统一转换为FP32。
 
@@ -2131,6 +2532,8 @@ $$
 \in\mathbb{R}^{288}.
 $$
 
+**本式符号说明：**\(\mathbf x^{(q)}\)是单条query IQ，\(\Phi_\theta\)是冻结特征映射，\(\mathbf q\in\mathbb R^{288}\)是query特征，\(\mathbf W,\mathbf b\)是最终全类仿射头，\(\mathbf s\in\mathbb R^C\)是\(C\)类分数，\(\widehat y\)是最大分数类别；\(A_{\mathrm{old}}^{\mathrm{before}}\)、\(A_{\mathrm{old}}^{\mathrm{after}}\)、\(A_{\mathrm{new}}\)分别是注册前旧类、注册后旧类和已注册新类准确率，\(H_{\mathrm{old,new}}\)是调和均值，\(F\)是遗忘，\(A_c^{\mathrm{after}}\)是类别\(c\)注册后准确率。
+
 然后一次性计算全部注册类分数：
 
 $$
@@ -2141,6 +2544,8 @@ $$
 \in\mathbb{R}^{C}.
 $$
 
+**本式符号说明：**\(\mathbf x^{(q)}\)是单条query IQ，\(\Phi_\theta\)是冻结特征映射，\(\mathbf q\in\mathbb R^{288}\)是query特征，\(\mathbf W,\mathbf b\)是最终全类仿射头，\(\mathbf s\in\mathbb R^C\)是\(C\)类分数，\(\widehat y\)是最大分数类别；\(A_{\mathrm{old}}^{\mathrm{before}}\)、\(A_{\mathrm{old}}^{\mathrm{after}}\)、\(A_{\mathrm{new}}\)分别是注册前旧类、注册后旧类和已注册新类准确率，\(H_{\mathrm{old,new}}\)是调和均值，\(F\)是遗忘，\(A_c^{\mathrm{after}}\)是类别\(c\)注册后准确率。
+
 预测为
 
 $$
@@ -2149,6 +2554,8 @@ $$
 \arg\max_{c\in\mathcal{Y}}
 s_c(\mathbf{q}).
 $$
+
+**本式符号说明：**\(\mathbf x^{(q)}\)是单条query IQ，\(\Phi_\theta\)是冻结特征映射，\(\mathbf q\in\mathbb R^{288}\)是query特征，\(\mathbf W,\mathbf b\)是最终全类仿射头，\(\mathbf s\in\mathbb R^C\)是\(C\)类分数，\(\widehat y\)是最大分数类别；\(A_{\mathrm{old}}^{\mathrm{before}}\)、\(A_{\mathrm{old}}^{\mathrm{after}}\)、\(A_{\mathrm{new}}\)分别是注册前旧类、注册后旧类和已注册新类准确率，\(H_{\mathrm{old,new}}\)是调和均值，\(F\)是遗忘，\(A_c^{\mathrm{after}}\)是类别\(c\)注册后准确率。
 
 query不会被类中心平移，因为类中心平移已经编译进由support拟合的判别头。query也不会参与重新估计\(\boldsymbol{\Sigma}_{\mathrm{o}}\)、\(\boldsymbol{\Sigma}_{\mathrm{n}}\)、融合权重或安全门。
 
@@ -2192,17 +2599,23 @@ $$
 A_{\mathrm{old}}^{\mathrm{before}}.
 $$
 
+**本式符号说明：**\(\mathbf x^{(q)}\)是单条query IQ，\(\Phi_\theta\)是冻结特征映射，\(\mathbf q\in\mathbb R^{288}\)是query特征，\(\mathbf W,\mathbf b\)是最终全类仿射头，\(\mathbf s\in\mathbb R^C\)是\(C\)类分数，\(\widehat y\)是最大分数类别；\(A_{\mathrm{old}}^{\mathrm{before}}\)、\(A_{\mathrm{old}}^{\mathrm{after}}\)、\(A_{\mathrm{new}}\)分别是注册前旧类、注册后旧类和已注册新类准确率，\(H_{\mathrm{old,new}}\)是调和均值，\(F\)是遗忘，\(A_c^{\mathrm{after}}\)是类别\(c\)注册后准确率。
+
 注册后在同一批旧类query上的准确率记为
 
 $$
 A_{\mathrm{old}}^{\mathrm{after}}.
 $$
 
+**本式符号说明：**\(\mathbf x^{(q)}\)是单条query IQ，\(\Phi_\theta\)是冻结特征映射，\(\mathbf q\in\mathbb R^{288}\)是query特征，\(\mathbf W,\mathbf b\)是最终全类仿射头，\(\mathbf s\in\mathbb R^C\)是\(C\)类分数，\(\widehat y\)是最大分数类别；\(A_{\mathrm{old}}^{\mathrm{before}}\)、\(A_{\mathrm{old}}^{\mathrm{after}}\)、\(A_{\mathrm{new}}\)分别是注册前旧类、注册后旧类和已注册新类准确率，\(H_{\mathrm{old,new}}\)是调和均值，\(F\)是遗忘，\(A_c^{\mathrm{after}}\)是类别\(c\)注册后准确率。
+
 新类准确率记为
 
 $$
 A_{\mathrm{new}}.
 $$
+
+**本式符号说明：**\(\mathbf x^{(q)}\)是单条query IQ，\(\Phi_\theta\)是冻结特征映射，\(\mathbf q\in\mathbb R^{288}\)是query特征，\(\mathbf W,\mathbf b\)是最终全类仿射头，\(\mathbf s\in\mathbb R^C\)是\(C\)类分数，\(\widehat y\)是最大分数类别；\(A_{\mathrm{old}}^{\mathrm{before}}\)、\(A_{\mathrm{old}}^{\mathrm{after}}\)、\(A_{\mathrm{new}}\)分别是注册前旧类、注册后旧类和已注册新类准确率，\(H_{\mathrm{old,new}}\)是调和均值，\(F\)是遗忘，\(A_c^{\mathrm{after}}\)是类别\(c\)注册后准确率。
 
 旧新调和均值为
 
@@ -2216,6 +2629,8 @@ A_{\mathrm{old}}^{\mathrm{after}}+A_{\mathrm{new}}
 }.
 $$
 
+**本式符号说明：**\(\mathbf x^{(q)}\)是单条query IQ，\(\Phi_\theta\)是冻结特征映射，\(\mathbf q\in\mathbb R^{288}\)是query特征，\(\mathbf W,\mathbf b\)是最终全类仿射头，\(\mathbf s\in\mathbb R^C\)是\(C\)类分数，\(\widehat y\)是最大分数类别；\(A_{\mathrm{old}}^{\mathrm{before}}\)、\(A_{\mathrm{old}}^{\mathrm{after}}\)、\(A_{\mathrm{new}}\)分别是注册前旧类、注册后旧类和已注册新类准确率，\(H_{\mathrm{old,new}}\)是调和均值，\(F\)是遗忘，\(A_c^{\mathrm{after}}\)是类别\(c\)注册后准确率。
+
 遗忘定义为
 
 $$
@@ -2226,6 +2641,8 @@ A_{\mathrm{old}}^{\mathrm{before}}
 A_{\mathrm{old}}^{\mathrm{after}}.
 $$
 
+**本式符号说明：**\(\mathbf x^{(q)}\)是单条query IQ，\(\Phi_\theta\)是冻结特征映射，\(\mathbf q\in\mathbb R^{288}\)是query特征，\(\mathbf W,\mathbf b\)是最终全类仿射头，\(\mathbf s\in\mathbb R^C\)是\(C\)类分数，\(\widehat y\)是最大分数类别；\(A_{\mathrm{old}}^{\mathrm{before}}\)、\(A_{\mathrm{old}}^{\mathrm{after}}\)、\(A_{\mathrm{new}}\)分别是注册前旧类、注册后旧类和已注册新类准确率，\(H_{\mathrm{old,new}}\)是调和均值，\(F\)是遗忘，\(A_c^{\mathrm{after}}\)是类别\(c\)注册后准确率。
+
 旧类floor为
 
 $$
@@ -2234,6 +2651,8 @@ A_{\mathrm{old}}^{\min}
 \min_{c\in\mathcal{Y}_{\mathrm{o}}}
 A_c^{\mathrm{after}}.
 $$
+
+**本式符号说明：**\(\mathbf x^{(q)}\)是单条query IQ，\(\Phi_\theta\)是冻结特征映射，\(\mathbf q\in\mathbb R^{288}\)是query特征，\(\mathbf W,\mathbf b\)是最终全类仿射头，\(\mathbf s\in\mathbb R^C\)是\(C\)类分数，\(\widehat y\)是最大分数类别；\(A_{\mathrm{old}}^{\mathrm{before}}\)、\(A_{\mathrm{old}}^{\mathrm{after}}\)、\(A_{\mathrm{new}}\)分别是注册前旧类、注册后旧类和已注册新类准确率，\(H_{\mathrm{old,new}}\)是调和均值，\(F\)是遗忘，\(A_c^{\mathrm{after}}\)是类别\(c\)注册后准确率。
 
 这些指标必须来自同一row和同一最终状态，不能把不同候选的最大值拼接成一个结果。
 
@@ -2254,17 +2673,23 @@ $$
 p=160+96+32=288,
 $$
 
+**本式符号说明：**\(L\)是IQ长度，\(p=288\)是特征维数，\(C\)是类别数，\(K\)是每类shot数，\(n\)和\(c\)分别是一次拟合使用的样本数和类别数；\(\mathcal O(\cdot)\)表示渐近复杂度，\(T_{\mathrm{enc}},T_{\mathrm{feat}}\)是编码器和完整特征时间，\(\mathcal M\)表示MAC计数，\(N_{\mathrm{fit}}\)是LDA拟合次数；\(B\)表示字节数，KiB和MiB分别按\(2^{10}\)和\(2^{20}\)字节计；\(\mathbf w,\mathbf q,s\)是浮点权重、INT8码和尺度，\(\odot\)是逐元素乘法，\(\mathbf W,\mathbf z,\mathbf b\)是分类矩阵、特征和截距；MAC是一次乘加，FLOP是一次浮点基本运算。
+
 旧类数为
 
 $$
 C_{\mathrm{o}}=6,
 $$
 
+**本式符号说明：**\(L\)是IQ长度，\(p=288\)是特征维数，\(C\)是类别数，\(K\)是每类shot数，\(n\)和\(c\)分别是一次拟合使用的样本数和类别数；\(\mathcal O(\cdot)\)表示渐近复杂度，\(T_{\mathrm{enc}},T_{\mathrm{feat}}\)是编码器和完整特征时间，\(\mathcal M\)表示MAC计数，\(N_{\mathrm{fit}}\)是LDA拟合次数；\(B\)表示字节数，KiB和MiB分别按\(2^{10}\)和\(2^{20}\)字节计；\(\mathbf w,\mathbf q,s\)是浮点权重、INT8码和尺度，\(\odot\)是逐元素乘法，\(\mathbf W,\mathbf z,\mathbf b\)是分类矩阵、特征和截距；MAC是一次乘加，FLOP是一次浮点基本运算。
+
 注册后总类数为
 
 $$
 C=C_{\mathrm{o}}+C_{\mathrm{n}}\in\{11,16,26\},
 $$
+
+**本式符号说明：**\(L\)是IQ长度，\(p=288\)是特征维数，\(C\)是类别数，\(K\)是每类shot数，\(n\)和\(c\)分别是一次拟合使用的样本数和类别数；\(\mathcal O(\cdot)\)表示渐近复杂度，\(T_{\mathrm{enc}},T_{\mathrm{feat}}\)是编码器和完整特征时间，\(\mathcal M\)表示MAC计数，\(N_{\mathrm{fit}}\)是LDA拟合次数；\(B\)表示字节数，KiB和MiB分别按\(2^{10}\)和\(2^{20}\)字节计；\(\mathbf w,\mathbf q,s\)是浮点权重、INT8码和尺度，\(\odot\)是逐元素乘法，\(\mathbf W,\mathbf z,\mathbf b\)是分类矩阵、特征和截距；MAC是一次乘加，FLOP是一次浮点基本运算。
 
 每类support数为\(K\)，单条IQ长度为\(L\)。
 
@@ -2275,6 +2700,8 @@ FFT96的主要时间复杂度为
 $$
 \mathcal{O}(L\log L),
 $$
+
+**本式符号说明：**\(L\)是IQ长度，\(p=288\)是特征维数，\(C\)是类别数，\(K\)是每类shot数，\(n\)和\(c\)分别是一次拟合使用的样本数和类别数；\(\mathcal O(\cdot)\)表示渐近复杂度，\(T_{\mathrm{enc}},T_{\mathrm{feat}}\)是编码器和完整特征时间，\(\mathcal M\)表示MAC计数，\(N_{\mathrm{fit}}\)是LDA拟合次数；\(B\)表示字节数，KiB和MiB分别按\(2^{10}\)和\(2^{20}\)字节计；\(\mathbf w,\mathbf q,s\)是浮点权重、INT8码和尺度，\(\odot\)是逐元素乘法，\(\mathbf W,\mathbf z,\mathbf b\)是分类矩阵、特征和截距；MAC是一次乘加，FLOP是一次浮点基本运算。
 
 RF32中的矩、自相关和基础统计为\(\mathcal{O}(L)\)，分位数实现还包含选择或排序成本。冻结ADV3B02主干需要一次神经网络前向传播。因而单条IQ的完整特征代价可写为
 
@@ -2287,6 +2714,8 @@ T_{\mathrm{enc}}(L)
 +
 \mathcal{O}(L).
 $$
+
+**本式符号说明：**\(L\)是IQ长度，\(p=288\)是特征维数，\(C\)是类别数，\(K\)是每类shot数，\(n\)和\(c\)分别是一次拟合使用的样本数和类别数；\(\mathcal O(\cdot)\)表示渐近复杂度，\(T_{\mathrm{enc}},T_{\mathrm{feat}}\)是编码器和完整特征时间，\(\mathcal M\)表示MAC计数，\(N_{\mathrm{fit}}\)是LDA拟合次数；\(B\)表示字节数，KiB和MiB分别按\(2^{10}\)和\(2^{20}\)字节计；\(\mathbf w,\mathbf q,s\)是浮点权重、INT8码和尺度，\(\odot\)是逐元素乘法，\(\mathbf W,\mathbf z,\mathbf b\)是分类矩阵、特征和截距；MAC是一次乘加，FLOP是一次浮点基本运算。
 
 项目D31在N607上的交叉运行记录显示，每个场景110条样本的主干提取时间为3946/344/349ms，FFT约22/16/16ms，RF约41/41/41ms。第一组主干时间包含明显的初始化或冷启动效应；这些数字来自服务器而非星载处理器，只能说明在现有实现中主干通常比FFT96/RF32更值得优先优化，不能当作星上时延。
 
@@ -2312,6 +2741,8 @@ $$
 \mathcal{O}(CKp^2+p^3).
 $$
 
+**本式符号说明：**\(L\)是IQ长度，\(p=288\)是特征维数，\(C\)是类别数，\(K\)是每类shot数，\(n\)和\(c\)分别是一次拟合使用的样本数和类别数；\(\mathcal O(\cdot)\)表示渐近复杂度，\(T_{\mathrm{enc}},T_{\mathrm{feat}}\)是编码器和完整特征时间，\(\mathcal M\)表示MAC计数，\(N_{\mathrm{fit}}\)是LDA拟合次数；\(B\)表示字节数，KiB和MiB分别按\(2^{10}\)和\(2^{20}\)字节计；\(\mathbf w,\mathbf q,s\)是浮点权重、INT8码和尺度，\(\odot\)是逐元素乘法，\(\mathbf W,\mathbf z,\mathbf b\)是分类矩阵、特征和截距；MAC是一次乘加，FLOP是一次浮点基本运算。
+
 理想的block3实现可把主要立方项降为
 
 $$
@@ -2320,6 +2751,8 @@ $$
 160^3+96^3+32^3
 \right),
 $$
+
+**本式符号说明：**\(L\)是IQ长度，\(p=288\)是特征维数，\(C\)是类别数，\(K\)是每类shot数，\(n\)和\(c\)分别是一次拟合使用的样本数和类别数；\(\mathcal O(\cdot)\)表示渐近复杂度，\(T_{\mathrm{enc}},T_{\mathrm{feat}}\)是编码器和完整特征时间，\(\mathcal M\)表示MAC计数，\(N_{\mathrm{fit}}\)是LDA拟合次数；\(B\)表示字节数，KiB和MiB分别按\(2^{10}\)和\(2^{20}\)字节计；\(\mathbf w,\mathbf q,s\)是浮点权重、INT8码和尺度，\(\odot\)是逐元素乘法，\(\mathbf W,\mathbf z,\mathbf b\)是分类矩阵、特征和截距；MAC是一次乘加，FLOP是一次浮点基本运算。
 
 但当前研究实现先形成完整\(288\times288\)矩阵，再将跨块元素置零，所以不能把理想block3节省量直接当成当前实现的实测RAM或时延。
 
@@ -2337,11 +2770,15 @@ N_{\mathrm{fit}}
 8(K+1).
 $$
 
+**本式符号说明：**\(L\)是IQ长度，\(p=288\)是特征维数，\(C\)是类别数，\(K\)是每类shot数，\(n\)和\(c\)分别是一次拟合使用的样本数和类别数；\(\mathcal O(\cdot)\)表示渐近复杂度，\(T_{\mathrm{enc}},T_{\mathrm{feat}}\)是编码器和完整特征时间，\(\mathcal M\)表示MAC计数，\(N_{\mathrm{fit}}\)是LDA拟合次数；\(B\)表示字节数，KiB和MiB分别按\(2^{10}\)和\(2^{20}\)字节计；\(\mathbf w,\mathbf q,s\)是浮点权重、INT8码和尺度，\(\odot\)是逐元素乘法，\(\mathbf W,\mathbf z,\mathbf b\)是分类矩阵、特征和截距；MAC是一次乘加，FLOP是一次浮点基本运算。
+
 因此在\(K=10\)时，
 
 $$
 N_{\mathrm{fit}}=88.
 $$
+
+**本式符号说明：**\(L\)是IQ长度，\(p=288\)是特征维数，\(C\)是类别数，\(K\)是每类shot数，\(n\)和\(c\)分别是一次拟合使用的样本数和类别数；\(\mathcal O(\cdot)\)表示渐近复杂度，\(T_{\mathrm{enc}},T_{\mathrm{feat}}\)是编码器和完整特征时间，\(\mathcal M\)表示MAC计数，\(N_{\mathrm{fit}}\)是LDA拟合次数；\(B\)表示字节数，KiB和MiB分别按\(2^{10}\)和\(2^{20}\)字节计；\(\mathbf w,\mathbf q,s\)是浮点权重、INT8码和尺度，\(\odot\)是逐元素乘法，\(\mathbf W,\mathbf z,\mathbf b\)是分类矩阵、特征和截距；MAC是一次乘加，FLOP是一次浮点基本运算。
 
 旧类对角metric还有20个full-batch优化步。该部分在\(K=10\)、\(C_{\mathrm{o}}=6\)时的审计估计为
 
@@ -2352,6 +2789,8 @@ $$
 =
 6{,}220{,}800.
 $$
+
+**本式符号说明：**\(L\)是IQ长度，\(p=288\)是特征维数，\(C\)是类别数，\(K\)是每类shot数，\(n\)和\(c\)分别是一次拟合使用的样本数和类别数；\(\mathcal O(\cdot)\)表示渐近复杂度，\(T_{\mathrm{enc}},T_{\mathrm{feat}}\)是编码器和完整特征时间，\(\mathcal M\)表示MAC计数，\(N_{\mathrm{fit}}\)是LDA拟合次数；\(B\)表示字节数，KiB和MiB分别按\(2^{10}\)和\(2^{20}\)字节计；\(\mathbf w,\mathbf q,s\)是浮点权重、INT8码和尺度，\(\odot\)是逐元素乘法，\(\mathbf W,\mathbf z,\mathbf b\)是分类矩阵、特征和截距；MAC是一次乘加，FLOP是一次浮点基本运算。
 
 完整K10注册审计如下。这里的“GMAC等价上界”包含`8p^3`形式的Fisher稠密代数上界；它用于统一保守资源清单，不等于某一具体BLAS、CPU或FPGA实现的实测硬件MAC数。
 
@@ -2375,6 +2814,8 @@ $$
 648\ \mathrm{KiB}.
 $$
 
+**本式符号说明：**\(L\)是IQ长度，\(p=288\)是特征维数，\(C\)是类别数，\(K\)是每类shot数，\(n\)和\(c\)分别是一次拟合使用的样本数和类别数；\(\mathcal O(\cdot)\)表示渐近复杂度，\(T_{\mathrm{enc}},T_{\mathrm{feat}}\)是编码器和完整特征时间，\(\mathcal M\)表示MAC计数，\(N_{\mathrm{fit}}\)是LDA拟合次数；\(B\)表示字节数，KiB和MiB分别按\(2^{10}\)和\(2^{20}\)字节计；\(\mathbf w,\mathbf q,s\)是浮点权重、INT8码和尺度，\(\odot\)是逐元素乘法，\(\mathbf W,\mathbf z,\mathbf b\)是分类矩阵、特征和截距；MAC是一次乘加，FLOP是一次浮点基本运算。
+
 仅旧类协方差、新类协方差和平衡协方差三份矩阵的理论数据区就达到
 
 $$
@@ -2382,6 +2823,8 @@ $$
 =
 1.898\ \mathrm{MiB}.
 $$
+
+**本式符号说明：**\(L\)是IQ长度，\(p=288\)是特征维数，\(C\)是类别数，\(K\)是每类shot数，\(n\)和\(c\)分别是一次拟合使用的样本数和类别数；\(\mathcal O(\cdot)\)表示渐近复杂度，\(T_{\mathrm{enc}},T_{\mathrm{feat}}\)是编码器和完整特征时间，\(\mathcal M\)表示MAC计数，\(N_{\mathrm{fit}}\)是LDA拟合次数；\(B\)表示字节数，KiB和MiB分别按\(2^{10}\)和\(2^{20}\)字节计；\(\mathbf w,\mathbf q,s\)是浮点权重、INT8码和尺度，\(\odot\)是逐元素乘法，\(\mathbf W,\mathbf z,\mathbf b\)是分类矩阵、特征和截距；MAC是一次乘加，FLOP是一次浮点基本运算。
 
 理想block3仅保存三个对角块时，一份FP64矩阵的数据区为
 
@@ -2392,6 +2835,8 @@ $$
 =
 280\ \mathrm{KiB}.
 $$
+
+**本式符号说明：**\(L\)是IQ长度，\(p=288\)是特征维数，\(C\)是类别数，\(K\)是每类shot数，\(n\)和\(c\)分别是一次拟合使用的样本数和类别数；\(\mathcal O(\cdot)\)表示渐近复杂度，\(T_{\mathrm{enc}},T_{\mathrm{feat}}\)是编码器和完整特征时间，\(\mathcal M\)表示MAC计数，\(N_{\mathrm{fit}}\)是LDA拟合次数；\(B\)表示字节数，KiB和MiB分别按\(2^{10}\)和\(2^{20}\)字节计；\(\mathbf w,\mathbf q,s\)是浮点权重、INT8码和尺度，\(\odot\)是逐元素乘法，\(\mathbf W,\mathbf z,\mathbf b\)是分类矩阵、特征和截距；MAC是一次乘加，FLOP是一次浮点基本运算。
 
 当前NumPy、scikit-learn实现还会产生样本副本、中心矩阵、特征值、线性求解工作区、LOO头和Python对象。因此1.898MiB不是完整峰值RAM，只是三个主要full矩阵的数据区下界。现有D92完整125结果没有提供星载硬件上的峰值RSS、最坏工作区或能耗测量，报告不能声称“注册只需约2MiB内存”。
 
@@ -2416,6 +2861,8 @@ $$
 \{-127,\ldots,127\}^{p_b}
 $$
 
+**本式符号说明：**\(L\)是IQ长度，\(p=288\)是特征维数，\(C\)是类别数，\(K\)是每类shot数，\(n\)和\(c\)分别是一次拟合使用的样本数和类别数；\(\mathcal O(\cdot)\)表示渐近复杂度，\(T_{\mathrm{enc}},T_{\mathrm{feat}}\)是编码器和完整特征时间，\(\mathcal M\)表示MAC计数，\(N_{\mathrm{fit}}\)是LDA拟合次数；\(B\)表示字节数，KiB和MiB分别按\(2^{10}\)和\(2^{20}\)字节计；\(\mathbf w,\mathbf q,s\)是浮点权重、INT8码和尺度，\(\odot\)是逐元素乘法，\(\mathbf W,\mathbf z,\mathbf b\)是分类矩阵、特征和截距；MAC是一次乘加，FLOP是一次浮点基本运算。
+
 均为INT8编码，\(s^{(1)}_{c,b}\)和\(s^{(2)}_{c,b}\)是FP16块尺度。第一层编码原系数，第二层继续编码第一层的量化残差：
 
 $$
@@ -2425,6 +2872,8 @@ $$
 -
 s^{(1)}_{c,b}\boldsymbol{q}^{(1)}_{c,b}.
 $$
+
+**本式符号说明：**\(L\)是IQ长度，\(p=288\)是特征维数，\(C\)是类别数，\(K\)是每类shot数，\(n\)和\(c\)分别是一次拟合使用的样本数和类别数；\(\mathcal O(\cdot)\)表示渐近复杂度，\(T_{\mathrm{enc}},T_{\mathrm{feat}}\)是编码器和完整特征时间，\(\mathcal M\)表示MAC计数，\(N_{\mathrm{fit}}\)是LDA拟合次数；\(B\)表示字节数，KiB和MiB分别按\(2^{10}\)和\(2^{20}\)字节计；\(\mathbf w,\mathbf q,s\)是浮点权重、INT8码和尺度，\(\odot\)是逐元素乘法，\(\mathbf W,\mathbf z,\mathbf b\)是分类矩阵、特征和截距；MAC是一次乘加，FLOP是一次浮点基本运算。
 
 截距使用FP16，旧类metric的288维`log_diag`使用FP32。正式INT8状态中的`coef_fp32`和`intercept_fp32`是空数组，因此不存在可用于正式预测的FP32系数sidecar。Phase1 bundle中还包含只读INT8地面聚合知识；它属于D92稳健中心的输入，不是target分类头本身。
 
@@ -2442,6 +2891,8 @@ B_{\mathrm{affine,int8}}
 2Cp+14C.
 $$
 
+**本式符号说明：**\(L\)是IQ长度，\(p=288\)是特征维数，\(C\)是类别数，\(K\)是每类shot数，\(n\)和\(c\)分别是一次拟合使用的样本数和类别数；\(\mathcal O(\cdot)\)表示渐近复杂度，\(T_{\mathrm{enc}},T_{\mathrm{feat}}\)是编码器和完整特征时间，\(\mathcal M\)表示MAC计数，\(N_{\mathrm{fit}}\)是LDA拟合次数；\(B\)表示字节数，KiB和MiB分别按\(2^{10}\)和\(2^{20}\)字节计；\(\mathbf w,\mathbf q,s\)是浮点权重、INT8码和尺度，\(\odot\)是逐元素乘法，\(\mathbf W,\mathbf z,\mathbf b\)是分类矩阵、特征和截距；MAC是一次乘加，FLOP是一次浮点基本运算。
+
 加入FP32对角metric后，正式核心数组为
 
 $$
@@ -2449,6 +2900,8 @@ B_{\mathrm{core,int8}}
 =
 4p+2Cp+14C.
 $$
+
+**本式符号说明：**\(L\)是IQ长度，\(p=288\)是特征维数，\(C\)是类别数，\(K\)是每类shot数，\(n\)和\(c\)分别是一次拟合使用的样本数和类别数；\(\mathcal O(\cdot)\)表示渐近复杂度，\(T_{\mathrm{enc}},T_{\mathrm{feat}}\)是编码器和完整特征时间，\(\mathcal M\)表示MAC计数，\(N_{\mathrm{fit}}\)是LDA拟合次数；\(B\)表示字节数，KiB和MiB分别按\(2^{10}\)和\(2^{20}\)字节计；\(\mathbf w,\mathbf q,s\)是浮点权重、INT8码和尺度，\(\odot\)是逐元素乘法，\(\mathbf W,\mathbf z,\mathbf b\)是分类矩阵、特征和截距；MAC是一次乘加，FLOP是一次浮点基本运算。
 
 |状态|类数\(C\)|未压缩FP32仿射头|量化仿射行|含FP32 metric的正式核心数组|
 |---|---:|---:|---:|---:|
@@ -2465,6 +2918,8 @@ $$
 48.96\%
 $$
 
+**本式符号说明：**\(L\)是IQ长度，\(p=288\)是特征维数，\(C\)是类别数，\(K\)是每类shot数，\(n\)和\(c\)分别是一次拟合使用的样本数和类别数；\(\mathcal O(\cdot)\)表示渐近复杂度，\(T_{\mathrm{enc}},T_{\mathrm{feat}}\)是编码器和完整特征时间，\(\mathcal M\)表示MAC计数，\(N_{\mathrm{fit}}\)是LDA拟合次数；\(B\)表示字节数，KiB和MiB分别按\(2^{10}\)和\(2^{20}\)字节计；\(\mathbf w,\mathbf q,s\)是浮点权重、INT8码和尺度，\(\odot\)是逐元素乘法，\(\mathbf W,\mathbf z,\mathbf b\)是分类矩阵、特征和截距；MAC是一次乘加，FLOP是一次浮点基本运算。
+
 的数据区。它不是普通的“每个权重一个INT8”四倍压缩，因为D92为每个权重保存两层INT8编码以降低量化误差；其系数主体接近2B/weight，而不是1B/weight。表中还不含类注册JSON、版本、哈希和receipt元数据。
 
 ### 13.7量化压缩不等于当前实现已经获得INT8计算加速
@@ -2478,6 +2933,8 @@ $$
 +
 \boldsymbol{S}^{(2)}\odot\boldsymbol{Q}^{(2)}
 $$
+
+**本式符号说明：**\(L\)是IQ长度，\(p=288\)是特征维数，\(C\)是类别数，\(K\)是每类shot数，\(n\)和\(c\)分别是一次拟合使用的样本数和类别数；\(\mathcal O(\cdot)\)表示渐近复杂度，\(T_{\mathrm{enc}},T_{\mathrm{feat}}\)是编码器和完整特征时间，\(\mathcal M\)表示MAC计数，\(N_{\mathrm{fit}}\)是LDA拟合次数；\(B\)表示字节数，KiB和MiB分别按\(2^{10}\)和\(2^{20}\)字节计；\(\mathbf w,\mathbf q,s\)是浮点权重、INT8码和尺度，\(\odot\)是逐元素乘法，\(\mathbf W,\mathbf z,\mathbf b\)是分类矩阵、特征和截距；MAC是一次乘加，FLOP是一次浮点基本运算。
 
 把两层INT8系数解码为FP32，再进行矩阵乘法。因此当前实现已经获得**常驻存储压缩**，但没有证明端到端使用整数乘加，也不能把INT8 Tensor Core、DSP或NPU的理论吞吐直接记为D92实测加速。
 
@@ -2493,11 +2950,15 @@ $$
 \boldsymbol{b},
 $$
 
+**本式符号说明：**\(L\)是IQ长度，\(p=288\)是特征维数，\(C\)是类别数，\(K\)是每类shot数，\(n\)和\(c\)分别是一次拟合使用的样本数和类别数；\(\mathcal O(\cdot)\)表示渐近复杂度，\(T_{\mathrm{enc}},T_{\mathrm{feat}}\)是编码器和完整特征时间，\(\mathcal M\)表示MAC计数，\(N_{\mathrm{fit}}\)是LDA拟合次数；\(B\)表示字节数，KiB和MiB分别按\(2^{10}\)和\(2^{20}\)字节计；\(\mathbf w,\mathbf q,s\)是浮点权重、INT8码和尺度，\(\odot\)是逐元素乘法，\(\mathbf W,\mathbf z,\mathbf b\)是分类矩阵、特征和截距；MAC是一次乘加，FLOP是一次浮点基本运算。
+
 即约
 
 $$
 \mathcal{M}_{\mathrm{head}}=Cp
 $$
+
+**本式符号说明：**\(L\)是IQ长度，\(p=288\)是特征维数，\(C\)是类别数，\(K\)是每类shot数，\(n\)和\(c\)分别是一次拟合使用的样本数和类别数；\(\mathcal O(\cdot)\)表示渐近复杂度，\(T_{\mathrm{enc}},T_{\mathrm{feat}}\)是编码器和完整特征时间，\(\mathcal M\)表示MAC计数，\(N_{\mathrm{fit}}\)是LDA拟合次数；\(B\)表示字节数，KiB和MiB分别按\(2^{10}\)和\(2^{20}\)字节计；\(\mathbf w,\mathbf q,s\)是浮点权重、INT8码和尺度，\(\odot\)是逐元素乘法，\(\mathbf W,\mathbf z,\mathbf b\)是分类矩阵、特征和截距；MAC是一次乘加，FLOP是一次浮点基本运算。
 
 次乘加，再进行\(C\)项偏置与argmax。
 
@@ -2525,6 +2986,8 @@ $$
 Cp.
 $$
 
+**本式符号说明：**\(L\)是IQ长度，\(p=288\)是特征维数，\(C\)是类别数，\(K\)是每类shot数，\(n\)和\(c\)分别是一次拟合使用的样本数和类别数；\(\mathcal O(\cdot)\)表示渐近复杂度，\(T_{\mathrm{enc}},T_{\mathrm{feat}}\)是编码器和完整特征时间，\(\mathcal M\)表示MAC计数，\(N_{\mathrm{fit}}\)是LDA拟合次数；\(B\)表示字节数，KiB和MiB分别按\(2^{10}\)和\(2^{20}\)字节计；\(\mathbf w,\mathbf q,s\)是浮点权重、INT8码和尺度，\(\odot\)是逐元素乘法，\(\mathbf W,\mathbf z,\mathbf b\)是分类矩阵、特征和截距；MAC是一次乘加，FLOP是一次浮点基本运算。
+
 7,488MAC只描述26类线性头，不包含冻结ADV3B02主干，也不包含IQ预处理、FFT和射频统计。若主干没有量化或硬件加速，端到端延迟、显存/内存和功耗仍可能由主干决定。
 
 ### 13.10资源需求结论
@@ -2549,6 +3012,8 @@ a
 a+xw,
 $$
 
+**本式符号说明：**\(L\)是IQ长度，\(p=288\)是特征维数，\(C\)是类别数，\(K\)是每类shot数，\(n\)和\(c\)分别是一次拟合使用的样本数和类别数；\(\mathcal O(\cdot)\)表示渐近复杂度，\(T_{\mathrm{enc}},T_{\mathrm{feat}}\)是编码器和完整特征时间，\(\mathcal M\)表示MAC计数，\(N_{\mathrm{fit}}\)是LDA拟合次数；\(B\)表示字节数，KiB和MiB分别按\(2^{10}\)和\(2^{20}\)字节计；\(\mathbf w,\mathbf q,s\)是浮点权重、INT8码和尺度，\(\odot\)是逐元素乘法，\(\mathbf W,\mathbf z,\mathbf b\)是分类矩阵、特征和截距；MAC是一次乘加，FLOP是一次浮点基本运算。
+
 即一次乘法和一次累加。长度为\(p\)的点积
 
 $$
@@ -2556,6 +3021,8 @@ y
 =
 \sum_{j=1}^{p}w_jx_j
 $$
+
+**本式符号说明：**\(L\)是IQ长度，\(p=288\)是特征维数，\(C\)是类别数，\(K\)是每类shot数，\(n\)和\(c\)分别是一次拟合使用的样本数和类别数；\(\mathcal O(\cdot)\)表示渐近复杂度，\(T_{\mathrm{enc}},T_{\mathrm{feat}}\)是编码器和完整特征时间，\(\mathcal M\)表示MAC计数，\(N_{\mathrm{fit}}\)是LDA拟合次数；\(B\)表示字节数，KiB和MiB分别按\(2^{10}\)和\(2^{20}\)字节计；\(\mathbf w,\mathbf q,s\)是浮点权重、INT8码和尺度，\(\odot\)是逐元素乘法，\(\mathbf W,\mathbf z,\mathbf b\)是分类矩阵、特征和截距；MAC是一次乘加，FLOP是一次浮点基本运算。
 
 通常记为\(p\)MAC；严格展开时是\(p\)次乘法和\(p-1\)次加法，但神经网络资源审计通常把每个“乘法并累加到部分和”的过程计为一次MAC。
 
@@ -2571,6 +3038,8 @@ $$
 10^9\ \mathrm{MAC}.
 $$
 
+**本式符号说明：**\(L\)是IQ长度，\(p=288\)是特征维数，\(C\)是类别数，\(K\)是每类shot数，\(n\)和\(c\)分别是一次拟合使用的样本数和类别数；\(\mathcal O(\cdot)\)表示渐近复杂度，\(T_{\mathrm{enc}},T_{\mathrm{feat}}\)是编码器和完整特征时间，\(\mathcal M\)表示MAC计数，\(N_{\mathrm{fit}}\)是LDA拟合次数；\(B\)表示字节数，KiB和MiB分别按\(2^{10}\)和\(2^{20}\)字节计；\(\mathbf w,\mathbf q,s\)是浮点权重、INT8码和尺度，\(\odot\)是逐元素乘法，\(\mathbf W,\mathbf z,\mathbf b\)是分类矩阵、特征和截距；MAC是一次乘加，FLOP是一次浮点基本运算。
+
 MAC与FLOP的常见关系为
 
 $$
@@ -2578,6 +3047,8 @@ $$
 \approx
 2\ \mathrm{FLOP},
 $$
+
+**本式符号说明：**\(L\)是IQ长度，\(p=288\)是特征维数，\(C\)是类别数，\(K\)是每类shot数，\(n\)和\(c\)分别是一次拟合使用的样本数和类别数；\(\mathcal O(\cdot)\)表示渐近复杂度，\(T_{\mathrm{enc}},T_{\mathrm{feat}}\)是编码器和完整特征时间，\(\mathcal M\)表示MAC计数，\(N_{\mathrm{fit}}\)是LDA拟合次数；\(B\)表示字节数，KiB和MiB分别按\(2^{10}\)和\(2^{20}\)字节计；\(\mathbf w,\mathbf q,s\)是浮点权重、INT8码和尺度，\(\odot\)是逐元素乘法，\(\mathbf W,\mathbf z,\mathbf b\)是分类矩阵、特征和截距；MAC是一次乘加，FLOP是一次浮点基本运算。
 
 因为乘法和加法各算一次浮点操作。因此11.741GMAC大致对应23.482GFLOP的算术计数。这个换算只是计数约定：支持FMA的处理器可能用一条指令完成一次乘加，但一条指令可以含多个SIMD lane，也可能跨多个周期执行。
 
@@ -2600,6 +3071,8 @@ P_{\mathrm{query}},
 \quad
 B_{\mathrm{peak}},
 $$
+
+**本式符号说明：**\(L\)是IQ长度，\(p=288\)是特征维数，\(C\)是类别数，\(K\)是每类shot数，\(n\)和\(c\)分别是一次拟合使用的样本数和类别数；\(\mathcal O(\cdot)\)表示渐近复杂度，\(T_{\mathrm{enc}},T_{\mathrm{feat}}\)是编码器和完整特征时间，\(\mathcal M\)表示MAC计数，\(N_{\mathrm{fit}}\)是LDA拟合次数；\(B\)表示字节数，KiB和MiB分别按\(2^{10}\)和\(2^{20}\)字节计；\(\mathbf w,\mathbf q,s\)是浮点权重、INT8码和尺度，\(\odot\)是逐元素乘法，\(\mathbf W,\mathbf z,\mathbf b\)是分类矩阵、特征和截距；MAC是一次乘加，FLOP是一次浮点基本运算。
 
 即注册时延、单次更新能量、持续query功率和峰值内存。
 
@@ -2759,6 +3232,8 @@ $$
 \right).
 $$
 
+**本式符号说明：**\(\mathbf f^{\mathrm{id}}\)、\(\mathbf f^{\mathrm{fft}}\)、\(\mathbf f^{\mathrm{rf}}\)是160、96、32维特征，\(\mathcal N_\varepsilon\)是带保护归一化，分号表示纵向拼接，常数4是辅助块权重，\(\mathbf z\)是288维联合输出。
+
 `block3_centered`只保留三个块各自的协方差，块间协方差置零；`full`保留完整\(288\times288\)协方差。完整状态构造会在full、block、outer和held support范围内多次调用D92拟合器，任何query行都不进入这些fit。
 
 ### 17.3 核心函数输出
@@ -2801,6 +3276,8 @@ a_{c,k}
 }.
 $$
 
+**本式符号说明：**\(c,k,K\)是类别、shot索引和每类shot数，\(E_{c,k}\)是扰动谱能量，\(\tau_c\)是类平均能量，\(a_{c,k}\)是Cauchy可靠性，\(\mathbf z_{c,k}^{\mathrm{id}}\)是身份特征，\(\mathbf m_c^{\mathrm{rob}}\)是加权稳健中心。
+
 随后只平移该类support的`z160`中心，保持类内残差和target协方差不变，`FFT96/RF32`不变。这个设计让地面知识只影响“哪些target support更可靠”，不直接把ground旧类原型塞入query分数。
 
 这套稳健中心是实验中D92完整状态构造的一部分。代码沿用了早期模块文件名，但方法解释不把它视为外部基线或可忽略前置步骤。
@@ -2829,6 +3306,8 @@ $$
 \widetilde{\mathbf{z}}_{c,k}.
 $$
 
+**本式符号说明：**\(c,k,K\)是类别、shot索引和每类shot数，\(\widetilde{\mathbf z}_{c,k}\)是稳健化support，\(\boldsymbol\mu_c\)是类均值；\(\boldsymbol\Sigma_{\mathrm o}\)、\(\boldsymbol\Sigma_{\mathrm n}\)、\(\boldsymbol\Sigma_{\mathrm{bal}}\)、\(\boldsymbol\Sigma_{\mathrm{blk}}\)是旧、新、均衡和块对角协方差；\(\pi_c\)是等先验，\(\mathbf w_c,b_c\)是仿射行，\(s_c(\mathbf q)\)是query分数，\(\widehat y\)是预测；\(\mathbf1\)是全一向量，跨类均值删除不改变argmax。
+
 这里的\(\widetilde{\mathbf{z}}_{c,k}\)已经经过D92稳健中心模块处理。旧类与新类使用相同的类中心公式。
 
 ### 19.2 任务内auto-shrinkage协方差
@@ -2844,6 +3323,8 @@ $$
 \right),
 $$
 
+**本式符号说明：**\(c,k,K\)是类别、shot索引和每类shot数，\(\widetilde{\mathbf z}_{c,k}\)是稳健化support，\(\boldsymbol\mu_c\)是类均值；\(\boldsymbol\Sigma_{\mathrm o}\)、\(\boldsymbol\Sigma_{\mathrm n}\)、\(\boldsymbol\Sigma_{\mathrm{bal}}\)、\(\boldsymbol\Sigma_{\mathrm{blk}}\)是旧、新、均衡和块对角协方差；\(\pi_c\)是等先验，\(\mathbf w_c,b_c\)是仿射行，\(s_c(\mathbf q)\)是query分数，\(\widehat y\)是预测；\(\mathbf1\)是全一向量，跨类均值删除不改变argmax。
+
 $$
 \boldsymbol{\Sigma}_{\mathrm{n}}
 =
@@ -2852,6 +3333,8 @@ $$
 \{\widetilde{\mathbf{z}}_{c,k}:c\in\mathcal{Y}_{\mathrm{n}}\}
 \right).
 $$
+
+**本式符号说明：**\(c,k,K\)是类别、shot索引和每类shot数，\(\widetilde{\mathbf z}_{c,k}\)是稳健化support，\(\boldsymbol\mu_c\)是类均值；\(\boldsymbol\Sigma_{\mathrm o}\)、\(\boldsymbol\Sigma_{\mathrm n}\)、\(\boldsymbol\Sigma_{\mathrm{bal}}\)、\(\boldsymbol\Sigma_{\mathrm{blk}}\)是旧、新、均衡和块对角协方差；\(\pi_c\)是等先验，\(\mathbf w_c,b_c\)是仿射行，\(s_c(\mathbf q)\)是query分数，\(\widehat y\)是预测；\(\mathbf1\)是全一向量，跨类均值删除不改变argmax。
 
 auto-shrinkage的作用是把高维小样本协方差向更稳定的结构收缩，降低288维、少样本条件下的奇异风险。两组协方差先独立估计，因此新类数量增加不会直接把旧类任务在协方差统计中的权重压低。
 
@@ -2864,6 +3347,8 @@ $$
 +
 \frac{1}{2}\boldsymbol{\Sigma}_{\mathrm{n}}.
 $$
+
+**本式符号说明：**\(c,k,K\)是类别、shot索引和每类shot数，\(\widetilde{\mathbf z}_{c,k}\)是稳健化support，\(\boldsymbol\mu_c\)是类均值；\(\boldsymbol\Sigma_{\mathrm o}\)、\(\boldsymbol\Sigma_{\mathrm n}\)、\(\boldsymbol\Sigma_{\mathrm{bal}}\)、\(\boldsymbol\Sigma_{\mathrm{blk}}\)是旧、新、均衡和块对角协方差；\(\pi_c\)是等先验，\(\mathbf w_c,b_c\)是仿射行，\(s_c(\mathbf q)\)是query分数，\(\widehat y\)是预测；\(\mathbf1\)是全一向量，跨类均值删除不改变argmax。
 
 0.5/0.5不是从query性能选出的最优权重，也不随新类数、receiver或场景变化。它来自项目对Stage2-B旧类适应与Stage2-C新类注册“同等优先”的方法锁。实验明确记录：
 
@@ -2886,6 +3371,8 @@ $$
 \right).
 $$
 
+**本式符号说明：**\(c,k,K\)是类别、shot索引和每类shot数，\(\widetilde{\mathbf z}_{c,k}\)是稳健化support，\(\boldsymbol\mu_c\)是类均值；\(\boldsymbol\Sigma_{\mathrm o}\)、\(\boldsymbol\Sigma_{\mathrm n}\)、\(\boldsymbol\Sigma_{\mathrm{bal}}\)、\(\boldsymbol\Sigma_{\mathrm{blk}}\)是旧、新、均衡和块对角协方差；\(\pi_c\)是等先验，\(\mathbf w_c,b_c\)是仿射行，\(s_c(\mathbf q)\)是query分数，\(\widehat y\)是预测；\(\mathbf1\)是全一向量，跨类均值删除不改变argmax。
+
 若使用`full`，则保留三个特征块之间的交叉协方差。
 
 ### 19.4 统一等先验LDA头
@@ -2896,6 +3383,8 @@ $$
 \pi_c=\frac{1}{C}.
 $$
 
+**本式符号说明：**\(c,k,K\)是类别、shot索引和每类shot数，\(\widetilde{\mathbf z}_{c,k}\)是稳健化support，\(\boldsymbol\mu_c\)是类均值；\(\boldsymbol\Sigma_{\mathrm o}\)、\(\boldsymbol\Sigma_{\mathrm n}\)、\(\boldsymbol\Sigma_{\mathrm{bal}}\)、\(\boldsymbol\Sigma_{\mathrm{blk}}\)是旧、新、均衡和块对角协方差；\(\pi_c\)是等先验，\(\mathbf w_c,b_c\)是仿射行，\(s_c(\mathbf q)\)是query分数，\(\widehat y\)是预测；\(\mathbf1\)是全一向量，跨类均值删除不改变argmax。
+
 LDA仿射头为：
 
 $$
@@ -2904,6 +3393,8 @@ $$
 \boldsymbol{\Sigma}_{\mathrm{bal}}^{-1}
 \boldsymbol{\mu}_c,
 $$
+
+**本式符号说明：**\(c,k,K\)是类别、shot索引和每类shot数，\(\widetilde{\mathbf z}_{c,k}\)是稳健化support，\(\boldsymbol\mu_c\)是类均值；\(\boldsymbol\Sigma_{\mathrm o}\)、\(\boldsymbol\Sigma_{\mathrm n}\)、\(\boldsymbol\Sigma_{\mathrm{bal}}\)、\(\boldsymbol\Sigma_{\mathrm{blk}}\)是旧、新、均衡和块对角协方差；\(\pi_c\)是等先验，\(\mathbf w_c,b_c\)是仿射行，\(s_c(\mathbf q)\)是query分数，\(\widehat y\)是预测；\(\mathbf1\)是全一向量，跨类均值删除不改变argmax。
 
 $$
 b_c
@@ -2917,6 +3408,8 @@ b_c
 \log\pi_c,
 $$
 
+**本式符号说明：**\(c,k,K\)是类别、shot索引和每类shot数，\(\widetilde{\mathbf z}_{c,k}\)是稳健化support，\(\boldsymbol\mu_c\)是类均值；\(\boldsymbol\Sigma_{\mathrm o}\)、\(\boldsymbol\Sigma_{\mathrm n}\)、\(\boldsymbol\Sigma_{\mathrm{bal}}\)、\(\boldsymbol\Sigma_{\mathrm{blk}}\)是旧、新、均衡和块对角协方差；\(\pi_c\)是等先验，\(\mathbf w_c,b_c\)是仿射行，\(s_c(\mathbf q)\)是query分数，\(\widehat y\)是预测；\(\mathbf1\)是全一向量，跨类均值删除不改变argmax。
+
 $$
 s_c(\mathbf{q})
 =
@@ -2926,6 +3419,8 @@ s_c(\mathbf{q})
 =
 \arg\max_c s_c(\mathbf{q}).
 $$
+
+**本式符号说明：**\(c,k,K\)是类别、shot索引和每类shot数，\(\widetilde{\mathbf z}_{c,k}\)是稳健化support，\(\boldsymbol\mu_c\)是类均值；\(\boldsymbol\Sigma_{\mathrm o}\)、\(\boldsymbol\Sigma_{\mathrm n}\)、\(\boldsymbol\Sigma_{\mathrm{bal}}\)、\(\boldsymbol\Sigma_{\mathrm{blk}}\)是旧、新、均衡和块对角协方差；\(\pi_c\)是等先验，\(\mathbf w_c,b_c\)是仿射行，\(s_c(\mathbf q)\)是query分数，\(\widehat y\)是预测；\(\mathbf1\)是全一向量，跨类均值删除不改变argmax。
 
 “任务均衡”只发生在协方差构造阶段。最终没有旧类头和新类头两个分支，也没有先判断query角色再分类。旧类和新类对同一query做一次全注册类竞争。
 
@@ -2948,6 +3443,8 @@ $$
 \frac{1}{C}
 \mathbf{1}\mathbf{1}^{\mathsf T}\mathbf{b}.
 $$
+
+**本式符号说明：**\(c,k,K\)是类别、shot索引和每类shot数，\(\widetilde{\mathbf z}_{c,k}\)是稳健化support，\(\boldsymbol\mu_c\)是类均值；\(\boldsymbol\Sigma_{\mathrm o}\)、\(\boldsymbol\Sigma_{\mathrm n}\)、\(\boldsymbol\Sigma_{\mathrm{bal}}\)、\(\boldsymbol\Sigma_{\mathrm{blk}}\)是旧、新、均衡和块对角协方差；\(\pi_c\)是等先验，\(\mathbf w_c,b_c\)是仿射行，\(s_c(\mathbf q)\)是query分数，\(\widehat y\)是预测；\(\mathbf1\)是全一向量，跨类均值删除不改变argmax。
 
 再跨越FP32边界，使后续再次中心化近似幂等。初始实现曾在一个125矩阵row触发近边界中心漂移；修复后完整重跑。retry1又发现注册前block组件误用了任务均衡协方差，导致注册前状态不再与matched control逐值一致；retry2修复为“无新类任务或K1/K2时进入锁定回退分支，只有注册后且K>2启用旧/新任务均衡”，并重新执行完整125。最终性能只采用retry2。
 
@@ -3122,6 +3619,8 @@ $$
 \right].
 $$
 
+**本式符号说明：**MRIOR式中的\(E_\theta\)是特征编码器，\(T_\psi\)是参数\(\psi\)的域统计网络，\(\mathbf x_i^{\mathrm s},\mathbf x_j^{\mathrm t}\)是source与target样本，\(n_{\mathrm s},n_{\mathrm t}\)是样本数，\(\widehat D_{\mathrm{DV}}\)是DV域差异估计，\(\mathcal L\)是损失，\(\lambda,\mu\)是固定权重；DADDA式中的MMD/LMMD是全局/局部均值嵌入差异；ProtoNet式中的\(\mathbf p_c\)是类原型，\(d\)是距离，\(K\)是shot数。
+
 项目监督K-shot版本的分类项采用
 
 $$
@@ -3160,6 +3659,8 @@ d_{\mathrm{MMD}}+d_{\mathrm{LMMD}}
 }.
 $$
 
+**本式符号说明：**MRIOR式中的\(E_\theta\)是特征编码器，\(T_\psi\)是参数\(\psi\)的域统计网络，\(\mathbf x_i^{\mathrm s},\mathbf x_j^{\mathrm t}\)是source与target样本，\(n_{\mathrm s},n_{\mathrm t}\)是样本数，\(\widehat D_{\mathrm{DV}}\)是DV域差异估计，\(\mathcal L\)是损失，\(\lambda,\mu\)是固定权重；DADDA式中的MMD/LMMD是全局/局部均值嵌入差异；ProtoNet式中的\(\mathbf p_c\)是类原型，\(d\)是距离，\(K\)是shot数。
+
 调节全局与局部对齐权重。项目中的DADDA-SDA加入target support CE，LMMD对support使用真实标签；若另加无标签target池，必须作为半监督扩展单列。
 
 DADDA的总目标为
@@ -3181,6 +3682,8 @@ $$
 \right].
 $$
 
+**本式符号说明：**MRIOR式中的\(E_\theta\)是特征编码器，\(T_\psi\)是参数\(\psi\)的域统计网络，\(\mathbf x_i^{\mathrm s},\mathbf x_j^{\mathrm t}\)是source与target样本，\(n_{\mathrm s},n_{\mathrm t}\)是样本数，\(\widehat D_{\mathrm{DV}}\)是DV域差异估计，\(\mathcal L\)是损失，\(\lambda,\mu\)是固定权重；DADDA式中的MMD/LMMD是全局/局部均值嵌入差异；ProtoNet式中的\(\mathbf p_c\)是类原型，\(d\)是距离，\(K\)是shot数。
+
 MMD对齐source/target全局均值嵌入，LMMD按类别或伪类别对齐局部分布。动态因子接近0时更依赖全局对齐，接近1时更依赖类条件对齐。项目版本的输出是更新后的旧类特征提取器和分类器。
 
 DADDA-SDA比D92更像“学习域不变特征”；D92则假定冻结表征已基本可用，主要校正少样本注册头的几何与旧新任务权重。DADDA不设计新类追加、旧类遗忘或全注册类竞争，因此不能替代D92的Stage2-C评价。
@@ -3200,6 +3703,8 @@ E_{\theta}
 \right).
 $$
 
+**本式符号说明：**MRIOR式中的\(E_\theta\)是特征编码器，\(T_\psi\)是参数\(\psi\)的域统计网络，\(\mathbf x_i^{\mathrm s},\mathbf x_j^{\mathrm t}\)是source与target样本，\(n_{\mathrm s},n_{\mathrm t}\)是样本数，\(\widehat D_{\mathrm{DV}}\)是DV域差异估计，\(\mathcal L\)是损失，\(\lambda,\mu\)是固定权重；DADDA式中的MMD/LMMD是全局/局部均值嵌入差异；ProtoNet式中的\(\mathbf p_c\)是类原型，\(d\)是距离，\(K\)是shot数。
+
 query通过距离分类：
 
 $$
@@ -3212,6 +3717,8 @@ E_{\theta}(\mathbf{x}^{(q)}),
 \mathbf{p}_c
 \right).
 $$
+
+**本式符号说明：**MRIOR式中的\(E_\theta\)是特征编码器，\(T_\psi\)是参数\(\psi\)的域统计网络，\(\mathbf x_i^{\mathrm s},\mathbf x_j^{\mathrm t}\)是source与target样本，\(n_{\mathrm s},n_{\mathrm t}\)是样本数，\(\widehat D_{\mathrm{DV}}\)是DV域差异估计，\(\mathcal L\)是损失，\(\lambda,\mu\)是固定权重；DADDA式中的MMD/LMMD是全局/局部均值嵌入差异；ProtoNet式中的\(\mathbf p_c\)是类原型，\(d\)是距离，\(K\)是shot数。
 
 它不对query反传。欧氏距离相当于各维同尺度、球形类分布；D92则由support估计共享Mahalanobis几何：
 
@@ -3229,6 +3736,8 @@ d_{\mathrm{D92}}^2
 \mathbf{q}-\boldsymbol{\mu}_c
 \right).
 $$
+
+**本式符号说明：**MRIOR式中的\(E_\theta\)是特征编码器，\(T_\psi\)是参数\(\psi\)的域统计网络，\(\mathbf x_i^{\mathrm s},\mathbf x_j^{\mathrm t}\)是source与target样本，\(n_{\mathrm s},n_{\mathrm t}\)是样本数，\(\widehat D_{\mathrm{DV}}\)是DV域差异估计，\(\mathcal L\)是损失，\(\lambda,\mu\)是固定权重；DADDA式中的MMD/LMMD是全局/局部均值嵌入差异；ProtoNet式中的\(\mathbf p_c\)是类原型，\(d\)是距离，\(K\)是shot数。
 
 ProtoNet CDA在现行比较中只覆盖旧类Stage2-B；D92在Stage2-C同时容纳旧类和新类。
 
@@ -3283,6 +3792,8 @@ F_j
 \right)^2.
 $$
 
+**本式符号说明：**\(c,i,j,N\)是类别或样本索引与类别总数；CSIL式中的\(\mathbf v_c\)是类别指纹，CE/KD/EWC是交叉熵、蒸馏和弹性权重保持项，\(F_j\)是Fisher重要性；MoPC式中的\(\mathbf p_c^{(t)}\)、\(\mathbf P\)、\(\boldsymbol\Delta\)、\(\mathbf S\)是阶段\(t\)原型、原型矩阵、漂移和相似度映射，\(\alpha_p,\beta,\lambda_\ell\)是权重；Orthogonal式中的\(\mathbf t_i\)是单位目标向量；qKNN式中的\(\mathcal N_q(\mathbf q)\)是近邻集合，\(d\)是距离，\(\kappa\)是距离核，\(\mathbf p_c\)是类原型，\(\lambda_p\)是原型项权重。
+
 \(F_j\)表示旧任务对参数\(\theta_j\)的重要性估计；mask控制哪些新旧通道可以更新。CSIL输出扩展后的可训练网络和新增fingerprint权重，而不是闭式统计头。
 
 |维度|D92|CSIL|
@@ -3309,6 +3820,8 @@ $$
 f_{\theta_t}(\mathbf{x}_i).
 $$
 
+**本式符号说明：**\(c,i,j,N\)是类别或样本索引与类别总数；CSIL式中的\(\mathbf v_c\)是类别指纹，CE/KD/EWC是交叉熵、蒸馏和弹性权重保持项，\(F_j\)是Fisher重要性；MoPC式中的\(\mathbf p_c^{(t)}\)、\(\mathbf P\)、\(\boldsymbol\Delta\)、\(\mathbf S\)是阶段\(t\)原型、原型矩阵、漂移和相似度映射，\(\alpha_p,\beta,\lambda_\ell\)是权重；Orthogonal式中的\(\mathbf t_i\)是单位目标向量；qKNN式中的\(\mathcal N_q(\mathbf q)\)是近邻集合，\(d\)是距离，\(\kappa\)是距离核，\(\mathbf p_c\)是类原型，\(\lambda_p\)是原型项权重。
+
 新模型相对旧模型在新类prototype上的变化为
 
 $$
@@ -3319,6 +3832,8 @@ $$
 \mathbf{P}_{\mathrm{n}}^{(t-1)}.
 $$
 
+**本式符号说明：**\(c,i,j,N\)是类别或样本索引与类别总数；CSIL式中的\(\mathbf v_c\)是类别指纹，CE/KD/EWC是交叉熵、蒸馏和弹性权重保持项，\(F_j\)是Fisher重要性；MoPC式中的\(\mathbf p_c^{(t)}\)、\(\mathbf P\)、\(\boldsymbol\Delta\)、\(\mathbf S\)是阶段\(t\)原型、原型矩阵、漂移和相似度映射，\(\alpha_p,\beta,\lambda_\ell\)是权重；Orthogonal式中的\(\mathbf t_i\)是单位目标向量；qKNN式中的\(\mathcal N_q(\mathbf q)\)是近邻集合，\(d\)是距离，\(\kappa\)是距离核，\(\mathbf p_c\)是类原型，\(\lambda_p\)是原型项权重。
+
 以旧prototype和旧模型新类prototype的余弦相似度矩阵\(\mathbf{S}\)传播这一变化：
 
 $$
@@ -3326,6 +3841,8 @@ $$
 =
 \mathbf{S}\boldsymbol{\Delta}_{\mathrm{n}},
 $$
+
+**本式符号说明：**\(c,i,j,N\)是类别或样本索引与类别总数；CSIL式中的\(\mathbf v_c\)是类别指纹，CE/KD/EWC是交叉熵、蒸馏和弹性权重保持项，\(F_j\)是Fisher重要性；MoPC式中的\(\mathbf p_c^{(t)}\)、\(\mathbf P\)、\(\boldsymbol\Delta\)、\(\mathbf S\)是阶段\(t\)原型、原型矩阵、漂移和相似度映射，\(\alpha_p,\beta,\lambda_\ell\)是权重；Orthogonal式中的\(\mathbf t_i\)是单位目标向量；qKNN式中的\(\mathcal N_q(\mathbf q)\)是近邻集合，\(d\)是距离，\(\kappa\)是距离核，\(\mathbf p_c\)是类原型，\(\lambda_p\)是原型项权重。
 
 当前复现按论文路径使用动量修正
 
@@ -3343,6 +3860,8 @@ $$
 \alpha_{\mathrm{p}}=0.97.
 $$
 
+**本式符号说明：**\(c,i,j,N\)是类别或样本索引与类别总数；CSIL式中的\(\mathbf v_c\)是类别指纹，CE/KD/EWC是交叉熵、蒸馏和弹性权重保持项，\(F_j\)是Fisher重要性；MoPC式中的\(\mathbf p_c^{(t)}\)、\(\mathbf P\)、\(\boldsymbol\Delta\)、\(\mathbf S\)是阶段\(t\)原型、原型矩阵、漂移和相似度映射，\(\alpha_p,\beta,\lambda_\ell\)是权重；Orthogonal式中的\(\mathbf t_i\)是单位目标向量；qKNN式中的\(\mathcal N_q(\mathbf q)\)是近邻集合，\(d\)是距离，\(\kappa\)是距离核，\(\mathbf p_c\)是类原型，\(\lambda_p\)是原型项权重。
+
 prototype增强为
 
 $$
@@ -3357,6 +3876,8 @@ $$
 \mathbf{0},0.05^2\mathbf{I}
 \right).
 $$
+
+**本式符号说明：**\(c,i,j,N\)是类别或样本索引与类别总数；CSIL式中的\(\mathbf v_c\)是类别指纹，CE/KD/EWC是交叉熵、蒸馏和弹性权重保持项，\(F_j\)是Fisher重要性；MoPC式中的\(\mathbf p_c^{(t)}\)、\(\mathbf P\)、\(\boldsymbol\Delta\)、\(\mathbf S\)是阶段\(t\)原型、原型矩阵、漂移和相似度映射，\(\alpha_p,\beta,\lambda_\ell\)是权重；Orthogonal式中的\(\mathbf t_i\)是单位目标向量；qKNN式中的\(\mathcal N_q(\mathbf q)\)是近邻集合，\(d\)是距离，\(\kappa\)是距离核，\(\mathbf p_c\)是类原型，\(\lambda_p\)是原型项权重。
 
 增量目标为
 
@@ -3376,6 +3897,8 @@ $$
 \boldsymbol{\theta}_{\ell}^{(t-1)}
 \right\rVert_2^2.
 $$
+
+**本式符号说明：**\(c,i,j,N\)是类别或样本索引与类别总数；CSIL式中的\(\mathbf v_c\)是类别指纹，CE/KD/EWC是交叉熵、蒸馏和弹性权重保持项，\(F_j\)是Fisher重要性；MoPC式中的\(\mathbf p_c^{(t)}\)、\(\mathbf P\)、\(\boldsymbol\Delta\)、\(\mathbf S\)是阶段\(t\)原型、原型矩阵、漂移和相似度映射，\(\alpha_p,\beta,\lambda_\ell\)是权重；Orthogonal式中的\(\mathbf t_i\)是单位目标向量；qKNN式中的\(\mathcal N_q(\mathbf q)\)是近邻集合，\(d\)是距离，\(\kappa\)是距离核，\(\mathbf p_c\)是类原型，\(\lambda_p\)是原型项权重。
 
 层级系数\(\lambda_{\ell}\)随网络层位置递减。MoPC-HR输出增量训练后的网络、修正旧prototype和新prototype。
 
@@ -3400,6 +3923,8 @@ $$
 \quad i\neq j.
 $$
 
+**本式符号说明：**\(c,i,j,N\)是类别或样本索引与类别总数；CSIL式中的\(\mathbf v_c\)是类别指纹，CE/KD/EWC是交叉熵、蒸馏和弹性权重保持项，\(F_j\)是Fisher重要性；MoPC式中的\(\mathbf p_c^{(t)}\)、\(\mathbf P\)、\(\boldsymbol\Delta\)、\(\mathbf S\)是阶段\(t\)原型、原型矩阵、漂移和相似度映射，\(\alpha_p,\beta,\lambda_\ell\)是权重；Orthogonal式中的\(\mathbf t_i\)是单位目标向量；qKNN式中的\(\mathcal N_q(\mathbf q)\)是近邻集合，\(d\)是距离，\(\kappa\)是距离核，\(\mathbf p_c\)是类原型，\(\lambda_p\)是原型项权重。
+
 base阶段目标概括为
 
 $$
@@ -3412,6 +3937,8 @@ $$
 \mathcal{L}_{\mathrm{c}},
 $$
 
+**本式符号说明：**\(c,i,j,N\)是类别或样本索引与类别总数；CSIL式中的\(\mathbf v_c\)是类别指纹，CE/KD/EWC是交叉熵、蒸馏和弹性权重保持项，\(F_j\)是Fisher重要性；MoPC式中的\(\mathbf p_c^{(t)}\)、\(\mathbf P\)、\(\boldsymbol\Delta\)、\(\mathbf S\)是阶段\(t\)原型、原型矩阵、漂移和相似度映射，\(\alpha_p,\beta,\lambda_\ell\)是权重；Orthogonal式中的\(\mathbf t_i\)是单位目标向量；qKNN式中的\(\mathcal N_q(\mathbf q)\)是近邻集合，\(d\)是距离，\(\kappa\)是距离核，\(\mathbf p_c\)是类原型，\(\lambda_p\)是原型项权重。
+
 分别对应伪目标交叉熵、监督锚点对比和类中心分离。增量校准为
 
 $$
@@ -3422,6 +3949,8 @@ $$
 \lambda_{\mathrm{a}}
 \mathcal{L}_{\mathrm{align}}.
 $$
+
+**本式符号说明：**\(c,i,j,N\)是类别或样本索引与类别总数；CSIL式中的\(\mathbf v_c\)是类别指纹，CE/KD/EWC是交叉熵、蒸馏和弹性权重保持项，\(F_j\)是Fisher重要性；MoPC式中的\(\mathbf p_c^{(t)}\)、\(\mathbf P\)、\(\boldsymbol\Delta\)、\(\mathbf S\)是阶段\(t\)原型、原型矩阵、漂移和相似度映射，\(\alpha_p,\beta,\lambda_\ell\)是权重；Orthogonal式中的\(\mathbf t_i\)是单位目标向量；qKNN式中的\(\mathcal N_q(\mathbf q)\)是近邻集合，\(d\)是距离，\(\kappa\)是距离核，\(\mathbf p_c\)是类原型，\(\lambda_p\)是原型项权重。
 
 \(\mathcal{L}_{\mathrm{margin}}\)惩罚新类权重对旧类或其他新类的困难竞争，\(\mathcal{L}_{\mathrm{align}}\)使新权重靠近support prototype。输出是冻结encoder加扩展并校准后的分类器权重。
 
@@ -3458,6 +3987,8 @@ $$
 \arg\max_c
 s_c^{\mathrm{qKNN}}(\mathbf{q}).
 $$
+
+**本式符号说明：**\(c,i,j,N\)是类别或样本索引与类别总数；CSIL式中的\(\mathbf v_c\)是类别指纹，CE/KD/EWC是交叉熵、蒸馏和弹性权重保持项，\(F_j\)是Fisher重要性；MoPC式中的\(\mathbf p_c^{(t)}\)、\(\mathbf P\)、\(\boldsymbol\Delta\)、\(\mathbf S\)是阶段\(t\)原型、原型矩阵、漂移和相似度映射，\(\alpha_p,\beta,\lambda_\ell\)是权重；Orthogonal式中的\(\mathbf t_i\)是单位目标向量；qKNN式中的\(\mathcal N_q(\mathbf q)\)是近邻集合，\(d\)是距离，\(\kappa\)是距离核，\(\mathbf p_c\)是类原型，\(\lambda_p\)是原型项权重。
 
 它依靠局部support记忆处理非高斯边界；D92把support压缩为共享协方差和仿射行，query成本与每类support数量无关。
 
@@ -3567,6 +4098,8 @@ B_{\mathrm{qKNN}}
 CKd.
 $$
 
+**本式符号说明：**\(B_{\mathrm{qKNN}}\)是qKNN状态字节数，\(\mathcal M_{\mathrm{qKNN}}\)是每query近似MAC数，\(C\)是类别数，\(K\)是每类support数，\(d\)是特征维数，系数2表示FP16每坐标2字节；\(160\)是identity维数，\(288\)是D92联合维数，比例式比较两种状态随K增长的相对规模。
+
 当\(C=11\)时，qKNN需要35,200B样本状态和17,600次点积MAC，而D92的11类正式核心数组约7.46KiB、分类头为3,168MAC；当\(C=26\)时，qKNN约需81.25KiB和41,600MAC，D92正式核心数组约16.11KiB、分类头为7,488MAC。query计算比值约为
 
 $$
@@ -3574,6 +4107,8 @@ $$
 =
 5.56.
 $$
+
+**本式符号说明：**\(B_{\mathrm{qKNN}}\)是qKNN状态字节数，\(\mathcal M_{\mathrm{qKNN}}\)是每query近似MAC数，\(C\)是类别数，\(K\)是每类support数，\(d\)是特征维数，系数2表示FP16每坐标2字节；\(160\)是identity维数，\(288\)是D92联合维数，比例式比较两种状态随K增长的相对规模。
 
 因此qKNN注册明显更便宜，D92则在大量后续query上用一次较重的状态编译换取约5.56倍更低的分类头计算和不随K增长的量化常驻头。当前D92的量化主要降低存储；NumPy路径仍先解码到FP32，不能把5.56倍query MAC差值继续乘以INT8硬件加速倍率。若使用288维qKNN或加入adapter，qKNN的状态与query开销还会增加。
 
