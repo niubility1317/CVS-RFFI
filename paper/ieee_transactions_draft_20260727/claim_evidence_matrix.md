@@ -21,6 +21,9 @@
 |C13|26类RTB-IDR核心数组约16.11KiB，仿射头7488MAC/query|D92资源审计|解析式与artifact证据|“compiled head storage/compute”|“end-to-end system is 7488MAC”|补主干、FFT/RF和硬件测试|
 |C14|WiSig/ManySig和LEO仿真信道均为代理；当前IQ仅实现后同步残余基带链路|`项目.md`、`code/sat_channel.py`、`code/training_controls.py`|场景与实现边界|“terrestrial proxy and simulated LEO residual channel”|“real on-orbit validation”或“complete satellite link budget”|真实卫星或硬件在环|
 |C15|论文当前可作为IEEE Transactions结构化初稿|`manuscript.tex`和编译PDF|文稿交付证据|“initial evidence-locked draft”|“submission-ready Q1 paper”|清除全部AUTHOR ACTION|
+|C16|现有研究分别覆盖跨接收机、少样本增量或卫星识别，但本稿调研范围内没有共同评测同时执行全部CVS约束|38篇已核验引用PDF、`citation_inventory.md`、Introduction与Related Work|限定范围的文献综合|“Among the studies surveyed in Section II, we found no common evaluation that simultaneously enforces ...”|“the first method ever”或无范围限定的“no prior work”|投稿前按最终检索日期更新文献|
+|C17|冻结Phase1模型的`z_id`与`z_dom`均为160维，LEO一致性项不产生梯度|`docs/CVS_ADV3B02_QKNNV42_TECHNICAL_REPORT_20260709.md`第2—6节及历史快照|实现与谱系一致证据|“asymmetric 160-dimensional identity and nuisance representations”；“LEO classification only”|`z_dom=128`或“LEO consistency learning”|补参数量匹配的Phase1模块消融|
+|C18|当前统一Phase1协议划分为`0.07/0.63/0.30`，而ADV3B02历史审计实际为`0.10/0.70/0.20`|`项目.md`第4节、ADV3B02技术报告第5节|协议与历史执行不一致，已显式隔离|“historical internal audit pending confirmation under the current split”|把历史结果标成当前协议正式复验|按`0.07/0.63/0.30`冻结规则独立复验|
 
 ## 摘要允许使用的数字
 
