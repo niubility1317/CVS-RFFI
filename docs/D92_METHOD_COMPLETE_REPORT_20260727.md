@@ -1670,31 +1670,23 @@ $$
 
 ### 7.0本模块在做什么
 
-类中心只能回答“每个类别大致在哪里”，不能回答“类别云团朝哪些方向展开”。协方差矩阵描述的正是云团的形状：
+类中心只能回答“每个类别大致在哪里”，不能回答“类别云团朝哪些方向展开”。协方差矩阵描述的正是云团的形状。对于两个不同特征维\(i\ne j\)，非对角元素的符号可解释为
 
 $$
+\begin{aligned}
 \Sigma_{ij}>0
-$$
-
-**本式符号说明：**\(c,k\)是类别与shot索引，\(K\)是每类样本数，\(p=288\)是特征维数；\(\widetilde{\mathbf z}_{c,k}\)是稳健化support，\(\boldsymbol\mu_c\)是类均值，\(\mathbf D_c\)是逐维标准差对角矩阵，\(\mathbf u_{c,k}\)是标准化残差，\(\mathbf S_c^{(u)}\)是标准化经验协方差，\(\alpha_c\)是自动收缩强度，\(\zeta_c\)是平均方差，\(\mathbf I_p\)是单位矩阵，\(\widehat{\boldsymbol\Sigma}_c^{\mathrm{LW}}\)是类内Ledoit–Wolf协方差；\(\boldsymbol\Sigma_{\mathrm o}\)、\(\boldsymbol\Sigma_{\mathrm n}\)、\(\boldsymbol\Sigma_{\mathrm{bal}}\)是旧任务、新任务和等权共享协方差，\(\boldsymbol\Sigma_{\mathrm{full}}\)、\(\boldsymbol\Sigma_{\mathrm{blk}}\)是full与三块结构，\(\lambda_{\min}\)是最小特征值。
-
-表示第\(i\)维和第\(j\)维倾向同向变化；
-
-$$
+&\quad\Longrightarrow\quad
+\text{特征维 }i\text{ 与特征维 }j\text{ 倾向同向变化},\\
 \Sigma_{ij}<0
-$$
-
-**本式符号说明：**\(c,k\)是类别与shot索引，\(K\)是每类样本数，\(p=288\)是特征维数；\(\widetilde{\mathbf z}_{c,k}\)是稳健化support，\(\boldsymbol\mu_c\)是类均值，\(\mathbf D_c\)是逐维标准差对角矩阵，\(\mathbf u_{c,k}\)是标准化残差，\(\mathbf S_c^{(u)}\)是标准化经验协方差，\(\alpha_c\)是自动收缩强度，\(\zeta_c\)是平均方差，\(\mathbf I_p\)是单位矩阵，\(\widehat{\boldsymbol\Sigma}_c^{\mathrm{LW}}\)是类内Ledoit–Wolf协方差；\(\boldsymbol\Sigma_{\mathrm o}\)、\(\boldsymbol\Sigma_{\mathrm n}\)、\(\boldsymbol\Sigma_{\mathrm{bal}}\)是旧任务、新任务和等权共享协方差，\(\boldsymbol\Sigma_{\mathrm{full}}\)、\(\boldsymbol\Sigma_{\mathrm{blk}}\)是full与三块结构，\(\lambda_{\min}\)是最小特征值。
-
-表示两维倾向反向变化；
-
-$$
+&\quad\Longrightarrow\quad
+\text{特征维 }i\text{ 与特征维 }j\text{ 倾向反向变化},\\
 \Sigma_{ij}\approx0
+&\quad\Longrightarrow\quad
+\text{当前统计中没有明显的线性联动}.
+\end{aligned}
 $$
 
-**本式符号说明：**\(c,k\)是类别与shot索引，\(K\)是每类样本数，\(p=288\)是特征维数；\(\widetilde{\mathbf z}_{c,k}\)是稳健化support，\(\boldsymbol\mu_c\)是类均值，\(\mathbf D_c\)是逐维标准差对角矩阵，\(\mathbf u_{c,k}\)是标准化残差，\(\mathbf S_c^{(u)}\)是标准化经验协方差，\(\alpha_c\)是自动收缩强度，\(\zeta_c\)是平均方差，\(\mathbf I_p\)是单位矩阵，\(\widehat{\boldsymbol\Sigma}_c^{\mathrm{LW}}\)是类内Ledoit–Wolf协方差；\(\boldsymbol\Sigma_{\mathrm o}\)、\(\boldsymbol\Sigma_{\mathrm n}\)、\(\boldsymbol\Sigma_{\mathrm{bal}}\)是旧任务、新任务和等权共享协方差，\(\boldsymbol\Sigma_{\mathrm{full}}\)、\(\boldsymbol\Sigma_{\mathrm{blk}}\)是full与三块结构，\(\lambda_{\min}\)是最小特征值。
-
-表示当前统计中没有明显线性联动。
+**本式符号说明：**\(\boldsymbol\Sigma\in\mathbb R^{288\times288}\)是协方差矩阵；\(\Sigma_{ij}\)是其第\(i\)行、第\(j\)列元素；\(i,j\in\{1,\ldots,288\}\)是特征维索引。上述正负号解释只针对\(i\ne j\)的非对角协方差；对角元素\(\Sigma_{ii}\)是第\(i\)维的方差，理论上满足\(\Sigma_{ii}\geq0\)。
 
 模块三需要在两个困难下估计共享几何：
 
@@ -1740,7 +1732,7 @@ $$
 23.08\%,
 $$
 
-**本式符号说明：**\(c,k\)是类别与shot索引，\(K\)是每类样本数，\(p=288\)是特征维数；\(\widetilde{\mathbf z}_{c,k}\)是稳健化support，\(\boldsymbol\mu_c\)是类均值，\(\mathbf D_c\)是逐维标准差对角矩阵，\(\mathbf u_{c,k}\)是标准化残差，\(\mathbf S_c^{(u)}\)是标准化经验协方差，\(\alpha_c\)是自动收缩强度，\(\zeta_c\)是平均方差，\(\mathbf I_p\)是单位矩阵，\(\widehat{\boldsymbol\Sigma}_c^{\mathrm{LW}}\)是类内Ledoit–Wolf协方差；\(\boldsymbol\Sigma_{\mathrm o}\)、\(\boldsymbol\Sigma_{\mathrm n}\)、\(\boldsymbol\Sigma_{\mathrm{bal}}\)是旧任务、新任务和等权共享协方差，\(\boldsymbol\Sigma_{\mathrm{full}}\)、\(\boldsymbol\Sigma_{\mathrm{blk}}\)是full与三块结构，\(\lambda_{\min}\)是最小特征值。
+**本式符号说明：**6是旧类数量；20是新类数量；26是注册后的总类别数；\(6/26\)是直接按全部26类等权汇总时旧类任务获得的总权重；百分号表示将该比例乘以100%。
 
 新类任务总权重为
 
@@ -1750,7 +1742,7 @@ $$
 76.92\%.
 $$
 
-**本式符号说明：**\(c,k\)是类别与shot索引，\(K\)是每类样本数，\(p=288\)是特征维数；\(\widetilde{\mathbf z}_{c,k}\)是稳健化support，\(\boldsymbol\mu_c\)是类均值，\(\mathbf D_c\)是逐维标准差对角矩阵，\(\mathbf u_{c,k}\)是标准化残差，\(\mathbf S_c^{(u)}\)是标准化经验协方差，\(\alpha_c\)是自动收缩强度，\(\zeta_c\)是平均方差，\(\mathbf I_p\)是单位矩阵，\(\widehat{\boldsymbol\Sigma}_c^{\mathrm{LW}}\)是类内Ledoit–Wolf协方差；\(\boldsymbol\Sigma_{\mathrm o}\)、\(\boldsymbol\Sigma_{\mathrm n}\)、\(\boldsymbol\Sigma_{\mathrm{bal}}\)是旧任务、新任务和等权共享协方差，\(\boldsymbol\Sigma_{\mathrm{full}}\)、\(\boldsymbol\Sigma_{\mathrm{blk}}\)是full与三块结构，\(\lambda_{\min}\)是最小特征值。
+**本式符号说明：**20是新类数量；26是注册后的总类别数；\(20/26\)是直接按全部26类等权汇总时新类任务获得的总权重；该比例约为76.92%。
 
 D92先在任务内部平均，再令
 
@@ -1762,7 +1754,7 @@ $$
 0.5\boldsymbol{\Sigma}_{\mathrm{n}},
 $$
 
-**本式符号说明：**\(c,k\)是类别与shot索引，\(K\)是每类样本数，\(p=288\)是特征维数；\(\widetilde{\mathbf z}_{c,k}\)是稳健化support，\(\boldsymbol\mu_c\)是类均值，\(\mathbf D_c\)是逐维标准差对角矩阵，\(\mathbf u_{c,k}\)是标准化残差，\(\mathbf S_c^{(u)}\)是标准化经验协方差，\(\alpha_c\)是自动收缩强度，\(\zeta_c\)是平均方差，\(\mathbf I_p\)是单位矩阵，\(\widehat{\boldsymbol\Sigma}_c^{\mathrm{LW}}\)是类内Ledoit–Wolf协方差；\(\boldsymbol\Sigma_{\mathrm o}\)、\(\boldsymbol\Sigma_{\mathrm n}\)、\(\boldsymbol\Sigma_{\mathrm{bal}}\)是旧任务、新任务和等权共享协方差，\(\boldsymbol\Sigma_{\mathrm{full}}\)、\(\boldsymbol\Sigma_{\mathrm{blk}}\)是full与三块结构，\(\lambda_{\min}\)是最小特征值。
+**本式符号说明：**\(\boldsymbol\Sigma_{\mathrm o}\)是旧类任务内部等权汇总得到的协方差；\(\boldsymbol\Sigma_{\mathrm n}\)是新类任务内部等权汇总得到的协方差；\(\boldsymbol\Sigma_{\mathrm{bal}}\)是两项各占0.5权重的任务均衡协方差。三个矩阵的形状均为\(288\times288\)。
 
 所以新增类别只改变新类任务内部估计，不会把旧类任务的总统计权重继续压低。
 
@@ -1781,7 +1773,7 @@ $$
 \in\mathbb{R}^{288}.
 $$
 
-**本式符号说明：**\(c,k\)是类别与shot索引，\(K\)是每类样本数，\(p=288\)是特征维数；\(\widetilde{\mathbf z}_{c,k}\)是稳健化support，\(\boldsymbol\mu_c\)是类均值，\(\mathbf D_c\)是逐维标准差对角矩阵，\(\mathbf u_{c,k}\)是标准化残差，\(\mathbf S_c^{(u)}\)是标准化经验协方差，\(\alpha_c\)是自动收缩强度，\(\zeta_c\)是平均方差，\(\mathbf I_p\)是单位矩阵，\(\widehat{\boldsymbol\Sigma}_c^{\mathrm{LW}}\)是类内Ledoit–Wolf协方差；\(\boldsymbol\Sigma_{\mathrm o}\)、\(\boldsymbol\Sigma_{\mathrm n}\)、\(\boldsymbol\Sigma_{\mathrm{bal}}\)是旧任务、新任务和等权共享协方差，\(\boldsymbol\Sigma_{\mathrm{full}}\)、\(\boldsymbol\Sigma_{\mathrm{blk}}\)是full与三块结构，\(\lambda_{\min}\)是最小特征值。
+**本式符号说明：**\(c\)是类别索引；\(k\)是类别\(c\)内的shot索引；\(K\)是该类support样本数；\(\widetilde{\mathbf z}_{c,k}\in\mathbb R^{288}\)是模块二输出的第\(k\)条稳健化support特征；\(\boldsymbol\mu_c\in\mathbb R^{288}\)是类别\(c\)的support均值。
 
 旧类和新类使用同一均值公式。方法中不存在某个具体TX的专属中心规则。
 
@@ -1803,7 +1795,7 @@ $$
 \right).
 $$
 
-**本式符号说明：**\(c,k\)是类别与shot索引，\(K\)是每类样本数，\(p=288\)是特征维数；\(\widetilde{\mathbf z}_{c,k}\)是稳健化support，\(\boldsymbol\mu_c\)是类均值，\(\mathbf D_c\)是逐维标准差对角矩阵，\(\mathbf u_{c,k}\)是标准化残差，\(\mathbf S_c^{(u)}\)是标准化经验协方差，\(\alpha_c\)是自动收缩强度，\(\zeta_c\)是平均方差，\(\mathbf I_p\)是单位矩阵，\(\widehat{\boldsymbol\Sigma}_c^{\mathrm{LW}}\)是类内Ledoit–Wolf协方差；\(\boldsymbol\Sigma_{\mathrm o}\)、\(\boldsymbol\Sigma_{\mathrm n}\)、\(\boldsymbol\Sigma_{\mathrm{bal}}\)是旧任务、新任务和等权共享协方差，\(\boldsymbol\Sigma_{\mathrm{full}}\)、\(\boldsymbol\Sigma_{\mathrm{blk}}\)是full与三块结构，\(\lambda_{\min}\)是最小特征值。
+**本式符号说明：**\(\widetilde{\mathbf z}_{c,k}-\boldsymbol\mu_c\)是第\(k\)条support相对类均值的288维残差；\(\mathbf D_c\in\mathbb R^{288\times288}\)是类别\(c\)各维support标准差构成的对角矩阵；\(\mathbf D_c^{-1}\)执行逐维尺度标准化；\(\mathbf u_{c,k}\in\mathbb R^{288}\)是标准化后的类内残差。
 
 标准化空间中的经验协方差为
 
@@ -1815,7 +1807,7 @@ $$
 \mathbf{u}_{c,k}\mathbf{u}_{c,k}^{\mathsf T}.
 $$
 
-**本式符号说明：**\(c,k\)是类别与shot索引，\(K\)是每类样本数，\(p=288\)是特征维数；\(\widetilde{\mathbf z}_{c,k}\)是稳健化support，\(\boldsymbol\mu_c\)是类均值，\(\mathbf D_c\)是逐维标准差对角矩阵，\(\mathbf u_{c,k}\)是标准化残差，\(\mathbf S_c^{(u)}\)是标准化经验协方差，\(\alpha_c\)是自动收缩强度，\(\zeta_c\)是平均方差，\(\mathbf I_p\)是单位矩阵，\(\widehat{\boldsymbol\Sigma}_c^{\mathrm{LW}}\)是类内Ledoit–Wolf协方差；\(\boldsymbol\Sigma_{\mathrm o}\)、\(\boldsymbol\Sigma_{\mathrm n}\)、\(\boldsymbol\Sigma_{\mathrm{bal}}\)是旧任务、新任务和等权共享协方差，\(\boldsymbol\Sigma_{\mathrm{full}}\)、\(\boldsymbol\Sigma_{\mathrm{blk}}\)是full与三块结构，\(\lambda_{\min}\)是最小特征值。
+**本式符号说明：**\(\mathbf S_c^{(u)}\in\mathbb R^{288\times288}\)是类别\(c\)在标准化空间中的经验协方差；\(K\)是该类support数；\(\mathbf u_{c,k}\mathbf u_{c,k}^{\mathsf T}\)是第\(k\)条标准化残差的外积；上标\(\mathsf T\)表示转置。
 
 Ledoit–Wolf估计器自动确定\(\alpha_c\in[0,1]\)，形成
 
@@ -1835,7 +1827,7 @@ $$
 \left(\mathbf{S}^{(u)}_c\right)}{p}.
 $$
 
-**本式符号说明：**\(c,k\)是类别与shot索引，\(K\)是每类样本数，\(p=288\)是特征维数；\(\widetilde{\mathbf z}_{c,k}\)是稳健化support，\(\boldsymbol\mu_c\)是类均值，\(\mathbf D_c\)是逐维标准差对角矩阵，\(\mathbf u_{c,k}\)是标准化残差，\(\mathbf S_c^{(u)}\)是标准化经验协方差，\(\alpha_c\)是自动收缩强度，\(\zeta_c\)是平均方差，\(\mathbf I_p\)是单位矩阵，\(\widehat{\boldsymbol\Sigma}_c^{\mathrm{LW}}\)是类内Ledoit–Wolf协方差；\(\boldsymbol\Sigma_{\mathrm o}\)、\(\boldsymbol\Sigma_{\mathrm n}\)、\(\boldsymbol\Sigma_{\mathrm{bal}}\)是旧任务、新任务和等权共享协方差，\(\boldsymbol\Sigma_{\mathrm{full}}\)、\(\boldsymbol\Sigma_{\mathrm{blk}}\)是full与三块结构，\(\lambda_{\min}\)是最小特征值。
+**本式符号说明：**\(\widehat{\boldsymbol\Sigma}^{(u)}_c\)是收缩后的标准化类内协方差；\(\alpha_c\in[0,1]\)是Ledoit–Wolf估计器从类别\(c\)的support自动确定的收缩强度；\(\mathbf S_c^{(u)}\)是经验协方差；\(\mathbf I_p\)是\(p=288\)维单位矩阵；\(\operatorname{tr}(\cdot)\)是矩阵迹；\(\zeta_c=\operatorname{tr}(\mathbf S_c^{(u)})/p\)是经验协方差的平均对角方差，也是球形收缩目标的尺度。
 
 再恢复原始特征尺度：
 
@@ -1847,7 +1839,7 @@ $$
 \mathbf{D}_c.
 $$
 
-**本式符号说明：**\(c,k\)是类别与shot索引，\(K\)是每类样本数，\(p=288\)是特征维数；\(\widetilde{\mathbf z}_{c,k}\)是稳健化support，\(\boldsymbol\mu_c\)是类均值，\(\mathbf D_c\)是逐维标准差对角矩阵，\(\mathbf u_{c,k}\)是标准化残差，\(\mathbf S_c^{(u)}\)是标准化经验协方差，\(\alpha_c\)是自动收缩强度，\(\zeta_c\)是平均方差，\(\mathbf I_p\)是单位矩阵，\(\widehat{\boldsymbol\Sigma}_c^{\mathrm{LW}}\)是类内Ledoit–Wolf协方差；\(\boldsymbol\Sigma_{\mathrm o}\)、\(\boldsymbol\Sigma_{\mathrm n}\)、\(\boldsymbol\Sigma_{\mathrm{bal}}\)是旧任务、新任务和等权共享协方差，\(\boldsymbol\Sigma_{\mathrm{full}}\)、\(\boldsymbol\Sigma_{\mathrm{blk}}\)是full与三块结构，\(\lambda_{\min}\)是最小特征值。
+**本式符号说明：**\(\widehat{\boldsymbol\Sigma}^{\mathrm{LW}}_c\in\mathbb R^{288\times288}\)是恢复到原始联合特征尺度后的类别\(c\)协方差；\(\widehat{\boldsymbol\Sigma}^{(u)}_c\)是标准化空间中的Ledoit–Wolf估计；左右两侧的\(\mathbf D_c\)分别恢复行方向和列方向的特征尺度。
 
 这与当前实现中`StandardScaler→ledoit_wolf→rescale`的`shrinkage="auto"`语义一致。这里的\(\alpha_c\)由当前类support的协方差估计问题自动确定，不通过query结果或125矩阵扫描选择。
 
@@ -1863,7 +1855,7 @@ $$
 \widehat{\boldsymbol{\Sigma}}^{\mathrm{LW}}_c.
 $$
 
-**本式符号说明：**\(c,k\)是类别与shot索引，\(K\)是每类样本数，\(p=288\)是特征维数；\(\widetilde{\mathbf z}_{c,k}\)是稳健化support，\(\boldsymbol\mu_c\)是类均值，\(\mathbf D_c\)是逐维标准差对角矩阵，\(\mathbf u_{c,k}\)是标准化残差，\(\mathbf S_c^{(u)}\)是标准化经验协方差，\(\alpha_c\)是自动收缩强度，\(\zeta_c\)是平均方差，\(\mathbf I_p\)是单位矩阵，\(\widehat{\boldsymbol\Sigma}_c^{\mathrm{LW}}\)是类内Ledoit–Wolf协方差；\(\boldsymbol\Sigma_{\mathrm o}\)、\(\boldsymbol\Sigma_{\mathrm n}\)、\(\boldsymbol\Sigma_{\mathrm{bal}}\)是旧任务、新任务和等权共享协方差，\(\boldsymbol\Sigma_{\mathrm{full}}\)、\(\boldsymbol\Sigma_{\mathrm{blk}}\)是full与三块结构，\(\lambda_{\min}\)是最小特征值。
+**本式符号说明：**\(\mathcal Y_{\mathrm o}\)是旧类集合；\(C_{\mathrm o}=|\mathcal Y_{\mathrm o}|\)是旧类数；\(\widehat{\boldsymbol\Sigma}^{\mathrm{LW}}_c\)是旧类\(c\)的类内收缩协方差；\(\boldsymbol\Sigma_{\mathrm o}\)是对所有旧类等权平均得到的旧类任务协方差。
 
 新类任务协方差为
 
@@ -1875,7 +1867,7 @@ $$
 \widehat{\boldsymbol{\Sigma}}^{\mathrm{LW}}_c.
 $$
 
-**本式符号说明：**\(c,k\)是类别与shot索引，\(K\)是每类样本数，\(p=288\)是特征维数；\(\widetilde{\mathbf z}_{c,k}\)是稳健化support，\(\boldsymbol\mu_c\)是类均值，\(\mathbf D_c\)是逐维标准差对角矩阵，\(\mathbf u_{c,k}\)是标准化残差，\(\mathbf S_c^{(u)}\)是标准化经验协方差，\(\alpha_c\)是自动收缩强度，\(\zeta_c\)是平均方差，\(\mathbf I_p\)是单位矩阵，\(\widehat{\boldsymbol\Sigma}_c^{\mathrm{LW}}\)是类内Ledoit–Wolf协方差；\(\boldsymbol\Sigma_{\mathrm o}\)、\(\boldsymbol\Sigma_{\mathrm n}\)、\(\boldsymbol\Sigma_{\mathrm{bal}}\)是旧任务、新任务和等权共享协方差，\(\boldsymbol\Sigma_{\mathrm{full}}\)、\(\boldsymbol\Sigma_{\mathrm{blk}}\)是full与三块结构，\(\lambda_{\min}\)是最小特征值。
+**本式符号说明：**\(\mathcal Y_{\mathrm n}\)是已注册新类集合；\(C_{\mathrm n}=|\mathcal Y_{\mathrm n}|\)是新类数；\(\widehat{\boldsymbol\Sigma}^{\mathrm{LW}}_c\)是新类\(c\)的类内收缩协方差；\(\boldsymbol\Sigma_{\mathrm n}\)是对所有新类等权平均得到的新类任务协方差。
 
 先在各任务内部进行类别等权汇总，意味着旧类任务的统计权重不会随着新类数量从5增加到20而被自动稀释。
 
@@ -1895,7 +1887,7 @@ $$
 }
 $$
 
-**本式符号说明：**\(c,k\)是类别与shot索引，\(K\)是每类样本数，\(p=288\)是特征维数；\(\widetilde{\mathbf z}_{c,k}\)是稳健化support，\(\boldsymbol\mu_c\)是类均值，\(\mathbf D_c\)是逐维标准差对角矩阵，\(\mathbf u_{c,k}\)是标准化残差，\(\mathbf S_c^{(u)}\)是标准化经验协方差，\(\alpha_c\)是自动收缩强度，\(\zeta_c\)是平均方差，\(\mathbf I_p\)是单位矩阵，\(\widehat{\boldsymbol\Sigma}_c^{\mathrm{LW}}\)是类内Ledoit–Wolf协方差；\(\boldsymbol\Sigma_{\mathrm o}\)、\(\boldsymbol\Sigma_{\mathrm n}\)、\(\boldsymbol\Sigma_{\mathrm{bal}}\)是旧任务、新任务和等权共享协方差，\(\boldsymbol\Sigma_{\mathrm{full}}\)、\(\boldsymbol\Sigma_{\mathrm{blk}}\)是full与三块结构，\(\lambda_{\min}\)是最小特征值。
+**本式符号说明：**\(\boldsymbol\Sigma_{\mathrm{bal}}\)是任务均衡共享协方差；\(\boldsymbol\Sigma_{\mathrm o}\)和\(\boldsymbol\Sigma_{\mathrm n}\)分别是旧类任务与新类任务协方差；两个系数\(1/2\)把旧、新任务总权重固定为50%和50%，不随两侧类别数改变。
 
 更一般地，若直接把全部类别混在一起等先验估计，则旧类任务总权重为\(C_{\mathrm{o}}/C\)，新类任务总权重为\(C_{\mathrm{n}}/C\)。当\(C_{\mathrm{o}}=6,C_{\mathrm{n}}=20\)时，旧类任务只占
 
@@ -1903,7 +1895,7 @@ $$
 \frac{6}{26}\approx23.08\%.
 $$
 
-**本式符号说明：**\(c,k\)是类别与shot索引，\(K\)是每类样本数，\(p=288\)是特征维数；\(\widetilde{\mathbf z}_{c,k}\)是稳健化support，\(\boldsymbol\mu_c\)是类均值，\(\mathbf D_c\)是逐维标准差对角矩阵，\(\mathbf u_{c,k}\)是标准化残差，\(\mathbf S_c^{(u)}\)是标准化经验协方差，\(\alpha_c\)是自动收缩强度，\(\zeta_c\)是平均方差，\(\mathbf I_p\)是单位矩阵，\(\widehat{\boldsymbol\Sigma}_c^{\mathrm{LW}}\)是类内Ledoit–Wolf协方差；\(\boldsymbol\Sigma_{\mathrm o}\)、\(\boldsymbol\Sigma_{\mathrm n}\)、\(\boldsymbol\Sigma_{\mathrm{bal}}\)是旧任务、新任务和等权共享协方差，\(\boldsymbol\Sigma_{\mathrm{full}}\)、\(\boldsymbol\Sigma_{\mathrm{blk}}\)是full与三块结构，\(\lambda_{\min}\)是最小特征值。
+**本式符号说明：**6和20分别是旧类数与新类数；26是注册类总数；\(6/26\)是如果绕过任务均衡、直接按26个类别等权平均时旧类任务仅能获得的总权重。
 
 D92把两个任务的总权重固定为50%和50%，而不是让类别数量决定任务重要性。这一等权是方法定义，不是从query准确率拟合的超参数。
 
@@ -1917,7 +1909,7 @@ $$
 \boldsymbol{\Sigma}_{\mathrm{bal}}.
 $$
 
-**本式符号说明：**\(c,k\)是类别与shot索引，\(K\)是每类样本数，\(p=288\)是特征维数；\(\widetilde{\mathbf z}_{c,k}\)是稳健化support，\(\boldsymbol\mu_c\)是类均值，\(\mathbf D_c\)是逐维标准差对角矩阵，\(\mathbf u_{c,k}\)是标准化残差，\(\mathbf S_c^{(u)}\)是标准化经验协方差，\(\alpha_c\)是自动收缩强度，\(\zeta_c\)是平均方差，\(\mathbf I_p\)是单位矩阵，\(\widehat{\boldsymbol\Sigma}_c^{\mathrm{LW}}\)是类内Ledoit–Wolf协方差；\(\boldsymbol\Sigma_{\mathrm o}\)、\(\boldsymbol\Sigma_{\mathrm n}\)、\(\boldsymbol\Sigma_{\mathrm{bal}}\)是旧任务、新任务和等权共享协方差，\(\boldsymbol\Sigma_{\mathrm{full}}\)、\(\boldsymbol\Sigma_{\mathrm{blk}}\)是full与三块结构，\(\lambda_{\min}\)是最小特征值。
+**本式符号说明：**\(\boldsymbol\Sigma_{\mathrm{full}}\)是保留全部块内和跨块协方差的full候选；\(\boldsymbol\Sigma_{\mathrm{bal}}\)是任务均衡共享协方差。此候选不删除任何矩阵元素。
 
 block3结构使用投影算子\(\mathcal{P}_{\mathrm{blk}}\)，只保留三个特征块内部的协方差：
 
@@ -1936,7 +1928,7 @@ $$
 \end{bmatrix}.
 $$
 
-**本式符号说明：**\(c,k\)是类别与shot索引，\(K\)是每类样本数，\(p=288\)是特征维数；\(\widetilde{\mathbf z}_{c,k}\)是稳健化support，\(\boldsymbol\mu_c\)是类均值，\(\mathbf D_c\)是逐维标准差对角矩阵，\(\mathbf u_{c,k}\)是标准化残差，\(\mathbf S_c^{(u)}\)是标准化经验协方差，\(\alpha_c\)是自动收缩强度，\(\zeta_c\)是平均方差，\(\mathbf I_p\)是单位矩阵，\(\widehat{\boldsymbol\Sigma}_c^{\mathrm{LW}}\)是类内Ledoit–Wolf协方差；\(\boldsymbol\Sigma_{\mathrm o}\)、\(\boldsymbol\Sigma_{\mathrm n}\)、\(\boldsymbol\Sigma_{\mathrm{bal}}\)是旧任务、新任务和等权共享协方差，\(\boldsymbol\Sigma_{\mathrm{full}}\)、\(\boldsymbol\Sigma_{\mathrm{blk}}\)是full与三块结构，\(\lambda_{\min}\)是最小特征值。
+**本式符号说明：**\(\mathcal P_{\mathrm{blk}}(\cdot)\)是block3投影算子；\(\boldsymbol\Sigma_{\mathrm{blk}}\)是投影后的块对角候选；\(\boldsymbol\Sigma_{\mathrm{id}}\in\mathbb R^{160\times160}\)、\(\boldsymbol\Sigma_{\mathrm{fft}}\in\mathbb R^{96\times96}\)、\(\boldsymbol\Sigma_{\mathrm{rf}}\in\mathbb R^{32\times32}\)分别是身份、FFT和RF块内协方差；\(\mathbf0\)表示被置零的跨块协方差。
 
 两种结构分别表达“相信跨块相关性”和“只相信块内相关性”。D92保留两者，随后由support内证据按类别融合。
 
@@ -1953,7 +1945,7 @@ $$
 }{2}.
 $$
 
-**本式符号说明：**\(c,k\)是类别与shot索引，\(K\)是每类样本数，\(p=288\)是特征维数；\(\widetilde{\mathbf z}_{c,k}\)是稳健化support，\(\boldsymbol\mu_c\)是类均值，\(\mathbf D_c\)是逐维标准差对角矩阵，\(\mathbf u_{c,k}\)是标准化残差，\(\mathbf S_c^{(u)}\)是标准化经验协方差，\(\alpha_c\)是自动收缩强度，\(\zeta_c\)是平均方差，\(\mathbf I_p\)是单位矩阵，\(\widehat{\boldsymbol\Sigma}_c^{\mathrm{LW}}\)是类内Ledoit–Wolf协方差；\(\boldsymbol\Sigma_{\mathrm o}\)、\(\boldsymbol\Sigma_{\mathrm n}\)、\(\boldsymbol\Sigma_{\mathrm{bal}}\)是旧任务、新任务和等权共享协方差，\(\boldsymbol\Sigma_{\mathrm{full}}\)、\(\boldsymbol\Sigma_{\mathrm{blk}}\)是full与三块结构，\(\lambda_{\min}\)是最小特征值。
+**本式符号说明：**\(\boldsymbol\Sigma\)代表当前待检查的full或block3协方差；\(\boldsymbol\Sigma^{\mathsf T}\)是其转置；赋值箭头\(\leftarrow\)表示用对称化结果覆盖当前矩阵。该操作消除浮点计算造成的微小非对称误差。
 
 若最小特征值不满足
 
@@ -1964,7 +1956,7 @@ $$
 \right)>0,
 $$
 
-**本式符号说明：**\(c,k\)是类别与shot索引，\(K\)是每类样本数，\(p=288\)是特征维数；\(\widetilde{\mathbf z}_{c,k}\)是稳健化support，\(\boldsymbol\mu_c\)是类均值，\(\mathbf D_c\)是逐维标准差对角矩阵，\(\mathbf u_{c,k}\)是标准化残差，\(\mathbf S_c^{(u)}\)是标准化经验协方差，\(\alpha_c\)是自动收缩强度，\(\zeta_c\)是平均方差，\(\mathbf I_p\)是单位矩阵，\(\widehat{\boldsymbol\Sigma}_c^{\mathrm{LW}}\)是类内Ledoit–Wolf协方差；\(\boldsymbol\Sigma_{\mathrm o}\)、\(\boldsymbol\Sigma_{\mathrm n}\)、\(\boldsymbol\Sigma_{\mathrm{bal}}\)是旧任务、新任务和等权共享协方差，\(\boldsymbol\Sigma_{\mathrm{full}}\)、\(\boldsymbol\Sigma_{\mathrm{blk}}\)是full与三块结构，\(\lambda_{\min}\)是最小特征值。
+**本式符号说明：**\(\lambda_{\min}(\boldsymbol\Sigma)\)是协方差矩阵\(\boldsymbol\Sigma\)的最小特征值；条件\(\lambda_{\min}>0\)表示矩阵正定，从而可以稳定地进行LDA线性求解。若条件不成立，当前fit按门禁失败闭合。
 
 则当前fit失败闭合，不使用伪逆悄悄改变方法语义。
 
