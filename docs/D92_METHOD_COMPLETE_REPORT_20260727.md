@@ -38,7 +38,7 @@ D92同时处理三类困难：跨接收机和LEO弱信道造成的support中心�
 
 本报告从这一节开始，不再按“D92相对D81或D62增加了什么”组织方法。这里的D92指实验中实际执行的完整Phase2分类方法：
 
-> D92是一种面向跨接收机少样本类增量RFFI的support-only稳健判别方法。它从固定LEO接收IQ提取身份、频谱和射频统计特征，利用Phase1封存的类无关扰动谱稳健化每个注册类的support中心，分别估计旧类任务与新类任务的收缩协方差，以固定等权方式形成共享判别几何，再通过support内交叉拟合选择full/block几何和有界Fisher残差，最终编译成一个面对全部注册类的等先验仿射分类器。
+> D92是一种面向跨接收机少样本类增量RFFI的support-only稳健判别方法。它从固定LEO接收IQ提取身份、频谱和射频统计特征，从Phase1封存的域×类INT8聚合中心派生类无关扰动谱并据此稳健化每个注册类的support中心，分别估计旧类任务与新类任务的收缩协方差，以固定等权方式形成共享判别几何，再通过support内交叉拟合选择full/block几何和有界Fisher残差，最终编译成一个面对全部注册类的等先验仿射分类器。
 
 D92可以依赖冻结的Phase1编码器，就像线性探测、原型网络或LDA可以依赖预训练特征提取器一样。这不妨碍将D92作为一套完整的Phase2方法讲解。方法的完整性由以下闭环定义：
 
@@ -286,8 +286,8 @@ $$
 
 |符号|维度|含义|
 |---|---:|---|
-|\(\mathbf{G}\)|\(160\times160\)|Phase1封存的类无关地面扰动协方差|
-|\(\sigma_{\mathrm{q}}^2\)|标量|int8量化噪声底|
+|\(\mathbf{G}\)|\(160\times160\)|D92从Phase1域×类INT8聚合中心派生的类无关地面扰动协方差|
+|\(\sigma_{\mathrm{q}}^2\)|标量|由有效FP16量化尺度派生的INT8量化噪声底|
 |\(\mathbf{G}_{+}\)|\(160\times160\)|去除量化噪声底后的对称扰动矩阵|
 |\(\lambda_j\)|标量|扰动矩阵第\(j\)个正特征值|
 |\(\mathbf{u}_j\)|160|对应的单位特征向量|
@@ -371,7 +371,8 @@ $$
 flowchart LR
     A["固定LEO接收IQ"] --> B["冻结特征映射Φθ"]
     B --> C["288维联合特征"]
-    G["Phase1封存类无关扰动谱"] --> D["support类中心稳健化"]
+    G["Phase1封存域×类INT8聚合中心"] --> G2["派生类无关跨域扰动谱"]
+    G2 --> D["support类中心稳健化"]
     C --> D
     D --> E["旧类任务收缩协方差"]
     D --> F["新类任务收缩协方差"]
@@ -467,6 +468,268 @@ $$
 |模块六|类均值、类内残差、基础融合头|SVD、Fisher增益、逐类Pareto门|最终单一量化仿射状态|
 
 这六个模块只在support状态构造阶段运行。query到来后不会重新计算support协方差、LOO权重或Fisher安全门。
+
+### 4.2 Phase1 deployment bundle详细构成
+
+#### 4.2.1 bundle是什么
+
+Phase1 deployment bundle是地面训练结束后、任何target数据到达前冻结的部署知识集合。它不是训练数据压缩包，也不是旧类样本库。对D92而言，这个逻辑bundle由三部分组成：
+
+|组成部分|当前实际内容|作用|Phase2是否可更新|
+|---|---|---|---|
+|冻结身份特征运行时|与Phase1 checkpoint绑定的TorchScript特征编码器及特征schema|把固定received IQ映射为160维身份特征|否|
+|INT8域×类聚合中心组件|每个有效地面域、每个Phase1旧类的一条160维INT8聚合中心及FP16尺度|派生类无关跨域扰动谱，辅助判断target support可靠性|否|
+|完整性与权限元数据|checkpoint、源聚合artifact、类别表、域表、组件文件的SHA256及schema、allowlist、provenance和eligibility字段|防止组件错配、替换或夹带禁止成员|否|
+
+“逻辑bundle”不要求所有内容物理上位于同一个文件。当前代码路径从已封存的enrollment package加载冻结特征运行时，并通过独立的组件目录和manifest哈希加载INT8域×类中心。二者必须由checkpoint哈希、特征schema、类别注册表和完整性记录绑定，方法语义上共同构成一个不可变Phase1 deployment bundle。
+
+#### 4.2.2 冻结身份特征运行时
+
+冻结运行时实现映射
+
+$$
+\mathbf f^{\mathrm{id}}
+=
+E_{\theta}(\mathbf x)
+\in\mathbb R^{160}.
+$$
+
+**本式符号说明：**\(\mathbf x\)是单条固定received IQ；\(E_\theta\)是参数\(\theta\)已冻结的Phase1身份编码器；\(\mathbf f^{\mathrm{id}}\)是160维身份特征。Phase2只执行前向推理，不更新\(\theta\)。
+
+运行时至少通过以下身份字段与实验row绑定：
+
+|字段|含义|
+|---|---|
+|`phase1_checkpoint_sha256`|Phase1 checkpoint内容身份|
+|`feature_runtime_sha256`|实际部署特征运行时内容身份|
+|`feature_schema`|当前为`ADV3B02:z_id:unit_l2:160:v1`，规定特征名称、归一化和维度|
+|`method_lock_sha256`|D92方法锁及固定配置身份|
+
+冻结运行时承担“从IQ提取身份表征”的作用。它不携带target support统计量，不保存target新类知识，也不会因Stage2-B适应或Stage2-C注册而改变。
+
+#### 4.2.3 INT8域×类聚合中心组件
+
+当前组件schema为
+
+```text
+phase1_int8_domain_class_centroids_v1
+```
+
+设Phase1共有\(D_{\mathrm g}\)个地面接收机域和\(C_{\mathrm o}\)个旧类别。组件的主要数组为：
+
+|数组|数据类型与形状|每个元素表示什么|
+|---|---:|---|
+|`domain_class_q`|INT8，\(D_{\mathrm g}\times C_{\mathrm o}\times160\)|每个有效域×类聚合中心的160维量化码|
+|`domain_class_scale`|FP16，\(D_{\mathrm g}\times C_{\mathrm o}\)|每个域×类中心独立使用的对称量化尺度|
+|`domain_class_mask`|UINT8，\(D_{\mathrm g}\times C_{\mathrm o}\)|该域×类中心是否有效；有效为1，无效为0|
+|`domain_registry`|INT16，\(D_{\mathrm g}\)|地面域注册顺序|
+|`class_registry`|字符串，\(C_{\mathrm o}\)|Phase1旧类handle及其固定顺序|
+|`feature_schema`|字符串标量|中心所属的特征空间和维度|
+
+因此，对一个具体旧类别\(c\)，bundle不是只保存一条“全地面平均原型”，而是最多保存\(D_{\mathrm g}\)条域条件中心：
+
+$$
+\left\{
+\mathbf q_{d,c},\,s_{d,c},\,m_{d,c}
+\right\}_{d=1}^{D_{\mathrm g}}.
+$$
+
+**本式符号说明：**\(c\)是旧类别索引；\(d\)是地面域索引；\(\mathbf q_{d,c}\in\{-127,\ldots,127\}^{160}\)是INT8中心码；\(s_{d,c}>0\)是FP16尺度；\(m_{d,c}\in\{0,1\}\)是有效掩码；\(D_{\mathrm g}\)是地面域总数。
+
+每个有效域×类中心在Phase1由至少2个互不重复的地面物理样本聚合。若构建中心时该单元包含\(n_{d,c}\)条身份特征，则未量化中心可写为
+
+$$
+\mathbf p_{d,c}
+=
+\frac{1}{n_{d,c}}
+\sum_{i=1}^{n_{d,c}}
+\mathbf z^{\mathrm{id}}_{d,c,i},
+\qquad
+n_{d,c}\geq2.
+$$
+
+**本式符号说明：**\(\mathbf p_{d,c}\in\mathbb R^{160}\)是地面域\(d\)、旧类别\(c\)的聚合中心；\(\mathbf z^{\mathrm{id}}_{d,c,i}\)是参与聚合的第\(i\)条Phase1身份特征；\(n_{d,c}\)是构建时的成员数。成员数只用于构建门禁，不写入当前INT8组件。
+
+这意味着Phase2不能知道哪些样本参与了中心，也不能从bundle恢复样本集合。
+
+#### 4.2.4 中心如何量化
+
+每个域×类中心独立计算对称量化尺度：
+
+$$
+s_{d,c}
+=
+\frac{
+\max_{1\leq j\leq160}
+\left|p_{d,c,j}\right|
+}{127}.
+$$
+
+**本式符号说明：**\(p_{d,c,j}\)是\(\mathbf p_{d,c}\)的第\(j\)个坐标；\(j\)是特征维索引；\(s_{d,c}\)是该160维中心共享的量化尺度；127是有符号INT8对称量化采用的最大正整数码。
+
+量化码为
+
+$$
+q_{d,c,j}
+=
+\operatorname{clip}
+\left(
+\operatorname{round}
+\left(
+\frac{p_{d,c,j}}{s_{d,c}}
+\right),
+-127,\,
+127
+\right).
+$$
+
+**本式符号说明：**\(q_{d,c,j}\)是第\(j\)个INT8码；\(\operatorname{round}\)表示舍入到最近整数；\(\operatorname{clip}(v,-127,127)\)把数值限制在对称INT8有效范围内；当前格式禁止使用\(-128\)。
+
+Phase2使用时只做反量化：
+
+$$
+\widehat{\mathbf p}_{d,c}
+=
+s_{d,c}\mathbf q_{d,c}.
+$$
+
+**本式符号说明：**\(\widehat{\mathbf p}_{d,c}\in\mathbb R^{160}\)是反量化后的近似域×类中心；\(\mathbf q_{d,c}\)是INT8码向量；\(s_{d,c}\)是对应FP16尺度。帽号表示它是量化恢复值，不等于原始FP32中心的逐bit副本。
+
+若某个有效中心恰好是全零向量，构建器使用\(s_{d,c}=1\)作为防止除零的回退尺度，并令\(\mathbf q_{d,c}=\mathbf0\)。这一回退不会把零中心改成非零中心。
+
+只计算三个主数组的稠密存储量时，每个域×类单元需要160字节INT8码、2字节FP16尺度和1字节UINT8掩码，因此
+
+$$
+B_{\mathrm{main}}
+=
+D_{\mathrm g}C_{\mathrm o}
+\left(
+160+2+1
+\right)
+=
+163D_{\mathrm g}C_{\mathrm o}
+\ \text{bytes}.
+$$
+
+**本式符号说明：**\(B_{\mathrm{main}}\)是三个主数组未考虑容器压缩时的字节数；\(D_{\mathrm g}\)是地面域数；\(C_{\mathrm o}\)是Phase1旧类数；160来自每个中心的160个INT8坐标；2是一个FP16尺度的字节数；1是一个UINT8掩码的字节数。该式不包含类别字符串、域注册表、feature schema、manifest和NPZ容器开销。由于主数组采用稠密布局，无效单元也占数组位置，掩码只说明该位置能否使用。
+
+#### 4.2.5 每个类别实际包含什么
+
+当前D92的每个Phase1旧类包含以下知识：
+
+1. 一个稳定的`class_handle`，用于绑定类别顺序；
+2. 在每个有效地面域上的一条160维INT8聚合中心；
+3. 每条域条件中心对应的一个FP16尺度；
+4. 每个域条件中心是否存在的一个掩码位。
+
+以下内容不按类别保存：
+
+- 原始IQ或clean IQ；
+- 单样本160维feature；
+-训练样本ID、文件路径或成员清单；
+- 当前中心的精确成员数；
+- 样本级logit、source replay或source cache；
+- 全精度中心sidecar；
+- target support、target query或Phase2新类信息；
+- 可直接用于query分类的地面旧类分数。
+
+Stage2-C中的新类在Phase1从未出现，因此bundle中没有新类中心。新类知识只能由当前target receiver上的合法K-shot support注册。
+
+#### 4.2.6 D92如何使用这些中心
+
+D92不把反量化地面中心直接作为旧类分类原型。它先对同一个旧类别在不同地面域上的中心做跨域中心化：
+
+$$
+\bar{\mathbf p}_c
+=
+\frac{1}{D_c}
+\sum_{d:m_{d,c}=1}
+\widehat{\mathbf p}_{d,c},
+$$
+
+$$
+\mathbf r_{d,c}
+=
+\widehat{\mathbf p}_{d,c}
+-\bar{\mathbf p}_c.
+$$
+
+**本式符号说明：**\(D_c=\sum_d m_{d,c}\)是旧类别\(c\)拥有的有效地面域数；\(\bar{\mathbf p}_c\)是该类别跨地面域的平均中心；\(\mathbf r_{d,c}\)是域\(d\)中心相对该类别平均中心的偏移。第一式计算同类跨域平均，第二式删除类别中心。
+
+随后把所有旧类别的同类跨域偏移汇总为
+
+$$
+\mathbf G_{\mathrm{raw}}
+=
+\frac{1}{
+C_{\mathrm o}(D_{\mathrm g}-1)
+}
+\sum_{c=1}^{C_{\mathrm o}}
+\sum_{d=1}^{D_{\mathrm g}}
+\mathbf r_{d,c}\mathbf r_{d,c}^{\mathsf T}.
+$$
+
+**本式符号说明：**\(\mathbf G_{\mathrm{raw}}\in\mathbb R^{160\times160}\)是类无关跨域中心漂移协方差；\(C_{\mathrm o}\)是旧类数；\(D_{\mathrm g}\)是参与统计的完整地面域数；\(\mathbf r_{d,c}\mathbf r_{d,c}^{\mathsf T}\)是160维偏移向量的外积。当前实现要求参与计算的域提供完整类别网格，并至少有2个完整地面域。
+
+量化噪声底近似为
+
+$$
+\sigma_{\mathrm q}^{2}
+=
+\frac{1}{12}
+\operatorname{mean}_{d,c}
+\left(
+s_{d,c}^{2}
+\right),
+$$
+
+并构造
+
+$$
+\mathbf G
+=
+\mathbf G_{\mathrm{raw}}
++
+\sigma_{\mathrm q}^{2}\mathbf I_{160}.
+$$
+
+**本式符号说明：**\(\sigma_{\mathrm q}^{2}\)是由有效域×类量化尺度估计的平均均匀量化噪声方差；\(1/12\)来自均匀量化误差模型；\(\mathbf I_{160}\)是160维单位矩阵；\(\mathbf G\)是加入各向同性量化噪声底后的对称正定协方差输入。
+
+因此，\(\mathbf G\)不是bundle中的独立数组。bundle实际封存的是\(\mathbf q_{d,c}\)、\(s_{d,c}\)、\(m_{d,c}\)及注册表；D92在注册状态构造开始时从这些不可变内容派生\(\mathbf G\)和\(\sigma_{\mathrm q}^{2}\)。模块二随后移除量化噪声底并提取正谱扰动方向。
+
+跨域中心化完成后，具体类别中心不进入D92最终query打分。D92只保留类无关的扰动方向和谱权重，用来判断当前target support的类内偏移是否沿着已知域扰动方向。由此，地面知识影响“support中心如何稳健估计”，不直接替代target旧类support，也不预置新类分类行。
+
+#### 4.2.7 与“每类最多3个压缩多原型”的区别
+
+当前D92使用的`phase1_int8_domain_class_centroids_v1`不是协议中默认关闭的地面旧类压缩多原型组件。两者区别如下：
+
+|比较项|D92当前域×类中心组件|可选地面旧类压缩多原型|
+|---|---|---|
+|组织方式|每个地面域×每个旧类一条中心|每个旧类最多3个聚类原型|
+|主要目的|估计跨接收机域扰动方向|表达一个类别内部可能存在的多模态结构|
+|是否直接参与分类|D92中不直接参与query分类|若未来启用，可按锁定聚合规则参与旧类打分|
+|当前D92是否启用|是|否|
+|是否包含新类|否|否|
+
+把两者都称为“地面压缩原型”容易混淆。报告后文将当前组件称为“Phase1域×类INT8聚合中心”，将未来组件称为“地面旧类压缩多原型”。
+
+#### 4.2.8 bundle的输入、输出与生命周期
+
+|阶段|输入|输出|是否接触target|
+|---|---|---|---|
+|Phase1地面训练|source IQ、旧类标签、地面域标签|冻结checkpoint和特征运行时|否|
+|Phase1离线聚合|冻结编码器产生的旧类身份特征、域标签|域×类FP32聚合中心|否|
+|Phase1量化封存|FP32中心、有效掩码、类别表、域表|INT8中心、FP16尺度、manifest和哈希|否|
+|Stage2加载|冻结运行时、INT8组件、合法target support|身份特征、类无关扰动谱和注册状态|是，仅合法support|
+|Query推理|冻结运行时、已冻结D92仿射状态、单条query IQ|全部注册类分数和预测类别|是，但query不更新bundle或状态|
+
+bundle的生命周期原则是：
+
+1. 在任何target访问前构建并封存；
+2. 与Phase1 checkpoint和类别/域注册表绑定；
+3. Stage2只读，不允许更新中心、尺度、掩码或manifest；
+4. bundle变化只改变`bundle_id`，不改变已经验证的固定received IQ；
+5. query及其真值永远不能用于选择、修正或重建bundle。
 
 ## 5.模块一：从固定接收IQ到288维联合特征
 
@@ -1074,8 +1337,10 @@ RF32对整体增益具有归一化不变性，但仍保留IQ不平衡、幅度�
 完整计算链为：
 
 ```text
-Phase1封存聚合扰动协方差G
-    ↓去除量化噪声底并对称化
+Phase1封存域×类INT8聚合中心q、尺度s和有效掩码m
+    ↓反量化、按类别跨域中心化并汇总
+派生聚合扰动协方差G和量化噪声底σq²
+    ↓对称化并去除量化噪声底
 正谱特征分解→扰动基U和谱权重ρ
     ↓
 当前类别K条身份特征→普通均值
@@ -1160,7 +1425,7 @@ $$
 
 ### 6.1 从封存聚合知识构造扰动基
 
-Phase1 bundle提供类无关的160维聚合扰动协方差\(\mathbf{G}\)和量化噪声底\(\sigma_{\mathrm{q}}^2\)。先计算
+Phase1 bundle直接提供的是域×类INT8聚合中心\(\mathbf q_{d,c}\)、FP16尺度\(s_{d,c}\)、有效掩码\(m_{d,c}\)及类别和域注册表，不直接保存协方差矩阵。D92按4.2.6节的过程反量化中心、删除类别中心并汇总跨域残差，由此在注册状态构造时派生160维聚合扰动协方差\(\mathbf G\)和量化噪声底\(\sigma_{\mathrm q}^{2}\)。随后计算
 
 $$
 \mathbf{G}_{+}
@@ -1169,7 +1434,7 @@ $$
 -\sigma_{\mathrm{q}}^2\mathbf{I}_{160}.
 $$
 
-**本式符号说明：**\(\mathbf G\in\mathbb R^{160\times160}\)是Phase1封存的身份特征扰动协方差；\(\mathbf G^{\mathsf T}\)是其转置；\((\mathbf G+\mathbf G^{\mathsf T})/2\)将数值上可能略不对称的矩阵对称化；\(\sigma_{\mathrm q}^{2}\)是量化噪声方差；\(\mathbf I_{160}\)是160维单位矩阵；\(\mathbf G_+\)是去除各向同性量化噪声底后的对称扰动矩阵。
+**本式符号说明：**\(\mathbf G\in\mathbb R^{160\times160}\)是D92从Phase1域×类INT8聚合中心派生的身份特征扰动协方差，而不是bundle中直接封存的数组；\(\mathbf G^{\mathsf T}\)是其转置；\((\mathbf G+\mathbf G^{\mathsf T})/2\)将数值上可能略不对称的矩阵对称化；\(\sigma_{\mathrm q}^{2}\)是从有效量化尺度派生的平均量化噪声方差；\(\mathbf I_{160}\)是160维单位矩阵；\(\mathbf G_+\)是去除各向同性量化噪声底后的对称扰动矩阵。
 
 对\(\mathbf{G}_{+}\)做特征分解：
 
