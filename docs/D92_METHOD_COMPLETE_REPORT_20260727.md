@@ -507,7 +507,113 @@ FFT96与RF32拼成128维辅助块并归一化
 拼成288维并再次归一化
 ```
 
-如果身份块和辅助块都非零，两者在拼接前的范数均为1。乘权并最终归一化前，拼接向量范数为
+#### 5.0.1范数是什么
+
+范数是把一个向量映射为非负标量的“长度函数”。D92使用的是\(L_2\)范数，也称欧氏范数。对\(d\)维实向量
+
+$$
+\mathbf v=
+\begin{bmatrix}
+v_1&v_2&\cdots&v_d
+\end{bmatrix}^{\mathsf T},
+\qquad
+\lVert\mathbf v\rVert_2
+=
+\sqrt{\sum_{i=1}^{d}v_i^2}.
+$$
+
+**本式符号说明：**
+
+- \(\mathbf v\)：含\(d\)个实数坐标的向量。
+- \(v_i\)：\(\mathbf v\)的第\(i\)个坐标。
+- \(i\)：坐标索引，从1取到\(d\)。
+- \(d\)：向量维数。
+- \(\sum_{i=1}^{d}v_i^2\)：全部坐标平方之和。
+- \(\lVert\mathbf v\rVert_2\)：向量\(\mathbf v\)的\(L_2\)范数。
+- 上标\({\mathsf T}\)：转置；它把横向书写的坐标变成列向量。
+
+例如二维向量\([3,4]^{\mathsf T}\)的长度为\(\sqrt{3^2+4^2}=5\)。这就是二维平面中的勾股定理；\(L_2\)范数把同一规则推广到160维、128维和288维空间。范数不表示维数，也不表示向量有多少个样本。160维向量可以具有范数1、10或0；维数回答“有多少个坐标”，范数回答“这些坐标合起来有多大”。
+
+#### 5.0.2为什么先把两个块归一化
+
+记归一化身份块和辅助块为
+
+$$
+\mathbf a
+=
+\mathcal N_\varepsilon
+\left(
+\mathbf f^{\mathrm{id}}
+\right),
+\qquad
+\mathbf b
+=
+\mathbf f^{\mathrm{aux}}.
+$$
+
+**本式符号说明：**
+
+- \(\mathbf a\in\mathbb R^{160}\)：归一化后的身份特征块。
+- \(\mathbf b\in\mathbb R^{128}\)：已经归一化的辅助特征块。
+- \(\mathbf f^{\mathrm{id}}\)：归一化前的160维冻结编码器特征。
+- \(\mathbf f^{\mathrm{aux}}\)：FFT96和RF32拼接后共同归一化得到的128维辅助特征。
+- \(\mathcal N_\varepsilon\)：带\(\varepsilon\)保护的\(L_2\)归一化。
+- 如果两个输入块都不是零向量，则\(\lVert\mathbf a\rVert_2=\lVert\mathbf b\rVert_2=1\)。
+
+先分别归一化有两个目的。第一，消除原始数值尺度：编码器特征可能天然比FFT/RF统计大很多，反之亦然；不归一化时，数值更大的块会在没有明确设计依据的情况下支配距离和内积。第二，使权重4具有明确含义：它控制的是两个单位范数块之间的相对几何权重，而不是补偿某次运行中偶然出现的特征幅值。
+
+#### 5.0.3为什么拼接后的范数是\(\sqrt{17}\)
+
+乘权但尚未执行最终归一化的联合向量记为
+
+$$
+\mathbf y
+=
+\begin{bmatrix}
+\mathbf a\\
+4\mathbf b
+\end{bmatrix}
+\in\mathbb R^{288}.
+$$
+
+**本式符号说明：**
+
+- \(\mathbf y\)：外层归一化前的288维加权拼接向量。
+- \(\mathbf a\)：160维单位范数身份块。
+- \(\mathbf b\)：128维单位范数辅助块。
+- \(4\mathbf b\)：辅助块的每个坐标都乘以固定权重4，因此其块范数由1变为4。
+- 方括号中的上下排列表示纵向拼接，不表示\(\mathbf a+4\mathbf b\)；两者维数不同，不能直接逐坐标相加。
+- \(288=160+128\)：拼接后的总维数。
+
+按照\(L_2\)范数定义，
+
+$$
+\begin{aligned}
+\lVert\mathbf y\rVert_2^2
+&=
+\mathbf y^{\mathsf T}\mathbf y\\
+&=
+\mathbf a^{\mathsf T}\mathbf a
++
+(4\mathbf b)^{\mathsf T}(4\mathbf b)\\
+&=
+\lVert\mathbf a\rVert_2^2
++
+16\lVert\mathbf b\rVert_2^2.
+\end{aligned}
+$$
+
+**本式符号说明：**
+
+- \(\lVert\mathbf y\rVert_2^2\)：联合向量范数的平方。
+- \(\mathbf y^{\mathsf T}\mathbf y\)：向量与自身的内积，等于所有288个坐标的平方和。
+- \(\mathbf a^{\mathsf T}\mathbf a=\lVert\mathbf a\rVert_2^2\)：身份块160个坐标的平方和。
+- \((4\mathbf b)^{\mathsf T}(4\mathbf b)=16\mathbf b^{\mathsf T}\mathbf b\)：标量4在平方范数中变成\(4^2=16\)。
+- 式中没有\(2\mathbf a^{\mathsf T}\mathbf b\)交叉项，因为这里执行的是坐标拼接，不是同维向量相加；\(\mathbf a\)占前160个坐标，\(\mathbf b\)占后128个坐标。
+
+“两个块正交”在这里是**拼接坐标空间意义上的正交**：身份块嵌入为\([\mathbf a;\mathbf0]\)，辅助块嵌入为\([\mathbf0;4\mathbf b]\)，二者内积恒为0。这不意味着身份信息和FFT/RF信息在统计学上独立，也不意味着两块没有重复信息。
+
+由于两个块在正常非零情况下都已归一化为单位范数，
 
 $$
 \sqrt{1^2+4^2}
@@ -538,6 +644,32 @@ $$
 
   其中，\(\mathbf f^{\mathrm{fft}}\in\mathbb R^{96}\)是FFT频谱描述，\(\mathbf f^{\mathrm{rf}}\in\mathbb R^{32}\)是RF统计描述，\(128=96+32\)，\(\mathcal N_\varepsilon\)是带数值保护的\(L_2\)归一化。
 
+#### 5.0.4最终归一化做了什么
+
+最终联合特征为
+
+$$
+\mathbf z
+=
+\frac{\mathbf y}{\lVert\mathbf y\rVert_2}
+=
+\begin{bmatrix}
+\mathbf a/\sqrt{17}\\
+4\mathbf b/\sqrt{17}
+\end{bmatrix},
+\qquad
+\lVert\mathbf z\rVert_2=1.
+$$
+
+**本式符号说明：**
+
+- \(\mathbf z\)：最终送入D92分类几何的288维联合特征。
+- \(\mathbf y\)：外层归一化前的加权拼接向量。
+- \(\lVert\mathbf y\rVert_2=\sqrt{17}\)：正常非零条件下的归一化分母。
+- \(\mathbf a/\sqrt{17}\)：最终联合向量中的身份块。
+- \(4\mathbf b/\sqrt{17}\)：最终联合向量中的辅助块。
+- \(\lVert\mathbf z\rVert_2=1\)：归一化后的完整联合向量具有单位长度。
+
 所以最终身份块范数为
 
 $$
@@ -563,7 +695,42 @@ $$
 - \(4/\sqrt{17}\approx0.9701\)：最终288维向量完成外层归一化后，整个辅助块所占的块范数。
 - 该值描述128维辅助块整体，不表示其中每个FFT或RF坐标都等于\(4/\sqrt{17}\)。
 
-这说明固定权重4不是“把辅助特征简单放大四倍后就结束”，而是在最终单位球面上规定两个大块的相对几何。权重不由当前query或测试准确率决定。
+若用平方范数表示两个块在归一化向量中的“几何能量”，身份块和辅助块的比例分别为
+
+$$
+\frac{1}{17}\approx5.88\%,
+\qquad
+\frac{16}{17}\approx94.12\%.
+$$
+
+**本式符号说明：**
+
+- \(1/17\)：身份块范数平方\((1/\sqrt{17})^2\)。
+- \(16/17\)：辅助块范数平方\((4/\sqrt{17})^2\)。
+- 两个比例之和为1，对应完整向量\(\mathbf z\)的平方范数。
+- 这些比例描述输入联合特征的块几何，不是分类准确率、概率或可直接解释为模型贡献率的因果比例。
+
+对两条样本的归一化块\((\mathbf a,\mathbf b)\)和\((\mathbf a',\mathbf b')\)，联合特征内积为
+
+$$
+\mathbf z^{\mathsf T}\mathbf z'
+=
+\frac{1}{17}\mathbf a^{\mathsf T}\mathbf a'
++
+\frac{16}{17}\mathbf b^{\mathsf T}\mathbf b'.
+$$
+
+**本式符号说明：**
+
+- \(\mathbf z,\mathbf z'\)：两条不同IQ样本的最终联合特征。
+- \(\mathbf a,\mathbf a'\)：两条样本各自的归一化身份块。
+- \(\mathbf b,\mathbf b'\)：两条样本各自的归一化辅助块。
+- \(\mathbf a^{\mathsf T}\mathbf a'\)和\(\mathbf b^{\mathsf T}\mathbf b'\)：两个块内部的余弦相似性，因为每个块的范数均为1。
+- 系数\(1/17\)和\(16/17\)：固定权重4经过平方后在原始内积几何中形成的相对系数。
+
+这说明固定权重4不是“把辅助特征简单放大四倍后就结束”，而是在最终单位球面上规定两个大块的相对几何。在未经后续协方差校正的内积或余弦几何中，辅助块相似性的系数是身份块的16倍。不过，D92后续还会估计full/block协方差并构造LDA仿射头，因此94.12%不能直接解释为“最终预测的94.12%来自辅助特征”。权重不由当前query或测试准确率决定。
+
+最后，以上\(\sqrt{17}\)推导有一个明确前提：身份块和辅助块都不是零向量，归一化后范数才各为1。如果某个输入块为零或其原始范数小于数值保护常数\(\varepsilon\)，\(\mathcal N_\varepsilon\)不会把它强行变成单位向量，此时应按该样本的实际块范数计算，不能直接使用\(\sqrt{17}\)。
 
 ### 5.1 特征映射
 
