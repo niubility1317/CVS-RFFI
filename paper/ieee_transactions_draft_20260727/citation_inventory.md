@@ -2,12 +2,12 @@
 
 ## 验证结论
 
-- 清单日期：2026-07-27
-- BibTeX条目：36条
-- 对应PDF：36份
-- 文件头验证：36/36为`%PDF-`
-- PDF解析验证：36/36可由`pypdf`打开
-- 首页文本验证：36/36与预期论文题名或出版信息相符
+- 清单日期：2026-07-28
+- BibTeX条目：38条
+- 对应PDF：38份
+- 文件头验证：38/38为`%PDF-`
+- PDF解析验证：38/38可由`pypdf`打开
+- 首页文本验证：38/38与预期论文题名或出版信息相符
 - 解析错误：0
 
 IEEE受限全文均通过用户已授权的深圳大学机构访问会话从IEEE Xplore下载；其余文件来自作者主页、出版方、会议官网、arXiv或大学开放仓储。既有样本PDF也重新执行了文件头、页数和首页文本检查。本文档不主张将IEEE订阅全文再公开分发。
@@ -52,6 +52,8 @@ IEEE受限全文均通过用户已授权的深圳大学机构访问会话从IEEE
 |R34|`ledoit2004covariance`|`R34_Ledoit_Wolf_JMVA2004.pdf`|44|`10.1016/S0047-259X(03)00096-4`|Universidad Carlos III开放仓储|
 |R35|`fisher1936lda`|`R35_Fisher_LDA_1936.pdf`|11|`10.1111/j.1469-1809.1936.tb02137.x`|Rothamsted开放仓储，CC BY 4.0|
 |R36|`ding2004memory`|`R36_Memory_Polynomial_TCOM2004.pdf`|7|`10.1109/TCOMM.2003.822188`|IEEE Xplore机构授权|
+|R37|`abdi2003lms`|`R37_Abdi_Shadowed_Rician_TWC2003.pdf`|26|`10.1109/TWC.2003.811182`|作者机构主页开放稿；Crossref核验元数据|
+|R38|`3gpp38811`|`R38_3GPP_TR38811_NTN_R15.pdf`|126|—|3GPP TR 38.811 V15.1.0公开副本；3GPP官方门户核验版本与题名|
 
 ## SHA-256
 
@@ -92,4 +94,6 @@ R33_Multisampling_CNN_IoTJ2019.pdf  a6a6194dbd24ed266de9eff1d5f09bc97989513564a0
 R34_Ledoit_Wolf_JMVA2004.pdf  7ad9de12948acc27b278051c355bdf12a26ad2101e27d17fd2158cb56dcc08cd
 R35_Fisher_LDA_1936.pdf  193348087ff4071ec07785a2de8271056efaf9d0bb242a9c0ad522cb0d1e111e
 R36_Memory_Polynomial_TCOM2004.pdf  ea2473a54650083ad856fcd07dc862d3f7d3e3e7e8acdb20c2c71172042b92e9
+R37_Abdi_Shadowed_Rician_TWC2003.pdf  54afd8811d285a84bf1d1b584bac747c8cde3a1e817a754c7428fdebf23b121f
+R38_3GPP_TR38811_NTN_R15.pdf  b5bc2850a876f2e4eb9e74dd29ca17e2d07e5f077e6d24622bce43ba9173b252
 ```
