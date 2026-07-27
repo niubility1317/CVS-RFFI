@@ -2,27 +2,1755 @@
 
 日期：2026-07-27
 
+修订：v2，完整方法独立讲解版
+
 证据状态：`EVIDENCE_BOUND_TECHNICAL_REPORT`
 
 D92实验状态：`COMPLETED_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE`
 
 ## 摘要
 
-D92是面向CVS Stage2-C的轻量类增量分类头，不是新的IQ编码器，也不是重新训练Phase1主干的端到端网络。它继承D81的地面扰动谱稳健中心变换和D62/D43分类头流水线，只替换注册完成后的共享协方差估计：先用合法target-old support估计旧类任务协方差`Σ_old`，再用合法target-new support估计新类任务协方差`Σ_new`，最后固定合成为
+D92是一种面向CVS Stage2-C的完整support-only少样本类增量判别方法。它以冻结Phase1部署bundle、固定LEO接收IQ和旧/新类标注support为输入，依次完成288维联合特征提取、类无关扰动谱建模、support类中心稳健化、旧/新任务自动收缩协方差估计、full/block双几何可靠性融合、有界Fisher残差安全选择和统一仿射头编译。它不是重新训练Phase1主干的端到端网络，但完整覆盖Phase2从合法输入到全注册类预测artifact的状态构造与推理闭环。
 
-```text
-Σ_shared = 0.5Σ_old + 0.5Σ_new
-```
+D92对旧类任务和新类任务分别估计协方差，并固定合成为
+
+$$
+\boldsymbol{\Sigma}_{\mathrm{bal}}
+=
+\frac{1}{2}\boldsymbol{\Sigma}_{\mathrm{o}}
++
+\frac{1}{2}\boldsymbol{\Sigma}_{\mathrm{n}}.
+$$
 
 全部旧类与新类仍由同一个等先验LDA仿射头竞争。D92不读取query真值、query的old/new角色、query批次类别数、类别配额或跨query关系，也不根据receiver、LEO场景、seed、新类数或具体TX标识切换公式。
 
-D92解决的问题非常具体：当新类数量远多于旧类时，用全部注册support直接估计一份共享协方差，会让协方差统计更多地受新类任务支配；若完全冻结旧类协方差，则又会使新类标尺失配。D92把旧类适应与新类注册视为两个等权任务，而不是按support总行数自然加权。完整125稳定性screen显示，这个机制在K10/new20上相对D81把注册后旧类准确率提高2.622个百分点、最低旧类准确率提高4.600个百分点、遗忘降低2.622个百分点，但新类准确率下降0.653个百分点；K1因无法估计可靠类内协方差而严格回退，所有指标与D81逐值一致。D92证明了“任务均衡协方差能缓解大规模注册下的旧类遗忘”，但没有同时解决新类性能、K1适配和绝对准确率，因此不能晋级。
+D92同时处理三类困难：跨接收机和LEO弱信道造成的support中心扰动、高维小样本协方差不适定，以及新类数量增加造成的旧/新任务统计失衡。完整125稳定性screen显示，D92在K10/new20上相对其严格matched control把注册后旧类准确率提高2.622个百分点、最低旧类准确率提高4.600个百分点、遗忘降低2.622个百分点，但新类准确率下降0.653个百分点；K1因无法辨识类内扰动而进入保守回退分支。D92证明了“扰动稳健中心+任务均衡判别几何”能缓解大规模注册下的旧类遗忘，但当前实例没有同时解决新类性能、K1适配和绝对准确率，因此不能晋级。
 
 与论文复现方法相比，D92同时承担旧类域适应和新类注册；MRIOR-SDA、DADDA-SDA、ProtoNet CDA只承担Stage2-B闭集旧类域适应，不能直接与D92注册后的`H_old_new`比较。CSIL、MoPC-HR和Orthogonal Incremental SEI承担类增量任务，但其原论文允许base/source训练、历史统计或原生增量流程，数据权限和模型生命周期不同。项目中已有同LEO条件的复现结果可以描述性比较，但只有数据哈希、seed、support/query和候选空间完全匹配时才能称为严格paired comparison。
 
-## 1.方法定位
+## 1.阅读约定：把D92视为完整方法
 
-### 1.1 D92要处理的科学问题
+本报告从这一节开始，不再按“D92相对D81或D62增加了什么”组织方法。这里的D92指实验中实际执行的完整Phase2分类方法：
+
+> D92是一种面向跨接收机少样本类增量RFFI的support-only稳健判别方法。它从固定LEO接收IQ提取身份、频谱和射频统计特征，利用Phase1封存的类无关扰动谱稳健化每个注册类的support中心，分别估计旧类任务与新类任务的收缩协方差，以固定等权方式形成共享判别几何，再通过support内交叉拟合选择full/block几何和有界Fisher残差，最终编译成一个面对全部注册类的等先验仿射分类器。
+
+D92可以依赖冻结的Phase1编码器，就像线性探测、原型网络或LDA可以依赖预训练特征提取器一样。这不妨碍将D92作为一套完整的Phase2方法讲解。方法的完整性由以下闭环定义：
+
+1.明确合法输入；
+2.从IQ到特征的确定性映射；
+3.仅由support构造预测状态；
+4.对任意单条query输出全部注册类分数与唯一预测；
+5.预测封存后再由独立scorer计算指标。
+
+历史开发编号只用于定位代码，不参与方法定义。换言之，下面先回答“D92本身是什么、为什么成立、怎样运行”，最后才说明各模块在仓库中的实现文件。
+
+## 2.问题定义
+
+### 2.1 接收观测模型
+
+对发射机类别\(y\)、接收机/信道域\(d\)和待发送基带信号\(s\)，接收IQ写为
+
+$$
+\mathbf{x}
+=
+\mathcal{R}_{d}
+\left(
+\mathcal{H}_{d} * \mathcal{T}_{y}(\mathbf{s})
+\right)
++\mathbf{n},
+$$
+
+其中：
+
+- \(\mathcal{T}_{y}\)表示发射机\(y\)的硬件非理想响应，是身份信息的主要来源；
+- \(\mathcal{H}_{d}\)表示传播与星地弱信道；
+- \(\mathcal{R}_{d}\)表示目标接收机前端和链路响应；
+- \(\mathbf{n}\)表示加性噪声；
+- \(\mathbf{x}\)是Phase2实际可读取的固定接收IQ。
+
+D92不尝试从\(\mathbf{x}\)恢复clean IQ，也不估计真实信道\(\mathcal{H}_{d}\)。它直接在固定接收观测上构造对接收机扰动更稳健的少样本判别几何。
+
+### 2.2 类别集合
+
+旧类与新类集合分别记为
+
+$$
+\mathcal{Y}_{\mathrm{o}}
+=
+\{1,\ldots,C_{\mathrm{o}}\},
+\qquad
+\mathcal{Y}_{\mathrm{n}}
+=
+\{C_{\mathrm{o}}+1,\ldots,C_{\mathrm{o}}+C_{\mathrm{n}}\}.
+$$
+
+全部已注册类别为
+
+$$
+\mathcal{Y}
+=
+\mathcal{Y}_{\mathrm{o}}\cup\mathcal{Y}_{\mathrm{n}},
+\qquad
+C=C_{\mathrm{o}}+C_{\mathrm{n}}.
+$$
+
+当前正式矩阵固定
+
+$$
+C_{\mathrm{o}}=6,
+\qquad
+C_{\mathrm{n}}\in\{5,10,20\},
+\qquad
+C\in\{11,16,26\}.
+$$
+
+“旧”和“新”只描述类别是否在Phase1出现过。D92不会在query推理时读取query的真实old/new角色。
+
+### 2.3 Support与query
+
+每类有\(K\)个物理上独立的标注support样本：
+
+$$
+\mathcal{S}_{c}
+=
+\left\{
+(\mathbf{x}_{c,k},c)
+\right\}_{k=1}^{K},
+\qquad
+c\in\mathcal{Y}.
+$$
+
+完整support集合为
+
+$$
+\mathcal{S}
+=
+\bigcup_{c\in\mathcal{Y}}\mathcal{S}_{c},
+\qquad
+N_{\mathrm{s}}=CK.
+$$
+
+query集合写为
+
+$$
+\mathcal{Q}
+=
+\{\mathbf{x}^{(q)}_j\}_{j=1}^{N_{\mathrm{q}}}.
+$$
+
+构造D92状态时只能访问\(\mathcal{S}\)及其标签。query真值、query类别配额、真实old/new角色和query批次类别构成均不可见。
+
+### 2.4 D92学习的映射
+
+D92要从合法输入构造参数状态
+
+$$
+\Theta_{\mathrm{D92}}
+=
+\mathcal{A}
+\left(
+\mathcal{B}_{\mathrm{P1}},
+\mathcal{S},
+\Gamma
+\right),
+$$
+
+其中\(\mathcal{B}_{\mathrm{P1}}\)是不可变Phase1部署bundle，\(\Gamma\)是不依赖数据内容的锁定配置，\(\mathcal{A}\)是D92的support-only状态构造算法。
+
+对每个query，D92执行
+
+$$
+\widehat{y}_j
+=
+\arg\max_{c\in\mathcal{Y}}
+s_c\!\left(\mathbf{x}^{(q)}_j;\Theta_{\mathrm{D92}}\right).
+$$
+
+这是逐样本、全注册类、单次\(\arg\max\)决策，不存在先判断old/new角色再进入不同分类器的过程。
+
+## 3.符号、维度与含义
+
+### 3.1 集合和计数符号
+
+|符号|类型或取值|含义|
+|---|---:|---|
+|\(\mathcal{Y}_{\mathrm{o}}\)|类别集合|Phase1已见、Phase2需要适应的旧类|
+|\(\mathcal{Y}_{\mathrm{n}}\)|类别集合|Phase1未见、Phase2需要注册的新类|
+|\(\mathcal{Y}\)|类别集合|全部已注册类|
+|\(C_{\mathrm{o}}\)|正整数|旧类数量，当前为6|
+|\(C_{\mathrm{n}}\)|正整数|新类数量，当前为5、10或20|
+|\(C\)|正整数|注册类总数，\(C=C_{\mathrm{o}}+C_{\mathrm{n}}\)|
+|\(K\)|正整数|每类独立物理support样本数|
+|\(N_{\mathrm{s}}\)|正整数|support总数，\(N_{\mathrm{s}}=CK\)|
+|\(N_{\mathrm{q}}\)|正整数|query总数|
+|\(\mathcal{S}_c\)|样本集合|类别\(c\)的K-shot support|
+|\(\mathcal{S}\)|样本集合|所有注册类的support|
+|\(\mathcal{Q}\)|样本集合|只用于测试的query|
+
+### 3.2 观测和特征符号
+
+|符号|维度|含义|
+|---|---:|---|
+|\(\mathbf{x}\)|\(2\times L\)或等价复数长度\(L\)|固定接收IQ|
+|\(\Phi_{\theta}\)|映射|冻结的Phase1特征提取器及确定性接收后特征计算|
+|\(E_{\theta}\)|映射|冻结编码器的160维身份特征映射|
+|\(\mathcal{N}_{\varepsilon}\)|映射|带\(\varepsilon\)下界保护的行二范数归一化|
+|\(\varepsilon\)|\(10^{-8}\)|FFT/RF描述和行归一化的数值保护常数|
+|\(\mathbf{z}\)|\(p=288\)|D92联合特征|
+|\(\mathbf{f}^{\mathrm{id}}\)|160|归一化前的编码器身份特征|
+|\(\mathbf{f}^{\mathrm{fft}}\)|96|均值删除并归一化后的FFT描述|
+|\(\mathbf{f}^{\mathrm{rf}}\)|32|归一化后的RF统计描述|
+|\(\mathbf{f}^{\mathrm{aux}}\)|128|FFT96与RF32拼接后共同归一化的辅助特征|
+|\(\mathbf{z}^{\mathrm{id}}\)|160|冻结编码器产生的身份表征|
+|\(\mathbf{z}^{\mathrm{fft}}\)|96|由同一接收IQ计算的FFT特征|
+|\(\mathbf{z}^{\mathrm{rf}}\)|32|由同一接收IQ计算的射频统计特征|
+|\(\widetilde{\mathbf{z}}\)|288|经过类中心稳健化后的support特征|
+|\(\mathbf{q}\)|288|query联合特征|
+|\(p\)|288|总特征维数|
+|\(p_{\mathrm{id}},p_{\mathrm{fft}},p_{\mathrm{rf}}\)|160、96、32|三个特征块的维数|
+
+### 3.3 扰动谱和稳健中心符号
+
+|符号|维度|含义|
+|---|---:|---|
+|\(\mathbf{G}\)|\(160\times160\)|Phase1封存的类无关地面扰动协方差|
+|\(\sigma_{\mathrm{q}}^2\)|标量|int8量化噪声底|
+|\(\mathbf{G}_{+}\)|\(160\times160\)|去除量化噪声底后的对称扰动矩阵|
+|\(\lambda_j\)|标量|扰动矩阵第\(j\)个正特征值|
+|\(\mathbf{u}_j\)|160|对应的单位特征向量|
+|\(\mathbf{U}\)|\(160\times r\)|保留的扰动基|
+|\(\rho_j\)|标量|第\(j\)个扰动方向的归一化谱权重|
+|\(r_{\mathrm{eff}}\)|标量|participation-ratio有效秩|
+|\(r\)|正整数|实际保留秩，\(r=\lceil r_{\mathrm{eff}}\rceil\)|
+|\(\bar{\mathbf{z}}^{\mathrm{id}}_c\)|160|类别\(c\)的普通support均值|
+|\(\mathbf{e}_{c,k}\)|160|support样本相对类均值的残差|
+|\(E_{c,k}\)|标量|样本在地面扰动谱上的加权能量|
+|\(\tau_c\)|标量|类别\(c\)的平均扰动能量尺度|
+|\(a_{c,k}\)|标量|未归一化Cauchy权重|
+|\(\omega_{c,k}\)|标量|归一化Cauchy权重|
+|\(\mathbf{m}^{\mathrm{rob}}_c\)|160|类别\(c\)的稳健身份中心|
+|\(\boldsymbol{\delta}_c\)|160|普通中心到稳健中心的平移量|
+
+### 3.4 协方差与分类头符号
+
+|符号|维度|含义|
+|---|---:|---|
+|\(\boldsymbol{\mu}_c\)|288|稳健化后类别\(c\)的联合特征均值|
+|\(\mathbf{D}_c\)|\(288\times288\)|类别\(c\)逐维support标准差组成的对角矩阵|
+|\(\mathbf{u}_{c,k}\)|288|类别\(c\)第\(k\)个support的标准化残差|
+|\(\mathbf{S}_c\)|\(288\times288\)|类别\(c\)的经验协方差|
+|\(\mathbf{S}^{(u)}_c\)|\(288\times288\)|标准化坐标中的经验协方差|
+|\(\alpha_c\)|\([0,1]\)|类别\(c\)由Ledoit–Wolf自动估计的收缩强度|
+|\(\zeta_c\)|标量|标准化经验协方差的平均特征方差|
+|\(\widehat{\boldsymbol{\Sigma}}_c^{\mathrm{LW}}\)|\(288\times288\)|类别\(c\)的自动收缩协方差|
+|\(\boldsymbol{\Sigma}_{\mathrm{o}}\)|\(288\times288\)|旧类任务内等先验协方差|
+|\(\boldsymbol{\Sigma}_{\mathrm{n}}\)|\(288\times288\)|新类任务内等先验协方差|
+|\(\boldsymbol{\Sigma}_{\mathrm{bal}}\)|\(288\times288\)|旧/新任务固定等权共享协方差|
+|\(\boldsymbol{\Sigma}_{\mathrm{full}}\)|\(288\times288\)|保留全部块内和块间关系的协方差|
+|\(\boldsymbol{\Sigma}_{\mathrm{blk}}\)|\(288\times288\)|只保留160/96/32三个对角块的协方差|
+|\(\pi_c\)|标量|类别先验，固定为\(1/C\)|
+|\(\mathbf{w}_c\)|288|类别\(c\)的仿射系数|
+|\(b_c\)|标量|类别\(c\)的仿射截距|
+|\(\mathbf{W}\)|\(C\times288\)|全部类别系数组成的矩阵|
+|\(\mathbf{b}\)|\(C\)|全部类别截距向量|
+|\(s_c(\mathbf{q})\)|标量|query属于类别\(c\)的判别分数|
+
+### 3.5 融合和安全门符号
+
+|符号|维度|含义|
+|---|---:|---|
+|\(r_h\)|标量|几何分支\(h\)的support类中心化logit RMS|
+|\(r_h^{(R)}\)|标量|Fisher残差分支\(h\)的support类中心化logit RMS|
+|\(\ell_{c,h}^{\mathrm{LOO}}\)|标量|分支\(h\)在类别\(c\)上的support内留一交叉熵|
+|\(\eta_{c,h}\)|标量|类别\(c\)对分支\(h\)的可靠性权重|
+|\(\ell_{c,h}^{(R,\mathrm{LOO})}\)|标量|Fisher残差分支\(h\)在类别\(c\)上的留一交叉熵|
+|\(\eta_{c,h}^{(R)}\)|标量|类别\(c\)对Fisher残差分支\(h\)的可靠性权重|
+|\(\mathbf{V}\)|\(288\times r_F\)|类均值矩阵的右奇异方向|
+|\(\beta_j,\nu_j\)|标量|第\(j\)个方向的类间能量和类内能量|
+|\(\gamma_j\)|\([0,1]\)|第\(j\)个方向的有界Fisher增益|
+|\(\mathbf{A}\)|\(288\times288\)|identity-primary Fisher残差变换|
+|\(TP_c,FP_c\)|非负整数|support交叉拟合中的类别真阳性和假阳性计数|
+|\(g_c\)|\(\{0,1\}\)|类别\(c\)是否通过残差行替换安全门|
+
+### 3.6 通用数学记号
+
+|记号|意义|
+|---|---|
+|\(\mathbb{R}^{m\times n}\)|\(m\)行\(n\)列实矩阵空间|
+|\(\mathbf{I}_p\)|\(p\times p\)单位矩阵|
+|\(\mathbf{0}\)|与上下文维度一致的全零向量或矩阵|
+|\(\mathbf{1}\)|与上下文维度一致的全一向量|
+|\((\cdot)^{\mathsf T}\)|转置|
+|\((\cdot)^{-1}\)|矩阵逆；实现中优先用线性方程求解代替显式求逆|
+|\(\operatorname{tr}(\cdot)\)|矩阵迹，即对角元素之和|
+|\(\operatorname{diag}(\cdot)\)|由向量构造对角矩阵，或按给定矩阵块构造块对角矩阵|
+|\(\lVert\cdot\rVert_2\)|向量二范数|
+|\(\arg\max\)、\(\arg\min\)|使目标函数达到最大值或最小值的类别索引|
+|\(\mathbb{1}[\cdot]\)|指示函数；条件成立为1，否则为0|
+|\(\mathcal{N}(\boldsymbol{\mu},\boldsymbol{\Sigma})\)|均值为\(\boldsymbol{\mu}\)、协方差为\(\boldsymbol{\Sigma}\)的高斯分布|
+|\(\lceil a\rceil\)|不小于\(a\)的最小整数|
+|\(\lambda_{\min}(\mathbf{A})\)|矩阵\(\mathbf{A}\)的最小特征值|
+|\(\operatorname{softmax}\)|把有限实数向量归一化为和为1的正权重|
+
+## 4.D92完整处理流程
+
+```mermaid
+flowchart LR
+    A["固定LEO接收IQ"] --> B["冻结特征映射Φθ"]
+    B --> C["288维联合特征"]
+    G["Phase1封存类无关扰动谱"] --> D["support类中心稳健化"]
+    C --> D
+    D --> E["旧类任务收缩协方差"]
+    D --> F["新类任务收缩协方差"]
+    E --> H["0.5/0.5任务均衡"]
+    F --> H
+    H --> I["full与block3两种几何"]
+    I --> J["support内留一可靠性融合"]
+    J --> K["有界Fisher残差候选"]
+    K --> L["逐类Pareto安全门"]
+    L --> M["单一FP32仿射状态W,b"]
+    B --> N["单条query特征q"]
+    M --> O["全部注册类分数"]
+    N --> O
+    O --> P["逐样本argmax预测"]
+    P --> Q["不可变prediction artifact"]
+    Q --> R["独立truth-side scorer"]
+```
+
+这条流水线有两个时间阶段：
+
+- 状态构造阶段：读取Phase1 bundle和当前row的support，生成\((\mathbf{W},\mathbf{b})\)；
+- 推理阶段：每条query只做一次特征提取和一次全注册类仿射打分，不更新任何状态。
+
+## 5.模块一：从固定接收IQ到288维联合特征
+
+### 5.1 特征映射
+
+定义带数值保护的行归一化
+
+$$
+\mathcal{N}_{\varepsilon}(\mathbf{v})
+=
+\frac{
+\mathbf{v}
+}{
+\max
+\left(
+\lVert\mathbf{v}\rVert_2,\varepsilon
+\right)
+},
+\qquad
+\varepsilon=10^{-8}.
+$$
+
+对任意固定接收IQ\(\mathbf{x}\)，冻结编码器首先产生160维身份特征
+
+$$
+\mathbf{f}^{\mathrm{id}}
+=
+E_{\theta}(\mathbf{x})
+\in\mathbb{R}^{160}.
+$$
+
+对同一IQ计算FFT96和RF32原始描述
+
+$$
+\mathbf{f}^{\mathrm{fft}}
+\in\mathbb{R}^{96},
+\qquad
+\mathbf{f}^{\mathrm{rf}}
+\in\mathbb{R}^{32}.
+$$
+
+辅助块先拼接并整体归一化：
+
+$$
+\mathbf{f}^{\mathrm{aux}}
+=
+\mathcal{N}_{\varepsilon}
+\left(
+\begin{bmatrix}
+\mathbf{f}^{\mathrm{fft}}\\
+\mathbf{f}^{\mathrm{rf}}
+\end{bmatrix}
+\right)
+\in\mathbb{R}^{128}.
+$$
+
+当前锁定几何把辅助块乘以固定权重4，再与归一化身份块拼接，最后对288维向量整体归一化：
+
+$$
+\mathbf{z}
+=
+\Phi_{\theta}(\mathbf{x})
+=
+\mathcal{N}_{\varepsilon}
+\left(
+\begin{bmatrix}
+\mathcal{N}_{\varepsilon}
+\left(
+\mathbf{f}^{\mathrm{id}}
+\right)\\
+4\mathbf{f}^{\mathrm{aux}}
+\end{bmatrix}
+\right)
+\in\mathbb{R}^{288},
+$$
+
+最终块切片仍记为
+
+$$
+\mathbf{z}^{\mathrm{id}}\in\mathbb{R}^{160},
+\qquad
+\mathbf{z}^{\mathrm{fft}}\in\mathbb{R}^{96},
+\qquad
+\mathbf{z}^{\mathrm{rf}}\in\mathbb{R}^{32}.
+$$
+
+因此，“160+96+32”描述的是最终向量的块边界，不表示三个块未经缩放直接裸拼接。固定权重4是当前部署几何的一部分，不由query或125结果按row选择。
+
+### 5.2 FFT96如何计算
+
+把两通道IQ写成复数序列
+
+$$
+u_t=I_t+\mathrm{j}Q_t,
+\qquad
+t=1,\ldots,L.
+$$
+
+先去除复均值并做RMS归一化：
+
+$$
+u_t^{(0)}
+=
+\frac{
+u_t-\bar{u}
+}{
+\max
+\left(
+\sqrt{
+\frac{1}{L}
+\sum_{t=1}^{L}
+\left|
+u_t-\bar{u}
+\right|^2
+},
+\varepsilon
+\right)
+}.
+$$
+
+施加Hann窗\(h_t\)，计算中心化频谱
+
+$$
+U_k
+=
+\operatorname{fftshift}
+\left[
+\operatorname{FFT}
+\left(
+u_t^{(0)}h_t
+\right)
+\right]_k.
+$$
+
+取对数幅度
+
+$$
+v_k
+=
+\log
+\left(
+1+\left|U_k\right|
+\right),
+$$
+
+然后在归一化频率轴上用线性插值重采样到96点，得到\(\mathbf{r}^{\mathrm{fft}}\in\mathbb{R}^{96}\)。最后删除96维均值并归一化：
+
+$$
+\mathbf{f}^{\mathrm{fft}}
+=
+\mathcal{N}_{\varepsilon}
+\left(
+\mathbf{r}^{\mathrm{fft}}
+-
+\frac{
+\mathbf{1}^{\mathsf T}\mathbf{r}^{\mathrm{fft}}
+}{96}
+\mathbf{1}
+\right).
+$$
+
+这条路径对同一固定IQ只执行一次，不重新叠加LEO信道。
+
+### 5.3 RF32如何计算
+
+RF32先对复IQ做RMS增益归一化，再构造32个统计量：
+
+|编号|统计量|数量|
+|---:|---|---:|
+|1–2|\(I,Q\)均值|2|
+|3–4|\(I,Q\)标准差|2|
+|5|\(I/Q\)相关系数|1|
+|6–7|幅度均值、标准差|2|
+|8–12|幅度10%、25%、50%、75%、90%分位数|5|
+|13|最大幅度|1|
+|14–15|幅度偏度、峰度|2|
+|16–18|二阶复中心矩的实部、虚部、模|3|
+|19–20|三阶复中心矩的实部、虚部|2|
+|21–23|四阶复中心矩的实部、虚部、模|3|
+|24–31|lag为1、2、4、8的复自相关实部和虚部|8|
+|32|幅度lag-1归一化自相关|1|
+
+设上述统计组成\(\mathbf{r}^{\mathrm{rf}}\in\mathbb{R}^{32}\)，最终
+
+$$
+\mathbf{f}^{\mathrm{rf}}
+=
+\mathcal{N}_{\varepsilon}
+\left(
+\mathbf{r}^{\mathrm{rf}}
+\right).
+$$
+
+RF32对整体增益具有归一化不变性，但仍保留IQ不平衡、幅度分布、高阶矩和短时相关结构。
+
+### 5.4 为什么组合三种特征
+
+160维身份表征承担主要类别区分；96维FFT描述频域形态；32维RF统计提供低维射频结构。D92同时保留两种假设：
+
+1.三个块之间的相关性有判别价值，对应full协方差；
+2.块间相关性在少样本下不稳定，对应block3协方差。
+
+方法不会事先断言哪种假设永远正确，而是使用support内交叉拟合为每个类别分配可靠性权重。
+
+## 6.模块二：类无关扰动谱与support稳健中心
+
+### 6.1 从封存聚合知识构造扰动基
+
+Phase1 bundle提供类无关的160维聚合扰动协方差\(\mathbf{G}\)和量化噪声底\(\sigma_{\mathrm{q}}^2\)。先计算
+
+$$
+\mathbf{G}_{+}
+=
+\frac{\mathbf{G}+\mathbf{G}^{\mathsf T}}{2}
+-\sigma_{\mathrm{q}}^2\mathbf{I}_{160}.
+$$
+
+对\(\mathbf{G}_{+}\)做特征分解：
+
+$$
+\mathbf{G}_{+}\mathbf{u}_j
+=
+\lambda_j\mathbf{u}_j.
+$$
+
+只保留数值上为正的特征值。正谱的participation-ratio有效秩为
+
+$$
+r_{\mathrm{eff}}
+=
+\frac{
+\left(\sum_{j:\lambda_j>0}\lambda_j\right)^2
+}{
+\sum_{j:\lambda_j>0}\lambda_j^2
+}.
+$$
+
+实际保留秩不经target扫描，而固定为
+
+$$
+r
+=
+\left\lceil r_{\mathrm{eff}}\right\rceil.
+$$
+
+取最大的\(r\)个正特征方向构成
+
+$$
+\mathbf{U}
+=
+\begin{bmatrix}
+\mathbf{u}_1&\cdots&\mathbf{u}_r
+\end{bmatrix}
+\in\mathbb{R}^{160\times r},
+$$
+
+对应归一化谱权重为
+
+$$
+\rho_j
+=
+\frac{\lambda_j}{\sum_{\ell=1}^{r}\lambda_\ell},
+\qquad
+\sum_{j=1}^{r}\rho_j=1.
+$$
+
+\(\mathbf{U}\)只表达“哪些身份特征方向容易受地面域变化影响”，不包含某个旧类的prototype、样本feature或类别得分。
+
+### 6.2 普通类中心与残差
+
+对类别\(c\)的160维身份support：
+
+$$
+\left\{
+\mathbf{z}^{\mathrm{id}}_{c,k}
+\right\}_{k=1}^{K},
+$$
+
+普通均值为
+
+$$
+\bar{\mathbf{z}}^{\mathrm{id}}_c
+=
+\frac{1}{K}
+\sum_{k=1}^{K}
+\mathbf{z}^{\mathrm{id}}_{c,k},
+$$
+
+样本残差为
+
+$$
+\mathbf{e}_{c,k}
+=
+\mathbf{z}^{\mathrm{id}}_{c,k}
+-\bar{\mathbf{z}}^{\mathrm{id}}_c.
+$$
+
+### 6.3 地面扰动谱能量
+
+将残差投影到扰动基：
+
+$$
+\mathbf{h}_{c,k}
+=
+\mathbf{U}^{\mathsf T}\mathbf{e}_{c,k}
+\in\mathbb{R}^{r}.
+$$
+
+样本的加权扰动能量定义为
+
+$$
+E_{c,k}
+=
+\sum_{j=1}^{r}
+\rho_j h_{c,k,j}^{2}.
+$$
+
+类别内能量尺度为
+
+$$
+\tau_c
+=
+\frac{1}{K}
+\sum_{k=1}^{K}
+E_{c,k}.
+$$
+
+\(E_{c,k}\)越大，表示该support样本相对本类中心的偏移越集中在已知扰动方向上。
+
+### 6.4 一步Cauchy权重
+
+当\(K>2\)且\(\tau_c\)非退化时，未归一化权重为
+
+$$
+a_{c,k}
+=
+\frac{1}{
+1+E_{c,k}/\tau_c
+}.
+$$
+
+归一化后
+
+$$
+\omega_{c,k}
+=
+\frac{a_{c,k}}{
+\sum_{\ell=1}^{K}a_{c,\ell}
+},
+\qquad
+\sum_{k=1}^{K}\omega_{c,k}=1.
+$$
+
+稳健身份中心为
+
+$$
+\mathbf{m}^{\mathrm{rob}}_c
+=
+\sum_{k=1}^{K}
+\omega_{c,k}
+\mathbf{z}^{\mathrm{id}}_{c,k}.
+$$
+
+类中心平移量为
+
+$$
+\boldsymbol{\delta}_c
+=
+\mathbf{m}^{\mathrm{rob}}_c
+-\bar{\mathbf{z}}^{\mathrm{id}}_c.
+$$
+
+最终只平移本类所有support的身份特征块：
+
+$$
+\widetilde{\mathbf{z}}_{c,k}
+=
+\begin{bmatrix}
+\mathbf{z}^{\mathrm{id}}_{c,k}
++\boldsymbol{\delta}_c\\
+\mathbf{z}^{\mathrm{fft}}_{c,k}\\
+\mathbf{z}^{\mathrm{rf}}_{c,k}
+\end{bmatrix}.
+$$
+
+### 6.5 为什么只平移类中心
+
+平移后类别均值变为稳健中心，但类内残差严格不变：
+
+$$
+\widetilde{\mathbf{z}}^{\mathrm{id}}_{c,k}
+-\mathbf{m}^{\mathrm{rob}}_c
+=
+\mathbf{z}^{\mathrm{id}}_{c,k}
+-\bar{\mathbf{z}}^{\mathrm{id}}_c.
+$$
+
+因此，该步骤不会人为压缩或扩张类内散布，也不会修改FFT96和RF32。它只改变“类别位于特征空间的什么位置”，不改变“类别内部样本如何围绕中心分布”。
+
+### 6.6 小K回退
+
+当\(K\leq2\)时，D92固定
+
+$$
+\boldsymbol{\delta}_c=\mathbf{0},
+\qquad
+\widetilde{\mathbf{z}}_{c,k}=\mathbf{z}_{c,k}.
+$$
+
+原因不是计算失败，而是1或2个样本不足以稳定区分“身份中心偏移”和“类内扰动离群”。D92宁可保持恒等映射，也不从极少support制造伪稳健性。
+
+## 7.模块三：旧/新任务均衡的自动收缩协方差
+
+### 7.1 稳健化后的类别均值
+
+对全部注册类统一计算
+
+$$
+\boldsymbol{\mu}_c
+=
+\frac{1}{K}
+\sum_{k=1}^{K}
+\widetilde{\mathbf{z}}_{c,k}
+\in\mathbb{R}^{288}.
+$$
+
+旧类和新类使用同一均值公式。方法中不存在某个具体TX的专属中心规则。
+
+### 7.2 为什么不能直接使用经验协方差
+
+在\(p=288\)而\(K\in\{1,5,10\}\)时，单类经验协方差秩最多为\(K-1\)，必然远低于288。直接求逆会奇异或对support扰动极端敏感。D92对每个类别使用Ledoit–Wolf自动收缩，再在任务内等先验汇总。
+
+### 7.3 类内标准化Ledoit–Wolf协方差
+
+对类别\(c\)，令\(\mathbf{D}_c\)为逐维support标准差组成的对角矩阵，并定义标准化残差
+
+$$
+\mathbf{u}_{c,k}
+=
+\mathbf{D}_c^{-1}
+\left(
+\widetilde{\mathbf{z}}_{c,k}
+-\boldsymbol{\mu}_c
+\right).
+$$
+
+标准化空间中的经验协方差为
+
+$$
+\mathbf{S}^{(u)}_c
+=
+\frac{1}{K}
+\sum_{k=1}^{K}
+\mathbf{u}_{c,k}\mathbf{u}_{c,k}^{\mathsf T}.
+$$
+
+Ledoit–Wolf估计器自动确定\(\alpha_c\in[0,1]\)，形成
+
+$$
+\widehat{\boldsymbol{\Sigma}}^{(u)}_c
+=
+(1-\alpha_c)\mathbf{S}^{(u)}_c
++\alpha_c\zeta_c\mathbf{I}_{p},
+$$
+
+其中
+
+$$
+\zeta_c
+=
+\frac{\operatorname{tr}
+\left(\mathbf{S}^{(u)}_c\right)}{p}.
+$$
+
+再恢复原始特征尺度：
+
+$$
+\widehat{\boldsymbol{\Sigma}}^{\mathrm{LW}}_c
+=
+\mathbf{D}_c
+\widehat{\boldsymbol{\Sigma}}^{(u)}_c
+\mathbf{D}_c.
+$$
+
+这与当前实现中`StandardScaler→ledoit_wolf→rescale`的`shrinkage="auto"`语义一致。这里的\(\alpha_c\)由当前类support的协方差估计问题自动确定，不通过query结果或125矩阵扫描选择。
+
+### 7.4 任务内等先验协方差
+
+旧类任务协方差为
+
+$$
+\boldsymbol{\Sigma}_{\mathrm{o}}
+=
+\frac{1}{C_{\mathrm{o}}}
+\sum_{c\in\mathcal{Y}_{\mathrm{o}}}
+\widehat{\boldsymbol{\Sigma}}^{\mathrm{LW}}_c.
+$$
+
+新类任务协方差为
+
+$$
+\boldsymbol{\Sigma}_{\mathrm{n}}
+=
+\frac{1}{C_{\mathrm{n}}}
+\sum_{c\in\mathcal{Y}_{\mathrm{n}}}
+\widehat{\boldsymbol{\Sigma}}^{\mathrm{LW}}_c.
+$$
+
+先在各任务内部进行类别等权汇总，意味着旧类任务的统计权重不会随着新类数量从5增加到20而被自动稀释。
+
+### 7.5 固定任务均衡
+
+D92的核心共享协方差为
+
+$$
+\boxed{
+\boldsymbol{\Sigma}_{\mathrm{bal}}
+=
+\frac{1}{2}
+\boldsymbol{\Sigma}_{\mathrm{o}}
++
+\frac{1}{2}
+\boldsymbol{\Sigma}_{\mathrm{n}}
+}
+$$
+
+更一般地，若直接把全部类别混在一起等先验估计，则旧类任务总权重为\(C_{\mathrm{o}}/C\)，新类任务总权重为\(C_{\mathrm{n}}/C\)。当\(C_{\mathrm{o}}=6,C_{\mathrm{n}}=20\)时，旧类任务只占
+
+$$
+\frac{6}{26}\approx23.08\%.
+$$
+
+D92把两个任务的总权重固定为50%和50%，而不是让类别数量决定任务重要性。这一等权是方法定义，不是从query准确率拟合的超参数。
+
+### 7.6 Full与block3两种结构
+
+full结构直接使用
+
+$$
+\boldsymbol{\Sigma}_{\mathrm{full}}
+=
+\boldsymbol{\Sigma}_{\mathrm{bal}}.
+$$
+
+block3结构使用投影算子\(\mathcal{P}_{\mathrm{blk}}\)，只保留三个特征块内部的协方差：
+
+$$
+\boldsymbol{\Sigma}_{\mathrm{blk}}
+=
+\mathcal{P}_{\mathrm{blk}}
+\left(
+\boldsymbol{\Sigma}_{\mathrm{bal}}
+\right)
+=
+\begin{bmatrix}
+\boldsymbol{\Sigma}_{\mathrm{id}}&\mathbf{0}&\mathbf{0}\\
+\mathbf{0}&\boldsymbol{\Sigma}_{\mathrm{fft}}&\mathbf{0}\\
+\mathbf{0}&\mathbf{0}&\boldsymbol{\Sigma}_{\mathrm{rf}}
+\end{bmatrix}.
+$$
+
+两种结构分别表达“相信跨块相关性”和“只相信块内相关性”。D92保留两者，随后由support内证据按类别融合。
+
+### 7.7 正定性门禁
+
+数值实现再次对称化：
+
+$$
+\boldsymbol{\Sigma}
+\leftarrow
+\frac{
+\boldsymbol{\Sigma}
++\boldsymbol{\Sigma}^{\mathsf T}
+}{2}.
+$$
+
+若最小特征值不满足
+
+$$
+\lambda_{\min}
+\left(
+\boldsymbol{\Sigma}
+\right)>0,
+$$
+
+则当前fit失败闭合，不使用伪逆悄悄改变方法语义。
+
+## 8.模块四：等先验LDA仿射头
+
+### 8.1 高斯共享协方差假设
+
+D92把每个注册类建模为共享协方差、不同均值的高斯分布：
+
+$$
+p(\mathbf{z}\mid y=c)
+=
+\mathcal{N}
+\left(
+\boldsymbol{\mu}_c,
+\boldsymbol{\Sigma}
+\right).
+$$
+
+所有类别先验固定为
+
+$$
+\pi_c
+=
+\frac{1}{C}.
+$$
+
+等先验避免support数量、历史类别频率或真实query类别比例改变决策边界。
+
+### 8.2 从高斯判别函数到线性分数
+
+忽略对全部类别相同的项后，类别\(c\)的判别函数为
+
+$$
+s_c(\mathbf{q})
+=
+\mathbf{q}^{\mathsf T}
+\boldsymbol{\Sigma}^{-1}
+\boldsymbol{\mu}_c
+-
+\frac{1}{2}
+\boldsymbol{\mu}_c^{\mathsf T}
+\boldsymbol{\Sigma}^{-1}
+\boldsymbol{\mu}_c
++
+\log\pi_c.
+$$
+
+定义
+
+$$
+\mathbf{w}_c
+=
+\boldsymbol{\Sigma}^{-1}
+\boldsymbol{\mu}_c,
+$$
+
+$$
+b_c
+=
+-
+\frac{1}{2}
+\boldsymbol{\mu}_c^{\mathsf T}
+\boldsymbol{\Sigma}^{-1}
+\boldsymbol{\mu}_c
++
+\log\pi_c,
+$$
+
+即可写成
+
+$$
+s_c(\mathbf{q})
+=
+\mathbf{q}^{\mathsf T}\mathbf{w}_c+b_c.
+$$
+
+实现不显式计算\(\boldsymbol{\Sigma}^{-1}\)，而是求解线性方程
+
+$$
+\boldsymbol{\Sigma}\mathbf{W}^{\mathsf T}
+=
+\mathbf{M}^{\mathsf T},
+$$
+
+其中
+
+$$
+\mathbf{M}
+=
+\begin{bmatrix}
+\boldsymbol{\mu}_1^{\mathsf T}\\
+\vdots\\
+\boldsymbol{\mu}_C^{\mathsf T}
+\end{bmatrix}.
+$$
+
+直接求解通常比先形成逆矩阵再相乘更稳定。
+
+### 8.3 删除类别公共仿射项
+
+若对所有类别分数同时减去同一个关于query的函数，\(\arg\max\)不变。D92在FP64中执行
+
+$$
+\bar{\mathbf{w}}
+=
+\frac{1}{C}\sum_{c=1}^{C}\mathbf{w}_c,
+\qquad
+\bar{b}
+=
+\frac{1}{C}\sum_{c=1}^{C}b_c,
+$$
+
+$$
+\mathbf{w}_c
+\leftarrow
+\mathbf{w}_c-\bar{\mathbf{w}},
+\qquad
+b_c
+\leftarrow
+b_c-\bar{b}.
+$$
+
+因为
+
+$$
+\arg\max_c
+\left[
+\mathbf{q}^{\mathsf T}\mathbf{w}_c+b_c
+\right]
+=
+\arg\max_c
+\left[
+\mathbf{q}^{\mathsf T}
+\left(\mathbf{w}_c-\bar{\mathbf{w}}\right)
++b_c-\bar{b}
+\right],
+$$
+
+这一操作不改变FP64理论决策，却消除了任意score gauge，便于不同几何分支稳定融合。
+
+## 9.模块五：双几何可靠性融合
+
+### 9.1 为什么需要融合
+
+full分支利用跨块相关性，表达力更强；block3分支忽略跨块相关性，方差更低。少样本下不存在一个对所有类别都最优的固定选择，因此D92用support内部交叉拟合估计每个类别更信任哪个分支。
+
+### 9.2 分支分数尺度归一化
+
+对分支\(h\in\{\mathrm{full},\mathrm{blk}\}\)，support行\(i\)对类别\(c\)的分数为
+
+$$
+s_{i,c}^{(h)}
+=
+\mathbf{z}_i^{\mathsf T}
+\mathbf{w}_{c}^{(h)}
++b_c^{(h)}.
+$$
+
+先对每一行删除类别均值：
+
+$$
+\widetilde{s}_{i,c}^{(h)}
+=
+s_{i,c}^{(h)}
+-
+\frac{1}{C}
+\sum_{j=1}^{C}s_{i,j}^{(h)}.
+$$
+
+分支RMS尺度为
+
+$$
+r_h
+=
+\sqrt{
+\frac{1}{N_{\mathrm{s}}C}
+\sum_{i=1}^{N_{\mathrm{s}}}
+\sum_{c=1}^{C}
+\left(
+\widetilde{s}_{i,c}^{(h)}
+\right)^2
+}.
+$$
+
+后续使用\(s_{i,c}^{(h)}/r_h\)，防止某个分支仅因logit绝对尺度更大而获得更高权重。
+
+### 9.3 Support内按shot秩留一
+
+将每类第\(t\)个support组成第\(t\)折held集合：
+
+$$
+\mathcal{H}_t
+=
+\left\{
+(c,t):c\in\mathcal{Y}
+\right\},
+\qquad
+t=1,\ldots,K.
+$$
+
+第\(t\)折训练集合为
+
+$$
+\mathcal{S}_{-t}
+=
+\mathcal{S}\setminus\mathcal{H}_t.
+$$
+
+每一折都只用\(\mathcal{S}_{-t}\)重新计算稳健中心、协方差和仿射头，然后预测\(\mathcal{H}_t\)。每个support样本恰好作为held样本一次。
+
+### 9.4 类别级交叉熵证据
+
+对类别\(c\)和分支\(h\)，留一交叉熵记为
+
+$$
+\ell_{c,h}^{\mathrm{LOO}}
+=
+-
+\frac{1}{K}
+\sum_{t=1}^{K}
+\log
+\frac{
+\exp
+\left(
+s_{c,t,c}^{(h)}/r_h
+\right)
+}{
+\sum_{j=1}^{C}
+\exp
+\left(
+s_{c,t,j}^{(h)}/r_h
+\right)
+}.
+$$
+
+把\(-K\ell_{c,h}^{\mathrm{LOO}}\)解释为类别\(c\)在分支\(h\)上的对数证据，可靠性权重为
+
+$$
+\eta_{c,h}
+=
+\frac{
+\exp
+\left(
+-K\ell_{c,h}^{\mathrm{LOO}}
+\right)
+}{
+\sum_{h'}
+\exp
+\left(
+-K\ell_{c,h'}^{\mathrm{LOO}}
+\right)
+}.
+$$
+
+因此
+
+$$
+\eta_{c,\mathrm{full}}
++\eta_{c,\mathrm{blk}}
+=1.
+$$
+
+### 9.5 类别级仿射融合
+
+基础融合头为
+
+$$
+\mathbf{w}^{(0)}_c
+=
+\eta_{c,\mathrm{full}}
+\frac{\mathbf{w}^{(\mathrm{full})}_c}{r_{\mathrm{full}}}
++
+\eta_{c,\mathrm{blk}}
+\frac{\mathbf{w}^{(\mathrm{blk})}_c}{r_{\mathrm{blk}}},
+$$
+
+$$
+b^{(0)}_c
+=
+\eta_{c,\mathrm{full}}
+\frac{b^{(\mathrm{full})}_c}{r_{\mathrm{full}}}
++
+\eta_{c,\mathrm{blk}}
+\frac{b^{(\mathrm{blk})}_c}{r_{\mathrm{blk}}}.
+$$
+
+融合权重只来自当前row的support留一结果；它不读取outer held、query或truth-side指标。
+
+## 10.模块六：有界Fisher残差与逐类安全门
+
+### 10.1 类均值子空间
+
+将全部类均值中心化：
+
+$$
+\mathbf{M}_{0}
+=
+\begin{bmatrix}
+\left(\boldsymbol{\mu}_1-\bar{\boldsymbol{\mu}}\right)^{\mathsf T}\\
+\vdots\\
+\left(\boldsymbol{\mu}_C-\bar{\boldsymbol{\mu}}\right)^{\mathsf T}
+\end{bmatrix},
+$$
+
+其中
+
+$$
+\bar{\boldsymbol{\mu}}
+=
+\frac{1}{C}
+\sum_{c=1}^{C}
+\boldsymbol{\mu}_c.
+$$
+
+对\(\mathbf{M}_0\)做SVD：
+
+$$
+\mathbf{M}_0
+=
+\mathbf{L}
+\mathbf{S}
+\mathbf{V}^{\mathsf T}.
+$$
+
+保留机器精度判定为非零的\(r_F\leq C-1\)个右奇异方向：
+
+$$
+\mathbf{V}_{r_F}
+=
+\begin{bmatrix}
+\mathbf{v}_1&\cdots&\mathbf{v}_{r_F}
+\end{bmatrix}.
+$$
+
+### 10.2 类间能量、类内能量与有界增益
+
+第\(j\)个方向的类间能量为
+
+$$
+\beta_j
+=
+\frac{1}{C}
+\sum_{c=1}^{C}
+\left[
+\left(
+\boldsymbol{\mu}_c-\bar{\boldsymbol{\mu}}
+\right)^{\mathsf T}
+\mathbf{v}_j
+\right]^2.
+$$
+
+类内能量为
+
+$$
+\nu_j
+=
+\frac{1}{CK}
+\sum_{c=1}^{C}
+\sum_{k=1}^{K}
+\left[
+\left(
+\widetilde{\mathbf{z}}_{c,k}-\boldsymbol{\mu}_c
+\right)^{\mathsf T}
+\mathbf{v}_j
+\right]^2.
+$$
+
+Fisher增益定义为
+
+$$
+\gamma_j
+=
+\frac{\beta_j}{\beta_j+\nu_j},
+\qquad
+0\leq\gamma_j\leq1.
+$$
+
+构造identity-primary变换
+
+$$
+\mathbf{A}
+=
+\mathbf{I}_{p}
++
+\mathbf{V}_{r_F}
+\operatorname{diag}
+\left(
+\gamma_1,\ldots,\gamma_{r_F}
+\right)
+\mathbf{V}_{r_F}^{\mathsf T}.
+$$
+
+\(\mathbf{A}\)的特征值位于\([1,2]\)，所以它只增强类间相对稳定的方向，不会删除原始坐标或无限放大某个方向。
+
+### 10.3 将残差变换编译进仿射头
+
+对几何分支\(h\in\{\mathrm{full},\mathrm{blk}\}\)，若query先变换为
+
+$$
+\mathbf{q}'^{\mathsf T}
+=
+\mathbf{q}^{\mathsf T}\mathbf{A},
+$$
+
+再使用该分支的基础头打分，则
+
+$$
+\mathbf{q}^{\mathsf T}
+\mathbf{A}
+\mathbf{w}^{(h)}_c
++b^{(h)}_c
+=
+\mathbf{q}^{\mathsf T}
+\mathbf{w}^{(R,h)}_c
++b^{(h)}_c,
+$$
+
+其中列向量形式为
+
+$$
+\mathbf{w}^{(R,h)}_c
+=
+\mathbf{A}\mathbf{w}^{(h)}_c,
+$$
+
+矩阵行向量形式为
+
+$$
+\mathbf{W}^{(R,h)}
+=
+\mathbf{W}^{(h)}
+\mathbf{A}^{\mathsf T}.
+$$
+
+残差候选不会直接沿用基础分支的融合权重。D92在相同support留一划分上重新计算残差分支交叉熵
+
+$$
+\ell_{c,h}^{(R,\mathrm{LOO})},
+$$
+
+再得到残差分支权重
+
+$$
+\eta_{c,h}^{(R)}
+=
+\frac{
+\exp
+\left(
+-K\ell_{c,h}^{(R,\mathrm{LOO})}
+\right)
+}{
+\sum_{h'}
+\exp
+\left(
+-K\ell_{c,h'}^{(R,\mathrm{LOO})}
+\right)
+}.
+$$
+
+令\(r_h^{(R)}\)为残差分支的support类中心化logit RMS，完整残差候选行为
+
+$$
+\mathbf{w}^{(R)}_c
+=
+\sum_h
+\eta_{c,h}^{(R)}
+\frac{
+\mathbf{w}^{(R,h)}_c
+}{
+r_h^{(R)}
+},
+$$
+
+$$
+b^{(R)}_c
+=
+\sum_h
+\eta_{c,h}^{(R)}
+\frac{
+b^{(h)}_c
+}{
+r_h^{(R)}
+}.
+$$
+
+因此，基础候选与Fisher残差候选各自拥有support校准后的full/block融合权重。变换和融合全部编译进仿射行，部署时仍然只保留最终一个头，不需要保存第二套query特征变换网络。
+
+### 10.4 逐类Pareto安全门
+
+在相同support留一折上，分别得到基础头分数与Fisher残差头分数。对类别\(c\)，基础头真阳性和假阳性计数记为
+
+$$
+TP_c^{(0)},\qquad FP_c^{(0)}.
+$$
+
+只替换类别\(c\)这一行后，计数记为
+
+$$
+TP_c^{(R)},\qquad FP_c^{(R)}.
+$$
+
+类别\(c\)的初始接受条件为
+
+$$
+g_c^{\mathrm{init}}
+=
+\mathbb{1}
+\left[
+TP_c^{(R)}\geq TP_c^{(0)}
+\;\land\;
+FP_c^{(R)}\leq FP_c^{(0)}
+\;\land\;
+\left[
+\left(
+TP_c^{(R)}>TP_c^{(0)}
+\right)
+\lor
+\left(
+FP_c^{(R)}<FP_c^{(0)}
+\right)
+\right]
+\right].
+$$
+
+上式用逻辑“与”连接三个条件；写成文字就是：真阳性不下降、假阳性不增加，并且至少一项严格改善。
+
+### 10.5 原子联合检查
+
+多个类别分别安全，不代表同时替换后仍安全。D92把所有初始通过的行同时替换，再检查
+
+$$
+TP_c^{\mathrm{joint}}
+\geq
+TP_c^{(0)},
+\qquad
+FP_c^{\mathrm{joint}}
+\leq
+FP_c^{(0)},
+\qquad
+\forall c\in\mathcal{Y}.
+$$
+
+若任一类别违反条件，则全部Fisher残差行原子回滚：
+
+$$
+g_c=0,\qquad\forall c.
+$$
+
+若联合检查通过，则
+
+$$
+g_c=g_c^{\mathrm{init}}.
+$$
+
+最终分类头逐类取
+
+$$
+\mathbf{w}^{(*)}_c
+=
+\begin{cases}
+\mathbf{w}^{(R)}_c,&g_c=1,\\
+\mathbf{w}^{(0)}_c,&g_c=0,
+\end{cases}
+$$
+
+$$
+b^{(*)}_c
+=
+\begin{cases}
+b^{(R)}_c,&g_c=1,\\
+b^{(0)}_c,&g_c=0.
+\end{cases}
+$$
+
+随后再次删除类别公共仿射项并统一转换为FP32。
+
+## 11.状态构造算法
+
+### 11.1 算法伪代码
+
+```text
+输入：
+  不可变Phase1 bundle B_P1
+  每个注册类K个标注support S
+  旧类集合Y_o、新类集合Y_n
+  固定配置Γ
+
+输出：
+  单一仿射状态Θ_D92=(W,b,classes,audit)
+
+1. 对每个support IQ计算288维联合特征z。
+2. 从B_P1读取类无关扰动协方差和量化噪声底。
+3. 构造正扰动谱U及谱权重ρ。
+4. 对每个类别：
+   4.1 计算普通身份中心；
+   4.2 计算每个support的扰动谱能量；
+   4.3 K>2时计算Cauchy权重和稳健中心；
+   4.4 只平移z_id160，保持FFT96、RF32及类内残差不变。
+5. 分别在旧类组和新类组内：
+   5.1 为每类估计自动收缩协方差；
+   5.2 按类别等先验平均，得到Σ_o和Σ_n。
+6. 固定计算Σ_bal=0.5Σ_o+0.5Σ_n。
+7. 分别构造full和block3协方差。
+8. 对两个协方差分支求解等先验LDA仿射头。
+9. 用support内按shot秩留一交叉熵，为每个类别融合两个分支。
+10. 从类均值子空间构造有界Fisher残差头。
+11. 用相同support交叉拟合证据执行逐类Pareto门和原子联合检查。
+12. 得到最终逐类仿射行，删除类别公共项并转换为FP32。
+13. 输出W、b、注册类顺序和完整审计记录。
+```
+
+### 11.2 激活与回退条件
+
+|条件|稳健中心|旧/新均衡协方差|Fisher残差安全门|最终行为|
+|---|---|---|---|---|
+|只有旧类，\(C=C_{\mathrm{o}}\)|按K决定|不激活，因为没有新类任务|按既有支持证据|形成注册前旧类状态|
+|已注册新类且\(K>2\)|激活|激活|激活|完整D92|
+|已注册新类且\(K=1\)|恒等|回退|回退|极少样本保守状态|
+|已注册新类且\(K=2\)|恒等|回退|回退|极少样本保守状态|
+|任一协方差非有限或非正定|—|失败闭合|—|不发布预测状态|
+|残差逐类条件通过但联合不安全|有效|有效|全部回滚|保留基础融合头|
+
+## 12.Query推理与最终输出
+
+### 12.1 单条query推理
+
+对query IQ\(\mathbf{x}^{(q)}\)，先计算
+
+$$
+\mathbf{q}
+=
+\Phi_{\theta}
+\left(
+\mathbf{x}^{(q)}
+\right)
+\in\mathbb{R}^{288}.
+$$
+
+然后一次性计算全部注册类分数：
+
+$$
+\mathbf{s}(\mathbf{q})
+=
+\mathbf{W}\mathbf{q}
++\mathbf{b}
+\in\mathbb{R}^{C}.
+$$
+
+预测为
+
+$$
+\widehat{y}
+=
+\arg\max_{c\in\mathcal{Y}}
+s_c(\mathbf{q}).
+$$
+
+query不会被类中心平移，因为类中心平移已经编译进由support拟合的判别头。query也不会参与重新估计\(\boldsymbol{\Sigma}_{\mathrm{o}}\)、\(\boldsymbol{\Sigma}_{\mathrm{n}}\)、融合权重或安全门。
+
+### 12.2 核心函数接口
+
+当前核心拟合接口接收：
+
+|输入|形状|含义|
+|---|---:|---|
+|`transformed`|\([CK,288]\)|当前fit范围内的support联合特征|
+|`targets`|\([CK]\)|连续本地类别索引|
+|`class_count`|标量|当前注册类数量\(C\)|
+|`k_shot`|标量|每类support数量\(K\)|
+|`arm`|枚举|`full`或`block3_centered`|
+
+返回：
+
+|输出|形状|含义|
+|---|---:|---|
+|`coefficient`|\([C,288]\)|FP32仿射系数\(\mathbf{W}\)|
+|`intercept`|\([C]\)|FP32截距\(\mathbf{b}\)|
+|`audit`|字典|状态、权重、谱、正定性、回退和访问边界证据|
+
+### 12.3 系统级输出
+
+D92完整流水线输出：
+
+1.注册类有序表；
+2.最终仿射状态\((\mathbf{W},\mathbf{b})\)；
+3.每条query对全部注册类的分数向量；
+4.每条query的唯一预测标签；
+5.不可覆盖prediction artifact；
+6.predictor receipt、执行receipt和score哈希；
+7.独立scorer生成的旧类、新类、调和均值、floor、遗忘和逐类结果。
+
+### 12.4 指标公式
+
+注册前旧类准确率记为
+
+$$
+A_{\mathrm{old}}^{\mathrm{before}}.
+$$
+
+注册后在同一批旧类query上的准确率记为
+
+$$
+A_{\mathrm{old}}^{\mathrm{after}}.
+$$
+
+新类准确率记为
+
+$$
+A_{\mathrm{new}}.
+$$
+
+旧新调和均值为
+
+$$
+H_{\mathrm{old,new}}
+=
+\frac{
+2A_{\mathrm{old}}^{\mathrm{after}}A_{\mathrm{new}}
+}{
+A_{\mathrm{old}}^{\mathrm{after}}+A_{\mathrm{new}}
+}.
+$$
+
+遗忘定义为
+
+$$
+F
+=
+A_{\mathrm{old}}^{\mathrm{before}}
+-
+A_{\mathrm{old}}^{\mathrm{after}}.
+$$
+
+旧类floor为
+
+$$
+A_{\mathrm{old}}^{\min}
+=
+\min_{c\in\mathcal{Y}_{\mathrm{o}}}
+A_c^{\mathrm{after}}.
+$$
+
+这些指标必须来自同一row和同一最终状态，不能把不同候选的最大值拼接成一个结果。
+
+## 13.数值复杂度与资源含义
+
+设特征维数为\(p=288\)、注册类数为\(C\)、每类shot数为\(K\)。
+
+### 13.1 单样本辅助特征复杂度
+
+长度为\(L\)的IQ计算FFT96主要需要
+
+$$
+\mathcal{O}(L\log L)
+$$
+
+时间；RF32的矩、自相关和基础统计为\(\mathcal{O}(L)\)，分位数实现还包含选择或排序成本。二者都只读取同一固定接收IQ一次。
+
+### 13.2 状态构造复杂度
+
+单次full协方差构造的主要代价近似为：
+
+$$
+\mathcal{O}
+\left(
+CKp^2+p^3
+\right).
+$$
+
+其中\(CKp^2\)来自协方差统计，\(p^3\)来自正定矩阵求解或谱检查。block3分支把立方项拆成
+
+$$
+\mathcal{O}
+\left(
+160^3+96^3+32^3
+\right),
+$$
+
+显著小于完整\(288^3\)，但D92还需要support内\(K\)折交叉拟合，因此完整状态构造成本高于单次LDA。
+
+### 13.3 推理复杂度
+
+所有复杂选择都发生在support状态构造阶段。部署后的单query主要代价为
+
+$$
+\mathcal{O}(Cp),
+$$
+
+对应一次\(C\times288\)矩阵向量乘法和\(C\)个截距相加。
+
+### 13.4 状态存储
+
+核心仿射状态约为
+
+$$
+C(p+1)
+$$
+
+个标量。即使\(C=26\)，也只有
+
+$$
+26\times289=7514
+$$
+
+个仿射参数。协方差、LOO中间头和support证据用于构造及审计，不需要作为多分支query模型长期驻留。
+
+## 14.协议机制：D92明确不做什么
+
+D92的合法性不是“结果看起来合理”，而是由输入和状态更新边界决定：
+
+|禁止信息或操作|D92处理|
+|---|---|
+|Phase2读取clean/raw/source样本|禁止|
+|读取样本级source feature或source replay|禁止|
+|用query真值选择协方差、权重或安全门|禁止|
+|先知道query是old还是new再选择头|禁止|
+|利用真实query类别数量或类别配额|禁止|
+|跨query做Hungarian、OT或全局重排|禁止|
+|按具体TX ID设置阈值或专属公式|禁止|
+|按receiver、scene或seed选择分支|禁止|
+|从125矩阵扫描0.5/0.5任务权重|禁止|
+|预测后用scorer结果回流重跑|禁止|
+
+D92允许support标签影响类中心、协方差、LOO可靠性和安全门，因为这些都属于Stage2-C合法注册信息。它不允许任何query信息影响这些状态。
+
+## 15.实现名称映射：仅用于代码审计
+
+完整D92在仓库中由多个经过独立审计的模块组合而成。下面的历史编号只回答“代码在哪里”，不表示D92的方法定义必须按历史顺序理解。
+
+|D92方法模块|代码中的实现来源|
+|---|---|
+|类无关扰动谱与Cauchy稳健中心|`stage2_d81_ground_nuisance_cauchy_center.py`|
+|旧/新任务均衡协方差|`stage2_d92_registration_balanced_covariance.py`|
+|full/block结构与公共仿射项删除|D43相关结构化协方差实现|
+|support内LOO可靠性融合|D45/D46相关实现|
+|identity-primary Fisher残差|D61相关实现|
+|逐类Pareto行替换与原子安全门|D62相关实现|
+|完整D92装配|`probe_d92_registration_balanced_covariance.py`|
+|全query闭环|`stage2_d92_query_evaluation.py`|
+
+从科学方法角度看，这些模块共同构成D92；从软件工程角度看，保留历史模块边界便于复用测试、追踪哈希和审计每个不变量。
+
+## 16.实验系统定位补充
+
+### 16.1 D92要处理的科学问题
 
 CVS的Phase2场景是：Phase1已经学习并封存旧发射机知识；部署到未见target receiver后，系统只得到该接收机上的固定LEO弱信道received IQ、K-shot已标注support和只读deployment bundle。Stage2-B用旧类support适应接收机域，Stage2-C再注册新类，随后每条query独立面对全部已注册类。
 
@@ -32,9 +1760,9 @@ CVS的Phase2场景是：Phase1已经学习并封存旧发射机知识；部署�
 2.把新类加入候选空间后，旧类与新类共享同一决策空间，旧类会被新类侵入。
 3.注册类数增大时，新类support行数远多于旧类support行数；若直接对全部support汇总协方差，任务权重会随新类数变化。
 
-D92只攻击第三个问题及其引发的遗忘。它不是完整的“域变化显式建模器”，也不直接把地面旧类原型当作分类锚。
+D92完整方法同时使用扰动谱稳健中心、少样本收缩判别和旧/新任务均衡。任务均衡协方差模块直接处理第三个问题；稳健中心模块处理第一类support中心扰动；统一全注册类头与安全门处理第二类竞争风险。D92不显式反演信道，也不把地面旧类prototype直接作为query分类锚。
 
-### 1.2 D92在完整系统中的位置
+### 16.2 D92在完整系统中的位置
 
 ```mermaid
 flowchart LR
@@ -56,25 +1784,25 @@ flowchart LR
     M --> N["独立truth-side scorer"]
 ```
 
-图中的D92核心是`Σ_old/Σ_new→Σ_shared→统一LDA头`。ADV3B02、D81中心变换、full/block组件融合、量化和artifact发布属于继承流水线；不能把这些继承组件都写成D92独创。
+图中从冻结特征、稳健中心、任务均衡协方差、双几何融合到单一仿射状态和artifact发布，合起来才是本报告定义的完整D92。ADV3B02负责提供冻结表征；其余模块属于D92的Phase2状态构造和推理闭环。代码保留D81、D43、D62等历史文件名，只是实现复用关系，不改变这里的完整方法定义。
 
-## 2.输入与输出
+## 17.实现接口补充
 
-### 2.1 系统级输入
+### 17.1 系统级输入
 
 |输入|内容|是否更新|用途|
 |---|---|---|---|
-|Phase1 deployment bundle|冻结ADV3B02 checkpoint及与其联合封存的只读int8地面聚合知识|否|提取身份表征；为D81中心变换提供地面扰动谱|
+|Phase1 deployment bundle|冻结ADV3B02 checkpoint及与其联合封存的只读int8地面聚合知识|否|提取身份表征；为D92稳健中心模块提供类无关扰动谱|
 |Phase2 capsule|`p2_min_v1`、`VALIDATED_ONCE`的固定received IQ|否|唯一合法target物理观测|
-|旧类support|6个旧类、每类K个互不重复物理样本及标签|只形成target适配状态|估计旧类中心和`Σ_old`|
-|新类support|5、10或20个新类、每类K个互不重复物理样本及标签|追加注册状态|估计新类中心和`Σ_new`|
+|旧类support|6个旧类、每类K个互不重复物理样本及标签|只形成target适配状态|估计旧类中心和\(\boldsymbol{\Sigma}_{\mathrm{o}}\)|
+|新类support|5、10或20个新类、每类K个互不重复物理样本及标签|追加注册状态|估计新类中心和\(\boldsymbol{\Sigma}_{\mathrm{n}}\)|
 |注册表|已注册类别顺序、旧类前缀和新类后缀|由合法enrollment定义|划分两个任务协方差组|
 |算法锁|固定0.5/0.5权重、full/block结构、回退规则|否|防止按query或测试结果调参|
 |query IQ|当前query的一份固定received IQ|否|只用于单样本前向和打分|
 
 这里的“旧类前缀/新类后缀”来自合法注册生命周期，不是query角色Oracle。预测器知道哪些类别已经在Phase1存在、哪些类别刚刚由support注册，但不知道当前query究竟来自旧类还是新类。
 
-### 2.2 核心函数输入
+### 17.2 核心函数输入
 
 D92核心协方差函数接收：
 
@@ -86,15 +1814,32 @@ k_shot:      K≥1
 arm:         full或block3_centered
 ```
 
-288维特征由三个块组成：
+288维特征的块边界为160/96/32，实际锁定构造为
 
-```text
-z_id160 + FFT96 + RF32
-```
+$$
+\mathbf{z}
+=
+\mathcal{N}_{\varepsilon}
+\left(
+\left[
+\mathcal{N}_{\varepsilon}
+\left(
+\mathbf{f}^{\mathrm{id}}
+\right);
+4\mathcal{N}_{\varepsilon}
+\left(
+\left[
+\mathbf{f}^{\mathrm{fft}};
+\mathbf{f}^{\mathrm{rf}}
+\right]
+\right)
+\right]
+\right).
+$$
 
-`block3_centered`只保留三个块各自的协方差，块间协方差置零；`full`保留完整288×288协方差。D92会被嵌入D62/D43的full、block、outer和held support fit中，任何query行都不进入这些fit。
+`block3_centered`只保留三个块各自的协方差，块间协方差置零；`full`保留完整\(288\times288\)协方差。完整状态构造会在full、block、outer和held support范围内多次调用D92拟合器，任何query行都不进入这些fit。
 
-### 2.3 核心函数输出
+### 17.3 核心函数输出
 
 核心函数输出：
 
@@ -112,61 +1857,91 @@ audit:       方法状态、权重、协方差谱、回退与访问边界记录
 - predictor receipt、执行receipt和score哈希；
 - truth-side scorer生成的旧类、新类、调和均值、floor、遗忘和逐类指标。
 
-算法函数返回的FP32系数不等于最终允许长期保存FP32 sidecar。完整D81/D92流水线继续执行既有量化和状态封存；最终预测先封存，真值只在独立scorer侧连接。
+算法函数返回的FP32系数不等于最终允许长期保存FP32 sidecar。完整D92流水线继续执行量化和状态封存；最终预测先封存，真值只在独立scorer侧连接。
 
-## 3.特征与D81继承机制
+## 18.稳健中心实现背景
 
-### 3.1 为什么D92保留D81
+### 18.1 稳健中心模块为何进入D92
 
-D81从84个int8地面域×类聚合cell中构造类内去中心的跨域质心漂移谱。它不读取raw IQ、单样本feature、ground类别分数、单样本半径或count。对每个target类，D81在当前fit可见support上计算样本沿地面扰动谱的能量，并用一次Cauchy权重形成稳健中心：
+当前实现从84个int8地面域×类聚合cell中构造类内去中心的跨域质心漂移谱。它不读取raw IQ、单样本feature、ground类别分数、单样本半径或count。对每个target类，D92在当前fit可见support上计算样本沿地面扰动谱的能量，并用一步Cauchy权重形成稳健中心：
 
-```text
-raw_w_i = 1 / (1 + energy_i / mean_energy)
-μ_c^robust = Σ_i w_i z_i / Σ_i w_i
-```
+$$
+a_{c,k}
+=
+\frac{1}{1+E_{c,k}/\tau_c},
+\qquad
+\mathbf{m}^{\mathrm{rob}}_c
+=
+\frac{
+\sum_{k=1}^{K}a_{c,k}\mathbf{z}_{c,k}^{\mathrm{id}}
+}{
+\sum_{k=1}^{K}a_{c,k}
+}.
+$$
 
 随后只平移该类support的`z160`中心，保持类内残差和target协方差不变，`FFT96/RF32`不变。这个设计让地面知识只影响“哪些target support更可靠”，不直接把ground旧类原型塞入query分数。
 
-D92在此基础上重新设计注册后的协方差。如果删除D81，D92就不再是实验中实际运行的候选；如果把D81写成D92的任务均衡机制，也会混淆两者贡献。
+这套稳健中心是实验中D92完整状态构造的一部分。代码沿用了早期模块文件名，但方法解释不把它视为外部基线或可忽略前置步骤。
 
-### 3.2 K1为什么没有D81和D92增益
+### 18.2 K1为何没有稳健中心和任务均衡增益
 
 K1时每类只有一个物理support样本：
 
-- D81没有类内样本差异，Cauchy可靠性权重无法区分样本；
-- D92没有类内残差，不能稳定估计`Σ_old`和`Σ_new`；
-- 代码因此严格调用D81基线fit，而不是伪造协方差或使用query补样本。
+- 类内没有足够样本差异，Cauchy可靠性权重无法稳定区分样本；
+- 类内残差不足，不能稳定估计\(\boldsymbol{\Sigma}_{\mathrm{o}}\)和\(\boldsymbol{\Sigma}_{\mathrm{n}}\)；
+- 代码因此进入D92定义的保守回退分支，而不是伪造协方差或使用query补样本。
 
 这不是实现漏跑，而是方法定义的可识别性边界。
 
-## 4.D92数学机制
+## 19.D92核心公式速查
 
-### 4.1 类中心
+### 19.1 类中心
 
-对每个注册类`c`，用当前fit可见的K-shot support计算：
+对每个注册类\(c\)，用当前fit可见的K-shot support计算：
 
-```text
-μ_c = (1/K) Σ_i z_ci
-```
+$$
+\boldsymbol{\mu}_c
+=
+\frac{1}{K}
+\sum_{k=1}^{K}
+\widetilde{\mathbf{z}}_{c,k}.
+$$
 
-这里的`z_ci`已经经过D81稳健中心变换。旧类与新类使用相同的类中心公式。
+这里的\(\widetilde{\mathbf{z}}_{c,k}\)已经经过D92稳健中心模块处理。旧类与新类使用相同的类中心公式。
 
-### 4.2 任务内auto-shrinkage协方差
+### 19.2 任务内auto-shrinkage协方差
 
 对旧类集合和新类集合分别拟合等先验、`lsqr`求解器语义的auto-shrinkage LDA协方差：
 
-```text
-Σ_old = AutoShrinkageCov({z_ci | c∈Y_old})
-Σ_new = AutoShrinkageCov({z_ci | c∈Y_new})
-```
+$$
+\boldsymbol{\Sigma}_{\mathrm{o}}
+=
+\operatorname{AutoShrinkageCov}
+\left(
+\{\widetilde{\mathbf{z}}_{c,k}:c\in\mathcal{Y}_{\mathrm{o}}\}
+\right),
+$$
+
+$$
+\boldsymbol{\Sigma}_{\mathrm{n}}
+=
+\operatorname{AutoShrinkageCov}
+\left(
+\{\widetilde{\mathbf{z}}_{c,k}:c\in\mathcal{Y}_{\mathrm{n}}\}
+\right).
+$$
 
 auto-shrinkage的作用是把高维小样本协方差向更稳定的结构收缩，降低288维、少样本条件下的奇异风险。两组协方差先独立估计，因此新类数量增加不会直接把旧类任务在协方差统计中的权重压低。
 
-### 4.3 固定任务均衡
+### 19.3 固定任务均衡
 
-```text
-Σ_shared = 0.5Σ_old + 0.5Σ_new
-```
+$$
+\boldsymbol{\Sigma}_{\mathrm{bal}}
+=
+\frac{1}{2}\boldsymbol{\Sigma}_{\mathrm{o}}
++
+\frac{1}{2}\boldsymbol{\Sigma}_{\mathrm{n}}.
+$$
 
 0.5/0.5不是从query性能选出的最优权重，也不随新类数、receiver或场景变化。它来自项目对Stage2-B旧类适应与Stage2-C新类注册“同等优先”的方法锁。实验明确记录：
 
@@ -178,72 +1953,111 @@ d92_query_rows_used = 0
 
 若使用`block3_centered`：
 
-```text
-Σ_shared =
-diag(Σ_z160, Σ_FFT96, Σ_RF32)
-```
+$$
+\boldsymbol{\Sigma}_{\mathrm{blk}}
+=
+\operatorname{diag}
+\left(
+\boldsymbol{\Sigma}_{\mathrm{id}},
+\boldsymbol{\Sigma}_{\mathrm{fft}},
+\boldsymbol{\Sigma}_{\mathrm{rf}}
+\right).
+$$
 
 若使用`full`，则保留三个特征块之间的交叉协方差。
 
-### 4.4 统一等先验LDA头
+### 19.4 统一等先验LDA头
 
-所有注册类共享同一`Σ_shared`，类别先验固定为：
+所有注册类共享同一\(\boldsymbol{\Sigma}_{\mathrm{bal}}\)，类别先验固定为
 
-```text
-π_c = 1/C
-```
+$$
+\pi_c=\frac{1}{C}.
+$$
 
 LDA仿射头为：
 
-```text
-w_c = Σ_shared^(-1) μ_c
-b_c = -0.5 μ_c^T Σ_shared^(-1) μ_c + log π_c
-s_c(q) = q^T w_c + b_c
-ŷ(q) = argmax_c s_c(q)
-```
+$$
+\mathbf{w}_c
+=
+\boldsymbol{\Sigma}_{\mathrm{bal}}^{-1}
+\boldsymbol{\mu}_c,
+$$
+
+$$
+b_c
+=
+-
+\frac{1}{2}
+\boldsymbol{\mu}_c^{\mathsf T}
+\boldsymbol{\Sigma}_{\mathrm{bal}}^{-1}
+\boldsymbol{\mu}_c
++
+\log\pi_c,
+$$
+
+$$
+s_c(\mathbf{q})
+=
+\mathbf{q}^{\mathsf T}\mathbf{w}_c+b_c,
+\qquad
+\widehat{y}(\mathbf{q})
+=
+\arg\max_c s_c(\mathbf{q}).
+$$
 
 “任务均衡”只发生在协方差构造阶段。最终没有旧类头和新类头两个分支，也没有先判断query角色再分类。旧类和新类对同一query做一次全注册类竞争。
 
-### 4.5 数值闭合
+### 19.5 数值闭合
 
-D45/D43后续组件融合会删除所有类别共有的仿射项。D92在FP64中先执行：
+D92在FP64中删除所有类别共有的仿射项：
 
-```text
-W ← W - mean_class(W)
-b ← b - mean_class(b)
-```
+$$
+\mathbf{W}
+\leftarrow
+\mathbf{W}
+-
+\frac{1}{C}
+\mathbf{1}\mathbf{1}^{\mathsf T}\mathbf{W},
+\qquad
+\mathbf{b}
+\leftarrow
+\mathbf{b}
+-
+\frac{1}{C}
+\mathbf{1}\mathbf{1}^{\mathsf T}\mathbf{b}.
+$$
 
-再跨越FP32边界，使后续再次中心化近似幂等。初始实现曾在一个125矩阵row触发近边界中心漂移；修复后完整重跑。retry1又发现注册前block组件误用了D92全协方差基线，导致注册前与D81不再逐值一致；retry2修复为“注册前与K1/K2严格D81，只有注册后且K>2启用D92”，并重新执行完整125。最终性能只采用retry2。
+再跨越FP32边界，使后续再次中心化近似幂等。初始实现曾在一个125矩阵row触发近边界中心漂移；修复后完整重跑。retry1又发现注册前block组件误用了任务均衡协方差，导致注册前状态不再与matched control逐值一致；retry2修复为“无新类任务或K1/K2时进入锁定回退分支，只有注册后且K>2启用旧/新任务均衡”，并重新执行完整125。最终性能只采用retry2。
 
-## 5.训练、适配与推理过程
+## 20.训练、适配与推理过程补充
 
-### 5.1 Phase1
+### 20.1 Phase1
 
 1.在source receivers上训练ADV3B02。
 2.在任何target访问前封存checkpoint和合规int8地面聚合知识。
 3.Phase2不更新地面组件，也不回读source样本。
 
-### 5.2 Stage2-B：仅旧类
+### 20.2 注册前旧类状态
 
 1.读取6个旧类的K-shot target support。
-2.从固定received IQ提取`z160+FFT96+RF32`。
-3.执行D81类内稳健中心变换。
+2.从固定received IQ提取带固定辅助权重4和整体归一化的288维联合特征。
+3.执行D92类内稳健中心模块。
 4.构建注册前旧类头。
-5.由于`class_count=6`，D92核心标记为`before_exact_d81`，系数和截距与D81逐值一致。
+5.由于`class_count=6`且尚不存在新类任务，任务均衡协方差分支不激活；代码审计状态记为`before_exact_d81`。
 
-因此，D92不是一个独立的Stage2-B改进；它的注册前性能完全继承D81。
+这是D92生命周期中的注册前状态，不是另一个待与D92拼接的方法。为了建立严格matched control，当前实现保证该状态的系数和截距与实验对照头逐值一致。
 
-### 5.3 Stage2-C：注册新类
+### 20.3 Stage2-C：注册新类
 
 1.追加新类K-shot support和标签。
 2.在所有当前fit可见support上重新计算类中心。
 3.旧类和新类分别估计auto-shrinkage协方差。
-4.固定0.5/0.5合成`Σ_shared`。
+4.固定按\(0.5/0.5\)合成\(\boldsymbol{\Sigma}_{\mathrm{bal}}\)。
 5.为全部旧类和新类计算统一LDA行。
 6.经过full/block、outer/held安全组件与既有编译流程形成单一部署状态。
 7.状态锁定后才打开query。
 
-### 5.4 Query推理
+### 20.4 Query推理
 
 1.对当前query的一份固定received IQ做一次允许的特征计算。
 2.用单一仿射头计算全部注册类score。
@@ -251,7 +2065,7 @@ b ← b - mean_class(b)
 4.原子发布prediction。
 5.独立scorer按opaque query ID连接truth。
 
-## 6.完整125实验设计
+## 21.完整125实验设计
 
 |维度|取值|
 |---|---|
@@ -266,7 +2080,9 @@ b ← b - mean_class(b)
 
 每个slice的结果是25个receiver×seed matched row均值，每个row内部覆盖三个LEO场景。`B-old`表示注册前旧类准确率，`A-old`表示注册后旧类准确率，`Min-old`表示row级最低旧类准确率，`New`表示已注册新类准确率，`H`表示旧类与新类准确率的调和均值，`F=B-old-A-old`表示遗忘。
 
-## 7.D92与D81的严格matched结果
+## 22.D92与严格matched control的结果
+
+本节表中的`D81`是实验记录沿用的matched control名称。它与完整D92共享冻结特征、稳健中心、双几何融合、安全门、数据切片、support/query和seed；唯一受控差异是注册后是否启用旧/新任务均衡协方差。因此，本节用于隔离任务均衡协方差的因果贡献，不用于定义D92本身。
 
 |切片|方法|B-old|A-old|Min-old|New|H|F|
 |---|---|---:|---:|---:|---:|---:|---:|
@@ -281,7 +2097,7 @@ b ← b - mean_class(b)
 |K10/new20|D81|86.111%|68.711%|38.067%|68.803%|68.591%|17.400pp|
 |K10/new20|D92|86.111%|71.333%|42.667%|68.150%|69.555%|14.778pp|
 
-### 7.1 Paired变化
+### 22.1 Paired变化
 
 |切片|ΔA-old|ΔMin-old|ΔNew|ΔH|ΔF|
 |---|---:|---:|---:|---:|---:|
@@ -293,7 +2109,7 @@ b ← b - mean_class(b)
 
 K5/new20、K10/new10和K10/new20的旧类/遗忘改善具有稳定paired信号，但都伴随新类下降。K10/new5则相反：新类略升，旧类和floor略降。固定等权没有让一个任务在所有注册规模上同时占优。
 
-### 7.2 Receiver与场景
+### 22.2 Receiver与场景
 
 - K10/new20的5个receiver旧类准确率均提高，但`3-19`在D92后仍只有`A-old=57.44%`、`Min-old=25.67%`、`New=49.10%`。
 - `leo_clear_weak`,`leo_low_elev_weak`,`leo_rain_weak`上的K10/new20旧类分别提高2.00、2.77和3.10个百分点。
@@ -301,7 +2117,7 @@ K5/new20、K10/new10和K10/new20的旧类/遗忘改善具有稳定paired信号�
 
 这排除了“改善只来自单一receiver或单一LEO场景”的解释，也说明新类代价同样具有跨场景一致性。
 
-## 8.Role-Oracle诊断告诉了什么
+## 23.Role-Oracle诊断告诉了什么
 
 另有一个特许D92 Role-Oracle实验。它在同一次fresh run、同一support、同一状态和同一score matrix上，同时计算：
 
@@ -318,9 +2134,9 @@ K5/new20、K10/new10和K10/new20的旧类/遗忘改善具有稳定paired信号�
 
 K10/new20中Oracle把旧类提高约11.98个百分点，而新类只提高约3.28个百分点，说明D92的大规模注册瓶颈主要是新类侵入旧类，而不只是角色内部旧类彼此混淆。K1/new20中旧类Oracle结果恰好回到注册前旧类准确率68.14%，表明24.11个百分点遗忘几乎都来自把新类加入统一候选空间后的跨角色竞争。合法方法必须在不知道query角色的情况下解决这个问题，不能把Oracle上限当作可部署方案。
 
-## 9.与域适应论文复现方法的对比
+## 24.与域适应论文复现方法的对比
 
-### 9.1 为什么域适应方法不能直接与D92的Stage2-C结果排名
+### 24.1 为什么域适应方法不能直接与D92的Stage2-C结果排名
 
 MRIOR、DADDA和ProtoNet CDA在本项目对比中识别的都是6个target-old类。它们回答“已知旧类在新接收机上如何适应”，不回答“加入5/10/20个新类后如何同时保持旧类并识别新类”。因此：
 
@@ -329,9 +2145,60 @@ MRIOR、DADDA和ProtoNet CDA在本项目对比中识别的都是6个target-old�
 - 不能因MRIOR的K20 old准确率高，就说它解决了D92的新类注册；
 - D92注册后旧类下降也不能简单解释为域适应比MRIOR差，因为D92多承担了全注册类竞争。
 
-### 9.2 MRIOR-SDA
+### 24.2 MRIOR-SDA
 
 原论文《Mitigating Receiver Impact on Radio Frequency Fingerprint Identification via Domain Adaptation》把跨接收机RFFI定义为闭集无监督域适应：输入是有标签source receiver样本和无标签target receiver样本，机制由全局域对齐和自适应伪标签组成。项目中的`MRIOR-SDA`是CVS监督K-shot适配版本，不是作者给出的正式简称：它共享ADV3B02 checkpoint，保留GAD和Donsker–Varadhan KL方向；合法target support真标签进入target CE，真标签优先于CPL伪标签；没有额外无标签target训练池时关闭CPL并单列消融。
+
+MRIOR的Donsker–Varadhan域差异估计可写为
+
+$$
+\widehat{D}_{\mathrm{DV}}
+=
+\frac{1}{n_{\mathrm{s}}}
+\sum_{i=1}^{n_{\mathrm{s}}}
+T_{\psi}
+\left(
+E_{\theta}(\mathbf{x}^{\mathrm{s}}_i)
+\right)
+-
+\log
+\left[
+\frac{1}{n_{\mathrm{t}}}
+\sum_{j=1}^{n_{\mathrm{t}}}
+\exp
+\left(
+T_{\psi}
+\left(
+E_{\theta}(\mathbf{x}^{\mathrm{t}}_j)
+\right)
+\right)
+\right].
+$$
+
+其中\(E_{\theta}\)是特征提取器，\(T_{\psi}\)是域critic，\(n_{\mathrm{s}},n_{\mathrm{t}}\)分别是source和target批大小。critic增大该差异估计，特征提取器减小它，从而形成
+
+$$
+\min_{\theta,C}
+\max_{\psi}
+\left[
+\mathcal{L}_{\mathrm{cls}}
++
+\lambda_{\mathrm{DV}}
+\widehat{D}_{\mathrm{DV}}
+\right].
+$$
+
+项目监督K-shot版本的分类项采用
+
+$$
+\mathcal{L}_{\mathrm{cls}}
+=
+\mu\mathcal{L}_{\mathrm{s}}
++
+(1-\mu)\mathcal{L}_{\mathrm{t}},
+$$
+
+其中\(\mathcal{L}_{\mathrm{t}}\)优先使用合法target support真标签；原论文的CPL则使用目标伪标签置信度和类别频率动态阈值。MRIOR最终输出的是旧类闭集分类器参数，不输出新类注册表。
 
 MRIOR-SDA通过梯度改变特征提取/分类状态，适合旧类闭集接收机域适应。D92的区别是：
 
@@ -340,28 +2207,98 @@ MRIOR-SDA通过梯度改变特征提取/分类状态，适合旧类闭集接收�
 |任务|Stage2-B旧类适应+Stage2-C新类注册|Stage2-B旧类闭集适应|
 |target标签|旧类和新类K-shot support标签|旧类K-shot support标签|
 |source运行时访问|禁止；只读bundle例外|项目matched版共享checkpoint；原论文训练需source数据|
-|核心机制|D81稳健中心+任务均衡协方差+统一LDA|域对齐critic+target CE/伪标签|
-|更新方式|D92增量为闭式协方差/仿射求解；继承流水线另有适配步骤|梯度训练|
+|核心机制|扰动谱稳健中心+任务均衡协方差+双几何安全融合+统一LDA|域对齐critic+target CE/伪标签|
+|更新方式|support-only闭式统计、交叉拟合选择和仿射编译|梯度训练|
 |新类输出|支持|不支持|
 |query决策|逐样本全注册类argmax|逐样本旧类闭集分类|
 
-### 9.3 DADDA-SDA
+### 24.3 DADDA-SDA
 
 DADDA原论文《Cross-Receiver Radio Frequency Fingerprint Identification Based on Domain Adaptation With Dynamic Distribution Alignment》同样是闭集UDA。它使用ResNet18提取全局特征，以MMD对齐全局分布；多尺度模块提取局部/子域特征，以LMMD进行类条件对齐；动态因子
 
-```text
-α = d_MMD / (d_MMD + d_LMMD)
-```
+$$
+\alpha_{\mathrm{DADDA}}
+=
+\frac{
+d_{\mathrm{MMD}}
+}{
+d_{\mathrm{MMD}}+d_{\mathrm{LMMD}}
+}.
+$$
 
 调节全局与局部对齐权重。项目中的DADDA-SDA加入target support CE，LMMD对support使用真实标签；若另加无标签target池，必须作为半监督扩展单列。
 
+DADDA的总目标为
+
+$$
+\mathcal{L}_{\mathrm{DADDA}}
+=
+\mathcal{L}_{\mathrm{CE}}
++
+\lambda
+\left[
+\left(
+1-\alpha_{\mathrm{DADDA}}
+\right)
+\mathcal{L}_{\mathrm{MMD}}
++
+\alpha_{\mathrm{DADDA}}
+\mathcal{L}_{\mathrm{LMMD}}
+\right].
+$$
+
+MMD对齐source/target全局均值嵌入，LMMD按类别或伪类别对齐局部分布。动态因子接近0时更依赖全局对齐，接近1时更依赖类条件对齐。项目版本的输出是更新后的旧类特征提取器和分类器。
+
 DADDA-SDA比D92更像“学习域不变特征”；D92则假定冻结表征已基本可用，主要校正少样本注册头的几何与旧新任务权重。DADDA不设计新类追加、旧类遗忘或全注册类竞争，因此不能替代D92的Stage2-C评价。
 
-### 9.4 ProtoNet CDA
+### 24.4 ProtoNet CDA
 
-ProtoNet CDA用每类support均值形成prototype，query按距离分类，不对query反传。它与D92都能做到support-only，但ProtoNet CDA在现行比较中只覆盖旧类Stage2-B；D92使用共享协方差对各维度和特征块进行判别缩放，并在Stage2-C同时容纳旧类和新类。
+ProtoNet CDA用每类support均值形成prototype：
 
-### 9.5 Stage2-B描述性数值
+$$
+\mathbf{p}_c
+=
+\frac{1}{K}
+\sum_{k=1}^{K}
+E_{\theta}
+\left(
+\mathbf{x}_{c,k}
+\right).
+$$
+
+query通过距离分类：
+
+$$
+\widehat{y}
+=
+\arg\min_c
+d
+\left(
+E_{\theta}(\mathbf{x}^{(q)}),
+\mathbf{p}_c
+\right).
+$$
+
+它不对query反传。欧氏距离相当于各维同尺度、球形类分布；D92则由support估计共享Mahalanobis几何：
+
+$$
+d_{\mathrm{D92}}^2
+\left(
+\mathbf{q},\boldsymbol{\mu}_c
+\right)
+=
+\left(
+\mathbf{q}-\boldsymbol{\mu}_c
+\right)^{\mathsf T}
+\boldsymbol{\Sigma}_{\mathrm{bal}}^{-1}
+\left(
+\mathbf{q}-\boldsymbol{\mu}_c
+\right).
+$$
+
+ProtoNet CDA在现行比较中只覆盖旧类Stage2-B；D92在Stage2-C同时容纳旧类和新类。
+
+### 24.5 Stage2-B描述性数值
 
 下表中的域适应矩阵使用5个receiver、5个seed`713101–713105`；D92使用`713102–713106`，两者seed集合错开1个，当前报告也没有完成跨矩阵artifact哈希配对。因此只能看趋势，不能计算paired显著性或宣布严格胜负。
 
@@ -371,13 +2308,48 @@ ProtoNet CDA用每类support均值形成prototype，query按距离分类，不�
 |5|75.21%|79.17%|76.74%|70.28%|81.267%|
 |10|75.21%|84.50%|79.36%|70.86%|86.111%|
 
-趋势上，D92/D81注册前旧类头在K5和K10高于三个论文适配头，MRIOR-SDA在K1高于D92/D81；但D92注册前完全继承D81，这不是D92任务均衡协方差带来的增益。域适应论文结果证明的是不同Stage2-B适配管线的效果，不是D92核心机制的消融。
+趋势上，D92的注册前旧类状态在K5和K10高于三个论文适配头，MRIOR-SDA在K1高于D92。注册前尚无新类任务，所以这部分结果不能归因于任务均衡协方差；它反映的是完整D92在旧类support上的稳健状态构造。域适应论文结果证明的是不同Stage2-B适配管线的效果，不是D92内部组件的严格消融。
 
-## 10.与类增量论文复现方法的机制对比
+## 25.与类增量论文复现方法的机制对比
 
-### 10.1 CSIL
+### 25.1 CSIL
 
-CSIL论文《Class-Incremental Learning for Wireless Device Identification in IoT》使用zero-bias cosine fingerprint层，通过通道扩展为新类增加表示容量，并用块状mask隔离新旧fingerprint；优化目标包含CE、知识蒸馏和EWC。它的核心思想是“扩展网络容量并限制旧知识更新”，而D92不扩展encoder，只重估共享判别几何。
+CSIL论文《Class-Incremental Learning for Wireless Device Identification in IoT》使用zero-bias cosine fingerprint层，通过通道扩展为新类增加表示容量，并用块状mask隔离新旧fingerprint；优化目标包含CE、知识蒸馏和EWC。它的核心思想是“扩展网络容量并限制旧知识更新”，而D92不扩展encoder，而是用稳健support统计、任务均衡判别几何和交叉拟合安全选择构造增量状态。
+
+项目复现中的zero-bias类别分数为
+
+$$
+s_c^{\mathrm{CSIL}}(\mathbf{z})
+=
+5
+\frac{
+\mathbf{z}^{\mathsf T}\mathbf{v}_c
+}{
+\lVert\mathbf{z}\rVert_2
+\lVert\mathbf{v}_c\rVert_2
+}
++5,
+$$
+
+其中\(\mathbf{v}_c\)是类别fingerprint方向。增量阶段总损失为
+
+$$
+\mathcal{L}_{\mathrm{CSIL}}
+=
+\mathcal{L}_{\mathrm{CE}}
++
+\lambda_{\mathrm{KD}}
+\mathcal{L}_{\mathrm{KD}}
++
+\lambda_{\mathrm{EWC}}
+\sum_j
+F_j
+\left(
+\theta_j-\theta_j^{\mathrm{old}}
+\right)^2.
+$$
+
+\(F_j\)表示旧任务对参数\(\theta_j\)的重要性估计；mask控制哪些新旧通道可以更新。CSIL输出扩展后的可训练网络和新增fingerprint权重，而不是闭式统计头。
 
 |维度|D92|CSIL|
 |---|---|---|
@@ -387,26 +2359,173 @@ CSIL论文《Class-Incremental Learning for Wireless Device Identification in Io
 |历史样本|主方法禁止source回放|论文原生base/增量流程按自身权限运行|
 |主要风险|新类仍侵入旧类；K1无效|新类训练可覆盖旧决策边界；small-K可能零步|
 
-### 10.2 MoPC-HR
+### 25.2 MoPC-HR
 
 MoPC-HR全名为《Non-Exemplar Class-Incremental Learning via Prototype Correction and Hierarchical Regularization for Specific Emitter Identification》。它维护类prototype，用动量prototype correction调整旧类中心，通过高斯prototype augmentation生成特征级训练样本，并以层次正则控制旧类、新类及其关系。论文默认prototype动量为0.97、噪声标准差为0.05，base和增量阶段各20epoch。
 
 MoPC-HR和D92都不要求保存旧类raw exemplar，但侧重点不同：
+
+MoPC-HR首先计算类别prototype：
+
+$$
+\mathbf{p}_c^{(t)}
+=
+\frac{1}{n_c}
+\sum_{i:y_i=c}
+f_{\theta_t}(\mathbf{x}_i).
+$$
+
+新模型相对旧模型在新类prototype上的变化为
+
+$$
+\boldsymbol{\Delta}_{\mathrm{n}}
+=
+\mathbf{P}_{\mathrm{n}}^{(t)}
+-
+\mathbf{P}_{\mathrm{n}}^{(t-1)}.
+$$
+
+以旧prototype和旧模型新类prototype的余弦相似度矩阵\(\mathbf{S}\)传播这一变化：
+
+$$
+\widehat{\boldsymbol{\Delta}}_{\mathrm{o}}
+=
+\mathbf{S}\boldsymbol{\Delta}_{\mathrm{n}},
+$$
+
+当前复现按论文路径使用动量修正
+
+$$
+\mathbf{P}_{\mathrm{o}}^{\mathrm{corr}}
+=
+\alpha_{\mathrm{p}}
+\mathbf{P}_{\mathrm{o}}
++
+\left(
+1-\alpha_{\mathrm{p}}
+\right)
+\widehat{\boldsymbol{\Delta}}_{\mathrm{o}},
+\qquad
+\alpha_{\mathrm{p}}=0.97.
+$$
+
+prototype增强为
+
+$$
+\widetilde{\mathbf{p}}_c
+=
+\mathbf{p}_c+\boldsymbol{\epsilon},
+\qquad
+\boldsymbol{\epsilon}
+\sim
+\mathcal{N}
+\left(
+\mathbf{0},0.05^2\mathbf{I}
+\right).
+$$
+
+增量目标为
+
+$$
+\mathcal{L}_{\mathrm{MoPC}}
+=
+\mathcal{L}_{\mathrm{CE,current}}
++
+\mathcal{L}_{\mathrm{CE,proto}}
++
+\beta
+\sum_{\ell}
+\lambda_{\ell}
+\left\lVert
+\boldsymbol{\theta}_{\ell}^{(t)}
+-
+\boldsymbol{\theta}_{\ell}^{(t-1)}
+\right\rVert_2^2.
+$$
+
+层级系数\(\lambda_{\ell}\)随网络层位置递减。MoPC-HR输出增量训练后的网络、修正旧prototype和新prototype。
 
 - D92重新平衡两个任务的协方差统计；
 - MoPC-HR显式移动旧prototype并在特征空间增强prototype；
 - D92最终只有统一线性判别头；
 - MoPC-HR执行增量梯度训练，在CVS大域偏移下容易出现“新类学得越多，旧类遗忘越强”的权衡。
 
-### 10.3 Orthogonal Incremental SEI
+### 25.3 Orthogonal Incremental SEI
 
-正交空间约束FSCIL-SEI在base阶段预留相互分离的伪目标方向，并联合使用交叉熵、自监督对比和类中心分离损失；增量阶段冻结encoder，用新类support均值初始化新权重，再用边际竞争与prototype对齐做校准。它试图在Phase1就为未来类“留空间”，D92则不假设未来新类方向已预留，只在Phase2注册时重构共享协方差。
+正交空间约束FSCIL-SEI在base阶段预留相互分离的伪目标方向，并联合使用交叉熵、自监督对比和类中心分离损失；增量阶段冻结encoder，用新类support均值初始化新权重，再用边际竞争与prototype对齐做校准。它试图在Phase1就为未来类“留空间”，D92则不假设未来新类方向已预留，而是在Phase2由当前合法support完整构造稳健中心、判别几何和统一分类状态。
+
+当伪目标数\(N\leq d+1\)时，规则单纯形方向满足
+
+$$
+\lVert\mathbf{t}_i\rVert_2=1,
+\qquad
+\mathbf{t}_i^{\mathsf T}\mathbf{t}_j
+=
+-
+\frac{1}{N-1},
+\quad i\neq j.
+$$
+
+base阶段目标概括为
+
+$$
+\mathcal{L}_{\mathrm{base}}
+=
+\mathcal{L}_{\mathrm{ce}}
++
+\mathcal{L}_{\mathrm{s}}
++
+\mathcal{L}_{\mathrm{c}},
+$$
+
+分别对应伪目标交叉熵、监督锚点对比和类中心分离。增量校准为
+
+$$
+\mathcal{L}_{\mathrm{inc}}
+=
+\mathcal{L}_{\mathrm{margin}}
++
+\lambda_{\mathrm{a}}
+\mathcal{L}_{\mathrm{align}}.
+$$
+
+\(\mathcal{L}_{\mathrm{margin}}\)惩罚新类权重对旧类或其他新类的困难竞争，\(\mathcal{L}_{\mathrm{align}}\)使新权重靠近support prototype。输出是冻结encoder加扩展并校准后的分类器权重。
 
 这一方法的潜在优势是K1仍可利用预留方向；D92在K1必然回退。代价是正交方法对base类顺序、伪目标容量、论文数据和完整base训练高度敏感。项目中的ManyTx代理正式结果仍存在论文数据源、真实TX顺序和未公开网络细节差距。
 
-### 10.4 qKNN路线
+### 25.4 qKNN路线
 
 项目中的合法非dense qKNN不是外部论文复现，但它是重要的类增量参照。单qKNN头将support本身作为局部记忆，结合prototype和距离进行逐样本分类；adapter版本进一步学习轻量特征变换。D92使用参数化共享协方差头，不保存逐support邻居图。
+
+令\(\mathcal{N}_{q}(\mathbf{q})\)为query的\(q\)个最近support，带距离权重的类别得分可抽象为
+
+$$
+s_c^{\mathrm{qKNN}}(\mathbf{q})
+=
+\sum_{i\in\mathcal{N}_{q}(\mathbf{q})}
+\mathbb{1}[y_i=c]
+\kappa
+\left(
+d(\mathbf{q},\mathbf{z}_i)
+\right)
++
+\lambda_{\mathrm{p}}
+\kappa
+\left(
+d(\mathbf{q},\mathbf{p}_c)
+\right),
+$$
+
+其中\(\kappa(\cdot)\)是随距离减小而增大的核权重，\(\mathbf{p}_c\)是类别prototype。最终预测为
+
+$$
+\widehat{y}
+=
+\arg\max_c
+s_c^{\mathrm{qKNN}}(\mathbf{q}).
+$$
+
+它依靠局部support记忆处理非高斯边界；D92把support压缩为共享协方差和仿射行，query成本与每类support数量无关。
 
 |维度|D92|单qKNN/adapter qKNN|
 |---|---|---|
@@ -416,9 +2535,9 @@ MoPC-HR和D92都不要求保存旧类raw exemplar，但侧重点不同：
 |注册类增加|协方差任务均衡|局部邻居竞争，需跨角色校准|
 |query-query图|无|合法版本无；历史dense版本有，仅诊断|
 
-## 11.类增量论文复现的数值对比
+## 26.类增量论文复现的数值对比
 
-### 11.1 官方流程LEO完整矩阵与D92共同slice
+### 26.1 官方流程LEO完整矩阵与D92共同slice
 
 CSIL和MoPC-HR官方仓库核心复现完成了5receiver×5seed×4K×4新类规模×2方法=800cell、2400个LEO场景row。其seed为`713101–713105`，D92为`713102–713106`；两者base训练、状态构造和方法权限也不同。因此下表是共同K/new切片上的描述性对照，不是严格paired结果。
 
@@ -440,7 +2559,7 @@ CSIL和MoPC-HR官方仓库核心复现完成了5receiver×5seed×4K×4新类规�
 |K10/new20|CSIL官方流程|42.833%|38.222%|1.660%|2.979%|4.611pp|
 |K10/new20|MoPC-HR官方流程|45.322%|7.611%|25.187%|10.695%|37.711pp|
 
-D92在这些共同slice上的H明显更高，但不能把差距全部归因于“D92算法优于论文算法”。CSIL/MoPC-HR流程在自己的base训练后得到的`old-before`仅约42.8%和45.3%，而D92的D81/ADV3B02底座在K10达到86.1%；底座质量、模型生命周期、训练权限和CVS接口适配共同影响结果。
+D92在这些共同slice上的H明显更高，但不能把差距全部归因于“D92算法优于论文算法”。CSIL/MoPC-HR流程在自己的base训练后得到的`old-before`仅约42.8%和45.3%，而D92在冻结ADV3B02表征和自身注册前状态构造下于K10达到86.1%；表征质量、模型生命周期、训练权限和CVS接口适配共同影响结果。
 
 更可靠的结论是：
 
@@ -449,7 +2568,7 @@ D92在这些共同slice上的H明显更高，但不能把差距全部归因于�
 3.MoPC-HR能学到更多新类，但随K和新类训练增强，旧类遗忘明显增加。
 4.两种论文方法在CVS的“LEO弱信道+大量同时新类+统一旧新竞争”条件下都出现严重旧新失衡。
 
-### 11.2 旧的统一Stage2-C矩阵
+### 26.2 旧的统一Stage2-C矩阵
 
 另一批统一Stage2-C矩阵固定只有2个新类，逐K的`H_old_new`如下：
 
@@ -463,7 +2582,7 @@ D92在这些共同slice上的H明显更高，但不能把差距全部归因于�
 
 D92没有new2切片，不能填入这张表做严格排名。D92的K10/new5 H为74.803%，与qKNN E20的K10/new2 H=79.97%难度不同；新类数从2增至5会改变候选空间、遗忘和跨角色混淆，不能用5.17个百分点差值宣布qKNN优于D92。
 
-### 11.3 最新CVS接口适配诊断
+### 26.3 最新CVS接口适配诊断
 
 2026-07-24的CSIL/MoPC-HR v3接口适配实验进一步说明：
 
@@ -473,11 +2592,11 @@ D92没有new2切片，不能填入这张表做严格排名。D92的K10/new5 H为
 
 这些结果支持D92对“旧新任务均衡”的关注，但也说明仅平衡协方差不足以解决全部跨角色冲突。
 
-## 12.公平比较矩阵
+## 27.公平比较矩阵
 
 |方法|原始任务|项目对比任务|source/base访问|target标签|支持新类注册|旧类保护机制|严格可与D92 paired？|
 |---|---|---|---|---|---|---|---|
-|D92|CVS Stage2-B/C|同原始任务|只读bundle，禁止source样本|旧类+新类K-shot|是|D81中心+任务均衡协方差|与D81是；与论文方法当前否|
+|D92|CVS Stage2-B/C|同原始任务|只读bundle，禁止source样本|旧类+新类K-shot|是|扰动谱稳健中心+任务均衡收缩协方差+双几何与Fisher安全融合|与matched control是；与论文方法当前否|
 |MRIOR-SDA|闭集UDA|Stage2-B监督K-shot改造|原论文需有标签source；项目版共享checkpoint|旧类support|否|域对齐与伪标签|否，只可Stage2-B描述比较|
 |DADDA-SDA|闭集UDA|Stage2-B监督K-shot改造|原论文需source/target配对batch|旧类support|否|MMD/LMMD动态对齐|否，只可Stage2-B描述比较|
 |ProtoNet CDA|闭集few-shot DA|Stage2-B|checkpoint+support|旧类support|当前比较未注册新类|prototype|否，只可Stage2-B描述比较|
@@ -486,43 +2605,43 @@ D92没有new2切片，不能填入这张表做严格排名。D92的K10/new5 H为
 |Orthogonal Incremental|FSCIL-SEI|CVS类增量适配|完整base训练|新类K-shot|是|预留正交方向+权重校准|当前否|
 |qKNN E20|项目轻量类增量|统一Stage2-C|checkpoint+support|旧类+新类K-shot|是|局部邻居+轻量adapter|只有相同new数与manifest时可paired|
 
-## 13.D92的优势
+## 28.D92的优势
 
 1.协议边界清楚。D92 fit只读取support和只读bundle，query完全不进入适配。
 2.没有query角色Oracle。最终只有一个全注册类头。
 3.没有按receiver、场景、seed、新类数或TX标识调参。
 4.任务权重不随新类数量自然漂移。旧类只有6类、新类可达20类时，旧任务仍保留50%协方差权重。
-5.状态和query计算轻。D92核心是闭式协方差与仿射头，不引入query-query图。
+5.状态和query计算轻。D92把稳健中心、双几何选择和Fisher安全门全部编译进单一仿射状态，不引入query-query图。
 6.完整125证据显示大注册规模旧类、floor和遗忘改善跨receiver、跨场景存在。
-7.数值闭合经过两次缺陷修复和完整重跑，最终注册前与D81逐值一致。
+7.数值闭合经过两次缺陷修复和完整重跑，最终注册前状态与锁定matched control逐值一致。
 
-## 14.D92的局限
+## 29.D92的局限
 
-### 14.1 K1结构性无效
+### 29.1 K1结构性无效
 
-没有类内残差就不能估计任务协方差。D92在K1不是“效果弱”，而是机制不激活。
+没有类内残差就不能估计任务协方差。D92在K1仍能输出保守分类状态，但稳健中心、旧/新均衡协方差和Fisher残差等区别性模块不激活。
 
-### 14.2 仍以新类退化换取旧类改善
+### 29.2 仍以新类退化换取旧类改善
 
 K5/new20、K10/new10和K10/new20都出现旧类改善、新类下降。固定0.5/0.5平衡的是协方差估计权，不保证score分布、prototype半径或logit标尺自动平衡。
 
-### 14.3 没有显式ground→LEO域变换
+### 29.3 没有显式ground→LEO域变换
 
-D81只用地面扰动谱做support可靠性加权和类中心平移。D92没有学习类无关的ground到target共享变换，也没有让地面旧类知识成为K1可用的弱先验。
+D92的扰动谱模块只用地面聚合知识做support可靠性加权和类中心平移。它没有学习显式的ground到target共享变换，也没有让地面旧类知识成为K1可用的弱先验。
 
-### 14.4 共享协方差表达能力有限
+### 29.4 共享协方差表达能力有限
 
-全部类共享一份`Σ_shared`，无法表示各类半径、各类不确定度和局部非线性边界。旧类与新类在同一接收机上仍可能具有不同尺度和多模态结构。
+全部类共享一份\(\boldsymbol{\Sigma}_{\mathrm{bal}}\)，无法表示各类半径、各类不确定度和局部非线性边界。旧类与新类在同一接收机上仍可能具有不同尺度和多模态结构。
 
-### 14.5 Role-Oracle差距仍大
+### 29.5 Role-Oracle差距仍大
 
 K10/new20的无Oracle H比Role-Oracle低7.20个百分点，旧类准确率低11.98个百分点。合法跨角色校准仍是主要未解问题。
 
-### 14.6 绝对性能门全部失败
+### 29.6 绝对性能门全部失败
 
 K10/new20的`A-old=71.333%`、`Min-old=42.667%`、`New=68.150%`，远低于项目目标92%、88%和86%。完成125不等于达到可推广性能。
 
-## 15.如何正确使用D92
+## 30.如何正确使用D92
 
 D92适合：
 
@@ -540,9 +2659,9 @@ D92不适合：
 - 与new2的qKNN或不同seed的论文矩阵做paired显著性结论；
 - 把WiSig/ManySig+LEO模拟结果表述为真实在轨验证。
 
-## 16.后续方法建议
+## 31.后续方法建议
 
-下一步不应继续扫描`Σ_old/Σ_new`权重。D92已经回答了权重平衡的方向性问题，继续用query性能寻找0.4/0.6或0.6/0.4会破坏方法锁，也难以解决K1和跨角色标尺。
+下一步不应继续扫描\(\boldsymbol{\Sigma}_{\mathrm{o}}/\boldsymbol{\Sigma}_{\mathrm{n}}\)权重。D92已经回答了权重平衡的方向性问题，继续用query性能寻找0.4/0.6或0.6/0.4会破坏方法锁，也难以解决K1和跨角色标尺。
 
 更有信息价值的路线是：
 
@@ -554,15 +2673,15 @@ D92不适合：
 6.为K1设计可识别的弱先验或单样本不确定度机制，而不是伪造协方差。
 7.继续保留单一全注册类决策，禁止role Oracle、quota和query批次重排。
 
-## 17.结论
+## 32.结论
 
-D92的核心贡献不是“精度已经很高”，而是把类增量共享协方差中的样本数量偏置改写为显式任务均衡。它用合法support分别估计旧类和新类协方差，再固定等权合成，并通过一个统一等先验LDA头完成逐query全注册类判决。完整125实验确认：新类规模较大时，这一改动确实能稳定减轻旧类遗忘并提高旧类floor；代价是新类准确率小幅下降，K1完全无效，绝对性能仍远低于目标。
+D92是一套从固定接收IQ到不可变预测artifact的完整Phase2方法。它用冻结表征生成288维联合特征，以类无关扰动谱和Cauchy权重稳健化support中心，以Ledoit–Wolf收缩解决高维小样本协方差不适定，以旧/新任务固定等权抑制类别数量造成的任务偏置，再用full/block留一可靠性融合和有界Fisher安全门把状态编译为单一等先验仿射分类器。完整125实验确认：新类规模较大时，这套方法能稳定减轻旧类遗忘并提高旧类floor；代价是新类准确率小幅下降，K1进入保守回退，绝对性能仍远低于目标。
 
 MRIOR-SDA和DADDA-SDA擅长闭集接收机域适应，但不承担新类注册；CSIL、MoPC-HR和Orthogonal Incremental承担类增量任务，却采用不同的base训练、增量更新和数据权限。现有复现结果表明，D92在当前ADV3B02+LEO弱信道主线上保持了更好的旧新联合性能，但尚不能用严格paired统计宣布普遍优于所有论文方法。当前最准确的定性是：
 
-> D92是一个协议合法、技术闭合、具有稳定遗忘改善信号但未达到推广门槛的任务均衡类增量头。
+> D92是一种协议合法、技术闭合、具有稳定遗忘改善信号但未达到推广门槛的support-only跨接收机少样本类增量方法。
 
-## 18.证据来源
+## 33.证据来源
 
 ### 本地权威材料
 
