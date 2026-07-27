@@ -9,6 +9,14 @@
 - Phase2 follows `protocol_schema=p2_min_v1`: one randomly selected allowed LEO weak observation per physical sample; K independent support samples; scenario and support/query physical-ID separation; query-only testing; no clean/source runtime access except immutable int8 multi-sample Phase1 knowledge jointly sealed with the checkpoint; and independent all-registered-class decisions without query truth/role, true batch counts, quota or global reassignment.
 - After a builder returns matching `capsule_id`, `split_id` and `phase2_data_status=VALIDATED_ONCE`, reuse the data across methods. Revalidate only for received-IQ bytes, physical IDs, receiver/TX sets, scenario, K, support/query split or schema changes. Candidate, adapter, hyperparameter, epoch, prototype rule, method lock, model state and resource changes do not trigger data revalidation; one-time provenance/hash/allowlist/runtime checks belong to the validator appendix.
 
+## Administrator Account Authorization Boundary
+
+- Administrator and privileged remote accounts are denied by default. Use an ordinary non-privileged account unless the user explicitly authorizes administrator-account use for a concrete, bounded task in the current request.
+- Administrator authorization is task-scoped and expires when that task ends. It does not carry into later turns, automation, monitoring, subagents, retries, or adjacent maintenance.
+- Authorization to log in as an administrator does not authorize state changes. Configuration edits, writes, deletion, movement, permission/ownership changes, package or service operations, process termination, network/storage changes, reboot, shutdown, power-cycle, firmware, BMC, iDRAC, and other persistent or risky actions require separate explicit user authorization naming the action and target.
+- If administrator use or mutation scope is ambiguous, stop and ask. Never infer authorization from a prior password entry, available credentials, troubleshooting urgency, or a general request to inspect or fix a system.
+- After explicit authorization, keep commands minimally scoped, inspect workloads and targets first, prefer read-only checks and dry-runs, preserve recovery paths, record exact commands/results, and never publish private account identifiers, credentials, keys, or other local runtime details.
+
 ## Windows Shell and Command Hygiene
 
 - Prefer PowerShell 7 for complex Windows commands. Use `pwsh -NoLogo -NoProfile -Command "<command>"` when shell behavior, quoting, or UTF-8 output matters.
