@@ -1101,7 +1101,7 @@ E_2=0.2,
 E_3=1.2.
 $$
 
-**本式符号说明：**\(c\)是类别索引，\(k\)是类内shot索引，\(K\)是每类support数；\(\mathbf z^{\mathrm{id}}_{c,k}\)是身份块，\(\bar{\mathbf z}^{\mathrm{id}}_c\)是普通类均值，\(\mathbf e_{c,k}\)是类内残差；\(\mathbf G\)是封存扰动协方差，\(\sigma_q^2\)是量化噪声底，\(\mathbf G_+\)是去噪对称矩阵，\(\lambda_j,\mathbf u_j\)是第\(j\)个特征值和单位特征向量，\(r_{\mathrm{eff}},r\)是有效秩和保留秩，\(\mathbf U\)是扰动基，\(\rho_j\)是谱权重；\(\mathbf h_{c,k}\)、\(E_{c,k}\)、\(\tau_c\)分别是投影、扰动能量和类内能量尺度，\(a_{c,k}\)、\(\omega_{c,k}\)是未归一化和归一化Cauchy权重，\(\mathbf m_c^{\mathrm{rob}}\)、\(\boldsymbol\delta_c\)、\(\widetilde{\mathbf z}_{c,k}\)是稳健中心、中心平移和稳健化联合特征。
+**本式符号说明：**\(E_i\)表示第\(i\)条support样本的扰动能量；\(i\in\{1,2,3\}\)是该示例中的样本序号。数值\(0.1、0.2、1.2\)是为解释权重变化而设定的示例值，不是正式实验测量值。扰动能量越大，表示该样本越明显地偏向易受域扰动的方向。
 
 类别能量尺度为
 
@@ -1113,7 +1113,7 @@ $$
 0.5.
 $$
 
-**本式符号说明：**\(c\)是类别索引，\(k\)是类内shot索引，\(K\)是每类support数；\(\mathbf z^{\mathrm{id}}_{c,k}\)是身份块，\(\bar{\mathbf z}^{\mathrm{id}}_c\)是普通类均值，\(\mathbf e_{c,k}\)是类内残差；\(\mathbf G\)是封存扰动协方差，\(\sigma_q^2\)是量化噪声底，\(\mathbf G_+\)是去噪对称矩阵，\(\lambda_j,\mathbf u_j\)是第\(j\)个特征值和单位特征向量，\(r_{\mathrm{eff}},r\)是有效秩和保留秩，\(\mathbf U\)是扰动基，\(\rho_j\)是谱权重；\(\mathbf h_{c,k}\)、\(E_{c,k}\)、\(\tau_c\)分别是投影、扰动能量和类内能量尺度，\(a_{c,k}\)、\(\omega_{c,k}\)是未归一化和归一化Cauchy权重，\(\mathbf m_c^{\mathrm{rob}}\)、\(\boldsymbol\delta_c\)、\(\widetilde{\mathbf z}_{c,k}\)是稳健中心、中心平移和稳健化联合特征。
+**本式符号说明：**\(\tau\)是这个三样本示例的类内能量尺度；\(0.1、0.2、1.2\)分别是\(E_1、E_2、E_3\)；分母3是样本数。这里用三条能量的算术平均得到\(\tau=0.5\)，它提供判断单条样本能量相对大小的参照尺度。
 
 未归一化Cauchy权重为
 
@@ -1124,7 +1124,7 @@ a_1
 \approx0.833,
 $$
 
-**本式符号说明：**\(c\)是类别索引，\(k\)是类内shot索引，\(K\)是每类support数；\(\mathbf z^{\mathrm{id}}_{c,k}\)是身份块，\(\bar{\mathbf z}^{\mathrm{id}}_c\)是普通类均值，\(\mathbf e_{c,k}\)是类内残差；\(\mathbf G\)是封存扰动协方差，\(\sigma_q^2\)是量化噪声底，\(\mathbf G_+\)是去噪对称矩阵，\(\lambda_j,\mathbf u_j\)是第\(j\)个特征值和单位特征向量，\(r_{\mathrm{eff}},r\)是有效秩和保留秩，\(\mathbf U\)是扰动基，\(\rho_j\)是谱权重；\(\mathbf h_{c,k}\)、\(E_{c,k}\)、\(\tau_c\)分别是投影、扰动能量和类内能量尺度，\(a_{c,k}\)、\(\omega_{c,k}\)是未归一化和归一化Cauchy权重，\(\mathbf m_c^{\mathrm{rob}}\)、\(\boldsymbol\delta_c\)、\(\widetilde{\mathbf z}_{c,k}\)是稳健中心、中心平移和稳健化联合特征。
+**本式符号说明：**\(a_1\)是第一条support的未归一化Cauchy可靠性权重；\(0.1=E_1\)是第一条support的扰动能量；\(0.5=\tau\)是类内能量尺度。比值\(E_1/\tau=0.2\)较小，因此\(a_1\approx0.833\)，说明第一条样本相对可靠。
 
 $$
 a_2
@@ -1133,7 +1133,7 @@ a_2
 \approx0.714,
 $$
 
-**本式符号说明：**\(c\)是类别索引，\(k\)是类内shot索引，\(K\)是每类support数；\(\mathbf z^{\mathrm{id}}_{c,k}\)是身份块，\(\bar{\mathbf z}^{\mathrm{id}}_c\)是普通类均值，\(\mathbf e_{c,k}\)是类内残差；\(\mathbf G\)是封存扰动协方差，\(\sigma_q^2\)是量化噪声底，\(\mathbf G_+\)是去噪对称矩阵，\(\lambda_j,\mathbf u_j\)是第\(j\)个特征值和单位特征向量，\(r_{\mathrm{eff}},r\)是有效秩和保留秩，\(\mathbf U\)是扰动基，\(\rho_j\)是谱权重；\(\mathbf h_{c,k}\)、\(E_{c,k}\)、\(\tau_c\)分别是投影、扰动能量和类内能量尺度，\(a_{c,k}\)、\(\omega_{c,k}\)是未归一化和归一化Cauchy权重，\(\mathbf m_c^{\mathrm{rob}}\)、\(\boldsymbol\delta_c\)、\(\widetilde{\mathbf z}_{c,k}\)是稳健中心、中心平移和稳健化联合特征。
+**本式符号说明：**\(a_2\)是第二条support的未归一化Cauchy可靠性权重；\(0.2=E_2\)是第二条support的扰动能量；\(0.5=\tau\)是同一类别的能量尺度。由于\(E_2/\tau=0.4\)，得到\(a_2\approx0.714\)。
 
 $$
 a_3
@@ -1142,7 +1142,7 @@ a_3
 \approx0.294.
 $$
 
-**本式符号说明：**\(c\)是类别索引，\(k\)是类内shot索引，\(K\)是每类support数；\(\mathbf z^{\mathrm{id}}_{c,k}\)是身份块，\(\bar{\mathbf z}^{\mathrm{id}}_c\)是普通类均值，\(\mathbf e_{c,k}\)是类内残差；\(\mathbf G\)是封存扰动协方差，\(\sigma_q^2\)是量化噪声底，\(\mathbf G_+\)是去噪对称矩阵，\(\lambda_j,\mathbf u_j\)是第\(j\)个特征值和单位特征向量，\(r_{\mathrm{eff}},r\)是有效秩和保留秩，\(\mathbf U\)是扰动基，\(\rho_j\)是谱权重；\(\mathbf h_{c,k}\)、\(E_{c,k}\)、\(\tau_c\)分别是投影、扰动能量和类内能量尺度，\(a_{c,k}\)、\(\omega_{c,k}\)是未归一化和归一化Cauchy权重，\(\mathbf m_c^{\mathrm{rob}}\)、\(\boldsymbol\delta_c\)、\(\widetilde{\mathbf z}_{c,k}\)是稳健中心、中心平移和稳健化联合特征。
+**本式符号说明：**\(a_3\)是第三条support的未归一化Cauchy可靠性权重；\(1.2=E_3\)是第三条support的扰动能量；\(0.5=\tau\)是类内能量尺度。由于\(E_3/\tau=2.4\)明显较大，权重降为\(a_3\approx0.294\)，但样本没有被删除。
 
 归一化后约为
 
@@ -1154,7 +1154,7 @@ $$
 \right].
 $$
 
-**本式符号说明：**\(c\)是类别索引，\(k\)是类内shot索引，\(K\)是每类support数；\(\mathbf z^{\mathrm{id}}_{c,k}\)是身份块，\(\bar{\mathbf z}^{\mathrm{id}}_c\)是普通类均值，\(\mathbf e_{c,k}\)是类内残差；\(\mathbf G\)是封存扰动协方差，\(\sigma_q^2\)是量化噪声底，\(\mathbf G_+\)是去噪对称矩阵，\(\lambda_j,\mathbf u_j\)是第\(j\)个特征值和单位特征向量，\(r_{\mathrm{eff}},r\)是有效秩和保留秩，\(\mathbf U\)是扰动基，\(\rho_j\)是谱权重；\(\mathbf h_{c,k}\)、\(E_{c,k}\)、\(\tau_c\)分别是投影、扰动能量和类内能量尺度，\(a_{c,k}\)、\(\omega_{c,k}\)是未归一化和归一化Cauchy权重，\(\mathbf m_c^{\mathrm{rob}}\)、\(\boldsymbol\delta_c\)、\(\widetilde{\mathbf z}_{c,k}\)是稳健中心、中心平移和稳健化联合特征。
+**本式符号说明：**\(\boldsymbol\omega=[\omega_1,\omega_2,\omega_3]\)是三条support的归一化权重向量；\(\omega_i=a_i/(a_1+a_2+a_3)\)，因此三个分量之和为1。数值\(0.452、0.388、0.160\)分别表示三条样本对稳健类中心的相对贡献。
 
 第三条样本没有被删除，但它对中心的贡献从普通平均的\(1/3\)降至约0.160。这个例子只解释Cauchy机制，不是某个正式实验row的真实能量。
 
@@ -1169,7 +1169,7 @@ $$
 -\sigma_{\mathrm{q}}^2\mathbf{I}_{160}.
 $$
 
-**本式符号说明：**\(c\)是类别索引，\(k\)是类内shot索引，\(K\)是每类support数；\(\mathbf z^{\mathrm{id}}_{c,k}\)是身份块，\(\bar{\mathbf z}^{\mathrm{id}}_c\)是普通类均值，\(\mathbf e_{c,k}\)是类内残差；\(\mathbf G\)是封存扰动协方差，\(\sigma_q^2\)是量化噪声底，\(\mathbf G_+\)是去噪对称矩阵，\(\lambda_j,\mathbf u_j\)是第\(j\)个特征值和单位特征向量，\(r_{\mathrm{eff}},r\)是有效秩和保留秩，\(\mathbf U\)是扰动基，\(\rho_j\)是谱权重；\(\mathbf h_{c,k}\)、\(E_{c,k}\)、\(\tau_c\)分别是投影、扰动能量和类内能量尺度，\(a_{c,k}\)、\(\omega_{c,k}\)是未归一化和归一化Cauchy权重，\(\mathbf m_c^{\mathrm{rob}}\)、\(\boldsymbol\delta_c\)、\(\widetilde{\mathbf z}_{c,k}\)是稳健中心、中心平移和稳健化联合特征。
+**本式符号说明：**\(\mathbf G\in\mathbb R^{160\times160}\)是Phase1封存的身份特征扰动协方差；\(\mathbf G^{\mathsf T}\)是其转置；\((\mathbf G+\mathbf G^{\mathsf T})/2\)将数值上可能略不对称的矩阵对称化；\(\sigma_{\mathrm q}^{2}\)是量化噪声方差；\(\mathbf I_{160}\)是160维单位矩阵；\(\mathbf G_+\)是去除各向同性量化噪声底后的对称扰动矩阵。
 
 对\(\mathbf{G}_{+}\)做特征分解：
 
@@ -1179,7 +1179,7 @@ $$
 \lambda_j\mathbf{u}_j.
 $$
 
-**本式符号说明：**\(c\)是类别索引，\(k\)是类内shot索引，\(K\)是每类support数；\(\mathbf z^{\mathrm{id}}_{c,k}\)是身份块，\(\bar{\mathbf z}^{\mathrm{id}}_c\)是普通类均值，\(\mathbf e_{c,k}\)是类内残差；\(\mathbf G\)是封存扰动协方差，\(\sigma_q^2\)是量化噪声底，\(\mathbf G_+\)是去噪对称矩阵，\(\lambda_j,\mathbf u_j\)是第\(j\)个特征值和单位特征向量，\(r_{\mathrm{eff}},r\)是有效秩和保留秩，\(\mathbf U\)是扰动基，\(\rho_j\)是谱权重；\(\mathbf h_{c,k}\)、\(E_{c,k}\)、\(\tau_c\)分别是投影、扰动能量和类内能量尺度，\(a_{c,k}\)、\(\omega_{c,k}\)是未归一化和归一化Cauchy权重，\(\mathbf m_c^{\mathrm{rob}}\)、\(\boldsymbol\delta_c\)、\(\widetilde{\mathbf z}_{c,k}\)是稳健中心、中心平移和稳健化联合特征。
+**本式符号说明：**\(\mathbf u_j\in\mathbb R^{160}\)是\(\mathbf G_+\)的第\(j\)个单位特征向量，表示一个扰动方向；\(\lambda_j\)是对应特征值，表示该方向上的扰动方差强度；\(j\)是特征方向索引。只保留\(\lambda_j>0\)的方向。
 
 只保留数值上为正的特征值。正谱的participation-ratio有效秩为
 
@@ -1193,7 +1193,7 @@ r_{\mathrm{eff}}
 }.
 $$
 
-**本式符号说明：**\(c\)是类别索引，\(k\)是类内shot索引，\(K\)是每类support数；\(\mathbf z^{\mathrm{id}}_{c,k}\)是身份块，\(\bar{\mathbf z}^{\mathrm{id}}_c\)是普通类均值，\(\mathbf e_{c,k}\)是类内残差；\(\mathbf G\)是封存扰动协方差，\(\sigma_q^2\)是量化噪声底，\(\mathbf G_+\)是去噪对称矩阵，\(\lambda_j,\mathbf u_j\)是第\(j\)个特征值和单位特征向量，\(r_{\mathrm{eff}},r\)是有效秩和保留秩，\(\mathbf U\)是扰动基，\(\rho_j\)是谱权重；\(\mathbf h_{c,k}\)、\(E_{c,k}\)、\(\tau_c\)分别是投影、扰动能量和类内能量尺度，\(a_{c,k}\)、\(\omega_{c,k}\)是未归一化和归一化Cauchy权重，\(\mathbf m_c^{\mathrm{rob}}\)、\(\boldsymbol\delta_c\)、\(\widetilde{\mathbf z}_{c,k}\)是稳健中心、中心平移和稳健化联合特征。
+**本式符号说明：**\(r_{\mathrm{eff}}\)是扰动谱的有效秩；\(\lambda_j>0\)是正特征值；\(\sum_{j:\lambda_j>0}\)表示只对正特征值求和。若能量集中在少数方向，\(r_{\mathrm{eff}}\)较小；若能量较均匀地分布在多个方向，\(r_{\mathrm{eff}}\)较大。
 
 实际保留秩不经target扫描，而固定为
 
@@ -1203,7 +1203,7 @@ r
 \left\lceil r_{\mathrm{eff}}\right\rceil.
 $$
 
-**本式符号说明：**\(c\)是类别索引，\(k\)是类内shot索引，\(K\)是每类support数；\(\mathbf z^{\mathrm{id}}_{c,k}\)是身份块，\(\bar{\mathbf z}^{\mathrm{id}}_c\)是普通类均值，\(\mathbf e_{c,k}\)是类内残差；\(\mathbf G\)是封存扰动协方差，\(\sigma_q^2\)是量化噪声底，\(\mathbf G_+\)是去噪对称矩阵，\(\lambda_j,\mathbf u_j\)是第\(j\)个特征值和单位特征向量，\(r_{\mathrm{eff}},r\)是有效秩和保留秩，\(\mathbf U\)是扰动基，\(\rho_j\)是谱权重；\(\mathbf h_{c,k}\)、\(E_{c,k}\)、\(\tau_c\)分别是投影、扰动能量和类内能量尺度，\(a_{c,k}\)、\(\omega_{c,k}\)是未归一化和归一化Cauchy权重，\(\mathbf m_c^{\mathrm{rob}}\)、\(\boldsymbol\delta_c\)、\(\widetilde{\mathbf z}_{c,k}\)是稳健中心、中心平移和稳健化联合特征。
+**本式符号说明：**\(r\)是实际保留的扰动方向数；\(r_{\mathrm{eff}}\)是上一式得到的非整数有效秩；\(\lceil\cdot\rceil\)表示向上取整。
 
 取最大的\(r\)个正特征方向构成
 
@@ -1216,7 +1216,7 @@ $$
 \in\mathbb{R}^{160\times r},
 $$
 
-**本式符号说明：**\(c\)是类别索引，\(k\)是类内shot索引，\(K\)是每类support数；\(\mathbf z^{\mathrm{id}}_{c,k}\)是身份块，\(\bar{\mathbf z}^{\mathrm{id}}_c\)是普通类均值，\(\mathbf e_{c,k}\)是类内残差；\(\mathbf G\)是封存扰动协方差，\(\sigma_q^2\)是量化噪声底，\(\mathbf G_+\)是去噪对称矩阵，\(\lambda_j,\mathbf u_j\)是第\(j\)个特征值和单位特征向量，\(r_{\mathrm{eff}},r\)是有效秩和保留秩，\(\mathbf U\)是扰动基，\(\rho_j\)是谱权重；\(\mathbf h_{c,k}\)、\(E_{c,k}\)、\(\tau_c\)分别是投影、扰动能量和类内能量尺度，\(a_{c,k}\)、\(\omega_{c,k}\)是未归一化和归一化Cauchy权重，\(\mathbf m_c^{\mathrm{rob}}\)、\(\boldsymbol\delta_c\)、\(\widetilde{\mathbf z}_{c,k}\)是稳健中心、中心平移和稳健化联合特征。
+**本式符号说明：**\(\mathbf U\)是扰动基矩阵；它的第\(j\)列是单位扰动方向\(\mathbf u_j\)；\(r\)是保留方向数；\(\mathbb R^{160\times r}\)表示\(\mathbf U\)有160行、\(r\)列。
 
 对应归一化谱权重为
 
@@ -1228,7 +1228,7 @@ $$
 \sum_{j=1}^{r}\rho_j=1.
 $$
 
-**本式符号说明：**\(c\)是类别索引，\(k\)是类内shot索引，\(K\)是每类support数；\(\mathbf z^{\mathrm{id}}_{c,k}\)是身份块，\(\bar{\mathbf z}^{\mathrm{id}}_c\)是普通类均值，\(\mathbf e_{c,k}\)是类内残差；\(\mathbf G\)是封存扰动协方差，\(\sigma_q^2\)是量化噪声底，\(\mathbf G_+\)是去噪对称矩阵，\(\lambda_j,\mathbf u_j\)是第\(j\)个特征值和单位特征向量，\(r_{\mathrm{eff}},r\)是有效秩和保留秩，\(\mathbf U\)是扰动基，\(\rho_j\)是谱权重；\(\mathbf h_{c,k}\)、\(E_{c,k}\)、\(\tau_c\)分别是投影、扰动能量和类内能量尺度，\(a_{c,k}\)、\(\omega_{c,k}\)是未归一化和归一化Cauchy权重，\(\mathbf m_c^{\mathrm{rob}}\)、\(\boldsymbol\delta_c\)、\(\widetilde{\mathbf z}_{c,k}\)是稳健中心、中心平移和稳健化联合特征。
+**本式符号说明：**\(\rho_j\)是第\(j\)个扰动方向的归一化谱权重；\(\lambda_j\)是该方向的特征值；\(\ell\)是分母中的求和索引；\(r\)是保留方向数。所有\(\rho_j\)之和为1。
 
 \(\mathbf{U}\)只表达“哪些身份特征方向容易受地面域变化影响”，不包含某个旧类的prototype、样本feature或类别得分。
 
@@ -1242,7 +1242,7 @@ $$
 \right\}_{k=1}^{K},
 $$
 
-**本式符号说明：**\(c\)是类别索引，\(k\)是类内shot索引，\(K\)是每类support数；\(\mathbf z^{\mathrm{id}}_{c,k}\)是身份块，\(\bar{\mathbf z}^{\mathrm{id}}_c\)是普通类均值，\(\mathbf e_{c,k}\)是类内残差；\(\mathbf G\)是封存扰动协方差，\(\sigma_q^2\)是量化噪声底，\(\mathbf G_+\)是去噪对称矩阵，\(\lambda_j,\mathbf u_j\)是第\(j\)个特征值和单位特征向量，\(r_{\mathrm{eff}},r\)是有效秩和保留秩，\(\mathbf U\)是扰动基，\(\rho_j\)是谱权重；\(\mathbf h_{c,k}\)、\(E_{c,k}\)、\(\tau_c\)分别是投影、扰动能量和类内能量尺度，\(a_{c,k}\)、\(\omega_{c,k}\)是未归一化和归一化Cauchy权重，\(\mathbf m_c^{\mathrm{rob}}\)、\(\boldsymbol\delta_c\)、\(\widetilde{\mathbf z}_{c,k}\)是稳健中心、中心平移和稳健化联合特征。
+**本式符号说明：**\(c\)是类别索引；\(k\in\{1,\ldots,K\}\)是类内support索引；\(K\)是该类support数量；\(\mathbf z^{\mathrm{id}}_{c,k}\in\mathbb R^{160}\)是类别\(c\)第\(k\)条support的身份特征块；花括号表示该类全部身份support构成的集合。
 
 普通均值为
 
@@ -1254,7 +1254,7 @@ $$
 \mathbf{z}^{\mathrm{id}}_{c,k},
 $$
 
-**本式符号说明：**\(c\)是类别索引，\(k\)是类内shot索引，\(K\)是每类support数；\(\mathbf z^{\mathrm{id}}_{c,k}\)是身份块，\(\bar{\mathbf z}^{\mathrm{id}}_c\)是普通类均值，\(\mathbf e_{c,k}\)是类内残差；\(\mathbf G\)是封存扰动协方差，\(\sigma_q^2\)是量化噪声底，\(\mathbf G_+\)是去噪对称矩阵，\(\lambda_j,\mathbf u_j\)是第\(j\)个特征值和单位特征向量，\(r_{\mathrm{eff}},r\)是有效秩和保留秩，\(\mathbf U\)是扰动基，\(\rho_j\)是谱权重；\(\mathbf h_{c,k}\)、\(E_{c,k}\)、\(\tau_c\)分别是投影、扰动能量和类内能量尺度，\(a_{c,k}\)、\(\omega_{c,k}\)是未归一化和归一化Cauchy权重，\(\mathbf m_c^{\mathrm{rob}}\)、\(\boldsymbol\delta_c\)、\(\widetilde{\mathbf z}_{c,k}\)是稳健中心、中心平移和稳健化联合特征。
+**本式符号说明：**\(\bar{\mathbf z}^{\mathrm{id}}_c\)是类别\(c\)的普通身份中心；\(\mathbf z^{\mathrm{id}}_{c,k}\)是第\(k\)条身份support；\(K\)是该类support总数；\(\sum_{k=1}^{K}\)表示对全部类内support求和。
 
 样本残差为
 
@@ -1265,7 +1265,7 @@ $$
 -\bar{\mathbf{z}}^{\mathrm{id}}_c.
 $$
 
-**本式符号说明：**\(c\)是类别索引，\(k\)是类内shot索引，\(K\)是每类support数；\(\mathbf z^{\mathrm{id}}_{c,k}\)是身份块，\(\bar{\mathbf z}^{\mathrm{id}}_c\)是普通类均值，\(\mathbf e_{c,k}\)是类内残差；\(\mathbf G\)是封存扰动协方差，\(\sigma_q^2\)是量化噪声底，\(\mathbf G_+\)是去噪对称矩阵，\(\lambda_j,\mathbf u_j\)是第\(j\)个特征值和单位特征向量，\(r_{\mathrm{eff}},r\)是有效秩和保留秩，\(\mathbf U\)是扰动基，\(\rho_j\)是谱权重；\(\mathbf h_{c,k}\)、\(E_{c,k}\)、\(\tau_c\)分别是投影、扰动能量和类内能量尺度，\(a_{c,k}\)、\(\omega_{c,k}\)是未归一化和归一化Cauchy权重，\(\mathbf m_c^{\mathrm{rob}}\)、\(\boldsymbol\delta_c\)、\(\widetilde{\mathbf z}_{c,k}\)是稳健中心、中心平移和稳健化联合特征。
+**本式符号说明：**\(\mathbf e_{c,k}\in\mathbb R^{160}\)是第\(k\)条support相对本类普通中心的残差；\(\mathbf z^{\mathrm{id}}_{c,k}\)是该support的身份特征；\(\bar{\mathbf z}^{\mathrm{id}}_c\)是类别\(c\)的普通身份中心。
 
 ### 6.3 地面扰动谱能量
 
@@ -1278,7 +1278,7 @@ $$
 \in\mathbb{R}^{r}.
 $$
 
-**本式符号说明：**\(c\)是类别索引，\(k\)是类内shot索引，\(K\)是每类support数；\(\mathbf z^{\mathrm{id}}_{c,k}\)是身份块，\(\bar{\mathbf z}^{\mathrm{id}}_c\)是普通类均值，\(\mathbf e_{c,k}\)是类内残差；\(\mathbf G\)是封存扰动协方差，\(\sigma_q^2\)是量化噪声底，\(\mathbf G_+\)是去噪对称矩阵，\(\lambda_j,\mathbf u_j\)是第\(j\)个特征值和单位特征向量，\(r_{\mathrm{eff}},r\)是有效秩和保留秩，\(\mathbf U\)是扰动基，\(\rho_j\)是谱权重；\(\mathbf h_{c,k}\)、\(E_{c,k}\)、\(\tau_c\)分别是投影、扰动能量和类内能量尺度，\(a_{c,k}\)、\(\omega_{c,k}\)是未归一化和归一化Cauchy权重，\(\mathbf m_c^{\mathrm{rob}}\)、\(\boldsymbol\delta_c\)、\(\widetilde{\mathbf z}_{c,k}\)是稳健中心、中心平移和稳健化联合特征。
+**本式符号说明：**\(\mathbf h_{c,k}\in\mathbb R^r\)是残差在\(r\)个扰动方向上的投影坐标；\(\mathbf U^{\mathsf T}\)是扰动基矩阵的转置；\(\mathbf e_{c,k}\in\mathbb R^{160}\)是类内残差；\(h_{c,k,j}\)表示\(\mathbf h_{c,k}\)的第\(j\)个分量。
 
 样本的加权扰动能量定义为
 
@@ -1289,7 +1289,7 @@ E_{c,k}
 \rho_j h_{c,k,j}^{2}.
 $$
 
-**本式符号说明：**\(c\)是类别索引，\(k\)是类内shot索引，\(K\)是每类support数；\(\mathbf z^{\mathrm{id}}_{c,k}\)是身份块，\(\bar{\mathbf z}^{\mathrm{id}}_c\)是普通类均值，\(\mathbf e_{c,k}\)是类内残差；\(\mathbf G\)是封存扰动协方差，\(\sigma_q^2\)是量化噪声底，\(\mathbf G_+\)是去噪对称矩阵，\(\lambda_j,\mathbf u_j\)是第\(j\)个特征值和单位特征向量，\(r_{\mathrm{eff}},r\)是有效秩和保留秩，\(\mathbf U\)是扰动基，\(\rho_j\)是谱权重；\(\mathbf h_{c,k}\)、\(E_{c,k}\)、\(\tau_c\)分别是投影、扰动能量和类内能量尺度，\(a_{c,k}\)、\(\omega_{c,k}\)是未归一化和归一化Cauchy权重，\(\mathbf m_c^{\mathrm{rob}}\)、\(\boldsymbol\delta_c\)、\(\widetilde{\mathbf z}_{c,k}\)是稳健中心、中心平移和稳健化联合特征。
+**本式符号说明：**\(E_{c,k}\geq0\)是类别\(c\)第\(k\)条support的扰动谱能量；\(h_{c,k,j}\)是该样本在第\(j\)个扰动方向上的投影；\(\rho_j\)是该方向的谱权重；\(r\)是保留方向数。平方保证正、负投影都按偏离幅度计入能量。
 
 类别内能量尺度为
 
@@ -1301,7 +1301,7 @@ $$
 E_{c,k}.
 $$
 
-**本式符号说明：**\(c\)是类别索引，\(k\)是类内shot索引，\(K\)是每类support数；\(\mathbf z^{\mathrm{id}}_{c,k}\)是身份块，\(\bar{\mathbf z}^{\mathrm{id}}_c\)是普通类均值，\(\mathbf e_{c,k}\)是类内残差；\(\mathbf G\)是封存扰动协方差，\(\sigma_q^2\)是量化噪声底，\(\mathbf G_+\)是去噪对称矩阵，\(\lambda_j,\mathbf u_j\)是第\(j\)个特征值和单位特征向量，\(r_{\mathrm{eff}},r\)是有效秩和保留秩，\(\mathbf U\)是扰动基，\(\rho_j\)是谱权重；\(\mathbf h_{c,k}\)、\(E_{c,k}\)、\(\tau_c\)分别是投影、扰动能量和类内能量尺度，\(a_{c,k}\)、\(\omega_{c,k}\)是未归一化和归一化Cauchy权重，\(\mathbf m_c^{\mathrm{rob}}\)、\(\boldsymbol\delta_c\)、\(\widetilde{\mathbf z}_{c,k}\)是稳健中心、中心平移和稳健化联合特征。
+**本式符号说明：**\(\tau_c\)是类别\(c\)的平均扰动能量，用作该类内部的自适应参照尺度；\(E_{c,k}\)是第\(k\)条support的扰动能量；\(K\)是该类support数量。
 
 \(E_{c,k}\)越大，表示该support样本相对本类中心的偏移越集中在已知扰动方向上。
 
@@ -1317,7 +1317,7 @@ a_{c,k}
 }.
 $$
 
-**本式符号说明：**\(c\)是类别索引，\(k\)是类内shot索引，\(K\)是每类support数；\(\mathbf z^{\mathrm{id}}_{c,k}\)是身份块，\(\bar{\mathbf z}^{\mathrm{id}}_c\)是普通类均值，\(\mathbf e_{c,k}\)是类内残差；\(\mathbf G\)是封存扰动协方差，\(\sigma_q^2\)是量化噪声底，\(\mathbf G_+\)是去噪对称矩阵，\(\lambda_j,\mathbf u_j\)是第\(j\)个特征值和单位特征向量，\(r_{\mathrm{eff}},r\)是有效秩和保留秩，\(\mathbf U\)是扰动基，\(\rho_j\)是谱权重；\(\mathbf h_{c,k}\)、\(E_{c,k}\)、\(\tau_c\)分别是投影、扰动能量和类内能量尺度，\(a_{c,k}\)、\(\omega_{c,k}\)是未归一化和归一化Cauchy权重，\(\mathbf m_c^{\mathrm{rob}}\)、\(\boldsymbol\delta_c\)、\(\widetilde{\mathbf z}_{c,k}\)是稳健中心、中心平移和稳健化联合特征。
+**本式符号说明：**\(a_{c,k}\in(0,1]\)是未归一化Cauchy可靠性权重；\(E_{c,k}\)是单条support的扰动能量；\(\tau_c\)是本类平均扰动能量。比值\(E_{c,k}/\tau_c\)越大，\(a_{c,k}\)越小。
 
 归一化后
 
@@ -1331,7 +1331,7 @@ $$
 \sum_{k=1}^{K}\omega_{c,k}=1.
 $$
 
-**本式符号说明：**\(c\)是类别索引，\(k\)是类内shot索引，\(K\)是每类support数；\(\mathbf z^{\mathrm{id}}_{c,k}\)是身份块，\(\bar{\mathbf z}^{\mathrm{id}}_c\)是普通类均值，\(\mathbf e_{c,k}\)是类内残差；\(\mathbf G\)是封存扰动协方差，\(\sigma_q^2\)是量化噪声底，\(\mathbf G_+\)是去噪对称矩阵，\(\lambda_j,\mathbf u_j\)是第\(j\)个特征值和单位特征向量，\(r_{\mathrm{eff}},r\)是有效秩和保留秩，\(\mathbf U\)是扰动基，\(\rho_j\)是谱权重；\(\mathbf h_{c,k}\)、\(E_{c,k}\)、\(\tau_c\)分别是投影、扰动能量和类内能量尺度，\(a_{c,k}\)、\(\omega_{c,k}\)是未归一化和归一化Cauchy权重，\(\mathbf m_c^{\mathrm{rob}}\)、\(\boldsymbol\delta_c\)、\(\widetilde{\mathbf z}_{c,k}\)是稳健中心、中心平移和稳健化联合特征。
+**本式符号说明：**\(\omega_{c,k}\)是归一化后的第\(k\)条support权重；\(a_{c,k}\)是其未归一化可靠性；\(\ell\)是分母中的类内求和索引；\(K\)是support数量。归一化后同一类别的全部\(\omega_{c,k}\)之和为1。
 
 稳健身份中心为
 
@@ -1343,7 +1343,7 @@ $$
 \mathbf{z}^{\mathrm{id}}_{c,k}.
 $$
 
-**本式符号说明：**\(c\)是类别索引，\(k\)是类内shot索引，\(K\)是每类support数；\(\mathbf z^{\mathrm{id}}_{c,k}\)是身份块，\(\bar{\mathbf z}^{\mathrm{id}}_c\)是普通类均值，\(\mathbf e_{c,k}\)是类内残差；\(\mathbf G\)是封存扰动协方差，\(\sigma_q^2\)是量化噪声底，\(\mathbf G_+\)是去噪对称矩阵，\(\lambda_j,\mathbf u_j\)是第\(j\)个特征值和单位特征向量，\(r_{\mathrm{eff}},r\)是有效秩和保留秩，\(\mathbf U\)是扰动基，\(\rho_j\)是谱权重；\(\mathbf h_{c,k}\)、\(E_{c,k}\)、\(\tau_c\)分别是投影、扰动能量和类内能量尺度，\(a_{c,k}\)、\(\omega_{c,k}\)是未归一化和归一化Cauchy权重，\(\mathbf m_c^{\mathrm{rob}}\)、\(\boldsymbol\delta_c\)、\(\widetilde{\mathbf z}_{c,k}\)是稳健中心、中心平移和稳健化联合特征。
+**本式符号说明：**\(\mathbf m_c^{\mathrm{rob}}\in\mathbb R^{160}\)是类别\(c\)的稳健身份中心；\(\omega_{c,k}\)是第\(k\)条support的归一化权重；\(\mathbf z^{\mathrm{id}}_{c,k}\)是对应身份特征；\(K\)是support数量。
 
 类中心平移量为
 
@@ -1354,7 +1354,7 @@ $$
 -\bar{\mathbf{z}}^{\mathrm{id}}_c.
 $$
 
-**本式符号说明：**\(c\)是类别索引，\(k\)是类内shot索引，\(K\)是每类support数；\(\mathbf z^{\mathrm{id}}_{c,k}\)是身份块，\(\bar{\mathbf z}^{\mathrm{id}}_c\)是普通类均值，\(\mathbf e_{c,k}\)是类内残差；\(\mathbf G\)是封存扰动协方差，\(\sigma_q^2\)是量化噪声底，\(\mathbf G_+\)是去噪对称矩阵，\(\lambda_j,\mathbf u_j\)是第\(j\)个特征值和单位特征向量，\(r_{\mathrm{eff}},r\)是有效秩和保留秩，\(\mathbf U\)是扰动基，\(\rho_j\)是谱权重；\(\mathbf h_{c,k}\)、\(E_{c,k}\)、\(\tau_c\)分别是投影、扰动能量和类内能量尺度，\(a_{c,k}\)、\(\omega_{c,k}\)是未归一化和归一化Cauchy权重，\(\mathbf m_c^{\mathrm{rob}}\)、\(\boldsymbol\delta_c\)、\(\widetilde{\mathbf z}_{c,k}\)是稳健中心、中心平移和稳健化联合特征。
+**本式符号说明：**\(\boldsymbol\delta_c\in\mathbb R^{160}\)是类别\(c\)的中心平移量；\(\mathbf m_c^{\mathrm{rob}}\)是稳健身份中心；\(\bar{\mathbf z}^{\mathrm{id}}_c\)是普通身份中心。该差向量给出普通中心应移动的方向和距离。
 
 最终只平移本类所有support的身份特征块：
 
@@ -1369,7 +1369,7 @@ $$
 \end{bmatrix}.
 $$
 
-**本式符号说明：**\(c\)是类别索引，\(k\)是类内shot索引，\(K\)是每类support数；\(\mathbf z^{\mathrm{id}}_{c,k}\)是身份块，\(\bar{\mathbf z}^{\mathrm{id}}_c\)是普通类均值，\(\mathbf e_{c,k}\)是类内残差；\(\mathbf G\)是封存扰动协方差，\(\sigma_q^2\)是量化噪声底，\(\mathbf G_+\)是去噪对称矩阵，\(\lambda_j,\mathbf u_j\)是第\(j\)个特征值和单位特征向量，\(r_{\mathrm{eff}},r\)是有效秩和保留秩，\(\mathbf U\)是扰动基，\(\rho_j\)是谱权重；\(\mathbf h_{c,k}\)、\(E_{c,k}\)、\(\tau_c\)分别是投影、扰动能量和类内能量尺度，\(a_{c,k}\)、\(\omega_{c,k}\)是未归一化和归一化Cauchy权重，\(\mathbf m_c^{\mathrm{rob}}\)、\(\boldsymbol\delta_c\)、\(\widetilde{\mathbf z}_{c,k}\)是稳健中心、中心平移和稳健化联合特征。
+**本式符号说明：**\(\widetilde{\mathbf z}_{c,k}\in\mathbb R^{288}\)是稳健化后的联合support；\(\mathbf z^{\mathrm{id}}_{c,k}\)、\(\mathbf z^{\mathrm{fft}}_{c,k}\)、\(\mathbf z^{\mathrm{rf}}_{c,k}\)分别是160、96、32维特征块；\(\boldsymbol\delta_c\)只加到身份块；方括号表示纵向拼接。
 
 ### 6.5 为什么只平移类中心
 
@@ -1383,7 +1383,7 @@ $$
 -\bar{\mathbf{z}}^{\mathrm{id}}_c.
 $$
 
-**本式符号说明：**\(c\)是类别索引，\(k\)是类内shot索引，\(K\)是每类support数；\(\mathbf z^{\mathrm{id}}_{c,k}\)是身份块，\(\bar{\mathbf z}^{\mathrm{id}}_c\)是普通类均值，\(\mathbf e_{c,k}\)是类内残差；\(\mathbf G\)是封存扰动协方差，\(\sigma_q^2\)是量化噪声底，\(\mathbf G_+\)是去噪对称矩阵，\(\lambda_j,\mathbf u_j\)是第\(j\)个特征值和单位特征向量，\(r_{\mathrm{eff}},r\)是有效秩和保留秩，\(\mathbf U\)是扰动基，\(\rho_j\)是谱权重；\(\mathbf h_{c,k}\)、\(E_{c,k}\)、\(\tau_c\)分别是投影、扰动能量和类内能量尺度，\(a_{c,k}\)、\(\omega_{c,k}\)是未归一化和归一化Cauchy权重，\(\mathbf m_c^{\mathrm{rob}}\)、\(\boldsymbol\delta_c\)、\(\widetilde{\mathbf z}_{c,k}\)是稳健中心、中心平移和稳健化联合特征。
+**本式符号说明：**\(\widetilde{\mathbf z}^{\mathrm{id}}_{c,k}=\mathbf z^{\mathrm{id}}_{c,k}+\boldsymbol\delta_c\)是平移后的身份特征；\(\mathbf m_c^{\mathrm{rob}}\)是平移后的稳健中心；右侧是原身份特征相对普通中心的残差。等式表明同类样本统一平移不会改变类内残差结构。
 
 因此，该步骤不会人为压缩或扩张类内散布，也不会修改FFT96和RF32。它只改变“类别位于特征空间的什么位置”，不改变“类别内部样本如何围绕中心分布”。
 
@@ -1397,7 +1397,7 @@ $$
 \widetilde{\mathbf{z}}_{c,k}=\mathbf{z}_{c,k}.
 $$
 
-**本式符号说明：**\(c\)是类别索引，\(k\)是类内shot索引，\(K\)是每类support数；\(\mathbf z^{\mathrm{id}}_{c,k}\)是身份块，\(\bar{\mathbf z}^{\mathrm{id}}_c\)是普通类均值，\(\mathbf e_{c,k}\)是类内残差；\(\mathbf G\)是封存扰动协方差，\(\sigma_q^2\)是量化噪声底，\(\mathbf G_+\)是去噪对称矩阵，\(\lambda_j,\mathbf u_j\)是第\(j\)个特征值和单位特征向量，\(r_{\mathrm{eff}},r\)是有效秩和保留秩，\(\mathbf U\)是扰动基，\(\rho_j\)是谱权重；\(\mathbf h_{c,k}\)、\(E_{c,k}\)、\(\tau_c\)分别是投影、扰动能量和类内能量尺度，\(a_{c,k}\)、\(\omega_{c,k}\)是未归一化和归一化Cauchy权重，\(\mathbf m_c^{\mathrm{rob}}\)、\(\boldsymbol\delta_c\)、\(\widetilde{\mathbf z}_{c,k}\)是稳健中心、中心平移和稳健化联合特征。
+**本式符号说明：**\(\boldsymbol\delta_c=\mathbf0\)表示类别\(c\)不执行中心平移；\(\mathbf z_{c,k}\)是原始288维联合support；\(\widetilde{\mathbf z}_{c,k}\)是稳健化输出。小K回退时二者完全相同。
 
 原因不是计算失败，而是1或2个样本不足以稳定区分“身份中心偏移”和“类内扰动离群”。D92宁可保持恒等映射，也不从极少support制造伪稳健性。
 
