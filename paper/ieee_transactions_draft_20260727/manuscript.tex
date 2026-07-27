@@ -21,7 +21,7 @@
 
 \begin{document}
 
-\title{\method: Protocol-Governed Cross-Receiver Generalization and Few-Shot Incremental Registration for Spaceborne Radio-Frequency Fingerprinting}
+\title{\method: Cross-Receiver Generalization and Few-Shot Incremental Registration under a Spaceborne Deployment Proxy}
 
 \author{Anonymous Authors%
 \thanks{This manuscript is an evidence-locked initial draft. Author identities, affiliations, funding, and the final reproducibility URL are withheld pending internal approval.}%
@@ -33,35 +33,39 @@
 \maketitle
 
 \begin{abstract}
-Radio-frequency fingerprint identification (RFFI) is evaluated with a fixed receiver, transmitter labels, and a closed class set. A spaceborne monitor violates these assumptions: the deployed receiver is absent from ground training, received IQ follows a different propagation process, and unseen transmitters must be enrolled from few labeled records under onboard memory and update constraints. We present \method, a protocol-governed framework that treats ground generalization and deployment registration as equal stages. Phase~1 learns asymmetric 160-dimensional identity and receiver-nuisance representations from proxy receivers under a limited-label split. Receiver-day-gated pseudo-labeling, tail-aware angular geometry, and identity-preserving challenges train the encoder before it and INT8 aggregates are sealed. Phase~2 admits only this immutable bundle and \(K\) labeled target-support records per class. Its \stagehead{} module compiles a 288-dimensional multimodal support representation into one equal-prior affine classifier using perturbation-aware robust centers, task-balanced shrinkage covariance, support-cross-fitted geometry fusion, and residual quantization. Each physical record passes once through a fixed simulated LEO channel; target queries never update the state. On a WiSig/ManySig terrestrial proxy, the selected Phase~1 model reaches 89.18\% overall accuracy, 84.89\% strict unseen-domain accuracy, and a 75.55\% receiver floor. In a 125-row matched Phase~2 diagnostic, task-balanced covariance improves post-registration old-class accuracy by 2.62 percentage points and the old/new harmonic mean by 0.96 points for \(K=10\) with 20 new classes, but reduces new-class accuracy by 0.65 points and provides no gain at \(K=1\). The study is a simulation-based prototype, not in-orbit or flight-software validation.
+Radio-frequency fingerprint identification (RFFI) is evaluated with a fixed receiver, transmitter labels, and a closed class set. A spaceborne uplink monitor violates these assumptions: its receiver is absent from ground training, received IQ undergoes LEO propagation, and unseen transmitters must be enrolled from few labeled records under onboard memory and update constraints. We present \method, a protocol-governed framework that treats ground generalization and deployment registration as equal stages. Phase~1 learns asymmetric 160-dimensional identity and receiver-nuisance representations from proxy receivers under a limited-label split. Receiver-day-gated pseudo-labeling, tail-aware angular geometry, and identity-preserving challenges train the encoder before it and INT8 aggregates are sealed. Phase~2 admits only this immutable bundle and \(K\) labeled target-support records per class. Its \stagehead{} module compiles a 288-dimensional multimodal support representation into one equal-prior affine classifier using perturbation-aware robust centers, task-balanced shrinkage covariance, support-cross-fitted geometry fusion, and residual quantization. Each physical record passes once through a fixed simulated LEO channel; target queries never update the state. A historical Phase~1 audit on a WiSig/ManySig terrestrial proxy reports 89.18\% overall accuracy, 84.89\% strict unseen-domain accuracy, and a 75.55\% receiver floor. In a 125-row matched Phase~2 diagnostic, task-balanced covariance improves post-registration old-class accuracy by 2.62 percentage points and the old/new harmonic mean by 0.96 points for \(K=10\) with 20 new classes, but reduces new-class accuracy by 0.65 points and provides no gain at \(K=1\). The study is a simulation-based prototype, not in-orbit or flight-software validation.
 \end{abstract}
 
 \begin{IEEEkeywords}
-radio-frequency fingerprint identification, specific emitter identification, cross-receiver generalization, domain adaptation, few-shot class-incremental learning, satellite communications, physical-layer authentication.
+radio-frequency fingerprint identification, specific emitter identification, cross-receiver generalization, domain adaptation, few-shot class-incremental learning, satellite communications, physical-layer identity assurance.
 \end{IEEEkeywords}
 
 \section{Introduction}
-\IEEEPARstart{R}{adio-frequency} fingerprint identification (RFFI), also known as specific emitter identification, infers transmitter identity from hardware-dependent distortions introduced by oscillators, mixers, power amplifiers, and other nonideal radio-frequency components. Early radiometric systems used engineered transients and statistics \cite{brik2008paradis}; later work showed that convolutional models can learn discriminative fingerprints directly from complex baseband samples \cite{merchant2018deep,riyaz2018radioid,sankhe2019oracle}. The appeal is clear: a hardware fingerprint is harder to copy than a network identifier and can provide an independent physical-layer authentication signal.
+\IEEEPARstart{R}{adio-frequency} fingerprint identification (RFFI), also known as specific emitter identification, infers transmitter identity from hardware-dependent distortions introduced by oscillators, mixers, power amplifiers, and other nonideal radio-frequency components. Early radiometric systems used engineered transients and statistics \cite{brik2008paradis}; later work showed that convolutional models can learn discriminative fingerprints directly from complex baseband samples \cite{merchant2018deep,riyaz2018radioid,sankhe2019oracle}. Because a hardware fingerprint is tied to the analog emission chain rather than a network identifier, it can provide an independent physical-layer identity cue.
+
+Commercial broadband LEO constellations give this problem an operational scale. The FCC's 2022 partial grant authorized an initial tranche of up to 7,500 Gen2 Starlink satellites at 525--535~km, with user-terminal and gateway earth-to-space links included in the system authorization \cite{fcc2022starlinkgen2}. SpaceX describes its Direct to Cell payloads as orbital cellular base stations that connect ordinary LTE phones and IoT devices, while explicitly identifying Doppler, latency, low antenna gain, and low terrestrial transmit power as link challenges \cite{spacex2025directtocell}. Measurements of operational Starlink service report short satellite dwell, handovers, and substantially greater time variation than terrestrial access \cite{ma2023starlink}; independent RF studies have recovered the structure of its 10.7--12.7~GHz Ku-band downlink \cite{humphreys2023starlink}. These facts make high-density LEO networks a useful systems exemplar, not a dataset claim: the experiments in this paper use no Starlink waveform, terminal, satellite, or proprietary interface.
+
+Our sensing direction is the uplink. A receiver aboard a satellite observes terrestrial terminals, gateways, or other authorized emitters and must associate each received waveform with a physical transmitter. In that role, RFFI can supply an auxiliary provenance signal: it can corroborate a claimed terminal identity, help associate interference or replay with a physical emitter, and support enrollment when only a few labeled contacts are available. It does not replace cryptographic authentication. SatIQ shows that hardware fingerprints can raise the cost of spoofing and replay against satellite downlinks \cite{smailes2023satiq}; Tang \emph{et al.} use a 16-USRP proxy to study lightweight onboard identification of TT\&C ground stations \cite{tang2023ttc}; a recent survey places satellite-based emitter fingerprinting alongside geolocation for access control, interference mitigation, and wide-area source identification \cite{hendy2026beyondgnss}. These studies establish the security role and sensing direction, but not the cross-receiver incremental lifecycle studied here.
 
 The observable waveform is not a transmitter-only object. Propagation, receiver filtering, local oscillators, automatic gain control, sampling clocks, and preprocessing jointly transform the same emitted signal. A model can therefore achieve high same-receiver accuracy by encoding a receiver--channel shortcut rather than a stable transmitter characteristic \cite{restuccia2019deepradioid,alshawabka2020exposing}. This failure is exposed when the receiver changes: cross-receiver RFFI is consistently more difficult than same-receiver classification \cite{hanna2022wisig,shen2024receiveragnostic,zhang2024riei}.
 
-A spaceborne monitoring lifecycle compounds receiver shift with label, channel, class, and resource constraints. Ground training cannot observe the final receiver chain, and transmitter labels are costly even in the source domains. At deployment, satellite geometry, residual synchronization errors, multipath, and noise alter the baseband process; elevation, path length, and Doppler are central non-terrestrial-link variables \cite{3gpp38811}. Short contact windows limit labeled observations, while onboard computation and storage favor ground training followed by compact inference state \cite{zhao2026gsgl}. The class set is also open to enrollment: a newly encountered transmitter must be added from a small support set without erasing previously registered identities.
+A spaceborne monitoring lifecycle compounds receiver shift with label, uplink, class, and resource constraints. Ground training cannot observe the final receiver chain, and transmitter labels are costly even in the source domains. At deployment, satellite geometry, residual synchronization errors, multipath, and noise alter the baseband process; elevation, path length, and Doppler are central non-terrestrial-link variables \cite{3gpp38811}. Short contact windows limit labeled observations, while satellite computing remains constrained by moving infrastructure, power, compute, storage, and the operating environment \cite{wang2023satellitecomputing}. These conditions favor ground training followed by compact inference state and sparse onboard updates \cite{zhao2026gsgl}. The class set is also open to enrollment: a newly encountered transmitter must be added from a small support set without erasing previously registered identities.
 
-Three research lines address these difficulties separately. Cross-receiver RFFI uses collaborative receivers, adversarial disentanglement, distribution alignment, or pseudo-labeling \cite{shen2024receiveragnostic,zhang2024riei,liu2024receiverimpact,feng2025dadda,ma2025channelrobust}, but normally retains a fixed transmitter set and may use target records for alignment or fine-tuning. Few-shot class-incremental SEI adds devices with prototypes, subnet expansion, self-training, or regularization \cite{liu2021csil,li2024selftraining,shi2025dpds,li2025fscilsei,li2025mopchr}, but its base and incremental sessions are not designed around a simultaneously unseen receiver and changed satellite-to-ground propagation process. Satellite fingerprinting establishes feasibility on real downlinks \cite{oligeri2023pastai,smailes2023satiq}, and ground--satellite generative learning addresses sample scarcity \cite{zhao2026gsgl}, yet these studies do not jointly evaluate replay-free old-class adaptation and new-class registration on a disjoint receiver.
+Three research lines address these difficulties separately. Cross-receiver RFFI uses collaborative receivers, adversarial disentanglement, distribution alignment, or pseudo-labeling \cite{shen2024receiveragnostic,zhang2024riei,liu2024receiverimpact,feng2025dadda,ma2025channelrobust}, but normally retains a fixed transmitter set and may use target records for alignment or fine-tuning. Few-shot class-incremental SEI adds devices with prototypes, subnet expansion, self-training, or regularization \cite{liu2021csil,li2024selftraining,shi2025dpds,li2025fscilsei,li2025mopchr}, but its base and incremental sessions are not designed around a simultaneously unseen receiver and changed ground-to-satellite propagation process. Satellite fingerprinting establishes feasibility on real downlinks \cite{oligeri2023pastai,smailes2023satiq}, while the closest onboard uplink study uses one receiver and a fixed 16-transmitter class set \cite{tang2023ttc}. Ground--satellite generative learning addresses sample scarcity \cite{zhao2026gsgl}. None of these evaluations jointly tests source-label scarcity, receiver transfer, old-class adaptation, and new-class registration under a sealed deployment state.
 
 The unresolved gap is therefore the intersection of the constraints, not any one constraint in isolation. Among the studies surveyed in Section~II, we found no common evaluation that simultaneously enforces: an unseen target receiver; transmitter-label scarcity during ground learning; \(K\)-shot old- and new-class support after deployment; no runtime source IQ, clean counterpart, or target-query feedback; a compact immutable deployment state; and one role-blind predictor over all registered classes. Relaxing any one of these conditions changes the task. Target-batch alignment no longer measures source-only generalization, source replay no longer measures self-contained deployment, and separate old/new heads no longer measure a deployable all-class decision.
 
-We ask whether an RFFI system can first learn an unseen-receiver-tolerant identity space from at most 10\% transmitter-labeled source records and then adapt old identities and register new ones from \(K\) fixed received records per class, without replaying source samples or retraining on queries. This question requires two coequal stages. Phase~1 must build a representation whose transmitter geometry survives receiver and channel variation under label-limited supervision. Phase~2 must turn scarce support on the deployed receiver into a balanced old/new decision rule within a bounded state.
+We ask whether an RFFI system can first learn an unseen-receiver-tolerant identity space when at most 10\% of the source training pool is transmitter-labeled and then adapt old identities and register new ones from \(K\) fixed received records per class, without replaying source samples or retraining on queries. This question requires two coequal stages. Phase~1 must build a representation whose transmitter geometry survives receiver and channel variation under label-limited supervision. Phase~2 must turn scarce support on the deployed receiver into a balanced old/new decision rule within a bounded state.
 
 \method{} implements this lifecycle. Phase~1 uses an asymmetric dual-representation CV-SincNet: one branch integrates temporal, spectral, and power-amplifier evidence for transmitter identity, while a second branch absorbs receiver, channel, and noise nuisance. Receiver-day-gated semi-supervision, tail-risk geometry, and identity-preserving source challenges train the two representations before the encoder and quantized multi-sample aggregates are sealed. Phase~2 uses \stagehead{} (Robust Task-Balanced Incremental Discriminant Registration) to estimate a receiver-sensitive perturbation spectrum, robustify support centers, balance old and new tasks during covariance estimation, and compile all registered classes into one compact affine head. The channel simulator is a reproducible residual baseband operator, not evidence of an operational satellite link.
 
 The contributions are fourfold.
 
 \begin{enumerate}
-  \item We formalize the combined research gap as a two-stage access contract spanning label-limited source-only receiver generalization, a fixed simulated LEO satellite-to-ground observation, support-only old-class adaptation, and few-shot new-class registration under independent all-class inference.
+  \item We formalize the combined research gap as a two-stage access contract spanning label-limited source-only receiver generalization, a fixed simulated LEO ground-to-satellite observation, support-only old-class adaptation, and few-shot new-class registration under independent all-class inference.
   \item For Phase~1, we develop an asymmetric identity--nuisance CV-SincNet that couples physical signal views with explicit receiver-information allocation, receiver-day-gated pseudo-labeling, tail-aware angular risk, and an identity-preserving source-domain curriculum. The output is a sealed encoder plus auditable INT8 aggregate knowledge rather than replayable source data.
   \item For Phase~2, we develop \stagehead{}, a support-only compiler that combines learned and deterministic views, perturbation-aware robust centers, task-balanced shrinkage geometry, bounded Fisher residuals, and residual quantization in one equal-prior affine classifier.
-  \item We report matched positive and negative evidence for both stages. A 32-candidate Phase~1 audit identifies a source-only checkpoint, while a complete 125-row Phase~2 diagnostic shows that task balancing reduces old-class forgetting at large registration scales but does not solve one-shot adaptation or cross-role calibration.
+  \item We report evidence at its supported strength. A historical 32-candidate Phase~1 audit identifies a source-only checkpoint pending confirmation under the current split, while a complete 125-row Phase~2 diagnostic isolates a task-balancing effect that reduces old-class forgetting at large registration scales but does not solve one-shot adaptation or cross-role calibration.
 \end{enumerate}
 
 The remainder of the paper reviews related work, formalizes the protocol, describes the two-stage method, reports the evidence currently available, and lists the experiments required before submission-grade performance claims can be made.
@@ -78,9 +82,11 @@ Receiver mismatch has prompted several complementary approaches. Collaborative r
 
 Our distinction is primarily one of lifecycle and evidence. Phase~1 permits only source receivers. Phase~2 permits labeled target support but excludes target-query feedback and runtime source samples. Consequently, a method that uses target data during model selection is classified as adaptation, not DG; a comparison method that requires source replay remains a valid external comparator but is reported under a different permission row.
 
-\subsection{Satellite Transmitter Fingerprinting}
+\subsection{RFFI over Satellite Links: Downlink Evidence and Uplink Deployment}
 
-PAST-AI and SatIQ provide evidence that satellite transmitters can be fingerprinted from real received traffic \cite{oligeri2023pastai,smailes2023satiq}. A recent ground--satellite generative framework further studies few-shot satellite IoE identification \cite{zhao2026gsgl}. Their real-satellite evidence is important context, but it cannot be transferred to a proxy experiment. In \method, WiSig/ManySig supplies terrestrial device and receiver observations. A simulated LEO residual channel then creates clear-sky, low-elevation, and rainy-link baseband profiles. We therefore use ``spaceborne deployment proxy'' rather than ``in-orbit validation'' throughout.
+Satellite RFFI has two sensing directions. PAST-AI and SatIQ identify satellite transmitters from downlinks captured by terrestrial receivers \cite{oligeri2023pastai,smailes2023satiq}. Tang \emph{et al.} study the reverse direction: a lightweight CNN--GRU intended for an onboard receiver classifies a 16-USRP proxy for TT\&C ground stations \cite{tang2023ttc}. Their experiment uses one receiver, fixed identities, and simulated noise; it neither measures cross-receiver transfer nor enrolls new ground transmitters. A ground--satellite generative framework further studies few-shot satellite IoE identification \cite{zhao2026gsgl}, while the broader satellite sensing literature distinguishes emitter identity from geolocation \cite{hendy2026beyondgnss}.
+
+Starlink anchors the operational context rather than the evaluation. Its licensed system scale and earth-to-space links \cite{fcc2022starlinkgen2}, Direct to Cell receive direction \cite{spacex2025directtocell}, measured temporal dynamics \cite{ma2023starlink}, and observable Ku-band downlink structure \cite{humphreys2023starlink} show why identity evidence must coexist with moving geometry, handovers, and proprietary waveforms. No Starlink IQ appears in the present corpus. In \method, WiSig/ManySig supplies terrestrial device and receiver observations, and a simulated LEO residual uplink creates clear-sky, low-elevation, and rainy-link baseband profiles. We therefore use ``spaceborne deployment proxy'' rather than ``Starlink validation'' or ``in-orbit validation'' throughout.
 
 \subsection{Few-Shot and Class-Incremental SEI}
 
@@ -92,112 +98,121 @@ These methods do not all solve the same problem. Some assume complete base-sessi
 
 \subsection{Compound Identification Task}
 
-Let \(y\in\mathcal{Y}\) denote a transmitter identity, \(d\in\mathcal{D}\) a receiver domain, and \(c\in\mathcal{C}\) a propagation condition. We write a length-\(N\) complex baseband observation as
+Let \(y\in\mathcal{Y}\) denote a transmitter identity, \(d\in\mathcal{D}\) a receiver domain, and \(\chi\in\mathcal{C}_{\mathrm{prop}}\) a propagation condition. We write a length-\(N\) complex baseband observation as
 \begin{equation}
-\mathbf{x}_{y,d,c} =
+\mathbf{x}_{y,d,\chi} =
 \mathcal{R}_{d}\!\left[
-\mathcal{H}_{c}\!\left(
+\mathcal{H}_{\chi}\!\left(
 \mathcal{T}_{y}(\mathbf{s})
 \right)
 \right]+\mathbf{n},
 \label{eq:received}
 \end{equation}
-where \(\mathcal{T}_{y}\) represents transmitter-dependent hardware distortion, \(\mathcal{H}_{c}\) propagation and synchronization effects, \(\mathcal{R}_{d}\) the receiver chain, and \(\mathbf{n}\) additive noise. The objective is to preserve information about \(y\) while suppressing shortcuts tied to \(d\) and incidental \(c\). Equation~\eqref{eq:received} is a task decomposition rather than an identifiable inverse model: \method{} neither reconstructs clean IQ nor estimates a physical power-amplifier model at deployment. Memory-polynomial analysis \cite{ding2004memory} motivates stable nonlinear transmitter effects, but the classifier operates on the received record.
+where \(\mathcal{T}_{y}\) represents transmitter-dependent hardware distortion, \(\mathcal{H}_{\chi}\) propagation and synchronization effects, \(\mathcal{R}_{d}\) the receiver chain, and \(\mathbf{n}\) additive noise. The objective is to preserve information about \(y\) while suppressing shortcuts tied to \(d\) and incidental \(\chi\). Equation~\eqref{eq:received} is a task decomposition rather than an identifiable inverse model: \method{} neither reconstructs clean IQ nor estimates a physical power-amplifier model at deployment. Memory-polynomial analysis \cite{ding2004memory} motivates stable nonlinear transmitter effects, but the classifier operates on the received record.
 
-The deployment problem combines domain shift and class-set expansion. Source training observes receivers \(\Rsource\) and old identities \(\Yold\). Deployment observes a disjoint receiver set \(\Rtarget\), retains the old classes, and registers \(\Ynew\), where
+The deployment problem combines domain shift and class-set expansion. In the intended data flow, terrestrial devices are the transmitters, the target receiver and RFFI inference service are onboard the satellite, authorized labeled contacts form support, and later uplink observations are independently classified as queries. Source training observes proxy receivers \(\Rsource\) and old identities \(\Yold\). Deployment observes a disjoint receiver set \(\Rtarget\), retains the old classes, and registers \(\Ynew\), where
 \begin{equation}
 \Rsource\cap\Rtarget=\varnothing,\qquad
 \Yold\cap\Ynew=\varnothing.
 \end{equation}
 The final predictor is a single map over \(\Yold\cup\Ynew\); it is not given an old/new query role. This distinguishes the task from closed-set DG alone, target adaptation alone, and conventional class-incremental learning under source replay.
 
-\subsection{Simulated LEO Satellite-to-Ground Channel}
+\subsection{Simulated LEO Ground-to-Satellite Channel}
 
-The simulator is applied to a captured WiSig/ManySig record, not to a clean transmitted waveform. It represents a post-synchronization residual satellite-to-ground baseband channel. The three manuscript-facing profiles are
+Equation~\eqref{eq:received} describes the intended physical uplink, but the proxy corpus does not expose \(\mathcal{T}_{y}(\mathbf{s})\) or an orbital receiver chain separately. The simulator therefore starts from an already captured terrestrial record \(\mathbf{x}^{\mathrm{cap}}_i\) and applies a post-capture residual overlay:
+\begin{equation}
+\widetilde{\mathbf{x}}_i=
+\mathcal{A}_{\chi_i}\!\left(
+\mathbf{x}^{\mathrm{cap}}_i;\boldsymbol{\xi}
+\right),
+\qquad \chi_i\in\mathcal{C}_{\mathrm{LEO}},
+\label{eq:fixed_observation}
+\end{equation}
+where \(\mathcal{A}_{\chi_i}\) approximates residual ground-to-satellite baseband effects after bulk synchronization and modeled AGC. It neither removes the terrestrial propagation and receiver effects already present in \(\mathbf{x}^{\mathrm{cap}}_i\) nor synthesizes a clean satellite waveform. The three manuscript-facing profiles are
 \begin{equation}
 \mathcal{C}_{\mathrm{LEO}}
 =\{\mathrm{CS},\mathrm{LE},\mathrm{RL}\},
 \end{equation}
-denoting clear-sky, low-elevation, and rainy-link conditions, respectively. Given \(\mathbf{x}_{i}=[x_i[0],\ldots,x_i[N-1]]\), the implemented operator is
+denoting clear-sky, low-elevation, and rainy-link conditions, respectively. Given \(\mathbf{x}^{\mathrm{cap}}_{i}=[x_i[0],\ldots,x_i[N-1]]\), the implemented operator is
 \begin{align}
 u_i[n]&=\sum_{\ell=0}^{1}h_{i,\ell}
-x_i[n-d_{i,\ell}],\label{eq:leo_multipath}\\
+x_i[n-\delta_{i,\ell}],\label{eq:leo_multipath}\\
 q_i[n]&=u_i[n]\exp\!\left\{j\!\left(
 \frac{2\pi\Delta f_i n}{f_{\mathrm{s}}}+\phi_i[n]\right)\right\},\\
 \widetilde{x}_i[n]&=
 \frac{a_i q_i[n]}
-{\sqrt{\max\!\left\{N^{-1}\sum_{m=0}^{N-1}|q_i[m]|^2,\epsilon\right\}}}
+{\sqrt{\max\!\left\{N^{-1}\sum_{m=0}^{N-1}|q_i[m]|^2,\epsilon_{\mathrm{ch}}\right\}}}
 +w_i[n].
 \label{eq:leo_channel}
 \end{align}
-Here, \(d_{i,0}=0\), samples with negative indices are zero, the second delay is sampled from a bounded integer interval, \(a_i=10^{g_i/20}\) is a residual AGC gain, and \(\epsilon=10^{-12}\). The noise obeys \(w_i[n]\sim\mathcal{CN}(0,\sigma_{w,i}^2)\), with \(\sigma_{w,i}^{2}=P_i10^{-\gamma_i/10}\), where \(P_i\) is the post-AGC signal power and \(\gamma_i\) the sampled SNR in decibels. The phase process is Wiener:
+Here, \(\delta_{i,0}=0\), samples with negative indices are zero, the second delay is sampled from a bounded integer interval, \(a_i=10^{g_i/20}\) is a residual AGC gain, and \(\epsilon_{\mathrm{ch}}=10^{-12}\). The noise obeys \(w_i[n]\sim\mathcal{CN}(0,\sigma_{w,i}^2)\), with \(\sigma_{w,i}^{2}=P_i10^{-\gamma_i/10}\), where \(P_i\) is the post-AGC signal power and \(\gamma_i\) the sampled SNR in decibels. The phase process is Wiener:
 \begin{equation}
 \phi_i[n]=\phi_i[n-1]+\varepsilon_i[n],\qquad
 \varepsilon_i[n]\sim\mathcal{N}(0,\sigma_{\phi,i}^{2}),
 \end{equation}
 and the residual carrier offset follows
 \begin{equation}
-\Delta f_i\sim\mathcal{N}(0,\sigma_{f,c_i}^{2}).
+\Delta f_i\sim\mathcal{N}(0,\sigma_{f,\chi_i}^{2}).
 \end{equation}
 Bulk orbital Doppler is assumed to have been removed by synchronization; the simulator injects only \(\Delta f_i\).
 
 The dominant tap is Rician or shadowed Rician \cite{abdi2003lms}:
 \begin{align}
 h_{i,0}&=\sqrt{\rho_0}\left[
-\eta_i\sqrt{\frac{K_i}{K_i+1}}e^{j\psi_i}
-+\sqrt{\frac{1}{K_i+1}}\,z_{i,0}\right],\\
+\eta_i\sqrt{\frac{\kappa_i}{\kappa_i+1}}e^{j\psi_i}
+{}+\sqrt{\frac{1}{\kappa_i+1}}\,z_{i,0}\right],\\
 h_{i,1}&=\sqrt{\rho_1}\,z_{i,1},
 \end{align}
 where \(z_{i,0},z_{i,1}\sim\mathcal{CN}(0,1)\),
 \(\psi_i\sim\mathcal{U}(-\pi,\pi)\), and
-\((\rho_0,\rho_1)=(1,p_c)/(1+p_c)\).
+\((\rho_0,\rho_1)=(1,p_{\chi_i})/(1+p_{\chi_i})\).
 For the low-elevation profile,
 \(\eta_i=10^{v_i/20}\) with
 \(v_i\sim\mathcal{N}(0,1.5^2)\)~dB; otherwise \(\eta_i=1\).
 The Rician factor varies linearly with elevation:
 \begin{equation}
-K_i^{\mathrm{dB}}=K_{\min,c_i}+
-(K_{\max,c_i}-K_{\min,c_i})
-\frac{\theta_i-\theta_{\min,c_i}}
-{\theta_{\max,c_i}-\theta_{\min,c_i}}.
+\kappa_i^{\mathrm{dB}}=\kappa_{\min,\chi_i}+
+(\kappa_{\max,\chi_i}-\kappa_{\min,\chi_i})
+\frac{\theta_i-\theta_{\min,\chi_i}}
+{\theta_{\max,\chi_i}-\theta_{\min,\chi_i}}.
 \end{equation}
-The gain equations use \(K_i=10^{K_i^{\mathrm{dB}}/10}\).
+The gain equations use \(\kappa_i=10^{\kappa_i^{\mathrm{dB}}/10}\).
 
 Following standard LEO geometry \cite{3gpp38811}, altitude \(h_i\) and elevation \(\theta_i\) determine the slant range
 \begin{equation}
-d_i=-R_{\mathrm{E}}\sin\theta_i+
+r_i=-R_{\mathrm{E}}\sin\theta_i+
 \sqrt{(R_{\mathrm{E}}+h_i)^2-
 R_{\mathrm{E}}^2\cos^2\theta_i}
 \end{equation}
 and free-space path loss
 \begin{equation}
 L_{\mathrm{FS},i}=20\log_{10}
-\left(\frac{4\pi d_i f_{\mathrm{c}}}{c_0}\right).
+\left(\frac{4\pi r_i f_{\mathrm{c}}}{c_0}\right).
 \end{equation}
 Here, \(R_{\mathrm{E}}=6.371\times10^6\)~m and
 \(c_0=299\,792\,458\)~m/s.
-The present residual-channel implementation records \(d_i\) and \(L_{\mathrm{FS},i}\) as metadata but does not multiply absolute path loss into IQ, because every record is RMS-normalized by the modeled AGC. Likewise, explicit atmospheric attenuation and additional IQ imbalance are disabled. The rainy-link profile therefore represents the post-AGC SNR, fading, phase-noise, and residual-frequency regime in Table~\ref{tab:leo_profiles}; it is not a full link-budget rain-attenuation model.
+The present residual-channel implementation records \(r_i\) and \(L_{\mathrm{FS},i}\) as metadata but does not multiply absolute path loss into IQ, because every record is RMS-normalized by the modeled AGC. Carrier frequency and altitude therefore affect recorded geometry metadata, not the output IQ. Likewise, explicit atmospheric attenuation and additional IQ imbalance are disabled. The rainy-link profile represents the post-AGC SNR, fading, phase-noise, and residual-frequency regime in Table~\ref{tab:leo_profiles}; it is not a full link-budget rain-attenuation model.
 
 \begin{table}[t]
 \caption{Common Simulated LEO Channel Settings}
 \label{tab:leo_common}
 \centering
 \footnotesize
-\begin{tabular}{p{0.43\columnwidth}p{0.43\columnwidth}}
+\begin{tabular}{p{0.30\columnwidth}p{0.37\columnwidth}p{0.18\columnwidth}}
 \toprule
-Parameter & Setting \\
+Parameter & Setting & IQ role \\
 \midrule
-Record length \(N\) & 256 complex samples \\
-Sampling rate \(f_{\mathrm{s}}\) & 25~MS/s \\
-Carrier frequency \(f_{\mathrm{c}}\) & 2.462~GHz \\
-Orbit and altitude \(h\) & LEO; \(\mathcal{U}(500,2000)\)~km \\
-Multipath & Two taps; first delay zero \\
-Bulk orbital Doppler & Compensated before residual model \\
-Absolute FSPL in IQ & Not applied; retained as metadata \\
-Explicit atmospheric attenuation & Disabled \\
-Additional IQ imbalance & Disabled \\
-AGC target RMS & 1, followed by residual gain \(g\) \\
-Realization policy & One seeded, fixed output per physical record \\
+Record length \(N\) & 256 complex samples & Applied \\
+Sampling rate \(f_{\mathrm{s}}\) & 25~MS/s & Applied \\
+Carrier \(f_{\mathrm{c}}\) & 2.462~GHz & Metadata \\
+Altitude \(h\) & \(\mathcal{U}(500,2000)\)~km & Metadata \\
+Multipath & Two taps; \(\delta_0=0\) & Applied \\
+Bulk Doppler & Compensated before overlay & Not injected \\
+Absolute FSPL & Retained in record metadata & Not applied \\
+Atmospheric loss & Disabled & Not applied \\
+Extra IQ imbalance & Disabled & Not applied \\
+AGC target RMS & 1, then residual \(g\) & Applied \\
+Realization policy & Role-seeded stream; sealed bytes & Applied \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -217,9 +232,9 @@ SNR & 22--32 & 16--28 & 14--26 & Uniform, dB \\
 Residual CFO \(\sigma_f\) & 50 & 90 & 70 & Gaussian std., Hz \\
 Phase-increment std. \(\sigma_\phi\) & \(0\)--\(5{\times}10^{-4}\) & \(1{\times}10^{-4}\)--\(8{\times}10^{-4}\) & \(1{\times}10^{-4}\)--\(7{\times}10^{-4}\) & Uniform, rad/sample \\
 Fading law & Rician & Shadowed Rician & Rician & LOS shadow std. in LE: 1.5~dB \\
-\(K^{\mathrm{dB}}\) range & 16--24 & 8--18 & 10--20 & Linear in elevation \\
-Second-tap delay \(d_1\) & 1--2 & 1--3 & 1--3 & Discrete uniform, samples \\
-Second-tap factor \(p_c\) & 0.08 & 0.12 & 0.10 & Powers normalized as \([1,p_c]\) \\
+\(\kappa^{\mathrm{dB}}\) range & 16--24 & 8--18 & 10--20 & Linear in elevation \\
+Second-tap delay \(\delta_1\) & 1--2 & 1--3 & 1--3 & Discrete uniform, samples \\
+Second-tap factor \(p_\chi\) & 0.08 & 0.12 & 0.10 & Powers normalized as \([1,p_\chi]\) \\
 Residual AGC \(g\) & \(-0.2\)--0.2 & \(-0.3\)--0.3 & \(-0.3\)--0.3 & Uniform, dB \\
 \bottomrule
 \end{tabular}
@@ -237,19 +252,19 @@ and the unlabeled source set
 \mathcal{U}_{\mathrm{s}} =
 \{(\mathbf{x}_j,d_j):d_j\in\Rsource,\;y_j\ \text{hidden}\}.
 \end{equation}
-The protocol limits the transmitter-labeled fraction to \(\rho_{\mathrm{label}}\leq0.10\); its current governed split allocates 0.07, 0.63, and 0.30 of the source pool to labeled training, unlabeled training, and disjoint source validation. No record from \(\Rtarget\) may affect training, normalization statistics, early stopping, thresholds, prototypes, or checkpoint selection. Phase~1 outputs an immutable bundle \(\mathcal{B}_{\mathrm{P1}}\) containing the selected encoder and licensed aggregate state, but no target-derived quantity. The historical checkpoint audited in Section~V-B used an earlier 0.10/0.70/0.20 split and is therefore internal method evidence rather than the final protocol-locked confirmation.
+The protocol defines the transmitter-labeled fraction within the source training pool as
+\begin{equation}
+\rho_{\mathrm{label}}=
+\frac{|\mathcal{L}_{\mathrm{s}}|}
+{|\mathcal{L}_{\mathrm{s}}|+|\mathcal{U}_{\mathrm{s}}|}
+\leq 0.10.
+\label{eq:label_fraction}
+\end{equation}
+Its current governed split allocates 0.07, 0.63, and 0.30 of the full source pool to labeled training, unlabeled training, and disjoint source validation, so \(0.07/(0.07+0.63)=0.10\). No record from \(\Rtarget\) may affect training, normalization statistics, early stopping, thresholds, prototypes, or checkpoint selection. Phase~1 outputs an immutable bundle \(\mathcal{B}_{\mathrm{P1}}\) containing the selected encoder and licensed aggregate state, but no target-derived quantity. The historical checkpoint audited in Section~V-B used a 0.10/0.70/0.20 full-pool split: 10\% of the full source pool, but 12.5\% of its training pool, carried transmitter labels. It is therefore internal method evidence rather than the final protocol-locked confirmation.
 
 \subsection{Phase~2: Fixed Observation and Support-Only State}
 
-Before Phase~2, each physical IQ record produces exactly one allowed simulated LEO observation
-\begin{equation}
-\widetilde{\mathbf{x}}_i =
-\mathcal{H}_{\mathrm{LEO}}
-\!\left(\mathbf{x}_i;c_i,\boldsymbol{\xi}_i\right),
-\qquad c_i\in\mathcal{C}_{\mathrm{LEO}},
-\label{eq:fixed_observation}
-\end{equation}
-where \(\boldsymbol{\xi}_i\) is the seeded random state governing the parameters in Tables~\ref{tab:leo_common} and \ref{tab:leo_profiles}. The scenario assignment, seed, and resulting bytes are frozen before support/query use. Equalization, normalization, FFTs, and other mathematical views may read \(\widetilde{\mathbf{x}}_i\), but they do not create additional physical samples. Thus, \(K\)-shot means \(K\) distinct physical records, not \(K\) transformations of one record.
+Before Phase~2, each physical IQ record produces exactly one allowed observation through Eq.~\eqref{eq:fixed_observation}. The current capsule builder uses a role-seeded ordered random-number stream: the two-tap delay pattern is shared within a processed batch, while the remaining draws advance in builder order. Consequently, a record is not independently regenerated from its physical identifier and the recorded role seed alone. The authoritative replay surface is the validated capsule containing the frozen scenario assignment and output bytes. Equalization, normalization, FFTs, and other mathematical views may read \(\widetilde{\mathbf{x}}_i\), but they do not create additional physical samples. Thus, \(K\)-shot means \(K\) distinct physical records, not \(K\) transformations of one record.
 
 Let the old and newly enrolled class sets be \(\Yold\) and \(\Ynew\), with \(\Yold\cap\Ynew=\varnothing\). Every registered class \(c\in\mathcal{Y}=\Yold\cup\Ynew\) has a labeled support set
 \begin{equation}
@@ -440,7 +455,7 @@ Its maximum weights are \(1\), \(0.35\), \(0.05\), and \(0.08\), respectively. D
 
 \subsubsection{Receiver-Day-Gated Semi-Supervision and Tail Risk}
 
-In the audited checkpoint, 10\% of the source pool carries transmitter labels, while 70\% is available without transmitter labels and 20\% is reserved for source validation. During epochs 131--200, an exponential-moving-average (EMA) teacher with decay 0.999 predicts a lightly perturbed unlabeled record. For confidence
+In the audited checkpoint, 10\% of the full source pool carries transmitter labels, while 70\% is available without transmitter labels and 20\% is reserved for source validation; equivalently, 12.5\% of the historical source training pool is labeled under Eq.~\eqref{eq:label_fraction}. During epochs 131--200, an exponential-moving-average (EMA) teacher with decay 0.999 predicts a lightly perturbed unlabeled record. For confidence
 \(\kappa_j=\max_c q_{j,c}\), the receiver-day threshold is
 \begin{equation}
 \tau_d=\operatorname{clip}\!\left(
@@ -649,7 +664,7 @@ Six transmitter identities appear in Phase~1 and are old classes in Phase~2. Nes
 
 \subsection{Phase~1 Selection Audit}
 
-The Phase~1 audit contains 32 completed candidates. Each has a complete 200--240 epoch trace, checkpoint, diagnostic export, and source-only evaluation. The selected checkpoint, \texttt{ADV3B02\_CORE90\_SOFT\_E200}, uses 200 epochs and is selected at epoch 194. It is compared with the preceding ADV2 aggregate rather than with an untraceable cross-run maximum. This historical audit used the 0.10/0.70/0.20 source split implemented by that run. A final confirmation must use the current 0.07/0.63/0.30 protocol split; Table~\ref{tab:p1} is not relabeled as evidence from that unexecuted split.
+The Phase~1 audit contains 32 completed candidates. Each has a complete 200--240 epoch trace, checkpoint, diagnostic export, and source-only evaluation. The selected checkpoint, \texttt{ADV3B02\_CORE90\_SOFT\_E200}, uses 200 epochs and is selected at epoch 194. It is compared with the preceding ADV2 aggregate rather than with an untraceable cross-run maximum. This historical audit used the 0.10/0.70/0.20 full-source-pool split implemented by that run, corresponding to a 12.5\% labeled fraction inside its training pool. A final confirmation must use the current 0.07/0.63/0.30 protocol split, whose training-pool labeled fraction is 10\%; Table~\ref{tab:p1} is not relabeled as evidence from that unexecuted split.
 
 We report overall source-domain accuracy, strict unseen-domain/unseen-split (UDU) accuracy, the minimum receiver-level accuracy (receiver floor), and the strict floor under satellite-stress augmentation. The stress metrics remain proxy metrics and do not certify target adaptation.
 
@@ -789,6 +804,12 @@ The individual ingredients of \method{} have precedents: Sinc filters \cite{rava
 
 The present evidence establishes these properties and a targeted forgetting reduction. It does not yet establish a state-of-the-art end-to-end accuracy result. For a top-tier Transactions submission, the protocol contribution must be accompanied by a stronger final Stage~2 method or by a broader benchmark release that makes the protocol itself independently reusable.
 
+\subsection{Operational Role and Security Boundary}
+
+In a deployed uplink receiver, \method{} would be one sensor in a larger identity and spectrum-assurance chain. Its defensible functions are to corroborate a credentialed transmitter, maintain physical-device provenance across contacts, prioritize anomalous emissions for review, and compile a small registered-class state after authorized support arrives. A closed-set RFFI score alone cannot prove malicious intent, distinguish an unknown emitter, or justify autonomous access denial. Those actions require calibrated rejection, attack-specific validation, and integration with cryptographic and network-layer evidence.
+
+Starlink motivates the scale, mobility, and contact dynamics of the problem; it is not the evaluated system. The current model has not processed a Starlink uplink, executed on a Starlink-compatible payload, or been tested against a Starlink terminal. Any system-specific claim would require compatible RF captures, receiver-front-end characterization, a complete link budget, attack and benign controls, and target-processor measurements. The present evidence supports a protocol and a terrestrial-to-LEO proxy, not a security assessment of Starlink.
+
 \subsection{Failure Analysis}
 
 The \(K=1\) result exposes a structural limit: one support per class cannot identify within-class perturbation or estimate task-specific covariance. Query-assisted pseudo-labeling could add apparent samples, but it would violate the present support-only contract and would confound adaptation with evaluation.
@@ -802,6 +823,8 @@ At larger \(K\), Eq.~\eqref{eq:balanced} balances covariance evidence, not score
 \textbf{Selection multiplicity:} Phase~1 was selected from 32 candidates. The reported comparison is an internal audit and lacks a fresh, independently repeated confirmation. Its deltas should not be interpreted as unbiased generalization gains until reproduced under a frozen selection rule.
 
 \textbf{External-method permissions:} CSIL and MoPC-HR are reproduced according to their own lifecycles. Their low CVS results do not invalidate their original papers. A fair manuscript must show both original-task fidelity and the permission mismatch when transferring them to CVS.
+
+\textbf{Incremental-lifecycle evidence:} The current matrix performs one joint registration event over the available old- and new-class supports. It does not test a sequence of independently arriving enrollment sessions, persistent-state updates, arrival-order sensitivity, or rollback. The evidence therefore supports few-shot class-set expansion in one sealed event, not a completed continual onboard lifecycle.
 
 \textbf{Resource evidence:} The final head is compact, but the complete registration pipeline has no worst-case execution time, peak resident memory, energy, thermal, or radiation-tolerance measurement on a target processor.
 

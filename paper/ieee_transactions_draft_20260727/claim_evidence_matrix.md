@@ -21,9 +21,13 @@
 |C13|26类RTB-IDR核心数组约16.11KiB，仿射头7488MAC/query|D92资源审计|解析式与artifact证据|“compiled head storage/compute”|“end-to-end system is 7488MAC”|补主干、FFT/RF和硬件测试|
 |C14|WiSig/ManySig和LEO仿真信道均为代理；当前IQ仅实现后同步残余基带链路|`项目.md`、`code/sat_channel.py`、`code/training_controls.py`|场景与实现边界|“terrestrial proxy and simulated LEO residual channel”|“real on-orbit validation”或“complete satellite link budget”|真实卫星或硬件在环|
 |C15|论文当前可作为IEEE Transactions结构化初稿|`manuscript.tex`和编译PDF|文稿交付证据|“initial evidence-locked draft”|“submission-ready Q1 paper”|清除全部AUTHOR ACTION|
-|C16|现有研究分别覆盖跨接收机、少样本增量或卫星识别，但本稿调研范围内没有共同评测同时执行全部CVS约束|38篇已核验引用PDF、`citation_inventory.md`、Introduction与Related Work|限定范围的文献综合|“Among the studies surveyed in Section II, we found no common evaluation that simultaneously enforces ...”|“the first method ever”或无范围限定的“no prior work”|投稿前按最终检索日期更新文献|
+|C16|现有研究分别覆盖跨接收机、少样本增量或卫星识别，但本稿调研范围内没有共同评测同时执行全部CVS约束|45篇已核验引用PDF、`citation_inventory.md`、Introduction与Related Work|限定范围的文献综合|“Among the studies surveyed in Section II, we found no common evaluation that simultaneously enforces ...”|“the first method ever”或无范围限定的“no prior work”|投稿前按最终检索日期更新文献|
 |C17|冻结Phase1模型的`z_id`与`z_dom`均为160维，LEO一致性项不产生梯度|`docs/CVS_ADV3B02_QKNNV42_TECHNICAL_REPORT_20260709.md`第2—6节及历史快照|实现与谱系一致证据|“asymmetric 160-dimensional identity and nuisance representations”；“LEO classification only”|`z_dom=128`或“LEO consistency learning”|补参数量匹配的Phase1模块消融|
-|C18|当前统一Phase1协议划分为`0.07/0.63/0.30`，而ADV3B02历史审计实际为`0.10/0.70/0.20`|`项目.md`第4节、ADV3B02技术报告第5节|协议与历史执行不一致，已显式隔离|“historical internal audit pending confirmation under the current split”|把历史结果标成当前协议正式复验|按`0.07/0.63/0.30`冻结规则独立复验|
+|C18|当前统一Phase1协议划分为`0.07/0.63/0.30`，训练池内标签比例为10%；ADV3B02历史审计实际为`0.10/0.70/0.20`，训练池内标签比例为12.5%|`项目.md`第4节、ADV3B02技术报告第5节、实际计数|协议与历史执行不一致，已显式隔离|“historical internal audit with 10% of the full pool and 12.5% of the training pool labeled”|把历史结果描述为当前“训练池内10%标签”正式复验|按`0.07/0.63/0.30`冻结规则独立复验|
+|C19|本文识别方向为地面发射机到星载接收机的上行；PAST-AI和SatIQ主要是地面接收卫星下行|`tang2023ttc`、`oligeri2023pastai`、`smailes2023satiq`|文献方向核验|“downlink evidence and uplink deployment proxy”|把下行结果写成本文上行任务的直接验证|补方向匹配的HIL或真实上行数据|
+|C20|Starlink Direct to Cell与本文共享“地面终端→星载接收机”的系统方向，但本文没有Starlink数据或接口|FCC 22-91、Starlink官方Direct to Cell材料、Starlink测量与信号结构论文|系统动机|“Starlink anchors the systems motivation only”|“validated for Starlink”“secures Starlink”或“Starlink uses RFFI”|若需系统特定主张，补兼容波形、前端和授权实验|
+|C21|星上RFFI只能作为辅助物理身份线索，不能替代密码学或单独证明恶意|SatIQ威胁边界、本文闭集指标|安全边界|“auxiliary physical identity cue”|“authentication solved”“attack detected”或自动封禁依据|若投TIFS，补威胁模型、非法设备和攻击指标|
+|C22|当前LEO生成器使用role-seeded ordered RNG且batch内共享delay；单条记录不能由physical ID与role seed独立重建|capsule builder与channel implementation审计|实现边界|“sealed capsule bytes are the authoritative replay surface”|“independent per-record replay seed”|后续版本可改成sample-addressed RNG并重新生成capsule|
 
 ## 摘要允许使用的数字
 
@@ -38,8 +42,10 @@
 
 - terrestrial proxy
 - physics-inspired simulated LEO residual channel
+- post-capture residual overlay
 - support-only
 - immutable Phase1 bundle
 - independent all-registered-class decision
 - matched component diagnostic
+- Starlink as systems motivation only
 - not in-orbit or flight-software validation

@@ -3,11 +3,11 @@
 ## 验证结论
 
 - 清单日期：2026-07-28
-- BibTeX条目：38条
-- 对应PDF：38份
-- 文件头验证：38/38为`%PDF-`
-- PDF解析验证：38/38可由`pypdf`打开
-- 首页文本验证：38/38与预期论文题名或出版信息相符
+- BibTeX条目：45条
+- 对应PDF：45份
+- 文件头验证：45/45为`%PDF-`
+- PDF解析验证：45/45可由`pypdf`打开
+- 首页文本验证：45/45与预期论文题名或出版信息相符
 - 解析错误：0
 
 IEEE受限全文均通过用户已授权的深圳大学机构访问会话从IEEE Xplore下载；其余文件来自作者主页、出版方、会议官网、arXiv或大学开放仓储。既有样本PDF也重新执行了文件头、页数和首页文本检查。本文档不主张将IEEE订阅全文再公开分发。
@@ -54,6 +54,13 @@ IEEE受限全文均通过用户已授权的深圳大学机构访问会话从IEEE
 |R36|`ding2004memory`|`R36_Memory_Polynomial_TCOM2004.pdf`|7|`10.1109/TCOMM.2003.822188`|IEEE Xplore机构授权|
 |R37|`abdi2003lms`|`R37_Abdi_Shadowed_Rician_TWC2003.pdf`|26|`10.1109/TWC.2003.811182`|作者机构主页开放稿；Crossref核验元数据|
 |R38|`3gpp38811`|`R38_3GPP_TR38811_NTN_R15.pdf`|126|—|3GPP TR 38.811 V15.1.0公开副本；3GPP官方门户核验版本与题名|
+|R39|`humphreys2023starlink`|`R39_Starlink_Signal_Structure_TAES2023.pdf`|14|`10.1109/TAES.2023.3268610`|作者开放稿；DOI与IEEE元数据核验|
+|R40|`ma2023starlink`|`R40_Starlink_Network_Characteristics_INFOCOM2023.pdf`|12|`10.1109/INFOCOM53939.2023.10228912`|作者开放稿；DOI与IEEE元数据核验|
+|R41|`tang2023ttc`|`R41_Satellite_TTC_Ground_Station_RFF_JBIT2023.pdf`|12|`10.15918/j.jbit1004-0579.2022.074`|期刊开放全文；题名与DOI核验|
+|R42|`fcc2022starlinkgen2`|`R42_FCC_Starlink_Gen2_Order_2022.pdf`|74|—|FCC官方命令与授权PDF|
+|R43|`hendy2026beyondgnss`|`R43_Beyond_GNSS_Satellite_RF_Fingerprinting_2026.pdf`|29|`10.1038/s44459-026-00045-y`|Nature开放全文；Crossref核验|
+|R44|`spacex2025directtocell`|`R44_Starlink_Direct_to_Cell_Official_2025.pdf`|2|—|Starlink官方系统说明|
+|R45|`wang2023satellitecomputing`|`R45_Satellite_Computing_IoTJ2023.pdf`|16|`10.1109/JIOT.2023.3303346`|作者开放稿；DOI与IEEE元数据核验|
 
 ## SHA-256
 
@@ -96,4 +103,11 @@ R35_Fisher_LDA_1936.pdf  193348087ff4071ec07785a2de8271056efaf9d0bb242a9c0ad522c
 R36_Memory_Polynomial_TCOM2004.pdf  ea2473a54650083ad856fcd07dc862d3f7d3e3e7e8acdb20c2c71172042b92e9
 R37_Abdi_Shadowed_Rician_TWC2003.pdf  54afd8811d285a84bf1d1b584bac747c8cde3a1e817a754c7428fdebf23b121f
 R38_3GPP_TR38811_NTN_R15.pdf  b5bc2850a876f2e4eb9e74dd29ca17e2d07e5f077e6d24622bce43ba9173b252
+R39_Starlink_Signal_Structure_TAES2023.pdf  29ecf4a77c4a7bbd5c3aacd65ec07f85aa1057f8a1d4f230a29dd17029392907
+R40_Starlink_Network_Characteristics_INFOCOM2023.pdf  f6bc85c3542f9b88ee9b59fb1dfab49752b8d8ae8f33a4be864794b9939a42db
+R41_Satellite_TTC_Ground_Station_RFF_JBIT2023.pdf  f6c97455625b3404703583a9c9570927756d9ed8f5e8d55663dc4d368f3064ea
+R42_FCC_Starlink_Gen2_Order_2022.pdf  a6fa3198ed5bd3ee0778d96678d61c8f9f218a554de3a882c10c16646582c316
+R43_Beyond_GNSS_Satellite_RF_Fingerprinting_2026.pdf  6e88ce84950096fe24ba0fd621bffebebde63c8c288832089437f693331f7f4a
+R44_Starlink_Direct_to_Cell_Official_2025.pdf  ac76ec4b13c11d462cb9683588b193d1d1700f47cb3a44d5e6b2b94ff6d003bc
+R45_Satellite_Computing_IoTJ2023.pdf  0b6036cdac149cf1b94278347db0b5ae44ad7f370c8ee4d06118b6a7a3c96eac
 ```
