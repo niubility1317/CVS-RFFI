@@ -1,0 +1,569 @@
+\documentclass[journal]{IEEEtran}
+
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{cite}
+\usepackage{url}
+\usepackage{graphicx}
+\usepackage[hidelinks]{hyperref}
+\usepackage{balance}
+
+\newcommand{\method}{CVS-RFFI}
+\newcommand{\stagehead}{RTB-IDR}
+\newcommand{\authoraction}[1]{\par\noindent\textbf{[AUTHOR ACTION: #1]}\par}
+\newcommand{\Rsource}{\mathcal{R}_{\mathrm{s}}}
+\newcommand{\Rtarget}{\mathcal{R}_{\mathrm{t}}}
+\newcommand{\Yold}{\mathcal{Y}_{\mathrm{o}}}
+\newcommand{\Ynew}{\mathcal{Y}_{\mathrm{n}}}
+\newcommand{\Harm}{H_{\mathrm{old,new}}}
+
+\begin{document}
+
+\title{\method: Protocol-Governed Cross-Receiver Generalization and Few-Shot Incremental Registration for Spaceborne Radio-Frequency Fingerprinting}
+
+\author{Anonymous Authors%
+\thanks{This manuscript is an evidence-locked initial draft. Author identities, affiliations, funding, and the final reproducibility URL are withheld pending internal approval.}%
+}
+
+\markboth{IEEE Transactions Manuscript, Initial Draft, July 2026}%
+{Anonymous Authors: \method}
+
+\maketitle
+
+\begin{abstract}
+Radio-frequency fingerprint identification (RFFI) models are often evaluated with a fixed receiver and a closed transmitter set, whereas a spaceborne monitor must tolerate an unseen receiver, propagation stress, scarce labels, and transmitters enrolled after deployment. We present \method, a protocol-governed two-stage framework that separates source-only representation learning from support-only deployment adaptation. Phase~1 learns a dual identity--nuisance representation from terrestrial proxy receivers and seals an immutable deployment bundle. Phase~2 admits exactly one fixed physics-inspired low-Earth-orbit observation per physical sample, \(K\) labeled target-support samples per registered class, and no target-query feedback. Its \stagehead{} module compiles a 288-dimensional multimodal support representation into a unified equal-prior affine classifier using perturbation-aware robust centers, task-balanced shrinkage covariance, support-cross-fitted geometry fusion, and residual quantization. On a WiSig/ManySig terrestrial proxy, the selected Phase~1 model reaches 89.18\% overall accuracy, 84.89\% strict unseen-domain accuracy, and a 75.55\% receiver floor. In a 125-row matched Phase~2 diagnostic, task-balanced covariance improves post-registration old-class accuracy by 2.62 percentage points and the old/new harmonic mean by 0.96 points for \(K=10\) with 20 new classes, but reduces new-class accuracy by 0.65 points and provides no gain at \(K=1\). These results establish a reproducible deployment protocol and a targeted forgetting mitigation mechanism, while also showing that cross-role calibration and one-shot adaptation remain unresolved. The study therefore reports a bounded research prototype, not in-orbit or flight-software validation.
+\end{abstract}
+
+\begin{IEEEkeywords}
+radio-frequency fingerprint identification, specific emitter identification, cross-receiver generalization, domain adaptation, few-shot class-incremental learning, satellite communications, physical-layer authentication.
+\end{IEEEkeywords}
+
+\section{Introduction}
+\IEEEPARstart{R}{adio-frequency} fingerprint identification (RFFI), also called specific emitter identification, exploits transmitter-dependent distortions introduced by oscillators, power amplifiers, mixers, and other nonideal radio-frequency components. Early radiometric systems relied on engineered transients and statistics \cite{brik2008paradis}; later work showed that convolutional models can learn fingerprints directly from complex baseband samples \cite{merchant2018deep,riyaz2018radioid,sankhe2019oracle}. Such models are attractive for physical-layer authentication because the fingerprint is tied to hardware rather than a clonable network identifier.
+
+The received waveform, however, contains more than a transmitter fingerprint. Propagation, receiver filters, oscillators, gain control, sampling clocks, and preprocessing all perturb the observation. Channel variation alone can dominate a learned representation \cite{restuccia2019deepradioid,alshawabka2020exposing}, and cross-receiver evaluation is consistently harder than same-receiver testing \cite{hanna2022wisig,shen2024receiveragnostic,zhang2024riei}. The problem is sharper for a spaceborne monitor: the deployed receiver is unseen during ground training, the link differs from the terrestrial training environment, and the set of emitters can grow after launch.
+
+Recent satellite studies demonstrate that transmitter identification is feasible from real satellite traffic. PAST-AI studies physical-layer authentication of Iridium transmitters \cite{oligeri2023pastai}, while SatIQ evaluates resilient fingerprinting of satellite communication signals \cite{smailes2023satiq}. Ground--satellite few-shot learning has also emerged as a dedicated problem \cite{zhao2026gsgl}. These works motivate the application, but they do not remove two experimental ambiguities. First, a model selected with target-receiver data is not source-only domain generalization (DG). Second, a classifier that knows whether a query belongs to an old or a new class, or that uses the query batch to rebalance predictions, is not an independently deployable class-incremental predictor.
+
+Cross-receiver RFFI methods address receiver mismatch through collaboration, disentanglement, or domain adaptation \cite{shen2024receiveragnostic,zhang2024riei,liu2024receiverimpact,feng2025dadda,ma2025channelrobust}. Separately, class-incremental SEI methods protect old classes while incorporating new ones \cite{liu2021csil,li2024selftraining,shi2025dpds,li2025fscilsei,li2025mopchr}. The two literatures use different access assumptions. Domain-adaptation methods may retain source samples or consume unlabeled target batches; incremental methods may retain a base model, exemplars, teacher logits, or historical class statistics. A spaceborne support-only system instead needs one explicit contract that states what is sealed before deployment, what a \(K\)-shot support set means, and what the predictor may observe for each query.
+
+This paper presents \method, a two-stage system and evaluation discipline for that setting. Phase~1 learns a cross-receiver identity representation from source receivers only. Phase~2 operates on a held-out target receiver using a fixed received-IQ observation, labeled support, and an immutable Phase~1 bundle. The proposed Phase~2 realization, \stagehead{} (Robust Task-Balanced Incremental Discriminant Registration), estimates a receiver-sensitive perturbation spectrum from quantized aggregate knowledge, robustifies target-support centers, balances old and new tasks during covariance estimation, and compiles all registered classes into one small affine head.
+
+The contributions are fourfold.
+
+\begin{enumerate}
+  \item We define a falsifiable two-stage protocol that separates source-only DG, old-class target adaptation, and new-class registration. It forbids clean/source replay at deployment, target-query model selection, query-role oracles, class quotas, and cross-query reassignment.
+  \item We instantiate the protocol with a dual-representation CV-SincNet backbone and an immutable bundle containing the frozen model plus quantized multi-sample aggregate source knowledge. The target classifier never receives source examples or full-precision exemplars.
+  \item We develop \stagehead{}, which combines a 160-dimensional learned identity embedding with deterministic FFT96 and RF32 descriptors, support-only robust location estimation, task-balanced auto-shrinkage covariance, full/block reliability fusion, and a quantized equal-prior discriminant head.
+  \item We report both positive and negative evidence. A 32-candidate Phase~1 audit identifies a strong source-only checkpoint, while a complete 125-row matched Phase~2 study shows that task balancing reduces old-class forgetting at large registration scales but does not solve one-shot adaptation or cross-role calibration. This claim boundary is part of the result.
+\end{enumerate}
+
+The remainder of the paper reviews related work, formalizes the protocol, describes the two-stage method, reports the evidence currently available, and lists the experiments required before submission-grade performance claims can be made.
+
+\section{Related Work}
+
+\subsection{Deep RFFI and Channel Robustness}
+
+Deep RFFI has progressed from raw-IQ convolutional classifiers \cite{merchant2018deep,riyaz2018radioid,sankhe2019oracle} to models that use multisampling \cite{yu2019multisampling}, spectrograms \cite{shen2021lora}, or learned channel compensation \cite{restuccia2019deepradioid}. ORACLE explicitly optimizes transmitter classification with convolutional networks \cite{sankhe2019oracle}, whereas the channel-dissection study of Al-Shawabka \emph{et al.} shows that an apparently accurate classifier can learn propagation artifacts rather than stable hardware characteristics \cite{alshawabka2020exposing}. WiSig provides a large-scale test bed with 174 transmitters, 41 receivers, and multiple capture campaigns \cite{hanna2022wisig}. We use it only as a terrestrial proxy; the present experiments are not measurements from an on-orbit receiver.
+
+\subsection{Cross-Receiver Generalization and Adaptation}
+
+Receiver mismatch has prompted several complementary approaches. Collaborative receiver-agnostic RFFI exploits multiple receivers \cite{shen2024receiveragnostic}. RIEI explicitly separates emitter- and receiver-related information and also studies a federated variant \cite{zhang2024riei}. Other methods use target-domain alignment and pseudo-labeling \cite{liu2024receiverimpact}, dynamic distribution alignment \cite{feng2025dadda}, or joint channel-robust and receiver-independent learning \cite{ma2025channelrobust}. These studies build on broader DG and domain-adversarial learning principles \cite{ganin2016dann,zhou2021mixstyle,zhou2023dgsurvey}.
+
+Our distinction is primarily one of lifecycle and evidence. Phase~1 permits only source receivers. Phase~2 permits labeled target support but excludes target-query feedback and runtime source samples. Consequently, a method that uses target data during model selection is classified as adaptation, not DG; a comparison method that requires source replay remains a valid external comparator but is reported under a different permission row.
+
+\subsection{Satellite Transmitter Fingerprinting}
+
+PAST-AI and SatIQ provide evidence that satellite transmitters can be fingerprinted from real received traffic \cite{oligeri2023pastai,smailes2023satiq}. A recent ground--satellite generative framework further studies few-shot satellite IoE identification \cite{zhao2026gsgl}. Their real-satellite evidence is important context, but it must not be transferred to a proxy experiment. In \method, WiSig/ManySig records represent terrestrial devices and receivers; the three \texttt{leo\_*} operators are physics-inspired stress views. We therefore use ``spaceborne deployment proxy'' rather than ``in-orbit validation'' throughout.
+
+\subsection{Few-Shot and Class-Incremental SEI}
+
+Few-shot metric learning commonly represents each class by a support prototype \cite{snell2017prototypical}. Class-incremental learning additionally addresses catastrophic forgetting, often through exemplars, distillation, or classifier expansion \cite{rebuffi2017icarl,li2018lwf}. In wireless identification, CSIL expands a device classifier while preserving old knowledge \cite{liu2021csil}; later methods add self-training and prototype augmentation \cite{li2024selftraining}, systematic few-shot incremental design \cite{shi2025dpds}, orthogonal or reserved classifier directions \cite{li2025fscilsei}, and prototype correction with hierarchical regularization \cite{li2025mopchr}. Open-world variants further combine incremental enrollment with rejection or semi-supervised learning \cite{han2025openrfi,zhang2026ofscil,zhao2026cdsil}.
+
+These methods do not all solve the same problem. Some assume complete base-session training, retain an old teacher, or update a neural network over many gradient steps. \method{} instead studies a sealed pretrained backbone followed by support-only registration on a new receiver. Its current \stagehead{} realization uses a parametric discriminant state rather than exemplar replay or query-graph inference.
+
+\section{Problem Formulation and Protocol}
+
+\subsection{Received-Signal Model}
+
+Let \(y\) index a transmitter, \(d\) a receiver/domain, and \(c\) a propagation condition. A received complex baseband record is modeled abstractly as
+\begin{equation}
+\mathbf{x} =
+\mathcal{R}_{d}\!\left(
+\mathcal{H}_{d,c} * \mathcal{T}_{y}(\mathbf{s})
+\right) + \mathbf{n},
+\label{eq:received}
+\end{equation}
+where \(\mathcal{T}_{y}\) denotes transmitter hardware distortion, \(\mathcal{H}_{d,c}\) the channel, \(\mathcal{R}_{d}\) the receiver chain, and \(\mathbf{n}\) noise. This decomposition is explanatory: \method{} does not invert \(\mathcal{H}_{d,c}\), recover clean IQ, or identify a physical power-amplifier model at deployment. Memory-polynomial models \cite{ding2004memory} motivate the existence of stable nonlinear transmitter effects, but the classifier operates directly on the fixed received record.
+
+\subsection{Phase~1: Source-Only Learning}
+
+Let \(\Rsource\) be the set of source receivers and \(\Rtarget\) a held-out target receiver, with
+\begin{equation}
+\Rsource \cap \Rtarget = \varnothing.
+\end{equation}
+Phase~1 uses a labeled set
+\begin{equation}
+\mathcal{L}_{\mathrm{s}} =
+\{(\mathbf{x}_i,y_i,d_i):d_i\in\Rsource\}
+\end{equation}
+and an unlabeled set
+\begin{equation}
+\mathcal{U}_{\mathrm{s}} =
+\{(\mathbf{x}_j,d_j):d_j\in\Rsource,\;y_j\ \text{hidden}\}.
+\end{equation}
+The frozen split allocates 0.07, 0.63, and 0.30 of the source pool to labeled training, unlabeled training, and disjoint source validation, respectively. No record from \(\Rtarget\) may affect training, normalization statistics, early stopping, thresholds, prototypes, or checkpoint selection.
+
+\subsection{Phase~2: Fixed Observation and Support-Only State}
+
+Before Phase~2, each physical IQ record produces exactly one randomly selected allowed weak-LEO observation
+\begin{equation}
+\widetilde{\mathbf{x}}_i =
+\mathcal{A}_{c_i}(\mathbf{x}_i),\qquad
+c_i\in\{\texttt{clear},\texttt{low\_elev},\texttt{rain}\}.
+\end{equation}
+The resulting bytes and the scenario assignment are fixed. Equalization, normalization, FFTs, and other mathematical views may read \(\widetilde{\mathbf{x}}_i\), but they do not create additional physical samples. Thus, \(K\)-shot means \(K\) distinct physical records, not \(K\) augmentations of one record.
+
+Let the old and newly enrolled class sets be \(\Yold\) and \(\Ynew\), with \(\Yold\cap\Ynew=\varnothing\). Every registered class \(c\in\mathcal{Y}=\Yold\cup\Ynew\) has a labeled support set
+\begin{equation}
+\mathcal{S}_c =
+\{(\widetilde{\mathbf{x}}_{c,k},c)\}_{k=1}^{K}.
+\end{equation}
+Support and query physical identifiers are disjoint. A deployment state is constructed as
+\begin{equation}
+\Theta =
+\mathcal{A}\!\left(
+\mathcal{B}_{\mathrm{P1}},
+\bigcup_{c\in\mathcal{Y}}\mathcal{S}_c,
+\Gamma
+\right),
+\label{eq:state}
+\end{equation}
+where \(\mathcal{B}_{\mathrm{P1}}\) is an immutable Phase~1 bundle and \(\Gamma\) is a method configuration frozen before query evaluation.
+
+For every query, the predictor produces one independent decision
+\begin{equation}
+\widehat{y}_j =
+\arg\max_{c\in\mathcal{Y}}
+s_c(\widetilde{\mathbf{x}}^{(q)}_j;\Theta).
+\label{eq:prediction}
+\end{equation}
+The predictor cannot read the query label, its true old/new role, the number of examples from each class in the query batch, or another query's features. It cannot enforce class quotas or use Hungarian assignment, optimal transport, label propagation over queries, or global reassignment. Labels are joined only after immutable predictions are emitted.
+
+\begin{table}[t]
+\caption{Phase~2 Access and Claim Semantics}
+\label{tab:protocol}
+\centering
+\footnotesize
+\begin{tabular}{p{0.12\columnwidth}p{0.30\columnwidth}p{0.41\columnwidth}}
+\toprule
+Stage & Target information & Permitted claim \\
+\midrule
+2-A & No target transmitter labels; optionally unlabeled fixed received IQ & Zero-label target reference only \\
+2-B & \(K\)-shot labeled support for \(\Yold\) & Old-class target adaptation and calibration \\
+2-C & \(K\)-shot labeled support for \(\Yold\cup\Ynew\) & Joint old-class retention and seen-new enrollment \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Metrics}
+
+Let \(A_{\mathrm{o}}^{\mathrm{pre}}\) be old-class accuracy after Stage~2-B and before adding new classes, \(A_{\mathrm{o}}^{\mathrm{post}}\) old-class accuracy after Stage~2-C, and \(A_{\mathrm{n}}\) seen-new accuracy. We report
+\begin{equation}
+F = A_{\mathrm{o}}^{\mathrm{pre}}-A_{\mathrm{o}}^{\mathrm{post}}
+\end{equation}
+and
+\begin{equation}
+\Harm =
+\frac{2A_{\mathrm{o}}^{\mathrm{post}}A_{\mathrm{n}}}
+{A_{\mathrm{o}}^{\mathrm{post}}+A_{\mathrm{n}}}.
+\end{equation}
+We also report the lowest old-class accuracy within each row, receiver-wise results, and scenario-wise results. A valid Stage~2-C claim must keep \(A_{\mathrm{o}}^{\mathrm{post}}\), \(A_{\mathrm{n}}\), and \(\Harm\) from the same experimental row.
+
+\section{\method{} Architecture}
+
+\begin{figure*}[t]
+\centering
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.25}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{c@{\ \(\Longrightarrow\)\ }c@{\ \(\Longrightarrow\)\ }c@{\ \(\Longrightarrow\)\ }c}
+\fbox{\parbox{0.21\textwidth}{\centering
+\textbf{Phase 1: source only}\\
+Labeled + unlabeled IQ\\
+Source receivers only\\
+Dual CV-SincNet training}}
+&
+\fbox{\parbox{0.20\textwidth}{\centering
+\textbf{Immutable bundle}\\
+Frozen encoder\\
+INT8 aggregate knowledge\\
+Hashes and class/domain registry}}
+&
+\fbox{\parbox{0.25\textwidth}{\centering
+\textbf{Phase 2: support only}\\
+One fixed weak-LEO observation\\
+\(K\) physical supports per class\\
+\stagehead{} state compilation}}
+&
+\fbox{\parbox{0.22\textwidth}{\centering
+\textbf{Independent query}\\
+All registered classes compete\\
+Immutable prediction artifact\\
+Truth-side scorer}}
+\end{tabular}}
+\caption{The \method{} lifecycle. The target query is absent from training and registration. The independent scorer receives ground truth only after predictions are sealed.}
+\label{fig:overview}
+\end{figure*}
+
+\subsection{Phase~1 Dual Representation}
+
+The deployed encoder processes \(2\times256\) real-valued IQ samples. Its front end contains learnable bandpass filters inspired by SincNet \cite{ravanelli2018sincnet} and a lightweight convolutional backbone. Two asymmetric branches are trained:
+\begin{equation}
+\mathbf{z}_{\mathrm{id}}=f_{\theta}^{\mathrm{id}}(\mathbf{x})\in\mathbb{R}^{160},
+\qquad
+\mathbf{z}_{\mathrm{dom}}=f_{\theta}^{\mathrm{dom}}(\mathbf{x})\in\mathbb{R}^{128}.
+\end{equation}
+The identity branch feeds a cosine-margin transmitter classifier \cite{wang2018cosface}; the nuisance branch and gradient-reversal path expose receiver information during training. Only \(\mathbf{z}_{\mathrm{id}}\) enters Phase~2 identity geometry. The domain embedding is retained for training and diagnostics, not as a target-class shortcut.
+
+For exposition, the source-only objective is grouped as
+\begin{equation}
+\mathcal{L}_{\mathrm{P1}} =
+\mathcal{L}_{\mathrm{tx}}
+\lambda_{\mathrm{dom}}\mathcal{L}_{\mathrm{dom}}
+\lambda_{\mathrm{adv}}\mathcal{L}_{\mathrm{adv}}
+\lambda_{\mathrm{ssl}}\mathcal{L}_{\mathrm{ssl}}
+\lambda_{\mathrm{geo}}\mathcal{L}_{\mathrm{geo}}
+\lambda_{\mathrm{stress}}\mathcal{L}_{\mathrm{stress}}.
+\label{eq:p1loss}
+\end{equation}
+Here, \(\mathcal{L}_{\mathrm{tx}}\) is the supervised identity loss, \(\mathcal{L}_{\mathrm{dom}}\) and \(\mathcal{L}_{\mathrm{adv}}\) respectively preserve nuisance observability and suppress receiver information in the identity space, \(\mathcal{L}_{\mathrm{ssl}}\) covers confidence-controlled unlabeled learning, \(\mathcal{L}_{\mathrm{geo}}\) groups class-balanced angular/prototype constraints, and \(\mathcal{L}_{\mathrm{stress}}\) covers source-only receiver episodes and physics-inspired channel views. Equation~\eqref{eq:p1loss} is a conceptual grouping of implemented terms; component-level novelty is not claimed for Sinc filters, gradient reversal, cosine-margin classification, or style perturbation individually.
+
+\subsection{Immutable Deployment Bundle}
+
+The deployment bundle contains the selected checkpoint, architecture and normalization metadata, class/domain registries, and 84 quantized domain--class aggregate identity centers. Each center is formed from at least two distinct Phase~1 physical records before any target access and stored with an INT8 code, scale, and validity mask. The bundle contains no raw source IQ, single-sample feature, reversible index, or full-precision exemplar. Phase~2 reads but cannot update it.
+
+This design makes source knowledge explicit and auditable. It is closer to immutable model state than to source replay. Removing or changing the aggregate component changes the bundle identifier, but it does not change the already validated target data capsule.
+
+\section{\stagehead{} Support-Only Registration}
+
+\subsection{Multimodal Target Feature}
+
+For each fixed received record, \stagehead{} computes three views from the same physical observation:
+\begin{align}
+\mathbf{a} &=
+\mathcal{N}_{\epsilon}(\mathbf{z}_{\mathrm{id}})
+\in\mathbb{R}^{160},\\
+\mathbf{b} &=
+\mathcal{N}_{\epsilon}
+\left(
+\left[
+\mathbf{f}_{\mathrm{FFT96}};
+\mathbf{f}_{\mathrm{RF32}}
+\right]\right)
+\in\mathbb{R}^{128},
+\end{align}
+where \(\mathcal{N}_{\epsilon}(\mathbf{v})=
+\mathbf{v}/\max(\|\mathbf{v}\|_2,\epsilon)\) and \(\epsilon=10^{-8}\).
+FFT96 is obtained by centering, applying a Hann window, taking the log-magnitude spectrum, and interpolating to 96 bins. RF32 contains fixed amplitude, phase, moment, imbalance, and short-lag correlation statistics. Neither view increases \(K\).
+
+The joint feature is
+\begin{equation}
+\mathbf{z} =
+\mathcal{N}_{\epsilon}
+\left(
+\begin{bmatrix}
+\mathbf{a}\\4\mathbf{b}
+\end{bmatrix}
+\right)
+\in\mathbb{R}^{288}.
+\label{eq:joint}
+\end{equation}
+For nonzero blocks, their final norm contributions are \(1/\sqrt{17}\) and \(4/\sqrt{17}\). The fixed factor 4 is part of the locked candidate and is not selected from target-query accuracy.
+
+\subsection{Perturbation-Aware Robust Centers}
+
+The INT8 source aggregates are dequantized, centered within each class across source domains, and pooled into a perturbation covariance \(\mathbf{G}\). After symmetric correction and subtraction of the estimated quantization-noise floor,
+\begin{equation}
+\mathbf{G}_{+} =
+\frac{\mathbf{G}+\mathbf{G}^{\mathsf T}}{2}
+-\sigma_{\mathrm{q}}^{2}\mathbf{I}.
+\end{equation}
+The positive eigenspectrum \((\lambda_j,\mathbf{u}_j)\) defines a class-agnostic basis \(\mathbf{U}\). Its rank is the ceiling of the positive-spectrum participation ratio, so rank selection does not use target-query results.
+
+For class \(c\), let \(\bar{\mathbf{z}}_{c}^{\mathrm{id}}\) be the mean identity support and \(\mathbf{e}_{c,k}\) the residual of support \(k\). The perturbation energy is
+\begin{equation}
+E_{c,k} =
+\sum_{j=1}^{r}\rho_j
+\left(\mathbf{u}_{j}^{\mathsf T}\mathbf{e}_{c,k}\right)^2,
+\qquad
+\rho_j=\frac{\lambda_j}{\sum_{\ell=1}^{r}\lambda_\ell}.
+\end{equation}
+With \(\tau_c=K^{-1}\sum_k E_{c,k}\), one-step Cauchy weights are
+\begin{equation}
+\omega_{c,k}\propto
+\frac{1}{1+E_{c,k}/\tau_c}.
+\end{equation}
+The weighted identity center defines a translation applied uniformly to all identity supports of class \(c\); their within-class residuals and the FFT/RF blocks are unchanged. For \(K\leq2\) or a degenerate energy scale, the module takes a conservative identity fallback. This prevents the method from fabricating covariance evidence at one shot.
+
+\subsection{Task-Balanced Shrinkage Geometry}
+
+The 288-dimensional support covariance is ill-conditioned when \(K\) is small. \stagehead{} therefore uses automatic shrinkage \cite{ledoit2004covariance} separately within the old and new tasks:
+\begin{equation}
+\widehat{\boldsymbol{\Sigma}}_{\mathrm{o}} =
+\operatorname{ShrinkCov}(\{\mathbf{z}_{c,k}:c\in\Yold\}),
+\end{equation}
+\begin{equation}
+\widehat{\boldsymbol{\Sigma}}_{\mathrm{n}} =
+\operatorname{ShrinkCov}(\{\mathbf{z}_{c,k}:c\in\Ynew\}).
+\end{equation}
+After registration, the balanced covariance is
+\begin{equation}
+\widehat{\boldsymbol{\Sigma}}_{\mathrm{bal}} =
+\frac{1}{2}\widehat{\boldsymbol{\Sigma}}_{\mathrm{o}}
++\frac{1}{2}\widehat{\boldsymbol{\Sigma}}_{\mathrm{n}}.
+\label{eq:balanced}
+\end{equation}
+The 0.5/0.5 weights are fixed and do not vary with the number of new classes, receiver, scenario, seed, or transmitter identifier. Before new-class registration, and in the \(K\leq2\) fallback, the registered-old control geometry is retained exactly.
+
+Two covariance structures are constructed. A full model retains cross-block correlations among identity, FFT, and RF features; a block model zeros the cross-block terms. Leave-one-shot-rank cross-fitting estimates class-wise reliability without query access. The resulting fusion is compiled into a single score matrix; it is not a query-time mixture chosen from a query's old/new role.
+
+\subsection{Bounded Fisher Residual and Affine Compilation}
+
+A low-rank Fisher residual \cite{fisher1936lda} is estimated from support class means and within-class scatter. Candidate residuals are clipped and admitted only through support-cross-fitted per-class and atomic safety checks. Failed candidates leave the base geometry unchanged. Equal class priors are then used to compile a linear discriminant head
+\begin{align}
+\mathbf{w}_c &=
+\widehat{\boldsymbol{\Sigma}}^{-1}\boldsymbol{\mu}_c,\\
+b_c &=
+-\frac{1}{2}
+\boldsymbol{\mu}_c^{\mathsf T}
+\widehat{\boldsymbol{\Sigma}}^{-1}\boldsymbol{\mu}_c,\\
+s_c(\mathbf{q}) &= \mathbf{q}^{\mathsf T}\mathbf{w}_c+b_c.
+\label{eq:lda}
+\end{align}
+All old and new classes use the same score form and equal prior. Thus, task balancing affects covariance estimation but does not create separate old/new heads.
+
+\subsection{Quantized State}
+
+Each affine coefficient block is stored with two residual INT8 codes and two FP16 scales; intercepts use FP16 and the diagonal metric uses FP32. For \(C\) registered classes and \(p=288\),
+\begin{equation}
+B_{\mathrm{core}} = 4p+2Cp+14C\ \text{bytes}.
+\end{equation}
+The 26-class core arrays occupy 16.11~KiB, and the compiled head requires \(Cp=7488\) multiply--accumulate operations per query. These figures exclude the frozen encoder, FFT/RF extraction, registration workspace, metadata, and the current FP32 decode path.
+
+\section{Experimental Methodology}
+
+\subsection{Data and Splits}
+
+We use the WiSig/ManySig corpus as a terrestrial receiver/transmitter proxy. The public WiSig dataset contains 10 million packets from 174 transmitters and 41 receivers across four captures \cite{hanna2022wisig}. The frozen \method{} subset uses seven source receivers
+\[
+\{1\!-\!1,1\!-\!19,14\!-\!7,18\!-\!2,19\!-\!2,2\!-\!1,2\!-\!19\}
+\]
+and five disjoint target receivers
+\[
+\{20\!-\!1,3\!-\!19,7\!-\!14,7\!-\!7,8\!-\!8\}.
+\]
+Six transmitter identities appear in Phase~1 and are old classes in Phase~2. Nested sets of 5, 10, and 20 additional identities are used as new classes. Every target record is assigned one of
+\(\{\texttt{leo\_clear\_weak},\texttt{leo\_low\_elev\_weak},
+\texttt{leo\_rain\_weak}\}\) before support/query selection.
+
+\authoraction{Insert the exact public data-release identifier, local manifest hash, per-split physical-record counts, sampling rate, and numerical channel-operator parameters. These values must come from the frozen capsule; do not reconstruct them from prose.}
+
+\subsection{Phase~1 Selection Audit}
+
+The Phase~1 audit contains 32 completed candidates. Each has a complete 200--240 epoch trace, checkpoint, diagnostic export, and source-only evaluation. The selected checkpoint, \texttt{ADV3B02\_CORE90\_SOFT\_E200}, uses 200 epochs and is selected at epoch 194. It is compared with the preceding ADV2 aggregate rather than with an untraceable cross-run maximum.
+
+We report overall source-domain accuracy, strict unseen-domain/unseen-split (UDU) accuracy, the minimum receiver-level accuracy (receiver floor), and the strict floor under satellite-stress augmentation. The stress metrics remain proxy metrics and do not certify target adaptation.
+
+\subsection{Phase~2 Matched Matrix}
+
+The \stagehead{} diagnostic fixes five target receivers, seeds 713102--713106, and five slices:
+\[
+(K,C_{\mathrm{n}})\in
+\{(1,20),(5,20),(10,5),(10,10),(10,20)\}.
+\]
+Each receiver--seed--slice row evaluates all three weak-LEO scenarios, yielding 125 jobs and 375 scenario cells. The authoritative retry completed 125/125 jobs with zero execution failures.
+
+The matched control, internally named D81, shares the frozen features, robust centers, dual-geometry fusion, safety gates, support/query sets, and seeds. The only controlled difference is whether Eq.~\eqref{eq:balanced} is activated after new-class registration. The paired deltas therefore isolate task-balanced covariance; they do not estimate the contribution of the entire \stagehead{} pipeline relative to a raw backbone.
+
+\subsection{External Comparisons}
+
+We include official-semantics reproductions of CSIL \cite{liu2021csil} and MoPC-HR \cite{li2025mopchr}. Their complete matrix contains \(5\) receivers, \(5\) seeds, \(4\) values of \(K\), \(4\) new-class scales, and two methods, for 800 cells and 2400 scenario rows. The new-class support and query records use the same weak-LEO convention, but the methods retain the base/source access required by their original training lifecycles. Their results are therefore descriptive, not paired with \stagehead{}.
+
+\authoraction{Before submission, add same-capsule, same-seed, same-\(C_{\mathrm{n}}\) support-only ProtoNet, single-qKNN, adapter-qKNN, and a frozen current CVS candidate. Report external-paper methods in a separate permission table rather than merging incompatible rows into one leaderboard.}
+
+\subsection{Evidence and Statistical Policy}
+
+All adaptations are constructed from support only. Hyperparameters are locked before query scoring. Each query prediction is written to an immutable artifact, and a separate scorer joins truth afterward. Main interpretations use complete same-row tuples; marginal maxima from different receivers or seeds are not combined. Means are descriptive unless a paired interval is available.
+
+\authoraction{Compute receiver-clustered or receiver-by-seed bootstrap confidence intervals and paired effect intervals from the final frozen confirmation matrix. The current Phase~1 comparison has no independent-repeat interval and must not be described as statistically significant.}
+
+\section{Results}
+
+\subsection{Phase~1 Source-Only Generalization}
+
+\begin{table}[t]
+\caption{Phase~1 Source-Only Results (\%)}
+\label{tab:p1}
+\centering
+\footnotesize
+\begin{tabular}{lrrr}
+\toprule
+Metric & ADV2 avg. & \method{} P1 & Difference \\
+\midrule
+Overall & 86.92 & 89.18 & +2.26 \\
+Strict UDU & 80.09 & 84.89 & +4.80 \\
+Receiver floor & 69.07 & 75.55 & +6.48 \\
+Satellite strict floor & 67.83 & 68.77 & +0.94 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Table~\ref{tab:p1} shows that the selected Phase~1 checkpoint improves the mean, strict split, and worst-receiver criteria simultaneously. The receiver-floor gain is the largest, suggesting that model selection based only on overall accuracy would understate the benefit. The satellite-stress floor improves by less than one point, however, and remains below a separate soft-unknown baseline's 69.55\%. The selected checkpoint also has a source-overflow diagnostic of 0.459 and a bridge-accept diagnostic of 1.0. These diagnostics prevent an open-set claim: the Phase~1 evidence supports closed-set source-only DG, not unknown rejection.
+
+\subsection{Matched Effect of Task-Balanced Covariance}
+
+\begin{table*}[t]
+\caption{\stagehead{} Absolute Results and Paired Change Versus the Matched Control}
+\label{tab:d92}
+\centering
+\footnotesize
+\begin{tabular}{ccrrrrrr|rrrr}
+\toprule
+\(K\) & \(C_{\mathrm{n}}\) &
+\(A_{\mathrm{o}}^{\mathrm{pre}}\) &
+\(A_{\mathrm{o}}^{\mathrm{post}}\) &
+Min-old & \(A_{\mathrm{n}}\) & \(\Harm\) & \(F\) &
+\(\Delta A_{\mathrm{o}}^{\mathrm{post}}\) &
+\(\Delta\)Min-old &
+\(\Delta A_{\mathrm{n}}\) &
+\(\Delta\Harm\) \\
+\midrule
+1  & 20 & 68.144 & 44.033 & 14.200 & 27.150 & 33.410 & 24.111 & 0.000 & 0.000 & 0.000 & 0.000 \\
+5  & 20 & 81.267 & 63.711 & 33.200 & 58.883 & 60.955 & 17.556 & +2.311 & +2.400 & -0.410 & +0.920 \\
+10 & 5  & 86.111 & 76.189 & 49.800 & 74.133 & 74.803 & 9.922  & -0.133 & -0.867 & +0.520 & +0.197 \\
+10 & 10 & 86.111 & 72.533 & 44.200 & 66.353 & 69.106 & 13.578 & +1.000 & +1.933 & -0.340 & +0.291 \\
+10 & 20 & 86.111 & 71.333 & 42.667 & 68.150 & 69.555 & 14.778 & +2.622 & +4.600 & -0.653 & +0.964 \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+Table~\ref{tab:d92} yields three conclusions. First, the task-balanced covariance is inactive at \(K=1\), as required by the identifiability fallback; its paired effect is exactly zero. Second, as the new-class set grows, it increasingly protects old classes. At \(K=10,C_{\mathrm{n}}=20\), all five target receivers improve in old-class accuracy, and the gains under clear, low-elevation, and rain stress are 2.00, 2.77, and 3.10 points. Third, the gain is not Pareto-complete. The same large-scale row loses 0.65 points of new-class accuracy, and the \(K=10,C_{\mathrm{n}}=5\) row slightly favors new classes at the expense of old-class accuracy and floor.
+
+The absolute values also matter. At \(K=10,C_{\mathrm{n}}=20\), \(\Harm=69.56\%\), and the weakest old-class accuracy is 42.67\%. Thus, complete execution and a positive paired delta do not imply deployment success.
+
+\subsection{Descriptive External Comparison}
+
+\begin{table}[t]
+\caption{Different-Permission Comparison at \(K=10,C_{\mathrm{n}}=20\) (\%)}
+\label{tab:external}
+\centering
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{lrrrr}
+\toprule
+Method & Old-pre & Old-post & New & \(H\) \\
+\midrule
+\stagehead{} & 86.111 & 71.333 & 68.150 & 69.555 \\
+CSIL reproduction & 42.833 & 38.222 & 1.660 & 2.979 \\
+MoPC-HR reproduction & 45.322 & 7.611 & 25.187 & 10.695 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\stagehead{} obtains a substantially higher harmonic mean than the two reproduced incremental methods in Table~\ref{tab:external}. This is not a clean algorithm ranking. The old-pre values reveal that the methods enter registration with very different base representations, and their source/base permissions, training schedules, and seeds differ. The result instead shows that original incremental-learning recipes can become severely imbalanced when transferred to weak-LEO cross-receiver data with many simultaneously enrolled classes.
+
+We intentionally exclude an older two-new-class qKNN table from this ranking. Changing \(C_{\mathrm{n}}\) changes the candidate set and the cross-role confusion problem; comparing its \(H\) with a 5-, 10-, or 20-new-class row would be invalid.
+
+\subsection{Resource Profile}
+
+\begin{table}[t]
+\caption{\stagehead{} Compiled-State Resource Profile}
+\label{tab:resource}
+\centering
+\footnotesize
+\begin{tabular}{rrrr}
+\toprule
+\(C\) & FP32 affine & Core state & Head MAC/query \\
+\midrule
+6  & 6.77 KiB  & 4.58 KiB  & 1,728 \\
+11 & 12.42 KiB & 7.46 KiB  & 3,168 \\
+16 & 18.06 KiB & 10.34 KiB & 4,608 \\
+26 & 29.35 KiB & 16.11 KiB & 7,488 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The compiled state is small, but registration is not free. The current \(K=10\) audit performs approximately 88 component fits and has an 11.15--11.74 GMAC-equivalent upper-bound accounting, together with FP64 covariance workspaces. The Python/NumPy/scikit-learn reference implementation decodes INT8 weights to FP32 before the final product. Accordingly, Table~\ref{tab:resource} supports a storage claim for the head, not an end-to-end INT8 acceleration claim.
+
+\section{Discussion}
+
+\subsection{What Is Novel and What Is Not}
+
+The individual ingredients of \method{} have precedents: Sinc filters \cite{ravanelli2018sincnet}, cosine-margin classification \cite{wang2018cosface}, domain-adversarial learning \cite{ganin2016dann}, style perturbation \cite{zhou2021mixstyle}, shrinkage covariance \cite{ledoit2004covariance}, and Fisher discrimination \cite{fisher1936lda}. The defensible novelty lies in their task-specific lifecycle and coupling:
+
+\begin{enumerate}
+  \item an explicit separation between source-only weak/semi-supervised receiver DG and support-only incremental deployment;
+  \item an immutable, quantized aggregate source-knowledge boundary rather than runtime source replay;
+  \item a class-permutation-symmetric state compiler that uses identical formulas for old and new supports, yet prevents new-class count from dominating covariance estimation; and
+  \item an evidence path in which every query is independently scored over all registered classes and truth is attached only after prediction publication.
+\end{enumerate}
+
+The present evidence establishes these properties and a targeted forgetting reduction. It does not yet establish a state-of-the-art end-to-end accuracy result. For a top-tier Transactions submission, the protocol contribution must be accompanied by a stronger final Stage~2 method or by a broader benchmark release that makes the protocol itself independently reusable.
+
+\subsection{Failure Analysis}
+
+The \(K=1\) result exposes a structural limit: one support per class cannot identify within-class perturbation or estimate task-specific covariance. Query-assisted pseudo-labeling could add apparent samples, but it would violate the present support-only contract and would confound adaptation with evaluation.
+
+At larger \(K\), Eq.~\eqref{eq:balanced} balances covariance evidence, not score scales. New classes can still intrude into old-class decision regions. A licensed role-oracle diagnostic at \(K=10,C_{\mathrm{n}}=20\) increases old accuracy from 71.33\% to 83.31\% and \(H\) from approximately 69.7\% to 76.9\%. The oracle is permanently non-promotable, but the gap localizes the remaining problem: legal cross-role calibration must be learned from support, not from a query's true role.
+
+\subsection{Validity Boundaries}
+
+\textbf{Proxy-to-space gap:} WiSig/ManySig is terrestrial. The weak-LEO operators are physical stress proxies, not orbital measurements. Claims about radiation, Doppler dynamics, satellite payload electronics, or flight reliability require real hardware and real links.
+
+\textbf{Selection multiplicity:} Phase~1 was selected from 32 candidates. The reported comparison is an internal audit and lacks a fresh, independently repeated confirmation. Its deltas should not be interpreted as unbiased generalization gains until reproduced under a frozen selection rule.
+
+\textbf{External-method permissions:} CSIL and MoPC-HR are reproduced according to their own lifecycles. Their low CVS results do not invalidate their original papers. A fair manuscript must show both original-task fidelity and the permission mismatch when transferring them to CVS.
+
+\textbf{Resource evidence:} The final head is compact, but the complete registration pipeline has no worst-case execution time, peak resident memory, energy, thermal, or radiation-tolerance measurement on a target processor.
+
+\subsection{Submission-Critical Evidence Still Required}
+
+\begin{table*}[t]
+\caption{Evidence Lock for the Submission Version}
+\label{tab:missing}
+\centering
+\footnotesize
+\begin{tabular}{p{0.23\textwidth}p{0.22\textwidth}p{0.43\textwidth}}
+\toprule
+Claim surface & Current status & Required before a Q1 submission \\
+\midrule
+Phase~1 source-only DG & Complete internal audit & Fresh frozen repeats, intervals, module ablations, and a matched comparison with current cross-receiver DG baselines \\
+Stage~2 old/new registration & Complete negative diagnostic & Frozen promotable method on the full \(K\), receiver, seed, scenario, and \(C_{\mathrm{n}}\) matrix; same-row old, new, floor, forgetting, and \(H\) \\
+Comparison with qKNN/ProtoNet & Different slices exist & Same capsule, same seeds, same new-class scale, identical physical support/query IDs, and explicit permission rows \\
+Real satellite generalization & Not tested & Independent real-satellite or hardware-in-the-loop validation; otherwise retain proxy-only language \\
+Onboard efficiency & Head storage audited & End-to-end latency, peak RAM, energy, and numerical-closure tests on the intended CPU/DSP/FPGA/NPU \\
+Reproducibility & Local evidence complete & Public code, hashes, split manifest, channel parameters, and a one-command scorer that cannot expose query truth to the predictor \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\section{Conclusion}
+
+This paper introduced \method{}, a protocol-governed framework for cross-receiver RFFI under a spaceborne deployment proxy. It separates source-only dual-representation learning from support-only old-class adaptation and new-class enrollment, and it makes the deployment boundary auditable through fixed received observations, immutable model knowledge, independent all-class decisions, and truth-side scoring. The current \stagehead{} realization compiles multimodal target support into a compact discriminant state. Its 125-row matched diagnostic shows that task-balanced covariance can reduce old-class forgetting when many new classes are registered, but the improvement is accompanied by a new-class tradeoff and vanishes at one shot. The evidence therefore supports the protocol, the state-compilation mechanism, and a specific forgetting result; it does not yet support in-orbit validation or a completed state-of-the-art deployment claim. Resolving support-only cross-role calibration, one-shot identifiability, and target-hardware efficiency is the necessary next step.
+
+\section*{Data and Code Availability}
+
+The base WiSig dataset is described in \cite{hanna2022wisig}. The current experiment artifacts, protocol capsules, and implementation are maintained in a controlled research repository.
+\authoraction{Replace this paragraph with the final public repository, immutable release tag, data-access instructions, split-manifest hashes, and artifact archive DOI. Do not promise release terms that have not been approved.}
+
+\section*{Acknowledgment}
+\authoraction{Insert funding, compute-resource, data-provider, and contributor acknowledgments after authorship review.}
+
+\balance
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+
+\end{document}
