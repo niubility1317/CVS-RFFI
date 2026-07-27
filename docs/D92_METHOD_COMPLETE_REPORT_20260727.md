@@ -515,7 +515,28 @@ $$
 \sqrt{17}.
 $$
 
-**本式符号说明：**本模块中的\(\mathbf x\)是固定接收IQ，\(I_t,Q_t\)是第\(t\)个I/Q采样，\(L\)是序列长度；\(E_\theta\)是参数\(\theta\)冻结的身份编码器，\(\mathbf f^{\mathrm{id}}\)、\(\mathbf f^{\mathrm{fft}}\)、\(\mathbf f^{\mathrm{rf}}\)、\(\mathbf f^{\mathrm{aux}}\)分别是160维身份、96维频谱、32维RF统计和128维辅助特征；\(\mathcal N_\varepsilon\)是带\(\varepsilon=10^{-8}\)保护的二范数归一化，\(\Phi_\theta\)是完整特征映射，\(\mathbf z\in\mathbb R^{288}\)是最终联合特征；常数4是锁定的辅助块权重。
+**本式符号说明：**
+
+- 第一个1：单独归一化后的160维身份特征块范数。
+- 数字4：128维辅助特征块的固定几何权重。
+- \(\sqrt{1^2+4^2}\)：两个正交拼接块加权后的整体\(L_2\)范数。
+- \(\sqrt{17}\)：外层归一化前完整288维拼接向量的范数。
+- 这里的辅助特征块记为\(\mathbf f^{\mathrm{aux}}\)。它由FFT96和RF32拼接后共同归一化得到：
+
+  \[
+  \mathbf f^{\mathrm{aux}}
+  =
+  \mathcal N_\varepsilon
+  \left(
+  \begin{bmatrix}
+  \mathbf f^{\mathrm{fft}}\\
+  \mathbf f^{\mathrm{rf}}
+  \end{bmatrix}
+  \right)
+  \in\mathbb R^{128}.
+  \]
+
+  其中，\(\mathbf f^{\mathrm{fft}}\in\mathbb R^{96}\)是FFT频谱描述，\(\mathbf f^{\mathrm{rf}}\in\mathbb R^{32}\)是RF统计描述，\(128=96+32\)，\(\mathcal N_\varepsilon\)是带数值保护的\(L_2\)归一化。
 
 所以最终身份块范数为
 
@@ -523,7 +544,11 @@ $$
 \frac{1}{\sqrt{17}},
 $$
 
-**本式符号说明：**本模块中的\(\mathbf x\)是固定接收IQ，\(I_t,Q_t\)是第\(t\)个I/Q采样，\(L\)是序列长度；\(E_\theta\)是参数\(\theta\)冻结的身份编码器，\(\mathbf f^{\mathrm{id}}\)、\(\mathbf f^{\mathrm{fft}}\)、\(\mathbf f^{\mathrm{rf}}\)、\(\mathbf f^{\mathrm{aux}}\)分别是160维身份、96维频谱、32维RF统计和128维辅助特征；\(\mathcal N_\varepsilon\)是带\(\varepsilon=10^{-8}\)保护的二范数归一化，\(\Phi_\theta\)是完整特征映射，\(\mathbf z\in\mathbb R^{288}\)是最终联合特征；常数4是锁定的辅助块权重。
+**本式符号说明：**
+
+- 分子1：身份块在进入最终拼接前已经单独归一化为单位范数。
+- 分母\(\sqrt{17}\)：身份块和四倍辅助块拼接后的总范数。
+- \(1/\sqrt{17}\approx0.2425\)：最终288维向量完成外层归一化后，身份块所占的块范数。
 
 辅助块范数为
 
@@ -531,7 +556,12 @@ $$
 \frac{4}{\sqrt{17}}.
 $$
 
-**本式符号说明：**本模块中的\(\mathbf x\)是固定接收IQ，\(I_t,Q_t\)是第\(t\)个I/Q采样，\(L\)是序列长度；\(E_\theta\)是参数\(\theta\)冻结的身份编码器，\(\mathbf f^{\mathrm{id}}\)、\(\mathbf f^{\mathrm{fft}}\)、\(\mathbf f^{\mathrm{rf}}\)、\(\mathbf f^{\mathrm{aux}}\)分别是160维身份、96维频谱、32维RF统计和128维辅助特征；\(\mathcal N_\varepsilon\)是带\(\varepsilon=10^{-8}\)保护的二范数归一化，\(\Phi_\theta\)是完整特征映射，\(\mathbf z\in\mathbb R^{288}\)是最终联合特征；常数4是锁定的辅助块权重。
+**本式符号说明：**
+
+- 分子4：辅助块\(\mathbf f^{\mathrm{aux}}\)在最终拼接前乘以固定权重4。
+- 分母\(\sqrt{17}\)：加权身份块与辅助块的拼接总范数。
+- \(4/\sqrt{17}\approx0.9701\)：最终288维向量完成外层归一化后，整个辅助块所占的块范数。
+- 该值描述128维辅助块整体，不表示其中每个FFT或RF坐标都等于\(4/\sqrt{17}\)。
 
 这说明固定权重4不是“把辅助特征简单放大四倍后就结束”，而是在最终单位球面上规定两个大块的相对几何。权重不由当前query或测试准确率决定。
 
