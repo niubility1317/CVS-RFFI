@@ -10,6 +10,7 @@ import os
 import re
 import signal
 import subprocess
+import sys
 import threading
 import time
 from collections import defaultdict
@@ -21,6 +22,7 @@ from cvsrffi.full_ablation_spec import (
     GPU_COUNT,
     PHASE1_T1_ARMS,
     SLOTS_PER_GPU,
+    build_phase1_t1_rows,
     validate_plan_rows,
 )
 
@@ -29,8 +31,23 @@ class Phase1RunnerError(RuntimeError):
     """Raised when the immutable Phase1 release contract is violated."""
 
 
+class Phase1ProtocolError(Phase1RunnerError):
+    """Raised for a P0 identity, protocol, or artifact integrity violation."""
+
+
 def _load_json(path: Path) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8-sig"))
+
+
+def _sha256_path(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        while True:
+            chunk = handle.read(1024 * 1024)
+            if not chunk:
+                break
+            digest.update(chunk)
+    return digest.hexdigest()
 
 
 def _canonical_plan_hash(plan: Mapping[str, Any]) -> str:
@@ -45,6 +62,36 @@ def _canonical_plan_hash(plan: Mapping[str, Any]) -> str:
         separators=(",", ":"),
     ).encode("utf-8")
     return hashlib.sha256(encoded).hexdigest()
+
+
+def _canonical_payload_hash(payload: Mapping[str, Any]) -> str:
+    encoded = json.dumps(
+        dict(payload),
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+        default=str,
+    ).encode("utf-8")
+    return hashlib.sha256(encoded).hexdigest()
+
+
+def is_p0_protocol_failure(
+    log_text: str,
+    completion_exception: Exception | None,
+) -> bool:
+    if isinstance(completion_exception, Phase1ProtocolError):
+        return True
+    normalized = str(log_text).lower()
+    markers = (
+        "phase1ablationconfigerror",
+        "formal phase1",
+        "resolved phase1 config hash differs",
+        "checkpoint selection drift",
+        "source-only checkpoint selection forbids",
+        "dataset receipt drift",
+        "environment receipt drift",
+    )
+    return any(marker in normalized for marker in markers)
 
 
 def validate_phase1_release_plan(
@@ -65,6 +112,49 @@ def validate_phase1_release_plan(
         raise Phase1RunnerError("Phase1 T1 release must contain exactly 30 rows")
     if len({int(row["train_seed"]) for row in rows}) != 5:
         raise Phase1RunnerError("Phase1 T1 release must contain five paired seeds")
+    registered_seeds = [
+        int(value)
+        for value in list(
+            plan.get("registered_phase1_train_seeds") or []
+        )
+    ]
+    if len(registered_seeds) != 5 or len(set(registered_seeds)) != 5:
+        raise Phase1RunnerError(
+            "plan lacks five registered Phase1 seeds"
+        )
+    expected_rows = build_phase1_t1_rows(
+        registered_seeds,
+        git_commit=str(plan.get("git_commit", "")),
+    )
+    canonical_fields = (
+        "ablation_id",
+        "train_seed",
+        "row_key",
+        "worker",
+        "split_fractions",
+        "epochs",
+        "checkpoint_selection",
+        "method_config_hash",
+    )
+    actual_by_key = {
+        str(row["row_key"]): row for row in rows
+    }
+    expected_by_key = {
+        str(row["row_key"]): row for row in expected_rows
+    }
+    if set(actual_by_key) != set(expected_by_key):
+        raise Phase1RunnerError(
+            "Phase1 plan is not the exact registered 6x5 Cartesian matrix"
+        )
+    for row_key, expected_row in expected_by_key.items():
+        actual_row = actual_by_key[row_key]
+        if any(
+            actual_row.get(field) != expected_row.get(field)
+            for field in canonical_fields
+        ):
+            raise Phase1RunnerError(
+                f"Phase1 canonical row drift: {row_key}"
+            )
     if any(row.get("git_commit") != plan.get("git_commit") for row in rows):
         raise Phase1RunnerError("row Git commit differs from plan Git commit")
     if require_launch_authority:
@@ -86,6 +176,16 @@ def validate_phase1_release_plan(
             for char in seed_registry_hash
         ):
             raise Phase1RunnerError("sealed plan lacks seed-registry hash")
+        wisig_hash = str(plan.get("wisig_pkl_sha256", "")).lower()
+        if len(wisig_hash) != 64 or any(
+            char not in "0123456789abcdef"
+            for char in wisig_hash
+        ):
+            raise Phase1RunnerError("sealed plan lacks WiSig SHA256")
+        if plan.get("python_environment_id") != "ssr-gpu":
+            raise Phase1RunnerError(
+                "sealed plan requires the ssr-gpu environment"
+            )
         if any(
             row.get("executor_status") != "LOCAL_VERIFIED"
             for row in rows
@@ -106,6 +206,11 @@ def build_phase1_command(
     output_dir: Path,
     sealed_plan_sha256: str = "",
     seed_registry_sha256: str = "",
+    wisig_pkl_sha256: str = "",
+    dataset_receipt_path: str = "",
+    dataset_receipt_sha256: str = "",
+    environment_receipt_path: str = "",
+    environment_receipt_sha256: str = "",
 ) -> list[str]:
     command = [
         str(python_executable),
@@ -131,6 +236,18 @@ def build_phase1_command(
         str(sealed_plan_sha256),
         "--seed_registry_sha256",
         str(seed_registry_sha256),
+        "--wisig_pkl_sha256",
+        str(wisig_pkl_sha256),
+        "--dataset_receipt_path",
+        str(dataset_receipt_path),
+        "--dataset_receipt_sha256",
+        str(dataset_receipt_sha256),
+        "--environment_receipt_sha256",
+        str(environment_receipt_sha256),
+        "--environment_receipt_path",
+        str(environment_receipt_path),
+        "--python_environment_id",
+        "ssr-gpu",
         "--seed",
         str(int(row["train_seed"])),
         "--device",
@@ -167,6 +284,8 @@ def validate_phase1_row_completion(
     plan: Mapping[str, Any],
     output_dir: Path,
     return_code: int,
+    dataset_receipt_sha256: str = "",
+    environment_receipt_sha256: str = "",
 ) -> dict[str, Any]:
     terminal_path = output_dir / "phase1_terminal_status.json"
     receipt_path = output_dir / "phase1_training_completion_receipt.json"
@@ -181,21 +300,26 @@ def validate_phase1_row_completion(
         "git_commit": str(plan["git_commit"]),
         "sealed_plan_sha256": str(plan["sealed_content_sha256"]),
         "seed_registry_sha256": str(plan["seed_registry_sha256"]),
+        "wisig_pkl_sha256": str(plan["wisig_pkl_sha256"]),
+        "dataset_receipt_sha256": str(dataset_receipt_sha256),
+        "environment_receipt_sha256": str(
+            environment_receipt_sha256
+        ),
     }
     for key, value in expected.items():
         if str(receipt.get(key, "")) != value:
-            raise Phase1RunnerError(
+            raise Phase1ProtocolError(
                 f"row completion receipt identity drift: {key}"
             )
     if int(receipt.get("train_seed", -1)) != int(row["train_seed"]):
-        raise Phase1RunnerError("row completion receipt train-seed drift")
+        raise Phase1ProtocolError("row completion receipt train-seed drift")
     if (
         str(receipt.get("resolved_config_hash", ""))
         != str(row.get("config_hash", ""))
         or str(receipt.get("method_config_hash", ""))
         != str(row.get("method_config_hash", ""))
     ):
-        raise Phase1RunnerError("row completion receipt config-hash drift")
+        raise Phase1ProtocolError("row completion receipt config-hash drift")
     actual_terminal_hash = hashlib.sha256(
         terminal_path.read_bytes()
     ).hexdigest()
@@ -203,14 +327,14 @@ def validate_phase1_row_completion(
         str(receipt.get("terminal_manifest_sha256", ""))
         != actual_terminal_hash
     ):
-        raise Phase1RunnerError("row terminal-manifest hash drift")
+        raise Phase1ProtocolError("row terminal-manifest hash drift")
     resource_path = output_dir / "phase1_resource_summary.json"
     if (
         not resource_path.is_file()
         or str(receipt.get("resource_summary_sha256", ""))
         != hashlib.sha256(resource_path.read_bytes()).hexdigest()
     ):
-        raise Phase1RunnerError("row resource-summary hash drift")
+        raise Phase1ProtocolError("row resource-summary hash drift")
     for key, expected_hash in dict(
         receipt.get("prototype_hashes") or {}
     ).items():
@@ -223,10 +347,57 @@ def validate_phase1_row_completion(
             or hashlib.sha256(Path(prototype_path).read_bytes()).hexdigest()
             != str(expected_hash)
         ):
-            raise Phase1RunnerError("row prototype artifact hash drift")
+            raise Phase1ProtocolError("row prototype artifact hash drift")
+    prototype_hashes = dict(receipt.get("prototype_hashes") or {})
+    if set(prototype_hashes) != {
+        "prototype_path",
+        "prototype_json_path",
+    } or any(
+        len(str(value)) != 64
+        for value in prototype_hashes.values()
+    ):
+        raise Phase1ProtocolError(
+            "row prototype artifact hashes are incomplete"
+        )
+    checkpoint_path = Path(
+        str(terminal.get("selected_checkpoint", ""))
+    )
+    selected_checkpoint_sha256 = str(
+        receipt.get("selected_checkpoint_sha256", "")
+    )
+    if (
+        not checkpoint_path.is_file()
+        or len(selected_checkpoint_sha256) != 64
+        or _sha256_path(checkpoint_path)
+        != selected_checkpoint_sha256
+        or str(terminal.get("selected_checkpoint_sha256", ""))
+        != selected_checkpoint_sha256
+    ):
+        raise Phase1ProtocolError(
+            "row selected-checkpoint hash drift"
+        )
     split_receipt = dict(receipt.get("source_split_receipt") or {})
+    split_payload = {
+        key: value
+        for key, value in split_receipt.items()
+        if key != "split_manifest_sha256"
+    }
     if (
         len(str(split_receipt.get("split_manifest_sha256", ""))) != 64
+        or _canonical_payload_hash(split_payload)
+        != str(split_receipt.get("split_manifest_sha256", ""))
+        or split_receipt
+        != dict(terminal.get("source_split_receipt") or {})
+        or str(split_receipt.get("wisig_pkl_sha256", ""))
+        != str(plan["wisig_pkl_sha256"])
+        or any(
+            len(str(split_receipt.get(key, ""))) != 64
+            for key in (
+                "labeled_indices_sha256",
+                "unlabeled_indices_sha256",
+                "source_validation_indices_sha256",
+            )
+        )
         or int(
             split_receipt.get(
                 "source_target_receiver_overlap_count",
@@ -235,7 +406,7 @@ def validate_phase1_row_completion(
         )
         != 0
     ):
-        raise Phase1RunnerError("row completion receipt split evidence invalid")
+        raise Phase1ProtocolError("row completion receipt split evidence invalid")
     if (
         int(return_code) != 0
         or int(receipt.get("exit_code", -1)) != 0
@@ -263,6 +434,17 @@ def verify_release_checkout(
         raise Phase1RunnerError(
             f"checkout commit drift: expected={expected_commit} actual={actual_commit}"
         )
+    tracked_status = subprocess.run(
+        ["git", "status", "--porcelain", "--untracked-files=no"],
+        cwd=str(root),
+        check=True,
+        capture_output=True,
+        text=True,
+    ).stdout.strip()
+    if tracked_status:
+        raise Phase1RunnerError(
+            "release checkout has tracked file drift"
+        )
     release_files = dict(plan.get("release_files") or {})
     if not release_files:
         raise Phase1RunnerError("sealed plan lacks release file hashes")
@@ -274,7 +456,7 @@ def verify_release_checkout(
             raise Phase1RunnerError("release file escapes repository root") from exc
         if not path.is_file():
             raise Phase1RunnerError(f"release file is missing: {relative_path}")
-        actual_hash = hashlib.sha256(path.read_bytes()).hexdigest()
+        actual_hash = _sha256_path(path)
         if actual_hash != str(expected_hash).lower():
             raise Phase1RunnerError(
                 f"release file hash drift: {relative_path}"
@@ -399,7 +581,29 @@ def _exclusive_json(path: Path, payload: Mapping[str, Any]) -> None:
 
 def run_release(args: argparse.Namespace, plan: Mapping[str, Any]) -> int:
     validate_phase1_release_plan(plan, require_launch_authority=True)
-    verify_release_checkout(plan, Path(args.repo_root))
+    repo_root = Path(args.repo_root).resolve()
+    verify_release_checkout(plan, repo_root)
+    expected_train_script = (
+        repo_root / "code" / "SSDG" / "train_ssdg.py"
+    ).resolve()
+    if Path(args.train_script).resolve() != expected_train_script:
+        raise Phase1RunnerError(
+            "execute mode requires the reviewed train_ssdg.py"
+        )
+    if Path(args.python).resolve() != Path(sys.executable).resolve():
+        raise Phase1RunnerError(
+            "child Python must equal the reviewed runner interpreter"
+        )
+    if Path(sys.prefix).name.lower() != "ssr-gpu":
+        raise Phase1RunnerError(
+            "formal Phase1 runner requires the ssr-gpu environment"
+        )
+    wisig_path = Path(args.wisig_pkl).resolve()
+    if not wisig_path.is_file():
+        raise Phase1RunnerError("WiSig pickle is missing")
+    actual_wisig_hash = _sha256_path(wisig_path)
+    if actual_wisig_hash != str(plan["wisig_pkl_sha256"]):
+        raise Phase1ProtocolError("WiSig pickle SHA256 drift")
     run_root = Path(args.run_root).resolve()
     log_root = Path(args.log_root).resolve()
     if run_root.exists() or log_root.exists():
@@ -408,6 +612,46 @@ def run_release(args: argparse.Namespace, plan: Mapping[str, Any]) -> int:
     log_root.mkdir(parents=True)
     (log_root / "status").mkdir()
     _exclusive_json(log_root / "sealed_plan.json", dict(plan))
+    wisig_stat = wisig_path.stat()
+    dataset_receipt_path = log_root / "dataset_receipt.json"
+    _exclusive_json(
+        dataset_receipt_path,
+        {
+            "schema": "cvs.phase1.dataset_receipt.v1",
+            "sealed_plan_sha256": str(
+                plan["sealed_content_sha256"]
+            ),
+            "wisig_pkl_sha256": actual_wisig_hash,
+            "wisig_pkl_path": str(wisig_path),
+            "wisig_pkl_size": int(wisig_stat.st_size),
+            "wisig_pkl_mtime_ns": int(wisig_stat.st_mtime_ns),
+        },
+    )
+    dataset_receipt_sha256 = hashlib.sha256(
+        dataset_receipt_path.read_bytes()
+    ).hexdigest()
+    environment_receipt_path = log_root / "environment_receipt.json"
+    import numpy as np
+    import torch
+
+    _exclusive_json(
+        environment_receipt_path,
+        {
+            "schema": "cvs.phase1.python_environment_receipt.v1",
+            "environment_id": "ssr-gpu",
+            "python_executable": str(Path(sys.executable).resolve()),
+            "python_version": sys.version,
+            "python_prefix": str(Path(sys.prefix).resolve()),
+            "torch_version": str(torch.__version__),
+            "torch_cuda_version": str(torch.version.cuda),
+            "torch_cuda_available": bool(torch.cuda.is_available()),
+            "torch_cuda_device_count": int(torch.cuda.device_count()),
+            "numpy_version": str(np.__version__),
+        },
+    )
+    environment_receipt_sha256 = hashlib.sha256(
+        environment_receipt_path.read_bytes()
+    ).hexdigest()
     rows_by_slot: dict[tuple[int, int], list[Mapping[str, Any]]] = defaultdict(list)
     for row in plan["rows"]:
         worker = row["worker"]
@@ -444,6 +688,15 @@ def run_release(args: argparse.Namespace, plan: Mapping[str, Any]) -> int:
                 seed_registry_sha256=str(
                     plan["seed_registry_sha256"]
                 ),
+                wisig_pkl_sha256=actual_wisig_hash,
+                dataset_receipt_path=str(dataset_receipt_path),
+                dataset_receipt_sha256=dataset_receipt_sha256,
+                environment_receipt_path=str(
+                    environment_receipt_path
+                ),
+                environment_receipt_sha256=(
+                    environment_receipt_sha256
+                ),
             )
             env = dict(os.environ)
             env["CUDA_VISIBLE_DEVICES"] = str(gpu)
@@ -467,15 +720,23 @@ def run_release(args: argparse.Namespace, plan: Mapping[str, Any]) -> int:
             terminal_exists = (output_dir / "phase1_terminal_status.json").is_file()
             receipt_valid = False
             completion_error = ""
+            completion_exception: Exception | None = None
             try:
                 validate_phase1_row_completion(
                     row=row,
                     plan=plan,
                     output_dir=output_dir,
                     return_code=return_code,
+                    dataset_receipt_sha256=(
+                        dataset_receipt_sha256
+                    ),
+                    environment_receipt_sha256=(
+                        environment_receipt_sha256
+                    ),
                 )
                 receipt_valid = True
             except Exception as exc:
+                completion_exception = exc
                 completion_error = str(exc)
             status = {
                 "row_key": row_key,
@@ -488,18 +749,33 @@ def run_release(args: argparse.Namespace, plan: Mapping[str, Any]) -> int:
                 "terminal_manifest_exists": terminal_exists,
                 "completion_receipt_valid": receipt_valid,
                 "completion_error": completion_error,
+                "p0_protocol_violation": isinstance(
+                    completion_exception,
+                    Phase1ProtocolError,
+                ),
                 "elapsed_seconds": time.time() - started,
             }
             if not receipt_valid:
+                log_text = log_path.read_text(
+                    encoding="utf-8",
+                    errors="replace",
+                )
+                p0_protocol_violation = is_p0_protocol_failure(
+                    log_text,
+                    completion_exception,
+                )
+                status["p0_protocol_violation"] = (
+                    p0_protocol_violation
+                )
                 fingerprint = normalize_exception_fingerprint(
-                    log_path.read_text(encoding="utf-8", errors="replace")
-                    + "\n"
-                    + completion_error
+                    log_text + "\n" + completion_error
                 )
                 status["exception_fingerprint"] = fingerprint
                 with failure_lock:
                     failures[fingerprint].append(row_key)
-                    if len(set(failures[fingerprint])) >= 2:
+                    if p0_protocol_violation or len(
+                        set(failures[fingerprint])
+                    ) >= 2:
                         stop_event.set()
                         capacity.terminate_owned()
             _exclusive_json(status_path, status)

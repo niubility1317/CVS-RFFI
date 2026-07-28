@@ -726,6 +726,12 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--row_key", type=str, default="")
     parser.add_argument("--sealed_plan_sha256", type=str, default="")
     parser.add_argument("--seed_registry_sha256", type=str, default="")
+    parser.add_argument("--wisig_pkl_sha256", type=str, default="")
+    parser.add_argument("--dataset_receipt_path", type=str, default="")
+    parser.add_argument("--dataset_receipt_sha256", type=str, default="")
+    parser.add_argument("--environment_receipt_path", type=str, default="")
+    parser.add_argument("--environment_receipt_sha256", type=str, default="")
+    parser.add_argument("--python_environment_id", type=str, default="")
     parser.add_argument("--reject_head", type=str2bool, default=False)
     parser.add_argument("--reject_class_index", type=int, default=-1)
     parser.add_argument("--lambda_energy_in", type=float, default=0.0)
@@ -1331,11 +1337,13 @@ def _build_source_split_receipt(
     labeled_indices: Sequence[Any],
     unlabeled_indices: Sequence[Any],
     source_validation_indices: Sequence[Any],
+    wisig_pkl_sha256: str,
 ) -> Dict[str, Any]:
     receipt = {
         "schema": "cvs.phase1.source_split_receipt.v1",
         "seed": int(seed),
         "split_mode": str(split_mode),
+        "wisig_pkl_sha256": str(wisig_pkl_sha256),
         "source_days": sorted(str(value) for value in source_days),
         "target_days": sorted(str(value) for value in target_days),
         "source_receivers": sorted(
@@ -1491,6 +1499,7 @@ def _build_ssdg_wisig_data(args, device: torch.device):
         labeled_indices=labeled_idx,
         unlabeled_indices=unlabeled_idx,
         source_validation_indices=val_idx,
+        wisig_pkl_sha256=str(args.wisig_pkl_sha256),
     )
     return {
         "train_loader": labeled_loader,
@@ -1936,7 +1945,9 @@ def _maybe_export_phase2_prototypes_ssdg(
                 "known_class_count": int(getattr(args, "num_classes", 0)),
                 "classification_head_contract": "dual_cvsincnet_tx_logits_v1",
                 "checkpoint_load_strict": True,
-                "checkpoint_selection": "final_only",
+                "checkpoint_selection": str(
+                    getattr(args, "checkpoint_selection", "")
+                ),
                 "satellite_protocol": dict(getattr(args, "sat_protocol_manifest", {}) or {}),
                 "zid_leakage_probe": ((ckpt.get("stats", {}) or {}).get("zid_leakage_probe", {})),
             },
@@ -3442,6 +3453,72 @@ def _canonical_json_sha256(payload: Any) -> str:
     return hashlib.sha256(encoded).hexdigest()
 
 
+def _validate_formal_dataset_receipt(args) -> Dict[str, Any]:
+    receipt_path = Path(
+        str(getattr(args, "dataset_receipt_path", "")).strip()
+    )
+    expected_receipt_hash = str(
+        getattr(args, "dataset_receipt_sha256", "")
+    ).strip().lower()
+    if (
+        not receipt_path.is_file()
+        or len(expected_receipt_hash) != 64
+        or _sha256_file(receipt_path) != expected_receipt_hash
+    ):
+        raise ValueError("formal Phase1 dataset receipt is missing or invalid")
+    receipt = json.loads(
+        receipt_path.read_text(encoding="utf-8-sig")
+    )
+    dataset_path = Path(str(args.wisig_pkl)).resolve()
+    stat = dataset_path.stat()
+    expected = {
+        "schema": "cvs.phase1.dataset_receipt.v1",
+        "sealed_plan_sha256": str(args.sealed_plan_sha256),
+        "wisig_pkl_sha256": str(args.wisig_pkl_sha256),
+        "wisig_pkl_path": str(dataset_path),
+        "wisig_pkl_size": int(stat.st_size),
+        "wisig_pkl_mtime_ns": int(stat.st_mtime_ns),
+    }
+    for key, value in expected.items():
+        if receipt.get(key) != value:
+            raise ValueError(
+                f"formal Phase1 dataset receipt drift: {key}"
+            )
+    return dict(receipt)
+
+
+def _validate_formal_environment_receipt(args) -> Dict[str, Any]:
+    receipt_path = Path(
+        str(getattr(args, "environment_receipt_path", "")).strip()
+    )
+    expected_hash = str(
+        getattr(args, "environment_receipt_sha256", "")
+    ).strip().lower()
+    if (
+        not receipt_path.is_file()
+        or len(expected_hash) != 64
+        or _sha256_file(receipt_path) != expected_hash
+    ):
+        raise ValueError(
+            "formal Phase1 environment receipt is missing or invalid"
+        )
+    receipt = json.loads(
+        receipt_path.read_text(encoding="utf-8-sig")
+    )
+    expected = {
+        "schema": "cvs.phase1.python_environment_receipt.v1",
+        "environment_id": "ssr-gpu",
+        "python_executable": str(Path(sys.executable).resolve()),
+        "python_prefix": str(Path(sys.prefix).resolve()),
+    }
+    for key, value in expected.items():
+        if receipt.get(key) != value:
+            raise ValueError(
+                f"formal Phase1 environment receipt drift: {key}"
+            )
+    return dict(receipt)
+
+
 def _safe_percent(value: Any) -> str:
     try:
         return f"{float(value):.2f}"
@@ -4352,7 +4429,11 @@ def train(args) -> int:
             raise ValueError(
                 "formal Phase1 row_key does not match ablation_id and seed"
             )
-        for field in ("sealed_plan_sha256", "seed_registry_sha256"):
+        for field in (
+            "sealed_plan_sha256",
+            "seed_registry_sha256",
+            "wisig_pkl_sha256",
+        ):
             value = str(getattr(args, field, "")).strip().lower()
             if len(value) != 64 or any(
                 char not in "0123456789abcdef" for char in value
@@ -4571,6 +4652,12 @@ def train(args) -> int:
             "seed_registry_sha256": str(
                 args.seed_registry_sha256
             ),
+            "wisig_pkl_sha256": str(
+                args.wisig_pkl_sha256
+            ),
+            "python_environment_id": str(
+                args.python_environment_id
+            ),
             "output_dir": str(out_dir),
             "phase2_export_path": str(args.phase2_export_path),
         }
@@ -4585,6 +4672,16 @@ def train(args) -> int:
             encoding="utf-8",
             newline="\n",
         )
+    formal_dataset_receipt = (
+        _validate_formal_dataset_receipt(args)
+        if bool(getattr(args, "formal_ablation", False))
+        else {}
+    )
+    formal_environment_receipt = (
+        _validate_formal_environment_receipt(args)
+        if bool(getattr(args, "formal_ablation", False))
+        else {}
+    )
     metrics_csv_path = Path(str(args.metrics_csv).strip()) if str(args.metrics_csv).strip() else out_dir / "metrics_epoch.csv"
     metrics_jsonl_path = Path(str(args.metrics_jsonl).strip()) if str(args.metrics_jsonl).strip() else out_dir / "metrics_epoch.jsonl"
     final_path = out_dir / "final_ssdg.pth"
@@ -7390,7 +7487,7 @@ def train(args) -> int:
         payload = {
             "checkpoint_schema": "ssdg_phase1_training_state_v2",
             "checkpoint_role": "training_epoch_state_in_memory",
-            "checkpoint_selection": "final_only",
+            "checkpoint_selection": str(args.checkpoint_selection),
             "run_id": str(getattr(args, "run_id", "")),
             "candidate_id": str(getattr(args, "candidate_id", "")),
             "ablation_id": str(getattr(args, "ablation_id", "")),
@@ -7897,7 +7994,7 @@ def train(args) -> int:
     reference_final_tail_gate: Dict[str, Any] = {
         "status": "FAILED",
         "protocol": "fixed_source_val_multiview_local_component_v2",
-        "selection_policy": "final_only",
+        "selection_policy": str(args.checkpoint_selection),
         "reference": reference_source_val_tail,
         "final": final_source_val_tail,
         "p99_delta_deg": None,
@@ -8386,9 +8483,20 @@ def train(args) -> int:
         "seed_registry_sha256": str(
             getattr(args, "seed_registry_sha256", "")
         ),
+        "wisig_pkl_sha256": str(
+            getattr(args, "wisig_pkl_sha256", "")
+        ),
+        "dataset_receipt_sha256": str(
+            getattr(args, "dataset_receipt_sha256", "")
+        ),
+        "environment_receipt_sha256": str(
+            getattr(args, "environment_receipt_sha256", "")
+        ),
         "source_split_receipt": (
             data_ctx.get("split_info", {}) or {}
         ).get("source_split_receipt", {}),
+        "dataset_receipt": formal_dataset_receipt,
+        "environment_receipt": formal_environment_receipt,
         "status": terminal_status,
         "exit_code": int(terminal_exit_code),
         "selection_source": selected_source,
@@ -8455,6 +8563,15 @@ def train(args) -> int:
         "seed_registry_sha256": str(
             getattr(args, "seed_registry_sha256", "")
         ),
+        "wisig_pkl_sha256": str(
+            getattr(args, "wisig_pkl_sha256", "")
+        ),
+        "dataset_receipt_sha256": str(
+            getattr(args, "dataset_receipt_sha256", "")
+        ),
+        "environment_receipt_sha256": str(
+            getattr(args, "environment_receipt_sha256", "")
+        ),
         "method_config_hash": str(
             getattr(args, "ablation_method_config_hash", "")
         ),
@@ -8464,6 +8581,8 @@ def train(args) -> int:
         "source_split_receipt": (
             data_ctx.get("split_info", {}) or {}
         ).get("source_split_receipt", {}),
+        "dataset_receipt": formal_dataset_receipt,
+        "environment_receipt": formal_environment_receipt,
         "selected_checkpoint_sha256": selected_checkpoint_sha256,
         "terminal_manifest_sha256": _sha256_file(
             terminal_manifest_path

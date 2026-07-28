@@ -13,6 +13,17 @@ _RELEASE_FILES = {
     "code/example.py": "b" * 64,
     "configs/full_ablation_20260728/seed_registry.json": "c" * 64,
 }
+_SEED_REGISTRY = {
+    "schema": "cvs.full_ablation.seed_registry.v1",
+    "design_id": "cvs_full_ablation_phase1_phase2_20260728",
+    "phase1_train_seeds": [
+        7281101,
+        7281102,
+        7281103,
+        7281104,
+        7281105,
+    ],
+}
 
 
 def _plan() -> dict:
@@ -24,6 +35,11 @@ def _plan() -> dict:
         "git_commit": "a" * 40,
         "formal_launch_authority": False,
         "seed_registry_sha256": "c" * 64,
+        "wisig_pkl_sha256": "d" * 64,
+        "python_environment_id": "ssr-gpu",
+        "registered_phase1_train_seeds": list(
+            _SEED_REGISTRY["phase1_train_seeds"]
+        ),
         "rows": build_phase1_t1_rows(
             [7281101, 7281102, 7281103, 7281104, 7281105],
             git_commit="a" * 40,
@@ -45,6 +61,7 @@ def test_seal_binds_review_commit_config_and_release_hashes() -> None:
     sealed = seal_plan(
         _plan(),
         _review(),
+        _SEED_REGISTRY,
         run_id="phase1-t1-v1",
         commit="a" * 40,
         release_files=_RELEASE_FILES,
@@ -63,6 +80,7 @@ def test_seal_rejects_review_findings_or_commit_drift() -> None:
         seal_plan(
             _plan(),
             review,
+            _SEED_REGISTRY,
             run_id="phase1-t1-v1",
             commit="a" * 40,
             release_files=_RELEASE_FILES,
@@ -73,6 +91,7 @@ def test_seal_rejects_review_findings_or_commit_drift() -> None:
         seal_plan(
             _plan(),
             review,
+            _SEED_REGISTRY,
             run_id="phase1-t1-v1",
             commit="a" * 40,
             release_files=_RELEASE_FILES,
@@ -82,10 +101,31 @@ def test_seal_rejects_review_findings_or_commit_drift() -> None:
 def test_seal_rejects_method_hash_drift() -> None:
     plan = copy.deepcopy(_plan())
     plan["rows"][0]["method_config_hash"] = "0" * 64
-    with pytest.raises(Phase1RunnerError, match="method config hash"):
+    with pytest.raises(
+        Phase1RunnerError,
+        match="canonical row drift|method config hash",
+    ):
         seal_plan(
             plan,
             _review(),
+            _SEED_REGISTRY,
+            run_id="phase1-t1-v1",
+            commit="a" * 40,
+            release_files=_RELEASE_FILES,
+        )
+
+
+def test_seal_rejects_seed_registry_semantic_drift() -> None:
+    registry = copy.deepcopy(_SEED_REGISTRY)
+    registry["phase1_train_seeds"][-1] = 9999999
+    with pytest.raises(
+        Phase1RunnerError,
+        match="differ from the sealed seed registry",
+    ):
+        seal_plan(
+            _plan(),
+            _review(),
+            registry,
             run_id="phase1-t1-v1",
             commit="a" * 40,
             release_files=_RELEASE_FILES,

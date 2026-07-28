@@ -64,12 +64,16 @@ def build_plan(args: argparse.Namespace) -> dict[str, Any]:
     registry_path = Path(args.seed_registry).resolve()
     registry, registry_hash = _load_registry(registry_path)
     if args.phase == "phase1":
+        registered_phase1_train_seeds = [
+            int(value) for value in registry["phase1_train_seeds"]
+        ]
         rows = build_phase1_t1_rows(
-            registry["phase1_train_seeds"],
+            registered_phase1_train_seeds,
             git_commit=args.git_commit,
         )
         stage = "t1"
     else:
+        registered_phase1_train_seeds = []
         stage = args.stage
         stage_registry = registry[f"stage2_{stage}"]
         bundles = [SeedBundle(**item) for item in stage_registry["seed_bundles"]]
@@ -96,6 +100,13 @@ def build_plan(args: argparse.Namespace) -> dict[str, Any]:
         "git_commit": args.git_commit,
         "seed_registry_path": str(registry_path),
         "seed_registry_sha256": registry_hash,
+        "wisig_pkl_sha256": str(
+            getattr(args, "wisig_pkl_sha256", "")
+        ).strip().lower(),
+        "registered_phase1_train_seeds": (
+            registered_phase1_train_seeds
+        ),
+        "python_environment_id": "ssr-gpu",
         "formal_launch_authority": False,
         "release_gate": "LOCAL_T0_AND_INDEPENDENT_P0_P1_REVIEW_REQUIRED",
         "logical_row_count": logical_rows,
@@ -120,6 +131,14 @@ def _parser() -> argparse.ArgumentParser:
         help="Phase2 only: t1 or comma-separated registered arm IDs.",
     )
     parser.add_argument("--git-commit", required=True)
+    parser.add_argument(
+        "--wisig-pkl-sha256",
+        default="",
+        help=(
+            "Phase1 only: SHA256 of the immutable WiSig pickle; "
+            "required before sealing."
+        ),
+    )
     parser.add_argument(
         "--seed-registry",
         default=str(DEFAULT_SEED_REGISTRY),

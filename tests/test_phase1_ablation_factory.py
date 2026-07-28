@@ -33,6 +33,14 @@ def test_all_six_phase1_t1_arms_have_unique_frozen_hashes() -> None:
     assert all(len(value) == 64 for value in hashes.values())
 
 
+def test_full_arm_matches_frozen_dual_branch_architecture() -> None:
+    config = phase1_ablation_config("P1-FULL")
+    assert config["branch_ablation"] == "no_dac"
+    assert config["domain_branch_ablation"] == "none"
+    assert config["domain_enhancer"] == "rcn_stats"
+    assert config["representation_mode"] == "dual"
+
+
 def test_common_protocol_and_budget_never_drift() -> None:
     configs = [phase1_ablation_config(arm_id) for arm_id in PHASE1_ABLATION_IDS]
     assert {config["split_mode"] for config in configs} == {"tx_rx_day_1_7_2"}
@@ -153,6 +161,8 @@ def test_real_training_parser_accepts_each_frozen_arm_in_dry_run(
             "b" * 64,
             "--seed_registry_sha256",
             "c" * 64,
+            "--wisig_pkl_sha256",
+            "d" * 64,
             "--dry_run",
         ]
     )
@@ -191,6 +201,8 @@ def test_formal_factory_locks_protocol_and_optimizer_cli_drift(tmp_path) -> None
             "b" * 64,
             "--seed_registry_sha256",
             "c" * 64,
+            "--wisig_pkl_sha256",
+            "d" * 64,
             "--wisig_train_rxs",
             "0,1,2,3,4,5,6,7,8,9,10,11",
             "--lr",
@@ -228,6 +240,8 @@ def test_unfrozen_parser_field_changes_resolved_hash(tmp_path) -> None:
                 "b" * 64,
                 "--seed_registry_sha256",
                 "c" * 64,
+                "--wisig_pkl_sha256",
+                "d" * 64,
                 "--max_grad_norm",
                 max_grad_norm,
                 "--dry_run",
@@ -236,6 +250,43 @@ def test_unfrozen_parser_field_changes_resolved_hash(tmp_path) -> None:
 
     first = parsed("0")
     second = parsed("9.9")
+    assert train(first) == 0
+    assert train(second) == 0
+    assert first.ablation_config_hash != second.ablation_config_hash
+
+
+def test_dataset_bytes_hash_changes_resolved_hash(tmp_path) -> None:
+    def parsed(dataset_hash: str):
+        return build_arg_parser().parse_args(
+            [
+                "--output_dir",
+                str(tmp_path / dataset_hash[:4]),
+                "--formal_ablation",
+                "true",
+                "--ablation_id",
+                "P1-FULL",
+                "--candidate_id",
+                "P1-FULL",
+                "--run_id",
+                "dataset-hash",
+                "--git_commit",
+                "a" * 40,
+                "--seed",
+                "42",
+                "--row_key",
+                "P1-FULL__train_seed_42",
+                "--sealed_plan_sha256",
+                "b" * 64,
+                "--seed_registry_sha256",
+                "c" * 64,
+                "--wisig_pkl_sha256",
+                dataset_hash,
+                "--dry_run",
+            ]
+        )
+
+    first = parsed("d" * 64)
+    second = parsed("e" * 64)
     assert train(first) == 0
     assert train(second) == 0
     assert first.ablation_config_hash != second.ablation_config_hash
@@ -268,6 +319,8 @@ def test_arm_aware_terminal_contract_accepts_intentional_disabled_groups(
             "b" * 64,
             "--seed_registry_sha256",
             "c" * 64,
+            "--wisig_pkl_sha256",
+            "d" * 64,
             "--dry_run",
         ]
     )
@@ -330,6 +383,7 @@ def test_source_split_receipt_hashes_label_masks_and_disjoint_receivers() -> Non
         labeled_indices=[3, 7],
         unlabeled_indices=[1, 9, 11],
         source_validation_indices=[2, 4],
+        wisig_pkl_sha256="d" * 64,
     )
     assert receipt["source_target_receiver_overlap_count"] == 0
     assert receipt["labeled_indices_sha256"] != receipt[

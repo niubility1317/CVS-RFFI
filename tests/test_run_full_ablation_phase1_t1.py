@@ -3,14 +3,21 @@ from __future__ import annotations
 import copy
 import hashlib
 import json
+import signal
+import threading
+from types import SimpleNamespace
 
 import pytest
 
 from cvsrffi.full_ablation_spec import build_phase1_t1_rows
+from scripts import run_full_ablation_phase1_t1 as phase1_runner
 from scripts.run_full_ablation_phase1_t1 import (
+    _Capacity,
     Phase1RunnerError,
     build_phase1_command,
+    is_p0_protocol_failure,
     normalize_exception_fingerprint,
+    run_release,
     validate_phase1_row_completion,
     validate_phase1_release_plan,
 )
@@ -25,6 +32,15 @@ def _plan() -> dict:
         "git_commit": "a" * 40,
         "formal_launch_authority": False,
         "seed_registry_sha256": "c" * 64,
+        "wisig_pkl_sha256": "f" * 64,
+        "python_environment_id": "ssr-gpu",
+        "registered_phase1_train_seeds": [
+            7281101,
+            7281102,
+            7281103,
+            7281104,
+            7281105,
+        ],
         "rows": build_phase1_t1_rows(
             [7281101, 7281102, 7281103, 7281104, 7281105],
             git_commit="a" * 40,
@@ -81,6 +97,13 @@ def test_command_binds_exact_row_identity(tmp_path) -> None:
         output_dir=tmp_path / row["row_key"],
         sealed_plan_sha256="d" * 64,
         seed_registry_sha256="c" * 64,
+        wisig_pkl_sha256="f" * 64,
+        dataset_receipt_path=str(tmp_path / "dataset_receipt.json"),
+        dataset_receipt_sha256="e" * 64,
+        environment_receipt_path=str(
+            tmp_path / "environment_receipt.json"
+        ),
+        environment_receipt_sha256="9" * 64,
     )
     joined = " ".join(command)
     assert "--formal_ablation true" in joined
@@ -105,12 +128,147 @@ def test_plan_rejects_row_commit_or_arm_drift() -> None:
         validate_phase1_release_plan(drift, require_launch_authority=False)
 
 
+def test_plan_rejects_noncanonical_row_identity_or_slot() -> None:
+    plan = _plan()
+    drift = copy.deepcopy(plan)
+    drift["rows"][0]["row_key"] = "forged"
+    with pytest.raises(
+        Phase1RunnerError,
+        match="exact registered 6x5",
+    ):
+        validate_phase1_release_plan(
+            drift,
+            require_launch_authority=False,
+        )
+    drift = copy.deepcopy(plan)
+    drift["rows"][0]["worker"] = {"gpu": 0, "slot": 1}
+    with pytest.raises(
+        Phase1RunnerError,
+        match="canonical row drift",
+    ):
+        validate_phase1_release_plan(
+            drift,
+            require_launch_authority=False,
+        )
+
+
 def test_exception_fingerprint_ignores_paths_addresses_and_numbers() -> None:
     first = "RuntimeError at C:\\run\\row1.py:123 address 0xABC value 9"
     second = "RuntimeError at D:\\other\\row2.py:987 address 0xDEF value 42"
     assert normalize_exception_fingerprint(first) == normalize_exception_fingerprint(
         second
     )
+
+
+def test_p0_classifier_stops_on_formal_protocol_drift() -> None:
+    assert is_p0_protocol_failure(
+        "Phase1AbLATIONConfigError: formal Phase1 dataset receipt drift",
+        None,
+    )
+    assert not is_p0_protocol_failure(
+        "RuntimeError: transient worker allocation failure",
+        RuntimeError("transient worker allocation failure"),
+    )
+
+
+def test_capacity_counts_external_and_owned_processes(
+    monkeypatch,
+    tmp_path,
+) -> None:
+    class FakeProcess:
+        pid = 22001
+
+        def poll(self):
+            return None
+
+    launches: list[list[str]] = []
+
+    def fake_popen(command, **kwargs):
+        launches.append(list(command))
+        return FakeProcess()
+
+    monkeypatch.setattr(
+        phase1_runner,
+        "_gpu_process_pids",
+        lambda: {gpu: ({11001} if gpu == 0 else set()) for gpu in range(8)},
+    )
+    monkeypatch.setattr(phase1_runner.subprocess, "Popen", fake_popen)
+    capacity = _Capacity(0.0)
+    process = capacity.launch(
+        0,
+        ["python", "train.py"],
+        cwd=tmp_path,
+        env={},
+        stdout=None,
+        stop_event=threading.Event(),
+    )
+    assert process.pid == 22001
+    assert launches == [["python", "train.py"]]
+    assert set(capacity.owned[0]) == {22001}
+
+    class OneWaitStop:
+        def __init__(self):
+            self.stopped = False
+
+        def is_set(self):
+            return self.stopped
+
+        def wait(self, _seconds):
+            self.stopped = True
+
+    with pytest.raises(Phase1RunnerError, match="dispatch stopped"):
+        capacity.launch(
+            0,
+            ["python", "second.py"],
+            cwd=tmp_path,
+            env={},
+            stdout=None,
+            stop_event=OneWaitStop(),
+        )
+    assert len(launches) == 1
+
+
+def test_terminate_owned_escalates_exact_process_group(monkeypatch) -> None:
+    class FakeProcess:
+        pid = 33001
+
+        def poll(self):
+            return None
+
+    monkeypatch.setattr(phase1_runner.signal, "SIGKILL", 9, raising=False)
+    signals: list[tuple[int, int]] = []
+    monkeypatch.setattr(
+        phase1_runner.os,
+        "killpg",
+        lambda pid, sig: signals.append((pid, sig)),
+        raising=False,
+    )
+    capacity = _Capacity(0.0)
+    capacity.owned[3][33001] = FakeProcess()
+    capacity.terminate_owned(grace_seconds=0.0)
+    assert signals == [
+        (33001, signal.SIGTERM),
+        (33001, 9),
+    ]
+
+
+def test_execute_rejects_unreviewed_train_script(monkeypatch, tmp_path) -> None:
+    monkeypatch.setattr(
+        phase1_runner,
+        "validate_phase1_release_plan",
+        lambda *_args, **_kwargs: None,
+    )
+    monkeypatch.setattr(
+        phase1_runner,
+        "verify_release_checkout",
+        lambda *_args, **_kwargs: None,
+    )
+    args = SimpleNamespace(
+        repo_root=str(tmp_path),
+        train_script=str(tmp_path / "unreviewed.py"),
+    )
+    with pytest.raises(Phase1RunnerError, match="reviewed train_ssdg.py"):
+        run_release(args, {})
 
 
 def test_completion_receipt_binds_row_plan_split_and_terminal(tmp_path) -> None:
@@ -125,14 +283,63 @@ def test_completion_receipt_binds_row_plan_split_and_terminal(tmp_path) -> None:
     row = plan["rows"][0]
     output = tmp_path / row["row_key"]
     output.mkdir()
-    terminal = {"status": "COMPLETE"}
+    split_payload = {
+        "schema": "cvs.phase1.source_split_receipt.v1",
+        "seed": row["train_seed"],
+        "split_mode": "tx_rx_day_1_7_2",
+        "source_days": ["d0", "d1"],
+        "target_days": ["d2", "d3"],
+        "source_receivers": [f"r{i}" for i in range(7)],
+        "target_receivers": [f"r{i}" for i in range(7, 12)],
+        "source_target_receiver_overlap_count": 0,
+        "labeled_indices_sha256": "1" * 64,
+        "unlabeled_indices_sha256": "2" * 64,
+        "source_validation_indices_sha256": "3" * 64,
+        "labeled_size": 1,
+        "unlabeled_size": 1,
+        "source_validation_size": 1,
+        "wisig_pkl_sha256": plan["wisig_pkl_sha256"],
+    }
+    split_receipt = {
+        **split_payload,
+        "split_manifest_sha256": hashlib.sha256(
+            json.dumps(
+                split_payload,
+                ensure_ascii=False,
+                sort_keys=True,
+                separators=(",", ":"),
+                default=str,
+            ).encode("utf-8")
+        ).hexdigest(),
+    }
+    terminal = {
+        "status": "COMPLETE",
+        "source_split_receipt": split_receipt,
+    }
     terminal_path = output / "phase1_terminal_status.json"
+    checkpoint_path = output / "best_source_validation_ssdg.pth"
+    checkpoint_path.write_bytes(b"checkpoint")
+    checkpoint_hash = hashlib.sha256(
+        checkpoint_path.read_bytes()
+    ).hexdigest()
+    terminal.update(
+        {
+            "selected_checkpoint": str(checkpoint_path),
+            "selected_checkpoint_sha256": checkpoint_hash,
+        }
+    )
     terminal_path.write_text(json.dumps(terminal), encoding="utf-8")
     resource_path = output / "phase1_resource_summary.json"
     resource_path.write_text(
         json.dumps({"wall_time_seconds": 1.0}),
         encoding="utf-8",
     )
+    prototype_path = output / "phase2_zid_prototypes.pt"
+    prototype_json_path = output / "phase2_zid_prototypes.json"
+    prototype_path.write_bytes(b"prototype")
+    prototype_json_path.write_text("{}", encoding="utf-8")
+    dataset_receipt_hash = "8" * 64
+    environment_receipt_hash = "9" * 64
     receipt = {
         "run_id": plan["run_id"],
         "row_key": row["row_key"],
@@ -141,6 +348,9 @@ def test_completion_receipt_binds_row_plan_split_and_terminal(tmp_path) -> None:
         "git_commit": plan["git_commit"],
         "sealed_plan_sha256": plan["sealed_content_sha256"],
         "seed_registry_sha256": plan["seed_registry_sha256"],
+        "wisig_pkl_sha256": plan["wisig_pkl_sha256"],
+        "dataset_receipt_sha256": dataset_receipt_hash,
+        "environment_receipt_sha256": environment_receipt_hash,
         "resolved_config_hash": row["config_hash"],
         "method_config_hash": row["method_config_hash"],
         "terminal_manifest_sha256": hashlib.sha256(
@@ -149,9 +359,19 @@ def test_completion_receipt_binds_row_plan_split_and_terminal(tmp_path) -> None:
         "resource_summary_sha256": hashlib.sha256(
             resource_path.read_bytes()
         ).hexdigest(),
-        "source_split_receipt": {
-            "split_manifest_sha256": "e" * 64,
-            "source_target_receiver_overlap_count": 0,
+        "source_split_receipt": split_receipt,
+        "selected_checkpoint_sha256": checkpoint_hash,
+        "prototype_paths": {
+            "prototype_path": str(prototype_path),
+            "prototype_json_path": str(prototype_json_path),
+        },
+        "prototype_hashes": {
+            "prototype_path": hashlib.sha256(
+                prototype_path.read_bytes()
+            ).hexdigest(),
+            "prototype_json_path": hashlib.sha256(
+                prototype_json_path.read_bytes()
+            ).hexdigest(),
         },
         "terminal_status": "COMPLETE",
         "exit_code": 0,
@@ -166,6 +386,8 @@ def test_completion_receipt_binds_row_plan_split_and_terminal(tmp_path) -> None:
             plan=plan,
             output_dir=output,
             return_code=0,
+            dataset_receipt_sha256=dataset_receipt_hash,
+            environment_receipt_sha256=environment_receipt_hash,
         )["row_key"]
         == row["row_key"]
     )
@@ -183,4 +405,6 @@ def test_completion_receipt_binds_row_plan_split_and_terminal(tmp_path) -> None:
             plan=plan,
             output_dir=output,
             return_code=0,
+            dataset_receipt_sha256=dataset_receipt_hash,
+            environment_receipt_sha256=environment_receipt_hash,
         )

@@ -20,7 +20,7 @@ def test_single_embedding_exactly_matches_dual_parameter_count() -> None:
         "input_len": 256,
         "model_variant": "lite_d",
         "branch_ablation": "no_dac",
-        "domain_branch_ablation": "no_stats",
+        "domain_branch_ablation": "none",
         "domain_enhancer": "rcn_stats",
         "domain_enhancer_strength": 0.35,
         "arch_family": "cvsincnet",

@@ -44,7 +44,11 @@ def _canonical_hash(payload: Mapping[str, Any]) -> str:
     return hashlib.sha256(encoded).hexdigest()
 
 
-def _arm_resolved_hash(ablation_id: str, commit: str) -> str:
+def _arm_resolved_hash(
+    ablation_id: str,
+    commit: str,
+    wisig_pkl_sha256: str,
+) -> str:
     args = build_arg_parser().parse_args(
         [
             "--output_dir",
@@ -59,6 +63,8 @@ def _arm_resolved_hash(ablation_id: str, commit: str) -> str:
             "SEALED_RUNTIME_RUN",
             "--git_commit",
             commit,
+            "--wisig_pkl_sha256",
+            wisig_pkl_sha256,
             "--dry_run",
         ]
     )
@@ -68,12 +74,29 @@ def _arm_resolved_hash(ablation_id: str, commit: str) -> str:
 def seal_plan(
     plan: Mapping[str, Any],
     review: Mapping[str, Any],
+    seed_registry: Mapping[str, Any],
     *,
     run_id: str,
     commit: str,
     release_files: Mapping[str, str],
 ) -> dict[str, Any]:
     validate_phase1_release_plan(plan, require_launch_authority=False)
+    registered_seeds = [
+        int(value)
+        for value in list(
+            seed_registry.get("phase1_train_seeds") or []
+        )
+    ]
+    if (
+        seed_registry.get("schema")
+        != "cvs.full_ablation.seed_registry.v1"
+        or seed_registry.get("design_id") != plan.get("design_id")
+        or registered_seeds
+        != list(plan.get("registered_phase1_train_seeds") or [])
+    ):
+        raise Phase1RunnerError(
+            "plan Phase1 seeds differ from the sealed seed registry"
+        )
     if review.get("schema") != "cvs.independent_review.v1":
         raise Phase1RunnerError("unexpected independent review schema")
     if str(review.get("git_commit", "")).lower() != str(commit).lower():
@@ -86,6 +109,16 @@ def seal_plan(
         raise Phase1RunnerError("run_id is required")
     if not release_files:
         raise Phase1RunnerError("release file hashes are required")
+    wisig_pkl_sha256 = str(
+        plan.get("wisig_pkl_sha256", "")
+    ).lower()
+    if len(wisig_pkl_sha256) != 64 or any(
+        char not in "0123456789abcdef"
+        for char in wisig_pkl_sha256
+    ):
+        raise Phase1RunnerError(
+            "Phase1 plan lacks immutable WiSig SHA256"
+        )
     seed_registry_relative = (
         "configs/full_ablation_20260728/seed_registry.json"
     )
@@ -110,7 +143,11 @@ def seal_plan(
         if row.get("method_config_hash") != method_hash:
             raise Phase1RunnerError(f"method config hash drift: {arm_id}")
         row["git_commit"] = str(commit).lower()
-        row["config_hash"] = _arm_resolved_hash(arm_id, str(commit).lower())
+        row["config_hash"] = _arm_resolved_hash(
+            arm_id,
+            str(commit).lower(),
+            wisig_pkl_sha256,
+        )
         row["executor_status"] = "LOCAL_VERIFIED"
     sealed["sealed_content_sha256"] = _canonical_hash(
         {
@@ -168,9 +205,16 @@ def main() -> int:
     commit, release_files = _git_release_state(repo_root)
     plan = json.loads(Path(args.plan).read_text(encoding="utf-8-sig"))
     review = json.loads(Path(args.review).read_text(encoding="utf-8-sig"))
+    seed_registry = json.loads(
+        (
+            repo_root
+            / "configs/full_ablation_20260728/seed_registry.json"
+        ).read_text(encoding="utf-8-sig")
+    )
     sealed = seal_plan(
         plan,
         review,
+        seed_registry,
         run_id=args.run_id,
         commit=commit,
         release_files=release_files,
