@@ -22,6 +22,7 @@ from cvsrffi.full_ablation_spec import (
     SeedBundle,
     build_phase1_t1_rows,
     build_phase2_rows,
+    validate_stage2_registry_disjointness,
 )
 
 
@@ -42,6 +43,20 @@ def _load_registry(path: Path) -> tuple[dict[str, Any], str]:
         raise FullAblationSpecError("unexpected seed-registry schema")
     if registry.get("design_id") != DESIGN_ID:
         raise FullAblationSpecError("seed registry belongs to another design")
+    screening = registry.get("stage2_screening") or {}
+    confirmation = registry.get("stage2_confirmation") or {}
+    validate_stage2_registry_disjointness(
+        [
+            SeedBundle(**item)
+            for item in screening.get("seed_bundles") or []
+        ],
+        screening.get("new_class_draw_seeds") or [],
+        [
+            SeedBundle(**item)
+            for item in confirmation.get("seed_bundles") or []
+        ],
+        confirmation.get("new_class_draw_seeds") or [],
+    )
     return registry, _sha256_bytes(payload)
 
 
@@ -85,13 +100,9 @@ def build_plan(args: argparse.Namespace) -> dict[str, Any]:
             git_commit=args.git_commit,
         )
     logical_rows = len(rows)
-    physical_keys = {
-        (
-            row.get("physical_config_id", row["ablation_id"]),
-            row["row_key"].replace(row["ablation_id"], "", 1),
-        )
-        for row in rows
-    }
+    unique_physical_row_count = (
+        logical_rows if args.phase == "phase1" else None
+    )
     return {
         "schema": "cvs.full_ablation.plan.v1",
         "design_id": DESIGN_ID,
@@ -106,11 +117,24 @@ def build_plan(args: argparse.Namespace) -> dict[str, Any]:
         "registered_phase1_train_seeds": (
             registered_phase1_train_seeds
         ),
+        "registered_stage2_method_seeds": (
+            [int(bundle.method_seed) for bundle in bundles]
+            if args.phase == "phase2"
+            else []
+        ),
+        "stage2_seed_disjointness_verified": (
+            args.phase == "phase2"
+        ),
         "python_environment_id": "ssr-gpu",
         "formal_launch_authority": False,
         "release_gate": "LOCAL_T0_AND_INDEPENDENT_P0_P1_REVIEW_REQUIRED",
         "logical_row_count": logical_rows,
-        "unique_physical_row_count": len(physical_keys),
+        "unique_physical_row_count": unique_physical_row_count,
+        "physical_dedup_status": (
+            "NOT_APPLICABLE_PHASE1"
+            if args.phase == "phase1"
+            else "PENDING_EFFECTIVE_CONFIG_AND_INPUT_BINDING"
+        ),
         "rows": rows,
     }
 

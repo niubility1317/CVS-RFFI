@@ -7,15 +7,20 @@ import pytest
 from cvsrffi.full_ablation_spec import (
     LEO_SCENARIOS,
     PHASE1_T1_ARMS,
+    PHASE2_STATE_T1_ARMS,
     PHASE2_T1_ARMS,
     REQUIRED_RUN_ARTIFACT_FIELDS,
     ArmSpec,
     FullAblationSpecError,
     SeedBundle,
+    Stage2InputBinding,
     assign_worker_slots,
+    bind_stage2_row,
     build_phase1_t1_rows,
     build_phase2_rows,
+    stage2_physical_execution_key,
     validate_artifact_record,
+    validate_stage2_registry_disjointness,
 )
 
 
@@ -103,6 +108,89 @@ def test_stage2_t1_arm_ids_are_unique() -> None:
     f3 = next(arm for arm in PHASE2_T1_ARMS if arm.ablation_id == "P2-F3")
     assert full.physical_config_id is None
     assert f3.physical_config_id == "P2-FULL"
+    assert {arm.ablation_id for arm in PHASE2_STATE_T1_ARMS} == {
+        "P2-S2A",
+        "P2-S2B-PROTO",
+        "P2-S2B-DIAGOFF",
+        "P2-S2B-FULL",
+    }
+
+
+def test_stage2_rows_distinguish_method_and_phase1_bundle_seeds() -> None:
+    arm = ArmSpec("P2-TEST", "stage2c", "M", "test", "P2-FULL")
+    rows = build_phase2_rows(
+        stage="screening",
+        arms=[arm],
+        seed_bundles=_bundles(3),
+        class_draw_seeds=[830001],
+        git_commit="a" * 40,
+    )
+    assert all(row["method_seed"] == row["train_seed"] for row in rows)
+    assert all(row["phase1_bundle_training_seed"] is None for row in rows)
+    assert all(
+        row["data_binding_status"] == "UNBOUND_FAIL_CLOSED"
+        for row in rows
+    )
+
+
+def _binding() -> Stage2InputBinding:
+    return Stage2InputBinding(
+        phase1_bundle_hash="1" * 64,
+        phase1_bundle_training_seed=7281101,
+        capsule_id="capsule-v1",
+        split_id="split-v1",
+        channel_assignment_hash="2" * 64,
+        old_class_ids_hash="3" * 64,
+        new_class_ids_hash="4" * 64,
+        support_physical_ids_hash="5" * 64,
+        query_physical_ids_hash="6" * 64,
+        support_query_disjoint_receipt_sha256="7" * 64,
+        support_prefix_receipt_sha256="8" * 64,
+        new_class_prefix_receipt_sha256="9" * 64,
+        query_fixed_receipt_sha256="a" * 64,
+    )
+
+
+def test_stage2_binding_and_dynamic_physical_identity_are_fail_closed() -> None:
+    arm = ArmSpec("P2-TEST", "stage2c", "M", "test", "P2-FULL")
+    row = build_phase2_rows(
+        stage="screening",
+        arms=[arm],
+        seed_bundles=_bundles(3),
+        class_draw_seeds=[830001],
+        git_commit="a" * 40,
+    )[0]
+    bound = bind_stage2_row(row, _binding())
+    bound["effective_config_hash"] = "b" * 64
+    assert bound["formal_launch_authority"] is False
+    assert bound["data_binding_status"] == "BOUND_VALIDATED_ONCE"
+    assert stage2_physical_execution_key(bound)[0] == "b" * 64
+    alias = copy.deepcopy(bound)
+    alias["ablation_id"] = "P2-F3"
+    assert (
+        stage2_physical_execution_key(alias)
+        == stage2_physical_execution_key(bound)
+    )
+    invalid = copy.deepcopy(bound)
+    invalid.pop("effective_config_hash")
+    with pytest.raises(FullAblationSpecError, match="unbound"):
+        stage2_physical_execution_key(invalid)
+
+
+def test_stage2_registry_requires_fresh_confirmation_seeds() -> None:
+    validate_stage2_registry_disjointness(
+        _bundles(3, 820001),
+        [830001],
+        _bundles(5, 840001),
+        [850001, 850002, 850003],
+    )
+    with pytest.raises(FullAblationSpecError, match="overlap"):
+        validate_stage2_registry_disjointness(
+            _bundles(3, 820001),
+            [830001],
+            _bundles(5, 840001),
+            [830001, 850002, 850003],
+        )
 
 
 def test_fresh_stage2_rejects_observed_or_aliased_seeds() -> None:

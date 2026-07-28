@@ -1,0 +1,51 @@
+from __future__ import annotations
+
+import argparse
+from pathlib import Path
+
+from scripts.build_full_ablation_plan import build_plan
+
+
+ROOT = Path(__file__).resolve().parents[1]
+REGISTRY = (
+    ROOT / "configs" / "full_ablation_20260728" / "seed_registry.json"
+)
+
+
+def _args(*, phase: str, stage: str = "screening") -> argparse.Namespace:
+    return argparse.Namespace(
+        phase=phase,
+        stage=stage,
+        arms="P2-FULL",
+        git_commit="a" * 40,
+        wisig_pkl_sha256="b" * 64,
+        seed_registry=str(REGISTRY),
+    )
+
+
+def test_phase2_plan_does_not_claim_static_physical_dedup() -> None:
+    plan = build_plan(_args(phase="phase2"))
+    assert plan["logical_row_count"] == 75
+    assert plan["unique_physical_row_count"] is None
+    assert (
+        plan["physical_dedup_status"]
+        == "PENDING_EFFECTIVE_CONFIG_AND_INPUT_BINDING"
+    )
+    assert plan["stage2_seed_disjointness_verified"] is True
+    assert plan["registered_stage2_method_seeds"] == [
+        7282101,
+        7282102,
+        7282103,
+    ]
+    assert all(
+        row["method_seed"] == row["train_seed"]
+        and row["phase1_bundle_training_seed"] is None
+        for row in plan["rows"]
+    )
+
+
+def test_phase1_plan_keeps_exact_physical_count() -> None:
+    plan = build_plan(_args(phase="phase1"))
+    assert plan["logical_row_count"] == 30
+    assert plan["unique_physical_row_count"] == 30
+    assert plan["physical_dedup_status"] == "NOT_APPLICABLE_PHASE1"

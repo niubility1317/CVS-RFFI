@@ -95,6 +95,12 @@ class SeedBundle:
     support_seed: int
     query_seed: int
 
+    @property
+    def method_seed(self) -> int:
+        """Stage2 algorithm seed; never the Phase1 bundle-training seed."""
+
+        return int(self.train_seed)
+
     def validate(self, *, require_fresh_stage2: bool) -> None:
         values = tuple(int(value) for value in asdict(self).values())
         if any(value <= 0 for value in values):
@@ -119,6 +125,62 @@ class WorkerSlot:
     @property
     def key(self) -> str:
         return f"gpu{self.gpu}_slot{self.slot}"
+
+
+@dataclass(frozen=True)
+class Stage2InputBinding:
+    phase1_bundle_hash: str
+    phase1_bundle_training_seed: int
+    capsule_id: str
+    split_id: str
+    channel_assignment_hash: str
+    old_class_ids_hash: str
+    new_class_ids_hash: str
+    support_physical_ids_hash: str
+    query_physical_ids_hash: str
+    support_query_disjoint_receipt_sha256: str
+    support_prefix_receipt_sha256: str
+    new_class_prefix_receipt_sha256: str
+    query_fixed_receipt_sha256: str
+    support_query_overlap_count: int = 0
+    phase2_data_status: str = "VALIDATED_ONCE"
+
+    def validate(self) -> None:
+        if self.phase2_data_status != "VALIDATED_ONCE":
+            raise FullAblationSpecError(
+                "Stage2 binding lacks VALIDATED_ONCE data status"
+            )
+        if int(self.phase1_bundle_training_seed) <= 0:
+            raise FullAblationSpecError(
+                "Phase1 bundle-training seed must be positive"
+            )
+        if not str(self.capsule_id).strip() or not str(self.split_id).strip():
+            raise FullAblationSpecError("capsule_id and split_id are required")
+        hash_fields = (
+            "phase1_bundle_hash",
+            "channel_assignment_hash",
+            "old_class_ids_hash",
+            "new_class_ids_hash",
+            "support_physical_ids_hash",
+            "query_physical_ids_hash",
+            "support_query_disjoint_receipt_sha256",
+            "support_prefix_receipt_sha256",
+            "new_class_prefix_receipt_sha256",
+            "query_fixed_receipt_sha256",
+        )
+        for field in hash_fields:
+            if not _is_sha256(getattr(self, field)):
+                raise FullAblationSpecError(
+                    f"Stage2 binding {field} must be SHA256"
+                )
+        if (
+            self.support_physical_ids_hash
+            == self.query_physical_ids_hash
+            or int(self.support_query_overlap_count) != 0
+        ):
+            raise FullAblationSpecError(
+                "Stage2 support/query physical IDs are not disjoint"
+            )
 
 
 PHASE1_T1_ARMS = (
@@ -180,6 +242,37 @@ PHASE2_BASELINE_ARMS = (
     ArmSpec("P2-BASE-POOLED-LW-LDA", "stage2c", "M", "baseline", "P2-FULL"),
     ArmSpec("P2-BASE-FULL-BLOCK-LDA", "stage2c", "M", "baseline", "P2-FULL"),
     ArmSpec("P2-BASE-ADAPTER-HEAD", "stage2c", "M", "baseline", "P2-FULL"),
+)
+
+PHASE2_STATE_T1_ARMS = (
+    ArmSpec(
+        "P2-S2A",
+        "stage2a",
+        "M",
+        "zero_label_deployment",
+        "P1-FULL",
+    ),
+    ArmSpec(
+        "P2-S2B-PROTO",
+        "stage2b",
+        "M",
+        "old_class_adaptation",
+        "P2-S2B-FULL",
+    ),
+    ArmSpec(
+        "P2-S2B-DIAGOFF",
+        "stage2b",
+        "M",
+        "old_class_metric",
+        "P2-S2B-FULL",
+    ),
+    ArmSpec(
+        "P2-S2B-FULL",
+        "stage2b",
+        "M",
+        "old_class_adaptation",
+        "reference",
+    ),
 )
 
 PHASE2_T1_ARMS = (
@@ -366,7 +459,10 @@ def build_phase2_rows(
                                 "new_class_count": int(new_count),
                                 "scenarios": list(LEO_SCENARIOS),
                                 **asdict(bundle),
+                                "method_seed": int(bundle.method_seed),
+                                "phase1_bundle_training_seed": None,
                                 "new_class_draw_seed": int(draw_seed),
+                                "data_binding_status": "UNBOUND_FAIL_CLOSED",
                                 "executor_status": arm.executor_status,
                                 "formal_launch_authority": False,
                             }
@@ -404,6 +500,91 @@ def validate_plan_rows(rows: Sequence[Mapping[str, Any]]) -> None:
                 raise FullAblationSpecError("Stage2 scenario list drift")
             if int(row.get("k_shot", 0)) <= 0:
                 raise FullAblationSpecError("Stage2 K must be positive")
+            if int(row.get("method_seed", -1)) != int(
+                row.get("train_seed", -2)
+            ):
+                raise FullAblationSpecError(
+                    "Stage2 method seed identity drift"
+                )
+
+
+def bind_stage2_row(
+    row: Mapping[str, Any],
+    binding: Stage2InputBinding,
+) -> dict[str, Any]:
+    """Attach immutable bundle/data evidence without granting launch authority."""
+
+    if row.get("phase") != "stage2c":
+        raise FullAblationSpecError("only a Stage2-C row can be data-bound")
+    binding.validate()
+    bound = dict(row)
+    bound.update(asdict(binding))
+    bound["data_binding_status"] = "BOUND_VALIDATED_ONCE"
+    bound["formal_launch_authority"] = False
+    validate_plan_rows([bound])
+    return bound
+
+
+def stage2_physical_execution_key(row: Mapping[str, Any]) -> tuple[Any, ...]:
+    """Dynamic physical identity after effective config and data are frozen."""
+
+    required = (
+        "effective_config_hash",
+        "phase1_bundle_hash",
+        "capsule_id",
+        "split_id",
+        "receiver_id",
+        "support_physical_ids_hash",
+        "query_physical_ids_hash",
+        "k_shot",
+        "new_class_count",
+        "method_seed",
+        "support_seed",
+        "query_seed",
+        "new_class_draw_seed",
+    )
+    missing = [
+        field
+        for field in required
+        if row.get(field) in (None, "")
+    ]
+    if missing:
+        raise FullAblationSpecError(
+            "physical execution key is unbound: " + ",".join(missing)
+        )
+    for field in (
+        "effective_config_hash",
+        "phase1_bundle_hash",
+        "support_physical_ids_hash",
+        "query_physical_ids_hash",
+    ):
+        if not _is_sha256(row[field]):
+            raise FullAblationSpecError(
+                f"physical execution key {field} must be SHA256"
+            )
+    return tuple(row[field] for field in required)
+
+
+def validate_stage2_registry_disjointness(
+    screening_bundles: Sequence[SeedBundle],
+    screening_draws: Sequence[int],
+    confirmation_bundles: Sequence[SeedBundle],
+    confirmation_draws: Sequence[int],
+) -> None:
+    screening = {
+        int(value)
+        for bundle in screening_bundles
+        for value in asdict(bundle).values()
+    } | {int(value) for value in screening_draws}
+    confirmation = {
+        int(value)
+        for bundle in confirmation_bundles
+        for value in asdict(bundle).values()
+    } | {int(value) for value in confirmation_draws}
+    if screening & confirmation:
+        raise FullAblationSpecError(
+            "screening and confirmation seeds/draws overlap"
+        )
 
 
 def validate_artifact_record(record: Mapping[str, Any]) -> None:
@@ -450,15 +631,20 @@ __all__ = [
     "OBSERVED_STAGE2_SEEDS",
     "PHASE1_T1_ARMS",
     "PHASE2_T1_ARMS",
+    "PHASE2_STATE_T1_ARMS",
     "PROTOCOL_SCHEMA",
     "REQUIRED_RUN_ARTIFACT_FIELDS",
     "SCREENING_SLICES",
     "SLOTS_PER_GPU",
     "SeedBundle",
+    "Stage2InputBinding",
     "TARGET_RECEIVERS",
     "assign_worker_slots",
     "build_phase1_t1_rows",
     "build_phase2_rows",
+    "bind_stage2_row",
+    "stage2_physical_execution_key",
     "validate_artifact_record",
     "validate_plan_rows",
+    "validate_stage2_registry_disjointness",
 ]
