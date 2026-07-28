@@ -17,10 +17,45 @@ from cvsrffi.phase1_ablation_factory import (
 from SSDG.train_ssdg import (
     _build_source_split_receipt,
     _formal_ablation_terminal_flags,
+    _prepare_cuda_memory_audit,
     _validate_phase1_checkpoint_payload,
     build_arg_parser,
     train,
 )
+
+
+def test_cuda_memory_audit_initializes_context_before_peak_reset(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    import SSDG.train_ssdg as train_ssdg
+
+    calls: list[tuple[str, object]] = []
+    device = train_ssdg.torch.device("cuda:0")
+    monkeypatch.setattr(
+        train_ssdg.torch.cuda,
+        "set_device",
+        lambda value: calls.append(("set_device", value)),
+    )
+    monkeypatch.setattr(
+        train_ssdg.torch,
+        "empty",
+        lambda *args, **kwargs: calls.append(
+            ("empty", kwargs.get("device"))
+        ),
+    )
+    monkeypatch.setattr(
+        train_ssdg.torch.cuda,
+        "reset_peak_memory_stats",
+        lambda value: calls.append(("reset", value)),
+    )
+
+    _prepare_cuda_memory_audit(device)
+
+    assert calls == [
+        ("set_device", device),
+        ("empty", device),
+        ("reset", device),
+    ]
 
 
 def test_all_six_phase1_t1_arms_have_unique_frozen_hashes() -> None:

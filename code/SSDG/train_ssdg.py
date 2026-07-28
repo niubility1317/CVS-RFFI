@@ -3442,6 +3442,16 @@ def _sha256_file(path: str | Path) -> str:
     return digest.hexdigest()
 
 
+def _prepare_cuda_memory_audit(device) -> None:
+    """Initialize the selected CUDA context before resetting peak counters."""
+
+    if device.type != "cuda":
+        return
+    torch.cuda.set_device(device)
+    torch.empty(0, device=device)
+    torch.cuda.reset_peak_memory_stats(device)
+
+
 def _canonical_json_sha256(payload: Any) -> str:
     encoded = json.dumps(
         payload,
@@ -4627,8 +4637,7 @@ def train(args) -> int:
         raise ValueError("SSDG.train_ssdg currently implements the WiSig tx_rx_day_1_7_2 protocol.")
     set_seed(int(args.seed))
     device = resolve_device(args.device)
-    if device.type == "cuda":
-        torch.cuda.reset_peak_memory_stats(device)
+    _prepare_cuda_memory_audit(device)
     out_dir = ensure_dir(args.output_dir)
     stale_identity_paths = [
         out_dir / "phase1_terminal_status.json",
