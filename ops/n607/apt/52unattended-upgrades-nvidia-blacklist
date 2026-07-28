@@ -1,0 +1,8 @@
+# N607: keep the core NVIDIA driver stack out of unattended-upgrades.
+# Container runtime packages remain eligible for their normal update policy.
+Unattended-Upgrade::Package-Blacklist {
+    "nvidia-(driver|dkms|headless|kernel-common|kernel-source|firmware|utils|compute-utils)-";
+    "libnvidia-(cfg1|common|compute|decode|encode|extra|fbc1|gl)-";
+    "linux-(modules|objects|signatures)-nvidia-";
+    "xserver-xorg-video-nvidia-";
+};
