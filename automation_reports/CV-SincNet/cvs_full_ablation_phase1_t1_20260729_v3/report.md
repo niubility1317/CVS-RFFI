@@ -104,6 +104,22 @@ v2在首个完成行的source-only prototype导出阶段发现内部安全契约
 
 正式发布前，唯一runner必须执行本地N607直连只读preflight，记录GPU与现有训练进程占用，验证v1/v2只读保留、v3目标路径全部不存在，核对WiSig SHA、Git bundle、tracked-clean checkout、release file hashes、review receipt和30-row sealed plan。
 
+## N607只读预检
+
+唯一runner于`2026-07-29T05:06:41+08:00`完成只读预检，结论为`PRECHECK_PASS`。未执行SCP、mkdir、写文件、同步、落地、启动、kill或其他远端修改。
+
+|项目|实时证据|
+|---|---|
+|主机|`szu2070436088@dell-DSS8440`；项目根存在|
+|环境|`CVS-RFFI`；Python=`3.10.19`；torch=`2.1.0+cu121`；CUDA=`12.1`；device_count=8|
+|GPU|GPU0–7均为RTX3090、0%利用率、1/24576MiB、compute PID=0|
+|容量|每卡可新增2个训练slot；相关训练进程总数=0|
+|WiSig|2,359,341,461字节；SHA256与预登记完全一致|
+|旧run|v1/v2相关进程均为0；核心release/sealed/run/log证据保留|
+|v3碰撞|release、sealed、run、log、launch.out五个精确目标均不存在|
+|本地release|commit、bundle、sealed、review及30 rows/16 slots证据全部匹配|
+|连接闭合|最终`ssh.exe=0`；N607与bridge的ESTABLISHED TCP22=0|
+
 ## 正式命令模板
 
 以下命令只作预登记。用户为v3给出新的明确启动授权前不得执行：
