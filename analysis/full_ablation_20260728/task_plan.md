@@ -17,6 +17,8 @@
 
 `PHASE_3_PHASE1_T1_RELEASE_PREFLIGHT / IN_PROGRESS`
 
+Phase2并行状态：`DESIGN_FROZEN -> IMPLEMENTING`，冻结摘要见`phase2_feasibility.md`。
+
 ## 阶段
 
 - [x]0.读取控制面、设计、历史索引、Git状态并完成实现就绪审计。
