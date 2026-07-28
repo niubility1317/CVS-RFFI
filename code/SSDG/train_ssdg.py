@@ -19,6 +19,7 @@ if __package__ in (None, ""):
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from post_stage_cli import add_common_data_args, add_sat_eval_args, str2bool
+from cvsrffi.phase1_ablation_factory import apply_phase1_ablation
 
 try:
     import torch
@@ -712,6 +713,9 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--run_id", type=str, default="")
     parser.add_argument("--candidate_id", type=str, default="")
     parser.add_argument("--base_candidate", type=str, default="")
+    parser.add_argument("--formal_ablation", type=str2bool, default=False)
+    parser.add_argument("--ablation_id", type=str, default="")
+    parser.add_argument("--git_commit", type=str, default="")
     parser.add_argument("--reject_head", type=str2bool, default=False)
     parser.add_argument("--reject_class_index", type=int, default=-1)
     parser.add_argument("--lambda_energy_in", type=float, default=0.0)
@@ -767,6 +771,12 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--freeze_backbone", type=str2bool, default=False)
     parser.add_argument("--model_size", type=str, default="M")
     parser.add_argument("--model_variant", type=str, default="lite_d")
+    parser.add_argument(
+        "--representation_mode",
+        type=str,
+        default="dual",
+        choices=["dual", "single_parameter_matched"],
+    )
     parser.add_argument(
         "--id_feature_key",
         type=str,
@@ -1279,6 +1289,7 @@ def _apply_model_cli_args(model_args, args):
     for key in (
         "model_size",
         "model_variant",
+        "representation_mode",
         "id_feature_key",
         "branch_ablation",
         "domain_branch_ablation",
@@ -4097,6 +4108,19 @@ def _prepare_concat_sat_batch_for_training(
 
 
 def train(args) -> int:
+    ablation_manifest = None
+    if bool(getattr(args, "formal_ablation", False)):
+        ablation_manifest = apply_phase1_ablation(args)
+        if not str(getattr(args, "run_id", "")).strip():
+            raise ValueError("formal Phase1 ablation requires --run_id")
+        if str(getattr(args, "candidate_id", "")).strip() != str(args.ablation_id):
+            raise ValueError(
+                "formal Phase1 candidate_id must exactly equal ablation_id"
+            )
+    elif str(getattr(args, "ablation_id", "")).strip():
+        raise ValueError(
+            "--ablation_id is reserved for --formal_ablation true"
+        )
     total_epochs = _resolve_epoch_schedule(args)
     args.epochs = total_epochs
     args.lambda_dom = float(args.lambda_domain)
@@ -4263,6 +4287,7 @@ def train(args) -> int:
     out_dir = ensure_dir(args.output_dir)
     stale_identity_paths = [
         out_dir / "phase1_terminal_status.json",
+        out_dir / "phase1_ablation_manifest.json",
         out_dir / f"best_{args.best_metric}_ssdg.pth",
         out_dir / "final_ssdg.pth",
         out_dir / "latest_ssdg.pth",
@@ -4273,6 +4298,30 @@ def train(args) -> int:
         raise FileExistsError(
             "Phase1 output directory contains stale run identity artifacts; use a new candidate directory: "
             + ", ".join(str(path) for path in stale_identity_paths)
+        )
+    if ablation_manifest is not None:
+        if not str(getattr(args, "phase2_export_path", "")).strip():
+            args.phase2_export_path = str(
+                out_dir / "phase2_zid_prototypes.pt"
+            )
+        ablation_manifest = {
+            **ablation_manifest,
+            "run_id": str(args.run_id),
+            "candidate_id": str(args.candidate_id),
+            "train_seed": int(args.seed),
+            "output_dir": str(out_dir),
+            "phase2_export_path": str(args.phase2_export_path),
+        }
+        (out_dir / "phase1_ablation_manifest.json").write_text(
+            json.dumps(
+                ablation_manifest,
+                ensure_ascii=False,
+                indent=2,
+                sort_keys=True,
+            )
+            + "\n",
+            encoding="utf-8",
+            newline="\n",
         )
     metrics_csv_path = Path(str(args.metrics_csv).strip()) if str(args.metrics_csv).strip() else out_dir / "metrics_epoch.csv"
     metrics_jsonl_path = Path(str(args.metrics_jsonl).strip()) if str(args.metrics_jsonl).strip() else out_dir / "metrics_epoch.jsonl"
@@ -7082,6 +7131,11 @@ def train(args) -> int:
             "checkpoint_selection": "final_only",
             "run_id": str(getattr(args, "run_id", "")),
             "candidate_id": str(getattr(args, "candidate_id", "")),
+            "ablation_id": str(getattr(args, "ablation_id", "")),
+            "ablation_config_hash": str(
+                getattr(args, "ablation_config_hash", "")
+            ),
+            "git_commit": str(getattr(args, "git_commit", "")),
             "model": model.state_dict(),
             "ema_model": ema_model.state_dict() if ema_model is not None else None,
             "optimizer": optimizer.state_dict(),
@@ -7954,6 +8008,11 @@ def train(args) -> int:
         "schema": "phase1_terminal_status_v2",
         "run_id": str(getattr(args, "run_id", "")),
         "candidate_id": str(getattr(args, "candidate_id", "")),
+        "ablation_id": str(getattr(args, "ablation_id", "")),
+        "ablation_config_hash": str(
+            getattr(args, "ablation_config_hash", "")
+        ),
+        "git_commit": str(getattr(args, "git_commit", "")),
         "status": terminal_status,
         "exit_code": int(terminal_exit_code),
         "selection_source": "training_final_only",

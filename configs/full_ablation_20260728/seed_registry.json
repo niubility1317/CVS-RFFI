@@ -1,0 +1,84 @@
+{
+  "schema": "cvs.full_ablation.seed_registry.v1",
+  "design_id": "cvs_full_ablation_phase1_phase2_20260728",
+  "sealed_at": "2026-07-28T00:00:00+08:00",
+  "freshness_audit": {
+    "project_conversation_index_entries": 1188,
+    "conversation_index_json_sha256": "1ae29ec83edb3e06d2d7966e1faf48094cd343a0cabc79da99627f3744548a4f",
+    "conversation_index_md_sha256": "1895192fb3675db9b903941ddc6acba06db4f1a813e4595fa8e723c0a8e3521a",
+    "git_tracked_search": "NO_EXACT_SEED_MATCH",
+    "automation_report_control_file_search": "NO_EXACT_SEED_MATCH",
+    "conversation_index_search": "NO_EXACT_SEED_MATCH",
+    "observed_stage2_seeds_excluded": [
+      713101,
+      713102,
+      713103,
+      713104,
+      713105,
+      713106
+    ]
+  },
+  "phase1_train_seeds": [
+    7281101,
+    7281102,
+    7281103,
+    7281104,
+    7281105
+  ],
+  "stage2_screening": {
+    "seed_bundles": [
+      {
+        "train_seed": 7282101,
+        "support_seed": 7282201,
+        "query_seed": 7282301
+      },
+      {
+        "train_seed": 7282102,
+        "support_seed": 7282202,
+        "query_seed": 7282302
+      },
+      {
+        "train_seed": 7282103,
+        "support_seed": 7282203,
+        "query_seed": 7282303
+      }
+    ],
+    "new_class_draw_seeds": [
+      7282401
+    ]
+  },
+  "stage2_confirmation": {
+    "seed_bundles": [
+      {
+        "train_seed": 7283101,
+        "support_seed": 7283201,
+        "query_seed": 7283301
+      },
+      {
+        "train_seed": 7283102,
+        "support_seed": 7283202,
+        "query_seed": 7283302
+      },
+      {
+        "train_seed": 7283103,
+        "support_seed": 7283203,
+        "query_seed": 7283303
+      },
+      {
+        "train_seed": 7283104,
+        "support_seed": 7283204,
+        "query_seed": 7283304
+      },
+      {
+        "train_seed": 7283105,
+        "support_seed": 7283205,
+        "query_seed": 7283305
+      }
+    ],
+    "new_class_draw_seeds": [
+      7283401,
+      7283402,
+      7283403
+    ]
+  }
+}

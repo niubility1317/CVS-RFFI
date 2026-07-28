@@ -1,0 +1,156 @@
+#!/usr/bin/env python3
+"""Build fail-closed Phase1 or Phase2 full-ablation plans.
+
+The generated plan is a preregistered identity surface, not launch authority.
+No command in this file starts a training or evaluation process.
+"""
+
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+from pathlib import Path
+from typing import Any
+
+from cvsrffi.full_ablation_spec import (
+    DESIGN_ID,
+    PHASE1_T1_ARMS,
+    PHASE2_T1_ARMS,
+    ArmSpec,
+    FullAblationSpecError,
+    SeedBundle,
+    build_phase1_t1_rows,
+    build_phase2_rows,
+)
+
+
+ROOT = Path(__file__).resolve().parents[2]
+DEFAULT_SEED_REGISTRY = (
+    ROOT / "configs" / "full_ablation_20260728" / "seed_registry.json"
+)
+
+
+def _sha256_bytes(payload: bytes) -> str:
+    return hashlib.sha256(payload).hexdigest()
+
+
+def _load_registry(path: Path) -> tuple[dict[str, Any], str]:
+    payload = path.read_bytes()
+    registry = json.loads(payload.decode("utf-8-sig"))
+    if registry.get("schema") != "cvs.full_ablation.seed_registry.v1":
+        raise FullAblationSpecError("unexpected seed-registry schema")
+    if registry.get("design_id") != DESIGN_ID:
+        raise FullAblationSpecError("seed registry belongs to another design")
+    return registry, _sha256_bytes(payload)
+
+
+def _select_arms(raw_ids: str) -> list[ArmSpec]:
+    available = {arm.ablation_id: arm for arm in PHASE2_T1_ARMS}
+    if raw_ids.strip().lower() == "t1":
+        return list(PHASE2_T1_ARMS)
+    ids = [value.strip() for value in raw_ids.split(",") if value.strip()]
+    if not ids:
+        raise FullAblationSpecError("at least one Phase2 arm ID is required")
+    unknown = [value for value in ids if value not in available]
+    if unknown:
+        raise FullAblationSpecError(
+            "unknown Phase2 arm IDs: " + ",".join(unknown)
+        )
+    return [available[value] for value in ids]
+
+
+def build_plan(args: argparse.Namespace) -> dict[str, Any]:
+    registry_path = Path(args.seed_registry).resolve()
+    registry, registry_hash = _load_registry(registry_path)
+    if args.phase == "phase1":
+        rows = build_phase1_t1_rows(
+            registry["phase1_train_seeds"],
+            git_commit=args.git_commit,
+        )
+        stage = "t1"
+    else:
+        stage = args.stage
+        stage_registry = registry[f"stage2_{stage}"]
+        bundles = [SeedBundle(**item) for item in stage_registry["seed_bundles"]]
+        rows = build_phase2_rows(
+            stage=stage,
+            arms=_select_arms(args.arms),
+            seed_bundles=bundles,
+            class_draw_seeds=stage_registry["new_class_draw_seeds"],
+            git_commit=args.git_commit,
+        )
+    logical_rows = len(rows)
+    physical_keys = {
+        (
+            row.get("physical_config_id", row["ablation_id"]),
+            row["row_key"].replace(row["ablation_id"], "", 1),
+        )
+        for row in rows
+    }
+    return {
+        "schema": "cvs.full_ablation.plan.v1",
+        "design_id": DESIGN_ID,
+        "phase": args.phase,
+        "stage": stage,
+        "git_commit": args.git_commit,
+        "seed_registry_path": str(registry_path),
+        "seed_registry_sha256": registry_hash,
+        "formal_launch_authority": False,
+        "release_gate": "LOCAL_T0_AND_INDEPENDENT_P0_P1_REVIEW_REQUIRED",
+        "logical_row_count": logical_rows,
+        "unique_physical_row_count": len(physical_keys),
+        "rows": rows,
+    }
+
+
+def _parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(
+        description="Build a non-launching full-ablation matrix."
+    )
+    parser.add_argument("--phase", choices=("phase1", "phase2"), required=True)
+    parser.add_argument(
+        "--stage",
+        choices=("screening", "confirmation"),
+        default="screening",
+    )
+    parser.add_argument(
+        "--arms",
+        default="t1",
+        help="Phase2 only: t1 or comma-separated registered arm IDs.",
+    )
+    parser.add_argument("--git-commit", required=True)
+    parser.add_argument(
+        "--seed-registry",
+        default=str(DEFAULT_SEED_REGISTRY),
+    )
+    parser.add_argument("--output", required=True)
+    return parser
+
+
+def main() -> int:
+    args = _parser().parse_args()
+    output = Path(args.output).resolve()
+    if output.exists():
+        raise FileExistsError(f"refusing to overwrite plan: {output}")
+    plan = build_plan(args)
+    output.parent.mkdir(parents=True, exist_ok=True)
+    payload = json.dumps(plan, ensure_ascii=False, indent=2, sort_keys=True)
+    output.write_text(payload + "\n", encoding="utf-8", newline="\n")
+    print(
+        json.dumps(
+            {
+                "output": str(output),
+                "logical_row_count": plan["logical_row_count"],
+                "unique_physical_row_count": plan["unique_physical_row_count"],
+                "formal_launch_authority": False,
+            },
+            ensure_ascii=False,
+            sort_keys=True,
+        )
+    )
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

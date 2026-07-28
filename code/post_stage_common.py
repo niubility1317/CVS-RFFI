@@ -319,6 +319,9 @@ def build_baseline_model(model_args, device: torch.device) -> nn.Module:
         freq_stability_channels=int(getattr(model_args, "freq_stability_channels", 4)),
         fast_infer_when_no_aux=bool(getattr(model_args, "fast_infer_when_no_aux", True)),
         arch_family=str(getattr(model_args, "arch_family", "cvsincnet")),
+        representation_mode=str(
+            getattr(model_args, "representation_mode", "dual")
+        ),
     ).to(device)
 
 

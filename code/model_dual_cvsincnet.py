@@ -227,6 +227,55 @@ class DomainFeatureEnhancer(nn.Module):
         return self.norm(z_dom + self.strength * gate * z_rcn), z_rcn
 
 
+class ParameterMatchedIdentityCapacity(nn.Module):
+    """Move the removed domain-branch budget into the identity embedding."""
+
+    def __init__(self, emb_dim: int, num_classes: int, target_params: int):
+        super().__init__()
+        self.emb_dim = int(emb_dim)
+        self.num_classes = int(num_classes)
+        self.target_params = int(target_params)
+        head_params = self.emb_dim * self.num_classes + self.num_classes
+        if self.target_params <= head_params:
+            raise ValueError("parameter-matched identity budget is too small")
+        remaining = self.target_params - head_params
+        per_hidden = 2 * self.emb_dim + 1
+        hidden = max(1, (remaining - self.emb_dim) // per_hidden)
+        while hidden > 0 and per_hidden * hidden + self.emb_dim > remaining:
+            hidden -= 1
+        if hidden <= 0:
+            raise ValueError("parameter-matched identity residual has no capacity")
+        self.hidden = int(hidden)
+        self.fc1 = nn.Linear(self.emb_dim, self.hidden)
+        self.fc2 = nn.Linear(self.hidden, self.emb_dim)
+        self.tx_correction = nn.Linear(self.emb_dim, self.num_classes)
+        used = sum(parameter.numel() for parameter in self.parameters())
+        tail_count = self.target_params - int(used)
+        if tail_count < 0:
+            raise ValueError("parameter-matched identity budget underflow")
+        self.tail = nn.Parameter(torch.zeros(tail_count))
+        actual = sum(parameter.numel() for parameter in self.parameters())
+        if actual != self.target_params:
+            raise RuntimeError(
+                f"parameter-matched identity budget drift: {actual} != {self.target_params}"
+            )
+
+    def forward(self, z_id: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
+        residual = self.fc2(torch.nn.functional.gelu(self.fc1(z_id)))
+        adapted = z_id + residual
+        if self.tail.numel() > 0:
+            indices = torch.arange(
+                self.emb_dim,
+                device=adapted.device,
+                dtype=torch.long,
+            ) % int(self.tail.numel())
+            gate = self.tail[indices]
+            if self.tail.numel() > self.emb_dim:
+                gate = gate + self.tail[self.emb_dim :].mean()
+            adapted = adapted + 0.01 * torch.tanh(gate).unsqueeze(0) * adapted
+        return adapted, self.tx_correction(adapted)
+
+
 class FeatureBackboneAdapter(nn.Module):
     """Expose common RFFI backbones through the CVS-RFFI auxiliary-output API."""
 
@@ -440,11 +489,17 @@ class DualCVSincNetDisentangle(nn.Module):
         fast_infer_when_no_aux: bool = True,
         use_tx_adv_on_zdom: bool = False,
         arch_family: str = "cvsincnet",
+        representation_mode: str = "dual",
     ):
         super().__init__()
         self.num_classes = int(num_classes)
         self.num_domains = int(max(1, num_domains))
         self.arch_family = str(arch_family or "cvsincnet").lower().strip()
+        self.representation_mode = str(representation_mode or "dual").lower().strip()
+        if self.representation_mode not in {"dual", "single_parameter_matched"}:
+            raise ValueError(
+                "representation_mode must be dual or single_parameter_matched"
+            )
         self.id_feature_key = str(id_feature_key)
         self.dom_feature_key = str(dom_feature_key)
         self.model_variant = str(model_variant or "base").lower().strip()
@@ -541,6 +596,42 @@ class DualCVSincNetDisentangle(nn.Module):
             if self.use_tx_adv_on_zdom
             else None
         )
+        self.identity_capacity = None
+        if self.representation_mode == "single_parameter_matched":
+            replaced_modules = (
+                self.dom_backbone,
+                self.dom_enhancer,
+                self.dom_head,
+                self.adv_head,
+                self.tx_adv_head,
+            )
+            retained_parameter_ids = {
+                id(parameter) for parameter in self.id_backbone.parameters()
+            }
+            counted_parameter_ids = set()
+            target_params = 0
+            for module in replaced_modules:
+                if module is None:
+                    continue
+                for parameter in module.parameters():
+                    parameter_id = id(parameter)
+                    if (
+                        parameter_id in retained_parameter_ids
+                        or parameter_id in counted_parameter_ids
+                    ):
+                        continue
+                    counted_parameter_ids.add(parameter_id)
+                    target_params += int(parameter.numel())
+            self.identity_capacity = ParameterMatchedIdentityCapacity(
+                self.emb_dim,
+                self.num_classes,
+                target_params,
+            )
+            self.dom_backbone = None
+            self.dom_enhancer = None
+            self.dom_head = None
+            self.adv_head = None
+            self.tx_adv_head = None
 
     def _share_early_stem(self) -> None:
         """Share the lowest-level IQ/filterbank stem only for Lite-B.
@@ -601,6 +692,43 @@ class DualCVSincNetDisentangle(nn.Module):
         return_aux: bool = False,
         domain_labels: Optional[torch.Tensor] = None,
     ):
+        if self.representation_mode == "single_parameter_matched":
+            aux_id = backbone_forward_compat(
+                self.id_backbone,
+                x,
+                y=y_tx,
+                return_aux=True,
+                domain_labels=domain_labels,
+            )
+            base_logits = aux_id["logits"]
+            base_z_id = self._pick_z_id(aux_id)
+            z_id, correction = self.identity_capacity(base_z_id)
+            tx_logits = base_logits + correction
+            if not return_aux:
+                return tx_logits
+            zero_domain_logits = tx_logits.new_zeros(
+                (int(tx_logits.size(0)), self.num_domains)
+            )
+            return {
+                "tx_logits": tx_logits,
+                "dom_logits": zero_domain_logits,
+                "adv_dom_logits": zero_domain_logits,
+                "z_id": z_id,
+                "z_dom": z_id,
+                "z_dom_raw": z_id,
+                "z_id_key": self.id_feature_key,
+                "z_dom_key": "shared_identity_no_domain_representation",
+                "representation_mode": self.representation_mode,
+                "domain_branch_ablation": "not_present",
+                "id_time_stability_mode": self.id_time_stability_mode,
+                "id_freq_stability_mode": self.id_freq_stability_mode,
+                "domain_time_stability_mode": "not_present",
+                "domain_freq_stability_mode": "not_present",
+                "tx_adv_on_zdom": False,
+                "aux_id": aux_id,
+                "aux_dom": {},
+            }
+
         if (not return_aux) and self.fast_infer_when_no_aux:
             return backbone_forward_compat(
                 self.id_backbone,
@@ -640,6 +768,7 @@ class DualCVSincNetDisentangle(nn.Module):
             "domain_time_stability_mode": self.domain_time_stability_mode,
             "domain_freq_stability_mode": self.domain_freq_stability_mode,
             "tx_adv_on_zdom": self.tx_adv_head is not None,
+            "representation_mode": self.representation_mode,
             "aux_id": aux_id,
             "aux_dom": aux_dom,
         }
@@ -717,6 +846,7 @@ def build_dual_model(
     fast_infer_when_no_aux: bool = True,
     use_tx_adv_on_zdom: bool = False,
     arch_family: str = "cvsincnet",
+    representation_mode: str = "dual",
 ) -> DualCVSincNetDisentangle:
     return DualCVSincNetDisentangle(
         num_classes=num_classes,
@@ -759,4 +889,5 @@ def build_dual_model(
         fast_infer_when_no_aux=fast_infer_when_no_aux,
         use_tx_adv_on_zdom=use_tx_adv_on_zdom,
         arch_family=arch_family,
+        representation_mode=representation_mode,
     )
