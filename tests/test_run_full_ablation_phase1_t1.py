@@ -312,9 +312,29 @@ def test_completion_receipt_binds_row_plan_split_and_terminal(tmp_path) -> None:
             ).encode("utf-8")
         ).hexdigest(),
     }
+    dataset_receipt_path = tmp_path / "dataset_receipt.json"
+    environment_receipt_path = tmp_path / "environment_receipt.json"
+    dataset_receipt = {
+        "schema": "cvs.phase1.dataset_receipt.v1",
+        "wisig_pkl_sha256": plan["wisig_pkl_sha256"],
+    }
+    environment_receipt = {
+        "schema": "cvs.phase1.python_environment_receipt.v1",
+        "environment_id": "ssr-gpu",
+    }
+    dataset_receipt_path.write_text(
+        json.dumps(dataset_receipt),
+        encoding="utf-8",
+    )
+    environment_receipt_path.write_text(
+        json.dumps(environment_receipt),
+        encoding="utf-8",
+    )
     terminal = {
         "status": "COMPLETE",
         "source_split_receipt": split_receipt,
+        "dataset_receipt": dataset_receipt,
+        "environment_receipt": environment_receipt,
     }
     terminal_path = output / "phase1_terminal_status.json"
     checkpoint_path = output / "best_source_validation_ssdg.pth"
@@ -338,8 +358,12 @@ def test_completion_receipt_binds_row_plan_split_and_terminal(tmp_path) -> None:
     prototype_json_path = output / "phase2_zid_prototypes.json"
     prototype_path.write_bytes(b"prototype")
     prototype_json_path.write_text("{}", encoding="utf-8")
-    dataset_receipt_hash = "8" * 64
-    environment_receipt_hash = "9" * 64
+    dataset_receipt_hash = hashlib.sha256(
+        dataset_receipt_path.read_bytes()
+    ).hexdigest()
+    environment_receipt_hash = hashlib.sha256(
+        environment_receipt_path.read_bytes()
+    ).hexdigest()
     receipt = {
         "run_id": plan["run_id"],
         "row_key": row["row_key"],
@@ -351,6 +375,8 @@ def test_completion_receipt_binds_row_plan_split_and_terminal(tmp_path) -> None:
         "wisig_pkl_sha256": plan["wisig_pkl_sha256"],
         "dataset_receipt_sha256": dataset_receipt_hash,
         "environment_receipt_sha256": environment_receipt_hash,
+        "dataset_receipt": dataset_receipt,
+        "environment_receipt": environment_receipt,
         "resolved_config_hash": row["config_hash"],
         "method_config_hash": row["method_config_hash"],
         "terminal_manifest_sha256": hashlib.sha256(
@@ -388,6 +414,8 @@ def test_completion_receipt_binds_row_plan_split_and_terminal(tmp_path) -> None:
             return_code=0,
             dataset_receipt_sha256=dataset_receipt_hash,
             environment_receipt_sha256=environment_receipt_hash,
+            dataset_receipt_path=dataset_receipt_path,
+            environment_receipt_path=environment_receipt_path,
         )["row_key"]
         == row["row_key"]
     )
@@ -407,4 +435,34 @@ def test_completion_receipt_binds_row_plan_split_and_terminal(tmp_path) -> None:
             return_code=0,
             dataset_receipt_sha256=dataset_receipt_hash,
             environment_receipt_sha256=environment_receipt_hash,
+            dataset_receipt_path=dataset_receipt_path,
+            environment_receipt_path=environment_receipt_path,
+        )
+
+
+def test_p0_disabled_terminal_is_immediate_protocol_failure(tmp_path) -> None:
+    plan = _plan()
+    plan["run_id"] = "phase1-v1"
+    row = plan["rows"][0]
+    output = tmp_path / row["row_key"]
+    output.mkdir()
+    (output / "phase1_terminal_status.json").write_text(
+        json.dumps({"status": "NON_PROMOTABLE_P0_DISABLED"}),
+        encoding="utf-8",
+    )
+    (output / "phase1_training_completion_receipt.json").write_text(
+        json.dumps(
+            {"terminal_status": "NON_PROMOTABLE_P0_DISABLED"}
+        ),
+        encoding="utf-8",
+    )
+    with pytest.raises(
+        phase1_runner.Phase1ProtocolError,
+        match="NON_PROMOTABLE_P0_DISABLED",
+    ):
+        validate_phase1_row_completion(
+            row=row,
+            plan=plan,
+            output_dir=output,
+            return_code=8,
         )

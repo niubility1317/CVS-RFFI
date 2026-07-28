@@ -286,6 +286,8 @@ def validate_phase1_row_completion(
     return_code: int,
     dataset_receipt_sha256: str = "",
     environment_receipt_sha256: str = "",
+    dataset_receipt_path: Path | None = None,
+    environment_receipt_path: Path | None = None,
 ) -> dict[str, Any]:
     terminal_path = output_dir / "phase1_terminal_status.json"
     receipt_path = output_dir / "phase1_training_completion_receipt.json"
@@ -293,6 +295,49 @@ def validate_phase1_row_completion(
         raise Phase1RunnerError("row lacks terminal or completion receipt")
     terminal = _load_json(terminal_path)
     receipt = _load_json(receipt_path)
+    terminal_status = str(terminal.get("status", ""))
+    receipt_status = str(receipt.get("terminal_status", ""))
+    if "NON_PROMOTABLE_P0_DISABLED" in {
+        terminal_status,
+        receipt_status,
+    }:
+        raise Phase1ProtocolError(
+            "row terminal status is NON_PROMOTABLE_P0_DISABLED"
+        )
+    if terminal_status != receipt_status:
+        raise Phase1ProtocolError(
+            "row terminal status differs from completion receipt"
+        )
+    public_receipts = (
+        (
+            "dataset",
+            dataset_receipt_path,
+            str(dataset_receipt_sha256),
+        ),
+        (
+            "environment",
+            environment_receipt_path,
+            str(environment_receipt_sha256),
+        ),
+    )
+    for label, public_path, expected_hash in public_receipts:
+        if (
+            public_path is None
+            or not Path(public_path).is_file()
+            or _sha256_path(Path(public_path)) != expected_hash
+        ):
+            raise Phase1ProtocolError(
+                f"row public {label} receipt hash drift"
+            )
+        public_payload = _load_json(Path(public_path))
+        if (
+            public_payload != dict(receipt.get(f"{label}_receipt") or {})
+            or public_payload
+            != dict(terminal.get(f"{label}_receipt") or {})
+        ):
+            raise Phase1ProtocolError(
+                f"row public {label} receipt content drift"
+            )
     expected = {
         "run_id": str(plan["run_id"]),
         "row_key": str(row["row_key"]),
@@ -732,6 +777,10 @@ def run_release(args: argparse.Namespace, plan: Mapping[str, Any]) -> int:
                     ),
                     environment_receipt_sha256=(
                         environment_receipt_sha256
+                    ),
+                    dataset_receipt_path=dataset_receipt_path,
+                    environment_receipt_path=(
+                        environment_receipt_path
                     ),
                 )
                 receipt_valid = True
