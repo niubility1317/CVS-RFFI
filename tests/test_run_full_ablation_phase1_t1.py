@@ -169,3 +169,18 @@ def test_completion_receipt_binds_row_plan_split_and_terminal(tmp_path) -> None:
         )["row_key"]
         == row["row_key"]
     )
+    receipt["resource_summary_sha256"] = "0" * 64
+    (output / "phase1_training_completion_receipt.json").write_text(
+        json.dumps(receipt),
+        encoding="utf-8",
+    )
+    with pytest.raises(
+        Phase1RunnerError,
+        match="resource-summary hash drift",
+    ):
+        validate_phase1_row_completion(
+            row=row,
+            plan=plan,
+            output_dir=output,
+            return_code=0,
+        )

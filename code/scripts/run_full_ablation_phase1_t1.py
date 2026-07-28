@@ -362,17 +362,33 @@ class _Capacity:
         with self.locks[gpu]:
             self.owned[gpu].pop(int(pid), None)
 
-    def terminate_owned(self) -> None:
+    def terminate_owned(self, grace_seconds: float = 20.0) -> None:
+        owned_processes: list[subprocess.Popen] = []
         for gpu in range(GPU_COUNT):
             with self.locks[gpu]:
-                processes = list(self.owned[gpu].values())
-            for process in processes:
-                if process.poll() is not None:
-                    continue
-                try:
-                    os.killpg(int(process.pid), signal.SIGTERM)
-                except ProcessLookupError:
-                    pass
+                owned_processes.extend(self.owned[gpu].values())
+        live_processes = [
+            process
+            for process in owned_processes
+            if process.poll() is None
+        ]
+        for process in live_processes:
+            try:
+                os.killpg(int(process.pid), signal.SIGTERM)
+            except ProcessLookupError:
+                pass
+        deadline = time.time() + max(0.0, float(grace_seconds))
+        while time.time() < deadline:
+            if all(process.poll() is not None for process in live_processes):
+                return
+            time.sleep(0.25)
+        for process in live_processes:
+            if process.poll() is not None:
+                continue
+            try:
+                os.killpg(int(process.pid), signal.SIGKILL)
+            except ProcessLookupError:
+                pass
 
 
 def _exclusive_json(path: Path, payload: Mapping[str, Any]) -> None:
@@ -520,10 +536,13 @@ def run_release(args: argparse.Namespace, plan: Mapping[str, Any]) -> int:
         "row_count": len(plan["rows"]),
         "completed_count": len(statuses),
         "success_count": sum(
-            status["return_code"] == 0 and status["terminal_manifest_exists"]
+            bool(status["completion_receipt_valid"])
             for status in statuses
         ),
-        "failed_count": sum(status["return_code"] != 0 for status in statuses),
+        "failed_count": sum(
+            not bool(status["completion_receipt_valid"])
+            for status in statuses
+        ),
         "systemic_stop": stop_event.is_set(),
         "thread_errors": thread_errors,
         "failure_fingerprints": failures,
