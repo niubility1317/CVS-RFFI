@@ -14,7 +14,7 @@
 |代码就绪提交|`bfe3bf9bc8332e158c4453c919f47b0e58301633`|
 |独立终审|`P0=0、P1=0`；`APPROVE_LOCAL_VERIFIED`|
 |审阅者|`/root/phase1_t1_independent_review`|
-|性能结论|无；尚未连接N607、同步或启动|
+|性能结论|无；仅完成N607只读preflight，尚未同步或启动|
 
 ## 目标与假设
 
