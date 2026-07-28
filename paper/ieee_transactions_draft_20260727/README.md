@@ -13,6 +13,7 @@
 - `manuscript.pdf`：由Tectonic 0.17.0编译的审阅PDF。
 - `claim_evidence_matrix.md`：逐项主张、证据和禁用表述。
 - `citation_inventory.md`：45份引用PDF的来源、页数、解析结果和SHA-256清单。
+- `experiments/CVS_FULL_ABLATION_DESIGN_PHASE1_PHASE2_20260728.md`：覆盖Phase1、Stage2-A/B/C、两阶段交互、资源、连续注册和安全边界的全量消融预注册设计。
 - `reviews/00_consolidated_revision_and_experiment_roadmap.md`：综合审稿结论、P0/P1补实验和主张解锁路线。
 - `reviews/01_starlink_spaceborne_rffi_literature_audit.md`：Starlink与星上RFFI文献、作用及边界审计。
 - `reviews/02_q1_reviewer_novelty_evidence_audit.md`：IEEE一区匿名审稿视角的创新与证据审计。
