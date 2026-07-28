@@ -7,13 +7,13 @@
 |实验ID|`cvs_full_ablation_phase1_t1_20260729_v2`|
 |日期|2026-07-29|
 |operator|Codex主代理；N607发布由唯一实验runner子代理执行|
-|状态|`RUNNING / FIRST_WORKER_WAVE_HEALTHY`|
+|状态|`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`|
 |协议|Phase1 source-only；`0.07/0.63/0.30`|
 |Git分支|`codex/full-ablation-20260728`|
 |代码提交|`f8a46c1b3d889e0eeea2c3fb75b6d8c871c6881a`|
 |独立审查|`P0=0、P1=0 / APPROVE_LOCAL_VERIFIED`|
 |前序run|`cvs_full_ablation_phase1_t1_20260728_v1`，系统性技术失败、无性能结果、不可恢复|
-|性能结论|无；本run执行中|
+|性能结论|无；prototype安全导出P0失败，本run不可用于性能分析|
 
 ## 目标、假设与对照
 
@@ -117,6 +117,52 @@ cd /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase1_t
 |6|`P1-A0/s7281103/281235`|`P1-A0/s7281104/281516`|
 |7|`P1-A0/s7281105/281238`|`P1-B0/s7281101/281519`|
 
+## v2技术停止与证据封口
+
+runner于`2026-07-29 04:35:20 +08:00`按预登记P0规则自动封口。唯一触发行`P1-SUP__train_seed_7281101`完成200 epoch后，在正式prototype导出阶段触发`endpoint_accept_v1`组件半径安全校验：
+
+```text
+endpoint_accept_v1 component radius-to-inter ratio unsafe: class=0 component=1 ratio=0.863507
+```
+
+该行`return_code=3`，terminal状态为`FAILED_EXPORT`，prototype文件未生成，completion校验报告`row prototype artifact hashes are incomplete`。可靠归一化异常指纹为`cca18df5dd028d2f112cafce436620c3a3e29ee1402a8a35b9bc9658dcb83a1e`。runner将其判为`p0_protocol_violation=true`，停止派发并只终止已证明属于本run的其余15个worker；未启动剩余14行。
+
+|汇总字段|值|
+|---|---:|
+|冻结rows|30|
+|已启动|16|
+|已封口|16|
+|成功|0|
+|失败|16|
+|未启动|14|
+|systemic_stop|`true`|
+|thread_errors|0|
+|最终活跃main/worker|0/0|
+|GPU释放|8/8，compute-app=0|
+
+|arm|seed|GPU|最后epoch|return code|terminal|checkpoint|prototype|completion|技术判定|
+|---|---:|---:|---:|---:|---|---|---|---|---|
+|P1-FULL|7281101|0|88|-15|无|有|无|无|P0触发后被动停止|
+|P1-FULL|7281102|0|88|-15|无|有|无|无|P0触发后被动停止|
+|P1-FULL|7281103|1|87|-15|无|有|无|无|P0触发后被动停止|
+|P1-FULL|7281104|1|88|-15|无|有|无|无|P0触发后被动停止|
+|P1-FULL|7281105|2|84|-15|无|有|无|无|P0触发后被动停止|
+|P1-SUP|7281101|2|200|3|`FAILED_EXPORT`|有|无|无|P0触发行|
+|P1-SUP|7281102|3|200|-15|无|有|无|无|P0触发后被动停止|
+|P1-SUP|7281103|3|199|-15|无|有|无|无|P0触发后被动停止|
+|P1-SUP|7281104|4|200|-15|无|有|无|无|P0触发后被动停止|
+|P1-SUP|7281105|4|200|-15|无|有|无|无|P0触发后被动停止|
+|P1-A0|7281101|5|112|-15|无|有|无|无|P0触发后被动停止|
+|P1-A0|7281102|5|110|-15|无|有|无|无|P0触发后被动停止|
+|P1-A0|7281103|6|111|-15|无|有|无|无|P0触发后被动停止|
+|P1-A0|7281104|6|109|-15|无|有|无|无|P0触发后被动停止|
+|P1-A0|7281105|7|106|-15|无|有|无|无|P0触发后被动停止|
+|P1-B0|7281101|7|90|-15|无|有|无|无|P0触发后被动停止|
+
+P1-SUP日志中的NaN来自禁用或空置指标打印，不是本次停止指纹。其余15个`-15`是同一系统性停止后的被动终止，也不构成独立重复故障。
+
+失败证据已回收到`runner_release/remote_failure_e6383147`：44个远端原始文件，另有`evidence_summary.json`和`SHA256SUMS.txt`，共46个文件、12,688,347字节。45条文件SHA全部复算通过，27个JSON全部可解析；`SHA256SUMS.txt`自身SHA256为`a977b6d154ad3aa7aaf8ce8408e479050cb7b128abe28bfc291fcaa4731cfe58`，`runner_summary.json`SHA256为`a0c60b2113d11046bb55b0787d06109e0d1ac0a5e10d858a1b86b17b0a51be37`。未下载checkpoint或模型。最终`ssh.exe=0`，N607与bridge TCP22连接为0。
+
 ## 健康门与停止规则
 
 - 启动后立即核对main PID、PGID/SID、CWD、cmdline、run/log、16槽、GPU映射和receipt。
@@ -132,11 +178,11 @@ cd /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase1_t
 
 |arm|seed|split|参数量|source UDU|hard-TX|LEO clear|LEO low|LEO rain|状态|判定|
 |---|---:|---|---:|---:|---:|---:|---:|---:|---|---|
-|首波16行|`7281101–7281105`|`0.07/0.63/0.30`|待终局|—|—|—|—|—|`RUNNING`|仅技术健康，无性能结论|
+|v2首波16行|`7281101–7281105`|`0.07/0.63/0.30`|待新run|—|—|—|—|—|`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE`|`NO_PERFORMANCE_RESULT`|
 
 ## 风险与后续
 
-1. 本次仅授权启动v2；若本run技术失败，不自动授权再次重试。
+1. v2已技术停止；不得恢复、覆盖、续跑或改标为性能实验。
 2. 远端CUDA/torch/driver或GPU占用变化必须在启动前重新检查。
 3. 双进程/GPU只用于吞吐，不作为隔离时延或峰值资源主张。
 4. 30个row完整闭合后才进行同row统计和Phase2 bundle选择。
