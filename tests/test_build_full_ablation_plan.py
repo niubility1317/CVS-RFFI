@@ -3,7 +3,10 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-from scripts.build_full_ablation_plan import build_plan
+from scripts.build_full_ablation_plan import (
+    _canonical_text_sha256,
+    build_plan,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -51,3 +54,9 @@ def test_phase1_plan_keeps_exact_physical_count() -> None:
     assert plan["unique_physical_row_count"] == 30
     assert plan["physical_dedup_status"] == "NOT_APPLICABLE_PHASE1"
     assert plan["python_environment_id"] == "CVS-RFFI"
+
+
+def test_registry_hash_is_cross_platform_line_ending_stable() -> None:
+    lf = b'{"schema":"example"}\n'
+    crlf = b'{"schema":"example"}\r\n'
+    assert _canonical_text_sha256(lf) == _canonical_text_sha256(crlf)

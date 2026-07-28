@@ -1,12 +1,18 @@
 from __future__ import annotations
 
 import copy
+import hashlib
+import subprocess
+from pathlib import Path
 
 import pytest
 
 from cvsrffi.full_ablation_spec import build_phase1_t1_rows
 from scripts.run_full_ablation_phase1_t1 import Phase1RunnerError
-from scripts.seal_full_ablation_phase1_plan import seal_plan
+from scripts.seal_full_ablation_phase1_plan import (
+    _git_blob_sha256,
+    seal_plan,
+)
 
 
 _RELEASE_FILES = {
@@ -130,3 +136,25 @@ def test_seal_rejects_seed_registry_semantic_drift() -> None:
             commit="a" * 40,
             release_files=_RELEASE_FILES,
         )
+
+
+def test_git_release_hashes_bind_commit_blobs_not_checkout_eol() -> None:
+    repo_root = Path(__file__).resolve().parents[1]
+    commit = subprocess.run(
+        ["git", "rev-parse", "HEAD"],
+        cwd=str(repo_root),
+        check=True,
+        capture_output=True,
+        text=True,
+    ).stdout.strip()
+    assert len(commit) == 40
+    relative_path = "code/scripts/seal_full_ablation_phase1_plan.py"
+    blob = subprocess.run(
+        ["git", "show", f"{commit}:{relative_path}"],
+        cwd=str(repo_root),
+        check=True,
+        capture_output=True,
+    ).stdout
+    assert _git_blob_sha256(repo_root, commit, relative_path) == (
+        hashlib.sha256(blob).hexdigest()
+    )

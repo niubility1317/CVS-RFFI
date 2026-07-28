@@ -36,6 +36,12 @@ def _sha256_bytes(payload: bytes) -> str:
     return hashlib.sha256(payload).hexdigest()
 
 
+def _canonical_text_sha256(payload: bytes) -> str:
+    """Hash Git/Linux text bytes, independent of Windows checkout CRLF."""
+
+    return _sha256_bytes(payload.replace(b"\r\n", b"\n"))
+
+
 def _load_registry(path: Path) -> tuple[dict[str, Any], str]:
     payload = path.read_bytes()
     registry = json.loads(payload.decode("utf-8-sig"))
@@ -57,7 +63,7 @@ def _load_registry(path: Path) -> tuple[dict[str, Any], str]:
         ],
         confirmation.get("new_class_draw_seeds") or [],
     )
-    return registry, _sha256_bytes(payload)
+    return registry, _canonical_text_sha256(payload)
 
 
 def _select_arms(raw_ids: str) -> list[ArmSpec]:

@@ -44,6 +44,20 @@ def _canonical_hash(payload: Mapping[str, Any]) -> str:
     return hashlib.sha256(encoded).hexdigest()
 
 
+def _git_blob_sha256(
+    repo_root: Path,
+    commit: str,
+    relative_path: str,
+) -> str:
+    blob = subprocess.run(
+        ["git", "show", f"{commit}:{relative_path}"],
+        cwd=str(repo_root),
+        check=True,
+        capture_output=True,
+    ).stdout
+    return hashlib.sha256(blob).hexdigest()
+
+
 def _arm_resolved_hash(
     ablation_id: str,
     commit: str,
@@ -182,7 +196,11 @@ def _git_release_state(repo_root: Path) -> tuple[str, dict[str, str]]:
         path = repo_root / relative_path
         if not path.is_file():
             raise Phase1RunnerError(f"release file missing: {relative_path}")
-        hashes[relative_path] = hashlib.sha256(path.read_bytes()).hexdigest()
+        hashes[relative_path] = _git_blob_sha256(
+            repo_root,
+            commit,
+            relative_path,
+        )
     return commit, hashes
 
 
