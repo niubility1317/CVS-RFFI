@@ -10,6 +10,7 @@ import pytest
 from cvsrffi.full_ablation_spec import build_phase1_t1_rows
 from scripts.run_full_ablation_phase1_t1 import Phase1RunnerError
 from scripts.seal_full_ablation_phase1_plan import (
+    RELEASE_RELATIVE_PATHS,
     _git_blob_sha256,
     seal_plan,
 )
@@ -158,3 +159,9 @@ def test_git_release_hashes_bind_commit_blobs_not_checkout_eol() -> None:
     assert _git_blob_sha256(repo_root, commit, relative_path) == (
         hashlib.sha256(blob).hexdigest()
     )
+
+
+def test_release_hashes_cover_phase1_prototype_export_runtime() -> None:
+    assert "code/SSDG/train_ssdg.py" in RELEASE_RELATIVE_PATHS
+    assert "code/post_stage_common.py" in RELEASE_RELATIVE_PATHS
+    assert "code/cvsrffi/phase2_prototypes.py" in RELEASE_RELATIVE_PATHS

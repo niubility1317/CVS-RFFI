@@ -27,6 +27,7 @@ RELEASE_RELATIVE_PATHS = (
     "code/post_stage_common.py",
     "code/cvsrffi/full_ablation_spec.py",
     "code/cvsrffi/phase1_ablation_factory.py",
+    "code/cvsrffi/phase2_prototypes.py",
     "code/scripts/build_full_ablation_plan.py",
     "code/scripts/run_full_ablation_phase1_t1.py",
     "code/scripts/seal_full_ablation_phase1_plan.py",
