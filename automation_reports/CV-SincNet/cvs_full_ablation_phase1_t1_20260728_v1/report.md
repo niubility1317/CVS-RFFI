@@ -7,7 +7,7 @@
 |实验ID|`cvs_full_ablation_phase1_t1_20260728_v1`|
 |日期|2026-07-28|
 |operator|Codex主代理；N607发布将交给唯一实验runner子代理|
-|状态|`LOCAL_VERIFIED_PENDING_N607_PREFLIGHT_NOT_LAUNCHED`|
+|状态|`BLOCKED_PRELAUNCH_MISSING_N607_SSR_GPU_NOT_LAUNCHED`|
 |设计|`CVS_FULL_ABLATION_DESIGN_PHASE1_PHASE2_20260728.md`|
 |协议|Phase1 source-only；正式划分`0.07/0.63/0.30`|
 |当前Git分支|`codex/full-ablation-20260728`|
@@ -111,15 +111,17 @@ print(json.dumps(r,ensure_ascii=False,sort_keys=True))
 
 |字段|当前值|
 |---|---|
-|远端项目根|预期`/home/szu2070436088/2510044040/CV-SincNet`；待实时只读确认|
-|Python环境|必须为`ssr-gpu`；待实时只读确认精确解释器路径|
-|WiSig数据|预期`Dataset_WigSig/ManySig.pkl`；待实时只读确认|
+|远端项目根|`/home/szu2070436088/2510044040/CV-SincNet`；direct preflight确认可见|
+|Python环境|缺少`ssr-gpu`；仅发现`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`，未冒充、未改契约|
+|WiSig数据|`/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl`；2,359,341,461字节；SHA256=`2b0a7a7488dd3650bcae7b1d80efbcffd1598aaa671ae6b0a0df2a24dc0f694f`|
 |run root|`runs/cvs_full_ablation_phase1_t1_20260728_v1`|
 |log root|`logs/cvs_full_ablation_phase1_t1_20260728_v1`|
 |主PID/GPU|尚未启动|
 |精确启动命令|尚未冻结；发布前写入|
 
 计划同步目标均位于远端项目根的同名相对路径，只同步本次Git提交包含的精确文件；同步后逐文件核对SHA256并执行远端`py_compile`和runner dry-run。
+
+2026-07-28实时preflight证据：普通账号直连成功；8张RTX3090均空闲且无compute app；release/run/log目标均不存在。由于远端没有经审查要求的`ssr-gpu`，runner在SCP、目录创建、seal和launch之前停止。未改变N607状态，结束后本地`ssh.exe`与N607/bridge TCP22残留均为0。继续需要用户明确授权创建/安装N607端`ssr-gpu`，或另走“改用既有`CVS-RFFI`环境”的本地代码变更与独立复审。
 
 ## 健康门与停止规则
 
