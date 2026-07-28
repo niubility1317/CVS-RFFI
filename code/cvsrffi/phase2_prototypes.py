@@ -918,6 +918,11 @@ def calibrate_endpoint_accept_v1(
     sample_geo_margin = torch.full((z.size(0),), float("nan"), dtype=torch.float32)
     sample_core = torch.zeros(z.size(0), dtype=torch.bool)
     enabled_by_class = [0 for _ in range(fused.size(0))]
+    max_radius_to_inter_ratio = 0.50
+    calibration_radius_guard_ratio = (
+        max_radius_to_inter_ratio - 1e-6
+    )
+    interclass_guard_contracted_components = 0
 
     all_active_centers = []
     all_active_classes = []
@@ -970,13 +975,53 @@ def calibrate_endpoint_accept_v1(
                 row["accept_enabled"] = False
                 row["calibration_status"] = "insufficient_component_source_val"
                 continue
-            r_core = _finite_quantile(comp_angles, core_quantile)
-            r_accept = max(r_core, _finite_quantile(comp_angles, accept_quantile))
-            r_tail = max(r_accept, _finite_quantile(comp_angles, tail_quantile))
-            if not all(math.isfinite(value) for value in (r_core, r_accept, r_tail)):
+            raw_r_core = _finite_quantile(comp_angles, core_quantile)
+            raw_r_accept = max(
+                raw_r_core,
+                _finite_quantile(comp_angles, accept_quantile),
+            )
+            raw_r_tail = max(
+                raw_r_accept,
+                _finite_quantile(comp_angles, tail_quantile),
+            )
+            if not all(
+                math.isfinite(value)
+                for value in (raw_r_core, raw_r_accept, raw_r_tail)
+            ):
                 row["accept_enabled"] = False
                 row["calibration_status"] = "nonfinite_source_val_geometry"
                 continue
+            center = _normalize(
+                fused[class_id, comp_id].view(1, -1),
+                dim=1,
+            ).squeeze(0)
+            other_center_mask = all_center_classes != class_id
+            if not bool(other_center_mask.any()):
+                row["accept_enabled"] = False
+                row["calibration_status"] = "missing_other_class_component"
+                continue
+            nearest_other_component_deg = math.degrees(
+                float(
+                    torch.acos(
+                        torch.clamp(
+                            all_centers[other_center_mask] @ center,
+                            -1.0 + 1e-6,
+                            1.0 - 1e-6,
+                        )
+                    )
+                    .min()
+                    .item()
+                )
+            )
+            safe_accept_cap_deg = (
+                calibration_radius_guard_ratio
+                * nearest_other_component_deg
+            )
+            r_accept = min(raw_r_accept, safe_accept_cap_deg)
+            r_core = min(raw_r_core, r_accept)
+            r_tail = max(r_accept, raw_r_tail)
+            contracted = raw_r_accept > safe_accept_cap_deg + 1e-8
+            interclass_guard_contracted_components += int(contracted)
             density = torch.exp(-torch.square(comp_angles / max(r_accept, 1e-6)))
             nll = 0.5 * torch.square(comp_angles / max(r_accept, 1e-6))
             core_values = comp_angles <= r_core
@@ -994,6 +1039,24 @@ def calibrate_endpoint_accept_v1(
                     "density_p10": _finite_quantile(density, 0.10),
                     "nll_p95": _finite_quantile(nll[core_values] if bool(core_values.any()) else nll, 0.95),
                     "nll_tail_p95": _finite_quantile(nll, 0.95),
+                    "source_val_raw_r_core_deg": float(raw_r_core),
+                    "source_val_raw_r_accept_deg": float(raw_r_accept),
+                    "source_val_raw_r_tail_deg": float(raw_r_tail),
+                    "nearest_other_component_deg": float(
+                        nearest_other_component_deg
+                    ),
+                    "interclass_safe_r_accept_cap_deg": float(
+                        safe_accept_cap_deg
+                    ),
+                    "max_radius_to_inter_ratio": float(
+                        max_radius_to_inter_ratio
+                    ),
+                    "calibration_radius_guard_ratio": float(
+                        calibration_radius_guard_ratio
+                    ),
+                    "radius_contracted_by_interclass_guard": bool(
+                        contracted
+                    ),
                     "accept_enabled": True,
                     "calibration_status": "source_val_calibrated",
                 }
@@ -1042,7 +1105,7 @@ def calibrate_endpoint_accept_v1(
         "use_energy_gate": True,
         "use_geo_margin_gate": True,
         "reject_nan": True,
-        "max_radius_to_inter_ratio": 0.50,
+        "max_radius_to_inter_ratio": max_radius_to_inter_ratio,
     }
     calibration = {
         "schema": "endpoint_accept_v1_source_val_calibration_v1",
@@ -1058,6 +1121,15 @@ def calibrate_endpoint_accept_v1(
         "core_quantile": float(core_quantile),
         "accept_quantile": float(accept_quantile),
         "tail_quantile": float(tail_quantile),
+        "max_radius_to_inter_ratio": float(
+            max_radius_to_inter_ratio
+        ),
+        "calibration_radius_guard_ratio": float(
+            calibration_radius_guard_ratio
+        ),
+        "interclass_guard_contracted_components": int(
+            interclass_guard_contracted_components
+        ),
     }
     out["fusion_components"] = calibrated_components
     out["fused_tx_accept_radii"] = accept_radii

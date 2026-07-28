@@ -8,6 +8,7 @@ from pathlib import Path
 from types import SimpleNamespace
 from typing import Any, Dict, Iterable, Mapping, Optional, Tuple
 
+import numpy as np
 import torch
 import torch.nn as nn
 
@@ -267,8 +268,20 @@ def build_standard_data(args, device: torch.device):
 
 
 def load_checkpoint(path: str, device: torch.device) -> Dict[str, Any]:
+    numpy_core = getattr(np, "_core", None)
+    if numpy_core is None:
+        numpy_core = np.core
+    numpy_reconstruct = numpy_core.multiarray._reconstruct
     try:
-        with torch.serialization.safe_globals([SatViewStage]):
+        with torch.serialization.safe_globals(
+            [
+                SatViewStage,
+                np.ndarray,
+                np.dtype,
+                numpy_reconstruct,
+                type(np.dtype(np.uint32)),
+            ]
+        ):
             ckpt = torch.load(path, map_location=device, weights_only=True)
     except AttributeError:
         ckpt = torch.load(path, map_location=device)

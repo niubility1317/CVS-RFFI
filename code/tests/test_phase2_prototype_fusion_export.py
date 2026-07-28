@@ -1,8 +1,11 @@
+import hashlib
 import math
+import os
 import sys
 from pathlib import Path
 from types import SimpleNamespace
 
+import pytest
 import torch
 
 
@@ -52,6 +55,14 @@ def _minimal_phase2_package():
             "endpoint_runtime_entry_parity_sample_count": 8,
         },
     }
+
+
+def _sha256_path(path):
+    digest = hashlib.sha256()
+    with Path(path).open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
 
 
 def test_fuse_tx_domain_prototypes_exports_v2_gate_schema():
@@ -211,6 +222,152 @@ def test_endpoint_accept_v1_calibrates_thresholds_from_source_val_and_verifies()
     assert manifest["calibration_evidence"]["num_samples"] == 8
     assert manifest["gate_thresholds"]["energy_max_by_class"].keys() == {"0", "1"}
     assert all(row[0]["calibration_status"] == "source_val_calibrated" for row in artifact["fusion_components"])
+
+
+def test_endpoint_calibration_contracts_accept_radius_to_interclass_guard():
+    def direction(degrees):
+        radians = torch.deg2rad(torch.tensor(float(degrees)))
+        return [float(torch.cos(radians)), float(torch.sin(radians))]
+
+    package = {
+        "feature_key": "z_id",
+        "fused_tx_prototypes": torch.tensor(
+            [[direction(0.0)], [direction(20.0)]],
+            dtype=torch.float32,
+        ),
+        "fused_tx_mask": torch.ones(2, 1, dtype=torch.bool),
+        "fusion_accept_policy": "local_component",
+        "global_fused_radius_is_accept_region": False,
+        "metadata": dict(_minimal_phase2_package()["metadata"]),
+        "fusion_components": [
+            [{"component_id": 0, "source_domains": [0], "accept_enabled": True}],
+            [{"component_id": 0, "source_domains": [0], "accept_enabled": True}],
+        ],
+    }
+    features = torch.tensor(
+        [
+            direction(0.0),
+            direction(-12.0),
+            direction(-15.0),
+            direction(-18.0),
+            direction(20.0),
+            direction(32.0),
+            direction(35.0),
+            direction(38.0),
+        ],
+        dtype=torch.float32,
+    )
+    labels = torch.tensor([0, 0, 0, 0, 1, 1, 1, 1])
+    logits = torch.tensor([[5.0, 0.0]] * 4 + [[0.0, 5.0]] * 4)
+
+    calibrated = calibrate_endpoint_accept_v1(
+        package,
+        features,
+        labels,
+        logits,
+        min_component_samples=2,
+        min_class_samples=2,
+    )
+    for rows in calibrated["fusion_components"]:
+        row = rows[0]
+        assert row["source_val_raw_r_accept_deg"] > 10.0
+        assert row["radius_contracted_by_interclass_guard"] is True
+        assert row["r_accept_deg"] <= (
+            0.5 * row["nearest_other_component_deg"] + 1e-6
+        )
+        assert row["r_core_deg"] <= row["r_accept_deg"]
+
+    artifact = attach_endpoint_accept_v1_manifest(calibrated)
+    manifest = verify_endpoint_accept_v1_manifest(artifact)
+    assert manifest["policy_id"] == "endpoint_accept_v1"
+
+
+@pytest.mark.skipif(
+    not (
+        os.environ.get("CVS_PHASE1_REAL_CHECKPOINT")
+        and os.environ.get("CVS_PHASE1_REAL_WISIG")
+    ),
+    reason=(
+        "set CVS_PHASE1_REAL_CHECKPOINT and CVS_PHASE1_REAL_WISIG "
+        "for the release-gated real-checkpoint smoke"
+    ),
+)
+def test_real_checkpoint_source_only_export_closes_interclass_guard(tmp_path):
+    checkpoint_path = Path(
+        os.environ["CVS_PHASE1_REAL_CHECKPOINT"]
+    ).resolve()
+    wisig_path = Path(os.environ["CVS_PHASE1_REAL_WISIG"]).resolve()
+    assert checkpoint_path.is_file()
+    assert wisig_path.is_file()
+    assert _sha256_path(checkpoint_path) == (
+        "41dea67c8cdc17a01b0bb8d1b198f703ed52ef2320f471832f6cfeff3b77d5aa"
+    )
+    assert _sha256_path(wisig_path) == (
+        "2b0a7a7488dd3650bcae7b1d80efbcffd1598aaa671ae6b0a0df2a24dc0f694f"
+    )
+
+    device = torch.device(
+        "cuda:0" if torch.cuda.is_available() else "cpu"
+    )
+    checkpoint = train_ssdg.load_checkpoint(
+        str(checkpoint_path),
+        device,
+    )
+    args = SimpleNamespace(**dict(checkpoint["args"]))
+    args.wisig_pkl = str(wisig_path)
+    args.device = str(device)
+    args.num_workers = 0
+    args.phase2_export_checkpoint = str(checkpoint_path)
+    args.phase2_export_path = str(
+        tmp_path / "phase2_zid_prototypes.pt"
+    )
+    data_ctx = train_ssdg._build_ssdg_wisig_data(args, device)
+    model_args = train_ssdg.merge_checkpoint_args(
+        checkpoint,
+        args,
+        input_len=int(data_ctx["input_len"]),
+        num_domains=int(data_ctx["num_domains"]),
+    )
+    model_args = train_ssdg._apply_model_cli_args(model_args, args)
+    model = train_ssdg.build_baseline_model(model_args, device)
+    train_ssdg._load_phase1_checkpoint_strict(
+        model,
+        checkpoint,
+        checkpoint_path,
+    )
+    model.eval()
+
+    package = train_ssdg._maybe_export_phase2_prototypes_ssdg(
+        args,
+        model,
+        data_ctx,
+        device,
+        default_checkpoint=checkpoint_path,
+    )
+    manifest = verify_endpoint_accept_v1_manifest(package)
+    enabled = [
+        row
+        for rows in package["fusion_components"]
+        for row in rows
+        if row.get("accept_enabled") is True
+    ]
+    assert enabled
+    assert any(
+        row["radius_contracted_by_interclass_guard"]
+        for row in enabled
+    )
+    assert all(
+        row["r_accept_deg"]
+        <= 0.5 * row["nearest_other_component_deg"] + 1e-8
+        for row in enabled
+    )
+    assert package["metadata"]["loader_split"] == "train"
+    assert (
+        manifest["calibration_evidence"]["calibration_split"]
+        == "source_val"
+    )
+    assert Path(package["paths"]["pt_path"]).is_file()
+    assert Path(package["paths"]["json_path"]).is_file()
 
 
 def test_ssdg_export_hook_attaches_and_verifies_endpoint_artifact(monkeypatch, tmp_path):

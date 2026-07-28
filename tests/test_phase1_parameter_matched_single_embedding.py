@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import numpy as np
 import torch
 
 from baseline_origin_sat_view import SatViewStage
@@ -81,3 +82,21 @@ def test_project_checkpoint_loader_allowlists_sat_view_stage(tmp_path) -> None:
     loaded = load_checkpoint(str(checkpoint_path), torch.device("cpu"))
     assert torch.equal(loaded["model"]["weight"], torch.ones(2))
     assert isinstance(loaded["args"]["sat_view_stages"][0], SatViewStage)
+
+
+def test_project_checkpoint_loader_allowlists_numpy_rng_state(tmp_path) -> None:
+    checkpoint_path = tmp_path / "checkpoint_with_numpy_rng.pth"
+    rng_state = np.random.RandomState(7).get_state()
+    torch.save(
+        {
+            "model": {"weight": torch.ones(2)},
+            "rng_state": {"numpy": rng_state},
+        },
+        checkpoint_path,
+    )
+
+    loaded = load_checkpoint(str(checkpoint_path), torch.device("cpu"))
+
+    restored = loaded["rng_state"]["numpy"]
+    assert restored[0] == rng_state[0]
+    assert np.array_equal(restored[1], rng_state[1])
