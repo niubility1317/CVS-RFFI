@@ -7,11 +7,12 @@
 |实验ID|`cvs_full_ablation_phase1_t1_20260729_v3`|
 |日期|2026-07-29|
 |operator|Codex主代理；N607发布仅由`/root/phase1_t1_n607_runner`执行|
-|状态|`LOCAL_VERIFIED / NOT_LANDED / NOT_LAUNCHED / AWAITING_FRESH_USER_AUTHORITY`|
+|状态|`LOCAL_SEALED / NOT_LANDED / NOT_LAUNCHED / AWAITING_FRESH_USER_AUTHORITY`|
 |设计来源|`CVS-RFFI_全部消融实验设计_Phase1_Phase2_20260728.md`第4.1、5.1、6.1、9.1、9.2、11、12节|
 |协议|Phase1 source-only；`0.07/0.63/0.30`|
 |Git分支|`codex/full-ablation-20260728`|
 |代码审查基线|`5d6df9d609e8e9fe160ce87ce7fceef628163b38`|
+|release提交|`a2c292481160a0707805b06401c776361053bd5a`|
 |独立审查|`P0=0、P1=0、P2=0 / RELEASE_READY`|
 |前序run|v1与v2均为系统性技术失败、`NO_PERFORMANCE_RESULT`、不可恢复或覆盖|
 |性能结论|无；v3尚未启动|
@@ -34,11 +35,11 @@ v2在首个完成行的source-only prototype导出阶段发现内部安全契约
 |T1-P1-06|9.1|单因素diff与协议负测试|聚焦pytest集合|verified|主代理测试及独立63项安全负测试|T0不构成性能证据|
 |T1-P1-07|9.1、11|真实checkpoint、artifact与hash闭合|`phase2_prototypes.py`、真实smoke|verified|v2触发checkpoint source-only导出通过|checkpoint与ManySig SHA固定|
 |T1-P1-08|9.1、13|独立审查`P0=0、P1=0`并Git提交|独立review receipt|verified|`P0=0、P1=0、P2=0`|代码基线`5d6df9d6`|
-|T1-P1-09|1、9.2|唯一run ID与16个固定slot|v3 sealed plan、runner|pending|待seal与远端落地|GPU0–7各slot0/slot1|
+|T1-P1-09|1、9.2|唯一run ID与16个固定slot|v3 sealed plan、runner|verified|30 rows、16 slots、GPU0–7各2 slots|远端落地仍待授权|
 |T1-P1-10|11|逐row保存checkpoint、prototype、指标、资源与exit证据|v3 run/log root|pending|待正式运行|失败row不得静默删除|
 |T1-P1-11|5.1、5.3|同row指标、paired统计与资源汇总|本报告完成段|pending|待30行完整artifact|不得拼接单项极值|
 
-当前追踪计数：verified=8、pending=3、deferred=0、rejected=0、blocked=0。当前范围对Phase1 T1为严格设计对应，不代表设计报告其余T2–T4或Phase2已完成。
+当前追踪计数：verified=9、pending=2、deferred=0、rejected=0、blocked=0。当前范围对Phase1 T1为严格设计对应，不代表设计报告其余T2–T4或Phase2已完成。
 
 ## v2根因与v3修复
 
@@ -65,6 +66,19 @@ v2在首个完成行的source-only prototype导出阶段发现内部安全契约
 
 独立审查仅剩非阻断弃用告警：pin-memory API与旧AMP API。
 
+## 本地不可变发布证据
+
+|artifact|SHA256或绑定值|
+|---|---|
+|Git bundle|`9e37f1544f901ab3da50d10402235293b51acff7832c11896d41ff195d0e3e53`|
+|未授权plan|`f0992481e1499b701b7f77197ba7f2916786b84fa6a7a39d02e2b5879937d1b7`|
+|review receipt|`2960fafd17029725d934a72da9cbccaa11d07c76120fd02353ef46128b1860c7`|
+|sealed plan文件|`0cf7fabf89595949feffcfe0c9860ecd4739a2015b9dd7a0fc3161b7cd5b0d44`|
+|sealed content|`4b62658f070dd231b5c412e8c0da4ae55ff1490b5d2e45057efd5916073cb7a9`|
+|精确release|commit=`a2c292481160a0707805b06401c776361053bd5a`；bundle完整历史校验通过|
+|矩阵|30 rows；16 slots；GPU0–7各2 slots；10个release file hashes|
+|关键导出模块|`code/cvsrffi/phase2_prototypes.py` Git blob SHA256=`6dc5c9066bdc0c4f221036516a8d470c27089b258b51e8891c12cb7607f8a07d`|
+
 ## 冻结矩阵与资源
 
 - Phase1 seeds：`7281101–7281105`。
@@ -82,8 +96,8 @@ v2在首个完成行的source-only prototype导出阶段发现内部安全契约
 |远端Python|`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`|
 |WiSig|`/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl`|
 |WiSig SHA256|`2b0a7a7488dd3650bcae7b1d80efbcffd1598aaa671ae6b0a0df2a24dc0f694f`|
-|release checkout|待seal后固定为`.../releases/cvs_full_ablation_phase1_t1_20260729_v3_<commit8>`|
-|sealed plan|待seal后固定为对应`.sealed.json`|
+|release checkout|`/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase1_t1_20260729_v3_a2c29248`|
+|sealed plan|`/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase1_t1_20260729_v3_a2c29248.sealed.json`|
 |run root|`/home/szu2070436088/2510044040/CV-SincNet/runs/cvs_full_ablation_phase1_t1_20260729_v3`|
 |log root|`/home/szu2070436088/2510044040/CV-SincNet/logs/cvs_full_ablation_phase1_t1_20260729_v3`|
 |远端环境|必须为`CVS-RFFI`，并记录Python、torch、CUDA和8卡可见性receipt|
