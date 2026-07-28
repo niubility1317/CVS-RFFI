@@ -21,10 +21,11 @@
 - 完成Phase1六arm统一factory、A0严格参数匹配单表征、正式训练入口和来源验证选模。
 - 首批实现提交`0b98b2131744b68a1aad02122d357fca4e24b10b`完成；独立审查返回`P0=2、P1=5`，未获发布权。
 - 按审查逐项补齐完整解析配置哈希、arm-aware终局门、checkout/发布文件SHA、source split receipt、训练完成收据和真实16槽容量控制。
-- 修复后`ssr-gpu`聚焦测试44项通过；6个执行文件静态编译通过；Phase1计划非启动演练为30 rows/16 slots。
+- 修复后`ssr-gpu`聚焦测试53项通过；8个发布文件静态编译通过；Phase1计划非启动演练为30 rows/16 slots。
+- 提交`67b41f6d5eecfa90aaf134c891bd43f2a4793997`独立终审为`P0=0、P1=0 / APPROVE_LOCAL_VERIFIED`；真实14域A0/full均为1,062,306参数。
 
 ## 当前
 
-`PHASE_2_PHASE1_T1_IMPLEMENTATION / IN_PROGRESS`
+`PHASE_3_PHASE1_T1_RELEASE_PREFLIGHT / IN_PROGRESS`
 
-下一步：更新报告并提交审查修复版本，交由独立审查复核；只有`P0=0、P1=0`后才生成封存计划并执行N607只读preflight。
+下一步：提交metadata-only报告更新并确认相对`67b41f6d`无代码漂移；随后执行N607只读preflight，冻结WiSig SHA、`ssr-gpu`解释器、8卡占用和逐文件SHA，再生成30-row sealed plan。

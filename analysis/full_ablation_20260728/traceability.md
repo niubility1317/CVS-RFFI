@@ -2,7 +2,7 @@
 
 源文档：`paper/ieee_transactions_draft_20260727/experiments/CVS_FULL_ABLATION_DESIGN_PHASE1_PHASE2_20260728.md`
 
-状态：`READINESS_AUDIT_IN_PROGRESS`
+状态：`PHASE1_T1_RELEASE_PREFLIGHT_IN_PROGRESS`
 
 |ID|源章节|需求|目标文件|状态|验证|备注|
 |---|---|---|---|---|---|---|
@@ -36,7 +36,7 @@
 |JOINT-02|§8.2|A0/B0/C0/D0 bundle下游传递|待映射|pending|固定P2-FULL screening|不替代Phase1主消融|
 |JOINT-03|§8.3|Phase2核心消融固定fresh P1-FULL bundle|待映射|pending|bundle hash一致|不同arm不得换checkpoint|
 |T0-01|§9.1|arm单因素配置diff测试|`code/cvsrffi/phase1_ablation_factory.py`|verified|六arm唯一hash、差分与真实解析器测试通过|Phase1 T1已闭合；内部T2仍待实现|
-|T0-02|§9.1|参数量匹配测试|`code/model_dual_cvsincnet.py`|verified|A0与完整模型均1,048,693参数且梯度可达|Phase1 T1已闭合；Conv-A1仍属T2|
+|T0-02|§9.1|参数量匹配测试|`code/model_dual_cvsincnet.py`|verified|8域fixture均1,061,334；真实14域均1,062,306且梯度可达|正式绝对值以row resource summary为准；Conv-A1仍属T2|
 |T0-03|§9.1|query不可达、全类逐样本argmax、scorer分离|待映射|pending|协议负测试|发布硬门槛|
 |T0-04|§9.1|K1/K2精确fallback闭合|待映射|pending|逐logit/预测测试|发布硬门槛|
 |T0-05|§9.1|量化state无FP32 sidecar|待映射|pending|artifact审计|发布硬门槛|
@@ -44,7 +44,7 @@
 |ART-01|§11|保存完整run/identity/data/prediction/score/resource/exit artifact|`code/cvsrffi/full_ablation_spec.py`;`code/SSDG/train_ssdg.py`|partial|Phase1 split/terminal/completion收据与负测试通过；真实run artifact待验证|Phase2 prediction/score闭环仍待实现|
 |RUN-01|§9/§13|统一arm factory、矩阵executor、8GPU×2调度和不可覆盖输出|`code/cvsrffi/full_ablation_spec.py`;`code/scripts/build_full_ablation_plan.py`;`code/scripts/run_full_ablation_phase1_t1.py`|partial|Phase1 30-row/16槽真实执行器和完成收据验证通过；N607待发布|已有任务计入上限；Phase2执行器待实现|
 |STAT-01|§5.3/§10|paired CI、分层bootstrap、Holm、论文表图数据|待映射|pending|统计单测与fixture|失败row不得删除|
-|REVIEW-01|§13|独立审查达到`P0=0,P1=0`后方可发布|待映射|pending|独立审查记录|作者自测不替代审查|
+|REVIEW-01|§13|独立审查达到`P0=0,P1=0`后方可发布|提交`67b41f6d5eecfa90aaf134c891bd43f2a4793997`|verified|`APPROVE_LOCAL_VERIFIED`|仅Phase1-T1代码就绪，不是性能或landed结论|
 
 ## 统计
 
@@ -57,4 +57,4 @@
 
 ## 最高风险待确认项
 
-`REVIEW-01`：Phase1审查修复尚未形成新提交并复审；在`P0=0、P1=0`前没有N607发布授权。
+`REVIEW-01`：Phase1-T1代码已达到`P0=0、P1=0`。metadata-only新提交须确认相对`67b41f6d`无代码漂移，正式启动仍依赖WiSig SHA、环境、占用、远端checkout和sealed plan。

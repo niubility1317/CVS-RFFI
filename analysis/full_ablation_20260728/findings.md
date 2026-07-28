@@ -43,9 +43,9 @@
 
 ## 三方只读审计裁决
 
-- Phase1：六个第一层arm中0项已验证、5项部分实现、1项缺失；`P1-A0`参数量匹配单embedding是真实P0阻塞。旧launcher的`0.10/0.70/0.20`不能替代当前`0.07/0.63/0.30`重训。
+- Phase1：六个第一层arm及30-row执行层已本地验证，服务器重训尚未开始。旧launcher的`0.10/0.70/0.20`不能替代当前`0.07/0.63/0.30`重训。
 - Phase2：历史prediction/truth分离已实现；P2-FULL、A–F模块、7基线、K2、75/900矩阵、连续注册和16槽调度均只部分或未实现。旧D92 retry2只作负向诊断回归。
-- 监督审计：当前裁决`NO-GO / 禁止发布N607`。必须先完成本地T0、真实checkpoint无query smoke、fresh registry、Git提交和独立`P0=0,P1=0`审查。
+- Phase1-T1终审：提交`67b41f6d5eecfa90aaf134c891bd43f2a4793997`达到`P0=0、P1=0 / APPROVE_LOCAL_VERIFIED`；仅允许进入metadata、seal和N607只读preflight，不是性能结论或已landed证据。
 - `P2-F3`与`P2-FULL`是同一完整量化状态；矩阵保留两个逻辑ID用于论文表语义，但物理执行去重并共享同一不可变artifact引用，避免虚假重复实验。
 
 ## 已冻结的第一批身份层
@@ -57,10 +57,10 @@
 
 ## Phase1 T1实现与首轮独立审查
 
-- 首批实现提交为`0b98b2131744b68a1aad02122d357fca4e24b10b`。独立审查确认`P1-A0`严格参数匹配成立：完整双表征与单表征均为1,048,693参数；单表征仅309个补偿参数，占被移除唯一参数的0.046%，无独立domain分支且梯度可达。
+- `P1-A0`严格参数匹配成立：8域测试fixture下完整双表征与单表征均为1,061,334参数；真实14域下均为1,062,306参数。正式绝对值以对应row的resource summary为准。
 - 首轮审查同时判定`P0=2、P1=5`，因此该提交未获得发布权。阻塞包括完整运行配置未纳入哈希、旧终局门错误要求被消融机制仍启用、source-validation计划与final-only训练不一致、计划未绑定checkout/文件SHA、artifact validator偏schema占位及8×2仅静态。
 - 修复后，arm factory覆盖数据集、source/target receiver/day、划分、优化器和资源参数，并对所有未排除解析器字段计算resolved config hash；运行器核对真实checkout和发布文件SHA。
 - 正式训练只保存`best_source_validation_ssdg.pth`作为选择点；target receiver/day/LEO结果仅在选择冻结后一次性评估，不参与选择。
 - 训练入口写出source split receipt，绑定labeled/unlabeled/source-validation索引哈希、source/target receiver集合和零交集；完成收据进一步绑定row、Git、封存计划、seed registry、方法/解析配置、checkpoint、terminal和prototype哈希。
 - 16槽运行器在启动前读取真实GPU compute PID，把外部进程与本run进程共同计入每卡2进程上限；行输出不可覆盖，完成后必须通过收据校验。两个不同row出现同一规范化技术异常会停止继续派发，并只终止已证明归属本run的进程组。
-- 修复后的聚焦套件在`ssr-gpu`下44项通过，静态编译通过，非启动矩阵演练闭合为30 rows/16 slots。新提交仍须独立复审达到`P0=0、P1=0`，否则不得连接N607执行写操作。
+- 修复后的聚焦套件在`ssr-gpu`下53项通过，8文件静态编译、`git diff --check`和tracked clean通过，非启动矩阵闭合为30 rows/16 slots。真实checkpoint SHA256为`2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98`，no-query smoke为0 missing、0 unexpected、输出`[2,6]`与`z_id=[2,160]`且有限。

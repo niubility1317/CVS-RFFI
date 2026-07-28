@@ -15,7 +15,7 @@
 
 ## 当前阶段
 
-`PHASE_2_PHASE1_T1_IMPLEMENTATION / IN_PROGRESS`
+`PHASE_3_PHASE1_T1_RELEASE_PREFLIGHT / IN_PROGRESS`
 
 ## 阶段
 
@@ -23,8 +23,8 @@
 - [x]1.冻结首批T1范围、fresh seed/draw注册表、paired manifest和8×2调度矩阵。
 - [x]2.补齐并验证Phase1统一arm factory、参数匹配、来源验证选模、行级收据和8×2执行器。
 - [ ]3.补齐并验证Phase2 arm factory、fallback闭合、same-row scorer、连续状态和资源路径。
-- [ ]4.在`ssr-gpu`串行执行聚焦测试、协议负测试、真实checkpoint无query smoke和完整矩阵dry-run。
-- [ ]5.完成独立审查`P0=0,P1=0`、Git提交和N607报告预登记。
+- [x]4.在`ssr-gpu`串行执行聚焦测试、协议负测试、真实checkpoint无query smoke和完整矩阵dry-run。
+- [x]5.完成独立审查`P0=0,P1=0`、Git提交和N607报告预登记。
 - [ ]6.由唯一实验runner执行N607预检、占用审计、精确同步、远端校验和分波次发布。
 - [ ]7.持续完成启动/首row/首worker wave/终局健康检查并回收完整artifact。
 - [ ]8.完成T1分析与晋级判定，再执行符合条件的T2/T3/T4。

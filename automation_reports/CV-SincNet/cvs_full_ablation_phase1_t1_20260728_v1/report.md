@@ -7,12 +7,13 @@
 |实验ID|`cvs_full_ablation_phase1_t1_20260728_v1`|
 |日期|2026-07-28|
 |operator|Codex主代理；N607发布将交给唯一实验runner子代理|
-|状态|`LOCAL_VERIFIED_PENDING_INDEPENDENT_REREVIEW_NOT_LAUNCHED`|
+|状态|`LOCAL_VERIFIED_PENDING_N607_PREFLIGHT_NOT_LAUNCHED`|
 |设计|`CVS_FULL_ABLATION_DESIGN_PHASE1_PHASE2_20260728.md`|
 |协议|Phase1 source-only；正式划分`0.07/0.63/0.30`|
 |当前Git分支|`codex/full-ablation-20260728`|
-|首批实现提交|`0b98b2131744b68a1aad02122d357fca4e24b10b`|
-|首轮独立审查|`P0=2、P1=5`；已修复，待新提交复审|
+|代码就绪提交|`67b41f6d5eecfa90aaf134c891bd43f2a4793997`|
+|独立终审|`P0=0、P1=0`；`APPROVE_LOCAL_VERIFIED`|
+|审阅者|`/root/phase1_t1_independent_review`|
 |性能结论|无；尚未连接N607、同步或启动|
 
 ## 目标与假设
@@ -55,8 +56,8 @@
 
 |检查|结果|
 |---|---|
-|聚焦规范、arm factory、A0、runner、sealer与收据测试|44项通过|
-|A0参数量|与完整双表征模型精确相等；共享Sinc/HF stem只计一次|
+|聚焦规范、arm factory、A0、runner、sealer与收据测试|53项通过|
+|A0参数量|与完整双表征模型精确相等；8域测试fixture均为1,061,334，真实14域均为1,062,306；正式值以row resource summary为准|
 |训练CLI dry-run|六个arm均解析成功；200轮和`0.07/0.63/0.30`被工厂强制覆盖|
 |矩阵dry-run|30 rows、16 slots|
 |静态编译|6个正式执行/规范文件通过|
@@ -65,9 +66,48 @@
 
 正式checkpoint只由source validation选择并保存为`best_source_validation_ssdg.pth`；target receiver/day/LEO只在选择冻结后评估。PyTorch 2.6把checkpoint加载默认改为安全`weights_only`后，历史artifact中的`SatViewStage`会被拒绝。本次公共加载器只对白名单`SatViewStage`开放安全加载，没有回退到不受限反序列化。
 
+真实checkpoint无query smoke使用：
+
+- 路径：`E:\type10-7\automation_reports\CV-SincNet\qknnv42_strict_dual125_20260714_183556\artifacts\best_joint_safe_ssdg.pth`
+- SHA256：`2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98`
+- 环境：`ssr-gpu`；CPU前向；不读取dataset、support或query。
+
+精确命令：
+
+```powershell
+(& conda 'shell.powershell' 'hook') | Out-String | Invoke-Expression
+conda activate ssr-gpu
+$env:PYTHONPATH='E:\type10-7\github_publish\CVS-RFFI-repo\code'
+@'
+import hashlib, json
+from types import SimpleNamespace
+import torch
+from post_stage_common import build_baseline_model, load_checkpoint, merge_checkpoint_args
+p=r"E:\type10-7\automation_reports\CV-SincNet\qknnv42_strict_dual125_20260714_183556\artifacts\best_joint_safe_ssdg.pth"
+d=torch.device("cpu")
+c=load_checkpoint(p,d)
+n=int(c["model"]["dom_head.net.3.weight"].shape[0])
+a=merge_checkpoint_args(c,SimpleNamespace(),input_len=int(c["args"]["wisig_out_len"]),num_domains=n)
+m=build_baseline_model(a,d)
+missing,unexpected=m.load_state_dict(c["model"],strict=False)
+m.eval()
+with torch.no_grad():
+    o=m(torch.randn(2,2,int(a.input_len)),return_aux=True)
+r={"checkpoint":p,"checkpoint_sha256":hashlib.sha256(open(p,"rb").read()).hexdigest(),"python_environment":"ssr-gpu","device":"cpu","query_input_count":0,"num_domains":n,"missing_keys":list(missing),"unexpected_keys":list(unexpected),"tx_logits_shape":list(o["tx_logits"].shape),"z_id_shape":list(o["z_id"].shape),"finite":bool(torch.isfinite(o["tx_logits"]).all() and torch.isfinite(o["z_id"]).all())}
+assert not missing and not unexpected and r["finite"] and r["query_input_count"]==0
+print(json.dumps(r,ensure_ascii=False,sort_keys=True))
+'@ | python -
+```
+
+结果：
+
+```json
+{"checkpoint":"E:\\type10-7\\automation_reports\\CV-SincNet\\qknnv42_strict_dual125_20260714_183556\\artifacts\\best_joint_safe_ssdg.pth","checkpoint_sha256":"2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98","device":"cpu","finite":true,"missing_keys":[],"num_domains":14,"python_environment":"ssr-gpu","query_input_count":0,"tx_logits_shape":[2,6],"unexpected_keys":[],"z_id_shape":[2,160]}
+```
+
 ## N607发布计划
 
-本报告当前不构成发布授权。以下字段须在本地T0和独立审查达到`P0=0,P1=0`、新Git提交完成并执行实时preflight后冻结：
+代码门已达到`P0=0,P1=0`，但本报告当前仍不构成服务器启动授权。以下字段须在metadata-only提交复核和实时preflight后冻结：
 
 |字段|当前值|
 |---|---|
@@ -114,6 +154,6 @@
 ## 风险与后续检查
 
 1. 双进程/GPU用于吞吐调度，不作为无竞争时延或峰值资源主张；正式资源表另做单进程隔离测量。
-2. `P1-A0`参数量精确相等且本地梯度已验证；仍需真实checkpoint和W2 bundle smoke证明端到端闭合。
+2. `P1-A0`参数量精确相等、梯度和真实checkpoint no-query smoke均已验证；W2 bundle smoke仍须在每个arm训练完成后闭合。
 3. 每个Phase1 arm必须生成自己的bundle；不得把`P1-FULL`地面状态借给其他arm。
 4. 30次训练完成后才按source validation规则封存进入Phase2的`P1-FULL` bundle；target结果不得参与选择。
