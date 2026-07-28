@@ -7,7 +7,7 @@
 |实验ID|`cvs_full_ablation_phase1_t1_20260729_v2`|
 |日期|2026-07-29|
 |operator|Codex主代理；N607发布由唯一实验runner子代理执行|
-|状态|`LOCAL_VERIFIED_PENDING_FRESH_RUN_AUTHORIZATION_NOT_LAUNCHED`|
+|状态|`PRECHECK_PASS_RESOURCE_AND_PATH_READY / FRESH_RUN_AUTHORIZATION_NOT_GRANTED / NOT_LAUNCHED`|
 |协议|Phase1 source-only；`0.07/0.63/0.30`|
 |Git分支|`codex/full-ablation-20260728`|
 |代码提交|`f8a46c1b3d889e0eeea2c3fb75b6d8c871c6881a`|
@@ -51,13 +51,42 @@
 |远端Python|`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`|
 |WiSig|`/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl`|
 |已知WiSig SHA256|`2b0a7a7488dd3650bcae7b1d80efbcffd1598aaa671ae6b0a0df2a24dc0f694f`；启动前重验|
-|release checkout|`/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase1_t1_20260729_v2_f8a46c1b`|
-|sealed plan|`/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase1_t1_20260729_v2_f8a46c1b.sealed.json`|
+|release checkout|`/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase1_t1_20260729_v2_e6383147`|
+|sealed plan|`/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase1_t1_20260729_v2_e6383147.sealed.json`|
 |run root|`/home/szu2070436088/2510044040/CV-SincNet/runs/cvs_full_ablation_phase1_t1_20260729_v2`|
 |log root|`/home/szu2070436088/2510044040/CV-SincNet/logs/cvs_full_ablation_phase1_t1_20260729_v2`|
 |启动命令/PID/GPU|待fresh-run授权和启动前实时占用审计后冻结|
 
 发布必须使用精确Git bundle、Git blob SHA、tracked-clean独立checkout、当前review receipt、30-row sealed plan和`CVS-RFFI`environment receipt。旧v1 release/run/log只读保留，不得覆盖、移动、删除或作为本run输入。
+
+## 本地不可变发布证据
+
+|artifact|SHA256或绑定值|
+|---|---|
+|Git bundle|`b4ed0ad27261644f6828f600e73c4a551d2849a91b3db7cd16a1f6c743fcee54`|
+|sealed plan文件|`6f1aeb65cf5f43e0f0a153a71a3280a13bf1cc8e30af69402ff22545d9437bf2`|
+|sealed content|`bbc6d989104708cf82fbfc8524a680bf36a588bceca788430300ad9205c1f545`|
+|review receipt|`96f0af1e254be1d5789f62678a94a012d6d393a448382e45684861cee25e4b5a`|
+|精确checkout|commit=`e63831476f17c11cbac9d5d49075847c574b729d`；tracked-clean；release文件哈希全部匹配|
+|矩阵验证|30 rows；16 slots；GPU0–7各2 slots；`formal_launch_authority=true`|
+
+## N607只读预检
+
+预检时间为`2026-07-29T01:43:21+08:00`，结论为`LAUNCH_READINESS=PRECHECK_PASS_RESOURCE_AND_PATH_READY`。
+
+|项目|实时证据|
+|---|---|
+|主机|`dell-DSS8440`；项目根可见|
+|远端环境|`CVS-RFFI`；torch=`2.1.0+cu121`；CUDA=`12.1`；8个CUDA device|
+|GPU占用|GPU0–7均为0%利用率、1/24576MiB、无compute PID、无训练进程|
+|可用容量|每卡2个新增slot，共16个slot|
+|WiSig|2,359,341,461字节；SHA256与预登记一致|
+|v1状态|release/run/log保留；主PID和17个row PID存活数均为0|
+|v2路径|release、sealed plan、run、log四个目标均不存在|
+|磁盘|`/home`可用约7.5TB，使用率29%|
+|连接闭合|本地`ssh.exe`残留0；N607和bridge TCP22残留0|
+
+本次预检全程只读，未执行SCP、mkdir、launch、kill或任何远端写入。
 
 ## 健康门与停止规则
 
