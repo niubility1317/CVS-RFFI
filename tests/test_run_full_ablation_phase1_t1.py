@@ -33,7 +33,7 @@ def _plan() -> dict:
         "formal_launch_authority": False,
         "seed_registry_sha256": "c" * 64,
         "wisig_pkl_sha256": "f" * 64,
-        "python_environment_id": "ssr-gpu",
+        "python_environment_id": "CVS-RFFI",
         "registered_phase1_train_seeds": [
             7281101,
             7281102,
@@ -84,6 +84,13 @@ def test_sealed_plan_requires_review_and_local_verified_executors() -> None:
         row["executor_status"] = "LOCAL_VERIFIED"
     _seal_for_test(plan)
     validate_phase1_release_plan(plan, require_launch_authority=True)
+    plan["python_environment_id"] = "ssr-gpu"
+    _seal_for_test(plan)
+    with pytest.raises(Phase1RunnerError, match="CVS-RFFI"):
+        validate_phase1_release_plan(
+            plan,
+            require_launch_authority=True,
+        )
 
 
 def test_command_binds_exact_row_identity(tmp_path) -> None:
@@ -91,7 +98,7 @@ def test_command_binds_exact_row_identity(tmp_path) -> None:
     command = build_phase1_command(
         row,
         run_id="run-v1",
-        python_executable="/envs/ssr-gpu/bin/python",
+        python_executable="/envs/CVS-RFFI/bin/python",
         train_script=tmp_path / "train_ssdg.py",
         wisig_pkl=tmp_path / "wisig.pkl",
         output_dir=tmp_path / row["row_key"],
@@ -104,6 +111,7 @@ def test_command_binds_exact_row_identity(tmp_path) -> None:
             tmp_path / "environment_receipt.json"
         ),
         environment_receipt_sha256="9" * 64,
+        python_environment_id="CVS-RFFI",
     )
     joined = " ".join(command)
     assert "--formal_ablation true" in joined
@@ -113,6 +121,7 @@ def test_command_binds_exact_row_identity(tmp_path) -> None:
     assert f"--row_key {row['row_key']}" in joined
     assert f"--sealed_plan_sha256 {'d' * 64}" in joined
     assert f"--seed_registry_sha256 {'c' * 64}" in joined
+    assert "--python_environment_id CVS-RFFI" in joined
     assert "--device cuda:0" in joined
 
 
@@ -320,7 +329,7 @@ def test_completion_receipt_binds_row_plan_split_and_terminal(tmp_path) -> None:
     }
     environment_receipt = {
         "schema": "cvs.phase1.python_environment_receipt.v1",
-        "environment_id": "ssr-gpu",
+        "environment_id": "CVS-RFFI",
     }
     dataset_receipt_path.write_text(
         json.dumps(dataset_receipt),

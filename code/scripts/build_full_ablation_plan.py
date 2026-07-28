@@ -125,7 +125,9 @@ def build_plan(args: argparse.Namespace) -> dict[str, Any]:
         "stage2_seed_disjointness_verified": (
             args.phase == "phase2"
         ),
-        "python_environment_id": "ssr-gpu",
+        "python_environment_id": str(
+            getattr(args, "python_environment_id", "CVS-RFFI")
+        ).strip(),
         "formal_launch_authority": False,
         "release_gate": "LOCAL_T0_AND_INDEPENDENT_P0_P1_REVIEW_REQUIRED",
         "logical_row_count": logical_rows,
@@ -162,6 +164,11 @@ def _parser() -> argparse.ArgumentParser:
             "Phase1 only: SHA256 of the immutable WiSig pickle; "
             "required before sealing."
         ),
+    )
+    parser.add_argument(
+        "--python-environment-id",
+        default="CVS-RFFI",
+        help="Verified remote Conda environment basename.",
     )
     parser.add_argument(
         "--seed-registry",

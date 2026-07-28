@@ -3505,9 +3505,20 @@ def _validate_formal_environment_receipt(args) -> Dict[str, Any]:
     receipt = json.loads(
         receipt_path.read_text(encoding="utf-8-sig")
     )
+    expected_environment_id = str(
+        getattr(args, "python_environment_id", "")
+    ).strip()
+    if (
+        not expected_environment_id
+        or Path(sys.prefix).name.lower()
+        != expected_environment_id.lower()
+    ):
+        raise ValueError(
+            "formal Phase1 Python environment differs from the sealed ID"
+        )
     expected = {
         "schema": "cvs.phase1.python_environment_receipt.v1",
-        "environment_id": "ssr-gpu",
+        "environment_id": expected_environment_id,
         "python_executable": str(Path(sys.executable).resolve()),
         "python_prefix": str(Path(sys.prefix).resolve()),
     }

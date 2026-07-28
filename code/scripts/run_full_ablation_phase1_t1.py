@@ -182,9 +182,9 @@ def validate_phase1_release_plan(
             for char in wisig_hash
         ):
             raise Phase1RunnerError("sealed plan lacks WiSig SHA256")
-        if plan.get("python_environment_id") != "ssr-gpu":
+        if plan.get("python_environment_id") != "CVS-RFFI":
             raise Phase1RunnerError(
-                "sealed plan requires the ssr-gpu environment"
+                "sealed plan requires the verified CVS-RFFI environment"
             )
         if any(
             row.get("executor_status") != "LOCAL_VERIFIED"
@@ -211,6 +211,7 @@ def build_phase1_command(
     dataset_receipt_sha256: str = "",
     environment_receipt_path: str = "",
     environment_receipt_sha256: str = "",
+    python_environment_id: str = "",
 ) -> list[str]:
     command = [
         str(python_executable),
@@ -247,7 +248,7 @@ def build_phase1_command(
         "--environment_receipt_path",
         str(environment_receipt_path),
         "--python_environment_id",
-        "ssr-gpu",
+        str(python_environment_id),
         "--seed",
         str(int(row["train_seed"])),
         "--device",
@@ -639,9 +640,16 @@ def run_release(args: argparse.Namespace, plan: Mapping[str, Any]) -> int:
         raise Phase1RunnerError(
             "child Python must equal the reviewed runner interpreter"
         )
-    if Path(sys.prefix).name.lower() != "ssr-gpu":
+    expected_environment_id = str(
+        plan.get("python_environment_id", "")
+    ).strip()
+    if (
+        not expected_environment_id
+        or Path(sys.prefix).name.lower()
+        != expected_environment_id.lower()
+    ):
         raise Phase1RunnerError(
-            "formal Phase1 runner requires the ssr-gpu environment"
+            "formal Phase1 runner environment differs from the sealed plan"
         )
     wisig_path = Path(args.wisig_pkl).resolve()
     if not wisig_path.is_file():
@@ -683,7 +691,7 @@ def run_release(args: argparse.Namespace, plan: Mapping[str, Any]) -> int:
         environment_receipt_path,
         {
             "schema": "cvs.phase1.python_environment_receipt.v1",
-            "environment_id": "ssr-gpu",
+            "environment_id": expected_environment_id,
             "python_executable": str(Path(sys.executable).resolve()),
             "python_version": sys.version,
             "python_prefix": str(Path(sys.prefix).resolve()),
@@ -742,6 +750,7 @@ def run_release(args: argparse.Namespace, plan: Mapping[str, Any]) -> int:
                 environment_receipt_sha256=(
                     environment_receipt_sha256
                 ),
+                python_environment_id=expected_environment_id,
             )
             env = dict(os.environ)
             env["CUDA_VISIBLE_DEVICES"] = str(gpu)

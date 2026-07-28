@@ -19,6 +19,7 @@ def _args(*, phase: str, stage: str = "screening") -> argparse.Namespace:
         arms="P2-FULL",
         git_commit="a" * 40,
         wisig_pkl_sha256="b" * 64,
+        python_environment_id="CVS-RFFI",
         seed_registry=str(REGISTRY),
     )
 
@@ -49,3 +50,4 @@ def test_phase1_plan_keeps_exact_physical_count() -> None:
     assert plan["logical_row_count"] == 30
     assert plan["unique_physical_row_count"] == 30
     assert plan["physical_dedup_status"] == "NOT_APPLICABLE_PHASE1"
+    assert plan["python_environment_id"] == "CVS-RFFI"

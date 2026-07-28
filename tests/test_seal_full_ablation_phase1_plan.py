@@ -36,7 +36,7 @@ def _plan() -> dict:
         "formal_launch_authority": False,
         "seed_registry_sha256": "c" * 64,
         "wisig_pkl_sha256": "d" * 64,
-        "python_environment_id": "ssr-gpu",
+        "python_environment_id": "CVS-RFFI",
         "registered_phase1_train_seeds": list(
             _SEED_REGISTRY["phase1_train_seeds"]
         ),
