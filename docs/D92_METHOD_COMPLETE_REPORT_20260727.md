@@ -995,6 +995,25 @@ $$
 
 最后，以上\(\sqrt{17}\)推导有一个明确前提：身份块和辅助块都不是零向量，归一化后范数才各为1。如果某个输入块为零或其原始范数小于数值保护常数\(\varepsilon\)，\(\mathcal N_\varepsilon\)不会把它强行变成单位向量，此时应按该样本的实际块范数计算，不能直接使用\(\sqrt{17}\)。
 
+#### 5.0.5一条IQ、一个特征向量和一个support矩阵
+
+模块一每读取一条固定接收IQ，只输出一条288维特征，不会因为同时计算身份、FFT和RF描述就把K增加为3。若注册后共有\(C\)个类别、每类K条support，则模块一重复前向\(CK\)次，形成
+
+$$
+\mathbf Z
+=
+\begin{bmatrix}
+\Phi_\theta(\mathbf x_{1,1})^{\mathsf T}\\
+\vdots\\
+\Phi_\theta(\mathbf x_{C,K})^{\mathsf T}
+\end{bmatrix}
+\in\mathbb R^{CK\times288}.
+$$
+
+**本式符号说明：**\(\mathbf x_{c,k}\)是类别\(c\)的第\(k\)条固定接收IQ；\(\Phi_\theta\)是完整特征映射；\(\mathbf Z\)是全部注册support的特征矩阵；\(CK\)是矩阵行数，每行对应一个独立物理support；288是列数，每列对应一个特征坐标。后续模块二到六处理的是这张矩阵及其标签，不再直接处理时域IQ。
+
+权重4不是由\(\sqrt{17}\)反推出来的；逻辑顺序恰好相反：先把4作为锁定的特征几何超参数，再由两个单位范数块推出总范数\(\sqrt{1^2+4^2}=\sqrt{17}\)。因此4是方法设定，不是某条support实时计算的统计量，也不由query决定。报告只能把它表述为冻结实现采用的固定值；若要主张“4是最优值”，必须另有只使用合法开发证据的消融或预注册选择记录，当前公式本身不能证明最优性。
+
 ### 5.1 特征映射
 
 定义带数值保护的行归一化
@@ -1423,6 +1442,32 @@ $$
 
 第三条样本没有被删除，但它对中心的贡献从普通平均的\(1/3\)降至约0.160。这个例子只解释Cauchy机制，不是某个正式实验row的真实能量。
 
+#### 6.0.1本模块处理的不是地面原型分类
+
+Phase1知识和当前target support在模块二中扮演完全不同的角色：
+
+|来源|提供什么|不提供什么|
+|---|---|---|
+|Phase1 bundle|类无关扰动方向\(\mathbf U\)及方向权重\(\boldsymbol\rho\)|不提供当前旧类或新类的target中心，不直接参与类别匹配|
+|当前target support|每个注册类别的普通中心、类内残差、稳健权重和稳健中心|不修改Phase1 bundle，不增加新的地面知识|
+
+对某类别\(c\)，模块一给出K条身份特征\(\mathbf z_{c,k}^{\mathrm{id}}\in\mathbb R^{160}\)。模块二先计算普通中心\(\bar{\mathbf z}_c^{\mathrm{id}}\)，再把每条类内残差投影到扰动基：
+
+$$
+\mathbf h_{c,k}
+=
+\mathbf U^{\mathsf T}
+\left(
+\mathbf z_{c,k}^{\mathrm{id}}
+-\bar{\mathbf z}_c^{\mathrm{id}}
+\right)
+\in\mathbb R^r.
+$$
+
+**本式符号说明：**\(\mathbf h_{c,k}\)是第\(k\)条support在r个地面扰动方向上的投影坐标；\(\mathbf U\in\mathbb R^{160\times r}\)的每一列是一个单位扰动方向；\(\mathbf z_{c,k}^{\mathrm{id}}-\bar{\mathbf z}_c^{\mathrm{id}}\)是该support相对本类普通中心的160维残差；上标\(\mathsf T\)表示转置。投影只回答残差沿哪些扰动方向展开，不判断样本属于哪个类别。
+
+这一步体现“地面知识提供坐标系，target support提供当前位置”。旧类和新类都使用相同的\(\mathbf U\)、\(\boldsymbol\rho\)和Cauchy公式；地面聚合中心不会被当作旧类support，也不会与新类support计算距离。最终输出仍有\(CK\)行，每条输入support都有一条对应输出，标签和样本数均不改变。
+
 ### 6.1 从封存聚合知识构造扰动基
 
 Phase1 bundle直接提供的是域×类INT8聚合中心\(\mathbf q_{d,c}\)、FP16尺度\(s_{d,c}\)、有效掩码\(m_{d,c}\)及类别和域注册表，不直接保存协方差矩阵。D92按4.2.6节的过程反量化中心、删除类别中心并汇总跨域残差，由此在注册状态构造时派生160维聚合扰动协方差\(\mathbf G\)和量化噪声底\(\sigma_{\mathrm q}^{2}\)。随后计算
@@ -1759,6 +1804,146 @@ $$
 
 3.full分支保留三个特征块之间的估计协方差；block3分支把identity160、FFT96和RF32之间的跨块元素人为置零。这个0表示“该分支选择不使用跨块线性耦合”，不能作为三个特征块在真实数据中统计独立的证据。
 
+#### 7.0.1不是对一条288维向量“内部求协方差”
+
+“随机特征向量”\(\mathbf Z\)是总体层面的数学对象；一条实际support特征只是它的一次观测。模块三不能只凭一条288维向量得到可靠的\(288\times288\)协方差，而是把同一类别的\(K\)条support作为\(K\)次观测。对类别\(c\)，模块一和模块二的计算链为
+
+$$
+\mathbf{x}^{\mathrm{recv}}_{c,k}
+\xrightarrow{\ \Phi_\theta\ }
+\mathbf z_{c,k}
+\xrightarrow{\ \text{模块二}\ }
+\widetilde{\mathbf z}_{c,k}
+\in\mathbb R^{288}.
+$$
+
+**本式符号说明：**\(c\)是类别索引；\(k\in\{1,\ldots,K\}\)是类别\(c\)内的shot索引；\(\mathbf x^{\mathrm{recv}}_{c,k}\)是固定接收IQ；\(\Phi_\theta\)是冻结的模块一特征映射；\(\mathbf z_{c,k}\)是模块一产生的288维联合特征；\(\widetilde{\mathbf z}_{c,k}\)是模块二进行类中心稳健平移后的288维support特征；箭头表示数据依次经过对应模块，而不是增加新的物理样本。
+
+将类别\(c\)的\(K\)条输出按行堆叠为
+
+$$
+\widetilde{\mathbf Z}_c
+=
+\begin{bmatrix}
+\widetilde{\mathbf z}_{c,1}^{\mathsf T}\\
+\widetilde{\mathbf z}_{c,2}^{\mathsf T}\\
+\vdots\\
+\widetilde{\mathbf z}_{c,K}^{\mathsf T}
+\end{bmatrix}
+\in\mathbb R^{K\times288}.
+$$
+
+**本式符号说明：**\(\widetilde{\mathbf Z}_c\)是类别\(c\)的support特征矩阵；每一行对应一条独立物理support经过模块一、模块二后的特征；每一列对应一个特征维；上标\(\mathsf T\)把列向量写成矩阵中的一行；\(K\)是该类support数；288是identity160、FFT96和RF32拼接后的总维数。
+
+先计算类均值，再构造中心化残差矩阵：
+
+$$
+\boldsymbol\mu_c
+=
+\frac{1}{K}
+\sum_{k=1}^{K}
+\widetilde{\mathbf z}_{c,k},
+\qquad
+\mathbf R_c
+=
+\widetilde{\mathbf Z}_c
+-\mathbf1_K\boldsymbol\mu_c^{\mathsf T}
+\in\mathbb R^{K\times288}.
+$$
+
+**本式符号说明：**\(\boldsymbol\mu_c\in\mathbb R^{288}\)是类别\(c\)的support均值；\(\mathbf1_K\in\mathbb R^K\)是全部元素为1的列向量；\(\mathbf1_K\boldsymbol\mu_c^{\mathsf T}\)把同一个类均值复制成\(K\)行；\(\mathbf R_c\)是中心化残差矩阵；其第\(k\)行等于\((\widetilde{\mathbf z}_{c,k}-\boldsymbol\mu_c)^{\mathsf T}\)。
+
+未经收缩的类内经验协方差可写为
+
+$$
+\mathbf S_c
+=
+\frac{1}{K}
+\mathbf R_c^{\mathsf T}\mathbf R_c
+=
+\frac{1}{K}
+\sum_{k=1}^{K}
+\left(
+\widetilde{\mathbf z}_{c,k}-\boldsymbol\mu_c
+\right)
+\left(
+\widetilde{\mathbf z}_{c,k}-\boldsymbol\mu_c
+\right)^{\mathsf T}
+\in\mathbb R^{288\times288}.
+$$
+
+**本式符号说明：**\(\mathbf S_c\)是类别\(c\)的经验类内协方差；\(\mathbf R_c^{\mathsf T}\mathbf R_c\)对\(K\)条残差的维间乘积进行汇总；每个残差外积都是\(288\times288\)矩阵；矩阵第\(i,j\)项是第\(i\)、第\(j\)维中心化偏离乘积的样本平均。这里写\(1/K\)以匹配后续估计器的最大似然尺度；若使用无偏样本协方差会写成\(1/(K-1)\)，但这不改变“按样本行估计维间协变”的含义。
+
+因此，288维描述的是“每条样本有多少个特征”，\(K\)描述的是“有多少次观测”。协方差矩阵研究的是288个特征列在\(K\)条support行上的联合变化，不是把一条向量的第1维到第288维当作288个同类样本。
+
+#### 7.0.2旧类、新类和Phase1知识各自从哪里进入
+
+模块三中“旧”和“新”指注册任务分组，不表示使用两种不同来源的特征：
+
+|对象|模块三实际使用的内容|是否作为协方差样本行|容易混淆但不正确的理解|
+|---|---|---:|---|
+|旧类|6个目标域旧类各自的\(K\)-shot support，经模块一和模块二得到\(\widetilde{\mathbf z}_{c,k}\)|是|不是Phase1地面压缩原型|
+|新类|本次已注册新类各自的\(K\)-shot support，经同一模块一和模块二得到\(\widetilde{\mathbf z}_{c,k}\)|是|不是query，也不是由旧类合成的特征|
+|Phase1 bundle|类无关的160维扰动基与相关谱统计，供模块二估计稳健中心平移|否|不会作为“旧类样本”拼进模块三|
+|query|只在注册完成后进行独立预测|否|不参与均值、协方差、收缩强度或任务权重估计|
+
+设旧类集合和已注册新类集合分别为
+
+$$
+\mathcal Y_{\mathrm o}
+=
+\{0,1,\ldots,5\},
+\qquad
+\mathcal Y_{\mathrm n}
+=
+\{6,7,\ldots,C-1\}.
+$$
+
+**本式符号说明：**\(\mathcal Y_{\mathrm o}\)是6个目标域旧类的索引集合；\(\mathcal Y_{\mathrm n}\)是本次注册后全部新类的索引集合；\(C\)是注册后的类别总数；数字0至5、6至\(C-1\)是当前锁定注册表中的位置索引，不是由类别身份内容决定的特殊公式。
+
+实现分别把两组target support交给等类别先验的自动收缩LDA协方差估计器：
+
+$$
+\boldsymbol\Sigma_{\mathrm o}
+=
+\frac{1}{C_{\mathrm o}}
+\sum_{c\in\mathcal Y_{\mathrm o}}
+\widehat{\boldsymbol\Sigma}^{\mathrm{LW}}_c,
+\qquad
+\boldsymbol\Sigma_{\mathrm n}
+=
+\frac{1}{C_{\mathrm n}}
+\sum_{c\in\mathcal Y_{\mathrm n}}
+\widehat{\boldsymbol\Sigma}^{\mathrm{LW}}_c.
+$$
+
+**本式符号说明：**\(C_{\mathrm o}=|\mathcal Y_{\mathrm o}|=6\)是旧类数；\(C_{\mathrm n}=|\mathcal Y_{\mathrm n}|=C-6\)是已注册新类数；\(\widehat{\boldsymbol\Sigma}^{\mathrm{LW}}_c\)是类别\(c\)经自动收缩后的类内协方差；\(\boldsymbol\Sigma_{\mathrm o}\)和\(\boldsymbol\Sigma_{\mathrm n}\)分别是旧类任务、新类任务内部按类别等权汇总的矩阵。实现通过两次`LinearDiscriminantAnalysis(solver="lsqr", shrinkage="auto", priors=等类别先验)`拟合实现这一语义。
+
+模块二对类别\(c\)的所有support施加同一个中心平移\(\boldsymbol\delta_c\)，即
+
+$$
+\widetilde{\mathbf z}_{c,k}
+=
+\mathbf z_{c,k}
++\boldsymbol\delta_c.
+$$
+
+**本式符号说明：**\(\mathbf z_{c,k}\)是模块一输出；\(\boldsymbol\delta_c\in\mathbb R^{288}\)是模块二对类别\(c\)统一施加的平移，其中当前实现只修改前160维identity块；\(\widetilde{\mathbf z}_{c,k}\)是模块二输出。因为同一类别的每条support加的是同一个向量，类均值也平移同样的量。
+
+所以类内残差满足
+
+$$
+\widetilde{\mathbf z}_{c,k}
+-\widetilde{\boldsymbol\mu}_c
+=
+\mathbf z_{c,k}
+-\boldsymbol\mu_c,
+$$
+
+**本式符号说明：**\(\widetilde{\boldsymbol\mu}_c\)是平移后的类均值；\(\boldsymbol\mu_c\)是平移前的类均值；等式表明统一平移会改变类别中心的位置，但不会改变该类各support相对中心的残差。因此模块三在程序上读取模块二输出，而单类类内协方差在精确数学上与平移前相同；模块二影响后续分类头的类中心项，却不会凭空制造新的类内散布。
+
+D92任务均衡协方差只有在“已经注册新类且\(K>2\)”时启用。注册前只有6个旧类，或者\(K\in\{1,2\}\)时，当前实现精确回退到D81分类头，不构造D92的旧/新\(0.5/0.5\)平衡协方差。因此K1结果不能被解释成“用一条向量成功估计了288维协方差”。
+
 模块三需要在两个困难下估计共享几何：
 
 - \(p=288\)远大于每类\(K\)，普通经验协方差不可逆；
@@ -1900,6 +2085,68 @@ $$
 
 **本式符号说明：**\(\widehat{\boldsymbol\Sigma}^{(u)}_c\)是收缩后的标准化类内协方差；\(\alpha_c\in[0,1]\)是Ledoit–Wolf估计器从类别\(c\)的support自动确定的收缩强度；\(\mathbf S_c^{(u)}\)是经验协方差；\(\mathbf I_p\)是\(p=288\)维单位矩阵；\(\operatorname{tr}(\cdot)\)是矩阵迹；\(\zeta_c=\operatorname{tr}(\mathbf S_c^{(u)})/p\)是经验协方差的平均对角方差，也是球形收缩目标的尺度。
 
+#### 7.3.1“球形目标”到底是什么
+
+球形目标指上式中的
+
+$$
+\mathbf T_c
+=
+\zeta_c\mathbf I_p.
+$$
+
+**本式符号说明：**\(\mathbf T_c\in\mathbb R^{p\times p}\)是类别\(c\)在标准化空间中的收缩目标；\(\zeta_c\)是所有特征维经验方差的平均值；\(\mathbf I_p\)是\(p=288\)维单位矩阵；因此\(\mathbf T_c\)的全部对角元素都等于\(\zeta_c\)，全部非对角元素都等于0。
+
+它既不是一个类别中心，也不是一条“球形原型”，更不是额外生成的support。它是一张结构非常简单的候选协方差矩阵，表达的保守假设是：当support太少、无法可靠估计复杂方向关系时，暂时让所有标准化特征方向具有相同方差，并把维间协方差收回到0。
+
+“球形”来自协方差的几何解释。对以\(\boldsymbol\mu_c\)为中心的特征向量\(\mathbf z\)，等马氏距离边界为
+
+$$
+\left(
+\mathbf z-\boldsymbol\mu_c
+\right)^{\mathsf T}
+\mathbf T_c^{-1}
+\left(
+\mathbf z-\boldsymbol\mu_c
+\right)
+=
+r^2.
+$$
+
+**本式符号说明：**\(\mathbf z\in\mathbb R^p\)是标准化空间中的特征向量；\(\boldsymbol\mu_c\in\mathbb R^p\)是类别中心；\(\mathbf T_c^{-1}\)是球形目标的逆矩阵；\(r\geq0\)是固定的马氏半径；满足等式的点组成一个等距离边界。
+
+代入\(\mathbf T_c=\zeta_c\mathbf I_p\)可得
+
+$$
+\left\|
+\mathbf z-\boldsymbol\mu_c
+\right\|_2^2
+=
+\zeta_c r^2.
+$$
+
+**本式符号说明：**\(\|\cdot\|_2\)是欧氏\(L_2\)范数；\(\|\mathbf z-\boldsymbol\mu_c\|_2^2\)是特征点到类中心的欧氏距离平方；\(\zeta_c r^2\)是固定常数。所有到中心欧氏距离相同的点形成球面，所以\(\zeta_c\mathbf I_p\)称为球形或各向同性目标。二维时它是圆，三维时是球，288维时是超球面。
+
+\(\zeta_c\)不是随意设定的常数，而是用经验协方差的平均方差计算：
+
+$$
+\operatorname{tr}(\mathbf T_c)
+=
+\operatorname{tr}(\mathbf S_c^{(u)}).
+$$
+
+**本式符号说明：**\(\operatorname{tr}(\cdot)\)表示矩阵对角元素之和；\(\operatorname{tr}(\mathbf T_c)=p\zeta_c\)；由\(\zeta_c=\operatorname{tr}(\mathbf S_c^{(u)})/p\)可知，球形目标与经验协方差具有相同的总方差。收缩因此主要简化方向结构，而不是任意放大或缩小总体能量。
+
+收缩强度\(\alpha_c\)控制“相信数据”和“相信保守目标”的程度：
+
+|收缩强度|结果|含义|
+|---:|---|---|
+|\(\alpha_c=0\)|\(\widehat{\boldsymbol\Sigma}^{(u)}_c=\mathbf S_c^{(u)}\)|完全使用经验协方差|
+|\(0<\alpha_c<1\)|经验矩阵与球形目标加权混合|保留较可信结构，同时削弱高噪声相关性|
+|\(\alpha_c=1\)|\(\widehat{\boldsymbol\Sigma}^{(u)}_c=\zeta_c\mathbf I_p\)|完全采用各向同性结构|
+
+在D92中\(p=288\)，而每类最多只有10条support，中心化经验协方差的秩最多为\(K-1\leq9\)。这意味着至少279个方向无法由经验矩阵提供非零方差信息，矩阵必然奇异。只要\(\zeta_c>0\)且\(\alpha_c>0\)，球形项就向所有方向补入正方差，使求解更稳定。它的作用是降低有限样本估计误差，并不宣称真实类别云团一定是球形，也不宣称各特征在真实总体中独立。
+
 再恢复原始特征尺度：
 
 $$
@@ -1911,6 +2158,20 @@ $$
 $$
 
 **本式符号说明：**\(\widehat{\boldsymbol\Sigma}^{\mathrm{LW}}_c\in\mathbb R^{288\times288}\)是恢复到原始联合特征尺度后的类别\(c\)协方差；\(\widehat{\boldsymbol\Sigma}^{(u)}_c\)是标准化空间中的Ledoit–Wolf估计；左右两侧的\(\mathbf D_c\)分别恢复行方向和列方向的特征尺度。
+
+严格来说，“球形”只描述标准化空间中的\(\zeta_c\mathbf I_p\)。恢复原始特征尺度后，这一目标对应
+
+$$
+\mathbf D_c
+\left(
+\zeta_c\mathbf I_p
+\right)
+\mathbf D_c
+=
+\zeta_c\mathbf D_c^2.
+$$
+
+**本式符号说明：**\(\mathbf D_c\)是逐维标准差对角矩阵；\(\mathbf D_c^2\)是各维方差组成的对角矩阵；\(\zeta_c\mathbf D_c^2\)在原始尺度中仍没有非对角协方差，但不同维的对角方差可以不同。因此它在原始单位下通常是轴对齐椭球，而不再是欧氏意义上的球。
 
 这与当前实现中`StandardScaler→ledoit_wolf→rescale`的`shrinkage="auto"`语义一致。这里的\(\alpha_c\)由当前类support的协方差估计问题自动确定，不通过query结果或125矩阵扫描选择。
 
@@ -2149,6 +2410,49 @@ $$
 
 第一维的判别贡献被减半。这就是“用协方差把高波动方向降权”的含义。实际D92在288维空间中一次求出全部\(C\)个\(\mathbf{w}_c\)，不会为每条query重新求逆。
 
+#### 8.0.1从“距离”到“每类一个分数”
+
+LDA并不是为每条query训练一次模型。注册阶段先用support把每个类别的均值与共享协方差编译成仿射参数：
+
+$$
+\mathbf W
+\in\mathbb R^{C\times288},
+\qquad
+\mathbf b
+\in\mathbb R^C.
+$$
+
+**本式符号说明：**\(\mathbf W\)是分类权重矩阵，每一行对应一个注册类别；\(\mathbf b\)是截距向量，每个类别对应一个标量；\(C\)是注册类总数；288是联合特征维数。“编译”表示把均值和协方差的计算结果转换成query端可直接使用的常量。
+
+对一条query特征\(\mathbf q\in\mathbb R^{288}\)，一次矩阵—向量乘法即可得到全部类别分数：
+
+$$
+\mathbf s(\mathbf q)
+=
+\mathbf W\mathbf q+\mathbf b
+\in\mathbb R^C,
+\qquad
+\widehat y
+=
+\operatorname*{arg\,max}_{c\in\mathcal Y}
+s_c(\mathbf q).
+$$
+
+**本式符号说明：**\(\mathbf s(\mathbf q)\)是长度为\(C\)的logit向量；\(s_c(\mathbf q)\)是类别\(c\)的分数；\(\mathcal Y\)是全部注册类别集合；\(\operatorname*{arg\,max}\)返回分数最大的类别索引；\(\widehat y\)是最终预测标签。这里所有旧类和新类同时竞争，不先判断query属于旧任务还是新任务。
+
+实现使用线性方程求解
+
+$$
+\boldsymbol\Sigma
+\mathbf W^{\mathsf T}
+=
+\mathbf M^{\mathsf T},
+$$
+
+**本式符号说明：**\(\boldsymbol\Sigma\in\mathbb R^{288\times288}\)是共享协方差；\(\mathbf M\in\mathbb R^{C\times288}\)是类均值矩阵；\(\mathbf W^{\mathsf T}\in\mathbb R^{288\times C}\)同时包含C个待求判别方向。数值实现直接求解该线性系统，不需要显式形成\(\boldsymbol\Sigma^{-1}\)；数学上结果等价于\(\mathbf W=\mathbf M\boldsymbol\Sigma^{-1}\)，但直接求解通常更稳定。
+
+模块四的重计算发生在注册阶段：新增类别改变类均值集合，也会通过模块三改变共享协方差，所以必须重新编译头。编译完成后，单条query只执行特征提取、仿射打分和argmax，不再进行协方差估计或矩阵分解。
+
 ### 8.1 高斯共享协方差假设
 
 D92把每个注册类建模为共享协方差、不同均值的高斯分布：
@@ -2347,7 +2651,7 @@ $$
 \ell_{\mathrm{blk}}=0.35.
 $$
 
-**本式符号说明：**\(h\in\{\mathrm{full},\mathrm{blk}\}\)是几何分支，\(i,c,j\)分别是support、目标类别和求和类别索引；\(s_{i,c}^{(h)}\)是分支logit，\(\widetilde s_{i,c}^{(h)}\)是跨类中心化logit，\(r_h\)是其RMS尺度；\(t\)是shot秩，\(\mathcal H_t\)是第\(t\)秩留出集合，\(\mathcal S_{-t}\)是训练子集；\(\ell_{c,h}^{\mathrm{LOO}}\)是类别级留一交叉熵，\(\eta_{c,h}\)是由负交叉熵softmax得到的分支权重，\(K\)控制证据强度；\(\mathbf w_c^{(0)},b_c^{(0)}\)是融合后的基线仿射行。
+**本式符号说明：**\(\ell_{\mathrm{full}}=0.20\)和\(\ell_{\mathrm{blk}}=0.35\)分别是同一示例类别在full、block3分支上的平均留一交叉熵；数值越小，表示该分支在未参与本折拟合的support上给真实类别分配的概率越高。0.20和0.35只是说明融合机制的示例值，不是正式实验结果。
 
 两个未归一化证据为
 
@@ -2358,7 +2662,7 @@ $$
 \approx0.368,
 $$
 
-**本式符号说明：**\(h\in\{\mathrm{full},\mathrm{blk}\}\)是几何分支，\(i,c,j\)分别是support、目标类别和求和类别索引；\(s_{i,c}^{(h)}\)是分支logit，\(\widetilde s_{i,c}^{(h)}\)是跨类中心化logit，\(r_h\)是其RMS尺度；\(t\)是shot秩，\(\mathcal H_t\)是第\(t\)秩留出集合，\(\mathcal S_{-t}\)是训练子集；\(\ell_{c,h}^{\mathrm{LOO}}\)是类别级留一交叉熵，\(\eta_{c,h}\)是由负交叉熵softmax得到的分支权重，\(K\)控制证据强度；\(\mathbf w_c^{(0)},b_c^{(0)}\)是融合后的基线仿射行。
+**本式符号说明：**5是该示例的shot数\(K\)；0.20是full分支的平均留一交叉熵；乘积\(5\times0.20\)把平均损失还原为5个held样本的总负对数似然；\(\exp(-1)\)把对数证据转换为正的未归一化证据，约为0.368。
 
 $$
 \exp(-5\times0.35)
@@ -2367,7 +2671,7 @@ $$
 \approx0.174.
 $$
 
-**本式符号说明：**\(h\in\{\mathrm{full},\mathrm{blk}\}\)是几何分支，\(i,c,j\)分别是support、目标类别和求和类别索引；\(s_{i,c}^{(h)}\)是分支logit，\(\widetilde s_{i,c}^{(h)}\)是跨类中心化logit，\(r_h\)是其RMS尺度；\(t\)是shot秩，\(\mathcal H_t\)是第\(t\)秩留出集合，\(\mathcal S_{-t}\)是训练子集；\(\ell_{c,h}^{\mathrm{LOO}}\)是类别级留一交叉熵，\(\eta_{c,h}\)是由负交叉熵softmax得到的分支权重，\(K\)控制证据强度；\(\mathbf w_c^{(0)},b_c^{(0)}\)是融合后的基线仿射行。
+**本式符号说明：**5仍是shot数\(K\)；0.35是block3分支的平均留一交叉熵；\(\exp(-1.75)\)是该分支的未归一化证据，约为0.174。因为0.35大于0.20，block3证据小于full证据。
 
 归一化后：
 
@@ -2378,16 +2682,32 @@ $$
 \approx0.679,
 $$
 
-**本式符号说明：**\(h\in\{\mathrm{full},\mathrm{blk}\}\)是几何分支，\(i,c,j\)分别是support、目标类别和求和类别索引；\(s_{i,c}^{(h)}\)是分支logit，\(\widetilde s_{i,c}^{(h)}\)是跨类中心化logit，\(r_h\)是其RMS尺度；\(t\)是shot秩，\(\mathcal H_t\)是第\(t\)秩留出集合，\(\mathcal S_{-t}\)是训练子集；\(\ell_{c,h}^{\mathrm{LOO}}\)是类别级留一交叉熵，\(\eta_{c,h}\)是由负交叉熵softmax得到的分支权重，\(K\)控制证据强度；\(\mathbf w_c^{(0)},b_c^{(0)}\)是融合后的基线仿射行。
+**本式符号说明：**\(\eta_{\mathrm{full}}\)是该示例类别分配给full分支的归一化可靠性权重；分子0.368是full证据；分母\(0.368+0.174\)是两个分支证据之和；归一化后约为0.679。
 
 $$
 \eta_{\mathrm{blk}}
 \approx0.321.
 $$
 
-**本式符号说明：**\(h\in\{\mathrm{full},\mathrm{blk}\}\)是几何分支，\(i,c,j\)分别是support、目标类别和求和类别索引；\(s_{i,c}^{(h)}\)是分支logit，\(\widetilde s_{i,c}^{(h)}\)是跨类中心化logit，\(r_h\)是其RMS尺度；\(t\)是shot秩，\(\mathcal H_t\)是第\(t\)秩留出集合，\(\mathcal S_{-t}\)是训练子集；\(\ell_{c,h}^{\mathrm{LOO}}\)是类别级留一交叉熵，\(\eta_{c,h}\)是由负交叉熵softmax得到的分支权重，\(K\)控制证据强度；\(\mathbf w_c^{(0)},b_c^{(0)}\)是融合后的基线仿射行。
+**本式符号说明：**\(\eta_{\mathrm{blk}}\)是同一示例类别分配给block3分支的可靠性权重；它等于\(0.174/(0.368+0.174)\approx0.321\)，并与\(\eta_{\mathrm{full}}\)之和为1。
 
 于是该类别的最终判别行约有67.9%来自full，32.1%来自block3。另一类别可能得到相反权重，因此这是逐类别融合，不是全局模型选择。这个数值例子只用于解释公式。
+
+#### 9.0.1一次完整LOO到底重算什么
+
+以\(C=11\)、\(K=5\)为例，完整support共有55条。第\(t\)折从11个类别各留出第\(t\)条，共11条held；剩余44条用于重建本折状态。每一折都必须重新执行与support有关的步骤：
+
+1.用每类剩余4条support重算模块二稳健中心；
+2.用本折拟合集重算full与block3协方差；
+3.分别重编译两个LDA仿射头；
+4.让11条held同时面对全部11个注册类别竞争；
+5.记录每条held在两个分支中的全类别logit与真实类交叉熵。
+
+五折结束后，每条support恰好被真正留出一次。这里不能只“从已经用全量support拟合的头中删除一条分数”，因为那样held样本仍通过均值、协方差和融合状态间接泄漏进模型。LOO的计算量较大，正是因为每折重新构造完整注册状态。
+
+类别级权重不表示“类别\(c\)的query已被提前识别”。它只表示最终仿射矩阵的第\(c\)行在注册期由full和block3两条候选行如何组合。query到达时，系统仍一次计算全部C行；只有argmax之后才产生预测类别。
+
+当\(K=1\)时，留出唯一support会使每个类别没有剩余拟合样本，LOO不可定义；\(K=2\)虽然形式上可留一，但每折只剩单样本/类，无法稳定支撑D92的自动收缩协方差和后续可靠性链。当前锁定D92因此在\(K\leq2\)时执行精确回退，而不是用训练内分数伪装成留一证据。小K回退属于方法边界，不代表query可以用于补足验证样本。
 
 ### 9.1 为什么需要融合
 
@@ -2405,7 +2725,7 @@ s_{i,c}^{(h)}
 +b_c^{(h)}.
 $$
 
-**本式符号说明：**\(h\in\{\mathrm{full},\mathrm{blk}\}\)是几何分支，\(i,c,j\)分别是support、目标类别和求和类别索引；\(s_{i,c}^{(h)}\)是分支logit，\(\widetilde s_{i,c}^{(h)}\)是跨类中心化logit，\(r_h\)是其RMS尺度；\(t\)是shot秩，\(\mathcal H_t\)是第\(t\)秩留出集合，\(\mathcal S_{-t}\)是训练子集；\(\ell_{c,h}^{\mathrm{LOO}}\)是类别级留一交叉熵，\(\eta_{c,h}\)是由负交叉熵softmax得到的分支权重，\(K\)控制证据强度；\(\mathbf w_c^{(0)},b_c^{(0)}\)是融合后的基线仿射行。
+**本式符号说明：**\(s_{i,c}^{(h)}\)是分支\(h\)对第\(i\)条support属于类别\(c\)给出的未归一化分数，也称logit；\(\mathbf z_i\in\mathbb R^{288}\)是该support的联合特征；\(\mathbf w_c^{(h)}\in\mathbb R^{288}\)是类别\(c\)在分支\(h\)中的权重；\(b_c^{(h)}\)是对应截距；内积\(\mathbf z_i^{\mathsf T}\mathbf w_c^{(h)}\)衡量特征与该类别判别方向的匹配程度。
 
 先对每一行删除类别均值：
 
@@ -2418,7 +2738,7 @@ s_{i,c}^{(h)}
 \sum_{j=1}^{C}s_{i,j}^{(h)}.
 $$
 
-**本式符号说明：**\(h\in\{\mathrm{full},\mathrm{blk}\}\)是几何分支，\(i,c,j\)分别是support、目标类别和求和类别索引；\(s_{i,c}^{(h)}\)是分支logit，\(\widetilde s_{i,c}^{(h)}\)是跨类中心化logit，\(r_h\)是其RMS尺度；\(t\)是shot秩，\(\mathcal H_t\)是第\(t\)秩留出集合，\(\mathcal S_{-t}\)是训练子集；\(\ell_{c,h}^{\mathrm{LOO}}\)是类别级留一交叉熵，\(\eta_{c,h}\)是由负交叉熵softmax得到的分支权重，\(K\)控制证据强度；\(\mathbf w_c^{(0)},b_c^{(0)}\)是融合后的基线仿射行。
+**本式符号说明：**\(\widetilde s_{i,c}^{(h)}\)是中心化后的logit；\(s_{i,c}^{(h)}\)是原始logit；\(C\)是注册类别总数；\(j\)遍历全部候选类别；\(C^{-1}\sum_js_{i,j}^{(h)}\)是同一support在该分支上全部类别logit的平均值。对所有类别减去同一个值不改变argmax，只删除没有分类作用的公共偏移。
 
 分支RMS尺度为
 
@@ -2435,7 +2755,7 @@ r_h
 }.
 $$
 
-**本式符号说明：**\(h\in\{\mathrm{full},\mathrm{blk}\}\)是几何分支，\(i,c,j\)分别是support、目标类别和求和类别索引；\(s_{i,c}^{(h)}\)是分支logit，\(\widetilde s_{i,c}^{(h)}\)是跨类中心化logit，\(r_h\)是其RMS尺度；\(t\)是shot秩，\(\mathcal H_t\)是第\(t\)秩留出集合，\(\mathcal S_{-t}\)是训练子集；\(\ell_{c,h}^{\mathrm{LOO}}\)是类别级留一交叉熵，\(\eta_{c,h}\)是由负交叉熵softmax得到的分支权重，\(K\)控制证据强度；\(\mathbf w_c^{(0)},b_c^{(0)}\)是融合后的基线仿射行。
+**本式符号说明：**\(r_h\)是分支\(h\)的logit均方根尺度；\(N_{\mathrm s}=CK\)是support总行数；\(C\)是候选类别数；\(\widetilde s_{i,c}^{(h)}\)是中心化logit。先对全部support和类别的平方logit求平均，再开平方，得到该分支典型的分数幅度；实现还使用数值下限避免除零。
 
 后续使用\(s_{i,c}^{(h)}/r_h\)，防止某个分支仅因logit绝对尺度更大而获得更高权重。
 
@@ -2453,7 +2773,7 @@ $$
 t=1,\ldots,K.
 $$
 
-**本式符号说明：**\(h\in\{\mathrm{full},\mathrm{blk}\}\)是几何分支，\(i,c,j\)分别是support、目标类别和求和类别索引；\(s_{i,c}^{(h)}\)是分支logit，\(\widetilde s_{i,c}^{(h)}\)是跨类中心化logit，\(r_h\)是其RMS尺度；\(t\)是shot秩，\(\mathcal H_t\)是第\(t\)秩留出集合，\(\mathcal S_{-t}\)是训练子集；\(\ell_{c,h}^{\mathrm{LOO}}\)是类别级留一交叉熵，\(\eta_{c,h}\)是由负交叉熵softmax得到的分支权重，\(K\)控制证据强度；\(\mathbf w_c^{(0)},b_c^{(0)}\)是融合后的基线仿射行。
+**本式符号说明：**\(\mathcal H_t\)是第\(t\)个held集合；它从每个注册类别各取第\(t\)条物理support，因此包含\(C\)条样本；\((c,t)\)表示类别\(c\)的第\(t\)条support；\(\mathcal Y\)是全部注册类别集合；\(t=1,\ldots,K\)产生K个互不重叠的held集合。
 
 第\(t\)折训练集合为
 
@@ -2463,7 +2783,7 @@ $$
 \mathcal{S}\setminus\mathcal{H}_t.
 $$
 
-**本式符号说明：**\(h\in\{\mathrm{full},\mathrm{blk}\}\)是几何分支，\(i,c,j\)分别是support、目标类别和求和类别索引；\(s_{i,c}^{(h)}\)是分支logit，\(\widetilde s_{i,c}^{(h)}\)是跨类中心化logit，\(r_h\)是其RMS尺度；\(t\)是shot秩，\(\mathcal H_t\)是第\(t\)秩留出集合，\(\mathcal S_{-t}\)是训练子集；\(\ell_{c,h}^{\mathrm{LOO}}\)是类别级留一交叉熵，\(\eta_{c,h}\)是由负交叉熵softmax得到的分支权重，\(K\)控制证据强度；\(\mathbf w_c^{(0)},b_c^{(0)}\)是融合后的基线仿射行。
+**本式符号说明：**\(\mathcal S\)是当前row的完整target support集合；\(\mathcal S_{-t}\)是删除第\(t\)折held集合后的拟合集；集合差号\(\setminus\)表示“从左侧集合中去掉右侧集合”。当每类原有K条support时，\(\mathcal S_{-t}\)对每类保留\(K-1\)条。
 
 每一折都只用\(\mathcal{S}_{-t}\)重新计算稳健中心、协方差和仿射头，然后预测\(\mathcal{H}_t\)。每个support样本恰好作为held样本一次。
 
@@ -2492,7 +2812,7 @@ s_{c,t,j}^{(h)}/r_h
 }.
 $$
 
-**本式符号说明：**\(h\in\{\mathrm{full},\mathrm{blk}\}\)是几何分支，\(i,c,j\)分别是support、目标类别和求和类别索引；\(s_{i,c}^{(h)}\)是分支logit，\(\widetilde s_{i,c}^{(h)}\)是跨类中心化logit，\(r_h\)是其RMS尺度；\(t\)是shot秩，\(\mathcal H_t\)是第\(t\)秩留出集合，\(\mathcal S_{-t}\)是训练子集；\(\ell_{c,h}^{\mathrm{LOO}}\)是类别级留一交叉熵，\(\eta_{c,h}\)是由负交叉熵softmax得到的分支权重，\(K\)控制证据强度；\(\mathbf w_c^{(0)},b_c^{(0)}\)是融合后的基线仿射行。
+**本式符号说明：**\(\ell_{c,h}^{\mathrm{LOO}}\)是类别\(c\)在分支\(h\)上的平均留一交叉熵；\(t\)遍历K个held折；\(s_{c,t,j}^{(h)}\)是第\(t\)折未参与拟合的类别\(c\)样本对候选类\(j\)的logit；\(r_h\)是分支尺度；分子使用真实类别\(c\)的指数分数，分母对全部\(C\)个注册类求和，因此分式是该held样本的softmax真实类概率；负对数越小越好。
 
 把\(-K\ell_{c,h}^{\mathrm{LOO}}\)解释为类别\(c\)在分支\(h\)上的对数证据，可靠性权重为
 
@@ -2513,7 +2833,7 @@ $$
 }.
 $$
 
-**本式符号说明：**\(h\in\{\mathrm{full},\mathrm{blk}\}\)是几何分支，\(i,c,j\)分别是support、目标类别和求和类别索引；\(s_{i,c}^{(h)}\)是分支logit，\(\widetilde s_{i,c}^{(h)}\)是跨类中心化logit，\(r_h\)是其RMS尺度；\(t\)是shot秩，\(\mathcal H_t\)是第\(t\)秩留出集合，\(\mathcal S_{-t}\)是训练子集；\(\ell_{c,h}^{\mathrm{LOO}}\)是类别级留一交叉熵，\(\eta_{c,h}\)是由负交叉熵softmax得到的分支权重，\(K\)控制证据强度；\(\mathbf w_c^{(0)},b_c^{(0)}\)是融合后的基线仿射行。
+**本式符号说明：**\(\eta_{c,h}\in(0,1)\)是类别\(c\)分配给分支\(h\)的可靠性权重；\(-K\ell_{c,h}^{\mathrm{LOO}}\)是K条held样本的总对数证据；\(h'\)遍历full和block3两个分支；分母对两个正证据归一化。较小留一损失对应较大\(\eta_{c,h}\)，但只要数值有限，任何分支权重都不会凭此公式变成负数。
 
 因此
 
@@ -2523,7 +2843,7 @@ $$
 =1.
 $$
 
-**本式符号说明：**\(h\in\{\mathrm{full},\mathrm{blk}\}\)是几何分支，\(i,c,j\)分别是support、目标类别和求和类别索引；\(s_{i,c}^{(h)}\)是分支logit，\(\widetilde s_{i,c}^{(h)}\)是跨类中心化logit，\(r_h\)是其RMS尺度；\(t\)是shot秩，\(\mathcal H_t\)是第\(t\)秩留出集合，\(\mathcal S_{-t}\)是训练子集；\(\ell_{c,h}^{\mathrm{LOO}}\)是类别级留一交叉熵，\(\eta_{c,h}\)是由负交叉熵softmax得到的分支权重，\(K\)控制证据强度；\(\mathbf w_c^{(0)},b_c^{(0)}\)是融合后的基线仿射行。
+**本式符号说明：**\(\eta_{c,\mathrm{full}}\)和\(\eta_{c,\mathrm{blk}}\)是同一类别对两个几何分支的归一化权重；二者之和为1意味着融合是凸组合。这个等式对每个类别分别成立，不要求不同类别具有相同权重。
 
 ### 9.5 类别级仿射融合
 
@@ -2539,7 +2859,7 @@ $$
 \frac{\mathbf{w}^{(\mathrm{blk})}_c}{r_{\mathrm{blk}}},
 $$
 
-**本式符号说明：**\(h\in\{\mathrm{full},\mathrm{blk}\}\)是几何分支，\(i,c,j\)分别是support、目标类别和求和类别索引；\(s_{i,c}^{(h)}\)是分支logit，\(\widetilde s_{i,c}^{(h)}\)是跨类中心化logit，\(r_h\)是其RMS尺度；\(t\)是shot秩，\(\mathcal H_t\)是第\(t\)秩留出集合，\(\mathcal S_{-t}\)是训练子集；\(\ell_{c,h}^{\mathrm{LOO}}\)是类别级留一交叉熵，\(\eta_{c,h}\)是由负交叉熵softmax得到的分支权重，\(K\)控制证据强度；\(\mathbf w_c^{(0)},b_c^{(0)}\)是融合后的基线仿射行。
+**本式符号说明：**\(\mathbf w_c^{(0)}\in\mathbb R^{288}\)是类别\(c\)融合后的基础权重；\(\mathbf w_c^{(\mathrm{full})}\)和\(\mathbf w_c^{(\mathrm{blk})}\)来自两个LDA分支；\(r_{\mathrm{full}}\)和\(r_{\mathrm{blk}}\)先把两个分支换到可比较的logit尺度；\(\eta_{c,\mathrm{full}}\)和\(\eta_{c,\mathrm{blk}}\)再按该类别的留一可靠性加权。上标\((0)\)表示模块六残差增强之前的基线头。
 
 $$
 b^{(0)}_c
@@ -2551,7 +2871,7 @@ b^{(0)}_c
 \frac{b^{(\mathrm{blk})}_c}{r_{\mathrm{blk}}}.
 $$
 
-**本式符号说明：**\(h\in\{\mathrm{full},\mathrm{blk}\}\)是几何分支，\(i,c,j\)分别是support、目标类别和求和类别索引；\(s_{i,c}^{(h)}\)是分支logit，\(\widetilde s_{i,c}^{(h)}\)是跨类中心化logit，\(r_h\)是其RMS尺度；\(t\)是shot秩，\(\mathcal H_t\)是第\(t\)秩留出集合，\(\mathcal S_{-t}\)是训练子集；\(\ell_{c,h}^{\mathrm{LOO}}\)是类别级留一交叉熵，\(\eta_{c,h}\)是由负交叉熵softmax得到的分支权重，\(K\)控制证据强度；\(\mathbf w_c^{(0)},b_c^{(0)}\)是融合后的基线仿射行。
+**本式符号说明：**\(b_c^{(0)}\)是类别\(c\)融合后的基础截距；\(b_c^{(\mathrm{full})}\)和\(b_c^{(\mathrm{blk})}\)是两个分支的截距；它们必须分别除以与对应权重相同的\(r_h\)，再使用同一组\(\eta_{c,h}\)融合。这样得到的\((\mathbf w_c^{(0)},b_c^{(0)})\)仍是一条完整一致的仿射判别行。
 
 融合权重只来自当前row的support留一结果；它不读取outer held、query或truth-side指标。
 
@@ -2664,6 +2984,38 @@ $$
 |\((4,1)\)|\((4,1)\)|拒绝|没有任何严格改善|
 
 逐类接受仍不是最终结果，因为替换某个类别行会改变其他类别的argmax竞争。只有所有候选行同时替换后仍满足每类TP不降、FP不增，D92才提交这组替换。
+
+#### 10.0.1它不是一次梯度训练，而是闭式低秩重编译
+
+模块六读取的是模块二、三已经得到的target support类均值与类内残差。它不读取Phase1样本级特征，不更新冻结编码器，也不通过多轮反向传播学习网络参数。其核心计算是：
+
+|步骤|主要运算|结果|
+|---|---|---|
+|类均值中心化|减法、均值|删除所有类别共同的位置偏移|
+|类均值矩阵SVD|矩阵分解|得到最多\(C-1\)个可区分类别中心的方向|
+|能量估计|投影、平方、平均|分别得到每个方向的类间能量和类内能量|
+|有界增益|标量比值|把每个方向的附加增益限制到\([0,1]\)|
+|头重编译|低秩矩阵乘法|生成候选仿射行，不增加query网络层|
+|support安全检查|LOO打分、计数比较|决定保留候选还是回到模块五基础行|
+
+旧类和新类在Fisher方向计算中都只是“已注册类别”。类均值矩阵按全部C类构造，不对旧类使用地面原型，也不对新类使用不同公式。旧/新任务均衡发生在模块三的共享协方差；模块六解决的是“哪些全体类间方向值得温和增强”，两者作用不同。
+
+为什么最多只有\(C-1\)个方向？全部类均值减去总均值后，各中心化行之和为0，因此C行中至少有一行可由其他行线性表示：
+
+$$
+\sum_{c=1}^{C}
+\left(
+\boldsymbol\mu_c-\bar{\boldsymbol\mu}
+\right)
+=
+\mathbf0.
+$$
+
+**本式符号说明：**\(\boldsymbol\mu_c\)是类别\(c\)的288维均值；\(\bar{\boldsymbol\mu}\)是C个类均值的等权平均；\(\mathbf0\)是288维零向量。该线性依赖使中心化类均值矩阵的秩不超过\(C-1\)，所以模块六是低秩修正，而不是任意学习一个新的\(288\times288\)满矩阵。
+
+安全门中的TP与FP也只来自support held预测。对类别\(c\)，TP表示真实标签为\(c\)且argmax也预测为\(c\)的held数；FP表示真实标签不是\(c\)却被argmax预测成\(c\)的held数。FP检查很重要，因为提高某一行会抢走其他类别的样本；只看该类TP可能掩盖对其余类别造成的伤害。
+
+模块六的“安全”是相对于当前support留一证据的局部、有限样本不劣保证，不是对未知query准确率的数学保证。原子联合检查可以防止候选行之间在support上的明显相互破坏，但无法消除support与query分布差异。
 
 ### 10.1 类均值子空间
 
