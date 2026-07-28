@@ -7,14 +7,14 @@
 |实验ID|`cvs_full_ablation_phase1_t1_20260728_v1`|
 |日期|2026-07-28|
 |operator|Codex主代理；N607发布将交给唯一实验runner子代理|
-|状态|`LOCAL_VERIFIED_CVS_RFFI_PENDING_RESEAL_NOT_LAUNCHED`|
+|状态|`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`|
 |设计|`CVS_FULL_ABLATION_DESIGN_PHASE1_PHASE2_20260728.md`|
 |协议|Phase1 source-only；正式划分`0.07/0.63/0.30`|
 |当前Git分支|`codex/full-ablation-20260728`|
 |代码就绪提交|`e9aebd30c0147bc3cbca8af4a1fd4460b8275b81`|
 |独立终审|`P0=0、P1=0`；`APPROVE_LOCAL_VERIFIED`|
 |审阅者|`/root/phase1_t1_independent_review`|
-|性能结论|无；仅完成N607只读preflight，尚未同步或启动|
+|性能结论|无；正式run在任何终局artifact前因系统性CUDA初始化错误停止|
 
 ## 目标与假设
 
@@ -114,16 +114,34 @@ print(json.dumps(r,ensure_ascii=False,sort_keys=True))
 |远端项目根|`/home/szu2070436088/2510044040/CV-SincNet`；direct preflight确认可见|
 |Python环境|`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`；用户明确指定，plan/runner/child/receipt均绑定`CVS-RFFI`|
 |WiSig数据|`/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl`；2,359,341,461字节；SHA256=`2b0a7a7488dd3650bcae7b1d80efbcffd1598aaa671ae6b0a0df2a24dc0f694f`|
-|run root|`runs/cvs_full_ablation_phase1_t1_20260728_v1`|
-|log root|`logs/cvs_full_ablation_phase1_t1_20260728_v1`|
-|主PID/GPU|尚未启动|
-|精确启动命令|尚未冻结；发布前写入|
+|run root|`/home/szu2070436088/2510044040/CV-SincNet/runs/cvs_full_ablation_phase1_t1_20260728_v1`|
+|log root|`/home/szu2070436088/2510044040/CV-SincNet/logs/cvs_full_ablation_phase1_t1_20260728_v1`|
+|主PID/GPU|PID/PGID/SID=`239570`；已退出；8卡run-owned compute PID均为0|
+|release checkout|`/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase1_t1_20260728_v1_9aa9baeb`|
 
 计划同步目标均位于远端项目根的同名相对路径，只同步本次Git提交包含的精确文件；同步后逐文件核对SHA256并执行远端`py_compile`和runner dry-run。
 
 2026-07-28首次实时preflight证据：普通账号直连成功；8张RTX3090均空闲且无compute app；release/run/log目标均不存在。首次runner因错误地把本地`ssr-gpu`命名约束施加到远端而在SCP前停止，未改变N607状态，SSH/TCP22残留均为0。随后依据N607 skill和用户明确指令，将远端契约修正为已验证的`CVS-RFFI`，提交`bfe3bf9b`独立复审达到`P0=0、P1=0`。
 
 第二次发布在remote verify阶段因Windows CRLF工作树SHA与Linux Git checkout LF字节不同而失败关闭；9/9文件经`CRLF→LF`后均与远端精确一致，排除传输损坏。旧release checkout`releases/cvs_full_ablation_phase1_t1_20260728_v1_37b36087`及旧sealed plan保留为失败验证证据，run/log root仍未创建。提交`e9aebd30`改为封存精确Git blob SHA并复审达到`P0=0、P1=0`；后续使用新不可覆盖release路径。
+
+## 正式run终局
+
+|字段|证据|
+|---|---|
+|Git/bundle|commit=`9aa9baebd359449aed2df2f8a7a53c5576aea17d`；bundle SHA256=`dfa93161174756432c16820141653e9c67b362e344952a680f30754e0b9c15fc`|
+|sealed plan|文件SHA256=`54f86433e7c3d4906817bc7c64f29661d0cc85b30d9602333ab4cec5832f984c`；content SHA256=`dc2df1812446a5eb5addcbca1cae1485ee515745a26fcd38b977ea9ac3c2242c`|
+|计划|6 arms×5 paired seeds=30 rows；16 slots；9/9 release SHA通过|
+|环境|`CVS-RFFI`；torch `2.1.0+cu121`；CUDA 12.1；8 GPU可见|
+|派发结果|launched/completed=17；success=0；failed=17；`systemic_stop=true`|
+|重复指纹|`2c4936848af1568e890c52538321afa8444cad01fa3d806a62b86ab9779d65a6`，16个不同row一致|
+|异常|`torch.cuda.reset_peak_memory_stats(device)`在CUDA context初始化前触发`RuntimeError: Invalid device argument 0: did you call init?`|
+|停止依据|两个以上不同row在终局artifact前产生相同确定性异常；未读取性能值|
+|artifact|completion/checkpoint/prototype/prediction/score均为0；dataset/environment receipt已闭合|
+|关闭|run-owned PID=0；GPU compute PID=0；SSH/TCP22残留=0|
+|本地取回|`E:\type10-7\automation_reports\CV-SincNet\cvs_full_ablation_phase1_t1_20260728_v1\runner_release\remote_failure_9aa9baeb`|
+
+该run不可恢复、覆盖、重标或解释为性能实验。fresh-run retry当前为`NOT_AUTHORIZED`；后续必须先本地修复CUDA context初始化顺序、独立复审并使用全新run ID。
 
 ## 健康门与停止规则
 
