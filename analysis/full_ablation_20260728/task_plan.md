@@ -61,6 +61,7 @@ Phase2并行状态：`DESIGN_FROZEN -> IMPLEMENTING`，冻结摘要见`phase2_fe
 |2026-07-28|新增总时长统计后触发`time`局部绑定错误|定位训练循环内遗留局部`import time`并提升为模块级导入；44项测试重跑通过|
 |2026-07-28|N607 direct preflight发现不存在`ssr-gpu`，仅有旧`CVS-RFFI`环境|在SCP/seal/launch前停止；8卡与数据正常，等待用户授权创建环境或另走代码契约变更复审|
 |2026-07-28|远端环境约束误用了本地`ssr-gpu`名称|按N607 skill和用户指令绑定已验证`CVS-RFFI`，提交`bfe3bf9b`复审为`P0=0、P1=0`|
+|2026-07-28|Windows CRLF工作树SHA与N607 Git/LF checkout不一致|确认9/9规范LF SHA精确匹配；改用Git blob封存并以`e9aebd30`复审闭合|
 
 ## 重大决策
 

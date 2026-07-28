@@ -11,7 +11,7 @@
 |设计|`CVS_FULL_ABLATION_DESIGN_PHASE1_PHASE2_20260728.md`|
 |协议|Phase1 source-only；正式划分`0.07/0.63/0.30`|
 |当前Git分支|`codex/full-ablation-20260728`|
-|代码就绪提交|`bfe3bf9bc8332e158c4453c919f47b0e58301633`|
+|代码就绪提交|`e9aebd30c0147bc3cbca8af4a1fd4460b8275b81`|
 |独立终审|`P0=0、P1=0`；`APPROVE_LOCAL_VERIFIED`|
 |审阅者|`/root/phase1_t1_independent_review`|
 |性能结论|无；仅完成N607只读preflight，尚未同步或启动|
@@ -56,7 +56,7 @@
 
 |检查|结果|
 |---|---|
-|聚焦规范、arm factory、A0、runner、sealer与收据测试|60项通过|
+|聚焦规范、arm factory、A0、runner、sealer与收据测试|62项通过|
 |A0参数量|与完整双表征模型精确相等；8域测试fixture均为1,061,334，真实14域均为1,062,306；正式值以row resource summary为准|
 |训练CLI dry-run|六个arm均解析成功；200轮和`0.07/0.63/0.30`被工厂强制覆盖|
 |矩阵dry-run|30 rows、16 slots|
@@ -122,6 +122,8 @@ print(json.dumps(r,ensure_ascii=False,sort_keys=True))
 计划同步目标均位于远端项目根的同名相对路径，只同步本次Git提交包含的精确文件；同步后逐文件核对SHA256并执行远端`py_compile`和runner dry-run。
 
 2026-07-28首次实时preflight证据：普通账号直连成功；8张RTX3090均空闲且无compute app；release/run/log目标均不存在。首次runner因错误地把本地`ssr-gpu`命名约束施加到远端而在SCP前停止，未改变N607状态，SSH/TCP22残留均为0。随后依据N607 skill和用户明确指令，将远端契约修正为已验证的`CVS-RFFI`，提交`bfe3bf9b`独立复审达到`P0=0、P1=0`。
+
+第二次发布在remote verify阶段因Windows CRLF工作树SHA与Linux Git checkout LF字节不同而失败关闭；9/9文件经`CRLF→LF`后均与远端精确一致，排除传输损坏。旧release checkout`releases/cvs_full_ablation_phase1_t1_20260728_v1_37b36087`及旧sealed plan保留为失败验证证据，run/log root仍未创建。提交`e9aebd30`改为封存精确Git blob SHA并复审达到`P0=0、P1=0`；后续使用新不可覆盖release路径。
 
 ## 健康门与停止规则
 
