@@ -7,6 +7,7 @@ import importlib
 import json
 import math
 import random
+import time
 from collections import defaultdict
 from copy import deepcopy
 import sys
@@ -314,7 +315,12 @@ def build_arg_parser() -> argparse.ArgumentParser:
         choices=["clean_val_tx", "source_val_sat_hmean", "test_overall_tx", "sat_mean_tx", "sat_worst_tx", "joint_safe"],
         help="Source-val telemetry metric only; Phase1 checkpoint selection is final-only.",
     )
-    parser.add_argument("--checkpoint_selection", type=str, default="final_only", choices=["final_only"])
+    parser.add_argument(
+        "--checkpoint_selection",
+        type=str,
+        default="final_only",
+        choices=["final_only", "source_validation_only"],
+    )
     parser.add_argument("--safe_best_path", type=str, default="", help="Optional path for the guarded best checkpoint.")
     parser.add_argument("--safe_latest_path", type=str, default="", help="Optional path for the latest guarded checkpoint.")
     parser.add_argument("--phase1_source_val_selection_only", type=str2bool, default=True)
@@ -716,6 +722,10 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--formal_ablation", type=str2bool, default=False)
     parser.add_argument("--ablation_id", type=str, default="")
     parser.add_argument("--git_commit", type=str, default="")
+    parser.add_argument("--expected_config_hash", type=str, default="")
+    parser.add_argument("--row_key", type=str, default="")
+    parser.add_argument("--sealed_plan_sha256", type=str, default="")
+    parser.add_argument("--seed_registry_sha256", type=str, default="")
     parser.add_argument("--reject_head", type=str2bool, default=False)
     parser.add_argument("--reject_class_index", type=int, default=-1)
     parser.add_argument("--lambda_energy_in", type=float, default=0.0)
@@ -1310,6 +1320,55 @@ def _apply_model_cli_args(model_args, args):
     return model_args
 
 
+def _build_source_split_receipt(
+    *,
+    seed: int,
+    split_mode: str,
+    source_days: Sequence[Any],
+    target_days: Sequence[Any],
+    source_receivers: Sequence[Any],
+    target_receivers: Sequence[Any],
+    labeled_indices: Sequence[Any],
+    unlabeled_indices: Sequence[Any],
+    source_validation_indices: Sequence[Any],
+) -> Dict[str, Any]:
+    receipt = {
+        "schema": "cvs.phase1.source_split_receipt.v1",
+        "seed": int(seed),
+        "split_mode": str(split_mode),
+        "source_days": sorted(str(value) for value in source_days),
+        "target_days": sorted(str(value) for value in target_days),
+        "source_receivers": sorted(
+            str(value) for value in source_receivers
+        ),
+        "target_receivers": sorted(
+            str(value) for value in target_receivers
+        ),
+        "source_target_receiver_overlap_count": len(
+            {str(value) for value in source_receivers}
+            & {str(value) for value in target_receivers}
+        ),
+        "labeled_indices_sha256": _canonical_json_sha256(
+            [int(value) for value in labeled_indices]
+        ),
+        "unlabeled_indices_sha256": _canonical_json_sha256(
+            [int(value) for value in unlabeled_indices]
+        ),
+        "source_validation_indices_sha256": _canonical_json_sha256(
+            [int(value) for value in source_validation_indices]
+        ),
+        "labeled_size": int(len(labeled_indices)),
+        "unlabeled_size": int(len(unlabeled_indices)),
+        "source_validation_size": int(
+            len(source_validation_indices)
+        ),
+    }
+    receipt["split_manifest_sha256"] = _canonical_json_sha256(
+        receipt
+    )
+    return receipt
+
+
 def _build_ssdg_wisig_data(args, device: torch.device):
     ds_w = load_wisig_compact_pkl(args.wisig_pkl)
     infer_nc = len(ds_w.get("tx_list", []))
@@ -1422,6 +1481,17 @@ def _build_ssdg_wisig_data(args, device: torch.device):
         for name, ds in named_tests.items()
     }
     domain_label_map = build_domain_label_map(source_base)
+    split_receipt = _build_source_split_receipt(
+        seed=int(args.seed),
+        split_mode=str(args.split_mode),
+        source_days=train_days,
+        target_days=test_days,
+        source_receivers=train_rxs,
+        target_receivers=test_rxs,
+        labeled_indices=labeled_idx,
+        unlabeled_indices=unlabeled_idx,
+        source_validation_indices=val_idx,
+    )
     return {
         "train_loader": labeled_loader,
         "balanced_train_sampler": balanced_sampler,
@@ -1443,6 +1513,7 @@ def _build_ssdg_wisig_data(args, device: torch.device):
             "balanced_sampler_batch_size": int(balanced_sampler.batch_size) if balanced_sampler is not None else int(args.batch_size),
             "test": test_split_info,
             "named_test_meta": named_meta,
+            "source_split_receipt": split_receipt,
         },
     }
 
@@ -1804,6 +1875,12 @@ def _maybe_export_phase2_prototypes_ssdg(
     checkpoint_path = str(getattr(args, "phase2_export_checkpoint", "") or "").strip()
     if not checkpoint_path:
         checkpoint_path = str(default_checkpoint)
+    if bool(getattr(args, "formal_ablation", False)):
+        if Path(checkpoint_path).resolve() != Path(default_checkpoint).resolve():
+            raise ValueError(
+                "formal Phase1 export must use the "
+                "source-validation-selected checkpoint"
+            )
     if str(getattr(args, "checkpoint_selection", "")) == "final_only":
         if Path(checkpoint_path).resolve() != Path(default_checkpoint).resolve():
             raise ValueError("Phase1 final-only export forbids a non-final --phase2_export_checkpoint")
@@ -1819,7 +1896,11 @@ def _maybe_export_phase2_prototypes_ssdg(
         checkpoint_sha256 = ""
         ckpt: Mapping[str, Any] = {}
         if checkpoint_path:
-            ckpt = _validate_phase1_checkpoint_payload(torch.load(checkpoint_path, map_location=device), args, checkpoint_path)
+            ckpt = _validate_phase1_checkpoint_payload(
+                load_checkpoint(checkpoint_path, device),
+                args,
+                checkpoint_path,
+            )
             _load_phase1_checkpoint_strict(model, ckpt, checkpoint_path)
             checkpoint_sha256 = _sha256_file(checkpoint_path)
         package = export_phase2_prototypes(
@@ -2240,8 +2321,16 @@ def _validate_phase1_checkpoint_payload(checkpoint: Any, args, path: str | Path)
     saved_args = checkpoint.get("args", {}) or {}
     if str(saved_args.get("best_metric", "")) != str(getattr(args, "best_metric", "")):
         raise ValueError(f"Phase1 checkpoint selection metric mismatch: {path}")
-    if str(checkpoint.get("checkpoint_selection", saved_args.get("checkpoint_selection", ""))) != "final_only":
-        raise ValueError(f"Phase1 checkpoint is not final-only: {path}")
+    expected_selection = str(getattr(args, "checkpoint_selection", ""))
+    if str(
+        checkpoint.get(
+            "checkpoint_selection",
+            saved_args.get("checkpoint_selection", ""),
+        )
+    ) != expected_selection:
+        raise ValueError(
+            f"Phase1 checkpoint selection mismatch: expected={expected_selection} path={path}"
+        )
     return checkpoint
 
 
@@ -2260,7 +2349,11 @@ def _evaluate_frozen_phase1_checkpoint(args, model, data_ctx, device, checkpoint
         return {"status": "NOT_RUN", "reason": "frozen_source_val_checkpoint_missing", "checkpoint": str(path)}
     restore_state = deepcopy(getattr(model, "_orig_mod", model).state_dict())
     try:
-        checkpoint = _validate_phase1_checkpoint_payload(torch.load(path, map_location=device), args, path)
+        checkpoint = _validate_phase1_checkpoint_payload(
+            load_checkpoint(str(path), device),
+            args,
+            path,
+        )
         _load_phase1_checkpoint_strict(model, checkpoint, path)
         named = evaluate_named_loaders(
             model,
@@ -2279,7 +2372,7 @@ def _evaluate_frozen_phase1_checkpoint(args, model, data_ctx, device, checkpoint
         )
         return {
             "status": "COMPLETE",
-            "selection_source": "training_final_only",
+            "selection_source": str(args.checkpoint_selection),
             "checkpoint": str(path),
             "checkpoint_sha256": _sha256_file(path),
             "checkpoint_epoch": int(checkpoint.get("epoch", -1)),
@@ -2299,7 +2392,11 @@ def _evaluate_checkpoint_source_val_tail_geometry(args, model, data_ctx, device,
         return {"status": "FAILED", "reason": "checkpoint_missing", "checkpoint": str(path)}
     restore_state = deepcopy(getattr(model, "_orig_mod", model).state_dict())
     try:
-        checkpoint = _validate_phase1_checkpoint_payload(torch.load(path, map_location=device), args, path)
+        checkpoint = _validate_phase1_checkpoint_payload(
+            load_checkpoint(str(path), device),
+            args,
+            path,
+        )
         _load_phase1_checkpoint_strict(model, checkpoint, path)
         result = _evaluate_source_val_tail_geometry(model, data_ctx, device, args)
         result.update(
@@ -2344,6 +2441,125 @@ def _resolve_phase1_terminal_status(
     if not endpoint_export_ready:
         return "NON_PROMOTABLE_ENDPOINT_NOT_EXPORTED"
     return "COMPLETE"
+
+
+def _formal_ablation_terminal_flags(
+    args,
+    *,
+    selected_checkpoint: Path,
+    selected_checkpoint_evidence: Mapping[str, Any],
+    selected_checkpoint_sha256: str,
+    export_status: Mapping[str, Any],
+    source_split_receipt: Mapping[str, Any] | None = None,
+) -> Tuple[Dict[str, bool], Dict[str, bool]]:
+    checkpoint_args = dict(selected_checkpoint_evidence.get("args", {}) or {})
+    split_receipt = dict(source_split_receipt or {})
+    train_rx = {
+        value.strip()
+        for value in str(getattr(args, "wisig_train_rxs", "")).split(",")
+        if value.strip()
+    }
+    test_rx = {
+        value.strip()
+        for value in str(getattr(args, "wisig_test_rxs", "")).split(",")
+        if value.strip()
+    }
+    expected_representation = (
+        "single_parameter_matched"
+        if str(args.ablation_id) == "P1-A0"
+        else "dual"
+    )
+    p0_flags = {
+        "formal_ablation_identity": (
+            str(getattr(args, "candidate_id", "")) == str(args.ablation_id)
+            and str(getattr(args, "ablation_schema", ""))
+            == "cvs.phase1_ablation.config.v1"
+        ),
+        "git_commit_bound": len(str(getattr(args, "git_commit", ""))) == 40,
+        "method_config_hash_bound": len(
+            str(getattr(args, "ablation_method_config_hash", ""))
+        )
+        == 64,
+        "resolved_config_hash_bound": len(
+            str(getattr(args, "ablation_config_hash", ""))
+        )
+        == 64,
+        "source_receiver_set_locked": train_rx
+        == {"0", "1", "2", "3", "4", "5", "6"},
+        "target_receiver_set_locked": test_rx
+        == {"7", "8", "9", "10", "11"},
+        "source_target_receiver_disjoint": not bool(train_rx & test_rx),
+        "current_split_locked": (
+            abs(float(args.labeled_ratio) - 0.07) <= 1e-12
+            and abs(float(args.unlabeled_ratio) - 0.63) <= 1e-12
+            and abs(float(args.source_val_ratio) - 0.30) <= 1e-12
+        ),
+        "source_validation_only_selection": (
+            bool(getattr(args, "phase1_source_val_selection_only", False))
+            and str(getattr(args, "checkpoint_selection", ""))
+            == "source_validation_only"
+        ),
+        "representation_mode_matches_arm": str(
+            getattr(args, "representation_mode", "")
+        )
+        == expected_representation,
+        "selected_checkpoint_evidence_bound": bool(
+            selected_checkpoint_evidence
+        ),
+        "selected_checkpoint_identity_match": (
+            str(checkpoint_args.get("ablation_id", ""))
+            == str(args.ablation_id)
+            and str(checkpoint_args.get("ablation_config_hash", ""))
+            == str(args.ablation_config_hash)
+            and str(checkpoint_args.get("git_commit", ""))
+            == str(args.git_commit)
+        ),
+        "row_identity_bound": (
+            str(checkpoint_args.get("row_key", ""))
+            == str(getattr(args, "row_key", ""))
+        ),
+        "sealed_plan_bound": (
+            str(checkpoint_args.get("sealed_plan_sha256", ""))
+            == str(getattr(args, "sealed_plan_sha256", ""))
+        ),
+        "seed_registry_bound": (
+            str(checkpoint_args.get("seed_registry_sha256", ""))
+            == str(getattr(args, "seed_registry_sha256", ""))
+        ),
+        "source_split_receipt_bound": (
+            len(str(split_receipt.get("split_manifest_sha256", "")))
+            == 64
+        ),
+        "source_target_receivers_physically_disjoint": int(
+            split_receipt.get(
+                "source_target_receiver_overlap_count",
+                -1,
+            )
+        )
+        == 0,
+    }
+    p1_flags = {
+        "selected_checkpoint_is_source_validation": selected_checkpoint.name
+        == "best_source_validation_ssdg.pth",
+        "selected_checkpoint_role_source_validation": str(
+            selected_checkpoint_evidence.get("checkpoint_role", "")
+        )
+        == "source_validation_selected",
+        "phase2_export_prototypes": bool(
+            getattr(args, "phase2_export_prototypes", False)
+        ),
+        "phase2_fuse_prototypes": bool(
+            getattr(args, "phase2_fuse_prototypes", False)
+        ),
+        "endpoint_export_complete": str(export_status.get("status", ""))
+        == "COMPLETE",
+        "endpoint_checkpoint_identity_match": bool(
+            selected_checkpoint_sha256
+        )
+        and str(export_status.get("source_checkpoint_sha256", ""))
+        == selected_checkpoint_sha256,
+    }
+    return p0_flags, p1_flags
 
 
 def _loss_weights(args, stage_state: Mapping[str, Any] | None) -> Dict[str, float]:
@@ -3213,6 +3429,17 @@ def _sha256_file(path: str | Path) -> str:
         for chunk in iter(lambda: handle.read(1024 * 1024), b""):
             digest.update(chunk)
     return digest.hexdigest()
+
+
+def _canonical_json_sha256(payload: Any) -> str:
+    encoded = json.dumps(
+        payload,
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+        default=str,
+    ).encode("utf-8")
+    return hashlib.sha256(encoded).hexdigest()
 
 
 def _safe_percent(value: Any) -> str:
@@ -4108,6 +4335,7 @@ def _prepare_concat_sat_batch_for_training(
 
 
 def train(args) -> int:
+    training_wall_started = time.time()
     ablation_manifest = None
     if bool(getattr(args, "formal_ablation", False)):
         ablation_manifest = apply_phase1_ablation(args)
@@ -4117,6 +4345,21 @@ def train(args) -> int:
             raise ValueError(
                 "formal Phase1 candidate_id must exactly equal ablation_id"
             )
+        expected_row_key = (
+            f"{args.ablation_id}__train_seed_{int(args.seed)}"
+        )
+        if str(getattr(args, "row_key", "")).strip() != expected_row_key:
+            raise ValueError(
+                "formal Phase1 row_key does not match ablation_id and seed"
+            )
+        for field in ("sealed_plan_sha256", "seed_registry_sha256"):
+            value = str(getattr(args, field, "")).strip().lower()
+            if len(value) != 64 or any(
+                char not in "0123456789abcdef" for char in value
+            ):
+                raise ValueError(
+                    f"formal Phase1 requires a 64-character {field}"
+                )
     elif str(getattr(args, "ablation_id", "")).strip():
         raise ValueError(
             "--ablation_id is reserved for --formal_ablation true"
@@ -4176,8 +4419,16 @@ def train(args) -> int:
             "Phase1 is source-only: --phase1_source_val_selection_only must remain true; "
             "held-out receiver/day/satellite test feedback is forbidden during training."
         )
-    if str(getattr(args, "checkpoint_selection", "")) != "final_only":
-        raise ValueError("Phase1 checkpoint selection is final-only")
+    expected_checkpoint_selection = (
+        "source_validation_only"
+        if bool(getattr(args, "formal_ablation", False))
+        else "final_only"
+    )
+    if str(getattr(args, "checkpoint_selection", "")) != expected_checkpoint_selection:
+        raise ValueError(
+            "Phase1 checkpoint selection drift: "
+            f"expected {expected_checkpoint_selection}"
+        )
     if bool(getattr(args, "tail_rollback_enabled", False)):
         raise ValueError(
             "Phase1 final-only mode forbids tail checkpoint rollback; retain tail references as metrics only."
@@ -4284,10 +4535,14 @@ def train(args) -> int:
         raise ValueError("SSDG.train_ssdg currently implements the WiSig tx_rx_day_1_7_2 protocol.")
     set_seed(int(args.seed))
     device = resolve_device(args.device)
+    if device.type == "cuda":
+        torch.cuda.reset_peak_memory_stats(device)
     out_dir = ensure_dir(args.output_dir)
     stale_identity_paths = [
         out_dir / "phase1_terminal_status.json",
+        out_dir / "phase1_training_completion_receipt.json",
         out_dir / "phase1_ablation_manifest.json",
+        out_dir / "best_source_validation_ssdg.pth",
         out_dir / f"best_{args.best_metric}_ssdg.pth",
         out_dir / "final_ssdg.pth",
         out_dir / "latest_ssdg.pth",
@@ -4309,6 +4564,13 @@ def train(args) -> int:
             "run_id": str(args.run_id),
             "candidate_id": str(args.candidate_id),
             "train_seed": int(args.seed),
+            "row_key": str(args.row_key),
+            "sealed_plan_sha256": str(
+                args.sealed_plan_sha256
+            ),
+            "seed_registry_sha256": str(
+                args.seed_registry_sha256
+            ),
             "output_dir": str(out_dir),
             "phase2_export_path": str(args.phase2_export_path),
         }
@@ -4326,6 +4588,7 @@ def train(args) -> int:
     metrics_csv_path = Path(str(args.metrics_csv).strip()) if str(args.metrics_csv).strip() else out_dir / "metrics_epoch.csv"
     metrics_jsonl_path = Path(str(args.metrics_jsonl).strip()) if str(args.metrics_jsonl).strip() else out_dir / "metrics_epoch.jsonl"
     final_path = out_dir / "final_ssdg.pth"
+    source_validation_path = out_dir / "best_source_validation_ssdg.pth"
     default_safe_best_name = f"best_{args.best_metric}_ssdg.pth" if _joint_safe_guard_enabled(args) else f"best_{args.best_metric}_safe_ssdg.pth"
     safe_best_path = Path(str(args.safe_best_path).strip()) if str(args.safe_best_path).strip() else out_dir / default_safe_best_name
     safe_latest_path = Path(str(args.safe_latest_path).strip()) if str(args.safe_latest_path).strip() else out_dir / "latest_safe_ssdg.pth"
@@ -4671,7 +4934,6 @@ def train(args) -> int:
     for epoch in range(1, total_epochs + 1):
         if direct_metric_reference_bank is not None:
             direct_metric_reference_bank.maybe_promote(epoch)
-        import time
 
         t0 = time.time()
         phase = "label" if epoch <= int(args.label_epochs) else "pseudo"
@@ -7159,7 +7421,11 @@ def train(args) -> int:
             "stats": stats,
         }
         latest_path = out_dir / "NOT_SAVED_FINAL_ONLY"
-        best_path = final_path
+        best_path = (
+            source_validation_path
+            if bool(getattr(args, "formal_ablation", False))
+            else final_path
+        )
         protected_metrics = protected_metric_snapshot(
             val_stats=val_stats,
             test_stats=test_stats,
@@ -7460,6 +7726,19 @@ def train(args) -> int:
             best_test = float(test_stats["tx_acc"])
             best_epoch = int(epoch)
             is_best = True
+            if bool(getattr(args, "formal_ablation", False)):
+                selected_payload = deepcopy(payload)
+                selected_payload.update(
+                    {
+                        "checkpoint_role": "source_validation_selected",
+                        "checkpoint_selection": "source_validation_only",
+                        "selection_source": "source_validation_only",
+                        "selection_metric": str(args.best_metric),
+                        "selection_score": float(current_best_score),
+                        "selection_epoch": int(epoch),
+                    }
+                )
+                save_payload(source_validation_path, selected_payload)
         elapsed = time.time() - t0
         telemetry_rows.append(
             _build_ssdg_epoch_telemetry_row(
@@ -7538,7 +7817,31 @@ def train(args) -> int:
                 flush=True,
             )
             break
-    selected_checkpoint = final_path
+    if bool(getattr(args, "formal_ablation", False)):
+        selected_checkpoint = source_validation_path
+        if not selected_checkpoint.is_file():
+            raise RuntimeError(
+                "formal Phase1 ablation produced no source-validation-selected checkpoint"
+            )
+        selected_epoch_payload = _validate_phase1_checkpoint_payload(
+            load_checkpoint(str(selected_checkpoint), device),
+            args,
+            selected_checkpoint,
+        )
+        _load_phase1_checkpoint_strict(
+            model,
+            selected_epoch_payload,
+            selected_checkpoint,
+        )
+        payload = deepcopy(selected_epoch_payload)
+        selected_epoch = int(selected_epoch_payload.get("epoch", best_epoch))
+        selected_role = "source_validation_selected"
+        selected_source = "source_validation_only"
+    else:
+        selected_checkpoint = final_path
+        selected_epoch = int(epoch)
+        selected_role = "training_final_only"
+        selected_source = "training_final_only"
     final_source_val_tail = _evaluate_source_val_tail_geometry(model, data_ctx, device, args)
     final_zid_leakage_probe = _evaluate_zid_leakage_probes(model, data_ctx, device, args)
     leakage_decision = _assess_zid_leakage_probe(final_zid_leakage_probe, args)
@@ -7558,8 +7861,8 @@ def train(args) -> int:
     final_payload = deepcopy(payload)
     final_payload.update(
         {
-            "checkpoint_role": "training_final_only",
-            "checkpoint_selection": "final_only",
+            "checkpoint_role": selected_role,
+            "checkpoint_selection": str(args.checkpoint_selection),
             "model": getattr(model, "_orig_mod", model).state_dict(),
             "ema_model": ema_model.state_dict() if ema_model is not None else None,
             "optimizer": optimizer.state_dict(),
@@ -7568,8 +7871,9 @@ def train(args) -> int:
             "rng_state": _capture_training_rng_state(sat_gen),
             "tail_state_machine": phase1_v2_tail_machine.state_dict() if phase1_v2_tail_machine is not None else None,
             "tail_rollback_events": deepcopy(tail_rollback_events),
-            "final_epoch": int(epoch),
+            "final_epoch": int(selected_epoch),
             "observed_epoch": int(epoch),
+            "selection_epoch": int(selected_epoch),
         }
     )
     final_payload.setdefault("stats", {})
@@ -7577,7 +7881,7 @@ def train(args) -> int:
     final_payload["stats"]["zid_leakage_probe"] = final_zid_leakage_probe
     final_payload["stats"]["satellite_protocol"] = dict(getattr(args, "sat_protocol_manifest", {}) or {})
     final_payload["final_only_evidence"] = {
-        "selection_source": "training_final_only",
+        "selection_source": selected_source,
         "telemetry_best_metric": str(args.best_metric),
         "telemetry_best_epoch": int(best_epoch),
         "telemetry_best_score": float(best_score) if math.isfinite(float(best_score)) else None,
@@ -7738,7 +8042,11 @@ def train(args) -> int:
         )
     final_payload["joint_guard"] = dict(guard_state)
     final_payload["checkpoint_status"] = {
-        "state": "FINAL_ONLY",
+        "state": (
+            "SOURCE_VALIDATION_SELECTED"
+            if bool(getattr(args, "formal_ablation", False))
+            else "FINAL_ONLY"
+        ),
         "checkpoint_safe": not bool(phase1_v2_final_blocked),
         "phase1_v2_final_blocked": bool(phase1_v2_final_blocked),
         "reason": str(guard_state.get("reason", "")),
@@ -7755,7 +8063,7 @@ def train(args) -> int:
         frozen_eval = {
             "status": "FAILED",
             "reason": str(exc),
-            "selection_source": "training_final_only",
+            "selection_source": selected_source,
             "checkpoint": str(selected_checkpoint),
             "claim": "PHASE1_FROZEN_HELDOUT_EVAL_INCOMPLETE",
         }
@@ -7824,6 +8132,7 @@ def train(args) -> int:
                 export_status = {
                     "status": "COMPLETE",
                     "prototype_path": (exported_package.get("paths", {}) or {}).get("pt_path", ""),
+                    "prototype_json_path": (exported_package.get("paths", {}) or {}).get("json_path", ""),
                     "endpoint_artifact_ready": bool(endpoint_manifest),
                     "endpoint_boundary_version": endpoint_manifest.get("boundary_version", ""),
                     "endpoint_boundary_hash": endpoint_manifest.get("boundary_hash", ""),
@@ -7846,7 +8155,9 @@ def train(args) -> int:
     if selected_checkpoint_exists:
         try:
             selected_checkpoint_evidence = _validate_phase1_checkpoint_payload(
-                torch.load(selected_checkpoint, map_location="cpu"), args, selected_checkpoint
+                load_checkpoint(str(selected_checkpoint), torch.device("cpu")),
+                args,
+                selected_checkpoint,
             )
             selected_train_logs = (
                 (selected_checkpoint_evidence.get("stats", {}) or {}).get("train", {}) or {}
@@ -7909,6 +8220,7 @@ def train(args) -> int:
         and str(export_status.get("source_checkpoint_sha256", "")) == selected_checkpoint_sha256,
     }
     p0_mechanisms_ready = all(p0_mechanism_flags.values())
+    legacy_p0_mechanism_flags = dict(p0_mechanism_flags)
     probe_from_checkpoint = (
         (selected_checkpoint_evidence.get("stats", {}) or {}).get("zid_leakage_probe", {})
         if selected_checkpoint_evidence
@@ -7980,6 +8292,22 @@ def train(args) -> int:
         "zid_leakage_probe_gate_passed": not bool(leakage_decision["fired"]),
     }
     p1_mechanisms_ready = all(p1_mechanism_flags.values())
+    legacy_p1_mechanism_flags = dict(p1_mechanism_flags)
+    if bool(getattr(args, "formal_ablation", False)):
+        p0_mechanism_flags, p1_mechanism_flags = (
+            _formal_ablation_terminal_flags(
+                args,
+                selected_checkpoint=selected_checkpoint,
+                selected_checkpoint_evidence=selected_checkpoint_evidence,
+                selected_checkpoint_sha256=selected_checkpoint_sha256,
+                export_status=export_status,
+                source_split_receipt=(
+                    data_ctx.get("split_info", {}) or {}
+                ).get("source_split_receipt", {}),
+            )
+        )
+        p0_mechanisms_ready = all(p0_mechanism_flags.values())
+        p1_mechanisms_ready = all(p1_mechanism_flags.values())
     endpoint_export_ready = bool(
         export_status.get("status") == "COMPLETE" and export_status.get("endpoint_artifact_ready", False)
     )
@@ -8004,6 +8332,44 @@ def train(args) -> int:
             "NON_PROMOTABLE_P1_DISABLED": 11,
             "NON_PROMOTABLE_ENDPOINT_NOT_EXPORTED": 9,
         }.get(terminal_status, 10)
+    resource_summary = {
+        "schema": "cvs.phase1.resource_summary.v1",
+        "run_id": str(getattr(args, "run_id", "")),
+        "row_key": str(getattr(args, "row_key", "")),
+        "ablation_id": str(getattr(args, "ablation_id", "")),
+        "train_seed": int(getattr(args, "seed", -1)),
+        "wall_time_seconds": float(
+            time.time() - training_wall_started
+        ),
+        "trainable_parameter_count": int(trainable_params),
+        "total_parameter_count": int(total_params),
+        "device_type": str(device.type),
+        "peak_cuda_memory_allocated_bytes": (
+            int(torch.cuda.max_memory_allocated(device))
+            if device.type == "cuda"
+            else 0
+        ),
+        "peak_cuda_memory_reserved_bytes": (
+            int(torch.cuda.max_memory_reserved(device))
+            if device.type == "cuda"
+            else 0
+        ),
+        "resource_claim": (
+            "THROUGHPUT_SCHEDULE_OBSERVATION_NOT_ISOLATED_LATENCY"
+        ),
+    }
+    resource_summary_path = out_dir / "phase1_resource_summary.json"
+    resource_summary_path.write_text(
+        json.dumps(
+            resource_summary,
+            ensure_ascii=False,
+            indent=2,
+            sort_keys=True,
+        )
+        + "\n",
+        encoding="utf-8",
+        newline="\n",
+    )
     terminal_manifest = {
         "schema": "phase1_terminal_status_v2",
         "run_id": str(getattr(args, "run_id", "")),
@@ -8013,9 +8379,19 @@ def train(args) -> int:
             getattr(args, "ablation_config_hash", "")
         ),
         "git_commit": str(getattr(args, "git_commit", "")),
+        "row_key": str(getattr(args, "row_key", "")),
+        "sealed_plan_sha256": str(
+            getattr(args, "sealed_plan_sha256", "")
+        ),
+        "seed_registry_sha256": str(
+            getattr(args, "seed_registry_sha256", "")
+        ),
+        "source_split_receipt": (
+            data_ctx.get("split_info", {}) or {}
+        ).get("source_split_receipt", {}),
         "status": terminal_status,
         "exit_code": int(terminal_exit_code),
-        "selection_source": "training_final_only",
+        "selection_source": selected_source,
         "selected_checkpoint": str(selected_checkpoint),
         "selected_checkpoint_exists": bool(selected_checkpoint_exists),
         "selected_checkpoint_sha256": selected_checkpoint_sha256,
@@ -8034,12 +8410,15 @@ def train(args) -> int:
         "phase1_v2_final_blocked": bool(phase1_v2_final_blocked),
         "final_guard_reason": str((guard_state or {}).get("reason", "")),
         "prototype_export": export_status,
+        "resource_summary": resource_summary,
         "p0_mechanism_flags": p0_mechanism_flags,
+        "legacy_p0_mechanism_flags_diagnostic_only": legacy_p0_mechanism_flags,
         "p0_mechanism_evidence_checkpoint_epoch": int(
             selected_checkpoint_evidence.get("epoch", -1)
         ) if selected_checkpoint_evidence else -1,
         "p0_mechanisms_ready": bool(p0_mechanisms_ready),
         "p1_mechanism_flags": p1_mechanism_flags,
+        "legacy_p1_mechanism_flags_diagnostic_only": legacy_p1_mechanism_flags,
         "p1_mechanism_facts": {
             "sat_protocol_disjoint_required": sat_disjoint_required,
             "sat_protocol_disjoint": sat_protocol_disjoint,
@@ -8052,6 +8431,67 @@ def train(args) -> int:
     (out_dir / "phase1_terminal_status.json").write_text(
         json.dumps(terminal_manifest, ensure_ascii=False, indent=2, default=str),
         encoding="utf-8",
+    )
+    terminal_manifest_path = out_dir / "phase1_terminal_status.json"
+    prototype_paths = {
+        key: str(export_status.get(key, "") or "")
+        for key in ("prototype_path", "prototype_json_path")
+    }
+    prototype_hashes = {
+        key: _sha256_file(path)
+        for key, path in prototype_paths.items()
+        if path and Path(path).is_file()
+    }
+    completion_receipt = {
+        "schema": "cvs.phase1.training_completion_receipt.v1",
+        "run_id": str(getattr(args, "run_id", "")),
+        "row_key": str(getattr(args, "row_key", "")),
+        "ablation_id": str(getattr(args, "ablation_id", "")),
+        "train_seed": int(getattr(args, "seed", -1)),
+        "git_commit": str(getattr(args, "git_commit", "")),
+        "sealed_plan_sha256": str(
+            getattr(args, "sealed_plan_sha256", "")
+        ),
+        "seed_registry_sha256": str(
+            getattr(args, "seed_registry_sha256", "")
+        ),
+        "method_config_hash": str(
+            getattr(args, "ablation_method_config_hash", "")
+        ),
+        "resolved_config_hash": str(
+            getattr(args, "ablation_config_hash", "")
+        ),
+        "source_split_receipt": (
+            data_ctx.get("split_info", {}) or {}
+        ).get("source_split_receipt", {}),
+        "selected_checkpoint_sha256": selected_checkpoint_sha256,
+        "terminal_manifest_sha256": _sha256_file(
+            terminal_manifest_path
+        ),
+        "prototype_paths": prototype_paths,
+        "prototype_hashes": prototype_hashes,
+        "resource_summary_sha256": _sha256_file(
+            resource_summary_path
+        ),
+        "resource_summary": resource_summary,
+        "terminal_status": terminal_status,
+        "exit_code": int(terminal_exit_code),
+        "phase1_training_complete": terminal_status == "COMPLETE",
+        "deployment_bundle_status": "PENDING_PHASE1_W2_SEAL",
+        "formal_performance_claim": False,
+        "claim": "PHASE1_SOURCE_ONLY_TRAINING_RECEIPT",
+    }
+    (out_dir / "phase1_training_completion_receipt.json").write_text(
+        json.dumps(
+            completion_receipt,
+            ensure_ascii=False,
+            indent=2,
+            sort_keys=True,
+            default=str,
+        )
+        + "\n",
+        encoding="utf-8",
+        newline="\n",
     )
     print(
         f"[PHASE1-TERMINAL] status={terminal_status} exit_code={int(terminal_exit_code)} "

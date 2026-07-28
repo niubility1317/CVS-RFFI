@@ -2,7 +2,9 @@ from __future__ import annotations
 
 import torch
 
+from baseline_origin_sat_view import SatViewStage
 from model_dual_cvsincnet import build_dual_model
+from post_stage_common import load_checkpoint
 
 
 def _count(model) -> int:
@@ -57,3 +59,25 @@ def test_single_embedding_forward_has_no_separate_domain_representation() -> Non
         parameter.grad is not None
         for parameter in model.identity_capacity.parameters()
     )
+
+
+def test_project_checkpoint_loader_allowlists_sat_view_stage(tmp_path) -> None:
+    checkpoint_path = tmp_path / "checkpoint.pth"
+    torch.save(
+        {
+            "model": {"weight": torch.ones(2)},
+            "args": {
+                "sat_view_stages": (
+                    SatViewStage(
+                        start_epoch=1,
+                        scenarios=("leo_clear_weak",),
+                        view_prob=0.5,
+                    ),
+                )
+            },
+        },
+        checkpoint_path,
+    )
+    loaded = load_checkpoint(str(checkpoint_path), torch.device("cpu"))
+    assert torch.equal(loaded["model"]["weight"], torch.ones(2))
+    assert isinstance(loaded["args"]["sat_view_stages"][0], SatViewStage)

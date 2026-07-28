@@ -33,7 +33,7 @@ def _bundles(count: int, start: int = 820001) -> list[SeedBundle]:
 def test_phase1_t1_is_30_paired_runs_on_current_split() -> None:
     rows = build_phase1_t1_rows(
         [810001, 810002, 810003, 810004, 810005],
-        git_commit="abcdef0123456789",
+        git_commit="a" * 40,
     )
     assert len(PHASE1_T1_ARMS) == 6
     assert len(rows) == 30
@@ -52,7 +52,7 @@ def test_screening_is_75_rows_per_arm_and_three_scenarios_per_row() -> None:
         arms=[arm],
         seed_bundles=_bundles(3),
         class_draw_seeds=[830001],
-        git_commit="abcdef0123456789",
+        git_commit="a" * 40,
     )
     assert len(rows) == 75
     assert all(tuple(row["scenarios"]) == LEO_SCENARIOS for row in rows)
@@ -74,7 +74,7 @@ def test_confirmation_is_900_rows_per_arm() -> None:
         arms=[arm],
         seed_bundles=_bundles(5),
         class_draw_seeds=[830001, 830002, 830003],
-        git_commit="abcdef0123456789",
+        git_commit="a" * 40,
     )
     assert len(rows) == 900
     assert sum(len(row["scenarios"]) for row in rows) == 2700
@@ -115,7 +115,7 @@ def test_fresh_stage2_rejects_observed_or_aliased_seeds() -> None:
             arms=[arm],
             seed_bundles=observed,
             class_draw_seeds=[830001],
-            git_commit="abcdef0123456789",
+            git_commit="a" * 40,
         )
     aliased = _bundles(3)
     aliased[0] = SeedBundle(820001, 820001, 820003)
@@ -125,7 +125,7 @@ def test_fresh_stage2_rejects_observed_or_aliased_seeds() -> None:
             arms=[arm],
             seed_bundles=aliased,
             class_draw_seeds=[830001],
-            git_commit="abcdef0123456789",
+            git_commit="a" * 40,
         )
 
 
@@ -143,8 +143,18 @@ def test_artifact_validator_is_fail_closed() -> None:
         {
             "protocol_schema": "p2_min_v1",
             "phase2_data_status": "VALIDATED_ONCE",
-            "support_physical_ids_hash": "support-hash",
-            "query_physical_ids_hash": "query-hash",
+            "git_commit": "a" * 40,
+            "config_hash": "b" * 64,
+            "phase1_bundle_hash": "c" * 64,
+            "channel_assignment_hash": "d" * 64,
+            "old_class_ids_hash": "e" * 64,
+            "new_class_ids_hash": "f" * 64,
+            "support_physical_ids_hash": "1" * 64,
+            "query_physical_ids_hash": "2" * 64,
+            "support_query_overlap_count": 0,
+            "support_query_disjoint_receipt_sha256": "3" * 64,
+            "predictions_hash": "4" * 64,
+            "score_artifact_hash": "5" * 64,
         }
     )
     validate_artifact_record(record)
@@ -156,3 +166,11 @@ def test_artifact_validator_is_fail_closed() -> None:
     overlap["query_physical_ids_hash"] = overlap["support_physical_ids_hash"]
     with pytest.raises(FullAblationSpecError, match="must differ"):
         validate_artifact_record(overlap)
+    invalid_hash = copy.deepcopy(record)
+    invalid_hash["predictions_hash"] = "not-a-hash"
+    with pytest.raises(FullAblationSpecError, match="SHA256"):
+        validate_artifact_record(invalid_hash)
+    physical_overlap = copy.deepcopy(record)
+    physical_overlap["support_query_overlap_count"] = 1
+    with pytest.raises(FullAblationSpecError, match="overlap"):
+        validate_artifact_record(physical_overlap)

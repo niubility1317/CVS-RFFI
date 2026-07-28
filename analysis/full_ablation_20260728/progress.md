@@ -18,9 +18,13 @@
 - 完成Phase1 30-row、Phase2 75/900-row、8×2槽和artifact字段的失败关闭规范层。
 - 非启动型计划构建器dry-run闭合：Phase1 30、T1 screening 1425逻辑/1350唯一物理、单arm confirmation 900。
 - `ssr-gpu`聚焦规范测试7项通过。
+- 完成Phase1六arm统一factory、A0严格参数匹配单表征、正式训练入口和来源验证选模。
+- 首批实现提交`0b98b2131744b68a1aad02122d357fca4e24b10b`完成；独立审查返回`P0=2、P1=5`，未获发布权。
+- 按审查逐项补齐完整解析配置哈希、arm-aware终局门、checkout/发布文件SHA、source split receipt、训练完成收据和真实16槽容量控制。
+- 修复后`ssr-gpu`聚焦测试44项通过；6个执行文件静态编译通过；Phase1计划非启动演练为30 rows/16 slots。
 
 ## 当前
 
 `PHASE_2_PHASE1_T1_IMPLEMENTATION / IN_PROGRESS`
 
-下一步：实现Phase1统一arm factory、参数量匹配单embedding、配置差分与训练身份manifest。
+下一步：更新报告并提交审查修复版本，交由独立审查复核；只有`P0=0、P1=0`后才生成封存计划并执行N607只读preflight。

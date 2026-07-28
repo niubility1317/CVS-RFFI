@@ -12,7 +12,7 @@
 |G-04|§4|Phase1/Phase2公共因子、paired随机性与fresh seed/draw注册|`configs/full_ablation_20260728/seed_registry.json`;`code/cvsrffi/full_ablation_spec.py`|verified|精确历史搜索；7项规范测试|历史713101–713106拒绝；screen/confirm不重合|
 |G-05|§5|完整指标、同row语义、资源口径和分层统计|待映射|pending|schema与统计测试|不得拼接不同arm极值|
 |P1-REF|§3.1|实现并重训当前划分的`P1-FULL`|待映射|pending|5-seed训练与artifact|历史ADV3B02不可替代|
-|P1-T1|§6.1|执行`P1-FULL/SUP/A0/B0/C0/D0`|`code/cvsrffi/full_ablation_spec.py`|pending|30-row矩阵计数已验证；训练待完成|A0要求参数量匹配|
+|P1-T1|§6.1|执行`P1-FULL/SUP/A0/B0/C0/D0`|`code/cvsrffi/full_ablation_spec.py`;`code/cvsrffi/phase1_ablation_factory.py`;`code/SSDG/train_ssdg.py`|partial|六arm执行器与30-row矩阵已验证；服务器训练待完成|A0参数量已严格匹配|
 |P1-A|§6.2|实现并按漏斗执行A1–A13|待映射|pending|arm diff/指标/资源|含DAC/RCN/GRL等独立开关|
 |P1-B|§6.3|实现并按漏斗执行B1–B14|待映射|pending|matched coverage等|B1必须等coverage|
 |P1-C|§6.4|实现并按漏斗执行C1–C14|待映射|pending|累加链与内部开关|C1→C2→FULL|
@@ -35,25 +35,26 @@
 |JOINT-01|§8.1|执行Phase1×Phase2最小2×2|待映射|pending|四cell同row统计|bundle必须来自对应P1模型|
 |JOINT-02|§8.2|A0/B0/C0/D0 bundle下游传递|待映射|pending|固定P2-FULL screening|不替代Phase1主消融|
 |JOINT-03|§8.3|Phase2核心消融固定fresh P1-FULL bundle|待映射|pending|bundle hash一致|不同arm不得换checkpoint|
-|T0-01|§9.1|arm单因素配置diff测试|待映射|pending|聚焦测试|发布硬门槛|
-|T0-02|§9.1|参数量匹配测试|待映射|pending|参数计数测试|发布硬门槛|
+|T0-01|§9.1|arm单因素配置diff测试|`code/cvsrffi/phase1_ablation_factory.py`|verified|六arm唯一hash、差分与真实解析器测试通过|Phase1 T1已闭合；内部T2仍待实现|
+|T0-02|§9.1|参数量匹配测试|`code/model_dual_cvsincnet.py`|verified|A0与完整模型均1,048,693参数且梯度可达|Phase1 T1已闭合；Conv-A1仍属T2|
 |T0-03|§9.1|query不可达、全类逐样本argmax、scorer分离|待映射|pending|协议负测试|发布硬门槛|
 |T0-04|§9.1|K1/K2精确fallback闭合|待映射|pending|逐logit/预测测试|发布硬门槛|
 |T0-05|§9.1|量化state无FP32 sidecar|待映射|pending|artifact审计|发布硬门槛|
 |T0-06|§9.1|同capsule/support/seed paired manifest|待映射|pending|manifest测试|发布硬门槛|
-|ART-01|§11|保存完整run/identity/data/prediction/score/resource/exit artifact|`code/cvsrffi/full_ablation_spec.py`|pending|必需字段schema负测试通过；真实artifact待验证|缺字段不得晋级|
-|RUN-01|§9/§13|统一arm factory、矩阵executor、8GPU×2调度和不可覆盖输出|`code/cvsrffi/full_ablation_spec.py`;`code/scripts/build_full_ablation_plan.py`|pending|30/75/900计数和16槽边界通过；真实executor待实现|已有任务计入上限|
+|ART-01|§11|保存完整run/identity/data/prediction/score/resource/exit artifact|`code/cvsrffi/full_ablation_spec.py`;`code/SSDG/train_ssdg.py`|partial|Phase1 split/terminal/completion收据与负测试通过；真实run artifact待验证|Phase2 prediction/score闭环仍待实现|
+|RUN-01|§9/§13|统一arm factory、矩阵executor、8GPU×2调度和不可覆盖输出|`code/cvsrffi/full_ablation_spec.py`;`code/scripts/build_full_ablation_plan.py`;`code/scripts/run_full_ablation_phase1_t1.py`|partial|Phase1 30-row/16槽真实执行器和完成收据验证通过；N607待发布|已有任务计入上限；Phase2执行器待实现|
 |STAT-01|§5.3/§10|paired CI、分层bootstrap、Holm、论文表图数据|待映射|pending|统计单测与fixture|失败row不得删除|
 |REVIEW-01|§13|独立审查达到`P0=0,P1=0`后方可发布|待映射|pending|独立审查记录|作者自测不替代审查|
 
 ## 统计
 
-- verified：1
+- verified：3
+- partial：3
 - deferred：0
 - rejected：0
 - blocked：0
-- pending：35
+- pending：33
 
 ## 最高风险待确认项
 
-`RUN-01`：当前仓库是否已有覆盖Phase1/Phase2全部T1 arm的真实row executor、完整矩阵executor和8×2不可覆盖调度器尚未证实。
+`REVIEW-01`：Phase1审查修复尚未形成新提交并复审；在`P0=0、P1=0`前没有N607发布授权。

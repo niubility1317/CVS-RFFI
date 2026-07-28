@@ -10,6 +10,7 @@ from __future__ import annotations
 from dataclasses import asdict, dataclass
 from typing import Any, Iterable, Mapping, Sequence
 
+from cvsrffi.phase1_ablation_factory import phase1_ablation_config_hash
 
 PROTOCOL_SCHEMA = "p2_min_v1"
 DESIGN_ID = "cvs_full_ablation_phase1_phase2_20260728"
@@ -54,6 +55,8 @@ REQUIRED_RUN_ARTIFACT_FIELDS = (
     "new_class_ids_hash",
     "support_physical_ids_hash",
     "query_physical_ids_hash",
+    "support_query_overlap_count",
+    "support_query_disjoint_receipt_sha256",
     "predictions_hash",
     "score_artifact_hash",
     "scorer_receipt",
@@ -119,12 +122,54 @@ class WorkerSlot:
 
 
 PHASE1_T1_ARMS = (
-    ArmSpec("P1-FULL", "phase1", "M", "reference", "current full Phase1"),
-    ArmSpec("P1-SUP", "phase1", "M", "supervision", "P1-FULL"),
-    ArmSpec("P1-A0", "phase1", "M", "dual_representation", "P1-FULL"),
-    ArmSpec("P1-B0", "phase1", "M", "pseudo_label", "P1-FULL"),
-    ArmSpec("P1-C0", "phase1", "M", "angular_tail_geometry", "P1-FULL"),
-    ArmSpec("P1-D0", "phase1", "M", "counterfactual_extrapolation", "P1-FULL"),
+    ArmSpec(
+        "P1-FULL",
+        "phase1",
+        "M",
+        "reference",
+        "current full Phase1",
+        "LOCAL_IMPLEMENTED_PENDING_REVIEW",
+    ),
+    ArmSpec(
+        "P1-SUP",
+        "phase1",
+        "M",
+        "supervision",
+        "P1-FULL",
+        "LOCAL_IMPLEMENTED_PENDING_REVIEW",
+    ),
+    ArmSpec(
+        "P1-A0",
+        "phase1",
+        "M",
+        "dual_representation",
+        "P1-FULL",
+        "LOCAL_IMPLEMENTED_PENDING_REVIEW",
+    ),
+    ArmSpec(
+        "P1-B0",
+        "phase1",
+        "M",
+        "pseudo_label",
+        "P1-FULL",
+        "LOCAL_IMPLEMENTED_PENDING_REVIEW",
+    ),
+    ArmSpec(
+        "P1-C0",
+        "phase1",
+        "M",
+        "angular_tail_geometry",
+        "P1-FULL",
+        "LOCAL_IMPLEMENTED_PENDING_REVIEW",
+    ),
+    ArmSpec(
+        "P1-D0",
+        "phase1",
+        "M",
+        "counterfactual_extrapolation",
+        "P1-FULL",
+        "LOCAL_IMPLEMENTED_PENDING_REVIEW",
+    ),
 )
 
 PHASE2_BASELINE_ARMS = (
@@ -170,6 +215,18 @@ def _unique_positive(values: Iterable[int], *, name: str) -> tuple[int, ...]:
     return result
 
 
+def _require_git_commit(value: str) -> str:
+    result = str(value).strip().lower()
+    if len(result) != 40 or any(ch not in "0123456789abcdef" for ch in result):
+        raise FullAblationSpecError("a full 40-character Git commit is required")
+    return result
+
+
+def _is_sha256(value: Any) -> bool:
+    text = str(value).strip().lower()
+    return len(text) == 64 and all(ch in "0123456789abcdef" for ch in text)
+
+
 def assign_worker_slots(row_count: int) -> tuple[WorkerSlot, ...]:
     """Assign rows round-robin to exactly sixteen persistent slot queues."""
 
@@ -192,8 +249,7 @@ def build_phase1_t1_rows(
     seeds = _unique_positive(train_seeds, name="Phase1 train seeds")
     if len(seeds) != 5:
         raise FullAblationSpecError("Phase1 T1 requires exactly five paired seeds")
-    if len(str(git_commit).strip()) < 7:
-        raise FullAblationSpecError("a concrete Git commit is required")
+    concrete_commit = _require_git_commit(git_commit)
     rows: list[dict[str, Any]] = []
     for arm in PHASE1_T1_ARMS:
         for seed in seeds:
@@ -206,7 +262,10 @@ def build_phase1_t1_rows(
                     "evidence_level": arm.evidence_level,
                     "mechanism_family": arm.mechanism_family,
                     "comparison_target": arm.comparison_target,
-                    "git_commit": str(git_commit),
+                    "git_commit": concrete_commit,
+                    "method_config_hash": phase1_ablation_config_hash(
+                        arm.ablation_id
+                    ),
                     "train_seed": seed,
                     "split_fractions": {
                         "labeled": 0.07,
@@ -270,8 +329,7 @@ def build_phase2_rows(
         raise FullAblationSpecError(
             "new-class draw seeds must be independent of row seeds"
         )
-    if len(str(git_commit).strip()) < 7:
-        raise FullAblationSpecError("a concrete Git commit is required")
+    concrete_commit = _require_git_commit(git_commit)
     slices = (
         SCREENING_SLICES
         if stage == "screening"
@@ -300,7 +358,7 @@ def build_phase2_rows(
                                 "physical_config_id": (
                                     arm.physical_config_id or arm.ablation_id
                                 ),
-                                "git_commit": str(git_commit),
+                                "git_commit": concrete_commit,
                                 "protocol_schema": PROTOCOL_SCHEMA,
                                 "receiver_id": receiver,
                                 "k_shot": int(k_shot),
@@ -358,10 +416,26 @@ def validate_artifact_record(record: Mapping[str, Any]) -> None:
         raise FullAblationSpecError("run artifact protocol schema drift")
     if record.get("phase2_data_status") != "VALIDATED_ONCE":
         raise FullAblationSpecError("run artifact lacks VALIDATED_ONCE data status")
-    if not str(record["support_physical_ids_hash"]).strip():
-        raise FullAblationSpecError("support physical ID hash is empty")
+    hash_fields = (
+        "config_hash",
+        "phase1_bundle_hash",
+        "channel_assignment_hash",
+        "old_class_ids_hash",
+        "new_class_ids_hash",
+        "support_physical_ids_hash",
+        "query_physical_ids_hash",
+        "support_query_disjoint_receipt_sha256",
+        "predictions_hash",
+        "score_artifact_hash",
+    )
+    _require_git_commit(str(record["git_commit"]))
+    for field in hash_fields:
+        if not _is_sha256(record[field]):
+            raise FullAblationSpecError(f"{field} must be a SHA256 hex digest")
     if record["support_physical_ids_hash"] == record["query_physical_ids_hash"]:
         raise FullAblationSpecError("support/query physical ID hashes must differ")
+    if int(record["support_query_overlap_count"]) != 0:
+        raise FullAblationSpecError("support/query physical IDs overlap")
 
 
 __all__ = [

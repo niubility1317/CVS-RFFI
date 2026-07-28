@@ -31,6 +31,23 @@ class Phase1AblationConfigError(ValueError):
 
 _FULL_CONFIG: dict[str, Any] = {
     # Frozen protocol and optimization schedule.
+    "dataset": "wisig",
+    "wisig_equalized": "1",
+    "wisig_domain": "rx_day",
+    "wisig_out_len": 256,
+    "wisig_train_ratio": 0.2,
+    "wisig_val_ratio": -1.0,
+    "wisig_guard_gap": 8,
+    "wisig_train_days": "0,1",
+    "wisig_test_days": "2,3",
+    "wisig_train_rxs": "0,1,2,3,4,5,6",
+    "wisig_test_rxs": "7,8,9,10,11",
+    "wisig_split_strategy": "random",
+    "wisig_cap_strategy": "random",
+    "wisig_max_day123_per_combo": 0,
+    "wisig_max_train_per_combo": 0,
+    "wisig_max_val_per_combo": 0,
+    "wisig_max_test_per_combo": 0,
     "split_mode": "tx_rx_day_1_7_2",
     "labeled_ratio": 0.07,
     "unlabeled_ratio": 0.63,
@@ -39,7 +56,14 @@ _FULL_CONFIG: dict[str, Any] = {
     "label_epochs": 130,
     "pseudo_epochs": 70,
     "from_scratch": True,
-    "checkpoint_selection": "final_only",
+    "lr": 0.0002,
+    "weight_decay": 0.0001,
+    "batch_size": 128,
+    "eval_batch_size": 256,
+    "num_workers": 4,
+    "prefetch_factor": 2,
+    "eval_max_batches": 0,
+    "checkpoint_selection": "source_validation_only",
     "phase1_source_val_selection_only": True,
     "best_metric": "source_val_sat_hmean",
     # Physical dual-representation backbone.
@@ -144,6 +168,36 @@ _FULL_CONFIG: dict[str, Any] = {
     "test_eval_final_window": 20,
     "test_eval_final_interval": 2,
 }
+
+_RESOLVED_HASH_EXCLUDED_FIELDS = frozenset(
+    {
+        "ablation_config_hash",
+        "ablation_enabled_objectives",
+        "ablation_id",
+        "ablation_method_config_hash",
+        "ablation_schema",
+        "baseline_ckpt",
+        "candidate_id",
+        "device",
+        "dry_run",
+        "expected_config_hash",
+        "formal_ablation",
+        "git_commit",
+        "metrics_csv",
+        "metrics_jsonl",
+        "output_dir",
+        "phase2_export_checkpoint",
+        "phase2_export_path",
+        "run_id",
+        "row_key",
+        "safe_best_path",
+        "safe_latest_path",
+        "sealed_plan_sha256",
+        "seed",
+        "seed_registry_sha256",
+        "wisig_pkl",
+    }
+)
 
 
 _ARM_OVERRIDES: dict[str, dict[str, Any]] = {
@@ -266,6 +320,26 @@ def enabled_objectives(ablation_id: str) -> tuple[str, ...]:
     return tuple(objectives)
 
 
+def resolved_phase1_ablation_config(args: Namespace) -> dict[str, Any]:
+    return {
+        key: deepcopy(value)
+        for key, value in sorted(vars(args).items())
+        if key not in _RESOLVED_HASH_EXCLUDED_FIELDS
+    }
+
+
+def resolved_phase1_ablation_config_hash(args: Namespace) -> str:
+    payload = resolved_phase1_ablation_config(args)
+    encoded = json.dumps(
+        payload,
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+        default=str,
+    ).encode("utf-8")
+    return hashlib.sha256(encoded).hexdigest()
+
+
 def apply_phase1_ablation(args: Namespace) -> dict[str, Any]:
     arm_id = str(getattr(args, "ablation_id", "")).strip().upper()
     config = phase1_ablation_config(arm_id)
@@ -280,18 +354,29 @@ def apply_phase1_ablation(args: Namespace) -> dict[str, Any]:
                 f"training parser lacks frozen Phase1 field: {key}"
             )
         setattr(args, key, deepcopy(value))
-    config_hash = phase1_ablation_config_hash(arm_id, config=config)
+    method_config_hash = phase1_ablation_config_hash(arm_id, config=config)
+    config_hash = resolved_phase1_ablation_config_hash(args)
     args.ablation_id = arm_id
     args.ablation_schema = PHASE1_ABLATION_SCHEMA
+    args.ablation_method_config_hash = method_config_hash
     args.ablation_config_hash = config_hash
     args.ablation_enabled_objectives = list(enabled_objectives(arm_id))
+    expected_config_hash = str(
+        getattr(args, "expected_config_hash", "")
+    ).strip().lower()
+    if expected_config_hash and expected_config_hash != config_hash:
+        raise Phase1AblationConfigError(
+            "resolved Phase1 config hash differs from sealed plan"
+        )
     return {
         "schema": PHASE1_ABLATION_SCHEMA,
         "ablation_id": arm_id,
         "git_commit": git_commit,
         "config_hash": config_hash,
+        "method_config_hash": method_config_hash,
         "enabled_objectives": list(enabled_objectives(arm_id)),
         "config": config,
+        "resolved_config": resolved_phase1_ablation_config(args),
         "diff_from_p1_full": {
             key: {"p1_full": before, "arm": after}
             for key, (before, after) in phase1_ablation_diff(arm_id).items()
@@ -308,4 +393,6 @@ __all__ = [
     "phase1_ablation_config",
     "phase1_ablation_config_hash",
     "phase1_ablation_diff",
+    "resolved_phase1_ablation_config",
+    "resolved_phase1_ablation_config_hash",
 ]

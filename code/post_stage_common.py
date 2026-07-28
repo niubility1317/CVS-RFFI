@@ -14,6 +14,7 @@ import torch.nn as nn
 from dataset import WiFiRFFIDataset
 from dataset_wisig import load_wisig_compact_pkl, make_wisig_trainval_test_by_day_rx
 from model_dual_cvsincnet import build_dual_model
+from baseline_origin_sat_view import SatViewStage
 from cvsrffi.eval import evaluate_loader, evaluate_named_loaders, make_loader
 from cvsrffi.tensors import (
     build_domain_label_map,
@@ -266,7 +267,13 @@ def build_standard_data(args, device: torch.device):
 
 
 def load_checkpoint(path: str, device: torch.device) -> Dict[str, Any]:
-    ckpt = torch.load(path, map_location=device)
+    try:
+        with torch.serialization.safe_globals([SatViewStage]):
+            ckpt = torch.load(path, map_location=device, weights_only=True)
+    except AttributeError:
+        ckpt = torch.load(path, map_location=device)
+    except TypeError:
+        ckpt = torch.load(path, map_location=device)
     if isinstance(ckpt, Mapping) and "model" in ckpt:
         return dict(ckpt)
     if isinstance(ckpt, Mapping):

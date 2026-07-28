@@ -21,7 +21,7 @@
 
 - [x]0.读取控制面、设计、历史索引、Git状态并完成实现就绪审计。
 - [x]1.冻结首批T1范围、fresh seed/draw注册表、paired manifest和8×2调度矩阵。
-- [ ]2.补齐并验证Phase1统一arm factory、参数匹配、内部开关和指标/资源artifact。
+- [x]2.补齐并验证Phase1统一arm factory、参数匹配、来源验证选模、行级收据和8×2执行器。
 - [ ]3.补齐并验证Phase2 arm factory、fallback闭合、same-row scorer、连续状态和资源路径。
 - [ ]4.在`ssr-gpu`串行执行聚焦测试、协议负测试、真实checkpoint无query smoke和完整矩阵dry-run。
 - [ ]5.完成独立审查`P0=0,P1=0`、Git提交和N607报告预登记。
@@ -51,6 +51,12 @@
 |2026-07-28|首次聚焦pytest导入`code.cvsrffi`失败|改用`cvsrffi`并显式把仓库`code`目录加入`PYTHONPATH`，7项通过|
 |2026-07-28|fresh seed历史精确搜索第一次覆盖面过宽而超时|缩小到Git跟踪面、自动化报告控制文件和项目对话索引，三处均无精确值命中|
 |2026-07-28|A0首次参数匹配多出48个参数|定位为`lite_d`双分支共享Sinc/HF stem被重复计数；改为只补偿相对完整模型真正移除的唯一参数|
+|2026-07-28|真实历史checkpoint在PyTorch 2.6下因`weights_only`默认值变化而拒绝加载|确认唯一缺失安全全局为`SatViewStage`；公共加载器改为显式安全白名单，不回退到不受限反序列化|
+|2026-07-28|第一次真实checkpoint smoke手工指定`num_domains=8`导致head尺寸不匹配|从封存checkpoint的domain head推导真实14域后重建；0 missing、0 unexpected且前向有限|
+|2026-07-28|独立审查首轮返回2项P0、5项P1|补齐完整解析配置哈希、arm-aware终局门、来源验证选模、真实checkout/文件SHA校验、数据划分与完成收据；等待新提交复审|
+|2026-07-28|非初始化PowerShell再次直接`conda activate`失败|显式加载`conda shell.powershell hook`后进入`ssr-gpu`，不计为项目测试失败|
+|2026-07-28|聚焦测试命令包含不存在的`tests/test_post_stage_common.py`|核对实际测试文件后移除错误路径并重跑；项目代码未执行|
+|2026-07-28|新增总时长统计后触发`time`局部绑定错误|定位训练循环内遗留局部`import time`并提升为模块级导入；44项测试重跑通过|
 
 ## 重大决策
 
@@ -61,3 +67,5 @@
 |历史D92结果只作回归/诊断线索|不是本次fresh confirmation，且既有正式结论为未晋级|
 |先以T1主消融形成首批发布|设计规定T2仅在T1整体作用稳定后执行，避免事后扫参挽救主张|
 |`P2-F3`与`P2-FULL`逻辑保留、物理去重|二者设计状态完全相同；重复执行不能增加因果证据，只会制造伪独立样本|
+|Phase1正式checkpoint使用source validation选择|设计明确target receiver只作冻结后评估；每个epoch候选只由`clean_val_tx/source_val_sat_hmean`决定|
+|Phase1训练收据与W2部署bundle分离|W1收据不可变地绑定训练、split、checkpoint和prototype；W2另建封存收据，不把source-only prototype误称最终部署bundle|

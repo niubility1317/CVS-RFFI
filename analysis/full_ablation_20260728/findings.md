@@ -54,3 +54,13 @@
 - 新增`configs/full_ablation_20260728/seed_registry.json`。候选seed已对1188条项目对话索引、Git跟踪面和自动化报告控制文件做精确值搜索，未见历史使用；旧`713101–713106`显式拒绝。
 - 新增非启动型计划构建器`code/scripts/build_full_ablation_plan.py`。验证得到Phase1 30个物理row、Phase2 T1 screening 1425个逻辑row/1350个唯一物理row、单arm confirmation 900个row；所有计划保持`formal_launch_authority=false`。
 - 首组规范测试在`ssr-gpu`下7项通过；这只证明身份、计数、seed和调度边界，不等于真实executor就绪。
+
+## Phase1 T1实现与首轮独立审查
+
+- 首批实现提交为`0b98b2131744b68a1aad02122d357fca4e24b10b`。独立审查确认`P1-A0`严格参数匹配成立：完整双表征与单表征均为1,048,693参数；单表征仅309个补偿参数，占被移除唯一参数的0.046%，无独立domain分支且梯度可达。
+- 首轮审查同时判定`P0=2、P1=5`，因此该提交未获得发布权。阻塞包括完整运行配置未纳入哈希、旧终局门错误要求被消融机制仍启用、source-validation计划与final-only训练不一致、计划未绑定checkout/文件SHA、artifact validator偏schema占位及8×2仅静态。
+- 修复后，arm factory覆盖数据集、source/target receiver/day、划分、优化器和资源参数，并对所有未排除解析器字段计算resolved config hash；运行器核对真实checkout和发布文件SHA。
+- 正式训练只保存`best_source_validation_ssdg.pth`作为选择点；target receiver/day/LEO结果仅在选择冻结后一次性评估，不参与选择。
+- 训练入口写出source split receipt，绑定labeled/unlabeled/source-validation索引哈希、source/target receiver集合和零交集；完成收据进一步绑定row、Git、封存计划、seed registry、方法/解析配置、checkpoint、terminal和prototype哈希。
+- 16槽运行器在启动前读取真实GPU compute PID，把外部进程与本run进程共同计入每卡2进程上限；行输出不可覆盖，完成后必须通过收据校验。两个不同row出现同一规范化技术异常会停止继续派发，并只终止已证明归属本run的进程组。
+- 修复后的聚焦套件在`ssr-gpu`下44项通过，静态编译通过，非启动矩阵演练闭合为30 rows/16 slots。新提交仍须独立复审达到`P0=0、P1=0`，否则不得连接N607执行写操作。
