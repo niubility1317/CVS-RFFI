@@ -18,6 +18,11 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 SOURCE_DIR = REPO_ROOT / "docs" / "weekly_reports"
 REPORTS = (
     (
+        SOURCE_DIR / "CVS_RFFI_Phase2阶段工作详细报告_20260724.md",
+        "CVS-RFFI_Phase2阶段工作详细报告_截至20260724.docx",
+        "Phase2阶段综合报告",
+    ),
+    (
         SOURCE_DIR / "学习进展情况_20260716_详细扩展版.md",
         "学习进展情况+7.16_详细扩展版.docx",
         "跨接收机域适应",
@@ -109,6 +114,12 @@ def set_repeat_table_header(row) -> None:
     tbl_header = OxmlElement("w:tblHeader")
     tbl_header.set(qn("w:val"), "true")
     tr_pr.append(tbl_header)
+
+
+def set_row_cant_split(row) -> None:
+    tr_pr = row._tr.get_or_add_trPr()
+    if tr_pr.find(qn("w:cantSplit")) is None:
+        tr_pr.append(OxmlElement("w:cantSplit"))
 
 
 def set_table_borders(table, color: str = "C7CDD4", size: str = "6") -> None:
@@ -449,6 +460,8 @@ def add_table(doc: Document, rows: Sequence[Sequence[str]]) -> None:
                 set_cell_fill(cell, "FAFBFC")
 
     set_repeat_table_header(table.rows[0])
+    for row in table.rows:
+        set_row_cant_split(row)
     set_table_geometry(table, widths)
     set_table_borders(table)
     after = doc.add_paragraph()
@@ -653,8 +666,11 @@ def markdown_to_docx(source: Path, destination: Path, topic: str) -> None:
 
         if stripped.startswith("### "):
             flush_paragraph()
+            heading = stripped[4:].strip()
+            if heading == "3.6本报告涉及的数据与实验矩阵":
+                doc.add_page_break()
             p = doc.add_paragraph(style="Heading 2")
-            add_rich_text(p, stripped[4:].strip())
+            add_rich_text(p, heading)
             i += 1
             continue
 
