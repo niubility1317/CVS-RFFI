@@ -60,7 +60,7 @@
 |A0参数量|与完整双表征模型精确相等；8域测试fixture均为1,061,334，真实14域均为1,062,306；正式值以row resource summary为准|
 |训练CLI dry-run|六个arm均解析成功；200轮和`0.07/0.63/0.30`被工厂强制覆盖|
 |矩阵dry-run|30 rows、16 slots|
-|静态编译|6个正式执行/规范文件通过|
+|静态编译|8个正式发布文件通过|
 |真实checkpoint no-query smoke|历史封存checkpoint安全加载；0 missing、0 unexpected；输出`[2,6]`、`z_id=[2,160]`且有限|
 |已知非本改动失败|`tests/test_adv3b02_supervised_da_runner.py`有2项历史runtime contract字段漂移；未纳入本次通过计数，未修改|
 

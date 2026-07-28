@@ -48,12 +48,12 @@
 
 ## 统计
 
-- verified：3
+- verified：4
 - partial：3
 - deferred：0
 - rejected：0
 - blocked：0
-- pending：33
+- pending：32
 
 ## 最高风险待确认项
 
