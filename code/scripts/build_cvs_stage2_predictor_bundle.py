@@ -12,7 +12,7 @@ import secrets
 import shutil
 import sys
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any, Iterable, Mapping
 
 import numpy as np
 
@@ -28,6 +28,9 @@ for value in (str(REPO_ROOT), str(CODE_ROOT)):
 from cvsrffi.leo_weak_cache import (  # noqa: E402
     FORMAL_LEO_WEAK_SCENARIOS,
     load_verified_leo_weak_cache_set,
+)
+from cvsrffi.phase1_adv3b02_deployment_bundle import (  # noqa: E402
+    load_formal_adv3b02_deployment_bundle,
 )
 from cvsrffi.phase2_runtime_contract import PHASE2_FULL_CONTRACT  # noqa: E402
 from cvsrffi.stage2_predictor_bundle import (  # noqa: E402
@@ -52,6 +55,53 @@ from cvsrffi.stage2_scoring_sidecar import (  # noqa: E402
 
 TRUTH_SIDECAR_SCHEMA = "cvs.phase2.query_truth_sidecar.v2"
 OFFLINE_AUDIT_SCHEMA = "cvs.phase2.predictor_package_offline_build_audit.v2"
+FORMAL_DEPLOYMENT_BINDING_SCHEMA = (
+    "cvs.full_ablation.phase1.deployment_binding.v1"
+)
+FORMAL_CLASS_LABEL_BINDING_SCHEMA = (
+    "cvs.full_ablation.phase1.class_label_binding.v1"
+)
+_FORMAL_DEPLOYMENT_BINDING_KEYS = {
+    "schema",
+    "package_root",
+    "detached_seal_path",
+    "detached_seal_sha256",
+    "signature_envelope_path",
+    "signature_envelope_sha256",
+    "checkpoint_lineage_sha256",
+    "runtime_sha256",
+    "component_pre_sign_content_root_sha256",
+    "class_handle_binding_sha256",
+    "parity_receipt_sha256",
+    "generation_lock_sha256",
+    "method_lock_sha256",
+    "generation_config_sha256",
+    "generation_code_sha256",
+    "outer_content_root_sha256",
+    "phase1_completion_receipt_path",
+    "phase1_completion_receipt_sha256",
+    "generation_config_path",
+    "prototype_pt_path",
+    "prototype_pt_sha256",
+    "prototype_json_path",
+    "prototype_json_sha256",
+}
+_FORMAL_CLASS_LABEL_BINDING_KEYS = {
+    "schema",
+    "checkpoint_lineage_sha256",
+    "class_handle_binding_sha256",
+    "formal_deployment_binding_sha256",
+    "source_mapping_sha256",
+    "source_checkpoint_sha256",
+    "source_mapping_reused",
+    "cross_launch_data_identity_required",
+    "entries",
+}
+_FORMAL_CLASS_LABEL_ENTRY_KEYS = {
+    "class_index",
+    "phase1_tx",
+    "registered_class_handle",
+}
 
 
 def _write_json_new(path: Path, payload: Any) -> None:
@@ -371,6 +421,245 @@ def _reject_predictor_truth_leaks(root: Path, forbidden_values: Iterable[str]) -
                 )
 
 
+def _load_json_object(path: Path, *, context: str) -> dict[str, Any]:
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8-sig"))
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise ValueError(f"{context} is unreadable") from exc
+    if not isinstance(payload, dict):
+        raise ValueError(f"{context} must be a JSON object")
+    return payload
+
+
+def _is_sha256(value: Any) -> bool:
+    return (
+        isinstance(value, str)
+        and len(value) == 64
+        and all(character in "0123456789abcdef" for character in value)
+    )
+
+
+def _formal_phase1_class_handles(
+    args: argparse.Namespace,
+    *,
+    old_labels: list[str],
+) -> tuple[list[str] | None, dict[str, Any]]:
+    binding_value = getattr(args, "phase1_deployment_binding", None)
+    label_binding_value = getattr(
+        args, "phase1_class_label_binding", None
+    )
+    if not binding_value and not label_binding_value:
+        return None, {
+            "formal_phase1_class_binding_used": False,
+            "formal_phase1_class_handle_binding_sha256": "",
+            "phase1_class_label_binding_source_sha256": "",
+        }
+    if not binding_value or not label_binding_value:
+        raise ValueError(
+            "formal Phase1 deployment and class-label bindings "
+            "must be provided together"
+        )
+
+    binding_path = Path(binding_value).resolve()
+    label_binding_path = Path(label_binding_value).resolve()
+    binding = _load_json_object(
+        binding_path,
+        context="formal Phase1 deployment binding",
+    )
+    if (
+        set(binding) != _FORMAL_DEPLOYMENT_BINDING_KEYS
+        or binding.get("schema") != FORMAL_DEPLOYMENT_BINDING_SCHEMA
+    ):
+        raise ValueError("formal Phase1 deployment binding schema drift")
+
+    verified = load_formal_adv3b02_deployment_bundle(
+        binding["package_root"],
+        detached_seal_path=binding["detached_seal_path"],
+        expected_detached_seal_sha256=(
+            binding["detached_seal_sha256"]
+        ),
+        signature_envelope_path=binding["signature_envelope_path"],
+        expected_signature_envelope_sha256=(
+            binding["signature_envelope_sha256"]
+        ),
+        expected_checkpoint_lineage_sha256=(
+            binding["checkpoint_lineage_sha256"]
+        ),
+        expected_runtime_sha256=binding["runtime_sha256"],
+        expected_component_pre_sign_content_root_sha256=(
+            binding["component_pre_sign_content_root_sha256"]
+        ),
+        expected_class_handle_binding_sha256=(
+            binding["class_handle_binding_sha256"]
+        ),
+        expected_parity_receipt_sha256=(
+            binding["parity_receipt_sha256"]
+        ),
+        expected_generation_lock_sha256=(
+            binding["generation_lock_sha256"]
+        ),
+        expected_method_lock_sha256=binding["method_lock_sha256"],
+        expected_generation_config_sha256=(
+            binding["generation_config_sha256"]
+        ),
+        expected_generation_code_sha256=(
+            binding["generation_code_sha256"]
+        ),
+        expected_outer_content_root_sha256=(
+            binding["outer_content_root_sha256"]
+        ),
+    )
+    if (
+        verified.formal_phase2_context.get("formal_phase2_eligible")
+        is not True
+        or verified.formal_phase2_context.get(
+            "outer_signature_verified"
+        )
+        is not True
+    ):
+        raise ValueError("formal Phase1 deployment lacks authority")
+
+    package_root = Path(binding["package_root"]).resolve()
+    expected_paths = {
+        "candidate_lock": package_root / "locks" / "method_lock.json",
+        "checkpoint": (
+            package_root
+            / "runtime"
+            / "adv3b02_runtime.torchscript.pt"
+        ),
+        "adapter": (
+            package_root
+            / "component"
+            / "int8_domain_class_center_lowrank_residual_radius_v2.npz"
+        ),
+        "head_artifact": Path(binding["prototype_pt_path"]).resolve(),
+        "tta_policy_json": Path(
+            binding["generation_config_path"]
+        ).resolve(),
+    }
+    for field, expected in expected_paths.items():
+        if Path(getattr(args, field)).resolve() != expected.resolve():
+            raise ValueError(
+                f"formal Phase1 artifact path drift for {field}"
+            )
+    expected_hashes = {
+        "candidate_lock": binding["method_lock_sha256"],
+        "checkpoint": binding["runtime_sha256"],
+        "head_artifact": binding["prototype_pt_sha256"],
+        "tta_policy_json": binding["generation_config_sha256"],
+    }
+    for field, expected_sha256 in expected_hashes.items():
+        if sha256_file(Path(getattr(args, field))) != expected_sha256:
+            raise ValueError(
+                f"formal Phase1 artifact digest drift for {field}"
+            )
+
+    rows = verified.class_binding.get("class_id_to_handle")
+    if not isinstance(rows, list) or len(rows) != len(old_labels):
+        raise ValueError("formal Phase1 class-handle count drift")
+    formal_handles: list[str] = []
+    for index, row in enumerate(rows):
+        if (
+            not isinstance(row, Mapping)
+            or set(row) != {"class_index", "class_handle"}
+            or row.get("class_index") != index
+            or not isinstance(row.get("class_handle"), str)
+        ):
+            raise ValueError("formal Phase1 class-handle order drift")
+        formal_handles.append(str(row["class_handle"]))
+
+    label_binding = _load_json_object(
+        label_binding_path,
+        context="current Phase1 class-label binding",
+    )
+    if (
+        label_binding.get("schema")
+        != FORMAL_CLASS_LABEL_BINDING_SCHEMA
+        or set(label_binding)
+        != _FORMAL_CLASS_LABEL_BINDING_KEYS
+        or not isinstance(label_binding.get("entries"), list)
+    ):
+        raise ValueError("current Phase1 class-label binding schema drift")
+    for key in (
+        "checkpoint_lineage_sha256",
+        "class_handle_binding_sha256",
+        "formal_deployment_binding_sha256",
+        "source_mapping_sha256",
+        "source_checkpoint_sha256",
+    ):
+        if not _is_sha256(label_binding.get(key)):
+            raise ValueError(
+                f"current Phase1 class-label binding invalid {key}"
+            )
+    if (
+        label_binding["source_mapping_reused"] is not True
+        or label_binding["cross_launch_data_identity_required"] is not False
+    ):
+        raise ValueError(
+            "current Phase1 class-label binding reuse semantics drift"
+        )
+    if (
+        label_binding["checkpoint_lineage_sha256"]
+        != binding["checkpoint_lineage_sha256"]
+    ):
+        raise ValueError(
+            "current Phase1 class-label binding checkpoint lineage drift"
+        )
+    if (
+        label_binding["class_handle_binding_sha256"]
+        != binding["class_handle_binding_sha256"]
+    ):
+        raise ValueError(
+            "current Phase1 class-label binding semantic handle drift"
+        )
+    if (
+        label_binding["formal_deployment_binding_sha256"]
+        != sha256_file(binding_path)
+    ):
+        raise ValueError(
+            "current Phase1 class-label binding deployment digest drift"
+        )
+    expected_rows = [
+        {
+            "class_index": index,
+            "phase1_tx": label,
+            "registered_class_handle": formal_handles[index],
+        }
+        for index, label in enumerate(old_labels)
+    ]
+    actual_rows = []
+    for row in label_binding["entries"]:
+        if (
+            not isinstance(row, Mapping)
+            or set(row) != _FORMAL_CLASS_LABEL_ENTRY_KEYS
+        ):
+            raise ValueError(
+                "current Phase1 class-label binding row schema drift"
+            )
+        actual_rows.append(
+            {
+                "class_index": row.get("class_index"),
+                "phase1_tx": row.get("phase1_tx"),
+                "registered_class_handle": row.get(
+                    "registered_class_handle"
+                ),
+            }
+        )
+    if actual_rows != expected_rows:
+        raise ValueError(
+            "current Phase1 class-label binding does not match old-label order"
+        )
+    return formal_handles, {
+        "formal_phase1_class_binding_used": True,
+        "formal_phase1_class_handle_binding_sha256": binding[
+            "class_handle_binding_sha256"
+        ],
+        "phase1_class_label_binding_source_sha256": sha256_file(
+            label_binding_path
+        ),
+    }
+
+
 def _validate_roots(predictor_root: Path, scorer_root: Path, seal_path: Path) -> None:
     predictor_root = predictor_root.resolve()
     scorer_root = scorer_root.resolve()
@@ -459,6 +748,12 @@ def build(args: argparse.Namespace, *, token_secret: bytes | None = None) -> dic
         raise ValueError(
             "Stage2-B must use new_class_draw_seed=0 and no new-class pool"
         )
+    formal_old_handles, formal_class_audit = (
+        _formal_phase1_class_handles(
+            args,
+            old_labels=old_labels,
+        )
+    )
 
     allowed_roles = {"target_old"}
     if stage == "stage2c" or reference_new_labels:
@@ -747,15 +1042,23 @@ def build(args: argparse.Namespace, *, token_secret: bytes | None = None) -> dic
             ]
         )
 
-    class_registry = [
-        {
-            "class_index": index,
-            "class_handle": _opaque_token(
-                token_secret, "cls", "cvs-stage2-class-v2", label
-            ),
-        }
-        for index, (_role, label) in enumerate(support_labels)
-    ]
+    class_registry = []
+    for index, (role, label) in enumerate(support_labels):
+        if role == "target_old" and formal_old_handles is not None:
+            handle = formal_old_handles[index]
+        else:
+            handle = _opaque_token(
+                token_secret,
+                "cls",
+                "cvs-stage2-class-v2",
+                label,
+            )
+        class_registry.append(
+            {
+                "class_index": index,
+                "class_handle": handle,
+            }
+        )
     candidate_lock_sha256 = sha256_file(Path(args.candidate_lock))
     metadata = {
         "schema": PREDICTOR_PACKAGE_MANIFEST_SCHEMA,
@@ -852,6 +1155,7 @@ def build(args: argparse.Namespace, *, token_secret: bytes | None = None) -> dic
             "cross_scenario_selected_physical_disjointness": "PASS",
             "cross_scenario_opaque_token_disjointness": "PASS",
             "registered_class_rank_structure_consistent": "PASS",
+            **formal_class_audit,
         },
     )
 
@@ -914,6 +1218,8 @@ def main() -> int:
     parser.add_argument("--adapter", type=Path, required=True)
     parser.add_argument("--head-artifact", type=Path, required=True)
     parser.add_argument("--tta-policy-json", type=Path, required=True)
+    parser.add_argument("--phase1-deployment-binding", type=Path)
+    parser.add_argument("--phase1-class-label-binding", type=Path)
     args = parser.parse_args()
     print(json.dumps(build(args), ensure_ascii=False, sort_keys=True))
     return 0

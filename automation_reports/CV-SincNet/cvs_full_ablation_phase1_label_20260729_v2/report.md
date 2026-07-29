@@ -197,3 +197,20 @@ P0协议/覆盖风险立即停止本run的后续派发；至少两个不同执�
 
 |rho|seed|labeled数|unlabeled数|source validation数|best epoch|strict UDU|receiver floor|pseudo precision|pseudo coverage|P1-SUP同seed增益|checkpoint|状态|
 |---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|---|
+
+### 2026-07-30 00:42只读健康快照
+
+|字段|值|
+|---|---|
+|preflight/服务器时间|直连preflight于00:41:46+08:00通过；快照时间00:42:32+08:00|
+|dispatch计数|launched=12、completed=9、succeeded=9、failed=0、nonzero=0、active=3、waiting=2|
+|新增完整行|`RHO005` seed7281102；`RHO010` seed7281101/02；`RHO020` seed7281103；`RHO050` seed7281103|
+|活跃行|`RHO020` seed7281102、`RHO050` seed7281101/02；E49–E154仅作非停滞证据|
+|最新artifact闭合|`P1-LABEL-RHO050__train_seed_7281103`的checkpoint、prototype PT/JSON、resource、heldout、terminal和receipt七类文件均非空且可解析/加载；terminal/receipt/heldout均COMPLETE+exit0，路径、SHA和P0机制一致，1/1通过|
+|最新artifact大小|checkpoint=15,263,436B、PT=418,263B、JSON=2,060,246B、resource=540B、heldout=8,185B、terminal=27,453B、receipt=5,434B|
+|日志/异常|log_bytes=12,526,784；summary尚不存在；硬错误、异常指纹和P0均为0|
+|合并GPU训练数|T1=`2/1/0/0/0/0/0/0`，label v2=`0/1/0/1/1/0/0/0`，合计=`2/2/0/1/1/0/0/0`，均不超过2|
+|操作边界|未读取性能，未启动、终止、修改或重试任务，未重审数据或要求跨批次一致|
+|SSH清理|本地`ssh.exe=0`，ESTABLISHED TCP22=0|
+
+状态为`RUNNING / 9_OF_12_ARTIFACTS_COMPLETE / NO_PERFORMANCE_RESULT`。

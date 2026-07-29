@@ -1,0 +1,42 @@
+{
+  "schema": "cvs.full_ablation.phase1.class_label_binding.v1",
+  "checkpoint_lineage_sha256": "1eb6d07b9d6339400892c5553f33261f40513922d4b08c907446e44e993307d7",
+  "class_handle_binding_sha256": "a90931dd0266cbd42b1163a61d015d5bfe955d2ab287733d8674b9da92d722d0",
+  "formal_deployment_binding_sha256": "1deec70778965f41010fe155335a30db3ec172cb3788c7074ffbadfe6236dee7",
+  "source_mapping_sha256": "4f701ac96a03761859810286a43f8576b0e642191be0fc0beb96d2c90785b5b7",
+  "source_checkpoint_sha256": "2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98",
+  "source_mapping_reused": true,
+  "cross_launch_data_identity_required": false,
+  "entries": [
+    {
+      "class_index": 0,
+      "phase1_tx": "14-10",
+      "registered_class_handle": "cls_75aa6d506081240f50cf3b79a0bd91714fa0084a635a472ca63194e57ec1dca2"
+    },
+    {
+      "class_index": 1,
+      "phase1_tx": "14-7",
+      "registered_class_handle": "cls_8b02d99905a8fe579368ac8e37eff51c505aaa89a646eba8892d5d800aa08416"
+    },
+    {
+      "class_index": 2,
+      "phase1_tx": "20-15",
+      "registered_class_handle": "cls_1f33441efa14970113b27483344b7df852a9041984b38d34ce570fafbab6689c"
+    },
+    {
+      "class_index": 3,
+      "phase1_tx": "20-19",
+      "registered_class_handle": "cls_f8dfc2edcccc5344f8e2535a959f13b53a1cddfd6fb22aed6e714de382b58d24"
+    },
+    {
+      "class_index": 4,
+      "phase1_tx": "6-15",
+      "registered_class_handle": "cls_a53ca1280d8fca58e3f4d6d1e9ddabfdab6027a941ee8c3f8c01d9d8ec945725"
+    },
+    {
+      "class_index": 5,
+      "phase1_tx": "8-20",
+      "registered_class_handle": "cls_33bbd16556c6e6305d1b7162f5ea71393afba910a922f9abca5999d5921a2d9d"
+    }
+  ]
+}

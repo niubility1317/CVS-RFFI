@@ -441,3 +441,19 @@ GPU2的第二个静态槽用于B0补导出，完成后该槽无后续行，因�
 - 复用行和新训练行不是同一发布批次，最终统计必须保留来源列。
 - B0补导出必须使用当前修复后的endpoint exporter，原v3失败terminal不能当作完整训练receipt；使用独立reexport receipt闭合。
 - 完成后检查30行同一行指标、最佳epoch/checkpoint、held-out指标、prototype、资源、异常指纹和GPU释放，再推进设计报告下一批实验。
+
+### 2026-07-30 00:42只读健康快照
+
+|字段|值|
+|---|---|
+|preflight/服务器时间|直连preflight于00:41:46+08:00通过；快照时间00:42:32+08:00|
+|dispatch计数|launched=19、completed=16、succeeded=16、failed=0、nonzero=0、active=3、waiting=1|
+|活跃行|`P1-D0`种子7281102、7281103、7281104；最新E130–E132仅作非停滞证据|
+|进程绑定|runner PID`711523`、PPID`711522`及3个直接子进程的CWD/cmdline/row/run绑定通过|
+|日志/异常|log_bytes=19,594,138；summary尚不存在；硬错误、异常指纹和P0均为0|
+|合并GPU训练数|T1=`2/1/0/0/0/0/0/0`，label v2=`0/1/0/1/1/0/0/0`，合计=`2/2/0/1/1/0/0/0`，均不超过2|
+|GPU利用率/显存|利用率=`90/91/0/23/24/0/0/0%`；显存=`6111/6325/4/3140/3240/4/4/4MiB`|
+|操作边界|未读取性能，未启动、终止、修改或重试任务，未重审数据或要求跨批次一致|
+|SSH清理|本地`ssh.exe=0`，ESTABLISHED TCP22=0|
+
+状态保持`RUNNING / HEALTHY / NO_PERFORMANCE_RESULT`。

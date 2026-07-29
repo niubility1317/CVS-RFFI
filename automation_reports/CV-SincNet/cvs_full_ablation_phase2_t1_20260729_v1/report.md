@@ -379,3 +379,46 @@ deployment实现提交更新为`6fd77c22e1edb5eb710fb1f152e25214fb27e437`后，�
 - 启动前必须闭合当前实际采用的feature cache、predictor package、严格truth-sidecar、binding registry和sealed plan；run/log root必须启动前不存在，所有输出不可覆盖。
 - 健康停止仅限P0协议/安全问题、输出覆盖风险、checkout/binding错误，或至少两个不同row在产生prediction前出现相同确定性异常指纹；不得因准确率或其他性能值停止。
 - 首行及首个worker wave后必须报告launched/completed/succeeded/failed、prediction/score数、活动PID、GPU进程占用和归一化异常指纹；runner不读取性能值。
+
+## 2026-07-30 predictor→feature旧类handle启动前拦截
+
+current-launch覆盖率盘点确认states源计划325个logical row对应125个唯一input identity；D18母缓存30/30 cell可直接复用，但当前deployment/candidate-lock/seed链下没有可直接复用的完整feature+package+scoring identity，因此需要从既有IQ cache补建125个identity，不需要重建或重审IQ数据。
+
+在任何正式request/run/log目录创建前发现确定性P0断口：旧predictor builder用每次随机secret生成旧6类handle，而full-ablation feature builder强制before/after旧类handle与formal Phase1 deployment的固定6类handle逐项同序，因此旧`6fd77c22`链会在首个feature cache稳定fail-closed。states和Stage2-C均未启动，正式run/request/log路径仍不存在；旧预登记run ID与两份`6fd77c22`源计划撤销启动权限，只保留设计证据。
+
+本地修复：
+
+- predictor builder新增成对的`--phase1-deployment-binding`与`--phase1-class-label-binding`输入；只提供其中一个立即拒绝。
+- 正式模式完整验证外部签名Phase1 bundle，要求`formal_phase2_eligible=true`、outer signature通过，并把candidate lock、runtime、component、prototype和generation config限制为binding锁定路径。
+- candidate lock、runtime、prototype和generation config SHA必须分别与formal binding一致；class-label source的TX顺序和handle必须与正式class binding逐项一致。
+- Stage2-B与Stage2-C封包的旧6类handle直接复用formal handles；仅新增类继续生成当前package内opaque handle。predictor manifest既有`candidate_lock_sha256`绑定signed method lock，而method lock绑定`class_handle_binding_sha256`；scorer audit另记录formal class binding与class-label source SHA。
+- 新增before/after正式handle→feature builder registered-handle跨链正测、class-label顺序漂移负测和formal双参数原子性负测。单文件16项通过；predictor、feature、registry三文件定向回归24项通过。
+
+当前状态：`P0_FIX_LOCAL_VERIFIED / INDEPENDENT_REVIEW_PENDING / NO_STAGE2_RUN / NO_PERFORMANCE_RESULT`。独立复审P0=0、P1=0并Git封存前不得生成新计划或启动。
+
+## 2026-07-30 predictor正式绑定首轮复审修复
+
+首轮独立复审为P0=0、P1=2，未提交、未生成新计划、未启动。两个P1分别是：历史class-label source中的旧checkpoint SHA未与当前formal deployment lineage区分；artifact path/digest、formal authority和完整loader参数传播缺少cache-open前负测。
+
+修复不改变数据复用策略：旧TX→class handle映射继续复用，不要求旧source checkpoint等于当前checkpoint，也不要求不同启动使用相同数据。新增current-launch attestation：
+
+`release_evidence/n607_v3_6fd77c22/phase1_class_label_binding.json`
+
+其SHA256为`f8abb25522b8b6d30f657be5de19e4922317bc271dbc9ff95dcd8de5c89dbb06`，原子记录当前checkpoint lineage=`1eb6d07b9d6339400892c5553f33261f40513922d4b08c907446e44e993307d7`、current semantic handle binding=`a90931dd0266cbd42b1163a61d015d5bfe955d2ab287733d8674b9da92d722d0`和formal deployment binding SHA=`1deec70778965f41010fe155335a30db3ec172cb3788c7074ffbadfe6236dee7`；历史mapping SHA与旧checkpoint SHA仅保留为复用来源证据，不冒充当前lineage。builder要求attestation顶层键、6个entry键/数量/顺序、当前三项绑定及复用语义精确一致。
+
+新增负测证明以下错误均在打开LEO_weak cache之前失败：candidate/runtime/component/prototype/generation config路径漂移；candidate/runtime/prototype/generation config内容漂移；当前checkpoint lineage、semantic handle或formal deployment digest漂移；entry额外键或缺行；formal authority为false；formal loader抛错。另一个正测逐项断言deployment binding的全部路径和期望SHA参数均传入正式loader，component内容根由该loader闭合。
+
+验证结果：
+
+|验证面|结果|
+|---|---:|
+|predictor builder单文件|33 passed|
+|predictor+feature builder+binding registry|独立复审42 passed|
+|7文件发布链回归|79 passed|
+|`git diff --check`|通过|
+|root/Git报告镜像|SHA一致|
+|root/Git attestation镜像|SHA一致|
+
+第二轮独立复审结论为P0=0、P1=0，确认current-launch attestation与当前deployment及历史mapping证据一致、formal loader先于cache open、五类artifact路径锁定、显式digest与component content root闭合、authority/异常/参数传播负测完整，legacy无formal参数路径兼容。允许Git封存并生成新commit绑定计划；提交必须强制纳入受`.gitignore`影响的attestation，旧`6fd77c22`计划继续禁止启动。
+
+当前状态：`P0_P1_REVIEW_PASS / READY_FOR_GIT_SEAL / NO_STAGE2_RUN / NO_PERFORMANCE_RESULT`。
