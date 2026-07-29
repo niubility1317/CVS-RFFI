@@ -230,3 +230,44 @@ checkpoint SHA256仍为`1eb6d07b9d6339400892c5553f33261f40513922d4b08c907446e44e
 - 重新从原始`P1-FULL__train_seed_7281105`完成输入和稳定class binding source执行normalize、source-labeled域×类P90组件、formal CUDA prepare；不读取性能，不重审数据，不做跨启动数据hash对齐。
 - formal prepare固定使用batch`1/8/64/256`；receipt必须记录`device=cuda`、输出全有限、`max_abs<=1e-3`、六类logit argmax mismatch总数为0，并实际回读`matmul TF32=false`、`cudnn benchmark=false`、`cudnn deterministic=true`、`deterministic algorithms=true`。任一条件失败即fail-closed。
 - 本轮只到unsigned package、detached seal与signing request闭合并取回最小签名证据；不读取或上传私钥，不自行sign，不启动Stage2矩阵。
+
+## 2026-07-29 23:32–23:37 fresh v2 N607发布证据
+
+本次由唯一release runner从原始Phase1完成输入重新构建，没有读取、复制或覆盖旧`fff5cad1`release及其partial。Stage2矩阵未启动，性能和truth未读取，数据未重审，也未做跨启动数据hash对齐。
+
+|项目|证据|
+|---|---|
+|Git提交|`122d7a72038bb6a9eb49f80af9722d3a6a1f922a`；独立复审P0=0、P1=0；7文件59项通过|
+|fresh release root|`/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2_t1_20260729_v2_122d7a72`，启动前不存在并以不可覆盖方式创建|
+|commit归档|`122d7a72_code.tar.gz`，SHA256=`830fdaadb5adfb405dffa9a5baabbe992ebd1f7dbe2ed429238a163d3d93ea1d`|
+|强制远端SHA|deployment builder=`230ff92de4899a66d0dc37e560c75b7ab5d4cd26a443b13deaf547f40bc28d15`；binding registry=`d0e9700cb1b3451d1ddd8516df9fe1d87e2fc20c003e49bba91f3a2b800ba039`；deployment bundle=`f81dfc8b4782f0148e1bc5f7d3ad48124d294bac3622f1c64c6b17ba9199be21`；P90 exporter=`04b21568a6444bce50095d052f384692cb56cf7519fbcd6125caffdd855857ee`|
+|远端代码验证|7个发布文件`py_compile`通过，deployment builder入口加载通过|
+|normalize|从原始checkpoint/prototype/completion receipt重新执行，`COMPLETE/UNCHANGED_VALID`；generation config SHA256=`59d8acf54778ae181ccfa3762b90b2fa861ca81fb8c3da9d4c88cc2d0e030364`|
+|fresh P90组件|PID`879937`，GPU6；启动前GPU6为0个进程，执行中为1个，结束后为0；CWD和命令绑定fresh release|
+|组件闭合|状态`PHASE1_COMPONENT_PENDING_OUTER_JOINT_SEAL`；NPZ=`6b651fb5f00318cd073f0329e146c5e3522ab22e244e7ba279babe0028676aa8`、manifest=`03b5761d9cfd0f09a6b64710f5ebe7c270314bf5d73215206e5e8cf84606448a`、manifest.sha256=`87683202866765897c0098ed2933e7279c0a80f529b1550e495c74c94896886a`|
+|formal prepare|`FRESH_V2_PREPARE_FAILED_CLOSED / NO_STAGE2_RUN / NO_PERFORMANCE_RESULT`|
+|失败点|脚本已请求`deterministic algorithms=true`，但N607 CUDA/cuBLAS在首次trace时拒绝：Python进程启动前未设置`CUBLAS_WORKSPACE_CONFIG=:4096:8`或`:16:8`，因此没有进入parity统计和receipt发布|
+|partial范围|`artifacts/phase1_unsigned`目录存在但其中无文件；`package=ABSENT`、`signing_request.json=ABSENT`、parity receipt=ABSENT、prepare receipt=ABSENT|
+|签名与资源|未读取或上传私钥，未自行sign；失败后GPU6为0个计算进程；本地`ssh.exe=0`且N607/bridge ESTABLISHED TCP22=0|
+
+实际formal prepare命令没有设置`CUBLAS_WORKSPACE_CONFIG`：
+
+```text
+CUDA_VISIBLE_DEVICES=6 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2_t1_20260729_v2_122d7a72/code /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python scripts/build_full_ablation_phase1_deployment_bundle.py prepare --checkpoint /home/szu2070436088/2510044040/CV-SincNet/runs/cvs_full_ablation_phase1_t1_20260729_v5_reuse/P1-FULL__train_seed_7281105/best_source_validation_ssdg.pth --prototype-pt /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2_t1_20260729_v2_122d7a72/artifacts/phase1_normalized/deployment_prototype/phase2_zid_prototypes.pt --prototype-json /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2_t1_20260729_v2_122d7a72/artifacts/phase1_normalized/deployment_prototype/phase2_zid_prototypes.json --component-dir /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2_t1_20260729_v2_122d7a72/artifacts/phase1_component --class-binding-source /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2_t1_20260729_v2_122d7a72/input/class_binding_source.json --completion-receipt /home/szu2070436088/2510044040/CV-SincNet/runs/cvs_full_ablation_phase1_t1_20260729_v5_reuse/P1-FULL__train_seed_7281105/phase1_training_completion_receipt.json --generation-config /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2_t1_20260729_v2_122d7a72/artifacts/phase1_normalized/generation_config.json --output-root /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2_t1_20260729_v2_122d7a72/artifacts/phase1_unsigned --device cuda:0 --parity-seed 7281105 --parity-rows 8
+RuntimeError: Deterministic behavior was enabled ... set CUBLAS_WORKSPACE_CONFIG=:4096:8 or :16:8
+```
+
+fresh必要小证据已取回`E:\type10-7\automation_reports\CV-SincNet\cvs_full_ablation_phase2_t1_20260729_v1\release_evidence\n607_v2_122d7a72\`。由于formal prepare未产生签名请求，本轮在fail-closed安全边界结束；同一release/output不得补环境变量重跑。后续需本地补齐launcher环境前置条件、复审、Git封存，并使用新release ID。
+
+## 2026-07-29 fresh v3启动前CuBLAS修复与校验
+
+v2失败已按本次启动自身的运行时完整性问题修复，不引入数据集重审，也不要求不同启动使用相同数据或进行跨启动数据hash对齐。已有合格Phase1完成行、checkpoint及稳定类绑定继续复用；v1/v2失败release只保留为证据，不作为v3输出根。
+
+- formal CUDA prepare要求Python进程启动前已有`CUBLAS_WORKSPACE_CONFIG=:4096:8`；正式`prepare()`入口在解析任何输入路径、计算hash、读取JSON或加载checkpoint前执行CUDA/CuBLAS preflight，`_runtime_and_parity()`保留同一门禁作为二次防线。
+- parity数值策略更新为`fp32_cuda_tf32_disabled_cudnn_deterministic_cublas4096_v1`；receipt显式记录`cublas_workspace_config=:4096:8`，正式bundle loader要求精确一致。
+- 负向测试覆盖CPU设备、缺失CuBLAS环境、`:16:8`漂移，以及设备、后端、容差和决策字段漂移。
+- 首轮独立复审发现门禁原先只在`_runtime_and_parity()`生效，晚于正式入口的checkpoint与输入加载，结论为P0=0、P1=1，未提交、未发布。修复后新增3个正式`prepare()`入口负向测试，分别证明CPU、缺失环境变量和`:16:8`漂移均在任何checkpoint hash/load前拒绝。
+- 修复后2文件定向回归28项通过；7文件定向回归共64项通过、0项失败；`git diff --check`通过。
+- v3必须使用新的、启动前不存在的release/output路径；正式命令必须以`CUBLAS_WORKSPACE_CONFIG=:4096:8 CUDA_VISIBLE_DEVICES=<gpu>`启动。只有fresh N607 CUDA parity满足固定batch`1/8/64/256`、全部输出有限、`max_abs<=1e-3`且六类argmax mismatch总数为0，才允许继续生成签名请求。
+- 最终独立增量复审为P0=0、P1=0，确认正式入口零输入访问门禁、runtime二次门禁、receipt/loader精确绑定和fresh/non-overwrite边界均闭合，允许Git封存及fresh v3发布。
+- 当前状态为`LOCAL_VERIFIED / INDEPENDENT_REVIEW_PASSED / COMMIT_PENDING`；未签名、未启动Stage2、未读取性能。

@@ -136,6 +136,32 @@ v2使用新run/log/release路径，重新执行v1首个失败行和13个未启�
 |数据边界|未读取性能、未干预或重启任务、未重审数据，也未进行跨批次一致性或hash对齐|
 |SSH清理|全部短连接退出后本地`ssh.exe=0`，N607及bridge的ESTABLISHED TCP22连接均为0|
 
+### 2026-07-29 23:36 CST
+
+|项目|状态|
+|---|---|
+|本地直连preflight|2026-07-29 23:35:48+08:00通过；直连配置、普通账号身份、服务器时间、项目根目录及8张RTX 3090均正常；退出码0|
+|服务器快照时间|2026-07-29 23:36:27+08:00|
+|runner与release|runner PID`823097`、PPID`823096`存活；CWD/cmdline继续绑定release、plan、run/log root、CVS-RFFI Python及`--execute`；release为tracked-clean，HEAD=`ae1f9aab1c6095fb5f941d4cebb1cc171100f7a1`|
+|dispatch计数|launched=11、completed=3、succeeded=3、failed=0、nonzero=0、active=8、queued=3；相较23:11首次新增3个完整完成行，没有新增派发行|
+|新增完成行|`P1-LABEL-RHO005__train_seed_7281103`、`P1-LABEL-RHO010__train_seed_7281104`、`P1-LABEL-RHO010__train_seed_7281105`；runner记录的真实return code均为0、completion receipt均有效、P0均为false|
+|严格独立验收|在冻结release的`PYTHONPATH`和CVS-RFFI Python下，对3行逐一检查7类非空必需artifact，加载checkpoint与prototype PT，解析prototype JSON、resource、heldout、terminal和completion receipt，并核对本行绝对路径、全部嵌入SHA256、COMPLETE状态、退出码及P0机制标志；结果3/3通过、0失败|
+|活动/队列|8个活跃训练主进程全部由runner PID`823097`直接持有且绑定通过：rho=0.005种子7281102在GPU1；rho=0.010种子7281101/02/03在GPU3/4/5；rho=0.020种子7281103在GPU2；rho=0.050种子7281101/02/03在GPU3/4/5。其余3行继续等待容量|
+|GPU分布|label v2在GPU0–7为`0/1/1/2/2/2/0/0`；与T1合并后的全机训练实验数为`2/2/1/2/2/2/0/0`，所有GPU均不超过2个|
+|GPU利用率|GPU0–7依次为96%、98%、0%、95%、97%、98%、0%、0%；对应显存6075、6291、3160、6185、6315、6325、4、4MiB|
+|训练进度与日志|8个活跃行最新`[EPOCH-BEGIN]`为E68–E187；仅作非停滞健康证据。逐行日志总量由23:11的6,445,407字节增至8,845,852字节，增加2,400,445字节|
+|技术异常|硬错误、P0、非零退出、异常指纹和重复确定性异常指纹均为0；`runner_summary.json`尚不存在|
+|数据边界|未读取性能、未干预或重启任务、未重审数据，也未进行跨批次一致性或hash对齐|
+|SSH清理|全部短连接和artifact验收连接退出后本地`ssh.exe=0`，N607及bridge的ESTABLISHED TCP22连接均为0|
+
+#### 23:36新增完整训练行artifact验收
+
+|行|checkpoint/B|prototype PT/B|prototype JSON/B|resource/B|heldout/B|terminal/B|completion receipt/B|return code|结论|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---|
+|`P1-LABEL-RHO005__train_seed_7281103`|15,263,436|423,939|2,228,880|540|8,138|27,372|5,425|0|完整，通过|
+|`P1-LABEL-RHO010__train_seed_7281104`|15,263,372|421,037|2,054,174|540|8,155|27,378|5,404|0|完整，通过|
+|`P1-LABEL-RHO010__train_seed_7281105`|15,263,372|423,875|1,975,394|540|8,112|27,336|5,404|0|完整，通过|
+
 ## 完整性与止损
 
 每个成功行必须同时具有可加载checkpoint、prototype PT+JSON、resource summary、held-out eval、terminal、completion receipt，并且terminal、receipt与真实退出码都为0。启动或只有checkpoint不算完成。

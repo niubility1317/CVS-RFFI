@@ -45,6 +45,7 @@ from cvsrffi.phase1_adv3b02_deployment_bundle import (  # noqa: E402
     DETACHED_SEAL_SCHEMA,
     MANIFEST_RELATIVE_PATH,
     RUNTIME_PARITY_MAX_ABS_TOLERANCE,
+    RUNTIME_PARITY_CUBLAS_WORKSPACE_CONFIG,
     RUNTIME_PARITY_NUMERIC_POLICY,
     SIGNATURE_DOMAIN,
     SIGNATURE_ENVELOPE_SCHEMA,
@@ -373,6 +374,22 @@ def _tensor_sha256(value: torch.Tensor) -> str:
     return digest.hexdigest()
 
 
+def _formal_cuda_process_preflight(device: torch.device) -> None:
+    if device.type != "cuda" or not torch.cuda.is_available():
+        raise FullAblationDeploymentError(
+            "formal runtime parity requires an available CUDA device"
+        )
+    if (
+        os.environ.get("CUBLAS_WORKSPACE_CONFIG")
+        != RUNTIME_PARITY_CUBLAS_WORKSPACE_CONFIG
+    ):
+        raise FullAblationDeploymentError(
+            "formal CUDA parity requires "
+            f"CUBLAS_WORKSPACE_CONFIG={RUNTIME_PARITY_CUBLAS_WORKSPACE_CONFIG} "
+            "before process start"
+        )
+
+
 def _runtime_and_parity(
     checkpoint: Mapping[str, Any],
     *,
@@ -382,10 +399,7 @@ def _runtime_and_parity(
     parity_seed: int,
     parity_rows: int,
 ) -> tuple[str, dict[str, Any], dict[str, Any]]:
-    if device.type != "cuda" or not torch.cuda.is_available():
-        raise FullAblationDeploymentError(
-            "formal runtime parity requires an available CUDA device"
-        )
+    _formal_cuda_process_preflight(device)
     cuda_device_index = (
         int(device.index)
         if device.index is not None
@@ -530,6 +544,9 @@ def _runtime_and_parity(
         "deterministic_algorithms_enabled": bool(
             torch.are_deterministic_algorithms_enabled()
         ),
+        "cublas_workspace_config": os.environ[
+            "CUBLAS_WORKSPACE_CONFIG"
+        ],
         "parity_vector_root_sha256": vector_root,
         "validated_batch_sizes": validated_batch_sizes,
         "feature_dim": 160,
@@ -709,6 +726,8 @@ def normalize(args: argparse.Namespace) -> dict[str, Any]:
 
 
 def prepare(args: argparse.Namespace) -> dict[str, Any]:
+    device = torch.device(str(args.device))
+    _formal_cuda_process_preflight(device)
     output_root = Path(args.output_root).resolve()
     if output_root.exists():
         raise FileExistsError("refusing to reuse deployment output root")
@@ -775,9 +794,6 @@ def prepare(args: argparse.Namespace) -> dict[str, Any]:
         raise FullAblationDeploymentError(
             "component does not bind the deployment generation config"
         )
-    device = torch.device(str(args.device))
-    if device.type == "cuda" and not torch.cuda.is_available():
-        raise FullAblationDeploymentError("requested CUDA device is unavailable")
     resolved_input_len = _input_len(checkpoint, int(args.input_len))
 
     work = output_root / "work"

@@ -62,8 +62,9 @@ FORMAL_CONTEXT_SCHEMA = "cvs.phase2.adv3b02_joint_formal_context.v1"
 CLASS_BINDING_SCHEMA = "phase1_tx_class_handle_binding_v1"
 RUNTIME_PARITY_MAX_ABS_TOLERANCE = 1.0e-3
 RUNTIME_PARITY_NUMERIC_POLICY = (
-    "fp32_cuda_tf32_disabled_cudnn_deterministic_v1"
+    "fp32_cuda_tf32_disabled_cudnn_deterministic_cublas4096_v1"
 )
+RUNTIME_PARITY_CUBLAS_WORKSPACE_CONFIG = ":4096:8"
 
 MANIFEST_RELATIVE_PATH = "deployment_manifest.json"
 RUNTIME_RELATIVE_PATH = "runtime/adv3b02_runtime.torchscript.pt"
@@ -532,6 +533,7 @@ def _validate_lock_documents(
             "cudnn_benchmark",
             "cudnn_deterministic",
             "deterministic_algorithms_enabled",
+            "cublas_workspace_config",
             "parity_vector_root_sha256",
             "validated_batch_sizes",
             "feature_dim",
@@ -577,6 +579,8 @@ def _validate_lock_documents(
         or parity["cudnn_benchmark"] is not False
         or parity["cudnn_deterministic"] is not True
         or parity["deterministic_algorithms_enabled"] is not True
+        or parity["cublas_workspace_config"]
+        != RUNTIME_PARITY_CUBLAS_WORKSPACE_CONFIG
     ):
         raise ADV3B02DeploymentBundleError("runtime parity delta exceeds fixed tolerance")
     batch_sizes = parity["validated_batch_sizes"]

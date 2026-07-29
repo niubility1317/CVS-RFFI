@@ -144,7 +144,9 @@ def _fixture(
             "max_abs_output_delta": 0.0,
             "max_abs_output_delta_tolerance": 0.001,
             "decision_equivalence_verified": True,
-            "numeric_policy": "fp32_cuda_tf32_disabled_cudnn_deterministic_v1",
+            "numeric_policy": (
+                "fp32_cuda_tf32_disabled_cudnn_deterministic_cublas4096_v1"
+            ),
             "parity_device_type": "cuda",
             "cuda_device_index": 0,
             "cuda_device_capability": [8, 6],
@@ -156,6 +158,7 @@ def _fixture(
             "cudnn_benchmark": False,
             "cudnn_deterministic": True,
             "deterministic_algorithms_enabled": True,
+            "cublas_workspace_config": ":4096:8",
             "parity_vector_root_sha256": "f" * 64,
             "validated_batch_sizes": [1, 8, 64, 256],
             "feature_dim": 160,
@@ -396,6 +399,7 @@ def test_builder_requires_stage2_batch_shape_and_finite_parity_closure(
         ("cudnn_allow_tf32", True),
         ("cudnn_deterministic", False),
         ("deterministic_algorithms_enabled", False),
+        ("cublas_workspace_config", ":16:8"),
     ),
 )
 def test_builder_rejects_runtime_outside_fixed_fp32_parity_policy(

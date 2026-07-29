@@ -9,6 +9,7 @@ from types import SimpleNamespace
 import pytest
 import torch
 
+from scripts import build_full_ablation_phase1_deployment_bundle as deployment_builder
 from cvsrffi import somph_runtime_trust as runtime_trust
 from cvsrffi.phase1_adv3b02_deployment_bundle import (
     SIGNATURE_DOMAIN,
@@ -22,6 +23,7 @@ from scripts.build_full_ablation_phase1_deployment_bundle import (
     _class_binding_source,
     _completion_receipt,
     _runtime_and_parity,
+    prepare,
     sign,
 )
 
@@ -114,6 +116,85 @@ def test_formal_runtime_parity_rejects_cpu_before_checkpoint_load(
             parity_seed=7281105,
             parity_rows=8,
         )
+
+
+def test_formal_runtime_parity_requires_process_start_cublas_config(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(torch.cuda, "is_available", lambda: True)
+    monkeypatch.delenv("CUBLAS_WORKSPACE_CONFIG", raising=False)
+    with pytest.raises(
+        FullAblationDeploymentError,
+        match="before process start",
+    ):
+        _runtime_and_parity(
+            {},
+            input_len=256,
+            device=torch.device("cuda:0"),
+            runtime_path=tmp_path / "runtime.pt",
+            parity_seed=7281105,
+            parity_rows=8,
+        )
+
+
+@pytest.mark.parametrize(
+    ("device_name", "workspace_config", "error_match"),
+    [
+        (
+            "cpu",
+            ":4096:8",
+            "requires an available CUDA device",
+        ),
+        (
+            "cuda:0",
+            None,
+            "before process start",
+        ),
+        (
+            "cuda:0",
+            ":16:8",
+            "before process start",
+        ),
+    ],
+)
+def test_formal_prepare_rejects_invalid_cuda_process_before_input_access(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    device_name: str,
+    workspace_config: str | None,
+    error_match: str,
+) -> None:
+    monkeypatch.setattr(torch.cuda, "is_available", lambda: True)
+    if workspace_config is None:
+        monkeypatch.delenv("CUBLAS_WORKSPACE_CONFIG", raising=False)
+    else:
+        monkeypatch.setenv("CUBLAS_WORKSPACE_CONFIG", workspace_config)
+
+    accessed: list[str] = []
+
+    def fail_if_checkpoint_is_accessed(*_args: object, **_kwargs: object) -> None:
+        accessed.append("checkpoint")
+        raise AssertionError("formal process preflight must run before input access")
+
+    monkeypatch.setattr(
+        deployment_builder,
+        "sha256_file",
+        fail_if_checkpoint_is_accessed,
+    )
+    monkeypatch.setattr(
+        deployment_builder,
+        "_load_checkpoint",
+        fail_if_checkpoint_is_accessed,
+    )
+    args = SimpleNamespace(
+        device=device_name,
+        output_root=tmp_path / "unused-output",
+        checkpoint=tmp_path / "unused-checkpoint.pth",
+    )
+    with pytest.raises(FullAblationDeploymentError, match=error_match):
+        prepare(args)
+    assert accessed == []
 
 
 def test_sign_uses_only_pinned_matching_ed25519_key_and_detached_request(
