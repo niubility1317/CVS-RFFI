@@ -8,7 +8,7 @@
 |时间|2026-07-29|
 |操作方|Codex主代理；N607唯一runner：`/root/phase1_t1_n607_runner`|
 |目标|完成Phase1 T1六臂×五配对种子的30行矩阵，同时复用v3已完整产物，避免重复训练和重复数据审计|
-|当前状态|`LOCAL_VERIFIED / WAITING_INDEPENDENT_REVIEW`|
+|当前状态|`LANDED / RUNNING / FIRST-WAVE HEALTHY`|
 
 ## 假设与比较
 
@@ -43,14 +43,14 @@
 |`configs/full_ablation_20260728/phase1_t1_reuse_v5.json`|冻结10+1+19复用矩阵|
 |`tests/test_run_full_ablation_phase1_t1.py`|复用、补导出、held-out和损坏产物故障注入|
 
-验证结果：`55 passed,1 skipped`（含真实B0 checkpoint导出）；sealer/runner/factory定向测试`51 passed`；`py_compile`和`git diff --check`通过。
+验证结果：最终release定向回归`72 passed,1 skipped`（含真实B0 checkpoint导出）；复用九项故障注入全部拒绝；`py_compile`和`git diff --check`通过。
 
 ## N607发布参数
 
 |字段|值|
 |---|---|
 |Conda/Python|`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`|
-|工作目录|待seal后填写|
+|工作目录|`/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase1_t1_20260729_v5_reuse_4592bdd9/code`|
 |run root|`/home/szu2070436088/2510044040/CV-SincNet/runs/cvs_full_ablation_phase1_t1_20260729_v5_reuse`|
 |log root|`/home/szu2070436088/2510044040/CV-SincNet/logs/cvs_full_ablation_phase1_t1_20260729_v5_reuse`|
 |launch log|`/home/szu2070436088/2510044040/CV-SincNet/logs/cvs_full_ablation_phase1_t1_20260729_v5_reuse.launch.out`|
@@ -58,6 +58,43 @@
 |预期执行|19个完整训练+1个checkpoint-only导出；10行直接复用|
 |成功条件|30/30有效闭合，19个新训练成功、1个补导出成功、10个复用行验证通过、无P0、无重复异常指纹系统停机|
 |系统停机|P0协议/输出覆盖风险，或至少两个不同新执行行在生成prototype前出现同一确定性异常指纹|
+
+## N607落地与启动证据
+
+|字段|证据|
+|---|---|
+|发布提交|`4592bdd9497feffe69298a20c436abd177801231`；远端detached HEAD一致且tracked-clean|
+|远端release|`/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase1_t1_20260729_v5_reuse_4592bdd9`|
+|独立复审|`PRELAUNCH_OUTPUT_CLOSURE_PASS`；P0/P1/P2均为0|
+|seal后dry-run|30逻辑行、20个dispatch、10个direct reuse、1个reexport-only、19个new train、16个首波静态槽|
+|PID绑定|`launch.pid=711522`为外层后台bash；其唯一直接子进程`711523`为正式Python runner，CWD与release/code一致|
+|第二波状态|2026-07-29 18:41:05+08:00；16个逐行PID文件；completed=1、succeeded=1、failed=0；15个训练GPU进程活跃；日志总量828,564字节，约E5–E6|
+|异常扫描|未检出`Traceback`、`RuntimeError`、`CUDA out of memory`或`unrecognized argument`；无异常指纹|
+|SSH清理|本地`ssh.exe=0`，N607与bridge的ESTABLISHED TCP22连接均为0|
+
+### B0补导出闭环
+
+|字段|值|
+|---|---|
+|行/模式|`P1-B0__train_seed_7281101`；`reexport_only`|
+|执行|PID`711835`；GPU2、slot1；22.32秒；return_code=0|
+|验证|completion_receipt_valid=true；P0=false；receipt status=`COMPLETE`|
+|输出|prototype PT 407,306字节；JSON 2,108,153字节；receipt 1,128字节|
+
+### 第二波GPU快照
+
+|GPU|活跃训练进程|利用率|显存|
+|---:|---:|---:|---:|
+|0|2|88%|6079MiB|
+|1|2|100%|6307MiB|
+|2|1|40%|3094MiB|
+|3|2|99%|6383MiB|
+|4|2|95%|6075MiB|
+|5|2|93%|6177MiB|
+|6|2|92%|6361MiB|
+|7|2|97%|6169MiB|
+
+GPU2的第二个静态槽用于B0补导出，完成后该槽无后续行，因此第二波为15个训练进程；首波16个任务均有独占PID证据。当前只有技术健康结论，无性能结论。
 
 ## 风险与完成后检查
 
