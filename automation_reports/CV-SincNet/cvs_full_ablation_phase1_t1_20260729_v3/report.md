@@ -7,7 +7,7 @@
 |实验ID|`cvs_full_ablation_phase1_t1_20260729_v3`|
 |日期|2026-07-29|
 |operator|Codex主代理；N607发布仅由`/root/phase1_t1_n607_runner`执行|
-|状态|`AUTHORIZED / PENDING_LANDING_AND_LAUNCH`|
+|状态|`RUNNING / LANDED / 16_WORKERS_HEALTHY`|
 |设计来源|`CVS-RFFI_全部消融实验设计_Phase1_Phase2_20260728.md`第4.1、5.1、6.1、9.1、9.2、11、12节|
 |协议|Phase1 source-only；`0.07/0.63/0.30`|
 |Git分支|`codex/full-ablation-20260728`|
@@ -124,11 +124,35 @@ v2在首个完成行的source-only prototype导出阶段发现内部安全契约
 
 ## 正式命令模板
 
-以下命令只作预登记。用户为v3给出新的明确启动授权前不得执行：
+唯一runner于`2026-07-29T12:59:41+08:00`执行以下正式命令：
 
 ```bash
-cd <v3_release>/code && nohup setsid env PYTHONPATH=<v3_release>/code /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python <v3_release>/code/scripts/run_full_ablation_phase1_t1.py --plan <v3_sealed_plan> --repo-root <v3_release> --run-root /home/szu2070436088/2510044040/CV-SincNet/runs/cvs_full_ablation_phase1_t1_20260729_v3 --log-root /home/szu2070436088/2510044040/CV-SincNet/logs/cvs_full_ablation_phase1_t1_20260729_v3 --wisig-pkl /home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl --python /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python --train-script <v3_release>/code/SSDG/train_ssdg.py --poll-seconds 30 --execute
+cd /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase1_t1_20260729_v3_a2c29248/code && nohup setsid env PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase1_t1_20260729_v3_a2c29248/code /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase1_t1_20260729_v3_a2c29248/code/scripts/run_full_ablation_phase1_t1.py --plan /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase1_t1_20260729_v3_a2c29248.sealed.json --repo-root /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase1_t1_20260729_v3_a2c29248 --run-root /home/szu2070436088/2510044040/CV-SincNet/runs/cvs_full_ablation_phase1_t1_20260729_v3 --log-root /home/szu2070436088/2510044040/CV-SincNet/logs/cvs_full_ablation_phase1_t1_20260729_v3 --wisig-pkl /home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl --python /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python --train-script /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase1_t1_20260729_v3_a2c29248/code/SSDG/train_ssdg.py --poll-seconds 30 --execute > /home/szu2070436088/2510044040/CV-SincNet/logs/cvs_full_ablation_phase1_t1_20260729_v3.launch.out 2>&1 < /dev/null &
 ```
+
+## 启动与即时健康证据
+
+|项目|证据|
+|---|---|
+|main|PID/PGID/SID=`545770`；PPID=`1`；CWD与cmdline精确绑定v3 release/run/log|
+|workers|16个main直接子进程、16个不同row；逐PID row/CUDA/CWD/cmdline校验`BINDING_BAD=0`|
+|环境receipt|`CVS-RFFI`；CUDA available；device_count=8；WiSig与sealed content匹配|
+|即时计数|launched=16、completed=0、succeeded=0、failed=0|
+|artifact|checkpoint=16、prototype=0、terminal=0、completion=0|
+|异常|真实异常文件=0；runner summary尚未生成；无停机条件|
+|GPU|GPU0–7每卡恰好2个run-owned compute PID；external=0；利用率78%–97%；显存3.18–6.48GiB/卡|
+|连接闭合|最终`ssh.exe=0`、ESTABLISHED TCP22=0|
+
+|GPU|slot0 row/PID|slot1 row/PID|
+|---:|---|---|
+|0|`P1-FULL/s7281101/545956`|`P1-FULL/s7281102/545996`|
+|1|`P1-FULL/s7281103/545959`|`P1-FULL/s7281104/545997`|
+|2|`P1-FULL/s7281105/545976`|`P1-SUP/s7281101/546318`|
+|3|`P1-SUP/s7281102/546124`|`P1-SUP/s7281103/545964`|
+|4|`P1-SUP/s7281104/545962`|`P1-SUP/s7281105/546125`|
+|5|`P1-A0/s7281101/545971`|`P1-A0/s7281102/546191`|
+|6|`P1-A0/s7281103/545968`|`P1-A0/s7281104/546126`|
+|7|`P1-A0/s7281105/545974`|`P1-B0/s7281101/546127`|
 
 ## 健康停止与成功标准
 
