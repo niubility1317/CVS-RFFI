@@ -807,4 +807,6 @@ v12 Stage2-B v3 sidecar随后25/25正式loader验收通过，50文件完整、0�
 
 独立复审已确认CUDA修复和fresh启动模板均为`P0=0 / P1=0`；模板在commit、clean和fresh检查前启用fail-closed，并要求325行states与1425行Stage2-C源plan均绑定同一v14代码commit重新生成。
 
-当前状态：`INPUT_BINDING_COMPLETE / V13_STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / V14_CUDA_INIT_FIX_REVIEWED / NO_PERFORMANCE_RESULT`。
+v14 CUDA修复已封存为`14552df1ca50f8fe100621f5fd4f099942b08322`。新生成`stage2_states_plan_14552df1.json`与`stage2c_screening_plan_14552df1.json`，分别为325和1425个唯一row key；顶层及每行均绑定该v14 commit，旧d1f commit出现0次，除commit外与各自已审旧计划完全一致。计划相关3个测试文件25项通过，独立计划复审`P0=0 / P1=0`并通过官方行验证。
+
+当前状态：`INPUT_BINDING_COMPLETE / V13_STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / V14_CODE_COMMITTED / V14_SOURCE_PLANS_GENERATED / NO_PERFORMANCE_RESULT`。

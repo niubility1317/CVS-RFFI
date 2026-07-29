@@ -51,3 +51,15 @@
 ## 独立复审
 
 2026-07-30独立复审结论为`P0=0 / P1=0`。复审确认CUDA执行顺序为device选择、context初始化、峰值统计重置；初始化失败先于row输出根创建。启动模板在所有commit、clean、fresh检查前启用`set -euo pipefail`，并保留`noclobber`；325行states与1425行Stage2-C源plan均须绑定同一v14代码commit重新生成。
+
+## v14代码与源计划封存
+
+|字段|结果|
+|---|---|
+|v14代码commit|`14552df1ca50f8fe100621f5fd4f099942b08322`|
+|CUDA相关回归|row executor、executors、release、quantization共4个测试文件全部通过|
+|states源plan|`stage2_states_plan_14552df1.json`；325/325个唯一row key；顶层及每行commit均为v14代码commit|
+|Stage2-C源plan|`stage2c_screening_plan_14552df1.json`；1425/1425个唯一row key；顶层及每行commit均为v14代码commit|
+|计划回归|plan builder、full spec、Stage2 release共3个测试文件25项通过|
+|与旧计划关系|除`git_commit`外分别与已审d1f版325行及1425行计划完全一致；旧d1f commit在新计划中出现0次|
+|计划独立复审|`P0=0 / P1=0`；官方行验证通过；states保持25行Stage2-A+300行Stage2-B，Stage2-C保持19个arm×75行|
