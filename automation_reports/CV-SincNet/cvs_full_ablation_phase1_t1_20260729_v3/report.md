@@ -154,6 +154,40 @@ cd /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase1_t
 |6|`P1-A0/s7281103/545968`|`P1-A0/s7281104/546126`|
 |7|`P1-A0/s7281105/545974`|`P1-B0/s7281101/546127`|
 
+## 第一worker wave技术证据
+
+唯一runner于`2026-07-29T14:42:40+08:00`完成首个终态与第一worker wave复核。实际首波为5个`P1-SUP` paired seed，全部技术成功：
+
+|arm|seed|return code|terminal|prototype export|completion receipt|P0|
+|---|---:|---:|---|---|---|---|
+|`P1-SUP`|7281101|0|`COMPLETE`|`COMPLETE`|valid|false|
+|`P1-SUP`|7281102|0|`COMPLETE`|`COMPLETE`|valid|false|
+|`P1-SUP`|7281103|0|`COMPLETE`|`COMPLETE`|valid|false|
+|`P1-SUP`|7281104|0|`COMPLETE`|`COMPLETE`|valid|false|
+|`P1-SUP`|7281105|0|`COMPLETE`|`COMPLETE`|valid|false|
+
+每行2个prototype hash均非空，completion中的terminal SHA与实文件一致，全部completion checks为true。该证据证明执行与artifact闭环，不代表性能结论。
+
+|项目|首波后证据|
+|---|---|
+|矩阵计数|launched=21、completed=5、succeeded=5、failed=0、active=16|
+|artifact计数|prototype files=10、terminal=5、completion=5|
+|异常|归一化异常指纹=0；无P0；未触发停止规则|
+|续排|释放的5个slot按冻结顺序启动`P1-C0`四行和`P1-D0`一行|
+|绑定|16个active worker全部通过row/CUDA/CWD/cmdline绑定，`BAD=0`|
+|GPU|GPU0–7每卡仍恰好2个run-owned PID；external=0；利用率92%–99%；显存4.19–6.41GiB|
+|连接闭合|最终`ssh.exe=0`、ESTABLISHED TCP22=0|
+
+|GPU/slot|新续排行|PID|
+|---|---|---:|
+|GPU2/slot1|`P1-C0/s7281102`|598051|
+|GPU3/slot0|`P1-C0/s7281103`|598553|
+|GPU3/slot1|`P1-C0/s7281104`|598158|
+|GPU4/slot0|`P1-C0/s7281105`|597240|
+|GPU4/slot1|`P1-D0/s7281101`|597235|
+
+当前日志仍在增长。本节仅报告截至该时间点完整封口的5行和活跃进程状态；其余行需在完成后读取完整日志与artifact，不能据此作收敛或性能判断。
+
 ## 健康停止与成功标准
 
 - 只因P0协议/安全违规、launcher级确定性故障、输出覆盖风险、缺失prediction闭环，或至少两个不同row在prediction前出现同一归一化异常指纹而停止。
