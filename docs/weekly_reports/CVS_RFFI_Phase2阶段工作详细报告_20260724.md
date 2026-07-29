@@ -357,7 +357,7 @@ ProtoNet CDA、MRIOR-SDA与DADDA-SDA的复现实验数值统一放在附录A，�
 
 ### 5.1研究问题、代码口径与数据
 
-Stage2-C在同一target receiver中注册新类，并要求旧类与新类统一竞争。本轮使用论文作者官方执行语义：CSIL锁定`pcwhy/CSIL@8ce8637`[12]，MoPC-HR锁定`xmuLdz/MoPC-HR@ae65543`[13]；编码器接口替换为ADV3B02的160维\(z_{\mathrm{id}}\)，其余训练器、损失和更新范围按官方实现保留。
+Stage2-C在同一target receiver中注册新类，并要求旧类与新类统一竞争。本轮使用论文作者官方执行语义：CSIL锁定`pcwhy/CSIL@8ce8637`，MoPC-HR锁定`xmuLdz/MoPC-HR@ae65543`；编码器接口替换为ADV3B02的160维\(z_{\mathrm{id}}\)，其余训练器、损失和更新范围按官方实现保留。
 
 |环节|CSIL|MoPC-HR|
 |---|---|---|
@@ -588,22 +588,6 @@ $$
 [4] LIU Y, WANG J, LI J, NIU S, SONG H. Class-Incremental Learning for Wireless Device Identification in IoT[J]. IEEE Internet of Things Journal, 2021, 8(23):17227-17235. DOI:10.1109/JIOT.2021.3078407.
 
 [5] LI D, CHEN Z, SHAO M, et al. Non-Exemplar Class-Incremental Learning via Prototype Correction and Hierarchical Regularization for Specific Emitter Identification[J]. IEEE Transactions on Intelligent Transportation Systems, 2025, 26(8):12632-12646. DOI:10.1109/TITS.2025.3559174.
-
-[6] PAN S J, YANG Q. A Survey on Transfer Learning[J]. IEEE Transactions on Knowledge and Data Engineering, 2010, 22(10):1345-1359. DOI:10.1109/TKDE.2009.191.
-
-[7] GRETTON A, BORGWARDT K M, RASCH M J, et al. A Kernel Two-Sample Test[J]. Journal of Machine Learning Research, 2012, 13:723-773.
-
-[8] KIRKPATRICK J, PASCANU R, RABINOWITZ N, et al. Overcoming Catastrophic Forgetting in Neural Networks[J]. Proceedings of the National Academy of Sciences, 2017, 114(13):3521-3526. DOI:10.1073/pnas.1611835114.
-
-[9] HINTON G, VINYALS O, DEAN J. Distilling the Knowledge in a Neural Network[EB/OL]. arXiv:1503.02531, 2015. https://arxiv.org/abs/1503.02531
-
-[10] COVER T, HART P. Nearest Neighbor Pattern Classification[J]. IEEE Transactions on Information Theory, 1967, 13(1):21-27. DOI:10.1109/TIT.1967.1053964.
-
-[11] DE LANGE M, ALJUNDI R, MASANA M, et al. A Continual Learning Survey: Defying Forgetting in Classification Tasks[J]. IEEE Transactions on Pattern Analysis and Machine Intelligence, 2022, 44(7):3366-3385. DOI:10.1109/TPAMI.2021.3057446.
-
-[12] LIU Y, et al. CSIL official implementation[CP/OL]. GitHub, commit 8ce8637daf4dc60eeb1c56bff64c050c5b2353e9. https://github.com/pcwhy/CSIL
-
-[13] LI D, et al. MoPC-HR official implementation[CP/OL]. GitHub, commit ae6554316ad1a2175920e330133a2f103408bf78. https://github.com/xmuLdz/MoPC-HR
 
 ## 附录A：非类增量对比方法复现实验结果
 
