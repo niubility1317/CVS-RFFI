@@ -1,0 +1,18 @@
+# NOT EXECUTABLE UNTIL __V14_COMMIT40__ IS REPLACED AND THE NEW PLAN IS SEALED.
+root=/home/szu2070436088/2510044040/CV-SincNet
+runid=cvs_full_ablation_phase2_states_t1_20260730_v14_cuda_init
+release=$root/releases/$runid
+input=$root/stage2_inputs/$runid
+run=$root/runs/$runid
+rowlogs=$root/logs/$runid
+driver=$root/logs/${runid}_driver
+set -euo pipefail
+test "$(git -C "$release" rev-parse HEAD)" = __V14_COMMIT40__
+test -z "$(git -C "$release" status --porcelain --untracked-files=all)"
+test ! -e "$run"
+test ! -e "$rowlogs"
+test ! -e "$driver"
+mkdir "$driver"
+set -o noclobber
+cd "$release"
+PYTHONPATH="$release/code" nohup /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u "$release/code/scripts/run_full_ablation_stage2.py" --plan "$input/sealed_plan.json" --repo-root "$release" --python /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python --predictor-script "$release/code/scripts/run_full_ablation_stage2_row.py" --scorer-script "$release/code/scripts/score_full_ablation_stage2_row.py" --execute > "$driver/runner_driver.out" 2>&1 < /dev/null &

@@ -7,6 +7,7 @@ from pathlib import Path
 import numpy as np
 import pytest
 
+import cvsrffi.stage2_ablation_row_executor as row_executor
 from cvsrffi.stage2_ablation_row_executor import (
     Stage2AblationRowExecutionError,
     execute_feature_row,
@@ -81,7 +82,12 @@ def _fixture(k_shot: int = 2):
     }
 
 
-def _run(tmp_path: Path, *, ablation_id: str):
+def _run(
+    tmp_path: Path,
+    *,
+    ablation_id: str,
+    device: str = "cpu",
+):
     fixture = _fixture()
     if ablation_id == "P2-S2A":
         fixture["new_classes"] = ()
@@ -116,13 +122,75 @@ def _run(tmp_path: Path, *, ablation_id: str):
         },
         output_root=tmp_path / ablation_id,
         seed=840001,
-        device="cpu",
+        device=device,
         feature_cache_bytes=4096,
         deployment_state_bytes=8192,
         peak_rss_bytes=8192,
         peak_vram_bytes=0,
         **fixture,
     )
+
+
+def test_cuda_memory_audit_initializes_context_before_peak_reset(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    calls: list[tuple[str, object]] = []
+    device = row_executor.torch.device("cuda:0")
+    monkeypatch.setattr(
+        row_executor.torch.cuda,
+        "set_device",
+        lambda value: calls.append(("set_device", value)),
+    )
+    monkeypatch.setattr(
+        row_executor.torch,
+        "empty",
+        lambda *args, **kwargs: calls.append(
+            ("empty", kwargs.get("device"))
+        ),
+    )
+    monkeypatch.setattr(
+        row_executor.torch.cuda,
+        "reset_peak_memory_stats",
+        lambda value: calls.append(("reset", value)),
+    )
+
+    row_executor._prepare_cuda_memory_audit(device)
+
+    assert calls == [
+        ("set_device", device),
+        ("empty", device),
+        ("reset", device),
+    ]
+
+
+def test_cuda_initialization_failure_precedes_output_creation(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    output = tmp_path / "P2-S2A"
+    monkeypatch.setattr(
+        row_executor.torch.cuda,
+        "is_available",
+        lambda: True,
+    )
+    monkeypatch.setattr(
+        row_executor,
+        "_prepare_cuda_memory_audit",
+        lambda _device: (_ for _ in ()).throw(
+            RuntimeError("synthetic CUDA initialization failure")
+        ),
+    )
+
+    with pytest.raises(
+        RuntimeError,
+        match="synthetic CUDA initialization failure",
+    ):
+        _run(
+            tmp_path,
+            ablation_id="P2-S2A",
+            device="cuda:0",
+        )
+    assert not output.exists()
 
 
 def test_feature_row_executor_has_no_truth_or_dataset_surface() -> None:

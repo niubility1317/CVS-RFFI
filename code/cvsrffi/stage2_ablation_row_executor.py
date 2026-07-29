@@ -44,6 +44,14 @@ class Stage2AblationRowExecutionError(RuntimeError):
     """Raised when a feature row cannot close its prediction artifact."""
 
 
+def _prepare_cuda_memory_audit(device: torch.device) -> None:
+    if device.type != "cuda":
+        return
+    torch.cuda.set_device(device)
+    torch.empty(0, device=device)
+    torch.cuda.reset_peak_memory_stats(device)
+
+
 def _rss_bytes() -> int:
     try:
         import psutil
@@ -399,6 +407,13 @@ def execute_feature_row(
             "Stage2-A/B cannot register new classes"
         )
 
+    runtime_device = torch.device(device)
+    if runtime_device.type == "cuda":
+        if not torch.cuda.is_available():
+            raise Stage2AblationRowExecutionError(
+                "CUDA device requested but unavailable"
+            )
+        _prepare_cuda_memory_audit(runtime_device)
     output = Path(output_root).absolute()
     if output.exists() and (
         not output.is_dir() or output.is_symlink() or any(output.iterdir())
@@ -407,13 +422,6 @@ def execute_feature_row(
             "row output root must be absent or an empty directory"
         )
     output.mkdir(parents=True, exist_ok=True)
-    runtime_device = torch.device(device)
-    if runtime_device.type == "cuda":
-        if not torch.cuda.is_available():
-            raise Stage2AblationRowExecutionError(
-                "CUDA device requested but unavailable"
-            )
-        torch.cuda.reset_peak_memory_stats(runtime_device)
 
     all_tokens: list[np.ndarray] = []
     all_scenarios: list[np.ndarray] = []

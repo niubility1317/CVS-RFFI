@@ -800,3 +800,11 @@ v10分离package输入根和fresh feature输出根，使用单文件自包含控
 本地兼容修复只允许精确顶层的v2/v3 Stage2-B truth，先验证rows，再发布为v3；未知schema、额外顶层键或非法rows均在写出前拒绝。fresh v11固定25个K=10 canonical Stage2-A sidecar，最终25/25子进程成功、25/25正式loader验收、50文件完整、0异常指纹。registry还需要同一25份truth的v3 Stage2-B发布，stage保持stage2b且rows不变；fresh v12必须25/25正式loader验收后才允许生成binding registry和plan seal。
 
 当前状态：`PACKAGE_50_OF_50 / FEATURE_SCOPE_300_OF_300 / STAGE2A_SIDECAR_25_OF_25 / STAGE2B_SIDECAR_FRESH_V12_PENDING / STATES_NOT_LAUNCHED / NO_PERFORMANCE_RESULT`。
+
+v12 Stage2-B v3 sidecar随后25/25正式loader验收通过，50文件完整、0失败、0异常指纹；125个物理input binding和325个逻辑row plan seal闭合。首次states landing因driver日志预创建plan log root而在0 row前拒绝启动；fresh v13修正日志根后派发15行，但14行在预测前同指纹失败：`torch.cuda.reset_peak_memory_stats(cuda:0)`在首次CUDA context初始化前执行，最终0 prediction、0 score、308行未启动，按系统性技术故障封口。
+
+本地v14修复显式执行`torch.cuda.set_device`、零元素CUDA tensor context初始化，再重置峰值显存统计，并把整段CUDA初始化移到row output root创建之前。相关4文件23项通过；fresh v14必须绑定新code commit重生成states与Stage2-C计划，不续跑或覆盖v13。
+
+独立复审已确认CUDA修复和fresh启动模板均为`P0=0 / P1=0`；模板在commit、clean和fresh检查前启用fail-closed，并要求325行states与1425行Stage2-C源plan均绑定同一v14代码commit重新生成。
+
+当前状态：`INPUT_BINDING_COMPLETE / V13_STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / V14_CUDA_INIT_FIX_REVIEWED / NO_PERFORMANCE_RESULT`。
