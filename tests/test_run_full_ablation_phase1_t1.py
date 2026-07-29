@@ -79,8 +79,8 @@ def _label_plan() -> dict:
             "phase1_terminal_status.json",
             "phase1_resource_summary.json",
             "frozen_phase1_heldout_eval.json",
-            "phase2_prototypes.pt",
-            "phase2_prototypes.json",
+            "phase2_zid_prototypes.pt",
+            "phase2_zid_prototypes.json",
         ],
         "rows": [
             {
