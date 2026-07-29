@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run the frozen Phase1 T1 matrix with at most two processes per GPU."""
+"""Run a frozen Phase1 T1 or label-rate matrix with two slots per GPU."""
 
 from __future__ import annotations
 
@@ -22,6 +22,7 @@ from cvsrffi.full_ablation_spec import (
     GPU_COUNT,
     PHASE1_T1_ARMS,
     SLOTS_PER_GPU,
+    build_phase1_label_rows,
     build_phase1_t1_rows,
     validate_plan_rows,
 )
@@ -105,13 +106,13 @@ def validate_phase1_release_plan(
         raise Phase1RunnerError("plan is not the Phase1 full-ablation T1 matrix")
     rows = list(plan.get("rows") or [])
     validate_plan_rows(rows)
-    expected_ids = {arm.ablation_id for arm in PHASE1_T1_ARMS}
-    if {row.get("ablation_id") for row in rows} != expected_ids:
-        raise Phase1RunnerError("Phase1 plan arm set drift")
-    if len(rows) != 30:
-        raise Phase1RunnerError("Phase1 T1 release must contain exactly 30 rows")
+    stage = str(plan.get("stage", "")).strip().lower()
+    if stage not in {"t1", "label"}:
+        raise Phase1RunnerError("unsupported Phase1 matrix stage")
     if len({int(row["train_seed"]) for row in rows}) != 5:
-        raise Phase1RunnerError("Phase1 T1 release must contain five paired seeds")
+        raise Phase1RunnerError(
+            "Phase1 release must reference five paired seeds"
+        )
     registered_seeds = [
         int(value)
         for value in list(
@@ -122,16 +123,34 @@ def validate_phase1_release_plan(
         raise Phase1RunnerError(
             "plan lacks five registered Phase1 seeds"
         )
-    expected_rows = build_phase1_t1_rows(
-        registered_seeds,
-        git_commit=str(plan.get("git_commit", "")),
-    )
+    if stage == "t1":
+        expected_ids = {arm.ablation_id for arm in PHASE1_T1_ARMS}
+        if {row.get("ablation_id") for row in rows} != expected_ids:
+            raise Phase1RunnerError("Phase1 T1 plan arm set drift")
+        if len(rows) != 30:
+            raise Phase1RunnerError(
+                "Phase1 T1 release must contain exactly 30 rows"
+            )
+        expected_rows = build_phase1_t1_rows(
+            registered_seeds,
+            git_commit=str(plan.get("git_commit", "")),
+        )
+    else:
+        if len(rows) != 14:
+            raise Phase1RunnerError(
+                "Phase1 label release must contain exactly 14 rows"
+            )
+        expected_rows = build_phase1_label_rows(
+            registered_seeds,
+            git_commit=str(plan.get("git_commit", "")),
+        )
     canonical_fields = (
         "ablation_id",
         "train_seed",
         "row_key",
         "worker",
         "split_fractions",
+        "rho_label",
         "epochs",
         "checkpoint_selection",
         "method_config_hash",

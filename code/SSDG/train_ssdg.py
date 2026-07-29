@@ -20,7 +20,10 @@ if __package__ in (None, ""):
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from post_stage_cli import add_common_data_args, add_sat_eval_args, str2bool
-from cvsrffi.phase1_ablation_factory import apply_phase1_ablation
+from cvsrffi.phase1_ablation_factory import (
+    apply_phase1_ablation,
+    phase1_ablation_config,
+)
 
 try:
     import torch
@@ -2465,6 +2468,9 @@ def _formal_ablation_terminal_flags(
 ) -> Tuple[Dict[str, bool], Dict[str, bool]]:
     checkpoint_args = dict(selected_checkpoint_evidence.get("args", {}) or {})
     split_receipt = dict(source_split_receipt or {})
+    expected_ablation_config = phase1_ablation_config(
+        str(getattr(args, "ablation_id", ""))
+    )
     train_rx = {
         value.strip()
         for value in str(getattr(args, "wisig_train_rxs", "")).split(",")
@@ -2501,9 +2507,21 @@ def _formal_ablation_terminal_flags(
         == {"7", "8", "9", "10", "11"},
         "source_target_receiver_disjoint": not bool(train_rx & test_rx),
         "current_split_locked": (
-            abs(float(args.labeled_ratio) - 0.07) <= 1e-12
-            and abs(float(args.unlabeled_ratio) - 0.63) <= 1e-12
-            and abs(float(args.source_val_ratio) - 0.30) <= 1e-12
+            abs(
+                float(args.labeled_ratio)
+                - float(expected_ablation_config["labeled_ratio"])
+            )
+            <= 1e-12
+            and abs(
+                float(args.unlabeled_ratio)
+                - float(expected_ablation_config["unlabeled_ratio"])
+            )
+            <= 1e-12
+            and abs(
+                float(args.source_val_ratio)
+                - float(expected_ablation_config["source_val_ratio"])
+            )
+            <= 1e-12
         ),
         "source_validation_only_selection": (
             bool(getattr(args, "phase1_source_val_selection_only", False))

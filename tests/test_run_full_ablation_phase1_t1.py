@@ -11,7 +11,10 @@ from types import SimpleNamespace
 import pytest
 import torch
 
-from cvsrffi.full_ablation_spec import build_phase1_t1_rows
+from cvsrffi.full_ablation_spec import (
+    build_phase1_label_rows,
+    build_phase1_t1_rows,
+)
 from scripts import run_full_ablation_phase1_t1 as phase1_runner
 from scripts.run_full_ablation_phase1_t1 import (
     _Capacity,
@@ -55,6 +58,16 @@ def _plan() -> dict:
     return plan
 
 
+def _label_plan() -> dict:
+    plan = _plan()
+    plan["stage"] = "label"
+    plan["rows"] = build_phase1_label_rows(
+        plan["registered_phase1_train_seeds"],
+        git_commit=plan["git_commit"],
+    )
+    return plan
+
+
 def _seal_for_test(plan: dict) -> None:
     content = {
         key: value
@@ -76,6 +89,15 @@ def test_unsealed_plan_is_dry_run_valid_but_not_launchable() -> None:
     validate_phase1_release_plan(plan, require_launch_authority=False)
     with pytest.raises(Phase1RunnerError, match="launch authority"):
         validate_phase1_release_plan(plan, require_launch_authority=True)
+
+
+def test_unsealed_label_plan_is_valid_and_exactly_fourteen_rows() -> None:
+    plan = _label_plan()
+    validate_phase1_release_plan(plan, require_launch_authority=False)
+    assert len(plan["rows"]) == 14
+    plan["rows"][0]["split_fractions"]["labeled"] = 0.07
+    with pytest.raises(Phase1RunnerError, match="canonical row drift"):
+        validate_phase1_release_plan(plan, require_launch_authority=False)
 
 
 def test_sealed_plan_requires_review_and_local_verified_executors() -> None:

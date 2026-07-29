@@ -16,6 +16,7 @@ from cvsrffi.full_ablation_spec import (
     Stage2InputBinding,
     assign_worker_slots,
     bind_stage2_row,
+    build_phase1_label_rows,
     build_phase1_t1_rows,
     build_phase2_rows,
     stage2_physical_execution_key,
@@ -48,6 +49,50 @@ def test_phase1_t1_is_30_paired_runs_on_current_split() -> None:
     } == {(0.07, 0.63, 0.30)}
     for seed in {row["train_seed"] for row in rows}:
         assert len([row for row in rows if row["train_seed"] == seed]) == 6
+
+
+def test_phase1_label_matrix_is_four_lower_rates_and_fourteen_new_runs() -> None:
+    seeds = [810001, 810002, 810003, 810004, 810005]
+    rows = build_phase1_label_rows(seeds, git_commit="a" * 40)
+    assert len(rows) == 14
+    assert len({row["row_key"] for row in rows}) == 14
+    by_rho = {
+        rho: [row for row in rows if row["rho_label"] == rho]
+        for rho in {row["rho_label"] for row in rows}
+    }
+    assert {rho: len(items) for rho, items in by_rho.items()} == {
+        0.005: 3,
+        0.01: 5,
+        0.02: 3,
+        0.05: 3,
+    }
+    assert all(
+        row["split_fractions"]["labeled"]
+        == pytest.approx(0.70 * row["rho_label"])
+        and row["split_fractions"]["unlabeled"]
+        == pytest.approx(0.70 * (1.0 - row["rho_label"]))
+        and row["split_fractions"]["source_validation"]
+        == pytest.approx(0.30)
+        and row["checkpoint_selection"] == "source_validation_only"
+        for row in rows
+    )
+    assert len({tuple(row["worker"].values()) for row in rows}) == 14
+    assert {row["worker"]["gpu"] for row in rows} == set(range(8))
+    assert all(
+        sum(row["worker"]["gpu"] == gpu for row in rows) <= 2
+        for gpu in range(8)
+    )
+
+
+def test_phase1_label_matrix_requires_five_registered_seeds() -> None:
+    with pytest.raises(
+        FullAblationSpecError,
+        match="five registered paired seeds",
+    ):
+        build_phase1_label_rows(
+            [810001, 810002, 810003],
+            git_commit="a" * 40,
+        )
 
 
 def test_screening_is_75_rows_per_arm_and_three_scenarios_per_row() -> None:

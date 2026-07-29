@@ -7,6 +7,8 @@ import pytest
 
 from cvsrffi.phase1_ablation_factory import (
     PHASE1_ABLATION_IDS,
+    PHASE1_LABEL_ABLATION_IDS,
+    PHASE1_LABEL_RHOS_BY_ID,
     Phase1AblationConfigError,
     apply_phase1_ablation,
     enabled_objectives,
@@ -66,6 +68,26 @@ def test_all_six_phase1_t1_arms_have_unique_frozen_hashes() -> None:
     assert len(PHASE1_ABLATION_IDS) == 6
     assert len(set(hashes.values())) == 6
     assert all(len(value) == 64 for value in hashes.values())
+
+
+def test_label_rate_arms_change_only_the_preregistered_split_fractions() -> None:
+    hashes = {
+        ablation_id: phase1_ablation_config_hash(ablation_id)
+        for ablation_id in PHASE1_LABEL_ABLATION_IDS
+    }
+    assert len(hashes) == 4
+    assert len(set(hashes.values())) == 4
+    for ablation_id, rho in PHASE1_LABEL_RHOS_BY_ID.items():
+        config = phase1_ablation_config(ablation_id)
+        assert config["labeled_ratio"] == pytest.approx(0.70 * rho)
+        assert config["unlabeled_ratio"] == pytest.approx(
+            0.70 * (1.0 - rho)
+        )
+        assert config["source_val_ratio"] == pytest.approx(0.30)
+        assert set(phase1_ablation_diff(ablation_id)) == {
+            "labeled_ratio",
+            "unlabeled_ratio",
+        }
 
 
 def test_full_arm_matches_frozen_dual_branch_architecture() -> None:
@@ -327,7 +349,10 @@ def test_dataset_bytes_hash_changes_resolved_hash(tmp_path) -> None:
     assert first.ablation_config_hash != second.ablation_config_hash
 
 
-@pytest.mark.parametrize("ablation_id", PHASE1_ABLATION_IDS)
+@pytest.mark.parametrize(
+    "ablation_id",
+    PHASE1_ABLATION_IDS + PHASE1_LABEL_ABLATION_IDS,
+)
 def test_arm_aware_terminal_contract_accepts_intentional_disabled_groups(
     ablation_id: str,
     tmp_path,

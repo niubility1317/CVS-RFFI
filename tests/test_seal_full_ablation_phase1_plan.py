@@ -7,7 +7,10 @@ from pathlib import Path
 
 import pytest
 
-from cvsrffi.full_ablation_spec import build_phase1_t1_rows
+from cvsrffi.full_ablation_spec import (
+    build_phase1_label_rows,
+    build_phase1_t1_rows,
+)
 from scripts.run_full_ablation_phase1_t1 import Phase1RunnerError
 from scripts.seal_full_ablation_phase1_plan import (
     RELEASE_RELATIVE_PATHS,
@@ -64,6 +67,16 @@ def _review() -> dict:
     }
 
 
+def _label_plan() -> dict:
+    plan = _plan()
+    plan["stage"] = "label"
+    plan["rows"] = build_phase1_label_rows(
+        _SEED_REGISTRY["phase1_train_seeds"],
+        git_commit="a" * 40,
+    )
+    return plan
+
+
 def test_seal_binds_review_commit_config_and_release_hashes() -> None:
     sealed = seal_plan(
         _plan(),
@@ -78,6 +91,24 @@ def test_seal_binds_review_commit_config_and_release_hashes() -> None:
     assert len({row["config_hash"] for row in sealed["rows"]}) == 6
     assert all(row["executor_status"] == "LOCAL_VERIFIED" for row in sealed["rows"])
     assert len(sealed["sealed_content_sha256"]) == 64
+
+
+def test_seal_accepts_fourteen_row_label_matrix() -> None:
+    sealed = seal_plan(
+        _label_plan(),
+        _review(),
+        _SEED_REGISTRY,
+        run_id="phase1-label-v1",
+        commit="a" * 40,
+        release_files=_RELEASE_FILES,
+    )
+    assert sealed["formal_launch_authority"] is True
+    assert len(sealed["rows"]) == 14
+    assert len({row["config_hash"] for row in sealed["rows"]}) == 4
+    assert all(
+        row["executor_status"] == "LOCAL_VERIFIED"
+        for row in sealed["rows"]
+    )
 
 
 def test_seal_rejects_review_findings_or_commit_drift() -> None:

@@ -15,10 +15,16 @@ REGISTRY = (
 )
 
 
-def _args(*, phase: str, stage: str = "screening") -> argparse.Namespace:
+def _args(
+    *,
+    phase: str,
+    stage: str = "screening",
+    phase1_matrix: str = "t1",
+) -> argparse.Namespace:
     return argparse.Namespace(
         phase=phase,
         stage=stage,
+        phase1_matrix=phase1_matrix,
         arms="P2-FULL",
         git_commit="a" * 40,
         wisig_pkl_sha256="b" * 64,
@@ -54,6 +60,21 @@ def test_phase1_plan_keeps_exact_physical_count() -> None:
     assert plan["unique_physical_row_count"] == 30
     assert plan["physical_dedup_status"] == "NOT_APPLICABLE_PHASE1"
     assert plan["python_environment_id"] == "CVS-RFFI"
+
+
+def test_phase1_label_plan_has_fourteen_new_rows_and_reuses_rho10() -> None:
+    plan = build_plan(
+        _args(phase="phase1", phase1_matrix="label")
+    )
+    assert plan["stage"] == "label"
+    assert plan["logical_row_count"] == 14
+    assert plan["unique_physical_row_count"] == 14
+    assert {row["rho_label"] for row in plan["rows"]} == {
+        0.005,
+        0.01,
+        0.02,
+        0.05,
+    }
 
 
 def test_registry_hash_is_cross_platform_line_ending_stable() -> None:

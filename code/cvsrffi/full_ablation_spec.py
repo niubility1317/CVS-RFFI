@@ -10,7 +10,11 @@ from __future__ import annotations
 from dataclasses import asdict, dataclass
 from typing import Any, Iterable, Mapping, Sequence
 
-from cvsrffi.phase1_ablation_factory import phase1_ablation_config_hash
+from cvsrffi.phase1_ablation_factory import (
+    PHASE1_LABEL_ABLATION_IDS,
+    PHASE1_LABEL_RHOS_BY_ID,
+    phase1_ablation_config_hash,
+)
 
 PROTOCOL_SCHEMA = "p2_min_v1"
 DESIGN_ID = "cvs_full_ablation_phase1_phase2_20260728"
@@ -380,6 +384,76 @@ def build_phase1_t1_rows(
     return rows
 
 
+def build_phase1_label_rows(
+    train_seeds: Sequence[int],
+    *,
+    git_commit: str,
+) -> list[dict[str, Any]]:
+    """Build the 14 new P1-LABEL rows; rho=0.10 reuses P1-FULL T1."""
+
+    seeds = _unique_positive(train_seeds, name="Phase1 label train seeds")
+    if len(seeds) != 5:
+        raise FullAblationSpecError(
+            "Phase1 label matrix requires five registered paired seeds"
+        )
+    concrete_commit = _require_git_commit(git_commit)
+    rows: list[dict[str, Any]] = []
+    for ablation_id in PHASE1_LABEL_ABLATION_IDS:
+        rho = float(PHASE1_LABEL_RHOS_BY_ID[ablation_id])
+        selected_seeds = seeds if abs(rho - 0.01) <= 1e-12 else seeds[:3]
+        split_fractions = {
+            "labeled": 0.70 * rho,
+            "unlabeled": 0.70 * (1.0 - rho),
+            "source_validation": 0.30,
+        }
+        for seed in selected_seeds:
+            rows.append(
+                {
+                    "design_id": DESIGN_ID,
+                    "design_schema": DESIGN_SCHEMA,
+                    "phase": "phase1",
+                    "ablation_id": ablation_id,
+                    "evidence_level": (
+                        "M_CONFIRMATION"
+                        if abs(rho - 0.01) <= 1e-12
+                        else "S_SCREENING"
+                    ),
+                    "mechanism_family": "label_rate_sensitivity",
+                    "comparison_target": "P1-FULL@rho0.10",
+                    "git_commit": concrete_commit,
+                    "method_config_hash": phase1_ablation_config_hash(
+                        ablation_id
+                    ),
+                    "rho_label": rho,
+                    "split_fractions": split_fractions,
+                    "train_seed": seed,
+                    "epochs": 200,
+                    "checkpoint_selection": "source_validation_only",
+                    "executor_status": "LOCAL_IMPLEMENTED_PENDING_REVIEW",
+                }
+            )
+    # P1-LABEL has fourteen rows. Spread the first wave across all eight GPUs
+    # before allocating the second slot so the bounded matrix uses the full
+    # server instead of leaving GPU7 idle.
+    balanced_slots = tuple(
+        WorkerSlot(gpu=gpu, slot=slot)
+        for slot in range(SLOTS_PER_GPU)
+        for gpu in range(GPU_COUNT)
+    )
+    slots = balanced_slots[: len(rows)]
+    for row, slot in zip(rows, slots):
+        row["worker"] = asdict(slot)
+        row["row_key"] = (
+            f"{row['ablation_id']}__train_seed_{row['train_seed']}"
+        )
+    if len(rows) != 14:
+        raise FullAblationSpecError(
+            "Phase1 label matrix must contain exactly 14 new-training rows"
+        )
+    validate_plan_rows(rows)
+    return rows
+
+
 def build_phase2_rows(
     *,
     stage: str,
@@ -641,6 +715,7 @@ __all__ = [
     "TARGET_RECEIVERS",
     "assign_worker_slots",
     "build_phase1_t1_rows",
+    "build_phase1_label_rows",
     "build_phase2_rows",
     "bind_stage2_row",
     "stage2_physical_execution_key",

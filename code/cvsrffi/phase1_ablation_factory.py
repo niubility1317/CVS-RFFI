@@ -23,6 +23,13 @@ PHASE1_ABLATION_IDS = (
     "P1-C0",
     "P1-D0",
 )
+PHASE1_LABEL_RHOS_BY_ID = {
+    "P1-LABEL-RHO005": 0.005,
+    "P1-LABEL-RHO010": 0.010,
+    "P1-LABEL-RHO020": 0.020,
+    "P1-LABEL-RHO050": 0.050,
+}
+PHASE1_LABEL_ABLATION_IDS = tuple(PHASE1_LABEL_RHOS_BY_ID)
 
 
 class Phase1AblationConfigError(ValueError):
@@ -262,6 +269,14 @@ _ARM_OVERRIDES: dict[str, dict[str, Any]] = {
         "concat_sat_ce_only": False,
         "lambda_sat_cls": 0.0,
     },
+    **{
+        ablation_id: {
+            "labeled_ratio": 0.70 * rho,
+            "unlabeled_ratio": 0.70 * (1.0 - rho),
+            "source_val_ratio": 0.30,
+        }
+        for ablation_id, rho in PHASE1_LABEL_RHOS_BY_ID.items()
+    },
 }
 
 
@@ -392,6 +407,8 @@ def apply_phase1_ablation(args: Namespace) -> dict[str, Any]:
 __all__ = [
     "PHASE1_ABLATION_IDS",
     "PHASE1_ABLATION_SCHEMA",
+    "PHASE1_LABEL_ABLATION_IDS",
+    "PHASE1_LABEL_RHOS_BY_ID",
     "Phase1AblationConfigError",
     "apply_phase1_ablation",
     "enabled_objectives",

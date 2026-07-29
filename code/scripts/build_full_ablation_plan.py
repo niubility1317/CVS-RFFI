@@ -20,6 +20,7 @@ from cvsrffi.full_ablation_spec import (
     ArmSpec,
     FullAblationSpecError,
     SeedBundle,
+    build_phase1_label_rows,
     build_phase1_t1_rows,
     build_phase2_rows,
     validate_stage2_registry_disjointness,
@@ -88,11 +89,18 @@ def build_plan(args: argparse.Namespace) -> dict[str, Any]:
         registered_phase1_train_seeds = [
             int(value) for value in registry["phase1_train_seeds"]
         ]
-        rows = build_phase1_t1_rows(
-            registered_phase1_train_seeds,
-            git_commit=args.git_commit,
-        )
-        stage = "t1"
+        if args.phase1_matrix == "label":
+            rows = build_phase1_label_rows(
+                registered_phase1_train_seeds,
+                git_commit=args.git_commit,
+            )
+            stage = "label"
+        else:
+            rows = build_phase1_t1_rows(
+                registered_phase1_train_seeds,
+                git_commit=args.git_commit,
+            )
+            stage = "t1"
     else:
         registered_phase1_train_seeds = []
         stage = args.stage
@@ -152,6 +160,12 @@ def _parser() -> argparse.ArgumentParser:
         description="Build a non-launching full-ablation matrix."
     )
     parser.add_argument("--phase", choices=("phase1", "phase2"), required=True)
+    parser.add_argument(
+        "--phase1-matrix",
+        choices=("t1", "label"),
+        default="t1",
+        help="Phase1 only: main T1 matrix or P1-LABEL sensitivity matrix.",
+    )
     parser.add_argument(
         "--stage",
         choices=("screening", "confirmation"),
