@@ -689,3 +689,48 @@ v5失败已经证明predictor package与复用D18缓存闭合，唯一系统性�
 - smoke或批次发现两个不同row出现相同prediction前确定性异常时，立即停止本run新增dispatch并保留证据；不得续跑、覆盖或删除旧v5。
 
 当前状态：`COMMIT_00B7AD35_LOCAL_VERIFIED / SOURCE_PLANS_READY / FRESH_V6_REAL_SMOKE_AUTHORIZED / NO_PERFORMANCE_RESULT`。
+
+## 2026-07-30 fresh v6真实smoke失败封口
+
+direct preflight、磁盘、GPU进程和fresh root缺席检查均PASS；v6 release已检出commit`00b7ad3597e3958ea1fc9c152d2119be36dd55a2`且tracked clean，6个关键文件compile PASS。smoke复用v5已封存before/after package，在物理GPU2启动feature PID`950875`，CWD/cmdline/output/log绑定均正确。
+
+进程随后确定性退出，feature输出`0`个；完整异常为`Stage2AblationFeatureBuilderError: formal Phase1 deployment binding drift`，normalized fingerprint=`7a13cd0cc4e6778ce7fd7ccf3efa6dd90e43166d8d24d9f7ece890743ea084b3`，日志SHA256=`5219d1aaa40dfe16827a246def6a5accbdfb2a6a29c29f7667918c6f9dcca255`。
+
+根因是启动参数身份字段误配，不是代码或数据损坏：
+
+|字段|实际值|
+|---|---|
+|CLI `--expected-phase1-bundle-sha256`|`276afd459ab8cee97e86837faf541fc576190f6da773f7cfb7b22dd4edfb1702`|
+|binding `outer_content_root_sha256`|`276afd459ab8cee97e86837faf541fc576190f6da773f7cfb7b22dd4edfb1702`|
+|binding `checkpoint_lineage_sha256`|`1eb6d07b9d6339400892c5553f33261f40513922d4b08c907446e44e993307d7`|
+|当前loader比较字段|`checkpoint_lineage_sha256`|
+
+binding schema为`cvs.full_ablation.phase1.deployment_binding.v1`，23键集合与loader常量一致。v5→v6实际feature参数只改变release/CWD、正式ground component目录和fresh output/log/PID根；其余参数相同，包括上述误传的outer content root。v5 feature在更早的D81→D80→D66加载处失败，未曾验证该后续formal runtime参数。
+
+失败后PID已退出，本run GPU进程为0，GPU2已释放；GPU0/1各2个既有外部进程，其余GPU为空。states与Stage2-C的request/run/log共6个正式root全部`ABSENT`，未构建剩余输入、未启动正式矩阵、未读取性能、未修改或重试代码/数据。v6 release与v4 input全部保留；本地`ssh.exe=0`，N607/lab bridge ESTABLISHED TCP22=`0/0`。
+
+证据位于`release_evidence/n607_v6_00b7ad35/`，包括完整`feature_k10.log`、`launch_command.txt`、`deployment_binding.json`、`binding_drift_evidence.json`、`v5_v6_parameter_diff.json`、`remote_status_snapshot.json`、`local_connection_cleanup.json`和`runner_handoff.json`。25.8MB Git bundle只保留在root证据目录，未复制到Git证据目录。
+
+当前状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / ZERO_FEATURE_OUTPUT / NO_FORMAL_STAGE2_ROOT / NO_PERFORMANCE_RESULT / REMOTE_OUTPUTS_PRESERVED`。
+
+## 2026-07-30 fresh v7启动参数预检与补跑预登记
+
+v6已经把参数歧义隔离为单一启动错误：CLI名称中的“bundle”实际由feature builder解释为Phase1 checkpoint lineage，而v6误传了outer content root。代码、正式deployment binding、v2 component、v5 predictor package和D18缓存均不需要修改。v7只补跑失败的feature smoke，继续复用前序完整产物，不重新运行Phase1、predictor package或数据构建。
+
+启动前新增一项不写输出、不打开D18 package/query、CPU-only的真实formal-input预检，直接调用当前commit中的三个正式函数：
+
+1. `_load_formal_runtime`使用`expected_phase1_bundle_sha256=1eb6d07b...307d7`，必须返回6个固定handle、formal eligible、outer signature verified和runtime parity verified。
+2. `_verified_deployment_prototypes`使用同一checkpoint lineage及已封存prototype PT/JSON哈希，必须返回`[6,288]`有限单位范数prototype，且inference identity的source checkpoint匹配。
+3. `_ground_spectrum_from_formal_v2_component`必须使用`phase1_unsigned/package/component`和manifest SHA`03b576...448a`，返回`[160,r]`basis、正且和为1的weights、84个component input与outer joint seal verified。
+
+只有上述三段全部PASS并把实际CLI参数逐项写入launch artifact，才允许占用GPU启动feature。fresh不可覆盖边界：
+
+- 复用release：`/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2_t1_20260730_v6_00b7ad35`，代码仍为`00b7ad3597e3958ea1fc9c152d2119be36dd55a2`。
+- 新input：`/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2_t1_20260730_v5_00b7ad35`。
+- feature smoke ID：`cvs_full_ablation_phase2_feature_smoke_t1_20260730_v7_00b7ad35`。
+- states run ID：`cvs_full_ablation_phase2_states_t1_20260730_v5_00b7ad35`。
+- Stage2-C run ID：`cvs_full_ablation_phase2c_t1_20260730_v5_00b7ad35`。
+- CLI必须显式传入`--expected-phase1-bundle-sha256 1eb6d07b9d6339400892c5553f33261f40513922d4b08c907446e44e993307d7`；launch artifact必须同时记录该值与outer content root，禁止再次混用。
+- v7 smoke失败时仍不自动重试；成功时只补剩余缺失输入，然后按原325/1425计划启动，不重跑已完整闭合的旧package/cache。
+
+当前状态：`V6_CLOSED_NO_RESULT / V7_CPU_FORMAL_PREFLIGHT_REQUIRED / REUSE_COMPLETED_ARTIFACTS / NO_PERFORMANCE_RESULT`。
