@@ -9,6 +9,7 @@ from cvsrffi.stage2_ablation_scoring_sidecars import (
     LEGACY_PREDICTOR_TRUTH_SIDECAR_SCHEMA,
     Stage2AblationScoringSidecarError,
     publish_stage2a_scoring_sidecar,
+    publish_stage2b_scoring_sidecar,
 )
 from cvsrffi.stage2_metric_scorer import (
     FORMAL_LEO_WEAK_SCENARIOS,
@@ -80,6 +81,42 @@ def test_publish_stage2a_accepts_supported_source_truth_schemas(
     assert receipt["source_truth_schema"] == source_schema
     assert receipt["published_truth_schema"] == TRUTH_SIDECAR_SCHEMA
     assert receipt["truth_rows_reused_without_data_revalidation"] is True
+    verified_truth, _, _ = load_verified_scoring_sidecar(
+        receipt["scoring_manifest_path"],
+        expected_scoring_manifest_sha256=receipt[
+            "scoring_manifest_sha256"
+        ],
+    )
+    assert verified_truth == published
+
+
+@pytest.mark.parametrize(
+    "source_schema",
+    [LEGACY_PREDICTOR_TRUTH_SIDECAR_SCHEMA, TRUTH_SIDECAR_SCHEMA],
+)
+def test_publish_stage2b_accepts_supported_source_truth_schemas(
+    tmp_path: Path,
+    source_schema: str,
+) -> None:
+    source = tmp_path / "source_truth.json"
+    original = _write_source(source, source_schema)
+    receipt = publish_stage2b_scoring_sidecar(
+        source_stage2b_truth_path=source,
+        expected_source_truth_sha256=sha256_file(source),
+        predictor_package_root_sha256="a" * 64,
+        predictor_package_seal_sha256="b" * 64,
+        output_root=tmp_path / "published",
+    )
+
+    published = json.loads(
+        Path(receipt["truth_sidecar_path"]).read_text(encoding="utf-8")
+    )
+    assert published["schema"] == TRUTH_SIDECAR_SCHEMA
+    assert published["stage"] == "stage2b"
+    assert published["rows"] == original["rows"]
+    assert receipt["stage"] == "stage2b"
+    assert receipt["source_truth_schema"] == source_schema
+    assert receipt["published_truth_schema"] == TRUTH_SIDECAR_SCHEMA
     verified_truth, _, _ = load_verified_scoring_sidecar(
         receipt["scoring_manifest_path"],
         expected_scoring_manifest_sha256=receipt[

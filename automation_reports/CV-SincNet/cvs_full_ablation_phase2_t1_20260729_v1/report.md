@@ -797,6 +797,6 @@ v9用Git承载的原50行命令、只改三个输出参数的分波控制器重�
 
 v10分离package输入根和fresh feature输出根，使用单文件自包含控制器并显式传递release code的`PYTHONPATH`。最终99/99 feature extraction成功，新增297个scope caches/594个物理文件；加v8 smoke复用3个scope caches后达到300个，即Stage2-A/B/C各100个，300/300由当前loader重载通过，异常指纹为空。Stage2-A sidecar首项随后因正式package truth schema为v2而被仅接受v3的publisher拒绝，其余24项未启动；feature全集不受影响。
 
-本地兼容修复只允许精确顶层的v2/v3 Stage2-B truth，先验证rows，再发布为v3 Stage2-A truth；未知schema、额外顶层键或非法rows均在写出前拒绝。相关23项与独立组合36项通过，代码复审P0=0、P1=0。fresh v11固定25个K=10 canonical Stage2-A sidecar；必须逐项由正式loader验证25组/50文件后才允许生成binding registry和plan seal。
+本地兼容修复只允许精确顶层的v2/v3 Stage2-B truth，先验证rows，再发布为v3；未知schema、额外顶层键或非法rows均在写出前拒绝。fresh v11固定25个K=10 canonical Stage2-A sidecar，最终25/25子进程成功、25/25正式loader验收、50文件完整、0异常指纹。registry还需要同一25份truth的v3 Stage2-B发布，stage保持stage2b且rows不变；fresh v12必须25/25正式loader验收后才允许生成binding registry和plan seal。
 
-当前状态：`PACKAGE_50_OF_50 / FEATURE_SCOPE_300_OF_300 / STAGE2A_SIDECAR_FRESH_V11_PENDING / STATES_NOT_LAUNCHED / NO_PERFORMANCE_RESULT`。
+当前状态：`PACKAGE_50_OF_50 / FEATURE_SCOPE_300_OF_300 / STAGE2A_SIDECAR_25_OF_25 / STAGE2B_SIDECAR_FRESH_V12_PENDING / STATES_NOT_LAUNCHED / NO_PERFORMANCE_RESULT`。
