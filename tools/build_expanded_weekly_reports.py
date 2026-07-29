@@ -25,7 +25,7 @@ SOURCE_DIR = REPO_ROOT / "docs" / "weekly_reports"
 REPORTS = (
     (
         SOURCE_DIR / "CVS_RFFI_Phase2阶段工作详细报告_20260724.md",
-        "CVS-RFFI_Phase2阶段工作详细报告_截至20260724_导师批注修订版.docx",
+        "CVS-RFFI_Phase2阶段工作详细报告_截至20260724_递进精简优化版.docx",
         "Phase2阶段综合报告",
     ),
     (
@@ -759,8 +759,10 @@ def markdown_to_docx(source: Path, destination: Path, topic: str) -> None:
             flush_paragraph()
             heading = stripped[3:].strip()
             if heading in {
-                "2.Phase2任务定义与三个Stage",
-                "7.五种方法的统一横向比较",
+                "2.Phase2任务的递进关系",
+                "4.Stage2-B：跨接收机旧类域适应",
+                "5.Stage2-C：类增量学习与新类注册",
+                "6.统一比较与下一步",
                 "附录A：非类增量对比方法复现实验结果",
             }:
                 doc.add_page_break()
@@ -772,10 +774,7 @@ def markdown_to_docx(source: Path, destination: Path, topic: str) -> None:
         if stripped.startswith("### "):
             flush_paragraph()
             heading = stripped[4:].strip()
-            if heading in {
-                "3.6本报告涉及的数据与实验矩阵",
-                "6.7matched无LEO新类归因诊断",
-            }:
+            if heading == "5.6matched无LEO新类归因诊断":
                 doc.add_page_break()
             p = doc.add_paragraph(style="Heading 2")
             add_rich_text(p, heading)
