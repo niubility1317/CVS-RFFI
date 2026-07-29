@@ -86,6 +86,7 @@ v3在`P1-B0/s7281101`完成E200后的source-only endpoint导出阶段发现1条�
 |review receipt|`235ebf804589e8871ba47430dc079c396408c032a28af5785152a5041dca4c06`|
 |sealed plan文件|`6a3a1ca35351ab063407e63a0a4509e802e2f134a54b30261b3a8a079f8a165f`|
 |sealed content|`33b88447cbca0a1589b33ea7955a7c5a679800a4bbd68cf6a51bc81809932b97`|
+|runner handoff|`337719171cdae37df6982f819638e509ec1fa7570905db9871d80550599590a2`；`user_launch_authorized=false`|
 |精确release|commit=`34c3e723a426fabed18c0ffc547ce839d628b572`；bundle完整历史校验通过|
 |矩阵|30 rows；16 slots；GPU0–7各2 slots；10个release file hashes|
 |关键导出模块|`code/cvsrffi/phase2_prototypes.py` Git blob SHA256=`cf293066a6daa19f9568ea5e089c902c270136482705c467916ec68fc41faf46`|
