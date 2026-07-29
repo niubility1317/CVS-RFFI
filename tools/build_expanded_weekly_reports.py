@@ -19,7 +19,7 @@ SOURCE_DIR = REPO_ROOT / "docs" / "weekly_reports"
 REPORTS = (
     (
         SOURCE_DIR / "CVS_RFFI_Phase2阶段工作详细报告_20260724.md",
-        "CVS-RFFI_Phase2阶段工作详细报告_截至20260724_对比结果后置版.docx",
+        "CVS-RFFI_Phase2阶段工作详细报告_截至20260724_实验定义补充版.docx",
         "Phase2阶段综合报告",
     ),
     (

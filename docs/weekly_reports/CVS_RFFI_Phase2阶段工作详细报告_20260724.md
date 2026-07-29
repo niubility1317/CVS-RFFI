@@ -34,7 +34,7 @@
 |时间|Phase2阶段|核心问题|对比方法|主要输出|
 |---|---|---|---|---|
 |截至7月16日|Stage2-B|换到新接收机后，旧类准确率如何恢复|ProtoNet CDA、MRIOR-SDA、DADDA-SDA|375个域适应任务，分析K-shot、receiver和计算开销|
-|截至7月24日|Stage2-C|如何注册新发射机，同时保留旧发射机|CSIL、MoPC-HR|24个正式LEO配置与18个matched无LEO诊断配置|
+|截至7月24日|Stage2-C|如何注册新发射机，同时保留旧发射机|CSIL、MoPC-HR|800个正式LEO cell/2400个场景row及同规模matched无LEO诊断|
 
 ## 2.从零理解RFFI与Phase2
 
@@ -162,8 +162,10 @@ MRIOR、DADDA、CSIL和MoPC-HR的原论文任务、训练生命周期和数据�
 |工作包|基座与数据|target设置|实验规模|输出|
 |---|---|---|---|---|
 |旧类域适应|ADV3B02＋target-old support/query；MRIOR/DADDA另读source|5个target receiver；K={1,2,5,10,20}；5个seed|5×5×5×3=375个方法任务|适应前后old_acc、收益、正/负迁移、时延|
-|新类注册|ADV3B02接口＋target-old/target-new support/query|K={5,10,20}；新类数按方法配置变化|24个正式LEO配置|old_acc_after、seen_new_acc、H、forgetting|
-|信道归因诊断|保持方法、物理ID、split、K和seed一致，仅替换新类IQ为无LEO版本|18个matched配置|18个诊断配置|Δnew、Δold、ΔH|
+|新类注册|ADV3B02接口＋Phase2前base状态＋target-new support；old/new query只评分|5个target receiver；5个seed；K={1,5,10,20}；新类数={2,5,10,20}|800个正式LEO cell/2400个场景row|old_acc_before/after、seen_new_acc、H、forgetting、min_old|
+|信道归因诊断|保持方法、物理ID、split、K、seed和旧类条件一致，仅替换新类IQ为无LEO版本|与正式矩阵逐row配对|800个非正式cell/2400个场景row|Δnew、Δold、ΔH、Δforgetting、Δmin_old|
+
+本报告沿用已完成外部对比运行中的“正式LEO”命名，表示该冻结矩阵内的LEO条件，而不表示这些宽权限方法已经获得`p2_min_v1`主方法晋级资格。三个LEO场景分别训练、锁定和评分，不能把同一物理样本的多场景结果合并成更多K-shot support；其汇总仅用于对比方法机制分析。
 
 ## 4.评价指标与输入输出
 
@@ -266,11 +268,19 @@ $$
 \hat y=\arg\min_c\|f_\theta(x)-p_c\|_2^2
 $$
 
-**本轮使用的数据：**只使用固定ADV3B02特征和target-old support，不读取source，不更新backbone。
-
-**更新对象：**每类一个target prototype。
-
 **方法分类：**度量型少样本分类、prototype classifier。
+
+#### 在CVS模型上的Phase2-B执行方式
+
+**CVS起点：**加载同一ADV3B02 Phase1 checkpoint，使用其160维身份特征\(z_{\mathrm{id}}\)作为固定embedding。
+
+**Phase2实际使用的数据：**每个target receiver、K-shot、seed和LEO弱信道场景只读取6个旧类的target-old support及其合法标签。source LEO缓存虽然在统一配置中声明，但本方法不会打开；query只在prototype构建完成后用于推理。
+
+**更新对象：**不更新ADV3B02、不训练分类头、不执行反向传播，只把每类K个support embedding的均值写成一个target prototype。
+
+**优化目标与损失函数：**这是闭式估计而不是梯度优化。其目标是让query选择欧氏距离最近的类中心；实现中适应损失记为0，`adapt_steps=0`，`adv3b02_gradient_updates=0`。
+
+**输出与决策：**每个query独立计算到6个旧类prototype的距离并取最小值，不读取query真值、整批类别数量或类别配额。
 
 **优点：**注册快、无反向传播、每类状态小、机制上可扩展新类。
 
@@ -282,16 +292,26 @@ Yang等人提出MRIOR，用于缓解不同接收机造成的RFFI性能下降[2]�
 
 $$
 \mathcal L_{\text{MRIOR-SDA}}
-=\mathcal L_{\text{CE}}^{\text{source}}
-+0.5\mathcal L_{\text{CE}}^{\text{target}}
+=0.5\mathcal L_{\text{wCE}}^{\text{source}}
++0.5\mathcal L_{\text{wCE}}^{\text{target-support}}
 +0.005\mathcal L_{\text{DV-KL}}
 $$
 
-**本轮使用的数据：**source有标签数据、target-old support和固定target query。
-
-**更新对象：**完整backbone和分类相关状态；每个任务进行600次更新。
-
 **方法分类：**模型更新型监督域适应；原论文基础是域对齐＋自适应伪标签的UDA。
+
+#### 在CVS模型上的Phase2-B执行方式
+
+**CVS起点：**复制同一ADV3B02身份backbone及其旧类logit输出，并在160维\(z_{\mathrm{id}}\)后增加MRIOR的DV-KL估计网络。该实验属于“ADV3B02-backbone CVS extension”，不是把原论文网络结构原样搬到CVS。
+
+**Phase2实际使用的数据：**每个场景同时采样两部分训练数据。一部分是封存的source LEO弱信道有标签缓存，覆盖6个旧类、7个source receiver、2天、每个“类别×接收机×天”100条物理样本；另一部分是当前target receiver的6类K-shot target-old LEO support。target query与support物理ID互斥，并且只在适应结束、模型锁定后打开。
+
+**更新对象：**外层更新ADV3B02完整身份backbone及其旧类分类输出；内层单独更新DV-KL估计网络。它不是prototype更新，也不是只训练轻量adapter。
+
+**优化目标：**一方面保持source旧类判别能力并利用target support标签纠正目标域分类，另一方面通过DV-KL项缩小source与target-support特征分布差异。`wCE`表示按target support类别频数计算并均值归一化权重后的交叉熵；本轮K对各类相同，因此该权重通常接近均匀。
+
+**优化过程：**每个外层step先固定特征，用7个内层step训练估计网络，使其提高DV-KL差异估计；再固定估计网络，用上式更新ADV3B02。优化器为两个Adam，学习率均为\(6\times10^{-4}\)。每个LEO场景执行200个外层更新；一个receiver×K×seed任务包含3个独立场景模型，因此汇总资源表记为600次backbone更新，不能理解为同一个模型连续训练600步。
+
+**query边界与输出：**query不进入交叉熵、DV-KL、模型选择或回滚。适应后的ADV3B02旧类logit在全部6个已注册旧类中独立argmax。
 
 **为什么可能有效：**它不是只移动prototype，而是改变特征提取网络，使target support回到正确旧类区域。
 
@@ -311,16 +331,24 @@ Feng等人提出DADDA，通过动态分布对齐解决跨接收机RFFI[3]。方�
 $$
 \mathcal L_{\text{DADDA-SDA}}
 =\mathcal L_{\text{CE}}^{\text{source}}
-+\mathcal L_{\text{CE}}^{\text{target}}
-+\mathcal L_{\text{MMD}}
-+\alpha\mathcal L_{\text{LMMD}}
++\mathcal L_{\text{CE}}^{\text{target-support}}
++(1-\alpha)\mathcal L_{\text{MMD}}
++\alpha\mathcal L_{\text{LMMD-sum}}
 $$
 
-**本轮使用的数据：**source有标签数据、target-old support和固定target query。
-
-**更新对象：**backbone和分类相关状态；每个任务进行600次更新。
-
 **方法分类：**统计距离型监督域适应；原论文属于动态全局＋局部对齐UDA。
+
+#### 在CVS模型上的Phase2-B执行方式
+
+**CVS起点和数据：**使用与MRIOR-SDA完全相同的ADV3B02 checkpoint、source LEO弱信道有标签缓存、target-old LEO support、target query划分和375项receiver×K×seed矩阵。query同样只在训练结束后用于测试。
+
+**更新对象：**更新ADV3B02完整身份backbone和旧类分类输出。DADDA路径从ADV3B02提取全局特征\(z_{\mathrm{id}}\)，并拼接`feat_cls`、`feat_dac`、`feat_pa`、`feat_imp`等可用中间表示形成局部特征。
+
+**优化目标：**source CE保持原有旧类判别边界，target-support CE利用少量目标域真标签校准分类；MMD对齐source与target-support的整体分布，LMMD-sum利用真实support标签对齐对应类别的局部分布[7]。动态因子\(\alpha\)由当前MMD和LMMD-sum计算，并在本轮实现中停止梯度，使训练根据当前全局/局部差异自动分配对齐权重，而不是把MMD和LMMD简单相加。
+
+**优化过程：**采用SGD，初始学习率\(1\times10^{-4}\)、momentum为0.9、weight decay为\(5\times10^{-4}\)，学习率按逆衰减日程下降。source CE、target CE和动态对齐项的外部权重均为1。每个LEO场景更新200步；3个场景合计600次backbone更新，但三个场景模型彼此独立。
+
+**query边界与输出：**target query不参与CE、MMD、LMMD、\(\alpha\)估计、调参或回滚；最终在6个已注册旧类logit中独立argmax。
 
 **局限：**K很小时，target类条件分布估计噪声大，强行对齐可能破坏source中已经形成的决策边界。
 
@@ -329,8 +357,8 @@ $$
 |方法|方法分类|部署输入|更新对象|source访问|计算特点|本轮能否注册新类|
 |---|---|---|---|---|---|---|
 |ProtoNet CDA|度量型少样本分类|target-old support|prototype|否|0次backbone更新|未评估|
-|MRIOR-SDA|模型更新型监督域适应|source＋target-old support|完整backbone|是|600次更新|否，闭集旧类|
-|DADDA-SDA|统计距离型监督域适应|source＋target-old support|完整backbone|是|600次更新|否，闭集旧类|
+|MRIOR-SDA|模型更新型监督域适应|source LEO缓存＋target-old support|完整身份backbone＋DV-KL估计网络|是|200步/场景，3场景合计600步|否，闭集旧类|
+|DADDA-SDA|统计距离型监督域适应|source LEO缓存＋target-old support|完整身份backbone|是|200步/场景，3场景合计600步|否，闭集旧类|
 
 ### 5.6非类增量对比方法的复现实验结果位置
 
@@ -348,7 +376,15 @@ Stage2-C要求在同一个target receiver域中同时处理：
 - target-new support：注册Phase1未见的新发射机。
 - old/new query：模型冻结后，在全部已注册类别中统一竞争。
 
-正式实验的新类support和query均叠加固定LEO弱信道。K取5、10和20，新类数量按CSIL和MoPC-HR的可执行配置取1、3、5、10、20或25。报告必须把old_acc_after、seen_new_acc、H_old_new和forgetting保留在同一row中。
+本轮类增量对比严格采用论文作者公开仓库的执行语义，而不是早期简化移植版：CSIL锁定`pcwhy/CSIL@8ce8637`[12]，MoPC-HR锁定`xmuLdz/MoPC-HR@ae65543`[13]。原始编码器统一替换为预训练ADV3B02的160维\(z_{\mathrm{id}}\)特征接口，再保留CSIL或MoPC-HR各自的分类头、训练器、batch、`drop_last`、损失和更新范围。因此，实验定位是“官方方法语义＋CVS基座/数据接口适配”，不是原论文数据集上的数值复现。
+
+#### Phase1基座状态与Phase2输入必须分开
+
+**进入Phase2前的source base状态：**6个旧类、7个source receiver、2天、每个组合100条，共8400条地面source物理样本。MoPC-HR使用全部8400条训练base；CSIL按官方全局shuffle语义切成5879条base train和2521条互斥Fisher validation。它们用于构造进入Phase2前的旧类模型、Fisher统计或old prototype，不是每个Phase2增量cell反复回放的训练输入。
+
+**Phase2真正用于新增类更新的数据：**仅使用当前cell中带合法标签的target-new K-shot support。正式条件下，新类support和query均为固定LEO弱信道观测；support/query物理ID互斥。旧类target query用于测量遗忘，新类target query用于测量注册能力，二者都不参与训练。
+
+**冻结矩阵：**5个target receiver×5个seed×4个K（1、5、10、20）×4个新类规模（2、5、10、20）×2种方法，共800个cell；每个cell包含`leo_clear_weak`、`leo_low_elev_weak`、`leo_rain_weak`三个正式场景，共2400个正式LEO row。每个query在模型锁定后独立对全部实际注册类竞争。
 
 ### 6.2CSIL：通道隔离型无exemplar类增量学习
 
@@ -370,22 +406,32 @@ Liu等人在2021年提出CSIL（Channel Separation Enabled Incremental Learning�
 - 知识蒸馏（KD），让新模型接近旧模型输出[9]。
 - EWC/Fisher约束，对旧任务重要参数施加更强保护[8]。
 
-概念性目标可写为：
+#### 在ADV3B02-CVS模型上的Phase2-C执行方式
+
+**CVS模型结构：**`ADV3B02 z_id160→fc_bf_fp(C)→zero-bias Fingerprints(C)`。进入Phase2前，5879条source样本用于base训练，2521条互斥source样本用于估计旧任务Fisher重要性。
+
+**Phase2数据：**从当前cell的target-new support中筛出新增类别样本，按官方全局shuffle语义取约60%训练部分，并保留原实现的off-by-one切分、batch size 20、`drop_last=True`和3个epoch。旧类source IQ、旧类target support和任何query都不进入增量梯度。
+
+**更新对象：**ADV3B02旧backbone在增量阶段冻结。模型扩展新的`fc_bf_fp`输出行和新的fingerprint块；fc梯度mask只允许新增行和bias更新，fingerprint梯度mask允许old-old与new-new块更新，old-new和new-old交叉块保持为0。旧模型参数和Fisher统计只作为约束状态读取。
+
+**实际执行损失：**
 
 $$
 \mathcal L_{\text{CSIL}}
 =\mathcal L_{\text{CE,new}}
-+\lambda_{\text{KD}}\mathcal L_{\text{KD}}
-+\lambda_{\text{EWC}}\mathcal L_{\text{EWC}}
++\mathcal L_{\text{EWC}}
++0.2\mathcal L_{\text{KD}}
 $$
 
-**使用的数据与状态：**新类support、旧模型、旧类重要参数统计和CVS适配训练流程；不保存全部旧类原始IQ。
+其中，\(\mathcal L_{\text{CE,new}}\)是在新增类support上的交叉熵；\(\mathcal L_{\text{EWC}}\)按Fisher重要性惩罚当前参数偏离Phase2前旧参数，执行官方“全量求和”语义；\(\mathcal L_{\text{KD}}\)约束当前模型旧类响应接近冻结旧模型响应，本轮按官方代码使用固定除数32。优化器为手工SGDM，学习率\(0.01/(1+0.01t)\)、momentum为0.9、L2 factor为0.05。
+
+**query与输出：**训练结束后使用zero-bias分类器，对旧类和新类全部注册输出共同argmax。query训练步数为0，不参与Fisher、CE、EWC、KD、模型选择或回滚。
 
 **优点：**旧类保护强，不要求完整历史原始样本。
 
-**局限：**网络容量随增量阶段扩展；固定batch和`drop_last`会导致低K、低新类数时没有有效optimizer step；过度保护旧类时，新类可能完全不被预测。
+**局限：**网络容量随增量阶段扩展；新增类数大于旧输出宽度时需要明确的类别规模接口适配；固定batch和`drop_last`会导致低K、低新类数时没有有效optimizer step；过度保护旧类时，新类可能完全不被预测。
 
-**CVS适配边界：**本轮是“CSIL机制驱动的CVS适配”，不是原论文在ADS-B数据上的数值复现。ADV3B02特征、LEO新类数据、类别规模和训练日程均与原论文不同。
+**CVS适配边界：**新类fingerprint初始化在新类数不超过6时使用官方扩展前末端坐标；超过6类时使用新增坐标完成类别规模适配并显式记录。该适配解决接口可执行性，不改变上述损失和冻结范围。
 
 ### 6.3MoPC-HR：prototype校正与分层正则化
 
@@ -420,20 +466,30 @@ $$
 
 **分层正则化（HR）：**在多个网络层控制新旧模型参数或表示差异，把更多可塑性留给适合学习新类的层，同时保护通用旧类表征。
 
-概念性目标为：
+#### 在ADV3B02-CVS模型上的Phase2-C执行方式
+
+**CVS模型结构：**`ADV3B02 z_id160→预分配全注册类Linear classifier`。进入Phase2前用全部8400条source旧类样本训练base，并保存6个旧类prototype和旧模型参数。
+
+**Phase2数据：**交叉熵的真实样本只来自当前cell的target-new support。训练采用20个epoch、batch size 16和`drop_last=True`；每个有效step再从历史旧类prototype中随机抽取16个类别中心，并加入标准差0.05的Gaussian噪声形成旧类伪特征。旧类原始IQ和query不进入增量训练。
+
+**更新对象：**与CSIL不同，MoPC-HR在增量阶段不冻结ADV3B02；backbone和Linear classifier均由SGD更新。优化器学习率为0.01、momentum为0.9、weight decay为\(2\times10^{-4}\)。
+
+**公开trainer的实际总损失：**
 
 $$
 \mathcal L_{\text{MoPC-HR}}
-=\mathcal L_{\text{CE}}
-+\lambda_{\text{PA}}\mathcal L_{\text{prototype augmentation}}
-+\lambda_{\text{HR}}\mathcal L_{\text{hierarchical regularization}}
+=\mathcal L_{\text{CE,new}}
++\mathcal L_{\text{protoAug}}
++\mathcal L_{\text{HR}}
 $$
 
-**使用的数据与状态：**新类support、旧类prototype、旧模型或参数状态，以及CVS接口中的增量训练流程。
+\(\mathcal L_{\text{CE,new}}\)是当前新类support在全部已注册类logit上的交叉熵；\(\mathcal L_{\text{protoAug}}\)是在Gaussian增强旧prototype上的交叉熵，logit除以温度2；\(\mathcal L_{\text{HR}}\)是当前参数与Phase2前参数之间逐parameter的非平方L2距离之和。公开代码还计算旧模型到新模型的KD值用于日志观察，但`KD不进入总loss`，本报告按实际执行而不是按概念公式改写。
+
+**prototype校正与最终决策：**训练后记录历史旧prototype、前后模型产生的新类均值及动量0.97的prototype校正状态。但本轮正式CVS predictor按锁定的官方执行接口，最终query决策使用当前模型面向全部注册类的classifier logits，而不是另行用校正prototype替换预测规则。
 
 **优点：**状态比保存历史IQ紧凑；新类学习能力通常强于只做结构隔离的方法；prototype校正直接处理特征漂移。
 
-**局限：**prototype只近似旧类分布；新类训练较强时仍会遗忘旧类；公开trainer与CVS适配执行路径存在实现差异，必须区分论文公式、官方代码和项目接口结果。
+**局限：**prototype只近似旧类分布；完整backbone随新类support更新，容易破坏旧类特征；固定batch会让低K组合零步；论文公式、公开trainer和CVS最终决策接口存在差异，必须以实际执行收据界定结论。
 
 ### 6.4CSIL与MoPC-HR机制对比
 
@@ -441,50 +497,35 @@ $$
 |---|---|---|
 |主要方法类别|结构扩展与通道隔离|prototype校正与分层正则|
 |历史原始样本|不保存|不保存|
-|保留的历史状态|旧模型、fingerprint结构、重要参数统计|旧类prototype、旧模型或参数状态|
-|旧类保护|mask、冻结、KD、EWC|prototype增强、prototype校正、HR|
-|新类学习|扩展新通道与分类输出|用新类support训练并校正新旧prototype关系|
+|Phase2真实训练样本|target-new support|target-new support＋旧prototype伪特征|
+|保留的历史状态|旧模型、fingerprint结构、Fisher重要参数统计|旧类prototype、旧模型参数|
+|ADV3B02增量更新|冻结|不冻结|
+|实际损失|CE-new＋EWC＋0.2KD|CE-new＋protoAug＋逐参数非平方L2 HR；KD仅记录|
+|旧类保护|mask、冻结、KD、EWC|prototype增强、HR、旧参数参考|
+|最终query规则|zero-bias全注册类argmax|当前模型全注册类classifier logits argmax|
 |主要风险|过度保护旧类，新类不注册|新类学得快，但旧类遗忘|
 |部署特征|结构复杂、容量增长|状态较紧凑，但仍需多轮训练|
 
 ### 6.5正式LEO弱信道完整结果
 
-|K-shot|方法|新类数|old_acc_after|seen_new_acc|H_old_new|forgetting|
-|---:|---|---:|---:|---:|---:|---:|
-|5|CSIL|1|83.70%|0.00%|0.00%|0.00%|
-|5|CSIL|3|83.70%|0.00%|0.00%|0.00%|
-|5|CSIL|20|0.78%|5.17%|0.54%|82.92%|
-|5|MoPC-HR|1|87.47%|0.00%|0.00%|0.00%|
-|5|MoPC-HR|3|87.47%|0.02%|0.04%|0.00%|
-|5|MoPC-HR|5|77.44%|25.65%|37.97%|10.02%|
-|5|MoPC-HR|10|63.80%|22.08%|32.30%|23.67%|
-|5|MoPC-HR|25|58.73%|14.82%|23.43%|28.73%|
-|10|CSIL|1|83.70%|0.00%|0.00%|0.00%|
-|10|CSIL|3|83.70%|0.00%|0.00%|0.00%|
-|10|CSIL|20|8.33%|5.49%|3.17%|75.37%|
-|10|MoPC-HR|1|87.47%|0.00%|0.00%|0.00%|
-|10|MoPC-HR|3|66.78%|50.40%|56.78%|20.69%|
-|10|MoPC-HR|5|47.38%|50.52%|48.05%|40.09%|
-|10|MoPC-HR|10|44.69%|33.15%|37.57%|42.78%|
-|10|MoPC-HR|25|44.99%|22.31%|29.32%|42.48%|
-|20|CSIL|1|83.70%|0.00%|0.00%|0.00%|
-|20|CSIL|3|0.08%|34.04%|0.14%|83.62%|
-|20|CSIL|20|59.84%|5.64%|9.96%|23.86%|
-|20|MoPC-HR|1|60.76%|96.53%|72.69%|26.71%|
-|20|MoPC-HR|3|48.96%|71.47%|57.23%|38.51%|
-|20|MoPC-HR|5|33.28%|61.31%|41.09%|54.19%|
-|20|MoPC-HR|10|34.07%|41.36%|35.48%|53.40%|
-|20|MoPC-HR|25|36.66%|27.86%|30.23%|50.81%|
+正式LEO矩阵的800/800个cell、2400/2400个场景row和800/800份prediction/评分收据均完成，独立审计`failures=[]`。下表每行聚合1200个同条件、同方法的场景row：
+
+|方法|old_acc_before|old_acc_after|seen_new_acc|H_old_new|forgetting|min_old|
+|---|---:|---:|---:|---:|---:|---:|
+|CSIL|42.83%|23.17%|8.65%|1.18%|19.66%|0.82%|
+|MoPC-HR|45.32%|22.14%|26.61%|10.85%|23.19%|3.89%|
+
+这些是跨5个target receiver、5个seed、4个K、4个新类规模和3个LEO场景的全矩阵均值，不是挑选最佳K或最佳receiver后的结果。`min_old`表示每个row最低旧类准确率再求均值，用于观察少数旧类是否被严重牺牲。
 
 ### 6.6正式结果中的主要现象
 
-**低新类数、低K时新类可能完全不被预测。**CSIL在K=5/10且新类数为1或3时seen_new_acc为0；MoPC-HR在K=5新类数1、K=10新类数1时也为0。后续流程审计确认，固定batch和`drop_last`会使部分配置没有optimizer step。
+**两种方法都没有在全矩阵上解决旧新平衡。**CSIL的正式LEO新类均值只有8.65%，H仅1.18%；MoPC-HR的新类均值较高，为26.61%，但old_acc_after仍只有22.14%，遗忘达到23.19个百分点。
 
-**MoPC-HR的可塑性强于CSIL。**K=20、新类数1时，MoPC-HR的seen_new_acc达到96.53%，H_old_new为72.69%，是表中旧新联合性能最平衡的切片。但old_acc从87.47%下降到60.76%，遗忘26.71个百分点。
+**MoPC-HR比CSIL更具可塑性，但不是无代价提升。**其seen_new_acc比CSIL高17.96个百分点，H高9.67个百分点；与此同时，完整backbone更新使旧类表征更容易漂移。全矩阵结果不能写成“MoPC-HR已经解决新类注册”，只能说明它在当前执行语义下更倾向于学习新类。
 
-**新类规模扩大后联合性能下降。**MoPC-HR在K=20时，新类数从1增加到25，seen_new_acc从96.53%下降到27.86%，old_acc_after下降到36.66%。更多新类带来更复杂的类间竞争和更强的旧类边界扰动。
+**CSIL偏向稳定约束，但新类通道经常没有形成有效竞争力。**冻结backbone、EWC、KD和mask共同保护旧状态，但正式LEO下旧类均值仍从42.83%降到23.17%，说明结构隔离不能自动抵消target receiver域偏移。
 
-**CSIL出现两个极端。**小规模时旧类几乎完全保留但新类不注册；部分大规模或高K切片中新类开始学习，却伴随旧类崩塌。通道隔离不能自动解决CVS中的目标域变化和小样本优化问题。
+**逐类floor揭示均值掩盖的问题。**两种方法的`min_old`均值都低于4%，说明至少一部分旧发射机在增量后接近失效。Phase2方法不能只看平均old_acc或平均seen_new。
 
 ### 6.7matched无LEO新类归因诊断
 
@@ -492,30 +533,12 @@ $$
 
 `DIAGNOSTIC_NEW_CLASS_NO_LEO_NON_FORMAL`
 
-|K-shot|方法|新类数|无LEO seen_new|Δnew|Δold|ΔH|
-|---:|---|---:|---:|---:|---:|---:|
-|5|CSIL|3|0.00%|+0.00pp|+0.00pp|+0.00pp|
-|5|CSIL|20|8.05%|+2.88pp|−0.78pp|−0.54pp|
-|5|MoPC-HR|3|0.00%|−0.02pp|+0.00pp|−0.04pp|
-|5|MoPC-HR|5|54.33%|+28.68pp|−33.44pp|+6.75pp|
-|5|MoPC-HR|10|63.29%|+41.21pp|−38.09pp|+3.56pp|
-|5|MoPC-HR|25|51.02%|+36.20pp|−40.32pp|+3.23pp|
-|10|CSIL|3|0.00%|+0.00pp|+0.00pp|+0.00pp|
-|10|CSIL|20|4.98%|−0.50pp|+48.69pp|+3.10pp|
-|10|MoPC-HR|3|63.04%|+12.64pp|−12.68pp|−0.98pp|
-|10|MoPC-HR|5|90.91%|+40.39pp|−19.80pp|−6.12pp|
-|10|MoPC-HR|10|75.63%|+42.48pp|−29.12pp|−12.28pp|
-|10|MoPC-HR|25|64.38%|+42.07pp|−35.71pp|−13.64pp|
-|20|CSIL|3|45.09%|+11.04pp|−0.08pp|−0.14pp|
-|20|CSIL|20|5.03%|−0.61pp|+2.00pp|−0.98pp|
-|20|MoPC-HR|3|95.64%|+24.18pp|+5.46pp|+10.85pp|
-|20|MoPC-HR|5|94.85%|+33.55pp|−10.28pp|−4.69pp|
-|20|MoPC-HR|10|81.81%|+40.45pp|−20.38pp|−12.51pp|
-|20|MoPC-HR|25|70.26%|+42.40pp|−29.78pp|−18.16pp|
+|方法|无LEO old_after|无LEO seen_new|无LEO H|Δold_after|Δseen_new|ΔH|Δforgetting|
+|---|---:|---:|---:|---:|---:|---:|---:|
+|CSIL|23.78%|12.15%|1.67%|+0.60pp|+3.50pp|+0.49pp|−0.60pp|
+|MoPC-HR|21.45%|52.50%|12.98%|−0.68pp|+25.89pp|+2.13pp|+0.92pp|
 
-移除新类LEO扰动后，MoPC-HR的新类准确率在多数切片明显提高，说明信道失真破坏了新类特征与旧类prototype之间的几何关系。但新类学得更好不一定提高H：新类梯度变强时，模型更容易向新类偏移，旧类准确率可能进一步下降。
-
-例如K=10、新类数10时，无LEO使seen_new_acc提高42.48个百分点，但old_acc_after下降29.12个百分点，最终H反而下降12.28个百分点。LEO不是唯一原因，稳定性—可塑性冲突仍然存在。
+移除新类LEO扰动后，MoPC-HR的seen_new_acc平均提高25.89个百分点，说明LEO弱信道显著破坏了新类可分性；但old_acc_after下降0.68个百分点、遗忘增加0.92个百分点，H只提高2.13个百分点。CSIL的新类只提高3.50个百分点，说明其主要瓶颈还包括零步训练和过强稳定约束。
 
 该诊断不能用于CVS卫星场景性能声明、方法晋级或Stage2协议有效性证明。
 
@@ -529,24 +552,26 @@ $$
 
 当结果为0时，一个完整batch都不会产生，optimizer step也为0。新增分类权重没有学习，query自然继续被预测为旧类。
 
-低新类数并不必然意味着任务更简单。只有1个新类时，新类样本缺少其他新类作为对比，新增权重的方向和尺度可能不稳定；旧类logit经过充分训练，新类logit接近初始化，单头竞争会强烈偏向旧类。
+CSIL还要先执行约60%的官方训练切分，因此其有效样本数会进一步减少。正式LEO的400个CSIL cell中有175个零步cell，平均每场景5.625个optimizer step；400个MoPC-HR cell中有100个零步cell，平均每场景97.5步。两种条件均未启用缩batch、补采样或small-K训练适配。
+
+低新类数并不必然意味着任务更简单。新增类之间可用于形成相对边界的样本更少，新增权重的方向和尺度可能不稳定；旧类logit经过充分训练，新类logit接近初始化，单头竞争会强烈偏向旧类。零步行只能说明官方trainer在该K/新类数组合下没有产生有效更新，不能解释成“训练后证明方法无效”。
 
 ## 7.五种方法的统一横向比较
 
 |方法|解决方向|主要数据|更新对象|新类能力|旧类保护|资源与状态|报告定位|
 |---|---|---|---|---|---|---|---|
 |ProtoNet CDA|少样本度量分类|target support|prototype|机制上可扩展|不主动保护或校准backbone|极轻量|非类增量对比方法；复现实验结果见附录A|
-|MRIOR-SDA|跨接收机域适应|source＋target-old support|完整backbone|本轮无|source CE维持旧类|600次更新，source replay|非类增量对比方法；复现实验结果见附录A|
-|DADDA-SDA|全局＋类条件域对齐|source＋target-old support|完整backbone|本轮无|source分类和动态对齐|600次更新，source replay|非类增量对比方法；复现实验结果见附录A|
-|CSIL|无exemplar类增量|新类support＋旧模型统计|通道、mask、分类输出|可以|KD、EWC、冻结与隔离|容量增长，多轮训练|旧类保护强，但低K经常零注册|
-|MoPC-HR|prototype类增量|新类support＋旧prototype/模型状态|prototype、分类器及受控参数|较强|prototype增强、校正、HR|状态较紧凑，多轮训练|新类可塑性强，但旧类遗忘明显|
+|MRIOR-SDA|跨接收机域适应|source LEO缓存＋target-old support|完整身份backbone＋DV-KL估计网络|本轮无|source/target加权CE|200步/场景，source replay|非类增量对比方法；复现实验结果见附录A|
+|DADDA-SDA|全局＋类条件域对齐|source LEO缓存＋target-old support|完整身份backbone|本轮无|source CE＋动态MMD/LMMD|200步/场景，source replay|非类增量对比方法；复现实验结果见附录A|
+|CSIL|无exemplar类增量|target-new support＋旧模型/Fisher|新增fc行＋old-old/new-new fingerprint块；backbone冻结|可以|KD、EWC、mask与冻结|3epoch、batch20；存在零步cell|官方代码语义＋CVS基座/数据接口|
+|MoPC-HR|prototype类增量|target-new support＋旧prototype/参数|完整backbone＋classifier|较强|prototype增强、HR|20epoch、batch16；存在零步cell|官方代码语义＋CVS基座/数据接口|
 
 ### 7.1这些方法实际上修改了什么
 
 - ProtoNet只修改类别参考点，不修改特征空间。
 - MRIOR与DADDA修改特征空间，使target旧类重新靠近正确决策区域。
-- CSIL修改网络结构和可训练通道，用容量隔离保护旧类。
-- MoPC-HR修改新旧prototype关系和分类状态，用伪特征与分层正则控制遗忘。
+- CSIL扩展分类结构，但Phase2只更新新增fc行和新fingerprint块，ADV3B02保持冻结。
+- MoPC-HR用新类support与旧prototype伪特征更新完整ADV3B02和classifier，并记录prototype校正状态。
 
 方法之间的差异不是“用了不同loss”这么简单。它们读取的数据、保存的历史状态、允许更新的参数和执行生命周期都不同。
 
@@ -634,8 +659,8 @@ KNN仍需要解决目标域embedding质量、类别support数量不平衡、距�
 2. MRIOR-SDA和DADDA-SDA表明target-old support包含可利用的域校准信息，但两者使用source replay和完整backbone更新，只能作为宽权限外部对照；具体数值见附录A。
 3. ProtoNet CDA说明轻量prototype分类不能自动替代接收机域适应；其总体、K-shot和target receiver结果见附录A。
 4. CSIL强保护旧类，但低K、低新类数时经常没有有效训练或完全不输出新类。
-5. MoPC-HR的新类学习能力更强，K=20、新类数1时H达到72.69%，但旧类遗忘26.71个百分点，稳定性问题仍然突出。
-6. 无LEO诊断说明LEO弱信道确实破坏新类几何结构，但去掉LEO后旧类可能进一步下降，因此信道失真不是唯一矛盾。
+5. 官方代码语义全矩阵中，MoPC-HR正式LEO的seen_new_acc为26.61%、H为10.85%，高于CSIL的8.65%和1.18%，但两者old_acc_after都只有约22%至23%，稳定性问题仍然突出。
+6. matched无LEO诊断中，MoPC-HR新类准确率平均提高25.89个百分点，但H只提高2.13个百分点且遗忘略增，因此LEO信道失真不是唯一矛盾。
 7. 下一步应优先研究support-only轻量域校准＋KNN/qKNN或稳健prototype头，并用统一全类竞争、旧新调和均值和逐类floor评价。
 8. 当前工作已经完成任务定义、论文机制复现、CVS接口适配、完整结果审计和失败原因定位；尚未得到可表述为Phase2主方法晋级成功的结论。
 
@@ -663,24 +688,30 @@ KNN仍需要解决目标域embedding质量、类别support数量不平衡、距�
 
 [11] DE LANGE M, ALJUNDI R, MASANA M, et al. A Continual Learning Survey: Defying Forgetting in Classification Tasks[J]. IEEE Transactions on Pattern Analysis and Machine Intelligence, 2022, 44(7):3366-3385. DOI:10.1109/TPAMI.2021.3057446.
 
+[12] LIU Y, et al. CSIL official implementation[CP/OL]. GitHub, commit 8ce8637daf4dc60eeb1c56bff64c050c5b2353e9. https://github.com/pcwhy/CSIL
+
+[13] LI D, et al. MoPC-HR official implementation[CP/OL]. GitHub, commit ae6554316ad1a2175920e330133a2f103408bf78. https://github.com/xmuLdz/MoPC-HR
+
 ## 项目内部依据与证据边界
 
 - `E:\type10-7\项目.md`：当前科学场景、Phase1/Phase2数据协议、Stage2-A/B/C权限和claim边界。
 - `E:\type10-7\github_publish\CVS-RFFI-repo\docs\weekly_reports\学习进展情况_20260716_详细扩展版.md`：旧类域适应方法、375任务结果和解释。
 - `E:\type10-7\github_publish\CVS-RFFI-repo\docs\weekly_reports\学习进展情况_20260724_详细扩展版.md`：CSIL/MoPC-HR机制、正式LEO结果与matched无LEO诊断。
-- `E:\type10-7\github_publish\CVS-RFFI-repo\analysis\csil_mopc_hr_cvs_port_audit_20260723.md`：CSIL/MoPC-HR官方源码、论文公式与CVS接口一致性审计。
-- `E:\type10-7\automation_reports\CV-SincNet\adv3b02_officialrepo_csil_mopc_20260723_v1\report.md`：固定batch、zero-step和执行证据。
+- `E:\type10-7\github_publish\CVS-RFFI-repo\analysis\official_repo_execution_lock_csil_mopc_hr_20260723.md`：CSIL/MoPC-HR官方commit、训练日程、loss和接口适配锁。
+- `E:\type10-7\github_publish\CVS-RFFI-repo\paper_reproduction\cvs_aligned\adv3b02_official_repo_ci.py`：类增量方法在ADV3B02-CVS上的实际参数更新、损失和query决策实现。
+- `E:\type10-7\github_publish\CVS-RFFI-repo\paper_reproduction\cvs_aligned\supervised_da.py`与`adv3b02_supervised_da_runner.py`：ProtoNet CDA、MRIOR-SDA和DADDA-SDA的实际数据入口、优化目标和训练边界。
+- `E:\type10-7\automation_reports\CV-SincNet\adv3b02_officialrepo_csil_mopc_20260723_v1\report.md`：8400条source base构建、800-cell完整矩阵、固定batch、zero-step和执行证据。
 - 原始周报：`C:\Users\lh594\Desktop\周报\学习进展情况+7.16.docx`、`C:\Users\lh594\Desktop\周报\学习进展情况+7.24.docx`。
 
-本文中的WiSig/ManySig只表示地面代理数据；LEO弱信道是物理启发的仿真压力条件，不是真实在轨验证。MRIOR-SDA和DADDA-SDA结果来自更宽source-access权限，不能与`p2_min_v1` support-only主方法同权限排名。无LEO新类结果仅为`DIAGNOSTIC_NEW_CLASS_NO_LEO_NON_FORMAL`归因诊断。
+本文中的WiSig/ManySig只表示地面代理数据；LEO弱信道是物理启发的仿真压力条件，不是真实在轨验证。MRIOR-SDA和DADDA-SDA结果来自更宽source-access权限，不能与`p2_min_v1` support-only主方法同权限排名。CSIL和MoPC-HR的source base状态属于外部论文方法所需历史状态，其结果不能反证主方法已经满足support-only协议。无LEO新类结果仅为`DIAGNOSTIC_NEW_CLASS_NO_LEO_NON_FORMAL`归因诊断。
 
 ## 附录A：非类增量对比方法复现实验结果
 
-本附录仅汇总ProtoNet CDA、MRIOR-SDA与DADDA-SDA的375项CVS复现实验。CSIL和MoPC-HR采用论文作者公开的官方代码，其CVS接口实验与结果见第6节。三种方法共享第5.1节的基座、target receiver、K-shot和seed矩阵，但数据权限不同：MRIOR-SDA与DADDA-SDA使用source标签与target-old support，ProtoNet CDA只使用冻结特征与target-old support。因此，附录结果只作机制对照，不构成同权限Phase2主方法排名。
+本附录仅汇总ProtoNet CDA、MRIOR-SDA与DADDA-SDA的375项CVS复现实验。CSIL和MoPC-HR采用论文作者公开的官方代码，其CVS接口实验与结果见第6节。三种方法共享第5.1节的基座、target receiver、K-shot和seed矩阵，但数据权限不同：MRIOR-SDA与DADDA-SDA使用封存source LEO弱信道标签缓存与target-old support，ProtoNet CDA只使用冻结特征与target-old support。因此，附录结果只作机制对照，不构成同权限Phase2主方法排名。
 
 ### A.1总体实验结果
 
-|方法|适应前old_acc|适应后old_acc|平均收益|正/负迁移任务|平均时延|backbone更新|
+|方法|适应前old_acc|适应后old_acc|平均收益|正/负迁移任务|平均时延|3场景backbone更新|
 |---|---:|---:|---:|---:|---:|---:|
 |MRIOR-SDA|73.60%|82.58%|+8.98pp|105/20|17.90s|600|
 |DADDA-SDA|73.60%|78.35%|+4.75pp|99/26|14.62s|600|
