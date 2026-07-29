@@ -10,7 +10,7 @@
 |目标|修复v1的prototype校准导出故障后，完成0.005、0.01、0.02、0.05标签率14个训练行；0.10继续复用Phase1 T1中的5个`P1-FULL`完整行|
 |比较对象|同一`P1-FULL`配置，仅改变`f_L/f_U`，固定`f_V=0.30`|
 |环境|本地`ssr-gpu`；远端`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`|
-|当前状态|`LOCAL_VERIFIED / READY_FOR_GIT_SEAL_AND_CAPACITY_AWARE_LAUNCH`|
+|当前状态|`RUNNING / FIRST_WAVE_HEALTHY`|
 
 ## 与v1的关系
 
@@ -45,12 +45,35 @@ v2使用新run/log/release路径，重新执行v1首个失败行和13个未启�
 
 |用途|路径|
 |---|---|
-|release root|`/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase1_label_20260729_v2_<commit8>`|
+|release root|`/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase1_label_20260729_v2_ae1f9aab`|
 |run root|`/home/szu2070436088/2510044040/CV-SincNet/runs/cvs_full_ablation_phase1_label_20260729_v2`|
 |log root|`/home/szu2070436088/2510044040/CV-SincNet/logs/cvs_full_ablation_phase1_label_20260729_v2`|
 |launch log|`/home/szu2070436088/2510044040/CV-SincNet/logs/cvs_full_ablation_phase1_label_20260729_v2.launch.out`|
 
 正式命令使用封存plan、不可覆盖run/log/launch路径和远端`CVS-RFFI`Python。发布前只检查当前GPU进程数、精确目标不存在、release checkout干净、入口可编译和sealed dry-run计数；不重审数据集。
+
+## N607发布与首波健康证据
+
+2026-07-29 21:57–22:06 CST完成直连预检、精确目标检查、发布和首波健康核验。T1 runner PID`711523`始终保持运行且未被干预。发布前v2的release、run、log、launch log和PID目标均不存在；只同步bundle、sealed plan和independent review三件发布物。
+
+|检查项|证据|
+|---|---|
+|Git发布|commit`ae1f9aab1c6095fb5f941d4cebb1cc171100f7a1`；detached HEAD；tracked/untracked clean|
+|bundle SHA256|`e3563b774945c9fe2f8e48c0fd8afe7d5ca2b6ddbd041c9c76939b9f68a783d3`|
+|sealed plan SHA256|`379cee37f5a36f2a697485f03a234ed7983907547a4510e62d9160e26e5c4f60`|
+|independent review SHA256|`cbe6724c2101c1a730d615fd587536f59f61711c86110b431e3d8995d68e0644`|
+|远端环境|`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`；PyTorch`2.1.0+cu121`；CUDA可用；8张GPU可见|
+|入口编译|runner、`train_ssdg.py`和prototype导出入口通过`py_compile`|
+|sealed dry-run|14 rows、14 dispatches、0 direct reuse、0 reexport、14 new trains、14 slots；GPU静态分布`2/2/2/2/2/2/1/1`|
+|启动进程|launch PID`823096`；实际runner PID`823097`；CWD、release、plan、run root和log root绑定一致|
+|首批实际训练|6行：GPU2两行、GPU5两行、GPU6一行、GPU7一行；其余8行由capacity-aware runner等待空槽|
+|整机GPU上限|启动后计算进程数`[2,2,2,2,2,2,1,1]`，所有GPU均不超过2|
+|首波进度|截至22:08 CST，6行分别推进至E7–E12/200；runner和6个直接训练子进程均存活|
+|闭环artifact计数|status=0、terminal=0、prototype PT=0、prototype JSON=0、completion receipt=0；当前均处于训练中，尚未到导出阶段|
+|异常检查|无Traceback、RuntimeError、OOM、参数错误或确定性异常指纹|
+|本地连接清理|启动SSH通道因后台bash持有而超时；仅终止精确本地`ssh.exe` PID`5972`，远端任务已landed且持续运行；随后本地`ssh.exe=0`、`ESTABLISHED TCP22=0`，未重复启动|
+
+日志中的`nan`仅出现在无样本分母的诊断字段，例如`overall_tx=nan% (0/0)`；训练loss项保持有限值，不属于系统性技术故障，也未据此进行性能判断或止损。launch log当前为空是因为runner将进度写入每行独立`.out`；6个活动日志已增长至约46–75KB，8个排队日志保持0字节符合capacity-aware等待状态。异常/P0/非零退出指纹计数均为0。
 
 ## 完整性与止损
 
