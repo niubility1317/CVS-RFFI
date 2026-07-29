@@ -272,6 +272,21 @@ endpoint_accept_v1 calibration features must be finite and non-zero
 
 封口后main PID `545770`及全部worker均不存在，GPU0–7均为0%利用率、1MiB且无compute PID；最终`ssh.exe=0`、ESTABLISHED TCP22=0。runner未重启、补跑、迁移、调参或发出人工stop。v3路径与部分artifact全部保留且不可覆盖。
 
+## 完整失败证据与根因
+
+runner以只读方式回收v3失败证据到`runner_release/remote_failure_a2c29248/`。原始远端文件107个、38,527,428字节；连同本地摘要共110个文件、38,612,447字节。109条SHA256清单全部通过，55个JSON全部可解析；其中14个JSON含训练期禁用指标的非标准`NaN`占位，已逐文件记录，不是执行异常。25份日志全部读取，共22,827,224字节、179,707行，Traceback、RuntimeError、AssertionError、CUDA OOM和Segmentation fault均为0。
+
+|证据|SHA256|
+|---|---|
+|`SHA256SUMS.txt`|`441739123379b649607bb46f7d225855cbfc2ffade358a75a239bf5762068e19`|
+|`evidence_summary.json`|`9216a07e3781efd9341c096b383dc31ab279daf3fd65eb9affc0ad6fac9cc6da`|
+|`runner_summary.json`|`d3e6ba5073d729a3d3e2ae597a9d38863cb1f2f4327b11359ae00c4b9eb2dde3`|
+|B0触发checkpoint|`be2dd3ca4616a859b6740bbb66774f474eb456a398920a0eb91e272d0e19fe41`|
+
+B0 checkpoint的远端status、terminal、completion与本地副本四方SHA一致。对该checkpoint和同一ManySig数据进行全量source-validation复现后，`z_id`为`[25200,160]`，非有限元素和非有限行均为0，只有1行范数为0；该行为class 3，class 3占比为`1/4200=0.000238095`。该样本输入、`id_base`、`id_feat_cls`、`id_feat_imp`、`z_dom`和logits均有限且非零，只有ReLU后的`id_feat_joint/z_id`精确为零；source-train的5880条原型特征全部有限且无零方向。因此根因是单个样本缺少可定义的角方向，不是数据损坏、训练数值崩溃或原型塌缩。
+
+本地候选修复提交为`a7ec013b500bcdb753b8698dcdc4e79f80bcc4b7`：运行时对零方向强制`REJECT_INVALID_FEATURE`；source-validation角校准仅排除并审计零方向；overall和per-class排除比例均以0.001为硬上限，超限、非有限特征、非有限logits或审计不一致仍失败关闭；原有radius-to-interclass保护未修改。主代理回归123项通过、2项条件跳过，零方向聚焦测试18项通过，原始B0真实checkpoint完整导出smoke 1项通过，得到input=25200、directional=25199、class 3排除1条。以上仅是v4候选技术修复证据，不改变v3的`NO_PERFORMANCE_RESULT`。
+
 ## 健康停止与成功标准
 
 - 只因P0协议/安全违规、launcher级确定性故障、输出覆盖风险、缺失prediction闭环，或至少两个不同row在prediction前出现同一归一化异常指纹而停止。
