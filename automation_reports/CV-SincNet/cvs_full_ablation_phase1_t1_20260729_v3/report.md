@@ -7,7 +7,7 @@
 |实验ID|`cvs_full_ablation_phase1_t1_20260729_v3`|
 |日期|2026-07-29|
 |operator|Codex主代理；N607发布仅由`/root/phase1_t1_n607_runner`执行|
-|状态|`RUNNING / LANDED / 16_WORKERS_HEALTHY`|
+|状态|`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`|
 |设计来源|`CVS-RFFI_全部消融实验设计_Phase1_Phase2_20260728.md`第4.1、5.1、6.1、9.1、9.2、11、12节|
 |协议|Phase1 source-only；`0.07/0.63/0.30`|
 |Git分支|`codex/full-ablation-20260728`|
@@ -232,6 +232,45 @@ active由16降至15不是调度丢失。sealed plan中GPU7/slot0只登记`P1-A0/
 |`P1-D0/s7281102–1105`|E14–20|
 
 15个active worker的sealed GPU/slot/CUDA/CWD/run绑定全部通过，`BINDING_BAD=0`。GPU0–6各2个run-owned PID，GPU7为1个，全部external=0。
+
+## v3系统性技术停止
+
+runner于`2026-07-29T16:56:19+08:00`按预登记P0规则自动技术封口。唯一P0触发行是`P1-B0__train_seed_7281101`，完成E200后在source-only prototype导出阶段失败：
+
+```text
+endpoint_accept_v1 calibration features must be finite and non-zero
+```
+
+该行return_code=3、`p0_protocol_violation=true`、terminal=`FAILED_EXPORT`、prototype export=`FAILED`、completion无效，原因是row prototype hashes不完整。可靠归一化指纹为`00213641361353e6c0d82e72b2c09aa3b7985e2df414cd62eb2789c3aab8b876`。
+
+|汇总字段|值|
+|---|---:|
+|冻结rows|30|
+|已启动|25|
+|已封口|25|
+|成功|10|
+|失败|15|
+|未启动|5|
+|最终active|0|
+|prototype/terminal/completion|20/11/11|
+|systemic stop|`true`|
+|thread errors|0|
+
+其余14个active行由runner精确终止，return_code均为-15、P0=false；其完整日志未发现Traceback、OOM、Killed、Runtime、Assertion、协议错误或Inf。5个从未launch的行是`P1-B0/s7281102–1105`和`P1-C0/s7281101`。此前成功的5个SUP与5个A0保持技术artifact完整，但冻结30行矩阵未完成，因此不能进入性能分析或报告任何方法结果。
+
+|行组|数量|技术状态|最终epoch范围|性能判定|
+|---|---:|---|---|---|
+|`P1-SUP/s7281101–1105`|5|成功，artifact完整|E200|不可单独分析|
+|`P1-A0/s7281101–1105`|5|成功，artifact完整|E200|不可单独分析|
+|`P1-B0/s7281101`|1|P0，`FAILED_EXPORT`|E200|`NO_PERFORMANCE_RESULT`|
+|`P1-FULL/s7281101–1105`|5|P0后精确终止|E183–188|`NO_PERFORMANCE_RESULT`|
+|`P1-C0/s7281102–1105`|4|P0后精确终止|E130–132|`NO_PERFORMANCE_RESULT`|
+|`P1-D0/s7281101`|1|P0后精确终止|E146|`NO_PERFORMANCE_RESULT`|
+|`P1-D0/s7281102–1105`|4|P0后精确终止|E43–50|`NO_PERFORMANCE_RESULT`|
+|`P1-B0/s7281102–1105`|4|从未launch|—|`NO_PERFORMANCE_RESULT`|
+|`P1-C0/s7281101`|1|从未launch|—|`NO_PERFORMANCE_RESULT`|
+
+封口后main PID `545770`及全部worker均不存在，GPU0–7均为0%利用率、1MiB且无compute PID；最终`ssh.exe=0`、ESTABLISHED TCP22=0。runner未重启、补跑、迁移、调参或发出人工stop。v3路径与部分artifact全部保留且不可覆盖。
 
 ## 健康停止与成功标准
 
