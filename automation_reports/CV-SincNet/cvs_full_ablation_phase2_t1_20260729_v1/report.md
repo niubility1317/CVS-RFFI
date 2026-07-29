@@ -734,3 +734,44 @@ v6已经把参数歧义隔离为单一启动错误：CLI名称中的“bundle”
 - v7 smoke失败时仍不自动重试；成功时只补剩余缺失输入，然后按原325/1425计划启动，不重跑已完整闭合的旧package/cache。
 
 当前状态：`V6_CLOSED_NO_RESULT / V7_CPU_FORMAL_PREFLIGHT_REQUIRED / REUSE_COMPLETED_ARTIFACTS / NO_PERFORMANCE_RESULT`。
+
+## 2026-07-30 fresh v7 CPU-only formal预检失败封口
+
+direct preflight PASS；release v6仍为HEAD=`00b7ad3597e3958ea1fc9c152d2119be36dd55a2`、tracked clean。fresh v5 input以及smoke/states/Stage2-C全部request/run/log根在预检前后均`ABSENT`。CPU-only检查未打开D18 package/query、未写远端项目输出、未占用GPU。
+
+三段只读分段结果：
+
+|检查|结果|关键证据|
+|---|---|---|
+|`_load_formal_runtime`|PASS|checkpoint lineage=`1eb6d07b...307d7`；6个class handle；sealed component目录正确|
+|`_verified_deployment_prototypes`|FAIL|打印`before_verified_prototypes`后发生SIGSEGV；未返回`[6,288]`或identity|
+|`_ground_spectrum_from_formal_v2_component`|PASS|basis=`[160,8]`；weights正、sum=`1.0`；input count=`84`；outer joint seal=`true`；manifest SHA匹配|
+
+合并预检与独立prototype探针均在`_verified_deployment_prototypes`内确定性崩溃。服务器core limit=`0`，未生成core文件。因CPU门未闭合，没有生成feature launch artifact，没有启动GPU smoke，也没有构建输入全集或正式矩阵。
+
+封口时v7 GPU进程为0；GPU0/1各有2个既有外部进程，GPU2–7为空。本地`ssh.exe=0`，N607/lab bridge ESTABLISHED TCP22=`0/0`。证据位于`release_evidence/n607_v7_00b7ad35/`：`cpu_formal_preflight_stdout.jsonl`、`cpu_prototype_probe_stderr.txt`、`remote_status_snapshot.json`、`local_connection_cleanup.json`和`runner_handoff.json`。
+
+当前状态：`CPU_FORMAL_PREFLIGHT_FAILED / GPU_SMOKE_NOT_LAUNCHED / NO_V7_INPUT_ROOT / NO_FORMAL_STAGE2_ROOT / NO_PERFORMANCE_RESULT`。
+
+## 2026-07-30 N607 Torch/NumPy prototype转换兼容修复
+
+v7把SIGSEGV精确定位到`_deployment_prototypes`中的`tensor.detach().float().cpu().numpy()`。该路径只处理正式prototype artifact内的6×160小张量；同一feature backbone forward路径已经使用`cpu().tolist()`，没有第二个Torch→NumPy ABI bridge。修复将该处改为：
+
+```text
+np.asarray(tensor.detach().float().cpu().tolist(), dtype=np.float32)
+```
+
+该修改不改变prototype值、归一化、padding、class order、Phase1 binding或任何数据输入，只绕开N607 Torch2.1.0+cu121与NumPy2.2.5组合中的不安全`.numpy()`边界。新增静态负测确保正式函数内不再出现`.numpy(`，并保留原有`[6,288]`、单位范数和辅助128维全0数值测试。
+
+本地`ssr-gpu`验证：
+
+|验证面|结果|
+|---|---:|
+|feature builder+predictor+v2谱+outer bundle+cache/executor/row executor九文件|117 passed|
+|独立复审九文件+多dtype/非连续tensor等价检查|100 passed，P0=0，P1=0|
+|`git diff --check`|PASS|
+|数据重验/性能读取|0/0|
+
+独立复审确认FP32值、shape、finite、归一化和padding语义保持；float16/32/64、int64、bfloat16及非连续tensor的新旧桥接逐元素一致，6×160列表转换资源开销可忽略，同路径无`.numpy()`或`torch.from_numpy()`残留。结论P0=0、P1=0，允许commit及fresh N607 CPU-only formal preflight；预检通过前仍不得启动D18/GPU。
+
+当前状态：`LOCAL_TORCH_NUMPY_ABI_FIX_REVIEWED_P0_0_P1_0 / COMMIT_PENDING / FRESH_V8_NOT_RELEASED / NO_PERFORMANCE_RESULT`。

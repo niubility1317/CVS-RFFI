@@ -101,7 +101,10 @@ def _deployment_prototypes(
         raise Stage2AblationFeatureBuilderError(
             "Phase1 prototype package lacks prototypes"
         )
-    identity = prototypes.detach().float().cpu().numpy().astype(np.float32)
+    identity = np.asarray(
+        prototypes.detach().float().cpu().tolist(),
+        dtype=np.float32,
+    )
     if (
         identity.shape != (expected_old_class_count, 160)
         or not np.isfinite(identity).all()

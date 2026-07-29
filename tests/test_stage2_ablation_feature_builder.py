@@ -59,6 +59,12 @@ def test_phase1_identity_prototypes_are_padded_to_288(
     assert np.count_nonzero(result[:, 160:]) == 0
 
 
+def test_phase1_identity_prototypes_avoid_torch_numpy_abi_bridge() -> None:
+    source = inspect.getsource(_deployment_prototypes)
+    assert ".numpy(" not in source
+    assert ".cpu().tolist()" in source
+
+
 def test_d81_cross_state_lock_accepts_registered_k2() -> None:
     old = [
         {
