@@ -444,3 +444,101 @@ plan builder回归5项通过。新发布绑定：
 - 8张GPU各2个总槽；先计入现有Phase1占用，再填剩余槽，任意GPU总训练/adapter进程不超过2。
 
 当前状态：`IMPLEMENTATION_COMMITTED / SOURCE_PLANS_GENERATED / N607_RELEASE_HANDOFF_READY / NO_STAGE2_RUN / NO_PERFORMANCE_RESULT`。
+
+## 2026-07-30 00:54–01:02 N607 v4发布失败封口
+
+本轮唯一N607执行者`stage2_t1_n607_release`完成直连preflight后，只复用D18的30/30完整LEO_weak母缓存并尝试补建当前states缺失的predictor package；没有重建或重审数据，也没有做跨启动数据/hash对齐。
+
+### 落地与启动前状态
+
+|检查项|结果|
+|---|---|
+|fresh release|`/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2_t1_20260730_v4_25c725c4`|
+|input root|`/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2_t1_20260730_v2_25c725c4`|
+|执行checkout|HEAD=`25c725c43b0420348ad89186f27e0c8ad7aa6d4e`，tracked/untracked dirty count=`0`|
+|脚本验收|8个发布脚本`py_compile`通过；predictor CLI存在两项正式Phase1 binding参数|
+|states plan|SHA256=`a48f468c16c3c764b3fc235b360559f73059dc37a95aa2eb81de52f840ff07f6`|
+|Stage2-C plan|SHA256=`7d0d48a4cb4ab95441b6e9ba0c29bf18c409d4440413de4e4cab4509f22f93c7`|
+|class-label attestation|SHA256=`f8abb25522b8b6d30f657be5de19e4922317bc271dbc9ff95dcd8de5c89dbb06`|
+|Phase1 deployment binding|SHA256=`1deec70778965f41010fe155335a30db3ec172cb3788c7074ffbadfe6236dee7`|
+|启动前GPU外部进程数|GPU0–7分别为`2/2/0/1/1/0/0/0`|
+|states request/run/log root|均保持不存在|
+
+代码只来自tracked-clean的`25c725c4`checkout。50条命令由短连接内存orchestrator调用该checkout内已提交脚本，完整argv已保存在summary；没有remote-only代码或config修改。
+
+### 系统性技术失败
+
+package orchestrator PID=`924709`，最终状态为已退出。50条命令覆盖25个receiver×method pair的before/new20两类package，结果为`completed=50,succeeded=0,failed=50`。至少三个不同receiver/stage的完整日志具有相同normalized exception fingerprint：
+
+`722a6762f89999f663682361fd75e8ac58d635d3efcfb122b86cc83a600c44de`
+
+共同异常为：
+
+```text
+ValueError: LEO cache manifest contract failed: ['overlay_role_policy']
+```
+
+错误发生于`load_verified_leo_weak_cache_set`，早于predictor/scorer输出创建。实际D18`cache_set.json`和三个场景NPZ的embedded manifest均不存在`overlay_role_policy`键；只读工具仅把缺省显示为`null`，并非显式JSON`null`。当前加载器要求非external模式为`all_roles`。只读交叉证据显示三个场景均为：
+
+|字段|实际值|
+|---|---|
+|`channel_views`唯一值|`['rx_base']`|
+|`overlay_applied`唯一值|`[true]`，且all true|
+|embedded manifest `output_roles`|`['target_old','target_new']`|
+|NPZ `dataset_role`唯一值|`['target_new','target_old']`|
+|embedded manifest `overlay_role_policy`|键不存在；只读工具缺省显示`null`|
+
+这是一项当前加载器与已一次准入D18资产之间的manifest合同缺口。本失败批次不得通过远端修改manifest、放宽代码或原地重启处理。
+
+### 产物与清理
+
+|产物/状态|数量或结果|
+|---|---:|
+|package build log|50|
+|package根下已创建目录|80|
+|package根下文件|50，全部为build log|
+|predictor manifest/seal|0/0|
+|scoring manifest|0|
+|feature manifest|0|
+|prediction|0|
+|orchestrator PID存活|否|
+|本run GPU进程|0|
+|release dirty count|0|
+|本地`ssh.exe`|0|
+|到N607/lab bridge的ESTABLISHED TCP22|0/0|
+
+远端input root、50份日志和空目录全部保留；没有删除、覆盖或复用。fresh release保留且仍为tracked-clean；states request/run/log root从未创建。该批次不可原地恢复、不可覆盖、不可自动fresh retry。
+
+回收证据位于`release_evidence/n607_v4_25c725c4/`：
+
+|文件|SHA256|
+|---|---|
+|`package_build_summary.json`|`db4fbf825309c3bce123069ec0137654ff91e4efd14e5a8b1586fc6cb2ea514a`|
+|`runner_handoff.json`|`1cd54125349bf1d68712c6fcb67187ef0e42dc8a756eba9d443cab55a7768560`|
+|`rx_20_1_m7283101_before_build.log`|`f2943efafb386c952da88664d6bf713a716e7e080fbb7713002dadd465160a62`|
+|`rx_20_1_m7283101_new20_build.log`|`f2943efafb386c952da88664d6bf713a716e7e080fbb7713002dadd465160a62`|
+|`rx_3_19_m7283102_before_build.log`|`f2943efafb386c952da88664d6bf713a716e7e080fbb7713002dadd465160a62`|
+|`local_connection_cleanup.json`|`64995bf1c672e40f8edcc868639d69afe4b6cd2e046973b04c10ef3813c5a308`|
+
+当前状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT / NO_STAGE2_RUN`。
+
+## 2026-07-30 D18旧manifest最小兼容修复
+
+失败证据证明D18数据本身满足当前`all_roles`语义：三个场景每行`channel_views=rx_base`且`overlay_applied=true`，role集合为`target_old/target_new`；唯一缺口是旧builder生成时尚无`overlay_role_policy`字段。修复只调整加载器对该后来新增声明的兼容方式，不重建、不重审、不修改远端数据或manifest：
+
+- embedded manifest显式声明`overlay_role_policy`时，仍必须与当前期望完全一致；错误值继续fail-closed。
+- 字段缺失时，不直接信任或补写manifest；加载器继续完成现有逐行IQ、view、overlay、物理ID、IQ SHA、overlay ID和跨场景单观测验证，只有非external模式所有行均为`rx_base`且`overlay_applied=true`时才推断`all_roles`。
+- audit记录`overlay_role_policy=all_roles`和`overlay_role_policy_evidence=legacy_missing_manifest_field_verified_from_rows`，保留声明来源边界。
+- 新负测证明显式`target_new_only`漂移仍被拒绝、缺字段不能掩盖任一`overlay_applied=false`行。
+
+本地验证：
+
+|验证面|结果|
+|---|---:|
+|LEO_weak lineage与新增兼容正负测|16 passed|
+|lineage authority+predictor+feature+registry五文件跨链|75 passed|
+|性能读取|0|
+
+首轮独立复审发现P0=0、P1=1：显式JSON`null`会被旧实现误当缺键，且external target-new-only模式不应使用该兼容。修复后只有`overlay_role_policy`键真正缺失且`allow_target_new_only_overlay=false`时进入旧资产逐行推断；任何显式值（含`null`和空串）必须精确等于期望，external缺键继续拒绝。新增显式null与external缺键两项负测，五文件75项通过。
+
+当前状态：`P1_REVIEW_FIX_VERIFIED / SECOND_INDEPENDENT_REVIEW_PENDING / FAILED_BATCH_PRESERVED / NO_PERFORMANCE_RESULT`。第二轮独立复审与Git封存后使用new release/input/run ID做单个D18真实cache no-query smoke；只有package与feature完整闭合才重发全批次，禁止原地重启旧25c输入根。

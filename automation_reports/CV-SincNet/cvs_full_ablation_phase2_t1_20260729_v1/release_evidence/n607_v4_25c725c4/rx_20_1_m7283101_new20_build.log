@@ -1,0 +1,14 @@
+Traceback (most recent call last):
+  File "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2_t1_20260730_v4_25c725c4/code/scripts/build_cvs_stage2_predictor_bundle.py", line 1229, in <module>
+    raise SystemExit(main())
+  File "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2_t1_20260730_v4_25c725c4/code/scripts/build_cvs_stage2_predictor_bundle.py", line 1224, in main
+    print(json.dumps(build(args), ensure_ascii=False, sort_keys=True))
+  File "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2_t1_20260730_v4_25c725c4/code/scripts/build_cvs_stage2_predictor_bundle.py", line 762, in build
+    arrays_by_scenario, cache_manifest, cache_audit = load_verified_leo_weak_cache_set(
+  File "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2_t1_20260730_v4_25c725c4/code/cvsrffi/leo_weak_cache.py", line 516, in load_verified_leo_weak_cache_set
+    arrays, _manifest, audit = load_verified_leo_weak_cache(
+  File "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2_t1_20260730_v4_25c725c4/code/cvsrffi/leo_weak_cache.py", line 343, in load_verified_leo_weak_cache
+    _require_manifest_contract(
+  File "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2_t1_20260730_v4_25c725c4/code/cvsrffi/leo_weak_cache.py", line 233, in _require_manifest_contract
+    raise ValueError(f"LEO cache manifest contract failed: {failed}")
+ValueError: LEO cache manifest contract failed: ['overlay_role_policy']

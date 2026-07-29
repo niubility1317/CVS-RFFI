@@ -1,0 +1,607 @@
+{
+  "artifact_counts": {
+    "build_logs": 50,
+    "directories_under_packages": 80,
+    "feature_manifests": 0,
+    "files_under_packages": 50,
+    "predictions": 0,
+    "predictor_manifests": 0,
+    "predictor_seals": 0,
+    "scoring_manifests": 0
+  },
+  "cache_contract": {
+    "cache_set_overlay_role_policy": {
+      "present": false,
+      "value": null
+    },
+    "cache_set_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/d18_formal_k10_new5_rx20_1_seed713101_20260717_085303/cache_matrix/rx_20_1/seed_713101/cache_set.json",
+    "cache_set_schema": "cvs_leo_weak_iq_cache_set_v2",
+    "cache_set_sha256": "2b941370335e17dd6190068f4d409b86657f4bceaa9beec8045d955e77873cb3",
+    "loader_context": "code/cvsrffi/leo_weak_cache.py:191-233",
+    "loader_required_value": "all_roles",
+    "scenario_embedded_overlay_role_policy": {
+      "leo_clear_weak": {
+        "present": false,
+        "value": null
+      },
+      "leo_low_elev_weak": {
+        "present": false,
+        "value": null
+      },
+      "leo_rain_weak": {
+        "present": false,
+        "value": null
+      }
+    }
+  },
+  "commands_used_committed_25c_checkout_scripts": true,
+  "exception": "ValueError: LEO cache manifest contract failed: [overlay_role_policy]",
+  "exit_list": [
+    {
+      "cache_seed": 713101,
+      "method_seed": 7283101,
+      "output": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2_t1_20260730_v2_25c725c4/artifacts/packages/rx_20_1/method_7283101/before",
+      "query_seed": 7283301,
+      "receiver": "20-1",
+      "returncode": 1,
+      "stage": "before",
+      "support_seed": 7283201
+    },
+    {
+      "cache_seed": 713101,
+      "method_seed": 7283101,
+      "output": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2_t1_20260730_v2_25c725c4/artifacts/packages/rx_20_1/method_7283101/new20",
+      "query_seed": 7283301,
+      "receiver": "20-1",
+      "returncode": 1,
+      "stage": "new20",
+      "support_seed": 7283201
+    },
+    {
+      "cache_seed": 713102,
+      "method_seed": 7283102,
+      "output": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2_t1_20260730_v2_25c725c4/artifacts/packages/rx_20_1/method_7283102/before",
+      "query_seed": 7283302,
+      "receiver": "20-1",
+      "returncode": 1,
+      "stage": "before",
+      "support_seed": 7283202
+    },
+    {
+      "cache_seed": 713102,
+      "method_seed": 7283102,
+      "output": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2_t1_20260730_v2_25c725c4/artifacts/packages/rx_20_1/method_7283102/new20",
+      "query_seed": 7283302,
+      "receiver": "20-1",
+      "returncode": 1,
+      "stage": "new20",
+      "support_seed": 7283202
+    },
+    {
+      "cache_seed": 713103,
+      "method_seed": 7283103,
+      "output": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2_t1_20260730_v2_25c725c4/artifacts/packages/rx_20_1/method_7283103/before",
+      "query_seed": 7283303,
+      "receiver": "20-1",
+      "returncode": 1,
+      "stage": "before",
+      "support_seed": 7283203
+    },
+    {
+      "cache_seed": 713103,
+      "method_seed": 7283103,
+      "output": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2_t1_20260730_v2_25c725c4/artifacts/packages/rx_20_1/method_7283103/new20",
+      "query_seed": 7283303,
+      "receiver": "20-1",
+      "returncode": 1,
+      "stage": "new20",
+      "support_seed": 7283203
+    },
+    {
+      "cache_seed": 713104,
+      "method_seed": 7283104,
+      "output": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2_t1_20260730_v2_25c725c4/artifacts/packages/rx_20_1/method_7283104/before",
+      "query_seed": 7283304,
+      "receiver": "20-1",
+      "returncode": 1,
+      "stage": "before",
+      "support_seed": 7283204
+    },
+    {
+      "cache_seed": 713104,
+      "method_seed": 7283104,
+      "output": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2_t1_20260730_v2_25c725c4/artifacts/packages/rx_20_1/method_7283104/new20",
+      "query_seed": 7283304,
+      "receiver": "20-1",
+      "returncode": 1,
+      "stage": "new20",
+      "support_seed": 7283204
+    },
+    {
+      "cache_seed": 713105,
+      "method_seed": 7283105,
+      "output": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2_t1_20260730_v2_25c725c4/artifacts/packages/rx_20_1/method_7283105/before",
+      "query_seed": 7283305,
+      "receiver": "20-1",
+      "returncode": 1,
+      "stage": "before",
+      "support_seed": 7283205
+    },
+    {
+      "cache_seed": 713105,
+      "method_seed": 7283105,
+      "output": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2_t1_20260730_v2_25c725c4/artifacts/packages/rx_20_1/method_7283105/new20",
+      "query_seed": 7283305,
+      "receiver": "20-1",
+      "returncode": 1,
+      "stage": "new20",
+      "support_seed": 7283205
+    },
+    {
+      "cache_seed": 713101,
+      "method_seed": 7283101,
+      "output": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2_t1_20260730_v2_25c725c4/artifacts/packages/rx_3_19/method_7283101/before",
+      "query_seed": 7283301,
+      "receiver": "3-19",
+      "returncode": 1,
+      "stage": "before",
+      "support_seed": 7283201
+    },
+    {
+      "cache_seed": 713101,
+      "method_seed": 7283101,
+      "output": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2_t1_20260730_v2_25c725c4/artifacts/packages/rx_3_19/method_7283101/new20",
+      "query_seed": 7283301,
+      "receiver": "3-19",
+      "returncode": 1,
+      "stage": "new20",
+      "support_seed": 7283201
+    },
+    {
+      "cache_seed": 713102,
+      "method_seed": 7283102,
+      "output": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2_t1_20260730_v2_25c725c4/artifacts/packages/rx_3_19/method_7283102/before",
+      "query_seed": 7283302,
+      "receiver": "3-19",
+      "returncode": 1,
+      "stage": "before",
+      "support_seed": 7283202
+    },
+    {
+      "cache_seed": 713102,
+      "method_seed": 7283102,
+      "output": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2_t1_20260730_v2_25c725c4/artifacts/packages/rx_3_19/method_7283102/new20",
+      "query_seed": 7283302,
+      "receiver": "3-19",
+      "returncode": 1,
+      "stage": "new20",
+      "support_seed": 7283202
+    },
+    {
+      "cache_seed": 713103,
+      "method_seed": 7283103,
+      "output": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2_t1_20260730_v2_25c725c4/artifacts/packages/rx_3_19/method_7283103/before",
+      "query_seed": 7283303,
+      "receiver": "3-19",
+      "returncode": 1,
+      "stage": "before",
+      "support_seed": 7283203
+    },
+    {
+      "cache_seed": 713103,
+      "method_seed": 7283103,
+      "output": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2_t1_20260730_v2_25c725c4/artifacts/packages/rx_3_19/method_7283103/new20",
+      "query_seed": 7283303,
+      "receiver": "3-19",
+      "returncode": 1,
+      "stage": "new20",
+      "support_seed": 7283203
+    },
+    {
+      "cache_seed": 713104,
+      "method_seed": 7283104,
+      "output": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2_t1_20260730_v2_25c725c4/artifacts/packages/rx_3_19/method_7283104/before",
+      "query_seed": 7283304,
+      "receiver": "3-19",
+      "returncode": 1,
+      "stage": "before",
+      "support_seed": 7283204
+    },
+    {
+      "cache_seed": 713104,
+      "method_seed": 7283104,
+      "output": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2_t1_20260730_v2_25c725c4/artifacts/packages/rx_3_19/method_7283104/new20",
+      "query_seed": 7283304,
+      "receiver": "3-19",
+      "returncode": 1,
+      "stage": "new20",
+      "support_seed": 7283204
+    },
+    {
+      "cache_seed": 713105,
+      "method_seed": 7283105,
+      "output": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2_t1_20260730_v2_25c725c4/artifacts/packages/rx_3_19/method_7283105/before",
+      "query_seed": 7283305,
+      "receiver": "3-19",
+      "returncode": 1,
+      "stage": "before",
+      "support_seed": 7283205
+    },
+    {
+      "cache_seed": 713105,
+      "method_seed": 7283105,
+      "output": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2_t1_20260730_v2_25c725c4/artifacts/packages/rx_3_19/method_7283105/new20",
+      "query_seed": 7283305,
+      "receiver": "3-19",
+      "returncode": 1,
+      "stage": "new20",
+      "support_seed": 7283205
+    },
+    {
+      "cache_seed": 713101,
+      "method_seed": 7283101,
+      "output": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2_t1_20260730_v2_25c725c4/artifacts/packages/rx_7_14/method_7283101/before",
+      "query_seed": 7283301,
+      "receiver": "7-14",
+      "returncode": 1,
+      "stage": "before",
+      "support_seed": 7283201
+    },
+    {
+      "cache_seed": 713101,
+      "method_seed": 7283101,
+      "output": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2_t1_20260730_v2_25c725c4/artifacts/packages/rx_7_14/method_7283101/new20",
+      "query_seed": 7283301,
+      "receiver": "7-14",
+      "returncode": 1,
+      "stage": "new20",
+      "support_seed": 7283201
+    },
+    {
+      "cache_seed": 713102,
+      "method_seed": 7283102,
+      "output": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2_t1_20260730_v2_25c725c4/artifacts/packages/rx_7_14/method_7283102/before",
+      "query_seed": 7283302,
+      "receiver": "7-14",
+      "returncode": 1,
+      "stage": "before",
+      "support_seed": 7283202
+    },
+    {
+      "cache_seed": 713102,
+      "method_seed": 7283102,
+      "output": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2_t1_20260730_v2_25c725c4/artifacts/packages/rx_7_14/method_7283102/new20",
+      "query_seed": 7283302,
+      "receiver": "7-14",
+      "returncode": 1,
+      "stage": "new20",
+      "support_seed": 7283202
+    },
+    {
+      "cache_seed": 713103,
+      "method_seed": 7283103,
+      "output": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2_t1_20260730_v2_25c725c4/artifacts/packages/rx_7_14/method_7283103/before",
+      "query_seed": 7283303,
+      "receiver": "7-14",
+      "returncode": 1,
+      "stage": "before",
+      "support_seed": 7283203
+    },
+    {
+      "cache_seed": 713103,
+      "method_seed": 7283103,
+      "output": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2_t1_20260730_v2_25c725c4/artifacts/packages/rx_7_14/method_7283103/new20",
+      "query_seed": 7283303,
+      "receiver": "7-14",
+      "returncode": 1,
+      "stage": "new20",
+      "support_seed": 7283203
+    },
+    {
+      "cache_seed": 713104,
+      "method_seed": 7283104,
+      "output": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2_t1_20260730_v2_25c725c4/artifacts/packages/rx_7_14/method_7283104/before",
+      "query_seed": 7283304,
+      "receiver": "7-14",
+      "returncode": 1,
+      "stage": "before",
+      "support_seed": 7283204
+    },
+    {
+      "cache_seed": 713104,
+      "method_seed": 7283104,
+      "output": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2_t1_20260730_v2_25c725c4/artifacts/packages/rx_7_14/method_7283104/new20",
+      "query_seed": 7283304,
+      "receiver": "7-14",
+      "returncode": 1,
+      "stage": "new20",
+      "support_seed": 7283204
+    },
+    {
+      "cache_seed": 713105,
+      "method_seed": 7283105,
+      "output": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2_t1_20260730_v2_25c725c4/artifacts/packages/rx_7_14/method_7283105/before",
+      "query_seed": 7283305,
+      "receiver": "7-14",
+      "returncode": 1,
+      "stage": "before",
+      "support_seed": 7283205
+    },
+    {
+      "cache_seed": 713105,
+      "method_seed": 7283105,
+      "output": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2_t1_20260730_v2_25c725c4/artifacts/packages/rx_7_14/method_7283105/new20",
+      "query_seed": 7283305,
+      "receiver": "7-14",
+      "returncode": 1,
+      "stage": "new20",
+      "support_seed": 7283205
+    },
+    {
+      "cache_seed": 713101,
+      "method_seed": 7283101,
+      "output": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2_t1_20260730_v2_25c725c4/artifacts/packages/rx_7_7/method_7283101/before",
+      "query_seed": 7283301,
+      "receiver": "7-7",
+      "returncode": 1,
+      "stage": "before",
+      "support_seed": 7283201
+    },
+    {
+      "cache_seed": 713101,
+      "method_seed": 7283101,
+      "output": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2_t1_20260730_v2_25c725c4/artifacts/packages/rx_7_7/method_7283101/new20",
+      "query_seed": 7283301,
+      "receiver": "7-7",
+      "returncode": 1,
+      "stage": "new20",
+      "support_seed": 7283201
+    },
+    {
+      "cache_seed": 713102,
+      "method_seed": 7283102,
+      "output": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2_t1_20260730_v2_25c725c4/artifacts/packages/rx_7_7/method_7283102/before",
+      "query_seed": 7283302,
+      "receiver": "7-7",
+      "returncode": 1,
+      "stage": "before",
+      "support_seed": 7283202
+    },
+    {
+      "cache_seed": 713102,
+      "method_seed": 7283102,
+      "output": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2_t1_20260730_v2_25c725c4/artifacts/packages/rx_7_7/method_7283102/new20",
+      "query_seed": 7283302,
+      "receiver": "7-7",
+      "returncode": 1,
+      "stage": "new20",
+      "support_seed": 7283202
+    },
+    {
+      "cache_seed": 713103,
+      "method_seed": 7283103,
+      "output": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2_t1_20260730_v2_25c725c4/artifacts/packages/rx_7_7/method_7283103/before",
+      "query_seed": 7283303,
+      "receiver": "7-7",
+      "returncode": 1,
+      "stage": "before",
+      "support_seed": 7283203
+    },
+    {
+      "cache_seed": 713103,
+      "method_seed": 7283103,
+      "output": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2_t1_20260730_v2_25c725c4/artifacts/packages/rx_7_7/method_7283103/new20",
+      "query_seed": 7283303,
+      "receiver": "7-7",
+      "returncode": 1,
+      "stage": "new20",
+      "support_seed": 7283203
+    },
+    {
+      "cache_seed": 713104,
+      "method_seed": 7283104,
+      "output": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2_t1_20260730_v2_25c725c4/artifacts/packages/rx_7_7/method_7283104/before",
+      "query_seed": 7283304,
+      "receiver": "7-7",
+      "returncode": 1,
+      "stage": "before",
+      "support_seed": 7283204
+    },
+    {
+      "cache_seed": 713104,
+      "method_seed": 7283104,
+      "output": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2_t1_20260730_v2_25c725c4/artifacts/packages/rx_7_7/method_7283104/new20",
+      "query_seed": 7283304,
+      "receiver": "7-7",
+      "returncode": 1,
+      "stage": "new20",
+      "support_seed": 7283204
+    },
+    {
+      "cache_seed": 713105,
+      "method_seed": 7283105,
+      "output": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2_t1_20260730_v2_25c725c4/artifacts/packages/rx_7_7/method_7283105/before",
+      "query_seed": 7283305,
+      "receiver": "7-7",
+      "returncode": 1,
+      "stage": "before",
+      "support_seed": 7283205
+    },
+    {
+      "cache_seed": 713105,
+      "method_seed": 7283105,
+      "output": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2_t1_20260730_v2_25c725c4/artifacts/packages/rx_7_7/method_7283105/new20",
+      "query_seed": 7283305,
+      "receiver": "7-7",
+      "returncode": 1,
+      "stage": "new20",
+      "support_seed": 7283205
+    },
+    {
+      "cache_seed": 713101,
+      "method_seed": 7283101,
+      "output": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2_t1_20260730_v2_25c725c4/artifacts/packages/rx_8_8/method_7283101/before",
+      "query_seed": 7283301,
+      "receiver": "8-8",
+      "returncode": 1,
+      "stage": "before",
+      "support_seed": 7283201
+    },
+    {
+      "cache_seed": 713101,
+      "method_seed": 7283101,
+      "output": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2_t1_20260730_v2_25c725c4/artifacts/packages/rx_8_8/method_7283101/new20",
+      "query_seed": 7283301,
+      "receiver": "8-8",
+      "returncode": 1,
+      "stage": "new20",
+      "support_seed": 7283201
+    },
+    {
+      "cache_seed": 713102,
+      "method_seed": 7283102,
+      "output": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2_t1_20260730_v2_25c725c4/artifacts/packages/rx_8_8/method_7283102/before",
+      "query_seed": 7283302,
+      "receiver": "8-8",
+      "returncode": 1,
+      "stage": "before",
+      "support_seed": 7283202
+    },
+    {
+      "cache_seed": 713102,
+      "method_seed": 7283102,
+      "output": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2_t1_20260730_v2_25c725c4/artifacts/packages/rx_8_8/method_7283102/new20",
+      "query_seed": 7283302,
+      "receiver": "8-8",
+      "returncode": 1,
+      "stage": "new20",
+      "support_seed": 7283202
+    },
+    {
+      "cache_seed": 713103,
+      "method_seed": 7283103,
+      "output": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2_t1_20260730_v2_25c725c4/artifacts/packages/rx_8_8/method_7283103/before",
+      "query_seed": 7283303,
+      "receiver": "8-8",
+      "returncode": 1,
+      "stage": "before",
+      "support_seed": 7283203
+    },
+    {
+      "cache_seed": 713103,
+      "method_seed": 7283103,
+      "output": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2_t1_20260730_v2_25c725c4/artifacts/packages/rx_8_8/method_7283103/new20",
+      "query_seed": 7283303,
+      "receiver": "8-8",
+      "returncode": 1,
+      "stage": "new20",
+      "support_seed": 7283203
+    },
+    {
+      "cache_seed": 713104,
+      "method_seed": 7283104,
+      "output": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2_t1_20260730_v2_25c725c4/artifacts/packages/rx_8_8/method_7283104/before",
+      "query_seed": 7283304,
+      "receiver": "8-8",
+      "returncode": 1,
+      "stage": "before",
+      "support_seed": 7283204
+    },
+    {
+      "cache_seed": 713104,
+      "method_seed": 7283104,
+      "output": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2_t1_20260730_v2_25c725c4/artifacts/packages/rx_8_8/method_7283104/new20",
+      "query_seed": 7283304,
+      "receiver": "8-8",
+      "returncode": 1,
+      "stage": "new20",
+      "support_seed": 7283204
+    },
+    {
+      "cache_seed": 713105,
+      "method_seed": 7283105,
+      "output": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2_t1_20260730_v2_25c725c4/artifacts/packages/rx_8_8/method_7283105/before",
+      "query_seed": 7283305,
+      "receiver": "8-8",
+      "returncode": 1,
+      "stage": "before",
+      "support_seed": 7283205
+    },
+    {
+      "cache_seed": 713105,
+      "method_seed": 7283105,
+      "output": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2_t1_20260730_v2_25c725c4/artifacts/packages/rx_8_8/method_7283105/new20",
+      "query_seed": 7283305,
+      "receiver": "8-8",
+      "returncode": 1,
+      "stage": "new20",
+      "support_seed": 7283205
+    }
+  ],
+  "gpu_compute_apps_snapshot": [
+    "GPU-56adac86-77cd-36c9-8770-dbf002650461, 852763, 3124",
+    "GPU-56adac86-77cd-36c9-8770-dbf002650461, 853634, 2978",
+    "GPU-a2d039ff-1792-4222-2b47-140429e10f94, 848912, 3214",
+    "GPU-a2d039ff-1792-4222-2b47-140429e10f94, 904139, 3116",
+    "GPU-7b4bacb3-4901-6845-a414-0dfdfeeade97, 847567, 3130",
+    "GPU-95d925a1-7218-ca7b-adef-164241f4f491, 846968, 3230"
+  ],
+  "normalized_exception_fingerprint": "722a6762f89999f663682361fd75e8ac58d635d3efcfb122b86cc83a600c44de",
+  "orchestrator": {
+    "completed": 50,
+    "expected": 50,
+    "failed": 50,
+    "pid": 924709,
+    "pid_alive": false,
+    "succeeded": 0,
+    "summary_path": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2_t1_20260730_v2_25c725c4/orchestration/package_build/summary.json",
+    "summary_sha256": "db4fbf825309c3bce123069ec0137654ff91e4efd14e5a8b1586fc6cb2ea514a"
+  },
+  "performance_result": "NO_PERFORMANCE_RESULT",
+  "recovery": {
+    "empty_directories_preserved": true,
+    "fresh_retry_permitted": false,
+    "in_place_restart_permitted": false,
+    "overwrite_permitted": false,
+    "partial_logs_preserved": true,
+    "remote_files_deleted": false
+  },
+  "release_head": "25c725c43b0420348ad89186f27e0c8ad7aa6d4e",
+  "release_status_count": 0,
+  "remote_only_code_or_config_modified": false,
+  "representative_logs": [
+    {
+      "path": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2_t1_20260730_v2_25c725c4/artifacts/packages/rx_20_1/method_7283101/before/build.log",
+      "sha256": "f2943efafb386c952da88664d6bf713a716e7e080fbb7713002dadd465160a62",
+      "size_bytes": 1550
+    },
+    {
+      "path": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2_t1_20260730_v2_25c725c4/artifacts/packages/rx_20_1/method_7283101/new20/build.log",
+      "sha256": "f2943efafb386c952da88664d6bf713a716e7e080fbb7713002dadd465160a62",
+      "size_bytes": 1550
+    },
+    {
+      "path": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2_t1_20260730_v2_25c725c4/artifacts/packages/rx_3_19/method_7283102/before/build.log",
+      "sha256": "f2943efafb386c952da88664d6bf713a716e7e080fbb7713002dadd465160a62",
+      "size_bytes": 1550
+    }
+  ],
+  "root_exists": {
+    "input": true,
+    "log": false,
+    "release": true,
+    "request": false,
+    "run": false
+  },
+  "roots": {
+    "input": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2_t1_20260730_v2_25c725c4",
+    "log": "/home/szu2070436088/2510044040/CV-SincNet/logs/cvs_full_ablation_phase2_states_t1_20260730_v2_25c725c4",
+    "release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2_t1_20260730_v4_25c725c4",
+    "request": "/home/szu2070436088/2510044040/CV-SincNet/requests/cvs_full_ablation_phase2_states_t1_20260730_v2_25c725c4",
+    "run": "/home/szu2070436088/2510044040/CV-SincNet/runs/cvs_full_ablation_phase2_states_t1_20260730_v2_25c725c4"
+  },
+  "run_id": "cvs_full_ablation_phase2_states_t1_20260730_v2_25c725c4",
+  "run_owned_gpu_processes": [],
+  "schema": "cvs.full_ablation.stage2.runner_handoff.v1",
+  "status": "STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE"
+}

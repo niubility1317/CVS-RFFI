@@ -8,13 +8,16 @@ import pytest
 
 import cvsrffi.somph_leo_weak_lineage_seal as lineage
 from cvsrffi.leo_weak_cache import (
+    EXTERNAL_COMPARISON_SAMPLE_VIEW_POLICY,
     FORMAL_LEO_WEAK_SCENARIOS,
     LEO_WEAK_CACHE_SCHEMA,
     LEO_WEAK_CACHE_SET_SCHEMA,
     LEO_WEAK_CACHE_STAGE,
     PHASE2_SAMPLE_VIEW_POLICY,
+    _require_manifest_contract,
     canonical_json_sha256,
     ids_sha256,
+    load_verified_leo_weak_cache,
     overlay_id,
     physical_sample_id_from_values,
     post_channel_iq_sha256,
@@ -276,6 +279,146 @@ def _fixture(tmp_path: Path) -> dict:
         "receipt_path": tmp_path / "receipt.json",
         "detached_seal_path": tmp_path / "receipt.seal.json",
     }
+
+
+def test_legacy_missing_overlay_policy_is_inferred_only_from_verified_rows(
+    tmp_path: Path,
+) -> None:
+    fixture = _fixture(tmp_path)
+    cache = tmp_path / f"{FORMAL_LEO_WEAK_SCENARIOS[0]}.npz"
+    _arrays, manifest, audit = load_verified_leo_weak_cache(
+        cache,
+        expected_scenario=FORMAL_LEO_WEAK_SCENARIOS[0],
+        allowed_roles={"target_old"},
+    )
+    assert "overlay_role_policy" not in manifest
+    assert audit["overlay_role_policy"] == "all_roles"
+    assert (
+        audit["overlay_role_policy_evidence"]
+        == "legacy_missing_manifest_field_verified_from_rows"
+    )
+    assert fixture["expected_cache_sha256_by_scenario"][
+        FORMAL_LEO_WEAK_SCENARIOS[0]
+    ]
+
+
+def test_declared_overlay_policy_drift_still_fails_closed(
+    tmp_path: Path,
+) -> None:
+    _fixture(tmp_path)
+    scenario = FORMAL_LEO_WEAK_SCENARIOS[0]
+    cache = tmp_path / f"{scenario}.npz"
+    with np.load(cache, allow_pickle=False) as archive:
+        payload = {
+            key: np.asarray(archive[key])
+            for key in archive.files
+        }
+    manifest = json.loads(str(payload["manifest_json"].item()))
+    manifest["overlay_role_policy"] = "target_new_only"
+    payload["manifest_json"] = np.asarray(
+        json.dumps(manifest, sort_keys=True)
+    )
+    np.savez(cache, **payload)
+    with pytest.raises(
+        ValueError,
+        match="overlay_role_policy",
+    ):
+        load_verified_leo_weak_cache(
+            cache,
+            expected_scenario=scenario,
+            allowed_roles={"target_old"},
+        )
+
+
+def test_explicit_null_overlay_policy_is_not_legacy_missing(
+    tmp_path: Path,
+) -> None:
+    _fixture(tmp_path)
+    scenario = FORMAL_LEO_WEAK_SCENARIOS[0]
+    cache = tmp_path / f"{scenario}.npz"
+    with np.load(cache, allow_pickle=False) as archive:
+        payload = {
+            key: np.asarray(archive[key])
+            for key in archive.files
+        }
+    manifest = json.loads(str(payload["manifest_json"].item()))
+    manifest["overlay_role_policy"] = None
+    payload["manifest_json"] = np.asarray(
+        json.dumps(manifest, sort_keys=True)
+    )
+    np.savez(cache, **payload)
+    with pytest.raises(
+        ValueError,
+        match="overlay_role_policy",
+    ):
+        load_verified_leo_weak_cache(
+            cache,
+            expected_scenario=scenario,
+            allowed_roles={"target_old"},
+        )
+
+
+def test_external_comparison_cannot_infer_a_missing_overlay_policy(
+    tmp_path: Path,
+) -> None:
+    _fixture(tmp_path)
+    scenario = FORMAL_LEO_WEAK_SCENARIOS[0]
+    cache = tmp_path / f"{scenario}.npz"
+    with np.load(cache, allow_pickle=False) as archive:
+        manifest = json.loads(
+            str(np.asarray(archive["manifest_json"]).item())
+        )
+    manifest.update(
+        {
+            "phase2_sample_view_policy": (
+                EXTERNAL_COMPARISON_SAMPLE_VIEW_POLICY
+            ),
+            "clean_sample_access": True,
+            "contains_post_channel_iq_only": False,
+            "contains_clean_rows": True,
+            "target_channel_view": (
+                "mixed_old_received_new_leo_weak"
+            ),
+            "output_roles": ["target_old", "target_new"],
+        }
+    )
+    with pytest.raises(
+        ValueError,
+        match="overlay_role_policy",
+    ):
+        _require_manifest_contract(
+            manifest,
+            expected_scenario=scenario,
+            observed_roles={"target_old", "target_new"},
+            allow_target_new_only_overlay=True,
+        )
+
+
+def test_missing_overlay_policy_cannot_hide_unoverlaid_rows(
+    tmp_path: Path,
+) -> None:
+    _fixture(tmp_path)
+    scenario = FORMAL_LEO_WEAK_SCENARIOS[0]
+    cache = tmp_path / f"{scenario}.npz"
+    with np.load(cache, allow_pickle=False) as archive:
+        payload = {
+            key: np.asarray(archive[key])
+            for key in archive.files
+        }
+    payload["overlay_applied"] = np.asarray(
+        [False, True],
+        dtype=bool,
+    )
+    np.savez(cache, **payload)
+    with pytest.raises(
+        ValueError,
+        match="without overlay_applied=true",
+    ):
+        load_verified_leo_weak_cache(
+            cache,
+            expected_scenario=scenario,
+            allowed_roles={"target_old"},
+        )
 
 
 def test_writes_byte_grounded_receipt_and_detached_seal(tmp_path: Path) -> None:

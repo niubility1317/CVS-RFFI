@@ -195,6 +195,11 @@ def _require_manifest_contract(
     observed_roles: set[str],
     allow_target_new_only_overlay: bool = False,
 ) -> None:
+    expected_overlay_role_policy = (
+        "target_new_only"
+        if allow_target_new_only_overlay
+        else "all_roles"
+    )
     required = {
         "schema": LEO_WEAK_CACHE_SCHEMA,
         "artifact_stage": LEO_WEAK_CACHE_STAGE,
@@ -216,11 +221,6 @@ def _require_manifest_contract(
         "iq_array_key": "leo_weak_iq",
         "raw_or_clean_iq_key_present": False,
         "overlay_applied_before_phase2": True,
-        "overlay_role_policy": (
-            "target_new_only"
-            if allow_target_new_only_overlay
-            else "all_roles"
-        ),
         "star_ground_channel_impl": "simplified_leo_residual",
         "channel_model": "leo_residual",
     }
@@ -229,6 +229,17 @@ def _require_manifest_contract(
         for key, expected in required.items()
         if manifest.get(key) != expected
     ]
+    declared_overlay_role_policy = manifest.get(
+        "overlay_role_policy"
+    )
+    if (
+        "overlay_role_policy" in manifest
+        and declared_overlay_role_policy != expected_overlay_role_policy
+    ) or (
+        "overlay_role_policy" not in manifest
+        and allow_target_new_only_overlay
+    ):
+        failed.append("overlay_role_policy")
     if failed:
         raise ValueError(f"LEO cache manifest contract failed: {failed}")
     scenarios = tuple(str(value) for value in manifest.get("target_channel_scenarios", []))
@@ -441,6 +452,16 @@ def load_verified_leo_weak_cache(
         ),
         "phase2_physical_sample_root_id_policy": (
             PHASE2_PHYSICAL_SAMPLE_ROOT_ID_POLICY
+        ),
+        "overlay_role_policy": (
+            "target_new_only"
+            if allow_target_new_only_overlay
+            else "all_roles"
+        ),
+        "overlay_role_policy_evidence": (
+            "manifest_and_verified_rows"
+            if "overlay_role_policy" in manifest
+            else "legacy_missing_manifest_field_verified_from_rows"
         ),
     }
     return arrays, dict(manifest), audit
