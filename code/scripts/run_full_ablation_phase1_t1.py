@@ -397,8 +397,8 @@ def validate_phase1_direct_reuse_entry(
     terminal = _load_json(required["terminal"])
     receipt = _load_json(required["completion"])
     heldout = _load_json(required["heldout"])
-    _load_json(required["resource"])
-    _load_json(required["prototype_json"])
+    resource = _load_json(required["resource"])
+    prototype_json = _load_json(required["prototype_json"])
     expected_identity = {
         "row_key": row_key,
         "ablation_id": str(row["ablation_id"]),
@@ -406,6 +406,7 @@ def validate_phase1_direct_reuse_entry(
     }
     if (
         str(terminal.get("status", "")) != "COMPLETE"
+        or int(terminal.get("exit_code", -1)) != 0
         or str(receipt.get("terminal_status", "")) != "COMPLETE"
         or int(receipt.get("exit_code", -1)) != 0
         or str(heldout.get("status", "")).upper() != "COMPLETE"
@@ -423,6 +424,98 @@ def validate_phase1_direct_reuse_entry(
             raise Phase1RunnerError(
                 f"direct-reuse row identity drift: {row_key}: {key}"
             )
+    if (
+        not isinstance(resource, dict)
+        or not resource
+        or not isinstance(prototype_json, dict)
+        or not prototype_json
+        or heldout != dict(terminal.get("heldout_eval") or {})
+    ):
+        raise Phase1ProtocolError(
+            f"direct-reuse row content binding drift: {row_key}"
+        )
+    if str(receipt.get("terminal_manifest_sha256", "")) != _sha256_path(
+        required["terminal"]
+    ):
+        raise Phase1ProtocolError(
+            f"direct-reuse terminal hash drift: {row_key}"
+        )
+    if str(receipt.get("resource_summary_sha256", "")) != _sha256_path(
+        required["resource"]
+    ):
+        raise Phase1ProtocolError(
+            f"direct-reuse resource hash drift: {row_key}"
+        )
+    expected_prototype_paths = {
+        "prototype_path": required["prototype"].resolve(),
+        "prototype_json_path": required["prototype_json"].resolve(),
+    }
+    receipt_prototype_paths = dict(
+        receipt.get("prototype_paths") or {}
+    )
+    receipt_prototype_hashes = dict(
+        receipt.get("prototype_hashes") or {}
+    )
+    if set(receipt_prototype_paths) != set(expected_prototype_paths) or set(
+        receipt_prototype_hashes
+    ) != set(expected_prototype_paths):
+        raise Phase1ProtocolError(
+            f"direct-reuse prototype receipt incomplete: {row_key}"
+        )
+    for key, expected_path in expected_prototype_paths.items():
+        if (
+            Path(str(receipt_prototype_paths[key])).resolve()
+            != expected_path
+            or _sha256_path(expected_path)
+            != str(receipt_prototype_hashes[key])
+        ):
+            raise Phase1ProtocolError(
+                f"direct-reuse prototype hash or path drift: "
+                f"{row_key}: {key}"
+            )
+    expected_checkpoint = required["checkpoint"].resolve()
+    selected_checkpoint = Path(
+        str(terminal.get("selected_checkpoint", ""))
+    ).resolve()
+    checkpoint_hash = _sha256_path(expected_checkpoint)
+    if (
+        selected_checkpoint != expected_checkpoint
+        or str(terminal.get("selected_checkpoint_sha256", ""))
+        != checkpoint_hash
+        or str(receipt.get("selected_checkpoint_sha256", ""))
+        != checkpoint_hash
+    ):
+        raise Phase1ProtocolError(
+            f"direct-reuse checkpoint hash or path drift: {row_key}"
+        )
+    try:
+        import torch
+
+        checkpoint_payload = torch.load(
+            expected_checkpoint,
+            map_location="cpu",
+            weights_only=False,
+        )
+        prototype_payload = torch.load(
+            expected_prototype_paths["prototype_path"],
+            map_location="cpu",
+            weights_only=False,
+        )
+    except Exception as exc:
+        raise Phase1ProtocolError(
+            f"direct-reuse checkpoint or prototype is not loadable: "
+            f"{row_key}"
+        ) from exc
+    if (
+        not isinstance(checkpoint_payload, Mapping)
+        or not isinstance(checkpoint_payload.get("model"), Mapping)
+        or not checkpoint_payload["model"]
+        or not isinstance(prototype_payload, Mapping)
+    ):
+        raise Phase1ProtocolError(
+            f"direct-reuse checkpoint or prototype content drift: "
+            f"{row_key}"
+        )
     return {
         "mode": "direct_reuse",
         "source_run_id": str(entry["source_run_id"]),
@@ -469,17 +562,48 @@ def validate_phase1_reexport_completion(
         raise Phase1ProtocolError(
             "reexport prototype hashes are incomplete"
         )
+    expected_artifacts = {
+        "prototype_path": (
+            output_dir / "phase2_zid_prototypes.pt"
+        ).resolve(),
+        "prototype_json_path": (
+            output_dir / "phase2_zid_prototypes.json"
+        ).resolve(),
+    }
     for key, raw_path in artifacts.items():
-        path = Path(str(raw_path))
+        path = Path(str(raw_path)).resolve()
         if (
-            not path.is_file()
+            path != expected_artifacts[key]
+            or not path.is_file()
             or path.stat().st_size <= 0
             or _sha256_path(path) != str(hashes[key])
         ):
             raise Phase1ProtocolError(
                 f"reexport prototype artifact drift: {key}"
             )
-    _load_json(Path(str(artifacts["prototype_json_path"])))
+    prototype_json = _load_json(
+        expected_artifacts["prototype_json_path"]
+    )
+    if not isinstance(prototype_json, dict) or not prototype_json:
+        raise Phase1ProtocolError(
+            "reexport prototype JSON content drift"
+        )
+    try:
+        import torch
+
+        prototype_payload = torch.load(
+            expected_artifacts["prototype_path"],
+            map_location="cpu",
+            weights_only=False,
+        )
+    except Exception as exc:
+        raise Phase1ProtocolError(
+            "reexport prototype PT is not loadable"
+        ) from exc
+    if not isinstance(prototype_payload, Mapping):
+        raise Phase1ProtocolError(
+            "reexport prototype PT content drift"
+        )
     return receipt
 
 

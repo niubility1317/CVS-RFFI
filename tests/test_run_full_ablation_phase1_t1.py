@@ -158,17 +158,10 @@ def _write_direct_reuse_fixture(tmp_path, row) -> tuple[dict, dict]:
     source_log = tmp_path / "logs" / f"{row['row_key']}.out"
     source_log.parent.mkdir()
     source_log.write_text("complete\n", encoding="utf-8")
+    heldout = {"status": "COMPLETE", "accuracy": 0.5}
     payloads = {
-        "phase1_terminal_status.json": {"status": "COMPLETE"},
-        "phase1_training_completion_receipt.json": {
-            "terminal_status": "COMPLETE",
-            "exit_code": 0,
-            "row_key": row["row_key"],
-            "ablation_id": row["ablation_id"],
-            "train_seed": row["train_seed"],
-        },
         "phase1_resource_summary.json": {"wall_time_seconds": 1},
-        "frozen_phase1_heldout_eval.json": {"status": "COMPLETE"},
+        "frozen_phase1_heldout_eval.json": heldout,
         "phase2_zid_prototypes.json": {"schema": "prototype"},
     }
     for name, payload in payloads.items():
@@ -176,12 +169,72 @@ def _write_direct_reuse_fixture(tmp_path, row) -> tuple[dict, dict]:
             json.dumps(payload),
             encoding="utf-8",
         )
-    (source_output / "best_source_validation_ssdg.pth").write_bytes(
-        b"checkpoint"
+    checkpoint = source_output / "best_source_validation_ssdg.pth"
+    prototype = source_output / "phase2_zid_prototypes.pt"
+    torch.save(
+        {"model": {"weight": torch.ones(1)}},
+        checkpoint,
     )
-    (source_output / "phase2_zid_prototypes.pt").write_bytes(
-        b"prototype"
+    torch.save(
+        {"metadata": {"schema": "prototype"}},
+        prototype,
     )
+    terminal = {
+        "status": "COMPLETE",
+        "exit_code": 0,
+        "heldout_eval": heldout,
+        "selected_checkpoint": str(checkpoint),
+        "selected_checkpoint_sha256": hashlib.sha256(
+            checkpoint.read_bytes()
+        ).hexdigest(),
+    }
+    terminal_path = source_output / "phase1_terminal_status.json"
+    terminal_path.write_text(
+        json.dumps(terminal),
+        encoding="utf-8",
+    )
+    receipt = {
+        "terminal_status": "COMPLETE",
+        "exit_code": 0,
+        "row_key": row["row_key"],
+        "ablation_id": row["ablation_id"],
+        "train_seed": row["train_seed"],
+        "terminal_manifest_sha256": hashlib.sha256(
+            terminal_path.read_bytes()
+        ).hexdigest(),
+        "resource_summary_sha256": hashlib.sha256(
+            (
+                source_output / "phase1_resource_summary.json"
+            ).read_bytes()
+        ).hexdigest(),
+        "selected_checkpoint_sha256": hashlib.sha256(
+            checkpoint.read_bytes()
+        ).hexdigest(),
+        "prototype_paths": {
+            "prototype_path": str(prototype),
+            "prototype_json_path": str(
+                source_output / "phase2_zid_prototypes.json"
+            ),
+        },
+        "prototype_hashes": {
+            "prototype_path": hashlib.sha256(
+                prototype.read_bytes()
+            ).hexdigest(),
+            "prototype_json_path": hashlib.sha256(
+                (
+                    source_output / "phase2_zid_prototypes.json"
+                ).read_bytes()
+            ).hexdigest(),
+        },
+    }
+    (
+        source_output / "phase1_training_completion_receipt.json"
+    ).write_text(
+        json.dumps(receipt),
+        encoding="utf-8",
+    )
+    payloads["phase1_terminal_status.json"] = terminal
+    payloads["phase1_training_completion_receipt.json"] = receipt
     entry = {
         "row_key": row["row_key"],
         "mode": "direct_reuse",
@@ -272,8 +325,11 @@ def test_reexport_completion_rejects_corrupt_artifact(tmp_path) -> None:
     output.mkdir()
     prototype = output / "phase2_zid_prototypes.pt"
     prototype_json = output / "phase2_zid_prototypes.json"
-    prototype.write_bytes(b"prototype")
-    prototype_json.write_text("{}", encoding="utf-8")
+    torch.save({"metadata": {"schema": "prototype"}}, prototype)
+    prototype_json.write_text(
+        json.dumps({"schema": "prototype"}),
+        encoding="utf-8",
+    )
     entry = {
         "source_run_id": "phase1-v3",
         "source_checkpoint": "/old/checkpoint.pth",
