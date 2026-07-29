@@ -43,6 +43,18 @@ package补齐使用commit内`code/scripts/build_cvs_stage2_predictor_bundle.py`�
 
 每个identity使用独立、不可覆盖输出目录和日志。package按最多8行一波提交，不一次性预提交48行；每波结束读取失败日志的标准化最终异常行。P0或两个不同identity在产物发布前出现相同非空确定性异常指纹时停止后续dispatch；summary记录`launched/completed/succeeded/failed/not_launched/exception_fingerprints/systemic_stop`，不按任何性能指标停止。首批核对runner PID、worker数、GPU映射、日志增长、package seal/feature manifest计数和异常指纹。正式states启动前必须达到package、feature、sidecar、registry、seal全集闭合。
 
+## package补齐结果
+
+Git commit=`af0eefa6`的v9 package controller、v4 50行source summary和launch artifact已同步到release外置artifact目录，三文件远端SHA256分别为`bd74995ed0a04fbbab06519038e706a8e3bf0549501fee418eedc02265a08fa0`、`db4fbf825309c3bce123069ec0137654ff91e4efd14e5a8b1586fc6cb2ea514a`、`11659bcde18c0d3b6d89ab6d32ce7d2b9331ef0d7f61370f13167d793ba4daa3`，与本地一致。远端compile、50行共同v2 binding可读性、v5两份seal可读性及fresh input/log根检查均PASS。
+
+runner PID=`983142`，每波8个CPU worker。第一波8/8成功，无异常指纹；最终`launched=48`、`completed=48`、`succeeded=48`、`failed=0`、`not_launched=0`、`exception_fingerprints={}`、`systemic_stop=false`，耗时18.65秒。新建48个package seal，加v5复用2个后达到50/50；runner已退出，未占GPU。
+
+## feature补齐冻结配置
+
+补齐99个缺失feature extraction calls；每次调用固定发布Stage2-A/B/C三个scope cache，因此新增297个scope caches、594个物理文件；再复用v8 smoke的3个scope caches后达到300个total scope caches，即A/B/C各100个。GPU slots固定为`[1,2,2,3,3,4,4,5,5,6,6,7,7]`：GPU0不使用，GPU1仅增加1进程，GPU2-7各最多2进程。每波13行，波后执行相同系统性异常停派门；不读取性能指标。driver log启动前必须不存在，并由shell `noclobber`保护，误重跑不能截断。
+
+states的正式计数口径与物理cache数量分开：100个Stage2-B combo triples跨三个arm复用并服务300个逻辑row；每个receiver/method只选K=10的Stage2-A cache作为canonical A，再生成25个Stage2-A scoring sidecar服务25个逻辑row；共325个逻辑row。K=1/2/5伴生的75个Stage2-A cache不计为canonical Stage2-A identity。
+
 ## 完成后回填
 
 回填package/feature/sidecar/registry/seal计数、精确runner命令/PID/GPU映射、first-wave健康状态、正式states启动证据及最终artifact状态。完整结果前不作性能结论。
