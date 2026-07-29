@@ -667,3 +667,25 @@ v5失败已经证明predictor package与复用D18缓存闭合，唯一系统性�
 独立复审确认：outer loader已闭合signature/runtime parity/class registry；新入口只能消费该verified v2 component，D89输出满足D81/D92的`[160,r]`正权谱接口，K1/K2 exact fallback不变，且不存在truth/raw dataset输入面。结论P0=0、P1=0，允许Git封存，并要求commit后只能使用新run ID执行fresh N607 real-checkpoint/no-query smoke。
 
 当前状态：`LOCAL_V2_COMPATIBILITY_FIX_REVIEWED_P0_0_P1_0 / COMMIT_PENDING / FRESH_RUN_NOT_YET_RELEASED / NO_PERFORMANCE_RESULT`。
+
+## 2026-07-30 v2兼容修复封存与fresh v6预登记
+
+正式v2地面组件兼容修复、负测、v5失败证据、追踪表和报告已封存为Git commit`00b7ad3597e3958ea1fc9c152d2119be36dd55a2`。基于该实现提交生成新的未授权source plan：
+
+|计划|逻辑行数|Git绑定|SHA256|
+|---|---:|---|---|
+|`stage2_states_plan_00b7ad35.json`|325|`00b7ad3597e3958ea1fc9c152d2119be36dd55a2`|`e60573d89fb11ac5f5ee8dbe2963f296e76efc808bd3e30e8238e2d88cb1cfc4`|
+|`stage2c_screening_plan_00b7ad35.json`|1425|`00b7ad3597e3958ea1fc9c152d2119be36dd55a2`|`0f14aecead471b4935816cda1e8246fdc9c682d9b5c9cfabc79155fc1e29a0cc`|
+
+两份计划均保持`formal_launch_authority=false`，旧commit出现次数为0；计划与release定向回归12/12通过。fresh发布边界：
+
+- release：`/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2_t1_20260730_v6_00b7ad35`。
+- input：`/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2_t1_20260730_v4_00b7ad35`。
+- states run ID：`cvs_full_ablation_phase2_states_t1_20260730_v4_00b7ad35`。
+- Stage2-C run ID：`cvs_full_ablation_phase2c_t1_20260730_v4_00b7ad35`。
+- 继续复用现有D18 `VALIDATED_ONCE`缓存和正式Phase1 deployment bundle；不要求与旧v4/v5输入数据一致，不做跨批次数据hash对齐或数据重验。
+- 首个真实smoke仍使用receiver=`20-1`、method seed=`7283101`、K=10，但`--ground-component-dir`必须指向正式外层封存目录`artifacts/phase1_unsigned/package/component`，不能再指向`artifacts/phase1_component`。
+- 只有before/after package、Stage2-A/B/C三份feature cache、manifest重载、ground audit、文件SHA和0异常指纹全部闭合，才允许构建剩余package、feature、registry和seal；在此之前不得创建正式request/run/log根。
+- smoke或批次发现两个不同row出现相同prediction前确定性异常时，立即停止本run新增dispatch并保留证据；不得续跑、覆盖或删除旧v5。
+
+当前状态：`COMMIT_00B7AD35_LOCAL_VERIFIED / SOURCE_PLANS_READY / FRESH_V6_REAL_SMOKE_AUTHORIZED / NO_PERFORMANCE_RESULT`。
