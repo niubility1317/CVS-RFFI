@@ -85,6 +85,18 @@ def latex_to_omml_xml(latex: str) -> bytes | None:
     return None if equation is None else etree.tostring(equation)
 
 
+@lru_cache(maxsize=256)
+def latex_to_inline_omml_xml(latex: str) -> bytes | None:
+    """Convert inline LaTeX to an inline Word OMML equation."""
+
+    equation_paragraph_xml = latex_to_omml_xml(latex)
+    if equation_paragraph_xml is None:
+        return None
+    equation_paragraph = etree.fromstring(equation_paragraph_xml)
+    equation = equation_paragraph.find(f".//{{{MATH_NS}}}oMath")
+    return None if equation is None else etree.tostring(equation)
+
+
 def set_run_font(
     run,
     *,
@@ -394,37 +406,65 @@ def strip_inline_math(text: str) -> str:
     return text
 
 
-INLINE_TOKEN_RE = re.compile(r"(\*\*.*?\*\*|`.*?`|\\\(.*?\\\))")
+RICH_TOKEN_RE = re.compile(r"(\*\*.*?\*\*|`.*?`)")
+INLINE_MATH_RE = re.compile(r"\\\((.*?)\\\)")
+
+
+def add_text_with_inline_math(
+    paragraph,
+    text: str,
+    *,
+    size: float | None = None,
+    bold: bool = False,
+) -> None:
+    pos = 0
+    for match in INLINE_MATH_RE.finditer(text):
+        if match.start() > pos:
+            run = paragraph.add_run(text[pos : match.start()])
+            set_run_font(run, size=size, bold=bold)
+        latex = match.group(1).strip()
+        omml_xml = latex_to_inline_omml_xml(latex)
+        if omml_xml is None:
+            run = paragraph.add_run(strip_inline_math(latex))
+            set_run_font(
+                run,
+                latin="Cambria Math",
+                east_asia="Microsoft YaHei",
+                size=size,
+                bold=bold,
+            )
+        else:
+            paragraph._p.append(etree.fromstring(omml_xml))
+        pos = match.end()
+    if pos < len(text):
+        run = paragraph.add_run(text[pos:])
+        set_run_font(run, size=size, bold=bold)
 
 
 def add_rich_text(paragraph, text: str, *, size: float | None = None) -> None:
     pos = 0
-    for match in INLINE_TOKEN_RE.finditer(text):
+    for match in RICH_TOKEN_RE.finditer(text):
         if match.start() > pos:
-            run = paragraph.add_run(text[pos : match.start()])
-            set_run_font(run, size=size)
+            add_text_with_inline_math(
+                paragraph,
+                text[pos : match.start()],
+                size=size,
+            )
         token = match.group(0)
         if token.startswith("**"):
-            bold_text = token[2:-2]
-            if "\\(" in bold_text:
-                bold_text = re.sub(
-                    r"\\\((.*?)\\\)",
-                    lambda item: strip_inline_math(item.group(1)),
-                    bold_text,
-                )
-            run = paragraph.add_run(bold_text)
-            set_run_font(run, size=size, bold=True)
-        elif token.startswith("`"):
+            add_text_with_inline_math(
+                paragraph,
+                token[2:-2],
+                size=size,
+                bold=True,
+            )
+        else:
             run = paragraph.add_run(token[1:-1])
             set_run_font(run, latin="Consolas", east_asia="Microsoft YaHei", size=(size or 11) - 0.5)
             run.font.color.rgb = RGBColor.from_string(DARK_BLUE)
-        else:
-            run = paragraph.add_run(strip_inline_math(token[2:-2]))
-            set_run_font(run, latin="Cambria Math", east_asia="Microsoft YaHei", size=size)
         pos = match.end()
     if pos < len(text):
-        run = paragraph.add_run(text[pos:])
-        set_run_font(run, size=size)
+        add_text_with_inline_math(paragraph, text[pos:], size=size)
 
 
 def parse_table(lines: Sequence[str]) -> list[list[str]]:
@@ -452,7 +492,16 @@ def compute_widths(rows: Sequence[Sequence[str]]) -> list[int]:
     columns = list(zip(*rows))
     raw: list[float] = []
     for col in columns:
-        max_len = max(len(re.sub(r"[*`]", "", cell)) for cell in col)
+        max_len = max(
+            len(
+                re.sub(
+                    r"\\\((.*?)\\\)",
+                    lambda item: strip_inline_math(item.group(1)),
+                    re.sub(r"[*`]", "", cell),
+                )
+            )
+            for cell in col
+        )
         if is_numeric_column(col[1:]):
             raw.append(min(max(max_len, 7), 10))
         else:
@@ -723,7 +772,10 @@ def markdown_to_docx(source: Path, destination: Path, topic: str) -> None:
         if stripped.startswith("### "):
             flush_paragraph()
             heading = stripped[4:].strip()
-            if heading == "3.6本报告涉及的数据与实验矩阵":
+            if heading in {
+                "3.6本报告涉及的数据与实验矩阵",
+                "6.7matched无LEO新类归因诊断",
+            }:
                 doc.add_page_break()
             p = doc.add_paragraph(style="Heading 2")
             add_rich_text(p, heading)

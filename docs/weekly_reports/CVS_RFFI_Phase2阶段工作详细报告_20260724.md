@@ -30,7 +30,7 @@
 
 |时间|Phase2阶段|核心问题|对比方法|主要输出|
 |---|---|---|---|---|
-|统一参考|Stage2-A|没有target标签时，Phase1模型能否直接跨接收机|直接ADV3B02|5个target receiver的old_acc_before参考|
+|统一参考|Stage2-A|没有target标签时，Phase1模型能否直接跨接收机|直接ADV3B02|5个target receiver的\(A_{\mathrm{old}}^{\mathrm{pre}}\)参考|
 |截至7月16日|Stage2-B|换到新接收机后，旧类准确率如何恢复|ProtoNet CDA、MRIOR-SDA、DADDA-SDA|375个域适应任务，分析K-shot、receiver和计算开销|
 |截至7月24日|Stage2-C|如何注册新发射机，同时保留旧发射机|CSIL、MoPC-HR|800个正式LEO cell/2400个场景row及同规模matched无LEO诊断|
 
@@ -70,7 +70,7 @@ Phase3的unknown拒识不属于Phase2-A/B/C。本报告只讨论已经注册的�
 
 **任务：**在同一target receiver中同时完成两件事：保持或校准旧类，注册新类。模型冻结后，每个query必须在全部已注册旧类和新类中统一竞争。
 
-**输出与评价：**必须在同一row报告old_acc_after、seen_new_acc、\(H_{\mathrm{old,new}}\)、forgetting和旧类floor。只保旧类或只学新类都不能称为Stage2-C成功。CSIL和MoPC-HR属于本阶段的外部类增量对比。
+**输出与评价：**必须在同一row报告\(A_{\mathrm{old}}^{\mathrm{post}}\)、\(A_{\mathrm{new}}\)、\(H_{\mathrm{old,new}}\)、\(F_{\mathrm{old}}\)和\(A_{\min,\mathrm{old}}\)。只保旧类或只学新类都不能称为Stage2-C成功。CSIL和MoPC-HR属于本阶段的外部类增量对比。
 
 ### 2.5关键集合与样本角色
 
@@ -119,22 +119,22 @@ $$
 
 |工作包|基座与数据|target设置|实验规模|输出|
 |---|---|---|---|---|
-|旧类域适应|ADV3B02＋target-old support/query；MRIOR/DADDA另读source|5个target receiver；K={1,2,5,10,20}；5个seed|5×5×5×3=375个方法任务|适应前后old_acc、收益、正/负迁移、时延|
-|新类注册|ADV3B02接口＋Phase2前base状态＋target-new support；old/new query只评分|5个target receiver；5个seed；K={1,5,10,20}；新类数={2,5,10,20}|800个正式LEO cell/2400个场景row|old_acc_before/after、seen_new_acc、H、forgetting、min_old|
-|信道归因诊断|保持方法、物理ID、split、K、seed和旧类条件一致，仅替换新类IQ为无LEO版本|与正式矩阵逐row配对|800个非正式cell/2400个场景row|Δnew、Δold、ΔH、Δforgetting、Δmin_old|
+|旧类域适应|ADV3B02＋target-old support/query；MRIOR/DADDA另读source|5个target receiver；\(K\in\{1,2,5,10,20\}\)；5个seed|5×5×5×3=375个方法任务|\(A_{\mathrm{old}}^{\mathrm{pre/post}}\)、\(G_{\mathrm{old}}\)、正/负迁移、时延|
+|新类注册|ADV3B02接口＋Phase2前base状态＋target-new support；old/new query只评分|5个target receiver；5个seed；\(K\in\{1,5,10,20\}\)；新类数\(\in\{2,5,10,20\}\)|800个正式LEO cell/2400个场景row|\(A_{\mathrm{old}}^{\mathrm{pre/post}}\)、\(A_{\mathrm{new}}\)、\(H_{\mathrm{old,new}}\)、\(F_{\mathrm{old}}\)、\(A_{\min,\mathrm{old}}\)|
+|信道归因诊断|保持方法、物理ID、split、K、seed和旧类条件一致，仅替换新类IQ为无LEO版本|与正式矩阵逐row配对|800个非正式cell/2400个场景row|\(\Delta A_{\mathrm{new}}\)、\(\Delta A_{\mathrm{old}}\)、\(\Delta H\)、\(\Delta F_{\mathrm{old}}\)、\(\Delta A_{\min,\mathrm{old}}\)|
 
 本报告沿用已完成外部对比运行中的“正式LEO”命名，表示该冻结矩阵内的LEO条件，而不表示这些宽权限方法已经获得`p2_min_v1`主方法晋级资格。三个LEO场景分别训练、锁定和评分，不能把同一物理样本的多场景结果合并成更多K-shot support；其汇总仅用于对比方法机制分析。
 
 ## 4.评价指标与输入输出
 
-记\(Q_{\mathrm{old}}\)和\(Q_{\mathrm{new}}\)分别为旧类、新类query集合，\(Q_c\)为旧类\(c\)的query集合；\(y_i\)是真值，\(\hat y_i^{(0)}\)和\(\hat y_i^{(1)}\)分别表示适应/注册前后的预测，\(\mathbb I[\cdot]\)为指示函数。
+记\(Q_{\mathrm{old}}\)和\(Q_{\mathrm{new}}\)分别为旧类、新类query集合，\(Q_c\)为旧类\(c\)的query集合；\(y_i\)是真值，\(\hat y_i^{(0)}\)和\(\hat y_i^{(1)}\)分别表示适应/注册前后的预测，\(\mathbb I[\cdot]\)为指示函数。为同时保证数学表达和实验字段可追溯，本文采用\(A_{\mathrm{old}}^{\mathrm{pre}}\)、\(A_{\mathrm{old}}^{\mathrm{post}}\)、\(A_{\mathrm{new}}\)、\(H_{\mathrm{old,new}}\)、\(F_{\mathrm{old}}\)和\(A_{\min,\mathrm{old}}\)，分别对应结果字段`old_acc_before`、`old_acc_after`、`seen_new_acc`、`H_old_new`、`forgetting`和`min_old`。
 
 ### 4.1旧类适应指标
 
 **适应前旧类准确率：**
 
 $$
-\mathrm{old\_acc\_before}
+A_{\mathrm{old}}^{\mathrm{pre}}
 =\frac{1}{|Q_{\mathrm{old}}|}
 \sum_{i\in Q_{\mathrm{old}}}
 \mathbb I[\hat y_i^{(0)}=y_i]
@@ -143,7 +143,7 @@ $$
 **适应后旧类准确率：**
 
 $$
-\mathrm{old\_acc\_after}
+A_{\mathrm{old}}^{\mathrm{post}}
 =\frac{1}{|Q_{\mathrm{old}}|}
 \sum_{i\in Q_{\mathrm{old}}}
 \mathbb I[\hat y_i^{(1)}=y_i]
@@ -152,18 +152,18 @@ $$
 **适应收益：**
 
 $$
-\mathrm{gain}
-=\mathrm{old\_acc\_after}-\mathrm{old\_acc\_before}
+G_{\mathrm{old}}
+=A_{\mathrm{old}}^{\mathrm{post}}-A_{\mathrm{old}}^{\mathrm{pre}}
 $$
 
-gain为正表示正迁移，为负表示适应损伤了原有能力。
+\(G_{\mathrm{old}}\)为正表示正迁移，为负表示适应损伤了原有能力。
 
 ### 4.2新类注册指标
 
 **已注册新类准确率：**
 
 $$
-\mathrm{seen\_new\_acc}
+A_{\mathrm{new}}
 =\frac{1}{|Q_{\mathrm{new}}|}
 \sum_{i\in Q_{\mathrm{new}}}
 \mathbb I[\hat y_i^{(1)}=y_i]
@@ -178,9 +178,9 @@ $$
 $$
 H_{\text{old,new}}
 =\frac{
-2\cdot\mathrm{old\_acc\_after}\cdot\mathrm{seen\_new\_acc}
+2A_{\mathrm{old}}^{\mathrm{post}}A_{\mathrm{new}}
 }{
-\mathrm{old\_acc\_after}+\mathrm{seen\_new\_acc}
+A_{\mathrm{old}}^{\mathrm{post}}+A_{\mathrm{new}}
 }
 $$
 
@@ -189,8 +189,8 @@ $$
 **遗忘：**
 
 $$
-\mathrm{forgetting}
-=\mathrm{old\_acc\_before}-\mathrm{old\_acc\_after}
+F_{\mathrm{old}}
+=A_{\mathrm{old}}^{\mathrm{pre}}-A_{\mathrm{old}}^{\mathrm{post}}
 $$
 
 遗忘越大，说明增量学习对旧知识破坏越严重。
@@ -198,18 +198,18 @@ $$
 **最低旧类准确率：**
 
 $$
-\mathrm{acc}_c
+A_c
 =\frac{1}{|Q_c|}
 \sum_{i\in Q_c}
 \mathbb I[\hat y_i^{(1)}=y_i]
 $$
 
 $$
-\mathrm{min\_old}
-=\min_{c\in Y_{\mathrm{old}}}\mathrm{acc}_c
+A_{\min,\mathrm{old}}
+=\min_{c\in Y_{\mathrm{old}}}A_c
 $$
 
-`min_old`直接检查最差旧发射机是否接近失效，避免平均old_acc掩盖局部崩塌。
+\(A_{\min,\mathrm{old}}\)直接检查最差旧发射机是否接近失效，避免平均\(A_{\mathrm{old}}^{\mathrm{post}}\)掩盖局部崩塌。
 
 ### 4.4统一输入、状态更新与输出
 
@@ -217,8 +217,8 @@ $$
 |---|---|---|---|
 |直接基线|Phase1 bundle＋target query|无|旧类预测|
 |Stage2-B适应|Phase1 bundle＋target-old support|prototype、adapter或backbone，取决于方法权限|冻结后的旧类预测器|
-|Stage2-C注册|冻结/适应后状态＋old/new support|旧类统计、新类prototype、分类头或受控参数|面向全部注册类的统一预测器|
-|独立评分|不可变prediction artifact＋query真值|不得回流到predictor|old/new/H/forgetting等指标|
+|Stage2-C注册|冻结/适应后状态＋\(Y_{\mathrm{old}}/Y_{\mathrm{new}}\) support|旧类统计、新类prototype、分类头或受控参数|面向全部注册类的统一预测器|
+|独立评分|不可变prediction artifact＋query真值|不得回流到predictor|\(A_{\mathrm{old}}^{\mathrm{post}}\)、\(A_{\mathrm{new}}\)、\(H_{\mathrm{old,new}}\)、\(F_{\mathrm{old}}\)等指标|
 
 ## 5.工作一：跨接收机旧类域适应
 
@@ -530,22 +530,22 @@ $$
 
 正式LEO矩阵的800/800个cell、2400/2400个场景row和800/800份prediction/评分收据均完成，独立审计`failures=[]`。下表每行聚合1200个同条件、同方法的场景row：
 
-|方法|old_acc_before|old_acc_after|seen_new_acc|H_old_new|forgetting|min_old|
+|方法|\(A_{\mathrm{old}}^{\mathrm{pre}}\)|\(A_{\mathrm{old}}^{\mathrm{post}}\)|\(A_{\mathrm{new}}\)|\(H_{\mathrm{old,new}}\)|\(F_{\mathrm{old}}\)|\(A_{\min,\mathrm{old}}\)|
 |---|---:|---:|---:|---:|---:|---:|
 |CSIL|42.83%|23.17%|8.65%|1.18%|19.66%|0.82%|
 |MoPC-HR|45.32%|22.14%|26.61%|10.85%|23.19%|3.89%|
 
-这些是跨5个target receiver、5个seed、4个K、4个新类规模和3个LEO场景的全矩阵均值，不是挑选最佳K或最佳receiver后的结果。`min_old`表示每个row最低旧类准确率再求均值，用于观察少数旧类是否被严重牺牲。
+这些是跨5个target receiver、5个seed、4个\(K\)、4个新类规模和3个LEO场景的全矩阵均值，不是挑选最佳\(K\)或最佳receiver后的结果。\(A_{\min,\mathrm{old}}\)表示每个row最低旧类准确率再求均值，用于观察少数旧类是否被严重牺牲。
 
 ### 6.6正式结果中的主要现象
 
-**两种方法都没有在全矩阵上解决旧新平衡。**CSIL的正式LEO新类均值只有8.65%，H仅1.18%；MoPC-HR的新类均值较高，为26.61%，但old_acc_after仍只有22.14%，遗忘达到23.19个百分点。
+**两种方法都没有在全矩阵上解决旧新平衡。**CSIL的正式LEO\(A_{\mathrm{new}}\)只有8.65%，\(H_{\mathrm{old,new}}\)仅1.18%；MoPC-HR的\(A_{\mathrm{new}}\)较高，为26.61%，但\(A_{\mathrm{old}}^{\mathrm{post}}\)仍只有22.14%，\(F_{\mathrm{old}}\)达到23.19个百分点。
 
-**MoPC-HR比CSIL更具可塑性，但不是无代价提升。**其seen_new_acc比CSIL高17.96个百分点，H高9.67个百分点；与此同时，完整backbone更新使旧类表征更容易漂移。全矩阵结果不能写成“MoPC-HR已经解决新类注册”，只能说明它在当前执行语义下更倾向于学习新类。
+**MoPC-HR比CSIL更具可塑性，但不是无代价提升。**其\(A_{\mathrm{new}}\)比CSIL高17.96个百分点，\(H_{\mathrm{old,new}}\)高9.67个百分点；与此同时，完整backbone更新使旧类表征更容易漂移。全矩阵结果不能写成“MoPC-HR已经解决新类注册”，只能说明它在当前执行语义下更倾向于学习新类。
 
 **CSIL偏向稳定约束，但新类通道经常没有形成有效竞争力。**冻结backbone、EWC、KD和mask共同保护旧状态，但正式LEO下旧类均值仍从42.83%降到23.17%，说明结构隔离不能自动抵消target receiver域偏移。
 
-**逐类floor揭示均值掩盖的问题。**两种方法的`min_old`均值都低于4%，说明至少一部分旧发射机在增量后接近失效。Phase2方法不能只看平均old_acc或平均seen_new。
+**逐类floor揭示均值掩盖的问题。**两种方法的\(A_{\min,\mathrm{old}}\)均值都低于4%，说明至少一部分旧发射机在增量后接近失效。Phase2方法不能只看\(A_{\mathrm{old}}^{\mathrm{post}}\)或\(A_{\mathrm{new}}\)。
 
 ### 6.7matched无LEO新类归因诊断
 
@@ -553,12 +553,12 @@ $$
 
 `DIAGNOSTIC_NEW_CLASS_NO_LEO_NON_FORMAL`
 
-|方法|无LEO old_after|无LEO seen_new|无LEO H|Δold_after|Δseen_new|ΔH|Δforgetting|
+|方法|无LEO\(A_{\mathrm{old}}^{\mathrm{post}}\)|无LEO\(A_{\mathrm{new}}\)|无LEO\(H_{\mathrm{old,new}}\)|\(\Delta A_{\mathrm{old}}^{\mathrm{post}}\)|\(\Delta A_{\mathrm{new}}\)|\(\Delta H_{\mathrm{old,new}}\)|\(\Delta F_{\mathrm{old}}\)|
 |---|---:|---:|---:|---:|---:|---:|---:|
 |CSIL|23.78%|12.15%|1.67%|+0.60pp|+3.50pp|+0.49pp|−0.60pp|
 |MoPC-HR|21.45%|52.50%|12.98%|−0.68pp|+25.89pp|+2.13pp|+0.92pp|
 
-移除新类LEO扰动后，MoPC-HR的seen_new_acc平均提高25.89个百分点，说明LEO弱信道显著破坏了新类可分性；但old_acc_after下降0.68个百分点、遗忘增加0.92个百分点，H只提高2.13个百分点。CSIL的新类只提高3.50个百分点，说明其主要瓶颈还包括零步训练和过强稳定约束。
+移除新类LEO扰动后，MoPC-HR的\(A_{\mathrm{new}}\)平均提高25.89个百分点，说明LEO弱信道显著破坏了新类可分性；但\(A_{\mathrm{old}}^{\mathrm{post}}\)下降0.68个百分点、\(F_{\mathrm{old}}\)增加0.92个百分点，\(H_{\mathrm{old,new}}\)只提高2.13个百分点。CSIL的\(A_{\mathrm{new}}\)只提高3.50个百分点，说明其主要瓶颈还包括零步训练和过强稳定约束。
 
 该诊断不能用于CVS卫星场景性能声明、方法晋级或Stage2协议有效性证明。
 
@@ -605,7 +605,7 @@ MRIOR-SDA和DADDA-SDA使用source replay并完整更新backbone；ProtoNet只读
 2. 数据权限：是否读取source、旧样本、旧prototype或历史模型。
 3. 更新范围：prototype、分类头、adapter还是完整backbone。
 4. 资源：训练步数、时延、存储状态和是否需要反向传播。
-5. 同一row指标：old_acc、seen_new_acc、H、forgetting和逐类floor。
+5. 同一row指标：\(A_{\mathrm{old}}^{\mathrm{post}}\)、\(A_{\mathrm{new}}\)、\(H_{\mathrm{old,new}}\)、\(F_{\mathrm{old}}\)和\(A_{\min,\mathrm{old}}\)。
 
 ## 8.当前困难与原因归纳
 
@@ -619,7 +619,7 @@ ProtoNet的失败说明当前target embedding并非简单的“同类中心平�
 
 ### 8.3类增量存在稳定性—可塑性冲突
 
-CSIL偏稳定：旧类保留但新类可能不注册。MoPC-HR偏可塑：新类能学到，但旧类下降。Stage2-C的目标不是选择任一极端，而是在统一全类竞争中同时提高old_acc_after与seen_new_acc。
+CSIL偏稳定：旧类保留但新类可能不注册。MoPC-HR偏可塑：新类能学到，但旧类下降。Stage2-C的目标不是选择任一极端，而是在统一全类竞争中同时提高\(A_{\mathrm{old}}^{\mathrm{post}}\)与\(A_{\mathrm{new}}\)。
 
 ### 8.4低K条件下训练流程本身可能失效
 
@@ -651,11 +651,11 @@ KNN仍需要解决目标域embedding质量、类别support数量不平衡、距�
 
 旧类和新类必须使用同一推理规则，在全部实际注册类别中竞争。后续方法需要同时报告：
 
-- old_acc_after。
-- seen_new_acc。
-- H_old_new。
-- forgetting。
-- 最低旧类准确率或逐类floor。
+- \(A_{\mathrm{old}}^{\mathrm{post}}\)。
+- \(A_{\mathrm{new}}\)。
+- \(H_{\mathrm{old,new}}\)。
+- \(F_{\mathrm{old}}\)。
+- \(A_{\min,\mathrm{old}}\)。
 - receiver级收益与负迁移比例。
 
 不能通过old/new角色Oracle、类别配额、TX白名单或跨query重排修饰结果。
@@ -679,7 +679,7 @@ KNN仍需要解决目标域embedding质量、类别support数量不平衡、距�
 2. MRIOR-SDA和DADDA-SDA表明target-old support包含可利用的域校准信息，但两者使用source replay和完整backbone更新，只能作为宽权限外部对照；具体数值见附录A。
 3. ProtoNet CDA说明轻量prototype分类不能自动替代接收机域适应；其总体、K-shot和target receiver结果见附录A。
 4. CSIL强保护旧类，但低K、低新类数时经常没有有效训练或完全不输出新类。
-5. 官方代码语义全矩阵中，MoPC-HR正式LEO的seen_new_acc为26.61%、H为10.85%，高于CSIL的8.65%和1.18%，但两者old_acc_after都只有约22%至23%，稳定性问题仍然突出。
+5. 官方代码语义全矩阵中，MoPC-HR正式LEO的\(A_{\mathrm{new}}\)为26.61%、\(H_{\mathrm{old,new}}\)为10.85%，高于CSIL的8.65%和1.18%，但两者\(A_{\mathrm{old}}^{\mathrm{post}}\)都只有约22%至23%，稳定性问题仍然突出。
 6. matched无LEO诊断中，MoPC-HR新类准确率平均提高25.89个百分点，但H只提高2.13个百分点且遗忘略增，因此LEO信道失真不是唯一矛盾。
 7. 下一步应优先研究support-only轻量域校准＋KNN/qKNN或稳健prototype头，并用统一全类竞争、旧新调和均值和逐类floor评价。
 8. 当前工作已经完成任务定义、论文机制复现、CVS接口适配、完整结果审计和失败原因定位；尚未得到可表述为Phase2主方法晋级成功的结论。
@@ -731,7 +731,7 @@ KNN仍需要解决目标域embedding质量、类别support数量不平衡、距�
 
 ### A.1总体实验结果
 
-|方法|适应前old_acc|适应后old_acc|平均收益|正/负迁移任务|平均时延|3场景backbone更新|
+|方法|适应前\(A_{\mathrm{old}}\)|适应后\(A_{\mathrm{old}}\)|平均\(G_{\mathrm{old}}\)|正/负迁移任务|平均时延|3场景backbone更新|
 |---|---:|---:|---:|---:|---:|---:|
 |MRIOR-SDA|73.60%|82.58%|+8.98pp|105/20|17.90s|600|
 |DADDA-SDA|73.60%|78.35%|+4.75pp|99/26|14.62s|600|
