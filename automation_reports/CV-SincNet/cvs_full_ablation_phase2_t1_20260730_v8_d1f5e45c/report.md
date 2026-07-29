@@ -66,3 +66,15 @@ CUDA_VISIBLE_DEVICES=2 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python code/
 - P0或两个不同row在prediction前出现同一确定性异常指纹时，停止精确run-owned进程树；不按准确率停止。
 - 正式矩阵第一行与first wave记录launched/completed/succeeded/failed、prediction/score counts、PIDs、GPU映射和异常指纹。
 - 预期输出为每row prediction、behavior、quantization、resource、score和terminal artifact，以及完整registry/seal/summary；完成前不作性能结论。
+
+## v8输入补齐批次封口
+
+CPU formal预检和GPU smoke通过后，package补齐runner PID=`975269`使用8个CPU worker启动缺失48行。首批两个不同identity在package发布前产生相同确定性异常指纹：
+
+```text
+ValueError: current Phase1 class-label binding is unreadable
+```
+
+原因是批次控制器对旧命令执行全局input-root替换时，将本应继续引用的既有v2不可变`phase1_class_label_binding.json`误指向了不存在的v8 source路径。该runner自然结束，`completed=48`、`succeeded=0`、`failed=48`、package seal=`0`，未进入feature/GPU阶段；v8 run-owned active PID=`0`。GPU0上的PID=`955936,956031`和GPU1上的PID=`957815`均为无关Phase1任务，未干预；GPU2-7未被本批次占用。结束后本地`ssh.exe=0`且到N607/bridge的`ESTABLISHED TCP22=0`。
+
+本批次状态为`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。input、逐行日志和`package_completion_summary.json`全部保留，不覆盖、不续跑。fresh retry改用新实验ID和新input根，只允许定点替换三个输出参数，明确禁止替换class-label binding。
