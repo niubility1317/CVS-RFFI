@@ -542,3 +542,25 @@ ValueError: LEO cache manifest contract failed: ['overlay_role_policy']
 首轮独立复审发现P0=0、P1=1：显式JSON`null`会被旧实现误当缺键，且external target-new-only模式不应使用该兼容。修复后只有`overlay_role_policy`键真正缺失且`allow_target_new_only_overlay=false`时进入旧资产逐行推断；任何显式值（含`null`和空串）必须精确等于期望，external缺键继续拒绝。新增显式null与external缺键两项负测，五文件75项通过。
 
 当前状态：`P1_REVIEW_FIX_VERIFIED / SECOND_INDEPENDENT_REVIEW_PENDING / FAILED_BATCH_PRESERVED / NO_PERFORMANCE_RESULT`。第二轮独立复审与Git封存后使用new release/input/run ID做单个D18真实cache no-query smoke；只有package与feature完整闭合才重发全批次，禁止原地重启旧25c输入根。
+
+## 2026-07-30 D18兼容修复封存与fresh smoke预登记
+
+第二轮独立复审结论P0=0、P1=0；五文件独立实测75/75通过，允许commit与单个真实D18 cache no-query smoke。修复、测试、失败报告和小型回收证据已封存为Git commit`5097a33d0af76fe29c260557af55a9d083f34773`。
+
+新source plan：
+
+|计划|逻辑行数|Git绑定|SHA256|
+|---|---:|---|---|
+|`stage2_states_plan_5097a33d.json`|325|`5097a33d0af76fe29c260557af55a9d083f34773`|`14c6c89c65592ef70bbda686e448aa44234c25281296e6a4bc6e5eb25e88fa29`|
+|`stage2c_screening_plan_5097a33d.json`|1425|`5097a33d0af76fe29c260557af55a9d083f34773`|`3747ee94d5eb0bf5e9d44bcb4af7f6515e6758e3818dce446ccff6efefdf4e81`|
+
+fresh发布边界：
+
+- release：`/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2_t1_20260730_v5_5097a33d`。
+- input：`/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2_t1_20260730_v3_5097a33d`。
+- states run ID：`cvs_full_ablation_phase2_states_t1_20260730_v3_5097a33d`。
+- Stage2-C run ID：`cvs_full_ablation_phase2c_t1_20260730_v3_5097a33d`。
+- smoke只选择receiver=`20-1`、method seed=`7283101`的before package及K=10 Stage2-B feature，使用真实D18 cache和正式Phase1 binding/attestation；只检查package、feature、audit、handle和无query-truth泄漏，不读取性能。
+- smoke的所有输出使用fresh smoke子目录且不可覆盖。只有package与feature均完整加载、audit明确`legacy_missing_manifest_field_verified_from_rows`且0异常指纹，才允许在同一fresh input root继续构建其余49个package和124个identity；任何错误立即停止，不创建正式request/run/log root。
+
+当前状态：`COMPATIBILITY_FIX_COMMITTED / FRESH_REAL_CACHE_SMOKE_READY / FAILED_25C_BATCH_PRESERVED / NO_PERFORMANCE_RESULT`。
