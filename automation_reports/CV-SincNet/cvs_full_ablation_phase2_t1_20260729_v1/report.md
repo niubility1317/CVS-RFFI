@@ -110,3 +110,106 @@ Stage2-C的新类候选池不由调用方预选：构建器从当前已验证cac
 22:25全机训练进程占用为`2/2/2/2/2/2/1/1`，未超过每卡2个进程；Phase1 T1主矩阵`launched/completed/succeeded/failed/active/waiting=16/8/8/0/8/4`，label v2为6行活动、8行排队。两条运行链均无P0、非零退出或重复确定性异常指纹，SSH与TCP22连接已清零。
 
 22:54 Phase1 T1主矩阵更新为`launched/completed/succeeded/failed/nonzero/active/waiting=19/16/16/0/0/3/1`，10个历史复用行加16个新完成行均已闭合；剩3个D0活动、1个D0排队。Label v2为11行活动、3行排队，尚无完成或失败。整机GPU进程占用仍为`2/2/2/2/2/2/1/1`，两条运行链均无P0、非零退出、异常指纹或输出损坏证据。
+
+## 2026-07-29 23:00发布增量
+
+- Phase1正式部署bundle实现、完整候选池检查、同row prototype签名链和启动前报告已封存为Git commit`fff5cad186d40ed25335d2095ed7b4007a6651be`；该提交的独立发布审查为P0=0、P1=0。
+- 新增`build_full_ablation_stage2_binding_registry.py`：用`stage_scope/receiver/method_seed/support_seed/query_seed/new_class_draw_seed/K/new_class_count`精确匹配当前启动的唯一输入identity，核对feature payload/manifest、predictor package/seal、candidate lock、truth-side scoring manifest、`VALIDATED_ONCE`、capsule/split和Phase1 bundle/prototype哈希。
+- registry要求当前计划全部logical row恰好覆盖；缺行、额外identity或重复identity均拒绝。不同arm可共享同一输入identity，`P2-F3`与`P2-FULL`因此绑定相同feature和scoring artifact，但保留两个独立logical score。不同启动不要求缓存或数据hash相同。
+- 新增工具与既有release链的定向回归为49项通过、0项失败；当前等待该增量的独立P0/P1复审后再封存第二个精确commit。
+
+## 2026-07-29 23:01–23:12 N607 Phase1 deployment bundle发布证据
+
+本次由唯一服务器发布代理`stage2_t1_n607_release`执行，仅落地Phase1正式部署输入、构建source-labeled域×类P90组件并尝试unsigned prepare；未启动Stage2矩阵，未读取性能指标，未重审数据，未跨启动对齐数据hash，未干预Phase1或其他进程。
+
+|项目|证据|
+|---|---|
+|Git提交|`fff5cad186d40ed25335d2095ed7b4007a6651be`|
+|远端release root|`/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2_t1_20260729_v1_fff5cad1`，启动前确认不存在并以不可覆盖方式创建|
+|远端Python|`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`|
+|代码落地|commit归档SHA256=`3db0e8bed9e90d7faee7cf5ffe9e29dbb3d21f58ff417deacc7085b7d21c14e5`；Git归档规范化换行后，5个发布关键文件重新以本地已审查字节精确同步，远端SHA依次为`9083d34d...c23e8`、`04b21568...57ee`、`0dff3dec...edba`、`25ea1b36...af6`、`28be12ac...7f3`，全部匹配交接值；远端`py_compile`和入口`--help`通过|
+|Phase1输入|checkpoint=`1eb6d07b...307d7`，原prototype PT=`a2cd82b7...dfd2`、JSON=`3c7c1183...77a5`，completion receipt=`829d83b3...6727`；receipt为`phase1_training_complete=true`、`terminal_status=COMPLETE`、`exit_code=0`并绑定`P1-FULL__train_seed_7281105`|
+|WiSig同文件验证|当前`ManySig.pkl`SHA256=`2b0a7a74...694f`，只用于本次组件命令验证所读同一文件；未把它用作不同启动批次一致性门禁|
+|class binding|复用源文件SHA256=`4f701ac9...b5b7`；只读取6个TX及稳定class handle，当前派生binding SHA256=`a90931dd...22d0`，未采用其历史checkpoint字段|
+|normalize|`COMPLETE`；另存PT=`e0e10b67...88f0`、JSON=`89c1f21a...c527`，generation config=`59d8acf5...0364`；当前读取器判定`prototype_normalization_status=UNCHANGED_VALID`，原训练文件未覆盖|
+|P90组件|PID`864644`，CWD绑定本release的`code`，`CUDA_VISIBLE_DEVICES=6`且进程内部`cuda:0`；启动前GPU6已有1个进程，构建期间为2个，未超限；完成后回落为1个|
+|组件闭合|状态`PHASE1_COMPONENT_PENDING_OUTER_JOINT_SEAL`；3个成员齐全：NPZ SHA256=`6b651fb5...6aa8`、manifest=`03b5761d...448a`、manifest.sha256=`87683202...686a`；未签名、未提升|
+|unsigned prepare|`PHASE1_DEPLOYMENT_PREPARE_FAILED_CLOSED / NO_STAGE2_RUN / NO_PERFORMANCE_RESULT`|
+|失败证据|正式N607 CUDA parity在生成runtime后拒绝：`runtime/checkpoint parity failed: max_abs=0.0009131431579589844`；partial目录只含`work/runtime/p1_full.torchscript.pt`，大小4,684,341字节|
+|签名状态|`signing_request.json=ABSENT`，`package=ABSENT`；未生成、未取回、未签名，私钥未读取、未上传|
+|资源与连接清理|prepare退出后GPU6只剩原PID`823219`；所有SSH/SCP任务结束后本地`ssh.exe=0`，N607与bridge的ESTABLISHED TCP22连接=0|
+
+实际normalize命令：
+
+```text
+PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2_t1_20260729_v1_fff5cad1/code /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python scripts/build_full_ablation_phase1_deployment_bundle.py normalize --checkpoint /home/szu2070436088/2510044040/CV-SincNet/runs/cvs_full_ablation_phase1_t1_20260729_v5_reuse/P1-FULL__train_seed_7281105/best_source_validation_ssdg.pth --prototype-pt /home/szu2070436088/2510044040/CV-SincNet/runs/cvs_full_ablation_phase1_t1_20260729_v5_reuse/P1-FULL__train_seed_7281105/phase2_zid_prototypes.pt --prototype-json /home/szu2070436088/2510044040/CV-SincNet/runs/cvs_full_ablation_phase1_t1_20260729_v5_reuse/P1-FULL__train_seed_7281105/phase2_zid_prototypes.json --completion-receipt /home/szu2070436088/2510044040/CV-SincNet/runs/cvs_full_ablation_phase1_t1_20260729_v5_reuse/P1-FULL__train_seed_7281105/phase1_training_completion_receipt.json --class-binding-source /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2_t1_20260729_v1_fff5cad1/input/class_binding_source.json --output-root /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2_t1_20260729_v1_fff5cad1/artifacts/phase1_normalized --component-batch-size 512 --component-num-workers 0 --min-samples-per-cell 2 --radius-histogram-bins 4096
+```
+
+实际组件命令：
+
+```text
+CUDA_VISIBLE_DEVICES=6 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2_t1_20260729_v1_fff5cad1/code /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python scripts/export_adv3b02_center_lowrank_radius_component.py --checkpoint /home/szu2070436088/2510044040/CV-SincNet/runs/cvs_full_ablation_phase1_t1_20260729_v5_reuse/P1-FULL__train_seed_7281105/best_source_validation_ssdg.pth --wisig-pkl /home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl --output /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2_t1_20260729_v1_fff5cad1/artifacts/phase1_component --device cuda:0 --expected-checkpoint-sha256 1eb6d07b9d6339400892c5553f33261f40513922d4b08c907446e44e993307d7 --expected-wisig-sha256 2b0a7a7488dd3650bcae7b1d80efbcffd1598aaa671ae6b0a0df2a24dc0f694f --expected-class-handle-binding-sha256 a90931dd0266cbd42b1163a61d015d5bfe955d2ab287733d8674b9da92d722d0 --class-binding-source /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2_t1_20260729_v1_fff5cad1/input/class_binding_source.json --generation-config /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2_t1_20260729_v1_fff5cad1/artifacts/phase1_normalized/generation_config.json --expected-generation-config-sha256 59d8acf54778ae181ccfa3762b90b2fa861ca81fb8c3da9d4c88cc2d0e030364 --expected-generation-code-sha256 04b21568a6444bce50095d052f384692cb56cf7519fbcd6125caffdd855857ee --batch-size 512 --num-workers 0 --min-samples-per-cell 2 --radius-histogram-bins 4096
+```
+
+实际prepare命令与失败点：
+
+```text
+CUDA_VISIBLE_DEVICES=6 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2_t1_20260729_v1_fff5cad1/code /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python scripts/build_full_ablation_phase1_deployment_bundle.py prepare --checkpoint /home/szu2070436088/2510044040/CV-SincNet/runs/cvs_full_ablation_phase1_t1_20260729_v5_reuse/P1-FULL__train_seed_7281105/best_source_validation_ssdg.pth --prototype-pt /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2_t1_20260729_v1_fff5cad1/artifacts/phase1_normalized/deployment_prototype/phase2_zid_prototypes.pt --prototype-json /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2_t1_20260729_v1_fff5cad1/artifacts/phase1_normalized/deployment_prototype/phase2_zid_prototypes.json --component-dir /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2_t1_20260729_v1_fff5cad1/artifacts/phase1_component --class-binding-source /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2_t1_20260729_v1_fff5cad1/input/class_binding_source.json --completion-receipt /home/szu2070436088/2510044040/CV-SincNet/runs/cvs_full_ablation_phase1_t1_20260729_v5_reuse/P1-FULL__train_seed_7281105/phase1_training_completion_receipt.json --generation-config /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2_t1_20260729_v1_fff5cad1/artifacts/phase1_normalized/generation_config.json --output-root /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2_t1_20260729_v1_fff5cad1/artifacts/phase1_unsigned --device cuda:0 --parity-seed 7281105 --parity-rows 8
+FullAblationDeploymentError: runtime/checkpoint parity failed: max_abs=0.0009131431579589844
+```
+
+已取回的必要小证据位于`E:\type10-7\automation_reports\CV-SincNet\cvs_full_ablation_phase2_t1_20260729_v1\release_evidence\n607_fff5cad1\`。原partial远端目录保持不变、不可重用。本发布没有获授权对该失败目录重跑；后续须先本地修复、独立复审、Git封存，并使用新的release/output ID。
+
+## 2026-07-29 23:13–23:25 fail-closed修复验证
+
+失败release的既有checkpoint与partial TorchScript runtime仅做只读CUDA数值诊断，没有重跑prepare、修改旧目录、打开truth或启动Stage2。batch`1/8/64/256`的feature最大绝对差依次为`0/9.6411e-06/4.0054e-05/7.5340e-05`，logit最大绝对差依次为`0/7.9632e-05/2.6608e-04/9.1314e-04`；相对eager输出标度的最高比例分别为`3.9867e-05`和`7.1414e-05`。全部batch的feature/logit在`atol=1e-3,rtol=1e-4`下均allclose，329个probe的6类logit argmax mismatch合计为0。诊断JSON为`release_evidence/n607_fff5cad1/cuda_parity_diagnostic_v1.json`，SHA256=`9d231424f450997ea9d5c76ff50ffa8e92a18362c3e20e821ce25439dba67624`。
+
+据此将正式门禁改为固定单精度CUDA策略：formal prepare必须实际运行在可用CUDA设备上；禁用matmul/cuDNN TF32，关闭cuDNN benchmark并启用cuDNN deterministic和PyTorch deterministic algorithms；最大绝对差固定不超过`1e-3`，且batch`1/8/64/256`全部输出有限、全部probe的6类logit argmax必须完全一致。parity receipt显式绑定device type/index/capability、Torch/CUDA/cuDNN版本、五个实际后端开关、容差和decision equivalence；CPU、自声明策略漂移、`0.0011`超差、decision false或容差字段漂移均由负测拒绝。没有按本次观测值动态调容差。
+
+binding registry同步修复独立复审的两个P1：
+
+1. Stage2-A的`support_seed/k_shot/new_class_draw_seed/new_class_count`在index与feature manifest两侧都必须严格为0；Stage2-B要求draw/new count为0；Stage2-C要求正support/draw/new count和冻结K集合。错误字段不再被identity规范化掩盖。
+2. registry改用正式scorer的严格sidecar loader，在发布前验证truth exact schema、完整rows、stage和receiver；Stage2-A误绑Stage2-B truth或错误receiver会立即拒绝，不再推迟到正式评分时失败。
+
+最新7文件定向回归为59项通过、0项失败。此前本地CPU prepare只属于pre-CUDA-binding技术smoke，当前正式构建器会在checkpoint加载前拒绝CPU，不能作为正式bundle或替代N607新commit/new release root的fresh CUDA闭合。
+
+最终独立增量复审确认上述registry与CUDA parity修复为P0=0、P1=0，允许Git封存；封存后仅允许唯一release runner在fresh N607新root生成全新的runtime、receipt、bundle和seal，旧`fff5cad1`partial/root不得复用或覆盖。
+
+## 2026-07-29 23:17–23:20 partial runtime只读CUDA数值诊断
+
+本诊断没有重跑prepare、没有写入失败release、没有签名、没有启动Stage2，也没有读取数据truth或任何准确率。诊断脚本先在本地`ssr-gpu`环境完成`py_compile`与CLI加载，root与Git镜像SHA256均为`b515370862dea3348a1ddf00486da355121c4a745316e23bb704a637b15058a2`；随后同步到独立且启动前不存在的目录：
+
+```text
+/home/szu2070436088/2510044040/CV-SincNet/diagnostics/cvs_full_ablation_phase2_t1_20260729_v1_fff5cad1_cuda_parity_diag_v1
+```
+
+执行前GPU6只有原PID`823219`一个计算进程，满足全机每卡少于2进程的启动条件。诊断读取同一checkpoint、既有partial runtime，使用`parity_seed=7281105`和batch`1/8/64/256`：
+
+```text
+CUDA_VISIBLE_DEVICES=6 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2_t1_20260729_v1_fff5cad1/code /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python diagnose_n607_cuda_parity.py --checkpoint /home/szu2070436088/2510044040/CV-SincNet/runs/cvs_full_ablation_phase1_t1_20260729_v5_reuse/P1-FULL__train_seed_7281105/best_source_validation_ssdg.pth --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2_t1_20260729_v1_fff5cad1/artifacts/phase1_unsigned/work/runtime/p1_full.torchscript.pt --output /home/szu2070436088/2510044040/CV-SincNet/diagnostics/cvs_full_ablation_phase2_t1_20260729_v1_fff5cad1_cuda_parity_diag_v1/output/parity_diagnostic.json --device cuda:0 --parity-seed 7281105
+```
+
+checkpoint SHA256仍为`1eb6d07b9d6339400892c5553f33261f40513922d4b08c907446e44e993307d7`；partial runtime SHA256为`5b834846bb7df553a8c6d2cf54d2eee4a9999845239b3a46887cfcc2ffbe922a`。
+
+|batch|feature max_abs delta|logit max_abs delta|eager feature max_abs|eager logit max_abs|feature相对标度|logit相对标度|argmax mismatch|
+|---:|---:|---:|---:|---:|---:|---:|---:|
+|1|0|0|1.1311485767364502|2.0624685287475586|0|0|0|
+|8|9.641051292419434e-06|7.963180541992188e-05|1.2359713315963745|7.303960800170898|7.800384237041403e-06|1.0902551040260053e-05|0|
+|64|4.00543212890625e-05|0.00026607513427734375|1.8897825479507446|12.668201446533203|2.119520117936155e-05|2.100338673965105e-05|0|
+|256|7.534027099609375e-05|0.0009131431579589844|1.8897825479507446|12.786611557006836|3.986716412308482e-05|7.141400627428916e-05|0|
+
+四个batch的feature与logit在`atol=1e-3,rtol=1e-4`及`atol=2e-3,rtol=2e-4`两组条件下全部`torch.allclose=true`，输出全部有限；总logit argmax mismatch为0。诊断只表明既有partial runtime的数值差随batch增大且最大项位于batch256的logit，不改变原`1e-5`正式门禁失败结论，也不自动授权放宽门禁。
+
+运行时后端记录：
+
+|设置|值|
+|---|---|
+|设备|NVIDIA GeForce RTX 3090，capability 8.6|
+|PyTorch/CUDA/cuDNN|`2.1.0+cu121`/`12.1`/`8902`|
+|`torch.backends.cuda.matmul.allow_tf32`|false|
+|`torch.backends.cudnn.allow_tf32`|true|
+|`torch.backends.cudnn.benchmark`|false|
+|`torch.backends.cudnn.deterministic`|false|
+|deterministic algorithms|false|
+
+远端与本地JSON SHA256均为`9d231424f450997ea9d5c76ff50ffa8e92a18362c3e20e821ce25439dba67624`，本地证据为`E:\type10-7\automation_reports\CV-SincNet\cvs_full_ablation_phase2_t1_20260729_v1\release_evidence\n607_fff5cad1\cuda_parity_diagnostic_v1.json`。诊断退出后GPU6恢复为原PID`823219`一个进程；本地`ssh.exe=0`且N607/bridge的ESTABLISHED TCP22连接=0。

@@ -60,6 +60,10 @@ SIGNATURE_ENVELOPE_SCHEMA = "cvs.phase1.adv3b02_deployment_bundle_signature_enve
 SIGNATURE_DOMAIN = "cvs.phase1.adv3b02_deployment_bundle.ed25519.v1"
 FORMAL_CONTEXT_SCHEMA = "cvs.phase2.adv3b02_joint_formal_context.v1"
 CLASS_BINDING_SCHEMA = "phase1_tx_class_handle_binding_v1"
+RUNTIME_PARITY_MAX_ABS_TOLERANCE = 1.0e-3
+RUNTIME_PARITY_NUMERIC_POLICY = (
+    "fp32_cuda_tf32_disabled_cudnn_deterministic_v1"
+)
 
 MANIFEST_RELATIVE_PATH = "deployment_manifest.json"
 RUNTIME_RELATIVE_PATH = "runtime/adv3b02_runtime.torchscript.pt"
@@ -514,6 +518,20 @@ def _validate_lock_documents(
             "runtime_sha256",
             "parity_status",
             "max_abs_output_delta",
+            "max_abs_output_delta_tolerance",
+            "decision_equivalence_verified",
+            "numeric_policy",
+            "parity_device_type",
+            "cuda_device_index",
+            "cuda_device_capability",
+            "torch_version",
+            "cuda_runtime_version",
+            "cudnn_version",
+            "cuda_matmul_allow_tf32",
+            "cudnn_allow_tf32",
+            "cudnn_benchmark",
+            "cudnn_deterministic",
+            "deterministic_algorithms_enabled",
             "parity_vector_root_sha256",
             "validated_batch_sizes",
             "feature_dim",
@@ -531,7 +549,35 @@ def _validate_lock_documents(
         delta = float(parity["max_abs_output_delta"])
     except (TypeError, ValueError) as exc:
         raise ADV3B02DeploymentBundleError("runtime parity delta invalid") from exc
-    if not np.isfinite(delta) or delta < 0.0 or delta > 1.0e-5:
+    if (
+        not np.isfinite(delta)
+        or delta < 0.0
+        or delta > RUNTIME_PARITY_MAX_ABS_TOLERANCE
+        or parity["max_abs_output_delta_tolerance"]
+        != RUNTIME_PARITY_MAX_ABS_TOLERANCE
+        or parity["decision_equivalence_verified"] is not True
+        or parity["numeric_policy"] != RUNTIME_PARITY_NUMERIC_POLICY
+        or parity["parity_device_type"] != "cuda"
+        or type(parity["cuda_device_index"]) is not int
+        or parity["cuda_device_index"] < 0
+        or not isinstance(parity["cuda_device_capability"], list)
+        or len(parity["cuda_device_capability"]) != 2
+        or any(
+            type(value) is not int or value < 0
+            for value in parity["cuda_device_capability"]
+        )
+        or not isinstance(parity["torch_version"], str)
+        or not parity["torch_version"]
+        or not isinstance(parity["cuda_runtime_version"], str)
+        or not parity["cuda_runtime_version"]
+        or type(parity["cudnn_version"]) is not int
+        or parity["cudnn_version"] <= 0
+        or parity["cuda_matmul_allow_tf32"] is not False
+        or parity["cudnn_allow_tf32"] is not False
+        or parity["cudnn_benchmark"] is not False
+        or parity["cudnn_deterministic"] is not True
+        or parity["deterministic_algorithms_enabled"] is not True
+    ):
         raise ADV3B02DeploymentBundleError("runtime parity delta exceeds fixed tolerance")
     batch_sizes = parity["validated_batch_sizes"]
     if (

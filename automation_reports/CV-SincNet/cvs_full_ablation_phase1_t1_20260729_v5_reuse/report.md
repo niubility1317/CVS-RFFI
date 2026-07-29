@@ -380,6 +380,24 @@ GPU2的第二个静态槽用于B0补导出，完成后该槽无后续行，因�
 |`P1-FULL__train_seed_7281103`|15,262,796|394,471|2,063,968|528|8,095|26,655|4,922|0|完整，通过|
 |`P1-FULL__train_seed_7281104`|15,262,732|401,566|2,029,383|528|8,129|26,684|4,922|0|完整，通过|
 
+### 23:11 T1与label v2合并直连健康快照
+
+|字段|值|
+|---|---|
+|本地直连preflight|2026-07-29 23:10:36+08:00通过；直连配置、普通账号身份、服务器时间、项目根目录及8张RTX 3090均正常；退出码0|
+|服务器快照时间|2026-07-29 23:11:16+08:00|
+|runner与release绑定|T1 runner PID`711523`、PPID`711522`仍存活，CWD/cmdline继续绑定冻结release及原plan/run/log；release为tracked-clean，HEAD=`4592bdd9497feffe69298a20c436abd177801231`|
+|dispatch计数|launched=19、completed=16、succeeded=16、failed=0、nonzero=0、active=3、waiting=1；相较22:54无新增完成行或派发行|
+|闭合artifact|此前两批共15个new-train行已分别通过7/7和8/8严格独立验收；本轮这些行的checkpoint、prototype PT/JSON、resource、heldout、terminal和completion receipt仍全部非空，return code均为0；没有新行需要验收|
+|活跃/等待|`P1-D0`种子7281102、7281103在GPU0，种子7281104在GPU1，3个训练主进程全部由runner直接持有且CWD/cmdline绑定正确；种子7281105因GPU1已有1个T1和1个label v2而继续等待|
+|GPU上限|T1在GPU0–7为`2/1/0/0/0/0/0/0`；合并label v2后全机为`2/2/2/2/2/2/1/1`，所有GPU均不超过2个训练实验|
+|GPU利用率|GPU0–7依次为97%、95%、98%、92%、91%、99%、21%、29%；对应显存6075、6273、6355、6167、6297、6321、3232、3240MiB|
+|训练进度|3个D0最新`[EPOCH-BEGIN]`为E28–E32；仅作非停滞健康证据，不读取或比较性能|
+|日志增长|T1逐行日志总量由22:54的17,510,030字节增至17,859,188字节，增加349,158字节|
+|异常/汇总|硬错误、P0、failed、nonzero、异常指纹和重复异常指纹均为0；`runner_summary.json`仍不存在，矩阵尚未结束|
+|数据边界|本轮未读取性能、未干预或重启任务、未重审数据，也未进行跨批次一致性或hash对齐|
+|SSH清理|全部短连接退出后本地`ssh.exe=0`，N607及bridge的ESTABLISHED TCP22连接均为0|
+
 当前仅能下结论为`LANDED / RUNNING / FIRST-WAVE HEALTHY`，不能据此形成任何性能结论。
 
 ## 风险与完成后检查

@@ -31,12 +31,14 @@
 |P2-TR-21|7.10、14|5+5+5连续注册与3种到达顺序|后续lifecycle plan/launcher|deferred|T3前验证|顺序必须在query前锁定|
 |P2-TR-22|5、10、14|same-row汇总、paired CI、per-receiver/per-class|`summarize_full_ablation_phase2.py`|implemented|现有测试待纳入发布回归|需确认完整矩阵输入契约|
 |P2-TR-23|9.1、13|独立复审P0=0/P1=0、Git提交、不可覆盖N607发布|review artifact；report；bundle/seal|implemented|独立实现审查P0=0、P1=0；244 passed、2 skipped、0 failed|审查时唯一发布P0为未Git封存；本报告所在提交闭合后归零，正式seal仍等待P1-FULL输入|
-|P2-TR-24|3.1、9.1、11|把T1完整P1-FULL checkpoint与同row prototype编译成可加载的不可变Phase1 deployment bundle|`build_full_ablation_phase1_deployment_bundle.py`；测试；Phase2报告|pending|待真实P1-FULL seed7281105 checkpoint/prototype smoke|必须输出TorchScript、checkpoint/runtime parity、160维多域聚合组件、class-handle binding、外部签名请求和正式binding；不得复制source样本或把裸pth带入Phase2|
-|P2-TR-25|2.2、4.2、9.1|已有LEO_weak cache按可用row复用，不要求不同启动批次数据一致；每个正式row的support/query/new-class-draw种子分别生效|predictor bundle builder；Stage2输入registry；feature-cache builder；release plan|pending|D18 cache可复用；待生成正式package、truth-sidecar和registry|仅核对存在、schema、row内部绑定和`VALIDATED_ONCE`句柄，不重做原始数据审计或跨批次对齐；不得把一个总seed伪装成三个独立seed|
+|P2-TR-24|3.1、9.1、11|把T1完整P1-FULL checkpoint与同row prototype编译成可加载的不可变Phase1 deployment bundle|`build_full_ablation_phase1_deployment_bundle.py`；测试；Phase2报告|implemented|真实P1-FULL seed7281105 checkpoint在batch 1/8/64/256逐项parity；46项回归与独立复审P0=0、P1=0|N607正式签名往返仍在进行；必须输出TorchScript、160维多域聚合组件、class-handle binding、外部签名和正式binding，不得复制source样本或把裸pth带入Phase2|
+|P2-TR-25|2.2、4.2、9.1|已有LEO_weak cache按可用row复用，不要求不同启动批次数据一致；每个正式row的support/query/new-class-draw种子分别生效|predictor bundle builder；Stage2输入registry；feature-cache builder；release plan|implemented|D18 cache可复用；support/query seed独立生效；Stage2-C完整target-new pool与draw seed强制闭合；待N607生成正式package、truth-sidecar和registry|仅核对存在、schema、row内部绑定和`VALIDATED_ONCE`句柄，不重做原始数据审计或跨批次对齐；不得把一个总seed伪装成三个独立seed|
+|P2-TR-26|9.1、11、13|把每个逻辑row精确绑定到当前已封存feature cache、predictor package和truth-side scoring manifest|`build_full_ablation_stage2_binding_registry.py`；测试；release plan|verified|exact identity映射、artifact链复核、全集覆盖、缺行拒绝和P2-F3/FULL别名共享测试；Stage2-A四个零support字段及严格truth schema/stage/receiver负测已补；最终增量复审P0=0、P1=0|registry只绑定当前启动实际采用的缓存，不要求不同启动的数据或缓存hash相同；待N607真实artifact闭合|
+|P2-TR-27|3.1、9.1、11|Phase1 checkpoint→TorchScript parity必须在N607 CUDA上按固定数值策略闭合，并拒绝会改变6类决策的runtime|deployment builder；parity receipt；bundle loader；测试|verified|旧release CUDA诊断最大绝对差`0.0009131431579589844`、相对标度≤`7.1414e-05`、全部batch在`atol=1e-3,rtol=1e-4`下allclose、argmax mismatch=0；formal prepare强制CUDA，receipt绑定device/capability/Torch/CUDA/cuDNN与五个实际后端开关；新策略固定max abs≤`1e-3`且全probe argmax等价；相关全链59项通过；最终增量复审P0=0、P1=0|旧partial目录永久保留为`NO_STAGE2_RUN / NO_PERFORMANCE_RESULT`；必须用新commit、新release root生成fresh N607 CUDA receipt|
 
 ## 当前最高风险
 
-当前最高风险已经从“无真实executor”转为“真实输入尚未闭环”：Phase1 T1中的`P1-FULL`五个deployment bundle仍在运行队列中，因此尚不能完成真实checkpoint no-query smoke或正式Phase2发布。代码侧已具备一次性特征提取、缓存复用、物理别名去重、不可覆盖预测/评分、16槽调度和系统性技术故障止损；独立实现审查已经达到P0=0、P1=0。不同发布批次可以使用不同既有合法数据包，只要求各自row内部预测、truth-side评分和输入身份闭合。
+当前最高风险已经从“无真实输入”转为“N607正式artifact封存尚未闭合”：`P1-FULL__train_seed_7281105`的完整checkpoint/prototype/terminal/receipt已通过本地真实runtime smoke，Git发布提交为`fff5cad186d40ed25335d2095ed7b4007a6651be`，Phase1 deployment bundle正在N607进行不可覆盖落地和外部签名往返。代码侧已具备一次性特征提取、缓存复用、逻辑row全集绑定、物理别名去重、不可覆盖预测/评分、16槽调度和系统性技术故障止损。不同发布批次可以使用不同既有合法数据包，只要求各自row内部预测、truth-side评分和输入身份闭合。
 
 ## 数据复用边界
 

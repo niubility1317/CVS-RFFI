@@ -142,6 +142,20 @@ def _fixture(
             "runtime_sha256": runtime_sha,
             "parity_status": "PASS",
             "max_abs_output_delta": 0.0,
+            "max_abs_output_delta_tolerance": 0.001,
+            "decision_equivalence_verified": True,
+            "numeric_policy": "fp32_cuda_tf32_disabled_cudnn_deterministic_v1",
+            "parity_device_type": "cuda",
+            "cuda_device_index": 0,
+            "cuda_device_capability": [8, 6],
+            "torch_version": "2.1.0+cu121",
+            "cuda_runtime_version": "12.1",
+            "cudnn_version": 8902,
+            "cuda_matmul_allow_tf32": False,
+            "cudnn_allow_tf32": False,
+            "cudnn_benchmark": False,
+            "cudnn_deterministic": True,
+            "deterministic_algorithms_enabled": True,
             "parity_vector_root_sha256": "f" * 64,
             "validated_batch_sizes": [1, 8, 64, 256],
             "feature_dim": 160,
@@ -369,6 +383,50 @@ def test_builder_requires_stage2_batch_shape_and_finite_parity_closure(
             method_lock_path=method_path,
             detached_seal_path=tmp_path / "missing-batch.seal",
             signing_request_path=tmp_path / "missing-batch.request",
+        )
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    (
+        ("max_abs_output_delta", 0.0011),
+        ("decision_equivalence_verified", False),
+        ("max_abs_output_delta_tolerance", 0.002),
+        ("parity_device_type", "cpu"),
+        ("cudnn_allow_tf32", True),
+        ("cudnn_deterministic", False),
+        ("deterministic_algorithms_enabled", False),
+    ),
+)
+def test_builder_rejects_runtime_outside_fixed_fp32_parity_policy(
+    tmp_path: Path,
+    field: str,
+    value: object,
+) -> None:
+    root = tmp_path / field
+    _fixture(root)
+    parity_path = root / "inputs" / "parity.json"
+    parity = json.loads(parity_path.read_text(encoding="utf-8"))
+    parity[field] = value
+    _write_json(parity_path, parity)
+    method_path = root / "inputs" / "method.json"
+    method = json.loads(method_path.read_text(encoding="utf-8"))
+    method["parity_receipt_sha256"] = sha256_file(parity_path)
+    _write_json(method_path, method)
+    with pytest.raises(
+        ADV3B02DeploymentBundleError,
+        match="fixed tolerance",
+    ):
+        build_unsigned_adv3b02_deployment_bundle(
+            root / "bad-policy",
+            torchscript_runtime_path=root / "adv3b02.torchscript.pt",
+            component_dir=root / "component_input",
+            class_binding_path=root / "inputs" / "class_binding.json",
+            parity_receipt_path=parity_path,
+            generation_lock_path=root / "inputs" / "generation.json",
+            method_lock_path=method_path,
+            detached_seal_path=root / "bad-policy.seal",
+            signing_request_path=root / "bad-policy.request",
         )
 
 

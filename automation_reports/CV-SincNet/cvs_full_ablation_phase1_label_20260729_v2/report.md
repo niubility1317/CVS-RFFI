@@ -122,6 +122,20 @@ v2使用新run/log/release路径，重新执行v1首个失败行和13个未启�
 
 11个checkpoint仍是训练中间产物；没有terminal和完整导出闭环，完成行仍为0。本次监控未读取性能、未干预进程、未重启或对齐数据。
 
+### 2026-07-29 23:11 CST
+
+|项目|状态|
+|---|---|
+|runner与release|runner PID`823097`、PPID`823096`存活；CWD/cmdline继续绑定release、plan、run/log root、CVS-RFFI Python及`--execute`；release为tracked-clean，HEAD=`ae1f9aab1c6095fb5f941d4cebb1cc171100f7a1`|
+|dispatch计数|launched=11、completed=0、succeeded=0、failed=0、nonzero=0、active=11、queued=3|
+|子进程绑定|11个活跃训练主进程全部由runner PID`823097`直接持有，CWD、run ID和冻结训练脚本绑定均通过|
+|GPU分布|label v2在GPU0–7为`0/1/2/2/2/2/1/1`；与T1合并后的全机训练实验数为`2/2/2/2/2/2/1/1`，所有GPU均不超过2个|
+|训练进度与日志|11个活跃行最新`[EPOCH-BEGIN]`为E39–E184；仅作非停滞健康证据。逐行日志总量为6,445,407字节，11个活跃日志均持续增长，3个排队行尚未启动|
+|首个/最新完成artifact|status=0，完成行仍为0；当前非空checkpoint=11，但prototype PT=0、prototype JSON=0、resource=0、heldout=0、terminal=0、completion receipt=0，因此这些checkpoint均为中间产物，不能计作完整行|
+|技术异常|硬错误、P0、非零退出、异常指纹和重复确定性异常指纹均为0；`runner_summary.json`尚不存在|
+|数据边界|未读取性能、未干预或重启任务、未重审数据，也未进行跨批次一致性或hash对齐|
+|SSH清理|全部短连接退出后本地`ssh.exe=0`，N607及bridge的ESTABLISHED TCP22连接均为0|
+
 ## 完整性与止损
 
 每个成功行必须同时具有可加载checkpoint、prototype PT+JSON、resource summary、held-out eval、terminal、completion receipt，并且terminal、receipt与真实退出码都为0。启动或只有checkpoint不算完成。

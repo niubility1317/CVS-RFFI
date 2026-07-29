@@ -44,6 +44,8 @@ from cvsrffi.phase1_adv3b02_deployment_bundle import (  # noqa: E402
     CLASS_BINDING_SCHEMA,
     DETACHED_SEAL_SCHEMA,
     MANIFEST_RELATIVE_PATH,
+    RUNTIME_PARITY_MAX_ABS_TOLERANCE,
+    RUNTIME_PARITY_NUMERIC_POLICY,
     SIGNATURE_DOMAIN,
     SIGNATURE_ENVELOPE_SCHEMA,
     SIGNING_REQUEST_SCHEMA,
@@ -380,6 +382,31 @@ def _runtime_and_parity(
     parity_seed: int,
     parity_rows: int,
 ) -> tuple[str, dict[str, Any], dict[str, Any]]:
+    if device.type != "cuda" or not torch.cuda.is_available():
+        raise FullAblationDeploymentError(
+            "formal runtime parity requires an available CUDA device"
+        )
+    cuda_device_index = (
+        int(device.index)
+        if device.index is not None
+        else int(torch.cuda.current_device())
+    )
+    torch.cuda.set_device(cuda_device_index)
+    torch.backends.cuda.matmul.allow_tf32 = False
+    torch.backends.cudnn.allow_tf32 = False
+    torch.backends.cudnn.benchmark = False
+    torch.backends.cudnn.deterministic = True
+    torch.use_deterministic_algorithms(True)
+    if (
+        torch.backends.cuda.matmul.allow_tf32 is not False
+        or torch.backends.cudnn.allow_tf32 is not False
+        or torch.backends.cudnn.benchmark is not False
+        or torch.backends.cudnn.deterministic is not True
+        or torch.are_deterministic_algorithms_enabled() is not True
+    ):
+        raise FullAblationDeploymentError(
+            "formal CUDA numeric policy did not take effect"
+        )
     model, checkpoint_audit = build_exact_ssdg_model_from_checkpoint(
         checkpoint,
         input_len=input_len,
@@ -410,6 +437,7 @@ def _runtime_and_parity(
     runtime = torch.jit.load(str(runtime_path), map_location=device).eval()
     vector_rows: list[dict[str, Any]] = []
     maximum = 0.0
+    decision_equivalence_verified = True
     for batch_size in validated_batch_sizes:
         current = probes[:batch_size]
         eager_features, eager_logits = _run(wrapper, current)
@@ -434,6 +462,16 @@ def _runtime_and_parity(
             torch.max(torch.abs(eager_logits - script_logits)).item()
         )
         maximum = max(maximum, feature_delta, logit_delta)
+        decision_mismatch_count = int(
+            torch.count_nonzero(
+                torch.argmax(eager_logits, dim=1)
+                != torch.argmax(script_logits, dim=1)
+            ).item()
+        )
+        decision_equivalence_verified = (
+            decision_equivalence_verified
+            and decision_mismatch_count == 0
+        )
         vector_rows.append(
             {
                 "batch_size": batch_size,
@@ -442,11 +480,18 @@ def _runtime_and_parity(
                 "logit_sha256": _tensor_sha256(eager_logits),
                 "max_abs_feature_delta": feature_delta,
                 "max_abs_logit_delta": logit_delta,
+                "logit_argmax_mismatch_count": decision_mismatch_count,
             }
         )
-    if not np.isfinite(maximum) or maximum > 1.0e-5:
+    if (
+        not np.isfinite(maximum)
+        or maximum > RUNTIME_PARITY_MAX_ABS_TOLERANCE
+        or not decision_equivalence_verified
+    ):
         raise FullAblationDeploymentError(
-            f"runtime/checkpoint parity failed: max_abs={maximum}"
+            "runtime/checkpoint parity failed: "
+            f"max_abs={maximum}, "
+            f"decision_equivalence={decision_equivalence_verified}"
         )
     vector_root = sha256_bytes(
         canonical_json_bytes(
@@ -463,6 +508,28 @@ def _runtime_and_parity(
         "runtime_sha256": runtime_sha,
         "parity_status": "PASS",
         "max_abs_output_delta": maximum,
+        "max_abs_output_delta_tolerance": (
+            RUNTIME_PARITY_MAX_ABS_TOLERANCE
+        ),
+        "decision_equivalence_verified": decision_equivalence_verified,
+        "numeric_policy": RUNTIME_PARITY_NUMERIC_POLICY,
+        "parity_device_type": device.type,
+        "cuda_device_index": cuda_device_index,
+        "cuda_device_capability": list(
+            torch.cuda.get_device_capability(cuda_device_index)
+        ),
+        "torch_version": str(torch.__version__),
+        "cuda_runtime_version": str(torch.version.cuda),
+        "cudnn_version": int(torch.backends.cudnn.version()),
+        "cuda_matmul_allow_tf32": bool(
+            torch.backends.cuda.matmul.allow_tf32
+        ),
+        "cudnn_allow_tf32": bool(torch.backends.cudnn.allow_tf32),
+        "cudnn_benchmark": bool(torch.backends.cudnn.benchmark),
+        "cudnn_deterministic": bool(torch.backends.cudnn.deterministic),
+        "deterministic_algorithms_enabled": bool(
+            torch.are_deterministic_algorithms_enabled()
+        ),
         "parity_vector_root_sha256": vector_root,
         "validated_batch_sizes": validated_batch_sizes,
         "feature_dim": 160,
@@ -1076,7 +1143,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
     prepare_parser.add_argument("--completion-receipt", required=True)
     prepare_parser.add_argument("--generation-config", required=True)
     prepare_parser.add_argument("--output-root", required=True)
-    prepare_parser.add_argument("--device", default="cpu")
+    prepare_parser.add_argument("--device", default="cuda:0")
     prepare_parser.add_argument("--input-len", type=int, default=0)
     prepare_parser.add_argument("--parity-seed", type=int, default=7281105)
     prepare_parser.add_argument("--parity-rows", type=int, default=8)

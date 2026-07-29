@@ -7,6 +7,7 @@ from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
+import torch
 
 from cvsrffi import somph_runtime_trust as runtime_trust
 from cvsrffi.phase1_adv3b02_deployment_bundle import (
@@ -20,6 +21,7 @@ from scripts.build_full_ablation_phase1_deployment_bundle import (
     FullAblationDeploymentError,
     _class_binding_source,
     _completion_receipt,
+    _runtime_and_parity,
     sign,
 )
 
@@ -94,6 +96,23 @@ def test_completion_receipt_binds_checkpoint_and_both_original_prototypes(
             checkpoint_sha256="a" * 64,
             original_prototype_pt_sha256="b" * 64,
             original_prototype_json_sha256="c" * 64,
+        )
+
+
+def test_formal_runtime_parity_rejects_cpu_before_checkpoint_load(
+    tmp_path: Path,
+) -> None:
+    with pytest.raises(
+        FullAblationDeploymentError,
+        match="requires an available CUDA device",
+    ):
+        _runtime_and_parity(
+            {},
+            input_len=256,
+            device=torch.device("cpu"),
+            runtime_path=tmp_path / "runtime.pt",
+            parity_seed=7281105,
+            parity_rows=8,
         )
 
 
