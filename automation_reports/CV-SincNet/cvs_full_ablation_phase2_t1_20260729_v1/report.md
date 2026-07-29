@@ -259,6 +259,86 @@ RuntimeError: Deterministic behavior was enabled ... set CUBLAS_WORKSPACE_CONFIG
 
 fresh必要小证据已取回`E:\type10-7\automation_reports\CV-SincNet\cvs_full_ablation_phase2_t1_20260729_v1\release_evidence\n607_v2_122d7a72\`。由于formal prepare未产生签名请求，本轮在fail-closed安全边界结束；同一release/output不得补环境变量重跑。后续需本地补齐launcher环境前置条件、复审、Git封存，并使用新release ID。
 
+## 2026-07-29 fresh Phase1 deployment bundle v3预登记
+
+- 实现提交固定为`6fd77c22e1edb5eb710fb1f152e25214fb27e437`；当前报告HEAD`384f00d72fddf4c04917fe1eb10e1289bdffe3f4`仅含其后的文档变化，4个发布关键实现文件与`6fd77c22`逐项一致。
+- fresh root固定为`/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2_t1_20260729_v3_6fd77c22`；只读预检确认启动前不存在。v1/v2 release及partial均不得读取、复制、续跑或覆盖。
+- 23:50全机计算进程占用为GPU0–7=`2/2/1/2/2/1/0/0`，本轮选择GPU6；P90和formal prepare各自运行时仍须每卡不超过2个进程。
+- 从原始合格`P1-FULL__train_seed_7281105`checkpoint、completion receipt、prototype和稳定class binding source重新执行normalize、fresh P90和formal prepare；不重审数据，不要求跨启动数据或hash一致。
+- formal prepare父进程必须显式前缀`CUBLAS_WORKSPACE_CONFIG=:4096:8 CUDA_VISIBLE_DEVICES=6 PYTHONPATH=<fresh_v3>/code`且CWD=`<fresh_v3>/code`。parity固定batch`1/8/64/256`，要求全有限、`max_abs<=1e-3`、六类argmax mismatch总数0，并在receipt中精确绑定CUDA设备、确定性后端及CUBLAS配置。
+- 本轮只闭合unsigned 9成员package、prepare receipt、detached seal和signing request并取回最小证据；不读/传私钥，不自行sign，不启动Stage2，不读truth或性能。
+
+## 2026-07-29 23:50–23:56 fresh v3 unsigned bundle闭合
+
+本次由唯一release owner完成至`AWAITING_EXTERNAL_SIGNATURE`并停在本地签名安全边界。未读取/上传私钥，未自行sign，未启动Stage2，未读取truth或性能；v1/v2 release及partial未读取、复制、续跑或覆盖。
+
+|项目|证据|
+|---|---|
+|实现提交|`6fd77c22e1edb5eb710fb1f152e25214fb27e437`；代码归档SHA256=`fd98388ed291647ef7c9cc1668bbbd04b112787a2164aab53d5e1b393aa6a139`|
+|fresh root|`/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2_t1_20260729_v3_6fd77c22`|
+|关键远端SHA|builder=`b3d516a6a8464e0fc3fdd23a1c19e908674222af069b95eda467684e124f699c`；bundle loader=`79b361811a4ed9a91f0159248d024c8dd7d2319c830e9a3785313c671d065074`；binding registry=`d0e9700cb1b3451d1ddd8516df9fe1d87e2fc20c003e49bba91f3a2b800ba039`；P90 exporter=`04b21568a6444bce50095d052f384692cb56cf7519fbcd6125caffdd855857ee`|
+|远端代码验证|7个发布文件`py_compile`通过，builder入口加载通过|
+|normalize|从原始合格Phase1输入重新完成，`COMPLETE/UNCHANGED_VALID`；generation config=`59d8acf54778ae181ccfa3762b90b2fa861ca81fb8c3da9d4c88cc2d0e030364`|
+|fresh P90|PID`891355`，GPU6；启动前/结束后GPU6为0个计算进程，执行中为1个；3成员重新生成并闭合，component root=`123283d72da728e833cf40ad41a407f08f5905554da7f56500110ad256b8263a`|
+|formal prepare|父进程CWD=`<fresh_v3>/code`，显式前缀`CUBLAS_WORKSPACE_CONFIG=:4096:8 CUDA_VISIBLE_DEVICES=6 PYTHONPATH=<fresh_v3>/code`；状态`AWAITING_EXTERNAL_SIGNATURE`|
+|runtime|SHA256=`240692e2b89a0b422978cdbc8aa6de0857540d61c49738d35c4a627e543ad467`|
+|parity|CUDA；batch=`[1,8,64,256]`；finite=true；`max_abs=1.4066696166992188e-05<=0.001`；`decision_equivalence_verified=true`，因此四个batch的六类logit argmax mismatch总数为0|
+|后端字段|`CUBLAS_WORKSPACE_CONFIG=:4096:8`；CUDA matmul TF32=false；cuDNN TF32=false；benchmark=false；cuDNN deterministic=true；deterministic algorithms=true；numeric policy=`fp32_cuda_tf32_disabled_cudnn_deterministic_cublas4096_v1`|
+|package|远端9个文件；manifest列8个成员，所有relative path、size和SHA逐项验证；manifest SHA256=`9e5710a801bf0507fd2785ab59e94a469f484808e922aa3c48fa5f780684af66`|
+|prepare receipt|SHA256=`88d148e9774769d76e35a7ae22bf12f7e32d9f4b0084a9057849bdc3cb992efe`|
+|parity receipt|SHA256=`64f57ad33d19e656b2bc8fb4236a4abf3750dcce0feeabf9b0d81df9636d54dc`|
+|detached seal|SHA256=`0c1da89df6863e60e63bd03c9236921959d7adc5fc405e1371ae0404d6e61133`|
+|signing request|SHA256=`d28babfa01c7a7da46dee1baf0cf141c268cdd48dbe6a96ba9a8a57d3ecc8b0c`；签名消息、unsigned envelope、seal和outer root严格闭合|
+|清理|结束后GPU6=0个计算进程；本地`ssh.exe=0`，N607/bridge ESTABLISHED TCP22=0|
+
+实际formal prepare命令：
+
+```text
+CUBLAS_WORKSPACE_CONFIG=:4096:8 CUDA_VISIBLE_DEVICES=6 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2_t1_20260729_v3_6fd77c22/code /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python scripts/build_full_ablation_phase1_deployment_bundle.py prepare --checkpoint /home/szu2070436088/2510044040/CV-SincNet/runs/cvs_full_ablation_phase1_t1_20260729_v5_reuse/P1-FULL__train_seed_7281105/best_source_validation_ssdg.pth --prototype-pt /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2_t1_20260729_v3_6fd77c22/artifacts/phase1_normalized/deployment_prototype/phase2_zid_prototypes.pt --prototype-json /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2_t1_20260729_v3_6fd77c22/artifacts/phase1_normalized/deployment_prototype/phase2_zid_prototypes.json --component-dir /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2_t1_20260729_v3_6fd77c22/artifacts/phase1_component --class-binding-source /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2_t1_20260729_v3_6fd77c22/input/class_binding_source.json --completion-receipt /home/szu2070436088/2510044040/CV-SincNet/runs/cvs_full_ablation_phase1_t1_20260729_v5_reuse/P1-FULL__train_seed_7281105/phase1_training_completion_receipt.json --generation-config /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2_t1_20260729_v3_6fd77c22/artifacts/phase1_normalized/generation_config.json --output-root /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2_t1_20260729_v3_6fd77c22/artifacts/phase1_unsigned --device cuda:0 --parity-seed 7281105 --parity-rows 8
+```
+
+最小本地签名证据：
+
+|文件|本地路径|SHA256|
+|---|---|---|
+|signing request|`E:\type10-7\automation_reports\CV-SincNet\cvs_full_ablation_phase2_t1_20260729_v1\release_evidence\n607_v3_6fd77c22\signing_request.json`|`d28babfa01c7a7da46dee1baf0cf141c268cdd48dbe6a96ba9a8a57d3ecc8b0c`|
+|detached seal|`E:\type10-7\automation_reports\CV-SincNet\cvs_full_ablation_phase2_t1_20260729_v1\release_evidence\n607_v3_6fd77c22\deployment.seal.json`|`0c1da89df6863e60e63bd03c9236921959d7adc5fc405e1371ae0404d6e61133`|
+|prepare receipt|`E:\type10-7\automation_reports\CV-SincNet\cvs_full_ablation_phase2_t1_20260729_v1\release_evidence\n607_v3_6fd77c22\prepare_receipt.json`|`88d148e9774769d76e35a7ae22bf12f7e32d9f4b0084a9057849bdc3cb992efe`|
+|parity receipt|`E:\type10-7\automation_reports\CV-SincNet\cvs_full_ablation_phase2_t1_20260729_v1\release_evidence\n607_v3_6fd77c22\runtime_checkpoint_parity_receipt.json`|`64f57ad33d19e656b2bc8fb4236a4abf3750dcce0feeabf9b0d81df9636d54dc`|
+
+本地签名完成后只同步signature envelope到当前确认不存在的：
+
+```text
+/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2_t1_20260729_v3_6fd77c22/artifacts/phase1_unsigned/external/signature_envelope.json
+```
+
+随后在fresh v3`code`目录使用CVS-RFFI Python执行：
+
+```text
+PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2_t1_20260729_v3_6fd77c22/code /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python scripts/build_full_ablation_phase1_deployment_bundle.py finalize --package-root /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2_t1_20260729_v3_6fd77c22/artifacts/phase1_unsigned/package --detached-seal /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2_t1_20260729_v3_6fd77c22/artifacts/phase1_unsigned/external/deployment.seal.json --signature-envelope /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2_t1_20260729_v3_6fd77c22/artifacts/phase1_unsigned/external/signature_envelope.json --deployment-binding /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2_t1_20260729_v3_6fd77c22/artifacts/phase1_final/deployment_binding.json --completion-receipt /home/szu2070436088/2510044040/CV-SincNet/runs/cvs_full_ablation_phase1_t1_20260729_v5_reuse/P1-FULL__train_seed_7281105/phase1_training_completion_receipt.json --generation-config /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2_t1_20260729_v3_6fd77c22/artifacts/phase1_normalized/generation_config.json --prototype-pt /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2_t1_20260729_v3_6fd77c22/artifacts/phase1_normalized/deployment_prototype/phase2_zid_prototypes.pt --prototype-json /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2_t1_20260729_v3_6fd77c22/artifacts/phase1_normalized/deployment_prototype/phase2_zid_prototypes.json
+```
+
+当前远端signature envelope与deployment binding均不存在；必须由本地主代理完成签名并显式接续后才能finalize。
+
+## 2026-07-30 00:00–00:03离线签名接续与formal finalize
+
+本地主代理完成离线签名后，唯一release owner只同步`signature_envelope.json`到预登记的ABSENT路径。私钥和sign receipt均未上传；同步前再次确认远端unsigned manifest、seal、request、prepare receipt及parity receipt SHA未漂移。
+
+|项目|结果|
+|---|---|
+|本地signature envelope|`E:\type10-7\automation_reports\CV-SincNet\cvs_full_ablation_phase2_t1_20260729_v1\release_evidence\n607_v3_6fd77c22\signature_envelope.json`；SHA256=`aba1215362debd1e5c44fac6402b8d4c89c1806d3b308d31dcfdb00469b0629b`|
+|本地sign receipt|SHA256=`d4665fe264bbd3e080e66976ac9813187e2e1ae57f287922f6b083b85afe8014`；仅本地保留|
+|远端envelope|`/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2_t1_20260729_v3_6fd77c22/artifacts/phase1_unsigned/external/signature_envelope.json`；同步后SHA与本地一致|
+|formal finalize|`FORMAL_PHASE2_ELIGIBLE`；`class_count=6`|
+|deployment binding|`/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2_t1_20260729_v3_6fd77c22/artifacts/phase1_final/deployment_binding.json`|
+|binding SHA256|`1deec70778965f41010fe155335a30db3ec172cb3788c7074ffbadfe6236dee7`|
+|runtime/outer root|runtime=`240692e2b89a0b422978cdbc8aa6de0857540d61c49738d35c4a627e543ad467`；outer root=`276afd459ab8cee97e86837faf541fc576190f6da773f7cfb7b22dd4edfb1702`|
+|独立复核|再次调用正式bundle loader，返回`formal_phase2_eligible=true`；binding内package、seal、envelope、completion、generation config、prototype路径与SHA逐项匹配；6个class handle闭合|
+|本地binding证据|`E:\type10-7\automation_reports\CV-SincNet\cvs_full_ablation_phase2_t1_20260729_v1\release_evidence\n607_v3_6fd77c22\deployment_binding.json`；SHA与远端一致|
+|资源/连接|finalize不占GPU；GPU6为0个计算进程；本地`ssh.exe=0`，N607/bridge ESTABLISHED TCP22=0|
+
+结论：该deployment binding已完成正式签名和加载器验证，可作为当前Stage2启动的Phase1 bundle绑定输入。该结论只表示技术与协议输入闭合，不是任何性能结果；本轮没有启动Stage2、没有读取truth或性能。
+
 ## 2026-07-29 fresh v3启动前CuBLAS修复与校验
 
 v2失败已按本次启动自身的运行时完整性问题修复，不引入数据集重审，也不要求不同启动使用相同数据或进行跨启动数据hash对齐。已有合格Phase1完成行、checkpoint及稳定类绑定继续复用；v1/v2失败release只保留为证据，不作为v3输出根。
@@ -274,4 +354,15 @@ v2失败已按本次启动自身的运行时完整性问题修复，不引入数
 - fresh v3 release root预登记为`/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2_t1_20260729_v3_6fd77c22`，启动前必须不存在，且不得复制、续跑或覆盖v1/v2 partial。
 - formal prepare固定使用`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`，工作目录为fresh v3 release root下的`code`，命令前缀必须为`CUBLAS_WORKSPACE_CONFIG=:4096:8 CUDA_VISIBLE_DEVICES=<free_gpu> PYTHONPATH=<fresh_v3>/code`；输入继续复用已闭合的`P1-FULL__train_seed_7281105`checkpoint、completion receipt和稳定class binding，不重审数据，也不要求跨启动数据一致。
 - 预期输出为fresh runtime、固定batch parity receipt、9成员unsigned package、prepare receipt、detached seal和signing request；本轮发布执行者只能运行到签名请求闭合并回传，私钥始终只在本地离线签名。
-- 当前状态为`LOCAL_VERIFIED / INDEPENDENT_REVIEW_PASSED / COMMITTED / FRESH_V3_RELEASE_READY`；未签名、未启动Stage2、未读取性能。
+- 当前状态为`FORMAL_PHASE2_ELIGIBLE / STAGE2_PLAN_REBINDING`；v3已完成离线签名与formal finalize，Stage2尚未启动，未读取性能。
+
+## 2026-07-30 Stage2 T1源计划重绑定
+
+deployment实现提交更新为`6fd77c22e1edb5eb710fb1f152e25214fb27e437`后，重新生成不可直接启动的源计划；仅更新实现提交绑定，不要求跨启动使用相同数据或缓存。
+
+|计划|逻辑行数|Git绑定|SHA256|启动权限|
+|---|---:|---|---|---|
+|`stage2_states_plan_6fd77c22.json`|325|`6fd77c22e1edb5eb710fb1f152e25214fb27e437`|`8014268910937b0f4b8cda6de5a787147aabc7179996046d5b9913ea6994ac0e`|false|
+|`stage2c_screening_plan_6fd77c22.json`|1425|`6fd77c22e1edb5eb710fb1f152e25214fb27e437`|`a6addc27802c492658c2e46a3ff959c62e61b609fd8437fbce7624ae0d902f53`|false|
+
+下一步只对本次实际复用的合法feature cache、predictor package与truth-sidecar生成current-launch binding registry并封存计划；不重新审计数据。封存后先启动325行Stage2-A/B states矩阵，runner按8张GPU×2槽预分配并根据外部Phase1占用自动等待，确保任意时刻每卡总进程不超过2；其闭合后启动1425逻辑行的Stage2-C矩阵。

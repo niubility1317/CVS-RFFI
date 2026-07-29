@@ -416,6 +416,24 @@ GPU2的第二个静态槽用于B0补导出，完成后该槽无后续行，因�
 |数据边界|本轮未读取性能、未干预或重启任务、未重审数据，也未进行跨批次一致性或hash对齐|
 |SSH清理|全部短连接和artifact验收连接退出后本地`ssh.exe=0`，N607及bridge的ESTABLISHED TCP22连接均为0|
 
+### 23:53 T1与label v2合并直连健康快照
+
+|字段|值|
+|---|---|
+|本地直连preflight|2026-07-29 23:50:59+08:00通过；直连配置、普通账号身份、服务器时间、项目根目录及8张RTX 3090均正常；退出码0|
+|服务器快照时间|2026-07-29 23:53:55+08:00；23:55:13补充复核GPU瞬时进程|
+|runner与进程绑定|T1 runner PID`711523`、PPID`711522`存活，CWD/cmdline继续绑定冻结release及原plan/run/log；3个训练主进程均由runner直接持有，进程cmdline、CWD、row和run ID绑定通过|
+|dispatch计数|launched=19、completed=16、succeeded=16、failed=0、nonzero=0、active=3、waiting=1；相较23:36没有新增完成行或派发行|
+|闭合artifact|此前两批共15个new-train行已分别通过7/7和8/8严格独立验收；本轮没有T1新完成行，不重复读取已闭合artifact|
+|活跃/等待|`P1-D0`种子7281102、7281103、7281104继续活跃，最新`[EPOCH-BEGIN]`为E76–E78；种子7281105继续等待。epoch仅作非停滞健康证据，不读取或比较性能|
+|Phase1实际GPU训练数|T1在GPU0–7为`2/1/0/0/0/0/0/0`；label v2为`0/1/1/2/2/1/0/0`；合计`2/2/1/2/2/1/0/0`，所有GPU均不超过2个Phase1训练进程|
+|GPU利用率|GPU0–7依次为96%、96%、20%、82%、98%、20%、0%、0%；对应显存6077、6311、3162、6223、6351、3118、4、4MiB|
+|Stage2短时进程边界|补充进程检查曾观察到唯一Stage2 v3 deployment bundle `prepare`辅助进程PID`892322`、参数`--device cuda:0`；它不属于Phase1训练。在23:53:55及23:55:13两次GPU compute-app快照中均未形成额外GPU进程，随后自行结束；未误计、未干预|
+|日志增长|T1逐行日志总量由23:36的18,341,633字节增至18,674,970字节，增加333,337字节|
+|异常/汇总|完整日志硬错误、P0、failed、nonzero、异常指纹和重复确定性异常指纹均为0；`runner_summary.json`仍不存在|
+|数据边界|本轮未读取性能、未干预或重启任务、未重审数据，也未进行跨批次一致性或hash对齐|
+|SSH清理|全部短连接和artifact验收连接退出后本地`ssh.exe=0`，N607及bridge的ESTABLISHED TCP22连接均为0|
+
 当前仅能下结论为`LANDED / RUNNING / FIRST-WAVE HEALTHY`，不能据此形成任何性能结论。
 
 ## 风险与完成后检查

@@ -162,6 +162,31 @@ v2使用新run/log/release路径，重新执行v1首个失败行和13个未启�
 |`P1-LABEL-RHO010__train_seed_7281104`|15,263,372|421,037|2,054,174|540|8,155|27,378|5,404|0|完整，通过|
 |`P1-LABEL-RHO010__train_seed_7281105`|15,263,372|423,875|1,975,394|540|8,112|27,336|5,404|0|完整，通过|
 
+### 2026-07-29 23:53 CST
+
+|项目|状态|
+|---|---|
+|本地直连preflight|2026-07-29 23:50:59+08:00通过；直连配置、普通账号身份、服务器时间、项目根目录及8张RTX 3090均正常；退出码0|
+|服务器快照时间|2026-07-29 23:53:55+08:00；23:55:13补充复核GPU瞬时进程|
+|runner与进程绑定|runner PID`823097`、PPID`823096`存活，CWD/cmdline继续绑定release、plan、run/log root、CVS-RFFI Python及`--execute`；7个训练主进程均由runner直接持有，进程cmdline、CWD、row和run ID绑定通过|
+|dispatch计数|launched=11、completed=4、succeeded=4、failed=0、nonzero=0、active=7、queued=3；相较23:36新增1个完整完成行，没有新增派发行|
+|新增完成行|`P1-LABEL-RHO010__train_seed_7281103`；runner终态为真实return code 0、completion receipt有效、P0=false|
+|严格独立验收|在冻结release的`PYTHONPATH`和CVS-RFFI Python下检查7类非空必需artifact，加载checkpoint与prototype PT，解析prototype JSON、resource、heldout、terminal和completion receipt，并核对本行绝对路径、全部嵌入SHA256、COMPLETE状态、退出码及P0机制标志；结果1/1通过、0失败|
+|活动/队列|7个活跃行：rho=0.005种子7281102在GPU1；rho=0.010种子7281101/02在GPU3/4；rho=0.020种子7281103在GPU2；rho=0.050种子7281101/02/03在GPU3/4/5。其余3行继续等待容量|
+|Phase1实际GPU训练数|label v2在GPU0–7为`0/1/1/2/2/1/0/0`；与T1合计为`2/2/1/2/2/1/0/0`，所有GPU均不超过2个Phase1训练进程|
+|GPU利用率|GPU0–7依次为96%、96%、20%、82%、98%、20%、0%、0%；对应显存6077、6311、3162、6223、6351、3118、4、4MiB|
+|Stage2短时进程边界|唯一Stage2 v3 deployment bundle `prepare`辅助进程曾在补充检查中短时出现，不属于Phase1训练；两次GPU compute-app快照中均未形成额外GPU进程，随后自行结束，未误计或干预|
+|训练进度与日志|7个活跃行最新`[EPOCH-BEGIN]`为E88–E193；仅作非停滞健康证据。逐行日志总量由23:36的8,845,852字节增至10,147,561字节，增加1,301,709字节|
+|技术异常|完整日志硬错误、P0、非零退出、异常指纹和重复确定性异常指纹均为0；`runner_summary.json`尚不存在|
+|数据边界|未读取性能、未干预或重启任务、未重审数据，也未进行跨批次一致性或hash对齐|
+|SSH清理|全部短连接和artifact验收连接退出后本地`ssh.exe=0`，N607及bridge的ESTABLISHED TCP22连接均为0|
+
+#### 23:53新增完整训练行artifact验收
+
+|行|checkpoint/B|prototype PT/B|prototype JSON/B|resource/B|heldout/B|terminal/B|completion receipt/B|return code|结论|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---|
+|`P1-LABEL-RHO010__train_seed_7281103`|15,263,436|423,875|2,098,301|541|8,237|27,447|5,405|0|完整，通过|
+
 ## 完整性与止损
 
 每个成功行必须同时具有可加载checkpoint、prototype PT+JSON、resource summary、held-out eval、terminal、completion receipt，并且terminal、receipt与真实退出码都为0。启动或只有checkpoint不算完成。
