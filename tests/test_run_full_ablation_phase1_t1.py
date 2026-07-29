@@ -319,6 +319,66 @@ def test_reuse_manifest_rejects_incomplete_direct_row(tmp_path) -> None:
         )
 
 
+@pytest.mark.parametrize(
+    "fault",
+    (
+        "corrupt_checkpoint",
+        "corrupt_prototype",
+        "terminal_exit",
+        "empty_resource",
+        "heldout_mismatch",
+    ),
+)
+def test_direct_reuse_rejects_damaged_or_unbound_artifacts(
+    tmp_path,
+    fault,
+) -> None:
+    plan = _plan()
+    row = plan["rows"][0]
+    entry, _ = _write_direct_reuse_fixture(tmp_path, row)
+    output = Path(entry["source_output_dir"])
+    terminal_path = output / "phase1_terminal_status.json"
+    receipt_path = output / "phase1_training_completion_receipt.json"
+    terminal = json.loads(terminal_path.read_text(encoding="utf-8"))
+    receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    if fault == "corrupt_checkpoint":
+        checkpoint = output / "best_source_validation_ssdg.pth"
+        checkpoint.write_bytes(b"not-a-checkpoint")
+        digest = hashlib.sha256(checkpoint.read_bytes()).hexdigest()
+        terminal["selected_checkpoint_sha256"] = digest
+        receipt["selected_checkpoint_sha256"] = digest
+    elif fault == "corrupt_prototype":
+        prototype = output / "phase2_zid_prototypes.pt"
+        prototype.write_bytes(b"not-a-prototype")
+        receipt["prototype_hashes"]["prototype_path"] = (
+            hashlib.sha256(prototype.read_bytes()).hexdigest()
+        )
+    elif fault == "terminal_exit":
+        terminal["exit_code"] = 7
+    elif fault == "empty_resource":
+        resource = output / "phase1_resource_summary.json"
+        resource.write_text("{}", encoding="utf-8")
+        receipt["resource_summary_sha256"] = hashlib.sha256(
+            resource.read_bytes()
+        ).hexdigest()
+    elif fault == "heldout_mismatch":
+        terminal["heldout_eval"]["accuracy"] = 0.9
+    terminal_path.write_text(json.dumps(terminal), encoding="utf-8")
+    receipt["terminal_manifest_sha256"] = hashlib.sha256(
+        terminal_path.read_bytes()
+    ).hexdigest()
+    receipt_path.write_text(json.dumps(receipt), encoding="utf-8")
+    with pytest.raises(Phase1RunnerError):
+        validate_phase1_reuse_manifest(
+            {
+                "schema": "cvs.full_ablation.phase1_reuse.v1",
+                "rows": [entry],
+            },
+            plan,
+            check_artifacts=True,
+        )
+
+
 def test_reexport_completion_rejects_corrupt_artifact(tmp_path) -> None:
     row = _plan()["rows"][0]
     output = tmp_path / row["row_key"]
@@ -330,9 +390,14 @@ def test_reexport_completion_rejects_corrupt_artifact(tmp_path) -> None:
         json.dumps({"schema": "prototype"}),
         encoding="utf-8",
     )
+    source_checkpoint = tmp_path / "source_checkpoint.pth"
+    torch.save(
+        {"model": {"weight": torch.ones(1)}},
+        source_checkpoint,
+    )
     entry = {
         "source_run_id": "phase1-v3",
-        "source_checkpoint": "/old/checkpoint.pth",
+        "source_checkpoint": str(source_checkpoint),
     }
     receipt = {
         "schema": "cvs.phase1.prototype_reexport_receipt.v1",
@@ -340,7 +405,10 @@ def test_reexport_completion_rejects_corrupt_artifact(tmp_path) -> None:
         "exit_code": 0,
         "row_key": row["row_key"],
         "source_run_id": "phase1-v3",
-        "source_checkpoint": "/old/checkpoint.pth",
+        "source_checkpoint": str(source_checkpoint),
+        "source_checkpoint_sha256": hashlib.sha256(
+            source_checkpoint.read_bytes()
+        ).hexdigest(),
         "exporter_git_commit": "a" * 40,
         "prototype_paths": {
             "prototype_path": str(prototype),
@@ -371,6 +439,110 @@ def test_reexport_completion_rejects_corrupt_artifact(tmp_path) -> None:
         phase1_runner.Phase1ProtocolError,
         match="artifact drift",
     ):
+        validate_phase1_reexport_completion(
+            entry=entry,
+            row=row,
+            output_dir=output,
+            return_code=0,
+            exporter_git_commit="a" * 40,
+        )
+
+
+@pytest.mark.parametrize(
+    "fault",
+    (
+        "cross_row_paths",
+        "corrupt_prototype",
+        "empty_prototype_json",
+        "wrong_checkpoint_hash",
+    ),
+)
+def test_reexport_rejects_unbound_or_damaged_artifacts(
+    tmp_path,
+    fault,
+) -> None:
+    row = _plan()["rows"][0]
+    output = tmp_path / row["row_key"]
+    output.mkdir()
+    prototype = output / "phase2_zid_prototypes.pt"
+    prototype_json = output / "phase2_zid_prototypes.json"
+    torch.save({"metadata": {"schema": "prototype"}}, prototype)
+    prototype_json.write_text(
+        json.dumps({"schema": "prototype"}),
+        encoding="utf-8",
+    )
+    source_checkpoint = tmp_path / "source_checkpoint.pth"
+    torch.save(
+        {"model": {"weight": torch.ones(1)}},
+        source_checkpoint,
+    )
+    entry = {
+        "source_run_id": "phase1-v3",
+        "source_checkpoint": str(source_checkpoint),
+    }
+    receipt = {
+        "schema": "cvs.phase1.prototype_reexport_receipt.v1",
+        "status": "COMPLETE",
+        "exit_code": 0,
+        "row_key": row["row_key"],
+        "source_run_id": "phase1-v3",
+        "source_checkpoint": str(source_checkpoint),
+        "source_checkpoint_sha256": hashlib.sha256(
+            source_checkpoint.read_bytes()
+        ).hexdigest(),
+        "exporter_git_commit": "a" * 40,
+        "prototype_paths": {
+            "prototype_path": str(prototype),
+            "prototype_json_path": str(prototype_json),
+        },
+        "prototype_hashes": {
+            "prototype_path": hashlib.sha256(
+                prototype.read_bytes()
+            ).hexdigest(),
+            "prototype_json_path": hashlib.sha256(
+                prototype_json.read_bytes()
+            ).hexdigest(),
+        },
+    }
+    if fault == "cross_row_paths":
+        other = tmp_path / "other-row"
+        other.mkdir()
+        other_pt = other / prototype.name
+        other_json = other / prototype_json.name
+        torch.save({"metadata": {"schema": "prototype"}}, other_pt)
+        other_json.write_text(
+            json.dumps({"schema": "prototype"}),
+            encoding="utf-8",
+        )
+        receipt["prototype_paths"] = {
+            "prototype_path": str(other_pt),
+            "prototype_json_path": str(other_json),
+        }
+        receipt["prototype_hashes"] = {
+            "prototype_path": hashlib.sha256(
+                other_pt.read_bytes()
+            ).hexdigest(),
+            "prototype_json_path": hashlib.sha256(
+                other_json.read_bytes()
+            ).hexdigest(),
+        }
+    elif fault == "corrupt_prototype":
+        prototype.write_bytes(b"not-a-prototype")
+        receipt["prototype_hashes"]["prototype_path"] = (
+            hashlib.sha256(prototype.read_bytes()).hexdigest()
+        )
+    elif fault == "empty_prototype_json":
+        prototype_json.write_text("{}", encoding="utf-8")
+        receipt["prototype_hashes"]["prototype_json_path"] = (
+            hashlib.sha256(prototype_json.read_bytes()).hexdigest()
+        )
+    elif fault == "wrong_checkpoint_hash":
+        receipt["source_checkpoint_sha256"] = "0" * 64
+    (output / "phase1_reexport_receipt.json").write_text(
+        json.dumps(receipt),
+        encoding="utf-8",
+    )
+    with pytest.raises(phase1_runner.Phase1ProtocolError):
         validate_phase1_reexport_completion(
             entry=entry,
             row=row,

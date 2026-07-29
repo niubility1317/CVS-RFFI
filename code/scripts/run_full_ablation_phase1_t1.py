@@ -550,6 +550,18 @@ def validate_phase1_reexport_completion(
             raise Phase1ProtocolError(
                 f"reexport receipt identity drift: {key}"
             )
+    source_checkpoint = Path(
+        str(entry["source_checkpoint"])
+    ).resolve()
+    if (
+        not source_checkpoint.is_file()
+        or source_checkpoint.stat().st_size <= 0
+        or str(receipt.get("source_checkpoint_sha256", ""))
+        != _sha256_path(source_checkpoint)
+    ):
+        raise Phase1ProtocolError(
+            "reexport source checkpoint hash drift"
+        )
     if int(return_code) != 0 or int(receipt.get("exit_code", -1)) != 0:
         raise Phase1RunnerError("reexport row terminal status is not COMPLETE")
     artifacts = dict(receipt.get("prototype_paths") or {})
@@ -591,6 +603,11 @@ def validate_phase1_reexport_completion(
     try:
         import torch
 
+        source_checkpoint_payload = torch.load(
+            source_checkpoint,
+            map_location="cpu",
+            weights_only=False,
+        )
         prototype_payload = torch.load(
             expected_artifacts["prototype_path"],
             map_location="cpu",
@@ -600,9 +617,17 @@ def validate_phase1_reexport_completion(
         raise Phase1ProtocolError(
             "reexport prototype PT is not loadable"
         ) from exc
-    if not isinstance(prototype_payload, Mapping):
+    if (
+        not isinstance(source_checkpoint_payload, Mapping)
+        or not isinstance(
+            source_checkpoint_payload.get("model"),
+            Mapping,
+        )
+        or not source_checkpoint_payload["model"]
+        or not isinstance(prototype_payload, Mapping)
+    ):
         raise Phase1ProtocolError(
-            "reexport prototype PT content drift"
+            "reexport checkpoint or prototype PT content drift"
         )
     return receipt
 
