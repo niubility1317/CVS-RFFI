@@ -188,6 +188,22 @@ cd /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase1_t
 
 当前日志仍在增长。本节仅报告截至该时间点完整封口的5行和活跃进程状态；其余行需在完成后读取完整日志与artifact，不能据此作收敛或性能判断。
 
+### 首波完整日志审计与15:40快照
+
+`2026-07-29T15:38:00+08:00`，runner完整读取5个`P1-SUP`日志，每行9020行、约1.12MB。Traceback、OOM、Killed、Runtime error、Assertion、协议错误和Inf计数均为0。每行发现2000个NaN，仅分布于`LOSS-SAT-RAW/DM-ACCEPT/TRAIN/TEST/JOINT-METRIC`五类训练期禁用指标占位字段，各类每epoch一条、共200条；terminal最后非空行为`COMPLETE`，因此不构成执行异常。checkpoint、prototype、terminal、completion、resource、heldout及其hash全部闭合，`ALL_ARTIFACTS_OK=true`。
+
+`2026-07-29T15:40:16+08:00`活跃日志完整解析至：
+
+|arm|最新epoch范围|
+|---|---|
+|`P1-A0`|E165–172|
+|`P1-FULL`|E131–135|
+|`P1-B0`|E137|
+|`P1-C0`|E65–66|
+|`P1-D0`|E70|
+
+该时点仍为launched=21、completed=5、succeeded=5、failed=0、active=16；active hard error=0。16个worker绑定未漂移，GPU0–7每卡2个run-owned PID、无外部PID，利用率92%–99%，显存4.20–6.44GiB；最终SSH/TCP22均为0。
+
 ## 健康停止与成功标准
 
 - 只因P0协议/安全违规、launcher级确定性故障、输出覆盖风险、缺失prediction闭环，或至少两个不同row在prediction前出现同一归一化异常指纹而停止。
