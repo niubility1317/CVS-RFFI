@@ -17,6 +17,7 @@ from scripts.run_full_ablation_phase1_t1 import (
     _Capacity,
     Phase1RunnerError,
     build_phase1_command,
+    build_phase1_dispatch_schedule,
     build_phase1_reexport_command,
     is_p0_protocol_failure,
     normalize_exception_fingerprint,
@@ -219,6 +220,26 @@ def test_reuse_manifest_accepts_complete_direct_and_reexport_rows(
         plan["rows"][0]["row_key"],
         plan["rows"][1]["row_key"],
     }
+
+
+def test_reuse_dispatch_rebalances_twenty_tasks_across_all_slots() -> None:
+    plan = _plan()
+    direct_rows = plan["rows"][:10]
+    reuse_entries = {
+        str(row["row_key"]): {
+            "row_key": str(row["row_key"]),
+            "mode": "direct_reuse",
+        }
+        for row in direct_rows
+    }
+    reuse_entries[str(plan["rows"][10]["row_key"])] = {
+        "row_key": str(plan["rows"][10]["row_key"]),
+        "mode": "reexport_only",
+    }
+    schedule = build_phase1_dispatch_schedule(plan, reuse_entries)
+    assert len(schedule) == 20
+    assert len({(gpu, slot) for _row, gpu, slot in schedule}) == 16
+    assert {gpu for _row, gpu, _slot in schedule} == set(range(8))
 
 
 def test_reuse_manifest_rejects_incomplete_direct_row(tmp_path) -> None:

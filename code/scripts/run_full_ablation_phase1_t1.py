@@ -483,6 +483,39 @@ def validate_phase1_reexport_completion(
     return receipt
 
 
+def build_phase1_dispatch_schedule(
+    plan: Mapping[str, Any],
+    reuse_entries: Mapping[str, Mapping[str, Any]],
+) -> list[tuple[Mapping[str, Any], int, int]]:
+    scheduled = [
+        row
+        for row in list(plan.get("rows") or [])
+        if not (
+            str(row["row_key"]) in reuse_entries
+            and reuse_entries[str(row["row_key"])]["mode"]
+            == "direct_reuse"
+        )
+    ]
+    if not reuse_entries:
+        return [
+            (
+                row,
+                int(row["worker"]["gpu"]),
+                int(row["worker"]["slot"]),
+            )
+            for row in scheduled
+        ]
+    slots = [
+        (gpu, slot)
+        for gpu in range(GPU_COUNT)
+        for slot in range(SLOTS_PER_GPU)
+    ]
+    return [
+        (row, *slots[index % len(slots)])
+        for index, row in enumerate(scheduled)
+    ]
+
+
 def normalize_exception_fingerprint(log_text: str) -> str:
     lines = [line.strip() for line in str(log_text).splitlines() if line.strip()]
     exception_lines = [
@@ -1049,15 +1082,12 @@ def run_release(args: argparse.Namespace, plan: Mapping[str, Any]) -> int:
         environment_receipt_path.read_bytes()
     ).hexdigest()
     rows_by_slot: dict[tuple[int, int], list[Mapping[str, Any]]] = defaultdict(list)
-    for row in plan["rows"]:
-        if (
-            str(row["row_key"]) in reuse_entries
-            and reuse_entries[str(row["row_key"])]["mode"]
-            == "direct_reuse"
-        ):
-            continue
-        worker = row["worker"]
-        rows_by_slot[(int(worker["gpu"]), int(worker["slot"]))].append(row)
+    dispatch_schedule = build_phase1_dispatch_schedule(
+        plan,
+        reuse_entries,
+    )
+    for row, gpu, slot in dispatch_schedule:
+        rows_by_slot[(gpu, slot)].append(row)
     capacity = _Capacity(args.poll_seconds)
     stop_event = threading.Event()
     failure_lock = threading.Lock()
@@ -1347,11 +1377,13 @@ def main() -> int:
         )
     if not args.execute:
         commands = []
-        for row in plan["rows"]:
+        dispatch_schedule = build_phase1_dispatch_schedule(
+            plan,
+            reuse_entries,
+        )
+        for row, _gpu, _slot in dispatch_schedule:
             row_key = str(row["row_key"])
             entry = reuse_entries.get(row_key)
-            if entry is not None and entry["mode"] == "direct_reuse":
-                continue
             if entry is not None and entry["mode"] == "reexport_only":
                 commands.append(
                     build_phase1_reexport_command(
@@ -1403,15 +1435,8 @@ def main() -> int:
                     ),
                     "slot_count": len(
                         {
-                            (row["worker"]["gpu"], row["worker"]["slot"])
-                            for row in plan["rows"]
-                            if not (
-                                str(row["row_key"]) in reuse_entries
-                                and reuse_entries[
-                                    str(row["row_key"])
-                                ]["mode"]
-                                == "direct_reuse"
-                            )
+                            (gpu, slot)
+                            for _row, gpu, slot in dispatch_schedule
                         }
                     ),
                     "commands": commands,
