@@ -75,6 +75,23 @@ v2使用新run/log/release路径，重新执行v1首个失败行和13个未启�
 
 日志中的`nan`仅出现在无样本分母的诊断字段，例如`overall_tx=nan% (0/0)`；训练loss项保持有限值，不属于系统性技术故障，也未据此进行性能判断或止损。launch log当前为空是因为runner将进度写入每行独立`.out`；6个活动日志已增长至约46–75KB，8个排队日志保持0字节符合capacity-aware等待状态。异常/P0/非零退出指纹计数均为0。
 
+## N607持续监控快照
+
+### 2026-07-29 22:11 CST
+
+|项目|状态|
+|---|---|
+|runner|PID`823097`存活，release CWD和run绑定未变|
+|活动训练|原首波6个直接训练子进程全部存活；GPU2、GPU5各2行，GPU6、GPU7各1行|
+|队列|8行等待容量；status=0、complete=0、success=0、fail=0|
+|日志增长|6个活动日志约81–138KB，推进至E13–E23/200；8个排队日志仍为0字节|
+|闭环artifact|checkpoint=6、prototype PT=0、prototype JSON=0、resource=0、heldout=0、terminal=0、receipt=0|
+|技术异常|Traceback、RuntimeError、OOM、参数错误、P0和重复确定性异常指纹均为0|
+|整机GPU计算进程|`[2,2,2,2,2,2,1,1]`，没有GPU超过2|
+|SSH清理|监控命令结束后本地`ssh.exe=0`、`ESTABLISHED TCP22=0`|
+
+当前6个checkpoint仅是训练中的中间产物；由于terminal、prototype、resource、heldout和receipt均未形成，不计作完成行，也不作性能读取或判断。
+
 ## 完整性与止损
 
 每个成功行必须同时具有可加载checkpoint、prototype PT+JSON、resource summary、held-out eval、terminal、completion receipt，并且terminal、receipt与真实退出码都为0。启动或只有checkpoint不算完成。

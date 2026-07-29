@@ -291,6 +291,41 @@ GPU2的第二个静态槽用于B0补导出，完成后该槽无后续行，因�
 |数据复用边界|继续复用既有结果；本轮没有数据集重审，也没有进行跨批次数据一致性或hash对齐|
 |SSH清理|所有短连接退出后确认本地`ssh.exe=0`；到N607及bridge的ESTABLISHED TCP22连接均为0|
 
+### 22:11直连preflight、完成行闭环与健康快照
+
+|字段|值|
+|---|---|
+|本地直连preflight|2026-07-29 22:10:53+08:00通过；直连配置、普通账号身份、服务器时间、项目根目录及8张RTX 3090均正常；退出码0|
+|服务器快照时间|2026-07-29 22:11:31+08:00|
+|runner与release绑定|runner PID`711523`、PPID`711522`仍存活；CWD和完整cmdline继续绑定冻结release/code、原plan/run/log、CVS-RFFI Python及`--execute`；release为tracked-clean，HEAD=`4592bdd9497feffe69298a20c436abd177801231`|
+|dispatch计数|launched=16、completed=8、succeeded=8、failed=0、nonzero=0、active=8、waiting=4；相较20:59新增7个完整new-train状态|
+|逻辑矩阵状态|10个direct reuse+8个已完成dispatch=18个已闭合逻辑行；8个训练行活跃，4个D0尚未派发；共30行，未把运行中局部产物计为完成|
+|新增完成行|`P1-C0`五个种子、`P1-D0__train_seed_7281101`、`P1-FULL__train_seed_7281105`；runner记录的真实return code均为0、completion receipt均有效、P0均为false|
+|严格独立验收|在冻结release的`PYTHONPATH`和CVS-RFFI Python下，对7行逐一加载checkpoint与prototype PT，解析prototype JSON、resource、heldout、terminal和completion receipt，并核对本行绝对路径、输出hash、terminal/receipt/heldout COMPLETE状态和退出码；结果7/7通过、0失败|
+|验收命令环境说明|第一次独立加载未带冻结release的`PYTHONPATH`，仅checkpoint反序列化出现`ModuleNotFoundError`；其他绑定检查通过。使用与runner一致的只读模块路径重验后7/7全部加载通过，该问题属于验收命令环境缺失，不是训练或artifact失败|
+|活跃行|`P1-FULL`种子7281101–7281104和`P1-B0`种子7281102–7281105，共8行；8个训练主进程全部由runner PID`711523`直接持有，CWD与cmdline绑定正确|
+|waiting自动派发|后续4个D0行位于GPU0/1的冻结slot队列，需等待对应4个活跃FULL行完成后由原runner自动派发；本轮在GPU2/5/6/7完成的行不会跨GPU改写冻结队列，因此waiting仍为4，未人工补跑或改调度|
+|GPU训练数与空槽|T1在GPU0–7为`2/2/0/2/2/0/0/0`；label v2在GPU0–7为`0/0/2/0/0/2/1/1`；整机合计为`2/2/2/2/2/2/1/1`，GPU6和GPU7各释放1个允许槽位，其余卡仍为2个训练实验|
+|GPU利用率|GPU0–7依次为99%、99%、95%、90%、99%、97%、23%、38%；对应显存6163、6391、5923、6467、6159、6263、3194、3202MiB|
+|训练进度|8个活跃T1行最新`[EPOCH-BEGIN]`为E174–E178；仅作为非停滞健康证据，不读取或比较中间性能|
+|日志增长|T1逐行日志总量由20:59的11,668,162字节增至16,235,026字节，增加4,566,864字节|
+|异常/协议|完整逐行日志硬错误扫描计数0、P0标记计数0；failed=0、nonzero=0，没有异常指纹或重复异常指纹，未触发预注册技术停机规则|
+|汇总产物|log root中的`runner_summary.json`仍不存在，完整矩阵尚未结束|
+|数据复用边界|继续复用既有结果；本轮没有数据集重审，也没有进行跨批次数据一致性或hash对齐|
+|SSH清理|所有短连接退出后确认本地`ssh.exe=0`；到N607及bridge的ESTABLISHED TCP22连接均为0|
+
+#### 22:11新增完整训练行artifact验收
+
+|行|checkpoint/B|prototype PT/B|prototype JSON/B|resource/B|heldout/B|terminal/B|completion receipt/B|return code|结论|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---|
+|`P1-C0__train_seed_7281101`|15,229,188|414,337|2,087,034|524|8,148|26,704|4,908|0|完整，通过|
+|`P1-C0__train_seed_7281102`|15,229,252|397,309|2,024,391|524|8,218|26,750|4,908|0|完整，通过|
+|`P1-C0__train_seed_7281103`|15,229,124|405,823|2,081,272|523|8,132|26,698|4,907|0|完整，通过|
+|`P1-C0__train_seed_7281104`|15,229,060|405,823|2,041,139|524|8,158|26,707|4,908|0|完整，通过|
+|`P1-C0__train_seed_7281105`|15,229,124|398,728|2,061,870|524|8,079|26,626|4,908|0|完整，通过|
+|`P1-D0__train_seed_7281101`|15,259,724|394,471|2,056,002|524|8,217|26,779|4,908|0|完整，通过|
+|`P1-FULL__train_seed_7281105`|15,262,796|394,471|2,057,588|528|8,195|26,754|4,922|0|完整，通过|
+
 当前仅能下结论为`LANDED / RUNNING / FIRST-WAVE HEALTHY`，不能据此形成任何性能结论。
 
 ## 风险与完成后检查
