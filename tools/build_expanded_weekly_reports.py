@@ -1,7 +1,12 @@
 from __future__ import annotations
 
 import argparse
+from functools import lru_cache
 import re
+import shutil
+import subprocess
+import tempfile
+import zipfile
 from pathlib import Path
 from typing import Iterable, Sequence
 
@@ -12,6 +17,7 @@ from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
 from docx.shared import Inches, Pt, RGBColor
+from lxml import etree
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -19,7 +25,7 @@ SOURCE_DIR = REPO_ROOT / "docs" / "weekly_reports"
 REPORTS = (
     (
         SOURCE_DIR / "CVS_RFFI_Phase2阶段工作详细报告_20260724.md",
-        "CVS-RFFI_Phase2阶段工作详细报告_截至20260724_实验定义补充版.docx",
+        "CVS-RFFI_Phase2阶段工作详细报告_截至20260724_导师批注修订版.docx",
         "Phase2阶段综合报告",
     ),
     (
@@ -44,6 +50,39 @@ WHITE = "FFFFFF"
 TABLE_WIDTH_DXA = 9360
 TABLE_INDENT_DXA = 120
 CELL_MARGINS = {"top": 80, "bottom": 80, "start": 120, "end": 120}
+MATH_NS = "http://schemas.openxmlformats.org/officeDocument/2006/math"
+
+
+@lru_cache(maxsize=128)
+def latex_to_omml_xml(latex: str) -> bytes | None:
+    """Convert one display equation to professional Word OMML via Pandoc."""
+
+    pandoc = shutil.which("pandoc")
+    if pandoc is None:
+        return None
+    with tempfile.TemporaryDirectory(prefix="cvs_report_math_") as temp_dir:
+        output = Path(temp_dir) / "equation.docx"
+        completed = subprocess.run(
+            [
+                pandoc,
+                "--from=markdown+tex_math_dollars",
+                "--to=docx",
+                "--output",
+                str(output),
+            ],
+            input=f"$$\n{latex}\n$$\n",
+            text=True,
+            encoding="utf-8",
+            capture_output=True,
+            check=False,
+        )
+        if completed.returncode != 0 or not output.exists():
+            return None
+        with zipfile.ZipFile(output) as archive:
+            document_xml = archive.read("word/document.xml")
+    root = etree.fromstring(document_xml)
+    equation = root.find(f".//{{{MATH_NS}}}oMathPara")
+    return None if equation is None else etree.tostring(equation)
 
 
 def set_run_font(
@@ -635,9 +674,20 @@ def markdown_to_docx(source: Path, destination: Path, topic: str) -> None:
                 equation_lines.append(current)
                 i += 1
             p = doc.add_paragraph(style="Equation")
-            p.add_run(strip_inline_math(" ".join(equation_lines)))
-            for run in p.runs:
-                set_run_font(run, latin="Cambria Math", east_asia="Microsoft YaHei", size=10.5, color=DARK_BLUE)
+            latex = " ".join(equation_lines)
+            omml_xml = latex_to_omml_xml(latex)
+            if omml_xml is None:
+                p.add_run(strip_inline_math(latex))
+                for run in p.runs:
+                    set_run_font(
+                        run,
+                        latin="Cambria Math",
+                        east_asia="Microsoft YaHei",
+                        size=10.5,
+                        color=DARK_BLUE,
+                    )
+            else:
+                p._p.append(etree.fromstring(omml_xml))
             i += 1
             continue
 
@@ -659,7 +709,11 @@ def markdown_to_docx(source: Path, destination: Path, topic: str) -> None:
         if stripped.startswith("## "):
             flush_paragraph()
             heading = stripped[3:].strip()
-            if heading == "附录A：非类增量对比方法复现实验结果":
+            if heading in {
+                "2.Phase2任务定义与三个Stage",
+                "7.五种方法的统一横向比较",
+                "附录A：非类增量对比方法复现实验结果",
+            }:
                 doc.add_page_break()
             p = doc.add_paragraph(style="Heading 1")
             add_rich_text(p, heading)
