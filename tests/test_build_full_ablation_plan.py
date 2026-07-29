@@ -13,6 +13,12 @@ ROOT = Path(__file__).resolve().parents[1]
 REGISTRY = (
     ROOT / "configs" / "full_ablation_20260728" / "seed_registry.json"
 )
+LABEL_REFERENCE = (
+    ROOT
+    / "configs"
+    / "full_ablation_20260728"
+    / "phase1_label_rho100_reference_v1.json"
+)
 
 
 def _args(
@@ -25,6 +31,7 @@ def _args(
         phase=phase,
         stage=stage,
         phase1_matrix=phase1_matrix,
+        phase1_label_reference=str(LABEL_REFERENCE),
         arms="P2-FULL",
         git_commit="a" * 40,
         wisig_pkl_sha256="b" * 64,
@@ -75,6 +82,12 @@ def test_phase1_label_plan_has_fourteen_new_rows_and_reuses_rho10() -> None:
         0.02,
         0.05,
     }
+    assert (
+        plan["phase1_label_reference"]["source_run_id"]
+        == "cvs_full_ablation_phase1_t1_20260729_v5_reuse"
+    )
+    assert len(plan["phase1_label_reference"]["rows"]) == 5
+    assert len(plan["phase1_label_reference_sha256"]) == 64
 
 
 def test_registry_hash_is_cross_platform_line_ending_stable() -> None:

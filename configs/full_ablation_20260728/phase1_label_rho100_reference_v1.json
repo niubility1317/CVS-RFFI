@@ -1,0 +1,43 @@
+{
+  "schema": "cvs.full_ablation.phase1_label_reference.v1",
+  "design_id": "cvs_full_ablation_phase1_phase2_20260728",
+  "rho_label": 0.1,
+  "ablation_id": "P1-FULL",
+  "reuse_mode": "reference_only_not_dispatched",
+  "source_run_id": "cvs_full_ablation_phase1_t1_20260729_v5_reuse",
+  "source_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/cvs_full_ablation_phase1_t1_20260729_v5_reuse",
+  "source_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/cvs_full_ablation_phase1_t1_20260729_v5_reuse",
+  "source_status": "RUNNING_PENDING_ARTIFACTS_COMPLETE",
+  "required_before_label_curve_analysis": true,
+  "expected_artifacts": [
+    "best_source_validation_ssdg.pth",
+    "phase1_training_completion_receipt.json",
+    "phase1_terminal_status.json",
+    "phase1_resource_summary.json",
+    "frozen_phase1_heldout_eval.json",
+    "phase2_prototypes.pt",
+    "phase2_prototypes.json"
+  ],
+  "rows": [
+    {
+      "row_key": "P1-FULL__train_seed_7281101",
+      "train_seed": 7281101
+    },
+    {
+      "row_key": "P1-FULL__train_seed_7281102",
+      "train_seed": 7281102
+    },
+    {
+      "row_key": "P1-FULL__train_seed_7281103",
+      "train_seed": 7281103
+    },
+    {
+      "row_key": "P1-FULL__train_seed_7281104",
+      "train_seed": 7281104
+    },
+    {
+      "row_key": "P1-FULL__train_seed_7281105",
+      "train_seed": 7281105
+    }
+  ]
+}

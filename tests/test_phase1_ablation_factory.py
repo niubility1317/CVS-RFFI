@@ -389,6 +389,40 @@ def test_arm_aware_terminal_contract_accepts_intentional_disabled_groups(
         "checkpoint_role": "source_validation_selected",
         "args": vars(args),
     }
+    source_pool_size = 10000
+    labeled_size = int(round(source_pool_size * args.labeled_ratio))
+    unlabeled_size = int(
+        round(source_pool_size * args.unlabeled_ratio)
+    )
+    validation_size = source_pool_size - labeled_size - unlabeled_size
+    split_receipt = _build_source_split_receipt(
+        seed=int(args.seed),
+        split_mode=str(args.split_mode),
+        source_days=["d0", "d1"],
+        target_days=["d2", "d3"],
+        source_receivers=[f"r{i}" for i in range(7)],
+        target_receivers=[f"r{i}" for i in range(7, 12)],
+        labeled_indices=list(range(labeled_size)),
+        unlabeled_indices=list(
+            range(labeled_size, labeled_size + unlabeled_size)
+        ),
+        source_validation_indices=list(
+            range(
+                labeled_size + unlabeled_size,
+                labeled_size + unlabeled_size + validation_size,
+            )
+        ),
+        wisig_pkl_sha256="d" * 64,
+        requested_labeled_ratio=float(args.labeled_ratio),
+        requested_unlabeled_ratio=float(args.unlabeled_ratio),
+        requested_source_val_ratio=float(args.source_val_ratio),
+        realized_rho_tolerance=float(
+            args.phase1_realized_rho_tolerance
+        ),
+        realized_source_val_tolerance=float(
+            args.phase1_realized_source_val_tolerance
+        ),
+    )
     p0_flags, p1_flags = _formal_ablation_terminal_flags(
         args,
         selected_checkpoint=Path("best_source_validation_ssdg.pth"),
@@ -398,10 +432,7 @@ def test_arm_aware_terminal_contract_accepts_intentional_disabled_groups(
             "status": "COMPLETE",
             "source_checkpoint_sha256": "b" * 64,
         },
-        source_split_receipt={
-            "split_manifest_sha256": "d" * 64,
-            "source_target_receiver_overlap_count": 0,
-        },
+        source_split_receipt=split_receipt,
     )
     assert all(p0_flags.values()), p0_flags
     assert all(p1_flags.values()), p1_flags
@@ -444,9 +475,62 @@ def test_source_split_receipt_hashes_label_masks_and_disjoint_receivers() -> Non
         unlabeled_indices=[1, 9, 11],
         source_validation_indices=[2, 4],
         wisig_pkl_sha256="d" * 64,
+        requested_labeled_ratio=2.0 / 7.0,
+        requested_unlabeled_ratio=3.0 / 7.0,
+        requested_source_val_ratio=2.0 / 7.0,
+        realized_rho_tolerance=0.0,
+        realized_source_val_tolerance=0.0,
     )
     assert receipt["source_target_receiver_overlap_count"] == 0
     assert receipt["labeled_indices_sha256"] != receipt[
         "unlabeled_indices_sha256"
     ]
+    assert receipt["realized_rho_within_tolerance"] is True
+    assert receipt["realized_source_val_within_tolerance"] is True
     assert len(receipt["split_manifest_sha256"]) == 64
+
+
+def test_source_split_receipt_records_manysig_low_rho_discretization() -> None:
+    labeled_size = 252
+    unlabeled_size = 58464
+    validation_size = 25284
+
+    def build_receipt(tolerance: float) -> dict:
+        return _build_source_split_receipt(
+            seed=7281101,
+            split_mode="tx_rx_day_1_7_2",
+            source_days=["d0", "d1"],
+            target_days=["d2", "d3"],
+            source_receivers=[f"r{i}" for i in range(7)],
+            target_receivers=[f"r{i}" for i in range(7, 12)],
+            labeled_indices=range(labeled_size),
+            unlabeled_indices=range(
+                labeled_size,
+                labeled_size + unlabeled_size,
+            ),
+            source_validation_indices=range(
+                labeled_size + unlabeled_size,
+                labeled_size + unlabeled_size + validation_size,
+            ),
+            wisig_pkl_sha256="d" * 64,
+            requested_labeled_ratio=0.0035,
+            requested_unlabeled_ratio=0.6965,
+            requested_source_val_ratio=0.30,
+            realized_rho_tolerance=tolerance,
+            realized_source_val_tolerance=tolerance,
+        )
+
+    receipt = build_receipt(0.002)
+    assert receipt["requested_rho_label"] == pytest.approx(0.005)
+    assert receipt["realized_rho_label"] == pytest.approx(
+        0.004291845493561
+    )
+    assert receipt["realized_source_val_fraction"] == pytest.approx(
+        0.301
+    )
+    assert receipt["realized_rho_within_tolerance"] is True
+    assert receipt["realized_source_val_within_tolerance"] is True
+
+    strict_receipt = build_receipt(0.0001)
+    assert strict_receipt["realized_rho_within_tolerance"] is False
+    assert strict_receipt["realized_source_val_within_tolerance"] is False

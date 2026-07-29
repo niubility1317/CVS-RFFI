@@ -4,6 +4,7 @@ import copy
 import hashlib
 import json
 import signal
+import sys
 import threading
 from pathlib import Path
 from types import SimpleNamespace
@@ -61,6 +62,21 @@ def _plan() -> dict:
 def _label_plan() -> dict:
     plan = _plan()
     plan["stage"] = "label"
+    plan["phase1_label_reference_sha256"] = "e" * 64
+    plan["phase1_label_reference"] = {
+        "schema": "cvs.full_ablation.phase1_label_reference.v1",
+        "ablation_id": "P1-FULL",
+        "rho_label": 0.10,
+        "reuse_mode": "reference_only_not_dispatched",
+        "required_before_label_curve_analysis": True,
+        "rows": [
+            {
+                "row_key": f"P1-FULL__train_seed_{seed}",
+                "train_seed": seed,
+            }
+            for seed in plan["registered_phase1_train_seeds"]
+        ],
+    }
     plan["rows"] = build_phase1_label_rows(
         plan["registered_phase1_train_seeds"],
         git_commit=plan["git_commit"],
@@ -97,6 +113,16 @@ def test_unsealed_label_plan_is_valid_and_exactly_fourteen_rows() -> None:
     assert len(plan["rows"]) == 14
     plan["rows"][0]["split_fractions"]["labeled"] = 0.07
     with pytest.raises(Phase1RunnerError, match="canonical row drift"):
+        validate_phase1_release_plan(plan, require_launch_authority=False)
+
+
+def test_label_plan_rejects_missing_rho100_machine_reference() -> None:
+    plan = _label_plan()
+    plan["phase1_label_reference"]["rows"].pop()
+    with pytest.raises(
+        Phase1RunnerError,
+        match="five-row rho=0.10 reference",
+    ):
         validate_phase1_release_plan(plan, require_launch_authority=False)
 
 
@@ -744,6 +770,7 @@ def test_execute_rejects_unreviewed_reuse_manifest(
         lambda *_args, **_kwargs: None,
     )
     plan = {
+        "stage": "t1",
         "release_files": {
             (
                 "configs/full_ablation_20260728/"
@@ -761,6 +788,77 @@ def test_execute_rejects_unreviewed_reuse_manifest(
         match="reviewed reuse manifest",
     ):
         run_release(args, plan)
+
+
+def test_label_execute_does_not_require_the_t1_reuse_manifest(
+    monkeypatch,
+    tmp_path,
+) -> None:
+    monkeypatch.setattr(
+        phase1_runner,
+        "validate_phase1_release_plan",
+        lambda *_args, **_kwargs: None,
+    )
+    monkeypatch.setattr(
+        phase1_runner,
+        "verify_release_checkout",
+        lambda *_args, **_kwargs: None,
+    )
+    repo_root = tmp_path / "repo"
+    train_script = repo_root / "code" / "SSDG" / "train_ssdg.py"
+    train_script.parent.mkdir(parents=True)
+    train_script.write_text("# reviewed path\n", encoding="utf-8")
+    plan = {
+        "stage": "label",
+        "python_environment_id": Path(sys.prefix).name,
+        "release_files": {
+            (
+                "configs/full_ablation_20260728/"
+                "phase1_t1_reuse_v5.json"
+            ): "a" * 64,
+        },
+    }
+    args = SimpleNamespace(
+        repo_root=str(repo_root),
+        train_script=str(train_script),
+        python=sys.executable,
+        reuse_manifest="",
+        reexport_script="",
+        wisig_pkl=str(tmp_path / "missing.pkl"),
+    )
+    with pytest.raises(Phase1RunnerError, match="WiSig pickle is missing"):
+        run_release(args, plan)
+
+
+def test_label_execute_rejects_any_reuse_manifest(
+    monkeypatch,
+    tmp_path,
+) -> None:
+    monkeypatch.setattr(
+        phase1_runner,
+        "validate_phase1_release_plan",
+        lambda *_args, **_kwargs: None,
+    )
+    monkeypatch.setattr(
+        phase1_runner,
+        "verify_release_checkout",
+        lambda *_args, **_kwargs: None,
+    )
+    repo_root = tmp_path / "repo"
+    train_script = repo_root / "code" / "SSDG" / "train_ssdg.py"
+    train_script.parent.mkdir(parents=True)
+    train_script.write_text("# reviewed path\n", encoding="utf-8")
+    args = SimpleNamespace(
+        repo_root=str(repo_root),
+        train_script=str(train_script),
+        python=sys.executable,
+        reuse_manifest=str(tmp_path / "t1-reuse.json"),
+    )
+    with pytest.raises(
+        Phase1RunnerError,
+        match="does not accept a reuse manifest",
+    ):
+        run_release(args, {"stage": "label", "release_files": {}})
 
 
 def test_completion_receipt_binds_row_plan_split_and_terminal(tmp_path) -> None:

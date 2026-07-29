@@ -33,6 +33,10 @@ RELEASE_RELATIVE_PATHS = (
     "code/scripts/run_full_ablation_phase1_t1.py",
     "code/scripts/seal_full_ablation_phase1_plan.py",
     "configs/full_ablation_20260728/phase1_t1_reuse_v5.json",
+    (
+        "configs/full_ablation_20260728/"
+        "phase1_label_rho100_reference_v1.json"
+    ),
     "configs/full_ablation_20260728/seed_registry.json",
 )
 
@@ -147,6 +151,21 @@ def seal_plan(
         raise Phase1RunnerError(
             "plan seed-registry hash differs from reviewed release file"
         )
+    if str(plan.get("stage", "")).strip().lower() == "label":
+        label_reference_relative = (
+            "configs/full_ablation_20260728/"
+            "phase1_label_rho100_reference_v1.json"
+        )
+        if (
+            label_reference_relative not in release_files
+            or str(
+                plan.get("phase1_label_reference_sha256", "")
+            ).lower()
+            != str(release_files[label_reference_relative]).lower()
+        ):
+            raise Phase1RunnerError(
+                "plan rho=0.10 reference hash differs from reviewed release file"
+            )
     sealed = json.loads(json.dumps(dict(plan)))
     sealed["run_id"] = str(run_id)
     sealed["git_commit"] = str(commit).lower()

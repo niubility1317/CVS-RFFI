@@ -882,6 +882,16 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--amp", type=str2bool, default=True)
     parser.add_argument("--dry_run", action="store_true")
     add_common_data_args(parser)
+    parser.add_argument(
+        "--phase1_realized_rho_tolerance",
+        type=float,
+        default=0.002,
+    )
+    parser.add_argument(
+        "--phase1_realized_source_val_tolerance",
+        type=float,
+        default=0.002,
+    )
     add_sat_eval_args(parser)
     return parser
 
@@ -1341,7 +1351,37 @@ def _build_source_split_receipt(
     unlabeled_indices: Sequence[Any],
     source_validation_indices: Sequence[Any],
     wisig_pkl_sha256: str,
+    requested_labeled_ratio: float | None = None,
+    requested_unlabeled_ratio: float | None = None,
+    requested_source_val_ratio: float | None = None,
+    realized_rho_tolerance: float = 0.002,
+    realized_source_val_tolerance: float = 0.002,
 ) -> Dict[str, Any]:
+    labeled_size = int(len(labeled_indices))
+    unlabeled_size = int(len(unlabeled_indices))
+    source_validation_size = int(len(source_validation_indices))
+    train_size = labeled_size + unlabeled_size
+    source_pool_size = train_size + source_validation_size
+    realized_rho = float(labeled_size) / float(max(1, train_size))
+    realized_source_val_fraction = float(source_validation_size) / float(
+        max(1, source_pool_size)
+    )
+    if requested_labeled_ratio is None:
+        requested_labeled_ratio = float(labeled_size) / float(
+            max(1, source_pool_size)
+        )
+    if requested_unlabeled_ratio is None:
+        requested_unlabeled_ratio = float(unlabeled_size) / float(
+            max(1, source_pool_size)
+        )
+    if requested_source_val_ratio is None:
+        requested_source_val_ratio = realized_source_val_fraction
+    requested_train_fraction = float(requested_labeled_ratio) + float(
+        requested_unlabeled_ratio
+    )
+    requested_rho = float(requested_labeled_ratio) / float(
+        max(1e-12, requested_train_fraction)
+    )
     receipt = {
         "schema": "cvs.phase1.source_split_receipt.v1",
         "seed": int(seed),
@@ -1368,10 +1408,30 @@ def _build_source_split_receipt(
         "source_validation_indices_sha256": _canonical_json_sha256(
             [int(value) for value in source_validation_indices]
         ),
-        "labeled_size": int(len(labeled_indices)),
-        "unlabeled_size": int(len(unlabeled_indices)),
-        "source_validation_size": int(
-            len(source_validation_indices)
+        "labeled_size": labeled_size,
+        "unlabeled_size": unlabeled_size,
+        "source_validation_size": source_validation_size,
+        "source_pool_size": source_pool_size,
+        "requested_labeled_ratio": float(requested_labeled_ratio),
+        "requested_unlabeled_ratio": float(requested_unlabeled_ratio),
+        "requested_source_val_ratio": float(requested_source_val_ratio),
+        "requested_rho_label": requested_rho,
+        "realized_rho_label": realized_rho,
+        "realized_source_val_fraction": realized_source_val_fraction,
+        "realized_rho_tolerance": float(realized_rho_tolerance),
+        "realized_source_val_tolerance": float(
+            realized_source_val_tolerance
+        ),
+        "realized_rho_within_tolerance": (
+            abs(realized_rho - requested_rho)
+            <= float(realized_rho_tolerance) + 1e-12
+        ),
+        "realized_source_val_within_tolerance": (
+            abs(
+                realized_source_val_fraction
+                - float(requested_source_val_ratio)
+            )
+            <= float(realized_source_val_tolerance) + 1e-12
         ),
     }
     receipt["split_manifest_sha256"] = _canonical_json_sha256(
@@ -1503,6 +1563,15 @@ def _build_ssdg_wisig_data(args, device: torch.device):
         unlabeled_indices=unlabeled_idx,
         source_validation_indices=val_idx,
         wisig_pkl_sha256=str(args.wisig_pkl_sha256),
+        requested_labeled_ratio=float(args.labeled_ratio),
+        requested_unlabeled_ratio=float(args.unlabeled_ratio),
+        requested_source_val_ratio=float(args.source_val_ratio),
+        realized_rho_tolerance=float(
+            args.phase1_realized_rho_tolerance
+        ),
+        realized_source_val_tolerance=float(
+            args.phase1_realized_source_val_tolerance
+        ),
     )
     return {
         "train_loader": labeled_loader,
@@ -2558,6 +2627,30 @@ def _formal_ablation_terminal_flags(
         "source_split_receipt_bound": (
             len(str(split_receipt.get("split_manifest_sha256", "")))
             == 64
+        ),
+        "source_split_requested_ratios_match_arm": (
+            abs(
+                float(split_receipt.get("requested_labeled_ratio", -1.0))
+                - float(expected_ablation_config["labeled_ratio"])
+            )
+            <= 1e-12
+            and abs(
+                float(split_receipt.get("requested_unlabeled_ratio", -1.0))
+                - float(expected_ablation_config["unlabeled_ratio"])
+            )
+            <= 1e-12
+            and abs(
+                float(split_receipt.get("requested_source_val_ratio", -1.0))
+                - float(expected_ablation_config["source_val_ratio"])
+            )
+            <= 1e-12
+        ),
+        "source_split_realized_rho_within_tolerance": (
+            split_receipt.get("realized_rho_within_tolerance") is True
+        ),
+        "source_split_realized_source_val_within_tolerance": (
+            split_receipt.get("realized_source_val_within_tolerance")
+            is True
         ),
         "source_target_receivers_physically_disjoint": int(
             split_receipt.get(

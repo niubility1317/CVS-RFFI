@@ -144,6 +144,37 @@ def validate_phase1_release_plan(
             registered_seeds,
             git_commit=str(plan.get("git_commit", "")),
         )
+        reference = dict(plan.get("phase1_label_reference") or {})
+        reference_rows = list(reference.get("rows") or [])
+        expected_reference_rows = {
+            f"P1-FULL__train_seed_{seed}": int(seed)
+            for seed in registered_seeds
+        }
+        actual_reference_rows = {
+            str(row.get("row_key", "")): int(
+                row.get("train_seed", -1)
+            )
+            for row in reference_rows
+        }
+        reference_hash = str(
+            plan.get("phase1_label_reference_sha256", "")
+        ).strip().lower()
+        if (
+            reference.get("schema")
+            != "cvs.full_ablation.phase1_label_reference.v1"
+            or reference.get("ablation_id") != "P1-FULL"
+            or abs(float(reference.get("rho_label", -1.0)) - 0.10)
+            > 1e-12
+            or reference.get("reuse_mode")
+            != "reference_only_not_dispatched"
+            or reference.get("required_before_label_curve_analysis")
+            is not True
+            or len(reference_hash) != 64
+            or actual_reference_rows != expected_reference_rows
+        ):
+            raise Phase1RunnerError(
+                "Phase1 label plan lacks the five-row rho=0.10 reference"
+            )
     canonical_fields = (
         "ablation_id",
         "train_seed",
@@ -1152,6 +1183,8 @@ def run_release(args: argparse.Namespace, plan: Mapping[str, Any]) -> int:
         repo_root / reuse_relative_path
     ).resolve()
     reuse_is_release_bound = (
+        str(plan.get("stage", "")).strip().lower() == "t1"
+        and
         reuse_relative_path in dict(plan.get("release_files") or {})
     )
     if reuse_is_release_bound and (
@@ -1161,6 +1194,13 @@ def run_release(args: argparse.Namespace, plan: Mapping[str, Any]) -> int:
     ):
         raise Phase1RunnerError(
             "execute mode requires the reviewed reuse manifest"
+        )
+    if (
+        str(plan.get("stage", "")).strip().lower() != "t1"
+        and str(getattr(args, "reuse_manifest", "")).strip()
+    ):
+        raise Phase1RunnerError(
+            "non-T1 Phase1 matrix does not accept a reuse manifest"
         )
     expected_train_script = (
         repo_root / "code" / "SSDG" / "train_ssdg.py"

@@ -59,6 +59,8 @@ _FULL_CONFIG: dict[str, Any] = {
     "labeled_ratio": 0.07,
     "unlabeled_ratio": 0.63,
     "source_val_ratio": 0.30,
+    "phase1_realized_rho_tolerance": 0.002,
+    "phase1_realized_source_val_tolerance": 0.002,
     "epochs": 200,
     "label_epochs": 130,
     "pseudo_epochs": 70,

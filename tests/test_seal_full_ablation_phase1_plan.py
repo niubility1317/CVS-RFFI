@@ -22,6 +22,10 @@ from scripts.seal_full_ablation_phase1_plan import (
 _RELEASE_FILES = {
     "code/example.py": "b" * 64,
     "configs/full_ablation_20260728/seed_registry.json": "c" * 64,
+    (
+        "configs/full_ablation_20260728/"
+        "phase1_label_rho100_reference_v1.json"
+    ): "e" * 64,
 }
 _SEED_REGISTRY = {
     "schema": "cvs.full_ablation.seed_registry.v1",
@@ -70,6 +74,21 @@ def _review() -> dict:
 def _label_plan() -> dict:
     plan = _plan()
     plan["stage"] = "label"
+    plan["phase1_label_reference_sha256"] = "e" * 64
+    plan["phase1_label_reference"] = {
+        "schema": "cvs.full_ablation.phase1_label_reference.v1",
+        "ablation_id": "P1-FULL",
+        "rho_label": 0.10,
+        "reuse_mode": "reference_only_not_dispatched",
+        "required_before_label_curve_analysis": True,
+        "rows": [
+            {
+                "row_key": f"P1-FULL__train_seed_{seed}",
+                "train_seed": seed,
+            }
+            for seed in _SEED_REGISTRY["phase1_train_seeds"]
+        ],
+    }
     plan["rows"] = build_phase1_label_rows(
         _SEED_REGISTRY["phase1_train_seeds"],
         git_commit="a" * 40,

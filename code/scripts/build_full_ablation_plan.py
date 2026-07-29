@@ -31,6 +31,12 @@ ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_SEED_REGISTRY = (
     ROOT / "configs" / "full_ablation_20260728" / "seed_registry.json"
 )
+DEFAULT_PHASE1_LABEL_REFERENCE = (
+    ROOT
+    / "configs"
+    / "full_ablation_20260728"
+    / "phase1_label_rho100_reference_v1.json"
+)
 
 
 def _sha256_bytes(payload: bytes) -> str:
@@ -67,6 +73,64 @@ def _load_registry(path: Path) -> tuple[dict[str, Any], str]:
     return registry, _canonical_text_sha256(payload)
 
 
+def _load_phase1_label_reference(
+    path: Path,
+    registered_seeds: list[int],
+) -> tuple[dict[str, Any], str]:
+    payload = path.read_bytes()
+    reference = json.loads(payload.decode("utf-8-sig"))
+    if (
+        reference.get("schema")
+        != "cvs.full_ablation.phase1_label_reference.v1"
+        or reference.get("design_id") != DESIGN_ID
+        or reference.get("ablation_id") != "P1-FULL"
+        or abs(float(reference.get("rho_label", -1.0)) - 0.10) > 1e-12
+        or reference.get("reuse_mode")
+        != "reference_only_not_dispatched"
+        or reference.get("required_before_label_curve_analysis") is not True
+    ):
+        raise FullAblationSpecError(
+            "invalid Phase1 rho=0.10 reference manifest"
+        )
+    if not str(reference.get("source_run_id", "")).strip():
+        raise FullAblationSpecError(
+            "Phase1 label reference lacks source_run_id"
+        )
+    if not str(reference.get("source_run_root", "")).strip() or not str(
+        reference.get("source_log_root", "")
+    ).strip():
+        raise FullAblationSpecError(
+            "Phase1 label reference lacks source run/log roots"
+        )
+    rows = list(reference.get("rows") or [])
+    expected_rows = {
+        f"P1-FULL__train_seed_{seed}": int(seed)
+        for seed in registered_seeds
+    }
+    actual_rows = {
+        str(row.get("row_key", "")): int(row.get("train_seed", -1))
+        for row in rows
+    }
+    if len(rows) != 5 or actual_rows != expected_rows:
+        raise FullAblationSpecError(
+            "Phase1 rho=0.10 reference must bind five registered P1-FULL rows"
+        )
+    required_artifacts = {
+        "best_source_validation_ssdg.pth",
+        "phase1_training_completion_receipt.json",
+        "phase1_terminal_status.json",
+        "phase1_resource_summary.json",
+        "frozen_phase1_heldout_eval.json",
+        "phase2_prototypes.pt",
+        "phase2_prototypes.json",
+    }
+    if set(reference.get("expected_artifacts") or []) != required_artifacts:
+        raise FullAblationSpecError(
+            "Phase1 rho=0.10 reference artifact contract drift"
+        )
+    return reference, _canonical_text_sha256(payload)
+
+
 def _select_arms(raw_ids: str) -> list[ArmSpec]:
     available = {arm.ablation_id: arm for arm in PHASE2_T1_ARMS}
     if raw_ids.strip().lower() == "t1":
@@ -90,18 +154,28 @@ def build_plan(args: argparse.Namespace) -> dict[str, Any]:
             int(value) for value in registry["phase1_train_seeds"]
         ]
         if args.phase1_matrix == "label":
+            label_reference, label_reference_hash = (
+                _load_phase1_label_reference(
+                    Path(args.phase1_label_reference).resolve(),
+                    registered_phase1_train_seeds,
+                )
+            )
             rows = build_phase1_label_rows(
                 registered_phase1_train_seeds,
                 git_commit=args.git_commit,
             )
             stage = "label"
         else:
+            label_reference = {}
+            label_reference_hash = ""
             rows = build_phase1_t1_rows(
                 registered_phase1_train_seeds,
                 git_commit=args.git_commit,
             )
             stage = "t1"
     else:
+        label_reference = {}
+        label_reference_hash = ""
         registered_phase1_train_seeds = []
         stage = args.stage
         stage_registry = registry[f"stage2_{stage}"]
@@ -131,6 +205,13 @@ def build_plan(args: argparse.Namespace) -> dict[str, Any]:
         "registered_phase1_train_seeds": (
             registered_phase1_train_seeds
         ),
+        "phase1_label_reference_path": (
+            str(Path(args.phase1_label_reference).resolve())
+            if args.phase == "phase1" and stage == "label"
+            else ""
+        ),
+        "phase1_label_reference_sha256": label_reference_hash,
+        "phase1_label_reference": label_reference,
         "registered_stage2_method_seeds": (
             [int(bundle.method_seed) for bundle in bundles]
             if args.phase == "phase2"
@@ -165,6 +246,11 @@ def _parser() -> argparse.ArgumentParser:
         choices=("t1", "label"),
         default="t1",
         help="Phase1 only: main T1 matrix or P1-LABEL sensitivity matrix.",
+    )
+    parser.add_argument(
+        "--phase1-label-reference",
+        default=str(DEFAULT_PHASE1_LABEL_REFERENCE),
+        help="Phase1 label only: machine-readable rho=0.10 P1-FULL reference.",
     )
     parser.add_argument(
         "--stage",
