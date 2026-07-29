@@ -19,7 +19,7 @@ SOURCE_DIR = REPO_ROOT / "docs" / "weekly_reports"
 REPORTS = (
     (
         SOURCE_DIR / "CVS_RFFI_Phase2阶段工作详细报告_20260724.md",
-        "CVS-RFFI_Phase2阶段工作详细报告_截至20260724.docx",
+        "CVS-RFFI_Phase2阶段工作详细报告_截至20260724_对比结果后置版.docx",
         "Phase2阶段综合报告",
     ),
     (
@@ -659,6 +659,8 @@ def markdown_to_docx(source: Path, destination: Path, topic: str) -> None:
         if stripped.startswith("## "):
             flush_paragraph()
             heading = stripped[3:].strip()
+            if heading == "附录A：非类增量对比方法复现实验结果":
+                doc.add_page_break()
             p = doc.add_paragraph(style="Heading 1")
             add_rich_text(p, heading)
             i += 1

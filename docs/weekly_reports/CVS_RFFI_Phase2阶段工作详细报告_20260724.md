@@ -332,51 +332,11 @@ $$
 |MRIOR-SDA|模型更新型监督域适应|source＋target-old support|完整backbone|是|600次更新|否，闭集旧类|
 |DADDA-SDA|统计距离型监督域适应|source＋target-old support|完整backbone|是|600次更新|否，闭集旧类|
 
-### 5.6总体实验结果
+### 5.6非类增量对比方法的复现实验结果位置
 
-|方法|适应前old_acc|适应后old_acc|平均收益|正/负迁移任务|平均时延|backbone更新|
-|---|---:|---:|---:|---:|---:|---:|
-|MRIOR-SDA|73.60%|82.58%|+8.98pp|105/20|17.90s|600|
-|DADDA-SDA|73.60%|78.35%|+4.75pp|99/26|14.62s|600|
-|ProtoNet CDA|73.60%|66.85%|−6.75pp|10/115|0.046s|0|
+为使正文先完成Phase2概念、任务、方法机制和类增量主线的讲解，ProtoNet CDA、MRIOR-SDA与DADDA-SDA的复现实验数值统一移至报告最后的“附录A：非类增量对比方法复现实验结果”。附录按总体结果、K-shot分组、target receiver分组和证据边界依次汇总。
 
-MRIOR-SDA获得最高旧类准确率，平均提升8.98个百分点；DADDA-SDA平均提升4.75个百分点；ProtoNet CDA平均下降6.75个百分点。结果说明target-old support确实包含可利用的域校准信息，但固定embedding上的单prototype不足以恢复跨接收机偏移。
-
-### 5.7不同K-shot下的结果
-
-|K|直接ADV3B02|MRIOR-SDA|DADDA-SDA|ProtoNet CDA|
-|---:|---:|---:|---:|---:|
-|1|73.60%|77.22%|74.94%|58.67%|
-|2|73.60%|79.51%|76.14%|64.70%|
-|5|73.60%|82.59%|78.19%|68.98%|
-|10|73.60%|85.82%|80.31%|70.42%|
-|20|73.60%|87.74%|82.16%|71.48%|
-
-K从1增加到20时，MRIOR与DADDA持续受益，说明更多target support提高了梯度估计和类条件对齐的稳定性。ProtoNet也随K增加而改善，但K=20仍低于直接ADV3B02，问题不只是prototype均值方差，而是目标域embedding发生了系统性偏移。
-
-### 5.8不同target receiver下的结果
-
-|target receiver|直接ADV3B02|MRIOR-SDA|DADDA-SDA|ProtoNet CDA|
-|---|---:|---:|---:|---:|
-|20-1|64.61%|83.43%|75.91%|60.98%|
-|3-19|60.33%|69.06%|65.31%|48.50%|
-|7-14|90.06%|89.93%|89.93%|83.53%|
-|7-7|80.22%|86.78%|82.49%|74.81%|
-|8-8|72.78%|83.69%|78.10%|66.42%|
-
-- **20-1：**direct基线较低，MRIOR提升到83.43%，support提供了明确的目标域校准信号。
-- **3-19：**最高结果只有69.06%，是本轮最困难receiver，说明方法必须报告逐receiver和逐类floor。
-- **7-14：**direct已经达到90.06%，继续更新反而轻微下降，证明高基线receiver存在负迁移风险。
-- **7-7与8-8：**MRIOR保持明显正收益，DADDA获得中等收益，ProtoNet仍低于direct。
-
-### 5.9Stage2-B结果能够证明什么
-
-1. 跨接收机域偏移真实且强烈，不同receiver的direct基线差距接近30个百分点。
-2. target-old support含有有效适应信息；在允许source replay和完整backbone更新时，MRIOR与DADDA多数任务获得正迁移。
-3. K增加能够稳定监督式域适应。
-4. 单prototype分类不等于域适应，尤其无法处理系统性embedding偏移。
-
-这轮结果不能证明当前support-only Phase2主方法已经解决旧类域适应，因为最高性能方法使用了更宽的数据权限和计算预算。
+CSIL与MoPC-HR使用论文作者公开的官方代码，并在此基础上完成CVS数据接口和评测矩阵适配。因此，第6节继续保留两种类增量方法的实验结果，但不把它们列入“对比方法复现实验结果”附录。
 
 ## 6.工作二：类增量学习与新类注册
 
@@ -573,11 +533,11 @@ $$
 
 ## 7.五种方法的统一横向比较
 
-|方法|解决方向|主要数据|更新对象|新类能力|旧类保护|资源与状态|本轮主要结论|
+|方法|解决方向|主要数据|更新对象|新类能力|旧类保护|资源与状态|报告定位|
 |---|---|---|---|---|---|---|---|
-|ProtoNet CDA|少样本度量分类|target support|prototype|机制上可扩展|不主动保护或校准backbone|极轻量|速度快，但Stage2-B平均负迁移|
-|MRIOR-SDA|跨接收机域适应|source＋target-old support|完整backbone|本轮无|source CE维持旧类|600次更新，source replay|旧类平均提升最高，但权限较宽|
-|DADDA-SDA|全局＋类条件域对齐|source＋target-old support|完整backbone|本轮无|source分类和动态对齐|600次更新，source replay|有正收益，但低K分布估计不稳|
+|ProtoNet CDA|少样本度量分类|target support|prototype|机制上可扩展|不主动保护或校准backbone|极轻量|非类增量对比方法；复现实验结果见附录A|
+|MRIOR-SDA|跨接收机域适应|source＋target-old support|完整backbone|本轮无|source CE维持旧类|600次更新，source replay|非类增量对比方法；复现实验结果见附录A|
+|DADDA-SDA|全局＋类条件域对齐|source＋target-old support|完整backbone|本轮无|source分类和动态对齐|600次更新，source replay|非类增量对比方法；复现实验结果见附录A|
 |CSIL|无exemplar类增量|新类support＋旧模型统计|通道、mask、分类输出|可以|KD、EWC、冻结与隔离|容量增长，多轮训练|旧类保护强，但低K经常零注册|
 |MoPC-HR|prototype类增量|新类support＋旧prototype/模型状态|prototype、分类器及受控参数|较强|prototype增强、校正、HR|状态较紧凑，多轮训练|新类可塑性强，但旧类遗忘明显|
 
@@ -671,8 +631,8 @@ KNN仍需要解决目标域embedding质量、类别support数量不平衡、距�
 ## 10.导师可直接带走的结论
 
 1. Phase2的第一层困难是跨接收机域偏移，第二层困难是少样本条件下的新类注册与旧类遗忘，两者必须联合处理。
-2. MRIOR-SDA和DADDA-SDA证明target-old support包含有效域校准信息；MRIOR平均提升8.98个百分点，但两者使用source replay和完整backbone更新，只能作为宽权限外部对照。
-3. ProtoNet CDA极轻量，但Stage2-B平均下降6.75个百分点，说明当前target embedding不能简单用单prototype解决。
+2. MRIOR-SDA和DADDA-SDA表明target-old support包含可利用的域校准信息，但两者使用source replay和完整backbone更新，只能作为宽权限外部对照；具体数值见附录A。
+3. ProtoNet CDA说明轻量prototype分类不能自动替代接收机域适应；其总体、K-shot和target receiver结果见附录A。
 4. CSIL强保护旧类，但低K、低新类数时经常没有有效训练或完全不输出新类。
 5. MoPC-HR的新类学习能力更强，K=20、新类数1时H达到72.69%，但旧类遗忘26.71个百分点，稳定性问题仍然突出。
 6. 无LEO诊断说明LEO弱信道确实破坏新类几何结构，但去掉LEO后旧类可能进一步下降，因此信道失真不是唯一矛盾。
@@ -713,3 +673,52 @@ KNN仍需要解决目标域embedding质量、类别support数量不平衡、距�
 - 原始周报：`C:\Users\lh594\Desktop\周报\学习进展情况+7.16.docx`、`C:\Users\lh594\Desktop\周报\学习进展情况+7.24.docx`。
 
 本文中的WiSig/ManySig只表示地面代理数据；LEO弱信道是物理启发的仿真压力条件，不是真实在轨验证。MRIOR-SDA和DADDA-SDA结果来自更宽source-access权限，不能与`p2_min_v1` support-only主方法同权限排名。无LEO新类结果仅为`DIAGNOSTIC_NEW_CLASS_NO_LEO_NON_FORMAL`归因诊断。
+
+## 附录A：非类增量对比方法复现实验结果
+
+本附录仅汇总ProtoNet CDA、MRIOR-SDA与DADDA-SDA的375项CVS复现实验。CSIL和MoPC-HR采用论文作者公开的官方代码，其CVS接口实验与结果见第6节。三种方法共享第5.1节的基座、target receiver、K-shot和seed矩阵，但数据权限不同：MRIOR-SDA与DADDA-SDA使用source标签与target-old support，ProtoNet CDA只使用冻结特征与target-old support。因此，附录结果只作机制对照，不构成同权限Phase2主方法排名。
+
+### A.1总体实验结果
+
+|方法|适应前old_acc|适应后old_acc|平均收益|正/负迁移任务|平均时延|backbone更新|
+|---|---:|---:|---:|---:|---:|---:|
+|MRIOR-SDA|73.60%|82.58%|+8.98pp|105/20|17.90s|600|
+|DADDA-SDA|73.60%|78.35%|+4.75pp|99/26|14.62s|600|
+|ProtoNet CDA|73.60%|66.85%|−6.75pp|10/115|0.046s|0|
+
+MRIOR-SDA获得最高旧类准确率，平均提升8.98个百分点；DADDA-SDA平均提升4.75个百分点；ProtoNet CDA平均下降6.75个百分点。target-old support确实包含可利用的域校准信息，但固定embedding上的单prototype不足以恢复跨接收机偏移。
+
+### A.2不同K-shot下的结果
+
+|K|直接ADV3B02|MRIOR-SDA|DADDA-SDA|ProtoNet CDA|
+|---:|---:|---:|---:|---:|
+|1|73.60%|77.22%|74.94%|58.67%|
+|2|73.60%|79.51%|76.14%|64.70%|
+|5|73.60%|82.59%|78.19%|68.98%|
+|10|73.60%|85.82%|80.31%|70.42%|
+|20|73.60%|87.74%|82.16%|71.48%|
+
+K从1增加到20时，MRIOR-SDA与DADDA-SDA持续受益，说明更多target support提高了梯度估计和类条件对齐的稳定性。ProtoNet CDA也随K增加而改善，但K=20时仍低于直接ADV3B02。误差并非只来自prototype均值方差，目标域embedding还发生了系统性偏移。
+
+### A.3不同target receiver下的结果
+
+|target receiver|直接ADV3B02|MRIOR-SDA|DADDA-SDA|ProtoNet CDA|
+|---|---:|---:|---:|---:|
+|20-1|64.61%|83.43%|75.91%|60.98%|
+|3-19|60.33%|69.06%|65.31%|48.50%|
+|7-14|90.06%|89.93%|89.93%|83.53%|
+|7-7|80.22%|86.78%|82.49%|74.81%|
+|8-8|72.78%|83.69%|78.10%|66.42%|
+
+- **20-1：**direct基线较低，MRIOR-SDA提升到83.43%，support提供了明确的目标域校准信号。
+- **3-19：**最高结果为69.06%，是本轮最困难的receiver，说明后续方法必须报告逐receiver结果和逐类floor。
+- **7-14：**direct已经达到90.06%，继续更新后轻微下降，高基线receiver存在负迁移风险。
+- **7-7与8-8：**MRIOR-SDA保持明显正收益，DADDA-SDA获得中等收益，ProtoNet CDA仍低于direct。
+
+### A.4复现实验结果的证据边界
+
+1. 不同receiver的direct基线差距接近30个百分点，跨接收机域偏移是需要单独处理的性能来源。
+2. 在允许source replay和完整backbone更新时，MRIOR-SDA与DADDA-SDA多数任务获得正迁移，证明target-old support能够提供域校准信号。
+3. K增加后两种监督式域适应方法持续改善，说明support数量影响梯度估计和类条件分布估计的稳定性。
+4. ProtoNet CDA的结果说明单prototype分类不等于域适应，尤其不能处理系统性的embedding旋转、拉伸或类内多峰。
+5. 本附录不能证明support-only Phase2主方法已经解决旧类域适应；MRIOR-SDA与DADDA-SDA使用更宽权限，只能作为外部机制对照。
