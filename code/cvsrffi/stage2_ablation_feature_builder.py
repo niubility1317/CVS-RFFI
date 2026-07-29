@@ -249,6 +249,27 @@ _DEPLOYMENT_BINDING_KEYS = {
     "generation_config_sha256",
     "generation_code_sha256",
     "outer_content_root_sha256",
+    "phase1_completion_receipt_path",
+    "phase1_completion_receipt_sha256",
+    "generation_config_path",
+    "prototype_pt_path",
+    "prototype_pt_sha256",
+    "prototype_json_path",
+    "prototype_json_sha256",
+}
+_GENERATION_CONFIG_KEYS = {
+    "schema",
+    "row_key",
+    "run_id",
+    "checkpoint_lineage_sha256",
+    "completion_receipt_sha256",
+    "original_prototype_pt_sha256",
+    "original_prototype_json_sha256",
+    "normalized_prototype_pt_sha256",
+    "normalized_prototype_json_sha256",
+    "prototype_normalization_status",
+    "class_handle_binding_sha256",
+    "component_export",
 }
 
 
@@ -256,6 +277,10 @@ def _load_formal_runtime(
     binding_path: str | Path,
     *,
     expected_phase1_bundle_sha256: str,
+    phase1_prototype_path: str | Path,
+    phase1_prototype_manifest_path: str | Path,
+    expected_phase1_prototype_sha256: str,
+    expected_phase1_prototype_manifest_sha256: str,
 ) -> tuple[Any, tuple[str, ...], str, dict[str, Any]]:
     try:
         binding = json.loads(
@@ -275,6 +300,77 @@ def _load_formal_runtime(
     ):
         raise Stage2AblationFeatureBuilderError(
             "formal Phase1 deployment binding drift"
+        )
+    locked_paths = {
+        "prototype_pt_path": Path(binding["prototype_pt_path"]).resolve(),
+        "prototype_json_path": Path(binding["prototype_json_path"]).resolve(),
+        "generation_config_path": Path(
+            binding["generation_config_path"]
+        ).resolve(),
+        "phase1_completion_receipt_path": Path(
+            binding["phase1_completion_receipt_path"]
+        ).resolve(),
+    }
+    if (
+        locked_paths["prototype_pt_path"]
+        != Path(phase1_prototype_path).resolve()
+        or locked_paths["prototype_json_path"]
+        != Path(phase1_prototype_manifest_path).resolve()
+        or _sha256_file(locked_paths["prototype_pt_path"])
+        != str(expected_phase1_prototype_sha256).lower()
+        or _sha256_file(locked_paths["prototype_json_path"])
+        != str(expected_phase1_prototype_manifest_sha256).lower()
+        or binding["prototype_pt_sha256"]
+        != str(expected_phase1_prototype_sha256).lower()
+        or binding["prototype_json_sha256"]
+        != str(expected_phase1_prototype_manifest_sha256).lower()
+        or _sha256_file(locked_paths["generation_config_path"])
+        != binding["generation_config_sha256"]
+        or _sha256_file(locked_paths["phase1_completion_receipt_path"])
+        != binding["phase1_completion_receipt_sha256"]
+    ):
+        raise Stage2AblationFeatureBuilderError(
+            "signed Phase1 prototype lock path/hash drift"
+        )
+    try:
+        generation_config = json.loads(
+            locked_paths["generation_config_path"].read_text(
+                encoding="utf-8-sig"
+            )
+        )
+        completion = json.loads(
+            locked_paths["phase1_completion_receipt_path"].read_text(
+                encoding="utf-8-sig"
+            )
+        )
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise Stage2AblationFeatureBuilderError(
+            "signed Phase1 prototype lock is unreadable"
+        ) from exc
+    if (
+        not isinstance(generation_config, Mapping)
+        or set(generation_config) != _GENERATION_CONFIG_KEYS
+        or generation_config.get("schema")
+        != "cvs.full_ablation.phase1.deployment_generation_config.v1"
+        or generation_config.get("checkpoint_lineage_sha256")
+        != binding["checkpoint_lineage_sha256"]
+        or generation_config.get("completion_receipt_sha256")
+        != binding["phase1_completion_receipt_sha256"]
+        or generation_config.get("normalized_prototype_pt_sha256")
+        != binding["prototype_pt_sha256"]
+        or generation_config.get("normalized_prototype_json_sha256")
+        != binding["prototype_json_sha256"]
+        or generation_config.get("class_handle_binding_sha256")
+        != binding["class_handle_binding_sha256"]
+        or not isinstance(completion, Mapping)
+        or completion.get("phase1_training_complete") is not True
+        or completion.get("terminal_status") != "COMPLETE"
+        or int(completion.get("exit_code", -1)) != 0
+        or str(completion.get("selected_checkpoint_sha256", "")).lower()
+        != binding["checkpoint_lineage_sha256"]
+    ):
+        raise Stage2AblationFeatureBuilderError(
+            "signed Phase1 prototype lock content drift"
         )
     verified = load_formal_adv3b02_deployment_bundle(
         binding["package_root"],
@@ -470,6 +566,16 @@ def build_feature_cache_from_sealed_row_pair(
             phase1_deployment_binding_path,
             expected_phase1_bundle_sha256=(
                 expected_phase1_bundle_sha256
+            ),
+            phase1_prototype_path=phase1_prototype_path,
+            phase1_prototype_manifest_path=(
+                phase1_prototype_manifest_path
+            ),
+            expected_phase1_prototype_sha256=(
+                expected_phase1_prototype_sha256
+            ),
+            expected_phase1_prototype_manifest_sha256=(
+                expected_phase1_prototype_manifest_sha256
             ),
         )
     )

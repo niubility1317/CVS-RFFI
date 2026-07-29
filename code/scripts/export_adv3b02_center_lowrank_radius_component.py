@@ -156,6 +156,45 @@ def class_handle_binding_sha256(class_registry: Sequence[str]) -> str:
     return hashlib.sha256(encoded).hexdigest()
 
 
+def class_handles_from_binding_source(
+    path: str | Path,
+    *,
+    expected_phase1_txs: Sequence[str],
+) -> tuple[str, ...]:
+    """Reuse an existing old-class handle registry after checking TX order only."""
+
+    try:
+        payload = json.loads(Path(path).read_text(encoding="utf-8-sig"))
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise Phase1ExportError("class binding source is unreadable") from exc
+    if (
+        not isinstance(payload, Mapping)
+        or payload.get("schema") != "cvs.phase2.d19_adv3b02_class_binding.v1"
+        or set(payload) != {"schema", "checkpoint_sha256", "entries", "evidence"}
+        or not isinstance(payload.get("entries"), list)
+    ):
+        raise Phase1ExportError("class binding source schema drift")
+    expected = tuple(str(value) for value in expected_phase1_txs)
+    entries = payload["entries"]
+    if len(entries) != len(expected):
+        raise Phase1ExportError("class binding source class-count drift")
+    handles: list[str] = []
+    for index, (entry, expected_tx) in enumerate(zip(entries, expected)):
+        if (
+            not isinstance(entry, Mapping)
+            or set(entry)
+            != {"class_index", "phase1_tx", "registered_class_handle"}
+            or int(entry.get("class_index", -1)) != index
+            or str(entry.get("phase1_tx", "")) != expected_tx
+            or not str(entry.get("registered_class_handle", "")).strip()
+        ):
+            raise Phase1ExportError("class binding source TX/order drift")
+        handles.append(str(entry["registered_class_handle"]))
+    if len(set(handles)) != len(handles):
+        raise Phase1ExportError("class binding source handles are not unique")
+    return tuple(handles)
+
+
 def _default_batch_adapter(
     batch: Any, device: torch.device
 ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
@@ -523,6 +562,14 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--expected-checkpoint-sha256", required=True)
     parser.add_argument("--expected-wisig-sha256", required=True)
     parser.add_argument("--expected-class-handle-binding-sha256", required=True)
+    parser.add_argument(
+        "--class-binding-source",
+        default="",
+        help=(
+            "Optional existing old-class TX-to-registered-handle registry. "
+            "Its historical checkpoint field is not used; current TX order is checked."
+        ),
+    )
     parser.add_argument("--generation-config", required=True)
     parser.add_argument("--expected-generation-config-sha256", required=True)
     parser.add_argument("--expected-generation-code-sha256", default="")
@@ -574,7 +621,15 @@ def main(argv: Sequence[str] | None = None) -> int:
         batch_size=int(args.batch_size),
         num_workers=int(args.num_workers),
     )
-    class_registry = tuple(str(value) for value in data_ctx["class_id_to_tx"])
+    phase1_txs = tuple(str(value) for value in data_ctx["class_id_to_tx"])
+    class_registry = (
+        class_handles_from_binding_source(
+            args.class_binding_source,
+            expected_phase1_txs=phase1_txs,
+        )
+        if str(args.class_binding_source).strip()
+        else phase1_txs
+    )
     actual_binding_sha = class_handle_binding_sha256(class_registry)
     expected_binding_sha = _validate_sha256(
         args.expected_class_handle_binding_sha256,

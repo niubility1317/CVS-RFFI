@@ -515,6 +515,10 @@ def _validate_lock_documents(
             "parity_status",
             "max_abs_output_delta",
             "parity_vector_root_sha256",
+            "validated_batch_sizes",
+            "feature_dim",
+            "logit_dim",
+            "finite_outputs_verified",
             *_RUNTIME_STRUCTURE_KEYS,
         },
         context="runtime parity receipt",
@@ -529,6 +533,18 @@ def _validate_lock_documents(
         raise ADV3B02DeploymentBundleError("runtime parity delta invalid") from exc
     if not np.isfinite(delta) or delta < 0.0 or delta > 1.0e-5:
         raise ADV3B02DeploymentBundleError("runtime parity delta exceeds fixed tolerance")
+    batch_sizes = parity["validated_batch_sizes"]
+    if (
+        not isinstance(batch_sizes, list)
+        or any(type(value) is not int or value <= 0 for value in batch_sizes)
+        or batch_sizes != [1, 8, 64, 256]
+        or parity["feature_dim"] != FEATURE_DIM
+        or parity["logit_dim"] != 6
+        or parity["finite_outputs_verified"] is not True
+    ):
+        raise ADV3B02DeploymentBundleError(
+            "runtime parity batch/shape/finite closure drift"
+        )
     _validate_sha(parity["parity_vector_root_sha256"], "parity_vector_root_sha256")
     for key in _RUNTIME_STRUCTURE_KEYS - {"runtime_state_bytes"}:
         _validate_sha(parity[key], key)

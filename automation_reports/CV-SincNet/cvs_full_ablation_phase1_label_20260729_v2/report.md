@@ -92,6 +92,36 @@ v2使用新run/log/release路径，重新执行v1首个失败行和13个未启�
 
 当前6个checkpoint仅是训练中的中间产物；由于terminal、prototype、resource、heldout和receipt均未形成，不计作完成行，也不作性能读取或判断。
 
+### 2026-07-29 22:25 CST
+
+|项目|状态|
+|---|---|
+|runner|PID`823097`存活，父PID`823096`、release CWD和run绑定未变|
+|活动/队列|6个首波直接训练子进程全部存活，8行等待容量|
+|状态计数|status=0、complete=0、success=0、fail=0|
+|日志增长|6个活动日志约184–363KB，推进至E31–E62/200；8个排队日志仍为0字节|
+|闭环artifact|checkpoint=6、prototype PT=0、prototype JSON=0、resource=0、heldout=0、terminal=0、receipt=0|
+|技术异常|异常/P0/非零退出/重复确定性指纹均为0|
+|整机GPU计算进程|`[2,2,2,2,2,2,1,1]`，所有GPU均不超过2|
+|SSH清理|监控命令结束后本地`ssh.exe=0`、`ESTABLISHED TCP22=0`|
+
+尚无首行完成或失败，未触发terminal、receipt和prototype的逐行终态核验。监控未读取任何性能字段，未修改、重启或重新对齐数据。
+
+### 2026-07-29 22:54 CST
+
+|项目|状态|
+|---|---|
+|runner|PID`823097`存活，父PID`823096`、release CWD和run绑定未变|
+|活动/队列|T1释放部分槽位后，capacity-aware runner已将活动训练增至11行；剩余3行等待容量|
+|状态计数|status=0、complete=0、success=0、fail=0|
+|日志增长|11个活动日志约115–814KB，推进至E19–E140/200；3个排队日志仍为0字节|
+|闭环artifact|checkpoint=11、prototype PT=0、prototype JSON=0、resource=0、heldout=0、terminal=0、receipt=0|
+|技术异常|异常/P0/非零退出/重复确定性指纹均为0|
+|整机GPU计算进程|`[2,2,2,2,2,2,1,1]`，所有GPU均不超过2|
+|SSH清理|监控命令结束后本地`ssh.exe=0`、`ESTABLISHED TCP22=0`|
+
+11个checkpoint仍是训练中间产物；没有terminal和完整导出闭环，完成行仍为0。本次监控未读取性能、未干预进程、未重启或对齐数据。
+
 ## 完整性与止损
 
 每个成功行必须同时具有可加载checkpoint、prototype PT+JSON、resource summary、held-out eval、terminal、completion receipt，并且terminal、receipt与真实退出码都为0。启动或只有checkpoint不算完成。

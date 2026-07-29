@@ -23,8 +23,8 @@ def _arrays():
     tx_ids: list[str] = []
     dataset_roles: list[str] = []
     for label, role in zip(labels, roles):
-        tx_ids.extend([label, label])
-        dataset_roles.extend([role, role])
+        tx_ids.extend([label] * 8)
+        dataset_roles.extend([role] * 8)
     count = len(tx_ids)
     result = {}
     for scenario_index, scenario in enumerate(builder.FORMAL_LEO_WEAK_SCENARIOS):
@@ -72,6 +72,15 @@ def _args(tmp_path: Path, suffix: str, *, stage: str):
     tta.write_text(json.dumps({"base_views": 1, "max_views": 5}), encoding="utf-8")
     cache = artifacts / "cache_set.json"
     cache.write_text("{}", encoding="utf-8")
+    new_pool = ["new-a", "new-b"]
+    draw_seed = 713131 if stage == "stage2c" else 0
+    drawn_new = (
+        new_pool[
+            int(np.random.default_rng(draw_seed).permutation(len(new_pool))[0])
+        ]
+        if stage == "stage2c"
+        else ""
+    )
     return SimpleNamespace(
         target_cache_set=cache,
         predictor_out_root=tmp_path / f"predictor-{suffix}",
@@ -80,8 +89,14 @@ def _args(tmp_path: Path, suffix: str, *, stage: str):
         stage=stage,
         receiver="20-1",
         seed=713101,
+        support_seed=713111,
+        query_seed=713121,
+        new_class_draw_seed=draw_seed,
         old_class_labels="old-a,old-b",
-        new_class_labels="new-a" if stage == "stage2c" else "",
+        new_class_labels=drawn_new,
+        new_class_pool_labels=(
+            ",".join(new_pool) if stage == "stage2c" else ""
+        ),
         stage2b_reference_new_class_labels="new-a" if stage == "stage2b" else "",
         new_class_count=1 if stage == "stage2c" else 0,
         support_pool_max_k=1,
@@ -92,6 +107,68 @@ def _args(tmp_path: Path, suffix: str, *, stage: str):
         head_artifact=files["head"],
         tta_policy_json=tta,
     )
+
+
+def test_support_and_query_seeds_are_independently_effective_and_disjoint() -> None:
+    arrays = _arrays()[builder.FORMAL_LEO_WEAK_SCENARIOS[0]]
+    common = {
+        "receiver": "20-1",
+        "support_seed": 101,
+        "support_labels": [
+            ("target_old", "old-a"),
+            ("target_old", "old-b"),
+        ],
+        "reference_query_labels": [],
+        "support_pool_max_k": 2,
+        "query_per_tx": 2,
+    }
+    first = builder._select_support_query(
+        arrays, query_seed=201, **common
+    )
+    second = builder._select_support_query(
+        arrays, query_seed=202, **common
+    )
+    assert first[0].tolist() == second[0].tolist()
+    assert first[1].tolist() != second[1].tolist()
+    assert set(first[0].tolist()).isdisjoint(first[1].tolist())
+    assert set(second[0].tolist()).isdisjoint(second[1].tolist())
+
+
+def test_stage2c_requires_explicit_draw_seed_and_matching_frozen_pool(
+    tmp_path: Path, monkeypatch
+) -> None:
+    _patch_cache(monkeypatch)
+    missing = _args(tmp_path, "missing-draw", stage="stage2c")
+    missing.new_class_draw_seed = 0
+    with pytest.raises(ValueError, match="new-class pool"):
+        builder.build(missing, token_secret=b"d" * 32)
+
+    wrong = _args(tmp_path, "wrong-draw", stage="stage2c")
+    wrong.new_class_labels = (
+        "new-b" if wrong.new_class_labels == "new-a" else "new-a"
+    )
+    with pytest.raises(ValueError, match="draw seed"):
+        builder.build(wrong, token_secret=b"e" * 32)
+
+
+def test_stage2c_rejects_partial_pool_even_when_large_enough_to_draw(
+    tmp_path: Path, monkeypatch
+) -> None:
+    _patch_cache(monkeypatch)
+    partial = _args(tmp_path, "partial-pool", stage="stage2c")
+    partial.new_class_pool_labels = partial.new_class_labels
+    with pytest.raises(ValueError, match="canonical complete"):
+        builder.build(partial, token_secret=b"p" * 32)
+
+
+def test_formal_packages_require_explicit_support_and_query_seeds(
+    tmp_path: Path, monkeypatch
+) -> None:
+    _patch_cache(monkeypatch)
+    missing = _args(tmp_path, "missing-split-seeds", stage="stage2b")
+    missing.support_seed = 0
+    with pytest.raises(ValueError, match="must be explicit"):
+        builder.build(missing, token_secret=b"f" * 32)
 
 
 def _patch_cache(monkeypatch):

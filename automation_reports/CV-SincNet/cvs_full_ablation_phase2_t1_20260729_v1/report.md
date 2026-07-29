@@ -93,3 +93,20 @@ Stage2-C中的75row/arm来自`5receiver×5个预登记(K,Cn)slice×3development 
 |失败row只留日志而无结构化证据|为每个未评分logical row写入无性能值的immutable failure record，并在physical terminal记录数量|
 
 完成后重点核对per-receiver、per-class、per-scenario同row指标，K1/K2 fallback计数，Fisher accept/rollback，量化误差/flip/state bytes，以及每个失败row的非性能failure closure。
+
+## 2026-07-29 22:25–22:40启动前闭环
+
+- N607只读盘点确认已完整闭合的`P1-FULL__train_seed_7281105`checkpoint、prototype PT/JSON、terminal和completion receipt可复用；不重跑Phase1、不重审数据、不要求其他启动批次使用相同cache。
+- D18的5receiver×6seed LEO_weak cache可作为底层输入；它们将直接包装成当前row自己的predictor package、truth sidecar和`VALIDATED_ONCE`句柄，不做跨批次数据或数据hash对齐。
+- 真实checkpoint本地重建成功，checkpoint→TorchScript在batch`1/8/64/256`上的`z_id[*,160]`和logits`[*,6]`逐项一致，全部有限，最大绝对误差为0。
+- 原训练prototype的tensor与JSON内容一致，但旧`endpoint_accept_v1`边界摘要不能通过当前正式读取器。已实现只重建该摘要的确定性规范化链：非endpoint tensor/字段必须逐项不变，另存新PT/JSON，不覆盖训练原件。
+- prototype链改为：同row completion receipt绑定原始PT/JSON和checkpoint→规范化PT/JSON哈希→generation config→组件manifest的`generation_config_sha256`→外层签名→正式deployment binding→Stage2 feature builder复核。私钥仅在本地`sign`子命令读取，绝不上传N607。
+- predictor package构建器已拆分support seed、query seed和new-class draw seed；support/query物理样本仍强制不交叠，新类标签必须与预登记draw seed从冻结pool得到的顺序一致。
+
+定向回归：46项通过、0项失败；真实P1-FULL unsigned prepare smoke完成，package共9个正式成员，状态`AWAITING_EXTERNAL_SIGNATURE`。最终独立发布复审确认P0=0、P1=0，允许Git封存并在精确commit、N607干净发布目录、常规preflight和签名往返闭合后正式发布。
+
+Stage2-C的新类候选池不由调用方预选：构建器从当前已验证cache中按receiver导出每个LEO_weak场景的全部`target_new`TX，要求三个场景全集一致，并要求命令行候选池与canonical sorted全集逐项一致，随后才按显式`new_class_draw_seed`抽取。负测确认即使部分pool数量足够完成抽取也会被拒绝。该检查只约束当前启动内部的完整候选池，不要求不同启动使用相同数据或相同cache。
+
+22:25全机训练进程占用为`2/2/2/2/2/2/1/1`，未超过每卡2个进程；Phase1 T1主矩阵`launched/completed/succeeded/failed/active/waiting=16/8/8/0/8/4`，label v2为6行活动、8行排队。两条运行链均无P0、非零退出或重复确定性异常指纹，SSH与TCP22连接已清零。
+
+22:54 Phase1 T1主矩阵更新为`launched/completed/succeeded/failed/nonzero/active/waiting=19/16/16/0/0/3/1`，10个历史复用行加16个新完成行均已闭合；剩3个D0活动、1个D0排队。Label v2为11行活动、3行排队，尚无完成或失败。整机GPU进程占用仍为`2/2/2/2/2/2/1/1`，两条运行链均无P0、非零退出、异常指纹或输出损坏证据。

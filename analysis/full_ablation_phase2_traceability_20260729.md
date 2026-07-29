@@ -31,6 +31,8 @@
 |P2-TR-21|7.10、14|5+5+5连续注册与3种到达顺序|后续lifecycle plan/launcher|deferred|T3前验证|顺序必须在query前锁定|
 |P2-TR-22|5、10、14|same-row汇总、paired CI、per-receiver/per-class|`summarize_full_ablation_phase2.py`|implemented|现有测试待纳入发布回归|需确认完整矩阵输入契约|
 |P2-TR-23|9.1、13|独立复审P0=0/P1=0、Git提交、不可覆盖N607发布|review artifact；report；bundle/seal|implemented|独立实现审查P0=0、P1=0；244 passed、2 skipped、0 failed|审查时唯一发布P0为未Git封存；本报告所在提交闭合后归零，正式seal仍等待P1-FULL输入|
+|P2-TR-24|3.1、9.1、11|把T1完整P1-FULL checkpoint与同row prototype编译成可加载的不可变Phase1 deployment bundle|`build_full_ablation_phase1_deployment_bundle.py`；测试；Phase2报告|pending|待真实P1-FULL seed7281105 checkpoint/prototype smoke|必须输出TorchScript、checkpoint/runtime parity、160维多域聚合组件、class-handle binding、外部签名请求和正式binding；不得复制source样本或把裸pth带入Phase2|
+|P2-TR-25|2.2、4.2、9.1|已有LEO_weak cache按可用row复用，不要求不同启动批次数据一致；每个正式row的support/query/new-class-draw种子分别生效|predictor bundle builder；Stage2输入registry；feature-cache builder；release plan|pending|D18 cache可复用；待生成正式package、truth-sidecar和registry|仅核对存在、schema、row内部绑定和`VALIDATED_ONCE`句柄，不重做原始数据审计或跨批次对齐；不得把一个总seed伪装成三个独立seed|
 
 ## 当前最高风险
 

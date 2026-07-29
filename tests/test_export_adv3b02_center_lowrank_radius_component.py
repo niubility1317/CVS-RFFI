@@ -25,6 +25,7 @@ from scripts.export_adv3b02_center_lowrank_radius_component import (
     build_arg_parser,
     build_v1_aggregate_payload,
     class_handle_binding_sha256,
+    class_handles_from_binding_source,
     export_from_loader,
     save_aggregate_component,
     verify_file_sha256,
@@ -165,6 +166,40 @@ def test_hash_and_class_binding_checks_are_fail_closed(tmp_path: Path) -> None:
     assert class_handle_binding_sha256(("a", "b")) != class_handle_binding_sha256(
         ("b", "a")
     )
+
+
+def test_existing_registered_handles_are_reused_only_after_tx_order_check(
+    tmp_path: Path,
+) -> None:
+    source = tmp_path / "binding.json"
+    payload = {
+        "schema": "cvs.phase2.d19_adv3b02_class_binding.v1",
+        "checkpoint_sha256": "0" * 64,
+        "entries": [
+            {
+                "class_index": 0,
+                "phase1_tx": "tx-a",
+                "registered_class_handle": "cls-a",
+            },
+            {
+                "class_index": 1,
+                "phase1_tx": "tx-b",
+                "registered_class_handle": "cls-b",
+            },
+        ],
+        "evidence": {},
+    }
+    source.write_text(json.dumps(payload), encoding="utf-8")
+
+    assert class_handles_from_binding_source(
+        source, expected_phase1_txs=("tx-a", "tx-b")
+    ) == ("cls-a", "cls-b")
+    payload["entries"][0]["phase1_tx"] = "tx-b"
+    source.write_text(json.dumps(payload), encoding="utf-8")
+    with pytest.raises(Phase1ExportError, match="TX/order"):
+        class_handles_from_binding_source(
+            source, expected_phase1_txs=("tx-a", "tx-b")
+        )
 
 
 def test_output_must_be_empty_before_codec_write(tmp_path: Path) -> None:

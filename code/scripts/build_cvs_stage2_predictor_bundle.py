@@ -72,6 +72,36 @@ def _parse_labels(raw: str | None, *, field: str, required: bool) -> list[str]:
     return labels
 
 
+def _complete_target_new_pool(
+    arrays_by_scenario: dict[str, dict[str, np.ndarray]],
+    *,
+    receiver: str,
+) -> list[str]:
+    """Return the canonical full target-new TX pool for one receiver."""
+
+    reference: list[str] | None = None
+    for scenario in FORMAL_LEO_WEAK_SCENARIOS:
+        arrays = arrays_by_scenario[scenario]
+        roles = np.asarray(arrays["dataset_role"]).astype(str)
+        rx_ids = np.asarray(arrays["rx_ids"]).astype(str)
+        tx_ids = np.asarray(arrays["tx_ids"]).astype(str)
+        current = sorted(
+            set(tx_ids[(roles == "target_new") & (rx_ids == receiver)].tolist())
+        )
+        if not current:
+            raise ValueError(
+                f"no target-new cache pool for receiver={receiver}, scenario={scenario}"
+            )
+        if reference is None:
+            reference = current
+        elif current != reference:
+            raise ValueError(
+                "complete target-new cache pool drifts across LEO_weak scenarios"
+            )
+    assert reference is not None
+    return reference
+
+
 def _opaque_token(secret: bytes, prefix: str, *parts: object) -> str:
     message = canonical_json_bytes([str(value) for value in parts])
     digest = hmac.new(secret, message, hashlib.sha256).hexdigest()
@@ -119,7 +149,8 @@ def _select_support_query(
     arrays: dict[str, np.ndarray],
     *,
     receiver: str,
-    seed: int,
+    support_seed: int,
+    query_seed: int,
     support_labels: list[tuple[str, str]],
     reference_query_labels: list[tuple[str, str]],
     support_pool_max_k: int,
@@ -165,9 +196,21 @@ def _select_support_query(
             query_ordered.sort(key=lambda index: int(partition_ranks[index]))
             ordered = support_ordered + query_ordered
         else:
-            ordered = _stable_class_indices(
-                arrays, receiver=receiver, role=role, label=label, seed=seed
+            support_ordered = _stable_class_indices(
+                arrays,
+                receiver=receiver,
+                role=role,
+                label=label,
+                seed=support_seed,
             )
+            query_ordered = _stable_class_indices(
+                arrays,
+                receiver=receiver,
+                role=role,
+                label=label,
+                seed=query_seed,
+            )
+            ordered = support_ordered
         required = support_pool_max_k + query_per_tx
         if len(ordered) < required:
             raise ValueError(
@@ -180,8 +223,17 @@ def _select_support_query(
         selected_query = (
             query_ordered[:query_per_tx]
             if use_offline_split_partition
-            else ordered[support_pool_max_k:required]
+            else [
+                index
+                for index in query_ordered
+                if index not in set(ordered[:support_pool_max_k])
+            ][:query_per_tx]
         )
+        if len(selected_query) != query_per_tx:
+            raise ValueError(
+                f"insufficient support-disjoint query rows for receiver={receiver}, "
+                f"role={role}, tx={label}"
+            )
         query_records.extend(
             {
                 "array_index": index,
@@ -196,7 +248,11 @@ def _select_support_query(
         if (role, label) in support_lookup:
             continue
         ordered = _stable_class_indices(
-            arrays, receiver=receiver, role=role, label=label, seed=seed
+            arrays,
+            receiver=receiver,
+            role=role,
+            label=label,
+            seed=query_seed,
         )
         if len(ordered) < query_per_tx:
             raise ValueError(
@@ -214,7 +270,9 @@ def _select_support_query(
         )
 
     if not use_offline_split_partition:
-        query_order = np.random.default_rng(int(seed) + 700_001).permutation(len(query_records))
+        query_order = np.random.default_rng(
+            int(query_seed) + 700_001
+        ).permutation(len(query_records))
         query_records = [query_records[int(index)] for index in query_order]
     return (
         np.asarray(support_indices, dtype=np.int64),
@@ -374,6 +432,33 @@ def build(args: argparse.Namespace, *, token_secret: bytes | None = None) -> dic
     query_per_tx = int(args.query_per_tx)
     if support_pool_max_k < 1 or query_per_tx < 1:
         raise ValueError("support_pool_max_k and query_per_tx must be positive")
+    support_seed = int(getattr(args, "support_seed", 0) or 0)
+    query_seed = int(getattr(args, "query_seed", 0) or 0)
+    new_class_draw_seed = int(
+        getattr(args, "new_class_draw_seed", 0) or 0
+    )
+    if support_seed <= 0 or query_seed <= 0:
+        raise ValueError(
+            "support_seed and query_seed must be explicit positive integers"
+        )
+    new_class_pool = _parse_labels(
+        getattr(args, "new_class_pool_labels", ""),
+        field="new_class_pool_labels",
+        required=False,
+    )
+    if stage == "stage2c":
+        if (
+            new_class_draw_seed <= 0
+            or len(new_class_pool) < declared_new_count
+            or set(new_class_pool) & set(old_labels)
+        ):
+            raise ValueError(
+                "new-class pool is missing or overlaps old classes"
+            )
+    elif new_class_draw_seed != 0 or new_class_pool:
+        raise ValueError(
+            "Stage2-B must use new_class_draw_seed=0 and no new-class pool"
+        )
 
     allowed_roles = {"target_old"}
     if stage == "stage2c" or reference_new_labels:
@@ -385,6 +470,27 @@ def build(args: argparse.Namespace, *, token_secret: bytes | None = None) -> dic
         allowed_roles=allowed_roles,
     )
     _assert_scenario_physical_independence(arrays_by_scenario)
+    if stage == "stage2c":
+        complete_new_pool = _complete_target_new_pool(
+            arrays_by_scenario,
+            receiver=str(args.receiver),
+        )
+        if new_class_pool != complete_new_pool:
+            raise ValueError(
+                "new-class pool must exactly match the canonical complete "
+                "target-new cache pool"
+            )
+        order = np.random.default_rng(new_class_draw_seed).permutation(
+            len(new_class_pool)
+        )
+        frozen_new_labels = [
+            new_class_pool[int(index)]
+            for index in order[:declared_new_count]
+        ]
+        if new_labels != frozen_new_labels:
+            raise ValueError(
+                "new-class labels do not match the independent draw seed"
+            )
     support_labels = [("target_old", label) for label in old_labels]
     if stage == "stage2c":
         support_labels.extend(("target_new", label) for label in new_labels)
@@ -408,7 +514,8 @@ def build(args: argparse.Namespace, *, token_secret: bytes | None = None) -> dic
             _select_support_query(
                 arrays,
                 receiver=str(args.receiver),
-                seed=int(args.seed),
+                support_seed=support_seed,
+                query_seed=query_seed,
                 support_labels=support_labels,
                 reference_query_labels=reference_query_labels,
                 support_pool_max_k=support_pool_max_k,
@@ -467,7 +574,7 @@ def build(args: argparse.Namespace, *, token_secret: bytes | None = None) -> dic
                     "cvs-stage2-support-v3",
                     scenario,
                     args.receiver,
-                    args.seed,
+                    support_seed,
                     sample_ids[index],
                 )
                 for index in support_idx.tolist()
@@ -481,7 +588,7 @@ def build(args: argparse.Namespace, *, token_secret: bytes | None = None) -> dic
                     "cvs-stage2-query-v3",
                     scenario,
                     args.receiver,
-                    args.seed,
+                    query_seed,
                     sample_ids[index],
                 )
                 for index in query_idx.tolist()
@@ -775,6 +882,9 @@ def build(args: argparse.Namespace, *, token_secret: bytes | None = None) -> dic
         "query_count": len(
             selections[FORMAL_LEO_WEAK_SCENARIOS[0]]["query_idx"]
         ),
+        "support_seed": support_seed,
+        "query_seed": query_seed,
+        "new_class_draw_seed": new_class_draw_seed,
     }
 
 
@@ -788,8 +898,12 @@ def main() -> int:
     parser.add_argument("--stage", choices=("stage2b", "stage2c"), required=True)
     parser.add_argument("--receiver", required=True)
     parser.add_argument("--seed", type=int, required=True)
+    parser.add_argument("--support-seed", type=int, default=0)
+    parser.add_argument("--query-seed", type=int, default=0)
+    parser.add_argument("--new-class-draw-seed", type=int, default=0)
     parser.add_argument("--old-class-labels", required=True)
     parser.add_argument("--new-class-labels", default="")
+    parser.add_argument("--new-class-pool-labels", default="")
     parser.add_argument("--stage2b-reference-new-class-labels", default="")
     parser.add_argument("--new-class-count", type=int, default=0)
     parser.add_argument("--support-pool-max-k", type=int, required=True)

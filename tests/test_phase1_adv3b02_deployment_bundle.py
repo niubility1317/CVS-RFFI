@@ -143,6 +143,10 @@ def _fixture(
             "parity_status": "PASS",
             "max_abs_output_delta": 0.0,
             "parity_vector_root_sha256": "f" * 64,
+            "validated_batch_sizes": [1, 8, 64, 256],
+            "feature_dim": 160,
+            "logit_dim": 6,
+            "finite_outputs_verified": True,
             **runtime_structure,
         },
     )
@@ -332,6 +336,40 @@ def test_builder_rejects_raw_checkpoint_and_forbidden_lock_key(tmp_path: Path) -
     assert bundle.is_dir() and kwargs["expected_runtime_sha256"] == sha256_file(
         tmp_path / "good" / "adv3b02.torchscript.pt"
     )
+
+
+def test_builder_requires_stage2_batch_shape_and_finite_parity_closure(
+    tmp_path: Path,
+) -> None:
+    _fixture(tmp_path / "good")
+    parity_path = tmp_path / "good" / "inputs" / "parity.json"
+    parity = json.loads(parity_path.read_text(encoding="utf-8"))
+    parity["validated_batch_sizes"] = [1, 8, 256]
+    _write_json(parity_path, parity)
+    method_path = tmp_path / "good" / "inputs" / "method.json"
+    method = json.loads(method_path.read_text(encoding="utf-8"))
+    method["parity_receipt_sha256"] = sha256_file(parity_path)
+    _write_json(method_path, method)
+    with pytest.raises(
+        ADV3B02DeploymentBundleError, match="batch/shape/finite"
+    ):
+        build_unsigned_adv3b02_deployment_bundle(
+            tmp_path / "missing-batch",
+            torchscript_runtime_path=(
+                tmp_path / "good" / "adv3b02.torchscript.pt"
+            ),
+            component_dir=tmp_path / "good" / "component_input",
+            class_binding_path=(
+                tmp_path / "good" / "inputs" / "class_binding.json"
+            ),
+            parity_receipt_path=parity_path,
+            generation_lock_path=(
+                tmp_path / "good" / "inputs" / "generation.json"
+            ),
+            method_lock_path=method_path,
+            detached_seal_path=tmp_path / "missing-batch.seal",
+            signing_request_path=tmp_path / "missing-batch.request",
+        )
 
 
 def test_class_binding_is_semantic_not_file_format_and_order_drift_rejected(
