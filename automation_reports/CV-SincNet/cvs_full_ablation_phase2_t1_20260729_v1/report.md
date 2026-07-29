@@ -788,3 +788,15 @@ Torch/NumPy ABI修复、测试、v7失败证据和追踪表已封存为Git commi
 两份计划旧commit出现次数为0，计划/release定向回归12/12通过。fresh v8使用独立报告`automation_reports/CV-SincNet/cvs_full_ablation_phase2_t1_20260730_v8_d1f5e45c/report.md`，新release/input/run根均不可覆盖。v8只重做CPU formal预检和此前从未成功的feature cache；复用v5完整predictor package及所有既有合法D18缓存，不要求不同批次数据一致。
 
 当前状态：`COMMIT_D1F5E45C_LOCAL_VERIFIED / SOURCE_PLANS_READY / FRESH_V8_CPU_PREFLIGHT_AUTHORIZED / NO_PERFORMANCE_RESULT`。
+
+## 2026-07-30 v8至v11输入闭合进展
+
+v8在N607真实环境完成formal runtime、prototype和ground spectrum三段CPU预检，随后GPU2 feature smoke产生Stage2-A/B/C共6个文件并由当前loader全部重载通过。v8 package补齐因class-label binding路径被错误替换而48/48在产物前失败，0 package seal；失败根按`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`封口。
+
+v9用Git承载的原50行命令、只改三个输出参数的分波控制器重启package补齐。第一波8/8成功，最终新增48/48 package成功；加v5复用2份达到50/50。v9 feature首波因子进程缺少`PYTHONPATH=<release>/code`而13/13在产物前同指纹失败，其余86项未启动，0 feature产物。
+
+v10分离package输入根和fresh feature输出根，使用单文件自包含控制器并显式传递release code的`PYTHONPATH`。最终99/99 feature extraction成功，新增297个scope caches/594个物理文件；加v8 smoke复用3个scope caches后达到300个，即Stage2-A/B/C各100个，300/300由当前loader重载通过，异常指纹为空。Stage2-A sidecar首项随后因正式package truth schema为v2而被仅接受v3的publisher拒绝，其余24项未启动；feature全集不受影响。
+
+本地兼容修复只允许精确顶层的v2/v3 Stage2-B truth，先验证rows，再发布为v3 Stage2-A truth；未知schema、额外顶层键或非法rows均在写出前拒绝。相关23项与独立组合36项通过，代码复审P0=0、P1=0。fresh v11固定25个K=10 canonical Stage2-A sidecar；必须逐项由正式loader验证25组/50文件后才允许生成binding registry和plan seal。
+
+当前状态：`PACKAGE_50_OF_50 / FEATURE_SCOPE_300_OF_300 / STAGE2A_SIDECAR_FRESH_V11_PENDING / STATES_NOT_LAUNCHED / NO_PERFORMANCE_RESULT`。

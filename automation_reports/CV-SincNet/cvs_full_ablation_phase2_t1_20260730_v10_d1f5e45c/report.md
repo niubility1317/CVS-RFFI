@@ -33,3 +33,9 @@ GPU slots固定为`[1,2,2,3,3,4,4,5,5,6,6,7,7]`：GPU0不使用，GPU1仅增加1
 ## 完成后回填
 
 回填remote hashes/compile、fresh-root检查、50 package与v8 smoke可读性、runner/worker PID与GPU映射、first-wave计数、manifest/payload/loader、异常指纹和最终scope/file计数。完整结果前不作性能结论。
+
+## v10 feature完成与sidecar批次封口
+
+feature runner PID=`993377`按13个GPU slots运行，99/99调用成功、0失败、`exception_fingerprints={}`、`systemic_stop=false`，耗时518.99秒。新增297个scope caches/594个物理文件；加v8复用3个scope caches后共300个，即Stage2-A/B/C各100个。全300个scope cache均由当前`load_feature_cache`重载PASS。runner已退出，GPU2-7恢复空闲。
+
+随后sidecar fail-fast批次只启动第1个canonical A，其余24个未启动。失败指纹为`Stage2AblationScoringSidecarError: source truth is not a Stage2-B scorer sidecar`。只读定位：50个before truth均为合法`stage2b`，但package builder封存schema=`cvs.phase2.query_truth_sidecar.v2`，当前publisher只接受v3。该批次`launched=1`、`completed=1`、`succeeded=0`、`failed=1`、`not_launched=24`，日志和summary保留；状态为`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。feature全集不受影响并供fresh v11复用。

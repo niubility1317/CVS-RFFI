@@ -10,10 +10,21 @@ from typing import Any, Mapping
 from cvsrffi.stage2_metric_scorer import (
     SCORING_MANIFEST_SCHEMA,
     TRUTH_SIDECAR_SCHEMA,
+    TRUTH_TOP_LEVEL_KEYS,
     _validate_truth_rows,
     canonical_json_bytes,
     sha256_bytes,
     sha256_file,
+)
+
+LEGACY_PREDICTOR_TRUTH_SIDECAR_SCHEMA = (
+    "cvs.phase2.query_truth_sidecar.v2"
+)
+SUPPORTED_SOURCE_TRUTH_SIDECAR_SCHEMAS = frozenset(
+    {
+        LEGACY_PREDICTOR_TRUTH_SIDECAR_SCHEMA,
+        TRUTH_SIDECAR_SCHEMA,
+    }
 )
 
 
@@ -64,13 +75,18 @@ def publish_stage2a_scoring_sidecar(
     truth = json.loads(source.read_text(encoding="utf-8-sig"))
     if (
         not isinstance(truth, dict)
-        or truth.get("schema") != TRUTH_SIDECAR_SCHEMA
+        or set(truth) != TRUTH_TOP_LEVEL_KEYS
+        or truth.get("schema")
+        not in SUPPORTED_SOURCE_TRUTH_SIDECAR_SCHEMAS
         or truth.get("stage") != "stage2b"
     ):
         raise Stage2AblationScoringSidecarError(
             "source truth is not a Stage2-B scorer sidecar"
         )
+    source_truth_schema = str(truth["schema"])
+    _validate_truth_rows(truth)
     stage2a_truth = dict(truth)
+    stage2a_truth["schema"] = TRUTH_SIDECAR_SCHEMA
     stage2a_truth["stage"] = "stage2a"
     _validate_truth_rows(stage2a_truth)
 
@@ -104,6 +120,8 @@ def publish_stage2a_scoring_sidecar(
         "source_stage2b_truth_sha256": str(
             expected_source_truth_sha256
         ).lower(),
+        "source_truth_schema": source_truth_schema,
+        "published_truth_schema": TRUTH_SIDECAR_SCHEMA,
         "truth_rows_reused_without_data_revalidation": True,
     }
 
