@@ -564,3 +564,106 @@ fresh发布边界：
 - smoke的所有输出使用fresh smoke子目录且不可覆盖。只有package与feature均完整加载、audit明确`legacy_missing_manifest_field_verified_from_rows`且0异常指纹，才允许在同一fresh input root继续构建其余49个package和124个identity；任何错误立即停止，不创建正式request/run/log root。
 
 当前状态：`COMPATIBILITY_FIX_COMMITTED / FRESH_REAL_CACHE_SMOKE_READY / FAILED_25C_BATCH_PRESERVED / NO_PERFORMANCE_RESULT`。
+
+## 2026-07-30 fresh 5097真实cache smoke失败封口
+
+fresh release/input已按预登记完成单个receiver=`20-1`、method seed=`7283101`的真实D18 cache no-query smoke。package阶段成功构建同一对before(Stage2-B)与after(new20, Stage2-C)封存包；随后K=10 feature构建在首次真实加载正式Phase1 component时发生确定性技术失败。该smoke未进入预测、评分或任何性能读取。
+
+### 实际启动与失败
+
+|字段|证据|
+|---|---|
+|release HEAD|`5097a33d0af76fe29c260557af55a9d083f34773`，tracked dirty count=`0`|
+|remote Python|`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`|
+|feature PID|`938779`，检查时已退出|
+|GPU绑定|物理GPU2；`CUDA_VISIBLE_DEVICES=2`，进程内`--device cuda:0`|
+|feature输出根|`/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2_t1_20260730_v3_5097a33d/smoke/rx_20_1_method_7283101/feature_k10`|
+|完整日志|同级`feature_k10.log`，SHA256=`ef572cf02b82a94eb4224d1ab9d4ff0518a967cf9c3f662158f7e4e9ca4738de`|
+|异常|`d80_d66_loader_scaffold.D66ProbeError: D66 ground component member missing`|
+|normalized fingerprint|`690846f32177fad9342ceb52ea41d05052d53b4252a2755c3126aee6f10b9f0e`|
+|feature产物|`0`个|
+
+实际feature子命令绑定如下；外层以`CUDA_VISIBLE_DEVICES=2`分离启动并将stdout/stderr写入上述日志：
+
+```text
+/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2_t1_20260730_v5_5097a33d/code/scripts/build_full_ablation_stage2_feature_cache.py --before-package-root /home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2_t1_20260730_v3_5097a33d/smoke/rx_20_1_method_7283101/before/predictor --before-seal-path /home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2_t1_20260730_v3_5097a33d/smoke/rx_20_1_method_7283101/before/predictor.seal.json --before-seal-sha256 6089f40b0e3a9412609661ab1d159019ce7e8fbc3ff2e9d9ace2548895709274 --after-package-root /home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2_t1_20260730_v3_5097a33d/smoke/rx_20_1_method_7283101/new20/predictor --after-seal-path /home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2_t1_20260730_v3_5097a33d/smoke/rx_20_1_method_7283101/new20/predictor.seal.json --after-seal-sha256 220231dea15378e7fdbf000b9188cc0f293b30d142273818512507dd7882689d --phase1-deployment-binding-path /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2_t1_20260729_v3_6fd77c22/artifacts/phase1_final/deployment_binding.json --ground-component-dir /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2_t1_20260729_v3_6fd77c22/artifacts/phase1_component --ground-manifest-sha256 03b5761d9cfd0f09a6b64710f5ebe7c270314bf5d73215206e5e8cf84606448a --phase1-prototype-path /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2_t1_20260729_v3_6fd77c22/artifacts/phase1_normalized/deployment_prototype/phase2_zid_prototypes.pt --phase1-prototype-manifest-path /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2_t1_20260729_v3_6fd77c22/artifacts/phase1_normalized/deployment_prototype/phase2_zid_prototypes.json --expected-phase1-prototype-sha256 e0e10b671dec5088bcb6e59b475dc3a99060b0ccbc03581e345a5e953b6088f0 --expected-phase1-prototype-manifest-sha256 89c1f21a5476e8d6b6a27264af6505d9ac4ab6eb66b32ea1e54c1d21405fc527 --expected-phase1-bundle-sha256 276afd459ab8cee97e86837faf541fc576190f6da773f7cfb7b22dd4edfb1702 --cache-output-root /home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2_t1_20260730_v3_5097a33d/smoke/rx_20_1_method_7283101/feature_k10 --phase2-data-status VALIDATED_ONCE --capsule-id d18-rx20-1-cache713101-m7283101-k10-new20 --split-id p2_min_v1-rx20-1-m7283101-s7283201-q7283301-d7282401-k10 --k-shot 10 --method-seed 7283101 --support-seed 7283201 --query-seed 7283301 --new-class-draw-seed 7282401 --device cuda:0
+```
+
+异常栈完整链为`build_full_ablation_stage2_feature_cache.py`→`stage2_ablation_feature_builder.py:592`→`probe_d81_ground_nuisance_cauchy_center.load_ground_basis`→`probe_d80_ground_commonmode_covariance_denoiser.load_ground_covariance`→`probe_d66_ground_domain_reliability_residual.load_ground_domain_reliability`。5097实现的D66加载器要求成员`int8_domain_class_prototypes.npz`；只读检查确认正式Phase1 component目录只有：
+
+|成员|大小|SHA256|
+|---|---:|---|
+|`int8_domain_class_center_lowrank_residual_radius_v2.npz`|6323|`6b651fb5f00318cd073f0329e146c5e3522ab22e244e7ba279babe0028676aa8`|
+|`manifest.json`|5739|`03b5761d9cfd0f09a6b64710f5ebe7c270314bf5d73215206e5e8cf84606448a`|
+|`manifest.sha256`|80|`87683202866765897c0098ed2933e7279c0a80f529b1550e495c74c94896886a`|
+
+manifest实际schema=`int8_domain_class_center_lowrank_residual_radius_v2`，member allowlist也仅包含同名NPZ。因此本次失败是D81→D80→D66加载链与正式Phase1 component成员/schema的合同不一致，不是D18数据损坏，也不是package兼容修复回归。
+
+### package成功闭包
+
+|包|stage|注册类|support/query|package root SHA256|seal SHA256|audit|
+|---|---|---:|---:|---|---|---|
+|before|Stage2-B|6|60/520|`5d5293ecfe1c70b34fbce6cf7dbb0a95e03671216399fb3f186e3a2d1b893e68`|`6089f40b0e3a9412609661ab1d159019ce7e8fbc3ff2e9d9ace2548895709274`|PASS|
+|after new20|Stage2-C|26|260/520|`6d2028465577d742356e0bc2359e89d10731832694634022b7f11dacec405a26`|`220231dea15378e7fdbf000b9188cc0f293b30d142273818512507dd7882689d`|PASS|
+
+两份audit均确认`phase2_single_observation_compliant=true`，三个场景的`overlay_role_policy_evidence=legacy_missing_manifest_field_verified_from_rows`，且support/query同场景物理ID互斥、跨场景物理ID互斥均PASS。
+
+### 输出、资源与保留状态
+
+|检查项|结果|
+|---|---:|
+|smoke总文件|35|
+|before/new20 package子树文件|32|
+|package manifest/seal/offline audit/scoring manifest|2/2/2/2|
+|support/query NPZ|6/6|
+|feature log/PID文件|1/1|
+|feature cache文件|0|
+|prediction/score|0/0|
+|PID`938779`存活|否|
+|本run GPU进程|0|
+|检查时GPU进程数0…7|`2/2/0/0/0/0/0/0`；GPU0/1均为既有外部任务|
+|正式states request/run/log root|`ABSENT/ABSENT/ABSENT`|
+|本地`ssh.exe`|0|
+|到N607/lab bridge的ESTABLISHED TCP22|0/0|
+
+远端v5 release与v3 input全部保留；没有删除、覆盖、远端改代码/数据或重跑。剩余48个package、124个identity、正式325逻辑行和后续Stage2-C均未启动。
+
+回收证据位于`release_evidence/n607_v5_5097a33d/`：
+
+|证据|SHA256|
+|---|---|
+|`runner_handoff.json`|`dab7b8d99ab24814a44496ec6551c22470d31b8bf26e1f3ea3c40bf3c3625758`|
+|`remote_status_snapshot.json`|`02a28917cdbfab3fd00e75b826d45cb7231b33bb1ff9043daec19b6c160990ec`|
+|`local_connection_cleanup.json`|`3cc2af13312c2a61155ce5635cd10a09141398ab12fda05b56128eb4c9b98e62`|
+|`feature_k10.log`|`ef572cf02b82a94eb4224d1ab9d4ff0518a967cf9c3f662158f7e4e9ca4738de`|
+|`package_summary.json`|`aae5b1da24f71906f7f8337d346ec8eb3b462a205eea27720ebb9542b5bcb308`|
+|`phase1_component/directory_listing.tsv`|`114451ae1e74a1b108385c8e1512ce989c232b25ea21279d2ae461f027ed8ee7`|
+|`phase1_component/manifest.json`|`03b5761d9cfd0f09a6b64710f5ebe7c270314bf5d73215206e5e8cf84606448a`|
+
+当前状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT / NO_FORMAL_STAGE2_RUN / REMOTE_OUTPUTS_PRESERVED`。
+
+## 2026-07-30正式v2地面组件兼容修复与fresh发布前检查
+
+v5失败已经证明predictor package与复用D18缓存闭合，唯一系统性故障是feature builder仍通过D81→D80→D66旧链读取v1 dense组件，而正式Phase1 deployment bundle只封存v2 center-lowrank-residual-radius组件。修复严格限定在该兼容面：
+
+- `_load_formal_runtime`继续先验证完整外层deployment bundle，并直接返回其中已经联合封存验证的v2 component对象；不新增任何数据、clean/source或query-truth输入。
+- feature builder只接受`deployment_binding.package_root/component`这一外层封存目录；新smoke必须把`--ground-component-dir`从原始导出目录改为`artifacts/phase1_unsigned/package/component`。其他目录即使文件内容相同也fail-closed。
+- `manifest.json`必须是普通文件，SHA256必须与命令行绑定一致，解析内容必须与外层loader实际验证的component manifest完全一致；目录、hash、schema或160维特征语义漂移均在写feature前拒绝。
+- 从封存v2 component按14个domain×6个旧类重建84个聚合中心并读取聚合Q90半径，调用既有D89固定公式生成半径可靠性加权、类无关D81扰动谱；量化噪声底仍为manifest reconstruction RMSE平方，不扫描rank或超参数。
+- Stage2-A仍不携带ground state；Stage2-B/C复用同一次正式component谱。D18 package、support/query划分、数据manifest和旧v5远端输出均不修改、不重验、不删除。
+
+本地`ssr-gpu`定向验证：
+
+|验证面|结果|
+|---|---:|
+|feature builder+v2谱+cache+executor首轮|48 passed|
+|Phase1 outer bundle+v2 component+D89 probe+feature cache/executor/row executor跨链|83 passed|
+|独立复审8文件定向回归|86 passed，P0=0，P1=0|
+|`git diff --check`|PASS|
+|性能读取|0|
+
+新增负测覆盖错误component目录与manifest hash漂移；正测确认160维谱、84个component input、D81 basis/hash字段和outer joint seal证据完整。发布仍使用fresh不可覆盖路径；真实D18 smoke必须先产生并重新加载Stage2-A/B/C三份feature cache及manifest，确认文件数、SHA、ground audit、无query-truth字段和0异常指纹后，才允许继续构建剩余package与正式registry/seal。旧v5 release/input仅保留为失败证据，不原地续跑。
+
+独立复审确认：outer loader已闭合signature/runtime parity/class registry；新入口只能消费该verified v2 component，D89输出满足D81/D92的`[160,r]`正权谱接口，K1/K2 exact fallback不变，且不存在truth/raw dataset输入面。结论P0=0、P1=0，允许Git封存，并要求commit后只能使用新run ID执行fresh N607 real-checkpoint/no-query smoke。
+
+当前状态：`LOCAL_V2_COMPATIBILITY_FIX_REVIEWED_P0_0_P1_0 / COMMIT_PENDING / FRESH_RUN_NOT_YET_RELEASED / NO_PERFORMANCE_RESULT`。

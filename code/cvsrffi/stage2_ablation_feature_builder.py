@@ -14,7 +14,13 @@ from cvsrffi.phase2_prototypes import verify_endpoint_accept_v1_manifest
 from cvsrffi.phase1_adv3b02_deployment_bundle import (
     load_formal_adv3b02_deployment_bundle,
 )
+from cvsrffi.phase1_center_lowrank_prototype_bundle import (
+    MANIFEST_NAME as PHASE1_COMPONENT_MANIFEST_NAME,
+)
 from cvsrffi.stage2_ablation_feature_cache import publish_feature_cache
+from cvsrffi.stage2_d89_v2_radius_cauchy_center import (
+    radius_reliability_ground_spectrum,
+)
 from cvsrffi.stage2_diag_cosine_exploration import (
     forward_zid160,
     registered_feature,
@@ -281,7 +287,14 @@ def _load_formal_runtime(
     phase1_prototype_manifest_path: str | Path,
     expected_phase1_prototype_sha256: str,
     expected_phase1_prototype_manifest_sha256: str,
-) -> tuple[Any, tuple[str, ...], str, dict[str, Any]]:
+) -> tuple[
+    Any,
+    tuple[str, ...],
+    str,
+    dict[str, Any],
+    Any,
+    Path,
+]:
     try:
         binding = json.loads(
             Path(binding_path).read_text(encoding="utf-8-sig")
@@ -429,7 +442,129 @@ def _load_formal_runtime(
         handles,
         str(binding["runtime_sha256"]).lower(),
         formal,
+        verified.component,
+        Path(binding["package_root"]).resolve() / "component",
     )
+
+
+def _ground_spectrum_from_formal_v2_component(
+    component: Any,
+    *,
+    component_dir: str | Path,
+    sealed_component_dir: str | Path,
+    expected_manifest_sha256: str,
+) -> tuple[np.ndarray, np.ndarray, dict[str, Any]]:
+    """Derive the D81 spectrum from the outer-sealed Phase1 v2 component."""
+
+    supplied_root = Path(component_dir).resolve()
+    sealed_root = Path(sealed_component_dir).resolve()
+    manifest_path = supplied_root / PHASE1_COMPONENT_MANIFEST_NAME
+    if supplied_root != sealed_root:
+        raise Stage2AblationFeatureBuilderError(
+            "ground component is not the outer-sealed Phase1 component"
+        )
+    if (
+        not manifest_path.is_file()
+        or manifest_path.is_symlink()
+        or _sha256_file(manifest_path)
+        != str(expected_manifest_sha256).lower()
+    ):
+        raise Stage2AblationFeatureBuilderError(
+            "outer-sealed ground component manifest hash drift"
+        )
+    try:
+        manifest = json.loads(
+            manifest_path.read_text(encoding="utf-8-sig")
+        )
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise Stage2AblationFeatureBuilderError(
+            "outer-sealed ground component manifest is unreadable"
+        ) from exc
+    if (
+        not isinstance(manifest, Mapping)
+        or _jsonable(component.manifest) != manifest
+        or manifest.get("schema")
+        != "int8_domain_class_center_lowrank_residual_radius_v2"
+        or int(manifest.get("feature_dim", -1)) != 160
+    ):
+        raise Stage2AblationFeatureBuilderError(
+            "outer-sealed ground component content drift"
+        )
+
+    prototypes = np.stack(
+        [
+            component.reconstruct_domain(domain)
+            for domain in component.domain_registry
+        ]
+    )
+    radius = np.stack(
+        [
+            component.radius_for_domain(domain)
+            for domain in component.domain_registry
+        ]
+    )
+    resource = component.resource_audit()
+    reconstruction_rmse = float(resource["reconstruction_rmse"])
+    basis, weights, spectrum_audit = (
+        radius_reliability_ground_spectrum(
+            prototypes,
+            radius,
+            reconstruction_rmse,
+        )
+    )
+    statistics_macs = int(
+        resource["all_residual_domain_enrollment_reconstruction_macs"]
+        + radius.size * (10 * 160 + 8)
+        + 160 * 160 * 8
+    )
+    ground_audit = dict(spectrum_audit)
+    ground_audit.update(
+        {
+            **{
+                f"d81_{key}": value
+                for key, value in spectrum_audit.items()
+            },
+            "ground_component_input_count": int(radius.size),
+            "ground_int8_component_logical_state_bytes": int(
+                resource["logical_deployment_state_bytes"]
+            ),
+            "ground_covariance_statistics_mac_upper_bound": (
+                statistics_macs
+            ),
+            "ground_statistic_semantics": (
+                "v2_cell_radius_reliability_ground_spectrum_for_"
+                "d81_cauchy_center"
+            ),
+            "ground_bundle_contains_sample_radius": False,
+            "ground_bundle_contains_aggregated_p90_radius": True,
+            "ground_bundle_contains_sample_count": False,
+            "ground_aggregated_center_access": True,
+            "ground_aggregated_p90_radius_access": True,
+            "ground_sample_radius_access": False,
+            "ground_sample_feature_access": False,
+            "ground_target_identity_mapping_access": False,
+            "ground_class_score_access": False,
+            "ground_component_update_access": False,
+            "dense_ground_bank_persisted": False,
+            "quantization_noise_floor_policy": (
+                "manifest_reconstruction_rmse_squared"
+            ),
+            "ground_component_state": str(
+                component.manifest["component_state"]
+            ),
+            "ground_component_manifest_sha256": str(
+                expected_manifest_sha256
+            ).lower(),
+            "ground_component_outer_joint_seal_verified": True,
+            "d81_basis_transient_fp64_bytes": int(
+                basis.nbytes
+                + weights.nbytes
+                + prototypes.nbytes
+                + radius.nbytes
+            ),
+        }
+    )
+    return basis, weights, ground_audit
 
 
 def _support_features(
@@ -561,7 +696,14 @@ def build_feature_cache_from_sealed_row_pair(
         )
 
     runtime_device = _device(device)
-    model, deployment_handles, runtime_sha256, formal_context = (
+    (
+        model,
+        deployment_handles,
+        runtime_sha256,
+        formal_context,
+        formal_component,
+        sealed_component_dir,
+    ) = (
         _load_formal_runtime(
             phase1_deployment_binding_path,
             expected_phase1_bundle_sha256=(
@@ -586,13 +728,12 @@ def build_feature_cache_from_sealed_row_pair(
             "Phase1 deployment and predictor old-class order drift"
         )
 
-    from scripts import probe_d81_ground_nuisance_cauchy_center as ground_probe
-
     ground_basis, spectral_weights, ground_audit = (
-        ground_probe.load_ground_basis(
-            Path(ground_component_dir),
-            str(ground_manifest_sha256),
-            288,
+        _ground_spectrum_from_formal_v2_component(
+            formal_component,
+            component_dir=ground_component_dir,
+            sealed_component_dir=sealed_component_dir,
+            expected_manifest_sha256=ground_manifest_sha256,
         )
     )
     deployment, prototype_identity = _verified_deployment_prototypes(
