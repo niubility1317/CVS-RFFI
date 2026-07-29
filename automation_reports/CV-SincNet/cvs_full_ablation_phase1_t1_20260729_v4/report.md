@@ -7,13 +7,14 @@
 |实验ID|`cvs_full_ablation_phase1_t1_20260729_v4`|
 |创建时间|`2026-07-29T17:29:42+08:00`|
 |operator|Codex主代理；N607发布仅由唯一runner执行|
-|状态|`LOCAL_VERIFIED / INDEPENDENT_REVIEW_IN_PROGRESS / NOT_AUTHORIZED_TO_LAUNCH`|
+|状态|`RELEASE_SEALED / NOT_AUTHORIZED_TO_LAUNCH`|
 |设计来源|`CVS-RFFI_全部消融实验设计_Phase1_Phase2_20260728.md`第4.1、5.1、6.1、9.1、9.2、11、12节|
 |协议|Phase1 source-only；`0.07/0.63/0.30`|
 |Git分支|`codex/full-ablation-20260728`|
 |技术修复提交|`a7ec013b500bcdb753b8698dcdc4e79f80bcc4b7`|
 |v3证据闭合提交|`c074e764faa3f6e2e682fd5cbaab0ceaedad4198`|
-|正式release提交|待独立审查后由sealed plan固定|
+|正式release提交|`34c3e723a426fabed18c0ffc547ce839d628b572`|
+|独立审查|`P0=0、P1=0、P2=0 / RELEASE_READY_FOR_SEAL_ONLY`|
 |前序run|v1、v2、v3均为系统性技术失败，全部`NO_PERFORMANCE_RESULT`且不可恢复、覆盖或拼接|
 |性能结论|无；v4未启动|
 
@@ -36,12 +37,12 @@ v3在`P1-B0/s7281101`完成E200后的source-only endpoint导出阶段发现1条�
 |T1-P1-05|`P1-A0`参数量匹配|`phase1_ablation_factory.py`及测试|verified|参数量匹配测试|
 |T1-P1-06|单因素diff与协议负测试|聚焦pytest集合|verified|主代理回归123项通过、2项条件跳过|
 |T1-P1-07|真实checkpoint与artifact闭合|B0真实smoke|verified|input=25200、directional=25199、prototype与manifest闭合|
-|T1-P1-08|独立审查`P0=0、P1=0`|独立review receipt|in progress|不得由作者自证|
-|T1-P1-09|唯一run ID与16个固定slot|v4 sealed plan、runner|pending|GPU0–7各2 slots|
+|T1-P1-08|独立审查`P0=0、P1=0`|独立review receipt|verified|`P0=0、P1=0、P2=0`|
+|T1-P1-09|唯一run ID与16个固定slot|v4 sealed plan、runner|verified|30 rows；GPU0–7各2 slots|
 |T1-P1-10|逐row checkpoint、prototype、指标、资源与exit|v4 run/log root|pending|失败row不得静默删除|
 |T1-P1-11|30行同row结果与paired统计|本报告完成段|pending|矩阵完整后才分析|
 
-当前追踪计数：verified=7、in progress=1、pending=3、deferred=0、rejected=0。当前范围只对应Phase1 T1。
+当前追踪计数：verified=9、pending=2、deferred=0、rejected=0。当前范围只对应Phase1 T1。
 
 ## v3根因与v4技术修复
 
@@ -74,6 +75,21 @@ v3在`P1-B0/s7281101`完成E200后的source-only endpoint导出阶段发现1条�
 - ManySig：SHA256=`2b0a7a7488dd3650bcae7b1d80efbcffd1598aaa671ae6b0a0df2a24dc0f694f`；
 - 结果：source-train prototype计数全部非零；source-validation input=25200、directional=25199；只排除class 3的一条零方向，比例`1/4200`；PT/JSON、endpoint manifest、审计字段与边界哈希闭合。
 
+独立审查绑定完整提交`34c3e723`。6个受影响入口共收集85项，83项通过，2项真实checkpoint门禁按预期跳过；指定B0真实smoke 1项通过。独立复核得到overall排除比例`1/25200`、class 3比例`1/4200`、24个启用组件、最大`r_accept/inter=0.499999`，并确认无target/query新增读取。
+
+## 本地不可变发布证据
+
+|artifact|SHA256或绑定值|
+|---|---|
+|Git bundle|`242e49dd3464213711a6b87268a856a8eb0971bf709c88d834d4e01f9802640d`|
+|未授权plan|`07de2d350f892a62bba244d85156298b65a70eb894fd5ce7f6b4bf88bee366ff`|
+|review receipt|`235ebf804589e8871ba47430dc079c396408c032a28af5785152a5041dca4c06`|
+|sealed plan文件|`6a3a1ca35351ab063407e63a0a4509e802e2f134a54b30261b3a8a079f8a165f`|
+|sealed content|`33b88447cbca0a1589b33ea7955a7c5a679800a4bbd68cf6a51bc81809932b97`|
+|精确release|commit=`34c3e723a426fabed18c0ffc547ce839d628b572`；bundle完整历史校验通过|
+|矩阵|30 rows；16 slots；GPU0–7各2 slots；10个release file hashes|
+|关键导出模块|`code/cvsrffi/phase2_prototypes.py` Git blob SHA256=`cf293066a6daa19f9568ea5e089c902c270136482705c467916ec68fc41faf46`|
+
 ## 冻结矩阵与资源
 
 - Phase1 seeds：`7281101–7281105`。
@@ -91,8 +107,8 @@ v3在`P1-B0/s7281101`完成E200后的source-only endpoint导出阶段发现1条�
 |远端Python|`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`|
 |WiSig|`/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl`|
 |WiSig SHA256|`2b0a7a7488dd3650bcae7b1d80efbcffd1598aaa671ae6b0a0df2a24dc0f694f`|
-|release checkout|封版后按`releases/cvs_full_ablation_phase1_t1_20260729_v4_<commit8>`固定|
-|sealed plan|封版后按`releases/cvs_full_ablation_phase1_t1_20260729_v4_<commit8>.sealed.json`固定|
+|release checkout|`/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase1_t1_20260729_v4_34c3e723`|
+|sealed plan|`/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase1_t1_20260729_v4_34c3e723.sealed.json`|
 |run root|`/home/szu2070436088/2510044040/CV-SincNet/runs/cvs_full_ablation_phase1_t1_20260729_v4`|
 |log root|`/home/szu2070436088/2510044040/CV-SincNet/logs/cvs_full_ablation_phase1_t1_20260729_v4`|
 |远端环境|必须为`CVS-RFFI`，记录Python、torch、CUDA和8卡可见性receipt|
@@ -101,10 +117,10 @@ v3在`P1-B0/s7281101`完成E200后的source-only endpoint导出阶段发现1条�
 
 ## 正式命令模板
 
-封版后将`<commit8>`替换为sealed plan绑定的8位release提交；唯一runner只能执行该精确命令：
+唯一runner只能执行以下精确命令：
 
 ```bash
-cd /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase1_t1_20260729_v4_<commit8>/code && nohup setsid env PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase1_t1_20260729_v4_<commit8>/code /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase1_t1_20260729_v4_<commit8>/code/scripts/run_full_ablation_phase1_t1.py --plan /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase1_t1_20260729_v4_<commit8>.sealed.json --repo-root /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase1_t1_20260729_v4_<commit8> --run-root /home/szu2070436088/2510044040/CV-SincNet/runs/cvs_full_ablation_phase1_t1_20260729_v4 --log-root /home/szu2070436088/2510044040/CV-SincNet/logs/cvs_full_ablation_phase1_t1_20260729_v4 --wisig-pkl /home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl --python /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python --train-script /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase1_t1_20260729_v4_<commit8>/code/SSDG/train_ssdg.py --poll-seconds 30 --execute > /home/szu2070436088/2510044040/CV-SincNet/logs/cvs_full_ablation_phase1_t1_20260729_v4.launch.out 2>&1 < /dev/null &
+cd /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase1_t1_20260729_v4_34c3e723/code && nohup setsid env PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase1_t1_20260729_v4_34c3e723/code /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase1_t1_20260729_v4_34c3e723/code/scripts/run_full_ablation_phase1_t1.py --plan /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase1_t1_20260729_v4_34c3e723.sealed.json --repo-root /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase1_t1_20260729_v4_34c3e723 --run-root /home/szu2070436088/2510044040/CV-SincNet/runs/cvs_full_ablation_phase1_t1_20260729_v4 --log-root /home/szu2070436088/2510044040/CV-SincNet/logs/cvs_full_ablation_phase1_t1_20260729_v4 --wisig-pkl /home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl --python /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python --train-script /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase1_t1_20260729_v4_34c3e723/code/SSDG/train_ssdg.py --poll-seconds 30 --execute > /home/szu2070436088/2510044040/CV-SincNet/logs/cvs_full_ablation_phase1_t1_20260729_v4.launch.out 2>&1 < /dev/null &
 ```
 
 ## 健康停止与成功标准
