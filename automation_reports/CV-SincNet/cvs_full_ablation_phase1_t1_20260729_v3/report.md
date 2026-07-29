@@ -7,7 +7,7 @@
 |实验ID|`cvs_full_ablation_phase1_t1_20260729_v3`|
 |日期|2026-07-29|
 |operator|Codex主代理；N607发布仅由`/root/phase1_t1_n607_runner`执行|
-|状态|`LOCAL_SEALED / NOT_LANDED / NOT_LAUNCHED / AWAITING_FRESH_USER_AUTHORITY`|
+|状态|`AUTHORIZED / PENDING_LANDING_AND_LAUNCH`|
 |设计来源|`CVS-RFFI_全部消融实验设计_Phase1_Phase2_20260728.md`第4.1、5.1、6.1、9.1、9.2、11、12节|
 |协议|Phase1 source-only；`0.07/0.63/0.30`|
 |Git分支|`codex/full-ablation-20260728`|
@@ -16,6 +16,8 @@
 |独立审查|`P0=0、P1=0、P2=0 / RELEASE_READY`|
 |前序run|v1与v2均为系统性技术失败、`NO_PERFORMANCE_RESULT`、不可恢复或覆盖|
 |性能结论|无；v3尚未启动|
+
+用户于`2026-07-29T12:55:15+08:00`明确授权“启动v3”。该授权适用于本报告绑定的唯一run ID，不授权修改方法、矩阵、seed、split或干预其他服务器任务。
 
 ## 目标、假设与对照
 
