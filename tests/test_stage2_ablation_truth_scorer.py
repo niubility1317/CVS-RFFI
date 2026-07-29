@@ -25,6 +25,13 @@ NEW1 = "cls_" + "3" * 32
 NEW2 = "cls_" + "4" * 32
 TOKENS = ["qid_" + str(index) * 32 for index in range(1, 5)]
 SCENARIOS = ("leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak")
+TOKENS_BY_SCENARIO = {
+    scenario: [
+        "qid_" + f"{scenario_index + 1}{index}" * 16
+        for index in range(1, 5)
+    ]
+    for scenario_index, scenario in enumerate(SCENARIOS)
+}
 
 
 def _identity(*, alias_of: str | None = None) -> dict:
@@ -63,21 +70,33 @@ def _quantization() -> dict:
 def _resource() -> dict:
     return {
         "schema": RESOURCE_RECEIPT_SCHEMA,
-        "bundle_bytes": 1024,
+        "feature_cache_bytes": 1024,
+        "deployment_state_bytes": 768,
         "state_bytes": 512,
         "registration_time_ms": 3.5,
-        "peak_rss_bytes": 4096,
-        "peak_vram_bytes": 2048,
+        "row_peak_rss_bytes": 4096,
+        "row_peak_vram_bytes": 2048,
+        "candidate_peak_memory_isolated": False,
         "closed_form_fit_count": 2,
         "mac_equivalent_upper_bound": 1000,
         "query_head_mac": 50,
-        "query_latency_ms": 0.5,
+        "candidate_head_batch_query_latency_ms_per_row": 0.5,
+        "end_to_end_query_latency_available": False,
+        "end_to_end_query_latency_ms": None,
+        "batch1_head_resource": None,
+        "row_orchestration_time_ms": 8.0,
+        "auxiliary_state_cost_in_candidate_resource": False,
+        "auxiliary_prediction_cost_in_candidate_latency": False,
     }
 
 
 def _prediction_binding_and_arrays(*, stage: str = "stage2c"):
     scenarios = [scenario for scenario in SCENARIOS for _ in TOKENS]
-    tokens = TOKENS * len(SCENARIOS)
+    tokens = [
+        token
+        for scenario in SCENARIOS
+        for token in TOKENS_BY_SCENARIO[scenario]
+    ]
     before = [OLD1, OLD2, OLD1, OLD1] * len(SCENARIOS)
     after = [OLD1, NEW1, NEW1, OLD1] * len(SCENARIOS)
     if stage == "stage2b":
@@ -113,45 +132,62 @@ def _prediction_binding_and_arrays(*, stage: str = "stage2c"):
 
 
 def _truth_and_manifest(*, stage: str = "stage2c"):
+    rows = []
+    for scenario in SCENARIOS:
+        rows.extend(
+            [
+                {
+                    "scenario": scenario,
+                    "query_token": TOKENS_BY_SCENARIO[scenario][0],
+                    "true_class_index": 0,
+                    "true_class_handle": OLD1,
+                    "transmitter_label": "old-1",
+                    "evaluation_role": "target_old",
+                    "receiver_label": "20-1",
+                },
+                {
+                    "scenario": scenario,
+                    "query_token": TOKENS_BY_SCENARIO[scenario][1],
+                    "true_class_index": 1,
+                    "true_class_handle": OLD2,
+                    "transmitter_label": "old-2",
+                    "evaluation_role": "target_old",
+                    "receiver_label": "20-1",
+                },
+                {
+                    "scenario": scenario,
+                    "query_token": TOKENS_BY_SCENARIO[scenario][2],
+                    "true_class_index": (
+                        2 if stage == "stage2c" else None
+                    ),
+                    "true_class_handle": (
+                        NEW1 if stage == "stage2c" else None
+                    ),
+                    "transmitter_label": "new-1",
+                    "evaluation_role": "target_new",
+                    "receiver_label": "20-1",
+                },
+                {
+                    "scenario": scenario,
+                    "query_token": TOKENS_BY_SCENARIO[scenario][3],
+                    "true_class_index": (
+                        3 if stage == "stage2c" else None
+                    ),
+                    "true_class_handle": (
+                        NEW2 if stage == "stage2c" else None
+                    ),
+                    "transmitter_label": "new-2",
+                    "evaluation_role": "target_new",
+                    "receiver_label": "20-1",
+                },
+            ]
+        )
     truth = {
         "schema": "cvs.phase2.query_truth_sidecar.v2",
         "stage": stage,
         "receiver": "20-1",
         "seed": 123,
-        "rows": [
-            {
-                "query_token": TOKENS[0],
-                "true_class_index": 0,
-                "true_class_handle": OLD1,
-                "transmitter_label": "old-1",
-                "evaluation_role": "target_old",
-                "receiver_label": "20-1",
-            },
-            {
-                "query_token": TOKENS[1],
-                "true_class_index": 1,
-                "true_class_handle": OLD2,
-                "transmitter_label": "old-2",
-                "evaluation_role": "target_old",
-                "receiver_label": "20-1",
-            },
-            {
-                "query_token": TOKENS[2],
-                "true_class_index": 2 if stage == "stage2c" else None,
-                "true_class_handle": NEW1 if stage == "stage2c" else None,
-                "transmitter_label": "new-1",
-                "evaluation_role": "target_new",
-                "receiver_label": "20-1",
-            },
-            {
-                "query_token": TOKENS[3],
-                "true_class_index": 3 if stage == "stage2c" else None,
-                "true_class_handle": NEW2 if stage == "stage2c" else None,
-                "transmitter_label": "new-2",
-                "evaluation_role": "target_new",
-                "receiver_label": "20-1",
-            },
-        ],
+        "rows": rows,
     }
     manifest = {
         "predictor_package_root_sha256": "d" * 64,

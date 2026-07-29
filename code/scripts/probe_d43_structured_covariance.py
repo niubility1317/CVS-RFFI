@@ -149,7 +149,7 @@ def build_structured_fit(
         residual_energy = float(np.sum(residuals**2))
         residual_rank = int(np.linalg.matrix_rank(residuals))
         fallback = bool(
-            int(k_shot) == 1
+            int(k_shot) <= 2
             or residual_rank == 0
             or not np.isfinite(residual_energy)
             or residual_energy <= float(d42.ENERGY_EPSILON)
@@ -196,6 +196,7 @@ def build_structured_fit(
                 {
                     "d43_probe_arm": arm,
                     "d43_covariance_structure": "unit_fallback",
+                    "d43_k_le2_unit_covariance_fallback": int(k_shot) <= 2,
                     "d43_class_common_affine_omitted": True,
                     "d43_centered_score_fp64_algebraically_equivalent": True,
                     "d43_centered_support_fp32_argmax_equivalent": fp32_argmax_equivalent,

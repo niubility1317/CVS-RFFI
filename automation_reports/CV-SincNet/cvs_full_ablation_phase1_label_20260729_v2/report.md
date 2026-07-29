@@ -1,0 +1,64 @@
+# CVS全量消融Phase1标签率v2发布报告
+
+## 实验登记
+
+|字段|值|
+|---|---|
+|实验ID|`cvs_full_ablation_phase1_label_20260729_v2`|
+|时间|2026-07-29|
+|操作者|Codex主代理；N607唯一发布runner由独立子代理负责|
+|目标|修复v1的prototype校准导出故障后，完成0.005、0.01、0.02、0.05标签率14个训练行；0.10继续复用Phase1 T1中的5个`P1-FULL`完整行|
+|比较对象|同一`P1-FULL`配置，仅改变`f_L/f_U`，固定`f_V=0.30`|
+|环境|本地`ssr-gpu`；远端`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`|
+|当前状态|`LOCAL_VERIFIED / READY_FOR_GIT_SEAL_AND_CAPACITY_AWARE_LAUNCH`|
+
+## 与v1的关系
+
+v1首行完成200epochs后在prototype导出阶段退出，真实错误为class 0正确source-validation样本不足；prototype文件尚未写出。v1保持`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`，不覆盖、不续写、不将其checkpoint直接计作完整行。
+
+v2使用新run/log/release路径，重新执行v1首个失败行和13个未启动行。已有其他批次的完整结果按行身份复用；不同启动批次的数据可以不同，不做跨批次数据一致性检查或数据hash对齐。
+
+## 冻结矩阵
+
+|rho|新训练seed数|seed|
+|---:|---:|---|
+|0.005|3|7281101–7281103|
+|0.010|5|7281101–7281105|
+|0.020|3|7281101–7281103|
+|0.050|3|7281101–7281103|
+|0.100|0|复用T1 `P1-FULL`的7281101–7281105|
+
+合计14个新训练行，每行200epochs。调度上限为GPU0–GPU7每卡2个训练进程；runner根据整机已有进程动态等待空槽，不停止或覆盖Phase1 T1。
+
+## 本地修复与验证
+
+|文件|修复|
+|---|---|
+|`code/cvsrffi/phase2_prototypes.py`|正确样本不足时使用同一真类全部有限energy的source-validation样本统一回退，并记录correct/all-true计数和校准来源；全部真类样本仍不足时fail closed|
+|`code/scripts/run_full_ablation_phase1_t1.py`|先核对terminal和真实退出码；`FAILED_EXPORT`归为技术失败，只有`COMPLETE`却缺失或错绑prototype才判P0|
+|`code/tests/test_phase2_prototype_fusion_export.py`|覆盖统一回退成功和真类证据仍不足的拒绝|
+|`tests/test_run_full_ablation_phase1_t1.py`|覆盖`FAILED_EXPORT`先于prototype完整性分类|
+
+跨Phase1/Phase2独立回归结果为244 passed、2 skipped、0 failed；实现审查P0=0、P1=0。准确发布提交由sealed plan、review artifact和runner handoff记录，本报告不采用自指Git哈希。
+
+## N607预留位置
+
+|用途|路径|
+|---|---|
+|release root|`/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase1_label_20260729_v2_<commit8>`|
+|run root|`/home/szu2070436088/2510044040/CV-SincNet/runs/cvs_full_ablation_phase1_label_20260729_v2`|
+|log root|`/home/szu2070436088/2510044040/CV-SincNet/logs/cvs_full_ablation_phase1_label_20260729_v2`|
+|launch log|`/home/szu2070436088/2510044040/CV-SincNet/logs/cvs_full_ablation_phase1_label_20260729_v2.launch.out`|
+
+正式命令使用封存plan、不可覆盖run/log/launch路径和远端`CVS-RFFI`Python。发布前只检查当前GPU进程数、精确目标不存在、release checkout干净、入口可编译和sealed dry-run计数；不重审数据集。
+
+## 完整性与止损
+
+每个成功行必须同时具有可加载checkpoint、prototype PT+JSON、resource summary、held-out eval、terminal、completion receipt，并且terminal、receipt与真实退出码都为0。启动或只有checkpoint不算完成。
+
+P0协议/覆盖风险立即停止本run的后续派发；至少两个不同执行行在产生prototype前出现相同确定性异常指纹时停止本run。只终止已证明属于本run的进程树，保留全部部分产物；中间性能不得触发停止。
+
+## 完成后结果表
+
+|rho|seed|labeled数|unlabeled数|source validation数|best epoch|strict UDU|receiver floor|pseudo precision|pseudo coverage|P1-SUP同seed增益|checkpoint|状态|
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|---|

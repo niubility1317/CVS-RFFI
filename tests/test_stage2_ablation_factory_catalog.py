@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import inspect
 
+import numpy as np
 import pytest
 
 from cvsrffi.stage2_ablation_factory import (
@@ -11,7 +12,6 @@ from cvsrffi.stage2_ablation_factory import (
     STAGE2_T1_ARMS,
     Stage2AblationConfigError,
     Stage2AblationMethod,
-    Stage2AblationNotImplementedError,
     build_stage2_method,
     get_stage2_arm,
     resolve_stage2_config,
@@ -89,17 +89,22 @@ def test_resolved_full_config_closes_protocol_and_query_permissions() -> None:
     assert config["fallback_profile"] == "p2_fallback_kle2"
 
 
-def test_fit_signature_has_no_query_and_placeholder_fails_closed() -> None:
+def test_fit_signature_has_no_query_and_factory_reaches_numerical_stage2a() -> None:
     signature = inspect.signature(Stage2AblationMethod.fit)
     assert not any("query" in name.lower() for name in signature.parameters)
-    method = build_stage2_method("P2-FULL")
-    with pytest.raises(Stage2AblationNotImplementedError, match="numerical fit is not implemented"):
-        method.fit(
-            deployment_bundle={},
-            support_iq=None,
-            support_labels=None,
-            registered_classes=None,
-        )
+    method = build_stage2_method("P2-S2A")
+    prototypes = np.eye(6, 288, dtype=np.float32)
+    state = method.fit(
+        deployment_bundle={"deployment_prototypes": prototypes},
+        old_support_features=None,
+        old_support_labels=None,
+        old_classes=[f"old-{index}" for index in range(6)],
+        seed=820001,
+    )
+    assert state.stage == "stage2a"
+    assert state.predict(prototypes).tolist() == [
+        f"old-{index}" for index in range(6)
+    ]
 
 
 def test_unknown_arm_fails_closed() -> None:

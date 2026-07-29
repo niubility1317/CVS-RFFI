@@ -318,7 +318,7 @@ def _fit_equal_prior_lda(
     residual_energy = float(np.sum(residuals.astype(np.float64) ** 2))
     residual_rank = int(np.linalg.matrix_rank(residuals.astype(np.float64)))
     fallback = bool(
-        int(k_shot) == 1
+        int(k_shot) <= 2
         or residual_rank == 0
         or not math.isfinite(residual_energy)
         or residual_energy <= ENERGY_EPSILON
@@ -811,6 +811,10 @@ def fit_d42_unified_shrinkage_lda(
         "before_covariance_audit": dict(before_lda),
         "final_covariance_audit": dict(final_lda),
         "k1_unit_covariance_fallback": bool(
+            before_lda["unit_covariance_fallback"]
+            or final_lda["unit_covariance_fallback"]
+        ),
+        "k_le2_unit_covariance_fallback": bool(
             before_lda["unit_covariance_fallback"]
             or final_lda["unit_covariance_fallback"]
         ),

@@ -1199,3 +1199,33 @@ def test_p0_disabled_terminal_is_immediate_protocol_failure(tmp_path) -> None:
             output_dir=output,
             return_code=8,
         )
+
+
+def test_failed_export_is_technical_failure_before_prototype_check(
+    tmp_path,
+) -> None:
+    plan = _plan()
+    plan["run_id"] = "phase1-label-v1"
+    row = plan["rows"][0]
+    output = tmp_path / row["row_key"]
+    output.mkdir()
+    (output / "phase1_terminal_status.json").write_text(
+        json.dumps({"status": "FAILED_EXPORT", "exit_code": 3}),
+        encoding="utf-8",
+    )
+    (output / "phase1_training_completion_receipt.json").write_text(
+        json.dumps(
+            {"terminal_status": "FAILED_EXPORT", "exit_code": 3}
+        ),
+        encoding="utf-8",
+    )
+    with pytest.raises(
+        Phase1RunnerError,
+        match="status is not COMPLETE",
+    ):
+        validate_phase1_row_completion(
+            row=row,
+            plan=plan,
+            output_dir=output,
+            return_code=3,
+        )

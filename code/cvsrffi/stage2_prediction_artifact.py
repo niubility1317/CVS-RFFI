@@ -48,7 +48,7 @@ NPZ_FIELD_ALLOWLIST = (
 )
 NPZ_MEMBER_ALLOWLIST = tuple(f"{field}.npy" for field in NPZ_FIELD_ALLOWLIST)
 
-ALLOWED_STAGES = frozenset({"Stage2-B", "Stage2-C"})
+ALLOWED_STAGES = frozenset({"Stage2-A", "Stage2-B", "Stage2-C"})
 ALLOWED_SCENARIOS = frozenset(
     {"leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak"}
 )
@@ -373,8 +373,19 @@ def _validate_bindings(document: Mapping[str, Any], label: str) -> None:
         raise PredictionArtifactError(f"unsupported {label} stage: {document['stage']!r}")
     _require_nonempty_text(f"{label}.row_id", document["row_id"])
     _require_nonempty_text(f"{label}.receiver", document["receiver"])
-    if not isinstance(document["k_shot"], int) or isinstance(document["k_shot"], bool) or document["k_shot"] <= 0:
-        raise PredictionArtifactError(f"{label}.k_shot must be a positive integer")
+    k_shot = document["k_shot"]
+    if not isinstance(k_shot, int) or isinstance(k_shot, bool):
+        raise PredictionArtifactError(f"{label}.k_shot must be an integer")
+    if (
+        document["stage"] == "Stage2-A"
+        and k_shot != 0
+    ) or (
+        document["stage"] != "Stage2-A"
+        and k_shot <= 0
+    ):
+        raise PredictionArtifactError(
+            f"{label}.k_shot does not match the stage"
+        )
     for field in ("candidate_lock_sha256", "package_root_sha256", "package_seal_sha256"):
         _require_sha256(f"{label}.{field}", document[field])
     failed = [

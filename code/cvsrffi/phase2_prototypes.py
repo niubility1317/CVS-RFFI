@@ -990,8 +990,13 @@ def calibrate_endpoint_accept_v1(
     for class_id in range(fused.size(0)):
         sample_idx = torch.where(y == class_id)[0]
         class_sample_counts[str(class_id)] = int(sample_idx.numel())
+        if sample_idx.numel() < max(1, int(min_class_samples)):
+            raise ValueError(
+                "endpoint_accept_v1 source-val calibration has "
+                f"insufficient true-class samples for class {class_id}"
+            )
         active_ids = torch.where(mask[class_id])[0]
-        if sample_idx.numel() < max(1, int(min_class_samples)) or active_ids.numel() == 0:
+        if active_ids.numel() == 0:
             for row in calibrated_components[class_id]:
                 row["accept_enabled"] = False
                 row["calibration_status"] = "insufficient_class_source_val"
@@ -1128,10 +1133,30 @@ def calibrate_endpoint_accept_v1(
     margins = top2[:, 0] - top2[:, 1] if top2.size(1) > 1 else torch.full((logits.size(0),), float("inf"))
     energies = -torch.logsumexp(logits, dim=1)
     energy_max_by_class: Dict[str, float] = {}
+    energy_correct_sample_counts: Dict[str, int] = {}
+    energy_all_true_sample_counts: Dict[str, int] = {}
+    energy_calibration_source_by_class: Dict[str, str] = {}
     for class_id in range(fused.size(0)):
-        values = energies[(y == class_id) & correct]
-        if values.numel() < max(1, int(min_class_samples)):
-            raise ValueError(f"endpoint_accept_v1 source-val calibration has insufficient correct class {class_id}")
+        true_mask = y == class_id
+        correct_values = energies[true_mask & correct]
+        all_true_values = energies[true_mask]
+        correct_count = int(correct_values.numel())
+        all_true_count = int(all_true_values.numel())
+        energy_correct_sample_counts[str(class_id)] = correct_count
+        energy_all_true_sample_counts[str(class_id)] = all_true_count
+        required_count = max(1, int(min_class_samples))
+        if correct_count >= required_count:
+            values = correct_values
+            source = "correct_true_class_source_val"
+        elif all_true_count >= required_count:
+            values = all_true_values
+            source = "all_true_class_source_val_fallback"
+        else:
+            raise ValueError(
+                "endpoint_accept_v1 source-val calibration has "
+                f"insufficient true-class samples for class {class_id}"
+            )
+        energy_calibration_source_by_class[str(class_id)] = source
         energy_max_by_class[str(class_id)] = _finite_quantile(values, 0.95)
     core_known = correct & sample_core
     accepted_known = correct & torch.isfinite(sample_own_distance)
@@ -1174,6 +1199,11 @@ def calibrate_endpoint_accept_v1(
         "zero_direction_policy": "force_reject_exclude_from_angular_calibration_v1",
         "max_zero_direction_fraction": max_zero_direction_fraction,
         "correct_samples": int(correct.sum().item()),
+        "energy_correct_sample_counts": energy_correct_sample_counts,
+        "energy_all_true_sample_counts": energy_all_true_sample_counts,
+        "energy_calibration_source_by_class": (
+            energy_calibration_source_by_class
+        ),
         "class_sample_counts": class_sample_counts,
         "component_sample_counts": component_sample_counts,
         "enabled_components_by_class": {str(i): int(v) for i, v in enumerate(enabled_by_class)},

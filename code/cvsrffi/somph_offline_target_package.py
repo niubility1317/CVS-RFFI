@@ -33,8 +33,8 @@ from cvsrffi.somph_metric_scorer import (
     FORMAL_NEW20_TX_LABELS,
     FORMAL_OLD_TX_LABELS,
     REGISTRATION_PAIR_SCHEMA,
+    SOMPH_TRUTH_SIDECAR_SCHEMA,
 )
-from cvsrffi.stage2_metric_scorer import TRUTH_SIDECAR_SCHEMA
 from cvsrffi.stage2_predictor_bundle import (
     _hash_handle,
     _json_from_handle,
@@ -1982,7 +1982,7 @@ def _build_somph_offline_row_pair_from_context(
     old_query_root = _physical_root(list(before_old.items()))
 
     truth_sidecar = {
-        "schema": TRUTH_SIDECAR_SCHEMA,
+        "schema": SOMPH_TRUTH_SIDECAR_SCHEMA,
         "stage": "stage2c",
         "receiver": receiver,
         "seed": seed,

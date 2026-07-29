@@ -36,7 +36,7 @@ FORMAL_LEO_WEAK_SCENARIOS = (
 )
 PREDICTION_NPZ_MEMBERS = tuple(NPZ_FIELD_ALLOWLIST)
 SCORING_MANIFEST_SCHEMA = "cvs.phase2.scoring_sidecar_manifest.v2"
-TRUTH_SIDECAR_SCHEMA = "cvs.phase2.query_truth_sidecar.v2"
+TRUTH_SIDECAR_SCHEMA = "cvs.phase2.query_truth_sidecar.v3"
 FORMAL_ROWS_SCHEMA = "cvs.phase2.formal_metric_rows.v1"
 FORMAL_PREDICTIONS_SCHEMA = "cvs.phase2.formal_scored_predictions.v1"
 SCORING_RECEIPT_SCHEMA = "cvs.phase2.scoring_receipt.v1"
@@ -51,6 +51,7 @@ SCORING_MANIFEST_KEYS = {
 }
 TRUTH_TOP_LEVEL_KEYS = {"schema", "stage", "receiver", "seed", "rows"}
 TRUTH_ROW_REQUIRED_KEYS = {
+    "scenario",
     "query_token",
     "true_class_index",
     "true_class_handle",
@@ -180,7 +181,11 @@ def _validate_hash_value(actual: str, expected: str, *, context: str) -> str:
 
 
 def _normalize_stage(value: str) -> str:
-    mapping = {"Stage2-B": "stage2b", "Stage2-C": "stage2c"}
+    mapping = {
+        "Stage2-A": "stage2a",
+        "Stage2-B": "stage2b",
+        "Stage2-C": "stage2c",
+    }
     try:
         return mapping[value]
     except KeyError as exc:
@@ -239,9 +244,13 @@ def load_verified_sealed_prediction(
         set(query_tokens[scenario_array == scenario].tolist())
         for scenario in FORMAL_LEO_WEAK_SCENARIOS
     ]
-    if not token_sets[0] or any(values != token_sets[0] for values in token_sets[1:]):
+    if any(not values for values in token_sets) or any(
+        token_sets[left] & token_sets[right]
+        for left in range(len(token_sets))
+        for right in range(left + 1, len(token_sets))
+    ):
         raise Stage2ScoringError(
-            "the three formal scenarios must contain identical query_token sets"
+            "the three formal scenarios must contain pairwise-disjoint query_token sets"
         )
     scenarios = list(FORMAL_LEO_WEAK_SCENARIOS)
     binding = {
@@ -343,9 +352,15 @@ def load_verified_scoring_sidecar(
     }
 
 
-def _validate_truth_rows(truth: Mapping[str, Any]) -> None:
-    if truth["stage"] not in {"stage2b", "stage2c"}:
-        raise Stage2ScoringError("truth sidecar stage must be stage2b or stage2c")
+def _validate_truth_rows(
+    truth: Mapping[str, Any],
+    *,
+    require_scenario: bool = True,
+) -> None:
+    if truth["stage"] not in {"stage2a", "stage2b", "stage2c"}:
+        raise Stage2ScoringError(
+            "truth sidecar stage must be stage2a, stage2b, or stage2c"
+        )
     if not isinstance(truth["receiver"], str) or not truth["receiver"]:
         raise Stage2ScoringError("truth sidecar receiver must be nonempty")
     if not isinstance(truth["seed"], int) or isinstance(truth["seed"], bool):
@@ -354,6 +369,7 @@ def _validate_truth_rows(truth: Mapping[str, Any]) -> None:
     if not isinstance(rows, list) or not rows:
         raise Stage2ScoringError("truth sidecar rows must be nonempty")
     seen_tokens: set[str] = set()
+    seen_scenarios: set[str] = set()
     tx_to_role: dict[str, str] = {}
     tx_to_class: dict[str, int] = {}
     tx_to_handle: dict[str, str] = {}
@@ -363,8 +379,14 @@ def _validate_truth_rows(truth: Mapping[str, Any]) -> None:
         if not isinstance(row, dict):
             raise Stage2ScoringError("truth sidecar row must be an object")
         keys = set(row)
-        if not TRUTH_ROW_REQUIRED_KEYS.issubset(keys) or not keys.issubset(
-            TRUTH_ROW_REQUIRED_KEYS | TRUTH_ROW_OPTIONAL_KEYS
+        required = (
+            TRUTH_ROW_REQUIRED_KEYS
+            if require_scenario
+            else TRUTH_ROW_REQUIRED_KEYS - {"scenario"}
+        )
+        allowed = required | TRUTH_ROW_OPTIONAL_KEYS
+        if not required.issubset(keys) or not keys.issubset(
+            allowed
         ):
             raise Stage2ScoringError("truth sidecar row exact schema drift")
         token = row["query_token"]
@@ -373,6 +395,11 @@ def _validate_truth_rows(truth: Mapping[str, Any]) -> None:
         if token in seen_tokens:
             raise Stage2ScoringError("duplicate truth query_token")
         seen_tokens.add(token)
+        if require_scenario:
+            scenario = row["scenario"]
+            if scenario not in FORMAL_LEO_WEAK_SCENARIOS:
+                raise Stage2ScoringError("truth scenario contamination")
+            seen_scenarios.add(scenario)
         role = row["evaluation_role"]
         if role not in {"target_old", "target_new"}:
             raise Stage2ScoringError("truth evaluation_role contamination")
@@ -386,10 +413,16 @@ def _validate_truth_rows(truth: Mapping[str, Any]) -> None:
         tx_to_role[tx] = role
         true_class = row["true_class_index"]
         true_handle = row["true_class_handle"]
-        if truth["stage"] == "stage2b" and role == "target_new":
+        if truth["stage"] in {"stage2a", "stage2b"} and role == "target_new":
             if true_class is not None or true_handle is not None:
+                stage_name = (
+                    "Stage2-A"
+                    if truth["stage"] == "stage2a"
+                    else "Stage2-B"
+                )
                 raise Stage2ScoringError(
-                    "Stage2-B target-new reference cannot have a registered true class"
+                    f"{stage_name} target-new reference cannot have a "
+                    "registered true class"
                 )
             continue
         if not isinstance(true_class, int) or isinstance(true_class, bool) or true_class < 0:
@@ -409,6 +442,12 @@ def _validate_truth_rows(truth: Mapping[str, Any]) -> None:
         class_to_tx[true_class] = tx
         handle_to_tx[true_handle] = tx
     roles = {row["evaluation_role"] for row in rows}
+    if require_scenario and seen_scenarios != set(
+        FORMAL_LEO_WEAK_SCENARIOS
+    ):
+        raise Stage2ScoringError(
+            "truth sidecar does not cover all formal scenarios"
+        )
     if "target_old" not in roles:
         raise Stage2ScoringError("truth sidecar has no target-old query")
     if truth["stage"] == "stage2c" and "target_new" not in roles:
@@ -444,7 +483,10 @@ def score_prediction_arrays(
         raise Stage2ScoringError("prediction/truth stage mismatch")
     if binding["receiver"] != truth["receiver"]:
         raise Stage2ScoringError("prediction/truth receiver mismatch")
-    truth_by_token = {row["query_token"]: row for row in truth["rows"]}
+    truth_by_key = {
+        (row["scenario"], row["query_token"]): row
+        for row in truth["rows"]
+    }
     prediction_tokens = np.asarray(arrays["query_tokens"]).astype(str)
     prediction_scenarios = np.asarray(arrays["scenarios"]).astype(str)
     prediction_streams = {
@@ -464,14 +506,22 @@ def score_prediction_arrays(
     for scenario in binding["scenarios"]:
         indices = np.flatnonzero(prediction_scenarios == scenario)
         scenario_tokens = prediction_tokens[indices].tolist()
-        if set(scenario_tokens) != set(truth_by_token):
-            missing = sorted(set(truth_by_token) - set(scenario_tokens))
-            extra = sorted(set(scenario_tokens) - set(truth_by_token))
+        truth_tokens = {
+            token
+            for truth_scenario, token in truth_by_key
+            if truth_scenario == scenario
+        }
+        if set(scenario_tokens) != truth_tokens:
+            missing = sorted(truth_tokens - set(scenario_tokens))
+            extra = sorted(set(scenario_tokens) - truth_tokens)
             raise Stage2ScoringError(
                 f"prediction/truth token mismatch for {scenario}: "
                 f"missing={missing}:extra={extra}"
             )
-        ordered_truth = [truth_by_token[token] for token in scenario_tokens]
+        ordered_truth = [
+            truth_by_key[(scenario, token)]
+            for token in scenario_tokens
+        ]
         old_mask = np.asarray(
             [row["evaluation_role"] == "target_old" for row in ordered_truth],
             dtype=bool,

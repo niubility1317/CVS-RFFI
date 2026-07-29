@@ -224,6 +224,97 @@ def test_endpoint_accept_v1_calibrates_thresholds_from_source_val_and_verifies()
     assert all(row[0]["calibration_status"] == "source_val_calibrated" for row in artifact["fusion_components"])
 
 
+def test_endpoint_energy_calibration_uses_symmetric_true_class_fallback():
+    package = {
+        "feature_key": "z_id",
+        "fused_tx_prototypes": torch.tensor(
+            [[[1.0, 0.0]], [[0.0, 1.0]]]
+        ),
+        "fused_tx_mask": torch.ones(2, 1, dtype=torch.bool),
+        "fusion_accept_policy": "local_component",
+        "global_fused_radius_is_accept_region": False,
+        "metadata": dict(_minimal_phase2_package()["metadata"]),
+        "fusion_components": [
+            [{"component_id": 0, "source_domains": [0], "accept_enabled": True}],
+            [{"component_id": 0, "source_domains": [0], "accept_enabled": True}],
+        ],
+    }
+    features = torch.tensor(
+        [
+            [1.0, 0.0],
+            [0.999, 0.03],
+            [0.995, -0.05],
+            [0.998, 0.04],
+            [0.0, 1.0],
+            [0.03, 0.999],
+            [-0.05, 0.995],
+            [0.04, 0.998],
+        ],
+        dtype=torch.float32,
+    )
+    labels = torch.tensor([0, 0, 0, 0, 1, 1, 1, 1])
+    logits = torch.tensor(
+        [
+            [5.0, 0.0],
+            [0.0, 5.0],
+            [0.0, 5.0],
+            [0.0, 5.0],
+            [0.0, 5.0],
+            [0.0, 5.0],
+            [0.0, 5.0],
+            [0.0, 5.0],
+        ]
+    )
+    calibrated = calibrate_endpoint_accept_v1(
+        package,
+        features,
+        labels,
+        logits,
+        min_component_samples=2,
+        min_class_samples=2,
+    )
+    evidence = calibrated["endpoint_calibration"]
+    assert evidence["energy_correct_sample_counts"] == {"0": 1, "1": 4}
+    assert evidence["energy_all_true_sample_counts"] == {"0": 4, "1": 4}
+    assert evidence["energy_calibration_source_by_class"] == {
+        "0": "all_true_class_source_val_fallback",
+        "1": "correct_true_class_source_val",
+    }
+
+
+def test_endpoint_energy_calibration_fails_without_true_class_minimum():
+    package = {
+        "feature_key": "z_id",
+        "fused_tx_prototypes": torch.tensor(
+            [[[1.0, 0.0]], [[0.0, 1.0]]]
+        ),
+        "fused_tx_mask": torch.ones(2, 1, dtype=torch.bool),
+        "fusion_accept_policy": "local_component",
+        "global_fused_radius_is_accept_region": False,
+        "metadata": dict(_minimal_phase2_package()["metadata"]),
+        "fusion_components": [
+            [{"component_id": 0, "source_domains": [0], "accept_enabled": True}],
+            [{"component_id": 0, "source_domains": [0], "accept_enabled": True}],
+        ],
+    }
+    features = torch.tensor(
+        [[1.0, 0.0], [0.0, 1.0], [0.03, 0.999], [-0.05, 0.995]]
+    )
+    labels = torch.tensor([0, 1, 1, 1])
+    logits = torch.tensor(
+        [[0.0, 5.0], [0.0, 5.0], [0.0, 5.0], [0.0, 5.0]]
+    )
+    with pytest.raises(ValueError, match="insufficient true-class"):
+        calibrate_endpoint_accept_v1(
+            package,
+            features,
+            labels,
+            logits,
+            min_component_samples=1,
+            min_class_samples=2,
+        )
+
+
 def test_endpoint_calibration_excludes_and_audits_rare_zero_direction():
     package = {
         "feature_key": "z_id",

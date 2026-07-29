@@ -26,13 +26,16 @@ def _args(
     phase: str,
     stage: str = "screening",
     phase1_matrix: str = "t1",
+    phase2_matrix: str = "stage2c",
+    arms: str = "P2-FULL",
 ) -> argparse.Namespace:
     return argparse.Namespace(
         phase=phase,
         stage=stage,
         phase1_matrix=phase1_matrix,
         phase1_label_reference=str(LABEL_REFERENCE),
-        arms="P2-FULL",
+        phase2_matrix=phase2_matrix,
+        arms=arms,
         git_commit="a" * 40,
         wisig_pkl_sha256="b" * 64,
         python_environment_id="CVS-RFFI",
@@ -57,6 +60,26 @@ def test_phase2_plan_does_not_claim_static_physical_dedup() -> None:
     assert all(
         row["method_seed"] == row["train_seed"]
         and row["phase1_bundle_training_seed"] is None
+        for row in plan["rows"]
+    )
+
+
+def test_phase2_state_plan_is_independent_from_stage2c_dimensions() -> None:
+    plan = build_plan(
+        _args(
+            phase="phase2",
+            phase2_matrix="states",
+            arms="t1",
+        )
+    )
+    assert plan["phase2_matrix"] == "states"
+    assert plan["stage"] == "state_confirmation"
+    assert plan["logical_row_count"] == 325
+    assert {
+        row["phase"] for row in plan["rows"]
+    } == {"stage2a", "stage2b"}
+    assert not any(
+        row["new_class_count"] or row["new_class_draw_seed"] is not None
         for row in plan["rows"]
     )
 

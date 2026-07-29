@@ -19,6 +19,7 @@ from cvsrffi.full_ablation_spec import (
     build_phase1_label_rows,
     build_phase1_t1_rows,
     build_phase2_rows,
+    build_phase2_state_rows,
     stage2_physical_execution_key,
     validate_artifact_record,
     validate_stage2_registry_disjointness,
@@ -130,6 +131,35 @@ def test_confirmation_is_900_rows_per_arm() -> None:
     assert sum(len(row["scenarios"]) for row in rows) == 2700
     assert {row["k_shot"] for row in rows} == {1, 2, 5, 10}
     assert {row["new_class_count"] for row in rows} == {5, 10, 20}
+
+
+def test_stage2_state_tables_do_not_inherit_stage2c_dimensions() -> None:
+    rows = build_phase2_state_rows(
+        arms=PHASE2_STATE_T1_ARMS,
+        seed_bundles=_bundles(5, 840001),
+        git_commit="a" * 40,
+    )
+    stage2a = [row for row in rows if row["phase"] == "stage2a"]
+    stage2b = [row for row in rows if row["phase"] == "stage2b"]
+    assert len(stage2a) == 5 * 5
+    assert len(stage2b) == 3 * 5 * 4 * 5
+    assert len(rows) == 325
+    assert all(
+        row["k_shot"] is None
+        and row["support_seed"] is None
+        and row["target_support_access"] is False
+        and row["new_class_count"] == 0
+        and row["new_class_draw_seed"] is None
+        for row in stage2a
+    )
+    assert {row["k_shot"] for row in stage2b} == {1, 2, 5, 10}
+    assert all(
+        row["new_class_count"] == 0
+        and row["target_support_access"] is True
+        and row["new_class_draw_seed"] is None
+        for row in stage2b
+    )
+    assert sum(len(row["scenarios"]) for row in rows) == 975
 
 
 def test_stage2_t1_arm_ids_are_unique() -> None:

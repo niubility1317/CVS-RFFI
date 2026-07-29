@@ -12,7 +12,6 @@ import pytest
 
 from cvsrffi import somph_metric_scorer as scorer
 from cvsrffi.stage2_metric_scorer import (
-    TRUTH_SIDECAR_SCHEMA,
     canonical_json_bytes,
     sha256_file,
 )
@@ -321,7 +320,7 @@ def _case(
     evidence_sha = sha256_file(evidence_path)
     truth_path = root / "truth_sidecar.json"
     _write_json(truth_path, {
-        "schema": TRUTH_SIDECAR_SCHEMA,
+        "schema": scorer.SOMPH_TRUTH_SIDECAR_SCHEMA,
         "stage": stage,
         "receiver": "8-8",
         "seed": 713106,

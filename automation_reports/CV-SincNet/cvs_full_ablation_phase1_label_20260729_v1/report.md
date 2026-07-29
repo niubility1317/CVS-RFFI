@@ -10,7 +10,7 @@
 |目标|完成设计报告`P1-LABEL`的0.005、0.01、0.02、0.05标签率训练，并复用Phase1 T1中0.10的`P1-FULL`结果形成五点曲线|
 |比较对象|同一`P1-FULL`方法配置；仅改变`f_L/f_U`，固定`f_V=0.30`|
 |环境|本地`ssr-gpu`；远端`CVS-RFFI`|
-|状态|`RUNNING / STARTUP_HEALTH_PASS`|
+|状态|`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`|
 
 ## 设计追踪
 
@@ -139,6 +139,84 @@ set -o noclobber; : > /home/szu2070436088/2510044040/CV-SincNet/logs/cvs_full_ab
 |技术异常|硬错误0、P0=0、非零status=0、异常指纹0、重复异常指纹0|
 |完成输出|completion receipt=0、terminal=0、heldout=0、prototype PT/JSON=0、runner summary不存在；首行尚未完成，因此本轮不执行完成artifact闭合验证|
 |操作结论|健康规则未触发；只监控，不重启、不调参、不干预T1、不做数据hash或数据集审计|
+
+### 运行中健康检查：2026-07-29 19:54:27 CST
+
+|检查项|结果|
+|---|---|
+|直连预检|通过；普通账号、项目根和8张RTX 3090正常可见|
+|runner绑定|launch PID=`745606`、runner PID=`745607`均存活；runner CWD、release、sealed plan、run root和log root绑定正确|
+|调度计数|launched=1、active=1、waiting=13、completed=0、succeeded=0、failed=0、nonzero=0|
+|容量接续|T1尚未释放可用训练槽；本run仍只有`P1-LABEL-RHO005__train_seed_7281103`，PID=`745732`，运行于GPU2|
+|健康进度|从上次`E025/200`推进至`E041/200`；row日志从149694字节增长到241983字节|
+|GPU容量|整机GPU0–7训练实验数为`2/2/2/2/2/2/2/2`；本run为`0/0/1/0/0/0/0/0`；利用率36%–99%，显存约6.1–6.4GiB/卡|
+|技术异常|硬错误0、P0=0、非零status=0、异常指纹0、重复异常指纹0；runner summary不存在|
+|完成输出|新增完成行=0，terminal=0、completion receipt=0；没有可执行完整artifact闭合验证的行|
+|操作结论|健康规则未触发；禁止重复launch，只监控，不重启、不调参、不干预T1、不做数据hash或数据集审计|
+
+### 运行中健康检查：2026-07-29 20:13:41 CST
+
+|检查项|结果|
+|---|---|
+|直连预检|通过；普通账号、项目根和8张RTX 3090正常可见|
+|runner绑定|launch PID=`745606`、runner PID=`745607`均存活；runner CWD、release、sealed plan、run root和log root绑定正确|
+|dispatch计数|launched=1、active=1、waiting=13、completed=0、succeeded=0、failed=0、nonzero=0|
+|首行进展|`P1-LABEL-RHO005__train_seed_7281103`，PID=`745732`，GPU2；从`E041/200`推进至`E085/200`；日志从241983字节增长到496229字节|
+|首行产物|阶段性`best_source_validation_ssdg.pth`存在且非空，大小15258700字节；prototype PT/JSON、resource summary、heldout eval、terminal和completion receipt尚未产生，因此不得计为完整行|
+|GPU容量|整机GPU0–7训练实验数为`2/2/2/2/2/2/2/2`；本run为`0/0/1/0/0/0/0/0`；利用率17%–99%，显存约6.1–6.4GiB/卡|
+|技术异常|硬错误0、P0=0、非零status=0、重复异常指纹0；runner summary不存在|
+|操作结论|健康规则未触发；禁止重复launch，只监控，不重启、不调参、不干预T1、不做数据hash或数据集审计|
+
+### 运行中健康检查：2026-07-29 20:28:33 CST
+
+|检查项|结果|
+|---|---|
+|直连预检|通过；普通账号、项目根和8张RTX 3090正常可见|
+|runner绑定|launch PID=`745606`、runner PID=`745607`均存活；runner CWD、release、sealed plan、run root和log root绑定正确|
+|dispatch计数|launched=1、active=1、waiting=13、completed=0、succeeded=0、failed=0、nonzero=0|
+|首行进展|`P1-LABEL-RHO005__train_seed_7281103`，PID=`745732`，GPU2；从`E085/200`推进至`E119/200`；日志从496229字节增长到692747字节|
+|首行产物|阶段性checkpoint仍为15258700字节；prototype PT/JSON、resource summary、heldout eval、terminal和completion receipt仍未产生，训练进程仍存活，因此严格不计成功或完整|
+|GPU容量|整机GPU0–7训练实验数为`2/2/2/2/2/2/2/2`；本run为`0/0/1/0/0/0/0/0`；利用率20%–99%，显存约6.1–6.4GiB/卡|
+|技术异常|硬错误0、P0=0、非零status=0、重复异常指纹0；runner summary不存在|
+|操作结论|健康规则未触发；禁止重复launch，只监控，不重启、不调参、不干预T1、不做数据hash或数据集审计|
+
+### 运行中健康检查：2026-07-29 20:36:05 CST
+
+|检查项|结果|
+|---|---|
+|直连预检|通过；普通账号、项目根和8张RTX 3090正常可见|
+|runner与子进程绑定|launch PID=`745606`、runner PID=`745607`、训练PID=`745732`均存活；父子关系、CWD、release、sealed plan、row、run root和log root绑定正确|
+|dispatch计数|launched=1、active=1、waiting=13、completed=0、succeeded=0、failed=0、nonzero=0|
+|16槽整体占用|整机16个训练槽全部使用；GPU0–7训练实验数为`2/2/2/2/2/2/2/2`；本run为`0/0/1/0/0/0/0/0`|
+|首行进展|`P1-LABEL-RHO005__train_seed_7281103`从`E119/200`推进至`E136/200`；日志从692747字节增长到791099字节|
+|首行产物|阶段性checkpoint为15258700字节；prototype PT/JSON、resource summary、heldout eval、terminal和completion receipt仍未闭合，因此completed/succeeded保持0|
+|GPU健康|利用率39%–99%，显存约6.1–6.4GiB/卡；没有GPU超过2个训练实验|
+|技术异常|硬错误0、P0=0、非零status=0、重复异常指纹0；runner summary不存在|
+|数据处理|复用既有登记结果，不做数据集重审，也不做跨批次数据一致性或数据hash对齐|
+|操作结论|健康规则未触发；只读监控，不停止、不重启、不修改任务、不干预T1|
+
+### 20:59完成度快照与系统技术停止
+
+|检查项|结果|
+|---|---|
+|20:59健康快照|首行推进至`E191/200`，日志从791099字节增长到1109393字节；进程存活，正式artifact尚未产生|
+|21:04最后epoch|首行到达`E200/200`，日志1161472字节；训练与最终导出仍在进行，未提前计完成|
+|真实退出|21:06后训练PID`745732`退出，return code=`3`；runner随后自行退出，未人工停止|
+|首行严格闭环|checkpoint存在、可加载且最终大小15263436字节；resource summary、heldout eval、terminal、completion receipt均存在且JSON可解析；prototype PT和prototype JSON均缺失|
+|终端状态|terminal status=`FAILED_EXPORT`、terminal exit code=`3`、completion receipt exit code=`3`；completion receipt不能作为成功凭据|
+|失败原因|prototype导出未完成；runner completion validator报告`row prototype artifact hash or path drift`|
+|P0与指纹|`p0_protocol_violation=true`；异常指纹=`49bc6d2fe7fc0d1fd79ea9b212a1dbda039067716a1212ffacae9ffebf326412`，涉及1行|
+|runner summary|row_count=14、completed=1、success=0、failed=1、new_train=1、systemic_stop=true；其余13行均记录`dispatch stopped before row launch`，没有自动派发|
+|最终调度|launched=1、completed=1、succeeded=0、failed=1、active=0、unlaunched=13；runner summary已闭合|
+|GPU释放|label在GPU2占用的槽位已释放；整机训练进程数变为`2/2/1/2/2/2/2/2`，共15个；未干预T1|
+|性能边界|该run为`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`，不读取或报告中间性能，不进入五点曲线|
+|操作边界|未停止、重启、修改或重跑任务；未做数据集重审、跨批次数据一致性检查或数据hash对齐|
+
+### 失败归因修正与v2接续
+
+后续读取完整首行日志确认，真实失败是`endpoint_accept_v1 source-val calibration has insufficient correct class 0`：原导出器要求每个类别至少4个source-validation正确分类样本，class 0未满足，因此prototype保存过程尚未执行。旧runner先检查prototype文件、后检查`FAILED_EXPORT`退出状态，才把“导出前失败导致文件不存在”误标成P0路径漂移；这不是数据、路径或跨批次不一致问题。
+
+本地修复为：每类正确样本不足时统一回退到该真类全部有限energy的source-validation样本并记录回退来源；若该真类全部样本仍不足则保持fail closed。runner先按terminal/真实退出码把`FAILED_EXPORT`归类为技术失败，只有声称`COMPLETE`却缺失或错绑prototype时才判P0。修复后的继任实验使用新run ID`cvs_full_ablation_phase1_label_20260729_v2`，不覆盖v1，重新执行首个失败行及其余13个未启动行；v1继续保留为`NO_PERFORMANCE_RESULT`。
 
 ## 完成后结果表
 

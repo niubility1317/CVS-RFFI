@@ -16,6 +16,7 @@ from typing import Any
 from cvsrffi.full_ablation_spec import (
     DESIGN_ID,
     PHASE1_T1_ARMS,
+    PHASE2_STATE_T1_ARMS,
     PHASE2_T1_ARMS,
     ArmSpec,
     FullAblationSpecError,
@@ -23,6 +24,7 @@ from cvsrffi.full_ablation_spec import (
     build_phase1_label_rows,
     build_phase1_t1_rows,
     build_phase2_rows,
+    build_phase2_state_rows,
     validate_stage2_registry_disjointness,
 )
 
@@ -131,10 +133,12 @@ def _load_phase1_label_reference(
     return reference, _canonical_text_sha256(payload)
 
 
-def _select_arms(raw_ids: str) -> list[ArmSpec]:
-    available = {arm.ablation_id: arm for arm in PHASE2_T1_ARMS}
+def _select_arms(
+    raw_ids: str, arm_space: tuple[ArmSpec, ...] = PHASE2_T1_ARMS
+) -> list[ArmSpec]:
+    available = {arm.ablation_id: arm for arm in arm_space}
     if raw_ids.strip().lower() == "t1":
-        return list(PHASE2_T1_ARMS)
+        return list(arm_space)
     ids = [value.strip() for value in raw_ids.split(",") if value.strip()]
     if not ids:
         raise FullAblationSpecError("at least one Phase2 arm ID is required")
@@ -177,16 +181,32 @@ def build_plan(args: argparse.Namespace) -> dict[str, Any]:
         label_reference = {}
         label_reference_hash = ""
         registered_phase1_train_seeds = []
-        stage = args.stage
-        stage_registry = registry[f"stage2_{stage}"]
-        bundles = [SeedBundle(**item) for item in stage_registry["seed_bundles"]]
-        rows = build_phase2_rows(
-            stage=stage,
-            arms=_select_arms(args.arms),
-            seed_bundles=bundles,
-            class_draw_seeds=stage_registry["new_class_draw_seeds"],
-            git_commit=args.git_commit,
+        phase2_matrix = str(
+            getattr(args, "phase2_matrix", "stage2c")
+        ).strip()
+        if phase2_matrix not in {"stage2c", "states"}:
+            raise FullAblationSpecError("unknown Phase2 matrix")
+        registry_stage = (
+            "confirmation" if phase2_matrix == "states" else args.stage
         )
+        stage_registry = registry[f"stage2_{registry_stage}"]
+        bundles = [SeedBundle(**item) for item in stage_registry["seed_bundles"]]
+        if phase2_matrix == "states":
+            stage = "state_confirmation"
+            rows = build_phase2_state_rows(
+                arms=_select_arms(args.arms, PHASE2_STATE_T1_ARMS),
+                seed_bundles=bundles,
+                git_commit=args.git_commit,
+            )
+        else:
+            stage = args.stage
+            rows = build_phase2_rows(
+                stage=stage,
+                arms=_select_arms(args.arms),
+                seed_bundles=bundles,
+                class_draw_seeds=stage_registry["new_class_draw_seeds"],
+                git_commit=args.git_commit,
+            )
     logical_rows = len(rows)
     unique_physical_row_count = (
         logical_rows if args.phase == "phase1" else None
@@ -196,6 +216,11 @@ def build_plan(args: argparse.Namespace) -> dict[str, Any]:
         "design_id": DESIGN_ID,
         "phase": args.phase,
         "stage": stage,
+        "phase2_matrix": (
+            str(getattr(args, "phase2_matrix", "stage2c"))
+            if args.phase == "phase2"
+            else None
+        ),
         "git_commit": args.git_commit,
         "seed_registry_path": str(registry_path),
         "seed_registry_sha256": registry_hash,
@@ -256,6 +281,15 @@ def _parser() -> argparse.ArgumentParser:
         "--stage",
         choices=("screening", "confirmation"),
         default="screening",
+    )
+    parser.add_argument(
+        "--phase2-matrix",
+        choices=("stage2c", "states"),
+        default="stage2c",
+        help=(
+            "Phase2 only: Stage2-C registration rows or independent "
+            "Stage2-A/B state tables."
+        ),
     )
     parser.add_argument(
         "--arms",

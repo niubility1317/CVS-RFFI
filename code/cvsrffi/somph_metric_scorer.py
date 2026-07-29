@@ -21,6 +21,7 @@ REGISTRATION_PAIR_SCHEMA = "cvs.phase2.somph_registration_pair.v1"
 FORMAL_ROWS_SCHEMA = "cvs.phase2.somph_formal_metric_rows.v1"
 FORMAL_PREDICTIONS_SCHEMA = "cvs.phase2.somph_formal_scored_predictions.v1"
 SCORING_RECEIPT_SCHEMA = "cvs.phase2.somph_scoring_receipt.v1"
+SOMPH_TRUTH_SIDECAR_SCHEMA = "cvs.phase2.query_truth_sidecar.v2"
 
 FORMAL_OLD_TX_LABELS = (
     "14-10", "14-7", "20-15", "20-19", "6-15", "8-20",
@@ -558,9 +559,9 @@ def _load_scoring_inputs(
         truth = _base._exact_object(
             truth, _base.TRUTH_TOP_LEVEL_KEYS, context="SOMP-H truth sidecar"
         )
-        if truth["schema"] != _base.TRUTH_SIDECAR_SCHEMA:
+        if truth["schema"] != SOMPH_TRUTH_SIDECAR_SCHEMA:
             raise SomphScoringError("SOMP-H truth sidecar schema drift")
-        _base._validate_truth_rows(truth)
+        _base._validate_truth_rows(truth, require_scenario=False)
     except _base.Stage2ScoringError as exc:
         raise SomphScoringError(str(exc)) from exc
     if truth["stage"] != manifest["stage"]:
@@ -1095,6 +1096,7 @@ __all__ = [
     "FORMAL_ROWS_SCHEMA",
     "SCORING_MANIFEST_SCHEMA",
     "SCORING_RECEIPT_SCHEMA",
+    "SOMPH_TRUTH_SIDECAR_SCHEMA",
     "SomphScoringError",
     "score_somph_registration_pair",
     "score_somph_stage2b",

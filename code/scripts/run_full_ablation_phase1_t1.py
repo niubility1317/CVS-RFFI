@@ -778,6 +778,17 @@ def validate_phase1_row_completion(
         raise Phase1ProtocolError(
             "row terminal status differs from completion receipt"
         )
+    if (
+        terminal_status != "COMPLETE"
+        or int(return_code) != 0
+        or int(receipt.get("exit_code", -1)) != 0
+        or int(terminal.get("exit_code", -1)) != 0
+    ):
+        raise Phase1RunnerError(
+            "row terminal status is not COMPLETE: "
+            f"status={terminal_status or '<missing>'} "
+            f"return_code={int(return_code)}"
+        )
     public_receipts = (
         (
             "dataset",

@@ -104,7 +104,7 @@ def _require_cross_state_lock(
     if len(old_classes) != 6 or new_count not in (5, 10, 20):
         raise D81QueryEvaluationError("D81 125 class-count lock drift")
     k_shot = int(after_enrollment.get("k_shot", -1))
-    if k_shot not in (1, 5, 10):
+    if k_shot not in (1, 2, 5, 10):
         raise D81QueryEvaluationError("D81 125 K-shot lock drift")
     return old_classes, all_classes, k_shot
 

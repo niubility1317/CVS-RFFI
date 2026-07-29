@@ -23,6 +23,13 @@ SCENARIOS = (
     "leo_rain_weak",
 )
 TOKENS = [f"qid_{index:064x}" for index in range(1, 7)]
+TOKENS_BY_SCENARIO = {
+    scenario: [
+        f"qid_{(scenario_index + 1) * 100 + index:064x}"
+        for index in range(1, 7)
+    ]
+    for scenario_index, scenario in enumerate(SCENARIOS)
+}
 HANDLES = [f"cls_{index:064x}" for index in range(101, 104)]
 
 
@@ -53,17 +60,25 @@ def _truth_rows(stage: str) -> list[dict[str, object]]:
     ]
     return [
         {
-            "query_token": token,
+            "scenario": scenario,
+            "query_token": TOKENS_BY_SCENARIO[scenario][position],
             "true_class_index": class_index,
             "true_class_handle": class_handle,
             "transmitter_label": transmitter,
             "evaluation_role": role,
             "receiver_label": "20-1",
             "day_label": "day-1",
-            "signal_label": f"sig-{position}",
-            "physical_sample_id": f"sample-{position}",
+            "signal_label": f"{scenario}-sig-{position}",
+            "physical_sample_id": f"{scenario}-sample-{position}",
         }
-        for position, (token, class_index, class_handle, transmitter, role) in enumerate(definitions)
+        for scenario in SCENARIOS
+        for position, (
+            _token,
+            class_index,
+            class_handle,
+            transmitter,
+            role,
+        ) in enumerate(definitions)
     ]
 
 
@@ -79,7 +94,7 @@ def _make_case(
     tokens_by_scenario: dict[str, list[str]] | None = None,
 ) -> dict[str, object]:
     root.mkdir()
-    tokens = prediction_tokens or list(TOKENS)
+    tokens = prediction_tokens or list(TOKENS_BY_SCENARIO[SCENARIOS[0]])
     count = len(tokens)
     prediction_path = root / "prediction_artifact.cvspred"
     base_streams = {
@@ -107,7 +122,12 @@ def _make_case(
     flat_view_counts: list[int] = []
     base_view_counts = [1, 3, 5, 1, 3, 5][:count]
     for scenario in scenario_order:
-        scenario_tokens = (tokens_by_scenario or {}).get(scenario, tokens)
+        scenario_tokens = (tokens_by_scenario or {}).get(
+            scenario,
+            tokens
+            if scenario == SCENARIOS[0]
+            else TOKENS_BY_SCENARIO[scenario][:count],
+        )
         if len(scenario_tokens) != count:
             raise ValueError("test fixture scenario token count drift")
         flat_tokens.extend(scenario_tokens)
@@ -265,22 +285,28 @@ def test_rejects_missing_or_reordered_formal_scenarios(
         _score(case)
 
 
-def test_rejects_query_token_set_drift_across_formal_scenarios(
+def test_rejects_query_token_overlap_across_formal_scenarios(
     tmp_path: Path,
 ) -> None:
-    rain_tokens = list(TOKENS)
-    rain_tokens[-1] = f"qid_{999:064x}"
+    rain_tokens = list(TOKENS_BY_SCENARIO[SCENARIOS[2]])
+    rain_tokens[-1] = TOKENS_BY_SCENARIO[SCENARIOS[0]][0]
     case = _make_case(
         tmp_path / "case",
         tokens_by_scenario={SCENARIOS[2]: rain_tokens},
     )
-    with pytest.raises(scorer.Stage2ScoringError, match="identical query_token sets"):
+    with pytest.raises(scorer.Stage2ScoringError, match="pairwise-disjoint"):
         _score(case)
 
 
 @pytest.mark.parametrize(
     "tokens",
-    [TOKENS[:-1], [*TOKENS[:-1], f"qid_{999:064x}"]],
+    [
+        TOKENS_BY_SCENARIO[SCENARIOS[0]][:-1],
+        [
+            *TOKENS_BY_SCENARIO[SCENARIOS[0]][:-1],
+            f"qid_{999:064x}",
+        ],
+    ],
 )
 def test_rejects_missing_or_unmatched_prediction_tokens(
     tmp_path: Path, tokens: list[str]

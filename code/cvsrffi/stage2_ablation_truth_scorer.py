@@ -60,15 +60,23 @@ _QUANTIZATION_KEYS = {
 }
 _RESOURCE_KEYS = {
     "schema",
-    "bundle_bytes",
+    "feature_cache_bytes",
+    "deployment_state_bytes",
     "state_bytes",
     "registration_time_ms",
-    "peak_rss_bytes",
-    "peak_vram_bytes",
+    "row_peak_rss_bytes",
+    "row_peak_vram_bytes",
+    "candidate_peak_memory_isolated",
     "closed_form_fit_count",
     "mac_equivalent_upper_bound",
     "query_head_mac",
-    "query_latency_ms",
+    "candidate_head_batch_query_latency_ms_per_row",
+    "end_to_end_query_latency_available",
+    "end_to_end_query_latency_ms",
+    "batch1_head_resource",
+    "row_orchestration_time_ms",
+    "auxiliary_state_cost_in_candidate_resource",
+    "auxiliary_prediction_cost_in_candidate_latency",
 }
 _PRIMARY_FIELDS = (
     "A_o_pre",
@@ -245,18 +253,51 @@ def _validate_resource(value: Mapping[str, Any]) -> dict[str, Any]:
     if receipt["schema"] != RESOURCE_RECEIPT_SCHEMA:
         raise FullAblationScoringError("resource receipt schema drift")
     integer_fields = {
-        "bundle_bytes",
+        "feature_cache_bytes",
+        "deployment_state_bytes",
         "state_bytes",
-        "peak_rss_bytes",
-        "peak_vram_bytes",
+        "row_peak_rss_bytes",
+        "row_peak_vram_bytes",
         "closed_form_fit_count",
         "mac_equivalent_upper_bound",
         "query_head_mac",
     }
     for field in integer_fields:
         receipt[field] = _count(receipt[field], context=field)
-    for field in ("registration_time_ms", "query_latency_ms"):
+    for field in (
+        "registration_time_ms",
+        "candidate_head_batch_query_latency_ms_per_row",
+        "row_orchestration_time_ms",
+    ):
         receipt[field] = _finite_number(receipt[field], context=field)
+    for field in (
+        "candidate_peak_memory_isolated",
+        "end_to_end_query_latency_available",
+        "auxiliary_state_cost_in_candidate_resource",
+        "auxiliary_prediction_cost_in_candidate_latency",
+    ):
+        if not isinstance(receipt[field], bool):
+            raise FullAblationScoringError(
+                f"{field} must be boolean"
+            )
+    if (
+        receipt["candidate_peak_memory_isolated"] is not False
+        or receipt["end_to_end_query_latency_available"] is not False
+        or receipt["end_to_end_query_latency_ms"] is not None
+        or receipt["auxiliary_state_cost_in_candidate_resource"] is not False
+        or receipt["auxiliary_prediction_cost_in_candidate_latency"] is not False
+    ):
+        raise FullAblationScoringError(
+            "resource scope declaration drift"
+        )
+    batch1 = receipt["batch1_head_resource"]
+    if batch1 is not None and (
+        not isinstance(batch1, Mapping)
+        or not isinstance(batch1.get("decode_cost"), Mapping)
+    ):
+        raise FullAblationScoringError(
+            "batch1 head resource receipt drift"
+        )
     return receipt
 
 
@@ -547,8 +588,15 @@ def build_failed_row_record(
     identity = _validate_identity(row_identity)
     if stage not in {"stage2a", "stage2b", "stage2c"}:
         raise FullAblationScoringError("failed row stage is unsupported")
-    if isinstance(k_shot, bool) or not isinstance(k_shot, int) or k_shot <= 0:
-        raise FullAblationScoringError("failed row k_shot must be positive")
+    if (
+        isinstance(k_shot, bool)
+        or not isinstance(k_shot, int)
+        or (stage == "stage2a" and k_shot != 0)
+        or (stage != "stage2a" and k_shot <= 0)
+    ):
+        raise FullAblationScoringError(
+            "failed row k_shot does not match the stage"
+        )
     if not isinstance(zero_prediction, bool):
         raise FullAblationScoringError("zero_prediction must be boolean")
     failure_receipt = {

@@ -554,6 +554,107 @@ def build_phase2_rows(
     return rows
 
 
+def build_phase2_state_rows(
+    *,
+    arms: Sequence[ArmSpec],
+    seed_bundles: Sequence[SeedBundle],
+    git_commit: str,
+) -> list[dict[str, Any]]:
+    """Build the independent Stage2-A/B confirmation tables.
+
+    Stage2-A has no target support and therefore no K dimension. Stage2-B
+    uses old-class support at K={1,2,5,10}, but it has neither a new-class
+    count nor a new-class draw. Both tables use the five fresh confirmation
+    seed bundles and keep the three LEO scenarios inside each row.
+    """
+
+    if not arms:
+        raise FullAblationSpecError("at least one Stage2 state arm is required")
+    if len({arm.ablation_id for arm in arms}) != len(arms):
+        raise FullAblationSpecError("Stage2 state arm IDs must be unique")
+    if any(arm.phase not in {"stage2a", "stage2b"} for arm in arms):
+        raise FullAblationSpecError(
+            "Stage2 state rows accept only Stage2-A/B arms"
+        )
+    if len(seed_bundles) != 5:
+        raise FullAblationSpecError(
+            "Stage2 state confirmation requires five seed bundles"
+        )
+    for bundle in seed_bundles:
+        bundle.validate(require_fresh_stage2=True)
+    all_seed_values = [
+        value
+        for bundle in seed_bundles
+        for value in asdict(bundle).values()
+    ]
+    if len(set(all_seed_values)) != len(all_seed_values):
+        raise FullAblationSpecError("seed bundles must be globally independent")
+    concrete_commit = _require_git_commit(git_commit)
+
+    rows: list[dict[str, Any]] = []
+    for arm in arms:
+        k_values: tuple[int | None, ...] = (
+            (None,) if arm.phase == "stage2a" else CONFIRMATION_K
+        )
+        for receiver in TARGET_RECEIVERS:
+            for k_shot in k_values:
+                for bundle in seed_bundles:
+                    row = {
+                        "design_id": DESIGN_ID,
+                        "design_schema": DESIGN_SCHEMA,
+                        "phase": arm.phase,
+                        "stage": "confirmation",
+                        "ablation_id": arm.ablation_id,
+                        "evidence_level": arm.evidence_level,
+                        "mechanism_family": arm.mechanism_family,
+                        "comparison_target": arm.comparison_target,
+                        "physical_config_id": (
+                            arm.physical_config_id or arm.ablation_id
+                        ),
+                        "git_commit": concrete_commit,
+                        "protocol_schema": PROTOCOL_SCHEMA,
+                        "receiver_id": receiver,
+                        "k_shot": k_shot,
+                        "old_class_count": OLD_CLASS_COUNT,
+                        "new_class_count": 0,
+                        "scenarios": list(LEO_SCENARIOS),
+                        **asdict(bundle),
+                        "support_seed": (
+                            None
+                            if arm.phase == "stage2a"
+                            else int(bundle.support_seed)
+                        ),
+                        "reserved_support_seed": (
+                            int(bundle.support_seed)
+                            if arm.phase == "stage2a"
+                            else None
+                        ),
+                        "target_support_access": arm.phase != "stage2a",
+                        "method_seed": int(bundle.method_seed),
+                        "phase1_bundle_training_seed": None,
+                        "new_class_draw_seed": None,
+                        "data_binding_status": "UNBOUND_FAIL_CLOSED",
+                        "executor_status": arm.executor_status,
+                        "formal_launch_authority": False,
+                    }
+                    rows.append(row)
+    slots = assign_worker_slots(len(rows))
+    for row, slot in zip(rows, slots):
+        row["worker"] = asdict(slot)
+        k_suffix = (
+            "zero_support"
+            if row["phase"] == "stage2a"
+            else f"k_{row['k_shot']}"
+        )
+        row["row_key"] = (
+            f"{row['ablation_id']}__rx_{row['receiver_id'].replace('-', '_')}"
+            f"__{k_suffix}__method_{row['method_seed']}"
+            f"__query_{row['query_seed']}"
+        )
+    validate_plan_rows(rows)
+    return rows
+
+
 def validate_plan_rows(rows: Sequence[Mapping[str, Any]]) -> None:
     if not rows:
         raise FullAblationSpecError("plan has no rows")
@@ -567,13 +668,18 @@ def validate_plan_rows(rows: Sequence[Mapping[str, Any]]) -> None:
         gpu, slot = int(worker.get("gpu", -1)), int(worker.get("slot", -1))
         if not (0 <= gpu < GPU_COUNT and 0 <= slot < SLOTS_PER_GPU):
             raise FullAblationSpecError("worker assignment exceeds 8x2 bounds")
-        if row.get("phase") == "stage2c":
+        if row.get("phase") in {"stage2a", "stage2b", "stage2c"}:
             if row.get("protocol_schema") != PROTOCOL_SCHEMA:
                 raise FullAblationSpecError("Stage2 protocol schema drift")
             if tuple(row.get("scenarios", ())) != LEO_SCENARIOS:
                 raise FullAblationSpecError("Stage2 scenario list drift")
-            if int(row.get("k_shot", 0)) <= 0:
-                raise FullAblationSpecError("Stage2 K must be positive")
+            if row.get("phase") == "stage2a":
+                if row.get("k_shot") is not None:
+                    raise FullAblationSpecError(
+                        "Stage2-A cannot declare target-support K"
+                    )
+            elif int(row.get("k_shot", 0)) <= 0:
+                raise FullAblationSpecError("Stage2-B/C K must be positive")
             if int(row.get("method_seed", -1)) != int(
                 row.get("train_seed", -2)
             ):
@@ -717,6 +823,7 @@ __all__ = [
     "build_phase1_t1_rows",
     "build_phase1_label_rows",
     "build_phase2_rows",
+    "build_phase2_state_rows",
     "bind_stage2_row",
     "stage2_physical_execution_key",
     "validate_artifact_record",

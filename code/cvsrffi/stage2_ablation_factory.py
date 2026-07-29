@@ -1,12 +1,4 @@
-"""Frozen catalog for the Phase2 T1 ablation methods.
-
-This module deliberately contains configuration identity only.  It does not
-pretend that the numerical Stage2 implementations are ready: ``fit`` fails
-closed until a concrete executor is registered in a later implementation
-step.  Keeping the catalog executable but not runnable lets plan builders and
-review tests bind exact method identities without silently falling back to an
-older Stage2 route.
-"""
+"""Frozen catalog and support-only factory for Phase2 T1 ablation methods."""
 
 from __future__ import annotations
 
@@ -62,7 +54,7 @@ _FULL_CONFIG: dict[str, Any] = {
     "fisher_profile": "d62_bounded_pareto_atomic",
     "head_profile": "d42_equal_prior_affine",
     "quantization_profile": (
-        "f3_dual_residual_int8_fp16_block_scale_bias_fp32_diag_metric"
+        "f3_dual_residual_int8_fp16_block_scale_bias_fp16_diag_metric"
     ),
     "fallback_profile": "p2_fallback_kle2",
 }
@@ -220,7 +212,7 @@ def stage2_config_diff(
 
 
 class Stage2AblationMethod:
-    """Fail-closed placeholder with a support-only fit boundary."""
+    """Frozen arm identity with a query-inaccessible numerical fit boundary."""
 
     def __init__(self, ablation_id: str):
         self.spec = get_stage2_arm(ablation_id)
@@ -231,20 +223,40 @@ class Stage2AblationMethod:
         self,
         *,
         deployment_bundle: Mapping[str, Any],
-        support_iq: Any | None,
-        support_labels: Any | None,
-        registered_classes: Any | None,
+        old_support_features: Any | None,
+        old_support_labels: Any | None,
+        old_classes: Any,
+        new_support_features: Any | None = None,
+        new_support_labels: Any | None = None,
+        new_classes: Any = (),
+        seed: int,
+        device: Any = "cpu",
     ) -> Any:
-        """Fit from immutable bundle and legal support only; query is absent."""
+        """Fit from immutable deployment state and legal support only."""
 
-        del deployment_bundle, support_iq, support_labels, registered_classes
-        raise Stage2AblationNotImplementedError(
-            f"{self.spec.ablation_id} has catalog identity only; numerical fit is not implemented"
+        from cvsrffi.stage2_ablation_executors import fit_stage2_ablation
+
+        return fit_stage2_ablation(
+            ablation_id=self.spec.ablation_id,
+            old_support_features=old_support_features,
+            old_support_labels=old_support_labels,
+            old_classes=old_classes,
+            new_support_features=new_support_features,
+            new_support_labels=new_support_labels,
+            new_classes=new_classes,
+            deployment_prototypes=deployment_bundle.get("deployment_prototypes"),
+            ground_basis=deployment_bundle.get("ground_basis"),
+            ground_spectral_weights=deployment_bundle.get(
+                "ground_spectral_weights"
+            ),
+            ground_audit=deployment_bundle.get("ground_audit"),
+            seed=int(seed),
+            device=device,
         )
 
 
 def build_stage2_method(ablation_id: str) -> Stage2AblationMethod:
-    """Build the fail-closed catalog method for signature-level integration."""
+    """Build a frozen, support-only numerical arm."""
 
     return Stage2AblationMethod(ablation_id)
 
