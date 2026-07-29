@@ -775,3 +775,16 @@ np.asarray(tensor.detach().float().cpu().tolist(), dtype=np.float32)
 独立复审确认FP32值、shape、finite、归一化和padding语义保持；float16/32/64、int64、bfloat16及非连续tensor的新旧桥接逐元素一致，6×160列表转换资源开销可忽略，同路径无`.numpy()`或`torch.from_numpy()`残留。结论P0=0、P1=0，允许commit及fresh N607 CPU-only formal preflight；预检通过前仍不得启动D18/GPU。
 
 当前状态：`LOCAL_TORCH_NUMPY_ABI_FIX_REVIEWED_P0_0_P1_0 / COMMIT_PENDING / FRESH_V8_NOT_RELEASED / NO_PERFORMANCE_RESULT`。
+
+## 2026-07-30 d1f5e45c封存与fresh v8预登记
+
+Torch/NumPy ABI修复、测试、v7失败证据和追踪表已封存为Git commit`d1f5e45c72f20e6d81ea5d6fef5e05fcd5f56f0e`。新的source plan：
+
+|计划|逻辑行数|Git绑定|SHA256|
+|---|---:|---|---|
+|`stage2_states_plan_d1f5e45c.json`|325|`d1f5e45c72f20e6d81ea5d6fef5e05fcd5f56f0e`|`f8d4687b05ffeada700d9e1b76da30b5fbc4e8657e50e7e2b08cf97a767d77f2`|
+|`stage2c_screening_plan_d1f5e45c.json`|1425|`d1f5e45c72f20e6d81ea5d6fef5e05fcd5f56f0e`|`546fe838730f6c22d1bb3197213e9ae246c85874e63dbda810421898a186dcdf`|
+
+两份计划旧commit出现次数为0，计划/release定向回归12/12通过。fresh v8使用独立报告`automation_reports/CV-SincNet/cvs_full_ablation_phase2_t1_20260730_v8_d1f5e45c/report.md`，新release/input/run根均不可覆盖。v8只重做CPU formal预检和此前从未成功的feature cache；复用v5完整predictor package及所有既有合法D18缓存，不要求不同批次数据一致。
+
+当前状态：`COMMIT_D1F5E45C_LOCAL_VERIFIED / SOURCE_PLANS_READY / FRESH_V8_CPU_PREFLIGHT_AUTHORIZED / NO_PERFORMANCE_RESULT`。
