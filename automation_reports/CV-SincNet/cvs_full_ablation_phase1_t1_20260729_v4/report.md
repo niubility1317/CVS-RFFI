@@ -1,5 +1,7 @@
 # CVS-RFFI Phase1第一层全量消融v4预登记
 
+> 2026-07-29最终状态：`NOT_LAUNCHED_SUPERSEDED_BY_V5_REUSE`。正式run root、log root和`launch.out`均未创建；仅保留已上传的release sidecar与checkout，不删除、不覆盖。后续由`cvs_full_ablation_phase1_t1_20260729_v5_reuse`复用10行、只补导出1行并新训练19行。
+
 ## 身份与状态
 
 |字段|值|

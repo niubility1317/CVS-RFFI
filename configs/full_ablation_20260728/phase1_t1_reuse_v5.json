@@ -1,0 +1,88 @@
+{
+  "schema": "cvs.full_ablation.phase1_reuse.v1",
+  "source_run_id": "cvs_full_ablation_phase1_t1_20260729_v3",
+  "policy": {
+    "direct_reuse": "Reuse only rows with complete nonempty checkpoint, prototype PT/JSON, terminal, completion, resource, heldout, and log artifacts.",
+    "reexport_only": "Reuse completed E200 source-validation checkpoint and run the current reviewed prototype exporter only.",
+    "safe_resume": false,
+    "repeat_dataset_hash_audit": false
+  },
+  "rows": [
+    {
+      "mode": "direct_reuse",
+      "row_key": "P1-SUP__train_seed_7281101",
+      "source_log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/cvs_full_ablation_phase1_t1_20260729_v3/P1-SUP__train_seed_7281101.out",
+      "source_output_dir": "/home/szu2070436088/2510044040/CV-SincNet/runs/cvs_full_ablation_phase1_t1_20260729_v3/P1-SUP__train_seed_7281101",
+      "source_run_id": "cvs_full_ablation_phase1_t1_20260729_v3"
+    },
+    {
+      "mode": "direct_reuse",
+      "row_key": "P1-SUP__train_seed_7281102",
+      "source_log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/cvs_full_ablation_phase1_t1_20260729_v3/P1-SUP__train_seed_7281102.out",
+      "source_output_dir": "/home/szu2070436088/2510044040/CV-SincNet/runs/cvs_full_ablation_phase1_t1_20260729_v3/P1-SUP__train_seed_7281102",
+      "source_run_id": "cvs_full_ablation_phase1_t1_20260729_v3"
+    },
+    {
+      "mode": "direct_reuse",
+      "row_key": "P1-SUP__train_seed_7281103",
+      "source_log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/cvs_full_ablation_phase1_t1_20260729_v3/P1-SUP__train_seed_7281103.out",
+      "source_output_dir": "/home/szu2070436088/2510044040/CV-SincNet/runs/cvs_full_ablation_phase1_t1_20260729_v3/P1-SUP__train_seed_7281103",
+      "source_run_id": "cvs_full_ablation_phase1_t1_20260729_v3"
+    },
+    {
+      "mode": "direct_reuse",
+      "row_key": "P1-SUP__train_seed_7281104",
+      "source_log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/cvs_full_ablation_phase1_t1_20260729_v3/P1-SUP__train_seed_7281104.out",
+      "source_output_dir": "/home/szu2070436088/2510044040/CV-SincNet/runs/cvs_full_ablation_phase1_t1_20260729_v3/P1-SUP__train_seed_7281104",
+      "source_run_id": "cvs_full_ablation_phase1_t1_20260729_v3"
+    },
+    {
+      "mode": "direct_reuse",
+      "row_key": "P1-SUP__train_seed_7281105",
+      "source_log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/cvs_full_ablation_phase1_t1_20260729_v3/P1-SUP__train_seed_7281105.out",
+      "source_output_dir": "/home/szu2070436088/2510044040/CV-SincNet/runs/cvs_full_ablation_phase1_t1_20260729_v3/P1-SUP__train_seed_7281105",
+      "source_run_id": "cvs_full_ablation_phase1_t1_20260729_v3"
+    },
+    {
+      "mode": "direct_reuse",
+      "row_key": "P1-A0__train_seed_7281101",
+      "source_log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/cvs_full_ablation_phase1_t1_20260729_v3/P1-A0__train_seed_7281101.out",
+      "source_output_dir": "/home/szu2070436088/2510044040/CV-SincNet/runs/cvs_full_ablation_phase1_t1_20260729_v3/P1-A0__train_seed_7281101",
+      "source_run_id": "cvs_full_ablation_phase1_t1_20260729_v3"
+    },
+    {
+      "mode": "direct_reuse",
+      "row_key": "P1-A0__train_seed_7281102",
+      "source_log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/cvs_full_ablation_phase1_t1_20260729_v3/P1-A0__train_seed_7281102.out",
+      "source_output_dir": "/home/szu2070436088/2510044040/CV-SincNet/runs/cvs_full_ablation_phase1_t1_20260729_v3/P1-A0__train_seed_7281102",
+      "source_run_id": "cvs_full_ablation_phase1_t1_20260729_v3"
+    },
+    {
+      "mode": "direct_reuse",
+      "row_key": "P1-A0__train_seed_7281103",
+      "source_log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/cvs_full_ablation_phase1_t1_20260729_v3/P1-A0__train_seed_7281103.out",
+      "source_output_dir": "/home/szu2070436088/2510044040/CV-SincNet/runs/cvs_full_ablation_phase1_t1_20260729_v3/P1-A0__train_seed_7281103",
+      "source_run_id": "cvs_full_ablation_phase1_t1_20260729_v3"
+    },
+    {
+      "mode": "direct_reuse",
+      "row_key": "P1-A0__train_seed_7281104",
+      "source_log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/cvs_full_ablation_phase1_t1_20260729_v3/P1-A0__train_seed_7281104.out",
+      "source_output_dir": "/home/szu2070436088/2510044040/CV-SincNet/runs/cvs_full_ablation_phase1_t1_20260729_v3/P1-A0__train_seed_7281104",
+      "source_run_id": "cvs_full_ablation_phase1_t1_20260729_v3"
+    },
+    {
+      "mode": "direct_reuse",
+      "row_key": "P1-A0__train_seed_7281105",
+      "source_log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/cvs_full_ablation_phase1_t1_20260729_v3/P1-A0__train_seed_7281105.out",
+      "source_output_dir": "/home/szu2070436088/2510044040/CV-SincNet/runs/cvs_full_ablation_phase1_t1_20260729_v3/P1-A0__train_seed_7281105",
+      "source_run_id": "cvs_full_ablation_phase1_t1_20260729_v3"
+    },
+    {
+      "mode": "reexport_only",
+      "row_key": "P1-B0__train_seed_7281101",
+      "source_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/cvs_full_ablation_phase1_t1_20260729_v3/P1-B0__train_seed_7281101/best_source_validation_ssdg.pth",
+      "source_run_id": "cvs_full_ablation_phase1_t1_20260729_v3"
+    }
+  ]
+}

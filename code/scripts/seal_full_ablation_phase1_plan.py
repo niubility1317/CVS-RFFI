@@ -32,6 +32,7 @@ RELEASE_RELATIVE_PATHS = (
     "code/scripts/reexport_phase1_prototypes.py",
     "code/scripts/run_full_ablation_phase1_t1.py",
     "code/scripts/seal_full_ablation_phase1_plan.py",
+    "configs/full_ablation_20260728/phase1_t1_reuse_v5.json",
     "configs/full_ablation_20260728/seed_registry.json",
 )
 
