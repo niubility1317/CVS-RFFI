@@ -479,6 +479,40 @@ def test_execute_rejects_unreviewed_train_script(monkeypatch, tmp_path) -> None:
         run_release(args, {})
 
 
+def test_execute_rejects_unreviewed_reuse_manifest(
+    monkeypatch,
+    tmp_path,
+) -> None:
+    monkeypatch.setattr(
+        phase1_runner,
+        "validate_phase1_release_plan",
+        lambda *_args, **_kwargs: None,
+    )
+    monkeypatch.setattr(
+        phase1_runner,
+        "verify_release_checkout",
+        lambda *_args, **_kwargs: None,
+    )
+    plan = {
+        "release_files": {
+            (
+                "configs/full_ablation_20260728/"
+                "phase1_t1_reuse_v5.json"
+            ): "a" * 64,
+        }
+    }
+    args = SimpleNamespace(
+        repo_root=str(tmp_path),
+        train_script=str(tmp_path / "code" / "SSDG" / "train_ssdg.py"),
+        reuse_manifest=str(tmp_path / "unreviewed.json"),
+    )
+    with pytest.raises(
+        Phase1RunnerError,
+        match="reviewed reuse manifest",
+    ):
+        run_release(args, plan)
+
+
 def test_completion_receipt_binds_row_plan_split_and_terminal(tmp_path) -> None:
     plan = _plan()
     plan["formal_launch_authority"] = True

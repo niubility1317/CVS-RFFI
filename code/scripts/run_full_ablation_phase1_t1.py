@@ -977,6 +977,23 @@ def run_release(args: argparse.Namespace, plan: Mapping[str, Any]) -> int:
     validate_phase1_release_plan(plan, require_launch_authority=True)
     repo_root = Path(args.repo_root).resolve()
     verify_release_checkout(plan, repo_root)
+    reuse_relative_path = (
+        "configs/full_ablation_20260728/phase1_t1_reuse_v5.json"
+    )
+    reviewed_reuse_manifest = (
+        repo_root / reuse_relative_path
+    ).resolve()
+    reuse_is_release_bound = (
+        reuse_relative_path in dict(plan.get("release_files") or {})
+    )
+    if reuse_is_release_bound and (
+        not str(getattr(args, "reuse_manifest", "")).strip()
+        or Path(args.reuse_manifest).resolve()
+        != reviewed_reuse_manifest
+    ):
+        raise Phase1RunnerError(
+            "execute mode requires the reviewed reuse manifest"
+        )
     expected_train_script = (
         repo_root / "code" / "SSDG" / "train_ssdg.py"
     ).resolve()
