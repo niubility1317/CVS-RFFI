@@ -270,4 +270,8 @@ v2失败已按本次启动自身的运行时完整性问题修复，不引入数
 - 修复后2文件定向回归28项通过；7文件定向回归共64项通过、0项失败；`git diff --check`通过。
 - v3必须使用新的、启动前不存在的release/output路径；正式命令必须以`CUBLAS_WORKSPACE_CONFIG=:4096:8 CUDA_VISIBLE_DEVICES=<gpu>`启动。只有fresh N607 CUDA parity满足固定batch`1/8/64/256`、全部输出有限、`max_abs<=1e-3`且六类argmax mismatch总数为0，才允许继续生成签名请求。
 - 最终独立增量复审为P0=0、P1=0，确认正式入口零输入访问门禁、runtime二次门禁、receipt/loader精确绑定和fresh/non-overwrite边界均闭合，允许Git封存及fresh v3发布。
-- 当前状态为`LOCAL_VERIFIED / INDEPENDENT_REVIEW_PASSED / COMMIT_PENDING`；未签名、未启动Stage2、未读取性能。
+- 修复已封存为Git commit`6fd77c22e1edb5eb710fb1f152e25214fb27e437`。关键文件SHA256：deployment builder=`b3d516a6a8464e0fc3fdd23a1c19e908674222af069b95eda467684e124f699c`；deployment bundle loader=`79b361811a4ed9a91f0159248d024c8dd7d2319c830e9a3785313c671d065074`；binding registry=`d0e9700cb1b3451d1ddd8516df9fe1d87e2fc20c003e49bba91f3a2b800ba039`；P90 exporter=`04b21568a6444bce50095d052f384692cb56cf7519fbcd6125caffdd855857ee`。
+- fresh v3 release root预登记为`/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2_t1_20260729_v3_6fd77c22`，启动前必须不存在，且不得复制、续跑或覆盖v1/v2 partial。
+- formal prepare固定使用`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`，工作目录为fresh v3 release root下的`code`，命令前缀必须为`CUBLAS_WORKSPACE_CONFIG=:4096:8 CUDA_VISIBLE_DEVICES=<free_gpu> PYTHONPATH=<fresh_v3>/code`；输入继续复用已闭合的`P1-FULL__train_seed_7281105`checkpoint、completion receipt和稳定class binding，不重审数据，也不要求跨启动数据一致。
+- 预期输出为fresh runtime、固定batch parity receipt、9成员unsigned package、prepare receipt、detached seal和signing request；本轮发布执行者只能运行到签名请求闭合并回传，私钥始终只在本地离线签名。
+- 当前状态为`LOCAL_VERIFIED / INDEPENDENT_REVIEW_PASSED / COMMITTED / FRESH_V3_RELEASE_READY`；未签名、未启动Stage2、未读取性能。
