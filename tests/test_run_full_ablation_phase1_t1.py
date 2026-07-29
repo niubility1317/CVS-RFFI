@@ -65,10 +65,23 @@ def _label_plan() -> dict:
     plan["phase1_label_reference_sha256"] = "e" * 64
     plan["phase1_label_reference"] = {
         "schema": "cvs.full_ablation.phase1_label_reference.v1",
+        "design_id": "cvs_full_ablation_phase1_phase2_20260728",
         "ablation_id": "P1-FULL",
         "rho_label": 0.10,
         "reuse_mode": "reference_only_not_dispatched",
         "required_before_label_curve_analysis": True,
+        "source_run_id": "phase1-t1-v5",
+        "source_run_root": "/runs/phase1-t1-v5",
+        "source_log_root": "/logs/phase1-t1-v5",
+        "expected_artifacts": [
+            "best_source_validation_ssdg.pth",
+            "phase1_training_completion_receipt.json",
+            "phase1_terminal_status.json",
+            "phase1_resource_summary.json",
+            "frozen_phase1_heldout_eval.json",
+            "phase2_prototypes.pt",
+            "phase2_prototypes.json",
+        ],
         "rows": [
             {
                 "row_key": f"P1-FULL__train_seed_{seed}",
@@ -808,10 +821,27 @@ def test_label_execute_does_not_require_the_t1_reuse_manifest(
     train_script = repo_root / "code" / "SSDG" / "train_ssdg.py"
     train_script.parent.mkdir(parents=True)
     train_script.write_text("# reviewed path\n", encoding="utf-8")
+    reference_path = (
+        repo_root
+        / "configs"
+        / "full_ablation_20260728"
+        / "phase1_label_rho100_reference_v1.json"
+    )
+    reference_path.parent.mkdir(parents=True)
+    reference_payload = {"reviewed": "reference"}
+    reference_path.write_text(
+        json.dumps(reference_payload),
+        encoding="utf-8",
+    )
     plan = {
         "stage": "label",
         "python_environment_id": Path(sys.prefix).name,
+        "phase1_label_reference": reference_payload,
         "release_files": {
+            (
+                "configs/full_ablation_20260728/"
+                "phase1_label_rho100_reference_v1.json"
+            ): "b" * 64,
             (
                 "configs/full_ablation_20260728/"
                 "phase1_t1_reuse_v5.json"
@@ -848,6 +878,18 @@ def test_label_execute_rejects_any_reuse_manifest(
     train_script = repo_root / "code" / "SSDG" / "train_ssdg.py"
     train_script.parent.mkdir(parents=True)
     train_script.write_text("# reviewed path\n", encoding="utf-8")
+    reference_path = (
+        repo_root
+        / "configs"
+        / "full_ablation_20260728"
+        / "phase1_label_rho100_reference_v1.json"
+    )
+    reference_path.parent.mkdir(parents=True)
+    reference_payload = {"reviewed": "reference"}
+    reference_path.write_text(
+        json.dumps(reference_payload),
+        encoding="utf-8",
+    )
     args = SimpleNamespace(
         repo_root=str(repo_root),
         train_script=str(train_script),
@@ -858,7 +900,19 @@ def test_label_execute_rejects_any_reuse_manifest(
         Phase1RunnerError,
         match="does not accept a reuse manifest",
     ):
-        run_release(args, {"stage": "label", "release_files": {}})
+        run_release(
+            args,
+            {
+                "stage": "label",
+                "phase1_label_reference": reference_payload,
+                "release_files": {
+                    (
+                        "configs/full_ablation_20260728/"
+                        "phase1_label_rho100_reference_v1.json"
+                    ): "b" * 64,
+                },
+            },
+        )
 
 
 def test_completion_receipt_binds_row_plan_split_and_terminal(tmp_path) -> None:

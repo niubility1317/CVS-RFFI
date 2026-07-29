@@ -156,6 +156,15 @@ def validate_phase1_release_plan(
             )
             for row in reference_rows
         }
+        required_reference_artifacts = {
+            "best_source_validation_ssdg.pth",
+            "phase1_training_completion_receipt.json",
+            "phase1_terminal_status.json",
+            "phase1_resource_summary.json",
+            "frozen_phase1_heldout_eval.json",
+            "phase2_prototypes.pt",
+            "phase2_prototypes.json",
+        }
         reference_hash = str(
             plan.get("phase1_label_reference_sha256", "")
         ).strip().lower()
@@ -163,6 +172,7 @@ def validate_phase1_release_plan(
             reference.get("schema")
             != "cvs.full_ablation.phase1_label_reference.v1"
             or reference.get("ablation_id") != "P1-FULL"
+            or reference.get("design_id") != DESIGN_ID
             or abs(float(reference.get("rho_label", -1.0)) - 0.10)
             > 1e-12
             or reference.get("reuse_mode")
@@ -171,6 +181,11 @@ def validate_phase1_release_plan(
             is not True
             or len(reference_hash) != 64
             or actual_reference_rows != expected_reference_rows
+            or not str(reference.get("source_run_id", "")).strip()
+            or not str(reference.get("source_run_root", "")).strip()
+            or not str(reference.get("source_log_root", "")).strip()
+            or set(reference.get("expected_artifacts") or [])
+            != required_reference_artifacts
         ):
             raise Phase1RunnerError(
                 "Phase1 label plan lacks the five-row rho=0.10 reference"
@@ -1176,6 +1191,24 @@ def run_release(args: argparse.Namespace, plan: Mapping[str, Any]) -> int:
     validate_phase1_release_plan(plan, require_launch_authority=True)
     repo_root = Path(args.repo_root).resolve()
     verify_release_checkout(plan, repo_root)
+    if str(plan.get("stage", "")).strip().lower() == "label":
+        label_reference_relative = (
+            "configs/full_ablation_20260728/"
+            "phase1_label_rho100_reference_v1.json"
+        )
+        label_reference_path = (
+            repo_root / label_reference_relative
+        ).resolve()
+        if (
+            label_reference_relative
+            not in dict(plan.get("release_files") or {})
+            or not label_reference_path.is_file()
+            or _load_json(label_reference_path)
+            != dict(plan.get("phase1_label_reference") or {})
+        ):
+            raise Phase1RunnerError(
+                "execute label reference differs from the reviewed release"
+            )
     reuse_relative_path = (
         "configs/full_ablation_20260728/phase1_t1_reuse_v5.json"
     )

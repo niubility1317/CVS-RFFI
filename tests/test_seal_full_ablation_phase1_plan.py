@@ -77,10 +77,23 @@ def _label_plan() -> dict:
     plan["phase1_label_reference_sha256"] = "e" * 64
     plan["phase1_label_reference"] = {
         "schema": "cvs.full_ablation.phase1_label_reference.v1",
+        "design_id": "cvs_full_ablation_phase1_phase2_20260728",
         "ablation_id": "P1-FULL",
         "rho_label": 0.10,
         "reuse_mode": "reference_only_not_dispatched",
         "required_before_label_curve_analysis": True,
+        "source_run_id": "phase1-t1-v5",
+        "source_run_root": "/runs/phase1-t1-v5",
+        "source_log_root": "/logs/phase1-t1-v5",
+        "expected_artifacts": [
+            "best_source_validation_ssdg.pth",
+            "phase1_training_completion_receipt.json",
+            "phase1_terminal_status.json",
+            "phase1_resource_summary.json",
+            "frozen_phase1_heldout_eval.json",
+            "phase2_prototypes.pt",
+            "phase2_prototypes.json",
+        ],
         "rows": [
             {
                 "row_key": f"P1-FULL__train_seed_{seed}",
