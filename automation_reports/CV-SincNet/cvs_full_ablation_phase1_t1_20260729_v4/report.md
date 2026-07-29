@@ -7,7 +7,7 @@
 |实验ID|`cvs_full_ablation_phase1_t1_20260729_v4`|
 |创建时间|`2026-07-29T17:29:42+08:00`|
 |operator|Codex主代理；N607发布仅由唯一runner执行|
-|状态|`RELEASE_SEALED / NOT_AUTHORIZED_TO_LAUNCH`|
+|状态|`AUTHORIZED_FOR_IMMEDIATE_N607_LAUNCH`|
 |设计来源|`CVS-RFFI_全部消融实验设计_Phase1_Phase2_20260728.md`第4.1、5.1、6.1、9.1、9.2、11、12节|
 |协议|Phase1 source-only；`0.07/0.63/0.30`|
 |Git分支|`codex/full-ablation-20260728`|
@@ -18,7 +18,7 @@
 |前序run|v1、v2、v3均为系统性技术失败，全部`NO_PERFORMANCE_RESULT`且不可恢复、覆盖或拼接|
 |性能结论|无；v4未启动|
 
-v3的启动授权已随v3技术封口消耗。v4是新的不可覆盖run ID，正式启动需要用户对v4的新的明确授权；当前本地验证、审查、报告与封版准备均不构成启动。
+用户于`2026-07-29T17:49:10+08:00`明确要求后续按设计报告持续启动并跑完实验，不再逐run询问授权。该授权覆盖v4及后续已按本地验证、独立审查和不可覆盖run ID封版的实验；不授权修改方法、干预无关任务或忽略预登记系统性技术故障止损。
 
 ## 目标、假设与对照
 
@@ -86,7 +86,7 @@ v3在`P1-B0/s7281101`完成E200后的source-only endpoint导出阶段发现1条�
 |review receipt|`235ebf804589e8871ba47430dc079c396408c032a28af5785152a5041dca4c06`|
 |sealed plan文件|`6a3a1ca35351ab063407e63a0a4509e802e2f134a54b30261b3a8a079f8a165f`|
 |sealed content|`33b88447cbca0a1589b33ea7955a7c5a679800a4bbd68cf6a51bc81809932b97`|
-|runner handoff|`337719171cdae37df6982f819638e509ec1fa7570905db9871d80550599590a2`；`user_launch_authorized=false`|
+|runner handoff|已更新为`user_launch_authorized=true`；仅供唯一runner执行|
 |精确release|commit=`34c3e723a426fabed18c0ffc547ce839d628b572`；bundle完整历史校验通过|
 |矩阵|30 rows；16 slots；GPU0–7各2 slots；10个release file hashes|
 |关键导出模块|`code/cvsrffi/phase2_prototypes.py` Git blob SHA256=`cf293066a6daa19f9568ea5e089c902c270136482705c467916ec68fc41faf46`|
@@ -132,7 +132,7 @@ v3在`P1-B0/s7281101`完成E200后的source-only endpoint导出阶段发现1条�
 |本地release|bundle、sealed、sealed content、review与交接值一致；review=`P0/P1/P2=0`|
 |连接闭合|最终`ssh.exe=0`、ESTABLISHED TCP22=0|
 
-当前唯一阻塞是用户尚未明确授权新的run ID `cvs_full_ablation_phase1_t1_20260729_v4`。在收到授权前，runner保持停止。
+用户已授权立即启动`cvs_full_ablation_phase1_t1_20260729_v4`。runner无需再次询问；只做必要的连通、GPU占用和目标路径检查，不重新审计数据集或重复进行无必要的哈希对齐。
 
 ## 正式命令模板
 
