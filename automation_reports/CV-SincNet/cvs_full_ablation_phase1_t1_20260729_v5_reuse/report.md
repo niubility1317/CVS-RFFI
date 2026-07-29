@@ -177,6 +177,27 @@ GPU2的第二个静态槽用于B0补导出，完成后该槽无后续行，因�
 
 当前仅能下结论为`LANDED / RUNNING / FIRST-WAVE HEALTHY`，不能据此形成任何性能结论。
 
+### 19:49直连preflight与健康快照
+
+|字段|值|
+|---|---|
+|本地直连preflight|2026-07-29 19:46:51+08:00通过；直连配置、普通账号身份、服务器时间、项目根目录及8张RTX 3090均正常；退出码0|
+|服务器快照时间|2026-07-29 19:49:41+08:00|
+|runner与release绑定|实际runner PID`711523`、PPID`711522`仍存活；CWD为冻结release/code；完整cmdline中的plan、repo root、run root、log root、Python、训练脚本、复用manifest及reexport脚本继续与交接命令一致并带`--execute`；release为tracked-clean，HEAD=`4592bdd9497feffe69298a20c436abd177801231`|
+|行计数|dispatch launched=16、completed=1、succeeded=1、failed=0、nonzero=0；唯一完成状态仍是已闭合的`P1-B0__train_seed_7281101`补导出；20个dispatch中尚有4个D0训练行未启动|
+|完成行闭环|本次没有新增训练行产生`phase1_terminal_status.json`或`phase1_training_completion_receipt.json`，因此无需新增checkpoint、prototype PT/JSON、resource summary、held-out eval、terminal、completion receipt和退出码核验；既有B0补导出状态仍为return code 0且receipt有效|
+|第二波状态|15个首波训练行均仍存活，原runner尚无已完成训练槽可自动调度后续4个D0行；未人工补跑、重启或改变队列|
+|本run训练占用|T1在GPU0–7的活跃训练实验数依次为`2/2/1/2/2/2/2/2`，合计15|
+|整机训练占用|GPU2另有1个label实验，其余GPU无额外训练实验；按训练主进程去除DataLoader子进程后，GPU0–7总训练实验数均为2，没有超过每卡2实验上限|
+|GPU利用率|GPU0–7依次为85%、91%、73%、99%、97%、86%、95%、99%；对应显存6091、6319、6047、6395、6087、6217、6397、6191MiB|
+|训练进度|15个活跃T1行最新`[EPOCH-BEGIN]`为E67–E95；仅作为非停滞健康证据，不读取或比较中间性能|
+|日志增长|T1逐行日志总量由19:20的4,308,607字节增至6,559,248字节，增加2,250,641字节|
+|异常/协议|完整T1逐行日志硬错误扫描计数0；P0标记计数0；失败状态0、非零状态0，因此没有异常指纹，未触发预注册技术停机规则|
+|汇总产物|log root中的`runner_summary.json`仍不存在，符合完整矩阵尚未完成的预期|
+|SSH清理|所有短连接退出后确认本地`ssh.exe=0`；到`172.31.111.215:22`及bridge`172.31.105.18:22`的ESTABLISHED连接均为0|
+
+当前仅能下结论为`LANDED / RUNNING / FIRST-WAVE HEALTHY`，不能据此形成任何性能结论。
+
 ## 风险与完成后检查
 
 - 复用行和新训练行不是同一发布批次，最终统计必须保留来源列。

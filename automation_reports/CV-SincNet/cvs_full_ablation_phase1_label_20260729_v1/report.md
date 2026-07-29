@@ -126,6 +126,20 @@ set -o noclobber; : > /home/szu2070436088/2510044040/CV-SincNet/logs/cvs_full_ab
 
 `launch.out`当前为0字节，因为runner将训练输出写入各行独占`.out`且自身尚无摘要输出；首行日志持续增长并含完整配置、telemetry和epoch标记，因此不属于日志受损或训练无输出。
 
+### 运行中健康检查：2026-07-29 19:47:47 CST
+
+|检查项|结果|
+|---|---|
+|直连预检|通过；普通账号、项目根和8张RTX 3090正常可见|
+|runner绑定|launch PID=`745606`、runner PID=`745607`均存活；runner CWD、release、sealed plan、run root和log root绑定正确|
+|调度计数|launched=1、active=1、waiting=13、completed=0、succeeded=0、failed=0|
+|活跃行|`P1-LABEL-RHO005__train_seed_7281103`，PID=`745732`，GPU2|
+|健康进度|从上次`E010/200`推进至`E025/200`；row日志从63477字节增长到149694字节|
+|GPU容量|GPU0–7各有2个GPU计算进程；本run仅在GPU2占1个槽；总利用率92%–99%，显存约6.0–6.4GiB/卡；无卡超过2个训练进程|
+|技术异常|硬错误0、P0=0、非零status=0、异常指纹0、重复异常指纹0|
+|完成输出|completion receipt=0、terminal=0、heldout=0、prototype PT/JSON=0、runner summary不存在；首行尚未完成，因此本轮不执行完成artifact闭合验证|
+|操作结论|健康规则未触发；只监控，不重启、不调参、不干预T1、不做数据hash或数据集审计|
+
 ## 完成后结果表
 
 |rho|seed|labeled数|unlabeled数|source validation数|best epoch|strict UDU|receiver floor|pseudo precision|pseudo coverage|P1-SUP同seed增益|checkpoint|状态|
