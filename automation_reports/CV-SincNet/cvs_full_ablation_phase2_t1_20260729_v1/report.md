@@ -366,3 +366,16 @@ deployment实现提交更新为`6fd77c22e1edb5eb710fb1f152e25214fb27e437`后，�
 |`stage2c_screening_plan_6fd77c22.json`|1425|`6fd77c22e1edb5eb710fb1f152e25214fb27e437`|`a6addc27802c492658c2e46a3ff959c62e61b609fd8437fbce7624ae0d902f53`|false|
 
 下一步只对本次实际复用的合法feature cache、predictor package与truth-sidecar生成current-launch binding registry并封存计划；不重新审计数据。封存后先启动325行Stage2-A/B states矩阵，runner按8张GPU×2槽预分配并根据外部Phase1占用自动等待，确保任意时刻每卡总进程不超过2；其闭合后启动1425逻辑行的Stage2-C矩阵。
+
+## 2026-07-30 Stage2 T1正式发布预登记
+
+- 唯一执行者：`stage2_t1_n607_release`；不得由主代理或第二个runner重复启动同一run ID。
+- 正式实现checkout：`6fd77c22e1edb5eb710fb1f152e25214fb27e437`，必须是clean Git checkout；报告与源计划封存提交为`d674dbc212901c418e18a81680c69ebad3403e0d`，只作为外部计划/证据承载，不改变执行checkout绑定。
+- Phase1 deployment binding：`/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2_t1_20260729_v3_6fd77c22/artifacts/phase1_final/deployment_binding.json`，SHA256=`1deec70778965f41010fe155335a30db3ec172cb3788c7074ffbadfe6236dee7`。
+- states run ID：`cvs_full_ablation_phase2_states_t1_20260730_v1_6fd77c22`；run root=`/home/szu2070436088/2510044040/CV-SincNet/runs/cvs_full_ablation_phase2_states_t1_20260730_v1_6fd77c22`；log root=`/home/szu2070436088/2510044040/CV-SincNet/logs/cvs_full_ablation_phase2_states_t1_20260730_v1_6fd77c22`。
+- Stage2-C run ID：`cvs_full_ablation_phase2c_t1_20260730_v1_6fd77c22`；run root=`/home/szu2070436088/2510044040/CV-SincNet/runs/cvs_full_ablation_phase2c_t1_20260730_v1_6fd77c22`；log root=`/home/szu2070436088/2510044040/CV-SincNet/logs/cvs_full_ablation_phase2c_t1_20260730_v1_6fd77c22`。只在states达到`ARTIFACTS_COMPLETE`后启动，避免两个独立capacity runner竞态超配。
+- Python固定为`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`；runner使用`run_full_ablation_stage2.py --execute`，8张GPU各2个固定slot，发现外部Phase1进程时自动等待。
+- current-launch artifact策略：复用已存在且本row内部schema/身份/完整性闭合的合法cache或prediction；其余只构建缺失项。不同启动批次不要求数据或cache hash相同，不做原始数据重审。
+- 启动前必须闭合当前实际采用的feature cache、predictor package、严格truth-sidecar、binding registry和sealed plan；run/log root必须启动前不存在，所有输出不可覆盖。
+- 健康停止仅限P0协议/安全问题、输出覆盖风险、checkout/binding错误，或至少两个不同row在产生prediction前出现相同确定性异常指纹；不得因准确率或其他性能值停止。
+- 首行及首个worker wave后必须报告launched/completed/succeeded/failed、prediction/score数、活动PID、GPU进程占用和归一化异常指纹；runner不读取性能值。
