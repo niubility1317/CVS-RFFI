@@ -55,6 +55,10 @@ runner PID=`983142`，每波8个CPU worker。第一波8/8成功，无异常指�
 
 states的正式计数口径与物理cache数量分开：100个Stage2-B combo triples跨三个arm复用并服务300个逻辑row；每个receiver/method只选K=10的Stage2-A cache作为canonical A，再生成25个Stage2-A scoring sidecar服务25个逻辑row；共325个逻辑row。K=1/2/5伴生的75个Stage2-A cache不计为canonical Stage2-A identity。
 
+## v9 feature批次封口
+
+feature runner启动后，第一波13行在产物发布前全部出现相同确定性异常指纹`ModuleNotFoundError: No module named 'cvsrffi'`。系统性故障门正确停止后续派发：`launched=13`、`completed=13`、`succeeded=0`、`failed=13`、`not_launched=86`、`systemic_stop=true`、generated scope/files=`0`。根因是子进程环境未显式加入v8 smoke已使用的`PYTHONPATH=<release>/code`。runner已退出，GPU2-7回到4MiB空闲状态；本地`ssh.exe=0`且到N607/bridge的`ESTABLISHED TCP22=0`。13份逐行日志、driver log与summary保留，本批次状态为`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。50/50 package不受影响，供fresh v10只读复用。
+
 ## 完成后回填
 
 回填package/feature/sidecar/registry/seal计数、精确runner命令/PID/GPU映射、first-wave健康状态、正式states启动证据及最终artifact状态。完整结果前不作性能结论。
