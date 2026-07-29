@@ -204,6 +204,35 @@ cd /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase1_t
 
 该时点仍为launched=21、completed=5、succeeded=5、failed=0、active=16；active hard error=0。16个worker绑定未漂移，GPU0–7每卡2个run-owned PID、无外部PID，利用率92%–99%，显存4.20–6.44GiB；最终SSH/TCP22均为0。
 
+## 10行完成里程碑
+
+`2026-07-29T16:25:44+08:00`，v3达到completed>=10：
+
+|项目|证据|
+|---|---|
+|矩阵计数|launched=25、completed=10、succeeded=10、failed=0、active=15|
+|完成范围|`P1-SUP`5个paired seed与`P1-A0`5个paired seed|
+|artifact计数|prototype=20、terminal=10、completion=10|
+|完整日志|10行均完整读取9020行；Traceback/OOM/Killed/Runtime/Assertion/协议错误/Inf均为0|
+|NaN|仅为相同5类禁用训练指标占位，不是执行异常|
+|闭合|每行checkpoint、2个prototype、terminal、completion、resource、heldout及hash全部闭合|
+|安全|P0=0、硬错误=0、异常指纹=0；无停止条件|
+|连接闭合|最终`ssh.exe=0`、ESTABLISHED TCP22=0|
+
+active由16降至15不是调度丢失。sealed plan中GPU7/slot0只登记`P1-A0/s7281105`，该行完成后该slot的active与pending均为空；其余5个尚未launch的`P1-B0/s7281102–1105`和`P1-C0/s7281101`固定等待各自登记slot。为保持冻结矩阵与row/slot绑定，不人为迁移或补填该空闲slot。
+
+`2026-07-29T16:24:26+08:00`活跃日志解析至：
+
+|arm|最新epoch范围|
+|---|---|
+|`P1-FULL`|E164–169|
+|`P1-B0/s7281101`|E173|
+|`P1-C0/s7281102–1105`|E106–108|
+|`P1-D0/s7281101`|E119|
+|`P1-D0/s7281102–1105`|E14–20|
+
+15个active worker的sealed GPU/slot/CUDA/CWD/run绑定全部通过，`BINDING_BAD=0`。GPU0–6各2个run-owned PID，GPU7为1个，全部external=0。
+
 ## 健康停止与成功标准
 
 - 只因P0协议/安全违规、launcher级确定性故障、输出覆盖风险、缺失prediction闭环，或至少两个不同row在prediction前出现同一归一化异常指纹而停止。
