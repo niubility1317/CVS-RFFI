@@ -422,3 +422,25 @@ current-launch覆盖率盘点确认states源计划325个logical row对应125个�
 第二轮独立复审结论为P0=0、P1=0，确认current-launch attestation与当前deployment及历史mapping证据一致、formal loader先于cache open、五类artifact路径锁定、显式digest与component content root闭合、authority/异常/参数传播负测完整，legacy无formal参数路径兼容。允许Git封存并生成新commit绑定计划；提交必须强制纳入受`.gitignore`影响的attestation，旧`6fd77c22`计划继续禁止启动。
 
 当前状态：`P0_P1_REVIEW_PASS / READY_FOR_GIT_SEAL / NO_STAGE2_RUN / NO_PERFORMANCE_RESULT`。
+
+## 2026-07-30新commit绑定计划与不可覆盖发布
+
+正式实现已封存为Git commit`25c725c43b0420348ad89186f27e0c8ad7aa6d4e`，current-launch attestation已强制纳入该提交。旧`6fd77c22`计划和run ID继续撤销启动权限。用同一plan builder仅替换Git绑定后生成：
+
+|计划|逻辑行数|Git绑定|SHA256|启动权限|
+|---|---:|---|---|---|
+|`stage2_states_plan_25c725c4.json`|325|`25c725c43b0420348ad89186f27e0c8ad7aa6d4e`|`a48f468c16c3c764b3fc235b360559f73059dc37a95aa2eb81de52f840ff07f6`|仅在current-launch artifact registry与sealed plan闭合后|
+|`stage2c_screening_plan_25c725c4.json`|1425|`25c725c43b0420348ad89186f27e0c8ad7aa6d4e`|`7d0d48a4cb4ab95441b6e9ba0c29bf18c409d4440413de4e4cab4509f22f93c7`|仅在states达到ARTIFACTS_COMPLETE后|
+
+plan builder回归5项通过。新发布绑定：
+
+- 唯一N607执行者：`stage2_t1_n607_release`。
+- input root：`/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2_t1_20260730_v2_25c725c4`。
+- states run ID：`cvs_full_ablation_phase2_states_t1_20260730_v2_25c725c4`；run/log root使用同名且启动前必须不存在。
+- Stage2-C run ID：`cvs_full_ablation_phase2c_t1_20260730_v2_25c725c4`；只在states完成后创建。
+- Python：`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`。
+- Phase1 deployment binding保持`1deec70778965f41010fe155335a30db3ec172cb3788c7074ffbadfe6236dee7`；class-label attestation SHA为`f8abb25522b8b6d30f657be5de19e4922317bc271dbc9ff95dcd8de5c89dbb06`。
+- 复用D18的30/30完整LEO_weak母缓存，只补建当前125个缺失feature/package/scoring identity；不重建或重审数据，也不要求跨启动数据一致。
+- 8张GPU各2个总槽；先计入现有Phase1占用，再填剩余槽，任意GPU总训练/adapter进程不超过2。
+
+当前状态：`IMPLEMENTATION_COMMITTED / SOURCE_PLANS_GENERATED / N607_RELEASE_HANDOFF_READY / NO_STAGE2_RUN / NO_PERFORMANCE_RESULT`。
