@@ -115,6 +115,24 @@ v3在`P1-B0/s7281101`完成E200后的source-only endpoint导出阶段发现1条�
 
 正式发布前，唯一runner必须执行直连N607只读preflight，记录GPU与现有训练进程占用，验证v1–v3只读保留、v4精确目标路径不存在，核对WiSig、Git bundle、tracked-clean checkout、release file hashes、review receipt和30-row sealed plan。用户授权之前不得SCP、创建远端目录或启动。
 
+## N607只读预检
+
+唯一runner于`2026-07-29T17:39:32+08:00`完成只读预检，结论为`PRECHECK_PASS`。未执行SCP、mkdir、写文件、同步、落地、启动、终止或重启。
+
+|项目|实时证据|
+|---|---|
+|主机|`szu2070436088@dell-DSS8440`；项目根存在|
+|环境|`CVS-RFFI`；Python=`3.10.19`；torch=`2.1.0+cu121`；CUDA=`12.1`；cuDNN=`8902`；device_count=8|
+|GPU|GPU0–7均为RTX3090、0%利用率、1/24576MiB、compute PID=0|
+|容量|每卡可新增2个训练slot，总计16个；无训练进程|
+|WiSig|2,359,341,461字节；SHA256与sealed plan完全一致|
+|旧run|v1–v3相关进程均为0，旧release/run/log保留|
+|v4碰撞|release、sealed、run、log、launch.out五个精确目标均不存在|
+|本地release|bundle、sealed、sealed content、review与交接值一致；review=`P0/P1/P2=0`|
+|连接闭合|最终`ssh.exe=0`、ESTABLISHED TCP22=0|
+
+当前唯一阻塞是用户尚未明确授权新的run ID `cvs_full_ablation_phase1_t1_20260729_v4`。在收到授权前，runner保持停止。
+
 ## 正式命令模板
 
 唯一runner只能执行以下精确命令：
