@@ -8184,7 +8184,8 @@ def train(args) -> int:
             "checkpoint": str(selected_checkpoint),
             "claim": "PHASE1_FROZEN_HELDOUT_EVAL_INCOMPLETE",
         }
-    (out_dir / "frozen_phase1_heldout_eval.json").write_text(
+    heldout_eval_path = out_dir / "frozen_phase1_heldout_eval.json"
+    heldout_eval_path.write_text(
         json.dumps(frozen_eval, ensure_ascii=False, indent=2, default=str),
         encoding="utf-8",
     )
@@ -8526,6 +8527,8 @@ def train(args) -> int:
         "best_epoch": int(best_epoch),
         "best_source_val_tx": float(best_val) if math.isfinite(float(best_val)) else None,
         "heldout_eval": frozen_eval,
+        "heldout_eval_path": str(heldout_eval_path),
+        "heldout_eval_sha256": _sha256_file(heldout_eval_path),
         "tail_reference_path": "METRIC_ONLY",
         "tail_reference_exists": bool(tail_reference_geometry),
         "tail_reference_sha256": "",
@@ -8609,6 +8612,8 @@ def train(args) -> int:
         ),
         "prototype_paths": prototype_paths,
         "prototype_hashes": prototype_hashes,
+        "heldout_eval_path": str(heldout_eval_path),
+        "heldout_eval_sha256": _sha256_file(heldout_eval_path),
         "resource_summary_sha256": _sha256_file(
             resource_summary_path
         ),

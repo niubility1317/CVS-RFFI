@@ -261,6 +261,228 @@ def build_phase1_command(
     return command
 
 
+def build_phase1_reexport_command(
+    row: Mapping[str, Any],
+    entry: Mapping[str, Any],
+    *,
+    python_executable: str,
+    reexport_script: Path,
+    wisig_pkl: Path,
+    output_dir: Path,
+    exporter_git_commit: str,
+) -> list[str]:
+    return [
+        str(python_executable),
+        str(reexport_script),
+        "--checkpoint",
+        str(entry["source_checkpoint"]),
+        "--wisig-pkl",
+        str(wisig_pkl),
+        "--output-dir",
+        str(output_dir),
+        "--device",
+        "cuda:0",
+        "--num-workers",
+        "0",
+        "--row-key",
+        str(row["row_key"]),
+        "--source-run-id",
+        str(entry["source_run_id"]),
+        "--exporter-git-commit",
+        str(exporter_git_commit),
+    ]
+
+
+def validate_phase1_reuse_manifest(
+    manifest: Mapping[str, Any],
+    plan: Mapping[str, Any],
+    *,
+    check_artifacts: bool,
+) -> dict[str, dict[str, Any]]:
+    if manifest.get("schema") != "cvs.full_ablation.phase1_reuse.v1":
+        raise Phase1RunnerError("unexpected Phase1 reuse-manifest schema")
+    rows_by_key = {
+        str(row["row_key"]): row for row in list(plan.get("rows") or [])
+    }
+    entries = list(manifest.get("rows") or [])
+    if not entries:
+        raise Phase1RunnerError("Phase1 reuse manifest has no rows")
+    result: dict[str, dict[str, Any]] = {}
+    for raw_entry in entries:
+        entry = dict(raw_entry)
+        row_key = str(entry.get("row_key", "")).strip()
+        mode = str(entry.get("mode", "")).strip()
+        if row_key not in rows_by_key:
+            raise Phase1RunnerError(
+                f"reuse row is not in the frozen matrix: {row_key}"
+            )
+        if row_key in result:
+            raise Phase1RunnerError(f"duplicate reuse row: {row_key}")
+        if mode not in {"direct_reuse", "reexport_only"}:
+            raise Phase1RunnerError(
+                f"unsupported reuse mode for {row_key}: {mode}"
+            )
+        if not str(entry.get("source_run_id", "")).strip():
+            raise Phase1RunnerError(
+                f"reuse row lacks source_run_id: {row_key}"
+            )
+        if mode == "direct_reuse":
+            if not str(entry.get("source_output_dir", "")).strip():
+                raise Phase1RunnerError(
+                    f"direct-reuse row lacks source_output_dir: {row_key}"
+                )
+            if not str(entry.get("source_log_path", "")).strip():
+                raise Phase1RunnerError(
+                    f"direct-reuse row lacks source_log_path: {row_key}"
+                )
+            if check_artifacts:
+                validate_phase1_direct_reuse_entry(
+                    entry=entry,
+                    row=rows_by_key[row_key],
+                )
+        else:
+            checkpoint_raw = str(
+                entry.get("source_checkpoint", "")
+            ).strip()
+            if not checkpoint_raw:
+                raise Phase1RunnerError(
+                    f"reexport row lacks source_checkpoint: {row_key}"
+                )
+            checkpoint = Path(checkpoint_raw)
+            if check_artifacts and (
+                not checkpoint.is_file()
+                or checkpoint.stat().st_size <= 0
+            ):
+                raise Phase1RunnerError(
+                    f"reexport source checkpoint is absent or empty: {row_key}"
+                )
+        result[row_key] = entry
+    return result
+
+
+def validate_phase1_direct_reuse_entry(
+    *,
+    entry: Mapping[str, Any],
+    row: Mapping[str, Any],
+) -> dict[str, Any]:
+    row_key = str(row["row_key"])
+    source_output = Path(str(entry["source_output_dir"]))
+    source_log = Path(str(entry["source_log_path"]))
+    required = {
+        "terminal": source_output / "phase1_terminal_status.json",
+        "completion": (
+            source_output / "phase1_training_completion_receipt.json"
+        ),
+        "resource": source_output / "phase1_resource_summary.json",
+        "heldout": source_output / "frozen_phase1_heldout_eval.json",
+        "checkpoint": (
+            source_output / "best_source_validation_ssdg.pth"
+        ),
+        "prototype": source_output / "phase2_zid_prototypes.pt",
+        "prototype_json": (
+            source_output / "phase2_zid_prototypes.json"
+        ),
+        "log": source_log,
+    }
+    missing = [
+        label
+        for label, path in required.items()
+        if not path.is_file() or path.stat().st_size <= 0
+    ]
+    if missing:
+        raise Phase1RunnerError(
+            f"direct-reuse row has absent or empty artifacts: "
+            f"{row_key}: {','.join(missing)}"
+        )
+    terminal = _load_json(required["terminal"])
+    receipt = _load_json(required["completion"])
+    heldout = _load_json(required["heldout"])
+    _load_json(required["resource"])
+    _load_json(required["prototype_json"])
+    expected_identity = {
+        "row_key": row_key,
+        "ablation_id": str(row["ablation_id"]),
+        "train_seed": int(row["train_seed"]),
+    }
+    if (
+        str(terminal.get("status", "")) != "COMPLETE"
+        or str(receipt.get("terminal_status", "")) != "COMPLETE"
+        or int(receipt.get("exit_code", -1)) != 0
+        or str(heldout.get("status", "")).upper() != "COMPLETE"
+    ):
+        raise Phase1RunnerError(
+            f"direct-reuse row is not COMPLETE: {row_key}"
+        )
+    for key, expected in expected_identity.items():
+        actual = receipt.get(key)
+        if key == "train_seed":
+            actual = int(actual)
+        else:
+            actual = str(actual)
+        if actual != expected:
+            raise Phase1RunnerError(
+                f"direct-reuse row identity drift: {row_key}: {key}"
+            )
+    return {
+        "mode": "direct_reuse",
+        "source_run_id": str(entry["source_run_id"]),
+        "source_output_dir": str(source_output),
+        "source_log_path": str(source_log),
+        "terminal_status": "COMPLETE",
+    }
+
+
+def validate_phase1_reexport_completion(
+    *,
+    entry: Mapping[str, Any],
+    row: Mapping[str, Any],
+    output_dir: Path,
+    return_code: int,
+    exporter_git_commit: str,
+) -> dict[str, Any]:
+    receipt_path = output_dir / "phase1_reexport_receipt.json"
+    if not receipt_path.is_file() or receipt_path.stat().st_size <= 0:
+        raise Phase1RunnerError("reexport row lacks completion receipt")
+    receipt = _load_json(receipt_path)
+    expected = {
+        "schema": "cvs.phase1.prototype_reexport_receipt.v1",
+        "status": "COMPLETE",
+        "row_key": str(row["row_key"]),
+        "source_run_id": str(entry["source_run_id"]),
+        "source_checkpoint": str(entry["source_checkpoint"]),
+        "exporter_git_commit": str(exporter_git_commit),
+    }
+    for key, value in expected.items():
+        if str(receipt.get(key, "")) != value:
+            raise Phase1ProtocolError(
+                f"reexport receipt identity drift: {key}"
+            )
+    if int(return_code) != 0 or int(receipt.get("exit_code", -1)) != 0:
+        raise Phase1RunnerError("reexport row terminal status is not COMPLETE")
+    artifacts = dict(receipt.get("prototype_paths") or {})
+    hashes = dict(receipt.get("prototype_hashes") or {})
+    if set(artifacts) != {"prototype_path", "prototype_json_path"}:
+        raise Phase1ProtocolError(
+            "reexport prototype paths are incomplete"
+        )
+    if set(hashes) != set(artifacts):
+        raise Phase1ProtocolError(
+            "reexport prototype hashes are incomplete"
+        )
+    for key, raw_path in artifacts.items():
+        path = Path(str(raw_path))
+        if (
+            not path.is_file()
+            or path.stat().st_size <= 0
+            or _sha256_path(path) != str(hashes[key])
+        ):
+            raise Phase1ProtocolError(
+                f"reexport prototype artifact drift: {key}"
+            )
+    _load_json(Path(str(artifacts["prototype_json_path"])))
+    return receipt
+
+
 def normalize_exception_fingerprint(log_text: str) -> str:
     lines = [line.strip() for line in str(log_text).splitlines() if line.strip()]
     exception_lines = [
@@ -377,23 +599,67 @@ def validate_phase1_row_completion(
     resource_path = output_dir / "phase1_resource_summary.json"
     if (
         not resource_path.is_file()
+        or resource_path.stat().st_size <= 0
         or str(receipt.get("resource_summary_sha256", ""))
         != hashlib.sha256(resource_path.read_bytes()).hexdigest()
     ):
         raise Phase1ProtocolError("row resource-summary hash drift")
-    for key, expected_hash in dict(
-        receipt.get("prototype_hashes") or {}
-    ).items():
-        prototype_path = str(
-            (receipt.get("prototype_paths") or {}).get(key, "")
+    resource_payload = _load_json(resource_path)
+    if not isinstance(resource_payload, dict) or not resource_payload:
+        raise Phase1ProtocolError(
+            "row resource-summary artifact content drift"
         )
+    heldout_path = output_dir / "frozen_phase1_heldout_eval.json"
+    if (
+        not heldout_path.is_file()
+        or heldout_path.stat().st_size <= 0
+        or str(receipt.get("heldout_eval_path", ""))
+        != str(heldout_path)
+        or str(receipt.get("heldout_eval_sha256", ""))
+        != hashlib.sha256(heldout_path.read_bytes()).hexdigest()
+    ):
+        raise Phase1ProtocolError("row heldout-eval artifact hash drift")
+    heldout_payload = _load_json(heldout_path)
+    if (
+        heldout_payload != dict(terminal.get("heldout_eval") or {})
+        or str(heldout_payload.get("status", "")).upper()
+        != "COMPLETE"
+        or str(terminal.get("heldout_eval_path", ""))
+        != str(heldout_path)
+        or str(terminal.get("heldout_eval_sha256", ""))
+        != str(receipt.get("heldout_eval_sha256", ""))
+    ):
+        raise Phase1ProtocolError("row heldout-eval artifact content drift")
+    expected_prototype_paths = {
+        "prototype_path": (
+            output_dir / "phase2_zid_prototypes.pt"
+        ).resolve(),
+        "prototype_json_path": (
+            output_dir / "phase2_zid_prototypes.json"
+        ).resolve(),
+    }
+    receipt_prototype_paths = dict(
+        receipt.get("prototype_paths") or {}
+    )
+    for key, expected_path in expected_prototype_paths.items():
+        raw_path = str(receipt_prototype_paths.get(key, ""))
+        prototype_path = Path(raw_path).resolve() if raw_path else Path()
         if (
-            not prototype_path
-            or not Path(prototype_path).is_file()
-            or hashlib.sha256(Path(prototype_path).read_bytes()).hexdigest()
-            != str(expected_hash)
+            not raw_path
+            or prototype_path != expected_path
+            or not prototype_path.is_file()
+            or prototype_path.stat().st_size <= 0
+            or hashlib.sha256(prototype_path.read_bytes()).hexdigest()
+            != str(
+                (receipt.get("prototype_hashes") or {}).get(
+                    key,
+                    "",
+                )
+            )
         ):
-            raise Phase1ProtocolError("row prototype artifact hash drift")
+            raise Phase1ProtocolError(
+                "row prototype artifact hash or path drift"
+            )
     prototype_hashes = dict(receipt.get("prototype_hashes") or {})
     if set(prototype_hashes) != {
         "prototype_path",
@@ -405,14 +671,44 @@ def validate_phase1_row_completion(
         raise Phase1ProtocolError(
             "row prototype artifact hashes are incomplete"
         )
+    prototype_json_payload = _load_json(
+        expected_prototype_paths["prototype_json_path"]
+    )
+    if not isinstance(prototype_json_payload, dict) or not (
+        prototype_json_payload
+    ):
+        raise Phase1ProtocolError(
+            "row prototype JSON artifact content drift"
+        )
+    try:
+        import torch
+
+        prototype_payload = torch.load(
+            expected_prototype_paths["prototype_path"],
+            map_location="cpu",
+            weights_only=False,
+        )
+    except Exception as exc:
+        raise Phase1ProtocolError(
+            "row prototype PT artifact is not loadable"
+        ) from exc
+    if not isinstance(prototype_payload, Mapping):
+        raise Phase1ProtocolError(
+            "row prototype PT artifact content drift"
+        )
     checkpoint_path = Path(
         str(terminal.get("selected_checkpoint", ""))
-    )
+    ).resolve()
+    expected_checkpoint_path = (
+        output_dir / "best_source_validation_ssdg.pth"
+    ).resolve()
     selected_checkpoint_sha256 = str(
         receipt.get("selected_checkpoint_sha256", "")
     )
     if (
-        not checkpoint_path.is_file()
+        checkpoint_path != expected_checkpoint_path
+        or not checkpoint_path.is_file()
+        or checkpoint_path.stat().st_size <= 0
         or len(selected_checkpoint_sha256) != 64
         or _sha256_path(checkpoint_path)
         != selected_checkpoint_sha256
@@ -421,6 +717,24 @@ def validate_phase1_row_completion(
     ):
         raise Phase1ProtocolError(
             "row selected-checkpoint hash drift"
+        )
+    try:
+        checkpoint_payload = torch.load(
+            checkpoint_path,
+            map_location="cpu",
+            weights_only=False,
+        )
+    except Exception as exc:
+        raise Phase1ProtocolError(
+            "row selected-checkpoint is not loadable"
+        ) from exc
+    if (
+        not isinstance(checkpoint_payload, Mapping)
+        or not isinstance(checkpoint_payload.get("model"), Mapping)
+        or not checkpoint_payload["model"]
+    ):
+        raise Phase1ProtocolError(
+            "row selected-checkpoint content drift"
         )
     split_receipt = dict(receipt.get("source_split_receipt") or {})
     split_payload = {
@@ -456,6 +770,7 @@ def validate_phase1_row_completion(
     if (
         int(return_code) != 0
         or int(receipt.get("exit_code", -1)) != 0
+        or int(terminal.get("exit_code", -1)) != 0
         or str(receipt.get("terminal_status", "")) != "COMPLETE"
         or str(terminal.get("status", "")) != "COMPLETE"
     ):
@@ -640,6 +955,33 @@ def run_release(args: argparse.Namespace, plan: Mapping[str, Any]) -> int:
         raise Phase1RunnerError(
             "child Python must equal the reviewed runner interpreter"
         )
+    reuse_entries: dict[str, dict[str, Any]] = {}
+    if str(getattr(args, "reuse_manifest", "")).strip():
+        reuse_entries = validate_phase1_reuse_manifest(
+            _load_json(Path(args.reuse_manifest).resolve()),
+            plan,
+            check_artifacts=True,
+        )
+    reexport_rows = {
+        row_key
+        for row_key, entry in reuse_entries.items()
+        if entry["mode"] == "reexport_only"
+    }
+    if reexport_rows:
+        expected_reexport_script = (
+            repo_root
+            / "code"
+            / "scripts"
+            / "reexport_phase1_prototypes.py"
+        ).resolve()
+        if (
+            not str(getattr(args, "reexport_script", "")).strip()
+            or Path(args.reexport_script).resolve()
+            != expected_reexport_script
+        ):
+            raise Phase1RunnerError(
+                "execute mode requires the reviewed reexport script"
+            )
     expected_environment_id = str(
         plan.get("python_environment_id", "")
     ).strip()
@@ -654,9 +996,10 @@ def run_release(args: argparse.Namespace, plan: Mapping[str, Any]) -> int:
     wisig_path = Path(args.wisig_pkl).resolve()
     if not wisig_path.is_file():
         raise Phase1RunnerError("WiSig pickle is missing")
-    actual_wisig_hash = _sha256_path(wisig_path)
-    if actual_wisig_hash != str(plan["wisig_pkl_sha256"]):
-        raise Phase1ProtocolError("WiSig pickle SHA256 drift")
+    # The user explicitly allows reuse across launches without repeating a
+    # whole-dataset audit. Preserve the sealed dataset identifier in receipts,
+    # but do not reread the full pickle solely to recompute its hash.
+    actual_wisig_hash = str(plan["wisig_pkl_sha256"])
     run_root = Path(args.run_root).resolve()
     log_root = Path(args.log_root).resolve()
     if run_root.exists() or log_root.exists():
@@ -707,6 +1050,12 @@ def run_release(args: argparse.Namespace, plan: Mapping[str, Any]) -> int:
     ).hexdigest()
     rows_by_slot: dict[tuple[int, int], list[Mapping[str, Any]]] = defaultdict(list)
     for row in plan["rows"]:
+        if (
+            str(row["row_key"]) in reuse_entries
+            and reuse_entries[str(row["row_key"])]["mode"]
+            == "direct_reuse"
+        ):
+            continue
         worker = row["worker"]
         rows_by_slot[(int(worker["gpu"]), int(worker["slot"]))].append(row)
     capacity = _Capacity(args.poll_seconds)
@@ -716,6 +1065,32 @@ def run_release(args: argparse.Namespace, plan: Mapping[str, Any]) -> int:
     statuses: list[dict[str, Any]] = []
     status_lock = threading.Lock()
     thread_errors: list[dict[str, Any]] = []
+    for row in plan["rows"]:
+        row_key = str(row["row_key"])
+        entry = reuse_entries.get(row_key)
+        if entry is None or entry["mode"] != "direct_reuse":
+            continue
+        reused = validate_phase1_direct_reuse_entry(
+            entry=entry,
+            row=row,
+        )
+        statuses.append(
+            {
+                "row_key": row_key,
+                "ablation_id": row["ablation_id"],
+                "train_seed": int(row["train_seed"]),
+                "mode": "direct_reuse",
+                "source_run_id": reused["source_run_id"],
+                "source_output_dir": reused["source_output_dir"],
+                "source_log_path": reused["source_log_path"],
+                "pid": None,
+                "return_code": 0,
+                "completion_receipt_valid": True,
+                "completion_error": "",
+                "p0_protocol_violation": False,
+                "elapsed_seconds": 0.0,
+            }
+        )
 
     def run_slot(gpu: int, slot: int) -> None:
         for row in rows_by_slot[(gpu, slot)]:
@@ -728,36 +1103,56 @@ def run_release(args: argparse.Namespace, plan: Mapping[str, Any]) -> int:
             status_path = log_root / "status" / f"{row_key}.json"
             if any(path.exists() for path in (output_dir, log_path, pid_path, status_path)):
                 raise FileExistsError(f"row identity collision: {row_key}")
-            command = build_phase1_command(
-                row,
-                run_id=str(plan["run_id"]),
-                python_executable=args.python,
-                train_script=Path(args.train_script).resolve(),
-                wisig_pkl=Path(args.wisig_pkl).resolve(),
-                output_dir=output_dir,
-                sealed_plan_sha256=str(
-                    plan["sealed_content_sha256"]
-                ),
-                seed_registry_sha256=str(
-                    plan["seed_registry_sha256"]
-                ),
-                wisig_pkl_sha256=actual_wisig_hash,
-                dataset_receipt_path=str(dataset_receipt_path),
-                dataset_receipt_sha256=dataset_receipt_sha256,
-                environment_receipt_path=str(
-                    environment_receipt_path
-                ),
-                environment_receipt_sha256=(
-                    environment_receipt_sha256
-                ),
-                python_environment_id=expected_environment_id,
+            entry = reuse_entries.get(row_key)
+            mode = (
+                str(entry["mode"])
+                if entry is not None
+                else "new_train"
             )
+            if mode == "reexport_only":
+                command = build_phase1_reexport_command(
+                    row,
+                    entry,
+                    python_executable=args.python,
+                    reexport_script=Path(
+                        args.reexport_script
+                    ).resolve(),
+                    wisig_pkl=wisig_path,
+                    output_dir=output_dir,
+                    exporter_git_commit=str(plan["git_commit"]),
+                )
+            else:
+                command = build_phase1_command(
+                    row,
+                    run_id=str(plan["run_id"]),
+                    python_executable=args.python,
+                    train_script=Path(args.train_script).resolve(),
+                    wisig_pkl=Path(args.wisig_pkl).resolve(),
+                    output_dir=output_dir,
+                    sealed_plan_sha256=str(
+                        plan["sealed_content_sha256"]
+                    ),
+                    seed_registry_sha256=str(
+                        plan["seed_registry_sha256"]
+                    ),
+                    wisig_pkl_sha256=actual_wisig_hash,
+                    dataset_receipt_path=str(dataset_receipt_path),
+                    dataset_receipt_sha256=dataset_receipt_sha256,
+                    environment_receipt_path=str(
+                        environment_receipt_path
+                    ),
+                    environment_receipt_sha256=(
+                        environment_receipt_sha256
+                    ),
+                    python_environment_id=expected_environment_id,
+                )
             env = dict(os.environ)
             env["CUDA_VISIBLE_DEVICES"] = str(gpu)
             env["PYTHONPATH"] = os.pathsep.join(
                 [str(Path(args.repo_root).resolve() / "code"), str(Path(args.repo_root).resolve())]
             )
-            output_dir.mkdir()
+            if mode == "new_train":
+                output_dir.mkdir()
             started = time.time()
             with log_path.open("x", encoding="utf-8", newline="\n") as log_handle:
                 process = capacity.launch(
@@ -768,30 +1163,49 @@ def run_release(args: argparse.Namespace, plan: Mapping[str, Any]) -> int:
                     stdout=log_handle,
                     stop_event=stop_event,
                 )
-                pid_path.write_text(f"{process.pid}\n", encoding="utf-8")
+                with pid_path.open(
+                    "x",
+                    encoding="utf-8",
+                    newline="\n",
+                ) as pid_handle:
+                    pid_handle.write(f"{process.pid}\n")
                 return_code = int(process.wait())
             capacity.release(gpu, int(process.pid))
-            terminal_exists = (output_dir / "phase1_terminal_status.json").is_file()
+            terminal_exists = (
+                output_dir / "phase1_terminal_status.json"
+            ).is_file()
             receipt_valid = False
             completion_error = ""
             completion_exception: Exception | None = None
             try:
-                validate_phase1_row_completion(
-                    row=row,
-                    plan=plan,
-                    output_dir=output_dir,
-                    return_code=return_code,
-                    dataset_receipt_sha256=(
-                        dataset_receipt_sha256
-                    ),
-                    environment_receipt_sha256=(
-                        environment_receipt_sha256
-                    ),
-                    dataset_receipt_path=dataset_receipt_path,
-                    environment_receipt_path=(
-                        environment_receipt_path
-                    ),
-                )
+                if mode == "reexport_only":
+                    validate_phase1_reexport_completion(
+                        entry=entry,
+                        row=row,
+                        output_dir=output_dir,
+                        return_code=return_code,
+                        exporter_git_commit=str(plan["git_commit"]),
+                    )
+                    terminal_exists = (
+                        output_dir / "phase1_reexport_receipt.json"
+                    ).is_file()
+                else:
+                    validate_phase1_row_completion(
+                        row=row,
+                        plan=plan,
+                        output_dir=output_dir,
+                        return_code=return_code,
+                        dataset_receipt_sha256=(
+                            dataset_receipt_sha256
+                        ),
+                        environment_receipt_sha256=(
+                            environment_receipt_sha256
+                        ),
+                        dataset_receipt_path=dataset_receipt_path,
+                        environment_receipt_path=(
+                            environment_receipt_path
+                        ),
+                    )
                 receipt_valid = True
             except Exception as exc:
                 completion_exception = exc
@@ -800,6 +1214,7 @@ def run_release(args: argparse.Namespace, plan: Mapping[str, Any]) -> int:
                 "row_key": row_key,
                 "ablation_id": row["ablation_id"],
                 "train_seed": int(row["train_seed"]),
+                "mode": mode,
                 "gpu": gpu,
                 "slot": slot,
                 "pid": int(process.pid),
@@ -869,6 +1284,18 @@ def run_release(args: argparse.Namespace, plan: Mapping[str, Any]) -> int:
         "run_id": plan["run_id"],
         "row_count": len(plan["rows"]),
         "completed_count": len(statuses),
+        "direct_reuse_count": sum(
+            status.get("mode") == "direct_reuse"
+            for status in statuses
+        ),
+        "reexport_only_count": sum(
+            status.get("mode") == "reexport_only"
+            for status in statuses
+        ),
+        "new_train_count": sum(
+            status.get("mode") == "new_train"
+            for status in statuses
+        ),
         "success_count": sum(
             bool(status["completion_receipt_valid"])
             for status in statuses
@@ -897,6 +1324,8 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument("--wisig-pkl", required=True)
     parser.add_argument("--python", required=True)
     parser.add_argument("--train-script", required=True)
+    parser.add_argument("--reuse-manifest", default="")
+    parser.add_argument("--reexport-script", default="")
     parser.add_argument("--poll-seconds", type=float, default=30.0)
     parser.add_argument("--execute", action="store_true")
     return parser
@@ -909,33 +1338,80 @@ def main() -> int:
         plan,
         require_launch_authority=bool(args.execute),
     )
+    reuse_entries: dict[str, dict[str, Any]] = {}
+    if str(args.reuse_manifest).strip():
+        reuse_entries = validate_phase1_reuse_manifest(
+            _load_json(Path(args.reuse_manifest).resolve()),
+            plan,
+            check_artifacts=False,
+        )
     if not args.execute:
-        commands = [
-            build_phase1_command(
-                row,
-                run_id=str(plan.get("run_id") or "UNSEALED_DRY_RUN"),
-                python_executable=args.python,
-                train_script=Path(args.train_script),
-                wisig_pkl=Path(args.wisig_pkl),
-                output_dir=Path(args.run_root) / row["row_key"],
-                sealed_plan_sha256=str(
-                    plan.get("sealed_content_sha256", "")
-                ),
-                seed_registry_sha256=str(
-                    plan.get("seed_registry_sha256", "")
-                ),
-            )
-            for row in plan["rows"]
-        ]
+        commands = []
+        for row in plan["rows"]:
+            row_key = str(row["row_key"])
+            entry = reuse_entries.get(row_key)
+            if entry is not None and entry["mode"] == "direct_reuse":
+                continue
+            if entry is not None and entry["mode"] == "reexport_only":
+                commands.append(
+                    build_phase1_reexport_command(
+                        row,
+                        entry,
+                        python_executable=args.python,
+                        reexport_script=Path(args.reexport_script),
+                        wisig_pkl=Path(args.wisig_pkl),
+                        output_dir=Path(args.run_root) / row_key,
+                        exporter_git_commit=str(plan.get("git_commit", "")),
+                    )
+                )
+            else:
+                commands.append(
+                    build_phase1_command(
+                        row,
+                        run_id=str(
+                            plan.get("run_id")
+                            or "UNSEALED_DRY_RUN"
+                        ),
+                        python_executable=args.python,
+                        train_script=Path(args.train_script),
+                        wisig_pkl=Path(args.wisig_pkl),
+                        output_dir=Path(args.run_root) / row_key,
+                        sealed_plan_sha256=str(
+                            plan.get("sealed_content_sha256", "")
+                        ),
+                        seed_registry_sha256=str(
+                            plan.get("seed_registry_sha256", "")
+                        ),
+                    )
+                )
         print(
             json.dumps(
                 {
                     "dry_run": True,
-                    "row_count": len(commands),
+                    "row_count": len(plan["rows"]),
+                    "dispatch_count": len(commands),
+                    "direct_reuse_count": sum(
+                        entry["mode"] == "direct_reuse"
+                        for entry in reuse_entries.values()
+                    ),
+                    "reexport_only_count": sum(
+                        entry["mode"] == "reexport_only"
+                        for entry in reuse_entries.values()
+                    ),
+                    "new_train_count": (
+                        len(plan["rows"]) - len(reuse_entries)
+                    ),
                     "slot_count": len(
                         {
                             (row["worker"]["gpu"], row["worker"]["slot"])
                             for row in plan["rows"]
+                            if not (
+                                str(row["row_key"]) in reuse_entries
+                                and reuse_entries[
+                                    str(row["row_key"])
+                                ]["mode"]
+                                == "direct_reuse"
+                            )
                         }
                     ),
                     "commands": commands,
