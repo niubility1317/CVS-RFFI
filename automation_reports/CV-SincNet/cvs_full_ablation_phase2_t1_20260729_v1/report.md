@@ -175,6 +175,15 @@ binding registry同步修复独立复审的两个P1：
 
 最终独立增量复审确认上述registry与CUDA parity修复为P0=0、P1=0，允许Git封存；封存后仅允许唯一release runner在fresh N607新root生成全新的runtime、receipt、bundle和seal，旧`fff5cad1`partial/root不得复用或覆盖。
 
+修复实现已封存为Git commit`122d7a72038bb6a9eb49f80af9722d3a6a1f922a`。基于该实现提交重新生成两份不可启动的源计划：
+
+|计划|logical row|SHA256|
+|---|---:|---|
+|`stage2_states_plan_122d7a72.json`|325|`c84580d510254e6d3cefaf17dca40125384958628221a682780d353dda06e075`|
+|`stage2c_screening_plan_122d7a72.json`|1425|`338910847dbbebf3dab269ff6757597bb82d00b442436c142075af2e9c249200`|
+
+两份计划的`git_commit`字段均精确绑定`122d7a72038bb6a9eb49f80af9722d3a6a1f922a`；计划与release链定向回归12项通过、0项失败。它们当前仍为`formal_launch_authority=false`，只有在fresh Phase1 deployment bundle、全部cache binding registry和seal闭合后才能启动。
+
 ## 2026-07-29 23:17–23:20 partial runtime只读CUDA数值诊断
 
 本诊断没有重跑prepare、没有写入失败release、没有签名、没有启动Stage2，也没有读取数据truth或任何准确率。诊断脚本先在本地`ssr-gpu`环境完成`py_compile`与CLI加载，root与Git镜像SHA256均为`b515370862dea3348a1ddf00486da355121c4a745316e23bb704a637b15058a2`；随后同步到独立且启动前不存在的目录：
@@ -213,3 +222,11 @@ checkpoint SHA256仍为`1eb6d07b9d6339400892c5553f33261f40513922d4b08c907446e44e
 |deterministic algorithms|false|
 
 远端与本地JSON SHA256均为`9d231424f450997ea9d5c76ff50ffa8e92a18362c3e20e821ce25439dba67624`，本地证据为`E:\type10-7\automation_reports\CV-SincNet\cvs_full_ablation_phase2_t1_20260729_v1\release_evidence\n607_fff5cad1\cuda_parity_diagnostic_v1.json`。诊断退出后GPU6恢复为原PID`823219`一个进程；本地`ssh.exe=0`且N607/bridge的ESTABLISHED TCP22连接=0。
+
+## 2026-07-29 fresh Phase1 deployment bundle v2预登记
+
+- release提交：`122d7a72038bb6a9eb49f80af9722d3a6a1f922a`；独立复审P0=0、P1=0；7文件定向回归59项通过。
+- fresh release root：`/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2_t1_20260729_v2_122d7a72`。必须启动前不存在；旧`fff5cad1`release、partial runtime、normalize和P90组件均不得复用、复制或覆盖。
+- 重新从原始`P1-FULL__train_seed_7281105`完成输入和稳定class binding source执行normalize、source-labeled域×类P90组件、formal CUDA prepare；不读取性能，不重审数据，不做跨启动数据hash对齐。
+- formal prepare固定使用batch`1/8/64/256`；receipt必须记录`device=cuda`、输出全有限、`max_abs<=1e-3`、六类logit argmax mismatch总数为0，并实际回读`matmul TF32=false`、`cudnn benchmark=false`、`cudnn deterministic=true`、`deterministic algorithms=true`。任一条件失败即fail-closed。
+- 本轮只到unsigned package、detached seal与signing request闭合并取回最小签名证据；不读取或上传私钥，不自行sign，不启动Stage2矩阵。
