@@ -224,6 +224,99 @@ def test_endpoint_accept_v1_calibrates_thresholds_from_source_val_and_verifies()
     assert all(row[0]["calibration_status"] == "source_val_calibrated" for row in artifact["fusion_components"])
 
 
+def test_endpoint_calibration_excludes_and_audits_rare_zero_direction():
+    package = {
+        "feature_key": "z_id",
+        "fused_tx_prototypes": torch.tensor([[[1.0, 0.0]], [[0.0, 1.0]]]),
+        "fused_tx_mask": torch.ones(2, 1, dtype=torch.bool),
+        "fusion_accept_policy": "local_component",
+        "global_fused_radius_is_accept_region": False,
+        "metadata": dict(_minimal_phase2_package()["metadata"]),
+        "fusion_components": [
+            [{"component_id": 0, "source_domains": [0], "accept_enabled": True}],
+            [{"component_id": 0, "source_domains": [0], "accept_enabled": True}],
+        ],
+    }
+    per_class = 2000
+    features = torch.cat(
+        (
+            torch.tensor([[1.0, 0.0]]).repeat(per_class, 1),
+            torch.tensor([[0.0, 1.0]]).repeat(per_class, 1),
+        ),
+        dim=0,
+    )
+    features[17].zero_()
+    labels = torch.cat(
+        (
+            torch.zeros(per_class, dtype=torch.long),
+            torch.ones(per_class, dtype=torch.long),
+        )
+    )
+    logits = torch.cat(
+        (
+            torch.tensor([[5.0, 0.0]]).repeat(per_class, 1),
+            torch.tensor([[0.0, 5.0]]).repeat(per_class, 1),
+        ),
+        dim=0,
+    )
+
+    calibrated = calibrate_endpoint_accept_v1(
+        package,
+        features,
+        labels,
+        logits,
+    )
+    artifact = attach_endpoint_accept_v1_manifest(calibrated)
+    manifest = verify_endpoint_accept_v1_manifest(artifact)
+    evidence = manifest["calibration_evidence"]
+
+    assert evidence["input_num_samples"] == 4000
+    assert evidence["directional_num_samples"] == 3999
+    assert evidence["num_samples"] == 3999
+    assert evidence["zero_direction_excluded_samples"] == 1
+    assert evidence["zero_direction_excluded_by_class"] == {"0": 1, "1": 0}
+    assert evidence["zero_direction_excluded_fraction_by_class"]["0"] == pytest.approx(1 / 2000)
+    assert evidence["zero_direction_policy"] == "force_reject_exclude_from_angular_calibration_v1"
+    assert manifest["gate_thresholds"]["reject_zero_direction"] is True
+
+
+def test_endpoint_calibration_fails_closed_on_excess_or_nonfinite_directions():
+    package = {
+        "feature_key": "z_id",
+        "fused_tx_prototypes": torch.tensor([[[1.0, 0.0]], [[0.0, 1.0]]]),
+        "fused_tx_mask": torch.ones(2, 1, dtype=torch.bool),
+        "fusion_accept_policy": "local_component",
+        "global_fused_radius_is_accept_region": False,
+        "metadata": dict(_minimal_phase2_package()["metadata"]),
+        "fusion_components": [
+            [{"component_id": 0, "source_domains": [0], "accept_enabled": True}],
+            [{"component_id": 0, "source_domains": [0], "accept_enabled": True}],
+        ],
+    }
+    features = torch.cat(
+        (
+            torch.tensor([[1.0, 0.0]]).repeat(100, 1),
+            torch.tensor([[0.0, 1.0]]).repeat(100, 1),
+        ),
+        dim=0,
+    )
+    labels = torch.cat((torch.zeros(100, dtype=torch.long), torch.ones(100, dtype=torch.long)))
+    logits = torch.cat(
+        (
+            torch.tensor([[5.0, 0.0]]).repeat(100, 1),
+            torch.tensor([[0.0, 5.0]]).repeat(100, 1),
+        ),
+        dim=0,
+    )
+    features[3].zero_()
+    with pytest.raises(ValueError, match="exceeds per-class limit"):
+        calibrate_endpoint_accept_v1(package, features, labels, logits)
+
+    features[3] = torch.tensor([float("nan"), 0.0])
+    with pytest.raises(ValueError, match="features must be finite"):
+        calibrate_endpoint_accept_v1(package, features, labels, logits)
+
+
 def test_endpoint_calibration_contracts_accept_radius_to_interclass_guard():
     def direction(degrees):
         radians = torch.deg2rad(torch.tensor(float(degrees)))
@@ -282,6 +375,39 @@ def test_endpoint_calibration_contracts_accept_radius_to_interclass_guard():
     assert manifest["policy_id"] == "endpoint_accept_v1"
 
 
+def _export_real_phase1_checkpoint(checkpoint_path, wisig_path, output_path):
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    checkpoint = train_ssdg.load_checkpoint(str(checkpoint_path), device)
+    args = SimpleNamespace(**dict(checkpoint["args"]))
+    args.wisig_pkl = str(wisig_path)
+    args.device = str(device)
+    args.num_workers = 0
+    args.phase2_export_checkpoint = str(checkpoint_path)
+    args.phase2_export_path = str(output_path)
+    data_ctx = train_ssdg._build_ssdg_wisig_data(args, device)
+    model_args = train_ssdg.merge_checkpoint_args(
+        checkpoint,
+        args,
+        input_len=int(data_ctx["input_len"]),
+        num_domains=int(data_ctx["num_domains"]),
+    )
+    model_args = train_ssdg._apply_model_cli_args(model_args, args)
+    model = train_ssdg.build_baseline_model(model_args, device)
+    train_ssdg._load_phase1_checkpoint_strict(
+        model,
+        checkpoint,
+        checkpoint_path,
+    )
+    model.eval()
+    return train_ssdg._maybe_export_phase2_prototypes_ssdg(
+        args,
+        model,
+        data_ctx,
+        device,
+        default_checkpoint=checkpoint_path,
+    )
+
+
 @pytest.mark.skipif(
     not (
         os.environ.get("CVS_PHASE1_REAL_CHECKPOINT")
@@ -306,43 +432,10 @@ def test_real_checkpoint_source_only_export_closes_interclass_guard(tmp_path):
         "2b0a7a7488dd3650bcae7b1d80efbcffd1598aaa671ae6b0a0df2a24dc0f694f"
     )
 
-    device = torch.device(
-        "cuda:0" if torch.cuda.is_available() else "cpu"
-    )
-    checkpoint = train_ssdg.load_checkpoint(
-        str(checkpoint_path),
-        device,
-    )
-    args = SimpleNamespace(**dict(checkpoint["args"]))
-    args.wisig_pkl = str(wisig_path)
-    args.device = str(device)
-    args.num_workers = 0
-    args.phase2_export_checkpoint = str(checkpoint_path)
-    args.phase2_export_path = str(
-        tmp_path / "phase2_zid_prototypes.pt"
-    )
-    data_ctx = train_ssdg._build_ssdg_wisig_data(args, device)
-    model_args = train_ssdg.merge_checkpoint_args(
-        checkpoint,
-        args,
-        input_len=int(data_ctx["input_len"]),
-        num_domains=int(data_ctx["num_domains"]),
-    )
-    model_args = train_ssdg._apply_model_cli_args(model_args, args)
-    model = train_ssdg.build_baseline_model(model_args, device)
-    train_ssdg._load_phase1_checkpoint_strict(
-        model,
-        checkpoint,
+    package = _export_real_phase1_checkpoint(
         checkpoint_path,
-    )
-    model.eval()
-
-    package = train_ssdg._maybe_export_phase2_prototypes_ssdg(
-        args,
-        model,
-        data_ctx,
-        device,
-        default_checkpoint=checkpoint_path,
+        wisig_path,
+        tmp_path / "phase2_zid_prototypes.pt",
     )
     manifest = verify_endpoint_accept_v1_manifest(package)
     enabled = [
@@ -366,6 +459,59 @@ def test_real_checkpoint_source_only_export_closes_interclass_guard(tmp_path):
         manifest["calibration_evidence"]["calibration_split"]
         == "source_val"
     )
+    assert Path(package["paths"]["pt_path"]).is_file()
+    assert Path(package["paths"]["json_path"]).is_file()
+
+
+@pytest.mark.skipif(
+    not (
+        os.environ.get("CVS_PHASE1_REAL_B0_CHECKPOINT")
+        and os.environ.get("CVS_PHASE1_REAL_WISIG")
+    ),
+    reason=(
+        "set CVS_PHASE1_REAL_B0_CHECKPOINT and CVS_PHASE1_REAL_WISIG "
+        "for the B0 zero-direction release-gated smoke"
+    ),
+)
+def test_real_b0_checkpoint_audits_one_zero_direction_and_exports(tmp_path):
+    checkpoint_path = Path(
+        os.environ["CVS_PHASE1_REAL_B0_CHECKPOINT"]
+    ).resolve()
+    wisig_path = Path(os.environ["CVS_PHASE1_REAL_WISIG"]).resolve()
+    assert checkpoint_path.is_file()
+    assert wisig_path.is_file()
+    assert _sha256_path(checkpoint_path) == (
+        "be2dd3ca4616a859b6740bbb66774f474eb456a398920a0eb91e272d0e19fe41"
+    )
+    assert _sha256_path(wisig_path) == (
+        "2b0a7a7488dd3650bcae7b1d80efbcffd1598aaa671ae6b0a0df2a24dc0f694f"
+    )
+
+    package = _export_real_phase1_checkpoint(
+        checkpoint_path,
+        wisig_path,
+        tmp_path / "phase2_zid_prototypes_b0.pt",
+    )
+    manifest = verify_endpoint_accept_v1_manifest(package)
+    evidence = manifest["calibration_evidence"]
+
+    assert evidence["input_num_samples"] == 25200
+    assert evidence["directional_num_samples"] == 25199
+    assert evidence["num_samples"] == 25199
+    assert evidence["zero_direction_excluded_samples"] == 1
+    assert evidence["zero_direction_excluded_by_class"] == {
+        "0": 0,
+        "1": 0,
+        "2": 0,
+        "3": 1,
+        "4": 0,
+        "5": 0,
+    }
+    assert evidence["zero_direction_excluded_fraction_by_class"]["3"] == pytest.approx(1 / 4200)
+    assert evidence["max_zero_direction_fraction"] == 0.001
+    assert evidence["zero_direction_policy"] == "force_reject_exclude_from_angular_calibration_v1"
+    assert manifest["gate_thresholds"]["reject_zero_direction"] is True
+    assert bool(torch.as_tensor(package["prototype_counts"]).gt(0).all())
     assert Path(package["paths"]["pt_path"]).is_file()
     assert Path(package["paths"]["json_path"]).is_file()
 

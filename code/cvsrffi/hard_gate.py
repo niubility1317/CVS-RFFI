@@ -24,6 +24,7 @@ class GateThresholds:
     use_energy_gate: bool = True
     use_geo_margin_gate: bool = True
     reject_nan: bool = True
+    reject_zero_direction: bool = True
     max_radius_to_inter_ratio: float = 0.50
 
     @classmethod
@@ -46,6 +47,7 @@ class GateThresholds:
             use_energy_gate=bool(values.get("use_energy_gate", True)),
             use_geo_margin_gate=bool(values.get("use_geo_margin_gate", True)),
             reject_nan=bool(values.get("reject_nan", True)),
+            reject_zero_direction=bool(values.get("reject_zero_direction", False)),
             max_radius_to_inter_ratio=float(values.get("max_radius_to_inter_ratio", float("nan"))),
         )
 
@@ -170,6 +172,12 @@ class LocalComponentHardGate:
         z = z.detach().float()
         if self.th.reject_nan and (not torch.isfinite(z).all()):
             return {"decision": "REJECT_NAN", "debug": identity_debug}
+        feature_norm = float(torch.linalg.vector_norm(z).item())
+        identity_debug["feature_norm"] = feature_norm
+        if self.th.reject_nan and not math.isfinite(feature_norm):
+            return {"decision": "REJECT_NAN", "debug": identity_debug}
+        if self.th.reject_zero_direction and feature_norm <= 1e-8:
+            return {"decision": "REJECT_INVALID_FEATURE", "debug": identity_debug}
         if logits is None:
             return {"decision": "REJECT_INVALID_LOGITS", "debug": identity_debug}
         if not torch.is_tensor(logits) or logits.dim() != 1:

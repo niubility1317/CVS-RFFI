@@ -75,13 +75,22 @@ def _artifact(*, density_core=0.0, density_tail=0.0, nll_core=10.0, nll_tail=10.
             "use_energy_gate": True,
             "use_geo_margin_gate": True,
             "reject_nan": True,
+            "reject_zero_direction": True,
             "max_radius_to_inter_ratio": 0.50,
         },
         "endpoint_calibration": {
             "schema": "endpoint_accept_v1_source_val_calibration_v1",
             "threshold_source": "source_val_only",
             "calibration_split": "source_val",
+            "input_num_samples": 40,
+            "directional_num_samples": 40,
             "num_samples": 40,
+            "zero_direction_excluded_samples": 0,
+            "zero_direction_excluded_fraction": 0.0,
+            "zero_direction_excluded_by_class": {"0": 0, "1": 0},
+            "zero_direction_excluded_fraction_by_class": {"0": 0.0, "1": 0.0},
+            "zero_direction_policy": "force_reject_exclude_from_angular_calibration_v1",
+            "max_zero_direction_fraction": 0.001,
             "correct_samples": 40,
             "class_sample_counts": {"0": 20, "1": 20},
             "component_sample_counts": {"0:0": 20, "1:0": 20},
@@ -130,10 +139,13 @@ def test_hard_gate_rejects_wrong_feature_or_logit_shape():
     gate = _gate()
 
     bad_feature = gate.decide(torch.tensor([[1.0, 0.0]]), logits=torch.tensor([4.0, 1.0]))
+    zero_direction = gate.decide(torch.zeros(2), logits=torch.tensor([4.0, 1.0]))
     bad_logits = gate.decide(torch.tensor([1.0, 0.0]), logits=torch.tensor([[4.0, 1.0]]))
     missing_logits = gate.decide(torch.tensor([1.0, 0.0]), logits=None)
 
     assert bad_feature["decision"] == "REJECT_INVALID_FEATURE"
+    assert zero_direction["decision"] == "REJECT_INVALID_FEATURE"
+    assert zero_direction["debug"]["feature_norm"] == 0.0
     assert bad_logits["decision"] == "REJECT_INVALID_LOGITS"
     assert missing_logits["decision"] == "REJECT_INVALID_LOGITS"
 
@@ -208,11 +220,19 @@ def test_endpoint_v11_rejects_disabled_gate_and_schema_tampering():
     package = _artifact()
     disabled = copy.deepcopy(package)
     disabled["endpoint_gate_thresholds"]["use_energy_gate"] = False
+    zero_direction_disabled = copy.deepcopy(package)
+    zero_direction_disabled["endpoint_gate_thresholds"]["reject_zero_direction"] = False
+    zero_direction_audit = copy.deepcopy(package)
+    zero_direction_audit["endpoint_calibration"]["directional_num_samples"] = 39
     schema = copy.deepcopy(package)
     schema["endpoint_accept_v1"]["schema_version"] = 999
 
     with pytest.raises(ValueError, match="requires use_energy_gate=true"):
         _runtime_gate(disabled)
+    with pytest.raises(ValueError, match="requires reject_zero_direction=true"):
+        _runtime_gate(zero_direction_disabled)
+    with pytest.raises(ValueError, match="sample accounting mismatch"):
+        _runtime_gate(zero_direction_audit)
     with pytest.raises(ValueError, match="schema version mismatch"):
         _runtime_gate(schema)
 

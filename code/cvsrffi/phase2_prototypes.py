@@ -887,6 +887,7 @@ def calibrate_endpoint_accept_v1(
     core_quantile: float = 0.80,
     accept_quantile: float = 0.95,
     tail_quantile: float = 0.99,
+    max_zero_direction_fraction: float = 0.001,
 ) -> Dict[str, Any]:
     """Calibrate one deterministic local-component endpoint on source-val only."""
 
@@ -901,12 +902,63 @@ def calibrate_endpoint_accept_v1(
     logits = calibration_logits.detach().float().cpu()
     if raw_z.ndim != 2 or y.numel() != raw_z.size(0) or logits.ndim != 2 or logits.size(0) != raw_z.size(0):
         raise ValueError("endpoint_accept_v1 calibration tensors have incompatible shapes")
-    if not torch.isfinite(raw_z).all() or bool((raw_z.norm(dim=1) <= 1e-8).any()):
-        raise ValueError("endpoint_accept_v1 calibration features must be finite and non-zero")
+    if not torch.isfinite(raw_z).all():
+        raise ValueError("endpoint_accept_v1 calibration features must be finite")
     if not torch.isfinite(logits).all():
         raise ValueError("endpoint_accept_v1 calibration logits must be finite")
     if logits.size(1) != fused.size(0):
         raise ValueError("endpoint_accept_v1 calibration logits must exactly match known-class order")
+    if y.numel() == 0 or int(y.min().item()) < 0 or int(y.max().item()) >= int(fused.size(0)):
+        raise ValueError("endpoint_accept_v1 calibration labels must match known-class order")
+    max_zero_direction_fraction = float(max_zero_direction_fraction)
+    if (
+        not math.isfinite(max_zero_direction_fraction)
+        or max_zero_direction_fraction < 0.0
+        or max_zero_direction_fraction > 0.01
+    ):
+        raise ValueError("endpoint_accept_v1 max zero-direction fraction must be in [0,0.01]")
+    input_num_samples = int(raw_z.size(0))
+    feature_norms = torch.linalg.vector_norm(raw_z, dim=1)
+    if not torch.isfinite(feature_norms).all():
+        raise ValueError("endpoint_accept_v1 calibration feature norms must be finite")
+    zero_direction = feature_norms <= 1e-8
+    zero_direction_count = int(zero_direction.sum().item())
+    zero_direction_fraction = (
+        float(zero_direction_count) / float(input_num_samples)
+        if input_num_samples > 0
+        else 1.0
+    )
+    zero_direction_by_class: Dict[str, int] = {}
+    zero_direction_fraction_by_class: Dict[str, float] = {}
+    for class_id in range(fused.size(0)):
+        class_mask = y == class_id
+        class_count = int(class_mask.sum().item())
+        class_zero_count = int((zero_direction & class_mask).sum().item())
+        class_zero_fraction = (
+            float(class_zero_count) / float(class_count)
+            if class_count > 0
+            else 1.0
+        )
+        zero_direction_by_class[str(class_id)] = class_zero_count
+        zero_direction_fraction_by_class[str(class_id)] = class_zero_fraction
+        if class_zero_fraction > max_zero_direction_fraction + 1e-12:
+            raise ValueError(
+                "endpoint_accept_v1 zero-direction fraction exceeds per-class limit: "
+                f"class={class_id} fraction={class_zero_fraction:.9f} "
+                f"limit={max_zero_direction_fraction:.9f}"
+            )
+    if zero_direction_fraction > max_zero_direction_fraction + 1e-12:
+        raise ValueError(
+            "endpoint_accept_v1 zero-direction fraction exceeds overall limit: "
+            f"fraction={zero_direction_fraction:.9f} "
+            f"limit={max_zero_direction_fraction:.9f}"
+        )
+    directional = ~zero_direction
+    if not bool(directional.any()):
+        raise ValueError("endpoint_accept_v1 calibration has no directional features")
+    raw_z = raw_z[directional]
+    y = y[directional]
+    logits = logits[directional]
     z = F.normalize(raw_z, dim=1)
 
     calibrated_components = [[dict(row) for row in (rows or [])] for rows in components]
@@ -1105,13 +1157,22 @@ def calibrate_endpoint_accept_v1(
         "use_energy_gate": True,
         "use_geo_margin_gate": True,
         "reject_nan": True,
+        "reject_zero_direction": True,
         "max_radius_to_inter_ratio": max_radius_to_inter_ratio,
     }
     calibration = {
         "schema": "endpoint_accept_v1_source_val_calibration_v1",
         "threshold_source": "source_val_only",
         "calibration_split": "source_val",
+        "input_num_samples": input_num_samples,
+        "directional_num_samples": int(z.size(0)),
         "num_samples": int(z.size(0)),
+        "zero_direction_excluded_samples": zero_direction_count,
+        "zero_direction_excluded_fraction": zero_direction_fraction,
+        "zero_direction_excluded_by_class": zero_direction_by_class,
+        "zero_direction_excluded_fraction_by_class": zero_direction_fraction_by_class,
+        "zero_direction_policy": "force_reject_exclude_from_angular_calibration_v1",
+        "max_zero_direction_fraction": max_zero_direction_fraction,
         "correct_samples": int(correct.sum().item()),
         "class_sample_counts": class_sample_counts,
         "component_sample_counts": component_sample_counts,
@@ -1360,7 +1421,14 @@ def _endpoint_boundary_spec(
     ):
         if float(gate_thresholds[key]) < 0.0:
             raise ValueError(f"endpoint_accept_v1 gate threshold must be non-negative: {key}")
-    for key in ("use_density_gate", "use_nll_gate", "use_energy_gate", "use_geo_margin_gate", "reject_nan"):
+    for key in (
+        "use_density_gate",
+        "use_nll_gate",
+        "use_energy_gate",
+        "use_geo_margin_gate",
+        "reject_nan",
+        "reject_zero_direction",
+    ):
         if gate_thresholds.get(key) is not True:
             raise ValueError(f"endpoint_accept_v1 requires {key}=true")
     if gate_thresholds.get("allow_tail_auto_accept") is not False:
@@ -1369,6 +1437,72 @@ def _endpoint_boundary_spec(
         raise ValueError("endpoint_accept_v1 density formula mismatch")
     if str(gate_thresholds.get("nll_formula_id", "")) != "half_sq_normalized_angle_v1":
         raise ValueError("endpoint_accept_v1 NLL formula mismatch")
+    if str(calibration.get("zero_direction_policy", "")) != (
+        "force_reject_exclude_from_angular_calibration_v1"
+    ):
+        raise ValueError("endpoint_accept_v1 zero-direction policy mismatch")
+    try:
+        input_num_samples = int(calibration["input_num_samples"])
+        directional_num_samples = int(calibration["directional_num_samples"])
+        num_samples = int(calibration["num_samples"])
+        zero_direction_samples = int(calibration["zero_direction_excluded_samples"])
+        zero_direction_fraction = float(calibration["zero_direction_excluded_fraction"])
+        max_zero_direction_fraction = float(calibration["max_zero_direction_fraction"])
+    except (KeyError, TypeError, ValueError) as exc:
+        raise ValueError("endpoint_accept_v1 zero-direction audit is incomplete") from exc
+    if (
+        input_num_samples <= 0
+        or directional_num_samples <= 0
+        or num_samples != directional_num_samples
+        or input_num_samples != directional_num_samples + zero_direction_samples
+        or zero_direction_samples < 0
+    ):
+        raise ValueError("endpoint_accept_v1 zero-direction sample accounting mismatch")
+    expected_zero_fraction = float(zero_direction_samples) / float(input_num_samples)
+    if (
+        not math.isfinite(zero_direction_fraction)
+        or abs(zero_direction_fraction - expected_zero_fraction) > 1e-12
+        or not math.isfinite(max_zero_direction_fraction)
+        or not 0.0 <= max_zero_direction_fraction <= 0.01
+        or zero_direction_fraction > max_zero_direction_fraction + 1e-12
+    ):
+        raise ValueError("endpoint_accept_v1 zero-direction fraction audit mismatch")
+    excluded_by_class = calibration.get("zero_direction_excluded_by_class")
+    excluded_fraction_by_class = calibration.get("zero_direction_excluded_fraction_by_class")
+    class_sample_counts = calibration.get("class_sample_counts")
+    if not all(
+        isinstance(value, Mapping)
+        for value in (excluded_by_class, excluded_fraction_by_class, class_sample_counts)
+    ):
+        raise ValueError("endpoint_accept_v1 zero-direction class audit is incomplete")
+    class_excluded_total = 0
+    for class_id in range(fused_tensor.size(0)):
+        key = str(class_id)
+        try:
+            class_directional = int(class_sample_counts[key])
+            class_excluded = int(excluded_by_class[key])
+            class_fraction = float(excluded_fraction_by_class[key])
+        except (KeyError, TypeError, ValueError) as exc:
+            raise ValueError("endpoint_accept_v1 zero-direction class audit is incomplete") from exc
+        class_input = class_directional + class_excluded
+        expected_class_fraction = (
+            float(class_excluded) / float(class_input)
+            if class_input > 0
+            else 1.0
+        )
+        if (
+            class_directional <= 0
+            or class_excluded < 0
+            or not math.isfinite(class_fraction)
+            or abs(class_fraction - expected_class_fraction) > 1e-12
+            or class_fraction > max_zero_direction_fraction + 1e-12
+        ):
+            raise ValueError(
+                f"endpoint_accept_v1 zero-direction class audit mismatch: class={class_id}"
+            )
+        class_excluded_total += class_excluded
+    if class_excluded_total != zero_direction_samples:
+        raise ValueError("endpoint_accept_v1 zero-direction class totals mismatch")
     enabled_rows = [row for row in component_rows if row["accept_enabled"]]
     for row in enabled_rows:
         own = torch.tensor(row["center"], dtype=torch.float32)

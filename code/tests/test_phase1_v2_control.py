@@ -82,12 +82,22 @@ def _verified_endpoint_package():
             "use_energy_gate": True,
             "use_geo_margin_gate": True,
             "reject_nan": True,
+            "reject_zero_direction": True,
             "max_radius_to_inter_ratio": 0.50,
         },
         "endpoint_calibration": {
             "threshold_source": "source_val_only",
             "calibration_split": "source_val",
+            "input_num_samples": 32,
+            "directional_num_samples": 32,
             "num_samples": 32,
+            "zero_direction_excluded_samples": 0,
+            "zero_direction_excluded_fraction": 0.0,
+            "zero_direction_excluded_by_class": {"0": 0, "1": 0},
+            "zero_direction_excluded_fraction_by_class": {"0": 0.0, "1": 0.0},
+            "zero_direction_policy": "force_reject_exclude_from_angular_calibration_v1",
+            "max_zero_direction_fraction": 0.001,
+            "class_sample_counts": {"0": 16, "1": 16},
         },
     }
     return attach_endpoint_accept_v1_manifest(package)
