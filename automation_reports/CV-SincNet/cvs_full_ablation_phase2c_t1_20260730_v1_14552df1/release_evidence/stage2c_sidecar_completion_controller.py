@@ -26,6 +26,16 @@ SOURCE_TRUTH_SCHEMAS = {
 _TASK = TypeVar("_TASK")
 
 
+def _json_ready_fields(
+    task: dict[str, object],
+    fields: tuple[str, ...],
+) -> dict[str, object]:
+    return {
+        field: str(task[field]) if isinstance(task[field], Path) else task[field]
+        for field in fields
+    }
+
+
 def _parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("--release-root", type=Path, required=True)
@@ -294,16 +304,16 @@ def main() -> int:
             fingerprint = _normalize_exception_fingerprint(exc)
             validation_error = f"{type(exc).__name__}: {exc}"
             log_path.write_text(validation_error + "\n", encoding="utf-8")
-        return {
-            key: task[key]
-            for key in (
+        return _json_ready_fields(
+            task,
+            (
                 "receiver",
                 "method_seed",
                 "variant",
                 "new_class_count",
                 "output",
-            )
-        } | {
+            ),
+        ) | {
             "key": key,
             "returncode": returncode,
             "artifact_validated": returncode == 0,

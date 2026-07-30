@@ -85,6 +85,26 @@ def test_feature_slots_count_existing_compute_processes() -> None:
     )
 
 
+@pytest.mark.parametrize(
+    "filename",
+    [
+        "stage2c_package_completion_controller.py",
+        "stage2c_feature_completion_controller.py",
+        "stage2c_sidecar_completion_controller.py",
+    ],
+)
+def test_completion_summary_fields_are_json_serializable(
+    filename: str,
+) -> None:
+    module = _load(f"{filename}_json_test", filename)
+    result = module._json_ready_fields(
+        {"receiver": "20-1", "output": Path("/tmp/fresh-output")},
+        ("receiver", "output"),
+    )
+    assert result["output"] == str(Path("/tmp/fresh-output"))
+    json.dumps({"results": [result]})
+
+
 def test_stage2c_source_plan_has_exact_1425_row_identity() -> None:
     module = _load(
         "verify_stage2c_plan_identity_test",

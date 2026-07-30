@@ -31,6 +31,16 @@ EXPECTED_SCOPE_CACHES = 225
 _TASK = TypeVar("_TASK")
 
 
+def _json_ready_fields(
+    task: dict[str, object],
+    fields: tuple[str, ...],
+) -> dict[str, object]:
+    return {
+        field: str(task[field]) if isinstance(task[field], Path) else task[field]
+        for field in fields
+    }
+
+
 def _sha256(path: Path) -> str:
     digest = hashlib.sha256()
     with path.open("rb") as stream:
@@ -452,9 +462,9 @@ def main() -> int:
             if process.returncode != 0
             else validation_error
         )
-        return {
-            key: task[key]
-            for key in (
+        return _json_ready_fields(
+            task,
+            (
                 "receiver",
                 "method_seed",
                 "support_seed",
@@ -464,8 +474,8 @@ def main() -> int:
                 "k_shot",
                 "gpu",
                 "output",
-            )
-        } | {
+            ),
+        ) | {
             "key": key,
             "process_returncode": process.returncode,
             "returncode": returncode,

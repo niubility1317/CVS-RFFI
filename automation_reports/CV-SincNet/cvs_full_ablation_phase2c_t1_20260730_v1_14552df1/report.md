@@ -10,7 +10,7 @@
 |目标|完整执行设计报告Stage2-C screening矩阵，不基于中间性能缩小范围|
 |比较目标|19个已注册arm在5个receiver、3个seed bundle、K∈{1,2,5,10}、new_count∈{5,20}上的同计划比较|
 |Git实现|`32fb0ae78f7d1c8093316e4336f6fe9e848e261d`；实验ID中的`14552df1`仅为首次预注册标签，正式release以本字段为准|
-|状态|`LOCAL_VERIFIED / INDEPENDENT_REVIEW_P0_0_P1_0 / STATES_ARTIFACTS_COMPLETE / READY_FOR_N607_INPUT_COMPLETION / REMOTE_NOT_LAUNCHED / NO_PERFORMANCE_RESULT`|
+|状态|`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / PACKAGE_SUMMARY_NOT_PUBLISHED / NO_PERFORMANCE_RESULT`|
 
 ## 固定矩阵与复用边界
 
@@ -63,3 +63,23 @@
 |`verify_stage2c_plan_identity.py`|固定1425行source plan和1425/1350 sealed plan的矩阵身份、Git提交、formal authority及detached SHA|
 
 本地`compileall`和5个Bash模板语法检查全部通过；静态矩阵验证为package 45项（15 before+15 new20+15 new5）、feature 75项（60 new20+15 new5，动态计入外部GPU进程后每卡总数≤2）、sidecar 30项/60文件；cache index的75个identity与1425行source plan去重后的身份集合完全相等。predictor package、feature builder、scoring sidecar、binding registry和release相邻5个测试文件连同focused测试共65项全部通过；focused测试覆盖旧50行来源身份/命令结构、GPU动态空槽、1425行source plan、summary摘要绑定及精确身份集合失败关闭。独立复审结论为`P0=0 / P1=0`，允许以Git提交`32fb0ae7`作为正式Stage2-C release code。
+
+## N607落地与package阶段技术关闭
+
+|字段|结果|
+|---|---|
+|direct preflight|PASS；项目根可见；8张GPU启动前均空闲；`/home`可用空间约7.94TB|
+|Git bundle|25,937,931 bytes；SHA256=`97f127204631f950724932b83ac6f7162673c54e70af8fb419ae5ec68984d659`|
+|formal release|HEAD=`32fb0ae78f7d1c8093316e4336f6fe9e848e261d`；tracked/untracked clean|
+|控制面落地|7个Python、5个模板、旧50行source summary及1425行source plan逐文件SHA匹配；远端`py_compile`、模板`bash -n`与source plan verifier通过|
+|package controller|PID=`1339910`；driver log=`/home/szu2070436088/2510044040/CV-SincNet/logs/cvs_full_ablation_phase2c_t1_20260730_v1_14552df1_package_builder/controller.out`|
+|逐任务证据|45份逐任务日志、45个predictor目录、45份predictor seal、45份scoring manifest均已落盘；逐任务日志未见Traceback或非零返回证据|
+|计数口径|`launched=45`、`child_completed=45`、`child_failed=0`；同一正式artifact validator只读重放45/45通过；但最终summary不存在，因此`formal_validated=0`且package gate未闭合|
+|系统故障|控制器在写最终`package_completion_summary.json`时执行`json.dumps(summary)`失败：`TypeError: Object of type PosixPath is not JSON serializable`|
+|归一化异常指纹|SHA256=`0e72f78f1be97efd2e33e07e37449c84a702deb363ce75707cf49a26e4f157e2`|
+|正式闭环结论|`package_completion_summary.json`不存在，因此45项不能晋级为正式loader闭环；feature、sidecar、registry、seal及1425正式矩阵均未启动|
+|进程/GPU|package controller已退出；run-owned child=0；GPU compute process=0|
+|SSH清理|本地`ssh.exe=0`；到N607及bridge的TCP22 `ESTABLISHED=0`|
+|保留与重试边界|原input/package/driver及全部部分制品原样保留；不得远端patch、补写summary、覆盖或在原run重启。须本地修复、独立复审、Git提交，并使用新的非覆盖run ID|
+
+该故障发生在输入补齐控制器的最终汇总发布阶段，不是性能结果。当前run固定为`NO_PERFORMANCE_RESULT`。

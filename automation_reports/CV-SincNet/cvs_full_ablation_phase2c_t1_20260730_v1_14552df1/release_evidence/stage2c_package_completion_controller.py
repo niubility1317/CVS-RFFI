@@ -42,6 +42,16 @@ IMMUTABLE_INPUT_FLAGS = (
 _TASK = TypeVar("_TASK")
 
 
+def _json_ready_fields(
+    task: dict[str, object],
+    fields: tuple[str, ...],
+) -> dict[str, object]:
+    return {
+        field: str(task[field]) if isinstance(task[field], Path) else task[field]
+        for field in fields
+    }
+
+
 def _parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("--source-summary", type=Path, required=True)
@@ -386,9 +396,9 @@ def main() -> int:
             if process.returncode != 0
             else validation_error
         )
-        return {
-            key: task[key]
-            for key in (
+        return _json_ready_fields(
+            task,
+            (
                 "receiver",
                 "method_seed",
                 "support_seed",
@@ -396,8 +406,8 @@ def main() -> int:
                 "stage",
                 "new_class_count",
                 "output",
-            )
-        } | {
+            ),
+        ) | {
             "key": key,
             "process_returncode": process.returncode,
             "returncode": returncode,
