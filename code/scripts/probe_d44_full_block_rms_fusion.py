@@ -54,9 +54,24 @@ def _class_centered_logit_rms(
 
 def build_full_block_rms_fit(
     d42: Any,
+    *,
+    allow_fp32_centering_argmax_drift: bool = False,
 ) -> Callable[[np.ndarray, np.ndarray, int, int], tuple[np.ndarray, np.ndarray, dict[str, Any]]]:
-    full_fit = d43.build_structured_fit(d42, "full_centered_control")
-    block_fit = d43.build_structured_fit(d42, "block3_centered")
+    centering_kwargs = (
+        {"allow_fp32_centering_argmax_drift": True}
+        if allow_fp32_centering_argmax_drift
+        else {}
+    )
+    full_fit = d43.build_structured_fit(
+        d42,
+        "full_centered_control",
+        **centering_kwargs,
+    )
+    block_fit = d43.build_structured_fit(
+        d42,
+        "block3_centered",
+        **centering_kwargs,
+    )
 
     def fit(
         transformed: np.ndarray,

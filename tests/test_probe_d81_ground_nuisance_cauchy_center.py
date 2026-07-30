@@ -37,7 +37,7 @@ def test_probe_patches_all_full_block_closures_before_d62_build():
     source = PROBE.read_text(encoding="utf-8")
     full_index = source.index("d42._fit_equal_prior_lda = full_fit")
     block_index = source.index("d43.build_structured_fit = structured_builder")
-    build_index = source.index("base_fit, call_records = d62.build_d62_fit(d42)")
+    build_index = source.index("base_fit, call_records = d62.build_d62_fit(")
     restore_index = source.index("d43.build_structured_fit = original_builder")
     assert max(full_index, block_index) < build_index < restore_index
     assert "D81 D43 module alias identity drift" in source

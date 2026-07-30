@@ -170,9 +170,22 @@ def build_classwise_loo_reliability_fit(
     d42: Any,
     reliability_strategy: Callable[..., tuple[np.ndarray, Any, dict[str, Any]]]
     | None = None,
+    *,
+    allow_fp32_centering_argmax_drift: bool = False,
 ) -> Callable[[np.ndarray, np.ndarray, int, int], tuple[np.ndarray, np.ndarray, dict[str, Any]]]:
-    full_base_fit = d45._build_locked_d42_full_component_fit(d42)
-    block_base_fit = d43.build_structured_fit(d42, "block3_centered")
+    centering_kwargs = (
+        {"allow_fp32_centering_argmax_drift": True}
+        if allow_fp32_centering_argmax_drift
+        else {}
+    )
+    full_base_fit = d45._build_locked_d42_full_component_fit(
+        d42, **centering_kwargs
+    )
+    block_base_fit = d43.build_structured_fit(
+        d42,
+        "block3_centered",
+        **centering_kwargs,
+    )
 
     def fit(
         transformed: np.ndarray,

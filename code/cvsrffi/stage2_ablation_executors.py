@@ -347,13 +347,18 @@ def _component_builder(
                 np.empty(0, dtype=np.float64),
                 {},
                 apply_ground_center=False,
+                allow_fp32_centering_argmax_drift=True,
             )[0],
             "d92_d46_d62_without_ground_robust_center",
         )
     if ablation_id == "P2-C3":
         return (
             d81.build_d81_fit(
-                d42, ground_basis, ground_weights, ground_audit
+                d42,
+                ground_basis,
+                ground_weights,
+                ground_audit,
+                allow_fp32_centering_argmax_drift=True,
             )[0],
             "d81_all_classes_equal_covariance",
         )
@@ -361,27 +366,41 @@ def _component_builder(
     original_d62_builder = d92.d62.build_d62_fit
     try:
         if ablation_id == "P2-D0":
-            d92.d62.build_d62_fit = lambda module: (
+            d92.d62.build_d62_fit = lambda module, **_kwargs: (
                 module._fit_equal_prior_lda,
                 [],
             )
         elif ablation_id == "P2-D1":
-            d92.d62.build_d62_fit = lambda module: (
-                d43.build_structured_fit(module, "block3_centered"),
+            d92.d62.build_d62_fit = lambda module, **_kwargs: (
+                d43.build_structured_fit(
+                    module,
+                    "block3_centered",
+                    allow_fp32_centering_argmax_drift=True,
+                ),
                 [],
             )
         elif ablation_id == "P2-D2":
-            d92.d62.build_d62_fit = lambda module: (
-                d44.build_full_block_rms_fit(module),
+            d92.d62.build_d62_fit = lambda module, **_kwargs: (
+                d44.build_full_block_rms_fit(
+                    module,
+                    allow_fp32_centering_argmax_drift=True,
+                ),
                 [],
             )
         elif ablation_id == "P2-E0":
-            d92.d62.build_d62_fit = lambda module: (
-                d46.build_classwise_loo_reliability_fit(module),
+            d92.d62.build_d62_fit = lambda module, **_kwargs: (
+                d46.build_classwise_loo_reliability_fit(
+                    module,
+                    allow_fp32_centering_argmax_drift=True,
+                ),
                 [],
             )
         fit = d92.build_d92_fit(
-            d42, ground_basis, ground_weights, ground_audit
+            d42,
+            ground_basis,
+            ground_weights,
+            ground_audit,
+            allow_fp32_centering_argmax_drift=True,
         )[0]
     finally:
         d92.d62.build_d62_fit = original_d62_builder
@@ -391,6 +410,23 @@ def _component_builder(
         "P2-D2": "d92_d81_full_block_fixed_half",
         "P2-E0": "d92_d81_d46_without_fisher",
     }.get(ablation_id, "d92_d81_d46_d62_full")
+
+
+def _fit_with_fp32_centering_audit(
+    fit: Any,
+    transformed: np.ndarray,
+    targets: np.ndarray,
+    class_count: int,
+    k_shot: int,
+) -> tuple[np.ndarray, np.ndarray, dict[str, Any]]:
+    """Record the explicit per-fit FP32 gauge-roundoff policy."""
+
+    coefficient, intercept, audit = fit(
+        transformed, targets, class_count, k_shot
+    )
+    evidence = dict(audit)
+    evidence["stage2_ablation_fp32_centering_argmax_drift_allowed"] = True
+    return coefficient, intercept, evidence
 
 
 @dataclass(frozen=True)
@@ -693,13 +729,20 @@ def fit_stage2_ablation(
         if ablation_id == "P2-BASE-FULL-BLOCK-LDA":
             from scripts import probe_d46_classwise_loo_reliability_fusion as d46
 
-            fit = d46.build_classwise_loo_reliability_fit(d42)
+            fit = d46.build_classwise_loo_reliability_fit(
+                d42,
+                allow_fp32_centering_argmax_drift=True,
+            )
             method = "full_block_shrinkage_lda_no_robust_center"
         elif ablation_id == "P2-S2B-DIAGOFF":
             from scripts import probe_d81_ground_nuisance_cauchy_center as d81
 
             fit = d81.build_d81_fit(
-                d42, basis, weights, basis_audit
+                d42,
+                basis,
+                weights,
+                basis_audit,
+                allow_fp32_centering_argmax_drift=True,
             )[0]
             method = "stage2b_d81_diag_metric_off"
         else:
@@ -710,10 +753,9 @@ def fit_stage2_ablation(
                 ground_weights=weights,
                 ground_audit=basis_audit,
             )
-        coefficient, intercept, audit = fit(
-            transformed, targets, len(classes), k_shot
+        coefficient, intercept, audit = _fit_with_fp32_centering_audit(
+            fit, transformed, targets, len(classes), k_shot
         )
-        audit = dict(audit)
         audit["numerical_method"] = method
 
     fit_seconds = time.perf_counter() - started

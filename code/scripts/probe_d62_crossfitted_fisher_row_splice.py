@@ -278,13 +278,32 @@ def _pareto_gate(
     }
 
 
-def build_d62_fit(d42: Any) -> tuple[Callable[..., Any], list[dict[str, Any]]]:
-    base_fit = d46.build_classwise_loo_reliability_fit(d42)
+def build_d62_fit(
+    d42: Any,
+    *,
+    allow_fp32_centering_argmax_drift: bool = False,
+) -> tuple[Callable[..., Any], list[dict[str, Any]]]:
+    centering_kwargs = (
+        {"allow_fp32_centering_argmax_drift": True}
+        if allow_fp32_centering_argmax_drift
+        else {}
+    )
+    base_fit = d46.build_classwise_loo_reliability_fit(
+        d42, **centering_kwargs
+    )
     full_fit = d46._canonical_component_fit(
-        d45._build_locked_d42_full_component_fit(d42), []
+        d45._build_locked_d42_full_component_fit(
+            d42, **centering_kwargs
+        ),
+        [],
     )
     block_fit = d46._canonical_component_fit(
-        d43.build_structured_fit(d42, "block3_centered"), []
+        d43.build_structured_fit(
+            d42,
+            "block3_centered",
+            **centering_kwargs,
+        ),
+        [],
     )
     call_records: list[dict[str, Any]] = []
 
@@ -573,7 +592,6 @@ def main(argv: list[str] | None = None) -> int:
     d42 = package = None
     original_path: tuple[str, ...] = ()
     original_fit = original_macs = original_top = original_cell_guard = None
-    original_centering_drift_policy = d43.ALLOW_FP32_CENTERING_ARGMAX_DRIFT
     runner_name, exit_code = "d62_locked_d42_runner", 1
     runner_module = None
     call_records: list[dict[str, Any]] = []
@@ -581,10 +599,13 @@ def main(argv: list[str] | None = None) -> int:
         d42, package, original_path = d43._bootstrap(known.runtime_root, known.probe_root)
         if d43.FP32_CENTERING_ARGMAX_AUDIT:
             raise D62ProbeError("D62 centering audit was not empty before run")
-        if known.d62_confirmation_seed is not None:
-            d43.ALLOW_FP32_CENTERING_ARGMAX_DRIFT = True
         original_fit = d42._fit_equal_prior_lda
-        fit, call_records = build_d62_fit(d42)
+        fit, call_records = build_d62_fit(
+            d42,
+            allow_fp32_centering_argmax_drift=(
+                known.d62_confirmation_seed is not None
+            ),
+        )
         d42._fit_equal_prior_lda = fit
         original_macs, original_top = _install_resource_accounting(d42)
         runner = known.probe_root / "code" / "scripts" / "run_d25_support_only_concat.py"
@@ -615,7 +636,6 @@ def main(argv: list[str] | None = None) -> int:
             d42.fit_d42_unified_shrinkage_lda = original_top
         if runner_module is not None and original_cell_guard is not None:
             runner_module._require_d42_development_cell = original_cell_guard
-        d43.ALLOW_FP32_CENTERING_ARGMAX_DRIFT = original_centering_drift_policy
         if package is not None:
             package.__path__[:] = list(original_path)
         sys.modules.pop(runner_name, None)

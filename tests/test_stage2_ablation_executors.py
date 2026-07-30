@@ -7,6 +7,7 @@ import pytest
 
 from cvsrffi.stage2_ablation_factory import STAGE2_T1_ARMS
 from cvsrffi.stage2_ablation_executors import (
+    _fit_with_fp32_centering_audit,
     fit_stage2_ablation,
 )
 
@@ -56,6 +57,38 @@ def _fixture(k_shot: int = 2):
 def test_fit_api_has_no_query_surface() -> None:
     signature = inspect.signature(fit_stage2_ablation)
     assert not any("query" in name.lower() for name in signature.parameters)
+
+
+def test_fp32_centering_roundoff_policy_is_explicitly_audited() -> None:
+    def fit(rows, targets, class_count, k_shot):
+        return (
+            np.zeros((class_count, rows.shape[1]), dtype=np.float32),
+            np.zeros(class_count, dtype=np.float32),
+            {"k_shot": k_shot, "target_count": len(targets)},
+        )
+
+    coefficient, intercept, audit = _fit_with_fp32_centering_audit(
+        fit,
+        np.ones((2, 3), dtype=np.float32),
+        np.asarray([0, 1], dtype=np.int64),
+        2,
+        1,
+    )
+    assert coefficient.shape == (2, 3)
+    assert intercept.shape == (2,)
+    assert audit["stage2_ablation_fp32_centering_argmax_drift_allowed"] is True
+
+    def failing_fit(*_args):
+        raise RuntimeError("synthetic fit failure")
+
+    with pytest.raises(RuntimeError, match="synthetic fit failure"):
+        _fit_with_fp32_centering_audit(
+            failing_fit,
+            np.ones((2, 3), dtype=np.float32),
+            np.asarray([0, 1], dtype=np.int64),
+            2,
+            1,
+        )
 
 
 @pytest.mark.parametrize(

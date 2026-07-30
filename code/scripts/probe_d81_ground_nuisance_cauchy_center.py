@@ -134,6 +134,8 @@ def build_d81_fit(
     basis: np.ndarray,
     spectral_weights: np.ndarray,
     ground_audit: dict[str, Any],
+    *,
+    allow_fp32_centering_argmax_drift: bool = False,
 ) -> tuple[Callable[..., Any], list[dict[str, Any]], list[dict[str, Any]]]:
     """Inject center translation before all D62 full/block OOF closures."""
 
@@ -147,6 +149,11 @@ def build_d81_fit(
         raise D81ProbeError("D81 D43 module alias identity drift")
     original_fit = d42._fit_equal_prior_lda
     original_builder = d43.build_structured_fit
+    centering_kwargs = (
+        {"allow_fp32_centering_argmax_drift": True}
+        if allow_fp32_centering_argmax_drift
+        else {}
+    )
     transform_records: list[dict[str, Any]] = []
     basis_audit = {
         "basis_sha256": ground_audit["d81_basis_sha256"],
@@ -168,10 +175,19 @@ def build_d81_fit(
         transform_records,
     )
 
-    def structured_builder(d42_arg: Any, arm: str) -> Callable[..., Any]:
+    def structured_builder(
+        d42_arg: Any,
+        arm: str,
+        *,
+        allow_fp32_centering_argmax_drift: bool = False,
+    ) -> Callable[..., Any]:
         if d42_arg is not d42 or arm != "block3_centered":
             raise D81ProbeError("D81 unexpected structured covariance request")
-        base = original_builder(d42_arg, arm)
+        base = original_builder(
+            d42_arg,
+            arm,
+            **centering_kwargs,
+        )
         return core.build_robust_center_component_fit(
             base,
             basis,
@@ -184,7 +200,9 @@ def build_d81_fit(
     try:
         d42._fit_equal_prior_lda = full_fit
         d43.build_structured_fit = structured_builder
-        base_fit, call_records = d62.build_d62_fit(d42)
+        base_fit, call_records = d62.build_d62_fit(
+            d42, **centering_kwargs
+        )
     finally:
         d42._fit_equal_prior_lda = original_fit
         d43.build_structured_fit = original_builder

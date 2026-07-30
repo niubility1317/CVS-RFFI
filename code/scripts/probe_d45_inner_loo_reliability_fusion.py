@@ -203,6 +203,8 @@ def _likelihood_weights(
 
 def _build_locked_d42_full_component_fit(
     d42: Any,
+    *,
+    allow_fp32_centering_argmax_drift: bool = False,
 ) -> Callable[..., tuple[np.ndarray, np.ndarray, dict[str, Any]]]:
     """Reuse D42's locked sklearn solution; only remove a class-common affine term."""
 
@@ -214,12 +216,29 @@ def _build_locked_d42_full_component_fit(
         class_count: int,
         k_shot: int,
     ) -> tuple[np.ndarray, np.ndarray, dict[str, Any]]:
+        fp32_drift_allowed = bool(allow_fp32_centering_argmax_drift)
         coefficients, intercept, audit = original_fit(
             transformed, targets, class_count, k_shot
         )
         centered_coef, centered_intercept = d43._center_affine_scores(
             coefficients, intercept
         )
+        rows64 = np.asarray(transformed, dtype=np.float64)
+        original_scores64 = (
+            rows64 @ np.asarray(coefficients, dtype=np.float64).T
+            + np.asarray(intercept, dtype=np.float64)[None, :]
+        )
+        centered_scores64 = (
+            rows64 @ centered_coef.T + centered_intercept[None, :]
+        )
+        fp64_argmax_equivalent = bool(
+            np.array_equal(
+                np.argmax(original_scores64, axis=1),
+                np.argmax(centered_scores64, axis=1),
+            )
+        )
+        if not fp64_argmax_equivalent:
+            raise D45ProbeError("D45 locked D42 algebraic centering drift")
         rows32 = np.asarray(transformed, dtype=np.float32)
         original_scores = (
             rows32 @ np.asarray(coefficients, dtype=np.float32).T
@@ -230,8 +249,17 @@ def _build_locked_d42_full_component_fit(
         centered_scores = (
             rows32 @ centered_coef32.T + centered_intercept32[None, :]
         )
-        if not np.array_equal(
-            np.argmax(original_scores, axis=1), np.argmax(centered_scores, axis=1)
+        original_predictions = np.argmax(original_scores, axis=1)
+        centered_predictions = np.argmax(centered_scores, axis=1)
+        fp32_argmax_equivalent = bool(
+            np.array_equal(original_predictions, centered_predictions)
+        )
+        fp32_argmax_changed_count = int(
+            np.sum(original_predictions != centered_predictions)
+        )
+        if (
+            not fp32_argmax_equivalent
+            and not fp32_drift_allowed
         ):
             raise D45ProbeError("D45 locked D42 full-component centering drift")
         result_audit = dict(audit)
@@ -242,6 +270,18 @@ def _build_locked_d42_full_component_fit(
                 "d43_class_common_affine_omitted": True,
                 "d45_full_component_uses_locked_d42_fit": True,
                 "d45_full_component_refits_covariance": False,
+                "d45_full_component_centered_support_fp64_argmax_equivalent": (
+                    fp64_argmax_equivalent
+                ),
+                "d45_full_component_centered_support_fp32_argmax_equivalent": (
+                    fp32_argmax_equivalent
+                ),
+                "d45_full_component_centered_support_fp32_argmax_changed_count": (
+                    fp32_argmax_changed_count
+                ),
+                "d45_full_component_centered_support_fp32_argmax_drift_allowed": (
+                    fp32_drift_allowed
+                ),
             }
         )
         return centered_coef32, centered_intercept32, result_audit
@@ -253,9 +293,20 @@ def build_inner_loo_reliability_fit(
     d42: Any,
     post_fusion_calibration: Callable[..., tuple[np.ndarray, dict[str, Any]]]
     | None = None,
+    *,
+    allow_fp32_centering_argmax_drift: bool = False,
 ) -> Callable[[np.ndarray, np.ndarray, int, int], tuple[np.ndarray, np.ndarray, dict[str, Any]]]:
-    full_fit = _build_locked_d42_full_component_fit(d42)
-    block_fit = d43.build_structured_fit(d42, "block3_centered")
+    centering_kwargs = (
+        {"allow_fp32_centering_argmax_drift": True}
+        if allow_fp32_centering_argmax_drift
+        else {}
+    )
+    full_fit = _build_locked_d42_full_component_fit(d42, **centering_kwargs)
+    block_fit = d43.build_structured_fit(
+        d42,
+        "block3_centered",
+        **centering_kwargs,
+    )
 
     def fit(
         transformed: np.ndarray,

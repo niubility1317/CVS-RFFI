@@ -40,12 +40,18 @@ def build_d92_fit(
     ground_audit: dict[str, Any],
     *,
     apply_ground_center: bool = True,
+    allow_fp32_centering_argmax_drift: bool = False,
 ) -> tuple[Callable[..., Any], list[dict[str, Any]], list[dict[str, Any]]]:
     aliases = (d62.d43, d62.d61.d43, d62.d61.d46.d43, d62.d61.d46.d45.d43)
     if any(alias is not d43 for alias in aliases):
         raise D92ProbeError("D92 D43 module alias identity drift")
     original_fit = d42._fit_equal_prior_lda
     original_builder = d43.build_structured_fit
+    centering_kwargs = (
+        {"allow_fp32_centering_argmax_drift": True}
+        if allow_fp32_centering_argmax_drift
+        else {}
+    )
     transform_records: list[dict[str, Any]] = []
     component_records: list[dict[str, Any]] = []
     basis_audit = (
@@ -100,10 +106,19 @@ def build_d92_fit(
         else full_component
     )
 
-    def structured_builder(d42_arg: Any, arm: str) -> Callable[..., Any]:
+    def structured_builder(
+        d42_arg: Any,
+        arm: str,
+        *,
+        allow_fp32_centering_argmax_drift: bool = False,
+    ) -> Callable[..., Any]:
         if d42_arg is not d42 or arm != "block3_centered":
             raise D92ProbeError("D92 unexpected structured covariance request")
-        baseline_block = original_builder(d42_arg, arm)
+        baseline_block = original_builder(
+            d42_arg,
+            arm,
+            **centering_kwargs,
+        )
         d92_block = build_registration_balanced_equal_lda(
             d42, baseline_block, arm="block3_centered"
         )
@@ -124,7 +139,9 @@ def build_d92_fit(
     try:
         d42._fit_equal_prior_lda = full_fit
         d43.build_structured_fit = structured_builder
-        base_fit, call_records = d62.build_d62_fit(d42)
+        base_fit, call_records = d62.build_d62_fit(
+            d42, **centering_kwargs
+        )
     finally:
         d42._fit_equal_prior_lda = original_fit
         d43.build_structured_fit = original_builder

@@ -154,7 +154,7 @@ def test_confirmation_guard_rejects_unregistered_seed_before_install() -> None:
 
 def test_confirmation_probe_explicitly_audits_centering_roundoff() -> None:
     source = SCRIPT.read_text(encoding="utf-8")
-    assert "ALLOW_FP32_CENTERING_ARGMAX_DRIFT = True" in source
+    assert "allow_fp32_centering_argmax_drift=(" in source
     assert '"fp32_centering_argmax_drift_allowed"' in source
     assert '"fp32_centering_audit"' in source
     assert '"non_equivalent_fit_count"' in source

@@ -237,6 +237,77 @@ def _partition_evidence(class_count: int, k_shot: int, ce: float):
     }
 
 
+def test_d45_records_fp32_centering_roundoff_when_ablation_policy_allows_it() -> None:
+    rows = np.asarray([[0.6512653827667236]], dtype=np.float32)
+    coefficients = np.asarray(
+        [[85.9393081665039], [85.93941497802734], [85.93926239013672]],
+        dtype=np.float32,
+    )
+    intercept = np.asarray(
+        [-163.86297607421875, -163.863037109375, -163.8631134033203],
+        dtype=np.float32,
+    )
+
+    class FakeD42:
+        @staticmethod
+        def _fit_equal_prior_lda(*_args):
+            return coefficients, intercept, {}
+
+    strict_fit = probe._build_locked_d42_full_component_fit(FakeD42)
+    with pytest.raises(probe.D45ProbeError, match="centering drift"):
+        strict_fit(rows, np.asarray([0]), 3, 1)
+    allowed_fit = probe._build_locked_d42_full_component_fit(
+        FakeD42,
+        allow_fp32_centering_argmax_drift=True,
+    )
+    _coef, _intercept, audit = allowed_fit(
+        rows, np.asarray([0]), 3, 1
+    )
+    assert (
+        audit["d45_full_component_centered_support_fp64_argmax_equivalent"]
+        is True
+    )
+    assert (
+        audit["d45_full_component_centered_support_fp32_argmax_equivalent"]
+        is False
+    )
+    assert (
+        audit["d45_full_component_centered_support_fp32_argmax_changed_count"]
+        == 1
+    )
+    assert (
+        audit["d45_full_component_centered_support_fp32_argmax_drift_allowed"]
+        is True
+    )
+
+
+def test_d45_rejects_fp64_algebraic_centering_drift_even_in_ablation_scope(
+    monkeypatch,
+) -> None:
+    coefficients = np.asarray([[1.0], [0.0]], dtype=np.float32)
+    intercept = np.zeros(2, dtype=np.float32)
+
+    class FakeD42:
+        @staticmethod
+        def _fit_equal_prior_lda(*_args):
+            return coefficients, intercept, {}
+
+    monkeypatch.setattr(
+        probe.d43,
+        "_center_affine_scores",
+        lambda *_args: (
+            np.zeros((2, 1), dtype=np.float64),
+            np.asarray([0.0, 1.0], dtype=np.float64),
+        ),
+    )
+    fit = probe._build_locked_d42_full_component_fit(
+        FakeD42,
+        allow_fp32_centering_argmax_drift=True,
+    )
+    with pytest.raises(probe.D45ProbeError, match="algebraic centering drift"):
+        fit(np.asarray([[1.0]], dtype=np.float32), np.asarray([0]), 2, 1)
+
+
 def _valid_audit(class_count: int, k_shot: int):
     full_ce = 0.4
     block_ce = 0.5
