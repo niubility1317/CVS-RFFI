@@ -9,7 +9,7 @@
 |operator|Codex主代理；N607 sole launch owner=`stage2_t1_n607_release`|
 |目标|修复v3的NumPy 2.x/PyTorch 2.1转换故障后，完整执行Stage2-C全部1425个logical row，不按中间性能缩小范围|
 |正式代码commit|`1ca64a586b85c97fbaa2a677a6ca5776ffd239b3`|
-|状态|`RUNNING / ROOT_CAUSE_SMOKE_PASS / FIRST_ROW_HEALTH_PASS / FULL_1425_MATRIX_DISPATCHING`|
+|状态|`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT / TERMINAL_ARTIFACTS_COMPLETE`|
 
 ## 假设与比较目标
 
@@ -128,3 +128,40 @@ reuse封存再次只读验收package 45/45、feature 75/75/225 scope cache和for
 |产物状态|`prediction_complete=false`；`scores_complete=false`；`zero_prediction=true`；`p0_protocol_violation=false`|
 |证据|完整读取2401-byte row日志、terminal status和launch artifact；全部原样保留|
 |处置|不干预健康运行的其余矩阵；完成后以新的不可覆盖补跑run补齐该孤立行，不覆盖v4、不调参、不改变方法|
+
+## 系统性停止与终态闭合
+
+v4随后在第二个不同row复现指纹`3c5905f17ef1f213abb92e9b0d49e355619d280abdaf690a510cf89d9bd9a759`。runner按预注册规则停止继续分发并退出，未按性能值作出停止决定。终态固定为`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`，不得将641个已完成row用于v4性能结论，也不得resume或覆盖v4。
+
+|physical终态|计数|说明|
+|---|---:|---|
+|COMPLETE|641|prediction、score、logical闭环字段一致|
+|FAILED|18|3类指纹；全部prediction前失败、zero prediction、P0=false|
+|NOT_LAUNCHED_SYSTEMIC_STOP|691|系统性停止后未分发；映射766个logical row|
+|合计|1350|status JSON全量可读；unreadable=0|
+
+|FAILED指纹|physical数|错误/角色|判定|
+|---|---:|---|---|
+|`3c5905f...b66b4a1`|2|`D43ProbeError: D43 FP32 centering changed support argmax`|两个不同row复现；系统性停止触发指纹|
+|`d51f60a...de5a8dd`|1|`D45ProbeError: D45 locked D42 full-component centering drift`|独立孤立失败|
+|`f73d366f...1db274d`|15|停止收尾时其余活跃worker返回非零；15个row日志均为0-byte|系统性停止后的清退后果；原样保留|
+
+终态全量只读审计：
+
+- 1350个status JSON全部解析；P0=0、COMPLETE字段不一致=0。
+- 1425个logical输出全部存在并解析：641个`same_row_score/PASS`，784个`failed_row/FAILED`；后者由18个真实FAILED logical和766个NOT_LAUNCHED logical构成，全部`zero_prediction=true`。
+- 641个完成physical的prediction文件均存在且非空，641个row receipt均可解析，641份完整row日志均可读且非空；641个logical completion receipt均可解析。
+- 641个PASS logical输出均记录truth在prediction commit后才打开；scheduler记录`performance_values_visible_to_scheduler=false`。
+- `runner_summary.json`与上述计数一致：`physical_execution_count=1350`、`logical_row_count=1425`、`completed_physical_count=641`、`completed_logical_score_count=641`、`failed_physical_count=18`、`not_launched_systemic_stop_count=691`、`systemic_stop=true`、thread error为空。
+- main PID、16个worker及全部v4绑定进程均已退出；GPU0–7 compute进程均为0。本地`ssh.exe=0`，N607 TCP22 established连接=0。远端全部run、request、log、driver和partial artifact保持原样。
+
+回收的小型终态证据位于`terminal_evidence/`：
+
+|文件|字节|SHA256|
+|---|---:|---|
+|`runner_summary.json`|788508|`0f2dc74c7809bc5093b231442834f0f0c3920890957ae36be059760bb1b8308e`|
+|`phys_1b9d0cee16897a454ddb3aa7.out`|2386|`cea8e5b9b4770d5b6c8857988e077529b1b1ac208027644be4a43e46346b15a5`|
+|`phys_af88df635bf6b18beb105d08.out`|3100|`70874c0fb021512a57c9364121f27bed5d93e333451d2b9a1255d8f1af05f1bf`|
+|`phys_37cc012d2b44700e361a5a9c.out`|2401|`eff98e221090939376545d9a9d8d146c2eede45bb9d9bb0a0f605bf2236a624c`|
+
+下一步必须先在本地修复并覆盖三类终态技术失败，完成针对性测试、真实输入smoke、独立复审和新commit，再创建不可覆盖的v5补跑计划。v5至少补齐18个FAILED physical和691个NOT_LAUNCHED physical，并按原registry恢复全部784个未成功logical闭环；是否能够安全复用v4的641个已完成row，须由v5冻结计划显式绑定和验证，不能在v4内补写。

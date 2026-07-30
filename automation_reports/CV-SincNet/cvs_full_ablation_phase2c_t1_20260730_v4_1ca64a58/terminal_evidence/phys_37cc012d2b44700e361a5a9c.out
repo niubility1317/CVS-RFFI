@@ -1,0 +1,22 @@
+Traceback (most recent call last):
+  File "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2c_t1_20260730_v4_1ca64a58/code/scripts/run_full_ablation_stage2_row.py", line 192, in <module>
+    raise SystemExit(main())
+  File "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2c_t1_20260730_v4_1ca64a58/code/scripts/run_full_ablation_stage2_row.py", line 186, in main
+    receipt = run_request(_parser().parse_args().request)
+  File "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2c_t1_20260730_v4_1ca64a58/code/scripts/run_full_ablation_stage2_row.py", line 116, in run_request
+    receipt = execute_feature_row(
+  File "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2c_t1_20260730_v4_1ca64a58/code/cvsrffi/stage2_ablation_row_executor.py", line 533, in execute_feature_row
+    after_state = _fit(
+  File "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2c_t1_20260730_v4_1ca64a58/code/cvsrffi/stage2_ablation_row_executor.py", line 162, in _fit
+    return fit_stage2_ablation(**kwargs)
+  File "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2c_t1_20260730_v4_1ca64a58/code/cvsrffi/stage2_ablation_executors.py", line 713, in fit_stage2_ablation
+    coefficient, intercept, audit = fit(
+  File "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2c_t1_20260730_v4_1ca64a58/code/scripts/probe_d46_classwise_loo_reliability_fusion.py", line 225, in fit
+    ) = d45._inner_loo_component_ce(
+  File "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2c_t1_20260730_v4_1ca64a58/code/scripts/probe_d45_inner_loo_reliability_fusion.py", line 109, in _inner_loo_component_ce
+    coefficients, intercept, _audit = component_fit(
+  File "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2c_t1_20260730_v4_1ca64a58/code/scripts/probe_d46_classwise_loo_reliability_fusion.py", line 52, in fit
+    coefficients, intercept, audit = component_fit(
+  File "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2c_t1_20260730_v4_1ca64a58/code/scripts/probe_d45_inner_loo_reliability_fusion.py", line 236, in fit
+    raise D45ProbeError("D45 locked D42 full-component centering drift")
+d46_d45_probe_helper.D45ProbeError: D45 locked D42 full-component centering drift
