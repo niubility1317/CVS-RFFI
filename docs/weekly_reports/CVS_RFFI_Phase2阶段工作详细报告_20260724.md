@@ -368,6 +368,83 @@ Stage2-C在同一target receiver中注册新类，并要求旧类与新类统一
 
 这里的source数据用于构造进入Phase2前的旧类状态，不是每个增量cell中的source replay。实验属于“官方方法语义＋CVS基座/数据接口适配”，不是原论文数据集数值复现。
 
+#### 5.1.1少样本学习的严格定义
+
+少样本学习（few-shot learning，FSL）不是泛指“总数据量较小”，而是指：**模型已经从base数据、相关任务或预训练模型中获得先验知识，在一个新的目标任务中，每个待识别类别只有极少量带标签样本时，仍要利用这些样本建立能够泛化到独立query的预测器。**少样本描述的是目标任务的监督数据条件，不限定必须采用某一种网络或优化算法。
+
+令一个分类任务为\(\mathcal T=(\mathcal Y_{\mathcal T},S_{\mathcal T},Q_{\mathcal T})\)。其中，\(\mathcal Y_{\mathcal T}\)是本任务的类别集合，\(S_{\mathcal T}\)是允许模型读取并用于适配的support集合，\(Q_{\mathcal T}\)是只用于评价的query集合，并满足样本级互斥：
+
+$$
+S_{\mathcal T}\cap Q_{\mathcal T}=\varnothing .
+$$
+
+标准\(N\)-way \(K\)-shot分类表示任务中有\(N\)个类别，每个类别提供\(K\)个带标签support样本：
+
+$$
+\left|\mathcal Y_{\mathcal T}\right|=N,\qquad
+S_{\mathcal T}
+=\bigcup_{c\in\mathcal Y_{\mathcal T}}
+\left\{(x_{c,k},c)\right\}_{k=1}^{K},
+\qquad
+\left|S_{\mathcal T}\right|=NK.
+$$
+
+学习算法\(\mathcal A\)接收先验状态\(\theta_0\)和support，生成针对当前任务的状态或预测器：
+
+$$
+\theta_{\mathcal T}
+=\mathcal A(\theta_0,S_{\mathcal T}),\qquad
+\hat y=f_{\theta_{\mathcal T}}(x),\quad x\in Q_{\mathcal T}.
+$$
+
+少样本学习的目标不是记住support，而是降低独立query上的期望风险。若任务从分布\(p(\mathcal T)\)中抽取，则目标可写为：
+
+$$
+\min_{\mathcal A}\;
+\mathbb E_{\mathcal T\sim p(\mathcal T)}
+\left[
+\frac{1}{|Q_{\mathcal T}|}
+\sum_{(x,y)\in Q_{\mathcal T}}
+\ell\!\left(f_{\mathcal A(\theta_0,S_{\mathcal T})}(x),y\right)
+\right].
+$$
+
+因此，少样本学习至少包含四个必要要素：
+
+1. **先验知识：**来自base类训练、相关任务、预训练表示或已有模型；完全从随机初始化学习几个样本通常只是极小数据训练。
+2. **少量带标签support：**\(K\)统计相互独立的真实样本，而不是数据增强产生的view数量。
+3. **support/query隔离：**support可以更新模型、prototype或分类头；query不能参与调参、早停、阈值选择或状态更新。
+4. **对独立query泛化：**评价对象是未参与适配的query，而不是support训练准确率。
+
+经典闭集少样本分类通常满足\(\mathcal Y_{\mathrm{support}}=\mathcal Y_{\mathrm{query}}\)，query只在当前\(N\)个类别中竞争。ProtoNet[1]属于度量型少样本学习：它不必在support上反向传播，而是用support计算类别prototype，再按距离预测query。其他少样本方法也可以通过微调参数、生成分类权重或学习优化器完成适配；“少样本”描述数据与任务条件，不等同于“只使用prototype”。
+
+#### 5.1.2少样本学习与类增量学习的区别
+
+类增量学习（class-incremental learning，CIL）描述的是**类别随时间分批到达、模型状态持续更新、推理标签空间不断扩大的学习过程**。设base阶段类别为\(\mathcal Y^{(0)}\)，第\(t\)次增量到达的新类别为\(\mathcal Y^{(t)}\)，不同阶段的新增类别互不重叠。完成第\(t\)阶段后，模型必须在全部已学习类别的并集上统一预测：
+
+$$
+\mathcal Y^{(\le t)}
+=\bigcup_{j=0}^{t}\mathcal Y^{(j)},\qquad
+\hat y
+=\arg\max_{c\in\mathcal Y^{(\le t)}}p_{\theta_t}(c|x).
+$$
+
+类增量学习的关键不在于当前批次样本是否少，而在于更新\(\theta_{t-1}\rightarrow\theta_t\)后，模型既要学习\(\mathcal Y^{(t)}\)，又要保持\(\mathcal Y^{(<t)}\)的识别能力，并且推理时通常不提供样本来自哪个阶段的task ID。其核心矛盾是新类可塑性与旧类稳定性之间的平衡。
+
+|比较维度|少样本学习|类增量学习|少样本类增量学习|
+|---|---|---|---|
+|主要约束|目标任务中每类标签样本很少|类别分阶段到达，模型要持续更新|新类别分阶段到达，且每个新类只有少量样本|
+|标签空间|一个episode内通常固定为\(N\)类|随阶段扩展为\(\mathcal Y^{(\le t)}\)|随阶段扩展，但每阶段新类为K-shot|
+|历史状态|可以对每个任务重新构造临时预测器|必须从\(\theta_{t-1}\)继续更新到\(\theta_t\)|必须持续更新，同时避免少样本过拟合|
+|旧类保持|普通闭集FSL通常不要求保留此前episode性能|必须评价旧类遗忘|必须同时解决旧类遗忘与新类欠学习|
+|推理范围|通常在当前任务的\(N\)类内预测|在全部已学习类别中统一竞争|在全部base类和历次新类中统一竞争|
+|主要风险|support过拟合、类别中心估计不准|灾难性遗忘、分类器偏向新类|灾难性遗忘、新类欠拟合及严重类别不平衡|
+|本报告对应|Stage2-B中的K-shot旧类域适应、ProtoNet CDA|CSIL和MoPC-HR的增量更新机制|Stage2-C在少量新类support下注册新类并保留旧类|
+
+两者不是互斥的方法类别，而是描述两个不同维度：**少样本学习规定“当前任务能看到多少标注”，类增量学习规定“类别和模型状态如何随时间演化”。**当增量阶段每个新类只有\(K\)个support时，任务同时属于少样本学习和类增量学习，即少样本类增量学习（few-shot class-incremental learning，FSCIL）。
+
+在本项目中，Stage2-B保持标签空间为\(\mathcal Y_{\mathrm{old}}\)，主要解决新receiver下的K-shot域适应，因此属于跨域少样本适应；Stage2-C把标签空间从\(\mathcal Y_{\mathrm{old}}\)扩展为\(\mathcal Y_{\mathrm{old}}\cup\mathcal Y_{\mathrm{new}}\)，并要求两部分在同一分类器中竞争，因此属于少样本类增量新类注册。仅在新类support上取得较高训练准确率，不代表类增量成功；必须同时报告独立query上的\(A_{\mathrm{new}}\)、\(A_{\mathrm{old}}^{\mathrm{post}}\)、\(H_{\mathrm{old,new}}\)和\(F_{\mathrm{old}}\)。
+
 ### 5.2CSIL：通道隔离型无exemplar类增量学习
 
 Liu等人提出的CSIL属于无exemplar、结构扩展型类增量方法[4]。**其特点是冻结ADV3B02 backbone，以通道扩展和mask限制新类更新，再用EWC与KD保护旧类响应。**
