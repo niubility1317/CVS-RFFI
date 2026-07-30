@@ -96,3 +96,20 @@ reuse封存再次只读验收package 45/45、feature 75/75/225 scope cache和for
 |2026-07-30 18:45:23|340/1350 COMPLETE；FAILED=0；剩余1010|340/340|340；expected=340|unreadable=0；field mismatch=0；P0=0；fingerprints=0；旧`cda5...b4a1`=0|main PID存活；16 workers；GPU0–7各2个worker和2个compute进程|跨过338/1350的25%里程碑；运行健康，继续完整矩阵|
 
 里程碑监控不读取性能值。`runner_summary.json`尚未生成，当前状态仍为`RUNNING`。
+
+## 孤立技术失败
+
+2026-07-30 21:18:17的低频检查发现1个prediction前失败；截至21:19:28，同一异常指纹只出现在1个physical row，未达到“两个不同row在prediction前出现同一确定性异常指纹”的系统性停止门槛。runner继续分发其余冻结矩阵，不覆盖、不重启该行。
+
+|字段|值|
+|---|---|
+|physical execution|`phys_1b9d0cee16897a454ddb3aa7`|
+|logical row|`P2-BASE-FULL-BLOCK-LDA__rx_7_14__k_10__new_20__support_7282201__query_7282301__draw_7282401`|
+|GPU/slot|GPU0/slot0|
+|launch PID|`1804941`；失败后已退出|
+|launch绑定|CWD为v4 release；cmdline绑定正式row入口和v4 request；output root绑定v4 physical根|
+|异常|`D43ProbeError: D43 FP32 centering changed support argmax`|
+|指纹|`3c5905f17ef1f213abb92e9b0d49e355619d280abdaf690a510cf89d9bd9a759`；计数1|
+|产物状态|`prediction_complete=false`；`scores_complete=false`；`zero_prediction=true`；`p0_protocol_violation=false`|
+|证据|完整读取2386-byte row日志、terminal status和launch artifact；全部原样保留|
+|处置|不干预健康运行的其余矩阵；完成后以新的不可覆盖补跑run补齐该孤立行，不覆盖v4、不调参、不改变方法|
