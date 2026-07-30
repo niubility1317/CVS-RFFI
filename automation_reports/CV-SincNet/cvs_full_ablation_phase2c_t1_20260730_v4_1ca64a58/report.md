@@ -99,7 +99,7 @@ reuse封存再次只读验收package 45/45、feature 75/75/225 scope cache和for
 
 ## 孤立技术失败
 
-2026-07-30 21:18:17的低频检查发现1个prediction前失败；截至21:19:28，同一异常指纹只出现在1个physical row，未达到“两个不同row在prediction前出现同一确定性异常指纹”的系统性停止门槛。runner继续分发其余冻结矩阵，不覆盖、不重启该行。
+2026-07-30 21:18:17的低频检查发现首个prediction前失败。22:21:02发现第二个prediction前失败，但它产生不同异常指纹；截至22:21:43，两个指纹分别只出现在1个physical row，仍未达到“两个不同row在prediction前出现同一确定性异常指纹”的系统性停止门槛。runner继续分发其余冻结矩阵，不覆盖、不重启失败行。
 
 |字段|值|
 |---|---|
@@ -112,4 +112,19 @@ reuse封存再次只读验收package 45/45、feature 75/75/225 scope cache和for
 |指纹|`3c5905f17ef1f213abb92e9b0d49e355619d280abdaf690a510cf89d9bd9a759`；计数1|
 |产物状态|`prediction_complete=false`；`scores_complete=false`；`zero_prediction=true`；`p0_protocol_violation=false`|
 |证据|完整读取2386-byte row日志、terminal status和launch artifact；全部原样保留|
+|处置|不干预健康运行的其余矩阵；完成后以新的不可覆盖补跑run补齐该孤立行，不覆盖v4、不调参、不改变方法|
+
+第二个孤立失败：
+
+|字段|值|
+|---|---|
+|physical execution|`phys_37cc012d2b44700e361a5a9c`|
+|logical row|`P2-BASE-FULL-BLOCK-LDA__rx_8_8__k_10__new_20__support_7282203__query_7282303__draw_7282401`|
+|GPU/slot|GPU0/slot0|
+|launch PID|`1836233`；失败后已退出|
+|launch绑定|CWD为v4 release；cmdline绑定正式row入口和v4 request；output root绑定v4 physical根|
+|异常|`D45ProbeError: D45 locked D42 full-component centering drift`|
+|指纹|`d51f60a1e166b42422a19157fca87909115ffeea24979982212d2694bde5a8dd`；计数1|
+|产物状态|`prediction_complete=false`；`scores_complete=false`；`zero_prediction=true`；`p0_protocol_violation=false`|
+|证据|完整读取2401-byte row日志、terminal status和launch artifact；全部原样保留|
 |处置|不干预健康运行的其余矩阵；完成后以新的不可覆盖补跑run补齐该孤立行，不覆盖v4、不调参、不改变方法|
