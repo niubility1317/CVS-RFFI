@@ -1,0 +1,33 @@
+# EXECUTE ONLY AFTER V4 RELEASE LANDING AND FRESH INPUT-ROOT CHECK.
+root=/home/szu2070436088/2510044040/CV-SincNet
+runid=cvs_full_ablation_phase2c_t1_20260730_v4_1ca64a58
+release=$root/releases/$runid
+input=$root/stage2_inputs/$runid
+package=$root/stage2_inputs/cvs_full_ablation_phase2c_package_t1_20260730_v2_0903163e
+feature=$root/stage2_inputs/cvs_full_ablation_phase2c_feature_t1_20260730_v3_47212437
+sidecar=$root/stage2_inputs/cvs_full_ablation_phase2c_sidecar_t1_20260730_v3_47212437
+verifier=$input/preflight/verify_input_completion_summary.py
+plan_verifier=$input/preflight/verify_stage2c_plan_identity.py
+index_builder=$input/preflight/build_stage2c_cache_binding_index.py
+source_plan=$input/source_plan.json
+cache_index=$input/cache_binding_index.json
+registry=$input/binding_registry.json
+sealed_plan=$input/sealed_plan.json
+set -euo pipefail
+test "$(git -C "$release" rev-parse HEAD)" = 1ca64a586b85c97fbaa2a677a6ca5776ffd239b3
+test -z "$(git -C "$release" status --porcelain --untracked-files=all)"
+test -f "$verifier"
+test -f "$plan_verifier"
+test -f "$index_builder"
+test -f "$source_plan"
+PYTHONPATH="$release/code" /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python "$plan_verifier" --source-plan "$source_plan" --expected-source-plan-sha256 d8c420c22a0a775bc7d6c79af513d79adf78d29a25713e03591a4a79e9136fd7 --expected-git-commit 1ca64a586b85c97fbaa2a677a6ca5776ffd239b3
+PYTHONPATH="$release/code" /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python "$verifier" --summary "$package/source/package_completion_summary.json" --expected-sha256 ed61d7c8403c203f4b1c73d4dd87251a67cf01b7da7f6f580143dfa852b026cb --schema cvs.full_ablation.stage2c.package_completion.v1 --equal expected=45 --equal launched=45 --equal completed=45 --equal succeeded=45 --equal validated=45 --equal failed=0 --equal not_launched=0 --equal systemic_stop=false --result-identity-fields receiver,method_seed,stage --identity-profile stage2c-package --artifact-profile stage2c-package --result-equal returncode=0 --result-equal artifact_validated=true --result-path-field output
+PYTHONPATH="$release/code" /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python "$verifier" --summary "$feature/source/feature_completion_summary.json" --expected-sha256 423ea50e5f74a1dcc055f605d093d699865f371b92dd0ee7960a31993c94a91d --schema cvs.full_ablation.stage2c.feature_completion.v1 --equal expected=75 --equal launched=75 --equal completed=75 --equal succeeded=75 --equal validated=75 --equal failed=0 --equal not_launched=0 --equal generated_scope_caches=225 --equal expected_scope_caches=225 --equal stage2c_identity_count=75 --equal systemic_stop=false --equal gpu_count=8 --equal slots_per_gpu=2 --result-identity-fields receiver,method_seed,variant,k_shot --identity-profile stage2c-feature --artifact-profile stage2c-feature --result-equal returncode=0 --result-equal artifact_validated=true --result-path-field output --result-path-field log
+PYTHONPATH="$release/code" /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python "$verifier" --summary "$sidecar/source/sidecar_completion_summary.json" --expected-sha256 7d7de4a6dbb22caa5ec4cde594cdf66dc678423c8639882af99cbfce88bb5c45 --schema cvs.full_ablation.stage2c.sidecar_completion.v1 --equal expected=30 --equal launched=30 --equal completed=30 --equal succeeded=30 --equal validated=30 --equal failed=0 --equal not_launched=0 --equal published_sidecar_files=60 --equal registry_and_seal_authorized=true --equal systemic_stop=false --result-identity-fields receiver,method_seed,variant --identity-profile stage2c-sidecar --artifact-profile stage2c-sidecar --result-equal returncode=0 --result-equal artifact_validated=true --result-path-field output
+test ! -e "$cache_index"
+test ! -e "$registry"
+test ! -e "$sealed_plan"
+PYTHONPATH="$release/code" /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python "$index_builder" --package-root "$package" --feature-root "$feature" --sidecar-root "$sidecar" --output "$cache_index"
+PYTHONPATH="$release/code" /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python "$release/code/scripts/build_full_ablation_stage2_binding_registry.py" --plan "$source_plan" --cache-binding-index "$cache_index" --output "$registry"
+PYTHONPATH="$release/code" /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python "$release/code/scripts/seal_full_ablation_stage2_plan.py" --plan "$source_plan" --binding-registry "$registry" --run-id "$runid" --request-root "$root/requests/$runid" --run-root "$root/runs/$runid" --log-root "$root/logs/$runid" --python-environment-id CVS-RFFI --review-p0-count 0 --review-p1-count 0 --device cuda:0 --shared-view-count 5 --output "$sealed_plan"
+PYTHONPATH="$release/code" /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python "$release/code/scripts/run_full_ablation_stage2.py" --plan "$sealed_plan" --repo-root "$release" --python /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python --predictor-script "$release/code/scripts/run_full_ablation_stage2_row.py" --scorer-script "$release/code/scripts/score_full_ablation_stage2_row.py"
