@@ -1,0 +1,19 @@
+# EXECUTE ONLY AFTER STATES ARTIFACTS_COMPLETE AND EXACT FILE SYNC.
+root=/home/szu2070436088/2510044040/CV-SincNet
+runid=cvs_full_ablation_phase2c_t1_20260730_v2_0903163e
+release=$root/releases/$runid
+input=$root/stage2_inputs/$runid
+package=$root/stage2_inputs/cvs_full_ablation_phase2c_package_t1_20260730_v2_0903163e
+driver=$root/logs/${runid}_package_builder
+controller=$input/preflight/stage2c_package_completion_controller.py
+source=$input/preflight/package_build_summary.json
+set -euo pipefail
+test "$(git -C "$release" rev-parse HEAD)" = 0903163e12902114b2685722125b1d304b97e2fa
+test -z "$(git -C "$release" status --porcelain --untracked-files=all)"
+test -f "$controller"
+test -f "$source"
+test ! -e "$package"
+test ! -e "$driver"
+mkdir "$driver"
+set -o noclobber
+PYTHONPATH="$release/code" nohup /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u "$controller" --source-summary "$source" --expected-source-sha256 db4fbf825309c3bce123069ec0137654ff91e4efd14e5a8b1586fc6cb2ea514a --release-root "$release" --output-root "$package" --max-workers 8 > "$driver/controller.out" 2>&1 < /dev/null &
