@@ -9,7 +9,7 @@
 |operator|Codex主代理；N607 sole launch owner=`stage2_t1_n607_release`|
 |目标|修复v3的NumPy 2.x/PyTorch 2.1转换故障后，完整执行Stage2-C全部1425个logical row，不按中间性能缩小范围|
 |正式代码commit|`1ca64a586b85c97fbaa2a677a6ca5776ffd239b3`|
-|状态|`LOCAL_VERIFIED / INDEPENDENT_REVIEW_P0_0_P1_0 / REMOTE_NOT_LANDED / NO_PERFORMANCE_RESULT`|
+|状态|`RUNNING / ROOT_CAUSE_SMOKE_PASS / FIRST_ROW_HEALTH_PASS / FULL_1425_MATRIX_DISPATCHING`|
 
 ## 假设与比较目标
 
@@ -58,3 +58,40 @@ v4仅重新生成与新commit和新run ID绑定的75-entry cache index、1425-en
 `reuse_seal_template.txt`先验证三类复用输入的闭合summary，再在fresh v4 input根生成index、registry和sealed plan。`launch_template.txt`验证release HEAD/clean、Phase2 states、source/sealed plan和三类输入后，才创建fresh driver并启动完整矩阵。
 
 启动后立即记录main PID、CWD/cmdline、16个worker、GPU0–7每卡2个槽、日志增长、首个row和首个worker波次。只在P0协议/安全违规，或两个不同row在prediction前出现同一确定性异常指纹时停止v4精确进程树；不得按性能停止、选行或缩小矩阵。完成后必须闭合1350个physical状态、1425个logical score output、全部prediction/score/log和runner summary，再进入结果分析。
+
+## N607落地、根因smoke与fresh封存
+
+direct preflight通过：普通N607账号、项目根和8张GPU均可见，启动前GPU compute进程为0。v3主进程和run绑定进程均为0，v3全部根保持原样；v4的release、input、request、run、rowlog和driver六个目标根在落地前均不存在。
+
+v4 release通过增量bundle落地，bundle大小122596 bytes，SHA256=`c1feff733d44f896c0c7599158a7043db30d385f5bd4f252111f4bf8b3cf35b6`。远端release精确HEAD=`1ca64a586b85c97fbaa2a677a6ca5776ffd239b3`且clean；source plan、bundle及6个preflight文件逐项同步，远端py_compile、两个bash语法检查和source plan identity verifier均通过。
+
+正式封存前，以v3触发根因row`phys_82699244e1b3ff0ccaab85a0`执行单个fresh predictor smoke。smoke仅复用既有合法request输入，将request、prediction、receipt和日志写入v4 input的`preflight/smoke`，没有启动scorer。PID=`1465459`自然退出；日志末行与保存receipt一致，而row入口在打印该receipt后固定返回0。receipt状态为`PREDICTIONS_COMPLETE_TRUTH_UNOPENED`，`query_truth_opened=false`、`fit_query_rows_used=0`，prediction存在且只读；日志中没有`torch.from_numpy`、`Tensor.numpy`、traceback或`SCORE_START`。
+
+|fresh封存制品|计数|SHA256|
+|---|---:|---|
+|cache binding index|75 entries|`85fe57e8b6234a660e687165ac900439a2a0089a276fda20ec8e78fe1a7b190b`|
+|binding registry|1425 entries|`a413e160bcc9bfa0a6c40864b5f716c0dc5805192a3ff3ba73d708dbd2c430a4`|
+|sealed plan|1425 logical；1350 physical；75 aliases|`cf1f98e1a17c8df52ee94c3f17b28df5e725be8cbee96cdfd5f97959dbc258cd`|
+
+reuse封存再次只读验收package 45/45、feature 75/75/225 scope cache和formal sidecar 30/30/60文件，未写旧输入根。sealed plan固定8张GPU、每卡2槽、formal launch authority=true、P0=0、P1=0。正式launch又复验states 325/325、三类summary、source/sealed plan及fresh run/log/driver门后启动完整矩阵。
+
+|正式启动证据|值|
+|---|---|
+|main PID|`1469792`|
+|CWD|v4 release根|
+|cmdline绑定|v4 sealed plan、正式row predictor和truth-side scorer|
+|并发|16个直属worker；GPU0–7各2个|
+|首次完成row|3/1350 physical；prediction=3；score=3；logical score=3|
+|健康|failed=0；P0=0；异常指纹0；runner继续完整矩阵|
+
+首个完整worker波次快照为21/1350 physical，prediction=21、score=21、logical score=21、failed=0、unreadable=0、P0=0、异常指纹0；main仍存活，16个worker继续保持GPU0–7各2个槽。
+
+监控均使用带显式短超时的独立SSH连接，连接完成后立即退出。当前只报告执行健康，不读取或解释性能。
+
+## 运行里程碑
+
+|时间|physical状态|prediction/score|logical闭环|异常检查|进程与GPU|结论|
+|---|---:|---:|---:|---|---|---|
+|2026-07-30 16:40:23|137/1350 COMPLETE；FAILED=0；剩余1213|137/137|137；expected=137|unreadable=0；field mismatch=0；P0=0；fingerprints=0；旧`cda5...b4a1`=0|main PID存活；16 workers；GPU0–7各2个worker和2个compute进程|跨过135/1350首个10%里程碑；运行健康，继续完整矩阵|
+
+里程碑监控不读取性能值。`runner_summary.json`尚未生成，当前状态仍为`RUNNING`。
