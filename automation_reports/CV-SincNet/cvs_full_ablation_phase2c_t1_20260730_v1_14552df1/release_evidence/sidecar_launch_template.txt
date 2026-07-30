@@ -9,7 +9,7 @@ driver=$root/logs/${runid}_sidecar_builder
 controller=$input/preflight/stage2c_sidecar_completion_controller.py
 verifier=$input/preflight/verify_input_completion_summary.py
 set -euo pipefail
-test "$(git -C "$release" rev-parse HEAD)" = 14552df1ca50f8fe100621f5fd4f099942b08322
+test "$(git -C "$release" rev-parse HEAD)" = 32fb0ae78f7d1c8093316e4336f6fe9e848e261d
 test -z "$(git -C "$release" status --porcelain --untracked-files=all)"
 test -f "$controller"
 test -f "$verifier"

@@ -9,16 +9,16 @@
 |operator|Codex主代理；N607 sole launch owner=`stage2_t1_n607_release`|
 |目标|完整执行设计报告Stage2-C screening矩阵，不基于中间性能缩小范围|
 |比较目标|19个已注册arm在5个receiver、3个seed bundle、K∈{1,2,5,10}、new_count∈{5,20}上的同计划比较|
-|Git实现|`14552df1ca50f8fe100621f5fd4f099942b08322`|
-|状态|`PREREGISTERED / EXACT_INPUT_COMPLETION_LOCAL_VERIFIED / WAITING_FOR_STATES_ARTIFACTS_COMPLETE / REMOTE_NOT_LAUNCHED / NO_PERFORMANCE_RESULT`|
+|Git实现|`32fb0ae78f7d1c8093316e4336f6fe9e848e261d`；实验ID中的`14552df1`仅为首次预注册标签，正式release以本字段为准|
+|状态|`LOCAL_VERIFIED / INDEPENDENT_REVIEW_P0_0_P1_0 / STATES_ARTIFACTS_COMPLETE / READY_FOR_N607_INPUT_COMPLETION / REMOTE_NOT_LAUNCHED / NO_PERFORMANCE_RESULT`|
 
 ## 固定矩阵与复用边界
 
 |字段|值|
 |---|---|
-|source plan|`stage2c_screening_plan_14552df1.json`；1425个唯一logical row key；独立复审`P0=0 / P1=0`|
+|source plan|`stage2c_screening_plan_32fb0ae7.json`；SHA256=`3ba6ea9b0358076d5b77ef9e6cc29e7419797c1dc606ecb4cbdbb0d2aff416cd`；1425个唯一logical row key；19 arms×75 identities；独立复审`P0=0 / P1=0`|
 |预期封存规模|1425 logical；1350 physical；`P2-F3`仅按既有正式别名规则复用`P2-FULL`|
-|前置屏障|`cvs_full_ablation_phase2_states_t1_20260730_v14_cuda_init`必须达到`ARTIFACTS_COMPLETE`，325/325 prediction与score闭合且0失败|
+|前置屏障|`cvs_full_ablation_phase2_states_t1_20260730_v14_cuda_init`已达到`ARTIFACTS_COMPLETE`：325/325 prediction与score闭合，0失败、0缺件、无异常指纹；主进程、子进程、GPU进程和SSH均已释放|
 |输入复用|仅复用已验证D18 IQ cache、formal Phase1 deployment和既有50行package命令矩阵中的不可变输入路径；旧50行摘要是历史失败运行的命令模板证据，不作为成功产物复用。其文件、50个receiver/seed/stage身份和除允许变化字段外的命令结构均被固定；screening seeds与旧confirmation cache不相同，因此fresh构建45个package、75个精确Stage2-C feature identity和30个Stage2-C v3 sidecar；不重审D18数据，不要求跨批次数据identity/hash一致|
 |协议|`p2_min_v1`；query test-only；无clean/source访问、无query truth、无role oracle、无class quota|
 |环境|`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`|
@@ -62,4 +62,4 @@
 |`verify_input_completion_summary.py`|以detached summary SHA、完整身份集合、逐条成功状态和实际产物路径验证package/feature/sidecar闭环|
 |`verify_stage2c_plan_identity.py`|固定1425行source plan和1425/1350 sealed plan的矩阵身份、Git提交、formal authority及detached SHA|
 
-本地`compileall`和5个Bash模板语法检查全部通过；静态矩阵验证为package 45项（15 before+15 new20+15 new5）、feature 75项（60 new20+15 new5，动态计入外部GPU进程后每卡总数≤2）、sidecar 30项/60文件；cache index的75个identity与1425行source plan去重后的身份集合完全相等。predictor package、feature builder、scoring sidecar、binding registry和release相邻5个测试文件连同focused测试共65项全部通过；focused测试覆盖旧50行来源身份/命令结构、GPU动态空槽、1425行source plan、summary摘要绑定及精确身份集合失败关闭。
+本地`compileall`和5个Bash模板语法检查全部通过；静态矩阵验证为package 45项（15 before+15 new20+15 new5）、feature 75项（60 new20+15 new5，动态计入外部GPU进程后每卡总数≤2）、sidecar 30项/60文件；cache index的75个identity与1425行source plan去重后的身份集合完全相等。predictor package、feature builder、scoring sidecar、binding registry和release相邻5个测试文件连同focused测试共65项全部通过；focused测试覆盖旧50行来源身份/命令结构、GPU动态空槽、1425行source plan、summary摘要绑定及精确身份集合失败关闭。独立复审结论为`P0=0 / P1=0`，允许以Git提交`32fb0ae7`作为正式Stage2-C release code。
