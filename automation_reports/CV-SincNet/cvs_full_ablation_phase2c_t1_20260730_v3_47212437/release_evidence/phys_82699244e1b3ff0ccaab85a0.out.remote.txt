@@ -1,0 +1,18 @@
+Traceback (most recent call last):
+  File "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2c_t1_20260730_v3_47212437/code/scripts/run_full_ablation_stage2_row.py", line 192, in <module>
+    raise SystemExit(main())
+  File "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2c_t1_20260730_v3_47212437/code/scripts/run_full_ablation_stage2_row.py", line 186, in main
+    receipt = run_request(_parser().parse_args().request)
+  File "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2c_t1_20260730_v3_47212437/code/scripts/run_full_ablation_stage2_row.py", line 116, in run_request
+    receipt = execute_feature_row(
+  File "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2c_t1_20260730_v3_47212437/code/cvsrffi/stage2_ablation_row_executor.py", line 533, in execute_feature_row
+    after_state = _fit(
+  File "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2c_t1_20260730_v3_47212437/code/cvsrffi/stage2_ablation_row_executor.py", line 162, in _fit
+    return fit_stage2_ablation(**kwargs)
+  File "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2c_t1_20260730_v3_47212437/code/cvsrffi/stage2_ablation_executors.py", line 657, in fit_stage2_ablation
+    ) = _affine_trainable_adapter_head(
+  File "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2c_t1_20260730_v3_47212437/code/cvsrffi/stage2_ablation_executors.py", line 216, in _affine_trainable_adapter_head
+    u, v, gate, trace = adapter._train_once(
+  File "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2c_t1_20260730_v3_47212437/code/cvsrffi/stage2_trainable_lowrank_support_adapter.py", line 480, in _train_once
+    tensor = torch.from_numpy(np.ascontiguousarray(stacked)).to(device)
+TypeError: expected np.ndarray (got numpy.ndarray)
