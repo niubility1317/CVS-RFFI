@@ -8,7 +8,8 @@ from pathlib import Path
 
 from docx import Document
 from docx.enum.style import WD_STYLE_TYPE
-from docx.enum.text import WD_BREAK
+from docx.enum.table import WD_CELL_VERTICAL_ALIGNMENT, WD_TABLE_ALIGNMENT
+from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_BREAK
 from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
 from docx.shared import Pt, RGBColor
@@ -33,16 +34,33 @@ FRONT = r"""# 1.核心概念及其与Phase2阶段的对应
 
 **核心区别：DA回答“换了域如何适应”，FSL回答“标注很少如何学习”，CIL回答“类别持续增加如何保持旧知识”。Stage2-C同时包含receiver域偏移、K-shot新类和标签空间扩展，因此属于跨域FSCIL。**
 
-|比较维度|域适应DA|少样本学习FSL|类增量学习CIL/FSCIL|
-|---|---|---|---|
-|发生变化的对象|数据域或接收条件|目标任务的监督样本数量|类别集合与持久化模型状态|
-|标签空间|通常保持不变|一个episode内通常固定|随增量阶段持续扩大|
-|主要学习输入|source知识＋target域信息|每类K个support＋预训练先验|当前新类数据＋允许保留的历史状态|
-|query范围|target域既定类别|标准FSL通常为当前novel类|全部旧类与历次新类统一竞争|
-|主要风险|域偏移导致决策边界失效|support过拟合、类别中心估计不准|灾难性遗忘、新类偏置与类别不平衡|
-|CVS对应|Stage2-B|K-shot是Stage2-B/C的数据条件|Stage2-C；K-shot时为FSCIL|
+## 1.2RFFI任务的三轴谱系
 
-## 1.2RFFI中的类别轴与域轴
+为避免把“样本少”“域变化”和“类别逐步增加”混成同一问题，表1从三个相互独立的轴定位RFFI任务：类别轴描述训练、测试及增量阶段的类别关系；域轴描述接收机、信道或采集条件是否变化；时间轴描述任务是否顺序到达，以及更新后的模型状态是否持续保存。
+
+**读表原则：K-shot只描述监督预算，不单独决定任务类型。只有类别轴、域轴和时间轴同时确定后，才能判断一个任务属于闭集低样本分类、FSL、域适应、CIL还是跨域FSCIL。**
+
+**表1 RFFI任务在类别轴、域轴和时间轴上的定位**
+
+|任务类型|类别轴|域轴|时间轴|监督预算|冻结后推理类别空间|
+|---|---|---|---|---|---|
+|低样本闭集RFFI|$\mathcal C_{\mathrm{tr}}=\mathcal C_{\mathrm{te}}$|$d_{\mathrm{tr}}=d_{\mathrm{te}}$|单任务；状态不累积|每个已知类的训练样本较少|固定已知类|
+|标准RFFI-FSL|$\mathcal C_B\cap\mathcal C_N=\varnothing$|$d_B=d_N$|episodic；episode间不累积|novel类每类$K$个support|当前episode的novel类|
+|广义RFFI-FSL|$\mathcal C_B\cap\mathcal C_N=\varnothing$|$d_B=d_N$|episodic；episode间不累积|novel类每类$K$个support|base类与当前novel类|
+|RFFI域适应|$\mathcal C_S=\mathcal C_T$|$d_S\ne d_T$|单次迁移；类别不扩展|target标签可为0、少量或充分|与source相同的发射机集合|
+|RFFI少样本域适应|$\mathcal C_S=\mathcal C_T$|$d_S\ne d_T$|单次迁移；类别不扩展|每个已知类$K$个target support|与source相同的发射机集合|
+|跨域RFFI-FSL|$\mathcal C_B\cap\mathcal C_N=\varnothing$|$d_B\ne d_T$|episodic；通常不持久化|target novel类每类$K$个support|标准FSL为novel类；广义FSL为base类与novel类|
+|RFFI-CIL|$\mathcal C^{(\le t-1)}\subset\mathcal C^{(\le t)}$|通常$d_t=d_{t-1}$|session顺序到达；状态持续保存|新增类标签数量不限定为少样本|全部累计已注册类|
+|RFFI-FSCIL|$\mathcal C^{(\le t-1)}\subset\mathcal C^{(\le t)}$|通常$d_t=d_{t-1}$|session顺序到达；状态持续保存|每个增量新类$K$个support|全部累计已注册类|
+|RFFI域增量学习（Domain-IL）|$\mathcal C_t=\mathcal C_{t-1}$|$d_t\ne d_{t-1}$|域顺序到达；状态持续保存|新域标签可有可无|固定发射机集合|
+|跨域RFFI-FSCIL|$\mathcal C^{(\le t-1)}\subset\mathcal C^{(\le t)}$|$d_t\ne d_{t-1}$|session顺序到达；状态持续保存|target新类每类$K$个support；旧类监督按协议提供|全部累计已注册旧类与新类|
+|开放世界跨域RFFI-FSCIL（扩展）|类别增长且存在$\mathcal C_{\mathrm{unknown}}$|域随部署阶段变化|注册与拒识顺序执行；状态持续保存|已注册新类为K-shot；unknown无标签|已注册旧类与新类，并拒识未注册unknown|
+
+三个边界尤其重要：低样本闭集RFFI的训练类和测试类相同，不等于novel-class FSL；episodic FSL的episode彼此独立，不保存不断扩大的标签空间，因此不等于CIL；一次性域适应只处理当前target域，而Domain-IL要求多个域按顺序到达并持续保存模型状态。
+
+**CVS阶段定位：Stage2-A是零标签target迁移参考，只有实际利用无标签target更新时才属于UDA；Stage2-B对应RFFI少样本监督域适应；Stage2-C在同一row中提供旧类与新类K-shot target support，对应跨域单步FSCIL与新类注册，连续执行多个增量session后才构成完整FSCIL；Phase3才扩展到未注册unknown拒识。**
+
+## 1.3RFFI中的类别轴与域轴
 
 RFFI接收信号可抽象为
 
@@ -61,7 +79,7 @@ $$
 =\mathcal C_{\mathrm{old}}\cup\bigcup_{i=1}^{t}\mathcal C_i^{\mathrm{new}}.
 $$
 
-## 1.3少样本学习的严格任务定义
+## 1.4少样本学习的严格任务定义
 
 少样本学习不是泛指“总数据量较小”，而是指模型已经从base数据或预训练状态中获得先验，在目标任务每类只有少量带标签样本时，仍能泛化到未参与适配的query。
 
@@ -95,7 +113,7 @@ $$
 
 **K-shot统计的是每类K个独立物理IQ记录；同一IQ的FFT、裁剪、均衡或数据增强view均不增加K。query只用于冻结后评价，不能训练、调参、早停、设阈值或回滚。**
 
-## 1.4域适应及Stage2-B定位
+## 1.5域适应及Stage2-B定位
 
 source域与target域可写为
 
@@ -120,7 +138,7 @@ $$
 
 Stage2-B每个旧类仅提供K个target-old support，因此属于**少样本监督域适应**：少样本描述target标签预算，域适应才是任务本质。Phase1域泛化训练不能读取未来target receiver；Phase2域适应发生在部署以后，可以读取协议允许的target support。是否接触target数据，是DG与DA的关键边界。
 
-## 1.5类增量、FSCIL与新类注册
+## 1.6类增量、FSCIL与新类注册
 
 类增量学习要求新类按阶段到达，并把更新后的状态持续保存：
 
@@ -142,18 +160,18 @@ $$
 
 unknown尚未获得可信标签，不能直接进入注册集合；只有获得合法标签和support后，才能成为已注册新类。
 
-## 1.6与CVS-RFFI Phase2阶段的对应
+## 1.7与CVS-RFFI Phase2阶段的对应
 
 |阶段|域是否变化|类别是否增加|可用target标签|准确任务定位|冻结后query范围|
 |---|---|---|---|---|---|
 |Stage2-A|是|否|无|zero-label transfer/reference；仅在实际使用无标签target更新时才属于UDA|旧类target query|
 |Stage2-B|是|否|旧类K-shot|少样本监督域适应|旧类target query|
-|Stage2-C|是|是|新类K-shot；旧类状态按协议保留|跨域单步FSCIL/新类注册；连续多session时为完整FSCIL|旧类＋已注册新类统一query|
+|Stage2-C|是|是|旧类与新类均为K-shot target support|跨域单步FSCIL/新类注册；连续多session时为完整FSCIL|旧类＋已注册新类统一query|
 |Phase3|是|可能|unknown无真值|开集拒识与开放世界扩展|旧类＋已注册新类＋未注册unknown|
 
 **Stage2-A不属于K-shot学习；Stage2-B类别不增加，不是标准novel-class FSL；Stage2-C同时扩大标签空间并要求旧新统一竞争，是少样本类增量任务。**
 
-## 1.7样本角色与成功条件
+## 1.8样本角色与成功条件
 
 - **旧类$\mathcal C_{\mathrm{old}}$：**Phase1已经见过的发射机；更换receiver不改变其身份。
 - **新类$\mathcal C_t^{\mathrm{new}}$：**Phase1未见、在Stage2-C通过合法support注册的发射机。
@@ -308,6 +326,100 @@ def set_cell_shading(cell, fill: str) -> None:
     shd.set(qn("w:fill"), fill)
 
 
+def set_repeat_table_header(row) -> None:
+    tr_pr = row._tr.get_or_add_trPr()
+    marker = tr_pr.find(qn("w:tblHeader"))
+    if marker is None:
+        marker = OxmlElement("w:tblHeader")
+        tr_pr.append(marker)
+    marker.set(qn("w:val"), "true")
+
+
+def set_row_cant_split(row) -> None:
+    tr_pr = row._tr.get_or_add_trPr()
+    marker = tr_pr.find(qn("w:cantSplit"))
+    if marker is None:
+        marker = OxmlElement("w:cantSplit")
+        tr_pr.append(marker)
+
+
+def set_cell_margins(
+    cell,
+    *,
+    top: int = 70,
+    start: int = 90,
+    bottom: int = 70,
+    end: int = 90,
+) -> None:
+    tc_pr = cell._tc.get_or_add_tcPr()
+    tc_mar = tc_pr.find(qn("w:tcMar"))
+    if tc_mar is None:
+        tc_mar = OxmlElement("w:tcMar")
+        tc_pr.append(tc_mar)
+    for edge, value in (
+        ("top", top),
+        ("start", start),
+        ("bottom", bottom),
+        ("end", end),
+    ):
+        node = tc_mar.find(qn(f"w:{edge}"))
+        if node is None:
+            node = OxmlElement(f"w:{edge}")
+            tc_mar.append(node)
+        node.set(qn("w:w"), str(value))
+        node.set(qn("w:type"), "dxa")
+
+
+def set_table_geometry(table, widths_twips: list[int]) -> None:
+    if len(widths_twips) != len(table.columns):
+        raise ValueError("column width count does not match table")
+    table.autofit = False
+    table.alignment = WD_TABLE_ALIGNMENT.LEFT
+    tbl_pr = table._tbl.tblPr
+    total_width = sum(widths_twips)
+
+    tbl_w = tbl_pr.find(qn("w:tblW"))
+    if tbl_w is None:
+        tbl_w = OxmlElement("w:tblW")
+        tbl_pr.insert(0, tbl_w)
+    tbl_w.set(qn("w:w"), str(total_width))
+    tbl_w.set(qn("w:type"), "dxa")
+
+    tbl_ind = tbl_pr.find(qn("w:tblInd"))
+    if tbl_ind is None:
+        tbl_ind = OxmlElement("w:tblInd")
+        tbl_pr.append(tbl_ind)
+    tbl_ind.set(qn("w:w"), "0")
+    tbl_ind.set(qn("w:type"), "dxa")
+
+    layout = tbl_pr.find(qn("w:tblLayout"))
+    if layout is None:
+        layout = OxmlElement("w:tblLayout")
+        tbl_pr.append(layout)
+    layout.set(qn("w:type"), "fixed")
+
+    grid = table._tbl.tblGrid
+    if grid is None:
+        grid = OxmlElement("w:tblGrid")
+        table._tbl.insert(1, grid)
+    for child in list(grid):
+        grid.remove(child)
+    for width in widths_twips:
+        grid_col = OxmlElement("w:gridCol")
+        grid_col.set(qn("w:w"), str(width))
+        grid.append(grid_col)
+
+    for row in table.rows:
+        for cell, width in zip(row.cells, widths_twips):
+            tc_pr = cell._tc.get_or_add_tcPr()
+            tc_w = tc_pr.find(qn("w:tcW"))
+            if tc_w is None:
+                tc_w = OxmlElement("w:tcW")
+                tc_pr.insert(0, tc_w)
+            tc_w.set(qn("w:w"), str(width))
+            tc_w.set(qn("w:type"), "dxa")
+
+
 def postprocess_docx(path: Path) -> None:
     doc = Document(path)
     doc.settings.odd_and_even_pages_header_footer = False
@@ -355,6 +467,8 @@ def postprocess_docx(path: Path) -> None:
         "类增量学习（class-incremental learning，CIL）：",
         "少样本类增量学习（few-shot class-incremental learning，FSCIL）：",
         "核心区别：",
+        "读表原则：",
+        "CVS阶段定位：",
         "Stage2-A不属于K-shot学习；",
     )
 
@@ -375,34 +489,67 @@ def postprocess_docx(path: Path) -> None:
             size = 11.5
         for run in paragraph.runs:
             style_run(run, size=size)
+        if text.startswith("表1 RFFI任务在类别轴、域轴和时间轴上的定位"):
+            paragraph.paragraph_format.keep_with_next = True
         if text.startswith(key_prefixes):
             for run in paragraph.runs:
                 run.font.bold = True
                 run.font.color.rgb = RGBColor(192, 0, 0)
 
     for table_index, table in enumerate(doc.tables):
+        table_font_size = 8.2 if table_index == 0 else 9
         for paragraph in iter_table_paragraphs(table):
+            paragraph.paragraph_format.space_before = Pt(0)
+            paragraph.paragraph_format.space_after = Pt(0)
+            paragraph.paragraph_format.line_spacing = 1
             for run in paragraph.runs:
-                style_run(run, size=9)
+                style_run(run, size=table_font_size)
         if table.rows:
+            set_repeat_table_header(table.rows[0])
             for cell in table.rows[0].cells:
-                set_cell_shading(cell, "E7E6E6")
+                set_cell_shading(cell, "1F4E79" if table_index == 0 else "E7E6E6")
+                cell.vertical_alignment = WD_CELL_VERTICAL_ALIGNMENT.CENTER
                 for paragraph in cell.paragraphs:
+                    paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
                     for run in paragraph.runs:
                         run.font.bold = True
+                        if table_index == 0:
+                            run.font.color.rgb = RGBColor(255, 255, 255)
+        for row in table.rows:
+            set_row_cant_split(row)
+            for cell in row.cells:
+                cell.vertical_alignment = WD_CELL_VERTICAL_ALIGNMENT.CENTER
+                set_cell_margins(cell)
         if table_index == 0:
-            for row in table.rows[1:]:
-                if len(row.cells) > 1:
-                    for cell in row.cells[1:]:
-                        if cell.text.strip():
-                            for paragraph in cell.paragraphs:
-                                for run in paragraph.runs:
-                                    if any(
-                                        key in cell.text
-                                        for key in ("域适应", "少样本", "类增量", "FSCIL")
-                                    ):
-                                        run.font.bold = True
-                                        run.font.color.rgb = RGBColor(192, 0, 0)
+            usable_width = int(
+                doc.sections[0].page_width.twips
+                - doc.sections[0].left_margin.twips
+                - doc.sections[0].right_margin.twips
+            )
+            fractions = (0.17, 0.16, 0.11, 0.16, 0.18, 0.22)
+            widths = [int(usable_width * fraction) for fraction in fractions[:-1]]
+            widths.append(usable_width - sum(widths))
+            set_table_geometry(table, widths)
+            highlighted_tasks = {"RFFI少样本域适应", "跨域RFFI-FSCIL"}
+            for row_index, row in enumerate(table.rows[1:], start=1):
+                fill = "F7F7F7"
+                if 4 <= row_index <= 6:
+                    fill = "EAF2F8"
+                elif row_index >= 7:
+                    fill = "FDF2E9"
+                for column_index, cell in enumerate(row.cells):
+                    set_cell_shading(cell, fill)
+                    for paragraph in cell.paragraphs:
+                        paragraph.alignment = (
+                            WD_ALIGN_PARAGRAPH.CENTER
+                            if column_index in {1, 2}
+                            else WD_ALIGN_PARAGRAPH.LEFT
+                        )
+                for paragraph in row.cells[0].paragraphs:
+                    for run in paragraph.runs:
+                        run.font.bold = True
+                        if row.cells[0].text.strip() in highlighted_tasks:
+                            run.font.color.rgb = RGBColor(192, 0, 0)
         for row in table.rows:
             for cell in row.cells:
                 if cell.text.strip() in {"Stage2-A", "Stage2-B", "Stage2-C"}:
