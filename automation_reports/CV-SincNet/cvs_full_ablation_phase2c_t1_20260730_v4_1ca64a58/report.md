@@ -93,5 +93,6 @@ reuse封存再次只读验收package 45/45、feature 75/75/225 scope cache和for
 |时间|physical状态|prediction/score|logical闭环|异常检查|进程与GPU|结论|
 |---|---:|---:|---:|---|---|---|
 |2026-07-30 16:40:23|137/1350 COMPLETE；FAILED=0；剩余1213|137/137|137；expected=137|unreadable=0；field mismatch=0；P0=0；fingerprints=0；旧`cda5...b4a1`=0|main PID存活；16 workers；GPU0–7各2个worker和2个compute进程|跨过135/1350首个10%里程碑；运行健康，继续完整矩阵|
+|2026-07-30 18:45:23|340/1350 COMPLETE；FAILED=0；剩余1010|340/340|340；expected=340|unreadable=0；field mismatch=0；P0=0；fingerprints=0；旧`cda5...b4a1`=0|main PID存活；16 workers；GPU0–7各2个worker和2个compute进程|跨过338/1350的25%里程碑；运行健康，继续完整矩阵|
 
 里程碑监控不读取性能值。`runner_summary.json`尚未生成，当前状态仍为`RUNNING`。
