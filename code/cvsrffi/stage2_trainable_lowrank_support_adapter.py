@@ -452,6 +452,34 @@ def _supcon_loss(features: torch.Tensor, targets: torch.Tensor, temperature: flo
     return -((log_probability * positive).sum(dim=1) / positive_count).mean()
 
 
+def _tensor_from_numpy_compatible(
+    value: np.ndarray,
+    *,
+    dtype: torch.dtype,
+    device: torch.device,
+) -> torch.Tensor:
+    """Bridge NumPy 2.x arrays into PyTorch 2.1 without its legacy C-API."""
+
+    if dtype == torch.float32:
+        rows = np.ascontiguousarray(value, dtype=np.float32)
+    elif dtype == torch.long:
+        rows = np.ascontiguousarray(value, dtype=np.int64)
+    else:
+        raise TrainableLowRankAdapterError("unsupported tensor bridge dtype")
+    return (
+        torch.frombuffer(rows, dtype=dtype)
+        .reshape(rows.shape)
+        .clone()
+        .to(device)
+    )
+
+
+def _numpy_float32_compatible(value: torch.Tensor) -> np.ndarray:
+    """Return a detached float32 array without Tensor.numpy()."""
+
+    return np.asarray(value.detach().cpu().tolist(), dtype=np.float32)
+
+
 def _train_once(
     features_by_view: Mapping[str, np.ndarray],
     labels: np.ndarray,
@@ -477,8 +505,16 @@ def _train_once(
     optimizer = torch.optim.Adam(
         adapter.parameters(), lr=hyperparameters.learning_rate
     )
-    tensor = torch.from_numpy(np.ascontiguousarray(stacked)).to(device)
-    target_tensor = torch.from_numpy(targets).to(device)
+    tensor = _tensor_from_numpy_compatible(
+        stacked,
+        dtype=torch.float32,
+        device=device,
+    )
+    target_tensor = _tensor_from_numpy_compatible(
+        targets,
+        dtype=torch.long,
+        device=device,
+    )
     trace: list[dict[str, Any]] = []
     for epoch in range(1, hyperparameters.epochs + 1):
         optimizer.zero_grad(set_to_none=True)
@@ -513,9 +549,9 @@ def _train_once(
         )
         loss.backward()
         optimizer.step()
-        u_now = adapter.u.detach().cpu().numpy().astype(np.float32)
-        v_now = adapter.v.detach().cpu().numpy().astype(np.float32)
-        gate_now = adapter.gate.detach().cpu().numpy().astype(np.float32)
+        u_now = _numpy_float32_compatible(adapter.u)
+        v_now = _numpy_float32_compatible(adapter.v)
+        gate_now = _numpy_float32_compatible(adapter.gate)
         train_adapted = np.stack(
             [
                 _adapt_numpy(np.asarray(features_by_view[name]), u_now, v_now, gate_now)
@@ -579,9 +615,9 @@ def _train_once(
             }
         )
     return (
-        adapter.u.detach().cpu().numpy().astype(np.float32),
-        adapter.v.detach().cpu().numpy().astype(np.float32),
-        adapter.gate.detach().cpu().numpy().astype(np.float32),
+        _numpy_float32_compatible(adapter.u),
+        _numpy_float32_compatible(adapter.v),
+        _numpy_float32_compatible(adapter.gate),
         tuple(trace),
     )
 

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import numpy as np
 import pytest
+import torch
 import cvsrffi.stage2_trainable_lowrank_support_adapter as d11
 
 from cvsrffi.stage2_trainable_lowrank_support_adapter import (
@@ -92,6 +93,29 @@ def test_k10_selection_and_resource_bounds() -> None:
     assert result.state.resource["adapt_epochs"] <= 20
     assert result.validation["selected_candidate_id"] == "d11_rank8_test"
     assert len(result.trace) == 12
+
+
+def test_training_bridge_supports_numpy2_torch21_incompatibility(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    def incompatible_from_numpy(_value):
+        raise TypeError("expected np.ndarray (got numpy.ndarray)")
+
+    def incompatible_tensor_numpy(_value):
+        raise TypeError("Numpy is not available")
+
+    monkeypatch.setattr(torch, "from_numpy", incompatible_from_numpy)
+    monkeypatch.setattr(torch.Tensor, "numpy", incompatible_tensor_numpy)
+    views, labels, ranks = _support(("a", "b"), 5)
+    state = fit_locked(
+        _artifact(views),
+        labels,
+        ranks,
+        k_shot=5,
+        hyperparameters=_hp(),
+    ).state
+    assert state.classes == ("a", "b")
+    assert state.low_rank_u.dtype == np.float32
 
 
 def test_after_registration_freezes_adapter_and_old_prototypes() -> None:
