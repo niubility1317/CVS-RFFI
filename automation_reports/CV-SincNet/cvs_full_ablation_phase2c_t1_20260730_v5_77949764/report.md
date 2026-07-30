@@ -119,3 +119,43 @@ PYTHONPATH="$release/code" nohup /home/szu2070436088/.conda/envs/CVS-RFFI/bin/py
 ## 风险与完成后检查
 
 主要风险为完成回执复用路径漂移、旧FP32中心化指纹再次出现、单row异常、GPU worker退出或artifact不完整。任何异常必须保留原根并按精确run ID处理，不得覆盖、删除或缩小矩阵。完成后需按candidate/run同一行汇总receiver、K-shot、seed、old/seen-new/unknown、H、coverage/rollback/defer、loss/adapter摘要和最终判定，并与Phase1 44/44及Phase2 States 325/325一起完成设计报告全量消融闭环。
+
+## 2026-07-31正式发布与启动证据
+
+当前状态：`RUNNING`。本节只记录发布、启动与技术健康证据，不读取或解释accuracy、H、BA等性能值。
+
+### Direct preflight与发布面
+
+- `2026-07-31 00:05:31 CST`执行`tools\n607_ssh_preflight.ps1`，普通账号`szu2070436088`、主机`dell-DSS8440`、项目根和8张GPU均可见；GPU0-7均为0%利用率、1MiB显存占用，无compute进程。
+- v5的release、input、request、run、row log和driver六类根在创建前均不存在；创建后未覆盖v4或其他任务。
+- 远端release精确HEAD为`779497647f1e616f1a143121635fdc183f3ec0bb`，tracked status为空。
+- `source_plan.json` SHA256=`10ec27b86328062152cb2ba4ff66bc82482f38c07b45c45e8d81836272220d41`。
+- `build_v5_reuse_binding_registry.py` SHA256=`f1f0adfa71919e34438186fa3a14c679d228207397c90c38287e26ca098fc2a3`。
+- v4过渡bundle SHA256=`c1feff733d44f896c0c7599158a7043db30d385f5bd4f252111f4bf8b3cf35b6`；v5增量bundle SHA256=`6318f8d1761cc2ad0ab2072696c0cd789805e7a4c1b5683894c46e483d225338`。
+- 本次修改涉及的执行器、D43/D44/D45/D46/D62/D81/D92探针和复用registry构建器均通过远端`CVS-RFFI`环境`py_compile`。
+
+### 复用构建、无真值冒烟与seal
+
+- structure-only与正式构建结果一致：1425 logical、1350 physical、641 reuse、709 execute；`performance_values_read=false`、`dataset_revalidated=false`。
+- `binding_registry.json` SHA256=`1efc663de9cf23e4c6f0aa651c20c85df4aa31ac28e8845a5048ca2aad3e25d0`；复用物理ID集合SHA256=`343322ae49468740ec02ca028d67676550c2abe6fb49db13d438f3309cf54bcd`。
+- 三个历史根因row均使用本地生成且只修改`output_root`的请求，在独立preflight输出根运行；未调用truth-side scorer。
+
+|row|历史根因覆盖|请求SHA256|预测行数|状态|真值门|
+|---|---|---|---:|---|---|
+|`phys_1b9d0cee16897a454ddb3aa7`|D43相关路径|`9967c9c0d8360a72e11294632664c6fbf93d4186687b0096d111a0de0311f973`|1560|`PREDICTIONS_COMPLETE_TRUTH_UNOPENED`|`query_truth_opened=false`，`fit_query_rows_used=0`|
+|`phys_af88df635bf6b18beb105d08`|D43相关路径|`23f1b51ead2e37f7c04c0ab3c9c99eea82f96aa91f9578065d709465c502e7c2`|1560|`PREDICTIONS_COMPLETE_TRUTH_UNOPENED`|`query_truth_opened=false`，`fit_query_rows_used=0`|
+|`phys_37cc012d2b44700e361a5a9c`|D45相关路径|`26daf3ccc522109bee8c8567ea251584b58bdc3547a17991e58eca6f80116c6a`|1560|`PREDICTIONS_COMPLETE_TRUTH_UNOPENED`|`query_truth_opened=false`，`fit_query_rows_used=0`|
+
+- sealed plan：`formal_launch_authority=true`、P0=0、P1=0、8张GPU、每卡2槽、1425 logical、1350 physical、641 reuse、709 execute、75 alias。
+- `sealed_plan.json` SHA256=`6029b64f2f9fbd2d6ac24ff71de8c90f95028b86491b55171a32b41bd1cad15b`。
+- seal生成709个predict请求和1425个score请求；请求树SHA256=`e31c4c798d98f92bbdfd1047cece85f930ef15e83988edcb5357306e487ef7fc`。
+- 709个execute物理行已完整分配到GPU0-7×slot0-1的16个槽位，每个槽均非空。
+
+### Detached launch与即时健康
+
+- 使用`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`启动；main PID=`1935906`。
+- main cmdline精确绑定本v5的`sealed_plan.json`、release、predictor和scorer；CWD为`/home/szu2070436088`，所有正式输入、输出和日志路径均为绝对v5路径。
+- 启动后main存活，直接子进程数为16。即时波次正在并发闭合641个复用行的truth-side scorer，因此GPU仍为空闲，这是预注册的先复用闭合、后执行709个新物理行的正常阶段；不得把该时点解释为GPU worker缺失。
+- driver日志路径为`/home/szu2070436088/2510044040/CV-SincNet/logs/cvs_full_ablation_phase2c_t1_20260730_v5_77949764_driver/runner_driver.out`；PID文件为同目录`launcher.pid`。
+- 每次SSH/SCP短连接结束后，本地`ssh.exe=0`且指向N607/bridge的`ESTABLISHED TCP22=0`。
+- 下一次只在10%里程碑或真实技术异常时短连接检查。首个709 execute GPU波次尚未在本节签字；继续沿用P0或两个不同新execute row在prediction前出现相同确定性异常指纹的唯一技术停止规则。
