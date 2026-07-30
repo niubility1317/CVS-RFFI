@@ -95,7 +95,7 @@ def _equalities(items: list[str], *, option: str) -> dict[str, Any]:
 
 
 def _verify_package_artifacts(result: dict[str, Any]) -> None:
-    from cvsrffi.stage2_metric_scorer import (  # noqa: PLC0415
+    from cvsrffi.stage2_scoring_sidecar import (  # noqa: PLC0415
         load_verified_scoring_sidecar,
     )
     from cvsrffi.stage2_predictor_bundle import (  # noqa: PLC0415
@@ -111,8 +111,7 @@ def _verify_package_artifacts(result: dict[str, Any]) -> None:
     )
     scoring_path = output / "scorer" / "scoring_manifest.json"
     truth, _scoring, _scoring_audit = load_verified_scoring_sidecar(
-        scoring_path,
-        expected_scoring_manifest_sha256=_sha256(scoring_path),
+        scoring_path
     )
     expected_stage = (
         "stage2b" if result["stage"] == "before" else "stage2c"

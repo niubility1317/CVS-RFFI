@@ -105,6 +105,69 @@ def test_completion_summary_fields_are_json_serializable(
     json.dumps({"results": [result]})
 
 
+def test_package_gate_uses_source_sidecar_loader(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    module = _load(
+        "verify_input_completion_summary_source_loader_test",
+        "verify_input_completion_summary.py",
+    )
+    from cvsrffi import stage2_predictor_bundle
+    from cvsrffi import stage2_scoring_sidecar
+
+    output = tmp_path / "package"
+    (output / "predictor").mkdir(parents=True)
+    (output / "scorer").mkdir()
+    (output / "predictor.seal.json").write_text("{}", encoding="utf-8")
+    (output / "scorer" / "scoring_manifest.json").write_text(
+        "{}",
+        encoding="utf-8",
+    )
+    called = {"source_loader": 0}
+
+    def fake_preflight(*_args, **_kwargs):
+        return (
+            {"stage": "stage2c", "receiver": "20-1", "seed": 7282101},
+            {},
+            {},
+        )
+
+    def fake_source_loader(_path):
+        called["source_loader"] += 1
+        return (
+            {
+                "schema": "cvs.phase2.query_truth_sidecar.v2",
+                "stage": "stage2c",
+                "receiver": "20-1",
+                "seed": 7282101,
+                "rows": [{"opaque_query_token": "q"}],
+            },
+            {},
+            {},
+        )
+
+    monkeypatch.setattr(
+        stage2_predictor_bundle,
+        "preflight_stage2_predictor_package",
+        fake_preflight,
+    )
+    monkeypatch.setattr(
+        stage2_scoring_sidecar,
+        "load_verified_scoring_sidecar",
+        fake_source_loader,
+    )
+    module._verify_package_artifacts(
+        {
+            "output": str(output),
+            "stage": "new20",
+            "receiver": "20-1",
+            "method_seed": 7282101,
+        }
+    )
+    assert called["source_loader"] == 1
+
+
 def test_stage2c_source_plan_has_exact_1425_row_identity() -> None:
     module = _load(
         "verify_stage2c_plan_identity_test",

@@ -11,7 +11,7 @@
 |比较目标|19个arm×5个receiver×3个method seed×5个K/new_count身份|
 |正式release代码|`0903163e12902114b2685722125b1d304b97e2fa`|
 |修复目标|关闭v1最终summary中`PosixPath`不可JSON序列化的统一技术故障；package、feature、sidecar三个controller同时修复|
-|状态|`LOCAL_VERIFIED / INDEPENDENT_REVIEW_P0_0_P1_0 / FRESH_REMOTE_NOT_LAUNCHED / NO_PERFORMANCE_RESULT`|
+|状态|`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / FORMAL_PACKAGE_LOADER_GATE_FAILED / NO_PERFORMANCE_RESULT`|
 
 ## v1边界与v2非覆盖要求
 
@@ -59,3 +59,21 @@ package完成门为summary存在且45/45 launched/completed/succeeded/validated�
 ## 完成后检查
 
 完成后在本报告追加package、feature、sidecar及sealed plan的完整计数、SHA、PID/GPU/SSH清理证据，以及1425行同一实验结果表。主解释必须基于同一候选同一行的old/seen-new/unknown、coverage、rollback/defer、loss/adapter和最终判定，不使用跨行拼接的单指标极值。
+
+## N607落地与package正式门技术关闭
+
+|字段|结果|
+|---|---|
+|direct preflight/fresh|PASS；8张GPU空闲；v2全部12个目标根不存在；v1关键根均保留|
+|增量Git bundle|62,399 bytes；SHA256=`eb4f8555dac5246b13ad08ae14a92fb34158b0e95fec66f04bdc85e81cd1c1ae`；以v1只读release为ancestor|
+|formal release|HEAD=`0903163e12902114b2685722125b1d304b97e2fa`；tracked/untracked clean|
+|控制面落地|v2的7个Python、5个模板、source plan及旧50行source summary逐文件SHA匹配；远端compile、模板语法和source plan verifier通过|
+|package controller|PID=`1359977`；正常退出；children=0|
+|package summary|JSON可解析；SHA256=`ed61d7c8403c203f4b1c73d4dd87251a67cf01b7da7f6f580143dfa852b026cb`；expected/launched/completed/succeeded/validated均为45；failed=0；not_launched=0；`systemic_stop=false`；`exception_fingerprints={}`|
+|实际schema|predictor manifest v2=45；scoring manifest v2=45；truth sidecar实际为`cvs.phase2.query_truth_sidecar.v2`共45|
+|正式loader门|当前formal scorer要求`cvs.phase2.query_truth_sidecar.v3`；45/45重载均失败，统一异常=`Stage2ScoringError: truth sidecar schema drift`|
+|归一化异常指纹|SHA256=`6e79ca8b80de3b7324338fa6ec277327a70ddb2496bd07c6abb2a10935ea59af`，重复45项|
+|下游发布|feature、sidecar、index、registry、seal及1425正式矩阵均未启动|
+|清理/保留|PID=0、children=0、GPU compute=0、本地`ssh.exe=0`、N607/bridge TCP22=0；v2 input/package/driver与全部制品只读保留，不patch、不补写、不重启|
+
+package controller自身summary成功不等于正式输入闭环。由于正式loader逐项重载45/45失败，v2在package门停止，固定为`NO_PERFORMANCE_RESULT`。
