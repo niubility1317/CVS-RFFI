@@ -759,9 +759,10 @@ def markdown_to_docx(source: Path, destination: Path, topic: str) -> None:
             flush_paragraph()
             heading = stripped[3:].strip()
             if heading in {
-                "2.Phase2任务的递进关系",
-                "4.Stage2-B：跨接收机旧类域适应",
-                "5.Stage2-C：类增量学习与新类注册",
+                "2.核心概念及其与Phase2阶段的对应",
+                "3.数据、权限与评价框架",
+                "4.Stage2-B：跨接收机旧类域适应仿真实验",
+                "5.Stage2-C：少样本类增量仿真实验",
                 "6.统一比较与下一步",
                 "附录A：非类增量对比方法复现实验结果",
             }:

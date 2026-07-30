@@ -18,11 +18,11 @@
 
 ### 1.1报告讲述逻辑
 
-本报告按“任务是什么→实验如何组织→方法做了什么→结果说明什么”的顺序展开：
+本报告按“概念是什么→对应Phase2哪个阶段→实验如何组织→结果说明什么”的顺序展开：
 
-1. 先用Stage2-A/B/C说明Phase2的递进任务、数据权限和评价口径。
-2. 再分别介绍Stage2-B的三种域适应方法和Stage2-C的两种类增量方法，包括数据、更新对象和损失函数。
-3. 最后汇总正式LEO结果、matched诊断、方法边界和下一步路线。
+1. 先定义域适应、少样本学习、类增量学习，并说明三者在Stage2-A/B/C中的对应关系。
+2. 再统一说明Phase2的数据权限、support/query角色、实验矩阵和评价指标。
+3. 后半部分分别介绍Stage2-B的域适应仿真和Stage2-C的少样本类增量仿真，包括方法、数据、更新对象、损失函数和结果。
 
 ### 1.2近期工作的递进关系
 
@@ -32,21 +32,127 @@
 |截至7月16日|Stage2-B|换到新接收机后，旧类准确率如何恢复|ProtoNet CDA、MRIOR-SDA、DADDA-SDA|375个域适应任务，分析K-shot、receiver和计算开销|
 |截至7月24日|Stage2-C|如何注册新发射机，同时保留旧发射机|CSIL、MoPC-HR|800个正式LEO cell/2400个场景row及同规模matched无LEO诊断|
 
-## 2.Phase2任务的递进关系
+## 2.核心概念及其与Phase2阶段的对应
 
-### 2.1Stage2-A/B/C
+### 2.1域、域偏移与域适应
 
-Phase1在地面source receiver上训练并封存ADV3B02 deployment bundle。Phase2将该模型部署到互斥的target receiver，三个Stage按target标签权限和类别范围逐级增加：
+在监督分类中，一个域可以写为\(\mathcal D=(\mathcal X,P(X))\)，其中\(\mathcal X\)是输入空间，\(P(X)\)是输入分布；分类任务还包含标签空间\(\mathcal Y\)和条件关系\(P(Y|X)\)。source域与target域分别记为：
 
-|阶段|target标签权限|类别集合|核心任务|主要输出|
-|---|---|---|---|---|
-|Stage2-A|无target TX标签|旧类参考|建立无标签目标域参考|reference/diagnostic|
-|Stage2-B|旧类K-shot标签|\(Y_{\mathrm{old}}\)|完成旧类域适应|旧类预测器|
-|Stage2-C|旧类与新类K-shot标签|\(Y_{\mathrm{old}}\cup Y_{\mathrm{new}}\)|保持旧类并注册新类|全注册类统一预测器|
+$$
+\mathcal D_s=(\mathcal X_s,P_s(X,Y)),\qquad
+\mathcal D_t=(\mathcal X_t,P_t(X,Y)).
+$$
 
-Stage2-A只回答“没有target标签时能否直接迁移”；Stage2-B用旧类support校准域偏移；Stage2-C进一步加入新类support，并要求旧类与新类在同一分类空间竞争。Phase3的unknown拒识不属于本报告范围。
+当source和target的数据生成分布不同时，就存在域偏移：
 
-### 2.2集合、样本角色与成功条件
+$$
+P_s(X,Y)\neq P_t(X,Y).
+$$
+
+CVS中的发射机身份没有因receiver改变而变化，但相同发射机经过不同接收机射频前端和传播信道后，IQ分布及其特征分布会改变。因此，跨接收机RFFI主要表现为类别条件分布偏移：
+
+$$
+P_s(X|Y)\neq P_t(X|Y),\qquad
+\mathcal Y_s=\mathcal Y_t=\mathcal Y_{\mathrm{old}}.
+$$
+
+域适应（domain adaptation，DA）是指：**利用source域已有知识以及部署时允许获得的target域信息，对模型、特征、分类边界或统计量进行校准，使其在target域上的期望风险降低。**target风险为：
+
+$$
+R_t(h)
+=\mathbb E_{(x,y)\sim P_t}
+\left[\ell(h(x),y)\right].
+$$
+
+域适应根据target标签权限可分为无监督域适应、半监督域适应和有监督域适应。CVS的Stage2-B提供旧类K-shot target标签，因此属于有监督的少样本域适应。Phase1域泛化与Phase2域适应的区别是：Phase1训练时不能读取target数据；Phase2适应发生在模型部署到target receiver之后，可以读取当前阶段合法的target support。
+
+### 2.2少样本学习
+
+少样本学习（few-shot learning，FSL）不是泛指“总数据量较小”，而是指：**模型已经从base数据、相关任务或预训练模型中获得先验知识，在一个新的目标任务中，每个待识别类别只有极少量带标签样本时，仍要利用这些样本建立能够泛化到独立query的预测器。**少样本描述的是目标任务的监督数据条件，不限定必须采用某一种网络或优化算法。
+
+令一个分类任务为\(\mathcal T=(\mathcal Y_{\mathcal T},S_{\mathcal T},Q_{\mathcal T})\)。其中，\(\mathcal Y_{\mathcal T}\)是本任务的类别集合，\(S_{\mathcal T}\)是允许模型读取并用于适配的support集合，\(Q_{\mathcal T}\)是只用于评价的query集合，并满足：
+
+$$
+S_{\mathcal T}\cap Q_{\mathcal T}=\varnothing .
+$$
+
+标准\(N\)-way \(K\)-shot分类表示任务中有\(N\)个类别，每个类别提供\(K\)个带标签support样本：
+
+$$
+\left|\mathcal Y_{\mathcal T}\right|=N,\qquad
+S_{\mathcal T}
+=\bigcup_{c\in\mathcal Y_{\mathcal T}}
+\left\{(x_{c,k},c)\right\}_{k=1}^{K},
+\qquad
+\left|S_{\mathcal T}\right|=NK.
+$$
+
+学习算法\(\mathcal A\)接收先验状态\(\theta_0\)和support，生成针对当前任务的预测器：
+
+$$
+\theta_{\mathcal T}
+=\mathcal A(\theta_0,S_{\mathcal T}),\qquad
+\hat y=f_{\theta_{\mathcal T}}(x),\quad x\in Q_{\mathcal T}.
+$$
+
+少样本学习的目标不是记住support，而是降低独立query上的期望风险：
+
+$$
+\min_{\mathcal A}\;
+\mathbb E_{\mathcal T\sim p(\mathcal T)}
+\left[
+\frac{1}{|Q_{\mathcal T}|}
+\sum_{(x,y)\in Q_{\mathcal T}}
+\ell\!\left(f_{\mathcal A(\theta_0,S_{\mathcal T})}(x),y\right)
+\right].
+$$
+
+少样本学习至少包含四个必要要素：
+
+1. **先验知识：**来自base类训练、相关任务、预训练表示或已有模型。
+2. **少量带标签support：**\(K\)统计相互独立的真实样本，数据增强view不增加K。
+3. **support/query隔离：**support可以更新模型、prototype或分类头；query不能参与调参、早停或状态更新。
+4. **对独立query泛化：**评价对象是未参与适配的query，而不是support训练准确率。
+
+经典闭集少样本分类通常满足\(\mathcal Y_{\mathrm{support}}=\mathcal Y_{\mathrm{query}}\)，query只在当前\(N\)类中竞争。ProtoNet[1]属于度量型少样本方法：它用support计算类别prototype，再按距离预测query。少样本方法也可以通过微调参数、生成分类权重或学习优化器完成适配；“少样本”描述数据与任务条件，不等同于“只使用prototype”。
+
+### 2.3类增量学习与少样本类增量学习
+
+类增量学习（class-incremental learning，CIL）是指：**类别随时间分批到达，模型状态持续更新，推理标签空间不断扩大；完成每次更新后，模型必须在全部已学习类别中统一预测。**设base阶段类别为\(\mathcal Y^{(0)}\)，第\(t\)次增量到达的新类别为\(\mathcal Y^{(t)}\)，则：
+
+$$
+\mathcal Y^{(\le t)}
+=\bigcup_{j=0}^{t}\mathcal Y^{(j)},\qquad
+\hat y
+=\arg\max_{c\in\mathcal Y^{(\le t)}}p_{\theta_t}(c|x).
+$$
+
+类增量学习的关键不在于当前批次样本是否少，而在于更新\(\theta_{t-1}\rightarrow\theta_t\)后，模型既要学习新类\(\mathcal Y^{(t)}\)，又要保持旧类\(\mathcal Y^{(<t)}\)的识别能力，并且推理时通常不提供task ID。其核心矛盾是新类可塑性与旧类稳定性之间的平衡。
+
+|比较维度|少样本学习|类增量学习|少样本类增量学习|
+|---|---|---|---|
+|主要约束|目标任务中每类标签样本很少|类别分阶段到达，模型持续更新|新类别分阶段到达，且每个新类只有少量样本|
+|标签空间|一个episode内通常固定为\(N\)类|随阶段扩展为\(\mathcal Y^{(\le t)}\)|随阶段扩展，但每阶段新类为K-shot|
+|历史状态|可为每个任务构造临时预测器|必须从\(\theta_{t-1}\)更新到\(\theta_t\)|持续更新，同时避免少样本过拟合|
+|旧类保持|普通闭集FSL通常不要求保留此前episode性能|必须评价旧类遗忘|同时解决旧类遗忘和新类欠学习|
+|推理范围|通常在当前任务的\(N\)类内预测|全部已学习类别统一竞争|全部base类和历次新类统一竞争|
+|主要风险|support过拟合、类别中心估计不准|灾难性遗忘、分类器偏置|灾难性遗忘、新类欠拟合和类别不平衡|
+
+少样本学习和类增量学习描述两个不同维度：**少样本学习规定“当前任务能看到多少标注”，类增量学习规定“类别和模型状态如何随时间演化”。**当增量阶段每个新类只有\(K\)个support时，任务同时属于两者，即少样本类增量学习（few-shot class-incremental learning，FSCIL）。
+
+### 2.4三个概念与Stage2-A/B/C的对应
+
+Phase1在地面source receiver上训练并封存ADV3B02 deployment bundle。Phase2将模型部署到互斥的target receiver，三个Stage按target标签权限和类别范围逐级增加：
+
+|阶段|发生的变化|target标签权限|标签空间|对应概念|核心任务|
+|---|---|---|---|---|---|
+|Stage2-A|source receiver→target receiver|无target TX标签|\(\mathcal Y_{\mathrm{old}}\)参考|域偏移评估、zero-label transfer/reference|判断Phase1模型能否直接跨receiver工作|
+|Stage2-B|receiver变化，类别不增加|旧类K-shot标签|\(\mathcal Y_{\mathrm{old}}\)|有监督少样本域适应|用旧类support校准target域|
+|Stage2-C|receiver变化且加入新类|旧类与新类K-shot标签|\(\mathcal Y_{\mathrm{old}}\cup\mathcal Y_{\mathrm{new}}\)|跨域少样本类增量学习|保持旧类并注册新类，进行全类统一预测|
+
+因此，Stage2-A只建立无标签目标域参考，不构成K-shot学习或新类注册；Stage2-B是固定旧类标签空间下的跨接收机少样本域适应；Stage2-C同时叠加receiver域偏移、少量新类标注和标签空间扩展，属于更严格的跨域FSCIL任务。Phase3的unknown拒识不属于本报告范围。
+
+### 2.5集合、样本角色与成功条件
 
 $$
 Y_{\mathrm{old}}\cap Y_{\mathrm{new}}=\varnothing
@@ -189,9 +295,9 @@ $$
 |Stage2-C注册|冻结/适应后状态＋\(Y_{\mathrm{old}}/Y_{\mathrm{new}}\) support|旧类统计、新类prototype、分类头或受控参数|面向全部注册类的统一预测器|
 |独立评分|不可变prediction artifact＋query真值|不得回流到predictor|\(A_{\mathrm{old}}^{\mathrm{post}}\)、\(A_{\mathrm{new}}\)、\(H_{\mathrm{old,new}}\)、\(F_{\mathrm{old}}\)等指标|
 
-## 4.Stage2-B：跨接收机旧类域适应
+## 4.Stage2-B：跨接收机旧类域适应仿真实验
 
-### 4.1研究问题与统一实验设置
+### 4.1仿真问题与统一实验设置
 
 Stage2-B要回答的问题是：Phase1已经识别过的发射机换到未见target receiver后，少量target-old support能否恢复旧类识别能力？
 
@@ -353,9 +459,9 @@ $$
 
 ProtoNet CDA、MRIOR-SDA与DADDA-SDA的复现实验数值统一放在附录A，正文只保留理解方法和权限差异所需的信息。
 
-## 5.Stage2-C：类增量学习与新类注册
+## 5.Stage2-C：少样本类增量仿真实验
 
-### 5.1研究问题、代码口径与数据
+### 5.1仿真问题、代码口径与数据
 
 Stage2-C在同一target receiver中注册新类，并要求旧类与新类统一竞争。本轮使用论文作者官方执行语义：CSIL锁定`pcwhy/CSIL@8ce8637`，MoPC-HR锁定`xmuLdz/MoPC-HR@ae65543`；编码器接口替换为ADV3B02的160维\(z_{\mathrm{id}}\)，其余训练器、损失和更新范围按官方实现保留。
 
@@ -367,83 +473,6 @@ Stage2-C在同一target receiver中注册新类，并要求旧类与新类统一
 |冻结矩阵|5个receiver×5个seed×4个K×4个新类规模，共400个cell/1200个LEO row|同左|
 
 这里的source数据用于构造进入Phase2前的旧类状态，不是每个增量cell中的source replay。实验属于“官方方法语义＋CVS基座/数据接口适配”，不是原论文数据集数值复现。
-
-#### 5.1.1少样本学习的严格定义
-
-少样本学习（few-shot learning，FSL）不是泛指“总数据量较小”，而是指：**模型已经从base数据、相关任务或预训练模型中获得先验知识，在一个新的目标任务中，每个待识别类别只有极少量带标签样本时，仍要利用这些样本建立能够泛化到独立query的预测器。**少样本描述的是目标任务的监督数据条件，不限定必须采用某一种网络或优化算法。
-
-令一个分类任务为\(\mathcal T=(\mathcal Y_{\mathcal T},S_{\mathcal T},Q_{\mathcal T})\)。其中，\(\mathcal Y_{\mathcal T}\)是本任务的类别集合，\(S_{\mathcal T}\)是允许模型读取并用于适配的support集合，\(Q_{\mathcal T}\)是只用于评价的query集合，并满足样本级互斥：
-
-$$
-S_{\mathcal T}\cap Q_{\mathcal T}=\varnothing .
-$$
-
-标准\(N\)-way \(K\)-shot分类表示任务中有\(N\)个类别，每个类别提供\(K\)个带标签support样本：
-
-$$
-\left|\mathcal Y_{\mathcal T}\right|=N,\qquad
-S_{\mathcal T}
-=\bigcup_{c\in\mathcal Y_{\mathcal T}}
-\left\{(x_{c,k},c)\right\}_{k=1}^{K},
-\qquad
-\left|S_{\mathcal T}\right|=NK.
-$$
-
-学习算法\(\mathcal A\)接收先验状态\(\theta_0\)和support，生成针对当前任务的状态或预测器：
-
-$$
-\theta_{\mathcal T}
-=\mathcal A(\theta_0,S_{\mathcal T}),\qquad
-\hat y=f_{\theta_{\mathcal T}}(x),\quad x\in Q_{\mathcal T}.
-$$
-
-少样本学习的目标不是记住support，而是降低独立query上的期望风险。若任务从分布\(p(\mathcal T)\)中抽取，则目标可写为：
-
-$$
-\min_{\mathcal A}\;
-\mathbb E_{\mathcal T\sim p(\mathcal T)}
-\left[
-\frac{1}{|Q_{\mathcal T}|}
-\sum_{(x,y)\in Q_{\mathcal T}}
-\ell\!\left(f_{\mathcal A(\theta_0,S_{\mathcal T})}(x),y\right)
-\right].
-$$
-
-因此，少样本学习至少包含四个必要要素：
-
-1. **先验知识：**来自base类训练、相关任务、预训练表示或已有模型；完全从随机初始化学习几个样本通常只是极小数据训练。
-2. **少量带标签support：**\(K\)统计相互独立的真实样本，而不是数据增强产生的view数量。
-3. **support/query隔离：**support可以更新模型、prototype或分类头；query不能参与调参、早停、阈值选择或状态更新。
-4. **对独立query泛化：**评价对象是未参与适配的query，而不是support训练准确率。
-
-经典闭集少样本分类通常满足\(\mathcal Y_{\mathrm{support}}=\mathcal Y_{\mathrm{query}}\)，query只在当前\(N\)个类别中竞争。ProtoNet[1]属于度量型少样本学习：它不必在support上反向传播，而是用support计算类别prototype，再按距离预测query。其他少样本方法也可以通过微调参数、生成分类权重或学习优化器完成适配；“少样本”描述数据与任务条件，不等同于“只使用prototype”。
-
-#### 5.1.2少样本学习与类增量学习的区别
-
-类增量学习（class-incremental learning，CIL）描述的是**类别随时间分批到达、模型状态持续更新、推理标签空间不断扩大的学习过程**。设base阶段类别为\(\mathcal Y^{(0)}\)，第\(t\)次增量到达的新类别为\(\mathcal Y^{(t)}\)，不同阶段的新增类别互不重叠。完成第\(t\)阶段后，模型必须在全部已学习类别的并集上统一预测：
-
-$$
-\mathcal Y^{(\le t)}
-=\bigcup_{j=0}^{t}\mathcal Y^{(j)},\qquad
-\hat y
-=\arg\max_{c\in\mathcal Y^{(\le t)}}p_{\theta_t}(c|x).
-$$
-
-类增量学习的关键不在于当前批次样本是否少，而在于更新\(\theta_{t-1}\rightarrow\theta_t\)后，模型既要学习\(\mathcal Y^{(t)}\)，又要保持\(\mathcal Y^{(<t)}\)的识别能力，并且推理时通常不提供样本来自哪个阶段的task ID。其核心矛盾是新类可塑性与旧类稳定性之间的平衡。
-
-|比较维度|少样本学习|类增量学习|少样本类增量学习|
-|---|---|---|---|
-|主要约束|目标任务中每类标签样本很少|类别分阶段到达，模型要持续更新|新类别分阶段到达，且每个新类只有少量样本|
-|标签空间|一个episode内通常固定为\(N\)类|随阶段扩展为\(\mathcal Y^{(\le t)}\)|随阶段扩展，但每阶段新类为K-shot|
-|历史状态|可以对每个任务重新构造临时预测器|必须从\(\theta_{t-1}\)继续更新到\(\theta_t\)|必须持续更新，同时避免少样本过拟合|
-|旧类保持|普通闭集FSL通常不要求保留此前episode性能|必须评价旧类遗忘|必须同时解决旧类遗忘与新类欠学习|
-|推理范围|通常在当前任务的\(N\)类内预测|在全部已学习类别中统一竞争|在全部base类和历次新类中统一竞争|
-|主要风险|support过拟合、类别中心估计不准|灾难性遗忘、分类器偏向新类|灾难性遗忘、新类欠拟合及严重类别不平衡|
-|本报告对应|Stage2-B中的K-shot旧类域适应、ProtoNet CDA|CSIL和MoPC-HR的增量更新机制|Stage2-C在少量新类support下注册新类并保留旧类|
-
-两者不是互斥的方法类别，而是描述两个不同维度：**少样本学习规定“当前任务能看到多少标注”，类增量学习规定“类别和模型状态如何随时间演化”。**当增量阶段每个新类只有\(K\)个support时，任务同时属于少样本学习和类增量学习，即少样本类增量学习（few-shot class-incremental learning，FSCIL）。
-
-在本项目中，Stage2-B保持标签空间为\(\mathcal Y_{\mathrm{old}}\)，主要解决新receiver下的K-shot域适应，因此属于跨域少样本适应；Stage2-C把标签空间从\(\mathcal Y_{\mathrm{old}}\)扩展为\(\mathcal Y_{\mathrm{old}}\cup\mathcal Y_{\mathrm{new}}\)，并要求两部分在同一分类器中竞争，因此属于少样本类增量新类注册。仅在新类support上取得较高训练准确率，不代表类增量成功；必须同时报告独立query上的\(A_{\mathrm{new}}\)、\(A_{\mathrm{old}}^{\mathrm{post}}\)、\(H_{\mathrm{old,new}}\)和\(F_{\mathrm{old}}\)。
 
 ### 5.2CSIL：通道隔离型无exemplar类增量学习
 
