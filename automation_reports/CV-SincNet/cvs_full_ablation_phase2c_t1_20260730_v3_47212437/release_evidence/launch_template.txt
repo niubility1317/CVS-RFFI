@@ -1,0 +1,38 @@
+# EXECUTE ONLY AFTER STATES ARTIFACTS_COMPLETE AND FRESH STAGE2-C SEAL AUTHORITY.
+root=/home/szu2070436088/2510044040/CV-SincNet
+runid=cvs_full_ablation_phase2c_t1_20260730_v3_47212437
+release=$root/releases/$runid
+input=$root/stage2_inputs/$runid
+package=$root/stage2_inputs/cvs_full_ablation_phase2c_package_t1_20260730_v2_0903163e
+feature=$root/stage2_inputs/cvs_full_ablation_phase2c_feature_t1_20260730_v3_47212437
+sidecar=$root/stage2_inputs/cvs_full_ablation_phase2c_sidecar_t1_20260730_v3_47212437
+run=$root/runs/$runid
+rowlogs=$root/logs/$runid
+driver=$root/logs/${runid}_driver
+states_runid=cvs_full_ablation_phase2_states_t1_20260730_v14_cuda_init
+states_plan=$root/stage2_inputs/$states_runid/sealed_plan.json
+states_summary=$root/logs/$states_runid/runner_summary.json
+states_verifier=$input/preflight/verify_states_completion.py
+input_verifier=$input/preflight/verify_input_completion_summary.py
+plan_verifier=$input/preflight/verify_stage2c_plan_identity.py
+source_plan=$input/source_plan.json
+set -euo pipefail
+test "$(git -C "$release" rev-parse HEAD)" = 4721243770bee654bb7c41ad0bdd128d2dbfb863
+test -z "$(git -C "$release" status --porcelain --untracked-files=all)"
+test -f "$input/sealed_plan.json"
+test -f "$states_verifier"
+test -f "$input_verifier"
+test -f "$plan_verifier"
+test -f "$source_plan"
+test ! -e "$run"
+test ! -e "$rowlogs"
+test ! -e "$driver"
+PYTHONPATH="$release/code" /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python "$states_verifier" --states-sealed-plan "$states_plan" --expected-states-plan-sha256 __STATES_SEALED_PLAN_SHA256__ --states-runner-summary "$states_summary" --expected-states-summary-sha256 __STATES_RUNNER_SUMMARY_SHA256__ --expected-run-id "$states_runid" --expected-git-commit 14552df1ca50f8fe100621f5fd4f099942b08322 --expected-logical 325 --expected-physical 325
+PYTHONPATH="$release/code" /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python "$plan_verifier" --source-plan "$source_plan" --expected-source-plan-sha256 6cc5fcba0194adaa65efb1c238479c7ac77d160228c2e1227db91d1852ffcbe4 --expected-git-commit 4721243770bee654bb7c41ad0bdd128d2dbfb863 --sealed-plan "$input/sealed_plan.json" --expected-sealed-plan-sha256 __SEALED_PLAN_SHA256__ --expected-run-id "$runid"
+PYTHONPATH="$release/code" /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python "$input_verifier" --summary "$package/source/package_completion_summary.json" --expected-sha256 ed61d7c8403c203f4b1c73d4dd87251a67cf01b7da7f6f580143dfa852b026cb --schema cvs.full_ablation.stage2c.package_completion.v1 --equal expected=45 --equal launched=45 --equal completed=45 --equal succeeded=45 --equal validated=45 --equal failed=0 --equal not_launched=0 --equal systemic_stop=false --result-identity-fields receiver,method_seed,stage --identity-profile stage2c-package --artifact-profile stage2c-package --result-equal returncode=0 --result-equal artifact_validated=true --result-path-field output
+PYTHONPATH="$release/code" /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python "$input_verifier" --summary "$feature/source/feature_completion_summary.json" --expected-sha256 __FEATURE_SUMMARY_SHA256__ --schema cvs.full_ablation.stage2c.feature_completion.v1 --equal expected=75 --equal launched=75 --equal completed=75 --equal succeeded=75 --equal validated=75 --equal failed=0 --equal not_launched=0 --equal generated_scope_caches=225 --equal expected_scope_caches=225 --equal stage2c_identity_count=75 --equal systemic_stop=false --equal gpu_count=8 --equal slots_per_gpu=2 --result-identity-fields receiver,method_seed,variant,k_shot --identity-profile stage2c-feature --artifact-profile stage2c-feature --result-equal returncode=0 --result-equal artifact_validated=true --result-path-field output --result-path-field log
+PYTHONPATH="$release/code" /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python "$input_verifier" --summary "$sidecar/source/sidecar_completion_summary.json" --expected-sha256 __SIDECAR_SUMMARY_SHA256__ --schema cvs.full_ablation.stage2c.sidecar_completion.v1 --equal expected=30 --equal launched=30 --equal completed=30 --equal succeeded=30 --equal validated=30 --equal failed=0 --equal not_launched=0 --equal published_sidecar_files=60 --equal registry_and_seal_authorized=true --equal systemic_stop=false --result-identity-fields receiver,method_seed,variant --identity-profile stage2c-sidecar --artifact-profile stage2c-sidecar --result-equal returncode=0 --result-equal artifact_validated=true --result-path-field output
+mkdir "$driver"
+set -o noclobber
+cd "$release"
+PYTHONPATH="$release/code" nohup /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u "$release/code/scripts/run_full_ablation_stage2.py" --plan "$input/sealed_plan.json" --repo-root "$release" --python /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python --predictor-script "$release/code/scripts/run_full_ablation_stage2_row.py" --scorer-script "$release/code/scripts/score_full_ablation_stage2_row.py" --execute > "$driver/runner_driver.out" 2>&1 < /dev/null &

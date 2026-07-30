@@ -1,0 +1,22 @@
+# EXECUTE ONLY AFTER 45/45 PACKAGE ARTIFACTS COMPLETE.
+root=/home/szu2070436088/2510044040/CV-SincNet
+runid=cvs_full_ablation_phase2c_t1_20260730_v3_47212437
+release=$root/releases/$runid
+input=$root/stage2_inputs/$runid
+package=$root/stage2_inputs/cvs_full_ablation_phase2c_package_t1_20260730_v2_0903163e
+feature=$root/stage2_inputs/cvs_full_ablation_phase2c_feature_t1_20260730_v3_47212437
+phase1=$root/releases/cvs_full_ablation_phase2_t1_20260729_v3_6fd77c22
+driver=$root/logs/${runid}_feature_builder
+controller=$input/preflight/stage2c_feature_completion_controller.py
+verifier=$input/preflight/verify_input_completion_summary.py
+set -euo pipefail
+test "$(git -C "$release" rev-parse HEAD)" = 4721243770bee654bb7c41ad0bdd128d2dbfb863
+test -z "$(git -C "$release" status --porcelain --untracked-files=all)"
+test -f "$controller"
+test -f "$verifier"
+PYTHONPATH="$release/code" /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python "$verifier" --summary "$package/source/package_completion_summary.json" --expected-sha256 ed61d7c8403c203f4b1c73d4dd87251a67cf01b7da7f6f580143dfa852b026cb --schema cvs.full_ablation.stage2c.package_completion.v1 --equal expected=45 --equal launched=45 --equal completed=45 --equal succeeded=45 --equal validated=45 --equal failed=0 --equal not_launched=0 --equal systemic_stop=false --result-identity-fields receiver,method_seed,stage --identity-profile stage2c-package --artifact-profile stage2c-package --result-equal returncode=0 --result-equal artifact_validated=true --result-path-field output
+test ! -e "$feature"
+test ! -e "$driver"
+mkdir "$driver"
+set -o noclobber
+PYTHONPATH="$release/code" nohup /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u "$controller" --release-root "$release" --package-root "$package" --output-root "$feature" --phase1-root "$phase1" > "$driver/controller.out" 2>&1 < /dev/null &
