@@ -165,3 +165,11 @@ v4随后在第二个不同row复现指纹`3c5905f17ef1f213abb92e9b0d49e355619d28
 |`phys_37cc012d2b44700e361a5a9c.out`|2401|`eff98e221090939376545d9a9d8d146c2eede45bb9d9bb0a0f605bf2236a624c`|
 
 下一步必须先在本地修复并覆盖三类终态技术失败，完成针对性测试、真实输入smoke、独立复审和新commit，再创建不可覆盖的v5补跑计划。v5至少补齐18个FAILED physical和691个NOT_LAUNCHED physical，并按原registry恢复全部784个未成功logical闭环；是否能够安全复用v4的641个已完成row，须由v5冻结计划显式绑定和验证，不能在v4内补写。
+
+## 根因行no-truth输入回收
+
+为支持本地修复后的prediction-only smoke，已从v4保留根只读回收3个真实根因row的完整request、对应feature manifest sidecar和feature NPZ，共9个文件，保存于`release_evidence/root_cause_no_truth_inputs/`。3份manifest均声明`query_truth_present=false`和`query_role_present=false`；NPZ不含query label/truth/role数组。未复制数据集、query truth、scoring sidecar或其他大文件，未重验数据、未修改远端。
+
+逐文件原始N607路径、字节数、完整文件SHA256、manifest canonical绑定SHA256、本地derived request规则和no-truth smoke依赖清单见该目录的`README.md`。
+
+本地`ssr-gpu`只读校验3/3通过：request row绑定、payload SHA、manifest canonical SHA均一致；每份NPZ的21个数组均不含query label/truth/role数组。本证据补充未执行smoke。
