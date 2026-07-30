@@ -13,7 +13,7 @@ test "$(git -C "$release" rev-parse HEAD)" = 14552df1ca50f8fe100621f5fd4f099942b
 test -z "$(git -C "$release" status --porcelain --untracked-files=all)"
 test -f "$controller"
 test -f "$verifier"
-PYTHONPATH="$release/code" /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python "$verifier" --summary "$package/source/package_completion_summary.json" --expected-sha256 __PACKAGE_SUMMARY_SHA256__ --schema cvs.full_ablation.stage2c.package_completion.v1 --equal expected=45 --equal launched=45 --equal completed=45 --equal succeeded=45 --equal validated=45 --equal failed=0 --equal not_launched=0 --equal systemic_stop=false --result-identity-fields receiver,method_seed,stage --result-equal returncode=0 --result-equal artifact_validated=true --result-path-field output
+PYTHONPATH="$release/code" /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python "$verifier" --summary "$package/source/package_completion_summary.json" --expected-sha256 __PACKAGE_SUMMARY_SHA256__ --schema cvs.full_ablation.stage2c.package_completion.v1 --equal expected=45 --equal launched=45 --equal completed=45 --equal succeeded=45 --equal validated=45 --equal failed=0 --equal not_launched=0 --equal systemic_stop=false --result-identity-fields receiver,method_seed,stage --identity-profile stage2c-package --artifact-profile stage2c-package --result-equal returncode=0 --result-equal artifact_validated=true --result-path-field output
 test ! -e "$sidecar"
 test ! -e "$driver"
 mkdir "$driver"

@@ -25,6 +25,13 @@ SOURCE_SUMMARY = (
     / "n607_v4_25c725c4"
     / "package_build_summary.json"
 )
+SOURCE_PLAN = (
+    REPO_ROOT
+    / "automation_reports"
+    / "CV-SincNet"
+    / "cvs_full_ablation_phase2_t1_20260729_v1"
+    / "stage2c_screening_plan_14552df1.json"
+)
 
 
 def _load(name: str, filename: str):
@@ -75,6 +82,18 @@ def test_feature_slots_count_existing_compute_processes() -> None:
         5,
         7,
         7,
+    )
+
+
+def test_stage2c_source_plan_has_exact_1425_row_identity() -> None:
+    module = _load(
+        "verify_stage2c_plan_identity_test",
+        "verify_stage2c_plan_identity.py",
+    )
+    plan = json.loads(SOURCE_PLAN.read_text(encoding="utf-8"))
+    module._validate_source(
+        plan,
+        expected_git_commit="14552df1ca50f8fe100621f5fd4f099942b08322",
     )
 
 
@@ -174,4 +193,41 @@ def test_completion_verifier_rejects_digest_drift(
         ],
     )
     with pytest.raises(ValueError, match="SHA-256 drift"):
+        module.main()
+
+
+def test_completion_verifier_rejects_incomplete_identity_profile(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    module = _load(
+        "verify_input_completion_summary_identity_test",
+        "verify_input_completion_summary.py",
+    )
+    artifact = tmp_path / "artifact"
+    artifact.mkdir()
+    summary = tmp_path / "summary.json"
+    _write_summary(summary, artifact)
+    payload = json.loads(summary.read_text(encoding="utf-8"))
+    payload["results"][0].update({"method_seed": 7282101, "stage": "before"})
+    payload["results"][1].update({"method_seed": 7282101, "stage": "before"})
+    summary.write_text(json.dumps(payload, sort_keys=True), encoding="utf-8")
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "verify_input_completion_summary.py",
+            "--summary",
+            str(summary),
+            "--expected-sha256",
+            module._sha256(summary),
+            "--schema",
+            "test.completion.v1",
+            "--result-identity-fields",
+            "receiver,method_seed,stage",
+            "--identity-profile",
+            "stage2c-package",
+        ],
+    )
+    with pytest.raises(ValueError, match="identity coverage drift"):
         module.main()
