@@ -155,7 +155,8 @@ PYTHONPATH="$release/code" nohup /home/szu2070436088/.conda/envs/CVS-RFFI/bin/py
 
 - 使用`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`启动；main PID=`1935906`。
 - main cmdline精确绑定本v5的`sealed_plan.json`、release、predictor和scorer；CWD为`/home/szu2070436088`，所有正式输入、输出和日志路径均为绝对v5路径。
-- 启动后main存活，直接子进程数为16。即时波次正在并发闭合641个复用行的truth-side scorer，因此GPU仍为空闲，这是预注册的先复用闭合、后执行709个新物理行的正常阶段；不得把该时点解释为GPU worker缺失。
+- 启动后main存活，直接子进程数为16。即时波次先并发闭合641个复用行的truth-side scorer；随后事件型短连接确认16个直接子进程已全部切换为`run_full_ablation_stage2_row.py` predictor，GPU0-7各有2个compute进程、每进程约338MiB，8×2首个execute GPU波次成立。
 - driver日志路径为`/home/szu2070436088/2510044040/CV-SincNet/logs/cvs_full_ablation_phase2c_t1_20260730_v5_77949764_driver/runner_driver.out`；PID文件为同目录`launcher.pid`。
 - 每次SSH/SCP短连接结束后，本地`ssh.exe=0`且指向N607/bridge的`ESTABLISHED TCP22=0`。
-- 下一次只在10%里程碑或真实技术异常时短连接检查。首个709 execute GPU波次尚未在本节签字；继续沿用P0或两个不同新execute row在prediction前出现相同确定性异常指纹的唯一技术停止规则。
+- 首个execute GPU波次快照中状态面有640个`COMPLETE`，没有非`COMPLETE`状态，规范化异常指纹集合为空，未见P0；该计数仅为并发切换瞬时技术健康快照，不用于性能或最终覆盖结论。
+- 下一次只在10%里程碑或真实技术异常时短连接检查；继续沿用P0或两个不同新execute row在prediction前出现相同确定性异常指纹的唯一技术停止规则。
