@@ -173,3 +173,9 @@ v4随后在第二个不同row复现指纹`3c5905f17ef1f213abb92e9b0d49e355619d28
 逐文件原始N607路径、字节数、完整文件SHA256、manifest canonical绑定SHA256、本地derived request规则和no-truth smoke依赖清单见该目录的`README.md`。
 
 本地`ssr-gpu`只读校验3/3通过：request row绑定、payload SHA、manifest canonical SHA均一致；每份NPZ的21个数组均不含query label/truth/role数组。本证据补充未执行smoke。
+
+## v5复用控制文件回收
+
+为支持新v5只补跑709个physical并显式复用641个v4 COMPLETE，已只读回收v4的`sealed_plan.json`、`binding_registry.json`和`cache_binding_index.json`至`release_evidence/v5_reuse_control/`。未回收641个prediction大文件，未重验数据、未修改N607。
+
+本地`ssr-gpu`集合核验通过：sealed plan的1350个physical与runner summary的1350个status ID完全一致；其中641个COMPLETE、709个待v5补跑。sealed plan的1425个logical与registry的1425个binding完全一致，cache index为75项，三文件candidate lock一致。N607上641个COMPLETE对应的`row_execution_receipt.json`全部存在且可解析，missing=0、unreadable=0、binding mismatch=0。逐文件远端路径、大小、SHA和v5复用边界见该目录`README.md`。
