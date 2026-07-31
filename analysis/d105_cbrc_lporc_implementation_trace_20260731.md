@@ -115,3 +115,11 @@ FTU2实现已完成：257/8400边界、批形状敏感fake、非法capacity早�
 4.先完成Phase1 source-held预测、独立truth-open score、gate、外部签名和formal seal；只有该资产链通过后，才准备并执行完整Target25。
 
 在上述条件全部完成前，不得把本地landing、smoke或历史对比描述为D105性能成功。
+
+## 8.R7终态同步
+
+R7已完成一次受控N607发布，非覆盖run ID=d105_phase1_sourceheld_2d948ce9_20260731_r7，冻结source commit=2d948ce981b9008522f825cfe6d868bce08cb624。远端54/54链路、9/9帮助面和真实checkpoint生产bridge fixed256小型合同预检均通过；正式tap-cache以固定256容量完成8400行、33次forward和reference dual parity，随后prediction、truth-open和score均生成。
+
+runner在derive-gate入口收到source-held derived gate integer drift并以exit=2自然结束。类型诊断显示9个整数guard字段均为内置int；其中receiver_held_min_net_correct与class_loco_min_net_correct为合法负整数，却被仅允许非负计数的validator拒绝。此处只记录字段语义与计数，不记录任何评分或性能数值。
+
+因此R7终态为STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT：gate、component、authority、formal asset和Target25均为0/未启动。该证据说明fixed256 tap合同已闭合，但不能形成D105方法性能或Phase1资产成功主张。后续必须在本地修复validator语义、增加负整数合法性回归、独立审查和新提交后，才可用全新run ID重新申请release。

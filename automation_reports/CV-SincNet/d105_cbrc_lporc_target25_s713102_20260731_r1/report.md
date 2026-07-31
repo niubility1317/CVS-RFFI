@@ -186,3 +186,9 @@ R6唯一detach后在8400行strict tap与reference dual的数值parity门失败�
 FTU2本地实现现已通过238/238统一回归和独立`GO / P0=0 / P1=0 / P2=0`审查，runtime/method更新为`8797de12…a498`/`9a87e51d…61e6`，提交=`2d948ce981b9008522f825cfe6d868bce08cb624`。该结论只允许进入精确archive smoke；Phase1尚无新formal asset，Target25继续保持未启动。
 
 FTU2精确archive已通过54/54、9/9帮助面、238/238回归、真实checkpoint固定256和8400批合同验证。R7冻结为`d105_phase1_sourceheld_2d948ce9_20260731_r7`，预登记提交=`632fd9f0e1324d14cb9d489b92b71259e9ac29fe`，只用于重新完成Phase1 source-held闭环；首次8400行reference parity仍是N607硬门。Target25继续保持未启动。
+
+## 11.R7 Phase1状态同步
+
+R7的8400行fixed256 strict tap与reference parity已通过，但source-held derive-gate在两个合法负min_net_correct字段上被非负计数validator误拒，exit=2。prediction、truth-open和score虽已生成，但gate、component、authority与formal asset均未闭合；R7永久标记为STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT，不得读取未闭合评分作为性能结论。
+
+因此Target25仍为未启动状态：没有Target输入、prediction、truth-open、score、authority、nonce消费或任何Target性能行。只有后续本地修复gate validator语义并通过独立审查、提交和新的不可覆盖Phase1 release后，才可重新评估Target25启动资格。

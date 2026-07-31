@@ -327,3 +327,21 @@ R7冻结为：
 R7必须使用全新root和唯一terra-max runner，不得读取或复用R3—R6的source、input、output、PID或日志。首次正式tap必须对全部8400行通过reference parity；否则R7技术失败并永久关闭。只有tap、prediction、truth-open、score、gate和component完整闭合后，才进入独立component审查；Target25仍禁止启动。
 
 与R6启动脚本逐行比较只存在两个冻结差异：run root从R6改为上述R7全新root，tap-cache的`--batch-size`从128改为256。其余命令、参考archive、门阈值、输入和阶段顺序不变。
+
+## 17.R7 N607终态：derive-gate整数门技术失败
+
+R7由唯一runner按冻结方案detach一次后关闭为STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT。run ID=d105_phase1_sourceheld_2d948ce9_20260731_r7；source commit=2d948ce981b9008522f825cfe6d868bce08cb624；R7预登记commit=632fd9f0e1324d14cb9d489b92b71259e9ac29fe；证据绑定HEAD=20ec6291436213c66daace27f6f0b9572c25e6fc。main PID=2857134，CWD、cmdline、CUDA_VISIBLE_DEVICES=0和launcher均由launch_receipt绑定到R7新root；进程自然退出，pipeline_stage1.exit=2。
+
+预启动门全部通过：direct普通账户preflight、GPU0空闲、run root初始不存在、archive/launcher/revocation四输入SHA与大小、4770成员安全解包、54/54 Git blob=archive=extract=manifest、54/54 LF与隔离pyc、9/9 CLI help、外部cache/salt/checkpoint/reference SHA，以及真实checkpoint的生产bridge fixed256小型合同smoke。后者在1/208/256行均以固定256容量运行，对独立bytearray/frombuffer reference的三路max_abs均为0，195 tensors、eval、state不变和旧GRB未导入均通过；它是source-only技术预检，不产生formal asset或性能结论。旧外部helper的直接torch.from_numpy在N607 NumPy/Torch配对下失败，已标为非生产bridge预检缺陷，未改变冻结source或launcher。
+
+唯一正式tap-cache已完成8400行reference parity：fixed_256_zero_pad_then_slice_v1，forward=33，末批=208真实行+48填充行，reference z_id/z_dom max_abs均为0；strict tap为source-only，target_rows=0、query_rows=0、raw/clean IQ均未保留。随后prediction、truth-open、score各生成一份不可变artifact；derive-gate尚未创建输出即以source-held derived gate integer drift退出，component、authority、seal、formal asset和Target25均未执行。
+
+|候选/run|机制|strict tap|prediction/truth/score|gate/component|Target25|结论|
+|---|---|---|---|---|---|---|
+|D105-FTU2/R7|Phase1 fixed256双backbone strict tap与source-held闭环|8400行，33次forward，reference parity通过|1/1/1份已回收|0/0|未启动|NO_PERFORMANCE_RESULT|
+
+失败门精确复核仅输出结构与类型，不披露性能值：整数guard共9个字段，类型漂移=0；receiver_held_min_net_correct和class_loco_min_net_correct两项为合法负整数，却被该validator的非负计数条件拒绝，failed_integer_guard_field_count=2。immutable row计数为scored prediction=63、truth score=63、tx probe=7；target_rows=query_rows=0。该失败是gate validator语义与min_net_correct允许负值之间的确定性技术不一致，不是性能结论。
+
+完整证据已回收至retrieved_d105_phase1_sourceheld_2d948ce9_20260731_r7_STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE_NO_PERFORMANCE_RESULT/artifacts。主日志SHA256=8680bf8aef479e59cc4ec7b3dc8e7588c371a0339c0d8a25a0af256a9b7ff5be；strict-tap SHA256=6626afbf5d5987b2944b53f9b4bddbb6c9397f4c577accb95cea5e0039b24578；receipt SHA256=27ee9275b3b89ef78c4ed61349d87f9491274efacd12e6028002aa9a6faed67f。回收副本与远端21项哈希逐项一致，GPU0终态0%/1MiB且无compute process，本地SSH/SCP已清理。
+
+R7不得重试、恢复、覆盖或重新解释为性能实验。后续只能先在本地修复并测试min_net_correct的合法整数域与gate validator语义，完成独立审查和新Git提交后，以新的不可覆盖run ID重新申请release；在完整Phase1 component、独立审查、离线authority和formal seal之前，Target25继续保持未启动。
