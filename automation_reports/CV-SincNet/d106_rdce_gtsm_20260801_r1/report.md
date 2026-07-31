@@ -1,6 +1,6 @@
 # D106-RDCE/GTSM-r3研发与实验报告
 
-状态：`DESIGN_FROZEN / DATA_LOCAL_CODE_G0_GO / DA_LOCAL_CODE_G0_GO / REAL_INTEGRATION_NO_GO / N607_READ_ONLY_DISCOVERY_ONLY / SOURCE_HELD_NOT_OPENED / TARGET25_NO_GO / NO_TARGET_PERFORMANCE_RESULT`
+状态：`DESIGN_FROZEN / DATA_LOCAL_CODE_G0_GO / DA_LOCAL_CODE_G0_GO / GIT_COMMITTED_bd9f1944 / REAL_INTEGRATION_NO_GO / N607_READ_ONLY_DISCOVERY_ONLY / SOURCE_HELD_NOT_OPENED / TARGET25_NO_GO / NO_TARGET_PERFORMANCE_RESULT`
 
 ## 1.实验身份
 
@@ -291,4 +291,4 @@ D104正式远端split root、588条`L_s`和D106 disjoint receipt均不存在；�
 2.D106公开入口改为`upstream_source_pool_cache_set`/`--upstream-source-pool-cache-set`，并硬验`cache_scope=source_validation`、8400行、三个场景同序物理ID根及完整存储语义；
 3.validator升级为v2，显式记录`upstream_source_pool_cache_set_sha256`、实际scope和D104旧字段名；选中588行的method artifact仍不携带全池SHA或全池能力；
 4.由于received-IQ bytes、physical IDs、receiver/TX集合、场景、K、support/query split和`p2_min_v1`均未变化，本次只修实现契约，不触发数据重验；
-5.本地独立复审已达`P0=0/P1=0/P2=0 / LOCAL DATA GO`；在Git提交和真实fixture闭环之前，DATA跨模块release、正式DA asset、source-held和Target仍为NO-GO。
+5.本地独立复审已达`P0=0/P1=0/P2=0 / LOCAL DATA GO`，authority修正已提交为`bd9f1944`；在真实fixture闭环之前，DATA跨模块release、正式DA asset、source-held和Target仍为NO-GO。
