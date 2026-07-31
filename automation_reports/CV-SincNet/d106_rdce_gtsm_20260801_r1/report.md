@@ -357,3 +357,7 @@ release source commit为`deefd57c4185a5343f87772be78b5038c37e6217`。本地专�
 r5的绝对路径修复经独立复审`P0=0/P1=0/P2=0`并以`0dc2484b`发布。完整落地门和绝对命令复核通过后，唯一launch在checkpoint loader导入阶段因source archive遗漏`baseline_origin_sat_view.py`退出。异常指纹为`c2c635b2…`，log SHA为`53d4b8a6…`。partial `selected_ls_iq`完整保留但IQ内容未读取、未拉回；正式result/completion均不存在，run-owned进程为0，GPU和SSH已清理。r5永久为`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。
 
 本地r6修复不再手写猜测依赖：以D105声明的`D105_CANDIDATE_RUNTIME_MODEL_FILES=(baseline_origin_sat_view.py,model.py,model_dual_cvsincnet.py)`为权威，D106 construction closure和runtime同时绑定三份实际SHA，并新增依赖集合漂移及三字段SHA负测。新archive必须包含并逐entry核验三文件；r4/r5均不得复用。
+
+### 20.1 r6本地release
+
+依赖闭包修复提交为`44e33eab`，独立复审`P0=0/P1=0/P2=0`。新source archive SHA为`91c5a30b…`，包含并逐entry验证`baseline_origin_sat_view.py=fa7221ae…`、`model.py=afc6e626…`和`model_dual_cvsincnet.py=11b56f2a…`；直接从zip执行三模型import smoke通过。r6 fixture SHA为`ee905614…`，runtime SHA为`0e8bc733…`。run ID冻结为`d106_real_integration_44e33eab_20260801_r6`，当前`NOT_LANDED`。
