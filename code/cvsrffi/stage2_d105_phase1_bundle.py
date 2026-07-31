@@ -72,7 +72,9 @@ if TYPE_CHECKING:
 
 
 SCHEMA = "cvs.phase1.d105.cbrc.strict_source_bundle.v1"
-STRICT_TAP_SCHEMA = "cvs.phase1.d105.cbrc.strict_tap_receipt.v1"
+STRICT_TAP_SCHEMA = "cvs.phase1.d105.cbrc.strict_tap_receipt.v2"
+D105_STRICT_TAP_FORWARD_BATCH_CAPACITY = 256
+D105_STRICT_TAP_FORWARD_BATCH_POLICY = "fixed_256_zero_pad_then_slice_v1"
 SOURCE_ACCESS_SCHEMA = "cvs.phase1.d105.cbrc.source_access_receipt.v1"
 SOURCE_HELD_PREDICTION_SCHEMA = (
     "cvs.phase1.d105.cbrc.source_held_prediction_manifest.v1"
@@ -1227,6 +1229,11 @@ _STRICT_TAP_FIELDS = {
     "tap_archive_sha256",
     "tap_archive_members",
     "row_count",
+    "forward_batch_capacity",
+    "forward_invocation_count",
+    "last_batch_real_rows",
+    "last_batch_padding_rows",
+    "forward_batch_policy",
     "pre_relu_sha256",
     "z_dom_sha256",
     "physical_id_root_sha256",
@@ -1705,7 +1712,7 @@ def export_d105_phase1_strict_tap(
     d102_revocation_signature: str | Path,
     output_dir: str | Path,
     device: str = "cuda:0",
-    batch_size: int = 128,
+    batch_size: int = D105_STRICT_TAP_FORWARD_BATCH_CAPACITY,
 ) -> dict[str, Any]:
     """Export a strict source-only D105 tap from a real frozen checkpoint.
 
@@ -1713,7 +1720,9 @@ def export_d105_phase1_strict_tap(
     output archive deliberately contains just the two D105 feature views and
     Phase1 metadata needed for class-balanced aggregation. The strict receipt
     binds the output arrays to the supplied checkpoint, runtime, method lock,
-    source-input receipt, and strict hook path.
+    source-input receipt, and strict hook path. ``batch_size`` remains a
+    compatibility input for the older tap-runtime CLI, but cannot change the
+    fixed 256-row forward capacity recorded by the receipt.
     """
 
     checkpoint = _require_sha256(checkpoint_sha256, "checkpoint_sha256")
@@ -1752,7 +1761,10 @@ def export_d105_phase1_strict_tap(
         or len(set(physical.tolist())) != count
     ):
         raise D105Phase1BundleError("source tap metadata/physical ID closure drift")
-    if type(batch_size) is not int or not 1 <= batch_size <= 256:
+    if (
+        type(batch_size) is not int
+        or not 1 <= batch_size <= D105_STRICT_TAP_FORWARD_BATCH_CAPACITY
+    ):
         raise D105Phase1BundleError("strict tap batch_size must be in [1,256]")
     access = (
         _load_json(source_access_receipt, name="source access receipt")
@@ -1789,10 +1801,16 @@ def export_d105_phase1_strict_tap(
     pre_rows: list[np.ndarray] = []
     dom_rows: list[np.ndarray] = []
     execution_paths: set[str] = set()
-    for start in range(0, count, batch_size):
-        batch = np.ascontiguousarray(iq[start : start + batch_size], dtype=np.float32)
+    forward_invocation_count = 0
+    last_batch_real_rows = 0
+    capacity = D105_STRICT_TAP_FORWARD_BATCH_CAPACITY
+    for start in range(0, count, capacity):
+        batch = np.ascontiguousarray(iq[start : start + capacity], dtype=np.float32)
+        real_rows = len(batch)
+        padded = np.zeros((capacity, *batch.shape[1:]), dtype=np.float32)
+        padded[:real_rows] = batch
         tensor = _tensor_from_d105_float32_c_iq(
-            batch,
+            padded,
             torch_module=torch,
             device=torch_device,
             error_type=D105Phase1BundleError,
@@ -1800,11 +1818,13 @@ def export_d105_phase1_strict_tap(
         )
         forward = _strict_forward(model, tensor)
         z_id, z_dom, pre_relu, execution_path = _validate_d105_strict_forward(
-            forward, rows=len(batch)
+            forward, rows=capacity
         )
         execution_paths.add(execution_path)
-        pre_rows.append(np.ascontiguousarray(pre_relu, dtype=np.float32))
-        dom_rows.append(np.ascontiguousarray(z_dom, dtype=np.float32))
+        pre_rows.append(np.ascontiguousarray(pre_relu[:real_rows], dtype=np.float32))
+        dom_rows.append(np.ascontiguousarray(z_dom[:real_rows], dtype=np.float32))
+        forward_invocation_count += 1
+        last_batch_real_rows = real_rows
     if len(execution_paths) != 1:
         raise D105Phase1BundleError("strict tap execution path changed across batches")
     arrays = {
@@ -1836,6 +1856,11 @@ def export_d105_phase1_strict_tap(
         "tap_archive_sha256": archive_sha,
         "tap_archive_members": list(STRICT_TAP_MEMBERS),
         "row_count": count,
+        "forward_batch_capacity": capacity,
+        "forward_invocation_count": forward_invocation_count,
+        "last_batch_real_rows": last_batch_real_rows,
+        "last_batch_padding_rows": capacity - last_batch_real_rows,
+        "forward_batch_policy": D105_STRICT_TAP_FORWARD_BATCH_POLICY,
         "pre_relu_sha256": _array_sha256(arrays["pre_relu"]),
         "z_dom_sha256": _array_sha256(arrays["z_dom"]),
         "physical_id_root_sha256": _physical_root(physical.tolist()),
@@ -1886,7 +1911,27 @@ def _validate_strict_tap_receipt(
         or receipt["candidate_id"] != CANDIDATE_ID
         or receipt["tap_archive_members"] != list(STRICT_TAP_MEMBERS)
         or receipt["tap_archive_sha256"] != archive_sha256
+        or type(receipt["row_count"]) is not int
+        or receipt["row_count"] <= 0
         or receipt["row_count"] != len(arrays["pre_relu"])
+        or type(receipt["forward_batch_capacity"]) is not int
+        or receipt["forward_batch_capacity"]
+        != D105_STRICT_TAP_FORWARD_BATCH_CAPACITY
+        or type(receipt["forward_invocation_count"]) is not int
+        or receipt["forward_invocation_count"]
+        != (
+            len(arrays["pre_relu"]) + D105_STRICT_TAP_FORWARD_BATCH_CAPACITY - 1
+        )
+        // D105_STRICT_TAP_FORWARD_BATCH_CAPACITY
+        or type(receipt["last_batch_real_rows"]) is not int
+        or receipt["last_batch_real_rows"]
+        != ((len(arrays["pre_relu"]) - 1) % D105_STRICT_TAP_FORWARD_BATCH_CAPACITY) + 1
+        or type(receipt["last_batch_padding_rows"]) is not int
+        or receipt["last_batch_padding_rows"]
+        != D105_STRICT_TAP_FORWARD_BATCH_CAPACITY
+        - receipt["last_batch_real_rows"]
+        or receipt["forward_batch_policy"]
+        != D105_STRICT_TAP_FORWARD_BATCH_POLICY
         or receipt["pre_relu_sha256"] != _array_sha256(arrays["pre_relu"])
         or receipt["z_dom_sha256"] != _array_sha256(arrays["z_dom"])
         or receipt["physical_id_root_sha256"]
@@ -4736,6 +4781,8 @@ __all__ = [
     "SOURCE_HELD_TRUTH_OPEN_SCHEMA",
     "STRICT_TAP_MEMBERS",
     "STRICT_TAP_SCHEMA",
+    "D105_STRICT_TAP_FORWARD_BATCH_CAPACITY",
+    "D105_STRICT_TAP_FORWARD_BATCH_POLICY",
     "StrictTapRows",
     "build_d105_phase1_component",
     "build_d105_source_access_receipt",

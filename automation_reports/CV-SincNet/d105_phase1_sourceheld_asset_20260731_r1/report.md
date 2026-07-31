@@ -1,6 +1,6 @@
 # D105 Phase1 source-only压缩知识与source-held门实验报告
 
-状态：`PHASE1_R5_STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / D105-FTU1_ARCHIVE_VERIFIED / R6_LOCAL_PREREGISTERED / READY_FOR_SOLE_RUNNER / NO_PERFORMANCE_RESULT`
+状态：`PHASE1_R6_STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / D105-FTU2_LOCAL_CODE_REVIEW_GO / ARCHIVE_SMOKE_PENDING / NO_PERFORMANCE_RESULT`
 
 ## 1.实验标识与目标
 
@@ -291,3 +291,17 @@ R6已由唯一runner启动一次后关闭为\`STOPPED_EARLY_SYSTEMIC_TECHNICAL_F
 |\`D105-FTU1/R6\`|Phase1双backbone strict tap＋reference dual parity guard|\`5\`文件、8400行|\`0\`|\`0\`|\`0\`|\`0\`|\`0\`|\`0\`|\`NO_PERFORMANCE_RESULT\`|
 
 主/子进程均已自然退出，GPU0终态0%/1MiB且无compute process；本地SSH清理完成。完整回收交接见\`retrieved_d105_phase1_sourceheld_a0bdbba6_20260731_r6_STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE_NO_PERFORMANCE_RESULT/handoff.md\`，主日志SHA256=\`e11c6054150e9cf008890dfd61cca707b2b3afc16d356b8b288f01e01f0c1789\`。R6不得重试；下一轮必须先在本地闭合reference dual archive与当前生产tap的数值parity来源，重新独立审查、提交并使用新run ID。
+
+## 14.R6固定批容量根因与D105-FTU2
+
+全量8400×160差分已确认，reference dual以固定capacity=256生成，共33次调用；R6以batch=128直接前向，最后一次实际shape=80。`z_dom>1e-5`恰好只发生在最后80行，前8320行最大差仅`1.9073486328125e-06`；`z_id`唯一超过`1e-5`的行也位于该末批。根因是旧固定256补零TorchScript wrapper与新可变批eager路径的执行合同差异，不是checkpoint、输入顺序或D105-FTU1特征语义改变。
+
+下一修复冻结为`D105-FTU2`：Phase1 tap固定以256容量执行，不足256行的末批零填充后前向并切回真实行；receipt增加capacity、调用数、末批真实/填充行；`tap-cache`拒绝非256；257行和8400行边界及批形状敏感fake model进入回归。参考archive、checkpoint、模型、feature tap和全8400行`max_abs<=1e-5`门均不改变。详见`analysis/d105_r6_batch_contract_root_cause_20260731.md`。
+
+## 15.D105-FTU2本地实现与独立审查
+
+FTU2现已完成固定256分块、末批零填充/切回、receipt v2绑定和`tap-cache`严格早门。257行形成2次256前向且末批1＋255；8400行形成33次256前向且末批208＋48。非法`128`、`256.0`、`np.int64(256)`和`True`均在任何外部路径访问前拒绝。真实SHA绑定checkpoint在1/208/256真实行下，相对独立256零填充reference的`z_id/pre_relu/z_dom`最大差≤`1.91e-6`。
+
+统一10文件回归238/238通过。更新后的54文件canonical runtime SHA256=`8797de12f035db609aeb6f453f096571f216d0d514d6705344e763f5ec63a498`，method lock SHA256=`9a87e51de4d775ff2ea05e59654afaa62844edaf2def942d8f73c8e289ea61e6`。独立R11最终裁决为`GO / P0=0 / P1=0 / P2=0`；首轮1个P1和3个P2均已关闭。详见`analysis/d105_ftu2_implementation_validation_20260731.md`与`analysis/d105_ftu2_review_r11_20260731.md`。
+
+本地代码审查GO不授权N607。下一门是本地Git提交后，从该提交生成精确archive，在解包副本中复跑54/54、CLI、真实checkpoint固定256 tap和完整8400行reference parity技术smoke；通过后才能创建新run ID和唯一runner。

@@ -344,6 +344,27 @@ def _materialize_strict_tap(
         "tap_archive_sha256": archive_sha,
         "tap_archive_members": list(STRICT_TAP_MEMBERS),
         "row_count": len(arrays["pre_relu"]),
+        "forward_batch_capacity": phase1.D105_STRICT_TAP_FORWARD_BATCH_CAPACITY,
+        "forward_invocation_count": (
+            len(arrays["pre_relu"])
+            + phase1.D105_STRICT_TAP_FORWARD_BATCH_CAPACITY
+            - 1
+        )
+        // phase1.D105_STRICT_TAP_FORWARD_BATCH_CAPACITY,
+        "last_batch_real_rows": (
+            (len(arrays["pre_relu"]) - 1)
+            % phase1.D105_STRICT_TAP_FORWARD_BATCH_CAPACITY
+        )
+        + 1,
+        "last_batch_padding_rows": (
+            phase1.D105_STRICT_TAP_FORWARD_BATCH_CAPACITY
+            - (
+                (len(arrays["pre_relu"]) - 1)
+                % phase1.D105_STRICT_TAP_FORWARD_BATCH_CAPACITY
+            )
+            - 1
+        ),
+        "forward_batch_policy": phase1.D105_STRICT_TAP_FORWARD_BATCH_POLICY,
         "pre_relu_sha256": phase1._array_sha256(arrays["pre_relu"]),
         "z_dom_sha256": phase1._array_sha256(arrays["z_dom"]),
         "physical_id_root_sha256": phase1._physical_root(
@@ -889,6 +910,227 @@ def test_d105_tap_cache_salt_and_observation_selection_match_legacy_helper(
     assert d105_iq.tobytes(order="C") == legacy_iq.tobytes(order="C")
 
 
+@pytest.mark.parametrize("batch_size", [128, 256.0, np.int64(256), True])
+def test_d105_tap_cache_rejects_nonfixed_forward_capacity_before_file_access(
+    monkeypatch: pytest.MonkeyPatch, batch_size: object
+) -> None:
+    from types import SimpleNamespace
+
+    builder = importlib.import_module("scripts.build_d105_phase1_bundle")
+
+    def reject_file_access(*_args: object, **_kwargs: object) -> Path:
+        raise AssertionError("tap-cache touched an external file before the batch gate")
+
+    monkeypatch.setattr(builder, "_regular", reject_file_access)
+    with pytest.raises(
+        D105Phase1BundleError,
+        match="tap-cache batch_size must equal fixed forward capacity 256",
+    ):
+        builder._tap_from_cache(SimpleNamespace(batch_size=batch_size))
+
+
+def test_d105_tap_runtime_cli_defaults_to_fixed_capacity_and_marks_compatibility() -> None:
+    import argparse
+
+    builder = importlib.import_module("scripts.build_d105_phase1_bundle")
+    parser = argparse.ArgumentParser()
+    builder._tap_runtime_command(parser)
+    batch_action = next(
+        action for action in parser._actions if action.dest == "batch_size"
+    )
+    assert batch_action.default == phase1.D105_STRICT_TAP_FORWARD_BATCH_CAPACITY
+    help_text = parser.format_help()
+    assert "deprecated compatibility option" in help_text
+    assert "fixed forward capacity 256" in help_text
+
+
+@pytest.mark.parametrize(
+    ("row_count", "expected_invocations", "expected_last_real", "expected_padding"),
+    [(257, 2, 1, 255), (8400, 33, 208, 48)],
+)
+def test_d105_strict_tap_uses_fixed_256_zero_padding_and_slices_real_rows(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    row_count: int,
+    expected_invocations: int,
+    expected_last_real: int,
+    expected_padding: int,
+) -> None:
+    from types import SimpleNamespace
+
+    import torch
+
+    revocation_manifest, revocation_signature, revocation_sha = _signed_d102_revocation(
+        tmp_path
+    )
+    _, runtime_sha, _, lock_sha = _candidate_identity(tmp_path)
+    source_iq = np.zeros((row_count, 2, 1), dtype=np.float32)
+    source_iq[:, 0, 0] = np.arange(row_count, dtype=np.float32) + np.float32(1.0)
+    labels = tuple(f"source-class-{index % 3:02d}" for index in range(row_count))
+    receivers = tuple(f"source-rx-{index % 4:02d}" for index in range(row_count))
+    physical_ids = tuple(f"source-physical-{index:05d}" for index in range(row_count))
+    access = phase1.build_d105_source_access_receipt(
+        source_received_iq=source_iq,
+        source_labels=labels,
+        source_receiver_ids=receivers,
+        source_physical_ids=physical_ids,
+        checkpoint_sha256=CHECKPOINT_SHA256,
+        runtime_sha256=runtime_sha,
+        method_lock_sha256=lock_sha,
+        d102_revocation_manifest_sha256=revocation_sha,
+    )
+    observed_batches: list[np.ndarray] = []
+
+    def batch_shape_sensitive_forward(_model: object, received_iq: torch.Tensor):
+        rows = np.asarray(received_iq.detach().cpu().tolist(), dtype=np.float32)
+        observed_batches.append(rows)
+        # The feature deliberately depends on the actual forward shape.  A
+        # non-padded tail would therefore publish different retained rows.
+        base = rows[:, 0, 0] + np.float32(len(rows))
+        pre_relu = np.repeat(base[:, None], 160, axis=1).astype(np.float32)
+        return SimpleNamespace(
+            z_id=np.maximum(pre_relu, np.float32(0.0)),
+            z_dom=np.ascontiguousarray(pre_relu * np.float32(2.0)),
+            pre_relu=pre_relu,
+            hook_exact_bytes=True,
+            execution_path="eager_forward_hook",
+        )
+
+    monkeypatch.setattr(phase1, "_strict_forward", batch_shape_sensitive_forward)
+    exported = phase1.export_d105_phase1_strict_tap(
+        model=SimpleNamespace(training=False),
+        source_received_iq=source_iq,
+        source_labels=labels,
+        source_receiver_ids=receivers,
+        source_physical_ids=physical_ids,
+        checkpoint_sha256=CHECKPOINT_SHA256,
+        runtime_sha256=runtime_sha,
+        method_lock_sha256=lock_sha,
+        source_access_receipt=access,
+        d102_revocation_manifest=revocation_manifest,
+        d102_revocation_signature=revocation_signature,
+        output_dir=tmp_path / f"strict-tap-fixed-{row_count}",
+        device="cpu",
+        batch_size=phase1.D105_STRICT_TAP_FORWARD_BATCH_CAPACITY,
+    )
+    assert len(observed_batches) == expected_invocations
+    assert all(batch.shape == (256, 2, 1) for batch in observed_batches)
+    assert np.array_equal(
+        observed_batches[-1][:expected_last_real], source_iq[-expected_last_real:]
+    )
+    assert np.count_nonzero(observed_batches[-1][expected_last_real:]) == 0
+    receipt = json.loads(
+        Path(exported["strict_tap_receipt"]).read_text(encoding="utf-8")
+    )
+    assert receipt["forward_batch_capacity"] == 256
+    assert receipt["forward_invocation_count"] == expected_invocations
+    assert receipt["last_batch_real_rows"] == expected_last_real
+    assert receipt["last_batch_padding_rows"] == expected_padding
+    assert (
+        receipt["forward_batch_policy"]
+        == phase1.D105_STRICT_TAP_FORWARD_BATCH_POLICY
+    )
+    with np.load(exported["strict_tap_archive"], allow_pickle=False) as archive:
+        assert archive["pre_relu"].shape == (row_count, 160)
+        assert np.array_equal(
+            archive["pre_relu"][:, 0],
+            source_iq[:, 0, 0] + np.float32(256.0),
+        )
+    rows, loaded_receipt = phase1.load_d105_strict_tap_rows(
+        exported["strict_tap_archive"], exported["strict_tap_receipt"]
+    )
+    assert rows.pre_relu.shape == (row_count, 160)
+    assert loaded_receipt == receipt
+
+
+@pytest.mark.parametrize(
+    ("field", "corruption"),
+    [
+        ("forward_batch_capacity", 255),
+        ("forward_invocation_count", 2),
+        ("last_batch_real_rows", 1),
+        ("last_batch_padding_rows", 255),
+        ("forward_batch_policy", "variable_batch_no_padding"),
+    ],
+)
+def test_d105_strict_tap_receipt_rejects_fixed_batch_contract_tampering(
+    tmp_path: Path, field: str, corruption: object
+) -> None:
+    tap = _materialize_strict_tap(
+        tmp_path, d102_revocation_manifest_sha256="a" * 64
+    )
+    receipt_path = Path(tap["receipt"])
+    receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    receipt[field] = corruption
+    _write_json(receipt_path, receipt)
+    with pytest.raises(D105Phase1BundleError, match="strict tap receipt closure drift"):
+        phase1.load_d105_strict_tap_rows(tap["archive"], receipt_path)
+
+
+def test_d105_strict_tap_receipt_rejects_boolean_row_count_directly(
+    tmp_path: Path,
+) -> None:
+    tap = _materialize_strict_tap(
+        tmp_path, d102_revocation_manifest_sha256="a" * 64
+    )
+    receipt = json.loads(Path(tap["receipt"]).read_text(encoding="utf-8"))
+    receipt["row_count"] = True
+    with pytest.raises(D105Phase1BundleError, match="strict tap receipt closure drift"):
+        phase1._validate_strict_tap_receipt(
+            receipt,
+            archive_sha256=str(tap["archive_sha"]),
+            arrays=tap["arrays"],
+        )
+
+
+def test_d105_strict_tap_receipt_rejects_zero_row_archive_directly(
+    tmp_path: Path,
+) -> None:
+    tap = _materialize_strict_tap(
+        tmp_path, d102_revocation_manifest_sha256="a" * 64
+    )
+    receipt = json.loads(Path(tap["receipt"]).read_text(encoding="utf-8"))
+    zero_arrays = {
+        "pre_relu": np.zeros((0, 160), dtype=np.float32),
+        "z_dom": np.zeros((0, 160), dtype=np.float32),
+        "labels": np.asarray([], dtype=np.str_),
+        "receiver_ids": np.asarray([], dtype=np.str_),
+        "physical_ids": np.asarray([], dtype=np.str_),
+    }
+    receipt.update(
+        {
+            "row_count": 0,
+            "forward_invocation_count": 0,
+            "last_batch_real_rows": 0,
+            "last_batch_padding_rows": 256,
+            "pre_relu_sha256": phase1._array_sha256(zero_arrays["pre_relu"]),
+            "z_dom_sha256": phase1._array_sha256(zero_arrays["z_dom"]),
+        }
+    )
+    with pytest.raises(D105Phase1BundleError, match="strict tap receipt closure drift"):
+        phase1._validate_strict_tap_receipt(
+            receipt,
+            archive_sha256=str(tap["archive_sha"]),
+            arrays=zero_arrays,
+        )
+
+
+def test_d105_strict_tap_receipt_rejects_legacy_v1_schema_directly(
+    tmp_path: Path,
+) -> None:
+    tap = _materialize_strict_tap(
+        tmp_path, d102_revocation_manifest_sha256="a" * 64
+    )
+    receipt = json.loads(Path(tap["receipt"]).read_text(encoding="utf-8"))
+    receipt["schema"] = "cvs.phase1.d105.cbrc.strict_tap_receipt.v1"
+    with pytest.raises(D105Phase1BundleError, match="strict tap receipt closure drift"):
+        phase1._validate_strict_tap_receipt(
+            receipt,
+            archive_sha256=str(tap["archive_sha"]),
+            arrays=tap["arrays"],
+        )
+
+
 def test_d105_tap_cache_v1_loader_matches_legacy_passthrough(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
@@ -1091,6 +1333,17 @@ def test_d105_minimal_checkpoint_loader_matches_exact_ssdg_model_and_taps(
     )
     runtime_path, runtime_sha, lock_path, lock_sha = _candidate_identity(tmp_path)
     source_iq = np.asarray(received_iq.detach().cpu().tolist(), dtype=np.float32)
+    padded_reference_iq = torch.zeros(
+        (
+            phase1.D105_STRICT_TAP_FORWARD_BATCH_CAPACITY,
+            *received_iq.shape[1:],
+        ),
+        dtype=torch.float32,
+    )
+    padded_reference_iq[: len(received_iq)] = received_iq
+    fixed_capacity_reference = phase1._strict_forward(
+        new_model, padded_reference_iq
+    )
     labels = ("source-class-00",)
     receivers = ("source-rx-00",)
     physical_ids = ("source-physical-00",)
@@ -1118,15 +1371,41 @@ def test_d105_minimal_checkpoint_loader_matches_exact_ssdg_model_and_taps(
         d102_revocation_signature=revocation_signature,
         output_dir=tmp_path / "strict-tap-positive",
         device="cpu",
-        batch_size=1,
+        batch_size=phase1.D105_STRICT_TAP_FORWARD_BATCH_CAPACITY,
     )
     receipt = json.loads(Path(exported["strict_tap_receipt"]).read_text(encoding="utf-8"))
     assert receipt["execution_path"] == "eager_forward_hook"
     assert receipt["z_dom_present"] is True
     assert receipt["strict_pre_relu_path"] is True
+    assert receipt["forward_batch_capacity"] == 256
+    assert receipt["forward_invocation_count"] == 1
+    assert receipt["last_batch_real_rows"] == 1
+    assert receipt["last_batch_padding_rows"] == 255
     with np.load(exported["strict_tap_archive"], allow_pickle=False) as archive:
-        assert np.array_equal(archive["z_dom"], phase1_forward.z_dom)
-        assert np.array_equal(archive["pre_relu"], phase1_forward.pre_relu)
+        assert archive["z_dom"].shape == (1, 160)
+        assert archive["pre_relu"].shape == (1, 160)
+        assert np.isfinite(archive["z_dom"]).all()
+        assert np.isfinite(archive["pre_relu"]).all()
+        observed = {
+            "z_id": np.maximum(archive["pre_relu"], np.float32(0.0)),
+            "pre_relu": np.asarray(archive["pre_relu"], dtype=np.float32),
+            "z_dom": np.asarray(archive["z_dom"], dtype=np.float32),
+        }
+    reference = {
+        "z_id": fixed_capacity_reference.z_id[:1],
+        "pre_relu": fixed_capacity_reference.pre_relu[:1],
+        "z_dom": fixed_capacity_reference.z_dom[:1],
+    }
+    for name in ("z_id", "pre_relu", "z_dom"):
+        max_abs = float(
+            np.max(
+                np.abs(
+                    observed[name].astype(np.float64)
+                    - np.asarray(reference[name], dtype=np.float64)
+                )
+            )
+        )
+        assert max_abs <= 1.0e-5, (name, max_abs)
     assert legacy_calls == []
 
 
@@ -1179,10 +1458,11 @@ def test_d105_phase1_export_fail_closes_each_strict_forward_field(
         method_lock_sha256=lock_sha,
         d102_revocation_manifest_sha256=revocation_sha,
     )
-    pre_relu = np.zeros((1, 160), dtype=np.float32)
+    capacity = phase1.D105_STRICT_TAP_FORWARD_BATCH_CAPACITY
+    pre_relu = np.zeros((capacity, 160), dtype=np.float32)
     values: dict[str, object] = {
         "z_id": np.maximum(pre_relu, np.float32(0.0)),
-        "z_dom": np.zeros((1, 160), dtype=np.float32),
+        "z_dom": np.zeros((capacity, 160), dtype=np.float32),
         "pre_relu": pre_relu,
         "hook_exact_bytes": True,
         "execution_path": "eager_forward_hook",
@@ -1192,11 +1472,13 @@ def test_d105_phase1_export_fail_closes_each_strict_forward_field(
     elif corruption == "float64":
         values[field] = np.asarray(values[field], dtype=np.float64)
     elif corruption == "short":
-        values[field] = np.zeros((1, 159), dtype=np.float32)
+        values[field] = np.zeros((capacity, 159), dtype=np.float32)
     elif corruption == "nonfinite":
-        values[field] = np.full((1, 160), np.float32("nan"), dtype=np.float32)
+        values[field] = np.full(
+            (capacity, 160), np.float32("nan"), dtype=np.float32
+        )
     elif corruption == "relu_mismatch":
-        values[field] = np.ones((1, 160), dtype=np.float32)
+        values[field] = np.ones((capacity, 160), dtype=np.float32)
     elif corruption == "unrecognized":
         values[field] = "identity_only_legacy_forward"
     else:
@@ -1219,7 +1501,7 @@ def test_d105_phase1_export_fail_closes_each_strict_forward_field(
             d102_revocation_signature=revocation_signature,
             output_dir=output_dir,
             device="cpu",
-            batch_size=1,
+            batch_size=phase1.D105_STRICT_TAP_FORWARD_BATCH_CAPACITY,
         )
     assert not output_dir.exists()
 

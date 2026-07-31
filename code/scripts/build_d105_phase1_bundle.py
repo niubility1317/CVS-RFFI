@@ -29,6 +29,7 @@ if str(ROOT / "code") not in sys.path:
     sys.path.insert(0, str(ROOT / "code"))
 
 from cvsrffi.stage2_d105_phase1_bundle import (  # noqa: E402
+    D105_STRICT_TAP_FORWARD_BATCH_CAPACITY,
     D105Phase1BundleError,
     build_d105_exact_model_from_checkpoint,
     build_d105_phase1_component,
@@ -263,6 +264,13 @@ def _tap_from_runtime(args: argparse.Namespace) -> dict[str, object]:
 def _tap_from_cache(args: argparse.Namespace) -> dict[str, object]:
     """Create a new D105 strict tap directly from verified source weak-IQ cache."""
 
+    if (
+        type(args.batch_size) is not int
+        or args.batch_size != D105_STRICT_TAP_FORWARD_BATCH_CAPACITY
+    ):
+        raise D105Phase1BundleError(
+            "tap-cache batch_size must equal fixed forward capacity 256"
+        )
     try:
         import torch
     except ImportError as error:
@@ -363,7 +371,15 @@ def _tap_runtime_command(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--d102-revocation-signature", type=Path, required=True)
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--device", default="cuda:0")
-    parser.add_argument("--batch-size", type=int, default=128)
+    parser.add_argument(
+        "--batch-size",
+        type=int,
+        default=D105_STRICT_TAP_FORWARD_BATCH_CAPACITY,
+        help=(
+            "deprecated compatibility option; execution always uses fixed "
+            "forward capacity 256"
+        ),
+    )
 
 
 def _tap_cache_command(parser: argparse.ArgumentParser) -> None:
@@ -381,7 +397,9 @@ def _tap_cache_command(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--reference-dual-archive-sha256", required=True)
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--device", default="cuda:0")
-    parser.add_argument("--batch-size", type=int, default=128)
+    parser.add_argument(
+        "--batch-size", type=int, default=D105_STRICT_TAP_FORWARD_BATCH_CAPACITY
+    )
 
 
 def _predict_command(parser: argparse.ArgumentParser) -> None:
