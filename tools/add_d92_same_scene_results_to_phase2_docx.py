@@ -39,17 +39,39 @@ STAGE2B_D92_TABLE = [
         "MRIOR-SDA",
         "DADDA-SDA",
         "ProtoNet CDA",
-        "D92注册前旧类准确率",
+        "qKNN Stage2-B旧类准确率",
     ],
     ["1", "75.21%", "69.88%", "72.58%", "59.47%", "68.144%"],
     ["5", "75.21%", "79.17%", "76.74%", "70.28%", "81.267%"],
     ["10", "75.21%", "84.50%", "79.36%", "70.86%", "86.111%"],
 ]
 
+STAGE2B_D92_DETAIL_TABLE = [
+    ["K", "target receiver", "clear", "low-elev", "rain", "三场景均值"],
+    ["1", "20-1", "67.000%", "67.000%", "65.500%", "66.500%"],
+    ["1", "3-19", "52.833%", "43.333%", "52.667%", "49.611%"],
+    ["1", "7-14", "80.000%", "80.833%", "76.667%", "79.167%"],
+    ["1", "7-7", "81.667%", "74.167%", "71.000%", "75.611%"],
+    ["1", "8-8", "75.167%", "70.500%", "63.833%", "69.833%"],
+    ["1", "5接收机总体", "71.333%", "67.167%", "65.933%", "68.144%"],
+    ["5", "20-1", "88.667%", "83.667%", "79.333%", "83.889%"],
+    ["5", "3-19", "69.833%", "65.667%", "65.167%", "66.889%"],
+    ["5", "7-14", "87.667%", "80.500%", "77.667%", "81.944%"],
+    ["5", "7-7", "93.500%", "89.667%", "90.333%", "91.167%"],
+    ["5", "8-8", "85.500%", "82.500%", "79.333%", "82.444%"],
+    ["5", "5接收机总体", "85.033%", "80.400%", "78.367%", "81.267%"],
+    ["10", "20-1", "93.000%", "88.000%", "86.500%", "89.167%"],
+    ["10", "3-19", "76.000%", "72.500%", "71.500%", "73.333%"],
+    ["10", "7-14", "91.333%", "83.000%", "84.500%", "86.278%"],
+    ["10", "7-7", "96.833%", "96.333%", "94.167%", "95.778%"],
+    ["10", "8-8", "91.167%", "83.833%", "83.000%", "86.000%"],
+    ["10", "5接收机总体", "89.667%", "84.733%", "83.933%", "86.111%"],
+]
+
 
 STAGE2C_D92_COMPARISON_TABLE = [
     ["切片", "方法", "适应前", "", "", "", ""],
-    ["K1/new20", "D92", "68.144%", "44.033%", "27.150%", "33.410%", "24.111pp"],
+    ["K1/new20", "qKNN", "68.144%", "44.033%", "27.150%", "33.410%", "24.111pp"],
     [
         "K1/new20",
         "CSIL官方流程",
@@ -68,7 +90,7 @@ STAGE2C_D92_COMPARISON_TABLE = [
         "2.603%",
         "4.600pp",
     ],
-    ["K5/new20", "D92", "81.267%", "63.711%", "58.883%", "60.955%", "17.556pp"],
+    ["K5/new20", "qKNN", "81.267%", "63.711%", "58.883%", "60.955%", "17.556pp"],
     [
         "K5/new20",
         "CSIL官方流程",
@@ -87,7 +109,7 @@ STAGE2C_D92_COMPARISON_TABLE = [
         "14.309%",
         "31.811pp",
     ],
-    ["K10/new5", "D92", "86.111%", "76.189%", "74.133%", "74.803%", "9.922pp"],
+    ["K10/new5", "qKNN", "86.111%", "76.189%", "74.133%", "74.803%", "9.922pp"],
     [
         "K10/new5",
         "CSIL官方流程",
@@ -106,7 +128,7 @@ STAGE2C_D92_COMPARISON_TABLE = [
         "14.947%",
         "36.000pp",
     ],
-    ["K10/new10", "D92", "86.111%", "72.533%", "66.353%", "69.106%", "13.578pp"],
+    ["K10/new10", "qKNN", "86.111%", "72.533%", "66.353%", "69.106%", "13.578pp"],
     [
         "K10/new10",
         "CSIL官方流程",
@@ -125,7 +147,7 @@ STAGE2C_D92_COMPARISON_TABLE = [
         "13.770%",
         "35.822pp",
     ],
-    ["K10/new20", "D92", "86.111%", "71.333%", "68.150%", "69.555%", "14.778pp"],
+    ["K10/new20", "qKNN", "86.111%", "71.333%", "68.150%", "69.555%", "14.778pp"],
     [
         "K10/new20",
         "CSIL官方流程",
@@ -224,11 +246,11 @@ def revise(source: Path, output: Path) -> None:
     forgetting_header = capture_cell_content(formal_table.rows[0].cells[6])
 
     boundary_heading = find_paragraph(doc, "3.6.4结果边界")
-    replace_paragraph_text(boundary_heading, "3.6.5结果边界")
+    replace_paragraph_text(boundary_heading, "3.6.6结果边界")
     d92_stage2b_heading = append_paragraph_before(
         doc,
         boundary_heading,
-        "3.6.4D92注册前共同LEO场景对照",
+        "3.6.4qKNN Stage2-B域适应实验结果",
         style="Heading 3",
         keep_with_next=True,
     )
@@ -236,10 +258,50 @@ def revise(source: Path, output: Path) -> None:
         doc,
         boundary_heading,
         (
-            "本表补充D92正式retry2在注册新类之前的旧类状态，并与D92技术报告中保留的"
-            "共同LEO弱信道场景矩阵并列。它不是在3.6.2周报表上直接追加一列：域适应矩阵"
-            "使用5个receiver、seed 713101–713105，D92使用相同三类LEO场景、5个receiver"
-            "和seed 713102–713106，数据矩阵及seed集合并非严格一一配对，因此只作描述性比较。"
+            "qKNN的Stage2-B状态读取6个旧类的K-shot target support，在注册任何"
+            "新类之前完成旧类目标域适配。原始artifact将该指标记为B-old；为避免把“注册前”"
+            "误解成“尚未域适应”，本节统一记为S2B-old。下表按K、target receiver和LEO弱"
+            "信道场景列出S2B-old，每个单元格为5个seed（713102–713106）的均值。"
+        ),
+        style="Body Text",
+    )
+    stage2b_detail_table = add_result_table_before(
+        doc,
+        boundary_heading,
+        STAGE2B_D92_DETAIL_TABLE,
+        fractions=[0.07, 0.20, 0.17, 0.19, 0.17, 0.20],
+        font_size=8.0,
+        left_columns=(1,),
+        group_column=0,
+    )
+    set_table_header_keep_with_next(stage2b_detail_table)
+    append_paragraph_before(
+        doc,
+        boundary_heading,
+        (
+            "qKNN的Stage2-B域适应准确率随support由K=1增加到K=5、K=10而提升：5个接收机"
+            "三场景总体均值依次为68.144%、81.267%和86.111%。同一K下，clear场景总体"
+            "最高，low-elev与rain场景更低；接收机3-19始终最弱，K=10时三场景均值仍仅"
+            "73.333%，说明接收机域偏移和弱信道扰动尚未被完全消除。"
+        ),
+        style="Body Text",
+    )
+
+    append_paragraph_before(
+        doc,
+        boundary_heading,
+        "3.6.5qKNN与域适应方法的共同LEO场景对照",
+        style="Heading 3",
+        keep_with_next=True,
+    )
+    append_paragraph_before(
+        doc,
+        boundary_heading,
+        (
+            "下表将qKNN的S2B-old与相同三类LEO弱信道场景下的域适应对比方法并列。域适应"
+            "矩阵使用5个receiver、seed 713101–713105，qKNN使用5个receiver和seed "
+            "713102–713106；两套矩阵的seed集合及artifact没有严格一一配对，因此只作"
+            "描述性比较，不计算paired显著性。"
         ),
         style="Body Text",
     )
@@ -256,10 +318,11 @@ def revise(source: Path, output: Path) -> None:
         doc,
         boundary_heading,
         (
-            "在这一描述性口径下，D92注册前旧类准确率在K=5和K=10时分别为81.267%和"
-            "86.111%，高于同表中的三个论文适配头；K=1时MRIOR-SDA为69.88%，高于D92的"
-            "68.144%。注册前尚未加入新类，D92的旧/新任务均衡协方差尚未启用，因此这里"
-            "反映的是D92旧类support稳健状态构造，而不是Stage2-C任务均衡模块的增益。"
+            "在这一描述性口径下，qKNN的Stage2-B旧类准确率在K=5和K=10时分别为81.267%和"
+            "86.111%，高于同表中的三个论文适配头；K=1时MRIOR-SDA为69.88%，高于qKNN的"
+            "68.144%。这里比较的是完成旧类support域适应后的S2B-old，而不是Phase1模型"
+            "直接推理结果。此时尚未加入新类，qKNN的旧/新任务均衡协方差也尚未启用；数值"
+            "反映qKNN的旧类support稳健状态构造，不能归因于Stage2-C均衡模块。"
         ),
         style="Body Text",
     )
@@ -276,14 +339,14 @@ def revise(source: Path, output: Path) -> None:
             replace_paragraph_text(
                 boundary_paragraphs[0],
                 boundary_text
-                + "D92补充表只报告注册前旧类状态，不应被解释为新类注册结果。",
+                + "qKNN补充表只报告完成旧类域适配后的Stage2-B状态，不应被解释为新类注册结果。",
             )
 
     stage2c_anchor = find_paragraph(doc, "4.6matched无LEO新类归因诊断")
     append_paragraph_before(
         doc,
         stage2c_anchor,
-        "4.5.3D92与类增量方法的共同LEO切片对照",
+        "4.5.3qKNN与类增量方法的共同LEO切片对照",
         style="Heading 3",
         keep_with_next=True,
     )
@@ -291,10 +354,10 @@ def revise(source: Path, output: Path) -> None:
         doc,
         stage2c_anchor,
         (
-            "D92正式retry2完成125/125个任务和375/375个LEO场景，失败数为0。下表在"
+            "qKNN完成125/125个任务和375/375个LEO场景，失败数为0。下表在"
             "K1/new20、K5/new20、K10/new5、K10/new10和K10/new20五个共同切片上，"
-            "对照D92与CSIL、MoPC-HR官方流程的三场景平均结果。CSIL和MoPC-HR使用seed "
-            "713101–713105，D92使用713102–713106；三者的base训练、状态构造和训练权限"
+            "对照qKNN与CSIL、MoPC-HR官方流程的三场景平均结果。CSIL和MoPC-HR使用seed "
+            "713101–713105，qKNN使用713102–713106；三者的base训练、状态构造和训练权限"
             "也不同，因此该表是同LEO场景的描述性对照，不是严格paired显著性比较。"
         ),
         style="Body Text",
@@ -323,12 +386,12 @@ def revise(source: Path, output: Path) -> None:
         doc,
         stage2c_anchor,
         (
-            "D92在五个共同切片上的旧新调和均值均高于两种论文流程，但不能把差距全部"
-            "归因于D92算法：D92的注册前旧类状态明显更强，方法生命周期和允许使用的历史"
-            "状态也不同。D92在K10/new20得到注册后旧类71.333%、新类68.150%、调和均值"
+            "qKNN在五个共同切片上的旧新调和均值均高于两种论文流程，但不能把差距全部"
+            "归因于qKNN算法：qKNN的Stage2-B旧类状态明显更强，方法生命周期和允许使用的历史"
+            "状态也不同。qKNN在K10/new20得到注册后旧类71.333%、新类68.150%、调和均值"
             "69.555%，遗忘14.778个百分点；相对其matched D81控制，它改善旧类和遗忘，"
             "但新类下降且全部绝对性能门仍失败。正式结论保持"
-            "COMPLETED_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE，不能表述为D92已完成晋级。"
+            "COMPLETED_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE，不能表述为qKNN已完成晋级。"
         ),
         style="Body Text",
     )
@@ -340,10 +403,11 @@ def revise(source: Path, output: Path) -> None:
                 style_run(run)
     normalize_all_visible_run_fonts(doc)
 
-    doc.core_properties.title = "CVS-RFFI Phase2详细复现报告（D92同场景结果补充版）"
-    doc.core_properties.subject = "Phase2对比方法、D92共同LEO场景结果与证据边界"
+    doc.core_properties.title = "CVS-RFFI Phase2详细复现报告（qKNN域适应与类增量结果补充版）"
+    doc.core_properties.subject = "Phase2对比方法、qKNN Stage2-B域适应结果、Stage2-C类增量结果与证据边界"
     doc.core_properties.comments = (
-        "在Stage2-B与Stage2-C对应结果章节补充D92正式retry2共同LEO场景描述性对照。"
+        "在Stage2-B补充qKNN按接收机和场景展开的域适应结果；"
+        "在Stage2-C保留qKNN共同LEO切片类增量对照。"
     )
     output.parent.mkdir(parents=True, exist_ok=True)
     doc.save(str(output))
@@ -355,36 +419,39 @@ def revise(source: Path, output: Path) -> None:
         if paragraph.style.name.startswith("Heading")
     ]
     required = {
-        "3.6.4D92注册前共同LEO场景对照",
-        "3.6.5结果边界",
-        "4.5.3D92与类增量方法的共同LEO切片对照",
+        "3.6.4qKNN Stage2-B域适应实验结果",
+        "3.6.5qKNN与域适应方法的共同LEO场景对照",
+        "3.6.6结果边界",
+        "4.5.3qKNN与类增量方法的共同LEO切片对照",
     }
     missing = required.difference(headings)
     if missing:
         raise RuntimeError(f"missing inserted headings: {sorted(missing)}")
     if "3.6.4结果边界" in headings:
         raise RuntimeError("obsolete Stage2-B boundary heading remains")
-    if len(check.tables) != 16:
-        raise RuntimeError(f"expected 16 final tables, found {len(check.tables)}")
+    if len(check.tables) != 17:
+        raise RuntimeError(f"expected 17 final tables, found {len(check.tables)}")
 
     final_tables = [table_matrix(table) for table in check.tables]
     for original in original_tables:
         if original not in final_tables:
             raise RuntimeError(f"source table was not preserved: {original[0]}")
     if STAGE2B_D92_TABLE not in final_tables:
-        raise RuntimeError("Stage2-B D92 table was not preserved exactly")
+        raise RuntimeError("Stage2-B qKNN table was not preserved exactly")
+    if STAGE2B_D92_DETAIL_TABLE not in final_tables:
+        raise RuntimeError("detailed Stage2-B qKNN table was not preserved exactly")
     if not any(
         len(matrix) == len(STAGE2C_D92_COMPARISON_TABLE)
         and matrix[1:] == STAGE2C_D92_COMPARISON_TABLE[1:]
         for matrix in final_tables
     ):
-        raise RuntimeError("Stage2-C D92 table body was not preserved exactly")
+        raise RuntimeError("Stage2-C qKNN table body was not preserved exactly")
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description=(
-            "Insert formal D92 same-LEO-scene descriptive results into the "
+            "Insert formal qKNN same-LEO-scene descriptive results into the "
             "Stage2-B and Stage2-C comparison sections of an existing DOCX."
         )
     )
