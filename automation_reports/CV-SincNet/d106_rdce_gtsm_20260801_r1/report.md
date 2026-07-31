@@ -1,6 +1,6 @@
 # D106-RDCE/GTSM-r3研发与实验报告
 
-状态：`DESIGN_FROZEN / DATA_LOCAL_CODE_G0_GO / DA_LOCAL_CODE_G0_GO / GIT_COMMITTED_bd9f1944 / REAL_INTEGRATION_NO_GO / N607_READ_ONLY_DISCOVERY_ONLY / SOURCE_HELD_NOT_OPENED / TARGET25_NO_GO / NO_TARGET_PERFORMANCE_RESULT`
+状态：`DESIGN_FROZEN / DATA_LOCAL_CODE_G0_GO / DA_LOCAL_CODE_G0_GO / REAL_INTEGRATION_ENTRY_LOCAL_GO / PORTABLE_PATH_LOCAL_GO_GIT_PENDING / REAL_INTEGRATION_NOT_EXECUTED / N607_READ_ONLY_DISCOVERY_ONLY / SOURCE_HELD_NOT_OPENED / TARGET25_NO_GO / NO_TARGET_PERFORMANCE_RESULT`
 
 ## 1.实验身份
 
@@ -230,7 +230,7 @@ SPR证明同IQ的signed第二表征能够让K1产生真实prediction变化，也
 - 方法提取产物仅包含精确588条`L_s`，并与完整存储validator、selected IQ archive/receipt/content root、D104 split和checkpoint执行收据分层绑定；
 - export入口不持有8400缓存、split、disjoint或salt能力；关键嵌套callable、同句柄读取、checkpoint/model/forward收据和completion marker均fail-closed；
 - 真实authority修正后的独立终审结论为`P0=0/P1=0/P2=0 / LOCAL DATA GO`；
-- 当前DATA、CLI、DA资产/runtime及真实集成入口联合测试：85通过、1跳过；跳过项为缺少环境变量`D106_REAL_INTEGRATION_FIXTURE`的既有真实资产闭环。
+- 当前DATA、CLI、DA资产/runtime及真实集成入口联合测试：97通过、1跳过；跳过项为缺少环境变量`D106_REAL_INTEGRATION_FIXTURE`的既有真实资产闭环。
 
 ### 14.2 DA闭包
 
@@ -245,7 +245,7 @@ SPR证明同IQ的signed第二表征能够让K1产生真实prediction变化，也
 
 |验证面|结果|结论|
 |---|---:|---|
-|D106 DATA+CLI+DA及真实集成入口五个测试文件|85通过、1跳过|上游scope/API/validator v2、DA runtime及入口编排闭合；真实夹具仍是release硬门|
+|D106 DATA+CLI+DA及真实集成入口五个测试文件|97通过、1跳过|含portable D104路径正负测；真实夹具仍是release硬门|
 |D104 split、D105 tap、Student-t qKNN、VALIDATED_ONCE句柄|51/51通过|authority修正后当前依赖回归未破坏|
 |Python编译与`git diff --check`|通过|无语法或空白错误|
 
@@ -253,7 +253,7 @@ SPR证明同IQ的signed第二表征能够让K1产生真实prediction变化，也
 
 |文件|SHA256|
 |---|---|
-|`code/cvsrffi/stage2_d106_phase1_tap.py`|`72bcdb528d0594e503c2d550445bb4e3c8b12efddd232172df9048ea6e472a21`|
+|`code/cvsrffi/stage2_d106_phase1_tap.py`|`37cd43137e4a6b5deb03565b0db2aba9ca602e06c72565c611836547c1ba5f5b`|
 |`code/cvsrffi/stage2_d106_rdce_asset.py`|`e9d57245a80cdf31ae4ea5fd76cd521022399d0be512e2647a92cc2a0671da1f`|
 |`code/cvsrffi/stage2_d106_rdce_runtime.py`|`9d78b83134bfb668c3b9c32053eaa86b5c9fd4d970e87aa99dc30ac2df8df946`|
 |`code/scripts/export_d106_phase1_ls_tap.py`|`1664684de351199a0a825b04bde17308dba1dc46a566ee5826772b4ccfe91c83`|
@@ -306,7 +306,10 @@ D104正式远端split root、588条`L_s`和D106 disjoint receipt均不存在；�
 |`RI-06`|部署wire|原子保存并以精确lineage和wire SHA重载|同上|`verified`|save/load、receipt/binding roundtrip|真实wire仍`blocked`|
 |`RI-07`|证据边界|发布canonical结果收据和完成marker，明确query/target/source-held访问均为false|同上|`verified`|exact flags、canonical result/marker及result SHA|无性能字段|
 |`RI-08`|runner交接|单一CLI、精确退出语义、可由N607专属runner执行|同上|`implemented`|专项测试、`--help`、py_compile|Git提交和专属runner交接仍`blocked`|
+|`RI-09`|Windows→N607交接|不可变D104 manifest中的Windows反斜杠相对路径必须在Linux安全解析，同时拒绝绝对路径、盘符和上跳|`stage2_d106_phase1_tap.py`、测试|`verified`|portable path正负测、execution closure、独立复审`P0=0/P1=0/P2=0`|未改写D104 manifest或SHA|
 
 独立审查：`P0=0/P1=0/P2=2 / LOCAL REAL-INTEGRATION ENTRY GO`。P2为`release_commit`需在正式交接时由fixture SHA、Git commit和同步文件SHA外部闭合，以及当前核心链专项测试使用替身；二者均不冒充真实N607证据。真实fixture、真实checkpoint forward、正式asset/wire/receipt和runner交接仍为`blocked`。
+
+RI-09独立代码复审：`P0=0/P1=0/P2=0 / IMPLEMENTATION GO`。Windows反斜杠先规范为portable组件；绝对路径、UNC、盘符、colon、空组件、`.`和`..`均在文件访问前拒绝，随后仍执行root escape、symlink、正规文件和archive SHA边界。
 
 已生成本地ID-only disjoint receipt：`artifacts/d106_train_held_disjoint_receipt.json`，SHA256=`ee7005fcc99d703dac2f3e529e39426587ffa8967d19c15cf848c98f5295d961`，`train_held_intersection_count=0`、`tx_labels_read=false`、`formal_query_access=false`。

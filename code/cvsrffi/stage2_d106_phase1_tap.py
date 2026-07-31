@@ -340,6 +340,7 @@ EXTRACT_EXECUTION_CALLABLES = (
     "_npz_safe_member",
     "_resolve_cache_artifact",
     "_resolve_manifest_artifact",
+    "_portable_manifest_relative_path",
     "_validate_npz_member_names",
     "_validate_ls_iq_arrays",
     "_d106_selection_index",
@@ -648,10 +649,23 @@ def _load_json_exact(path: str | Path, *, expected_sha256: str, name: str) -> di
     return value
 
 
-def _resolve_manifest_artifact(manifest: Path, raw_path: Any) -> Path:
-    relative = Path(str(raw_path))
-    if relative.is_absolute() or not relative.parts:
+def _portable_manifest_relative_path(raw_path: Any) -> Path:
+    if not isinstance(raw_path, str) or not raw_path or "\x00" in raw_path:
+        raise D106Phase1TapError("source split artifact path must be a string")
+    normalized = raw_path.replace("\\", "/")
+    parts = normalized.split("/")
+    if (
+        normalized.startswith("/")
+        or (len(normalized) >= 2 and normalized[0].isalpha() and normalized[1] == ":")
+        or any(part in {"", ".", ".."} for part in parts)
+        or any(":" in part for part in parts)
+    ):
         raise D106Phase1TapError("source split artifact path must be relative")
+    return Path(*parts)
+
+
+def _resolve_manifest_artifact(manifest: Path, raw_path: Any) -> Path:
+    relative = _portable_manifest_relative_path(raw_path)
     base = manifest.parent.resolve(strict=True)
     lexical_candidate = base / relative
     if lexical_candidate.is_symlink():

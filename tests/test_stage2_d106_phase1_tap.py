@@ -218,6 +218,41 @@ def _selected_source() -> tuple[dict[str, np.ndarray], np.ndarray]:
     return metadata, np.zeros((588, 2, 256), dtype=np.float32)
 
 
+@pytest.mark.parametrize(
+    ("raw", "parts"),
+    [
+        ("L_s\\features.npz", ("L_s", "features.npz")),
+        (
+            "scorer_only/source_val/features.npz",
+            ("scorer_only", "source_val", "features.npz"),
+        ),
+    ],
+)
+def test_d104_manifest_relative_paths_are_portable(
+    raw: str, parts: tuple[str, ...]
+) -> None:
+    assert d106._portable_manifest_relative_path(raw).parts == parts
+
+
+@pytest.mark.parametrize(
+    "raw",
+    [
+        "",
+        "/absolute/features.npz",
+        "\\\\server\\share\\features.npz",
+        "C:\\split\\features.npz",
+        "../features.npz",
+        "L_s/../features.npz",
+        "L_s//features.npz",
+        "L_s/./features.npz",
+        "L_s:alias/features.npz",
+    ],
+)
+def test_d104_manifest_relative_paths_reject_escape_and_ambiguity(raw: str) -> None:
+    with pytest.raises(d106.D106Phase1TapError, match="path must be"):
+        d106._portable_manifest_relative_path(raw)
+
+
 def _write_synthetic_upstream_source_pool_cache_set(
     tmp_path: Path,
     *,
@@ -839,6 +874,7 @@ def test_feature_export_signature_has_no_8400_cache_or_split_capability() -> Non
         "_load_inner_cache_manifest",
         "_npz_safe_member",
         "_resolve_cache_artifact",
+        "_portable_manifest_relative_path",
         "_validate_ls_iq_arrays",
         "_deterministic_npz_bytes",
         "_write_new",
