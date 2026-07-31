@@ -64,7 +64,9 @@ source weak-IQ
 
 |类型|路径|
 |---|---|
-|run root|`/home/szu2070436088/2510044040/CV-SincNet/runs/d105_phase1_sourceheld_asset_20260731_r1`|
+|run ID|`d105_phase1_sourceheld_8f08a46f_20260731_r2`|
+|Git commit|`8f08a46f1e6db557b8bf658365485879f03d6942`|
+|run root|`/home/szu2070436088/2510044040/CV-SincNet/runs/d105_phase1_sourceheld_8f08a46f_20260731_r2`|
 |source snapshot|`<run-root>/source`|
 |input receipts|`<run-root>/input`|
 |strict tap|`<run-root>/output/strict_tap`|
@@ -72,9 +74,24 @@ source weak-IQ
 |truth-open与score|`<run-root>/output/source_held_score`|
 |component|`<run-root>/output/component`|
 |formal sealed asset|`<run-root>/output/formal_asset`|
-|main log/PID/exit|`<run-root>/logs/pipeline.log`、`pipeline.pid`、`pipeline.exit`|
+|main log/PID/exit|`<run-root>/logs/pipeline_stage1.log`、`pipeline_stage1.pid`、`pipeline_stage1.exit`|
+|GPU|`cuda:0`；仅strict tap执行backbone，source-held矩阵为冻结解析执行|
+|candidate runtime|`639c16dd6a70620ca99fa960acb9e988aeba3cea92edcb7a9a158b26a6d958b5`|
+|candidate method lock|`37dd03fcdb7cb01e6e545def11711b0c9c9ad35e3d505d75c18f314cb3ef3576`|
+|R3 review receipt|`64ef2abde34625ce4676c3563196ace333ce691de814d0d26ac15b6bbcac0dbb`|
+|D102 revocation manifest/signature|`99393aa21b30cc654ba784ecf8a60b1ac8497e67d7fdefc3ee12872133293734`/`53d138b36f7688431d364f2e6291e86aefb9c9fc3e84697e288f0aa813b81c58`|
+|stage1 launcher|`run_d105_phase1_stage1_8f08a46f.sh`；SHA256=`0e2648f2d0c34ea00d372b77a0a6b38b2399c398b01cf39882ed5d77c0b34c25`；LF-only；`bash -n`通过|
 
-精确服务器命令、Git commit、源码哈希、method lock/runtime SHA、authority receipt和expected artifact SHA将在本地实现、全组测试与独立release复审完成后补写。在此之前不得同步或启动。
+唯一runner的精确启动命令固定为：
+
+```bash
+RUN=/home/szu2070436088/2510044040/CV-SincNet/runs/d105_phase1_sourceheld_8f08a46f_20260731_r2
+nohup bash "$RUN/input/run_d105_phase1_stage1_8f08a46f.sh" \
+  >"$RUN/logs/pipeline_stage1.log" 2>&1 </dev/null &
+printf '%s\n' "$!" >"$RUN/logs/pipeline_stage1.pid"
+```
+
+run-specific脚本按`tap-cache→predict-source-held→open-truth→score-source-held→derive-gate→build component`固定顺序执行，任一步失败即退出并以不可覆盖方式写`pipeline_stage1.exit`。脚本不封存formal asset；stage1结束后必须先回收完整component/score/gate，由独立审查确认source-held门，再由离线authority绑定N607 nonce ledger identity、run ID、commit和component签名。生产私钥不进入N607。
 
 ## 7.健康停止与判定
 
