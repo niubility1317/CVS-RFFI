@@ -74,7 +74,7 @@ R6唯一detach后写出8400行strict tap，但在reference dual parity门以exit
 
 FTU2实现已完成：257/8400边界、批形状敏感fake、非法capacity早拒绝、receipt v2负测和真实checkpoint固定256reference均闭合；10文件238/238通过。runtime/method=`8797de12f035db609aeb6f453f096571f216d0d514d6705344e763f5ec63a498`/`9a87e51de4d775ff2ea05e59654afaa62844edaf2def942d8f73c8e289ea61e6`。独立R11最终`GO / P0=0 / P1=0 / P2=0`，实现提交=`2d948ce981b9008522f825cfe6d868bce08cb624`；下一门为该提交的精确archive与完整8400行技术parity smoke。
 
-精确archive SHA256=`e58240a0a358893c0c90ce0b3cb9c202eed9e6907272fa0d587d160f3fb8ec23`，54/54四方SHA、LF/pyc、9/9帮助面、238/238回归、真实checkpoint固定256和8400批合同均通过。R7冻结为`d105_phase1_sourceheld_2d948ce9_20260731_r7`；完整8400行reference parity保留为新run首tap硬门，尚未授权N607。
+精确archive SHA256=`e58240a0a358893c0c90ce0b3cb9c202eed9e6907272fa0d587d160f3fb8ec23`，54/54四方SHA、LF/pyc、9/9帮助面、238/238回归、真实checkpoint固定256和8400批合同均通过。R7冻结为`d105_phase1_sourceheld_2d948ce9_20260731_r7`，预登记提交=`632fd9f0e1324d14cb9d489b92b71259e9ac29fe`；完整8400行reference parity保留为新run首tap硬门，尚未授权N607。
 
 ## 5.真实checkpoint派生特征无truth smoke
 

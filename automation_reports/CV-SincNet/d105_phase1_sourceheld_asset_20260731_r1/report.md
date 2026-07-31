@@ -317,6 +317,7 @@ R7冻结为：
 |run ID|`d105_phase1_sourceheld_2d948ce9_20260731_r7`|
 |run root|`/home/szu2070436088/2510044040/CV-SincNet/runs/d105_phase1_sourceheld_2d948ce9_20260731_r7`|
 |source commit|`2d948ce981b9008522f825cfe6d868bce08cb624`|
+|R7预登记提交|`632fd9f0e1324d14cb9d489b92b71259e9ac29fe`|
 |archive|SHA256=`e58240a0a358893c0c90ce0b3cb9c202eed9e6907272fa0d587d160f3fb8ec23`；242964480B|
 |runtime/method|`8797de12f035db609aeb6f453f096571f216d0d514d6705344e763f5ec63a498`/`9a87e51de4d775ff2ea05e59654afaa62844edaf2def942d8f73c8e289ea61e6`|
 |launcher|`run_d105_phase1_stage1_2d948ce9.sh`；SHA256=`95081f1e20aabc7f89a970b667bae223926949dde26edd0a0e660acd8157406a`；5624B；LF=123；CRLF=0；`bash -n`通过|
