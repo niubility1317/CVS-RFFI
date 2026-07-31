@@ -1,6 +1,6 @@
 # D106-RDCE/GTSM-r3研发与实验报告
 
-状态：`DESIGN_FROZEN / DATA_LOCAL_CODE_G0_GO / DA_LOCAL_CODE_G0_GO / REAL_INTEGRATION_ENTRY_LOCAL_GO / RELEASE_SOURCE_COMMIT_b268364b / REAL_INTEGRATION_NOT_EXECUTED / N607_READ_ONLY_DISCOVERY_ONLY / SOURCE_HELD_NOT_OPENED / TARGET25_NO_GO / NO_TARGET_PERFORMANCE_RESULT`
+状态：`DESIGN_FROZEN / DATA_LOCAL_CODE_G0_GO / DA_LOCAL_CODE_G0_GO / REAL_INTEGRATION_ENTRY_LOCAL_GO / CANONICAL_METHOD_RUNTIME_GIT_PENDING / REAL_INTEGRATION_NOT_EXECUTED / N607_READ_ONLY_DISCOVERY_ONLY / SOURCE_HELD_NOT_OPENED / TARGET25_NO_GO / NO_TARGET_PERFORMANCE_RESULT`
 
 ## 1.实验身份
 
@@ -258,7 +258,8 @@ SPR证明同IQ的signed第二表征能够让K1产生真实prediction变化，也
 |`code/cvsrffi/stage2_d106_rdce_runtime.py`|`9d78b83134bfb668c3b9c32053eaa86b5c9fd4d970e87aa99dc30ac2df8df946`|
 |`code/scripts/export_d106_phase1_ls_tap.py`|`1664684de351199a0a825b04bde17308dba1dc46a566ee5826772b4ccfe91c83`|
 |`code/scripts/run_d106_real_integration.py`|`8c09e30aa17baa832fd9e82d2c2964d8e09c3eab477dc2fce74d3561a6568022`|
-|`configs/d106_candidate_runtime_manifest_20260801.json`|`c139269cdb89bf49bdf1c00a4238ba6801814317f05ce9297f311892b166c6f9`|
+|`configs/d106_rdce_method_lock_20260801.json`|`e7a1982b4bdeaf5b8179993ce78f4a2af26965d8f4a3239440dbe636ebf14cc1`|
+|`configs/d106_candidate_runtime_manifest_20260801.json`|`336d970a98cef89e42d7978d25da9bf61bb01796ab5edbb3b119f1bdde6ec994`|
 
 当前尚无D106 source-held、Target25、D62/D91/D92/SVRN matched性能结果。不得把机械训练面`+4/+4/+2`、真实588行no-query smoke或本地测试通过数写成性能提升。
 
@@ -314,6 +315,6 @@ D104正式远端split root、588条`L_s`和D106 disjoint receipt均不存在；�
 
 RI-09独立代码复审：`P0=0/P1=0/P2=0 / IMPLEMENTATION GO`。Windows反斜杠先规范为portable组件；绝对路径、UNC、盘符、colon、空组件、`.`和`..`均在文件访问前拒绝，随后仍执行root escape、symlink、正规文件和archive SHA边界。
 
-RI-10独立代码复审：`P0=0/P1=0/P2=0 / IMPLEMENTATION GO`。新D106 runtime为单向绑定，无自哈希循环；历史D102/D105 runtime因schema、candidate、字段和内容绑定不符而拒绝。正式fixture只能指向SHA为`c139269c…`的新D106 runtime。
+RI-10独立代码复审：`P0=0/P1=0/P2=0 / IMPLEMENTATION GO`。新D106 runtime为单向绑定，无自哈希循环；历史D102/D105 runtime因schema、candidate、字段和内容绑定不符而拒绝。为消除Markdown在Windows/Git archive之间的CRLF/LF差异，正式方法锁另封为canonical JSON`e7a1982b…`；正式fixture只能指向SHA为`336d970a…`的新D106 runtime。
 
 已生成本地ID-only disjoint receipt：`artifacts/d106_train_held_disjoint_receipt.json`，SHA256=`ee7005fcc99d703dac2f3e529e39426587ffa8967d19c15cf848c98f5295d961`，`train_held_intersection_count=0`、`tx_labels_read=false`、`formal_query_access=false`。

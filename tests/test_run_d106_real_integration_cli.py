@@ -19,6 +19,11 @@ RUNTIME_MANIFEST_PATH = (
     / "configs"
     / "d106_candidate_runtime_manifest_20260801.json"
 )
+METHOD_LOCK_PATH = (
+    Path(__file__).resolve().parents[1]
+    / "configs"
+    / "d106_rdce_method_lock_20260801.json"
+)
 SPEC = importlib.util.spec_from_file_location("run_d106_real_integration_cli", SCRIPT_PATH)
 assert SPEC is not None and SPEC.loader is not None
 runner = importlib.util.module_from_spec(SPEC)
@@ -79,12 +84,27 @@ def _fixture(tmp_path: Path) -> tuple[Path, dict[str, object]]:
 
 
 def test_repository_runtime_manifest_binds_current_d106_implementation() -> None:
+    lock_payload = METHOD_LOCK_PATH.read_bytes()
+    method_lock = json.loads(lock_payload.decode("utf-8"))
+    assert lock_payload == runner._canonical_bytes(method_lock) + b"\n"
+    assert method_lock["candidate_id"] == runner.CANDIDATE_ID
+    assert method_lock["protocol_schema"] == runner.PROTOCOL_SCHEMA
+    assert method_lock["rank"] == 3
+    assert method_lock["gamma"] == 0.2
+    assert method_lock["k1_attenuation"] == [0.3, 0.3, 0.3]
+    assert method_lock["query_fit"] is False
+    assert method_lock["query_selection"] is False
+    assert method_lock["query_update"] is False
+    assert method_lock["formal_query_access"] is False
+    assert method_lock["target_access"] is False
+
     payload = RUNTIME_MANIFEST_PATH.read_bytes()
     runtime = json.loads(payload.decode("utf-8"))
     assert set(runtime) == runner.RUNTIME_FIELDS
     assert payload == runner._canonical_bytes(runtime) + b"\n"
     assert runtime["candidate_id"] == runner.CANDIDATE_ID
     assert runtime["protocol_schema"] == runner.PROTOCOL_SCHEMA
+    assert runtime["method_lock_sha256"] == _sha(METHOD_LOCK_PATH.read_bytes())
     assert runtime["phase1_tap_code_sha256"] == _sha(
         runner.PHASE1_TAP_CODE_PATH.read_bytes()
     )
