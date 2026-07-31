@@ -1,6 +1,6 @@
 # D105-CBRC-MB4+LPO-RC-qKNN单seed Target25实验报告
 
-状态：`R5_LOCAL_RELEASE_GO / P0=0 / P1=0 / P2=2 / PHASE1_R4_PREREG_PENDING / TARGET25_NOT_STARTED`
+状态：`R5_LOCAL_RELEASE_GO / PHASE1_R4_PREREGISTERED / TARGET25_NOT_STARTED`
 
 ## 1.实验标识
 
@@ -163,4 +163,6 @@ R2/R3完成authority和执行链后，独立复核在N607落地前发现两条�
 - `ssr-gpu`统一回归212项通过；同代真实checkpoint无query R6 smoke收据SHA256=`a954896a5b3e3db91334ac564d967705568c892b5d2b7c6dbe42111a03d7c76c`；query fit/update=0/0、Target访问=false、性能计算=false。
 - 修复提交`46a65b3af2621d23bcc0a34631f45c8be17af4dd`的精确Git archive SHA256=`d313243c79eab306f988abadf67c2e207d380dba633f39a04e2cc63ffae7ed7a`；解包副本的canonical loader、54 pyc、9帮助面和真实checkpoint无truth smoke均通过，archive smoke SHA256=`a915eb66c4df926e6f738a4de636026fa29cb9bf3968c5fb6a15007ffc47ce84`。
 
-R4的`LOCAL_RELEASE_GO`已被跨平台发布字节P0作废。R5已在修复提交的精确Git archive上独立完成54文件canonical loader/编译、真实checkpoint安全加载策略、动态依赖guard、8项关键测试、9个帮助面和archive smoke，暂定结论`P0=0、P1=0、P2=2`。最终receipt、新Phase1 run预登记和提交完成前仍不得重新落地，更不得启动Target25。D105仍无任何Target性能数据。
+R4的`LOCAL_RELEASE_GO`已被跨平台发布字节P0作废。R5已在修复提交的精确Git archive上独立完成54文件canonical loader/编译、真实checkpoint安全加载策略、动态依赖guard、8项关键测试、9个帮助面和archive smoke，最终结论`LOCAL_RELEASE_GO / P0=0 / P1=0 / P2=2`，receipt SHA256=`65f8f211c01b8b72b4f4d7a385d9c1747b16dae9f14bddd32457ccf2f402c822`。
+
+新的Phase1运行已预登记为`d105_phase1_sourceheld_d23469ba_20260731_r4`，源码只允许使用提交`d23469ba54afe00c284aa9b78b025def2b22fc43`的精确Git archive，新run root为`/home/szu2070436088/2510044040/CV-SincNet/runs/d105_phase1_sourceheld_d23469ba_20260731_r4`。该run尚未落地；必须先完成Phase1 source-held闭环、独立审查、离线authority签名和formal seal，才允许启动Target25。D105仍无任何Target性能数据。
