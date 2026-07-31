@@ -361,3 +361,17 @@ r5的绝对路径修复经独立复审`P0=0/P1=0/P2=0`并以`0dc2484b`发布。�
 ### 20.1 r6本地release
 
 依赖闭包修复提交为`44e33eab`，独立复审`P0=0/P1=0/P2=0`。新source archive SHA为`91c5a30b…`，包含并逐entry验证`baseline_origin_sat_view.py=fa7221ae…`、`model.py=afc6e626…`和`model_dual_cvsincnet.py=11b56f2a…`；直接从zip执行三模型import smoke通过。r6 fixture SHA为`ee905614…`，runtime SHA为`0e8bc733…`。run ID冻结为`d106_real_integration_44e33eab_20260801_r6`，当前`NOT_LANDED`。
+
+## 21.RCMR-2V本地实现闭环
+
+Terra Max子agent在独立文件面完成`stage2_d106_rcmr_2v_qknn.py`、canonical method lock和专项测试。首轮复审发现zero-code strict loader、每query O(N²)重哈、资源峰值虚低和最大规模/G0测试四个P1；作者修复后，第二轮非作者复审为`P0=0/P1=0/P2=0 / LOCAL IMPLEMENTATION GO`，专项测试10/10通过。
+
+|文件|SHA256|
+|---|---|
+|`code/cvsrffi/stage2_d106_rcmr_2v_qknn.py`|`ca641737f4ba26093c9d70f6ad8048e4cad9c6a0fa737920149d7ffe0fef73fa`|
+|`configs/d106_rcmr_2v_method_lock_20260801.json`|`be452cc52da8e5c43d3addc73568580d63a83f146310ec3559bb5daa99076b0c`|
+|`tests/test_stage2_d106_rcmr_2v_qknn.py`|`c07a5fbb96e13fcefbe028b57d3b528d1795d60d4767ba828041fca0c8363385`|
+
+strict state/wire逐行拒绝plus或signed全零INT8码；state/context数组由immutable bytes承载，不能重新开启写权限；query热路径只执行O(1)身份和receipt绑定，不重哈profile或重算support-support距离。\(N=260\)时数值state为85,020B，设计固定二进制payload为86,060B，prepare确定性数组峰值为2,285,920B；64-byte最大token反证下实际canonical wire为88,737B，低于90,000B hard cap。实际wire framing与设计payload分栏报告，JSON/Python对象、allocator和RSS明确标记未测。
+
+G0接口只接收opaque query ID、候选/旧头argmax和formal tap receipt，没有truth、role、score、metric或参数扫描入口。当前只完成合成拒绝测试，真实588条train-only特征上的`ARGMAX_CHANGED`仍为G1前硬门；未产生held、Target或性能结论。
