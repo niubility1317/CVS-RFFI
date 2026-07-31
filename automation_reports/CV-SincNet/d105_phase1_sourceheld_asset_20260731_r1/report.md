@@ -1,6 +1,6 @@
 # D105 Phase1 source-only压缩知识与source-held门实验报告
 
-状态：`PHASE1_R5_STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / D105-FTU1_COMMITTED / R10_LOCAL_CODE_REVIEW_GO / ARCHIVE_SMOKE_PENDING / NO_PERFORMANCE_RESULT`
+状态：`PHASE1_R5_STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / D105-FTU1_ARCHIVE_VERIFIED / R6_LOCAL_PREREGISTERING / NO_PERFORMANCE_RESULT`
 
 ## 1.实验标识与目标
 
@@ -252,3 +252,25 @@ run-specific脚本按`tap-cache→predict-source-held→open-truth→score-sourc
 本地实现闭环不授权N607。下一门是从提交`a0bdbba6`生成精确Git archive，并在其解包副本中复跑54文件canonical loader/编译、帮助面、SHA钉定真实checkpoint Phase1 strict-forward/export no-truth smoke及旧路径不可达检查。archive smoke和新run预登记完成前不得同步或启动。
 
 R4的两个P2为：`model.py`仍产生`torch.cuda.amp.autocast`弃用警告；旧PyTorch缺少`safe_globals`时保留仅对精确SHA绑定checkpoint开放的兼容反序列化分支。两者不改变当前本地结果；唯一N607 runner必须在预检中记录PyTorch版本和实际checkpoint加载策略。
+
+## 12.D105-FTU1精确归档与R6预登记
+
+提交`a0bdbba6bfb56c45682e0c2bde95aa622a68f101`的精确Git archive已完成独立本地验证。archive SHA256=`99fd633c78070b940064ca6e95ca9072427457058cab96c3a61e584c7991c0b4`，大小242913280B；4763个成员均在单一`source/`根下，无路径逃逸、链接、特殊成员或重复路径。54/54项满足`Git blob=archive=解包=runtime manifest`，LF和独立编译均54/54通过。
+
+归档内真实checkpoint验证加载195个state tensor，`z_id/pre_relu/z_dom=[2,160]`，dtype、有限性、ReLU绑定和`eager_forward_hook`全部通过，fresh进程前后旧GRB模块均未导入。单行source-only export和receipt闭环通过，同时被既有最小34行formal聚合门正确拒绝；因此它只证明入口技术健康，不形成formal asset。CLI9/9、FTU1定向8/8、D105/LPO-RC回归223/223均exit0。总验证JSON SHA256=`78543dbb00d2ba3381d6e10b9808ebe751e8355d351261fa8c284cbe44c2ba30`，中文handoff SHA256=`95b4df18c212b959c49942e01c0fcd8a2484fa2387372bc69e4d47b12f3a9441`。
+
+第四次release冻结为：
+
+|字段|R6冻结值|
+|---|---|
+|run ID|`d105_phase1_sourceheld_a0bdbba6_20260731_r6`|
+|run root|`/home/szu2070436088/2510044040/CV-SincNet/runs/d105_phase1_sourceheld_a0bdbba6_20260731_r6`|
+|源码提交|`a0bdbba6bfb56c45682e0c2bde95aa622a68f101`|
+|源码archive|SHA256=`99fd633c78070b940064ca6e95ca9072427457058cab96c3a61e584c7991c0b4`；242913280B|
+|candidate runtime|`873879aad707fd2407b7645de45daa68fec1d3537feaf9fd57fe98b3ab059214`|
+|candidate method lock|`7d33662750b160fce82217dace9e1933aa8e43ea2a0df19f59e28adcf8bb4848`|
+|launcher|`run_d105_phase1_stage1_a0bdbba6.sh`；SHA256=`7f23f6e9bc8038a859962fed4b8fbb6ab63a805301ac9dbae7310a51be36e28d`；5624B；LF-only；`bash -n`通过|
+|GPU|`cuda:0`；正式preflight后才可确认可用|
+|fresh-run retry|`NO`；任何技术失败永久关闭R6并使用新run ID|
+
+R6必须由一个专用terra-max实验子agent作为唯一launch owner执行。它重新完成direct N607 preflight、即时资源盘点、run root不存在、archive/54文件/pyc/checkpoint/launcher门和实际strict-forward预启动验证后，才允许唯一detach一次。R6不得读取或复用R3、R4、R5的source、input、PID、日志或output；不得远端修补、调参、因性能停止、访问Target或启动Target25。Phase1 stage1闭合后仍须回收完整component/score/gate，由独立审查确认source-held门，再由离线authority绑定N607 nonce ledger identity、run ID、commit和component签名，之后才可能封存formal asset。

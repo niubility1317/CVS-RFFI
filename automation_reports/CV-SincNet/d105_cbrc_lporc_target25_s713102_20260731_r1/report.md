@@ -1,6 +1,6 @@
 # D105-CBRC-MB4+LPO-RC-qKNN单seed Target25实验报告
 
-状态：`PHASE1_R5_SYSTEMIC_TECHNICAL_FAILURE / D105-FTU1_COMMITTED / ARCHIVE_SMOKE_PENDING / TARGET25_NOT_STARTED / NO_D105_PERFORMANCE_RESULT`
+状态：`PHASE1_R5_SYSTEMIC_TECHNICAL_FAILURE / D105-FTU1_ARCHIVE_VERIFIED / R6_LOCAL_PREREGISTERING / TARGET25_NOT_STARTED / NO_D105_PERFORMANCE_RESULT`
 
 ## 1.实验标识
 
@@ -178,3 +178,5 @@ R5随后通过全部远端prelaunch门并唯一detach一次，但首个`tap-cach
 R3/R4/R5三轮正式回顾已完成。真实checkpoint复现证明Phase1接入的GRB旧tap只前向`id_backbone`，`z_id/pre_relu`有效但`z_dom=None`；D105专用双backbone tap在同一模型、同一IQ上正确输出`z_dom=[2,160]`。下一技术候选`D105-FTU1`只统一正式特征出口并补齐入口级真实checkpoint回归，不改变CBRC、LPO-RC、qKNN、Target25矩阵、seed或性能门。Target25继续保持未启动，只有新Phase1资产链完整通过后才可进入。
 
 `D105-FTU1`现已在提交`a0bdbba6`落地：真实checkpoint 195 tensors下`z_id/pre_relu/z_dom=[2,160]`，fresh进程调用前后旧GRB模块均未加载，10文件223/223回归通过，runtime/method=`873879aa…9214`/`7d336627…4848`。R10独立审查为`LOCAL_CODE_REVIEW_GO / P0=0 / P1=0 / P2=2`。这只是Phase1本地技术闭环；精确archive smoke、新run预登记、Phase1 source-held资格和formal seal仍未完成，Target25保持未启动。
+
+精确archive smoke现已通过：提交`a0bdbba6bfb56c45682e0c2bde95aa622a68f101`的archive SHA256=`99fd633c78070b940064ca6e95ca9072427457058cab96c3a61e584c7991c0b4`，54/54文件四面一致、54/54独立编译、真实checkpoint严格双分支前向、9/9帮助面、8/8 FTU1定向和223/223冻结回归全部通过。R6已冻结为`d105_phase1_sourceheld_a0bdbba6_20260731_r6`，仅用于重新生成Phase1 source-held证据；Target25继续保持未启动、无D105性能结果。只有R6完成component/score/gate、独立component审查、离线authority签名与formal seal后，才能另行预登记Target25落地。
