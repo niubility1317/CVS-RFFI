@@ -31,6 +31,8 @@ D106 DA冻结为`D106-RDCE/GTSM-r3-SCATTER02`。详细公式和证据边界见`a
 
 D62、D91、D92和SVRN只作matched外部基线分析，不替代`M_HEAD`，不污染2×2简单效应。
 
+历史矩阵、逐slice指标、paired差值、资源和证据等级已统一整理到`analysis/d106_external_baseline_comparison_20260801.md`。其中D62、D92、SVRN已有完整125，不重复运行同一冻结revision；D91只有15个development row，不冒充125证据。
+
 ## 4.数据与协议
 
 - `protocol_schema=p2_min_v1`
