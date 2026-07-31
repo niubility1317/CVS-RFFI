@@ -214,3 +214,21 @@ PYTHONPATH="$release/code" nohup /home/szu2070436088/.conda/envs/CVS-RFFI/bin/py
 |连接清理|direct preflight通过；短SSH结束后本地`ssh.exe=0`、N607/bridge`ESTABLISHED TCP22=0`|
 
 判定：v5已健康跨过50%里程碑，继续原矩阵运行，不修改、不重启、不停止。下一次仅在75%里程碑或真实技术异常时检查。
+
+## 2026-07-31 75%技术里程碑
+
+`2026-07-31 08:20:39 CST`执行正式低频只读检查；本节只统计执行健康与artifact闭合，不读取性能值，不执行数据审计或任何任务修改。
+
+|检查项|结果|
+|---|---|
+|main/worker|main PID=`1935906`存活；16个直接子进程，全部为predictor，scorer子进程0|
+|physical状态|`COMPLETE=1180`、`FAILED=0`、运行中16、排队154，合计1350|
+|复用闭合|641/641个`reuse_prediction`均为`COMPLETE`|
+|fresh execute进度|539/709=`76.02%`，已跨过75%门槛；execute失败0|
+|prediction闭合|539个`predictions.cvspred`、539个`row_execution_receipt.json`|
+|score闭合|1183个score、1183个completion；比terminal status暂多3个，属于并发收口中先发布产物、后写入status的瞬时状态|
+|GPU资源|GPU0-7各2个compute进程；瞬时利用率均0%，每卡691MiB，每进程约338MiB|
+|异常控制|P0=0；非`COMPLETE`状态0；规范化异常指纹集合为空|
+|连接清理|direct preflight通过；短SSH结束后本地`ssh.exe=0`、N607/bridge`ESTABLISHED TCP22=0`|
+
+判定：v5已健康跨过75%里程碑，继续原矩阵运行，不修改、不重启、不停止。下一次仅在100%里程碑或真实技术异常时检查。
