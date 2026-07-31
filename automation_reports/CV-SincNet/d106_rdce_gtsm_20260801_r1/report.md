@@ -323,3 +323,24 @@ RI-10独立代码复审：`P0=0/P1=0/P2=0 / IMPLEMENTATION GO`。新D106 runtime
 RI-11独立窄审查：实现机制`P0=0/P1=0/P2=0`。入口从自身`CODE_ROOT`定位并按实际SHA绑定`model_dual_cvsincnet.py`与`model.py`；exact builder同时校验模块`__file__`和factory来源。`model_dual_cvsincnet.py`唯一额外本地依赖为`model.py`，后者只依赖标准库、NumPy和PyTorch。补齐两模型SHA漂移负测后本地release门闭合；正式archive必须按原布局包含`source/code/model_dual_cvsincnet.py`和`source/code/model.py`，并在交接前逐entry复核。
 
 已生成本地ID-only disjoint receipt：`artifacts/d106_train_held_disjoint_receipt.json`，SHA256=`ee7005fcc99d703dac2f3e529e39426587ffa8967d19c15cf848c98f5295d961`，`train_held_intersection_count=0`、`tx_labels_read=false`、`formal_query_access=false`。
+
+## 17.真实集成release预登记
+
+release source commit为`deefd57c4185a5343f87772be78b5038c37e6217`。本地专项8/8、D106主链101通过1跳过、依赖51/51，RI-11复核为`P0=0/P1=0/P2=0 / LOCAL IMPLEMENTATION GO`。N607 run ID冻结为`d106_real_integration_deefd57c_20260801_r4`，唯一启动owner为专属Terra Max runner，不授权自动retry。
+
+|Release资产|SHA256|状态|
+|---|---|---|
+|`artifacts/d106_real_integration_source_deefd57c.zip`|`6d30d85b624ca2a94d8b5fcde4be0ba4d32d36e87c0e21d07fc793fee65e21a2`|Git commit导出；关键五entry及SHA已本地复核|
+|`artifacts/d104_split_4a1e23cc.zip`|`b1884cf1a7e287aa489a2b591fc5688a7e655c6b541f6f90eafcf71cf476372e`|D104冻结split|
+|`artifacts/d106_real_integration_fixture_deefd57c.json`|`74b2367f82a682a41f46447b089ec85bb21433b39ec8205167356909e3cd0ff1`|canonical无换行；字段集合与release commit已本地复核|
+|`artifacts/d106_train_held_disjoint_receipt.json`|`ee7005fcc99d703dac2f3e529e39426587ffa8967d19c15cf848c98f5295d961`|ID-only且train/held交集为0|
+
+详细路径、启动命令、GPU、健康门、预期文件和SSH清理要求见`d106_real_integration_runner_handoff_deefd57c.md`。当前状态仍为`LOCAL_RELEASE_READY / NOT_LANDED`，没有真实checkpoint forward、N607 asset或性能结果。
+
+## 18.RCMR-2V分类头冻结
+
+第四个HEAD候选冻结为`D106-RCMR-2V-qKNN/r1.1`。它用同一IQ一次前向的`ReLU(pre_relu)`与signed`pre_relu`两视图，在量化support图上计算跨视图秩可靠度\(R_i\)，再按query全局秩、support局部profile秩和query可靠度\(R_q\)形成双侧拥挤度分数。最终类分数为类内等K平均，不读取旧Student-t分数，也没有阈值、温度、残差、hard gate、identity fallback或可扫描权重。
+
+设计和资源上界已独立冻结在`analysis/d106_rcmr_2v_qknn_design_freeze_20260801.md`。\(N=260,D=160\)时固定二进制payload为86,060B，arrays-only临时峰值为2,285,920B，含固定state resident峰值为2,371,980B；一次`prepare`为10,774,400 MAC，单query为83,200 MAC。这些是解析上界，不是实测吞吐或性能。
+
+当前结论仅为`DESIGN_FROZEN / IMPLEMENTATION_AUTHORIZED`。实现必须由不同Terra Max子agent完成formal state、strict loader、一次性context、query scorer、wire/receipt和协议负测；再由非作者独立复审。真实特征G0若与旧qKNN逐query同序，则直接`REJECT_NO_FUNCTION`，不得据此扫描参数。
