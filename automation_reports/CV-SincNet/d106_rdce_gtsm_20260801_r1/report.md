@@ -1,6 +1,6 @@
 # D106-RDCE/GTSM-r3研发与实验报告
 
-状态：`DESIGN_FROZEN / DATA_LOCAL_CODE_G0_GO / DA_LOCAL_CODE_G0_GO / REAL_INTEGRATION_ENTRY_LOCAL_GO / PORTABLE_PATH_LOCAL_GO_GIT_PENDING / REAL_INTEGRATION_NOT_EXECUTED / N607_READ_ONLY_DISCOVERY_ONLY / SOURCE_HELD_NOT_OPENED / TARGET25_NO_GO / NO_TARGET_PERFORMANCE_RESULT`
+状态：`DESIGN_FROZEN / DATA_LOCAL_CODE_G0_GO / DA_LOCAL_CODE_G0_GO / REAL_INTEGRATION_ENTRY_LOCAL_GO / RELEASE_SOURCE_COMMIT_b268364b / REAL_INTEGRATION_NOT_EXECUTED / N607_READ_ONLY_DISCOVERY_ONLY / SOURCE_HELD_NOT_OPENED / TARGET25_NO_GO / NO_TARGET_PERFORMANCE_RESULT`
 
 ## 1.实验身份
 
@@ -305,7 +305,7 @@ D104正式远端split root、588条`L_s`和D106 disjoint receipt均不存在；�
 |`RI-05`|DA资产门|以冻结method lock SHA和构造代码SHA构建正式RDCE资产|同上|`verified`|typed lock、实际导入路径和SHA断言|真实asset仍`blocked`|
 |`RI-06`|部署wire|原子保存并以精确lineage和wire SHA重载|同上|`verified`|save/load、receipt/binding roundtrip|真实wire仍`blocked`|
 |`RI-07`|证据边界|发布canonical结果收据和完成marker，明确query/target/source-held访问均为false|同上|`verified`|exact flags、canonical result/marker及result SHA|无性能字段|
-|`RI-08`|runner交接|单一CLI、精确退出语义、可由N607专属runner执行|同上|`implemented`|专项测试、`--help`、py_compile|Git提交和专属runner交接仍`blocked`|
+|`RI-08`|runner交接|单一CLI、精确退出语义、可由N607专属runner执行|同上|`implemented`|专项测试、`--help`、py_compile、release source commit`b268364b`|专属runner交接仍`blocked`|
 |`RI-09`|Windows→N607交接|不可变D104 manifest中的Windows反斜杠相对路径必须在Linux安全解析，同时拒绝绝对路径、盘符和上跳|`stage2_d106_phase1_tap.py`、测试|`verified`|portable path正负测、execution closure、独立复审`P0=0/P1=0/P2=0`|未改写D104 manifest或SHA|
 
 独立审查：`P0=0/P1=0/P2=2 / LOCAL REAL-INTEGRATION ENTRY GO`。P2为`release_commit`需在正式交接时由fixture SHA、Git commit和同步文件SHA外部闭合，以及当前核心链专项测试使用替身；二者均不冒充真实N607证据。真实fixture、真实checkpoint forward、正式asset/wire/receipt和runner交接仍为`blocked`。
