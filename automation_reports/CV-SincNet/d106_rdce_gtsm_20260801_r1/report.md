@@ -230,7 +230,7 @@ SPR证明同IQ的signed第二表征能够让K1产生真实prediction变化，也
 - 方法提取产物仅包含精确588条`L_s`，并与完整存储validator、selected IQ archive/receipt/content root、D104 split和checkpoint执行收据分层绑定；
 - export入口不持有8400缓存、split、disjoint或salt能力；关键嵌套callable、同句柄读取、checkpoint/model/forward收据和completion marker均fail-closed；
 - 真实authority修正后的独立终审结论为`P0=0/P1=0/P2=0 / LOCAL DATA GO`；
-- 修正版DATA+CLI+DA资产/runtime测试：81通过、1跳过；跳过项为缺少环境变量`D106_REAL_INTEGRATION_FIXTURE`的真实资产闭环。
+- 当前DATA、CLI、DA资产/runtime及真实集成入口联合测试：85通过、1跳过；跳过项为缺少环境变量`D106_REAL_INTEGRATION_FIXTURE`的既有真实资产闭环。
 
 ### 14.2 DA闭包
 
@@ -245,7 +245,7 @@ SPR证明同IQ的signed第二表征能够让K1产生真实prediction变化，也
 
 |验证面|结果|结论|
 |---|---:|---|
-|D106 DATA+CLI+DA四个测试文件|81通过、1跳过|上游scope/API/validator v2与DA runtime闭合；真实夹具仍是release硬门|
+|D106 DATA+CLI+DA及真实集成入口五个测试文件|85通过、1跳过|上游scope/API/validator v2、DA runtime及入口编排闭合；真实夹具仍是release硬门|
 |D104 split、D105 tap、Student-t qKNN、VALIDATED_ONCE句柄|51/51通过|authority修正后当前依赖回归未破坏|
 |Python编译与`git diff --check`|通过|无语法或空白错误|
 
@@ -257,6 +257,7 @@ SPR证明同IQ的signed第二表征能够让K1产生真实prediction变化，也
 |`code/cvsrffi/stage2_d106_rdce_asset.py`|`e9d57245a80cdf31ae4ea5fd76cd521022399d0be512e2647a92cc2a0671da1f`|
 |`code/cvsrffi/stage2_d106_rdce_runtime.py`|`9d78b83134bfb668c3b9c32053eaa86b5c9fd4d970e87aa99dc30ac2df8df946`|
 |`code/scripts/export_d106_phase1_ls_tap.py`|`1664684de351199a0a825b04bde17308dba1dc46a566ee5826772b4ccfe91c83`|
+|`code/scripts/run_d106_real_integration.py`|`8537dc0f06c1da1f5fbb859bc60698d20bf850c5bec334a7bb2e3023c99f3972`|
 
 当前尚无D106 source-held、Target25、D62/D91/D92/SVRN matched性能结果。不得把机械训练面`+4/+4/+2`、真实588行no-query smoke或本地测试通过数写成性能提升。
 
@@ -292,3 +293,20 @@ D104正式远端split root、588条`L_s`和D106 disjoint receipt均不存在；�
 3.validator升级为v2，显式记录`upstream_source_pool_cache_set_sha256`、实际scope和D104旧字段名；选中588行的method artifact仍不携带全池SHA或全池能力；
 4.由于received-IQ bytes、physical IDs、receiver/TX集合、场景、K、support/query split和`p2_min_v1`均未变化，本次只修实现契约，不触发数据重验；
 5.本地独立复审已达`P0=0/P1=0/P2=0 / LOCAL DATA GO`，authority修正已提交为`bd9f1944`；在真实fixture闭环之前，DATA跨模块release、正式DA asset、source-held和Target仍为NO-GO。
+
+## 16.真实fixture入口追踪表
+
+|ID|来源|要求|目标文件|状态|验证|备注|
+|---|---|---|---|---|---|---|
+|`RI-01`|设计冻结§数据入口|严格fixture字段、输入正规文件与外部SHA绑定|`code/scripts/run_d106_real_integration.py`、测试|`verified`|extra query、输入篡改、非导入construction code负测|真实fixture执行仍`blocked`|
+|`RI-02`|DATA闭包|调用builder-only 8400×3 extract并只封存588条L_s IQ|同上|`verified`|调用链和能力边界断言|真实8400×3执行仍`blocked`|
+|`RI-03`|same-IQ dual forward|用冻结checkpoint/runtime从同一选中IQ导出strict tap|同上|`verified`|selected→export调用链断言|真实checkpoint forward仍`blocked`|
+|`RI-04`|formal tap门|使用外部SHA严格重载tap并验证z_id=ReLU(pre_relu)|同上|`verified`|loader-origin调用链断言|真实tap仍`blocked`|
+|`RI-05`|DA资产门|以冻结method lock SHA和构造代码SHA构建正式RDCE资产|同上|`verified`|typed lock、实际导入路径和SHA断言|真实asset仍`blocked`|
+|`RI-06`|部署wire|原子保存并以精确lineage和wire SHA重载|同上|`verified`|save/load、receipt/binding roundtrip|真实wire仍`blocked`|
+|`RI-07`|证据边界|发布canonical结果收据和完成marker，明确query/target/source-held访问均为false|同上|`verified`|exact flags、canonical result/marker及result SHA|无性能字段|
+|`RI-08`|runner交接|单一CLI、精确退出语义、可由N607专属runner执行|同上|`implemented`|专项测试、`--help`、py_compile|Git提交和专属runner交接仍`blocked`|
+
+独立审查：`P0=0/P1=0/P2=2 / LOCAL REAL-INTEGRATION ENTRY GO`。P2为`release_commit`需在正式交接时由fixture SHA、Git commit和同步文件SHA外部闭合，以及当前核心链专项测试使用替身；二者均不冒充真实N607证据。真实fixture、真实checkpoint forward、正式asset/wire/receipt和runner交接仍为`blocked`。
+
+已生成本地ID-only disjoint receipt：`artifacts/d106_train_held_disjoint_receipt.json`，SHA256=`ee7005fcc99d703dac2f3e529e39426587ffa8967d19c15cf848c98f5295d961`，`train_held_intersection_count=0`、`tx_labels_read=false`、`formal_query_access=false`。
