@@ -8,7 +8,7 @@
 |时间|2026-07-29|
 |操作方|Codex主代理；N607唯一runner：`/root/phase1_t1_n607_runner`|
 |目标|完成Phase1 T1六臂×五配对种子的30行矩阵，同时复用v3已完整产物，避免重复训练和重复数据审计|
-|当前状态|`RUNNING`|
+|当前状态|`ARTIFACTS_COMPLETE / ANALYSIS_PENDING`|
 
 ## 假设与比较
 
@@ -457,3 +457,21 @@ GPU2的第二个静态槽用于B0补导出，完成后该槽无后续行，因�
 |SSH清理|本地`ssh.exe=0`，ESTABLISHED TCP22=0|
 
 状态保持`RUNNING / HEALTHY / NO_PERFORMANCE_RESULT`。
+
+## 2026-07-31终态补录
+
+本节于N607服务器时间约2026-07-31 11:47+08:00执行一次只读终态取证。只读取既有`runner_summary.json`和非性能控制字段；未启动、修改、重试或终止任务，未重验数据，未进行跨批次hash对齐，也未读取准确率等性能值。
+
+|终态检查项|结果|
+|---|---|
+|run root|`/home/szu2070436088/2510044040/CV-SincNet/runs/cvs_full_ablation_phase1_t1_20260729_v5_reuse`|
+|log root|`/home/szu2070436088/2510044040/CV-SincNet/logs/cvs_full_ablation_phase1_t1_20260729_v5_reuse`|
+|summary时间|2026-07-30 04:02:51+08:00|
+|矩阵闭合|30/30完成，30成功，0失败|
+|来源构成|10条`direct_reuse`、1条`reexport_only`、19条`new_train`|
+|逐行控制|30/30均`return_code=0`、`completion_receipt_valid=true`、`p0_protocol_violation=false`，无`completion_error`|
+|系统状态|`systemic_stop=false`；异常指纹0；线程错误0|
+|自然退出|原外层PID`711522`和runner PID`711523`均不存在；当前含本run ID的远端进程0|
+|SSH清理|本地`ssh.exe=0`；N607及bridge的ESTABLISHED TCP22连接均为0|
+
+技术终态为`ARTIFACTS_COMPLETE / ANALYSIS_PENDING`。30行Phase1 T1执行面已经闭合；同row性能表、最佳epoch/checkpoint引用和最终因果判定将在全量结果分析阶段补充。

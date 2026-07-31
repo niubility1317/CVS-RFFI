@@ -10,7 +10,7 @@
 |目标|修复v1的prototype校准导出故障后，完成0.005、0.01、0.02、0.05标签率14个训练行；0.10继续复用Phase1 T1中的5个`P1-FULL`完整行|
 |比较对象|同一`P1-FULL`配置，仅改变`f_L/f_U`，固定`f_V=0.30`|
 |环境|本地`ssr-gpu`；远端`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`|
-|当前状态|`RUNNING / FIRST_WAVE_HEALTHY`|
+|当前状态|`ARTIFACTS_COMPLETE / ANALYSIS_PENDING`|
 
 ## 与v1的关系
 
@@ -214,3 +214,22 @@ P0协议/覆盖风险立即停止本run的后续派发；至少两个不同执�
 |SSH清理|本地`ssh.exe=0`，ESTABLISHED TCP22=0|
 
 状态为`RUNNING / 9_OF_12_ARTIFACTS_COMPLETE / NO_PERFORMANCE_RESULT`。
+
+## 2026-07-31终态补录
+
+本节于N607服务器时间约2026-07-31 11:47+08:00执行一次只读终态取证。只读取既有封存计划、`runner_summary.json`和逐行非性能控制字段；未启动、修改、重试或终止任务，未重验数据，未进行跨批次hash对齐，也未读取准确率等性能值。
+
+|终态检查项|结果|
+|---|---|
+|run root|`/home/szu2070436088/2510044040/CV-SincNet/runs/cvs_full_ablation_phase1_label_20260729_v2`|
+|log root|`/home/szu2070436088/2510044040/CV-SincNet/logs/cvs_full_ablation_phase1_label_20260729_v2`|
+|summary时间|2026-07-30 03:44:14+08:00|
+|新训练闭合|14/14完成，14成功，0失败|
+|标签率分布|ρ=0.005为3条、ρ=0.01为5条、ρ=0.02为3条、ρ=0.05为3条|
+|逐行控制|14/14均`return_code=0`、receipt有效、terminal manifest存在、P0=false且无completion error|
+|ρ=0.10引用|以`reference_only_not_dispatched`引用T1的5条`P1-FULL`，seed为7281101–7281105；5/5均return code 0、receipt有效、P0=false，所需7类artifact均7/7非空|
+|逻辑曲线闭合|14条新训练+5条ρ=0.10引用=19/19|
+|自然退出|原外层PID`823096`和runner PID`823097`均不存在；当前含本run ID的远端进程0|
+|SSH清理|本地`ssh.exe=0`；N607及bridge的ESTABLISHED TCP22连接均为0|
+
+封存计划中的`source_status=RUNNING_PENDING_ARTIFACTS_COMPLETE`是启动时写入且未回写的静态字段；T1最终summary和5条逐行artifact已独立证明引用闭合。技术终态为`ARTIFACTS_COMPLETE / ANALYSIS_PENDING`；标签率同row性能曲线和最终判定将在全量结果分析阶段补充。
