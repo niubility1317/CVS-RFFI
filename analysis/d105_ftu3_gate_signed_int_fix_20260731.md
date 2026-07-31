@@ -49,3 +49,5 @@ R7的8400行fixed256 strict tap及reference parity已经通过，prediction、tr
 |`configs/d105_candidate_method_lock_20260731.json`|`7345f81e88588c46ad453eb315786306f28291478a5eaddce618ef7ee6998ecd`|
 
 本地验证不授权N607、authority、formal seal或Target25。下一门是本地Git提交后的精确archive复核；新运行必须使用全新run ID，不能恢复、覆盖或重标R7。
+
+实现提交：`230c6cbc9149250ca0303ca240945d0e0992360e`。

@@ -76,7 +76,7 @@ FTU2实现已完成：257/8400边界、批形状敏感fake、非法capacity早�
 
 精确archive SHA256=`e58240a0a358893c0c90ce0b3cb9c202eed9e6907272fa0d587d160f3fb8ec23`，54/54四方SHA、LF/pyc、9/9帮助面、238/238回归、真实checkpoint固定256和8400批合同均通过。R7冻结为`d105_phase1_sourceheld_2d948ce9_20260731_r7`，预登记提交=`632fd9f0e1324d14cb9d489b92b71259e9ac29fe`；完整8400行reference parity保留为新run首tap硬门，尚未授权N607。
 
-R7已在8400行reference parity=0后于derive-gate整数门技术失败，永久关闭为`NO_PERFORMANCE_RESULT`。FTU3将两个允许为负的`*_min_net_correct`从普通非负计数组拆出，15项定向和10文件253项统一回归通过；负证据仍保持`DIAGNOSTIC_STATUS`并被formal seal拒绝。新runtime/method=`5de5926bbb2e9fd78b2f3315ec6e109964ddd6216ebe4f75e428b6b9f6bf11bc`/`7345f81e88588c46ad453eb315786306f28291478a5eaddce618ef7ee6998ecd`。独立增量审查最终`GO / P0=0 / P1=0 / P2=0`；下一门为提交后的精确archive复核，尚未授权新N607 run。
+R7已在8400行reference parity=0后于derive-gate整数门技术失败，永久关闭为`NO_PERFORMANCE_RESULT`。FTU3将两个允许为负的`*_min_net_correct`从普通非负计数组拆出，15项定向和10文件253项统一回归通过；负证据仍保持`DIAGNOSTIC_STATUS`并被formal seal拒绝。新runtime/method=`5de5926bbb2e9fd78b2f3315ec6e109964ddd6216ebe4f75e428b6b9f6bf11bc`/`7345f81e88588c46ad453eb315786306f28291478a5eaddce618ef7ee6998ecd`。独立增量审查最终`GO / P0=0 / P1=0 / P2=0`，实现提交=`230c6cbc9149250ca0303ca240945d0e0992360e`；下一门为该提交的精确archive复核，尚未授权新N607 run。
 
 ## 5.真实checkpoint派生特征无truth smoke
 

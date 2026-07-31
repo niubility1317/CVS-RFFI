@@ -352,4 +352,4 @@ R7回收artifact的结构/类型复算确认，7个普通计数字段均为原�
 
 新增15项回归覆盖负原生整数放行、`bool/float/np.int64`拒绝、7个普通计数负数拒绝，以及负证据组件保持`DIAGNOSTIC_STATUS`并被formal seal拒绝。统一10文件共253项执行到100%，无失败或错误；canonical runtime/method loader通过54/54成员。新runtime SHA256=`5de5926bbb2e9fd78b2f3315ec6e109964ddd6216ebe4f75e428b6b9f6bf11bc`，method lock SHA256=`7345f81e88588c46ad453eb315786306f28291478a5eaddce618ef7ee6998ecd`。独立增量复审已实跑组件/封印拒绝case并核对54文件身份，最终结论=`GO / P0=0 / P1=0 / P2=0`。
 
-FTU3仍只有本地技术证据，不改变R7的`NO_PERFORMANCE_RESULT`。下一门是本地Git提交后的精确archive复核；通过前不创建新N607 run、不签名、不封装formal asset、不启动Target25。详见`analysis/d105_ftu3_gate_signed_int_fix_20260731.md`。
+FTU3实现提交=`230c6cbc9149250ca0303ca240945d0e0992360e`。它仍只有本地技术证据，不改变R7的`NO_PERFORMANCE_RESULT`。下一门是该提交的精确archive复核；通过前不创建新N607 run、不签名、不封装formal asset、不启动Target25。详见`analysis/d105_ftu3_gate_signed_int_fix_20260731.md`。

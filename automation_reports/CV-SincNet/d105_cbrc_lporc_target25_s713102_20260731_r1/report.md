@@ -197,4 +197,4 @@ R7的8400行fixed256 strict tap与reference parity已通过，但source-held der
 
 FTU3已在本地完成最小gate值域修复：两个`*_min_net_correct`允许原生负`int`，其余计数仍要求原生非负`int`。负证据仍生成`DIAGNOSTIC_STATUS`并被formal seal拒绝；这不是方法或Target性能改善。15项定向、10文件253项统一回归和54文件canonical身份均通过，独立增量审查为`GO / P0=0 / P1=0 / P2=0`。
 
-新runtime/method=`5de5926b…11bc`/`7345f81e…8ecd`。当前只允许进入提交后的精确archive复核；Target25仍没有输入、运行或性能数据。
+新runtime/method=`5de5926b…11bc`/`7345f81e…8ecd`，实现提交=`230c6cbc9149250ca0303ca240945d0e0992360e`。当前只允许进入该提交的精确archive复核；Target25仍没有输入、运行或性能数据。
