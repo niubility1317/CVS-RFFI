@@ -67,13 +67,13 @@ def test_parser_exposes_only_bounded_d106_workflows() -> None:
     }
     assert "target" not in " ".join(_actions(parser, "export")).lower()
     assert "source_val_labels" not in _actions(parser, "export")
-    assert "source_train_cache_set" not in _actions(parser, "export")
+    assert "upstream_source_pool_cache_set" not in _actions(parser, "export")
     assert _actions(parser, "extract") >= {
         "source_split_manifest",
         "source_split_manifest_sha256",
         "disjoint_receipt",
         "disjoint_receipt_sha256",
-        "source_train_cache_set",
+        "upstream_source_pool_cache_set",
         "selection_salt_receipt",
         "output_dir",
     }
@@ -125,7 +125,7 @@ def test_extract_command_is_the_only_8400_cache_consumer(
             "--source-split-manifest-sha256", "a" * 64,
             "--disjoint-receipt", "disjoint.json",
             "--disjoint-receipt-sha256", "b" * 64,
-            "--source-train-cache-set", "cache.json",
+            "--upstream-source-pool-cache-set", "cache.json",
             "--selection-salt-receipt", "salt.json",
             "--output-dir", "selected",
         ]
@@ -135,7 +135,7 @@ def test_extract_command_is_the_only_8400_cache_consumer(
         "source_split_manifest_sha256": "a" * 64,
         "disjoint_receipt": Path("disjoint.json"),
         "disjoint_receipt_sha256": "b" * 64,
-        "source_train_cache_set": Path("cache.json"),
+        "upstream_source_pool_cache_set": Path("cache.json"),
         "selection_salt_receipt": Path("salt.json"),
         "output_dir": Path("selected"),
     }

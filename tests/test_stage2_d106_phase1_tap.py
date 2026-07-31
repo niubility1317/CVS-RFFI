@@ -218,10 +218,10 @@ def _selected_source() -> tuple[dict[str, np.ndarray], np.ndarray]:
     return metadata, np.zeros((588, 2, 256), dtype=np.float32)
 
 
-def _write_synthetic_source_train_cache_set(
+def _write_synthetic_upstream_source_pool_cache_set(
     tmp_path: Path,
     *,
-    root_name: str = "source-train-cache",
+    root_name: str = "upstream-source-pool-cache",
     non_ls_variant: bool = False,
     invalid_non_ls: str | None = None,
 ) -> tuple[Path, str]:
@@ -351,7 +351,7 @@ def _write_synthetic_source_train_cache_set(
         "clean_sample_access": False,
         "clean_derived_signal_access": False,
         "target_channel_view": "leo_weak_only",
-        "cache_scope": "source_train",
+        "cache_scope": "source_validation",
         "output_roles": ["source"],
         "cache_npz_by_scenario": scenario_map,
         "cache_sha256_by_scenario": hash_map,
@@ -515,7 +515,7 @@ def _extract_real_ls_fixture(
     invalid_non_ls: str | None = None,
 ) -> tuple[dict[str, object], dict[str, Path]]:
     root.mkdir()
-    cache_set, cache_sha = _write_synthetic_source_train_cache_set(
+    cache_set, cache_sha = _write_synthetic_upstream_source_pool_cache_set(
         root, non_ls_variant=non_ls_variant, invalid_non_ls=invalid_non_ls
     )
     salt, salt_sha = _write_selection_salt_receipt(root)
@@ -530,7 +530,7 @@ def _extract_real_ls_fixture(
         source_split_manifest_sha256=manifest_sha,
         disjoint_receipt=disjoint,
         disjoint_receipt_sha256=disjoint_sha,
-        source_train_cache_set=cache_set,
+        upstream_source_pool_cache_set=cache_set,
         selection_salt_receipt=salt,
         output_dir=root / "selected-ls-iq",
     )
@@ -561,6 +561,15 @@ def test_extract_isolates_588_artifact_from_legal_non_ls_iq_and_metadata(
     assert validator["storage_iq_rows_read"] == 25200
     assert validator["storage_physical_rows_validated"] == 8400
     assert validator["selected_iq_rows_persisted"] == 588
+    assert (
+        validator["upstream_source_pool_cache_scope"]
+        == d106.UPSTREAM_SOURCE_POOL_CACHE_SCOPE
+    )
+    assert len(validator["upstream_source_pool_cache_set_sha256"]) == 64
+    assert (
+        validator["d104_legacy_source_pool_hash_field"]
+        == d106.D104_LEGACY_SOURCE_POOL_HASH_FIELD
+    )
     assert validator["all_8400x3_storage_semantics_verified"] is True
     assert validator["validator_only_not_method_input"] is True
     assert tuple(validator["scenario_validation"]) == d106.FORMAL_LEO_WEAK_SCENARIOS
@@ -609,7 +618,21 @@ def test_extract_isolates_588_artifact_from_legal_non_ls_iq_and_metadata(
     assert loaded.received_iq.shape == (588, 2, 256)
     assert loaded.receipt["contains_only_selected_ls_rows"] is True
     assert len(loaded.receipt["selected_content_root_sha256"]) == 64
-    assert "source_train_cache_set_sha256" not in loaded.receipt
+    assert "upstream_source_pool_cache_set_sha256" not in loaded.receipt
+
+
+def test_upstream_source_pool_rejects_legacy_name_as_actual_scope(
+    tmp_path: Path,
+) -> None:
+    cache_set, _cache_sha = _write_synthetic_upstream_source_pool_cache_set(tmp_path)
+    value = json.loads(cache_set.read_text(encoding="utf-8"))
+    value["cache_scope"] = "source_train"
+    cache_set.write_bytes(d106._canonical_bytes(value))
+    with pytest.raises(d106.D106Phase1TapError, match="semantic closure"):
+        d106._load_d106_source_cache_index(
+            cache_set,
+            expected_sha256=_sha(cache_set),
+        )
 
 
 @pytest.mark.parametrize("invalid_non_ls", ["role", "hash", "nan"])
@@ -620,7 +643,7 @@ def test_extract_rejects_invalid_non_ls_storage_rows(
 ) -> None:
     root = tmp_path / invalid_non_ls
     root.mkdir()
-    cache_set, cache_sha = _write_synthetic_source_train_cache_set(
+    cache_set, cache_sha = _write_synthetic_upstream_source_pool_cache_set(
         root, invalid_non_ls=invalid_non_ls
     )
     salt, salt_sha = _write_selection_salt_receipt(root)
@@ -637,7 +660,7 @@ def test_extract_rejects_invalid_non_ls_storage_rows(
             source_split_manifest_sha256=manifest_sha,
             disjoint_receipt=disjoint,
             disjoint_receipt_sha256=disjoint_sha,
-            source_train_cache_set=cache_set,
+            upstream_source_pool_cache_set=cache_set,
             selection_salt_receipt=salt,
             output_dir=output,
         )
@@ -799,7 +822,7 @@ def test_feature_export_signature_has_no_8400_cache_or_split_capability() -> Non
     }
     assert parameters.isdisjoint(
         {
-            "source_train_cache_set", "source_split_manifest",
+            "upstream_source_pool_cache_set", "source_split_manifest",
             "disjoint_receipt", "selection_salt_receipt",
         }
     )
@@ -835,7 +858,7 @@ def test_formal_extract_rejects_critical_callable_replacement_before_inputs(
             source_split_manifest_sha256="1" * 64,
             disjoint_receipt=tmp_path / "missing-disjoint.json",
             disjoint_receipt_sha256="2" * 64,
-            source_train_cache_set=tmp_path / "missing-cache.json",
+            upstream_source_pool_cache_set=tmp_path / "missing-cache.json",
             selection_salt_receipt=tmp_path / "missing-salt.json",
             output_dir=tmp_path / "never-extracted",
         )
@@ -940,7 +963,8 @@ def test_real_checkpoint_cli_extract_export_validate_no_query(
     fixture = json.loads(Path(fixture_path).read_text(encoding="utf-8"))
     required = {
         "source_split_manifest", "source_split_manifest_sha256",
-        "disjoint_receipt", "disjoint_receipt_sha256", "source_train_cache_set",
+        "disjoint_receipt", "disjoint_receipt_sha256",
+        "upstream_source_pool_cache_set",
         "selection_salt_receipt", "ls_archive", "ls_archive_sha256",
         "checkpoint", "checkpoint_sha256", "runtime_manifest", "runtime_sha256",
     }
@@ -958,7 +982,8 @@ def test_real_checkpoint_cli_extract_export_validate_no_query(
             fixture["source_split_manifest_sha256"],
             "--disjoint-receipt", fixture["disjoint_receipt"],
             "--disjoint-receipt-sha256", fixture["disjoint_receipt_sha256"],
-            "--source-train-cache-set", fixture["source_train_cache_set"],
+            "--upstream-source-pool-cache-set",
+            fixture["upstream_source_pool_cache_set"],
             "--selection-salt-receipt", fixture["selection_salt_receipt"],
             "--output-dir", str(extracted_dir),
         ],
@@ -1031,7 +1056,7 @@ def _superseded_export_and_loader_close_exact_members_and_derive_readonly_zid(
         source_split_manifest_sha256=manifest_sha,
         disjoint_receipt=disjoint,
         disjoint_receipt_sha256=disjoint_sha,
-        source_train_cache_set=tmp_path / "cache.json",
+        upstream_source_pool_cache_set=tmp_path / "cache.json",
         selection_salt_receipt=tmp_path / "salt.json",
         checkpoint=tmp_path / "checkpoint.pth",
         output_dir=output,
@@ -1078,7 +1103,7 @@ def _superseded_export_and_loader_close_exact_members_and_derive_readonly_zid(
 def _superseded_export_uses_real_8400x3_cache_without_opening_source_label_members(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    cache_set, cache_sha = _write_synthetic_source_train_cache_set(tmp_path)
+    cache_set, cache_sha = _write_synthetic_upstream_source_pool_cache_set(tmp_path)
     manifest, manifest_sha, disjoint, disjoint_sha, _archives = _build_disjoint(
         tmp_path, monkeypatch, cache_set_sha256=cache_sha
     )
@@ -1091,7 +1116,7 @@ def _superseded_export_uses_real_8400x3_cache_without_opening_source_label_membe
         source_split_manifest_sha256=manifest_sha,
         disjoint_receipt=disjoint,
         disjoint_receipt_sha256=disjoint_sha,
-        source_train_cache_set=cache_set,
+        upstream_source_pool_cache_set=cache_set,
         selection_salt_receipt=tmp_path / "salt.json",
         checkpoint=tmp_path / "checkpoint.pth",
         output_dir=tmp_path / "real-cache-tap",
@@ -1109,7 +1134,7 @@ def _superseded_export_uses_real_8400x3_cache_without_opening_source_label_membe
     assert loaded.receipt["method_visible_tx_label_rows"] == 588
     assert (
         loaded.receipt[
-            "source_train_cache_tx_ids_or_raw_labels_read_or_materialized"
+            "upstream_source_pool_tx_ids_or_raw_labels_read_or_materialized"
         ]
         is False
     )
@@ -1138,7 +1163,7 @@ def _superseded_export_join_failure_writes_no_output(
             source_split_manifest_sha256=manifest_sha,
             disjoint_receipt=disjoint,
             disjoint_receipt_sha256=disjoint_sha,
-            source_train_cache_set=tmp_path / "cache.json",
+            upstream_source_pool_cache_set=tmp_path / "cache.json",
             selection_salt_receipt=tmp_path / "salt.json",
             checkpoint=tmp_path / "checkpoint.pth",
             output_dir=output,
@@ -1146,7 +1171,7 @@ def _superseded_export_join_failure_writes_no_output(
     assert not output.exists()
 
 
-def _superseded_export_rejects_incomplete_source_train_cache_before_selection_or_write(
+def _superseded_export_rejects_incomplete_source_pool_before_selection_or_write(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     manifest, manifest_sha, disjoint, disjoint_sha, _archives = _build_disjoint(
@@ -1161,7 +1186,7 @@ def _superseded_export_rejects_incomplete_source_train_cache_before_selection_or
             source_split_manifest_sha256=manifest_sha,
             disjoint_receipt=disjoint,
             disjoint_receipt_sha256=disjoint_sha,
-            source_train_cache_set=tmp_path / "cache.json",
+            upstream_source_pool_cache_set=tmp_path / "cache.json",
             selection_salt_receipt=tmp_path / "salt.json",
             checkpoint=tmp_path / "checkpoint.pth",
             output_dir=output,
@@ -1182,7 +1207,7 @@ def _superseded_loader_rejects_noncanonical_receipt_and_archive_tamper(
         source_split_manifest_sha256=manifest_sha,
         disjoint_receipt=disjoint,
         disjoint_receipt_sha256=disjoint_sha,
-        source_train_cache_set=tmp_path / "cache.json",
+        upstream_source_pool_cache_set=tmp_path / "cache.json",
         selection_salt_receipt=tmp_path / "salt.json",
         checkpoint=tmp_path / "checkpoint.pth",
         output_dir=tmp_path / "tap",
@@ -1220,7 +1245,7 @@ def _superseded_loader_rejects_construction_closure_drift(
         source_split_manifest_sha256=manifest_sha,
         disjoint_receipt=disjoint,
         disjoint_receipt_sha256=disjoint_sha,
-        source_train_cache_set=tmp_path / "cache.json",
+        upstream_source_pool_cache_set=tmp_path / "cache.json",
         selection_salt_receipt=tmp_path / "salt.json",
         checkpoint=tmp_path / "checkpoint.pth",
         output_dir=tmp_path / "closure-tap",
@@ -1259,7 +1284,7 @@ def _superseded_export_and_loader_reject_output_and_artifact_symlinks(
             source_split_manifest_sha256=manifest_sha,
             disjoint_receipt=disjoint,
             disjoint_receipt_sha256=disjoint_sha,
-            source_train_cache_set=tmp_path / "cache.json",
+            upstream_source_pool_cache_set=tmp_path / "cache.json",
             selection_salt_receipt=tmp_path / "salt.json",
             checkpoint=tmp_path / "checkpoint.pth",
             output_dir=output_link,
@@ -1269,7 +1294,7 @@ def _superseded_export_and_loader_reject_output_and_artifact_symlinks(
         source_split_manifest_sha256=manifest_sha,
         disjoint_receipt=disjoint,
         disjoint_receipt_sha256=disjoint_sha,
-        source_train_cache_set=tmp_path / "cache.json",
+        upstream_source_pool_cache_set=tmp_path / "cache.json",
         selection_salt_receipt=tmp_path / "salt.json",
         checkpoint=tmp_path / "checkpoint.pth",
         output_dir=tmp_path / "symlink-loader-tap",
@@ -1320,7 +1345,7 @@ def _superseded_export_publish_race_preserves_newly_created_output(
             source_split_manifest_sha256=manifest_sha,
             disjoint_receipt=disjoint,
             disjoint_receipt_sha256=disjoint_sha,
-            source_train_cache_set=tmp_path / "cache.json",
+            upstream_source_pool_cache_set=tmp_path / "cache.json",
             selection_salt_receipt=tmp_path / "salt.json",
             checkpoint=tmp_path / "checkpoint.pth",
             output_dir=output,

@@ -34,7 +34,7 @@ D106只使用冻结D104 split：
 - checkpoint SHA256：`2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98`；
 - source validation尚未运行正式prediction矩阵，也未计算性能。
 
-不得复用D105的8400行`source_validation`strict tap。D106需要builder-only全池metadata、冻结D104 split和588个`L_s`physical ID做精确inner join，join完成后才允许TX标签和received IQ进入same-IQ dual forward。
+不得复用D105的8400行`source_validation`特征tap。D106的builder-only存储验证器必须读取D104旧字段`source_train_cache_set_sha256`实际绑定的8400行上游`cache_scope=source_validation` received-IQ池，逐场景验证完整存储语义，再以冻结D104 split的588个`L_s`physical ID做精确inner join。只允许这588条被选IQ进入独立extract artifact；其余7812条记录、全池TX标签及任何source-validation truth不得进入方法/export面。旧字段名只作为不可变D104 provenance保留，不得解释为真正`source_train`。
 
 ## 3.Phase1数学构造
 

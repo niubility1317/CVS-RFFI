@@ -43,7 +43,9 @@ def build_parser() -> argparse.ArgumentParser:
     extract.add_argument("--source-split-manifest-sha256", required=True)
     extract.add_argument("--disjoint-receipt", type=Path, required=True)
     extract.add_argument("--disjoint-receipt-sha256", required=True)
-    extract.add_argument("--source-train-cache-set", type=Path, required=True)
+    extract.add_argument(
+        "--upstream-source-pool-cache-set", type=Path, required=True
+    )
     extract.add_argument("--selection-salt-receipt", type=Path, required=True)
     extract.add_argument("--output-dir", type=Path, required=True)
 
@@ -89,7 +91,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             source_split_manifest_sha256=args.source_split_manifest_sha256,
             disjoint_receipt=args.disjoint_receipt,
             disjoint_receipt_sha256=args.disjoint_receipt_sha256,
-            source_train_cache_set=args.source_train_cache_set,
+            upstream_source_pool_cache_set=args.upstream_source_pool_cache_set,
             selection_salt_receipt=args.selection_salt_receipt,
             output_dir=args.output_dir,
         )

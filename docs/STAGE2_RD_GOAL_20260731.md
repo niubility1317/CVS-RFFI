@@ -172,7 +172,7 @@ old+new总正确数严格增加
 ## 10.当前执行优先级
 
 1.`D105-CBRC-MB4`的source-held门已观察到receiver/class/TX三项拒绝且没有formal组件；FTU4只修复合法科学负结果的无wire持久化。D105不进入Target25，也不因技术修复自动补跑；
-2.冻结`D106-RDCE/GTSM-r3`共享非等距DA：仅从D104冻结split的588条`L_s`构造receiver-day类中心残差基，禁止复用D105的8400行source-validation tap；
+2.冻结`D106-RDCE/GTSM-r3`共享非等距DA：仅从D104冻结split的588条`L_s`构造receiver-day类中心残差基；禁止复用D105的8400行特征tap。builder-only存储验证器可以读取由D104 SHA绑定的8400行上游`source_validation` received-IQ池，但只允许封存选中的588条`L_s` IQ，方法/export面不得获得其余7812条记录；
 3.先实现D106专用`L_s`单观测tap、ID-only train/held互斥收据、INT8 RDCE资产和严格loader，再实现K1非identity的纯support-only qKNN头；各功能包文件面互不重叠；
 4.使用尚未打开性能truth的D104 source-held split完成固定`M0/M_DA/M_HEAD/M_JOINT`四臂G1。任何outer held结果不得回调rank、衰减、head结构或阈值；
 5.只有G0/G1、真实checkpoint no-query smoke、资源闭合、完整回归和独立复审达到`P0=0、P1=0`后，才本地Git提交并预登记新run；不push、不上传GitHub；

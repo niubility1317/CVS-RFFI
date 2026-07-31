@@ -1,6 +1,6 @@
 # D106-RDCE/GTSM-r3研发与实验报告
 
-状态：`DESIGN_FROZEN / DATA_LOCAL_G0_GO / DA_LOCAL_G0_GO / REAL_INTEGRATION_HARD_GATE_PENDING / N607_NOT_ACCESSED / SOURCE_HELD_NOT_OPENED / TARGET25_NO_GO / NO_TARGET_PERFORMANCE_RESULT`
+状态：`DESIGN_FROZEN / DATA_LOCAL_CODE_G0_GO / DA_LOCAL_CODE_G0_GO / REAL_INTEGRATION_NO_GO / N607_READ_ONLY_DISCOVERY_ONLY / SOURCE_HELD_NOT_OPENED / TARGET25_NO_GO / NO_TARGET_PERFORMANCE_RESULT`
 
 ## 1.实验身份
 
@@ -43,7 +43,7 @@ D62、D91、D92和SVRN只作matched外部基线分析，不替代`M_HEAD`，不�
 - source-held truth尚未用于性能计算
 - Target capsule保持`VALIDATED_ONCE`，方法变化不得触发数据重验
 
-禁止当前D105 8400行source-validation tap进入D106训练。正式D106 tap只能在冻结D104 split后精确选择588个`L_s`physical ID，并保留day/scenario/observation绑定。
+禁止当前D105 8400行特征tap进入D106训练。builder-only存储验证器必须读取D104 SHA绑定的8400行上游`source_validation` received-IQ池并验证完整存储语义；正式D106 extract/export只允许精确选择的588个`L_s`physical ID及其day/scenario/observation绑定进入方法面，其余7812行不可见。
 
 ## 5.已完成的训练面探针
 
@@ -90,19 +90,19 @@ M_S = I-B^T diag(a)B
 
 |工作包|建议文件|状态|
 |---|---|---|
-|DATA|`stage2_d106_phase1_tap.py`、CLI及测试|本地实现完成；独立复审`P0=0/P1=0/P2=0`、`LOCAL G0 GO`|
-|DA|`stage2_d106_rdce_asset.py`、`stage2_d106_rdce_runtime.py`及测试|实现完成；DA测试20/20、DATA+DA联合80/80通过；独立复审`P0=0/P1=0/P2=0`、`LOCAL G0 GO`|
+|DATA|`stage2_d106_phase1_tap.py`、CLI及测试|588/588纯ID归属已闭合；真实scope/API/receipt修正完成，81通过、1跳过，独立复审`P0=0/P1=0/P2=0 / LOCAL DATA GO`|
+|DA|`stage2_d106_rdce_asset.py`、`stage2_d106_rdce_runtime.py`及测试|本地代码20/20、独立复审`P0=0/P1=0/P2=0`；但跨模块release随DATA保持NO-GO|
 |HEAD|候选文件待新revision冻结|`SG-LC-CL-OOF/r1`与`SBCM-BR/r2`均在训练面拒绝|
 |四臂/held|`stage2_d106_four_arm.py`、source-held predictor/scorer|待HEAD冻结|
 |Target25|基于D105骨架的新runner/launcher|G1前禁止实现release|
 
 ## 10.N607信息
 
-本轮尚未执行N607 preflight、SSH/SCP、远端目录创建、同步、编译、启动或监控。无server command、PID、GPU分配、log path或远端output。只有完成本地实现、定向/协议负测、真实checkpoint no-query smoke、独立审查`P0=0/P1=0`、Git commit和报告预登记后，才允许唯一runner进入N607 Phase1。
+2026-08-01由唯一Terra Max runner完成direct N607只读preflight、资产发现及588个L_s纯物理ID归属核验；bridge未使用。8张RTX3090两次均为0%/1MiB，所有短SSH后均确认本地`ssh.exe=0`且N607/bridge无`ESTABLISHED TCP22`。本轮未SCP、未创建远端目录、未运行项目脚本、未启动进程或占用GPU。详见§15。
 
 ## 11.风险与下一步
 
-当前release硬门为：真实8400×3缓存、selection salt、588条`L_s`、真实checkpoint的extract→export→validate闭环尚未在本机执行；该真实夹具仅在测试中明确跳过，必须在N607 release前由唯一runner完成。HEAD、四臂held/scorer和Target25 runner仍未实现。DATA与DA代码门不得替代真实资产门或性能证据。
+当前release硬门为：独立复审修正后的DATA契约，然后执行真实extract→export→validate。纯ID证据已证明D104的588个L_s来自SHA`125bb312…`的8400行`source_validation`池；现有split、物理ID、received-IQ bytes和场景均未变化，因此按`VALIDATED_ONCE`规则不重建split、不重验数据。D106仅修正历史误名字段的解释、公开API、scope验证和validator receipt。HEAD、四臂held/scorer和Target25 runner仍未实现。
 
 `D106-SG-LC-CL-OOF-qKNN/r1`已完成三轮共136组`L_s` train-only预锁检查。没有任何配置同时满足K1/K5/K10总正确数与floor均非退化；最后的最小非零clearance方案仍在三个K各减少1个正确样本。因此该HEAD状态为`DESIGN_REVISION_REQUIRED / IMPLEMENTATION_FORBIDDEN`，不能因margin非零就写成有性能功能。
 
@@ -229,8 +229,8 @@ SPR证明同IQ的signed第二表征能够让K1产生真实prediction变化，也
 - 完整存储验证器逐场景验证3×8400行的role、scenario、view、applied、receiver/day、seed、`[8400,2,256]`有限IQ、每条IQ摘要和overlay provenance；
 - 方法提取产物仅包含精确588条`L_s`，并与完整存储validator、selected IQ archive/receipt/content root、D104 split和checkpoint执行收据分层绑定；
 - export入口不持有8400缓存、split、disjoint或salt能力；关键嵌套callable、同句柄读取、checkpoint/model/forward收据和completion marker均fail-closed；
-- 独立复审结论：`P0=0/P1=0/P2=0 / LOCAL G0 DATA GO`；
-- DATA测试：60通过、1跳过；跳过项为缺少环境变量`D106_REAL_INTEGRATION_FIXTURE`的真实资产闭环。
+- 真实authority修正后的独立终审结论为`P0=0/P1=0/P2=0 / LOCAL DATA GO`；
+- 修正版DATA+CLI+DA资产/runtime测试：81通过、1跳过；跳过项为缺少环境变量`D106_REAL_INTEGRATION_FIXTURE`的真实资产闭环。
 
 ### 14.2 DA闭包
 
@@ -245,17 +245,50 @@ SPR证明同IQ的signed第二表征能够让K1产生真实prediction变化，也
 
 |验证面|结果|结论|
 |---|---:|---|
-|D106 DATA+DA四个测试文件|80通过、1跳过|最终receipt接口与DA runtime闭合；真实夹具仍是release硬门|
-|D104 split、D105 tap、Student-t qKNN、VALIDATED_ONCE句柄|59/59通过|未破坏直接依赖|
+|D106 DATA+CLI+DA四个测试文件|81通过、1跳过|上游scope/API/validator v2与DA runtime闭合；真实夹具仍是release硬门|
+|D104 split、D105 tap、Student-t qKNN、VALIDATED_ONCE句柄|51/51通过|authority修正后当前依赖回归未破坏|
 |Python编译与`git diff --check`|通过|无语法或空白错误|
 
 本地放行生产文件SHA256：
 
 |文件|SHA256|
 |---|---|
-|`code/cvsrffi/stage2_d106_phase1_tap.py`|`a70f1f280c750332e52951007e8184a1e4c4b4e49f9dfca649316c7b176db782`|
+|`code/cvsrffi/stage2_d106_phase1_tap.py`|`72bcdb528d0594e503c2d550445bb4e3c8b12efddd232172df9048ea6e472a21`|
 |`code/cvsrffi/stage2_d106_rdce_asset.py`|`e9d57245a80cdf31ae4ea5fd76cd521022399d0be512e2647a92cc2a0671da1f`|
 |`code/cvsrffi/stage2_d106_rdce_runtime.py`|`9d78b83134bfb668c3b9c32053eaa86b5c9fd4d970e87aa99dc30ac2df8df946`|
-|`code/scripts/export_d106_phase1_ls_tap.py`|`744616c0f07b5c232ad4695555b1aa9764e835fd50b2d4000a306199b56bb608`|
+|`code/scripts/export_d106_phase1_ls_tap.py`|`1664684de351199a0a825b04bde17308dba1dc46a566ee5826772b4ccfe91c83`|
 
 当前尚无D106 source-held、Target25、D62/D91/D92/SVRN matched性能结果。不得把机械训练面`+4/+4/+2`、真实588行no-query smoke或本地测试通过数写成性能提升。
+
+## 15.N607只读真实authority闭合
+
+### 15.1 可用资产
+
+|资产|远端路径|SHA256|
+|---|---|---|
+|上游`source_validation`cache set|`runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14/phase1_caches/source_validation/cache_set.json`|`125bb312972fd82edab9b1566a1ebddcd077b9a00c5255a55da22afb453b8d74`|
+|上游`source_train`cache set|同根`phase1_caches/source_train/cache_set.json`|`d719808ceaed07c13f6c8d8053acf910a61904243ec1d47c28cc4e4b679cffd2`|
+|selection salt|`runs/d99_d100_phase1_export_7932dbf9_cuda0_20260721_r4/input/d99_d100_phase1_selection_salt.json`|`38ffbdda293cd2eead31c481237a459581c862572041ea472b38391a1b4bddb0`|
+|checkpoint|`runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth`|`2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98`|
+|runtime manifest|`runs/d105_phase1_sourceheld_230c6cbc_20260801_r8/source/configs/d105_candidate_runtime_manifest_20260731.json`|`5de5926bbb2e9fd78b2f3315ec6e109964ddd6216ebe4f75e428b6b9f6bf11bc`|
+
+D104正式远端split root、588条`L_s`和D106 disjoint receipt均不存在；四个D106生产文件也均未同步。预登记run root`runs/d106_real_integration_72850073_20260801_r1`实时为`ABSENT`。
+
+### 15.2 纯ID归属证据
+
+本地不可变D104 manifest SHA为`4a1e23cc999b7e7b6d5b53e44a6c02f142625c10dd0c9caf7ac0cee6dd2ada21`，其中输入字段名为`source_train_cache_set_sha256`且值为`125bb312…`。实时远端文件证明该SHA对应`cache_scope=source_validation`；真正`cache_scope=source_train`的SHA是`d719808c…`。runner只在内存中比较physical ID，不读取IQ、TX标签或性能。
+
+|池|池规模|L_s命中|缺失|额外|结论|
+|---|---:|---:|---:|---:|---|
+|`source_validation`，SHA`125bb312…`|8400|588|0|7812|三个场景的matched ordered/set root均与本地L_s一致|
+|`source_train`，SHA`d719808c…`|6000|22|566|5978|不是D104 L_s权威池|
+
+本地L_s ordered root为`2798044663c1c727346c1142002e9b2dfc3e282e8b58d9752b420171c28ea12e`，set root为`ee81fd5c5efdbe171eaff9601990594b61b79adf8c3622a8cda8dbc2fd228d4b`。`source_validation`三个场景均得到相同根；`source_train`仅22个交集。
+
+### 15.3 修正决策
+
+1.保留D104 manifest及588/5292/2520切分；旧字段名作为不可变provenance存在，但D106显式解释为`D104_LEGACY_SOURCE_POOL_HASH_FIELD`，不再把它冒充真正source_train；
+2.D106公开入口改为`upstream_source_pool_cache_set`/`--upstream-source-pool-cache-set`，并硬验`cache_scope=source_validation`、8400行、三个场景同序物理ID根及完整存储语义；
+3.validator升级为v2，显式记录`upstream_source_pool_cache_set_sha256`、实际scope和D104旧字段名；选中588行的method artifact仍不携带全池SHA或全池能力；
+4.由于received-IQ bytes、physical IDs、receiver/TX集合、场景、K、support/query split和`p2_min_v1`均未变化，本次只修实现契约，不触发数据重验；
+5.本地独立复审已达`P0=0/P1=0/P2=0 / LOCAL DATA GO`；在Git提交和真实fixture闭环之前，DATA跨模块release、正式DA asset、source-held和Target仍为NO-GO。

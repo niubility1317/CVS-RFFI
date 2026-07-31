@@ -59,6 +59,8 @@ from .stage2_d105_phase1_bundle import (
 CANDIDATE_ID = "D106-RDCE/GTSM-r3-SCATTER02"
 PROTOCOL_SCHEMA = "p2_min_v1"
 EXPECTED_SOURCE_ROWS = 8400
+UPSTREAM_SOURCE_POOL_CACHE_SCOPE = "source_validation"
+D104_LEGACY_SOURCE_POOL_HASH_FIELD = "source_train_cache_set_sha256"
 RHO_LABEL = 0.1
 FORWARD_BATCH_CAPACITY = 256
 EXPECTED_CHECKPOINT_SHA256 = (
@@ -72,7 +74,7 @@ TAP_SCHEMA = "cvs.phase1.d106.ls_strict_tap.v1"
 TAP_RECEIPT_SCHEMA = "cvs.phase1.d106.ls_strict_tap_receipt.v1"
 LS_IQ_SCHEMA = "cvs.phase1.d106.ls_received_iq.v1"
 LS_IQ_RECEIPT_SCHEMA = "cvs.phase1.d106.ls_received_iq_receipt.v1"
-LS_IQ_VALIDATOR_SCHEMA = "cvs.phase1.d106.ls_received_iq_validator.v1"
+LS_IQ_VALIDATOR_SCHEMA = "cvs.phase1.d106.ls_received_iq_validator.v2"
 LS_IQ_ARCHIVE_NAME = "d106_ls_received_iq.npz"
 LS_IQ_RECEIPT_NAME = "d106_ls_received_iq.receipt.json"
 LS_IQ_VALIDATOR_NAME = "d106_ls_received_iq.validator.json"
@@ -670,7 +672,7 @@ class D106SourceSplitBinding:
     manifest_sha256: str
     checkpoint_sha256: str
     runtime_sha256: str
-    cache_set_sha256: str
+    source_pool_cache_set_sha256: str
     selection_salt_receipt_sha256: str
     ls_archive: Path
     us_archive: Path
@@ -745,8 +747,12 @@ def load_d106_source_split_binding(
     if checkpoint != EXPECTED_CHECKPOINT_SHA256:
         raise D106Phase1TapError("D106 frozen checkpoint SHA256 drift")
     runtime = _require_sha256(inputs.get("runtime_sha256"), "runtime")
+    # D104 sealed this 8400-row upstream pool under a historically misleading
+    # field name.  Preserve the immutable manifest while giving D106 the actual
+    # authority semantics: it is the source-validation pool, not source-train.
     cache = _require_sha256(
-        inputs.get("source_train_cache_set_sha256"), "source-train cache set"
+        inputs.get(D104_LEGACY_SOURCE_POOL_HASH_FIELD),
+        "D104 legacy-named upstream source-pool cache set",
     )
     salt = _require_sha256(
         inputs.get("selection_salt_receipt_sha256"), "selection-salt receipt"
@@ -782,7 +788,7 @@ def load_d106_source_split_binding(
         manifest_sha256=_require_sha256(expected_sha256, "source split manifest"),
         checkpoint_sha256=checkpoint,
         runtime_sha256=runtime,
-        cache_set_sha256=cache,
+        source_pool_cache_set_sha256=cache,
         selection_salt_receipt_sha256=salt,
         ls_archive=resolved["L_s"],
         us_archive=resolved["U_s"],
@@ -976,14 +982,16 @@ def _load_d106_source_cache_index(
     payload, _observed = _read_regular_bytes(
         source,
         expected_sha256=expected_sha256,
-        name="source-train cache set",
+        name="upstream source-pool cache set",
     )
     try:
         manifest = json.loads(payload.decode("utf-8-sig"))
     except (OSError, UnicodeDecodeError, json.JSONDecodeError) as error:
-        raise D106Phase1TapError("source-train cache set must be strict JSON") from error
+        raise D106Phase1TapError(
+            "upstream source-pool cache set must be strict JSON"
+        ) from error
     if type(manifest) is not dict:
-        raise D106Phase1TapError("source-train cache set must be an object")
+        raise D106Phase1TapError("upstream source-pool cache set must be an object")
     observed_schema = manifest.get("schema")
     if (
         observed_schema not in {
@@ -995,10 +1003,10 @@ def _load_d106_source_cache_index(
         or manifest.get("clean_sample_access") is not False
         or manifest.get("clean_derived_signal_access") is not False
         or manifest.get("target_channel_view") != "leo_weak_only"
-        or manifest.get("cache_scope") != "source_train"
+        or manifest.get("cache_scope") != UPSTREAM_SOURCE_POOL_CACHE_SCOPE
         or {str(value) for value in manifest.get("output_roles", [])} != {"source"}
     ):
-        raise D106Phase1TapError("source-train cache-set semantic closure drift")
+        raise D106Phase1TapError("upstream source-pool cache-set semantic closure drift")
     scenario_map = manifest.get("cache_npz_by_scenario")
     hash_map = manifest.get("cache_sha256_by_scenario")
     if (
@@ -1350,7 +1358,7 @@ def select_d106_ls_cache_observations(
     )
     audit = {
         "cache_set_sha256": _require_sha256(expected_sha256, "source cache set"),
-        "cache_scope": "source_train",
+        "cache_scope": UPSTREAM_SOURCE_POOL_CACHE_SCOPE,
         "physical_sample_count": EXPECTED_SOURCE_ROWS,
         "physical_sample_observation_count": EXPECTED_SOURCE_ROWS
         * len(FORMAL_LEO_WEAK_SCENARIOS),
@@ -1419,7 +1427,7 @@ def extract_d106_ls_received_iq(
     source_split_manifest_sha256: str,
     disjoint_receipt: str | Path,
     disjoint_receipt_sha256: str,
-    source_train_cache_set: str | Path,
+    upstream_source_pool_cache_set: str | Path,
     selection_salt_receipt: str | Path,
     output_dir: str | Path,
 ) -> dict[str, Any]:
@@ -1459,8 +1467,8 @@ def extract_d106_ls_received_iq(
         expected_sha256=binding.archive_sha256_by_role["L_s"],
     )
     metadata, selected_iq, audit = select_d106_ls_cache_observations(
-        source_train_cache_set,
-        expected_sha256=binding.cache_set_sha256,
+        upstream_source_pool_cache_set,
+        expected_sha256=binding.source_pool_cache_set_sha256,
         ls_physical_ids=ls_physical_ids.tolist(),
         selection_salt_sha256=salt["selection_salt_sha256"],
     )
@@ -1571,7 +1579,13 @@ def extract_d106_ls_received_iq(
             "disjoint_receipt_sha256": _require_sha256(
                 disjoint_receipt_sha256, "disjoint receipt"
             ),
-            "source_train_cache_set_sha256": binding.cache_set_sha256,
+            "upstream_source_pool_cache_set_sha256": (
+                binding.source_pool_cache_set_sha256
+            ),
+            "upstream_source_pool_cache_scope": UPSTREAM_SOURCE_POOL_CACHE_SCOPE,
+            "d104_legacy_source_pool_hash_field": (
+                D104_LEGACY_SOURCE_POOL_HASH_FIELD
+            ),
             "selection_salt_receipt_sha256": binding.selection_salt_receipt_sha256,
             "selected_archive_sha256": archive_sha,
             "selected_receipt_sha256": receipt_sha,
@@ -1769,7 +1783,10 @@ def load_d106_ls_storage_validator(
     expected_fields = {
         "schema", "candidate_id", "split_id", "protocol_schema", "rho_label",
         "source_split_manifest_sha256", "disjoint_receipt_sha256",
-        "source_train_cache_set_sha256", "selection_salt_receipt_sha256",
+        "upstream_source_pool_cache_set_sha256",
+        "upstream_source_pool_cache_scope",
+        "d104_legacy_source_pool_hash_field",
+        "selection_salt_receipt_sha256",
         "selected_archive_sha256", "selected_receipt_sha256",
         "selected_content_root_sha256", "storage_iq_rows_read",
         "storage_physical_rows_validated", "selected_iq_rows_persisted",
@@ -1803,6 +1820,10 @@ def load_d106_ls_storage_validator(
         or validator.get("storage_physical_rows_validated") != EXPECTED_SOURCE_ROWS
         or validator.get("selected_iq_rows_persisted") != EXPECTED_COUNTS["L_s"]
         or validator.get("source_cache_label_members_read") is not False
+        or validator.get("upstream_source_pool_cache_scope")
+        != UPSTREAM_SOURCE_POOL_CACHE_SCOPE
+        or validator.get("d104_legacy_source_pool_hash_field")
+        != D104_LEGACY_SOURCE_POOL_HASH_FIELD
         or type(scenarios) is not dict
         or tuple(scenarios) != FORMAL_LEO_WEAK_SCENARIOS
         or validator.get("all_8400x3_storage_semantics_verified") is not True
@@ -1811,7 +1832,8 @@ def load_d106_ls_storage_validator(
         raise D106Phase1TapError("D106 storage validator semantic closure drift")
     for name in (
         "source_split_manifest_sha256", "disjoint_receipt_sha256",
-        "source_train_cache_set_sha256", "selection_salt_receipt_sha256",
+        "upstream_source_pool_cache_set_sha256",
+        "selection_salt_receipt_sha256",
         "selected_archive_sha256", "selected_receipt_sha256",
         "selected_content_root_sha256", "storage_validation_root_sha256",
     ):
