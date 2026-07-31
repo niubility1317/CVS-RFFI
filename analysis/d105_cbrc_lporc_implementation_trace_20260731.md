@@ -3,8 +3,8 @@
 ## 1.状态
 
 - 设计基线commit：`776dc6a4`
-- 当前阶段：`R5_LOCAL_RELEASE_GO / P0=0 / P1=0 / P2=2 / PHASE1_R4_PREREGISTERED / NOT_LANDED`
-- N607：R3只完成受控落地，预启动canonical loader发现跨平台字节不一致；未detach，终态`LANDED_PRELAUNCH_HASH_MISMATCH / NO_PERFORMANCE_RESULT`
+- 当前阶段：`PHASE1_R4_STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / FIX_REQUIRED`
+- N607：R3停止于预启动Git archive字节门；R4通过全部预启动门并唯一detach一次，但首个tap-cache在零预测前触发PyTorch/NumPy对象边界异常，exit=1
 - 性能证据：无
 - D104：保持`PAUSED_BEFORE_LANDING / NO_PERFORMANCE_RESULT`
 
@@ -57,6 +57,8 @@ R4的211项本地结论在N607发布前被跨平台字节P0作废：冻结manife
 修复提交`46a65b3af2621d23bcc0a34631f45c8be17af4dd`生成的精确Git archive为4747项、242800640B、SHA256=`d313243c79eab306f988abadf67c2e207d380dba633f39a04e2cc63ffae7ed7a`。单根/成员类型检查通过；解包副本的canonical loader、54文件pyc和9个帮助入口通过，真实checkpoint无truth smoke SHA256=`a915eb66c4df926e6f738a4de636026fa29cb9bf3968c5fb6a15007ffc47ce84`。
 
 R5独立发布审查最终结论为`LOCAL_RELEASE_GO / P0=0 / P1=0 / P2=2`，receipt SHA256=`65f8f211c01b8b72b4f4d7a385d9c1747b16dae9f14bddd32457ccf2f402c822`。新的非覆盖Phase1运行预登记为`d105_phase1_sourceheld_d23469ba_20260731_r4`：源码只取提交`d23469ba54afe00c284aa9b78b025def2b22fc43`的精确Git archive；launcher `run_d105_phase1_stage1_d23469ba.sh` SHA256=`b72fef60ab14ec86e9b53cc3355d07ac50598a3d6788000b4962726c89271d35`，5624B、LF-only、`bash -n`通过；预登记提交=`03e3ff67003f16b6c39596a521f5bfdf0401850c`。该run尚未落地。
+
+R4远端实际PyTorch=`2.1.0+cu121`，checkpoint安全加载走已审查的`legacy_pickle_exact_frozen_sha_only`分支并闭合195个tensor。唯一detach PID=`2726125`后，首个`tap-cache`在`stage2_d105_phase1_bundle.py:1658`的`torch.from_numpy(batch)`触发`TypeError: expected np.ndarray (got numpy.ndarray)`；完整日志992B、exit=1，strict tap/prediction/truth/score/gate/component全部为0。运行后runtime仍54/54一致，无Target、Target25、authority或seal操作，GPU/进程/SSH均清理。R4终态为`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`，handoff SHA256=`f362f5051a71d0dd88552a815c2a82680b6157a537ef1ebc36b1d8e720a3811a`。
 
 ## 5.真实checkpoint派生特征无truth smoke
 

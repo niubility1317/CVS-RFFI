@@ -1,6 +1,6 @@
 # D105-CBRC-MB4+LPO-RC-qKNN单seed Target25实验报告
 
-状态：`R5_LOCAL_RELEASE_GO / PHASE1_R4_PREREGISTERED / TARGET25_NOT_STARTED`
+状态：`PHASE1_R4_SYSTEMIC_TECHNICAL_FAILURE / FIX_REQUIRED / TARGET25_NOT_STARTED / NO_D105_PERFORMANCE_RESULT`
 
 ## 1.实验标识
 
@@ -165,4 +165,6 @@ R2/R3完成authority和执行链后，独立复核在N607落地前发现两条�
 
 R4的`LOCAL_RELEASE_GO`已被跨平台发布字节P0作废。R5已在修复提交的精确Git archive上独立完成54文件canonical loader/编译、真实checkpoint安全加载策略、动态依赖guard、8项关键测试、9个帮助面和archive smoke，最终结论`LOCAL_RELEASE_GO / P0=0 / P1=0 / P2=2`，receipt SHA256=`65f8f211c01b8b72b4f4d7a385d9c1747b16dae9f14bddd32457ccf2f402c822`。
 
-新的Phase1运行已预登记为`d105_phase1_sourceheld_d23469ba_20260731_r4`，源码只允许使用提交`d23469ba54afe00c284aa9b78b025def2b22fc43`的精确Git archive，新run root为`/home/szu2070436088/2510044040/CV-SincNet/runs/d105_phase1_sourceheld_d23469ba_20260731_r4`。该run尚未落地；必须先完成Phase1 source-held闭环、独立审查、离线authority签名和formal seal，才允许启动Target25。D105仍无任何Target性能数据。
+新的Phase1运行曾预登记为`d105_phase1_sourceheld_d23469ba_20260731_r4`，源码只允许使用提交`d23469ba54afe00c284aa9b78b025def2b22fc43`的精确Git archive，新run root为`/home/szu2070436088/2510044040/CV-SincNet/runs/d105_phase1_sourceheld_d23469ba_20260731_r4`。预登记时该run尚未落地；只有完成Phase1 source-held闭环、独立审查、离线authority签名和formal seal，才允许启动Target25。D105仍无任何Target性能数据。
+
+R4随后在全部预启动门通过后唯一detach一次，但首个`tap-cache`在任何strict tap或预测前以`TypeError: expected np.ndarray (got numpy.ndarray)`退出。exit=1，所有Phase1正式artifact为0，未访问Target、未启动Target25、未执行authority签名或seal。R4永久关闭为`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`；完整交接SHA256=`f362f5051a71d0dd88552a815c2a82680b6157a537ef1ebc36b1d8e720a3811a`。只有完成本地修复、回归、独立审查、提交和新run预登记后，才可再次申请Phase1 release。

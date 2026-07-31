@@ -1,6 +1,6 @@
 # D105 Phase1 source-only压缩知识与source-held门实验报告
 
-状态：`R5_LOCAL_RELEASE_GO / PHASE1_R4_PREREGISTERED / NOT_LANDED / NO_PERFORMANCE_RESULT`
+状态：`PHASE1_R4_STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / FIX_REQUIRED / NO_PERFORMANCE_RESULT`
 
 ## 1.实验标识与目标
 
@@ -153,7 +153,10 @@ run-specific脚本按`tap-cache→predict-source-held→open-truth→score-sourc
 - 上述GPU状态仅是历史只读盘点，正式release前必须重新preflight；
 - R4独立审查的本地代码结论被跨平台发布字节P0作废；R5已把Git archive字节同一性作为硬门并达到最终`P0=0、P1=0、P2=2`；
 - 新Phase1 R4已用非覆盖run ID、精确源码提交、独立launcher、一次detach和禁止retry规则完成预登记，但尚未落地；
-- 当前尚无N607真实D105 strict tap、source-held score、formal asset或性能数据；预登记提交`03e3ff67003f16b6c39596a521f5bfdf0401850c`已完成，只有唯一runner可以落地。
+- R4在全部远端预启动门通过后唯一detach一次，PID=`2726125`，首个`tap-cache`在生成strict tap前以exit=1退出；完整日志992B，归一化异常指纹=`TypeError: expected np.ndarray (got numpy.ndarray)`，位置`stage2_d105_phase1_bundle.py:1658`；
+- R4的strict tap、prediction、truth-open、score、gate和component均为0，未访问Target、未启动Target25、未签名或seal；运行后runtime仍54/54一致，GPU、run进程与SSH均已清理；
+- R4永久关闭为`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`，不得重启、修补、覆盖或复用；完整交接SHA256=`f362f5051a71d0dd88552a815c2a82680b6157a537ef1ebc36b1d8e720a3811a`；
+- 当前必须先在本地修复NumPy/PyTorch对象边界、完成回归、独立审查、Git提交和新的非覆盖run预登记，才可再次申请release。
 
 ## 9.R5发布门
 
@@ -172,6 +175,7 @@ run-specific脚本按`tap-cache→predict-source-held→open-truth→score-sourc
 |R4预登记提交|`03e3ff67003f16b6c39596a521f5bfdf0401850c`；包含独立launcher及运行边界|
 |N607 R3 landing|失败于预启动哈希门；无detach、无性能；run永久封存|
 |N607 R4预登记|`d105_phase1_sourceheld_d23469ba_20260731_r4`；新run root；源码只取`d23469ba`精确archive；尚未落地|
+|N607 R4终态|唯一detach=1；exit=1；首个tap-cache在零prediction前触发PyTorch/NumPy对象边界异常；全部正式artifact为0；`NO_PERFORMANCE_RESULT`|
 
 生产私钥不得进入Git、报告、N607或formal asset。若无法获得与固定公钥匹配的独立签名，必须保持`NO_TARGET_LAUNCH`，不能退回unsigned JSON。
 
