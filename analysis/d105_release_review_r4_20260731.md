@@ -1,5 +1,7 @@
 # D105 R4独立release审查收据
 
+> 已作废：N607 R3预启动canonical loader发现冻结manifest与Git archive在24/54个runtime文件上字节不一致。该run未detach、无性能结果；必须以LF规范化后的新锁完成R5独立审查。
+
 状态：`LOCAL_RELEASE_GO（仅同版本本地发布）`
 
 审查日期：2026-07-31

@@ -1,6 +1,6 @@
 # D105-CBRC-MB4+LPO-RC-qKNN单seed Target25实验报告
 
-状态：`R4_LOCAL_RELEASE_GO / P0=0 / P1=0 / P2=2 / NOT_LANDED / NO_PERFORMANCE_RESULT`
+状态：`PHASE1_R3_PRELAUNCH_HASH_MISMATCH / R5_BYTE_PARITY_REPAIR_LOCAL_VERIFIED / TARGET25_NOT_STARTED`
 
 ## 1.实验标识
 
@@ -156,9 +156,10 @@ R2/R3完成authority和执行链后，独立复核在N607落地前发现两条�
 - 独立`TARGET25_PREPARE`签名域精确绑定matrix、plan、context、prepare receipt、Git commit、run ID、候选锁及N607 nonce ledger identity；非dry-run prediction在执行前消费nonce，dry-run/score只验签；
 - Phase1和Target25均以“本机账本绝对路径＋run ID＋签名域”重算跨主机ledger identity，拒绝替换账本路径、run或签名域；
 - development claim不可升级，K5嵌套、query root一致、25/300/600覆盖和600预测后才开truth；
-- 54文件candidate runtime closure明确排除两个legacy exporter、通用`checkpoint_loading`、SSDG训练栈、无关paper路径和`model_modified`探测，SHA256=`48ce446cb406aad67902c80547a48ffbd95d496c728725f2d99fc51b3433f9da`；
-- candidate method lock SHA256=`cdae572cad22721351620828cd1ec36ae1d3432d4b04c70a4c60359a64339d2a`；
-- `ssr-gpu`统一回归211项、54文件`py_compile`、5个CLI及4个关键子命令参数面、canonical loader和差异检查通过；
-- 同代真实checkpoint无query R5 smoke收据SHA256=`347a0b659d8db3b44e8bacbe0e9c5c613de9827f1d77862917a453e350f2d338`；query fit/update=0/0、Target访问=false、性能计算=false。
+- R3只完成N607受控落地，canonical loader在py_compile/checkpoint/detach前发现24/54项manifest与Git archive字节不一致；pipeline pid/log/exit始终不存在，终态为`LANDED_PRELAUNCH_HASH_MISMATCH / NO_PERFORMANCE_RESULT`；
+- 根因为Windows工作树CRLF与Git blob LF不一致；`.gitattributes`现固定`*.py`/`*.sh`为LF，54个runtime文件与当前Git blob逐项SHA一致，并新增CRLF负测；
+- repaired candidate runtime SHA256=`dc315ffe2860a9d76493ba5284aff6dfb9c248330613717a6614de6997da1cfc`；
+- repaired candidate method lock SHA256=`ac796d83e92ea1e8b5f0efa6e8a303f9eb989ba1f876219784cda1ac7363a030`；
+- `ssr-gpu`统一回归212项通过；同代真实checkpoint无query R6 smoke收据SHA256=`a954896a5b3e3db91334ac564d967705568c892b5d2b7c6dbe42111a03d7c76c`；query fit/update=0/0、Target访问=false、性能计算=false。
 
-这些仍只是本地实现证据。R4独立结论为`LOCAL_RELEASE_GO / P0=0 / P1=0 / P2=2`；最终receipt落盘和新本地Git提交尚待完成，N607 Phase1门与Target25均尚未执行。两个P2分别是PyTorch弃用警告，以及旧PyTorch缺少`safe_globals`时保留精确SHA绑定的兼容反序列化分支；唯一runner必须在N607预检中记录实际加载策略。
+R4的`LOCAL_RELEASE_GO`已被跨平台发布字节P0作废。R5必须在修复提交的精确Git archive上重新完成54文件canonical loader、py_compile、checkpoint加载策略和独立复审；此前不得新建Phase1 run，更不得启动Target25。D105仍无任何Target性能数据。

@@ -1,6 +1,6 @@
 # D105 Phase1 source-only压缩知识与source-held门实验报告
 
-状态：`R4_LOCAL_RELEASE_GO / PHASE1_R3_PREREGISTERED / NOT_LANDED / NO_PERFORMANCE_RESULT`
+状态：`PHASE1_R3_LANDED_PRELAUNCH_HASH_MISMATCH / R5_BYTE_PARITY_REPAIR_LOCAL_VERIFIED / NO_PERFORMANCE_RESULT`
 
 ## 1.实验标识与目标
 
@@ -65,9 +65,9 @@ source weak-IQ
 |类型|路径|
 |---|---|
 |旧run ID|`d105_phase1_sourceheld_8f08a46f_20260731_r2`；从未落地，因45文件闭包遗漏而作废|
-|新run ID|`d105_phase1_sourceheld_2eaa1b11_20260731_r3`|
-|Git commit|`2eaa1b11b4d720673fa999025939058918efc63d`；R4闭包实现提交|
-|run root|`/home/szu2070436088/2510044040/CV-SincNet/runs/d105_phase1_sourceheld_2eaa1b11_20260731_r3`|
+|失败run ID|`d105_phase1_sourceheld_2eaa1b11_20260731_r3`；永久停止于预启动哈希门|
+|失败run Git提交|实现`2eaa1b11b4d720673fa999025939058918efc63d`；预登记`bf9406429cb5540e785bc3e61434c682ab548bb9`|
+|失败run root|`/home/szu2070436088/2510044040/CV-SincNet/runs/d105_phase1_sourceheld_2eaa1b11_20260731_r3`；保留且不得覆盖、恢复或复用|
 |source snapshot|`<run-root>/source`|
 |input receipts|`<run-root>/input`|
 |strict tap|`<run-root>/output/strict_tap`|
@@ -77,13 +77,13 @@ source weak-IQ
 |formal sealed asset|`<run-root>/output/formal_asset`|
 |main log/PID/exit|`<run-root>/logs/pipeline_stage1.log`、`pipeline_stage1.pid`、`pipeline_stage1.exit`|
 |GPU|`cuda:0`；仅strict tap执行backbone，source-held矩阵为冻结解析执行|
-|candidate runtime|`48ce446cb406aad67902c80547a48ffbd95d496c728725f2d99fc51b3433f9da`；54文件|
-|candidate method lock|`cdae572cad22721351620828cd1ec36ae1d3432d4b04c70a4c60359a64339d2a`|
-|R4 review receipt|SHA256=`af312331c81c638240c8d8245f69513d4c9f8bf63fe4b8adff0f1e63e414fc51`；`P0=0、P1=0、P2=2`|
+|R5 repaired candidate runtime|`dc315ffe2860a9d76493ba5284aff6dfb9c248330613717a6614de6997da1cfc`；54文件，全部与当前Git blob字节一致|
+|R5 repaired candidate method lock|`ac796d83e92ea1e8b5f0efa6e8a303f9eb989ba1f876219784cda1ac7363a030`|
+|R4 review receipt|历史SHA256=`af312331c81c638240c8d8245f69513d4c9f8bf63fe4b8adff0f1e63e414fc51`；被N607预启动字节不一致证据作废|
 |D102 revocation manifest/signature|`99393aa21b30cc654ba784ecf8a60b1ac8497e67d7fdefc3ee12872133293734`/`53d138b36f7688431d364f2e6291e86aefb9c9fc3e84697e288f0aa813b81c58`|
-|stage1 launcher|`run_d105_phase1_stage1_2eaa1b11.sh`；SHA256=`6d540868f3347633846ffce92a2bc424e3f63593fc9a0b16333de3f7aad938de`；5624B；LF-only；`bash -n`通过|
+|失败run stage1 launcher|`run_d105_phase1_stage1_2eaa1b11.sh`；SHA256=`6d540868f3347633846ffce92a2bc424e3f63593fc9a0b16333de3f7aad938de`；从未执行|
 
-旧`r2`命令、路径和launcher不得执行。唯一runner的精确启动命令为：
+旧`r2`和失败`r3`的命令、路径与launcher均不得执行。`r3`原预登记命令为：
 
 ```bash
 RUN=/home/szu2070436088/2510044040/CV-SincNet/runs/d105_phase1_sourceheld_2eaa1b11_20260731_r3
@@ -92,7 +92,7 @@ nohup bash "$RUN/input/run_d105_phase1_stage1_2eaa1b11.sh" \
 printf '%s\n' "$!" >"$RUN/logs/pipeline_stage1.pid"
 ```
 
-本报告与launcher完成第二次本地提交后才允许交给唯一runner。该第二次提交只登记运行身份和launcher，不改变`2eaa1b11`中已审查的54文件runtime与方法锁。
+该命令从未执行：`pipeline_stage1.pid/log/exit`始终不存在。失败run只完成Git archive、公开input和source落地；canonical loader在py_compile、checkpoint加载与detach前发现24/54项哈希不一致。完整交接SHA256=`cc969b37754280d9a78bbb7ff09aceacbd458809b90b2790a7770f6448136b23`。修复后必须新建run ID和launcher。
 
 run-specific脚本按`tap-cache→predict-source-held→open-truth→score-source-held→derive-gate→build component`固定顺序执行，任一步失败即退出并以不可覆盖方式写`pipeline_stage1.exit`。脚本不封存formal asset；stage1结束后必须先回收完整component/score/gate，由独立审查确认source-held门，再由离线authority绑定N607 nonce ledger identity、run ID、commit和component签名。生产私钥不进入N607。
 
@@ -113,28 +113,31 @@ run-specific脚本按`tap-cache→predict-source-held→open-truth→score-sourc
 - formal authority签名绑定N607预先创建的nonce ledger identity；该identity由N607账本绝对路径、run ID和签名域规范化产生，离线签名端只接收摘要，封存端必须在消费nonce前以本机路径重算一致；
 - D102r6的bundle manifest、payload、seal、content root、method lock、runtime、held score和tap archive真实SHA均进入内容撤销项，改名副本不能绕过；
 - R4独立审查进一步发现模型工厂在来源校验前探测清单外`model_modified.py`，判为新P0；现已改为确定性导入清单内`model.py`并增加负测，中间锁与R4 smoke随即作废；
-- candidate runtime manifest现绑定54个实际可达文件，明确移除通用`checkpoint_loading`、`model_modified`探测并纳入最小模型与真实feature-smoke依赖；最终SHA256=`48ce446cb406aad67902c80547a48ffbd95d496c728725f2d99fc51b3433f9da`；
-- candidate method lock显式固定4轮IRLS、任务等质量、K1零系数、FP16部署和Target25开发声明；最终SHA256=`cdae572cad22721351620828cd1ec36ae1d3432d4b04c70a4c60359a64339d2a`；
-- `ssr-gpu`统一回归211项全部通过；54文件`py_compile`、5个正式CLI及4个关键子命令参数面和canonical loader通过；
-- 同代真实checkpoint无query R5 smoke收据SHA256=`347a0b659d8db3b44e8bacbe0e9c5c613de9827f1d77862917a453e350f2d338`；400个source-held meta step完成，K1恒等成立，query fit/update=0/0，Target访问=false，性能计算=false；
+- R3在N607只完成受控落地，随后canonical loader发现24/54项manifest期望SHA与Git archive实际字节不一致；未执行py_compile、checkpoint加载或detach，pipeline三件套始终不存在，终态为`LANDED_PRELAUNCH_HASH_MISMATCH / NO_PERFORMANCE_RESULT`；
+- 根因是冻结manifest使用Windows工作树CRLF字节，而Linux部署使用Git blob LF字节；本地已把全部54文件与Git blob逐项对照，32个受影响工作树文件仅存在CRLF→LF差异，未发现非行尾内容漂移；
+- `.gitattributes`新增`*.py text eol=lf`，54个runtime文件全部规范为LF；新增回归要求Python/Shell属性固定且runtime中无CRLF；
+- repaired candidate runtime SHA256=`dc315ffe2860a9d76493ba5284aff6dfb9c248330613717a6614de6997da1cfc`，54/54项与当前Git blob SHA一致；method lock SHA256=`ac796d83e92ea1e8b5f0efa6e8a303f9eb989ba1f876219784cda1ac7363a030`；
+- `ssr-gpu`统一回归212项全部通过；R5独立release复审和精确Git archive验证待完成；
+- 同代真实checkpoint无query R6 smoke收据SHA256=`a954896a5b3e3db91334ac564d967705568c892b5d2b7c6dbe42111a03d7c76c`；400个source-held meta step完成，K1恒等成立，query fit/update=0/0，Target访问=false，性能计算=false；
 - 2026-07-31 14:24 HKT只读N607 preflight通过，8张RTX 3090均空闲；盘点结束后本地无残留SSH进程或到N607/bridge的ESTABLISHED连接；
 - 上述GPU状态仅是历史只读盘点，正式release前必须重新preflight；
-- R4独立审查收据已落盘，结论`P0=0、P1=0、P2=2`；54文件闭包实现与审查证据提交为`2eaa1b11b4d720673fa999025939058918efc63d`；
-- 当前尚无N607真实D105 strict tap、source-held score、formal asset或性能数据；新`r3`运行预登记完成第二次本地提交后，才可由唯一runner执行实时preflight。
+- R4独立审查的本地代码结论被跨平台发布字节P0作废；R5必须把Git archive字节同一性作为硬门；
+- 当前尚无N607真实D105 strict tap、source-held score、formal asset或性能数据；R5复审、修复提交和新run预登记全部完成前，禁止重新落地。
 
-## 9.R4发布门
+## 9.R5发布门
 
 |门|当前状态|
 |---|---|
-|统一代码/负测|211 passed|
-|正式执行闭包|54文件`py_compile`通过；动态legacy exporter与通用训练loader不可达；缺失/漂移逐项失败|
-|真实checkpoint无query smoke|PASS；R5收据SHA256=`347a0b659d8db3b44e8bacbe0e9c5c613de9827f1d77862917a453e350f2d338`；仅技术证据|
-|candidate runtime/method lock|`48ce446c…3f9da`/`cdae572c…339d2a`；canonical loader通过|
+|统一代码/负测|212 passed|
+|正式执行闭包|54文件LF规范化；工作树与当前Git blob 54/54 SHA一致；缺失/漂移/CRLF逐项失败|
+|真实checkpoint无query smoke|PASS；R6收据SHA256=`a954896a…d7c76c`；仅技术证据|
+|candidate runtime/method lock|`dc315ffe…a1cfc`/`ac796d83…3a030`；本地canonical loader通过|
 |可信外部authority签名|代码闭合；尚未生成生产signature|
 |签名D102 revocation|生产内容撤销manifest/signature已本地生成并用固定公钥验签；私钥未进入工作树|
-|R4独立release复审|`LOCAL_RELEASE_GO / P0=0 / P1=0 / P2=2`；receipt SHA256=`af312331…14fc51`|
-|本地Git提交|实现与审查证据=`2eaa1b11b4d720673fa999025939058918efc63d`；run预登记提交待完成|
-|N607 landing|未执行|
+|R4独立release复审|已被N607预启动Git archive字节不一致P0作废|
+|R5独立release复审|待修复提交及精确Git archive复核|
+|本地Git提交|LF/manifest/test/report修复待提交|
+|N607 R3 landing|失败于预启动哈希门；无detach、无性能；run永久封存|
 
 生产私钥不得进入Git、报告、N607或formal asset。若无法获得与固定公钥匹配的独立签名，必须保持`NO_TARGET_LAUNCH`，不能退回unsigned JSON。
 

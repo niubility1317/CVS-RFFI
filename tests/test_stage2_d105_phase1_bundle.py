@@ -1105,6 +1105,19 @@ def test_optional_model_families_remain_fail_closed_when_dependency_is_missing(
         model_dual_cvsincnet.FeatureBackboneAdapter(family, num_classes=3)
 
 
+def test_d105_runtime_source_bytes_are_lf_canonical_for_git_archive() -> None:
+    """The signed filesystem bytes must equal Linux Git-archive bytes."""
+
+    code_root = Path(phase1.__file__).resolve().parents[1]
+    attributes = (code_root.parent / ".gitattributes").read_text(
+        encoding="utf-8"
+    ).splitlines()
+    assert "*.py text eol=lf" in attributes
+    assert "*.sh text eol=lf" in attributes
+    for relative_path in phase1.D105_CANDIDATE_RUNTIME_FILES:
+        assert b"\r\n" not in (code_root / relative_path).read_bytes(), relative_path
+
+
 @pytest.mark.parametrize("relative_path", phase1.D105_CANDIDATE_RUNTIME_FILES)
 def test_candidate_runtime_closure_rejects_every_missing_listed_member(
     tmp_path: Path, relative_path: str

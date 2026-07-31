@@ -3,8 +3,8 @@
 ## 1.状态
 
 - 设计基线commit：`776dc6a4`
-- 当前阶段：`R4_LOCAL_RELEASE_GO / P0=0 / P1=0 / P2=2 / NOT_LANDED`
-- N607：未预检、未同步、未创建远端目录、未启动
+- 当前阶段：`R5_BYTE_PARITY_REPAIR_LOCAL_VERIFIED / INDEPENDENT_REVIEW_PENDING`
+- N607：R3只完成受控落地，预启动canonical loader发现跨平台字节不一致；未detach，终态`LANDED_PRELAUNCH_HASH_MISMATCH / NO_PERFORMANCE_RESULT`
 - 性能证据：无
 - D104：保持`PAUSED_BEFORE_LANDING / NO_PERFORMANCE_RESULT`
 
@@ -50,15 +50,17 @@ DA审查GO只证明本地实现G0，不证明外部Phase1 validator签名权威�
 
 旧45文件闭包在独立审查中被作废：tap-cache可动态进入两个legacy exporter，query evaluator可经通用`checkpoint_loading`进入训练栈；首次54文件修复后又发现模型工厂会在来源校验前探测清单外`model_modified.py`。这些问题均在N607落地前发现，未产生远端状态或性能结果。
 
-当前R4稳定版结果：10个指定D105测试文件共`211 passed，0 failed`；54文件正式执行闭包全部`py_compile`通过；5个正式CLI及`predict/score/sign-authority/sign-target25-prepare`关键参数面退出码均为0。模型工厂确定性导入清单内`model.py`，tap-cache和query evaluator共享D105最小checkpoint重建，负测禁止legacy exporter、SSDG训练栈、通用`checkpoint_loading`、无关paper路径和`model_modified`。
+R4的211项本地结论在N607发布前被跨平台字节P0作废：冻结manifest基于Windows工作树CRLF，Git archive部署为LF，导致24/54项远端SHA不一致。pipeline pid/log/exit始终不存在，未执行py_compile、checkpoint加载或任何性能流程。
+
+当前R5修复把`.py`/`.sh`固定为LF，并要求全部54个runtime文件无CRLF；工作树与当前Git blob 54/54项SHA一致。10个指定D105测试文件共`212 passed，0 failed`。repaired runtime SHA256=`dc315ffe2860a9d76493ba5284aff6dfb9c248330613717a6614de6997da1cfc`，method lock SHA256=`ac796d83e92ea1e8b5f0efa6e8a303f9eb989ba1f876219784cda1ac7363a030`。
 
 ## 5.真实checkpoint派生特征无truth smoke
 
 凭据：
 
-`E:\type10-7\automation_reports\CV-SincNet\d105_cbrc_lporc_local_smoke_20260731_r5\real_feature_no_truth_smoke.json`
+`E:\type10-7\automation_reports\CV-SincNet\d105_cbrc_lporc_local_smoke_20260731_r6\real_feature_no_truth_smoke.json`
 
-凭据SHA256：`347a0b659d8db3b44e8bacbe0e9c5c613de9827f1d77862917a453e350f2d338`
+凭据SHA256：`a954896a5b3e3db91334ac564d967705568c892b5d2b7c6dbe42111a03d7c76c`
 
 |项目|结果|
 |---|---|
@@ -75,7 +77,7 @@ DA审查GO只证明本地实现G0，不证明外部Phase1 validator签名权威�
 |性能计算|false|
 |Target访问|false|
 
-本次smoke绑定冻结runtime SHA256=`48ce446cb406aad67902c80547a48ffbd95d496c728725f2d99fc51b3433f9da`和method lock SHA256=`cdae572cad22721351620828cd1ec36ae1d3432d4b04c70a4c60359a64339d2a`，耗时40.812秒。它复用已封存的checkpoint派生真实特征，没有重新从原始IQ执行backbone前向；它是实际checkpoint字节＋真实派生特征的机械闭环证据，不是Target性能、正式Phase2 row或完整runner证据。
+本次smoke绑定冻结runtime SHA256=`dc315ffe2860a9d76493ba5284aff6dfb9c248330613717a6614de6997da1cfc`和method lock SHA256=`ac796d83e92ea1e8b5f0efa6e8a303f9eb989ba1f876219784cda1ac7363a030`，耗时39.547秒。它复用已封存的checkpoint派生真实特征，没有重新从原始IQ执行backbone前向；它是实际checkpoint字节＋真实派生特征的机械闭环证据，不是Target性能、正式Phase2 row或完整runner证据。
 
 ## 6.历史性能定位
 
