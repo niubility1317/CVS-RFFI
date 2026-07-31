@@ -1,6 +1,6 @@
 # D105 Phase1 source-only压缩知识与source-held门实验报告
 
-状态：`PHASE1_R6_STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / D105-FTU2_COMMITTED / ARCHIVE_SMOKE_PENDING / NO_PERFORMANCE_RESULT`
+状态：`PHASE1_R6_STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / D105-FTU2_ARCHIVE_VERIFIED / R7_LOCAL_PREREGISTERING / NO_PERFORMANCE_RESULT`
 
 ## 1.实验标识与目标
 
@@ -305,3 +305,24 @@ FTU2现已完成固定256分块、末批零填充/切回、receipt v2绑定和`t
 统一10文件回归238/238通过。更新后的54文件canonical runtime SHA256=`8797de12f035db609aeb6f453f096571f216d0d514d6705344e763f5ec63a498`，method lock SHA256=`9a87e51de4d775ff2ea05e59654afaa62844edaf2def942d8f73c8e289ea61e6`。独立R11最终裁决为`GO / P0=0 / P1=0 / P2=0`；首轮1个P1和3个P2均已关闭。详见`analysis/d105_ftu2_implementation_validation_20260731.md`与`analysis/d105_ftu2_review_r11_20260731.md`。
 
 本地实现提交=`2d948ce981b9008522f825cfe6d868bce08cb624`。该提交不授权N607。下一门是从该提交生成精确archive，在解包副本中复跑54/54、CLI、真实checkpoint固定256 tap和完整8400行reference parity技术smoke；通过后才能创建新run ID和唯一runner。
+
+## 16.D105-FTU2精确archive与R7预登记
+
+提交`2d948ce981b9008522f825cfe6d868bce08cb624`的精确archive已独立验证通过。archive SHA256=`e58240a0a358893c0c90ce0b3cb9c202eed9e6907272fa0d587d160f3fb8ec23`，242964480B、4770成员；成员安全、54/54四方SHA、LF、独立pyc、canonical runtime/method、9/9帮助面和238/238回归全部通过。真实checkpoint在1/208/256真实行下相对独立256零填充reference的三路max_abs=0，8400批合同闭合为33次forward、末批208＋48。
+
+R7冻结为：
+
+|字段|冻结值|
+|---|---|
+|run ID|`d105_phase1_sourceheld_2d948ce9_20260731_r7`|
+|run root|`/home/szu2070436088/2510044040/CV-SincNet/runs/d105_phase1_sourceheld_2d948ce9_20260731_r7`|
+|source commit|`2d948ce981b9008522f825cfe6d868bce08cb624`|
+|archive|SHA256=`e58240a0a358893c0c90ce0b3cb9c202eed9e6907272fa0d587d160f3fb8ec23`；242964480B|
+|runtime/method|`8797de12f035db609aeb6f453f096571f216d0d514d6705344e763f5ec63a498`/`9a87e51de4d775ff2ea05e59654afaa62844edaf2def942d8f73c8e289ea61e6`|
+|launcher|`run_d105_phase1_stage1_2d948ce9.sh`；SHA256=`95081f1e20aabc7f89a970b667bae223926949dde26edd0a0e660acd8157406a`；5624B；LF=123；CRLF=0；`bash -n`通过|
+|GPU|`cuda:0`；正式preflight后才可确认|
+|fresh-run retry|`NO`|
+
+R7必须使用全新root和唯一terra-max runner，不得读取或复用R3—R6的source、input、output、PID或日志。首次正式tap必须对全部8400行通过reference parity；否则R7技术失败并永久关闭。只有tap、prediction、truth-open、score、gate和component完整闭合后，才进入独立component审查；Target25仍禁止启动。
+
+与R6启动脚本逐行比较只存在两个冻结差异：run root从R6改为上述R7全新root，tap-cache的`--batch-size`从128改为256。其余命令、参考archive、门阈值、输入和阶段顺序不变。

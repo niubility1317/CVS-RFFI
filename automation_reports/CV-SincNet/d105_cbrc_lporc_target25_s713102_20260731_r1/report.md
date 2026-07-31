@@ -1,6 +1,6 @@
 # D105-CBRC-MB4+LPO-RC-qKNN单seed Target25实验报告
 
-状态：`PHASE1_R6_SYSTEMIC_TECHNICAL_FAILURE / D105-FTU2_COMMITTED / ARCHIVE_SMOKE_PENDING / TARGET25_NOT_STARTED / NO_D105_PERFORMANCE_RESULT`
+状态：`PHASE1_R6_SYSTEMIC_TECHNICAL_FAILURE / D105-FTU2_ARCHIVE_VERIFIED / R7_LOCAL_PREREGISTERING / TARGET25_NOT_STARTED / NO_D105_PERFORMANCE_RESULT`
 
 ## 1.实验标识
 
@@ -184,3 +184,5 @@ R3/R4/R5三轮正式回顾已完成。真实checkpoint复现证明Phase1接入�
 R6唯一detach后在8400行strict tap与reference dual的数值parity门失败，prediction、truth、score、gate、component和formal asset均为0，因此永久关闭为`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。全量差分将根因闭合为参考固定256补零合同与R6可变batch=128合同不一致；异常严格集中在最后80行partial batch。`D105-FTU2`只修复固定256容量、末批补零/切回和receipt绑定，不改模型、方法或阈值。Target25继续保持未启动。
 
 FTU2本地实现现已通过238/238统一回归和独立`GO / P0=0 / P1=0 / P2=0`审查，runtime/method更新为`8797de12…a498`/`9a87e51d…61e6`，提交=`2d948ce981b9008522f825cfe6d868bce08cb624`。该结论只允许进入精确archive smoke；Phase1尚无新formal asset，Target25继续保持未启动。
+
+FTU2精确archive已通过54/54、9/9帮助面、238/238回归、真实checkpoint固定256和8400批合同验证。R7冻结为`d105_phase1_sourceheld_2d948ce9_20260731_r7`，只用于重新完成Phase1 source-held闭环；首次8400行reference parity仍是N607硬门。Target25继续保持未启动。
