@@ -7,7 +7,7 @@
 |operator|Codex主代理|
 |设计来源|`CVS-RFFI_全部消融实验设计_Phase1_Phase2_20260728.md`|
 |目标|逐项完成设计报告中的Phase1、Phase2和联合消融，在N607上使用8张GPU×每卡2进程执行正式GPU矩阵|
-|当前总状态|`IN_PROGRESS / T1_TECHNICAL_ARTIFACTS_CLOSED / FULL_DESIGN_NOT_COMPLETE`|
+|当前总状态|`IN_PROGRESS / COMPLETED_MATRICES_ANALYZED / NEW_RELEASE_PAUSED_BY_USER`|
 
 ## 执行边界
 
@@ -90,3 +90,14 @@ Stage2-C的19个arm为：`P2-FULL`、7个同权限基线、`P2-A0/P2-B0/P2-C3/P2
 |停止规则|仅P0协议/安全违规，或至少两个不同row在prediction前产生相同确定性异常指纹|
 |成功标准|冻结矩阵全部row终态、prediction、score、completion和runner summary闭合，失败0、P0=0|
 |监控|启动、首row/首wave、25%/50%/75%/100%或真实异常；不高频轮询|
+
+## 2026-07-31已完成矩阵分析结论
+
+|矩阵|闭合状态|主要结论|设计判定|
+|---|---|---|---|
+|Phase1 T1|30/30成功|A/B/C未形成稳定独立收益；D对LEO稳定性贡献明确|仅D达到后续触发证据|
+|Phase1标签率|19/19逻辑闭合|rho从0.005提高到0.10时总体、严格、最差类和卫星指标单调改善|标签率是强主效应|
+|Phase2 States|325/325成功|原型是主体；对角度量仅提供小增益；K≥2后状态更新收益明显|状态矩阵分析完成|
+|Stage2-C|1350/1350物理、1425/1425逻辑闭合|A为决定性模块；B无独立贡献；C/E小效应；D混杂；F仅证明存储压缩|筛选分析完成，不能外推为确认性结论|
+
+用户已明确要求暂停发布新实验。后续设计缺口和确认性矩阵保留为未完成项，但在收到新的明确指令前，不执行同步、发布或启动。

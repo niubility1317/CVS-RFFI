@@ -10,7 +10,7 @@
 |目标|修复v1的prototype校准导出故障后，完成0.005、0.01、0.02、0.05标签率14个训练行；0.10继续复用Phase1 T1中的5个`P1-FULL`完整行|
 |比较对象|同一`P1-FULL`配置，仅改变`f_L/f_U`，固定`f_V=0.30`|
 |环境|本地`ssr-gpu`；远端`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`|
-|当前状态|`ARTIFACTS_COMPLETE / ANALYSIS_PENDING`|
+|当前状态|`ANALYZED / LABEL_MATRIX_COMPLETE`|
 
 ## 与v1的关系
 
@@ -233,3 +233,19 @@ P0协议/覆盖风险立即停止本run的后续派发；至少两个不同执�
 |SSH清理|本地`ssh.exe=0`；N607及bridge的ESTABLISHED TCP22连接均为0|
 
 封存计划中的`source_status=RUNNING_PENDING_ARTIFACTS_COMPLETE`是启动时写入且未回写的静态字段；T1最终summary和5条逐行artifact已独立证明引用闭合。技术终态为`ARTIFACTS_COMPLETE / ANALYSIS_PENDING`；标签率同row性能曲线和最终判定将在全量结果分析阶段补充。
+
+## 2026-07-31标签率全量分析
+
+ρ=0.10引用P1-FULL五个seed；其余14条为本run新训练。指标单位为%，Δstrict按共同seed相对ρ=0.10配对。
+
+|ρ|n|overall|strict|receiver floor|sat strict floor|Δstrict及95%CI|pseudo precision/coverage|
+|---:|---:|---:|---:|---:|---:|---:|---:|
+|0.005|3|62.499±5.569|58.556±6.090|35.308±4.840|39.651±1.153|−22.015；[−28.937,−15.267]|NA/0|
+|0.01|5|76.388±1.413|71.197±1.692|59.647±6.442|44.540±4.017|−9.651；[−11.991,−7.296]|1.0000/0.0004|
+|0.02|3|82.692±2.574|74.704±3.117|63.169±4.039|50.481±1.879|−5.867；[−7.075,−4.357]|0.9976/0.0035|
+|0.05|3|84.917±0.947|77.634±0.812|67.325±3.583|56.329±1.878|−2.937；[−4.745,−1.748]|0.9988/0.0071|
+|0.10|5|86.818±1.009|80.848±1.625|69.698±1.942|62.171±1.096|0|0.9998/0.0084|
+
+四个低标签率相对ρ=0.10的共同seed差值全部为负。overall、strict、receiver floor和satellite floor随ρ增加而单调改善。ρ=0.005方差最大，且个别epoch全部batch被非有限梯度保护跳过。现有证据不支持“极低标签率几乎无损”。
+
+完整训练稳定性、资源和Phase1主消融联合解释见`cvs_full_ablation_completed_matrix_analysis_20260731/report.md`。本run状态更新为`ANALYZED / LABEL_MATRIX_COMPLETE`。
