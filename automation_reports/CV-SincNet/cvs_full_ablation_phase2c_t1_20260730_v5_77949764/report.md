@@ -9,7 +9,7 @@
 |operator|Codex主代理；N607 sole launch owner=`stage2_t1_n607_release`|
 |目标|只读复用v4已完整闭合的641个physical prediction，补跑剩余709个physical，最终闭合设计报告全部1425个Stage2-C logical row|
 |正式代码commit|`779497647f1e616f1a143121635fdc183f3ec0bb`|
-|当前状态|`LOCAL_VERIFIED / READY_FOR_N607_HANDOFF`|
+|当前状态|`ARTIFACTS_COMPLETE / READY_FOR_ANALYSIS`|
 
 ## 假设与比较目标
 
@@ -232,3 +232,24 @@ PYTHONPATH="$release/code" nohup /home/szu2070436088/.conda/envs/CVS-RFFI/bin/py
 |连接清理|direct preflight通过；短SSH结束后本地`ssh.exe=0`、N607/bridge`ESTABLISHED TCP22=0`|
 
 判定：v5已健康跨过75%里程碑，继续原矩阵运行，不修改、不重启、不停止。下一次仅在100%里程碑或真实技术异常时检查。
+
+## 2026-07-31 100%终态审计
+
+`2026-07-31 11:35-11:39 CST`执行唯一一次100%候选检查与完整终态审计。审计只读取v5的sealed plan、runner summary、terminal status、row日志、prediction receipt、prediction artifact、score及completion receipt的存在性、可读性、只读属性和非性能控制字段；未读取或解释accuracy、H、BA等性能值，未重验数据集，未执行跨批次哈希对齐，也未修改、重启或停止服务器任务。
+
+|终态检查项|结果|
+|---|---|
+|总体状态|`ARTIFACTS_COMPLETE / READY_FOR_ANALYSIS`|
+|physical闭合|1350/1350为`COMPLETE`；`FAILED=0`；`NOT_LAUNCHED_SYSTEMIC_STOP=0`|
+|logical闭合|1425/1425 score可读且只读；1425/1425 completion为`PASS`、绑定同一logical/physical且`performance_values_present=false`|
+|fresh/reuse|709/709 fresh prediction＋receipt有效且只读；641/641 reuse prediction＋receipt有效且只读|
+|row终态|1350/1350 status JSON可读；1350/1350 predictor/scorer exit闭合；1350/1350 row日志可读|
+|prediction面|1350/1350 prediction artifact可读且只读；所有receipt均为`PREDICTIONS_COMPLETE_TRUTH_UNOPENED`、`query_truth_opened=false`、`fit_query_rows_used=0`|
+|runner summary|计数与sealed plan、1350个terminal status一致；`systemic_stop=false`；`failure_fingerprints={}`；`thread_errors=[]`|
+|协议与异常|P0=0；terminal status异常指纹数0；失败数0|
+|8×2资源证据|sealed plan为8张GPU×每卡2槽，16个lane均有任务，每lane分配84-85个physical；终态GPU compute进程0|
+|自然退出|launcher PID=`1935906`已不存在；v5 main/worker进程数0；未执行终止或重启|
+|driver|`runner_driver.out`为存在且可读的0字节普通文件；runner不输出stdout，终态由完整runner summary和逐row回执证明|
+|连接清理|direct read-only preflight通过；所有短SSH结束后`ssh.exe=0`、N607/bridge`ESTABLISHED TCP22=0`|
+
+终态判定：v5补跑已自然完成，设计冻结的Stage2-C完整物理执行面与逻辑评分面均闭合，技术失败和协议异常均为0。当前只完成技术artifact闭合，尚未读取性能或形成候选结论；后续由主代理执行设计报告覆盖审计和same-row结果分析。
