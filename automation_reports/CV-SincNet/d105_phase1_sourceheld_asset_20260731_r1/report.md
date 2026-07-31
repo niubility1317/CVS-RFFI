@@ -1,6 +1,6 @@
 # D105 Phase1 source-only压缩知识与source-held门实验报告
 
-状态：`R7_LOCAL_RELEASE_GO / ARCHIVE_SMOKE_PASS / PHASE1_R5_PREREG_PENDING / NO_PERFORMANCE_RESULT`
+状态：`R7_LOCAL_RELEASE_GO / ARCHIVE_SMOKE_PASS / PHASE1_R5_PREREGISTERED / NOT_LANDED / NO_PERFORMANCE_RESULT`
 
 ## 1.实验标识与目标
 
@@ -129,7 +129,7 @@ R4已按§8永久关闭，上述命令与launcher不得再次执行。
 |---|---|
 |新run ID|`d105_phase1_sourceheld_9f608e8b_20260731_r5`|
 |源码Git archive提交|`9f608e8be72024f00f1497cf6bddb9fb77e28201`；只允许精确Git archive|
-|预登记Git提交|本报告、验证artifact和launcher提交后回填；不改变源码archive身份|
+|预登记Git提交|`27fccbfc1d49599a4c9e5e82d301780b02fbad37`；包含报告、验证artifact和launcher，不改变源码archive身份|
 |新run root|`/home/szu2070436088/2510044040/CV-SincNet/runs/d105_phase1_sourceheld_9f608e8b_20260731_r5`；落地前必须证明不存在|
 |candidate runtime|`8940e05f9fdf92d7735bba1570bb3239ee210313ecbbeffa3511b62e21685425`；54文件|
 |candidate method lock|`f36a0c6c4ee832b34cd98ed7664ec87707a4dbb1559c7c9b4b05dd13fbf4864e`|
@@ -191,7 +191,7 @@ run-specific脚本按`tap-cache→predict-source-held→open-truth→score-sourc
 - 已用受检`frombuffer→reshape→clone→to`输入桥和`tolist→float32`输出桥同时修复Phase1与Target25正式执行面，未改变方法或协议；修复提交=`9f608e8be72024f00f1497cf6bddb9fb77e28201`；
 - `ssr-gpu`统一回归216/216通过；R7独立复核`P0=0、P1=0、P2=2`，54文件编译和canonical runtime/method闭合；
 - 修复提交的精确archive SHA256=`dd85491e…9a67`，4754项；解包副本54/54、54 pyc、9帮助面和旧桥AST扫描通过；真实checkpoint无truth smoke 400步通过，收据SHA256=`fdea3e39…9a07`；
-- 新Phase1 R5已用新run ID和独立launcher预登记，尚未落地；D105仍无Phase1 formal asset或Target性能数据。
+- 新Phase1 R5已用新run ID和独立launcher预登记，提交=`27fccbfc1d49599a4c9e5e82d301780b02fbad37`，尚未落地；D105仍无Phase1 formal asset或Target性能数据。
 
 ## 9.R7发布门
 
@@ -213,6 +213,7 @@ run-specific脚本按`tap-cache→predict-source-held→open-truth→score-sourc
 |N607 R4预登记|`d105_phase1_sourceheld_d23469ba_20260731_r4`；新run root；源码只取`d23469ba`精确archive；尚未落地|
 |N607 R4终态|唯一detach=1；exit=1；首个tap-cache在零prediction前触发PyTorch/NumPy对象边界异常；全部正式artifact为0；`NO_PERFORMANCE_RESULT`|
 |N607 R5预登记|`d105_phase1_sourceheld_9f608e8b_20260731_r5`；全新run root；尚未落地|
+|R5预登记提交|`27fccbfc1d49599a4c9e5e82d301780b02fbad37`|
 
 生产私钥不得进入Git、报告、N607或formal asset。若无法获得与固定公钥匹配的独立签名，必须保持`NO_TARGET_LAUNCH`，不能退回unsigned JSON。
 
