@@ -1,6 +1,6 @@
 # D105 Phase1 source-only压缩知识与source-held门实验报告
 
-状态：`PHASE1_R5_STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / D105-FTU1_ARCHIVE_VERIFIED / R6_LOCAL_PREREGISTERING / NO_PERFORMANCE_RESULT`
+状态：`PHASE1_R5_STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / D105-FTU1_ARCHIVE_VERIFIED / R6_LOCAL_PREREGISTERED / READY_FOR_SOLE_RUNNER / NO_PERFORMANCE_RESULT`
 
 ## 1.实验标识与目标
 
@@ -270,6 +270,7 @@ R4的两个P2为：`model.py`仍产生`torch.cuda.amp.autocast`弃用警告；�
 |candidate runtime|`873879aad707fd2407b7645de45daa68fec1d3537feaf9fd57fe98b3ab059214`|
 |candidate method lock|`7d33662750b160fce82217dace9e1933aa8e43ea2a0df19f59e28adcf8bb4848`|
 |launcher|`run_d105_phase1_stage1_a0bdbba6.sh`；SHA256=`7f23f6e9bc8038a859962fed4b8fbb6ab63a805301ac9dbae7310a51be36e28d`；5624B；LF-only；`bash -n`通过|
+|本地预登记提交|`814d3b1d51ce764e67c1125492886fb1a4f6b03e`|
 |GPU|`cuda:0`；正式preflight后才可确认可用|
 |fresh-run retry|`NO`；任何技术失败永久关闭R6并使用新run ID|
 

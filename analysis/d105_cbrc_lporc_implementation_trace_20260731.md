@@ -3,7 +3,7 @@
 ## 1.状态
 
 - 设计基线commit：`776dc6a4`
-- 当前阶段：`PHASE1_R5_STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / D105-FTU1_ARCHIVE_VERIFIED / R6_LOCAL_PREREGISTERING`
+- 当前阶段：`PHASE1_R5_STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / D105-FTU1_ARCHIVE_VERIFIED / R6_LOCAL_PREREGISTERED / READY_FOR_SOLE_RUNNER`
 - N607：R3停止于预启动Git archive字节门；R4通过全部预启动门并唯一detach一次，但首个tap-cache在零预测前触发PyTorch/NumPy对象边界异常，exit=1
 - 性能证据：无
 - D104：保持`PAUSED_BEFORE_LANDING / NO_PERFORMANCE_RESULT`
@@ -68,7 +68,7 @@ R5通过全部远端prelaunch门后唯一detach PID=`2770709`，首个`tap-cache
 
 `D105-FTU1`提交=`a0bdbba6`。正式Phase1现唯一调用D105专用双backbone tap，真实checkpoint 195 tensors下`z_id/pre_relu/z_dom=[2,160]`且旧GRB模块未在fresh进程导入；10文件223/223、54文件hash/编译和canonical runtime/method通过。新runtime/method=`873879aad707fd2407b7645de45daa68fec1d3537feaf9fd57fe98b3ab059214`/`7d33662750b160fce82217dace9e1933aa8e43ea2a0df19f59e28adcf8bb4848`。R10独立审查=`LOCAL_CODE_REVIEW_GO / P0=0 / P1=0 / P2=2`，收据SHA256=`31ebec822064b4db7a3e5f4d419ee0ce8c4a493bb454ef1c0629c265164b8831`。下一门是精确Git archive smoke；尚未授权N607。
 
-精确Git archive smoke已通过：archive SHA256=`99fd633c78070b940064ca6e95ca9072427457058cab96c3a61e584c7991c0b4`，54/54四面SHA一致、54/54独立编译、真实checkpoint strict-forward、source-only单行export负晋级门、9/9帮助面、8/8 FTU1定向和223/223冻结回归全部通过；总收据SHA256=`78543dbb00d2ba3381d6e10b9808ebe751e8355d351261fa8c284cbe44c2ba30`。R6冻结为`d105_phase1_sourceheld_a0bdbba6_20260731_r6`，独立launcher SHA256=`7f23f6e9bc8038a859962fed4b8fbb6ab63a805301ac9dbae7310a51be36e28d`，且只允许唯一实验子agent落地；尚未连接N607、无Phase1 formal asset、无Target性能。
+精确Git archive smoke已通过：archive SHA256=`99fd633c78070b940064ca6e95ca9072427457058cab96c3a61e584c7991c0b4`，54/54四面SHA一致、54/54独立编译、真实checkpoint strict-forward、source-only单行export负晋级门、9/9帮助面、8/8 FTU1定向和223/223冻结回归全部通过；总收据SHA256=`78543dbb00d2ba3381d6e10b9808ebe751e8355d351261fa8c284cbe44c2ba30`。R6冻结为`d105_phase1_sourceheld_a0bdbba6_20260731_r6`，独立launcher SHA256=`7f23f6e9bc8038a859962fed4b8fbb6ab63a805301ac9dbae7310a51be36e28d`，本地预登记提交=`814d3b1d51ce764e67c1125492886fb1a4f6b03e`，且只允许唯一实验子agent落地；尚未连接N607、无Phase1 formal asset、无Target性能。
 
 ## 5.真实checkpoint派生特征无truth smoke
 
