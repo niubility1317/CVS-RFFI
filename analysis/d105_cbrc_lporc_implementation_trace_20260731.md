@@ -127,3 +127,11 @@ R7已完成一次受控N607发布，非覆盖run ID=d105_phase1_sourceheld_2d948
 runner在derive-gate入口收到source-held derived gate integer drift并以exit=2自然结束。类型诊断显示9个整数guard字段均为内置int；其中receiver_held_min_net_correct与class_loco_min_net_correct为合法负整数，却被仅允许非负计数的validator拒绝。此处只记录字段语义与计数，不记录任何评分或性能数值。
 
 因此R7终态为STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT：gate、component、authority、formal asset和Target25均为0/未启动。该证据说明fixed256 tap合同已闭合，但不能形成D105方法性能或Phase1资产成功主张。后续必须在本地修复validator语义、增加负整数合法性回归、独立审查和新提交后，才可用全新run ID重新申请release。
+
+## 9.R8终态同步
+
+R8在全新root上通过4775成员安全解包、54/54身份/LF/pyc、9/9帮助面和真实checkpoint production-bridge fixed256三档预检；唯一detach后完成8400行、33次forward和reference双路零差，prediction、truth-open、score与derived gate均成功落盘。gate为source-held拒绝，formal missing包含receiver-held、class-LOCO和TX probe三项；这些只作为结构化负证据，不形成D105性能结论。
+
+build在diagnostic component持久化前自然exit=2。第一轮provisional bundle已通过20成员量化闭包；第二轮仅把provisional quantization receipt SHA换成正式quantization summary SHA，数值数组与类型不变。serializer随后因原生`bool`字段`tx_probe_gate_pass=false`抛出`failed dual TX probe bundle is diagnostic-only and cannot be serialized`，外层归一化为`D105 aggregate bundle cannot be serialized after quantization closure`。因此根因是diagnostic拒绝与component生命周期冲突，不是INT8/FP16量化损坏。
+
+R8固定为`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / ARTIFACTS_INCOMPLETE / SOURCE_HELD_GATE_REJECT_OBSERVED / NO_PERFORMANCE_RESULT`。component、authority、formal seal和Target25均为0；后续必须先在本地让合法gate-reject生成不可签名的DIAGNOSTIC component，并以真实端到端回归和独立审查闭合后，才能创建新的Phase1 run ID。

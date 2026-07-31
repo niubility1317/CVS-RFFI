@@ -373,3 +373,25 @@ R8冻结为：
 |fresh-run retry|`NO`|
 
 R8启动脚本相对R7只有全新run root一个差异；输入、固定256合同、reference、阈值和阶段顺序不变。R8不得读取或复用R3—R7任何run内容；完整8400行reference parity仍是首tap硬门。只有gate和component实际落盘后才能读取其正式状态；若component为诊断拒绝，则不得签名、封装或进入Target25。
+
+## 20.R8 N607终态：diagnostic序列化生命周期技术失败
+
+R8由唯一runner在普通N607账户上完成一次非覆盖发布，run ID=`d105_phase1_sourceheld_230c6cbc_20260801_r8`，main PID=`2894396`。source commit=`230c6cbc9149250ca0303ca240945d0e0992360e`，实现证据commit=`a4e14e83235dc33c8287500cb0540234d6201ea6`，预登记commit=`582aa634bd7943eaa567242b2ac6c133527e2356`，绑定HEAD=`a7f3cf1b742fb815981ff9e0db5875830b7645ec`。launch receipt绑定精确CWD、cmdline、run root、`CUDA_VISIBLE_DEVICES=0`、PYTHONPATH及launcher/runtime/method SHA；没有第二次detach、远端修改、阈值或方法变更。
+
+预启动门全部通过：direct只读preflight；R8 root初始ABSENT；8张RTX3090均空闲；磁盘余量7.4T；4个冻结输入SHA/大小、launcher LF=123/CRLF=0与`bash -n`通过；4775个archive成员安全；54/54 manifest=archive=extract、LF54/54、隔离pyc54/54、source污染为0；结合本地独立archive handoff闭合54/54 Git四方链。9/9 CLI帮助面均返回0。生产bridge真实checkpoint fixed256 smoke在1/208/256行均以固定256容量完成，三路reference max_abs均为0；torch=`2.1.0+cu121`，loader为精确SHA约束的legacy分支，195个state tensor，eval/state不变、GRB未导入，float32 shape/dtype/finite、ReLU和eager hook路径均通过。以上均为source-only技术门，不是性能证据。
+
+唯一正式tap-cache完成8400行、33次forward，末批208实+48补零，reference z_id/z_dom max_abs均为0。prediction、truth-open、score和derived gate各生成1份；结构覆盖21个receiver-held row、42个class-LOCO row和7个TX probe row，target/query均为0。gate的原生`bool`字段`tx_probe_gate_pass=false`，formal missing包含`receiver_held_all_noninferior`、`class_loco_complete_and_noninferior`和`tx_probe_max_balanced_accuracy_at_most_0_25`；本报告不披露任何未闭合BA、floor或其他性能值。
+
+|阶段|数量|技术状态|可声明范围|
+|---|---:|---|---|
+|strict tap|1|8400行fixed256 parity通过|source-only技术证据|
+|prediction/truth-open/score|1/1/1|不可变artifact已生成|不形成性能结论|
+|derived gate|1|`SOURCE_HELD_GATE_REJECT_OBSERVED`|仅报告布尔状态与missing token|
+|component|0|build序列化失败|`ARTIFACTS_INCOMPLETE`|
+|authority/formal seal/Target25|0/0/0|未执行|`NO_TARGET_PERFORMANCE_RESULT`|
+
+确定性错误指纹为`D105 aggregate bundle cannot be serialized after quantization closure`，pipeline自然exit=`2`。静态控制流和回收gate结构共同闭合底层原因：第一轮provisional `build_rxid_metabias4_bundle`已成功，说明20个INT8/FP16/int16 payload成员的dtype、shape、finite、scale、计数和量化闭包均通过；第二轮数值输入与第一轮相同，唯一替换项是合法`quantization_receipt_sha256`。随后`serialize_rxid_metabias4_bundle`因`tx_probe_gate_pass=false`抛出`failed dual TX probe bundle is diagnostic-only and cannot be serialized`，外层将其包装为上述指纹。故障不是量化数组损坏，而是diagnostic gate拒绝与“负证据也应持久化DIAGNOSTIC component”的生命周期冲突。
+
+R8终态固定为`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / ARTIFACTS_INCOMPLETE / SOURCE_HELD_GATE_REJECT_OBSERVED / NO_PERFORMANCE_RESULT / NO_TARGET_PERFORMANCE_RESULT`。完整选择证据已回收至`retrieved_d105_phase1_sourceheld_230c6cbc_20260801_r8_STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE_NO_PERFORMANCE_RESULT/artifacts`；远端64行retrieval manifest与本地64/64逐项SHA一致，manifest SHA256=`568ac89b0d20c10161af45f9ab48019a99c87f78bc684c75f4fbc4b59f66103a`。主日志SHA256=`aca2458f906d6961080fe7577a75cf063ceb3a1de17f1d241541b8cbec440a57`，exit SHA256=`53c234e5e8472b6ac51c1ae1cab3fe06fad053beb8ebfd8977b010655bfdd3c3`，tap archive/receipt SHA256=`6626afbf5d5987b2944b53f9b4bddbb6c9397f4c577accb95cea5e0039b24578`/`d8090c50fa8aa2fd2496d3883cb821dc91e87132e21db909fa0890af29a567b2`，gate SHA256=`209629115298f9ac5f537d36d7ae01841673739b101599d33a3cd3a8035b9424`。终态GPU0为0%/1MiB，无R8进程或compute process，本地SSH/SCP/TCP22已清理。
+
+R8不得恢复、覆盖、重试或重新解释为性能实验。下一门只能在本地修复diagnostic component的持久化/序列化生命周期，补充真实gate-reject端到端回归，完成独立审查和新Git提交后，以全新run ID重新申请Phase1 release；在新component、独立审查、离线authority和formal seal完整闭合前，Target25继续禁止。

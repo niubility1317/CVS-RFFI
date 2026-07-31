@@ -200,3 +200,9 @@ FTU3已在本地完成最小gate值域修复：两个`*_min_net_correct`允许�
 新runtime/method=`5de5926b…11bc`/`7345f81e…8ecd`，实现提交=`230c6cbc9149250ca0303ca240945d0e0992360e`。当前只允许进入该提交的精确archive复核；Target25仍没有输入、运行或性能数据。
 
 FTU3精确archive已经独立验证通过，R8冻结为`d105_phase1_sourceheld_230c6cbc_20260801_r8`，预登记提交=`582aa634bd7943eaa567242b2ac6c133527e2356`，只重新生成Phase1 source-held gate/component证据。R8的component若为诊断拒绝，Target25继续禁止；当前仍没有任何D105 Target性能数据。
+
+## 13.R8 Phase1状态同步
+
+R8完成8400行fixed256 parity、prediction、truth-open、score和derived gate；gate只形成`SOURCE_HELD_GATE_REJECT_OBSERVED`负证据。build随后在diagnostic序列化生命周期冲突处exit=2，component没有落盘，因此R8固定为`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / ARTIFACTS_INCOMPLETE / NO_PERFORMANCE_RESULT`。不得把gate中的未闭合数值当作D105性能行。
+
+Target25继续保持未启动：Target输入、prediction、truth-open、score、authority、nonce消费、formal seal和Target性能行均为0。下一次资格评估必须等待新的Phase1 run完整生成不可签名DIAGNOSTIC或可晋级component，并完成独立审查、离线authority与formal seal；R8不得重试或补跑Target。
