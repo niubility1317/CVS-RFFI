@@ -1,6 +1,6 @@
 # D105 Phase1 source-only压缩知识与source-held门实验报告
 
-状态：`R7_LOCAL_RELEASE_GO / ARCHIVE_SMOKE_PASS / PHASE1_R5_PREREGISTERED / NOT_LANDED / NO_PERFORMANCE_RESULT`
+状态：`PHASE1_R5_STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / RETROSPECTIVE_REQUIRED / NO_PERFORMANCE_RESULT`
 
 ## 1.实验标识与目标
 
@@ -192,6 +192,10 @@ run-specific脚本按`tap-cache→predict-source-held→open-truth→score-sourc
 - `ssr-gpu`统一回归216/216通过；R7独立复核`P0=0、P1=0、P2=2`，54文件编译和canonical runtime/method闭合；
 - 修复提交的精确archive SHA256=`dd85491e…9a67`，4754项；解包副本54/54、54 pyc、9帮助面和旧桥AST扫描通过；真实checkpoint无truth smoke 400步通过，收据SHA256=`fdea3e39…9a07`；
 - 新Phase1 R5已用新run ID和独立launcher预登记，提交=`27fccbfc1d49599a4c9e5e82d301780b02fbad37`，尚未落地；D105仍无Phase1 formal asset或Target性能数据。
+- R5通过全部远端prelaunch门后唯一detach一次，PID=`2770709`，首个`tap-cache`以exit=2结束；完整日志313B/4行，异常=`strict tap must expose byte-bound z_id/pre_relu and z_dom`；
+- R5的strict tap、prediction、truth-open、score、gate和component仍全部为0，未执行Target、Target25、authority或seal；终态GPU、run进程和SSH均清理；
+- R5永久关闭为`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`，不得重启、覆盖或复用；handoff SHA256=`5f390e0220d5168948a7a1cf4a2e964dfc3961cfdcdcb667a9db99a77fcd88ab`；
+- R3/R4/R5构成连续三轮技术release探索，第四轮前必须完成项目目标、会话索引、完整日志、协议边界和下一候选的正式回顾。
 
 ## 9.R7发布门
 
@@ -214,6 +218,7 @@ run-specific脚本按`tap-cache→predict-source-held→open-truth→score-sourc
 |N607 R4终态|唯一detach=1；exit=1；首个tap-cache在零prediction前触发PyTorch/NumPy对象边界异常；全部正式artifact为0；`NO_PERFORMANCE_RESULT`|
 |N607 R5预登记|`d105_phase1_sourceheld_9f608e8b_20260731_r5`；全新run root；尚未落地|
 |R5预登记提交|`27fccbfc1d49599a4c9e5e82d301780b02fbad37`|
+|N607 R5终态|唯一detach=1；exit=2；首个tap-cache严格输出合同失败；全部正式artifact为0；`NO_PERFORMANCE_RESULT`|
 
 生产私钥不得进入Git、报告、N607或formal asset。若无法获得与固定公钥匹配的独立签名，必须保持`NO_TARGET_LAUNCH`，不能退回unsigned JSON。
 
