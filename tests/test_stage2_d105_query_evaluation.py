@@ -16,10 +16,15 @@ The record is embedded here because this work package may edit only this test
 and its evaluator implementation.
 """
 
+import ast
+import builtins
 from dataclasses import fields, replace
 import hashlib
+import io
 import json
 from pathlib import Path
+import subprocess
+import sys
 from types import SimpleNamespace
 
 import numpy as np
@@ -542,6 +547,226 @@ def _patch_formal_asset(monkeypatch, asset, handle):
     return calls
 
 
+def test_default_evaluator_loader_is_closed_to_bound_d105_model_factory(
+    monkeypatch,
+) -> None:
+    """The evaluator must not recover the generic SSDG training stack."""
+
+    source = Path(evaluation.__file__).read_text(encoding="utf-8")
+    tree = ast.parse(source)
+    imported_modules = {
+        node.module or ""
+        for node in ast.walk(tree)
+        if isinstance(node, ast.ImportFrom)
+    } | {
+        alias.name
+        for node in ast.walk(tree)
+        if isinstance(node, ast.Import)
+        for alias in node.names
+    }
+    called_names = {
+        node.func.id
+        for node in ast.walk(tree)
+        if isinstance(node, ast.Call) and isinstance(node.func, ast.Name)
+    }
+    assert not any(
+        name == "SSDG"
+        or name.startswith("SSDG.")
+        or "checkpoint_loading" in name
+        for name in imported_modules
+    )
+    assert "build_exact_ssdg_model_from_checkpoint" not in called_names
+    assert "build_d105_exact_model_from_checkpoint" in called_names
+
+    checkpoint_buffer = io.BytesIO()
+    torch.save({"args": {}, "model": {}}, checkpoint_buffer)
+    factory_calls: list[tuple[object, int, str]] = []
+
+    class BoundModel(torch.nn.Module):
+        def forward(self, value):
+            return value
+
+    def bound_factory(checkpoint, *, input_len, device):
+        factory_calls.append((checkpoint, input_len, str(device)))
+        return BoundModel(), {
+            "loader": "d105_bound_test_factory",
+            "model_factory": "model_dual_cvsincnet.build_dual_model",
+            "checkpoint_load_strict": True,
+        }
+
+    monkeypatch.setattr(
+        evaluation, "build_d105_exact_model_from_checkpoint", bound_factory
+    )
+    original_import = builtins.__import__
+    blocked_imports: list[str] = []
+
+    def reject_legacy_import(name, globals=None, locals=None, fromlist=(), level=0):
+        if (
+            name == "SSDG"
+            or name.startswith("SSDG.")
+            or name == "cvsrffi.checkpoint_loading"
+        ):
+            blocked_imports.append(name)
+            raise AssertionError("legacy checkpoint-loading stack is forbidden")
+        return original_import(name, globals, locals, fromlist, level)
+
+    monkeypatch.setattr(builtins, "__import__", reject_legacy_import)
+    model, audit = evaluation._default_model_loader(
+        checkpoint_buffer.getvalue(), 8, torch.device("cpu")
+    )
+    assert blocked_imports == []
+    assert len(factory_calls) == 1
+    assert factory_calls[0][0] == {"args": {}, "model": {}}
+    assert factory_calls[0][1:] == (8, "cpu")
+    assert isinstance(model, torch.nn.Module) and not model.training
+    assert audit["model_factory"] == "model_dual_cvsincnet.build_dual_model"
+
+
+def test_evaluator_import_path_cannot_open_legacy_ssdg_stack() -> None:
+    """Check a fresh interpreter, before cached imports can mask a reachability bug."""
+
+    source_root = Path(evaluation.__file__).resolve().parents[1]
+    probe = """
+import builtins
+
+_original_import = builtins.__import__
+
+def _guard(name, globals=None, locals=None, fromlist=(), level=0):
+    if name == 'SSDG' or name.startswith('SSDG.') or name == 'cvsrffi.checkpoint_loading':
+        raise RuntimeError('legacy D105 evaluator dependency: ' + name)
+    return _original_import(name, globals, locals, fromlist, level)
+
+builtins.__import__ = _guard
+import cvsrffi.stage2_d105_query_evaluation  # noqa: F401
+print('D105_EVALUATOR_IMPORT_CLOSED')
+"""
+    result = subprocess.run(
+        [sys.executable, "-c", probe],
+        cwd=source_root,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    assert result.returncode == 0, result.stderr
+    assert result.stdout.strip() == "D105_EVALUATOR_IMPORT_CLOSED"
+
+
+def test_model_loading_waits_for_complete_package_authority_and_context_validation(
+    tmp_path: Path, monkeypatch
+) -> None:
+    (
+        context,
+        package_loader,
+        model_loader,
+        extractor,
+        model_calls,
+        _tap_calls,
+        asset,
+        handle,
+        _candidate_runtime,
+        _candidate_lock,
+    ) = _fixture(tmp_path)
+    events: list[str] = []
+
+    def tracked_package_loader(reference):
+        loaded = package_loader(reference)
+        events.append(f"package:{reference.package_root}")
+        return loaded
+
+    original_candidate_identity = evaluation._load_candidate_identity
+    original_qknn_identity = evaluation._validate_qknn_lock_identity
+    original_package_binding = evaluation._package_binding
+    original_payload_preflight = evaluation._preflight_d105_model_inputs
+    original_regular_bytes = evaluation._regular_bytes
+    original_device = evaluation._device
+
+    def tracked_candidate_identity(value):
+        result = original_candidate_identity(value)
+        events.append("candidate_identity")
+        return result
+
+    def tracked_qknn_identity(lock, candidate_lock):
+        result = original_qknn_identity(lock, candidate_lock)
+        events.append("qknn_context")
+        return result
+
+    def tracked_phase1_asset(path, *, require_formal_phase2_eligible=False):
+        assert require_formal_phase2_eligible is True
+        events.append("phase1_asset")
+        return asset
+
+    def tracked_package_binding(references, manifests, audits):
+        result = original_package_binding(references, manifests, audits)
+        events.append("package_authority")
+        return result
+
+    def tracked_payload_preflight(*args, **kwargs):
+        result = original_payload_preflight(*args, **kwargs)
+        events.append("sealed_payloads")
+        return result
+
+    def tracked_regular_bytes(path, *, name):
+        result = original_regular_bytes(path, name=name)
+        if name == "exact Phase1 checkpoint":
+            events.append("checkpoint_context")
+        return result
+
+    def tracked_device(value):
+        result = original_device(value)
+        events.append("device_context")
+        return result
+
+    def observed_model_loader(raw, input_len, device):
+        required = {
+            "candidate_identity",
+            "qknn_context",
+            "phase1_asset",
+            "package_authority",
+            "sealed_payloads",
+            "checkpoint_context",
+            "device_context",
+        }
+        assert required.issubset(events)
+        assert len([event for event in events if event.startswith("package:")]) == 4
+        events.append("model")
+        return model_loader(raw, input_len, device)
+
+    monkeypatch.setattr(evaluation, "_load_candidate_identity", tracked_candidate_identity)
+    monkeypatch.setattr(
+        evaluation, "_validate_qknn_lock_identity", tracked_qknn_identity
+    )
+    monkeypatch.setattr(evaluation, "load_d105_phase1_asset", tracked_phase1_asset)
+    monkeypatch.setattr(
+        evaluation, "make_d105_phase1_runtime_handle", lambda value: handle
+    )
+    monkeypatch.setattr(evaluation, "_package_binding", tracked_package_binding)
+    monkeypatch.setattr(
+        evaluation, "_preflight_d105_model_inputs", tracked_payload_preflight
+    )
+    monkeypatch.setattr(evaluation, "_regular_bytes", tracked_regular_bytes)
+    monkeypatch.setattr(evaluation, "_device", tracked_device)
+
+    result = evaluate_d105_query_row(
+        context,
+        package_loader=tracked_package_loader,
+        model_loader=observed_model_loader,
+        feature_extractor=extractor,
+    )
+    assert result.scenario_pairs
+    assert events.index("model") > max(
+        events.index(name)
+        for name in (
+            "candidate_identity",
+            "qknn_context",
+            "phase1_asset",
+            "package_authority",
+            "sealed_payloads",
+            "checkpoint_context",
+            "device_context",
+        )
+    )
+
+
 def test_real_iq_evaluator_emits_three_complete_before_after_four_arm_pairs(
     tmp_path: Path, monkeypatch,
 ) -> None:
@@ -655,7 +880,7 @@ def test_query_truth_surface_and_split_root_tamper_fail_closed(
         package_loader,
         model_loader,
         extractor,
-        _model_calls,
+        model_calls,
         _tap_calls,
         asset,
         handle,
@@ -681,6 +906,7 @@ def test_query_truth_surface_and_split_root_tamper_fail_closed(
             model_loader=model_loader,
             feature_extractor=extractor,
         )
+    assert model_calls == []
     authorities = list(context.split_authorities)
     authorities[0] = replace(authorities[0], query_token_root_sha256="f" * 64)
     tampered = replace(context, split_authorities=tuple(authorities))
@@ -691,6 +917,7 @@ def test_query_truth_surface_and_split_root_tamper_fail_closed(
             model_loader=model_loader,
             feature_extractor=extractor,
         )
+    assert model_calls == []
 
 
 def test_public_prediction_context_helper_is_the_unique_plan_evaluator_hash(
@@ -835,6 +1062,34 @@ def test_wrong_package_authority_commit_fails_before_feature_extraction(
         evaluate_d105_query_row(
             context,
             package_loader=wrong_commit_loader,
+            model_loader=model_loader,
+            feature_extractor=extractor,
+        )
+    assert model_calls == []
+    assert tap_calls == []
+
+
+def test_checkpoint_context_tamper_fails_before_model_loading(
+    tmp_path: Path, monkeypatch
+) -> None:
+    (
+        context,
+        package_loader,
+        model_loader,
+        extractor,
+        model_calls,
+        tap_calls,
+        asset,
+        handle,
+        _candidate_runtime,
+        _candidate_lock,
+    ) = _fixture(tmp_path)
+    _patch_formal_asset(monkeypatch, asset, handle)
+    Path(context.checkpoint_path).write_bytes(b"tampered-checkpoint-bytes")
+    with pytest.raises(D105QueryEvaluationError, match="checkpoint SHA256 drift"):
+        evaluate_d105_query_row(
+            context,
+            package_loader=package_loader,
             model_loader=model_loader,
             feature_extractor=extractor,
         )

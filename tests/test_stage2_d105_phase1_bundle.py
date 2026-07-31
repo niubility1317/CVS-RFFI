@@ -1,12 +1,15 @@
 from __future__ import annotations
 
 import ast
+import builtins
 from collections import deque
 import hashlib
+import importlib
 import json
 import os
 from pathlib import Path
 import stat
+import sys
 from datetime import datetime, timezone
 
 import numpy as np
@@ -203,19 +206,18 @@ def _candidate_identity(tmp_path: Path) -> tuple[Path, str, Path, str]:
     return runtime_path, runtime_sha, lock_path, lock_sha
 
 
-def _cvsrffi_module_source(code_root: Path, module: str) -> Path | None:
-    if module == "cvsrffi":
-        candidate = code_root / "cvsrffi" / "__init__.py"
-    elif module.startswith("cvsrffi."):
-        candidate = code_root.joinpath(*module.split(".")).with_suffix(".py")
-        if not candidate.is_file():
-            candidate = code_root.joinpath(*module.split("."), "__init__.py")
-    else:
+def _local_module_source(code_root: Path, module: str) -> Path | None:
+    """Resolve a local code-root module without treating third-party imports as code."""
+
+    if not module or any(not part.isidentifier() for part in module.split(".")):
         return None
+    candidate = code_root.joinpath(*module.split(".")).with_suffix(".py")
+    if not candidate.is_file():
+        candidate = code_root.joinpath(*module.split("."), "__init__.py")
     return candidate if candidate.is_file() else None
 
 
-def _absolute_cvsrffi_import(
+def _absolute_local_import(
     module: str, level: int, imported_module: str | None
 ) -> str:
     package_parts = module.split(".")[:-1]
@@ -225,8 +227,8 @@ def _absolute_cvsrffi_import(
     return ".".join(base)
 
 
-def _direct_local_cvsrffi_imports(code_root: Path, module: str) -> set[str]:
-    source = _cvsrffi_module_source(code_root, module)
+def _direct_local_imports(code_root: Path, module: str) -> set[str]:
+    source = _local_module_source(code_root, module)
     assert source is not None, f"missing local module source: {module}"
     tree = ast.parse(source.read_text(encoding="utf-8"), filename=str(source))
     imports: set[str] = set()
@@ -234,30 +236,33 @@ def _direct_local_cvsrffi_imports(code_root: Path, module: str) -> set[str]:
         if isinstance(node, ast.Import):
             for alias in node.names:
                 name = alias.name
-                if name == "cvsrffi" or name.startswith("cvsrffi."):
-                    if _cvsrffi_module_source(code_root, name) is not None:
-                        imports.add(name)
+                if _local_module_source(code_root, name) is not None:
+                    imports.add(name)
         elif isinstance(node, ast.ImportFrom):
-            base = _absolute_cvsrffi_import(module, node.level, node.module)
-            if base != "cvsrffi" and not base.startswith("cvsrffi."):
-                continue
-            if _cvsrffi_module_source(code_root, base) is not None:
+            base = _absolute_local_import(module, node.level, node.module)
+            if _local_module_source(code_root, base) is not None:
                 imports.add(base)
             for alias in node.names:
                 if alias.name == "*":
                     continue
                 child = f"{base}.{alias.name}" if base else alias.name
-                if _cvsrffi_module_source(code_root, child) is not None:
+                if _local_module_source(code_root, child) is not None:
                     imports.add(child)
     return imports
 
 
-def _recursive_d105_cvsrffi_runtime_files(code_root: Path) -> set[str]:
-    roots = {
-        entrypoint.split(":", 1)[0]
-        for entrypoint in phase1.D105_CANDIDATE_RUNTIME_ENTRYPOINTS.values()
-        if entrypoint.startswith("cvsrffi.")
-    }
+def _recursive_d105_local_python_runtime_files(code_root: Path) -> set[str]:
+    roots: set[str] = set()
+    for entrypoint in phase1.D105_CANDIDATE_RUNTIME_ENTRYPOINTS.values():
+        module = entrypoint.split(":", 1)[0]
+        if module.endswith(".py"):
+            source = code_root / module
+            assert source.is_file(), f"missing D105 CLI root: {module}"
+            relative = source.relative_to(code_root).with_suffix("")
+            roots.add(".".join(relative.parts))
+        else:
+            assert _local_module_source(code_root, module) is not None
+            roots.add(module)
     queue: deque[str] = deque(sorted(roots))
     seen: set[str] = set()
     while queue:
@@ -266,11 +271,11 @@ def _recursive_d105_cvsrffi_runtime_files(code_root: Path) -> set[str]:
             continue
         seen.add(module)
         queue.extend(
-            sorted(_direct_local_cvsrffi_imports(code_root, module) - seen)
+            sorted(_direct_local_imports(code_root, module) - seen)
         )
     files: set[str] = set()
     for module in seen:
-        source = _cvsrffi_module_source(code_root, module)
+        source = _local_module_source(code_root, module)
         assert source is not None
         files.add(source.relative_to(code_root).as_posix())
     return files
@@ -786,9 +791,318 @@ def test_candidate_runtime_closure_requires_somph_trust_module(tmp_path: Path) -
 
 def test_candidate_runtime_file_set_is_exact_recursive_local_python_closure() -> None:
     code_root = Path(phase1.__file__).resolve().parents[1]
-    declared = set(phase1.D105_CANDIDATE_RUNTIME_CVSRFFI_FILES)
-    assert len(declared) == len(phase1.D105_CANDIDATE_RUNTIME_CVSRFFI_FILES)
-    assert declared == _recursive_d105_cvsrffi_runtime_files(code_root)
+    declared = set(phase1.D105_CANDIDATE_RUNTIME_FILES)
+    assert len(declared) == len(phase1.D105_CANDIDATE_RUNTIME_FILES)
+    assert declared == _recursive_d105_local_python_runtime_files(code_root)
+
+
+def test_tap_cache_closure_excludes_legacy_export_and_training_stacks() -> None:
+    """Only the D105-owned source-selection path may execute in tap-cache.
+
+    ``baseline_origin_sat_view.py`` remains a legitimate SHA-bound checkpoint
+    compatibility dependency; the legacy exporter scripts and SSDG training
+    program are not.  Keeping this distinction explicit prevents a future
+    import refactor from silently broadening the signed runtime closure.
+    """
+
+    code_root = Path(phase1.__file__).resolve().parents[1]
+    closure = _recursive_d105_local_python_runtime_files(code_root)
+    legacy_only = {
+        "scripts/export_phase1_jp4_tap_archive.py",
+        "scripts/export_phase1_singleobs_dual_feature_archive.py",
+        "scripts/export_phase1_singleobs_feature_archive.py",
+        "scripts/export_adv3b02_dual_feature_torchscript.py",
+        "scripts/verify_adv3b02_dual_runtime_checkpoint_parity.py",
+        "SSDG/train_ssdg.py",
+    }
+    assert closure.isdisjoint(legacy_only)
+    assert {
+        "baseline_origin_sat_view.py",
+        "model.py",
+        "model_dual_cvsincnet.py",
+    }.issubset(closure)
+
+
+def _legacy_tap_cache_arrays() -> dict[str, dict[str, np.ndarray]]:
+    arrays: dict[str, dict[str, np.ndarray]] = {}
+    physical_ids = ["source-physical-00", "source-physical-01", "source-physical-02"]
+    for scenario_index, scenario in enumerate(phase1.FORMAL_LEO_WEAK_SCENARIOS):
+        rows = len(physical_ids)
+        arrays[scenario] = {
+            "leo_weak_iq": np.full(
+                (rows, 2, 8), float(scenario_index + 1), dtype=np.float32
+            ),
+            "sample_ids": np.asarray(physical_ids, dtype=np.str_),
+            "tx_ids": np.asarray(["tx-0", "tx-1", "tx-2"], dtype=np.str_),
+            "rx_ids": np.asarray(["rx-0", "rx-1", "rx-2"], dtype=np.str_),
+            "day_ids": np.asarray(["day-0", "day-0", "day-1"], dtype=np.str_),
+            "dataset_role": np.asarray(["source"] * rows, dtype=np.str_),
+            "sat_scenarios": np.asarray([scenario] * rows, dtype=np.str_),
+            "overlay_ids": np.asarray(
+                [f"overlay-{scenario_index}-{row}" for row in range(rows)],
+                dtype=np.str_,
+            ),
+        }
+    return arrays
+
+
+def test_d105_tap_cache_salt_and_observation_selection_match_legacy_helper(
+    tmp_path: Path,
+) -> None:
+    """The old exporter is a test-only oracle, never a D105 runtime import."""
+
+    legacy = importlib.import_module(
+        "scripts.export_phase1_singleobs_dual_feature_archive"
+    )
+    receipt = {
+        "schema": phase1.D105_TAP_CACHE_SELECTION_SALT_SCHEMA,
+        "status": "SEALED_BEFORE_TARGET_ACCESS",
+        "artifact_stage": "phase1_offline_before_target_access",
+        "bundle_id": "b" * 64,
+        "phase1_checkpoint_sha256": CHECKPOINT_SHA256,
+        "selection_salt_sha256": "a" * 64,
+        "target_access": False,
+    }
+    receipt_path = tmp_path / "selection_salt_receipt.json"
+    receipt_sha = _write_json(receipt_path, receipt)
+    legacy_salt = legacy._load_selection_salt(
+        receipt_path, receipt_sha, checkpoint_sha=CHECKPOINT_SHA256
+    )
+    d105_salt = phase1.load_d105_tap_cache_selection_salt(
+        receipt_path, receipt_sha, checkpoint_sha256=CHECKPOINT_SHA256
+    )
+    assert d105_salt == legacy_salt
+
+    arrays = _legacy_tap_cache_arrays()
+    legacy_metadata, legacy_iq = legacy._select_verified_observations(
+        arrays, legacy_salt["selection_salt_sha256"]
+    )
+    d105_metadata, d105_iq = phase1.select_d105_tap_cache_observations(
+        arrays, d105_salt["selection_salt_sha256"]
+    )
+    assert tuple(d105_metadata) == tuple(legacy_metadata)
+    for key in legacy_metadata:
+        assert np.array_equal(d105_metadata[key], legacy_metadata[key])
+    assert d105_iq.dtype == legacy_iq.dtype == np.float32
+    assert d105_iq.shape == legacy_iq.shape
+    assert d105_iq.tobytes(order="C") == legacy_iq.tobytes(order="C")
+
+
+def test_d105_tap_cache_v1_loader_matches_legacy_passthrough(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The D105 loader retains the old v1 scope/schema arguments exactly."""
+
+    legacy = importlib.import_module("scripts.export_phase1_singleobs_feature_archive")
+    cache_set = tmp_path / "source_cache_set.json"
+    cache_set.write_bytes(b"{}")
+    result = ({"sentinel": {}}, {"manifest": "sentinel"}, {"audit": "sentinel"})
+    calls: list[tuple[tuple[object, ...], dict[str, object]]] = []
+
+    def fake_loader(*args: object, **kwargs: object):
+        calls.append((args, kwargs))
+        return result
+
+    monkeypatch.setattr(legacy, "load_verified_leo_weak_cache_set", fake_loader)
+    monkeypatch.setattr(phase1, "load_verified_leo_weak_cache_set", fake_loader)
+    legacy_result = legacy._load_verified_v1_only_source_validation_cache_set(
+        cache_set, expected_scope="source_validation", allowed_roles={"source"}
+    )
+    d105_result = phase1.load_d105_tap_cache_source_validation_set(cache_set)
+    assert legacy_result is result
+    assert d105_result is result
+    assert len(calls) == 2
+    assert calls[0][0] == calls[1][0] == (cache_set,)
+    assert calls[0][1] == calls[1][1] == {
+        "expected_scope": "source_validation",
+        "allowed_roles": {"source"},
+        "accepted_outer_schemas": frozenset({phase1.LEO_WEAK_CACHE_SET_SCHEMA_V1}),
+        "accepted_inner_schemas": frozenset({phase1.LEO_WEAK_CACHE_SCHEMA_V1}),
+    }
+
+
+def test_d105_minimal_checkpoint_loader_matches_exact_ssdg_model_and_taps() -> None:
+    """The compact D105 path must be model/tap-equivalent to the old loader.
+
+    This uses a real CVSincNet checkpoint-shaped state generated locally.  The
+    release workflow separately runs the same comparison against the immutable
+    SHA-bound production checkpoint before any Phase1 seal is considered.
+    """
+
+    import torch
+
+    import model_dual_cvsincnet
+    from cvsrffi.checkpoint_loading import build_exact_ssdg_model_from_checkpoint
+    from cvsrffi.stage2_d105_feature_tap import extract_d105_feature_tap
+
+    args = dict(phase1._D105_MODEL_RECONSTRUCTION_DEFAULTS)
+    args.update(
+        {
+            "num_classes": 3,
+            "model_size": "S",
+            "model_variant": "lite_d",
+            "input_len": 256,
+        }
+    )
+    reference = model_dual_cvsincnet.build_dual_model(
+        num_classes=3,
+        num_domains=2,
+        model_size="S",
+        dataset="wisig",
+        input_len=256,
+        sample_rate_hz=25.0e6,
+        id_feature_key="feat_joint",
+        dom_feature_key="feat_imp",
+        model_variant="lite_d",
+        branch_ablation="no_dac",
+        mixstyle_on=True,
+        mixstyle_p=0.18,
+        mixstyle_alpha=0.10,
+        mixstyle_eps=1.0e-6,
+        mixstyle_layers="time_down,t1",
+        mixstyle_use_domain_label=True,
+        mixstyle_mix="same_tx_crossdomain",
+        mixstyle_strength=0.70,
+        mixstyle_fallback="skip",
+        domain_branch_ablation="no_stats",
+        domain_enhancer="rcn_stats",
+        domain_enhancer_strength=0.35,
+        use_circularity=True,
+        use_freq_stats=True,
+        use_pa_stats=True,
+        use_freq_band_gate=True,
+        freq_feature_source="raw_fft",
+        pa_feature_source="raw_iq",
+        pa_orders=None,
+        use_aux_spectral_stats=True,
+        channel_trim_scale=1.0,
+        id_time_stability_mode="off",
+        id_freq_stability_mode="off",
+        domain_time_stability_mode="off",
+        domain_freq_stability_mode="off",
+        time_stability_channels=8,
+        freq_stability_channels=4,
+        fast_infer_when_no_aux=True,
+        arch_family="cvsincnet",
+    ).eval()
+    checkpoint = {
+        "args": args,
+        "model": {
+            f"module.{name}": value.detach().clone()
+            for name, value in reference.state_dict().items()
+        },
+    }
+    old_model, old_audit = build_exact_ssdg_model_from_checkpoint(
+        checkpoint, input_len=256, device=torch.device("cpu")
+    )
+    new_model, new_audit = phase1.build_d105_exact_model_from_checkpoint(
+        checkpoint, input_len=256, device=torch.device("cpu")
+    )
+    old_model.eval()
+    assert new_model.training is False
+    assert old_audit["state_tensor_count"] == new_audit["state_tensor_count"]
+    assert tuple(new_model.state_dict()) == tuple(old_model.state_dict())
+    for name, old_value in old_model.state_dict().items():
+        assert torch.equal(new_model.state_dict()[name], old_value), name
+    torch.manual_seed(105731)
+    received_iq = torch.randn(1, 2, 256, dtype=torch.float32)
+    old_tap = extract_d105_feature_tap(old_model, received_iq)
+    new_tap = extract_d105_feature_tap(new_model, received_iq)
+    for name in ("z_id", "z_dom", "hidden", "pre_relu"):
+        assert getattr(new_tap, name).tobytes(order="C") == getattr(
+            old_tap, name
+        ).tobytes(order="C")
+
+
+def test_d105_model_loader_never_imports_optional_or_training_stacks(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """D105 CVSincNet reconstruction must execute only its declared model files."""
+
+    import torch
+
+    import model_dual_cvsincnet
+
+    reference = model_dual_cvsincnet.build_dual_model(
+        num_classes=3,
+        num_domains=2,
+        model_size="S",
+        dataset="wisig",
+        input_len=256,
+        model_variant="lite_d",
+        branch_ablation="no_dac",
+        domain_branch_ablation="no_stats",
+        domain_enhancer="rcn_stats",
+        mixstyle_on=True,
+        mixstyle_p=0.18,
+        mixstyle_alpha=0.10,
+        mixstyle_eps=1.0e-6,
+        mixstyle_layers="time_down,t1",
+        mixstyle_use_domain_label=True,
+        mixstyle_mix="same_tx_crossdomain",
+        mixstyle_strength=0.70,
+        mixstyle_fallback="skip",
+    )
+    args = dict(phase1._D105_MODEL_RECONSTRUCTION_DEFAULTS)
+    args.update({"num_classes": 3, "model_size": "S"})
+    checkpoint = {
+        "args": args,
+        "model": {name: value.detach().clone() for name, value in reference.state_dict().items()},
+    }
+    for name in tuple(sys.modules):
+        if name == "model_dual_cvsincnet" or name.startswith("baselines"):
+            sys.modules.pop(name, None)
+    original_import = builtins.__import__
+
+    def guarded_import(name: str, *args: object, **kwargs: object):
+        if (
+            name == "SSDG"
+            or name.startswith("SSDG.")
+            or name == "baselines"
+            or name.startswith("baselines.")
+            or name == "model_modified"
+            or name == "paper_reproduction"
+            or name.startswith("paper_reproduction.")
+            or name == "cvsrffi.checkpoint_loading"
+        ):
+            raise AssertionError(f"D105 model loader imported forbidden module: {name}")
+        return original_import(name, *args, **kwargs)
+
+    monkeypatch.setattr(builtins, "__import__", guarded_import)
+    model, audit = phase1.build_d105_exact_model_from_checkpoint(
+        checkpoint, input_len=256, device=torch.device("cpu")
+    )
+    assert model.training is False
+    assert audit["model_factory"] == "model_dual_cvsincnet.build_dual_model"
+    assert not any(
+        name == "baselines" or name.startswith("baselines.") for name in sys.modules
+    )
+
+
+@pytest.mark.parametrize(
+    ("family", "needle"),
+    [
+        ("resnet18_1d", "resnet18_1d requires baselines.common.resnet1d"),
+        ("cvcnn", "cvcnn requires baselines.cvcnn_ce.model"),
+    ],
+)
+def test_optional_model_families_remain_fail_closed_when_dependency_is_missing(
+    monkeypatch: pytest.MonkeyPatch, family: str, needle: str
+) -> None:
+    """Making optional imports lazy must not turn missing families permissive."""
+
+    import model_dual_cvsincnet
+
+    original_import = builtins.__import__
+
+    def missing_baseline(name: str, *args: object, **kwargs: object):
+        if name == "baselines" or name.startswith("baselines."):
+            raise ModuleNotFoundError(name)
+        return original_import(name, *args, **kwargs)
+
+    monkeypatch.setattr(builtins, "__import__", missing_baseline)
+    with pytest.raises(ImportError, match=needle):
+        model_dual_cvsincnet.FeatureBackboneAdapter(family, num_classes=3)
 
 
 @pytest.mark.parametrize("relative_path", phase1.D105_CANDIDATE_RUNTIME_FILES)

@@ -30,16 +30,21 @@ if str(ROOT / "code") not in sys.path:
 
 from cvsrffi.stage2_d105_phase1_bundle import (  # noqa: E402
     D105Phase1BundleError,
+    build_d105_exact_model_from_checkpoint,
     build_d105_phase1_component,
     build_d105_source_access_receipt,
     derive_d105_source_held_gate,
     execute_d105_source_held_predictions,
     export_d105_phase1_strict_tap,
+    load_d105_exact_sha_bound_checkpoint,
     load_d105_candidate_method_lock,
     load_d105_candidate_runtime_manifest,
     load_d105_strict_tap_rows,
+    load_d105_tap_cache_selection_salt,
+    load_d105_tap_cache_source_validation_set,
     open_d105_source_held_truth,
     score_d105_source_held_truth,
+    select_d105_tap_cache_observations,
     seal_d105_phase1_component,
     sha256_file,
     validate_d105_phase1_asset,
@@ -54,6 +59,23 @@ SOURCE_INPUT_MEMBERS = (
     "labels",
     "receiver_ids",
     "physical_ids",
+)
+
+# The historical dual archive is consumed only as a byte-parity comparator.
+# Keep its immutable member contract local so ``tap-cache`` never imports the
+# legacy dual-exporter module (and therefore never loads its paper-reproduction
+# implementation tree).
+REFERENCE_DUAL_ARCHIVE_MEMBERS = (
+    "z_id",
+    "z_dom",
+    "tx_logits",
+    "labels",
+    "receiver_ids",
+    "day_ids",
+    "physical_ids",
+    "scenario_names",
+    "class_ids",
+    "observation_ids",
 )
 
 
@@ -133,12 +155,8 @@ def _reference_dual_parity(
     if observed_reference_sha != reference_archive_sha256:
         raise D105Phase1BundleError("reference dual archive SHA256 drift")
     try:
-        from scripts.export_phase1_singleobs_dual_feature_archive import MEMBERS
-    except ImportError as error:
-        raise D105Phase1BundleError("reference dual archive schema is unavailable") from error
-    try:
         with np.load(reference, allow_pickle=False) as loaded:
-            if tuple(loaded.files) != MEMBERS:
+            if tuple(loaded.files) != REFERENCE_DUAL_ARCHIVE_MEMBERS:
                 raise D105Phase1BundleError("reference dual archive member closure drift")
             reference_arrays = {
                 name: np.ascontiguousarray(np.array(loaded[name], copy=True))
@@ -247,13 +265,6 @@ def _tap_from_cache(args: argparse.Namespace) -> dict[str, object]:
 
     try:
         import torch
-        from cvsrffi.checkpoint_loading import build_exact_ssdg_model_from_checkpoint
-        from scripts.export_phase1_jp4_tap_archive import _load_exact_sha_bound_checkpoint
-        from scripts.export_phase1_singleobs_dual_feature_archive import (
-            CACHE_LOADER,
-            _load_selection_salt,
-            _select_verified_observations,
-        )
     except ImportError as error:
         raise D105Phase1BundleError("tap-cache dependencies are unavailable") from error
     cache = _regular(args.cache_set, "source cache set")
@@ -288,18 +299,21 @@ def _tap_from_cache(args: argparse.Namespace) -> dict[str, object]:
         or device.index >= torch.cuda.device_count()
     ):
         raise D105Phase1BundleError("tap-cache requires an explicit available CUDA device")
-    checkpoint_payload, _ = _load_exact_sha_bound_checkpoint(checkpoint, checkpoint_sha)
-    model, _ = build_exact_ssdg_model_from_checkpoint(
+    checkpoint_payload, _ = load_d105_exact_sha_bound_checkpoint(
+        checkpoint, checkpoint_sha
+    )
+    model, _ = build_d105_exact_model_from_checkpoint(
         checkpoint_payload, input_len=256, device=device
     )
-    model.to(device).eval()
-    salt = _load_selection_salt(
-        salt_path, args.selection_salt_receipt_sha256, checkpoint_sha=checkpoint_sha
+    if model.training:
+        raise D105Phase1BundleError("D105 exact checkpoint model remained in training mode")
+    salt = load_d105_tap_cache_selection_salt(
+        salt_path,
+        args.selection_salt_receipt_sha256,
+        checkpoint_sha256=checkpoint_sha,
     )
-    arrays_by_scenario, _, _ = CACHE_LOADER(
-        cache, expected_scope="source_validation", allowed_roles={"source"}
-    )
-    metadata, selected_iq = _select_verified_observations(
+    arrays_by_scenario, _, _ = load_d105_tap_cache_source_validation_set(cache)
+    metadata, selected_iq = select_d105_tap_cache_observations(
         arrays_by_scenario, salt["selection_salt_sha256"]
     )
     access = build_d105_source_access_receipt(

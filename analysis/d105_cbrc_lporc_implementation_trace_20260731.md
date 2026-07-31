@@ -3,7 +3,7 @@
 ## 1.状态
 
 - 设计基线commit：`776dc6a4`
-- 当前阶段：`LOCAL_IMPLEMENTED / LOCAL_TESTED / REAL_CHECKPOINT_DERIVED_FEATURE_SMOKE_PASS / INDEPENDENT_IMPLEMENTATION_REVIEW_GO`
+- 当前阶段：`R4_LOCAL_RELEASE_GO / P0=0 / P1=0 / P2=2 / NOT_LANDED`
 - N607：未预检、未同步、未创建远端目录、未启动
 - 性能证据：无
 - D104：保持`PAUSED_BEFORE_LANDING / NO_PERFORMANCE_RESULT`
@@ -48,15 +48,17 @@ DA审查GO只证明本地实现G0，不证明外部Phase1 validator签名权威�
 - query root、state receipt、bundle payload、INT8 bank、HEAD bias篡改fail-closed；
 - DA、HEAD、基础Student-t qKNN和RXIDMetaBias4 bundle相邻回归。
 
-最终稳定版结果：10个指定D105测试文件共`182 passed，0 failed`；45文件正式执行闭包全部`py_compile`通过；5个正式CLI及`predict/score/sign-authority/sign-target25-prepare`关键参数面退出码均为0。
+旧45文件闭包在独立审查中被作废：tap-cache可动态进入两个legacy exporter，query evaluator可经通用`checkpoint_loading`进入训练栈；首次54文件修复后又发现模型工厂会在来源校验前探测清单外`model_modified.py`。这些问题均在N607落地前发现，未产生远端状态或性能结果。
+
+当前R4稳定版结果：10个指定D105测试文件共`211 passed，0 failed`；54文件正式执行闭包全部`py_compile`通过；5个正式CLI及`predict/score/sign-authority/sign-target25-prepare`关键参数面退出码均为0。模型工厂确定性导入清单内`model.py`，tap-cache和query evaluator共享D105最小checkpoint重建，负测禁止legacy exporter、SSDG训练栈、通用`checkpoint_loading`、无关paper路径和`model_modified`。
 
 ## 5.真实checkpoint派生特征无truth smoke
 
 凭据：
 
-`E:\type10-7\automation_reports\CV-SincNet\d105_cbrc_lporc_local_smoke_20260731_r3\real_feature_no_truth_smoke.json`
+`E:\type10-7\automation_reports\CV-SincNet\d105_cbrc_lporc_local_smoke_20260731_r5\real_feature_no_truth_smoke.json`
 
-凭据SHA256：`cc08c4891b8c9112fc37dc9c752f7f53f99e4a3b83df22195f3f58e48696ef5f`
+凭据SHA256：`347a0b659d8db3b44e8bacbe0e9c5c613de9827f1d77862917a453e350f2d338`
 
 |项目|结果|
 |---|---|
@@ -73,7 +75,7 @@ DA审查GO只证明本地实现G0，不证明外部Phase1 validator签名权威�
 |性能计算|false|
 |Target访问|false|
 
-本次smoke绑定冻结runtime SHA256=`639c16dd6a70620ca99fa960acb9e988aeba3cea92edcb7a9a158b26a6d958b5`和method lock SHA256=`37dd03fcdb7cb01e6e545def11711b0c9c9ad35e3d505d75c18f314cb3ef3576`，耗时121.047秒，stderr为0。它复用已封存的checkpoint派生真实特征，没有重新从原始IQ执行backbone前向；它是实际checkpoint字节＋真实派生特征的机械闭环证据，不是Target性能、正式Phase2 row或完整runner证据。45文件正式执行闭包包含该smoke入口本体，但不声称覆盖smoke专用训练helper的全部传递依赖；正式Target25预测不依赖这些helper。
+本次smoke绑定冻结runtime SHA256=`48ce446cb406aad67902c80547a48ffbd95d496c728725f2d99fc51b3433f9da`和method lock SHA256=`cdae572cad22721351620828cd1ec36ae1d3432d4b04c70a4c60359a64339d2a`，耗时40.812秒。它复用已封存的checkpoint派生真实特征，没有重新从原始IQ执行backbone前向；它是实际checkpoint字节＋真实派生特征的机械闭环证据，不是Target性能、正式Phase2 row或完整runner证据。
 
 ## 6.历史性能定位
 

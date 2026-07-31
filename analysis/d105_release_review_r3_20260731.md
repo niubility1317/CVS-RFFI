@@ -1,5 +1,7 @@
 # D105 R3独立release审查收据
 
+> 已作废：后续R4审查发现tap-cache、query evaluator和模型工厂存在清单外动态执行路径。本收据对应的45文件闭包与`LOCAL_RELEASE_GO`不得用于N607发布或性能声明。
+
 状态：`LOCAL_RELEASE_GO（同版本本地实现）`
 
 审查日期：2026-07-31

@@ -18,20 +18,10 @@ for _path in (_CODE_ROOT, _REPO_ROOT):
 for _path in (_REPO_ROOT, _CODE_ROOT):
     sys.path.insert(0, str(_path))
 
-try:
-    from model_modified import build_model as build_single_model
-except Exception:
-    from model import build_model as build_single_model
-
-try:
-    from baselines.common.resnet1d import MLPClassifier, ResNet1DEncoder
-    from baselines.cvcnn_ce.model import BasicCVCNN, SincCVCNN
-except Exception:  # pragma: no cover - import errors surface when a baseline family is requested.
-    MLPClassifier = None
-    ResNet1DEncoder = None
-    BasicCVCNN = None
-    SincCVCNN = None
-
+# This factory is part of the D105 signed runtime closure.  Import the bound
+# backbone directly; probing an optional ``model_modified`` first would execute
+# an unmanifested local module before D105 can validate the factory origin.
+from model import build_model as build_single_model
 
 def build_single_model_compat(**kwargs):
     try:
@@ -242,8 +232,16 @@ class FeatureBackboneAdapter(nn.Module):
         self.arch_family = str(family or "cvsincnet").lower().strip()
         self.input_len = int(input_len)
         if self.arch_family == "resnet18_1d":
-            if ResNet1DEncoder is None or MLPClassifier is None:
-                raise ImportError("resnet18_1d requires baselines.common.resnet1d")
+            # Keep optional baseline implementations outside the CVSincNet
+            # import path.  D105 only permits ``arch_family=cvsincnet`` and
+            # must not execute or trust these unrelated modules while it
+            # reconstructs the sealed model.
+            try:
+                from baselines.common.resnet1d import MLPClassifier, ResNet1DEncoder
+            except Exception as error:  # pragma: no cover - optional family.
+                raise ImportError(
+                    "resnet18_1d requires baselines.common.resnet1d"
+                ) from error
             self.encoder = ResNet1DEncoder(
                 input_channels=2,
                 embedding_dim=512,
@@ -253,9 +251,13 @@ class FeatureBackboneAdapter(nn.Module):
             self.emb_dim = 512
             self.classifier = MLPClassifier(self.emb_dim, int(num_classes), hidden_dim=256, dropout=float(drop))
         elif self.arch_family in {"cvcnn", "sinc_cvcnn"}:
+            try:
+                from baselines.cvcnn_ce.model import BasicCVCNN, SincCVCNN
+            except Exception as error:  # pragma: no cover - optional family.
+                raise ImportError(
+                    f"{self.arch_family} requires baselines.cvcnn_ce.model"
+                ) from error
             model_cls = SincCVCNN if self.arch_family == "sinc_cvcnn" else BasicCVCNN
-            if model_cls is None:
-                raise ImportError(f"{self.arch_family} requires baselines.cvcnn_ce.model")
             self.encoder = model_cls(
                 num_classes=int(num_classes),
                 input_len=int(input_len),

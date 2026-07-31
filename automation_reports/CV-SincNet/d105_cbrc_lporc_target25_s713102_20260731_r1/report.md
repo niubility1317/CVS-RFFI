@@ -1,6 +1,6 @@
 # D105-CBRC-MB4+LPO-RC-qKNN单seed Target25实验报告
 
-状态：`R2_LOCAL_VERIFIED / RELEASE_REVIEW_PENDING / NOT_LANDED / NO_PERFORMANCE_RESULT`
+状态：`R4_LOCAL_RELEASE_GO / P0=0 / P1=0 / P2=2 / NOT_LANDED / NO_PERFORMANCE_RESULT`
 
 ## 1.实验标识
 
@@ -49,11 +49,11 @@ K5的support physical IDs必须是同receiver、同scenario、同capsule的K10/n
 |`stage2_lpo_rc_qknn.py`|纯support HEAD|本地独立复审`P0=0、P1=0`|
 |`stage2_d105_four_arm.py`|四臂集成|本地独立复审`P0=0、P1=0`|
 |`stage2_d105_feature_tap.py`|真实checkpoint同IQ单次`z_id/z_dom/hidden/pre_relu`tap|真实checkpoint随机IQ smoke通过|
-|`stage2_d105_target25_runner.py`|25job计划、四臂before/after预测封存、truth-side score及300-pair/600-state覆盖|R2本地回归通过|
-|`stage2_d105_target25_launcher.py`|真实row context、GPU绑定和逐row执行|R2本地回归通过|
-|`stage2_d105_target25_inputs.py`|签名D92/D81 authority和真实package到25行plan/context的唯一prepare入口|R2本地真实结构fixture通过|
-|D105 Phase1 bundle/authority|source-only压缩知识、签名D102撤销和可信外部formal seal|R2本地回归通过；生产signature未生成|
-|D105 query evaluator|D92 sealed row package到四臂预测|R2本地回归通过|
+|`stage2_d105_target25_runner.py`|25job计划、四臂before/after预测封存、truth-side score及300-pair/600-state覆盖|R4统一回归通过|
+|`stage2_d105_target25_launcher.py`|真实row context、GPU绑定和逐row执行|R4统一回归通过|
+|`stage2_d105_target25_inputs.py`|签名D92/D81 authority和真实package到25行plan/context的唯一prepare入口|R4本地真实结构fixture通过|
+|D105 Phase1 bundle/authority|source-only压缩知识、签名D102撤销和可信外部formal seal|R4统一回归通过；生产D105 signature未生成|
+|D105 query evaluator|D92 sealed row package到四臂预测|R4闭包与预检顺序回归通过|
 
 已核验checkpoint：
 
@@ -142,11 +142,13 @@ artifact_sha256=65e67bb763aeb1d2eb20b7f577923745d2f91532c83159902a7667123950604a
 
 基线联合表已写入Git承载面`analysis/d105_target25_baseline_seed713102.md`。当前可验证结论是：D92在K10/new10、K10/new20和K5/new20提高注册后旧类并降低遗忘，但新类小幅下降；K1与D62逐值一致；SVRN在全部切片显著更差。D105尚无性能数据，不能加入排序。
 
-## 10.R1拒绝与R2修复
+## 10.R1拒绝、R3作废与R4闭包修复
 
 R1独立release审查结论为`NO-GO / P0=1 / P1≥4`，原因包括unsigned Phase1 authority自述、缺少真实D92→plan/context入口、runtime闭包遗漏launcher/CLI和D102拒绝仅靠名称。R1未提交、未落地、无性能结果。
 
-R2完成：
+R2/R3完成authority和执行链后，独立复核在N607落地前发现两条清单外动态执行路径：tap-cache导入legacy exporter，query evaluator经通用`checkpoint_loading`进入训练栈。第一次54文件修复后，R4 reviewer又发现`model_dual_cvsincnet.py`会在来源校验前探测清单外`model_modified.py`。因此旧45文件R3 review、旧`r2`运行预登记及中间54文件哈希全部作废，且均未落地。
+
+当前R4修复：
 
 - 固定Ed25519信任根、独立review receipt、时间窗、nonce防重放和完整formal authority artifact；
 - D102r6真实内容identity签名撤销；
@@ -154,9 +156,9 @@ R2完成：
 - 独立`TARGET25_PREPARE`签名域精确绑定matrix、plan、context、prepare receipt、Git commit、run ID、候选锁及N607 nonce ledger identity；非dry-run prediction在执行前消费nonce，dry-run/score只验签；
 - Phase1和Target25均以“本机账本绝对路径＋run ID＋签名域”重算跨主机ledger identity，拒绝替换账本路径、run或签名域；
 - development claim不可升级，K5嵌套、query root一致、25/300/600覆盖和600预测后才开truth；
-- 45文件candidate runtime closure（40个递归模块＋5个CLI）SHA256=`639c16dd6a70620ca99fa960acb9e988aeba3cea92edcb7a9a158b26a6d958b5`；
-- candidate method lock SHA256=`37dd03fcdb7cb01e6e545def11711b0c9c9ad35e3d505d75c18f314cb3ef3576`；
-- `ssr-gpu`统一回归182项、45文件`py_compile`、5个CLI及4个关键子命令参数面、canonical loader和差异检查通过；
-- 同代真实checkpoint无query smoke收据SHA256=`cc08c4891b8c9112fc37dc9c752f7f53f99e4a3b83df22195f3f58e48696ef5f`；query fit/update=0/0、Target访问=false、性能计算=false。
+- 54文件candidate runtime closure明确排除两个legacy exporter、通用`checkpoint_loading`、SSDG训练栈、无关paper路径和`model_modified`探测，SHA256=`48ce446cb406aad67902c80547a48ffbd95d496c728725f2d99fc51b3433f9da`；
+- candidate method lock SHA256=`cdae572cad22721351620828cd1ec36ae1d3432d4b04c70a4c60359a64339d2a`；
+- `ssr-gpu`统一回归211项、54文件`py_compile`、5个CLI及4个关键子命令参数面、canonical loader和差异检查通过；
+- 同代真实checkpoint无query R5 smoke收据SHA256=`347a0b659d8db3b44e8bacbe0e9c5c613de9827f1d77862917a453e350f2d338`；query fit/update=0/0、Target访问=false、性能计算=false。
 
-这些仍只是本地实现证据。R3独立release最终签字、本地Git提交、N607 Phase1门和Target25均尚未执行。45文件闭包不声称覆盖技术smoke专用训练helper的全部传递依赖；正式Target25预测不依赖这些helper。
+这些仍只是本地实现证据。R4独立结论为`LOCAL_RELEASE_GO / P0=0 / P1=0 / P2=2`；最终receipt落盘和新本地Git提交尚待完成，N607 Phase1门与Target25均尚未执行。两个P2分别是PyTorch弃用警告，以及旧PyTorch缺少`safe_globals`时保留精确SHA绑定的兼容反序列化分支；唯一runner必须在N607预检中记录实际加载策略。

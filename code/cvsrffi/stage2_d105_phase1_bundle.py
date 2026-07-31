@@ -42,6 +42,12 @@ from cvsrffi.stage2_d105_cbrc import (
     compute_d105_bundle_validator_receipt,
     make_d105_cbrc_bundle_handle,
 )
+from cvsrffi.leo_weak_cache import (
+    FORMAL_LEO_WEAK_SCENARIOS,
+    LEO_WEAK_CACHE_SCHEMA_V1,
+    LEO_WEAK_CACHE_SET_SCHEMA_V1,
+    load_verified_leo_weak_cache_set,
+)
 from cvsrffi.stage2_d105_phase1_authority import (
     AUTHORITY_ENVELOPE_NAME,
     AUTHORITY_ENVELOPE_SCHEMA,
@@ -81,6 +87,15 @@ D105_CANDIDATE_RUNTIME_MANIFEST_SCHEMA = (
 # is never accepted by this module.
 AUTHORITY_SEAL_SCHEMA = AUTHORITY_ENVELOPE_SCHEMA
 PROTOCOL_SCHEMA = "p2_min_v1"
+
+# These two constants are copied from the historical one-observation source
+# selection implementation.  They intentionally live in the D105 runtime so
+# ``tap-cache`` does not import the older exporter and its unrelated training
+# and paper-reproduction dependency tree.
+D105_TAP_CACHE_SELECTION_SALT_SCHEMA = (
+    "cvs.phase1.singleobs_selection_salt_receipt.v1"
+)
+D105_TAP_CACHE_SELECTION_DOMAIN = b"P1_SINGLE_LEO_V1"
 
 CANDIDATE_ID = "D105-CBRC+LPO-RC"
 COMPONENT_STATUS = "PHASE1_COMPONENT_PENDING_INDEPENDENT_FORMAL_SEAL"
@@ -122,14 +137,17 @@ D105_CANDIDATE_RUNTIME_CVSRFFI_FILES = (
     # list: a transitive helper can otherwise change signature, model, data,
     # or prediction semantics outside the signed runtime manifest.
     "cvsrffi/__init__.py",
-    "cvsrffi/checkpoint_loading.py",
     "cvsrffi/dual_feature_forward.py",
     "cvsrffi/leo_weak_cache.py",
     "cvsrffi/phase1_adv3b02_deployment_bundle.py",
     "cvsrffi/phase1_center_lowrank_prototype_bundle.py",
     "cvsrffi/phase1_grb_jp4_bundle.py",
+    "cvsrffi/phase1_rb_metabias4_bundle.py",
     "cvsrffi/phase2_runtime_contract.py",
     "cvsrffi/rxid_metabias4_bundle.py",
+    "cvsrffi/rxid_metabias4_held_execution.py",
+    "cvsrffi/rxid_metabias4_phase1_trainer.py",
+    "cvsrffi/rxid_metabias4_source_archive.py",
     "cvsrffi/somph_cache_build_matrix.py",
     "cvsrffi/somph_diagnostic_bundle_loader.py",
     "cvsrffi/somph_formal_matrix.py",
@@ -159,16 +177,35 @@ D105_CANDIDATE_RUNTIME_CVSRFFI_FILES = (
     "cvsrffi/stage2_prediction_artifact.py",
     "cvsrffi/stage2_predictor_bundle.py",
     "cvsrffi/stage2_predictor_runtime.py",
+    "cvsrffi/stage2_rb_metabias4_qknn.py",
+    "cvsrffi/stage2_rxid_metabias4.py",
     "cvsrffi/stage2_svrn_bcr.py",
     "cvsrffi/stage2_zid_student_t_qknn.py",
+    "training_controls.py",
 )
 
-D105_CANDIDATE_RUNTIME_FILES = D105_CANDIDATE_RUNTIME_CVSRFFI_FILES + (
+# The D105 exact-checkpoint reconstruction path intentionally bypasses the
+# generic ``checkpoint_loading`` fallback, whose implementation imports the
+# complete SSDG training program.  The runtime instead depends only on this
+# fixed model factory and the CVSincNet backbone it selects in this checkout.
+# ``build_d105_exact_model_from_checkpoint`` rejects a changed factory origin
+# before a model is constructed.
+D105_CANDIDATE_RUNTIME_MODEL_FILES = (
+    "baseline_origin_sat_view.py",
+    "model.py",
+    "model_dual_cvsincnet.py",
+)
+
+D105_CANDIDATE_RUNTIME_FILES = (
+    D105_CANDIDATE_RUNTIME_CVSRFFI_FILES
+    + D105_CANDIDATE_RUNTIME_MODEL_FILES
+    + (
     "scripts/build_d105_phase1_bundle.py",
     "scripts/sign_d105_phase1_authority.py",
     "scripts/run_d105_four_arm_real_feature_smoke.py",
     "scripts/prepare_d105_target25_inputs.py",
     "scripts/run_d105_target25.py",
+    )
 )
 
 BUNDLE_WIRE_NAME = "d105_phase1_aggregate.wire"
@@ -268,6 +305,487 @@ def sha256_file(path: str | Path) -> str:
         for block in iter(lambda: stream.read(1 << 20), b""):
             digest.update(block)
     return digest.hexdigest()
+
+
+# This is the model-construction subset of the historical SSDG parser plus
+# ``post_stage_common.build_baseline_model`` defaults.  It is deliberately
+# local and finite: D105 uses the checkpoint's stored values when present and
+# otherwise exactly these frozen defaults.  Keeping it here prevents the
+# inference/Phase1 asset path from importing ``SSDG.train_ssdg`` (a training
+# program with a much wider local import graph).
+_D105_MODEL_RECONSTRUCTION_DEFAULTS: Mapping[str, Any] = MappingProxyType(
+    {
+        "num_classes": 16,
+        "dataset": "wisig",
+        "sample_rate_hz": 0.0,
+        "model_size": "M",
+        "model_variant": "lite_d",
+        "id_feature_key": "feat_joint",
+        "dom_feature_key": "feat_imp",
+        "branch_ablation": "no_dac",
+        "domain_branch_ablation": "no_stats",
+        "domain_enhancer": "rcn_stats",
+        "domain_enhancer_strength": 0.35,
+        "use_mixstyle": True,
+        "mixstyle_p": 0.18,
+        "mixstyle_alpha": 0.10,
+        "mixstyle_eps": 1.0e-6,
+        "mixstyle_layers": "time_down,t1",
+        "mixstyle_use_domain_label": True,
+        "mixstyle_mix": "same_tx_crossdomain",
+        "mixstyle_strength": 0.70,
+        "mixstyle_fallback": "skip",
+        "use_circularity": True,
+        "use_freq_stats": True,
+        "use_pa_stats": True,
+        "use_freq_band_gate": True,
+        "freq_feature_source": "raw_fft",
+        "pa_feature_source": "raw_iq",
+        "pa_orders": None,
+        "use_aux_spectral_stats": True,
+        "channel_trim_scale": 1.0,
+        "id_time_stability_mode": "off",
+        "id_freq_stability_mode": "off",
+        "domain_time_stability_mode": "off",
+        "domain_freq_stability_mode": "off",
+        "time_stability_channels": 8,
+        "freq_stability_channels": 4,
+        "fast_infer_when_no_aux": True,
+        "arch_family": "cvsincnet",
+    }
+)
+
+
+def _d105_reconstruction_model_kwargs(
+    checkpoint_args: Mapping[str, Any], *, input_len: int, num_domains: int
+) -> dict[str, Any]:
+    """Normalize the fixed checkpoint-to-CVSincNet construction contract."""
+
+    if type(checkpoint_args) is not dict:
+        raise D105Phase1BundleError("checkpoint args must be an exact mapping")
+    if isinstance(input_len, bool) or int(input_len) <= 0:
+        raise D105Phase1BundleError("checkpoint reconstruction input length is invalid")
+    if isinstance(num_domains, bool) or int(num_domains) <= 0:
+        raise D105Phase1BundleError("checkpoint reconstruction domain count is invalid")
+    merged = dict(_D105_MODEL_RECONSTRUCTION_DEFAULTS)
+    merged.update(checkpoint_args)
+    try:
+        dataset = str(merged["dataset"])
+        sample_rate_hz = float(merged["sample_rate_hz"])
+        if sample_rate_hz <= 0.0:
+            sample_rate_hz = 25.0e6 if dataset == "wisig" else 5.0e6
+        kwargs = {
+            "num_classes": int(merged["num_classes"]),
+            "num_domains": int(num_domains),
+            "model_size": str(merged["model_size"]),
+            "dataset": dataset,
+            "input_len": int(input_len),
+            "sample_rate_hz": sample_rate_hz,
+            "id_feature_key": str(merged["id_feature_key"]),
+            "dom_feature_key": str(merged["dom_feature_key"]),
+            "model_variant": str(merged["model_variant"]),
+            "branch_ablation": str(merged["branch_ablation"]),
+            "mixstyle_on": bool(merged["use_mixstyle"]),
+            "mixstyle_p": float(merged["mixstyle_p"]),
+            "mixstyle_alpha": float(merged["mixstyle_alpha"]),
+            "mixstyle_eps": float(merged["mixstyle_eps"]),
+            "mixstyle_layers": str(merged["mixstyle_layers"]),
+            "mixstyle_use_domain_label": bool(
+                merged["mixstyle_use_domain_label"]
+            ),
+            "mixstyle_mix": str(merged["mixstyle_mix"]),
+            "mixstyle_strength": float(merged["mixstyle_strength"]),
+            "mixstyle_fallback": str(merged["mixstyle_fallback"]),
+            "domain_branch_ablation": str(merged["domain_branch_ablation"]),
+            "domain_enhancer": str(merged["domain_enhancer"]),
+            "domain_enhancer_strength": float(merged["domain_enhancer_strength"]),
+            "use_circularity": bool(merged["use_circularity"]),
+            "use_freq_stats": bool(merged["use_freq_stats"]),
+            "use_pa_stats": bool(merged["use_pa_stats"]),
+            "use_freq_band_gate": bool(merged["use_freq_band_gate"]),
+            "freq_feature_source": str(merged["freq_feature_source"]),
+            "pa_feature_source": str(merged["pa_feature_source"]),
+            "pa_orders": merged["pa_orders"],
+            "use_aux_spectral_stats": bool(merged["use_aux_spectral_stats"]),
+            "channel_trim_scale": float(merged["channel_trim_scale"]),
+            "id_time_stability_mode": str(merged["id_time_stability_mode"]),
+            "id_freq_stability_mode": str(merged["id_freq_stability_mode"]),
+            "domain_time_stability_mode": str(
+                merged["domain_time_stability_mode"]
+            ),
+            "domain_freq_stability_mode": str(
+                merged["domain_freq_stability_mode"]
+            ),
+            "time_stability_channels": int(merged["time_stability_channels"]),
+            "freq_stability_channels": int(merged["freq_stability_channels"]),
+            "fast_infer_when_no_aux": bool(merged["fast_infer_when_no_aux"]),
+            "arch_family": str(merged["arch_family"]),
+        }
+    except (KeyError, TypeError, ValueError) as error:
+        raise D105Phase1BundleError(
+            "checkpoint model-argument reconstruction drift"
+        ) from error
+    if kwargs["num_classes"] < 2 or kwargs["arch_family"] != "cvsincnet":
+        raise D105Phase1BundleError("checkpoint model-family contract drift")
+    return kwargs
+
+
+def load_d105_exact_sha_bound_checkpoint(
+    path: str | Path, expected_sha256: str
+) -> tuple[Mapping[str, Any], dict[str, Any]]:
+    """Load an exact-byte checkpoint through the bounded legacy bridge.
+
+    Some N607-compatible PyTorch releases cannot use ``weights_only`` with
+    the historical checkpoint.  The fallback remains acceptable only after
+    the file has matched the caller's exact SHA256, and the one safe global it
+    may resolve is explicitly part of the D105 runtime manifest.
+    """
+
+    source = Path(path)
+    expected = _require_sha256(expected_sha256, "checkpoint SHA256")
+    if source.is_symlink() or not source.is_file() or sha256_file(source) != expected:
+        raise D105Phase1BundleError("checkpoint SHA256 drift")
+    try:
+        import torch
+        from baseline_origin_sat_view import SatViewStage
+    except ImportError as error:  # pragma: no cover - deployment dependency.
+        raise D105Phase1BundleError("D105 checkpoint loader dependencies are unavailable") from error
+    try:
+        safe_globals = getattr(torch.serialization, "safe_globals", None)
+        if safe_globals is not None:
+            with safe_globals([SatViewStage]):
+                payload = torch.load(source, map_location="cpu", weights_only=True)
+            policy = "weights_only_with_explicit_safe_globals"
+            weights_only = True
+        else:
+            try:
+                payload = torch.load(source, map_location="cpu", weights_only=False)
+            except TypeError:
+                payload = torch.load(source, map_location="cpu")
+            policy = "legacy_pickle_exact_frozen_sha_only"
+            weights_only = False
+    except (OSError, RuntimeError, TypeError, ValueError) as error:
+        raise D105Phase1BundleError("exact SHA-bound checkpoint load failed") from error
+    if not isinstance(payload, Mapping):
+        raise D105Phase1BundleError("checkpoint load did not return a mapping")
+    return payload, {
+        "policy": policy,
+        "torch_version": str(torch.__version__),
+        "safe_globals_available": safe_globals is not None,
+        "weights_only": weights_only,
+        "exact_frozen_checkpoint_sha256_required": expected,
+        "caller_selected_checkpoint_allowed": False,
+    }
+
+
+def build_d105_exact_model_from_checkpoint(
+    checkpoint: Mapping[str, Any], *, input_len: int, device: Any
+) -> tuple[Any, dict[str, Any]]:
+    """Reconstruct the frozen ADV3B02 model without importing SSDG training.
+
+    The only executable local model dependency is the checked-in CVSincNet
+    factory.  The runtime manifest lists both files, and the origin checks
+    below fail closed if an alternate ``model_modified`` or path-injected
+    factory would otherwise be selected.
+    """
+
+    try:
+        import torch
+    except ImportError as error:  # pragma: no cover - exercised in deployment.
+        raise D105Phase1BundleError("D105 checkpoint reconstruction requires PyTorch") from error
+    if not isinstance(checkpoint, Mapping):
+        raise D105Phase1BundleError("checkpoint must be a mapping")
+    args = checkpoint.get("args")
+    raw_state = checkpoint.get("model")
+    if type(args) is not dict or not isinstance(raw_state, Mapping):
+        raise D105Phase1BundleError("checkpoint requires exact args/model fields")
+    state: dict[str, Any] = {}
+    for raw_key, value in raw_state.items():
+        key = str(raw_key)
+        if not key or not torch.is_tensor(value):
+            raise D105Phase1BundleError("checkpoint model state tensor contract drift")
+        normalized = key[7:] if key.startswith("module.") else key
+        if not normalized or normalized in state:
+            raise D105Phase1BundleError("checkpoint model-state key normalization drift")
+        state[normalized] = value
+    num_domains = 0
+    for name in (
+        "dom_head.net.3.bias",
+        "dom_head.net.3.weight",
+        "adv_head.net.3.bias",
+        "adv_head.net.3.weight",
+    ):
+        value = state.get(name)
+        if torch.is_tensor(value) and value.ndim >= 1 and int(value.shape[0]) > 0:
+            num_domains = int(value.shape[0])
+            break
+    if num_domains <= 0:
+        raise D105Phase1BundleError("cannot infer checkpoint domain count")
+    kwargs = _d105_reconstruction_model_kwargs(
+        args, input_len=int(input_len), num_domains=num_domains
+    )
+    try:
+        import model_dual_cvsincnet as model_factory_module
+        import model as model_backbone_module
+    except ImportError as error:
+        raise D105Phase1BundleError(
+            "D105 CVSincNet model factory is unavailable"
+        ) from error
+    code_root = Path(__file__).resolve().parents[1]
+    expected_factory = (code_root / "model_dual_cvsincnet.py").resolve()
+    expected_backbone = (code_root / "model.py").resolve()
+    if (
+        Path(str(getattr(model_factory_module, "__file__", ""))).resolve()
+        != expected_factory
+        or Path(str(getattr(model_backbone_module, "__file__", ""))).resolve()
+        != expected_backbone
+        or getattr(model_factory_module.build_dual_model, "__module__", None)
+        != "model_dual_cvsincnet"
+        or getattr(model_factory_module.build_single_model, "__module__", None)
+        != "model"
+    ):
+        raise D105Phase1BundleError("D105 model factory origin drift")
+    try:
+        model = model_factory_module.build_dual_model(**kwargs).to(device)
+        incompatible = model.load_state_dict(state, strict=False)
+    except (RuntimeError, TypeError, ValueError) as error:
+        raise D105Phase1BundleError(
+            "strict D105 checkpoint reconstruction shape mismatch"
+        ) from error
+    missing = list(incompatible.missing_keys)
+    unexpected = list(incompatible.unexpected_keys)
+    if missing or unexpected:
+        raise D105Phase1BundleError(
+            "strict D105 checkpoint reconstruction failed: "
+            f"missing={missing} unexpected={unexpected}"
+        )
+    model.eval()
+    return model, {
+        "loader": "d105_minimal_cvsincnet_checkpoint_reconstruction_v1",
+        "model_factory": "model_dual_cvsincnet.build_dual_model",
+        "backbone_factory": "model.build_model",
+        "checkpoint_load_strict": True,
+        "missing_keys": 0,
+        "unexpected_keys": 0,
+        "skipped_mismatch": 0,
+        "state_tensor_count": len(state),
+        "num_domains_from_state": num_domains,
+        "input_len": int(input_len),
+        "eval_mode": True,
+    }
+
+
+def load_d105_tap_cache_selection_salt(
+    path: str | Path,
+    expected_sha256: str,
+    *,
+    checkpoint_sha256: str,
+) -> dict[str, str]:
+    """Read the frozen one-observation salt without importing old exporters."""
+
+    source = Path(path)
+    expected = _require_sha256(expected_sha256, "selection salt receipt SHA256")
+    checkpoint = _require_sha256(checkpoint_sha256, "checkpoint SHA256")
+    if (
+        source.is_symlink()
+        or not source.is_file()
+        or sha256_file(source) != expected
+    ):
+        raise D105Phase1BundleError("selection salt receipt path/SHA256 drift")
+    try:
+        receipt = json.loads(source.read_text(encoding="utf-8"))
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError) as error:
+        raise D105Phase1BundleError(
+            "selection salt receipt must be strict UTF-8 JSON"
+        ) from error
+    expected_keys = {
+        "schema",
+        "status",
+        "artifact_stage",
+        "bundle_id",
+        "phase1_checkpoint_sha256",
+        "selection_salt_sha256",
+        "target_access",
+    }
+    if (
+        type(receipt) is not dict
+        or set(receipt) != expected_keys
+        or receipt.get("schema") != D105_TAP_CACHE_SELECTION_SALT_SCHEMA
+        or receipt.get("status") != "SEALED_BEFORE_TARGET_ACCESS"
+        or receipt.get("artifact_stage") != "phase1_offline_before_target_access"
+        or _require_sha256(receipt.get("bundle_id"), "selection-salt bundle_id")
+        != str(receipt.get("bundle_id"))
+        or receipt.get("phase1_checkpoint_sha256") != checkpoint
+        or receipt.get("target_access") is not False
+    ):
+        raise D105Phase1BundleError("selection salt receipt lineage drift")
+    return {
+        "path": str(source.resolve()),
+        "sha256": expected,
+        "selection_salt_sha256": _require_sha256(
+            receipt.get("selection_salt_sha256"), "selection salt"
+        ),
+    }
+
+
+def load_d105_tap_cache_source_validation_set(
+    path: str | Path,
+) -> tuple[dict[str, dict[str, np.ndarray]], dict[str, Any], dict[str, Any]]:
+    """Load only the historical v1 source-validation cache lineage."""
+
+    source = Path(path)
+    if source.is_symlink() or not source.is_file():
+        raise D105Phase1BundleError("source cache set must be a regular file")
+    try:
+        return load_verified_leo_weak_cache_set(
+            source,
+            expected_scope="source_validation",
+            allowed_roles={"source"},
+            accepted_outer_schemas=frozenset({LEO_WEAK_CACHE_SET_SCHEMA_V1}),
+            accepted_inner_schemas=frozenset({LEO_WEAK_CACHE_SCHEMA_V1}),
+        )
+    except (OSError, TypeError, ValueError, KeyError) as error:
+        raise D105Phase1BundleError(
+            "verified v1 source-validation cache-set validation failed"
+        ) from error
+
+
+def _d105_tap_cache_selection_index(
+    selection_salt_sha256: str, physical_id: str
+) -> int:
+    salt = bytes.fromhex(_require_sha256(selection_salt_sha256, "selection salt"))
+    identifier = str(physical_id)
+    if not identifier:
+        raise D105Phase1BundleError("physical_id must be nonempty")
+    digest = hashlib.sha256(
+        D105_TAP_CACHE_SELECTION_DOMAIN + salt + identifier.encode("utf-8")
+    ).digest()
+    return int.from_bytes(digest[:8], "big", signed=False) % len(
+        FORMAL_LEO_WEAK_SCENARIOS
+    )
+
+
+def select_d105_tap_cache_observations(
+    arrays_by_scenario: Mapping[str, Mapping[str, np.ndarray]],
+    selection_salt_sha256: str,
+) -> tuple[dict[str, np.ndarray], np.ndarray]:
+    """Select the one fixed weak observation per source physical sample.
+
+    This is deliberately byte-compatible with the historical helper for a
+    valid v1 source cache, while making the logic part of the D105 runtime
+    manifest rather than an unsealed export script.
+    """
+
+    if tuple(arrays_by_scenario) != FORMAL_LEO_WEAK_SCENARIOS:
+        raise D105Phase1BundleError("all three ordered scenarios are required")
+    required = {
+        "leo_weak_iq",
+        "sample_ids",
+        "tx_ids",
+        "rx_ids",
+        "day_ids",
+        "dataset_role",
+        "sat_scenarios",
+        "overlay_ids",
+    }
+    indexes: dict[str, dict[str, int]] = {}
+    ids: dict[str, list[str]] = {}
+    for scenario in FORMAL_LEO_WEAK_SCENARIOS:
+        arrays = arrays_by_scenario[scenario]
+        missing = required - set(arrays)
+        if missing:
+            raise D105Phase1BundleError(
+                f"verified cache lacks fields: {sorted(missing)}"
+            )
+        sample_ids = np.asarray(arrays["sample_ids"]).astype(str).tolist()
+        iq = np.asarray(arrays["leo_weak_iq"], dtype=np.float32)
+        if (
+            not sample_ids
+            or len(sample_ids) != len(set(sample_ids))
+            or iq.ndim != 3
+            or iq.shape[1] != 2
+            or len(iq) != len(sample_ids)
+            or not np.isfinite(iq).all()
+        ):
+            raise D105Phase1BundleError(
+                f"verified cache row contract drift: {scenario}"
+            )
+        if any(
+            len(np.asarray(arrays[name])) != len(sample_ids)
+            for name in required - {"leo_weak_iq"}
+        ):
+            raise D105Phase1BundleError(
+                f"verified cache row count drift: {scenario}"
+            )
+        if np.asarray(arrays["sat_scenarios"]).astype(str).tolist() != [
+            scenario
+        ] * len(sample_ids):
+            raise D105Phase1BundleError(
+                f"verified cache scenario drift: {scenario}"
+            )
+        overlay_ids = np.asarray(arrays["overlay_ids"]).astype(str).tolist()
+        if any(not value for value in overlay_ids) or len(overlay_ids) != len(
+            set(overlay_ids)
+        ):
+            raise D105Phase1BundleError(f"verified overlay_ids drift: {scenario}")
+        ids[scenario] = sample_ids
+        indexes[scenario] = {value: index for index, value in enumerate(sample_ids)}
+    reference = ids[FORMAL_LEO_WEAK_SCENARIOS[0]]
+    if any(
+        set(ids[scenario]) != set(reference)
+        for scenario in FORMAL_LEO_WEAK_SCENARIOS[1:]
+    ):
+        raise D105Phase1BundleError(
+            "cache scenarios do not share one selectable physical-ID set"
+        )
+    metadata: dict[str, list[str]] = {
+        name: []
+        for name in (
+            "labels",
+            "receiver_ids",
+            "day_ids",
+            "physical_ids",
+            "scenario_names",
+            "observation_ids",
+        )
+    }
+    selected_iq: list[np.ndarray] = []
+    for physical_id in reference:
+        identities: list[tuple[str, str, str]] = []
+        roles: list[str] = []
+        for scenario in FORMAL_LEO_WEAK_SCENARIOS:
+            arrays = arrays_by_scenario[scenario]
+            index = indexes[scenario][physical_id]
+            identities.append(
+                (
+                    str(arrays["tx_ids"][index]),
+                    str(arrays["rx_ids"][index]),
+                    str(arrays["day_ids"][index]),
+                )
+            )
+            roles.append(str(arrays["dataset_role"][index]))
+        if len(set(identities)) != 1 or set(roles) != {"source"}:
+            raise D105Phase1BundleError(
+                f"physical identity/role drift: {physical_id}"
+            )
+        scenario = FORMAL_LEO_WEAK_SCENARIOS[
+            _d105_tap_cache_selection_index(selection_salt_sha256, physical_id)
+        ]
+        index = indexes[scenario][physical_id]
+        arrays = arrays_by_scenario[scenario]
+        metadata["labels"].append(identities[0][0])
+        metadata["receiver_ids"].append(identities[0][1])
+        metadata["day_ids"].append(identities[0][2])
+        metadata["physical_ids"].append(physical_id)
+        metadata["scenario_names"].append(scenario)
+        metadata["observation_ids"].append(str(arrays["overlay_ids"][index]))
+        selected_iq.append(np.asarray(arrays["leo_weak_iq"][index], dtype=np.float32))
+    if len(metadata["observation_ids"]) != len(set(metadata["observation_ids"])):
+        raise D105Phase1BundleError("selected observation IDs are not unique")
+    return (
+        {key: np.asarray(value, dtype=np.str_) for key, value in metadata.items()},
+        np.ascontiguousarray(np.stack(selected_iq), dtype=np.float32),
+    )
 
 
 def _require_sha256(value: Any, name: str) -> str:

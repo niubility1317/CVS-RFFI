@@ -19,7 +19,6 @@ from typing import Any, Callable, Mapping, Sequence
 import numpy as np
 import torch
 
-from .checkpoint_loading import build_exact_ssdg_model_from_checkpoint
 from .somph_diagnostic_bundle_loader import load_verified_somph_predictor_bundle
 from .somph_predictor_bundle import (
     FORMAL_LEO_WEAK_SCENARIOS,
@@ -39,6 +38,7 @@ from .stage2_d105_four_arm import (
     score_d105_four_arm_logits,
 )
 from .stage2_d105_phase1_bundle import (
+    build_d105_exact_model_from_checkpoint,
     load_d105_candidate_method_lock,
     load_d105_candidate_runtime_manifest,
     load_d105_phase1_asset,
@@ -719,19 +719,45 @@ def _default_model_loader(
     checkpoint_bytes: bytes, input_len: int, device: torch.device
 ) -> tuple[torch.nn.Module, Mapping[str, Any]]:
     try:
-        checkpoint = torch.load(
-            io.BytesIO(checkpoint_bytes), map_location="cpu", weights_only=False
-        )
-    except TypeError:
-        checkpoint = torch.load(io.BytesIO(checkpoint_bytes), map_location="cpu")
+        from baseline_origin_sat_view import SatViewStage
+    except ImportError as error:
+        raise D105QueryEvaluationError(
+            "checkpoint safe-global dependency is unavailable"
+        ) from error
+    safe_globals = getattr(torch.serialization, "safe_globals", None)
+    try:
+        if safe_globals is not None:
+            with safe_globals([SatViewStage]):
+                checkpoint = torch.load(
+                    io.BytesIO(checkpoint_bytes),
+                    map_location="cpu",
+                    weights_only=True,
+                )
+            checkpoint_policy = "weights_only_with_explicit_safe_globals"
+        else:
+            try:
+                checkpoint = torch.load(
+                    io.BytesIO(checkpoint_bytes),
+                    map_location="cpu",
+                    weights_only=False,
+                )
+            except TypeError:
+                checkpoint = torch.load(
+                    io.BytesIO(checkpoint_bytes), map_location="cpu"
+                )
+            checkpoint_policy = "legacy_exact_sha_bound_bytes"
+    except (OSError, RuntimeError, TypeError, ValueError) as error:
+        raise D105QueryEvaluationError(
+            "exact checkpoint deserialization failed closed"
+        ) from error
     if not isinstance(checkpoint, Mapping):
         raise D105QueryEvaluationError("checkpoint payload must be a mapping")
-    model, audit = build_exact_ssdg_model_from_checkpoint(
+    model, audit = build_d105_exact_model_from_checkpoint(
         checkpoint, input_len=input_len, device=device
     )
     model.to(device)
     model.eval()
-    return model, audit
+    return model, {**dict(audit), "checkpoint_policy": checkpoint_policy}
 
 
 def _device(value: str) -> torch.device:
@@ -1096,6 +1122,90 @@ def _validate_authority_split_receipt_binding(
     return next(iter(authority_commits))
 
 
+def _preflight_d105_model_inputs(
+    payloads: Sequence[Mapping[str, Mapping[str, np.ndarray]]],
+    *,
+    old_classes: tuple[str, ...],
+    all_classes: tuple[str, ...],
+    active_k: int,
+    split_by_key: Mapping[tuple[str, str], D105SplitAuthority],
+) -> int:
+    """Validate every IQ/token input before reconstructing the checkpoint.
+
+    Model construction is deliberately deferred until the complete sealed
+    package surface is known to be usable.  This keeps malformed package
+    payloads, forbidden query metadata, split-root drift, and before/after
+    query mismatches from opening the Phase1 checkpoint at all.
+    """
+
+    if len(payloads) != len(PACKAGE_ROOT_KEYS) or any(
+        set(payload) != set(FORMAL_LEO_WEAK_SCENARIOS) for payload in payloads
+    ):
+        raise D105QueryEvaluationError("formal three-scenario package closure drift")
+    input_lengths: set[int] = set()
+    for scenario in FORMAL_LEO_WEAK_SCENARIOS:
+        before_support_iq, _before_labels, before_support_tokens = _support_rows(
+            payloads[0][scenario],
+            registered_classes=old_classes,
+            active_k=active_k,
+        )
+        before_query_iq, before_query_tokens = _query_rows(payloads[1][scenario])
+        after_support_iq, _after_labels, after_support_tokens = _support_rows(
+            payloads[2][scenario],
+            registered_classes=all_classes,
+            active_k=active_k,
+        )
+        after_query_iq, after_query_tokens = _query_rows(payloads[3][scenario])
+        for registration_state, support_iq, support_tokens, query_iq, query_tokens in (
+            (
+                "BEFORE_REGISTRATION",
+                before_support_iq,
+                before_support_tokens,
+                before_query_iq,
+                before_query_tokens,
+            ),
+            (
+                "AFTER_REGISTRATION",
+                after_support_iq,
+                after_support_tokens,
+                after_query_iq,
+                after_query_tokens,
+            ),
+        ):
+            validate_d105_physical_split(support_tokens, query_tokens)
+            support_root = _physical_root(support_tokens, "support tokens")
+            query_root = _physical_root(query_tokens, "query tokens")
+            authority = split_by_key[(registration_state, scenario)]
+            if (
+                authority.support_token_root_sha256 != support_root
+                or authority.query_token_root_sha256 != query_root
+            ):
+                raise D105QueryEvaluationError(
+                    "VALIDATED_ONCE split token-root drift"
+                )
+            input_lengths.add(int(support_iq.shape[-1]))
+            input_lengths.add(int(query_iq.shape[-1]))
+        after_index = {
+            token: index for index, token in enumerate(after_query_tokens)
+        }
+        if not set(before_query_tokens) < set(after_index):
+            raise D105QueryEvaluationError(
+                "before old-query tokens must be an after-query subset"
+            )
+        for index, token in enumerate(before_query_tokens):
+            if not np.array_equal(
+                before_query_iq[index], after_query_iq[after_index[token]]
+            ):
+                raise D105QueryEvaluationError(
+                    "shared before/after query IQ bytes drift"
+                )
+    if len(input_lengths) != 1:
+        raise D105QueryEvaluationError(
+            "received IQ input length drift across packages"
+        )
+    return next(iter(input_lengths))
+
+
 def _evaluate_state(
     *,
     registration_state: str,
@@ -1407,30 +1517,6 @@ def evaluate_d105_query_row(
         != authority.d105_candidate_method_lock_sha256
     ):
         raise D105QueryEvaluationError("formal Phase1 asset/context authority drift")
-    checkpoint_bytes = _regular_bytes(
-        context.checkpoint_path, name="exact Phase1 checkpoint"
-    )
-    if _sha256_bytes(checkpoint_bytes) != context.checkpoint_sha256:
-        raise D105QueryEvaluationError("exact Phase1 checkpoint SHA256 drift")
-    input_lengths = {
-        int(np.asarray(payload[scenario][key]).shape[-1])
-        for payload, key in (
-            (payloads[0], "support_leo_weak_iq"),
-            (payloads[1], "query_leo_weak_iq"),
-            (payloads[2], "support_leo_weak_iq"),
-            (payloads[3], "query_leo_weak_iq"),
-        )
-        for scenario in FORMAL_LEO_WEAK_SCENARIOS
-    }
-    if len(input_lengths) != 1:
-        raise D105QueryEvaluationError("received IQ input length drift across packages")
-    runtime_device = _device(context.device)
-    model, checkpoint_audit = model_loader(
-        checkpoint_bytes, input_lengths.pop(), runtime_device
-    )
-    if not isinstance(model, torch.nn.Module) or model.training:
-        raise D105QueryEvaluationError("exact checkpoint loader must return eval model")
-    checkpoint_load_receipt = _sha256(checkpoint_audit)
     package_binding = _package_binding(references, manifests, audits)
     package_root_sha256 = {
         name: _require_sha256(
@@ -1440,23 +1526,30 @@ def evaluate_d105_query_row(
         for name, manifest in zip(PACKAGE_ROOT_KEYS, manifests, strict=True)
     }
     split_by_key = {
-        (authority.registration_state, authority.scenario): authority
-        for authority in context.split_authorities
+        (split_authority.registration_state, split_authority.scenario): split_authority
+        for split_authority in context.split_authorities
     }
+    input_len = _preflight_d105_model_inputs(
+        payloads,
+        old_classes=old_classes,
+        all_classes=all_classes,
+        active_k=active_k,
+        split_by_key=split_by_key,
+    )
+    checkpoint_bytes = _regular_bytes(
+        context.checkpoint_path, name="exact Phase1 checkpoint"
+    )
+    if _sha256_bytes(checkpoint_bytes) != context.checkpoint_sha256:
+        raise D105QueryEvaluationError("exact Phase1 checkpoint SHA256 drift")
+    runtime_device = _device(context.device)
+    model, checkpoint_audit = model_loader(
+        checkpoint_bytes, input_len, runtime_device
+    )
+    if not isinstance(model, torch.nn.Module) or model.training:
+        raise D105QueryEvaluationError("exact checkpoint loader must return eval model")
+    checkpoint_load_receipt = _sha256(checkpoint_audit)
     scenario_pairs: list[D105ScenarioPredictionPair] = []
     for scenario in FORMAL_LEO_WEAK_SCENARIOS:
-        before_query_iq, before_query_tokens = _query_rows(payloads[1][scenario])
-        after_query_iq, after_query_tokens = _query_rows(payloads[3][scenario])
-        after_index = {token: index for index, token in enumerate(after_query_tokens)}
-        if not set(before_query_tokens) < set(after_index):
-            raise D105QueryEvaluationError(
-                "before old-query tokens must be an after-query subset"
-            )
-        for index, token in enumerate(before_query_tokens):
-            if not np.array_equal(before_query_iq[index], after_query_iq[after_index[token]]):
-                raise D105QueryEvaluationError(
-                    "shared before/after query IQ bytes drift"
-                )
         before, _before_logits = _evaluate_state(
             registration_state="BEFORE_REGISTRATION",
             scenario=scenario,
