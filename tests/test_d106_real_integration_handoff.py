@@ -46,6 +46,15 @@ R6_HANDOFF_PATH = ARTIFACT_ROOT / "d106_real_integration_runner_handoff_44e33eab
 R6_SOURCE_ARCHIVE = (
     ARTIFACT_ROOT / "artifacts" / "d106_real_integration_source_44e33eab.zip"
 )
+R7_RUN_ID = "d106_real_integration_dba10236_20260801_r7"
+R7_RUN_ROOT = f"/home/szu2070436088/2510044040/CV-SincNet/runs/{R7_RUN_ID}"
+R7_FIXTURE_PATH = (
+    ARTIFACT_ROOT / "artifacts" / "d106_real_integration_fixture_dba10236_r7.json"
+)
+R7_HANDOFF_PATH = ARTIFACT_ROOT / "d106_real_integration_runner_handoff_dba10236_r7.md"
+R7_SOURCE_ARCHIVE = (
+    ARTIFACT_ROOT / "artifacts" / "d106_real_integration_source_dba10236.zip"
+)
 
 SPEC = importlib.util.spec_from_file_location("d106_handoff_runner", SCRIPT_PATH)
 assert SPEC is not None and SPEC.loader is not None
@@ -200,3 +209,107 @@ def test_r6_archive_contains_exact_release_dependency_closure() -> None:
     with zipfile.ZipFile(R6_SOURCE_ARCHIVE, "r") as archive:
         for name, expected_sha256 in expected.items():
             assert hashlib.sha256(archive.read(name)).hexdigest() == expected_sha256
+
+
+def test_r7_fixture_and_launch_are_absolute_isolated_and_rank_closed() -> None:
+    payload = R7_FIXTURE_PATH.read_bytes()
+    fixture = json.loads(payload.decode("utf-8"))
+    assert payload == runner._canonical_bytes(fixture)
+    assert set(fixture) == runner.FIXTURE_FIELDS
+    assert fixture["release_commit"] == "dba10236889a45b11f2f10dab3596aff7e218df0"
+    assert fixture["runtime_sha256"] == (
+        "ba8e96a925d9dc69be50fcf53af7fcbffe6391d9d51558a48b34848bff8cc901"
+    )
+    for path_field, _sha_field in runner.PATH_HASH_FIELDS:
+        path = PurePosixPath(fixture[path_field])
+        assert path.is_absolute()
+        assert ".." not in path.parts
+        if path_field in RUN_LOCAL_FIELDS:
+            assert fixture[path_field].startswith(R7_RUN_ROOT + "/")
+            assert all(
+                prior not in fixture[path_field]
+                for prior in (
+                    "d106_real_integration_deefd57c_20260801_r4",
+                    "d106_real_integration_deefd57c_20260801_r5",
+                    "d106_real_integration_44e33eab_20260801_r6",
+                )
+            )
+
+    text = R7_HANDOFF_PATH.read_text(encoding="utf-8")
+    commands = [
+        line
+        for line in text.splitlines()
+        if line.startswith("CUDA_VISIBLE_DEVICES=0 ")
+    ]
+    assert len(commands) == 1
+    argv = shlex.split(commands[0], posix=True)
+    assert argv[2] == f"{R7_RUN_ROOT}/source/code/scripts/run_d106_real_integration.py"
+    assert argv[argv.index("--fixture") + 1] == (
+        f"{R7_RUN_ROOT}/input/{R7_FIXTURE_PATH.name}"
+    )
+    assert argv[argv.index("--output-dir") + 1] == f"{R7_RUN_ROOT}/output"
+    assert "--fixture ../" not in text
+    assert "retry：`NOT_AUTHORIZED`" in text
+    assert "不得启动第二次" in text
+    assert "rdce_rank=3" in text
+    assert f"`{runner.COMPLETION_NAME}`" in text
+
+
+def test_r7_handoff_has_four_hash_verified_absolute_mappings() -> None:
+    text = R7_HANDOFF_PATH.read_text(encoding="utf-8")
+    mapping_lines = [
+        line
+        for line in text.splitlines()
+        if line.startswith("|`E:\\type10-7\\")
+    ]
+    assert len(mapping_lines) == 4
+    for line in mapping_lines:
+        cells = [cell.strip().strip("`") for cell in line.strip("|").split("|")]
+        local_path, expected_sha256, remote_path = cells
+        assert Path(local_path).is_absolute()
+        assert hashlib.sha256(Path(local_path).read_bytes()).hexdigest() == expected_sha256
+        assert PurePosixPath(remote_path).is_absolute()
+        assert remote_path.startswith(R7_RUN_ROOT + "/")
+        assert all(
+            prior not in remote_path
+            for prior in (
+                "d106_real_integration_deefd57c_20260801_r4",
+                "d106_real_integration_deefd57c_20260801_r5",
+                "d106_real_integration_44e33eab_20260801_r6",
+            )
+        )
+
+
+def test_r7_archive_contains_exact_rank_fix_dependency_closure() -> None:
+    assert hashlib.sha256(R7_SOURCE_ARCHIVE.read_bytes()).hexdigest() == (
+        "1eae03c8a63ede8241c4b3cb7331994ffb32e571608774e1dd874d30c928a585"
+    )
+    expected = {
+        "source/code/scripts/run_d106_real_integration.py": (
+            "4ec55ad0c22ed1176a2fedb898dff353c9307b76e67c99e59c4337e190e4b375"
+        ),
+        "source/code/cvsrffi/stage2_d106_phase1_tap.py": (
+            "5a63a5935748f17a1efcbf4069d5c80c1d99a8e813330a2c3a15895483c53e9b"
+        ),
+        "source/code/baseline_origin_sat_view.py": (
+            "fa7221ae505a51a2afc2a51b857675ac4a5384b004d5a4f36e10dafc9d4f8ace"
+        ),
+        "source/code/model.py": (
+            "afc6e6266a09fd5f5be967fed85254c6c92fa0241a0336fd5ffa3eb12aa1c417"
+        ),
+        "source/code/model_dual_cvsincnet.py": (
+            "11b56f2a763eb49de21d0a566d8e4420538cb7af310c9338f4e8d4a21c42c235"
+        ),
+        "source/configs/d106_candidate_runtime_manifest_20260801.json": (
+            "ba8e96a925d9dc69be50fcf53af7fcbffe6391d9d51558a48b34848bff8cc901"
+        ),
+        "source/configs/d106_rdce_method_lock_20260801.json": (
+            "e7a1982b4bdeaf5b8179993ce78f4a2af26965d8f4a3239440dbe636ebf14cc1"
+        ),
+    }
+    with zipfile.ZipFile(R7_SOURCE_ARCHIVE, "r") as archive:
+        for name, expected_sha256 in expected.items():
+            assert hashlib.sha256(archive.read(name)).hexdigest() == expected_sha256
+        entry = archive.read("source/code/scripts/run_d106_real_integration.py")
+        assert b"asset.rank" not in entry
+        assert b"_validated_roundtrip_rdce_rank" in entry

@@ -1,6 +1,6 @@
 # D106-RDCE/GTSM-r3研发与实验报告
 
-状态：`DESIGN_FROZEN / DATA_LOCAL_CODE_G0_GO / DA_LOCAL_CODE_G0_GO / HEAD_LOCAL_IMPLEMENTATION_GO / R6_STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT / R7_LOCAL_FIX_GO / SOURCE_HELD_NOT_OPENED / TARGET25_NO_GO / NO_TARGET_PERFORMANCE_RESULT`
+状态：`DESIGN_FROZEN / DATA_LOCAL_CODE_G0_GO / DA_LOCAL_CODE_G0_GO / HEAD_LOCAL_IMPLEMENTATION_GO / R6_STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT / R7_LOCAL_RELEASE_GO / R7_NOT_LANDED / SOURCE_HELD_NOT_OPENED / TARGET25_NO_GO / NO_TARGET_PERFORMANCE_RESULT`
 
 ## 1.实验身份
 
@@ -385,3 +385,9 @@ G0接口只接收opaque query ID、候选/旧头argmax和formal tap receipt，�
 r6证明正式`D106RDCEAsset`没有`.rank`字段；秩的权威为资产模块导出的`RDCE_RANK=3`，且serialized/reloaded资产的`basis_codes_qint8.shape`必须为`(RDCE_RANK,Z_DIM)`。r7修复在结果发布前验证真实roundtrip资产形状，并从权威常量写入`rdce_rank`；测试替身故意不提供`.rank`，避免再次以虚构属性掩盖正式合同。
 
 该修复仅更正运行时收据发布接口，不改变RDCE数学、Phase1 tap、DATA选择、protocol权限或方法锁。专项16/16通过，D106闭包为126通过1跳过，独立终审`P0=0/P1=0/P2=0 / GO`。Git提交及新的source archive、fixture、handoff和run ID闭合后，才可交给同一唯一runner；r6不能retry。
+
+## 23.r7本地release闭环
+
+r7 source commit为`dba10236889a45b11f2f10dab3596aff7e218df0`，run ID为`d106_real_integration_dba10236_20260801_r7`。source archive SHA为`1eae03c8a63ede8241c4b3cb7331994ffb32e571608774e1dd874d30c928a585`，fixture SHA为`d8c3475dca9cdd82450a63b6b8a4097dc96a98ca8849d55e2df3cf51c59ba669`；archive 200个Python文件编译通过，三模型zipimport smoke通过，fixture/handoff/entry组合25/25通过。
+
+release独立终审为`P0=0/P1=0/P2=0 / GO`。四份本地到远端映射、7个关键entry、canonical 22字段fixture、9个绝对路径、r4—r6隔离、唯一child command、健康/停止/completion/SSH清理语义均闭合。当前仅为`LOCAL_RELEASE_GO / NOT_LANDED`，未运行r7、未产生正式asset收据或性能结果。
