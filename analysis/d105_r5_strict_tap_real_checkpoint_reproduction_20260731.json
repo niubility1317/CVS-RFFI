@@ -1,0 +1,36 @@
+{
+  "schema": "cvs.d105.r5.strict_tap_real_checkpoint_reproduction.v1",
+  "timestamp": "2026-07-31",
+  "environment": {
+    "conda": "ssr-gpu",
+    "torch": "2.10.0+cu128",
+    "numpy": "2.2.6",
+    "device": "cpu"
+  },
+  "checkpoint": {
+    "sha256": "2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98",
+    "loader_policy": "weights_only_with_explicit_safe_globals"
+  },
+  "input": {
+    "seed": 105735,
+    "shape": [2, 2, 256],
+    "dtype": "float32"
+  },
+  "phase1_current_strict_forward": {
+    "implementation": "stage2_grb_jp4_adv_drqknn_bcrr.strict_zid_with_hook",
+    "execution_path": "eager_forward_hook",
+    "z_id_shape": [2, 160],
+    "pre_relu_shape": [2, 160],
+    "z_dom_is_none": true,
+    "z_dom_shape": null,
+    "hook_exact_bytes": true
+  },
+  "d105_exact_feature_tap": {
+    "implementation": "stage2_d105_feature_tap.extract_d105_feature_tap",
+    "z_id_shape": [2, 160],
+    "pre_relu_shape": [2, 160],
+    "z_dom_shape": [2, 160],
+    "receipt_sha256": "bb22eb6aa06129e9c8a615d645802ef7e3ad93b012fe9f0a39da56bd07e145d0"
+  },
+  "conclusion": "R5 is deterministically caused by Phase1 routing the D105 dual model through the legacy GRB id-backbone-only strict tap; the canonical D105 dual tap exposes the required z_dom."
+}

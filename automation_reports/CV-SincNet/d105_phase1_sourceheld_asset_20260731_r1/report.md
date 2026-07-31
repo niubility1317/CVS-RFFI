@@ -1,6 +1,6 @@
 # D105 Phase1 source-only压缩知识与source-held门实验报告
 
-状态：`PHASE1_R5_STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / RETROSPECTIVE_REQUIRED / NO_PERFORMANCE_RESULT`
+状态：`PHASE1_R5_STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / RETROSPECTIVE_COMPLETE / D105-FTU1_FROZEN / NO_PERFORMANCE_RESULT`
 
 ## 1.实验标识与目标
 
@@ -223,5 +223,15 @@ run-specific脚本按`tap-cache→predict-source-held→open-truth→score-sourc
 生产私钥不得进入Git、报告、N607或formal asset。若无法获得与固定公钥匹配的独立签名，必须保持`NO_TARGET_LAUNCH`，不能退回unsigned JSON。
 
 54文件闭包覆盖正式Phase1/Target25执行面、5个CLI、最小CVSincNet模型构造以及真实feature-smoke实际可达依赖；任何新增本地可执行依赖都必须先扩展清单并重新冻结。
+
+## 10.R3/R4/R5三轮正式回顾
+
+回顾已完成并记录于`analysis/d105_r3_r5_release_retrospective_20260731.md`。项目会话索引已刷新为1181条，并检索D105三轮、当前目标、D62/D91/D92/SVRN和Target25历史；同时重新读取2026-07-20版`项目.md`及R3/R4/R5完整handoff和pipeline日志。
+
+真实checkpoint最小复现确认：Phase1当前`_strict_forward`实际调用GRB旧tap，该路径只前向`id_backbone`，得到`z_id/pre_relu=[2,160]`且字节绑定通过，但`z_dom=None`；同一模型、同一IQ调用D105专用`extract_d105_feature_tap`时得到`z_dom=[2,160]`。复现JSON为`analysis/d105_r5_strict_tap_real_checkpoint_reproduction_20260731.json`。R5根因因此闭合为“正式Phase1接错特征出口”，不是数据、CUDA、数值或方法性能失败。
+
+下一候选冻结为`D105-FTU1`：统一Phase1与D105正式双backbone tap，保持`z_id/pre_relu`字节绑定和`dom_backbone.feat_imp→dom_enhancer`域特征来源；增加真实checkpoint入口级Phase1 strict-tap/export回归和字段级fail-closed诊断。不得删除`z_dom`、伪造域特征、只改报错后release、远端修补R5或跳过Phase1启动Target25。
+
+协议复核保持：LEO弱观测唯一、Phase2无clean/source、query零fit/update且逐样本全注册类决策、无role/quota/global reassignment、无类ID专属规则。后续Target25必须同时报告同row before/after旧类、`seen_new_acc`、`H_old_new`、逐旧类准确率、floor和forgetting；D105当前仍无任何性能结果。第四次release需等`D105-FTU1`实现、真实checkpoint本地闭环、独立`P0=0/P1=0`审查、Git提交和新run预登记全部完成。
 
 R4的两个P2为：`model.py`仍产生`torch.cuda.amp.autocast`弃用警告；旧PyTorch缺少`safe_globals`时保留仅对精确SHA绑定checkpoint开放的兼容反序列化分支。两者不改变当前本地结果；唯一N607 runner必须在预检中记录PyTorch版本和实际checkpoint加载策略。

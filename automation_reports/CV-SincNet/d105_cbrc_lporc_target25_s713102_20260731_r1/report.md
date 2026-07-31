@@ -1,6 +1,6 @@
 # D105-CBRC-MB4+LPO-RC-qKNN单seed Target25实验报告
 
-状态：`PHASE1_R5_SYSTEMIC_TECHNICAL_FAILURE / RETROSPECTIVE_REQUIRED / TARGET25_NOT_STARTED / NO_D105_PERFORMANCE_RESULT`
+状态：`PHASE1_R5_SYSTEMIC_TECHNICAL_FAILURE / RETROSPECTIVE_COMPLETE / D105-FTU1_FROZEN / TARGET25_NOT_STARTED / NO_D105_PERFORMANCE_RESULT`
 
 ## 1.实验标识
 
@@ -174,3 +174,5 @@ NumPy/Torch边界已在Phase1输入、Target25查询输入和feature tap输出�
 新的Phase1 R5预登记为`d105_phase1_sourceheld_9f608e8b_20260731_r5`，预登记提交=`27fccbfc1d49599a4c9e5e82d301780b02fbad37`，新run root为`/home/szu2070436088/2510044040/CV-SincNet/runs/d105_phase1_sourceheld_9f608e8b_20260731_r5`。它尚未落地，且不得读取或复用R4的任何运行内容。只有R5完整source-held闭环、独立component审查、离线authority签名和formal seal全部通过，才允许启动Target25。D105仍无任何Target性能数据。
 
 R5随后通过全部远端prelaunch门并唯一detach一次，但首个`tap-cache`以exit=2结束，完整日志仅报告`strict tap must expose byte-bound z_id/pre_relu and z_dom`。所有Phase1正式artifact仍为0，无Target、Target25、authority或seal操作。R5永久关闭为`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`，handoff SHA256=`5f390e0220d5168948a7a1cf4a2e964dfc3961cfdcdcb667a9db99a77fcd88ab`。第四次release前必须先完成三轮正式回顾和新根因闭包。
+
+R3/R4/R5三轮正式回顾已完成。真实checkpoint复现证明Phase1接入的GRB旧tap只前向`id_backbone`，`z_id/pre_relu`有效但`z_dom=None`；D105专用双backbone tap在同一模型、同一IQ上正确输出`z_dom=[2,160]`。下一技术候选`D105-FTU1`只统一正式特征出口并补齐入口级真实checkpoint回归，不改变CBRC、LPO-RC、qKNN、Target25矩阵、seed或性能门。Target25继续保持未启动，只有新Phase1资产链完整通过后才可进入。

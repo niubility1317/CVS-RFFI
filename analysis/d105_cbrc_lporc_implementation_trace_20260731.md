@@ -3,7 +3,7 @@
 ## 1.状态
 
 - 设计基线commit：`776dc6a4`
-- 当前阶段：`PHASE1_R5_STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / RETROSPECTIVE_REQUIRED`
+- 当前阶段：`PHASE1_R5_STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / RETROSPECTIVE_COMPLETE / D105-FTU1_FROZEN`
 - N607：R3停止于预启动Git archive字节门；R4通过全部预启动门并唯一detach一次，但首个tap-cache在零预测前触发PyTorch/NumPy对象边界异常，exit=1
 - 性能证据：无
 - D104：保持`PAUSED_BEFORE_LANDING / NO_PERFORMANCE_RESULT`
@@ -63,6 +63,8 @@ R4远端实际PyTorch=`2.1.0+cu121`，checkpoint安全加载走已审查的`lega
 修复提交`9f608e8be72024f00f1497cf6bddb9fb77e28201`以受检buffer复制桥替换D105正式Phase1/Target25的旧NumPy C-API桥，runtime/method SHA256=`8940e05f9fdf92d7735bba1570bb3239ee210313ecbbeffa3511b62e21685425`/`f36a0c6c4ee832b34cd98ed7664ec87707a4dbb1559c7c9b4b05dd13fbf4864e`。统一回归216/216通过，R7独立审查`P0=0、P1=0、P2=2`。精确Git archive SHA256=`dd85491e96f1cb9ea14e967694db91aec590e42273a2556492221af982ee9a67`；4754项，54/54、54 pyc、9帮助面通过；archive真实checkpoint无truth smoke收据SHA256=`fdea3e395b15d34ba7968037aa9a54ca835ec643e669c66de6854c8c3ff69a07`。新Phase1 R5预登记提交=`27fccbfc1d49599a4c9e5e82d301780b02fbad37`，尚未落地。
 
 R5通过全部远端prelaunch门后唯一detach PID=`2770709`，首个`tap-cache`以exit=2结束，完整日志313B/4行，错误=`strict tap must expose byte-bound z_id/pre_relu and z_dom`。strict tap/prediction/truth/score/gate/component全部为0，无Target、Target25、authority或seal操作，GPU/进程/SSH均清理。R5终态=`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`，handoff SHA256=`5f390e0220d5168948a7a1cf4a2e964dfc3961cfdcdcb667a9db99a77fcd88ab`。R3/R4/R5三轮后必须先完成正式回顾，再决定下一修复和新run。
+
+三轮回顾现已完成。真实checkpoint复现证明Phase1 `_strict_forward`调用的GRB旧tap只执行`id_backbone`，结果为`z_id/pre_relu=[2,160]`、`hook_exact_bytes=true`、`z_dom=None`；D105权威双backbone tap在同一模型和IQ上输出`z_dom=[2,160]`。下一候选冻结为`D105-FTU1`：统一正式D105 tap，补齐直接覆盖Phase1 strict-tap/export的真实checkpoint回归，保持方法、矩阵和协议不变。详见`analysis/d105_r3_r5_release_retrospective_20260731.md`。
 
 ## 5.真实checkpoint派生特征无truth smoke
 
