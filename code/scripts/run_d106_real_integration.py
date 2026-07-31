@@ -21,11 +21,13 @@ from cvsrffi.stage2_d106_phase1_tap import (  # noqa: E402
     CANDIDATE_ID,
     EXPECTED_CHECKPOINT_SHA256,
     EXPECTED_COUNTS,
+    LS_IQ_VALIDATOR_SCHEMA,
     PROTOCOL_SCHEMA,
     extract_d106_ls_received_iq,
     export_d106_phase1_ls_tap,
     load_d106_phase1_ls_tap,
 )
+import cvsrffi.stage2_d106_phase1_tap as phase1_tap_module  # noqa: E402
 from cvsrffi.stage2_d106_rdce_asset import (  # noqa: E402
     D106RDCEBuildLock,
     build_d106_rdce_asset,
@@ -36,6 +38,7 @@ import cvsrffi.stage2_d106_rdce_asset as rdce_asset_module  # noqa: E402
 
 
 FIXTURE_SCHEMA = "cvs.d106.real_integration_fixture.v1"
+RUNTIME_SCHEMA = "cvs.d106.runtime_manifest.v1"
 RESULT_SCHEMA = "cvs.d106.real_integration_result.v1"
 COMPLETION_SCHEMA = "cvs.d106.real_integration_completion.v1"
 RESULT_NAME = "d106_real_integration_result.json"
@@ -54,6 +57,25 @@ PATH_HASH_FIELDS = (
     ("construction_code", "construction_code_sha256"),
 )
 CONSTRUCTION_CODE_PATH = Path(rdce_asset_module.__file__).resolve()
+PHASE1_TAP_CODE_PATH = Path(phase1_tap_module.__file__).resolve()
+INTEGRATION_CODE_PATH = Path(__file__).resolve()
+RUNTIME_FIELDS = {
+    "schema",
+    "candidate_id",
+    "protocol_schema",
+    "method_lock_sha256",
+    "phase1_tap_code_sha256",
+    "construction_code_sha256",
+    "integration_entry_code_sha256",
+    "checkpoint_sha256",
+    "source_split_manifest_sha256",
+    "upstream_source_pool_cache_set_sha256",
+    "storage_validator_schema",
+    "source_held_truth_access",
+    "formal_query_access",
+    "target_access",
+    "performance_metrics_computed",
+}
 FIXTURE_FIELDS = {
     "schema",
     "candidate_id",
@@ -78,7 +100,7 @@ def _sha256_bytes(value: bytes) -> str:
 
 
 def _read_regular(path: Path, *, expected_sha256: str, name: str) -> bytes:
-    if not HEX64.fullmatch(expected_sha256):
+    if not isinstance(expected_sha256, str) or not HEX64.fullmatch(expected_sha256):
         raise D106RealIntegrationError(f"{name} expected SHA256 drift")
     if path.is_symlink() or not path.is_absolute() or not path.is_file():
         raise D106RealIntegrationError(f"{name} must be an absolute regular file")
@@ -130,18 +152,65 @@ def load_fixture(path: str | Path) -> tuple[Mapping[str, Any], str]:
     for name in ("method_lock_sha256", "construction_code_sha256"):
         if not isinstance(fixture.get(name), str) or not HEX64.fullmatch(fixture[name]):
             raise D106RealIntegrationError(f"fixture {name} drift")
+    bound_payloads: dict[str, bytes] = {}
     for path_name, hash_name in PATH_HASH_FIELDS:
         raw_path = fixture.get(path_name)
         expected = fixture.get(hash_name)
         if not isinstance(raw_path, str) or not isinstance(expected, str):
             raise D106RealIntegrationError(f"fixture {path_name} binding drift")
-        _read_regular(Path(raw_path), expected_sha256=expected, name=path_name)
+        bound_payloads[path_name] = _read_regular(
+            Path(raw_path), expected_sha256=expected, name=path_name
+        )
     if Path(fixture["construction_code"]).resolve() != CONSTRUCTION_CODE_PATH:
         raise D106RealIntegrationError(
             "fixture construction code is not the imported RDCE implementation"
         )
     if fixture["checkpoint_sha256"] != EXPECTED_CHECKPOINT_SHA256:
         raise D106RealIntegrationError("fixture checkpoint is not the frozen D106 model")
+    try:
+        runtime = json.loads(bound_payloads["runtime_manifest"].decode("utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError) as error:
+        raise D106RealIntegrationError(
+            "D106 runtime manifest must be strict UTF-8 JSON"
+        ) from error
+    expected_runtime = {
+        "schema": RUNTIME_SCHEMA,
+        "candidate_id": CANDIDATE_ID,
+        "protocol_schema": PROTOCOL_SCHEMA,
+        "method_lock_sha256": fixture["method_lock_sha256"],
+        "phase1_tap_code_sha256": _sha256_bytes(
+            _read_regular(
+                PHASE1_TAP_CODE_PATH,
+                expected_sha256=runtime.get("phase1_tap_code_sha256", ""),
+                name="imported D106 Phase1 tap code",
+            )
+        ),
+        "construction_code_sha256": fixture["construction_code_sha256"],
+        "integration_entry_code_sha256": _sha256_bytes(
+            _read_regular(
+                INTEGRATION_CODE_PATH,
+                expected_sha256=runtime.get("integration_entry_code_sha256", ""),
+                name="D106 integration entry code",
+            )
+        ),
+        "checkpoint_sha256": fixture["checkpoint_sha256"],
+        "source_split_manifest_sha256": fixture["source_split_manifest_sha256"],
+        "upstream_source_pool_cache_set_sha256": fixture[
+            "upstream_source_pool_cache_set_sha256"
+        ],
+        "storage_validator_schema": LS_IQ_VALIDATOR_SCHEMA,
+        "source_held_truth_access": False,
+        "formal_query_access": False,
+        "target_access": False,
+        "performance_metrics_computed": False,
+    }
+    if (
+        type(runtime) is not dict
+        or set(runtime) != RUNTIME_FIELDS
+        or bound_payloads["runtime_manifest"] != _canonical_bytes(runtime) + b"\n"
+        or runtime != expected_runtime
+    ):
+        raise D106RealIntegrationError("D106 runtime manifest semantic closure drift")
     return fixture, _sha256_bytes(payload)
 
 

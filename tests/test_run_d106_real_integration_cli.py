@@ -14,6 +14,11 @@ SCRIPT_PATH = (
     / "scripts"
     / "run_d106_real_integration.py"
 )
+RUNTIME_MANIFEST_PATH = (
+    Path(__file__).resolve().parents[1]
+    / "configs"
+    / "d106_candidate_runtime_manifest_20260801.json"
+)
 SPEC = importlib.util.spec_from_file_location("run_d106_real_integration_cli", SCRIPT_PATH)
 assert SPEC is not None and SPEC.loader is not None
 runner = importlib.util.module_from_spec(SPEC)
@@ -44,9 +49,55 @@ def _fixture(tmp_path: Path) -> tuple[Path, dict[str, object]]:
     checkpoint = Path(str(values["checkpoint"]))
     checkpoint.write_bytes(b"frozen-checkpoint")
     values["checkpoint_sha256"] = _sha(b"frozen-checkpoint")
+    runtime_manifest = Path(str(values["runtime_manifest"]))
+    runtime = {
+        "schema": runner.RUNTIME_SCHEMA,
+        "candidate_id": runner.CANDIDATE_ID,
+        "protocol_schema": runner.PROTOCOL_SCHEMA,
+        "method_lock_sha256": values["method_lock_sha256"],
+        "phase1_tap_code_sha256": _sha(runner.PHASE1_TAP_CODE_PATH.read_bytes()),
+        "construction_code_sha256": values["construction_code_sha256"],
+        "integration_entry_code_sha256": _sha(
+            runner.INTEGRATION_CODE_PATH.read_bytes()
+        ),
+        "checkpoint_sha256": values["checkpoint_sha256"],
+        "source_split_manifest_sha256": values["source_split_manifest_sha256"],
+        "upstream_source_pool_cache_set_sha256": values[
+            "upstream_source_pool_cache_set_sha256"
+        ],
+        "storage_validator_schema": runner.LS_IQ_VALIDATOR_SCHEMA,
+        "source_held_truth_access": False,
+        "formal_query_access": False,
+        "target_access": False,
+        "performance_metrics_computed": False,
+    }
+    runtime_manifest.write_bytes(runner._canonical_bytes(runtime) + b"\n")
+    values["runtime_sha256"] = _sha(runtime_manifest.read_bytes())
     fixture = (tmp_path / "fixture.json").resolve()
     fixture.write_bytes(runner._canonical_bytes(values))
     return fixture, values
+
+
+def test_repository_runtime_manifest_binds_current_d106_implementation() -> None:
+    payload = RUNTIME_MANIFEST_PATH.read_bytes()
+    runtime = json.loads(payload.decode("utf-8"))
+    assert set(runtime) == runner.RUNTIME_FIELDS
+    assert payload == runner._canonical_bytes(runtime) + b"\n"
+    assert runtime["candidate_id"] == runner.CANDIDATE_ID
+    assert runtime["protocol_schema"] == runner.PROTOCOL_SCHEMA
+    assert runtime["phase1_tap_code_sha256"] == _sha(
+        runner.PHASE1_TAP_CODE_PATH.read_bytes()
+    )
+    assert runtime["construction_code_sha256"] == _sha(
+        runner.CONSTRUCTION_CODE_PATH.read_bytes()
+    )
+    assert runtime["integration_entry_code_sha256"] == _sha(
+        runner.INTEGRATION_CODE_PATH.read_bytes()
+    )
+    assert runtime["source_held_truth_access"] is False
+    assert runtime["formal_query_access"] is False
+    assert runtime["target_access"] is False
+    assert runtime["performance_metrics_computed"] is False
 
 
 def test_fixture_rejects_extra_query_capability_and_actual_sha_drift(
@@ -71,6 +122,28 @@ def test_fixture_rejects_nonimported_construction_code(
     with pytest.raises(
         runner.D106RealIntegrationError, match="not the imported RDCE"
     ):
+        runner.load_fixture(fixture)
+
+
+def test_fixture_rejects_runtime_semantic_drift(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    fixture, values = _fixture(tmp_path)
+    monkeypatch.setattr(
+        runner, "EXPECTED_CHECKPOINT_SHA256", values["checkpoint_sha256"]
+    )
+    monkeypatch.setattr(
+        runner,
+        "CONSTRUCTION_CODE_PATH",
+        Path(str(values["construction_code"])).resolve(),
+    )
+    runtime_path = Path(str(values["runtime_manifest"]))
+    runtime = json.loads(runtime_path.read_text(encoding="utf-8"))
+    runtime["formal_query_access"] = True
+    runtime_path.write_bytes(runner._canonical_bytes(runtime) + b"\n")
+    values["runtime_sha256"] = _sha(runtime_path.read_bytes())
+    fixture.write_bytes(runner._canonical_bytes(values))
+    with pytest.raises(runner.D106RealIntegrationError, match="runtime manifest"):
         runner.load_fixture(fixture)
 
 
