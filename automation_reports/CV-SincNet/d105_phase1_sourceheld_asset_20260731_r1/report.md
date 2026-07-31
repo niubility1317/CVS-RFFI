@@ -1,6 +1,6 @@
 # D105 Phase1 source-only压缩知识与source-held门实验报告
 
-状态：`PHASE1_R7_STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / D105-FTU3_LOCAL_VERIFIED / ARCHIVE_SMOKE_PENDING / NO_PERFORMANCE_RESULT`
+状态：`PHASE1_R7_STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / D105-FTU3_ARCHIVE_VERIFIED / R8_LOCAL_PREREGISTERING / NO_PERFORMANCE_RESULT`
 
 ## 1.实验标识与目标
 
@@ -353,3 +353,22 @@ R7回收artifact的结构/类型复算确认，7个普通计数字段均为原�
 新增15项回归覆盖负原生整数放行、`bool/float/np.int64`拒绝、7个普通计数负数拒绝，以及负证据组件保持`DIAGNOSTIC_STATUS`并被formal seal拒绝。统一10文件共253项执行到100%，无失败或错误；canonical runtime/method loader通过54/54成员。新runtime SHA256=`5de5926bbb2e9fd78b2f3315ec6e109964ddd6216ebe4f75e428b6b9f6bf11bc`，method lock SHA256=`7345f81e88588c46ad453eb315786306f28291478a5eaddce618ef7ee6998ecd`。独立增量复审已实跑组件/封印拒绝case并核对54文件身份，最终结论=`GO / P0=0 / P1=0 / P2=0`。
 
 FTU3实现提交=`230c6cbc9149250ca0303ca240945d0e0992360e`。它仍只有本地技术证据，不改变R7的`NO_PERFORMANCE_RESULT`。下一门是该提交的精确archive复核；通过前不创建新N607 run、不签名、不封装formal asset、不启动Target25。详见`analysis/d105_ftu3_gate_signed_int_fix_20260731.md`。
+
+## 19.D105-FTU3精确archive与R8预登记
+
+实现提交`230c6cbc9149250ca0303ca240945d0e0992360e`的精确archive已独立验证通过：SHA256=`16d57519cfa15d9929a38282217b0a2e2908e5c92e8b42672dae1537386855c7`，243005440B。archive成员安全、54/54四方SHA、LF、独立编译、canonical runtime/method、9/9帮助面、15项FTU3定向、10文件253项统一回归、真实checkpoint fixed256三档和8400批形状合同全部通过。独立archive审查=`PASS / P0=0 / P1=0 / P2=0`。
+
+R8冻结为：
+
+|字段|冻结值|
+|---|---|
+|run ID|`d105_phase1_sourceheld_230c6cbc_20260801_r8`|
+|run root|`/home/szu2070436088/2510044040/CV-SincNet/runs/d105_phase1_sourceheld_230c6cbc_20260801_r8`|
+|source commit|`230c6cbc9149250ca0303ca240945d0e0992360e`|
+|archive|SHA256=`16d57519cfa15d9929a38282217b0a2e2908e5c92e8b42672dae1537386855c7`；243005440B|
+|runtime/method|`5de5926bbb2e9fd78b2f3315ec6e109964ddd6216ebe4f75e428b6b9f6bf11bc`/`7345f81e88588c46ad453eb315786306f28291478a5eaddce618ef7ee6998ecd`|
+|launcher|`run_d105_phase1_stage1_230c6cbc.sh`；SHA256=`db0757789fa4b3a4155e793c28a2d7c76926248b59cd51c3758cf93364a3cdc9`；5624B；LF=123；CRLF=0；`bash -n`通过|
+|GPU|`cuda:0`；正式preflight后确认|
+|fresh-run retry|`NO`|
+
+R8启动脚本相对R7只有全新run root一个差异；输入、固定256合同、reference、阈值和阶段顺序不变。R8不得读取或复用R3—R7任何run内容；完整8400行reference parity仍是首tap硬门。只有gate和component实际落盘后才能读取其正式状态；若component为诊断拒绝，则不得签名、封装或进入Target25。

@@ -51,3 +51,5 @@ R7的8400行fixed256 strict tap及reference parity已经通过，prediction、tr
 本地验证不授权N607、authority、formal seal或Target25。下一门是本地Git提交后的精确archive复核；新运行必须使用全新run ID，不能恢复、覆盖或重标R7。
 
 实现提交：`230c6cbc9149250ca0303ca240945d0e0992360e`。
+
+该提交的精确archive已独立验证为`PASS / P0=0 / P1=0 / P2=0`：archive SHA256=`16d57519cfa15d9929a38282217b0a2e2908e5c92e8b42672dae1537386855c7`，243005440B；`archive_verification.json` SHA256=`aca86879cb8510428167f076dd0937a1c6a8af2f7298b8dc99b06dbe472888d8`，handoff SHA256=`7d22b80c722c91c31aceba696d3bbef96ee68189240383d5c3a6bf9830dc029f`。该结论仍为`NOT_N607_AUTHORIZATION / NO_PERFORMANCE_RESULT`。
