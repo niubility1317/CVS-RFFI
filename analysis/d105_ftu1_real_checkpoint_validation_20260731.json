@@ -1,0 +1,55 @@
+{
+  "schema": "cvs.d105.ftu1.real_checkpoint_validation.v1",
+  "timestamp": "2026-07-31",
+  "claim_scope": "LOCAL_TECHNICAL_VALIDATION_ONLY_NO_PERFORMANCE_RESULT",
+  "environment": {
+    "conda": "ssr-gpu",
+    "torch": "2.10.0+cu128",
+    "numpy": "2.2.6",
+    "device": "cpu"
+  },
+  "checkpoint": {
+    "sha256": "2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98",
+    "loader_policy": "weights_only_with_explicit_safe_globals",
+    "state_tensor_count": 195
+  },
+  "candidate_identity": {
+    "phase1_bundle_sha256": "9060e1f8dc65e24ce2b3843c098f70b2f2837950fe4314025e5076f183af95e4",
+    "runtime_manifest_sha256": "873879aad707fd2407b7645de45daa68fec1d3537feaf9fd57fe98b3ab059214",
+    "method_lock_sha256": "7d33662750b160fce82217dace9e1933aa8e43ea2a0df19f59e28adcf8bb4848",
+    "runtime_core_file_count": 54
+  },
+  "strict_forward": {
+    "input_seed": 105736,
+    "input_shape": [2, 2, 256],
+    "execution_path": "eager_forward_hook",
+    "z_id_shape": [2, 160],
+    "pre_relu_shape": [2, 160],
+    "z_dom_shape": [2, 160],
+    "hook_exact_bytes": true,
+    "relu_parity": true,
+    "finite": true
+  },
+  "legacy_runtime_import_check": {
+    "module": "cvsrffi.stage2_grb_jp4_adv_drqknn_bcrr",
+    "loaded_before_strict_forward": false,
+    "loaded_after_strict_forward": false
+  },
+  "tests": {
+    "suite_file_count": 10,
+    "collected": 223,
+    "passed": 223,
+    "failed": 0,
+    "known_warning": "code/model.py:693 torch.cuda.amp.autoc FutureWarning"
+  },
+  "independent_review": {
+    "status": "LOCAL_CODE_REVIEW_GO",
+    "p0": 0,
+    "p1": 0,
+    "p2": 2,
+    "receipt_sha256": "31ebec822064b4db7a3e5f4d419ee0ce8c4a493bb454ef1c0629c265164b8831"
+  },
+  "target_access": false,
+  "query_truth_read": false,
+  "performance_computed": false
+}

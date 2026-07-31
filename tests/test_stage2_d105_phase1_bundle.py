@@ -8,6 +8,7 @@ import importlib
 import json
 import os
 from pathlib import Path
+import re
 import stat
 import sys
 from datetime import datetime, timezone
@@ -921,7 +922,10 @@ def test_d105_tap_cache_v1_loader_matches_legacy_passthrough(
     }
 
 
-def test_d105_minimal_checkpoint_loader_matches_exact_ssdg_model_and_taps() -> None:
+def test_d105_minimal_checkpoint_loader_matches_exact_ssdg_model_and_taps(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     """The compact D105 path must be model/tap-equivalent to the old loader.
 
     This uses a real CVSincNet checkpoint-shaped state generated locally.  The
@@ -1012,6 +1016,212 @@ def test_d105_minimal_checkpoint_loader_matches_exact_ssdg_model_and_taps() -> N
         assert getattr(new_tap, name).tobytes(order="C") == getattr(
             old_tap, name
         ).tobytes(order="C")
+
+    # Phase1 must use the D105 same-IQ dual path, not the historical GRB
+    # identity-only tap.  If this entry point regresses to the old import, the
+    # patched helper fails the test before it can hide the missing z_dom.
+    legacy = importlib.import_module("cvsrffi.stage2_grb_jp4_adv_drqknn_bcrr")
+    legacy_calls: list[tuple[object, ...]] = []
+
+    def reject_legacy_tap(*args: object, **kwargs: object) -> object:
+        legacy_calls.append((*args, kwargs))
+        raise AssertionError("Phase1 must not call the GRB strict tap")
+
+    monkeypatch.setattr(legacy, "strict_zid_with_hook", reject_legacy_tap)
+    id_calls: list[object] = []
+    dom_backbone_features: list[torch.Tensor] = []
+    dom_enhancer_inputs: list[tuple[torch.Tensor, torch.Tensor]] = []
+
+    def count_id_backbone(*_args: object) -> None:
+        id_calls.append(object())
+
+    def capture_dom_backbone(
+        _module: torch.nn.Module, _args: tuple[torch.Tensor, ...], output: object
+    ) -> None:
+        assert isinstance(output, dict)
+        value = output["feat_imp"]
+        assert torch.is_tensor(value)
+        dom_backbone_features.append(value.detach().clone())
+
+    def capture_dom_enhancer(
+        _module: torch.nn.Module, args: tuple[torch.Tensor, ...]
+    ) -> None:
+        assert len(args) == 2
+        assert torch.is_tensor(args[0]) and torch.is_tensor(args[1])
+        dom_enhancer_inputs.append((args[0].detach().clone(), args[1].detach().clone()))
+
+    id_hook = new_model.id_backbone.register_forward_hook(count_id_backbone)
+    dom_hook = new_model.dom_backbone.register_forward_hook(capture_dom_backbone)
+    enhancer_hook = new_model.dom_enhancer.register_forward_pre_hook(
+        capture_dom_enhancer
+    )
+    try:
+        phase1_forward = phase1._strict_forward(new_model, received_iq)
+    finally:
+        id_hook.remove()
+        dom_hook.remove()
+        enhancer_hook.remove()
+
+    assert legacy_calls == []
+    assert len(id_calls) == len(dom_backbone_features) == len(dom_enhancer_inputs) == 1
+    assert torch.equal(dom_enhancer_inputs[0][0], dom_backbone_features[0])
+    assert torch.equal(dom_enhancer_inputs[0][1], received_iq)
+    assert phase1_forward.hook_exact_bytes is True
+    assert phase1_forward.execution_path == "eager_forward_hook"
+    assert phase1_forward.z_dom.dtype == np.float32
+    assert phase1_forward.z_dom.shape == (1, 160)
+    assert np.array_equal(
+        phase1_forward.z_id,
+        np.maximum(phase1_forward.pre_relu, np.float32(0.0)),
+    )
+    with torch.no_grad():
+        expected_dom = new_model.dom_enhancer(
+            dom_enhancer_inputs[0][0], dom_enhancer_inputs[0][1]
+        )[0]
+    assert np.array_equal(
+        phase1_forward.z_dom,
+        np.asarray(expected_dom.detach().cpu().tolist(), dtype=np.float32),
+    )
+
+    # Exercise the actual Phase1 archive export once with the reconstructed
+    # checkpoint-shaped model.  This is intentionally a source-only one-row
+    # technical closure, not a performance result.
+    revocation_manifest, revocation_signature, revocation_sha = _signed_d102_revocation(
+        tmp_path
+    )
+    runtime_path, runtime_sha, lock_path, lock_sha = _candidate_identity(tmp_path)
+    source_iq = np.asarray(received_iq.detach().cpu().tolist(), dtype=np.float32)
+    labels = ("source-class-00",)
+    receivers = ("source-rx-00",)
+    physical_ids = ("source-physical-00",)
+    access = phase1.build_d105_source_access_receipt(
+        source_received_iq=source_iq,
+        source_labels=labels,
+        source_receiver_ids=receivers,
+        source_physical_ids=physical_ids,
+        checkpoint_sha256=CHECKPOINT_SHA256,
+        runtime_sha256=runtime_sha,
+        method_lock_sha256=lock_sha,
+        d102_revocation_manifest_sha256=revocation_sha,
+    )
+    exported = phase1.export_d105_phase1_strict_tap(
+        model=new_model,
+        source_received_iq=source_iq,
+        source_labels=labels,
+        source_receiver_ids=receivers,
+        source_physical_ids=physical_ids,
+        checkpoint_sha256=CHECKPOINT_SHA256,
+        runtime_sha256=runtime_sha,
+        method_lock_sha256=lock_sha,
+        source_access_receipt=access,
+        d102_revocation_manifest=revocation_manifest,
+        d102_revocation_signature=revocation_signature,
+        output_dir=tmp_path / "strict-tap-positive",
+        device="cpu",
+        batch_size=1,
+    )
+    receipt = json.loads(Path(exported["strict_tap_receipt"]).read_text(encoding="utf-8"))
+    assert receipt["execution_path"] == "eager_forward_hook"
+    assert receipt["z_dom_present"] is True
+    assert receipt["strict_pre_relu_path"] is True
+    with np.load(exported["strict_tap_archive"], allow_pickle=False) as archive:
+        assert np.array_equal(archive["z_dom"], phase1_forward.z_dom)
+        assert np.array_equal(archive["pre_relu"], phase1_forward.pre_relu)
+    assert legacy_calls == []
+
+
+@pytest.mark.parametrize(
+    ("field", "corruption", "needle"),
+    [
+        ("hook_exact_bytes", "false", "strict tap hook_exact_bytes must be true"),
+        ("z_id", "float64", "strict tap z_id must use float32"),
+        ("z_dom", "short", "strict tap z_dom must have shape [N,160]"),
+        ("z_dom", "nonfinite", "strict tap z_dom must be finite"),
+        ("pre_relu", "float64", "strict tap pre_relu must use float32"),
+        (
+            "z_id",
+            "relu_mismatch",
+            "strict tap z_id/pre_relu ReLU binding drift",
+        ),
+        (
+            "execution_path",
+            "unrecognized",
+            "strict tap execution path is unrecognized",
+        ),
+    ],
+)
+def test_d105_phase1_export_fail_closes_each_strict_forward_field(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    field: str,
+    corruption: str,
+    needle: str,
+) -> None:
+    """The real Phase1 export entrypoint rejects each strict output field."""
+
+    from types import SimpleNamespace
+
+    revocation_manifest, revocation_signature, revocation_sha = _signed_d102_revocation(
+        tmp_path
+    )
+    runtime_path, runtime_sha, lock_path, lock_sha = _candidate_identity(tmp_path)
+    source_iq = np.zeros((1, 2, 8), dtype=np.float32)
+    labels = ("source-class-00",)
+    receivers = ("source-rx-00",)
+    physical_ids = ("source-physical-00",)
+    access = phase1.build_d105_source_access_receipt(
+        source_received_iq=source_iq,
+        source_labels=labels,
+        source_receiver_ids=receivers,
+        source_physical_ids=physical_ids,
+        checkpoint_sha256=CHECKPOINT_SHA256,
+        runtime_sha256=runtime_sha,
+        method_lock_sha256=lock_sha,
+        d102_revocation_manifest_sha256=revocation_sha,
+    )
+    pre_relu = np.zeros((1, 160), dtype=np.float32)
+    values: dict[str, object] = {
+        "z_id": np.maximum(pre_relu, np.float32(0.0)),
+        "z_dom": np.zeros((1, 160), dtype=np.float32),
+        "pre_relu": pre_relu,
+        "hook_exact_bytes": True,
+        "execution_path": "eager_forward_hook",
+    }
+    if corruption == "false":
+        values[field] = False
+    elif corruption == "float64":
+        values[field] = np.asarray(values[field], dtype=np.float64)
+    elif corruption == "short":
+        values[field] = np.zeros((1, 159), dtype=np.float32)
+    elif corruption == "nonfinite":
+        values[field] = np.full((1, 160), np.float32("nan"), dtype=np.float32)
+    elif corruption == "relu_mismatch":
+        values[field] = np.ones((1, 160), dtype=np.float32)
+    elif corruption == "unrecognized":
+        values[field] = "identity_only_legacy_forward"
+    else:
+        raise AssertionError(f"unexpected strict-tap corruption: {corruption}")
+    forward = SimpleNamespace(**values)
+    monkeypatch.setattr(phase1, "_strict_forward", lambda *_args: forward)
+    output_dir = tmp_path / f"strict-tap-reject-{corruption}"
+    with pytest.raises(D105Phase1BundleError, match=re.escape(needle)):
+        phase1.export_d105_phase1_strict_tap(
+            model=SimpleNamespace(training=False),
+            source_received_iq=source_iq,
+            source_labels=labels,
+            source_receiver_ids=receivers,
+            source_physical_ids=physical_ids,
+            checkpoint_sha256=CHECKPOINT_SHA256,
+            runtime_sha256=runtime_sha,
+            method_lock_sha256=lock_sha,
+            source_access_receipt=access,
+            d102_revocation_manifest=revocation_manifest,
+            d102_revocation_signature=revocation_signature,
+            output_dir=output_dir,
+            device="cpu",
+            batch_size=1,
+        )
+    assert not output_dir.exists()
 
 
 def test_d105_model_loader_never_imports_optional_or_training_stacks(

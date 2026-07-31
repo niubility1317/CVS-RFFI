@@ -22,7 +22,7 @@ import os
 from pathlib import Path
 import stat
 from types import MappingProxyType
-from typing import Any, Mapping, Sequence
+from typing import TYPE_CHECKING, Any, Mapping, Sequence
 
 import numpy as np
 
@@ -62,6 +62,13 @@ from cvsrffi.stage2_d105_phase1_authority import (
     load_signed_d105_authority_envelope,
     reject_revoked_d102_identity,
 )
+
+
+if TYPE_CHECKING:
+    # The frozen D105 runtime manifest retains this historical module in its
+    # static archive closure.  It is deliberately never imported or called by
+    # the Phase1 D105 dual-backbone forward path.
+    from cvsrffi.stage2_grb_jp4_adv_drqknn_bcrr import StrictForward as _StrictForward
 
 
 SCHEMA = "cvs.phase1.d105.cbrc.strict_source_bundle.v1"
@@ -1487,12 +1494,89 @@ class D105Phase1Asset:
         object.__setattr__(self, "manifest", _freeze(manifest))
 
 
-def _strict_forward(model: Any, received_iq: Any) -> Any:
-    """Import the strict real-checkpoint tap lazily at the Phase1 boundary."""
+@dataclass(frozen=True, slots=True)
+class _D105StrictForward:
+    """Phase1-compatible view of the D105-only dual-backbone feature tap."""
 
-    from cvsrffi.stage2_grb_jp4_adv_drqknn_bcrr import strict_zid_with_hook
+    z_id: np.ndarray
+    hidden: np.ndarray
+    pre_relu: np.ndarray
+    hook_exact_bytes: bool
+    z_dom: np.ndarray
+    execution_path: str
 
-    return strict_zid_with_hook(model, received_iq)
+
+def _strict_forward(model: Any, received_iq: Any) -> _D105StrictForward:
+    """Run the D105-authoritative same-IQ dual-backbone strict tap.
+
+    D105 needs the domain feature produced by
+    ``dom_backbone.feat_imp -> dom_enhancer(feat_imp, received_iq)``.  The
+    older GRB helper invokes only the identity backbone for an eager model and
+    therefore cannot satisfy this Phase1 boundary.  This is a single strict
+    path: a D105 contract failure is surfaced as an error and never falls back
+    to a legacy or identity-only forward.
+    """
+
+    from cvsrffi.dual_feature_forward import DualFeatureForwardError
+    from cvsrffi.stage2_d105_feature_tap import (
+        D105FeatureTapError,
+        extract_d105_feature_tap,
+    )
+
+    try:
+        tap = extract_d105_feature_tap(model, received_iq)
+    except (D105FeatureTapError, DualFeatureForwardError, RuntimeError, TypeError) as error:
+        raise D105Phase1BundleError(
+            "D105 strict dual-backbone feature tap failed"
+        ) from error
+    return _D105StrictForward(
+        z_id=tap.z_id,
+        hidden=tap.hidden,
+        pre_relu=tap.pre_relu,
+        hook_exact_bytes=True,
+        z_dom=tap.z_dom,
+        # Keep the persisted receipt vocabulary stable while its implementation
+        # remains the D105 eager forward-hook path.
+        execution_path="eager_forward_hook",
+    )
+
+
+def _strict_tap_float32_rows(
+    forward: Any, field: str, *, rows: int
+) -> np.ndarray:
+    """Read one strict-tap output with deterministic, field-level failures."""
+
+    value = np.asarray(getattr(forward, field, None))
+    if value.dtype != np.float32:
+        raise D105Phase1BundleError(f"strict tap {field} must use float32")
+    if value.shape != (rows, Z_DIM):
+        raise D105Phase1BundleError(
+            f"strict tap {field} must have shape [N,{Z_DIM}]"
+        )
+    if not np.isfinite(value).all():
+        raise D105Phase1BundleError(f"strict tap {field} must be finite")
+    return value
+
+
+def _validate_d105_strict_forward(
+    forward: Any, *, rows: int
+) -> tuple[np.ndarray, np.ndarray, np.ndarray, str]:
+    """Fail closed on every Phase1 strict-tap contract field separately."""
+
+    if getattr(forward, "hook_exact_bytes", None) is not True:
+        raise D105Phase1BundleError("strict tap hook_exact_bytes must be true")
+    z_id = _strict_tap_float32_rows(forward, "z_id", rows=rows)
+    z_dom = _strict_tap_float32_rows(forward, "z_dom", rows=rows)
+    pre_relu = _strict_tap_float32_rows(forward, "pre_relu", rows=rows)
+    if not np.array_equal(z_id, np.maximum(pre_relu, np.float32(0.0))):
+        raise D105Phase1BundleError("strict tap z_id/pre_relu ReLU binding drift")
+    execution_path = str(getattr(forward, "execution_path", ""))
+    if execution_path not in (
+        "torchscript_exported_functional_tap",
+        "eager_forward_hook",
+    ):
+        raise D105Phase1BundleError("strict tap execution path is unrecognized")
+    return z_id, z_dom, pre_relu, execution_path
 
 
 def _validate_source_access_receipt(
@@ -1715,30 +1799,9 @@ def export_d105_phase1_strict_tap(
             name="strict tap batch",
         )
         forward = _strict_forward(model, tensor)
-        z_id = np.asarray(getattr(forward, "z_id", None))
-        z_dom = np.asarray(getattr(forward, "z_dom", None))
-        pre_relu = np.asarray(getattr(forward, "pre_relu", None))
-        if (
-            getattr(forward, "hook_exact_bytes", None) is not True
-            or z_dom.dtype != np.float32
-            or z_dom.shape != (len(batch), Z_DIM)
-            or pre_relu.dtype != np.float32
-            or pre_relu.shape != (len(batch), Z_DIM)
-            or z_id.dtype != np.float32
-            or z_id.shape != (len(batch), Z_DIM)
-            or not np.isfinite(z_dom).all()
-            or not np.isfinite(pre_relu).all()
-            or not np.array_equal(z_id, np.maximum(pre_relu, np.float32(0.0)))
-        ):
-            raise D105Phase1BundleError(
-                "strict tap must expose byte-bound z_id/pre_relu and z_dom"
-            )
-        execution_path = str(getattr(forward, "execution_path", ""))
-        if execution_path not in (
-            "torchscript_exported_functional_tap",
-            "eager_forward_hook",
-        ):
-            raise D105Phase1BundleError("strict tap execution path is unrecognized")
+        z_id, z_dom, pre_relu, execution_path = _validate_d105_strict_forward(
+            forward, rows=len(batch)
+        )
         execution_paths.add(execution_path)
         pre_rows.append(np.ascontiguousarray(pre_relu, dtype=np.float32))
         dom_rows.append(np.ascontiguousarray(z_dom, dtype=np.float32))
