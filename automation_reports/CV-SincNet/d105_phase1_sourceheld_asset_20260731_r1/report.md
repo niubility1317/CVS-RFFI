@@ -1,6 +1,6 @@
 # D105 Phase1 source-only压缩知识与source-held门实验报告
 
-状态：`PHASE1_R6_STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / D105-FTU2_LOCAL_CODE_REVIEW_GO / ARCHIVE_SMOKE_PENDING / NO_PERFORMANCE_RESULT`
+状态：`PHASE1_R6_STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / D105-FTU2_COMMITTED / ARCHIVE_SMOKE_PENDING / NO_PERFORMANCE_RESULT`
 
 ## 1.实验标识与目标
 
@@ -304,4 +304,4 @@ FTU2现已完成固定256分块、末批零填充/切回、receipt v2绑定和`t
 
 统一10文件回归238/238通过。更新后的54文件canonical runtime SHA256=`8797de12f035db609aeb6f453f096571f216d0d514d6705344e763f5ec63a498`，method lock SHA256=`9a87e51de4d775ff2ea05e59654afaa62844edaf2def942d8f73c8e289ea61e6`。独立R11最终裁决为`GO / P0=0 / P1=0 / P2=0`；首轮1个P1和3个P2均已关闭。详见`analysis/d105_ftu2_implementation_validation_20260731.md`与`analysis/d105_ftu2_review_r11_20260731.md`。
 
-本地代码审查GO不授权N607。下一门是本地Git提交后，从该提交生成精确archive，在解包副本中复跑54/54、CLI、真实checkpoint固定256 tap和完整8400行reference parity技术smoke；通过后才能创建新run ID和唯一runner。
+本地实现提交=`2d948ce981b9008522f825cfe6d868bce08cb624`。该提交不授权N607。下一门是从该提交生成精确archive，在解包副本中复跑54/54、CLI、真实checkpoint固定256 tap和完整8400行reference parity技术smoke；通过后才能创建新run ID和唯一runner。

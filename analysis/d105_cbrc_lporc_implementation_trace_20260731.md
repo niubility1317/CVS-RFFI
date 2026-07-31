@@ -3,7 +3,7 @@
 ## 1.状态
 
 - 设计基线commit：`776dc6a4`
-- 当前阶段：`PHASE1_R6_STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / D105-FTU2_LOCAL_CODE_REVIEW_GO / ARCHIVE_SMOKE_PENDING`
+- 当前阶段：`PHASE1_R6_STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / D105-FTU2_COMMITTED / ARCHIVE_SMOKE_PENDING`
 - N607：R3停止于预启动Git archive字节门；R4通过全部预启动门并唯一detach一次，但首个tap-cache在零预测前触发PyTorch/NumPy对象边界异常，exit=1
 - 性能证据：无
 - D104：保持`PAUSED_BEFORE_LANDING / NO_PERFORMANCE_RESULT`
@@ -72,7 +72,7 @@ R5通过全部远端prelaunch门后唯一detach PID=`2770709`，首个`tap-cache
 
 R6唯一detach后写出8400行strict tap，但在reference dual parity门以exit=2结束，prediction及后续artifact均为0。全量差分确认reference以固定256容量/33次调用生成，而R6以128直接分块；`z_dom>1e-5`恰好只发生在最后80行partial batch，前8320行最大差`1.907e-6`。下一修复`D105-FTU2`只恢复固定256补零/切回执行合同并绑定receipt，保持全8400行`1e-5`门、模型与特征语义不变。
 
-FTU2实现已完成：257/8400边界、批形状敏感fake、非法capacity早拒绝、receipt v2负测和真实checkpoint固定256reference均闭合；10文件238/238通过。runtime/method=`8797de12f035db609aeb6f453f096571f216d0d514d6705344e763f5ec63a498`/`9a87e51de4d775ff2ea05e59654afaa62844edaf2def942d8f73c8e289ea61e6`。独立R11最终`GO / P0=0 / P1=0 / P2=0`，下一门为Git提交后的精确archive与完整8400行本地技术parity smoke。
+FTU2实现已完成：257/8400边界、批形状敏感fake、非法capacity早拒绝、receipt v2负测和真实checkpoint固定256reference均闭合；10文件238/238通过。runtime/method=`8797de12f035db609aeb6f453f096571f216d0d514d6705344e763f5ec63a498`/`9a87e51de4d775ff2ea05e59654afaa62844edaf2def942d8f73c8e289ea61e6`。独立R11最终`GO / P0=0 / P1=0 / P2=0`，实现提交=`2d948ce981b9008522f825cfe6d868bce08cb624`；下一门为该提交的精确archive与完整8400行技术parity smoke。
 
 ## 5.真实checkpoint派生特征无truth smoke
 

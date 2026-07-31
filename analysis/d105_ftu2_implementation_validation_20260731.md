@@ -37,3 +37,5 @@
 |`tests/test_stage2_d105_phase1_bundle.py`|`b4f7128e392714bfe0a843708134fe2ecfe17bc49a1bb65110842e5bbd55b5b3`|
 
 本地验证不构成N607同步、Phase1 formal asset、Target25或性能授权。下一门是Git提交后的精确archive smoke和全量source-only GPU parity技术复现。
+
+实现提交：`2d948ce981b9008522f825cfe6d868bce08cb624`。
