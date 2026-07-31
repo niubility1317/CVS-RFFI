@@ -1,6 +1,6 @@
 # D106真实集成r7预登记报告
 
-状态：`LOCAL_RELEASE_GO / NOT_LANDED / NO_PERFORMANCE_RESULT`
+状态：`ARTIFACTS_COMPLETE / TECHNICAL_CLOSURE_PASS / NO_PERFORMANCE_RESULT`
 
 ## 1.身份、目标与假设
 
@@ -83,3 +83,21 @@ CUDA_VISIBLE_DEVICES=0 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python /home
 ## 6.风险与完成后检查
 
 主要风险为旧r6路径污染、archive/runtime SHA漂移、checkpoint依赖缺失、roundtrip rank门失败和partial误报完成。完成后必须检查PID/CWD/cmdline/GPU、log增长、五类expected artifact、canonical result/marker、全部SHA、禁用访问标志、run-owned进程归零、GPU释放和SSH/TCP22清理。只回收小型控制证据，不读取或拉回大型IQ/tap/wire内容。
+
+## 7.N607执行结果
+
+r7由唯一N607 runner于2026-08-01执行。direct preflight通过；run root创建前为`ABSENT`。四份传输资产、7个关键source entry、2个D104 entry、canonical 22字段fixture、9个绝对路径/SHA绑定、r7 scope、200个Python文件编译和checkpoint/source-pool/salt现场SHA均通过。真实解压路径下的三模型import smoke精确为`baseline_origin_sat_view.py`、`model.py`和`model_dual_cvsincnet.py`；RDCE入口导出`RDCE_RANK=3`、`Z_DIM=160`和`_validated_roundtrip_rdce_rank`，不存在旧`asset.rank`读取。
+
+唯一launch PID为`3065521`。启动3秒后进程存活，CWD和cmdline与r7绝对路径合同完全一致，物理GPU0映射为进程内`cuda:0`。进程随后自然结束，形成`selected_ls_iq`、`strict_tap`、`rdce_asset`、`d106_real_integration_result.json`和`COMPLETED.json`五类完整artifact；日志无异常指纹。
+
+| 完成证据 | SHA256 |
+|---|---|
+| `d106_real_integration_result.json` | `7b3c2b73a8c7c9bfeab85d99b68f70007996d44451f88b63a529bf7d8fd140cb` |
+| `COMPLETED.json` | `2c35385f56b4c596840c4c9420cf4294746c25fc4b5297a2f59315dccb041880` |
+| `logs/run.out` | `b0fbf86f8f736067679fbd132a3eea667898c7d60b3b04b2d056a1232179fdbe` |
+| `logs/runner_completion_receipt.json` | `e29e26abcfd281513fc0f6acdffba7e585825e2faa6270667693e1993f73df94` |
+| `logs/sha256_manifest.txt` | `509164493f82d7fb616c0c5b24fa4be0a07eb8196c942dbf133e7ec5ad7604ac` |
+
+result与marker均为canonical JSON，marker对result SHA绑定通过；7项artifact SHA、RDCE wire反序列化roundtrip、asset receipt与binding digest均闭合，`rdce_rank=3`。`source_held_truth_access`、`formal_query_access`、`target_access`和`performance_metrics_computed`均为false，result中无性能字段。这是真实Phase1 aggregate的技术闭环，不是Target25、125矩阵或性能结论。
+
+16份小型证据已回收到`automation_reports/CV-SincNet/d106_rdce_gtsm_20260801_r1/artifacts/remote_dba10236_r7/`。大型IQ、tap和wire仅保留在原远端run中，未拉回或用于性能解读。最终run-owned进程为0，GPU0释放，本地`ssh.exe`及N607/bridge TCP22连接均为NONE。

@@ -1,6 +1,6 @@
 # D106-RDCE/GTSM-r3研发与实验报告
 
-状态：`DESIGN_FROZEN / DATA_LOCAL_CODE_G0_GO / DA_LOCAL_CODE_G0_GO / HEAD_LOCAL_IMPLEMENTATION_GO / R6_STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT / R7_LOCAL_RELEASE_GO / R7_NOT_LANDED / SOURCE_HELD_NOT_OPENED / TARGET25_NO_GO / NO_TARGET_PERFORMANCE_RESULT`
+状态：`DESIGN_FROZEN / DATA_LOCAL_CODE_G0_GO / DA_LOCAL_CODE_G0_GO / HEAD_LOCAL_IMPLEMENTATION_GO / R6_STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / R7_ARTIFACTS_COMPLETE / R7_TECHNICAL_CLOSURE_PASS / NO_PERFORMANCE_RESULT / SOURCE_HELD_NOT_OPENED / TARGET25_NO_GO / NO_TARGET_PERFORMANCE_RESULT`
 
 ## 1.实验身份
 
@@ -391,3 +391,11 @@ r6证明正式`D106RDCEAsset`没有`.rank`字段；秩的权威为资产模块�
 r7 source commit为`dba10236889a45b11f2f10dab3596aff7e218df0`，run ID为`d106_real_integration_dba10236_20260801_r7`。source archive SHA为`1eae03c8a63ede8241c4b3cb7331994ffb32e571608774e1dd874d30c928a585`，fixture SHA为`d8c3475dca9cdd82450a63b6b8a4097dc96a98ca8849d55e2df3cf51c59ba669`；archive 200个Python文件编译通过，三模型zipimport smoke通过，fixture/handoff/entry组合25/25通过。
 
 release独立终审为`P0=0/P1=0/P2=0 / GO`。四份本地到远端映射、7个关键entry、canonical 22字段fixture、9个绝对路径、r4—r6隔离、唯一child command、健康/停止/completion/SSH清理语义均闭合。当前仅为`LOCAL_RELEASE_GO / NOT_LANDED`，未运行r7、未产生正式asset收据或性能结果。
+
+## 24.r7 N607真实集成闭环
+
+r7 direct preflight、四资产传输SHA、7个source entry、D104两entry、fixture canonical/22字段/9路径绑定、200个Python文件编译、三模型与RDCE入口import smoke、checkpoint/source-pool/salt现场SHA和GPU/output门全部通过。唯一launch PID`3065521`的CWD、cmdline及GPU映射与预登记完全一致，进程自然结束后五类expected artifact齐全。
+
+`d106_real_integration_result.json` SHA为`7b3c2b73a8c7c9bfeab85d99b68f70007996d44451f88b63a529bf7d8fd140cb`，`COMPLETED.json` SHA为`2c35385f56b4c596840c4c9420cf4294746c25fc4b5297a2f59315dccb041880`，日志SHA为`b0fbf86f8f736067679fbd132a3eea667898c7d60b3b04b2d056a1232179fdbe`。result/marker canonical、marker→result SHA、7项artifact SHA、RDCE wire roundtrip、asset receipt/binding全部闭合，`rdce_rank=3`。四个禁用访问/性能标志均为false，result不含性能字段。
+
+因此r7可记为`ARTIFACTS_COMPLETE / TECHNICAL_CLOSURE_PASS`，但仍为`NO_PERFORMANCE_RESULT`：本run不是Target25或125矩阵，不支持accuracy、H、BA、floor或晋级结论。16份小型证据已回收至`artifacts/remote_dba10236_r7/`；大型IQ/tap/wire未拉回。最终run-owned=0、GPU0已释放、SSH及N607/bridge TCP22均为NONE。
