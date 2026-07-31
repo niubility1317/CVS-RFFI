@@ -395,3 +395,29 @@ R8由唯一runner在普通N607账户上完成一次非覆盖发布，run ID=`d10
 R8终态固定为`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / ARTIFACTS_INCOMPLETE / SOURCE_HELD_GATE_REJECT_OBSERVED / NO_PERFORMANCE_RESULT / NO_TARGET_PERFORMANCE_RESULT`。完整选择证据已回收至`retrieved_d105_phase1_sourceheld_230c6cbc_20260801_r8_STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE_NO_PERFORMANCE_RESULT/artifacts`；远端64行retrieval manifest与本地64/64逐项SHA一致，manifest SHA256=`568ac89b0d20c10161af45f9ab48019a99c87f78bc684c75f4fbc4b59f66103a`。主日志SHA256=`aca2458f906d6961080fe7577a75cf063ceb3a1de17f1d241541b8cbec440a57`，exit SHA256=`53c234e5e8472b6ac51c1ae1cab3fe06fad053beb8ebfd8977b010655bfdd3c3`，tap archive/receipt SHA256=`6626afbf5d5987b2944b53f9b4bddbb6c9397f4c577accb95cea5e0039b24578`/`d8090c50fa8aa2fd2496d3883cb821dc91e87132e21db909fa0890af29a567b2`，gate SHA256=`209629115298f9ac5f537d36d7ae01841673739b101599d33a3cd3a8035b9424`。终态GPU0为0%/1MiB，无R8进程或compute process，本地SSH/SCP/TCP22已清理。
 
 R8不得恢复、覆盖、重试或重新解释为性能实验。下一门只能在本地修复diagnostic component的持久化/序列化生命周期，补充真实gate-reject端到端回归，完成独立审查和新Git提交后，以全新run ID重新申请Phase1 release；在新component、独立审查、离线authority和formal seal完整闭合前，Target25继续禁止。
+
+## 21.D105-FTU4 TX负结果诊断回执本地实现
+
+`D105-FTU4`已在合法`tx_probe_gate_pass=false`后、`_build_aggregate_parameters`之前增加独立无wire诊断分支。新artifact kind为`D105_PHASE1_TX_PROBE_DIAGNOSTIC_RECEIPT`，status=`DIAGNOSTIC_STATUS`，固定`formal_phase2_eligible=false`和`deployable_wire_present=false`。目录只有canonical manifest、manifest SHA256 seal、source-held gate、签名D102 revocation manifest及其detached signature，共5个允许成员；不生成`d105_phase1_aggregate.wire`，不持久化receiver aggregate、量化数组、源行、raw/clean IQ或receiver/class/physical句柄。
+
+专用`load_d105_phase1_diagnostic_receipt`验证精确schema/allowlist、canonical字节、seal、gate及TX missing token、D102签名绑定、candidate/runtime/method/strict-tap身份和全部fail-closed字段，返回只读且不可部署的`D105Phase1DiagnosticReceipt`。普通asset loader、formal validate、runtime handle和seal均拒绝该目录；seal在读取authority、消费nonce或创建输出前退出。TX通过路径没有改变，TX通过但receiver/class失败时仍沿既有DIAGNOSTIC component路径。`rxid_metabias4_bundle.py`及其failed-TX不可serialize合同保持原样。
+
+|本地门|结果|
+|---|---|
+|TX失败E2E|从不可变synthetic证据生成5成员诊断回执；聚合函数调用数=0；无wire|
+|专用/普通生命周期|专用loader通过；普通/formal/runtime/seal全部拒绝；nonce ledger前后相同；formal输出为0|
+|篡改负测|伪装kind、manifest字节、塞wire、删除TX missing token、翻status、非法allowlist、gate及D102签名篡改全部拒绝|
+|技术异常分类|二次bundle build与serialize错误文案拆分，两者均不误写诊断回执|
+|非覆盖|同目录二次输出拒绝|
+|symlink逐成员拒绝|5个diagnostic成员逐一替换为真实symlink，专用loader均拒绝；本机5/5实际执行，0项skip|
+|canonical重封印篡改拒绝|`source_held_gate_summary`、checkpoint/runtime/method/strict-tap绑定SHA、D102 manifest/signature SHA共7项逐一篡改；manifest与seal均按canonical规则重算后，专用loader仍全部拒绝|
+|定向回归|FTU4新增23项全部通过|
+|Phase1 bundle整文件|187项全部通过|
+|统一回归|固定10文件276项执行到100%，全部通过|
+|canonical runtime|54/54 core SHA一致；54/54文件内存编译通过；runtime/method CR=0、LF=0|
+
+runtime manifest SHA256=`9b1887e64851851be8a81118a3b3728cd94517de6c9ae275f8574764cb30c38e`，method lock SHA256=`7324ff469cf18d34cdc3795e36d053570e60ba341c112167b49d759a150dda08`。相对FTU3只改变`stage2_d105_phase1_bundle.py`一个core hash和method→runtime绑定；方法参数与阈值逐字段不变。唯一测试警告仍为既有`torch.cuda.amp.autocast`弃用警告。
+
+FTU4独立复核初始结论中的两项P2已关闭：5个成员均以真实symlink执行且由专用loader拒绝，7个代表性绑定字段在修改manifest并重算canonical seal后仍由专用loader拒绝。测试文件SHA256=`9a677ff0a045a6816f469fc3d4c0e55cedb672cefc4e6bf1e6fb1fa7da0e0253`；最终独立复核=`GO / P0=0 / P1=0 / P2=0`。
+
+当前状态=`LOCAL_REVIEW_GO / P0=0 / P1=0 / P2=0`。冻结设计无偏差；本轮没有连接N607，没有性能计算、target/query访问、authority签名、formal asset或Stage2运行，也未commit或push。详细实现见`analysis/d105_ftu4_tx_diagnostic_receipt_20260801.md`。`E:\type10-7`根目录不是Git仓库；根报告与根analysis仅为同步镜像，Git版本以当前工作树为准。

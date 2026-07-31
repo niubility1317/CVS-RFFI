@@ -9,6 +9,7 @@ import json
 import os
 from pathlib import Path
 import re
+import shutil
 import stat
 import sys
 from datetime import datetime, timezone
@@ -37,6 +38,7 @@ from cvsrffi.stage2_d105_phase1_bundle import (
     execute_d105_source_held_predictions,
     load_d105_candidate_runtime_manifest,
     load_d105_phase1_asset,
+    load_d105_phase1_diagnostic_receipt,
     make_d105_phase1_runtime_handle,
     open_d105_source_held_truth,
     score_d105_source_held_truth,
@@ -405,6 +407,7 @@ def _manual_evidence(
     tap: dict[str, object],
     *,
     force_negative_net_correct: bool = False,
+    force_tx_probe_failure: bool = False,
 ) -> tuple[Path, Path, Path]:
     arrays = tap["arrays"]
     assert isinstance(arrays, dict)
@@ -478,7 +481,11 @@ def _manual_evidence(
         row = {
             "held_receiver_token": receiver,
             "physical_ids": physical_ids,
-            "predictions": [class_tokens[0]] * len(class_tokens),
+            "predictions": (
+                list(class_tokens)
+                if force_tx_probe_failure
+                else [class_tokens[0]] * len(class_tokens)
+            ),
             "prediction_commit_sha256": "0" * 64,
         }
         row["prediction_commit_sha256"] = compute_d105_source_held_tx_prediction_commit(
@@ -871,6 +878,379 @@ def test_negative_signed_source_held_gate_remains_diagnostic_and_cannot_seal(
             sealed,
         )
     assert not sealed.exists()
+
+
+def _build_tx_failed_diagnostic(
+    tmp_path: Path,
+) -> tuple[Path, dict[str, object], Path, Path, dict[str, object]]:
+    tmp_path.mkdir(parents=True, exist_ok=True)
+    revocation_manifest, revocation_signature, revocation_sha = _signed_d102_revocation(
+        tmp_path
+    )
+    tap = _materialize_strict_tap(
+        tmp_path, d102_revocation_manifest_sha256=revocation_sha
+    )
+    prediction, truth_open, score = _manual_evidence(
+        tmp_path, tap, force_tx_probe_failure=True
+    )
+    output = tmp_path / "tx-probe-diagnostic"
+    result = build_d105_phase1_component(
+        tap["archive"],
+        tap["receipt"],
+        tap["lock"],
+        tap["runtime"],
+        prediction,
+        truth_open,
+        score,
+        revocation_manifest,
+        revocation_signature,
+        output,
+    )
+    return output, result, revocation_manifest, revocation_signature, tap
+
+
+def _rewrite_tx_diagnostic_manifest(
+    root: Path, mutate: object,
+) -> None:
+    manifest_path = root / phase1.TX_PROBE_DIAGNOSTIC_MANIFEST_NAME
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    assert callable(mutate)
+    mutate(manifest)
+    payload = _canonical_bytes(manifest) + b"\n"
+    manifest_path.write_bytes(payload)
+    (root / phase1.TX_PROBE_DIAGNOSTIC_SEAL_NAME).write_text(
+        f"{hashlib.sha256(payload).hexdigest()}  "
+        f"{phase1.TX_PROBE_DIAGNOSTIC_MANIFEST_NAME}\n",
+        encoding="ascii",
+        newline="\n",
+    )
+
+
+def test_tx_probe_failure_emits_independent_no_wire_diagnostic_receipt(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    def reject_aggregate(*_args: object, **_kwargs: object) -> object:
+        raise AssertionError("TX-negative build reached aggregate construction")
+
+    monkeypatch.setattr(phase1, "_build_aggregate_parameters", reject_aggregate)
+    output, result, revocation_manifest, revocation_signature, tap = (
+        _build_tx_failed_diagnostic(tmp_path)
+    )
+    assert result["artifact_kind"] == phase1.TX_PROBE_DIAGNOSTIC_KIND
+    assert result["status"] == DIAGNOSTIC_STATUS
+    assert result["formal_phase2_eligible"] is False
+    assert result["deployable_wire_present"] is False
+    assert {item.name for item in output.iterdir()} == {
+        phase1.TX_PROBE_DIAGNOSTIC_MANIFEST_NAME,
+        phase1.TX_PROBE_DIAGNOSTIC_SEAL_NAME,
+        phase1.HELD_GATE_NAME,
+        authority.D102_REVOCATION_MANIFEST_NAME,
+        authority.D102_REVOCATION_SIGNATURE_NAME,
+    }
+    assert not (output / phase1.BUNDLE_WIRE_NAME).exists()
+
+    receipt = load_d105_phase1_diagnostic_receipt(output)
+    manifest = receipt.manifest
+    assert receipt.formal_phase2_eligible is False
+    assert receipt.deployable_wire_present is False
+    assert receipt.source_held_gate["tx_probe_gate_pass"] is False
+    assert "tx_probe_max_balanced_accuracy_at_most_0_25" in manifest[
+        "formal_phase2_eligibility_missing"
+    ]
+    assert manifest["d105_candidate_runtime_manifest_sha256"] == tap["runtime_sha"]
+    assert manifest["d105_candidate_method_lock_sha256"] == tap["lock_sha"]
+    assert manifest["strict_tap_receipt_sha256"] == tap["receipt_sha"]
+    for field in (
+        "raw_iq_retained",
+        "clean_iq_retained",
+        "source_row_features_retained",
+        "source_replay_access",
+        "source_archive_path_retained",
+        "payload_contains_source_rows",
+        "payload_contains_class_handles",
+        "payload_contains_receiver_handles",
+        "payload_contains_receiver_names",
+        "payload_contains_physical_ids",
+    ):
+        assert manifest[field] is False
+    manifest_text = json.dumps(phase1._thaw(manifest), sort_keys=True)
+    assert "receiver_aggregate_summary" not in manifest_text
+    assert "quantization_summary" not in manifest_text
+    with pytest.raises(TypeError):
+        receipt.manifest["status"] = COMPONENT_STATUS  # type: ignore[index]
+
+    for formal in (False, True):
+        with pytest.raises(
+            D105Phase1BundleError, match="TX diagnostic receipt is non-deployable"
+        ):
+            load_d105_phase1_asset(
+                output, require_formal_phase2_eligible=formal
+            )
+    with pytest.raises(
+        D105Phase1BundleError, match="TX diagnostic receipt is non-deployable"
+    ):
+        validate_d105_phase1_asset(output, require_formal_phase2_eligible=True)
+    with pytest.raises(
+        D105Phase1BundleError, match="only a formal D105 Phase1 asset"
+    ):
+        make_d105_phase1_runtime_handle(receipt)  # type: ignore[arg-type]
+
+    nonce_ledger = tmp_path / "nonce-ledger"
+    nonce_ledger.mkdir()
+    sentinel = nonce_ledger / "sentinel.txt"
+    sentinel.write_bytes(b"nonce-ledger-must-not-change")
+    before = {item.name: sha256_file(item) for item in nonce_ledger.iterdir()}
+    formal_output = tmp_path / "must-not-exist"
+    with pytest.raises(
+        D105Phase1BundleError,
+        match="TX diagnostic receipt cannot enter the formal seal path",
+    ):
+        seal_d105_phase1_component(
+            output,
+            tmp_path / "unread-authority-envelope.json",
+            tmp_path / "unread-authority-signature.ed25519",
+            tmp_path / "unread-independent-review.json",
+            revocation_manifest,
+            revocation_signature,
+            nonce_ledger,
+            formal_output,
+        )
+    after = {item.name: sha256_file(item) for item in nonce_ledger.iterdir()}
+    assert before == after
+    assert not formal_output.exists()
+
+    with pytest.raises(D105Phase1BundleError, match="output already exists"):
+        build_d105_phase1_component(
+            tap["archive"],
+            tap["receipt"],
+            tap["lock"],
+            tap["runtime"],
+            tmp_path / "source_held_prediction_manifest.json",
+            tmp_path / "source_held_truth_open_receipt.json",
+            tmp_path / "source_held_score_artifact.json",
+            revocation_manifest,
+            revocation_signature,
+            output,
+        )
+
+
+@pytest.mark.parametrize(
+    "corruption",
+    [
+        "masquerade-kind",
+        "manifest-byte-tamper",
+        "inject-wire",
+        "delete-tx-missing-token",
+        "flip-status",
+        "illegal-allowlist",
+        "gate-tamper",
+        "revocation-signature-tamper",
+    ],
+)
+def test_tx_probe_diagnostic_loader_rejects_tamper_and_masquerade(
+    tmp_path: Path, corruption: str
+) -> None:
+    original, _, _, _, _ = _build_tx_failed_diagnostic(tmp_path / "original")
+    corrupted = tmp_path / corruption
+    shutil.copytree(original, corrupted)
+    if corruption == "masquerade-kind":
+        _rewrite_tx_diagnostic_manifest(
+            corrupted,
+            lambda value: value.__setitem__(
+                "artifact_kind", "D105_PHASE1_COMPONENT"
+            ),
+        )
+    elif corruption == "manifest-byte-tamper":
+        path = corrupted / phase1.TX_PROBE_DIAGNOSTIC_MANIFEST_NAME
+        path.write_bytes(path.read_bytes() + b" ")
+    elif corruption == "inject-wire":
+        (corrupted / phase1.BUNDLE_WIRE_NAME).write_bytes(b"not-a-wire")
+    elif corruption == "delete-tx-missing-token":
+        _rewrite_tx_diagnostic_manifest(
+            corrupted,
+            lambda value: value["formal_phase2_eligibility_missing"].remove(
+                "tx_probe_max_balanced_accuracy_at_most_0_25"
+            ),
+        )
+    elif corruption == "flip-status":
+        _rewrite_tx_diagnostic_manifest(
+            corrupted,
+            lambda value: value.__setitem__("status", COMPONENT_STATUS),
+        )
+    elif corruption == "illegal-allowlist":
+        (corrupted / "forbidden.json").write_bytes(b"{}")
+    elif corruption == "gate-tamper":
+        path = corrupted / phase1.HELD_GATE_NAME
+        gate = json.loads(path.read_text(encoding="utf-8"))
+        gate["tx_probe_gate_pass"] = True
+        path.write_bytes(_canonical_bytes(gate))
+    elif corruption == "revocation-signature-tamper":
+        path = corrupted / authority.D102_REVOCATION_SIGNATURE_NAME
+        payload = bytearray(path.read_bytes())
+        payload[0] ^= 1
+        path.write_bytes(payload)
+    else:
+        raise AssertionError(corruption)
+    with pytest.raises(D105Phase1BundleError):
+        load_d105_phase1_diagnostic_receipt(corrupted)
+
+
+@pytest.mark.parametrize(
+    "member_name",
+    [
+        phase1.TX_PROBE_DIAGNOSTIC_MANIFEST_NAME,
+        phase1.TX_PROBE_DIAGNOSTIC_SEAL_NAME,
+        phase1.HELD_GATE_NAME,
+        authority.D102_REVOCATION_MANIFEST_NAME,
+        authority.D102_REVOCATION_SIGNATURE_NAME,
+    ],
+)
+def test_tx_probe_diagnostic_loader_rejects_each_symlink_member(
+    tmp_path: Path, member_name: str
+) -> None:
+    root, _, _, _, _ = _build_tx_failed_diagnostic(tmp_path / "original")
+    member = root / member_name
+    target_root = tmp_path / "external-symlink-targets"
+    target_root.mkdir()
+    target = target_root / member_name
+    target.write_bytes(member.read_bytes())
+    member.unlink()
+    try:
+        member.symlink_to(target, target_is_directory=False)
+    except (NotImplementedError, OSError) as error:
+        pytest.skip(
+            "host cannot create a real file symlink for the diagnostic-member "
+            f"negative test: {type(error).__name__}: {error}"
+        )
+    assert member.is_symlink(), "the negative test must use a real symbolic link"
+    assert member.resolve(strict=True) == target.resolve(strict=True)
+    with pytest.raises(
+        D105Phase1BundleError,
+        match="TX diagnostic member missing or symbolic link",
+    ):
+        load_d105_phase1_diagnostic_receipt(root)
+
+
+@pytest.mark.parametrize(
+    ("field", "nested_field", "replacement"),
+    [
+        pytest.param(
+            "source_held_gate_summary",
+            "tx_probe_mean_balanced_accuracy",
+            0.123456789,
+            id="gate-summary",
+        ),
+        pytest.param("checkpoint_sha256", None, "0" * 64, id="checkpoint-sha"),
+        pytest.param("runtime_sha256", None, "0" * 64, id="runtime-sha"),
+        pytest.param("method_lock_sha256", None, "0" * 64, id="method-sha"),
+        pytest.param(
+            "strict_tap_receipt_sha256", None, "0" * 64, id="strict-tap-sha"
+        ),
+        pytest.param(
+            "d102_revocation_manifest_sha256",
+            None,
+            "0" * 64,
+            id="d102-manifest-sha",
+        ),
+        pytest.param(
+            "d102_revocation_signature_sha256",
+            None,
+            "0" * 64,
+            id="d102-signature-sha",
+        ),
+    ],
+)
+def test_tx_probe_diagnostic_loader_rejects_canonical_resealed_binding_tamper(
+    tmp_path: Path,
+    field: str,
+    nested_field: str | None,
+    replacement: object,
+) -> None:
+    root, _, _, _, _ = _build_tx_failed_diagnostic(tmp_path / "original")
+
+    def mutate(value: dict[str, object]) -> None:
+        if nested_field is None:
+            value[field] = replacement
+            return
+        nested = value[field]
+        assert isinstance(nested, dict)
+        nested[nested_field] = replacement
+
+    _rewrite_tx_diagnostic_manifest(root, mutate)
+    manifest_path = root / phase1.TX_PROBE_DIAGNOSTIC_MANIFEST_NAME
+    manifest_bytes = manifest_path.read_bytes()
+    manifest = json.loads(manifest_bytes.decode("utf-8"))
+    assert manifest_bytes == _canonical_bytes(manifest) + b"\n"
+    expected_seal = (
+        f"{hashlib.sha256(manifest_bytes).hexdigest()}  "
+        f"{phase1.TX_PROBE_DIAGNOSTIC_MANIFEST_NAME}\n"
+    ).encode("ascii")
+    assert (root / phase1.TX_PROBE_DIAGNOSTIC_SEAL_NAME).read_bytes() == expected_seal
+    with pytest.raises(D105Phase1BundleError):
+        load_d105_phase1_diagnostic_receipt(root)
+
+
+def test_second_aggregate_build_failure_is_not_reported_as_serialization(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    revocation_manifest, revocation_signature, revocation_sha = _signed_d102_revocation(
+        tmp_path
+    )
+    tap = _materialize_strict_tap(
+        tmp_path, d102_revocation_manifest_sha256=revocation_sha
+    )
+    prediction, truth_open, score = _manual_evidence(tmp_path, tap)
+    original = phase1.build_rxid_metabias4_bundle
+    calls = 0
+
+    def fail_second_build(*args: object, **kwargs: object) -> object:
+        nonlocal calls
+        calls += 1
+        if calls == 2:
+            raise phase1.RXIDMetaBias4BundleError("synthetic rebuild failure")
+        return original(*args, **kwargs)
+
+    monkeypatch.setattr(phase1, "build_rxid_metabias4_bundle", fail_second_build)
+    output = tmp_path / "rebuild-failure"
+    with pytest.raises(
+        D105Phase1BundleError,
+        match="D105 aggregate bundle quantization-closure rebuild failed",
+    ):
+        build_d105_phase1_component(
+            tap["archive"], tap["receipt"], tap["lock"], tap["runtime"],
+            prediction, truth_open, score, revocation_manifest,
+            revocation_signature, output,
+        )
+    assert calls == 2
+    assert not output.exists()
+
+
+def test_serialize_failure_remains_a_technical_error_without_diagnostic(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    revocation_manifest, revocation_signature, revocation_sha = _signed_d102_revocation(
+        tmp_path
+    )
+    tap = _materialize_strict_tap(
+        tmp_path, d102_revocation_manifest_sha256=revocation_sha
+    )
+    prediction, truth_open, score = _manual_evidence(tmp_path, tap)
+
+    def fail_serialize(*_args: object, **_kwargs: object) -> bytes:
+        raise phase1.RXIDMetaBias4BundleError("synthetic serialization failure")
+
+    monkeypatch.setattr(phase1, "serialize_rxid_metabias4_bundle", fail_serialize)
+    output = tmp_path / "serialization-failure"
+    with pytest.raises(
+        D105Phase1BundleError,
+        match="D105 aggregate bundle serialization failed after quantization closure",
+    ):
+        build_d105_phase1_component(
+            tap["archive"], tap["receipt"], tap["lock"], tap["runtime"],
+            prediction, truth_open, score, revocation_manifest,
+            revocation_signature, output,
+        )
+    assert not output.exists()
 
 
 @pytest.mark.parametrize(

@@ -221,6 +221,14 @@ BUNDLE_WIRE_NAME = "d105_phase1_aggregate.wire"
 MANIFEST_NAME = "d105_phase1_bundle.manifest.json"
 SEAL_NAME = "d105_phase1_bundle.manifest.sha256"
 COMPONENT_MANIFEST_NAME = "d105_phase1_component.manifest.json"
+TX_PROBE_DIAGNOSTIC_SCHEMA = (
+    "cvs.phase1.d105.cbrc.tx_probe_diagnostic_receipt.v1"
+)
+TX_PROBE_DIAGNOSTIC_KIND = "D105_PHASE1_TX_PROBE_DIAGNOSTIC_RECEIPT"
+TX_PROBE_DIAGNOSTIC_MANIFEST_NAME = (
+    "d105_phase1_tx_probe_diagnostic.manifest.json"
+)
+TX_PROBE_DIAGNOSTIC_SEAL_NAME = "d105_phase1_tx_probe_diagnostic.manifest.sha256"
 HELD_GATE_NAME = "d105_source_held_gate.json"
 SOURCE_ACCESS_RECEIPT_NAME = "d105_source_access_receipt.json"
 STRICT_TAP_ARCHIVE_NAME = "d105_phase1_strict_tap.npz"
@@ -1499,6 +1507,33 @@ class D105Phase1Asset:
                 "unsealed component must not expose a runtime validator identity"
             )
         object.__setattr__(self, "manifest", _freeze(manifest))
+
+
+@dataclass(frozen=True, slots=True)
+class D105Phase1DiagnosticReceipt:
+    """Read-only, deliberately non-deployable D105 TX-probe result."""
+
+    manifest: Mapping[str, Any]
+    source_held_gate: Mapping[str, Any]
+    manifest_sha256: str
+    formal_phase2_eligible: bool = False
+    deployable_wire_present: bool = False
+
+    def __post_init__(self) -> None:
+        manifest = _thaw(self.manifest)
+        gate = _thaw(self.source_held_gate)
+        _require_sha256(self.manifest_sha256, "manifest_sha256")
+        if _sha256_bytes(_canonical_bytes(manifest) + b"\n") != self.manifest_sha256:
+            raise D105Phase1BundleError("diagnostic manifest hash drift")
+        if (
+            self.formal_phase2_eligible is not False
+            or self.deployable_wire_present is not False
+            or manifest.get("formal_phase2_eligible") is not False
+            or manifest.get("deployable_wire_present") is not False
+        ):
+            raise D105Phase1BundleError("diagnostic receipt became deployable")
+        object.__setattr__(self, "manifest", _freeze(manifest))
+        object.__setattr__(self, "source_held_gate", _freeze(gate))
 
 
 @dataclass(frozen=True, slots=True)
@@ -3791,6 +3826,152 @@ def _quantization_summary(
     return result
 
 
+_TX_PROBE_DIAGNOSTIC_MANIFEST_FIELDS = {
+    "schema",
+    "artifact_kind",
+    "candidate_id",
+    "protocol_schema",
+    "status",
+    "formal_phase2_eligible",
+    "deployable_wire_present",
+    "formal_phase2_eligibility_prerequisites",
+    "formal_phase2_eligibility_missing",
+    "checkpoint_sha256",
+    "runtime_sha256",
+    "method_lock_sha256",
+    "d105_candidate_method_lock_sha256",
+    "d105_candidate_runtime_manifest_sha256",
+    "d102_revocation_manifest_sha256",
+    "d102_revocation_signature_sha256",
+    "strict_tap_receipt_sha256",
+    "source_held_gate_receipt_sha256",
+    "source_held_gate_summary",
+    "source_only",
+    "target_rows",
+    "query_rows",
+    "raw_iq_retained",
+    "clean_iq_retained",
+    "source_row_features_retained",
+    "source_replay_access",
+    "source_archive_path_retained",
+    "payload_contains_source_rows",
+    "payload_contains_class_handles",
+    "payload_contains_receiver_handles",
+    "payload_contains_receiver_names",
+    "payload_contains_physical_ids",
+    "d102_rejected_bundle_reused",
+}
+
+
+def _tx_probe_diagnostic_manifest(
+    *,
+    strict_tap_receipt_sha256: str,
+    checkpoint_sha256: str,
+    runtime_sha256: str,
+    method_lock_sha256: str,
+    d105_candidate_method_lock_sha256: str,
+    d105_candidate_runtime_manifest_sha256: str,
+    d102_revocation_manifest_sha256: str,
+    d102_revocation_signature_sha256: str,
+    source_held_gate_sha256: str,
+    gate_summary: Mapping[str, Any],
+    gate_missing: Sequence[str],
+) -> dict[str, Any]:
+    """Describe one legal TX-probe failure without building deployment state."""
+
+    if gate_summary.get("tx_probe_gate_pass") is not False:
+        raise D105Phase1BundleError(
+            "TX diagnostic receipt requires an exact false TX probe gate"
+        )
+    missing = list(
+        dict.fromkeys(
+            [
+                *gate_missing,
+                "independent_review_p0_0_p1_0",
+                "independent_phase2_authority_seal",
+            ]
+        )
+    )
+    if "tx_probe_max_balanced_accuracy_at_most_0_25" not in missing:
+        raise D105Phase1BundleError("TX diagnostic prerequisite closure drift")
+    return {
+        "schema": TX_PROBE_DIAGNOSTIC_SCHEMA,
+        "artifact_kind": TX_PROBE_DIAGNOSTIC_KIND,
+        "candidate_id": CANDIDATE_ID,
+        "protocol_schema": PROTOCOL_SCHEMA,
+        "status": DIAGNOSTIC_STATUS,
+        "formal_phase2_eligible": False,
+        "deployable_wire_present": False,
+        "formal_phase2_eligibility_prerequisites": list(FORMAL_PREREQUISITES),
+        "formal_phase2_eligibility_missing": missing,
+        "checkpoint_sha256": checkpoint_sha256,
+        "runtime_sha256": runtime_sha256,
+        "method_lock_sha256": method_lock_sha256,
+        "d105_candidate_method_lock_sha256": d105_candidate_method_lock_sha256,
+        "d105_candidate_runtime_manifest_sha256": (
+            d105_candidate_runtime_manifest_sha256
+        ),
+        "d102_revocation_manifest_sha256": d102_revocation_manifest_sha256,
+        "d102_revocation_signature_sha256": d102_revocation_signature_sha256,
+        "strict_tap_receipt_sha256": strict_tap_receipt_sha256,
+        "source_held_gate_receipt_sha256": source_held_gate_sha256,
+        "source_held_gate_summary": dict(gate_summary),
+        "source_only": True,
+        "target_rows": 0,
+        "query_rows": 0,
+        "raw_iq_retained": False,
+        "clean_iq_retained": False,
+        "source_row_features_retained": False,
+        "source_replay_access": False,
+        "source_archive_path_retained": False,
+        "payload_contains_source_rows": False,
+        "payload_contains_class_handles": False,
+        "payload_contains_receiver_handles": False,
+        "payload_contains_receiver_names": False,
+        "payload_contains_physical_ids": False,
+        "d102_rejected_bundle_reused": False,
+    }
+
+
+def _create_tx_probe_diagnostic_output(
+    output_dir: str | Path,
+    *,
+    manifest: Mapping[str, Any],
+    source_held_gate: Mapping[str, Any],
+    d102_revocation_manifest_bytes: bytes,
+    d102_revocation_signature: bytes,
+) -> dict[str, Any]:
+    root = Path(output_dir)
+    if root.exists() or root.is_symlink():
+        raise D105Phase1BundleError(f"output already exists: {root}")
+    root.mkdir(parents=True, exist_ok=False)
+    manifest_bytes = _canonical_bytes(manifest) + b"\n"
+    gate_bytes = _canonical_bytes(source_held_gate)
+    _write_new(root / HELD_GATE_NAME, gate_bytes)
+    _write_new(root / D102_REVOCATION_MANIFEST_NAME, d102_revocation_manifest_bytes)
+    _write_new(root / D102_REVOCATION_SIGNATURE_NAME, d102_revocation_signature)
+    _write_new(root / TX_PROBE_DIAGNOSTIC_MANIFEST_NAME, manifest_bytes)
+    _write_new(
+        root / TX_PROBE_DIAGNOSTIC_SEAL_NAME,
+        (
+            f"{_sha256_bytes(manifest_bytes)}  "
+            f"{TX_PROBE_DIAGNOSTIC_MANIFEST_NAME}\n"
+        ).encode("ascii"),
+    )
+    receipt = load_d105_phase1_diagnostic_receipt(root)
+    return {
+        "bundle_root": str(root),
+        "artifact_kind": TX_PROBE_DIAGNOSTIC_KIND,
+        "manifest_sha256": receipt.manifest_sha256,
+        "source_held_gate_receipt_sha256": manifest[
+            "source_held_gate_receipt_sha256"
+        ],
+        "formal_phase2_eligible": False,
+        "deployable_wire_present": False,
+        "status": DIAGNOSTIC_STATUS,
+    }
+
+
 def _component_manifest(
     *,
     bundle: RXIDMetaBias4Bundle,
@@ -4083,6 +4264,29 @@ def build_d105_phase1_component(
         method_lock_sha256=str(tap["method_lock_sha256"]),
     )
     gate_sha = _sha256_bytes(_canonical_bytes(gate))
+    if gate_summary["tx_probe_gate_pass"] is not True:
+        diagnostic_manifest = _tx_probe_diagnostic_manifest(
+            strict_tap_receipt_sha256=rows.strict_tap_receipt_sha256,
+            checkpoint_sha256=str(tap["checkpoint_sha256"]),
+            runtime_sha256=str(tap["runtime_sha256"]),
+            method_lock_sha256=str(tap["method_lock_sha256"]),
+            d105_candidate_method_lock_sha256=candidate_identity[
+                "d105_candidate_method_lock_sha256"
+            ],
+            d105_candidate_runtime_manifest_sha256=str(tap["runtime_sha256"]),
+            d102_revocation_manifest_sha256=str(revocation["manifest_sha256"]),
+            d102_revocation_signature_sha256=str(revocation["signature_sha256"]),
+            source_held_gate_sha256=gate_sha,
+            gate_summary=gate_summary,
+            gate_missing=gate_missing,
+        )
+        return _create_tx_probe_diagnostic_output(
+            output_dir,
+            manifest=diagnostic_manifest,
+            source_held_gate=gate,
+            d102_revocation_manifest_bytes=revocation["manifest_bytes"],
+            d102_revocation_signature=revocation["signature"],
+        )
     (
         u,
         b,
@@ -4195,10 +4399,15 @@ def build_d105_phase1_component(
                 "tx_probe_max_balanced_accuracy"
             ],
         )
+    except RXIDMetaBias4BundleError as error:
+        raise D105Phase1BundleError(
+            "D105 aggregate bundle quantization-closure rebuild failed"
+        ) from error
+    try:
         wire = serialize_rxid_metabias4_bundle(bundle)
     except RXIDMetaBias4BundleError as error:
         raise D105Phase1BundleError(
-            "D105 aggregate bundle cannot be serialized after quantization closure"
+            "D105 aggregate bundle serialization failed after quantization closure"
         ) from error
     manifest = _component_manifest(
         bundle=bundle,
@@ -4310,9 +4519,169 @@ def _validate_persisted_d102_revocation(
     return revocation
 
 
+def load_d105_phase1_diagnostic_receipt(
+    receipt_dir: str | Path,
+) -> D105Phase1DiagnosticReceipt:
+    """Load only a non-deployable TX-probe diagnostic directory."""
+
+    root = Path(receipt_dir)
+    if not root.is_dir() or root.is_symlink():
+        raise D105Phase1BundleError("diagnostic root must be a normal directory")
+    allowed = {
+        TX_PROBE_DIAGNOSTIC_MANIFEST_NAME,
+        TX_PROBE_DIAGNOSTIC_SEAL_NAME,
+        HELD_GATE_NAME,
+        D102_REVOCATION_MANIFEST_NAME,
+        D102_REVOCATION_SIGNATURE_NAME,
+    }
+    actual = {item.name for item in root.iterdir()}
+    if actual != allowed:
+        raise D105Phase1BundleError("TX diagnostic artifact allowlist drift")
+    paths = {name: root / name for name in allowed}
+    if any(not path.is_file() or path.is_symlink() for path in paths.values()):
+        raise D105Phase1BundleError(
+            "TX diagnostic member missing or symbolic link"
+        )
+
+    manifest_bytes = paths[TX_PROBE_DIAGNOSTIC_MANIFEST_NAME].read_bytes()
+    try:
+        manifest = json.loads(manifest_bytes.decode("utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError) as error:
+        raise D105Phase1BundleError("TX diagnostic manifest JSON drift") from error
+    if (
+        type(manifest) is not dict
+        or manifest_bytes != _canonical_bytes(manifest) + b"\n"
+    ):
+        raise D105Phase1BundleError("TX diagnostic manifest canonical encoding drift")
+    _require_exact_keys(
+        manifest,
+        _TX_PROBE_DIAGNOSTIC_MANIFEST_FIELDS,
+        "TX diagnostic manifest",
+    )
+    manifest_sha = _sha256_bytes(manifest_bytes)
+    try:
+        seal_tokens = (
+            paths[TX_PROBE_DIAGNOSTIC_SEAL_NAME]
+            .read_text(encoding="ascii")
+            .strip()
+            .split()
+        )
+    except UnicodeDecodeError as error:
+        raise D105Phase1BundleError("TX diagnostic manifest seal drift") from error
+    if seal_tokens != [manifest_sha, TX_PROBE_DIAGNOSTIC_MANIFEST_NAME]:
+        raise D105Phase1BundleError("TX diagnostic manifest SHA256 seal drift")
+
+    if (
+        manifest["schema"] != TX_PROBE_DIAGNOSTIC_SCHEMA
+        or manifest["artifact_kind"] != TX_PROBE_DIAGNOSTIC_KIND
+        or manifest["candidate_id"] != CANDIDATE_ID
+        or manifest["protocol_schema"] != PROTOCOL_SCHEMA
+        or manifest["status"] != DIAGNOSTIC_STATUS
+        or manifest["formal_phase2_eligible"] is not False
+        or manifest["deployable_wire_present"] is not False
+        or manifest["formal_phase2_eligibility_prerequisites"]
+        != list(FORMAL_PREREQUISITES)
+        or manifest["d105_candidate_method_lock_sha256"]
+        != manifest["method_lock_sha256"]
+        or manifest["d105_candidate_runtime_manifest_sha256"]
+        != manifest["runtime_sha256"]
+        or manifest["source_only"] is not True
+        or manifest["target_rows"] != 0
+        or manifest["query_rows"] != 0
+        or manifest["raw_iq_retained"] is not False
+        or manifest["clean_iq_retained"] is not False
+        or manifest["source_row_features_retained"] is not False
+        or manifest["source_replay_access"] is not False
+        or manifest["source_archive_path_retained"] is not False
+        or manifest["payload_contains_source_rows"] is not False
+        or manifest["payload_contains_class_handles"] is not False
+        or manifest["payload_contains_receiver_handles"] is not False
+        or manifest["payload_contains_receiver_names"] is not False
+        or manifest["payload_contains_physical_ids"] is not False
+        or manifest["d102_rejected_bundle_reused"] is not False
+    ):
+        raise D105Phase1BundleError("TX diagnostic lifecycle/identity closure drift")
+    for field in (
+        "checkpoint_sha256",
+        "runtime_sha256",
+        "method_lock_sha256",
+        "d105_candidate_method_lock_sha256",
+        "d105_candidate_runtime_manifest_sha256",
+        "d102_revocation_manifest_sha256",
+        "d102_revocation_signature_sha256",
+        "strict_tap_receipt_sha256",
+        "source_held_gate_receipt_sha256",
+    ):
+        _require_sha256(manifest[field], field)
+
+    gate_bytes = paths[HELD_GATE_NAME].read_bytes()
+    try:
+        gate = json.loads(gate_bytes.decode("utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError) as error:
+        raise D105Phase1BundleError("TX diagnostic source-held gate JSON drift") from error
+    if type(gate) is not dict or gate_bytes != _canonical_bytes(gate):
+        raise D105Phase1BundleError(
+            "TX diagnostic source-held gate canonical encoding drift"
+        )
+    summary = _validate_derived_source_held_gate(
+        gate,
+        strict_tap_receipt_sha256=str(manifest["strict_tap_receipt_sha256"]),
+        checkpoint_sha256=str(manifest["checkpoint_sha256"]),
+        runtime_sha256=str(manifest["runtime_sha256"]),
+        method_lock_sha256=str(manifest["method_lock_sha256"]),
+    )
+    expected_missing = list(
+        dict.fromkeys(
+            [
+                *_gate_missing_from_summary(gate),
+                "independent_review_p0_0_p1_0",
+                "independent_phase2_authority_seal",
+            ]
+        )
+    )
+    if (
+        gate["tx_probe_gate_pass"] is not False
+        or "tx_probe_max_balanced_accuracy_at_most_0_25" not in expected_missing
+        or _sha256_bytes(gate_bytes)
+        != manifest["source_held_gate_receipt_sha256"]
+        or summary != manifest["source_held_gate_summary"]
+        or expected_missing != manifest["formal_phase2_eligibility_missing"]
+    ):
+        raise D105Phase1BundleError("TX diagnostic source-held gate binding drift")
+
+    revocation = _load_d102_revocation(
+        paths[D102_REVOCATION_MANIFEST_NAME],
+        paths[D102_REVOCATION_SIGNATURE_NAME],
+    )
+    if (
+        revocation["manifest_sha256"]
+        != manifest["d102_revocation_manifest_sha256"]
+        or revocation["signature_sha256"]
+        != manifest["d102_revocation_signature_sha256"]
+    ):
+        raise D105Phase1BundleError("TX diagnostic D102 revocation binding drift")
+    _reject_revoked_identity(
+        revocation,
+        bundle_manifest_sha256=manifest_sha,
+        checkpoint_sha256=str(manifest["checkpoint_sha256"]),
+        method_lock_sha256=str(manifest["method_lock_sha256"]),
+        runtime_sha256=str(manifest["runtime_sha256"]),
+    )
+    return D105Phase1DiagnosticReceipt(
+        manifest=manifest,
+        source_held_gate=gate,
+        manifest_sha256=manifest_sha,
+    )
+
+
 def _read_bundle_members(root: Path) -> tuple[dict[str, Any], bytes, str]:
     if not root.is_dir() or root.is_symlink():
         raise D105Phase1BundleError("asset root must be a normal directory")
+    diagnostic_manifest = root / TX_PROBE_DIAGNOSTIC_MANIFEST_NAME
+    if diagnostic_manifest.exists() or diagnostic_manifest.is_symlink():
+        raise D105Phase1BundleError(
+            "TX diagnostic receipt is non-deployable; use its dedicated loader"
+        )
     manifest_path = root / MANIFEST_NAME
     wire_path = root / BUNDLE_WIRE_NAME
     seal_path = root / SEAL_NAME
@@ -4602,6 +4971,12 @@ def seal_d105_phase1_component(
 ) -> dict[str, Any]:
     """Copy a passing component into a signed, one-time formal Phase2 asset."""
 
+    component_root = Path(component_dir)
+    diagnostic_manifest = component_root / TX_PROBE_DIAGNOSTIC_MANIFEST_NAME
+    if diagnostic_manifest.exists() or diagnostic_manifest.is_symlink():
+        raise D105Phase1BundleError(
+            "TX diagnostic receipt cannot enter the formal seal path"
+        )
     component = load_d105_phase1_asset(
         component_dir, require_formal_phase2_eligible=False
     )
@@ -4770,6 +5145,7 @@ __all__ = [
     "CANDIDATE_ID",
     "COMPONENT_MANIFEST_NAME",
     "COMPONENT_STATUS",
+    "D105Phase1DiagnosticReceipt",
     "D105Phase1Asset",
     "D105Phase1BundleError",
     "DIAGNOSTIC_STATUS",
@@ -4785,6 +5161,10 @@ __all__ = [
     "SOURCE_HELD_TRUTH_OPEN_SCHEMA",
     "STRICT_TAP_MEMBERS",
     "STRICT_TAP_SCHEMA",
+    "TX_PROBE_DIAGNOSTIC_KIND",
+    "TX_PROBE_DIAGNOSTIC_MANIFEST_NAME",
+    "TX_PROBE_DIAGNOSTIC_SCHEMA",
+    "TX_PROBE_DIAGNOSTIC_SEAL_NAME",
     "D105_STRICT_TAP_FORWARD_BATCH_CAPACITY",
     "D105_STRICT_TAP_FORWARD_BATCH_POLICY",
     "StrictTapRows",
@@ -4796,6 +5176,7 @@ __all__ = [
     "execute_d105_source_held_predictions",
     "export_d105_phase1_strict_tap",
     "load_d105_phase1_asset",
+    "load_d105_phase1_diagnostic_receipt",
     "load_d105_candidate_method_lock",
     "load_d105_candidate_runtime_manifest",
     "load_d105_strict_tap_rows",
