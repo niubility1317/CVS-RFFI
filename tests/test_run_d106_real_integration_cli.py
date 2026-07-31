@@ -104,7 +104,9 @@ def test_repository_runtime_manifest_binds_current_d106_implementation() -> None
     assert payload == runner._canonical_bytes(runtime) + b"\n"
     assert runtime["candidate_id"] == runner.CANDIDATE_ID
     assert runtime["protocol_schema"] == runner.PROTOCOL_SCHEMA
-    assert runtime["method_lock_sha256"] == _sha(METHOD_LOCK_PATH.read_bytes())
+    assert runtime["method_lock_sha256"] == _sha(
+        runner._canonical_bytes(method_lock) + b"\n"
+    )
     assert runtime["phase1_tap_code_sha256"] == _sha(
         runner.PHASE1_TAP_CODE_PATH.read_bytes()
     )

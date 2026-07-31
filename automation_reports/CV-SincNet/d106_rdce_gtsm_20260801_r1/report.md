@@ -315,6 +315,6 @@ D104正式远端split root、588条`L_s`和D106 disjoint receipt均不存在；�
 
 RI-09独立代码复审：`P0=0/P1=0/P2=0 / IMPLEMENTATION GO`。Windows反斜杠先规范为portable组件；绝对路径、UNC、盘符、colon、空组件、`.`和`..`均在文件访问前拒绝，随后仍执行root escape、symlink、正规文件和archive SHA边界。
 
-RI-10独立代码复审：`P0=0/P1=0/P2=0 / IMPLEMENTATION GO`。新D106 runtime为单向绑定，无自哈希循环；历史D102/D105 runtime因schema、candidate、字段和内容绑定不符而拒绝。为消除Markdown在Windows/Git archive之间的CRLF/LF差异，正式方法锁另封为canonical JSON`e7a1982b…`；正式fixture只能指向SHA为`336d970a…`的新D106 runtime。
+RI-10独立代码复审：`P0=0/P1=0/P2=0 / IMPLEMENTATION GO`。新D106 runtime为单向绑定，无自哈希循环；历史D102/D105 runtime因schema、candidate、字段和内容绑定不符而拒绝。为消除Markdown在Windows/Git archive之间的CRLF/LF差异，正式方法锁另封为canonical JSON`e7a1982b…`，两份JSON由`.gitattributes`强制`eol=lf`；正式fixture只能指向SHA为`336d970a…`的新D106 runtime。
 
 已生成本地ID-only disjoint receipt：`artifacts/d106_train_held_disjoint_receipt.json`，SHA256=`ee7005fcc99d703dac2f3e529e39426587ffa8967d19c15cf848c98f5295d961`，`train_held_intersection_count=0`、`tx_labels_read=false`、`formal_query_access=false`。
