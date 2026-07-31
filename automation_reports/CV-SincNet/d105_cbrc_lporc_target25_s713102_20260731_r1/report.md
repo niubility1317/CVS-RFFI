@@ -1,6 +1,6 @@
 # D105-CBRC-MB4+LPO-RC-qKNN单seed Target25实验报告
 
-状态：`PHASE1_R5_SYSTEMIC_TECHNICAL_FAILURE / RETROSPECTIVE_COMPLETE / D105-FTU1_FROZEN / TARGET25_NOT_STARTED / NO_D105_PERFORMANCE_RESULT`
+状态：`PHASE1_R5_SYSTEMIC_TECHNICAL_FAILURE / D105-FTU1_COMMITTED / ARCHIVE_SMOKE_PENDING / TARGET25_NOT_STARTED / NO_D105_PERFORMANCE_RESULT`
 
 ## 1.实验标识
 
@@ -176,3 +176,5 @@ NumPy/Torch边界已在Phase1输入、Target25查询输入和feature tap输出�
 R5随后通过全部远端prelaunch门并唯一detach一次，但首个`tap-cache`以exit=2结束，完整日志仅报告`strict tap must expose byte-bound z_id/pre_relu and z_dom`。所有Phase1正式artifact仍为0，无Target、Target25、authority或seal操作。R5永久关闭为`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`，handoff SHA256=`5f390e0220d5168948a7a1cf4a2e964dfc3961cfdcdcb667a9db99a77fcd88ab`。第四次release前必须先完成三轮正式回顾和新根因闭包。
 
 R3/R4/R5三轮正式回顾已完成。真实checkpoint复现证明Phase1接入的GRB旧tap只前向`id_backbone`，`z_id/pre_relu`有效但`z_dom=None`；D105专用双backbone tap在同一模型、同一IQ上正确输出`z_dom=[2,160]`。下一技术候选`D105-FTU1`只统一正式特征出口并补齐入口级真实checkpoint回归，不改变CBRC、LPO-RC、qKNN、Target25矩阵、seed或性能门。Target25继续保持未启动，只有新Phase1资产链完整通过后才可进入。
+
+`D105-FTU1`现已在提交`a0bdbba6`落地：真实checkpoint 195 tensors下`z_id/pre_relu/z_dom=[2,160]`，fresh进程调用前后旧GRB模块均未加载，10文件223/223回归通过，runtime/method=`873879aa…9214`/`7d336627…4848`。R10独立审查为`LOCAL_CODE_REVIEW_GO / P0=0 / P1=0 / P2=2`。这只是Phase1本地技术闭环；精确archive smoke、新run预登记、Phase1 source-held资格和formal seal仍未完成，Target25保持未启动。

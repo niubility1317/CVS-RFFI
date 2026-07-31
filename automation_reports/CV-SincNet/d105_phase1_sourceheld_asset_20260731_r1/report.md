@@ -1,6 +1,6 @@
 # D105 Phase1 source-only压缩知识与source-held门实验报告
 
-状态：`PHASE1_R5_STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / RETROSPECTIVE_COMPLETE / D105-FTU1_FROZEN / NO_PERFORMANCE_RESULT`
+状态：`PHASE1_R5_STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / D105-FTU1_COMMITTED / R10_LOCAL_CODE_REVIEW_GO / ARCHIVE_SMOKE_PENDING / NO_PERFORMANCE_RESULT`
 
 ## 1.实验标识与目标
 
@@ -233,5 +233,22 @@ run-specific脚本按`tap-cache→predict-source-held→open-truth→score-sourc
 下一候选冻结为`D105-FTU1`：统一Phase1与D105正式双backbone tap，保持`z_id/pre_relu`字节绑定和`dom_backbone.feat_imp→dom_enhancer`域特征来源；增加真实checkpoint入口级Phase1 strict-tap/export回归和字段级fail-closed诊断。不得删除`z_dom`、伪造域特征、只改报错后release、远端修补R5或跳过Phase1启动Target25。
 
 协议复核保持：LEO弱观测唯一、Phase2无clean/source、query零fit/update且逐样本全注册类决策、无role/quota/global reassignment、无类ID专属规则。后续Target25必须同时报告同row before/after旧类、`seen_new_acc`、`H_old_new`、逐旧类准确率、floor和forgetting；D105当前仍无任何性能结果。第四次release需等`D105-FTU1`实现、真实checkpoint本地闭环、独立`P0=0/P1=0`审查、Git提交和新run预登记全部完成。
+
+## 11.D105-FTU1本地实现闭环
+
+`D105-FTU1`已在提交`a0bdbba6`实现并提交。Phase1 `_strict_forward`现在唯一调用D105专用同IQ双backbone tap，`z_dom`严格来自`dom_backbone.feat_imp→dom_enhancer`；不存在GRB旧tap运行时导入或identity-only fallback。正式export将hook标志、`z_id/z_dom/pre_relu`的dtype、形状、有限性、ReLU绑定和execution path拆为字段级fail-closed门。
+
+|本地门|结果|
+|---|---|
+|checkpoint形状正向入口/export|通过；旧GRB helper被置为必失败但调用数仍为0；一行IQ strict-tap archive与直接tap一致|
+|字段破坏负测|7/7在创建输出目录前拒绝|
+|SHA钉定真实checkpoint|195 tensors；`z_id/pre_relu/z_dom=[2,160]`；ReLU parity、finite和hook exact均通过|
+|fresh进程旧GRB导入|调用前=false；调用后=false|
+|统一回归|10文件223/223通过|
+|54文件runtime|54/54哈希与内存编译通过|
+|candidate runtime/method|`873879aad707fd2407b7645de45daa68fec1d3537feaf9fd57fe98b3ab059214`/`7d33662750b160fce82217dace9e1933aa8e43ea2a0df19f59e28adcf8bb4848`|
+|R10独立审查|`LOCAL_CODE_REVIEW_GO / P0=0 / P1=0 / P2=2`；收据SHA256=`31ebec822064b4db7a3e5f4d419ee0ce8c4a493bb454ef1c0629c265164b8831`|
+
+本地实现闭环不授权N607。下一门是从提交`a0bdbba6`生成精确Git archive，并在其解包副本中复跑54文件canonical loader/编译、帮助面、SHA钉定真实checkpoint Phase1 strict-forward/export no-truth smoke及旧路径不可达检查。archive smoke和新run预登记完成前不得同步或启动。
 
 R4的两个P2为：`model.py`仍产生`torch.cuda.amp.autocast`弃用警告；旧PyTorch缺少`safe_globals`时保留仅对精确SHA绑定checkpoint开放的兼容反序列化分支。两者不改变当前本地结果；唯一N607 runner必须在预检中记录PyTorch版本和实际checkpoint加载策略。
