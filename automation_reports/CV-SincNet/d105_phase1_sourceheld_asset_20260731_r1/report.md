@@ -275,3 +275,19 @@ R4的两个P2为：`model.py`仍产生`torch.cuda.amp.autocast`弃用警告；�
 |fresh-run retry|`NO`；任何技术失败永久关闭R6并使用新run ID|
 
 R6必须由一个专用terra-max实验子agent作为唯一launch owner执行。它重新完成direct N607 preflight、即时资源盘点、run root不存在、archive/54文件/pyc/checkpoint/launcher门和实际strict-forward预启动验证后，才允许唯一detach一次。R6不得读取或复用R3、R4、R5的source、input、PID、日志或output；不得远端修补、调参、因性能停止、访问Target或启动Target25。Phase1 stage1闭合后仍须回收完整component/score/gate，由独立审查确认source-held门，再由离线authority绑定N607 nonce ledger identity、run ID、commit和component签名，之后才可能封存formal asset。
+
+## 13.R6 N607终态：reference dual parity技术失败
+
+R6已由唯一runner启动一次后关闭为\`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT\`。run ID=\`d105_phase1_sourceheld_a0bdbba6_20260731_r6\`，主PID=\`2817802\`，首个\`tap-cache\`子PID=\`2817808\`，\`pipeline_stage1.exit=2\`。主PID的CWD、cmdline和\`CUDA_VISIBLE_DEVICES=0\`均绑定R6 run root与冻结launcher；没有第二次detach、重试、远端修补、调参、Target访问或Target25启动。
+
+远端预启动全部通过：direct普通账户preflight、run root不存在、GPU0空闲、4个input SHA/大小、4763成员archive安全、54/54canonical runtime、source外pyc54/54、cache/salt/checkpoint/reference SHA、R2生产checkpoint strict-forward、9/9帮助面以及launcher LF/\`bash -n\`。R2终检记录195 tensors、torch=\`2.1.0+cu121\`、\`legacy_pickle_exact_frozen_sha_only\`、\`z_id/pre_relu/z_dom=[2,160]\`、float32、finite、ReLU绑定、\`eager_forward_hook\`和旧GRB未导入。
+
+预检中旧\`verify_loader_and_real_checkpoint.py\`曾把1行source-only技术导出送入正式聚合读取，得到预期的\`strict tap feature rows drift\`；它不在冻结\`source/\`、R6 input或launcher/CLI入口，且已被R2终检替代。实际archive定义\`DOMAIN_DIM=32\`，\`StrictTapRows\`的最小聚合行数为\`DOMAIN_DIM+2=34\`；因此R2正确把1行拒绝记录为防误晋级边界，而不是运行时失败。
+
+唯一正式启动写出8400行strict tap后，在reference dual byte-parity guard停止。日志指纹为\`strict D105 tap/reference dual archive parity failed\`。三项metadata完全一致，但\`z_id\`差=\`1.9073486328125e-05\`、\`z_dom\`差=\`0.0019412636756896973\`，均超过固定\`1e-5\`阈值。reference SHA=\`dd2a2b0c8ab1a1d8edbeed81e78ffb79c253240998a9ac2404b75699f4ca68d0\`，R6 strict-tap SHA=\`68c08c85b2fdd7429444f9c9e92859f5e412076165d2e36d4fc634702ae1f5c6\`。这是确定性入口技术故障，不是性能或数据协议结论。
+
+|候选/run|机制|strict tap|prediction|truth-open|score|gate|component|formal asset|性能结论|
+|---|---|---:|---:|---:|---:|---:|---:|---:|---|
+|\`D105-FTU1/R6\`|Phase1双backbone strict tap＋reference dual parity guard|\`5\`文件、8400行|\`0\`|\`0\`|\`0\`|\`0\`|\`0\`|\`0\`|\`NO_PERFORMANCE_RESULT\`|
+
+主/子进程均已自然退出，GPU0终态0%/1MiB且无compute process；本地SSH清理完成。完整回收交接见\`retrieved_d105_phase1_sourceheld_a0bdbba6_20260731_r6_STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE_NO_PERFORMANCE_RESULT/handoff.md\`，主日志SHA256=\`e11c6054150e9cf008890dfd61cca707b2b3afc16d356b8b288f01e01f0c1789\`。R6不得重试；下一轮必须先在本地闭合reference dual archive与当前生产tap的数值parity来源，重新独立审查、提交并使用新run ID。
