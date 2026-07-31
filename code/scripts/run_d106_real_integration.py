@@ -30,6 +30,8 @@ from cvsrffi.stage2_d106_phase1_tap import (  # noqa: E402
 import cvsrffi.stage2_d106_phase1_tap as phase1_tap_module  # noqa: E402
 from cvsrffi.stage2_d106_rdce_asset import (  # noqa: E402
     D106RDCEBuildLock,
+    RDCE_RANK,
+    Z_DIM,
     build_d106_rdce_asset,
     load_d106_rdce_asset,
     save_d106_rdce_asset,
@@ -250,6 +252,13 @@ def _write_new(path: Path, value: bytes) -> None:
         os.fsync(handle.fileno())
 
 
+def _validated_roundtrip_rdce_rank(asset: Any) -> int:
+    basis = getattr(asset, "basis_codes_qint8", None)
+    if basis is None or getattr(basis, "shape", None) != (RDCE_RANK, Z_DIM):
+        raise D106RealIntegrationError("RDCE wire roundtrip rank drift")
+    return RDCE_RANK
+
+
 def run_real_integration(
     *,
     fixture_path: str | Path,
@@ -320,6 +329,7 @@ def run_real_integration(
         or reloaded.binding_sha256 != asset.binding_sha256
     ):
         raise D106RealIntegrationError("RDCE wire roundtrip binding drift")
+    rdce_rank = _validated_roundtrip_rdce_rank(reloaded)
 
     result = {
         "schema": RESULT_SCHEMA,
@@ -344,7 +354,7 @@ def run_real_integration(
         "rdce_asset_receipt_sha256": asset.asset_receipt_sha256,
         "rdce_binding_sha256": asset.binding_sha256,
         "selected_row_count": EXPECTED_COUNTS["L_s"],
-        "rdce_rank": asset.rank,
+        "rdce_rank": rdce_rank,
         "device": str(device),
         "source_held_truth_access": False,
         "formal_query_access": False,

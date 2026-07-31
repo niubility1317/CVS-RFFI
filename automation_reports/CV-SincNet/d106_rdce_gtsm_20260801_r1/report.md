@@ -1,6 +1,6 @@
 # D106-RDCE/GTSM-r3研发与实验报告
 
-状态：`DESIGN_FROZEN / DATA_LOCAL_CODE_G0_GO / DA_LOCAL_CODE_G0_GO / REAL_INTEGRATION_ENTRY_LOCAL_GO / CANONICAL_METHOD_RUNTIME_GIT_PENDING / REAL_INTEGRATION_NOT_EXECUTED / N607_READ_ONLY_DISCOVERY_ONLY / SOURCE_HELD_NOT_OPENED / TARGET25_NO_GO / NO_TARGET_PERFORMANCE_RESULT`
+状态：`DESIGN_FROZEN / DATA_LOCAL_CODE_G0_GO / DA_LOCAL_CODE_G0_GO / HEAD_LOCAL_IMPLEMENTATION_GO / R6_STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT / R7_LOCAL_FIX_GO / SOURCE_HELD_NOT_OPENED / TARGET25_NO_GO / NO_TARGET_PERFORMANCE_RESULT`
 
 ## 1.实验身份
 
@@ -301,6 +301,8 @@ D104正式远端split root、588条`L_s`和D106 disjoint receipt均不存在；�
 
 ## 16.真实fixture入口追踪表
 
+本节表格和段末`blocked`状态是首次真实运行前的历史预登记快照；当前运行事实由§19—§22取代，不得把本节旧状态解释为r6未执行。
+
 |ID|来源|要求|目标文件|状态|验证|备注|
 |---|---|---|---|---|---|---|
 |`RI-01`|设计冻结§数据入口|严格fixture字段、输入正规文件与外部SHA绑定|`code/scripts/run_d106_real_integration.py`、测试|`verified`|extra query、输入篡改、非导入construction code负测|真实fixture执行仍`blocked`|
@@ -315,7 +317,7 @@ D104正式远端split root、588条`L_s`和D106 disjoint receipt均不存在；�
 |`RI-10`|D106 runtime权威|不得借用历史D102/D105 runtime；新manifest须绑定设计、DATA、DA、入口、checkpoint、split和上游池，入口须解析canonical语义|`configs/d106_candidate_runtime_manifest_20260801.json`、真实集成入口及测试|`verified`|repo hash正测、runtime query漂移负测、独立复审`P0=0/P1=0/P2=0`|不引入方法参数或性能门|
 |`RI-11`|真实checkpoint重建|release archive必须携带并由runtime绑定`model.py`与`model_dual_cvsincnet.py`，否则N607 exact model factory不可达|两模型文件、D106 runtime、入口及测试|`verified_local`|repo正向SHA、两字段参数化SHA漂移负测、独立依赖闭包复审|正式archive仍须核对entry/hash；不得退回项目根目录未封存模型|
 
-独立审查：`P0=0/P1=0/P2=2 / LOCAL REAL-INTEGRATION ENTRY GO`。P2为`release_commit`需在正式交接时由fixture SHA、Git commit和同步文件SHA外部闭合，以及当前核心链专项测试使用替身；二者均不冒充真实N607证据。真实fixture、真实checkpoint forward、正式asset/wire/receipt和runner交接仍为`blocked`。
+首次交接前独立审查：`P0=0/P1=0/P2=2 / LOCAL REAL-INTEGRATION ENTRY GO`。P2为`release_commit`需在正式交接时由fixture SHA、Git commit和同步文件SHA外部闭合，以及当时核心链专项测试使用替身；二者均不冒充真实N607证据。该时点真实fixture、真实checkpoint forward、正式asset/wire/receipt和runner交接为`blocked`；后续r4—r6运行事实见§19—§22。
 
 RI-09独立代码复审：`P0=0/P1=0/P2=0 / IMPLEMENTATION GO`。Windows反斜杠先规范为portable组件；绝对路径、UNC、盘符、colon、空组件、`.`和`..`均在文件访问前拒绝，随后仍执行root escape、symlink、正规文件和archive SHA边界。
 
@@ -325,7 +327,7 @@ RI-11独立窄审查：实现机制`P0=0/P1=0/P2=0`。入口从自身`CODE_ROOT`
 
 已生成本地ID-only disjoint receipt：`artifacts/d106_train_held_disjoint_receipt.json`，SHA256=`ee7005fcc99d703dac2f3e529e39426587ffa8967d19c15cf848c98f5295d961`，`train_held_intersection_count=0`、`tx_labels_read=false`、`formal_query_access=false`。
 
-## 17.真实集成release预登记
+## 17.真实集成release预登记（历史快照）
 
 release source commit为`deefd57c4185a5343f87772be78b5038c37e6217`。本地专项8/8、D106主链101通过1跳过、依赖51/51，RI-11复核为`P0=0/P1=0/P2=0 / LOCAL IMPLEMENTATION GO`。N607 run ID冻结为`d106_real_integration_deefd57c_20260801_r4`，唯一启动owner为专属Terra Max runner，不授权自动retry。
 
@@ -336,7 +338,7 @@ release source commit为`deefd57c4185a5343f87772be78b5038c37e6217`。本地专�
 |`artifacts/d106_real_integration_fixture_deefd57c.json`|`74b2367f82a682a41f46447b089ec85bb21433b39ec8205167356909e3cd0ff1`|canonical无换行；字段集合与release commit已本地复核|
 |`artifacts/d106_train_held_disjoint_receipt.json`|`ee7005fcc99d703dac2f3e529e39426587ffa8967d19c15cf848c98f5295d961`|ID-only且train/held交集为0|
 
-详细路径、启动命令、GPU、健康门、预期文件和SSH清理要求见`d106_real_integration_runner_handoff_deefd57c.md`。当前状态仍为`LOCAL_RELEASE_READY / NOT_LANDED`，没有真实checkpoint forward、N607 asset或性能结果。
+详细路径、启动命令、GPU、健康门、预期文件和SSH清理要求见`d106_real_integration_runner_handoff_deefd57c.md`。在该预登记时点，状态为`LOCAL_RELEASE_READY / NOT_LANDED`，尚无真实checkpoint forward、N607 asset或性能结果；当前状态由§19—§22取代。
 
 ## 18.RCMR-2V分类头冻结
 
@@ -360,7 +362,9 @@ r5的绝对路径修复经独立复审`P0=0/P1=0/P2=0`并以`0dc2484b`发布。�
 
 ### 20.1 r6本地release
 
-依赖闭包修复提交为`44e33eab`，独立复审`P0=0/P1=0/P2=0`。新source archive SHA为`91c5a30b…`，包含并逐entry验证`baseline_origin_sat_view.py=fa7221ae…`、`model.py=afc6e626…`和`model_dual_cvsincnet.py=11b56f2a…`；直接从zip执行三模型import smoke通过。r6 fixture SHA为`ee905614…`，runtime SHA为`0e8bc733…`。run ID冻结为`d106_real_integration_44e33eab_20260801_r6`，当前`NOT_LANDED`。
+依赖闭包修复提交为`44e33eab`，独立复审`P0=0/P1=0/P2=0`。新source archive SHA为`91c5a30b…`，包含并逐entry验证`baseline_origin_sat_view.py=fa7221ae…`、`model.py=afc6e626…`和`model_dual_cvsincnet.py=11b56f2a…`；直接从zip执行三模型import smoke通过。r6 fixture SHA为`ee905614…`，runtime SHA为`0e8bc733…`。run ID冻结为`d106_real_integration_44e33eab_20260801_r6`。
+
+r6的direct preflight、落地、7个source entry、2个D104 entry、199个Python文件compile、checkpoint/source-pool/salt SHA及三模型remote import smoke全部通过。唯一launch PID`3051253`完成selected-IQ、strict-tap和RDCE wire后，在结果封装读取不存在的`asset.rank`时退出；异常指纹为`3bcc4e69…`。正式result和`output/COMPLETED.json`均不存在，未访问query/held/Target且未计算性能。14份小型证据已回收，partial三大文件仅远端保全；GPU和SSH均已释放。r6永久封存为`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`，不得复用。
 
 ## 21.RCMR-2V本地实现闭环
 
@@ -375,3 +379,9 @@ Terra Max子agent在独立文件面完成`stage2_d106_rcmr_2v_qknn.py`、canonic
 strict state/wire逐行拒绝plus或signed全零INT8码；state/context数组由immutable bytes承载，不能重新开启写权限；query热路径只执行O(1)身份和receipt绑定，不重哈profile或重算support-support距离。\(N=260\)时数值state为85,020B，设计固定二进制payload为86,060B，prepare确定性数组峰值为2,285,920B；64-byte最大token反证下实际canonical wire为88,737B，低于90,000B hard cap。实际wire framing与设计payload分栏报告，JSON/Python对象、allocator和RSS明确标记未测。
 
 G0接口只接收opaque query ID、候选/旧头argmax和formal tap receipt，没有truth、role、score、metric或参数扫描入口。当前只完成合成拒绝测试，真实588条train-only特征上的`ARGMAX_CHANGED`仍为G1前硬门；未产生held、Target或性能结论。
+
+## 22.r7字段合同修复
+
+r6证明正式`D106RDCEAsset`没有`.rank`字段；秩的权威为资产模块导出的`RDCE_RANK=3`，且serialized/reloaded资产的`basis_codes_qint8.shape`必须为`(RDCE_RANK,Z_DIM)`。r7修复在结果发布前验证真实roundtrip资产形状，并从权威常量写入`rdce_rank`；测试替身故意不提供`.rank`，避免再次以虚构属性掩盖正式合同。
+
+该修复仅更正运行时收据发布接口，不改变RDCE数学、Phase1 tap、DATA选择、protocol权限或方法锁。专项16/16通过，D106闭包为126通过1跳过，独立终审`P0=0/P1=0/P2=0 / GO`。Git提交及新的source archive、fixture、handoff和run ID闭合后，才可交给同一唯一runner；r6不能retry。

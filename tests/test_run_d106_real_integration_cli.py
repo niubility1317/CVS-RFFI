@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 from types import SimpleNamespace
 
+import numpy as np
 import pytest
 
 SCRIPT_PATH = (
@@ -314,7 +315,6 @@ def test_real_integration_orchestrates_exact_no_query_chain(
         lineage=SimpleNamespace(),
         asset_receipt_sha256="6" * 64,
         binding_sha256="7" * 64,
-        rank=3,
     )
 
     def fake_extract(**kwargs: object) -> dict[str, str]:
@@ -349,6 +349,9 @@ def test_real_integration_orchestrates_exact_no_query_chain(
         return SimpleNamespace(
             asset_receipt_sha256=asset.asset_receipt_sha256,
             binding_sha256=asset.binding_sha256,
+            basis_codes_qint8=np.zeros(
+                (runner.RDCE_RANK, runner.Z_DIM), dtype=np.int8
+            ),
         )
 
     monkeypatch.setattr(runner, "extract_d106_ls_received_iq", fake_extract)
@@ -376,6 +379,7 @@ def test_real_integration_orchestrates_exact_no_query_chain(
     assert result["formal_query_access"] is False
     assert result["target_access"] is False
     assert result["performance_metrics_computed"] is False
+    assert result["rdce_rank"] == runner.RDCE_RANK == 3
     assert set(path.name for path in output.iterdir()) == {
         "selected_ls_iq",
         "strict_tap",
@@ -400,6 +404,31 @@ def test_real_integration_orchestrates_exact_no_query_chain(
             fixture_path=fixture,
             output_dir=output,
             device="cpu",
+        )
+
+
+def test_roundtrip_rank_gate_uses_wire_shape_not_dynamic_rank_attribute() -> None:
+    exact = SimpleNamespace(
+        basis_codes_qint8=np.zeros(
+            (runner.RDCE_RANK, runner.Z_DIM), dtype=np.int8
+        )
+    )
+    assert not hasattr(exact, "rank")
+    assert runner._validated_roundtrip_rdce_rank(exact) == runner.RDCE_RANK
+
+    with pytest.raises(
+        runner.D106RealIntegrationError, match="roundtrip rank drift"
+    ):
+        runner._validated_roundtrip_rdce_rank(SimpleNamespace())
+    with pytest.raises(
+        runner.D106RealIntegrationError, match="roundtrip rank drift"
+    ):
+        runner._validated_roundtrip_rdce_rank(
+            SimpleNamespace(
+                basis_codes_qint8=np.zeros(
+                    (runner.RDCE_RANK - 1, runner.Z_DIM), dtype=np.int8
+                )
+            )
         )
 
 

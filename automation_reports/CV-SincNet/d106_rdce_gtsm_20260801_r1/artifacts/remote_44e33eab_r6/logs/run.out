@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/home/szu2070436088/2510044040/CV-SincNet/runs/d106_real_integration_44e33eab_20260801_r6/source/code/scripts/run_d106_real_integration.py", line 390, in <module>
+    raise SystemExit(main())
+  File "/home/szu2070436088/2510044040/CV-SincNet/runs/d106_real_integration_44e33eab_20260801_r6/source/code/scripts/run_d106_real_integration.py", line 380, in main
+    result = run_real_integration(
+  File "/home/szu2070436088/2510044040/CV-SincNet/runs/d106_real_integration_44e33eab_20260801_r6/source/code/scripts/run_d106_real_integration.py", line 347, in run_real_integration
+    "rdce_rank": asset.rank,
+AttributeError: 'D106RDCEAsset' object has no attribute 'rank'
