@@ -3,7 +3,7 @@
 ## 1.状态
 
 - 设计基线commit：`776dc6a4`
-- 当前阶段：`R5_BYTE_PARITY_REPAIR_LOCAL_VERIFIED / INDEPENDENT_REVIEW_PENDING`
+- 当前阶段：`R5_LOCAL_RELEASE_GO / P0=0 / P1=0 / P2=2 / PHASE1_R4_PREREG_PENDING`
 - N607：R3只完成受控落地，预启动canonical loader发现跨平台字节不一致；未detach，终态`LANDED_PRELAUNCH_HASH_MISMATCH / NO_PERFORMANCE_RESULT`
 - 性能证据：无
 - D104：保持`PAUSED_BEFORE_LANDING / NO_PERFORMANCE_RESULT`
@@ -53,6 +53,8 @@ DA审查GO只证明本地实现G0，不证明外部Phase1 validator签名权威�
 R4的211项本地结论在N607发布前被跨平台字节P0作废：冻结manifest基于Windows工作树CRLF，Git archive部署为LF，导致24/54项远端SHA不一致。pipeline pid/log/exit始终不存在，未执行py_compile、checkpoint加载或任何性能流程。
 
 当前R5修复把`.py`/`.sh`固定为LF，并要求全部54个runtime文件无CRLF；工作树与当前Git blob 54/54项SHA一致。10个指定D105测试文件共`212 passed，0 failed`。repaired runtime SHA256=`dc315ffe2860a9d76493ba5284aff6dfb9c248330613717a6614de6997da1cfc`，method lock SHA256=`ac796d83e92ea1e8b5f0efa6e8a303f9eb989ba1f876219784cda1ac7363a030`。
+
+修复提交`46a65b3af2621d23bcc0a34631f45c8be17af4dd`生成的精确Git archive为4747项、242800640B、SHA256=`d313243c79eab306f988abadf67c2e207d380dba633f39a04e2cc63ffae7ed7a`。单根/成员类型检查通过；解包副本的canonical loader、54文件pyc和9个帮助入口通过，真实checkpoint无truth smoke SHA256=`a915eb66c4df926e6f738a4de636026fa29cb9bf3968c5fb6a15007ffc47ce84`。
 
 ## 5.真实checkpoint派生特征无truth smoke
 

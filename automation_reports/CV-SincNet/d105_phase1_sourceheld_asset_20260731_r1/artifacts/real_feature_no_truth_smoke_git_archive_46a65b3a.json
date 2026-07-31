@@ -1,0 +1,39 @@
+{
+  "active_k": 1,
+  "checkpoint_bytes_verified": true,
+  "checkpoint_sha256": "2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98",
+  "completed_meta_steps": 400,
+  "da_status": "ACTIVE",
+  "dual_archive_sha256": "dd2a2b0c8ab1a1d8edbeed81e78ffb79c253240998a9ac2404b75699f4ca68d0",
+  "elapsed_seconds": 39.39000000001397,
+  "formal_phase2_evidence": false,
+  "held_receiver": "1-1",
+  "k1_m_head_equals_m0_exact": true,
+  "k1_m_joint_equals_m_da_exact": true,
+  "logit_sha256_by_arm": {
+    "M0": "a7949b78d563f5a260667f305c24e0c845f276fe9ec94c7b785f458244ae577a",
+    "M_DA": "1499f969ac4e228d75fdf5d4b59173cc42b306f775f6218c8c1773072c8bf5cc",
+    "M_HEAD": "a7949b78d563f5a260667f305c24e0c845f276fe9ec94c7b785f458244ae577a",
+    "M_JOINT": "1499f969ac4e228d75fdf5d4b59173cc42b306f775f6218c8c1773072c8bf5cc"
+  },
+  "n607_run": false,
+  "partition_counts": {
+    "L_s": 588,
+    "U_s": 5292,
+    "source_val": 2520
+  },
+  "performance_computed": false,
+  "query_count": 354,
+  "query_labels_passed_to_predictor": false,
+  "query_rows_used_for_fit": 0,
+  "query_state_updates": 0,
+  "query_truth_read": false,
+  "registered_class_count": 6,
+  "schema": "cvs.phase2.d105.four_arm.real_feature_smoke.v1",
+  "state_receipt_sha256": "7500e683f77eb4dd1f3d47c5614f54d8dd045a9bbcafd8fa76faf2c94d3b5921",
+  "state_receipt_unchanged": true,
+  "status": "DEVELOPMENT_ONLY_REAL_CHECKPOINT_DERIVED_NO_TRUTH_SMOKE_PASS",
+  "support_count": 6,
+  "tap_archive_sha256": "c6807d9156ab3ac8f7005707a3bd7eec342d2e4f0a43d4b96d5ea8a9574ec4c1",
+  "target_access": false
+}

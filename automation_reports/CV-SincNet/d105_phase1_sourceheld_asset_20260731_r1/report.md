@@ -1,6 +1,6 @@
 # D105 Phase1 source-only压缩知识与source-held门实验报告
 
-状态：`PHASE1_R3_LANDED_PRELAUNCH_HASH_MISMATCH / R5_BYTE_PARITY_REPAIR_LOCAL_VERIFIED / NO_PERFORMANCE_RESULT`
+状态：`R5_LOCAL_RELEASE_GO / P0=0 / P1=0 / P2=2 / PHASE1_R4_PREREG_PENDING / NO_PERFORMANCE_RESULT`
 
 ## 1.实验标识与目标
 
@@ -117,26 +117,30 @@ run-specific脚本按`tap-cache→predict-source-held→open-truth→score-sourc
 - 根因是冻结manifest使用Windows工作树CRLF字节，而Linux部署使用Git blob LF字节；本地已把全部54文件与Git blob逐项对照，32个受影响工作树文件仅存在CRLF→LF差异，未发现非行尾内容漂移；
 - `.gitattributes`新增`*.py text eol=lf`，54个runtime文件全部规范为LF；新增回归要求Python/Shell属性固定且runtime中无CRLF；
 - repaired candidate runtime SHA256=`dc315ffe2860a9d76493ba5284aff6dfb9c248330613717a6614de6997da1cfc`，54/54项与当前Git blob SHA一致；method lock SHA256=`ac796d83e92ea1e8b5f0efa6e8a303f9eb989ba1f876219784cda1ac7363a030`；
-- `ssr-gpu`统一回归212项全部通过；R5独立release复审和精确Git archive验证待完成；
+- `ssr-gpu`统一回归212项全部通过；R5独立技术复核结论`P0=0、P1=0、P2=2`，最终receipt待本报告字节冻结后落盘；
 - 同代真实checkpoint无query R6 smoke收据SHA256=`a954896a5b3e3db91334ac564d967705568c892b5d2b7c6dbe42111a03d7c76c`；400个source-held meta step完成，K1恒等成立，query fit/update=0/0，Target访问=false，性能计算=false；
+- LF/manifest/test/report修复提交=`46a65b3af2621d23bcc0a34631f45c8be17af4dd`；由该提交生成的精确Git archive共4747项、242800640B、SHA256=`d313243c79eab306f988abadf67c2e207d380dba633f39a04e2cc63ffae7ed7a`，单一`source/`根且无链接或异常成员；
+- 在上述archive解包副本内，canonical runtime/method loader、54文件独立pyc编译和9个CLI/关键子命令帮助面全部通过；同一解包副本的真实checkpoint无truth smoke SHA256=`a915eb66c4df926e6f738a4de636026fa29cb9bf3968c5fb6a15007ffc47ce84`；
+- R5 reviewer在隔离解释器中以真实checkpoint验证`weights_only_with_explicit_safe_globals`、195 tensors、eval=true、factory/backbone均来自archive；SSDG、通用`checkpoint_loading`、paper路径、`model_modified`和两个legacy exporter均未导入，8项关键guard/query-tamper测试通过；
 - 2026-07-31 14:24 HKT只读N607 preflight通过，8张RTX 3090均空闲；盘点结束后本地无残留SSH进程或到N607/bridge的ESTABLISHED连接；
 - 上述GPU状态仅是历史只读盘点，正式release前必须重新preflight；
-- R4独立审查的本地代码结论被跨平台发布字节P0作废；R5必须把Git archive字节同一性作为硬门；
-- 当前尚无N607真实D105 strict tap、source-held score、formal asset或性能数据；R5复审、修复提交和新run预登记全部完成前，禁止重新落地。
+- R4独立审查的本地代码结论被跨平台发布字节P0作废；R5已把Git archive字节同一性作为硬门并达到暂定`P0=0、P1=0、P2=2`；
+- 当前尚无N607真实D105 strict tap、source-held score、formal asset或性能数据；R5最终receipt、新run ID/launcher和预登记提交完成前，禁止重新落地。
 
 ## 9.R5发布门
 
 |门|当前状态|
 |---|---|
 |统一代码/负测|212 passed|
-|正式执行闭包|54文件LF规范化；工作树与当前Git blob 54/54 SHA一致；缺失/漂移/CRLF逐项失败|
-|真实checkpoint无query smoke|PASS；R6收据SHA256=`a954896a…d7c76c`；仅技术证据|
+|正式执行闭包|54文件LF规范化；工作树与commit`46a65b3a`Git blob 54/54 SHA一致；缺失/漂移/CRLF逐项失败|
+|精确Git archive|SHA256=`d313243c…e7ed7a`；4747项；单根、无链接；解包后canonical loader、54 pyc、9帮助面PASS|
+|真实checkpoint无query smoke|工作树R6=`a954896a…d7c76c`；精确archive=`a915eb66…47ce84`；均仅技术证据|
 |candidate runtime/method lock|`dc315ffe…a1cfc`/`ac796d83…3a030`；本地canonical loader通过|
 |可信外部authority签名|代码闭合；尚未生成生产signature|
 |签名D102 revocation|生产内容撤销manifest/signature已本地生成并用固定公钥验签；私钥未进入工作树|
 |R4独立release复审|已被N607预启动Git archive字节不一致P0作废|
-|R5独立release复审|待修复提交及精确Git archive复核|
-|本地Git提交|LF/manifest/test/report修复待提交|
+|R5独立release复审|暂定`LOCAL_RELEASE_GO / P0=0 / P1=0 / P2=2`；最终receipt待报告冻结后落盘|
+|本地Git提交|LF/manifest/test/report修复=`46a65b3af2621d23bcc0a34631f45c8be17af4dd`|
 |N607 R3 landing|失败于预启动哈希门；无detach、无性能；run永久封存|
 
 生产私钥不得进入Git、报告、N607或formal asset。若无法获得与固定公钥匹配的独立签名，必须保持`NO_TARGET_LAUNCH`，不能退回unsigned JSON。
