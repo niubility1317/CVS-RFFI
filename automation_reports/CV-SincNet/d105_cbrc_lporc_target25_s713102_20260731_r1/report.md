@@ -199,4 +199,4 @@ FTU3已在本地完成最小gate值域修复：两个`*_min_net_correct`允许�
 
 新runtime/method=`5de5926b…11bc`/`7345f81e…8ecd`，实现提交=`230c6cbc9149250ca0303ca240945d0e0992360e`。当前只允许进入该提交的精确archive复核；Target25仍没有输入、运行或性能数据。
 
-FTU3精确archive已经独立验证通过，R8冻结为`d105_phase1_sourceheld_230c6cbc_20260801_r8`，只重新生成Phase1 source-held gate/component证据。R8的component若为诊断拒绝，Target25继续禁止；当前仍没有任何D105 Target性能数据。
+FTU3精确archive已经独立验证通过，R8冻结为`d105_phase1_sourceheld_230c6cbc_20260801_r8`，预登记提交=`582aa634bd7943eaa567242b2ac6c133527e2356`，只重新生成Phase1 source-held gate/component证据。R8的component若为诊断拒绝，Target25继续禁止；当前仍没有任何D105 Target性能数据。

@@ -78,7 +78,7 @@ FTU2实现已完成：257/8400边界、批形状敏感fake、非法capacity早�
 
 R7已在8400行reference parity=0后于derive-gate整数门技术失败，永久关闭为`NO_PERFORMANCE_RESULT`。FTU3将两个允许为负的`*_min_net_correct`从普通非负计数组拆出，15项定向和10文件253项统一回归通过；负证据仍保持`DIAGNOSTIC_STATUS`并被formal seal拒绝。新runtime/method=`5de5926bbb2e9fd78b2f3315ec6e109964ddd6216ebe4f75e428b6b9f6bf11bc`/`7345f81e88588c46ad453eb315786306f28291478a5eaddce618ef7ee6998ecd`。独立增量审查最终`GO / P0=0 / P1=0 / P2=0`，实现提交=`230c6cbc9149250ca0303ca240945d0e0992360e`；下一门为该提交的精确archive复核，尚未授权新N607 run。
 
-FTU3精确archive=`16d57519cfa15d9929a38282217b0a2e2908e5c92e8b42672dae1537386855c7`，243005440B；54/54、9/9、15定向、253统一回归、真实checkpoint fixed256和8400批合同均通过。R8预登记为`d105_phase1_sourceheld_230c6cbc_20260801_r8`，launcher SHA256=`db0757789fa4b3a4155e793c28a2d7c76926248b59cd51c3758cf93364a3cdc9`；尚未授权N607，Target25保持未启动。
+FTU3精确archive=`16d57519cfa15d9929a38282217b0a2e2908e5c92e8b42672dae1537386855c7`，243005440B；54/54、9/9、15定向、253统一回归、真实checkpoint fixed256和8400批合同均通过。R8预登记为`d105_phase1_sourceheld_230c6cbc_20260801_r8`，launcher SHA256=`db0757789fa4b3a4155e793c28a2d7c76926248b59cd51c3758cf93364a3cdc9`，预登记提交=`582aa634bd7943eaa567242b2ac6c133527e2356`；尚未授权N607，Target25保持未启动。
 
 ## 5.真实checkpoint派生特征无truth smoke
 
