@@ -1,6 +1,6 @@
 # D105 Phase1 source-only压缩知识与source-held门实验报告
 
-状态：`R4_LOCAL_RELEASE_GO / P0=0 / P1=0 / P2=2 / NOT_LANDED / NO_PERFORMANCE_RESULT`
+状态：`R4_LOCAL_RELEASE_GO / PHASE1_R3_PREREGISTERED / NOT_LANDED / NO_PERFORMANCE_RESULT`
 
 ## 1.实验标识与目标
 
@@ -65,9 +65,9 @@ source weak-IQ
 |类型|路径|
 |---|---|
 |旧run ID|`d105_phase1_sourceheld_8f08a46f_20260731_r2`；从未落地，因45文件闭包遗漏而作废|
-|新run ID|待R4审查与新本地Git提交后，以新commit短SHA创建不可覆盖的`r3`运行|
-|Git commit|待R4闭包提交|
-|run root|待新commit后冻结；不得复用旧`r2`路径|
+|新run ID|`d105_phase1_sourceheld_2eaa1b11_20260731_r3`|
+|Git commit|`2eaa1b11b4d720673fa999025939058918efc63d`；R4闭包实现提交|
+|run root|`/home/szu2070436088/2510044040/CV-SincNet/runs/d105_phase1_sourceheld_2eaa1b11_20260731_r3`|
 |source snapshot|`<run-root>/source`|
 |input receipts|`<run-root>/input`|
 |strict tap|`<run-root>/output/strict_tap`|
@@ -79,11 +79,20 @@ source weak-IQ
 |GPU|`cuda:0`；仅strict tap执行backbone，source-held矩阵为冻结解析执行|
 |candidate runtime|`48ce446cb406aad67902c80547a48ffbd95d496c728725f2d99fc51b3433f9da`；54文件|
 |candidate method lock|`cdae572cad22721351620828cd1ec36ae1d3432d4b04c70a4c60359a64339d2a`|
-|R4 review receipt|独立terra-max结论`P0=0、P1=0、P2=2`；最终receipt待本报告字节冻结后落盘|
+|R4 review receipt|SHA256=`af312331c81c638240c8d8245f69513d4c9f8bf63fe4b8adff0f1e63e414fc51`；`P0=0、P1=0、P2=2`|
 |D102 revocation manifest/signature|`99393aa21b30cc654ba784ecf8a60b1ac8497e67d7fdefc3ee12872133293734`/`53d138b36f7688431d364f2e6291e86aefb9c9fc3e84697e288f0aa813b81c58`|
-|stage1 launcher|旧`run_d105_phase1_stage1_8f08a46f.sh`保留为作废预登记；新launcher待新commit后创建并重新`bash -n`|
+|stage1 launcher|`run_d105_phase1_stage1_2eaa1b11.sh`；SHA256=`6d540868f3347633846ffce92a2bc424e3f63593fc9a0b16333de3f7aad938de`；5624B；LF-only；`bash -n`通过|
 
-旧`r2`命令、路径和launcher不得执行。新commit形成后，在本报告追加新run ID、精确命令、launcher SHA和远端路径，完成第二次本地提交后才允许交给唯一runner。
+旧`r2`命令、路径和launcher不得执行。唯一runner的精确启动命令为：
+
+```bash
+RUN=/home/szu2070436088/2510044040/CV-SincNet/runs/d105_phase1_sourceheld_2eaa1b11_20260731_r3
+nohup bash "$RUN/input/run_d105_phase1_stage1_2eaa1b11.sh" \
+  >"$RUN/logs/pipeline_stage1.log" 2>&1 </dev/null &
+printf '%s\n' "$!" >"$RUN/logs/pipeline_stage1.pid"
+```
+
+本报告与launcher完成第二次本地提交后才允许交给唯一runner。该第二次提交只登记运行身份和launcher，不改变`2eaa1b11`中已审查的54文件runtime与方法锁。
 
 run-specific脚本按`tap-cache→predict-source-held→open-truth→score-source-held→derive-gate→build component`固定顺序执行，任一步失败即退出并以不可覆盖方式写`pipeline_stage1.exit`。脚本不封存formal asset；stage1结束后必须先回收完整component/score/gate，由独立审查确认source-held门，再由离线authority绑定N607 nonce ledger identity、run ID、commit和component签名。生产私钥不进入N607。
 
@@ -110,7 +119,8 @@ run-specific脚本按`tap-cache→predict-source-held→open-truth→score-sourc
 - 同代真实checkpoint无query R5 smoke收据SHA256=`347a0b659d8db3b44e8bacbe0e9c5c613de9827f1d77862917a453e350f2d338`；400个source-held meta step完成，K1恒等成立，query fit/update=0/0，Target访问=false，性能计算=false；
 - 2026-07-31 14:24 HKT只读N607 preflight通过，8张RTX 3090均空闲；盘点结束后本地无残留SSH进程或到N607/bridge的ESTABLISHED连接；
 - 上述GPU状态仅是历史只读盘点，正式release前必须重新preflight；
-- 当前尚无N607真实D105 strict tap、source-held score、formal asset或性能数据；必须先取得R4独立`P0=0、P1=0`并完成新本地Git提交。
+- R4独立审查收据已落盘，结论`P0=0、P1=0、P2=2`；54文件闭包实现与审查证据提交为`2eaa1b11b4d720673fa999025939058918efc63d`；
+- 当前尚无N607真实D105 strict tap、source-held score、formal asset或性能数据；新`r3`运行预登记完成第二次本地提交后，才可由唯一runner执行实时preflight。
 
 ## 9.R4发布门
 
@@ -122,8 +132,8 @@ run-specific脚本按`tap-cache→predict-source-held→open-truth→score-sourc
 |candidate runtime/method lock|`48ce446c…3f9da`/`cdae572c…339d2a`；canonical loader通过|
 |可信外部authority签名|代码闭合；尚未生成生产signature|
 |签名D102 revocation|生产内容撤销manifest/signature已本地生成并用固定公钥验签；私钥未进入工作树|
-|R4独立release复审|`LOCAL_RELEASE_GO / P0=0 / P1=0 / P2=2`；最终receipt待落盘|
-|本地Git提交|待最终R4 receipt与本报告一并提交|
+|R4独立release复审|`LOCAL_RELEASE_GO / P0=0 / P1=0 / P2=2`；receipt SHA256=`af312331…14fc51`|
+|本地Git提交|实现与审查证据=`2eaa1b11b4d720673fa999025939058918efc63d`；run预登记提交待完成|
 |N607 landing|未执行|
 
 生产私钥不得进入Git、报告、N607或formal asset。若无法获得与固定公钥匹配的独立签名，必须保持`NO_TARGET_LAUNCH`，不能退回unsigned JSON。
