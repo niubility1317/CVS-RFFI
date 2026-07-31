@@ -3,7 +3,7 @@
 ## 1.状态
 
 - 设计基线commit：`776dc6a4`
-- 当前阶段：`PHASE1_R6_STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / D105-FTU2_ARCHIVE_VERIFIED / R7_LOCAL_PREREGISTERING`
+- 当前阶段：`PHASE1_R7_STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / D105-FTU3_LOCAL_VERIFIED / ARCHIVE_SMOKE_PENDING`
 - N607：R3停止于预启动Git archive字节门；R4通过全部预启动门并唯一detach一次，但首个tap-cache在零预测前触发PyTorch/NumPy对象边界异常，exit=1
 - 性能证据：无
 - D104：保持`PAUSED_BEFORE_LANDING / NO_PERFORMANCE_RESULT`
@@ -75,6 +75,8 @@ R6唯一detach后写出8400行strict tap，但在reference dual parity门以exit
 FTU2实现已完成：257/8400边界、批形状敏感fake、非法capacity早拒绝、receipt v2负测和真实checkpoint固定256reference均闭合；10文件238/238通过。runtime/method=`8797de12f035db609aeb6f453f096571f216d0d514d6705344e763f5ec63a498`/`9a87e51de4d775ff2ea05e59654afaa62844edaf2def942d8f73c8e289ea61e6`。独立R11最终`GO / P0=0 / P1=0 / P2=0`，实现提交=`2d948ce981b9008522f825cfe6d868bce08cb624`；下一门为该提交的精确archive与完整8400行技术parity smoke。
 
 精确archive SHA256=`e58240a0a358893c0c90ce0b3cb9c202eed9e6907272fa0d587d160f3fb8ec23`，54/54四方SHA、LF/pyc、9/9帮助面、238/238回归、真实checkpoint固定256和8400批合同均通过。R7冻结为`d105_phase1_sourceheld_2d948ce9_20260731_r7`，预登记提交=`632fd9f0e1324d14cb9d489b92b71259e9ac29fe`；完整8400行reference parity保留为新run首tap硬门，尚未授权N607。
+
+R7已在8400行reference parity=0后于derive-gate整数门技术失败，永久关闭为`NO_PERFORMANCE_RESULT`。FTU3将两个允许为负的`*_min_net_correct`从普通非负计数组拆出，15项定向和10文件253项统一回归通过；负证据仍保持`DIAGNOSTIC_STATUS`并被formal seal拒绝。新runtime/method=`5de5926bbb2e9fd78b2f3315ec6e109964ddd6216ebe4f75e428b6b9f6bf11bc`/`7345f81e88588c46ad453eb315786306f28291478a5eaddce618ef7ee6998ecd`。独立增量审查最终`GO / P0=0 / P1=0 / P2=0`；下一门为提交后的精确archive复核，尚未授权新N607 run。
 
 ## 5.真实checkpoint派生特征无truth smoke
 

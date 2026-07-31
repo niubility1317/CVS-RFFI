@@ -1,6 +1,6 @@
 # D105 Phase1 source-only压缩知识与source-held门实验报告
 
-状态：`PHASE1_R6_STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / D105-FTU2_ARCHIVE_VERIFIED / R7_LOCAL_PREREGISTERING / NO_PERFORMANCE_RESULT`
+状态：`PHASE1_R7_STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / D105-FTU3_LOCAL_VERIFIED / ARCHIVE_SMOKE_PENDING / NO_PERFORMANCE_RESULT`
 
 ## 1.实验标识与目标
 
@@ -345,3 +345,11 @@ R7由唯一runner按冻结方案detach一次后关闭为STOPPED_EARLY_SYSTEMIC_T
 完整证据已回收至retrieved_d105_phase1_sourceheld_2d948ce9_20260731_r7_STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE_NO_PERFORMANCE_RESULT/artifacts。主日志SHA256=8680bf8aef479e59cc4ec7b3dc8e7588c371a0339c0d8a25a0af256a9b7ff5be；strict-tap SHA256=6626afbf5d5987b2944b53f9b4bddbb6c9397f4c577accb95cea5e0039b24578；receipt SHA256=27ee9275b3b89ef78c4ed61349d87f9491274efacd12e6028002aa9a6faed67f。回收副本与远端21项哈希逐项一致，GPU0终态0%/1MiB且无compute process，本地SSH/SCP已清理。
 
 R7不得重试、恢复、覆盖或重新解释为性能实验。后续只能先在本地修复并测试min_net_correct的合法整数域与gate validator语义，完成独立审查和新Git提交后，以新的不可覆盖run ID重新申请release；在完整Phase1 component、独立审查、离线authority和formal seal之前，Target25继续保持未启动。
+
+## 18.D105-FTU3本地修复与审查
+
+R7回收artifact的结构/类型复算确认，7个普通计数字段均为原生非负`int`，只有`receiver_held_min_net_correct`和`class_loco_min_net_correct`是合法负`int`。`D105-FTU3`只把这两个字段从非负计数组拆出并要求原生`int`；其他计数、schema、gate计算、阈值、方法和生命周期不变。
+
+新增15项回归覆盖负原生整数放行、`bool/float/np.int64`拒绝、7个普通计数负数拒绝，以及负证据组件保持`DIAGNOSTIC_STATUS`并被formal seal拒绝。统一10文件共253项执行到100%，无失败或错误；canonical runtime/method loader通过54/54成员。新runtime SHA256=`5de5926bbb2e9fd78b2f3315ec6e109964ddd6216ebe4f75e428b6b9f6bf11bc`，method lock SHA256=`7345f81e88588c46ad453eb315786306f28291478a5eaddce618ef7ee6998ecd`。独立增量复审已实跑组件/封印拒绝case并核对54文件身份，最终结论=`GO / P0=0 / P1=0 / P2=0`。
+
+FTU3仍只有本地技术证据，不改变R7的`NO_PERFORMANCE_RESULT`。下一门是本地Git提交后的精确archive复核；通过前不创建新N607 run、不签名、不封装formal asset、不启动Target25。详见`analysis/d105_ftu3_gate_signed_int_fix_20260731.md`。

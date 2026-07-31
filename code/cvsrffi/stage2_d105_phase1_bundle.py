@@ -2647,13 +2647,17 @@ def _validate_derived_source_held_gate(
         "class_count",
         "receiver_held_row_count",
         "receiver_held_failing_row_count",
-        "receiver_held_min_net_correct",
         "class_loco_row_count",
         "class_loco_failing_row_count",
-        "class_loco_min_net_correct",
         "quantization_large_margin_flip_count",
     ):
         if type(gate[field]) is not int or gate[field] < 0:
+            raise D105Phase1BundleError("source-held derived gate integer drift")
+    for field in (
+        "receiver_held_min_net_correct",
+        "class_loco_min_net_correct",
+    ):
+        if type(gate[field]) is not int:
             raise D105Phase1BundleError("source-held derived gate integer drift")
     if gate["receiver_count"] < 2 or gate["class_count"] < 2:
         raise D105Phase1BundleError("source-held derived gate coverage cardinality drift")

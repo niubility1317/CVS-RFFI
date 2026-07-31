@@ -21,6 +21,7 @@ from cvsrffi.stage2_d105_phase1_bundle import (
     AUTHORITY_SEAL_SCHEMA,
     CANDIDATE_ID,
     COMPONENT_STATUS,
+    DIAGNOSTIC_STATUS,
     D105Phase1BundleError,
     FORMAL_STATUS,
     SOURCE_HELD_PREDICTION_SCHEMA,
@@ -399,7 +400,12 @@ def _materialize_strict_tap(
     }
 
 
-def _manual_evidence(tmp_path: Path, tap: dict[str, object]) -> tuple[Path, Path, Path]:
+def _manual_evidence(
+    tmp_path: Path,
+    tap: dict[str, object],
+    *,
+    force_negative_net_correct: bool = False,
+) -> tuple[Path, Path, Path]:
     arrays = tap["arrays"]
     assert isinstance(arrays, dict)
     labels = arrays["labels"].astype(str)
@@ -407,6 +413,11 @@ def _manual_evidence(tmp_path: Path, tap: dict[str, object]) -> tuple[Path, Path
     physical = arrays["physical_ids"].astype(str)
     receiver_tokens = tuple(sorted(set(receivers.tolist())))
     class_tokens = tuple(sorted(set(labels.tolist())))
+    d105_predictions = (
+        list(class_tokens[1:]) + [class_tokens[0]]
+        if force_negative_net_correct
+        else list(class_tokens)
+    )
     lineage = compute_d105_source_aggregate_lineage(
         strict_tap_receipt_sha256=str(tap["receipt_sha"]),
         checkpoint_sha256=CHECKPOINT_SHA256,
@@ -441,8 +452,8 @@ def _manual_evidence(tmp_path: Path, tap: dict[str, object]) -> tuple[Path, Path
                 "K": k_shot,
                 "query_physical_ids": query_ids,
                 "m0_predictions": list(class_tokens),
-                "d105_fp32_predictions": list(class_tokens),
-                "d105_int8_predictions": list(class_tokens),
+                "d105_fp32_predictions": d105_predictions,
+                "d105_int8_predictions": d105_predictions,
                 "d105_fp32_top2_margins": [0.2] * len(class_tokens),
                 "prediction_commit_sha256": "0" * 64,
                 "query_rows_used_for_fit": 0,
@@ -537,6 +548,46 @@ def _manual_evidence(tmp_path: Path, tap: dict[str, object]) -> tuple[Path, Path
     score_path = tmp_path / "source_held_score_artifact.json"
     _write_json(score_path, score, immutable=True)
     return prediction_path, truth_path, score_path
+
+
+def _derived_source_held_gate(
+    tmp_path: Path,
+    *,
+    force_negative_net_correct: bool = False,
+) -> tuple[dict[str, object], dict[str, object], dict[str, object]]:
+    _, _, revocation_sha = _signed_d102_revocation(tmp_path)
+    tap = _materialize_strict_tap(
+        tmp_path, d102_revocation_manifest_sha256=revocation_sha
+    )
+    prediction, truth_open, score = _manual_evidence(
+        tmp_path,
+        tap,
+        force_negative_net_correct=force_negative_net_correct,
+    )
+    derived = derive_d105_source_held_gate(
+        tap["archive"],
+        tap["receipt"],
+        tap["lock"],
+        tap["runtime"],
+        prediction,
+        truth_open,
+        score,
+    )
+    gate = derived["gate"]
+    assert type(gate) is dict
+    return gate, tap, derived
+
+
+def _validate_derived_gate_for_tap(
+    gate: dict[str, object], tap: dict[str, object]
+) -> dict[str, object]:
+    return phase1._validate_derived_source_held_gate(
+        gate,
+        strict_tap_receipt_sha256=str(tap["receipt_sha"]),
+        checkpoint_sha256=CHECKPOINT_SHA256,
+        runtime_sha256=str(tap["runtime_sha"]),
+        method_lock_sha256=str(tap["lock_sha"]),
+    )
 
 
 def _authority_material(
@@ -746,6 +797,131 @@ def test_actual_predict_truth_open_score_interface_has_no_prediction_truth_surfa
     assert gate["gate"]["source_held_truth_open_receipt_sha256"] == sha256_file(
         truth_open
     )
+
+
+def test_derived_source_held_gate_accepts_signed_native_int_net_correct(
+    tmp_path: Path,
+) -> None:
+    gate, _, derived = _derived_source_held_gate(
+        tmp_path, force_negative_net_correct=True
+    )
+    for field in (
+        "receiver_held_min_net_correct",
+        "class_loco_min_net_correct",
+    ):
+        assert type(gate[field]) is int
+        assert gate[field] < 0
+    assert gate["receiver_held_all_noninferior"] is False
+    assert gate["class_loco_all_noninferior"] is False
+    assert derived["formal_prerequisites_missing"]
+
+
+def test_negative_signed_source_held_gate_remains_diagnostic_and_cannot_seal(
+    tmp_path: Path,
+) -> None:
+    revocation_manifest, revocation_signature, revocation_sha = _signed_d102_revocation(
+        tmp_path
+    )
+    tap = _materialize_strict_tap(
+        tmp_path, d102_revocation_manifest_sha256=revocation_sha
+    )
+    prediction, truth_open, score = _manual_evidence(
+        tmp_path, tap, force_negative_net_correct=True
+    )
+    component = tmp_path / "diagnostic-component"
+    result = build_d105_phase1_component(
+        tap["archive"],
+        tap["receipt"],
+        tap["lock"],
+        tap["runtime"],
+        prediction,
+        truth_open,
+        score,
+        revocation_manifest,
+        revocation_signature,
+        component,
+    )
+    assert result["status"] == DIAGNOSTIC_STATUS
+    assert result["formal_phase2_eligible"] is False
+    component_asset = load_d105_phase1_asset(component)
+    assert component_asset.manifest["formal_phase2_eligibility_missing"] == (
+        "receiver_held_all_noninferior",
+        "class_loco_complete_and_noninferior",
+        "independent_review_p0_0_p1_0",
+        "independent_phase2_authority_seal",
+    )
+
+    authority_preview = tmp_path / "diagnostic-authority-preview.json"
+    _write_json(authority_preview, {"validated_bundle_id_sha256": VALIDATED_BUNDLE_ID})
+    nonce_ledger = tmp_path / "nonce-ledger"
+    nonce_ledger.mkdir()
+    sealed = tmp_path / "d105-test-run-rejected-diagnostic"
+    with pytest.raises(
+        D105Phase1BundleError,
+        match="source-held component is incomplete and cannot receive formal seal",
+    ):
+        seal_d105_phase1_component(
+            component,
+            authority_preview,
+            tmp_path / "unread-authority-signature.ed25519",
+            tmp_path / "unread-independent-review.json",
+            revocation_manifest,
+            revocation_signature,
+            nonce_ledger,
+            sealed,
+        )
+    assert not sealed.exists()
+
+
+@pytest.mark.parametrize(
+    ("field", "corruption"),
+    [
+        pytest.param(
+            "receiver_held_min_net_correct", True, id="receiver-held-bool"
+        ),
+        pytest.param(
+            "receiver_held_min_net_correct", -1.0, id="receiver-held-float"
+        ),
+        pytest.param(
+            "receiver_held_min_net_correct",
+            np.int64(-1),
+            id="receiver-held-numpy-int",
+        ),
+        pytest.param("class_loco_min_net_correct", True, id="class-loco-bool"),
+        pytest.param("class_loco_min_net_correct", -1.0, id="class-loco-float"),
+        pytest.param(
+            "class_loco_min_net_correct", np.int64(-1), id="class-loco-numpy-int"
+        ),
+    ],
+)
+def test_derived_source_held_gate_rejects_non_native_net_correct_values(
+    tmp_path: Path, field: str, corruption: object
+) -> None:
+    gate, tap, _ = _derived_source_held_gate(tmp_path)
+    gate[field] = corruption
+    with pytest.raises(D105Phase1BundleError, match="source-held derived gate integer drift"):
+        _validate_derived_gate_for_tap(gate, tap)
+
+
+@pytest.mark.parametrize(
+    "field",
+    [
+        "receiver_count",
+        "class_count",
+        "receiver_held_row_count",
+        "receiver_held_failing_row_count",
+        "class_loco_row_count",
+        "class_loco_failing_row_count",
+        "quantization_large_margin_flip_count",
+    ],
+)
+def test_derived_source_held_gate_rejects_negative_count_values(
+    tmp_path: Path, field: str
+) -> None:
+    gate, tap, _ = _derived_source_held_gate(tmp_path)
+    gate[field] = -1
+    with pytest.raises(D105Phase1BundleError, match="source-held derived gate integer drift"):
+        _validate_derived_gate_for_tap(gate, tap)
 
 
 def test_mutable_prediction_d102_and_runtime_code_drift_fail_closed(tmp_path: Path) -> None:
