@@ -1,0 +1,132 @@
+{
+  "all_gates_pass": true,
+  "archive_gate": {
+    "absolute_path_member_count": 0,
+    "archive_bytes": 242851840,
+    "archive_path": "E:\\type10-7\\automation_reports\\CV-SincNet\\d105_phase1_sourceheld_asset_20260731_r1\\archive_verify_9f608e8b\\source_9f608e8b.tar",
+    "archive_sha256": "dd85491e96f1cb9ea14e967694db91aec590e42273a2556492221af982ee9a67",
+    "backslash_path_member_count": 0,
+    "dirs": 567,
+    "dotdot_escape_member_count": 0,
+    "duplicate_path_count": 0,
+    "entries": 4754,
+    "extracted_regular_count": 4187,
+    "git_archive_command": "git -C E:/type10-7/code/snapshots/cdom_scxmap_d92_glf_r1_wt archive --format=tar --prefix=source/ 9f608e8be72024f00f1497cf6bddb9fb77e28201 --output=source_9f608e8b.tar",
+    "hardlink_member_count": 0,
+    "post_extract_source_symlink_count": 0,
+    "regular": 4187,
+    "safe_extraction_completed": true,
+    "safe_for_extraction": true,
+    "single_source_root": true,
+    "special_member_count": 0,
+    "symlink_member_count": 0
+  },
+  "created_at_utc": "2026-07-31T12:24:42.017865+00:00",
+  "expected_identities": {
+    "checkpoint_sha256": "2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98",
+    "git_commit": "9f608e8be72024f00f1497cf6bddb9fb77e28201",
+    "method_lock_sha256": "f36a0c6c4ee832b34cd98ed7664ec87707a4dbb1559c7c9b4b05dd13fbf4864e",
+    "runtime_sha256": "8940e05f9fdf92d7735bba1570bb3239ee210313ecbbeffa3511b62e21685425"
+  },
+  "gates": {
+    "archive_member_and_safe_extract": true,
+    "canonical_loader_frozen_identities": true,
+    "d105_no_executable_numpy_bridge_calls": true,
+    "git_worktree_clean_exact_commit": true,
+    "isolated_pyc_54": true,
+    "r5_nine_help_surfaces": true,
+    "real_feature_no_truth_smoke": true,
+    "runtime_manifest_54_of_54": true
+  },
+  "git_gate": {
+    "branch": "codex/stage2-da25-r1",
+    "branch_returncode": 0,
+    "diff_check_output": "",
+    "diff_check_returncode": 0,
+    "head": "9f608e8be72024f00f1497cf6bddb9fb77e28201",
+    "head_returncode": 0,
+    "status_porcelain": "",
+    "status_returncode": 0,
+    "worktree_clean": true
+  },
+  "help_gate": {
+    "all_returncode_zero": true,
+    "expected_surface_count": 9,
+    "pass": true,
+    "source_pyc_count": 0,
+    "source_pycache_count": 0,
+    "surface_count": 9
+  },
+  "no_git_commit_created": true,
+  "no_n607_connection": true,
+  "no_push": true,
+  "real_feature_no_truth_smoke": {
+    "active_k": 1,
+    "completed_meta_steps": 400,
+    "execution_pass": true,
+    "formal_phase2_evidence": false,
+    "input_hashes": {
+      "checkpoint_sha256": "2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98",
+      "dual_archive_sha256": "dd2a2b0c8ab1a1d8edbeed81e78ffb79c253240998a9ac2404b75699f4ca68d0",
+      "tap_archive_sha256": "c6807d9156ab3ac8f7005707a3bd7eec342d2e4f0a43d4b96d5ea8a9574ec4c1"
+    },
+    "input_paths": {
+      "checkpoint": "E:\\type10-7\\automation_reports\\CV-SincNet\\d105_feature_tap_real_checkpoint_smoke_20260731\\input\\best_joint_safe_ssdg.pth",
+      "dual_archive": "E:\\type10-7\\automation_reports\\CV-SincNet\\d103_rxid_r1_feasibility_20260724\\source_inputs\\phase1_singleobs_dual_feature_archive.npz",
+      "tap_archive": "E:\\type10-7\\automation_reports\\CV-SincNet\\d102_rb_metabias4_phase1held_target25_20260724\\retrieved_d102_analytic_held_r6\\output\\tap\\phase1_jp4_tap_archive.npz"
+    },
+    "k1_m_head_equals_m0_exact": true,
+    "k1_m_joint_equals_m_da_exact": true,
+    "n607_run": false,
+    "performance_computed": false,
+    "query_labels_passed_to_predictor": false,
+    "query_rows_used_for_fit": 0,
+    "query_state_updates": 0,
+    "query_truth_read": false,
+    "receipt_sha256": "fdea3e395b15d34ba7968037aa9a54ca835ec643e669c66de6854c8c3ff69a07",
+    "returncode": 0,
+    "script_from_archive": "E:\\type10-7\\automation_reports\\CV-SincNet\\d105_phase1_sourceheld_asset_20260731_r1\\archive_verify_9f608e8b\\source\\code\\scripts\\run_d105_four_arm_real_feature_smoke.py",
+    "state_receipt_unchanged": true,
+    "status": "DEVELOPMENT_ONLY_REAL_CHECKPOINT_DERIVED_NO_TRUTH_SMOKE_PASS",
+    "target_access": false
+  },
+  "receipt_files": {
+    "archive_member_precheck": {
+      "path": "archive_member_precheck.json",
+      "sha256": "5c9e150170096aeeca9e083ce423c6d5eb67548cee226d9bc9497201f8ca37d6"
+    },
+    "help_surface_verification": {
+      "path": "help_surface_verification.json",
+      "sha256": "9c7bd9ee4e60b746faa9983fb8d592b1e56a0305254ac2abdef88ce9039746f6"
+    },
+    "real_feature_no_truth_execution": {
+      "path": "real_feature_no_truth_smoke_execution.json",
+      "sha256": "e3e7712f8f24fc2595f9343b995e845adbfa90e494f1b1f5ce944a98263a9253"
+    },
+    "real_feature_no_truth_smoke": {
+      "path": "real_feature_no_truth_smoke_archive.json",
+      "sha256": "fdea3e395b15d34ba7968037aa9a54ca835ec643e669c66de6854c8c3ff69a07"
+    },
+    "source_gate_verification": {
+      "path": "source_gate_verification.json",
+      "sha256": "dc4c72ada867fe0e3e7fc28964c82582138f70dba6d63ad84e13782f436c7ee0"
+    }
+  },
+  "schema": "cvs.d105.git_archive_full_local_verification.v1",
+  "source_gate": {
+    "canonical_loader_checkpoint_sha256": "2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98",
+    "canonical_loader_method_lock_sha256": "f36a0c6c4ee832b34cd98ed7664ec87707a4dbb1559c7c9b4b05dd13fbf4864e",
+    "canonical_loader_runtime_sha256": "8940e05f9fdf92d7735bba1570bb3239ee210313ecbbeffa3511b62e21685425",
+    "d105_executable_from_numpy_or_numpy_call_count": 0,
+    "manifest_actual_hash_match_count": 54,
+    "manifest_expected_count": 54,
+    "manifest_mismatch_count": 0,
+    "pass": true,
+    "pyc_compiled_count": 54,
+    "pyc_expected_count": 54,
+    "source_pyc_count": 0,
+    "source_pycache_count": 0
+  },
+  "verification_output_outside_git_worktree": true,
+  "verification_scope": "LOCAL_TECHNICAL_ARCHIVE_AND_REAL_FEATURE_NO_TRUTH_SMOKE_ONLY"
+}

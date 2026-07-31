@@ -1,6 +1,6 @@
 # D105 Phase1 source-only压缩知识与source-held门实验报告
 
-状态：`PHASE1_R4_STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / FIX_REQUIRED / NO_PERFORMANCE_RESULT`
+状态：`R7_LOCAL_RELEASE_GO / ARCHIVE_SMOKE_PASS / PHASE1_R5_PREREG_PENDING / NO_PERFORMANCE_RESULT`
 
 ## 1.实验标识与目标
 
@@ -121,6 +121,38 @@ nohup bash "$RUN/input/run_d105_phase1_stage1_d23469ba.sh" \
 printf '%s\n' "$!" >"$RUN/logs/pipeline_stage1.pid"
 ```
 
+R4已按§8永久关闭，上述命令与launcher不得再次执行。
+
+### 6.2 NumPy/Torch边界修复后的Phase1 R5预登记
+
+|项目|冻结值|
+|---|---|
+|新run ID|`d105_phase1_sourceheld_9f608e8b_20260731_r5`|
+|源码Git archive提交|`9f608e8be72024f00f1497cf6bddb9fb77e28201`；只允许精确Git archive|
+|预登记Git提交|本报告、验证artifact和launcher提交后回填；不改变源码archive身份|
+|新run root|`/home/szu2070436088/2510044040/CV-SincNet/runs/d105_phase1_sourceheld_9f608e8b_20260731_r5`；落地前必须证明不存在|
+|candidate runtime|`8940e05f9fdf92d7735bba1570bb3239ee210313ecbbeffa3511b62e21685425`；54文件|
+|candidate method lock|`f36a0c6c4ee832b34cd98ed7664ec87707a4dbb1559c7c9b4b05dd13fbf4864e`|
+|R7独立review receipt|`analysis/d105_numpy_boundary_fix_review_r7_20260731.md`；SHA256=`558053a1c0352fda8226a8d52adbf4252b685b54cb4fc6e8b4c5e64607fab842`；`GO / P0=0 / P1=0 / P2=2`|
+|精确Git archive|SHA256=`dd85491e96f1cb9ea14e967694db91aec590e42273a2556492221af982ee9a67`；242851840B；4754项；单根、无链接/逃逸/重复|
+|archive验证收据|SHA256=`c206f1d89dba723b6b6e70c5f67362cb9c4dd877b6918587d74700ed22addd74`；54/54、54 pyc、9帮助面、旧桥AST=0|
+|archive真实checkpoint无truth smoke|SHA256=`fdea3e395b15d34ba7968037aa9a54ca835ec643e669c66de6854c8c3ff69a07`；400步、K1恒等、query fit/update=0/0、Target/performance=false|
+|D102 revocation manifest/signature|`99393aa21b30cc654ba784ecf8a60b1ac8497e67d7fdefc3ee12872133293734`/`53d138b36f7688431d364f2e6291e86aefb9c9fc3e84697e288f0aa813b81c58`|
+|R5 stage1 launcher|`run_d105_phase1_stage1_9f608e8b.sh`；SHA256=`83bc12edd5db9b177e6f38fe589c1d25d9a7bea2da366e29fd27306303bef56c`；5624B；LF-only；`bash -n`通过|
+|GPU|`cuda:0`|
+|fresh-run retry|`NO`；R5若技术失败则永久关闭并新建run|
+
+R5必须重新执行direct preflight、即时资源盘点、run root不存在、远端archive和54/54字节门、54文件独立pyc、checkpoint加载策略及launcher检查。R4旧root、source、input、launcher、PID、日志和output均不得读取为R5输入或复用。
+
+唯一预登记启动命令为：
+
+```bash
+RUN=/home/szu2070436088/2510044040/CV-SincNet/runs/d105_phase1_sourceheld_9f608e8b_20260731_r5
+nohup bash "$RUN/input/run_d105_phase1_stage1_9f608e8b.sh" \
+  >"$RUN/logs/pipeline_stage1.log" 2>&1 </dev/null &
+printf '%s\n' "$!" >"$RUN/logs/pipeline_stage1.pid"
+```
+
 run-specific脚本按`tap-cache→predict-source-held→open-truth→score-source-held→derive-gate→build component`固定顺序执行，任一步失败即退出并以不可覆盖方式写`pipeline_stage1.exit`。脚本不封存formal asset；stage1结束后必须先回收完整component/score/gate，由独立审查确认source-held门，再由离线authority绑定N607 nonce ledger identity、run ID、commit和component签名。生产私钥不进入N607。
 
 ## 7.健康停止与判定
@@ -156,26 +188,31 @@ run-specific脚本按`tap-cache→predict-source-held→open-truth→score-sourc
 - R4在全部远端预启动门通过后唯一detach一次，PID=`2726125`，首个`tap-cache`在生成strict tap前以exit=1退出；完整日志992B，归一化异常指纹=`TypeError: expected np.ndarray (got numpy.ndarray)`，位置`stage2_d105_phase1_bundle.py:1658`；
 - R4的strict tap、prediction、truth-open、score、gate和component均为0，未访问Target、未启动Target25、未签名或seal；运行后runtime仍54/54一致，GPU、run进程与SSH均已清理；
 - R4永久关闭为`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`，不得重启、修补、覆盖或复用；完整交接SHA256=`f362f5051a71d0dd88552a815c2a82680b6157a537ef1ebc36b1d8e720a3811a`；
-- 当前必须先在本地修复NumPy/PyTorch对象边界、完成回归、独立审查、Git提交和新的非覆盖run预登记，才可再次申请release。
+- 已用受检`frombuffer→reshape→clone→to`输入桥和`tolist→float32`输出桥同时修复Phase1与Target25正式执行面，未改变方法或协议；修复提交=`9f608e8be72024f00f1497cf6bddb9fb77e28201`；
+- `ssr-gpu`统一回归216/216通过；R7独立复核`P0=0、P1=0、P2=2`，54文件编译和canonical runtime/method闭合；
+- 修复提交的精确archive SHA256=`dd85491e…9a67`，4754项；解包副本54/54、54 pyc、9帮助面和旧桥AST扫描通过；真实checkpoint无truth smoke 400步通过，收据SHA256=`fdea3e39…9a07`；
+- 新Phase1 R5已用新run ID和独立launcher预登记，尚未落地；D105仍无Phase1 formal asset或Target性能数据。
 
-## 9.R5发布门
+## 9.R7发布门
 
 |门|当前状态|
 |---|---|
-|统一代码/负测|212 passed|
-|正式执行闭包|54文件LF规范化；工作树与commit`46a65b3a`Git blob 54/54 SHA一致；缺失/漂移/CRLF逐项失败|
-|精确Git archive|SHA256=`d313243c…e7ed7a`；4747项；单根、无链接；解包后canonical loader、54 pyc、9帮助面PASS|
-|真实checkpoint无query smoke|工作树R6=`a954896a…d7c76c`；精确archive=`a915eb66…47ce84`；均仅技术证据|
-|candidate runtime/method lock|`dc315ffe…a1cfc`/`ac796d83…3a030`；本地canonical loader通过|
+|统一代码/负测|216 passed|
+|正式执行闭包|54文件；commit`9f608e8b`精确archive内54/54 SHA一致；D105可执行旧NumPy桥AST=0|
+|精确Git archive|SHA256=`dd85491e…9a67`；4754项；单根、无链接/逃逸/重复；canonical loader、54 pyc、9帮助面PASS|
+|真实checkpoint无query smoke|精确archive=`fdea3e39…9a07`；400步、K1恒等、query fit/update=0/0、Target/performance=false|
+|candidate runtime/method lock|`8940e05f…85425`/`f36a0c6c…4864e`；archive canonical loader通过|
 |可信外部authority签名|代码闭合；尚未生成生产signature|
 |签名D102 revocation|生产内容撤销manifest/signature已本地生成并用固定公钥验签；私钥未进入工作树|
 |R4独立release复审|已被N607预启动Git archive字节不一致P0作废|
 |R5独立release复审|最终`LOCAL_RELEASE_GO / P0=0 / P1=0 / P2=2`；receipt SHA256=`65f8f211c…2c822`|
+|R7 NumPy/Torch边界修复复审|`GO / P0=0 / P1=0 / P2=2`；receipt SHA256=`558053a1…fab842`|
 |本地Git提交|LF/manifest/test/report修复=`46a65b3af2621d23bcc0a34631f45c8be17af4dd`；R5 review/docs源码archive提交=`d23469ba54afe00c284aa9b78b025def2b22fc43`|
 |R4预登记提交|`03e3ff67003f16b6c39596a521f5bfdf0401850c`；包含独立launcher及运行边界|
 |N607 R3 landing|失败于预启动哈希门；无detach、无性能；run永久封存|
 |N607 R4预登记|`d105_phase1_sourceheld_d23469ba_20260731_r4`；新run root；源码只取`d23469ba`精确archive；尚未落地|
 |N607 R4终态|唯一detach=1；exit=1；首个tap-cache在零prediction前触发PyTorch/NumPy对象边界异常；全部正式artifact为0；`NO_PERFORMANCE_RESULT`|
+|N607 R5预登记|`d105_phase1_sourceheld_9f608e8b_20260731_r5`；全新run root；尚未落地|
 
 生产私钥不得进入Git、报告、N607或formal asset。若无法获得与固定公钥匹配的独立签名，必须保持`NO_TARGET_LAUNCH`，不能退回unsigned JSON。
 
