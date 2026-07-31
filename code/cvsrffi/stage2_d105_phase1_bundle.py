@@ -269,6 +269,58 @@ class D105Phase1BundleError(ValueError):
     """Raised when a D105 Phase1 source asset is malformed or untrusted."""
 
 
+def _tensor_from_d105_float32_c_iq(
+    value: np.ndarray,
+    *,
+    torch_module: Any,
+    device: Any,
+    error_type: type[Exception],
+    name: str,
+) -> Any:
+    """Copy one validated D105 IQ batch without Torch's ndarray C-API bridge.
+
+    N607's Torch 2.1 / NumPy 2.x pairing can reject a valid ``np.ndarray`` at
+    ``torch.from_numpy`` because Torch retains an incompatible ndarray C-API
+    identity.  ``frombuffer`` reads the already checked C-order bytes instead;
+    the immediate clone makes the returned tensor independent of the NumPy
+    buffer and its lifetime.
+    """
+
+    if (
+        type(value) is not np.ndarray
+        or value.dtype != np.float32
+        or value.ndim != 3
+        or value.shape[0] < 1
+        or value.shape[1] != 2
+        or value.shape[2] < 1
+        or not value.flags.c_contiguous
+        or not np.isfinite(value).all()
+    ):
+        raise error_type(
+            f"{name} tensor bridge requires finite C-contiguous float32 [N,2,T]"
+        )
+    try:
+        copied = (
+            torch_module.frombuffer(
+                value,
+                dtype=torch_module.float32,
+                count=int(value.size),
+            )
+            .reshape(value.shape)
+            .clone()
+        )
+        tensor = copied.to(device=device, dtype=torch_module.float32)
+    except (RuntimeError, TypeError, ValueError) as error:
+        raise error_type(f"{name} tensor bridge is unavailable") from error
+    if (
+        tensor.dtype != torch_module.float32
+        or tuple(tensor.shape) != tuple(value.shape)
+        or not bool(torch_module.isfinite(tensor).all().item())
+    ):
+        raise error_type(f"{name} tensor bridge output drift")
+    return tensor
+
+
 def _canonical_bytes(value: Any) -> bytes:
     """Encode a small metadata payload deterministically and fail on NaN."""
 
@@ -1655,7 +1707,13 @@ def export_d105_phase1_strict_tap(
     execution_paths: set[str] = set()
     for start in range(0, count, batch_size):
         batch = np.ascontiguousarray(iq[start : start + batch_size], dtype=np.float32)
-        tensor = torch.from_numpy(batch).to(device=torch_device, dtype=torch.float32)
+        tensor = _tensor_from_d105_float32_c_iq(
+            batch,
+            torch_module=torch,
+            device=torch_device,
+            error_type=D105Phase1BundleError,
+            name="strict tap batch",
+        )
         forward = _strict_forward(model, tensor)
         z_id = np.asarray(getattr(forward, "z_id", None))
         z_dom = np.asarray(getattr(forward, "z_dom", None))

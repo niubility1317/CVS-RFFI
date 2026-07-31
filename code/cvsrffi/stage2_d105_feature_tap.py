@@ -58,10 +58,13 @@ def _to_numpy(value: torch.Tensor, *, width: int, name: str) -> np.ndarray:
         or not bool(torch.isfinite(tensor).all().item())
     ):
         raise D105FeatureTapError(f"{name} must be finite float32 [N,{width}]")
-    try:
-        array = tensor.numpy()
-    except RuntimeError:
-        array = np.asarray(tensor.tolist(), dtype=np.float32)
+    # N607's Torch 2.1 / NumPy 2.x C-API bridge can reject Tensor.numpy() even
+    # for a valid finite float32 tensor.  Python values preserve every finite
+    # float32 value exactly through the float64 intermediate and avoid that
+    # cached ndarray-type identity entirely.
+    array = np.asarray(tensor.tolist(), dtype=np.float32)
+    if array.shape != tuple(tensor.shape) or not np.isfinite(array).all():
+        raise D105FeatureTapError(f"{name} tensor-to-array bridge output drift")
     return np.ascontiguousarray(array, dtype=np.float32)
 
 

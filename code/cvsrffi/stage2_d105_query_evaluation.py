@@ -38,6 +38,7 @@ from .stage2_d105_four_arm import (
     score_d105_four_arm_logits,
 )
 from .stage2_d105_phase1_bundle import (
+    _tensor_from_d105_float32_c_iq,
     build_d105_exact_model_from_checkpoint,
     load_d105_candidate_method_lock,
     load_d105_candidate_runtime_manifest,
@@ -992,9 +993,14 @@ def _tap_rows(
     z_dom: list[np.ndarray] = []
     receipts: list[str] = []
     for start in range(0, len(iq), batch_size):
-        tensor = torch.from_numpy(
-            np.ascontiguousarray(iq[start : start + batch_size], dtype=np.float32)
-        ).to(device)
+        batch = np.ascontiguousarray(iq[start : start + batch_size], dtype=np.float32)
+        tensor = _tensor_from_d105_float32_c_iq(
+            batch,
+            torch_module=torch,
+            device=device,
+            error_type=D105QueryEvaluationError,
+            name="D105 query batch",
+        )
         tapped = feature_extractor(model, tensor)
         pre = np.asarray(tapped.pre_relu)
         domain = np.asarray(tapped.z_dom)

@@ -5,6 +5,7 @@ import pytest
 import torch
 from torch import nn
 
+import cvsrffi.stage2_d105_feature_tap as feature_tap
 from cvsrffi.stage2_d105_feature_tap import (
     D105FeatureTapError,
     extract_d105_feature_tap,
@@ -112,12 +113,16 @@ def test_d105_feature_tap_is_exact_one_pass_and_readonly() -> None:
     assert result.z_dom.shape == (5, 160)
     assert result.hidden.shape == (5, 320)
     assert result.pre_relu.shape == (5, 160)
-    expected_pre = (
-        model.id_backbone.cls_head.joint_proj[0](
-            torch.from_numpy(result.hidden.copy())
+    hidden = (
+        torch.frombuffer(
+            bytearray(result.hidden.tobytes(order="C")), dtype=torch.float32
         )
-        .detach()
-        .numpy()
+        .reshape(result.hidden.shape)
+        .clone()
+    )
+    expected_pre = np.asarray(
+        model.id_backbone.cls_head.joint_proj[0](hidden).detach().cpu().tolist(),
+        dtype=np.float32,
     )
     assert np.array_equal(result.pre_relu, expected_pre)
     assert np.array_equal(result.z_id, np.maximum(result.pre_relu, 0.0))
@@ -125,6 +130,31 @@ def test_d105_feature_tap_is_exact_one_pass_and_readonly() -> None:
         not getattr(result, name).flags.writeable
         for name in ("z_id", "z_dom", "hidden", "pre_relu")
     )
+
+
+def test_d105_feature_tap_output_bridge_bypasses_tensor_numpy_type_failure() -> None:
+    class _NumpyRejectingTensor(torch.Tensor):
+        @staticmethod
+        def __new__(cls, value: torch.Tensor) -> torch.Tensor:
+            return torch.Tensor._make_subclass(cls, value.detach(), require_grad=False)
+
+        def numpy(self):
+            raise TypeError("expected np.ndarray (got numpy.ndarray)")
+
+    source = np.asarray(
+        [[-0.0, 1.25, -3.5], [8.0, 2.0, -4.0]], dtype=np.float32
+    )
+    tensor = (
+        torch.frombuffer(bytearray(source.tobytes(order="C")), dtype=torch.float32)
+        .reshape(source.shape)
+        .clone()
+    )
+    result = feature_tap._to_numpy(
+        _NumpyRejectingTensor(tensor), width=3, name="bridge test"
+    )
+    assert result.dtype == np.float32
+    assert result.flags.c_contiguous
+    assert result.tobytes(order="C") == source.tobytes(order="C")
 
 
 def test_d105_feature_tap_rejects_training_nonfinite_and_wrong_joint_width() -> None:

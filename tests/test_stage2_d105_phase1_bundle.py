@@ -1118,6 +1118,91 @@ def test_d105_runtime_source_bytes_are_lf_canonical_for_git_archive() -> None:
         assert b"\r\n" not in (code_root / relative_path).read_bytes(), relative_path
 
 
+def test_d105_iq_tensor_bridge_is_detached_byte_exact_and_bypasses_from_numpy(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """The N607 ndarray-type rejection must not alter the finite IQ payload."""
+
+    import torch
+
+    source = np.asarray(
+        [
+            [[-0.0, 1.25, -3.5, 8.0], [2.0, -4.0, 0.5, 7.25]],
+            [[9.0, -1.0, 6.5, -2.25], [3.0, 4.0, -5.0, 0.0]],
+        ],
+        dtype=np.float32,
+    )
+    expected = (
+        torch.frombuffer(bytearray(source.tobytes(order="C")), dtype=torch.float32)
+        .reshape(source.shape)
+        .clone()
+    )
+    try:
+        normal = torch.from_numpy(source.copy()).clone()
+    except TypeError:
+        normal = None
+    if normal is not None:
+        assert torch.equal(
+            normal.contiguous().view(torch.uint8),
+            expected.contiguous().view(torch.uint8),
+        )
+    bridged = phase1._tensor_from_d105_float32_c_iq(
+        source,
+        torch_module=torch,
+        device=torch.device("cpu"),
+        error_type=D105Phase1BundleError,
+        name="test IQ",
+    )
+    assert torch.equal(
+        bridged.contiguous().view(torch.uint8),
+        expected.contiguous().view(torch.uint8),
+    )
+    source[0, 0, 0] = np.float32(99.0)
+    assert torch.equal(
+        bridged.contiguous().view(torch.uint8),
+        expected.contiguous().view(torch.uint8),
+    )
+
+    def reject_from_numpy(*_args: object, **_kwargs: object) -> object:
+        raise TypeError("expected np.ndarray (got numpy.ndarray)")
+
+    monkeypatch.setattr(torch, "from_numpy", reject_from_numpy)
+    recovered = phase1._tensor_from_d105_float32_c_iq(
+        np.asarray(expected.tolist(), dtype=np.float32),
+        torch_module=torch,
+        device=torch.device("cpu"),
+        error_type=D105Phase1BundleError,
+        name="test IQ",
+    )
+    assert torch.equal(
+        recovered.contiguous().view(torch.uint8),
+        expected.contiguous().view(torch.uint8),
+    )
+
+
+def test_d105_iq_tensor_bridge_rejects_noncanonical_inputs() -> None:
+    import torch
+
+    valid = np.zeros((2, 2, 8), dtype=np.float32)
+    nonfinite = valid.copy()
+    nonfinite[0, 0, 0] = np.float32("nan")
+    invalid_values = (
+        valid.astype(np.float64),
+        np.zeros((2, 3, 8), dtype=np.float32),
+        valid[:, :, ::2],
+        nonfinite,
+    )
+    for value in invalid_values:
+        with pytest.raises(D105Phase1BundleError, match="finite C-contiguous"):
+            phase1._tensor_from_d105_float32_c_iq(
+                value,
+                torch_module=torch,
+                device=torch.device("cpu"),
+                error_type=D105Phase1BundleError,
+                name="test IQ",
+            )
+
+
 @pytest.mark.parametrize("relative_path", phase1.D105_CANDIDATE_RUNTIME_FILES)
 def test_candidate_runtime_closure_rejects_every_missing_listed_member(
     tmp_path: Path, relative_path: str

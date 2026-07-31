@@ -1330,6 +1330,52 @@ def test_candidate_entrypoint_and_core_source_manifest_tamper_fail_closed(
         )
 
 
+def test_target25_tap_rows_bypass_rejected_torch_from_numpy(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Target25 must use the same N607-safe input bridge as Phase1 strict tap."""
+
+    class _Model(torch.nn.Module):
+        def forward(self, value: torch.Tensor) -> torch.Tensor:
+            return value
+
+    source = np.arange(48, dtype=np.float32).reshape(3, 2, 8)
+    observed: list[np.ndarray] = []
+
+    def extractor(_model: torch.nn.Module, received_iq: torch.Tensor):
+        values = np.asarray(received_iq.detach().cpu().tolist(), dtype=np.float32)
+        observed.append(values.copy())
+        rows = len(values)
+        pre = np.zeros((rows, 160), dtype=np.float32)
+        domain = np.zeros((rows, 160), dtype=np.float32)
+        pre[:, 0] = values[:, 0, 0]
+        domain[:, 0] = values[:, 1, 0]
+        return SimpleNamespace(
+            pre_relu=pre,
+            z_dom=domain,
+            receipt_sha256=hashlib.sha256(values.tobytes(order="C")).hexdigest(),
+        )
+
+    def reject_from_numpy(*_args: object, **_kwargs: object) -> object:
+        raise TypeError("expected np.ndarray (got numpy.ndarray)")
+
+    monkeypatch.setattr(torch, "from_numpy", reject_from_numpy)
+    pre, domain, receipt = evaluation._tap_rows(
+        _Model().eval(),
+        source,
+        device=torch.device("cpu"),
+        batch_size=2,
+        feature_extractor=extractor,
+    )
+    assert [values.tobytes(order="C") for values in observed] == [
+        source[:2].tobytes(order="C"),
+        source[2:].tobytes(order="C"),
+    ]
+    assert np.array_equal(pre[:, 0], source[:, 0, 0])
+    assert np.array_equal(domain[:, 0], source[:, 1, 0])
+    assert len(receipt) == 64
+
+
 @pytest.mark.parametrize(
     ("section", "field", "value"),
     [
