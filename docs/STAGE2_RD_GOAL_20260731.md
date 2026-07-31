@@ -1,6 +1,6 @@
 # Stage2功能研发目标与证据门
 
-状态：`ACTIVE / FUNCTION_FIRST / D105_R2_LOCAL_VERIFIED / RELEASE_REVIEW_PENDING / TARGET_NOT_OPENED`
+状态：`ACTIVE / FUNCTION_FIRST / D106_DA_DESIGN_FROZEN / IMPLEMENTING_LOCAL_ONLY / TARGET_NOT_OPENED`
 
 ## 1.最终目标
 
@@ -171,11 +171,11 @@ old+new总正确数严格增加
 
 ## 10.当前执行优先级
 
-1.保留已通过本地独立复审的`D105-CBRC-MB4+LPO-RC-qKNN`四臂核心，不再扩写并行候选；
-2.使用R2固定Ed25519信任根、独立review receipt和签名D102内容撤销链完成Phase1 source-only资产门；
-3.使用唯一prepare入口从现有签名D92/D81诊断authority派生25行输入；本轮声明永久为`DEVELOPMENT_SCREEN_ONLY_NON_PROMOTABLE`；
-4.在`ssr-gpu`完成182项统一回归、45文件正式执行闭包编译、5个正式CLI及其关键子命令参数验证、真实checkpoint无query smoke和R3独立release复审，要求`P0=0、P1=0`；
-5.本地Git提交并预登记新run ID、精确命令、文件哈希、远端路径、GPU映射和系统性技术失败停派规则；不push、不上传GitHub；
+1.`D105-CBRC-MB4`的source-held门已观察到receiver/class/TX三项拒绝且没有formal组件；FTU4只修复合法科学负结果的无wire持久化。D105不进入Target25，也不因技术修复自动补跑；
+2.冻结`D106-RDCE/GTSM-r3`共享非等距DA：仅从D104冻结split的588条`L_s`构造receiver-day类中心残差基，禁止复用D105的8400行source-validation tap；
+3.先实现D106专用`L_s`单观测tap、ID-only train/held互斥收据、INT8 RDCE资产和严格loader，再实现K1非identity的纯support-only qKNN头；各功能包文件面互不重叠；
+4.使用尚未打开性能truth的D104 source-held split完成固定`M0/M_DA/M_HEAD/M_JOINT`四臂G1。任何outer held结果不得回调rank、衰减、head结构或阈值；
+5.只有G0/G1、真实checkpoint no-query smoke、资源闭合、完整回归和独立复审达到`P0=0、P1=0`后，才本地Git提交并预登记新run；不push、不上传GitHub；
 6.由唯一terra-max runner在N607运行seed713102的Target25；性能好坏不得触发提前停止；
-7.由sol-high对完整25-job/300-pair/600-state预测做同row D62、D92、SVRN和D105四臂分析；
+7.由sol-high对完整25-job/300-pair/600-state预测做同row D62、D91、D92、SVRN和D106四臂分析；
 8.仅当§1、§6全部通过时进入fresh confirm seed；否则根据四臂简单效应、弱类错误流和K-shot退化定位下一轮DA或HEAD修订。
