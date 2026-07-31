@@ -1,6 +1,6 @@
 # D105-CBRC+LPO-RC功能设计冻结
 
-状态：`DESIGN_FROZEN_FOR_IMPLEMENTATION`
+状态：`IMPLEMENTATION_R2_LOCAL_VERIFIED / RELEASE_REVIEW_PENDING`
 
 独立审查：DA`P0=0/P1=0/P2=0`；HEAD`P0=0/P1=0/P2=0`；联合候选`P0=0/P1=0/P2=0`。
 
@@ -137,4 +137,20 @@ WP-HEAD只拥有：
 
 主agent在两个模块独立通过后拥有四臂集成、runner、receipt汇总和最终复审。G0至少验证：K1恒等、physical-ID去重和LOO自排除、标签与lifecycle role同步置换、query顺序/分块不变、query零更新、support/query物理ID不重叠、bundle/root篡改拒绝、INT8边界、共同平移/正交零效应、真实`ReLU+normalize`非等距可观测作用及资源闭合。
 
-通过G0后才能进入未打开source-held G1；通过G1后才能进入单seed Target25 G2；同method lock的一个fresh confirm seed25构成G3。每个Target25必须闭合`25 jobs×3 scenes×4 arms=300`个scenario-arm prediction/score。
+通过G0后才能进入未打开source-held G1；通过G1后才能进入单seed Target25 G2；同method lock的一个fresh confirm seed25构成G3。每个Target25必须闭合`25 jobs×3 scenes×4 arms=300`个scenario-arm pair；每个pair同时包含S_B before与S_C after，因此必须封存600个state prediction surface和600个对应state score。forgetting只能由同一pair的before/after旧类预测计算。
+
+## 5.R2发布闭包
+
+R1独立release审查结论为`NO-GO / P0=1 / P1≥4`，不得作为N607发布候选。R2补齐以下功能后，只有再次独立审查达到`P0=0、P1=0`才允许交给服务器runner：
+
+- Phase1 formal asset必须验证固定Ed25519信任根和D105专用signature domain；签名覆盖component、checkpoint、D105 runtime/method lock、本地Git commit、独立review receipt、签发时间窗、nonce、run ID和签名D102撤销manifest；
+- formal asset必须保留完整authority envelope、detached signature、独立review receipt、D102 revocation manifest及signature，不能只保存自述布尔值或SHA；
+- D102r6的bundle manifest、payload、seal、content root、method lock、runtime、held score和tap archive内容身份均进入签名撤销项；改名不改变拒绝；
+- Target25只能由唯一prepare入口从签名D92/D81 authority和真实封存package派生plan/context，调用者不能提交physical ID、root、registry或`VALIDATED_ONCE`自述；
+- Target25 prepare使用独立Ed25519签名域，签名精确覆盖25行matrix、plan、context、prepare receipt、本地Git commit、run ID、候选runtime/method lock及N607 nonce ledger identity；非dry-run prediction在打开执行面前原子消费nonce，dry-run和独立score只验证、不重复消费；
+- Phase1 authority和Target25 prepare均把N607上预先创建的账本绝对路径、run ID和签名域规范化为跨主机ledger identity；离线签名者只接收该摘要，N607消费端必须按本机路径重算一致，不能用另一台主机或另一run的nonce目录替代；
+- 本轮现有Target authority为`formal_launch_authority=false`，因此plan、context、prediction、score和summary永久绑定`DEVELOPMENT_SCREEN_ONLY_NON_PROMOTABLE`；不得重标为formal或`PROMOTABLE`；
+- candidate runtime manifest绑定正式执行面递归可达的40个`cvsrffi`模块和5个正式CLI，共45文件；AST测试验证集合精确性，缺失或内容漂移任一成员均失败。技术性real-checkpoint smoke脚本自身在闭包内，但其额外训练helper不属于正式Target25预测依赖，不能把45文件表述为覆盖全部smoke传递依赖；
+- candidate method lock显式固定4轮IRLS、old/new任务等质量、K1零系数、FP16部署和25/300/600覆盖。冻结runtime manifest SHA256=`639c16dd6a70620ca99fa960acb9e988aeba3cea92edcb7a9a158b26a6d958b5`，method lock SHA256=`37dd03fcdb7cb01e6e545def11711b0c9c9ad35e3d505d75c18f314cb3ef3576`。
+
+稳定版本地统一回归为182项全部通过、45文件`py_compile`通过、5个正式CLI及`predict/score/sign-authority/sign-target25-prepare`关键参数面通过、canonical runtime/method loader通过、`git diff --check`通过。该证据只证明实现闭合，不是Phase1门通过、Target25执行完成或性能结果。

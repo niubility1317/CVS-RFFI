@@ -1,0 +1,162 @@
+# D105-CBRC-MB4+LPO-RC-qKNN单seed Target25实验报告
+
+状态：`R2_LOCAL_VERIFIED / RELEASE_REVIEW_PENDING / NOT_LANDED / NO_PERFORMANCE_RESULT`
+
+## 1.实验标识
+
+|字段|值|
+|---|---|
+|experiment ID|`d105_cbrc_lporc_target25_s713102_20260731_r1`|
+|日期|2026-07-31|
+|operator|主agent负责整合、数据和结果分析；terra-max功能agent负责非重叠模块；N607另设唯一terra-max runner|
+|协议|`p2_min_v1`|
+|claim scope|`DEVELOPMENT_SCREEN_ONLY_NON_PROMOTABLE`；单seed研发screen；未完成时不得报告性能；通过也不等于多seed稳定或`PROMOTABLE`|
+|GitHub|不push、不上传；仅本地Git版本化|
+
+## 2.目标与假设
+
+目标是在D62和D92的同一row协议上验证四臂`M0/M_DA/M_HEAD/M_JOINT`。共享DA只读取不可变Phase1聚合bundle和当前row合法target old/new support；HEAD只读取当前臂target support和冻结qKNN lock。假设D105的非等距低维表示修正能够提高旧类和弱类地板，LPO-RC能够改善新类注册，两者联合不牺牲任一任务。
+
+硬目标：
+
+|slice|注册后旧类准确率|最低旧类准确率|新类准确率|
+|---|---:|---:|---:|
+|K10/new5|≥92%|≥85%|≥92%|
+|K10/new10|≥92%|≥85%|≥90%|
+|K10/new20|≥92%|≥85%|≥86%|
+
+K5/new20相对matched K10/new20的`A_old/F_old/N/H`下降均不得超过5pp。K1/new20相对同row冻结D92必须满足`ΔH≥2pp、ΔF_old≥2pp、ΔA_old≥0、ΔN≥0`且old+new总正确数严格增加。
+
+## 3.冻结矩阵与比较对象
+
+```text
+receivers={20-1,3-19,7-14,7-7,8-8}
+seed=713102
+slices={K10/new5,K10/new10,K10/new20,K5/new20,K1/new20}
+scenarios={leo_clear_weak,leo_low_elev_weak,leo_rain_weak}
+arms={M0,M_DA,M_HEAD,M_JOINT}
+25 jobs × 3 scenarios × 4 arms = 300 scenario-arm pairs
+每个pair含before(S_B)与after(S_C)，共600个state prediction surfaces
+```
+
+K5的support physical IDs必须是同receiver、同scenario、同capsule的K10/new20子集，query root必须逐scene完全相同。比较对象为同row D62、D92和SVRN/r4.2；D91只保留其单development cell边界，不冒充Target25或125。
+
+## 4.当前本地实现与验证
+
+|文件/组件|用途|当前状态|
+|---|---|---|
+|`stage2_d105_cbrc.py`|共享DA|本地独立复审`P0=0、P1=0`|
+|`stage2_lpo_rc_qknn.py`|纯support HEAD|本地独立复审`P0=0、P1=0`|
+|`stage2_d105_four_arm.py`|四臂集成|本地独立复审`P0=0、P1=0`|
+|`stage2_d105_feature_tap.py`|真实checkpoint同IQ单次`z_id/z_dom/hidden/pre_relu`tap|真实checkpoint随机IQ smoke通过|
+|`stage2_d105_target25_runner.py`|25job计划、四臂before/after预测封存、truth-side score及300-pair/600-state覆盖|R2本地回归通过|
+|`stage2_d105_target25_launcher.py`|真实row context、GPU绑定和逐row执行|R2本地回归通过|
+|`stage2_d105_target25_inputs.py`|签名D92/D81 authority和真实package到25行plan/context的唯一prepare入口|R2本地真实结构fixture通过|
+|D105 Phase1 bundle/authority|source-only压缩知识、签名D102撤销和可信外部formal seal|R2本地回归通过；生产signature未生成|
+|D105 query evaluator|D92 sealed row package到四臂预测|R2本地回归通过|
+
+已核验checkpoint：
+
+```text
+E:\type10-7\automation_reports\CV-SincNet\d105_feature_tap_real_checkpoint_smoke_20260731\input\best_joint_safe_ssdg.pth
+SHA256=2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98
+```
+
+真实checkpoint tap smoke：
+
+```text
+status=PASS
+rows=3
+z_id=[3,160]
+z_dom=[3,160]
+hidden=[3,320]
+pre_relu=[3,160]
+relu_exact=true
+state_unchanged=true
+query_truth_read=false
+labels_or_roles_passed=false
+artifact_sha256=65e67bb763aeb1d2eb20b7f577923745d2f91532c83159902a7667123950604a
+```
+
+## 5.N607输入、环境与拟定落地面
+
+2026-07-31 14:24 HKT只读preflight曾通过：主机`dell-DSS8440`，项目根可见，GPU0–7均空闲。该状态不是当前资源保证；正式release前仍需由唯一runner再次执行preflight并记录即时占用。
+
+|输入|N607路径|
+|---|---|
+|checkpoint|`/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth`|
+|cache root|`/home/szu2070436088/2510044040/CV-SincNet/runs/d18_formal_k10_new5_rx20_1_seed713101_20260717_085303/cache_matrix`|
+|authority root|`/home/szu2070436088/2510044040/CV-SincNet/runs/d81_comprehensive_125_v2auth_20260720/authority_controller/authority_final_retry1`|
+|Conda/Python|`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`|
+|run root|`/home/szu2070436088/2510044040/CV-SincNet/runs/d105_cbrc_lporc_target25_s713102_20260731_r1`|
+|source/CWD|`<run-root>/source/code`|
+|main log|`<run-root>/logs/target25.log`|
+|PID/exit|`<run-root>/logs/target25.pid`、`<run-root>/logs/target25.exit`|
+|GPU计划|GPU0–7，每GPU最多1个本run worker；不超过项目默认每GPU两个训练实验|
+
+现有D92/D81签名authority为`formal_launch_authority=false`，因此本run只能使用唯一prepare入口生成`DEVELOPMENT_SCREEN_ONLY_NON_PROMOTABLE`的plan/context。该声明、authority envelope root和`formal=false`必须贯穿prediction、score与summary，不能重标升级。
+
+精确服务器命令、Git commit、源码包哈希、Phase1 bundle/validator/runtime/method-lock哈希将在R2复审`P0=0、P1=0`且本地提交后写入；在此之前不得落地或启动。
+
+## 6.预期artifact与完整性
+
+- 不可覆盖的run manifest、25个row log和25个exit；
+- 25个row prediction artifact，每个包含3scenario×4arms×before/after；
+- 完整prediction manifest，300个scenario-arm pair receipt和600个state prediction receipt唯一；
+- prediction全部封存后才允许生成truth-open event；
+- 25个truth-side row score和完整score manifest；
+- 300个scenario-arm paired score、600个state score、逐类count/correct、old/new同row指标；
+- K5/K10嵌套receipt、K1逐值恒等receipt；
+- 汇总JSON/CSV、资源审计、异常指纹、coverage和归档哈希。
+
+只有完整日志、25/25成功row、300/300 pair、600/600 state预测和600/600 state score全部同键闭合，状态才可进入`ARTIFACTS_COMPLETE→ANALYZED`。
+
+## 7.健康停止与成功标准
+
+性能高低不得触发停止。仅当发生P0协议/安全错误，或至少两个不同row在产生预测前出现同一标准化确定性异常指纹时，停止后续派发并终止已证明属于本run的进程树。失败run保留全部partial artifact，标记`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`，不得覆盖、恢复或重标为性能实验。
+
+技术成功条件：25/25 row退出0、300/300 pair、600/600 state预测、600/600独立state score、query零fit/update、K5嵌套、K1恒等、所有hash/receipt/只读门通过。性能成功条件按§2硬目标判定。
+
+## 8.风险与完成后检查
+
+|风险|处理|
+|---|---|
+|D102 Phase1 held已`FALSIFIER_REJECT`|禁止复用其REJECT bundle；D105必须生成并独立验证新bundle|
+|D92 runtime不含`pre_relu`|使用D105专用checkpoint-bound feature tap，不从归一化`z_id`反推|
+|support代理过拟合|不按support准确率晋级；只读完整Target25独立query score|
+|旧类均值掩盖弱类|报告全部旧类count/correct、`F_old`、row-floor、receiver/scene|
+|只完成联合臂或after state|300-pair/600-state覆盖门直接拒绝|
+|单seed偶然性|通过仅记`TARGET25_SCREEN_PASS`；fresh confirm seed另行预注册|
+
+完成后重点检查四臂简单效应`E_DA/E_HEAD`、交互项`I`、旧类错误流、弱类地板、K5衰减和K1净新增正确数，再决定晋级或下一轮DA/HEAD修订。
+
+## 9.seed713102严格配对基线
+
+已从N607只读回收D62、D92完整125汇总的`row_metrics.csv`，并分别筛选`seed=713102`的25行；SVRN-qKNN-BCRR由同seed的25个原始评分文件重算。SSH/SCP结束后本地无残留`ssh.exe`。
+
+|来源|本地SHA256|行数|同seed行数|
+|---|---|---:|---:|
+|D62|`5b737206b0ebb222443996e71e76cdd2209929ae77ec3f6295688ae649b5807d`|125|25|
+|D92|`bc8070cd9235ab41eda5bafd2ec66e9afad48b6466d2066508d0bab46980fa62`|125|25|
+|SVRN-qKNN-BCRR|25个原始`diag_cosine_score.json`逐文件解析|25|25|
+
+基线联合表已写入Git承载面`analysis/d105_target25_baseline_seed713102.md`。当前可验证结论是：D92在K10/new10、K10/new20和K5/new20提高注册后旧类并降低遗忘，但新类小幅下降；K1与D62逐值一致；SVRN在全部切片显著更差。D105尚无性能数据，不能加入排序。
+
+## 10.R1拒绝与R2修复
+
+R1独立release审查结论为`NO-GO / P0=1 / P1≥4`，原因包括unsigned Phase1 authority自述、缺少真实D92→plan/context入口、runtime闭包遗漏launcher/CLI和D102拒绝仅靠名称。R1未提交、未落地、无性能结果。
+
+R2完成：
+
+- 固定Ed25519信任根、独立review receipt、时间窗、nonce防重放和完整formal authority artifact；
+- D102r6真实内容identity签名撤销；
+- 唯一Target25 prepare CLI，从现有签名diagnostic authority和真实封存package派生25行，不接受调用者自报physical ID/root/registry；
+- 独立`TARGET25_PREPARE`签名域精确绑定matrix、plan、context、prepare receipt、Git commit、run ID、候选锁及N607 nonce ledger identity；非dry-run prediction在执行前消费nonce，dry-run/score只验签；
+- Phase1和Target25均以“本机账本绝对路径＋run ID＋签名域”重算跨主机ledger identity，拒绝替换账本路径、run或签名域；
+- development claim不可升级，K5嵌套、query root一致、25/300/600覆盖和600预测后才开truth；
+- 45文件candidate runtime closure（40个递归模块＋5个CLI）SHA256=`639c16dd6a70620ca99fa960acb9e988aeba3cea92edcb7a9a158b26a6d958b5`；
+- candidate method lock SHA256=`37dd03fcdb7cb01e6e545def11711b0c9c9ad35e3d505d75c18f314cb3ef3576`；
+- `ssr-gpu`统一回归182项、45文件`py_compile`、5个CLI及4个关键子命令参数面、canonical loader和差异检查通过；
+- 同代真实checkpoint无query smoke收据SHA256=`cc08c4891b8c9112fc37dc9c752f7f53f99e4a3b83df22195f3f58e48696ef5f`；query fit/update=0/0、Target访问=false、性能计算=false。
+
+这些仍只是本地实现证据。R3独立release最终签字、本地Git提交、N607 Phase1门和Target25均尚未执行。45文件闭包不声称覆盖技术smoke专用训练helper的全部传递依赖；正式Target25预测不依赖这些helper。

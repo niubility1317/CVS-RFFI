@@ -1,6 +1,6 @@
 # Stage2功能研发目标与证据门
 
-状态：`ACTIVE_GOAL_REFACTOR / FUNCTION_FIRST / TARGET_NOT_OPENED`
+状态：`ACTIVE / FUNCTION_FIRST / D105_R2_LOCAL_VERIFIED / RELEASE_REVIEW_PENDING / TARGET_NOT_OPENED`
 
 ## 1.最终目标
 
@@ -105,6 +105,16 @@ I      = M_JOINT-M_DA-M_HEAD+M0
 
 每个job覆盖3个物理ID互斥的`leo_*_weak`场景。一次Target25只评估一个revision，不得从25行中选择receiver、scene、class或slice重跑。
 
+本轮采用四臂因果矩阵，因此完整性单位固定为：
+
+```text
+25 jobs × 3 scenarios × 4 arms
+= 300个scenario-arm pair
+= 600个state prediction surface（before/after各300）
+```
+
+每个pair必须同时封存Stage2-B的before旧类预测和Stage2-C的after旧类/新类预测。任一state或arm缺失、预测可覆盖、truth先于全部600个state prediction surface开放、键不唯一、哈希不匹配或只完成联合臂，均不得进入性能分析。`forgetting`只能由同一pair的before/after旧类预测计算，不能从其他方法或其他run补入。
+
 K10执行§1全部硬门。
 
 K5以同receiver、同scene的K10/new20为matched基线。预登记时必须锁定`K5 support physical IDs⊂K10 support physical IDs`，且两者的`query_id_root`逐scene完全相同；只有满足该嵌套关系时，`A_old/F_old/N/H`下降≤5pp才属于paired结论。若不满足，只能报告非配对差值，不能用于通过本门。任一核心指标出现>15pp的单scenario-row灾难退化则不晋级。
@@ -144,6 +154,8 @@ old+new总正确数严格增加
 
 方法agent不得自我认证。WP-DATA必须审查K-shot可辨识性、common-transform cancellation、support proxy过拟合、旧/新任务平衡、类置换、资源和query/role/quota禁区。
 
+每个功能包由不同agent拥有非重叠文件面。服务器实验另设唯一terra-max runner；runner只负责落地、启动、健康检查、完整日志与artifact回收，不得改方法、调参、按性能重跑或与主agent重复启动。主agent和WP-DATA使用sol-high读取完整25-job/300-pair/600-state预测与评分证据后再作晋级决定。
+
 ## 9.拒绝语义
 
 |状态|含义|
@@ -159,9 +171,11 @@ old+new总正确数严格增加
 
 ## 10.当前执行优先级
 
-1.按已通过独立设计审查的`D105-CBRC-MB4`冻结共享DA，明确K1公式和ground bundle生命周期；
-2.按已通过独立设计审查的`LPO-RC-qKNN`冻结不读取ground的纯support HEAD；
-3.先实现两者最小可运行功能与2×2接口；
-4.完成G0合成负测和真实no-query smoke；
-5.再决定是否释放已预登记但尚未落地的D104 source-held run；
-6.G1通过后只运行一个冻结revision的Target25。
+1.保留已通过本地独立复审的`D105-CBRC-MB4+LPO-RC-qKNN`四臂核心，不再扩写并行候选；
+2.使用R2固定Ed25519信任根、独立review receipt和签名D102内容撤销链完成Phase1 source-only资产门；
+3.使用唯一prepare入口从现有签名D92/D81诊断authority派生25行输入；本轮声明永久为`DEVELOPMENT_SCREEN_ONLY_NON_PROMOTABLE`；
+4.在`ssr-gpu`完成182项统一回归、45文件正式执行闭包编译、5个正式CLI及其关键子命令参数验证、真实checkpoint无query smoke和R3独立release复审，要求`P0=0、P1=0`；
+5.本地Git提交并预登记新run ID、精确命令、文件哈希、远端路径、GPU映射和系统性技术失败停派规则；不push、不上传GitHub；
+6.由唯一terra-max runner在N607运行seed713102的Target25；性能好坏不得触发提前停止；
+7.由sol-high对完整25-job/300-pair/600-state预测做同row D62、D92、SVRN和D105四臂分析；
+8.仅当§1、§6全部通过时进入fresh confirm seed；否则根据四臂简单效应、弱类错误流和K-shot退化定位下一轮DA或HEAD修订。

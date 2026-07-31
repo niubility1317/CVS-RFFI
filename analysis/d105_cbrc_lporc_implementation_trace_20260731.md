@@ -48,15 +48,15 @@ DA审查GO只证明本地实现G0，不证明外部Phase1 validator签名权威�
 - query root、state receipt、bundle payload、INT8 bank、HEAD bias篡改fail-closed；
 - DA、HEAD、基础Student-t qKNN和RXIDMetaBias4 bundle相邻回归。
 
-最终定向结果：`82 passed，0 failed`。
+最终稳定版结果：10个指定D105测试文件共`182 passed，0 failed`；45文件正式执行闭包全部`py_compile`通过；5个正式CLI及`predict/score/sign-authority/sign-target25-prepare`关键参数面退出码均为0。
 
 ## 5.真实checkpoint派生特征无truth smoke
 
 凭据：
 
-`E:\type10-7\automation_reports\CV-SincNet\d105_cbrc_lporc_local_smoke_20260731\real_feature_no_truth_smoke.json`
+`E:\type10-7\automation_reports\CV-SincNet\d105_cbrc_lporc_local_smoke_20260731_r3\real_feature_no_truth_smoke.json`
 
-凭据SHA256：`7580fccc1dbccf73289df3c484965e16763a09acfcad49988375322003b46a14`
+凭据SHA256：`cc08c4891b8c9112fc37dc9c752f7f53f99e4a3b83df22195f3f58e48696ef5f`
 
 |项目|结果|
 |---|---|
@@ -73,7 +73,7 @@ DA审查GO只证明本地实现G0，不证明外部Phase1 validator签名权威�
 |性能计算|false|
 |Target访问|false|
 
-该smoke复用已封存的checkpoint派生真实特征，没有重新从原始IQ执行backbone前向。因此它是实际checkpoint字节＋真实派生特征的机械闭环证据，不是Target性能、正式Phase2 row或完整runner证据。
+本次smoke绑定冻结runtime SHA256=`639c16dd6a70620ca99fa960acb9e988aeba3cea92edcb7a9a158b26a6d958b5`和method lock SHA256=`37dd03fcdb7cb01e6e545def11711b0c9c9ad35e3d505d75c18f314cb3ef3576`，耗时121.047秒，stderr为0。它复用已封存的checkpoint派生真实特征，没有重新从原始IQ执行backbone前向；它是实际checkpoint字节＋真实派生特征的机械闭环证据，不是Target性能、正式Phase2 row或完整runner证据。45文件正式执行闭包包含该smoke入口本体，但不声称覆盖smoke专用训练helper的全部传递依赖；正式Target25预测不依赖这些helper。
 
 ## 6.历史性能定位
 
@@ -83,9 +83,9 @@ DA审查GO只证明本地实现G0，不证明外部Phase1 validator签名权威�
 
 进入N607 Target25前仍需：
 
-1. runner接入、冻结25×3×4输出闭合及fail-closed artifact验证；
-2. 本地Git提交和文件SHA登记；
-3. 新run report预注册；
-4. 由唯一实验release子agent执行N607预检、精确同步、hash/compile、不可覆盖run-root和完整Target25。
+1.独立release复审达到`P0=0、P1=0`并形成同版本review receipt；
+2.本地Git提交和文件SHA登记；
+3.由唯一实验release子agent执行N607预检、精确同步、hash/compile和不可覆盖run-root；
+4.先完成Phase1 source-held预测、独立truth-open score、gate、外部签名和formal seal；只有该资产链通过后，才准备并执行完整Target25。
 
 在上述条件全部完成前，不得把本地landing、smoke或历史对比描述为D105性能成功。
