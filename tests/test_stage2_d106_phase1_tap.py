@@ -1423,3 +1423,23 @@ def test_outputs_are_non_overwriting(tmp_path: Path, monkeypatch: pytest.MonkeyP
             output_dir=existing_output,
         )
     assert marker.read_text(encoding="utf-8") == "keep"
+
+
+def test_construction_closure_binds_exact_d105_model_dependencies(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    closure = d106._construction_closure()
+    files = closure["files_sha256"]
+    code_root = Path(__file__).resolve().parents[1] / "code"
+    assert files["d105_model_augmentation"] == _sha(
+        code_root / "baseline_origin_sat_view.py"
+    )
+    assert files["d105_model_factory"] == _sha(code_root / "model_dual_cvsincnet.py")
+    assert files["d105_model_backbone"] == _sha(code_root / "model.py")
+    monkeypatch.setattr(
+        d106,
+        "D105_CANDIDATE_RUNTIME_MODEL_FILES",
+        ("model.py", "model_dual_cvsincnet.py"),
+    )
+    with pytest.raises(d106.D106Phase1TapError, match="dependency closure drift"):
+        d106._construction_closure()

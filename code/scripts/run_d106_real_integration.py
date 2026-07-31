@@ -59,6 +59,7 @@ PATH_HASH_FIELDS = (
 CONSTRUCTION_CODE_PATH = Path(rdce_asset_module.__file__).resolve()
 PHASE1_TAP_CODE_PATH = Path(phase1_tap_module.__file__).resolve()
 INTEGRATION_CODE_PATH = Path(__file__).resolve()
+MODEL_AUGMENTATION_PATH = (CODE_ROOT / "baseline_origin_sat_view.py").resolve()
 MODEL_FACTORY_PATH = (CODE_ROOT / "model_dual_cvsincnet.py").resolve()
 MODEL_BACKBONE_PATH = (CODE_ROOT / "model.py").resolve()
 RUNTIME_FIELDS = {
@@ -69,6 +70,7 @@ RUNTIME_FIELDS = {
     "phase1_tap_code_sha256",
     "construction_code_sha256",
     "integration_entry_code_sha256",
+    "model_augmentation_code_sha256",
     "model_factory_code_sha256",
     "model_backbone_code_sha256",
     "checkpoint_sha256",
@@ -195,6 +197,13 @@ def load_fixture(path: str | Path) -> tuple[Mapping[str, Any], str]:
                 INTEGRATION_CODE_PATH,
                 expected_sha256=runtime.get("integration_entry_code_sha256", ""),
                 name="D106 integration entry code",
+            )
+        ),
+        "model_augmentation_code_sha256": _sha256_bytes(
+            _read_regular(
+                MODEL_AUGMENTATION_PATH,
+                expected_sha256=runtime.get("model_augmentation_code_sha256", ""),
+                name="D106 model augmentation code",
             )
         ),
         "model_factory_code_sha256": _sha256_bytes(

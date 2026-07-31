@@ -65,6 +65,9 @@ def _fixture(tmp_path: Path) -> tuple[Path, dict[str, object]]:
         "integration_entry_code_sha256": _sha(
             runner.INTEGRATION_CODE_PATH.read_bytes()
         ),
+        "model_augmentation_code_sha256": _sha(
+            runner.MODEL_AUGMENTATION_PATH.read_bytes()
+        ),
         "model_factory_code_sha256": _sha(runner.MODEL_FACTORY_PATH.read_bytes()),
         "model_backbone_code_sha256": _sha(
             runner.MODEL_BACKBONE_PATH.read_bytes()
@@ -119,6 +122,9 @@ def test_repository_runtime_manifest_binds_current_d106_implementation() -> None
     )
     assert runtime["integration_entry_code_sha256"] == _sha(
         runner.INTEGRATION_CODE_PATH.read_bytes()
+    )
+    assert runtime["model_augmentation_code_sha256"] == _sha(
+        runner.MODEL_AUGMENTATION_PATH.read_bytes()
     )
     assert runtime["model_factory_code_sha256"] == _sha(
         runner.MODEL_FACTORY_PATH.read_bytes()
@@ -182,6 +188,7 @@ def test_fixture_rejects_runtime_semantic_drift(
 @pytest.mark.parametrize(
     ("runtime_field", "error_pattern"),
     (
+        ("model_augmentation_code_sha256", "D106 model augmentation code path/SHA256"),
         ("model_factory_code_sha256", "D106 model factory code path/SHA256"),
         ("model_backbone_code_sha256", "D106 model backbone code path/SHA256"),
     ),
@@ -208,6 +215,70 @@ def test_fixture_rejects_model_code_sha_drift(
     values["runtime_sha256"] = _sha(runtime_path.read_bytes())
     fixture.write_bytes(runner._canonical_bytes(values))
     with pytest.raises(runner.D106RealIntegrationError, match=error_pattern):
+        runner.load_fixture(fixture)
+
+
+@pytest.mark.parametrize(
+    ("path_attribute", "error_pattern"),
+    (
+        ("MODEL_AUGMENTATION_PATH", "D106 model augmentation code"),
+        ("MODEL_FACTORY_PATH", "D106 model factory code"),
+        ("MODEL_BACKBONE_PATH", "D106 model backbone code"),
+    ),
+)
+def test_fixture_rejects_missing_model_dependency_before_extraction(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    path_attribute: str,
+    error_pattern: str,
+) -> None:
+    fixture, values = _fixture(tmp_path)
+    monkeypatch.setattr(
+        runner, "EXPECTED_CHECKPOINT_SHA256", values["checkpoint_sha256"]
+    )
+    monkeypatch.setattr(
+        runner,
+        "CONSTRUCTION_CODE_PATH",
+        Path(str(values["construction_code"])).resolve(),
+    )
+    monkeypatch.setattr(
+        runner,
+        path_attribute,
+        (tmp_path / f"missing-{path_attribute}.py").resolve(),
+    )
+    with pytest.raises(runner.D106RealIntegrationError, match=error_pattern):
+        runner.load_fixture(fixture)
+
+
+@pytest.mark.parametrize(
+    "runtime_field",
+    (
+        "model_augmentation_code_sha256",
+        "model_factory_code_sha256",
+        "model_backbone_code_sha256",
+    ),
+)
+def test_fixture_rejects_missing_model_runtime_field(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    runtime_field: str,
+) -> None:
+    fixture, values = _fixture(tmp_path)
+    monkeypatch.setattr(
+        runner, "EXPECTED_CHECKPOINT_SHA256", values["checkpoint_sha256"]
+    )
+    monkeypatch.setattr(
+        runner,
+        "CONSTRUCTION_CODE_PATH",
+        Path(str(values["construction_code"])).resolve(),
+    )
+    runtime_path = Path(str(values["runtime_manifest"]))
+    runtime = json.loads(runtime_path.read_text(encoding="utf-8"))
+    runtime.pop(runtime_field)
+    runtime_path.write_bytes(runner._canonical_bytes(runtime) + b"\n")
+    values["runtime_sha256"] = _sha(runtime_path.read_bytes())
+    fixture.write_bytes(runner._canonical_bytes(values))
+    with pytest.raises(runner.D106RealIntegrationError, match="expected SHA256 drift"):
         runner.load_fixture(fixture)
 
 

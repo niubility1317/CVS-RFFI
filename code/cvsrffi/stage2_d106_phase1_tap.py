@@ -48,6 +48,7 @@ from .stage2_d104_source_split import (
 )
 from .stage2_d105_feature_tap import Z_DIM, extract_d105_feature_tap
 from .stage2_d105_phase1_bundle import (
+    D105_CANDIDATE_RUNTIME_MODEL_FILES,
     D105_TAP_CACHE_SELECTION_DOMAIN,
     _tensor_from_d105_float32_c_iq,
     build_d105_exact_model_from_checkpoint,
@@ -498,6 +499,12 @@ def _d106_selection_index(selection_salt_sha256: str, physical_id: str) -> int:
 def _construction_closure() -> dict[str, Any]:
     module_dir = Path(__file__).resolve().parent
     code_root = module_dir.parent
+    if tuple(D105_CANDIDATE_RUNTIME_MODEL_FILES) != (
+        "baseline_origin_sat_view.py",
+        "model.py",
+        "model_dual_cvsincnet.py",
+    ):
+        raise D106Phase1TapError("D105 exact-model dependency closure drift")
     files = {
         "d106_phase1_tap": Path(__file__).resolve(),
         "d106_selector_cache_parser": Path(__file__).resolve(),
@@ -505,6 +512,7 @@ def _construction_closure() -> dict[str, Any]:
         "d105_feature_tap": module_dir / "stage2_d105_feature_tap.py",
         "d105_exact_checkpoint_loader": module_dir / "stage2_d105_phase1_bundle.py",
         "leo_weak_cache_primitives": module_dir / "leo_weak_cache.py",
+        "d105_model_augmentation": code_root / "baseline_origin_sat_view.py",
         "d105_model_factory": code_root / "model_dual_cvsincnet.py",
         "d105_model_backbone": code_root / "model.py",
     }

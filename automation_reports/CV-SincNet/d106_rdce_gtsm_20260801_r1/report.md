@@ -253,15 +253,16 @@ SPR证明同IQ的signed第二表征能够让K1产生真实prediction变化，也
 
 |文件|SHA256|
 |---|---|
-|`code/cvsrffi/stage2_d106_phase1_tap.py`|`37cd43137e4a6b5deb03565b0db2aba9ca602e06c72565c611836547c1ba5f5b`|
+|`code/cvsrffi/stage2_d106_phase1_tap.py`|`5a63a5935748f17a1efcbf4069d5c80c1d99a8e813330a2c3a15895483c53e9b`|
 |`code/cvsrffi/stage2_d106_rdce_asset.py`|`e9d57245a80cdf31ae4ea5fd76cd521022399d0be512e2647a92cc2a0671da1f`|
 |`code/cvsrffi/stage2_d106_rdce_runtime.py`|`9d78b83134bfb668c3b9c32053eaa86b5c9fd4d970e87aa99dc30ac2df8df946`|
 |`code/scripts/export_d106_phase1_ls_tap.py`|`1664684de351199a0a825b04bde17308dba1dc46a566ee5826772b4ccfe91c83`|
-|`code/scripts/run_d106_real_integration.py`|`79120dff92f42225c22769ef7d6821ed5792e51c033075c073f291b0005bedfc`|
+|`code/scripts/run_d106_real_integration.py`|`3bb8acb3c48ad371c6c0b51f20fbefb0821445f2b7ecfaecd54de71e8a39de27`|
+|`code/baseline_origin_sat_view.py`|`fa7221ae505a51a2afc2a51b857675ac4a5384b004d5a4f36e10dafc9d4f8ace`|
 |`code/model_dual_cvsincnet.py`|`11b56f2a763eb49de21d0a566d8e4420538cb7af310c9338f4e8d4a21c42c235`|
 |`code/model.py`|`afc6e6266a09fd5f5be967fed85254c6c92fa0241a0336fd5ffa3eb12aa1c417`|
 |`configs/d106_rdce_method_lock_20260801.json`|`e7a1982b4bdeaf5b8179993ce78f4a2af26965d8f4a3239440dbe636ebf14cc1`|
-|`configs/d106_candidate_runtime_manifest_20260801.json`|`09d7b350ef97c9b5d26382549e6bb42f488f928f1854223c9ba59578783003d5`|
+|`configs/d106_candidate_runtime_manifest_20260801.json`|`0e8bc733ce9650aea3463da90242f97e969210ca8a95983fee032f1474f87cb2`|
 
 当前尚无D106 source-held、Target25、D62/D91/D92/SVRN matched性能结果。不得把机械训练面`+4/+4/+2`、真实588行no-query smoke或本地测试通过数写成性能提升。
 
@@ -350,3 +351,9 @@ release source commit为`deefd57c4185a5343f87772be78b5038c37e6217`。本地专�
 `d106_real_integration_deefd57c_20260801_r4`已完成落地门禁后执行唯一launch，但在3秒内因`D106RealIntegrationError: fixture must be an absolute regular file`退出。原handoff使用相对`--fixture ../input/...`，与入口绝对正规文件合同不一致。`output/result/completion`均不存在，run-owned进程为0，GPU0已释放；异常指纹为`a4aacc5c…`，log SHA为`043ef9b1…`。该run永久封存为`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`，不得重启或覆盖。完整报告见`automation_reports/CV-SincNet/d106_real_integration_deefd57c_20260801_r4/report.md`，9份小型证据见`artifacts/remote_deefd57c/`。
 
 本地修复使用全新run ID`d106_real_integration_deefd57c_20260801_r5`。r5 fixture把全部run-local路径绑定到新root，SHA为`931fc133…`；handoff的`--fixture`和`--output-dir`均冻结为绝对路径，并新增机械测试拒绝`../`及路径越界。r5在独立复审和新commit前保持`NOT_LANDED`，不会把r4失败写成方法或性能结果。
+
+## 20.r5依赖闭包失败
+
+r5的绝对路径修复经独立复审`P0=0/P1=0/P2=0`并以`0dc2484b`发布。完整落地门和绝对命令复核通过后，唯一launch在checkpoint loader导入阶段因source archive遗漏`baseline_origin_sat_view.py`退出。异常指纹为`c2c635b2…`，log SHA为`53d4b8a6…`。partial `selected_ls_iq`完整保留但IQ内容未读取、未拉回；正式result/completion均不存在，run-owned进程为0，GPU和SSH已清理。r5永久为`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。
+
+本地r6修复不再手写猜测依赖：以D105声明的`D105_CANDIDATE_RUNTIME_MODEL_FILES=(baseline_origin_sat_view.py,model.py,model_dual_cvsincnet.py)`为权威，D106 construction closure和runtime同时绑定三份实际SHA，并新增依赖集合漂移及三字段SHA负测。新archive必须包含并逐entry核验三文件；r4/r5均不得复用。
