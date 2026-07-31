@@ -344,3 +344,9 @@ release source commit为`deefd57c4185a5343f87772be78b5038c37e6217`。本地专�
 设计和资源上界已独立冻结在`analysis/d106_rcmr_2v_qknn_design_freeze_20260801.md`。\(N=260,D=160\)时固定二进制payload为86,060B，arrays-only临时峰值为2,285,920B，含固定state resident峰值为2,371,980B；一次`prepare`为10,774,400 MAC，单query为83,200 MAC。这些是解析上界，不是实测吞吐或性能。
 
 当前结论仅为`DESIGN_FROZEN / IMPLEMENTATION_AUTHORIZED`。实现必须由不同Terra Max子agent完成formal state、strict loader、一次性context、query scorer、wire/receipt和协议负测；再由非作者独立复审。真实特征G0若与旧qKNN逐query同序，则直接`REJECT_NO_FUNCTION`，不得据此扫描参数。
+
+## 19.r4技术失败与r5修复
+
+`d106_real_integration_deefd57c_20260801_r4`已完成落地门禁后执行唯一launch，但在3秒内因`D106RealIntegrationError: fixture must be an absolute regular file`退出。原handoff使用相对`--fixture ../input/...`，与入口绝对正规文件合同不一致。`output/result/completion`均不存在，run-owned进程为0，GPU0已释放；异常指纹为`a4aacc5c…`，log SHA为`043ef9b1…`。该run永久封存为`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`，不得重启或覆盖。完整报告见`automation_reports/CV-SincNet/d106_real_integration_deefd57c_20260801_r4/report.md`，9份小型证据见`artifacts/remote_deefd57c/`。
+
+本地修复使用全新run ID`d106_real_integration_deefd57c_20260801_r5`。r5 fixture把全部run-local路径绑定到新root，SHA为`931fc133…`；handoff的`--fixture`和`--output-dir`均冻结为绝对路径，并新增机械测试拒绝`../`及路径越界。r5在独立复审和新commit前保持`NOT_LANDED`，不会把r4失败写成方法或性能结果。

@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/home/szu2070436088/2510044040/CV-SincNet/runs/d106_real_integration_deefd57c_20260801_r4/source/code/scripts/run_d106_real_integration.py", line 381, in <module>
+    raise SystemExit(main())
+  File "/home/szu2070436088/2510044040/CV-SincNet/runs/d106_real_integration_deefd57c_20260801_r4/source/code/scripts/run_d106_real_integration.py", line 371, in main
+    result = run_real_integration(
+  File "/home/szu2070436088/2510044040/CV-SincNet/runs/d106_real_integration_deefd57c_20260801_r4/source/code/scripts/run_d106_real_integration.py", line 250, in run_real_integration
+    fixture, fixture_sha256 = load_fixture(fixture_path)
+  File "/home/szu2070436088/2510044040/CV-SincNet/runs/d106_real_integration_deefd57c_20260801_r4/source/code/scripts/run_d106_real_integration.py", line 129, in load_fixture
+    raise D106RealIntegrationError("fixture must be an absolute regular file")
+__main__.D106RealIntegrationError: fixture must be an absolute regular file
