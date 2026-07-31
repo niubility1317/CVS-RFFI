@@ -100,7 +100,7 @@ printf '%s\n' "$!" >"$RUN/logs/pipeline_stage1.pid"
 |---|---|
 |新run ID|`d105_phase1_sourceheld_d23469ba_20260731_r4`|
 |源码Git archive提交|`d23469ba54afe00c284aa9b78b025def2b22fc43`；必须直接由该提交生成精确archive，不得从工作树打包|
-|预登记Git提交|`03e3ff679398863235ba3096462636b2f28f27a0`；包含本报告、Target报告、追踪和launcher，不改变上行源码archive身份|
+|预登记Git提交|`03e3ff67003f16b6c39596a521f5bfdf0401850c`；包含本报告、Target报告、追踪和launcher，不改变上行源码archive身份|
 |新run root|`/home/szu2070436088/2510044040/CV-SincNet/runs/d105_phase1_sourceheld_d23469ba_20260731_r4`；落地前必须证明不存在|
 |candidate runtime|`dc315ffe2860a9d76493ba5284aff6dfb9c248330613717a6614de6997da1cfc`；54文件|
 |candidate method lock|`ac796d83e92ea1e8b5f0efa6e8a303f9eb989ba1f876219784cda1ac7363a030`|
@@ -153,7 +153,7 @@ run-specific脚本按`tap-cache→predict-source-held→open-truth→score-sourc
 - 上述GPU状态仅是历史只读盘点，正式release前必须重新preflight；
 - R4独立审查的本地代码结论被跨平台发布字节P0作废；R5已把Git archive字节同一性作为硬门并达到最终`P0=0、P1=0、P2=2`；
 - 新Phase1 R4已用非覆盖run ID、精确源码提交、独立launcher、一次detach和禁止retry规则完成预登记，但尚未落地；
-- 当前尚无N607真实D105 strict tap、source-held score、formal asset或性能数据；预登记提交`03e3ff679398863235ba3096462636b2f28f27a0`已完成，只有唯一runner可以落地。
+- 当前尚无N607真实D105 strict tap、source-held score、formal asset或性能数据；预登记提交`03e3ff67003f16b6c39596a521f5bfdf0401850c`已完成，只有唯一runner可以落地。
 
 ## 9.R5发布门
 
@@ -169,7 +169,7 @@ run-specific脚本按`tap-cache→predict-source-held→open-truth→score-sourc
 |R4独立release复审|已被N607预启动Git archive字节不一致P0作废|
 |R5独立release复审|最终`LOCAL_RELEASE_GO / P0=0 / P1=0 / P2=2`；receipt SHA256=`65f8f211c…2c822`|
 |本地Git提交|LF/manifest/test/report修复=`46a65b3af2621d23bcc0a34631f45c8be17af4dd`；R5 review/docs源码archive提交=`d23469ba54afe00c284aa9b78b025def2b22fc43`|
-|R4预登记提交|`03e3ff679398863235ba3096462636b2f28f27a0`；包含独立launcher及运行边界|
+|R4预登记提交|`03e3ff67003f16b6c39596a521f5bfdf0401850c`；包含独立launcher及运行边界|
 |N607 R3 landing|失败于预启动哈希门；无detach、无性能；run永久封存|
 |N607 R4预登记|`d105_phase1_sourceheld_d23469ba_20260731_r4`；新run root；源码只取`d23469ba`精确archive；尚未落地|
 
