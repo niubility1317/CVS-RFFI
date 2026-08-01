@@ -36,6 +36,8 @@ K路由为`K1→M_DA`、`K5→M0`、`K10→M_HEAD`。每个state先计算`M0、M
 |runtime修复|`8b1166e1ba4648204571612543319cf7a64dd1e3`|
 |matched K5/payload修复|`ba78d723da5ca87d32d9715bcd2dbcc28280512a`；`0d3ebcfd56cb484cabadc026678cc50b73ff67f7`|
 |本地验证|`py_compile`通过；195项D106聚焦测试通过；`git diff --check`通过；工作树clean|
+|release source/archive|commit=`2f7c0581148abf8c989a0b4941726bc1e2fe868e`；SHA256=`0dbe5ca0b4549975c6a8af5a8213fada4d2b0fe7a94ff3bbc8ea77a57ec2033d`|
+|解包lock SHA256|RDCE=`e7a1982b4bdeaf5b8179993ce78f4a2af26965d8f4a3239440dbe636ebf14cc1`；RCMR=`cc5795be25622da0f060056bb931e20c7bdee9a6f722621fc42768368983130b`；KCR=`a3d530734b90454724166f620d7017f80e6de838fd4ca469c04abb155534ab6a`|
 
 ## N607预登记
 
