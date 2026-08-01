@@ -27,6 +27,9 @@
 |RCMR wire修复/lock|`7ff4b4e7c882aed6e7fb62123b906eb388462a1c`；`cc5795be25622da0f060056bb931e20c7bdee9a6f722621fc42768368983130b`|
 |其他运行修复|runtime=`8b1166e1ba4648204571612543319cf7a64dd1e3`；matched K5=`ba78d723da5ca87d32d9715bcd2dbcc28280512a`；payload=`0d3ebcfd56cb484cabadc026678cc50b73ff67f7`|
 |本地验证|`py_compile`通过；204项D106聚焦测试通过；`git diff --check`通过；工作树clean|
+|release source/archive|commit=`21b0cfae36083c1809e345d18117239e7179eb30`；SHA256=`37e388552b3e2598a15316a0881416669356e91d9ef30b5368d0437fa21ec252`|
+|解包lock SHA256|RDCE=`e7a1982b4bdeaf5b8179993ce78f4a2af26965d8f4a3239440dbe636ebf14cc1`；RCMR=`cc5795be25622da0f060056bb931e20c7bdee9a6f722621fc42768368983130b`；KCR=`a3d530734b90454724166f620d7017f80e6de838fd4ca469c04abb155534ab6a`|
+|终止重复发布规则|r7为D106最后一次端到端尝试；若再次出现新的技术失败，不创建r8；若完整性能未达标，立即转入下一方法研发|
 
 ## N607预登记
 
