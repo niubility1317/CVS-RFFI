@@ -1,6 +1,6 @@
 # D111-LOO-GAT轻量域锚运输方法
 
-状态：`DESIGN_FROZEN / BUNDLE_IMPLEMENTATION_ONLY / NO_PERFORMANCE_RESULT`
+状态：`DESIGN_FROZEN / BUNDLE_CODE_VERIFIED / SCORE_CORE_NEXT / NO_PERFORMANCE_RESULT`
 
 ## 1.出发点
 
@@ -22,7 +22,7 @@ epsilon_q, epsilon_scale
 class_registry, schema
 ```
 
-还必须在manifest中绑定checkpoint SHA、method-lock SHA、registry SHA、生成代码／配置SHA、来源Phase1 aggregate SHA、outer signature和formal状态。禁止clean/raw IQ、source单样本feature/logit/cache、physical/sample ID、成员归属、样本数、源路径、receiver/day名称、逐成员radius、FP32源中心、dense source bank导出、query/truth字段和未签名sidecar。
+还必须在manifest中绑定checkpoint SHA、method-lock SHA、registry SHA、生成代码／配置SHA与来源Phase1 aggregate SHA。实现采用两阶段封印：组件始终保持`PENDING_OUTER_JOINT_SEAL`；外部authority对组件content root、manifest、NPZ和上述全部身份字段作Ed25519签名，loader只信任发布版本固定公钥表中的签名者。构建、封印安装和载入API均不接收调用方自选签名秘密。禁止clean/raw IQ、source单样本feature/logit/cache、physical/sample ID、成员归属、样本数、源路径、receiver/day名称、逐成员radius、FP32源中心、dense source bank导出、query/truth字段和未签名sidecar。
 
 现有D106 wire只有共享rank-3几何，缺少类锚；现有v2组件为`PENDING_OUTER_JOINT_SEAL`，其逐类basis也不能直接当作共同子空间。因此必须机械生成新joint-sealed bundle；这只改变`bundle_id`，不改变Phase2 received-IQ、physical ID、split或`p2_min_v1`，不触发数据重验。
 
@@ -127,7 +127,7 @@ K1时\(a_c\)不由本类唯一support复制，因而只具有泛型非恒等性�
 
 ## 9.当前裁决
 
-- 独立监督：理论设计`P0=0 / P1=0 / P2=0 / DESIGN_FROZEN`。
-- 当前发布：`P0_BLOCKED=MISSING_FORMAL_D111_JOINT_SEALED_ASSET`。
-- 当前唯一授权动作：机械实现和验证joint-sealed bundle。
-- 未授权：分数core、G0、G1、N607、Target25、参数扫描。
+- 独立监督：理论设计与bundle代码均为`P0=0 / P1=0 / P2=0`；bundle定向测试10项、相邻回归208项通过。
+- 当前资产：`BLOCKED=MISSING_PRODUCTION_AUTHORITY_KEYS_AND_FORMAL_D111_ASSET`。生产公钥表刻意为空，未登记authority时严格拒绝formal载入。
+- 下一授权动作：实现`D111-S01`至`D111-S03`评分核及纯功能测试；真实资产暂缺不再阻止功能研发。
+- 仍未授权：G0、G1、N607、Target25和参数扫描。评分核完成与性能有效是两个不同结论。

@@ -4,14 +4,14 @@
 
 |ID|源章节|要求|目标文件|状态|验证|备注|
 |---|---|---|---|---|---|---|
-|D111-B01|§2|定义仅允许INT8值＋FP16尺度的bundle schema与严格成员集|待定新bundle模块|pending|成员集正负测|不得沿用可替换v1/v2 sidecar|
-|D111-B02|§2|绑定checkpoint、registry、method lock、来源aggregate、代码/配置与outer signature|待定新bundle模块|pending|SHA/signature漂移负测|formal资产必须fail-closed|
-|D111-B03|§2|禁止source row/ID/path、FP32中心、dense导出、query/truth与未签sidecar|待定新bundle模块|pending|禁止成员/接口负测|必须在生成器和loader两侧拒绝|
-|D111-B04|§3|由逐类\(B_c\)等权投影平均确定性导出共同Top3\(U\)|待定新bundle模块|pending|类置换/符号/重放一致性|basis不得被直接冒充为U|
-|D111-B05|§3|封存量化扰动谱隙与\(U^TU\)证书，失败拒绝formal资产|待定新bundle模块|pending|谱隙/正交性正负测|不得替换rank或sidecar|
-|D111-B06|§4|仅从Phase1 aggregate机械导出\(v_g,v_s,B,\epsilon\)及其provenance|待定新bundle模块|pending|确定性/量化误差/无sample输入测试|不得用held性能选择|
-|D111-B07|§2-§4|strict Phase2 loader只解码必要聚合，无dense/source导出或可写cache|待定新bundle模块|pending|API面、readonly、tamper测试|只授权bundle实现|
-|D111-B08|§8|输出bundle数值字节、生成MAC、解码MAC和峰值数组上界|待定新bundle模块|pending|资源receipt单测|不宣称未实测RSS|
+|D111-B01|§2|定义仅允许INT8值＋FP16尺度的bundle schema与严格成员集|`code/cvsrffi/stage2_d111_loo_gat_bundle.py`|verified|NPZ/目录成员集正负测|不得沿用可替换v1/v2 sidecar|
+|D111-B02|§2|绑定checkpoint、registry、method lock、来源aggregate、代码/配置与outer signature|同上|verified|Ed25519源签名、外层签名、身份漂移与篡改负测|release-controlled公钥；API不接收签名秘密|
+|D111-B03|§2|禁止source row/ID/path、FP32中心、dense导出、query/truth与未签sidecar|同上|verified|公共API、成员白名单、protocol receipt测试|生成器只接收规范化aggregate|
+|D111-B04|§3|由逐类\(B_c\)等权投影平均确定性导出共同Top3\(U\)|同上|verified|不同class projector的非恒等类置换测试|规范字节顺序累加保证类置换确定性|
+|D111-B05|§3|封存量化扰动谱隙与\(U^TU\)证书，失败拒绝formal资产|同上|verified|退化谱隙负测、解码正交回执复算|不得替换rank或sidecar|
+|D111-B06|§4|仅从Phase1 aggregate机械导出\(v_g,v_s,B,\epsilon\)及其provenance|同上|verified|FP32同副本哈希/计算、B/epsilon向上量化、类置换测试|不得用held性能选择|
+|D111-B07|§2-§4|strict Phase2 loader只解码必要聚合，无dense/source导出或可写cache|同上|verified|深度readonly、签名/manifest/NPZ篡改测试|组件待封印；验签后才形成effective formal状态|
+|D111-B08|§8|输出bundle数值字节、生成MAC、解码MAC和峰值数组上界|同上|verified|resource receipt构建/载入复算|`source_domain_count`由content root与outer seal绑定|
 |D111-S01|§4|实现32步Weiszfeld、primal-dual gap与3/5共识资格|未授权|deferred|待bundle formal后单独授权|当前不编写分数core|
 |D111-S02|§5|实现等先验单位质量anchor/support凸混合|未授权|deferred|待bundle formal后单独授权|严禁old logit bias|
 |D111-S03|§6|正交坐标等变与物理局部界测试|未授权|deferred|待score core实现|不声称bit级旋转不变|
@@ -20,6 +20,8 @@
 
 ## 当前反向审计
 
-- 当前实现范围仅`D111-B01`至`D111-B08`。
+- 当前实现范围仅`D111-B01`至`D111-B08`，计数为`verified=8 / deferred=5 / rejected=1(RPP合并路线) / blocked=1(生产authority公钥与真实formal资产)`。
 - `D111-S01`至`D111-G02`均为有意延后，不能在bundle实现中偷渡。
-- 最高风险是历史v2只处于`PENDING_OUTER_JOINT_SEAL`；实现只能构建新joint-sealed D111资产，不能将历史件重标为formal。
+- 定向验证：`tests/test_stage2_d111_loo_gat_bundle.py`共10项通过；相邻知识包回归合计208项通过，唯一输出为既有PyTorch AMP弃用警告。
+- 独立Terra Max复审：`P0=0 / P1=0 / P2=0 / CODE_ACCEPTANCE_GO`。
+- 最高风险项仍是生产keyring刻意为空。它使未登记authority的资产fail-closed；代码验收通过不等于真实formal资产已经生成，更不等于性能有效。
