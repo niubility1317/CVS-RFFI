@@ -593,6 +593,56 @@ def test_d92_post_materialization_payload_contract_excludes_embedded_manifest() 
         runner_module._d106_query_rows({**query, "query_truth": np.asarray([0, 1])})
 
 
+def test_package_and_d106_runtime_namespaces_are_distinct_and_both_bound() -> None:
+    source_runtime = "f" * 64
+    d106_runtime = "b" * 64
+    binding = runner_module._runtime_identity_binding(
+        {"feature_runtime_sha256": source_runtime},
+        {"feature_runtime_sha256": source_runtime},
+        d106_runtime,
+    )
+    assert binding == {
+        "source_package_feature_runtime_sha256": source_runtime,
+        "d106_runtime_sha256": d106_runtime,
+    }
+    materializer_source = inspect.getsource(
+        runner_module._D106RealStateMaterializer.__call__
+    )
+    assert "**runtime_identity" in materializer_source
+    assert (
+        'runtime_sha256=runtime_identity["d106_runtime_sha256"]'
+        in materializer_source
+    )
+
+
+def test_support_query_runtime_mismatch_fails_closed() -> None:
+    with pytest.raises(D106Target25RunnerError, match="support/query package"):
+        runner_module._runtime_identity_binding(
+            {"feature_runtime_sha256": "a" * 64},
+            {"feature_runtime_sha256": "b" * 64},
+            "c" * 64,
+        )
+
+
+@pytest.mark.parametrize(
+    ("support_runtime", "query_runtime", "d106_runtime"),
+    [
+        ("not-a-sha", "not-a-sha", "c" * 64),
+        ("a" * 64, "not-a-sha", "c" * 64),
+        ("a" * 64, "a" * 64, "not-a-sha"),
+    ],
+)
+def test_illegal_runtime_sha_fails_closed(
+    support_runtime: str, query_runtime: str, d106_runtime: str
+) -> None:
+    with pytest.raises(D106Target25RunnerError, match="must be a lowercase SHA256"):
+        runner_module._runtime_identity_binding(
+            {"feature_runtime_sha256": support_runtime},
+            {"feature_runtime_sha256": query_runtime},
+            d106_runtime,
+        )
+
+
 def test_missing_surface_is_rejected_before_truth_open(tmp_path: Path) -> None:
     prediction, run_kwargs = _predicted(tmp_path)
     path = Path(prediction["prediction_manifest"])

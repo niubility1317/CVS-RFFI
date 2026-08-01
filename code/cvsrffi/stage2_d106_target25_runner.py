@@ -143,6 +143,32 @@ def _sha(value: Any, name: str) -> str:
     return value
 
 
+def _runtime_identity_binding(
+    support_manifest: Mapping[str, Any],
+    query_manifest: Mapping[str, Any],
+    d106_runtime_sha256: Any,
+) -> dict[str, str]:
+    """Bind the source package runtime and D106 runtime as distinct identities."""
+
+    source_runtime = _sha(
+        support_manifest.get("feature_runtime_sha256"),
+        "support package feature runtime SHA256",
+    )
+    query_runtime = _sha(
+        query_manifest.get("feature_runtime_sha256"),
+        "query package feature runtime SHA256",
+    )
+    d106_runtime = _sha(d106_runtime_sha256, "D106 runtime SHA256")
+    if source_runtime != query_runtime:
+        raise D106Target25RunnerError(
+            "support/query package feature runtime lineage drift"
+        )
+    return {
+        "source_package_feature_runtime_sha256": source_runtime,
+        "d106_runtime_sha256": d106_runtime,
+    }
+
+
 def _regular_file(path: Path, name: str) -> Path:
     source = Path(path)
     if source.is_symlink() or not source.is_file():
@@ -896,12 +922,11 @@ class _D106RealStateMaterializer:
         query_signed = np.ascontiguousarray(signed[len(support_iq) :], dtype=np.float32)
         support_plus = np.maximum(support_signed, np.float32(0.0))
         query_plus = np.maximum(query_signed, np.float32(0.0))
-        runtime_sha = support_manifest.get("feature_runtime_sha256")
-        if (
-            runtime_sha != query_manifest.get("feature_runtime_sha256")
-            or runtime_sha != self.rdce_asset.runtime_sha256
-        ):
-            raise D106Target25RunnerError("feature runtime/RDCE lineage drift")
+        runtime_identity = _runtime_identity_binding(
+            support_manifest,
+            query_manifest,
+            self.rdce_asset.runtime_sha256,
+        )
         received_pair_sha = canonical_sha256(
             {
                 "support": request["support_received_iq_ref"][
@@ -920,6 +945,7 @@ class _D106RealStateMaterializer:
                 "checkpoint_sha256": self.checkpoint_sha256,
                 "model_load_receipt_sha256": self.model_load_receipt_sha256,
                 "tap_receipt_sha256": tap_receipt,
+                **runtime_identity,
                 "support_rows": len(support_iq),
                 "query_rows": len(query_iq),
                 "query_fit_count": 0,
@@ -933,7 +959,7 @@ class _D106RealStateMaterializer:
             feature_receipt_path,
             received_iq_package_seal_sha256=received_pair_sha,
             checkpoint_sha256=self.checkpoint_sha256,
-            runtime_sha256=runtime_sha,
+            runtime_sha256=runtime_identity["d106_runtime_sha256"],
             forward_receipt_sha256=forward_receipt,
             support_plus=support_plus,
             support_signed=support_signed,
