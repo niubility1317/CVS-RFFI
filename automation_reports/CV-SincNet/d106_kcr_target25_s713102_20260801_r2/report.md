@@ -1,6 +1,6 @@
 # D106-KCR/r2完整Target25实验报告
 
-状态：`LOCAL_RELEASE_GO / P0=0 / P1=0 / R2_NOT_LANDED / NO_NEW_PERFORMANCE_RESULT`
+状态：`LANDED_PREPARE_COMPLETE_SMOKE_PAYLOAD_ALLOWLIST_FAILURE / NO_PERFORMANCE_RESULT`
 
 ## 实验登记
 
@@ -65,8 +65,21 @@ D106-KCR/r1仅按预先冻结的K值选择已完整计算的臂：`K1→M_DA`、
 |GPU|`cuda:0`；launch前重新记录占用|
 |日志/PID/exit|`logs/prepare.log`、`logs/smoke.log`、`logs/predict.log`；`control/predict.pid`、`control/predict.exit`|
 |预期输出|`prepared/`、`smoke/`、`predictions/`；完整prediction manifest及600个surface|
+|远端archive校验|SHA=`9b7deecea051def8024358df8d3e0a7af5b0d59d47b96958a408fb2395afb08b`；commit=`954c1df0ce5dddbe5a9641c4aa01b09e655f2ed6`；三lock SHA精确匹配；`py_compile=PASS`|
+|prepare结果|`TARGET25_D92_PACKAGES_LOCATED`；25/75/300/600闭合|
+|plan/context SHA|plan=`00f26d17d371472a1271078ed643e15fb2f30534d1524911191123990ce08e84`；context=`9dff1a120a0b3843da60e1718d00855acdf27e7b4eae84737b64658d2a4f0f0b`|
+|smoke结果|失败关闭；`D92 physical-ID materialization drift`，底层指纹`support payload exact allowlist drift`|
+|launch结果|未detach；`smoke/`、`predictions/`、predict PID和exit均不存在；无性能结果|
 
-`prepare`只读取D92 sealed package、checkpoint、RDCE wire和三个归档内lock。通过后对一个真实D92 package+checkpoint在`cuda:0`执行无truth smoke并保存receipt。只有smoke通过，才补记plan/context SHA与精确`predict`命令、再次提交报告并执行唯一一次不可覆盖detach。
+## 实际执行与失败证据
+
+`prepare`使用归档内RDCE/RCMR/KCR lock SHA`e7a198…4cc1`、`be452c…6b0c`、`a3d530…ab6a`及已登记的D92 manifest、checkpoint、RDCE wire SHA，输出`prepared/target25_plan.json`、`prepared/target25_context.json`和`prepared/prepare_receipt.json`。随后对`row_index=0,scenario_index=0,state_index=0`以`device=cuda:0,feature_batch_size=64`调用`smoke_d106_target25_prepared_state`，无truth参数。
+
+smoke在`_prepared_inputs→_expand_raw_rows→_derived_state→_support_rows`失败。D92原生helper`load_verified_somph_predictor_bundle`通过`_materialize_iq`解析并验证`manifest_json`后将其从array映射弹出；实际support payload为7项，但`_support_rows`仍按含`manifest_json`的8项NPZ成员表做exact-set比较，因此确定性失败。query路径存在同型5项对6项不一致，但尚未执行到该处。
+
+本地取回证据：`prepare.log`SHA=`fe98d7293c78e366ab316db773b88754f4ed1aae14ab286c8b0c5ad59324121d`；`smoke.log`SHA=`99c15b4779315af59974999900f66483ce8c80e64788d0d0c324ff0b88f7f84d`；`prepare_receipt.json`SHA=`a8e7015b79b7f258d67ec691425874a13860a92d81393b33c37f5b8ccf2cef3a`。远端日志实际文件名带尾部CR，这是PowerShell stdin换行造成的日志名问题，不影响异常内容；远端证据未修改，本地副本规范命名。检查时无目标进程，GPU0–7均为0%利用率/1MiB，`ssh.exe=0`且目标TCP22连接为0。
+
+r2不得覆盖、恢复、重试或重标为性能实验。修复必须在本地完成且不得改变方法；通过聚焦回归和独立P0/P1复核后使用新不可覆盖run ID。
 
 ## 健康停止规则
 
