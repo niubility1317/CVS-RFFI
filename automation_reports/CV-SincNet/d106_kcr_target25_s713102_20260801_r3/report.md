@@ -32,6 +32,9 @@ D106-KCR仅按K值选择已完整计算的臂：`K1→M_DA`、`K5→M0`、`K10�
 |项目|证据|
 |---|---|
 |payload修复commit|`0d3ebcfd6fbc70facf4d9630f1114fcc368456fa`|
+|release source commit|`d0e17621a8a9b50f1aa604d436d15b7d350822b4`|
+|LF-preserving archive SHA256|`08c5414cddb165d66e6e6965342fdad6e871815439166ab75470ebf3e0bdb6e3`|
+|解包lock SHA256|RDCE=`e7a1982b4bdeaf5b8179993ce78f4a2af26965d8f4a3239440dbe636ebf14cc1`；RCMR=`be452cc52da8e5c43d3addc73568580d63a83f146310ec3559bb5daa99076b0c`；KCR=`a3d530734b90454724166f620d7017f80e6de838fd4ca469c04abb155534ab6a`|
 |修复内容|按D92 loader完成`manifest_json`验证并移除后的真实payload契约读取support/query；额外truth/role字段fail closed|
 |本地验证|`py_compile`通过；176项聚焦测试全部通过；`git diff --check`通过|
 |方法/矩阵变化|无；仅修复真实payload适配|
