@@ -1,0 +1,92 @@
+{
+  "schema": "cvs.phase2.d108.cbrrc_smme_method_lock.v1",
+  "candidate_id": "D108-CB-RRC-SMME/r1",
+  "protocol_schema": "p2_min_v1",
+  "d92_matrix_manifest_sha256": "b70045e7cd45a6029bc0a1a47ada0bb72d16fdb6bc7662c43bd253bfc7e4bc5c",
+  "feature_view": "d92_288d_relu160_fft96_rf32",
+  "feature_width": 288,
+  "arms": [
+    "M0",
+    "M_DA",
+    "M_HEAD",
+    "M_JOINT"
+  ],
+  "ground_component": {
+    "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/d19_ciaf_int8_proto_20260717_1039/input/int8_component",
+    "manifest_sha256": "15b5e144f9af3989421d8e925c17758479c327be47e79222f6363dc63994629c",
+    "basis_loader": "D81_ground_basis_from_sealed_D19_int8_component"
+  },
+  "cbrrc": {
+    "module": "code/cvsrffi/stage2_d108_cbrrc.py",
+    "state": "class_balanced_before_support_relu160_energy_fp16",
+    "transform": "frozen_per_query_relu_residual_companding",
+    "preserved_blocks": "FFT96_and_RF32_bytewise_identity",
+    "query_rows_used_for_fit": 0,
+    "state_updates_from_query": 0
+  },
+  "smme": {
+    "module": "code/cvsrffi/stage2_d108_smme.py",
+    "state": "registered_support_D92_equal_prior_LDA_margin_bias",
+    "transform": "independent_LDA_logit_bias_addition",
+    "class_permutation_equivariant": true,
+    "query_rows_used_for_fit": 0,
+    "state_updates_from_query": 0
+  },
+  "causal_arm_contract": {
+    "M0": "frozen_D92_baseline",
+    "M_DA": "CB_RRC_only",
+    "M_HEAD": "SMME_only",
+    "M_JOINT": "CB_RRC_then_SMME"
+  },
+  "forbidden_inputs": [
+    "clean_source",
+    "clean_derived_signal",
+    "query_truth",
+    "query_role",
+    "old_new_role",
+    "class_quota",
+    "query_batch_class_count",
+    "global_reassignment",
+    "query_fit",
+    "query_update",
+    "K_router",
+    "performance_selection"
+  ],
+  "traceability": [
+    {
+      "id": "D108-01",
+      "requirement": "CB-RRC freezes a support-only 288-D transform with a ReLU160-only change",
+      "target": "code/cvsrffi/stage2_d108_cbrrc.py",
+      "status": "verified",
+      "verification": "code/tests/test_stage2_d108_cbrrc.py"
+    },
+    {
+      "id": "D108-02",
+      "requirement": "SMME freezes a registered-support-only D92-LDA bias state",
+      "target": "code/cvsrffi/stage2_d108_smme.py",
+      "status": "verified",
+      "verification": "code/tests/test_stage2_d108_smme.py"
+    },
+    {
+      "id": "D108-03",
+      "requirement": "all four causal arms remain fixed and independently scored",
+      "target": "code/cvsrffi/stage2_d108_matrix_protocol.py",
+      "status": "implemented",
+      "verification": "tests/test_stage2_d108_target125.py"
+    },
+    {
+      "id": "D108-04",
+      "requirement": "D19 ground component and every source D92 authority COMMIT are SHA-bound before runner use",
+      "target": "code/cvsrffi/stage2_d108_target125_inputs.py",
+      "status": "implemented",
+      "verification": "tests/test_stage2_d108_target125.py"
+    },
+    {
+      "id": "D108-05",
+      "requirement": "truth opens only after all immutable prediction artifacts are sealed",
+      "target": "code/cvsrffi/stage2_d108_truth_scorer.py",
+      "status": "implemented",
+      "verification": "tests/test_stage2_d108_truth_scorer.py"
+    }
+  ]
+}
