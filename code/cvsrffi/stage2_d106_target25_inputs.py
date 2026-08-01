@@ -234,7 +234,7 @@ def _kcr_route_lock(path: Path, expected_sha256: str) -> dict[str, Any]:
         raise D106Target25InputError("KCR route lock is not valid UTF-8 JSON") from error
     if (
         not isinstance(document, dict)
-        or raw != _canonical_bytes(document)
+        or raw not in {_canonical_bytes(document), _canonical_bytes(document) + b"\n"}
         or set(document) != _KCR_ROUTE_LOCK_FIELDS
         or document.get("schema") != KCR_ROUTE_LOCK_SCHEMA
         or document.get("candidate_id") != "D106-KCR/r1"
