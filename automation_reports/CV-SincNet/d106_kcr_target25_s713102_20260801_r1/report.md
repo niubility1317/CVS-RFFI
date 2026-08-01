@@ -1,6 +1,6 @@
 # D106-KCR/r1完整Target25实验报告
 
-状态：`LOCAL_VERIFIED / INDEPENDENT_INCREMENTAL_REVIEW_RUNNING / TARGET25_NOT_STARTED / NO_D106_TARGET_PERFORMANCE_RESULT`
+状态：`LOCAL_RELEASE_GO / P0=0 / P1=0 / TARGET25_NOT_STARTED / NO_D106_TARGET_PERFORMANCE_RESULT`
 
 ## 实验登记
 
@@ -45,9 +45,9 @@ G1 source-held开发证据表明单一全局联合臂不能稳定保持旧类flo
 |项目|状态|
 |---|---|
 |K条件路由|提交`d4b72a6b`，route lock SHA256=`a3d530734b90454724166f620d7017f80e6de838fd4ca469c04abb155534ab6a`|
-|production runner|初始提交`30d0eead`；D92 direct-seal发布修复提交`7531be61`|
-|本地验证|inputs/runner/evaluator/router/matrix统一窄回归全部通过；`py_compile`与`git diff --check`通过|
-|独立代码审查|初始production审查`GO / P0=0 / P1=0`；`7531be61`增量审查进行中|
+|production runner|初始提交`30d0eead`；D92 direct-seal发布修复`7531be61`；跨scene物理ID隔离修复`69b5679b`|
+|本地验证|inputs/runner/evaluator/router/matrix统一窄回归175项通过；`py_compile`与`git diff --check`通过|
+|独立代码审查|最终`GO / P0=0 / P1=0`；raw-path跨scene复用反例正确失败关闭|
 |真实checkpoint无truth smoke|待D92现有sealed package直接入口完成后在N607预启动阶段执行并保存receipt|
 |发布修复结果|已删除不存在的D105 formal-policy和外部split-locator依赖；直接从D92 package manifest、detached seal和真实payload派生物理ID与split身份；不改方法数学|
 
