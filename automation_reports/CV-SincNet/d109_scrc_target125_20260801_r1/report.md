@@ -1,6 +1,6 @@
 # D109-SCRC/r1方法研发与完整125预登记
 
-状态：`LOCAL_VERIFIED / IMPLEMENTATION_COMPLETE_NOT_RELEASED`
+状态：`LOCAL_VERIFIED / RELEASE_READY_NOT_LAUNCHED`
 
 ## 目标与证据边界
 
@@ -63,4 +63,16 @@ SCRC输出采用与冻结`h=g+log(pT)-logp`分类等价的canonical`log(pT)-max(
 |联合|两组测试及D108依赖|18 passed；仅既有PyTorch只读buffer警告|
 |独立复核|SCRC与pair分别审查|SCRC`P0=0,P1=0`；pair`P0=0,P1=0`|
 
-当前只完成方法核心，不含D109 runner、truth发布或N607性能证据；不得把实现完成写成性能成功。若D108完整125已达到目标，D109是否发布由主agent重新排序；若D108性能弱，直接复用其成熟Target125执行/证据面接入D109，不再增加数据或方法gate。
+## 最小Target125执行入口与独立发布复审
+
+D109不重建发布系统，只薄复用D108已经验证的D92/CB-RRC输入物化、冻结125矩阵、8-shard不可覆盖publication、完整manifest校验及独立truth scorer；D109只注入冻结`build_d109_d92_pair/score`，并给smoke、prediction、truth和score使用独立D109身份。prepared plan/context继续保持D108冻结输入身份，避免重复数据或authority封装。
+
+|执行面|文件|SHA256|验证|
+|---|---|---|---|
+|Target125 adapter|`code/cvsrffi/stage2_d109_target125.py`|`9d9ba0b05e0bfa84c1f6a97d6a116d119029b556212f6aec7abc71cd1e834943`|D109 pair/scorer注入、8-shard merge、完整prediction验证、truth前封存、异常安全身份恢复|
+|CLI|`code/scripts/run_d109_target125.py`|`966dcfa467c7b3381ffb3d04ee9fa35948e0065e88f960ea6c7534bcd4a3f2d0`|`prepare/smoke/predict-shard/merge/validate/build-truth/score`七个子命令|
+|聚焦测试|`tests/test_stage2_d109_target125.py`|`b2163ebef81b51a75093ce8f06d08362f89ab8f5a664dc65e745500936d0fba1`|Target专测5项；SCRC＋pair＋target联合23项|
+
+独立review完整读取D109 adapter、CLI、测试、D109 pair和复用的D108 runner/truth scorer，并在`ssr-gpu`中执行31项联合聚焦回归及三个文件`py_compile`，最终结论为`P0=0、P1=0 / RELEASE`。复审确认：`M0/M_DA`逐值保持D108正式状态；`M_HEAD/M_JOINT`分别使用base/DA、before/after冻结SCRC状态；predict入口不接收truth、role、quota、fit、update或selection；8个无重复shard必须完整合并3000个surface后，truth入口才允许继续。正式N607多进程仍必须使用`CUDA_VISIBLE_DEVICES=i`配合统一`--device cuda:0`。
+
+非阻塞P2仅包括测试覆盖分散和prediction manifest未内嵌run ID；唯一run root与不可覆盖输出由正式报告和runner交接固定。不得为这些P2延迟实验。当前没有D109 N607性能证据，状态只能是`RELEASE_READY_NOT_LAUNCHED`；若D108完整125性能弱，则创建新的不可覆盖D109 run ID、补充同一报告的N607命令/路径/PID/GPU/预期artifact并立即交给唯一Terra Max runner，不新增gate。若D108达到最终性能目标，则主agent重新排序是否仍需D109确认。
