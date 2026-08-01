@@ -269,11 +269,24 @@ def _target25_rows(
     if len(selected) != OUTER_JOB_COUNT or actual_keys != expected_keys:
         raise D106Target25InputError("D92 Target25 seed row order/coverage drift")
 
+    source_by_key = {
+        (str(job["receiver"]), int(job["k_shot"]), int(job["new_class_count"])): job
+        for job in selected
+    }
     matrix = freeze_d106_matrix_protocol()
     rows: list[dict[str, Any]] = []
-    for frozen, source in zip(matrix.jobs, selected, strict=True):
+    for frozen in matrix.jobs:
+        # D92 built K5 and K10 as independent sealed pools.  The frozen D106
+        # K5/new20 comparison instead needs a genuinely matched prefix, so it
+        # consumes the same K10 package as K10/new20 and materializes rank<5.
+        source_pool_k = (
+            10 if (frozen.k_shot, frozen.new_count) == (5, 20) else frozen.k_shot
+        )
+        source = source_by_key[(frozen.receiver, source_pool_k, frozen.new_count)]
         if (
             source.get("candidate") != D92_CANDIDATE
+            or source.get("k_shot") != source_pool_k
+            or source.get("new_class_count") != frozen.new_count
             or source.get("scenarios")
             != ["leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak"]
         ):
@@ -301,6 +314,7 @@ def _target25_rows(
                 "receiver": frozen.receiver,
                 "seed": frozen.seed,
                 "k_shot": frozen.k_shot,
+                "source_pool_k": source_pool_k,
                 "new_count": frozen.new_count,
                 "packages": packages,
             }

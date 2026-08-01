@@ -206,7 +206,21 @@ def test_prepare_projects_exact_target25_and_only_three_field_package_refs(
         for receiver in RECEIVERS
         for k_shot, new_count in TARGET25_SLICES
     ]
+    by_key = {
+        (row["receiver"], row["k_shot"], row["new_count"]): row
+        for row in plan["rows"]
+    }
+    for receiver in RECEIVERS:
+        k5 = by_key[(receiver, 5, 20)]
+        k10 = by_key[(receiver, 10, 20)]
+        assert k5["k_shot"] == 5
+        assert k5["source_pool_k"] == 10
+        assert k5["source_d92_job_id"] == k10["source_d92_job_id"]
+        assert k5["packages"] == k10["packages"]
     for row in plan["rows"]:
+        assert row["source_pool_k"] == (
+            10 if (row["k_shot"], row["new_count"]) == (5, 20) else row["k_shot"]
+        )
         assert set(row["packages"]) == {
             "before_enrollment",
             "before_apply",

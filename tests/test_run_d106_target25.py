@@ -98,7 +98,17 @@ def _expanded_rows(raw_rows: list[dict[str, Any]]) -> tuple[list[dict[str, Any]]
             scenario_row_id = f"{row['job_id']}::{scene}"
             plan_scenes.append({"scenario_row_id": scenario_row_id, "scenario": scene, "states": plan_states})
             context_scenes.append({"scenario_row_id": scenario_row_id, "scenario": scene, "states": context_states})
-        base = {name: row[name] for name in ("job_id", "receiver", "seed", "k_shot", "new_count")}
+        base = {
+            name: row[name]
+            for name in (
+                "job_id",
+                "receiver",
+                "seed",
+                "k_shot",
+                "source_pool_k",
+                "new_count",
+            )
+        }
         plan_rows.append({**base, "scenarios": plan_scenes})
         context_rows.append({**base, "scenarios": context_scenes})
     return plan_rows, context_rows, query_ids
@@ -416,6 +426,131 @@ def test_raw_plan_expands_and_rejects_cross_scene_physical_reuse(
             expected_plan_file_sha256=receipt["plan_file_sha256"],
             context_manifest_path=Path(receipt["context_manifest"]),
             expected_context_file_sha256=receipt["context_file_sha256"],
+        )
+
+
+def test_raw_plan_rejects_source_pool_k_tamper(tmp_path: Path) -> None:
+    values = input_fixture._inputs(tmp_path)
+    receipt = prepare_d106_target25_inputs(**values)
+    plan_path = Path(receipt["plan_manifest"])
+    context_path = Path(receipt["context_manifest"])
+    plan = json.loads(plan_path.read_text(encoding="utf-8"))
+    context = json.loads(context_path.read_text(encoding="utf-8"))
+    for document in (plan, context):
+        row = next(
+            item
+            for item in document["rows"]
+            if item["receiver"] == "20-1"
+            and item["k_shot"] == 5
+            and item["new_count"] == 20
+        )
+        row["source_pool_k"] = 5
+    plan["plan_receipt_sha256"] = canonical_sha256(
+        {key: value for key, value in plan.items() if key != "plan_receipt_sha256"}
+    )
+    context["plan_receipt_sha256"] = plan["plan_receipt_sha256"]
+    context["context_receipt_sha256"] = canonical_sha256(
+        {
+            key: value
+            for key, value in context.items()
+            if key != "context_receipt_sha256"
+        }
+    )
+    os.chmod(plan_path, stat.S_IWRITE)
+    os.chmod(context_path, stat.S_IWRITE)
+    plan_sha = _canonical_write(plan_path, plan)
+    context_sha = _canonical_write(context_path, context)
+    with pytest.raises(D106Target25RunnerError, match="source-pool K binding"):
+        runner_module._prepared_inputs(
+            plan_manifest_path=plan_path,
+            expected_plan_file_sha256=plan_sha,
+            context_manifest_path=context_path,
+            expected_context_file_sha256=context_sha,
+        )
+
+
+def test_k5_materialization_requires_k10_manifest_but_keeps_active_k(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    row = {
+        "source_d92_job_id": "rx_20_1__seed_713102__k_10__new_20",
+        "receiver": "20-1",
+        "seed": 713102,
+        "k_shot": 5,
+        "source_pool_k": 10,
+        "new_count": 20,
+    }
+    registry = ("old-0", "old-1")
+    manifest = {
+        "receiver": "20-1",
+        "seed": 713102,
+        "k_shot": 10,
+        "registered_classes": [
+            {"class_handle": value, "class_index": index}
+            for index, value in enumerate(registry)
+        ],
+        "package_root_sha256": "a" * 64,
+    }
+    captured: dict[str, int] = {}
+
+    def support_rows(
+        _payload: Mapping[str, np.ndarray],
+        *,
+        registered_classes: tuple[str, ...],
+        active_k: int,
+    ):
+        captured["active_k"] = active_k
+        ids = tuple(
+            f"{class_id}/rank-{rank}"
+            for class_id in registered_classes
+            for rank in range(active_k)
+        )
+        return (
+            np.zeros((len(ids), 2, 8), dtype=np.float32),
+            tuple(class_id for class_id in registered_classes for _ in range(active_k)),
+            ids,
+        )
+
+    monkeypatch.setattr(runner_module, "_validate_matched_packages", lambda *_: None)
+    monkeypatch.setattr(runner_module, "_d106_support_rows", support_rows)
+    monkeypatch.setattr(
+        runner_module,
+        "_d106_query_rows",
+        lambda _payload: (
+            np.zeros((2, 2, 8), dtype=np.float32),
+            ("query-0", "query-1"),
+        ),
+    )
+    ref = {
+        "package_root": "C:/sealed/package",
+        "detached_seal_path": "C:/sealed/seal.json",
+        "expected_seal_sha256": "b" * 64,
+    }
+    plan_state, _context_state, support_ids, _query_ids = runner_module._derived_state(
+        row=row,
+        scene="leo_clear_weak",
+        state_name="before",
+        support_ref=ref,
+        query_ref=ref,
+        support_loaded=({"leo_clear_weak": {}}, manifest, {}),
+        query_loaded=({"leo_clear_weak": {}}, manifest, {}),
+        old_registry=None,
+    )
+    assert captured["active_k"] == 5
+    assert len(support_ids) == 5 * len(registry)
+    assert plan_state["registered_classes"] == list(registry)
+
+    bad_manifest = {**manifest, "k_shot": 5}
+    with pytest.raises(D106Target25RunnerError, match="package row binding"):
+        runner_module._derived_state(
+            row=row,
+            scene="leo_clear_weak",
+            state_name="before",
+            support_ref=ref,
+            query_ref=ref,
+            support_loaded=({"leo_clear_weak": {}}, bad_manifest, {}),
+            query_loaded=({"leo_clear_weak": {}}, bad_manifest, {}),
+            old_registry=None,
         )
 
 

@@ -202,6 +202,7 @@ _RAW_ROW_FIELDS = {
     "receiver",
     "seed",
     "k_shot",
+    "source_pool_k",
     "new_count",
     "packages",
 }
@@ -333,7 +334,7 @@ def _derived_state(
         if (
             manifest.get("receiver") != row["receiver"]
             or manifest.get("seed") != row["seed"]
-            or manifest.get("k_shot") != row["k_shot"]
+            or manifest.get("k_shot") != row["source_pool_k"]
         ):
             raise D106Target25RunnerError("D92 package row binding drift")
     try:
@@ -423,6 +424,19 @@ def _expand_raw_rows(
     raw_context_rows = _sequence(context.get("rows"), "raw context rows", OUTER_JOB_COUNT)
     if raw_plan_rows != raw_context_rows:
         raise D106Target25RunnerError("raw plan/context row drift")
+    # Close the locator plane before opening any sealed package.  In
+    # particular, a tampered K5 row must not redirect materialization to an
+    # independently built D92 K5 pool.
+    for raw_row in raw_plan_rows:
+        if not isinstance(raw_row, Mapping) or set(raw_row) != _RAW_ROW_FIELDS:
+            raise D106Target25RunnerError("raw D92 row closure drift")
+        expected_pool_k = (
+            10
+            if (raw_row["k_shot"], raw_row["new_count"]) == (5, 20)
+            else raw_row["k_shot"]
+        )
+        if raw_row["source_pool_k"] != expected_pool_k:
+            raise D106Target25RunnerError("raw D92 source-pool K binding drift")
     package_cache: dict[tuple[tuple[str, str], ...], tuple[Any, dict[str, Any], dict[str, Any]]] = {}
 
     def loaded(ref: Mapping[str, Any]):
@@ -497,7 +511,17 @@ def _expand_raw_rows(
                     raise D106Target25RunnerError(
                         "D92 physical IDs overlap across target scenarios"
                     )
-        base = {name: raw_row[name] for name in ("job_id", "receiver", "seed", "k_shot", "new_count")}
+        base = {
+            name: raw_row[name]
+            for name in (
+                "job_id",
+                "receiver",
+                "seed",
+                "k_shot",
+                "source_pool_k",
+                "new_count",
+            )
+        }
         expanded_plan_rows.append({**base, "scenarios": plan_scenes})
         expanded_context_rows.append({**base, "scenarios": context_scenes})
     for receiver in {row["receiver"] for row in raw_plan_rows}:
@@ -832,8 +856,8 @@ class _D106RealStateMaterializer:
             or query_manifest.get("receiver") != request["receiver"]
             or support_manifest.get("seed") != request["seed"]
             or query_manifest.get("seed") != request["seed"]
-            or support_manifest.get("k_shot") != request["k_shot"]
-            or query_manifest.get("k_shot") != request["k_shot"]
+            or support_manifest.get("k_shot") != request["source_pool_k"]
+            or query_manifest.get("k_shot") != request["source_pool_k"]
         ):
             raise D106Target25RunnerError("D92 package row/registry binding drift")
         try:
@@ -1058,6 +1082,7 @@ def _state_request(
         "receiver": row["receiver"],
         "seed": row["seed"],
         "k_shot": row["k_shot"],
+        "source_pool_k": row["source_pool_k"],
         "new_count": row["new_count"],
         "scenario": scenario["scenario"],
         "state": state_name,
