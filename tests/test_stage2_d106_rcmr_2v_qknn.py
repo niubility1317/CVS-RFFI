@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import replace
 import hashlib
+import json
 from pathlib import Path
 import struct
 
@@ -9,6 +10,11 @@ import numpy as np
 import pytest
 
 import cvsrffi.stage2_d106_rcmr_2v_qknn as rcmr
+from cvsrffi.stage2_d106_matrix_protocol import (
+    LEO_SCENARIOS,
+    STATES,
+    freeze_d106_matrix_protocol,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -470,3 +476,51 @@ def test_g0_synthetic_reject_and_token_cap() -> None:
         _binding(ids, k=1, row="x" * 128)
     with pytest.raises(rcmr.D106RCMR2VError, match="wire-token limit"):
         rcmr._registry_tokens(("x" * 128, "class_b"))
+
+
+def test_exact_registry_and_target25_row_wire_boundaries() -> None:
+    legal_class = "cls_" + "a" * 64
+    assert len(legal_class.encode("utf-8")) == 68
+    assert len(json.dumps(legal_class).encode("utf-8")) == 70
+    assert rcmr._registry_tokens((legal_class, "class_b"))[0] == legal_class
+    oversized_class = legal_class + "0"
+    assert len(oversized_class.encode("utf-8")) == 69
+    assert len(json.dumps(oversized_class).encode("utf-8")) == 71
+    with pytest.raises(rcmr.D106RCMR2VError, match="wire-token limit"):
+        rcmr._registry_tokens((oversized_class, "class_b"))
+
+    matrix = freeze_d106_matrix_protocol()
+    row_ids = [
+        f"{job.job_id}::{scenario}::{state}"
+        for job in matrix.jobs
+        for scenario in LEO_SCENARIOS
+        for state in STATES
+    ]
+    longest = max(row_ids, key=lambda value: len(value.encode("utf-8")))
+    assert len(longest.encode("utf-8")) == 66
+    assert len(json.dumps(longest).encode("utf-8")) == 68
+    assert (
+        rcmr._require_text(
+            longest,
+            "row_id",
+            max_wire_bytes=rcmr.MAX_ROW_ID_WIRE_BYTES,
+        )
+        == longest
+    )
+    with pytest.raises(rcmr.D106RCMR2VError, match="wire-token limit"):
+        rcmr._require_text(
+            longest + "x",
+            "row_id",
+            max_wire_bytes=rcmr.MAX_ROW_ID_WIRE_BYTES,
+        )
+
+
+def test_method_lock_closes_exact_wire_caps() -> None:
+    document = json.loads(METHOD_LOCK_PATH.read_text(encoding="utf-8"))
+    assert document["max_registry_token_wire_bytes"] == 70
+    assert document["max_row_id_wire_bytes"] == 68
+    assert document["max_canonical_wire_bytes"] == 90000
+    assert rcmr.MAX_REGISTRY_TOKEN_WIRE_BYTES == 70
+    assert rcmr.MAX_ROW_ID_WIRE_BYTES == 68
+    assert rcmr.MAX_CANONICAL_WIRE_BYTES == 90000
+    assert _lock().is_loader_authorized
