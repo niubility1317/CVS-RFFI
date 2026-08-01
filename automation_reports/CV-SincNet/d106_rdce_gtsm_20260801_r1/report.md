@@ -422,3 +422,17 @@ RCMR真实588条G0仍是Phase1 train-only机械功能门，不是source-held、T
 G0模块把production和synthetic完全分离。production在本节时点仍固定`REAL_G0_BLOCKED_MISSING_D105_LOCK_AUTHORITY`；synthetic只使用`NON_FORMAL_TRAIN_ONLY_MECHANICAL`状态、独立wire和scorer，不调用Phase2 formal builder或strict state loader。每fold receipt绑定完整tap snapshot、fold身份、query双视图字节和changed bitmap；验证器强制外部SHA锚并从bitmap重算fold/per-K/aggregate门。无execution manifest时wire/state固定标记opaque且禁止promotion/runner消费。最终非作者复审为`P0=0/P1=0/P2=0`，G0＋RCMR＋Student-t联合58/58通过；合成K1/K5/K10变化数52/2/0因K10为0整体`REJECT_NO_FUNCTION_K_ZERO_CHANGED`。
 
 上述闭环没有访问held、Target或N607，没有accuracy、H、floor或性能结果。其状态只支持本地结构与非正式机械诊断；真实G0仍等待D106自有前序锁束完成独立复审和生产入口集成。
+
+## 27.D106 train-only前序锁束闭环
+
+`NON_FORMAL_TRAIN_ONLY_MECHANICAL_PREDECESSOR_LOCK_BUNDLE/v2`已完成实现和非作者复审。正式loader固定钉住D105 method-lock、runtime/checkpoint、D106 RCMR method-lock、依赖源码和loader callable身份；只发布canonical immutable bytes，消费时重新从固定资产构造K1/K5/K10 typed locks。公开summary不能直接构造，路径与SHA不在公开API，`False`不能由整数0冒充，低层对象污染不会进入fresh消费结果。
+
+|文件|SHA256|
+|---|---|
+|`code/cvsrffi/stage2_d106_train_only_predecessor_lock.py`|`fce6939bcd58834827a7f7dd96f7f4c090b1427ec39c8c988448631178edd588`|
+|`configs/d106_train_only_predecessor_lock_bundle_20260801.json`|`a1006909a60620479d6b64f7bd35d91b8c0e09c8738a226ef34c6da1a88668de`|
+|`tests/test_stage2_d106_train_only_predecessor_lock.py`|`741de717940ac0786d9ef0f202023281e82757c681975e64fce50e478e9e2d4b`|
+
+专项19/19、锁束＋Student-t＋RCMR联合59/59、D105 Phase1 bundle回归187/187通过。非作者终审为`P0=0/P1=0/P2=0 / LOCAL LOCK-BUNDLE GO`。资源收据为bundle 2,885/8,192B、三K lock wire 621/621/623B、loader源码57,492/131,072B、静态JSON 1,944/4,096B；Python对象和RSS未计。
+
+该锁束仍把tap archive/receipt标为`CALLER_SUPPLIED_UNVERIFIED`，六项authority均为false，不能单独授权真实G0、runner、Phase2、性能或Target。下一步必须由G0严格tap loader在同一生产入口内验证实际archive/receipt字节，再消费锁束；不得由调用方只传任意SHA越过tap验证。
