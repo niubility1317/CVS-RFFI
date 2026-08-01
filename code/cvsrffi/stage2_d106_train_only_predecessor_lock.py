@@ -14,7 +14,9 @@ from dataclasses import dataclass
 import hashlib
 import inspect
 import json
+import os
 from pathlib import Path
+import stat
 import sys
 from typing import Any, Callable, Mapping
 
@@ -177,14 +179,44 @@ def _require_exact_bool(value: Any, expected: bool, name: str) -> bool:
 
 
 def _read_regular_bytes(path: Path, *, name: str) -> tuple[bytes, str]:
-    if path.is_symlink() or not path.is_file():
-        raise D106TrainOnlyPredecessorLockError(
-            f"{name} must be a regular non-symlink file"
-        )
+    """Read and hash one stable regular file from the same opened descriptor."""
+
     try:
-        payload = path.read_bytes()
+        before = path.lstat()
     except OSError as error:
         raise D106TrainOnlyPredecessorLockError(f"cannot read {name}") from error
+    if not stat.S_ISREG(before.st_mode) or stat.S_ISLNK(before.st_mode):
+        raise D106TrainOnlyPredecessorLockError(f"{name} must be a regular non-symlink file")
+    descriptor: int | None = None
+    try:
+        descriptor = os.open(path, os.O_RDONLY | getattr(os, "O_NOFOLLOW", 0))
+        opened = os.fstat(descriptor)
+        if (
+            not stat.S_ISREG(opened.st_mode)
+            or opened.st_dev != before.st_dev
+            or opened.st_ino != before.st_ino
+        ):
+            raise D106TrainOnlyPredecessorLockError(f"{name} changed while opening")
+        chunks: list[bytes] = []
+        while True:
+            chunk = os.read(descriptor, 1 << 20)
+            if not chunk:
+                break
+            chunks.append(chunk)
+        after = os.fstat(descriptor)
+        if (
+            after.st_dev != opened.st_dev
+            or after.st_ino != opened.st_ino
+            or after.st_size != opened.st_size
+            or after.st_mtime_ns != opened.st_mtime_ns
+        ):
+            raise D106TrainOnlyPredecessorLockError(f"{name} changed during read")
+        payload = b"".join(chunks)
+    except OSError as error:
+        raise D106TrainOnlyPredecessorLockError(f"cannot read {name}") from error
+    finally:
+        if descriptor is not None:
+            os.close(descriptor)
     return payload, _sha256_bytes(payload)
 
 

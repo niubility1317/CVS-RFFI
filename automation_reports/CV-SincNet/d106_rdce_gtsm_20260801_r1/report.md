@@ -436,3 +436,42 @@ G0模块把production和synthetic完全分离。production在本节时点仍固�
 专项19/19、锁束＋Student-t＋RCMR联合59/59、D105 Phase1 bundle回归187/187通过。非作者终审为`P0=0/P1=0/P2=0 / LOCAL LOCK-BUNDLE GO`。资源收据为bundle 2,885/8,192B、三K lock wire 621/621/623B、loader源码57,492/131,072B、静态JSON 1,944/4,096B；Python对象和RSS未计。
 
 该锁束仍把tap archive/receipt标为`CALLER_SUPPLIED_UNVERIFIED`，六项authority均为false，不能单独授权真实G0、runner、Phase2、性能或Target。下一步必须由G0严格tap loader在同一生产入口内验证实际archive/receipt字节，再消费锁束；不得由调用方只传任意SHA越过tap验证。
+
+## 28.真实588条G0生产集成冻结
+
+可行性复审结论为`DESIGN_FROZEN / IMPLEMENTATION_AUTHORIZED`。production单入口必须先核对caller expected SHA，再复用`load_d106_phase1_ls_tap`严格验证同目录completion、正规非symlink文件、actual archive/receipt SHA、canonical receipt、588条L_s、`p2_min_v1`及clean/target/query=false；只有严格loader返回后，才把actual SHA交给v2锁束并私有fresh重建K1/K5/K10 locks。caller SHA不得直接成为锁束binding。
+
+生产执行复用现有28 receiver-day fold、每K覆盖588query、全类baseline/RCMR非正式机械scorer和changed bitmap，但使用独立production schema。结果与execution manifest分别发布canonical bytes，只含root、bitmap、count和receipt，不含query ID、预测标签、score、truth或性能字段。状态固定为`REAL_G0_EXECUTED_NON_FORMAL_TRAIN_ONLY_MECHANICAL`，全部runner/promotion/performance authority为false；任一K changed=0则整体`REJECT_NO_FUNCTION_K_ZERO_CHANGED`，参数扫描数为0。
+
+实现文件面冻结为：
+
+- 修改`code/cvsrffi/stage2_d106_rcmr_g0.py`及专项测试，增加production execute/verify；
+- 新增`code/scripts/run_d106_rcmr_g0_production.py`及专项测试，作为单用途薄CLI，负责不可覆盖output、result/manifest原子发布和completion marker，不复制算法；
+- 不修改tap builder、RCMR机制、Student-t数值、D105资产或Target runner。
+
+r7可复用资产的记录路径为`/home/szu2070436088/2510044040/CV-SincNet/runs/d106_real_integration_dba10236_20260801_r7/output/strict_tap/`，archive/receipt/completion SHA分别为`48b92fa8defc1c7261ca80f9e0723662e3fe6e8c64ec0881c8ef13bab3cafa2f`、`24badfa3f56c8f1b98a35768ea102a6c8e13267fcff80d59060ec6f2f13e0665`和`c50412f0601a8c9135ff4d743ac71c2e6438ada328fe3c16a3fcf34e15578655`。当前未验证远端仍存在，因此实现阶段不得写`LANDED`或`RUNNING`。
+
+## 29.真实G0最小独立入口与立即发布决定
+
+为纠正release工程扩张，本轮停止增加通用验证器、schema和authority层，只保留直接阻止真实G0的最小入口：父runner不导入方法模块，以外部canonical release manifest钉住实际运行文件；`python -I`clean child从同一无跟随FD读取真实tap/receipt并执行K1/K5/K10；第二clean child只验证production结果；POSIX目录FD无覆盖发布result、execution manifest和最后的completion marker。Windows在创建child或output前拒绝production，N607 Linux是唯一正式执行面。
+
+内部rows helper固定为`INTERNAL_ROWS_TEST_ONLY_NOT_A_PRODUCTION_ARTIFACT`，production和synthetic验证器已经拆分并互拒。前序锁读取改为同一FD内完成hash和parse。manifest构建器从5个直接模块出发以AST固定点得到当前29个`cvsrffi`传递模块，不使用手写5模块清单，也不扫描全部199模块。`cvsrffi/__init__.py`只作为已哈希文件；其未来静态导入扫描为P2，不阻塞当前实验。
+
+|文件|SHA256|
+|---|---|
+|`code/cvsrffi/stage2_d106_rcmr_g0.py`|`6d496298e21a1b9a1e5398ff9f507b44fa0164ca0332c50d29a385f2b7b5a2b2`|
+|`code/cvsrffi/stage2_d106_train_only_predecessor_lock.py`|`97cfc235d7b6832337d09627f80fa984b82f3bf753514b449e12e60bd28c46e3`|
+|`code/scripts/run_d106_rcmr_g0_production.py`|`c063885afb4434e8fdddc037ab59fbc11dca18150a53f0490464fdafc5604a91`|
+|`code/scripts/d106_rcmr_g0_clean_child.py`|`fd8cbeb473e43e71a8138548266268cd6c1b7cf6ebdacdea6ad118d38ad72182`|
+|`code/scripts/build_d106_rcmr_g0_release_manifest.py`|`fbb13d7c021bd0e2e8c729f858a42c140325a7306268b83d5dc494905acb3327`|
+|`tests/test_stage2_d106_rcmr_g0.py`|`4d660dae90c0ad688f88448f7935a1c71b09dfb8defd15f8c0c908f60ba36eb3`|
+|`tests/test_run_d106_rcmr_g0_production.py`|`b228bc861a8969faa44b20e583e91662b4dea7dcf0a2c5ec9cce41fb090e0d26`|
+|`tests/test_build_d106_rcmr_g0_release_manifest.py`|`758947e23612b4e30805254b9633480af7f88d890795c7e0e9eb836554fc3071`|
+
+独立Sol High终审收集170项，169通过、1项因缺少真实fixture预期跳过；结论为`P0=0/P1=0/P2=1 / LOCAL IMPLEMENTATION GO`。P2仅涉及未来`cvsrffi/__init__.py`新增静态导入时的构建器提前提示，不改变当前29模块闭包，也不阻止真实实验。下一步不再增加本地门：提交当前Git树，从clean commit生成manifest，创建`d106_rcmr_g0_real_20260801_121040_r1`，完成N607 preflight后立即运行真实588条G0。
+
+本阶段仍为`NO_NEW_PERFORMANCE_RESULT`。G0只读取feature/neighbor/margin/argmax变化和资源；不读取accuracy、H、floor或Target truth。任一K changed=0即`REJECT_REVISION_NO_FUNCTION`并恢复方法研发；三K均非零则直接进入G1。
+
+## 30.外部基线数据口径修正
+
+独立数据审计确认D62、D92、SVRN各有125个唯一job/375场景，D91只有15个development row；未发现跨run最佳值拼接。全面表已更新至`analysis/d106_external_baseline_comparison_20260801.md`。关键修正是区分五seed`mean row-floor`与当前G2固定seed、固定slice的`pooled F_old`：seed713102下D92 K10/new20为`A-old=72.167%`、`pooled F-old=51.667%`、`N=68.633%`、`H=70.160%`，距当前门分别为19.833pp、33.333pp和17.367pp。D92 K1/new20基线为`A-old=44.889%`、`pooled F-old=20.667%`、`N=26.267%`、`H=32.596%`、正确数2384；这些只用于未来同row配对，不是D106结果。
