@@ -7,6 +7,7 @@
 | D108-CORE-03 | Fixed four-arm scoring and exact M0 path | direct D42/D92 equality test |
 | D108-CORE-04 | K1, singleton decisions, and class permutation | K1/per-row/permutation tests |
 | D108-CORE-05 | Support-only capability and resource closure | surface/resource tests |
+| D108-CORE-06 | Strict sklearn 1.7.0/1.7.2 compatibility and dual-global recovery | runtime compatibility tests |
 """
 
 from __future__ import annotations
@@ -195,16 +196,90 @@ def test_strict_d92_injection_builds_base_and_da_then_restores_global(
     assert d42._fit_equal_prior_lda is original_fit
 
 
+def test_sklearn_170_runs_formal_d92_fit_with_unchanged_mechanism_metadata(
+    fast_d42_metric: None,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    old_x, old_y, new_x, new_y = _support(5)
+    original_fit = d42._fit_equal_prior_lda
+    original_runtime_lock = d42.SKLEARN_RUNTIME_VERSION
+    frozen_d92 = _d92_fit()
+    calls: list[tuple[int, int]] = []
+
+    def traced_d92(*args):
+        assert d42._fit_equal_prior_lda is traced_d92
+        assert d42.SKLEARN_RUNTIME_VERSION == "1.7.0"
+        calls.append((int(args[2]), int(args[3])))
+        return frozen_d92(*args)
+
+    monkeypatch.setattr(d42.sklearn, "__version__", "1.7.0")
+    result = core._fit_d42_with_temporary_d92(
+        old_x,
+        old_y,
+        OLD_CLASSES,
+        new_x,
+        new_y,
+        NEW_CLASSES,
+        seed=108,
+        device="cpu",
+        d92_fit=traced_d92,
+    )
+    assert calls == [(6, 5), (11, 5)]
+    assert result.before_state.is_int8 and result.state.is_int8
+    assert result.geometry_audit["sklearn_runtime_version"] == "1.7.0"
+    assert result.geometry_audit["sklearn_runtime_version_lock_pass"] is True
+    assert result.geometry_audit["stage2b_classifier"] == (
+        "old_only_unified_auto_shrinkage_lda"
+    )
+    assert result.geometry_audit["stage2c_classifier"] == (
+        "all_registry_unified_auto_shrinkage_lda"
+    )
+    assert result.geometry_audit["lda_solver"] == "lsqr"
+    assert result.geometry_audit["shrinkage"] == "auto"
+    assert d42._fit_equal_prior_lda is original_fit
+    assert d42.SKLEARN_RUNTIME_VERSION == original_runtime_lock
+
+
+def test_sklearn_172_path_remains_formal_and_restores_both_globals(
+    fast_d42_metric: None,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    old_x, old_y, new_x, new_y = _support(5)
+    original_fit = d42._fit_equal_prior_lda
+    original_runtime_lock = d42.SKLEARN_RUNTIME_VERSION
+    frozen_d92 = _d92_fit()
+    monkeypatch.setattr(d42.sklearn, "__version__", "1.7.2")
+    result = core._fit_d42_with_temporary_d92(
+        old_x,
+        old_y,
+        OLD_CLASSES,
+        new_x,
+        new_y,
+        NEW_CLASSES,
+        seed=108,
+        device="cpu",
+        d92_fit=frozen_d92,
+    )
+    assert result.geometry_audit["sklearn_runtime_version"] == "1.7.2"
+    assert result.before_state.is_int8 and result.state.is_int8
+    assert d42._fit_equal_prior_lda is original_fit
+    assert d42.SKLEARN_RUNTIME_VERSION == original_runtime_lock
+
+
 def test_exception_during_d92_fit_restores_d42_global(
     fast_d42_metric: None,
+    monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     old_x, old_y, new_x, new_y = _support(1)
     original_fit = d42._fit_equal_prior_lda
+    original_runtime_lock = d42.SKLEARN_RUNTIME_VERSION
 
     def exploding_d92(*_args):
         assert d42._fit_equal_prior_lda is exploding_d92
+        assert d42.SKLEARN_RUNTIME_VERSION == "1.7.0"
         raise RuntimeError("injected D92 failure")
 
+    monkeypatch.setattr(d42.sklearn, "__version__", "1.7.0")
     with pytest.raises(RuntimeError, match="injected D92 failure"):
         core.build_d108_d92_pair(
             old_x,
@@ -218,6 +293,39 @@ def test_exception_during_d92_fit_restores_d42_global(
             d92_fit=exploding_d92,
         )
     assert d42._fit_equal_prior_lda is original_fit
+    assert d42.SKLEARN_RUNTIME_VERSION == original_runtime_lock
+
+
+def test_unknown_sklearn_runtime_is_rejected_without_mutating_globals(
+    fast_d42_metric: None,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    old_x, old_y, new_x, new_y = _support(5)
+    original_fit = d42._fit_equal_prior_lda
+    original_runtime_lock = d42.SKLEARN_RUNTIME_VERSION
+    called = False
+
+    def forbidden_fit(*_args):
+        nonlocal called
+        called = True
+        raise AssertionError("unsupported runtime must fail before D92 fit")
+
+    monkeypatch.setattr(d42.sklearn, "__version__", "1.8.0")
+    with pytest.raises(core.D108D92CoreError, match="not supported: 1.8.0"):
+        core._fit_d42_with_temporary_d92(
+            old_x,
+            old_y,
+            OLD_CLASSES,
+            new_x,
+            new_y,
+            NEW_CLASSES,
+            seed=108,
+            device="cpu",
+            d92_fit=forbidden_fit,
+        )
+    assert called is False
+    assert d42._fit_equal_prior_lda is original_fit
+    assert d42.SKLEARN_RUNTIME_VERSION == original_runtime_lock
 
 
 def test_m0_is_bitwise_direct_d42_d92_score_and_heads_use_formal_support_logits(

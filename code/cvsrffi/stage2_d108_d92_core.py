@@ -23,6 +23,7 @@ CANDIDATE_ID = "D108-CB-RRC-SMME/r1"
 PROTOCOL_SCHEMA = "p2_min_v1"
 ARMS = ("M0", "M_DA", "M_HEAD", "M_JOINT")
 PHASES = ("before", "after")
+D108_ALLOWED_SKLEARN_RUNTIME_VERSIONS = ("1.7.0", "1.7.2")
 _DA_ARMS = frozenset(("M_DA", "M_JOINT"))
 _HEAD_ARMS = frozenset(("M_HEAD", "M_JOINT"))
 _D42_FIT_INJECTION_LOCK = threading.RLock()
@@ -201,9 +202,17 @@ def _fit_d42_with_temporary_d92(
         raise D108D92CoreError("d92_fit must be a prebuilt callable")
     with _D42_FIT_INJECTION_LOCK:
         original_fit = d42._fit_equal_prior_lda
+        original_sklearn_runtime_version = d42.SKLEARN_RUNTIME_VERSION
         if not callable(original_fit):
             raise D108D92CoreError("D42 baseline LDA hook is not callable")
+        sklearn_runtime_version = str(d42.sklearn.__version__)
+        if sklearn_runtime_version not in D108_ALLOWED_SKLEARN_RUNTIME_VERSIONS:
+            raise D108D92CoreError(
+                "D108 sklearn runtime is not supported: "
+                f"{sklearn_runtime_version}"
+            )
         try:
+            d42.SKLEARN_RUNTIME_VERSION = sklearn_runtime_version
             d42._fit_equal_prior_lda = d92_fit
             result = d42.fit_d42_unified_shrinkage_lda(
                 old_support_features,
@@ -214,11 +223,18 @@ def _fit_d42_with_temporary_d92(
                 new_registered_classes,
                 seed=seed,
                 device=device,
+                config=d42.D42UnifiedShrinkageLDAConfig(
+                    sklearn_runtime_version=sklearn_runtime_version
+                ),
             )
-            if d42._fit_equal_prior_lda is not d92_fit:
+            if (
+                d42._fit_equal_prior_lda is not d92_fit
+                or d42.SKLEARN_RUNTIME_VERSION != sklearn_runtime_version
+            ):
                 raise D108D92CoreError("D42 D92 injection was altered during fit")
         finally:
             d42._fit_equal_prior_lda = original_fit
+            d42.SKLEARN_RUNTIME_VERSION = original_sklearn_runtime_version
     if type(result) is not d42.D42UnifiedShrinkageLDAResult:
         raise D108D92CoreError("D42 injection did not return an exact result")
     return result
@@ -438,6 +454,7 @@ def resource_summary(pair: D108D92Pair) -> dict[str, int | bool | str]:
 __all__ = [
     "ARMS",
     "CANDIDATE_ID",
+    "D108_ALLOWED_SKLEARN_RUNTIME_VERSIONS",
     "D108D92CoreError",
     "D108D92Pair",
     "PHASES",
