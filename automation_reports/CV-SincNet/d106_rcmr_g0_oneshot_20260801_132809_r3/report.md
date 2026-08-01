@@ -1,6 +1,6 @@
 # D106-RCMR-2V-qKNN真实G0 one-shot发布报告
 
-状态：`LOCAL_COMMITTED / ONE_SHOT_ASSET_BUILT / N607_NOT_LANDED / NO_NEW_PERFORMANCE_RESULT`
+状态：`ARTIFACTS_COMPLETE / G0_PASS_PROCEED_G1 / NO_PERFORMANCE_RESULT`
 
 ## 1.身份与纠偏
 
@@ -56,3 +56,27 @@ CUDA_VISIBLE_DEVICES=0 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python /home
 - 三个K均非零：`G0_PASS_PROCEED_G1`，立即进入冻结四臂`M0/M_DA/M_HEAD/M_JOINT`。
 - G0不计算accuracy、H、floor或Target truth；不得用中间性能停止。
 
+## 6.实际执行与功能证据
+
+N607 direct preflight通过；8张RTX 3090在启动前均为0%利用率、1MiB显存占用。远端run-root初始为`ABSENT`，冻结zip上传后SHA256匹配，解压和唯一入口`py_compile`通过。冻结命令以PID=`3225766`在GPU0启动，3秒健康检查时进程为`LIVE`，CWD与完整命令行均绑定本run；其后自然退出并形成结果JSON。`run.out`为7153字节，未发现Traceback、Error、Exception、RuntimeError、OOM或NaN指纹。
+
+结果契约核验：`schema=cvs.phase1.d106.rcmr_2v_g0.one_shot.v2`，`run_id`和真实tap SHA逐字匹配，`row_count=588`，`real_archive_g0_executed=true`，`g0_decision_consumption_allowed=true`，`g1_entry_allowed=true`，`formal_performance_claim=false`，`performance_metrics_emitted=false`，`query_label_read_for_scoring=false`。
+
+|K|query数|feature变化数／bitmap roots root|neighbor变化数／bitmap roots root|margin变化数／bitmap roots root|argmax变化数／bitmap roots root|
+|---:|---:|---|---|---|---|
+|1|588|588／`5861f9b47759c73459175610e69705ba8986f5e9ced13261bd339382fc45b140`|20／`81951aa84c6fb2441249f6f2b29d4649e422c2702c1bf79c36ca0a979469e5fc`|588／`f91c611960dd315f5035e38abb6c7a571d434d1f85f2b566bfa8c3fd69890bed`|20／`1be8e913da18a4ebc8134890034f3115ecb121ef7e24a106a64e246f0ea4ac9b`|
+|5|588|588／`5861f9b47759c73459175610e69705ba8986f5e9ced13261bd339382fc45b140`|193／`63dd19dd099f94c9ad8b90754caf9737a345fc0294b2f99dd405258c2ff6cf96`|588／`f91c611960dd315f5035e38abb6c7a571d434d1f85f2b566bfa8c3fd69890bed`|28／`54a4316a9b5ae85bf638a98a4db35f257ebdc00a94b2c22756696bcd8e7c4e30`|
+|10|588|588／`5861f9b47759c73459175610e69705ba8986f5e9ced13261bd339382fc45b140`|262／`0c0cabfa4dddcb9e23f8a35e1abe28bf9af1b6fd3c5d1d4247247c16e2150231`|588／`f91c611960dd315f5035e38abb6c7a571d434d1f85f2b566bfa8c3fd69890bed`|87／`47a364b8a5f21e7319c9dc660e547808532388d8a82f4dcc0f53abb4288b7520`|
+
+|资源字段|结果|
+|---|---:|
+|analysis numeric array budget|1048576B|
+|incremental numeric array peak estimate|820880B|
+|parameter scan count|0|
+|query state updates|0|
+|analysis budget is process RSS cap|false|
+|process RSS measured|false|
+
+三个K的`argmax_changed_count`分别为20、28、87，均非零；`zero_changed_k_values=[]`。因此本run最终分类为`G0_PASS_PROCEED_G1`，允许主agent直接准备冻结G1四臂。该结论只证明真实功能路径生效，不是held性能或Target性能。
+
+小工件已回收到`artifacts/remote/g0_result.json`、`artifacts/remote/run.out`和`artifacts/remote/launch.pid`。PID已退出，本地`ssh.exe`与N607 TCP22连接均已清理。
