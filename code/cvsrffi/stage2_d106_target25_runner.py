@@ -82,6 +82,11 @@ PREDICTION_MANIFEST_SCHEMA = "cvs.phase2.d106.target25.prediction_manifest.v1"
 TRUTH_CATALOG_SCHEMA = "cvs.phase2.d106.target25.truth_catalog.v1"
 TRUTH_OPEN_EVENT_SCHEMA = "cvs.phase2.d106.target25.truth_open_event.v1"
 SCORE_MANIFEST_SCHEMA = "cvs.phase2.d106.target25.score_manifest.v1"
+PLUS_TOTALIZATION_SCHEMA = (
+    "cvs.phase2.d106.target25.relu_plus_totalization.v1"
+)
+PLUS_TOTALIZATION_REVISION = "same_physical_signed_fallback_r1"
+PLUS_TOTALIZATION_NORM_EPS = 1.0e-12
 METHODS = (*ARMS, "ROUTED")
 _PREDICTION_MANIFEST_FIELDS = {
     "schema",
@@ -694,6 +699,82 @@ def _array_receipt(value: np.ndarray) -> dict[str, Any]:
     }
 
 
+def _totalize_relu_plus_rows(
+    plus: np.ndarray,
+    signed: np.ndarray,
+    physical_ids: Sequence[str],
+    *,
+    scope: str,
+) -> tuple[np.ndarray, dict[str, Any]]:
+    """Replace only degenerate ReLU rows with their same-IQ signed rows."""
+
+    if scope not in {"support", "query"}:
+        raise D106Target25RunnerError("plus totalization scope drift")
+    if (
+        not isinstance(plus, np.ndarray)
+        or not isinstance(signed, np.ndarray)
+        or plus.dtype != np.dtype(np.float32)
+        or signed.dtype != np.dtype(np.float32)
+        or plus.ndim != 2
+        or signed.ndim != 2
+        or plus.shape != signed.shape
+        or plus.shape[0] < 1
+        or plus.shape[1] < 1
+    ):
+        raise D106Target25RunnerError(
+            "plus totalization arrays must be matched nonempty 2D float32"
+        )
+    ids = tuple(physical_ids)
+    if (
+        len(ids) != plus.shape[0]
+        or any(type(value) is not str or not value for value in ids)
+        or len(set(ids)) != len(ids)
+    ):
+        raise D106Target25RunnerError("plus totalization physical-ID binding drift")
+
+    plus_input = np.ascontiguousarray(plus)
+    signed_input = np.ascontiguousarray(signed)
+    if not np.isfinite(plus_input).all() or not np.isfinite(signed_input).all():
+        raise D106Target25RunnerError("plus totalization features must be finite")
+    signed_norms = np.linalg.norm(signed_input.astype(np.float64), axis=1)
+    if np.any(signed_norms <= PLUS_TOTALIZATION_NORM_EPS):
+        raise D106Target25RunnerError(
+            "plus totalization signed row is degenerate"
+        )
+    plus_norms = np.linalg.norm(plus_input.astype(np.float64), axis=1)
+    replace = plus_norms <= PLUS_TOTALIZATION_NORM_EPS
+    output = plus_input.copy(order="C")
+    output[replace] = signed_input[replace]
+    if (
+        not np.isfinite(output).all()
+        or np.any(
+            np.linalg.norm(output.astype(np.float64), axis=1)
+            <= PLUS_TOTALIZATION_NORM_EPS
+        )
+    ):
+        raise D106Target25RunnerError("plus totalization output is degenerate")
+
+    replaced_ids = [value for value, selected in zip(ids, replace) if selected]
+    receipt: dict[str, Any] = {
+        "schema": PLUS_TOTALIZATION_SCHEMA,
+        "revision": PLUS_TOTALIZATION_REVISION,
+        "scope": scope,
+        "row_count": len(ids),
+        "replaced_count": len(replaced_ids),
+        "replaced_physical_id_root_sha256": canonical_sha256(
+            sorted(replaced_ids)
+        ),
+        "ordered_physical_ids_sha256": canonical_sha256(list(ids)),
+        "input_plus_array_receipt": _array_receipt(plus_input),
+        "input_signed_array_receipt": _array_receipt(signed_input),
+        "output_plus_array_receipt": _array_receipt(output),
+        "query_truth_access": False,
+        "state_updated": False,
+    }
+    receipt["totalization_receipt_sha256"] = canonical_sha256(receipt)
+    return output, receipt
+
+
 def _load_rdce_asset_from_wire(
     path: Path,
     *,
@@ -920,8 +1001,28 @@ class _D106RealStateMaterializer:
             raise D106Target25RunnerError("same-model state feature forward failed") from error
         support_signed = np.ascontiguousarray(signed[: len(support_iq)], dtype=np.float32)
         query_signed = np.ascontiguousarray(signed[len(support_iq) :], dtype=np.float32)
-        support_plus = np.maximum(support_signed, np.float32(0.0))
-        query_plus = np.maximum(query_signed, np.float32(0.0))
+        support_plus_raw = np.maximum(support_signed, np.float32(0.0))
+        query_plus_raw = np.maximum(query_signed, np.float32(0.0))
+        support_plus, support_totalization = _totalize_relu_plus_rows(
+            support_plus_raw,
+            support_signed,
+            support_ids,
+            scope="support",
+        )
+        query_plus, query_totalization = _totalize_relu_plus_rows(
+            query_plus_raw,
+            query_signed,
+            query_ids,
+            scope="query",
+        )
+        _write_json_new(
+            state_root / "support_plus_totalization.receipt.json",
+            support_totalization,
+        )
+        _write_json_new(
+            state_root / "query_plus_totalization.receipt.json",
+            query_totalization,
+        )
         runtime_identity = _runtime_identity_binding(
             support_manifest,
             query_manifest,
@@ -948,6 +1049,12 @@ class _D106RealStateMaterializer:
                 **runtime_identity,
                 "support_rows": len(support_iq),
                 "query_rows": len(query_iq),
+                "support_plus_totalization_receipt_sha256": support_totalization[
+                    "totalization_receipt_sha256"
+                ],
+                "query_plus_totalization_receipt_sha256": query_totalization[
+                    "totalization_receipt_sha256"
+                ],
                 "query_fit_count": 0,
                 "query_update_count": 0,
             }

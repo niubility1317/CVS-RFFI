@@ -643,6 +643,278 @@ def test_illegal_runtime_sha_fails_closed(
         )
 
 
+def test_relu_plus_totalization_replaces_only_same_physical_zero_row() -> None:
+    signed = np.asarray(
+        [[-3.0, -4.0, -12.0], [1.25, -2.5, 3.75]], dtype=np.float32
+    )
+    plus = np.maximum(signed, np.float32(0.0))
+    original_nonzero_bytes = plus[1].tobytes(order="C")
+
+    output, receipt = runner_module._totalize_relu_plus_rows(
+        plus, signed, ("physical-0", "physical-1"), scope="support"
+    )
+
+    assert np.array_equal(output[0], signed[0])
+    assert output[1].tobytes(order="C") == original_nonzero_bytes
+    assert output.dtype == np.float32
+    assert output.shape == plus.shape
+    assert receipt["schema"] == runner_module.PLUS_TOTALIZATION_SCHEMA
+    assert receipt["revision"] == runner_module.PLUS_TOTALIZATION_REVISION
+    assert receipt["scope"] == "support"
+    assert receipt["row_count"] == 2
+    assert receipt["replaced_count"] == 1
+    assert receipt["replaced_physical_id_root_sha256"] == canonical_sha256(
+        ["physical-0"]
+    )
+    assert receipt["ordered_physical_ids_sha256"] == canonical_sha256(
+        ["physical-0", "physical-1"]
+    )
+    assert receipt["query_truth_access"] is False
+    assert receipt["state_updated"] is False
+    assert receipt["totalization_receipt_sha256"] == canonical_sha256(
+        {
+            key: value
+            for key, value in receipt.items()
+            if key != "totalization_receipt_sha256"
+        }
+    )
+
+
+def test_relu_plus_query_totalization_is_isolated_and_noop_bytes_hold() -> None:
+    signed = np.asarray([[2.0, -1.0], [0.25, 7.0]], dtype=np.float32)
+    plus = np.maximum(signed, np.float32(0.0))
+
+    output, receipt = runner_module._totalize_relu_plus_rows(
+        plus, signed, ("query-0", "query-1"), scope="query"
+    )
+
+    assert output.tobytes(order="C") == plus.tobytes(order="C")
+    assert receipt["scope"] == "query"
+    assert receipt["replaced_count"] == 0
+    assert receipt["replaced_physical_id_root_sha256"] == canonical_sha256([])
+    assert receipt["query_truth_access"] is False
+    assert receipt["state_updated"] is False
+
+
+@pytest.mark.parametrize(
+    "signed",
+    [
+        np.asarray([[0.0, 0.0]], dtype=np.float32),
+        np.asarray([[np.nan, 1.0]], dtype=np.float32),
+    ],
+)
+def test_relu_plus_totalization_rejects_invalid_signed_rows(
+    signed: np.ndarray,
+) -> None:
+    plus = np.zeros_like(signed)
+    with pytest.raises(D106Target25RunnerError):
+        runner_module._totalize_relu_plus_rows(
+            plus, signed, ("physical-0",), scope="support"
+        )
+
+
+@pytest.mark.parametrize(
+    ("plus", "signed", "physical_ids"),
+    [
+        (
+            np.ones((1, 3), dtype=np.float32),
+            np.ones((1, 2), dtype=np.float32),
+            ("physical-0",),
+        ),
+        (
+            np.ones((1, 2), dtype=np.float64),
+            np.ones((1, 2), dtype=np.float32),
+            ("physical-0",),
+        ),
+        (
+            np.ones((2, 2), dtype=np.float32),
+            np.ones((2, 2), dtype=np.float32),
+            ("physical-0",),
+        ),
+        (
+            np.ones((2, 2), dtype=np.float32),
+            np.ones((2, 2), dtype=np.float32),
+            ("physical-0", "physical-0"),
+        ),
+    ],
+)
+def test_relu_plus_totalization_rejects_shape_dtype_or_id_drift(
+    plus: np.ndarray,
+    signed: np.ndarray,
+    physical_ids: tuple[str, ...],
+) -> None:
+    with pytest.raises(D106Target25RunnerError):
+        runner_module._totalize_relu_plus_rows(
+            plus, signed, physical_ids, scope="support"
+        )
+
+
+def test_real_materializer_calls_totalization_for_support_and_query(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    support_ids = ("support-0", "support-1")
+    query_ids = ("query-0", "query-1")
+    registry = ("old-0", "old-1")
+    source_runtime = "a" * 64
+    manifest = {
+        "receiver": "20-1",
+        "seed": 713102,
+        "k_shot": 1,
+        "registered_classes": [
+            {"class_handle": value, "class_index": index}
+            for index, value in enumerate(registry)
+        ],
+        "feature_runtime_sha256": source_runtime,
+    }
+    packages = iter(
+        [
+            ({"leo_clear_weak": {}}, manifest, {}),
+            ({"leo_clear_weak": {}}, manifest, {}),
+        ]
+    )
+    support_iq = np.zeros((2, 2, 8), dtype=np.float32)
+    query_iq = np.zeros((2, 2, 8), dtype=np.float32)
+    signed = np.asarray(
+        [
+            [-3.0, -4.0, -12.0],
+            [1.0, -2.0, 3.0],
+            [-1.0, -2.0, -2.0],
+            [0.5, 0.25, -1.0],
+        ],
+        dtype=np.float32,
+    )
+    scopes: list[str] = []
+    receipts: dict[str, Mapping[str, Any]] = {}
+    real_totalize = runner_module._totalize_relu_plus_rows
+
+    def tracked_totalize(
+        plus: np.ndarray,
+        signed_rows: np.ndarray,
+        physical_ids: tuple[str, ...],
+        *,
+        scope: str,
+    ):
+        scopes.append(scope)
+        output, receipt = real_totalize(
+            plus, signed_rows, physical_ids, scope=scope
+        )
+        receipts[scope] = receipt
+        return output, receipt
+
+    class StopAfterPublish(RuntimeError):
+        pass
+
+    published: dict[str, Any] = {}
+
+    def capture_publish(
+        _feature_path: Path, _receipt_path: Path, **kwargs: Any
+    ) -> None:
+        published.update(kwargs)
+        raise StopAfterPublish
+
+    monkeypatch.setattr(runner_module, "_validate_matched_packages", lambda *_: None)
+    monkeypatch.setattr(
+        runner_module._D106RealStateMaterializer,
+        "_package",
+        lambda _self, _value: next(packages),
+    )
+    monkeypatch.setattr(
+        runner_module._D106RealStateMaterializer,
+        "_model_for",
+        lambda _self, _input_len: object(),
+    )
+    monkeypatch.setattr(
+        runner_module,
+        "_d106_support_rows",
+        lambda *_args, **_kwargs: (
+            support_iq,
+            registry,
+            support_ids,
+        ),
+    )
+    monkeypatch.setattr(
+        runner_module,
+        "_d106_query_rows",
+        lambda *_args, **_kwargs: (query_iq, query_ids),
+    )
+    monkeypatch.setattr(
+        runner_module,
+        "_tap_rows",
+        lambda *_args, **_kwargs: (signed, np.zeros_like(signed), "d" * 64),
+    )
+    monkeypatch.setattr(runner_module, "_totalize_relu_plus_rows", tracked_totalize)
+    monkeypatch.setattr(runner_module, "publish_d106_paired_features", capture_publish)
+
+    artifact_root = tmp_path / "states"
+    artifact_root.mkdir()
+    materializer = object.__new__(runner_module._D106RealStateMaterializer)
+    materializer.artifact_root = artifact_root
+    materializer.checkpoint_sha256 = "b" * 64
+    materializer.model_load_receipt_sha256 = "e" * 64
+    materializer.rdce_asset = type(
+        "Asset", (), {"runtime_sha256": "c" * 64}
+    )()
+    materializer.device = "cpu"
+    materializer.feature_batch_size = 4
+    support_ref = {"expected_seal_sha256": "f" * 64}
+    query_ref = {"expected_seal_sha256": "9" * 64}
+    request = {
+        "artifact_index": 0,
+        "support_received_iq_ref": support_ref,
+        "query_received_iq_ref": query_ref,
+        "scenario": "leo_clear_weak",
+        "registered_classes": registry,
+        "receiver": "20-1",
+        "seed": 713102,
+        "source_pool_k": 1,
+        "k_shot": 1,
+        "support_physical_root_sha256": canonical_sha256(sorted(support_ids)),
+        "query_physical_root_sha256": canonical_sha256(sorted(query_ids)),
+        "evaluation_row_id": "row-0",
+    }
+
+    with pytest.raises(StopAfterPublish):
+        materializer(request)
+
+    assert scopes == ["support", "query"]
+    assert np.array_equal(published["support_plus"][0], signed[0])
+    assert np.array_equal(published["query_plus"][0], signed[2])
+    assert published["support_plus"][1].tobytes() == np.maximum(
+        signed[1], np.float32(0.0)
+    ).tobytes()
+    assert published["query_plus"][1].tobytes() == np.maximum(
+        signed[3], np.float32(0.0)
+    ).tobytes()
+    expected_forward = canonical_sha256(
+        {
+            "schema": "cvs.phase2.d106.target25.same_model_forward.v1",
+            "row_id": "row-0",
+            "received_iq_pair_sha256": canonical_sha256(
+                {"support": "f" * 64, "query": "9" * 64}
+            ),
+            "checkpoint_sha256": "b" * 64,
+            "model_load_receipt_sha256": "e" * 64,
+            "tap_receipt_sha256": "d" * 64,
+            "source_package_feature_runtime_sha256": source_runtime,
+            "d106_runtime_sha256": "c" * 64,
+            "support_rows": 2,
+            "query_rows": 2,
+            "support_plus_totalization_receipt_sha256": receipts["support"][
+                "totalization_receipt_sha256"
+            ],
+            "query_plus_totalization_receipt_sha256": receipts["query"][
+                "totalization_receipt_sha256"
+            ],
+            "query_fit_count": 0,
+            "query_update_count": 0,
+        }
+    )
+    assert published["forward_receipt_sha256"] == expected_forward
+    for scope in ("support", "query"):
+        path = artifact_root / "state-000" / f"{scope}_plus_totalization.receipt.json"
+        assert json.loads(path.read_text(encoding="utf-8")) == receipts[scope]
+
+
 def test_missing_surface_is_rejected_before_truth_open(tmp_path: Path) -> None:
     prediction, run_kwargs = _predicted(tmp_path)
     path = Path(prediction["prediction_manifest"])
