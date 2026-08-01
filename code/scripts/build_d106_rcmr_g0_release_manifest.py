@@ -37,6 +37,14 @@ CHILD_RELATIVE_PATH = "scripts/d106_rcmr_g0_clean_child.py"
 PACKAGE_INIT_RELATIVE_PATH = "cvsrffi/__init__.py"
 G0_MODULE = "cvsrffi.stage2_d106_rcmr_g0"
 G0_PUBLIC_CODE_INTERFACE = "get_d106_rcmr_g0_release_expected_code_sha256"
+# The real D105 checkpoint path imports this fixed pair as top-level modules.
+# They are not ``cvsrffi`` modules, so the AST package closure below cannot
+# discover them.  Keep the release closure explicit and minimal rather than
+# broadening it into a generic top-level import scanner.
+_D105_TOP_LEVEL_RUNTIME_SOURCE_PATHS = (
+    "model.py",
+    "model_dual_cvsincnet.py",
+)
 SOURCE_BYTES_CAP = 4 * 1024 * 1024
 MANIFEST_BYTES_CAP = 256 * 1024
 _HEX40 = re.compile(r"^[0-9a-f]{40}$")
@@ -455,6 +463,7 @@ def _code_files_sha256(root: Path, modules: Sequence[str]) -> dict[str, str]:
         RUNNER_RELATIVE_PATH,
         CHILD_RELATIVE_PATH,
         PACKAGE_INIT_RELATIVE_PATH,
+        *_D105_TOP_LEVEL_RUNTIME_SOURCE_PATHS,
         *(_module_relative_path(module) for module in modules),
     }
     result: dict[str, str] = {}

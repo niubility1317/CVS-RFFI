@@ -43,6 +43,13 @@ _REQUIRED_DIRECT_MODULES = {
     "cvsrffi.stage2_d106_rcmr_2v_qknn",
     "cvsrffi.stage2_zid_student_t_qknn",
 }
+# The exact D105 checkpoint reconstruction imports these two known top-level
+# modules.  Keep their manifest paths fixed; the child must never fall back to
+# an ambient code-root import under ``python -I``.
+_D105_TOP_LEVEL_MODULE_PATHS = {
+    "model": "model.py",
+    "model_dual_cvsincnet": "model_dual_cvsincnet.py",
+}
 
 
 def _canonical_bytes(value: Any) -> bytes:
@@ -158,6 +165,7 @@ def _manifest_and_sources() -> tuple[dict[str, Any], dict[str, tuple[str, bytes]
     code_map = document.get("code_files_sha256")
     expected_paths = {
         RUNNER_RELATIVE_PATH, CHILD_RELATIVE_PATH, "cvsrffi/__init__.py",
+        *_D105_TOP_LEVEL_MODULE_PATHS.values(),
         *{module.replace(".", "/") + ".py" for module in modules},
     }
     if type(code_map) is not dict or set(code_map) != expected_paths:
@@ -172,10 +180,17 @@ def _manifest_and_sources() -> tuple[dict[str, Any], dict[str, tuple[str, bytes]
             module_name = "cvsrffi"
         elif relative_path.startswith("cvsrffi/"):
             module_name = relative_path[:-3].replace("/", ".")
+        elif relative_path in _D105_TOP_LEVEL_MODULE_PATHS.values():
+            module_name = next(
+                name for name, path in _D105_TOP_LEVEL_MODULE_PATHS.items()
+                if path == relative_path
+            )
         else:
             continue
         sources[module_name] = (relative_path, payload)
-    expected_module_names = {"cvsrffi", *modules}
+    expected_module_names = {
+        "cvsrffi", *modules, *_D105_TOP_LEVEL_MODULE_PATHS,
+    }
     if set(sources) != expected_module_names:
         raise RuntimeError("release import source closure")
     g0_map = document.get("g0_expected_code_sha256")
@@ -198,6 +213,7 @@ class _VerifiedProjectFinder(importlib.abc.MetaPathFinder, importlib.abc.Loader)
         if fullname == "cvsrffi" or fullname.startswith("cvsrffi."):
             if fullname not in self._sources:
                 raise ImportError(f"unlisted project module: {fullname}")
+        if fullname in self._sources:
             relative_path, _payload = self._sources[fullname]
             return importlib.util.spec_from_loader(
                 fullname, self, is_package=relative_path.endswith("/__init__.py")

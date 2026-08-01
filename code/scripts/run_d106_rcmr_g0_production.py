@@ -56,6 +56,12 @@ _REQUIRED_DIRECT_MODULES = {
     "cvsrffi.stage2_d106_rcmr_2v_qknn",
     "cvsrffi.stage2_zid_student_t_qknn",
 }
+# The clean child loads this fixed D105 model pair through its manifest-backed
+# finder.  These are top-level modules, not ``cvsrffi`` package modules.
+_D105_TOP_LEVEL_RUNTIME_SOURCE_PATHS = {
+    "model.py",
+    "model_dual_cvsincnet.py",
+}
 
 
 class D106RCMRG0ProductionRunnerError(RuntimeError):
@@ -248,6 +254,7 @@ def _parse_release_manifest_bytes(
         RUNNER_RELATIVE_PATH,
         CHILD_RELATIVE_PATH,
         "cvsrffi/__init__.py",
+        *_D105_TOP_LEVEL_RUNTIME_SOURCE_PATHS,
         *{value.replace(".", "/") + ".py" for value in modules},
     }
     if set(code_map) != expected_paths:

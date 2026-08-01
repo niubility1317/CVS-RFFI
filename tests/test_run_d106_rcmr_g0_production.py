@@ -39,6 +39,8 @@ def _manifest_bytes() -> bytes:
         runner.RUNNER_RELATIVE_PATH: SCRIPT_PATH,
         runner.CHILD_RELATIVE_PATH: CHILD_PATH,
         "cvsrffi/__init__.py": CODE_ROOT / "cvsrffi" / "__init__.py",
+        "model.py": CODE_ROOT / "model.py",
+        "model_dual_cvsincnet.py": CODE_ROOT / "model_dual_cvsincnet.py",
         **{
             module.replace(".", "/") + ".py": CODE_ROOT
             / (module.replace(".", "/") + ".py")
@@ -65,7 +67,7 @@ def test_manifest_test_only_accepts_external_canonical_root_without_output(tmp_p
         payload, expected_manifest_sha256=hashlib.sha256(payload).hexdigest()
     )
     assert checked["test_only"] is True
-    assert checked["source_file_count"] == 8
+    assert checked["source_file_count"] == 10
     assert not (tmp_path / "output").exists()
 
 
@@ -170,6 +172,52 @@ print('LIFECYCLE_REJECTION_OK')
     )
     assert completed.returncode == 0, completed.stderr
     assert completed.stdout.strip() == "LIFECYCLE_REJECTION_OK"
+
+
+def test_verified_finder_loads_fixed_d105_top_level_model_pair_from_sources():
+    """The clean child must not require ambient ``PYTHONPATH`` for D105 imports."""
+
+    probe = f"""
+import importlib.util
+import os
+import sys
+child_path = {str(CHILD_PATH)!r}
+spec = importlib.util.spec_from_file_location('d106_child_model_pair_probe', child_path)
+child = importlib.util.module_from_spec(spec)
+sys.modules[spec.name] = child
+spec.loader.exec_module(child)
+child.CODE_ROOT_PATH = '/verified-release'
+sources = {{
+    'cvsrffi': ('cvsrffi/__init__.py', b''),
+    'cvsrffi.stage2_d106_rcmr_g0': (
+        'cvsrffi/stage2_d106_rcmr_g0.py',
+        b'from cvsrffi.dual_feature_forward import VALUE\\n',
+    ),
+    'cvsrffi.dual_feature_forward': (
+        'cvsrffi/dual_feature_forward.py',
+        b'from model_dual_cvsincnet import VALUE\\n',
+    ),
+    'model_dual_cvsincnet': (
+        'model_dual_cvsincnet.py',
+        b'from model import VALUE\\n',
+    ),
+    'model': ('model.py', b'VALUE = 17\\n'),
+}}
+with child._verified_project_import_lifecycle(sources) as g0:
+    assert g0.VALUE == 17
+    assert sys.modules['model'].__file__ == os.path.join('/verified-release', 'model.py')
+    assert sys.modules['model_dual_cvsincnet'].__file__ == os.path.join('/verified-release', 'model_dual_cvsincnet.py')
+print('MODEL_PAIR_OK')
+"""
+    completed = subprocess.run(
+        [sys.executable, "-I", "-c", probe],
+        capture_output=True,
+        text=True,
+        check=False,
+        timeout=30,
+    )
+    assert completed.returncode == 0, completed.stderr
+    assert completed.stdout.strip() == "MODEL_PAIR_OK"
 
 
 def test_posix_publisher_uses_fd_relative_no_overwrite_publication_primitives():

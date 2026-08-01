@@ -82,6 +82,12 @@ def _make_clean_release_tree(tmp_path: Path) -> tuple[Path, Path, str]:
     code_root = repository / "code"
     public_map = repr(_fixture_public_map())
     _write(code_root, "cvsrffi/__init__.py", "__all__ = []\n")
+    _write(code_root, "model.py", "BACKBONE = 1\n")
+    _write(
+        code_root,
+        "model_dual_cvsincnet.py",
+        "from model import BACKBONE\nMODEL_FACTORY = BACKBONE\n",
+    )
     _write(
         code_root,
         "cvsrffi/stage2_d106_rcmr_g0.py",
@@ -197,6 +203,8 @@ def test_canonical_manifest_matches_current_runner_schema_and_never_overwrites(
         "scripts/run_d106_rcmr_g0_production.py",
         "scripts/d106_rcmr_g0_clean_child.py",
         "cvsrffi/__init__.py",
+        "model.py",
+        "model_dual_cvsincnet.py",
     }.issubset(document["code_files_sha256"])
     assert runner.validate_release_manifest_test_only(
         raw, expected_manifest_sha256=manifest_sha
@@ -259,4 +267,3 @@ def test_g0_expected_code_requires_public_fresh_interface(
 
     with pytest.raises(builder.ReleaseManifestBuildError, match="public packaging interface unavailable"):
         builder.read_g0_public_expected_code_sha256(code_root)
-
