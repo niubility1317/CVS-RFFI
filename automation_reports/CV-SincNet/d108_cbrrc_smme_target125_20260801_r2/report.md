@@ -1,6 +1,6 @@
 # D108-CB-RRC-SMME/r2完整125实验报告
 
-状态：`LOCAL_VERIFIED / RELEASE_READY`
+状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
 
 ## 实验登记
 
@@ -40,3 +40,9 @@ D92 matrix SHA256=`b70045e7cd45a6029bc0a1a47ada0bb72d16fdb6bc7662c43bd253bfc7e4b
 发布链路只有：fresh direct preflight→archive/锁/编译核验→prepare→GPU0真实smoke→M0 before/after与历史D92参考按query ID和预测逐项完全一致→GPU0—7固定8shard→严格merge/validate 125/3000→prediction封存后build-truth/score→artifact回收与GPU/SSH清理。smoke parity通过后不得再增加gate。停止仅允许P0协议/安全故障，或至少两个不同outer row在prediction前出现相同确定性异常指纹；不得因任何中途性能值停止、调参、重启或选行。
 
 期望artifact：`prepared/target125_plan.json`、`prepared/target125_context.json`、`smoke/smoke_receipt.json`、`smoke/smoke_predictions.json`、8个`prediction_shard_manifest.json`、`predictions/prediction_manifest.json`、`truth_catalog.json`、`score/score_manifest.json`和日志/PID/exit记录。完成后主表按125个outer-row均值报告before old、after old、before floor、after floor、seen-new、H、forgetting及全量post correct；D62、D92、SVRN保持同口径，D91单列development。
+
+## N607 r2技术闭包
+
+fresh preflight、archive/hash/编译、prepare和真实smoke均通过；M0 before的120条与after的220条query ID及predicted handle和历史D92参考逐项完全一致，证明sklearn兼容修复与D92基线接线正确。随后8个shard按`--device cuda:0..7`启动，wrapper PIDs=`3464522,3464525,3464532,3464536,3464541,3464545,3464549,3464557`。shard1—7在零prediction处以同一外层指纹`D92 registered_feature materialization failed`退出；底层异常明确为TorchScript卷积权重位于`cuda:0`、输入分别位于`cuda:1..7`的设备冲突，不是方法、sklearn、线程或数据故障。
+
+按预登记规则停止唯一仍活跃的run自有shard0 Python PID=`3464528`，wrapper以exit=`143`闭合；其余wrapper均exit=`1`。r2总prediction surface=`0`、shard manifest=`0`，未merge、未开truth、未score，因此无性能结果。事后r2进程=`0`、GPU compute=`0`、8卡均`0%/1MiB`，本机SSH/TCP22=`0`；partial artifact完整保留。后续新run只能将每个进程固定为`CUDA_VISIBLE_DEVICES=i`且CLI统一`--device cuda:0`，使各自可见GPU命名空间中的模型与输入同卡；不得恢复或覆盖r2。
