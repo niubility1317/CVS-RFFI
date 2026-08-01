@@ -1,6 +1,6 @@
 # D108-CB-RRC-SMME/r1完整125研发与实验报告
 
-状态：`LOCAL_VERIFIED / RELEASE_READY`
+状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
 
 ## 实验登记
 
@@ -75,6 +75,14 @@ D107完整125中M_JOINT仅为after old=47.26%、after floor=17.87%、seen-new=30
 发布子agent仅执行以下冻结链路：fresh direct preflight→同步并校验archive SHA→远端解包和D108文件`py_compile`→prepare→GPU0真实row0/clear无truth smoke→比较M0 before/after的query ID与预测和D92参考完全一致→GPU0—7各运行一个固定shard→严格合并125/3000→prediction封存后build-truth与score→回收artifact并退出所有SSH连接。每个shard命令固定使用`run_d108_cbrrc_smme_target125.py predict-shard`、相同plan/context SHA、`--shard-index 0..7`和对应`--device cuda:0..7`；不得按局部性能停止、重启、调参或选择性补跑。
 
 期望artifact：`prepared/target125_plan.json`、`prepared/target125_context.json`、`smoke/smoke_receipt.json`、`smoke/smoke_predictions.json`、8个`prediction_shard_manifest.json`、`predictions/prediction_manifest.json`、`truth_catalog.json`、`score/score_manifest.json`、每阶段日志/PID/exit与GPU/process核验记录。系统性技术停止条件仅为P0协议/安全故障，或至少两个不同outer row在生成prediction前出现相同确定性异常指纹；性能值不得触发停止。
+
+## N607 r1技术闭包
+
+2026-08-01 direct preflight通过，8张RTX3090均为空闲，runroot确认不存在后首次创建。archive远端SHA256与预登记完全一致；解包源码的D108文件`py_compile`通过。Git archive对JSON执行LF规范化，archive内method lock SHA256为`0ed48795…`；发布子agent按明确授权精确同步本地已验证字节后，远端method lock SHA256恢复为`7e8b310eeffc5e56aa39d60ef3b66c652207c3d9c1004e04d4499e6073862845`，JSON解析通过。
+
+prepare成功封存125outer、375scene、1500arm pair和3000预测面；plan文件SHA256=`ee9318e593ebd532511173478b9d2637b306bcf4cab48b8c5fff21e2f90c9a46`，context文件SHA256=`569f9343587be5e107aa27aebf841bdbc29d8704d9feac40d280499aee82f0f8`。GPU0的row0/scene0真实no-truth smoke运行约20秒后，在首个pair构建、任何prediction生成前以exit=1 fail-closed：`D42 sklearn runtime version drift: expected 1.7.2, got 1.7.0`。
+
+r1实际prediction surface=`0`；8个shard、merge、truth和score均未启动，严禁形成性能结论。事后D108进程=`0`、GPU compute进程=`0`、8卡均`0%/1MiB`，本机`ssh.exe`与TCP22连接均清空。服务器与本地partial artifact完整保留；本地证据位于`artifacts/remote_r1`。N607没有现成sklearn1.7.2环境：`CVS-RFFI`为1.7.0，`SDG-SEI`为1.3.2，`ssr-gpu`不存在；未安装或升级任何包。后续只能在本地完成已有D81式1.7.0/1.7.2严格兼容修复、测试、独立复核和新commit后，以新run ID执行，不得恢复或覆盖r1。
 
 ## 性能口径
 
