@@ -1,6 +1,6 @@
 # D108-CB-RRC-SMME/r1完整125研发与实验报告
 
-状态：`DESIGN_FROZEN / IMPLEMENTING`
+状态：`LOCAL_VERIFIED / RELEASE_READY`
 
 ## 实验登记
 
@@ -56,6 +56,25 @@ D107完整125中M_JOINT仅为after old=47.26%、after floor=17.87%、seen-new=30
 已锁定D92 matrix SHA256=`b70045e7cd45a6029bc0a1a47ada0bb72d16fdb6bc7662c43bd253bfc7e4bc5c`；Phase1 checkpoint SHA256=`2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98`；D81 ground component固定为`/home/szu2070436088/2510044040/CV-SincNet/runs/d19_ciaf_int8_proto_20260717_1039/input/int8_component`，manifest SHA256=`15b5e144f9af3989421d8e925c17758479c327be47e79222f6363dc63994629c`。D108不使用D106 RDCE资产。每个D92 job的authority bundle/COMMIT将逐项绑定进plan。
 
 其余本地改动、验证命令、commit/hash、远端同步映射、精确Python/CWD/日志/PID/GPU和期望artifact将在实现冻结后补齐。N607发布由唯一实验子agent负责，默认先直连只读preflight；完整预测支持GPU0-7独立不可覆盖分片，所有分片合并验证后才封存3000个surface并开放truth。停止只允许P0协议/安全故障或至少两个不同row出现相同确定性零prediction异常指纹，绝不因中间性能停止。
+
+## 本地实现、验证与发布封存
+
+|项目|证据|
+|---|---|
+|DA与head核心|commit=`eb229847`；CB-RRC23项、SMME8项测试通过|
+|D92四臂核心|commit=`ada3fcc4`；8项测试通过；M0逐值保持D92正式评分|
+|矩阵与truth证据面|commit=`6d2a415a`；Target125与truth各4项测试通过|
+|真实runner|commit=`9d6b0f65`，文件尾修正=`534648ae`；真实D92 sealed runtime→288维特征、四臂pair/score、不可变smoke预测、8个modulo分片和严格合并|
+|本地联合验证|`ssr-gpu`下核心与证据面`47 passed`，runner`6 passed`；`py_compile`、CLI帮助、非法shard负例和`git diff --check`通过|
+|独立复核|核心/证据面`P0=0,P1=0`；runner`P0=0,P1=0 / RUNNER_REVIEW_GO`|
+|method lock|`configs/stage2_d108_cbrrc_smme_r1.json`；SHA256=`7e8b310eeffc5e56aa39d60ef3b66c652207c3d9c1004e04d4499e6073862845`|
+|发布源码|commit=`534648ae5c9f72e0bbbfced73846197442ffaa9b`；archive=`E:\type10-7\code\snapshots\d108_cbrrc_smme_target125_20260801_r1_source_534648ae.tar`；SHA256=`eb77728f5dc89167164bbed2f5e96058c47d5a18d39d23e90f323b7d48a9a802`|
+
+远端不可覆盖run root预登记为`/home/szu2070436088/2510044040/CV-SincNet/runs/d108_cbrrc_smme_target125_20260801_r1`，源码目录为其下`source`，Python=`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`，CWD固定为源码目录。D92 output root为`/home/szu2070436088/2510044040/CV-SincNet/runs/d92_registration_balanced_125_retry2_20260720`；checkpoint为`/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth`。prepare固定写入`prepared`；smoke固定写入`smoke`；8个prediction shard分别写入`shards/shard_0`至`shards/shard_7`；合并写入`predictions`；truth与score分别写入`truth_catalog.json`和`score`，全部不可覆盖。
+
+发布子agent仅执行以下冻结链路：fresh direct preflight→同步并校验archive SHA→远端解包和D108文件`py_compile`→prepare→GPU0真实row0/clear无truth smoke→比较M0 before/after的query ID与预测和D92参考完全一致→GPU0—7各运行一个固定shard→严格合并125/3000→prediction封存后build-truth与score→回收artifact并退出所有SSH连接。每个shard命令固定使用`run_d108_cbrrc_smme_target125.py predict-shard`、相同plan/context SHA、`--shard-index 0..7`和对应`--device cuda:0..7`；不得按局部性能停止、重启、调参或选择性补跑。
+
+期望artifact：`prepared/target125_plan.json`、`prepared/target125_context.json`、`smoke/smoke_receipt.json`、`smoke/smoke_predictions.json`、8个`prediction_shard_manifest.json`、`predictions/prediction_manifest.json`、`truth_catalog.json`、`score/score_manifest.json`、每阶段日志/PID/exit与GPU/process核验记录。系统性技术停止条件仅为P0协议/安全故障，或至少两个不同outer row在生成prediction前出现相同确定性异常指纹；性能值不得触发停止。
 
 ## 性能口径
 
