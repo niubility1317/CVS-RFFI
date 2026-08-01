@@ -26,11 +26,10 @@ from .stage2_d105_feature_tap import extract_d105_feature_tap
 from .stage2_d105_query_evaluation import (
     _default_model_loader,
     _device,
-    _query_rows,
-    _support_rows,
     _tap_rows,
 )
 from .somph_diagnostic_bundle_loader import load_verified_somph_predictor_bundle
+from .somph_predictor_bundle import QUERY_NPZ_MEMBERS, SUPPORT_NPZ_MEMBERS
 from .stage2_diag_cosine_exploration import _validate_matched_packages
 from .stage2_d106_k_conditioned_router import (
     ARMS,
@@ -232,6 +231,78 @@ def _load_raw_package(value: Mapping[str, Any]):
     return payloads, dict(manifest), dict(audit)
 
 
+def _d106_support_rows(
+    payload: Mapping[str, np.ndarray],
+    *,
+    registered_classes: tuple[str, ...],
+    active_k: int,
+) -> tuple[np.ndarray, tuple[str, ...], tuple[str, ...]]:
+    expected = set(SUPPORT_NPZ_MEMBERS) - {"manifest_json"}
+    if set(payload) != expected:
+        raise D106Target25RunnerError("D92 materialized support payload allowlist drift")
+    ranks = np.asarray(payload["support_rank_within_class"])
+    indices = np.asarray(payload["support_class_indices"])
+    tokens = np.asarray(payload["support_tokens"]).astype(str)
+    iq = np.asarray(payload["support_leo_weak_iq"])
+    if (
+        ranks.dtype.kind not in "iu"
+        or indices.dtype.kind not in "iu"
+        or ranks.ndim != 1
+        or indices.shape != ranks.shape
+        or tokens.shape != ranks.shape
+        or len(iq) != len(ranks)
+        or iq.dtype != np.float32
+        or iq.ndim != 3
+        or iq.shape[1] != 2
+        or not np.isfinite(iq).all()
+    ):
+        raise D106Target25RunnerError("D92 support IQ/index/token contract drift")
+    mask = ranks.astype(np.int64) < active_k
+    selected_indices = indices.astype(np.int64)[mask]
+    if (
+        len(selected_indices) != active_k * len(registered_classes)
+        or len(selected_indices) == 0
+        or int(selected_indices.min()) != 0
+        or int(selected_indices.max()) != len(registered_classes) - 1
+        or any(
+            int(np.sum(selected_indices == index)) != active_k
+            for index in range(len(registered_classes))
+        )
+    ):
+        raise D106Target25RunnerError("D92 support balanced K-shot assignment drift")
+    selected_tokens = tuple(tokens[mask].tolist())
+    if len(set(selected_tokens)) != len(selected_tokens) or any(
+        not value for value in selected_tokens
+    ):
+        raise D106Target25RunnerError("D92 support physical-token drift")
+    labels = tuple(registered_classes[index] for index in selected_indices.tolist())
+    return np.ascontiguousarray(iq[mask], dtype=np.float32), labels, selected_tokens
+
+
+def _d106_query_rows(
+    payload: Mapping[str, np.ndarray],
+) -> tuple[np.ndarray, tuple[str, ...]]:
+    expected = set(QUERY_NPZ_MEMBERS) - {"manifest_json"}
+    if set(payload) != expected:
+        raise D106Target25RunnerError(
+            "D92 materialized query payload allowlist drift; truth/role fields are forbidden"
+        )
+    iq = np.asarray(payload["query_leo_weak_iq"])
+    tokens = tuple(np.asarray(payload["query_tokens"]).astype(str).tolist())
+    if (
+        iq.dtype != np.float32
+        or iq.ndim != 3
+        or iq.shape[1] != 2
+        or len(iq) != len(tokens)
+        or len(iq) == 0
+        or not np.isfinite(iq).all()
+        or len(set(tokens)) != len(tokens)
+        or any(not value for value in tokens)
+    ):
+        raise D106Target25RunnerError("D92 query IQ/token contract drift")
+    return np.ascontiguousarray(iq, dtype=np.float32), tokens
+
+
 def _derived_state(
     *,
     row: Mapping[str, Any],
@@ -266,12 +337,12 @@ def _derived_state(
         ):
             raise D106Target25RunnerError("D92 package row binding drift")
     try:
-        _support_iq, _support_labels, support_ids = _support_rows(
+        _support_iq, _support_labels, support_ids = _d106_support_rows(
             support_payloads[scene],
             registered_classes=registry,
             active_k=row["k_shot"],
         )
-        _query_iq, query_ids = _query_rows(query_payloads[scene])
+        _query_iq, query_ids = _d106_query_rows(query_payloads[scene])
     except Exception as error:
         raise D106Target25RunnerError("D92 physical-ID materialization drift") from error
     support_ids = tuple(str(value) for value in support_ids)
@@ -766,12 +837,12 @@ class _D106RealStateMaterializer:
         ):
             raise D106Target25RunnerError("D92 package row/registry binding drift")
         try:
-            support_iq, support_labels, support_ids = _support_rows(
+            support_iq, support_labels, support_ids = _d106_support_rows(
                 support_payloads[scene],
                 registered_classes=registry,
                 active_k=request["k_shot"],
             )
-            query_iq, query_ids = _query_rows(query_payloads[scene])
+            query_iq, query_ids = _d106_query_rows(query_payloads[scene])
         except Exception as error:
             raise D106Target25RunnerError("D92 IQ/token materialization drift") from error
         if (

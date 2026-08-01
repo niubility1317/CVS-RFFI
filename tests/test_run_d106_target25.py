@@ -11,6 +11,7 @@ import sys
 from typing import Any, Mapping
 
 import pytest
+import numpy as np
 
 import test_stage2_d106_target25_inputs as input_fixture
 import cvsrffi.stage2_d106_target25_runner as runner_module
@@ -416,6 +417,45 @@ def test_raw_plan_expands_and_rejects_cross_scene_physical_reuse(
             context_manifest_path=Path(receipt["context_manifest"]),
             expected_context_file_sha256=receipt["context_file_sha256"],
         )
+
+
+def test_d92_post_materialization_payload_contract_excludes_embedded_manifest() -> None:
+    support = {
+        name: np.asarray([0])
+        for name in set(runner_module.SUPPORT_NPZ_MEMBERS) - {"manifest_json"}
+    }
+    support.update(
+        {
+            "support_leo_weak_iq": np.zeros((2, 2, 8), dtype=np.float32),
+            "support_class_indices": np.asarray([0, 1], dtype=np.int64),
+            "support_rank_within_class": np.asarray([0, 0], dtype=np.int64),
+            "support_tokens": np.asarray(["s0", "s1"]),
+        }
+    )
+    iq, labels, tokens = runner_module._d106_support_rows(
+        support,
+        registered_classes=("old-0", "old-1"),
+        active_k=1,
+    )
+    assert iq.shape == (2, 2, 8)
+    assert labels == ("old-0", "old-1")
+    assert tokens == ("s0", "s1")
+
+    query = {
+        name: np.asarray([0])
+        for name in set(runner_module.QUERY_NPZ_MEMBERS) - {"manifest_json"}
+    }
+    query.update(
+        {
+            "query_leo_weak_iq": np.zeros((2, 2, 8), dtype=np.float32),
+            "query_tokens": np.asarray(["q0", "q1"]),
+        }
+    )
+    query_iq, query_tokens = runner_module._d106_query_rows(query)
+    assert query_iq.shape == (2, 2, 8)
+    assert query_tokens == ("q0", "q1")
+    with pytest.raises(D106Target25RunnerError, match="truth/role"):
+        runner_module._d106_query_rows({**query, "query_truth": np.asarray([0, 1])})
 
 
 def test_missing_surface_is_rejected_before_truth_open(tmp_path: Path) -> None:
