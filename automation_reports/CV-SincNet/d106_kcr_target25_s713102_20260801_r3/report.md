@@ -1,6 +1,6 @@
 # D106-KCR/r3完整Target25实验报告
 
-状态：`LOCAL_VERIFIED / RELEASE_PENDING`
+状态：`LANDED_PREPARE_COMPLETE_SMOKE_K5_K10_PAIRING_FAILURE / NO_PERFORMANCE_RESULT`
 
 ## 实验登记
 
@@ -31,7 +31,7 @@ D106-KCR仅按K值选择已完整计算的臂：`K1→M_DA`、`K5→M0`、`K10�
 
 |项目|证据|
 |---|---|
-|payload修复commit|`0d3ebcfd6fbc70facf4d9630f1114fcc368456fa`|
+|payload修复commit|`0d3ebcfd56cb484cabadc026678cc50b73ff67f7`|
 |release source commit|`d0e17621a8a9b50f1aa604d436d15b7d350822b4`|
 |LF-preserving archive SHA256|`08c5414cddb165d66e6e6965342fdad6e871815439166ab75470ebf3e0bdb6e3`|
 |解包lock SHA256|RDCE=`e7a1982b4bdeaf5b8179993ce78f4a2af26965d8f4a3239440dbe636ebf14cc1`；RCMR=`be452cc52da8e5c43d3addc73568580d63a83f146310ec3559bb5daa99076b0c`；KCR=`a3d530734b90454724166f620d7017f80e6de838fd4ca469c04abb155534ab6a`|
@@ -55,6 +55,36 @@ D106-KCR仅按K值选择已完整计算的臂：`K1→M_DA`、`K5→M0`、`K10�
 |GPU|`cuda:0`；launch前记录实时占用|
 |日志/PID/exit|`logs/prepare.log`、`logs/smoke.log`、`logs/predict.log`；`control/predict.pid`、`control/predict.exit`|
 |预期输出|`prepared/`、`smoke/`、`predictions/`；完整prediction manifest及600个surface|
+
+## r3实际执行证据
+
+|项目|结果|
+|---|---|
+|direct preflight|通过；r3 run root原先不存在；无D106进程；GPU0–7均0%利用率、1MiB占用|
+|远端archive|SHA=`08c5414cddb165d66e6e6965342fdad6e871815439166ab75470ebf3e0bdb6e3`；commit=`d0e17621a8a9b50f1aa604d436d15b7d350822b4`|
+|远端lock/compile|RDCE=`e7a1982b4bdeaf5b8179993ce78f4a2af26965d8f4a3239440dbe636ebf14cc1`；RCMR=`be452cc52da8e5c43d3addc73568580d63a83f146310ec3559bb5daa99076b0c`；KCR=`a3d530734b90454724166f620d7017f80e6de838fd4ca469c04abb155534ab6a`；`py_compile=PASS`|
+|prepare|`TARGET25_D92_PACKAGES_LOCATED`；25/75/300/600闭合|
+|plan/context|plan=`3ba353276daf1877ea23de97c34236534c4ebdd732dceff9ad9ffb6fdd37b6c7`；context=`3e0d64e5892ec6162270e135d4013ec750d02c57da4ff2e4a1d919b2fe2a9da6`|
+|smoke|失败关闭：`D106Target25RunnerError: D92 K5 support/query pairing differs from matched K10`|
+|prediction launch|未detach；PID=`NOT_CREATED`；`smoke/`、`predictions/`、`control/predict.pid`、`control/predict.exit`均不存在|
+|清理状态|无run-owned预测进程；GPU0–7恢复0%利用率、1MiB占用；`ssh.exe=0`，目标TCP22连接为0|
+
+实际`prepare`入口为`code/scripts/run_d106_target25.py prepare`，CWD为上表source CWD，输入为本报告登记的D92 matrix、checkpoint、RDCE wire和三个source内lock，输出为`<run root>/prepared`。实际smoke调用`smoke_d106_target25_prepared_state`，固定`row_index=0,scenario_index=0,state_index=0,device=cuda:0,feature_batch_size=64`，plan/context及其SHA如上，无truth参数。
+
+本地取回证据位于`E:\type10-7\automation_reports\CV-SincNet\d106_kcr_target25_s713102_20260801_r3\artifacts\remote_r3`：`prepare.log`SHA=`2cca54104cef9214c172110d92cf848d5daa575a5536d8d25cb58cb2bfaa182b`；`smoke.log`SHA=`5efede20fe637c8c3de5af28f45cf25ff4466109f081c0b9fda3cb8e6d833a31`；`prepare_receipt.json`SHA=`7357b3bc629ccf928763e827296b02419810484f1d5534373cab110aa9a3ee48`。
+
+### K5与matched K10只读差异摘要
+
+固定`receiver=20-1`、`scene=leo_clear_weak`、`state=before`，仅通过已验证D92 support/query封包读取opaque token，不读取truth：
+
+|比较项|K5|K10|结论|
+|---|---:|---:|---|
+|support数量|30|60|K5不是K10子集|
+|query数量|120|120|数量相同，但token集合不同|
+
+首个K5独有support为`sid_d7a85059b4bc1d687bf20631649043d2c285bcbdc288279f390082e3d3c68ce6`；首个K10独有support为`sid_84ca046a816598b493aebd109a03951aa2102b8a3203858821a154cdc2b48d5d`。query第0项即不同：K5为`qid_9be2a7b190c4d0328cfe0355c5baa46e845d3175dd95b86ae92717e6ec3f76d1`，K10为`qid_ac3c92bde0446ea92c7e460e58ad2ba0c37477e0279c93768a5595169ac9f0e4`。这说明现有D92 K5与K10封包是独立物理split；本次失败项是runner额外要求K5 support嵌套于K10且query token集合相同。
+
+r3不得覆盖、恢复、重试或重标为性能实验。不存在可用于性能分析的prediction。
 
 ## 性能目标
 
