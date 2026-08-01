@@ -66,14 +66,19 @@ def _outer(index: int) -> dict[str, object]:
 
 
 def _predictions(arm: str, phase: str) -> list[str]:
+    if phase == "before":
+        if arm in {"M0", "M_HEAD"}:
+            return ["old-a", "old-a"]
+        if arm in {"M_DA", "M_JOINT"}:
+            return ["old-a", "old-b"]
     if arm == "M0":
         return ["old-a", "old-a", "old-a"]
     if arm == "M_DA":
         return ["old-a", "old-b", "old-a"]
     if arm == "M_HEAD":
-        return ["old-a", "old-a", "old-a"] if phase == "before" else ["old-a", "old-a", "new-a"]
+        return ["old-a", "old-a", "new-a"]
     if arm == "M_JOINT":
-        return ["old-a", "old-b", "old-a"] if phase == "before" else ["old-a", "old-b", "new-a"]
+        return ["old-a", "old-b", "new-a"]
     raise AssertionError(arm)
 
 
@@ -91,6 +96,8 @@ def _build_case(root: Path) -> dict[str, object]:
                 f"{outer['outer_id']}::{scene}::new-a",
             ]
             for phase in scorer.PHASES:
+                phase_query_ids = query_ids[:2] if phase == "before" else query_ids
+                phase_truth = ["old-a", "old-b"] if phase == "before" else ["old-a", "old-b", "new-a"]
                 truth_surfaces.append(
                     {
                         "outer_id": outer["outer_id"],
@@ -100,8 +107,8 @@ def _build_case(root: Path) -> dict[str, object]:
                         "new_count": outer["new_count"],
                         "scene": scene,
                         "phase": phase,
-                        "ordered_query_physical_ids": query_ids,
-                        "labels": ["old-a", "old-b", "new-a"],
+                        "ordered_query_physical_ids": phase_query_ids,
+                        "labels": phase_truth,
                     }
                 )
                 for arm in scorer.ARMS:
@@ -127,8 +134,8 @@ def _build_case(root: Path) -> dict[str, object]:
                         "registered_classes": registered,
                         "prediction_artifact": f"predictions/{surface_id}.json",
                         "prediction_artifact_sha256": "",
-                        "ordered_query_physical_ids": query_ids,
-                        "ordered_query_physical_ids_sha256": scorer.canonical_sha256(query_ids),
+                        "ordered_query_physical_ids": phase_query_ids,
+                        "ordered_query_physical_ids_sha256": scorer.canonical_sha256(phase_query_ids),
                         "predicted_labels": labels,
                         "predicted_labels_sha256": scorer.canonical_sha256(labels),
                         "access_ledger": copy.deepcopy(ACCESS_LEDGER),
@@ -381,6 +388,160 @@ def test_comparator_pairing_fences_d91_to_fifteen_development_rows(tmp_path: Pat
         item["pairing_status"] == "D91_DEVELOPMENT_ONLY_15_ROWS_NON_PROMOTABLE"
         for item in paired["pairs"]
     )
+
+
+def _d92_source_sidecar(
+    *, root: Path, outer: dict[str, object]
+) -> tuple[dict[str, object], dict[str, list[str]]]:
+    job_root = root / "jobs" / "source-job"
+    apply_root = job_root / "offline" / "predictor" / "after" / "apply_only_staging"
+    apply_root.mkdir(parents=True)
+    tokens_by_scene: dict[str, list[str]] = {}
+    rows: list[dict[str, object]] = []
+    for scene_index, scene in enumerate(SCENES):
+        tokens = [
+            f"qid_{scene_index + 1:02x}{class_index + 1:02x}" + "a" * 60
+            for class_index in range(3)
+        ]
+        tokens_by_scene[scene] = tokens
+        for class_index, (label, role) in enumerate(
+            (("old-a", "target_old"), ("old-b", "target_old"), ("new-a", "target_new"))
+        ):
+            rows.append(
+                {
+                    "query_token": tokens[class_index],
+                    "true_class_index": class_index,
+                    "true_class_handle": label,
+                    "transmitter_label": f"tx-{class_index}",
+                    "evaluation_role": role,
+                    "receiver_label": outer["receiver"],
+                    # Every row deliberately shares this day: a scene cannot be
+                    # inferred from it and must be recovered from query tokens.
+                    "day_label": "day-not-a-scene",
+                    "signal_label": "wifi",
+                    "physical_sample_id": f"physical-{scene_index}-{class_index}",
+                }
+            )
+    sidecar = {
+        "schema": scorer.D92_TRUTH_SIDECAR_SCHEMA,
+        "stage": "stage2c",
+        "receiver": outer["receiver"],
+        "seed": outer["seed"],
+        "rows": list(reversed(rows)),
+    }
+    sidecar_path = job_root / "offline" / "scorer" / "truth_sidecar.json"
+    sidecar_sha = _write_json(sidecar_path, sidecar)
+    receipt = {
+        "schema": scorer.D92_OFFLINE_BUILD_SCHEMA,
+        "receiver": outer["receiver"],
+        "seed": outer["seed"],
+        "k_shot": outer["k_shot"],
+        "new_class_count": outer["new_count"],
+        "states": {"after": {"apply_staging_root": str(apply_root)}},
+        "truth_sidecar": str(sidecar_path),
+        "truth_sidecar_sha256": sidecar_sha,
+    }
+    _write_json(job_root / "offline" / "offline_build_receipt.json", receipt)
+    plan = {"identity": {"d92_output_root": str(root)}}
+    row = {
+        "source_d92_job_id": "source-job",
+        "source_pool_k": outer["k_shot"],
+        "packages": {"after_apply": {"package_root": str(apply_root)}},
+    }
+    return {"plan": plan, "row": row}, tokens_by_scene
+
+
+def test_build_truth_uses_sealed_query_tokens_not_day_labels(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    outer = _outer(0)
+    source, tokens_by_scene = _d92_source_sidecar(root=tmp_path / "d92", outer=outer)
+    sidecar_by_token = scorer._load_d92_truth_sidecar_for_outer(
+        plan=source["plan"], row=source["row"], outer=outer
+    )
+    surfaces: dict[tuple[str, str, str, str], dict[str, object]] = {}
+    for scene in SCENES:
+        after_ids = tokens_by_scene[scene]
+        before_ids = after_ids[:2]
+        surfaces[(str(outer["outer_id"]), scene, "M0", "before")] = {
+            "query_ids": tuple(before_ids)
+        }
+        surfaces[(str(outer["outer_id"]), scene, "M0", "after")] = {
+            "query_ids": tuple(after_ids)
+        }
+    prediction = {"scenes": tuple(SCENES), "surfaces": surfaces}
+    truth_surfaces = scorer._build_outer_truth_surfaces(
+        prediction=prediction, outer=outer, sidecar_by_token=sidecar_by_token
+    )
+    first_before, first_after = truth_surfaces[:2]
+    assert first_before["ordered_query_physical_ids"] == tokens_by_scene[SCENES[0]][:2]
+    assert first_before["labels"] == ["old-a", "old-b"]
+    assert first_after["ordered_query_physical_ids"] == tokens_by_scene[SCENES[0]]
+    assert first_after["labels"] == ["old-a", "old-b", "new-a"]
+
+    case = _build_case(tmp_path / "full")
+    calls: list[str] = []
+    manifest = scorer.validate_d107_prediction_manifest(
+        prediction_manifest_path=Path(case["manifest_path"]),
+        expected_prediction_manifest_file_sha256=str(case["manifest_file_sha"]),
+    )
+    prepared_rows = [
+        {
+            "outer_id": row["outer_id"],
+            "receiver": row["receiver"],
+            "seed": row["seed"],
+            "k_shot": row["k_shot"],
+            "new_count": row["new_count"],
+        }
+        for row in manifest["outer_rows"]
+    ]
+
+    def _prepared(**_kwargs):  # type: ignore[no-untyped-def]
+        return {"identity": {}}, {"rows": prepared_rows}
+
+    def _source_truth(*, outer, **_kwargs):  # type: ignore[no-untyped-def]
+        calls.append(outer["outer_id"])
+        result = {}
+        for scene in SCENES:
+            for label, role in (
+                ("old-a", "target_old"),
+                ("old-b", "target_old"),
+                ("new-a", "target_new"),
+            ):
+                token = f"{outer['outer_id']}::{scene}::{label}"
+                result[token] = {
+                    "label": label,
+                    "role": role,
+                    "physical_sample_id": token + "::physical",
+                }
+        return result
+
+    monkeypatch.setattr(scorer, "_load_prepared_d107_truth_inputs", _prepared)
+    monkeypatch.setattr(scorer, "_load_d92_truth_sidecar_for_outer", _source_truth)
+    built_path = tmp_path / "full" / "built_truth_catalog.json"
+    built = scorer.build_d107_target125_truth_catalog(
+        prediction_manifest_path=Path(case["manifest_path"]),
+        expected_prediction_manifest_file_sha256=str(case["manifest_file_sha"]),
+        plan_manifest_path=tmp_path / "unused-plan.json",
+        expected_plan_file_sha256="a" * 64,
+        context_manifest_path=tmp_path / "unused-context.json",
+        expected_context_file_sha256="b" * 64,
+        output_path=built_path,
+    )
+    assert len(calls) == scorer.OUTER_JOB_COUNT
+    built_catalog = _load(built_path)
+    assert built_catalog["truth_surface_count"] == scorer.TRUTH_SURFACE_COUNT
+    assert built_catalog["surfaces"][0]["labels"] == ["old-a", "old-b"]
+    assert built_catalog["surfaces"][1]["labels"] == ["old-a", "old-b", "new-a"]
+    scored = scorer.score_d107_target125(
+        prediction_manifest_path=Path(case["manifest_path"]),
+        expected_prediction_manifest_file_sha256=str(case["manifest_file_sha"]),
+        truth_catalog_path=built_path,
+        expected_truth_catalog_file_sha256=str(built["truth_catalog_file_sha256"]),
+        output_dir=tmp_path / "full" / "built_score",
+    )
+    assert Path(scored["score_manifest"]).is_file()
 
 
 def test_scorer_never_imports_d106_router() -> None:

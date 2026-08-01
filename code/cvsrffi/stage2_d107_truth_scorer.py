@@ -15,6 +15,7 @@ import hashlib
 import json
 import math
 from pathlib import Path, PurePosixPath
+import re
 import stat
 from typing import Any
 
@@ -25,6 +26,12 @@ PREDICTION_ARTIFACT_SCHEMA = "cvs.phase2.d107.scmkrr.target125.prediction_artifa
 TRUTH_CATALOG_SCHEMA = "cvs.phase2.d107.scmkrr.target125.truth_catalog.v1"
 TRUTH_OPEN_EVENT_SCHEMA = "cvs.phase2.d107.scmkrr.target125.truth_open_event.v1"
 SCORE_MANIFEST_SCHEMA = "cvs.phase2.d107.scmkrr.target125.score_manifest.v1"
+
+# D92 writes the truth sidecar independently of the predictor package.  Its
+# rows deliberately do not contain a scenario: D107 recovers scenario only
+# from the sealed prediction surface's ordered query-token stream.
+D92_TRUTH_SIDECAR_SCHEMA = "cvs.phase2.query_truth_sidecar.v2"
+D92_OFFLINE_BUILD_SCHEMA = "cvs.phase2.somph_offline_row_pair_build.v2"
 
 ARMS = ("M0", "M_DA", "M_HEAD", "M_JOINT")
 PHASES = ("before", "after")
@@ -120,6 +127,19 @@ _TRUTH_SURFACE_FIELDS = {
     "ordered_query_physical_ids",
     "labels",
 }
+_D92_TRUTH_SIDECAR_FIELDS = {"schema", "stage", "receiver", "seed", "rows"}
+_D92_TRUTH_ROW_FIELDS = {
+    "query_token",
+    "true_class_index",
+    "true_class_handle",
+    "transmitter_label",
+    "evaluation_role",
+    "receiver_label",
+    "day_label",
+    "signal_label",
+    "physical_sample_id",
+}
+_D92_QUERY_TOKEN_RE = re.compile(r"qid_[0-9a-f]{32,64}")
 _ALLOWED_PREDICTION_TRUTH_ROLE_FIELDS = {
     "truth_open",
     "query_truth_access",
@@ -245,6 +265,222 @@ def _read_json_regular(
     if type(payload) is not dict:
         raise D107TruthScorerError(f"{name} must be a JSON object")
     return payload, candidate.stat().st_size
+
+
+def _read_json_unpinned_regular(
+    path: str | Path, *, name: str
+) -> tuple[dict[str, Any], str, Path]:
+    """Read a regular JSON receipt whose detached file hash is unavailable.
+
+    D92's immutable offline-build receipt carries the sidecar's detached hash,
+    but the receipt itself is not an input-plan asset.  It is therefore used
+    only to bind the expected sidecar path and SHA after the sealed D107
+    prediction closure is already validated.
+    """
+
+    candidate = Path(path)
+    if candidate.is_symlink() or not candidate.is_file():
+        raise D107TruthScorerError(f"{name} must be a regular file")
+    mode = candidate.stat().st_mode
+    if not stat.S_ISREG(mode):
+        raise D107TruthScorerError(f"{name} must be a regular file")
+    try:
+        raw = candidate.read_bytes()
+        payload = json.loads(raw.decode("utf-8"))
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError) as error:
+        raise D107TruthScorerError(f"{name} is not valid UTF-8 JSON") from error
+    if type(payload) is not dict:
+        raise D107TruthScorerError(f"{name} must be a JSON object")
+    return payload, hashlib.sha256(raw).hexdigest(), candidate.resolve(strict=True)
+
+
+def _regular_directory(path: str | Path, *, name: str) -> Path:
+    candidate = Path(path)
+    if candidate.is_symlink() or not candidate.is_dir():
+        raise D107TruthScorerError(f"{name} must be a regular non-symlink directory")
+    try:
+        resolved = candidate.resolve(strict=True)
+    except OSError as error:
+        raise D107TruthScorerError(f"{name} cannot be resolved") from error
+    if not resolved.is_dir() or resolved.is_symlink():
+        raise D107TruthScorerError(f"{name} must be a regular non-symlink directory")
+    return resolved
+
+
+def _safe_job_id(value: Any) -> str:
+    job_id = _require_text(value, "source_d92_job_id")
+    if job_id in {".", ".."} or any(character in job_id for character in ("/", "\\", ":")):
+        raise D107TruthScorerError("source_d92_job_id is not a safe path component")
+    return job_id
+
+
+def _load_prepared_d107_truth_inputs(
+    *,
+    plan_manifest_path: str | Path,
+    expected_plan_file_sha256: str,
+    context_manifest_path: str | Path,
+    expected_context_file_sha256: str,
+) -> tuple[dict[str, Any], dict[str, Any]]:
+    """Reuse the runner's exact truth-free plan/context closure."""
+
+    try:
+        from .stage2_d107_target125_runner import _prepared_inputs
+
+        return _prepared_inputs(
+            plan_manifest_path=Path(plan_manifest_path),
+            expected_plan_file_sha256=expected_plan_file_sha256,
+            context_manifest_path=Path(context_manifest_path),
+            expected_context_file_sha256=expected_context_file_sha256,
+        )
+    except D107TruthScorerError:
+        raise
+    except Exception as error:
+        raise D107TruthScorerError("D107 prepared plan/context validation failed") from error
+
+
+def _validate_d92_truth_sidecar(
+    sidecar: Mapping[str, Any], *, outer: Mapping[str, Any]
+) -> dict[str, dict[str, str]]:
+    """Validate one real D92 Stage2-C sidecar without inferring a scene.
+
+    ``day_label`` is deliberately validated as source metadata only.  D92
+    ``_write_profile_payloads`` does not store a scenario in sidecar rows, so
+    scenario assignment is recovered later from sealed prediction query-token
+    membership and ordering, never from day or another heuristic.
+    """
+
+    document = _require_exact_keys(
+        sidecar, _D92_TRUTH_SIDECAR_FIELDS, "D92 truth sidecar"
+    )
+    if document["schema"] != D92_TRUTH_SIDECAR_SCHEMA or document["stage"] != "stage2c":
+        raise D107TruthScorerError("D92 truth sidecar schema/stage drift")
+    if document["receiver"] != outer["receiver"] or document["seed"] != outer["seed"]:
+        raise D107TruthScorerError("D92 truth sidecar receiver/seed binding drift")
+    rows = document["rows"]
+    if not isinstance(rows, list) or not rows:
+        raise D107TruthScorerError("D92 truth sidecar rows must be non-empty")
+    old = tuple(outer["old_classes"])
+    new = tuple(outer["new_classes"])
+    registry = (*old, *new)
+    class_index = {label: index for index, label in enumerate(registry)}
+    by_token: dict[str, dict[str, str]] = {}
+    physical_ids: set[str] = set()
+    role_classes = {"target_old": set(), "target_new": set()}
+    for index, raw in enumerate(rows):
+        row = _require_exact_keys(raw, _D92_TRUTH_ROW_FIELDS, f"D92 truth rows[{index}]")
+        token = _require_text(row["query_token"], f"D92 truth rows[{index}].query_token")
+        if _D92_QUERY_TOKEN_RE.fullmatch(token) is None or token in by_token:
+            raise D107TruthScorerError("D92 truth sidecar query-token closure drift")
+        handle = _require_text(
+            row["true_class_handle"], f"D92 truth rows[{index}].true_class_handle"
+        )
+        role = _require_text(row["evaluation_role"], f"D92 truth rows[{index}].evaluation_role")
+        if role not in role_classes:
+            raise D107TruthScorerError("D92 truth sidecar evaluation-role drift")
+        expected_role_classes = set(old if role == "target_old" else new)
+        if handle not in expected_role_classes:
+            raise D107TruthScorerError("D92 truth sidecar registry/role binding drift")
+        if _require_int(
+            row["true_class_index"], f"D92 truth rows[{index}].true_class_index"
+        ) != class_index[handle]:
+            raise D107TruthScorerError("D92 truth sidecar class-index binding drift")
+        if row["receiver_label"] != document["receiver"]:
+            raise D107TruthScorerError("D92 truth sidecar receiver-label drift")
+        _require_text(row["transmitter_label"], f"D92 truth rows[{index}].transmitter_label")
+        # Retain these real sidecar fields in the schema check only.  Neither
+        # can determine a D107 scene, which is established by query_token.
+        _require_text(row["day_label"], f"D92 truth rows[{index}].day_label")
+        _require_text(row["signal_label"], f"D92 truth rows[{index}].signal_label")
+        physical_id = _require_text(
+            row["physical_sample_id"], f"D92 truth rows[{index}].physical_sample_id"
+        )
+        if physical_id in physical_ids:
+            raise D107TruthScorerError("D92 truth sidecar physical-ID reuse drift")
+        physical_ids.add(physical_id)
+        role_classes[role].add(handle)
+        by_token[token] = {
+            "label": handle,
+            "role": role,
+            "physical_sample_id": physical_id,
+        }
+    if role_classes["target_old"] != set(old) or role_classes["target_new"] != set(new):
+        raise D107TruthScorerError("D92 truth sidecar class coverage drift")
+    return by_token
+
+
+def _load_d92_truth_sidecar_for_outer(
+    *, plan: Mapping[str, Any], row: Mapping[str, Any], outer: Mapping[str, Any]
+) -> dict[str, dict[str, str]]:
+    """Locate one source job's receipt and independently held truth sidecar."""
+
+    identity = plan.get("identity")
+    if not isinstance(identity, Mapping):
+        raise D107TruthScorerError("D107 plan identity is missing")
+    d92_root = _regular_directory(
+        _require_text(identity.get("d92_output_root"), "D92 output root"),
+        name="D92 output root",
+    )
+    jobs_root = _regular_directory(d92_root / "jobs", name="D92 jobs root")
+    job_root = _regular_directory(
+        jobs_root / _safe_job_id(row.get("source_d92_job_id")),
+        name="D92 source job root",
+    )
+    try:
+        job_root.relative_to(jobs_root)
+    except ValueError as error:
+        raise D107TruthScorerError("D92 source job escapes the jobs root") from error
+    packages = row.get("packages")
+    if not isinstance(packages, Mapping) or not isinstance(packages.get("after_apply"), Mapping):
+        raise D107TruthScorerError("D107 row after-apply package binding is missing")
+    after_apply = packages["after_apply"]
+    apply_root = _regular_directory(
+        _require_text(after_apply.get("package_root"), "D92 after-apply package root"),
+        name="D92 after-apply package root",
+    )
+    expected_apply_root = _regular_directory(
+        job_root / "offline" / "predictor" / "after" / "apply_only_staging",
+        name="expected D92 after-apply package root",
+    )
+    if apply_root != expected_apply_root:
+        raise D107TruthScorerError("D107 after-apply/source-job path binding drift")
+    receipt_path = job_root / "offline" / "offline_build_receipt.json"
+    receipt, _receipt_file_sha256, _receipt_resolved = _read_json_unpinned_regular(
+        receipt_path, name="D92 offline-build receipt"
+    )
+    if receipt.get("schema") != D92_OFFLINE_BUILD_SCHEMA:
+        raise D107TruthScorerError("D92 offline-build receipt schema drift")
+    if (
+        receipt.get("receiver") != outer["receiver"]
+        or receipt.get("seed") != outer["seed"]
+        or receipt.get("k_shot") != row.get("source_pool_k")
+        or receipt.get("new_class_count") != outer["new_count"]
+    ):
+        raise D107TruthScorerError("D92 offline-build receipt outer-row binding drift")
+    states = receipt.get("states")
+    if not isinstance(states, Mapping) or not isinstance(states.get("after"), Mapping):
+        raise D107TruthScorerError("D92 offline-build receipt after-state is missing")
+    staged_apply = _require_text(
+        states["after"].get("apply_staging_root"), "D92 receipt after apply root"
+    )
+    if _regular_directory(staged_apply, name="D92 receipt after apply root") != apply_root:
+        raise D107TruthScorerError("D92 offline-build receipt/apply package binding drift")
+    truth_path = job_root / "offline" / "scorer" / "truth_sidecar.json"
+    receipt_truth_path = Path(
+        _require_text(receipt.get("truth_sidecar"), "D92 receipt truth-sidecar path")
+    )
+    try:
+        if receipt_truth_path.resolve(strict=True) != truth_path.resolve(strict=True):
+            raise D107TruthScorerError("D92 receipt truth-sidecar path binding drift")
+    except OSError as error:
+        raise D107TruthScorerError("D92 receipt truth-sidecar path cannot be resolved") from error
+    sidecar, _sidecar_size = _read_json_regular(
+        truth_path,
+        name="D92 truth sidecar",
+        expected_file_sha256=_require_sha256(
+            receipt.get("truth_sidecar_sha256"), "D92 receipt truth-sidecar SHA256"
+        ),
+    )
+    return _validate_d92_truth_sidecar(sidecar, outer=outer)
 
 
 def _write_json_new(path: Path, value: Mapping[str, Any]) -> str:
@@ -556,8 +792,6 @@ def _validate_matched_prediction_surfaces(
             for arm in ARMS:
                 before = surfaces[(outer["outer_id"], scene, arm, "before")]
                 after = surfaces[(outer["outer_id"], scene, arm, "after")]
-                if before["query_ids"] != after["query_ids"]:
-                    raise D107TruthScorerError("before/after ordered query-ID parity drift")
                 if before["registered_classes"] != tuple(outer["old_classes"]):
                     raise D107TruthScorerError("before old-class registry drift")
                 if after["registered_classes"] != (
@@ -581,6 +815,177 @@ def validate_d107_prediction_manifest(
         Path(prediction_manifest_path),
         expected_prediction_manifest_file_sha256=expected_prediction_manifest_file_sha256,
     )
+
+
+def _prepared_rows_for_prediction(
+    *, prediction: Mapping[str, Any], context: Mapping[str, Any]
+) -> dict[str, Mapping[str, Any]]:
+    rows = context.get("rows")
+    if not isinstance(rows, list) or len(rows) != OUTER_JOB_COUNT:
+        raise D107TruthScorerError("D107 prepared context row coverage drift")
+    by_outer: dict[str, Mapping[str, Any]] = {}
+    for index, row in enumerate(rows):
+        if not isinstance(row, Mapping):
+            raise D107TruthScorerError("D107 prepared context row must be an object")
+        outer_id = _require_text(row.get("outer_id"), f"D107 context rows[{index}].outer_id")
+        outer = prediction["outer_by_id"].get(outer_id)
+        if outer is None or any(
+            row.get(field) != outer[field]
+            for field in ("receiver", "seed", "k_shot", "new_count")
+        ):
+            raise D107TruthScorerError("D107 prepared context/prediction row binding drift")
+        if outer_id in by_outer:
+            raise D107TruthScorerError("D107 prepared context has a duplicate outer row")
+        by_outer[outer_id] = row
+    if set(by_outer) != set(prediction["outer_by_id"]):
+        raise D107TruthScorerError("D107 prepared context/prediction coverage drift")
+    return by_outer
+
+
+def _build_outer_truth_surfaces(
+    *,
+    prediction: Mapping[str, Any],
+    outer: Mapping[str, Any],
+    sidecar_by_token: Mapping[str, Mapping[str, str]],
+) -> list[dict[str, Any]]:
+    """Join a D92 sidecar to sealed D107 query-token surfaces.
+
+    The D92 sidecar has no scene key.  The sealed after prediction stream was
+    materialized from the corresponding D92 apply package, so its ordered
+    query tokens are the only accepted source of scene membership.  This is
+    intentionally a direct token join, never a day-label heuristic.
+    """
+
+    old = tuple(outer["old_classes"])
+    registry = (*old, *outer["new_classes"])
+    seen_after_tokens: set[str] = set()
+    result: list[dict[str, Any]] = []
+    for scene in prediction["scenes"]:
+        before_ids = prediction["surfaces"][(outer["outer_id"], scene, ARMS[0], "before")][
+            "query_ids"
+        ]
+        after_ids = prediction["surfaces"][(outer["outer_id"], scene, ARMS[0], "after")][
+            "query_ids"
+        ]
+        if seen_after_tokens.intersection(after_ids):
+            raise D107TruthScorerError("D92 query-token is assigned to multiple scenes")
+        if any(token not in sidecar_by_token for token in after_ids):
+            raise D107TruthScorerError("sealed prediction query-token is absent from D92 truth")
+        seen_after_tokens.update(after_ids)
+        after_rows = [sidecar_by_token[token] for token in after_ids]
+        expected_before_ids = tuple(
+            token
+            for token, item in zip(after_ids, after_rows, strict=True)
+            if item["role"] == "target_old"
+        )
+        if before_ids != expected_before_ids:
+            raise D107TruthScorerError(
+                "before prediction IDs must equal this scene's ordered D92 old-token subset"
+            )
+        before_labels = [
+            item["label"]
+            for item in after_rows
+            if item["role"] == "target_old"
+        ]
+        after_labels = [item["label"] for item in after_rows]
+        if set(before_labels) != set(old) or any(label not in old for label in before_labels):
+            raise D107TruthScorerError("D92 before old-registry scene coverage drift")
+        if set(after_labels) != set(registry):
+            raise D107TruthScorerError("D92 after full-registry scene coverage drift")
+        common = {
+            "outer_id": outer["outer_id"],
+            "receiver": outer["receiver"],
+            "seed": outer["seed"],
+            "k_shot": outer["k_shot"],
+            "new_count": outer["new_count"],
+            "scene": scene,
+        }
+        result.extend(
+            (
+                {
+                    **common,
+                    "phase": "before",
+                    "ordered_query_physical_ids": list(before_ids),
+                    "labels": before_labels,
+                },
+                {
+                    **common,
+                    "phase": "after",
+                    "ordered_query_physical_ids": list(after_ids),
+                    "labels": after_labels,
+                },
+            )
+        )
+    if seen_after_tokens != set(sidecar_by_token):
+        raise D107TruthScorerError("D92 sidecar/query-token coverage drift")
+    return result
+
+
+def build_d107_target125_truth_catalog(
+    *,
+    prediction_manifest_path: str | Path,
+    expected_prediction_manifest_file_sha256: str,
+    plan_manifest_path: str | Path,
+    expected_plan_file_sha256: str,
+    context_manifest_path: str | Path,
+    expected_context_file_sha256: str,
+    output_path: str | Path,
+) -> dict[str, Any]:
+    """Build the immutable 750-surface D107 catalog from real D92 sidecars.
+
+    Prediction closure is intentionally the first operation.  Only after all
+    3,000 sealed truth-free artifacts validate do we open the D107 plan/context
+    locator and each source D92 ``offline/scorer/truth_sidecar.json``.
+    """
+
+    prediction = validate_d107_prediction_manifest(
+        prediction_manifest_path=prediction_manifest_path,
+        expected_prediction_manifest_file_sha256=expected_prediction_manifest_file_sha256,
+    )
+    plan, context = _load_prepared_d107_truth_inputs(
+        plan_manifest_path=plan_manifest_path,
+        expected_plan_file_sha256=expected_plan_file_sha256,
+        context_manifest_path=context_manifest_path,
+        expected_context_file_sha256=expected_context_file_sha256,
+    )
+    prepared_rows = _prepared_rows_for_prediction(prediction=prediction, context=context)
+    truth_surfaces: list[dict[str, Any]] = []
+    for outer in prediction["outer_rows"]:
+        row = prepared_rows[outer["outer_id"]]
+        sidecar_by_token = _load_d92_truth_sidecar_for_outer(
+            plan=plan, row=row, outer=outer
+        )
+        truth_surfaces.extend(
+            _build_outer_truth_surfaces(
+                prediction=prediction,
+                outer=outer,
+                sidecar_by_token=sidecar_by_token,
+            )
+        )
+    if len(truth_surfaces) != TRUTH_SURFACE_COUNT:
+        raise D107TruthScorerError("D107 truth catalog surface coverage drift")
+    catalog: dict[str, Any] = {
+        "schema": TRUTH_CATALOG_SCHEMA,
+        "truth_open": True,
+        "prediction_manifest_sha256": prediction["manifest_receipt_sha256"],
+        "outer_job_count": OUTER_JOB_COUNT,
+        "scene_row_count": SCENE_ROW_COUNT,
+        "truth_surface_count": TRUTH_SURFACE_COUNT,
+        "scenes": list(prediction["scenes"]),
+        "phases": list(PHASES),
+        "surfaces": truth_surfaces,
+    }
+    catalog["truth_catalog_sha256"] = canonical_sha256(catalog)
+    destination = Path(output_path)
+    file_sha256 = _write_json_new(destination, catalog)
+    return {
+        "truth_catalog": str(destination),
+        "truth_catalog_file_sha256": file_sha256,
+        "truth_catalog_sha256": catalog["truth_catalog_sha256"],
+        "outer_job_count": OUTER_JOB_COUNT,
+        "scene_row_count": SCENE_ROW_COUNT,
+        "truth_surface_count": TRUTH_SURFACE_COUNT,
+    }
 
 
 def _validate_truth_catalog(
@@ -637,14 +1042,17 @@ def _validate_truth_catalog(
         labels = _require_string_list(truth["labels"], f"truth surfaces[{index}].labels", unique=False)
         if len(query_ids) != len(labels):
             raise D107TruthScorerError("truth query/label length drift")
-        registry = set((*outer["old_classes"], *outer["new_classes"]))
+        old_registry = set(outer["old_classes"])
+        registry = old_registry | set(outer["new_classes"])
         if any(label not in registry for label in labels):
             raise D107TruthScorerError("truth label falls outside the phase registry")
         expected_classes = (
-            set(outer["old_classes"])
+            old_registry
             if phase == "before"
             else registry
         )
+        if phase == "before" and any(label not in old_registry for label in labels):
+            raise D107TruthScorerError("before truth must retain only the old registry")
         if not expected_classes.issubset(set(labels)):
             raise D107TruthScorerError("truth class coverage is incomplete")
         key = (outer_id, scene, phase)
@@ -1167,6 +1575,7 @@ __all__ = [
     "TRUTH_CATALOG_SCHEMA",
     "TRUTH_OPEN_EVENT_SCHEMA",
     "TRUTH_SURFACE_COUNT",
+    "build_d107_target125_truth_catalog",
     "canonical_sha256",
     "pair_d107_same_row",
     "score_d107_target125",
