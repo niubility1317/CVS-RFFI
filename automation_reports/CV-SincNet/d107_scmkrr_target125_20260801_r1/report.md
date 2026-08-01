@@ -65,6 +65,8 @@ K5必须复用matched K10物理池并只取前5shot；`receiver=3-19/rain/K1-new
 
 真实N607资产已只读核对：D92 matrix SHA256=`b70045e7cd45a6029bc0a1a47ada0bb72d16fdb6bc7662c43bd253bfc7e4bc5c`；checkpoint SHA256=`2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98`；RDCE wire SHA256=`20e44cb0eb2f5698e6d5f9029b63cf296ffbf4716edb999fed6743c8671bd795`。D92生产truth sidecar与offline build receipt的路径、SHA、receiver、seed、K和new-count字段已用真实首行核对。
 
+N607发布源码固定为commit=`79305f25114c91390dd0efca6683d60f966a2036`；本地Git archive=`E:\type10-7\code\snapshots\d107_scmkrr_target125_20260801_r1_source_79305f25.tar`，SHA256=`ad8e3c889767c9fa2b9e3846b5ef8d32e2ff0ed6b02e241f07db016898595d07`。远端不可覆盖run root预登记为`/home/szu2070436088/2510044040/CV-SincNet/runs/d107_scmkrr_target125_20260801_r1`，Python=`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`，GPU=`cuda:0`；日志、PID、prepared、smoke、predictions、truth和score均必须位于该run root内。
+
 ## 性能目标与分析
 
 沿用当前目标：K10三slice要求`A_old≥92%`、`F_old≥85%`、`N≥92/90/86%`；K5/new20相对matched K10/new20的`A/F/N/H`下降均≤5pp；K1/new20相对同row D92要求`ΔH≥2pp、ΔF≥2pp、ΔA≥0、ΔN≥0`且总正确严格增加。
