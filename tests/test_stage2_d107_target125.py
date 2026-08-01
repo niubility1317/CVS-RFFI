@@ -63,7 +63,6 @@ def _make_d92_prepare_inputs(tmp_path: Path) -> dict[str, Any]:
     checkpoint.write_bytes(b"d107-checkpoint")
     checkpoint_sha = _sha_bytes(checkpoint.read_bytes())
     d92_runtime_sha = _sha_token("d92-feature-runtime")
-    rdce_runtime_sha = _sha_token("rdce-construction-runtime")
     output_root = tmp_path / "d92-output"
     jobs_root = output_root / "jobs"
     jobs_root.mkdir(parents=True)
@@ -138,20 +137,6 @@ def _make_d92_prepare_inputs(tmp_path: Path) -> dict[str, Any]:
     }
     method_lock_path = tmp_path / "d107_lock.json"
     method_lock_sha = _write_json(method_lock_path, method_lock)
-    lineage = {
-        "checkpoint_sha256": checkpoint_sha,
-        "runtime_sha256": rdce_runtime_sha,
-        "method_lock_sha256": _sha_token("d106-rdce-lock"),
-        "split_id": "d104_source_seed104713_v2",
-        "tap_sha256": _sha_token("tap"),
-        "construction_code_sha256": _sha_token("construction"),
-        "content_root_sha256": _sha_token("content"),
-        "source_receipt_sha256": _sha_token("source"),
-        "tap_receipt_sha256": _sha_token("tap-receipt"),
-        "tap_authority_sha256": _sha_token("tap-authority"),
-    }
-    lineage_path = tmp_path / "rdce_lineage.json"
-    lineage_sha = _write_json(lineage_path, lineage)
     rdce_asset_dir = tmp_path / "rdce_asset"
     rdce_asset_dir.mkdir()
     return {
@@ -164,8 +149,6 @@ def _make_d92_prepare_inputs(tmp_path: Path) -> dict[str, Any]:
         "expected_d107_method_lock_sha256": method_lock_sha,
         "rdce_asset_dir": rdce_asset_dir.resolve(),
         "expected_rdce_wire_sha256": _sha_token("rdce-wire"),
-        "rdce_lineage_path": lineage_path.resolve(),
-        "expected_rdce_lineage_sha256": lineage_sha,
     }
 
 
@@ -218,20 +201,6 @@ def _make_prepared_manifests(tmp_path: Path) -> tuple[Path, str, Path, str]:
         "rdce_asset": {
             "directory": "/sealed/rdce",
             "wire_sha256": digest,
-            "lineage_path": "/sealed/lineage.json",
-            "lineage_file_sha256": digest,
-            "lineage": {
-                "checkpoint_sha256": digest,
-                "runtime_sha256": digest,
-                "method_lock_sha256": digest,
-                "split_id": "d104_source_seed104713_v2",
-                "tap_sha256": digest,
-                "construction_code_sha256": digest,
-                "content_root_sha256": digest,
-                "source_receipt_sha256": digest,
-                "tap_receipt_sha256": digest,
-                "tap_authority_sha256": digest,
-            },
         },
     }
     plan: dict[str, Any] = {
@@ -435,10 +404,6 @@ def test_prepare_binds_k5_to_matching_k10_prefix(tmp_path: Path) -> None:
     d92_manifest = json.loads(
         Path(inputs["d92_matrix_manifest_path"]).read_text(encoding="utf-8")
     )
-    rdce_lineage = json.loads(
-        Path(inputs["rdce_lineage_path"]).read_text(encoding="utf-8")
-    )
-    assert d92_manifest["sealed_runtime_sha256"] != rdce_lineage["runtime_sha256"]
     result = prepare_d107_target125_inputs(**inputs, output_dir=output_dir)
     assert result["outer_job_count"] == 125
     plan = json.loads(Path(result["plan_manifest"]).read_text(encoding="utf-8"))
@@ -446,10 +411,7 @@ def test_prepare_binds_k5_to_matching_k10_prefix(tmp_path: Path) -> None:
         plan["identity"]["d92_sealed_runtime_sha256"]
         == d92_manifest["sealed_runtime_sha256"]
     )
-    assert (
-        plan["identity"]["rdce_asset"]["lineage"]["runtime_sha256"]
-        == rdce_lineage["runtime_sha256"]
-    )
+    assert set(plan["identity"]["rdce_asset"]) == {"directory", "wire_sha256"}
     rows = {(row["receiver"], row["seed"], row["k_shot"], row["new_count"]): row for row in plan["rows"]}
     for receiver in ("20-1", "3-19", "7-14", "7-7", "8-8"):
         for seed in (713102, 713103, 713104, 713105, 713106):

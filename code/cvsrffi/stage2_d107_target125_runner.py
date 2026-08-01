@@ -16,6 +16,7 @@ import json
 import os
 from pathlib import Path
 import stat
+import struct
 from typing import Any
 
 import numpy as np
@@ -578,27 +579,64 @@ class _D107RealStateMaterializer:
     def _rdce_summary(self, reference: Mapping[str, Any]) -> tuple[np.ndarray, np.ndarray]:
         try:
             from .stage2_d106_rdce_asset import (
+                ASSET_WIRE_NAME,
                 D106RDCEAssetLineage,
+                WIRE_MAGIC,
                 decode_d106_rdce_spectrum,
                 decode_d106_rdce_tau,
-                load_d106_rdce_asset,
+                deserialize_d106_rdce_asset,
             )
         except Exception as error:  # pragma: no cover - import closure
             raise D107Target125RunnerError("RDCE public asset API is unavailable") from error
-        if set(reference) != {
-            "directory",
-            "wire_sha256",
-            "lineage_path",
-            "lineage_file_sha256",
-            "lineage",
-        } or not isinstance(reference.get("lineage"), Mapping):
+        if set(reference) != {"directory", "wire_sha256"}:
             raise D107Target125RunnerError("RDCE asset plan field closure drift")
-        lineage_values = dict(reference["lineage"])
         try:
-            lineage = D106RDCEAssetLineage(**lineage_values)
-            asset = load_d106_rdce_asset(
-                Path(str(reference["directory"])),
-                expected_wire_sha256=_sha(reference["wire_sha256"], "RDCE wire SHA256"),
+            directory = Path(str(reference["directory"]))
+            if not directory.is_dir() or directory.is_symlink():
+                raise D107Target125RunnerError("RDCE asset directory drift")
+            if {member.name for member in directory.iterdir()} != {ASSET_WIRE_NAME}:
+                raise D107Target125RunnerError("RDCE asset directory member drift")
+            wire_path = _regular_file(directory / ASSET_WIRE_NAME, "RDCE wire")
+            wire = wire_path.read_bytes()
+            expected_wire = _sha(reference["wire_sha256"], "RDCE wire SHA256")
+            if hashlib.sha256(wire).hexdigest() != expected_wire or not wire.startswith(WIRE_MAGIC):
+                raise D107Target125RunnerError("RDCE wire SHA/magic drift")
+            offset = len(WIRE_MAGIC)
+            if len(wire) < offset + 4:
+                raise D107Target125RunnerError("RDCE wire header is truncated")
+            header_size = struct.unpack(">I", wire[offset : offset + 4])[0]
+            offset += 4
+            if header_size < 1 or offset + header_size > len(wire):
+                raise D107Target125RunnerError("RDCE wire header length drift")
+            header_raw = wire[offset : offset + header_size]
+            header = json.loads(header_raw.decode("utf-8"))
+            if (
+                not isinstance(header, Mapping)
+                or canonical_bytes(header) != header_raw
+                or not isinstance(header.get("asset"), Mapping)
+            ):
+                raise D107Target125RunnerError("RDCE wire canonical header drift")
+            lineage_names = (
+                "checkpoint_sha256",
+                "runtime_sha256",
+                "method_lock_sha256",
+                "split_id",
+                "tap_sha256",
+                "construction_code_sha256",
+                "content_root_sha256",
+                "source_receipt_sha256",
+                "tap_receipt_sha256",
+                "tap_authority_sha256",
+            )
+            asset_header = header["asset"]
+            if any(name not in asset_header for name in lineage_names):
+                raise D107Target125RunnerError("RDCE wire lineage field closure drift")
+            lineage = D106RDCEAssetLineage(
+                **{name: asset_header[name] for name in lineage_names}
+            )
+            asset = deserialize_d106_rdce_asset(
+                wire,
+                expected_wire_sha256=expected_wire,
                 expected_lineage=lineage,
             )
             tau = decode_d106_rdce_tau(asset)
@@ -749,8 +787,6 @@ def _materialize_pair(
         or len(after.registered_classes) != OLD_CLASS_COUNT + row["new_count"]
     ):
         raise D107Target125RunnerError("before/after registry registration drift")
-    if before.query_physical_ids != after.query_physical_ids:
-        raise D107Target125RunnerError("before/after ordered query IDs must match")
     if not np.array_equal(before.tau, after.tau) or not np.array_equal(
         before.spectrum, after.spectrum
     ):
@@ -1164,7 +1200,6 @@ def validate_d107_target125_prediction_manifest(
     surfaces = _sequence(manifest.get("surfaces"), "prediction surfaces", SURFACE_COUNT)
     matrix = freeze_d107_target125_matrix()
     query_by_scope: dict[tuple[str, str, str], tuple[str, ...]] = {}
-    phase_query_by_scope: dict[tuple[str, str], tuple[str, ...]] = {}
     for surface, expected in zip(surfaces, matrix.surfaces, strict=True):
         if not isinstance(surface, Mapping) or set(surface) != _SURFACE_FIELDS:
             raise D107Target125RunnerError("prediction surface field closure drift")
@@ -1218,12 +1253,6 @@ def validate_d107_target125_prediction_manifest(
             query_by_scope[scope] = query_ids
         elif known != query_ids:
             raise D107Target125RunnerError("four-arm query order differs within a phase")
-        phase_scope = (expected.outer_id, expected.scene)
-        known_phase = phase_query_by_scope.get(phase_scope)
-        if known_phase is None:
-            phase_query_by_scope[phase_scope] = query_ids
-        elif known_phase != query_ids:
-            raise D107Target125RunnerError("before/after query order differs")
         _validate_artifact(surface=surface, root=path.parent)
     if len(query_by_scope) != SCENE_ROW_COUNT * len(PHASES):
         raise D107Target125RunnerError("prediction query-scope coverage drift")

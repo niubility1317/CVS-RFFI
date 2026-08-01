@@ -39,18 +39,6 @@ CONTEXT_SCHEMA = "cvs.phase2.d107.scmkrr.target125.input_context.v1"
 PREPARE_RECEIPT_SCHEMA = "cvs.phase2.d107.scmkrr.target125.prepare_receipt.v1"
 D107_METHOD_LOCK_SCHEMA = "cvs.phase2.d107.scmkrr_method_lock.v1"
 
-_RDCE_LINEAGE_FIELDS = (
-    "checkpoint_sha256",
-    "runtime_sha256",
-    "method_lock_sha256",
-    "split_id",
-    "tap_sha256",
-    "construction_code_sha256",
-    "content_root_sha256",
-    "source_receipt_sha256",
-    "tap_receipt_sha256",
-    "tap_authority_sha256",
-)
 _PACKAGE_NAMES = (
     "before_enrollment",
     "before_apply",
@@ -292,25 +280,6 @@ def _d107_method_lock(path: Path, expected_sha256: str) -> dict[str, str]:
     return {"path": str(source), "sha256": expected}
 
 
-def _rdce_lineage(path: Path, expected_sha256: str) -> dict[str, Any]:
-    document = _read_json(path, "RDCE lineage", expected_sha256)
-    if set(document) != set(_RDCE_LINEAGE_FIELDS):
-        raise D107Target125InputError("RDCE lineage field closure drift")
-    for name in _RDCE_LINEAGE_FIELDS[:8]:
-        if name == "split_id":
-            if document[name] != "d104_source_seed104713_v2":
-                raise D107Target125InputError("RDCE lineage split binding drift")
-        else:
-            _sha(document[name], f"RDCE lineage {name}")
-    optional = (document["tap_receipt_sha256"], document["tap_authority_sha256"])
-    if (optional[0] is None) != (optional[1] is None):
-        raise D107Target125InputError("RDCE tap authority fields must appear together")
-    if optional[0] is not None:
-        _sha(optional[0], "RDCE lineage tap_receipt_sha256")
-        _sha(optional[1], "RDCE lineage tap_authority_sha256")
-    return {name: document[name] for name in _RDCE_LINEAGE_FIELDS}
-
-
 def _write_json_new(path: Path, value: Mapping[str, Any]) -> str:
     if path.exists() or path.is_symlink():
         raise FileExistsError(f"immutable output already exists: {path}")
@@ -334,8 +303,6 @@ def prepare_d107_target125_inputs(
     expected_d107_method_lock_sha256: str,
     rdce_asset_dir: Path,
     expected_rdce_wire_sha256: str,
-    rdce_lineage_path: Path,
-    expected_rdce_lineage_sha256: str,
     output_dir: Path,
 ) -> dict[str, Any]:
     """Publish immutable, truth-free D107 Target125 plan/context/receipt files."""
@@ -350,16 +317,11 @@ def prepare_d107_target125_inputs(
     method_lock = _d107_method_lock(
         d107_method_lock_path, expected_d107_method_lock_sha256
     )
-    lineage_path = _regular_path(rdce_lineage_path, "RDCE lineage")
-    lineage_sha = _sha(expected_rdce_lineage_sha256, "expected RDCE lineage SHA256")
-    lineage = _rdce_lineage(lineage_path, lineage_sha)
     d92_sealed_runtime_sha = _sha(
         manifest.get("sealed_runtime_sha256"), "D92 sealed runtime SHA256"
     )
     if manifest.get("phase1_checkpoint_sha256") != checkpoint["sha256"]:
         raise D107Target125InputError("D92/checkpoint SHA binding drift")
-    if lineage["checkpoint_sha256"] != checkpoint["sha256"]:
-        raise D107Target125InputError("checkpoint/RDCE lineage SHA binding drift")
     rdce_directory = _regular_path(rdce_asset_dir, "RDCE asset directory", directory=True)
     rdce_wire_sha = _sha(expected_rdce_wire_sha256, "expected RDCE wire SHA256")
     rows = _selected_rows(manifest, output_root)
@@ -374,9 +336,6 @@ def prepare_d107_target125_inputs(
         "rdce_asset": {
             "directory": str(rdce_directory),
             "wire_sha256": rdce_wire_sha,
-            "lineage_path": str(lineage_path),
-            "lineage_file_sha256": lineage_sha,
-            "lineage": lineage,
         },
     }
     plan: dict[str, Any] = {

@@ -43,8 +43,6 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     prepare.add_argument("--d107-method-lock-sha256", required=True)
     prepare.add_argument("--rdce-asset-dir", type=Path, required=True)
     prepare.add_argument("--rdce-wire-sha256", required=True)
-    prepare.add_argument("--rdce-lineage", type=Path, required=True)
-    prepare.add_argument("--rdce-lineage-sha256", required=True)
     prepare.add_argument("--output-dir", type=Path, required=True)
 
     smoke = commands.add_parser(
@@ -80,8 +78,6 @@ def main(argv: list[str] | None = None) -> int:
             expected_d107_method_lock_sha256=args.d107_method_lock_sha256,
             rdce_asset_dir=args.rdce_asset_dir,
             expected_rdce_wire_sha256=args.rdce_wire_sha256,
-            rdce_lineage_path=args.rdce_lineage,
-            expected_rdce_lineage_sha256=args.rdce_lineage_sha256,
             output_dir=args.output_dir,
         )
     elif args.command == "smoke":
