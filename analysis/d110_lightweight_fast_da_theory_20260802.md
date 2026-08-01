@@ -1,6 +1,6 @@
 # D110-SCPM轻型快速域适应理论研究与候选收敛
 
-状态：`DESIGN_FROZEN / P0=0 / P1=0 / P2=0 / NO_PERFORMANCE_RESULT / NOT_LAUNCHED`
+状态：`DESIGN_FROZEN / LOCAL_CORE_VERIFIED / NO_PERFORMANCE_RESULT / NOT_LAUNCHED`
 
 日期：2026-08-02
 
@@ -13,7 +13,7 @@
 3.Phase2只用support估计同一4参数结构协方差，以class-block Ledoit–Wolf式矩估计连续收缩到sealed先验；K1自动退回sealed条件方差，而不是identity；
 4.query使用显式预测Mahalanobis距离，不把可逆共同变换再交给可能将其代数抵消的完整LDA。
 
-WP-SQR已移除：当前256点片段没有固定preamble／重复字段对齐。CV-GSA/RGM也已移除：现有sealed runtime asset没有构造cross-receiver等权old-TX Gram所需的信息。旧EBSS公式同样被否决：它错误地把只随support中心缩小的\(\nu^2/K\)当成全部预测噪声，并把可能在同row距离中抵消的receiver/day共同漂移直接加入分母。SCPM仍未实现、未运行；本报告只完成原理、可识别量、统计量和资源边界。
+WP-SQR已移除：当前256点片段没有固定preamble／重复字段对齐。CV-GSA/RGM也已移除：现有sealed runtime asset没有构造cross-receiver等权old-TX Gram所需的信息。旧EBSS公式同样被否决：它错误地把只随support中心缩小的\(\nu^2/K\)当成全部预测噪声，并把可能在同row距离中抵消的receiver/day共同漂移直接加入分母。SCPM的4方差asset与runtime核心已经实现并通过窄验证；正式Target5 materializer、真实checkpoint smoke和性能运行仍未完成，因此没有性能结果。
 
 ## 1.问题为什么不能靠盲目对齐解决
 
@@ -435,6 +435,20 @@ Target5沿用现有Target25 scorer：A、N、H按5个outer row等权聚合；\(F
 5.只有Target5获得联合正收益，才补K5/K10 Target20；完整125留给达到目标后的确认。
 
 这不是增加发布流程gate，而是把实验矩阵按“先回答最关键未知量”缩到最小。SCPM若数学复审不成立或Target5无联合正收益，直接关闭公式并研发下一机制；不会恢复WP-SQR、RGM、旧EBSS、D109或参数扫描。
+
+### 11.1本地核心实现状态
+
+本轮实现严格止于可独立审计的最小功能核心，没有构造Target5 runner或连接N607：
+
+|文件|已实现边界|当前验证|
+|---|---|---|
+|`code/cvsrffi/stage2_d110_scpm_asset.py`|168个TX×receiver×day cell等权条件方差、正交补157维归一、4×INT8＋4×FP16封存、D106 lineage／checkpoint绑定、loader-only formal authority、正式asset到runtime入口|零方差单cell允许但全局零方差拒绝；伪造formal状态拒绝；错误D106绑定拒绝|
+|`code/cvsrffi/stage2_d110_scpm_runtime.py`|K∈{1,5,10}的class-block矩收缩、K1封存先验、相对方差cap=20、全类独立预测、零query更新|d=160、正交补权重157、K1非欧氏恒等、K2拒绝、置换等价与确定性|
+|两份对应测试|只检查公式、资产边界和运行时行为，不读取accuracy选择配置|`ssr-gpu`中12项通过；两模块`py_compile`通过；`git diff --check`通过|
+
+修复后独立Terra Max复审结论为`P0=0 / P1=0 / LOCAL_CORE_VERIFIED`；前序零方差cell、formal authority、K集合、d=160／perp=157、K1非恒等及正式asset→runtime入口问题均已闭合。P2仅为真实D106 checkpoint／tap无query smoke和Target5 materializer尚未接线。
+
+因此`LOCAL_CORE_VERIFIED`只表示最小核心实现与冻结理论一致，不表示实验发布就绪，更不表示性能正收益。下一项唯一必要功能工作是用真实D106 checkpoint／tap做无query smoke，并把已有Target5 materializer接到正式asset入口；在这两项之前不启动性能实验。
 
 ## 12.主要参考
 
