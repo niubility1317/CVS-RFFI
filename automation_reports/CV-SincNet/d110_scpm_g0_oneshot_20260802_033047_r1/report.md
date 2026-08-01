@@ -72,3 +72,49 @@ CUDA_VISIBLE_DEVICES=0 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python /home
 - PID自然退出、GPU释放和SSH连接清理。
 
 本节之后由唯一runner补充LANDED／RUNNING／ARTIFACTS_COMPLETE证据；主agent只依据完整真实G0结果作G1或拒绝决策。
+
+## 7.唯一runner实际执行与回收
+
+最终状态：`ARTIFACTS_COMPLETE / REAL_ARCHIVE_G0_EXECUTED_NON_FORMAL_FUNCTIONAL_EVIDENCE / NO_PERFORMANCE_RESULT`
+
+### 7.1落地与运行
+
+|检查项|实际证据|
+|---|---|
+|direct preflight|通过；N607项目根可见，GPU0—7均为0%利用率、约1MiB显存，无用户训练进程|
+|落地前run root|`ABSENT`；随后仅创建本run的`input/`、`logs/`、`output/`|
+|真实tap|存在；SHA256=`48b92fa8defc1c7261ca80f9e0723662e3fe6e8c64ec0881c8ef13bab3cafa2f`匹配冻结值|
+|源码归档|已同步并在N607复核SHA256=`920aa871a52db0e77855de2a5a4c41f1b79903aed07ce243d2d5be85c108b931`；入口`py_compile`通过|
+|GPU／PID|GPU0；PID=`3654115`；启动即时存活，随后自然退出|
+|CWD|`/home/szu2070436088/2510044040/CV-SincNet/runs/d110_scpm_g0_oneshot_20260802_033047_r1/source/code`|
+|实际命令|冻结命令以`CUDA_VISIBLE_DEVICES=0`、预登记Python、archive SHA、6个registered class、固定run ID和不可覆盖output执行；使用`nohup`仅用于脱离SSH|
+|运行后GPU／进程|PID已`EXITED`；`nvidia-smi`无compute app；未干预任何其他任务|
+|SSH|每次短连接后本机`ssh.exe=NONE`且N607 TCP22连接为`NONE`|
+
+启动通道末尾出现`base64: invalid input`提示；随后立即核验该次唯一运行的PID、完整日志、完整结果、远端／本地SHA和JSON字段均闭合，因此未重启、未重跑、未改方法。
+
+### 7.2完整G0结果核验
+
+已回收并解析完整`g0_result.json`，而非仅依据日志尾部。字段核验：`schema=cvs.phase1.d110.scpm_g0.one_shot.v1`；run ID和tap SHA匹配；`row_count=588`；`fold_count=28`；`K_values=[1,5,10]`；每K`query_count=588`。
+
+|K|feature changed|neighbor changed|margin changed|argmax changed|结论|
+|---:|---:|---:|---:|---:|---|
+|1|588|23|588|23|非零|
+|5|588|54|588|40|非零|
+|10|588|116|588|96|非零|
+
+- `argmax_changed_count=159`，且`zero_changed_k_values=[]`。
+- `functional_gate_pass=true`，`functional_gate_status=G0_PASS_PROCEED_G1`，`g1_entry_allowed=true`。
+- `query_rows_used_for_fit=0`、`query_state_updates=0`、`query_label_read_for_scoring=false`、`parameter_scan_count=0`。
+- `performance_metrics_emitted=false`、`formal_performance_claim=false`；本run没有accuracy、H、floor或任何Target truth性能结论。
+- `resource_budget_exceeded=false`；峰值增量数值数组估计`133408B`，低于`1048576B`预算。
+
+### 7.3回收工件
+
+|工件|远端SHA256|字节数|本地回收路径|
+|---|---|---:|---|
+|`g0_result.json`|`219925bd277c07b1b0d850b7aae367ebe5c76ecbd70578cff60406d13d6e3afa`|8368|`artifacts/remote/g0_result.json`|
+|`run.out`|`186b51830855db4eb502e2f0d0787d121f2fcb09d23d2e6efa64238a76d01760`|8278|`artifacts/remote/run.out`|
+|`launch.pid`|`7366f45abb07e68f1eeb0cb5b4e0715cd4e04fd9ceeb4cbcc06f90f3afc0c6cd`|8|`artifacts/remote/launch.pid`|
+
+唯一runner交接：真实588条G0已完成且三种K的argmax变化均为非零。该结论仅允许主agent按冻结规则进入G1；它不构成任何held或Target性能收益声明。

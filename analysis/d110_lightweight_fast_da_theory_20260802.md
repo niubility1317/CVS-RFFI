@@ -1,6 +1,6 @@
 # D110-SCPM轻型快速域适应理论研究与候选收敛
 
-状态：`DESIGN_FROZEN / LOCAL_CORE_VERIFIED / NO_PERFORMANCE_RESULT / NOT_LAUNCHED`
+状态：`G0_PASS_PROCEED_G1 / NO_PERFORMANCE_RESULT`
 
 日期：2026-08-02
 
@@ -13,7 +13,7 @@
 3.Phase2只用support估计同一4参数结构协方差，以class-block Ledoit–Wolf式矩估计连续收缩到sealed先验；K1自动退回sealed条件方差，而不是identity；
 4.query使用显式预测Mahalanobis距离，不把可逆共同变换再交给可能将其代数抵消的完整LDA。
 
-WP-SQR已移除：当前256点片段没有固定preamble／重复字段对齐。CV-GSA/RGM也已移除：现有sealed runtime asset没有构造cross-receiver等权old-TX Gram所需的信息。旧EBSS公式同样被否决：它错误地把只随support中心缩小的\(\nu^2/K\)当成全部预测噪声，并把可能在同row距离中抵消的receiver/day共同漂移直接加入分母。SCPM的4方差asset与runtime核心已经实现并通过窄验证；正式Target5 materializer、真实checkpoint smoke和性能运行仍未完成，因此没有性能结果。
+WP-SQR已移除：当前256点片段没有固定preamble／重复字段对齐。CV-GSA/RGM也已移除：现有sealed runtime asset没有构造cross-receiver等权old-TX Gram所需的信息。旧EBSS公式同样被否决：它错误地把只随support中心缩小的\(\nu^2/K\)当成全部预测噪声，并把可能在同row距离中抵消的receiver/day共同漂移直接加入分母。SCPM的4方差asset、runtime核心和真实G0已经完成；G0只证明真实决策非恒等，尚无held或Target性能结果。
 
 ## 1.问题为什么不能靠盲目对齐解决
 
@@ -368,8 +368,8 @@ UCB只处理受限的类条件尺度／多模态，不是完整DA。它与现有
 |统计对象|target support共享协方差|receiver/day共同漂移方向及总体类内scatter|同TX×receiver×day cell内的单观测条件残差方差|
 |决策机制|完整LDA／协方差头|先统一变换，再交给后续头|4参数结构协方差直接定义预测距离|
 |K1差异|identity|固定常数非恒等|sealed条件方差形成各向异性metric|
-|最小差异证据|—|—|只跑完整Target5 K1/new20，M0对SCPM|
-|证伪／停止|—|—|K1无邻序变化，或A/F/N/H任一交换性下降即关闭SCPM，不调rank、clip或收缩|
+|最小差异证据|—|—|真实G0三种K已非恒等；下一步为完整63行source-held四臂|
+|证伪／停止|—|—|G1简单效应／交互方向错误或出现不可接受negative tail即关闭组合，不调rank、clip或带宽|
 |额外成本|高维协方差|约960MAC/query|约960MAC/query＋4标量|
 
 ## 9.协议、量化与资源
@@ -404,17 +404,56 @@ Phase1与Phase2必须使用同一个closed \(U\)、同一种L2顺序和同一个
 
 资源仍需以真实实现计时和state wire审计闭合；当前数值是理论估算，不是实测性能数据。
 
-## 10.最小因果实验设计（当前不执行）
+## 10.G1冻结四臂：同一qKNN公式上的2×2因果分解
 
-理论冻结且本地真实checkpoint smoke证明K1不是数值恒等后，首个真实性能实验只做完整Target5：5receiver×1seed×K1/new20。它不是从Target25中途按accuracy停机，而是一开始就冻结的完整5个outer row／15个scene row矩阵；每个scene的before／after必须全部完成。唯一停止／晋级基线是本次同row、同artifact的M0；D92只作历史参考，不能替代M0。
+真实588条tap的G0已完成：K1/K5/K10分别有23/40/96个argmax改变，三种K均非零，允许进入G1；该证据不含性能指标。当前目标要求先做尚未打开的source-held四臂，不再沿用旧版“两臂Target5优先”安排。
 
-|arm|作用|
-|---|---|
-|M0|现有统一raw-view qKNN／原型参考|
-|M_SCPM|同一support中心＋SCPM预测距离|
-|REF_D92|历史完整125中的matched K1/new20同row参考|
+令输入先按现有路径L2归一化；support仍沿用当前qKNN的逐向量INT8量化／解码。DA因子只改变如下平方距离：
 
-Target5沿用现有Target25 scorer：A、N、H按5个outer row等权聚合；\(F\)明确指15个scene row汇总后的pooled old-class minimum，同时另报row-floor；总正确数对15个scene row全部prediction求和。Target5一次性完整结束后，仅在SCPM相对同run M0同时满足\(\Delta H\ge2\)pp、\(\Delta F\ge2\)pp、\(\Delta A\ge0\)、\(\Delta N\ge0\)且总正确数严格增加时，才另行冻结剩余K5/K10四个slice的Target20；否则直接关闭SCPM并研发下一方法。不会跑第二seed或125，也不会扫描rank、condition cap、收缩公式、融合权重或头部模块。单seed Target5只是方向淘汰实验，不提供统计显著性或跨seed泛化保证。
+\[
+d_I(x,y)=\|x-y\|_2^2,
+\qquad
+d_S(x,y)=\sum_{j=1}^3\frac{[u_j^\top(x-y)]^2}{r_j}
++\frac{\|P_\perp(x-y)\|_2^2}{r_\perp},
+\]
+
+其中\(r_g\)是D110 runtime已经冻结的safe relative variance。SCPM预测方差中的公共\((1+1/K)\)不进入qKNN距离，因为它在固定K的类别决策中是公共尺度；去除它使四臂只比较SCPM各向异性，不引入额外K相关温度。G0最近中心决策对该公共因子本来就不敏感，因此G1使用的是同一个已通过G0的各向异性对象。
+
+HEAD因子只改变带宽是否按类独立。对每类\(c\)在K>1时计算其全部无序support pair的均值距离\(e_c\)。class-specific头严格复用现有公式：
+
+\[
+h_c^2=\operatorname{clip}\!\left(
+\frac{e_c+\lambda h_0^2}{1+\lambda},
+h_0^2r_{min}^2,h_0^2r_{max}^2
+\right).
+\]
+
+shared头不引入新的\(n_{eff}\)或\(\kappa\)，只把等K注册类的\(e_c\)先求算术均值\(\bar e=C^{-1}\sum_c e_c\)，再经过完全相同的Phase1锁定先验、分母和clip：
+
+\[
+h_{shared}^2=\operatorname{clip}\!\left(
+\frac{\bar e+\lambda h_0^2}{1+\lambda},
+h_0^2r_{min}^2,h_0^2r_{max}^2
+\right).
+\]
+
+K1没有类内自由度，两种头都严格取\(h_0\)。因此K1的`M_HEAD=M0`、`M_JOINT=M_DA`是预期的可辨识边界，不得把HEAD在K1恒等当作失败。四臂统一使用同一Student-t核、\(\nu\)、\(d_{eff}\)、volume项、logsumexp-minus-log-K、INT8解码和全注册类竞争：
+
+\[
+s_c(q)=\operatorname{LSE}_{i\in c}\left[
+-\gamma d_{eff}\log h_c
+-\frac{\nu+d_{eff}}2\log\!\left(1+\frac{d_M(q,z_{ci})}{\nu h_c^2}\right)
+\right]-\log K.
+\]
+
+|arm|距离因子|HEAD因子|
+|---|---|---|
+|M0|\(d_I\)|现有class-specific尺度|
+|M_DA|\(d_S\)|同一class-specific尺度公式|
+|M_HEAD|\(d_I\)|全注册类shared尺度|
+|M_JOINT|\(d_S\)|同一shared尺度公式|
+
+G1固定复用现有63行source-held split，一次完整运行后只看简单效应、交互、old/new平衡、floor和negative tail；不扫描rank、cap、带宽、温度或融合权重。方向正确才进入固定Target25四臂；方向错误则关闭该机制并研发下一revision。
 
 ## 11.交叉复审结论与研发顺序
 
@@ -424,21 +463,21 @@ Target5沿用现有Target25 scorer：A、N、H按5个outer row等权聚合；\(F
 - 资产侧：D106有合法U但没有cell内条件方差；SCPM只需从同一588条Phase1 tap新增4个共同封存聚合量，不读取clean/source运行时状态；
 - 协议侧：Phase1可使用source clean和卫星增强视图，但SCPM当前甚至不需要新增增强；Phase2一次观测规则不变；
 - 数学侧：独立终审为`P0=0 / P1=0 / P2=0 / DESIGN_FROZEN`；原SCPM草案的问题已通过自由度、正交补归一、class-block矩收缩、零方差回退、条件数界和唯一M0比较口径关闭；
-- 头部侧：UCB暂缓，首轮只有M0与M_SCPM，防止把DA效果与头部融合混在一起。
+- 头部侧：UCB与REPP暂缓；G1只用全注册类共享尺度，且与SCPM构成同一qKNN公式上的冻结2×2分解。
 
 量化顺序与历史重入差异已在本报告关闭；剩余研发顺序为：
 
 1.独立监督终审已完成：P0=0、P1=0、P2=0；
-2.只实现4方差asset＋SCPM score和M0/M_SCPM两臂；
-3.本地仅做公式、置换等价、无query更新、INT8闭合和真实checkpoint非恒等smoke；
-4.随后发布唯一Target5 K1/new20；性能弱则关闭SCPM并进入下一种统计对象研发；
-5.只有Target5获得联合正收益，才补K5/K10 Target20；完整125留给达到目标后的确认。
+2.4方差asset、SCPM score及真实G0已经完成；三种K均改变决策；
+3.实现同一Student-t qKNN公式上的四臂，不改Phase1锁定量；
+4.完成一次窄验证和一次独立复审后，立即发布完整63行source-held G1；
+5.G1方向正确即进入固定四臂Target25；性能弱则关闭当前组合并研发下一统计对象。
 
-这不是增加发布流程gate，而是把实验矩阵按“先回答最关键未知量”缩到最小。SCPM若数学复审不成立或Target5无联合正收益，直接关闭公式并研发下一机制；不会恢复WP-SQR、RGM、旧EBSS、D109或参数扫描。
+这不是增加发布流程gate，而是把实验矩阵按“先回答最关键未知量”缩到最小。SCPM组合若G1方向错误，直接关闭并研发下一机制；不会恢复WP-SQR、RGM、旧EBSS、D109或参数扫描。
 
 ### 11.1本地核心实现状态
 
-本轮实现严格止于可独立审计的最小功能核心，没有构造Target5 runner或连接N607：
+最小功能核心与真实G0已经闭合；尚未实现的是G1四臂source-held入口：
 
 |文件|已实现边界|当前验证|
 |---|---|---|
@@ -446,9 +485,9 @@ Target5沿用现有Target25 scorer：A、N、H按5个outer row等权聚合；\(F
 |`code/cvsrffi/stage2_d110_scpm_runtime.py`|K∈{1,5,10}的class-block矩收缩、K1封存先验、相对方差cap=20、全类独立预测、零query更新|d=160、正交补权重157、K1非欧氏恒等、K2拒绝、置换等价与确定性|
 |两份对应测试|只检查公式、资产边界和运行时行为，不读取accuracy选择配置|`ssr-gpu`中12项通过；两模块`py_compile`通过；`git diff --check`通过|
 
-修复后独立Terra Max复审结论为`P0=0 / P1=0 / LOCAL_CORE_VERIFIED`；前序零方差cell、formal authority、K集合、d=160／perp=157、K1非恒等及正式asset→runtime入口问题均已闭合。P2仅为真实D106 checkpoint／tap无query smoke和Target5 materializer尚未接线。
+修复后独立Terra Max复审结论为`P0=0 / P1=0 / LOCAL_CORE_VERIFIED`；前序零方差cell、formal authority、K集合、d=160／perp=157、K1非恒等及正式asset→runtime入口问题均已闭合。随后真实G0确认K1/K5/K10均改变argmax。
 
-因此`LOCAL_CORE_VERIFIED`只表示最小核心实现与冻结理论一致，不表示实验发布就绪，更不表示性能正收益。下一项唯一必要功能工作是用真实D106 checkpoint／tap做无query smoke，并把已有Target5 materializer接到正式asset入口；在这两项之前不启动性能实验。
+G0通过仍不表示性能正收益。下一项唯一必要功能工作是把上述冻结四臂接入既有source-held63行predict／independent score入口，完成一次窄验证与一次独立复审后立即发布G1。
 
 ## 12.主要参考
 
@@ -472,4 +511,4 @@ Target5沿用现有Target25 scorer：A、N、H按5个outer row等权聚合；\(F
 - `automation_reports/CV-SincNet/d107_scmkrr_target125_20260801_r1/report.md`
 - `automation_reports/CV-SincNet/d108_cbrrc_smme_target25_s713102_20260801_r1/report.md`
 
-本轮没有连接N607、没有启动或终止任何实验、没有生成新性能结果。
+本轮已在N607完成D110真实G0，但G0不读取truth且没有生成性能结果；下一步为冻结四臂source-held G1。
