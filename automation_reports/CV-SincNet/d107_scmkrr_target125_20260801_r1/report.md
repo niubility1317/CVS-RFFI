@@ -1,13 +1,13 @@
 # D107-SCMKRR/r1完整125研发与实验报告
 
-状态：`DESIGN_FROZEN / IMPLEMENTING`
+状态：`LOCAL_VERIFIED / READY_FOR_N607`
 
 ## 目标与终止背景
 
 |字段|值|
 |---|---|
 |experiment ID|`d107_scmkrr_target125_20260801_r1`|
-|日期/operator|2026-08-01；主agent负责集成、数据与结果分析；Terra Max子agent分工实现核心和执行面|
+|日期/operator|2026-08-01；主agent负责集成、数据与结果分析；Terra Max子agent分别实现核心、执行面和truth面|
 |目标|以机制独立的新方法完成完整125，并与D62、D91、D92、SVRN-qKNN-BCRR全面比较|
 |claim scope|`DEVELOPMENT_SCREEN_ONLY_NON_PROMOTABLE`|
 |Git|仅本地提交；不push、不上传GitHub|
@@ -49,7 +49,21 @@ K5必须复用matched K10物理池并只取前5shot；`receiver=3-19/rain/K1-new
 
 ## 精简研发与发布流程
 
-实现只分两个不重叠面：SCMKRR typed核心/数学负例；Target125矩阵、真实input、不可覆盖prediction和truth-side评分。主agent只做diff集成和最小聚焦验证。通过一个真实no-truth state smoke后直接发布完整125，不设置source-held性能gate、候选扫描或额外签名流程。只有协议/确定性执行故障可以停止，性能弱则完整结束后淘汰并进入下一方法。
+实现分为三个不重叠面：SCMKRR typed核心/数学负例、Target125矩阵与真实input/不可覆盖prediction、独立truth-side构建与评分。主agent只做diff集成和最小聚焦验证。通过一个真实no-truth state smoke后直接发布完整125，不设置source-held性能gate、候选扫描或额外签名流程。只有协议/确定性执行故障可以停止，性能弱则完整结束后淘汰并进入下一方法。
+
+## 本地实现与验证
+
+|项目|证据|
+|---|---|
+|核心|`92fcabca`；四臂SCMKRR、K1非fallback、冻结anchor、canonical wire|
+|执行面|`a571328c`；125/375/1500/3000矩阵、真实D92封包、不可覆盖prediction|
+|truth面|`0faf4f5d`,`1202d0b2`；先封存验证再构建750个truth surface并输出375个scene同row、500个outer-arm聚合|
+|真实接口修正|`baeaa023`,`bda8de01`；signed视图改用`pre_relu`；D92和RDCE运行时身份分离；RDCE从固定wire内解析lineage；删除错误的before/after全query相等假设|
+|method lock|`configs/stage2_d107_scmkrr_r1.json`；SHA256=`ae0fec3d82d3eaa6e135ae6340af723575ede1ccb3c12120628ffcad25a38788`|
+|本地验证|`ssr-gpu`下7个D107文件`py_compile`通过；三组专项测试合计`44 passed`；`git diff --check`通过|
+|发布边界|仅本地Git；不push、不上传GitHub；一个真实无truth smoke通过后立即完整125|
+
+真实N607资产已只读核对：D92 matrix SHA256=`b70045e7cd45a6029bc0a1a47ada0bb72d16fdb6bc7662c43bd253bfc7e4bc5c`；checkpoint SHA256=`2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98`；RDCE wire SHA256=`20e44cb0eb2f5698e6d5f9029b63cf296ffbf4716edb999fed6743c8671bd795`。D92生产truth sidecar与offline build receipt的路径、SHA、receiver、seed、K和new-count字段已用真实首行核对。
 
 ## 性能目标与分析
 
