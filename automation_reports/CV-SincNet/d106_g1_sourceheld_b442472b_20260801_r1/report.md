@@ -81,3 +81,14 @@ python code/scripts/run_d106_g1_sourceheld_one_shot.py score --prediction-root <
 |row|receiver|held class|K|arm|old BA|seen-new|H|old floor|all floor|correct/query|判定|
 |---|---|---|---|---|---:|---:|---:|---:|---:|---:|---|
 |待运行||||||||||||`NOT_RUN`|
+
+## 9.N607落地停止记录
+
+- 2026-08-01 direct preflight通过：普通账号、项目根和GPU可见；8张RTX3090均空闲；本实验无训练GPU需求。
+- 创建前远端run root确认为`ABSENT`，随后原子创建`/home/szu2070436088/2510044040/CV-SincNet/runs/d106_g1_sourceheld_b442472b_20260801_r1`。
+- release zip完成精确SCP；远端大小48,895,574bytes，SHA256=`01a63e43abcf893b24546f74fb37f861f0bdb6eba3a2a3944f823e2f64e908a1`，与预登记一致。
+- zip解压到全新`<run-root>/release`；CLI实算SHA256=`500d22b473b6b803706471c1aad7798bf414486ca4f103a906d72ed6fd4dbc90`，与预登记一致；`py_compile`及prepare/predict/score帮助面导入均通过。
+- P0触发：archive及远端解压文件`release/configs/d106_rcmr_2v_method_lock_20260801.json`实算SHA256=`0a1745219cc1bd998928d3eb1375c401c7d3f0870a0cd2fd71dd891e4889f83e`，不等于冻结SHA256=`be452cc52da8e5c43d3addc73568580d63a83f146310ec3559bb5daa99076b0c`。两份JSON语义内容一致，但字节身份不一致，不能绕过冻结SHA发布。
+- 按错误SHA停止规则，prepare、predict、score均未启动；没有PID、prediction、truth-open、score或性能artifact，truth从未打开。因此本run永久标记`LANDED_NOT_STARTED_WRONG_LOCK_HASH_SEMANTIC / NO_PERFORMANCE_RESULT`，不得续跑或覆盖。
+- 远端run root、zip和已解压release全部原样保留；未修改既有r7输入、RDCE asset或任何truth文件。主agent须在本地修正release后使用新的不可覆盖RUN_ID。
+- 最终本地清场：`ssh.exe=0`，到N607`172.31.111.215:22`及实验室桥`172.31.105.18:22`的`ESTABLISHED`连接均为0。
