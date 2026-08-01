@@ -33,6 +33,9 @@
 |runtime身份修复|`8b1166e1ba4648204571612543319cf7a64dd1e3`；D92 package runtime与D106/RDCE runtime分别验证、分别留痕，不再错误要求不同文件字节SHA相等|
 |matched K5修复|`ba78d723da5ca87d32d9715bcd2dbcc28280512a`|
 |payload修复|`0d3ebcfd56cb484cabadc026678cc50b73ff67f7`|
+|release source commit|`9a27a171f8c21a435c671daf278204af1fe753a9`|
+|LF-preserving archive SHA256|`8a54012f78fa4df7ed249a0e977051a317e4f11a7d8f068d167fd3b80da66e87`|
+|解包lock SHA256|RDCE=`e7a1982b4bdeaf5b8179993ce78f4a2af26965d8f4a3239440dbe636ebf14cc1`；RCMR=`be452cc52da8e5c43d3addc73568580d63a83f146310ec3559bb5daa99076b0c`；KCR=`a3d530734b90454724166f620d7017f80e6de838fd4ca469c04abb155534ab6a`|
 |本地验证|相关4文件`py_compile`通过；183项D106聚焦回归通过；`git diff --check`通过；工作树clean|
 |保留的fail-closed边界|support/query package runtime必须一致且为合法SHA；D106 runtime必须为合法SHA；checkpoint、RDCE wire、method lock、seal、query隔离均不变|
 
