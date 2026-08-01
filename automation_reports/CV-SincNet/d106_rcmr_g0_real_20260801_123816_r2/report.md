@@ -1,6 +1,6 @@
 # D106-RCMR-2V-qKNN真实G0发布报告
 
-状态：`LOCAL_COMMITTED / RELEASE_ASSETS_BUILT / N607_NOT_LANDED / NO_NEW_PERFORMANCE_RESULT`
+状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
 
 ## 1.身份与目标
 
@@ -58,3 +58,17 @@ G0不得读取accuracy、H、floor或Target truth。只记录K1/K5/K10的feature
 - 任一K的argmax changed count为0：`REJECT_REVISION_NO_FUNCTION`，停止该revision并回到HEAD/DA方法研发。
 - 三个K均非零：`G0_PASS_PROCEED_G1`，立即进入冻结四臂`M0/M_DA/M_HEAD/M_JOINT`。
 - 仅P0协议/安全或确定性执行错误可停止技术run；不得按性能停止。
+
+## 6.实际运行与回收
+
+|项目|实际证据|
+|---|---|
+|N607直连预检|通过；8张3090在启动前均无计算任务，GPU0预登记可用|
+|远端落地|run-root初始为`ABSENT`；两项冻结资产上传后SHA256逐字匹配，source解压和入口`py_compile`通过|
+|启动|以预登记命令在GPU0启动，PID=`3204843`|
+|启动健康|3秒内退出，`exit=1`；`output`未创建|
+|唯一错误指纹|`D106Phase1TapError: D106 tap receipt semantic closure drift`，经clean child封装为`strict D106 tap loader rejected production inputs`|
+|性能/真值读取|未读取accuracy、H、floor或Target truth；未形成prediction、result、completion或score artifact|
+|回收与清理|已回收远端`logs/run.out`和`launch.pid`至`artifacts/remote/`；PID已退出、GPU无该PID、本地`ssh.exe`与N607 TCP22连接均已清理|
+
+本run属于启动期确定性技术失败，结论为`NO_PERFORMANCE_RESULT`，不构成G0通过、G0拒绝或任何性能结论。按冻结规则，不在本run重试、不调参、不修改方法；如主agent决定修复，必须先在本地聚焦处理tap receipt语义闭包问题、使用新的不可覆盖run ID，并重新交由唯一runner发布。
