@@ -1,6 +1,6 @@
 # D106-KCR/r1完整Target25实验报告
 
-状态：`LOCAL_RELEASE_GO / P0=0 / P1=0 / TARGET25_NOT_STARTED / NO_D106_TARGET_PERFORMANCE_RESULT`
+状态：`LANDED_PREPARE_CRLF_ARCHIVE_FAILURE / NO_PERFORMANCE_RESULT`
 
 ## 实验登记
 
@@ -48,7 +48,7 @@ G1 source-held开发证据表明单一全局联合臂不能稳定保持旧类flo
 |production runner|初始提交`30d0eead`；D92 direct-seal发布修复`7531be61`；跨scene物理ID隔离修复`69b5679b`|
 |本地验证|inputs/runner/evaluator/router/matrix统一窄回归175项通过；`py_compile`与`git diff --check`通过|
 |独立代码审查|最终`GO / P0=0 / P1=0`；raw-path跨scene复用反例正确失败关闭|
-|真实checkpoint无truth smoke|待D92现有sealed package直接入口完成后在N607预启动阶段执行并保存receipt|
+|真实checkpoint无truth smoke|未执行；`prepare`先因CRLF Git archive触发canonical route-lock失败关闭|
 |发布修复结果|已删除不存在的D105 formal-policy和外部split-locator依赖；直接从D92 package manifest、detached seal和真实payload派生物理ID与split身份；不改方法数学|
 
 ## N607预登记
@@ -64,8 +64,16 @@ G1 source-held开发证据表明单一全局联合臂不能稳定保持旧类flo
 |RDCE wire SHA256|`20e44cb0eb2f5698e6d5f9029b63cf296ffbf4716edb999fed6743c8671bd795`|
 |run root|`/home/szu2070436088/2510044040/CV-SincNet/runs/d106_kcr_target25_s713102_20260801_r1`|
 |GPU|预检显示GPU0–7均空闲；正式launch前由唯一runner重新记录|
+|Git source commit|`954c1df0ce5dddbe5a9641c4aa01b09e655f2ed6`|
+|失败archive SHA256|`3a8191dac1001caecdf057239fedc1d742b72bf00fd2c5a0f461ea6f01d86ca2`|
+|归档内lock SHA256|RDCE=`e7a1982b4bdeaf5b8179993ce78f4a2af26965d8f4a3239440dbe636ebf14cc1`；RCMR=`0a1745219cc1bd998928d3eb1375c401c7d3f0870a0cd2fd71dd891e4889f83e`；KCR=`ed4b76894d861b385de26fba3fc2a967ccd8eb85cfc0a5ba25561b7e1c253b6c`|
+|发布结果|`prepare`失败关闭；未smoke、未detach、未产生prediction|
 
-精确Git提交、源码包SHA、sync映射、服务器命令、PID、日志和输出SHA将在一次发布修复完成后、detach前补入本报告。运行只允许一个owner和一次不可覆盖detach。
+## 预启动技术失败证据
+
+Windows当前Git导出配置把Git blob末尾LF转换为CRLF。归档commit仍为`954c1df0`，但RCMR与KCR字节SHA发生变化；KCR原始字节以CRLF结尾，触发`D106Target25InputError: KCR route-lock canonical schema/route drift`。失败发生在`prepare`，日志为`logs/prepare.log`；无smoke、无预测进程、无prediction或性能结果。连接结束后本地`ssh.exe=0`且目标TCP22连接为0。r1不得覆盖、恢复或重标为性能实验。
+
+单次发布修复不改loader和方法，仅以禁用EOL转换的原生`git archive`重新导出同一commit，并使用新run ID`d106_kcr_target25_s713102_20260801_r2`。
 
 ## 健康停止规则
 
