@@ -1,0 +1,81 @@
+{
+  "schema": "cvs.phase2.d107.scmkrr_method_lock.v1",
+  "candidate_id": "D107-SCMKRR/r1",
+  "protocol_schema": "p2_min_v1",
+  "feature_view": "signed_z_id_l2",
+  "feature_width": 160,
+  "arms": [
+    "M0",
+    "M_DA",
+    "M_HEAD",
+    "M_JOINT"
+  ],
+  "anchor": {
+    "source": "stage2_b_before_support",
+    "frozen_for_after": true,
+    "query_rows_used": 0
+  },
+  "prototype": "l2_normalized_class_mean",
+  "bandwidth": "median_all_registered_prototype_pairwise_squared_distance",
+  "kernel": "exp(-squared_l2_distance/bandwidth)",
+  "centering": "frozen_anchor_rkhs_mean_embedding",
+  "ridge_ratio": "median(tau/(tau+spectrum))/(1-median(tau/(tau+spectrum)))",
+  "ridge_scale": "trace(active_prototype_kernel)/registered_class_count",
+  "target": "I-one_one_transpose_over_C",
+  "tie_policy": "exact_cross_class_top_tie_fail_closed",
+  "numeric_totalization": "float64_machine_epsilon_only",
+  "forbidden_inputs": [
+    "query_truth",
+    "query_role",
+    "old_new_role",
+    "class_quota",
+    "query_batch_class_count",
+    "global_reassignment",
+    "query_fit",
+    "query_update"
+  ],
+  "traceability": [
+    {
+      "id": "D107-01",
+      "requirement": "typed immutable support-only state with frozen before anchor",
+      "target": "code/cvsrffi/stage2_d107_scmkrr.py",
+      "status": "verified",
+      "verification": "test_after_state_reuses_exact_frozen_before_anchor; test_wire_roundtrip_is_canonical_immutable_and_tamper_evident"
+    },
+    {
+      "id": "D107-02",
+      "requirement": "four frozen arms implement prototype and simplex KRR with optional anchor centering",
+      "target": "code/cvsrffi/stage2_d107_scmkrr.py",
+      "status": "verified",
+      "verification": "test_formula_matches_independent_reference_for_all_arms; test_four_arms_are_bound_and_mechanistically_distinct"
+    },
+    {
+      "id": "D107-03",
+      "requirement": "K1 is a real nonlinear state and never falls back",
+      "target": "code/cvsrffi/stage2_d107_scmkrr.py",
+      "status": "verified",
+      "verification": "test_k1_is_a_real_nonfallback_all_class_state"
+    },
+    {
+      "id": "D107-04",
+      "requirement": "query is independent all-class inference with no truth role quota fit or update surface",
+      "target": "code/cvsrffi/stage2_d107_scmkrr.py",
+      "status": "verified",
+      "verification": "test_public_surface_has_no_truth_role_quota_fit_or_update; permutation and batch-equivalence tests"
+    },
+    {
+      "id": "D107-05",
+      "requirement": "canonical tamper-evident bounded wire and resource receipt",
+      "target": "code/cvsrffi/stage2_d107_scmkrr.py",
+      "status": "verified",
+      "verification": "test_wire_roundtrip_is_canonical_immutable_and_tamper_evident; test_resource_summary_closes_maximum_state_and_wire_bound"
+    },
+    {
+      "id": "D107-06",
+      "requirement": "only machine epsilon totalizes numerical degeneracy",
+      "target": "code/cvsrffi/stage2_d107_scmkrr.py",
+      "status": "verified",
+      "verification": "test_dataclass_tamper_and_invalid_inputs_fail_closed; test_degenerate_bandwidth_uses_only_epsilon_and_exact_tie_fails_closed"
+    }
+  ]
+}
