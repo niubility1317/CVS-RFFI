@@ -1,6 +1,6 @@
 # D109-SCRC/r1方法研发与完整125预登记
 
-状态：`DESIGN_FROZEN / IMPLEMENTING`
+状态：`LOCAL_VERIFIED / IMPLEMENTATION_COMPLETE_NOT_RELEASED`
 
 ## 目标与证据边界
 
@@ -51,3 +51,16 @@ before与after分别只用各自合法support构建对应D92/SCRC状态；base�
 ## 实现拆分
 
 SCRC核心负责typed冻结状态、stable softmax、`Q/R/T/ρ`、query应用、K1/置换/负例和资源审计。D92 pair负责复用D108 base/CB-RRC正式int8状态，分别从support logits冻结before/after的SCRC状态，并固定四臂评分；不得改变D108 runner、N607运行或D108源码。主agent统一审查、提交和决定是否在D108结果后发布D109。
+
+## 实现与独立复核
+
+SCRC输出采用与冻结`h=g+log(pT)-logp`分类等价的canonical`log(pT)-max(log(pT))`；只在固定float32概率下限`2^-149`处截断，避免极端logit下加回巨大行常数抹掉稠密`pT`差异。数学identity T保持query logits逐字节直通。独立审查先后发现并复现两个P1：概率域floor破坏极端非identity方向、巨大行常数破坏稠密差异；最终加入循环置换零T与均匀Q稠密极限测试后，期望`[0.5555555820,0.2222222090,0.2222222090]`与实际最大误差为`4.82e-9`，复审`P0=0,P1=0 / GO`。
+
+|实现面|文件|验证|
+|---|---|---|
+|SCRC typed核心|`code/cvsrffi/stage2_d109_scrc.py`；SHA256=`71fa5f6a31333ee53fa928cf2b15cc791ffecd12a6a9d825104a49768b0202ef`|14项；Q/R/T方向、K1、置换、identity、极端稠密/零T、wire/resource|
+|D92四臂pair|`code/cvsrffi/stage2_d109_d92_core.py`；SHA256=`b829d59f9bfa9a30e0063c247e4b402eb8c3c79317f487fb624e2262d1229905`|4项；M0/M_DA逐值对齐D108、4个SCRC状态、无持久SMME、异常恢复|
+|联合|两组测试及D108依赖|18 passed；仅既有PyTorch只读buffer警告|
+|独立复核|SCRC与pair分别审查|SCRC`P0=0,P1=0`；pair`P0=0,P1=0`|
+
+当前只完成方法核心，不含D109 runner、truth发布或N607性能证据；不得把实现完成写成性能成功。若D108完整125已达到目标，D109是否发布由主agent重新排序；若D108性能弱，直接复用其成熟Target125执行/证据面接入D109，不再增加数据或方法gate。
