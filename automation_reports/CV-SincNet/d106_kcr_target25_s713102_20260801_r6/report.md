@@ -1,6 +1,6 @@
 # D106-KCR/r6完整Target25实验报告
 
-状态：`RUNNING / SMOKE_PASS / FULL_PREDICTION_DETACHED`
+状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
 
 ## 登记
 
@@ -100,6 +100,49 @@ smoke通过后未等待额外批准，于N607时间2026-08-01 17:34:04 CST detac
 |`artifacts/remote_r6/target25_context.json`|`b8894f24ee16644216502e1631a809977c94962d67ee3d864961ab1e14d08bd8`|
 |`artifacts/remote_r6/smoke_receipt.json`|`bc069621b1d409806fd996c50ab98d5b389ba0fab96e0436b57c549d66bc2e7c`|
 
-## 下一次检查
+## 完整prediction技术退出
 
-以短SSH继续核对state输入计数、PID/child、CWD、exit、GPU和异常指纹。只在P0或两个不同row出现同一确定性零prediction异常时停止；性能不得触发停止。完整artifact形成后取回prediction manifest并交由主agent独立打开truth和评分。
+launcher在首个未捕获异常处自行退出，wrapper PID`3352634`与Python child PID`3352637`均已结束，`control/predict.exit=1`。这不是按性能人工停止；没有读取truth或任何accuracy、H、floor指标。退出前物化46/600个state目录、共183个文件，未形成完整prediction manifest，因此所有部分结果均不可评分、不可比较、不可晋级。
+
+精确失败state：
+
+|字段|值|
+|---|---|
+|state|`state-045`|
+|outer row|`d106-rx-3_19__seed-713102__k-10__new-20`|
+|receiver/scene|`3-19`；`leo_low_elev_weak`|
+|lifecycle|`after`|
+|arm|`PRE_ARM_STATE_MATERIALIZATION`；尚未进入`M0/M_DA/M_HEAD/M_JOINT`任一arm预测|
+|异常|`ZIDStudentTQKNNError: z_id rows contain a zero-norm vector`|
+
+完整调用路径为：`run_d106_target25.py:main`→`predict_d106_target25`→`smoke_d106_target25_state`→`_D106RealStateMaterializer.__call__`→`build_typed_zid_support_bank(features.support_plus,...)`→`normalize_zid_rows`。异常发生在为该state建立typed qKNN support bank时，而非某个arm输出之后。
+
+## 零范数只读诊断
+
+诊断仅读取`state-045/paired_features.npz`中的无truth表征及其physical token；判定沿用实现中的`EPSILON=1e-12`。
+
+|表征|shape|零范数行数|最小L2范数|零行physical token|
+|---|---:|---:|---:|---|
+|`support_plus`|`260×160`|1|0|`sid_4e807dc6e469c9c116c7c858ec5934103d1e7e24d6334409ba7697db32bef53b`，index=235|
+|`support_signed`|`260×160`|0|3.7000724247374177|无|
+|`query_plus`|`520×160`|0|0.013304952730689676|无|
+|`query_signed`|`520×160`|0|3.418791828126275|无|
+
+同一support physical token在`signed`表征中的L2范数为`14.562560077286715`。因此根因是ReLU后的`support_plus`单行完全零化，不是原始`signed`表征也为零。最小后续修复应只处理这种plus-view退化，同时保留signed信息、physical-token绑定、query隔离和fail-closed数值检查；不得远端修改或重跑r6。
+
+## 最终取回与清理证据
+
+|文件|SHA256|
+|---|---|
+|`artifacts/remote_r6/predict.log`|`b1719e3a075b8a3769819c46667efc0db5119cd15018f7c809a1434e64a01c07`|
+|`artifacts/remote_r6/predict.pid`|`a4e0e1bf53d7187f86161f73b59c681e2153ae3705f15e9a185f066527052dcc`|
+|`artifacts/remote_r6/predict.exit`|`4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865`|
+|`artifacts/remote_r6/failure_state045/plan_state.json`|`ce8508995a0152bf92c00f98da3cf30dab1641d6c0dabe47d2eab668c23d90f2`|
+|`artifacts/remote_r6/failure_state045/paired_features.npz`|`37313e8cd8d01fcb8e40b9b79ebdac205e20326fa015ff71e5ec34ca851a9c2c`|
+|`artifacts/remote_r6/failure_state045/paired_features.receipt.json`|`f1803e772ea39a9b67237f6d162eff6adab5be2e7f30dc0a1d10cd4663a3589f`|
+
+收尾时两PID均不存在，GPU0—7均`0% utilization / 1 MiB used`；本地`ssh.exe=0`，到N607及lab bridge的`ESTABLISHED TCP/22=0`。r6及其46个partial state目录永久保留为只读技术失败证据。
+
+## 下一步最小动作
+
+本地修复plus-view零向量处理，运行覆盖“plus为零但signed非零”的聚焦负例/正例及真实no-truth smoke，再以新run ID直接发布完整Target25。重复数据验证、额外签名、通用重试框架和报告平台均不是发布前硬门。
