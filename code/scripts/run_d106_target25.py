@@ -32,12 +32,11 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     commands = parser.add_subparsers(dest="command", required=True)
 
     prepare = commands.add_parser(
-        "prepare", help="project sealed D92 locators into immutable D106 inputs"
+        "prepare", help="locate the seed-713102 rows in the sealed D92 matrix"
     )
-    prepare.add_argument("--matrix-index", type=Path, required=True)
-    prepare.add_argument("--matrix-index-sha256", required=True)
-    prepare.add_argument("--split-locator", type=Path, required=True)
-    prepare.add_argument("--split-locator-sha256", required=True)
+    prepare.add_argument("--d92-matrix-manifest", type=Path, required=True)
+    prepare.add_argument("--d92-matrix-manifest-sha256", required=True)
+    prepare.add_argument("--d92-output-root", type=Path, required=True)
     prepare.add_argument("--checkpoint", type=Path, required=True)
     prepare.add_argument("--checkpoint-sha256", required=True)
     prepare.add_argument("--rdce-wire", type=Path, required=True)
@@ -80,10 +79,11 @@ def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv)
     if args.command == "prepare":
         result = prepare_d106_target25_run(
-            matrix_index_path=args.matrix_index,
-            expected_matrix_index_sha256=args.matrix_index_sha256,
-            split_locator_path=args.split_locator,
-            expected_split_locator_sha256=args.split_locator_sha256,
+            d92_matrix_manifest_path=args.d92_matrix_manifest,
+            expected_d92_matrix_manifest_sha256=(
+                args.d92_matrix_manifest_sha256
+            ),
+            d92_output_root=args.d92_output_root,
             checkpoint_path=args.checkpoint,
             expected_checkpoint_sha256=args.checkpoint_sha256,
             rdce_wire_path=args.rdce_wire,
