@@ -16,6 +16,14 @@
 - A run ID has exactly one launch owner. Its handoff records the Git commit and file hashes, frozen candidate/matrix, exact child command, environment/CWD, output and log paths, expected artifacts, stop criteria, and retry authority. The primary agent integrates returned evidence and alone decides promotion.
 - Track separate immutable states: `LOCAL_VERIFIED` -> `LANDED` -> `RUNNING` -> `ARTIFACTS_COMPLETE` -> `ANALYZED`. Landing or process completion is not performance evidence; analysis requires complete logs and matched same-row artifacts.
 
+## Experiment-First Release Gate
+
+- Before N607 handoff, require only the Git-backed method entry, focused protocol-negative checks for query isolation and forbidden information access, a real-checkpoint no-query smoke, independent `P0=0`/`P1=0` review, an immutable run/output identity, a local commit, and bounded N607 preflight/resource evidence. Release immediately when these pass.
+- Scope machinery to the current experiment. G0 needs the real feature-to-prediction functional path and frozen K checks; it does not need a truth scorer, full-matrix executor, performance report, or general publication platform. G1/G2 add only their frozen matrix executor, immutable prediction publication, and independent truth-side scorer. Future-stage capabilities cannot block an earlier-stage experiment.
+- Repeated data validation, extra authority/signature layers, same-process malicious-code defenses, duplicate hash wrappers, production permission systems for test helpers, report-completeness work, and other non-correctness P2 items are non-blocking. If a task does not directly prevent the next real experiment from running correctly, record it for later and launch.
+- Preregister only the candidate/matrix, commit, exact command, environment/CWD, input/output/log paths, GPU allocation, protocol/safety stop rule, and expected artifacts. Finish narrative and tables after artifacts return.
+- Allow at most two concrete release-engineering repair rounds per revision. After a second unresolved non-scientific defect, freeze a smaller one-shot entry, use a new non-overwriting run ID, and release without adding another abstraction layer.
+
 ## Parallel Method Research
 
 - A round that jointly covers domain adaptation, classification-head design, and forgetting/floor optimization should use available subagent slots for parallel research roles instead of serial exploration. Use separate domain-adaptation/ground-knowledge, local-global head, and forgetting/floor supervision roles; the primary agent owns protocol interpretation, integration, code merge, and final promotion.
