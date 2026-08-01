@@ -376,9 +376,11 @@ def _expand_raw_rows(
         before_registry: tuple[str, ...] | None = None
         plan_scenes: list[dict[str, Any]] = []
         context_scenes: list[dict[str, Any]] = []
+        row_scene_ids: dict[str, set[str]] = {}
         for scene in LEO_SCENARIOS:
             plan_states: list[dict[str, Any]] = []
             context_states: list[dict[str, Any]] = []
+            scene_ids: set[str] = set()
             for state_name in STATES:
                 support_ref = packages[f"{state_name}_enrollment"]
                 query_ref = packages[f"{state_name}_apply"]
@@ -406,6 +408,8 @@ def _expand_raw_rows(
                     support_ids,
                     query_ids,
                 )
+                scene_ids.update(support_ids)
+                scene_ids.update(query_ids)
                 plan_states.append(plan_state)
                 context_states.append(context_state)
             scenario_row_id = f"{raw_row['job_id']}::{scene}"
@@ -415,6 +419,13 @@ def _expand_raw_rows(
             context_scenes.append(
                 {"scenario_row_id": scenario_row_id, "scenario": scene, "states": context_states}
             )
+            row_scene_ids[scene] = scene_ids
+        for left_index, left in enumerate(LEO_SCENARIOS):
+            for right in LEO_SCENARIOS[left_index + 1 :]:
+                if row_scene_ids[left].intersection(row_scene_ids[right]):
+                    raise D106Target25RunnerError(
+                        "D92 physical IDs overlap across target scenarios"
+                    )
         base = {name: raw_row[name] for name in ("job_id", "receiver", "seed", "k_shot", "new_count")}
         expanded_plan_rows.append({**base, "scenarios": plan_scenes})
         expanded_context_rows.append({**base, "scenarios": context_scenes})

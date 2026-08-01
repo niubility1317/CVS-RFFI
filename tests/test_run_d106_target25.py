@@ -13,6 +13,7 @@ from typing import Any, Mapping
 import pytest
 
 import test_stage2_d106_target25_inputs as input_fixture
+import cvsrffi.stage2_d106_target25_runner as runner_module
 from cvsrffi.stage2_d106_k_conditioned_router import ROUTE_BY_K, TARGET25_ROW_SCHEMA
 from cvsrffi.stage2_d106_matrix_protocol import canonical_sha256
 from cvsrffi.stage2_d106_target25_inputs import prepare_d106_target25_inputs
@@ -353,6 +354,68 @@ def test_real_checkpoint_smoke_interface_has_no_truth_or_dynamic_factory() -> No
     assert "rcmr_lock_path" in parameters
     assert "truth" not in " ".join(parameters)
     assert "factory" not in " ".join(parameters)
+
+
+def test_raw_plan_expands_and_rejects_cross_scene_physical_reuse(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    values = input_fixture._inputs(tmp_path)
+    receipt = prepare_d106_target25_inputs(**values)
+    monkeypatch.setattr(
+        runner_module,
+        "_load_raw_package",
+        lambda _value: ({}, {}, {}),
+    )
+
+    def derived(**kwargs: Any):
+        row = kwargs["row"]
+        scene = kwargs["scene"]
+        state_name = kwargs["state_name"]
+        old = ("old-0", "old-1")
+        new = tuple(f"new-{index}" for index in range(row["new_count"]))
+        registry = old if state_name == "before" else old + new
+        support = tuple(
+            f"{row['receiver']}/new{row['new_count']}/{scene}/{state_name}/s{index}"
+            for index in range(row["k_shot"])
+        )
+        if row["new_count"] == 20 and row["k_shot"] in (5, 10):
+            query = tuple(f"{row['receiver']}/{scene}/{state_name}/matched-q{index}" for index in range(3))
+        else:
+            query = tuple(f"{row['job_id']}/{scene}/{state_name}/q{index}" for index in range(3))
+        if row["k_shot"] == 10 and row["new_count"] == 5 and scene == "leo_rain_weak" and state_name == "before":
+            support = (f"{row['receiver']}/new5/leo_clear_weak/before/s0", *support[1:])
+        state = {
+            "state": state_name,
+            "registration_state": "BEFORE_REGISTRATION" if state_name == "before" else "AFTER_REGISTRATION",
+            "registered_classes": list(registry),
+            "old_classes": list(old),
+            "new_classes": [] if state_name == "before" else list(new),
+            "capsule_id": canonical_sha256({"row": row["job_id"], "state": state_name}),
+            "split_id": canonical_sha256({"row": row["job_id"], "scene": scene, "state": state_name}),
+            "authority_receipt_sha256": "a" * 64,
+            "support_physical_root_sha256": canonical_sha256(sorted(support)),
+            "query_physical_root_sha256": canonical_sha256(sorted(query)),
+        }
+        state["state_input_receipt_sha256"] = canonical_sha256(state)
+        return (
+            state,
+            {
+                **state,
+                "support_received_iq_ref": dict(kwargs["support_ref"]),
+                "query_received_iq_ref": dict(kwargs["query_ref"]),
+            },
+            support,
+            query,
+        )
+
+    monkeypatch.setattr(runner_module, "_derived_state", derived)
+    with pytest.raises(D106Target25RunnerError, match="across target scenarios"):
+        runner_module._prepared_inputs(
+            plan_manifest_path=Path(receipt["plan_manifest"]),
+            expected_plan_file_sha256=receipt["plan_file_sha256"],
+            context_manifest_path=Path(receipt["context_manifest"]),
+            expected_context_file_sha256=receipt["context_file_sha256"],
+        )
 
 
 def test_missing_surface_is_rejected_before_truth_open(tmp_path: Path) -> None:
