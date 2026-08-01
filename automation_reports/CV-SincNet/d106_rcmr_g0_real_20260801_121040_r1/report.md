@@ -1,6 +1,6 @@
 # D106真实588条RCMR-G0 r1预登记报告
 
-状态：`LOCAL_COMMITTED / RELEASE_MANIFEST_BUILT / N607_NOT_LANDED / NO_NEW_PERFORMANCE_RESULT`
+状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
 
 ## 1.身份、目标与假设
 
@@ -84,3 +84,21 @@ CUDA_VISIBLE_DEVICES=0 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python /home
 
 当前状态严格为`NO_NEW_PERFORMANCE_RESULT`。
 
+## 7.唯一N607 runner执行结论
+
+- 直连预检：通过。项目根可见；GPU0—7均为0%利用率、1MiB显存占用；无活动compute作业。
+- 落地：新run root在落地前为`ABSENT`；r7 tap与receipt SHA均匹配；冻结source zip和release manifest完成远端SHA、canonical JSON、解包及关键脚本编译复核。
+- 启动：2026-08-01 12:21:35 CST；PID=`3191403`；`CWD=/home/szu2070436088/2510044040/CV-SincNet/runs/d106_rcmr_g0_real_20260801_121040_r1/source/code`；`CUDA_VISIBLE_DEVICES=0`；命令与§4逐字一致。
+- 首次3秒健康检查：主PID已退出，`output=ABSENT`，没有result、execution manifest或`COMPLETED.json`。
+- 确定性异常指纹：实际clean child导入链到`cvsrffi.dual_feature_forward`时抛出`ModuleNotFoundError: No module named 'model_dual_cvsincnet'`。这是启动/导入闭包错误，不是性能结果。
+- 清理：随后核验`run_owned_process_count=0`、GPU compute表为空；本地`ssh.exe=0`，N607/bridge TCP22连接=0。未终止任何非本run进程。
+
+|工件/状态|结果|
+|---|---|
+|远端`logs/run.out`|4315bytes；SHA256=`b8aedbcf5e5eb64c7257e665ba455898526d8607b2f6bd5273c7ef5cb6869240`；已回收至root report的`artifacts/remote/run.out`|
+|远端`logs/launch.pid`|`3191403`；SHA256=`093bcb16a383bc1006058e6fc3b9935939bf063aa76200395ce03fefa5f9af58`；已回收至root report的`artifacts/remote/launch.pid`|
+|prediction/feature/neighbor/margin/argmax统计|未产生；三个K均未进入执行完成阶段|
+|性能指标|未读取、未产生；`NO_PERFORMANCE_RESULT`|
+|重试|`NOT_AUTHORIZED`；唯一runner未改方法、代码或输入，也未重启该run|
+
+本revision的本次run结论为`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。应由主agent在本地修复具体导入闭包、重新独立审查并用新的不可覆盖run ID发布；不得覆盖或恢复本run。
