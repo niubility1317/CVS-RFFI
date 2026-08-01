@@ -1,6 +1,6 @@
 # D111-LOO-GAT轻量域锚运输方法
 
-状态：`DESIGN_FROZEN / BUNDLE_CODE_VERIFIED / SCORE_CORE_NEXT / NO_PERFORMANCE_RESULT`
+状态：`DESIGN_FROZEN / BUNDLE_AND_SCORE_CODE_VERIFIED / NO_PERFORMANCE_RESULT`
 
 ## 1.出发点
 
@@ -52,7 +52,7 @@ m_c=N\!\left(K^{-1}\sum_kx_{ck}\right),\qquad
 r_c=U^\top(m_c-g_c).
 \]
 
-用其余\(C_o-1\)个旧类残差的固定32步阻尼Weiszfeld几何中位数得到\(\hat h_{-c}\)，再运输源锚：
+用其余\(C_o-1\)个旧类残差的固定32步阻尼Weiszfeld几何中位数得到\(\hat h_{-c}\)，阻尼系数固定为\(1/2\)，不得按support或性能调整，再运输源锚：
 
 \[
 a_c=N(g_c+U\hat h_{-c}).
@@ -70,7 +70,13 @@ a_c=N(g_c+U\hat h_{-c}).
 
 ## 5.同尺度单位质量评分
 
-M0的identity距离、完整Student-t密度常数和每类带宽\(h_c\)保持不变。
+M0的identity距离、每类带宽\(h_c\)、自由度\(\nu\)和有效维数\(d=160\)保持不变。D111要求`kernel_volume_gamma=1`，并在混合内部恢复完整Student-t归一化常数
+
+\[
+C_{\nu,d}=\log\Gamma((\nu+d)/2)-\log\Gamma(\nu/2)-\frac d2\log(\nu\pi).
+\]
+
+support与anchor都加上同一\(C_{\nu,d}\)，完成单位质量混合后再减去这个全类共同常数，因而未适配列与M0严格同原点。
 
 \[
 L_c^{\rm sup}(q)=\operatorname{LSE}_k\ell_c(q,x_{ck})-\log K.
@@ -92,6 +98,14 @@ v_{t,c}=\begin{cases}v_s,&K=1,\\
 \max\{v_s/K,S_c^2/K\},&K>1,
 \end{cases}
 \]
+
+其中
+
+\[
+S_c^2=\frac{1}{(K-1)d}\sum_{k=1}^K\lVert x_{ck}-m_c\rVert^2
+\]
+
+是围绕归一化support均值\(m_c\)的无偏逐坐标chord scatter；Phase1输入`class_radii`同样定义为逐坐标RMS，所以\(v_g\)、\(v_s\)、\(S_c^2\)与后续\(B^2/d\)量纲一致。
 
 \[
 v_{a,c}=v_{g,c}+(6B+\epsilon_F)^2/160,quad
@@ -129,5 +143,6 @@ K1时\(a_c\)不由本类唯一support复制，因而只具有泛型非恒等性�
 
 - 独立监督：理论设计与bundle代码均为`P0=0 / P1=0 / P2=0`；bundle定向测试10项、相邻回归208项通过。
 - 当前资产：`BLOCKED=MISSING_PRODUCTION_AUTHORITY_KEYS_AND_FORMAL_D111_ASSET`。生产公钥表刻意为空，未登记authority时严格拒绝formal载入。
-- 下一授权动作：实现`D111-S01`至`D111-S03`评分核及纯功能测试；真实资产暂缺不再阻止功能研发。
-- 仍未授权：G0、G1、N607、Target25和参数扫描。评分核完成与性能有效是两个不同结论。
+- 评分核：`D111-S01`至`D111-S03`已实现并独立复审为`GO / P0=0 / P1=0 / P2=0`。
+- 下一动作：登记生产authority公钥、生成真实formal bundle后做一个K1/K5/K10合并无truth G0。
+- 仍未授权：G1、N607性能矩阵、Target25和参数扫描。评分核完成与性能有效是两个不同结论。

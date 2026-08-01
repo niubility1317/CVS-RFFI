@@ -575,7 +575,7 @@ def build_d111_bundle_from_aggregate(
     generation_config_sha256: str,
     output_dir: str | Path,
 ) -> dict[str, Any]:
-    """Build an immutable component pending a separately verified outer seal."""
+    """Build a pending component; class_radii are per-coordinate RMS values."""
 
     hashes = {
         field: _validate_sha(value, field)
@@ -711,6 +711,7 @@ def build_d111_bundle_from_aggregate(
         "dequantized_persistent_cache": False,
         "sidecar_substitution": False,
         "phase2_mutable": False,
+        "class_radii_semantics": "per_coordinate_rms_chord_scatter_v1",
     }
     root = Path(output_dir)
     if root.exists() or root.is_symlink():
@@ -859,6 +860,7 @@ def _read_component(
         "dequantized_persistent_cache": False,
         "sidecar_substitution": False,
         "phase2_mutable": False,
+        "class_radii_semantics": "per_coordinate_rms_chord_scatter_v1",
     }
     if manifest.get("protocol_receipt") != expected_protocol:
         raise D111BundleError("D111 protocol receipt drift")
