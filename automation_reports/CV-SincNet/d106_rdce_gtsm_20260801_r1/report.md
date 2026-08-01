@@ -399,3 +399,26 @@ r7 direct preflight、四资产传输SHA、7个source entry、D104两entry、fix
 `d106_real_integration_result.json` SHA为`7b3c2b73a8c7c9bfeab85d99b68f70007996d44451f88b63a529bf7d8fd140cb`，`COMPLETED.json` SHA为`2c35385f56b4c596840c4c9420cf4294746c25fc4b5297a2f59315dccb041880`，日志SHA为`b0fbf86f8f736067679fbd132a3eea667898c7d60b3b04b2d056a1232179fdbe`。result/marker canonical、marker→result SHA、7项artifact SHA、RDCE wire roundtrip、asset receipt/binding全部闭合，`rdce_rank=3`。四个禁用访问/性能标志均为false，result不含性能字段。
 
 因此r7可记为`ARTIFACTS_COMPLETE / TECHNICAL_CLOSURE_PASS`，但仍为`NO_PERFORMANCE_RESULT`：本run不是Target25或125矩阵，不支持accuracy、H、BA、floor或晋级结论。16份小型证据已回收至`artifacts/remote_dba10236_r7/`；大型IQ/tap/wire未拉回。最终run-owned=0、GPU0已释放、SSH及N607/bridge TCP22均为NONE。
+
+## 25.G0机械锁束与结构模块重入
+
+RCMR真实588条G0仍是Phase1 train-only机械功能门，不是source-held、Target、性能或晋级证据。首版G0和矩阵协议经非作者红队后分别发现formal语义借用、query视图未入receipt、ID-only冒充artifact完成、policy低层篡改等问题；所有相关文件在P0/P1清零前保持未提交和NO-GO。
+
+为避免不存在的D105 formal三K签名长期阻塞功能研发，本轮冻结一个D106自有的`NON_FORMAL_TRAIN_ONLY_MECHANICAL_PREDECESSOR_LOCK_BUNDLE`。它只允许：
+
+- 钉住`configs/d105_candidate_method_lock_20260731.json`的实际SHA`7324ff469cf18d34cdc3795e36d053570e60ba341c112167b49d759a150dda08`；
+- 复核其中runtime SHA`9b1887e64851851be8a81118a3b3728cd94517de6c9ae275f8574764cb30c38e`、checkpoint SHA`2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98`和冻结Student-t qKNN全字段；
+- 对K1/K5/K10确定性构造同数值`Phase1ZIDStudentTLock`，其中LODO receipt绑定D105 method-lock SHA，量化receipt动态绑定实际D106 strict tap receipt；
+- 由生产G0入口接收受SHA约束的真实tap archive/receipt路径。r7本地只回收了小型tap receipt，未回收大型tap archive，因此配置不得硬编码或伪造tap archive本体。
+
+锁束不得调用D105 source-held gate/formal seal，不得输出authority handle，不得打开held/Target/query truth，不得含性能字段。建议文件面仅为新锁束模块、静态JSON、定向测试和G0生产分支；实现前状态为`DESIGN_FROZEN / IMPLEMENTATION_AUTHORIZED / NOT_EXECUTED`。真实执行状态只能是`REAL_G0_EXECUTED_NON_FORMAL_TRAIN_ONLY_MECHANICAL`，且`runner_authority=false`、`promotion_authority=false`、`performance_value_field_count=0`。任一K没有argmax变化均整体拒绝，不允许据此扫描参数。
+
+## 26.四臂、矩阵与G0本地结构闭环
+
+四臂模块在首轮复审发现可伪造formal handoff后已主动降级为固定2×2请求和非正式组件声明。它不再导入RDCE、qKNN或RCMR正式对象，`prepare_d106_four_arm_formal_handoff`和正式runner消费均无条件拒绝；same-job/query/validator/scenario只记录请求、不声明已验证。非作者复审为`P0=0/P1=0/P2=2 / NON_FORMAL DECLARATION GO`，正式四臂runner仍为NO-GO。
+
+矩阵模块固定枚举5个receiver×5个slice=25job、3场景=75row、4arm=300matched pair和before/after=600state surface。经过三轮红队，ID-only冒充artifact完成、receipt token替换、policy低层篡改和宽松字符串类型比较均已关闭。最终非作者复审为`P0=0/P1=0/P2=0 / STRUCTURAL MATRIX GO`，专项98/98通过；它只输出`STRUCTURAL_ID_COVERAGE_ONLY`私有诊断，600个typed artifact claim在缺可信verifier时仍无条件fail-closed。
+
+G0模块把production和synthetic完全分离。production在本节时点仍固定`REAL_G0_BLOCKED_MISSING_D105_LOCK_AUTHORITY`；synthetic只使用`NON_FORMAL_TRAIN_ONLY_MECHANICAL`状态、独立wire和scorer，不调用Phase2 formal builder或strict state loader。每fold receipt绑定完整tap snapshot、fold身份、query双视图字节和changed bitmap；验证器强制外部SHA锚并从bitmap重算fold/per-K/aggregate门。无execution manifest时wire/state固定标记opaque且禁止promotion/runner消费。最终非作者复审为`P0=0/P1=0/P2=0`，G0＋RCMR＋Student-t联合58/58通过；合成K1/K5/K10变化数52/2/0因K10为0整体`REJECT_NO_FUNCTION_K_ZERO_CHANGED`。
+
+上述闭环没有访问held、Target或N607，没有accuracy、H、floor或性能结果。其状态只支持本地结构与非正式机械诊断；真实G0仍等待D106自有前序锁束完成独立复审和生产入口集成。
