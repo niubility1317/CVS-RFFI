@@ -1,6 +1,6 @@
 # D107-SCMKRR/r1完整125研发与实验报告
 
-状态：`LOCAL_VERIFIED / READY_FOR_N607`
+状态：`ANALYZED / PERFORMANCE_WEAK / REJECTED_NO_RERUN`
 
 ## 目标与终止背景
 
@@ -72,3 +72,84 @@ N607发布源码固定为commit=`79305f25114c91390dd0efca6683d60f966a2036`；本
 沿用当前目标：K10三slice要求`A_old≥92%`、`F_old≥85%`、`N≥92/90/86%`；K5/new20相对matched K10/new20的`A/F/N/H`下降均≤5pp；K1/new20相对同row D92要求`ΔH≥2pp、ΔF≥2pp、ΔA≥0、ΔN≥0`且总正确严格增加。
 
 完成后必须保留同rowreceiver、seed、slice、scene、before/after old、old floor、seen-new、H、forgetting和correct count。D62、D92、SVRN用完整125比较；D91单列15行development证据。
++## N607运行与完整闭包
+
+2026-08-01 direct preflight通过，8张RTX3090均为空闲。唯一run root首次创建，archive、method lock、D92 matrix、checkpoint和RDCE wire的远端SHA均与预登记一致；7个D107文件远端`py_compile`通过。
+
+|阶段|结果|
+|---|---|
+|prepare|`TARGET125_D92_PACKAGES_LOCATED`；125 outer、375 scene、1500 arm-pair、3000 surface；query truth/role/fit/update/selection均为false|
+|真实smoke|row0/clear；2 phase×4 arm闭合；异常0；receipt file SHA256=`10e0589278c55ce7785213c758b09b5ecc9f09b6d62928b2782b978ff6a46e82`|
+|完整predict|wrapper PID=`3407594`，Python PID=`3407595`；19:23:52启动，19:26:38 exit=`0`，166秒；3000/3000 prediction surface；manifest sealed=true、truth_open=false|
+|truth/score|prediction完整封存后才生成750个truth surface；score包含375个scene同row、1500个scene-arm、500个outer-arm|
+|收尾|wrapper/child均退出；GPU0—7回到0%/1MiB；本地SSH/TCP22清空；无技术异常|
+
+## D107完整125性能
+
+为与D62/D92/SVRN历史主表一致，主比较采用125个outer-row指标均值；post correct为全量计数。补充的query-weighted值只解释全量正确数，不能与同row均值混排。
+
+|arm|before old|after old|before floor|after floor|seen-new|H|forgetting|post correct|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+|M0|74.63%|49.86%|47.89%|24.37%|30.40%|37.11%|24.78pp|51,616/157,500|
+|M_DA|74.63%|46.92%|43.80%|18.53%|29.52%|35.44%|27.71pp|49,633/157,500|
+|M_HEAD|74.90%|51.12%|46.99%|22.93%|29.56%|36.66%|23.77pp|51,347/157,500|
+|M_JOINT|74.77%|47.26%|44.03%|17.87%|30.11%|35.95%|27.51pp|50,262/157,500|
+
+四臂均未接近D92；support centering的M_DA和M_JOINT进一步损伤after old与floor，simplex head仅把after old提高到51.12%，但seen-new和H没有形成联合收益。未根据结果选择arm或改参数；冻结主臂仍为M_JOINT。M_JOINT按全部query计数加权时seen-new=25.77%、H=33.36%；该值仅解释post correct。
+
+### M_JOINT按slice
+
+|slice|before old|after old|before floor|after floor|seen-new|H|forgetting|post correct|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+|K10/new5|77.16%|59.10%|47.53%|26.53%|48.15%|51.73%|18.06pp|8,930/16,500|
+|K10/new10|77.16%|52.51%|47.53%|19.93%|35.53%|41.76%|24.64pp|10,056/24,000|
+|K10/new20|77.16%|49.38%|47.53%|18.40%|24.53%|32.62%|27.78pp|11,803/39,000|
+|K5/new20|75.50%|45.88%|45.13%|16.13%|23.22%|30.69%|29.62pp|11,096/39,000|
+|K1/new20|66.87%|29.43%|32.40%|8.33%|19.09%|22.96%|37.43pp|8,377/39,000|
+
+K10三个slice的绝对目标全部失败。K5/new20相对K10/new20的after old、after floor、seen-new和H分别下降3.50pp、2.27pp、1.31pp和1.93pp，shot降级稳定性尚可，但绝对性能过低。K1/new20相对同口径D92分别低14.60pp(after old)、5.87pp(after floor)、8.06pp(seen-new)、10.45pp(H)，且forgetting高13.32pp，K1晋级条件全部失败。
+
+### M_JOINT按receiver与scene
+
+|receiver|before old|after old|after floor|seen-new|H|forgetting|
+|---|---:|---:|---:|---:|---:|---:|
+|20-1|70.43%|44.23%|12.53%|33.66%|37.58%|26.20pp|
+|3-19|62.12%|35.17%|8.73%|18.28%|23.69%|26.96pp|
+|7-14|85.56%|55.72%|24.93%|32.82%|41.01%|29.83pp|
+|7-7|79.82%|57.08%|31.20%|29.72%|38.90%|22.74pp|
+|8-8|75.90%|44.10%|11.93%|36.05%|38.58%|31.80pp|
+
+|scene|before old|after old|after floor|seen-new|H|forgetting|
+|---|---:|---:|---:|---:|---:|---:|
+|leo_clear_weak|77.80%|50.10%|14.36%|32.59%|38.39%|27.70pp|
+|leo_low_elev_weak|72.91%|45.80%|13.88%|28.41%|34.01%|27.11pp|
+|leo_rain_weak|73.59%|45.88%|12.44%|29.32%|34.91%|27.71pp|
+
+最弱receiver为3-19，H=23.69%；所有receiver和scene均表现为after floor与new同时偏低，不是单一场景异常。
+
+## 与D62、D91、D92、SVRN全面同口径比较
+
+|方法|证据范围|before old|after old|before floor|after floor|seen-new|H|forgetting|post correct|结论|
+|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---|
+|D92|完整125|81.55%|65.56%|59.88%|36.81%|58.93%|61.57%|15.99pp|91,270/157,500|当前完整125最强|
+|D62|完整125|81.51%|64.39%|59.77%|35.15%|59.11%|61.09%|17.11pp|91,071/157,500|与D92接近|
+|D107 M_JOINT|完整125|74.77%|47.26%|44.03%|17.87%|30.11%|35.95%|27.51pp|50,262/157,500|淘汰，不重跑|
+|SVRN-qKNN-BCRR|完整125|73.10%|43.03%|45.17%|11.21%|23.46%|29.25%|30.07pp|40,938/157,500|弱于D107，但同样不可晋级|
+|D91|15行development；receiver20-1、seed713101、K10/new5|92.78%|82.22%|73.33%|50.00%|84.67%|82.62%|10.56pp|未形成完整125|15行prediction与matched D62逐哈希一致，不能归因于D91或参与完整125排名|
+
+D107 M_JOINT相对D92：after old低18.30pp、after floor低18.95pp、seen-new低28.83pp、H低25.61pp、forgetting高11.52pp、post少41,008个正确预测。相对D62：after old低17.13pp、after floor低17.28pp、seen-new低29.00pp、H低25.14pp、forgetting高10.40pp、post少40,809个正确预测。D107虽优于SVRN的after old、after floor、seen-new、H和forgetting，但仍远离项目目标，不能因“优于一个弱基线”保留该路线。
+
+## 证据artifact
+
+|artifact|SHA256|
+|---|---|
+|`prediction_manifest.json`|`51084f17e76376d58044f19bd61da69e153565657c6f2285774e15d8f09dbe5f`|
+|`truth_catalog.json`|`cd78bef1317a396ef238fe5e6c3b6f90cb927393d6527bb6e88b772ad0f20ae8`|
+|`score/score_manifest.json`|`d9b04fe97d4613decb851bdf7906b8ba54e33b9454532bc3598d872137058995`|
+|`logs/predict.log`|`efb72abe2dd7095bd77c1d75fc2ba85ae1a45ce39d110f234631a38fcd6a3062`|
+|`logs/score.log`|`1d8c16207c780c5aa0f4c9a3a693af8adad2164c7d386c7d1e756b75a2e48043`|
+|`control/predict.exit`|`9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa`|
+
+## 最终判定与下一方法
+
+D107状态为`ANALYZED / PERFORMANCE_WEAK / REJECTED_NO_RERUN`。失败机制清楚：signed pre-ReLU原型本身使before old从D92的81.55%降到74.77%；support-centered RKHS变换继续损伤old floor；simplex KRR没有恢复new。D107不调参、不修arm、不创建r2。下一方法D108必须保留D92的强ReLU/diag-cov表示，把研发集中在support-only的注册平衡head与floor保护上。
