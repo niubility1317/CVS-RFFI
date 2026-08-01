@@ -36,6 +36,7 @@ LEGACY_D92_SPLIT_SCHEMA = "cvs.phase2.d105.target25.v1.plan_manifest"
 PLAN_SCHEMA = "cvs.phase2.d106.target25_input_plan.v1"
 CONTEXT_SCHEMA = "cvs.phase2.d106.target25_input_context.v1"
 PREPARE_RECEIPT_SCHEMA = "cvs.phase2.d106.target25_input_receipt.v1"
+KCR_ROUTE_LOCK_SCHEMA = "cvs.phase2.d106.k_conditioned_route_lock.v1"
 
 _PACKAGE_NAMES = (
     "before_enrollment",
@@ -84,9 +85,16 @@ _D106_SPLIT_FIELDS = {
     "rows",
     "locator_receipt_sha256",
 }
-_SPLIT_ROW_FIELDS = {"receiver", "k_shot", "new_count", "scenarios"}
+_NATIVE_SPLIT_ROW_FIELDS = {"receiver", "k_shot", "new_count", "scenarios"}
+_LEGACY_SPLIT_ROW_FIELDS = {
+    "row_id",
+    "receiver",
+    "k_shot",
+    "new_count",
+    "scenarios",
+}
 _SCENARIO_FIELDS = {"scenario", "before", "after"}
-_STATE_FIELDS = {
+_NATIVE_STATE_FIELDS = {
     "protocol_schema",
     "phase2_data_status",
     "capsule_id",
@@ -98,18 +106,47 @@ _STATE_FIELDS = {
     "registered_classes",
     "old_classes",
     "new_classes",
+    "prediction_context_sha256",
 }
-_FORBIDDEN_KEY_FRAGMENTS = (
-    "truth",
-    "groundtruth",
-    "ground_truth",
-    "accuracy",
-    "metric",
-    "prediction",
-    "query_label",
-    "target_label",
-    "score_value",
-)
+_LEGACY_STATE_FIELDS = _NATIVE_STATE_FIELDS | {
+    "stage",
+    "registration_state",
+    "data_feature_runtime_sha256",
+    "data_materialization_lock_sha256",
+    "d105_candidate_runtime_manifest_sha256",
+    "d105_candidate_method_lock_sha256",
+    "single_leo_observation",
+    "clean_source_runtime_access",
+    "query_fit_access",
+    "query_decision_policy",
+    "support_physical_root_sha256",
+    "query_physical_root_sha256",
+}
+_LEGACY_PLAN_PAYLOAD_FIELDS = {
+    "schema",
+    "seed",
+    "claim_scope",
+    "formal_launch_authority",
+    "authority_envelope_root_sha256",
+    "data_feature_runtime_sha256",
+    "data_materialization_lock_sha256",
+    "d105_candidate_runtime_manifest_sha256",
+    "d105_candidate_method_lock_sha256",
+    "arms",
+    "leo_scenarios",
+    "target25_slices",
+    "rows",
+}
+_KCR_ROUTE_LOCK_FIELDS = {
+    "schema",
+    "candidate_id",
+    "route_by_k",
+    "query_truth_access",
+    "query_role_access",
+    "query_fit_access",
+    "query_update_access",
+    "query_selection",
+}
 
 
 class D106Target25InputError(ValueError):
@@ -164,20 +201,6 @@ def _read_json(path: Path, name: str, expected_sha256: str) -> dict[str, Any]:
     return value
 
 
-def _reject_truth_or_score_fields(value: Any, name: str) -> None:
-    if isinstance(value, Mapping):
-        for key, child in value.items():
-            normalized = str(key).lower().replace("-", "_")
-            if any(fragment in normalized for fragment in _FORBIDDEN_KEY_FRAGMENTS):
-                raise D106Target25InputError(
-                    f"{name} contains forbidden truth/score field: {key}"
-                )
-            _reject_truth_or_score_fields(child, name)
-    elif isinstance(value, (list, tuple)):
-        for child in value:
-            _reject_truth_or_score_fields(child, name)
-
-
 def _unique_texts(value: Any, name: str, *, allow_empty: bool = False) -> tuple[str, ...]:
     if not isinstance(value, list):
         raise D106Target25InputError(f"{name} must be a list")
@@ -197,6 +220,44 @@ def _asset(path: Path, expected_sha256: str, name: str) -> dict[str, str]:
     if _sha256_file(source) != expected:
         raise D106Target25InputError(f"{name} SHA mismatch")
     return {"path": str(source), "sha256": expected}
+
+
+def _kcr_route_lock(path: Path, expected_sha256: str) -> dict[str, Any]:
+    source = _regular_path(path, "KCR route lock")
+    expected = _sha(expected_sha256, "expected KCR route-lock SHA256")
+    raw = source.read_bytes()
+    if hashlib.sha256(raw).hexdigest() != expected:
+        raise D106Target25InputError("KCR route-lock SHA mismatch")
+    try:
+        document = json.loads(raw.decode("utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError) as error:
+        raise D106Target25InputError("KCR route lock is not valid UTF-8 JSON") from error
+    if (
+        not isinstance(document, dict)
+        or raw != _canonical_bytes(document)
+        or set(document) != _KCR_ROUTE_LOCK_FIELDS
+        or document.get("schema") != KCR_ROUTE_LOCK_SCHEMA
+        or document.get("candidate_id") != "D106-KCR/r1"
+        or document.get("route_by_k")
+        != {"1": "M_DA", "5": "M0", "10": "M_HEAD"}
+        or any(
+            document.get(name) is not False
+            for name in (
+                "query_truth_access",
+                "query_role_access",
+                "query_fit_access",
+                "query_update_access",
+                "query_selection",
+            )
+        )
+    ):
+        raise D106Target25InputError("KCR route-lock canonical schema/route drift")
+    return {
+        "path": str(source),
+        "sha256": expected,
+        "candidate_id": document["candidate_id"],
+        "route_by_k": document["route_by_k"],
+    }
 
 
 def _sealed_package_ref(value: Any, name: str) -> dict[str, str]:
@@ -293,7 +354,6 @@ def _project_matrix_index(index: Mapping[str, Any]) -> tuple[
     rows = index.get("rows")
     if not isinstance(rows, list) or len(rows) != OUTER_JOB_COUNT:
         raise D106Target25InputError("D92 matrix locator must contain 25 rows")
-    _reject_truth_or_score_fields(rows, "D92 matrix locator rows")
     expected_keys = [
         (receiver, k_shot, new_count)
         for receiver in RECEIVERS
@@ -319,12 +379,11 @@ def _project_matrix_index(index: Mapping[str, Any]) -> tuple[
     return claim_scope, formal, authorities, projected
 
 
-def _project_state(value: Any, state: str) -> dict[str, Any]:
+def _project_state(value: Any, state: str, *, legacy: bool) -> dict[str, Any]:
     if not isinstance(value, Mapping):
         raise D106Target25InputError("D92 split state must be an object")
-    # A native D106 locator has exact fields.  A legacy D105 plan has extra
-    # candidate receipts; they are deliberately ignored and never republished.
-    if set(value) != _STATE_FIELDS and not _STATE_FIELDS.issubset(value):
+    expected_fields = _LEGACY_STATE_FIELDS if legacy else _NATIVE_STATE_FIELDS
+    if set(value) != expected_fields:
         raise D106Target25InputError("D92 split-state locator closure drift")
     protocol = value.get("protocol_schema")
     status = value.get("phase2_data_status")
@@ -346,6 +405,28 @@ def _project_state(value: Any, state: str) -> dict[str, Any]:
     )
     if "registration_state" in value and value["registration_state"] != expected_registration:
         raise D106Target25InputError("registration-state locator drift")
+    support_root = canonical_sha256(sorted(support))
+    query_root = canonical_sha256(sorted(query))
+    if legacy:
+        expected_stage = "S_B" if state == "before" else "S_C"
+        if (
+            value.get("stage") != expected_stage
+            or value.get("single_leo_observation") is not True
+            or value.get("clean_source_runtime_access") is not False
+            or value.get("query_fit_access") is not False
+            or value.get("query_decision_policy")
+            != "per_sample_all_registered_classes"
+            or value.get("support_physical_root_sha256") != support_root
+            or value.get("query_physical_root_sha256") != query_root
+        ):
+            raise D106Target25InputError("legacy split-state lifecycle/root drift")
+        for name in (
+            "data_feature_runtime_sha256",
+            "data_materialization_lock_sha256",
+            "d105_candidate_runtime_manifest_sha256",
+            "d105_candidate_method_lock_sha256",
+        ):
+            _sha(value.get(name), name)
     return {
         "state": state,
         "registration_state": expected_registration,
@@ -360,16 +441,19 @@ def _project_state(value: Any, state: str) -> dict[str, Any]:
             value.get("authority_envelope_sha256"), "authority_envelope_sha256"
         ),
         "support_physical_ids": support,
-        "support_physical_root_sha256": canonical_sha256(sorted(support)),
+        "support_physical_root_sha256": support_root,
         "query_physical_ids": query,
-        "query_physical_root_sha256": canonical_sha256(sorted(query)),
+        "query_physical_root_sha256": query_root,
         "registered_classes": registered,
         "old_classes": old,
         "new_classes": new,
+        "prediction_context_sha256": _sha(
+            value.get("prediction_context_sha256"), "prediction_context_sha256"
+        ),
     }
 
 
-def _split_rows(locator: Mapping[str, Any]) -> list[Mapping[str, Any]]:
+def _split_rows(locator: Mapping[str, Any]) -> tuple[list[Mapping[str, Any]], bool]:
     schema = locator.get("schema")
     if schema == D106_SPLIT_LOCATOR_SCHEMA:
         if set(locator) != _D106_SPLIT_FIELDS:
@@ -386,6 +470,7 @@ def _split_rows(locator: Mapping[str, Any]) -> list[Mapping[str, Any]]:
         ):
             raise D106Target25InputError("D106 split locator protocol/status/seed drift")
         rows = locator.get("rows")
+        legacy = False
     elif schema == LEGACY_D92_SPLIT_SCHEMA:
         expected = {
             "schema",
@@ -404,21 +489,36 @@ def _split_rows(locator: Mapping[str, Any]) -> list[Mapping[str, Any]]:
         if locator.get("plan_manifest_receipt_sha256") != canonical_sha256(without_receipt):
             raise D106Target25InputError("legacy D92 split locator receipt drift")
         payload = locator.get("plan_payload")
-        if not isinstance(payload, Mapping) or payload.get("seed") != TARGET25_SEED:
+        if (
+            not isinstance(payload, Mapping)
+            or set(payload) != _LEGACY_PLAN_PAYLOAD_FIELDS
+            or payload.get("schema") != "cvs.phase2.d105.target25.v1.plan"
+            or payload.get("seed") != TARGET25_SEED
+            or payload.get("arms") != ["M0", "M_DA", "M_HEAD", "M_JOINT"]
+            or payload.get("leo_scenarios") != list(LEO_SCENARIOS)
+            or payload.get("target25_slices")
+            != [list(value) for value in TARGET25_SLICES]
+            or not isinstance(locator.get("candidate_identity_sources"), Mapping)
+            or set(locator["candidate_identity_sources"])
+            != {
+                "candidate_runtime_manifest_path",
+                "candidate_method_lock_path",
+            }
+        ):
             raise D106Target25InputError("legacy D92 split locator seed drift")
         rows = payload.get("rows")
+        legacy = True
     else:
         raise D106Target25InputError("unsupported D92 split locator schema")
     if not isinstance(rows, list) or len(rows) != OUTER_JOB_COUNT:
         raise D106Target25InputError("D92 split locator must contain 25 rows")
-    _reject_truth_or_score_fields(rows, "D92 split locator rows")
-    return rows
+    return rows, legacy
 
 
 def _project_split_locator(locator: Mapping[str, Any]) -> dict[
     tuple[str, int, int], dict[str, dict[str, dict[str, Any]]]
 ]:
-    rows = _split_rows(locator)
+    rows, legacy = _split_rows(locator)
     result: dict[tuple[str, int, int], dict[str, dict[str, dict[str, Any]]]] = {}
     expected_keys = [
         (receiver, k_shot, new_count)
@@ -426,8 +526,11 @@ def _project_split_locator(locator: Mapping[str, Any]) -> dict[
         for k_shot, new_count in TARGET25_SLICES
     ]
     actual_keys: list[tuple[str, int, int]] = []
+    expected_row_fields = (
+        _LEGACY_SPLIT_ROW_FIELDS if legacy else _NATIVE_SPLIT_ROW_FIELDS
+    )
     for row in rows:
-        if not isinstance(row, Mapping) or not _SPLIT_ROW_FIELDS.issubset(row):
+        if not isinstance(row, Mapping) or set(row) != expected_row_fields:
             raise D106Target25InputError("D92 split-row locator closure drift")
         key = (str(row["receiver"]), row["k_shot"], row["new_count"])
         actual_keys.append(key)
@@ -439,12 +542,12 @@ def _project_split_locator(locator: Mapping[str, Any]) -> dict[
             raise D106Target25InputError("D92 split scenario order/coverage drift")
         projected_scenarios: dict[str, dict[str, dict[str, Any]]] = {}
         for item in scenarios:
-            if not isinstance(item, Mapping) or not _SCENARIO_FIELDS.issubset(item):
+            if not isinstance(item, Mapping) or set(item) != _SCENARIO_FIELDS:
                 raise D106Target25InputError("D92 split scenario closure drift")
             scenario = str(item["scenario"])
             projected_scenarios[scenario] = {
-                "before": _project_state(item["before"], "before"),
-                "after": _project_state(item["after"], "after"),
+                "before": _project_state(item["before"], "before", legacy=legacy),
+                "after": _project_state(item["after"], "after", legacy=legacy),
             }
         result[key] = projected_scenarios
     if actual_keys != expected_keys or len(result) != OUTER_JOB_COUNT:
@@ -520,7 +623,8 @@ def prepare_d106_target25_inputs(
     expected_rdce_lock_sha256: str,
     rcmr_lock_path: Path,
     expected_rcmr_lock_sha256: str,
-    kcr_route_lock_sha256: str,
+    kcr_route_lock_path: Path,
+    expected_kcr_route_lock_sha256: str,
     output_dir: Path,
 ) -> dict[str, Any]:
     """Publish one immutable D106 Target25 input plan/context/receipt."""
@@ -538,7 +642,9 @@ def prepare_d106_target25_inputs(
         "rdce_wire": _asset(rdce_wire_path, expected_rdce_wire_sha256, "RDCE wire"),
         "rdce_lock": _asset(rdce_lock_path, expected_rdce_lock_sha256, "RDCE lock"),
         "rcmr_lock": _asset(rcmr_lock_path, expected_rcmr_lock_sha256, "RCMR lock"),
-        "kcr_route_lock_sha256": _sha(kcr_route_lock_sha256, "KCR route-lock SHA256"),
+        "kcr_route_lock": _kcr_route_lock(
+            kcr_route_lock_path, expected_kcr_route_lock_sha256
+        ),
     }
     matrix = freeze_d106_matrix_protocol()
     plan_rows: list[dict[str, Any]] = []
@@ -574,6 +680,7 @@ def prepare_d106_target25_inputs(
                         "registered_classes",
                         "old_classes",
                         "new_classes",
+                        "prediction_context_sha256",
                     )
                 }
                 state_identity.update(
@@ -698,6 +805,7 @@ __all__ = [
     "D106_INDEX_SCHEMA",
     "D106_SPLIT_LOCATOR_SCHEMA",
     "D106Target25InputError",
+    "KCR_ROUTE_LOCK_SCHEMA",
     "PLAN_SCHEMA",
     "PREPARE_RECEIPT_SCHEMA",
     "prepare_d106_target25_inputs",
