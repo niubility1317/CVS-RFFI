@@ -60,10 +60,12 @@ def _packages(job_root: Path) -> None:
             (package / "package_manifest.json").write_text("{}\n", encoding="utf-8")
         seals = job_root / "offline" / "seals"
         seals.mkdir(parents=True, exist_ok=True)
+        apply_seals = job_root / "apply_seals"
+        apply_seals.mkdir(parents=True, exist_ok=True)
         (seals / f"{state}_enrollment.seal.json").write_text(
             f'{{"state":"{state}","profile":"enrollment"}}\n', encoding="utf-8"
         )
-        (seals / f"{state}_apply_staging_authority.seal.json").write_text(
+        (apply_seals / f"{state}_apply.seal.json").write_text(
             f'{{"state":"{state}","profile":"apply"}}\n', encoding="utf-8"
         )
 

@@ -24,14 +24,13 @@ import numpy as np
 
 from .stage2_d105_feature_tap import extract_d105_feature_tap
 from .stage2_d105_query_evaluation import (
-    D105SealedPackageRef,
     _default_model_loader,
-    _default_package_loader,
     _device,
     _query_rows,
     _support_rows,
     _tap_rows,
 )
+from .somph_diagnostic_bundle_loader import load_verified_somph_predictor_bundle
 from .stage2_diag_cosine_exploration import _validate_matched_packages
 from .stage2_d106_k_conditioned_router import (
     ARMS,
@@ -198,6 +197,239 @@ def _sequence(value: Any, name: str, expected_len: int | None = None) -> list[An
     return value
 
 
+_RAW_ROW_FIELDS = {
+    "job_id",
+    "source_d92_job_id",
+    "receiver",
+    "seed",
+    "k_shot",
+    "new_count",
+    "packages",
+}
+_RAW_PACKAGE_FIELDS = {
+    "package_root",
+    "detached_seal_path",
+    "expected_seal_sha256",
+}
+
+
+def _load_raw_package(value: Mapping[str, Any]):
+    if not isinstance(value, Mapping) or set(value) != _RAW_PACKAGE_FIELDS:
+        raise D106Target25RunnerError("raw D92 package reference closure drift")
+    root = Path(str(value["package_root"]))
+    seal = Path(str(value["detached_seal_path"]))
+    expected = _sha(value["expected_seal_sha256"], "D92 package seal SHA256")
+    try:
+        payloads, manifest, audit = load_verified_somph_predictor_bundle(
+            root,
+            detached_seal_path=seal,
+            expected_seal_sha256=expected,
+        )
+    except Exception as error:
+        raise D106Target25RunnerError("sealed D92 package verification failed") from error
+    if not isinstance(manifest, Mapping) or not isinstance(payloads, Mapping):
+        raise D106Target25RunnerError("sealed D92 package materialization drift")
+    return payloads, dict(manifest), dict(audit)
+
+
+def _derived_state(
+    *,
+    row: Mapping[str, Any],
+    scene: str,
+    state_name: str,
+    support_ref: Mapping[str, Any],
+    query_ref: Mapping[str, Any],
+    support_loaded: tuple[Any, Mapping[str, Any], Mapping[str, Any]],
+    query_loaded: tuple[Any, Mapping[str, Any], Mapping[str, Any]],
+    old_registry: tuple[str, ...] | None,
+) -> tuple[dict[str, Any], dict[str, Any], tuple[str, ...], tuple[str, ...]]:
+    support_payloads, support_manifest, _support_audit = support_loaded
+    query_payloads, query_manifest, _query_audit = query_loaded
+    try:
+        _validate_matched_packages(support_manifest, query_manifest)
+    except Exception as error:
+        raise D106Target25RunnerError("D92 support/query package pairing drift") from error
+    if scene not in support_payloads or scene not in query_payloads:
+        raise D106Target25RunnerError("D92 package scenario missing")
+    registry = tuple(
+        str(item.get("class_handle", ""))
+        for item in support_manifest.get("registered_classes", [])
+        if isinstance(item, Mapping)
+    )
+    if not registry or len(set(registry)) != len(registry):
+        raise D106Target25RunnerError("D92 registered-class manifest drift")
+    for manifest in (support_manifest, query_manifest):
+        if (
+            manifest.get("receiver") != row["receiver"]
+            or manifest.get("seed") != row["seed"]
+            or manifest.get("k_shot") != row["k_shot"]
+        ):
+            raise D106Target25RunnerError("D92 package row binding drift")
+    try:
+        _support_iq, _support_labels, support_ids = _support_rows(
+            support_payloads[scene],
+            registered_classes=registry,
+            active_k=row["k_shot"],
+        )
+        _query_iq, query_ids = _query_rows(query_payloads[scene])
+    except Exception as error:
+        raise D106Target25RunnerError("D92 physical-ID materialization drift") from error
+    support_ids = tuple(str(value) for value in support_ids)
+    query_ids = tuple(str(value) for value in query_ids)
+    if set(support_ids).intersection(query_ids):
+        raise D106Target25RunnerError("D92 support/query physical IDs overlap")
+    if state_name == "before":
+        old = registry
+        new: tuple[str, ...] = ()
+    else:
+        if old_registry is None or registry[: len(old_registry)] != old_registry:
+            raise D106Target25RunnerError("D92 before/after registry prefix drift")
+        old = old_registry
+        new = registry[len(old_registry) :]
+        if len(new) != row["new_count"]:
+            raise D106Target25RunnerError("D92 new-class count drift")
+    support_root = canonical_sha256(sorted(support_ids))
+    query_root = canonical_sha256(sorted(query_ids))
+    capsule_id = canonical_sha256(
+        {
+            "schema": "cvs.phase2.d106.d92_sealed_package_capsule.v1",
+            "row": row["source_d92_job_id"],
+            "state": state_name,
+            "support_seal": support_ref["expected_seal_sha256"],
+            "query_seal": query_ref["expected_seal_sha256"],
+            "support_package_root": support_manifest.get("package_root_sha256"),
+            "query_package_root": query_manifest.get("package_root_sha256"),
+        }
+    )
+    split_id = canonical_sha256(
+        {
+            "schema": "cvs.phase2.d106.d92_materialized_split.v1",
+            "capsule_id": capsule_id,
+            "scene": scene,
+            "state": state_name,
+            "support_physical_ids": list(support_ids),
+            "query_physical_ids": list(query_ids),
+        }
+    )
+    validator_receipt = canonical_sha256(
+        {
+            "schema": "cvs.phase2.d106.d92_seal_verification_receipt.v1",
+            "support_seal": support_ref["expected_seal_sha256"],
+            "query_seal": query_ref["expected_seal_sha256"],
+            "support_package_root": support_manifest.get("package_root_sha256"),
+            "query_package_root": query_manifest.get("package_root_sha256"),
+            "support_query_disjoint": True,
+        }
+    )
+    registration_state = (
+        "BEFORE_REGISTRATION" if state_name == "before" else "AFTER_REGISTRATION"
+    )
+    plan_state: dict[str, Any] = {
+        "state": state_name,
+        "registration_state": registration_state,
+        "registered_classes": list(registry),
+        "old_classes": list(old),
+        "new_classes": list(new),
+        "capsule_id": capsule_id,
+        "split_id": split_id,
+        "authority_receipt_sha256": validator_receipt,
+        "support_physical_root_sha256": support_root,
+        "query_physical_root_sha256": query_root,
+    }
+    plan_state["state_input_receipt_sha256"] = canonical_sha256(plan_state)
+    context_state = {
+        **plan_state,
+        "support_received_iq_ref": dict(support_ref),
+        "query_received_iq_ref": dict(query_ref),
+    }
+    return plan_state, context_state, support_ids, query_ids
+
+
+def _expand_raw_rows(
+    plan: Mapping[str, Any], context: Mapping[str, Any]
+) -> tuple[dict[str, Any], dict[str, Any]]:
+    raw_plan_rows = _sequence(plan.get("rows"), "raw plan rows", OUTER_JOB_COUNT)
+    raw_context_rows = _sequence(context.get("rows"), "raw context rows", OUTER_JOB_COUNT)
+    if raw_plan_rows != raw_context_rows:
+        raise D106Target25RunnerError("raw plan/context row drift")
+    package_cache: dict[tuple[tuple[str, str], ...], tuple[Any, dict[str, Any], dict[str, Any]]] = {}
+
+    def loaded(ref: Mapping[str, Any]):
+        key = tuple(sorted((str(name), str(value)) for name, value in ref.items()))
+        if key not in package_cache:
+            package_cache[key] = _load_raw_package(ref)
+        return package_cache[key]
+
+    expanded_plan_rows: list[dict[str, Any]] = []
+    expanded_context_rows: list[dict[str, Any]] = []
+    physical: dict[
+        tuple[str, int, int, str, str], tuple[tuple[str, ...], tuple[str, ...]]
+    ] = {}
+    for raw_row in raw_plan_rows:
+        if not isinstance(raw_row, Mapping) or set(raw_row) != _RAW_ROW_FIELDS:
+            raise D106Target25RunnerError("raw D92 row closure drift")
+        packages = raw_row.get("packages")
+        if not isinstance(packages, Mapping) or set(packages) != {
+            "before_enrollment", "before_apply", "after_enrollment", "after_apply"
+        }:
+            raise D106Target25RunnerError("raw D92 four-package closure drift")
+        before_registry: tuple[str, ...] | None = None
+        plan_scenes: list[dict[str, Any]] = []
+        context_scenes: list[dict[str, Any]] = []
+        for scene in LEO_SCENARIOS:
+            plan_states: list[dict[str, Any]] = []
+            context_states: list[dict[str, Any]] = []
+            for state_name in STATES:
+                support_ref = packages[f"{state_name}_enrollment"]
+                query_ref = packages[f"{state_name}_apply"]
+                plan_state, context_state, support_ids, query_ids = _derived_state(
+                    row=raw_row,
+                    scene=scene,
+                    state_name=state_name,
+                    support_ref=support_ref,
+                    query_ref=query_ref,
+                    support_loaded=loaded(support_ref),
+                    query_loaded=loaded(query_ref),
+                    old_registry=before_registry,
+                )
+                if state_name == "before":
+                    before_registry = tuple(plan_state["registered_classes"])
+                physical[
+                    (
+                        raw_row["receiver"],
+                        raw_row["k_shot"],
+                        raw_row["new_count"],
+                        scene,
+                        state_name,
+                    )
+                ] = (
+                    support_ids,
+                    query_ids,
+                )
+                plan_states.append(plan_state)
+                context_states.append(context_state)
+            scenario_row_id = f"{raw_row['job_id']}::{scene}"
+            plan_scenes.append(
+                {"scenario_row_id": scenario_row_id, "scenario": scene, "states": plan_states}
+            )
+            context_scenes.append(
+                {"scenario_row_id": scenario_row_id, "scenario": scene, "states": context_states}
+            )
+        base = {name: raw_row[name] for name in ("job_id", "receiver", "seed", "k_shot", "new_count")}
+        expanded_plan_rows.append({**base, "scenarios": plan_scenes})
+        expanded_context_rows.append({**base, "scenarios": context_scenes})
+    for receiver in {row["receiver"] for row in raw_plan_rows}:
+        for scene in LEO_SCENARIOS:
+            for state_name in STATES:
+                short = physical[(receiver, 5, 20, scene, state_name)]
+                long = physical[(receiver, 10, 20, scene, state_name)]
+                if not set(short[0]).issubset(long[0]) or canonical_sha256(sorted(short[1])) != canonical_sha256(sorted(long[1])):
+                    raise D106Target25RunnerError(
+                        "D92 K5 support/query pairing differs from matched K10"
+                    )
+    return ({**dict(plan), "rows": expanded_plan_rows}, {**dict(context), "rows": expanded_context_rows})
+
+
 def _prepared_inputs(
     *,
     plan_manifest_path: Path,
@@ -231,6 +463,13 @@ def _prepared_inputs(
         or not context_receipt
     ):
         raise D106Target25RunnerError("prepared plan/context identity drift")
+    raw_rows = plan.get("rows")
+    if (
+        isinstance(raw_rows, list)
+        and raw_rows
+        and all(isinstance(row, Mapping) and set(row) == _RAW_ROW_FIELDS for row in raw_rows)
+    ):
+        plan, context = _expand_raw_rows(plan, context)
     plan_rows = _sequence(plan.get("rows"), "plan rows", OUTER_JOB_COUNT)
     context_rows = _sequence(context.get("rows"), "context rows", OUTER_JOB_COUNT)
     if [row.get("job_id") for row in plan_rows if isinstance(row, Mapping)] != [
@@ -459,13 +698,7 @@ class _D106RealStateMaterializer:
         key = tuple(sorted((str(name), str(item)) for name, item in value.items()))
         cached = self.package_cache.get(key)
         if cached is None:
-            try:
-                reference = D105SealedPackageRef(**dict(value))
-                cached = _default_package_loader(reference)
-            except Exception as error:
-                raise D106Target25RunnerError(
-                    "sealed D92 received-IQ package loading failed"
-                ) from error
+            cached = _load_raw_package(value)
             self.package_cache[key] = cached
         return cached
 

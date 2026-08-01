@@ -206,10 +206,15 @@ def _package_ref(job_root: Path, state: str, profile: str) -> dict[str, str]:
     if state not in {"before", "after"} or profile not in {"enrollment", "apply"}:
         raise D106Target25InputError("internal D92 package selector drift")
     package_leaf = "enrollment_only" if profile == "enrollment" else "apply_only_staging"
+    seal_root = (
+        job_root / "offline" / "seals"
+        if profile == "enrollment"
+        else job_root / "apply_seals"
+    )
     seal_leaf = (
         f"{state}_enrollment.seal.json"
         if profile == "enrollment"
-        else f"{state}_apply_staging_authority.seal.json"
+        else f"{state}_apply.seal.json"
     )
     root = _regular_path(
         job_root / "offline" / "predictor" / state / package_leaf,
@@ -217,7 +222,7 @@ def _package_ref(job_root: Path, state: str, profile: str) -> dict[str, str]:
         directory=True,
     )
     seal = _regular_path(
-        job_root / "offline" / "seals" / seal_leaf,
+        seal_root / seal_leaf,
         f"D92 {state} {profile} detached seal",
     )
     return {

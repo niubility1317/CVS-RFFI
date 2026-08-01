@@ -48,15 +48,58 @@ def _canonical_write(path: Path, value: Mapping[str, Any]) -> str:
     return _sha_file(path)
 
 
-def _query_ids_by_root(split_path: Path) -> dict[str, list[str]]:
-    split = json.loads(split_path.read_text(encoding="utf-8"))
-    result: dict[str, list[str]] = {}
-    for row in split["rows"]:
-        for scenario in row["scenarios"]:
+def _expanded_rows(raw_rows: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], list[dict[str, Any]], dict[str, list[str]]]:
+    plan_rows: list[dict[str, Any]] = []
+    context_rows: list[dict[str, Any]] = []
+    query_ids: dict[str, list[str]] = {}
+    for row in raw_rows:
+        old = [f"old-{index}" for index in range(2)]
+        new = [f"new-{index}" for index in range(row["new_count"])]
+        plan_scenes = []
+        context_scenes = []
+        for scene in ("leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak"):
+            plan_states = []
+            context_states = []
             for state_name in ("before", "after"):
-                query = scenario[state_name]["query_physical_ids"]
-                result[canonical_sha256(sorted(query))] = query
-    return result
+                registry = old if state_name == "before" else old + new
+                support = [
+                    f"{row['job_id']}/{scene}/{state_name}/{class_id}/{shot}"
+                    for class_id in registry
+                    for shot in range(row["k_shot"])
+                ]
+                query = [f"{row['job_id']}/{scene}/{state_name}/q{index}" for index in range(3)]
+                query_root = canonical_sha256(sorted(query))
+                query_ids[query_root] = query
+                state = {
+                    "state": state_name,
+                    "registration_state": "BEFORE_REGISTRATION" if state_name == "before" else "AFTER_REGISTRATION",
+                    "registered_classes": registry,
+                    "old_classes": old,
+                    "new_classes": [] if state_name == "before" else new,
+                    "capsule_id": canonical_sha256({"row": row["job_id"], "state": state_name}),
+                    "split_id": canonical_sha256({"row": row["job_id"], "scene": scene, "state": state_name}),
+                    "authority_receipt_sha256": canonical_sha256({"row": row["job_id"], "validator": state_name}),
+                    "support_physical_root_sha256": canonical_sha256(sorted(support)),
+                    "query_physical_root_sha256": query_root,
+                }
+                state["state_input_receipt_sha256"] = canonical_sha256(state)
+                support_key = f"{state_name}_enrollment"
+                query_key = f"{state_name}_apply"
+                plan_states.append(state)
+                context_states.append(
+                    {
+                        **state,
+                        "support_received_iq_ref": row["packages"][support_key],
+                        "query_received_iq_ref": row["packages"][query_key],
+                    }
+                )
+            scenario_row_id = f"{row['job_id']}::{scene}"
+            plan_scenes.append({"scenario_row_id": scenario_row_id, "scenario": scene, "states": plan_states})
+            context_scenes.append({"scenario_row_id": scenario_row_id, "scenario": scene, "states": context_states})
+        base = {name: row[name] for name in ("job_id", "receiver", "seed", "k_shot", "new_count")}
+        plan_rows.append({**base, "scenarios": plan_scenes})
+        context_rows.append({**base, "scenarios": context_scenes})
+    return plan_rows, context_rows, query_ids
 
 
 def _synthetic_evaluator(**kwargs: Any) -> dict[str, Any]:
@@ -95,13 +138,30 @@ def _synthetic_evaluator(**kwargs: Any) -> dict[str, Any]:
 
 def _prepared(tmp_path: Path) -> tuple[dict[str, Any], dict[str, Any], dict[str, list[str]]]:
     input_kwargs = input_fixture._inputs(tmp_path)
-    query_ids = _query_ids_by_root(input_kwargs["split_locator_path"])
     receipt = prepare_d106_target25_inputs(**input_kwargs)
+    plan_path = Path(receipt["plan_manifest"])
+    context_path = Path(receipt["context_manifest"])
+    plan = json.loads(plan_path.read_text(encoding="utf-8"))
+    context = json.loads(context_path.read_text(encoding="utf-8"))
+    plan_rows, context_rows, query_ids = _expanded_rows(plan["rows"])
+    plan["rows"] = plan_rows
+    plan["plan_receipt_sha256"] = canonical_sha256(
+        {key: value for key, value in plan.items() if key != "plan_receipt_sha256"}
+    )
+    context["rows"] = context_rows
+    context["plan_receipt_sha256"] = plan["plan_receipt_sha256"]
+    context["context_receipt_sha256"] = canonical_sha256(
+        {key: value for key, value in context.items() if key != "context_receipt_sha256"}
+    )
+    os.chmod(plan_path, stat.S_IWRITE)
+    os.chmod(context_path, stat.S_IWRITE)
+    plan_sha = _canonical_write(plan_path, plan)
+    context_sha = _canonical_write(context_path, context)
     run_kwargs = {
-        "plan_manifest_path": Path(receipt["plan_manifest"]),
-        "expected_plan_file_sha256": receipt["plan_file_sha256"],
-        "context_manifest_path": Path(receipt["context_manifest"]),
-        "expected_context_file_sha256": receipt["context_file_sha256"],
+        "plan_manifest_path": plan_path,
+        "expected_plan_file_sha256": plan_sha,
+        "context_manifest_path": context_path,
+        "expected_context_file_sha256": context_sha,
     }
     return receipt, run_kwargs, query_ids
 
@@ -193,14 +253,12 @@ def test_cli_prepare_forwards_new_route_lock_file_interface(tmp_path: Path) -> N
         sys.executable,
         str(SCRIPT),
         "prepare",
-        "--matrix-index",
-        str(values["matrix_index_path"]),
-        "--matrix-index-sha256",
-        values["expected_matrix_index_sha256"],
-        "--split-locator",
-        str(values["split_locator_path"]),
-        "--split-locator-sha256",
-        values["expected_split_locator_sha256"],
+        "--d92-matrix-manifest",
+        str(values["d92_matrix_manifest_path"]),
+        "--d92-matrix-manifest-sha256",
+        values["expected_d92_matrix_manifest_sha256"],
+        "--d92-output-root",
+        str(values["d92_output_root"]),
         "--checkpoint",
         str(values["checkpoint_path"]),
         "--checkpoint-sha256",
