@@ -21,7 +21,7 @@ D107完整125中M_JOINT仅为after old=47.26%、after floor=17.87%、seen-new=30
 
 1. 全部臂保留D92的288维表示：ReLU z_id160＋原FFT96＋原RF32；只允许DA臂改变ReLU块。
 2. CB-RRC对before旧类support逐行单位化，以六类等权方式冻结坐标能量`e_j`；零ReLU块保持零。
-3. 对每条support/query独立应用`r_j(x)=sqrt((e_j+mean(e)+eps)/(u_j(x)^2+e_j+mean(e)+eps))`，输出`unit(u(x)*(1+r(x)))`；增益在(1,2]，不中心化、不翻转ReLU mask。
+3. 对每条support/query独立应用`r_j(x)=sqrt((e_j+mean(e)+eps)/(u_j(x)^2+e_j+mean(e)+eps))`，先得到`unit(u(x)*(1+r(x)))`，再乘回该行输入ReLU块的原始L2范数；增益在(1,2]，不中心化、不翻转ReLU mask，也不改变D92的z_id与FFT/RF块间权重。
 4. SMME保留D92 equal-prior LDA logits。对每类support计算自身logit相对其余类logsumexp的均值margin`m_c`，冻结零和偏置`delta_c=mean(m)-m_c`；query分数为`g_c(q)+delta_c`。
 5. 四臂固定：`M0=D92表示＋D92头`、`M_DA=CB-RRC＋D92头`、`M_HEAD=D92表示＋SMME`、`M_JOINT=CB-RRC＋SMME`。每个row全部执行，无路由、扫描或择优运行。
 6. CB-RRC与SMME在K1均活动；不fallback，不读取query truth/role/count，不用quota、qKNN、query fit/update或global reassignment。
@@ -37,6 +37,8 @@ D107完整125中M_JOINT仅为after old=47.26%、after floor=17.87%、seen-new=30
 7. 风险是singleton support的margin偏置方差和非线性压缩可能损伤易类；由完整四臂125同row结果直接证伪，不新增性能gate。
 8. 判定：`FEASIBILITY_REVIEW_PASS / DESIGN_FROZEN`，直接实现。
 
+主agent在核心初审中检出并修复一个P1：最初实现把D92最终288维特征中的ReLU子块直接重归一到1，会把原约1:4的z_id/auxiliary块权重改成约1:1。修正后CB-RRC严格保持每行输入ReLU块范数，K10实测最大绝对误差为`1.1920928955078125e-07`，23项专项测试通过；这是表示接线修正，不是方法调参。
+
 ## 冻结完整125与发布流程
 
 |维度|取值|
@@ -51,7 +53,9 @@ D107完整125中M_JOINT仅为after old=47.26%、after floor=17.87%、seen-new=30
 
 ## 预登记运行面
 
-本地改动、验证命令、commit/hash、远端同步映射、精确Python/CWD/日志/PID/GPU和期望artifact将在实现冻结后补齐。N607发布由唯一实验子agent负责，默认先直连只读preflight；计划GPU不超过每卡两个训练任务，本实验以单GPU推理矩阵优先。停止只允许P0协议/安全故障或至少两个不同row出现相同确定性零prediction异常指纹，绝不因中间性能停止。
+已锁定D92 matrix SHA256=`b70045e7cd45a6029bc0a1a47ada0bb72d16fdb6bc7662c43bd253bfc7e4bc5c`；Phase1 checkpoint SHA256=`2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98`；D81 ground component固定为`/home/szu2070436088/2510044040/CV-SincNet/runs/d19_ciaf_int8_proto_20260717_1039/input/int8_component`，manifest SHA256=`15b5e144f9af3989421d8e925c17758479c327be47e79222f6363dc63994629c`。D108不使用D106 RDCE资产。每个D92 job的authority bundle/COMMIT将逐项绑定进plan。
+
+其余本地改动、验证命令、commit/hash、远端同步映射、精确Python/CWD/日志/PID/GPU和期望artifact将在实现冻结后补齐。N607发布由唯一实验子agent负责，默认先直连只读preflight；完整预测支持GPU0-7独立不可覆盖分片，所有分片合并验证后才封存3000个surface并开放truth。停止只允许P0协议/安全故障或至少两个不同row出现相同确定性零prediction异常指纹，绝不因中间性能停止。
 
 ## 性能口径
 
