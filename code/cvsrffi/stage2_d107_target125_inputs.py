@@ -353,10 +353,11 @@ def prepare_d107_target125_inputs(
     lineage_path = _regular_path(rdce_lineage_path, "RDCE lineage")
     lineage_sha = _sha(expected_rdce_lineage_sha256, "expected RDCE lineage SHA256")
     lineage = _rdce_lineage(lineage_path, lineage_sha)
+    d92_sealed_runtime_sha = _sha(
+        manifest.get("sealed_runtime_sha256"), "D92 sealed runtime SHA256"
+    )
     if manifest.get("phase1_checkpoint_sha256") != checkpoint["sha256"]:
         raise D107Target125InputError("D92/checkpoint SHA binding drift")
-    if manifest.get("sealed_runtime_sha256") != lineage["runtime_sha256"]:
-        raise D107Target125InputError("D92/RDCE runtime SHA binding drift")
     if lineage["checkpoint_sha256"] != checkpoint["sha256"]:
         raise D107Target125InputError("checkpoint/RDCE lineage SHA binding drift")
     rdce_directory = _regular_path(rdce_asset_dir, "RDCE asset directory", directory=True)
@@ -367,6 +368,7 @@ def prepare_d107_target125_inputs(
         "matrix_receipt_sha256": matrix.matrix_receipt_sha256,
         "d92_matrix_manifest": {"path": str(matrix_path), "sha256": matrix_sha},
         "d92_output_root": str(output_root),
+        "d92_sealed_runtime_sha256": d92_sealed_runtime_sha,
         "checkpoint": checkpoint,
         "d107_method_lock": method_lock,
         "rdce_asset": {

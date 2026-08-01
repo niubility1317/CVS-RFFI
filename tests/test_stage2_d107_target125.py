@@ -30,6 +30,7 @@ from cvsrffi.stage2_d107_target125_inputs import (
 )
 from cvsrffi.stage2_d107_target125_runner import (
     D107Target125RunnerError,
+    _signed_zid_l2_from_tap,
     predict_d107_target125,
     smoke_d107_target125_prepared_state,
     validate_d107_target125_prediction_manifest,
@@ -61,7 +62,8 @@ def _make_d92_prepare_inputs(tmp_path: Path) -> dict[str, Any]:
     checkpoint = tmp_path / "checkpoint.pth"
     checkpoint.write_bytes(b"d107-checkpoint")
     checkpoint_sha = _sha_bytes(checkpoint.read_bytes())
-    runtime_sha = _sha_token("runtime")
+    d92_runtime_sha = _sha_token("d92-feature-runtime")
+    rdce_runtime_sha = _sha_token("rdce-construction-runtime")
     output_root = tmp_path / "d92-output"
     jobs_root = output_root / "jobs"
     jobs_root.mkdir(parents=True)
@@ -111,7 +113,7 @@ def _make_d92_prepare_inputs(tmp_path: Path) -> dict[str, Any]:
         "job_count": OUTER_JOB_COUNT,
         "receivers": ["20-1", "3-19", "7-14", "7-7", "8-8"],
         "phase1_checkpoint_sha256": checkpoint_sha,
-        "sealed_runtime_sha256": runtime_sha,
+        "sealed_runtime_sha256": d92_runtime_sha,
         "phase2_contract": {
             "clean_sample_access": False,
             "clean_derived_signal_access": False,
@@ -138,7 +140,7 @@ def _make_d92_prepare_inputs(tmp_path: Path) -> dict[str, Any]:
     method_lock_sha = _write_json(method_lock_path, method_lock)
     lineage = {
         "checkpoint_sha256": checkpoint_sha,
-        "runtime_sha256": runtime_sha,
+        "runtime_sha256": rdce_runtime_sha,
         "method_lock_sha256": _sha_token("d106-rdce-lock"),
         "split_id": "d104_source_seed104713_v2",
         "tap_sha256": _sha_token("tap"),
@@ -210,6 +212,7 @@ def _make_prepared_manifests(tmp_path: Path) -> tuple[Path, str, Path, str]:
         "matrix_receipt_sha256": matrix.matrix_receipt_sha256,
         "d92_matrix_manifest": {"path": "/sealed/d92.json", "sha256": digest},
         "d92_output_root": "/sealed/d92",
+        "d92_sealed_runtime_sha256": digest,
         "checkpoint": {"path": "/sealed/checkpoint", "sha256": digest},
         "d107_method_lock": {"path": "/sealed/lock", "sha256": digest},
         "rdce_asset": {
@@ -349,12 +352,104 @@ def test_target125_matrix_counts_and_ids() -> None:
     )
 
 
+def test_signed_zid_l2_selects_negative_pre_relu_from_actual_tap() -> None:
+    torch = pytest.importorskip("torch")
+    nn = torch.nn
+    from cvsrffi.stage2_d105_feature_tap import extract_d105_feature_tap
+
+    class Head(nn.Module):
+        def __init__(self) -> None:
+            super().__init__()
+            self.joint_proj = nn.Sequential(
+                nn.Linear(320, 160, bias=True), nn.ReLU(inplace=False)
+            )
+
+    class IdentityBackbone(nn.Module):
+        def __init__(self) -> None:
+            super().__init__()
+            self.cls_head = Head()
+
+        def forward(self, rows, y=None, return_aux=True, domain_labels=None):
+            del y, domain_labels
+            hidden = rows.new_zeros((len(rows), 320))
+            feature = self.cls_head.joint_proj(hidden)
+            return {
+                "feat_joint": feature,
+                "feat_imp": feature,
+                "logits": torch.stack((feature[:, 0], feature[:, 1]), dim=1),
+            }
+
+    class DomainBackbone(nn.Module):
+        def forward(self, rows, y=None, return_aux=True, domain_labels=None):
+            del y, return_aux, domain_labels
+            feature = rows.new_zeros((len(rows), 160))
+            return {
+                "feat_joint": feature,
+                "feat_imp": feature,
+                "logits": torch.stack((feature[:, 0], feature[:, 1]), dim=1),
+            }
+
+    class Enhancer(nn.Module):
+        def forward(self, feature, rows):
+            del rows
+            return feature, feature
+
+    class Model(nn.Module):
+        id_feature_key = "feat_joint"
+        dom_feature_key = "feat_imp"
+
+        def __init__(self) -> None:
+            super().__init__()
+            self.id_backbone = IdentityBackbone()
+            self.dom_backbone = DomainBackbone()
+            self.dom_enhancer = Enhancer()
+
+        @staticmethod
+        def _pick_z_id(aux):
+            return aux["feat_joint"]
+
+        @staticmethod
+        def _pick_z_dom(aux):
+            return aux["feat_imp"]
+
+    model = Model().eval()
+    with torch.no_grad():
+        linear = model.id_backbone.cls_head.joint_proj[0]
+        linear.weight.zero_()
+        linear.bias.zero_()
+        linear.bias[0] = -2.0
+        linear.bias[1] = 3.0
+    tap = extract_d105_feature_tap(model, torch.zeros(2, 2, 8, dtype=torch.float32))
+    assert tap.pre_relu[0, 0] < 0.0
+    assert tap.z_id[0, 0] == 0.0
+    assert tap.z_id[0, 1] > 0.0
+    signed = _signed_zid_l2_from_tap(tap, 2)
+    assert signed[0, 0] < 0.0
+    assert signed[0, 1] > 0.0
+    np.testing.assert_allclose(np.linalg.norm(signed, axis=1), 1.0, atol=1.0e-6)
+
+
 def test_prepare_binds_k5_to_matching_k10_prefix(tmp_path: Path) -> None:
     inputs = _make_d92_prepare_inputs(tmp_path)
     output_dir = tmp_path / "prepared"
+    d92_manifest = json.loads(
+        Path(inputs["d92_matrix_manifest_path"]).read_text(encoding="utf-8")
+    )
+    rdce_lineage = json.loads(
+        Path(inputs["rdce_lineage_path"]).read_text(encoding="utf-8")
+    )
+    assert d92_manifest["sealed_runtime_sha256"] != rdce_lineage["runtime_sha256"]
     result = prepare_d107_target125_inputs(**inputs, output_dir=output_dir)
     assert result["outer_job_count"] == 125
     plan = json.loads(Path(result["plan_manifest"]).read_text(encoding="utf-8"))
+    assert (
+        plan["identity"]["d92_sealed_runtime_sha256"]
+        == d92_manifest["sealed_runtime_sha256"]
+    )
+    assert (
+        plan["identity"]["rdce_asset"]["lineage"]["runtime_sha256"]
+        == rdce_lineage["runtime_sha256"]
+    )
     rows = {(row["receiver"], row["seed"], row["k_shot"], row["new_count"]): row for row in plan["rows"]}
     for receiver in ("20-1", "3-19", "7-14", "7-7", "8-8"):
         for seed in (713102, 713103, 713104, 713105, 713106):

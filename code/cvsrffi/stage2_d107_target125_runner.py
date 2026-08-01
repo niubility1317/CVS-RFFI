@@ -274,6 +274,7 @@ def _prepared_inputs(
         "matrix_receipt_sha256",
         "d92_matrix_manifest",
         "d92_output_root",
+        "d92_sealed_runtime_sha256",
         "checkpoint",
         "d107_method_lock",
         "rdce_asset",
@@ -281,6 +282,7 @@ def _prepared_inputs(
         raise D107Target125RunnerError("prepared identity field closure drift")
     if identity.get("matrix_receipt_sha256") != matrix.matrix_receipt_sha256:
         raise D107Target125RunnerError("prepared matrix receipt drift")
+    _sha(identity.get("d92_sealed_runtime_sha256"), "D92 sealed runtime SHA256")
     plan_rows = _sequence(plan.get("rows"), "prepared plan rows", OUTER_JOB_COUNT)
     context_rows = _sequence(
         context.get("rows"), "prepared context rows", OUTER_JOB_COUNT
@@ -434,6 +436,23 @@ def _coerce_materialized_state(
 def _array_sha256(value: np.ndarray) -> str:
     array = np.ascontiguousarray(value)
     return hashlib.sha256(array.tobytes(order="C")).hexdigest()
+
+
+def _signed_zid_l2_from_tap(tapped: Any, rows: int) -> np.ndarray:
+    """Select the signed pre-ReLU identity feature and normalize each row."""
+
+    pre_relu = np.asarray(getattr(tapped, "pre_relu", None))
+    if (
+        pre_relu.dtype != np.float32
+        or pre_relu.ndim != 2
+        or pre_relu.shape != (rows, FEATURE_WIDTH)
+        or not np.isfinite(pre_relu).all()
+    ):
+        raise D107Target125RunnerError("signed pre-ReLU feature tap contract drift")
+    norms = np.linalg.norm(pre_relu.astype(np.float64), axis=1)
+    if np.any(~np.isfinite(norms)) or np.any(norms <= 1.0e-12):
+        raise D107Target125RunnerError("signed pre-ReLU feature has a degenerate row")
+    return np.ascontiguousarray(pre_relu / norms[:, None], dtype=np.float32)
 
 
 def _package_payloads(reference: Mapping[str, Any]):
@@ -633,20 +652,8 @@ class _D107RealStateMaterializer:
                     tapped = extract_d105_feature_tap(model, tensor)
             except Exception as error:
                 raise D107Target125RunnerError("one-pass signed z_id feature tap failed") from error
-            z_id = np.asarray(tapped.z_id)
-            if (
-                z_id.dtype != np.float32
-                or z_id.ndim != 2
-                or z_id.shape != (len(batch), FEATURE_WIDTH)
-                or not np.isfinite(z_id).all()
-            ):
-                raise D107Target125RunnerError("signed z_id feature tap contract drift")
-            rows.append(np.ascontiguousarray(z_id, dtype=np.float32))
-        raw = np.concatenate(rows, axis=0)
-        norms = np.linalg.norm(raw.astype(np.float64), axis=1)
-        if np.any(~np.isfinite(norms)) or np.any(norms <= 1.0e-12):
-            raise D107Target125RunnerError("signed z_id has a degenerate row")
-        return np.ascontiguousarray(raw / norms[:, None], dtype=np.float32)
+            rows.append(_signed_zid_l2_from_tap(tapped, len(batch)))
+        return np.ascontiguousarray(np.concatenate(rows, axis=0), dtype=np.float32)
 
     def __call__(self, request: Mapping[str, Any]) -> Mapping[str, Any]:
         phase = request.get("phase")
