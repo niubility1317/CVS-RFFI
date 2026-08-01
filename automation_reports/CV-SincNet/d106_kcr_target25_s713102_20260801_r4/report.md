@@ -1,6 +1,6 @@
 # D106-KCR/r4完整Target25实验报告
 
-状态：`LOCAL_VERIFIED / RELEASE_PENDING`
+状态：`LANDED_PREPARE_COMPLETE_SMOKE_RUNTIME_LINEAGE_SEMANTIC_FAILURE / NO_PERFORMANCE_RESULT`
 
 ## 实验登记
 
@@ -73,3 +73,48 @@ K5/new20使用同receiver、同seed、同new20的D92 K10封包，运行时只物
 prepare后执行真实checkpoint、真实D92封包、`cuda:0`、无truth单state smoke；通过即发布完整prediction。只有P0协议/安全错误，或至少两个不同row在产生prediction前出现同一确定性异常指纹时停止。不得按accuracy、H、floor或遗忘停止。停止时只处理已绑定到本run的PID树并保留全部artifact。
 
 完成后按同一row同时报告receiver、slice、scene、before old、after old、old floor、seen-new、H、forgetting、correct count和verdict。D62、D92、SVRN使用完整125证据；D91明确标注只有15行development证据。
+
+## N607实际执行结果
+
+2026-08-01直接N607预检通过：服务器时间、项目根目录、身份与GPU可见性正常，GPU0—7均为`0% utilization / 1 MiB used`。r4远端根目录此前不存在，随后只创建该不可覆盖run目录并同步冻结归档。
+
+|步骤|结果|证据|
+|---|---|---|
+|归档与版本|通过|远端归档SHA256=`25a27835eaf2c8718b144e7c49a7329c853e06f0f6a5bb4783c038208227a46d`；解包commit=`86c4255e8f1f62a459b8471ef72317de384a07f9`|
+|方法锁|通过|RDCE=`e7a1982b4bdeaf5b8179993ce78f4a2af26965d8f4a3239440dbe636ebf14cc1`；RCMR=`be452cc52da8e5c43d3addc73568580d63a83f146310ec3559bb5daa99076b0c`；KCR=`a3d530734b90454724166f620d7017f80e6de838fd4ca469c04abb155534ab6a`|
+|远端编译|通过|4个D106入口/模块`py_compile`通过|
+|prepare|通过|`TARGET25_D92_PACKAGES_LOCATED`；25个outer、75个scene、300个arm pair、600个state surface|
+|无truth真实smoke|失败|首个state在任何prediction前抛出`D106Target25RunnerError: feature runtime/RDCE lineage drift`|
+|完整prediction|未启动|没有detach、`predict.pid`、`predict.exit`、prediction或score artifact|
+|最终状态|无性能结果|r4永久只读，不重试、不覆盖、不进入性能分析|
+
+prepare输出SHA256：`target25_plan.json=6a55123b70d4f525847b94770c80694dfa52e55f46775ed121fa13691c781377`；`target25_context.json=77a6e3179226d7b6814cce67e74f0ac10835a8b159980495b7700524c40b369c`；`prepare_receipt.json=97632a782bc6f6bd5670ced2770b4e4ee50c51e655cff234a34167874c89b7f6`。
+
+## Lineage失败的只读定位
+
+诊断只读取首个state`d106-rx-20_1__seed-713102__k-10__new-5`的support/query manifest和RDCE资产声明，未读取truth，也未修改远端。
+
+|比较项|字段|实际值|
+|---|---|---|
+|support manifest|`feature_runtime_sha256`|`f119e8cb3f6beda95f0d545205e91b43e4a557af2fd1d025e95d2edf2b8e6e2a`|
+|query manifest|`feature_runtime_sha256`|`f119e8cb3f6beda95f0d545205e91b43e4a557af2fd1d025e95d2edf2b8e6e2a`|
+|RDCE asset|`runtime_sha256`|`ba8e96a925d9dc69be50fcf53af7fcbffe6391d9d51558a48b34848bff8cc901`|
+|当前代码条件|三者必须相等|`support.feature_runtime_sha256 == query.feature_runtime_sha256 == rdce_asset.runtime_sha256`，实际为false|
+
+结论：这是字段语义不一致，不是已证实的资产错配。`f119...6e2a`标识冻结的Phase1`sealed_feature_runtime.pt`字节；`ba8e...c901`标识`source/configs/d106_candidate_runtime_manifest_20260801.json`字节。support与query对同一个feature runtime完全一致；RDCE wire也在自己的D106 runtime-manifest身份空间内完成了内部校验。当前runner把TorchScript运行时文件身份与候选runtime manifest身份强制比较，跨了两个不同命名空间。后续只能在本地作最小语义修复、聚焦验证并使用新的不可覆盖run ID，不能在r4远端绕过检查。
+
+## 收尾证据与取回文件
+
+|本地取回文件|字节|SHA256|
+|---|---:|---|
+|`artifacts/remote_r4/prepare.log`|1456|`86f119dd047ba032f9aa307184ab4cacea67e84c31c162303794de4b74a62612`|
+|`artifacts/remote_r4/smoke.log`|889|`03d9f4dc663eccc2938b865349ccec2e59d2b063524b0c8519a7c3d2ae028049`|
+|`artifacts/remote_r4/prepare_receipt.json`|917|`97632a782bc6f6bd5670ced2770b4e4ee50c51e655cff234a34167874c89b7f6`|
+|`artifacts/remote_r4/target25_context.json`|56341|`77a6e3179226d7b6814cce67e74f0ac10835a8b159980495b7700524c40b369c`|
+|`artifacts/remote_r4/target25_plan.json`|575589|`6a55123b70d4f525847b94770c80694dfa52e55f46775ed121fa13691c781377`|
+
+收尾只读检查显示：`pgrep -af '[r]un_d106_target25.py'`无结果；GPU0—7均`0% utilization / 1 MiB used`；本地`ssh.exe=0`，到N607与lab bridge的`ESTABLISHED TCP/22=0`。本次没有best epoch、checkpoint或逐行性能表，因为实验未产生任何prediction；不得从prepare或smoke构造性能结论。
+
+## 下一步最小动作
+
+仅修复runner中两个runtime身份命名空间的绑定关系，保留support/query同runtime检查和RDCE自身资产校验；随后重跑相应聚焦测试、无truth真实smoke，并以新run ID直接发布完整Target25。该修复之外的报告平台、重复数据验证、额外签名层和新gate均不构成发布前硬门。
