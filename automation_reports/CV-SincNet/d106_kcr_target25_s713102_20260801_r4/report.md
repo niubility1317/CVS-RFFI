@@ -35,6 +35,9 @@ K5/new20使用同receiver、同seed、同new20的D92 K10封包，运行时只物
 |---|---|
 |matched K5修复commit|`ba78d723da5ca87d32d9715bcd2dbcc28280512a`|
 |payload契约修复commit|`0d3ebcfd56cb484cabadc026678cc50b73ff67f7`|
+|release source commit|`86c4255e8f1f62a459b8471ef72317de384a07f9`|
+|LF-preserving archive SHA256|`25a27835eaf2c8718b144e7c49a7329c853e06f0f6a5bb4783c038208227a46d`|
+|解包lock SHA256|RDCE=`e7a1982b4bdeaf5b8179993ce78f4a2af26965d8f4a3239440dbe636ebf14cc1`；RCMR=`be452cc52da8e5c43d3addc73568580d63a83f146310ec3559bb5daa99076b0c`；KCR=`a3d530734b90454724166f620d7017f80e6de838fd4ca469c04abb155534ab6a`|
 |本地验证|4文件`py_compile`通过；178项D106聚焦回归通过；`git diff --check`通过；工作树clean|
 |负例|`source_pool_k`篡改、K5错误绑定K5 manifest、query truth/role附加字段均fail closed|
 
