@@ -453,7 +453,7 @@ s_c(q)=\operatorname{LSE}_{i\in c}\left[
 |M_HEAD|\(d_I\)|全注册类shared尺度|
 |M_JOINT|\(d_S\)|同一shared尺度公式|
 
-G1固定复用现有63行source-held split，一次完整运行后只看简单效应、交互、old/new平衡、floor和negative tail；不扫描rank、cap、带宽、温度或融合权重。方向正确才进入固定Target25四臂；方向错误则关闭该机制并研发下一revision。
+G1必须使用在D110公式冻结后生成、预测提交前不打开truth的新source-held split；已经被D106 G1评分并用于D110设计复盘的`d104_source_seed104713_v2`只能做机械回归，不能再次冒充held证据。新split从既有8400条单观测source feature pool中同时排除2478条D103历史query、2520条D104 held和588条D110 Phase1 tap；三组有部分交集，排除union后168个receiver×TX×day cell的最小剩余容量为7，因此不扫描容量，固定每cell按冻结salt取7条，共1176条。这样42个receiver×class组各有28条且四天等权；K1/K5/K10分别保留27/23/18条query/class。G1保持21个一般行＋42个held-class K1行的63行结构。完整运行后只看简单效应、交互、old/new平衡、floor和negative tail；不扫描rank、cap、带宽、温度或融合权重。方向正确才进入固定Target25四臂；方向错误则关闭该机制并研发下一revision。
 
 ## 11.交叉复审结论与研发顺序
 
@@ -487,7 +487,7 @@ G1固定复用现有63行source-held split，一次完整运行后只看简单�
 
 修复后独立Terra Max复审结论为`P0=0 / P1=0 / LOCAL_CORE_VERIFIED`；前序零方差cell、formal authority、K集合、d=160／perp=157、K1非恒等及正式asset→runtime入口问题均已闭合。随后真实G0确认K1/K5/K10均改变argmax。
 
-G0通过仍不表示性能正收益。下一项唯一必要功能工作是把上述冻结四臂接入既有source-held63行predict／independent score入口，完成一次窄验证与一次独立复审后立即发布G1。
+G0通过仍不表示性能正收益。下一项唯一必要功能工作是把上述冻结四臂接入63行predict／independent score入口，并从既有source feature pool生成一份未打开、与历史held和D110 tap均不重叠的新split；完成一次窄验证与一次独立复审后立即发布G1。
 
 ## 12.主要参考
 
