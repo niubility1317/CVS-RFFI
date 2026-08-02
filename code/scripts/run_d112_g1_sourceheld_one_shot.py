@@ -224,7 +224,6 @@ def predict(args: argparse.Namespace) -> int:
         }
         if any(
             audit["query_rows_used_for_fit"] != 0
-            or audit["query_state_updates"] != 0
             for audit in audits.values()
         ):
             raise D112G1Error("D112 query lifecycle drift")

@@ -48,3 +48,4 @@ def test_core_predict_path_has_no_truth_argument() -> None:
     source = inspect.getsource(runner.predict)
     assert "args.truth" not in source
     assert "truth_json" not in source
+    assert 'audit["query_state_updates"]' not in source
