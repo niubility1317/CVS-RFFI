@@ -5,7 +5,7 @@
 |字段|内容|
 |---|---|
 |run ID|`d122_g1_sourceheld_standalone_add8f7d5_20260803_r3`|
-|状态|`ARTIFACTS_COMPLETE / ANALYSIS_PENDING`|
+|状态|`ARTIFACTS_COMPLETE / ANALYZED / CLOSE_D122_COMPOSITION_RETAIN_COMPONENTS`|
 |时间/操作员|2026-08-03，Codex主agent＋唯一Terra Max runner|
 |目标|以不依赖D106 construction链的独立入口，执行冻结的D122四臂source-held G1必要矩阵|
 |假设|RDCE同坐标输运后的D112静态ground head可改善old/new/H/floor；完整配对结果不支持时立即关闭D122|
@@ -120,13 +120,50 @@ score仅在63行完整封存后执行：
 
 以上仅为执行与artifact事实，不包含性能解释或晋级决定。
 
-## 6.结果（TBD）
+## 6.完整同row结果与判定
 
-|臂|old BA|seen-new|H|old floor|all floor|correct|判定|
+下表中old BA、old floor、all floor和correct按63行平均；seen-new与H按42个held-class行平均。前五项为百分比，correct为每行平均正确样本数。
+
+|臂|old BA|seen-new|H|old floor|all floor|correct/row|判定|
 |---|---:|---:|---:|---:|---:|---:|---|
-|M0|TBD|TBD|TBD|TBD|TBD|TBD|TBD|
-|M_DA|TBD|TBD|TBD|TBD|TBD|TBD|TBD|
-|M_HEAD|TBD|TBD|TBD|TBD|TBD|TBD|TBD|
-|M_JOINT|TBD|TBD|TBD|TBD|TBD|TBD|TBD|
+|M0|83.6560|83.7772|82.2378|57.9803|56.4199|288.9683|基线|
+|M_DA|83.9163|84.1404|82.6826|58.2627|56.8637|289.8889|RDCE小幅正收益|
+|M_HEAD|84.7348|85.0282|83.7209|58.8255|56.5657|292.7460|平均正收益，但接收机不均匀|
+|M_JOINT|84.7233|85.0282|83.7389|58.6049|56.4257|292.7143|均值提升但floor与交互不稳，不晋级|
 
-完整结果返回后由主agent做同row、K、receiver、held-class、per-class与正确数分析。若`HEAD_AT_ID`与`HEAD_AT_DA`没有稳定正收益，D122立即关闭，不调参、不扩矩阵，进入下一项理论候选。
+### 6.1冻结效应
+
+|效应|Δold BA|Δseen-new|ΔH|Δold floor|Δall floor|Δcorrect/row|关键胜/平/负|
+|---|---:|---:|---:|---:|---:|---:|---|
+|DA_AT_BASE|+0.2604|+0.3632|+0.4447|+0.2824|+0.4438|+0.9206|BA 25/25/13；H 17/18/7|
+|HEAD_AT_ID|+1.0788|+1.2510|+1.4831|+0.8452|+0.1457|+3.7778|BA 25/27/11；H 14/20/8|
+|HEAD_AT_DA|+0.8069|+0.8878|+1.0563|+0.3422|-0.4380|+2.8254|BA 25/15/23；H 17/6/19；correct 26/14/23|
+|factorial interaction|-0.2719|-0.3632|-0.4268|-0.5030|-0.5838|-0.9524|H 12/12/18；correct 20/16/27|
+
+`HEAD_AT_ID`在均值上确有正收益，但D122新增问题是head能否与RDCE稳定组合。`HEAD_AT_DA`虽然提升old/new/H和平均正确数，却降低all-class floor，负交互同时覆盖old/new/H/floor/correct，说明两组件没有形成互补增益。
+
+### 6.2接收机与K稳定性
+
+|held receiver|HEAD_AT_DA ΔH|Δall floor|Δcorrect/row|
+|---|---:|---:|---:|
+|1-1|+10.723|+0.869|+25.000|
+|1-19|+0.398|+3.020|+1.000|
+|14-7|-0.591|+0.848|-1.333|
+|18-2|-2.870|-8.026|-4.222|
+|19-2|-0.860|-1.318|-2.333|
+|2-1|+0.595|+1.540|+1.667|
+|2-19|0.000|0.000|0.000|
+
+整体均值主要由receiver 1-1的大收益驱动；18-2与19-2同时损害H、floor和正确数，不能称为跨receiver稳定正收益。
+
+|K|行数|HEAD_AT_DA Δold BA|ΔH|Δold floor|Δall floor|Δcorrect/row|
+|---:|---:|---:|---:|---:|---:|---:|
+|1|49|+0.8878|+1.0563|-0.6918|-1.6949|+3.1429|
+|5|7|+0.9524|不适用|+6.4935|+6.4935|+3.1429|
+|10|7|+0.0952|不适用|+1.4286|+1.4286|+0.2857|
+
+K=5/10只有无held-class行，不能替代新类注册证据；唯一同时覆盖old/new的K=1层面，joint的两个floor均下降。
+
+### 6.3最终决定
+
+`CLOSE_D122_COMPOSITION_RETAIN_COMPONENTS`：保留D106 RDCE作为已验证的小幅正收益域适应组件，保留D112静态ground head作为正收益head路线；关闭D122的RDCE×ground head组合，不调参、不换seed、不扩125矩阵。下一轮从轻型域适应原理出发设计新的可辨识候选，不继续修补该组合。
