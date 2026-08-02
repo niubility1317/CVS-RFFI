@@ -7,7 +7,8 @@
 1.`D106 RDCE`是目前已重复复现的小幅正收益轻型域适应组件。
 2.`D112 static ground head`在自己的完整source-held G1矩阵上是明确正收益head；但其SEAM motion没有改变任何prediction，收益不能归给SEAM。
 3.`D122`中的identity ground head平均为正，但新增的`RDCE×ground head`组合降低all-class floor且factorial interaction为负，因此D122组合路线关闭。
-4.`D110 SCPM`、`D121 LBR`、历史`D62`、`D91`和`SVRN-qKNN-BCRR`均不应继续调参或扩矩阵。
+4.`D123 LOO-CRES`只在18-2/K1改变logit，63个performance row与D122完全相同，已按零决策效应关闭。
+5.`D110 SCPM`、`D121 LBR`、历史`D62`、`D91`和`SVRN-qKNN-BCRR`均不应继续调参或扩矩阵。
 
 本报告严格区分两套不可混排证据：当前source-held G1因果矩阵与历史Target125/development诊断。跨套数值只能作为历史背景，不能直接排名。
 
@@ -23,7 +24,7 @@
 
 |层级|可做的结论|方法|
 |---|---|---|
-|A：完整source-held G1同row因果证据|可判断本矩阵内DA/head/interaction方向|D106、D110、D112、D121、D122|
+|A：完整source-held G1同row因果证据|可判断本矩阵内DA/head/interaction方向|D106、D110、D112、D121、D122、D123|
 |B：完整历史Target125诊断|可判断该冻结历史矩阵内稳定性，不可与A层混排|D92、D62、SVRN-qKNN-BCRR|
 |C：development/partial摘要|只能用于拒绝或设计参考，不可正式排名|D91|
 |D：技术落地无performance|不得产生任何性能结论|D122-r1/r2等技术失败run|
@@ -44,6 +45,8 @@
 |D121 M_JOINT|RDCE＋LBR-qKNN|83.8169|84.0194|82.5219|57.7496|56.2699|289.5397|
 |D122 M_HEAD|identity＋static ground head|84.7348|85.0282|83.7209|58.8255|56.5657|292.7460|
 |D122 M_JOINT|RDCE＋transported ground head|84.7233|85.0282|83.7389|58.6049|56.4257|292.7143|
+|D123 M_HEAD|identity＋LOO-CRES head|84.7348|85.0282|83.7209|58.8255|56.5657|292.7460|
+|D123 M_JOINT|RDCE＋LOO-CRES head|84.7233|85.0282|83.7389|58.6049|56.4257|292.7143|
 
 ### 4.2 同row简单效应
 
@@ -57,8 +60,11 @@
 |D122 ground head：M_HEAD−M0|+1.0788|+1.2510|+1.4831|+0.8452|+0.1457|平均正收益但receiver异质|
 |D122 ground head@RDCE：M_JOINT−M_DA|+0.8069|+0.8878|+1.0563|+0.3422|-0.4380|all-floor转负，不晋级|
 |D122 factorial interaction|-0.2719|-0.3632|-0.4268|-0.5030|-0.5838|组合没有互补增益|
+|D123−D122|0.0000|0.0000|0.0000|0.0000|0.0000|logit有局部变化，但63行预测与性能全同|
 
 D122的`HEAD_AT_DA`在BA/correct上为25胜/15平/23负与26胜/14平/23负；receiver 1-1贡献H `+10.723pp`和`+25 correct/row`，而18-2、19-2分别损失H `-2.870/-0.860pp`。因此平均正数不能替代跨receiver稳定性。
+
+D123只在receiver 18-2的K1 package触发CRES，identity/joint的`max_rho_ratio=0.9280/0.9231`；K5/K10及其余K1 package均与D122恒等。该变化没有改变任何argmax，`changed performance row=0/63`，也没有改善18-2/19-2负尾，因此不再调`delta`或扩矩阵。
 
 ### 4.3 另一完整source-held族：D110与D112
 
@@ -98,6 +104,7 @@ D62虽然H与D92接近，但注册后旧类从81.51%降至64.39%、floor从59.77
 |D110 SCPM|显著负收益|永久关闭|
 |D121 LBR|identity与RDCE下均负|永久关闭|
 |D122 RDCE×ground head|组件正，交互负，receiver/floor不稳|关闭组合；保留两个组件|
+|D123 LOO-CRES|仅单个K1包改变logit，63行预测与D122完全相同|永久关闭，不调收缩强度|
 |D92|历史参考|不与当前G1混排|
 |D62|历史完整诊断负|关闭|
 |D91|development且无独立raw score|不晋级|
