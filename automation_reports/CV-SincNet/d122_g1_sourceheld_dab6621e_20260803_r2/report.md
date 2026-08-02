@@ -5,7 +5,7 @@
 |字段|内容|
 |---|---|
 |run ID|`d122_g1_sourceheld_dab6621e_20260803_r2`|
-|状态|`LOCAL_VERIFIED`|
+|状态|`STARTUP_IMPORT_SMOKE_FAILED / NO_PERFORMANCE_RESULT`|
 |时间/操作员|2026-08-03，Codex主agent＋唯一Terra Max runner|
 |目标|在同一D104 source-held矩阵上分离RDCE域适应、D112静态ground head及其同坐标联合效应|
 |假设|Jacobian输运后的ground head可在RDCE空间保留old/new/H/floor；完整同row结果不支持时立即关闭|
@@ -103,6 +103,19 @@ tap和receipt另同步至run root/input，SHA沿用第3节。工作目录=/home/
 只允许P0协议/安全/覆盖/错误hash/错误checkout，或至少两行同一deterministic exception fingerprint且零prediction时停止精确run-owned进程树。禁止查看accuracy、BA、H、floor决定停止。失败保留全部artifact并标`NO_PERFORMANCE_RESULT`，不得重启同ID。
 
 预期：`prediction_manifest.json`、63个row JSON、`truth_open_event.json`、`held_scores.json`、完整log、PID/exit/cleanup receipts。
+
+## r2唯一runner技术闭合
+
+|字段|技术事实|
+|---|---|
+|同步核验|33/33代码文件local/remote SHA256匹配；tap与receipt SHA匹配。|
+|真实import smoke|exit=1；未输出D122_IMPORT_OK，因此主入口py_compile与detached launch均未继续。|
+|异常|D122导入D106链时，stage2_d106_phase1_tap的construction closure报告expected a regular non-symlink file。|
+|运行与truth|main.pid不存在；0prediction；predictions与truth_open_event均不存在；truth未打开。|
+|清理|GPU compute-app为空；本地ssh.exe=0；到N607:22的ESTABLISHED=0。|
+|import日志SHA256|c808e2eb0bdc3b6a1351f0c9f3b2b31f9796d380f1f663f8acca9261882e774d|
+|cleanup回执SHA256|b0ff0910c29d378e9c0f08cb14502953267b0b5611733a8f8aeabee10408faf6|
+|最终技术状态|STARTUP_IMPORT_SMOKE_FAILED / NO_PERFORMANCE_RESULT；r2未启动且不得重试。|
 
 ## 6.结果（TBD）
 
