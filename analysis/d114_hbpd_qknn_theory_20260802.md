@@ -1,6 +1,6 @@
 # D114-HBPD-qKNN轻型异方差预测域适应理论草案
 
-状态：`DESIGN_FROZEN_R2 / FEASIBILITY_REVIEW_MERGE / LOCAL_VERIFIED / REAL_ARCHIVE_G0_FUNCTIONAL_PASS / NO_NEW_PERFORMANCE_RESULT`
+状态：`G1_ANALYZED / HBPD_DA_NEGATIVE / HEAD_POSITIVE / CLOSE_D114`
 
 日期：2026-08-02
 
@@ -172,8 +172,12 @@ L_n^{JOINT}=L_n^H.
 
 ## 10.证据边界
 
-D114已有冻结实现、34项聚焦回归和真实588行无truth G0功能证据，但仍没有source-held或Target性能。D112 ground-head的source-held小正收益只支持`M_HEAD`作为对照因素；D113的零功能结果只支持停止共同平移。HBPD是否有效必须由未开封四臂G1决定，不能用公式完整度、方差非退化或G0决策变化替代。
+D114已有冻结实现、真实588行无truth G0和完整source-held四臂G1。D112 ground-head的正收益只支持`M_HEAD`作为对照因素；D113的零功能结果只支持停止共同平移。G1证明HBPD不是零功能，但在base和head两种背景下均为明显负收益，不能用公式完整度、方差非退化或G0决策变化替代性能。
 
 真实G0在K1/K5/K10分别改变16/73/29条argmax，三个K均为非零；bandwidth、score、margin也均发生变化，query fit rows=0、state updates=0、truth scoring=false、parameter scan count=0。因此D114通过“机制是否进入决策路径”的止损门，允许在独立实现复审和Git冻结后发布N607复现；该结果不表示正收益，也不得用于调节先验、pseudo-degree或带宽系数。
+
+source-held G1完整封存63行、252个prediction单元后独立评分。K1登记42行中，`M_DA`相对M0的old BA／seen-new／H／old floor为`-3.7037/-3.7037/-6.1944/-19.1358pp`，少252个正确；`M_JOINT`相对`M_HEAD`为`-2.5573/-2.5573/-4.4375/-15.6966pp`，少174个正确。一般行合并的`DA_AT_BASE`在BA／floor上为`-7.4592/-28.5753pp`，`DA_AT_HEAD`为`-7.2841/-27.6052pp`；K5退化最大。`M_HEAD`仍逐值复现D112正收益，说明负结果来自HBPD而非对照漂移。
+
+因此D114永久关闭：不调`σprior`、pseudo-degree、带宽系数或rho，不补seed，不运行Target25/125。正收益版本仍只有D112`M_HEAD_GROUND`分类head，不能记为HBPD域适应收益。
 
 首轮独立监督给出`P0=2/P1=2/REVISE`：原稿把类中心预测方差用于逐support核，并在未证明尺度关系时与经验`h²`相加。R2改为逐support pairwise方差`2barsigma²`，用`2p barsigma²`直接替换经验带宽，并明确总chord squared与每坐标MSE的单位换算。增量复审结论为`P0=0/P1=0/MERGE`；这只允许进入一个最小实现波次和真实G0，不构成性能结论。

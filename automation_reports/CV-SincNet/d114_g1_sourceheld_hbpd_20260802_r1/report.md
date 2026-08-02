@@ -1,6 +1,6 @@
 # D114-HBPD-qKNN source-held G1报告
 
-状态：`PREREGISTERED / LOCAL_VERIFIED / PREDICTIONS_NOT_STARTED / NO_PERFORMANCE_RESULT`
+状态：`ARTIFACTS_COMPLETE / ANALYZED / HBPD_DA_NEGATIVE / HEAD_POSITIVE / D114_CLOSED`
 
 ## 1.身份与目标
 
@@ -51,11 +51,49 @@
 
 ## 5.实际结果
 
-|范围|arm|old BA|seen-new|H|old floor|correct/query|裁决|
-|---|---|---:|---:|---:|---:|---:|---|
-|待完成|`M0`|待完成|待完成|待完成|待完成|待完成|待完成|
-|待完成|`M_DA`|待完成|待完成|待完成|待完成|待完成|待完成|
-|待完成|`M_HEAD`|待完成|待完成|待完成|待完成|待完成|待完成|
-|待完成|`M_JOINT`|待完成|待完成|待完成|待完成|待完成|待完成|
+完整63行、252个prediction单元和63个唯一receipt在truth前封存；predict阶段`query_truth_access=false`、`target_access=false`、`query_state_updates=0`。独立score随后打开既有truth seal。
 
-结果完成后补充全部同行效应、negative tail、资源、异常、与D112同split比较及最终关闭／晋级裁决。
+|artifact|SHA256／覆盖|
+|---|---|
+|prediction manifest|`d18c8662aaaea764d00209297c616a44ab52ca62e895a0c3cb94b39724b733b2`；63行／252单元|
+|truth-open event|`7d581d8a9422d1f008d0554e001202ecd7eb66611ab71810ada6b2018ec686da`|
+|pairwise base score|`18383509106b8eba322f95e47947e13b02851a6c6e7e4c46ebb887525a29cb9d`|
+|final score＋factorial interaction|`d661e2f6afe37cd92e3db52f6503e6e8618dd4e5ab1fa68cd9e4947bb0116bd4`；score receipt=`97c714d...d73236`|
+
+### 5.1全类一般行
+
+|K|arm|balanced accuracy|mean row floor|correct/query|对照效应|
+|---:|---|---:|---:|---:|---|
+|1|`M0`|84.0388%|57.6720%|953/1134|基线|
+|1|`M_DA`|80.3351%|34.9206%|911/1134|DA_AT_BASE：`-3.7037/-22.7513pp`，少42个正确|
+|1|`M_HEAD`|85.3616%|62.4339%|968/1134|HEAD_AT_BASE：`+1.3228/+4.7619pp`|
+|1|`M_JOINT`|82.8042%|43.3862%|939/1134|DA_AT_HEAD：`-2.5573/-19.0476pp`，少29个正确|
+|5|`M0`|84.9896%|60.8696%|821/966|基线|
+|5|`M_DA`|74.1201%|16.1491%|716/966|DA_AT_BASE：`-10.8696/-44.7205pp`，少105个正确|
+|5|`M_HEAD`|85.6108%|60.8696%|827/966|HEAD_AT_BASE：`+0.6211/0.0000pp`|
+|5|`M_JOINT`|74.1201%|16.1491%|716/966|DA_AT_HEAD：`-11.4907/-44.7205pp`，少111个正确|
+|10|`M0`|84.3915%|54.7619%|638/756|基线|
+|10|`M_DA`|76.5873%|36.5079%|579/756|DA_AT_BASE：`-7.8042/-18.2540pp`，少59个正确|
+|10|`M_HEAD`|84.3915%|54.7619%|638/756|HEAD_AT_BASE持平|
+|10|`M_JOINT`|76.5873%|35.7143%|579/756|DA_AT_HEAD：`-7.8042/-19.0476pp`，少59个正确|
+
+21个一般行合并：M0的BA／floor为84.4733%／57.7678%，`M_DA`为77.0142%／29.1925%，即`DA_AT_BASE=-7.4592/-28.5753pp`，正确数从2412降到2206；`M_HEAD`为85.1213%／59.3551%，`M_JOINT`为77.8372%／31.7499%，即`DA_AT_HEAD=-7.2841/-27.6052pp`，正确数从2433降到2234。DA_AT_BASE在BA上正／零／负=`2/1/18`，floor=`1/3/17`；DA_AT_HEAD在BA上=`4/0/17`，floor=`0/3/18`。
+
+### 5.2K1登记行
+
+|arm|old BA|seen-new|H old/new|old floor|correct/query|相对基线因素|
+|---|---:|---:|---:|---:|---:|---|
+|`M0`|84.0388%|84.0388%|82.3063%|59.4356%|5718/6804|基线|
+|`M_DA`|80.3351%|80.3351%|76.1119%|40.2998%|5466/6804|DA_AT_BASE：`-3.7037/-3.7037/-6.1944/-19.1358pp`，少252个正确|
+|`M_HEAD`|85.3616%|85.3616%|84.2799%|64.0212%|5808/6804|HEAD_AT_BASE：`+1.3228/+1.3228/+1.9736/+4.5855pp`|
+|`M_JOINT`|82.8042%|82.8042%|79.8424%|48.3245%|5634/6804|DA_AT_HEAD：`-2.5573/-2.5573/-4.4375/-15.6966pp`，比head少174个正确|
+
+42个登记行中，DA_AT_BASE的old BA／seen-new／H／old floor正／零／负分别为`9/2/31`、`7/25/10`、`6/0/36`、`6/5/31`；DA_AT_HEAD分别为`7/6/29`、`8/25/9`、`7/4/31`、`2/9/31`。factorial interaction均值为old BA`+1.1464pp`、seen-new`+1.1464pp`、H`+1.7569pp`、old floor`+3.4392pp`，只说明ground head部分缓冲HBPD负迁移；不能把缓冲写成HBPD正收益，因为两个DA简单效应仍大幅为负。
+
+### 5.3功能、资源与最终裁决
+
+- 一般行prediction变化：DA_AT_BASE=307、HEAD_AT_BASE=52、DA_AT_HEAD=308、JOINT_VS_M0=308；HBPD不是零功能或回退，而是明确改变大量错误边界。
+- D114 HBPD每row持久数值态192B；D112 ground head为4308B；query依赖态0B。HBPD不增加support-query点积数量，joint只保留ground head每query最多960MAC。
+- `M_HEAD`逐值复现D112同split正收益，证明四臂和scorer对照面没有漂移。HBPD对base与head两种背景均损害BA、H、floor和总正确数，且K5最严重，符合“预测带宽峰值惩罚使弱类失去密度质量”的证伪情形。
+
+最终裁决：`HBPD_DA_NEGATIVE / CLOSE_D114`。不调`sigma_prior`、pseudo-degree、带宽系数或rho，不补seed，不运行Target25或125。存在正收益的版本仍是`M_HEAD_GROUND`，它是分类head，不是D114域适应收益。下一方法必须更换生成机制，不得把HBPD改成浓度／温度扫描继续实验。

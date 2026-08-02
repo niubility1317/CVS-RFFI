@@ -1,6 +1,6 @@
 # D112–D114三轮轻型域适应研发回顾
 
-状态：`RETROSPECTIVE_COMPLETE / D114_G0_R2_RUNNING / NO_NEW_PERFORMANCE_RESULT`
+状态：`RETROSPECTIVE_COMPLETE / D114_G1_NEGATIVE / D114_CLOSED`
 
 日期：2026-08-02
 
@@ -8,7 +8,7 @@
 
 本回顾在D116设计或任何新性能矩阵前完成。已重新读取当前目标与`项目.md`，并在`ssr-gpu`环境将项目conversation index刷新到1261条记录，检索`D112 D113 D114 SEAM BCAT HBPD G0 G1 功能 负结果`。正式判断仍以本地Git报告、完整artifact和同row结果为准；conversation index只用于防止重复路线。
 
-D114当前只有本地真实588行无truth功能证据；N607 R1为0 prediction技术失败，R2正在独立新run根执行。除D112 source-held G1外，本回顾没有新增性能结果，也不把G0变化数量解释成收益。
+D114的N607 G0随后完成，source-held四臂G1也已完整评分。D114在base与head背景下均为明显负收益，因此本回顾追加终态裁决；仍不把G0变化数量解释成收益。
 
 ## 2.三轮同行证据
 
@@ -36,6 +36,6 @@ D114当前只有本地真实588行无truth功能证据；N607 R1为0 prediction�
 
 ## 5.下一轮裁决
 
-当前不启动D116。先等待D114 N607 G0完整复现；若hash与功能闭包一致，只运行一次冻结source-held四臂G1。若`DA_AT_BASE`与`DA_AT_HEAD`均无独立正收益，或K1的总正确数、H、old floor出现系统下降，则立即关闭HBPD。
+D114已经触发关闭条件：`DA_AT_BASE`与`DA_AT_HEAD`均无独立正收益，且K1总正确数、H与old floor系统下降。HBPD不进入Target25或125，也不做浓度、先验或带宽扫描。
 
 D114若关闭，下一DA候选必须同时满足：显式估计target域状态而不是只换分类head；K1可由跨类support识别；不是公共加性平移；不是D110式共享PSD/Fisher metric；不是D114式带宽/浓度重参数化；与`M_HEAD_GROUND`形成可辨识四臂。尚未满足这些条件的想法只保留为理论草案，不实现、不发布实验。
