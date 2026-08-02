@@ -29,6 +29,7 @@
 |B：完整历史Target125诊断|可判断该冻结历史矩阵内稳定性，不可与A层混排|D92、D62、SVRN-qKNN-BCRR|
 |C：development/partial摘要|只能用于拒绝或设计参考，不可正式排名|D91|
 |D：技术落地无performance|不得产生任何性能结论|D122-r1/r2等技术失败run|
+|E：理论草案/Phase1 falsifier待定|只可讨论机制与可证伪性|D125 RDHA-2|
 
 ## 4.Source-held G1正式结果
 
@@ -107,6 +108,7 @@ D62虽然H与D92接近，但注册后旧类从81.51%降至64.39%、floor从59.77
 |D122 RDCE×ground head|组件正，交互负，receiver/floor不稳|关闭组合；保留两个组件|
 |D123 LOO-CRES|仅单个K1包改变logit，63行预测与D122完全相同|永久关闭，不调收缩强度|
 |D124 CRAD-3|共享残差衰减仍等价于已关闭PSD metric族|理论关闭，不实现、不实验|
+|D125 RDHA-2|早层非线性Phase1 response hyper-adapter；P0=0但P1未闭合|仅允许设计修订与Phase1 falsifier，不进入Stage2|
 |D92|历史参考|不与当前G1混排|
 |D62|历史完整诊断负|关闭|
 |D91|development且无独立raw score|不晋级|
