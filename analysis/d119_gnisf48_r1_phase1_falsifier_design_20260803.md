@@ -11,8 +11,8 @@
 只读事实证据如下：
 
 - Phase1 source archive加载类`code/cvsrffi/rxid_metabias4_source_archive.py`的`POOL_MEMBERS`只含`z_id,z_dom,pre_relu,labels,receiver_ids,day_ids,physical_ids,scenario_names,observation_ids,class_ids`，且明确不接受或持久化clean-IQ/received-IQ；
-- 真实`L_s/manifest.json`仅含archive/checkpoint/runtime hash、candidate、fraction、physical-ID唯一性、role、schema和访问声明等字段，无CFO/carrier/frequency-offset；
-- 真实`L_s/features.npz`仅含`z_dom,pre_relu,receiver_ids,day_ids,tx_labels,physical_ids`；
+- 真实`E:\type10-7\automation_reports\CV-SincNet\d104_r1_angq_feasibility_20260725\local_d104_source_split_v2_builder_releasefix1_20260725\L_s\manifest.json`仅含archive/checkpoint/runtime hash、candidate、fraction、physical-ID唯一性、role、schema和访问声明等字段，无CFO/carrier/frequency-offset；
+- 同目录真实`features.npz`仅含`z_dom,pre_relu,receiver_ids,day_ids,tx_labels,physical_ids`；
 - 从相同IQ临时估计CFO再作为独立truth会构成循环证据，禁止用于补门。
 
 ## 2.≤20行可行性卡
