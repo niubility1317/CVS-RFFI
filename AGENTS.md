@@ -30,6 +30,13 @@
 - Method agents send intermediate summaries to the supervision agent. The supervisor checks protocol legality, K-shot identifiability, common-transform invariance, support-proxy overfitting, old/new balance, class-permutation symmetry, resources, and matched gates, and recommends merge, revision, or rejection. A method author does not self-certify from partial evidence.
 - Keep design read-only until the primary agent assigns explicit non-overlapping file ownership. After cross-review, parallelize implementation, tests, and experiment release only where responsibilities do not overlap. The primary agent integrates one frozen candidate and prevents competing edits or duplicate launches.
 
+## Agent Model and Task Routing
+
+- Keep method integration, protocol interpretation, data analysis, result analysis, and final promotion/stop decisions with the primary high-reasoning agent. The primary agent owns the frozen candidate/matrix and must not duplicate-launch a run already handed to a runner.
+- Use `gpt-5.6-terra` with `max` reasoning for bounded method subdesign, code implementation with explicit non-overlapping file ownership, independent P0/P1 supervision, and the sole N607 experiment-runner role. A method author must not self-certify; a runner must not change the frozen method/matrix, tune from query/target results, or make the final performance decision.
+- Use the global `luna_worker` only for clear mechanical work such as fixed-format checklists, hashes, `SYNC_MANIFEST` mappings, report skeletons, and field-completeness checks. Luna must not perform scientific method design, protocol interpretation, performance analysis, promotion decisions, SSH/SCP, experiment launch/stop/restart, or edits to scientific code.
+- Every delegated handoff must state the role, objective, input/output paths, exact file ownership, do-not list, completion evidence, and return format. Experiment handoffs must additionally include the immutable run ID, Git commit and hashes, frozen matrix, exact command/environment/CWD, GPU/log/output paths, expected artifacts, health/stop rule, and retry authority.
+
 ## Windows Shell and Command Hygiene
 
 - Prefer PowerShell 7 for complex Windows commands. Use `pwsh -NoLogo -NoProfile -Command "<command>"` when shell behavior, quoting, or UTF-8 output matters.
