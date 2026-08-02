@@ -248,7 +248,9 @@ K1不能识别160维任意变换。在Phase1固定rank-3共享位移模型且don
 
 下一步只允许一个实现波次：复用D111的source tap读取边界和M0 qKNN接口，但建立新的D112共同封存资产；现有D111 bundle不含两套方差和Phase1 LOO功率，不能直接冒充D112 bundle。随后一个本地验证波次、一次独立P0/P1复审，再运行真实588×K1/K5/K10无真值G0。
 
-G0只审计`positive_rho_count`、`||a_c-g_c||`、logit/margin差异和资源；argmax变化仅作附属诊断。只有三种K在anchor、rho、logit和margin层面全部严格零变化且能给出结构原因，才关闭D112；任何单个K无argmax翻转都不是停止理由。任一K证明合法非零函数后即可进入一次冻结四臂G1，不先跑125，不做参数扫描，也不据G0选择`r/tau/rho`或核参数。
+G0只审计`positive_rho_count`、`||a_c-g_c||`、logit/margin差异和资源；argmax变化仅作附属诊断。只有三种K在anchor、rho、logit和margin层面全部严格零变化且能给出结构原因，才关闭D112；任何单个K无argmax翻转都不是停止理由。任一K证明合法非零函数后即可进入一次冻结G1，不先跑125，不做参数扫描，也不据G0选择`r/tau/rho`或核参数。
+
+G1采用三个而非机械四个可辨识臂：`M0`为原Student-t qKNN；`M_HEAD_GROUND`以未移动的Phase1地面锚`g_c`作为单位质量anchor expert，其`rho`仍由同一ambient不确定度公式计算，但固定`alpha=0,v_h=0,a_c=g_c`；`M_JOINT_SEAM`为完整D112。三臂分别回答“原基线”“加入Phase1 ground-anchor head”“再加入target support估计的共享球面运动”。不设置`M_DA`：anchor motion本身不产生prediction，必须通过anchor expert进入score；将其伪装成独立臂只能得到机械恒等M0或引入本文未定义的support/query变换。G1只报告`HEAD_GROUND−M0`、`SEAM_MOTION_AT_HEAD=M_JOINT_SEAM−M_HEAD_GROUND`和`JOINT−M0`，不虚构`DA_AT_BASE`。
 
 ## 11.理论来源与证据边界
 

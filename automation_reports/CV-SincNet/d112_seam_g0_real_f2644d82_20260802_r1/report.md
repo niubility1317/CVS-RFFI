@@ -92,4 +92,4 @@
 
 ## 8.后续真实性能边界
 
-G0只判断“方法是否真正作用”。若功能成立，下一步只运行一次冻结四臂G1：`M0/M_DA/M_HEAD/M_JOINT`，并在同row报告old before/after、seen-new、H、每类old floor、forgetting和negative tail。若G1显示稳定负收益，立即关闭D112并转入下一条理论路线；不追加seed、不扫描参数、不恢复125矩阵。
+G0只判断“方法是否真正作用”。功能现已成立，下一步只运行一次冻结三臂G1：`M0/M_HEAD_GROUND/M_JOINT_SEAM`，并在同row报告old before/after、seen-new、H、每类old floor、forgetting和negative tail。`M_HEAD_GROUND`固定`alpha=0,v_h=0,a=g`，用于隔离Phase1地面anchor head；`M_JOINT_SEAM−M_HEAD_GROUND`才是共享球面运动在head存在时的条件效应。D112不设置虚构的`M_DA`，因为anchor motion脱离anchor expert没有prediction输出。若G1显示稳定负收益，立即关闭D112并转入下一条理论路线；不追加seed、不扫描参数、不恢复125矩阵。
