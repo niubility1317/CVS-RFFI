@@ -8,7 +8,8 @@
 2.`D112 static ground head`在自己的完整source-held G1矩阵上是明确正收益head；但其SEAM motion没有改变任何prediction，收益不能归给SEAM。
 3.`D122`中的identity ground head平均为正，但新增的`RDCE×ground head`组合降低all-class floor且factorial interaction为负，因此D122组合路线关闭。
 4.`D123 LOO-CRES`只在18-2/K1改变logit，63个performance row与D122完全相同，已按零决策效应关闭。
-5.`D110 SCPM`、`D121 LBR`、历史`D62`、`D91`和`SVRN-qKNN-BCRR`均不应继续调参或扩矩阵。
+5.`D124 CRAD-3`在实现前被理论拒绝：它仍是D110/D118已关闭的共享PSD metric族，没有新observable。
+6.`D110 SCPM`、`D121 LBR`、历史`D62`、`D91`和`SVRN-qKNN-BCRR`均不应继续调参或扩矩阵。
 
 本报告严格区分两套不可混排证据：当前source-held G1因果矩阵与历史Target125/development诊断。跨套数值只能作为历史背景，不能直接排名。
 
@@ -105,6 +106,7 @@ D62虽然H与D92接近，但注册后旧类从81.51%降至64.39%、floor从59.77
 |D121 LBR|identity与RDCE下均负|永久关闭|
 |D122 RDCE×ground head|组件正，交互负，receiver/floor不稳|关闭组合；保留两个组件|
 |D123 LOO-CRES|仅单个K1包改变logit，63行预测与D122完全相同|永久关闭，不调收缩强度|
+|D124 CRAD-3|共享残差衰减仍等价于已关闭PSD metric族|理论关闭，不实现、不实验|
 |D92|历史参考|不与当前G1混排|
 |D62|历史完整诊断负|关闭|
 |D91|development且无独立raw score|不晋级|
