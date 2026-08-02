@@ -1,6 +1,6 @@
 # D111-r2真实G0实验报告
 
-状态：`LOCAL_RELEASE_READY / NOT_LANDED / NO_PERFORMANCE_RESULT`
+状态：`LOCAL_REAL_ARCHIVE_G0_REJECTED / N607_NOT_LANDED / REJECT_REVISION_NO_FUNCTION / NO_PERFORMANCE_RESULT`
 
 ## 1.实验登记
 
@@ -78,3 +78,21 @@ nohup /home/szu2070436088/.conda/envs/ssr-gpu/bin/python scripts/run_d111_r2_g0_
 ## 7.完成后必须回收与分析
 
 回收`result.json`、完整log、PID/exit证据、bundle manifest/payload SHA和release commit/hash。更新本报告的状态、每K功能表、资源表、异常、裁决和下一步。若三K均改变prediction，直接设计冻结四臂G1；若任一K为0，关闭D111-r2并研发下一机制，不调rank、`rho`、`eta`、包络或核参数。
+
+## 8.实际执行与关闭结论
+
+N607 direct preflight、tap/receipt/completion SHA和资源均通过，但远端不存在`ssr-gpu`解释器；仅发现未获授权替代的历史`CVS-RFFI`环境。因此本run没有LAND、同步或launch，也没有远端写入。runner只读回收三份strict tap工件后，每次SSH/SCP均确认本地`ssh.exe=0`且TCP22连接为0。
+
+主agent随后在本地`ssr-gpu`使用同一实现提交、同一真实588行archive和全新不可覆盖路径完成production builder＋one-shot诊断。artifact位于`E:\type10-7\automation_reports\CV-SincNet\d111_r2_g0_real_5f371082_20260802_184927_r1\artifacts\local_exact_g0_r1\`；bundle payload SHA256=`5c774b9a70e0cfc9d6a4f3def8e317f71611f3dc0af33191ff079b4085de5492`。
+
+|K|fold|query|feature变化|neighbor变化|anchor变化|score变化|margin变化|argmax变化|合格anchor状态|正质量anchor状态|裁决|
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|
+|1|28|588|0|0|0|0|0|0|0/168|0/168|`REJECT_REVISION_NO_FUNCTION`|
+|5|28|588|0|0|0|0|0|0|0/168|0/168|`REJECT_REVISION_NO_FUNCTION`|
+|10|28|588|0|0|0|0|0|0|0/168|0/168|`REJECT_REVISION_NO_FUNCTION`|
+
+资源：bundle数值载荷1511B；单fold状态最大4188B；单query额外anchor上界960MAC；`query_rows_used_for_fit=0`、`query_state_updates=0`、`parameter_scan_count=0`、`performance_metrics_emitted=false`、`query_label_read_for_scoring=false`。
+
+直接根因为稳定界结构性失效，而不是runner或阈值实现错误：`B=0.489572`使`E_t=2.944215–2.990095`，稳定资格要求`||t||≥0.5+E_t=3.444215–3.490095`，但实际`||t||=0.966506–1.014135`。三个K的168个类状态均通过3/5共识；gap通过数分别为168、167、143，但归一化稳定通过数均为0。因此全部`rho=0`并精确回退M0。
+
+结论：D111-r2永久关闭，不上N607、不进入G1，不放宽`eta`、`B`、gap、`rho`或rank，不修runner、不扫描参数。下一revision必须从理论上消除欧氏归一化奇点及`6B`最坏界，而不是绕过本结果。
