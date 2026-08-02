@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import inspect
+from types import MappingProxyType
 
 from scripts import run_d112_g1_sourceheld_one_shot as runner
 
@@ -41,6 +42,12 @@ def test_score_is_the_only_truth_open_surface() -> None:
         ]
     )
     assert args.command == "score"
+
+
+def test_readonly_nested_audit_is_json_serializable() -> None:
+    value = MappingProxyType({"resource": MappingProxyType({"bytes": 4308})})
+    assert runner._jsonable(value) == {"resource": {"bytes": 4308}}
+    assert runner._sha(runner._jsonable(value))
 
 
 def test_core_predict_path_has_no_truth_argument() -> None:

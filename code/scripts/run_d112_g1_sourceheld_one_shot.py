@@ -81,6 +81,16 @@ def _sha(value: Any) -> str:
     return hashlib.sha256(_canonical_bytes(value)).hexdigest()
 
 
+def _jsonable(value: Any) -> Any:
+    if isinstance(value, Mapping):
+        return {str(key): _jsonable(item) for key, item in value.items()}
+    if isinstance(value, (tuple, list)):
+        return [_jsonable(item) for item in value]
+    if isinstance(value, np.generic):
+        return value.item()
+    return value
+
+
 def _file_sha(path: Path) -> str:
     return d106._file_sha(path)
 
@@ -219,8 +229,8 @@ def predict(args: argparse.Namespace) -> int:
         if set(arm_predictions) != set(ARMS):
             raise D112G1Error("D112 three-arm prediction closure drift")
         audits = {
-            "M_HEAD_GROUND": dict(audit_d112_seam_state(head)),
-            "M_JOINT_SEAM": dict(audit_d112_seam_state(joint)),
+            "M_HEAD_GROUND": _jsonable(audit_d112_seam_state(head)),
+            "M_JOINT_SEAM": _jsonable(audit_d112_seam_state(joint)),
         }
         if any(
             audit["query_rows_used_for_fit"] != 0
