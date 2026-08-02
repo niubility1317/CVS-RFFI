@@ -217,8 +217,8 @@ def test_predict_then_separate_score_closes_full_63_by_4_surface(tmp_path, monke
     monkeypatch.setattr(runner.d106, "fit_rdce_sourceheld_state", fake_fit)
     monkeypatch.setattr(runner.d106, "apply_rdce_state", fake_apply)
     monkeypatch.setattr(
-        runner.d112,
-        "_g1_bundle",
+        runner,
+        "_build_d112_g1_bundle",
         lambda *_args: _bundle(
             checkpoint_sha256="c" * 64, phase1_seal_sha256=tap_sha256
         ),
@@ -321,8 +321,8 @@ def test_global_joint_asset_binding_failure_cannot_seal_prediction(tmp_path, mon
     monkeypatch.setattr(runner.d106, "fit_rdce_sourceheld_state", invalid_fit)
     monkeypatch.setattr(runner.d106, "apply_rdce_state", fake_apply)
     monkeypatch.setattr(
-        runner.d112,
-        "_g1_bundle",
+        runner,
+        "_build_d112_g1_bundle",
         lambda *_args: _bundle(
             checkpoint_sha256="c" * 64, phase1_seal_sha256=tap_sha256
         ),

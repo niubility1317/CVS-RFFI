@@ -26,7 +26,12 @@ if str(CODE_ROOT) not in sys.path:
     sys.path.insert(0, str(CODE_ROOT))
 
 from scripts import run_d106_g1_sourceheld_one_shot as d106  # noqa: E402
-from scripts import run_d112_g1_sourceheld_one_shot as d112  # noqa: E402
+from cvsrffi.stage2_d112_g0_source_bundle import (  # noqa: E402
+    build_d112_g0_source_bundle,
+)
+from cvsrffi.stage2_d112_seam_bundle import (  # noqa: E402
+    build_d112_source_held_g1_bundle,
+)
 from cvsrffi.stage2_d112_seam_qknn import (  # noqa: E402
     audit_d112_seam_state,
     fit_d112_ground_head_source_held_g1_state,
@@ -99,6 +104,38 @@ def _read_json(path: Path) -> dict[str, Any]:
 
 def _write_new(path: Path, value: Any) -> None:
     d106._write_new(path, value)
+
+
+def _build_d112_g1_bundle(args: argparse.Namespace, truth_input_seal_sha256: str):
+    """Build the frozen D112 G1 aggregate without importing its script wrapper."""
+
+    g0 = build_d112_g0_source_bundle(
+        args.d106_tap_archive.resolve(strict=True),
+        receipt_path=args.d106_tap_receipt.resolve(strict=True),
+        checkpoint_sha256=args.checkpoint_sha256,
+        expected_tap_sha256=args.d106_tap_archive_sha256,
+    )
+    return build_d112_source_held_g1_bundle(
+        class_registry=g0.class_registry,
+        g=g0.g,
+        q0=g0.q0,
+        U=g0.U,
+        sigma0_r=g0.sigma0_r,
+        sigma0_amb=g0.sigma0_amb,
+        v_g_r=g0.v_g_r,
+        v_g_amb=g0.v_g_amb,
+        tau_h_r=g0.tau_h_r,
+        checkpoint_sha256=str(g0.manifest["checkpoint_sha256"]),
+        source_aggregate_sha256=str(g0.manifest["source_aggregate_sha256"]),
+        phase1_seal_sha256=_file_sha(args.d106_tap_receipt.resolve(strict=True)),
+        source_held_split_sha256=truth_input_seal_sha256,
+        global_bundle_valid=bool(g0.manifest["global_bundle_valid"]),
+        global_invalid_reason=str(g0.manifest["global_invalid_reason"]),
+        g_quantization_l2_error_bound=g0.g_quantization_l2_error_bound,
+        q0_quantization_l2_error_bound=g0.q0_quantization_l2_error_bound,
+        U_operator_error_upper_bound=g0.U_operator_error_upper_bound,
+        endpoint_quantization_chord_mse=g0.endpoint_quantization_chord_mse,
+    )
 
 
 def _jsonable(value: Any) -> Any:
@@ -349,7 +386,7 @@ def predict(args: argparse.Namespace) -> int:
         or rdce_asset.tap_receipt_sha256 != actual_tap_receipt_sha256
     ):
         raise D122G1Error("D122 RDCE asset lineage/source-held binding mismatch")
-    bundle = d112._g1_bundle(args, truth_seal_sha)
+    bundle = _build_d112_g1_bundle(args, truth_seal_sha)
     if (
         tuple(bundle.class_registry) != classes
         or bundle.manifest.get("checkpoint_sha256") != args.checkpoint_sha256
