@@ -1,6 +1,6 @@
 # D112-SEAM-qKNN真实G0与三轮回顾报告
 
-状态：`DESIGN_FROZEN / LOCAL_VERIFIED / G0_PREREGISTERED / NOT_LAUNCHED / NO_PERFORMANCE_RESULT`
+状态：`DESIGN_FROZEN / LOCAL_VERIFIED / G0_ARTIFACT_COMPLETE / FUNCTION_PRESENT / NO_PERFORMANCE_RESULT`
 
 ## 1.身份与目标
 
@@ -67,19 +67,29 @@
 |关闭条件|三K在anchor、rho、logit和margin层面全部严格零，且存在可解释的结构原因|
 |技术停止|P0协议／安全、错误输入／SHA／checkout、覆盖风险、非有限数、重复确定性异常或零prediction；禁止按accuracy/H/floor停止|
 
-## 6.运行面（实现后补齐）
+## 6.运行面与完成证据
 
 |字段|值|
 |---|---|
 |本地环境|`ssr-gpu`|
 |本地CWD|`E:\type10-7\code\snapshots\cdom_scxmap_d92_glf_r1_wt`|
 |本地精确命令|`python code/scripts/run_d112_seam_g0_one_shot.py --archive E:\type10-7\automation_reports\CV-SincNet\d111_r2_g0_real_5f371082_20260802_184927_r1\artifacts\input\strict_tap\d106_ls_strict_tap.npz --receipt E:\type10-7\automation_reports\CV-SincNet\d111_r2_g0_real_5f371082_20260802_184927_r1\artifacts\input\strict_tap\d106_ls_strict_tap.receipt.json --archive-sha256 48b92fa8defc1c7261ca80f9e0723662e3fe6e8c64ec0881c8ef13bab3cafa2f --checkpoint-sha256 2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98 --run-id d112_seam_g0_real_f2644d82_20260802_r1 --output E:\type10-7\automation_reports\CV-SincNet\d112_seam_g0_real_f2644d82_20260802_r1\artifacts\local_exact_g0_r1\result.json`|
-|N607环境|已知远端尚未找到同名`ssr-gpu`；D112本地G0通过前不处理该环境问题|
-|N607 CWD／命令／GPU／PID|`NOT_LAUNCHED / TBD_AFTER_RELEASE_REVIEW`|
+|N607环境|本轮G0只消费本地固定真实tap，无需N607|
+|N607 CWD／命令／GPU／PID|`NOT_USED`|
 |输出／日志|`E:\type10-7\automation_reports\CV-SincNet\d112_seam_g0_real_f2644d82_20260802_r1\artifacts\local_exact_g0_r1\result.json`；入口拒绝覆盖既有输出|
 
-预期artifact：一个不可覆盖的JSON，绑定输入、checkpoint、bundle/source root，并给出每K的ρ、information、donor、anchor、score、margin、argmax和资源receipt以及无truth声明。任何process landing或完成都不等于性能结果。
+完成artifact的文件SHA256为`9abe2c3af0a45372805d167d83ff574c3a657677494c49487e1b76f47a56df8c`，内部output receipt为`fc1b0205a5c6a1965fb6cbff486a29b3bf586372c055d34259173271ffb6aae5`，execution root为`49f94f404b91402d5448ec65f63b2694a60f834e969be9e2ee3a2b88b149d776`。首次调用因本地命令等待窗口误设为1秒被截断；核查确认没有遗留Python进程、没有生成输出文件，随后按同一冻结命令正常执行，未改方法、参数或run ID。
 
-## 7.后续真实性能边界
+## 7.G0结果与裁决
+
+|K|fold/query|正ρ状态|information有效|donor有效|anchor变化|score变化|margin变化|argmax变化（诊断）|最大ρ|最大anchor位移|最大状态字节|裁决|
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|
+|1|28/588|168|168|168|168|588|588|6|0.483114|0.010937|4308|功能成立|
+|5|28/588|168|168|168|168|588|588|3|0.339666|0.013170|4308|功能成立|
+|10|28/588|168|168|168|168|588|588|7|0.251648|0.016097|4308|功能成立|
+
+联合裁决为`G0_FUNCTION_PRESENT_PROCEED_SINGLE_G1`。三种K均有正ρ、非零anchor位移和全query的score／margin变化，且无feature改写；argmax仅改变6/3/7个query，符合轻量、连续、非暴力替换的设计预期。该结果只证明真实数据上的函数作用，不含truth，不是正收益或性能证据。
+
+## 8.后续真实性能边界
 
 G0只判断“方法是否真正作用”。若功能成立，下一步只运行一次冻结四臂G1：`M0/M_DA/M_HEAD/M_JOINT`，并在同row报告old before/after、seen-new、H、每类old floor、forgetting和negative tail。若G1显示稳定负收益，立即关闭D112并转入下一条理论路线；不追加seed、不扫描参数、不恢复125矩阵。
