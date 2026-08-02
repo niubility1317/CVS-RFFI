@@ -1,6 +1,6 @@
 # D121-LBR-qKNN真实archive G0第1次release repair报告
 
-状态：`LOCAL_VERIFIED / PREREGISTERED / NOT_YET_LANDED / NO_PERFORMANCE_RESULT`
+状态：`ARTIFACTS_COMPLETE / ANALYZED / G0_PASS / NO_PERFORMANCE_CLAIM`
 
 ## 1.身份、目标与修复边界
 
@@ -86,3 +86,37 @@ CUDA_VISIBLE_DEVICES=0 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python code/
 |`logs/runner.log`、PID、exit|完整回收|
 
 若三个K均非零，主agent立即进入冻结四臂G1；任一K为0则关闭D121当前revision，不调参、不扩矩阵。
+
+## 6.N607完成结果
+
+- 直连preflight通过；r2 root落地前为`ABSENT`，zip、核心、runner和strict archive SHA256全部匹配，远端`py_compile`通过。
+- 固定child command使用`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`、`CUDA_VISIBLE_DEVICES=0`和`<run-root>/source`，PID=`39601`。
+- G0在首次5秒健康轮询前自然结束，exit=`0`，log异常指纹计数0，result包含完整K1/K5/K10、28fold和588query/K。
+- 由于进程结束很快，没有取得存活时的`/proc` CWD/cmdline快照；未为补观测而重跑。wrapper的`cd`由exit0、正确schema/run ID和完整result闭合验证。
+- 最终无活PID，8张GPU均0%利用率、约1MiB显存占用；本地`ssh.exe=0`，N607/lab TCP22的`ESTABLISHED=0`。
+
+|K|support-kernel changed|margin changed|argmax changed|判定|
+|---:|---:|---:|---:|---|
+|1|588|588|1|非零|
+|5|588|588|3|非零|
+|10|588|588|2|非零|
+
+- `zero_changed_k_values=[]`
+- `functional_gate_status=G0_PASS_PROCEED_G1`
+- `g1_entry_allowed=true`
+- `performance_metrics_emitted=false`
+- `query_label_read_for_scoring=false`
+- `formal_performance_claim=false`
+
+## 7.完成artifact
+
+|artifact|SHA256|
+|---|---|
+|`d121_source_11307bf0.zip`|`c8becddb961bc01b543f47df08f1d6d43914622e5f2cf8e08ca21aad8dd9ec6e`|
+|`result.json`|`0c5d97d5196afdce1ed3a034e7a4f997b583c337af03a18fb322c74e72547a84`|
+|`runner.log`|`c5d3940a7504c9bde58fd94ed71ffd0f6457c93daf6a6185ca85cab9864cee54`|
+|`launch.pid`|`465dd53aea0d5ff0f45cad4a030e73084070fed2dd4aa3cfc3563f52913fd419`|
+|`runner.exit`|`9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa`|
+|`final_cleanup_receipt.txt`|`0129b2669d0548ee5538f3cac93c471cd0228265c5a1834d2b6bb7856f7e3edf`|
+
+最终解释：D121-LBR在三个K上均能改变真实checkpoint archive的决策，因此通过功能证伪门。该结果不包含准确率或收益，不能回答性能是否更强；下一步只运行冻结四臂source-held G1，弱则立即关闭并转入下一原理候选。
