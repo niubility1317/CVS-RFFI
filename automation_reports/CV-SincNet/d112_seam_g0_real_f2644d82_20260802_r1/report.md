@@ -1,6 +1,6 @@
 # D112-SEAM-qKNN真实G0与三轮回顾报告
 
-状态：`DESIGN_FROZEN / CORE_LOCALLY_VERIFIED / RUNNER_IN_PROGRESS / NOT_LAUNCHED / NO_PERFORMANCE_RESULT`
+状态：`DESIGN_FROZEN / LOCAL_VERIFIED / G0_PREREGISTERED / NOT_LAUNCHED / NO_PERFORMANCE_RESULT`
 
 ## 1.身份与目标
 
@@ -46,12 +46,13 @@
 |bundle实现|`code/cvsrffi/stage2_d112_seam_bundle.py`；typed只读资产、content root绑定checkpoint/source/权限、formal fail-closed|
 |source builder|`code/cvsrffi/stage2_d112_g0_source_bundle.py`；receipt绑定的588行Phase1聚合，先int8量化再构造bundle|
 |score实现|`code/cvsrffi/stage2_d112_seam_qknn.py`；Log/PT/Exp/R_pi、strict LOO、Jacobian、ambient rho、unit-mass score|
-|G0入口|`TBD_AFTER_CORE_INTEGRATION`|
-|focused tests|`tests/test_stage2_d112_seam_qknn.py`；`ssr-gpu`中11项通过；三个实现文件`py_compile`通过|
+|实现commit|`b33c4ccf`|
+|G0入口|`code/scripts/run_d112_seam_g0_one_shot.py`；commit`02092316`|
+|focused tests|`tests/test_stage2_d112_seam_qknn.py`、`tests/test_run_d112_seam_g0_one_shot.py`；`ssr-gpu`中14项通过；入口及三个实现文件`py_compile`通过|
 |真实source smoke|固定tap＋receipt＋checkpoint绑定通过；`global_bundle_valid=true`、reason=`NONE`、`tau_h^(r)=0.0029421325`|
-|实现级独立复审|首轮`P0=2/P1=4`已修；次轮`P0=0`且剩余3项P1已修；最终复审进行中|
+|实现级独立复审|首轮`P0=2/P1=4`已修；次轮`P0=0`且剩余3项P1已修；最终`GO / P0=0/P1=0`|
 
-真实source smoke还得到：`sigma0_r=0.006759–0.071533`、`sigma0_amb=0.000408–0.002467`、`v_g_r=0.007699–0.081483`、`v_g_amb=0.000252–0.002284`。这些只证明Phase1资产非退化，不是query功能或性能结果。本报告的TBD表示尚未到发布状态，不授权用占位命令或旧D111组件启动实验。实现完成后必须补充Git commit和SHA256。
+真实source smoke还得到：`sigma0_r=0.006759–0.071533`、`sigma0_amb=0.000408–0.002467`、`v_g_r=0.007699–0.081483`、`v_g_amb=0.000252–0.002284`。这些只证明Phase1资产非退化，不是query功能或性能结果。source aggregate SHA256为`348bc924785a26d72b76e394c00b6cc0b3a9fcdf9d8e5d7544e365ec245bdb70`，bundle content root为`461fe3337bd5c5698fa3e591be5ea1ad872fc63f237711f54c58f10414bd94d6`。
 
 ## 5.最小G0预登记
 
@@ -72,12 +73,12 @@
 |---|---|
 |本地环境|`ssr-gpu`|
 |本地CWD|`E:\type10-7\code\snapshots\cdom_scxmap_d92_glf_r1_wt`|
-|本地精确命令|`TBD`|
+|本地精确命令|`python code/scripts/run_d112_seam_g0_one_shot.py --archive E:\type10-7\automation_reports\CV-SincNet\d111_r2_g0_real_5f371082_20260802_184927_r1\artifacts\input\strict_tap\d106_ls_strict_tap.npz --receipt E:\type10-7\automation_reports\CV-SincNet\d111_r2_g0_real_5f371082_20260802_184927_r1\artifacts\input\strict_tap\d106_ls_strict_tap.receipt.json --archive-sha256 48b92fa8defc1c7261ca80f9e0723662e3fe6e8c64ec0881c8ef13bab3cafa2f --checkpoint-sha256 2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98 --run-id d112_seam_g0_real_f2644d82_20260802_r1 --output E:\type10-7\automation_reports\CV-SincNet\d112_seam_g0_real_f2644d82_20260802_r1\artifacts\local_exact_g0_r1\result.json`|
 |N607环境|已知远端尚未找到同名`ssr-gpu`；D112本地G0通过前不处理该环境问题|
 |N607 CWD／命令／GPU／PID|`NOT_LAUNCHED / TBD_AFTER_RELEASE_REVIEW`|
-|输出／日志|必须使用新的不可覆盖run root；具体路径待G0入口冻结后补齐|
+|输出／日志|`E:\type10-7\automation_reports\CV-SincNet\d112_seam_g0_real_f2644d82_20260802_r1\artifacts\local_exact_g0_r1\result.json`；入口拒绝覆盖既有输出|
 
-预期artifact：D112非正式G0 bundle与manifest、每K功能receipt、逐fold回退原因计数、resource receipt、完整manifest和无truth completion receipt。任何process landing或完成都不等于性能结果。
+预期artifact：一个不可覆盖的JSON，绑定输入、checkpoint、bundle/source root，并给出每K的ρ、information、donor、anchor、score、margin、argmax和资源receipt以及无truth声明。任何process landing或完成都不等于性能结果。
 
 ## 7.后续真实性能边界
 
