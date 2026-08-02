@@ -18,6 +18,8 @@ O=\operatorname{tuple}(\text{immutable Phase1 bundle.class\_registry})。
 
 实现必须验证`O`恰有六个唯一opaque handle且`O\subseteq bank.classes`。`O`只来自与checkpoint共同封存的Phase1 bundle，不读取`held_class`、query truth、评分角色、TX/receiver身份、类配额或batch类计数。source-held评分中的`held_class`仍保留在`O`中；实际Phase2 append的新注册类不在bundle registry，因此不会成为donor或获得ground head。新增类不得改变`O`。
 
+证据边界：现有source-held runner中的`held_class`只是truth-side生命周期proxy，预测时该类仍拥有Phase1 ground asset；因此63行G1只检验D123在source-held旧类上的组件效应，不是实际`Y_new`无ground注册性能。非old列逐bit边界由显式`O+new`测试和无truth smoke验证，但真实Stage2-C新类收益仍须由合法Target矩阵另行确认。
+
 ## 3.冻结公式
 
 identity臂与RDCE臂必须在各自坐标独立计算以下量，不得跨臂共享。对每个`c∈O`：
