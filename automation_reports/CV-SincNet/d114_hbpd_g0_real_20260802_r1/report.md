@@ -1,6 +1,6 @@
 # D114-HBPD-qKNN真实G0报告
 
-状态：`LOCAL_VERIFIED / N607_LANDED / REMOTE_FOCUSED_TEST_ENV_BLOCKED / NO_DETACHED_RUN / NO_PERFORMANCE_RESULT`
+状态：`LOCAL_VERIFIED / N607_LANDED / STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
 
 ## 1.身份与目标
 
@@ -88,3 +88,16 @@
 |指定聚焦测试|同一固定Python执行`-m pytest -q tests/test_stage2_d114_hbpd_qknn.py`返回`No module named pytest`；本地34项已通过且远端编译通过，不安装、不换解释器|`REMOTE_PYTEST_UNAVAILABLE_NONBLOCKING`|
 
 预启动第1次release工程修正曾把CWD更正为初次解包repo根`<run>/source`。该消息到达runner前，runner已按原登记对同一已核验zip完成第二层安全解包，使实际完整repo根成为`<run>/source/code`，且冻结相对入口`code/scripts/...`恰好存在。第2次也是最后一次release工程修正据真实落地点恢复CWD=`<run>/source/code`；不再移动、删除或重解包。源码包、输入、child参数、输出、run ID和方法hash始终不变。固定环境缺少`pytest`只记非阻断环境差异，不安装、不换解释器、不延迟G0。
+
+### 7.3R1终态：系统性技术失败，无性能结果
+
+|项目|实际终态证据|
+|---|---|
+|唯一detach|wrapper PID=`4146270`；启动回执记录CWD=`<run>/source/code`和冻结相对入口`python code/scripts/run_d114_hbpd_g0_one_shot.py ...`。首次短连接时该进程已退出，因此没有可再读取的child PID/PPID/PGID；未伪造进程绑定。|
+|退出与唯一指纹|`g0.exit=1`；完整`g0.stderr.log`为`OneShotG0Error: output must be a new file in an existing absolute directory`。触发点是冻结输出`<run>/artifacts/result.json`的父目录在启动前按不可覆盖清单保持`ABSENT`，而writer要求该绝对父目录已存在。|
+|artifact|`<run>/artifacts=ABSENT`，`<run>/artifacts/result.json=ABSENT`；无artifact SHA、无execution root、无588行/28fold/K计数可声明。|
+|运行与资源清理|终态检查中run-owned进程为空，GPU compute app为空；无进程可或需要终止。direct短连接后本机`ssh.exe=NONE`，到N607与lab bridge的TCP/22均为`NONE`。|
+|回收|完整`g0.stdout.log`(0B)、`g0.stderr.log`(1034B)、`g0.exit`和`g0.wrapper.pid`已回收至`E:\type10-7\automation_reports\CV-SincNet\d114_hbpd_g0_real_20260802_r1\artifacts\n607_failure_r1\`。|
+|后续裁决|这是第2次也是最后一次release工程修正后的非科学路径缺陷。保留R1全部输入、源码包、日志与错误证据；R1不重启、不安装环境、不在原根补建输出目录、不调参、不改方法、不打开truth。主agent另以新run ID登记最小R2。|
+
+本R1只证明一次受控N607发布在输出目录前置条件处技术失败，不能作为HBPD功能成功、性能成功或G1/Target25/125启动依据。最终判定：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。
