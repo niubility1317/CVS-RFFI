@@ -1,6 +1,6 @@
 # D121-RDCE＋LBR-qKNN固定四臂source-held G1发布报告
 
-状态：`LOCAL_VERIFIED / PREREGISTERED / NOT_YET_LANDED / NO_PERFORMANCE_RESULT`
+状态：`ARTIFACTS_COMPLETE / ANALYZED / REJECT_D121_REVISION_PERFORMANCE_WEAK`
 
 ## 1.实验身份与目标
 
@@ -130,3 +130,97 @@ fresh-run retry未授权；技术失败保留partial并记`NO_PERFORMANCE_RESULT
 - `promotion_allowed`与每个冻结criteria。
 
 性能弱则立即关闭D121并研发下一原理方法；通过才允许进入后续Target25，不运行125矩阵。
+
+## 8.N607执行闭合
+
+- predict：wrapper PID58978、child PID58980；CWD、cmdline、`CUDA_VISIBLE_DEVICES=0`与冻结命令匹配，exit0。
+- prediction seal：63个row JSON、252个arm-row units；manifest SHA256=`71ef06e7ecf2bdbb7598e5bbd630860474ed9753e0903c8c95821835493f55c5`；prediction set receipt=`d500b7672b2ec5347a4c155c82c9cc74191377c6be3c4d404ec5fd97e4c314d8`。
+- 本地用`ssr-gpu`绝对Python复算manifest、逐row文件SHA与receipt全部通过；`query_truth_access=false`、`query_state_updates=0`、`query_selection_count=0`、`target_access=false`。
+- score只在prediction seal闭合后启动：PID62064、child62066；CWD/cmdline匹配，exit0，log异常指纹0。
+- `truth_opened_after_all_predictions_committed=true`；held scores SHA256=`b6df00cc10aab5120ac2858b61617eb2ca87b63c15b711dd6fe5d9915b39c607`；score set receipt=`1639dd31fc2bd6f6bdc0ed3e13c40934102ab6ba6197d54811821f893f8d605c`。
+- 最终predict/score PID均退出；8张GPU均0%利用率、约1MiB显存占用；`ssh.exe=0`，N607/lab TCP22连接=0；无重跑。
+
+## 9.四臂完整row均值
+
+下表是63行的row均值，seen-new与H只对42个`held_class!=None`行取均值；不是从不同run拼接的单项极值。
+
+|臂|old BA|seen-new|H|old floor|all floor|平均correct/row|
+|---|---:|---:|---:|---:|---:|---:|
+|`M0`|83.6560%|83.7772%|82.2378%|57.9803%|56.4199%|288.9683|
+|`M_DA`|83.9163%|84.1404%|82.6826%|58.2627%|56.8637%|289.8889|
+|`M_HEAD`|83.5597%|83.7369%|82.1950%|57.7745%|56.2410%|288.6508|
+|`M_JOINT`|83.8169%|84.0194%|82.5219%|57.7496%|56.2699%|289.5397|
+
+## 10.同row因果效应
+
+|效应|Δold BA|Δseen-new|ΔH|Δold floor|Δall floor|总correct净和|
+|---|---:|---:|---:|---:|---:|---:|
+|`DA_AT_BASE=M_DA-M0`|+0.2604pp|+0.3632pp|+0.4447pp|+0.2824pp|+0.4438pp|+58|
+|`HEAD_AT_ID=M_HEAD-M0`|−0.0963pp|−0.0404pp|−0.0428pp|−0.2058pp|−0.1789pp|−20|
+|`HEAD_AT_DA=M_JOINT-M_DA`|−0.0995pp|−0.1211pp|−0.1606pp|−0.5131pp|−0.5938pp|−22|
+|`JOINT_VS_M0=M_JOINT-M0`|+0.1609pp|+0.2421pp|+0.2841pp|−0.2307pp|−0.1500pp|+36|
+
+解释：`M_JOINT`的BA、seen-new和H仍高于`M0`，完全来自RDCE正主效应覆盖了LBR负效应；不能据此把LBR判为正收益。两个匹配head效应都为负，且RDCE下floor损失更大。
+
+## 11.冻结gate
+
+|head效应|old correct净和|seen-new correct净和|K1 total correct净和|old floor全局min差|all floor全局min差|晋级|
+|---|---:|---:|---:|---:|---:|---|
+|`HEAD_AT_ID`|−19|−1|−7|0.0000pp|0.0000pp|否|
+|`HEAD_AT_DA`|−19|−3|−21|0.0000pp|0.0000pp|否|
+
+两个全局min floor差为0只因为baseline与candidate都已有0 floor，属于饱和而非保护成功；row均值和负row分布均显示floor实际变差。两个head效应的old/new净正确数与K1严格正条件全部失败，因此：
+
+- `promotion_allowed=false`
+- `promotion_decision=REJECT_D121_REVISION_PERFORMANCE_WEAK`
+
+## 12.负效应覆盖范围
+
+|效应/指标|正row|零row|负row|净和|
+|---|---:|---:|---:|---:|
+|`HEAD_AT_ID` total correct|2|48|13|−20|
+|`HEAD_AT_ID` old correct|2|49|12|−19|
+|`HEAD_AT_ID` seen-new correct|0|41|1|−1|
+|`HEAD_AT_ID` old floor|2|56|5|−0.1297|
+|`HEAD_AT_ID` all floor|2|57|4|−0.1127|
+|`HEAD_AT_DA` total correct|10|28|25|−22|
+|`HEAD_AT_DA` old correct|10|31|22|−19|
+|`HEAD_AT_DA` seen-new correct|2|37|3|−3|
+|`HEAD_AT_DA` old floor|4|43|16|−0.3233|
+|`HEAD_AT_DA` all floor|3|42|18|−0.3741|
+
+按K的total correct净和：
+
+|效应|K1|K5|K10|
+|---|---:|---:|---:|
+|`HEAD_AT_ID`|−7|−8|−5|
+|`HEAD_AT_DA`|−21|0|−1|
+
+LBR没有只在某个K偶发失败：identity下三个K全负；RDCE下K1大幅负、K5为0、K10仍负。
+
+## 13.receiver与held-class诊断
+
+|held receiver|`HEAD_AT_ID` total correct净和|`HEAD_AT_DA` total correct净和|
+|---|---:|---:|
+|`1-1`|+2|−1|
+|`1-19`|−1|+8|
+|`14-7`|+1|−11|
+|`18-2`|−11|−9|
+|`19-2`|−8|−8|
+|`2-1`|−2|0|
+|`2-19`|−1|−1|
+
+主要损失集中在receiver`18-2`和`19-2`；RDCE只在`1-19`使LBR局部转正，不能抵消其他receiver的广泛负效应。按held class汇总，identity下六个held class的total correct均为−1；RDCE下六个held class均为−3，说明问题不是单一类ID特例。
+
+## 14.artifact与最终裁决
+
+|artifact|SHA256|
+|---|---|
+|`predictions/prediction_manifest.json`|`71ef06e7ecf2bdbb7598e5bbd630860474ed9753e0903c8c95821835493f55c5`|
+|`scores/truth_open_event.json`|`9dd42ef0d9f68de47d19a6696660ccf3f8e13e2d92b73ff646517c6b7044ddc6`|
+|`scores/held_scores.json`|`b6df00cc10aab5120ac2858b61617eb2ca87b63c15b711dd6fe5d9915b39c607`|
+|`logs/runner.log`|`5ce774e2887e41e5528f6d73abaf000bb1c5ee146510d89905a8dfc050413adc`|
+|`logs/score.log`|`46c43f9ef3402c71d092d7fb8fd087424e8cdafb0117137cd4323c3f4a0b5bbe`|
+|`hash_manifest_and_cleanup.txt`|`960fd6c7a6ce67c41c9ba3db7c59d08a23fd700ea152feeeb165d591e9b4da20`|
+
+最终裁决：永久关闭D121-LBR当前revision，不进入Target25，不修改rival数、强度、阈值或温度，不运行125矩阵。保留D106 RDCE作为已再次复现的正域适应因素；下一轮从新的分类原理出发，而不是调LBR参数。
