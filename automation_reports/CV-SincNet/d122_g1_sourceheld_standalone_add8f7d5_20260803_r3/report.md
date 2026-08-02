@@ -5,7 +5,7 @@
 |字段|内容|
 |---|---|
 |run ID|`d122_g1_sourceheld_standalone_add8f7d5_20260803_r3`|
-|状态|`LOCAL_VERIFIED / PREREGISTERED`|
+|状态|`ARTIFACTS_COMPLETE / ANALYSIS_PENDING`|
 |时间/操作员|2026-08-03，Codex主agent＋唯一Terra Max runner|
 |目标|以不依赖D106 construction链的独立入口，执行冻结的D122四臂source-held G1必要矩阵|
 |假设|RDCE同坐标输运后的D112静态ground head可改善old/new/H/floor；完整配对结果不支持时立即关闭D122|
@@ -95,6 +95,30 @@ score仅在63行完整封存后执行：
 只允许P0协议/安全/错误hash/错误checkout/覆盖风险，或至少两个独立单元出现同一deterministic exception fingerprint且零prediction时，停止该run-owned进程树。禁止读取accuracy、BA、H或floor决定停止。
 
 预期产物：`prediction_manifest.json`、63个row JSON、`truth_open_event.json`、`held_scores.json`、完整`runner.log`、PID/exit/cleanup receipts。成功条件为63行/252单元全部封存并完成独立score；失败必须保留artifact并标`NO_PERFORMANCE_RESULT`，不得重启或覆盖同ID。
+
+## r3唯一runner技术闭合
+
+|字段|技术事实|
+|---|---|
+|预登记提交|2af5587a|
+|远端闭包|8/8代码文件SHA匹配；tap/receipt SHA匹配；standalone import和py_compile通过。|
+|启动与退出|wrapper PID120965；自然退出；exit=0。|
+|预测闭合|63行、252单元、63个唯一row receipt；prediction目录64个文件。|
+|评分闭合|63个performance row；truth_open_after_prediction_seal=True。|
+|query边界|query truth=False、target access=False、fit/update/selection=0。|
+|异常fingerprint|0。|
+|资源清理|GPU compute-app为空；本地ssh.exe=0；到N607:22的ESTABLISHED=0。|
+|本地artifact根|E:/type10-7/automation_reports/CV-SincNet/d122_g1_sourceheld_standalone_add8f7d5_20260803_r3/artifacts/n607|
+|prediction_manifest SHA256|b7d11435564f6508b77846582e4f92236fb42ef9ac8600725329c259c57eea7c|
+|truth_open_event SHA256|5c066ab8c4340f2a33f2bafd873330bbb7b61b0f6b615b16901ab4470d3429c2|
+|held_scores原始路径|E:/type10-7/automation_reports/CV-SincNet/d122_g1_sourceheld_standalone_add8f7d5_20260803_r3/artifacts/n607/held_scores.json|
+|held_scores SHA256|cc335dfb4ea05b3b62ef59fe415de9a1494d45c27dab7cdf03bedd57adc5549f|
+|runner.log SHA256|6a9f35ab256cd1fca967cbb6d4db18137637179048ffdf042036c2d8e52883b2|
+|main.pid SHA256|187a8088e7f2f2b4e2d9e8c3021a98af5ed7dc367854b0cf4c5cab61beb899fb|
+|exit_code SHA256|9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa|
+|cleanup receipt SHA256|d590ec1ca4689c7b0088cdf46d603ee2da6588cb37593176a345090b575269e5|
+
+以上仅为执行与artifact事实，不包含性能解释或晋级决定。
 
 ## 6.结果（TBD）
 
