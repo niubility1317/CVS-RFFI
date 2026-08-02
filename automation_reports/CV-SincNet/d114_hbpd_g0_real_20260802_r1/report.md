@@ -38,7 +38,7 @@
 |字段|本地真实功能run|N607发布|
 |---|---|---|
 |run ID|`d114_hbpd_g0_real_20260802_r1_local`|`d114_hbpd_g0_real_a6ec35a2_20260802_r1`|
-|CWD|`E:\type10-7\code\snapshots\cdom_scxmap_d92_glf_r1_wt`|`/home/szu2070436088/2510044040/CV-SincNet/runs/d114_hbpd_g0_real_a6ec35a2_20260802_r1/source`|
+|CWD|`E:\type10-7\code\snapshots\cdom_scxmap_d92_glf_r1_wt`|`/home/szu2070436088/2510044040/CV-SincNet/runs/d114_hbpd_g0_real_a6ec35a2_20260802_r1/source/code`|
 |环境|`ssr-gpu`|`ssr-gpu`|
 |输出|`E:\type10-7\automation_reports\CV-SincNet\d114_hbpd_g0_real_20260802_r1\artifacts\local_exact_g0_r1\result.json`|`<run>/artifacts/result.json`，启动前`artifacts`必须ABSENT|
 |GPU/PID/log|本地CPU闭式功能验证，无训练|轻量闭式推理；`<run>/logs/g0.stdout.log`、`g0.stderr.log`、`g0.exit`；PID/GPU由唯一runner实录|
@@ -62,7 +62,7 @@
 - 方法提交：`a6ec35a2940ef686e6e65145d95ad5beadb2c3b0`；预登记commit=`53908730bc6510c0b76c7ae268dd14d7e0dd978d`；工作树在runner开始前clean；不push。
 - 最终commit-bound源码包：`release/source_53908730.zip`，SHA256=`8b176d67ba441d12100c6e374e84df4eba635e2bfaa7dc92102af52496958208`，56,755,137B。该包已本地复核，不改代码、不复用run根。
 - 输入同步到`<run>/input/d106_ls_strict_tap.npz`与`<run>/input/d106_ls_strict_tap.receipt.json`；各自来源为本报告第2节固定路径与receipt，tap SHA必须保持`48b92f...afa2f`。
-- Python固定为`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`；在`<run>/source`执行D114三个实现文件的`py_compile`，不运行其他矩阵。源码包是Git archive，顶层直接包含`code/`，因此`<run>/source`是冻结repo CWD。
+- Python固定为`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`；实际完整repo根为`<run>/source/code`，在该处执行D114三个实现文件的`py_compile`，不运行其他矩阵。
 - 冻结child command：`python code/scripts/run_d114_hbpd_g0_one_shot.py --archive <run>/input/d106_ls_strict_tap.npz --receipt <run>/input/d106_ls_strict_tap.receipt.json --archive-sha256 48b92fa8defc1c7261ca80f9e0723662e3fe6e8c64ec0881c8ef13bab3cafa2f --checkpoint-sha256 2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98 --run-id d114_hbpd_g0_real_a6ec35a2_20260802_r1 --output <run>/artifacts/result.json`。
 - 唯一Terra Max runner负责direct preflight、资源记录、精确同步、远端SHA/解包/compile/test、不可覆盖根检查、唯一detach、PID/CWD/cmdline/GPU与日志增长核验、完整日志读取、artifact回收和SSH清理；主agent不并发启动。
 - 预期artifact只含无truth功能证据。成功要求行数588、fold数28、K=`1/5/10`、query fit/update=0、truth scoring=false、三Kargmax变化均非零且远端execution root与本地一致；否则保留证据并停止，不重启、不调参。
@@ -87,4 +87,4 @@
 |指定编译|固定Python`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -m py_compile`先完成D114三个实现文件，无编译错误输出|通过|
 |指定聚焦测试|同一固定Python执行`-m pytest -q tests/test_stage2_d114_hbpd_qknn.py`返回`No module named pytest`；本地34项已通过且远端编译通过，不安装、不换解释器|`REMOTE_PYTEST_UNAVAILABLE_NONBLOCKING`|
 
-预启动第1次release工程修正：Git archive已正确解包到`<run>/source`，其repo根即该路径；原登记CWD多写一层`code`，会使冻结相对入口必然不存在。run尚未detach且`artifacts`仍ABSENT，因此保留全部已核验文件，仅把CWD更正为`<run>/source`；源码、输入、child参数、输出、run ID和方法hash均不变。固定环境缺少`pytest`只记非阻断环境差异，不重复本地测试，不延迟G0。
+预启动第1次release工程修正曾把CWD更正为初次解包repo根`<run>/source`。该消息到达runner前，runner已按原登记对同一已核验zip完成第二层安全解包，使实际完整repo根成为`<run>/source/code`，且冻结相对入口`code/scripts/...`恰好存在。第2次也是最后一次release工程修正据真实落地点恢复CWD=`<run>/source/code`；不再移动、删除或重解包。源码包、输入、child参数、输出、run ID和方法hash始终不变。固定环境缺少`pytest`只记非阻断环境差异，不安装、不换解释器、不延迟G0。
