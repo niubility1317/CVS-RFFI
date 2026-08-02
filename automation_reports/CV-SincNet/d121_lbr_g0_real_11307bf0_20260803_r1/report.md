@@ -118,4 +118,3 @@ runner必须：
 |远端hash收据|source zip、核心、runner、archive均匹配|
 
 完成后把本报告状态更新为`ARTIFACTS_COMPLETE / ANALYZED`或`NO_PERFORMANCE_RESULT`。若G0通过，下一步只实现和发布冻结四臂G1；若G0失败，立即关闭D121当前revision并研发下一个原理候选。
-
