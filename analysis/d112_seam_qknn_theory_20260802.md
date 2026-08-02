@@ -1,6 +1,6 @@
 # D112-SEAM-qKNN轻型球面域适应理论设计
 
-状态：`DESIGN_FROZEN / IMPLEMENTATION_PENDING / P0=0 / P1=0 / NO_PERFORMANCE_RESULT`
+状态：`G1_ANALYZED / HEAD_POSITIVE / SEAM_MOTION_ZERO_DECISION_GAIN / CLOSE_SEAM_DA`
 
 日期：2026-08-02
 
@@ -272,3 +272,9 @@ G1采用三个而非机械四个可辨识臂：`M0`为原Student-t qKNN；`M_HEA
 |球面PT切向与保范|100组最大误差`3.56e-15`|随机合成单位向量，非性能数据|
 
 因此下一步只允许实现本文唯一公式，不得并行保留旧量纲版、调`r/tau/rho`、恢复硬角gate或从G0选择分支。
+
+## 13.真实G1结果与理论裁决
+
+真实source-held r3完整封存63行、三个臂和189个prediction单元后独立打开truth。K1登记42行中，`M_HEAD_GROUND`相对M0的old BA与seen-new均为`+1.3228pp`，H为`+1.9736pp`，old floor为`+4.5855pp`；但`M_JOINT_SEAM`与`M_HEAD_GROUND`在全部63行的prediction逐值相同，`SEAM_MOTION_AT_HEAD`所有指标严格为0。联合状态并非回退：21个唯一package均有6个正ρ旧类，最大`alpha=0.387345`、最大anchor位移`0.014563`，说明球面共享运动在数值层起作用，却不足以改善任何决策。
+
+因此D112的正收益版本是静态Phase1 ground-anchor单位质量head，不是SEAM域运动。保留`M_HEAD_GROUND`作为轻量head组件；关闭SEAM motion域适应路线，不调`r/tau/rho`、不补seed、不运行125。下一条域适应理论必须产生相对该head的独立增益，不能再把head收益记到DA名下。
