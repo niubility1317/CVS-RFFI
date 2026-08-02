@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import replace
 import inspect
 from types import MappingProxyType
+from typing import Mapping
 
 import numpy as np
 import pytest
@@ -12,6 +13,7 @@ from cvsrffi.stage2_d111_loo_gat_score import (
     D111ScoreError,
     WEISZFELD_STEPS,
     audit_d111_loo_gat_state,
+    fit_d111_loo_gat_g0_state,
     fit_d111_loo_gat_state,
     predict_d111_loo_gat,
     score_d111_loo_gat_logits,
@@ -20,7 +22,9 @@ from cvsrffi.stage2_d111_loo_gat_score import (
 from cvsrffi.stage2_zid_student_t_qknn import (
     Phase1ZIDStudentTLock,
     build_typed_zid_support_bank,
+    decode_zid_support_bank,
     identity_shared_psd_metric,
+    normalize_zid_rows,
     score_zid_student_t_logits,
 )
 
@@ -40,7 +44,9 @@ def _lock(k: int, *, gamma: float = 1.0) -> Phase1ZIDStudentTLock:
     return Phase1ZIDStudentTLock(
         active_k=k,
         student_nu=3.0,
-        kernel_effective_dim=FEATURE_DIM,
+        # M0's Student-t kernel is locked at d_eff=12.  The D111 geometry
+        # remains a real 160-coordinate unit-sphere calculation.
+        kernel_effective_dim=12,
         kernel_volume_gamma=gamma,
         shared_h0=0.2,
         scale_prior_strength=2.0,
@@ -61,7 +67,44 @@ def _geometry() -> tuple[np.ndarray, np.ndarray]:
     return anchors, basis
 
 
-def _bundle(*, envelope_b: float = 0.03, epsilon: float = 0.01) -> D111Bundle:
+def _formal_manifest() -> Mapping[str, object]:
+    return MappingProxyType(
+        {
+            "effective_formal_phase2_eligible": True,
+            "effective_bundle_state": "FORMAL_D111_OUTER_JOINT_SEALED",
+            "content_root_sha256": "a" * 64,
+            "verified_outer_seal": MappingProxyType(
+                {
+                    "schema": "cvs.d111.loo_gat.outer_ed25519_seal.v1",
+                    "bundle_state": "FORMAL_D111_OUTER_JOINT_SEALED",
+                    "formal_phase2_eligible": True,
+                    "algorithm": "Ed25519",
+                }
+            ),
+        }
+    )
+
+
+def _g0_manifest(**overrides: object) -> Mapping[str, object]:
+    values: dict[str, object] = {
+        "effective_bundle_state": "NONFORMAL_G0_FUNCTIONAL_ONLY",
+        "effective_formal_phase2_eligible": False,
+        "performance_metrics_allowed": False,
+        "target_access_allowed": False,
+        "content_root_sha256": "b" * 64,
+    }
+    values.update(overrides)
+    return MappingProxyType(values)
+
+
+def _bundle(
+    *,
+    envelope_b: float = 0.03,
+    epsilon: float = 0.01,
+    anchor_error: float = 0.0,
+    basis_error: float = 0.0,
+    manifest: Mapping[str, object] | None = None,
+) -> D111Bundle:
     anchors, basis = _geometry()
     return D111Bundle(
         class_registry=OLD,
@@ -71,13 +114,11 @@ def _bundle(*, envelope_b: float = 0.03, epsilon: float = 0.01) -> D111Bundle:
         v_s=0.002,
         envelope_b=envelope_b,
         epsilon=epsilon,
-        manifest=MappingProxyType(
-            {
-                "effective_formal_phase2_eligible": True,
-                "effective_bundle_state": "FORMAL_D111_OUTER_JOINT_SEALED",
-                "content_root_sha256": "a" * 64,
-            }
+        anchor_quantization_l2_error_bound=_readonly(
+            np.full(6, anchor_error, dtype=np.float32)
         ),
+        basis_operator_error_upper_bound=basis_error,
+        manifest=_formal_manifest() if manifest is None else manifest,
     )
 
 
@@ -120,6 +161,10 @@ def test_qualified_k1_is_nonidentity_and_new_class_mass_is_zero() -> None:
     assert np.all(state.iterations[old] == WEISZFELD_STEPS)
     assert np.all(state.gap[old] <= _bundle().epsilon)
     assert np.all(state.consensus_count[old] >= 3)
+    assert np.all(state.normalization_stable[old])
+    assert np.all(
+        state.transport_norm[old] >= 0.5 + state.transport_error_bound[old]
+    )
     assert np.all((state.rho[old] > 0.0) & (state.rho[old] < 1.0))
     assert state.rho[CLASSES.index("new-0")] == 0.0
     decoded_support, _labels = _support(1)
@@ -139,6 +184,50 @@ def test_ineligible_state_is_exact_m0_fallback() -> None:
     assert np.array_equal(actual, expected)
 
 
+def test_formal_fit_rejects_nonformal_g0_and_unsealed_forged_markers() -> None:
+    bank = _bank(1)
+    nonformal = _bundle(manifest=_g0_manifest())
+    with pytest.raises(D111ScoreError, match="formal"):
+        fit_d111_loo_gat_state(nonformal, bank)
+
+    # Simply relabelling the functional bundle as formal cannot replace the
+    # verified outer-seal runtime provenance injected by the formal loader.
+    forged = _bundle(
+        manifest=_g0_manifest(
+            effective_bundle_state="FORMAL_D111_OUTER_JOINT_SEALED",
+            effective_formal_phase2_eligible=True,
+        )
+    )
+    with pytest.raises(D111ScoreError, match="formal"):
+        fit_d111_loo_gat_state(forged, bank)
+
+
+def test_g0_fit_requires_all_exact_nonperformance_markers() -> None:
+    bank = _bank(1)
+    state = fit_d111_loo_gat_g0_state(_bundle(manifest=_g0_manifest()), bank)
+    assert np.all(np.isfinite(state.rho))
+
+    for overrides in (
+        {"effective_bundle_state": "FORMAL_D111_OUTER_JOINT_SEALED"},
+        {"effective_formal_phase2_eligible": True},
+        {"performance_metrics_allowed": True},
+        {"target_access_allowed": True},
+    ):
+        with pytest.raises(D111ScoreError, match="G0"):
+            fit_d111_loo_gat_g0_state(_bundle(manifest=_g0_manifest(**overrides)), bank)
+
+    for missing in (
+        "effective_bundle_state",
+        "effective_formal_phase2_eligible",
+        "performance_metrics_allowed",
+        "target_access_allowed",
+    ):
+        values = dict(_g0_manifest())
+        del values[missing]
+        with pytest.raises(D111ScoreError, match="G0"):
+            fit_d111_loo_gat_g0_state(_bundle(manifest=MappingProxyType(values)), bank)
+
+
 def test_unit_mass_formula_reuses_m0_density_and_bandwidth() -> None:
     bank = _bank(5)
     state = fit_d111_loo_gat_state(_bundle(), bank)
@@ -154,10 +243,13 @@ def test_unit_mass_formula_reuses_m0_density_and_bandwidth() -> None:
     normalized_query = query.astype(np.float64) / np.linalg.norm(query, axis=1, keepdims=True)
     distance = np.maximum(2.0 * (1.0 - np.clip(normalized_query @ anchor, -1.0, 1.0)), 0.0)
     h = float(bank.class_scales_fp16[class_index])
+    d_eff = int(bank.config.kernel_effective_dim)
+    assert d_eff == 12
+    assert d_eff != FEATURE_DIM
     anchor_log = (
-        -bank.config.kernel_volume_gamma * FEATURE_DIM * np.log(h)
+        -bank.config.kernel_volume_gamma * d_eff * np.log(h)
         - 0.5
-        * (bank.config.student_nu + FEATURE_DIM)
+        * (bank.config.student_nu + d_eff)
         * np.log1p(distance / (bank.config.student_nu * h * h))
     )
     expected = np.logaddexp(
@@ -166,6 +258,85 @@ def test_unit_mass_formula_reuses_m0_density_and_bandwidth() -> None:
     ).astype(np.float32)
     np.testing.assert_array_equal(actual[:, class_index], expected)
     np.testing.assert_array_equal(actual[:, -1], baseline[:, -1])
+
+
+def test_transport_error_bound_uses_local_gap_and_both_quantization_terms() -> None:
+    bundle = _bundle(
+        envelope_b=0.03,
+        epsilon=1.0,
+        anchor_error=0.0125,
+        basis_error=0.25,
+    )
+    state = fit_d111_loo_gat_state(bundle, _bank(1, shared=False))
+    old = np.asarray(state.old_class_indices)
+    expected = (
+        0.0125
+        + 6.0 * bundle.envelope_b
+        + state.gap[old]
+        + 0.25 * state.transport_shift_norm[old]
+    )
+    np.testing.assert_allclose(
+        state.transport_error_bound[old], expected, rtol=2.0e-6, atol=2.0e-8
+    )
+    # epsilon is a qualification threshold, never an uncertainty surrogate.
+    wrong_epsilon_formula = (
+        0.0125
+        + 6.0 * bundle.envelope_b
+        + bundle.epsilon
+        + 0.25 * state.transport_shift_norm[old]
+    )
+    assert not np.allclose(
+        state.transport_error_bound[old], wrong_epsilon_formula, rtol=1.0e-6, atol=1.0e-7
+    )
+
+
+def test_normalization_instability_forces_exact_m0_fallback() -> None:
+    # The transported direction itself is finite, but its norm cannot clear
+    # eta+E_t after the frozen quantization/error propagation bound.
+    bundle = _bundle(envelope_b=0.03, epsilon=1.0, anchor_error=0.9)
+    bank = _bank(1)
+    state = fit_d111_loo_gat_state(bundle, bank)
+    old = np.asarray(state.old_class_indices)
+    assert not np.any(state.normalization_stable[old])
+    assert not np.any(state.qualified[old])
+    assert not np.any(state.rho[old])
+    query, _ = _support(1)
+    baseline = score_zid_student_t_logits(
+        bank, query, metric=identity_shared_psd_metric(config=bank.config)
+    )
+    actual = score_d111_loo_gat_logits(state, bank, query)
+    np.testing.assert_array_equal(actual, baseline)
+
+
+def test_anchor_variance_uses_normalization_bound_over_embedding_dimension() -> None:
+    bundle = _bundle(
+        envelope_b=0.003,
+        epsilon=1.0,
+        anchor_error=0.01,
+        basis_error=0.10,
+    )
+    bank = _bank(5)
+    state = fit_d111_loo_gat_state(bundle, bank)
+    decoded = normalize_zid_rows(decode_zid_support_bank(bank).astype(np.float32)).astype(
+        np.float64
+    )
+    for old_position, bank_index in enumerate(state.old_class_indices):
+        assert state.normalization_stable[bank_index]
+        local = decoded[bank.class_indices_int16 == bank_index]
+        mean = local.mean(axis=0)
+        mean /= np.linalg.norm(mean)
+        target_variance = bundle.v_s / bank.active_k
+        discrepancy = float(np.sum(np.square(mean - state.anchors[bank_index])) / FEATURE_DIM)
+        error_bound = float(state.transport_error_bound[bank_index])
+        expected_anchor_variance = float(bundle.v_g[old_position]) + (
+            2.0 * error_bound / 0.5
+        ) ** 2 / FEATURE_DIM
+        expected_rho = target_variance / (
+            target_variance + expected_anchor_variance + discrepancy
+        )
+        np.testing.assert_allclose(
+            state.rho[bank_index], expected_rho, rtol=3.0e-6, atol=2.0e-8
+        )
 
 
 def test_unit_mass_rejects_non_normalized_m0_volume_exponent() -> None:
@@ -299,13 +470,33 @@ def test_state_is_readonly_bound_and_resource_is_query_independent() -> None:
         state.dual,
         state.gap,
         state.consensus_count,
+        state.transport_norm,
+        state.transport_shift_norm,
+        state.transport_error_bound,
+        state.normalization_stable,
     ):
         assert not value.flags.writeable
         with pytest.raises(ValueError):
             value.setflags(write=True)
     audit = audit_d111_loo_gat_state(state)
     resource = audit["resource_receipt"]
-    assert resource["persistent_numeric_bytes"] == 4711
+    assert resource["persistent_numeric_bytes"] == sum(
+        value.nbytes
+        for value in (
+            state.anchors,
+            state.rho,
+            state.qualified,
+            state.iterations,
+            state.primal,
+            state.dual,
+            state.gap,
+            state.consensus_count,
+            state.transport_norm,
+            state.transport_shift_norm,
+            state.transport_error_bound,
+            state.normalization_stable,
+        )
+    )
     assert resource["enrollment_projection_macs"] == 2880
     assert resource["weiszfeld_scalar_steps"] == 2880
     assert resource["extra_query_macs_per_row_upper_bound"] == 960

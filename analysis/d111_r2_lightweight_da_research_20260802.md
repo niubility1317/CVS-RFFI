@@ -1,6 +1,6 @@
 # D111-r2轻型快速域适应理论收敛报告
 
-状态：`DESIGN_R2_FROZEN / IMPLEMENTATION_PENDING / CURRENT_R1_G0_REJECTED / NO_PERFORMANCE_RESULT`
+状态：`DESIGN_R2_FROZEN / LOCAL_VERIFIED / G0_RELEASE_READY / NO_PERFORMANCE_RESULT`
 
 日期：2026-08-02
 
@@ -144,12 +144,12 @@ r_c=U(m_c-g_c).
 \{r_j:j\ne c\}.
 \]
 
-资格首先要求Weiszfeld primal-dual gap不超过运行时确定计算的\(\epsilon_F\)，且至少3/5 donor位于Phase1预封存包络\(B\)内。bundle中的\(B\)必须是把量化舍入误差向上包含后的保守上界，不能使用反量化点估计替代上界。在此条件下，低秩坐标估计先使用条件误差界：
+令运行时实际算得的Weiszfeld primal-dual gap为\(\epsilon_{F,c}\)。资格首先要求它不超过Phase1预封存的固定上限\(\epsilon_{max}\)，且至少3/5 donor位于Phase1预封存包络\(B\)内。bundle中的\(B\)与\(\epsilon_{max}\)必须把量化舍入误差向上包含，不能使用反量化点估计替代上界。在此条件下，低秩坐标估计使用当前类自己的实际gap形成误差界：
 
 \[
-E_h=6B+\epsilon_F,
+E_{h,c}=6B+\epsilon_{F,c},
 \qquad
-\lVert\hat h_{-c}-h\rVert\le E_h.
+\lVert\hat h_{-c}-h\rVert\le E_{h,c}.
 \]
 
 3/5共识只能证明donor彼此一致，不能排除“共同但错误”的位移。因此它是资格条件，不是性能保证。
@@ -171,7 +171,7 @@ t_c=g_c^{q}+(U^{q})^T\hat h_{-c},
 \]
 
 \[
-E_{t,c}=\epsilon_{g,c}+E_h+\delta_U\lVert\hat h_{-c}\rVert_2.
+E_{t,c}=\epsilon_{g,c}+E_{h,c}+\delta_U\lVert\hat h_{-c}\rVert_2.
 \]
 
 其中，\(g_c^q,U^q\)是Phase2实际读取的int8反量化值，\(\epsilon_{g,c}\)是类锚L2量化误差上界，\(\delta_U\)是共享基的算子范数量化误差上界；二者均由Phase1量化receipt给出，不从support或Target拟合。以真实未量化量\(g_c^*,U^*,h\)为参照，按
@@ -294,7 +294,7 @@ L_c(q)=\operatorname{logaddexp}
 |Phase1一次性聚合|`O(588×160×3)`加6次小型SVD|无训练、无optimizer|
 |Phase2 enrollment|约2880投影MAC＋2880个固定Weiszfeld标量步|6旧类、rank3、32步|
 |单query额外成本|最多`6×160=960MAC`|只评估旧类anchor密度|
-|7类示例状态|当前实现4711B；r2增加少量稳定性标量|远低于256KiB|
+|7类示例状态|4886B|包含r2稳定性标量，远低于256KiB|
 |query依赖状态|0B|逐query只读|
 
 不设置RSS gate，不做硬件微基准作为发布前置；实现后只记录真实数值state bytes和公式MAC。
@@ -320,9 +320,12 @@ G0不是性能实验；G1也只回答机制方向。只有G1通过后才讨论�
 |D111-r1真实G0|`REJECT_CURRENT_RELEASE`|
 |D111-r1理论|有正收益路径，但存在归一化P1和维数定义缺口，已由r2设计取代|
 |checkpoint权重锚|判别方向有效，原始锚假设不足，拒绝实施|
-|D111-r2设计|独立审查初始`P0=0/P1=2`；已吸收`E_t`量化传播与`p/d_eff`修正并冻结；代码仍待实现和独立复审|
+|D111-r2设计|独立理论审查初始`P0=0/P1=2`；已吸收`E_t`量化传播与`p/d_eff`修正并冻结|
+|D111-r2实现|评分核心、一次性588行int8 G0聚合器和28fold×三K one-shot入口已本地验证；独立发布复审`P0=0/P1=0/P2=0 / GO_FOR_MINIMAL_G0_RELEASE`|
 |真实性能|`NO_NEW_PERFORMANCE_RESULT`|
 |N607实验|未授权、未启动|
+
+本地focused suite在`ssr-gpu`下为32项通过；真实checkpoint SHA256=`2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98`派生的8400条source-only feature完成无query smoke，使用6条support、`p=160/d_eff=12`成功构造状态，`query_rows_used_for_fit=0`。以上均只证明入口可运行，不构成G0功能生效或held性能证据。
 
 ## 14.理论来源
 

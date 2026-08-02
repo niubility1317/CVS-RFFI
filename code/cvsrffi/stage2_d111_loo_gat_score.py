@@ -21,11 +21,15 @@ from cvsrffi.stage2_zid_student_t_qknn import (
 )
 
 
-SCHEMA = "cvs.stage2.d111.loo_gat.score_state.v1"
+SCHEMA = "cvs.stage2.d111.loo_gat.score_state.v2"
 WEISZFELD_STEPS = 32
 WEISZFELD_DAMPING = 0.5
 NUMERIC_EPSILON = 1.0e-12
 EXPECTED_OLD_CLASS_COUNT = 6
+TRANSPORT_NORM_FLOOR = 0.5
+FORMAL_BUNDLE_STATE = "FORMAL_D111_OUTER_JOINT_SEALED"
+G0_FUNCTIONAL_BUNDLE_STATE = "NONFORMAL_G0_FUNCTIONAL_ONLY"
+OUTER_SEAL_SCHEMA = "cvs.d111.loo_gat.outer_ed25519_seal.v1"
 
 
 class D111ScoreError(ValueError):
@@ -120,6 +124,10 @@ class D111LOOGATState:
     dual: np.ndarray
     gap: np.ndarray
     consensus_count: np.ndarray
+    transport_norm: np.ndarray
+    transport_shift_norm: np.ndarray
+    transport_error_bound: np.ndarray
+    normalization_stable: np.ndarray
     bank_receipt_sha256: str
     config_lock_digest: str
     bundle_content_root_sha256: str
@@ -141,6 +149,10 @@ class D111LOOGATState:
             or self.dual.shape != expected_vector
             or self.gap.shape != expected_vector
             or self.consensus_count.shape != expected_vector
+            or self.transport_norm.shape != expected_vector
+            or self.transport_shift_norm.shape != expected_vector
+            or self.transport_error_bound.shape != expected_vector
+            or self.normalization_stable.shape != expected_vector
         ):
             raise D111ScoreError("D111 state shape/schema drift")
         if any(array.flags.writeable for array in (
@@ -152,6 +164,10 @@ class D111LOOGATState:
             self.dual,
             self.gap,
             self.consensus_count,
+            self.transport_norm,
+            self.transport_shift_norm,
+            self.transport_error_bound,
+            self.normalization_stable,
         )):
             raise D111ScoreError("D111 state arrays must be deeply readonly")
 
@@ -175,6 +191,10 @@ def _state_payload(state: D111LOOGATState) -> dict[str, Any]:
                 "dual",
                 "gap",
                 "consensus_count",
+                "transport_norm",
+                "transport_shift_norm",
+                "transport_error_bound",
+                "normalization_stable",
             )
         },
         "resource_receipt": dict(state.resource_receipt),
@@ -198,25 +218,59 @@ def _verify_state(state: D111LOOGATState) -> None:
         or np.any(state.iterations[old] != WEISZFELD_STEPS)
         or np.any(state.consensus_count[old] < 0)
         or np.any(state.consensus_count[old] > EXPECTED_OLD_CLASS_COUNT - 1)
+        or not np.isfinite(state.transport_norm).all()
+        or not np.isfinite(state.transport_shift_norm).all()
+        or not np.isfinite(state.transport_error_bound).all()
+        or np.any(state.transport_norm < 0.0)
+        or np.any(state.transport_shift_norm < 0.0)
+        or np.any(state.transport_error_bound < 0.0)
+        or np.any(state.qualified & ~state.normalization_stable)
     ):
         raise D111ScoreError("D111 state semantic invariant drift")
+    stable_by_bound = state.transport_norm >= (
+        TRANSPORT_NORM_FLOOR + state.transport_error_bound
+    )
+    if np.any(state.normalization_stable != stable_by_bound):
+        raise D111ScoreError("D111 normalization-stability receipt drift")
 
 
-def fit_d111_loo_gat_state(
-    bundle: D111Bundle, bank: TypedINT8ZIDSupportBank
+def _require_d111_fit_surface(bundle: D111Bundle, *, formal: bool) -> None:
+    manifest = bundle.manifest
+    if formal:
+        outer_seal = manifest.get("verified_outer_seal")
+        if (
+            manifest.get("effective_formal_phase2_eligible") is not True
+            or manifest.get("effective_bundle_state") != FORMAL_BUNDLE_STATE
+            or not isinstance(outer_seal, Mapping)
+            or outer_seal.get("schema") != OUTER_SEAL_SCHEMA
+            or outer_seal.get("bundle_state") != FORMAL_BUNDLE_STATE
+            or outer_seal.get("formal_phase2_eligible") is not True
+            or outer_seal.get("algorithm") != "Ed25519"
+        ):
+            raise D111ScoreError("D111 formal fit requires a verified formal outer-sealed bundle")
+        return
+    if (
+        manifest.get("effective_bundle_state") != G0_FUNCTIONAL_BUNDLE_STATE
+        or manifest.get("effective_formal_phase2_eligible") is not False
+        or manifest.get("performance_metrics_allowed") is not False
+        or manifest.get("target_access_allowed") is not False
+    ):
+        raise D111ScoreError("D111 G0 fit requires the exact nonformal functional-only markers")
+
+
+def _fit_d111_loo_gat_state(
+    bundle: D111Bundle,
+    bank: TypedINT8ZIDSupportBank,
+    *,
+    formal: bool,
 ) -> D111LOOGATState:
-    """Fit one immutable support-only state; no query or truth enters this API."""
+    """Fit one immutable support-only state after binding its allowed surface."""
 
     if type(bundle) is not D111Bundle or type(bank) is not TypedINT8ZIDSupportBank:
         raise D111ScoreError("D111 fit requires exact bundle and qKNN bank types")
     if float(bank.config.kernel_volume_gamma) != 1.0:
         raise D111ScoreError("D111 unit-mass density requires kernel_volume_gamma=1")
-    if (
-        bundle.manifest.get("effective_formal_phase2_eligible") is not True
-        or bundle.manifest.get("effective_bundle_state")
-        != "FORMAL_D111_OUTER_JOINT_SEALED"
-    ):
-        raise D111ScoreError("D111 fit requires a verified formal outer-sealed bundle")
+    _require_d111_fit_surface(bundle, formal=formal)
     old_classes = tuple(bundle.class_registry)
     if len(old_classes) != EXPECTED_OLD_CLASS_COUNT:
         raise D111ScoreError("D111 LOO certificate is frozen for exactly six old classes")
@@ -238,16 +292,32 @@ def fit_d111_loo_gat_state(
     basis = np.asarray(bundle.basis, dtype=np.float64)
     source_anchor = np.asarray(bundle.anchors, dtype=np.float64)
     source_variance = np.asarray(bundle.v_g, dtype=np.float64)
+    raw_anchor_quantization_error = bundle.anchor_quantization_l2_error_bound
+    if raw_anchor_quantization_error is None:
+        # Compatibility for existing in-memory fixtures.  Formal bundle loads
+        # always supply immutable INT8 error bounds derived from g_scale.
+        anchor_quantization_error = np.zeros(EXPECTED_OLD_CLASS_COUNT, dtype=np.float64)
+    else:
+        anchor_quantization_error = np.asarray(
+            raw_anchor_quantization_error, dtype=np.float64
+        )
+    basis_operator_error = float(bundle.basis_operator_error_upper_bound)
     if basis.shape != (3, FEATURE_DIM) or source_anchor.shape != (
         EXPECTED_OLD_CLASS_COUNT,
         FEATURE_DIM,
-    ) or source_variance.shape != (EXPECTED_OLD_CLASS_COUNT,):
+    ) or source_variance.shape != (EXPECTED_OLD_CLASS_COUNT,) or anchor_quantization_error.shape != (
+        EXPECTED_OLD_CLASS_COUNT,
+    ):
         raise D111ScoreError("D111 bundle geometry drift")
     if (
         not np.isfinite(basis).all()
         or not np.isfinite(source_anchor).all()
         or not np.isfinite(source_variance).all()
+        or not np.isfinite(anchor_quantization_error).all()
         or np.any(source_variance <= 0.0)
+        or np.any(anchor_quantization_error < 0.0)
+        or not math.isfinite(basis_operator_error)
+        or basis_operator_error < 0.0
         or not all(
             math.isfinite(float(value)) and float(value) > 0.0
             for value in (bundle.v_s, bundle.envelope_b, bundle.epsilon)
@@ -265,14 +335,38 @@ def fit_d111_loo_gat_state(
     dual = np.zeros(class_count, dtype=np.float64)
     gap = np.zeros(class_count, dtype=np.float64)
     consensus = np.zeros(class_count, dtype=np.int16)
+    transport_norm = np.zeros(class_count, dtype=np.float64)
+    transport_shift_norm = np.zeros(class_count, dtype=np.float64)
+    transport_error_bound = np.zeros(class_count, dtype=np.float64)
+    normalization_stable = np.zeros(class_count, dtype=np.bool_)
 
     for old_position, bank_index in enumerate(old_indices):
         loo = np.delete(residual, old_position, axis=0)
         centre, local_primal, local_dual, local_gap, dual_feasible = _weiszfeld_certificate(loo)
-        transported = _normalize_vector(
-            source_anchor[old_position] + basis.T @ centre,
-            "transported D111 anchor",
+        raw_transport = source_anchor[old_position] + basis.T @ centre
+        local_transport_norm = float(np.linalg.norm(raw_transport))
+        local_shift_norm = float(np.linalg.norm(centre))
+        local_error_h = 6.0 * float(bundle.envelope_b) + local_gap
+        local_error_t = (
+            float(anchor_quantization_error[old_position])
+            + local_error_h
+            + basis_operator_error * local_shift_norm
         )
+        if not all(
+            math.isfinite(value) and value >= 0.0
+            for value in (local_transport_norm, local_shift_norm, local_error_h, local_error_t)
+        ):
+            raise D111ScoreError("D111 transport error receipt became invalid")
+        local_normalization_stable = bool(
+            local_transport_norm >= TRANSPORT_NORM_FLOOR + local_error_t
+        )
+        if local_normalization_stable:
+            transported = raw_transport / local_transport_norm
+        else:
+            # The anchor has zero mixture mass below, so this fallback can never
+            # affect a query decision; it only keeps the immutable audit state
+            # finite and structurally complete.
+            transported = _normalize_vector(source_anchor[old_position], "source D111 anchor")
         local_consensus = int(
             np.sum(np.linalg.norm(loo - centre[None, :], axis=1) <= bundle.envelope_b)
         )
@@ -280,23 +374,24 @@ def fit_d111_loo_gat_state(
             dual_feasible
             and local_gap <= bundle.epsilon
             and local_consensus >= 3
+            and local_normalization_stable
         )
         local = class_support[old_position]
         if bank.active_k == 1:
             target_variance = float(bundle.v_s)
         else:
-            # Frozen S_c^2: unbiased per-coordinate chord scatter around the
-            # normalized support mean m_c used by the transport equation.
-            sample_variance = float(
+            # Frozen S_c^2 is a per-coordinate chord-dispersion proxy around
+            # the normalized support mean m_c, not a sampling-variance claim.
+            sample_dispersion = float(
                 np.sum(np.square(local - mean_matrix[old_position]))
                 / ((bank.active_k - 1) * FEATURE_DIM)
             )
             target_variance = max(
                 float(bundle.v_s) / bank.active_k,
-                sample_variance / bank.active_k,
+                sample_dispersion / bank.active_k,
             )
         anchor_variance = float(source_variance[old_position]) + (
-            6.0 * float(bundle.envelope_b) + float(bundle.epsilon)
+            2.0 * local_error_t / TRANSPORT_NORM_FLOOR
         ) ** 2 / FEATURE_DIM
         discrepancy = float(
             np.sum(np.square(mean_matrix[old_position] - transported)) / FEATURE_DIM
@@ -313,6 +408,10 @@ def fit_d111_loo_gat_state(
         dual[bank_index] = local_dual
         gap[bank_index] = local_gap
         consensus[bank_index] = local_consensus
+        transport_norm[bank_index] = local_transport_norm
+        transport_shift_norm[bank_index] = local_shift_norm
+        transport_error_bound[bank_index] = local_error_t
+        normalization_stable[bank_index] = local_normalization_stable
 
     arrays = {
         "anchors": _readonly(anchors, np.float32),
@@ -323,6 +422,10 @@ def fit_d111_loo_gat_state(
         "dual": _readonly(dual, np.float64),
         "gap": _readonly(gap, np.float64),
         "consensus_count": _readonly(consensus, np.int16),
+        "transport_norm": _readonly(transport_norm, np.float64),
+        "transport_shift_norm": _readonly(transport_shift_norm, np.float64),
+        "transport_error_bound": _readonly(transport_error_bound, np.float64),
+        "normalization_stable": _readonly(normalization_stable, np.bool_),
     }
     resource = {
         "persistent_numeric_bytes": int(sum(array.nbytes for array in arrays.values())),
@@ -348,6 +451,22 @@ def fit_d111_loo_gat_state(
     object.__setattr__(state, "state_receipt_sha256", _canonical_sha256(_state_payload(state)))
     _verify_state(state)
     return state
+
+
+def fit_d111_loo_gat_state(
+    bundle: D111Bundle, bank: TypedINT8ZIDSupportBank
+) -> D111LOOGATState:
+    """Fit one formal support-only state; no query or truth enters this API."""
+
+    return _fit_d111_loo_gat_state(bundle, bank, formal=True)
+
+
+def fit_d111_loo_gat_g0_state(
+    bundle: D111Bundle, bank: TypedINT8ZIDSupportBank
+) -> D111LOOGATState:
+    """Fit the source-only, nonformal G0 functional state with no Target surface."""
+
+    return _fit_d111_loo_gat_state(bundle, bank, formal=False)
 
 
 def score_d111_loo_gat_logits(
@@ -436,6 +555,12 @@ def audit_d111_loo_gat_state(state: D111LOOGATState) -> Mapping[str, Any]:
             "min_consensus_count": int(
                 np.min(state.consensus_count[list(state.old_class_indices)])
             ),
+            "normalization_stable_old_count": int(
+                np.sum(state.normalization_stable[list(state.old_class_indices)])
+            ),
+            "max_transport_error_bound": float(
+                np.max(state.transport_error_bound[list(state.old_class_indices)])
+            ),
             "resource_receipt": state.resource_receipt,
             "query_rows_used_for_fit": 0,
             "truth_role_quota_inputs": 0,
@@ -447,8 +572,10 @@ __all__ = [
     "D111LOOGATState",
     "D111ScoreError",
     "SCHEMA",
+    "TRANSPORT_NORM_FLOOR",
     "WEISZFELD_STEPS",
     "audit_d111_loo_gat_state",
+    "fit_d111_loo_gat_g0_state",
     "fit_d111_loo_gat_state",
     "predict_d111_loo_gat",
     "score_d111_loo_gat_logits",

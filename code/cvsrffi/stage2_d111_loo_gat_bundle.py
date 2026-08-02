@@ -407,6 +407,38 @@ def _quantize_vectors(value: np.ndarray) -> tuple[np.ndarray, np.ndarray, np.nda
     return q, scale16, decoded
 
 
+def _int8_vector_l2_error_upper_bounds_from_scales(scales: np.ndarray) -> np.ndarray:
+    """Return a conservative decoded-INT8 vector error bound per payload row.
+
+    Vector payloads are quantized with a float32 step and decoded with its
+    persisted float16 representation.  The bound therefore includes both the
+    half-step integer rounding term and the maximum representable float16
+    scale-rounding term.  It is computable from the immutable payload alone;
+    no source vector or sidecar is needed at Phase2 runtime.
+    """
+
+    scale16 = np.asarray(scales, dtype=np.float16)
+    if scale16.ndim != 1 or not np.isfinite(scale16).all() or bool(np.any(scale16 <= 0.0)):
+        raise D111BundleError("INT8 vector scales must be finite positive [row]")
+    decoded_scale = scale16.astype(np.float64)
+    previous = np.nextafter(scale16, np.float16(0.0)).astype(np.float64)
+    following = np.nextafter(scale16, np.float16(np.inf)).astype(np.float64)
+    scale_rounding_bound = 0.5 * np.maximum(
+        decoded_scale - previous,
+        following - decoded_scale,
+    )
+    if not np.isfinite(scale_rounding_bound).all() or bool(np.any(scale_rounding_bound < 0.0)):
+        raise D111BundleError("INT8 vector scale-rounding bound is invalid")
+    unquantized_scale_upper_bound = decoded_scale + scale_rounding_bound
+    per_coordinate_bound = (
+        0.5 * unquantized_scale_upper_bound + 127.0 * scale_rounding_bound
+    )
+    bound = np.sqrt(float(FEATURE_DIM)) * per_coordinate_bound
+    if not np.isfinite(bound).all() or bool(np.any(bound < 0.0)):
+        raise D111BundleError("INT8 vector L2 error upper bound is invalid")
+    return _freeze_array(np.asarray(bound, dtype=np.float32))
+
+
 def _quantize_positive_vector(value: np.ndarray) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     vector = np.asarray(value, dtype=np.float32)
     if vector.ndim != 1 or not np.isfinite(vector).all() or bool(np.any(vector <= 0.0)):
@@ -557,6 +589,11 @@ class D111Bundle:
     envelope_b: float
     epsilon: float
     manifest: Mapping[str, Any]
+    # Runtime-only receipt values derived from the sealed aggregate payload.
+    # `None` is retained for old in-memory test fixtures; formal loaders always
+    # materialize the auditable per-anchor bound.
+    anchor_quantization_l2_error_bound: np.ndarray | None = None
+    basis_operator_error_upper_bound: float = 0.0
 
 
 def build_d111_bundle_from_aggregate(
@@ -830,6 +867,13 @@ def _read_component(
         raise D111BundleError("D111 registry binding drift")
     if float(manifest.get("spectral_gap", -1.0)) <= float(manifest.get("spectral_gap_required_minimum", math.inf)):
         raise D111BundleError("D111 spectral-gap certificate drift")
+    u_operator_error = float(manifest.get("u_operator_quantization_error", math.inf))
+    if (
+        not math.isfinite(u_operator_error)
+        or u_operator_error < 0.0
+        or u_operator_error > MAX_U_OPERATOR_QUANTIZATION_ERROR
+    ):
+        raise D111BundleError("D111 shared-basis operator error receipt drift")
     basis = np.asarray(details["basis"], dtype=np.float32)
     orth_error = float(np.linalg.norm(basis.astype(np.float64) @ basis.astype(np.float64).T - np.eye(RANK), ord=2))
     if abs(orth_error - float(manifest.get("u_orthogonality_error", math.inf))) > 1.0e-6:
@@ -1004,6 +1048,10 @@ def load_d111_bundle(
 
     anchors = _freeze_array(np.asarray(details["anchors"], dtype=np.float32))
     basis = _freeze_array(np.asarray(details["basis"], dtype=np.float32))
+    anchor_quantization_l2_error_bound = _int8_vector_l2_error_upper_bounds_from_scales(
+        np.asarray(payload["g_scale"], dtype=np.float16)
+    )
+    basis_operator_error_upper_bound = float(manifest["u_operator_quantization_error"])
     v_g = _freeze_array(
         np.asarray(payload["v_g_q"], dtype=np.float32) * np.float32(payload["v_g_scale"])
     )
@@ -1025,6 +1073,8 @@ def load_d111_bundle(
         envelope_b=envelope_b,
         epsilon=epsilon,
         manifest=_freeze_json(runtime_manifest),
+        anchor_quantization_l2_error_bound=anchor_quantization_l2_error_bound,
+        basis_operator_error_upper_bound=basis_operator_error_upper_bound,
     )
 
 
