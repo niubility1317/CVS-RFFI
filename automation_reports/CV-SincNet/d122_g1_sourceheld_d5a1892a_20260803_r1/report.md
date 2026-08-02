@@ -7,7 +7,7 @@
 |Run ID|d122_g1_sourceheld_d5a1892a_20260803_r1|
 |时间戳|2026-08-03（Asia/Hong_Kong，预登记）|
 |操作员|Codex（D122唯一N607 runner）|
-|状态|LOCAL_VERIFIED；direct preflight通过，待LANDING|
+|状态|STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT|
 |目标|验证冻结RDCE域适应与D112静态ground head在同一坐标和同一source-held矩阵中的独立效应与交互。|
 |假设|RDCE与ground head各自已有正向历史证据；Jacobian方差输运后的M_JOINT可能同时保留M_DA的域适应收益和M_HEAD的K1/floor收益。该假设必须由完整同row结果裁决。|
 |比较目标|四臂使用同一矩阵、同一输入包和同一运行边界；仅比较同一行证据。|
@@ -55,7 +55,7 @@
 |GPU|GPU0|
 |精确服务器命令|见启动前runner登记；先predict完整封存，再score打开truth。|
 |日志路径|/home/szu2070436088/2510044040/CV-SincNet/runs/d122_g1_sourceheld_d5a1892a_20260803_r1/runner.log|
-|主PID|待启动后登记|
+|主PID|95089（已退出；exit=1）|
 |同步目的地|code/cvsrffi/stage2_d122_rdce_ground_head.py、code/scripts/run_d122_g1_sourceheld_one_shot.py；tap/receipt至新run root/input。|
 
 ##预期产物
@@ -79,6 +79,22 @@
 ##健康与停止规则
 
 停止仅P0或两行同fingerprint无prediction。P0包括协议、安全、错误checkout/hash、输出覆盖或查询泄漏等系统性故障。禁止看性能停；不得依据accuracy、H、BA、floor或其他性能数值停止运行。停止后应保留已产生的日志、行退出、prediction计数和其他部分产物，并标记NO_PERFORMANCE_RESULT。
+
+## r1技术闭合
+
+|字段|r1事实|
+|---|---|
+|最终技术状态|STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT|
+|启动与退出|wrapper PID95089；exit=1；进程已退出。|
+|唯一异常|predict导入阶段缺少scripts.run_d106_g1_sourceheld_one_shot；D122 runner在零prediction前退出。|
+|预测与评分|0个prediction单元；无prediction_manifest、rows、truth_open_event或held_scores；truth未打开。|
+|停止决定|技术性导入闭合失败；未查看任何性能数值，未调参、未重启。|
+|资源清理|N607 GPU compute-app列表为空；本地ssh.exe=0，到N607:22的ESTABLISHED=0。|
+|回收路径|E:\type10-7\automation_reports\CV-SincNet\d122_g1_sourceheld_d5a1892a_20260803_r1\artifacts\n607|
+|runner.log SHA256|a479c937e70b11ddcaf10801911e830ef06791e13c33fdcbc268fe969f2805a4|
+|main.pid SHA256|67230371c2c86327d1b347dabd2a49231f5131a0bddeb3b1c433eeafa46fbcc6|
+|exit_code SHA256|4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865|
+|cleanup receipt SHA256|c2cf7188e31d1626436f4a929eae86120cf8673bad8a88f67fcce30d6e3272e4|
 
 ##结果表（TBD）
 
