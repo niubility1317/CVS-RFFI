@@ -6,8 +6,8 @@
 |---|---|
 |Run ID|d122_g1_sourceheld_d5a1892a_20260803_r1|
 |时间戳|2026-08-03（Asia/Hong_Kong，预登记）|
-|操作员|Codex（报告骨架子任务）|
-|状态|LOCAL_VERIFIED；N607运行与结果待补|
+|操作员|Codex（D122唯一N607 runner）|
+|状态|LOCAL_VERIFIED；direct preflight通过，待LANDING|
 |目标|验证冻结RDCE域适应与D112静态ground head在同一坐标和同一source-held矩阵中的独立效应与交互。|
 |假设|RDCE与ground head各自已有正向历史证据；Jacobian方差输运后的M_JOINT可能同时保留M_DA的域适应收益和M_HEAD的K1/floor收益。该假设必须由完整同row结果裁决。|
 |比较目标|四臂使用同一矩阵、同一输入包和同一运行边界；仅比较同一行证据。|
@@ -53,10 +53,10 @@
 |Conda/Python环境|/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python|
 |运行根目录|/home/szu2070436088/2510044040/CV-SincNet/runs/d122_g1_sourceheld_d5a1892a_20260803_r1|
 |GPU|GPU0|
-|精确服务器命令|TBD（待唯一runner登记）|
-|日志路径|TBD|
-|主PID|TBD|
-|同步目的地|TBD；本骨架不执行SCP|
+|精确服务器命令|见启动前runner登记；先predict完整封存，再score打开truth。|
+|日志路径|/home/szu2070436088/2510044040/CV-SincNet/runs/d122_g1_sourceheld_d5a1892a_20260803_r1/runner.log|
+|主PID|待启动后登记|
+|同步目的地|code/cvsrffi/stage2_d122_rdce_ground_head.py、code/scripts/run_d122_g1_sourceheld_one_shot.py；tap/receipt至新run root/input。|
 
 ##预期产物
 
@@ -95,4 +95,19 @@ TBD。待完整日志、prediction_manifest、truth_open_event、held_scores和�
 
 ##字段缺口（骨架阶段）
 
-精确服务器命令、启动与完成时间、日志路径、主/子PID、seed、实际运行状态、每行退出与prediction计数、完整同一行指标、异常记录、checkpoint/最佳epoch、最终结论和远端同步回执均待补。
+启动与完成时间、主/子PID、实际运行状态、每行退出与prediction计数、完整同一行指标、异常记录、checkpoint/最佳epoch、最终结论和远端同步回执均待补。
+
+## 启动前runner登记
+
+输入：packages=/home/szu2070436088/2510044040/CV-SincNet/runs/d106_g1_sourceheld_b442472b_20260801_r2/packages；truth=/home/szu2070436088/2510044040/CV-SincNet/runs/d106_g1_sourceheld_b442472b_20260801_r2/packages/scorer_only/truth.json；truth seal=/home/szu2070436088/2510044040/CV-SincNet/runs/d106_g1_sourceheld_b442472b_20260801_r2/packages/scorer_only/truth_input_seal.json；RDCE wire SHA256=20e44cb0eb2f5698e6d5f9029b63cf296ffbf4716edb999fed6743c8671bd795；新run root在只读检查时不存在。
+
+同步：stage2_d122_rdce_ground_head.py SHA256=1d244d2ef89fc4bbd9d87c02a83f008548fd65e62bc05a579c77ad5897764197；run_d122_g1_sourceheld_one_shot.py SHA256=07e7902d5c3fddf723af9401e3f500e3029590a6db02b6bc90110e0048581429；tap SHA256=48b92fa8defc1c7261ca80f9e0723662e3fe6e8c64ec0881c8ef13bab3cafa2f；receipt SHA256=24badfa3f56c8f1b98a35768ea102a6c8e13267fcff80d59060ec6f2f13e0665。
+
+固定目录=/home/szu2070436088/2510044040/CV-SincNet；Python=/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python；CUDA_VISIBLE_DEVICES=0：
+
+~~~bash
+python code/scripts/run_d122_g1_sourceheld_one_shot.py predict --package-root /home/szu2070436088/2510044040/CV-SincNet/runs/d106_g1_sourceheld_b442472b_20260801_r2/packages --rdce-asset-wire /home/szu2070436088/2510044040/CV-SincNet/runs/d106_real_integration_dba10236_20260801_r7/output/rdce_asset/d106_rdce_gtsm.asset.wire --rdce-wire-sha256 20e44cb0eb2f5698e6d5f9029b63cf296ffbf4716edb999fed6743c8671bd795 --d106-tap-archive <run_root>/input/d106_ls_strict_tap.npz --d106-tap-receipt <run_root>/input/d106_ls_strict_tap.receipt.json --d106-tap-archive-sha256 48b92fa8defc1c7261ca80f9e0723662e3fe6e8c64ec0881c8ef13bab3cafa2f --checkpoint-sha256 2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98 --run-id d122_g1_sourceheld_d5a1892a_20260803_r1 --output-dir <run_root>/predictions
+python code/scripts/run_d122_g1_sourceheld_one_shot.py score --prediction-root <run_root>/predictions --truth-json /home/szu2070436088/2510044040/CV-SincNet/runs/d106_g1_sourceheld_b442472b_20260801_r2/packages/scorer_only/truth.json --truth-input-seal-json /home/szu2070436088/2510044040/CV-SincNet/runs/d106_g1_sourceheld_b442472b_20260801_r2/packages/scorer_only/truth_input_seal.json --truth-open-event-json <run_root>/truth_open_event.json --output-json <run_root>/held_scores.json
+~~~
+
+停止仅P0或两行同一确定性exception fingerprint且零prediction；不得根据性能数值停止、调参或重启。
