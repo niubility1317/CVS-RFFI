@@ -1,6 +1,6 @@
 # D112-SEAM-qKNN source-held G1报告（r2）
 
-状态：`PREREGISTERED / LOCAL_VERIFIED / NOT_RUN / NO_PERFORMANCE_RESULT`
+状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
 
 - run ID：`d112_g1_sourceheld_seam_20260802_r2`。
 - 目标：在固定新source-held split上完整运行`M0/M_HEAD_GROUND/M_JOINT_SEAM`三臂63行／189个prediction单元。
@@ -11,3 +11,5 @@
 - 执行：重新从固定输入运行`prepare→predict`；确认63行／189单元后才允许`score`。predict无truth参数，本地纯NumPy，不使用N607/GPU。
 - 裁决：完整同row报告old BA、seen-new、H、old floor和negative tail；联合稳定负收益则关闭D112，不调参、不增加seed、不跑125。
 - 技术停止：仅输入／SHA／覆盖、非有限数、确定性异常或零prediction；禁止按性能停止。
+
+r2的`prepare`完成；`predict`在首个row收据序列化前因嵌套只读`mappingproxy`不可直接JSON编码而退出。prediction row／manifest、truth-open event和score仍均为0，truth未打开。修复提交`049c4927`仅将审计只读映射／序列／NumPy标量递归转换为等值JSON对象，26项测试通过；公式、输入、三臂和矩阵未改变。r2不续写，最后一次发布修复使用全新r3；若r3仍不闭合，不再扩展此runner。
