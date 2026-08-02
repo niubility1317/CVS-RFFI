@@ -74,7 +74,7 @@ P_c=I-g_cg_c^T.
 
 \[
 v_{g,c}=\epsilon_0+
-\operatorname{Mean}_d\frac{\lVert P_c(\mu_{dc}-g_c)-\bar u_d\rVert^2}{p}+q_c,
+\operatorname{Mean}_d\frac{\lVert P_c(\mu_{dc}-g_c)-\bar u_d\rVert^2}{p},
 \]
 
 \[
