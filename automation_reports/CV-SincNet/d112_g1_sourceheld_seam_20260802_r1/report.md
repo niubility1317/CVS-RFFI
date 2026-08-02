@@ -1,6 +1,6 @@
 # D112-SEAM-qKNN source-held G1报告
 
-状态：`PREREGISTERED / LOCAL_VERIFIED / NOT_RUN / NO_PERFORMANCE_RESULT`
+状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
 
 ## 身份与目标
 
@@ -52,3 +52,7 @@
 3.`score --prediction-root <artifacts>/predictions --truth-json <artifacts>/packages/scorer_only/truth.json --truth-input-seal-json <artifacts>/packages/scorer_only/truth_input_seal.json --truth-open-event-json <artifacts>/truth_open_event.json --output-json <artifacts>/held_scores.json`
 
 技术停止只针对输入／SHA／覆盖、非有限数、确定性异常或零prediction；禁止依据中间accuracy、H或floor停止。预期artifact为21个package、63个prediction row、prediction manifest、truth-open event和63行同row score。
+
+## r1技术终态
+
+`prepare`完整生成21个不可变predictor package、package manifest、truth seal和scorer-only truth。`predict`在首个row写入前读取不存在的审计键`query_state_updates`并以`KeyError`退出。固定证据：prediction row=0、prediction manifest=0、truth-open event=0、score=0；因此没有性能结果且truth未打开。根因仅是runner与`audit_d112_seam_state`实际字段合同不一致，方法公式、输入、三臂和矩阵均未执行到性能面。修复提交`1b6a9711`删除该不存在字段读取并保留`query_rows_used_for_fit=0`检查；25项聚焦测试通过。r1所有artifact保留且不续写，下一次使用全新r2。
