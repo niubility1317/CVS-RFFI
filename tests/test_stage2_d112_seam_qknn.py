@@ -9,12 +9,17 @@ import pytest
 from cvsrffi.stage2_d112_seam_bundle import (
     D112BundleError,
     FEATURE_DIM,
+    G1_COMPONENT_STATE,
+    G1_EVALUATION_SCOPE,
     build_d112_g0_bundle,
+    build_d112_source_held_g1_bundle,
 )
 from cvsrffi.stage2_d112_seam_qknn import (
     fit_d112_seam_g0_state,
     fit_d112_seam_state,
+    fit_d112_seam_source_held_g1_state,
     score_d112_seam_logits,
+    score_d112_seam_source_held_g1_logits,
     seam_jacobian_trace,
     sphere_exp,
     sphere_log,
@@ -58,6 +63,26 @@ def _bundle(*, global_valid: bool = True, order: tuple[int, ...] | None = None):
         tau_h_r=0.004,
         checkpoint_sha256="1" * 64,
         source_aggregate_sha256="2" * 64,
+        global_bundle_valid=global_valid,
+    )
+
+
+def _source_held_g1_bundle(*, global_valid: bool = True):
+    ground, q0, basis = _geometry()
+    return build_d112_source_held_g1_bundle(
+        class_registry=OLD,
+        g=ground,
+        q0=q0,
+        U=basis,
+        sigma0_r=np.asarray([0.002 + index * 1.0e-5 for index in range(6)]),
+        sigma0_amb=np.asarray([0.002 + index * 1.0e-5 for index in range(6)]),
+        v_g_r=np.asarray([0.001 + index * 1.0e-5 for index in range(6)]),
+        v_g_amb=np.asarray([0.001 + index * 1.0e-5 for index in range(6)]),
+        tau_h_r=0.004,
+        checkpoint_sha256="1" * 64,
+        source_aggregate_sha256="2" * 64,
+        phase1_seal_sha256="5" * 64,
+        source_held_split_sha256="6" * 64,
         global_bundle_valid=global_valid,
     )
 
@@ -179,8 +204,66 @@ def test_fit_api_has_no_query_truth_role_or_quota_surface() -> None:
 
 
 def test_formal_entry_rejects_even_a_global_invalid_g0_bundle() -> None:
-    with pytest.raises(Exception, match="formal D112 surface is not implemented"):
+    with pytest.raises(Exception, match="target formal D112 Phase2 surface"):
         fit_d112_seam_state(_bundle(global_valid=False), _bank(1))
+
+
+@pytest.mark.parametrize("k", [1, 5, 10])
+def test_source_held_g1_is_immutable_and_leaves_new_class_at_exact_m0(k: int) -> None:
+    bundle = _source_held_g1_bundle()
+    bank = _bank(k)
+    state = fit_d112_seam_source_held_g1_state(bundle, bank)
+    query, _labels = _support(k)
+    actual = score_d112_seam_source_held_g1_logits(state, bank, query)
+    baseline = _m0(bank, query)
+    assert bundle.manifest["component_state"] == G1_COMPONENT_STATE
+    assert bundle.manifest["evaluation_scope"] == G1_EVALUATION_SCOPE
+    assert bundle.manifest["formal_phase2_eligible"] is False
+    assert bundle.manifest["target_access_allowed"] is False
+    assert bundle.manifest["source_row_runtime_access_allowed"] is False
+    assert bundle.manifest["query_truth_access_allowed"] is False
+    assert bundle.manifest["source_held_query_access_allowed"] is True
+    assert not bundle.g.flags.writeable
+    assert state.bundle_component_state == G1_COMPONENT_STATE
+    assert state.evaluation_scope == G1_EVALUATION_SCOPE
+    assert np.max(np.abs(actual[:, :6] - baseline[:, :6])) > 0.0
+    assert np.array_equal(actual[:, 6], baseline[:, 6])
+    with pytest.raises(Exception, match="generic D112 scorer is reserved"):
+        score_d112_seam_logits(state, bank, query)
+
+
+def test_source_held_g1_rejects_g0_relabel_and_cross_surface_fit() -> None:
+    g0 = _bundle()
+    g1 = _source_held_g1_bundle()
+    relabelled = dict(g0.manifest)
+    relabelled["component_state"] = G1_COMPONENT_STATE
+    with pytest.raises(D112BundleError, match="source-held G1"):
+        replace(g0, manifest=relabelled)
+    with pytest.raises(Exception, match="source-held G1 fit"):
+        fit_d112_seam_source_held_g1_state(g0, _bank(1))
+    with pytest.raises(Exception, match="G0 fit"):
+        fit_d112_seam_g0_state(g1, _bank(1))
+    with pytest.raises(Exception, match="target formal D112 Phase2 surface"):
+        fit_d112_seam_state(g1, _bank(1))
+
+
+def test_source_held_g1_builder_and_fit_have_no_source_row_or_truth_surface() -> None:
+    builder_parameters = set(inspect.signature(build_d112_source_held_g1_bundle).parameters)
+    assert not builder_parameters & {
+        "g0_bundle",
+        "source_rows",
+        "source_ids",
+        "target",
+        "query",
+        "truth",
+        "labels",
+        "role",
+        "quota",
+    }
+    fit_parameters = set(inspect.signature(fit_d112_seam_source_held_g1_state).parameters)
+    assert fit_parameters == {"bundle", "bank"}
+    score_parameters = set(inspect.signature(score_d112_seam_source_held_g1_logits).parameters)
+    assert score_parameters == {"state", "bank", "held_query_zid"}
 
 
 def test_donor_invalid_class_can_still_receive_other_class_transport() -> None:

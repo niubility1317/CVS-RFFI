@@ -1,8 +1,9 @@
-"""Minimal typed Phase1 aggregate consumed by D112 SEAM-qKNN.
+"""Typed immutable Phase1 aggregate consumed by D112 SEAM-qKNN.
 
-This module contains no source-row builder and no target adaptation logic.  It
-only validates a decoded, already aggregated Phase1 component and binds its
-numeric contents to one immutable receipt used by the support-only scorer.
+The bundle has exactly two non-target surfaces: a nonformal G0 functional
+check and an independently frozen source-held G1 performance surface.  It
+contains no source rows, target data, query truth, or adaptation logic.  The
+numeric aggregate and lifecycle identity are jointly bound by ``content_root``.
 """
 
 from __future__ import annotations
@@ -23,6 +24,9 @@ FEATURE_DIM = 160
 SHARED_RANK = 3
 OLD_CLASS_COUNT = 6
 G0_COMPONENT_STATE = "NONFORMAL_G0_FUNCTIONAL_ONLY"
+G1_COMPONENT_STATE = "SOURCE_HELD_G1_PERFORMANCE"
+G0_EVALUATION_SCOPE = "NONFORMAL_G0_FUNCTIONAL_ONLY"
+G1_EVALUATION_SCOPE = "SOURCE_HELD_ONLY"
 NUMERIC_EPSILON = 64.0 * float(np.finfo(np.float32).eps)
 EPSILON_VARIANCE_R = NUMERIC_EPSILON**2 / SHARED_RANK
 EPSILON_VARIANCE_AMB = NUMERIC_EPSILON**2 / FEATURE_DIM
@@ -34,10 +38,17 @@ IDENTITY_FIELDS = (
     "performance_claim_allowed",
     "performance_metrics_allowed",
     "target_access_allowed",
+    "source_row_runtime_access_allowed",
+    "source_held_query_access_allowed",
+    "query_truth_access_allowed",
     "query_rows_used_for_fit",
     "checkpoint_sha256",
     "source_aggregate_sha256",
+    "phase1_seal_sha256",
+    "source_held_split_sha256",
+    "evaluation_scope",
 )
+MANIFEST_FIELDS = frozenset(("schema", "feature_schema", *IDENTITY_FIELDS, "content_root_sha256"))
 
 
 class D112BundleError(ValueError):
@@ -153,21 +164,47 @@ def _content_payload(
 
 
 def _manifest_identity(manifest: Mapping[str, Any]) -> dict[str, Any]:
-    if any(field not in manifest for field in IDENTITY_FIELDS):
-        raise D112BundleError("D112 manifest identity field missing")
+    if set(manifest) != MANIFEST_FIELDS:
+        raise D112BundleError("D112 manifest field set drift")
+    if manifest.get("schema") != SCHEMA or manifest.get("feature_schema") != FEATURE_SCHEMA:
+        raise D112BundleError("D112 manifest schema drift")
     result = {field: manifest[field] for field in IDENTITY_FIELDS}
     _require_sha256(str(result["checkpoint_sha256"]), "checkpoint_sha256")
     _require_sha256(str(result["source_aggregate_sha256"]), "source_aggregate_sha256")
+    phase1_seal = _require_sha256(str(result["phase1_seal_sha256"]), "phase1_seal_sha256")
+    held_split = _require_sha256(
+        str(result["source_held_split_sha256"]), "source_held_split_sha256"
+    )
     if (
-        result["component_state"] != G0_COMPONENT_STATE
-        or type(result["global_bundle_valid"]) is not bool
+        type(result["global_bundle_valid"]) is not bool
         or result["formal_phase2_eligible"] is not False
         or result["performance_claim_allowed"] is not False
-        or result["performance_metrics_allowed"] is not False
         or result["target_access_allowed"] is not False
+        or result["source_row_runtime_access_allowed"] is not False
+        or result["query_truth_access_allowed"] is not False
         or result["query_rows_used_for_fit"] != 0
     ):
-        raise D112BundleError("D112 G0 manifest permission identity drift")
+        raise D112BundleError("D112 manifest common permission identity drift")
+    if result["component_state"] == G0_COMPONENT_STATE:
+        if (
+            result["performance_metrics_allowed"] is not False
+            or result["source_held_query_access_allowed"] is not False
+            or result["evaluation_scope"] != G0_EVALUATION_SCOPE
+            or phase1_seal != "0" * 64
+            or held_split != "0" * 64
+        ):
+            raise D112BundleError("D112 G0 manifest permission identity drift")
+    elif result["component_state"] == G1_COMPONENT_STATE:
+        if (
+            result["performance_metrics_allowed"] is not True
+            or result["source_held_query_access_allowed"] is not True
+            or result["evaluation_scope"] != G1_EVALUATION_SCOPE
+            or phase1_seal == "0" * 64
+            or held_split == "0" * 64
+        ):
+            raise D112BundleError("D112 source-held G1 manifest permission identity drift")
+    else:
+        raise D112BundleError("D112 component state is not an allowed surface")
     reason = str(result["global_invalid_reason"])
     if (
         result["global_bundle_valid"] is True
@@ -290,7 +327,7 @@ class D112Bundle:
             raise D112BundleError("D112 manifest/content root binding drift")
 
 
-def build_d112_g0_bundle(
+def _build_d112_bundle(
     *,
     class_registry: Sequence[str],
     g: np.ndarray,
@@ -303,6 +340,12 @@ def build_d112_g0_bundle(
     tau_h_r: float,
     checkpoint_sha256: str,
     source_aggregate_sha256: str,
+    phase1_seal_sha256: str,
+    source_held_split_sha256: str,
+    component_state: str,
+    evaluation_scope: str,
+    performance_metrics_allowed: bool,
+    source_held_query_access_allowed: bool,
     global_bundle_valid: bool = True,
     global_invalid_reason: str | None = None,
     g_quantization_l2_error_bound: np.ndarray | None = None,
@@ -310,7 +353,7 @@ def build_d112_g0_bundle(
     U_operator_error_upper_bound: float = 0.0,
     endpoint_quantization_chord_mse: np.ndarray | None = None,
 ) -> D112Bundle:
-    """Construct the typed G0 surface from caller-owned Phase1 aggregates."""
+    """Construct one typed D112 surface from already sealed aggregate inputs."""
 
     registry = tuple(str(value) for value in class_registry)
     decoded_q0 = _unit_rows(np.asarray(q0)[None, :], (1, FEATURE_DIM), "q0")[0]
@@ -341,18 +384,26 @@ def build_d112_g0_bundle(
     manifest_values = {
         "schema": SCHEMA,
         "feature_schema": FEATURE_SCHEMA,
-        "component_state": G0_COMPONENT_STATE,
+        "component_state": str(component_state),
         "global_bundle_valid": bool(global_bundle_valid),
         "global_invalid_reason": reason,
         "formal_phase2_eligible": False,
         "performance_claim_allowed": False,
-        "performance_metrics_allowed": False,
+        "performance_metrics_allowed": bool(performance_metrics_allowed),
         "target_access_allowed": False,
+        "source_row_runtime_access_allowed": False,
+        "source_held_query_access_allowed": bool(source_held_query_access_allowed),
+        "query_truth_access_allowed": False,
         "query_rows_used_for_fit": 0,
         "checkpoint_sha256": _require_sha256(checkpoint_sha256, "checkpoint_sha256"),
         "source_aggregate_sha256": _require_sha256(
             source_aggregate_sha256, "source_aggregate_sha256"
         ),
+        "phase1_seal_sha256": _require_sha256(phase1_seal_sha256, "phase1_seal_sha256"),
+        "source_held_split_sha256": _require_sha256(
+            source_held_split_sha256, "source_held_split_sha256"
+        ),
+        "evaluation_scope": str(evaluation_scope),
     }
     root = _canonical_sha256(
         _content_payload(
@@ -376,6 +427,112 @@ def build_d112_g0_bundle(
     )
 
 
+def build_d112_g0_bundle(
+    *,
+    class_registry: Sequence[str],
+    g: np.ndarray,
+    q0: np.ndarray,
+    U: np.ndarray,
+    sigma0_r: np.ndarray,
+    sigma0_amb: np.ndarray,
+    v_g_r: np.ndarray,
+    v_g_amb: np.ndarray,
+    tau_h_r: float,
+    checkpoint_sha256: str,
+    source_aggregate_sha256: str,
+    global_bundle_valid: bool = True,
+    global_invalid_reason: str | None = None,
+    g_quantization_l2_error_bound: np.ndarray | None = None,
+    q0_quantization_l2_error_bound: float = 0.0,
+    U_operator_error_upper_bound: float = 0.0,
+    endpoint_quantization_chord_mse: np.ndarray | None = None,
+) -> D112Bundle:
+    """Construct the nonformal source-only G0 functional surface."""
+
+    return _build_d112_bundle(
+        class_registry=class_registry,
+        g=g,
+        q0=q0,
+        U=U,
+        sigma0_r=sigma0_r,
+        sigma0_amb=sigma0_amb,
+        v_g_r=v_g_r,
+        v_g_amb=v_g_amb,
+        tau_h_r=tau_h_r,
+        checkpoint_sha256=checkpoint_sha256,
+        source_aggregate_sha256=source_aggregate_sha256,
+        phase1_seal_sha256="0" * 64,
+        source_held_split_sha256="0" * 64,
+        component_state=G0_COMPONENT_STATE,
+        evaluation_scope=G0_EVALUATION_SCOPE,
+        performance_metrics_allowed=False,
+        source_held_query_access_allowed=False,
+        global_bundle_valid=global_bundle_valid,
+        global_invalid_reason=global_invalid_reason,
+        g_quantization_l2_error_bound=g_quantization_l2_error_bound,
+        q0_quantization_l2_error_bound=q0_quantization_l2_error_bound,
+        U_operator_error_upper_bound=U_operator_error_upper_bound,
+        endpoint_quantization_chord_mse=endpoint_quantization_chord_mse,
+    )
+
+
+def build_d112_source_held_g1_bundle(
+    *,
+    class_registry: Sequence[str],
+    g: np.ndarray,
+    q0: np.ndarray,
+    U: np.ndarray,
+    sigma0_r: np.ndarray,
+    sigma0_amb: np.ndarray,
+    v_g_r: np.ndarray,
+    v_g_amb: np.ndarray,
+    tau_h_r: float,
+    checkpoint_sha256: str,
+    source_aggregate_sha256: str,
+    phase1_seal_sha256: str,
+    source_held_split_sha256: str,
+    global_bundle_valid: bool = True,
+    global_invalid_reason: str | None = None,
+    g_quantization_l2_error_bound: np.ndarray | None = None,
+    q0_quantization_l2_error_bound: float = 0.0,
+    U_operator_error_upper_bound: float = 0.0,
+    endpoint_quantization_chord_mse: np.ndarray | None = None,
+) -> D112Bundle:
+    """Construct the independently sealed source-held G1 surface.
+
+    This builder receives only already-aggregated Phase1 numeric assets and
+    immutable identities.  It deliberately has no G0-bundle, source-row,
+    target, query, or truth parameter.  The held query is admitted only later
+    through the source-held scorer after support-only state construction.
+    """
+
+    return _build_d112_bundle(
+        class_registry=class_registry,
+        g=g,
+        q0=q0,
+        U=U,
+        sigma0_r=sigma0_r,
+        sigma0_amb=sigma0_amb,
+        v_g_r=v_g_r,
+        v_g_amb=v_g_amb,
+        tau_h_r=tau_h_r,
+        checkpoint_sha256=checkpoint_sha256,
+        source_aggregate_sha256=source_aggregate_sha256,
+        phase1_seal_sha256=phase1_seal_sha256,
+        source_held_split_sha256=source_held_split_sha256,
+        component_state=G1_COMPONENT_STATE,
+        evaluation_scope=G1_EVALUATION_SCOPE,
+        performance_metrics_allowed=True,
+        source_held_query_access_allowed=True,
+        global_bundle_valid=global_bundle_valid,
+        global_invalid_reason=global_invalid_reason,
+        g_quantization_l2_error_bound=g_quantization_l2_error_bound,
+        q0_quantization_l2_error_bound=q0_quantization_l2_error_bound,
+        U_operator_error_upper_bound=U_operator_error_upper_bound,
+        endpoint_quantization_chord_mse=endpoint_quantization_chord_mse,
+    )
+
+
 __all__ = [
     "D112Bundle",
     "D112BundleError",
@@ -383,9 +540,14 @@ __all__ = [
     "FEATURE_SCHEMA",
     "EPSILON_VARIANCE_AMB",
     "EPSILON_VARIANCE_R",
+    "G0_EVALUATION_SCOPE",
     "G0_COMPONENT_STATE",
+    "G1_EVALUATION_SCOPE",
+    "G1_COMPONENT_STATE",
+    "MANIFEST_FIELDS",
     "OLD_CLASS_COUNT",
     "SCHEMA",
     "SHARED_RANK",
     "build_d112_g0_bundle",
+    "build_d112_source_held_g1_bundle",
 ]

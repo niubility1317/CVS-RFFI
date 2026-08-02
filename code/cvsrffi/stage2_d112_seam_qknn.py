@@ -17,7 +17,14 @@ from typing import Any, Mapping
 
 import numpy as np
 
-from cvsrffi.stage2_d112_seam_bundle import D112Bundle, FEATURE_DIM
+from cvsrffi.stage2_d112_seam_bundle import (
+    D112Bundle,
+    FEATURE_DIM,
+    G0_COMPONENT_STATE,
+    G0_EVALUATION_SCOPE,
+    G1_COMPONENT_STATE,
+    G1_EVALUATION_SCOPE,
+)
 from cvsrffi.stage2_zid_student_t_qknn import (
     TypedINT8ZIDSupportBank,
     decode_zid_support_bank,
@@ -33,7 +40,9 @@ SHARED_RANK = 3
 EPSILON_GEO = 64.0 * float(np.finfo(np.float32).eps)
 EPSILON_VARIANCE_R = EPSILON_GEO**2 / SHARED_RANK
 EPSILON_VARIANCE_AMB = EPSILON_GEO**2 / FEATURE_DIM
-G0_COMPONENT_STATE = "NONFORMAL_G0_FUNCTIONAL_ONLY"
+G0_FIT_SURFACE = "G0_FUNCTIONAL_ONLY"
+SOURCE_HELD_G1_FIT_SURFACE = "SOURCE_HELD_G1_PERFORMANCE"
+TARGET_FORMAL_FIT_SURFACE = "TARGET_FORMAL_PHASE2"
 
 
 class D112SEAMError(ValueError):
@@ -238,6 +247,8 @@ class D112SEAMState:
     discrepancy_amb: np.ndarray
     anchor_shift_l2: np.ndarray
     global_bundle_valid: bool
+    bundle_component_state: str
+    evaluation_scope: str
     bank_receipt_sha256: str
     config_lock_digest: str
     bundle_content_root_sha256: str
@@ -313,6 +324,8 @@ def _state_payload(state: D112SEAMState) -> dict[str, Any]:
         "classes": list(state.classes),
         "old_class_indices": list(state.old_class_indices),
         "global_bundle_valid": bool(state.global_bundle_valid),
+        "bundle_component_state": state.bundle_component_state,
+        "evaluation_scope": state.evaluation_scope,
         "bank_receipt_sha256": state.bank_receipt_sha256,
         "config_lock_digest": state.config_lock_digest,
         "bundle_content_root_sha256": state.bundle_content_root_sha256,
@@ -354,6 +367,18 @@ def _verify_state(state: D112SEAMState) -> None:
         )
     ):
         raise D112SEAMError("D112 SEAM state numeric invariant drift")
+    if (
+        state.bundle_component_state == G0_COMPONENT_STATE
+        and state.evaluation_scope == G0_EVALUATION_SCOPE
+    ):
+        pass
+    elif (
+        state.bundle_component_state == G1_COMPONENT_STATE
+        and state.evaluation_scope == G1_EVALUATION_SCOPE
+    ):
+        pass
+    else:
+        raise D112SEAMError("D112 SEAM state surface binding drift")
     old_mask = np.zeros(len(state.classes), dtype=bool)
     old_mask[old] = True
     if np.any(state.information_valid & ~old_mask) or np.any(state.donor_valid & ~old_mask):
@@ -457,25 +482,44 @@ def _support_observation(
         return None
 
 
-def _require_fit_surface(bundle: D112Bundle, *, formal: bool) -> bool:
-    """Return global asset validity after checking the selected immutable surface."""
+def _require_fit_surface(bundle: D112Bundle, *, surface: str) -> bool:
+    """Return asset validity after checking one explicit immutable surface."""
 
     manifest = bundle.manifest
     if not isinstance(manifest, Mapping):
         raise D112SEAMError("D112 manifest must be a mapping")
-    if formal:
+    if surface == TARGET_FORMAL_FIT_SURFACE:
         raise D112SEAMError(
-            "formal D112 surface is not implemented; G0 bundles cannot enter it"
+            "target formal D112 Phase2 surface is not implemented and remains fail-closed"
         )
-    if (
-        manifest.get("component_state") != G0_COMPONENT_STATE
-        or manifest.get("formal_phase2_eligible") is not False
-        or manifest.get("performance_claim_allowed") is not False
-        or manifest.get("performance_metrics_allowed") is not False
-        or manifest.get("target_access_allowed") is not False
-        or manifest.get("query_rows_used_for_fit") != 0
-    ):
-        raise D112SEAMError("D112 G0 fit requires exact functional-only markers")
+    common = (
+        manifest.get("formal_phase2_eligible") is False
+        and manifest.get("performance_claim_allowed") is False
+        and manifest.get("target_access_allowed") is False
+        and manifest.get("source_row_runtime_access_allowed") is False
+        and manifest.get("query_truth_access_allowed") is False
+        and manifest.get("query_rows_used_for_fit") == 0
+    )
+    if surface == G0_FIT_SURFACE:
+        expected = (
+            manifest.get("component_state") == G0_COMPONENT_STATE
+            and manifest.get("performance_metrics_allowed") is False
+            and manifest.get("source_held_query_access_allowed") is False
+            and manifest.get("evaluation_scope") == G0_EVALUATION_SCOPE
+        )
+        if not (common and expected):
+            raise D112SEAMError("D112 G0 fit requires exact functional-only markers")
+    elif surface == SOURCE_HELD_G1_FIT_SURFACE:
+        expected = (
+            manifest.get("component_state") == G1_COMPONENT_STATE
+            and manifest.get("performance_metrics_allowed") is True
+            and manifest.get("source_held_query_access_allowed") is True
+            and manifest.get("evaluation_scope") == G1_EVALUATION_SCOPE
+        )
+        if not (common and expected):
+            raise D112SEAMError("D112 source-held G1 fit requires exact source-held markers")
+    else:
+        raise D112SEAMError("D112 requested fit surface is not recognized")
     global_valid = manifest.get("global_bundle_valid") is True and _global_geometry_valid(bundle)
     # A sealed bundle that reports fixed-asset invalidity is specified to resolve
     # to M0, not to invent a replacement asset from target support.
@@ -488,7 +532,7 @@ def _fit_d112_seam_state(
     bundle: D112Bundle,
     bank: TypedINT8ZIDSupportBank,
     *,
-    formal: bool,
+    surface: str,
 ) -> D112SEAMState:
     """Build one immutable state from Phase1 assets and current labelled support only."""
 
@@ -496,7 +540,7 @@ def _fit_d112_seam_state(
         raise D112SEAMError("D112 fit requires exact bundle and qKNN bank types")
     if float(bank.config.kernel_volume_gamma) != 1.0:
         raise D112SEAMError("D112 unit-mass density requires kernel_volume_gamma=1")
-    global_valid = _require_fit_surface(bundle, formal=formal)
+    global_valid = _require_fit_surface(bundle, surface=surface)
     old_classes = tuple(bundle.class_registry)
     if len(old_classes) != EXPECTED_OLD_CLASS_COUNT:
         raise D112SEAMError("D112 is frozen for exactly six Phase1 old classes")
@@ -686,6 +730,8 @@ def _fit_d112_seam_state(
         classes=tuple(bank.classes),
         old_class_indices=old_indices,
         global_bundle_valid=bool(global_valid),
+        bundle_component_state=str(bundle.manifest.get("component_state", "")),
+        evaluation_scope=str(bundle.manifest.get("evaluation_scope", "")),
         bank_receipt_sha256=bank.bank_receipt_sha256,
         config_lock_digest=bank.config_lock_digest,
         bundle_content_root_sha256=str(bundle.manifest.get("content_root_sha256", "")),
@@ -701,9 +747,9 @@ def _fit_d112_seam_state(
 def fit_d112_seam_state(
     bundle: D112Bundle, bank: TypedINT8ZIDSupportBank
 ) -> D112SEAMState:
-    """Fit the formal support-only D112 state; no query or truth API exists."""
+    """Fail closed for the unimplemented target-formal Phase2 surface."""
 
-    return _fit_d112_seam_state(bundle, bank, formal=True)
+    return _fit_d112_seam_state(bundle, bank, surface=TARGET_FORMAL_FIT_SURFACE)
 
 
 def fit_d112_seam_g0_state(
@@ -711,10 +757,22 @@ def fit_d112_seam_g0_state(
 ) -> D112SEAMState:
     """Fit the nonformal source-only G0 functional state without a target surface."""
 
-    return _fit_d112_seam_state(bundle, bank, formal=False)
+    return _fit_d112_seam_state(bundle, bank, surface=G0_FIT_SURFACE)
 
 
-def score_d112_seam_logits(
+def fit_d112_seam_source_held_g1_state(
+    bundle: D112Bundle, bank: TypedINT8ZIDSupportBank
+) -> D112SEAMState:
+    """Fit the source-held G1 state from sealed assets and labelled support only.
+
+    No query feature, query truth, source row, target, role, or quota input is
+    accepted here.  This is not the target-formal Phase2 entry point.
+    """
+
+    return _fit_d112_seam_state(bundle, bank, surface=SOURCE_HELD_G1_FIT_SURFACE)
+
+
+def _score_d112_seam_logits(
     state: D112SEAMState,
     bank: TypedINT8ZIDSupportBank,
     query_zid: np.ndarray,
@@ -760,12 +818,56 @@ def score_d112_seam_logits(
     return _readonly(output, np.float32)
 
 
+def score_d112_seam_logits(
+    state: D112SEAMState,
+    bank: TypedINT8ZIDSupportBank,
+    query_zid: np.ndarray,
+) -> np.ndarray:
+    """Score the nonformal G0 functional surface only."""
+
+    if type(state) is not D112SEAMState or state.bundle_component_state != G0_COMPONENT_STATE:
+        raise D112SEAMError("generic D112 scorer is reserved for the nonformal G0 surface")
+    return _score_d112_seam_logits(state, bank, query_zid)
+
+
+def score_d112_seam_source_held_g1_logits(
+    state: D112SEAMState,
+    bank: TypedINT8ZIDSupportBank,
+    held_query_zid: np.ndarray,
+) -> np.ndarray:
+    """Score independent source-held query features over all registered classes.
+
+    Truth remains outside this API and must only join immutable predictions in
+    an independent source-held scorer.  Target-formal Phase2 use is not
+    admitted by this named surface.
+    """
+
+    if (
+        type(state) is not D112SEAMState
+        or state.bundle_component_state != G1_COMPONENT_STATE
+        or state.evaluation_scope != G1_EVALUATION_SCOPE
+    ):
+        raise D112SEAMError("source-held G1 scorer requires a source-held G1 state")
+    return _score_d112_seam_logits(state, bank, held_query_zid)
+
+
 def predict_d112_seam(
     state: D112SEAMState,
     bank: TypedINT8ZIDSupportBank,
     query_zid: np.ndarray,
 ) -> tuple[str, ...]:
     logits = score_d112_seam_logits(state, bank, query_zid)
+    return tuple(state.classes[index] for index in np.argmax(logits, axis=1))
+
+
+def predict_d112_seam_source_held_g1(
+    state: D112SEAMState,
+    bank: TypedINT8ZIDSupportBank,
+    held_query_zid: np.ndarray,
+) -> tuple[str, ...]:
+    """Return source-held G1 predictions without a truth input."""
+
+    logits = score_d112_seam_source_held_g1_logits(state, bank, held_query_zid)
     return tuple(state.classes[index] for index in np.argmax(logits, axis=1))
 
 
@@ -803,15 +905,21 @@ __all__ = [
     "EPSILON_VARIANCE_AMB",
     "EPSILON_VARIANCE_R",
     "EXPECTED_OLD_CLASS_COUNT",
+    "G0_FIT_SURFACE",
     "SCHEMA",
+    "SOURCE_HELD_G1_FIT_SURFACE",
     "SHARED_RANK",
+    "TARGET_FORMAL_FIT_SURFACE",
     "audit_d112_seam_state",
     "fit_d112_seam_g0_state",
     "fit_d112_seam_state",
+    "fit_d112_seam_source_held_g1_state",
     "predict_d112_seam",
+    "predict_d112_seam_source_held_g1",
     "radial_pi_compress",
     "seam_jacobian_trace",
     "score_d112_seam_logits",
+    "score_d112_seam_source_held_g1_logits",
     "sphere_exp",
     "sphere_log",
     "sphere_parallel_transport",
