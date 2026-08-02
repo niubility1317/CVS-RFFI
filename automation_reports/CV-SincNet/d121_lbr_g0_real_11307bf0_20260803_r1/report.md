@@ -1,6 +1,6 @@
 # D121-LBR-qKNN真实archive G0发布报告
 
-状态：`LOCAL_VERIFIED / PREREGISTERED / NOT_YET_LANDED / NO_PERFORMANCE_RESULT`
+状态：`STOPPED_BEFORE_LANDING / NO_PERFORMANCE_RESULT`
 
 ## 1.实验身份与目标
 
@@ -118,3 +118,21 @@ runner必须：
 |远端hash收据|source zip、核心、runner、archive均匹配|
 
 完成后把本报告状态更新为`ARTIFACTS_COMPLETE / ANALYZED`或`NO_PERFORMANCE_RESULT`。若G0通过，下一步只实现和发布冻结四臂G1；若G0失败，立即关闭D121当前revision并研发下一个原理候选。
+
+## 8.r1落地前技术停止结果
+
+- 直连N607预检通过：普通账户、项目根可见，8张GPU均为0%利用率、约1MiB显存占用。
+- 远端run root确认`ABSENT`；固定strict archive SHA256匹配。
+- 报告冻结的`/home/szu2070436088/.conda/envs/ssr-gpu/bin/python`在N607不存在，解释器检查exit=127。
+- runner在创建run root、同步、解包和启动前停止；无PID、无log、无result、无性能字段，严格记为`NO_PERFORMANCE_RESULT`。
+- 补充只读确认：`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`可执行，Python3.10.19，`import numpy`成功。该事实只授权主agent修订新run ID，不得复用r1。
+- 所有短连接结束后`ssh.exe=0`，N607和lab两条TCP22的`ESTABLISHED=0`。
+
+|回执|SHA256|
+|---|---|
+|`preflight_receipt.txt`|`ee8f7150f4149a8246e9a97f7146bc54452a46793770083b776b7b07a6c5ab2c`|
+|`remote_blocker_receipt.txt`|`163829b440f9d450cf7f1ff0dca52b54d9c41a7b0e09420bcf9235136c82165c`|
+|`environment_confirmation_receipt.txt`|`105a3564fb0cb37ae47b52c2011345983f58c93e51b27bddb034b0a6ad153144`|
+|`ssh_cleanup_receipt.txt`|`3a1999e75ebc0bde56727253d85d1440f5e6a4cb54ecd0656e98bb13ec43733e`|
+
+具体修复项只有远端Python路径。按release repair规则，新建不覆盖的r2报告并复用同一实现commit、source archive、方法锁和测试收据；不重做方法或数据验证。
