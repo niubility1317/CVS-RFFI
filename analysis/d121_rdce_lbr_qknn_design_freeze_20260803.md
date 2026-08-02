@@ -107,11 +107,11 @@ query阶段复用M0已经需要的support核logit，只增加每support一个稳
 
 ### 7.3G1：最小四臂source-held
 
-G1只跑固定四臂，不扩展到125矩阵。晋级要求：
+G1只跑固定四臂，不扩展到125矩阵。对`HEAD_AT_ID=M_HEAD-M0`和`HEAD_AT_DA=M_JOINT-M_DA`分别在完整同row集合上汇总，而不是要求每一row的所有指标都非负。晋级要求：
 
-- `M_HEAD`与`M_JOINT`均不得降低old/new净正确数；
-- old floor与all floor均不得降低；
-- K1总正确数必须严格增加；
+- 两个head效应的old correct净和均不得降低；seen-new correct只在`held_class!=None`的row汇总，净和均不得降低；
+- 两个head效应各自的完整矩阵old floor与all-class floor全局最小值均不得降低；
+- 两个head效应各自的K1固定row总正确数净和必须严格增加；
 - 所有比较必须同row、同query、同truth-side scorer闭合。
 
 任一条件不满足即判定该revision性能弱，保留完整负结果并转入下一个原理候选，不启动调参矩阵。
