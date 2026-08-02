@@ -482,6 +482,47 @@ def _support_observation(
         return None
 
 
+def _ground_head_support_observation(
+    *,
+    support: np.ndarray,
+    sigma0_amb: float,
+    active_k: int,
+) -> _SupportObservation | None:
+    """Return only the support prototype and ambient reliability for M_HEAD_GROUND.
+
+    This deliberately does not open a sphere chart or construct a donor
+    coordinate: the ablation isolates the fixed Phase1 ground-anchor expert.
+    """
+
+    try:
+        local = np.asarray(support, dtype=np.float64)
+        if (
+            local.shape != (active_k, FEATURE_DIM)
+            or not np.isfinite(local).all()
+            or not math.isfinite(float(sigma0_amb))
+            or float(sigma0_amb) <= 0.0
+        ):
+            return None
+        total = np.sum(local, axis=0)
+        total_norm = float(np.linalg.norm(total))
+        if not math.isfinite(total_norm) or total_norm <= EPSILON_GEO:
+            return None
+        prototype = total / total_norm
+        if active_k == 1:
+            hat_sigma_amb = 0.0
+        else:
+            hat_sigma_amb = float(
+                np.sum(np.square(local - prototype[None, :]))
+                / ((active_k - 1) * FEATURE_DIM)
+            )
+        v_s_amb = (float(sigma0_amb) + hat_sigma_amb) / active_k
+        if not math.isfinite(v_s_amb) or v_s_amb <= 0.0:
+            return None
+        return _SupportObservation(prototype, None, 0.0, v_s_amb)
+    except (D112SEAMError, FloatingPointError, TypeError, ValueError):
+        return None
+
+
 def _require_fit_surface(bundle: D112Bundle, *, surface: str) -> bool:
     """Return asset validity after checking one explicit immutable surface."""
 
@@ -772,6 +813,134 @@ def fit_d112_seam_source_held_g1_state(
     return _fit_d112_seam_state(bundle, bank, surface=SOURCE_HELD_G1_FIT_SURFACE)
 
 
+def fit_d112_ground_head_source_held_g1_state(
+    bundle: D112Bundle, bank: TypedINT8ZIDSupportBank
+) -> D112SEAMState:
+    """Fit the identifiable fixed-ground-anchor source-held G1 ablation.
+
+    For each valid old class, ``M_HEAD_GROUND`` keeps the immutable Phase1
+    ground anchor exactly at ``g_c`` and gives that unit-mass expert the same
+    ambient-reliability mixture weight as D112.  It performs no chart,
+    transport, donor aggregation, or anchor motion.  New and invalid columns
+    therefore retain their exact M0 scores.
+    """
+
+    if type(bundle) is not D112Bundle or type(bank) is not TypedINT8ZIDSupportBank:
+        raise D112SEAMError("D112 fit requires exact bundle and qKNN bank types")
+    if float(bank.config.kernel_volume_gamma) != 1.0:
+        raise D112SEAMError("D112 unit-mass density requires kernel_volume_gamma=1")
+    global_valid = _require_fit_surface(bundle, surface=SOURCE_HELD_G1_FIT_SURFACE)
+    old_classes = tuple(bundle.class_registry)
+    if len(old_classes) != EXPECTED_OLD_CLASS_COUNT:
+        raise D112SEAMError("D112 is frozen for exactly six Phase1 old classes")
+    if any(name not in bank.classes for name in old_classes):
+        raise D112SEAMError("D112 old registry is not contained in the support bank")
+    old_indices = tuple(bank.classes.index(name) for name in old_classes)
+    class_count = len(bank.classes)
+    ground = np.asarray(bundle.g, dtype=np.float64)
+    sigma0_amb = np.asarray(bundle.sigma0_amb, dtype=np.float64)
+    v_g_amb = np.asarray(bundle.v_g_amb, dtype=np.float64)
+
+    anchors = np.zeros((class_count, FEATURE_DIM), dtype=np.float64)
+    for old_position, bank_index in enumerate(old_indices):
+        anchors[bank_index] = _unit_vector(ground[old_position], "D112 ground anchor")
+    rho = np.zeros(class_count, dtype=np.float64)
+    information_valid = np.zeros(class_count, dtype=np.bool_)
+    donor_valid = np.zeros(class_count, dtype=np.bool_)
+    alpha = np.zeros(class_count, dtype=np.float64)
+    v_s_r = np.zeros(class_count, dtype=np.float64)
+    v_s_amb = np.zeros(class_count, dtype=np.float64)
+    loo_variance_r = np.zeros(class_count, dtype=np.float64)
+    loo_disagreement_r = np.zeros(class_count, dtype=np.float64)
+    jacobian_trace = np.zeros(class_count, dtype=np.float64)
+    v_h_amb = np.zeros(class_count, dtype=np.float64)
+    discrepancy_amb = np.zeros(class_count, dtype=np.float64)
+    anchor_shift_l2 = np.zeros(class_count, dtype=np.float64)
+
+    if global_valid:
+        decoded = normalize_zid_rows(decode_zid_support_bank(bank).astype(np.float32)).astype(
+            np.float64
+        )
+        for old_position, bank_index in enumerate(old_indices):
+            observation = _ground_head_support_observation(
+                support=decoded[bank.class_indices_int16 == bank_index],
+                sigma0_amb=float(sigma0_amb[old_position]),
+                active_k=bank.active_k,
+            )
+            if observation is None:
+                continue
+            # This is the frozen M_HEAD_GROUND formula: no shared motion
+            # uncertainty and no coordinate-derived update are permitted.
+            local_discrepancy = float(
+                np.sum(
+                    np.square(
+                        observation.prototype
+                        - _unit_vector(ground[old_position], "D112 ground anchor")
+                    )
+                )
+                / FEATURE_DIM
+            )
+            mixture_denominator = (
+                observation.v_s_amb
+                + float(v_g_amb[old_position])
+                + local_discrepancy
+            )
+            if (
+                not math.isfinite(local_discrepancy)
+                or local_discrepancy < 0.0
+                or not math.isfinite(mixture_denominator)
+                or mixture_denominator <= 0.0
+            ):
+                continue
+            local_rho = observation.v_s_amb / mixture_denominator
+            if not math.isfinite(local_rho) or not 0.0 < local_rho < 1.0:
+                continue
+            rho[bank_index] = local_rho
+            information_valid[bank_index] = True
+            v_s_amb[bank_index] = observation.v_s_amb
+            discrepancy_amb[bank_index] = local_discrepancy
+
+    arrays = {
+        "anchors": _readonly(anchors, np.float32),
+        "rho": _readonly(rho, np.float32),
+        "information_valid": _readonly(information_valid, np.bool_),
+        "donor_valid": _readonly(donor_valid, np.bool_),
+        "alpha": _readonly(alpha, np.float64),
+        "v_s_r": _readonly(v_s_r, np.float64),
+        "v_s_amb": _readonly(v_s_amb, np.float64),
+        "loo_variance_r": _readonly(loo_variance_r, np.float64),
+        "loo_disagreement_r": _readonly(loo_disagreement_r, np.float64),
+        "jacobian_trace": _readonly(jacobian_trace, np.float64),
+        "v_h_amb": _readonly(v_h_amb, np.float64),
+        "discrepancy_amb": _readonly(discrepancy_amb, np.float64),
+        "anchor_shift_l2": _readonly(anchor_shift_l2, np.float64),
+    }
+    resource = {
+        "persistent_numeric_bytes": int(sum(array.nbytes for array in arrays.values())),
+        "enrollment_projection_macs": 0,
+        "enrollment_pairwise_loo_scalar_terms": 0,
+        "enrollment_ground_discrepancy_macs": EXPECTED_OLD_CLASS_COUNT * FEATURE_DIM,
+        "extra_query_macs_per_row_upper_bound": EXPECTED_OLD_CLASS_COUNT * FEATURE_DIM,
+        "query_dependent_state_bytes": 0,
+    }
+    state = D112SEAMState(
+        classes=tuple(bank.classes),
+        old_class_indices=old_indices,
+        global_bundle_valid=bool(global_valid),
+        bundle_component_state=str(bundle.manifest.get("component_state", "")),
+        evaluation_scope=str(bundle.manifest.get("evaluation_scope", "")),
+        bank_receipt_sha256=bank.bank_receipt_sha256,
+        config_lock_digest=bank.config_lock_digest,
+        bundle_content_root_sha256=str(bundle.manifest.get("content_root_sha256", "")),
+        resource_receipt=MappingProxyType(resource),
+        state_receipt_sha256="0" * 64,
+        **arrays,
+    )
+    object.__setattr__(state, "state_receipt_sha256", _canonical_sha256(_state_payload(state)))
+    _verify_state(state)
+    return state
+
+
 def _score_d112_seam_logits(
     state: D112SEAMState,
     bank: TypedINT8ZIDSupportBank,
@@ -911,6 +1080,7 @@ __all__ = [
     "SHARED_RANK",
     "TARGET_FORMAL_FIT_SURFACE",
     "audit_d112_seam_state",
+    "fit_d112_ground_head_source_held_g1_state",
     "fit_d112_seam_g0_state",
     "fit_d112_seam_state",
     "fit_d112_seam_source_held_g1_state",

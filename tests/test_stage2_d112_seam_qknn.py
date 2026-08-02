@@ -15,6 +15,7 @@ from cvsrffi.stage2_d112_seam_bundle import (
     build_d112_source_held_g1_bundle,
 )
 from cvsrffi.stage2_d112_seam_qknn import (
+    fit_d112_ground_head_source_held_g1_state,
     fit_d112_seam_g0_state,
     fit_d112_seam_state,
     fit_d112_seam_source_held_g1_state,
@@ -232,6 +233,51 @@ def test_source_held_g1_is_immutable_and_leaves_new_class_at_exact_m0(k: int) ->
         score_d112_seam_logits(state, bank, query)
 
 
+@pytest.mark.parametrize("k", [1, 5, 10])
+def test_ground_head_source_held_g1_uses_fixed_ground_anchor_and_exact_m0_new(k: int) -> None:
+    bundle = _source_held_g1_bundle()
+    bank = _bank(k)
+    state = fit_d112_ground_head_source_held_g1_state(bundle, bank)
+    query, _labels = _support(k)
+    actual = score_d112_seam_source_held_g1_logits(state, bank, query)
+    baseline = _m0(bank, query)
+    old_indices = np.asarray(state.old_class_indices)
+    expected_ground = np.asarray(bundle.g, dtype=np.float64)
+    expected_ground /= np.linalg.norm(expected_ground, axis=1, keepdims=True)
+    expected_rho = state.v_s_amb[old_indices] / (
+        state.v_s_amb[old_indices]
+        + np.asarray(bundle.v_g_amb, dtype=np.float64)
+        + state.discrepancy_amb[old_indices]
+    )
+    assert state.bundle_component_state == G1_COMPONENT_STATE
+    assert state.evaluation_scope == G1_EVALUATION_SCOPE
+    assert np.all(state.information_valid[old_indices])
+    assert not np.any(state.donor_valid)
+    assert np.allclose(state.anchors[old_indices], expected_ground, atol=1.0e-7, rtol=0.0)
+    assert np.array_equal(state.alpha, np.zeros_like(state.alpha))
+    assert np.array_equal(state.v_h_amb, np.zeros_like(state.v_h_amb))
+    assert np.array_equal(state.anchor_shift_l2, np.zeros_like(state.anchor_shift_l2))
+    assert np.allclose(state.rho[old_indices], expected_rho, atol=1.0e-7, rtol=0.0)
+    assert np.max(np.abs(actual[:, :6] - baseline[:, :6])) > 0.0
+    assert np.array_equal(actual[:, 6], baseline[:, 6])
+
+
+def test_ground_head_source_held_g1_rejects_g0_bundle() -> None:
+    with pytest.raises(Exception, match="source-held G1 fit"):
+        fit_d112_ground_head_source_held_g1_state(_bundle(), _bank(1))
+
+
+def test_ground_head_source_held_g1_invalid_bundle_is_exact_m0() -> None:
+    bundle = _source_held_g1_bundle(global_valid=False)
+    bank = _bank(1)
+    query, _labels = _support(1)
+    state = fit_d112_ground_head_source_held_g1_state(bundle, bank)
+    assert not np.any(state.information_valid)
+    assert np.array_equal(
+        score_d112_seam_source_held_g1_logits(state, bank, query), _m0(bank, query)
+    )
+
+
 def test_source_held_g1_rejects_g0_relabel_and_cross_surface_fit() -> None:
     g0 = _bundle()
     g1 = _source_held_g1_bundle()
@@ -262,6 +308,10 @@ def test_source_held_g1_builder_and_fit_have_no_source_row_or_truth_surface() ->
     }
     fit_parameters = set(inspect.signature(fit_d112_seam_source_held_g1_state).parameters)
     assert fit_parameters == {"bundle", "bank"}
+    ground_head_fit_parameters = set(
+        inspect.signature(fit_d112_ground_head_source_held_g1_state).parameters
+    )
+    assert ground_head_fit_parameters == {"bundle", "bank"}
     score_parameters = set(inspect.signature(score_d112_seam_source_held_g1_logits).parameters)
     assert score_parameters == {"state", "bank", "held_query_zid"}
 
