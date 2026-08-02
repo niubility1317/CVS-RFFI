@@ -77,6 +77,19 @@ score仅在63行完整封存后执行：
 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python code/scripts/run_d122_g1_sourceheld_standalone.py score --prediction-root /home/szu2070436088/2510044040/CV-SincNet/runs/d122_g1_sourceheld_standalone_add8f7d5_20260803_r3/predictions --truth-json /home/szu2070436088/2510044040/CV-SincNet/runs/d106_g1_sourceheld_b442472b_20260801_r2/packages/scorer_only/truth.json --truth-input-seal-json /home/szu2070436088/2510044040/CV-SincNet/runs/d106_g1_sourceheld_b442472b_20260801_r2/packages/scorer_only/truth_input_seal.json --truth-open-event-json /home/szu2070436088/2510044040/CV-SincNet/runs/d122_g1_sourceheld_standalone_add8f7d5_20260803_r3/truth_open_event.json --output-json /home/szu2070436088/2510044040/CV-SincNet/runs/d122_g1_sourceheld_standalone_add8f7d5_20260803_r3/held_scores.json
 ```
 
+### r3唯一runner handoff
+
+|字段|冻结值|
+|---|---|
+|唯一发布owner|Terra Max runner；主agent不并发启动同run ID。|
+|发布基线|standalone add8f7d54609e9f58344ad9f4c8925e2ce80dc12；报告基线97abe058。|
+|direct preflight|通过；普通N607账号、项目/Python可见、GPU compute-app为空。|
+|不可覆盖检查|r3 run root在同步前确认不存在。|
+|同步范围|仅standalone入口和tap/receipt；其余7个依赖只核对SHA，不重复同步。|
+|启动门|8文件远端SHA全部匹配且真实import smoke输出候选ID、四臂、K=(1,5,10)。|
+|执行顺序|detached predict完整封存63行/252单元后，独立score才可打开truth。|
+|fresh retry|不授权；任何技术失败保留artifact并记NO_PERFORMANCE_RESULT。|
+
 ## 5.健康边界与预期产物
 
 只允许P0协议/安全/错误hash/错误checkout/覆盖风险，或至少两个独立单元出现同一deterministic exception fingerprint且零prediction时，停止该run-owned进程树。禁止读取accuracy、BA、H或floor决定停止。
