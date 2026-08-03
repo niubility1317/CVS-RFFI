@@ -62,6 +62,23 @@ def test_prepare_predict_score_complete_proxy_matrix_without_truth_leak(
     )
     assert prediction["truth_loaded"] is False
     assert len(prediction["rows"]) == 168
+    resources = json.loads(
+        (prediction_dir / "resources.json").read_text(encoding="utf-8")
+    )
+    assert len(resources["rows"]) == 168
+    k5_resources = [
+        row for row in resources["rows"] if "|K=5" in row["row_id"]
+    ]
+    assert k5_resources
+    for row in k5_resources:
+        assert set(row["affine_logit_scale_audits"]) == {
+            "R0F", "R0L", "R1F", "R1L"
+        }
+        for audit in row["affine_logit_scale_audits"].values():
+            assert audit["argmax_equivalence_scope"] == (
+                "prequantized_common_positive_scaling_only"
+            )
+            assert audit["quantized_any_query_argmax_equivalence_claim"] is False
     encoded_prediction = json.dumps(prediction, sort_keys=True).lower()
     assert '"truth":' not in encoded_prediction
     assert "query_label" not in encoded_prediction

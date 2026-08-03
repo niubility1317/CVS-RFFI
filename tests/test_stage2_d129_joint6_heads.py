@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import inspect
+import math
 
 import numpy as np
 import pytest
@@ -158,6 +159,9 @@ def test_loco_five_retained_one_held_k5_is_explicit_proxy_extension() -> None:
     for arm in (result.r0f, result.r1f):
         assert isinstance(arm.state, d129.D129AffineHeadState)
         assert arm.receipt["fit_mode"] == "old_new_task_balanced_auto_shrinkage_full_covariance"
+        assert arm.receipt["shared_logit_scale_audit"][
+            "argmax_invariant_in_exact_arithmetic"
+        ] is True
         assert arm.state.active_k == 5
     for representation in (d129.R0, d129.R1):
         head = result.arm(f"{representation}F")
@@ -180,6 +184,62 @@ def test_loco_five_retained_one_held_k5_is_explicit_proxy_extension() -> None:
     )
     assert direct.fit_receipt["old_covariance_weight"] == 0.5
     assert direct.fit_receipt["new_covariance_weight"] == 0.5
+
+
+def test_shared_power_of_two_logit_scale_closes_fp16_without_changing_argmax() -> None:
+    rng = np.random.default_rng(129649)
+    classes = tuple(f"c{index}" for index in range(6))
+    weights = rng.normal(size=(6, 160)).astype(np.float64)
+    weights -= weights.mean(axis=0, keepdims=True)
+    intercepts = rng.normal(size=6).astype(np.float64)
+    intercepts -= intercepts.mean()
+    query = d129.normalize_zid160_rows(
+        rng.normal(size=(41, 160)).astype(np.float32), name="scale-test query"
+    )
+
+    base, base_audit = d129._quantize_shared_affine(
+        head=d129.FULL_HEAD,
+        classes=classes,
+        active_k=5,
+        weights=weights,
+        intercepts=intercepts,
+    )
+    multiplier = math.ldexp(1.0, 40)
+    huge, huge_audit = d129._quantize_shared_affine(
+        head=d129.FULL_HEAD,
+        classes=classes,
+        active_k=5,
+        weights=weights * multiplier,
+        intercepts=intercepts * multiplier,
+    )
+
+    assert base_audit["shared_logit_scale"] == 1.0
+    assert huge_audit["shared_logit_scale_exponent_base2"] < 0
+    assert huge_audit["class_specific_clipping"] is False
+    assert huge_audit["argmax_equivalence_scope"] == (
+        "prequantized_common_positive_scaling_only"
+    )
+    assert huge_audit["quantized_any_query_argmax_equivalence_claim"] is False
+    assert np.isfinite(huge.intercept_fp16).all()
+    assert np.isfinite(huge.scale_fp16).all()
+    base_predictions = np.argmax(d129.score_d129_affine_head(base, query), axis=1)
+    huge_predictions = np.argmax(d129.score_d129_affine_head(huge, query), axis=1)
+    np.testing.assert_array_equal(huge_predictions, base_predictions)
+
+
+def test_shared_logit_scale_fails_closed_when_fp16_dynamic_range_is_impossible() -> None:
+    weights = np.ones((6, 160), dtype=np.float64)
+    weights[0] = np.float64(1.0e-200)
+    intercepts = np.asarray([1.0e100, -1.0e100, 3.0, 2.0, 1.0, 0.0])
+
+    with pytest.raises(d129.D129Joint6HeadsError, match="dynamic range"):
+        d129._quantize_shared_affine(
+            head=d129.LITE_HEAD,
+            classes=tuple(f"c{index}" for index in range(6)),
+            active_k=5,
+            weights=weights,
+            intercepts=intercepts,
+        )
 
 
 def test_class_label_renaming_preserves_all_six_logit_columns() -> None:

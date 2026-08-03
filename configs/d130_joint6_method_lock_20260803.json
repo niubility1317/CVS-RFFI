@@ -1,0 +1,80 @@
+{
+  "schema": "cvs.stage2.d129.joint6.method_lock.v1",
+  "revision": "D130-JOINT6-AFFINE-SCALE-R1",
+  "protocol_schema": "p2_min_v1",
+  "scientific_scope": {
+    "source_screen_semantics": "phase1_seen_class_loco_directional_proxy",
+    "source_screen_formal_new_registration_claim": false,
+    "formal_old_new_claim_stage": "single_seed_target25_only"
+  },
+  "matrix": {
+    "receiver_count": 7,
+    "seen_class_count": 6,
+    "held_fold_count": 42,
+    "k_values": [1, 5],
+    "atomic_rows_per_candidate": 84,
+    "support_per_class": {"K1": 1, "K5": 5},
+    "query_per_class": 9,
+    "k1_is_exact_k5_prefix": true
+  },
+  "candidates": [
+    {
+      "candidate_id": "CSPAR-2",
+      "rank": 2,
+      "phase1_asset": "INT8_FP16_receiver_effect_polar_basis",
+      "k1_policy": "sealed_alpha0",
+      "k5_policy": "all_class_equal_weight_within_class_scatter",
+      "alpha_max": 0.5,
+      "phase2_gradient_steps": 0
+    },
+    {
+      "candidate_id": "SRDH-2",
+      "rank": 2,
+      "phase1_asset": "INT8_FP16_nonlinear_response_dictionary",
+      "support_policy": "all_class_permutation_invariant_shared_summary",
+      "phase2_gradient_steps": 0
+    }
+  ],
+  "representations": ["R0_normalized_zid160", "R1_support_only_adapted_zid160"],
+  "heads": [
+    "phase1_locked_student_t_qknn",
+    "d92_full160",
+    "d92_lite160"
+  ],
+  "head_rules": {
+    "K1_full_lite": "exact_qknn_alias_no_head_gain_claim",
+    "K5_full160_source_proxy": "single_class_proxy_extension_not_strict_historical_d92",
+    "K5_lite160": "task_balanced_diagonal_OAS_equal_half",
+    "affine_wire": "int8_W_Cx160_plus_fp16_scale_C_plus_fp16_intercept_C",
+    "affine_logit_scale": "all_class_common_positive_power_of_two_before_quantization",
+    "argmax_equivalence_scope": "prequantized_common_positive_scaling_only",
+    "quantized_any_query_argmax_equivalence_claim": false,
+    "class_specific_intercept_clip_or_scale": false,
+    "fp16_nonzero_weight_scale_underflow": "fail_closed",
+    "common_R0_head_fit_count_per_atomic_row": 3,
+    "common_R0_candidate_refit_count": 0
+  },
+  "primary_proxy_comparisons_K5": [
+    "R1Q-R0Q",
+    "R0L-R0F",
+    "R1L-R1F"
+  ],
+  "proxy_pass_rule": {
+    "delta_H_retained_held_proxy_strictly_positive": true,
+    "delta_total_correct_strictly_positive": true,
+    "delta_A_retained_nonnegative": true,
+    "delta_A_held_proxy_nonnegative": true,
+    "delta_F_retained_nonnegative": true
+  },
+  "forbidden_runtime_inputs": [
+    "clean_or_source_samples",
+    "query_truth",
+    "query_role",
+    "class_quota",
+    "true_batch_class_count",
+    "global_reassignment",
+    "phase2_optimizer_or_backward"
+  ],
+  "negative_candidate_policy": "close_after_complete_proxy_or_real_no_function_evidence_no_tuning",
+  "next_stage_sequence": ["G0_588", "G1_fresh63_proxy", "Target25_single_seed"]
+}

@@ -460,6 +460,13 @@ def predict_proxy_matrix(
                         "head_causal_resource_receipt": dict(
                             result.six_arm.head_causal_resource_receipt
                         ),
+                        "affine_logit_scale_audits": {
+                            arm.arm_id: dict(
+                                arm.receipt["shared_logit_scale_audit"]
+                            )
+                            for arm in result.six_arm.arms
+                            if "shared_logit_scale_audit" in arm.receipt
+                        },
                         "system_formal_replacement_resource_receipt": dict(
                             result.six_arm.system_formal_replacement_resource_receipt
                         ),

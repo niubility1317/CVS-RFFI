@@ -6,7 +6,7 @@
 |---|---|
 |实验ID|d129_joint6_proxy84_20260803_r3|
 |时间|2026-08-03（Asia/Hong_Kong）|
-|状态|LOCAL_VERIFIED / PREREGISTERED / NOT_YET_LANDED / NO_PERFORMANCE_RESULT|
+|状态|LANDED / STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT|
 |目标|用最小完整source-held LOCO矩阵联合比较CSPAR-2、SRDH-2与精简D92|
 |责任|主agent负责方法、协议、分析；唯一Terra Max runner负责N607落地、运行和artifact回收|
 |修复边界|r1修正Git归档哈希；r2确认服务器无ssr-gpu；r3显式使用已验证项目环境CVS-RFFI。科学代码、矩阵、seed、判据均未改变|
@@ -70,3 +70,11 @@ prepare、predict、score必须是不同进程。predict detached启动并写log
 |SRDH-2|rank-2共享响应字典|完整K1/K5|待运行|待运行|待运行|待运行|待运行|待运行|待运行|待运行|待判定|
 
 只允许同候选完整矩阵联合判定，不拼接边际极值。方向性胜者才进入G0 588、一次fresh63和单seed Target25；不运行125，不重复D62/D92/SVRN。
+
+## 7.r3运行结论
+
+r3的bundle、fixture、D104档案、checkpoint、7个D129源文件和method lock归档哈希均匹配，远端CVS-RFFI绝对Python编译通过。真实archive smoke完成，两候选均PASS且truth_loaded=false。prepare以独立进程完成，predictor package SHA256为402f223eab2705c003d76b62a4ad39920c249bfa08bcfc380cdeb2627d5da691；truth只保留在远端receipt绑定中，未读取或回传。
+
+detached predict PID 517676在产生任何prediction前确定性退出：RuntimeWarning提示FP16 cast overflow，随后stage2_d129_joint6_heads.py的D129Joint6HeadsError报告affine FP16 intercept is not representable。predict目录未创建，完整性为0/168，score未调用。因此本run没有性能结果，不得把两个smoke PASS或任何partial状态解释为正收益。
+
+run root、smoke、prepare、日志和PID证据均保留；无存活D129进程，GPU已释放，SSH连接清理为0。r3不得续跑或覆盖。下一研发动作仅允许在本地证明一个全类共享正logit缩放的数值编译修复，确保argmax不变后建立新scientific revision；禁止clip单类截距、fallback qKNN、改阈值或读取query truth。

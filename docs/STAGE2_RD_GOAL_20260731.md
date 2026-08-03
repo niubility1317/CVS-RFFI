@@ -119,6 +119,8 @@ a_j = a_max tanh(([C^-1 Σ_c K^-1 Σ_k tanh(q_j^T u_ck)]-m_j)/d_j)
 
 F/L必须部署为同一wire：`W_q[C,160]+FP16 scale[C]+FP16 intercept[C]`，序列化均为`164C`字节，query端均为`160C`MAC；Lite的效率主张仅来自拟合时延、峰值瞬时工作集、dense matrix/solve次数，不虚构部署态差异。正式288维`D92-Formal`继续作为同row外部全管线参考和资源参考，不进入六臂head因果结论。
 
+仿射编译若遇到有限但超过FP16范围的截距，只允许对同一head的全部类别共同乘一个正2次幂，并同步缩放权重与截距；这在量化前严格保持argmax和类别置换等价，且不增加wire字节或query MAC。不得逐类clip/scale、fallback到Q或把它宣称为INT8/FP16量化后对任意query严格等价。若共同缩放会使任一非零权重行的逐类scale低于FP16最小正规数，必须确定性失败并关闭该数值实现。receipt需记录指数、缩放前后峰值、截距归零/子正规计数和明确的等价范围。
+
 K1中F/L严格alias Q并保存等价receipt，不重复计算，也不提出head改进声明；K1只比较`R1Q-R0Q`。K5使用全部六臂，并用以下三个预注册主效应判断：
 
 ```text

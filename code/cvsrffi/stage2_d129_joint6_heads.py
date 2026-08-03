@@ -623,7 +623,7 @@ def _quantize_shared_affine(
     active_k: int,
     weights: np.ndarray,
     intercepts: np.ndarray,
-) -> D129AffineHeadState:
+) -> tuple[D129AffineHeadState, Mapping[str, Any]]:
     values = np.asarray(weights, dtype=np.float64)
     offset = np.asarray(intercepts, dtype=np.float64)
     if (
@@ -633,8 +633,32 @@ def _quantize_shared_affine(
         or not np.isfinite(offset).all()
     ):
         raise D129Joint6HeadsError("affine quantization input drift")
-    scale_floor = float(np.finfo(np.float16).tiny)
+    fp16 = np.finfo(np.float16)
+    scale_floor = float(fp16.tiny)
     maximum = np.max(np.abs(values), axis=1)
+    intercept_peak = float(np.max(np.abs(offset), initial=0.0))
+    wire_peak = max(
+        intercept_peak,
+        float(np.max(maximum, initial=0.0)) / INT8_MAX,
+    )
+    safe_peak = float(fp16.max)
+    if wire_peak <= safe_peak:
+        shared_exponent = 0
+    else:
+        shared_exponent = -int(math.ceil(math.log2(wire_peak / safe_peak)))
+    shared_scale = math.ldexp(1.0, shared_exponent)
+    if not math.isfinite(shared_scale) or shared_scale <= 0.0:
+        raise D129Joint6HeadsError("affine shared logit scale is invalid")
+    values = np.ldexp(values, shared_exponent)
+    offset = np.ldexp(offset, shared_exponent)
+    maximum = np.max(np.abs(values), axis=1)
+    nonzero_maximum = maximum[maximum > 0.0]
+    if len(nonzero_maximum) and bool(
+        np.any(nonzero_maximum / INT8_MAX < scale_floor)
+    ):
+        raise D129Joint6HeadsError(
+            "affine dynamic range cannot fit the FP16 scale wire"
+        )
     scales64 = np.maximum(maximum / INT8_MAX, scale_floor)
     if not np.isfinite(scales64).all() or np.any(
         scales64 > float(np.finfo(np.float16).max)
@@ -647,13 +671,44 @@ def _quantize_shared_affine(
     intercept16 = offset.astype(np.float16)
     if not np.isfinite(intercept16).all():
         raise D129Joint6HeadsError("affine FP16 intercept is not representable")
-    return D129AffineHeadState(
+    nonzero_intercept = offset != 0.0
+    intercept_cast_zero_count = int(
+        np.count_nonzero(nonzero_intercept & (intercept16 == np.float16(0.0)))
+    )
+    intercept_subnormal_count = int(
+        np.count_nonzero(nonzero_intercept & (np.abs(offset) < scale_floor))
+    )
+    state = D129AffineHeadState(
         head=head,
         classes=classes,
         active_k=active_k,
         weight_qint8=codes,
         scale_fp16=scales,
         intercept_fp16=intercept16,
+    )
+    return state, _freeze(
+        {
+            "schema": "cvs.phase2.d129.shared_affine_logit_scale.v1",
+            "policy": "all_class_common_positive_power_of_two_before_quantization",
+            "argmax_invariant_in_exact_arithmetic": True,
+            "argmax_equivalence_scope": (
+                "prequantized_common_positive_scaling_only"
+            ),
+            "quantized_any_query_argmax_equivalence_claim": False,
+            "class_specific_clipping": False,
+            "shared_logit_scale": shared_scale,
+            "shared_logit_scale_exponent_base2": shared_exponent,
+            "pre_scale_intercept_max_abs": intercept_peak,
+            "pre_scale_wire_peak": wire_peak,
+            "post_scale_intercept_max_abs": float(
+                np.max(np.abs(offset), initial=0.0)
+            ),
+            "post_scale_fp16_scale_max": float(np.max(scales64, initial=0.0)),
+            "nonzero_intercept_cast_zero_count": intercept_cast_zero_count,
+            "nonzero_intercept_subnormal_count": intercept_subnormal_count,
+            "zero_weight_row_count": int(np.count_nonzero(maximum == 0.0)),
+            "fp16_safe_peak": safe_peak,
+        }
     )
 
 
@@ -844,7 +899,7 @@ def fit_d92_full160(
     intercepts -= intercepts.mean()
     if not np.isfinite(coefficients).all() or not np.isfinite(intercepts).all():
         raise D129Joint6HeadsError("D92-Full160 affine state became non-finite")
-    state = _quantize_shared_affine(
+    state, quantization_audit = _quantize_shared_affine(
         head=FULL_HEAD,
         classes=classes,
         active_k=active_k,
@@ -870,6 +925,7 @@ def fit_d92_full160(
         "new_covariance_estimator": new_covariance_estimator,
         "single_class_group_policy": "sklearn_LedoitWolf_centered_residuals_when_needed",
         "class_common_affine_centered_before_quantization": True,
+        "shared_logit_scale_audit": dict(quantization_audit),
         "prequantized_weight_class_mean_max_abs": float(
             np.max(np.abs(coefficients.mean(axis=0)))
         ),
@@ -932,7 +988,7 @@ def fit_d92_lite160(
     intercepts -= intercepts.mean()
     if not np.isfinite(coefficients).all() or not np.isfinite(intercepts).all():
         raise D129Joint6HeadsError("D92-Lite160 affine state became non-finite")
-    state = _quantize_shared_affine(
+    state, quantization_audit = _quantize_shared_affine(
         head=LITE_HEAD,
         classes=classes,
         active_k=active_k,
@@ -955,6 +1011,7 @@ def fit_d92_lite160(
         "prior_policy": "equal_1_over_registered_class_count",
         "covariance_policy": "diagonal_oas_per_registration_task_equal_average",
         "class_common_affine_centered_before_quantization": True,
+        "shared_logit_scale_audit": dict(quantization_audit),
         "prequantized_weight_class_mean_max_abs": float(
             np.max(np.abs(coefficients.mean(axis=0)))
         ),
@@ -1137,6 +1194,9 @@ def _registration_arm(
         "fit_mode": fit.fit_receipt["fit_mode"],
         "cache_sha256": cache.cache_sha256,
         "head_state_sha256": state.state_sha256,
+        "shared_logit_scale_audit": dict(
+            fit.fit_receipt["shared_logit_scale_audit"]
+        ),
         "same_row_shared_cache": True,
         "same_affine_wire_as_other_registration_head": True,
         "query_rows_used_for_fit": 0,
