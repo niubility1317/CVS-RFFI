@@ -1,6 +1,6 @@
 # Stage2功能研发目标与证据门
 
-状态：`ACTIVE / D127_D128_ROUTE_CLOSED / D129_CSPAR_DESIGN_FROZEN / NO_NEW_PERFORMANCE_RESULT`
+状态：`ACTIVE / JOINT6_DESIGN_FROZEN / IMPLEMENTATION_PENDING / NO_NEW_PERFORMANCE_RESULT`
 
 ## 1.最终目标
 
@@ -53,125 +53,108 @@ K5/new20相对matched K10/new20的注册后旧类、最低旧类、新类和`H_o
 
 不得用不同row的边际最大值拼接结论。`F_old`是全部旧类的通用下界，不是预选弱类清单。
 
-## 4.联合候选小筛选与内联功能门
+## 4.冻结候选与原理边界
 
-正式大矩阵前最多保留3条原理不同的DA候选，并只冻结一个由三者共享的精简D92。禁止固定历史D92后只开发DA，也禁止为每条DA再开发一个不同head扩大方法空间。候选可以覆盖早层、中层和晚层干预，但层位只是机制差异的一部分，不构成层扫描。
+本轮冻结2条而不是强凑3条候选；二者共享相同160维输入、相同support/query、相同六臂头部和评分器，不为各候选另造head。
 
-三候选先使用source receiver-held完成Phase1方向学习和资产审计；class/TX对称性只做固定标签置换审计，不再展开receiver×class的42折LOCO训练。该数据只验证物理ID隔离、outer元目标、非零功能与跨receiver可迁移性，不模拟formal D92性能，也不承担候选排序。随后三候选在不同GPU上并行运行同一份真实checkpoint、Target development received-IQ、K1/K5 support/query划分和评分器。公共臂只计算一次；每个候选只允许一次冻结实现，不扫描层、rank、步数、view、seed或门限。
+|候选|机制|K5状态|K1边界|冻结理由|
+|---|---|---|---|---|
+|C1=`CSPAR-2`|Phase1联合封存rank2 nuisance轴`B`，Phase2用全类等权类内散度估计轴向收缩，形成非标量PSD度量|2个共享收缩系数|使用Phase1封存`alpha0`；只能称sealed metric benefit，不能称target support DA|闭式、低状态、无encoder梯度|
+|C2=`SRDH-2`|Phase1封存rank2非线性响应字典`P/Q`及summary标准化统计，Phase2从全类support共享响应生成低秩残差|2个共享响应系数|用跨类共享summary，允许形成可辨识状态；不得含类专属参数|与PSD度量原理不同，可改变非线性邻域|
 
-Phase1资产构建使用单一确定性日程：每个receiver×class的14个物理样本按`SHA256("d127-phase1-v1"|receiver|class|physical_id)`排序，前5个组成support池、其余9个组成outer-query池；K1严格取K5的第一个support。冻结清单因此只有7个receiver-held fold，每个fold的inner训练包含其余6个receiver的K1/K5 episode，held receiver的同一K1/K5 episode只用于outer审计；最终重建使用全部7个receiver，共14个episode。support池与outer-query池跨K、跨episode全局互斥，但允许K1作为K5前缀以及同一query池在K1/K5间复用。其余日程固定为canonical receiver-mean SVD初始化，模型checkpoint冻结，float32资产前向配合float64统计，K1/K5、receiver和class等权的预冻结全批episode，full-batch L-BFGS固定`max_iter=128`与`strong_wolfe`，单初始化、无early stop、无学习率/epoch/正则扫描。有效秩不足2或前两方向近重根时直接关闭候选。A/B只学习`U/V`并封存二维`D_F`及仅由Phase1 inner tap确定的`rho/a_max`，Phase2不得由target support重估预算；C以固定`Q=[I_2,0]`、`b=0`初始化后只学习`U/V/Q/b`并封存5维summary的`m_P1/d_P1`，Phase2固定使用`(s-m_P1)/d_P1`。所有数值下限仅由float64机器精度解析确定。最终只允许量化资产、必要FP16尺度和上述小统计进入Phase2，不保留source样本、样本feature、实体键或FP32 sidecar。该步骤是必要资产构建，不是source性能筛选；outer只审计隔离、固定循环标签置换等变性、非零和真实功能变化，唯一候选排序仍发生在全部S0 prediction封存后的一次truth评分。
+`RDCE-r3`与C1同属“Phase1轴＋target scatter PSD”族，历史D106 source-held小幅正收益不足以构成独立原理，本轮关闭。暂不增加第三条SCPM或浅层梯度候选；新增候选必须先证明不复用D127/D128 checkpoint replacement链，且确有独立可辨识机制，否则属于非必要扩张。
 
-outer审计闭合后，每个候选按同一固定日程在全部Phase1 source receiver上重建一次最终资产，不得按outer分数选择checkpoint、fold资产或迭代。C的Phase1独立query loss必须可直接反传到`U/V/Q/b`，但Phase2仍无optimizer且query零梯度。最终资产只绑定全source训练清单及物理ID根，不携带fold专属样本状态。
-
-DA资产量化固定为：`U`按rank列、`V/Q`按rank行、`b`按整向量做对称INT8，每组一个FP16 scale；小统计保存FP16，正统计若下溢为零或非有限则关闭候选，不得静默抬升数值下限；解码后的float32只读运行时视图不得作为sidecar落盘。A/B payload为`4d+14B`，C为`1328B`；C与C=26的D92-Lite合计`5592B`，相对formal D92减少66.09%。量化parity只用Phase1固定fixture核验，不读取Target truth。
-
-三候选的support监督固定使用一次forward的两个同IQ最终表示视图：`z_A=L2(ReLU(pre_relu))`与`z_B=L2(pre_relu)`；仅当ReLU零范数时，`z_A`确定性总化为`z_B`。对另一视图的class mean prototype做stop-gradient，以冻结qKNN温度0.85计算双向全类cosine CE并等权平均。两个视图不增加K、不重跑LEO观测；该损失只生成support-conditioned状态，query不参加。
-
-Phase1 outer元目标必须沿真实checkpoint下游执行。adapted source support按正式qKNN路径量化并解码成stop-gradient的INT8/FP16 bank，独立source query保持可微；identity-metric Student-t logits以float64计算，在部署logit输出点闭合为float32，再转回float64除以冻结temperature计算全类CE。support量化分支不回传梯度，但query分支必须直接对A/B的`U/V`或C的`U/V/Q/b`产生非零梯度；禁止用tap空间代理loss、未量化float support或手工raw asset替代。
-
-预测生成和真实性能评分分离。打开本轮候选的truth评分前先完成以下内联功能检查；检查通过后在同一不可覆盖run中评分，不另设588条G0或新的控制面：
-
-1.状态只读取不可变Phase1 bundle、当前row合法support和冻结配置；
-2.query为零fit、零selection、零update，每条query独立面对全部注册类；
-3.算法对类别标签置换等价，不含TX/class ID专用参数；
-4.DA使用同一共享规则处理所有类；HEAD不读取class-specific ground prototype，ground与target关系全部归入DA；
-5.K1自由度必须来自跨类共享低维结构、同一physical IQ的合法数学view或Phase1预锁共享先验，不能估计单类方差或类专属adapter；若精简D92在K1不可辨识，必须显式使用qKNN边界，K1联合收益只归因于DA；
-6.support physical-LOO/OOF只用于构造support-only状态，support准确率不能作为晋级依据；
-7.no-query真实特征smoke必须改变feature、邻居、margin或argmax中的至少一项；
-8.INT8、state、MAC、拟合时延、临时空间和序列化资源闭合；
-9.若DA只是共同平移、正交变换或全局正尺度，且在变换后重建欧氏/余弦qKNN导致邻居排序不变，则直接证伪。
-
-协议错误记为`INVALID / NO_PERFORMANCE_RESULT`；机制合法但没有可观测决策作用，记为`REJECT_REVISION_NO_FUNCTION`。
-
-## 5.S0/S1最小联合因果筛选
-
-formal D92使用288维`z_id160+FFT96+RF32`完整D62/D81管线，D92-Lite使用160维`z_id`。二者之间的差值同时包含表示、注册器和head变化，不能解释为纯head效应。联合因果识别因此只在相同160维表示空间中使用干净`2×2`：
-
-|臂|表示|分类头|回答的问题|
-|---|---|---|---|
-|M0|基础`z_id160`|qKNN|共同基线|
-|M_DA|同一候选适应后的`z_id160`|qKNN|DA单独是否提升|
-|M_L92|基础`z_id160`|共享D92-Lite|精简头相对qKNN是否提升|
-|M_JOINT|同一候选适应后的`z_id160`|同一D92-Lite|联合方法是否提升|
-|R_D92_FORMAL|正式288维表示|冻结formal D92|同row全管线历史参照，不进入`2×2`交互|
-
-`M_DA/M_JOINT`必须复用同一DA state和adapted feature缓存；`M_L92/M_JOINT`使用同一公式，但必须分别从各自表示的合法support拟合head。K1没有类内残差自由度，固定`M_L92=M0`、`M_JOINT=M_DA`，以等价receipt避免重复计算；K1只归因DA。`R_D92_FORMAL`优先绑定完全同row key的历史artifact，否则每行最多计算一次。`M_DA_D92`只回答DA与旧formal管线的兼容性，不是联合筛选必要臂；仅允许在S1对唯一胜者作一次非阻塞诊断。
-
-### 5.1连续技术停止后的单候选one-shot
-
-D127 r1/r2/r3分别因NumPy/Torch ABI、历史receipt当前checkout闭合和冻结asset误用可微训练审计入口，在prediction前技术停止，均为`NO_PERFORMANCE_RESULT`。这些运行既不证明三候选性能弱，也不授权继续在同一三候选release链上增加兼容层。按照最多两轮release-engineering修复的上限，当前活动入口缩减为`D128-A-ONE18`：
-
-- 只保留A=`DA-A-FSRG-time_fuse`，选择理由在任何D127/D128 Target truth前冻结：它是三候选中状态与计算最小、干预点最直接的共享时域低秩残差；该选择不是按Target性能挑选；
-- 复用同一seed`713102`、receiver`{20-1,3-19,7-14}`、`{K1/new20,K5/new20}`和3个互斥LEO弱场景，共18个row pair；只生成`M0/M_DA/M_L92/M_JOINT`四臂，K1继续使用既有等价alias，不重复计算；
-- Phase1只构建A的单候选bundle；Target只运行一个A worker；prediction封存后由独立one-shot scorer一次性打开truth。禁止构建B/C资产、三候选merged bundle、三worker merge、125/588/fresh63或新的通用发布框架；
-- 训练callback仍必须保留对`U/V`的非零梯度；训练完成后冻结asset的outer审计走同一真实checkpoint downstream，但不再伪要求caller graph，也不得用`requires_grad_(True)`制造假梯度；
-- 发布前只跑断图相关聚焦测试、一个真实checkpoint的A微episode无query smoke、独立`P0=0/P1=0`、Git提交、不可覆盖run ID和N607预检。既有Phase2数据不重验；
-- one-shot方向门保持简单且成对：池化`H(M_DA)>H(M0)`；K5池化`H(M_JOINT)>H(M_DA)`；池化`H(M_JOINT)>H(M0)`且old＋new总正确数增加。完整one-shot中任一项不成立即关闭A并转入下一个原理，不调层、rank、步数、view、seed或阈值；三项均成立才恢复S0/S1扩展评估；
-- D128若再次在prediction前因同一bridge/release体系技术停止，则关闭D127/D128实现路线，保留设计但不再修复该release链，下一轮必须使用新的更小方法实现而不是r5式重试。
-
-`D128-A-ONE18`是快速功能证伪，不是正式S0、Target25或promotable证据；但其完整负结果足以停止A的继续研发，避免在确定弱收益后浪费资源。
-
-D128 r1已在A bundle与任何prediction前因outer-audit closure技术停止，`assets/smoke/prediction/truth/score`均为0，严格为`NO_PERFORMANCE_RESULT`。该事件触发上一条预注册关闭规则：D127/D128的Phase1 autograd/checkpoint-replacement实现路线永久停止，不创建D128 r2，不继续修复outer audit；报告由commit`3d2d78e3`承载。
-
-### 5.2D129闭式PSD域适应×D92-Lite
-
-当前下一方法冻结为`D129-CSPAR-qKNN-D92Lite`。它不更新encoder、不使用Phase1 autograd或checkpoint replacement；方法定位必须诚实写为“D110-family闭式rank2 PSD度量的新统计量”，不得声称为新编码器适应。
-
-Phase1只从允许随checkpoint联合封存的int8域×类聚合知识构造域扰轴`B∈R^(160×2)`：对类内跨域中心化聚合二阶量`G`取前二特征向量。特征值降序；相对差≤`1e-6`的近重根用投影到标准坐标轴的确定性QR定基并令QR主元为正，非近重根令最大绝对坐标为正。Phase2不得回读source样本或FP32 sidecar。
-
-对当前row合法support的L2表示`u`，K5按当前注册类等权构造：
+C1在Phase1只保存`B∈R^(160×2)`及冻结`alpha0/alpha_max/eps`。K5按全部注册类等权估计：
 
 ```text
 S_w = [C(K-1)]^-1 Σ_c Σ_i (u_ci-μ_c)(u_ci-μ_c)^T
 v_j = b_j^T S_w b_j
 v_perp = [tr(S_w)-Σ_j v_j]/158
-α_j = clip(1-(v_perp+eps)/(v_j+eps), 0, α_max)
-M = I-B diag(α) B^T
-φ_M(u) = M^(1/2)u / ||M^(1/2)u||
+α_j = clip(1-(v_perp+eps)/(v_j+eps), 0, alpha_max)
+φ_C1(u) = normalize((I-B diag(α) B^T)^(1/2)u)
 ```
 
-`alpha0=(0.20,0.20)`、`alpha_max=0.50`、`eps=1e-6`全部在Phase1 seal中冻结，不根据Target结果修改；`eps`只承担数值下界。K1因`K-1=0`不得从target support估计散度，直接使用封存`alpha0`，因此K1只能称“封存度量收益”，不能纳入target DA成功声明。`M`必须是固定域轴上的非标量SPD；若退化为共同平移、正交或全局正缩放导致邻居排序不变，则直接关闭。
-
-四臂严格保持同表示空间因果对照：`M0=base/qKNN`、`M_DA=φ_M(base)/qKNN`、`M_L92=base/D92-Lite`、`M_JOINT=φ_M(base)/D92-Lite`。K5的两个D92-Lite头分别从本臂合法support重新拟合；禁止增加`β`、qKNN residual logit融合或新的校准自由度。K1严格alias：`M_L92=M0`、`M_JOINT=M_DA`。old/new使用同一共享规则，不读取role。
-
-实现前先做一次无truth真实checkpoint功能smoke：在同support和opaque query上证明`M_D129≠M_D110`，并且neighbor、margin或argmax至少一项改变；同时做类别标签置换等变测试。smoke失败记为`REJECT_D129_NO_INDEPENDENT_FUNCTION`，不得启动Target。
-
-D129 one-shot复用seed`713102`、receiver`{20-1,3-19,7-14}`、`{K1/new20,K5/new20}`和3个互斥LEO弱场景，共18个before/after配对row，只运行一个候选四臂。方向门只看K5：
-
-- G1：池化`H(M_DA)-H(M0)>0`；
-- G2：池化`H(M_JOINT)-H(M_DA)>0`；
-- G3：池化`old+new total_correct(M_JOINT)-total_correct(M0)>0`。
-
-任一门失败即关闭D129，不调`B/alpha0/alpha_max/eps`、层、rank、view、seed或阈值；全部通过才讨论扩展。资源预期为rank2 int8/FP16小状态加既有D92-Lite，必须在实现时给出精确序列化字节、MAC和forward receipt，但资源表不阻塞本次one-shot发布。
-
-对指标`y`定义：
+C2固定：
 
 ```text
-DA_Q          = M_DA-M0
-DA_L92        = M_JOINT-M_L92
-L92_BASE      = M_L92-M0
-L92_AFTER_DA  = M_JOINT-M_DA
-I_DA_X_L92    = M_JOINT-M_DA-M_L92+M0
-FORMAL_REPLACE= M_L92-R_D92_FORMAL  # 只表示全管线替换差
+a_j = a_max tanh(([C^-1 Σ_c K^-1 Σ_k tanh(q_j^T u_ck)]-m_j)/d_j)
+φ_C2(u) = normalize(u + P[a ⊙ tanh(Q^T u)])
 ```
 
-S0/S1的development seed固定为`713102`。该选择在任何D127 Target prediction和truth评分前完成，只为复用既有formal D92 retry2的完整K1/K10输入包、seal及历史同row参照；K5严格取同一K10/new20 enrollment包中预登记的前5个support，不重建received-IQ、不重复运行D92。发布前只补一张逐class/scene对比opaque physical-ID有序前缀与query根的紧凑receipt；它只绑定既有包，不重新验证数据、不增加builder或第二套控制面。seed选择不得根据D127或同轮候选性能修改。
+`B/P/Q/m/d/a_max`只能来自与checkpoint联合封存的允许Phase1聚合知识；Phase2不读取source/clean样本或FP32 sidecar。C1/C2都不得读取query、truth、role、class quota或全局批次计数，也不得包含TX/class ID专用参数。
 
-S0固定为按receiver ID词典序预冻结的3个development receiver`{20-1,3-19,7-14}`×`{K1/new20,K5/new20}`×3个互斥scene，共18个原子row。公共`M0/M_L92/R_D92_FORMAL`只生成一次；三候选各生成`M_DA/M_JOINT`，形成9个逻辑输出，K1别名不重复计算。三候选全部prediction完成后才一次性评分，不查看中间性能。
+Phase1科学审计固定为7个receiver×6个class的receiver-held×class-LOCO共42折；每折同时排除held receiver与held class，K1严格为K5 support前缀，outer只验证物理ID隔离、类置换等价、非零功能和跨receiver/class可迁移性，不用outer分数选资产或超参数。最终资产按同一冻结公式重建一次。不得复用D127/D128的Phase1 autograd、checkpoint replacement或outer-audit发布链。
 
-S0只作方向排序，不设置0.5pp级多指标硬门。候选进入排序只要求：
+预测生成和truth评分分离。发布前只保留下列必要检查：
 
-- `M_DA-M0`的池化`H`严格增加；
-- K5下`M_JOINT-M_DA`的池化`H`严格增加；
-- `M_JOINT-M0`的池化`H`和old+new总正确数都严格增加。
+1.状态只读取不可变Phase1 bundle、当前row合法support和冻结配置；
+2.query零fit、零selection、零update，每条query独立面对全部注册类；
+3.类别标签置换等价，old/new使用同一规则；
+4.真实checkpoint无truth smoke至少改变feature、neighbor、margin或argmax之一；
+5.C1若退化为共同平移、正交或全局正缩放并保持邻居排序，直接拒绝；C2若共享summary为零或残差无功能，直接拒绝；
+6.序列化字节、拟合MAC、同机同线程时延、瞬时工作集和backbone forward次数形成receipt。
 
-`A_old/N/F_old`、逐receiver、逐scene、四个简单效应和`I_DA_X_L92`全部报告，但不再新增小样本release gate。满足上列三项的候选按`min(DA_Q_H,L92_AFTER_DA_H)`、最差receiver联合增益、联合总正确数和端到端资源作词典序排序，只选一个胜者。
+协议错误记为`INVALID / NO_PERFORMANCE_RESULT`；机制合法但无可观测决策作用记为`REJECT_REVISION_NO_FUNCTION`。
 
-S1固定为同一`seed=713102`的剩余2个receiver`{7-7,8-8}`×`{K1/new20,K5/new20,K10/new20}`×3scene，共18个原子row，只运行S0胜者的核心四臂和公共formal参照。S0/S1均标为`TARGET_DEVELOPMENT`；S1失败后关闭本轮，不把S0第二名递补。完整负收益候选立即关闭，不根据已打开结果修改层、rank、step、view、shrinkage、量化或阈值。效率目标不阻塞S0启动，但不满足§1的候选不得成为最终胜者。
+## 5.共享缓存六臂联合筛选
 
-## 6.G2单seed Target25门
+每个候选只缓存两种表示：`R0=normalize(z_id160)`与`R1=normalize(phi_Ci(R0; support-only state))`。每种表示只做一次support/query特征缓存，再供三个头复用：
 
-候选、method lock和全部超参数在Target访问前冻结。screen seed必须排除development seed`713102`，并从已完成D92 Target125中按数值升序选择第一个未参与本轮S0/S1候选评分且具备全部同键D92 artifact的seed；完整性在打开该seed的本轮候选prediction前只读核验，若缺失则顺延到下一个完整seed，不得读取D127性能后改选。它是`METHOD_UNSEEN_SCREEN`，不是全项目从未读取truth的盲测。矩阵固定：
+|头|定义|目的|
+|---|---|---|
+|Q|冻结Phase1-lock qKNN|DA因果基线|
+|F=`D92-Full160`|在160维输入上严格复现历史D92的old/new两组自动收缩full covariance、0.5/0.5平均、等先验与同一仿射中心化|同表示历史D92机制对照|
+|L=`D92-Lite160`|相同old/new对称语义，但只拟合diagonal OAS并直接编译为仿射头|验证删减稠密拟合是否增益且更快|
+
+因此每个候选的最小完整矩阵固定为：
+
+|臂|表示|头|
+|---|---|---|
+|R0Q|基础160维|qKNN|
+|R0F|基础160维|D92-Full160|
+|R0L|基础160维|D92-Lite160|
+|R1Q|适应后160维|qKNN|
+|R1F|适应后160维|D92-Full160|
+|R1L|适应后160维|D92-Lite160|
+
+F/L必须部署为同一wire：`W_q[C,160]+FP16 scale[C]+FP16 intercept[C]`，序列化均为`164C`字节，query端均为`160C`MAC；Lite的效率主张仅来自拟合时延、峰值瞬时工作集、dense matrix/solve次数，不虚构部署态差异。正式288维`D92-Formal`继续作为同row外部全管线参考和资源参考，不进入六臂head因果结论。
+
+K1中F/L严格alias Q并保存等价receipt，不重复计算，也不提出head改进声明；K1只比较`R1Q-R0Q`。K5使用全部六臂，并用以下三个预注册主效应判断：
+
+```text
+DA_EFFECT       = R1Q-R0Q
+LITE_BASE       = R0L-R0F
+JOINT_REPLACE   = R1L-R1F
+```
+
+三个效应都必须在同row池化后满足`ΔH>0`且old＋new总正确数严格增加；`ΔA_old>=0`、`ΔN>=0`、`ΔF_old>=0`作为“不牺牲”条件。逐receiver、逐scene和逐类完整报告，但不添加0.5pp级小样本门。`R1L-R0L`、`R1F-R0F`和六臂交互项只作解释性结果，不增加发布gate。
+
+### 5.1最小实验矩阵与停止规则
+
+科学审计先执行42个receiver-held×class-LOCO fold×`{K1,K5}`，只验证功能、隔离和可迁移性；C1与C2可分配到不同GPU，但必须共享checkpoint、物理ID清单、K前缀、代码commit和评分定义。随后Target development one-shot固定为seed`713102`、receiver`{20-1,3-19,7-14}`×`{K1/new20,K5/new20}`×3个互斥LEO弱场景，共18个原子row；公共`R0Q/R0F/R0L`只计算一次，每个候选补`R1Q/R1F/R1L`。
+
+所有prediction完成并封存后一次性打开truth。候选若任一K5主效应失败，立即记为`COMPLETED_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE`并关闭，不调层、rank、step、view、seed、shrinkage或阈值。若两候选都通过，只按`min(DA_EFFECT_H,LITE_BASE_H,JOINT_REPLACE_H)`、最差receiver联合增益、总正确数和端到端资源作冻结排序，选择一个胜者。
+
+### 5.2发布硬门
+
+发布前只要求：实际Git方法入口；query零fit/update/selection及禁止clean/source/query-truth/role/quota/global-reassignment的聚焦负测；真实checkpoint no-query smoke；独立复核`P0=0/P1=0`；不可覆盖run ID/output；本地Git提交；N607预检与资源记录。既有`VALIDATED_ONCE`数据不因方法变化重验，不要求新签名层、通用执行平台、完整论文叙事或重复D62/D92/SVRN矩阵。
+
+## 6.胜者后的G0→G1→Target25
+
+小矩阵只负责选出一个联合胜者。胜者保持同一method lock，按以下顺序扩展；失败即停止，不回头从已打开性能中修改候选：
+
+1.`G0`：在既有588条Phase1功能面闭合非恒等、量化parity和两份资源receipt；不读取Target truth，不把功能变化写成性能收益；
+2.`G1`：只运行一次未参与本轮设计的fresh63 source-held六臂矩阵；它检查跨receiver/class方向与负迁移，不替代Target Stage2-C；
+3.`G2`：G0/G1均闭合后，只运行一次单seed Target25，执行本节K10/K5/K1最终门。
+
+不得为落地G0/G1重建通用发布平台或重复历史D62/D92/SVRN矩阵。两份资源receipt分别为：
+
+- `head_causal_resource_receipt`：同160维、同INT8 affine wire下比较Full160/Lite160的K5拟合墙钟、峰值工作集、dense elements及factorization/solve次数；
+- `system_formal_replacement_resource_receipt`：比较formal288 D92的`1152+590C`与Lite160的`164C`字节，并显式标记`representation_pipeline_changed / not_head_causal`。
+
+### 6.1单seed Target25门
+
+候选、method lock和全部超参数在Target访问前冻结。screen seed必须排除development seed`713102`，并从已完成D92 Target125中按数值升序选择第一个未参与本轮小矩阵/fresh63候选评分且具备全部同键D92 artifact的seed；完整性在打开该seed的本轮候选prediction前只读核验，若缺失则顺延到下一个完整seed，不得读取本轮性能后改选。它是`METHOD_UNSEEN_SCREEN`，不是全项目从未读取truth的盲测。矩阵固定：
 
 ```text
 5 receivers × 1 seed ×
@@ -181,17 +164,17 @@ S1固定为同一`seed=713102`的剩余2个receiver`{7-7,8-8}`×`{K1/new20,K5/ne
 
 每个job覆盖3个物理ID互斥的`leo_*_weak`场景。一次Target25只评估一个revision，不得从25行中选择receiver、scene、class或slice重跑。
 
-S0/S1按§5完成方向筛选。Target25只运行胜者的必要4臂`M0/M_DA/M_L92/M_JOINT`；历史D92只从已完成125中按完全相同的`capsule_id/split_id/query_id_root/receiver/seed/K/new_count/scenario`键连接，不重跑D92。键不全同则该seed不得用于本轮K1 paired目标，应在prediction前改选另一个具备完整同键D92 artifact且本方法未见的seed。
+§5小矩阵及§6的G0/fresh63完成方向筛选。Target25运行胜者的六个逻辑臂`R0Q/R0F/R0L/R1Q/R1F/R1L`；K1的F/L按等价receipt alias Q，不重复计算。历史formal D92只从已完成125中按完全相同的`capsule_id/split_id/query_id_root/receiver/seed/K/new_count/scenario`键连接，不重跑D92。键不全同则该seed不得用于本轮K1 paired目标，应在prediction前改选另一个具备完整同键D92 artifact且本方法未见的seed。
 
 Target25完整性单位保持：
 
 ```text
-25 jobs × 3 scenarios × 4 arms
-= 300个scenario-arm pair
-= 600个state prediction surface（before/after各300）
+25 jobs × 3 scenarios × 6 logical arms
+= 450个scenario-arm pair
+= 900个state prediction surface（before/after各450）
 ```
 
-每个pair必须同时封存Stage2-B的before旧类预测和Stage2-C的after旧类/新类预测。任一state或arm缺失、预测可覆盖、truth先于全部600个state prediction surface开放、键不唯一、哈希不匹配或只完成联合臂，均不得进入性能分析。`forgetting`只能由同一pair的before/after旧类预测计算，不能从其他方法或其他run补入。
+每个pair必须同时封存Stage2-B的before旧类预测和Stage2-C的after旧类/新类预测。任一state或arm缺失、预测可覆盖、truth先于全部900个state prediction surface开放、键不唯一、哈希不匹配或只完成联合臂，均不得进入性能分析。K1 alias必须有逐logit等价receipt；`forgetting`只能由同一pair的before/after旧类预测计算，不能从其他方法或其他run补入。
 
 K10执行§1全部硬门。
 
@@ -209,17 +192,9 @@ old+new总正确数严格增加
 
 单seed通过记为`TARGET25_SCREEN_PASS`，证明本轮研发目标在该预注册seed上达到；不能据此宣称多seed稳定。
 
-## 7.G3顺序确认
+## 7.本轮完成边界
 
-需要形成可推广的`PROMOTABLE`声明时，保持同一method lock，再运行一个预注册fresh confirm seed的25-job实验，不合并成125大矩阵。screen seed和confirm seed必须各自单独重过G2，并在两seed池化后再次重算。只有当两次结论冲突或置信区间极不稳定时，才单独决定是否增加第三seed；第三seed不是默认硬流程。
-
-确认门：
-
-- K1的paired`ΔH/ΔF_old`95%CI下界>0；
-- K5四项下降的95%CI上界≤5pp；
-- confirm seed失败记为`SCREEN_POSITIVE_NOT_CONFIRMED`。
-
-修改结构、rank、loss、step、量化、阈值或fallback会清零确认资格，并以新revision回到Phase1资产审计和S0。
+本轮默认终点是一个完整、预注册、单seed的`TARGET25_SCREEN_PASS`，不是再跑125或自动追加第二个Target seed。需要对外形成多seed`PROMOTABLE`声明时，另行预注册confirm seed；它不属于当前发布硬门，也不能延迟G0、fresh63或首个Target25。任何结构、rank、统计、量化、阈值或fallback修改都产生新revision，不得借用旧prediction。
 
 ## 8.研发工作包与模型分工
 
@@ -227,7 +202,7 @@ old+new总正确数严格增加
 |---|---|---|
 |WP-DA|轻型共享DA、层位/状态可辨识性、K1/K5 support更新与资源|`gpt-5.6-terra/max`|
 |WP-D92|历史D92计算图删改、类置换对称共享统计、K1边界及部署状态压缩|`gpt-5.6-terra/max`|
-|WP-CODESIGN|DA与精简D92共享view/统计/缓存、4臂因果接口和formal参照边界|`gpt-5.6-terra/max`|
+|WP-CODESIGN|DA与精简D92共享view/统计/缓存、六臂因果接口和formal参照边界|`gpt-5.6-terra/max`|
 |WP-DATA|目标、矩阵、同row指标、结果分析、拒绝语义和交叉审查|`gpt-5.6-sol/high`|
 |WP-INTEGRATE|协议解释、方案冻结、代码整合、独立复审和最终决策|主agent，`gpt-5.6-sol/high`|
 |WP-IMPLEMENT|复杂科学核心实现、改变或实现新机制、需要科学判断的复杂缺陷修复|`gpt-5.6-terra/max`|
@@ -247,7 +222,7 @@ old+new总正确数严格增加
 |`COMPLETED_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE`|完整矩阵完成但性能门失败|
 |`TARGET25_SCREEN_PASS`|单seed25达到本轮硬目标|
 |`SCREEN_POSITIVE_NOT_CONFIRMED`|单seed通过但确认seed失败|
-|`PROMOTABLE`|Phase1资产审计、S0、S1、Target25和fresh confirm全部通过|
+|`PROMOTABLE`|另行授权的多seed确认完成；不属于本轮默认硬门|
 
 禁止按receiver、scene、class、seed挑选结果，禁止跨run拼接极值，禁止用source-held替代Target。
 
@@ -257,7 +232,7 @@ old+new总正确数严格增加
 2.`D106` Target25 r7仅完成46/600 state后技术退出，严格为`NO_PERFORMANCE_RESULT`；当前没有新的Target性能；
 3.历史formal D92保留为固定参照，但不再视为最终头：K1整臂fallback、288维D62/D81管线、old/new重复稠密拟合和row-splice计算是本轮明确删改对象；160维held代理的额外协方差状态只作独立工程诊断；
 4.D127/D128全部是prediction前技术停止，没有性能结论；其Phase1 autograd/checkpoint-replacement实现路线已按预注册规则关闭，不再修复、不创建新run；
-5.当前唯一方法目标是§5.2的D129：闭式rank2 PSD度量＋既有D92-Lite，禁止encoder梯度、checkpoint replacement、`β`logit融合或第二候选；
-6.先实现`B/alpha`seal、K1/K5闭式metric和四臂；复用既有truth-free package/scorer语义，但不得复制D127三候选merge或Phase1 outer-audit框架；
-7.无truth真实checkpoint smoke只验证D129相对D110的独立功能变化和标签置换；通过聚焦测试、独立`P0=0/P1=0`、Git提交后立即发布18行one-shot，不重验数据；
-8.D129完整one-shot任一K5方向门失败即关闭并研发下一个原理；不得调参复活，不运行125、588、fresh63或重复D62/D92/SVRN矩阵。
+5.当前方法目标是§4的CSPAR-2与SRDH-2，不强凑第三条；两者禁止encoder梯度、checkpoint replacement、`β`logit融合或类专属状态；
+6.先实现两种共享表示、`Q/Full160/Lite160`三头和完整六臂；不得复制D127三候选merge或Phase1 outer-audit发布链；
+7.真实checkpoint no-truth smoke必须证明Gram、neighbor或margin发生非数值噪声变化；通过聚焦测试、42-fold覆盖、独立`P0=0/P1=0`、Git提交后立即发布小矩阵，不重验数据；
+8.任一候选完整小矩阵中一条K5主比较失败即关闭，不调参复活；胜者才顺序进入588 G0、一次fresh63和单seed Target25，不运行125或重复D62/D92/SVRN矩阵。
