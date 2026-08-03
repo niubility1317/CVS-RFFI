@@ -16,6 +16,8 @@
 
 NEXT-R1的最小性能矩阵固定为一个候选、42个receiver-held×seen-class-LOCO fold、`K∈{1,5}`，共84个candidate-row；每row只保留`R0Q/R0L/R1Q/R1L`四臂，删除D130已经证明不必重复的Full160代理臂。公共R0只计算一次。完整负结果立即关闭；完整正结果直接进入一个预注册单seed Target25 screen，不运行G0 588、fresh63或125。正式Target仍以完全同键的历史formal D92作外部基线。
 
+NEXT-R1设计流程严格时间盒为`DESIGN_DRAFT -> FEASIBILITY_REVIEW -> DESIGN_FROZEN`：只允许一次方法作者与独立supervisor交叉复审，可行性摘要不超过20行；只要协议合法性、K1/K5可辨识性、真实forward功能路径和资源上界没有P0/P1问题，就立即冻结并实现。补充文档、通用工具、重复数据验证、额外签名/权限层、P2测试和论文叙事均不阻塞发布；若一次复审仍证明机制不可辨识，则直接拒绝该设计，不通过增加流程或盲调实验延长。
+
 ## 1.最终目标
 
 本轮研发必须在`p2_min_v1`下形成一个同时包含轻型共享域适应和精简D92分类头的Stage2-C方法。D92不是冻结的下游基线，而是必须与DA共同删改、共同归因和共同优化的组成部分。最终候选在单seed的25个Target job上必须满足：
