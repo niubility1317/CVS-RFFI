@@ -6,7 +6,7 @@
 |---|---|
 |实验ID|d130_joint6_proxy84_20260803_r1|
 |时间|2026-08-03（Asia/Hong_Kong）|
-|状态|LOCAL_VERIFIED / PREREGISTERED / NOT_YET_LANDED / NO_PERFORMANCE_RESULT|
+|状态|ARTIFACTS_COMPLETE / ANALYZED / COMPLETED_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE|
 |目标|修复D129真实数值范围的仿射编译缺陷后，运行同一最小完整source-held LOCO联合矩阵|
 |主责任|主agent负责方法、协议、结果分析与晋级；唯一Terra Max runner负责N607落地、运行和artifact回收|
 |与D129关系|DA候选、42折、K1/K5、六臂、seed和评分门完全不变；只修改Full/Lite仿射state的共同数值尺度|
@@ -84,11 +84,105 @@ prepare、predict、score必须是不同进程。predict detached启动并写log
 
 预期artifact：smoke、prepare receipt/plan、predictions、resources、score、四份日志、PID/进程/GPU/哈希清单。truth文件默认不回传主分析面。
 
-## 8.待回填结果
+### 7.1实际执行闭环
 
-|candidate_id|机制|42折/K|A_retained|A_held_proxy|H_retained_held_proxy|F_retained|DA效应|Lite效应|联合效应|资源摘要|结论|
-|---|---|---|---:|---:|---:|---:|---:|---:|---:|---|---|
-|CSPAR-2|rank-2接收机残差|完整K1/K5|待运行|待运行|待运行|待运行|待运行|待运行|待运行|待运行|待判定|
-|SRDH-2|rank-2共享响应字典|完整K1/K5|待运行|待运行|待运行|待运行|待运行|待运行|待运行|待运行|待判定|
+- Git提交：`e7b1e006c2d9126112340accb6ef30201e4f6985`；bundle SHA=`97c756c082360ed1a847c251f11547935fb9909b6ffd50b9aec99845b11bde3b`。
+- N607状态链：`LOCAL_VERIFIED -> LANDED -> RUNNING -> ARTIFACTS_COMPLETE`。真实smoke两候选通过；prepare封存package/plan；predict一次完成168/168，`truth_loaded=false`，query fit/selection/state update均为0。
+- 首次score因父目录尚未创建，以`D129ProxyMatrixError: score output must be a new absolute file`退出；当时没有score输出。经主agent明确授权，仅创建冻结的空`score/`目录并对同一封存prediction执行一次独立score，未重跑smoke/prepare/predict，恢复日志完整保留。
+- prediction SHA=`839ec215686bd51b289a05fb62cacb4cd1b7f14335eef2f13e736f40335d636b`；resources SHA=`4ffe5b1aed62a6624f423152c5a5213b3d1a9683dc009bf422614773bcfa0799`；score SHA=`a0021a80bedb0cbe74ce276dc307fc85fd0bfc78623d191d46b0ed96f1e446bf`。
+- 最终无run-owned进程，8块GPU均空闲；所有SSH/SCP连接关闭。truth只在prediction完整封存后的独立score进程中打开，未回传主分析面。
 
-只允许同候选完整矩阵联合判定，不拼接边际极值。方向性胜者才进入G0 588、一次fresh63和单seed Target25；不运行125，不重复D62/D92/SVRN。
+## 8.结果与联合判定
+
+本矩阵是7个receiver×6个Phase1已见held class的42折source-held LOCO方向性代理。以下百分数来自同一candidate、同一K、同一arm的完整2268条query池；`F_retained`为六个retained class中的最低准确率。它不包含Target25真实新类，不能输出正式`N/H_old_new`或注册成功声明。
+
+### 8.1完整同臂结果
+
+|candidate_id|K|arm|A_retained|A_held_proxy|H_retained_held_proxy|F_retained|总正确数/2268|
+|---|---:|---|---:|---:|---:|---:|---:|
+|CSPAR-2|1|R0Q/F/L|82.593%|82.540%|82.566%|65.079%|1873|
+|CSPAR-2|1|R1Q/F/L|81.323%|82.011%|81.665%|56.825%|1847|
+|CSPAR-2|5|R0Q|87.037%|87.037%|87.037%|66.667%|1974|
+|CSPAR-2|5|R0F|85.661%|87.037%|86.344%|67.937%|1948|
+|CSPAR-2|5|R0L|86.508%|86.508%|86.508%|66.667%|1962|
+|CSPAR-2|5|R1Q|86.720%|86.243%|86.481%|67.619%|1965|
+|CSPAR-2|5|R1F|84.603%|87.302%|85.931%|72.063%|1929|
+|CSPAR-2|5|R1L|86.243%|86.243%|86.243%|66.349%|1956|
+|SRDH-2|1|R0Q/F/L|82.593%|82.540%|82.566%|65.079%|1873|
+|SRDH-2|1|R1Q/F/L|82.328%|82.011%|82.169%|63.175%|1866|
+|SRDH-2|5|R0Q|87.037%|87.037%|87.037%|66.667%|1974|
+|SRDH-2|5|R0F|85.661%|87.037%|86.344%|67.937%|1948|
+|SRDH-2|5|R0L|86.508%|86.508%|86.508%|66.667%|1962|
+|SRDH-2|5|R1Q|87.037%|87.037%|87.037%|66.667%|1974|
+|SRDH-2|5|R1F|85.714%|87.037%|86.371%|73.333%|1949|
+|SRDH-2|5|R1L|86.508%|86.508%|86.508%|66.667%|1962|
+
+### 8.2预注册K5主比较
+
+|candidate_id|主比较|ΔA_retained|ΔA_held_proxy|ΔH|ΔF_retained|Δ总正确数|判定|
+|---|---|---:|---:|---:|---:|---:|---|
+|CSPAR-2|DA：R1Q−R0Q|−0.317pp|−0.794pp|−0.556pp|+0.952pp|−9|失败|
+|CSPAR-2|Lite：R0L−R0F|+0.847pp|−0.529pp|+0.164pp|−1.270pp|+14|失败|
+|CSPAR-2|联合：R1L−R1F|+1.640pp|−1.058pp|+0.312pp|−5.714pp|+27|失败|
+|SRDH-2|DA：R1Q−R0Q|0.000pp|0.000pp|0.000pp|0.000pp|0|失败|
+|SRDH-2|Lite：R0L−R0F|+0.847pp|−0.529pp|+0.164pp|−1.270pp|+14|失败|
+|SRDH-2|联合：R1L−R1F|+0.794pp|−0.529pp|+0.137pp|−6.667pp|+13|失败|
+
+三项主比较都要求`ΔH>0`、总正确数严格增加，并且`ΔA_retained/ΔA_held_proxy/ΔF_retained`均不为负。CSPAR-2产生真实但总体负迁移；SRDH-2在K5 qKNN上退化为零效应。Lite头的平均与H小幅改善来自retained组，伴随held-proxy和最差类下降；它不是满足“域适应后模型与D92联合提升”的正版本。
+
+### 8.3资源结果
+
+|比较|部署数值状态|query head MAC/样本|拟合解析MAC|显式峰值工作集|K5拟合时延中位数|证据边界|
+|---|---:|---:|---:|---:|---:|---|
+|D92-Full160|984B|960|9,113,600|668,208B|约12.21–12.30ms|同160维表示的head因果对照|
+|D92-Lite160|984B|960|22,400|62,768B|约0.75ms|拟合MAC减少99.754%，工作集减少90.607%；部署wire与Full160相同|
+|历史formal D92-288|4,692B|1,728|未在本代理同机重测|未在本代理同机重测|未在本代理同机重测|仅系统级资源参考，表示管线不同|
+|CSPAR-2＋Lite160|1,320B|960|头为22,400|头为62,768B|头约0.75ms|相对formal参考状态减少71.867%，不构成性能因果比较|
+|SRDH-2＋Lite160|1,650B|960|头为22,400|头为62,768B|头约0.75ms|相对formal参考状态减少64.834%，不构成性能因果比较|
+
+数值可表示性修复有效：336份K5仿射audit中共享指数为`e=0:327、e=-1:6、e=-2:1、e=-3:2`，最大预缩放截距485329经共同正2次幂缩放后不超过63479，非零截距cast-zero和subnormal均为0。此结论只说明D130不再因FP16溢出退出，不改变负性能判定。
+
+### 8.4最终决定
+
+- `CSPAR-2`与`SRDH-2`均记为`COMPLETED_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE`并关闭。
+- 不运行G0 588、fresh63、Target25或125，不修改本轮layer/rank/step/view/seed/shrinkage/阈值，不用边际正值复活候选。
+- D130保留两项可复用工程结论：共同正2次幂仿射缩放解决真实FP16表示范围；Lite160显著降低拟合计算与工作集。但二者都不是性能晋级证据。
+- 下一研发轮最多允许一条原理不同候选；必须先从参数空间局部残差、Fisher锚定和尾部保持头的可辨识性出发完成设计，再冻结更小的必要矩阵。
+
+## 9.与D62、D91、D92、SVRN的证据分层对比
+
+D62/D92/SVRN是旧定义下的历史target-capsule 125诊断矩阵，D91是单receiver、单seed的15行development单元；它们都不是后来定义的Target25，也不是D130的source-held LOCO代理。以下只在各自原始同row口径内报告，不能把不同矩阵的绝对值直接写成配对增益。
+
+### 9.1D62与D92历史125同slice结果
+
+|方法|slice|B_old|A_old|N|H|forgetting|结论|
+|---|---|---:|---:|---:|---:|---:|---|
+|D62|K10/new5|86.02%|76.33%|73.57%|74.60%|9.69pp|完整125诊断，非晋级|
+|D92|K10/new5|86.111%|76.189%|74.133%|74.803%|9.922pp|H小幅增加，旧类/遗忘未改善|
+|D62|K10/new10|86.02%|71.53%|66.75%|68.84%|14.49pp|完整125诊断，非晋级|
+|D92|K10/new10|86.111%|72.533%|66.353%|69.106%|13.578pp|旧类与遗忘改善，新类下降|
+|D62|K10/new20|86.02%|68.68%|68.78%|68.56%|17.34pp|完整125诊断，非晋级|
+|D92|K10/new20|86.111%|71.333%|68.150%|69.555%|14.778pp|相对D62约`A_old+2.653pp、N−0.630pp、H+0.995pp、forgetting−2.562pp`|
+|D62|K5/new20|81.32%|61.39%|59.28%|60.03%|19.93pp|完整125诊断，非晋级|
+|D92|K5/new20|81.267%|63.711%|58.883%|60.955%|17.556pp|相对D62旧类/H改善，新类下降|
+|D62|K1/new20|68.14%|44.03%|27.15%|33.41%|24.11pp|K1整体fallback|
+|D92|K1/new20|68.144%|44.033%|27.150%|33.410%|24.111pp|逐值不变，没有K1功能增益|
+
+D92 Role-Oracle另有完整125上界，在K10/new20把`A_old/N/H`提高到`83.31%/71.43%/76.91%`，但它读取query old/new role，明确为`LICENSED_ORACLE_UPPER_BOUND_NON_PROMOTABLE`，不能作为NEXT-R1合法基线或方法组件。
+
+### 9.2其他路线与D130
+
+|方法|矩阵与语义|关键同row结果|资源摘要|对NEXT-R1的约束|
+|---|---|---|---|---|
+|D91|Rx20-1、seed713101、K10/new5、15行development|`B/A/N/H/forgetting=92.78/82.22/84.67/82.62/10.56`，与D62 development的15/15 outer prediction相同|2159参数；40 optimizer steps；约25.427GMAC适应＋0.249GMAC额外crossfit；query 6624MAC；持久14,399B＋瞬时ground 116,304B|内部support目标或几何变化不等于分类功能；不再扩展consensus/sigma margin|
+|SVRN-qKNN-BCRR r4.2|5receiver×5seed×5slice=125，完整375场景|overall `B_old/A_old/N/H/forgetting=73.10/43.03/23.46/29.25/30.07`；125/125的N和H均低于D62；配对`ΔA_old=-21.36pp、ΔN=-35.64pp、ΔH=-31.84pp、Δforgetting=+12.96pp`|0训练；持久状态均值126,981B、最大208,069B；评分矩阵每query均值0.07868ms|大分支状态和BCRR零范数修补不能弥补表示错配；该冻结revision关闭，不推广为所有DA无效|
+|D130 CSPAR-2|42折×K1/K5 source-held LOCO代理|K5 DA`ΔH=-0.556pp、正确数-9`|DA 336B；与Lite160联合1,320B；head query 960MAC|共享PSD表示变换发生负迁移，关闭|
+|D130 SRDH-2|42折×K1/K5 source-held LOCO代理|K5 DA全部delta=0|DA 666B；与Lite160联合1,650B；head query 960MAC|共享非线性响应在真实矩阵上无决策作用，关闭|
+|D130 Lite160|同160维Full160因果对照|`ΔH=+0.164pp、正确数+14`，但`ΔA_held=-0.529pp、Δfloor=-1.270pp`|拟合MAC 22,400、工作集62,768B、时延中位数约0.75ms；部署wire仍984B/960MAC|保留效率实现，下一头必须加入类对称尾部保护，不能把平均增益当联合成功|
+
+### 9.3资源口径限制
+
+- D62完整125报告的适应计算均值约26.056GMAC，持久状态均值约15,194B，query为6,624–15,264MAC，CUDA峰值约21.4–22.0MB。
+- D92最终retry2没有完整资源artifact；外部分析只能给出约11.153–11.741GMAC拟合上界、7.46–16.11KiB状态和3,168–7,488 compiled query MAC，属于上下文估计。
+- D130的22,400拟合MAC、960 query MAC和1,320/1,650B联合状态只覆盖160维代理head＋DA数值资产，且runtime中backbone forward为0。它证明组件轻量，不能直接宣称相对D62/D91/D92端到端同比降幅。
+- 各历史报告未提供统一的独立TX split字段；不得补写或猜测。所有跨版本主结论必须保留各自matrix、receiver、seed、K/new_count和claim语义。
