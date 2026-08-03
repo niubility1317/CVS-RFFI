@@ -1,6 +1,6 @@
 # Stage2功能研发目标与证据门
 
-状态：`ACTIVE / FUNCTION_FIRST / D106_DA_DESIGN_FROZEN / IMPLEMENTING_LOCAL_ONLY / TARGET_NOT_OPENED`
+状态：`ACTIVE / FUNCTION_FIRST / D126_THEORY_RESEARCH_COMPLETE / D125_IMPLEMENTATION_PAUSED / NO_EXPERIMENT_RELEASE`
 
 ## 1.最终目标
 
@@ -151,10 +151,12 @@ old+new总正确数严格增加
 |WP-HEAD|纯target-support qKNN、带宽/密度/不确定度校准、弱类floor和新类注册|`gpt-5.6-terra/max`|
 |WP-DATA|目标、矩阵、同row指标、结果分析、拒绝语义和交叉审查|`gpt-5.6-sol/high`|
 |WP-INTEGRATE|协议解释、方案冻结、代码整合、独立复审和最终决策|主agent，`gpt-5.6-sol/high`|
+|WP-IMPLEMENT|复杂科学核心实现、改变或实现新机制、需要科学判断的复杂缺陷修复|`gpt-5.6-terra/max`|
+|WP-EXEC|冻结规格helper/test、Git/report、manifest、sync、固定命令启动/监控和artifact回收|`Luna/max`|
 
 方法agent不得自我认证。WP-DATA必须审查K-shot可辨识性、common-transform cancellation、support proxy过拟合、旧/新任务平衡、类置换、资源和query/role/quota禁区。
 
-每个功能包由不同agent拥有非重叠文件面。服务器实验另设唯一terra-max runner；runner只负责落地、启动、健康检查、完整日志与artifact回收，不得改方法、调参、按性能重跑或与主agent重复启动。主agent和WP-DATA使用sol-high读取完整25-job/300-pair/600-state预测与评分证据后再作晋级决定。
+每个功能包由不同agent拥有非重叠文件面。服务器实验另设唯一`Luna/max`runner；当commit、matrix、command、paths和health-stop完全冻结时默认使用`Luna/max`，仅在落地或调试需要复杂P0/P1判断或科学判断时例外使用`gpt-5.6-terra/max`。runner只负责落地、启动、健康检查、完整日志与artifact回收，不得改方法、调参、按性能重跑或与主agent重复启动。主agent和WP-DATA使用sol-high读取完整25-job/300-pair/600-state预测与评分证据后再作晋级决定。
 
 ## 9.拒绝语义
 
@@ -171,11 +173,11 @@ old+new总正确数严格增加
 
 ## 10.当前执行优先级
 
-1.`D105-CBRC-MB4`的source-held门已观察到receiver/class/TX三项拒绝且没有formal组件；FTU4只修复合法科学负结果的无wire持久化。D105不进入Target25，也不因技术修复自动补跑；
-2.冻结`D106-RDCE/GTSM-r3`共享非等距DA：仅从D104冻结split的588条`L_s`构造receiver-day类中心残差基；禁止复用D105的8400行特征tap。builder-only存储验证器可以读取由D104 SHA绑定的8400行上游`source_validation` received-IQ池，但只允许封存选中的588条`L_s` IQ，方法/export面不得获得其余7812条记录；
-3.先实现D106专用`L_s`单观测tap、ID-only train/held互斥收据、INT8 RDCE资产和严格loader，再实现K1非identity的纯support-only qKNN头；各功能包文件面互不重叠；
-4.使用尚未打开性能truth的D104 source-held split完成固定`M0/M_DA/M_HEAD/M_JOINT`四臂G1。任何outer held结果不得回调rank、衰减、head结构或阈值；
-5.只有G0/G1、真实checkpoint no-query smoke、资源闭合、完整回归和独立复审达到`P0=0、P1=0`后，才本地Git提交并预登记新run；不push、不上传GitHub；
-6.由唯一terra-max runner在N607运行seed713102的Target25；性能好坏不得触发提前停止；
-7.由sol-high对完整25-job/300-pair/600-state预测做同row D62、D91、D92、SVRN和D106四臂分析；
-8.仅当§1、§6全部通过时进入fresh confirm seed；否则根据四臂简单效应、弱类错误流和K-shot退化定位下一轮DA或HEAD修订。
+1.`D106-RCMR`真实588条K1/K5/K10 G0已通过，argmax变化分别为20、28、87；D106 source-held G1已完成63行/252臂，不重跑G0/G1，不修复旧通用release manifest链；
+2.`D106` Target25 r7仅完成46/600 state后技术退出，严格为`NO_PERFORMANCE_RESULT`；不得恢复、覆盖或把D122/D123 source-held结果替代为Target证据；
+3.`D121-LBR`、`D122`组合项和`D123-LOO-CRES`均已关闭；D123相对D122为0/63性能行变化。当前只保留`D106-RDCE`和`D112`静态ground head作为各自证据边界内的正组件；
+4.`D125-RDHA-2`设计保持冻结但暂停实现；不废弃、不调参，也不与新方法组合。当前优先候选改为`D126-FSRG-2`：Phase1封存首个GroupNorm后、ReLU前的rank2浅层残差子空间，Phase2只对二维系数作一步全registered-support监督梯度；
+5.D126不声称识别CFO或纯物理receiver state，因此不把D119缺失的CFO真值设为新硬门；其唯一科学证据是receiver-held×class/TX-LOCO上的跨实体分类迁移、K1/K5稳定性及对D102/固定线性/PSD的函数非等价；
+6.只允许一个source-only Phase1 falsifier；唯一层位、rank2、一步更新、交叉视图support损失、Fishr启发的二维梯度方差预条件、INT8/FP16资产和trust radius一次冻结，不扫描层、rank、步数、视图、seed或门限；
+7.falsifier失败立即关闭D126并恢复到方法研发，不发布G0/G1/Target/125；通过后只做一次核心实现、一次`ssr-gpu`窄验证、真实checkpoint无query smoke和一次独立`P0=0、P1=0`审查；
+8.只有上述最小门通过才允许新run ID运行真实588条K1/K5/K10 G0；任一K无功能变化即拒绝revision，三K均变化才允许一次fresh63行G1，不直接运行Target或125矩阵。
