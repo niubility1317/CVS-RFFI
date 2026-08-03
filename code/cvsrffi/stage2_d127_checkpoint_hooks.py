@@ -625,9 +625,10 @@ D127Phase1RawIQEpisode = D127Phase1EpisodeIQ
 class D127Phase1CheckpointForward:
     """One real, same-downstream Phase1 checkpoint forward.
 
-    ``pre_relu`` and ``z_id`` intentionally retain the caller replacement's
-    autograd graph.  This record is ephemeral and never becomes a Phase2
-    feature cache or a persisted floating-point sidecar.
+    Training forwards retain the caller replacement's autograd graph.  The
+    explicit frozen-audit entry returns the same record shape through the same
+    checkpoint downstream without a caller graph.  Neither form becomes a
+    Phase2 feature cache or a persisted floating-point sidecar.
     """
 
     candidate_id: str
@@ -935,16 +936,19 @@ class D127Phase1CheckpointBridge:
         self._validate_episode_binding(episode, split, forward.tap)
         return forward
 
-    def forward_with_replacement(
+    def _forward_with_replacement(
         self,
         episode: phase1_assets.FSRGEpisode | phase1_assets.RDHAEpisode,
         *,
         split: Literal["support", "query"],
         replacement: Tensor,
+        require_caller_graph: bool,
     ) -> D127Phase1CheckpointForward:
-        """Inject one non-detached tap replacement through the real downstream."""
+        """Run the one shared replacement path in training or frozen-audit mode."""
 
-        if not torch.is_tensor(replacement) or not replacement.requires_grad:
+        if not torch.is_tensor(replacement):
+            raise D127CheckpointHookError("Phase1 bridge replacement must be a tensor")
+        if require_caller_graph and not replacement.requires_grad:
             raise D127CheckpointHookError(
                 "Phase1 bridge replacement must retain a differentiable caller graph"
             )
@@ -954,7 +958,7 @@ class D127Phase1CheckpointBridge:
             raw,
             self._binding,
             intervention=lambda _source: replacement,
-            require_grad=True,
+            require_grad=require_caller_graph,
         )
         self._validate_episode_binding(episode, split, captured.tap)
         forward = self._forward_record(
@@ -963,9 +967,54 @@ class D127Phase1CheckpointBridge:
             episode_id=episode.episode_id,
             split=split,
         )
-        if not forward.pre_relu.requires_grad or not forward.z_id.requires_grad:
+        if require_caller_graph and (
+            not forward.pre_relu.requires_grad or not forward.z_id.requires_grad
+        ):
             raise D127CheckpointHookError("Phase1 replacement did not reach real final z_id160")
         return forward
+
+    def forward_with_replacement(
+        self,
+        episode: phase1_assets.FSRGEpisode | phase1_assets.RDHAEpisode,
+        *,
+        split: Literal["support", "query"],
+        replacement: Tensor,
+    ) -> D127Phase1CheckpointForward:
+        """Inject one differentiable training replacement through the real downstream.
+
+        This remains the strict default.  A frozen Phase1 asset must not use
+        this entry to manufacture a caller graph after training has completed.
+        """
+
+        return self._forward_with_replacement(
+            episode,
+            split=split,
+            replacement=replacement,
+            require_caller_graph=True,
+        )
+
+    def forward_with_frozen_audit_replacement(
+        self,
+        episode: phase1_assets.FSRGEpisode | phase1_assets.RDHAEpisode,
+        *,
+        split: Literal["support", "query"],
+        replacement: Tensor,
+    ) -> D127Phase1CheckpointForward:
+        """Audit a frozen replacement through the same real checkpoint downstream.
+
+        This internal Phase1-only entry deliberately accepts an unconnected
+        replacement.  It keeps the identical tensor, shape/device/dtype,
+        finite-value, tap-binding, and final-node checks, but executes under
+        ``no_grad`` rather than calling ``requires_grad_(True)`` on frozen
+        data.  It is not a target/Phase2 query API.
+        """
+
+        return self._forward_with_replacement(
+            episode,
+            split=split,
+            replacement=replacement,
+            require_caller_graph=False,
+        )
 
     def build_deployment_qknn_bank(
         self,
@@ -1015,20 +1064,34 @@ class D127Phase1CheckpointBridge:
         return logits
 
     def fsrg_loss_callbacks(
-        self, *, qknn_locks: Mapping[int, qknn.Phase1ZIDStudentTLock]
+        self,
+        *,
+        qknn_locks: Mapping[int, qknn.Phase1ZIDStudentTLock],
+        frozen_audit: bool = False,
     ) -> phase1_assets.FSRGLossCallbacks:
-        """Create episode-aware real-checkpoint A/B support and outer callbacks."""
+        """Create source-only A/B callbacks for training or a frozen outer audit."""
 
         if self.candidate_id not in (da.CANDIDATE_A, da.CANDIDATE_B):
             raise D127CheckpointHookError("FSRG callbacks require an A or B bridge")
+        if type(frozen_audit) is not bool:
+            raise D127CheckpointHookError("frozen_audit must be an exact bool")
         locks = _phase1_qknn_locks(qknn_locks)
 
         def support_per_sample(
             episode: phase1_assets.FSRGEpisode, adapted_tap: Tensor
         ) -> Tensor:
-            forward = self.forward_with_replacement(
-                episode, split="support", replacement=adapted_tap
-            )
+            # FSRG's source-held audit still derives its temporary support
+            # coefficient from an actual derivative.  That local ``a0`` graph
+            # is real and must stay strict; once the fitted state is frozen,
+            # the outer audit below uses the no-graph entry.
+            if frozen_audit and not adapted_tap.requires_grad:
+                forward = self.forward_with_frozen_audit_replacement(
+                    episode, split="support", replacement=adapted_tap
+                )
+            else:
+                forward = self.forward_with_replacement(
+                    episode, split="support", replacement=adapted_tap
+                )
             return _support_view_loss(forward.pre_relu, episode.support_labels)
 
         def outer_query_per_sample(
@@ -1036,10 +1099,15 @@ class D127Phase1CheckpointBridge:
             adapted_support: Tensor,
             adapted_query: Tensor,
         ) -> Tensor:
-            support_forward = self.forward_with_replacement(
+            forward = (
+                self.forward_with_frozen_audit_replacement
+                if frozen_audit
+                else self.forward_with_replacement
+            )
+            support_forward = forward(
                 episode, split="support", replacement=adapted_support
             )
-            query_forward = self.forward_with_replacement(
+            query_forward = forward(
                 episode, split="query", replacement=adapted_query
             )
             logits = self.deployment_qknn_logits(
@@ -1065,12 +1133,17 @@ class D127Phase1CheckpointBridge:
         )
 
     def rdha_outer_callback(
-        self, *, qknn_locks: Mapping[int, qknn.Phase1ZIDStudentTLock]
+        self,
+        *,
+        qknn_locks: Mapping[int, qknn.Phase1ZIDStudentTLock],
+        frozen_audit: bool = False,
     ) -> phase1_assets.RDHALossCallback:
-        """Create the episode-aware real-checkpoint C qKNN outer callback."""
+        """Create the source-only C qKNN callback for training or frozen audit."""
 
         if self.candidate_id != da.CANDIDATE_C:
             raise D127CheckpointHookError("RDHA outer callback requires a C bridge")
+        if type(frozen_audit) is not bool:
+            raise D127CheckpointHookError("frozen_audit must be an exact bool")
         locks = _phase1_qknn_locks(qknn_locks)
 
         def outer_query_per_sample(
@@ -1078,10 +1151,15 @@ class D127Phase1CheckpointBridge:
             adapted_support: Tensor,
             adapted_query: Tensor,
         ) -> Tensor:
-            support_forward = self.forward_with_replacement(
+            forward = (
+                self.forward_with_frozen_audit_replacement
+                if frozen_audit
+                else self.forward_with_replacement
+            )
+            support_forward = forward(
                 episode, split="support", replacement=adapted_support
             )
-            query_forward = self.forward_with_replacement(
+            query_forward = forward(
                 episode, split="query", replacement=adapted_query
             )
             logits = self.deployment_qknn_logits(

@@ -596,6 +596,30 @@ def test_phase1_bridge_uses_real_downstream_int8_qknn_and_keeps_outer_gradients(
     assert torch.any(torch.abs(grad_u) > 0.0)
     assert torch.any(torch.abs(grad_v) > 0.0)
 
+    b_bridge, b_episode = _real_fsrg_bridge_episode(
+        model, candidate_id=da.CANDIDATE_B
+    )
+    b_asset = _fsrg_asset(da.CANDIDATE_B, b_episode.dimension, torch.device("cpu"))
+    b_asset.U.requires_grad_(True)
+    b_asset.V.requires_grad_(True)
+    b_callbacks = b_bridge.fsrg_loss_callbacks(qknn_locks=locks)
+    b_state = da.fit_fsrg_support_state(
+        b_episode.support_taps,
+        b_episode.support_labels,
+        b_asset,
+        lambda adapted: b_callbacks.support_per_sample(b_episode, adapted),
+    )
+    b_outer_loss = b_callbacks.outer_query_per_sample(
+        b_episode,
+        da.apply_fsrg_outer(b_episode.support_taps, b_asset, b_state),
+        da.apply_fsrg_outer(b_episode.query_taps, b_asset, b_state),
+    )
+    b_grad_u, b_grad_v = torch.autograd.grad(
+        b_outer_loss.mean(), (b_asset.U, b_asset.V)
+    )
+    assert torch.any(torch.abs(b_grad_u) > 0.0)
+    assert torch.any(torch.abs(b_grad_v) > 0.0)
+
     c_bridge, c_episode = _real_rdah_bridge_episode(model)
     c_asset = _rdha_asset(torch.device("cpu"))
     for parameter in (c_asset.U, c_asset.V, c_asset.Q, c_asset.b):
@@ -613,6 +637,81 @@ def test_phase1_bridge_uses_real_downstream_int8_qknn_and_keeps_outer_gradients(
         c_loss.mean(), (c_asset.U, c_asset.V, c_asset.Q, c_asset.b)
     )
     assert all(torch.any(torch.abs(gradient) > 0.0) for gradient in gradients)
+
+
+def test_frozen_audit_replacement_is_strictly_separate_and_same_downstream() -> None:
+    """A/C exercise the real hook layout without fabricating a caller graph."""
+
+    torch.manual_seed(127128)
+    model = hooks.freeze_d127_checkpoint_model(_TinyDualModel())
+    locks = _phase1_qknn_locks()
+    cases: tuple[
+        tuple[
+            hooks.D127Phase1CheckpointBridge,
+            phase1_assets.FSRGEpisode | phase1_assets.RDHAEpisode,
+            da.FSRGAsset | da.RDHAAsset,
+        ],
+        ...,
+    ] = (
+        (*_real_fsrg_bridge_episode(model), _fsrg_asset(da.CANDIDATE_A, 4, torch.device("cpu"))),
+        (*_real_rdah_bridge_episode(model), _rdha_asset(torch.device("cpu"))),
+    )
+
+    for bridge, episode, asset in cases:
+        captured = bridge.capture_episode(episode, split="query")
+        frozen_replacement = captured.tap.detach().clone() + 0.0125
+        with pytest.raises(
+            hooks.D127CheckpointHookError, match="differentiable caller graph"
+        ):
+            bridge.forward_with_replacement(
+                episode, split="query", replacement=frozen_replacement
+            )
+        live_replacement = frozen_replacement.detach().clone().requires_grad_(True)
+        live = bridge.forward_with_replacement(
+            episode, split="query", replacement=live_replacement
+        )
+        frozen = bridge.forward_with_frozen_audit_replacement(
+            episode, split="query", replacement=frozen_replacement
+        )
+        assert live.pre_relu.requires_grad and live.z_id.requires_grad
+        assert not frozen.pre_relu.requires_grad and not frozen.z_id.requires_grad
+        torch.testing.assert_close(live.tap.detach(), frozen.tap, rtol=0.0, atol=0.0)
+        torch.testing.assert_close(live.hidden.detach(), frozen.hidden, rtol=0.0, atol=0.0)
+        torch.testing.assert_close(live.pre_relu.detach(), frozen.pre_relu, rtol=0.0, atol=0.0)
+        torch.testing.assert_close(live.z_id.detach(), frozen.z_id, rtol=0.0, atol=0.0)
+
+        if isinstance(episode, phase1_assets.FSRGEpisode):
+            assert isinstance(asset, da.FSRGAsset)
+            callbacks = bridge.fsrg_loss_callbacks(qknn_locks=locks, frozen_audit=True)
+            state = da.fit_fsrg_support_state(
+                episode.support_taps,
+                episode.support_labels,
+                asset,
+                lambda adapted: callbacks.support_per_sample(episode, adapted),
+            )
+            support = da.adapt_fsrg_support(episode.support_taps, asset, state)
+            query = da.adapt_fsrg_query(episode.query_taps, asset, state)
+            losses = callbacks.outer_query_per_sample(episode, support, query)
+        else:
+            assert isinstance(asset, da.RDHAAsset)
+            callback = bridge.rdha_outer_callback(qknn_locks=locks, frozen_audit=True)
+            state = da.fit_rdah_support_state(
+                episode.support_hidden, episode.support_labels, asset
+            )
+            support = da.adapt_rdah_support(episode.support_hidden, asset, state)
+            query = da.adapt_rdah_query(episode.query_hidden, asset, state)
+            losses = callback(episode, support, query)
+        assert not losses.requires_grad
+        assert bool(torch.isfinite(losses).all().item())
+
+    a_bridge, a_episode = _real_fsrg_bridge_episode(model)
+    a_captured = a_bridge.capture_episode(a_episode, split="query")
+    with pytest.raises(hooks.D127CheckpointHookError, match="finite float32"):
+        a_bridge.forward_with_frozen_audit_replacement(
+            a_episode,
+            split="query",
+            replacement=torch.full_like(a_captured.tap, float("nan")),
+        )
 
 
 def test_signed_totalization_uses_pre_relu_only_for_relu_zero_rows() -> None:

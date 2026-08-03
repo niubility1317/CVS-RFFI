@@ -1662,20 +1662,27 @@ def _fsrg_audit(
     bridge: Any,
     episode: assets.FSRGEpisode,
     asset: da.FSRGAsset,
-    callbacks: assets.FSRGLossCallbacks,
+    qknn_locks: Mapping[int, qknn.Phase1ZIDStudentTLock],
 ) -> tuple[Tensor, bool, bool]:
+    # Do not reuse the training outer callback after U/V have been frozen.
+    # The support-state derivative remains a real local ``a0`` calculation,
+    # while the fitted-state evaluation below is intentionally no-graph.
+    audit_callbacks = bridge.fsrg_loss_callbacks(
+        qknn_locks=qknn_locks,
+        frozen_audit=True,
+    )
     state = da.fit_fsrg_support_state(
         episode.support_taps,
         episode.support_labels,
         asset,
-        lambda adapted: callbacks.support_per_sample(episode, adapted),
+        lambda adapted: audit_callbacks.support_per_sample(episode, adapted),
     )
-    support = da.apply_fsrg_outer(episode.support_taps, asset, state)
-    query = da.apply_fsrg_outer(episode.query_taps, asset, state)
-    losses = callbacks.outer_query_per_sample(episode, support, query)
+    support = da.adapt_fsrg_support(episode.support_taps, asset, state)
+    query = da.adapt_fsrg_query(episode.query_taps, asset, state)
+    losses = audit_callbacks.outer_query_per_sample(episode, support, query)
     value = da.class_balanced_support_loss(losses, episode.query_labels)
     base = bridge.capture_raw(episode.episode_id, split="query").z_id
-    changed = bridge.forward_with_replacement(
+    changed = bridge.forward_with_frozen_audit_replacement(
         episode, split="query", replacement=query
     ).z_id
     nonzero = bool(torch.any(torch.abs(state.support_gradient) > 0.0).item()) and bool(torch.any(torch.abs(state.a) > 0.0).item())
@@ -1687,20 +1694,20 @@ def _rdha_audit(
     bridge: Any,
     episode: assets.RDHAEpisode,
     asset: da.RDHAAsset,
-    callback: assets.RDHALossCallback,
+    qknn_locks: Mapping[int, qknn.Phase1ZIDStudentTLock],
 ) -> tuple[Tensor, bool, bool]:
-    outer = da.apply_rdah_outer(
-        episode.support_hidden,
-        episode.support_labels,
-        episode.query_hidden,
-        asset,
+    audit_callback = bridge.rdha_outer_callback(
+        qknn_locks=qknn_locks,
+        frozen_audit=True,
     )
     state = da.fit_rdah_support_state(episode.support_hidden, episode.support_labels, asset)
-    losses = callback(episode, outer.adapted_support, outer.adapted_query)
+    support = da.adapt_rdah_support(episode.support_hidden, asset, state)
+    query = da.adapt_rdah_query(episode.query_hidden, asset, state)
+    losses = audit_callback(episode, support, query)
     value = da.class_balanced_support_loss(losses, episode.query_labels)
     base = bridge.capture_raw(episode.episode_id, split="query").z_id
-    changed = bridge.forward_with_replacement(
-        episode, split="query", replacement=outer.adapted_query
+    changed = bridge.forward_with_frozen_audit_replacement(
+        episode, split="query", replacement=query
     ).z_id
     nonzero = bool(torch.any(torch.abs(state.a) > 0.0).item())
     return value, nonzero, not bool(torch.equal(base.detach(), changed.detach()))
@@ -1715,9 +1722,19 @@ def _audit_one_episode(
 ) -> tuple[Tensor, bool, bool]:
     if isinstance(episode, assets.FSRGEpisode):
         _require(isinstance(asset, da.FSRGAsset) and isinstance(callback, assets.FSRGLossCallbacks), "D127 FSRG audit binding drift")
-        return _fsrg_audit(bridge=runtime.bridge, episode=episode, asset=asset, callbacks=callback)
+        return _fsrg_audit(
+            bridge=runtime.bridge,
+            episode=episode,
+            asset=asset,
+            qknn_locks=runtime.qknn_locks,
+        )
     _require(isinstance(asset, da.RDHAAsset) and callable(callback), "D127 RDHA audit binding drift")
-    return _rdha_audit(bridge=runtime.bridge, episode=episode, asset=asset, callback=callback)
+    return _rdha_audit(
+        bridge=runtime.bridge,
+        episode=episode,
+        asset=asset,
+        qknn_locks=runtime.qknn_locks,
+    )
 
 
 def _candidate_logits(
@@ -1749,10 +1766,10 @@ def _candidate_logits(
         )
         support = outer.adapted_support
         query = outer.adapted_query
-    support_forward = runtime.bridge.forward_with_replacement(
+    support_forward = runtime.bridge.forward_with_frozen_audit_replacement(
         episode, split="support", replacement=support
     )
-    query_forward = runtime.bridge.forward_with_replacement(
+    query_forward = runtime.bridge.forward_with_frozen_audit_replacement(
         episode, split="query", replacement=query
     )
     return runtime.bridge.deployment_qknn_logits(

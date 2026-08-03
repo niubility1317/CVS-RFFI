@@ -529,9 +529,14 @@ def test_merge_rejects_a_different_source_or_method_binding(tmp_path: Path) -> N
 class _LightweightCheckpointBridge:
     """A test-only bridge with the real production bridge method shapes."""
 
+    last_instance: "_LightweightCheckpointBridge | None" = None
+
     def __init__(self, _model: object, *, candidate_id: str, episode_iq_by_id: object) -> None:
         assert candidate_id == da.CANDIDATE_A
         self._episodes = dict(episode_iq_by_id)
+        self.strict_replacement_calls = 0
+        self.frozen_audit_replacement_calls = 0
+        type(self).last_instance = self
 
     @staticmethod
     def _forward_from_iq(iq: torch.Tensor) -> SimpleNamespace:
@@ -556,13 +561,28 @@ class _LightweightCheckpointBridge:
 
     def forward_with_replacement(self, _episode: object, *, split: str, replacement: torch.Tensor) -> SimpleNamespace:
         assert split in ("support", "query")
+        assert replacement.requires_grad
+        self.strict_replacement_calls += 1
         return self._forward_from_tap(replacement)
 
-    def fsrg_loss_callbacks(self, *, qknn_locks: object) -> assets.FSRGLossCallbacks:
+    def forward_with_frozen_audit_replacement(self, _episode: object, *, split: str, replacement: torch.Tensor) -> SimpleNamespace:
+        assert split in ("support", "query")
+        self.frozen_audit_replacement_calls += 1
+        return self._forward_from_tap(replacement)
+
+    def fsrg_loss_callbacks(
+        self, *, qknn_locks: object, frozen_audit: bool = False
+    ) -> assets.FSRGLossCallbacks:
         assert tuple(qknn_locks) == (1, 5)
+        assert type(frozen_audit) is bool
 
         def support_per_sample(episode: assets.FSRGEpisode, adapted: torch.Tensor) -> torch.Tensor:
-            rows = _LightweightCheckpointBridge._forward_from_tap(adapted).z_id
+            forward = (
+                self.forward_with_frozen_audit_replacement
+                if frozen_audit and not adapted.requires_grad
+                else self.forward_with_replacement
+            )
+            rows = forward(episode, split="support", replacement=adapted).z_id
             classes, inverse = torch.unique(episode.support_labels, sorted=True, return_inverse=True)
             prototypes = torch.stack(
                 [rows[inverse == class_index].mean(dim=0) for class_index in range(len(classes))]
@@ -571,8 +591,13 @@ class _LightweightCheckpointBridge:
             return torch.nn.functional.cross_entropy(rows @ prototypes.transpose(0, 1), inverse, reduction="none").to(dtype=torch.float32)
 
         def outer_query_per_sample(episode: assets.FSRGEpisode, support: torch.Tensor, query: torch.Tensor) -> torch.Tensor:
-            support_rows = _LightweightCheckpointBridge._forward_from_tap(support).z_id
-            query_rows = _LightweightCheckpointBridge._forward_from_tap(query).z_id
+            forward = (
+                self.forward_with_frozen_audit_replacement
+                if frozen_audit
+                else self.forward_with_replacement
+            )
+            support_rows = forward(episode, split="support", replacement=support).z_id
+            query_rows = forward(episode, split="query", replacement=query).z_id
             classes, inverse = torch.unique(episode.support_labels, sorted=True, return_inverse=True)
             prototypes = torch.stack(
                 [support_rows[inverse == class_index].mean(dim=0) for class_index in range(len(classes))]
@@ -598,6 +623,7 @@ class _LightweightCheckpointBridge:
 
 
 def test_internal_real_shape_bridge_path_runs_outer7_final14_without_public_injection(tmp_path: Path) -> None:
+    _LightweightCheckpointBridge.last_instance = None
     lock_path, lock_sha = _write_method_lock(tmp_path)
     method_lock = release.load_d127_phase1_method_lock(lock_path, expected_sha256=lock_sha)
     result = release._build_d127_phase1_single_candidate_from_joined_rows(
@@ -617,6 +643,9 @@ def test_internal_real_shape_bridge_path_runs_outer7_final14_without_public_inje
     assert len(receipt["outer_folds"]) == 7
     assert all(item["performance_threshold_or_ranking_used"] is False for item in receipt["outer_folds"])
     assert all(item["source_held_isolation"] and item["fixed_cyclic_label_equivariant"] and item["nonzero_state_or_gradient"] and item["query_function_changed"] for item in receipt["outer_folds"])
+    assert _LightweightCheckpointBridge.last_instance is not None
+    assert _LightweightCheckpointBridge.last_instance.strict_replacement_calls > 0
+    assert _LightweightCheckpointBridge.last_instance.frozen_audit_replacement_calls > 0
     public_parameters = set(inspect.signature(release.build_d127_phase1_single_candidate_from_source).parameters)
     assert "bridge_factory" not in public_parameters
 
