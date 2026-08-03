@@ -5,7 +5,7 @@
 |字段|值|
 |---|---|
 |实验ID|`d128_a_one18_s713102_20260803_r1`|
-|状态|`LOCAL_VERIFIED/NO_NEW_PERFORMANCE_RESULT`|
+|状态|`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE/NO_PERFORMANCE_RESULT`|
 |目标|用最小单A闭环验证轻型FSRG域适应、D92-Lite和二者联合是否产生真实同row正收益|
 |Primary|Sol High：协议、集成、结果分析、关闭/晋级决策|
 |唯一runner|Terra Max：N607落地、启动、健康检查、artifact回收；不得调参或作性能决策|
@@ -82,6 +82,76 @@
 
 |receiver|scene|K|arm|old_before|old_after|seen_new|H|old_floor|forgetting|total_correct|verdict|
 |---|---|---:|---|---:|---:|---:|---:|---:|---:|---:|---|
-|`PENDING`|`PENDING`|`PENDING`|`PENDING`|`PENDING`|`PENDING`|`PENDING`|`PENDING`|`PENDING`|`PENDING`|`PENDING`|`PENDING`|
+|`N/A`|`N/A`|`N/A`|`N/A`|`N/A`|`N/A`|`N/A`|`N/A`|`N/A`|`N/A`|`N/A`|A bundle在prediction前技术退出；无性能结果|
 
-完成后必须回填72条同row指标、scope/receiver/scene/K pool、G1/G2/G3、资源、artifact SHA和最终关闭/晋级建议。当前没有新性能结果。
+本run未生成prediction，因此没有72条同row指标、pool或G1/G2/G3；这些字段不得以局部值或历史值补写。当前没有新性能结果。
+
+## 7.唯一runner预落地记录
+
+|字段|实测值|
+|---|---|
+|N607直连预检|`2026-08-03 17:25 CST`通过；普通账号、项目根和Python3.10.19可用|
+|r1唯一性|`$RUN`不存在；未触碰D127或其他历史run|
+|固定资产|checkpoint、selected IQ、receipt、`L_s` join及D92 manifest均逐项匹配第4节SHA256|
+|资源|GPU0-7均`0%/1MiB`且无compute process；`/home`可用约7.4T|
+|本地冻结输入|D127/D106最小source closure、5个D128文件、method lock及Target25 context共30项均存在并逐项计算SHA256；第3节7个新/更新关键SHA全部匹配|
+|本地SSH清理|预检及资产核验后均为`ssh.exe=0`、至N607/lab bridge的TCP22连接数`0`|
+|当前状态|`PRE_LANDING_VERIFIED/NO_NEW_PERFORMANCE_RESULT`；下一步首次创建r1专用不可覆盖根并精确同步|
+
+## 7.1落地、哈希与运行时入口闭合
+
+|字段|实测值|
+|---|---|
+|r1专用根|`$RUN`首次创建；仅含本run的`source/input/assets/predictions/truth/score/logs/receipts/smoke`目录|
+|精确同步|21个模块、7个CLI脚本、method lock和Target25 context，共30个冻结输入；未复用D127-r3 source文件|
+|远端SHA|30/30逐项匹配本地`b4810e80`冻结输入；checkpoint hooks=`8814e78d...078b5`、Phase1 release=`42348f8f...c7887`、D128 core=`7e388fed...5737de`|
+|编译与CLI|28个Python文件`py_compile`通过；D127 Phase1/prepare及3个D128 CLI的`--help`均通过|
+|日志|`$RUN/logs/preflight_compile_help.log`，完成标记`COMPILE_HELP_PASS`|
+|SSH|每次SCP/SSH后均为`ssh.exe=0`、至N607/lab bridge的TCP22连接数`0`|
+
+当前状态为`LANDED/PREFLIGHT_PASSED/PREPARE_PENDING/NO_NEW_PERFORMANCE_RESULT`。下一步直接fresh prepare，不复用D127-r2/r3产物。
+
+## 7.2fresh prepare完成
+
+|字段|实测值|
+|---|---|
+|状态|`D127_S0_PREPARED`，`truth_loaded=false`|
+|计划规模|18个row pair、36个state row|
+|prepared plan|`input/prepared/prepared_plan.json`；内容SHA256`1e6d931c6b0f833133e3a7589c6f7afa2cfbf4170e792a94f0bac1431d682108`；文件SHA256`c147120edb73481f2243535bcdc86da56ec0193ce052145e4515c8773ea76803`|
+|K5 prefix receipt|`input/prepared/k5_prefix_receipt.json`；内容SHA256`13b5b827469a74f5581e969a762f250e874708936ce03bacc5d3d1324e124ba2`；文件SHA256`7688f4a4870377900185598637cc742ce5b2d31e0926f415bf6145a166a251a5`|
+|日志/SSH|`logs/prepare.log`；连接结束后`ssh.exe=0`、至N607/lab bridge的TCP22连接数`0`|
+
+当前状态为`PREPARED/PHASE1_A_PENDING/NO_NEW_PERFORMANCE_RESULT`。下一步重新核验GPU0占用并仅启动候选A；B/C保持禁止。
+
+## 7.3候选A Phase1已启动
+
+|字段|实测值|
+|---|---|
+|candidate|仅`DA-A-FSRG-time_fuse`；B/C未启动|
+|PID/GPU|PID`450398`；外层GPU0，进程内`cuda:0`|
+|CWD/cmdline|`$RUN/source`；完整cmdline绑定本run的`build_d127_phase1_assets.py`、A资产目录、冻结method lock与5个固定资产|
+|log/output|`logs/phase1_DA-A-FSRG-time_fuse.log`；`assets/DA-A-FSRG-time_fuse`|
+|启动后健康点|40秒时PID存活且PPID已归1；GPU0`15%/972MiB`；error marker`0`；日志暂未flush；资产尚未封存|
+|runner包装说明|首次8秒检查末尾因`nvidia-smi | head`在`pipefail`下返回SIGPIPE/141；实验PID当时及后续均存活，非实验异常，未重启|
+|SSH|两次启动健康连接后均为`ssh.exe=0`、至N607/lab bridge的TCP22连接数`0`|
+
+当前状态为`RUNNING_PHASE1_A/NO_NEW_PERFORMANCE_RESULT`。下一步仅用短连接检查PID、日志增长、GPU和A bundle闭合，不读取accuracy/H等性能指标。
+
+## 7.4系统性技术停止与路线封存
+
+状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE/NO_PERFORMANCE_RESULT`。
+
+候选A在Phase1 outer-fold审计、bundle封存和任何prediction之前退出。准确异常位于`stage2_d127_phase1_release.py:1820`：`D127Phase1ReleaseError: D127 outer audit failed isolation/equivariance/nonzero/query-change closure`。该异常发生在`_outer_fold_audit_and_final_rebuild`，属于冻结handoff定义的同一bridge/release体系再次prediction前失败；因此本run停止后续唯一smoke、prediction、truth-open、truth builder和score，不重启、不创建r2、不在线调参。
+
+|项|实测结果|
+|---|---|
+|Phase1 PID|`450398`已退出；停止后没有带`$RUN`路径的存活进程|
+|Phase1日志|`logs/phase1_DA-A-FSRG-time_fuse.log`；SHA256`ec44126ebc8f9ca21e22a5a8a4a20a84396144bf922985591cf469da225f8814`|
+|输出计数|assets=`0`、smoke=`0`、predictions=`0`、truth=`0`、score=`0`|
+|GPU|GPU0-7均回到`0%/1MiB`|
+|其余日志|preflight SHA256`3a196cb52c435e296244b10d0bc724cd2eb9cd60b7242e218ec3cac8a5716bad`；prepare SHA256`315c50e7bfa5124d29790d57dc41a8e07495584a845302779e91ba4532a91c15`|
+|prepared证据|plan文件SHA256`c147120edb73481f2243535bcdc86da56ec0193ce052145e4515c8773ea76803`；K5 receipt文件SHA256`7688f4a4870377900185598637cc742ce5b2d31e0926f415bf6145a166a251a5`|
+|artifact回收|上述3份日志、2份prepared JSON和PID receipt共6项已镜像到双报告的`artifacts/remote_r1/`，6/6逐项同SHA|
+|SSH|所有连接结束后均为`ssh.exe=0`、至N607/lab bridge的TCP22连接数`0`|
+
+本停止不证明候选A性能为负，也不产生D92联合效果结论；它只关闭当前bridge/release实现路线的重复修复发布。后续方法选择和最终晋级/关闭决定由Primary结合既有研发证据作出。
