@@ -6,7 +6,7 @@
 |---|---|
 |实验ID|`d129_joint6_proxy84_20260803_r2`|
 |时间|2026-08-03（Asia/Hong_Kong）|
-|状态|`LOCAL_VERIFIED / PREREGISTERED / NOT_YET_LANDED / NO_PERFORMANCE_RESULT`|
+|状态|`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NOT_YET_LANDED / NO_PERFORMANCE_RESULT`|
 |主责任|主agent负责方法、协议、分析与晋级；唯一Terra Max runner负责N607落地和证据|
 |目标|运行CSPAR-2与SRDH-2的最小完整source-held LOCO方向性矩阵，并联合比较精简D92|
 |r1关系|r1在任何D129进程启动前因EOL字节哈希混用停止；r2只修release hash和解释器发现，不改方法、矩阵、seed或判据|
@@ -82,3 +82,9 @@ prepare、predict、score必须是不同进程。predict detached启动，PID写
 |SRDH-2|rank-2共享响应字典|完整K1/K5|待运行|待运行|待运行|待运行|待运行|待运行|待运行|待运行|待判定|
 
 只允许同候选完整矩阵的联合判定，不拼接边际极值。方向性胜者才顺序进入G0 588、一次fresh63和单seed Target25；不运行125，不重复D62/D92/SVRN。
+
+## 8.r2运行结论
+
+r2在任何远端写入前停止：run root始终为ABSENT，未SCP、未解包、未启动D129进程。N607的Conda注册表不存在名为`ssr-gpu`的环境，预注册的三个用户home候选及`/opt/miniconda3/envs/ssr-gpu/bin/python`均不存在；因此不得把本地测试环境名机械套用到服务器。
+
+只读核验确认服务器已注册的项目环境`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`可执行，Python 3.10.19、NumPy 2.2.5、PyTorch 2.1.0+cu121。下一次是本revision第二次且最后一次非科学发布修复：新run ID必须显式冻结该绝对解释器；本地代码测试继续使用`ssr-gpu`。若新run再出现发布工程缺陷，不增加通用抽象或继续无限修补。
