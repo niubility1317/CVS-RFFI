@@ -8,7 +8,7 @@
 |时间|2026-08-03（Asia/Hong_Kong）|
 |主责任|主agent：方法集成、协议解释、结果分析与晋级决定|
 |服务器责任|唯一Terra Max runner：N607落地、启动、健康检查、artifact回收；不得改方法或按性能重跑|
-|状态|`LOCAL_VERIFIED / PREREGISTERED / NOT_YET_LANDED / NO_PERFORMANCE_RESULT`|
+|状态|`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`|
 |目标|用最小完整方向性矩阵比较CSPAR-2与SRDH-2，并同时检验DA、D92-Lite替代和联合效应|
 |比较对象|同一原子row内共享R0的`R1Q-R0Q`、`R0L-R0F`、`R1L-R1F`|
 |正式声明边界|本轮是Phase1已见类source-held LOCO代理，不是Target25真实新类注册，不输出正式`N/H_old_new`|
@@ -32,7 +32,7 @@
 |`code/cvsrffi/stage2_d129_joint6_scorer.py`|`e575e55bbcacd24cc64b3f2da140e9c3e4f4dfe8c4a13580e737e48aa131b9ba`|prediction封存后的独立评分|
 |`code/scripts/run_d129_joint6_real_archive_smoke.py`|`119f9e32ef80ec1a54f5fb65a21ccd2692665de19c3be1cac0d6ba20250977c9`|真实D104六成员归档无truth smoke|
 |`code/scripts/run_d129_joint6_proxy_matrix.py`|`c0f41d81b887c1b21fbba0317052d06465cbeea0bc6ec472c47e88be528b2879`|prepare/predict/score三进程边界|
-|`configs/d129_joint6_method_lock_20260803.json`|`fd47cd9f52d4ae29100ebcaff5e2a64c5397294b72394990e2f2040a16cbedd7`|冻结方法与矩阵|
+|`configs/d129_joint6_method_lock_20260803.json`|预注册工作树字节`fd47cd9f52d4ae29100ebcaff5e2a64c5397294b72394990e2f2040a16cbedd7`；Git归档字节`73da38b66319ee69bf2076da698ada55b59e9569d671f4097fbdd80a45a8cd9f`|冻结方法与矩阵；r1错误混用两种EOL字节哈希|
 
 Git工作树为`E:\type10-7\code\snapshots\cdom_scxmap_d92_glf_r1_wt`，分支`codex/stage2-da25-r1`，预注册父提交`949f0385f75b90fdb0f2873717774f6cde34e1cf`；最终发布提交由本报告进入同一提交后记录在runner交接和完成更新中。根目录`E:\type10-7`不是Git仓库，本报告在该Git工作树和根目录报告面保持字节镜像。
 
@@ -96,3 +96,9 @@ prepare、predict、score必须是不同Python进程；predict只读predictor pa
 |SRDH-2|rank-2共享响应字典|42折完整|1/5|待运行|待运行|待运行|待运行|待运行|待运行|待运行|待运行|待判定|
 
 本表只允许同候选、同完整矩阵的联合行；不拼接边际最大值。若两候选均负，本revision关闭并保存完整负结果；下一研发轮最多新增一条原理不同候选。
+
+## 8.r1运行结论
+
+runner于2026-08-03 19:28:54 CST经直连N607完成预检。run root创建前不存在；bundle、fixture、D104档案、checkpoint及7个D129源文件哈希均匹配。解包后method lock实际SHA256为`73da38b66319ee69bf2076da698ada55b59e9569d671f4097fbdd80a45a8cd9f`，而预注册错误要求工作树CRLF字节哈希`fd47cd9f52d4ae29100ebcaff5e2a64c5397294b72394990e2f2040a16cbedd7`。这是发布清单混用工作树与Git归档字节的确定性P0技术缺陷。
+
+runner在任何D129进程启动前停止：`smoke/`和`logs/`为空，`prepare/`、`predict/`、`score/`不存在，无PID、无prediction、无性能结果。8张GPU均为0%/1MiB，所有SSH/SCP短连接结束后本机`ssh.exe=0`、N607:22连接数为0。远端run root及partial artifact保持不变。下一次只允许使用新run ID，并以Git归档字节哈希作为release truth；不得覆盖、续跑或重标r1。
