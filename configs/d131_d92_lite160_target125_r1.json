@@ -1,0 +1,68 @@
+{
+  "schema": "cvs.phase2.d131.d92_lite160_target125.method_lock.v1",
+  "candidate_id": "D131-D92-LITE160/r1",
+  "protocol_schema": "p2_min_v1",
+  "scientific_scope": "formal_stage2c_old_new_registration_target125_independent_system_diagnostic",
+  "matrix": {
+    "receiver_count": 5,
+    "seed_count": 5,
+    "slice_count": 5,
+    "outer_job_count": 125,
+    "scenes": [
+      "leo_clear_weak",
+      "leo_low_elev_weak",
+      "leo_rain_weak"
+    ],
+    "phases": [
+      "before",
+      "after"
+    ],
+    "candidate_arm_count": 1,
+    "prediction_surface_count": 750
+  },
+  "representation": {
+    "runtime": "sealed_D92_TorchScript_ADV3B02_z_id160",
+    "materialized_input": "D92_registered_feature_288",
+    "projection": "first_160_then_canonical_L2_normalization",
+    "claim": "semantic_equivalence_to_D129_normalized_z_id160_not_raw_byte_identity",
+    "additional_backbone_forward": false
+  },
+  "before": {
+    "state": "before_qknn_baseline",
+    "head": "phase1_locked_student_t_qknn",
+    "support": "old_registered_classes_only_same_K",
+    "claim": "baseline_not_D92_Lite_before"
+  },
+  "after": {
+    "K5_K10": "D92_Lite160_old_new_task_balanced_diagonal_OAS_equal_half",
+    "K1": "exact_same_qknn_logits_alias_no_Lite_fit_no_Lite_gain_claim",
+    "old_class_count": 6,
+    "prior": "equal_1_over_registered_class_count",
+    "wire": "int8_W_Cx160_plus_fp16_scale_C_plus_fp16_intercept_C"
+  },
+  "query_decision": {
+    "batch_size": 1,
+    "policy": "independent_argmax_over_all_registered_classes",
+    "query_fit": false,
+    "query_update": false,
+    "query_selection": false
+  },
+  "forbidden_runtime_inputs": [
+    "clean_or_source_samples",
+    "query_truth",
+    "query_role",
+    "query_old_new_role",
+    "class_quota",
+    "true_batch_class_count",
+    "global_reassignment",
+    "phase2_optimizer_or_backward",
+    "performance_routing_or_partial_selection"
+  ],
+  "claim_boundary": {
+    "full160_head_causal_superiority": false,
+    "historical_D92_288d_head_equivalence": false,
+    "K1_Lite_gain": false,
+    "promotion_requires_complete_125_375_750_closure": true
+  },
+  "negative_result_policy": "close_D92_Lite_route_after_complete_formal_negative_without_parameter_tuning"
+}
