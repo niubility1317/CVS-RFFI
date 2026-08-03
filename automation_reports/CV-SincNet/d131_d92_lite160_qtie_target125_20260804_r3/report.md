@@ -5,7 +5,7 @@
 - 实验ID：`d131_d92_lite160_qtie_target125_20260804_r3`
 - 日期：2026-08-04
 - 操作者：主agent负责科学集成、结果分析与晋级决定；Luna/max为唯一N607 runner。
-- 当前状态：`LOCAL_VERIFICATION_IN_PROGRESS`
+- 当前状态：`LOCAL_VERIFIED_RELEASE_READY`
 - 协议：`p2_min_v1`
 - 目标：修复D131 r2在Lite最高分精确并列处的确定性执行缺陷，完成冻结的125 outer/375 scene/750 prediction surface矩阵。
 - 比较对象：同一row的before qKNN与after D92-Lite160-QTIE；r2严格为`NO_PERFORMANCE_RESULT`，281个partial仅作执行故障证据。
@@ -33,7 +33,10 @@
 - 方法锁schema：`cvs.phase2.d131.d92_lite160_qtie_target125.method_lock.v2`。
 - 方法锁SHA256：`e0f7f8623b4d53002206aca8575f8eadd2bca4150a7c5aed3d017b4827fa5dac`。
 - 已通过：D92/D108/D129相关28项测试。
-- 待记录：独立P0/P1复核、最终Git commit、确定性runtime archive与解包哈希。
+- 独立Terra/max复核：`P0=0,P1=0,RELEASE_READY=yes`。
+- Git commit：`00aa23620225d8453f5868ffb7e254c2ead20d48`。
+- runtime archive：`E:\type10-7\code\snapshots\d131_d92_lite160_qtie_target125_20260804_r3_runtime_00aa2362_v1.tar`，SHA256=`f01e659b7ab223c6fe0c558576b3c27080e1f68a362579de914e37878ce86265`，大小17,192,960B；独立重生成包大小与SHA完全一致。
+- 实际解包SHA：method lock=`e0f7f8623b4d53002206aca8575f8eadd2bca4150a7c5aed3d017b4827fa5dac`；core=`cfdd787ffb4b5c6a6e43435d268acacc2d5979cc272762d994a72d3efa1732e0`；adapter=`f736cbb809f525e775a52151a84935eb0a0c9c7c2d20ab728f1f45b62643850a`；CLI=`141a8713e2d7e96a2955d71baa028d44c3f407b3155835c3f1efe9701c625750`。
 
 ## N607输入与发布冻结
 
@@ -61,4 +64,3 @@
 | candidate | receiver/TX | K/new | seed | scene | before old | after old | seen-new | H_old_new | forgetting | verdict |
 |---|---|---:|---:|---|---:|---:|---:|---:|---:|---|
 | 待完整truth score | 待填 | 待填 | 待填 | 待填 | 待填 | 待填 | 待填 | 待填 | 待填 | 待填 |
-
