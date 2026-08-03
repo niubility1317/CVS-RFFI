@@ -1,6 +1,6 @@
-# D127 S0固定格式预注册报告骨架
+# D127 S0预注册与发布报告
 
-> 本文件是固定格式预注册骨架。所有尚未由冻结实现、运行交接或独立评分产生的字段必须保持`PENDING`，不得在实验前用推测值替换。
+> 本文件记录冻结目标、本地实现验证和后续唯一runner交接。尚未由运行或独立评分产生的字段保持`PENDING`，不得用推测值替换。
 
 ## 1.基本信息
 
@@ -9,9 +9,9 @@
 |实验ID|`d127_joint_s0_s713102_20260803_r1`|
 |时间戳|`2026-08-03`|
 |阶段/矩阵|D127 joint，S0|
-|当前状态|`LOCAL_IMPLEMENTING/NO_NEW_PERFORMANCE_RESULT`|
+|当前状态|`LOCAL_VERIFIED/NO_NEW_PERFORMANCE_RESULT`|
 |协议模式|`p2_min_v1`|
-|报告类型|固定格式preregistration骨架|
+|报告类型|完整preregistration与release handoff|
 
 ### 操作员分工
 
@@ -25,13 +25,13 @@
 
 ### Objective
 
-在已冻结的D127 joint候选、Phase1部署bundle和一次验证的Phase2固定接收IQ上执行S0矩阵，验证冻结目标文档规定的三条方向性H/正确计数条件，并形成同一row的before/after预测、独立评分和证据闭合。当前仅完成预注册骨架，尚无性能结果。
+在已冻结的D127 joint候选、Phase1部署bundle和一次验证的Phase2固定接收IQ上执行S0矩阵，验证冻结目标文档规定的三条方向性H/正确计数条件，并形成同一row的before/after预测、独立评分和证据闭合。本地真实入口、协议负测和写读闭环已经完成，尚无性能结果。
 
 ### Hypothesis/comparison
 
 - 假设：至少一个冻结候选同时满足`M_DA-M0`池化`H>0`、K5的`M_JOINT-M_DA`池化`H>0`、以及`M_JOINT-M0`池化`H>0`且old＋new总正确数增加。除此以外不设0.5pp或局部row性能门。
 - 比较对象：核心因果臂为`M0/M_DA/M_L92/M_JOINT`；历史`R_D92_FORMAL`仅作为同row完整288维管线参照，不重跑、不冒充纯head效应，也不得以Oracle/clean-access或跨run边际最佳值替代。
-- 结果边界：`LOCAL_IMPLEMENTING/NO_NEW_PERFORMANCE_RESULT`；实现落地、进程完成或诊断阴性证据均不自动构成可晋级性能结果。
+- 结果边界：`LOCAL_VERIFIED/NO_NEW_PERFORMANCE_RESULT`；实现落地、进程完成或诊断阴性证据均不自动构成可晋级性能结果。
 
 ## 3.冻结S0矩阵
 
@@ -55,7 +55,7 @@ S0只运行上述冻结矩阵。不得新增、删减或重排receiver、TX、K�
 
 |资产|远端路径/标识|SHA256或receipt|
 |---|---|---|
-|当前Git基线|`d655775b`；补充commit`ade9e987`、`49d281dd`、`c496b5ee`；早期谱系`45485b18`、`fec8c14b`、`3d07db6e`|补充commit文件hash：`PENDING`|
+|当前Git基线|实现commit`3458ecba`；方法锁commit`ade9e987`；预注册commit`83b1cb16`；方向门commit`1951799b`；早期谱系`45485b18`、`fec8c14b`、`3d07db6e`|核心实现文件hash见7.1节|
 |Phase1 checkpoint|`/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth`|`2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98`|
 |固定source/received IQ|`/home/szu2070436088/2510044040/CV-SincNet/runs/d106_real_integration_dba10236_20260801_r7/output/selected_ls_iq/d106_ls_received_iq.npz`|文件SHA256：`e32708214eaedaf39af532c572e16045f173422d63110e4022778f3ad0252ede`；receipt SHA256：`a18bd5d610c9874bd0d6b50d34e845d85229d5892453bce9ff5bfeaa8ee82d59`|
 |D92注册根目录|`/home/szu2070436088/2510044040/CV-SincNet/runs/d92_registration_balanced_125_retry2_20260720`|manifest SHA256：`b70045e7cd45a6029bc0a1a47ada0bb72d16fdb6bc7662c43bd253bfc7e4bc5c`|
@@ -89,8 +89,8 @@ S0门槛仅包括活动目标文档规定的以下三条方向性H/正确计数�
 
 |字段|值|
 |---|---|
-|exact new Git commit|`PENDING`|
-|changed-file hashes|`PENDING`|
+|exact new Git commit|代码实现`3458ecba`；报告回填commit在本次提交后记录|
+|changed-file hashes|见7.1节|
 |local-to-remote sync mapping|`PENDING`|
 |N607 exact command|`PENDING`|
 |Conda/Python environment|`PENDING`（默认环境名为`ssr-gpu`，以交接实值为准）|
@@ -101,11 +101,24 @@ S0门槛仅包括活动目标文档规定的以下三条方向性H/正确计数�
 |output/prediction/score paths|`PENDING`|
 |expected artifacts and manifests|`PENDING`|
 |health-check schedule and receipts|`PENDING`|
-|focused protocol-negative tests|`PENDING`|
-|real-checkpoint no-query smoke|`PENDING`|
-|independent P0/P1 review|`PENDING`|
+|focused protocol-negative tests|`88 passed`；覆盖query zero-fit/zero-update/zero-selection、canonical写读、foreign Phase1 lineage、truth-open顺序及exclusive输出|
+|real-checkpoint no-query smoke|已通过`test_real_checkpoint_three_taps_strict_rebuild_and_no_query_smoke`；仅有既有AMP弃用警告|
+|independent P0/P1 review|预测链`P0=0,P1=0,RELEASE_READY`；评分链`P0=0,P1=0,RELEASE_READY`|
 
-本骨架创建不运行项目测试、不使用SSH/SCP、不启动或停止N607实验；上述交接字段只能由实现验证和唯一runner在交接时填写。
+尚未使用SSH/SCP，也未启动或停止N607实验。剩余运行字段只能由唯一Terra Max runner在交接和运行时填写。
+
+### 7.1本地实现与文件hash
+
+|文件|用途|SHA256|
+|---|---|---|
+|`code/cvsrffi/stage2_d127_phase1_release.py`|真实source-only七折审计、最终重建与量化bundle|`fdac4f10abe68c2993c007c507e80d3ddf7aa3f3cedfc0e76d19d16f142e7ecc`|
+|`code/cvsrffi/stage2_d127_s0_package_adapter.py`|D106包materialize、单候选预测和paired闭合|`8edb69f41506f79d922c753db6499cce6473adc009aa1f9f4b4947e00b6f4bb7`|
+|`code/cvsrffi/stage2_d127_s0_scorer.py`|paired预测归一化和独立same-row评分|`ef483c43f2114ac83121582ae145594fe163a1b395d8a6b0e0f8136d902bfb30`|
+|`code/cvsrffi/stage2_d127_s0_truth_assets.py`|truth-open后构造truth/formal-D92引用|`f5279151630c36a6818da4f648f06300cbb79377a4ddb39e5ca3ab18aa0e8361`|
+|`code/scripts/build_d127_phase1_assets.py`|单候选Phase1构建入口|`ed7550e1838abb865113137ffafb01811cfbaedd4695c026bbe9ec79ffe51a89`|
+|`code/scripts/run_d127_s0.py`|prepare/candidate-worker/merge入口|`a340dc3cb3bba4870d98a1618af844d87c995091bec654b576d0b6174ad02a24`|
+|`code/scripts/score_d127_s0.py`|open/score两阶段评分入口|`e378631ff567ca060aaf1fafa3b6559741b066376967a5b52a260face610cef5`|
+|`code/scripts/build_d127_s0_truth_assets.py`|独立truth/formal资产入口|`ea864775fb5aff38e5d1aa3b08c06c5a68a60f48b76a6e3e00b26f6d17e913a7`|
 
 ## 8.停止规则与明确排除项
 
@@ -136,4 +149,4 @@ S0门槛仅包括活动目标文档规定的以下三条方向性H/正确计数�
 |解释与晋级结论|`PENDING`|
 |下一实验建议|`PENDING`|
 
-**预注册结论：**当前仅登记冻结输入、S0矩阵、合法性边界和三条S0门槛，状态保持`LOCAL_IMPLEMENTING/NO_NEW_PERFORMANCE_RESULT`。任何性能结论须等完整同一row预测、独立评分和门槛证据闭合后再写入。
+**预注册结论：**冻结实现、本地88项聚焦测试和两条独立P0/P1复核已经闭合，状态为`LOCAL_VERIFIED/NO_NEW_PERFORMANCE_RESULT`。下一步直接交由唯一Terra Max runner完成N607落地、18行预测和独立评分；任何性能结论须等完整同一row证据返回后再写入。
