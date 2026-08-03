@@ -1,6 +1,10 @@
 # D126浅层Fishr启发残差梯度适配研究
 
-状态：`THEORY_RESEARCH_COMPLETE / PHASE1_FALSIFIER_CANDIDATE / NO_NEW_PERFORMANCE_RESULT / NO_EXPERIMENT_RELEASE`
+> **已被联合冻结设计替代（2026-08-03）：**本文件仅保留候选A的历史机理研究。`lambda_F/lambda_R`直接目标、D126独占优先、source-only性能硬门、588条G0和fresh63流程不再生效；A/B现统一采用一阶FOMAML式`S_src→a¹→Q_src`规则，并与候选C共享同一个D92-Lite和S0/S1矩阵。当前权威设计见`analysis/joint_da_d92_lite_codesign_frozen_20260803.md`。
+
+文档执行状态：`HISTORICAL_SUPERSEDED / DO_NOT_EXECUTE`。下文所有“建议”“下一步”“允许”均为旧决策记录，不再授权实现或实验。
+
+历史状态：`THEORY_RESEARCH_COMPLETE / PHASE1_FALSIFIER_CANDIDATE / NO_NEW_PERFORMANCE_RESULT / NO_EXPERIMENT_RELEASE`
 
 ## 1.直接裁决
 

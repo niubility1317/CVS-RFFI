@@ -1,5 +1,9 @@
 # D125 RDHA-2 Phase1证伪冻结设计
 
+> **已被联合冻结设计替代（2026-08-03）：**本文件仅保留候选C的公式来源。D125不再是独占路线，旧`Stage2 implementation forbidden`、source-held性能硬门、588条G0和fresh63流程不再生效；候选C现在与A/B共享同一个D92-Lite，并接受统一S0/S1因果筛选。当前权威设计见`analysis/joint_da_d92_lite_codesign_frozen_20260803.md`。
+
+文档执行状态：`HISTORICAL_SUPERSEDED / DO_NOT_EXECUTE`。下文所有“当前裁决”“必须”“允许”和实验步骤均为旧决策记录，不再授权实现或发布。
+
 ## 1.当前裁决
 
 - 名称：`D125-RDHA-2`（Receiver-Held Dynamic Hyper-Adapter，rank-2）。
