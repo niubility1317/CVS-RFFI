@@ -34,6 +34,23 @@
 |`DA-B-FSRG-t2norm`|`id_backbone.t2.norm`输出、既有ReLU之前|与A相同|中层折中，避免把研究固定在浅层|
 |`DA-C-RDHA-joint_proj`|`id_backbone.cls_head.joint_proj.0`的320维输入|5维全类对称support summary经封存hypernetwork直接生成|无Phase2反传，最快但更接近晚层adapter族|
 
+### 3.0一次性Phase1资产构建
+
+Phase1资产构建是方法实现的一部分，不是额外性能gate。三候选共用同一份receiver-held×TX/class-LOCO episode清单、同一物理ID互斥规则和同一确定性训练预算：
+
+1.每个fold只用inner source实体。对class等权去中心后的receiver均值差矩阵做canonical float64 SVD，以前两个右奇异方向初始化`U`列和`V`行；奇异向量符号由最大绝对坐标为正固定。有效秩不足2或前两方向因近重根而不能唯一确定时只关闭该候选，不换seed或初始化；同一冻结episode清单中全部support物理ID与全部outer-query物理ID必须全局互斥，包括跨K和跨episode；
+2.模型checkpoint全冻结，资产参数用float32前向，loss、梯度方差、summary均值/标准差和投影范数用float64累积；固定K1与K5 episode等权、receiver等权、class等权并按预冻结词典序全批计算；唯一优化器为确定性full-batch L-BFGS，`max_iter=128`、`line_search_fn=strong_wolfe`，单初始化、无early stop、无学习率/epoch/正则扫描；
+3.A/B对每个inner episode按下述`S_src→a¹→Q_src`计算outer query交叉熵，只更新`U/V`；`D_F`由inner receiver的逐样本二维梯度方差累计，数值下限固定为`epsilon64×max(1,mean(D_F_raw))`；`rho=0.05×median_inner||p_l||₂`只从Phase1 inner tap计算，并与`U/V/D_F/a_max`共同封存，Phase2不得由target support重估预算；
+4.C的`Q`初始化为前两维summary到二维`a`的单位选择矩阵、`b=0`，不另设随机初始化；对同一inner episode由support summary生成`a`，以独立query的qKNN交叉熵只更新`U/V/Q/b`；`m_P1/d_P1`的均值和标准差仅由inner episode summary累计，标准差只使用`epsilon64×max(1,|m_P1|)`防止除零，Phase2固定使用`(s-m_P1)/d_P1`；
+5.最终资产只保留量化后的`U/V/Q/b`、必要FP16尺度、`D_F`、`rho/a_max`或`m_P1/d_P1`，不得保留source样本、样本feature、receiver/TX/class键或FP32 sidecar。量化前后必须做函数parity receipt；
+6.outer fold只检查物理隔离、标签置换、状态非零和独立query上的可观测函数变化，不设置性能阈值，也不用于A/B/C排序。唯一候选排序发生在全部S0 prediction封存后的一次truth评分。
+
+所有outer审计闭合后，每个候选以完全相同的初始化、目标和128次确定性预算在全部Phase1 source receiver上重建一次最终资产；不得读取outer分数选择checkpoint、迭代或fold资产。最终资产只绑定全source训练清单及其物理ID根，不携带任何fold专属样本状态。C的Phase1 outer路径必须让独立query loss直接反传到`U/V/Q/b`；Phase2的support summary和query forward仍保持无optimizer、query零梯度。
+
+最终DA资产采用固定的对称INT8布局：`U`按rank列量化，`V/Q`按rank行量化，`b`按整向量量化；每个量化组只保留一个FP16 scale。`D_F/rho`或`m_P1/d_P1/a_max`保存为FP16；正统计若转换后下溢为零或非有限，只关闭该候选，不得静默抬升到另一数值下限。Phase2可一次解码为只读float32运行时视图，但不得序列化或携带FP32 sidecar。若`d`为A/B的tap通道数，则其数值payload为`4d+14B`；C的数值payload为`1328B`。C与C=26的D92-Lite合计`5592B`，相对formal D92的`16492B`减少66.09%；A/B按真实tap维度另行代入并报告。量化parity只在固定Phase1 fixture上核验函数与argmax，不读取Target truth。
+
+训练预算固定不等于必须等待完整source性能报告。只要资产闭合、非零、协议负测通过，就直接进入S0；若某候选在固定预算下资产退化为零/常量或无法改变真实checkpoint功能，只关闭该候选，不追加优化轮次。
+
 ### 3.1A/B共享的一阶FSRG规则
 
 对唯一tap`p_ell(x)`定义：
@@ -45,6 +62,25 @@ V_\ell\in\mathbb R^{2\times d_\ell}.
 \]
 
 Phase1使用物理ID互斥的source episode`S_src→Q_src`。在`a=0`求全类等权support损失的二维梯度，并用inner source receiver间梯度方差形成冻结对角预条件器：
+
+support梯度损失固定只用同一次模型forward在`joint_proj.0`得到的最终pre-ReLU向量`u`构造两个同IQ数学视图：
+
+\[
+z_A(u)=\mathcal N(\operatorname{ReLU}(u)),\qquad
+z_B(u)=\mathcal N(u).
+\]
+
+若且仅若`ReLU(u)`为零范数，`z_A`确定性总化为`z_B`；不重跑、不更换物理样本或LEO观测。对每类分别用另一个视图的class mean构造stop-gradient单位prototype，并以冻结qKNN lock的`temperature=0.85`计算全注册类cosine CE：
+
+\[
+L_S=\tfrac12\left[
+CE(z_B,\operatorname{sg}(P_A))+CE(z_A,\operatorname{sg}(P_B))
+\right].
+\]
+
+每个physical support在两个视图中仍是同一个K样本，类别先等权再求均值。K1允许同一物理support的两个数学视图互为prototype/query，但不得把它们计为两个独立样本。该损失只用于support产生二维状态；正式query仍只输出冻结adapted `z_id160`并按全注册类head评分。
+
+Phase1 outer元目标使用与部署相同的identity-metric Student-t qKNN数学和同一K对应的冻结lock。adapted source support先按正式路径构建INT8向量、FP16 scale/class scale并解码为stop-gradient bank；独立source query保持可微。Student-t class logit以float64计算，在正式部署的logit输出点闭合为float32，再转回float64除以冻结temperature计算逐query全类CE。量化support不回传梯度，但query真实checkpoint下游必须直接向A/B的`U/V`或C的`U/V/Q/b`产生非零梯度；不得以tap空间平方误差、float support proxy或手工raw asset代替。
 
 \[
 g_S=\left.\nabla_a\mathcal L_S(a)\right|_{a=0},\qquad
@@ -78,7 +114,7 @@ Phase1只优化：
 
 `sg`截断`a¹`对`U/V`的高阶依赖，但outer loss仍通过非零`a¹`下的残差分支直接更新`U/V`。这是一阶FOMAML式学习，不保留二阶图，不使用额外Fishr penalty或残差正则权重。`D_F`只是Fishr启发的预条件器，不能宣称复现Fishr方差对齐。
 
-Phase2对当前row全部registered-class support以同一公式求一次`a¹`，之后support统一重注册，query只运行冻结后的forward。若固定source fixture上`g_S`、`a¹`或outer`U/V`梯度为零，则实现P0失败；不得回退到`a=0`直接训练。
+`rho/a_max`是Phase1 inner统计并封存的资产。Phase2只对当前row全部registered-class support求一次`g_S→a¹`，不得由target support重估预算；之后support统一重注册，query只运行冻结后的forward。若固定source fixture上`g_S`、`a¹`或outer`U/V`梯度为零，则实现P0失败；不得回退到`a=0`直接训练。
 
 ### 3.2C的无反传RDHA规则
 
@@ -98,11 +134,11 @@ s=\left[\bar r;\operatorname{vech}\left(
 \]
 
 \[
-a=a_{max}\tanh(Q\operatorname{std}_{P1}(s)+b),\qquad
+a=a_{max}\tanh\left(Q\frac{s-m_{P1}}{d_{P1}}+b\right),\qquad
 a_{max}=0.05\operatorname{median}_{inner}\|h\|_2/\sqrt2.
 \]
 
-`U/V/Q/b/std_P1`只由Phase1 receiver-held×TX/class-LOCO学习并封存。Phase2只执行summary和一次adapted forward，不运行optimizer或反传。旧D125文档中的独占路线、588条G0和fresh63流程被本设计替代；保留的只有上述候选C公式与协议边界。
+`U/V/Q/b/m_P1/d_P1`只由Phase1 receiver-held×TX/class-LOCO学习并封存。Phase2只执行summary、固定标准化和一次adapted forward，不运行optimizer或反传。旧D125文档中的独占路线、588条G0和fresh63流程被本设计替代；保留的只有上述候选C公式与协议边界。
 
 ## 4.唯一共享D92-Lite
 

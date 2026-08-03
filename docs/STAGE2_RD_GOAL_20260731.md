@@ -59,6 +59,16 @@ K5/new20相对matched K10/new20的注册后旧类、最低旧类、新类和`H_o
 
 三候选先使用source receiver-held×class/TX-LOCO完成Phase1方向学习和资产审计；该数据只验证物理ID隔离、outer元目标、非零功能与跨receiver可迁移性，不模拟formal D92性能，也不承担候选排序。随后三候选在不同GPU上并行运行同一份真实checkpoint、Target development received-IQ、K1/K5 support/query划分和评分器。公共臂只计算一次；每个候选只允许一次冻结实现，不扫描层、rank、步数、view、seed或门限。
 
+Phase1资产构建使用单一确定性日程：canonical receiver-mean SVD初始化，模型checkpoint冻结，float32资产前向配合float64统计，K1/K5、receiver和class等权的预冻结全批episode，full-batch L-BFGS固定`max_iter=128`与`strong_wolfe`，单初始化、无early stop、无学习率/epoch/正则扫描。有效秩不足2或前两方向近重根时直接关闭候选；冻结清单内全部support物理ID与全部outer-query物理ID跨K、跨episode全局互斥。A/B只学习`U/V`并封存二维`D_F`及仅由Phase1 inner tap确定的`rho/a_max`，Phase2不得由target support重估预算；C以固定`Q=[I_2,0]`、`b=0`初始化后只学习`U/V/Q/b`并封存5维summary的`m_P1/d_P1`，Phase2固定使用`(s-m_P1)/d_P1`。所有数值下限仅由float64机器精度解析确定。最终只允许量化资产、必要FP16尺度和上述小统计进入Phase2，不保留source样本、样本feature、实体键或FP32 sidecar。该步骤是必要资产构建，不是source性能筛选；outer只审计隔离、置换、非零和真实功能变化，唯一候选排序仍发生在全部S0 prediction封存后的一次truth评分。
+
+outer审计闭合后，每个候选按同一固定日程在全部Phase1 source receiver上重建一次最终资产，不得按outer分数选择checkpoint、fold资产或迭代。C的Phase1独立query loss必须可直接反传到`U/V/Q/b`，但Phase2仍无optimizer且query零梯度。最终资产只绑定全source训练清单及物理ID根，不携带fold专属样本状态。
+
+DA资产量化固定为：`U`按rank列、`V/Q`按rank行、`b`按整向量做对称INT8，每组一个FP16 scale；小统计保存FP16，正统计若下溢为零或非有限则关闭候选，不得静默抬升数值下限；解码后的float32只读运行时视图不得作为sidecar落盘。A/B payload为`4d+14B`，C为`1328B`；C与C=26的D92-Lite合计`5592B`，相对formal D92减少66.09%。量化parity只用Phase1固定fixture核验，不读取Target truth。
+
+三候选的support监督固定使用一次forward的两个同IQ最终表示视图：`z_A=L2(ReLU(pre_relu))`与`z_B=L2(pre_relu)`；仅当ReLU零范数时，`z_A`确定性总化为`z_B`。对另一视图的class mean prototype做stop-gradient，以冻结qKNN温度0.85计算双向全类cosine CE并等权平均。两个视图不增加K、不重跑LEO观测；该损失只生成support-conditioned状态，query不参加。
+
+Phase1 outer元目标必须沿真实checkpoint下游执行。adapted source support按正式qKNN路径量化并解码成stop-gradient的INT8/FP16 bank，独立source query保持可微；identity-metric Student-t logits以float64计算，在部署logit输出点闭合为float32，再转回float64除以冻结temperature计算全类CE。support量化分支不回传梯度，但query分支必须直接对A/B的`U/V`或C的`U/V/Q/b`产生非零梯度；禁止用tap空间代理loss、未量化float support或手工raw asset替代。
+
 预测生成和真实性能评分分离。打开本轮候选的truth评分前先完成以下内联功能检查；检查通过后在同一不可覆盖run中评分，不另设588条G0或新的控制面：
 
 1.状态只读取不可变Phase1 bundle、当前row合法support和冻结配置；
