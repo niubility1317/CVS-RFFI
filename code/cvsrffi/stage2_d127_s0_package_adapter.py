@@ -28,6 +28,7 @@ from .stage2_diag_cosine_exploration import _validate_matched_packages
 from .stage2_d127_s0_entry import D127S0Row
 from . import stage2_d127_s0_entry as entry
 from . import stage2_d127_phase1_release as phase1_release
+from .stage2_d127_torch_compat import numpy_to_torch_copy
 from .stage2_zid_student_t_qknn import Phase1ZIDStudentTLock
 
 
@@ -587,8 +588,16 @@ def _materialize_state(
         receiver_id=str(raw_row["receiver"]),
         k_shot=active_k,
         scene=scene,
-        support_iq=torch.from_numpy(support_iq),
-        query_iq=torch.from_numpy(query_iq),
+        support_iq=numpy_to_torch_copy(
+            support_iq,
+            dtype=torch.float32,
+            name="D127 S0 support IQ",
+        ),
+        query_iq=numpy_to_torch_copy(
+            query_iq,
+            dtype=torch.float32,
+            name="D127 S0 query IQ",
+        ),
         support_labels=support_labels,
         registered_classes=registry,
         opaque_query_ids=query_tokens,

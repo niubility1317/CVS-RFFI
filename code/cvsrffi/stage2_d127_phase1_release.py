@@ -31,6 +31,7 @@ from cvsrffi import stage2_d106_phase1_tap as d106
 from cvsrffi import stage2_d127_da_candidates as da
 from cvsrffi import stage2_d127_checkpoint_hooks as hooks
 from cvsrffi import stage2_d127_phase1_assets as assets
+from cvsrffi.stage2_d127_torch_compat import numpy_to_torch_copy
 from cvsrffi import stage2_zid_student_t_qknn as qknn
 
 
@@ -1118,8 +1119,18 @@ def _episode_raw_iq_by_id(
         query = np.ascontiguousarray(rows[list(episode.query_indices)], dtype=np.float32)
         result[episode.episode_id] = hooks.D127Phase1EpisodeIQ(
             episode_id=episode.episode_id,
-            support_iq=torch.from_numpy(np.array(support, copy=True)).to(device=device),
-            query_iq=torch.from_numpy(np.array(query, copy=True)).to(device=device),
+            support_iq=numpy_to_torch_copy(
+                np.array(support, copy=True),
+                dtype=torch.float32,
+                device=device,
+                name="D127 Phase1 support IQ",
+            ),
+            query_iq=numpy_to_torch_copy(
+                np.array(query, copy=True),
+                dtype=torch.float32,
+                device=device,
+                name="D127 Phase1 query IQ",
+            ),
         )
     return MappingProxyType(result)
 
@@ -1165,15 +1176,17 @@ def _candidate_episode_runtime(
             query = bridge.capture_raw(source_episode.episode_id, split="query")
         except Exception as exc:
             raise D127Phase1ReleaseError("D127 Phase1 real checkpoint capture failed") from exc
-        support_labels = torch.as_tensor(
+        support_labels = numpy_to_torch_copy(
             source_episode.support_labels,
             dtype=torch.long,
             device=support.tap.device,
+            name="D127 Phase1 support labels",
         )
-        query_labels = torch.as_tensor(
+        query_labels = numpy_to_torch_copy(
             source_episode.query_labels,
             dtype=torch.long,
             device=query.tap.device,
+            name="D127 Phase1 query labels",
         )
         receiver_id = f"fold-{source_episode.fold_ordinal:02d}"
         try:

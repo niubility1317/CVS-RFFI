@@ -38,6 +38,10 @@ from cvsrffi.stage2_d127_da_candidates import (
     TAP_C,
     class_balanced_support_loss,
 )
+from cvsrffi.stage2_d127_torch_compat import (
+    numpy_to_torch_copy,
+    torch_to_numpy_copy,
+)
 
 
 LBFGS_MAX_ITER = 128
@@ -1059,7 +1063,11 @@ class FP16Buffer:
             or not bool(torch.isfinite(value).all().item())
         ):
             raise D127Phase1AssetError(f"{name} must be a finite floating vector")
-        source = value.detach().to(device="cpu", dtype=torch.float32).numpy()
+        source = torch_to_numpy_copy(
+            value,
+            dtype=np.float32,
+            name=f"{name} FP16 source",
+        )
         if require_positive:
             if not bool(np.all(source > 0.0)):
                 raise D127Phase1AssetError(f"{name} must be strictly positive")
@@ -1074,7 +1082,13 @@ class FP16Buffer:
 
     def decode(self, *, device: torch.device | str = "cpu") -> Tensor:
         values = np.frombuffer(self.data, dtype="<f2").astype(np.float32, copy=True)
-        return torch.from_numpy(values).to(device=device, dtype=torch.float32).detach()
+        return numpy_to_torch_copy(
+            values,
+            dtype=torch.float32,
+            device=device,
+            name="D127 FP16 buffer decode",
+            detach=True,
+        )
 
     @property
     def nbytes(self) -> int:
@@ -1122,7 +1136,11 @@ class SymmetricInt8Matrix:
             or not bool(torch.isfinite(value).all().item())
         ):
             raise D127Phase1AssetError(f"{name} must be a finite floating matrix")
-        data = value.detach().to(device="cpu", dtype=torch.float64).numpy()
+        data = torch_to_numpy_copy(
+            value,
+            dtype=np.float64,
+            name=f"{name} INT8 matrix source",
+        )
         maxima = np.max(np.abs(data), axis=0 if group_axis == "column" else 1)
         scale64 = np.maximum(maxima / 127.0, _FP16_TINY)
         scale16 = np.asarray(scale64, dtype="<f2")
@@ -1144,9 +1162,13 @@ class SymmetricInt8Matrix:
         codes = np.frombuffer(self.codes, dtype=np.int8).reshape(rows, columns).astype(np.float32)
         scales = np.frombuffer(self.scales.data, dtype="<f2").astype(np.float32)
         scale = scales.reshape(1, -1) if self.group_axis == "column" else scales.reshape(-1, 1)
-        return torch.from_numpy((codes * scale).astype(np.float32, copy=False)).to(
-            device=device, dtype=torch.float32
-        ).detach()
+        return numpy_to_torch_copy(
+            (codes * scale).astype(np.float32, copy=False),
+            dtype=torch.float32,
+            device=device,
+            name="D127 INT8 matrix decode",
+            detach=True,
+        )
 
     @property
     def nbytes(self) -> int:
@@ -1181,7 +1203,11 @@ class SymmetricInt8Vector:
             or not bool(torch.isfinite(value).all().item())
         ):
             raise D127Phase1AssetError(f"{name} must be a finite floating vector")
-        data = value.detach().to(device="cpu", dtype=torch.float64).numpy()
+        data = torch_to_numpy_copy(
+            value,
+            dtype=np.float64,
+            name=f"{name} INT8 vector source",
+        )
         scale64 = max(float(np.max(np.abs(data))) / 127.0, _FP16_TINY)
         scale16 = np.asarray([scale64], dtype="<f2")
         if not np.isfinite(scale16).all() or not bool(scale16[0] > 0.0):
@@ -1198,9 +1224,13 @@ class SymmetricInt8Vector:
     def decode(self, *, device: torch.device | str = "cpu") -> Tensor:
         codes = np.frombuffer(self.codes, dtype=np.int8).astype(np.float32)
         scale = float(np.frombuffer(self.scale.data, dtype="<f2").astype(np.float32)[0])
-        return torch.from_numpy((codes * scale).astype(np.float32, copy=False)).to(
-            device=device, dtype=torch.float32
-        ).detach()
+        return numpy_to_torch_copy(
+            (codes * scale).astype(np.float32, copy=False),
+            dtype=torch.float32,
+            device=device,
+            name="D127 INT8 vector decode",
+            detach=True,
+        )
 
     @property
     def nbytes(self) -> int:

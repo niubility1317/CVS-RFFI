@@ -7,6 +7,7 @@ from pathlib import Path
 
 import numpy as np
 import pytest
+import torch
 
 from cvsrffi import stage2_d127_s0_package_adapter as adapter
 from cvsrffi.somph_predictor_bundle import QUERY_NPZ_MEMBERS, SUPPORT_NPZ_MEMBERS
@@ -177,6 +178,18 @@ def test_k5_is_strict_ordered_prefix_of_k10_package(tmp_path):
     assert record["source_pool_k"] == 10
     assert record["support_token_count"] == 26 * 5
     assert all(part["prefix_count"] == 5 for part in record["class_prefixes"])
+
+
+def test_materialization_survives_disabled_numpy_torch_abi_bridge(tmp_path, monkeypatch):
+    def _blocked(*_args, **_kwargs):
+        raise TypeError("simulated NumPy2/Torch2.1 ABI mismatch")
+
+    monkeypatch.setattr(torch, "from_numpy", _blocked)
+    monkeypatch.setattr(torch, "as_tensor", _blocked)
+    prepared = _materialize(tmp_path)
+    assert len(prepared.before) == len(prepared.after) == 18
+    assert all(item.row.support_iq.dtype == torch.float32 for item in prepared.before)
+    assert all(item.row.query_iq.dtype == torch.float32 for item in prepared.after)
 
 
 def test_rejects_truth_role_seed_and_prefix_drift(tmp_path):

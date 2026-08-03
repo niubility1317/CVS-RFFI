@@ -461,8 +461,16 @@ def test_synthetic_three_taps_materialize_once_and_query_api_is_closed() -> None
     }.intersection(query_parameter_names)
 
 
-def test_phase1_bridge_uses_real_downstream_int8_qknn_and_keeps_outer_gradients() -> None:
+def test_phase1_bridge_uses_real_downstream_int8_qknn_and_keeps_outer_gradients(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     """The Phase1 bridge must not substitute an approximate feature head."""
+
+    def _blocked(*_args: object, **_kwargs: object) -> object:
+        raise TypeError("simulated NumPy2/Torch2.1 ABI mismatch")
+
+    monkeypatch.setattr(torch, "from_numpy", _blocked)
+    monkeypatch.setattr(torch, "as_tensor", _blocked)
 
     torch.manual_seed(127103)
     model = hooks.freeze_d127_checkpoint_model(_TinyDualModel())

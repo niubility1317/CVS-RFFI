@@ -31,6 +31,7 @@ from model_dual_cvsincnet import backbone_forward_compat
 
 from cvsrffi import stage2_d127_da_candidates as da
 from cvsrffi import stage2_d127_phase1_assets as phase1_assets
+from cvsrffi.stage2_d127_torch_compat import numpy_to_torch_copy
 from cvsrffi import stage2_zid_student_t_qknn as qknn
 
 
@@ -740,10 +741,11 @@ def _torch_deployment_qknn_logits(
         decoded = qknn.decode_zid_support_bank(bank)
     except qknn.ZIDStudentTQKNNError as exc:
         raise D127CheckpointHookError("Phase1 qKNN bank decode failed") from exc
-    support = torch.as_tensor(
+    support = numpy_to_torch_copy(
         np.array(decoded, dtype=np.float32, copy=True),
         device=query_zid.device,
         dtype=torch.float64,
+        name="D127 Phase1 qKNN decoded support",
     )
     # ``score_zid_student_t_logits`` normalizes a float32 query in float64 and
     # stores that normalization back into float32 before scoring.  Preserve the
@@ -760,8 +762,11 @@ def _torch_deployment_qknn_logits(
         member_indices = np.flatnonzero(bank.class_indices_int16 == class_index)
         if int(member_indices.size) != int(expected_count):
             raise D127CheckpointHookError("Phase1 qKNN class support count drift")
-        columns_index = torch.as_tensor(
-            member_indices, dtype=torch.long, device=query_zid.device
+        columns_index = numpy_to_torch_copy(
+            member_indices,
+            dtype=torch.long,
+            device=query_zid.device,
+            name="D127 Phase1 qKNN class indices",
         )
         local = distance.index_select(1, columns_index)
         h = float(bank.class_scales_fp16[class_index])

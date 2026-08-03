@@ -358,3 +358,30 @@ def test_positive_fp16_statistics_fail_on_underflow_and_preserve_subnormal() -> 
     decoded = encoded.decode()
     assert decoded.dtype == torch.float32
     assert decoded.item() == smallest_subnormal
+
+
+def test_quantized_from_tensor_and_decode_survive_disabled_numpy_torch_abi_bridge(monkeypatch) -> None:
+    def _blocked(*_args, **_kwargs):
+        raise TypeError("simulated NumPy2/Torch2.1 ABI mismatch")
+
+    monkeypatch.setattr(torch, "from_numpy", _blocked)
+    monkeypatch.setattr(torch, "as_tensor", _blocked)
+    monkeypatch.setattr(torch.Tensor, "numpy", _blocked)
+    vector = torch.tensor([0.25, -0.5, 0.75], dtype=torch.float32)
+    matrix = torch.tensor([[0.25, -0.5], [0.75, 0.125]], dtype=torch.float32)
+    fp16 = assets.FP16Buffer.from_tensor(vector, name="compat-fp16")
+    decoded_fp16 = fp16.decode()
+    decoded_matrix = assets.SymmetricInt8Matrix.from_tensor(
+        matrix, group_axis="column", name="compat-matrix"
+    ).decode()
+    decoded_vector = assets.SymmetricInt8Vector.from_tensor(
+        vector, name="compat-vector"
+    ).decode()
+    assert decoded_fp16.dtype == decoded_matrix.dtype == decoded_vector.dtype == torch.float32
+    assert decoded_fp16.shape == vector.shape
+    assert decoded_matrix.shape == matrix.shape
+    assert decoded_vector.shape == vector.shape
+    assert not decoded_fp16.requires_grad
+    assert torch.allclose(decoded_fp16, vector, atol=5.0e-4, rtol=0.0)
+    assert torch.allclose(decoded_matrix, matrix, atol=5.0e-3, rtol=0.0)
+    assert torch.allclose(decoded_vector, vector, atol=5.0e-3, rtol=0.0)

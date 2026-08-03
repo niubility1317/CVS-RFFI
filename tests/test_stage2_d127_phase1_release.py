@@ -326,3 +326,31 @@ def test_internal_real_shape_bridge_path_runs_outer7_final14_without_public_inje
     assert all(item["source_held_isolation"] and item["fixed_cyclic_label_equivariant"] and item["nonzero_state_or_gradient"] and item["query_function_changed"] for item in receipt["outer_folds"])
     public_parameters = set(inspect.signature(release.build_d127_phase1_single_candidate_from_source).parameters)
     assert "bridge_factory" not in public_parameters
+
+
+def test_real_episode_iq_and_labels_survive_disabled_numpy_torch_abi_bridge(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    def _blocked(*_args: object, **_kwargs: object) -> object:
+        raise TypeError("simulated NumPy2/Torch2.1 ABI mismatch")
+
+    monkeypatch.setattr(torch, "from_numpy", _blocked)
+    monkeypatch.setattr(torch, "as_tensor", _blocked)
+    lock_path, lock_sha = _write_method_lock(tmp_path)
+    method_lock = release.load_d127_phase1_method_lock(lock_path, expected_sha256=lock_sha)
+    plan = release.build_d127_phase1_episode_plan(_joined_rows(), method_lock=method_lock)
+    raw = release._episode_raw_iq_by_id(plan, _joined_rows(), device=torch.device("cpu"))
+    assert len(raw) == 14
+    assert all(item.support_iq.dtype == torch.float32 for item in raw.values())
+    runtime = release._candidate_episode_runtime(
+        candidate_id=da.CANDIDATE_A,
+        plan=plan,
+        joined_rows=_joined_rows(),
+        model=object(),
+        device=torch.device("cpu"),
+        bridge_factory=_LightweightCheckpointBridge,
+        method_lock=method_lock,
+    )
+    assert len(runtime.episodes) == 14
+    assert all(item.support_labels.dtype == torch.long for item in runtime.episodes)
+    assert all(item.query_labels.dtype == torch.long for item in runtime.episodes)
