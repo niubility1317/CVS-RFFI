@@ -36,14 +36,14 @@
 
 ### 3.0一次性Phase1资产构建
 
-Phase1资产构建是方法实现的一部分，不是额外性能gate。三候选共用同一份receiver-held×TX/class-LOCO episode清单、同一物理ID互斥规则和同一确定性训练预算：
+Phase1资产构建是方法实现的一部分，不是额外性能gate。三候选共用同一份receiver-held episode清单、同一物理ID互斥规则和同一确定性训练预算；class/TX对称性只做固定循环标签置换审计，不展开receiver×class的42折LOCO训练：
 
-1.每个fold只用inner source实体。对class等权去中心后的receiver均值差矩阵做canonical float64 SVD，以前两个右奇异方向初始化`U`列和`V`行；奇异向量符号由最大绝对坐标为正固定。有效秩不足2或前两方向因近重根而不能唯一确定时只关闭该候选，不换seed或初始化；同一冻结episode清单中全部support物理ID与全部outer-query物理ID必须全局互斥，包括跨K和跨episode；
+1.每个receiver×class的14个物理样本按`SHA256("d127-phase1-v1"|receiver|class|physical_id)`升序冻结：前5个是support池，后9个是outer-query池，K1严格取K5首个support。共7个receiver-held fold；每个fold只用其余6个inner receiver的K1/K5 episode训练，held receiver的K1/K5 episode只用于outer审计；最终全source重建使用7×2=14个episode。全部support池与全部outer-query池全局互斥；允许K1作为K5前缀和同一query池跨K复用。对class等权去中心后的receiver均值差矩阵做canonical float64 SVD，以前两个右奇异方向初始化`U`列和`V`行；奇异向量符号由最大绝对坐标为正固定。有效秩不足2或前两方向因近重根而不能唯一确定时只关闭该候选，不换seed或初始化；
 2.模型checkpoint全冻结，资产参数用float32前向，loss、梯度方差、summary均值/标准差和投影范数用float64累积；固定K1与K5 episode等权、receiver等权、class等权并按预冻结词典序全批计算；唯一优化器为确定性full-batch L-BFGS，`max_iter=128`、`line_search_fn=strong_wolfe`，单初始化、无early stop、无学习率/epoch/正则扫描；
 3.A/B对每个inner episode按下述`S_src→a¹→Q_src`计算outer query交叉熵，只更新`U/V`；`D_F`由inner receiver的逐样本二维梯度方差累计，数值下限固定为`epsilon64×max(1,mean(D_F_raw))`；`rho=0.05×median_inner||p_l||₂`只从Phase1 inner tap计算，并与`U/V/D_F/a_max`共同封存，Phase2不得由target support重估预算；
 4.C的`Q`初始化为前两维summary到二维`a`的单位选择矩阵、`b=0`，不另设随机初始化；对同一inner episode由support summary生成`a`，以独立query的qKNN交叉熵只更新`U/V/Q/b`；`m_P1/d_P1`的均值和标准差仅由inner episode summary累计，标准差只使用`epsilon64×max(1,|m_P1|)`防止除零，Phase2固定使用`(s-m_P1)/d_P1`；
 5.最终资产只保留量化后的`U/V/Q/b`、必要FP16尺度、`D_F`、`rho/a_max`或`m_P1/d_P1`，不得保留source样本、样本feature、receiver/TX/class键或FP32 sidecar。量化前后必须做函数parity receipt；
-6.outer fold只检查物理隔离、标签置换、状态非零和独立query上的可观测函数变化，不设置性能阈值，也不用于A/B/C排序。唯一候选排序发生在全部S0 prediction封存后的一次truth评分。
+6.outer fold只检查物理隔离、固定循环标签置换等变性、状态非零和独立query上的可观测函数变化，不设置性能阈值，也不用于A/B/C排序。唯一候选排序发生在全部S0 prediction封存后的一次truth评分。
 
 所有outer审计闭合后，每个候选以完全相同的初始化、目标和128次确定性预算在全部Phase1 source receiver上重建一次最终资产；不得读取outer分数选择checkpoint、迭代或fold资产。最终资产只绑定全source训练清单及其物理ID根，不携带任何fold专属样本状态。C的Phase1 outer路径必须让独立query loss直接反传到`U/V/Q/b`；Phase2的support summary和query forward仍保持无optimizer、query零梯度。
 
