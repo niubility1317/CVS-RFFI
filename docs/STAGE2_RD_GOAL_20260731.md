@@ -83,13 +83,13 @@ a_j = a_max tanh(([C^-1 Σ_c K^-1 Σ_k tanh(q_j^T u_ck)]-m_j)/d_j)
 
 `B/P/Q/m/d/a_max`只能来自与checkpoint联合封存的允许Phase1聚合知识；Phase2不读取source/clean样本或FP32 sidecar。C1/C2都不得读取query、truth、role、class quota或全局批次计数，也不得包含TX/class ID专用参数。
 
-Phase1科学审计固定为7个receiver×6个class的receiver-held×class-LOCO共42折；每折同时排除held receiver与held class，K1严格为K5 support前缀，outer只验证物理ID隔离、类置换等价、非零功能和跨receiver/class可迁移性，不用outer分数选资产或超参数。最终资产按同一冻结公式重建一次。不得复用D127/D128的Phase1 autograd、checkpoint replacement或outer-audit发布链。
+首轮候选矩阵固定为7个receiver×6个class的receiver-held×seen-class-LOCO共42折；每折构造新增Phase1资产时同时排除held receiver与held class，随后在held receiver的固定received-IQ上，把其余5个Phase1已见类记为`retained`组、held class记为`held-proxy`组，分别执行K1/K5六臂。checkpoint已经见过全部6个TX，因此held class绝不能重命名为注册新类；42折只产生方向性代理证据，不输出正式`N/H_old_new`，也不代替Stage2-C。K1严格为K5 support前缀，support/query物理ID互斥，且每折Phase1资产seal必须同时绑定held receiver、held class和420条Phase1-fit物理ID根。42折结果可以在全部prediction封存后按§5的代理主比较关闭明显负收益候选；不得据此修改资产、超参数或fold。最终资产按同一冻结公式重建一次。不得复用D127/D128的Phase1 autograd、checkpoint replacement或outer-audit发布链。
 
 预测生成和truth评分分离。发布前只保留下列必要检查：
 
 1.状态只读取不可变Phase1 bundle、当前row合法support和冻结配置；
 2.query零fit、零selection、零update，每条query独立面对全部注册类；
-3.类别标签置换等价，old/new使用同一规则；
+3.类别标签置换等价，两个任务组使用同一规则；source-held代理不得产生正式old/new声明；
 4.真实checkpoint无truth smoke至少改变feature、neighbor、margin或argmax之一；
 5.C1若退化为共同平移、正交或全局正缩放并保持邻居排序，直接拒绝；C2若共享summary为零或残差无功能，直接拒绝；
 6.序列化字节、拟合MAC、同机同线程时延、瞬时工作集和backbone forward次数形成receipt。
@@ -103,8 +103,8 @@ Phase1科学审计固定为7个receiver×6个class的receiver-held×class-LOCO�
 |头|定义|目的|
 |---|---|---|
 |Q|冻结Phase1-lock qKNN|DA因果基线|
-|F=`D92-Full160`|在160维输入上严格复现历史D92的old/new两组自动收缩full covariance、0.5/0.5平均、等先验与同一仿射中心化|同表示历史D92机制对照|
-|L=`D92-Lite160`|相同old/new对称语义，但只拟合diagonal OAS并直接编译为仿射头|验证删减稠密拟合是否增益且更快|
+|F=`D92-Full160`|当两组都含多个类时，在160维输入上复现历史D92的两组自动收缩full covariance、0.5/0.5平均、等先验与同一仿射中心化；5-retained/1-held的source-held矩阵只能使用明确标注的`single-class proxy extension`，不是历史D92严格复现|同表示机制对照；正式D92比较推迟到Target25|
+|L=`D92-Lite160`|相同双组对称语义，但只拟合diagonal OAS并直接编译为仿射头；source-held结果只称proxy|验证删减稠密拟合的方向与成本|
 
 因此每个候选的最小完整矩阵固定为：
 
@@ -127,24 +127,24 @@ LITE_BASE       = R0L-R0F
 JOINT_REPLACE   = R1L-R1F
 ```
 
-三个效应都必须在同row池化后满足`ΔH>0`且old＋new总正确数严格增加；`ΔA_old>=0`、`ΔN>=0`、`ΔF_old>=0`作为“不牺牲”条件。逐receiver、逐scene和逐类完整报告，但不添加0.5pp级小样本门。`R1L-R0L`、`R1F-R0F`和六臂交互项只作解释性结果，不增加发布gate。
+source-held矩阵的三个效应必须在同row池化后满足`ΔH_retained_held_proxy>0`且retained＋held-proxy总正确数严格增加；`ΔA_retained>=0`、`ΔA_held_proxy>=0`、`ΔF_retained>=0`作为方向性“不牺牲”条件。这些字段不得写成`A_old/N/H_old_new`。逐receiver和逐类完整报告，但不添加0.5pp级小样本门。真正的`A_old/N/H_old_new/F_old`以及相对历史formal D92的联合收益只在Target25同键评分。`R1L-R0L`、`R1F-R0F`和六臂交互项只作解释性结果，不增加发布gate。
 
 ### 5.1最小实验矩阵与停止规则
 
-科学审计先执行42个receiver-held×class-LOCO fold×`{K1,K5}`，只验证功能、隔离和可迁移性；C1与C2可分配到不同GPU，但必须共享checkpoint、物理ID清单、K前缀、代码commit和评分定义。随后Target development one-shot固定为seed`713102`、receiver`{20-1,3-19,7-14}`×`{K1/new20,K5/new20}`×3个互斥LEO弱场景，共18个原子row；公共`R0Q/R0F/R0L`只计算一次，每个候选补`R1Q/R1F/R1L`。
+首轮只执行42个receiver-held×seen-class-LOCO fold×`{K1,K5}`，每候选84个原子row。C1与C2可分配到不同GPU，但必须共享真实checkpoint、固定received-IQ、物理ID清单、K前缀、代码commit和代理评分定义。每个fold中公共`R0Q/R0F/R0L`只计算一次并由两个候选引用同一cache/receipt，每个候选只补`R1Q/R1F/R1L`；不得增加18row Target development或其他中间矩阵。
 
-所有prediction完成并封存后一次性打开truth。候选若任一K5主效应失败，立即记为`COMPLETED_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE`并关闭，不调层、rank、step、view、seed、shrinkage或阈值。若两候选都通过，只按`min(DA_EFFECT_H,LITE_BASE_H,JOINT_REPLACE_H)`、最差receiver联合增益、总正确数和端到端资源作冻结排序，选择一个胜者。
+所有prediction完成并封存后一次性打开source-held truth。候选若任一K5代理主效应失败，立即记为`COMPLETED_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE`并关闭，不调层、rank、step、view、seed、shrinkage或阈值。若两候选都通过，只按`min(DA_EFFECT_H_proxy,LITE_BASE_H_proxy,JOINT_REPLACE_H_proxy)`、最差receiver代理联合增益、总正确数和端到端资源作冻结排序，选择一个进入G0/G1的方向性胜者；这不是Stage2-C晋级或正式正收益结论。若两候选都失败，本revision立即以完整负结果结束，不进入G0/G1/Target；下一研发轮最多补1条原理不同的新候选，必须先给出可辨识性与协议合法性推导，不得修改或重跑本轮失败候选。
 
 ### 5.2发布硬门
 
-发布前只要求：实际Git方法入口；query零fit/update/selection及禁止clean/source/query-truth/role/quota/global-reassignment的聚焦负测；真实checkpoint no-query smoke；独立复核`P0=0/P1=0`；不可覆盖run ID/output；本地Git提交；N607预检与资源记录。既有`VALIDATED_ONCE`数据不因方法变化重验，不要求新签名层、通用执行平台、完整论文叙事或重复D62/D92/SVRN矩阵。
+发布前只要求：实际Git方法入口；query零fit/update/selection及禁止clean/source/query-truth/role/quota/global-reassignment的聚焦负测；真实checkpoint-derived received-IQ archive no-query smoke；独立复核`P0=0/P1=0`；不可覆盖run ID/output；本地Git提交；N607预检与资源记录。既有`VALIDATED_ONCE`数据不因方法变化重验，不要求新签名层、通用执行平台、完整论文叙事或重复D62/D92/SVRN矩阵。source-held proxy发布只需保存解析字节/MAC和原始时延/工作集receipt，不以正式90%/50%/40%阈值阻塞；这些阈值必须由Target25同机同线程重复测量的中位数和实际峰值判定。
 
 ## 6.胜者后的G0→G1→Target25
 
 小矩阵只负责选出一个联合胜者。胜者保持同一method lock，按以下顺序扩展；失败即停止，不回头从已打开性能中修改候选：
 
 1.`G0`：在既有588条Phase1功能面闭合非恒等、量化parity和两份资源receipt；不读取Target truth，不把功能变化写成性能收益；
-2.`G1`：只运行一次未参与本轮设计的fresh63 source-held六臂矩阵；它检查跨receiver/class方向与负迁移，不替代Target Stage2-C；
+2.`G1`：只运行一次未参与本轮设计的fresh63 source-held六臂矩阵；它仍是Phase1已见类代理，只检查跨receiver/class方向与负迁移，不输出正式new-registration指标，也不替代Target Stage2-C；
 3.`G2`：G0/G1均闭合后，只运行一次单seed Target25，执行本节K10/K5/K1最终门。
 
 不得为落地G0/G1重建通用发布平台或重复历史D62/D92/SVRN矩阵。两份资源receipt分别为：

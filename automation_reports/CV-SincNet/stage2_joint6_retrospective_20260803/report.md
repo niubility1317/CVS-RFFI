@@ -5,7 +5,8 @@
 |字段|值|
 |---|---|
 |报告ID|`stage2_joint6_retrospective_20260803`|
-|状态|`RETROSPECTIVE_COMPLETE / JOINT6_DESIGN_FROZEN / IMPLEMENTATION_PENDING / NO_NEW_PERFORMANCE_RESULT`|
+|阶段|`RETROSPECTIVE_COMPLETE / JOINT6_DESIGN_FROZEN / IMPLEMENTATION_REVIEW / NO_NEW_PERFORMANCE_RESULT`|
+|状态|`implemented`|
 |范围|D127 r1/r2/r3、D128 r1及下一轮完整联合目标|
 |协议|`p2_min_v1`|
 
@@ -25,7 +26,7 @@
 1.D127/D128把方法训练、真实checkpoint hook、source outer audit、量化bundle、三候选merge和Target scorer一次性耦合，导致本地单测通过但真实source资产路径持续在prediction前失败。
 2.三轮后仍修复同一release体系，已经偏离“快速获得真实功能证据”；D128虽缩为单A，但仍继承相同Phase1 outer-audit链，因此没有真正缩小失败面。
 3.旧设计只形成`base/adapted×qKNN/D92-Lite`四臂，没有满足持久目标要求的`2种表示×3种头`六臂，也不能严格回答精简D92相对历史D92的同表示贡献。
-4.下一轮必须保留旧类适应和新类注册同等优先级，完整报告before/after、`seen_new_acc`、`H_old_new`、逐类旧类准确率、floor和forgetting；只看内部loss、support或feature变化不完整。
+4.正式Target轮必须保留旧类适应和真实`Y_new`注册同等优先级，完整报告before/after、`seen_new_acc`、`H_old_new`、逐类旧类准确率、floor和forgetting；source-held已见类LOCO只产生`retained/held-proxy`方向性指标，不得输出或映射为正式`seen_new_acc/H_old_new`。只看内部loss、support或feature变化不完整。
 5.`LEO_weak-only`、无clean/source运行时访问、无query truth/role/quota、逐query全类竞争继续保持；既有`VALIDATED_ONCE`数据不得因候选变化重验。
 
 ## 4.已拒绝路线
@@ -41,9 +42,9 @@
 
 - 冻结两条而不强凑三条：`CSPAR-2`是rank2 sealed nuisance-axis PSD度量；`SRDH-2`是跨类support summary驱动的rank2非线性残差。`RDCE-r3`与前者同族，本轮关闭。
 - 每个候选共享`R0/R1`两种160维缓存和`qKNN/D92-Full160/D92-Lite160`三头，形成完整六臂。formal 288维D92只作外部同row系统参考。
-- K5仅设三条主比较：`R1Q-R0Q`、`R0L-R0F`、`R1L-R1F`；都要求池化H及总正确数严格增加，`A_old/N/F_old`非劣。K1只归因DA，F/L严格alias Q。
-- Phase1审计保留7receiver×6class=42个receiver-held×class-LOCO fold；它只验证隔离、等变、非恒等及负迁移，不冒充Target性能。
-- 下一步实现科学核心、两份资源receipt、聚焦协议负测和真实checkpoint no-truth smoke。必要门闭合后直接发布小矩阵，不增加新控制面或重复数据验证。
+- K5仅设三条主比较：`R1Q-R0Q`、`R0L-R0F`、`R1L-R1F`；source-held矩阵要求`H_retained_held_proxy`及总正确数严格增加，`A_retained/A_held_proxy/F_retained`非劣。K1只归因DA，F/L严格alias Q。正式`A_old/N/H_old_new/F_old`只在Target25判定。
+- 首轮候选筛选固定为7receiver×6class×K1/K5=84个原子row/候选；六个TX均已被Phase1 checkpoint见过，held class只是receiver-held seen-class lifecycle proxy，其余5类为retained组，绝不映射为`Y_new`或合法注册新类。它不冒充Target性能，也不得用于调参。
+- 科学核心、公共R0、两份资源receipt、fold seal和聚焦协议负测已实现并通过合成测试；下一步是固定真实checkpoint-derived received-IQ archive的no-truth smoke、独立P0/P1复审和Git提交。必要门闭合后直接发布42折六臂proxy矩阵，不增加18row Target development、新控制面或重复数据验证。
 
 ## 6.当前资源状态
 
