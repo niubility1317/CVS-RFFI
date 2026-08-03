@@ -1,6 +1,6 @@
 # Stage2功能研发目标与证据门
 
-状态：`ACTIVE / JOINT_DA_D92_CODESIGN / SMALL_MATRIX_FIRST / NO_NEW_PERFORMANCE_RESULT`
+状态：`ACTIVE / D127_LOCAL_VERIFIED / S0_RELEASE_PREP / NO_NEW_PERFORMANCE_RESULT`
 
 ## 1.最终目标
 
@@ -108,7 +108,9 @@ I_DA_X_L92    = M_JOINT-M_DA-M_L92+M0
 FORMAL_REPLACE= M_L92-R_D92_FORMAL  # 只表示全管线替换差
 ```
 
-S0固定为按receiver ID词典序预冻结的3个development receiver×`{K1/new20,K5/new20}`×3个互斥scene，共18个原子row。公共`M0/M_L92/R_D92_FORMAL`只生成一次；三候选各生成`M_DA/M_JOINT`，形成9个逻辑输出，K1别名不重复计算。三候选全部prediction完成后才一次性评分，不查看中间性能。
+S0/S1的development seed固定为`713102`。该选择在任何D127 Target prediction和truth评分前完成，只为复用既有formal D92 retry2的完整K1/K10输入包、seal及历史同row参照；K5严格取同一K10/new20 enrollment包中预登记的前5个support，不重建received-IQ、不重复运行D92。seed选择不得根据D127或同轮候选性能修改。
+
+S0固定为按receiver ID词典序预冻结的3个development receiver`{20-1,3-19,7-14}`×`{K1/new20,K5/new20}`×3个互斥scene，共18个原子row。公共`M0/M_L92/R_D92_FORMAL`只生成一次；三候选各生成`M_DA/M_JOINT`，形成9个逻辑输出，K1别名不重复计算。三候选全部prediction完成后才一次性评分，不查看中间性能。
 
 S0只作方向排序，不设置0.5pp级多指标硬门。候选进入排序只要求：
 
@@ -118,11 +120,11 @@ S0只作方向排序，不设置0.5pp级多指标硬门。候选进入排序只�
 
 `A_old/N/F_old`、逐receiver、逐scene、四个简单效应和`I_DA_X_L92`全部报告，但不再新增小样本release gate。满足上列三项的候选按`min(DA_Q_H,L92_AFTER_DA_H)`、最差receiver联合增益、联合总正确数和端到端资源作词典序排序，只选一个胜者。
 
-S1固定为剩余2个receiver×`{K1/new20,K5/new20,K10/new20}`×3scene，共18个原子row，只运行S0胜者的核心四臂和公共formal参照。S0/S1均标为`TARGET_DEVELOPMENT`；S1失败后关闭本轮，不把S0第二名递补。完整负收益候选立即关闭，不根据已打开结果修改层、rank、step、view、shrinkage、量化或阈值。效率目标不阻塞S0启动，但不满足§1的候选不得成为最终胜者。
+S1固定为同一`seed=713102`的剩余2个receiver`{7-7,8-8}`×`{K1/new20,K5/new20,K10/new20}`×3scene，共18个原子row，只运行S0胜者的核心四臂和公共formal参照。S0/S1均标为`TARGET_DEVELOPMENT`；S1失败后关闭本轮，不把S0第二名递补。完整负收益候选立即关闭，不根据已打开结果修改层、rank、step、view、shrinkage、量化或阈值。效率目标不阻塞S0启动，但不满足§1的候选不得成为最终胜者。
 
 ## 6.G2单seed Target25门
 
-候选、method lock和全部超参数在Target访问前冻结。screen seed必须从已完成D92 Target125中选择一个未参与本轮S0/S1候选评分且具备全部同键D92 artifact的seed；选择规则在打开该seed的本轮候选prediction前冻结。它是`METHOD_UNSEEN_SCREEN`，不是全项目从未读取truth的盲测。矩阵固定：
+候选、method lock和全部超参数在Target访问前冻结。screen seed必须排除development seed`713102`，并从已完成D92 Target125中按数值升序选择第一个未参与本轮S0/S1候选评分且具备全部同键D92 artifact的seed；完整性在打开该seed的本轮候选prediction前只读核验，若缺失则顺延到下一个完整seed，不得读取D127性能后改选。它是`METHOD_UNSEEN_SCREEN`，不是全项目从未读取truth的盲测。矩阵固定：
 
 ```text
 5 receivers × 1 seed ×

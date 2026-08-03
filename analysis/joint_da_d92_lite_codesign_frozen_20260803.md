@@ -1,6 +1,6 @@
 # 轻型DA×D92-Lite联合冻结设计
 
-状态：`DESIGN_FROZEN / IMPLEMENTATION_NOT_STARTED / TARGET_DEVELOPMENT_ONLY / NO_NEW_PERFORMANCE_RESULT`
+状态：`DESIGN_FROZEN / LOCAL_IMPLEMENTATION_VERIFIED / S0_RELEASE_PREP / TARGET_DEVELOPMENT_ONLY / NO_NEW_PERFORMANCE_RESULT`
 
 本文件只冻结下一轮实现和小筛选所需的方法、因果设计、资源口径与停止语义。它不包含新性能结果，也不把source-held代理、代码可运行性或理论可行性解释为Target收益。
 
@@ -232,11 +232,11 @@ formal代码审计确认，若以后运行`M_DA_D92`，必须把adapted z160与�
 |阶段|数据|运行对象|用途|结论级别|
 |---|---|---|---|---|
 |Phase1资产审计|source receiver-held×class/TX-LOCO|三候选各自方向|训练/封存资产，证明物理隔离与非零功能|source-only机制证据|
-|S0|词典序预冻结3receiver×`{K1/new20,K5/new20}`×3scene=18row|三候选|选择唯一胜者|`TARGET_DEVELOPMENT_SELECTION`|
-|S1|剩余2receiver×`{K1/new20,K5/new20,K10/new20}`×3scene=18row|仅S0胜者|receiver外推与K10确认|`TARGET_DEVELOPMENT_CONFIRMATION`|
-|Target25|本方法未见且具有完整同键D92 artifact的seed×正式5slice|仅冻结胜者|完整真实性能|`TARGET25_SCREEN`|
+|S0|`seed=713102`，receiver`{20-1,3-19,7-14}`×`{K1/new20,K5/new20}`×3scene=18row|三候选|选择唯一胜者|`TARGET_DEVELOPMENT_SELECTION`|
+|S1|`seed=713102`，receiver`{7-7,8-8}`×`{K1/new20,K5/new20,K10/new20}`×3scene=18row|仅S0胜者|receiver外推与K10确认|`TARGET_DEVELOPMENT_CONFIRMATION`|
+|Target25|排除`713102`，在formal D92 Target125中按数值升序选择第一个完整同键、本方法未见的seed×正式5slice|仅冻结胜者|完整真实性能|`TARGET25_SCREEN`|
 
-S0每row的公共输出为`M0/M_L92/R_D92_FORMAL`，三候选各输出`M_DA/M_JOINT`，共9个逻辑输出；K1别名不重复计算。三候选全部prediction封存后才一次性打开评分。
+S0/S1固定复用formal D92 retry2的`seed=713102`输入包和seal；K5只取同一K10/new20 enrollment包中预登记的前5个support，不重建received-IQ、不重跑formal D92。该seed在任何D127 prediction和truth评分前因工件可复用性确定，不得根据候选性能修改。S0每row的公共输出为`M0/M_L92/R_D92_FORMAL`，三候选各输出`M_DA/M_JOINT`，共9个逻辑输出；K1别名不重复计算。三候选全部prediction封存后才一次性打开评分。
 
 S0只保留三个方向条件：
 
