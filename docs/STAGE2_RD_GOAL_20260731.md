@@ -1,6 +1,6 @@
 # Stage2功能研发目标与证据门
 
-状态：`ACTIVE / D127_LOCAL_VERIFIED / S0_RELEASE_PREP / NO_NEW_PERFORMANCE_RESULT`
+状态：`ACTIVE / D127_R3_TECHNICAL_STOP / D128_A_ONE18_DESIGN_FROZEN / NO_NEW_PERFORMANCE_RESULT`
 
 ## 1.最终目标
 
@@ -96,6 +96,20 @@ formal D92使用288维`z_id160+FFT96+RF32`完整D62/D81管线，D92-Lite使用16
 |R_D92_FORMAL|正式288维表示|冻结formal D92|同row全管线历史参照，不进入`2×2`交互|
 
 `M_DA/M_JOINT`必须复用同一DA state和adapted feature缓存；`M_L92/M_JOINT`使用同一公式，但必须分别从各自表示的合法support拟合head。K1没有类内残差自由度，固定`M_L92=M0`、`M_JOINT=M_DA`，以等价receipt避免重复计算；K1只归因DA。`R_D92_FORMAL`优先绑定完全同row key的历史artifact，否则每行最多计算一次。`M_DA_D92`只回答DA与旧formal管线的兼容性，不是联合筛选必要臂；仅允许在S1对唯一胜者作一次非阻塞诊断。
+
+### 5.1连续技术停止后的单候选one-shot
+
+D127 r1/r2/r3分别因NumPy/Torch ABI、历史receipt当前checkout闭合和冻结asset误用可微训练审计入口，在prediction前技术停止，均为`NO_PERFORMANCE_RESULT`。这些运行既不证明三候选性能弱，也不授权继续在同一三候选release链上增加兼容层。按照最多两轮release-engineering修复的上限，当前活动入口缩减为`D128-A-ONE18`：
+
+- 只保留A=`DA-A-FSRG-time_fuse`，选择理由在任何D127/D128 Target truth前冻结：它是三候选中状态与计算最小、干预点最直接的共享时域低秩残差；该选择不是按Target性能挑选；
+- 复用同一seed`713102`、receiver`{20-1,3-19,7-14}`、`{K1/new20,K5/new20}`和3个互斥LEO弱场景，共18个row pair；只生成`M0/M_DA/M_L92/M_JOINT`四臂，K1继续使用既有等价alias，不重复计算；
+- Phase1只构建A的单候选bundle；Target只运行一个A worker；prediction封存后由独立one-shot scorer一次性打开truth。禁止构建B/C资产、三候选merged bundle、三worker merge、125/588/fresh63或新的通用发布框架；
+- 训练callback仍必须保留对`U/V`的非零梯度；训练完成后冻结asset的outer审计走同一真实checkpoint downstream，但不再伪要求caller graph，也不得用`requires_grad_(True)`制造假梯度；
+- 发布前只跑断图相关聚焦测试、一个真实checkpoint的A微episode无query smoke、独立`P0=0/P1=0`、Git提交、不可覆盖run ID和N607预检。既有Phase2数据不重验；
+- one-shot方向门保持简单且成对：池化`H(M_DA)>H(M0)`；K5池化`H(M_JOINT)>H(M_DA)`；池化`H(M_JOINT)>H(M0)`且old＋new总正确数增加。完整one-shot中任一项不成立即关闭A并转入下一个原理，不调层、rank、步数、view、seed或阈值；三项均成立才恢复S0/S1扩展评估；
+- D128若再次在prediction前因同一bridge/release体系技术停止，则关闭D127/D128实现路线，保留设计但不再修复该release链，下一轮必须使用新的更小方法实现而不是r5式重试。
+
+`D128-A-ONE18`是快速功能证伪，不是正式S0、Target25或promotable证据；但其完整负结果足以停止A的继续研发，避免在确定弱收益后浪费资源。
 
 对指标`y`定义：
 
@@ -209,8 +223,8 @@ old+new总正确数严格增加
 1.`D106-RCMR`真实588条功能面及source-held结果只作为历史非晋级证据；`D121`、`D122`组合项、`D123`已关闭，旧run不重跑、不沿用其G0/G1流程、不修旧通用release链；
 2.`D106` Target25 r7仅完成46/600 state后技术退出，严格为`NO_PERFORMANCE_RESULT`；当前没有新的Target性能；
 3.历史formal D92保留为固定参照，但不再视为最终头：K1整臂fallback、288维D62/D81管线、old/new重复稠密拟合和row-splice计算是本轮明确删改对象；160维held代理的额外协方差状态只作独立工程诊断；
-4.当前最多并行3条DA候选并共享一个D92-Lite。浅层梯度残差只是候选之一；中层残差和晚层无反传超适配可以作为原理不同候选，但最终由同一160维`2×2`证据选择，不预设浅层获胜；
-5.每条路线必须在设计时说明DA的唯一干预点/状态；三条路线共享同一个精简D92 K1/K5公式、view/cache契约、formal D92删除项、预测状态和实测资源口径；
-6.先完成一次Git承载的设计冻结和追踪映射，再由不同Terra Max agent实现非重叠科学核心和独立复审；Luna Max只承担固定清单、hash、manifest、报告骨架、字段检查及执行已冻结的本地测试命令；N607唯一runner使用Terra Max；
-7.本地最小负测、真实checkpoint无query smoke、独立`P0=0、P1=0`和Git提交后立即发布三候选并行小筛选，不新增数据复验、authority或通用控制面；
-8.S0只选一个胜者进入S1；S1失败不递补runner-up，完整负收益方法立即关闭并研发新原理。S1正向后直接进入方法未见seed的Target25，不运行588条G0、fresh63或D62/D92/SVRN重复125矩阵。
+4.D127 r1/r2/r3均为prediction前技术停止；不把它们误写成性能负收益，也不再原样发布三候选r4；当前唯一发布目标是§5.1的`D128-A-ONE18`；
+5.只修复已定位的冻结审计语义：训练路径保持严格可微，冻结审计路径允许无图replacement并保留真实downstream、形状、设备、绑定和数值检查；不修改FSRG/D92-Lite数学；
+6.D128只构建A单候选bundle并运行一个Target worker和一个独立scorer；B/C暂停，禁止三候选merge、重复125、588、fresh63和数据重验；
+7.Terra Max分别拥有断图修复和one-shot新文件面，方法作者不得自证；主agent整合，另一Terra Max做P0/P1复核，N607唯一runner另行发布；Luna Max仅承担固定清单、hash和报告字段检查；
+8.完成聚焦测试、真实checkpoint A微episode smoke、独立`P0=0、P1=0`和Git提交后立即发布。D128完整负收益即关闭A并研发下一个原理；三项方向门全正才恢复S0/S1，不增加中间gate。
