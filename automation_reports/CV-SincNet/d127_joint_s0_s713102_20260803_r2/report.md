@@ -92,3 +92,64 @@
 |`PENDING`|`PENDING`|`PENDING`|`PENDING`|`PENDING`|`PENDING`|`PENDING`|`PENDING`|`PENDING`|`PENDING`|`PENDING`|`PENDING`|`PENDING`|
 
 **预注册结论：**r2只修复r1已证实的运行时ABI兼容问题，方法、矩阵、阈值和数据资产保持不变。当前为`LOCAL_VERIFIED/NO_NEW_PERFORMANCE_RESULT`；下一步直接交由唯一Terra Max runner发布。
+
+## 8.唯一runner预落地记录
+
+|字段|实测值|
+|---|---|
+|N607直连预检|`2026-08-03 15:39 CST`通过；项目根可见；GPU0-7均`0%/1MiB`；无compute process|
+|固定资产|checkpoint、selected IQ、receipt、`L_s` join和D92 manifest均逐项匹配第5节SHA256|
+|r2唯一性|`$RUN`不存在，r1未触碰|
+|运行环境|`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`存在，Python3.10.19；r2仅使用该环境|
+|本地SSH清理|预检和资产核验后均为`ssh.exe=0`、至N607/lab bridge的TCP22连接数`0`|
+|当前状态|`PRE_LANDING_VERIFIED/NO_NEW_PERFORMANCE_RESULT`；下一步创建r2专用不可覆盖根并精确同步|
+
+### 8.1r2根与同步完成
+
+|字段|实测值|
+|---|---|
+|不可覆盖根|`/home/szu2070436088/2510044040/CV-SincNet/runs/d127_joint_s0_s713102_20260803_r2`首次创建，仅含`source/input/assets/predictions/score/logs/receipts`|
+|实际同步映射|11个D127模块（含`stage2_d127_torch_compat.py`）、namespace bootstrap和7个最小D106依赖→`$RUN/source/code/cvsrffi/`；4个入口脚本→`$RUN/source/code/scripts/`；method lock与Target25 context→`$RUN/input/`|
+|同步哈希|25/25项逐文件SHA256匹配；hash不符数`0`|
+|当前状态|`LANDED/PREFLIGHT_PENDING/NO_NEW_PERFORMANCE_RESULT`；下一步仅为CVS-RFFI下py_compile、4个CLI help和ABI copy smoke|
+
+### 8.2r2运行时预检通过
+
+- CVS-RFFI（Python3.10.19）下的显式ABI smoke已通过：`float32`二维数组在`numpy_to_torch_copy`与`torch_to_numpy_copy`之间保持shape`[2,2]`、float32 dtype和全部值；原`from_numpy/as_tensor/Tensor.numpy`桥未被调用。
+- 25个同步文件的`py_compile`与4个CLI`--help`均通过。成功日志为`$RUN/logs/preflight_compile_help_abi_r2_quote_fix.log`，SHA256`166e7fedbce2711314445700d6e3d4520299c0286df33933cfb195aa89ac0b0c`。
+- 首次ABI短命令因runner shell字符串处理产生`NameError`，未导入数据、未写预期artifact；已保留独立日志，不构成代码或性能失败。随后等价无嵌套字符串命令成功。
+- 当前状态：`LANDED/PREPARE_READY/NO_NEW_PERFORMANCE_RESULT`。下一步直接执行唯一的truth-free`prepare`，exclusive写入`$RUN/input/prepared`和`$RUN/logs/prepare.log`。
+
+### 8.3truth-free prepare完成与Phase1启动命令
+
+|artifact|文件SHA256|内容SHA256/状态|
+|---|---|---|
+|prepared plan|`c147120edb73481f2243535bcdc86da56ec0193ce052145e4515c8773ea76803`|`1e6d931c6b0f833133e3a7589c6f7afa2cfbf4170e792a94f0bac1431d682108`；18 row pairs/36 states|
+|K5 prefix receipt|`7688f4a4870377900185598637cc742ce5b2d31e0926f415bf6145a166a251a5`|`13b5b827469a74f5581e969a762f250e874708936ce03bacc5d3d1324e124ba2`|
+|prepare log|`4b43a41d55fa50b08a9e9e45a039d1722e63407481bd97dd19bc0dafd3547024`|`D127_S0_PREPARED`；`truth_loaded=false`|
+
+启动GPU0/1/2的唯一冻结命令模式如下；每条命令都在`$RUN/source`、`PYTHONPATH=$RUN/source/code:<D106-r7 source/code>`下运行，外部GPU映射后内部均使用`--device cuda:0`：
+
+```text
+CUDA_VISIBLE_DEVICES=<0|1|2> $PY $RUN/source/code/scripts/build_d127_phase1_assets.py --candidate-id <DA-A-FSRG-time_fuse|DA-B-FSRG-t2norm|DA-C-RDHA-joint_proj> --output-dir $RUN/assets/<candidate> --method-lock $RUN/input/d127_joint_s0_method_lock_20260803.json --method-lock-sha256 7b8df3c029d8096033b9a39734d563452f1f9b4bcb6737ade63821fb4786a650 --selected-iq-archive /home/szu2070436088/2510044040/CV-SincNet/runs/d106_real_integration_dba10236_20260801_r7/output/selected_ls_iq/d106_ls_received_iq.npz --selected-iq-archive-sha256 e32708214eaedaf39af532c572e16045f173422d63110e4022778f3ad0252ede --selected-iq-receipt /home/szu2070436088/2510044040/CV-SincNet/runs/d106_real_integration_dba10236_20260801_r7/output/selected_ls_iq/d106_ls_received_iq.receipt.json --selected-iq-receipt-sha256 a18bd5d610c9874bd0d6b50d34e845d85229d5892453bce9ff5bfeaa8ee82d59 --ls-label-join-archive /home/szu2070436088/2510044040/CV-SincNet/runs/d106_real_integration_dba10236_20260801_r7/input/d104_split/L_s/features.npz --ls-label-join-archive-sha256 dd315295bc65069f174529137ab0e5089c1e648b5cd902c476d79fbc18dd813d --checkpoint /home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth --checkpoint-sha256 2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98 --device cuda:0
+```
+
+### 8.4三候选同指纹Phase1技术停止
+
+- A→GPU0（PID`397736`）、B→GPU1（PID`397737`）、C→GPU2（PID`397738`）均在启动后约3秒退出；没有run-owned存活PID、没有GPU占用、`$RUN/assets`没有文件。
+- 三份独立候选日志完全同SHA256：`fc73b79e18b46ecd19a5b9ce37d0ccbb327c332ad4cddd52b5898064b779bd1e`。同一确定性异常为`D106Phase1TapError: D106 selected L_s IQ receipt closure drift`，D127上层统一包装为`D127 sealed selected-IQ load failed`。
+- 该错误发生在source-only selected-IQ加载、任何bundle/prediction之前；A/B/C是三个不同任务且同指纹，满足预注册系统性技术停止规则。未启动asset merge、target worker、paired merge、truth-open、truth assets或score；没有读取性能指标。
+- 当前状态为`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE/NO_PERFORMANCE_RESULT`。唯一runner不补文件、不重启、不启动后续阶段；r2所有输入、prepare artifact和日志保留。
+
+## 9.r2最终runner交接
+
+|字段|最终证据|
+|---|---|
+|运行状态|`LANDED_PREPARE_TECHNICAL_FAILURE`；`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE/NO_PERFORMANCE_RESULT`|
+|性能/评分|无Phase1 bundle、prediction、truth-open、truth catalog或score；没有可报告性能数值，也不作晋级判断|
+|同步清单|`$RUN/receipts/sync_manifest_sha256.txt`；SHA256`1b4aa1adf9502a7b9fb14c191ae93afdf8405b4fddfc086ecf9bf374d665d5fd`；已拉回根报告`artifacts/remote_r2/`|
+|prepare证据|prepared plan与K5 prefix receipt均完整，文件SHA256分别为`c147120edb73481f2243535bcdc86da56ec0193ce052145e4515c8773ea76803`、`7688f4a4870377900185598637cc742ce5b2d31e0926f415bf6145a166a251a5`；已拉回|
+|receipt与错误证据|真实selected-IQ receipt副本SHA256`a18bd5d610c9874bd0d6b50d34e845d85229d5892453bce9ff5bfeaa8ee82d59`、三份Phase1同指纹log、terminal health receipt均已拉回根报告`artifacts/remote_r2/`|
+|最终PID/GPU|仅检索Python命令行中的r2 run ID，无命中；GPU0-7均`0%/1MiB`，没有NVIDIA compute process；terminal health receipt SHA256`0fce444d6eddcceff1d6c29e4b63d7d312a131433bc9ead2f2071d256bc101fe`|
+|SSH最终核验|所有短连接结束后本地`ssh.exe=0`，至N607/lab bridge的TCP22连接数`0`|
+|保留边界|r2根不删除、不覆盖；唯一runner不创建r3，等待主agent本地诊断、版本化修复与新的独立交接|
