@@ -1,6 +1,6 @@
 # Stage2功能研发目标与证据门
 
-状态：`ACTIVE / D127_R3_TECHNICAL_STOP / D128_A_ONE18_DESIGN_FROZEN / NO_NEW_PERFORMANCE_RESULT`
+状态：`ACTIVE / D127_D128_ROUTE_CLOSED / D129_CSPAR_DESIGN_FROZEN / NO_NEW_PERFORMANCE_RESULT`
 
 ## 1.最终目标
 
@@ -110,6 +110,39 @@ D127 r1/r2/r3分别因NumPy/Torch ABI、历史receipt当前checkout闭合和冻�
 - D128若再次在prediction前因同一bridge/release体系技术停止，则关闭D127/D128实现路线，保留设计但不再修复该release链，下一轮必须使用新的更小方法实现而不是r5式重试。
 
 `D128-A-ONE18`是快速功能证伪，不是正式S0、Target25或promotable证据；但其完整负结果足以停止A的继续研发，避免在确定弱收益后浪费资源。
+
+D128 r1已在A bundle与任何prediction前因outer-audit closure技术停止，`assets/smoke/prediction/truth/score`均为0，严格为`NO_PERFORMANCE_RESULT`。该事件触发上一条预注册关闭规则：D127/D128的Phase1 autograd/checkpoint-replacement实现路线永久停止，不创建D128 r2，不继续修复outer audit；报告由commit`3d2d78e3`承载。
+
+### 5.2D129闭式PSD域适应×D92-Lite
+
+当前下一方法冻结为`D129-CSPAR-qKNN-D92Lite`。它不更新encoder、不使用Phase1 autograd或checkpoint replacement；方法定位必须诚实写为“D110-family闭式rank2 PSD度量的新统计量”，不得声称为新编码器适应。
+
+Phase1只从允许随checkpoint联合封存的int8域×类聚合知识构造域扰轴`B∈R^(160×2)`：对类内跨域中心化聚合二阶量`G`取前二特征向量。特征值降序；相对差≤`1e-6`的近重根用投影到标准坐标轴的确定性QR定基并令QR主元为正，非近重根令最大绝对坐标为正。Phase2不得回读source样本或FP32 sidecar。
+
+对当前row合法support的L2表示`u`，K5按当前注册类等权构造：
+
+```text
+S_w = [C(K-1)]^-1 Σ_c Σ_i (u_ci-μ_c)(u_ci-μ_c)^T
+v_j = b_j^T S_w b_j
+v_perp = [tr(S_w)-Σ_j v_j]/158
+α_j = clip(1-(v_perp+eps)/(v_j+eps), 0, α_max)
+M = I-B diag(α) B^T
+φ_M(u) = M^(1/2)u / ||M^(1/2)u||
+```
+
+`alpha0=(0.20,0.20)`、`alpha_max=0.50`、`eps=1e-6`全部在Phase1 seal中冻结，不根据Target结果修改；`eps`只承担数值下界。K1因`K-1=0`不得从target support估计散度，直接使用封存`alpha0`，因此K1只能称“封存度量收益”，不能纳入target DA成功声明。`M`必须是固定域轴上的非标量SPD；若退化为共同平移、正交或全局正缩放导致邻居排序不变，则直接关闭。
+
+四臂严格保持同表示空间因果对照：`M0=base/qKNN`、`M_DA=φ_M(base)/qKNN`、`M_L92=base/D92-Lite`、`M_JOINT=φ_M(base)/D92-Lite`。K5的两个D92-Lite头分别从本臂合法support重新拟合；禁止增加`β`、qKNN residual logit融合或新的校准自由度。K1严格alias：`M_L92=M0`、`M_JOINT=M_DA`。old/new使用同一共享规则，不读取role。
+
+实现前先做一次无truth真实checkpoint功能smoke：在同support和opaque query上证明`M_D129≠M_D110`，并且neighbor、margin或argmax至少一项改变；同时做类别标签置换等变测试。smoke失败记为`REJECT_D129_NO_INDEPENDENT_FUNCTION`，不得启动Target。
+
+D129 one-shot复用seed`713102`、receiver`{20-1,3-19,7-14}`、`{K1/new20,K5/new20}`和3个互斥LEO弱场景，共18个before/after配对row，只运行一个候选四臂。方向门只看K5：
+
+- G1：池化`H(M_DA)-H(M0)>0`；
+- G2：池化`H(M_JOINT)-H(M_DA)>0`；
+- G3：池化`old+new total_correct(M_JOINT)-total_correct(M0)>0`。
+
+任一门失败即关闭D129，不调`B/alpha0/alpha_max/eps`、层、rank、view、seed或阈值；全部通过才讨论扩展。资源预期为rank2 int8/FP16小状态加既有D92-Lite，必须在实现时给出精确序列化字节、MAC和forward receipt，但资源表不阻塞本次one-shot发布。
 
 对指标`y`定义：
 
@@ -223,8 +256,8 @@ old+new总正确数严格增加
 1.`D106-RCMR`真实588条功能面及source-held结果只作为历史非晋级证据；`D121`、`D122`组合项、`D123`已关闭，旧run不重跑、不沿用其G0/G1流程、不修旧通用release链；
 2.`D106` Target25 r7仅完成46/600 state后技术退出，严格为`NO_PERFORMANCE_RESULT`；当前没有新的Target性能；
 3.历史formal D92保留为固定参照，但不再视为最终头：K1整臂fallback、288维D62/D81管线、old/new重复稠密拟合和row-splice计算是本轮明确删改对象；160维held代理的额外协方差状态只作独立工程诊断；
-4.D127 r1/r2/r3均为prediction前技术停止；不把它们误写成性能负收益，也不再原样发布三候选r4；当前唯一发布目标是§5.1的`D128-A-ONE18`；
-5.只修复已定位的冻结审计语义：训练路径保持严格可微，冻结审计路径允许无图replacement并保留真实downstream、形状、设备、绑定和数值检查；不修改FSRG/D92-Lite数学；
-6.D128只构建A单候选bundle并运行一个Target worker和一个独立scorer；B/C暂停，禁止三候选merge、重复125、588、fresh63和数据重验；
-7.Terra Max分别拥有断图修复和one-shot新文件面，方法作者不得自证；主agent整合，另一Terra Max做P0/P1复核，N607唯一runner另行发布；Luna Max仅承担固定清单、hash和报告字段检查；
-8.完成聚焦测试、真实checkpoint A微episode smoke、独立`P0=0、P1=0`和Git提交后立即发布。D128完整负收益即关闭A并研发下一个原理；三项方向门全正才恢复S0/S1，不增加中间gate。
+4.D127/D128全部是prediction前技术停止，没有性能结论；其Phase1 autograd/checkpoint-replacement实现路线已按预注册规则关闭，不再修复、不创建新run；
+5.当前唯一方法目标是§5.2的D129：闭式rank2 PSD度量＋既有D92-Lite，禁止encoder梯度、checkpoint replacement、`β`logit融合或第二候选；
+6.先实现`B/alpha`seal、K1/K5闭式metric和四臂；复用既有truth-free package/scorer语义，但不得复制D127三候选merge或Phase1 outer-audit框架；
+7.无truth真实checkpoint smoke只验证D129相对D110的独立功能变化和标签置换；通过聚焦测试、独立`P0=0/P1=0`、Git提交后立即发布18行one-shot，不重验数据；
+8.D129完整one-shot任一K5方向门失败即关闭并研发下一个原理；不得调参复活，不运行125、588、fresh63或重复D62/D92/SVRN矩阵。
