@@ -15,5 +15,8 @@
 - 独立首轮审查：`P0=0,P1=3`；方法锁绑定与独立进程隔离已完成窄修复。
 - 独立复审：`P0=0,P1=0,RELEASE_READY=yes`。
 - 实现commit：`8d232fba89689e2e0e80cdc6eefdbbaa4340204f`。
+- Git交接头：`a59aaa5942b166cafedb8b8e0a60b1fac7785573`。
+- runtime归档：`E:\type10-7\code\snapshots\d131_d92_lite160_target125_20260804_r1_runtime_a59aaa59_v2.tar`，SHA256=`e213690d35776706827dd7f41009c4e654924bd73aacfb02d3cb41dbc72b4159`。
+- N607正式只读预检通过：8张RTX3090空闲，本地SSH连接已清零。
 - 方法锁SHA256：`6cfe8659390bf887bf1689edd24a17b6bed9ef103ccf6f5bfde4d36574725e15`；完整SHA已嵌入candidate身份，所有CLI命令均重新校验方法锁。
 - 当前待完成：N607预检、真实checkpoint smoke和唯一runner交接。
