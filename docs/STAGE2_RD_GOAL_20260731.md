@@ -108,7 +108,7 @@ I_DA_X_L92    = M_JOINT-M_DA-M_L92+M0
 FORMAL_REPLACE= M_L92-R_D92_FORMAL  # 只表示全管线替换差
 ```
 
-S0/S1的development seed固定为`713102`。该选择在任何D127 Target prediction和truth评分前完成，只为复用既有formal D92 retry2的完整K1/K10输入包、seal及历史同row参照；K5严格取同一K10/new20 enrollment包中预登记的前5个support，不重建received-IQ、不重复运行D92。seed选择不得根据D127或同轮候选性能修改。
+S0/S1的development seed固定为`713102`。该选择在任何D127 Target prediction和truth评分前完成，只为复用既有formal D92 retry2的完整K1/K10输入包、seal及历史同row参照；K5严格取同一K10/new20 enrollment包中预登记的前5个support，不重建received-IQ、不重复运行D92。发布前只补一张逐class/scene对比opaque physical-ID有序前缀与query根的紧凑receipt；它只绑定既有包，不重新验证数据、不增加builder或第二套控制面。seed选择不得根据D127或同轮候选性能修改。
 
 S0固定为按receiver ID词典序预冻结的3个development receiver`{20-1,3-19,7-14}`×`{K1/new20,K5/new20}`×3个互斥scene，共18个原子row。公共`M0/M_L92/R_D92_FORMAL`只生成一次；三候选各生成`M_DA/M_JOINT`，形成9个逻辑输出，K1别名不重复计算。三候选全部prediction完成后才一次性评分，不查看中间性能。
 
