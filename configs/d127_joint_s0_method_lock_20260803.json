@@ -1,0 +1,123 @@
+{
+  "schema": "cvs.stage2.d127.joint_s0.method_lock.v1",
+  "candidate_id": "D127-LIGHT-DA-X-D92-LITE-S0",
+  "protocol_schema": "p2_min_v1",
+  "claim_scope": "TARGET_DEVELOPMENT_S0_ONLY",
+  "checkpoint": {
+    "sha256": "2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98",
+    "remote_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth"
+  },
+  "phase1_asset_build": {
+    "source_received_iq_sha256": "e32708214eaedaf39af532c572e16045f173422d63110e4022778f3ad0252ede",
+    "source_received_iq_receipt_sha256": "a18bd5d610c9874bd0d6b50d34e845d85229d5892453bce9ff5bfeaa8ee82d59",
+    "partition_schema": "d127-phase1-v1",
+    "receiver_held_fold_count": 7,
+    "physical_samples_per_receiver_class": 14,
+    "ordering": "sha256(d127-phase1-v1|receiver|class|physical_id)_ascending",
+    "support_pool_count": 5,
+    "outer_query_pool_count": 9,
+    "active_k": [1, 5],
+    "k1_is_first_k5_support": true,
+    "support_query_globally_disjoint": true,
+    "class_symmetry_audit": "single_fixed_cyclic_label_permutation",
+    "class_loco_training_count": 0,
+    "final_episode_count": 14,
+    "optimizer": {
+      "name": "full_batch_lbfgs",
+      "max_iter": 128,
+      "line_search_fn": "strong_wolfe",
+      "initialization_count": 1,
+      "early_stop": false,
+      "parameter_scan": false
+    },
+    "persist_source_rows_or_features": false,
+    "persist_fp32_sidecar": false
+  },
+  "domain_adaptation": {
+    "rank": 2,
+    "relative_residual_budget": 0.05,
+    "candidates": [
+      {
+        "candidate_id": "DA-A-FSRG-time_fuse",
+        "tap": "id_backbone.time_fuse.1:pre_relu",
+        "phase2_backprop": false
+      },
+      {
+        "candidate_id": "DA-B-FSRG-t2norm",
+        "tap": "id_backbone.t2.norm:pre_relu",
+        "phase2_backprop": false
+      },
+      {
+        "candidate_id": "DA-C-RDHA-joint_proj",
+        "tap": "id_backbone.cls_head.joint_proj.0:input",
+        "phase2_backprop": false
+      }
+    ],
+    "query_fit_count": 0,
+    "query_update_count": 0,
+    "query_selection_count": 0
+  },
+  "student_t_qknn": {
+    "active_k": [1, 5],
+    "student_nu": 3,
+    "kernel_effective_dim": 12,
+    "kernel_volume_gamma": 1,
+    "shared_h0": 0.35,
+    "scale_prior_strength": 2,
+    "scale_min_ratio": 0.5,
+    "scale_max_ratio": 2,
+    "temperature": 0.85,
+    "support_storage": "int8_fp16_scale"
+  },
+  "d92_lite": {
+    "method": "D92-Lite-DR-OAS-LDA",
+    "input": "l2_normalized_z_id160",
+    "class_role_split": false,
+    "dense_covariance": false,
+    "k1": "exact_qknn_alias",
+    "k5": "analytic_diagonal_oas_form_lda",
+    "deployment_state": "per_class_int8_w_fp16_scale_fp16_intercept",
+    "fp32_sidecar": false
+  },
+  "s0_matrix": {
+    "seed": 713102,
+    "receivers": ["20-1", "3-19", "7-14"],
+    "k_new_count": [[1, 20], [5, 20]],
+    "scenes": ["leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak"],
+    "row_pair_count": 18,
+    "registration_states": ["before", "after"],
+    "state_row_count": 36,
+    "logical_outputs_per_row": [
+      "M0",
+      "M_L92",
+      "R_D92_FORMAL",
+      "M_DA[A]",
+      "M_JOINT[A]",
+      "M_DA[B]",
+      "M_JOINT[B]",
+      "M_DA[C]",
+      "M_JOINT[C]"
+    ],
+    "d92_retry2_manifest_sha256": "b70045e7cd45a6029bc0a1a47ada0bb72d16fdb6bc7662c43bd253bfc7e4bc5c",
+    "k5_source_pool_k": 10,
+    "k5_is_ordered_k10_prefix": true,
+    "truth_open_after_all_predictions": true
+  },
+  "promotion": {
+    "da_delta_h_positive": true,
+    "k5_lite_after_da_delta_h_positive": true,
+    "joint_delta_h_positive": true,
+    "joint_total_correct_increase": true,
+    "minimum_pp_gate": null,
+    "negative_candidate_action": "close_without_tuning_or_resurrection"
+  },
+  "deleted_work": [
+    "phase1_receiver_by_class_42_fold_loco",
+    "d127_588_g0",
+    "fresh63",
+    "repeat_d62_125",
+    "repeat_d92_125",
+    "repeat_svrn_qknn_bcrr_125",
+    "phase2_data_revalidation"
+  ]
+}
