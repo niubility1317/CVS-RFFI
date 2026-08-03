@@ -150,3 +150,90 @@ S0门槛仅包括活动目标文档规定的以下三条方向性H/正确计数�
 |下一实验建议|`PENDING`|
 
 **预注册结论：**冻结实现、本地88项聚焦测试和两条独立P0/P1复核已经闭合，状态为`LOCAL_VERIFIED/NO_NEW_PERFORMANCE_RESULT`。下一步直接交由唯一Terra Max runner完成N607落地、18行预测和独立评分；任何性能结论须等完整同一row证据返回后再写入。
+
+## 11.唯一runner预落地记录
+
+|字段|实测值|
+|---|---|
+|N607预检|`2026-08-03 14:53 CST`直连通过；项目根可见；GPU0-7均`0%/1MiB`；无计算进程|
+|本地SSH清理|预检和资产核验后均为`ssh.exe=0`、到N607/lab bridge的TCP22连接数`0`|
+|固定资产哈希|checkpoint、selected IQ、IQ receipt、`L_s` join和D92 manifest均逐项匹配第4节冻结SHA256|
+|远端运行时|冻结优先路径`/home/szu2070436088/.conda/envs/ssr-gpu/bin/python`不存在；只读确认D106-r7可用`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`（Python3.10.19、torch2.1.0+cu121、numpy2.2.5）|
+|已验证依赖根|`/home/szu2070436088/2510044040/CV-SincNet/runs/d106_real_integration_dba10236_20260801_r7/source/code`；含`cvsrffi`和`model_dual_cvsincnet.py`，只读复用、不覆盖|
+|不可覆盖远端根|`/home/szu2070436088/2510044040/CV-SincNet/runs/d127_joint_s0_s713102_20260803_r1`；尚未创建、尚未启动|
+|同步计划|14个D127 Python文件分别进入`$RUN/source/code/cvsrffi`或`$RUN/source/code/scripts`，method lock进入`$RUN/input`，D106 Target25 context进入`$RUN/input/target25_context.json`；每一文件同步后逐项SHA256核验|
+|当前状态|`PRE_LANDING_TECHNICAL_REPAIR/NO_PERFORMANCE_RESULT`；run root和输入均保留，等待本地包路径bootstrap版本化后重做编译/入口核验|
+
+### 11.1启动前单一技术缺口
+
+- 16个冻结输入的远端SHA256均匹配；`cvsrffi/__init__.py`也与D106-r7同SHA（`13cc5247133854c79ed160269ee8fa9816cb8dae3d162e724ad86d0ad8fad7a2`）。
+- `py_compile`已通过；第一个`build_d127_phase1_assets.py --help`在运行时导入阶段失败：隔离`$RUN/source/code/cvsrffi`的普通包遮蔽D106依赖根中的`cvsrffi`，从而找不到`stage2_d106_phase1_tap`。
+- 错误日志已保留在远端`$RUN/logs/preflight_compile_help.log`，SHA256为`0ca1cd97e1046bdefdce0941811b3ef3bb8856b99c41d461f729f244dde104a7`，并已拉回根报告`artifacts/remote_r1/preflight_compile_help.log`。
+- 未启动Phase1/target/scorer进程，未读取性能；未改远端科学代码、未覆盖run root。主agent将本地版本化纯机械`pkgutil.extend_path`bootstrap；新commit和唯一同步文件到达后，唯一runner只重做同步、hash、编译和`--help`。
+
+### 11.2bootstrap复验与既有D106依赖闭包缺口
+
+- 本地机械bootstrap已由commit`0bf96729`版本化；获授权仅覆盖`$RUN/source/code/cvsrffi/__init__.py`后，远端SHA256匹配`90f7447ed5ebc121aa1d4d6f47be389a9a54a8bd5b1ccd9d35591c3508eb508f`。
+- 第二次`py_compile`和`build_d127_phase1_assets.py --help`均通过，证明bootstrap本身有效；随后`run_d127_s0.py --help`以唯一指纹`ModuleNotFoundError: No module named 'cvsrffi.stage2_d106_matrix_protocol'`失败。
+- 该日志为`$RUN/logs/preflight_compile_help_bootstrap_0bf96729.log`，SHA256`53b9e502fbaf97296a335e34e8264d75270286e002818d1cf3f2ccbe13a2c70c`，已拉回根报告`artifacts/remote_r1/`。只读核验显示D106-r7的`source/code`不含该模块；当前adapter还需要同一闭包中的`stage2_d106_target25_runner.py`。
+- 这是启动前第二个独立的既有依赖闭包缺口。唯一runner不做远端临时修补、不启动Phase1；等待主agent决定并版本化唯一的本地依赖闭包同步方案。
+
+### 11.3已落地发布面与下一条冻结入口
+
+|字段|实测值|
+|---|---|
+|代码基线|核心发布commit`3458ecba`；机械namespace bootstrap commit`0bf96729`；runner未提交报告回填|
+|远端运行根|`/home/szu2070436088/2510044040/CV-SincNet/runs/d127_joint_s0_s713102_20260803_r1`（首次创建、不可覆盖）|
+|远端Python/CWD|`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`；CWD=`$RUN/source`；`PYTHONPATH=$RUN/source/code:/home/szu2070436088/2510044040/CV-SincNet/runs/d106_real_integration_dba10236_20260801_r7/source/code`|
+|实际同步映射|10个D127模块、7个最小D106依赖闭包和`cvsrffi/__init__.py`→`$RUN/source/code/cvsrffi/`；4个入口脚本→`$RUN/source/code/scripts/`；method lock→`$RUN/input/d127_joint_s0_method_lock_20260803.json`；Target25 context→`$RUN/input/target25_context.json`|
+|同步哈希|16个冻结输入、bootstrap和7个最小依赖闭包均逐项SHA256匹配；没有hash不符|
+|远端入口核验|`py_compile`和4个CLI`--help`均通过；日志`$RUN/logs/preflight_compile_help_depclosure_0bf96729.log`，SHA256`19ba9bddf54eb7595ccd38a903a285e3436f1da0af4d04a4dea6e53f2864462d`|
+|当前状态|`LANDED/PREPARING/NO_NEW_PERFORMANCE_RESULT`；尚无Phase1 PID、尚未读取truth或性能|
+
+下一条固定命令（exclusive输出`$RUN/input/prepared`和`$RUN/logs/prepare.log`）为：
+
+```text
+PYTHONPATH=$RUN/source/code:<D106-r7 source/code> $PY $RUN/source/code/scripts/run_d127_s0.py prepare --method-lock $RUN/input/d127_joint_s0_method_lock_20260803.json --method-lock-sha256 7b8df3c029d8096033b9a39734d563452f1f9b4bcb6737ade63821fb4786a650 --d106-context $RUN/input/target25_context.json --d106-context-sha256 e3cf5b15e29d5d907889874b1517da1ad77e5fa81085ed074d4c196af71830ba --output-dir $RUN/input/prepared
+```
+
+### 11.4prepare真实技术失败
+
+- `prepare`在读取既有D106 Target25 package的首个`support_iq`并调用`torch.from_numpy(support_iq)`时失败，唯一异常指纹为`TypeError: expected np.ndarray (got numpy.ndarray)`，位置`stage2_d127_s0_package_adapter.py:590`。
+- 远端日志`$RUN/logs/prepare.log`SHA256为`3f9c4019f22649686069aefd98330ff18ac9abf7bdbb8162b9f502c7a63573f2`；`$RUN/input/prepared`确认不存在，因而没有prepared plan、K5 prefix receipt或任何预测artifact。
+- 当前运行时为torch2.1.0+cu121与numpy2.2.5；该异常与二进制NumPy API兼容问题一致，但尚未将归因当作修复结论。唯一runner不在远端替换环境、不修改代码、不重试。
+- Phase1 A/B/C均未启动：没有run-owned PID、GPU0/1/2无本run进程、没有Phase1日志增长；状态更新为`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE/NO_PERFORMANCE_RESULT`，所有已有输入和日志保留。任何后续修复必须本地完成，并由主agent决定新的不可覆盖run ID和发布交接。
+
+### 11.5只读环境smoke
+
+|环境|Python/torch/numpy|CUDA|`torch.from_numpy(float32)`|结论|
+|---|---|---|---|---|
+|`CVS-RFFI`|3.10.19/2.1.0+cu121/2.2.5|可用|失败，复现同一`TypeError`|不适用于本次prepare|
+|`SDG-SEI`|3.8.20/1.11.0+cu113/1.24.4|可用|成功|仅记录为候选兼容环境，尚未获准用于D127，不启动、不加载项目数据或模型|
+
+该审计仅枚举`/home/szu2070436088/.conda/envs/*/bin/python`并执行长度为1的本地零数组转换；没有安装、更新或写入环境，没有访问项目数据/模型。SSH在检查后清理完毕。
+
+### 11.6主agent授权的兼容环境复验
+
+- 主agent已选定现有只读兼容环境`/home/szu2070436088/.conda/envs/SDG-SEI/bin/python`。选择依据仅为11.5的Python3.8.20、torch1.11.0+cu113、numpy1.24.4与`from_numpy`smoke通过；不安装、不升级、不改写环境。
+- 仍使用本run ID的明确原因：此前失败发生于prepare前半段，`input/prepared`不存在，未生成Phase1 bundle、prediction或score，且没有任何run-owned PID。此前失败日志继续保留，不覆盖。
+- 下一步只允许SDG-SEI下`py_compile`、4个CLI`--help`和`import torch,model_dual_cvsincnet`短smoke；全部通过后才重新执行同一truth-free prepare。任何新的兼容性错误立即停止，不作第三轮修补，也不启动A/B/C。
+
+### 11.7SDG-SEI兼容预检失败并停止
+
+- SDG-SEI的`torch.from_numpy`本身可用，但在预检要求的`import model_dual_cvsincnet`阶段加载D106`model.py`时失败：`TypeError: unsupported operand type(s) for |: '_GenericAlias' and 'type'`。根因表象为Python3.8不支持D106模型代码中的PEP604联合类型语法。
+- 日志保留在`$RUN/logs/preflight_compile_help_sdgs_compat.log`，SHA256`d1a27b9d6c0c3485e6935888ed68a6263c7c1f33610edee0dfa25158c0fe0211`，已拉回根报告`artifacts/remote_r1/`。
+- 因预检未通过，prepare没有重试，`input/prepared`仍不存在；Phase1 A/B/C的PID均为0，GPU0/1/2没有本run进程，也没有Phase1日志增长。
+- 已到达主agent授权的兼容性复验边界，状态保持`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE/NO_PERFORMANCE_RESULT`。唯一runner不作第三轮环境/代码修补、不启动或重试；现有run root、输入和所有日志保留，SSH已清理。
+
+## 12.r1最终runner交接
+
+|字段|最终证据|
+|---|---|
+|运行状态|`LANDED_PREPARE_TECHNICAL_FAILURE`；`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE/NO_PERFORMANCE_RESULT`|
+|性能/评分|无prepared plan、Phase1 bundle、truth-free prediction、truth-open、truth catalog或score；因此没有可报告性能数值或晋级判断|
+|远端同步清单|`$RUN/receipts/sync_manifest_sha256.txt`；SHA256`d1ba5d27fad95d181f99fa72329b4767b9d17d0c269cd138c33ec375d1ffd2e5`；已拉回根报告`artifacts/remote_r1/`|
+|日志保留|5份远端log完整保留：初始包导入、bootstrap复验、依赖闭包复验、SDG-SEI兼容预检和prepare失败；对应SHA256见11.1、11.2、11.3、11.4与11.7|
+|PID/GPU最终核验|仅针对Python命令行检索本run ID，无命中；GPU0-7均`0%/1MiB`，没有NVIDIA compute process；无run-owned PID|
+|SSH最终核验|所有短连接结束后本地`ssh.exe=0`，至N607/lab bridge的TCP22连接数`0`|
+|保留路径|`/home/szu2070436088/2510044040/CV-SincNet/runs/d127_joint_s0_s713102_20260803_r1`；不删除、不覆盖、不创建r2|
+|后续边界|主agent完成本地兼容修复、复核并给出新的不可覆盖run ID/交接前，唯一runner不再操作本run|
