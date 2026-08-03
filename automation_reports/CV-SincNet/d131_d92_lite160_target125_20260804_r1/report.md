@@ -20,3 +20,10 @@
 - N607正式只读预检通过：8张RTX3090空闲，本地SSH连接已清零。
 - 方法锁SHA256：`6cfe8659390bf887bf1689edd24a17b6bed9ef103ccf6f5bfde4d36574725e15`；完整SHA已嵌入candidate身份，所有CLI命令均重新校验方法锁。
 - 当前待完成：N607预检、真实checkpoint smoke和唯一runner交接。
+
+## r1终态
+
+- 状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。
+- 远端归档与core/adapter/CLI hash通过，但method lock在Windows Git archive中被导出为CRLF，远端原始字节SHA=`f6e8bed0e5993874fbcacbb1ea1efe17c21b52f3279f56ade0d0537270e16fc9`，与冻结LF字节SHA=`6cfe8659390bf887bf1689edd24a17b6bed9ef103ccf6f5bfde4d36574725e15`不一致。
+- r1在prepare前停止；smoke、shard、merge、truth和score均未启动。远端run root完整保留，不续跑、不覆盖。
+- landing证据SHA256：`ca8b49a3b58b365a10b07a51947022d34a553c359f46d57241a848e82ff095f1`。
