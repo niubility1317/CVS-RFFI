@@ -12,7 +12,7 @@ from scripts import run_d92_lite_target125 as cli
 from test_stage2_d109_target125 import FakeCore, FakeMaterializer, _common, _dummy_d92_fit
 
 
-METHOD_LOCK = Path(__file__).resolve().parents[1] / "configs" / "d131_d92_lite160_target125_r1.json"
+METHOD_LOCK = Path(__file__).resolve().parents[1] / "configs" / "d131_d92_lite160_qtie_target125_r2.json"
 METHOD = {
     "method_lock_path": METHOD_LOCK,
     "expected_method_lock_sha256": target.core.METHOD_LOCK_SHA256,

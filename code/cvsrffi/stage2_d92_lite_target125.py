@@ -78,7 +78,7 @@ def _verify_method_lock(
     if (
         not isinstance(document, Mapping)
         or document.get("schema") != core.METHOD_LOCK_SCHEMA
-        or document.get("candidate_id") != "D131-D92-LITE160/r1"
+        or document.get("candidate_id") != "D131-D92-LITE160-QTIE/r2"
         or document.get("protocol_schema") != PROTOCOL_SCHEMA
         or document.get("matrix", {}).get("prediction_surface_count") != SURFACE_COUNT
     ):

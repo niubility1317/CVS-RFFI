@@ -86,3 +86,120 @@ def test_public_score_has_no_truth_role_or_update_surface() -> None:
         core.score(pair, "after", "M_HEAD", query)
     with pytest.raises(core.D92LiteTarget125CoreError):
         core.score(pair, "unknown", core.TRANSPORT_ARM, query)
+
+
+def _lite_logits(*rows: tuple[float, ...]) -> np.ndarray:
+    return np.asarray(rows, dtype=np.float32)
+
+
+def test_non_tied_lite_logits_are_bitwise_unchanged_and_skip_qknn(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    pair = _pair(5)
+    query = np.zeros((2, 160), dtype=np.float32)
+    logits = np.tile(np.arange(11, dtype=np.float32), (2, 1))
+
+    def forbidden(*_args: object, **_kwargs: object) -> np.ndarray:
+        raise AssertionError("qKNN must not run without an exact Lite top tie")
+
+    monkeypatch.setattr(core, "score_zid_student_t_logits", forbidden)
+    actual = core._resolve_exact_lite_top_ties(pair, query, logits)
+    assert np.array_equal(actual, logits)
+
+
+def test_lite_top_tie_uses_only_tied_qknn_winner_and_changes_one_cell(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    pair = _pair(5)
+    query = np.zeros((1, 160), dtype=np.float32)
+    logits = _lite_logits((4.0, 4.0, 3.5, 99.0, 98.0, 97.0, 96.0, 95.0, 94.0, 93.0, 92.0))
+    logits[0, 3:] = np.float32(0.0)
+    qknn = _lite_logits((1.0, 2.0, 1000.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0))
+    monkeypatch.setattr(
+        core,
+        "score_zid_student_t_logits",
+        lambda *_args, **_kwargs: qknn,
+    )
+    actual = core._resolve_exact_lite_top_ties(pair, query, logits)
+    changed = np.flatnonzero(actual[0] != logits[0])
+    assert changed.tolist() == [1]
+    assert actual[0, 1] == np.nextafter(np.float32(4.0), np.float32(np.inf))
+    assert np.sum(actual == np.max(actual, axis=1, keepdims=True), axis=1).tolist() == [1]
+
+
+def test_lite_and_qknn_double_top_tie_fails_closed(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    pair = _pair(5)
+    query = np.zeros((1, 160), dtype=np.float32)
+    logits = np.zeros((1, 11), dtype=np.float32)
+    logits[0, :2] = np.float32(1.0)
+    qknn = np.zeros((1, 11), dtype=np.float32)
+    qknn[0, :2] = np.float32(2.0)
+    monkeypatch.setattr(
+        core,
+        "score_zid_student_t_logits",
+        lambda *_args, **_kwargs: qknn,
+    )
+    with pytest.raises(core.D92LiteTarget125CoreError, match="remains tied"):
+        core._resolve_exact_lite_top_ties(pair, query, logits)
+
+
+def test_exact_top_tie_resolution_is_class_permutation_equivariant(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    pair = _pair(5)
+    query = np.zeros((1, 160), dtype=np.float32)
+    logits = np.zeros((1, 11), dtype=np.float32)
+    logits[0, [2, 7]] = np.float32(3.0)
+    qknn = np.arange(11, dtype=np.float32)[None, :]
+    monkeypatch.setattr(
+        core,
+        "score_zid_student_t_logits",
+        lambda *_args, **_kwargs: qknn,
+    )
+    reference = core._resolve_exact_lite_top_ties(pair, query, logits)
+
+    permutation = np.asarray([7, 2, 10, 0, 1, 3, 4, 5, 6, 8, 9], dtype=np.int64)
+    monkeypatch.setattr(
+        core,
+        "score_zid_student_t_logits",
+        lambda *_args, **_kwargs: qknn[:, permutation],
+    )
+    permuted = core._resolve_exact_lite_top_ties(
+        pair, query, logits[:, permutation]
+    )
+    assert np.array_equal(permuted, reference[:, permutation])
+
+
+def test_exact_top_tie_resolution_is_query_batch_order_independent(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    pair = _pair(5)
+    query = np.zeros((2, 160), dtype=np.float32)
+    query[:, 0] = np.asarray([1.0, -1.0], dtype=np.float32)
+    logits = np.zeros((2, 11), dtype=np.float32)
+    logits[:, :2] = np.float32(5.0)
+
+    def qknn_from_query(_bank: object, rows: np.ndarray, **_kwargs: object) -> np.ndarray:
+        values = np.zeros((len(rows), 11), dtype=np.float32)
+        values[:, 0] = rows[:, 0]
+        values[:, 1] = -rows[:, 0]
+        return values
+
+    monkeypatch.setattr(core, "score_zid_student_t_logits", qknn_from_query)
+    reference = core._resolve_exact_lite_top_ties(pair, query, logits)
+    order = np.asarray([1, 0], dtype=np.int64)
+    permuted = core._resolve_exact_lite_top_ties(pair, query[order], logits[order])
+    assert np.array_equal(permuted, reference[order])
+
+
+def test_before_is_exact_qknn_logit_path() -> None:
+    pair = _pair(5)
+    query288 = _features(np.random.default_rng(44), 3)
+    query160 = core.normalized_zid160_from_registered_feature(query288)
+    direct = score_zid_student_t_logits(
+        pair.before_bank, query160, metric=pair.before_metric
+    )
+    actual = core.score(pair, "before", core.TRANSPORT_ARM, query288)
+    assert np.array_equal(actual, direct)

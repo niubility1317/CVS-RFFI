@@ -24,9 +24,9 @@ from .stage2_zid_student_t_qknn import (
 )
 
 
-METHOD_LOCK_SHA256 = "6cfe8659390bf887bf1689edd24a17b6bed9ef103ccf6f5bfde4d36574725e15"
-METHOD_LOCK_SCHEMA = "cvs.phase2.d131.d92_lite160_target125.method_lock.v1"
-CANDIDATE_ID = f"D131-D92-LITE160/r1@ml-{METHOD_LOCK_SHA256}"
+METHOD_LOCK_SHA256 = "e0f7f8623b4d53002206aca8575f8eadd2bca4150a7c5aed3d017b4827fa5dac"
+METHOD_LOCK_SCHEMA = "cvs.phase2.d131.d92_lite160_qtie_target125.method_lock.v2"
+CANDIDATE_ID = f"D131-D92-LITE160-QTIE/r2@ml-{METHOD_LOCK_SHA256}"
 PROTOCOL_SCHEMA = "p2_min_v1"
 TRANSPORT_ARM = "M_JOINT"
 OLD_CLASS_COUNT = 6
@@ -194,6 +194,12 @@ def build_d92_lite_pair(
         "after_head": (
             "exact_same_qknn_logits_alias" if active_k == 1 else d129.LITE_HEAD
         ),
+        "after_exact_top_tie_policy": (
+            "not_applicable_exact_qknn_alias"
+            if active_k == 1
+            else "Lite_top_set_same_after_qknn_unique_winner_plus_one_float32_ULP"
+        ),
+        "after_secondary_exact_tie": "fail_closed",
         "qknn_lock_digest": lock.lock_digest,
         "after_fit_receipt": fit_receipt,
         "query_rows_used_for_fit": 0,
@@ -213,6 +219,51 @@ def build_d92_lite_pair(
         active_k=active_k,
         audit=audit,
     )
+
+
+def _resolve_exact_lite_top_ties(
+    pair: D92LiteTarget125Pair,
+    query: np.ndarray,
+    lite_logits: np.ndarray,
+) -> np.ndarray:
+    """Resolve only exact Lite top ties with the same after-qKNN state."""
+
+    result = np.ascontiguousarray(lite_logits, dtype=np.float32)
+    maxima = np.max(result, axis=1, keepdims=True)
+    tie_rows = np.flatnonzero(np.sum(result == maxima, axis=1) > 1)
+    if len(tie_rows) == 0:
+        return result
+
+    qknn_logits = np.asarray(
+        score_zid_student_t_logits(
+            pair.after_bank,
+            np.ascontiguousarray(query[tie_rows], dtype=np.float32),
+            metric=pair.after_metric,
+        ),
+        dtype=np.float32,
+    )
+    if qknn_logits.shape != (len(tie_rows), len(pair.registered_classes)) or not np.isfinite(
+        qknn_logits
+    ).all():
+        raise D92LiteTarget125CoreError("exact-top-tie qKNN score drift")
+
+    resolved = result.copy()
+    positive_infinity = np.float32(np.inf)
+    for local_index, row_index in enumerate(tie_rows):
+        top_mask = result[row_index] == maxima[row_index, 0]
+        secondary = qknn_logits[local_index, top_mask]
+        secondary_max = np.max(secondary)
+        secondary_winners = np.flatnonzero(top_mask)[secondary == secondary_max]
+        if len(secondary_winners) != 1:
+            raise D92LiteTarget125CoreError(
+                "exact Lite top tie remains tied under same-after qKNN"
+            )
+        winner = int(secondary_winners[0])
+        promoted = np.nextafter(result[row_index, winner], positive_infinity)
+        if not np.isfinite(promoted):
+            raise D92LiteTarget125CoreError("exact-top-tie one-ULP promotion overflow")
+        resolved[row_index, winner] = promoted
+    return np.ascontiguousarray(resolved)
 
 
 def score(
@@ -240,6 +291,7 @@ def score(
         else:
             assert pair.after_lite_state is not None
             logits = d129.score_d129_affine_head(pair.after_lite_state, query)
+            logits = _resolve_exact_lite_top_ties(pair, query, logits)
     else:
         raise D92LiteTarget125CoreError("phase must be before or after")
     result = np.asarray(logits, dtype=np.float32)
