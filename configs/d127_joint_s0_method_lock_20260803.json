@@ -67,7 +67,9 @@
     "scale_min_ratio": 0.5,
     "scale_max_ratio": 2,
     "temperature": 0.85,
-    "support_storage": "int8_fp16_scale"
+    "support_storage": "int8_fp16_scale",
+    "phase1_lodo_receipt_sha256": "7324ff469cf18d34cdc3795e36d053570e60ba341c112167b49d759a150dda08",
+    "quantization_margin_audit_sha256": "24badfa3f56c8f1b98a35768ea102a6c8e13267fcff80d59060ec6f2f13e0665"
   },
   "d92_lite": {
     "method": "D92-Lite-DR-OAS-LDA",
