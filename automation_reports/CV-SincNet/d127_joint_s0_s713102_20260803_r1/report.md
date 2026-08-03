@@ -29,8 +29,8 @@
 
 ### Hypothesis/comparison
 
-- 假设：D127 joint候选在相同输入、相同S0矩阵和同一row配对规则下，按目标文档规定的三个方向性条件相对于预注册比较对象达到要求；精确方向、公式、阈值和判定标签必须从活动目标文档原文复制，当前均为`PENDING`。
-- 比较对象：冻结目标文档指定的同协议、同矩阵比较对象；候选名称、实现commit、文件hash和比较规则为`PENDING`，不得以开发期最佳值或Oracle/clean-access结果替代。
+- 假设：至少一个冻结候选同时满足`M_DA-M0`池化`H>0`、K5的`M_JOINT-M_DA`池化`H>0`、以及`M_JOINT-M0`池化`H>0`且old＋new总正确数增加。除此以外不设0.5pp或局部row性能门。
+- 比较对象：核心因果臂为`M0/M_DA/M_L92/M_JOINT`；历史`R_D92_FORMAL`仅作为同row完整288维管线参照，不重跑、不冒充纯head效应，也不得以Oracle/clean-access或跨run边际最佳值替代。
 - 结果边界：`LOCAL_IMPLEMENTING/NO_NEW_PERFORMANCE_RESULT`；实现落地、进程完成或诊断阴性证据均不自动构成可晋级性能结果。
 
 ## 3.冻结S0矩阵
@@ -43,7 +43,7 @@
 |new_count|`20`|
 |正式场景|`{leo_clear_weak,leo_low_elev_weak,leo_rain_weak}`|
 |receiver/TX split完整映射|`PENDING`（仅可从冻结目标文档填入）|
-|完整row枚举及数量|`PENDING`|
+|完整row枚举及数量|`3 receiver×2 K×3 scene=18`个row pair；每个pair必须同时封存before/after|
 |Phase1 receiver-held折叠|7个receiver-held折；每cell前5个为support、后9个为query；K1为K5前缀|
 |class对称性|仅循环标签置换；不按具体class ID设置分支、权重或阈值|
 |protocol_schema|`p2_min_v1`|
@@ -77,13 +77,13 @@ Phase2运行时只读取不可变deployment bundle、已验证固定received IQ�
 
 ## 6.唯一S0门槛
 
-S0门槛仅包括活动目标文档规定的以下三条方向性H/正确计数条件；不添加其它性能、资源或有利子集门槛。精确文字必须在冻结目标文档确认后填入。
+S0门槛仅包括活动目标文档规定的以下三条方向性H/正确计数条件；不添加其它性能、资源或有利子集门槛。
 
 |Gate|条件（必须原文复制）|证据列|状态|
 |---|---|---|---|
-|S0-G1|方向性H条件1：`PENDING`|同一row的before/after独立评分|`PENDING`|
-|S0-G2|方向性H条件2：`PENDING`|同一row的before/after独立评分|`PENDING`|
-|S0-G3|方向性正确计数条件：`PENDING`|逐row预测/计数闭合|`PENDING`|
+|S0-G1|`M_DA-M0`池化`H>0`|同一18行S0的独立评分|`PENDING`|
+|S0-G2|仅K5行的`M_JOINT-M_DA`池化`H>0`|同一K5子矩阵的独立评分|`PENDING`|
+|S0-G3|`M_JOINT-M0`池化`H>0`且old＋new总正确数增加|同一18行S0的预测与计数闭合|`PENDING`|
 
 ## 7.运行交接字段（均待填）
 
