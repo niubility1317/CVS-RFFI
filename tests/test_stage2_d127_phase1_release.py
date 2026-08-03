@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import replace
 import hashlib
+import io
 import inspect
 import json
 from pathlib import Path
@@ -21,7 +22,13 @@ def _sha(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def _write_method_lock(tmp_path: Path, *, source_iq: str = "a" * 64) -> tuple[Path, str]:
+def _write_method_lock(
+    tmp_path: Path,
+    *,
+    source_iq: str = "a" * 64,
+    source_receipt: str = "c" * 64,
+    source_join: str = "d" * 64,
+) -> tuple[Path, str]:
     payload = {
         "schema": "cvs.stage2.d127.joint_s0.method_lock.v1",
         "candidate_id": "D127-LIGHT-DA-X-D92-LITE-S0",
@@ -29,8 +36,8 @@ def _write_method_lock(tmp_path: Path, *, source_iq: str = "a" * 64) -> tuple[Pa
         "checkpoint": {"sha256": "b" * 64},
         "phase1_asset_build": {
             "source_received_iq_sha256": source_iq,
-            "source_received_iq_receipt_sha256": "c" * 64,
-            "source_label_join_archive_sha256": "d" * 64,
+            "source_received_iq_receipt_sha256": source_receipt,
+            "source_label_join_archive_sha256": source_join,
             "partition_schema": "d127-phase1-v1",
             "receiver_held_fold_count": 7,
             "physical_samples_per_receiver_class": 14,
@@ -109,6 +116,292 @@ def _joined_rows() -> d106.D106JoinedLSRows:
         scenario_names=np.asarray(scenes, dtype=np.str_),
         observation_ids=np.asarray(observations, dtype=np.str_),
     )
+
+
+def _historical_selected_iq_arrays() -> dict[str, np.ndarray]:
+    rows = _joined_rows()
+    return {
+        "received_iq": np.ascontiguousarray(rows.received_iq, dtype=np.float32),
+        "receiver_ids": np.asarray(rows.receiver_ids, dtype=np.str_),
+        "day_ids": np.asarray(rows.day_ids, dtype=np.str_),
+        "physical_ids": np.asarray(rows.physical_ids, dtype=np.str_),
+        "scenario_names": np.asarray(rows.scenario_names, dtype=np.str_),
+        "observation_ids": np.asarray(rows.observation_ids, dtype=np.str_),
+    }
+
+
+def _historical_execution_closure() -> dict[str, object]:
+    """Create a valid extraction receipt whose callable hash is historical."""
+
+    value = json.loads(json.dumps(d106._execution_closure("extract")))
+    row = value["callables"]["_load_completion_marker"]
+    current = str(row["code_sha256"])
+    row["code_sha256"] = ("0" if current[0] != "0" else "1") + current[1:]
+    payload = {
+        "schema": value["schema"],
+        "stage": value["stage"],
+        "callables": value["callables"],
+        "construction_closure": value["construction_closure"],
+    }
+    value["execution_content_root_sha256"] = release._canonical_sha256(payload)
+    return value
+
+
+def _write_historical_completion_marker(root: Path) -> None:
+    names = (
+        d106.LS_IQ_ARCHIVE_NAME,
+        d106.LS_IQ_RECEIPT_NAME,
+        d106.LS_IQ_VALIDATOR_NAME,
+    )
+    marker = {
+        "schema": d106.COMPLETION_MARKER_SCHEMA,
+        "artifact_kind": "d106_ls_received_iq",
+        "member_order": list(names),
+        "member_sha256": {name: _sha(root / name) for name in names},
+        "publication_policy": "atomic_output_reservation_exact_members_marker_last",
+        "directory_atomic_visibility_claimed": False,
+        "partial_output_acceptable": False,
+    }
+    (root / d106.COMPLETION_MARKER_NAME).write_bytes(d106._canonical_bytes(marker))
+
+
+def _write_historical_selected_iq_fixture(
+    tmp_path: Path,
+    *,
+    input_ls_archive_sha256: str = "d" * 64,
+    extra_archive_member: bool = False,
+    receipt_mutator: object | None = None,
+) -> dict[str, object]:
+    root = tmp_path / "historical-selected-iq"
+    root.mkdir(parents=True)
+    arrays = _historical_selected_iq_arrays()
+    archive = root / d106.LS_IQ_ARCHIVE_NAME
+    if extra_archive_member:
+        payload = io.BytesIO()
+        np.savez(payload, **(arrays | {"unexpected_member": np.asarray([1])}))
+        archive.write_bytes(payload.getvalue())
+    else:
+        archive.write_bytes(d106._deterministic_npz_bytes(arrays))
+    archive_sha = _sha(archive)
+    array_hashes = {name: d106._array_sha256(value) for name, value in arrays.items()}
+    physical_root = d106._ordered_id_root(arrays["physical_ids"].astype(str).tolist())
+    selected_content = {
+        "array_sha256": array_hashes,
+        "row_count": d106.EXPECTED_COUNTS["L_s"],
+        "physical_id_root_sha256": physical_root,
+        "selection_salt_sha256": "e" * 64,
+        "input_ls_archive_sha256": input_ls_archive_sha256,
+    }
+    execution = _historical_execution_closure()
+    execution_root = str(execution["execution_content_root_sha256"])
+    receipt: dict[str, object] = {
+        "schema": d106.LS_IQ_RECEIPT_SCHEMA,
+        "candidate_id": d106.CANDIDATE_ID,
+        "split_id": d106.SPLIT_ID,
+        "protocol_schema": d106.PROTOCOL_SCHEMA,
+        "tap_input_schema": d106.LS_IQ_SCHEMA,
+        "archive_name": d106.LS_IQ_ARCHIVE_NAME,
+        "archive_sha256": archive_sha,
+        "archive_members": list(d106.LS_IQ_MEMBERS),
+        "array_sha256": array_hashes,
+        "selected_content_root_sha256": release._canonical_sha256(selected_content),
+        "row_count": d106.EXPECTED_COUNTS["L_s"],
+        "rho_label": d106.RHO_LABEL,
+        "physical_id_root_sha256": physical_root,
+        "selection_salt_sha256": "e" * 64,
+        "input_ls_archive_sha256": input_ls_archive_sha256,
+        "scenario_order": list(d106.FORMAL_LEO_WEAK_SCENARIOS),
+        "execution_closure": execution,
+        "execution_pre_root_sha256": execution_root,
+        "execution_post_root_sha256": execution_root,
+        "contains_only_selected_ls_rows": True,
+        "source_pool_labels_persisted": False,
+        "clean_iq_access": False,
+        "target_access": False,
+        "formal_query_access": False,
+    }
+    if receipt_mutator is not None:
+        receipt_mutator(receipt)
+    receipt_path = root / d106.LS_IQ_RECEIPT_NAME
+    receipt_path.write_bytes(d106._canonical_bytes(receipt))
+    (root / d106.LS_IQ_VALIDATOR_NAME).write_bytes(b"historical-validator-receipt")
+    _write_historical_completion_marker(root)
+    return {
+        "root": root,
+        "archive": archive,
+        "receipt": receipt_path,
+        "archive_sha256": _sha(archive),
+        "receipt_sha256": _sha(receipt_path),
+    }
+
+
+def _load_historical_fixture(fixture: dict[str, object]) -> d106.D106SelectedLSIQ:
+    return release._load_d127_historical_d106_selected_ls_iq(
+        fixture["archive"],
+        fixture["receipt"],
+        expected_archive_sha256=str(fixture["archive_sha256"]),
+        expected_receipt_sha256=str(fixture["receipt_sha256"]),
+    )
+
+
+def test_historical_d106_receipt_accepts_fixed_hash_closure_but_live_d106_rejects(
+    tmp_path: Path,
+) -> None:
+    fixture = _write_historical_selected_iq_fixture(tmp_path)
+    with pytest.raises(d106.D106Phase1TapError, match="receipt closure drift"):
+        d106.load_d106_ls_received_iq(
+            fixture["archive"],
+            fixture["receipt"],
+            expected_archive_sha256=str(fixture["archive_sha256"]),
+            expected_receipt_sha256=str(fixture["receipt_sha256"]),
+        )
+    loaded = _load_historical_fixture(fixture)
+    assert isinstance(loaded, d106.D106SelectedLSIQ)
+    assert loaded.received_iq.shape == (588, 2, 256)
+    assert all(not value.flags.writeable for value in (
+        loaded.received_iq,
+        loaded.receiver_ids,
+        loaded.day_ids,
+        loaded.physical_ids,
+        loaded.scenario_names,
+        loaded.observation_ids,
+    ))
+    with pytest.raises(TypeError):
+        loaded.receipt["clean_iq_access"] = True  # type: ignore[index]
+
+
+def test_historical_d106_receipt_callable_set_is_frozen_from_current_d106(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    fixture = _write_historical_selected_iq_fixture(tmp_path)
+    current = tuple(d106.EXTRACT_EXECUTION_CALLABLES)
+    monkeypatch.setattr(
+        d106,
+        "EXTRACT_EXECUTION_CALLABLES",
+        (*current[1:], "d127_current_only_callable"),
+    )
+    loaded = _load_historical_fixture(fixture)
+    assert loaded.receipt["execution_closure"]["stage"] == "extract"
+
+
+@pytest.mark.parametrize(
+    "kind",
+    (
+        "array_hash",
+        "content_root",
+        "protocol",
+        "access",
+        "execution_root",
+        "callable_hash",
+    ),
+)
+def test_historical_d106_receipt_rejects_semantic_drift(
+    tmp_path: Path, kind: str
+) -> None:
+    def mutate(receipt: dict[str, object]) -> None:
+        if kind == "array_hash":
+            receipt["array_sha256"] = dict(receipt["array_sha256"])
+            receipt["array_sha256"]["received_iq"] = "0" * 64
+        elif kind == "content_root":
+            receipt["selected_content_root_sha256"] = "0" * 64
+        elif kind == "protocol":
+            receipt["protocol_schema"] = "not-p2-min-v1"
+        elif kind == "access":
+            receipt["clean_iq_access"] = True
+        elif kind == "execution_root":
+            receipt["execution_closure"]["execution_content_root_sha256"] = "0" * 64
+        elif kind == "callable_hash":
+            receipt["execution_closure"]["callables"]["_load_completion_marker"]["code_sha256"] = "invalid"
+        else:  # pragma: no cover - parameter guard.
+            raise AssertionError(kind)
+
+    fixture = _write_historical_selected_iq_fixture(
+        tmp_path, receipt_mutator=mutate
+    )
+    with pytest.raises(release.D127Phase1ReleaseError):
+        _load_historical_fixture(fixture)
+
+
+def test_historical_d106_receipt_rejects_hash_member_marker_and_canonical_drift(
+    tmp_path: Path,
+) -> None:
+    fixture = _write_historical_selected_iq_fixture(tmp_path / "hash")
+    with pytest.raises(release.D127Phase1ReleaseError, match="archive SHA256"):
+        release._load_d127_historical_d106_selected_ls_iq(
+            fixture["archive"],
+            fixture["receipt"],
+            expected_archive_sha256="0" * 64,
+            expected_receipt_sha256=str(fixture["receipt_sha256"]),
+        )
+    with pytest.raises(release.D127Phase1ReleaseError, match="receipt SHA256"):
+        release._load_d127_historical_d106_selected_ls_iq(
+            fixture["archive"],
+            fixture["receipt"],
+            expected_archive_sha256=str(fixture["archive_sha256"]),
+            expected_receipt_sha256="0" * 64,
+        )
+
+    member_fixture = _write_historical_selected_iq_fixture(
+        tmp_path / "member", extra_archive_member=True
+    )
+    with pytest.raises(release.D127Phase1ReleaseError, match="member drift"):
+        _load_historical_fixture(member_fixture)
+
+    marker_fixture = _write_historical_selected_iq_fixture(tmp_path / "marker")
+    marker_path = Path(marker_fixture["root"]) / d106.COMPLETION_MARKER_NAME
+    marker = json.loads(marker_path.read_text(encoding="utf-8"))
+    marker["member_sha256"][d106.LS_IQ_ARCHIVE_NAME] = "0" * 64
+    marker_path.write_bytes(d106._canonical_bytes(marker))
+    with pytest.raises(release.D127Phase1ReleaseError, match="completion closure"):
+        _load_historical_fixture(marker_fixture)
+
+    canonical_fixture = _write_historical_selected_iq_fixture(tmp_path / "canonical")
+    receipt_path = Path(canonical_fixture["receipt"])
+    receipt_path.write_bytes(receipt_path.read_bytes() + b"\n")
+    _write_historical_completion_marker(Path(canonical_fixture["root"]))
+    canonical_fixture["receipt_sha256"] = _sha(receipt_path)
+    with pytest.raises(release.D127Phase1ReleaseError, match="not canonical"):
+        _load_historical_fixture(canonical_fixture)
+
+
+def test_real_joined_loader_uses_historical_path_and_binds_input_ls(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    label_archive = tmp_path / "d104_ls_labels.npz"
+    label_archive.write_bytes(b"sealed-L_s-label-join")
+    label_sha = _sha(label_archive)
+    fixture = _write_historical_selected_iq_fixture(
+        tmp_path, input_ls_archive_sha256=label_sha
+    )
+    lock_path, lock_sha = _write_method_lock(
+        tmp_path,
+        source_iq=str(fixture["archive_sha256"]),
+        source_receipt=str(fixture["receipt_sha256"]),
+        source_join=label_sha,
+    )
+    method_lock = release.load_d127_phase1_method_lock(
+        lock_path, expected_sha256=lock_sha
+    )
+
+    def unexpected_live_loader(*_args: object, **_kwargs: object) -> object:
+        raise AssertionError("D127 must not use the live D106 closure loader")
+
+    monkeypatch.setattr(d106, "load_d106_ls_received_iq", unexpected_live_loader)
+    monkeypatch.setattr(
+        d106,
+        "join_d106_ls_observations",
+        lambda *_args, **_kwargs: _joined_rows(),
+    )
+    joined = release._load_real_d127_phase1_joined_rows(
+        selected_iq_archive=fixture["archive"],
+        selected_iq_archive_sha256=str(fixture["archive_sha256"]),
+        selected_iq_receipt=fixture["receipt"],
+        selected_iq_receipt_sha256=str(fixture["receipt_sha256"]),
+        ls_label_join_archive=label_archive,
+        ls_label_join_archive_sha256=label_sha,
+        method_lock=method_lock,
+    )
+    assert joined.received_iq.shape == (588, 2, 256)
 
 
 def _quantized_assets() -> dict[str, release.QuantizedD127Asset]:

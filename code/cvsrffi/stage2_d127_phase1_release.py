@@ -16,6 +16,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, replace
 import hashlib
+import io
 import json
 from pathlib import Path
 import shutil
@@ -1032,6 +1033,354 @@ def _require_bound_file(
     return observed
 
 
+_D106_HISTORICAL_EXECUTION_CLOSURE_SCHEMA = (
+    "cvs.phase1.d106.actual_execution_closure.v1"
+)
+_D106_HISTORICAL_CONSTRUCTION_CLOSURE_SCHEMA = (
+    "cvs.phase1.d106.tap_construction_closure.v1"
+)
+_D106_HISTORICAL_CONSTRUCTION_FILE_KEYS = frozenset(
+    {
+        "d106_phase1_tap",
+        "d106_selector_cache_parser",
+        "d106_export_cli",
+        "d105_feature_tap",
+        "d105_exact_checkpoint_loader",
+        "leo_weak_cache_primitives",
+        "d105_model_augmentation",
+        "d105_model_factory",
+        "d105_model_backbone",
+    }
+)
+_D106_HISTORICAL_CONSTRUCTION_SYMBOLS = {
+    "d106_selector": "select_d106_ls_cache_observations",
+    "d106_cache_parser": "_load_d106_source_cache_index",
+    "d105_feature_tap": "extract_d105_feature_tap",
+    "d105_exact_checkpoint_loader": "load_d105_exact_sha_bound_checkpoint",
+}
+_D106_HISTORICAL_EXTRACT_CALLABLES = (
+    "extract_d106_ls_received_iq",
+    "load_d106_source_split_binding",
+    "load_d106_train_held_disjoint_receipt",
+    "load_d105_tap_cache_selection_salt",
+    "_load_ids_only",
+    "select_d106_ls_cache_observations",
+    "_load_d106_source_cache_index",
+    "_load_selected_cache_scenario",
+    "_load_inner_cache_manifest",
+    "_is_forbidden_source_cache_member",
+    "_npz_safe_member",
+    "_resolve_cache_artifact",
+    "_resolve_manifest_artifact",
+    "_portable_manifest_relative_path",
+    "_validate_npz_member_names",
+    "_validate_ls_iq_arrays",
+    "_d106_selection_index",
+    "_read_regular_bytes",
+    "_load_json_exact",
+    "_require_sha256",
+    "_deterministic_npz_bytes",
+    "_write_new",
+    "_write_completion_marker",
+    "_load_completion_marker",
+    "_publish_new_directory",
+    "_array_sha256",
+    "_ordered_id_root",
+    "_set_id_root",
+    "_d104_canonical_sha256",
+    "_canonical_bytes",
+    "sha256_file",
+    "canonical_json_sha256",
+    "ids_sha256",
+    "overlay_id",
+    "post_channel_iq_sha256",
+)
+
+
+def _validate_d127_historical_d106_execution_closure(value: Any) -> str:
+    """Validate a sealed D106 extraction closure without rehashing local code.
+
+    The D106 artifact's execution receipt is part of its immutable historical
+    provenance.  D127 therefore verifies its schema, complete dependency
+    shape, and self-contained roots, but must not require that receipt to be
+    byte-identical to a later checkout's callable hashes.
+    """
+
+    expected_keys = {
+        "schema",
+        "stage",
+        "callables",
+        "construction_closure",
+        "execution_content_root_sha256",
+    }
+    _require(
+        type(value) is dict and set(value) == expected_keys,
+        "D127 historical D106 execution-closure field drift",
+    )
+    _require(
+        value.get("schema") == _D106_HISTORICAL_EXECUTION_CLOSURE_SCHEMA,
+        "D127 historical D106 execution-closure schema drift",
+    )
+    _require(
+        value.get("stage") == "extract",
+        "D127 historical D106 execution-closure stage drift",
+    )
+    callables = value.get("callables")
+    expected_callable_names = set(_D106_HISTORICAL_EXTRACT_CALLABLES)
+    _require(
+        type(callables) is dict and set(callables) == expected_callable_names,
+        "D127 historical D106 execution-callable closure drift",
+    )
+    callable_fields = {
+        "module",
+        "qualname",
+        "source_file_name",
+        "source_file_sha256",
+        "source_sha256",
+        "code_sha256",
+    }
+    for name in sorted(expected_callable_names):
+        row = callables[name]
+        _require(
+            type(row) is dict and set(row) == callable_fields,
+            f"D127 historical D106 callable {name} field drift",
+        )
+        for text_name in ("module", "qualname", "source_file_name"):
+            text = row.get(text_name)
+            _require(
+                isinstance(text, str)
+                and bool(text)
+                and "\x00" not in text
+                and (text_name != "source_file_name" or Path(text).name == text),
+                f"D127 historical D106 callable {name} {text_name} drift",
+            )
+        for hash_name in ("source_file_sha256", "source_sha256", "code_sha256"):
+            _sha256(row.get(hash_name), name=f"D127 historical D106 callable {name} {hash_name}")
+
+    construction = value.get("construction_closure")
+    construction_fields = {
+        "schema",
+        "files_sha256",
+        "symbols",
+        "construction_content_root_sha256",
+    }
+    _require(
+        type(construction) is dict and set(construction) == construction_fields,
+        "D127 historical D106 construction-closure field drift",
+    )
+    _require(
+        construction.get("schema") == _D106_HISTORICAL_CONSTRUCTION_CLOSURE_SCHEMA,
+        "D127 historical D106 construction-closure schema drift",
+    )
+    files = construction.get("files_sha256")
+    _require(
+        type(files) is dict and set(files) == _D106_HISTORICAL_CONSTRUCTION_FILE_KEYS,
+        "D127 historical D106 construction-file closure drift",
+    )
+    for name in sorted(_D106_HISTORICAL_CONSTRUCTION_FILE_KEYS):
+        _sha256(files.get(name), name=f"D127 historical D106 construction file {name}")
+    _require(
+        construction.get("symbols") == _D106_HISTORICAL_CONSTRUCTION_SYMBOLS,
+        "D127 historical D106 construction-symbol closure drift",
+    )
+    construction_payload = {
+        "schema": construction["schema"],
+        "files_sha256": files,
+        "symbols": construction["symbols"],
+    }
+    construction_root = _sha256(
+        construction.get("construction_content_root_sha256"),
+        name="D127 historical D106 construction root",
+    )
+    _require(
+        construction_root == _canonical_sha256(construction_payload),
+        "D127 historical D106 construction root drift",
+    )
+    execution_payload = {
+        "schema": value["schema"],
+        "stage": value["stage"],
+        "callables": callables,
+        "construction_closure": construction,
+    }
+    execution_root = _sha256(
+        value.get("execution_content_root_sha256"),
+        name="D127 historical D106 execution root",
+    )
+    _require(
+        execution_root == _canonical_sha256(execution_payload),
+        "D127 historical D106 execution root drift",
+    )
+    return execution_root
+
+
+def _load_d127_historical_d106_selected_ls_iq(
+    archive_path: str | Path,
+    receipt_path: str | Path,
+    *,
+    expected_archive_sha256: str,
+    expected_receipt_sha256: str,
+) -> d106.D106SelectedLSIQ:
+    """Read the fixed historical D106 selected-IQ seal for D127 Phase1 only.
+
+    This is intentionally narrower than D106's live loader: it accepts an
+    already sealed historical extraction receipt after strict content and
+    internal-provenance validation, rather than treating later source-code
+    hashes as a reason to rebuild the unchanged 588-row input.
+    """
+
+    archive_source = Path(archive_path)
+    receipt_source = Path(receipt_path)
+    _require(
+        archive_source.name == d106.LS_IQ_ARCHIVE_NAME
+        and receipt_source.name == d106.LS_IQ_RECEIPT_NAME
+        and archive_source.parent.resolve() == receipt_source.parent.resolve(),
+        "D127 historical selected-IQ completed path closure drift",
+    )
+    try:
+        d106._load_completion_marker(
+            archive_source.parent,
+            artifact_kind="d106_ls_received_iq",
+            members=(
+                d106.LS_IQ_ARCHIVE_NAME,
+                d106.LS_IQ_RECEIPT_NAME,
+                d106.LS_IQ_VALIDATOR_NAME,
+            ),
+        )
+    except d106.D106Phase1TapError as exc:
+        raise D127Phase1ReleaseError(
+            "D127 historical selected-IQ completion closure drift"
+        ) from exc
+    _archive_source, archive_bytes, archive_sha = _read_regular_bytes(
+        archive_source, name="D127 historical selected-IQ archive"
+    )
+    _receipt_source, receipt_bytes, receipt_sha = _read_regular_bytes(
+        receipt_source, name="D127 historical selected-IQ receipt"
+    )
+    _require(
+        archive_sha
+        == _sha256(expected_archive_sha256, name="D127 historical selected-IQ archive expected hash"),
+        "D127 historical selected-IQ archive SHA256 mismatch",
+    )
+    _require(
+        receipt_sha
+        == _sha256(expected_receipt_sha256, name="D127 historical selected-IQ receipt expected hash"),
+        "D127 historical selected-IQ receipt SHA256 mismatch",
+    )
+    try:
+        receipt = json.loads(receipt_bytes.decode("utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise D127Phase1ReleaseError(
+            "D127 historical selected-IQ receipt JSON drift"
+        ) from exc
+    _require(type(receipt) is dict, "D127 historical selected-IQ receipt object drift")
+    _require(
+        receipt_bytes == _canonical_bytes(receipt),
+        "D127 historical selected-IQ receipt is not canonical",
+    )
+    try:
+        with np.load(io.BytesIO(archive_bytes), allow_pickle=False) as payload:
+            _require(
+                tuple(payload.files) == d106.LS_IQ_MEMBERS,
+                "D127 historical selected-IQ member drift",
+            )
+            arrays = {
+                name: np.array(payload[name], copy=True) for name in d106.LS_IQ_MEMBERS
+            }
+    except D127Phase1ReleaseError:
+        raise
+    except (OSError, ValueError, TypeError, KeyError) as exc:
+        raise D127Phase1ReleaseError(
+            "D127 historical selected-IQ archive load failed"
+        ) from exc
+    try:
+        d106._validate_ls_iq_arrays(arrays)
+    except d106.D106Phase1TapError as exc:
+        raise D127Phase1ReleaseError(
+            "D127 historical selected-IQ array contract drift"
+        ) from exc
+
+    expected_fields = {
+        "schema",
+        "candidate_id",
+        "split_id",
+        "protocol_schema",
+        "tap_input_schema",
+        "archive_name",
+        "archive_sha256",
+        "archive_members",
+        "array_sha256",
+        "row_count",
+        "rho_label",
+        "selected_content_root_sha256",
+        "physical_id_root_sha256",
+        "selection_salt_sha256",
+        "input_ls_archive_sha256",
+        "scenario_order",
+        "execution_closure",
+        "execution_pre_root_sha256",
+        "execution_post_root_sha256",
+        "contains_only_selected_ls_rows",
+        "source_pool_labels_persisted",
+        "clean_iq_access",
+        "target_access",
+        "formal_query_access",
+    }
+    array_hashes = {name: d106._array_sha256(value) for name, value in arrays.items()}
+    physical_root = d106._ordered_id_root(arrays["physical_ids"].astype(str).tolist())
+    selected_content = {
+        "array_sha256": array_hashes,
+        "row_count": d106.EXPECTED_COUNTS["L_s"],
+        "physical_id_root_sha256": physical_root,
+        "selection_salt_sha256": receipt.get("selection_salt_sha256"),
+        "input_ls_archive_sha256": receipt.get("input_ls_archive_sha256"),
+    }
+    execution_root = _validate_d127_historical_d106_execution_closure(
+        receipt.get("execution_closure")
+    )
+    _require(
+        set(receipt) == expected_fields
+        and receipt.get("schema") == d106.LS_IQ_RECEIPT_SCHEMA
+        and receipt.get("candidate_id") == d106.CANDIDATE_ID
+        and receipt.get("split_id") == d106.SPLIT_ID
+        and receipt.get("protocol_schema") == d106.PROTOCOL_SCHEMA
+        and receipt.get("tap_input_schema") == d106.LS_IQ_SCHEMA
+        and receipt.get("archive_name") == d106.LS_IQ_ARCHIVE_NAME
+        and receipt.get("archive_sha256") == archive_sha
+        and receipt.get("archive_members") == list(d106.LS_IQ_MEMBERS)
+        and receipt.get("array_sha256") == array_hashes
+        and receipt.get("selected_content_root_sha256")
+        == _canonical_sha256(selected_content)
+        and receipt.get("row_count") == d106.EXPECTED_COUNTS["L_s"]
+        and receipt.get("rho_label") == d106.RHO_LABEL
+        and receipt.get("physical_id_root_sha256") == physical_root
+        and receipt.get("scenario_order") == list(d106.FORMAL_LEO_WEAK_SCENARIOS)
+        and receipt.get("execution_pre_root_sha256") == execution_root
+        and receipt.get("execution_post_root_sha256") == execution_root
+        and receipt.get("contains_only_selected_ls_rows") is True
+        and receipt.get("source_pool_labels_persisted") is False
+        and receipt.get("clean_iq_access") is False
+        and receipt.get("target_access") is False
+        and receipt.get("formal_query_access") is False,
+        "D127 historical selected-IQ receipt closure drift",
+    )
+    for name in (
+        "selection_salt_sha256",
+        "input_ls_archive_sha256",
+        "selected_content_root_sha256",
+    ):
+        _sha256(receipt.get(name), name=f"D127 historical selected-IQ {name}")
+    normalized = {
+        "received_iq": np.ascontiguousarray(arrays["received_iq"], dtype=np.float32),
+        **{name: arrays[name].astype(str) for name in d106.LS_IQ_MEMBERS[1:]},
+    }
+    for value in normalized.values():
+        value.setflags(write=False)
+    return d106.D106SelectedLSIQ(
+        **normalized,
+        receipt=MappingProxyType(dict(receipt)),
+    )
+
+
 def _load_real_d127_phase1_joined_rows(
     *,
     selected_iq_archive: str | Path,
@@ -1075,7 +1424,7 @@ def _load_real_d127_phase1_joined_rows(
         name="D127 L_s label join archive",
     )
     try:
-        selected = d106.load_d106_ls_received_iq(
+        selected = _load_d127_historical_d106_selected_ls_iq(
             selected_iq_archive,
             selected_iq_receipt,
             expected_archive_sha256=selected_iq_archive_sha256,
