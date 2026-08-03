@@ -71,10 +71,10 @@
 |Python|`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`|
 |CWD|`$RUN/source`|
 |GPU|A Phase1与prediction均GPU0，进程内`cuda:0`|
-|执行顺序|直连预检→sync/hash/compile/help→唯一真实checkpoint A微episode smoke→fresh D127-compatible prepare→A单候选Phase1 bundle→D128 A-only prediction→durable truth-open→D128 truth/formal assets→score|
+|执行顺序|直连预检→sync/hash/compile/help→fresh D127-compatible prepare→A单候选Phase1 bundle→用该冻结A bundle做唯一真实checkpoint微episode smoke→D128 A-only prediction→durable truth-open→D128 truth/formal assets→score|
 |预期artifact|prepared plan/K5 receipt、A single bundle、A-only prediction、truth-open、truth/formal/build receipt、score、完整日志/资源/清理receipt|
 
-唯一必要smoke：使用真实checkpoint和冻结A资产/微episode，验证FSRG支持态梯度非零、训练路径可微、冻结外层无caller graph，并确认query/truth/role/quota访问均为0。该smoke不得读取性能。
+唯一必要smoke：A单候选Phase1 bundle完成后，使用该冻结A资产和真实checkpoint在一个source-only微episode上验证FSRG支持态梯度非零、训练路径可微、冻结外层无caller graph，并确认target query/truth/role/quota访问均为0。该smoke不得读取性能；通过后直接进入Target prediction。
 
 停止规则仅为P0协议/安全违规，或至少两个不同任务/row在prediction前产生相同确定性异常指纹；单进程launcher-wide确定性故障或输出覆盖风险也属于系统性故障。不得因accuracy、H、floor或forgetting停止。不授权自动retry/restart；D128若再次因同一bridge/release体系在prediction前停止，则关闭该实现路线，不创建r2式重复修复。
 
