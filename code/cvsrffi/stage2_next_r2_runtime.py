@@ -281,6 +281,13 @@ def validate_four_state_inputs(
             or value.registered_classes != expected_classes
         ):
             raise NextR2RuntimeError("state inputs drifted from the outer-key plan")
+    if (
+        len({value.capsule_id for value in inputs.values()}) != 1
+        or len({value.split_id for value in inputs.values()}) != 1
+    ):
+        raise NextR2RuntimeError(
+            "all four states must share one capsule_id and split_id"
+        )
     if not _state_input_pair_equal(inputs["DA0_REG0"], inputs["DA1_REG0"]):
         raise NextR2RuntimeError("DA0/DA1 REG0 must share exact base inputs")
     if not _state_input_pair_equal(inputs["DA0_REG1"], inputs["DA1_REG1"]):

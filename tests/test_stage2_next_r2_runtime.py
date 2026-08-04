@@ -169,6 +169,19 @@ def test_da_pairs_must_share_inputs_and_reg0_must_be_exact_reg1_subset() -> None
         runtime.validate_four_state_inputs(key, drifted)
 
 
+@pytest.mark.parametrize(
+    ("field", "foreign"),
+    (("capsule_id", "foreign-capsule"), ("split_id", "foreign-split")),
+)
+def test_all_four_states_must_share_capsule_and_split(field: str, foreign: str) -> None:
+    key, inputs = _four_inputs(1)
+    drifted = dict(inputs)
+    drifted["DA0_REG0"] = replace(drifted["DA0_REG0"], **{field: foreign})
+    drifted["DA1_REG0"] = replace(drifted["DA1_REG0"], **{field: foreign})
+    with pytest.raises(runtime.NextR2RuntimeError, match="one capsule_id and split_id"):
+        runtime.validate_four_state_inputs(key, drifted)
+
+
 def test_sealed_manifest_requires_exact_order_and_all_96_states() -> None:
     plan = matrix.build_next_r2_proxy24_plan(
         RECEIVERS, CLASSES, source_identity_sha256="5" * 64

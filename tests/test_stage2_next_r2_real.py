@@ -75,6 +75,13 @@ def _capsule(builder: next_r1_real.NextR1RealRows):
     )
 
 
+def _reseal_capsule(payload: dict) -> dict:
+    content = dict(payload)
+    content.pop("capsule_content_sha256", None)
+    payload["capsule_content_sha256"] = matrix.canonical_sha256(content)
+    return payload
+
+
 def _fake_bridge(rows: real.NextR2PredictionRows) -> real.NextR2RealModelBridge:
     bridge = object.__new__(real.NextR2RealModelBridge)
     bridge.rows = rows
@@ -132,6 +139,29 @@ def test_prediction_rows_have_no_truth_or_class_field() -> None:
     assert rows.receipt["label_join_opened"] is False
 
 
+@pytest.mark.parametrize("alias", ["tx_labels", "query_truth", "truth"])
+def test_capsule_rejects_self_consistent_top_level_truth_aliases(alias: str) -> None:
+    payload = json.loads(real.capsule_bytes(_capsule(_builder_rows())).decode("utf-8"))
+    payload[alias] = ["forbidden"]
+    _reseal_capsule(payload)
+    with pytest.raises(real.NextR2RealError, match="top-level fields"):
+        real.validate_next_r2_prediction_capsule(payload)
+
+
+@pytest.mark.parametrize("location", ["key", "registration"])
+def test_capsule_rejects_self_consistent_nested_unknown_fields(location: str) -> None:
+    payload = json.loads(real.capsule_bytes(_capsule(_builder_rows())).decode("utf-8"))
+    if location == "key":
+        payload["keys"][0]["unknown_nested"] = True
+        expected = "key fields"
+    else:
+        payload["keys"][0]["registrations"]["REG0"]["unknown_nested"] = True
+        expected = "registration fields"
+    _reseal_capsule(payload)
+    with pytest.raises(real.NextR2RealError, match=expected):
+        real.validate_next_r2_prediction_capsule(payload)
+
+
 def test_capsule_receiver_drift_fails_closed() -> None:
     builder = _builder_rows()
     rows = _prediction_rows(builder)
@@ -144,9 +174,7 @@ def test_capsule_receiver_drift_fails_closed() -> None:
     registration = first["registrations"]["REG1"]
     registration["support_indices"][0] = foreign_index
     registration["support_physical_ids"][0] = rows.physical_ids[foreign_index]
-    content = dict(payload)
-    content.pop("capsule_content_sha256")
-    payload["capsule_content_sha256"] = matrix.canonical_sha256(content)
+    _reseal_capsule(payload)
     with pytest.raises(real.NextR2RealError, match="physical IDs/receiver"):
         real.validate_next_r2_prediction_capsule(payload, rows=rows)
 

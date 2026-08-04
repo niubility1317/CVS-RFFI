@@ -24,6 +24,38 @@ VIEW_RULE_ID = "fixed_received_iq_global_complex_rotation_0_plus45_minus45_v1"
 VIEW_RULE_SHA256 = hashlib.sha256(VIEW_RULE_ID.encode("utf-8")).hexdigest()
 SMOKE_SCHEMA = "cvs.stage2.next_r2.real_smoke.v1"
 
+_CAPSULE_FIELDS = frozenset(
+    (
+        "schema",
+        "capsule_id",
+        "split_id",
+        "selected_iq_archive_sha256",
+        "selected_iq_receipt_sha256",
+        "label_join_archive_sha256",
+        "physical_id_root_sha256",
+        "matrix_sha256",
+        "plan",
+        "keys",
+        "truth_opened_for_capsule_build",
+        "query_labels_persisted",
+        "capsule_content_sha256",
+    )
+)
+_CAPSULE_KEY_FIELDS = frozenset(
+    ("outer_key_id", "held_receiver", "held_class", "active_k", "registrations")
+)
+_REGISTRATION_NAMES = frozenset(("REG0", "REG1"))
+_REGISTRATION_FIELDS = frozenset(
+    (
+        "registered_classes",
+        "support_indices",
+        "support_labels",
+        "support_physical_ids",
+        "query_indices",
+        "query_physical_ids",
+    )
+)
+
 
 class NextR2RealError(ValueError):
     """The pinned IQ, capsule, model tap, or view binding drifted."""
@@ -321,17 +353,6 @@ def capsule_bytes(value: Mapping[str, Any]) -> bytes:
     return matrix.canonical_bytes(validated)
 
 
-def _has_forbidden_query_label_key(value: Any) -> bool:
-    if isinstance(value, Mapping):
-        return any(
-            str(key) == "query_labels" or _has_forbidden_query_label_key(item)
-            for key, item in value.items()
-        )
-    if isinstance(value, (tuple, list)):
-        return any(_has_forbidden_query_label_key(item) for item in value)
-    return False
-
-
 def _validate_registration(
     value: Mapping[str, Any],
     *,
@@ -340,6 +361,8 @@ def _validate_registration(
     held_receiver: str,
     rows: NextR2PredictionRows | None,
 ) -> None:
+    if not isinstance(value, Mapping) or set(value) != _REGISTRATION_FIELDS:
+        raise NextR2RealError("capsule registration fields drift")
     if tuple(value.get("registered_classes", ())) != classes:
         raise NextR2RealError("capsule registered class drift")
     support_indices = tuple(value.get("support_indices", ()))
@@ -379,6 +402,8 @@ def validate_next_r2_prediction_capsule(
 ) -> Mapping[str, Any]:
     if not isinstance(value, Mapping):
         raise NextR2RealError("prediction capsule must be a mapping")
+    if set(value) != _CAPSULE_FIELDS:
+        raise NextR2RealError("prediction capsule top-level fields drift")
     payload = dict(value)
     observed_content_sha = payload.pop("capsule_content_sha256", None)
     if observed_content_sha != matrix.canonical_sha256(payload):
@@ -391,7 +416,6 @@ def validate_next_r2_prediction_capsule(
         or not payload.get("split_id")
         or payload.get("truth_opened_for_capsule_build") is not True
         or payload.get("query_labels_persisted") is not False
-        or _has_forbidden_query_label_key(payload)
     ):
         raise NextR2RealError("prediction capsule legality fields drift")
     for name in (
@@ -409,16 +433,19 @@ def validate_next_r2_prediction_capsule(
     if len(keys) != matrix.OUTER_KEY_COUNT:
         raise NextR2RealError("capsule key count drift")
     for key_value, plan_value in zip(keys, plan["keys"], strict=True):
+        if not isinstance(key_value, Mapping) or set(key_value) != _CAPSULE_KEY_FIELDS:
+            raise NextR2RealError("capsule key fields drift")
         outer_key = matrix.outer_key_from_mapping(plan_value)
+        registrations = key_value.get("registrations")
         if (
             key_value.get("outer_key_id") != outer_key.outer_key_id
             or key_value.get("held_receiver") != outer_key.held_receiver
             or key_value.get("held_class") != outer_key.held_class
             or key_value.get("active_k") != outer_key.active_k
-            or set(key_value.get("registrations", {})) != {"REG0", "REG1"}
+            or not isinstance(registrations, Mapping)
+            or set(registrations) != _REGISTRATION_NAMES
         ):
             raise NextR2RealError("capsule key/plan drift")
-        registrations = key_value["registrations"]
         _validate_registration(
             registrations["REG0"],
             classes=outer_key.retained_classes,
