@@ -4,7 +4,7 @@
 
 - run ID：`next_r5_fa_rdce3_q_target125_20260805_r1`
 - 日期：2026-08-05
-- 当前状态：`GIT_FROZEN / LOCAL_VERIFIED / P0=0 / P1=0 / NOT_LANDED / NOT_LAUNCHED`
+- 当前状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`（closure archive内method-lock SHA漂移，未进入编译或实验）
 - 候选：`NEXT-R5-FA-RDCE3-Q-TARGET125`
 - 主agent：`gpt-5.6-sol/high`
 - 科学实现与独立审查：不同`gpt-5.6-terra/max`agent
@@ -99,3 +99,19 @@ K1已由完整Proxy24证明FA负收益，固定严格旁路并以alias receipt�
 ## 8.证据边界
 
 本地设计、代码、测试、landed或RUNNING均不是性能结果。只有125/125 outer、375/375 scene和1500/1500四状态prediction完整封存并由独立truth-side scorer闭合后，才能报告性能；partial artifact只作技术诊断，不进入性能比较。
+
+## 9.Runner执行记录（2026-08-05）
+
+- runner：`Luna/max`，唯一N607 release/launch owner；本节只记录执行证据，不作性能裁决。
+- 直连preflight：`powershell -ExecutionPolicy Bypass -File tools\\n607_ssh_preflight.ps1`，结果`Preflight OK`；N607=`szu2070436088@172.31.111.215`，服务器时间=`2026-08-05T04:17:15+08:00`，项目根可见，GPU0-7均为RTX3090且`0%/1MiB/24576MiB`，本地SSH/TCP22清理确认无残留。
+- 远端只读复核：时间=`2026-08-05T04:18:20+08:00`；strict tap、receipt、checkpoint、D108 plan/context均存在且SHA与冻结值一致；目标`RUN_ROOT`在首次创建前确认`ABSENT`；计算进程查询为空。
+- 本地封存：implementation commit=`8fb75c22`；closure archive SHA256=`cac1c4d1cfb842b3f78a4ee75129ac1f3472bccfe18a9c471ee6ef9b3f5c339e`，size=`73123840`；method lock `E:\\fa125wt\\configs\\next_r5_fa_rdce3_q_target125_20260805.json` SHA256=`0934b59c81ed5f422de503528d0ef48400210c817fae8c301f55b5e2d2775e34`。
+- 该阶段状态曾为`PRECHECK_OK / INPUTS_VERIFIED / RUN_ROOT_ABSENT / NOT_LANDED / NOT_LAUNCHED`；因随后发现closure源码SHA漂移，最终状态见第10节。
+
+## 10.停止证据：closure源码SHA漂移（2026-08-05）
+
+- closure archive传输SHA正确：远端`source_closure.tar`=`cac1c4d1cfb842b3f78a4ee75129ac1f3472bccfe18a9c471ee6ef9b3f5c339e`，size=`73123840`。
+- 六个新入口源码解包后SHA与本地worktree一致；唯一发现的源码漂移为method lock：本地冻结`configs/next_r5_fa_rdce3_q_target125_20260805.json`=`0934b59c81ed5f422de503528d0ef48400210c817fae8c301f55b5e2d2775e34`，closure archive内部成员及远端解包文件均=`8876edeae8da140e4e832081149e9812f60235126d04836f131fd053796b2880`（archive成员2203 bytes，内容为CRLF版本）。
+- 触发规则：源码SHA漂移，立即停止；不修补、不覆盖当前run、不重新打包、不重启、不启动新run。
+- 已执行到：直连preflight、远端输入存在/SHA核对、精确run目录创建、archive传输验签、archive解包。未执行：`py_compile`、四份测试、FA资产构建、prepare、smoke、8片预测、merge、truth-open、score。
+- 当前远端run root保留`source_closure.tar`、解包`source/`与空`input/prepared/smoke/shards/logs/control/score`目录；无预测、truth或score结果。状态固定为`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`，不得做性能解释或promotion。
