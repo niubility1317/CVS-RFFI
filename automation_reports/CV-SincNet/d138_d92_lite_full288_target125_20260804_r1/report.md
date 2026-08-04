@@ -4,7 +4,7 @@
 
 - 实验ID：`d138_d92_lite_full288_target125_20260804_r1`
 - 登记时间：`2026-08-04`
-- 当前状态：`LOCAL_VERIFIED / REMOTE_LAUNCH_PENDING / DIAGNOSTIC_RESULT_ONLY_PENDING`
+- 当前状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
 - 目标：修复PR160截断导致的query可判定性故障，完成完整125 outer、375 scene、750 before/after surface及独立truth-side诊断评分。
 - 与r6关系：这是用户明确要求继续后的新candidate和新不可覆盖run，不续跑、不覆盖r6，也不把r6 partial prediction当输入。
 
@@ -26,6 +26,13 @@
 - 验证：`py_compile`通过；新full288核心、旧D92/D108/D129/D138及qKNN窄回归全部通过；`git diff --check`通过。
 - 追踪修复：FULL288复用D92-Lite的truth/scoring实现时，摘要候选名已由投影注入`D92-Lite-FULL288/r1`；新增回归断言通过，且保留`system_diagnostic_only=true`。
 - 输入边界：当前sealed SOMP-H loader明确返回`UNVERIFIED_UNDER_CURRENT_PROTOCOL_DIAGNOSTIC_ONLY`、`formal_launch_authority=false`、`formal_metric_claim_allowed=false`。本run可以完整执行并产生诊断结果，但不能把该结果写成正式晋级/性能声明。
+
+## r1启动结果
+
+- N607预检、source基底复制、5个候选文件hash、远端py_compile、Torch`2.1.0+cu121`和候选import均通过。
+- 真实smoke在row000/scene000、任何query prediction前失败：`ModuleNotFoundError: scripts.probe_d92_registration_balanced_covariance`，外层为`D92 runtime/ground fit is unavailable`。
+- r1未产生smoke receipt、prediction、truth或score；未占用GPU残留，SSH已清理。该问题是隔离source依赖闭包缺失，不是方法或数据结果。
+- 修复动作：本地已确认缺失模块存在且Git跟踪，SHA256=`a04a9185e11ca851a1276004c4e2988cee0f6b61920851fe7a06ca7c740ee601`；按不可覆盖规则转入新run `d138_d92_lite_full288_target125_20260804_r2`。
 
 ## N607发布登记
 
