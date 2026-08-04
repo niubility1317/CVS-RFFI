@@ -497,9 +497,13 @@ def bind_next_r4_physical_ids(
     query_observation_ids_by_class: Mapping[str, Sequence[str]],
     query_ids_by_view: Mapping[str, Mapping[str, Sequence[str]]] | None = None,
     query_observation_ids_by_view: Mapping[str, Mapping[str, Sequence[str]]] | None = None,
-    fa_state_sha256_by_state: Mapping[str, str] | None = None,
 ) -> Mapping[str, Any]:
-    """Bind support/query physical IDs and common K/state receipts."""
+    """Bind support/query physical IDs shared by the paired K1/K5 rows.
+
+    FA state reuse is intentionally row-local because K1 and K5 consume
+    different support sets and therefore need not produce the same FA state.
+    Each runtime row carries its own canonical ``fa_state_reuse_receipt``.
+    """
 
     if not isinstance(row_k1, NextR4ProxyRow) or not isinstance(row_k5, NextR4ProxyRow):
         raise NextR4MatrixError("row_k1/row_k5 must be NEXT-R4 rows")
@@ -570,9 +574,6 @@ def bind_next_r4_physical_ids(
         classes=classes,
         name="query_observation_ids_by_view",
     )
-    if fa_state_sha256_by_state is None:
-        raise NextR4MatrixError("FA state SHA receipt is required for NEXT-R4 binding")
-    fa_receipt = validate_fa_state_reuse(fa_state_sha256_by_state)
     support1_ordered = tuple(item for c in classes for item in support1[c])
     support5_ordered = tuple(item for c in classes for item in support5[c])
     query_ordered = tuple(item for c in classes for item in query[c])
@@ -603,9 +604,6 @@ def bind_next_r4_physical_ids(
         "common_query_observation_ids_across_k_states": True,
         "query_view_ids_checked": list(id_views),
         "query_observation_view_ids_checked": list(observation_views),
-        "fa_state_reuse_required": True,
-        "fa_state_reuse_verified": True,
-        "fa_state_reuse_receipt": dict(fa_receipt),
         "k1_support_count": K1_SUPPORT_COUNT,
         "k5_support_count": K5_SUPPORT_COUNT,
         "query_count": sum(len(query[c]) for c in classes),
@@ -628,22 +626,8 @@ def validate_next_r4_binding(value: Mapping[str, Any]) -> Mapping[str, Any]:
         or payload.get("support_query_observation_ids_disjoint") is not True
         or payload.get("common_query_physical_ids_across_k_states") is not True
         or payload.get("common_query_observation_ids_across_k_states") is not True
-        or payload.get("fa_state_reuse_required") is not True
-        or payload.get("fa_state_reuse_verified") is not True
     ):
         raise NextR4MatrixError("NEXT-R4 row binding legality drift")
-    if payload.get("fa_state_reuse_verified"):
-        fa_receipt = payload.get("fa_state_reuse_receipt", {})
-        if not isinstance(fa_receipt, Mapping):
-            raise NextR4MatrixError("FA state reuse receipt is not an object")
-        validated_fa = validate_fa_state_reuse(
-            {
-                "DA1_REG0": fa_receipt.get("source_sha256"),
-                "DA1_REG1": fa_receipt.get("target_sha256"),
-            }
-        )
-        if dict(validated_fa) != dict(fa_receipt):
-            raise NextR4MatrixError("FA state reuse receipt drift")
     return MappingProxyType(_json_ready(value))
 
 

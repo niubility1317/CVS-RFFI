@@ -50,7 +50,7 @@ def test_registry_and_receivers_fail_closed() -> None:
         matrix.build_next_r4_proxy24_plan(("tx-a", "tx-a", "tx-b", "tx-c", "tx-d", "tx-e"))
 
 
-def test_k_prefix_query_reuse_and_fa_state_receipt() -> None:
+def test_k_prefix_and_query_reuse_binding_is_independent_of_fa_state() -> None:
     plan = matrix.build_next_r4_proxy24_plan(CLASSES)
     rows = [matrix.outer_key_from_mapping(value) for value in plan["rows"][:2]]
     support1, support5, query, observations, phase1 = _maps(CLASSES)
@@ -60,7 +60,6 @@ def test_k_prefix_query_reuse_and_fa_state_receipt() -> None:
         "K5": observations,
         **{state: observations for state in matrix.STATE_IDS},
     }
-    state_sha = "a" * 64
     receipt = matrix.bind_next_r4_physical_ids(
         row_k1=rows[0],
         row_k5=rows[1],
@@ -71,12 +70,11 @@ def test_k_prefix_query_reuse_and_fa_state_receipt() -> None:
         query_observation_ids_by_class=observations,
         query_ids_by_view=view_ids,
         query_observation_ids_by_view=view_observations,
-        fa_state_sha256_by_state={"DA1_REG0": state_sha, "DA1_REG1": state_sha},
     )
     assert receipt["k1_is_exact_k5_prefix"] is True
     assert receipt["common_query_physical_ids_across_k_states"] is True
     assert receipt["common_query_observation_ids_across_k_states"] is True
-    assert receipt["fa_state_reuse_verified"] is True
+    assert "fa_state_reuse_receipt" not in receipt
     assert matrix.validate_next_r4_binding(receipt)["binding_sha256"] == receipt[
         "binding_sha256"
     ]
@@ -125,7 +123,6 @@ def test_query_and_phase1_cardinality_is_runtime_not_r3_fixed() -> None:
         query_observation_ids_by_class=observations,
         query_ids_by_view=view_ids,
         query_observation_ids_by_view=view_observations,
-        fa_state_sha256_by_state={"DA1_REG0": "a" * 64, "DA1_REG1": "a" * 64},
     )
     assert receipt["phase1_fit_count"] == 2
     assert receipt["query_count"] == 12
@@ -142,7 +139,6 @@ def test_query_and_phase1_cardinality_is_runtime_not_r3_fixed() -> None:
             query_observation_ids_by_class=mismatched_observations,
             query_ids_by_view=view_ids,
             query_observation_ids_by_view=view_observations,
-            fa_state_sha256_by_state={"DA1_REG0": "a" * 64, "DA1_REG1": "a" * 64},
         )
 
 

@@ -40,7 +40,6 @@ def _binding(plan: Mapping[str, object], row_k1: Mapping[str, object], row_k5: M
         query_observation_ids_by_class=observation,
         query_ids_by_view=view_ids,
         query_observation_ids_by_view=view_obs,
-        fa_state_sha256_by_state={"DA1_REG0": "a" * 64, "DA1_REG1": "a" * 64},
     )
     return dict(receipt)
 
@@ -94,7 +93,15 @@ def _prediction_fixture() -> tuple[dict, dict, dict]:
                     "query_observation_ids": list(query_obs),
                     "arms": {
                         "Q": {"predictions": q_values, "receipt": {"exact_qknn_alias": False, "unique_prediction": True}},
-                        "H": {"predictions": h_values, "receipt": {"exact_qknn_alias": active_k == 1, "alias_target_arm": "Q" if active_k == 1 else None, "unique_prediction": active_k == 5}},
+                            "H": {
+                                "predictions": h_values,
+                                "receipt": {
+                                    "exact_qknn_alias": active_k == 1,
+                                    "alias_target_arm": "Q" if active_k == 1 else None,
+                                    "unique_prediction": active_k == 5,
+                                    "head_status": "K1_EXACT_QKNN_ALIAS" if active_k == 1 else "FUNCTIONAL",
+                                },
+                            },
                     },
                 }
             registrations[registration_id] = {"registered_classes": list(registered), "states": states}
@@ -103,7 +110,14 @@ def _prediction_fixture() -> tuple[dict, dict, dict]:
             "retained_classes": list(planned["retained_classes"]), "all_registered_classes": list(planned["all_registered_classes"]),
             "evaluation_semantics": matrix.PROXY_SEMANTICS, "formal_new_registration_claim": False,
             "binding_receipt": binding,
-            "fa_state_reuse_receipt": binding["fa_state_reuse_receipt"],
+            "fa_state_reuse_receipt": dict(
+                matrix.validate_fa_state_reuse(
+                    {
+                        "DA1_REG0": ("a" if int(planned["active_k"]) == 1 else "b") * 64,
+                        "DA1_REG1": ("a" if int(planned["active_k"]) == 1 else "b") * 64,
+                    }
+                )
+            ),
             "registrations": registrations,
         })
     prediction = {
@@ -146,6 +160,26 @@ def test_k1_alias_tamper_is_rejected() -> None:
     state["arms"]["Q"]["predictions"][0] = state["registered_classes"][-1]
     with pytest.raises(scorer.NextR4ScoreError, match="exact Q alias"):
         scorer.score_next_r4_proxy24(prediction=bad, plan=plan, truth_by_query_id=truth)
+
+
+def test_k5_no_head_function_exact_alias_is_accepted() -> None:
+    plan, prediction, truth = _prediction_fixture()
+    row = next(item for item in prediction["rows"] if int(item["active_k"]) == 5)
+    state = row["registrations"]["REG1"]["states"]["DA1_REG1"]
+    state["arms"]["H"] = {
+        "predictions": list(state["arms"]["Q"]["predictions"]),
+        "receipt": {
+            "exact_qknn_alias": True,
+            "alias_target_arm": "Q",
+            "unique_prediction": False,
+            "head_status": "NO_HEAD_FUNCTION",
+            "no_head_function_reason": "Sr_ZERO",
+        },
+    }
+    result = scorer.score_next_r4_proxy24(
+        prediction=prediction, plan=plan, truth_by_query_id=truth
+    )
+    assert result["rows_complete"] is True
 
 
 def test_truth_is_not_read_before_prediction_closure() -> None:

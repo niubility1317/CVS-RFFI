@@ -184,10 +184,23 @@ def _state_parts(
         if h_receipt.get("alias_target_arm") not in (None, "Q"):
             raise NextR4ScoreError(f"{name} K1 H alias target drift")
     else:
-        if normalized["H"]["receipt"].get("exact_qknn_alias") is True:
-            raise NextR4ScoreError(f"{name} K5 H cannot carry a K1 alias receipt")
-        if normalized["H"]["receipt"].get("unique_prediction") is False:
-            raise NextR4ScoreError(f"{name} K5 H receipt is not a unique prediction")
+        h_receipt = normalized["H"]["receipt"]
+        if h_receipt.get("head_status") == "NO_HEAD_FUNCTION":
+            if (
+                h_receipt.get("no_head_function_reason")
+                not in {"Sr_ZERO", "QUANTIZED_RESIDUAL_ZERO"}
+                or h_receipt.get("exact_qknn_alias") is not True
+                or h_receipt.get("unique_prediction") is not False
+                or h_receipt.get("alias_target_arm") not in (None, "Q")
+                or normalized["H"]["predictions"] != normalized["Q"]["predictions"]
+            ):
+                raise NextR4ScoreError(f"{name} K5 NO_HEAD_FUNCTION alias receipt drift")
+        elif (
+            h_receipt.get("head_status") != "FUNCTIONAL"
+            or h_receipt.get("exact_qknn_alias") is True
+            or h_receipt.get("unique_prediction") is not True
+        ):
+            raise NextR4ScoreError(f"{name} K5 functional H receipt drift")
     return MappingProxyType({"query_ids": qids, "observation_ids": obs, "arms": MappingProxyType(normalized)})
 
 
