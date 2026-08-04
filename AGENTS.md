@@ -9,6 +9,13 @@
 - Phase2 follows `protocol_schema=p2_min_v1`: one randomly selected allowed LEO weak observation per physical sample; K independent support samples; scenario and support/query physical-ID separation; query-only testing; no clean/source runtime access except immutable int8 multi-sample Phase1 knowledge jointly sealed with the checkpoint; and independent all-registered-class decisions without query truth/role, true batch counts, quota or global reassignment.
 - After a builder returns matching `capsule_id`, `split_id` and `phase2_data_status=VALIDATED_ONCE`, reuse the data across methods. Revalidate only for received-IQ bytes, physical IDs, receiver/TX sets, scenario, K, support/query split or schema changes. Candidate, adapter, hyperparameter, epoch, prototype rule, method lock, model state and resource changes do not trigger data revalidation; one-time provenance/hash/allowlist/runtime checks belong to the validator appendix.
 
+## Four-state DA and registration metric naming
+
+- Every future experiment/report that jointly studies domain adaptation and new-class registration must use the four explicit states `DA0_REG0`（域适应前/新类注册前）, `DA1_REG0`（域适应后/新类注册前）, `DA0_REG1`（域适应前/新类注册后）, and `DA1_REG1`（域适应后/新类注册后）. Do not use ambiguous standalone `before/after`, `B/C`, or “适应后” labels without both DA and registration state.
+- Report the DA effect before registration as `DA1_REG0 - DA0_REG0`, the DA effect after registration as `DA1_REG1 - DA0_REG1`, the registration effect without DA as `DA0_REG1 - DA0_REG0`, and the registration effect with DA as `DA1_REG1 - DA1_REG0`. For metrics defined in all four states, report the joint interaction as the corresponding difference-in-differences.
+- New-class accuracy and old/new harmonic metrics are defined only for `REG1`. In `REG0`, report them as `N/A` rather than zero and do not score an unregistered class as if it were registered or unknown-rejection capable. Old-class accuracy, old-class floor, resource state and latency may be reported in all four states.
+- This naming requirement must reuse the same sealed inputs, caches and predictions where possible; it is a reporting and causal-comparison requirement, not authorization to enlarge the frozen experiment matrix or add release gates.
+
 ## Experiment Release Delegation
 
 - Every N607 experiment release must use a dedicated subagent as the sole server-side launch owner after the primary agent finishes local implementation, focused verification, Git versioning, and report preregistration. The primary agent continues method research, code review, retrospective work, and next-candidate design while the release subagent handles the server lane.
