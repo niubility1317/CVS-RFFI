@@ -48,7 +48,8 @@
 ## N607预登记
 
 - Python：`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`
-- CWD：`/home/szu2070436088/2510044040/CV-SincNet/runs/next_r2_cvfr_bssdg_proxy24_20260804_r1/source`
+- CWD：`/home/szu2070436088/2510044040/CV-SincNet`
+- 同步目标：仅将NEXT-R2模块与两个CLI按原相对路径同步到现有项目根；不覆盖其他文件；同步后逐文件SHA256和`py_compile`必须匹配
 - run root：`/home/szu2070436088/2510044040/CV-SincNet/runs/next_r2_cvfr_bssdg_proxy24_20260804_r1`
 - capsule与builder receipt：`.../input/next_r2_proxy24.capsule.json`、`.../input/next_r2_proxy24.builder_receipt.json`
 - prediction输出：`.../output`，启动前必须不存在
