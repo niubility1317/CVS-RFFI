@@ -268,6 +268,31 @@ def test_sealed_manifest_rejects_wrong_artifact_suffix(
         runtime.build_next_r2_sealed_manifest(plan, artifacts)
 
 
+@pytest.mark.parametrize(
+    ("field", "invalid_path"),
+    [
+        ("json_path", "./states/1.json"),
+        ("json_path", "states//1.json"),
+        ("json_path", "C:/outside.json"),
+        ("json_path", "states/alias.json/"),
+        ("npz_path", "./states/1.npz"),
+        ("npz_path", "states//1.npz"),
+        ("npz_path", "C:/outside.npz"),
+        ("npz_path", "states/alias.npz/"),
+    ],
+)
+def test_sealed_manifest_rejects_noncanonical_relative_paths(
+    field: str, invalid_path: str
+) -> None:
+    plan = matrix.build_next_r2_proxy24_plan(
+        RECEIVERS, CLASSES, source_identity_sha256="5" * 64
+    )
+    artifacts = _manifest_artifacts(plan)
+    artifacts[0][field] = invalid_path
+    with pytest.raises(runtime.NextR2RuntimeError, match="paths"):
+        runtime.build_next_r2_sealed_manifest(plan, artifacts)
+
+
 @pytest.mark.parametrize("field", ["json_sha256", "npz_sha256", "state_seal_sha256"])
 def test_sealed_manifest_rejects_invalid_sha(field: str) -> None:
     plan = matrix.build_next_r2_proxy24_plan(

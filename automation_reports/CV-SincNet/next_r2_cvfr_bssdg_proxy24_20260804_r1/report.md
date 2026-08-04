@@ -4,7 +4,7 @@
 
 - 实验ID：`next_r2_cvfr_bssdg_proxy24_20260804_r1`
 - 日期：`2026-08-04`
-- 状态：`LOCAL_VERIFIED / RELEASE_REVIEW_GO / AWAITING_N607_PREFLIGHT`
+- 状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
 - 责任：主agent负责方法、数据/结果分析和晋级；唯一Luna/max runner负责N607落地、启动、监控和artifact回收
 - 目标：以最小source-held矩阵判断`CVFR-BSSDG/r1`是否产生非恒等且同row联合正收益；不是Target或正式Stage2-C性能结论
 
@@ -81,4 +81,14 @@ python code/scripts/score_next_r2_proxy24.py --run-root <completed_output_root> 
 |---|---|---:|---|---|---:|---:|---:|---:|---:|---|---|---|
 |`CVFR-BSSDG/r1`|待capsule冻结|1/5|`DA0/DA1`|`REG0/REG1`|待评分|REG0为NA|REG0为NA|待评分|待评分|待运行|待回填|待判定|
 
-完整逐key同row表、四态差分、异常、checkpoint、PID/GPU、artifact、资源和最终建议在运行与评分后回填。根工作区同名报告保存更详细的路径与命令文本。
+## 技术失败结案（2026-08-04）
+
+- N607直连预检通过，8个NEXT-R2文件按正确包路径落地并通过远端SHA和`py_compile`核验；GPU0执行。
+- builder retry1成功：capsule SHA=`070385a5acd07508c23d5a55aba0041610085e5a8a66a2ff1489a53a0a91fb03`，matrix SHA=`8f4a5d9c98e4f714883beaf3f9602b8cb0b12d90268dd9055f32200763d73425`。
+- truth-free real smoke成功：receipt SHA=`e41a1a5809ff2f27360cd032d9b63258c710edbb961c4eac05c92aa893fed24f`；canonical重复精确、pre-ReLU160有限、query truth未进入prediction进程。
+- predict PID=`1111152`自然退出前已形成96份JSON、96份NPZ、96份BSSDG wire和48份CVFR wire，但manifest因错误禁止重复内容SHA而失败；未生成manifest/completion，未打开truth，未运行score。
+- 96份NPZ只形成28个内容SHA组；这是合法的内容相同、路径不同情形。该证据只能定位封存缺陷，不能解释为性能或`NO_FUNCTION`。
+- 完整partial artifact已回收至根报告目录下`artifacts/technical_failure_partial_20260804/`；关键predict log SHA=`0a50b130477616651f3c5c7b34f5c86d3b0fd1a986b2180cf1294856219a2ba6`。
+- 修复commit=`4aea94c7`仅把manifest唯一性约束从内容SHA改为run-root相对artifact路径；方法、矩阵、输入和评分规则均未变化。r1不得续跑、封存、重标或评分；后续必须使用新run ID。
+
+根工作区同名报告保存完整landing、依赖闭包、smoke、PID、GPU、artifact计数和异常证据。

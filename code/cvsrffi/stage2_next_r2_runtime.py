@@ -573,16 +573,23 @@ def build_next_r2_sealed_manifest(
             return False
         return True
 
-    def valid_relative_path(value: object, *, suffix: str) -> bool:
-        """Match the scorer's run-root-relative artifact path contract."""
+    def canonical_relative_path(value: object, *, suffix: str) -> str | None:
+        """Return a strict scorer-compatible run-root-relative POSIX path."""
         if not isinstance(value, str) or not value or "\\" in value:
-            return False
+            return None
         path = PurePosixPath(value)
-        return (
-            not path.is_absolute()
-            and not any(part in {"", ".", ".."} for part in path.parts)
-            and path.name.lower().endswith(suffix)
-        )
+        normalized = path.as_posix()
+        if (
+            normalized != value
+            or not path.parts
+            or path.is_absolute()
+            or ":" in path.parts[0]
+            or value.endswith("/")
+            or any(part in {"", ".", ".."} for part in path.parts)
+            or not path.name.endswith(suffix)
+        ):
+            return None
+        return normalized
 
     for item in artifacts:
         if not isinstance(item, Mapping):
@@ -594,11 +601,13 @@ def build_next_r2_sealed_manifest(
         json_sha = str(item.get("json_sha256", ""))
         npz_sha = str(item.get("npz_sha256", ""))
         seal_sha = str(item.get("state_seal_sha256", ""))
+        json_key = canonical_relative_path(json_path, suffix=".json")
+        npz_key = canonical_relative_path(npz_path, suffix=".npz")
         if (
-            not valid_relative_path(json_path, suffix=".json")
-            or not valid_relative_path(npz_path, suffix=".npz")
-            or str(json_path) in artifact_paths
-            or str(npz_path) in artifact_paths
+            json_key is None
+            or npz_key is None
+            or json_key in artifact_paths
+            or npz_key in artifact_paths
         ):
             raise NextR2RuntimeError("state artifact paths are invalid or repeated")
         if (
@@ -607,7 +616,7 @@ def build_next_r2_sealed_manifest(
             or not valid_sha(seal_sha)
         ):
             raise NextR2RuntimeError("state artifact hashes are invalid")
-        artifact_paths.update((str(json_path), str(npz_path)))
+        artifact_paths.update((json_key, npz_key))
         ready.append(dict(item))
     if tuple(observed) != expected:
         raise NextR2RuntimeError("state artifact order/coverage drift")
