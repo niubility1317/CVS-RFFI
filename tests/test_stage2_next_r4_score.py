@@ -276,3 +276,60 @@ def test_row_old_ba_is_macro_balanced_for_unequal_query_counts() -> None:
     )
     assert result["old_ba"] == pytest.approx(0.8)
     assert result["retained_correct_count"] / result["retained_query_count"] == pytest.approx(5 / 6)
+
+
+def test_aggregate_seen_new_is_held_class_macro_balanced() -> None:
+    classes = tuple(sorted(CLASSES))
+    metrics = []
+    for index, held_class in enumerate(classes):
+        retained = tuple(cls for cls in classes if cls != held_class)
+        new_count = 10 if index == 0 else 1
+        new_correct = new_count if index == 0 else 0
+        per_class = {
+            cls: {
+                "correct": new_correct if cls == held_class else 1,
+                "count": new_count if cls == held_class else 1,
+                "accuracy": (new_correct / new_count) if cls == held_class else 1.0,
+            }
+            for cls in classes
+        }
+        metrics.append({
+            "row_id": f"row-{index}", "held_receiver": "1-1", "held_class": held_class,
+            "active_k": 1, "state_id": "DA0_REG1", "arm_id": "Q",
+            "registration_id": "REG1", "all_registered_classes": classes,
+            "registered_classes": classes, "retained_classes": retained,
+            "retained_correct_count": len(retained), "retained_query_count": len(retained),
+            "total_correct_count": len(retained) + new_correct,
+            "total_query_count": len(retained) + new_count,
+            "new_correct_count": new_correct, "new_query_count": new_count,
+            "per_class": per_class,
+        })
+    result = scorer._aggregate(metrics, active_k=1, state_id="DA0_REG1", arm_id="Q", receiver="1-1")
+    assert result["seen_new_acc"] == pytest.approx(1 / len(classes))
+    assert result["new_correct_count"] / result["new_query_count"] == pytest.approx(10 / 15)
+
+
+def test_forgetting_pairs_registration_before_after_at_fixed_da() -> None:
+    metrics = [
+        {"row_id": "r", "arm_id": "Q", "state_id": "DA0_REG0", "registration_id": "REG0", "old_ba": 0.90, "forgetting": "N/A"},
+        {"row_id": "r", "arm_id": "Q", "state_id": "DA0_REG1", "registration_id": "REG1", "old_ba": 0.70, "forgetting": "N/A"},
+        {"row_id": "r", "arm_id": "Q", "state_id": "DA1_REG0", "registration_id": "REG0", "old_ba": 0.85, "forgetting": "N/A"},
+        {"row_id": "r", "arm_id": "Q", "state_id": "DA1_REG1", "registration_id": "REG1", "old_ba": 0.70, "forgetting": "N/A"},
+    ]
+    by_state = {item["state_id"]: item for item in scorer._attach_forgetting(metrics)}
+    assert by_state["DA0_REG1"]["forgetting"] == pytest.approx(0.20)
+    assert by_state["DA1_REG1"]["forgetting"] == pytest.approx(0.15)
+
+    aggregate_block = {
+        state_id: {
+            arm_id: {"old_ba": value, "forgetting": "N/A"}
+            for arm_id in ("Q", "H")
+        }
+        for state_id, value in {
+            "DA0_REG0": 0.90, "DA0_REG1": 0.70,
+            "DA1_REG0": 0.85, "DA1_REG1": 0.70,
+        }.items()
+    }
+    aggregate = scorer._attach_aggregate_forgetting(aggregate_block)
+    assert aggregate["DA0_REG1"]["Q"]["forgetting"] == pytest.approx(0.20)
+    assert aggregate["DA1_REG1"]["H"]["forgetting"] == pytest.approx(0.15)

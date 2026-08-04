@@ -397,17 +397,18 @@ def _metric_row(
 
 
 def _attach_forgetting(metrics: list[Mapping[str, Any]]) -> list[Mapping[str, Any]]:
-    """Attach REG1 DA-forgetting using the paired DA0_REG1 row/state/arm."""
+    """Attach registration forgetting from the paired REG0 state at fixed DA."""
     by_key = {(item["row_id"], item["arm_id"], item["state_id"]): item for item in metrics}
     output: list[Mapping[str, Any]] = []
     for item in metrics:
         mutable = dict(item)
         if item["registration_id"] == "REG1":
-            baseline = by_key.get((item["row_id"], item["arm_id"], "DA0_REG1"))
+            baseline_state = "DA0_REG0" if item["state_id"] == "DA0_REG1" else "DA1_REG0"
+            baseline = by_key.get((item["row_id"], item["arm_id"], baseline_state))
             if baseline is None:
                 raise NextR4ScoreError("REG1 forgetting baseline is incomplete")
             mutable["forgetting"] = float(baseline["old_ba"]) - float(item["old_ba"])
-            mutable["forgetting_definition"] = "old_ba_DA0_REG1_minus_old_ba_current"
+            mutable["forgetting_definition"] = f"old_ba_{baseline_state}_minus_old_ba_{item['state_id']}"
         output.append(MappingProxyType(_plain(mutable)))
     return output
 
@@ -425,6 +426,7 @@ def _aggregate(metrics: Sequence[Mapping[str, Any]], *, active_k: int, state_id:
     classes = tuple(selected[0]["all_registered_classes"])
     pooled_old = {cls: {"correct": 0, "count": 0} for cls in classes}
     pooled_all = {cls: {"correct": 0, "count": 0} for cls in classes}
+    pooled_new = {cls: {"correct": 0, "count": 0} for cls in classes}
     for item in selected:
         for cls in item["retained_classes"]:
             value = item["per_class"][cls]
@@ -432,6 +434,11 @@ def _aggregate(metrics: Sequence[Mapping[str, Any]], *, active_k: int, state_id:
         for cls in item["registered_classes"]:
             value = item["per_class"][cls]
             pooled_all[cls]["correct"] += int(value["correct"]); pooled_all[cls]["count"] += int(value["count"])
+        if registration_id == "REG1":
+            held_class = item["held_class"]
+            value = item["per_class"][held_class]
+            pooled_new[held_class]["correct"] += int(value["correct"])
+            pooled_new[held_class]["count"] += int(value["count"])
     if old_query <= 0 or any(value["count"] <= 0 for cls, value in pooled_old.items() if cls in selected[0]["retained_classes"]):
         raise NextR4ScoreError("pooled old-class coverage is incomplete")
     old_per_class = {cls: {**value, "accuracy": value["correct"] / value["count"]} for cls, value in sorted(pooled_old.items()) if value["count"] > 0}
@@ -453,16 +460,34 @@ def _aggregate(metrics: Sequence[Mapping[str, Any]], *, active_k: int, state_id:
         all_per_class = {cls: {**value, "accuracy": value["correct"] / value["count"]} for cls, value in sorted(pooled_all.items())}
         if any(value["count"] <= 0 for value in all_per_class.values()):
             raise NextR4ScoreError("pooled REG1 class coverage is incomplete")
-        new_correct = sum(int(item.get("new_correct_count") or 0) for item in selected)
-        new_query = sum(int(item.get("new_query_count") or 0) for item in selected)
-        # The held class differs by row; summing all row-held new counts is the
-        # matched new-class aggregate, not a cross-row best selection.
-        if new_query <= 0:
+        new_per_class = {
+            cls: {**value, "accuracy": value["correct"] / value["count"]}
+            for cls, value in sorted(pooled_new.items())
+            if value["count"] > 0
+        }
+        if len(new_per_class) != len(classes):
             raise NextR4ScoreError("pooled REG1 held-class coverage is incomplete")
-        seen_new = new_correct / new_query
+        new_correct = sum(int(value["correct"]) for value in new_per_class.values())
+        new_query = sum(int(value["count"]) for value in new_per_class.values())
+        seen_new = sum(float(value["accuracy"]) for value in new_per_class.values()) / len(new_per_class)
         all_floor = min(float(value["accuracy"]) for value in all_per_class.values())
-        result.update({"all_floor": all_floor, "F_registered": all_floor, "seen_new_acc": seen_new, "N_seen_new": seen_new, "H_old_new": _harmonic(result["old_ba"], seen_new), "registered_per_class": all_per_class, "new_correct_count": new_correct, "new_query_count": new_query})
+        result.update({"all_floor": all_floor, "F_registered": all_floor, "seen_new_acc": seen_new, "N_seen_new": seen_new, "H_old_new": _harmonic(result["old_ba"], seen_new), "registered_per_class": all_per_class, "new_per_class": new_per_class, "new_correct_count": new_correct, "new_query_count": new_query})
     return MappingProxyType(_plain(result))
+
+
+def _attach_aggregate_forgetting(
+    state_aggregates: Mapping[str, Mapping[str, Mapping[str, Any]]],
+) -> dict[str, dict[str, Mapping[str, Any]]]:
+    """Attach registration forgetting to one complete K/receiver aggregate block."""
+    output = {state_id: dict(arms) for state_id, arms in state_aggregates.items()}
+    for state_id, baseline_state in (("DA0_REG1", "DA0_REG0"), ("DA1_REG1", "DA1_REG0")):
+        for arm_id in ("Q", "H"):
+            current = dict(output[state_id][arm_id])
+            baseline = output[baseline_state][arm_id]
+            current["forgetting"] = float(baseline["old_ba"]) - float(current["old_ba"])
+            current["forgetting_definition"] = f"old_ba_{baseline_state}_minus_old_ba_{state_id}"
+            output[state_id][arm_id] = MappingProxyType(_plain(current))
+    return output
 
 
 def _delta(left: Mapping[str, Any], right: Mapping[str, Any]) -> Mapping[str, Any]:
@@ -543,10 +568,10 @@ def score_next_r4_proxy24(*, prediction: Mapping[str, Any], plan: Mapping[str, A
     aggregates: dict[str, dict[str, dict[str, Mapping[str, Any]]]] = {}
     receiver_aggregates: dict[str, dict[str, dict[str, dict[str, Mapping[str, Any]]]]] = {}
     for active_k in matrix.K_VALUES:
-        aggregates[str(active_k)] = {state_id: {arm_id: _aggregate(flat, active_k=active_k, state_id=state_id, arm_id=arm_id) for arm_id in ("Q", "H")} for state_id in matrix.STATE_IDS}
+        aggregates[str(active_k)] = _attach_aggregate_forgetting({state_id: {arm_id: _aggregate(flat, active_k=active_k, state_id=state_id, arm_id=arm_id) for arm_id in ("Q", "H")} for state_id in matrix.STATE_IDS})
         receiver_aggregates[str(active_k)] = {}
         for receiver in matrix.HELD_RECEIVERS:
-            receiver_aggregates[str(active_k)][receiver] = {state_id: {arm_id: _aggregate(flat, active_k=active_k, state_id=state_id, arm_id=arm_id, receiver=receiver) for arm_id in ("Q", "H")} for state_id in matrix.STATE_IDS}
+            receiver_aggregates[str(active_k)][receiver] = _attach_aggregate_forgetting({state_id: {arm_id: _aggregate(flat, active_k=active_k, state_id=state_id, arm_id=arm_id, receiver=receiver) for arm_id in ("Q", "H")} for state_id in matrix.STATE_IDS})
     comparisons = {str(active_k): _comparisons(aggregates, active_k=active_k) for active_k in matrix.K_VALUES}
     return MappingProxyType(_plain({
         "schema": SCORE_SCHEMA, "candidate_id": matrix.CANDIDATE_ID, "protocol_schema": matrix.PROTOCOL_SCHEMA, "matrix_sha256": frozen["matrix_sha256"], "evaluation_semantics": matrix.PROXY_SEMANTICS, "formal_new_registration_claim": False, "formal_target_claim": False,
