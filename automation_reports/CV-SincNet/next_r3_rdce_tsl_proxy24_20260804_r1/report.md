@@ -5,11 +5,11 @@
 |字段|值|
 |---|---|
 |run ID|`next_r3_rdce_tsl_proxy24_20260804_r1`|
-|状态|`LOCAL_VERIFIED / N607_ASSETS_READY / PREPARE_PENDING`|
+|状态|`LANDED_NOT_STARTED_WRONG_ENVIRONMENT / NO_PERFORMANCE_RESULT`|
 |日期|2026-08-04|
 |主agent|Codex主agent（Sol/high）|
 |科学实现/审查|Terra/max分工；runner第三次独立审查`P0=0、P1=0、READY`|
-|机械实现/发布|Luna/max sole runner；preflight和只读inventory已完成，尚未sync/launch|
+|机械实现/发布|Luna/max sole runner；source已落地，因远端无`ssr-gpu`在prepare前停止|
 |协议|`p2_min_v1`|
 |证据语义|`SOURCE_HELD_PROXY`；`formal_new_registration_claim=false`|
 
@@ -177,3 +177,5 @@ TRUTH_SHA=$(sha256sum "$ROOT/prepare/truth.json" | awk '{print $1}')
 ## 10. 结束后更新
 
 完成后必须在本节填写：最终状态；remote hash/PID/GPU/SSH断开证据；24行详细same-row表；K/receiver/class分层；拟合墙钟与峰值工作集；异常；是否因完整负证据关闭，或是否只允许进入下一阶段。不得用边际最大值替代联合行，也不得把partial/technical smoke写成性能结果。
+
+2026-08-04，sole runner确认r1远端root原先不存在后创建`input/source/logs`，同步并核验runtime archive SHA=`151c0f1d76ad8b0d373e318fdef38149d412980ae1bbca5500662bc4bfc01abf`、size=6,475,647B，解包后runner及NEXT-R3模块存在。随后发现预注册解释器`/home/szu2070436088/.conda/envs/ssr-gpu/bin/python`不存在；N607仅登记`CVS-RFFI`和`SDG-SEI`。因此r1在`py_compile`、prepare、smoke和prediction之前停止；无PID、无truth打开、无性能结果。partial root原样保留，不覆盖、不删除；SSH收尾为`ssh.exe=0`、N607:22连接=0。环境修复转入全新r2。
