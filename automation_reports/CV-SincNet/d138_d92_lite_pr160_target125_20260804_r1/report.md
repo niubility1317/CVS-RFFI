@@ -5,7 +5,7 @@
 - 实验ID：`d138_d92_lite_pr160_target125_20260804_r1`
 - 日期：2026-08-04
 - 操作者：主agent负责科学集成、协议解释、结果分析与晋级决定；唯一N607 runner负责落地、启动、监控和回收。
-- 当前状态：`LOCAL_VERIFIED / REVIEW_P0=0 / LOCAL_P1_CLOSED / REMOTE_TORCH2.1_SMOKE_PENDING / NO_TARGET_PERFORMANCE_RESULT`
+- 当前状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
 - 目标：在用户明确要求下登记一个独立D138修复候选，修复D131的截断表示和K1精确并列执行缺陷，并尝试完成冻结的D92 125矩阵。
 - 比较对象：同一outer row、同一scene、同一物理query集合的before锁定qKNN与after D92-Lite-PR160；D131历史partial仅作技术故障证据，不进入本次结果。
 
@@ -99,3 +99,43 @@ D138是单一`M_JOINT`运输臂的D92-Lite独立系统诊断，不执行或声�
 - 当前阶段：独立复核确认`P0=0`，新增typed adapter测试和hash/投影锁修正已闭合本地调用链P1；远端Torch 2.1加载和真实checkpoint no-query smoke仍是释放前硬门。
 - Git commit：待独立复核通过后创建；不push、不上传、不覆盖历史D131 run。
 - 远端结果：待唯一runner执行；在本报告更新前不宣称Target125性能结果。
+
+## N607唯一runner执行结果
+
+- 执行日期：2026-08-04；执行角色：唯一N607 release runner（Luna/max）；fresh-run retry authority：`false`。
+- 冻结release identity：`b27e088302d6f6bf4a6ae88e8357d626a2336236`；分支工作树HEAD虽为后续提交，但D138显式同步文件相对该commit无差异；未同步或暂存任何`stage2_next_r2_*`文件。
+- 直连预检：通过。普通账户`szu2070436088`，远端主机`dell-DSS8440`，项目根可见，8张RTX3090空闲；run root首次检查不存在，随后仅在该run root内创建隔离目录。
+- 远端run root：`/home/szu2070436088/2510044040/CV-SincNet/runs/d138_d92_lite_pr160_target125_20260804_r1`。
+
+|阶段|结果|证据|
+|---|---|---|
+|SOURCE同步/hash|通过|13个冻结文件逐项SHA匹配；SOURCE内无`stage2_next_r2`文件；extractor为`56612c66b49c8167b3fbed0be5aaa25649a3246a178903618274048d541d80a3`，4618957字节|
+|远端编译|通过|CWD为`RUN_ROOT/source`；`torch=2.1.0+cu121`；D138指定代码`py_compile=PASS`；证据为`control/compile.out`|
+|TorchScript load gate|通过|CPU`torch.jit.load`成功；forward schema为`forward(__torch__.ADV3B02IdentityRuntime self, Tensor rows) -> ((Tensor, Tensor))`；graph输出1个`Tuple[Tensor, Tensor]`；graph SHA为`11ff9bbebec386e4ce5e0be0a2f07720dce688dd3e672ee351cbb4e056be53c7`|
+|prepare|失败并停止|按冻结命令执行一次，退出码1；`ModuleNotFoundError: No module named 'cvsrffi.stage2_d108_matrix_protocol'`；`prepared/`为空|
+|smoke/shard/merge/validate/truth/score|未执行|prepare未生成plan/context，未满足后续启动条件；无性能结果|
+
+### Prepare阻塞证据
+
+`stage2_d108_target125_runner.py`还需要两个基线模块，但用户给定的D138同步清单未包含它们：
+
+|必要依赖|b27存在|本地SHA256|本run状态|
+|---|---|---|---|
+|`code/cvsrffi/stage2_d108_matrix_protocol.py`|是|`d3e333f46a77f5b7f3f4d91378bfb9b3bd4eda16723c2234487897339925007f`|未同步|
+|`code/cvsrffi/stage2_d108_target125_inputs.py`|是|`c7f4afa728aaf1a210c07b2b5c15769edff019168efcbf5d4a733c55efecc661`|未同步|
+
+该问题不是方法、参数、矩阵或协议解释；runner未擅自扩展同步清单、未设置额外`PYTHONPATH`、未修改远端代码，也未重试prepare。需要主agent决定是否修订冻结同步清单并产生新的非覆盖release；在该决定前不得继续smoke或shard。
+
+### Partial证据与清理
+
+已回收到`E:\type10-7\automation_reports\CV-SincNet\d138_d92_lite_pr160_target125_20260804_r1\artifacts\control\`：
+
+|文件|SHA256|
+|---|---|
+|`compile.out`|`59774a1da7e60182a1e85ff5e516b3360b0519380dfc9bcbed107dd8b3fcafdc`|
+|`compatibility.out`|`be9862b7fb6690c45d3a19da3d7319f2b273012be009999f9c650ff6cb9035f0`|
+|`compatibility_graph.txt`|`11ff9bbebec386e4ce5e0be0a2f07720dce688dd3e672ee351cbb4e056be53c7`|
+|`compatibility_hash_receipt.txt`|`bc8c39c0755e2ed210cde6bd8ab3fc68a5885b67453552d0590777b9ed4e1a7d`|
+|`prepare.out`|`6fd67fcdbc24c1a05bc4ecdcbba6cefb4abf2f1d0bcedcbfd2ce3a01425626bc`|
+
+prepare失败后无D138进程；本地`ssh.exe`/`scp.exe`均已退出，到`172.31.111.215:22`和`172.31.105.18:22`均无残留连接。工作树中出现的无关未跟踪`stage2_next_r2_score.py`、`score_next_r2_proxy24.py`及其测试未修改、未暂存、未同步。
