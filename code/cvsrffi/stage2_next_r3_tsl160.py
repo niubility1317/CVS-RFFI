@@ -29,6 +29,9 @@ FIT_SCHEMA = "cvs.phase2.next_r3.tsl160.fit.v1"
 RESOURCE_SCHEMA = "cvs.phase2.next_r3.tsl160.resource.v1"
 PRIOR_NUMERIC_PAYLOAD_BYTES = 170
 AFFINE_STATE_BYTES_PER_CLASS = 164
+CANONICAL_R0 = "canonical_r0"
+RDCE_R1_SIGNED_UNIT = "rdce_r1_signed_unit"
+PRIOR_SEMANTICS = "pre_adaptation_source_anchor_same_ambient_axes"
 
 
 class NextR3TSL160Error(ValueError):
@@ -118,6 +121,50 @@ def _normalized_canonical_rows(value: np.ndarray, *, name: str) -> np.ndarray:
     norms = np.sqrt(np.sum(rows.astype(np.float64) ** 2, axis=1))
     if not np.allclose(norms, 1.0, rtol=0.0, atol=2.0e-6):
         raise NextR3TSL160Error(f"{name} canonical normalization drift")
+    return rows
+
+
+def tsl160_cache_sha256(value: np.ndarray) -> str:
+    """Hash one exact float32 cache without changing its values or row order."""
+
+    rows = _raw_float32_rows(value, name="TSL160 cache")
+    return _sha256_mapping(
+        {
+            "dtype": "float32",
+            "shape": list(rows.shape),
+            "values_sha256": _sha256_bytes(rows.tobytes(order="C")),
+        }
+    )
+
+
+def _bound_runtime_rows(
+    value: np.ndarray,
+    *,
+    representation_mode: str,
+    representation_context_sha256: str,
+    cache_sha256: str,
+    name: str,
+) -> np.ndarray:
+    """Validate a runtime-owned cache while preserving its exact float32 bytes.
+
+    R0 is already D106 canonical ReLU/unit data.  R1 is the frozen RDCE bridge
+    output in the same ambient axes; its signed unit rows must *not* be pushed
+    through ReLU or a second normalization here.
+    """
+
+    mode = str(representation_mode)
+    if mode not in {CANONICAL_R0, RDCE_R1_SIGNED_UNIT}:
+        raise NextR3TSL160Error("representation_mode must be canonical_r0 or rdce_r1_signed_unit")
+    _require_sha256(representation_context_sha256, name="representation_context_sha256")
+    expected_cache_sha = _require_sha256(cache_sha256, name="cache_sha256")
+    rows = _raw_float32_rows(value, name=name)
+    if tsl160_cache_sha256(rows) != expected_cache_sha:
+        raise NextR3TSL160Error(f"{name} cache SHA256 drift")
+    norms = np.sqrt(np.sum(rows.astype(np.float64) ** 2, axis=1))
+    if not np.allclose(norms, 1.0, rtol=0.0, atol=2.0e-6):
+        raise NextR3TSL160Error(f"{name} must be the bound unit-norm cache")
+    if mode == CANONICAL_R0 and bool(np.any(rows < 0.0)):
+        raise NextR3TSL160Error("canonical_r0 must remain the non-negative D106 ReLU cache")
     return rows
 
 
@@ -458,13 +505,13 @@ def roundtrip_tsl160_prior(prior: TSL160Phase1Prior) -> TSL160Phase1Prior:
 
 
 def _balanced_support(
-    support_zid160: np.ndarray,
+    support_rows: np.ndarray,
     support_labels: Sequence[str],
     registered_classes: Sequence[str],
     *,
     allowed_k: tuple[int, ...],
 ) -> tuple[np.ndarray, tuple[str, ...], np.ndarray, int]:
-    rows = _normalized_canonical_rows(support_zid160, name="support_zid160")
+    rows = _raw_float32_rows(support_rows, name="support_zid160")
     # The returned active state is the D129 wire, whose registry contract has
     # a four-class lower bound.  Enforce it here instead of leaking a D129
     # constructor error after a partial fit.
@@ -635,7 +682,7 @@ def _prior_from_cells(cells: Sequence[TSL160Phase1Cell], *, binding: TSL160Runti
 
 def _physical_loo_radius(fold: TSL160PhysicalLOOFold, prior: TSL160Phase1Prior) -> float:
     rows, classes, indices, _, = _balanced_support(
-        fold.support_zid160,
+        _normalized_canonical_rows(fold.support_zid160, name="LOO support_zid160"),
         fold.support_labels,
         fold.registered_classes,
         allowed_k=tuple(range(2, 32768)),
@@ -848,6 +895,9 @@ def _fit_receipt(
     binding: TSL160RuntimeBinding,
     state: d129.D129RegistrationHeadState,
     geometry: Mapping[str, Any] | None,
+    representation_mode: str,
+    representation_context_sha256: str,
+    support_cache_sha256: str,
 ) -> Mapping[str, Any]:
     receipt: dict[str, Any] = {
         "schema": FIT_SCHEMA,
@@ -873,7 +923,20 @@ def _fit_receipt(
         "source_runtime_access": False,
         "clean_runtime_access": False,
         "phase2_optimizer_or_backward": False,
-        "representation_rule": REPRESENTATION_RULE,
+        "phase1_representation_rule": REPRESENTATION_RULE,
+        "representation_mode": representation_mode,
+        "runtime_representation_rule": (
+            REPRESENTATION_RULE
+            if representation_mode == CANONICAL_R0
+            else "rdce_phi_on_canonical_d106_signed_unit_same_ambient_axes"
+        ),
+        "representation_context_sha256": representation_context_sha256,
+        "support_cache_sha256": support_cache_sha256,
+        "cache_binding_required": True,
+        "rdce_bridge_binding_required": representation_mode == RDCE_R1_SIGNED_UNIT,
+        "prior_semantics": PRIOR_SEMANTICS,
+        "prior_transported_by_rdce": False,
+        "r1_covariance_claim": False,
         "prior_sha256": prior.prior_sha256,
         "runtime_binding_sha256": binding.binding_sha256,
         "binding": dict(binding.mapping),
@@ -909,12 +972,22 @@ def fit_tsl160(
     *,
     prior: TSL160Phase1Prior,
     runtime_binding: TSL160RuntimeBinding,
+    representation_mode: str,
+    representation_context_sha256: str,
+    support_cache_sha256: str,
 ) -> d129.D129HeadFit:
-    """Fit K1 exact-qKNN alias or K5 role-free EB diagonal affine TSL-160."""
+    """Fit a bound R0/R1 cache without changing its runtime representation."""
 
     _validate_prior_binding(prior, runtime_binding)
-    rows, classes, indices, active_k = _balanced_support(
+    bound_support = _bound_runtime_rows(
         support_zid160,
+        representation_mode=representation_mode,
+        representation_context_sha256=representation_context_sha256,
+        cache_sha256=support_cache_sha256,
+        name="support_zid160",
+    )
+    rows, classes, indices, active_k = _balanced_support(
+        bound_support,
         support_labels,
         registered_classes,
         allowed_k=(1, 5),
@@ -931,6 +1004,9 @@ def fit_tsl160(
                 binding=runtime_binding,
                 state=state,
                 geometry=None,
+                representation_mode=representation_mode,
+                representation_context_sha256=representation_context_sha256,
+                support_cache_sha256=support_cache_sha256,
             ),
             resource_receipt=_resource_receipt(
                 active_k=active_k,
@@ -1000,6 +1076,9 @@ def fit_tsl160(
             binding=runtime_binding,
             state=state,
             geometry=geometry,
+            representation_mode=representation_mode,
+            representation_context_sha256=representation_context_sha256,
+            support_cache_sha256=support_cache_sha256,
         ),
         resource_receipt=_resource_receipt(
             active_k=active_k,
@@ -1027,6 +1106,17 @@ def validate_tsl160_fit_binding(fit: d129.D129HeadFit, runtime_binding: TSL160Ru
     }
     if receipt.get("binding") != required:
         raise NextR3TSL160Error("TSL fit receipt binding fields drift")
+    if (
+        receipt.get("representation_mode") not in {CANONICAL_R0, RDCE_R1_SIGNED_UNIT}
+        or not isinstance(receipt.get("representation_context_sha256"), str)
+        or not isinstance(receipt.get("support_cache_sha256"), str)
+        or receipt.get("prior_semantics") != PRIOR_SEMANTICS
+        or receipt.get("prior_transported_by_rdce") is not False
+        or receipt.get("r1_covariance_claim") is not False
+    ):
+        raise NextR3TSL160Error("TSL fit representation/prior semantic receipt drift")
+    _require_sha256(receipt["representation_context_sha256"], name="fit representation_context_sha256")
+    _require_sha256(receipt["support_cache_sha256"], name="fit support_cache_sha256")
 
 
 def require_unique_float32_top(logits: np.ndarray) -> None:
@@ -1066,20 +1156,31 @@ def alias_k1_qknn_logits(
 
 
 def score_tsl160_affine(
-    state: d129.D129AffineHeadState,
+    fit: d129.D129HeadFit,
     query_zid160: np.ndarray,
     *,
     runtime_binding: TSL160RuntimeBinding,
+    representation_mode: str,
+    representation_context_sha256: str,
+    query_cache_sha256: str,
 ) -> np.ndarray:
-    """Score a K5 TSL affine state, with canonical D106 conversion and tie closure.
+    """Score a bound cache directly; R1 remains signed-unit and byte-stable."""
 
-    The caller must preserve and validate the companion fit receipt through
-    :func:`validate_tsl160_fit_binding`; the inherited D129 affine state has no
-    sidecar field in which to duplicate a binding.
-    """
-
-    if type(runtime_binding) is not TSL160RuntimeBinding:
-        raise NextR3TSL160Error("TSL affine score requires an exact runtime binding")
+    validate_tsl160_fit_binding(fit, runtime_binding)
+    receipt = dict(fit.fit_receipt)
+    if (
+        receipt.get("representation_mode") != representation_mode
+        or receipt.get("representation_context_sha256") != representation_context_sha256
+    ):
+        raise NextR3TSL160Error("TSL query representation/context does not match the fit cache")
+    query = _bound_runtime_rows(
+        query_zid160,
+        representation_mode=representation_mode,
+        representation_context_sha256=representation_context_sha256,
+        cache_sha256=query_cache_sha256,
+        name="query_zid160",
+    )
+    state = fit.state
     if (
         type(state) is not d129.D129AffineHeadState
         or state.head != d129.LITE_HEAD
@@ -1087,7 +1188,6 @@ def score_tsl160_affine(
         or state.numeric_state_bytes != AFFINE_STATE_BYTES_PER_CLASS * len(state.classes)
     ):
         raise NextR3TSL160Error("TSL affine score requires a K5 Lite160 D129 state")
-    query = _normalized_canonical_rows(query_zid160, name="query_zid160")
     logits = d129.score_d129_affine_head(state, query)
     require_unique_float32_top(logits)
     return logits
@@ -1095,14 +1195,17 @@ def score_tsl160_affine(
 
 __all__ = [
     "AFFINE_STATE_BYTES_PER_CLASS",
+    "CANONICAL_R0",
     "FIT_SCHEMA",
     "NextR3TSL160Error",
     "NextR3TSL160TieError",
     "PRIOR_NUMERIC_PAYLOAD_BYTES",
     "PRIOR_SCHEMA",
+    "PRIOR_SEMANTICS",
     "PROTOCOL_SCHEMA",
     "REPRESENTATION_RULE",
     "RESOURCE_SCHEMA",
+    "RDCE_R1_SIGNED_UNIT",
     "TSL160Phase1Cell",
     "TSL160Phase1Prior",
     "TSL160PhysicalLOOFold",
@@ -1118,5 +1221,6 @@ __all__ = [
     "roundtrip_tsl160_prior",
     "score_tsl160_affine",
     "serialize_tsl160_prior",
+    "tsl160_cache_sha256",
     "validate_tsl160_fit_binding",
 ]

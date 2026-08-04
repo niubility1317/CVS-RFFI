@@ -92,6 +92,22 @@ def _k5_support() -> tuple[np.ndarray, tuple[str, ...], tuple[str, ...]]:
     )
 
 
+def _r0_binding_kwargs(rows: np.ndarray) -> dict[str, str]:
+    return {
+        "representation_mode": tsl.CANONICAL_R0,
+        "representation_context_sha256": _sha("r0-d106-cache-context"),
+        "support_cache_sha256": tsl.tsl160_cache_sha256(rows),
+    }
+
+
+def _r1_binding_kwargs(rows: np.ndarray) -> dict[str, str]:
+    return {
+        "representation_mode": tsl.RDCE_R1_SIGNED_UNIT,
+        "representation_context_sha256": _sha("sealed-rdce-bridge-context"),
+        "support_cache_sha256": tsl.tsl160_cache_sha256(rows),
+    }
+
+
 def test_canonical_d106_is_relu_normalized_and_fails_on_zero() -> None:
     raw = np.full((1, 160), -1.0, dtype=np.float32)
     raw[0, 3] = np.float32(2.0)
@@ -139,13 +155,16 @@ def test_phase1_prior_double_exclusion_binding_and_readonly_roundtrip() -> None:
 
 def test_k1_is_exact_qknn_object_alias_and_tie_fails_closed() -> None:
     prior, binding = _prior()
-    support = np.concatenate(tuple(_raw_cluster(class_index, 1, seed=130 + class_index) for class_index in range(1, 5)), axis=0)
+    support = tsl.canonical_d106_relu_zid160(
+        np.concatenate(tuple(_raw_cluster(class_index, 1, seed=130 + class_index) for class_index in range(1, 5)), axis=0)
+    )
     fit = tsl.fit_tsl160(
         support,
         ("c1", "c2", "c3", "c4"),
         ("c1", "c2", "c3", "c4"),
         prior=prior,
         runtime_binding=binding,
+        **_r0_binding_kwargs(support),
     )
     assert type(fit.state) is d129.D129K1QKNNAliasState
     assert fit.fit_receipt["fit_mode"] == "exact_qknn_logit_object_alias"
@@ -162,13 +181,15 @@ def test_k1_is_exact_qknn_object_alias_and_tie_fails_closed() -> None:
 
 def test_k5_d129_wire_eb_resource_and_permutation_equivariance() -> None:
     prior, binding = _prior()
-    support, labels, classes = _k5_support()
+    support_raw, labels, classes = _k5_support()
+    support = tsl.canonical_d106_relu_zid160(support_raw)
     fit = tsl.fit_tsl160(
         support,
         labels,
         classes,
         prior=prior,
         runtime_binding=binding,
+        **_r0_binding_kwargs(support),
     )
     assert type(fit.state) is d129.D129AffineHeadState
     assert fit.state.head == d129.LITE_HEAD
@@ -185,7 +206,14 @@ def test_k5_d129_wire_eb_resource_and_permutation_equivariance() -> None:
     query_raw = np.concatenate(tuple(_raw_cluster(class_index, 2, seed=140 + class_index) for class_index in range(1, 5)), axis=0)
     query = tsl.canonical_d106_relu_zid160(query_raw)
     expected = d129.score_d129_affine_head(fit.state, query)
-    actual = tsl.score_tsl160_affine(fit.state, query_raw, runtime_binding=binding)
+    actual = tsl.score_tsl160_affine(
+        fit,
+        query,
+        runtime_binding=binding,
+        representation_mode=tsl.CANONICAL_R0,
+        representation_context_sha256=_sha("r0-d106-cache-context"),
+        query_cache_sha256=tsl.tsl160_cache_sha256(query),
+    )
     np.testing.assert_array_equal(actual, expected)
 
     permutation = np.concatenate(tuple(support[index * 5 : (index + 1) * 5] for index in (3, 2, 1, 0)), axis=0)
@@ -195,14 +223,86 @@ def test_k5_d129_wire_eb_resource_and_permutation_equivariance() -> None:
         ("c4", "c3", "c2", "c1"),
         prior=prior,
         runtime_binding=binding,
+        **_r0_binding_kwargs(permutation),
     )
     permuted_logits = tsl.score_tsl160_affine(
-        permuted.state,
-        query_raw,
+        permuted,
+        query,
         runtime_binding=binding,
+        representation_mode=tsl.CANONICAL_R0,
+        representation_context_sha256=_sha("r0-d106-cache-context"),
+        query_cache_sha256=tsl.tsl160_cache_sha256(query),
     )
     np.testing.assert_allclose(actual, permuted_logits[:, ::-1], rtol=0.0, atol=2.0e-5)
 
     wrong_binding = replace(binding, checkpoint_sha256=_sha("other-checkpoint"))
     with pytest.raises(tsl.NextR3TSL160Error, match="does not match"):
         tsl.validate_tsl160_fit_binding(fit, wrong_binding)
+
+
+def test_r1_signed_unit_cache_is_direct_bound_and_source_anchor_is_explicit() -> None:
+    prior, binding = _prior()
+    support_raw, labels, classes = _k5_support()
+    r1_support = tsl.canonical_d106_relu_zid160(support_raw).copy()
+    r1_support[:, :80] *= np.float32(-1.0)
+    support_before = r1_support.copy()
+    fit = tsl.fit_tsl160(
+        r1_support,
+        labels,
+        classes,
+        prior=prior,
+        runtime_binding=binding,
+        **_r1_binding_kwargs(r1_support),
+    )
+    assert np.any(r1_support < 0.0)
+    np.testing.assert_array_equal(r1_support, support_before)
+    assert fit.fit_receipt["representation_mode"] == tsl.RDCE_R1_SIGNED_UNIT
+    assert fit.fit_receipt["support_cache_sha256"] == tsl.tsl160_cache_sha256(r1_support)
+    assert fit.fit_receipt["representation_context_sha256"] == _sha("sealed-rdce-bridge-context")
+    assert fit.fit_receipt["prior_semantics"] == "pre_adaptation_source_anchor_same_ambient_axes"
+    assert fit.fit_receipt["prior_transported_by_rdce"] is False
+    assert fit.fit_receipt["r1_covariance_claim"] is False
+    with pytest.raises(tsl.NextR3TSL160Error, match="non-negative D106 ReLU cache"):
+        tsl.fit_tsl160(
+            r1_support,
+            labels,
+            classes,
+            prior=prior,
+            runtime_binding=binding,
+            **_r0_binding_kwargs(r1_support),
+        )
+
+    query_raw = np.concatenate(tuple(_raw_cluster(class_index, 2, seed=200 + class_index) for class_index in range(1, 5)), axis=0)
+    r1_query = tsl.canonical_d106_relu_zid160(query_raw).copy()
+    r1_query[:, :80] *= np.float32(-1.0)
+    query_before = r1_query.copy()
+    expected = d129.score_d129_affine_head(fit.state, r1_query)
+    actual = tsl.score_tsl160_affine(
+        fit,
+        r1_query,
+        runtime_binding=binding,
+        representation_mode=tsl.RDCE_R1_SIGNED_UNIT,
+        representation_context_sha256=_sha("sealed-rdce-bridge-context"),
+        query_cache_sha256=tsl.tsl160_cache_sha256(r1_query),
+    )
+    np.testing.assert_array_equal(actual, expected)
+    np.testing.assert_array_equal(r1_query, query_before)
+
+    with pytest.raises(tsl.NextR3TSL160Error, match="representation/context"):
+        tsl.score_tsl160_affine(
+            fit,
+            r1_query,
+            runtime_binding=binding,
+            representation_mode=tsl.RDCE_R1_SIGNED_UNIT,
+            representation_context_sha256=_sha("different-rdce-context"),
+            query_cache_sha256=tsl.tsl160_cache_sha256(r1_query),
+        )
+    with pytest.raises(tsl.NextR3TSL160Error, match="cache SHA256 drift"):
+        tsl.score_tsl160_affine(
+            fit,
+            r1_query,
+            runtime_binding=binding,
+            representation_mode=tsl.RDCE_R1_SIGNED_UNIT,
+            representation_context_sha256=_sha("sealed-rdce-bridge-context"),
+            query_cache_sha256=_sha("drifted-r1-query-cache"),
+        )
