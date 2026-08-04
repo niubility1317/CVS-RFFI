@@ -9,6 +9,7 @@ NEXT-R3的`R3-RDCE160×TSL-160`已在N607最终r3的prepare阶段关闭。数值
 下一唯一候选冻结为`NEXT-R4 FA-RDCE3×CER-PLR160`：
 
 - `FA-RDCE3`只用REG0旧类support的类等权残差，在既有RDCE rank-3基上闭式估计一个跨类共享3维域位移；Phase1只封存与checkpoint共同密封的INT8多样本聚合中心、公共Fisher精度、残差方差和公共半径。R0先减一次`B^Ta`，再执行一次RDCE；R1 signed-unit输出后禁止再次位移、ReLU或L2归一化。DA1_REG1逐字节复用DA1_REG0的`a/κ`，不得以新类support重拟合DA。
+- FA Phase1统计唯一冻结为：沿用D106的canonical receiver-day类等权nuisance scatter得到rank-3基`B`；在量化闭合`B`上令`spectrum_j`为公共receiver-day cell-shift scatter对角、`tau_j`为旧类等权投影within-class样本方差，随后固定`D_v,j=tau_j`、`D_F,j=1/spectrum_j`、`rho=sqrt(3)`、`kappa_j=spectrum_j/(spectrum_j+tau_j)`。这是量纲一致的Bayesian nuisance-shift先验和Wiener型固定RDCE，不允许分位数、性能选择或额外超参数。任一`spectrum/tau`非有限或非正即scientific reject。
 - `CER-PLR160`保留qKNN为基座。K1的head逐logit精确alias qKNN；K5只用support构造类等权共享对角shrinkage的中心化prototype-logit残差，以无正确率、无LOO、无top-k的连续公共公式缩放。残差为零或量化后无函数时记`NO_HEAD_FUNCTION`并精确alias Q，不视为技术失败。
 - 两组件都不更新完整网络参数，不在Phase2执行Fishr式梯度方差匹配。Fishr只可用于Phase1构造/保护稳定表征；K1阶段只允许可辨识的共享低秩闭式状态。
 

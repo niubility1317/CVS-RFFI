@@ -35,6 +35,7 @@
 - prediction：144个唯一预测；artifact：192个含K1 alias的arm记录
 - DA1_REG1必须逐字节复用DA1_REG0的FA状态；K1 H必须逐logit精确alias Q
 - 禁止参数、seed、receiver、K、阈值或矩阵搜索
+- Phase1资产统计锁：`D_v=tau`、`D_F=1/spectrum`、`rho=sqrt(3)`、`kappa=spectrum/(spectrum+tau)`；只使用D106 canonical rank-3 receiver-day nuisance basis和旧类等权聚合，非正/非有限即scientific reject
 
 主要比较：`DA1_REG0−DA0_REG0`、`DA1_REG1−DA0_REG1`、固定DA下的`REG1−REG0`、K5的`H−Q`及DA×head交互。
 
@@ -73,7 +74,7 @@ CLI独立复审结论为`P0=1/P1=2`：除上述query类别分组P0外，predict�
 
 技术停止仅允许协议/安全违规、错误checkout/hash、覆盖风险、缺prediction闭合或至少两个不同row出现同一确定性异常指纹；不得按运行中性能停止。
 
-本地真实性能输入准备：已确认D105 checkpoint为`E:\type10-7\automation_reports\CV-SincNet\d105_feature_tap_real_checkpoint_smoke_20260731\input\best_joint_safe_ssdg.pth`，SHA256=`2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98`。计划只读取回N607既有received-IQ：远端`/home/szu2070436088/2510044040/CV-SincNet/runs/d106_real_integration_dba10236_20260801_r7/output/selected_ls_iq/d106_ls_received_iq.npz`到本报告目录的`input/d106_ls_received_iq.npz`；先执行规定的只读SSH preflight，SCP后核验已有记录SHA256=`e3270821...52ede`，不改变远端状态。NEXT-R4 capsule和12个FA-RDCE3资产仍待本地构建与封存。
+本地真实性能输入准备：已确认D105 checkpoint为`E:\type10-7\automation_reports\CV-SincNet\d105_feature_tap_real_checkpoint_smoke_20260731\input\best_joint_safe_ssdg.pth`，SHA256=`2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98`。规定的只读N607 preflight已通过，8张RTX 3090当时均空闲；随后只读取回既有received-IQ到本报告目录`input/d106_ls_received_iq.npz`，大小1,509,068B，远端与本地SHA256同为`e32708214eaedaf39af532c572e16045f173422d63110e4022778f3ad0252ede`。同时取回receipt，SHA256=`a18bd5d610c9874bd0d6b50d34e845d85229d5892453bce9ff5bfeaa8ee82d59`；其声明`protocol_schema=p2_min_v1`、`row_count=588`、`formal_query_access=false`、`clean_iq_access=false`。SCP结束后本地`ssh.exe=0`且到N607/bridge的TCP22连接为0。NEXT-R4 capsule和12个FA-RDCE3资产仍待本地构建与封存。
 
 ## 6.结果表
 

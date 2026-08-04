@@ -14,6 +14,8 @@ NEXT-R4必须同时回答两个问题：用K-shot support得到可辨识的轻�
 
 Phase1与checkpoint共同封存RDCE基`B∈R^(3×160)`、类聚合3维中心`m_c=Bμ_c`、跨类公共Fisher精度`D_F`、公共残差方差`D_v`、公共半径`ρ`和量化尺度。只允许INT8多样本聚合资产，不允许Phase1逐样本、LOO或source cache在Phase2重现。
 
+Phase1资产统计唯一固定为：复用D106 canonical receiver-day类等权nuisance scatter构造`B`；在量化闭合`B`上计算receiver-day公共cell shift的`spectrum_j`及旧类等权投影within-class样本方差`tau_j`，并设`D_v,j=tau_j`、`D_F,j=spectrum_j^-1`、`ρ=sqrt(3)`、`κ_j=spectrum_j/(spectrum_j+tau_j)`。其中`D_F`与`CKD_v^-1`量纲一致，`ρ`是3维先验Mahalanobis RMS半径，`κ`是无调参Wiener nuisance fraction。禁止分位数、accuracy、query或目标性能选择；非正/非有限统计直接scientific reject。
+
 REG0旧类support给出：
 
 ```text
