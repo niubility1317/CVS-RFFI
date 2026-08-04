@@ -46,7 +46,7 @@ gamma = Sq / (Sq + 4 Sr + 64 eps32 max(1,Sq,Sr))
 logit = qKNN_logit + gamma * centered_shape_residual
 ```
 
-`Sq`只由support qKNN bank的`nu,d_eff,h_c`解析得到，`Sr`为类原型残差RMS。没有LOO、support/query正确率、top-k、role或候选选择，并满足`gamma Sr≤Sq/4`。`Sr=0`或量化残差全零时记`NO_HEAD_FUNCTION`并精确alias Q；非有限fail-closed；最高logit精确并列统一`TIE_UNRESOLVED`。
+`Sq`只由support qKNN bank的`nu,d_eff,h_c`解析得到。`Sr²=[C(C−1)]^-1Σ_cΣ_{a≠c}[r_c(mu_c)−r_a(mu_c)]²`，即每个类原型上自身类与其它类的残差pairwise gap RMS；不得替换为包含对角项的全残差矩阵RMS。没有LOO、support/query正确率、top-k、role或候选选择，并满足`gamma Sr≤Sq/4`。`Sr=0`或量化残差全零时记`NO_HEAD_FUNCTION`并精确alias Q；非有限fail-closed；最高logit精确并列统一`TIE_UNRESOLVED`。
 
 部署wire固定为`INT8 W[C,160]+FP16 scale[C]+FP16 intercept[C]`，共`164C B`，C=6时984B；无`d^2`协方差或分解。相对既有Q的增量query为`Cd=960MAC`。
 
