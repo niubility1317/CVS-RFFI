@@ -86,3 +86,19 @@ logit = qKNN_logit + gamma * centered_shape_residual
 |N607发布|唯一Luna/max runner|Git/hash、真实checkpoint smoke、24行完整artifact|
 
 当前文件只冻结设计和可验证映射，不构成性能结果。
+
+## 6.逐项验收台账
+
+|ID|来源章节|要求|目标文件|状态|验证|备注|
+|---|---|---|---|---|---|---|
+|R4-DA-01|2.1|REG0旧类support只拟合一个共享3维FA状态；DA1_REG1逐字节复用|`stage2_next_r4_fa_rdce3.py`|verified|聚焦测试6项；state wire/reuse receipt|不含query或新类重拟合|
+|R4-HEAD-01|2.2|K1 H精确alias Q；K5 CER使用冻结pairwise Sr与164C B wire|`stage2_next_r4_cer_plr160.py`|verified|聚焦测试6项；独立复审P0=0、对应P1关闭|不恢复Full160稠密组件|
+|R4-MAT-01|3|24逻辑行、144 unique prediction、192 arm artifact、K前缀和共同query|`stage2_next_r4_matrix.py`、配置JSON|verified|聚焦测试6项|已移除R3固定query/Phase1数量gate|
+|R4-NAME-01|3|所有输出显式使用四态码与中文主名称；REG0新类/H=`N/A`|目标文档、matrix、scorer、报告|verified|目标提交`45e148c1`；scorer测试|禁止独立before/after|
+|R4-RUNTIME-01|2.1、2.2、3|truth-free四态runtime；R1后不再ReLU/L2/位移；query零fit/update/selection|`stage2_next_r4_runtime.py`|pending|待聚焦runtime测试|当前最高风险：public qKNN会二次normalize|
+|R4-ART-01|3、4|只投影预测与receipt，不携带truth/features/logits；严格闭合scorer单一schema|`stage2_next_r4_artifact.py`|pending|待artifact+scorer测试|机械实现由Luna/max负责|
+|R4-SCORE-01|3、4|完整预测闭合后才开truth；输出same-row四态、per-class old、forgetting及比较|`stage2_next_r4_score.py`|verified|聚焦测试5项；与matrix合计11项|不做promotion决策|
+|R4-CLI-01|5|prepare→predict→score三阶段、不可覆盖、动态metadata、真实checkpoint无query smoke|`code/scripts/run_next_r4_proxy24.py`|pending|待CLI聚焦测试与真实checkpoint smoke|不继承R3的588/14固定gate|
+|R4-REV-01|5|独立科学复审P0=0/P1=0|上述全部实现|pending|待Terra/max复审|P2缓存优化不阻塞发布|
+|R4-RUN-01|5|唯一Luna/max runner完成N607 preflight、同步、启动、监控和artifact回收|实验报告与远端不可变run root|pending|待Git冻结与preflight|不得按性能中止|
+|R4-AN-01|4|主agent按四态和同row证据完成性能裁决|实验报告|pending|待完整score artifact|弱/负即关闭，不调参|
