@@ -1,6 +1,6 @@
 # NEXT-R1 FABR-TSL需求追踪
 
-阶段：`DESIGN_FROZEN / IMPLEMENTATION_PENDING / NO_NEW_PERFORMANCE_RESULT`
+阶段：`LOCAL_VERIFIED / CODE_REVIEW_PASS_P0_0_P1_0 / NOT_RELEASED / NO_NEW_PERFORMANCE_RESULT`
 
 |ID|来源要求|冻结实现目标|状态|验证/证据|
 |---|---|---|---|---|
@@ -49,4 +49,20 @@
 15.所有K和所有臂均作float32 exact-top-tie拒绝；K1 liveness只作一次no-truth技术检查。
 16.通过后保持method lock依次进入G0、fresh63、Target25。
 
-最高风险：Phase1资产构建、真实functional override、D131型零行闭合与量化后完整Fisher几何尚未实现；独立差分复核及真实checkpoint no-query smoke完成前只有修订设计，没有新性能证据。
+最高风险已从方法定义转到真实运行成本与artifact闭合：实际N607 checkpoint smoke和84行预测尚未执行，因此没有新性能证据。
+
+## 2026-08-04实现复核
+
+首批`FABR/TSL/matrix`共26项聚焦测试通过后，独立代码复核裁定`REVISE(P0=1、P1=3)`；修复后完成最终复核：
+
+|问题|最小修复owner|状态|
+|---|---|---|
+|消费端交叉核对checkpoint、representation rule与row Phase1 seal|WP-DA＋runtime|closed|
+|FABR唯一Phase1 builder闭合广义特征、INT8反量化、`K_F`、LOO cosine与Phase1 TX保持|WP-ASSET|closed|
+|TSL先验验证冻结receiver×class完整网格与完整唯一physical-LOO覆盖|WP-ASSET|closed|
+|六臂row执行与84行manifest不可绕过tie/alias/system-forward receipt|WP-INTEGRATION|closed|
+|真实smoke必须读取固定checkpoint并执行可重复真实forward|WP-REAL|closed|
+|真实FABR forward不得原位写模型参数|WP-REAL|closed，改为`torch.func.functional_call`|
+|Phase1方向验证精确并列不得由类列顺序裁决|WP-REAL|closed，strict top-1失败关闭|
+
+最终独立差分复核为`P0=0、P1=0、CODE_REVIEW_PASS`；六个科学模块与最小runner联合53项聚焦测试、`py_compile`和`git diff --check`通过。独立score会验证plan、manifest、84个row seal、逐行NPZ及四个completion SHA。这些结果只证明本地实现闭合，不是性能证据。
