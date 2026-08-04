@@ -85,6 +85,8 @@
 
 commit`f143e5d2`的runner独立复核结论为`P0=2、P1=2、NOT_READY`。两项P0分别是：实际24行仍直接消费外部`source-held pre_relu`，真实checkpoint只承担重复smoke，尚未证明预测特征由received-IQ经checkpoint生成；predict阶段读取`tx_labels`并据此构造query集合，违反query truth/role禁入。两项P1是K1/K5共同旧query未在runner入口闭合，以及新增测试只覆盖缺失输入和run-root不可覆盖。当前只修这些直接阻止真实性能实验的问题；矩阵、候选和性能阈值不变，不追加工程gate。修复并再次独立得到`P0=0、P1=0`前，不进行remote inventory、sync或launch。
 
+commit`7f0fb9a4`已关闭真实特征输入问题：正式support/query/Phase1特征均改由received-IQ和绑定checkpoint的bridge生成，聚焦测试`5 passed`。但第二次独立复核仍为`P0=2、P1=1、NOT_READY`：两份REG0/REG1 query ID清单的差集会暴露新类角色；predict仍能读取全部588条`class_ids/tx_labels`。因此当前改为复用既有`prepare→predict→score`隔离：prepare封存Phase1 prior、合法K-shot support和单一共同query，predict不接触全量标签或query角色，旧/新/H划分只在完整prediction之后由score打开truth完成。
+
 ## 6. 真实输入现状
 
 本地Git快照只有receipt/fixture/manifest，没有真实`d106_ls_received_iq.npz`、strict-tap/features NPZ、D106 RDCE asset wire或checkpoint PTH。因而当前不能完成real-checkpoint smoke，也不能本地构建每fold完整TSL prior。缺失的最小真实字段为：
