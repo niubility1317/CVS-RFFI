@@ -19,7 +19,7 @@
 ## 本地版本与闭包
 
 - Git工作树：`E:\type10-7\code\snapshots\d92_lite125_20260804_wt`；运行时提交将在r4登记commit。
-- r4仅在r3已验证helper闭包上增加两个纯numpy core：`code/cvsrffi/stage2_d80_ground_commonmode_denoiser.py`、`code/cvsrffi/stage2_d81_ground_nuisance_cauchy_center.py`；不改candidate、method lock、数据或矩阵。
+- r4仅在r3已验证helper闭包上增加三个纯numpy core：`code/cvsrffi/stage2_d80_ground_commonmode_denoiser.py`、`code/cvsrffi/stage2_d81_ground_nuisance_cauchy_center.py`、`code/cvsrffi/stage2_d92_registration_balanced_covariance.py`；不改candidate、method lock、数据或矩阵。完整本地probe入口导入闭包已通过。
 - 本地`ssr-gpu`相关probe/core编译、依赖回归、FULL288回归和diff-check已通过。
 
 ## N607发布与成功标准
