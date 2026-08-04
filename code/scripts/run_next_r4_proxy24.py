@@ -259,7 +259,7 @@ def _load_received_capsule(path: Path, expected_sha256: str) -> ReceivedCapsule:
         with np.load(io.BytesIO(payload), allow_pickle=False) as archive:
             names = tuple(archive.files)
             required = {"received_iq", "receiver_ids", "physical_ids", "observation_ids"}
-            allowed = required | {"scenario_names"}
+            allowed = required | {"scenario_names", "day_ids"}
             if not required.issubset(names) or any(item not in allowed for item in names):
                 raise MissingRealInputArtifacts(f"{MISSING_PREFIX}: received-IQ capsule member drift")
             arrays = {item: np.asarray(archive[item]) for item in names}
@@ -274,6 +274,11 @@ def _load_received_capsule(path: Path, expected_sha256: str) -> ReceivedCapsule:
         name="received.scenario_names",
         count=count,
     )
+    # D106 capsules may carry day provenance for the builder.  Validate its
+    # shape/content, then deliberately discard it at the predictor boundary.
+    # It must never enter ReceivedCapsule, the package, or runtime state.
+    if "day_ids" in arrays:
+        _string_array(arrays["day_ids"], name="received.day_ids", count=count)
     return ReceivedCapsule(
         received_iq=iq,
         receiver_ids=_string_array(arrays["receiver_ids"], name="received.receiver_ids", count=count),

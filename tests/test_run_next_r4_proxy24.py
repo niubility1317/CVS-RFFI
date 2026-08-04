@@ -299,6 +299,50 @@ def test_missing_real_input_fails_closed_and_dynamic_capsule_has_no_588_gate(tmp
     path.write_bytes(payload.getvalue())
     loaded = runner._load_received_capsule(path, _sha(path.read_bytes()))
     assert len(loaded.physical_ids) == 2
+    # D106 day provenance is accepted at the capsule boundary but is not
+    # propagated into the predictor-facing object.
+    with_day = tmp_path / "small_with_day_ids.npz"
+    day_payload = io.BytesIO()
+    np.savez(
+        day_payload,
+        received_iq=np.zeros((2, 2, 8), dtype="<f4"),
+        receiver_ids=np.asarray(["1-1", "1-1"]),
+        physical_ids=np.asarray(["p0", "p1"]),
+        observation_ids=np.asarray(["o0", "o1"]),
+        day_ids=np.asarray(["day-a", "day-b"], dtype="<U8"),
+    )
+    with_day.write_bytes(day_payload.getvalue())
+    loaded_with_day = runner._load_received_capsule(with_day, _sha(with_day.read_bytes()))
+    assert not hasattr(loaded_with_day, "day_ids")
+
+    malformed_day = tmp_path / "malformed_day_ids.npz"
+    malformed_payload = io.BytesIO()
+    np.savez(
+        malformed_payload,
+        received_iq=np.zeros((2, 2, 8), dtype="<f4"),
+        receiver_ids=np.asarray(["1-1", "1-1"]),
+        physical_ids=np.asarray(["p0", "p1"]),
+        observation_ids=np.asarray(["o0", "o1"]),
+        day_ids=np.asarray([["day-a", "day-b"]], dtype="<U8"),
+    )
+    malformed_day.write_bytes(malformed_payload.getvalue())
+    with pytest.raises(runner.MissingRealInputArtifacts, match="day_ids"):
+        runner._load_received_capsule(malformed_day, _sha(malformed_day.read_bytes()))
+
+    unknown_member = tmp_path / "unknown_member.npz"
+    unknown_payload = io.BytesIO()
+    np.savez(
+        unknown_payload,
+        received_iq=np.zeros((2, 2, 8), dtype="<f4"),
+        receiver_ids=np.asarray(["1-1", "1-1"]),
+        physical_ids=np.asarray(["p0", "p1"]),
+        observation_ids=np.asarray(["o0", "o1"]),
+        unexpected=np.asarray(["x", "y"]),
+    )
+    unknown_member.write_bytes(unknown_payload.getvalue())
+    with pytest.raises(runner.MissingRealInputArtifacts, match="member drift"):
+        runner._load_received_capsule(unknown_member, _sha(unknown_member.read_bytes()))
+
     with pytest.raises(runner.MissingRealInputArtifacts, match=runner.MISSING_PREFIX):
         runner._load_received_capsule(tmp_path / "missing.npz", "0" * 64)
 
