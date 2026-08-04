@@ -3,7 +3,7 @@
 ## 状态
 
 - 实验ID：`d138_d92_lite_pr160_target125_20260804_r4`
-- 状态：`LOCAL_VERIFIED / REMOTE_LAUNCH_PENDING / NO_PERFORMANCE_RESULT`
+- 状态：`REMOTE_GATE_REPAIR_IN_PROGRESS / NO_PERFORMANCE_RESULT`
 - 操作员：Codex主agent；N607唯一release runner：Luna/max
 - 用户在r3prepare目录生命周期故障后明确要求立即修复并启动实验；r4为新的不可覆盖run ID，不复用或覆盖r3。
 
@@ -34,6 +34,13 @@ r3失败原因是runner在唯一prepare前预创建了空的`prepared`目录，�
 ## 硬门与停止规则
 
 先做有界N607预检、逐文件hash、远端compile和Torch 2.1 extractor load；然后唯一prepare和真实checkpoint row0/scene0 no-query smoke。smoke通过后直接启动完整8 shard。P0协议/安全违规，或两个不同outer row产生相同确定性异常且尚未生成prediction时停止本run；不依据准确率停止，不从partial产物推导性能，不自动重试。
+
+## smoke门修复记录（2026-08-04）
+
+- prepare已通过并生成完整125/375/3000输入闭包；首次真实smoke在forward前失败，退出码`1`，GPU未使用，未生成smoke输出或prediction。
+- 具体异常：`ModuleNotFoundError: No module named 'cvsrffi.phase2_runtime_contract'`，由`stage2_diag_cosine_exploration.py`导入；该模块仅包含Phase2 contract常量/校验，无数据、Torch或旧runner导入。
+- 本地修复验证：`ssr-gpu`环境下`python -m py_compile code/cvsrffi/phase2_runtime_contract.py`通过；SHA256=`792c3eda489679bebdde08825e437ef93c460e8f64fd6279b166909b3ab90a78`。
+- 修复动作：将该已存在的本地验证模块同步到当前r4的`source/code/cvsrffi/`；保留既有prepared产物，不重做prepare，不删除或覆盖任何历史run。同步后重新执行smoke；若仍有硬门异常则停止并保留证据。
 
 ## 结果
 
