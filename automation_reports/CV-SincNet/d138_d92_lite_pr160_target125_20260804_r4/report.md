@@ -44,7 +44,7 @@ r3失败原因是runner在唯一prepare前预创建了空的`prepared`目录，�
 - 递归闭包复核又确认并同步6个同组运行依赖：`somph_predictor_runtime.py`、`stage2_d38_strong_b3_quantized.py`、`stage2_predictor_bundle.py`、`stage2_predictor_runtime.py`、`stage2_d108_cbrrc.py`、`stage2_d108_smme.py`；6个文件均在本地`ssr-gpu`环境py_compile通过，未改变D138方法或数据。
 - smoke第三次仍只在导入阶段发现直接模块`somph_runtime_trust.py`未同步；该文件已在本地`ssr-gpu`环境py_compile通过，SHA256=`4b1dee1d8ffdc793f48c46c21a11b0fdf8b6ef6e3b253807cc1138011dc1f9fc`，补齐后继续同一prepared输入的smoke。
 - 第四次smoke已进入真实材料化，确认before/after的60个old support received-IQ逐元素相同、physical ID和label完全相同，但重复GPU forward产生最大`8.18e-05`数值抖动，触发原有逐元素断言；GPU仍未产生prediction。
-- 本地修复`code/cvsrffi/stage2_d92_pr160_runtime.py`：按support received-IQ的shape+SHA缓存首个160维forward结果，仅在同一physical support IQ重复出现时复用；不放宽ID/数据断言、不增加forward、不缓存query状态。新SHA256=`235c2e16f8eaab470fadda7693010ed89389e8453f044417310f04f1e7be16db`。
+- 本地修复`code/cvsrffi/stage2_d92_pr160_runtime.py`：按每条support received-IQ的shape+SHA缓存首个160维forward结果；after批次只复用其中重复的old support行，新类仍正常forward；不放宽ID/数据断言、不增加forward、不缓存query状态。新SHA256=`d5e2f82854f414034c7010366f6cc2ba7214de8160902cccef24295b5db6ed6d`。
 - 本地验证：`ssr-gpu`下py_compile通过；D138/D92/D108选定回归测试全部通过（pytest退出码0）。该修复已提交后再同步到r4 source，保留prepared输入闭包。
 
 ## 结果
