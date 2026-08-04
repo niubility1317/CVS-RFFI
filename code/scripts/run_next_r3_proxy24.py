@@ -3,10 +3,13 @@
 
 This entry is intentionally a thin, immutable runner around the already
 frozen NEXT-R3 matrix/runtime/artifact/scorer modules.  It accepts external
-received-IQ, source-held feature, Phase-1 cell, checkpoint, tap and D106
-RDCE-wire files.  No file is overwritten.  A missing or incomplete real
-archive is reported as ``MISSING_REAL_INPUT_ARTIFACTS``; the runner never
-substitutes synthetic cells or a historical best result.
+received-IQ, Phase-1 cell *metadata*, checkpoint, tap and D106 RDCE-wire
+files.  Every pre-ReLU/canonical row consumed by prediction is generated from
+the passed received-IQ through the pinned checkpoint bridge; no externally
+stored feature tensor is accepted as a prediction input.  No file is
+overwritten.  A missing or incomplete real archive is reported as
+``MISSING_REAL_INPUT_ARTIFACTS``; the runner never substitutes synthetic
+cells or a historical best result.
 
 ``predict`` never opens a truth catalog.  ``score`` validates the complete
 prediction, manifest and completion receipts first and only then opens the
@@ -52,6 +55,8 @@ COMPLETION_SCHEMA = "cvs.stage2.next_r3.proxy24.completion.v1"
 MANIFEST_SCHEMA = "cvs.stage2.next_r3.proxy24.manifest.v1"
 RESOURCE_SCHEMA = "cvs.stage2.next_r3.proxy24.resource.v1"
 SMOKE_SCHEMA = "cvs.stage2.next_r3.proxy24.real_checkpoint_smoke.v1"
+TRUTH_FREE_SPLIT_SCHEMA = "cvs.stage2.next_r3.proxy24.truth_free_split.v1"
+BRIDGE_FEATURE_SCHEMA = "cvs.stage2.next_r3.proxy24.bridge_feature_binding.v1"
 MISSING_PREFIX = "MISSING_REAL_INPUT_ARTIFACTS"
 
 RECEIVED_MEMBERS = (
@@ -62,15 +67,17 @@ RECEIVED_MEMBERS = (
     "scenario_names",
     "observation_ids",
 )
-SOURCE_MEMBERS = (
-    "z_dom",
+CELL_MEMBERS = ("zid160", "receiver_ids", "class_ids", "physical_ids")
+CELL_TAP_MEMBERS = (
     "pre_relu",
+    "z_dom",
+    "tx_labels",
     "receiver_ids",
     "day_ids",
-    "tx_labels",
     "physical_ids",
+    "scenario_names",
+    "observation_ids",
 )
-CELL_MEMBERS = ("zid160", "receiver_ids", "class_ids", "physical_ids")
 ROW_COUNT = 588
 PHYSICAL_PER_CELL = 14
 
@@ -145,14 +152,23 @@ def _require_file(path: Path | None, expected_sha256: str | None, name: str) -> 
     return payload
 
 
-def _load_npz(payload: bytes, expected_members: Sequence[str], name: str) -> dict[str, np.ndarray]:
+def _load_npz(
+    payload: bytes,
+    expected_members: Sequence[str],
+    name: str,
+    *,
+    selected_members: Sequence[str] | None = None,
+) -> dict[str, np.ndarray]:
     try:
         with np.load(io.BytesIO(payload), allow_pickle=False) as loaded:
             if tuple(loaded.files) != tuple(expected_members):
                 raise MissingRealInputArtifacts(
                     f"{MISSING_PREFIX}: {name} members must be {tuple(expected_members)}"
                 )
-            arrays = {member: np.asarray(loaded[member]) for member in expected_members}
+            selected = tuple(expected_members if selected_members is None else selected_members)
+            if any(member not in expected_members for member in selected):
+                raise MissingRealInputArtifacts(f"{MISSING_PREFIX}: {name} selected-member drift")
+            arrays = {member: np.asarray(loaded[member]) for member in selected}
     except MissingRealInputArtifacts:
         raise
     except Exception as error:
@@ -176,17 +192,13 @@ def _strings(value: np.ndarray, *, name: str, count: int, unique: bool = False) 
 @dataclass(frozen=True, slots=True)
 class SourceRows:
     received_iq: np.ndarray
-    pre_relu: np.ndarray
     receiver_ids: tuple[str, ...]
     day_ids: tuple[str, ...]
-    tx_labels: tuple[str, ...]
     physical_ids: tuple[str, ...]
     scenario_names: tuple[str, ...]
     observation_ids: tuple[str, ...]
     receiver_registry: tuple[str, ...]
-    class_registry: tuple[str, ...]
     received_iq_sha256: str
-    source_archive_sha256: str
 
 
 @dataclass(frozen=True, slots=True)
@@ -194,101 +206,350 @@ class CellRows:
     receiver_ids: tuple[str, ...]
     class_ids: tuple[str, ...]
     physical_ids: tuple[str, ...]
-    zid160: np.ndarray
 
 
 def _load_real_rows(args: argparse.Namespace) -> tuple[SourceRows, CellRows, Mapping[str, Any]]:
     received_bytes = _require_file(args.received_iq, args.received_iq_sha256, "received-IQ archive")
-    source_bytes = _require_file(args.source_held_archive, args.source_held_archive_sha256, "source-held archive")
     cell_bytes = _require_file(args.phase1_cells, args.phase1_cells_sha256, "Phase-1 cell archive")
     received = _load_npz(received_bytes, RECEIVED_MEMBERS, "received-IQ archive")
-    source = _load_npz(source_bytes, SOURCE_MEMBERS, "source-held archive")
     received_iq = np.asarray(received["received_iq"])
-    pre_relu = np.asarray(source["pre_relu"])
     if received_iq.dtype != np.dtype("<f4") or received_iq.ndim != 3 or received_iq.shape[0] != ROW_COUNT or received_iq.shape[1] != 2:
         raise MissingRealInputArtifacts(f"{MISSING_PREFIX}: received_iq must be little-endian float32 [588,2,T]")
-    if pre_relu.dtype != np.dtype("<f4") or pre_relu.shape != (ROW_COUNT, tsl.Z_DIM) or not np.isfinite(pre_relu).all():
-        raise MissingRealInputArtifacts(f"{MISSING_PREFIX}: source-held pre_relu must be finite float32 [588,160]")
     receiver_ids = _strings(received["receiver_ids"], name="received.receiver_ids", count=ROW_COUNT)
     day_ids = _strings(received["day_ids"], name="received.day_ids", count=ROW_COUNT)
     physical_ids = _strings(received["physical_ids"], name="received.physical_ids", count=ROW_COUNT, unique=True)
-    source_receiver_ids = _strings(source["receiver_ids"], name="source.receiver_ids", count=ROW_COUNT)
-    source_day_ids = _strings(source["day_ids"], name="source.day_ids", count=ROW_COUNT)
-    source_physical_ids = _strings(source["physical_ids"], name="source.physical_ids", count=ROW_COUNT, unique=True)
-    tx_labels = _strings(source["tx_labels"], name="source.tx_labels", count=ROW_COUNT)
-    if (receiver_ids, day_ids, physical_ids) != (source_receiver_ids, source_day_ids, source_physical_ids):
-        raise MissingRealInputArtifacts(f"{MISSING_PREFIX}: received-IQ/source-held physical join drift")
     scenario_names = _strings(received["scenario_names"], name="received.scenario_names", count=ROW_COUNT)
     observation_ids = _strings(received["observation_ids"], name="received.observation_ids", count=ROW_COUNT, unique=True)
-    counts = {(receiver, label): 0 for receiver in sorted(set(receiver_ids)) for label in sorted(set(tx_labels))}
-    for receiver, label in zip(receiver_ids, tx_labels, strict=True):
-        if (receiver, label) not in counts:
-            raise MissingRealInputArtifacts(f"{MISSING_PREFIX}: source registry drift")
-        counts[(receiver, label)] += 1
-    if len(set(receiver_ids)) != 7 or len(set(tx_labels)) != 6 or any(value != PHYSICAL_PER_CELL for value in counts.values()):
-        raise MissingRealInputArtifacts(f"{MISSING_PREFIX}: source archive must be a complete 7x6x14 grid")
 
-    # Phase-1 cells may be supplied either as the compact explicit cell archive
-    # or as the strict D106 tap-shaped archive.  Both paths retain all physical
-    # IDs and 160-D rows; neither is synthesized from a partial/fallback view.
+    # External Phase-1 cell archives may contribute only sealed identity/class
+    # metadata.  Their precomputed ``zid160``/``pre_relu`` arrays are never
+    # materialized or used by prediction; bridge output below supplies every
+    # consumed feature row.
     try:
-        cell_arrays = _load_npz(cell_bytes, CELL_MEMBERS, "Phase-1 cell archive")
-        cell_zid = np.asarray(cell_arrays["zid160"])
-        cell_receiver = _strings(cell_arrays["receiver_ids"], name="cells.receiver_ids", count=len(cell_zid))
-        cell_class = _strings(cell_arrays["class_ids"], name="cells.class_ids", count=len(cell_zid))
-        cell_physical = _strings(cell_arrays["physical_ids"], name="cells.physical_ids", count=len(cell_zid), unique=True)
+        cell_arrays = _load_npz(
+            cell_bytes,
+            CELL_MEMBERS,
+            "Phase-1 cell archive",
+            selected_members=("receiver_ids", "class_ids", "physical_ids"),
+        )
+        cell_receiver = _strings(cell_arrays["receiver_ids"], name="cells.receiver_ids", count=ROW_COUNT)
+        cell_class = _strings(cell_arrays["class_ids"], name="cells.class_ids", count=ROW_COUNT)
+        cell_physical = _strings(cell_arrays["physical_ids"], name="cells.physical_ids", count=ROW_COUNT, unique=True)
     except MissingRealInputArtifacts:
         try:
-            tap = _load_npz(cell_bytes, ("pre_relu", "z_dom", "tx_labels", "receiver_ids", "day_ids", "physical_ids", "scenario_names", "observation_ids"), "Phase-1 cell archive")
-            cell_zid = np.asarray(tap["pre_relu"])
-            cell_receiver = _strings(tap["receiver_ids"], name="cells.receiver_ids", count=len(cell_zid))
-            cell_class = _strings(tap["tx_labels"], name="cells.class_ids", count=len(cell_zid))
-            cell_physical = _strings(tap["physical_ids"], name="cells.physical_ids", count=len(cell_zid), unique=True)
+            tap = _load_npz(
+                cell_bytes,
+                CELL_TAP_MEMBERS,
+                "Phase-1 cell archive",
+                selected_members=("receiver_ids", "tx_labels", "physical_ids"),
+            )
+            cell_receiver = _strings(tap["receiver_ids"], name="cells.receiver_ids", count=ROW_COUNT)
+            cell_class = _strings(tap["tx_labels"], name="cells.class_ids", count=ROW_COUNT)
+            cell_physical = _strings(tap["physical_ids"], name="cells.physical_ids", count=ROW_COUNT, unique=True)
         except MissingRealInputArtifacts as error:
             raise MissingRealInputArtifacts(
                 f"{MISSING_PREFIX}: complete Phase-1 per-physical normalized-ReLU cells are required"
             ) from error
-    if cell_zid.dtype != np.dtype("<f4") or cell_zid.ndim != 2 or cell_zid.shape[1] != tsl.Z_DIM or not np.isfinite(cell_zid).all():
-        raise MissingRealInputArtifacts(f"{MISSING_PREFIX}: Phase-1 cell zid160 must be finite float32 [N,160]")
-    if len(cell_zid) != ROW_COUNT or (cell_receiver, cell_class, cell_physical) != (receiver_ids, tx_labels, physical_ids):
-        raise MissingRealInputArtifacts(f"{MISSING_PREFIX}: Phase-1 cells must align with the complete source physical grid")
+    if len(cell_physical) != ROW_COUNT or cell_receiver != receiver_ids or cell_physical != physical_ids:
+        raise MissingRealInputArtifacts(f"{MISSING_PREFIX}: Phase-1 cell metadata must align with received-IQ physical rows")
     if any(len([1 for r, c in zip(cell_receiver, cell_class, strict=True) if r == receiver and c == class_id]) != PHYSICAL_PER_CELL for receiver in sorted(set(cell_receiver)) for class_id in sorted(set(cell_class))):
         raise MissingRealInputArtifacts(f"{MISSING_PREFIX}: Phase-1 cells lack a complete per-physical receiver/class cell")
+    if len(set(receiver_ids)) != 7 or len(set(cell_class)) != 6:
+        raise MissingRealInputArtifacts(f"{MISSING_PREFIX}: Phase-1 cell metadata must be a complete 7x6 grid")
     rows = SourceRows(
         received_iq=np.ascontiguousarray(received_iq, dtype=np.float32),
-        pre_relu=np.ascontiguousarray(pre_relu, dtype=np.float32),
         receiver_ids=receiver_ids,
         day_ids=day_ids,
-        tx_labels=tx_labels,
         physical_ids=physical_ids,
         scenario_names=scenario_names,
         observation_ids=observation_ids,
         receiver_registry=tuple(sorted(set(receiver_ids))),
-        class_registry=tuple(sorted(set(tx_labels))),
         received_iq_sha256=_sha(received_bytes),
-        source_archive_sha256=_sha(source_bytes),
     )
     cells = CellRows(
         receiver_ids=cell_receiver,
         class_ids=cell_class,
         physical_ids=cell_physical,
-        zid160=np.ascontiguousarray(cell_zid, dtype=np.float32),
     )
-    return rows, cells, {"received_iq_sha256": _sha(received_bytes), "source_archive_sha256": _sha(source_bytes), "phase1_cells_sha256": _sha(cell_bytes)}
+    return rows, cells, {"received_iq_sha256": _sha(received_bytes), "phase1_cells_sha256": _sha(cell_bytes)}
 
 
-def _ordered_cell_indices(rows: SourceRows) -> Mapping[tuple[str, str], tuple[int, ...]]:
-    result: dict[tuple[str, str], tuple[int, ...]] = {}
-    for receiver in rows.receiver_registry:
-        for class_id in rows.class_registry:
-            indices = [index for index, (observed_receiver, observed_class) in enumerate(zip(rows.receiver_ids, rows.tx_labels, strict=True)) if observed_receiver == receiver and observed_class == class_id]
-            if len(indices) != PHYSICAL_PER_CELL:
-                raise MissingRealInputArtifacts(f"{MISSING_PREFIX}: source cell {receiver}/{class_id} is incomplete")
-            result[(receiver, class_id)] = tuple(sorted(indices, key=lambda index: _sha(f"NEXT-R3|{receiver}|{class_id}|{rows.physical_ids[index]}".encode("utf-8"))))
+@dataclass(frozen=True, slots=True)
+class TruthFreeSplitRow:
+    row_id: str
+    held_receiver: str
+    held_class: str
+    active_k: int
+    support_physical_ids: tuple[str, ...]
+    support_observation_ids: tuple[str, ...]
+    support_labels: tuple[str, ...]
+    reg0_query_physical_ids: tuple[str, ...]
+    reg0_query_observation_ids: tuple[str, ...]
+    reg1_query_physical_ids: tuple[str, ...]
+    reg1_query_observation_ids: tuple[str, ...]
+
+    def support_for(self, class_id: str) -> tuple[str, ...]:
+        return tuple(
+            physical_id
+            for physical_id, label in zip(self.support_physical_ids, self.support_labels, strict=True)
+            if label == class_id
+        )
+
+
+@dataclass(frozen=True, slots=True)
+class TruthFreeSplit:
+    class_registry: tuple[str, ...]
+    rows_by_id: Mapping[str, TruthFreeSplitRow]
+    sha256: str
+
+    def row(self, row_id: str) -> TruthFreeSplitRow:
+        try:
+            return self.rows_by_id[row_id]
+        except KeyError as error:
+            raise NextR3Proxy24Error("truth-free split row is missing") from error
+
+    def paired(self, row: TruthFreeSplitRow, active_k: int) -> TruthFreeSplitRow:
+        candidate = next(
+            (
+                item
+                for item in self.rows_by_id.values()
+                if item.held_receiver == row.held_receiver
+                and item.held_class == row.held_class
+                and item.active_k == active_k
+            ),
+            None,
+        )
+        if candidate is None:
+            raise NextR3Proxy24Error("truth-free split K-pair is missing")
+        return candidate
+
+
+def _string_tuple(value: Any, *, name: str, count: int, unique: bool = True) -> tuple[str, ...]:
+    if not isinstance(value, list) or len(value) != count:
+        raise NextR3Proxy24Error(f"truth-free split {name} must contain {count} strings")
+    result = tuple(str(item) for item in value)
+    if any(type(item) is not str or not item for item in value) or (unique and len(set(result)) != len(result)):
+        raise NextR3Proxy24Error(f"truth-free split {name} contains invalid IDs")
     return result
 
 
-def _build_phase1_cells(cells: CellRows) -> tuple[tsl.TSL160Phase1Cell, ...]:
+def _require_split_id_pairs(
+    value: Mapping[str, Any],
+    *,
+    physical_name: str,
+    observation_name: str,
+    count: int,
+    physical_to_observation: Mapping[str, str],
+) -> tuple[tuple[str, ...], tuple[str, ...]]:
+    physical_ids = _string_tuple(value.get(physical_name), name=physical_name, count=count)
+    observation_ids = _string_tuple(value.get(observation_name), name=observation_name, count=count)
+    if any(physical_to_observation.get(physical_id) != observation_id for physical_id, observation_id in zip(physical_ids, observation_ids, strict=True)):
+        raise NextR3Proxy24Error("truth-free split physical/observation identity drift")
+    return physical_ids, observation_ids
+
+
+def _is_subsequence(values: Sequence[str], universe: Sequence[str]) -> bool:
+    iterator = iter(universe)
+    return all(any(candidate == value for candidate in iterator) for value in values)
+
+
+def _load_truth_free_split(args: argparse.Namespace, rows: SourceRows, cells: CellRows) -> TruthFreeSplit:
+    payload = _require_file(
+        args.truth_free_split,
+        args.truth_free_split_sha256,
+        "truth-free split receipt",
+    )
+    try:
+        document = json.loads(payload.decode("utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError) as error:
+        raise NextR3Proxy24Error("truth-free split receipt must be UTF-8 JSON") from error
+    expected_top = {
+        "schema",
+        "protocol_schema",
+        "received_iq_sha256",
+        "capsule_id",
+        "split_id",
+        "class_registry",
+        "rows",
+    }
+    if type(document) is not dict or set(document) != expected_top:
+        raise NextR3Proxy24Error("truth-free split receipt schema drift")
+    if (
+        document["schema"] != TRUTH_FREE_SPLIT_SCHEMA
+        or document["protocol_schema"] != "p2_min_v1"
+        or document["received_iq_sha256"] != rows.received_iq_sha256
+        or document["capsule_id"] != _require_sha(args.capsule_id, "capsule ID")
+        or document["split_id"] != _require_sha(args.split_id, "split ID")
+    ):
+        raise NextR3Proxy24Error("truth-free split receipt provenance drift")
+    classes = _string_tuple(document["class_registry"], name="class_registry", count=matrix.CLASS_COUNT)
+    if classes != tuple(sorted(classes)) or set(classes) != set(cells.class_ids):
+        raise NextR3Proxy24Error("truth-free split registry drift")
+    plan = matrix.build_next_r3_proxy24_plan(classes)
+    matrix.validate_next_r3_proxy24_plan(plan)
+    plan_by_id = {str(item["row_id"]): item for item in plan["rows"]}
+    if not isinstance(document["rows"], list) or len(document["rows"]) != matrix.ROW_COUNT:
+        raise NextR3Proxy24Error("truth-free split must seal all 24 rows")
+    physical_to_observation = dict(zip(rows.physical_ids, rows.observation_ids, strict=True))
+    physical_to_receiver = dict(zip(rows.physical_ids, rows.receiver_ids, strict=True))
+    expected_row_keys = {
+        "row_id",
+        "held_receiver",
+        "held_class",
+        "active_k",
+        "support_physical_ids",
+        "support_observation_ids",
+        "support_labels",
+        "reg0_query_physical_ids",
+        "reg0_query_observation_ids",
+        "reg1_query_physical_ids",
+        "reg1_query_observation_ids",
+    }
+    result: dict[str, TruthFreeSplitRow] = {}
+    for raw in document["rows"]:
+        if type(raw) is not dict or set(raw) != expected_row_keys:
+            raise NextR3Proxy24Error("truth-free split contains truth-like or unknown row fields")
+        row_id = raw.get("row_id")
+        if type(row_id) is not str or row_id not in plan_by_id:
+            raise NextR3Proxy24Error("truth-free split row ID drift")
+        planned = plan_by_id[row_id]
+        if (
+            raw["held_receiver"] != planned["held_receiver"]
+            or raw["held_class"] != planned["held_class"]
+            or raw["active_k"] != planned["active_k"]
+        ):
+            raise NextR3Proxy24Error("truth-free split row identity drift")
+        active_k = int(planned["active_k"])
+        support_ids, support_observations = _require_split_id_pairs(
+            raw,
+            physical_name="support_physical_ids",
+            observation_name="support_observation_ids",
+            count=matrix.CLASS_COUNT * active_k,
+            physical_to_observation=physical_to_observation,
+        )
+        labels = _string_tuple(raw["support_labels"], name="support_labels", count=len(support_ids), unique=False)
+        expected_labels = tuple(class_id for class_id in classes for _ in range(active_k))
+        if labels != expected_labels:
+            raise NextR3Proxy24Error("only class-major K-shot support labels are permitted")
+        reg0_ids, reg0_observations = _require_split_id_pairs(
+            raw,
+            physical_name="reg0_query_physical_ids",
+            observation_name="reg0_query_observation_ids",
+            count=(matrix.CLASS_COUNT - 1) * matrix.QUERY_PER_CLASS,
+            physical_to_observation=physical_to_observation,
+        )
+        reg1_ids, reg1_observations = _require_split_id_pairs(
+            raw,
+            physical_name="reg1_query_physical_ids",
+            observation_name="reg1_query_observation_ids",
+            count=matrix.CLASS_COUNT * matrix.QUERY_PER_CLASS,
+            physical_to_observation=physical_to_observation,
+        )
+        if (
+            set(support_ids) & set(reg1_ids)
+            or not _is_subsequence(reg0_ids, reg1_ids)
+            or any(physical_to_receiver[item] != planned["held_receiver"] for item in support_ids + reg1_ids)
+        ):
+            raise NextR3Proxy24Error("truth-free support/query or held-receiver closure drift")
+        if row_id in result:
+            raise NextR3Proxy24Error("truth-free split duplicates a row")
+        result[row_id] = TruthFreeSplitRow(
+            row_id=row_id,
+            held_receiver=str(planned["held_receiver"]),
+            held_class=str(planned["held_class"]),
+            active_k=active_k,
+            support_physical_ids=support_ids,
+            support_observation_ids=support_observations,
+            support_labels=labels,
+            reg0_query_physical_ids=reg0_ids,
+            reg0_query_observation_ids=reg0_observations,
+            reg1_query_physical_ids=reg1_ids,
+            reg1_query_observation_ids=reg1_observations,
+        )
+    if set(result) != set(plan_by_id):
+        raise NextR3Proxy24Error("truth-free split lacks a frozen matrix row")
+    for row in result.values():
+        if row.active_k != 1:
+            continue
+        paired = next(
+            item
+            for item in result.values()
+            if item.held_receiver == row.held_receiver
+            and item.held_class == row.held_class
+            and item.active_k == 5
+        )
+        if (
+            any(row.support_for(class_id) != paired.support_for(class_id)[:1] for class_id in classes)
+            or row.reg0_query_physical_ids != paired.reg0_query_physical_ids
+            or row.reg0_query_observation_ids != paired.reg0_query_observation_ids
+            or row.reg1_query_physical_ids != paired.reg1_query_physical_ids
+            or row.reg1_query_observation_ids != paired.reg1_query_observation_ids
+        ):
+            raise NextR3Proxy24Error("K1/K5 truth-free support/query pairing drift")
+    return TruthFreeSplit(class_registry=classes, rows_by_id=result, sha256=_sha(payload))
+
+
+class BridgeFeatureCache:
+    """One received-IQ/checkpoint-derived cache shared by all 24 rows."""
+
+    def __init__(self, bridge: Any, rows: SourceRows, checkpoint_sha256: str) -> None:
+        if _require_sha(getattr(bridge, "checkpoint_sha256", None), "bridge checkpoint SHA256") != checkpoint_sha256:
+            raise NextR3Proxy24Error("checkpoint bridge SHA256 drift")
+        bridge_rows = getattr(bridge, "rows", None)
+        if (
+            bridge_rows is not rows
+            and (
+                tuple(getattr(bridge_rows, "physical_ids", ())) != rows.physical_ids
+                or tuple(getattr(bridge_rows, "observation_ids", ())) != rows.observation_ids
+                or not np.array_equal(np.asarray(getattr(bridge_rows, "received_iq", ())), rows.received_iq)
+            )
+        ):
+            raise NextR3Proxy24Error("received-IQ/checkpoint bridge input binding drift")
+        self._bridge = bridge
+        self._rows = rows
+        self._checkpoint_sha256 = checkpoint_sha256
+        self._index = {physical_id: index for index, physical_id in enumerate(rows.physical_ids)}
+        self._values: dict[str, np.ndarray] = {}
+
+    def take(self, physical_ids: Sequence[str]) -> np.ndarray:
+        ids = tuple(str(item) for item in physical_ids)
+        if not ids or len(set(ids)) != len(ids) or any(item not in self._index for item in ids):
+            raise NextR3Proxy24Error("bridge feature request physical-ID drift")
+        missing = tuple(item for item in ids if item not in self._values)
+        for start in range(0, len(missing), 128):
+            batch_ids = missing[start : start + 128]
+            indices = tuple(self._index[item] for item in batch_ids)
+            try:
+                _logits, features = self._bridge.forward_indices(indices)
+            except Exception as error:
+                raise NextR3Proxy24Error("received-IQ checkpoint bridge forward failed") from error
+            value = np.ascontiguousarray(np.asarray(features), dtype=np.float32)
+            if value.shape != (len(batch_ids), tsl.Z_DIM) or not np.isfinite(value).all():
+                raise NextR3Proxy24Error("received-IQ checkpoint bridge feature contract drift")
+            for physical_id, row in zip(batch_ids, value, strict=True):
+                frozen = np.array(row, dtype=np.float32, copy=True, order="C")
+                frozen.setflags(write=False)
+                self._values[physical_id] = frozen
+        return np.ascontiguousarray(np.stack(tuple(self._values[item] for item in ids)), dtype=np.float32)
+
+    def receipt(self, physical_ids: Sequence[str]) -> Mapping[str, Any]:
+        raw = self.take(physical_ids)
+        canonical = tsl.canonical_d106_relu_zid160(raw)
+        return {
+            "schema": BRIDGE_FEATURE_SCHEMA,
+            "feature_source": "received_iq_checkpoint_bridge",
+            "external_feature_archive_consumed": False,
+            "checkpoint_sha256": self._checkpoint_sha256,
+            "received_iq_sha256": self._rows.received_iq_sha256,
+            "physical_ids_sha256": _sha(_canonical(list(physical_ids))),
+            "bridge_z160_receipt": _array_receipt(raw),
+            "canonical_zid160_receipt": _array_receipt(canonical),
+        }
+
+
+def _build_phase1_cells(
+    cells: CellRows, feature_cache: BridgeFeatureCache
+) -> tuple[tsl.TSL160Phase1Cell, ...]:
     by_key: dict[tuple[str, str], list[int]] = {}
     for index, key in enumerate(zip(cells.receiver_ids, cells.class_ids, strict=True)):
         by_key.setdefault(key, []).append(index)
@@ -299,7 +560,7 @@ def _build_phase1_cells(cells: CellRows) -> tuple[tsl.TSL160Phase1Cell, ...]:
             receiver_id=receiver,
             class_handle=class_id,
             physical_ids=tuple(cells.physical_ids[index] for index in indices),
-            zid160=np.ascontiguousarray(cells.zid160[indices], dtype=np.float32),
+            zid160=feature_cache.take(tuple(cells.physical_ids[index] for index in indices)),
         )
         for (receiver, class_id), indices in sorted(by_key.items())
     )
@@ -395,8 +656,10 @@ def _read_d106_asset(
     return asset
 
 
-def _load_checkpoint_bridge(args: argparse.Namespace, checkpoint_sha256: str) -> Any:
-    """Load the existing real-checkpoint bridge after all pinned inputs close."""
+def _load_checkpoint_bridge(
+    args: argparse.Namespace, rows: SourceRows, checkpoint_sha256: str
+) -> Any:
+    """Build the existing real bridge from received-IQ and checkpoint only."""
 
     if args.received_iq_receipt is None or args.received_iq_receipt_sha256 is None:
         raise MissingRealInputArtifacts(
@@ -405,32 +668,34 @@ def _load_checkpoint_bridge(args: argparse.Namespace, checkpoint_sha256: str) ->
     _require_file(args.received_iq_receipt, args.received_iq_receipt_sha256, "received-IQ receipt")
     try:
         from cvsrffi import stage2_next_r1_real as real_bridge
-
-        real_rows = real_bridge.load_next_r1_real_rows(
-            selected_iq_archive=args.received_iq,
-            selected_iq_archive_sha256=args.received_iq_sha256,
-            selected_iq_receipt=args.received_iq_receipt,
-            selected_iq_receipt_sha256=args.received_iq_receipt_sha256,
-            ls_label_join_archive=args.source_held_archive,
-            ls_label_join_archive_sha256=args.source_held_archive_sha256,
+        from cvsrffi.stage2_d105_phase1_bundle import (
+            build_d105_exact_model_from_checkpoint,
+            load_d105_exact_sha_bound_checkpoint,
         )
-        bridge, _model_receipt = real_bridge.load_next_r1_real_model(
-            real_rows,
-            checkpoint_path=args.checkpoint,
-            checkpoint_sha256=checkpoint_sha256,
+        checkpoint, _load_receipt = load_d105_exact_sha_bound_checkpoint(
+            args.checkpoint, checkpoint_sha256
+        )
+        model, _build_receipt = build_d105_exact_model_from_checkpoint(
+            checkpoint,
+            input_len=int(rows.received_iq.shape[2]),
             device=args.device,
         )
-        return bridge
+        # ``NextR1RealModelBridge.forward_indices`` consumes only
+        # ``rows.received_iq``.  Supplying the received-only row object keeps
+        # source labels/features outside the prediction process altogether.
+        return real_bridge.NextR1RealModelBridge(model, rows, checkpoint_sha256, args.device)
     except MissingRealInputArtifacts:
         raise
     except Exception as error:
         raise NextR3Proxy24Error("real checkpoint/model bridge load failed") from error
 
 
-def _lock_for_k(source_receipt_sha256: str, active_k: int) -> qknn.Phase1ZIDStudentTLock:
+def _lock_for_k(phase1_metadata_sha256: str, active_k: int) -> qknn.Phase1ZIDStudentTLock:
     # The predecessor lock is imported from the frozen D106/D129 implementation;
     # this runner does not choose or tune any qKNN/rho/nu parameter.
-    locks = _predecessor_locks(SimpleNamespace(receipt={"source_archive_sha256": source_receipt_sha256}))
+    locks = _predecessor_locks(
+        SimpleNamespace(receipt={"phase1_cell_metadata_sha256": phase1_metadata_sha256})
+    )
     by_k = {lock.active_k: lock for lock in locks}
     if active_k not in by_k:
         raise NextR3Proxy24Error(f"frozen predecessor lock missing K{active_k}")
@@ -515,8 +780,8 @@ def _build_fold_inputs(
     args: argparse.Namespace,
     asset: d106_asset.D106RDCEAsset,
     source_meta: Mapping[str, Any],
-    bridge: Any,
-    cell_indices: Mapping[tuple[str, str], tuple[int, ...]],
+    truth_free_split: TruthFreeSplit,
+    feature_cache: BridgeFeatureCache,
 ) -> tuple[runtime.NextR3RuntimeResult, Mapping[str, Any]]:
     held_receiver = str(plan_row["held_receiver"])
     held_class = str(plan_row["held_class"])
@@ -538,29 +803,49 @@ def _build_fold_inputs(
     prior_build = _build_prior_from_cells(
         phase1_cells, held_receiver=held_receiver, held_class=held_class, binding=binding
     )
-    # K1/K5 use the same Phase-1-only prior; only the target support/query K
-    # changes.  The row runtime has no query truth or role input.
-    support5_by_class = {class_id: cell_indices[(held_receiver, class_id)][:5] for class_id in all_classes}
-    support_by_class = {class_id: support5_by_class[class_id][:active_k] for class_id in all_classes}
-    query_by_class = {class_id: cell_indices[(held_receiver, class_id)][5:] for class_id in all_classes}
-    reg0_support_indices = tuple(index for class_id in retained for index in support_by_class[class_id])
-    reg1_support_indices = tuple(index for class_id in all_classes for index in support_by_class[class_id])
-    reg0_query_indices = tuple(index for class_id in retained for index in query_by_class[class_id])
-    reg1_query_indices = tuple(index for class_id in all_classes for index in query_by_class[class_id])
-    # Bind one row pair.  K1/K5 query order is identical and K1 support is the
-    # class-wise prefix of K5 support by construction.
+    split_row = truth_free_split.row(str(plan_row["row_id"]))
+    if (
+        split_row.held_receiver != held_receiver
+        or split_row.held_class != held_class
+        or split_row.active_k != active_k
+    ):
+        raise NextR3Proxy24Error("truth-free split/runtime row drift")
+    # The receipt carries labels only for registered K-shot support.  Its query
+    # lists are opaque physical/observation IDs; neither this runner nor the
+    # runtime joins them to class labels, roles, or truth.
+    reg1_support_ids = split_row.support_physical_ids
+    reg1_support_labels = split_row.support_labels
+    reg0_support_ids = tuple(
+        physical_id
+        for physical_id, label in zip(reg1_support_ids, reg1_support_labels, strict=True)
+        if label in retained
+    )
+    reg0_support_labels = tuple(
+        label for label in reg1_support_labels if label in retained
+    )
+    reg0_query_ids = split_row.reg0_query_physical_ids
+    reg1_query_ids = split_row.reg1_query_physical_ids
     row_k1 = matrix.outer_key_from_mapping(next(item for item in matrix.build_next_r3_proxy24_plan(all_classes)["rows"] if item["held_receiver"] == held_receiver and item["held_class"] == held_class and item["active_k"] == 1))
     row_k5 = matrix.outer_key_from_mapping(next(item for item in matrix.build_next_r3_proxy24_plan(all_classes)["rows"] if item["held_receiver"] == held_receiver and item["held_class"] == held_class and item["active_k"] == 5))
+    split_k1 = truth_free_split.paired(split_row, 1)
+    split_k5 = truth_free_split.paired(split_row, 5)
     phase1_ids = tuple(pid for cell in eligible for pid in cell.physical_ids)
-    fold_receipt = {"held_receiver": held_receiver, "held_class": held_class, "phase1_fit_count": len(phase1_ids), "phase1_fit_physical_root_sha256": _sha(_canonical(sorted(phase1_ids)))}
+    fold_receipt = {"held_receiver": held_receiver, "held_class": held_class, "phase1_fit_count": len(phase1_ids), "phase1_fit_physical_root_sha256": _sha("\n".join(phase1_ids).encode("utf-8"))}
+    # ``bind_next_r3_physical_ids`` is a complete LOO/K-pair identity audit.
+    # Its query buckets are an opaque fixed 9-ID partition used solely for
+    # cardinality/root checks; they are not labels and never reach prediction.
+    opaque_query_buckets = {
+        class_id: tuple(split_k5.reg1_query_physical_ids[index * matrix.QUERY_PER_CLASS : (index + 1) * matrix.QUERY_PER_CLASS])
+        for index, class_id in enumerate(all_classes)
+    }
     binding_ids = matrix.bind_next_r3_physical_ids(
         row_k1=row_k1,
         row_k5=row_k5,
         loco_fold_receipt=fold_receipt,
         phase1_fit_ids=phase1_ids,
-        k1_support_ids_by_class={class_id: tuple(rows.physical_ids[index] for index in support5_by_class[class_id][:1]) for class_id in all_classes},
-        k5_support_ids_by_class={class_id: tuple(rows.physical_ids[index] for index in support5_by_class[class_id]) for class_id in all_classes},
-        query_ids_by_class={class_id: tuple(rows.physical_ids[index] for index in query_by_class[class_id]) for class_id in all_classes},
+        k1_support_ids_by_class={class_id: split_k1.support_for(class_id) for class_id in all_classes},
+        k5_support_ids_by_class={class_id: split_k5.support_for(class_id) for class_id in all_classes},
+        query_ids_by_class=opaque_query_buckets,
     )
     bridge_binding = runtime.NextR3RDCEBridgeBinding(
         checkpoint_sha256=args.checkpoint_sha256,
@@ -575,27 +860,30 @@ def _build_fold_inputs(
         phase1_seal_sha256=args.phase1_cells_sha256,
         outer_fold_id=outer_fold_id,
     )
-    raw_reg0_support = rows.pre_relu[list(reg0_support_indices)]
-    raw_reg1_support = rows.pre_relu[list(reg1_support_indices)]
-    raw_reg0_query = rows.pre_relu[list(reg0_query_indices)]
-    raw_reg1_query = rows.pre_relu[list(reg1_query_indices)]
+    raw_reg0_support = feature_cache.take(reg0_support_ids)
+    raw_reg1_support = feature_cache.take(reg1_support_ids)
+    raw_reg0_query = feature_cache.take(reg0_query_ids)
+    raw_reg1_query = feature_cache.take(reg1_query_ids)
+    paired_reg0_query = feature_cache.take(split_k5.reg0_query_physical_ids)
+    if raw_reg0_query.tobytes(order="C") != paired_reg0_query.tobytes(order="C"):
+        raise NextR3Proxy24Error("K1/K5 old-query bridge-feature byte pairing drift")
     reg0 = runtime.NextR3RegistrationInput(
         registration_state="REG0", received_iq_root_sha256=rows.received_iq_sha256,
         support_pre_relu160=raw_reg0_support, query_pre_relu160=raw_reg0_query,
-        support_labels=tuple(class_id for class_id in retained for _ in range(active_k)),
+        support_labels=reg0_support_labels,
         registered_classes=retained,
-        support_physical_ids=tuple(rows.physical_ids[index] for index in reg0_support_indices),
-        query_physical_ids=tuple(rows.physical_ids[index] for index in reg0_query_indices),
+        support_physical_ids=reg0_support_ids,
+        query_physical_ids=reg0_query_ids,
     )
     reg1 = runtime.NextR3RegistrationInput(
         registration_state="REG1", received_iq_root_sha256=rows.received_iq_sha256,
         support_pre_relu160=raw_reg1_support, query_pre_relu160=raw_reg1_query,
-        support_labels=tuple(class_id for class_id in all_classes for _ in range(active_k)),
+        support_labels=reg1_support_labels,
         registered_classes=all_classes,
-        support_physical_ids=tuple(rows.physical_ids[index] for index in reg1_support_indices),
-        query_physical_ids=tuple(rows.physical_ids[index] for index in reg1_query_indices),
+        support_physical_ids=reg1_support_ids,
+        query_physical_ids=reg1_query_ids,
     )
-    lock = _lock_for_k(source_meta["source_archive_sha256"], active_k)
+    lock = _lock_for_k(source_meta["phase1_cells_sha256"], active_k)
     authority_path = args._run_root / "rows" / f"{plan_row['row_id']}.row_authority.json"
     authority = _write_row_authority(
         authority_path,
@@ -634,7 +922,18 @@ def _build_fold_inputs(
         tsl_prior=prior_build.prior,
         tsl_runtime_binding=binding,
     )
-    return result, {"prior_receipt": dict(prior_build.receipt), "physical_binding": dict(binding_ids), "smoke_receipt": {"truth_loaded": False}}
+    return result, {
+        "prior_receipt": dict(prior_build.receipt),
+        "physical_binding": dict(binding_ids),
+        "input_feature_binding": {
+            "reg0_support": feature_cache.receipt(reg0_support_ids),
+            "reg0_query": feature_cache.receipt(reg0_query_ids),
+            "reg1_support": feature_cache.receipt(reg1_support_ids),
+            "reg1_query": feature_cache.receipt(reg1_query_ids),
+            "k1_k5_old_query_byte_identical": True,
+        },
+        "smoke_receipt": {"truth_loaded": False},
+    }
 
 
 def _build_prior_from_cells(cells: Sequence[tsl.TSL160Phase1Cell], *, held_receiver: str, held_class: str, binding: tsl.TSL160RuntimeBinding) -> tsl.TSL160PriorBuild:
@@ -650,13 +949,25 @@ def _build_prior_from_cells(cells: Sequence[tsl.TSL160Phase1Cell], *, held_recei
     return tsl.build_tsl160_phase1_prior(cells, folds, binding=binding, held_receiver=held_receiver, held_class=held_class)
 
 
-def _save_prediction_row(root: Path, index: int, result: runtime.NextR3RuntimeResult) -> Mapping[str, Any]:
+def _save_prediction_row(
+    root: Path,
+    index: int,
+    result: runtime.NextR3RuntimeResult,
+    input_feature_binding: Mapping[str, Any],
+) -> Mapping[str, Any]:
     row_id = result.bridge.row_id
     stem = f"{index:03d}_{_sha(row_id.encode('utf-8'))[:16]}"
     row_path = root / "rows" / f"{stem}.json"
     payload = artifact.build_next_r3_prediction_artifact
     del payload  # keep the row receipt intentionally derived below
-    row_document = {"schema": RUNNER_SCHEMA, "row_id": row_id, "runtime_receipt": _plain(result.runtime_receipt), "resource_receipt": _plain(result.resource_receipt), "smoke_receipt": {"truth_loaded": False}}
+    row_document = {
+        "schema": RUNNER_SCHEMA,
+        "row_id": row_id,
+        "runtime_receipt": _plain(result.runtime_receipt),
+        "resource_receipt": _plain(result.resource_receipt),
+        "input_feature_binding": _plain(input_feature_binding),
+        "smoke_receipt": {"truth_loaded": False},
+    }
     _write_json_new(row_path, row_document)
     return {"row_id": row_id, "path": row_path.relative_to(root).as_posix(), "sha256": _sha_file(row_path)}
 
@@ -677,6 +988,7 @@ def run_predict(args: argparse.Namespace) -> Mapping[str, Any]:
         args.validator_receipt_sha256, "validator receipt SHA256"
     )
     args.phase1_cells_sha256 = _require_sha(args.phase1_cells_sha256, "Phase-1 cell SHA256")
+    truth_free_split = _load_truth_free_split(args, rows, cells)
     asset_wire = _read_d106_asset(
         args.d106_rdce_wire,
         args.d106_rdce_wire_sha256,
@@ -684,28 +996,34 @@ def run_predict(args: argparse.Namespace) -> Mapping[str, Any]:
         tap_sha256=tap_sha,
         tap_receipt_sha256=tap_receipt_sha,
     )
-    cells_typed = _build_phase1_cells(cells)
-    plan = matrix.build_next_r3_proxy24_plan(rows.class_registry)
+    plan = matrix.build_next_r3_proxy24_plan(truth_free_split.class_registry)
     matrix.validate_next_r3_proxy24_plan(plan)
+    # The real checkpoint bridge is loaded only after every input receipt
+    # closes.  The cache is the sole feature source for support, query and the
+    # complete physical-LOO Phase1 cells.
+    bridge = _load_checkpoint_bridge(args, rows, checkpoint_sha)
+    feature_cache = BridgeFeatureCache(bridge, rows, checkpoint_sha)
+    cells_typed = _build_phase1_cells(cells, feature_cache)
+    first_split_row = truth_free_split.row(str(plan["rows"][0]["row_id"]))
+    index_by_physical = {physical_id: index for index, physical_id in enumerate(rows.physical_ids)}
+    first_indices = tuple(index_by_physical[item] for item in first_split_row.support_physical_ids[:2])
+    smoke = _checkpoint_smoke(bridge, first_indices, checkpoint_sha)
     root = _new_root(args.run_root)
     args._run_root = root
     _write_json_new(root / "plan.json", plan)
-    _write_json_new(root / "preregistration.json", {"schema": RUNNER_SCHEMA, "run_id": args.run_id, "candidate_id": matrix.CANDIDATE_ID, "matrix_sha256": plan["matrix_sha256"], "row_count": matrix.ROW_COUNT, "state_prediction_count": matrix.STATE_PREDICTION_COUNT, "truth_loaded": False, "checkpoint_sha256": checkpoint_sha, "received_iq_sha256": rows.received_iq_sha256, "source_archive_sha256": rows.source_archive_sha256, "phase1_cells_sha256": source_meta["phase1_cells_sha256"], "output_overwrite": False})
-    # The real checkpoint bridge is loaded only after archive/asset closure.
-    bridge = _load_checkpoint_bridge(args, checkpoint_sha)
-    cell_indices = _ordered_cell_indices(rows)
-    first_indices = tuple(cell_indices[(matrix.HELD_RECEIVERS[0], rows.class_registry[0])][:2])
-    smoke = _checkpoint_smoke(bridge, first_indices, checkpoint_sha)
+    _write_json_new(root / "preregistration.json", {"schema": RUNNER_SCHEMA, "run_id": args.run_id, "candidate_id": matrix.CANDIDATE_ID, "matrix_sha256": plan["matrix_sha256"], "row_count": matrix.ROW_COUNT, "state_prediction_count": matrix.STATE_PREDICTION_COUNT, "truth_loaded": False, "checkpoint_sha256": checkpoint_sha, "received_iq_sha256": rows.received_iq_sha256, "phase1_cells_sha256": source_meta["phase1_cells_sha256"], "truth_free_split_sha256": truth_free_split.sha256, "external_feature_archive_consumed": False, "output_overwrite": False})
+    _write_json_new(root / "bridge_feature_binding.json", feature_cache.receipt(rows.physical_ids))
     _write_json_new(root / "smoke.json", smoke)
     selected_rows = tuple(plan["rows"][:1]) if args.smoke_one_row_no_truth else tuple(plan["rows"])
     runtime_results: dict[str, runtime.NextR3RuntimeResult] = {}
     resources: list[Mapping[str, Any]] = []
     row_receipts: list[Mapping[str, Any]] = []
-    for planned in selected_rows:
-        result, receipts = _build_fold_inputs(rows, cells_typed, planned, args=args, asset=asset_wire, source_meta=source_meta, bridge=bridge, cell_indices=cell_indices)
+    for index, planned in enumerate(selected_rows):
+        result, receipts = _build_fold_inputs(rows, cells_typed, planned, args=args, asset=asset_wire, source_meta=source_meta, truth_free_split=truth_free_split, feature_cache=feature_cache)
         runtime_results[str(planned["row_id"])] = result
         resources.append({"row_id": planned["row_id"], "resource_receipt": _plain(result.resource_receipt), "prior_receipt": receipts["prior_receipt"]})
-        row_receipts.append({"row_id": planned["row_id"], "runtime_receipt_sha256": _sha(_canonical(result.runtime_receipt)), "resource_receipt_sha256": _sha(_canonical(result.resource_receipt))})
+        row_file = _save_prediction_row(root, index, result, receipts["input_feature_binding"])
+        row_receipts.append({"row_id": planned["row_id"], "runtime_receipt_sha256": _sha(_canonical(result.runtime_receipt)), "resource_receipt_sha256": _sha(_canonical(result.resource_receipt)), "input_feature_binding_sha256": _sha(_canonical(receipts["input_feature_binding"])), "row_file_sha256": row_file["sha256"]})
     if args.smoke_one_row_no_truth:
         completion = {"schema": COMPLETION_SCHEMA, "status": "SMOKE_NO_TRUTH", "run_id": args.run_id, "row_count": 1, "truth_loaded": False, "prediction_complete": False, "smoke_receipt_sha256": _sha_file(root / "smoke.json")}
         _write_json_new(root / "completion.json", completion)
@@ -767,8 +1085,8 @@ def _parser() -> argparse.ArgumentParser:
     predict.add_argument("--received-iq-sha256", required=True)
     predict.add_argument("--received-iq-receipt", type=Path)
     predict.add_argument("--received-iq-receipt-sha256")
-    predict.add_argument("--source-held-archive", required=True, type=Path)
-    predict.add_argument("--source-held-archive-sha256", required=True)
+    predict.add_argument("--truth-free-split", required=True, type=Path)
+    predict.add_argument("--truth-free-split-sha256", required=True)
     predict.add_argument("--phase1-cells", required=True, type=Path)
     predict.add_argument("--phase1-cells-sha256", required=True)
     predict.add_argument("--checkpoint", required=True, type=Path)
