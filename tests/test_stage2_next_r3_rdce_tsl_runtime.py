@@ -189,62 +189,23 @@ def _write_row_authority(tmp_path: Path, support: rdce.D106RDCESupportRows):
 
 
 def _build_prior(asset) -> tuple[tsl.TSL160Phase1Prior, tsl.TSL160RuntimeBinding]:
-    old_classes = tuple(f"c{index}" for index in range(5))
-
-    def cell(receiver: str, label: str, class_index: int, seed: int) -> tsl.TSL160Phase1Cell:
-        rows = _raw_cluster(class_index, 6, seed=seed)
-        return tsl.TSL160Phase1Cell(
-            receiver_id=receiver,
-            class_handle=label,
-            physical_ids=tuple(f"phase1-{receiver}-{label}-{index}" for index in range(6)),
-            zid160=rows,
-        )
-
-    cells = [cell("outer-hold", "c0", 0, 10), cell("p1", "pseudo-new", 5, 11)]
-    for receiver_index, receiver in enumerate(("p1", "p2")):
-        cells.extend(
-            cell(receiver, class_id, class_index, 100 + receiver_index * 10 + class_index)
-            for class_index, class_id in enumerate(old_classes)
-        )
-    source = tuple(cells)
-    fold_cells = tuple(
-        next(item for item in source if item.receiver_id == "p1" and item.class_handle == class_id)
-        for class_id in old_classes
-    )
-    fold = tsl.TSL160PhysicalLOOFold(
-        fold_id="p1-c1-physical-loo",
-        receiver_id="p1",
-        class_handle="c1",
-        registered_classes=old_classes,
-        support_zid160=np.concatenate(tuple(cell.zid160[:5] for cell in fold_cells), axis=0),
-        support_labels=tuple(class_id for class_id in old_classes for _ in range(5)),
-        support_physical_ids=tuple(
-            physical_id for cell in fold_cells for physical_id in cell.physical_ids[:5]
-        ),
-        validation_zid160=np.concatenate(tuple(cell.zid160[5:] for cell in fold_cells), axis=0),
-        validation_labels=old_classes,
-        validation_physical_ids=tuple(cell.physical_ids[5] for cell in fold_cells),
-    )
-    eligible = tuple(
-        item
-        for item in source
-        if item.receiver_id != "outer-hold" and item.class_handle != "pseudo-new"
-    )
     binding = tsl.TSL160RuntimeBinding(
         outer_fold_id="outer-hold/pseudo-new",
         checkpoint_sha256=asset.checkpoint_sha256,
         representation_rule_sha256=_sha("representation-rule"),
-        phase1_physical_id_root_sha256=tsl.phase1_physical_id_root(eligible),
+        phase1_physical_id_root_sha256=_sha("phase1-physical-root"),
         phase1_seal_sha256=_sha("phase1-seal"),
     )
-    built = tsl.build_tsl160_phase1_prior(
-        source,
-        (fold,),
+    prior = tsl.TSL160Phase1Prior(
+        q_logv0_int8=np.linspace(-63, 63, 160, dtype=np.int8),
+        scale_logv0_fp16=np.asarray([0.0078125], dtype=np.float16),
+        offset_logv0_fp16=np.asarray([-4.0], dtype=np.float16),
+        nu0_fp16=np.asarray([5.0], dtype=np.float16),
+        rho_h_mantissa_fp16=np.asarray([0.75], dtype=np.float16),
+        rho_h_exp2=np.asarray([12], dtype=np.int16),
         binding=binding,
-        held_receiver="outer-hold",
-        held_class="pseudo-new",
     )
-    return built.prior, binding
+    return prior, binding
 
 
 def _case(tmp_path: Path, monkeypatch: pytest.MonkeyPatch, active_k: int):
@@ -300,7 +261,7 @@ def _case(tmp_path: Path, monkeypatch: pytest.MonkeyPatch, active_k: int):
         query_physical_ids=old_query_ids,
     )
     raw_new_support = _raw_cluster(5, active_k, seed=305)
-    raw_new_query = _raw_cluster(5, 1, seed=405)
+    raw_new_query = _raw_cluster(5, 2, seed=405)
     reg1 = runtime.NextR3RegistrationInput(
         registration_state="REG1",
         received_iq_root_sha256=received_root,
@@ -309,7 +270,7 @@ def _case(tmp_path: Path, monkeypatch: pytest.MonkeyPatch, active_k: int):
         support_labels=old_labels + ("c5",) * active_k,
         registered_classes=all_classes,
         support_physical_ids=old_ids + tuple(f"support-c5-{shot}" for shot in range(active_k)),
-        query_physical_ids=old_query_ids + ("query-c5-0",),
+        query_physical_ids=old_query_ids + ("query-c5-0", "query-c5-1"),
     )
     bridge = runtime.NextR3RDCEBridgeBinding(
         checkpoint_sha256=asset.checkpoint_sha256,
@@ -353,6 +314,18 @@ def test_formal_rdce_tsl_four_state_closure_and_fail_closed_bindings(
     assert result.runtime_receipt["r1_tsl_prior_semantics"] == tsl.PRIOR_SEMANTICS
     assert result.runtime_receipt["r1_tsl_prior_transported_by_rdce"] is False
     assert result.runtime_receipt["r1_tsl_covariance_claim"] is False
+    old_query_reuse = result.runtime_receipt["old_query_reuse"]
+    assert old_query_reuse["common_old_query_count"] == len(reg0.query_physical_ids)
+    assert old_query_reuse["common_old_query_physical_root_sha256"] == runtime._physical_root(
+        reg0.query_physical_ids
+    )
+    assert old_query_reuse["common_old_query_ordered_root_sha256"] == (
+        runtime._ordered_physical_root(reg0.query_physical_ids)
+    )
+    assert old_query_reuse["reg0_query_is_reg1_ordered_subsequence"] is True
+    assert old_query_reuse["common_old_query_r0_byte_identical"] is True
+    assert old_query_reuse["common_old_query_r1_byte_identical"] is True
+    assert result.four_state_receipt["old_query_reuse"] == old_query_reuse
     for registration in (result.reg0, result.reg1):
         for representation in ("R0", "R1"):
             cache = registration.caches[representation]
@@ -402,11 +375,61 @@ def test_formal_rdce_tsl_four_state_closure_and_fail_closed_bindings(
             tsl_prior=prior,
             tsl_runtime_binding=tsl_binding,
         )
-    reverse = np.arange(len(reg1.query_physical_ids) - 1, -1, -1)
+    changed_query = reg1.query_pre_relu160.copy()
+    changed_query[0, 7] += np.float32(0.25)
+    with pytest.raises(runtime.NextR3RDCETSLRuntimeError, match="old-query R0 canonical"):
+        runtime.execute_next_r3_four_state(
+            bridge=bridge,
+            da1_reg0_state=state,
+            reg0=reg0,
+            reg1=replace(reg1, query_pre_relu160=changed_query),
+            qknn_lock=lock,
+            tsl_prior=prior,
+            tsl_runtime_binding=tsl_binding,
+        )
+    keep = np.arange(1, len(reg1.query_physical_ids), dtype=np.intp)
+    with pytest.raises(runtime.NextR3RDCETSLRuntimeError, match="every REG0 query ID"):
+        runtime.execute_next_r3_four_state(
+            bridge=bridge,
+            da1_reg0_state=state,
+            reg0=reg0,
+            reg1=replace(
+                reg1,
+                query_pre_relu160=reg1.query_pre_relu160[keep].copy(),
+                query_physical_ids=tuple(reg1.query_physical_ids[index] for index in keep),
+            ),
+            qknn_lock=lock,
+            tsl_prior=prior,
+            tsl_runtime_binding=tsl_binding,
+        )
+    duplicate_ids = list(reg1.query_physical_ids)
+    duplicate_ids[-1] = duplicate_ids[0]
+    with pytest.raises(runtime.NextR3RDCETSLRuntimeError, match="unique and aligned"):
+        replace(reg1, query_physical_ids=tuple(duplicate_ids))
+    old_order_drift = np.asarray((1, 0, 2, 3, 4, 5, 6), dtype=np.intp)
+    with pytest.raises(runtime.NextR3RDCETSLRuntimeError, match="ID order"):
+        runtime.execute_next_r3_four_state(
+            bridge=bridge,
+            da1_reg0_state=state,
+            reg0=reg0,
+            reg1=replace(
+                reg1,
+                query_pre_relu160=reg1.query_pre_relu160[old_order_drift].copy(),
+                query_physical_ids=tuple(
+                    reg1.query_physical_ids[index] for index in old_order_drift
+                ),
+            ),
+            qknn_lock=lock,
+            tsl_prior=prior,
+            tsl_runtime_binding=tsl_binding,
+        )
+    reordered_indices = np.asarray((0, 5, 1, 2, 6, 3, 4), dtype=np.intp)
     reordered = replace(
         reg1,
-        query_pre_relu160=reg1.query_pre_relu160[reverse].copy(),
-        query_physical_ids=tuple(reg1.query_physical_ids[index] for index in reverse),
+        query_pre_relu160=reg1.query_pre_relu160[reordered_indices].copy(),
+        query_physical_ids=tuple(
+            reg1.query_physical_ids[index] for index in reordered_indices
+        ),
     )
     reordered_result = runtime.execute_next_r3_four_state(
         bridge=bridge,
@@ -419,6 +442,14 @@ def test_formal_rdce_tsl_four_state_closure_and_fail_closed_bindings(
     )
     assert reordered_result.da1_reg0_state_sha256 == result.da1_reg0_state_sha256
     assert reordered_result.da1_reg1_state_sha256 == result.da1_reg1_state_sha256
+    assert (
+        reordered_result.reg1.receipt["qknn_bank_sha256"]
+        == result.reg1.receipt["qknn_bank_sha256"]
+    )
+    assert (
+        reordered_result.runtime_receipt["old_query_reuse"]
+        == result.runtime_receipt["old_query_reuse"]
+    )
     for arm_id in ("R0F", "R0L", "R1F", "R1L"):
         assert (
             reordered_result.reg1.head_fits[arm_id].state.state_sha256

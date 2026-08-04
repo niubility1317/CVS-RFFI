@@ -168,6 +168,16 @@ def _unit_zid160(value: Any, *, name: str) -> np.ndarray:
     return _readonly(value, dtype=np.float32)
 
 
+def _byte_identical(left: np.ndarray, right: np.ndarray) -> bool:
+    left_value = np.ascontiguousarray(left)
+    right_value = np.ascontiguousarray(right)
+    return (
+        left_value.dtype == right_value.dtype
+        and left_value.shape == right_value.shape
+        and left_value.tobytes(order="C") == right_value.tobytes(order="C")
+    )
+
+
 def _physical_root(values: Sequence[str]) -> str:
     return _canonical_sha256(sorted(values))
 
@@ -722,7 +732,9 @@ def _validate_reg1_append(
     reg1: NextR3RegistrationInput,
     reg0_support: np.ndarray,
     reg1_support: np.ndarray,
-) -> None:
+    reg0_query: np.ndarray,
+    reg1_query: np.ndarray,
+) -> tuple[int, ...]:
     old_classes = reg0.registered_classes
     old_rows = len(reg0_support)
     if (
@@ -742,6 +754,29 @@ def _validate_reg1_append(
         raise NextR3RDCETSLRuntimeError("REG1 support suffix must contain only appended classes")
     if any(suffix_labels.count(class_id) != reg0.active_k for class_id in new_classes):
         raise NextR3RDCETSLRuntimeError("REG1 appended classes violate frozen K")
+    reg1_query_index = {
+        physical_id: index for index, physical_id in enumerate(reg1.query_physical_ids)
+    }
+    if any(
+        physical_id not in reg1_query_index
+        for physical_id in reg0.query_physical_ids
+    ):
+        raise NextR3RDCETSLRuntimeError(
+            "REG1 query must preserve every REG0 query ID as an ordered subsequence"
+        )
+    old_query_positions = tuple(
+        reg1_query_index[physical_id] for physical_id in reg0.query_physical_ids
+    )
+    if old_query_positions != tuple(sorted(old_query_positions)):
+        raise NextR3RDCETSLRuntimeError(
+            "REG1 query must preserve REG0 query ID order as an ordered subsequence"
+        )
+    aligned_reg1_query = reg1_query[np.asarray(old_query_positions, dtype=np.intp)]
+    if not _byte_identical(aligned_reg1_query, reg0_query):
+        raise NextR3RDCETSLRuntimeError(
+            "REG1 common old-query R0 canonical feature bytes drift"
+        )
+    return old_query_positions
 
 
 def _q_head(cache: NextR3FeatureCache, lock: qknn.Phase1ZIDStudentTLock) -> _QHeadResult:
@@ -1210,11 +1245,13 @@ def execute_next_r3_four_state(
     )
     reg0_support, reg0_query = _canonicalize_input(reg0)
     reg1_support, reg1_query = _canonicalize_input(reg1)
-    _validate_reg1_append(
+    old_query_positions = _validate_reg1_append(
         reg0=reg0,
         reg1=reg1,
         reg0_support=reg0_support,
         reg1_support=reg1_support,
+        reg0_query=reg0_query,
+        reg1_query=reg1_query,
     )
     before = _state_fingerprint(da1_reg0_state)
     try:
@@ -1266,6 +1303,35 @@ def execute_next_r3_four_state(
         )
     ):
         raise NextR3RDCETSLRuntimeError("REG1 did not reuse the frozen old-support representations")
+    old_query_indices = np.asarray(old_query_positions, dtype=np.intp)
+    common_old_query_r0_byte_identical = _byte_identical(
+        reg1_result.caches["R0"].query_zid160[old_query_indices],
+        reg0_result.caches["R0"].query_zid160,
+    )
+    common_old_query_r1_byte_identical = _byte_identical(
+        reg1_result.caches["R1"].query_zid160[old_query_indices],
+        reg0_result.caches["R1"].query_zid160,
+    )
+    if not common_old_query_r0_byte_identical:
+        raise NextR3RDCETSLRuntimeError(
+            "REG1 common old-query R0 cache bytes drift after runtime binding"
+        )
+    if not common_old_query_r1_byte_identical:
+        raise NextR3RDCETSLRuntimeError(
+            "REG1 common old-query R1 RDCE bytes drift under the frozen state"
+        )
+    old_query_reuse_receipt = {
+        "common_old_query_count": len(reg0.query_physical_ids),
+        "common_old_query_physical_root_sha256": _physical_root(
+            reg0.query_physical_ids
+        ),
+        "common_old_query_ordered_root_sha256": _ordered_physical_root(
+            reg0.query_physical_ids
+        ),
+        "reg0_query_is_reg1_ordered_subsequence": True,
+        "common_old_query_r0_byte_identical": common_old_query_r0_byte_identical,
+        "common_old_query_r1_byte_identical": common_old_query_r1_byte_identical,
+    }
     if before != _state_fingerprint(da1_reg0_state):
         raise NextR3RDCETSLRuntimeError("R3 execution mutated the frozen DA1_REG0 state")
 
@@ -1290,6 +1356,7 @@ def execute_next_r3_four_state(
         "da1_reg1_reuses_da1_reg0_state_sha": True,
         "reg1_da_state_refit_calls": 0,
         "reg1_support_policy": "byte_preserve_reg0_prefix_append_new_support_only",
+        "old_query_reuse": old_query_reuse_receipt,
     }
     resource_receipt = {
         "schema": "cvs.stage2.next_r3.rdce_tsl160.resource.v1",
@@ -1341,6 +1408,7 @@ def execute_next_r3_four_state(
         "reg1_r0_cache_sha256": reg1_result.caches["R0"].cache_sha256,
         "reg1_r1_cache_sha256": reg1_result.caches["R1"].cache_sha256,
         "same_da_state_sha_across_reg0_reg1": True,
+        "old_query_reuse": old_query_reuse_receipt,
         "query_rows_used_for_fit": 0,
         "query_state_updates": 0,
         "query_selection_count": 0,
