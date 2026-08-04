@@ -1,6 +1,6 @@
 # Stage2功能研发目标与证据门
 
-状态：`ACTIVE / NEXT_R4_PROXY24_COMPLETED / NEXT_R5_K5_FA_Q_DESIGN_FROZEN`
+状态：`ACTIVE / NEXT_R4_PROXY24_COMPLETED / NEXT_R5_TARGET5_PAUSED_OBJECTIVE_MISMATCH / NEXT_R6_JOINT_RESEARCH`
 
 ## 0.0 2026-08-05当前活动目标与统一指标命名
 
@@ -11,7 +11,7 @@
 - K5 CER-PLR160在域适应后/新类注册后相对直接qKNN的H`-27.060pp`，12/12行均负，永久关闭；不得调残差比例或重新发布。
 - D92-Lite physical-LOO margin混合头虽在`alpha=0`时协议合法并可精确返回qKNN，但独立监督判定`P1=2`：K4-LOO仅保护support代理，Q/L logit缺少共同可辨识尺度，且会混淆已验证FA主效应。该头本轮拒绝，不实现、不实验。
 
-下一唯一候选冻结为`NEXT-R5 K5-FA-RDCE3-Q`：
+`NEXT-R5 K5-FA-RDCE3-Q`只冻结为可复用DA核心，不是已完成的联合候选：
 
 - 完整保留R2的FA-RDCE3公式、rank-3 INT8 Phase1资产、`rho=sqrt(3)`、固定Wiener系数及FP16共享动态状态`a[3]`；不得调参或改公式。
 - 仅`K>=5`启用FA；K1无足够独立support辨识共同接收机位移，严格旁路为未适应qKNN，不再进入当前矩阵。
@@ -32,7 +32,7 @@
 
 该命名规则同时约束性能日志、prediction/score artifact、CSV/JSON字段、Markdown表格、图题和对话结论。每条性能记录必须显式保存`state_id`及对应中文主名称；指标字段按`<metric>_<state_id>`表达，例如`old_ba_DA0_REG0`、`old_ba_DA1_REG0`、`h_DA0_REG1`和`h_DA1_REG1`。REG0状态的`seen_new_acc`与`H_old_new`必须写为`N/A`，不得写0，也不得通过跨run或不同query补齐。任何“提升”必须写明起点、终点和同配对差值，例如“域适应后/新类注册后相对域适应前/新类注册后：`H_old_new_DA1_REG1−H_old_new_DA0_REG1`”。
 
-R2已经完成`K5×2 receiver×6 held-class×四状态`的12行Q矩阵，不得重复运行相同Proxy24。下一次真实性能实验唯一冻结为`NEXT-R5-TARGET5-K5-new20`：
+R2已经完成`K5×2 receiver×6 held-class×四状态`的12行Q矩阵，不得重复运行相同Proxy24。原`NEXT-R5-TARGET5-K5-new20`只验证Q-only DA，缺少精简D92头主效应和联合交互，现暂停且不得发布。下一真实性能实验必须先由NEXT-R6的一条原理不同联合候选在共享缓存的2表示×3头六臂最小矩阵中胜出；以下Target5结构仅保留为未来Target四状态骨架：
 
 ```text
 5 receivers × 1个预注册未参与本轮Proxy评分的seed（固定713103）× K5/new20

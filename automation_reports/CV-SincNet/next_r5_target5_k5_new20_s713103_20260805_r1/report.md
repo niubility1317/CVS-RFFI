@@ -4,7 +4,7 @@
 
 - run ID：`next_r5_target5_k5_new20_s713103_20260805_r1`
 - 日期：2026-08-05
-- 当前状态：`LOCAL_PLAN_VERIFIED / NOT_LANDED / NOT_LAUNCHED`
+- 当前状态：`LOCAL_PLAN_VERIFIED / PAUSED_OBJECTIVE_MISMATCH / NOT_LANDED / NOT_LAUNCHED`
 - 候选：`NEXT-R5-K5-FA-RDCE3-Q`
 - 主agent：`gpt-5.6-sol/high`
 - 科学计划实现与独立审查：`gpt-5.6-terra/max`
@@ -67,6 +67,7 @@ git diff --check
 
 以下字段尚未冻结，因此本报告当前不授权N607 handoff或启动：
 
+- 持续目标要求DA与精简D92联合研发及2表示×3头六臂归因；当前Q-only Target5只能验证FA，不能证明Lite头或联合主效应。NEXT-R6联合候选完成三轮回顾、科学设计和最小六臂筛选前，本run保持暂停；
 - 复用D106真实包materializer的Target5预测入口和独立truth-side scorer；
 - seed713103的`capsule_id/split_id/old_query_id_root/new_query_id_root/receiver/K/new_count/scenario`完全同键只读检查；
 - 真实checkpoint无truth smoke与聚焦query零fit/update/selection负测；
