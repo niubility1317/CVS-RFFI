@@ -55,6 +55,10 @@ _METRIC_FIELDS = (
     "total_correct_count",
     "total_query_count",
 )
+_STATE_IDS_BY_REGISTRATION = {
+    "REG0": ("DA0_REG0", "DA1_REG0"),
+    "REG1": ("DA0_REG1", "DA1_REG1"),
+}
 
 
 class NextR3ScoreError(ValueError):
@@ -102,7 +106,12 @@ def _harmonic(old_accuracy: float, new_accuracy: float) -> float:
     return 2.0 * old_accuracy * new_accuracy / (old_accuracy + new_accuracy)
 
 
-def _state_map(registration: Mapping[str, Any], *, name: str) -> Mapping[str, Any]:
+def _state_map(
+    registration: Mapping[str, Any],
+    *,
+    name: str,
+    allowed_state_ids: Sequence[str],
+) -> Mapping[str, Any]:
     """Normalize the two runner spellings used for a registration bundle."""
 
     states = registration.get("states")
@@ -114,9 +123,12 @@ def _state_map(registration: Mapping[str, Any], *, name: str) -> Mapping[str, An
             key: value for key, value in registration.items() if key in matrix.STATE_IDS
         }
         states = candidate or None
-    if not isinstance(states, Mapping) or set(states) != set(matrix.STATE_IDS):
-        raise NextR3ScoreError(f"{name} must contain all four state IDs")
-    return states
+    allowed = tuple(allowed_state_ids)
+    if not isinstance(states, Mapping) or set(states) != set(allowed):
+        raise NextR3ScoreError(
+            f"{name} must contain exactly {', '.join(allowed)} for its registration"
+        )
+    return {state_id: states[state_id] for state_id in allowed}
 
 
 def _state_parts(
@@ -258,9 +270,13 @@ def _validate_prediction(
             )
             if tuple(registration.get("registered_classes", ())) != expected_classes:
                 raise NextR3ScoreError(f"prediction row[{index}] {registration_id} class registry drift")
-            states = _state_map(registration, name=f"prediction row[{index}] {registration_id}")
+            states = _state_map(
+                registration,
+                name=f"prediction row[{index}] {registration_id}",
+                allowed_state_ids=_STATE_IDS_BY_REGISTRATION[registration_id],
+            )
             normalized_states: dict[str, Any] = {}
-            for state_id in matrix.STATE_IDS:
+            for state_id in _STATE_IDS_BY_REGISTRATION[registration_id]:
                 state = states[state_id]
                 qids, arms = _state_parts(state, registration=registration, name=f"prediction row[{index}] {registration_id}.{state_id}")
                 # All six arms for a state share one opaque query stream.
@@ -625,7 +641,7 @@ def score_next_r3_proxy24(
         for registration_id in matrix.REGISTRATION_IDS:
             reg = record["registrations"][registration_id]
             state_output: dict[str, Any] = {}
-            for state_id in matrix.STATE_IDS:
+            for state_id in _STATE_IDS_BY_REGISTRATION[registration_id]:
                 state = reg["states"][state_id]
                 arm_output: dict[str, Any] = {}
                 for arm_id in matrix.ARM_IDS:

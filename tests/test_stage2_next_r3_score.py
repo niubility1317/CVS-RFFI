@@ -30,7 +30,12 @@ def _fixture() -> tuple[dict, dict, dict]:
                     query_ids.append(query_id)
                     truth[query_id] = cls
             states: dict[str, dict] = {}
-            for state_id in matrix.STATE_IDS:
+            state_ids = (
+                ("DA0_REG0", "DA1_REG0")
+                if registration_id == "REG0"
+                else ("DA0_REG1", "DA1_REG1")
+            )
+            for state_id in state_ids:
                 arms: dict[str, list[str]] = {}
                 for arm_id in matrix.ARM_IDS:
                     values = [truth[qid] for qid in query_ids]
@@ -102,6 +107,25 @@ def test_complete_matrix_scores_same_row_context_and_na_reg0() -> None:
     assert reg0["H_old_new"] is None
     assert reg0["registration_metric_status"] == "NA_BEFORE_REGISTRATION"
     assert "by_registration" in result["causal_comparisons_by_k"]["5"]
+
+
+def test_registration_cannot_carry_the_other_registration_states() -> None:
+    plan, prediction, truth = _fixture()
+    bad_reg0 = deepcopy(prediction)
+    registration = bad_reg0["rows"][0]["registrations"]["REG0"]
+    registration["states"]["DA0_REG1"] = registration["states"]["DA0_REG0"]
+    with pytest.raises(scorer.NextR3ScoreError, match="REG0.*DA0_REG0.*DA1_REG0"):
+        scorer.score_next_r3_proxy24(
+            prediction=bad_reg0, plan=plan, truth_by_query_id=truth
+        )
+
+    bad_reg1 = deepcopy(prediction)
+    registration = bad_reg1["rows"][0]["registrations"]["REG1"]
+    registration["states"]["DA0_REG0"] = registration["states"]["DA0_REG1"]
+    with pytest.raises(scorer.NextR3ScoreError, match="REG1.*DA0_REG1.*DA1_REG1"):
+        scorer.score_next_r3_proxy24(
+            prediction=bad_reg1, plan=plan, truth_by_query_id=truth
+        )
 
 
 def test_forbidden_truth_and_incomplete_rows_fail_before_scoring() -> None:
