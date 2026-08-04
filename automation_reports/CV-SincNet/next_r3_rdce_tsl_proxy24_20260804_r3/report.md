@@ -92,4 +92,6 @@ authority固定为`capsule_id=e32708214eaedaf39af532c572e16045f173422d63110e4022
 
 prepare日志固定在远端`<root>/logs/prepare.log`，大小1,996B，SHA=`5e198c17a92b2af68a094f3bb53e50791b8503ccaeb2afc28e6bdaeab11aa645`。远端top-level仅`input/`、`source/`、`logs/`；`prepare/predictor_package.json`、`prepare/truth.json`、`prepare/prepare_receipt.json`、`smoke/`、`output/`、`logs/main.pid`、`logs/run.out`、`logs/run.err`均不存在。prepare结束后匹配进程为空；GPU0为`0% util, 1MiB/24576MiB`；本地`ssh.exe`与到`172.31.111.215:22`的ESTABLISHED连接均为0。
 
+两个远端日志已只读拉回`release/remote_evidence/{compile.log,prepare.log}`，本地SHA分别与远端`6638d1659b2dd718474795a1bb70e197e460ed232be9861ba2b84852741e8098`和`5e198c17a92b2af68a094f3bb53e50791b8503ccaeb2afc28e6bdaeab11aa645`一致。
+
 **最终判定：**r3为该候选最后一次发布。由于TSL物理LOO参考margin异常在prepare阶段阻断，TSL路线关闭；本run不产生任何性能、注册、DA或promotable结论。保留远端root、archive、源码和日志，不删除任何既有r1/r2或输入资产。
