@@ -5,7 +5,7 @@
 - 实验ID：`d131_d92_lite160_qtie_target125_20260804_r3`
 - 日期：2026-08-04
 - 操作者：主agent负责科学集成、结果分析与晋级决定；Luna/max为唯一N607 runner。
-- 当前状态：`LOCAL_VERIFIED_RELEASE_READY`
+- 当前状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
 - 协议：`p2_min_v1`
 - 目标：修复D131 r2在Lite最高分精确并列处的确定性执行缺陷，完成冻结的125 outer/375 scene/750 prediction surface矩阵。
 - 比较对象：同一row的before qKNN与after D92-Lite160-QTIE；r2严格为`NO_PERFORMANCE_RESULT`，281个partial仅作执行故障证据。
@@ -38,6 +38,35 @@
 - runtime archive：`E:\type10-7\code\snapshots\d131_d92_lite160_qtie_target125_20260804_r3_runtime_00aa2362_v1.tar`，SHA256=`f01e659b7ab223c6fe0c558576b3c27080e1f68a362579de914e37878ce86265`，大小17,192,960B；独立重生成包大小与SHA完全一致。
 - 实际解包SHA：method lock=`e0f7f8623b4d53002206aca8575f8eadd2bca4150a7c5aed3d017b4827fa5dac`；core=`cfdd787ffb4b5c6a6e43435d268acacc2d5979cc272762d994a72d3efa1732e0`；adapter=`f736cbb809f525e775a52151a84935eb0a0c9c7c2d20ab728f1f45b62643850a`；CLI=`141a8713e2d7e96a2955d71baa028d44c3f407b3155835c3f1efe9701c625750`。
 
+## N607 runner result
+
+- preflight、远端五项SHA、`py_compile`、prepare及真实checkpoint no-query smoke均通过；smoke两phase存在，query truth/fit/update/selection均为false，truth未打开。
+- 8个固定shard均启动并自然退出：shard2完成其partial shard；其余7个失败。总计393个partial prediction、1个partial manifest。
+- 5个shard重复`D108 exact top tie must fail closed`；另2个shard重复`registered_feature_primary160 contains a zero or non-finite row`。满足预注册系统性技术停止规则。
+- 未执行merge、validate、truth-open或score；GPU与SSH均已清理；53个主要artifact回收到根目录报告的`artifacts/`。
+- `technical_stop.txt` SHA=`dbc6454933193acd4821647d71ea72636e609e4ea752f4161858e6f495eeb6b9`；r3不得重启、续跑或按partial晋级。
+
+## 主agent故障定位与路线决定
+
+根据冻结的shard取模顺序、每个outer固定6个surface的执行顺序和失败前prediction计数，不读取任何partial预测内容或性能，可精确定位如下：
+
+|outer index|outer ID|scene|phase|K/new|故障|
+|---:|---|---|---|---|---|
+|19|`d108-rx-20-1__seed-713105__k-1__new-20`|`leo_low_elev_weak`|before|K1/new20|qKNN精确top tie|
+|24|`d108-rx-20-1__seed-713106__k-1__new-20`|`leo_clear_weak`|before|K1/new20|qKNN精确top tie|
+|29|`d108-rx-3-19__seed-713102__k-1__new-20`|`leo_rain_weak`|before|K1/new20|qKNN精确top tie|
+|39|`d108-rx-3-19__seed-713104__k-1__new-20`|`leo_low_elev_weak`|before|K1/new20|qKNN精确top tie|
+|49|`d108-rx-3-19__seed-713106__k-1__new-20`|`leo_low_elev_weak`|after|K1/new20|qKNN alias精确top tie|
+|116|`d108-rx-8-8__seed-713105__k-10__new-10`|`leo_rain_weak`|after|K10/new10|完整288维有限，但primary z_id160为零|
+|118|`d108-rx-8-8__seed-713105__k-5__new-20`|`leo_rain_weak`|after|K5/new20|完整288维有限，但primary z_id160为零|
+
+- 5个tie全部位于K1；r3加入的K5/K10 Lite-top二级qKNN没有覆盖真正根因。
+- 4个before K1与1个after K1都依赖同一qKNN表示。对完全对称的query/support证据，任何逐query且类置换等变的规则都无法保证唯一类别；registry顺序、类别ID/hash或argmax首项不合法。
+- 两个zero-primary失败不是NaN或读取故障：现有288维registered feature仍由合法辅助128维保持有限，但D131只截取first160，丢失了这些样本唯一可用的辅助信息。
+- full288、aux128或固定288→160投影在协议上可以另行设计，但必须对support/query统一定义，且不再是D131冻结的`first160 canonical z_id160`方法身份。
+- 决定：关闭D131，不发布r4补丁，不重复Target125。任何多视图D92-Lite后继必须使用新candidate、新method lock和较小联合筛选；393个partial永久不评分。
+
+
 ## N607输入与发布冻结
 
 - Python：`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`
@@ -63,4 +92,4 @@
 
 | candidate | receiver/TX | K/new | seed | scene | before old | after old | seen-new | H_old_new | forgetting | verdict |
 |---|---|---:|---:|---|---:|---:|---:|---:|---:|---|
-| 待完整truth score | 待填 | 待填 | 待填 | 待填 | 待填 | 待填 | 待填 | 待填 | 待填 | 待填 |
+| D131-D92-LITE160-QTIE/r2 | 未形成完整矩阵 | - | - | - | - | - | - | - | - | 关闭；NO_PERFORMANCE_RESULT |
