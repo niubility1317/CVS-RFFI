@@ -79,10 +79,10 @@ logit = qKNN_logit + gamma * centered_shape_residual
 |职责|实现文件/状态|验证|
 |---|---|---|
 |FA-RDCE3科学核心|`code/cvsrffi/stage2_next_r4_fa_rdce3.py`，已实现，待独立P0/P1审查|wire/类置换/共同状态/R1边界/资源负测；聚焦测试6项通过|
-|CER-PLR160科学核心|`code/cvsrffi/stage2_next_r4_cer_plr160.py`，已实现，待独立P0/P1审查|K1 alias/K5 shrinkage/pairwise Sr/gamma/量化/tie/资源负测；聚焦测试6项通过|
+|CER-PLR160科学核心|`code/cvsrffi/stage2_next_r4_cer_plr160.py`，已实现并关闭首轮2项P1|K1 alias/K5 shrinkage/pairwise Sr/gamma/量化/tie/资源负测；R0/R1只读表示验证与alias前query闭合经独立复审，聚焦测试6项通过|
 |矩阵与method lock|`code/cvsrffi/stage2_next_r4_matrix.py`、`configs/next_r4_fa_rdce3_cer_plr160_proxy24_20260804.json`，已实现|24/144/192、共同query、K前缀、state复用；移除R3固定query/Phase1数量gate后聚焦测试6项通过|
 |四态runtime|`code/cvsrffi/stage2_next_r4_runtime.py`，Terra/max按冻结接口实现中|四态显式`state_id`和中文主名称；DA1_REG1复用DA1_REG0状态；K1 H逐logit alias Q；K5 H=CER；query零fit/update/selection；REG0新类/H=`N/A`|
-|artifact/scorer/CLI|runtime通过独立审查后做最小复用整合|truth分离、不可覆盖、144 prediction/192 artifact闭合、同row四态score及明确`<metric>_<state_id>`字段|
+|artifact/scorer/CLI|`code/cvsrffi/stage2_next_r4_score.py`已实现；artifact/CLI待runtime后接合|truth分离、不可覆盖、144 prediction/192 artifact闭合、同row四态score、中文主名称和REG0的`N/A`；scorer聚焦测试5项通过|
 |N607发布|唯一Luna/max runner|Git/hash、真实checkpoint smoke、24行完整artifact|
 
 当前文件只冻结设计和可验证映射，不构成性能结果。
