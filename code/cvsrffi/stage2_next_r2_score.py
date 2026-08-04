@@ -257,9 +257,23 @@ def _read_capsule(path: Path, expected_sha256: str) -> Mapping[str, Any]:
         for registration in ("REG0", "REG1"):
             k1 = pair[1]["registrations"][registration]
             k5 = pair[5]["registrations"][registration]
-            if set(k1["support_indices"]) - set(k5["support_indices"]) or tuple(k1["query_indices"]) != tuple(k5["query_indices"]):
+            if (
+                set(k1["support_indices"]) - set(k5["support_indices"])
+                or set(k1["support_physical_ids"]) - set(k5["support_physical_ids"])
+                or tuple(k1["query_indices"]) != tuple(k5["query_indices"])
+                or tuple(k1["query_physical_ids"]) != tuple(k5["query_physical_ids"])
+            ):
                 raise NextR2ScoreError("prediction capsule K1/K5 nesting drift")
-        if set(pair[1]["registrations"]["REG0"]["support_indices"]) - set(pair[1]["registrations"]["REG1"]["support_indices"]) or set(pair[1]["registrations"]["REG0"]["query_indices"]) - set(pair[1]["registrations"]["REG1"]["query_indices"]):
+        if (
+            set(pair[1]["registrations"]["REG0"]["support_indices"])
+            - set(pair[1]["registrations"]["REG1"]["support_indices"])
+            or set(pair[1]["registrations"]["REG0"]["support_physical_ids"])
+            - set(pair[1]["registrations"]["REG1"]["support_physical_ids"])
+            or set(pair[1]["registrations"]["REG0"]["query_indices"])
+            - set(pair[1]["registrations"]["REG1"]["query_indices"])
+            or set(pair[1]["registrations"]["REG0"]["query_physical_ids"])
+            - set(pair[1]["registrations"]["REG1"]["query_physical_ids"])
+        ):
             raise NextR2ScoreError("prediction capsule REG0 subset drift")
     ready = dict(payload)
     ready["capsule_content_sha256"] = observed
