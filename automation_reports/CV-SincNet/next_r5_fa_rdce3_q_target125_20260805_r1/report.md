@@ -4,13 +4,15 @@
 
 - run ID：`next_r5_fa_rdce3_q_target125_20260805_r1`
 - 日期：2026-08-05
-- 当前状态：`LOCAL_VERIFIED / P0=0 / P1=0 / NOT_LANDED / NOT_LAUNCHED`
+- 当前状态：`GIT_FROZEN / LOCAL_VERIFIED / P0=0 / P1=0 / NOT_LANDED / NOT_LAUNCHED`
 - 候选：`NEXT-R5-FA-RDCE3-Q-TARGET125`
 - 主agent：`gpt-5.6-sol/high`
 - 科学实现与独立审查：不同`gpt-5.6-terra/max`agent
 - 后续唯一N607 runner：方法、矩阵、命令和路径冻结后使用`Luna/max`
 - Git worktree：`E:\fa125wt`；branch=`codex/next-r5-fa-q-target125-20260805`
 - 起点commit：`70d775bc`
+- 实现commit：`8fb75c22`（`Implement FA qKNN Target125 experiment`）
+- release closure：`E:\type10-7\code\snapshots\next_r5_fa_rdce3_q_target125_20260805_r1_closure_8fb75c22.tar`，SHA256=`cac1c4d1cfb842b3f78a4ee75129ac1f3472bccfe18a9c471ee6ef9b3f5c339e`，大小=`73123840`bytes；仅含Git中`code/`与`configs/`，不含数据、checkpoint或历史报告。
 
 ## 2.用户覆盖与实验目标
 
@@ -58,7 +60,7 @@ K1已由完整Proxy24证明FA负收益，固定严格旁路并以alias receipt�
 |真实checkpoint无truth smoke|待N607落地后作为第一个运行动作执行|
 |独立代码复核|Terra/max：`P0=0，P1=0`|
 |本地验证|六个Python入口编译通过；四份聚焦测试`14 passed`；`git diff --check`通过|
-|Git提交与release archive|待本报告更新后立即冻结|
+|Git提交与release archive|实现commit=`8fb75c22`；closure SHA=`cac1c4d1…c339e`|
 
 实际实现文件为：`stage2_next_r5_fa_target125_matrix.py`、`stage2_next_r5_fa_target125_core.py`、`stage2_next_r5_fa_target125_runtime.py`、`stage2_next_r5_fa_target125.py`、`build_next_r5_fa_target125_asset.py`、`run_next_r5_fa_target125.py`和对应四份聚焦测试。method lock为`configs/next_r5_fa_rdce3_q_target125_20260805.json`，SHA256=`0934b59c81ed5f422de503528d0ef48400210c817fae8c301f55b5e2d2775e34`。
 
