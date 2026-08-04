@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import dataclasses
+from copy import deepcopy
 import hashlib
 import io
 import json
@@ -279,7 +280,8 @@ def test_help_and_predict_cli_do_not_offer_truth_or_split_label_inputs() -> None
     parser = runner._parser()
     subparsers = next(action for action in parser._actions if getattr(action, "choices", None))
     predict_help = subparsers.choices["predict"].format_help()
-    assert "truth" not in predict_help.lower()
+    assert "--truth" not in predict_help
+    assert "--truth-sha256" not in predict_help
     assert "split-label" not in predict_help.lower()
     assert "--fa-asset-manifest" in predict_help
 
@@ -301,7 +303,7 @@ def test_missing_real_input_fails_closed_and_dynamic_capsule_has_no_588_gate(tmp
         runner._load_received_capsule(tmp_path / "missing.npz", "0" * 64)
 
 
-def test_prepare_predict_score_lifecycle_keeps_truth_out_of_predictor_and_uses_real_runtime(
+def test_prepare_predict_score_lifecycle_keeps_truth_out_of_predictor(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     fixture = _make_fixture(tmp_path)
@@ -312,6 +314,8 @@ def test_prepare_predict_score_lifecycle_keeps_truth_out_of_predictor_and_uses_r
     assert not _contains_key(package_value, "truth")
     assert not _contains_key(package_value, "truth_by_query_id")
     assert not _contains_key(package_value, "phase1_fit_ids")
+    for forbidden in ("query_ids_by_class", "query_observation_ids_by_class", "query_count_by_class"):
+        assert not _contains_key(package_value, forbidden)
     assert all(
         set(row) == {"row_id", "held_receiver", "held_class", "active_k", "physical_binding_receipt"}
         for row in package_value["rows"]
@@ -320,18 +324,34 @@ def test_prepare_predict_score_lifecycle_keeps_truth_out_of_predictor_and_uses_r
     capsule = runner._load_received_capsule(fixture.received, fixture.received_sha256)
     bridge = _Bridge(capsule, fixture.feature_by_physical, fixture.checkpoint_sha256)
     monkeypatch.setattr(runner, "_load_checkpoint_bridge", lambda args, received, checkpoint_sha256: bridge)
-    # The full 24-row scorer contract is exercised here with a deterministic
-    # mechanical row provider; the frozen runtime itself is covered by the
-    # focused single-row smoke below.  This keeps the CLI test bounded on CPU
-    # while still driving the real artifact builder and independent scorer.
+    # The full 24-row scorer contract is exercised with a deterministic
+    # mechanical row provider.  The direct runtime has a separate focused
+    # functional smoke below, keeping this CLI test bounded on CPU.
     from test_stage2_next_r4_artifact import _row_results
 
-    _, expected_rows, expected_truth = _row_results()
+    _, expected_rows, _ = _row_results()
     rows_by_id = {row["row_id"]: row for row in expected_rows}
+
+    def sealed_row(*, row: object, **kwargs: object) -> dict:
+        planned = next(item for item in runner.matrix.build_next_r4_proxy24_plan(CLASSES)["rows"] if item["row_id"] == row.row_id)
+        package_row = next(item for item in package_value["rows"] if item["row_id"] == row.row_id)
+        value = deepcopy(rows_by_id[row.row_id])
+        value["row_id"] = planned["row_id"]
+        value["held_receiver"] = planned["held_receiver"]
+        value["held_class"] = planned["held_class"]
+        value["active_k"] = planned["active_k"]
+        value["binding_receipt"] = deepcopy(package_row["physical_binding_receipt"])
+        binding_value = value["binding_receipt"]
+        for registration in value["registrations"].values():
+            for state in registration["states"].values():
+                state["query_physical_ids"] = list(binding_value["query_physical_ids"])
+                state["query_observation_ids"] = list(binding_value["query_observation_ids"])
+        return value
+
     monkeypatch.setattr(
         runner.runtime,
         "execute_next_r4_logical_row",
-        lambda *, row, **kwargs: rows_by_id[row.row_id],
+        sealed_row,
     )
     predict_args = runner._parser().parse_args(
         [
@@ -356,6 +376,10 @@ def test_prepare_predict_score_lifecycle_keeps_truth_out_of_predictor_and_uses_r
             str(fixture.checkpoint),
             "--checkpoint-sha256",
             fixture.checkpoint_sha256,
+            "--prepare-receipt",
+            prepared["receipt"],
+            "--prepare-receipt-sha256",
+            _sha(Path(prepared["receipt"]).read_bytes()),
             "--device",
             "cpu",
         ]
@@ -367,8 +391,7 @@ def test_prepare_predict_score_lifecycle_keeps_truth_out_of_predictor_and_uses_r
     assert prediction["truth_loaded"] is False
     assert not _contains_key(prediction, "truth")
 
-    truth_path = tmp_path / "truth.json"
-    truth_path.write_text(json.dumps(expected_truth, sort_keys=True) + "\n", encoding="utf-8")
+    truth_path = Path(prepared["truth"])
     score_args = runner._parser().parse_args(
         [
             "score",
@@ -378,6 +401,10 @@ def test_prepare_predict_score_lifecycle_keeps_truth_out_of_predictor_and_uses_r
             str(truth_path),
             "--truth-sha256",
             _sha(truth_path.read_bytes()),
+            "--prepare-receipt",
+            prepared["receipt"],
+            "--prepare-receipt-sha256",
+            _sha(Path(prepared["receipt"]).read_bytes()),
             "--output",
             str(tmp_path / "score.json"),
         ]
@@ -387,15 +414,53 @@ def test_prepare_predict_score_lifecycle_keeps_truth_out_of_predictor_and_uses_r
     assert json.loads((tmp_path / "score.json").read_text(encoding="utf-8"))["schema"].endswith("proxy_score.v1")
 
 
-def test_real_runtime_single_row_smoke() -> None:
+def test_real_runtime_single_row_functional_smoke() -> None:
     # Keep one direct call to the frozen runtime in the CLI test module.  The
-    # complete 24-row lifecycle above intentionally uses the fast sealed-row
-    # provider because the direct qKNN implementation is CPU-expensive.
+    # complete 24-row lifecycle above intentionally uses a fast sealed-row
+    # provider because the direct qKNN implementation is CPU-expensive.  This
+    # is a functional runtime smoke, not a real-checkpoint claim.
     from test_stage2_next_r4_runtime import _run
 
     result, _ = _run(1)
     assert result["query_isolation_receipt"]["query_truth_access"] is False
     assert result["registrations"]["REG0"]["states"]["DA0_REG0"]["state_id"] == "DA0_REG0"
+
+
+def test_foreign_runtime_binding_is_rejected_before_artifact_projection() -> None:
+    from test_stage2_next_r4_artifact import _row_results
+
+    plan, rows, _ = _row_results()
+    result = deepcopy(rows[0])
+    foreign = deepcopy(result["binding_receipt"])
+    foreign["query_physical_ids"][0] = "foreign-query-id"
+    unsigned = dict(foreign)
+    unsigned.pop("binding_sha256", None)
+    foreign["binding_sha256"] = matrix.canonical_sha256(unsigned)
+    result["binding_receipt"] = foreign
+    with pytest.raises(runner.NextR4Proxy24Error, match="binding"):
+        runner._validate_runtime_result(
+            result=result,
+            planned=plan["rows"][0],
+            binding=rows[0]["binding_receipt"],
+        )
+
+
+def test_predictor_package_rejects_class_grouped_query_metadata(tmp_path: Path) -> None:
+    fixture = _make_fixture(tmp_path)
+    prepared = runner.run_prepare(_args(fixture, tmp_path / "prepared"))
+    package = json.loads(Path(prepared["package"]).read_text(encoding="utf-8"))
+    package["rows"][0]["physical_binding_receipt"]["query_ids_by_class"] = {"leak": ["q"]}
+    bad_package = tmp_path / "bad_package.json"
+    bad_package.write_text(json.dumps(package, sort_keys=True) + "\n", encoding="utf-8")
+    received = runner._load_received_capsule(fixture.received, fixture.received_sha256)
+    with pytest.raises(runner.NextR4Proxy24Error, match="class-grouped"):
+        runner._load_package(
+            bad_package,
+            _sha(bad_package.read_bytes()),
+            received=received,
+            checkpoint_sha256=fixture.checkpoint_sha256,
+            asset_manifest_sha256=fixture.asset_manifest_sha256,
+        )
 
 
 def test_output_root_overwrite_refused_and_incomplete_score_does_not_open_truth(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -420,6 +485,10 @@ def test_output_root_overwrite_refused_and_incomplete_score_does_not_open_truth(
                     str(truth),
                     "--truth-sha256",
                     _sha(truth.read_bytes()),
+                    "--prepare-receipt",
+                    str(tmp_path / "missing-prepare-receipt.json"),
+                    "--prepare-receipt-sha256",
+                    "0" * 64,
                     "--output",
                     str(tmp_path / "score.json"),
                 ]

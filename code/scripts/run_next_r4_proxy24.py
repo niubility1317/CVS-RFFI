@@ -50,6 +50,17 @@ MANIFEST_SCHEMA = "cvs.stage2.next_r4.fa_rdce3_cer_plr160.proxy24.manifest.v1"
 RESOURCE_SCHEMA = "cvs.stage2.next_r4.fa_rdce3_cer_plr160.proxy24.resource.v1"
 SMOKE_SCHEMA = "cvs.stage2.next_r4.fa_rdce3_cer_plr160.proxy24.real_checkpoint_smoke.v1"
 MISSING_PREFIX = "MISSING_REAL_INPUT_ARTIFACTS"
+GROUPED_QUERY_FIELDS = frozenset(
+    {"query_ids_by_class", "query_observation_ids_by_class", "query_count_by_class"}
+)
+PREPARE_AUTHORITY_FIELDS = (
+    "package_sha256",
+    "truth_sha256",
+    "received_iq_sha256",
+    "checkpoint_sha256",
+    "asset_manifest_sha256",
+    "matrix_sha256",
+)
 
 
 class NextR4Proxy24Error(ValueError):
@@ -98,6 +109,19 @@ def _reject_forbidden(value: Any, *, name: str) -> None:
     elif isinstance(value, (tuple, list)):
         for index, item in enumerate(value):
             _reject_forbidden(item, name=f"{name}[{index}]")
+
+
+def _reject_grouped_query(value: Any, *, name: str) -> None:
+    """Reject class-indexed query metadata outside the prepare builder."""
+
+    if isinstance(value, Mapping):
+        for key, item in value.items():
+            if _normal_key(key) in GROUPED_QUERY_FIELDS:
+                raise NextR4Proxy24Error(f"{name} exposes class-grouped query metadata: {key}")
+            _reject_grouped_query(item, name=f"{name}.{key}")
+    elif isinstance(value, (tuple, list)):
+        for index, item in enumerate(value):
+            _reject_grouped_query(item, name=f"{name}[{index}]")
 
 
 def _plain(value: Any) -> Any:
@@ -585,8 +609,9 @@ def _fa_binding(*, row: Mapping[str, Any], package: Mapping[str, Any], support_i
 def _registration_inputs(*, row: Mapping[str, Any], package: Mapping[str, Any], binding: Mapping[str, Any], cache: _FeatureCache) -> tuple[runtime.NextR4RegistrationInput, runtime.NextR4RegistrationInput]:
     classes = tuple(package["class_registry"])
     retained = tuple(item for item in classes if item != row["held_class"])
-    qids = tuple(item for cls in classes for item in binding["query_ids_by_class"][cls])
-    observations = tuple(item for cls in classes for item in binding["query_observation_ids_by_class"][cls])
+    _reject_grouped_query(binding, name="physical binding")
+    qids = tuple(binding["query_physical_ids"])
+    observations = tuple(binding["query_observation_ids"])
     query = cache.take(qids)
     support_k = binding["k1_support_ids_by_class"] if int(row["active_k"]) == 1 else binding["k5_support_ids_by_class"]
     all_support = {cls: cache.take(tuple(support_k[cls])) for cls in classes}
@@ -609,6 +634,64 @@ def _registration_inputs(*, row: Mapping[str, Any], package: Mapping[str, Any], 
         query_observation_ids=observations,
     )
     return reg0, reg1
+
+
+def _validate_runtime_result(
+    *, result: Mapping[str, Any], planned: Mapping[str, Any], binding: Mapping[str, Any]
+) -> Mapping[str, Any]:
+    """Check one runtime result before it enters the immutable artifact."""
+
+    if not isinstance(result, Mapping):
+        raise NextR4Proxy24Error("runtime result must be a mapping")
+    _reject_grouped_query(result, name="runtime result")
+    for field in ("row_id", "held_receiver", "held_class", "active_k"):
+        if result.get(field) != planned[field]:
+            raise NextR4Proxy24Error(f"runtime result {field} drift")
+    result_binding = result.get("binding_receipt")
+    try:
+        checked_binding = matrix.validate_next_r4_binding(result_binding)
+    except Exception as error:
+        raise NextR4Proxy24Error("runtime result binding receipt is invalid") from error
+    if dict(checked_binding) != dict(binding) or checked_binding.get("binding_sha256") != binding.get("binding_sha256"):
+        raise NextR4Proxy24Error("runtime result binding SHA/receipt drift")
+    registrations = result.get("registrations")
+    if not isinstance(registrations, Mapping) or set(registrations) != set(matrix.REGISTRATION_IDS):
+        raise NextR4Proxy24Error("runtime result REG0/REG1 closure drift")
+    query_ids = tuple(binding["query_physical_ids"])
+    observation_ids = tuple(binding["query_observation_ids"])
+    expected_states = {
+        "REG0": tuple(matrix.REG0_STATES),
+        "REG1": tuple(matrix.REG1_STATES),
+    }
+    for registration_id, states_expected in expected_states.items():
+        registration = registrations[registration_id]
+        states = registration.get("states") if isinstance(registration, Mapping) else None
+        if not isinstance(states, Mapping) or set(states) != set(states_expected):
+            raise NextR4Proxy24Error(f"runtime result {registration_id} state closure drift")
+        for state_id in states_expected:
+            state = states[state_id]
+            if not isinstance(state, Mapping):
+                raise NextR4Proxy24Error(f"runtime result {state_id} must be a mapping")
+            if tuple(state.get("query_physical_ids", ())) != query_ids or tuple(state.get("query_observation_ids", ())) != observation_ids:
+                raise NextR4Proxy24Error(f"runtime result {state_id} query binding drift")
+    return result
+
+
+def _load_prepare_receipt(path: Path, expected_sha256: str) -> Mapping[str, Any]:
+    receipt = _read_json(path, expected_sha256, "prepare receipt")
+    if receipt.get("schema") != PREPARE_SCHEMA or receipt.get("candidate_id") != matrix.CANDIDATE_ID:
+        raise NextR4Proxy24Error("prepare receipt schema/candidate drift")
+    if receipt.get("truth_in_predictor_package") is not False or receipt.get("phase2_data_status") != "VALIDATED_ONCE":
+        raise NextR4Proxy24Error("prepare receipt truth/protocol flags drift")
+    observed = receipt.get("prepare_receipt_sha256")
+    unsigned = dict(receipt)
+    unsigned.pop("prepare_receipt_sha256", None)
+    if _require_sha(observed, "prepare receipt payload SHA256") != _sha(_canonical(unsigned)):
+        raise NextR4Proxy24Error("prepare receipt payload hash drift")
+    for field in PREPARE_AUTHORITY_FIELDS:
+        _require_sha(receipt.get(field), f"prepare receipt {field}")
+    _reject_grouped_query(receipt, name="prepare receipt")
+    return receipt
 
 
 def run_prepare(args: argparse.Namespace) -> Mapping[str, Any]:
@@ -642,18 +725,23 @@ def run_prepare(args: argparse.Namespace) -> Mapping[str, Any]:
         "matrix_sha256": package["matrix_sha256"],
         "package_sha256": _sha_file(root / "predictor_package.json"),
         "truth_sha256": _sha_file(root / "truth.json"),
+        "received_iq_sha256": received.received_iq_sha256,
+        "checkpoint_sha256": checkpoint_sha,
+        "asset_manifest_sha256": args.fa_asset_manifest_sha256,
         "truth_in_predictor_package": False,
         "phase2_data_status": "VALIDATED_ONCE",
         "query_rows_used_for_fit": 0,
         "query_state_updates": 0,
         "query_selection_count": 0,
     }
+    receipt["prepare_receipt_sha256"] = _sha(_canonical(receipt))
     _write_json_new(root / "prepare_receipt.json", receipt)
     return {"output_dir": str(root), "package": str(root / "predictor_package.json"), "truth": str(root / "truth.json"), "receipt": str(root / "prepare_receipt.json"), "truth_in_predictor_package": False}
 
 
 def _load_package(path: Path, expected_sha256: str, *, received: ReceivedCapsule, checkpoint_sha256: str, asset_manifest_sha256: str) -> tuple[Mapping[str, Any], Mapping[str, Any]]:
     package = _read_json(path, expected_sha256, "predictor package")
+    _reject_grouped_query(package, name="predictor package")
     if package.get("schema") != PREDICTOR_PACKAGE_SCHEMA or package.get("candidate_id") != matrix.CANDIDATE_ID or package.get("protocol_schema") != matrix.PROTOCOL_SCHEMA or package.get("truth_free") is not True or package.get("truth_loaded") is not False:
         raise NextR4Proxy24Error("predictor package schema/provenance drift")
     if package.get("received_iq_sha256") != received.received_iq_sha256 or package.get("checkpoint_sha256") != checkpoint_sha256 or package.get("asset_manifest_sha256") != asset_manifest_sha256:
@@ -685,12 +773,25 @@ def _load_package(path: Path, expected_sha256: str, *, received: ReceivedCapsule
 def run_predict(args: argparse.Namespace) -> Mapping[str, Any]:
     received = _load_received_capsule(args.received_iq, args.received_iq_sha256)
     checkpoint_sha = _require_sha(args.checkpoint_sha256, "checkpoint SHA256")
+    prepare_receipt_sha = _require_sha(args.prepare_receipt_sha256, "prepare receipt SHA256")
+    package_sha = _require_sha(args.package_sha256, "predictor package SHA256")
+    asset_manifest_sha = _require_sha(args.fa_asset_manifest_sha256, "FA asset manifest SHA256")
+    prepare_receipt = _load_prepare_receipt(args.prepare_receipt, prepare_receipt_sha)
+    if (
+        prepare_receipt["received_iq_sha256"] != received.received_iq_sha256
+        or prepare_receipt["checkpoint_sha256"] != checkpoint_sha
+        or prepare_receipt["package_sha256"] != package_sha
+        or prepare_receipt["asset_manifest_sha256"] != asset_manifest_sha
+    ):
+        raise NextR4Proxy24Error("prepare receipt/input authority drift")
     _require_file(args.checkpoint, checkpoint_sha, "checkpoint")
-    package, plan = _load_package(args.package, args.package_sha256, received=received, checkpoint_sha256=checkpoint_sha, asset_manifest_sha256=args.fa_asset_manifest_sha256)
+    package, plan = _load_package(args.package, package_sha, received=received, checkpoint_sha256=checkpoint_sha, asset_manifest_sha256=asset_manifest_sha)
+    if prepare_receipt["matrix_sha256"] != package["matrix_sha256"]:
+        raise NextR4Proxy24Error("prepare receipt/package matrix authority drift")
     # Re-check manifest with package classes; this avoids accepting a package
     # that names a different outer-cell asset set.
     expected_keys = tuple(f"{receiver}|{held}" for receiver in matrix.HELD_RECEIVERS for held in package["class_registry"])
-    manifest = _load_asset_manifest(args.fa_asset_manifest, args.fa_asset_manifest_sha256, checkpoint_sha256=checkpoint_sha, expected_keys=expected_keys)
+    manifest = _load_asset_manifest(args.fa_asset_manifest, asset_manifest_sha, checkpoint_sha256=checkpoint_sha, expected_keys=expected_keys)
     for item in package["rows"]:
         pair_key = f"{item['held_receiver']}|{item['held_class']}"
         binding = item["physical_binding_receipt"]
@@ -701,7 +802,7 @@ def run_predict(args: argparse.Namespace) -> Mapping[str, Any]:
     smoke = _checkpoint_smoke(cache)
     root = _new_root(args.run_root)
     _write_json_new(root / "plan.json", plan)
-    _write_json_new(root / "preregistration.json", {"schema": RUNNER_SCHEMA, "run_id": args.run_id, "candidate_id": matrix.CANDIDATE_ID, "matrix_sha256": plan["matrix_sha256"], "row_count": matrix.ROW_COUNT, "unique_prediction_count": matrix.UNIQUE_PREDICTION_COUNT, "artifact_arm_count": matrix.ARTIFACT_ARM_COUNT, "truth_loaded": False, "query_rows_used_for_fit": 0, "query_state_updates": 0, "query_selection_count": 0})
+    _write_json_new(root / "preregistration.json", {"schema": RUNNER_SCHEMA, "run_id": args.run_id, "candidate_id": matrix.CANDIDATE_ID, "matrix_sha256": plan["matrix_sha256"], "row_count": matrix.ROW_COUNT, "unique_prediction_count": matrix.UNIQUE_PREDICTION_COUNT, "artifact_arm_count": matrix.ARTIFACT_ARM_COUNT, "truth_loaded": False, "prepare_receipt_sha256": prepare_receipt_sha, "prepare_receipt_payload_sha256": prepare_receipt["prepare_receipt_sha256"], "package_sha256": package_sha, "truth_sha256": prepare_receipt["truth_sha256"], "received_iq_sha256": received.received_iq_sha256, "checkpoint_sha256": checkpoint_sha, "asset_manifest_sha256": asset_manifest_sha, "query_rows_used_for_fit": 0, "query_state_updates": 0, "query_selection_count": 0})
     _write_json_new(root / "smoke.json", smoke)
     rows_by_id = {str(item["row_id"]): item for item in package["rows"]}
     runtime_results: list[Mapping[str, Any]] = []
@@ -715,20 +816,20 @@ def run_predict(args: argparse.Namespace) -> Mapping[str, Any]:
         if pair_key not in asset_cache:
             asset_cache[pair_key] = fa.deserialize_fa_rdce3_phase1_asset(Path(entry["asset_path"]).read_bytes())
         binding = row["physical_binding_receipt"]
-        support_map = binding["k1_support_ids_by_class"] if int(row["active_k"]) == 1 else binding["k5_support_ids_by_class"]
         reg0, reg1 = _registration_inputs(row=row, package=package, binding=binding, cache=cache)
         fa_binding = _fa_binding(row=row, package=package, support_ids=reg0.support_physical_ids)
         result = runtime.execute_next_r4_logical_row(row=matrix.outer_key_from_mapping(planned), binding_receipt=binding, fa_asset=asset_cache[pair_key], fa_binding=fa_binding, reg0=reg0, reg1=reg1, qknn_lock=_lock_for_k(package, int(row["active_k"])))
-        runtime_results.append(_plain(result))
-        resources.append({"row_id": row["row_id"], "resource_receipt": _plain(result["resource_receipt"])})
-        row_receipts.append({"row_id": row["row_id"], "resource_receipt_sha256": _sha(_canonical(result["resource_receipt"])), "fa_state_reuse_receipt_sha256": _sha(_canonical(result["fa_state_reuse_receipt"]))})
+        checked_result = _validate_runtime_result(result=result, planned=planned, binding=binding)
+        runtime_results.append(_plain(checked_result))
+        resources.append({"row_id": row["row_id"], "resource_receipt": _plain(checked_result["resource_receipt"])})
+        row_receipts.append({"row_id": row["row_id"], "resource_receipt_sha256": _sha(_canonical(checked_result["resource_receipt"])), "fa_state_reuse_receipt_sha256": _sha(_canonical(checked_result["fa_state_reuse_receipt"]))})
     prediction = artifact.build_next_r4_prediction_artifact(plan=plan, row_results=runtime_results)
     _write_json_new(root / "prediction.json", prediction)
     _write_json_new(root / "resource.json", {"schema": RESOURCE_SCHEMA, "rows": resources, "truth_loaded": False})
     manifest_doc = {"schema": MANIFEST_SCHEMA, "candidate_id": matrix.CANDIDATE_ID, "matrix_sha256": plan["matrix_sha256"], "row_count": matrix.ROW_COUNT, "rows": row_receipts, "all_rows_sealed": True, "sealed_before_scoring": True, "truth_loaded": False}
     manifest_doc["manifest_sha256"] = _sha(_canonical(manifest_doc))
     _write_json_new(root / "manifest.json", manifest_doc)
-    completion = {"schema": COMPLETION_SCHEMA, "status": "ARTIFACTS_COMPLETE_NOT_SCORED", "run_id": args.run_id, "row_count": matrix.ROW_COUNT, "unique_prediction_count": matrix.UNIQUE_PREDICTION_COUNT, "artifact_arm_count": matrix.ARTIFACT_ARM_COUNT, "truth_loaded": False, "prediction_sha256": _sha_file(root / "prediction.json"), "manifest_sha256": _sha_file(root / "manifest.json"), "resource_sha256": _sha_file(root / "resource.json"), "plan_sha256": _sha_file(root / "plan.json")}
+    completion = {"schema": COMPLETION_SCHEMA, "status": "ARTIFACTS_COMPLETE_NOT_SCORED", "run_id": args.run_id, "row_count": matrix.ROW_COUNT, "unique_prediction_count": matrix.UNIQUE_PREDICTION_COUNT, "artifact_arm_count": matrix.ARTIFACT_ARM_COUNT, "truth_loaded": False, "prediction_sha256": _sha_file(root / "prediction.json"), "manifest_sha256": _sha_file(root / "manifest.json"), "resource_sha256": _sha_file(root / "resource.json"), "plan_sha256": _sha_file(root / "plan.json"), "matrix_sha256": plan["matrix_sha256"], "prepare_receipt_sha256": prepare_receipt_sha, "prepare_receipt_payload_sha256": prepare_receipt["prepare_receipt_sha256"], "package_sha256": package_sha, "truth_sha256": prepare_receipt["truth_sha256"], "received_iq_sha256": received.received_iq_sha256, "checkpoint_sha256": checkpoint_sha, "asset_manifest_sha256": asset_manifest_sha}
     _write_json_new(root / "completion.json", completion)
     return completion
 
@@ -741,11 +842,31 @@ def run_score(args: argparse.Namespace) -> Mapping[str, Any]:
     completion = json.loads((root / "completion.json").read_text(encoding="utf-8"))
     if completion.get("status") != "ARTIFACTS_COMPLETE_NOT_SCORED" or completion.get("row_count") != matrix.ROW_COUNT or completion.get("truth_loaded") is not False:
         raise NextR4Proxy24Error("score refused incomplete prediction closure")
+    prepare_receipt_sha = _require_sha(args.prepare_receipt_sha256, "prepare receipt SHA256")
+    truth_sha = _require_sha(args.truth_sha256, "truth SHA256")
+    prepare_receipt = _load_prepare_receipt(args.prepare_receipt, prepare_receipt_sha)
+    if truth_sha != prepare_receipt["truth_sha256"]:
+        raise NextR4Proxy24Error("score truth SHA does not match prepare authority")
     expected = {name: _sha_file(root / f"{name}.json") for name in ("prediction", "manifest", "resource", "plan")}
     if any(completion.get(f"{name}_sha256") != value for name, value in expected.items()):
         raise NextR4Proxy24Error("score refused hash-mismatched prediction closure")
+    authority_expected = {
+        "prepare_receipt_sha256": prepare_receipt_sha,
+        "prepare_receipt_payload_sha256": prepare_receipt["prepare_receipt_sha256"],
+        "package_sha256": prepare_receipt["package_sha256"],
+        "truth_sha256": prepare_receipt["truth_sha256"],
+        "received_iq_sha256": prepare_receipt["received_iq_sha256"],
+        "checkpoint_sha256": prepare_receipt["checkpoint_sha256"],
+        "asset_manifest_sha256": prepare_receipt["asset_manifest_sha256"],
+        "matrix_sha256": prepare_receipt["matrix_sha256"],
+    }
+    if any(completion.get(field) != value for field, value in authority_expected.items()):
+        raise NextR4Proxy24Error("score refused prepare authority/completion drift")
     plan = matrix.validate_next_r4_proxy24_plan(json.loads((root / "plan.json").read_text(encoding="utf-8")))
+    if plan["matrix_sha256"] != prepare_receipt["matrix_sha256"]:
+        raise NextR4Proxy24Error("score refused prepare/plan matrix authority drift")
     prediction = json.loads((root / "prediction.json").read_text(encoding="utf-8"))
+    _reject_grouped_query(prediction, name="prediction")
     try:
         scorer._validate_prediction(prediction, plan)
     except Exception as error:
@@ -755,7 +876,9 @@ def run_score(args: argparse.Namespace) -> Mapping[str, Any]:
     if manifest_sha != _sha(_canonical(sealed_manifest)) or sealed_manifest.get("all_rows_sealed") is not True or sealed_manifest.get("sealed_before_scoring") is not True:
         raise NextR4Proxy24Error("score refused invalid sealed manifest")
     # Truth is intentionally opened only after every prediction-side check.
-    truth_bytes = _require_file(args.truth, args.truth_sha256, "truth sidecar")
+    truth_bytes = _require_file(args.truth, truth_sha, "truth sidecar")
+    if _sha(truth_bytes) != prepare_receipt["truth_sha256"]:
+        raise NextR4Proxy24Error("truth sidecar SHA differs from prepare authority")
     try:
         truth = json.loads(truth_bytes.decode("utf-8-sig"))
     except (UnicodeDecodeError, json.JSONDecodeError) as error:
@@ -765,6 +888,8 @@ def run_score(args: argparse.Namespace) -> Mapping[str, Any]:
     result = dict(scorer.score_next_r4_proxy24(prediction=prediction, plan=plan, truth_by_query_id=truth))
     result["prediction_sha256"] = expected["prediction"]
     result["truth_sha256"] = _sha_file(args.truth)
+    result["prepare_receipt_sha256"] = prepare_receipt_sha
+    result["prepare_receipt_payload_sha256"] = prepare_receipt["prepare_receipt_sha256"]
     output = args.output.resolve(strict=False)
     if not output.is_absolute() or output.exists() or not output.parent.is_dir():
         raise NextR4Proxy24Error("score output must be a new absolute file")
@@ -796,12 +921,16 @@ def _parser() -> argparse.ArgumentParser:
     predict.add_argument("--fa-asset-manifest-sha256", required=True)
     predict.add_argument("--checkpoint", required=True, type=Path)
     predict.add_argument("--checkpoint-sha256", required=True)
+    predict.add_argument("--prepare-receipt", required=True, type=Path)
+    predict.add_argument("--prepare-receipt-sha256", required=True)
     predict.add_argument("--device", default="cpu")
     predict.set_defaults(func=run_predict)
     score = commands.add_parser("score", help="open truth only after complete prediction closure")
     score.add_argument("--run-root", required=True, type=Path)
     score.add_argument("--truth", required=True, type=Path)
     score.add_argument("--truth-sha256", required=True)
+    score.add_argument("--prepare-receipt", required=True, type=Path)
+    score.add_argument("--prepare-receipt-sha256", required=True)
     score.add_argument("--output", required=True, type=Path)
     score.set_defaults(func=run_score)
     return parser
