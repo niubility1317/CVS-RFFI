@@ -3,7 +3,7 @@
 ## 状态
 
 - 实验ID：`d138_d92_lite_pr160_target125_20260804_r4`
-- 状态：`REMOTE_GATE_REPAIR_IN_PROGRESS / NO_PERFORMANCE_RESULT`
+- 状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
 - 操作员：Codex主agent；N607唯一release runner：Luna/max
 - 用户在r3prepare目录生命周期故障后明确要求立即修复并启动实验；r4为新的不可覆盖run ID，不复用或覆盖r3。
 
@@ -49,4 +49,8 @@ r3失败原因是runner在唯一prepare前预创建了空的`prepared`目录，�
 
 ## 结果
 
-启动前状态：尚未产生prediction、truth、score或性能结果。完成后在本报告追加同row候选表、异常、解释和下一步。
+启动后r4在完整矩阵闭合前停止，未执行merge、truth-open或score。6个分片（0、1、3、4、5、7）在未写出prediction前出现同一确定性异常：`D92PR160CoreError: TIE_UNRESOLVED: exact float32 top tie`，经runner包装为`D92LiteTarget125Error: D92-Lite prediction failed closed`；分片2和6仅留下partial shard manifest，不能组成正式矩阵。该证据满足“两个不同outer row同一确定性异常”的系统性技术停止规则。8个本run PID均已退出，GPU占用已释放；r4不产生性能结果，不从partial产物计算指标。
+
+## r4后续修复
+
+该异常来自评分端先把同一高精度分数截成float32再判tie：数值上不同的最高分可能被舍入为同一float32值。已在本地新候选`D92-Lite-PR160/r2`中修复：qKNN与共享仿射均保留同一最终分数的float64结果，只有当float32并列且float64存在唯一最高类时，按同一类分数提升一个float32 ULP；float64仍并列则继续fail-closed。没有使用registry顺序、类别hash、query truth、query role、跨query回退或class quota。新method lock为`configs/d138_d92_lite_pr160_r2.json`，SHA256=`256aacf7b6f790ce213ac27c1bb496be1a964cbf4f21cdd46309630235fb3ca4`；本地`ssr-gpu`窄回归`66 passed`，提交`eac43a1f8c1f901eca12354d04603776b0849afa`。r5使用新不可覆盖run ID并复用r4已生成的validated prepared输入，不重做数据准备。
