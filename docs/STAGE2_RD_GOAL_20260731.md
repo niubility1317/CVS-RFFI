@@ -1,6 +1,6 @@
 # Stage2功能研发目标与证据门
 
-状态：`ACTIVE / NEXT_R4_PROXY24_COMPLETED / NEXT_R5_TARGET5_PAUSED_OBJECTIVE_MISMATCH / NEXT_R6_JOINT_RESEARCH`
+状态：`ACTIVE / NEXT_R4_PROXY24_COMPLETED / NEXT_R5_TARGET5_PAUSED_OBJECTIVE_MISMATCH / NEXT_R6_RPPF160_DESIGN_FROZEN`
 
 ## 0.0 2026-08-05当前活动目标与统一指标命名
 
@@ -50,6 +50,12 @@ R2已经完成`K5×2 receiver×6 held-class×四状态`的12行Q矩阵，不得�
 主agent`gpt-5.6-sol/high`负责协议、候选整合、完整数据/结果分析和最终裁决；`gpt-5.6-terra/max`只用于科学方法实现与独立P0/P1审查；`Luna/max`负责文件/hash/Git机械工作、冻结helper以及唯一N607落地、监控和artifact回收。Luna不得修改方法、矩阵或解释性能。
 
 本节是唯一活动目标并覆盖下文旧路线。下文`0.2026-08-03`至§7仅保留为历史设计与证据追溯，不得据此启动NEXT-R1、84行六臂、G0、fresh63或Target25旧矩阵。
+
+### 0.0.1NEXT-R6唯一联合候选
+
+当前唯一联合候选为`NEXT-R6 FA-RDCE3×D92-Lite-RPPF160`，完整公式、量化、资源和矩阵以`analysis/next_r6_rppf160_design_20260805.md`为准。RPPF用全注册类support原型矩阵`P∈R^(160×C)`构造`U=P(PᵀP+I)^(-1/2)`，以`unit(q)ᵀU`直接分类；不混合qKNN logits，不使用old/new角色分支，不拟合160×160协方差。K1 RPPF功能化而FA旁路；K5使用FA-RDCE3。每个DA×REG状态从自身support cache拟合RPPF，禁止把R0头用于R1 query。
+
+首个完整筛选固定为receiver`1-19、14-7`×6 held-class×K1/K5，共24个matched condition；每条件2个REG状态×`R0Q/R0F/R0L/R1Q/R1F/R1L`，共288个state-arm surface。该矩阵不重复NEXT-R4 receiver，且只输出source-held proxy指标。完整负收益立即关闭，不调λ、receiver、class、K或量化；完整正收益才进入后续真实功能与Target阶段。
 
 ## 0.2026-08-03闭环与目标重置
 
