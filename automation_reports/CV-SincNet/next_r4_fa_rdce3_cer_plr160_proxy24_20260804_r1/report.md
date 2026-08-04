@@ -66,13 +66,13 @@
 
 |字段|冻结值|
 |---|---|
-|Git commit/文件SHA|当前实现`dab44012`；正式发布提交待本报告收口后冻结|
+|Git commit/文件SHA|已独立复审的source baseline`568ceafaf58e91977d14198be7a9cce69aba8aea`；runtime archive SHA256=`350f56641513e61d077daff562c4152806dfed65c49fff466ab15650be698de7`，6,528,947B|
 |本地验证命令与结果|R4九组聚焦测试`58 passed`；三入口`py_compile`通过；`git diff --check`通过|
-|N607工作目录|`PENDING`|
-|Conda/Python环境|优先`ssr-gpu`；若服务器不存在则必须使用已验证且依赖闭合的现有环境，并记录解释器版本|
-|prepare/predict/score精确命令|`PENDING`|
-|GPU分配|`PENDING_RESOURCE_PREFLIGHT`|
-|run root/log/prediction/score路径|`PENDING_IMMUTABLE_PATHS`|
+|N607工作目录|`/home/szu2070436088/2510044040/CV-SincNet/runs/next_r4_fa_rdce3_cer_plr160_proxy24_20260804_r1/source`；run root创建前必须`ABSENT`|
+|Conda/Python环境|`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`；runner在preflight复核Python/torch/CUDA|
+|prepare/predict/score精确命令|见下方§5.1；仅package/prepare/truth文件SHA由同次prepare后`sha256sum`机械填入|
+|GPU分配|物理GPU0；`CUDA_VISIBLE_DEVICES=0`、进程内`cuda:0`，以发布时preflight为空闲为条件|
+|run root/log/prediction/score路径|`<root>/{prepare,output,logs}`；主日志`<root>/logs/run.out`，PID`<root>/logs/main.pid`，score=`<root>/output/score.json`|
 |PID/CWD/cmdline证据|`PENDING_AFTER_LAUNCH`|
 |预期artifact|prepare package、truth sidecar、prediction、manifest、resource receipt、score、complete log|
 
@@ -87,6 +87,17 @@
 正式capsule v2 SHA256=`5b30f6dda514797beb984b5ed01995cfc64b8cb5d1a7367da241a468b6ab8272`，一次性validator receipt SHA256=`d0ac04930dd02a7d4c2dfe98c41d8933301e89095cc3cc5afad028f3bc499c64`，`capsule_id=9df82b4af19898748bc5a27c039cd7e04d1f7c53fc3aa4e082c6308a3eb32a26`，`split_id=a5ccbba48980228a6dfb42b86116262a33184877d5ed4cafe11d406b74d05d96`。固定salt为`cvs.stage2.next_r4.proxy24.opaque_physical_id_order.v1`、metadata seed=0，均在读取NEXT-R4性能前冻结；每receiver×class 14条中K5前5、K1为其首条、其余9条为K1/K5共享query。v1 metadata保留了安全扫描禁止的重复`global_reassignment=false`字段，因此真实prepare在任何forward前失败并完整保留；v2仅删除该重复字段，validator receipt仍明确保存访问为false。
 
 真实D105 checkpoint no-query smoke已在CPU上用两条真实received-IQ完成，两次forward的160维R0逐字节一致，`truth_loaded=false`、`query_truth_access=false`。真实prepare v2随后成功，输出`local_prepare_v2/`：predictor package SHA256=`250bf38c4ff26be960a2f41b59af3cbf9b2cf78b4e5cf4b863d49a40fe463c5b`，truth sidecar SHA256=`48c7291271fb79da1fa9236acc5282c4aeb20b062ce591a44af733825237731b`；递归扫描未发现按类query、Phase1成员ID、truth、role、quota或global reassignment字段，24行闭合且query fit/update/selection均为0。这些仍是发布就绪证据，不是性能结果。
+
+### 5.1 N607冻结执行
+
+- runtime archive：本地`release/next_r4_runtime_568ceafa.tar.gz`，远端`<root>/input/next_r4_runtime_568ceafa.tar.gz`。
+- 远端FA manifest：本地`release/remote_fa_asset_manifest.json`，SHA256=`dd602359d9ff28aaf9084a09c2d2e4fc9d6daf3383bc7268492b2eb58ede196d`；其中12个`asset_path`固定指向`<root>/input/fa_assets_v1/`。
+- received-IQ沿用只读路径`/home/szu2070436088/2510044040/CV-SincNet/runs/d106_real_integration_dba10236_20260801_r7/output/selected_ls_iq/d106_ls_received_iq.npz`；checkpoint沿用只读路径`/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth`。
+- prepare：在`<root>/source`用冻结Python执行`code/scripts/run_next_r4_proxy24.py prepare`，参数为上述received-IQ/SHA、`<root>/input/next_r4_capsule_metadata_v2.json`/SHA=`5b30f6dda514797beb984b5ed01995cfc64b8cb5d1a7367da241a468b6ab8272`、远端FA manifest/SHA及checkpoint SHA，输出`<root>/prepare`。
+- predict：同一CWD与Python，`CUDA_VISIBLE_DEVICES=0`，执行`... predict --run-id next_r4_fa_rdce3_cer_plr160_proxy24_20260804_r1 --run-root <root>/output --received-iq <received> --received-iq-sha256 e327... --package <root>/prepare/predictor_package.json --package-sha256 <同次文件SHA> --fa-asset-manifest <root>/input/remote_fa_asset_manifest.json --fa-asset-manifest-sha256 dd602... --checkpoint <checkpoint> --checkpoint-sha256 2699... --prepare-receipt <root>/prepare/prepare_receipt.json --prepare-receipt-sha256 <同次文件SHA> --device cuda:0`。
+- score：仅在prediction/completion闭合后执行`... score --run-root <root>/output --truth <root>/prepare/truth.json --truth-sha256 <同次文件SHA> --prepare-receipt <root>/prepare/prepare_receipt.json --prepare-receipt-sha256 <同次文件SHA> --output <root>/output/score.json`。
+
+predict以`nohup`独立启动；runner必须在启动后核对PID/CWD/cmdline、GPU映射、日志增长、首row/首wave计数，并用短SSH连接监控。fresh-run retry未授权。
 
 ## 6.结果表
 
