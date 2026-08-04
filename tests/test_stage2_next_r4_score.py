@@ -220,3 +220,36 @@ def test_incomplete_rows_are_rejected_even_with_complete_truth() -> None:
     bad["rows"] = bad["rows"][:-1]
     with pytest.raises(scorer.NextR4ScoreError, match="24 rows"):
         scorer.score_next_r4_proxy24(prediction=bad, plan=plan, truth_by_query_id=truth)
+
+
+def test_row_old_ba_is_macro_balanced_for_unequal_query_counts() -> None:
+    row = matrix.build_next_r4_proxy24_plan(CLASSES)["rows"][0]
+    old_classes = tuple(row["retained_classes"])
+    query_ids = ("a0", "a1", "b0", "c0", "d0", "e0")
+    truth = {
+        "a0": old_classes[0],
+        "a1": old_classes[0],
+        "b0": old_classes[1],
+        "c0": old_classes[2],
+        "d0": old_classes[3],
+        "e0": old_classes[4],
+    }
+    predictions = (
+        old_classes[0],
+        old_classes[0],
+        old_classes[0],
+        old_classes[2],
+        old_classes[3],
+        old_classes[4],
+    )
+    result = scorer._metric_row(
+        row=row,
+        registration_id="REG0",
+        state_id="DA0_REG0",
+        arm_id="Q",
+        query_ids=query_ids,
+        predictions=predictions,
+        truth=truth,
+    )
+    assert result["old_ba"] == pytest.approx(0.8)
+    assert result["retained_correct_count"] / result["retained_query_count"] == pytest.approx(5 / 6)

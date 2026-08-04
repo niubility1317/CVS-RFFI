@@ -313,9 +313,9 @@ def _metric_row(
 ) -> Mapping[str, Any]:
     old_classes = tuple(row["retained_classes"])
     classes = tuple(old_classes if registration_id == "REG0" else row["all_registered_classes"])
-    pairs = tuple((str(prediction), str(truth[query_id]), query_id) for query_id, prediction in zip(query_ids, predictions, strict=True))
     if any(query_id not in truth for query_id in query_ids):
         raise NextR4ScoreError("truth catalog lacks a prediction physical_id")
+    pairs = tuple((str(prediction), str(truth[query_id]), query_id) for query_id, prediction in zip(query_ids, predictions, strict=True))
     if any(label not in row["all_registered_classes"] for _, label, _ in pairs):
         raise NextR4ScoreError("truth label is outside frozen class registry")
     if any(prediction not in classes for prediction, _, _ in pairs):
@@ -329,7 +329,7 @@ def _metric_row(
         correct = sum(int(prediction == label) for prediction, label in class_pairs)
         per_class[cls] = {"correct": correct, "count": len(class_pairs), "accuracy": correct / len(class_pairs) if class_pairs else None}
     old_correct = sum(int(prediction == label) for prediction, label in old_pairs)
-    old_ba = old_correct / len(old_pairs)
+    old_ba = sum(float(per_class[cls]["accuracy"]) for cls in old_classes) / len(old_classes)
     old_floor = min(float(per_class[cls]["accuracy"]) for cls in old_classes)
     total_correct = sum(int(prediction == label) for prediction, label, _ in pairs)
     result: dict[str, Any] = {
@@ -405,11 +405,14 @@ def _aggregate(metrics: Sequence[Mapping[str, Any]], *, active_k: int, state_id:
     if old_query <= 0 or any(value["count"] <= 0 for cls, value in pooled_old.items() if cls in selected[0]["retained_classes"]):
         raise NextR4ScoreError("pooled old-class coverage is incomplete")
     old_per_class = {cls: {**value, "accuracy": value["correct"] / value["count"]} for cls, value in sorted(pooled_old.items()) if value["count"] > 0}
+    aggregate_old_ba = sum(
+        float(value["accuracy"]) for value in old_per_class.values()
+    ) / len(old_per_class)
     result: dict[str, Any] = {
         "active_k": active_k, "state_id": state_id, "state_name_zh": matrix.STATE_NAMES_ZH[state_id], "arm_id": arm_id,
         "registration_id": registration_id, "receiver": receiver or "ALL_RECEIVERS", "row_count": len(selected), "outer_key_count": len(selected),
-        "old_ba": old_correct / old_query, "old_floor": min(float(value["accuracy"]) for value in old_per_class.values()),
-        "all_floor": _N_A, "A_old": old_correct / old_query, "A_retained": old_correct / old_query,
+        "old_ba": aggregate_old_ba, "old_floor": min(float(value["accuracy"]) for value in old_per_class.values()),
+        "all_floor": _N_A, "A_old": aggregate_old_ba, "A_retained": aggregate_old_ba,
         "F_old": min(float(value["accuracy"]) for value in old_per_class.values()), "F_retained": min(float(value["accuracy"]) for value in old_per_class.values()), "F_registered": None,
         "seen_new_acc": _N_A, "N_seen_new": _N_A, "H_old_new": _N_A, "forgetting": _N_A,
         "retained_correct_count": old_correct, "retained_query_count": old_query, "total_correct_count": total_correct, "total_query_count": total_query,

@@ -17,6 +17,7 @@ def _isolation() -> dict[str, object]:
         "query_rows_used_for_fit": 0,
         "query_state_updates": 0,
         "query_selection_count": 0,
+        "global_reassignment_calls": 0,
         "query_batch_dependency": False,
     }
 
@@ -179,6 +180,10 @@ def test_builder_rejects_incomplete_rows_and_query_updates() -> None:
         artifact.build_next_r4_prediction_artifact(plan=plan, row_results=rows[:-1])
     bad = deepcopy(rows)
     bad[0]["query_isolation_receipt"]["query_state_updates"] = 1
+    with pytest.raises(artifact.NextR4ArtifactError, match="must be zero"):
+        artifact.build_next_r4_prediction_artifact(plan=plan, row_results=bad)
+    bad = deepcopy(rows)
+    bad[0]["query_isolation_receipt"]["global_reassignment_calls"] = 1
     with pytest.raises(artifact.NextR4ArtifactError, match="must be zero"):
         artifact.build_next_r4_prediction_artifact(plan=plan, row_results=bad)
 

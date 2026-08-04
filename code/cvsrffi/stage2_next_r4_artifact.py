@@ -180,6 +180,7 @@ def _validate_query_isolation(receipt: Mapping[str, Any], *, name: str) -> dict[
         "query_rows_used_for_fit",
         "query_state_updates",
         "query_selection_count",
+        "global_reassignment_calls",
     )
     false_fields = (
         "query_truth_access",
