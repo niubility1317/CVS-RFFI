@@ -35,13 +35,13 @@
 R2已经完成`K5×2 receiver×6 held-class×四状态`的12行Q矩阵，不得重复运行相同Proxy24。下一次真实性能实验唯一冻结为`NEXT-R5-TARGET5-K5-new20`：
 
 ```text
-5 receivers × 1个预注册未参与本轮Proxy评分的seed × K5/new20
+5 receivers × 1个预注册未参与本轮Proxy评分的seed（固定713103）× K5/new20
 = 5 jobs
 每job覆盖3个物理ID互斥的leo_*_weak场景 × 四状态
 = 60个state prediction surface
 ```
 
-该实验只运行Q，不包含K1、CER、H、D92-Lite、K10或额外new-count。每个场景必须共享同一query键并完整产生四状态；REG0的seen-new/H保持`N/A`。完整prediction封存后一次性独立评分，不按receiver、scene或中间性能重跑。历史formal D92仅在`capsule_id/split_id/query_id_root/receiver/seed/K/new_count/scenario`完全同键时连接比较，不重算D92。
+该实验只运行Q，不包含K1、CER、H、D92-Lite、K10或额外new-count。每个场景的旧类query根必须在四状态完全相同；新类query根在REG0为`N/A`，只在两个REG1状态存在且完全相同。REG0的seen-new/H保持`N/A`。完整prediction封存后一次性独立评分，不按receiver、scene或中间性能重跑。历史formal D92仅在`capsule_id/split_id/old_query_id_root/new_query_id_root/receiver/seed/K/new_count/scenario`完全同键时连接比较，不重算D92。当前plan只允许seed713103；若prediction前同键检查失败，技术停止并另建不可覆盖revision，不在同一plan自动顺延seed。
 
 唯一结果裁决为：池化`DA1_REG0−DA0_REG0`的old BA与old-floor均不低于0，且`DA1_REG1−DA0_REG1`的old BA、seen-new、H、all-floor均不低于0，H与总正确数严格增加。逐receiver完整报告但不设新的边际阈值。通过记为`TARGET5_SCREEN_POSITIVE_NOT_MULTI_SEED_PROMOTABLE`；任一池化主项为负则关闭FA-RDCE3，不调参、不重跑该seed。
 
