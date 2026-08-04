@@ -661,13 +661,23 @@ def _load_package(path: Path, expected_sha256: str, *, received: ReceivedCapsule
     plan = matrix.validate_next_r4_proxy24_plan(matrix.build_next_r4_proxy24_plan(tuple(package["class_registry"]), held_receivers=tuple(package["held_receivers"])))
     if package.get("matrix_sha256") != plan["matrix_sha256"] or len(package.get("rows", ())) != matrix.ROW_COUNT:
         raise NextR4Proxy24Error("predictor package matrix closure drift")
-    for item in package["rows"]:
+    package_rows = package["rows"]
+    package_by_id = {str(item.get("row_id")): item for item in package_rows if isinstance(item, Mapping)}
+    if len(package_by_id) != matrix.ROW_COUNT:
+        raise NextR4Proxy24Error("predictor package row identity closure drift")
+    for planned in plan["rows"]:
+        item = package_by_id.get(str(planned["row_id"]))
+        if not isinstance(item, Mapping) or any(item.get(field) != planned[field] for field in ("row_id", "held_receiver", "held_class", "active_k")):
+            raise NextR4Proxy24Error("predictor package row identity drift")
+    for item in package_rows:
         if not isinstance(item, Mapping) or "phase1_fit_ids" in item or "physical_binding_receipt" not in item:
             raise NextR4Proxy24Error("predictor package contains raw Phase1 IDs or lacks sealed binding")
         try:
-            matrix.validate_next_r4_binding(item["physical_binding_receipt"])
+            binding = matrix.validate_next_r4_binding(item["physical_binding_receipt"])
         except Exception as error:
             raise NextR4Proxy24Error("predictor package physical binding drift") from error
+        if tuple(binding.get("registered_classes", ())) != tuple(package["class_registry"]):
+            raise NextR4Proxy24Error("predictor package binding class registry drift")
     _reject_forbidden(package, name="predictor package")
     return package, plan
 
