@@ -41,7 +41,12 @@ def _binding(plan: Mapping[str, object], row_k1: Mapping[str, object], row_k5: M
         query_ids_by_view=view_ids,
         query_observation_ids_by_view=view_obs,
     )
-    return dict(receipt)
+    truth = {
+        query_id: class_id
+        for class_id, query_ids in query.items()
+        for query_id in query_ids
+    }
+    return dict(receipt), truth
 
 
 def _prediction_fixture() -> tuple[dict, dict, dict]:
@@ -60,13 +65,11 @@ def _prediction_fixture() -> tuple[dict, dict, dict]:
     rows: list[dict] = []
     for planned in plan["rows"]:
         receiver, held, active_k = planned["held_receiver"], planned["held_class"], planned["active_k"]
-        binding = bindings[(receiver, held)]
+        binding, binding_truth = bindings[(receiver, held)]
         classes = tuple(planned["all_registered_classes"])
-        query_ids = tuple(qid for cls in classes for qid in binding["query_ids_by_class"][cls])
-        query_obs = tuple(oid for cls in classes for oid in binding["query_observation_ids_by_class"][cls])
-        for cls in classes:
-            for qid in binding["query_ids_by_class"][cls]:
-                truth[qid] = cls
+        query_ids = tuple(binding["query_physical_ids"])
+        query_obs = tuple(binding["query_observation_ids"])
+        truth.update(binding_truth)
 
         def predictions(registered: tuple[str, ...], *, perturb: bool = False) -> list[str]:
             values = [truth[qid] if truth[qid] in registered else registered[0] for qid in query_ids]
@@ -220,9 +223,35 @@ def test_fa_state_reuse_tamper_and_binding_tamper_fail_closed() -> None:
     with pytest.raises(scorer.NextR4ScoreError, match="FA reuse"):
         scorer.score_next_r4_proxy24(prediction=bad_fa, plan=plan, truth_by_query_id=truth)
     bad_binding = deepcopy(prediction)
-    bad_binding["rows"][0]["binding_receipt"]["query_ids_by_class"][sorted(CLASSES)[0]][0] = "query-tampered"
+    binding = bad_binding["rows"][0]["binding_receipt"]
+    binding["query_physical_ids"][0] = "query-tampered"
     with pytest.raises(scorer.NextR4ScoreError, match="binding"):
         scorer.score_next_r4_proxy24(prediction=bad_binding, plan=plan, truth_by_query_id=truth)
+
+
+def test_scorer_rejects_old_class_grouped_binding_before_truth() -> None:
+    plan, prediction, _ = _prediction_fixture()
+    bad = deepcopy(prediction)
+    binding = bad["rows"][0]["binding_receipt"]
+    binding["schema"] = "cvs.stage2.next_r4.fa_rdce3_cer_plr160.row_binding.v1"
+    binding["query_ids_by_class"] = {"leaked-class": binding["query_physical_ids"]}
+    binding["query_observation_ids_by_class"] = {
+        "leaked-class": binding["query_observation_ids"]
+    }
+    binding["query_count_by_class"] = {"leaked-class": binding["query_count"]}
+    binding.pop("binding_sha256")
+    binding["binding_sha256"] = matrix.canonical_sha256(binding)
+
+    class Sentinel(Mapping[str, str]):
+        def __getitem__(self, key: str) -> str:
+            raise AssertionError("truth was opened before grouped binding rejection")
+        def __iter__(self) -> Iterator[str]:
+            raise AssertionError("truth was opened before grouped binding rejection")
+        def __len__(self) -> int:
+            raise AssertionError("truth was opened before grouped binding rejection")
+
+    with pytest.raises(scorer.NextR4ScoreError, match="forbidden"):
+        scorer.score_next_r4_proxy24(prediction=bad, plan=plan, truth_by_query_id=Sentinel())
 
 
 def test_scorer_revalidates_row_query_isolation_receipt() -> None:

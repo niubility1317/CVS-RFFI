@@ -26,7 +26,7 @@ def _isolation() -> dict[str, object]:
     }
 
 
-def _binding(row_k1: dict, row_k5: dict) -> dict:
+def _binding(row_k1: dict, row_k5: dict) -> tuple[dict, dict[str, str]]:
     classes = tuple(sorted(CLASSES))
     support5 = {
         cls: [f"support-{row_k1['held_receiver']}-{row_k1['held_class']}-{cls}-{i}" for i in range(5)]
@@ -47,7 +47,7 @@ def _binding(row_k1: dict, row_k5: dict) -> dict:
         "K5": observation,
         **{state: observation for state in matrix.STATE_IDS},
     }
-    return dict(
+    receipt = dict(
         matrix.bind_next_r4_physical_ids(
             row_k1=matrix.outer_key_from_mapping(row_k1),
             row_k5=matrix.outer_key_from_mapping(row_k5),
@@ -62,6 +62,12 @@ def _binding(row_k1: dict, row_k5: dict) -> dict:
             query_observation_ids_by_view=observation_views,
         )
     )
+    truth = {
+        query_id: class_id
+        for class_id, query_ids in query.items()
+        for query_id in query_ids
+    }
+    return receipt, truth
 
 
 def _row_results() -> tuple[dict, dict, dict]:
@@ -78,13 +84,11 @@ def _row_results() -> tuple[dict, dict, dict]:
     rows: list[dict] = []
     for planned in plan["rows"]:
         receiver, held, active_k = planned["held_receiver"], planned["held_class"], int(planned["active_k"])
-        binding = bindings[(receiver, held)]
+        binding, binding_truth = bindings[(receiver, held)]
         classes = tuple(planned["all_registered_classes"])
-        query_ids = tuple(qid for cls in classes for qid in binding["query_ids_by_class"][cls])
-        query_obs = tuple(oid for cls in classes for oid in binding["query_observation_ids_by_class"][cls])
-        for cls in classes:
-            for qid in binding["query_ids_by_class"][cls]:
-                truth[qid] = cls
+        query_ids = tuple(binding["query_physical_ids"])
+        query_obs = tuple(binding["query_observation_ids"])
+        truth.update(binding_truth)
 
         def prediction(registered: tuple[str, ...]) -> list[str]:
             return [truth[qid] if truth[qid] in registered else registered[0] for qid in query_ids]
@@ -165,6 +169,18 @@ def test_builder_emits_complete_truth_free_artifact_and_scores() -> None:
         and "query_truth" not in row
         for row in prediction["rows"]
     )
+    forbidden = {
+        "query_ids_by_class", "query_observation_ids_by_class", "query_count_by_class"
+    }
+    def keys(value):
+        if isinstance(value, dict):
+            for key, item in value.items():
+                yield key
+                yield from keys(item)
+        elif isinstance(value, list):
+            for item in value:
+                yield from keys(item)
+    assert forbidden.isdisjoint(keys(prediction))
     scored = scorer.score_next_r4_proxy24(prediction=prediction, plan=plan, truth_by_query_id=truth)
     assert scored["row_count"] == 24
     assert scored["unique_prediction_count"] == 144
@@ -179,6 +195,19 @@ def test_builder_rejects_forbidden_logits_and_truth_before_projection() -> None:
         artifact.build_next_r4_prediction_artifact(plan=plan, row_results=bad)
     bad = deepcopy(rows)
     bad[0]["registrations"]["REG0"]["states"]["DA0_REG0"]["arms"]["Q"]["receipt"]["truth"] = "tx-a"
+    with pytest.raises(artifact.NextR4ArtifactError, match="forbidden"):
+        artifact.build_next_r4_prediction_artifact(plan=plan, row_results=bad)
+
+
+def test_builder_rejects_old_class_grouped_binding_recursively() -> None:
+    plan, rows, _ = _row_results()
+    bad = deepcopy(rows)
+    binding = bad[0]["binding_receipt"]
+    binding["schema"] = "cvs.stage2.next_r4.fa_rdce3_cer_plr160.row_binding.v1"
+    binding["query_ids_by_class"] = {"leaked-class": binding["query_physical_ids"]}
+    binding["query_count_by_class"] = {"leaked-class": binding["query_count"]}
+    binding.pop("binding_sha256")
+    binding["binding_sha256"] = matrix.canonical_sha256(binding)
     with pytest.raises(artifact.NextR4ArtifactError, match="forbidden"):
         artifact.build_next_r4_prediction_artifact(plan=plan, row_results=bad)
 

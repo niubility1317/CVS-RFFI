@@ -61,6 +61,9 @@ _FORBIDDEN_KEYS = frozenset(
         "query_fit",
         "query_fitted",
         "query_update",
+        "query_ids_by_class",
+        "query_observation_ids_by_class",
+        "query_count_by_class",
     }
 )
 
@@ -144,17 +147,12 @@ def _strings(value: Any, *, name: str, unique: bool = True) -> tuple[str, ...]:
 
 
 def _binding_query_ids(binding: Mapping[str, Any], *, observation: bool = False) -> tuple[str, ...]:
-    field = "query_observation_ids_by_class" if observation else "query_ids_by_class"
-    classes = _strings(binding.get("registered_classes"), name="binding.registered_classes")
+    field = "query_observation_ids" if observation else "query_physical_ids"
     values = binding.get(field)
-    if not isinstance(values, Mapping) or set(values) != set(classes):
-        raise NextR4ArtifactError(f"binding.{field} class registry drift")
-    flattened: list[str] = []
-    for class_id in classes:
-        flattened.extend(_strings(values[class_id], name=f"binding.{field}.{class_id}"))
-    if len(flattened) != len(set(flattened)):
-        raise NextR4ArtifactError(f"binding.{field} contains duplicate IDs")
-    return tuple(flattened)
+    flattened = _strings(values, name=f"binding.{field}")
+    if binding.get("query_count") != len(flattened):
+        raise NextR4ArtifactError(f"binding.{field} count drift")
+    return flattened
 
 
 def _validate_fa_receipt(receipt: Mapping[str, Any], *, name: str) -> dict[str, Any]:

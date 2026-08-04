@@ -16,7 +16,7 @@ from typing import Any, Mapping, Sequence
 from . import stage2_next_r4_matrix as matrix
 
 
-PREDICTION_SCHEMA = "cvs.stage2.next_r4.fa_rdce3_cer_plr160.proxy_prediction.v1"
+PREDICTION_SCHEMA = "cvs.stage2.next_r4.fa_rdce3_cer_plr160.proxy_prediction.v2"
 SCORE_SCHEMA = "cvs.stage2.next_r4.fa_rdce3_cer_plr160.proxy_score.v1"
 ROW_SCORE_SCHEMA = "cvs.stage2.next_r4.fa_rdce3_cer_plr160.row_score.v1"
 
@@ -25,7 +25,8 @@ _FORBIDDEN_KEYS = frozenset(
         "truth", "truth_label", "query_truth", "query_label", "query_labels",
         "query_role", "query_roles", "class_quota", "batch_class_count",
         "true_batch_class_count", "true_batch_class_counts", "global_reassignment",
-        "hungarian", "optimal_transport",
+        "hungarian", "optimal_transport", "query_ids_by_class",
+        "query_observation_ids_by_class", "query_count_by_class",
     }
 )
 _REG_STATES = {
@@ -107,17 +108,12 @@ def _harmonic(old: float, new: float) -> float:
 
 
 def _binding_query_ids(binding: Mapping[str, Any], *, observation: bool = False) -> tuple[str, ...]:
-    field = "query_observation_ids_by_class" if observation else "query_ids_by_class"
-    classes = _strings(binding.get("registered_classes"), name="binding.registered_classes")
+    field = "query_observation_ids" if observation else "query_physical_ids"
     values = binding.get(field)
-    if not isinstance(values, Mapping) or tuple(sorted(values)) != tuple(sorted(classes)):
-        raise NextR4ScoreError(f"binding.{field} class registry drift")
-    flattened: list[str] = []
-    for class_id in classes:
-        flattened.extend(_strings(values[class_id], name=f"binding.{field}.{class_id}"))
-    if len(flattened) != len(set(flattened)):
-        raise NextR4ScoreError(f"binding.{field} contains duplicate IDs")
-    return tuple(flattened)
+    flattened = _strings(values, name=f"binding.{field}")
+    if binding.get("query_count") != len(flattened):
+        raise NextR4ScoreError(f"binding.{field} count drift")
+    return flattened
 
 
 def _validated_binding(row: Mapping[str, Any], planned: Mapping[str, Any]) -> Mapping[str, Any]:

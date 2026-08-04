@@ -74,6 +74,20 @@ def test_k_prefix_and_query_reuse_binding_is_independent_of_fa_state() -> None:
     assert receipt["k1_is_exact_k5_prefix"] is True
     assert receipt["common_query_physical_ids_across_k_states"] is True
     assert receipt["common_query_observation_ids_across_k_states"] is True
+    expected_pairs = sorted(
+        (physical_id, observations[class_id][index])
+        for class_id in sorted(CLASSES)
+        for index, physical_id in enumerate(query[class_id])
+    )
+    assert receipt["schema"] == matrix.ROW_BINDING_SCHEMA
+    assert receipt["query_pair_order_policy"] == matrix.QUERY_PAIR_ORDER_POLICY
+    assert receipt["query_physical_ids"] == [pair[0] for pair in expected_pairs]
+    assert receipt["query_observation_ids"] == [pair[1] for pair in expected_pairs]
+    assert {
+        "query_ids_by_class",
+        "query_observation_ids_by_class",
+        "query_count_by_class",
+    }.isdisjoint(receipt)
     assert "fa_state_reuse_receipt" not in receipt
     assert matrix.validate_next_r4_binding(receipt)["binding_sha256"] == receipt[
         "binding_sha256"
@@ -140,6 +154,36 @@ def test_query_and_phase1_cardinality_is_runtime_not_r3_fixed() -> None:
             query_ids_by_view=view_ids,
             query_observation_ids_by_view=view_observations,
         )
+
+
+def test_old_v1_or_class_grouped_query_binding_is_rejected() -> None:
+    plan = matrix.build_next_r4_proxy24_plan(CLASSES)
+    rows = [matrix.outer_key_from_mapping(value) for value in plan["rows"][:2]]
+    support1, support5, query, observations, phase1 = _maps(CLASSES)
+    views = {"K1": query, "K5": query, **{state: query for state in matrix.STATE_IDS}}
+    observation_views = {
+        "K1": observations,
+        "K5": observations,
+        **{state: observations for state in matrix.STATE_IDS},
+    }
+    receipt = dict(
+        matrix.bind_next_r4_physical_ids(
+            row_k1=rows[0], row_k5=rows[1], phase1_fit_ids=phase1,
+            k1_support_ids_by_class=support1, k5_support_ids_by_class=support5,
+            query_ids_by_class=query, query_observation_ids_by_class=observations,
+            query_ids_by_view=views,
+            query_observation_ids_by_view=observation_views,
+        )
+    )
+    old = dict(receipt)
+    old["schema"] = "cvs.stage2.next_r4.fa_rdce3_cer_plr160.row_binding.v1"
+    old["query_ids_by_class"] = query
+    old["query_observation_ids_by_class"] = observations
+    old["query_count_by_class"] = {key: len(value) for key, value in query.items()}
+    old.pop("binding_sha256")
+    old["binding_sha256"] = matrix.canonical_sha256(old)
+    with pytest.raises(matrix.NextR4MatrixError, match="class-grouped"):
+        matrix.validate_next_r4_binding(old)
 
 
 def test_plan_digest_is_immutable() -> None:

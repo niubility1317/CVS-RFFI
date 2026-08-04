@@ -17,7 +17,8 @@ from typing import Any, Mapping, Sequence
 
 
 SCHEMA = "cvs.stage2.next_r4.fa_rdce3_cer_plr160.proxy24.plan.v1"
-ROW_BINDING_SCHEMA = "cvs.stage2.next_r4.fa_rdce3_cer_plr160.row_binding.v1"
+ROW_BINDING_SCHEMA = "cvs.stage2.next_r4.fa_rdce3_cer_plr160.row_binding.v2"
+QUERY_PAIR_ORDER_POLICY = "opaque_physical_id_lexicographic_v1"
 PROTOCOL_SCHEMA = "p2_min_v1"
 CANDIDATE_ID = "NEXT-R4-FA-RDCE3-CER-PLR160"
 REPRESENTATION_RULE = "d106_canonical_normalized_relu_zid160"
@@ -576,8 +577,21 @@ def bind_next_r4_physical_ids(
     )
     support1_ordered = tuple(item for c in classes for item in support1[c])
     support5_ordered = tuple(item for c in classes for item in support5[c])
-    query_ordered = tuple(item for c in classes for item in query[c])
-    observation_ordered = tuple(item for c in classes for item in observations[c])
+    # The builder needs class-grouped inputs for the one-time legality checks,
+    # but the predictor-visible receipt must not retain their truth grouping.
+    # Sort opaque physical IDs globally and carry the paired observation ID
+    # with each item.  Physical IDs are unique, so this order is deterministic
+    # without a class-dependent tie-breaker.
+    query_pairs = sorted(
+        (
+            (physical_id, observations[class_id][index])
+            for class_id in classes
+            for index, physical_id in enumerate(query[class_id])
+        ),
+        key=lambda pair: pair[0],
+    )
+    query_ordered = tuple(pair[0] for pair in query_pairs)
+    observation_ordered = tuple(pair[1] for pair in query_pairs)
     payload: dict[str, Any] = {
         "schema": ROW_BINDING_SCHEMA,
         "held_receiver": row_k1.held_receiver,
@@ -593,10 +607,9 @@ def bind_next_r4_physical_ids(
         "query_observation_root_sha256": _root(observation_ordered),
         "k1_support_ids_by_class": {key: list(value) for key, value in support1.items()},
         "k5_support_ids_by_class": {key: list(value) for key, value in support5.items()},
-        "query_ids_by_class": {key: list(value) for key, value in query.items()},
-        "query_observation_ids_by_class": {
-            key: list(value) for key, value in observations.items()
-        },
+        "query_physical_ids": list(query_ordered),
+        "query_observation_ids": list(observation_ordered),
+        "query_pair_order_policy": QUERY_PAIR_ORDER_POLICY,
         "k1_is_exact_k5_prefix": True,
         "support_query_physical_ids_disjoint": True,
         "support_query_observation_ids_disjoint": True,
@@ -606,8 +619,7 @@ def bind_next_r4_physical_ids(
         "query_observation_view_ids_checked": list(observation_views),
         "k1_support_count": K1_SUPPORT_COUNT,
         "k5_support_count": K5_SUPPORT_COUNT,
-        "query_count": sum(len(query[c]) for c in classes),
-        "query_count_by_class": {key: len(value) for key, value in query.items()},
+        "query_count": len(query_ordered),
     }
     payload["binding_sha256"] = canonical_sha256(payload)
     return MappingProxyType(_json_ready(payload))
@@ -618,8 +630,51 @@ def validate_next_r4_binding(value: Mapping[str, Any]) -> Mapping[str, Any]:
         raise NextR4MatrixError("row binding must be a mapping")
     payload = dict(value)
     observed = payload.pop("binding_sha256", None)
+    forbidden = {
+        "query_ids_by_class",
+        "query_observation_ids_by_class",
+        "query_count_by_class",
+    }
+
+    def exposes_grouped_query(item: Any) -> bool:
+        if isinstance(item, Mapping):
+            return any(
+                str(key).strip().lower().replace("-", "_") in forbidden
+                or exposes_grouped_query(child)
+                for key, child in item.items()
+            )
+        if isinstance(item, (tuple, list)):
+            return any(exposes_grouped_query(child) for child in item)
+        return False
+
+    if exposes_grouped_query(payload):
+        raise NextR4MatrixError("row binding exposes class-grouped query metadata")
     if payload.get("schema") != ROW_BINDING_SCHEMA or observed != canonical_sha256(payload):
         raise NextR4MatrixError("row binding SHA256 drift")
+    query_ids = payload.get("query_physical_ids")
+    observation_ids = payload.get("query_observation_ids")
+    if not isinstance(query_ids, (tuple, list)) or not isinstance(
+        observation_ids, (tuple, list)
+    ):
+        raise NextR4MatrixError("row binding requires flattened query ID pairs")
+    query_ids = tuple(query_ids)
+    observation_ids = tuple(observation_ids)
+    if (
+        not query_ids
+        or len(query_ids) != len(observation_ids)
+        or len(set(query_ids)) != len(query_ids)
+        or len(set(observation_ids)) != len(observation_ids)
+        or any(not isinstance(item, str) or not item for item in query_ids + observation_ids)
+    ):
+        raise NextR4MatrixError("row binding flattened query ID pairs drift")
+    if (
+        query_ids != tuple(sorted(query_ids))
+        or payload.get("query_pair_order_policy") != QUERY_PAIR_ORDER_POLICY
+        or payload.get("query_count") != len(query_ids)
+        or payload.get("query_physical_root_sha256") != _root(query_ids)
+        or payload.get("query_observation_root_sha256") != _root(observation_ids)
+    ):
+        raise NextR4MatrixError("row binding flattened query order/root drift")
     if (
         payload.get("k1_is_exact_k5_prefix") is not True
         or payload.get("support_query_physical_ids_disjoint") is not True
@@ -749,6 +804,7 @@ __all__ = [
     "REGISTRATION_IDS",
     "REPRESENTATION_RULE",
     "ROW_BINDING_SCHEMA",
+    "QUERY_PAIR_ORDER_POLICY",
     "ROW_COUNT",
     "SCHEMA",
     "STATE_COUNT",

@@ -620,12 +620,8 @@ def _validate_shared_binding(
     for class_id in row.all_registered_classes:
         if tuple(support_map.get(class_id, ())) != reg1.support_physical_ids_by_class[class_id]:
             raise NextR4RuntimeError("REG1 physical support IDs drift from shared binding")
-    flattened_query = tuple(
-        item for class_id in row.all_registered_classes for item in binding["query_ids_by_class"][class_id]
-    )
-    flattened_observation = tuple(
-        item for class_id in row.all_registered_classes for item in binding["query_observation_ids_by_class"][class_id]
-    )
+    flattened_query = tuple(binding.get("query_physical_ids", ()))
+    flattened_observation = tuple(binding.get("query_observation_ids", ()))
     if (
         reg0.query_physical_ids != flattened_query
         or reg1.query_physical_ids != flattened_query

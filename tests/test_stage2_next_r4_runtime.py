@@ -105,7 +105,7 @@ def _asset(old_classes: tuple[str, ...]) -> fa.FARDCE3Phase1Asset:
 def _case(active_k: int):
     k1, k5, _ = _rows()
     row = k1 if active_k == 1 else k5
-    binding, support1, support5, query_map, observation_map = _physical_binding(k1, k5)
+    binding, support1, support5, _, _ = _physical_binding(k1, k5)
     physical = support1 if active_k == 1 else support5
     support: dict[str, np.ndarray] = {}
     for index, class_id in enumerate(CLASSES):
@@ -113,8 +113,8 @@ def _case(active_k: int):
     query = np.concatenate(
         [np.stack([_unit(index, 0), _unit(index, 6)]) for index in range(len(CLASSES))], axis=0
     ).astype(np.float32)
-    query_ids = tuple(item for class_id in CLASSES for item in query_map[class_id])
-    observation_ids = tuple(item for class_id in CLASSES for item in observation_map[class_id])
+    query_ids = tuple(binding["query_physical_ids"])
+    observation_ids = tuple(binding["query_observation_ids"])
     reg0 = runtime.NextR4RegistrationInput(
         registration_id="REG0",
         registered_classes=row.retained_classes,
@@ -295,6 +295,24 @@ def test_public_runtime_signature_has_no_truth_role_or_quota_input() -> None:
         "true_batch_class_count", "global_reassignment", "scorer_output", "optimizer",
     }
     assert forbidden.isdisjoint(parameters)
+
+
+def test_runtime_rejects_old_class_grouped_binding() -> None:
+    row, binding, asset, fa_binding, reg0, reg1, lock, _, _ = _case(1)
+    old = dict(binding)
+    old["schema"] = "cvs.stage2.next_r4.fa_rdce3_cer_plr160.row_binding.v1"
+    old["query_ids_by_class"] = {"leaked-class": list(reg0.query_physical_ids)}
+    old["query_observation_ids_by_class"] = {
+        "leaked-class": list(reg0.query_observation_ids)
+    }
+    old["query_count_by_class"] = {"leaked-class": len(reg0.query_physical_ids)}
+    old.pop("binding_sha256")
+    old["binding_sha256"] = matrix.canonical_sha256(old)
+    with pytest.raises(runtime.NextR4RuntimeError, match="binding"):
+        runtime.execute_next_r4_logical_row(
+            row=row, binding_receipt=old, fa_asset=asset, fa_binding=fa_binding,
+            reg0=reg0, reg1=reg1, qknn_lock=lock,
+        )
 
 
 def test_runtime_mapping_matches_the_strict_artifact_row_contract() -> None:
