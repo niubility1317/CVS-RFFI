@@ -68,3 +68,10 @@ predict detached启动后核验PID/CWD/cmdline/run-root/GPU/log增长；只有84
 |---|---|---:|---:|---:|---:|---:|---|---|
 |`NEXT-R1 FABR-TSL/r1`|待84行完成|—|—|—|—|—|—|`NO_NEW_PERFORMANCE_RESULT`|
 
+## N607 runner终态（2026-08-04）
+
+状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / ARTIFACTS_INCOMPLETE / NO_PERFORMANCE_RESULT`。提交`af805782c04c82d99f8e9ac2b7ca7d6a93a0f4e4`的精确archive为52,739,737 bytes，SHA256=`25a9605e023d78f297418ae32cf5f16094bfe3022e1025d3cfbddd6e69379ed1`；远端archive、commit marker、5237成员单根`source/`、7个关键源码SHA和`py_compile` 7/7均通过。
+
+唯一detached启动使用物理GPU0，主PID=`1001369`，CWD为`run_root/source`，冻结84行命令已写入`control/command.txt`。首个fold在prediction前报`FABRError: joint_proj.0 pre-ReLU must be finite float32 [N,160]`，`from_numpy`指纹已消失；rows预测artifact为0。`plan.json`和`preregistration.json`已生成；`completion.json`、`manifest.json`、`predictions.npz`、`truth_side.npz`和独立score均未生成，故未启动score。GPU0—7恢复0%/1MiB，SSH/TCP22清理为0，retry authority=false。
+
+只读tap诊断显示同一checkpoint/IQ的torch `pre/logits`均为finite float32；但`pre.cpu().numpy()`在远端NumPy/Torch ABI下访问`dtype/astype`触发`TypeError: expected 0 arguments, got 1`，运行时传入`fabr.signed_pre_relu160`的数组为`numpy.ndarray dtype=object`，导致finite检查失败。完整回收证据见`artifacts/remote_r1/runner_handoff.md`、`torch_numpy_tap_diagnostic.txt`与同目录日志/控制文件；无性能或晋级结论。
