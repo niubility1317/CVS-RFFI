@@ -3,6 +3,9 @@
 The matrix is intentionally mechanical.  It fixes two preregistered held
 receivers (``1-1`` and ``18-2``), accepts the six held classes from the call
 site, and emits one candidate with 24 atomic rows (receiver x class x K).
+Each REG owns a six-arm bundle, but a four-state view exposes only three arms:
+R0 states use R0Q/R0F/R0L and R1 states use R1Q/R1F/R1L (288 state-arm
+predictions in total).
 Truth and prediction values are not part of this module.  Physical-ID
 binding helpers are kept small and are compatible with the D129 row-binding
 shape so an existing runner can reuse its disjointness checks.
@@ -18,8 +21,8 @@ from types import MappingProxyType
 from typing import Any, Mapping, Sequence
 
 
-SCHEMA = "cvs.stage2.next_r3.rdce_tsl160.proxy24.plan.v1"
-ROW_BINDING_SCHEMA = "cvs.stage2.next_r3.rdce_tsl160.row_binding.v1"
+SCHEMA = "cvs.stage2.next_r3.rdce_tsl160.proxy24.plan.v2"
+ROW_BINDING_SCHEMA = "cvs.stage2.next_r3.rdce_tsl160.row_binding.v2"
 PROTOCOL_SCHEMA = "p2_min_v1"
 CANDIDATE_ID = "NEXT-R3-RDCE-TSL160-R1"
 REPRESENTATION_RULE = "d106_canonical_normalized_relu_zid160"
@@ -31,6 +34,12 @@ REGISTRATION_IDS = ("REG0", "REG1")
 ARM_IDS = ("R0Q", "R0F", "R0L", "R1Q", "R1F", "R1L")
 COMMON_ARM_IDS = ("R0Q", "R0F", "R0L")
 ADAPTED_ARM_IDS = ("R1Q", "R1F", "R1L")
+STATE_ARM_IDS = {
+    "DA0_REG0": COMMON_ARM_IDS,
+    "DA1_REG0": ADAPTED_ARM_IDS,
+    "DA0_REG1": COMMON_ARM_IDS,
+    "DA1_REG1": ADAPTED_ARM_IDS,
+}
 DA1_STATES = frozenset(("DA1_REG0", "DA1_REG1"))
 REG1_STATES = frozenset(("DA0_REG1", "DA1_REG1"))
 REG0_STATES = frozenset(("DA0_REG0", "DA1_REG0"))
@@ -41,7 +50,8 @@ ROW_COUNT = SELECTED_RECEIVER_COUNT * CLASS_COUNT * len(K_VALUES)
 OUTER_KEY_COUNT = ROW_COUNT
 STATE_COUNT = len(STATE_IDS)
 STATE_PREDICTION_COUNT = OUTER_KEY_COUNT * STATE_COUNT
-ARM_PREDICTION_COUNT = STATE_PREDICTION_COUNT * len(ARM_IDS)
+STATE_ARM_COUNT = 3
+ARM_PREDICTION_COUNT = STATE_PREDICTION_COUNT * STATE_ARM_COUNT
 QUERY_PER_CLASS = 9
 PHYSICAL_PER_CLASS = 14
 MAX_SUPPORT_K = 5
@@ -174,12 +184,23 @@ class NextR3ProxyRow:
         raise NextR3MatrixError(f"unknown registration ID {registration_id}")
 
     def as_dict(self) -> dict[str, Any]:
+        registration_state_ids = {
+            "REG0": ("DA0_REG0", "DA1_REG0"),
+            "REG1": ("DA0_REG1", "DA1_REG1"),
+        }
         registrations = {
             registration_id: {
                 "registration_id": registration_id,
                 "registered_classes": list(self.registration_classes(registration_id)),
-                "state_ids": list(STATE_IDS),
-                "arm_ids": list(ARM_IDS),
+                # A registration owns a six-arm bundle, while each causal
+                # state view exposes only its matching representation's three
+                # arms.  The scorer must not duplicate R0/R1 arms across views.
+                "bundle_arm_ids": list(ARM_IDS),
+                "state_ids": list(registration_state_ids[registration_id]),
+                "state_arm_ids": {
+                    state_id: list(STATE_ARM_IDS[state_id])
+                    for state_id in registration_state_ids[registration_id]
+                },
                 "query_per_class": QUERY_PER_CLASS,
                 "query_count": len(self.registration_classes(registration_id))
                 * QUERY_PER_CLASS,
@@ -298,6 +319,10 @@ def build_next_r3_proxy24_plan(
         "state_ids": list(STATE_IDS),
         "registration_ids": list(REGISTRATION_IDS),
         "arm_ids": list(ARM_IDS),
+        "state_arm_ids": {
+            state_id: list(STATE_ARM_IDS[state_id]) for state_id in STATE_IDS
+        },
+        "state_arm_count": STATE_ARM_COUNT,
         "row_count": ROW_COUNT,
         "outer_key_count": OUTER_KEY_COUNT,
         "state_prediction_count": STATE_PREDICTION_COUNT,
@@ -572,6 +597,12 @@ def validate_next_r3_proxy24_plan(value: Mapping[str, Any]) -> Mapping[str, Any]
         or tuple(payload.get("state_ids", ())) != STATE_IDS
         or tuple(payload.get("registration_ids", ())) != REGISTRATION_IDS
         or tuple(payload.get("arm_ids", ())) != ARM_IDS
+        or payload.get("state_arm_count") != STATE_ARM_COUNT
+        or {
+            str(state_id): tuple(values)
+            for state_id, values in dict(payload.get("state_arm_ids", {})).items()
+        }
+        != {state_id: STATE_ARM_IDS[state_id] for state_id in STATE_IDS}
         or payload.get("held_receiver_count") != SELECTED_RECEIVER_COUNT
         or payload.get("held_class_count") != CLASS_COUNT
         or payload.get("row_count") != ROW_COUNT
@@ -637,6 +668,8 @@ __all__ = [
     "ROW_BINDING_SCHEMA",
     "ROW_COUNT",
     "SCHEMA",
+    "STATE_ARM_COUNT",
+    "STATE_ARM_IDS",
     "STATE_COUNT",
     "STATE_IDS",
     "STATE_PREDICTION_COUNT",

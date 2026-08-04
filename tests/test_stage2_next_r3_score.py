@@ -37,7 +37,7 @@ def _fixture() -> tuple[dict, dict, dict]:
             )
             for state_id in state_ids:
                 arms: dict[str, list[str]] = {}
-                for arm_id in matrix.ARM_IDS:
+                for arm_id in matrix.STATE_ARM_IDS[state_id]:
                     values = [truth[qid] for qid in query_ids]
                     # One same-row K5 DA1 L improvement exercises Q/L DID.
                     if (
@@ -95,6 +95,7 @@ def test_complete_matrix_scores_same_row_context_and_na_reg0() -> None:
     )
     assert result["row_count"] == 24
     assert result["state_prediction_count"] == 96
+    assert result["arm_prediction_count"] == 288
     assert result["formal_new_registration_claim"] is False
     assert result["cross_row_best_selection_used"] is False
     assert result["decision"] == "SOURCE_HELD_PROXY_SCORED_ONLY"
@@ -107,6 +108,17 @@ def test_complete_matrix_scores_same_row_context_and_na_reg0() -> None:
     assert reg0["H_old_new"] is None
     assert reg0["registration_metric_status"] == "NA_BEFORE_REGISTRATION"
     assert "by_registration" in result["causal_comparisons_by_k"]["5"]
+
+
+def test_state_rejects_wrong_representation_arm() -> None:
+    plan, prediction, truth = _fixture()
+    bad = deepcopy(prediction)
+    arms = bad["rows"][0]["registrations"]["REG0"]["states"]["DA0_REG0"]["arms"]
+    arms["R1Q"] = arms.pop("R0Q")
+    with pytest.raises(scorer.NextR3ScoreError, match="matching three arm IDs"):
+        scorer.score_next_r3_proxy24(
+            prediction=bad, plan=plan, truth_by_query_id=truth
+        )
 
 
 def test_registration_cannot_carry_the_other_registration_states() -> None:

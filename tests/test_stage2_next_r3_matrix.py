@@ -17,9 +17,12 @@ def test_frozen_receivers_and_explicit_six_class_proxy_matrix() -> None:
     assert plan["candidate_count"] == 1
     assert plan["row_count"] == 24
     assert plan["state_prediction_count"] == 96
-    assert plan["arm_prediction_count"] == 576
+    assert plan["arm_prediction_count"] == 288
     assert tuple(plan["state_ids"]) == matrix.STATE_IDS
     assert tuple(plan["arm_ids"]) == matrix.ARM_IDS
+    assert plan["state_arm_count"] == 3
+    assert plan["state_arm_ids"]["DA0_REG0"] == list(matrix.COMMON_ARM_IDS)
+    assert plan["state_arm_ids"]["DA1_REG0"] == list(matrix.ADAPTED_ARM_IDS)
     assert all(set(row["registrations"]) == {"REG0", "REG1"} for row in plan["rows"])
     assert all(row["formal_new_registration_claim"] is False for row in plan["rows"])
     matrix.validate_next_r3_proxy24_plan(plan)

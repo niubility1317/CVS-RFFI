@@ -1,11 +1,12 @@
 """Truth-side scorer for the frozen NEXT-R3 source-held proxy matrix.
 
 The predictor is expected to publish one immutable, truth-free mapping with
-24 rows.  Each row carries REG0/REG1 and the six logical arms for all four
-explicit DA/registration states.  This module validates that complete closure
-first, then joins an opaque ``truth_by_query_id`` mapping and computes only
-same-row/pooled metrics.  It never selects a best row and never emits a
-promotion decision or a formal new-registration claim.
+24 rows.  Each REG carries a six-arm bundle, while each explicit
+DA/registration state view carries only its matching three arms (R0Q/R0F/R0L
+or R1Q/R1F/R1L).  This module validates that complete closure first, then joins
+an opaque ``truth_by_query_id`` mapping and computes only same-row/pooled
+metrics.  It never selects a best row and never emits a promotion decision or
+a formal new-registration claim.
 
 For compatibility with small local tools, both a pure mapping API
 (:func:`score_next_r3_proxy24`) and a D129-shaped alias
@@ -21,9 +22,9 @@ from typing import Any, Mapping, Sequence
 from . import stage2_next_r3_matrix as matrix
 
 
-PREDICTION_SCHEMA = "cvs.stage2.next_r3.rdce_tsl160.proxy_prediction.v1"
-SCORE_SCHEMA = "cvs.stage2.next_r3.rdce_tsl160.proxy_score.v1"
-ROW_SCORE_SCHEMA = "cvs.stage2.next_r3.rdce_tsl160.row_score.v1"
+PREDICTION_SCHEMA = "cvs.stage2.next_r3.rdce_tsl160.proxy_prediction.v2"
+SCORE_SCHEMA = "cvs.stage2.next_r3.rdce_tsl160.proxy_score.v2"
+ROW_SCORE_SCHEMA = "cvs.stage2.next_r3.rdce_tsl160.row_score.v2"
 
 _FORBIDDEN_KEYS = frozenset(
     {
@@ -145,15 +146,22 @@ def _state_parts(
     arms = state.get("arms")
     if arms is None:
         arms = state.get("predictions")
+    state_id = name.rsplit(".", 1)[-1]
+    expected_arm_ids = tuple(matrix.STATE_ARM_IDS.get(state_id, ()))
+    if not expected_arm_ids:
+        raise NextR3ScoreError(f"{name} has an unknown state arm mapping")
     if isinstance(arms, Mapping) and set(arms) == {"Q", "F", "L"}:
         # ``NextR3RuntimeResult.four_state`` exposes Q/F/L under each
         # causal state.  Expand that compact view to the frozen six-arm names.
-        prefix = "R0" if name.rsplit(".", 1)[-1].startswith("DA0") else "R1"
+        prefix = "R0" if state_id.startswith("DA0") else "R1"
         arms = {f"{prefix}{head}": value for head, value in arms.items()}
-    if not isinstance(arms, Mapping) or set(arms) != set(matrix.ARM_IDS):
-        raise NextR3ScoreError(f"{name} must contain all six arm IDs")
+    if not isinstance(arms, Mapping) or set(arms) != set(expected_arm_ids):
+        raise NextR3ScoreError(
+            f"{name} must contain exactly the matching three arm IDs "
+            f"{', '.join(expected_arm_ids)}"
+        )
     normalized: dict[str, tuple[str, ...]] = {}
-    for arm_id in matrix.ARM_IDS:
+    for arm_id in expected_arm_ids:
         value = arms[arm_id]
         if isinstance(value, Mapping):
             value = value.get("predictions", value.get("values"))
@@ -644,7 +652,7 @@ def score_next_r3_proxy24(
             for state_id in _STATE_IDS_BY_REGISTRATION[registration_id]:
                 state = reg["states"][state_id]
                 arm_output: dict[str, Any] = {}
-                for arm_id in matrix.ARM_IDS:
+                for arm_id in matrix.STATE_ARM_IDS[state_id]:
                     metric = _metric_row(
                         row=row,
                         registration_id=registration_id,
@@ -672,7 +680,7 @@ def score_next_r3_proxy24(
         aggregates[str(active_k)] = {}
         for state_id in matrix.STATE_IDS:
             aggregates[str(active_k)][state_id] = {}
-            for arm_id in matrix.ARM_IDS:
+            for arm_id in matrix.STATE_ARM_IDS[state_id]:
                 aggregates[str(active_k)][state_id][arm_id] = _aggregate(
                     flat_scores, active_k=active_k, state_id=state_id, arm_id=arm_id
                 )
