@@ -156,6 +156,7 @@ def test_builds_real_shape_metadata_and_closes_all_rows(tmp_path: Path) -> None:
     assert metadata["phase1_fit_count_per_row"] == 420
     assert metadata["class_registry"] == list(module.FIXED_CLASSES)
     assert metadata["held_receivers"] == ["1-1", "18-2"]
+    assert "global_reassignment" not in metadata
     assert metadata["qknn_lock_by_k"]["1"] == _lock(1)
     assert metadata["qknn_lock_by_k"]["5"] == _lock(5)
     assert metadata["qknn_locks"]["K1"] == _lock(1)

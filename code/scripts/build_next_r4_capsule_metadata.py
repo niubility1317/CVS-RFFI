@@ -664,7 +664,6 @@ def _build_metadata(
         "query_role_access": False,
         "class_quota_access": False,
         "true_batch_class_count_access": False,
-        "global_reassignment": False,
         "output_overwrite_allowed": False,
     }
     # Canonical hash is calculated by the caller after writing; identity
