@@ -4,7 +4,7 @@
 
 - 实验ID：`d138_d92_lite_full288_target125_20260804_r4`
 - 登记时间：`2026-08-04`
-- 当前状态：`LOCAL_VERIFIED / REMOTE_LAUNCH_PENDING / DIAGNOSTIC_RESULT_ONLY_PENDING`
+- 当前状态：`RUNNING / DIAGNOSTIC_RESULT_ONLY_PENDING`
 - 目标：用已闭合的D92 ground-fit runtime依赖完成冻结FULL288候选的125 outer、375 scene、750 surface及独立truth-side诊断评分。
 - r1/r2/r3均在预测前的隔离source依赖阶段停止，未产生预测；r4为最后一次独立one-shot入口，不复用前三次输出。
 
@@ -27,3 +27,9 @@
 - 新不可覆盖run root：`/home/szu2070436088/2510044040/CV-SincNet/runs/d138_d92_lite_full288_target125_20260804_r4`；source基底使用r3已验证closure，只覆盖上述两个core文件。
 - 先做远端hash/compile/import和真实checkpoint smoke；smoke通过后立即启动8个固定shard，一卡一shard，再merge、validate、build-truth、score。
 - 成功条件：8/8 shard、125/125 outer、375/375 scene、750/750 surface、prediction/truth/score完整；不按accuracy、H、BA或中间值停止。
+
+## r4启动证据
+
+- 远端hash/py_compile/完整D92 ground-fit import通过；真实checkpoint smoke通过，receipt SHA=`d0c3bc745cd90c6f568ac56264e8c0fefb93f9210cae31593120ae3fc7229968`，smoke predictions SHA=`dc2840b8ce39c0656215d1beb5be2ba501362070a6947d2c1c15c7b66a04d4da`。
+- 2026-08-04启动8个固定分片：shard0 PID1272005/GPU0，shard1 PID1272006/GPU1，shard2 PID1272007/GPU2，shard3 PID1272008/GPU3，shard4 PID1272010/GPU4，shard5 PID1272011/GPU5，shard6 PID1272012/GPU6，shard7 PID1272013/GPU7；CWD均为r4/source，日志在r4/logs/predict_shard_i.out。
+- 首波检查：8/8进程存活，GPU进程各约556–558MiB，日志无Traceback/RuntimeError/CUDA-OOM/TIE_UNRESOLVED，尚无分片artifact（仍在运行）。
