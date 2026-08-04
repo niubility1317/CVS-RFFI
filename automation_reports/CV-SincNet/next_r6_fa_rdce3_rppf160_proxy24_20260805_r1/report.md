@@ -17,8 +17,8 @@ K5 FA-RDCE3在NEXT-R4中提高域适应后/新类注册后proxy H 1.852个百分
 |比较|定义|通过方向|
 |---|---|---|
 |DA|`R1Q−R0Q`|H_proxy与总正确数增加，retained、held-proxy、floor不降|
-|Lite|`R0L−R0F`|同上|
-|联合替换|`R1L−R1F`|同上|
+|Lite|注册后`R0L−R0F`|同上|
+|联合替换|注册后`R1L−R1F`|同上|
 |直接实用性|`R1L−R1Q`|同上|
 
 任一完整主比较失败即关闭RPPF160；不调λ、receiver、class、K、量化或矩阵，不重跑。
@@ -42,7 +42,7 @@ K={1,5}
 
 receiver由D130清单顺序排除NEXT-R4已评分的`1-1、18-2`后确定，不依据性能选择。四状态统一为`DA0_REG0、DA1_REG0、DA0_REG1、DA1_REG1`。REG0的held-proxy准确率和H_proxy写`N/A`；本矩阵是source-held LOCO，不把held类称为正式Y_new。
 
-K1必须以alias receipt证明`R1Q≡R0Q、R1F≡R0F≡Q、R1L≡R0L`，但L不得alias Q。K5完整执行六臂`R0Q/R0F/R0L/R1Q/R1F/R1L`。
+REG0没有合法old/new分割，F按同representation精确alias Q，禁止使用registry尾类伪造new角色。K1还必须以alias receipt证明`R1Q≡R0Q、R1F≡R0F≡Q、R1L≡R0L`，但L不得alias Q。K5在REG1完整执行六臂`R0Q/R0F/R0L/R1Q/R1F/R1L`。因此保持288个逻辑surface，同时只计算168个unique prediction并用120个alias receipt闭合。
 
 ## 5.本地文件与验证状态
 
@@ -78,7 +78,7 @@ K1必须以alias receipt证明`R1Q≡R0Q、R1F≡R0F≡Q、R1L≡R0L`，但L不�
 |GPU|待preflight后分配，不超过每GPU两个训练任务|
 |exact command|未冻结，不得启动|
 |log/output/PID|未冻结，不得启动|
-|expected artifacts|plan、prediction、manifest、resource、completion、truth-open、score、coverage与alias receipts|
+|expected artifacts|plan、168个unique prediction、288个逻辑surface manifest、120个alias receipt、resource、completion、truth-open、score与coverage|
 
 ## 8.证据边界
 
