@@ -5,7 +5,7 @@
 |字段|值|
 |---|---|
 |run ID|`next_r3_rdce_tsl_proxy24_20260804_r2`|
-|状态|`PRE_REGISTERED / ENVIRONMENT_REPAIR_ROUND_1`|
+|状态|`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`|
 |日期|2026-08-04|
 |主agent|Codex主agent（Sol/high）|
 |唯一N607 runner|Luna/max|
@@ -81,3 +81,11 @@ authority固定为`capsule_id=e32708214eaedaf39af532c572e16045f173422d63110e4022
 |域适应后/新类注册后|—|—|PENDING|PENDING|PENDING|PENDING|PENDING|PENDING|PENDING|PENDING|
 
 完成后补充24行same-row表、K/receiver/class分层、资源、异常、PID/GPU/SSH断开证据和是否继续该方法；不得用边际最大值拼接性能结论。
+
+## 9. r2实际执行结果
+
+preflight、r2 root`ABSENT`、GPU0资源检查、archive同步/hash/size、CVS-RFFI Python3.10.19下`py_compile`和必要import均通过。foreground prepare随后在首个TSL prior的physical-LOO几何构造中以exit=1退出，唯一异常指纹为`NextR3TSL160Error: empirical-Bayes diagonal variance fell below its frozen floor`，调用链为`_build_prior_from_cells→build_tsl160_phase1_prior→_geometry`。没有生成prepare三JSON，未执行smoke、完整predict或score，truth未打开，无性能结果。
+
+代码审计显示`_prior_from_cells`在封存前已按同一规则将`v0`夹到正floor，但`int8 logv0＋FP16 scale/offset`wire解码可能使最小项轻微下穿；`_geometry`把这一可恢复的量化边界当成非法输入直接退出。当前只允许一次非调参修复：对有限正`v_post`按原有同一floor夹紧，保留0/NaN/Inf拒绝；不改floor系数、nu0、rho、方法、矩阵或阈值。修复须经独立复核后使用全新不可覆盖run；若下一次仍出现技术失败，关闭TSL路线，不再追加发布轮次。
+
+r2 partial root保留`input/source/logs/{compile,prepare}.log`；无runner PID，GPU0=`0%/1MiB`，SSH收尾为`ssh.exe=0`、N607:22连接=0。
