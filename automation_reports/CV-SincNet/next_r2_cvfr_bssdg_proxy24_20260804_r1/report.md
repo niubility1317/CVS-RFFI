@@ -24,14 +24,14 @@
 ## 本地版本与验证
 
 - 工作树：`E:\type10-7\code\snapshots\d92_lite125_20260804_wt`
-- 发布commit：`2b7726e5`
+- 发布commit：`6c254445`
 - scorer初始commit：`0923a361`
 - truth/split边界修复：`f1580d83`
 - 集成commit：`8af10612`
 - 核心修复：`d22b41a8、d2a0b418、41a8b79f、91cdf6b9`
 - 设计/命名：`18b41511、06c245c6`
 - 环境：`ssr-gpu`
-- 验证：核心+集成+独立scorer共`66 passed`，`py_compile`与`git diff --check`通过；`predict --help`无`ls_join`参数
+- 验证：核心+集成+独立scorer共`67 passed`，`py_compile`与`git diff --check`通过；`predict --help`无`ls_join`参数
 - 独立审查：`P0=0、P1=0、RELEASE_REVIEW_GO`
 - 主要文件：`stage2_next_r2_cvfr.py、stage2_next_r2_bssdg.py、stage2_next_r2_matrix.py、stage2_next_r2_runtime.py、stage2_next_r2_real.py、stage2_next_r2_score.py、run_next_r2_proxy24.py、score_next_r2_proxy24.py`及对应测试
 
