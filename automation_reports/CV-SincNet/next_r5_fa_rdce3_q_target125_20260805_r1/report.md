@@ -4,8 +4,8 @@
 
 - run ID：`next_r5_fa_rdce3_q_target125_20260805_r1`
 - 日期：2026-08-05
-- 当前状态：`DESIGN_REOPENED_BY_USER / IMPLEMENTING / NOT_LANDED / NOT_LAUNCHED`
-- 候选：`NEXT-R5-FA-RDCE3-Q-Target125`
+- 当前状态：`LOCAL_VERIFIED / P0=0 / P1=0 / NOT_LANDED / NOT_LAUNCHED`
+- 候选：`NEXT-R5-FA-RDCE3-Q-TARGET125`
 - 主agent：`gpt-5.6-sol/high`
 - 科学实现与独立审查：不同`gpt-5.6-terra/max`agent
 - 后续唯一N607 runner：方法、矩阵、命令和路径冻结后使用`Luna/max`
@@ -51,20 +51,49 @@ K1已由完整Proxy24证明FA负收益，固定严格旁路并以alias receipt�
 
 |项目|当前状态|
 |---|---|
-|Target125既有input/materializer/scorer复用边界|并行审计中|
+|Target125既有input/materializer/scorer复用边界|已实现并通过独立审查|
 |FA K10/K1方法锁|已冻结：K5/K10 fit，K1严格旁路|
-|四状态125 matrix/runner/CLI|待实现|
-|query零fit/update/selection聚焦负测|待实现|
-|真实checkpoint无truth smoke|待执行|
-|独立代码复核|待执行|
-|Git提交与release archive|待完成|
+|四状态125 matrix/runner/CLI|已完成：prepare、smoke、predict-shard、merge、truth-open、score|
+|query零fit/update/selection聚焦负测|已通过|
+|真实checkpoint无truth smoke|待N607落地后作为第一个运行动作执行|
+|独立代码复核|Terra/max：`P0=0，P1=0`|
+|本地验证|六个Python入口编译通过；四份聚焦测试`14 passed`；`git diff --check`通过|
+|Git提交与release archive|待本报告更新后立即冻结|
+
+实际实现文件为：`stage2_next_r5_fa_target125_matrix.py`、`stage2_next_r5_fa_target125_core.py`、`stage2_next_r5_fa_target125_runtime.py`、`stage2_next_r5_fa_target125.py`、`build_next_r5_fa_target125_asset.py`、`run_next_r5_fa_target125.py`和对应四份聚焦测试。method lock为`configs/next_r5_fa_rdce3_q_target125_20260805.json`，SHA256=`0934b59c81ed5f422de503528d0ef48400210c817fae8c301f55b5e2d2775e34`。
+
+独立审查实际推动关闭四项直接正确性缺陷：truth catalog逐surface物理ID顺序绑定、DA0/DA1同REG query严格一致、REG0 query等于REG1的有序`target_old`子序列、FA资产同时绑定checkpoint与method lock。四状态差分表已覆盖old BA、old/all floor和total correct；REG0的seen-new/H仍严格为`N/A`。
 
 ## 6.发布前必要字段
 
-当前报告不授权N607启动。必须补齐：Git commit和文件SHA、实际CLI、Conda/Python、CWD、D92/D108输入root、checkpoint和FA资产、prepared plan/context SHA、不可覆盖run root、GPU/shard映射、log/PID/output、expected artifacts及系统性技术失败停止规则。
+当前实现已通过本地与独立审查；补齐Git commit、release archive、N607直连预检、远端输入存在性和不可覆盖run root后即授权唯一runner启动，不增加其他gate。
+
+已核对的只读复用输入：
+
+|输入|路径|SHA256|
+|---|---|---|
+|Phase1 588-row strict tap|`/home/szu2070436088/2510044040/CV-SincNet/runs/d106_real_integration_dba10236_20260801_r7/output/strict_tap/d106_ls_strict_tap.npz`|`48b92fa8defc1c7261ca80f9e0723662e3fe6e8c64ec0881c8ef13bab3cafa2f`|
+|strict tap receipt|同目录`d106_ls_strict_tap.receipt.json`|`24badfa3f56c8f1b98a35768ea102a6c8e13267fcff80d59060ec6f2f13e0665`|
+|checkpoint|`/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth`|`2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98`|
+|D92 Target125 matrix|`/home/szu2070436088/2510044040/CV-SincNet/runs/d92_registration_balanced_125_retry2_20260720/matrix_manifest.json`|`b70045e7cd45a6029bc0a1a47ada0bb72d16fdb6bc7662c43bd253bfc7e4bc5c`|
+|D92 sealed runtime|由每个sealed package descriptor绑定|`f119e8cb3f6beda95f0d545205e91b43e4a557af2fd1d025e95d2edf2b8e6e2a`|
+
+只读复用D138-r6中已验证的D108 prepared plan/context：plan SHA=`13665ce5404c8ba34b3b05b7fd161baad05a96cec6d542416e115b3a9d6bd348`，context SHA=`067a6365e9c859161407ab62ba6349d7beb93083f59f78fd7c780c6d8924731f`。新run只在自己的不可覆盖`prepared/`中写入NEXT-R5绑定，不修改历史文件；这不改变数据，因此不重复执行VALIDATED_ONCE数据验证。
+
+## 7.N607冻结发布拓扑
+
+- run root：`/home/szu2070436088/2510044040/CV-SincNet/runs/next_r5_fa_rdce3_q_target125_20260805_r1`，必须不存在且首次创建。
+- source CWD：`RUN_ROOT/source`；Python：`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`。
+- D108 prepared候选来源：`/home/szu2070436088/2510044040/CV-SincNet/runs/d138_d92_lite_pr160_target125_20260804_r6/prepared/target125_plan.json`和同目录`target125_context.json`；runner在启动前核对存在性与上述SHA，若路径已迁移只允许定位同SHA文件，不重建数据。
+- FA资产：用本报告列出的D106 strict tap、checkpoint SHA和method lock SHA直接构建到`RUN_ROOT/input/fa_asset`。
+- NEXT-R5 prepare：写`RUN_ROOT/prepared`；真实row0/`leo_clear_weak`无truth smoke写`RUN_ROOT/smoke`。
+- 8个固定分片：物理GPU i设置`CUDA_VISIBLE_DEVICES=i`，CLI统一传`--device cuda:0 --shard-index i`，输出`RUN_ROOT/shards/shard_i`，i=0至7；每张卡不得使总训练/预测任务超过项目允许上限。
+- merge写`RUN_ROOT/predictions`；只有1500/1500逻辑surface封存完成后才执行`truth-open`写`RUN_ROOT/truth_catalog.json`，随后`score`写`RUN_ROOT/score`。
+- 健康停止只允许P0协议/安全/hash/覆盖错误，或至少两个不同outer row在prediction前出现相同确定性异常指纹；禁止按accuracy、H、BA、floor或局部结果停止、重跑、调参或选择性补片。
+- 预期闭合：125/125 outer、375/375 scene、1500/1500逻辑surface、1350 unique prediction、150 K1 alias、8/8 shard、truth-open与score全部成功。
 
 预期artifact至少包括：`target125_plan.json`、`target125_context.json`、真实smoke receipt/prediction、8个prediction shard manifest、合并prediction manifest、FA resource/state reuse receipt、truth-open event、truth catalog、score manifest、coverage和completion receipt。
 
-## 7.证据边界
+## 8.证据边界
 
 本地设计、代码、测试、landed或RUNNING均不是性能结果。只有125/125 outer、375/375 scene和1500/1500四状态prediction完整封存并由独立truth-side scorer闭合后，才能报告性能；partial artifact只作技术诊断，不进入性能比较。

@@ -1,0 +1,63 @@
+{
+  "schema": "cvs.stage2.next_r5.fa_rdce3_qknn.target125.method_lock.v1",
+  "revision": "NEXT-R5-FA-RDCE3-Q-TARGET125",
+  "candidate_id": "NEXT-R5-FA-RDCE3-Q-TARGET125",
+  "protocol_schema": "p2_min_v1",
+  "representation": {
+    "r0": "d106_canonical_normalized_relu_zid160",
+    "r1": "fa_rdce3_once_rdce_signed_unit_zid160",
+    "dimension": 160,
+    "r1_relu": false,
+    "r1_second_normalization": false
+  },
+  "matrix": {
+    "receivers": ["20-1", "3-19", "7-14", "7-7", "8-8"],
+    "seeds": [713102, 713103, 713104, 713105, 713106],
+    "slices": [[10, 5], [10, 10], [10, 20], [5, 20], [1, 20]],
+    "scenes": ["leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak"],
+    "states": ["DA0_REG0", "DA1_REG0", "DA0_REG1", "DA1_REG1"],
+    "outer_count": 125,
+    "scene_count": 375,
+    "logical_surface_count": 1500,
+    "unique_prediction_count": 1350,
+    "alias_count": 150
+  },
+  "fa_rdce3": {
+    "phase1_asset": "six_old_class_source_only_aggregate",
+    "rank": 3,
+    "fisher_radius": "sqrt(3)",
+    "fit_k": [5, 10],
+    "fit_input": "REG0_old_class_support_only",
+    "reg1_policy": "reuse_exact_REG0_FA_state_object",
+    "new_support_rows_used_for_da": 0,
+    "k1_policy": "FA_STRICT_BYPASS_exact_state_logit_prediction_resource_alias",
+    "target_optimizer_steps": 0
+  },
+  "head": {
+    "method": "phase1_locked_student_t_qknn",
+    "support_storage": "int8_per_row_fp16_scale",
+    "query_policy": "per_sample_all_registered_classes",
+    "tie_policy": "fail_closed",
+    "parameter_search": false
+  },
+  "reporting": {
+    "state_names_zh": {
+      "DA0_REG0": "域适应前/新类注册前",
+      "DA1_REG0": "域适应后/新类注册前",
+      "DA0_REG1": "域适应前/新类注册后",
+      "DA1_REG1": "域适应后/新类注册后"
+    },
+    "reg0_seen_new_and_h": "N/A",
+    "truth_open_after_complete_prediction_seal": true,
+    "no_performance_based_stop_or_slice_selection": true
+  },
+  "forbidden_runtime_inputs": [
+    "clean_or_source_samples",
+    "query_truth",
+    "query_role",
+    "class_quota",
+    "true_batch_class_count",
+    "global_reassignment",
+    "phase2_optimizer_or_backward"
+  ]
+}
