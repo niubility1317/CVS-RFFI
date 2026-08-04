@@ -23,6 +23,8 @@ NEXT-R3的`R3-RDCE160×TSL-160`已在N607最终r3的prepare阶段关闭。数值
 
 禁止单独使用“before/after”“old-after”“注册后”而不注明DA和REG状态。注册效应必须在固定DA状态内比较REG1−REG0；域适应效应必须在固定REG状态内比较DA1−DA0。
 
+该命名规则同时约束性能日志、prediction/score artifact、CSV/JSON字段、Markdown表格、图题和对话结论。每条性能记录必须显式保存`state_id`及对应中文主名称；指标字段按`<metric>_<state_id>`表达，例如`old_ba_DA0_REG0`、`old_ba_DA1_REG0`、`h_DA0_REG1`和`h_DA1_REG1`。REG0状态的`seen_new_acc`与`H_old_new`必须写为`N/A`，不得写0，也不得通过跨run或不同query补齐。任何“提升”必须写明起点、终点和同配对差值，例如“域适应后/新类注册后相对域适应前/新类注册后：`H_old_new_DA1_REG1−H_old_new_DA0_REG1`”。
+
 最小矩阵固定为`2 receiver(1-1,18-2)×6 held-class×K1/K5=24`个逻辑行，不扩receiver、seed、K或超参数。K1每行4个Q唯一预测，head仅保存alias receipt；K5每行4状态×Q/H，共8个唯一预测；全矩阵共144个唯一prediction、192个含alias的arm artifact。主要因果量为DA前注册、DA后注册、两种DA状态下的注册效应、K5的`H−Q`和DA×head交互。
 
 完整矩阵回收后才使用性能裁决，不作为运行中健康早停：保留候选要求`DA1_REG0−DA0_REG0`的old BA至少`+0.25pp`，`DA1_REG1−DA0_REG1`的H至少`+0.25pp`，K5的`H−Q`同时使H至少`+0.25pp`且总正确数增加，并满足seen-new、all-floor非降及4个receiver×K聚合层至少3个H非负。未达到即按组件或整条路线关闭，不调`λ/γ/K/receiver`。
