@@ -58,7 +58,7 @@ def _write_npz(path: Path, **arrays: np.ndarray) -> str:
     return _sha(path.read_bytes())
 
 
-def _fixture(tmp_path: Path) -> tuple[Path, Path, Path, str, str]:
+def _fixture(tmp_path: Path) -> tuple[Path, Path, Path, Path, str, str, str]:
     module = _module()
     receivers = ("1-1", "18-2", "1-19", "2-1", "2-19", "14-7", "19-2")
     classes = module.FIXED_CLASSES
@@ -107,18 +107,34 @@ def _fixture(tmp_path: Path) -> tuple[Path, Path, Path, str, str]:
             separators=(",", ":"),
         ).encode("utf-8")
     )
-    return tap_path, received_path, lock_path, tap_sha, received_sha
+    received_receipt = (tmp_path / "d106_ls_received_iq.receipt.json").resolve()
+    received_receipt.write_bytes(
+        b'{"schema":"cvs.phase1.d106.ls_received_iq_receipt.v1"}\n'
+    )
+    received_receipt_sha = _sha(received_receipt.read_bytes())
+    return (
+        tap_path,
+        received_path,
+        lock_path,
+        received_receipt,
+        tap_sha,
+        received_sha,
+        received_receipt_sha,
+    )
 
 
 def test_builds_real_shape_metadata_and_closes_all_rows(tmp_path: Path) -> None:
     module = _module()
-    tap, received, locks, tap_sha, received_sha = _fixture(tmp_path)
+    tap, received, locks, received_receipt, tap_sha, received_sha, received_receipt_sha = _fixture(tmp_path)
     output = (tmp_path / "capsule_metadata.json").resolve()
+    validator_output = (tmp_path / "validator_receipt.json").resolve()
     result = module.build_next_r4_capsule_metadata(
         strict_tap=tap,
         received_iq=received,
+        received_receipt=received_receipt,
         qknn_locks=locks,
-        validator_receipt_sha256="d" * 64,
+        received_receipt_sha256=received_receipt_sha,
+        validator_receipt_output=validator_output,
         output_path=output,
         strict_tap_sha256=tap_sha,
         received_iq_sha256=received_sha,
@@ -126,10 +142,13 @@ def test_builds_real_shape_metadata_and_closes_all_rows(tmp_path: Path) -> None:
     metadata = result["metadata"]
     assert result["status"] == module.BUILD_STATUS
     assert result["output_path"] == str(output)
+    assert result["validator_receipt_output_path"] == str(validator_output)
     assert output.read_bytes() == json.dumps(
         metadata, ensure_ascii=True, sort_keys=True, separators=(",", ":")
     ).encode("utf-8")
     assert metadata["received_iq_sha256"] == received_sha
+    assert metadata["received_receipt_sha256"] == received_receipt_sha
+    assert metadata["validator_receipt_sha256"] == _sha(validator_output.read_bytes())
     assert metadata["physical_id_count"] == 588
     assert metadata["receiver_count"] == 7
     assert metadata["class_count"] == 6
@@ -159,11 +178,28 @@ def test_builds_real_shape_metadata_and_closes_all_rows(tmp_path: Path) -> None:
         metadata["split_identity"]["row_id_order"]
     )
     assert metadata["split_identity"]["physical_id_sort_policy"] == module.PHYSICAL_ID_SORT_POLICY
+    validator = json.loads(validator_output.read_text(encoding="utf-8"))
+    assert validator["schema"] == module.VALIDATOR_RECEIPT_SCHEMA
+    assert validator["received_receipt_sha256"] == received_receipt_sha
+    assert validator["row_count"] == 24
+    assert len(validator["row_ids"]) == 24
+    assert validator["per_class_counts"][module.FIXED_CLASSES[0]] == {
+        "k1_support": 1,
+        "k5_support": 5,
+        "query": 9,
+    }
+    for field in (
+        "query_truth_access",
+        "query_role_access",
+        "class_quota_access",
+        "global_reassignment_access",
+    ):
+        assert validator[field] is False
 
 
 def test_rejects_id_order_mismatch_and_refuses_overwrite(tmp_path: Path) -> None:
     module = _module()
-    tap, received, locks, tap_sha, received_sha = _fixture(tmp_path)
+    tap, received, locks, received_receipt, tap_sha, received_sha, received_receipt_sha = _fixture(tmp_path)
     with np.load(received, allow_pickle=False) as archive:
         arrays = {name: np.asarray(archive[name]).copy() for name in archive.files}
     arrays["receiver_ids"] = arrays["receiver_ids"].copy()
@@ -174,17 +210,21 @@ def test_rejects_id_order_mismatch_and_refuses_overwrite(tmp_path: Path) -> None
         module.prepare_next_r4_capsule_metadata(
             strict_tap=tap,
             received_iq=bad_received,
+            received_receipt=received_receipt,
             qknn_locks=locks,
-            validator_receipt_sha256="d" * 64,
+            received_receipt_sha256=received_receipt_sha,
             strict_tap_sha256=tap_sha,
             received_iq_sha256=bad_received_sha,
         )
     output = (tmp_path / "capsule_metadata.json").resolve()
+    validator_output = (tmp_path / "validator_receipt.json").resolve()
     module.build_next_r4_capsule_metadata(
         strict_tap=tap,
         received_iq=received,
+        received_receipt=received_receipt,
         qknn_locks=locks,
-        validator_receipt_sha256="d" * 64,
+        received_receipt_sha256=received_receipt_sha,
+        validator_receipt_output=validator_output,
         output_path=output,
         strict_tap_sha256=tap_sha,
         received_iq_sha256=received_sha,
@@ -193,16 +233,105 @@ def test_rejects_id_order_mismatch_and_refuses_overwrite(tmp_path: Path) -> None
         module.build_next_r4_capsule_metadata(
             strict_tap=tap,
             received_iq=received,
+            received_receipt=received_receipt,
             qknn_locks=locks,
-            validator_receipt_sha256="d" * 64,
+            received_receipt_sha256=received_receipt_sha,
+            validator_receipt_output=validator_output,
             output_path=output,
             strict_tap_sha256=tap_sha,
             received_iq_sha256=received_sha,
         )
 
 
+def test_rejects_received_receipt_tamper_and_retains_receipt_on_metadata_failure(tmp_path: Path) -> None:
+    module = _module()
+    tap, received, locks, received_receipt, tap_sha, received_sha, received_receipt_sha = _fixture(tmp_path)
+    received_receipt.write_bytes(received_receipt.read_bytes() + b"tamper")
+    with pytest.raises(module.NextR4CapsuleMetadataError, match="received-IQ validator receipt SHA256 mismatch"):
+        module.build_next_r4_capsule_metadata(
+            strict_tap=tap,
+            received_iq=received,
+            received_receipt=received_receipt,
+            qknn_locks=locks,
+            received_receipt_sha256=received_receipt_sha,
+            validator_receipt_output=(tmp_path / "validator_tamper.json").resolve(),
+            output_path=(tmp_path / "metadata_tamper.json").resolve(),
+            strict_tap_sha256=tap_sha,
+            received_iq_sha256=received_sha,
+        )
+    existing_metadata = (tmp_path / "existing_metadata.json").resolve()
+    existing_metadata.write_bytes(b"keep")
+    validator_output = (tmp_path / "retained_validator.json").resolve()
+    with pytest.raises(module.NextR4CapsuleMetadataError, match="metadata output path"):
+        module.build_next_r4_capsule_metadata(
+            strict_tap=tap,
+            received_iq=received,
+            received_receipt=received_receipt,
+            qknn_locks=locks,
+            received_receipt_sha256=_sha(received_receipt.read_bytes()),
+            validator_receipt_output=validator_output,
+            output_path=existing_metadata,
+            strict_tap_sha256=tap_sha,
+            received_iq_sha256=received_sha,
+        )
+    assert validator_output.is_file()
+
+
+def test_formal_qknn_receipt_lock_digest_is_verified_and_stripped(tmp_path: Path) -> None:
+    module = _module()
+    tap, received, locks, received_receipt, tap_sha, received_sha, received_receipt_sha = _fixture(tmp_path)
+    source_locks = json.loads(locks.read_text(encoding="utf-8"))
+    formal_locks: dict[str, object] = {
+        "canonical_json": {
+            "encoding": "UTF-8 without BOM",
+            "ensure_ascii": True,
+            "separators": [",", ":"],
+            "sort_keys": True,
+            "trailing_lf": True,
+        },
+        "created_at_hkt": "2026-08-05T00:01:06+08:00",
+        "locks_by_k": {},
+        "receipt_files": {
+            "phase1_lodo": {"path": "C:/phase1.json", "sha256": "3" * 64},
+            "quantization_margin_audit": {"path": "C:/quant.json", "sha256": "4" * 64},
+        },
+        "schema": module.FORMAL_QKNN_LOCKS_SCHEMA,
+    }
+    for key, active_k in (("K1", 1), ("K5", 5)):
+        lock = dict(source_locks[key])
+        lock["lock_digest"] = _sha(
+            json.dumps(lock, ensure_ascii=True, sort_keys=True, separators=(",", ":")).encode("utf-8")
+        )
+        formal_locks["locks_by_k"][key] = lock
+    formal_path = (tmp_path / "qknn_locks_v1.json").resolve()
+    formal_path.write_text(
+        json.dumps(formal_locks, ensure_ascii=True, sort_keys=True, separators=(",", ":")),
+        encoding="utf-8",
+    )
+    metadata = module.prepare_next_r4_capsule_metadata(
+        strict_tap=tap,
+        received_iq=received,
+        received_receipt=received_receipt,
+        qknn_locks=formal_path,
+        strict_tap_sha256=tap_sha,
+        received_iq_sha256=received_sha,
+        received_receipt_sha256=received_receipt_sha,
+    )
+    assert "lock_digest" not in metadata["qknn_lock_by_k"]["1"]
+    assert "lock_digest" not in metadata["qknn_lock_by_k"]["5"]
+
+
 def test_cli_surface_is_mechanical_and_does_not_expose_tuning(tmp_path: Path) -> None:
     module = _module()
     names = {action.dest for action in module._parser()._actions}
-    assert {"strict_tap", "received_iq", "qknn_locks", "validator_receipt_sha256", "output_path"}.issubset(names)
+    assert {
+        "strict_tap",
+        "received_iq",
+        "received_receipt",
+        "received_receipt_sha256",
+        "qknn_locks",
+        "validator_receipt_output",
+        "output_path",
+    }.issubset(names)
+    assert "validator_receipt_sha256" not in names
     assert not {"truth", "query", "rank", "threshold", "temperature", "alpha", "lambda"}.intersection(names)

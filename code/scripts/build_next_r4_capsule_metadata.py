@@ -41,6 +41,8 @@ CAPSULE_METADATA_SCHEMA = (
 )
 CAPSULE_IDENTITY_SCHEMA = "cvs.stage2.next_r4.capsule_identity.v1"
 SPLIT_IDENTITY_SCHEMA = "cvs.stage2.next_r4.split_identity.v1"
+VALIDATOR_RECEIPT_SCHEMA = "cvs.stage2.next_r4.proxy24.validator_receipt.v1"
+FORMAL_QKNN_LOCKS_SCHEMA = "cvs.phase1.next_r4.qknn_locks.v1"
 BUILD_STATUS = "NEXT_R4_CAPSULE_METADATA_COMPLETE"
 PROTOCOL_SCHEMA = matrix.PROTOCOL_SCHEMA
 
@@ -105,6 +107,7 @@ LOCK_FIELDS = frozenset(
         "schema",
     }
 )
+FORMAL_LOCK_FIELDS = LOCK_FIELDS | {"lock_digest"}
 
 
 class NextR4CapsuleMetadataError(ValueError):
@@ -294,6 +297,28 @@ def _lock_mapping(value: Any, *, name: str, expected_k: int) -> dict[str, Any]:
     return dict(value)
 
 
+def _formal_lock_mapping(value: Any, *, name: str, expected_k: int) -> dict[str, Any]:
+    """Validate the formal receipt lock and strip its non-runtime digest.
+
+    The formal ``qknn_locks_v1.json`` receipt defines ``lock_digest`` as the
+    SHA256 of the canonical, sorted, compact JSON object formed by the typed
+    lock fields only (that is, with ``lock_digest`` removed).  The observed
+    file was self-verified against this preimage before this parser was
+    frozen; the same computation is repeated for every formal input.
+    """
+
+    if type(value) is not dict or set(value) != FORMAL_LOCK_FIELDS:
+        raise NextR4CapsuleMetadataError(
+            f"{name} must contain exactly the formal qKNN lock fields plus lock_digest"
+        )
+    supplied = _require_sha(value["lock_digest"], name=f"{name} lock_digest")
+    typed = {key: item for key, item in value.items() if key != "lock_digest"}
+    observed = _canonical_sha(typed)
+    if supplied != observed:
+        raise NextR4CapsuleMetadataError(f"{name} lock_digest mismatch")
+    return _lock_mapping(typed, name=name, expected_k=expected_k)
+
+
 def _load_qknn_locks(path: Path) -> tuple[dict[str, Any], dict[str, Any], str]:
     payload = _regular_bytes(path, name="qKNN locks JSON")
     try:
@@ -302,7 +327,56 @@ def _load_qknn_locks(path: Path) -> tuple[dict[str, Any], dict[str, Any], str]:
         raise NextR4CapsuleMetadataError("qKNN locks must be UTF-8 JSON") from error
     if type(source) is not dict:
         raise NextR4CapsuleMetadataError("qKNN locks must be a JSON object")
-    # Accept the two external spellings already used by the R4 tooling while
+    # The formal NEXT-R4 receipt is intentionally closed: unknown outer or
+    # per-lock fields are rejected rather than silently carried into runtime.
+    if set(source) == {
+        "canonical_json",
+        "created_at_hkt",
+        "locks_by_k",
+        "receipt_files",
+        "schema",
+    }:
+        if source.get("schema") != FORMAL_QKNN_LOCKS_SCHEMA:
+            raise NextR4CapsuleMetadataError("qKNN formal lock container schema drift")
+        canonical_json = source.get("canonical_json")
+        if canonical_json != {
+            "encoding": "UTF-8 without BOM",
+            "ensure_ascii": True,
+            "separators": [",", ":"],
+            "sort_keys": True,
+            "trailing_lf": True,
+        }:
+            raise NextR4CapsuleMetadataError("qKNN formal canonical_json contract drift")
+        if type(source.get("created_at_hkt")) is not str or not source["created_at_hkt"].strip():
+            raise NextR4CapsuleMetadataError("qKNN formal created_at_hkt is missing")
+        receipt_files = source.get("receipt_files")
+        if type(receipt_files) is not dict or set(receipt_files) != {
+            "phase1_lodo",
+            "quantization_margin_audit",
+        }:
+            raise NextR4CapsuleMetadataError("qKNN formal receipt_files contract drift")
+        for receipt_name, receipt_entry in receipt_files.items():
+            if type(receipt_entry) is not dict or set(receipt_entry) != {"path", "sha256"}:
+                raise NextR4CapsuleMetadataError(
+                    f"qKNN formal {receipt_name} receipt entry drift"
+                )
+            if type(receipt_entry["path"]) is not str or not receipt_entry["path"].strip():
+                raise NextR4CapsuleMetadataError(
+                    f"qKNN formal {receipt_name} receipt path is missing"
+                )
+            _require_sha(receipt_entry["sha256"], name=f"qKNN formal {receipt_name} SHA256")
+        formal_locks = source.get("locks_by_k")
+        if type(formal_locks) is not dict or set(formal_locks) != {"K1", "K5"}:
+            raise NextR4CapsuleMetadataError("qKNN formal locks_by_k must contain exactly K1/K5")
+        return (
+            {
+                "1": _formal_lock_mapping(formal_locks["K1"], name="qKNN formal K1 lock", expected_k=1),
+                "5": _formal_lock_mapping(formal_locks["K5"], name="qKNN formal K5 lock", expected_k=5),
+            },
+            source,
+            _sha_bytes(payload),
+        )
+    # Accept the external spellings already used by the R4 tooling while
     # requiring exactly K1 and K5 lock objects in either case.
     if set(source) == {"K1", "K5"}:
         raw = {"1": source["K1"], "5": source["K5"]}
@@ -437,6 +511,7 @@ def _build_metadata(
     strict_tap_sha256: str,
     received: Mapping[str, Any],
     received_iq_sha256: str,
+    received_receipt_sha256: str,
     qknn_lock_by_k: Mapping[str, Mapping[str, Any]],
     qknn_locks_source: Mapping[str, Any],
     qknn_locks_sha256: str,
@@ -551,6 +626,7 @@ def _build_metadata(
         "split_id": split_id,
         "validator_receipt_sha256": validator_receipt_sha256,
         "received_iq_sha256": received_iq_sha256,
+        "received_receipt_sha256": received_receipt_sha256,
         "strict_tap_sha256": strict_tap_sha256,
         "qknn_locks_sha256": qknn_locks_sha256,
         "class_registry": list(FIXED_CLASSES),
@@ -596,38 +672,160 @@ def _build_metadata(
     return metadata
 
 
-def prepare_next_r4_capsule_metadata(
+def _build_validator_receipt(
+    metadata: Mapping[str, Any], *, received_receipt_sha256: str
+) -> dict[str, Any]:
+    """Create the non-cyclic validator receipt bound to the prepared capsule.
+
+    This receipt records the complete 24-row identity set and the frozen
+    support/query cardinalities without carrying query truth, role, quota, or
+    reassignment state.  The receipt hash is deliberately not an input to the
+    capsule or split identity, so it can be written first and then bound into
+    the metadata without a hash cycle.
+    """
+
+    rows = tuple(metadata["rows"])
+    row_ids = [str(row["row_id"]) for row in rows]
+    row_bindings = [
+        {
+            "row_id": row["row_id"],
+            "held_receiver": row["held_receiver"],
+            "held_class": row["held_class"],
+            "active_k": row["active_k"],
+            "phase1_fit_count": row["phase1_fit_count"],
+            "phase1_fit_physical_root_sha256": row["phase1_fit_physical_root_sha256"],
+            "support_k1_physical_root_sha256": row["support_k1_physical_root_sha256"],
+            "support_k5_physical_root_sha256": row["support_k5_physical_root_sha256"],
+            "query_physical_root_sha256": row["query_physical_root_sha256"],
+            "query_observation_root_sha256": row["query_observation_root_sha256"],
+        }
+        for row in rows
+    ]
+    per_class_counts = {
+        class_id: {
+            "k1_support": K1_SUPPORT_COUNT,
+            "k5_support": K5_SUPPORT_COUNT,
+            "query": QUERY_PER_CLASS,
+        }
+        for class_id in FIXED_CLASSES
+    }
+    if len(rows) != matrix.ROW_COUNT or len(row_ids) != len(set(row_ids)):
+        raise NextR4CapsuleMetadataError("validator receipt row closure drift")
+    return {
+        "schema": VALIDATOR_RECEIPT_SCHEMA,
+        "candidate_id": metadata["candidate_id"],
+        "protocol_schema": PROTOCOL_SCHEMA,
+        "phase2_data_status": "VALIDATED_ONCE",
+        "capsule_id": metadata["capsule_id"],
+        "split_id": metadata["split_id"],
+        "strict_tap_sha256": metadata["strict_tap_sha256"],
+        "received_iq_sha256": metadata["received_iq_sha256"],
+        "received_receipt_sha256": _require_sha(
+            received_receipt_sha256, name="received receipt SHA256"
+        ),
+        "physical_id_sort_policy": PHYSICAL_ID_SORT_POLICY,
+        "class_registry": list(FIXED_CLASSES),
+        "held_receivers": list(HELD_RECEIVERS),
+        "row_count": len(rows),
+        "row_ids": row_ids,
+        "row_id_set_sorted": sorted(row_ids),
+        "rows": row_bindings,
+        "per_class_counts": per_class_counts,
+        "support_k1_count_per_class": K1_SUPPORT_COUNT,
+        "support_k5_count_per_class": K5_SUPPORT_COUNT,
+        "query_count_per_class": QUERY_PER_CLASS,
+        "phase1_fit_count_per_row": EXPECTED_PHASE1_FIT_COUNT,
+        "k1_is_exact_k5_prefix": True,
+        "support_query_physical_ids_disjoint": True,
+        "support_query_observation_ids_disjoint": True,
+        "common_query_physical_ids_across_k_states": True,
+        "common_query_observation_ids_across_k_states": True,
+        "single_leo_observation": True,
+        "clean_source_runtime_access": False,
+        "query_fit_access": False,
+        "query_truth_access": False,
+        "query_role_access": False,
+        "class_quota_access": False,
+        "true_batch_class_count_access": False,
+        "global_reassignment": False,
+        "global_reassignment_access": False,
+        "query_rows_used_for_fit": 0,
+        "query_state_updates": 0,
+        "query_selection_count": 0,
+        "truth_loaded": False,
+        "validator_only": True,
+    }
+
+
+def _prepare_base_metadata(
     *,
     strict_tap: Path,
     received_iq: Path,
+    received_receipt: Path,
     qknn_locks: Path,
-    validator_receipt_sha256: str,
     strict_tap_sha256: str | None = None,
     received_iq_sha256: str | None = None,
-) -> dict[str, Any]:
-    """Build metadata in memory without creating an output file."""
+    received_receipt_sha256: str | None = None,
+) -> tuple[dict[str, Any], str]:
+    """Read each sealed input once and build metadata with a zero hash slot."""
 
-    validator = _require_sha(validator_receipt_sha256, name="validator receipt SHA256")
     strict, strict_sha = _validate_strict_tap(
         strict_tap, expected_sha256=strict_tap_sha256
     )
     received, received_sha = _validate_received_iq(
         received_iq, strict=strict, expected_sha256=received_iq_sha256
     )
+    receipt_payload = _regular_bytes(
+        received_receipt,
+        name="received-IQ validator receipt",
+        expected_sha256=received_receipt_sha256,
+    )
+    received_receipt_sha = _sha_bytes(receipt_payload)
     locks_by_k, locks_source, locks_sha = _load_qknn_locks(qknn_locks)
-    return _build_metadata(
+    metadata = _build_metadata(
         strict=strict,
         strict_tap_sha256=strict_sha,
         received=received,
         received_iq_sha256=received_sha,
+        received_receipt_sha256=received_receipt_sha,
         qknn_lock_by_k=locks_by_k,
         qknn_locks_source=locks_source,
         qknn_locks_sha256=locks_sha,
-        validator_receipt_sha256=validator,
+        validator_receipt_sha256="0" * 64,
     )
+    return metadata, received_receipt_sha
 
 
-def _new_output(path: Path) -> Path:
+def prepare_next_r4_capsule_metadata(
+    *,
+    strict_tap: Path,
+    received_iq: Path,
+    received_receipt: Path,
+    qknn_locks: Path,
+    strict_tap_sha256: str | None = None,
+    received_iq_sha256: str | None = None,
+    received_receipt_sha256: str | None = None,
+) -> dict[str, Any]:
+    """Build the validated base metadata in memory without writing files.
+
+    The returned ``validator_receipt_sha256`` is a zero placeholder because no
+    receipt file exists in this prepare-only path.  Use
+    :func:`build_next_r4_capsule_metadata` for a closed two-file capsule.
+    """
+
+    metadata, _ = _prepare_base_metadata(
+        strict_tap=strict_tap,
+        received_iq=received_iq,
+        received_receipt=received_receipt,
+        qknn_locks=qknn_locks,
+        strict_tap_sha256=strict_tap_sha256,
+        received_iq_sha256=received_iq_sha256,
+        received_receipt_sha256=received_receipt_sha256,
+    )
+    return metadata
+
+
+def _new_output(path: Path, *, name: str) -> Path:
     resolved = path.resolve(strict=False)
     if (
         not path.is_absolute()
@@ -638,7 +836,7 @@ def _new_output(path: Path) -> Path:
         or path.parent.is_symlink()
     ):
         raise NextR4CapsuleMetadataError(
-            "output metadata path must be a new absolute child of an existing directory"
+            f"{name} path must be a new absolute child of an existing directory"
         )
     return path
 
@@ -647,43 +845,62 @@ def build_next_r4_capsule_metadata(
     *,
     strict_tap: Path,
     received_iq: Path,
+    received_receipt: Path,
     qknn_locks: Path,
-    validator_receipt_sha256: str,
-    output_path: Path | None = None,
+    received_receipt_sha256: str,
+    validator_receipt_output: Path,
+    output_path: Path,
     strict_tap_sha256: str | None = None,
     received_iq_sha256: str | None = None,
 ) -> Mapping[str, Any]:
-    """Validate inputs and optionally write one canonical, non-overwriting JSON."""
+    """Validate inputs and write a non-overwriting receipt then metadata pair."""
 
-    metadata = prepare_next_r4_capsule_metadata(
+    # Check the receipt destination before reading large inputs.  The metadata
+    # destination is intentionally checked only after the receipt is written:
+    # if metadata creation fails, the validator receipt remains available for
+    # diagnosis and is never removed or overwritten.
+    validator_destination = _new_output(
+        validator_receipt_output, name="validator receipt output"
+    )
+    metadata, received_receipt_sha = _prepare_base_metadata(
         strict_tap=strict_tap,
         received_iq=received_iq,
+        received_receipt=received_receipt,
         qknn_locks=qknn_locks,
-        validator_receipt_sha256=validator_receipt_sha256,
         strict_tap_sha256=strict_tap_sha256,
         received_iq_sha256=received_iq_sha256,
+        received_receipt_sha256=received_receipt_sha256,
     )
+    validator = _build_validator_receipt(
+        metadata, received_receipt_sha256=received_receipt_sha
+    )
+    validator_raw = _canonical_bytes(validator)
+    with validator_destination.open("xb") as handle:
+        handle.write(validator_raw)
+    validator_sha = _sha_bytes(validator_raw)
+    metadata["validator_receipt_sha256"] = validator_sha
     raw = _canonical_bytes(metadata)
+    metadata_destination = _new_output(output_path, name="metadata output")
+    with metadata_destination.open("xb") as handle:
+        handle.write(raw)
     result: dict[str, Any] = {
         "status": BUILD_STATUS,
         "capsule_id": metadata["capsule_id"],
         "split_id": metadata["split_id"],
         "received_iq_sha256": metadata["received_iq_sha256"],
         "strict_tap_sha256": metadata["strict_tap_sha256"],
+        "received_receipt_sha256": received_receipt_sha,
+        "validator_receipt_sha256": validator_sha,
+        "validator_receipt_output_path": str(validator_destination),
         "metadata_sha256": _sha_bytes(raw),
         "physical_id_count": metadata["physical_id_count"],
         "receiver_count": metadata["receiver_count"],
         "class_count": metadata["class_count"],
         "row_count": metadata["row_count"],
         "phase1_fit_count_per_row": metadata["phase1_fit_count_per_row"],
-        "output_path": None,
+        "output_path": str(metadata_destination),
         "metadata": metadata,
     }
-    if output_path is not None:
-        destination = _new_output(output_path)
-        with destination.open("xb") as handle:
-            handle.write(raw)
-        result["output_path"] = str(destination)
     return result
 
 
@@ -693,8 +910,10 @@ def _parser() -> argparse.ArgumentParser:
     )
     parser.add_argument("--strict-tap", required=True, type=Path)
     parser.add_argument("--received-iq", required=True, type=Path)
+    parser.add_argument("--received-receipt", required=True, type=Path)
     parser.add_argument("--qknn-locks", required=True, type=Path)
-    parser.add_argument("--validator-receipt-sha256", required=True)
+    parser.add_argument("--received-receipt-sha256", required=True)
+    parser.add_argument("--validator-receipt-output", required=True, type=Path)
     parser.add_argument("--output", "--output-path", dest="output_path", required=True, type=Path)
     parser.add_argument("--strict-tap-sha256")
     parser.add_argument("--received-iq-sha256")
@@ -706,8 +925,10 @@ def main(argv: Sequence[str] | None = None) -> int:
     result = build_next_r4_capsule_metadata(
         strict_tap=args.strict_tap,
         received_iq=args.received_iq,
+        received_receipt=args.received_receipt,
         qknn_locks=args.qknn_locks,
-        validator_receipt_sha256=args.validator_receipt_sha256,
+        received_receipt_sha256=args.received_receipt_sha256,
+        validator_receipt_output=args.validator_receipt_output,
         output_path=args.output_path,
         strict_tap_sha256=args.strict_tap_sha256,
         received_iq_sha256=args.received_iq_sha256,
@@ -731,6 +952,7 @@ __all__ = [
     "NextR4CapsuleMetadataError",
     "PHYSICAL_ID_SORT_POLICY",
     "PHYSICAL_ID_SORT_SALT",
+    "VALIDATOR_RECEIPT_SCHEMA",
     "build_next_r4_capsule_metadata",
     "main",
     "prepare_next_r4_capsule_metadata",
