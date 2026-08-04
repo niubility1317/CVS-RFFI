@@ -40,7 +40,7 @@
 
 ## 4.版本与本地验证
 
-当前基线提交：待runtime、artifact、scorer和CLI收口后冻结。已落地的相关提交包括：
+当前基线提交：待predictor-safe query绑定修复后冻结。已落地的相关提交包括：
 
 - `5179c541`：CER-PLR160核心
 - `09a07ccf`、`8cb723f9`：矩阵与动态计数一致性
@@ -48,8 +48,10 @@
 - `a5d80db0`：设计到实现追踪
 - `66d14379`：关闭CER的R0/R1表示契约与alias前query闭合P1
 - `e356c15a`：独立truth-side scorer及四态明确指标输出
+- `54f0723d`：新类按held-class宏平均；注册遗忘改为固定DA下注册前减注册后，并补齐总体与逐receiver聚合
+- `6f779325`、`b8b26e90`：prepare→predict→score CLI、动态capsule和行身份闭合
 
-当前聚焦验证：FA、CER、matrix、scorer共23项测试通过。独立审查初次结果为`P0=0/P1=3`；其中CER的2项P1已由独立复审确认关闭。剩余1项是runtime不得在FA生成R1后再次执行L2归一化；runtime/artifact尚未落地，当前不得发布。
+当前聚焦验证：FA、CER、matrix、runtime、artifact、scorer共38项通过；CLI生命周期5项通过。提交`54f0723d`已经独立复审为`P0=0/P1=0`。随后对CLI的全链检查发现新的协议P0：predictor package虽不含名为truth的字段，但其`physical_binding_receipt`仍含`query_ids_by_class`和`query_observation_ids_by_class`，等价于向predict暴露query真实类别分组。当前正在把预测侧绑定改为与类别无关的扁平固定顺序；修复、复审和真实checkpoint smoke完成前不得发布。
 
 ## 5.发布前最小信息
 
