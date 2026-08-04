@@ -151,6 +151,14 @@ def _make_fixture(tmp_path: Path) -> _Fixture:
                 feature_by_physical[physical_id] = _unit(class_index, 0 if variant == 0 else 6)
                 truth[physical_id] = class_id
         phase1_by_outer[outer] = tuple(f"phase1|{outer[0]}|{outer[1]}|{index}" for index in range(2))
+        # Formal D106 inputs carry the Phase1 fit members in the same
+        # received-IQ physical archive.  They remain prepare-only and are
+        # never requested by the predictor bridge.
+        for phase1_id in phase1_by_outer[outer]:
+            physical_ids.append(phase1_id)
+            observation_ids.append(f"obs-phase1|{phase1_id}")
+            receiver_ids.append(outer[0])
+            feature_by_physical[phase1_id] = _unit(0, 9)
         support1_by_outer[outer] = support1
         support5_by_outer[outer] = support5
         query_by_outer[outer] = query
@@ -352,6 +360,8 @@ def test_prepare_predict_score_lifecycle_keeps_truth_out_of_predictor(
 ) -> None:
     fixture = _make_fixture(tmp_path)
     prepared = runner.run_prepare(_args(fixture, tmp_path / "prepared"))
+    capsule_for_authority = runner._load_received_capsule(fixture.received, fixture.received_sha256)
+    assert any(item.startswith("phase1|") for item in capsule_for_authority.physical_ids)
     package_value = json.loads(Path(prepared["package"]).read_text(encoding="utf-8"))
     assert package_value["truth_free"] is True
     assert package_value["truth_loaded"] is False
@@ -456,6 +466,31 @@ def test_prepare_predict_score_lifecycle_keeps_truth_out_of_predictor(
     scored = runner.run_score(score_args)
     assert scored["truth_opened_after_complete_prediction"] is True
     assert json.loads((tmp_path / "score.json").read_text(encoding="utf-8"))["schema"].endswith("proxy_score.v1")
+
+
+def test_prepare_rejects_unknown_or_support_query_overlapping_phase1_ids(tmp_path: Path) -> None:
+    fixture = _make_fixture(tmp_path)
+    metadata_value = json.loads(fixture.metadata.read_text(encoding="utf-8"))
+
+    unknown_value = deepcopy(metadata_value)
+    unknown_value["rows"][0]["phase1_fit_ids"][0] = "phase1-not-in-received"
+    unknown_path = tmp_path / "metadata_unknown_phase1.json"
+    unknown_path.write_text(json.dumps(unknown_value, sort_keys=True) + "\n", encoding="utf-8")
+    unknown_args = _args(fixture, tmp_path / "prepare_unknown_phase1")
+    unknown_args.capsule_metadata = unknown_path
+    unknown_args.capsule_metadata_sha256 = _sha(unknown_path.read_bytes())
+    with pytest.raises(runner.MissingRealInputArtifacts, match="must belong to received physical IDs"):
+        runner.run_prepare(unknown_args)
+
+    overlap_value = deepcopy(metadata_value)
+    overlap_value["rows"][0]["phase1_fit_ids"][0] = overlap_value["rows"][0]["k5_support_ids_by_class"][CLASSES[0]][0]
+    overlap_path = tmp_path / "metadata_overlap_phase1.json"
+    overlap_path.write_text(json.dumps(overlap_value, sort_keys=True) + "\n", encoding="utf-8")
+    overlap_args = _args(fixture, tmp_path / "prepare_overlap_phase1")
+    overlap_args.capsule_metadata = overlap_path
+    overlap_args.capsule_metadata_sha256 = _sha(overlap_path.read_bytes())
+    with pytest.raises(runner.MissingRealInputArtifacts, match="overlap K5 support/query"):
+        runner.run_prepare(overlap_args)
 
 
 def test_real_runtime_single_row_functional_smoke() -> None:

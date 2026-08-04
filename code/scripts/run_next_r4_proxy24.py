@@ -383,7 +383,7 @@ def _load_capsule_metadata(
     by_id = {str(item.get("row_id")): item for item in raw_rows if isinstance(item, Mapping)}
     if len(by_id) != matrix.ROW_COUNT:
         raise MissingRealInputArtifacts(f"{MISSING_PREFIX}: capsule row identities are incomplete")
-    received_ids = set(received.physical_ids) | set(received.observation_ids)
+    received_physical_ids = set(received.physical_ids)
     row_out: list[Mapping[str, Any]] = []
     # Build the paired physical binding while the prepare side is still
     # allowed to inspect Phase1 member IDs.  Only its sealed count/root are
@@ -402,9 +402,14 @@ def _load_capsule_metadata(
         phase1_ids = tuple(raw.get("phase1_fit_ids", ()))
         if not phase1_ids or any(type(item) is not str or not item for item in phase1_ids) or len(set(phase1_ids)) != len(phase1_ids):
             raise MissingRealInputArtifacts(f"{MISSING_PREFIX}: phase1_fit_ids are incomplete")
-        if set(phase1_ids) & received_ids:
-            raise MissingRealInputArtifacts(f"{MISSING_PREFIX}: Phase1/support/query IDs overlap received-IQ IDs")
-        if any(item not in set(received.physical_ids) for values in (*support1.values(), *support5.values(), *q.values()) for item in values):
+        if not set(phase1_ids).issubset(received_physical_ids):
+            raise MissingRealInputArtifacts(f"{MISSING_PREFIX}: Phase1 fit IDs must belong to received physical IDs")
+        support_query_physical_ids = {
+            item for values in (*support5.values(), *q.values()) for item in values
+        }
+        if set(phase1_ids) & support_query_physical_ids:
+            raise MissingRealInputArtifacts(f"{MISSING_PREFIX}: Phase1 fit IDs overlap K5 support/query physical IDs")
+        if any(item not in received_physical_ids for values in (*support1.values(), *support5.values(), *q.values()) for item in values):
             raise MissingRealInputArtifacts(f"{MISSING_PREFIX}: capsule references an unknown received physical ID")
         if any(item not in set(received.observation_ids) for values in qo.values() for item in values):
             raise MissingRealInputArtifacts(f"{MISSING_PREFIX}: capsule references an unknown observation ID")
