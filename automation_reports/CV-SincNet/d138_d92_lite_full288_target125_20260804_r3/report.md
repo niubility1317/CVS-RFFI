@@ -4,7 +4,7 @@
 
 - 实验ID：`d138_d92_lite_full288_target125_20260804_r3`
 - 登记时间：`2026-08-04`
-- 当前状态：`LOCAL_VERIFIED / REMOTE_LAUNCH_PENDING / DIAGNOSTIC_RESULT_ONLY_PENDING`
+- 当前状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
 - 目标：一次性补齐r1/r2暴露的D92 ground-fit脚本闭包，完成冻结FULL288候选的125 outer、375 scene、750 surface及独立truth-side诊断评分。
 - r1/r2均在smoke/import依赖阶段停止，未产生预测；r3为新的不可覆盖run，不续写前两次。
 
@@ -28,3 +28,9 @@
 - 先做远端hash/compile/import和真实checkpoint smoke；smoke通过后立即启动8个固定shard，一卡一shard，再merge、validate、build-truth、score。
 - 只接受8/8 shard、125/125 outer、375/375 scene、750/750 surface和完整truth/score；不按accuracy、H、BA或中间值停止。
 - 若在prediction前出现至少两个不同row同一确定性异常，停止并保留全部证据；不使用r1/r2任何输出作为输入。
+
+## r3启动结果
+
+- r3 helper链文件已全部同步，hash和py_compile通过。
+- 依赖import在真实ground-fit导入前停止：`probe_d80_ground_commonmode_covariance_denoiser.py`需要`stage2_d80_ground_commonmode_denoiser.py`，该文件及D81 core未包含在r2基底中。
+- r3未产生smoke、prediction、truth或score；r4只补齐这两个纯numpy core文件，作为最后一次独立one-shot入口。
