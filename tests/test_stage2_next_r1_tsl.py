@@ -5,6 +5,7 @@ import inspect
 import numpy as np
 import pytest
 
+from cvsrffi import stage2_next_r1_tsl as tsl
 from cvsrffi.stage2_next_r1_tsl import (
     Phase1Cell,
     Phase1PhysicalLOOFold,
@@ -105,6 +106,57 @@ def test_phase1_prior_wire_is_deterministic_positive_and_downward_rho():
     assert build.receipt["rho_h_not_rounded_up"] is True
     assert build.receipt["physical_loo_margin_receipts"]
     assert all(item["support_validation_physical_ids_disjoint"] for item in build.receipt["physical_loo_margin_receipts"])
+
+
+def test_phase1_rho_overflow_uses_downward_fp16_mantissa_exp2_and_roundtrips(monkeypatch):
+    raw_rho_h = 4.0 * float(np.finfo(np.float16).max)
+    monkeypatch.setattr(tsl, "_type7_quantile", lambda _values, _probability: raw_rho_h)
+
+    build, _support, _labels, _validation = _inputs()
+    assert build.receipt["rho_h_encoding"] == "fp16_mantissa_times_power_of_two_downward"
+    assert build.prior.rho_h_exp2 > 0
+    assert 0.0 < build.prior.effective_rho_h <= raw_rho_h
+    assert build.receipt["actual_rho_h_effective"] == build.prior.effective_rho_h
+    assert build.receipt["rho_h_not_rounded_up"] is True
+
+    wire = serialize_phase1_prior(build.prior)
+    restored = deserialize_phase1_prior(wire)
+    assert restored.serialized_bytes == wire
+    assert restored.prior_sha256 == build.prior.prior_sha256
+    assert restored.rho_h == build.prior.rho_h
+    assert restored.rho_h_exp2 == build.prior.rho_h_exp2
+    assert restored.effective_rho_h == build.prior.effective_rho_h
+
+
+def test_phase1_prior_preserves_legacy_positional_schema_slot():
+    build, _support, _labels, _validation = _inputs()
+    prior = build.prior
+    restored = tsl.TSLPhase1Prior(
+        prior.q_logv0,
+        prior.scale_logv0,
+        prior.offset_logv0,
+        prior.nu0,
+        prior.rho_h,
+        prior.checkpoint_sha256,
+        prior.cell_physical_id_root_sha256,
+        prior.representation_rule_sha256,
+        tsl.PRIOR_SCHEMA,
+    )
+    assert restored.schema == tsl.PRIOR_SCHEMA
+    assert restored.rho_h_exp2 == 0
+
+
+def test_tail_safe_lite_fit_uses_decoded_rho_not_fp16_mantissa(monkeypatch):
+    raw_rho_h = 4.0 * float(np.finfo(np.float16).max)
+    monkeypatch.setattr(tsl, "_type7_quantile", lambda _values, _probability: raw_rho_h)
+    build, support, labels, _validation = _inputs()
+
+    fit = TailSafeLite(build.prior, runtime_binding=_binding(build)).fit(
+        support, labels, ("alpha", "beta")
+    )
+    assert fit.fit_receipt["rho_h_effective"] == build.prior.effective_rho_h
+    assert fit.fit_receipt["rho_h_exp2"] == build.prior.rho_h_exp2
+    assert fit.fit_receipt["eta"] == 1.0
 
 
 def test_phase1_prior_rejects_an_unbound_cell_id_root():

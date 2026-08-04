@@ -31,7 +31,7 @@ import numpy as np
 Z_DIM = 160
 ACTIVE_K_VALUES = (1, 5, 10)
 PRIOR_SCHEMA = "cvs.phase2.next_r1.tsl.phase1_prior.v1"
-PRIOR_WIRE_SCHEMA = "cvs.phase2.next_r1.tsl.phase1_prior_wire.v1"
+PRIOR_WIRE_SCHEMA = "cvs.phase2.next_r1.tsl.phase1_prior_wire.v2"
 AFFINE_SCHEMA = "cvs.phase2.next_r1.tsl.affine.v1"
 AFFINE_WIRE_SCHEMA = "cvs.phase2.next_r1.tsl.affine_wire.v1"
 ALIAS_SCHEMA = "cvs.phase2.next_r1.tsl.k1_qknn_alias.v1"
@@ -179,6 +179,54 @@ def _scalar_fp16(value: Any, *, name: str, positive: bool = True) -> np.float16:
     if not np.isfinite(result) or (positive and not float(result) > 0.0):
         raise TailSafeLiteError(f"{name} must be finite{' and positive' if positive else ''}")
     return result
+
+
+def _encode_positive_fp16_power2(
+    value: Any, *, name: str
+) -> tuple[np.float16, int, float, str]:
+    """Encode a positive float64 scalar without changing its safe upper bound.
+
+    Values representable by a positive finite FP16 retain the historical direct
+    encoding.  Values outside FP16's dynamic range use a positive FP16 mantissa
+    and an integer base-two exponent.  Both branches round downward, so the
+    decoded value is strictly positive and never exceeds the input.
+    """
+
+    array = np.asarray(value)
+    if array.shape != ():
+        raise TailSafeLiteError(f"{name} must be a scalar")
+    try:
+        raw = float(array.item())
+    except (TypeError, ValueError, OverflowError) as error:
+        raise TailSafeLiteError(f"{name} must be finite and positive") from error
+    if not math.isfinite(raw) or not raw > 0.0:
+        raise TailSafeLiteError(f"{name} must be finite and positive")
+
+    with np.errstate(over="ignore", under="ignore", invalid="ignore"):
+        direct = np.float16(raw)
+    if np.isfinite(direct) and float(direct) > 0.0:
+        if float(direct) > raw:
+            direct = np.nextafter(direct, np.float16(0.0), dtype=np.float16)
+        decoded = float(direct)
+        if decoded > 0.0 and decoded <= raw:
+            return direct, 0, decoded, "direct_fp16_downward"
+
+    mantissa, exponent = math.frexp(raw)
+    encoded = np.float16(mantissa)
+    if float(encoded) > mantissa:
+        encoded = np.nextafter(encoded, np.float16(0.0), dtype=np.float16)
+    try:
+        decoded = math.ldexp(float(encoded), int(exponent))
+    except OverflowError as error:  # pragma: no cover - guarded by raw finiteness
+        raise TailSafeLiteError(f"{name} scaled FP16 decode overflowed") from error
+    if (
+        not np.isfinite(encoded)
+        or not float(encoded) > 0.0
+        or not math.isfinite(decoded)
+        or not 0.0 < decoded <= raw
+    ):
+        raise TailSafeLiteError(f"{name} cannot be encoded as downward FP16×2^e")
+    return encoded, int(exponent), decoded, "fp16_mantissa_times_power_of_two_downward"
 
 
 def _fp16_hex(value: np.float16) -> str:
@@ -371,6 +419,7 @@ class TSLPhase1Prior:
     cell_physical_id_root_sha256: str
     representation_rule_sha256: str
     schema: str = PRIOR_SCHEMA
+    rho_h_exp2: int = 0
 
     def __post_init__(self) -> None:
         q = np.asarray(self.q_logv0)
@@ -380,6 +429,15 @@ class TSLPhase1Prior:
         offset = _scalar_fp16(self.offset_logv0, name="offset_logv0", positive=False)
         nu0 = _scalar_fp16(self.nu0, name="nu0")
         rho_h = _scalar_fp16(self.rho_h, name="rho_h")
+        rho_h_exp2 = self.rho_h_exp2
+        if type(rho_h_exp2) is not int or not -1074 <= rho_h_exp2 <= 1024:
+            raise TailSafeLiteError("rho_h_exp2 must be an exact bounded integer")
+        try:
+            effective_rho_h = math.ldexp(float(rho_h), rho_h_exp2)
+        except OverflowError as error:
+            raise TailSafeLiteError("decoded rho_h must be finite and positive") from error
+        if not math.isfinite(effective_rho_h) or not effective_rho_h > 0.0:
+            raise TailSafeLiteError("decoded rho_h must be finite and positive")
         if self.schema != PRIOR_SCHEMA:
             raise TailSafeLiteError("TSL prior schema drift")
         decoded_log = float(offset) + float(scale) * q.astype(np.float64)
@@ -391,6 +449,7 @@ class TSLPhase1Prior:
         object.__setattr__(self, "offset_logv0", offset)
         object.__setattr__(self, "nu0", nu0)
         object.__setattr__(self, "rho_h", rho_h)
+        object.__setattr__(self, "rho_h_exp2", rho_h_exp2)
         object.__setattr__(self, "checkpoint_sha256", _require_sha256(self.checkpoint_sha256, name="checkpoint_sha256"))
         object.__setattr__(self, "cell_physical_id_root_sha256", _require_sha256(self.cell_physical_id_root_sha256, name="cell_physical_id_root_sha256"))
         object.__setattr__(self, "representation_rule_sha256", _require_sha256(self.representation_rule_sha256, name="representation_rule_sha256"))
@@ -399,6 +458,12 @@ class TSLPhase1Prior:
     def decoded_v0(self) -> np.ndarray:
         decoded = np.exp(float(self.offset_logv0) + float(self.scale_logv0) * self.q_logv0.astype(np.float64))
         return _readonly(decoded, np.float64)
+
+    @property
+    def effective_rho_h(self) -> float:
+        """Return the positive trust radius represented by FP16 mantissa×2^e."""
+
+        return math.ldexp(float(self.rho_h), self.rho_h_exp2)
 
     def wire_mapping(self) -> Mapping[str, Any]:
         return _freeze(
@@ -409,7 +474,8 @@ class TSLPhase1Prior:
                 "offset_logv0_fp16_le_hex": _fp16_hex(self.offset_logv0),
                 "q_logv0_int8_b64": base64.b64encode(self.q_logv0.tobytes(order="C")).decode("ascii"),
                 "representation_rule_sha256": self.representation_rule_sha256,
-                "rho_h_fp16_le_hex": _fp16_hex(self.rho_h),
+                "rho_h_exp2": self.rho_h_exp2,
+                "rho_h_mantissa_fp16_le_hex": _fp16_hex(self.rho_h),
                 "scale_logv0_fp16_le_hex": _fp16_hex(self.scale_logv0),
                 "schema": PRIOR_WIRE_SCHEMA,
             }
@@ -434,7 +500,9 @@ class TSLPhase1Prior:
                 "scale_logv0_fp16": float(self.scale_logv0),
                 "offset_logv0_fp16": float(self.offset_logv0),
                 "nu0_fp16": float(self.nu0),
-                "rho_h_fp16": float(self.rho_h),
+                "rho_h_mantissa_fp16": float(self.rho_h),
+                "rho_h_exp2": self.rho_h_exp2,
+                "rho_h_effective": self.effective_rho_h,
                 "decoded_v0_min": float(np.min(v0)),
                 "decoded_v0_max": float(np.max(v0)),
                 "decoded_v0_all_positive": bool(np.all(v0 > 0.0)),
@@ -462,7 +530,7 @@ def deserialize_phase1_prior(value: bytes) -> TSLPhase1Prior:
         raise TailSafeLiteError("TSL prior wire schema drift")
     expected = {
         "schema", "q_logv0_int8_b64", "scale_logv0_fp16_le_hex", "offset_logv0_fp16_le_hex",
-        "nu0_fp16_le_hex", "rho_h_fp16_le_hex", "checkpoint_sha256",
+        "nu0_fp16_le_hex", "rho_h_mantissa_fp16_le_hex", "rho_h_exp2", "checkpoint_sha256",
         "cell_physical_id_root_sha256", "representation_rule_sha256",
     }
     if set(document) != expected:
@@ -478,10 +546,11 @@ def deserialize_phase1_prior(value: bytes) -> TSLPhase1Prior:
         scale_logv0=_fp16_from_hex(document["scale_logv0_fp16_le_hex"], name="scale_logv0"),
         offset_logv0=_fp16_from_hex(document["offset_logv0_fp16_le_hex"], name="offset_logv0"),
         nu0=_fp16_from_hex(document["nu0_fp16_le_hex"], name="nu0"),
-        rho_h=_fp16_from_hex(document["rho_h_fp16_le_hex"], name="rho_h"),
+        rho_h=_fp16_from_hex(document["rho_h_mantissa_fp16_le_hex"], name="rho_h"),
         checkpoint_sha256=document["checkpoint_sha256"],
         cell_physical_id_root_sha256=document["cell_physical_id_root_sha256"],
         representation_rule_sha256=document["representation_rule_sha256"],
+        rho_h_exp2=document["rho_h_exp2"],
     )
     if prior.serialized_bytes != bytes(value):
         raise TailSafeLiteError("TSL prior wire is not canonical")
@@ -720,10 +789,9 @@ def build_phase1_prior(
         rho_cells.append(rho_cell)
         cell_receipts.append(cell_receipt)
     raw_rho_h = _type7_quantile(rho_cells, 0.05)
-    rho_h = _scalar_fp16(raw_rho_h, name="Phase1 rho_h")
-    if float(rho_h) > raw_rho_h:
-        rho_h = np.nextafter(rho_h, np.float16(0.0), dtype=np.float16)
-    rho_h = _scalar_fp16(rho_h, name="Phase1 rho_h after downward rounding")
+    rho_h, rho_h_exp2, actual_rho_h, rho_h_encoding = _encode_positive_fp16_power2(
+        raw_rho_h, name="Phase1 rho_h"
+    )
     prior = TSLPhase1Prior(
         q_logv0=q,
         scale_logv0=scale,
@@ -733,15 +801,20 @@ def build_phase1_prior(
         checkpoint_sha256=checkpoint_sha256,
         cell_physical_id_root_sha256=cell_physical_id_root_sha256,
         representation_rule_sha256=representation_rule_sha256,
+        rho_h_exp2=rho_h_exp2,
     )
     decoded_error = np.abs(decoded_log - ell)
     v0_error = np.abs(decoded_v0 - np.exp(ell)) / np.maximum(np.exp(ell), float(np.finfo(np.float64).tiny))
     margin_receipts = []
     for entry in cell_receipts:
         payload = dict(entry)
-        payload["rho_h_fp16"] = float(prior.rho_h)
-        payload["rho_cell_minus_rho_h_fp16"] = float(payload["rho_cell"] - float(prior.rho_h))
-        payload["rho_h_not_rounded_up"] = bool(float(prior.rho_h) <= raw_rho_h)
+        payload["rho_h_mantissa_fp16"] = float(prior.rho_h)
+        payload["rho_h_exp2"] = prior.rho_h_exp2
+        payload["rho_h_effective"] = prior.effective_rho_h
+        payload["rho_cell_minus_rho_h_effective"] = float(
+            payload["rho_cell"] - prior.effective_rho_h
+        )
+        payload["rho_h_not_rounded_up"] = bool(prior.effective_rho_h <= raw_rho_h)
         margin_receipts.append(payload)
     receipt = {
         "schema": PRIOR_SCHEMA,
@@ -762,8 +835,11 @@ def build_phase1_prior(
         "raw_nu0": raw_nu0,
         "actual_nu0_fp16": float(prior.nu0),
         "raw_rho_h_type7_q05": raw_rho_h,
-        "actual_rho_h_fp16": float(prior.rho_h),
-        "rho_h_not_rounded_up": bool(float(prior.rho_h) <= raw_rho_h),
+        "rho_h_encoding": rho_h_encoding,
+        "rho_h_mantissa_fp16": float(prior.rho_h),
+        "rho_h_exp2": prior.rho_h_exp2,
+        "actual_rho_h_effective": actual_rho_h,
+        "rho_h_not_rounded_up": bool(prior.effective_rho_h <= raw_rho_h),
         "physical_loo_margin_receipts": margin_receipts,
         "checkpoint_sha256": prior.checkpoint_sha256,
         "cell_physical_id_root_sha256": prior.cell_physical_id_root_sha256,
@@ -1118,7 +1194,7 @@ class TailSafeLite:
             )
         started = time.perf_counter_ns()
         geometry = _raw_geometry(rows, support_labels, classes, prior=self._prior)
-        eta = min(1.0, float(self._prior.rho_h) / geometry.distance)
+        eta = min(1.0, self._prior.effective_rho_h / geometry.distance)
         if not math.isfinite(eta) or not 0.0 < eta <= 1.0:
             raise TailSafeLiteError("TSL common trust-region eta drift")
         weights = geometry.w_ref + eta * (geometry.w_hat - geometry.w_ref)
@@ -1160,7 +1236,9 @@ class TailSafeLite:
             "v_post_max": float(np.max(geometry.v_post)),
             "v_sph": geometry.v_sph,
             "D_prequantized": geometry.distance,
-            "rho_h_fp16": float(self._prior.rho_h),
+            "rho_h_mantissa_fp16": float(self._prior.rho_h),
+            "rho_h_exp2": self._prior.rho_h_exp2,
+            "rho_h_effective": self._prior.effective_rho_h,
             "eta": eta,
             "all_class_affine_centered": True,
             "support_compactness_policy": "physical_LOO_e_ck=((K-1)/K)*(u_ck-mean_{j_not_k}u_cj)",
