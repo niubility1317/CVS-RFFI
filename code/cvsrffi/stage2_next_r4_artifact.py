@@ -187,7 +187,6 @@ def _validate_query_isolation(receipt: Mapping[str, Any], *, name: str) -> dict[
         "query_role_access",
         "class_quota_access",
         "true_batch_class_count_access",
-        "global_reassignment",
         "query_batch_dependency",
     )
     for field in zero_fields:
@@ -196,9 +195,9 @@ def _validate_query_isolation(receipt: Mapping[str, Any], *, name: str) -> dict[
         if result[field] != 0:
             raise NextR4ArtifactError(f"{name}.{field} must be zero")
     for field in false_fields:
-        if field == "query_batch_dependency" and field not in result:
+        if field not in result:
             raise NextR4ArtifactError(f"{name}.{field} is required")
-        if field in result and result[field] is not False:
+        if result[field] is not False:
             raise NextR4ArtifactError(f"{name}.{field} must be false")
     return result
 

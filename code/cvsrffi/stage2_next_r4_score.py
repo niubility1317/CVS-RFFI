@@ -52,6 +52,31 @@ def _reject_forbidden(value: Any, *, name: str) -> None:
             _reject_forbidden(item, name=f"{name}[{index}]")
 
 
+def _validate_query_isolation(receipt: Any, *, name: str) -> Mapping[str, Any]:
+    if not isinstance(receipt, Mapping):
+        raise NextR4ScoreError(f"{name} must be a mapping")
+    zero_fields = (
+        "query_rows_used_for_fit",
+        "query_state_updates",
+        "query_selection_count",
+        "global_reassignment_calls",
+    )
+    false_fields = (
+        "query_truth_access",
+        "query_role_access",
+        "class_quota_access",
+        "true_batch_class_count_access",
+        "query_batch_dependency",
+    )
+    for field in zero_fields:
+        if receipt.get(field) != 0:
+            raise NextR4ScoreError(f"{name}.{field} must be present and zero")
+    for field in false_fields:
+        if field not in receipt or receipt[field] is not False:
+            raise NextR4ScoreError(f"{name}.{field} must be present and false")
+    return MappingProxyType(_plain(receipt))
+
+
 def _strings(value: Any, *, name: str, unique: bool = True) -> tuple[str, ...]:
     if not isinstance(value, (tuple, list)):
         raise NextR4ScoreError(f"{name} must be a sequence")
@@ -261,6 +286,10 @@ def _validate_prediction(prediction: Mapping[str, Any], plan: Mapping[str, Any])
                 raise NextR4ScoreError(f"prediction row[{index}] plan binding drift")
         if raw.get("evaluation_semantics", raw.get("artifact_semantics")) != matrix.PROXY_SEMANTICS or raw.get("formal_new_registration_claim") is not False:
             raise NextR4ScoreError(f"prediction row[{index}] proxy semantics drift")
+        isolation = _validate_query_isolation(
+            raw.get("query_isolation_receipt"),
+            name=f"prediction row[{index}].query_isolation_receipt",
+        )
         receipt_bundle = _validated_binding(raw, planned)
         registrations = raw.get("registrations")
         if not isinstance(registrations, Mapping) or set(registrations) != set(matrix.REGISTRATION_IDS):
@@ -295,6 +324,7 @@ def _validate_prediction(prediction: Mapping[str, Any], plan: Mapping[str, Any])
             "row": planned,
             "binding": receipt_bundle["binding"],
             "fa_state_reuse_receipt": receipt_bundle["fa_reuse"],
+            "query_isolation_receipt": isolation,
             "registrations": normalized_regs,
         }
     if tuple(records) != tuple(str(item["row_id"]) for item in frozen["rows"]):

@@ -18,6 +18,10 @@ def _isolation() -> dict[str, object]:
         "query_state_updates": 0,
         "query_selection_count": 0,
         "global_reassignment_calls": 0,
+        "query_truth_access": False,
+        "query_role_access": False,
+        "class_quota_access": False,
+        "true_batch_class_count_access": False,
         "query_batch_dependency": False,
     }
 
@@ -155,7 +159,12 @@ def test_builder_emits_complete_truth_free_artifact_and_scores() -> None:
     assert prediction["row_count"] == 24
     assert prediction["unique_prediction_count"] == 144
     assert prediction["artifact_arm_count"] == 192
-    assert all("truth" not in str(row).lower() for row in prediction["rows"])
+    assert all(
+        row["query_isolation_receipt"]["query_truth_access"] is False
+        and "truth" not in row
+        and "query_truth" not in row
+        for row in prediction["rows"]
+    )
     scored = scorer.score_next_r4_proxy24(prediction=prediction, plan=plan, truth_by_query_id=truth)
     assert scored["row_count"] == 24
     assert scored["unique_prediction_count"] == 144
@@ -185,6 +194,10 @@ def test_builder_rejects_incomplete_rows_and_query_updates() -> None:
     bad = deepcopy(rows)
     bad[0]["query_isolation_receipt"]["global_reassignment_calls"] = 1
     with pytest.raises(artifact.NextR4ArtifactError, match="must be zero"):
+        artifact.build_next_r4_prediction_artifact(plan=plan, row_results=bad)
+    bad = deepcopy(rows)
+    del bad[0]["query_isolation_receipt"]["query_truth_access"]
+    with pytest.raises(artifact.NextR4ArtifactError, match="is required"):
         artifact.build_next_r4_prediction_artifact(plan=plan, row_results=bad)
 
 

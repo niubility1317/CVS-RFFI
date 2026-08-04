@@ -118,6 +118,17 @@ def _prediction_fixture() -> tuple[dict, dict, dict]:
                     }
                 )
             ),
+            "query_isolation_receipt": {
+                "query_rows_used_for_fit": 0,
+                "query_state_updates": 0,
+                "query_selection_count": 0,
+                "global_reassignment_calls": 0,
+                "query_truth_access": False,
+                "query_role_access": False,
+                "class_quota_access": False,
+                "true_batch_class_count_access": False,
+                "query_batch_dependency": False,
+            },
             "registrations": registrations,
         })
     prediction = {
@@ -212,6 +223,18 @@ def test_fa_state_reuse_tamper_and_binding_tamper_fail_closed() -> None:
     bad_binding["rows"][0]["binding_receipt"]["query_ids_by_class"][sorted(CLASSES)[0]][0] = "query-tampered"
     with pytest.raises(scorer.NextR4ScoreError, match="binding"):
         scorer.score_next_r4_proxy24(prediction=bad_binding, plan=plan, truth_by_query_id=truth)
+
+
+def test_scorer_revalidates_row_query_isolation_receipt() -> None:
+    plan, prediction, truth = _prediction_fixture()
+    bad = deepcopy(prediction)
+    bad["rows"][0]["query_isolation_receipt"]["query_truth_access"] = True
+    with pytest.raises(scorer.NextR4ScoreError, match="query_truth_access"):
+        scorer.score_next_r4_proxy24(prediction=bad, plan=plan, truth_by_query_id=truth)
+    bad = deepcopy(prediction)
+    del bad["rows"][0]["query_isolation_receipt"]["query_role_access"]
+    with pytest.raises(scorer.NextR4ScoreError, match="query_role_access"):
+        scorer.score_next_r4_proxy24(prediction=bad, plan=plan, truth_by_query_id=truth)
 
 
 def test_incomplete_rows_are_rejected_even_with_complete_truth() -> None:
