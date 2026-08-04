@@ -1,8 +1,12 @@
 # Stage2功能研发目标与证据门
 
-状态：`ACTIVE / NEXT_R4_PROXY24_COMPLETED / NEXT_R5_TARGET5_PAUSED_OBJECTIVE_MISMATCH / NEXT_R6_RPPF160_DESIGN_FROZEN`
+状态：`ACTIVE / NEXT_R4_PROXY24_COMPLETED / NEXT-R5-FA-Q-TARGET125_USER_AUTHORIZED`
 
 ## 0.0 2026-08-05当前活动目标与统一指标命名
+
+### 0.0.0用户最新实验覆盖
+
+用户在2026-08-05明确要求运行`FA-RDCE3+qKNN`的完整125实验。该指令覆盖本节旧的Target5资源限制和“必须先完成NEXT-R6”的顺序，但不改变`p2_min_v1`、四状态命名、query零fit/update/selection、truth-after-seal、不可按性能停止或完整同row报告要求。当前活动实验以`analysis/next_r5_fa_q_target125_design_20260805.md`为唯一方法/矩阵锁；NEXT-R6本地WIP暂停且不作为125发布门。
 
 `NEXT-R4 FA-RDCE3×CER-PLR160`的R2已在N607完整闭合Proxy24：24个逻辑行、144个唯一prediction、192个含alias的arm artifact，truth只在全部prediction封存后打开。该结果是source-held机制证据，不是正式Target性能。
 
