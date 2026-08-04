@@ -99,3 +99,11 @@ predict必须detached启动并立即核验PID/CWD/cmdline/run-root/GPU/log增长
 |`NEXT-R1 FABR-TSL/r1`|单block rank2 FABR＋类对称TSL|待84行完成|—|—|—|—|—|—|`NO_NEW_PERFORMANCE_RESULT`|
 
 当前推荐：完成唯一候选的设计差分复核后立即实现并发布84行必要矩阵；不启动D92 Lite125。
+
+## N607 runner终态（2026-08-04）
+
+状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / ARTIFACTS_INCOMPLETE / NO_PERFORMANCE_RESULT`。源码由提交`945183e589802cac8de11eb9c4b3a384c376230c`精确归档并落地；archive为52,735,024 bytes、SHA256=`5971ff70c0e74e6f32ed77b678dd1e67da6e6cb7955e49ddbc8f85431f74f1c0`。远端archive SHA、commit marker、5235成员单根`source/`、7个关键源码SHA和`py_compile` 7/7均通过。
+
+唯一detached启动使用物理GPU0，主PID=`995120`，CWD为`run_root/source`，冻结84行命令已写入`control/command.txt`。首个fold在prediction前报确定性`TypeError: expected np.ndarray (got numpy.ndarray)`（`stage2_next_r1_real.py:357 -> 296`），PID随后退出；rows预测artifact为0。`plan.json`和`preregistration.json`已生成；`completion.json`、`manifest.json`、`predictions.npz`、`truth_side.npz`和独立score均未生成，故未启动score。GPU0—7均恢复0%/1MiB，SSH/TCP22清理为0，retry authority=false。
+
+同一远端解释器只读诊断：`torch=2.1.0+cu121`、`numpy=2.2.5`；`torch.from_numpy(np.zeros(...))`复现同一TypeError，`torch.frombuffer(bytearray(16),dtype=torch.float32)`通过。完整回收证据见`artifacts/remote_r1/runner_handoff.md`及同目录日志/控制文件；无性能或晋级结论。
