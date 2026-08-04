@@ -98,6 +98,7 @@ def _fixture(tmp_path: Path, *, drop_state: bool = False, repair: bool = True):
             if repair and k == 5 and state_id == "DA0_REG1" and key["outer_key_id"] == repair_key_id:
                 predictions[0] = registered[1]
             scores = np.zeros((len(qids), len(registered)), dtype="<f4")
+            scores[0, 0] = np.float32(len(state_entries) + 1)
             stem = f"{key['outer_key_id']}__{state_id}"
             npz_path = root / "states" / f"{stem}.npz"
             np.savez_compressed(npz_path, query_physical_ids=np.asarray(qids, dtype=np.str_), registered_classes=np.asarray(registered, dtype=np.str_), scores=scores, predictions=np.asarray(predictions, dtype=np.str_))

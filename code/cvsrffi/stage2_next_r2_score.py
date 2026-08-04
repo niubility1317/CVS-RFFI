@@ -203,7 +203,10 @@ def _read_capsule(path: Path, expected_sha256: str) -> Mapping[str, Any]:
     plan = matrix.validate_next_r2_proxy24_plan(payload.get("plan", {}))
     if payload["matrix_sha256"] != plan["matrix_sha256"]:
         raise NextR2ScoreError("prediction capsule matrix binding drift")
-    keys = tuple(payload.get("keys", ()))
+    raw_keys = payload.get("keys", ())
+    if not isinstance(raw_keys, (tuple, list)):
+        raise NextR2ScoreError("prediction capsule keys must be a sequence")
+    keys = tuple(raw_keys)
     if len(keys) != matrix.OUTER_KEY_COUNT:
         raise NextR2ScoreError("prediction capsule outer-key count drift")
     for key, planned in zip(keys, plan["keys"], strict=True):
@@ -214,11 +217,14 @@ def _read_capsule(path: Path, expected_sha256: str) -> Mapping[str, Any]:
             or key.get("held_receiver") != planned["held_receiver"]
             or key.get("held_class") != planned["held_class"]
             or key.get("active_k") != planned["active_k"]
+            or not isinstance(key.get("registrations"), Mapping)
             or set(key.get("registrations", {})) != {"REG0", "REG1"}
         ):
             raise NextR2ScoreError("prediction capsule key/plan binding drift")
         for registration, classes in (("REG0", planned["retained_classes"]), ("REG1", planned["all_registered_classes"])):
             item = key["registrations"][registration]
+            if not isinstance(item, Mapping):
+                raise NextR2ScoreError("prediction capsule registration must be an object")
             if tuple(item.get("registered_classes", ())) != tuple(classes):
                 raise NextR2ScoreError("prediction capsule registered class drift")
             support_labels = tuple(item.get("support_labels", ()))
@@ -360,6 +366,7 @@ def _state_record(
         or receipt.get("split_id") != split_id
         or receipt.get("outer_key_id") != outer.outer_key_id
         or receipt.get("active_k") != outer.active_k
+        or not isinstance(receipt.get("registered_classes"), (tuple, list))
         or tuple(receipt.get("registered_classes", ())) != matrix.registered_classes_for_state(outer, state_id)
     ):
         raise NextR2ScoreError("state receipt binding drift")
@@ -388,7 +395,14 @@ def _state_record(
     expected_classes = matrix.registered_classes_for_state(outer, state_id)
     if classes != expected_classes or any(value not in classes for value in predictions):
         raise NextR2ScoreError("state registered class/prediction drift")
-    if tuple(seal.get("registered_classes", ())) != classes or tuple(seal.get("query_physical_id_root", ())) == ():
+    seal_classes = seal.get("registered_classes")
+    seal_query_root = seal.get("query_physical_id_root")
+    if (
+        not isinstance(seal_classes, (tuple, list))
+        or tuple(seal_classes) != classes
+        or not isinstance(seal_query_root, str)
+        or not seal_query_root
+    ):
         raise NextR2ScoreError("state seal class/query binding drift")
     if seal.get("query_physical_id_root") != _id_root(query_ids):
         raise NextR2ScoreError("state query physical root drift")
@@ -443,7 +457,10 @@ def _validate_prediction_closure(
     capsule_id: str,
     split_id: str,
 ) -> tuple[Mapping[str, Any], ...]:
-    artifacts = tuple(manifest.get("states", ()))
+    raw_artifacts = manifest.get("states", ())
+    if not isinstance(raw_artifacts, (tuple, list)):
+        raise NextR2ScoreError("manifest states must be a sequence")
+    artifacts = tuple(raw_artifacts)
     if len(artifacts) != matrix.STATE_PREDICTION_COUNT:
         raise NextR2ScoreError("prediction state artifact count is not 96")
     expected = tuple((str(key["outer_key_id"]), state_id) for key in plan["keys"] for state_id in matrix.STATE_IDS)
