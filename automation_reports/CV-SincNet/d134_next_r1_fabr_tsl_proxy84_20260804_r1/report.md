@@ -62,3 +62,17 @@ predict detached启动后立即核验PID/CWD/cmdline/run-root/GPU/log；仅84行
 |---|---|---:|---:|---:|---:|---:|---|---|
 |`NEXT-R1 FABR-TSL/r1`|待84行完成|—|—|—|—|—|—|`NO_NEW_PERFORMANCE_RESULT`|
 
+## N607 runner终态（2026-08-04）
+
+|字段|值|
+|---|---|
+|状态链|`LOCAL_VERIFIED → LANDED → RUNNING → STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`|
+|启动时间|2026-08-04 14:41:50（Asia/Hong_Kong）|
+|PID/GPU|PID=`1013674`；物理GPU0；退出后`0%`利用率、`1 MiB/24576 MiB`|
+|覆盖率|`0/84` rows；prediction artifacts=`0`；completion/manifest=`ABSENT`；score=`NOT_RUN`|
+|远端日志|`logs/predict.log`，879 B，SHA256=`85E79496805C0110ECE7A6309D9803141C6A1D868414D15B1DF3DF202650AA80`|
+|控制证据|`control/main.pid` SHA256=`5E47F5F64170A88392F0F4E93441AA83FDA95BBA9250A62F59E499F28FD76798`；`control/command.txt` SHA256=`1B7B8E48011B65B2185031F0932953FC3996FA389C1ECCC30E2677F9DFB67721`|
+|归档|本地source归档SHA256=`91e0caa211af4836e307692f69a9a6a5394fdae90075e0a364c2224451319abe`；远端source七关键文件hash/py_compile均通过|
+|SSH清理|短连接均退出；本地无`ssh/scp`残留、无`ESTABLISHED remote22`|
+
+正式predict未进入首个fold即退出，日志唯一异常为：`NextR1Proxy84Error: run root must be a new absolute child of an existing directory`。启动包装预先创建了`RUN_ROOT/output`，违反`run_next_r1_proxy84.py`的new-root契约；这是launcher invocation defect，不是模型、ABI或协议性能证据。按预注册`retry authority=false`，不重试、不评分、不覆盖本run；远端`output`目录保留但为空，详见`artifacts/remote_r1/output_state.txt`及回收的日志/control文件。该run不产生任何性能结论，后续若修复包装层必须使用新的不可复用run ID并重新完成本地验证、落地和报告登记。
