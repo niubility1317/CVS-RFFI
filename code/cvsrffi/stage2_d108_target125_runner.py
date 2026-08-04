@@ -284,13 +284,17 @@ def prepare_d108_target125_run(**kwargs: Any) -> dict[str, Any]:
     return prepare_d108_target125_inputs(**kwargs)
 
 
-def _readonly_features(value: Any, name: str) -> np.ndarray:
+def _readonly_features(
+    value: Any, name: str, *, feature_width: int = FEATURE_WIDTH
+) -> np.ndarray:
     array = np.asarray(value)
     if (
         array.dtype != np.float32 or array.ndim != 2 or array.shape[0] < 1
-        or array.shape[1] != FEATURE_WIDTH or not np.isfinite(array).all()
+        or array.shape[1] != feature_width or not np.isfinite(array).all()
     ):
-        raise D108Target125RunnerError(f"{name} must be finite float32 [N,{FEATURE_WIDTH}]")
+        raise D108Target125RunnerError(
+            f"{name} must be finite float32 [N,{feature_width}]"
+        )
     copied = np.ascontiguousarray(array, dtype=np.float32).copy()
     norms = np.linalg.norm(copied.astype(np.float64), axis=1)
     if not np.allclose(norms, 1.0, rtol=1.0e-5, atol=1.0e-5):
@@ -310,7 +314,7 @@ class _MaterializedState:
 
 
 def _coerce_materialized_state(
-    value: Mapping[str, Any], *, request: Mapping[str, Any]
+    value: Mapping[str, Any], *, request: Mapping[str, Any], feature_width: int = FEATURE_WIDTH
 ) -> _MaterializedState:
     if not isinstance(value, Mapping) or set(value) != _MATERIALIZED_FIELDS:
         raise D108Target125RunnerError("state materializer field closure drift")
@@ -318,8 +322,12 @@ def _coerce_materialized_state(
         "truth", "role", "metric", "score", "quota"
     )) for name in value):
         raise D108Target125RunnerError("state materializer exposed forbidden data")
-    support = _readonly_features(value["support_features"], "support_features")
-    query = _readonly_features(value["query_features"], "query_features")
+    support = _readonly_features(
+        value["support_features"], "support_features", feature_width=feature_width
+    )
+    query = _readonly_features(
+        value["query_features"], "query_features", feature_width=feature_width
+    )
     registered = _tokens(
         value["registered_classes"], "registered_classes",
         len(value["registered_classes"]),
@@ -575,8 +583,15 @@ def _materialize_pair(
     )
     before_request = _state_request(row, scene, "before")
     after_request = _state_request(row, scene, "after")
-    before = _coerce_materialized_state(materializer(before_request), request=before_request)
-    after = _coerce_materialized_state(materializer(after_request), request=after_request)
+    feature_width = getattr(materializer, "feature_width", FEATURE_WIDTH)
+    if type(feature_width) is not int or feature_width not in (160, FEATURE_WIDTH):
+        raise D108Target125RunnerError("typed materializer feature width is not permitted")
+    before = _coerce_materialized_state(
+        materializer(before_request), request=before_request, feature_width=feature_width
+    )
+    after = _coerce_materialized_state(
+        materializer(after_request), request=after_request, feature_width=feature_width
+    )
     if len(before.registered_classes) != OLD_CLASS_COUNT:
         raise D108Target125RunnerError("before registry must retain six old classes")
     if (

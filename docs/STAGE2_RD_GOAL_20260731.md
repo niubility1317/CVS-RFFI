@@ -1,6 +1,6 @@
 # Stage2功能研发目标与证据门
 
-状态：`ACTIVE / D130_COMPLETE_NEGATIVE / D131_TECHNICAL_NO_RESULT / NEXT_R1_DESIGN_FROZEN / NO_TARGET_PERFORMANCE_RESULT`
+状态：`ACTIVE / D130_COMPLETE_NEGATIVE / D131_TECHNICAL_NO_RESULT / NEXT_R1_DESIGN_FROZEN / D138_PR160_DESIGN_FROZEN / NO_TARGET_PERFORMANCE_RESULT`
 
 ## 0.2026-08-03闭环与目标重置
 
@@ -58,6 +58,16 @@ What_c = mu_c/v_post; bhat_c = -sum_j(mu_cj^2/v_post_j)/2
 所有K、所有臂都必须在float32最终logit上执行精确top-tie检测；任一query出现最高logit精确并列即记为`TIE_UNRESOLVED / NO_PERFORMANCE_RESULT`。K1的Q/F/L还必须逐logit共享同一结果。不得使用registry顺序、类别ID、physical ID、hash、role或truth消除并列。发布前只执行一次无truth的K1 liveness scan；它只验证能否形成唯一prediction，不读取性能，也不形成新增调参gate。
 
 独立`FEASIBILITY_REVIEW`及差分复核最终确认上述修订已闭合，裁定`P0=0、P1=0、DESIGN_FROZEN`。现在立即进入唯一候选实现；不新增第二轮方法设计、第二表示或额外矩阵。实现若偏离本节任一公式、常数、输入边界或fail-closed语义，必须退回设计审查，不得直接发布实验。
+
+### 0.2用户明确请求下登记的D138 D92-Lite修复候选
+
+用户在D131路线永久关闭后再次明确要求“修复优化，然后跑D92-Lite的125实验”。因此新增独立candidate`D92-Lite-PR160/r1`，不修改D131，也不把NEXT-R1 FABR混入本次实验。该候选只修复D92-Lite的表示与头部边界，直接沿用已验证的Target125输入定位和750个单臂prediction surface；若无truth liveness或真实checkpoint smoke不能闭合，则不得启动完整125。
+
+- 表示从D92的`registered_feature[0:160]`改为同一sealed TorchScript前向中`model.id_backbone.cls_head.joint_proj.0`的线性pre-ReLU`p∈R^160`；`||ReLU(p)||>0`时归一化ReLU视图，否则归一化有符号`p`；精确零或非有限直接fail-closed。新extractor与源runtime、checkpoint和method lock绑定，且以`ReLU(p)`与原160维输出做parity核验；不读取full288、FFT96、RF32或第二套表示。
+- K1为该160维表示的全注册类qKNN逐logit精确alias；K5/K10为全注册类共享对角OAS仿射头，wire固定为`INT8 W[C,160]+FP16 scale[C]+FP16 intercept[C]`，不使用old/new角色分裂。拟合只读support，query端零fit、零update、零selection。
+- 每个query独立对全部已注册类竞争；最终float32最高值精确并列统一`TIE_UNRESOLVED`，不得使用registry顺序、类别ID/hash、physical ID、role或跨query重分配打破并列。任何完整125性能结论仍需同row prediction、truth和score闭合；本candidate的表示修复本身不是性能成功。
+- 状态映射固定为`DA0_REG0=before`与`DA0_REG1=after`；`DA1_REG0`和`DA1_REG1`对这个单一`M_JOINT`运输臂候选均为范围外，不生成四状态DA因果表，也不把运输臂名称当作已执行DA机制。
+- D138锁文件为`configs/d138_d92_lite_pr160_r1.json`，正式实验ID预登记为`d138_d92_lite_pr160_target125_20260804_r1`。该候选与NEXT-R1保持独立，不新增数据复验；固定received-IQ、physical IDs、receiver/TX集合、scenario、K、support/query split和`p2_min_v1`均未改变。
 
 ## 1.最终目标
 
