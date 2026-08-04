@@ -1,6 +1,6 @@
 # NEXT-R4 FA-RDCE3×CER-PLR160 Proxy24实验报告
 
-状态：`IMPLEMENTING / NO_PERFORMANCE_RESULT`
+状态：`LOCAL_VERIFIED / NO_PERFORMANCE_RESULT`
 
 ## 1.实验身份
 
@@ -41,7 +41,7 @@
 
 ## 4.版本与本地验证
 
-当前基线提交：待predictor-safe query绑定修复后冻结。已落地的相关提交包括：
+当前实现提交：`dab44012`。已落地的相关提交包括：
 
 - `5179c541`：CER-PLR160核心
 - `09a07ccf`、`8cb723f9`：矩阵与动态计数一致性
@@ -51,10 +51,14 @@
 - `e356c15a`：独立truth-side scorer及四态明确指标输出
 - `54f0723d`：新类按held-class宏平均；注册遗忘改为固定DA下注册前减注册后，并补齐总体与逐receiver聚合
 - `6f779325`、`b8b26e90`：prepare→predict→score CLI、动态capsule和行身份闭合
+- `8dcfdd69`：预测侧query绑定升级为v2扁平physical/observation ID，递归拒绝按类query字段
+- `b849383b`：冻结FA-RDCE3的Phase1统计公式和来源
+- `744a0b5d`：12个FA-RDCE3聚合资产构建器
+- `cf9b3d65`：CLI适配扁平query绑定并闭合prepare→predict→score权威哈希链
+- `b1aab4cb`、`c6e83488`：兼容合法`day_ids`并修正同源Phase1 ID只与当前row support/query隔离
+- `b02738f8`、`74991fb5`、`dab44012`：24行capsule构建、一次性validator receipt、正式qKNN lock适配及predictor-safe metadata
 
-当前聚焦验证：FA、CER、matrix、runtime、artifact、scorer共38项通过；CLI生命周期5项通过。提交`54f0723d`已经独立复审为`P0=0/P1=0`。随后对CLI的全链检查发现新的协议P0：predictor package虽不含名为truth的字段，但其`physical_binding_receipt`仍含`query_ids_by_class`和`query_observation_ids_by_class`，等价于向predict暴露query真实类别分组。当前正在把预测侧绑定改为与类别无关的扁平固定顺序；修复、复审和真实checkpoint smoke完成前不得发布。
-
-CLI独立复审结论为`P0=1/P1=2`：除上述query类别分组P0外，predict还需验证runtime返回的binding/query与package完全一致；prepare封存的权威truth SHA及package/received/checkpoint/FA manifest哈希必须贯穿completion并由score复验。现有5项CLI测试使用monkeypatch/synthetic bridge，只是功能测试，不是real-checkpoint smoke证据。
+当前R4合并验证为58项全部通过，并完成两个真实输入检查：12个Phase1资产的in-memory构建，以及正式落盘资产的逐文件SHA/checkpoint绑定复算。提交`8dcfdd69`已由独立Terra复审为`P0=0/P1=0`：predictor package只含全局扁平query ID，matrix/runtime/artifact/scorer均递归拒绝旧v1和任意嵌套的按类query字段；24行、144个唯一prediction和192个arm闭合。CLI随后由`cf9b3d65`完成foreign-result绑定拒绝及prepare receipt到completion/score的完整权威链。58项验证仍是功能/协议证据，不是real-checkpoint smoke或性能证据。
 
 ## 5.发布前最小信息
 
@@ -62,8 +66,8 @@ CLI独立复审结论为`P0=1/P1=2`：除上述query类别分组P0外，predict�
 
 |字段|冻结值|
 |---|---|
-|Git commit/文件SHA|`PENDING`|
-|本地验证命令与结果|`PENDING`|
+|Git commit/文件SHA|当前实现`dab44012`；正式发布提交待本报告收口后冻结|
+|本地验证命令与结果|R4九组聚焦测试`58 passed`；三入口`py_compile`通过；`git diff --check`通过|
 |N607工作目录|`PENDING`|
 |Conda/Python环境|优先`ssr-gpu`；若服务器不存在则必须使用已验证且依赖闭合的现有环境，并记录解释器版本|
 |prepare/predict/score精确命令|`PENDING`|
@@ -74,7 +78,15 @@ CLI独立复审结论为`P0=1/P1=2`：除上述query类别分组P0外，predict�
 
 技术停止仅允许协议/安全违规、错误checkout/hash、覆盖风险、缺prediction闭合或至少两个不同row出现同一确定性异常指纹；不得按运行中性能停止。
 
-本地真实性能输入准备：已确认D105 checkpoint为`E:\type10-7\automation_reports\CV-SincNet\d105_feature_tap_real_checkpoint_smoke_20260731\input\best_joint_safe_ssdg.pth`，SHA256=`2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98`。规定的只读N607 preflight已通过，8张RTX 3090当时均空闲；随后只读取回既有received-IQ到本报告目录`input/d106_ls_received_iq.npz`，大小1,509,068B，远端与本地SHA256同为`e32708214eaedaf39af532c572e16045f173422d63110e4022778f3ad0252ede`。同时取回receipt，SHA256=`a18bd5d610c9874bd0d6b50d34e845d85229d5892453bce9ff5bfeaa8ee82d59`；其声明`protocol_schema=p2_min_v1`、`row_count=588`、`formal_query_access=false`、`clean_iq_access=false`。SCP结束后本地`ssh.exe=0`且到N607/bridge的TCP22连接为0。NEXT-R4 capsule和12个FA-RDCE3资产仍待本地构建与封存。
+本地真实性能输入准备：已确认D105 checkpoint为`E:\type10-7\automation_reports\CV-SincNet\d105_feature_tap_real_checkpoint_smoke_20260731\input\best_joint_safe_ssdg.pth`，SHA256=`2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98`。规定的只读N607 preflight已通过，8张RTX 3090当时均空闲；随后只读取回既有received-IQ到本报告目录`input/d106_ls_received_iq.npz`，大小1,509,068B，远端与本地SHA256同为`e32708214eaedaf39af532c572e16045f173422d63110e4022778f3ad0252ede`。同时取回receipt，SHA256=`a18bd5d610c9874bd0d6b50d34e845d85229d5892453bce9ff5bfeaa8ee82d59`；其声明`protocol_schema=p2_min_v1`、`row_count=588`、`formal_query_access=false`、`clean_iq_access=false`。SCP结束后本地`ssh.exe=0`且到N607/bridge的TCP22连接为0。
+
+正式Phase1资产已由strict tap SHA256=`48b92fa8defc1c7261ca80f9e0723662e3fe6e8c64ec0881c8ef13bab3cafa2f`构建到`input/fa_assets_v1/`。方法锁使用冻结目标文档原始字节SHA256=`35530428ecfe77982043a3b29f3f2275c5bfb66fa1da523f64c8c01030bc7311`；manifest SHA256=`0dedb5ae2c6052820f44c1d9d986ff29222ac16765618cd470529671cbcb6fd8`。共12个资产，每个只含5类×84条的聚合统计、Phase1 fit count=420；逐资产wire SHA和checkpoint SHA复算全部一致，且`phase1_member_ids_written=false`、`phase1_per_row_features_written=false`。
+
+新的候选无关qKNN锁不复用任何旧候选/row SHA：Phase1 LODO authority SHA256=`b49cdc9f99094372412fd76d647cec58495a486eeb978fbd72f10e85f0f0e26a`，INT8 margin audit SHA256=`024a5024c06d710fbf4ddfee5326aacc89dc2ab2c74d3a9b866af09957efd9e3`，K1/K5锁文件SHA256=`13b5496c3580b16a6660dee4fc8cd0f41874a41144b357c7c08c99b4d80e91fc`。数值只机械继承D106的`ν=3,d_eff=12,h0=0.35,temperature=0.85`，K1/K5仅`active_k`不同；Phase1-only量化一致性为K1/K5 top1各588/588，未计算准确率、未读取Stage2 truth、未据此改参。当前direct qKNN score不实际应用temperature，该字段仅保留在继承锁中。
+
+正式capsule v2 SHA256=`5b30f6dda514797beb984b5ed01995cfc64b8cb5d1a7367da241a468b6ab8272`，一次性validator receipt SHA256=`d0ac04930dd02a7d4c2dfe98c41d8933301e89095cc3cc5afad028f3bc499c64`，`capsule_id=9df82b4af19898748bc5a27c039cd7e04d1f7c53fc3aa4e082c6308a3eb32a26`，`split_id=a5ccbba48980228a6dfb42b86116262a33184877d5ed4cafe11d406b74d05d96`。固定salt为`cvs.stage2.next_r4.proxy24.opaque_physical_id_order.v1`、metadata seed=0，均在读取NEXT-R4性能前冻结；每receiver×class 14条中K5前5、K1为其首条、其余9条为K1/K5共享query。v1 metadata保留了安全扫描禁止的重复`global_reassignment=false`字段，因此真实prepare在任何forward前失败并完整保留；v2仅删除该重复字段，validator receipt仍明确保存访问为false。
+
+真实D105 checkpoint no-query smoke已在CPU上用两条真实received-IQ完成，两次forward的160维R0逐字节一致，`truth_loaded=false`、`query_truth_access=false`。真实prepare v2随后成功，输出`local_prepare_v2/`：predictor package SHA256=`250bf38c4ff26be960a2f41b59af3cbf9b2cf78b4e5cf4b863d49a40fe463c5b`，truth sidecar SHA256=`48c7291271fb79da1fa9236acc5282c4aeb20b062ce591a44af733825237731b`；递归扫描未发现按类query、Phase1成员ID、truth、role、quota或global reassignment字段，24行闭合且query fit/update/selection均为0。这些仍是发布就绪证据，不是性能结果。
 
 ## 6.结果表
 

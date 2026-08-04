@@ -83,8 +83,8 @@ logit = qKNN_logit + gamma * centered_shape_residual
 |FA-RDCE3科学核心|`code/cvsrffi/stage2_next_r4_fa_rdce3.py`，已实现，待独立P0/P1审查|wire/类置换/共同状态/R1边界/资源负测；聚焦测试6项通过|
 |CER-PLR160科学核心|`code/cvsrffi/stage2_next_r4_cer_plr160.py`，已实现并关闭首轮2项P1|K1 alias/K5 shrinkage/pairwise Sr/gamma/量化/tie/资源负测；R0/R1只读表示验证与alias前query闭合经独立复审，聚焦测试6项通过|
 |矩阵与method lock|`code/cvsrffi/stage2_next_r4_matrix.py`、`configs/next_r4_fa_rdce3_cer_plr160_proxy24_20260804.json`，已实现，正在修复predictor-safe query绑定P0|24/144/192、共同query、K前缀、state复用；预测侧不得保存任何按真实类别分组的query ID|
-|四态runtime|`code/cvsrffi/stage2_next_r4_runtime.py`已实现，正在适配扁平query绑定|四态显式`state_id`和中文主名称；DA1_REG1复用DA1_REG0状态；K1 H逐logit alias Q；K5 H=CER；query零fit/update/selection；REG0新类/H=`N/A`|
-|artifact/scorer/CLI|runtime/artifact/scorer与三阶段CLI均已实现；等待query-binding P0修复及CLI适配|truth延迟开放、不可覆盖、144 prediction/192 artifact闭合、同row四态score；held-class宏平均；固定DA注册遗忘；预测包递归不得含class-indexed query映射|
+|四态runtime|`code/cvsrffi/stage2_next_r4_runtime.py`已实现并完成扁平query绑定|四态显式`state_id`和中文主名称；DA1_REG1复用DA1_REG0状态；K1 H逐logit alias Q；K5 H=CER；query零fit/update/selection；REG0新类/H=`N/A`|
+|artifact/scorer/CLI|runtime/artifact/scorer与三阶段CLI均已实现；真实prepare v2闭合|truth延迟开放、不可覆盖、144 prediction/192 artifact闭合、同row四态score；held-class宏平均；固定DA注册遗忘；预测包递归不含class-indexed query、Phase1成员ID或truth/role/quota|
 |N607发布|唯一Luna/max runner|Git/hash、真实checkpoint smoke、24行完整artifact|
 
 当前文件只冻结设计和可验证映射，不构成性能结果。
@@ -97,7 +97,7 @@ logit = qKNN_logit + gamma * centered_shape_residual
 |R4-HEAD-01|2.2|K1 H精确alias Q；K5 CER使用冻结pairwise Sr与164C B wire|`stage2_next_r4_cer_plr160.py`|verified|聚焦测试6项；独立复审P0=0、对应P1关闭|不恢复Full160稠密组件|
 |R4-MAT-01|3|24逻辑行、144 unique prediction、192 arm artifact、K前缀和共同query|`stage2_next_r4_matrix.py`、配置JSON|revision_required|既有矩阵闭合通过；predictor-safe query binding修复中|旧receipt含class-indexed query映射，构成P0|
 |R4-NAME-01|3|所有输出显式使用四态码与中文主名称；REG0新类/H=`N/A`|目标文档、matrix、scorer、报告|verified|目标提交`45e148c1`；scorer测试|禁止独立before/after|
-|R4-RUNTIME-01|2.1、2.2、3|truth-free四态runtime；R1后不再ReLU/L2/位移；query零fit/update/selection|`stage2_next_r4_runtime.py`|revision_required|既有六组核心38项通过；扁平query绑定适配中|旧runtime从class-indexed binding展开query，构成P0|
+|R4-RUNTIME-01|2.1、2.2、3|truth-free四态runtime；R1后不再ReLU/L2/位移；query零fit/update/selection|`stage2_next_r4_runtime.py`|verified|提交`8dcfdd69`独立复审P0=0/P1=0；真实prepare package扫描闭合|只消费v2扁平query physical/observation ID|
 |R4-ART-01|3、4|只投影预测与receipt，不携带truth/features/logits；严格闭合scorer单一schema|`stage2_next_r4_artifact.py`|revision_required|既有artifact/score闭合通过；需拒绝旧class-indexed query receipt|prediction递归不得携带query类别分组|
 |R4-SCORE-01|3、4|完整预测闭合后才开truth；输出same-row四态、per-class old、forgetting及比较|`stage2_next_r4_score.py`|verified|提交`54f0723d`独立复审P0=0/P1=0；核心38项通过|held-class宏平均；固定DA注册遗忘；不做promotion决策|
 |R4-CLI-01|5|prepare→predict→score三阶段、不可覆盖、动态metadata、真实checkpoint无query smoke|`code/scripts/run_next_r4_proxy24.py`|revision_required|CLI5项通过；等待predictor-safe binding适配与真正real-checkpoint smoke|fixture runtime测试不得称为真实checkpoint smoke|
