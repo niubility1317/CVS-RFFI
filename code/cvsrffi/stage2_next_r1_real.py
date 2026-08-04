@@ -77,6 +77,30 @@ def _require_sha(value: object, name: str) -> str:
     return value
 
 
+def _torch_float32_numpy_copy(value: Any, *, name: str) -> np.ndarray:
+    """Copy one finite torch.float32 tensor without Torch's NumPy C-API."""
+
+    try:
+        import torch
+    except ImportError as error:  # pragma: no cover
+        raise NextR1RealError("PyTorch is required for tensor conversion") from error
+    if (
+        not torch.is_tensor(value)
+        or value.dtype != torch.float32
+        or value.numel() < 1
+        or not bool(torch.isfinite(value).all().item())
+    ):
+        raise NextR1RealError(f"{name} must be a finite nonempty torch.float32 tensor")
+    # Python float exactly represents every float32 value.  The explicit list
+    # copy avoids both torch.from_numpy and Tensor.numpy, which are unusable in
+    # N607's torch2.1/numpy2.2 pair, without changing any float32 bits.
+    result = np.asarray(value.detach().cpu().tolist(), dtype=np.float32)
+    expected_shape = tuple(int(item) for item in value.shape)
+    if result.shape != expected_shape or not np.isfinite(result).all():
+        raise NextR1RealError(f"{name} Torch-to-NumPy copy drift")
+    return np.ascontiguousarray(result, dtype=np.float32)
+
+
 def _read_pinned(path: str | Path, expected_sha256: str, name: str) -> bytes:
     source = Path(path)
     expected = _require_sha(expected_sha256, f"{name}_sha256")
@@ -340,10 +364,10 @@ class NextR1RealModelBridge:
         logits, pre = self._forward(
             self._indices_tensor(indices), grad=False, parameter_overrides=overrides
         )
-        z160 = fabr.signed_pre_relu160(
-            pre.detach().cpu().numpy().astype(np.float32, copy=False)
-        )
-        return logits.detach().cpu().numpy().astype(np.float32, copy=False), z160
+        pre_numpy = _torch_float32_numpy_copy(pre, name="joint_proj.0 pre-ReLU")
+        logits_numpy = _torch_float32_numpy_copy(logits, name="D105 logits")
+        z160 = fabr.signed_pre_relu160(pre_numpy)
+        return logits_numpy, z160
 
     def gradient_blocks(self, indices: Sequence[int], *, microbatch_size: int = 8) -> tuple[assets.Phase1GradientBlock, ...]:
         """Compute actual per-sample TX-CE gradients for all four frozen blocks."""
@@ -378,7 +402,11 @@ class NextR1RealModelBridge:
                             losses[local], params, retain_graph=local + 1 < len(batch_indices), create_graph=False
                         )
                         flat = torch.cat(tuple(value.detach().reshape(-1) for value in grads))
-                        rows.append(flat.cpu().numpy().astype(np.float32, copy=False))
+                        rows.append(
+                            _torch_float32_numpy_copy(
+                                flat, name=f"{block_id} per-sample gradient"
+                            )
+                        )
             finally:
                 for parameter in params:
                     parameter.requires_grad_(False)

@@ -162,7 +162,23 @@ def test_iq_tensor_bridge_does_not_use_numpy_c_api_from_numpy(tmp_path, monkeypa
     )
     tensor = bridge._indices_tensor((0, 1))
     assert tensor.dtype == torch.float32 and tuple(tensor.shape) == (2, 2, 8)
-    assert np.array_equal(tensor.numpy(), rows.received_iq[[0, 1]])
+    assert np.array_equal(
+        np.asarray(tensor.tolist(), dtype=np.float32), rows.received_iq[[0, 1]]
+    )
+
+
+def test_real_bridge_does_not_use_tensor_numpy_for_forward_or_gradient(tmp_path, monkeypatch) -> None:
+    rows = _rows(tmp_path)
+    bridge = real.NextR1RealModelBridge(_Model(), rows, "1" * 64, "cpu")
+    monkeypatch.setattr(
+        torch.Tensor,
+        "numpy",
+        lambda _value: (_ for _ in ()).throw(RuntimeError("forbidden tensor.numpy")),
+    )
+    logits, z160 = bridge.forward_indices((0, 1))
+    blocks = bridge.gradient_blocks((0, 1), microbatch_size=2)
+    assert logits.shape == (2, 6) and z160.shape == (2, 160)
+    assert len(blocks) == 4 and all(value.gradients.dtype == np.float32 for value in blocks)
 
 
 def test_held_pair_creates_420_rows_thirty_cells_and_complete_loo(tmp_path) -> None:
