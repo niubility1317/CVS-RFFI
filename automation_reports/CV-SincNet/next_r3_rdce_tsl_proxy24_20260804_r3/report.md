@@ -5,7 +5,7 @@
 |字段|值|
 |---|---|
 |run ID|`next_r3_rdce_tsl_proxy24_20260804_r3`|
-|状态|`PRE_REGISTERED / FINAL_NUMERIC_REPAIR`|
+|状态|`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT / TSL_ROUTE_CLOSED`|
 |日期|2026-08-04|
 |主agent|Codex主agent（Sol/high）|
 |唯一N607 runner|Luna/max|
