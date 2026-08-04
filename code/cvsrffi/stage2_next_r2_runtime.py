@@ -5,6 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 import hashlib
 import time
+from pathlib import PurePosixPath
 from types import MappingProxyType
 from typing import Any, Mapping, Sequence
 
@@ -560,8 +561,9 @@ def build_next_r2_sealed_manifest(
         for state_id in matrix.STATE_IDS
     )
     observed: list[tuple[str, str]] = []
-    file_hashes: set[str] = set()
+    artifact_paths: set[str] = set()
     ready: list[dict[str, Any]] = []
+
     def valid_sha(value: str) -> bool:
         if len(value) != 64 or value.lower() != value:
             return False
@@ -571,23 +573,41 @@ def build_next_r2_sealed_manifest(
             return False
         return True
 
+    def valid_relative_path(value: object, *, suffix: str) -> bool:
+        """Match the scorer's run-root-relative artifact path contract."""
+        if not isinstance(value, str) or not value or "\\" in value:
+            return False
+        path = PurePosixPath(value)
+        return (
+            not path.is_absolute()
+            and not any(part in {"", ".", ".."} for part in path.parts)
+            and path.name.lower().endswith(suffix)
+        )
+
     for item in artifacts:
         if not isinstance(item, Mapping):
             raise NextR2RuntimeError("state artifact must be a mapping")
         pair = (str(item.get("outer_key_id", "")), str(item.get("state_id", "")))
         observed.append(pair)
+        json_path = item.get("json_path")
+        npz_path = item.get("npz_path")
         json_sha = str(item.get("json_sha256", ""))
         npz_sha = str(item.get("npz_sha256", ""))
         seal_sha = str(item.get("state_seal_sha256", ""))
         if (
+            not valid_relative_path(json_path, suffix=".json")
+            or not valid_relative_path(npz_path, suffix=".npz")
+            or str(json_path) in artifact_paths
+            or str(npz_path) in artifact_paths
+        ):
+            raise NextR2RuntimeError("state artifact paths are invalid or repeated")
+        if (
             not valid_sha(json_sha)
             or not valid_sha(npz_sha)
             or not valid_sha(seal_sha)
-            or json_sha in file_hashes
-            or npz_sha in file_hashes
         ):
-            raise NextR2RuntimeError("state artifact hashes are invalid or repeated")
-        file_hashes.update((json_sha, npz_sha))
+            raise NextR2RuntimeError("state artifact hashes are invalid")
+        artifact_paths.update((str(json_path), str(npz_path)))
         ready.append(dict(item))
     if tuple(observed) != expected:
         raise NextR2RuntimeError("state artifact order/coverage drift")

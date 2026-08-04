@@ -186,7 +186,21 @@ def test_sealed_manifest_requires_exact_order_and_all_96_states() -> None:
     plan = matrix.build_next_r2_proxy24_plan(
         RECEIVERS, CLASSES, source_identity_sha256="5" * 64
     )
-    artifacts = []
+    artifacts = _manifest_artifacts(plan)
+    manifest = runtime.build_next_r2_sealed_manifest(plan, artifacts)
+    assert manifest["state_prediction_count"] == 96
+    assert manifest["truth_opened"] is False
+    assert manifest["sealed_before_scoring"] is True
+    with pytest.raises(runtime.NextR2RuntimeError):
+        runtime.build_next_r2_sealed_manifest(plan, artifacts[:-1])
+    swapped = list(artifacts)
+    swapped[0], swapped[1] = swapped[1], swapped[0]
+    with pytest.raises(runtime.NextR2RuntimeError):
+        runtime.build_next_r2_sealed_manifest(plan, swapped)
+
+
+def _manifest_artifacts(plan: dict[str, object]) -> list[dict[str, str]]:
+    artifacts: list[dict[str, str]] = []
     counter = 1
     for key in plan["keys"]:
         for state_id in matrix.STATE_IDS:
@@ -202,13 +216,64 @@ def test_sealed_manifest_requires_exact_order_and_all_96_states() -> None:
                 }
             )
             counter += 1
+    return artifacts
+
+
+def test_sealed_manifest_allows_repeated_content_hashes_when_paths_differ() -> None:
+    plan = matrix.build_next_r2_proxy24_plan(
+        RECEIVERS, CLASSES, source_identity_sha256="5" * 64
+    )
+    artifacts = _manifest_artifacts(plan)
+    artifacts[1]["json_sha256"] = artifacts[0]["json_sha256"]
+    artifacts[1]["npz_sha256"] = artifacts[0]["npz_sha256"]
+    artifacts[1]["state_seal_sha256"] = artifacts[0]["state_seal_sha256"]
     manifest = runtime.build_next_r2_sealed_manifest(plan, artifacts)
     assert manifest["state_prediction_count"] == 96
-    assert manifest["truth_opened"] is False
-    assert manifest["sealed_before_scoring"] is True
-    with pytest.raises(runtime.NextR2RuntimeError):
-        runtime.build_next_r2_sealed_manifest(plan, artifacts[:-1])
-    swapped = list(artifacts)
-    swapped[0], swapped[1] = swapped[1], swapped[0]
-    with pytest.raises(runtime.NextR2RuntimeError):
-        runtime.build_next_r2_sealed_manifest(plan, swapped)
+
+
+@pytest.mark.parametrize("field", ["json_path", "npz_path"])
+def test_sealed_manifest_rejects_repeated_artifact_paths(field: str) -> None:
+    plan = matrix.build_next_r2_proxy24_plan(
+        RECEIVERS, CLASSES, source_identity_sha256="5" * 64
+    )
+    artifacts = _manifest_artifacts(plan)
+    artifacts[1][field] = artifacts[0][field]
+    with pytest.raises(runtime.NextR2RuntimeError, match="paths"):
+        runtime.build_next_r2_sealed_manifest(plan, artifacts)
+
+
+def test_sealed_manifest_rejects_cross_type_path_collision() -> None:
+    plan = matrix.build_next_r2_proxy24_plan(
+        RECEIVERS, CLASSES, source_identity_sha256="5" * 64
+    )
+    artifacts = _manifest_artifacts(plan)
+    artifacts[1]["npz_path"] = artifacts[0]["json_path"]
+    with pytest.raises(runtime.NextR2RuntimeError, match="paths"):
+        runtime.build_next_r2_sealed_manifest(plan, artifacts)
+
+
+@pytest.mark.parametrize(
+    ("field", "wrong_path"),
+    [("json_path", "states/1.npz"), ("npz_path", "states/1.json")],
+)
+def test_sealed_manifest_rejects_wrong_artifact_suffix(
+    field: str, wrong_path: str
+) -> None:
+    plan = matrix.build_next_r2_proxy24_plan(
+        RECEIVERS, CLASSES, source_identity_sha256="5" * 64
+    )
+    artifacts = _manifest_artifacts(plan)
+    artifacts[0][field] = wrong_path
+    with pytest.raises(runtime.NextR2RuntimeError, match="paths"):
+        runtime.build_next_r2_sealed_manifest(plan, artifacts)
+
+
+@pytest.mark.parametrize("field", ["json_sha256", "npz_sha256", "state_seal_sha256"])
+def test_sealed_manifest_rejects_invalid_sha(field: str) -> None:
+    plan = matrix.build_next_r2_proxy24_plan(
+        RECEIVERS, CLASSES, source_identity_sha256="5" * 64
+    )
+    artifacts = _manifest_artifacts(plan)
+    artifacts[0][field] = "not-a-sha256"
+    with pytest.raises(runtime.NextR2RuntimeError, match="hashes"):
+        runtime.build_next_r2_sealed_manifest(plan, artifacts)
