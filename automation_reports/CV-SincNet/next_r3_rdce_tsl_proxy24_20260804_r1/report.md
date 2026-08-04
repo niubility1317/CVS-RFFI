@@ -5,11 +5,11 @@
 |字段|值|
 |---|---|
 |run ID|`next_r3_rdce_tsl_proxy24_20260804_r1`|
-|状态|`RUNNER_REPAIRING / NO_PERFORMANCE_RESULT`|
+|状态|`LOCAL_VERIFIED / N607_ASSETS_READY / PREPARE_PENDING`|
 |日期|2026-08-04|
 |主agent|Codex主agent（Sol/high）|
-|科学实现/审查|Terra/max分工；二次独立审查`P0=0、P1=0`|
-|机械实现/发布|Luna/max sole runner；直连preflight已通过，尚未inventory/sync/launch|
+|科学实现/审查|Terra/max分工；runner第三次独立审查`P0=0、P1=0、READY`|
+|机械实现/发布|Luna/max sole runner；preflight和只读inventory已完成，尚未sync/launch|
 |协议|`p2_min_v1`|
 |证据语义|`SOURCE_HELD_PROXY`；`formal_new_registration_claim=false`|
 
@@ -71,6 +71,7 @@
 |`22f4e54e`|方法锁与设计追踪|
 |`51878e24`|完整physical-LOO覆盖|
 |`19b0650f`|truth-free runtime→artifact闭环|
+|`f35c3cdf`|隔离`prepare→predict→score`runner；真实checkpoint bridge与共同query|
 
 分支中夹有他人并行D92/D138提交；本报告不把它们计入NEXT-R3实现证据，也不得覆盖其工作树改动。
 
@@ -87,17 +88,22 @@ commit`f143e5d2`的runner独立复核结论为`P0=2、P1=2、NOT_READY`。两项
 
 commit`7f0fb9a4`已关闭真实特征输入问题：正式support/query/Phase1特征均改由received-IQ和绑定checkpoint的bridge生成，聚焦测试`5 passed`。但第二次独立复核仍为`P0=2、P1=1、NOT_READY`：两份REG0/REG1 query ID清单的差集会暴露新类角色；predict仍能读取全部588条`class_ids/tx_labels`。因此当前改为复用既有`prepare→predict→score`隔离：prepare封存Phase1 prior、合法K-shot support和单一共同query，predict不接触全量标签或query角色，旧/新/H划分只在完整prediction之后由score打开truth完成。
 
+commit`f35c3cdf`完成隔离后，第三次独立复核为`P0=0、P1=0、READY`。`predict`只接收received-IQ、checkpoint和无truth predictor package；REG0/REG1及K1/K5逐字复用同一共同query。主agent在`ssr-gpu`环境串行执行runner、NEXT-R3核心和D129 head回归，共`40 passed`，`py_compile`通过。
+
 ## 6. 真实输入现状
 
-本地Git快照只有receipt/fixture/manifest，没有真实`d106_ls_received_iq.npz`、strict-tap/features NPZ、D106 RDCE asset wire或checkpoint PTH。因而当前不能完成real-checkpoint smoke，也不能本地构建每fold完整TSL prior。缺失的最小真实字段为：
+N607只读inventory已确认既有真实资产足以执行一次`prepare`并生成本run专用predictor package和truth；不复用旧D104 truth，不重建数据。
 
-1. `received_iq`及physical ID、receiver、class绑定；
-2. 每个合法Phase1物理样本的canonical normalized-ReLU 160维行；
-3. D106 formal RDCE asset wire及SHA；
-4. 真实checkpoint及SHA；
-5. 与上述字段一致的split/tap/physical-root/seal receipts。
+|资产|绝对路径|SHA256/合同|
+|---|---|---|
+|received-IQ|`/home/szu2070436088/2510044040/CV-SincNet/runs/d106_real_integration_dba10236_20260801_r7/output/selected_ls_iq/d106_ls_received_iq.npz`|`e32708214eaedaf39af532c572e16045f173422d63110e4022778f3ad0252ede`；`<f4[588,2,256]`|
+|IQ receipt|同目录`d106_ls_received_iq.receipt.json`|`a18bd5d610c9874bd0d6b50d34e845d85229d5892453bce9ff5bfeaa8ee82d59`；validator=`2282942170a2bbd03aba904fe88d9e33840873c481d20be406ef54b50aa4fbfc`|
+|Phase1 cells/strict tap|`/home/szu2070436088/2510044040/CV-SincNet/runs/d106_real_integration_dba10236_20260801_r7/output/strict_tap/d106_ls_strict_tap.npz`|`48b92fa8defc1c7261ca80f9e0723662e3fe6e8c64ec0881c8ef13bab3cafa2f`；588行|
+|tap receipt|同目录`d106_ls_strict_tap.receipt.json`|`24badfa3f56c8f1b98a35768ea102a6c8e13267fcff80d59060ec6f2f13e0665`|
+|checkpoint|`/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth`|`2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98`|
+|RDCE wire|`/home/szu2070436088/2510044040/CV-SincNet/runs/d106_real_integration_dba10236_20260801_r7/output/rdce_asset/d106_rdce_gtsm.asset.wire`|`20e44cb0eb2f5698e6d5f9029b63cf296ffbf4716edb999fed6743c8671bd795`|
 
-禁止使用合成数组、receipt占位或不完整fold把real smoke标为通过。下一步只在N607做短连接只读inventory，确认这些既有资产的精确路径；不重建数据、不启动实验。
+source-held proxy的authority绑定使用既有不可变证据：`capsule_id=received-IQ archive SHA`，`split_id=scorer-only split manifest SHA 6d57b511e95382b0c1ebfad91b2a0de4be5c08d5896e0625aa3a4dfa110b5134`，`validator_receipt_sha256=2282942170a2bbd03aba904fe88d9e33840873c481d20be406ef54b50aa4fbfc`。这些值只标识本次`SOURCE_HELD_PROXY`输入，不构成正式Target新类注册声明。
 
 ## 7. N607发布预注册
 
@@ -105,20 +111,49 @@ commit`7f0fb9a4`已关闭真实特征输入问题：正式support/query/Phase1�
 
 |字段|预注册值|
 |---|---|
-|local commit|`PENDING_FINAL_RUNNER_COMMIT`|
-|source sync mapping|`PENDING_RUNNER_AND_INVENTORY`|
+|local commit|`f35c3cdf8737068f5aca2e9b2ddcb164a7579bf2`|
+|source sync mapping|本地`release/next_r3_runtime_f35c3cdf.tar.gz`→remote`input/next_r3_runtime_f35c3cdf.tar.gz`；SHA=`151c0f1d76ad8b0d373e318fdef38149d412980ae1bbca5500662bc4bfc01abf`；6,475,647B|
 |remote root|`/home/szu2070436088/2510044040/CV-SincNet/runs/next_r3_rdce_tsl_proxy24_20260804_r1`|
-|working directory|`PENDING_RUNNER_AND_INVENTORY`|
+|working directory|`/home/szu2070436088/2510044040/CV-SincNet/runs/next_r3_rdce_tsl_proxy24_20260804_r1/source`|
 |environment|`ssr-gpu`|
-|exact command|`PENDING_RUNNER_AND_INVENTORY`|
-|GPU allocation|`PENDING_N607_PREFLIGHT`|
-|stdout/stderr log|`.../logs/run.out`、`.../logs/run.err`|
+|exact command|见下方三段；`prepare`、单行smoke、完整24行严格顺序执行|
+|GPU allocation|物理GPU0；`CUDA_VISIBLE_DEVICES=0`，进程内`cuda:0`|
+|stdout/stderr log|`.../logs/prepare.log`、`.../logs/smoke.log`、`.../logs/run.out`、`.../logs/run.err`|
 |PID receipt|`.../logs/main.pid`|
 |prediction|`.../output/prediction.json`|
 |manifest/resource/smoke|`.../output/{manifest,resource,smoke}.json`|
 |truth-side score|`.../output/score.json`，仅prediction 24/24完整后生成|
 
-任何占位字段在sole runner交接前必须替换为真实值；占位报告不能授权launch。
+`prepare`命令固定使用上述received-IQ、receipt、strict tap和checkpoint，输出`.../prepare/{predictor_package,truth,prepare_receipt}.json`；`capsule-id=e32708214eaedaf39af532c572e16045f173422d63110e4022778f3ad0252ede`、`split-id=6d57b511e95382b0c1ebfad91b2a0de4be5c08d5896e0625aa3a4dfa110b5134`、`validator-receipt-sha256=2282942170a2bbd03aba904fe88d9e33840873c481d20be406ef54b50aa4fbfc`。生成后按字节计算package SHA并传入`predict`；单行smoke使用新目录`.../smoke`，完整矩阵使用新目录`.../output`。两次predict均固定同一received-IQ/checkpoint/tap/RDCE wire及上述SHA；完整prediction闭合后，`score`才读取本次`prepare/truth.json`并写入新文件`output/score.json`。
+
+### 7.1 精确执行命令
+
+以下变量在同一个有界远端命令中固定展开：
+
+```bash
+ROOT=/home/szu2070436088/2510044040/CV-SincNet/runs/next_r3_rdce_tsl_proxy24_20260804_r1
+PY=/home/szu2070436088/.conda/envs/ssr-gpu/bin/python
+IQ=/home/szu2070436088/2510044040/CV-SincNet/runs/d106_real_integration_dba10236_20260801_r7/output/selected_ls_iq/d106_ls_received_iq.npz
+IQ_RECEIPT=/home/szu2070436088/2510044040/CV-SincNet/runs/d106_real_integration_dba10236_20260801_r7/output/selected_ls_iq/d106_ls_received_iq.receipt.json
+TAP=/home/szu2070436088/2510044040/CV-SincNet/runs/d106_real_integration_dba10236_20260801_r7/output/strict_tap/d106_ls_strict_tap.npz
+TAP_RECEIPT=/home/szu2070436088/2510044040/CV-SincNet/runs/d106_real_integration_dba10236_20260801_r7/output/strict_tap/d106_ls_strict_tap.receipt.json
+CKPT=/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth
+RDCE=/home/szu2070436088/2510044040/CV-SincNet/runs/d106_real_integration_dba10236_20260801_r7/output/rdce_asset/d106_rdce_gtsm.asset.wire
+```
+
+```bash
+CUDA_VISIBLE_DEVICES=0 "$PY" code/scripts/run_next_r3_proxy24.py prepare --output-dir "$ROOT/prepare" --received-iq "$IQ" --received-iq-sha256 e32708214eaedaf39af532c572e16045f173422d63110e4022778f3ad0252ede --received-iq-receipt "$IQ_RECEIPT" --received-iq-receipt-sha256 a18bd5d610c9874bd0d6b50d34e845d85229d5892453bce9ff5bfeaa8ee82d59 --phase1-cells "$TAP" --phase1-cells-sha256 48b92fa8defc1c7261ca80f9e0723662e3fe6e8c64ec0881c8ef13bab3cafa2f --checkpoint "$CKPT" --checkpoint-sha256 2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98 --capsule-id e32708214eaedaf39af532c572e16045f173422d63110e4022778f3ad0252ede --split-id 6d57b511e95382b0c1ebfad91b2a0de4be5c08d5896e0625aa3a4dfa110b5134 --validator-receipt-sha256 2282942170a2bbd03aba904fe88d9e33840873c481d20be406ef54b50aa4fbfc --device cuda:0 >"$ROOT/logs/prepare.log" 2>&1
+PACKAGE_SHA=$(sha256sum "$ROOT/prepare/predictor_package.json" | awk '{print $1}')
+CUDA_VISIBLE_DEVICES=0 "$PY" code/scripts/run_next_r3_proxy24.py predict --run-id next_r3_rdce_tsl_proxy24_20260804_r1-smoke --run-root "$ROOT/smoke" --received-iq "$IQ" --received-iq-sha256 e32708214eaedaf39af532c572e16045f173422d63110e4022778f3ad0252ede --received-iq-receipt "$IQ_RECEIPT" --received-iq-receipt-sha256 a18bd5d610c9874bd0d6b50d34e845d85229d5892453bce9ff5bfeaa8ee82d59 --package "$ROOT/prepare/predictor_package.json" --package-sha256 "$PACKAGE_SHA" --checkpoint "$CKPT" --checkpoint-sha256 2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98 --d106-tap-archive "$TAP" --d106-tap-archive-sha256 48b92fa8defc1c7261ca80f9e0723662e3fe6e8c64ec0881c8ef13bab3cafa2f --d106-tap-receipt "$TAP_RECEIPT" --d106-tap-receipt-sha256 24badfa3f56c8f1b98a35768ea102a6c8e13267fcff80d59060ec6f2f13e0665 --d106-rdce-wire "$RDCE" --d106-rdce-wire-sha256 20e44cb0eb2f5698e6d5f9029b63cf296ffbf4716edb999fed6743c8671bd795 --device cuda:0 --smoke-one-row-no-truth >"$ROOT/logs/smoke.log" 2>&1
+nohup env CUDA_VISIBLE_DEVICES=0 "$PY" code/scripts/run_next_r3_proxy24.py predict --run-id next_r3_rdce_tsl_proxy24_20260804_r1 --run-root "$ROOT/output" --received-iq "$IQ" --received-iq-sha256 e32708214eaedaf39af532c572e16045f173422d63110e4022778f3ad0252ede --received-iq-receipt "$IQ_RECEIPT" --received-iq-receipt-sha256 a18bd5d610c9874bd0d6b50d34e845d85229d5892453bce9ff5bfeaa8ee82d59 --package "$ROOT/prepare/predictor_package.json" --package-sha256 "$PACKAGE_SHA" --checkpoint "$CKPT" --checkpoint-sha256 2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98 --d106-tap-archive "$TAP" --d106-tap-archive-sha256 48b92fa8defc1c7261ca80f9e0723662e3fe6e8c64ec0881c8ef13bab3cafa2f --d106-tap-receipt "$TAP_RECEIPT" --d106-tap-receipt-sha256 24badfa3f56c8f1b98a35768ea102a6c8e13267fcff80d59060ec6f2f13e0665 --d106-rdce-wire "$RDCE" --d106-rdce-wire-sha256 20e44cb0eb2f5698e6d5f9029b63cf296ffbf4716edb999fed6743c8671bd795 --device cuda:0 >"$ROOT/logs/run.out" 2>"$ROOT/logs/run.err" & echo $! >"$ROOT/logs/main.pid"
+```
+
+完整prediction闭合后执行：
+
+```bash
+TRUTH_SHA=$(sha256sum "$ROOT/prepare/truth.json" | awk '{print $1}')
+"$PY" code/scripts/run_next_r3_proxy24.py score --run-root "$ROOT/output" --truth "$ROOT/prepare/truth.json" --truth-sha256 "$TRUTH_SHA" --output "$ROOT/output/score.json"
+```
 
 ## 8. 健康停止与成功条件
 
