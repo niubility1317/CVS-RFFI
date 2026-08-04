@@ -245,4 +245,5 @@ D92与NEXT-R4回答不同问题：D92在注册后重配旧/新协方差，曾以
 1.`CER-PLR160`在K5的12/12 held-row上降低H，聚合损失27.060pp，并增加820—984B状态与800—960 MAC/query。该组件确定淘汰，不重跑、不调rank、不调残差权重。
 2.`FA-RDCE3 K1`整体负收益，尤其receiver18-2注册后floor为0；K1缺乏稳定的域尺度估计，不继续开发。
 3.`FA-RDCE3 K5＋direct qKNN`是本轮唯一正收益版本：域适应后/新类注册后old、seen-new和H各+1.852pp，all floor+11.111pp，12行中H为9正3平0负。保留它作为下一候选的DA核心，但维持`SOURCE_HELD_PROXY_SCORED_ONLY`，不晋级。
-4.下一方法不扩大矩阵。科学路线冻结为：保留K5 FA-RDCE3和直接qKNN；分类头改为“默认严格等于Q、仅在support-held可证明不降低old/new下界时才产生类对称小残差”的保守头，首先用Phase1/source-held反证其是否会重现CER的receiver18-2崩塌。若不能在不增加query依赖、阈值扫描或角色信息的条件下证明作用，直接保持无头Q，不再为“联合D92”强行增加计算。
+4.分类头作者提出K5 physical-LOO margin约束的D92-Lite/qKNN解析混合头；该设计在`alpha=0`时协议合法并可精确返回Q，但独立Terra/max监督裁定`P0=0、P1=2/REJECT`：K4-LOO只能保护support代理，Q/L logits没有独立可辨识的共同尺度，而且加入H臂会混淆已经闭合的FA主效应。该头不实现、不实验。
+5.下一唯一候选冻结为`NEXT-R5 K5-FA-RDCE3-Q`：原FA公式、rank、量化和6B动态状态不变，K1严格旁路，FA输出直接进入qKNN。R2已完成监督建议的12行K5 Proxy矩阵，因此不重复Proxy24、不跑fresh63或旧84行六臂。下一真实性能实验缩为单seed、5receiver、K5/new20的Target5；每job覆盖3场景和四个DA/REG状态，共60个state prediction surface。该结果只作单seed方向性Target筛选，不自动升级为多seed可推广结论。

@@ -1,17 +1,23 @@
 # Stage2功能研发目标与证据门
 
-状态：`ACTIVE / NEXT_R3_TSL_ROUTE_CLOSED_NO_PERFORMANCE_RESULT / NEXT_R4_FA_RDCE3_CER_PLR160_DESIGN_FROZEN`
+状态：`ACTIVE / NEXT_R4_PROXY24_COMPLETED / NEXT_R5_K5_FA_Q_DESIGN_FROZEN`
 
-## 0.0 2026-08-04当前活动目标与统一指标命名
+## 0.0 2026-08-05当前活动目标与统一指标命名
 
-NEXT-R3的`R3-RDCE160×TSL-160`已在N607最终r3的prepare阶段关闭。数值wire floor下穿已按同一冻结floor修复并通过独立复核，但真实physical-LOO仍出现`physical LOO fold has no correctly classified reference margin`。这说明TSL信赖半径依赖“参考头先正确分类”的前提在真实资产上不成立。r1/r2/r3均未产生完整prediction或score，严格记为`NO_PERFORMANCE_RESULT`；不创建r4、不修补TSL、不从技术退出推断性能。
+`NEXT-R4 FA-RDCE3×CER-PLR160`的R2已在N607完整闭合Proxy24：24个逻辑行、144个唯一prediction、192个含alias的arm artifact，truth只在全部prediction封存后打开。该结果是source-held机制证据，不是正式Target性能。
 
-下一唯一候选冻结为`NEXT-R4 FA-RDCE3×CER-PLR160`：
+- K5直接qKNN中，域适应后/新类注册前相对域适应前/新类注册前：old BA`+1.667pp`、old-floor`+10.000pp`；域适应后/新类注册后相对域适应前/新类注册后：old、seen-new和H均`+1.852pp`、all-floor`+11.111pp`、总正确数`+12`，12行中9正、3平、0负。
+- K1域适应在注册前old BA`-1.481pp`，注册后H`-1.392pp`，永久关闭；不得调rank、receiver、seed或权重复活。
+- K5 CER-PLR160在域适应后/新类注册后相对直接qKNN的H`-27.060pp`，12/12行均负，永久关闭；不得调残差比例或重新发布。
+- D92-Lite physical-LOO margin混合头虽在`alpha=0`时协议合法并可精确返回qKNN，但独立监督判定`P1=2`：K4-LOO仅保护support代理，Q/L logit缺少共同可辨识尺度，且会混淆已验证FA主效应。该头本轮拒绝，不实现、不实验。
 
-- `FA-RDCE3`只用REG0旧类support的类等权残差，在既有RDCE rank-3基上闭式估计一个跨类共享3维域位移；Phase1只封存与checkpoint共同密封的INT8多样本聚合中心、公共Fisher精度、残差方差和公共半径。R0先减一次`B^Ta`，再执行一次RDCE；R1 signed-unit输出后禁止再次位移、ReLU或L2归一化。DA1_REG1逐字节复用DA1_REG0的`a/κ`，不得以新类support重拟合DA。
-- FA Phase1统计唯一冻结为：沿用D106的canonical receiver-day类等权nuisance scatter得到rank-3基`B`；在量化闭合`B`上令`spectrum_j`为公共receiver-day cell-shift scatter对角、`tau_j`为旧类等权投影within-class样本方差，随后固定`D_v,j=tau_j`、`D_F,j=1/spectrum_j`、`rho=sqrt(3)`、`kappa_j=spectrum_j/(spectrum_j+tau_j)`。这是量纲一致的Bayesian nuisance-shift先验和Wiener型固定RDCE，不允许分位数、性能选择或额外超参数。任一`spectrum/tau`非有限或非正即scientific reject。
-- `CER-PLR160`保留qKNN为基座。K1的head逐logit精确alias qKNN；K5只用support构造类等权共享对角shrinkage的中心化prototype-logit残差，以无正确率、无LOO、无top-k的连续公共公式缩放。残差为零或量化后无函数时记`NO_HEAD_FUNCTION`并精确alias Q，不视为技术失败。
-- 两组件都不更新完整网络参数，不在Phase2执行Fishr式梯度方差匹配。Fishr只可用于Phase1构造/保护稳定表征；K1阶段只允许可辨识的共享低秩闭式状态。
+下一唯一候选冻结为`NEXT-R5 K5-FA-RDCE3-Q`：
+
+- 完整保留R2的FA-RDCE3公式、rank-3 INT8 Phase1资产、`rho=sqrt(3)`、固定Wiener系数及FP16共享动态状态`a[3]`；不得调参或改公式。
+- 仅`K>=5`启用FA；K1无足够独立support辨识共同接收机位移，严格旁路为未适应qKNN，不再进入当前矩阵。
+- DA只读REG0旧类support，类等权闭式拟合；`DA1_REG1`逐bit复用`DA1_REG0`状态，新类support不得参与DA。
+- FA输出直接进入原qKNN。当前D92精简结论是删除无正收益的附加头、稠密协方差、old/new分支和残差计算，而不是勉强保留一个D92名义组件；历史formal D92只作同键外部比较，不重跑。
+- Phase2不更新完整网络参数，也不执行Fishr梯度方差匹配。Fishr/Fisher只允许作为Phase1封存方向和稳定性统计，不读取Target query或truth选层。
 
 所有后续artifact、表格、报告和对话统一使用以下四个主状态；历史字段只可在括号中作映射，不再作为主名称：
 
@@ -26,11 +32,24 @@ NEXT-R3的`R3-RDCE160×TSL-160`已在N607最终r3的prepare阶段关闭。数值
 
 该命名规则同时约束性能日志、prediction/score artifact、CSV/JSON字段、Markdown表格、图题和对话结论。每条性能记录必须显式保存`state_id`及对应中文主名称；指标字段按`<metric>_<state_id>`表达，例如`old_ba_DA0_REG0`、`old_ba_DA1_REG0`、`h_DA0_REG1`和`h_DA1_REG1`。REG0状态的`seen_new_acc`与`H_old_new`必须写为`N/A`，不得写0，也不得通过跨run或不同query补齐。任何“提升”必须写明起点、终点和同配对差值，例如“域适应后/新类注册后相对域适应前/新类注册后：`H_old_new_DA1_REG1−H_old_new_DA0_REG1`”。
 
-最小矩阵固定为`2 receiver(1-1,18-2)×6 held-class×K1/K5=24`个逻辑行，不扩receiver、seed、K或超参数。K1每行4个Q唯一预测，head仅保存alias receipt；K5每行4状态×Q/H，共8个唯一预测；全矩阵共144个唯一prediction、192个含alias的arm artifact。主要因果量为DA前注册、DA后注册、两种DA状态下的注册效应、K5的`H−Q`和DA×head交互。
+R2已经完成`K5×2 receiver×6 held-class×四状态`的12行Q矩阵，不得重复运行相同Proxy24。下一次真实性能实验唯一冻结为`NEXT-R5-TARGET5-K5-new20`：
 
-完整矩阵回收后才使用性能裁决，不作为运行中健康早停：保留候选要求`DA1_REG0−DA0_REG0`的old BA至少`+0.25pp`，`DA1_REG1−DA0_REG1`的H至少`+0.25pp`，K5的`H−Q`同时使H至少`+0.25pp`且总正确数增加，并满足seen-new、all-floor非降及4个receiver×K聚合层至少3个H非负。未达到即按组件或整条路线关闭，不调`λ/γ/K/receiver`。
+```text
+5 receivers × 1个预注册未参与本轮Proxy评分的seed × K5/new20
+= 5 jobs
+每job覆盖3个物理ID互斥的leo_*_weak场景 × 四状态
+= 60个state prediction surface
+```
 
-工作流只保留直接影响下一真实性能实验的步骤：设计已由独立监督`MERGE`；随后是科学核心实现、query零fit/update/selection等必要负测、真实checkpoint无truth smoke、独立`P0=0/P1=0`、Git提交和唯一runner发布。主agent`gpt-5.6-sol/high`负责协议、整合、数据/结果分析与裁决；`gpt-5.6-terra/max`负责DA/head科学实现和独立审查；`Luna/max`负责文件、hash、Git机械工作及冻结规格下的唯一N607 runner。不得把重复数据验证、额外签名层、完整125矩阵或文档美化加入发布gate。
+该实验只运行Q，不包含K1、CER、H、D92-Lite、K10或额外new-count。每个场景必须共享同一query键并完整产生四状态；REG0的seen-new/H保持`N/A`。完整prediction封存后一次性独立评分，不按receiver、scene或中间性能重跑。历史formal D92仅在`capsule_id/split_id/query_id_root/receiver/seed/K/new_count/scenario`完全同键时连接比较，不重算D92。
+
+唯一结果裁决为：池化`DA1_REG0−DA0_REG0`的old BA与old-floor均不低于0，且`DA1_REG1−DA0_REG1`的old BA、seen-new、H、all-floor均不低于0，H与总正确数严格增加。逐receiver完整报告但不设新的边际阈值。通过记为`TARGET5_SCREEN_POSITIVE_NOT_MULTI_SEED_PROMOTABLE`；任一池化主项为负则关闭FA-RDCE3，不调参、不重跑该seed。
+
+发布前只保留直接防止下一真实实验跑错的项目：将现有FA真实forward接入已验证Target输入/评分链；query零fit/update/selection及禁止clean/source/query-truth/role/quota/global-reassignment的聚焦负测；真实checkpoint无truth smoke；独立`P0=0/P1=0`；不可覆盖run ID；本地Git提交；N607预检、报告和唯一runner。R2已闭合真实forward、量化、资源和source-held因果证据，因此取消84行六臂、重复G0、fresh63、重复数据验证、额外签名层、通用发布平台和125矩阵。
+
+主agent`gpt-5.6-sol/high`负责协议、候选整合、完整数据/结果分析和最终裁决；`gpt-5.6-terra/max`只用于科学方法实现与独立P0/P1审查；`Luna/max`负责文件/hash/Git机械工作、冻结helper以及唯一N607落地、监控和artifact回收。Luna不得修改方法、矩阵或解释性能。
+
+本节是唯一活动目标并覆盖下文旧路线。下文`0.2026-08-03`至§7仅保留为历史设计与证据追溯，不得据此启动NEXT-R1、84行六臂、G0、fresh63或Target25旧矩阵。
 
 ## 0.2026-08-03闭环与目标重置
 
@@ -319,7 +338,7 @@ old+new总正确数严格增加
 
 方法agent不得自我认证。WP-DATA必须审查K-shot可辨识性、common-transform cancellation、support proxy过拟合、旧/新任务平衡、类置换、资源和query/role/quota禁区。
 
-每个功能包由不同agent拥有非重叠文件面。服务器实验必须另设唯一runner；当commit、矩阵、命令、路径、健康规则和停止规则已完全冻结时默认使用`Luna/max`执行机械落地，只有需要科学判断或P0/P1调试时才使用`gpt-5.6-terra/max`。Luna可按冻结handoff执行SSH/SCP、启动、短连接监控与artifact回收，但不得修改科学方法、选择或改变method/loss/rank/threshold/quantization/matrix/receiver/seed/K、解释性能或作晋级判断。runner不得改方法、调参、按性能重跑或与主agent重复启动。主agent和WP-DATA使用sol-high读取完整25-job/450-pair/900-state预测与评分证据后再作晋级决定。
+每个功能包由不同agent拥有非重叠文件面。服务器实验必须另设唯一runner；当commit、矩阵、命令、路径、健康规则和停止规则已完全冻结时默认使用`Luna/max`执行机械落地，只有需要科学判断或P0/P1调试时才使用`gpt-5.6-terra/max`。Luna可按冻结handoff执行SSH/SCP、启动、短连接监控与artifact回收，但不得修改科学方法、选择或改变method/loss/rank/threshold/quantization/matrix/receiver/seed/K、解释性能或作晋级判断。runner不得改方法、调参、按性能重跑或与主agent重复启动。主agent和WP-DATA使用sol-high读取完整5-job/60-state prediction与评分证据后再作裁决。
 
 ## 9.拒绝语义
 
@@ -328,7 +347,7 @@ old+new总正确数严格增加
 |`TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`|预测前系统性技术失败|
 |`PARTIAL_DIAGNOSTIC_BIASED_NOT_PROMOTABLE`|只有partial prediction或score|
 |`COMPLETED_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE`|完整矩阵完成但性能门失败|
-|`TARGET25_SCREEN_PASS`|单seed25达到本轮硬目标|
+|`TARGET5_SCREEN_POSITIVE_NOT_MULTI_SEED_PROMOTABLE`|单seed、5receiver、K5/new20最小Target实验达到本轮方向性目标|
 |`SCREEN_POSITIVE_NOT_CONFIRMED`|单seed通过但确认seed失败|
 |`PROMOTABLE`|另行授权的多seed确认完成；不属于本轮默认硬门|
 
@@ -336,11 +355,9 @@ old+new总正确数严格增加
 
 ## 10.当前执行优先级
 
-1.`D106-RCMR`真实588条功能面及source-held结果只作为历史非晋级证据；`D121`、`D122`组合项、`D123`已关闭，旧run不重跑、不沿用其G0/G1流程、不修旧通用release链；
-2.`D106` Target25 r7仅完成46/600 state后技术退出，严格为`NO_PERFORMANCE_RESULT`；当前没有新的Target性能；
-3.历史formal D92保留为固定参照，但不再视为最终头：K1整臂fallback、288维D62/D81管线、old/new重复稠密拟合和row-splice计算是本轮明确删改对象；160维held代理的额外协方差状态只作独立工程诊断；
-4.D127/D128全部是prediction前技术停止，没有性能结论；其Phase1 autograd/checkpoint-replacement实现路线已按预注册规则关闭，不再修复、不创建新run；
-5.D130的CSPAR-2与SRDH-2已完整失败并关闭；共同正2次幂FP16修复和Lite160低计算实现可复用，但不得据此宣称性能正收益；
-6.当前方法目标是§0的NEXT-R1设计推导：先完成block选择准则、低秩Fisher残差、K1/K5可辨识性和Tail-Safe Lite公共trust region；在`DESIGN_FROZEN`前不启动实验；
-7.冻结后只实现一个候选和`R0Q/R0F/R0L/R1Q/R1F/R1L`六个逻辑臂。真实checkpoint no-truth smoke、聚焦协议负测、独立`P0=0/P1=0`、Git提交完成后立即发布84-row必要矩阵，不重验数据、不建通用平台；
-8.NEXT-R1完整小矩阵任一预注册联合主比较失败即关闭，不调参复活；通过才保持同一method lock进入G0真实588、一次fresh63和一个单seed Target25，不运行125或重复D62/D91/D92/SVRN矩阵。
+1.NEXT-R4 R2的完整Proxy24是当前最近真实性能证据；K5 FA-RDCE3保留，K1-FA和CER永久关闭，不重复该矩阵；
+2.NEXT-R5只保留`K5 FA-RDCE3→direct qKNN`，现有公式、rank、量化和动态状态全部冻结；
+3.D92-Lite LOO-margin头独立监督为`P1=2/REJECT`，不实现、不实验；历史formal D92只在Target完全同键时作外部参照；
+4.科学实现仅补足现有FA到Target四状态链的最小适配，不重建通用runner、不重验`VALIDATED_ONCE`数据；
+5.完成聚焦负测、真实checkpoint无truth smoke、独立`P0=0/P1=0`、Git提交和报告后，立即交给唯一Luna/max runner发布5-job/60-state Target5；
+6.Target5完整失败即关闭FA-RDCE3，不调参、不重跑该seed；完整通过仅记方向性单seed正结果，不直接写成多seed可推广性能。
