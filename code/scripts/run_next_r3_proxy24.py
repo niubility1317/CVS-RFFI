@@ -55,8 +55,10 @@ COMPLETION_SCHEMA = "cvs.stage2.next_r3.proxy24.completion.v1"
 MANIFEST_SCHEMA = "cvs.stage2.next_r3.proxy24.manifest.v1"
 RESOURCE_SCHEMA = "cvs.stage2.next_r3.proxy24.resource.v1"
 SMOKE_SCHEMA = "cvs.stage2.next_r3.proxy24.real_checkpoint_smoke.v1"
-TRUTH_FREE_SPLIT_SCHEMA = "cvs.stage2.next_r3.proxy24.truth_free_split.v1"
 BRIDGE_FEATURE_SCHEMA = "cvs.stage2.next_r3.proxy24.bridge_feature_binding.v1"
+PREDICTOR_PACKAGE_SCHEMA = "cvs.stage2.next_r3.proxy24.predictor_package.v2"
+PREPARE_SCHEMA = "cvs.stage2.next_r3.proxy24.prepare.v2"
+QUERY_ORDER_RULE = "sha256_outer_key_physical_id_v1"
 MISSING_PREFIX = "MISSING_REAL_INPUT_ARTIFACTS"
 
 RECEIVED_MEMBERS = (
@@ -274,54 +276,43 @@ def _load_real_rows(args: argparse.Namespace) -> tuple[SourceRows, CellRows, Map
     return rows, cells, {"received_iq_sha256": _sha(received_bytes), "phase1_cells_sha256": _sha(cell_bytes)}
 
 
-@dataclass(frozen=True, slots=True)
-class TruthFreeSplitRow:
-    row_id: str
-    held_receiver: str
-    held_class: str
-    active_k: int
-    support_physical_ids: tuple[str, ...]
-    support_observation_ids: tuple[str, ...]
-    support_labels: tuple[str, ...]
-    reg0_query_physical_ids: tuple[str, ...]
-    reg0_query_observation_ids: tuple[str, ...]
-    reg1_query_physical_ids: tuple[str, ...]
-    reg1_query_observation_ids: tuple[str, ...]
+def _load_received_rows(args: argparse.Namespace) -> SourceRows:
+    """Load only the sealed received-IQ capsule for the predictor phase."""
 
-    def support_for(self, class_id: str) -> tuple[str, ...]:
-        return tuple(
-            physical_id
-            for physical_id, label in zip(self.support_physical_ids, self.support_labels, strict=True)
-            if label == class_id
+    received_bytes = _require_file(args.received_iq, args.received_iq_sha256, "received-IQ archive")
+    received = _load_npz(received_bytes, RECEIVED_MEMBERS, "received-IQ archive")
+    received_iq = np.asarray(received["received_iq"])
+    if (
+        received_iq.dtype != np.dtype("<f4")
+        or received_iq.ndim != 3
+        or received_iq.shape[0] != ROW_COUNT
+        or received_iq.shape[1] != 2
+        or not np.isfinite(received_iq).all()
+    ):
+        raise MissingRealInputArtifacts(
+            f"{MISSING_PREFIX}: received_iq must be finite little-endian float32 [588,2,T]"
         )
-
-
-@dataclass(frozen=True, slots=True)
-class TruthFreeSplit:
-    class_registry: tuple[str, ...]
-    rows_by_id: Mapping[str, TruthFreeSplitRow]
-    sha256: str
-
-    def row(self, row_id: str) -> TruthFreeSplitRow:
-        try:
-            return self.rows_by_id[row_id]
-        except KeyError as error:
-            raise NextR3Proxy24Error("truth-free split row is missing") from error
-
-    def paired(self, row: TruthFreeSplitRow, active_k: int) -> TruthFreeSplitRow:
-        candidate = next(
-            (
-                item
-                for item in self.rows_by_id.values()
-                if item.held_receiver == row.held_receiver
-                and item.held_class == row.held_class
-                and item.active_k == active_k
-            ),
-            None,
-        )
-        if candidate is None:
-            raise NextR3Proxy24Error("truth-free split K-pair is missing")
-        return candidate
+    physical_ids = _strings(
+        received["physical_ids"], name="received.physical_ids", count=ROW_COUNT, unique=True
+    )
+    return SourceRows(
+        received_iq=np.ascontiguousarray(received_iq, dtype=np.float32),
+        receiver_ids=_strings(received["receiver_ids"], name="received.receiver_ids", count=ROW_COUNT),
+        day_ids=_strings(received["day_ids"], name="received.day_ids", count=ROW_COUNT),
+        physical_ids=physical_ids,
+        scenario_names=_strings(received["scenario_names"], name="received.scenario_names", count=ROW_COUNT),
+        observation_ids=_strings(
+            received["observation_ids"], name="received.observation_ids", count=ROW_COUNT, unique=True
+        ),
+        receiver_registry=tuple(
+            sorted(
+                set(
+                    _strings(received["receiver_ids"], name="received.receiver_ids", count=ROW_COUNT)
+                )
+            )
+        ),
+        received_iq_sha256=_sha(received_bytes),
+    )
 
 
 def _string_tuple(value: Any, *, name: str, count: int, unique: bool = True) -> tuple[str, ...]:
@@ -346,147 +337,6 @@ def _require_split_id_pairs(
     if any(physical_to_observation.get(physical_id) != observation_id for physical_id, observation_id in zip(physical_ids, observation_ids, strict=True)):
         raise NextR3Proxy24Error("truth-free split physical/observation identity drift")
     return physical_ids, observation_ids
-
-
-def _is_subsequence(values: Sequence[str], universe: Sequence[str]) -> bool:
-    iterator = iter(universe)
-    return all(any(candidate == value for candidate in iterator) for value in values)
-
-
-def _load_truth_free_split(args: argparse.Namespace, rows: SourceRows, cells: CellRows) -> TruthFreeSplit:
-    payload = _require_file(
-        args.truth_free_split,
-        args.truth_free_split_sha256,
-        "truth-free split receipt",
-    )
-    try:
-        document = json.loads(payload.decode("utf-8"))
-    except (UnicodeDecodeError, json.JSONDecodeError) as error:
-        raise NextR3Proxy24Error("truth-free split receipt must be UTF-8 JSON") from error
-    expected_top = {
-        "schema",
-        "protocol_schema",
-        "received_iq_sha256",
-        "capsule_id",
-        "split_id",
-        "class_registry",
-        "rows",
-    }
-    if type(document) is not dict or set(document) != expected_top:
-        raise NextR3Proxy24Error("truth-free split receipt schema drift")
-    if (
-        document["schema"] != TRUTH_FREE_SPLIT_SCHEMA
-        or document["protocol_schema"] != "p2_min_v1"
-        or document["received_iq_sha256"] != rows.received_iq_sha256
-        or document["capsule_id"] != _require_sha(args.capsule_id, "capsule ID")
-        or document["split_id"] != _require_sha(args.split_id, "split ID")
-    ):
-        raise NextR3Proxy24Error("truth-free split receipt provenance drift")
-    classes = _string_tuple(document["class_registry"], name="class_registry", count=matrix.CLASS_COUNT)
-    if classes != tuple(sorted(classes)) or set(classes) != set(cells.class_ids):
-        raise NextR3Proxy24Error("truth-free split registry drift")
-    plan = matrix.build_next_r3_proxy24_plan(classes)
-    matrix.validate_next_r3_proxy24_plan(plan)
-    plan_by_id = {str(item["row_id"]): item for item in plan["rows"]}
-    if not isinstance(document["rows"], list) or len(document["rows"]) != matrix.ROW_COUNT:
-        raise NextR3Proxy24Error("truth-free split must seal all 24 rows")
-    physical_to_observation = dict(zip(rows.physical_ids, rows.observation_ids, strict=True))
-    physical_to_receiver = dict(zip(rows.physical_ids, rows.receiver_ids, strict=True))
-    expected_row_keys = {
-        "row_id",
-        "held_receiver",
-        "held_class",
-        "active_k",
-        "support_physical_ids",
-        "support_observation_ids",
-        "support_labels",
-        "reg0_query_physical_ids",
-        "reg0_query_observation_ids",
-        "reg1_query_physical_ids",
-        "reg1_query_observation_ids",
-    }
-    result: dict[str, TruthFreeSplitRow] = {}
-    for raw in document["rows"]:
-        if type(raw) is not dict or set(raw) != expected_row_keys:
-            raise NextR3Proxy24Error("truth-free split contains truth-like or unknown row fields")
-        row_id = raw.get("row_id")
-        if type(row_id) is not str or row_id not in plan_by_id:
-            raise NextR3Proxy24Error("truth-free split row ID drift")
-        planned = plan_by_id[row_id]
-        if (
-            raw["held_receiver"] != planned["held_receiver"]
-            or raw["held_class"] != planned["held_class"]
-            or raw["active_k"] != planned["active_k"]
-        ):
-            raise NextR3Proxy24Error("truth-free split row identity drift")
-        active_k = int(planned["active_k"])
-        support_ids, support_observations = _require_split_id_pairs(
-            raw,
-            physical_name="support_physical_ids",
-            observation_name="support_observation_ids",
-            count=matrix.CLASS_COUNT * active_k,
-            physical_to_observation=physical_to_observation,
-        )
-        labels = _string_tuple(raw["support_labels"], name="support_labels", count=len(support_ids), unique=False)
-        expected_labels = tuple(class_id for class_id in classes for _ in range(active_k))
-        if labels != expected_labels:
-            raise NextR3Proxy24Error("only class-major K-shot support labels are permitted")
-        reg0_ids, reg0_observations = _require_split_id_pairs(
-            raw,
-            physical_name="reg0_query_physical_ids",
-            observation_name="reg0_query_observation_ids",
-            count=(matrix.CLASS_COUNT - 1) * matrix.QUERY_PER_CLASS,
-            physical_to_observation=physical_to_observation,
-        )
-        reg1_ids, reg1_observations = _require_split_id_pairs(
-            raw,
-            physical_name="reg1_query_physical_ids",
-            observation_name="reg1_query_observation_ids",
-            count=matrix.CLASS_COUNT * matrix.QUERY_PER_CLASS,
-            physical_to_observation=physical_to_observation,
-        )
-        if (
-            set(support_ids) & set(reg1_ids)
-            or not _is_subsequence(reg0_ids, reg1_ids)
-            or any(physical_to_receiver[item] != planned["held_receiver"] for item in support_ids + reg1_ids)
-        ):
-            raise NextR3Proxy24Error("truth-free support/query or held-receiver closure drift")
-        if row_id in result:
-            raise NextR3Proxy24Error("truth-free split duplicates a row")
-        result[row_id] = TruthFreeSplitRow(
-            row_id=row_id,
-            held_receiver=str(planned["held_receiver"]),
-            held_class=str(planned["held_class"]),
-            active_k=active_k,
-            support_physical_ids=support_ids,
-            support_observation_ids=support_observations,
-            support_labels=labels,
-            reg0_query_physical_ids=reg0_ids,
-            reg0_query_observation_ids=reg0_observations,
-            reg1_query_physical_ids=reg1_ids,
-            reg1_query_observation_ids=reg1_observations,
-        )
-    if set(result) != set(plan_by_id):
-        raise NextR3Proxy24Error("truth-free split lacks a frozen matrix row")
-    for row in result.values():
-        if row.active_k != 1:
-            continue
-        paired = next(
-            item
-            for item in result.values()
-            if item.held_receiver == row.held_receiver
-            and item.held_class == row.held_class
-            and item.active_k == 5
-        )
-        if (
-            any(row.support_for(class_id) != paired.support_for(class_id)[:1] for class_id in classes)
-            or row.reg0_query_physical_ids != paired.reg0_query_physical_ids
-            or row.reg0_query_observation_ids != paired.reg0_query_observation_ids
-            or row.reg1_query_physical_ids != paired.reg1_query_physical_ids
-            or row.reg1_query_observation_ids != paired.reg1_query_observation_ids
-        ):
-            raise NextR3Proxy24Error("K1/K5 truth-free support/query pairing drift")
-    return TruthFreeSplit(class_registry=classes, rows_by_id=result, sha256=_sha(payload))
 
 
 class BridgeFeatureCache:
@@ -566,55 +416,602 @@ def _build_phase1_cells(
     )
 
 
-def _build_prior(
-    cells: Sequence[tsl.TSL160Phase1Cell],
+@dataclass(frozen=True, slots=True)
+class PreparedPredictorRow:
+    row_id: str
+    support_physical_ids: tuple[str, ...]
+    support_observation_ids: tuple[str, ...]
+    support_labels: tuple[str, ...]
+    query_physical_ids: tuple[str, ...]
+    query_observation_ids: tuple[str, ...]
+    prior_key: str
+
+    def support_for(self, class_id: str) -> tuple[str, ...]:
+        return tuple(
+            physical_id
+            for physical_id, label in zip(self.support_physical_ids, self.support_labels, strict=True)
+            if label == class_id
+        )
+
+
+@dataclass(frozen=True, slots=True)
+class PreparedPredictorPackage:
+    class_registry: tuple[str, ...]
+    rows_by_id: Mapping[str, PreparedPredictorRow]
+    priors_by_key: Mapping[str, tsl.TSL160Phase1Prior]
+    pair_bindings: Mapping[str, Mapping[str, Any]]
+    received_iq_sha256: str
+    checkpoint_sha256: str
+    phase1_cells_sha256: str
+    capsule_id: str
+    split_id: str
+    validator_receipt_sha256: str
+    sha256: str
+
+    def row(self, row_id: str) -> PreparedPredictorRow:
+        try:
+            return self.rows_by_id[row_id]
+        except KeyError as error:
+            raise NextR3Proxy24Error("predictor package row is missing") from error
+
+    def prior(self, key: str) -> tsl.TSL160Phase1Prior:
+        try:
+            return self.priors_by_key[key]
+        except KeyError as error:
+            raise NextR3Proxy24Error("predictor package prior is missing") from error
+
+
+def _outer_key(held_receiver: str, held_class: str) -> str:
+    return _sha(f"NEXT-R3-PROXY24|{held_receiver}|{held_class}".encode("utf-8"))[:24]
+
+
+def _common_query_order(
+    held_receiver: str, held_class: str, physical_ids: Sequence[str]
+) -> tuple[str, ...]:
+    key = _outer_key(held_receiver, held_class)
+    return tuple(
+        sorted(
+            (str(item) for item in physical_ids),
+            key=lambda item: _sha(f"{QUERY_ORDER_RULE}|{key}|{item}".encode("utf-8")),
+        )
+    )
+
+
+def _metadata_cell_indices(cells: CellRows) -> Mapping[tuple[str, str], tuple[int, ...]]:
+    result: dict[tuple[str, str], list[int]] = {}
+    for index, key in enumerate(zip(cells.receiver_ids, cells.class_ids, strict=True)):
+        result.setdefault(key, []).append(index)
+    if len(result) != 42 or any(len(indices) != PHYSICAL_PER_CELL for indices in result.values()):
+        raise MissingRealInputArtifacts(f"{MISSING_PREFIX}: Phase-1 metadata grid is incomplete")
+    return {
+        key: tuple(
+            sorted(
+                indices,
+                key=lambda index: _sha(
+                    f"NEXT-R3|{key[0]}|{key[1]}|{cells.physical_ids[index]}".encode("utf-8")
+                ),
+            )
+        )
+        for key, indices in result.items()
+    }
+
+
+def _reject_predictor_package_forbidden_fields(value: Any) -> None:
+    if isinstance(value, Mapping):
+        for key, item in value.items():
+            lower = str(key).lower()
+            if (
+                "truth" in lower
+                or lower in {"tx_labels", "class_ids", "query_labels"}
+                or "role" in lower
+                or lower.startswith("reg0_query")
+                or lower.startswith("reg1_query")
+                or "query_class" in lower
+            ):
+                raise NextR3Proxy24Error("predictor package contains forbidden truth/role/query-label fields")
+            _reject_predictor_package_forbidden_fields(item)
+    elif isinstance(value, (tuple, list)):
+        for item in value:
+            _reject_predictor_package_forbidden_fields(item)
+
+
+def _ordered_physical_root(values: Sequence[str]) -> str:
+    return _sha("\n".join(str(item) for item in values).encode("utf-8"))
+
+
+def _pair_compact_binding(
+    binding: Mapping[str, Any], *, prior_key: str
+) -> Mapping[str, Any]:
+    fields = (
+        "k1_row_id",
+        "k5_row_id",
+        "phase1_fit_physical_root_sha256",
+        "support_k1_physical_root_sha256",
+        "support_k5_physical_root_sha256",
+        "query_physical_root_sha256",
+        "k1_is_exact_k5_prefix",
+        "binding_sha256",
+    )
+    return {"prior_key": prior_key, **{field: binding[field] for field in fields}}
+
+
+def _build_prepare_package(
+    rows: SourceRows,
+    cells: CellRows,
+    source_meta: Mapping[str, Any],
+    args: argparse.Namespace,
+    feature_cache: BridgeFeatureCache,
+    checkpoint_sha256: str,
+) -> tuple[Mapping[str, Any], Mapping[str, str], Mapping[str, Any]]:
+    classes = tuple(sorted(set(cells.class_ids)))
+    if len(classes) != matrix.CLASS_COUNT:
+        raise NextR3Proxy24Error("prepare Phase-1 class registry drift")
+    plan = matrix.build_next_r3_proxy24_plan(classes)
+    matrix.validate_next_r3_proxy24_plan(plan)
+    cells_typed = _build_phase1_cells(cells, feature_cache)
+    cell_indices = _metadata_cell_indices(cells)
+    observation_by_physical = dict(zip(rows.physical_ids, rows.observation_ids, strict=True))
+    class_by_physical = dict(zip(cells.physical_ids, cells.class_ids, strict=True))
+    priors: dict[str, Mapping[str, Any]] = {}
+    prior_objects: dict[str, tsl.TSL160Phase1Prior] = {}
+    pair_binding_values: dict[str, Mapping[str, Any]] = {}
+    package_rows: list[Mapping[str, Any]] = []
+    prepared_by_id: dict[str, Mapping[str, Any]] = {}
+    representation_rule_sha = _sha(tsl.REPRESENTATION_RULE.encode("utf-8"))
+    for planned in plan["rows"]:
+        held_receiver = str(planned["held_receiver"])
+        held_class = str(planned["held_class"])
+        active_k = int(planned["active_k"])
+        retained = tuple(str(item) for item in planned["retained_classes"])
+        all_classes = tuple(str(item) for item in planned["all_registered_classes"])
+        prior_key = _outer_key(held_receiver, held_class)
+        if prior_key not in prior_objects:
+            eligible = tuple(
+                cell
+                for cell in cells_typed
+                if cell.receiver_id != held_receiver and cell.class_handle != held_class
+            )
+            phase1_root = tsl.phase1_physical_id_root(eligible)
+            binding = tsl.TSL160RuntimeBinding(
+                outer_fold_id=f"r3/{held_receiver}/{held_class}|classes={','.join(retained)}",
+                checkpoint_sha256=checkpoint_sha256,
+                representation_rule_sha256=representation_rule_sha,
+                phase1_physical_id_root_sha256=phase1_root,
+                phase1_seal_sha256=_require_sha(args.phase1_cells_sha256, "Phase-1 cell SHA256"),
+            )
+            prior_build = _build_prior_from_cells(
+                cells_typed,
+                held_receiver=held_receiver,
+                held_class=held_class,
+                binding=binding,
+            )
+            prior_objects[prior_key] = prior_build.prior
+            wire = tsl.serialize_tsl160_prior(prior_build.prior)
+            priors[prior_key] = {
+                "prior_key": prior_key,
+                "prior_wire_json": wire.decode("ascii"),
+                "prior_sha256": prior_build.prior.prior_sha256,
+            }
+        support_classes = retained + (held_class,)
+        support_ids = tuple(
+            cells.physical_ids[index]
+            for class_id in support_classes
+            for index in cell_indices[(held_receiver, class_id)][:active_k]
+        )
+        support_labels = tuple(
+            class_id for class_id in support_classes for _ in range(active_k)
+        )
+        unordered_query = tuple(
+            cells.physical_ids[index]
+            for class_id in all_classes
+            for index in cell_indices[(held_receiver, class_id)][matrix.MAX_SUPPORT_K:]
+        )
+        query_ids = _common_query_order(held_receiver, held_class, unordered_query)
+        prepared = {
+            "row_id": str(planned["row_id"]),
+            "support_physical_ids": list(support_ids),
+            "support_observation_ids": [observation_by_physical[item] for item in support_ids],
+            "support_labels": list(support_labels),
+            "query_physical_ids": list(query_ids),
+            "query_observation_ids": [observation_by_physical[item] for item in query_ids],
+            "prior_key": prior_key,
+        }
+        package_rows.append(prepared)
+        prepared_by_id[str(planned["row_id"])] = prepared
+    for planned in plan["rows"]:
+        if int(planned["active_k"]) != 1:
+            continue
+        held_receiver = str(planned["held_receiver"])
+        held_class = str(planned["held_class"])
+        all_classes = tuple(str(item) for item in planned["all_registered_classes"])
+        row_k1 = matrix.outer_key_from_mapping(planned)
+        row_k5 = matrix.outer_key_from_mapping(
+            next(
+                item
+                for item in plan["rows"]
+                if item["held_receiver"] == held_receiver
+                and item["held_class"] == held_class
+                and item["active_k"] == 5
+            )
+        )
+        prior_key = _outer_key(held_receiver, held_class)
+        prior = prior_objects[prior_key]
+        phase1_ids = tuple(
+            physical_id
+            for cell in cells_typed
+            if cell.receiver_id != held_receiver and cell.class_handle != held_class
+            for physical_id in cell.physical_ids
+        )
+        k1 = prepared_by_id[row_k1.row_id]
+        k5 = prepared_by_id[row_k5.row_id]
+        query_ids = tuple(str(item) for item in k1["query_physical_ids"])
+        opaque_query_buckets = {
+            class_id: query_ids[index * matrix.QUERY_PER_CLASS : (index + 1) * matrix.QUERY_PER_CLASS]
+            for index, class_id in enumerate(all_classes)
+        }
+        binding = matrix.bind_next_r3_physical_ids(
+            row_k1=row_k1,
+            row_k5=row_k5,
+            loco_fold_receipt={
+                "held_receiver": held_receiver,
+                "held_class": held_class,
+                "phase1_fit_count": len(phase1_ids),
+                "phase1_fit_physical_root_sha256": _ordered_physical_root(phase1_ids),
+            },
+            phase1_fit_ids=phase1_ids,
+            k1_support_ids_by_class={
+                class_id: tuple(
+                    item
+                    for item, label in zip(k1["support_physical_ids"], k1["support_labels"], strict=True)
+                    if label == class_id
+                )
+                for class_id in all_classes
+            },
+            k5_support_ids_by_class={
+                class_id: tuple(
+                    item
+                    for item, label in zip(k5["support_physical_ids"], k5["support_labels"], strict=True)
+                    if label == class_id
+                )
+                for class_id in all_classes
+            },
+            query_ids_by_class=opaque_query_buckets,
+        )
+        # TSL seals the labeled Phase-1 cell records with its canonical-record
+        # root, while the matrix pair receipt seals the ordered physical-ID
+        # sequence.  They are deliberately distinct representations of the
+        # same prepare-only Phase-1 input and must not be conflated in predict.
+        pair_binding_values[prior_key] = _pair_compact_binding(binding, prior_key=prior_key)
+    package = {
+        "schema": PREDICTOR_PACKAGE_SCHEMA,
+        "protocol_schema": "p2_min_v1",
+        "received_iq_sha256": rows.received_iq_sha256,
+        "checkpoint_sha256": checkpoint_sha256,
+        "phase1_cells_sha256": source_meta["phase1_cells_sha256"],
+        "capsule_id": _require_sha(args.capsule_id, "capsule ID"),
+        "split_id": _require_sha(args.split_id, "split ID"),
+        "validator_receipt_sha256": _require_sha(
+            args.validator_receipt_sha256, "validator receipt SHA256"
+        ),
+        "query_order_rule": QUERY_ORDER_RULE,
+        "rows": package_rows,
+        "priors": [priors[key] for key in sorted(priors)],
+        "pair_bindings": [pair_binding_values[key] for key in sorted(pair_binding_values)],
+    }
+    _reject_predictor_package_forbidden_fields(package)
+    truth = {
+        query_id: class_by_physical[query_id]
+        for prepared in package_rows
+        for query_id in prepared["query_physical_ids"]
+    }
+    bridge_receipt = feature_cache.receipt(rows.physical_ids)
+    return package, truth, {"plan": plan, "bridge_receipt": bridge_receipt}
+
+
+def _write_prepare_artifacts(
+    output_dir: Path,
     *,
-    held_receiver: str,
-    held_class: str,
-    binding: tsl.TSL160RuntimeBinding,
-) -> tsl.TSL160PriorBuild:
-    eligible = tuple(cell for cell in cells if cell.receiver_id != held_receiver and cell.class_handle != held_class)
-    if len(eligible) != 30:
-        raise MissingRealInputArtifacts(f"{MISSING_PREFIX}: double exclusion must leave 30 complete Phase-1 cells")
-    eligible_ids = tuple(pid for cell in eligible for pid in cell.physical_ids)
-    active_classes = tuple(class_id for class_id in binding.outer_fold_id.split("|classes=", 1)[-1].split(",") if class_id) if "|classes=" in binding.outer_fold_id else tuple(sorted({cell.class_handle for cell in eligible}))
-    if held_class in active_classes or len(active_classes) != 5:
-        active_classes = tuple(sorted({cell.class_handle for cell in eligible}))
-    folds: list[tsl.TSL160PhysicalLOOFold] = []
-    for cell in eligible:
-        for local_index, validation_id in enumerate(cell.physical_ids):
-            support_rows: list[np.ndarray] = []
-            support_labels: list[str] = []
-            support_ids: list[str] = []
-            for source_cell in eligible:
-                for row_index, physical_id in enumerate(source_cell.physical_ids):
-                    if physical_id == validation_id:
-                        continue
-                    support_rows.append(source_cell.zid160[row_index])
-                    support_labels.append(source_cell.class_handle)
-                    support_ids.append(physical_id)
-            folds.append(
-                tsl.TSL160PhysicalLOOFold(
-                    fold_id=f"{held_receiver}/{held_class}/loo/{cell.receiver_id}/{cell.class_handle}/{local_index:02d}",
-                    receiver_id=cell.receiver_id,
-                    class_handle=cell.class_handle,
-                    registered_classes=active_classes,
-                    support_zid160=np.ascontiguousarray(np.stack(support_rows), dtype=np.float32),
-                    support_labels=tuple(support_labels),
-                    support_physical_ids=tuple(support_ids),
-                    validation_zid160=np.ascontiguousarray(cell.zid160[local_index : local_index + 1], dtype=np.float32),
-                    validation_labels=(cell.class_handle,),
-                    validation_physical_ids=(validation_id,),
+    package: Mapping[str, Any],
+    truth: Mapping[str, str],
+    receipt: Mapping[str, Any],
+) -> Mapping[str, Any]:
+    root = _new_root(output_dir)
+    package_path = root / "predictor_package.json"
+    truth_path = root / "truth.json"
+    receipt_path = root / "prepare_receipt.json"
+    _write_json_new(package_path, package)
+    _write_json_new(truth_path, truth)
+    receipt_document = {
+        "schema": PREPARE_SCHEMA,
+        "package_sha256": _sha_file(package_path),
+        "truth_sha256": _sha_file(truth_path),
+        "truth_in_predictor_package": False,
+        "package_has_two_query_lists": False,
+        "package_has_full_class_ids": False,
+        **_plain(receipt),
+    }
+    _write_json_new(receipt_path, receipt_document)
+    return {
+        "output_dir": str(root),
+        "package": str(package_path),
+        "package_sha256": _sha_file(package_path),
+        "truth": str(truth_path),
+        "truth_sha256": _sha_file(truth_path),
+        "receipt": str(receipt_path),
+        "receipt_sha256": _sha_file(receipt_path),
+    }
+
+
+def run_prepare(args: argparse.Namespace) -> Mapping[str, Any]:
+    rows, cells, source_meta = _load_real_rows(args)
+    checkpoint_sha = _require_sha(args.checkpoint_sha256, "checkpoint SHA256")
+    _require_file(args.checkpoint, checkpoint_sha, "checkpoint")
+    args.capsule_id = _require_sha(args.capsule_id, "capsule ID")
+    args.split_id = _require_sha(args.split_id, "split ID")
+    args.validator_receipt_sha256 = _require_sha(
+        args.validator_receipt_sha256, "validator receipt SHA256"
+    )
+    args.phase1_cells_sha256 = _require_sha(args.phase1_cells_sha256, "Phase-1 cell SHA256")
+    bridge = _load_checkpoint_bridge(args, rows, checkpoint_sha)
+    feature_cache = BridgeFeatureCache(bridge, rows, checkpoint_sha)
+    package, truth, evidence = _build_prepare_package(
+        rows, cells, source_meta, args, feature_cache, checkpoint_sha
+    )
+    return _write_prepare_artifacts(
+        args.output_dir,
+        package=package,
+        truth=truth,
+        receipt={
+            "received_iq_sha256": rows.received_iq_sha256,
+            "checkpoint_sha256": checkpoint_sha,
+            "phase1_cells_sha256": source_meta["phase1_cells_sha256"],
+            "matrix_sha256": evidence["plan"]["matrix_sha256"],
+            "bridge_feature_binding": evidence["bridge_receipt"],
+        },
+    )
+
+
+def _load_predictor_package(
+    args: argparse.Namespace, rows: SourceRows, checkpoint_sha256: str
+) -> tuple[PreparedPredictorPackage, Mapping[str, Any]]:
+    payload = _require_file(
+        getattr(args, "package", None),
+        getattr(args, "package_sha256", None),
+        "predictor package",
+    )
+    try:
+        document = json.loads(payload.decode("utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError) as error:
+        raise NextR3Proxy24Error("predictor package must be UTF-8 JSON") from error
+    _reject_predictor_package_forbidden_fields(document)
+    expected_top = {
+        "schema",
+        "protocol_schema",
+        "received_iq_sha256",
+        "checkpoint_sha256",
+        "phase1_cells_sha256",
+        "capsule_id",
+        "split_id",
+        "validator_receipt_sha256",
+        "query_order_rule",
+        "rows",
+        "priors",
+        "pair_bindings",
+    }
+    if type(document) is not dict or set(document) != expected_top:
+        raise NextR3Proxy24Error("predictor package schema drift")
+    if (
+        document["schema"] != PREDICTOR_PACKAGE_SCHEMA
+        or document["protocol_schema"] != "p2_min_v1"
+        or document["received_iq_sha256"] != rows.received_iq_sha256
+        or document["checkpoint_sha256"] != checkpoint_sha256
+        or document["query_order_rule"] != QUERY_ORDER_RULE
+    ):
+        raise NextR3Proxy24Error("predictor package provenance/query-order drift")
+    phase1_cells_sha = _require_sha(document["phase1_cells_sha256"], "package Phase-1 cell SHA256")
+    capsule_id = _require_sha(document["capsule_id"], "package capsule ID")
+    split_id = _require_sha(document["split_id"], "package split ID")
+    validator_sha = _require_sha(
+        document["validator_receipt_sha256"], "package validator receipt SHA256"
+    )
+    if not isinstance(document["rows"], list) or len(document["rows"]) != matrix.ROW_COUNT:
+        raise NextR3Proxy24Error("predictor package must seal all 24 rows")
+    row_keys = {
+        "row_id",
+        "support_physical_ids",
+        "support_observation_ids",
+        "support_labels",
+        "query_physical_ids",
+        "query_observation_ids",
+        "prior_key",
+    }
+    support_label_values: list[str] = []
+    for raw in document["rows"]:
+        if type(raw) is not dict or set(raw) != row_keys:
+            raise NextR3Proxy24Error("predictor package row contains forbidden role/query fields")
+        labels = raw.get("support_labels")
+        if not isinstance(labels, list):
+            raise NextR3Proxy24Error("predictor package support labels are malformed")
+        support_label_values.extend(labels)
+    classes = tuple(sorted(set(str(item) for item in support_label_values)))
+    if len(classes) != matrix.CLASS_COUNT or any(type(item) is not str or not item for item in support_label_values):
+        raise NextR3Proxy24Error("predictor package support-only class registry drift")
+    plan = matrix.build_next_r3_proxy24_plan(classes)
+    matrix.validate_next_r3_proxy24_plan(plan)
+    plan_by_id = {str(item["row_id"]): item for item in plan["rows"]}
+    physical_to_observation = dict(zip(rows.physical_ids, rows.observation_ids, strict=True))
+    physical_to_receiver = dict(zip(rows.physical_ids, rows.receiver_ids, strict=True))
+    prepared: dict[str, PreparedPredictorRow] = {}
+    for raw in document["rows"]:
+        row_id = raw.get("row_id")
+        if type(row_id) is not str or row_id not in plan_by_id or row_id in prepared:
+            raise NextR3Proxy24Error("predictor package row identity drift")
+        planned = plan_by_id[row_id]
+        active_k = int(planned["active_k"])
+        support_ids, support_observations = _require_split_id_pairs(
+            raw,
+            physical_name="support_physical_ids",
+            observation_name="support_observation_ids",
+            count=matrix.CLASS_COUNT * active_k,
+            physical_to_observation=physical_to_observation,
+        )
+        labels = _string_tuple(
+            raw["support_labels"], name="support_labels", count=len(support_ids), unique=False
+        )
+        expected_labels = tuple(
+            class_id
+            for class_id in tuple(planned["retained_classes"]) + (str(planned["held_class"]),)
+            for _ in range(active_k)
+        )
+        if labels != expected_labels:
+            raise NextR3Proxy24Error("predictor package permits only class-major K-shot support labels")
+        query_ids, query_observations = _require_split_id_pairs(
+            raw,
+            physical_name="query_physical_ids",
+            observation_name="query_observation_ids",
+            count=matrix.CLASS_COUNT * matrix.QUERY_PER_CLASS,
+            physical_to_observation=physical_to_observation,
+        )
+        if (
+            set(support_ids) & set(query_ids)
+            or any(physical_to_receiver[item] != planned["held_receiver"] for item in support_ids + query_ids)
+            or query_ids
+            != _common_query_order(
+                str(planned["held_receiver"]), str(planned["held_class"]), query_ids
+            )
+        ):
+            raise NextR3Proxy24Error("predictor package common-query identity/order drift")
+        prior_key = raw.get("prior_key")
+        if type(prior_key) is not str or prior_key != _outer_key(
+            str(planned["held_receiver"]), str(planned["held_class"])
+        ):
+            raise NextR3Proxy24Error("predictor package prior-key drift")
+        prepared[row_id] = PreparedPredictorRow(
+            row_id=row_id,
+            support_physical_ids=support_ids,
+            support_observation_ids=support_observations,
+            support_labels=labels,
+            query_physical_ids=query_ids,
+            query_observation_ids=query_observations,
+            prior_key=prior_key,
+        )
+    if set(prepared) != set(plan_by_id):
+        raise NextR3Proxy24Error("predictor package lacks a matrix row")
+    prior_keys = {"prior_key", "prior_wire_json", "prior_sha256"}
+    if not isinstance(document["priors"], list) or len(document["priors"]) != 12:
+        raise NextR3Proxy24Error("predictor package prior coverage drift")
+    priors: dict[str, tsl.TSL160Phase1Prior] = {}
+    for raw in document["priors"]:
+        if type(raw) is not dict or set(raw) != prior_keys:
+            raise NextR3Proxy24Error("predictor package prior schema drift")
+        key = raw.get("prior_key")
+        wire_text = raw.get("prior_wire_json")
+        if type(key) is not str or type(wire_text) is not str or key in priors:
+            raise NextR3Proxy24Error("predictor package prior identity drift")
+        try:
+            prior = tsl.deserialize_tsl160_prior(wire_text.encode("ascii"))
+        except Exception as error:
+            raise NextR3Proxy24Error("predictor package sealed prior wire drift") from error
+        if raw.get("prior_sha256") != prior.prior_sha256:
+            raise NextR3Proxy24Error("predictor package sealed prior hash drift")
+        priors[key] = prior
+    pair_keys = {
+        "prior_key",
+        "k1_row_id",
+        "k5_row_id",
+        "phase1_fit_physical_root_sha256",
+        "support_k1_physical_root_sha256",
+        "support_k5_physical_root_sha256",
+        "query_physical_root_sha256",
+        "k1_is_exact_k5_prefix",
+        "binding_sha256",
+    }
+    if not isinstance(document["pair_bindings"], list) or len(document["pair_bindings"]) != 12:
+        raise NextR3Proxy24Error("predictor package K-pair binding coverage drift")
+    pair_bindings: dict[str, Mapping[str, Any]] = {}
+    for raw in document["pair_bindings"]:
+        if type(raw) is not dict or set(raw) != pair_keys:
+            raise NextR3Proxy24Error("predictor package K-pair binding schema drift")
+        key = raw.get("prior_key")
+        if type(key) is not str or key in pair_bindings:
+            raise NextR3Proxy24Error("predictor package K-pair binding identity drift")
+        for field in (
+            "phase1_fit_physical_root_sha256",
+            "support_k1_physical_root_sha256",
+            "support_k5_physical_root_sha256",
+            "query_physical_root_sha256",
+            "binding_sha256",
+        ):
+            _require_sha(raw[field], f"predictor package {field}")
+        if raw["k1_is_exact_k5_prefix"] is not True:
+            raise NextR3Proxy24Error("predictor package K-pair prefix flag drift")
+        pair_bindings[key] = dict(raw)
+    for planned in plan["rows"]:
+        if int(planned["active_k"]) != 1:
+            continue
+        held_receiver = str(planned["held_receiver"])
+        held_class = str(planned["held_class"])
+        key = _outer_key(held_receiver, held_class)
+        row_k1 = prepared[str(planned["row_id"])]
+        row_k5 = next(
+            prepared[str(item["row_id"])]
+            for item in plan["rows"]
+            if item["held_receiver"] == held_receiver
+            and item["held_class"] == held_class
+            and item["active_k"] == 5
+        )
+        prior = priors.get(key)
+        binding = pair_bindings.get(key)
+        expected_outer = f"r3/{held_receiver}/{held_class}|classes={','.join(planned['retained_classes'])}"
+        if (
+            prior is None
+            or binding is None
+            or prior.binding.outer_fold_id != expected_outer
+            or prior.binding.checkpoint_sha256 != checkpoint_sha256
+            or prior.binding.phase1_seal_sha256 != phase1_cells_sha
+            or binding["k1_row_id"] != row_k1.row_id
+            or binding["k5_row_id"] != row_k5.row_id
+            or binding["support_k1_physical_root_sha256"]
+            != _ordered_physical_root(
+                tuple(
+                    physical_id
+                    for class_id in classes
+                    for physical_id in row_k1.support_for(class_id)
                 )
             )
-    if set(eligible_ids) != {pid for fold in folds for pid in fold.validation_physical_ids} or len(folds) != len(eligible_ids):
-        raise MissingRealInputArtifacts(f"{MISSING_PREFIX}: physical-LOO validation coverage is incomplete")
-    return tsl.build_tsl160_phase1_prior(
-        cells,
-        folds,
-        binding=binding,
-        held_receiver=held_receiver,
-        held_class=held_class,
+            or binding["support_k5_physical_root_sha256"]
+            != _ordered_physical_root(
+                tuple(
+                    physical_id
+                    for class_id in classes
+                    for physical_id in row_k5.support_for(class_id)
+                )
+            )
+            or binding["query_physical_root_sha256"]
+            != _ordered_physical_root(row_k1.query_physical_ids)
+            or row_k1.query_physical_ids != row_k5.query_physical_ids
+            or row_k1.query_observation_ids != row_k5.query_observation_ids
+            or any(
+                row_k1.support_for(class_id) != row_k5.support_for(class_id)[:1]
+                for class_id in classes
+            )
+        ):
+            raise NextR3Proxy24Error("predictor package sealed prior/K-pair/common-query drift")
+    return (
+        PreparedPredictorPackage(
+            class_registry=classes,
+            rows_by_id=prepared,
+            priors_by_key=priors,
+            pair_bindings=pair_bindings,
+            received_iq_sha256=rows.received_iq_sha256,
+            checkpoint_sha256=checkpoint_sha256,
+            phase1_cells_sha256=phase1_cells_sha,
+            capsule_id=capsule_id,
+            split_id=split_id,
+            validator_receipt_sha256=validator_sha,
+            sha256=_sha(payload),
+        ),
+        plan,
     )
 
 
@@ -772,118 +1169,78 @@ def _checkpoint_smoke(bridge: Any, indices: Sequence[int], checkpoint_sha256: st
     return {"schema": SMOKE_SCHEMA, "checkpoint_sha256": checkpoint_sha256, "sample_count": len(indices), "canonical_repeat_exact": True, "truth_loaded": False, "query_truth_access": False}
 
 
-def _build_fold_inputs(
+def _execute_prepared_fold(
     rows: SourceRows,
-    cells: Sequence[tsl.TSL160Phase1Cell],
     plan_row: Mapping[str, Any],
+    package: PreparedPredictorPackage,
     *,
     args: argparse.Namespace,
     asset: d106_asset.D106RDCEAsset,
-    source_meta: Mapping[str, Any],
-    truth_free_split: TruthFreeSplit,
     feature_cache: BridgeFeatureCache,
 ) -> tuple[runtime.NextR3RuntimeResult, Mapping[str, Any]]:
+    """Predict one row using only the sealed prior/support/common-query package."""
+
     held_receiver = str(plan_row["held_receiver"])
     held_class = str(plan_row["held_class"])
     active_k = int(plan_row["active_k"])
     all_classes = tuple(str(value) for value in plan_row["all_registered_classes"])
     retained = tuple(str(value) for value in plan_row["retained_classes"])
-    phase1_cells = tuple(cells)
-    eligible = tuple(cell for cell in phase1_cells if cell.receiver_id != held_receiver and cell.class_handle != held_class)
-    phase1_root = tsl.phase1_physical_id_root(eligible)
-    representation_rule_sha = _sha(tsl.REPRESENTATION_RULE.encode("utf-8"))
-    outer_fold_id = f"r3/{held_receiver}/{held_class}|classes={','.join(retained)}"
-    binding = tsl.TSL160RuntimeBinding(
-        outer_fold_id=outer_fold_id,
-        checkpoint_sha256=_require_sha(args.checkpoint_sha256, "checkpoint SHA256"),
-        representation_rule_sha256=representation_rule_sha,
-        phase1_physical_id_root_sha256=phase1_root,
-        phase1_seal_sha256=_require_sha(args.phase1_cells_sha256, "Phase-1 cell SHA256"),
-    )
-    prior_build = _build_prior_from_cells(
-        phase1_cells, held_receiver=held_receiver, held_class=held_class, binding=binding
-    )
-    split_row = truth_free_split.row(str(plan_row["row_id"]))
+    prepared = package.row(str(plan_row["row_id"]))
+    prior = package.prior(prepared.prior_key)
+    expected_outer = f"r3/{held_receiver}/{held_class}|classes={','.join(retained)}"
     if (
-        split_row.held_receiver != held_receiver
-        or split_row.held_class != held_class
-        or split_row.active_k != active_k
+        prior.binding.outer_fold_id != expected_outer
+        or prior.binding.checkpoint_sha256 != package.checkpoint_sha256
+        or prior.binding.phase1_seal_sha256 != package.phase1_cells_sha256
+        or prepared.query_physical_ids
+        != _common_query_order(held_receiver, held_class, prepared.query_physical_ids)
     ):
-        raise NextR3Proxy24Error("truth-free split/runtime row drift")
-    # The receipt carries labels only for registered K-shot support.  Its query
-    # lists are opaque physical/observation IDs; neither this runner nor the
-    # runtime joins them to class labels, roles, or truth.
-    reg1_support_ids = split_row.support_physical_ids
-    reg1_support_labels = split_row.support_labels
+        raise NextR3Proxy24Error("prepared prior/common-query runtime binding drift")
+    reg1_support_ids = prepared.support_physical_ids
+    reg1_support_labels = prepared.support_labels
     reg0_support_ids = tuple(
         physical_id
         for physical_id, label in zip(reg1_support_ids, reg1_support_labels, strict=True)
         if label in retained
     )
-    reg0_support_labels = tuple(
-        label for label in reg1_support_labels if label in retained
-    )
-    reg0_query_ids = split_row.reg0_query_physical_ids
-    reg1_query_ids = split_row.reg1_query_physical_ids
-    row_k1 = matrix.outer_key_from_mapping(next(item for item in matrix.build_next_r3_proxy24_plan(all_classes)["rows"] if item["held_receiver"] == held_receiver and item["held_class"] == held_class and item["active_k"] == 1))
-    row_k5 = matrix.outer_key_from_mapping(next(item for item in matrix.build_next_r3_proxy24_plan(all_classes)["rows"] if item["held_receiver"] == held_receiver and item["held_class"] == held_class and item["active_k"] == 5))
-    split_k1 = truth_free_split.paired(split_row, 1)
-    split_k5 = truth_free_split.paired(split_row, 5)
-    phase1_ids = tuple(pid for cell in eligible for pid in cell.physical_ids)
-    fold_receipt = {"held_receiver": held_receiver, "held_class": held_class, "phase1_fit_count": len(phase1_ids), "phase1_fit_physical_root_sha256": _sha("\n".join(phase1_ids).encode("utf-8"))}
-    # ``bind_next_r3_physical_ids`` is a complete LOO/K-pair identity audit.
-    # Its query buckets are an opaque fixed 9-ID partition used solely for
-    # cardinality/root checks; they are not labels and never reach prediction.
-    opaque_query_buckets = {
-        class_id: tuple(split_k5.reg1_query_physical_ids[index * matrix.QUERY_PER_CLASS : (index + 1) * matrix.QUERY_PER_CLASS])
-        for index, class_id in enumerate(all_classes)
-    }
-    binding_ids = matrix.bind_next_r3_physical_ids(
-        row_k1=row_k1,
-        row_k5=row_k5,
-        loco_fold_receipt=fold_receipt,
-        phase1_fit_ids=phase1_ids,
-        k1_support_ids_by_class={class_id: split_k1.support_for(class_id) for class_id in all_classes},
-        k5_support_ids_by_class={class_id: split_k5.support_for(class_id) for class_id in all_classes},
-        query_ids_by_class=opaque_query_buckets,
-    )
+    reg0_support_labels = tuple(label for label in reg1_support_labels if label in retained)
+    raw_reg0_support = feature_cache.take(reg0_support_ids)
+    raw_reg1_support = feature_cache.take(reg1_support_ids)
+    raw_query = feature_cache.take(prepared.query_physical_ids)
     bridge_binding = runtime.NextR3RDCEBridgeBinding(
-        checkpoint_sha256=args.checkpoint_sha256,
-        capsule_id=args.capsule_id,
-        split_id=args.split_id,
+        checkpoint_sha256=package.checkpoint_sha256,
+        capsule_id=package.capsule_id,
+        split_id=package.split_id,
         row_id=str(plan_row["row_id"]),
         seed=int(args.seed),
         received_iq_root_sha256=rows.received_iq_sha256,
         tap_sha256=_require_sha(args.d106_tap_archive_sha256, "D106 tap archive SHA256"),
-        representation_rule_sha256=representation_rule_sha,
-        phase1_physical_id_root_sha256=phase1_root,
-        phase1_seal_sha256=args.phase1_cells_sha256,
-        outer_fold_id=outer_fold_id,
+        representation_rule_sha256=_sha(tsl.REPRESENTATION_RULE.encode("utf-8")),
+        phase1_physical_id_root_sha256=prior.binding.phase1_physical_id_root_sha256,
+        phase1_seal_sha256=package.phase1_cells_sha256,
+        outer_fold_id=expected_outer,
     )
-    raw_reg0_support = feature_cache.take(reg0_support_ids)
-    raw_reg1_support = feature_cache.take(reg1_support_ids)
-    raw_reg0_query = feature_cache.take(reg0_query_ids)
-    raw_reg1_query = feature_cache.take(reg1_query_ids)
-    paired_reg0_query = feature_cache.take(split_k5.reg0_query_physical_ids)
-    if raw_reg0_query.tobytes(order="C") != paired_reg0_query.tobytes(order="C"):
-        raise NextR3Proxy24Error("K1/K5 old-query bridge-feature byte pairing drift")
     reg0 = runtime.NextR3RegistrationInput(
-        registration_state="REG0", received_iq_root_sha256=rows.received_iq_sha256,
-        support_pre_relu160=raw_reg0_support, query_pre_relu160=raw_reg0_query,
+        registration_state="REG0",
+        received_iq_root_sha256=rows.received_iq_sha256,
+        support_pre_relu160=raw_reg0_support,
+        query_pre_relu160=raw_query,
         support_labels=reg0_support_labels,
         registered_classes=retained,
         support_physical_ids=reg0_support_ids,
-        query_physical_ids=reg0_query_ids,
+        query_physical_ids=prepared.query_physical_ids,
     )
     reg1 = runtime.NextR3RegistrationInput(
-        registration_state="REG1", received_iq_root_sha256=rows.received_iq_sha256,
-        support_pre_relu160=raw_reg1_support, query_pre_relu160=raw_reg1_query,
+        registration_state="REG1",
+        received_iq_root_sha256=rows.received_iq_sha256,
+        support_pre_relu160=raw_reg1_support,
+        query_pre_relu160=raw_query,
         support_labels=reg1_support_labels,
         registered_classes=all_classes,
         support_physical_ids=reg1_support_ids,
-        query_physical_ids=reg1_query_ids,
+        query_physical_ids=prepared.query_physical_ids,
     )
-    lock = _lock_for_k(source_meta["phase1_cells_sha256"], active_k)
+    lock = _lock_for_k(package.phase1_cells_sha256, active_k)
     authority_path = args._run_root / "rows" / f"{plan_row['row_id']}.row_authority.json"
     authority = _write_row_authority(
         authority_path,
@@ -901,16 +1258,22 @@ def _build_fold_inputs(
         support_z_id=tsl.canonical_d106_relu_zid160(raw_reg0_support),
         support_labels=np.asarray(reg0.support_labels, dtype="<U64"),
         support_physical_ids=np.asarray(reg0.support_physical_ids, dtype="<U128"),
-        qknn_bank=qknn.build_typed_zid_support_bank(tsl.canonical_d106_relu_zid160(raw_reg0_support), reg0.support_labels, retained, config=lock),
+        qknn_bank=qknn.build_typed_zid_support_bank(
+            tsl.canonical_d106_relu_zid160(raw_reg0_support),
+            reg0.support_labels,
+            retained,
+            config=lock,
+        ),
         split_handle=TypedValidatedOnceP2SplitHandle(
-            capsule_id=args.capsule_id,
-            split_id=args.split_id,
-            validator_receipt_sha256=args.validator_receipt_sha256,
+            capsule_id=package.capsule_id,
+            split_id=package.split_id,
+            validator_receipt_sha256=package.validator_receipt_sha256,
             support_physical_root_sha256=d106_runtime._physical_root(reg0.support_physical_ids),
             query_physical_root_sha256=d106_runtime._physical_root(reg0.query_physical_ids),
             support_query_disjoint=True,
         ),
-        row_id=str(plan_row["row_id"]), seed=int(args.seed),
+        row_id=str(plan_row["row_id"]),
+        seed=int(args.seed),
     )
     state = d106_runtime.fit_d106_rdce_runtime(asset, support_rows, row_authority=authority)
     result = runtime.execute_next_r3_four_state(
@@ -919,18 +1282,17 @@ def _build_fold_inputs(
         reg0=reg0,
         reg1=reg1,
         qknn_lock=lock,
-        tsl_prior=prior_build.prior,
-        tsl_runtime_binding=binding,
+        tsl_prior=prior,
+        tsl_runtime_binding=prior.binding,
     )
     return result, {
-        "prior_receipt": dict(prior_build.receipt),
-        "physical_binding": dict(binding_ids),
+        "prior_receipt": {"prior_sha256": prior.prior_sha256, "sealed_in_prepare": True},
+        "pair_binding": package.pair_bindings[prepared.prior_key],
         "input_feature_binding": {
             "reg0_support": feature_cache.receipt(reg0_support_ids),
-            "reg0_query": feature_cache.receipt(reg0_query_ids),
             "reg1_support": feature_cache.receipt(reg1_support_ids),
-            "reg1_query": feature_cache.receipt(reg1_query_ids),
-            "k1_k5_old_query_byte_identical": True,
+            "common_query": feature_cache.receipt(prepared.query_physical_ids),
+            "reg0_reg1_common_query_byte_identical": True,
         },
         "smoke_receipt": {"truth_loaded": False},
     }
@@ -973,22 +1335,21 @@ def _save_prediction_row(
 
 
 def run_predict(args: argparse.Namespace) -> Mapping[str, Any]:
-    # Input validation precedes run-root creation, so a missing real asset
-    # leaves no misleading partial run or smoke marker behind.
-    rows, cells, source_meta = _load_real_rows(args)
+    # Input validation precedes run-root creation, so a missing sealed package
+    # leaves no misleading partial run or smoke marker behind.  This phase has
+    # no Phase-1 cell archive or truth/split input: those stay in ``prepare``.
+    rows = _load_received_rows(args)
     checkpoint_sha = _require_sha(args.checkpoint_sha256, "checkpoint SHA256")
     _require_file(args.checkpoint, checkpoint_sha, "checkpoint")
     tap_sha = _require_sha(args.d106_tap_archive_sha256, "D106 tap archive SHA256")
     tap_receipt_sha = _require_sha(args.d106_tap_receipt_sha256, "D106 tap receipt SHA256")
     _require_file(args.d106_tap_archive, tap_sha, "D106 tap archive")
     _require_file(args.d106_tap_receipt, tap_receipt_sha, "D106 tap receipt")
-    args.capsule_id = _require_sha(args.capsule_id, "capsule ID")
-    args.split_id = _require_sha(args.split_id, "split ID")
-    args.validator_receipt_sha256 = _require_sha(
-        args.validator_receipt_sha256, "validator receipt SHA256"
-    )
-    args.phase1_cells_sha256 = _require_sha(args.phase1_cells_sha256, "Phase-1 cell SHA256")
-    truth_free_split = _load_truth_free_split(args, rows, cells)
+    package, plan = _load_predictor_package(args, rows, checkpoint_sha)
+    args.capsule_id = package.capsule_id
+    args.split_id = package.split_id
+    args.validator_receipt_sha256 = package.validator_receipt_sha256
+    args.phase1_cells_sha256 = package.phase1_cells_sha256
     asset_wire = _read_d106_asset(
         args.d106_rdce_wire,
         args.d106_rdce_wire_sha256,
@@ -996,22 +1357,18 @@ def run_predict(args: argparse.Namespace) -> Mapping[str, Any]:
         tap_sha256=tap_sha,
         tap_receipt_sha256=tap_receipt_sha,
     )
-    plan = matrix.build_next_r3_proxy24_plan(truth_free_split.class_registry)
-    matrix.validate_next_r3_proxy24_plan(plan)
-    # The real checkpoint bridge is loaded only after every input receipt
-    # closes.  The cache is the sole feature source for support, query and the
-    # complete physical-LOO Phase1 cells.
+    # The bridge consumes only received IQ and the pinned checkpoint.  The
+    # predictor reconstructs no Phase-1 feature/prior data itself.
     bridge = _load_checkpoint_bridge(args, rows, checkpoint_sha)
     feature_cache = BridgeFeatureCache(bridge, rows, checkpoint_sha)
-    cells_typed = _build_phase1_cells(cells, feature_cache)
-    first_split_row = truth_free_split.row(str(plan["rows"][0]["row_id"]))
+    first_prepared = package.row(str(plan["rows"][0]["row_id"]))
     index_by_physical = {physical_id: index for index, physical_id in enumerate(rows.physical_ids)}
-    first_indices = tuple(index_by_physical[item] for item in first_split_row.support_physical_ids[:2])
+    first_indices = tuple(index_by_physical[item] for item in first_prepared.support_physical_ids[:2])
     smoke = _checkpoint_smoke(bridge, first_indices, checkpoint_sha)
     root = _new_root(args.run_root)
     args._run_root = root
     _write_json_new(root / "plan.json", plan)
-    _write_json_new(root / "preregistration.json", {"schema": RUNNER_SCHEMA, "run_id": args.run_id, "candidate_id": matrix.CANDIDATE_ID, "matrix_sha256": plan["matrix_sha256"], "row_count": matrix.ROW_COUNT, "state_prediction_count": matrix.STATE_PREDICTION_COUNT, "truth_loaded": False, "checkpoint_sha256": checkpoint_sha, "received_iq_sha256": rows.received_iq_sha256, "phase1_cells_sha256": source_meta["phase1_cells_sha256"], "truth_free_split_sha256": truth_free_split.sha256, "external_feature_archive_consumed": False, "output_overwrite": False})
+    _write_json_new(root / "preregistration.json", {"schema": RUNNER_SCHEMA, "run_id": args.run_id, "candidate_id": matrix.CANDIDATE_ID, "matrix_sha256": plan["matrix_sha256"], "row_count": matrix.ROW_COUNT, "state_prediction_count": matrix.STATE_PREDICTION_COUNT, "truth_loaded": False, "checkpoint_sha256": checkpoint_sha, "received_iq_sha256": rows.received_iq_sha256, "phase1_cells_sha256": package.phase1_cells_sha256, "predictor_package_sha256": package.sha256, "predictor_package_truth_free": True, "external_feature_archive_consumed": False, "output_overwrite": False})
     _write_json_new(root / "bridge_feature_binding.json", feature_cache.receipt(rows.physical_ids))
     _write_json_new(root / "smoke.json", smoke)
     selected_rows = tuple(plan["rows"][:1]) if args.smoke_one_row_no_truth else tuple(plan["rows"])
@@ -1019,7 +1376,14 @@ def run_predict(args: argparse.Namespace) -> Mapping[str, Any]:
     resources: list[Mapping[str, Any]] = []
     row_receipts: list[Mapping[str, Any]] = []
     for index, planned in enumerate(selected_rows):
-        result, receipts = _build_fold_inputs(rows, cells_typed, planned, args=args, asset=asset_wire, source_meta=source_meta, truth_free_split=truth_free_split, feature_cache=feature_cache)
+        result, receipts = _execute_prepared_fold(
+            rows,
+            planned,
+            package,
+            args=args,
+            asset=asset_wire,
+            feature_cache=feature_cache,
+        )
         runtime_results[str(planned["row_id"])] = result
         resources.append({"row_id": planned["row_id"], "resource_receipt": _plain(result.resource_receipt), "prior_receipt": receipts["prior_receipt"]})
         row_file = _save_prediction_row(root, index, result, receipts["input_feature_binding"])
@@ -1057,6 +1421,9 @@ def run_score(args: argparse.Namespace) -> Mapping[str, Any]:
     manifest_sha = manifest.pop("manifest_sha256", None)
     if manifest_sha != _sha(_canonical(manifest)) or manifest.get("all_rows_sealed") is not True or manifest.get("sealed_before_scoring") is not True or manifest.get("row_count") != matrix.ROW_COUNT:
         raise NextR3Proxy24Error("score refused invalid sealed manifest")
+    output = args.output.resolve(strict=False)
+    if not output.is_absolute() or output.exists() or not output.parent.is_dir():
+        raise NextR3Proxy24Error("score output must be a new absolute file")
     # Truth is opened only after all prediction-side closure checks above.
     truth_bytes = _require_file(args.truth, args.truth_sha256, "truth catalog")
     try:
@@ -1065,9 +1432,6 @@ def run_score(args: argparse.Namespace) -> Mapping[str, Any]:
         raise NextR3Proxy24Error("truth catalog must be UTF-8 JSON mapping") from error
     if not isinstance(truth, Mapping):
         raise NextR3Proxy24Error("truth catalog must be a mapping")
-    output = args.output.resolve(strict=False)
-    if not output.is_absolute() or output.exists() or not output.parent.is_dir():
-        raise NextR3Proxy24Error("score output must be a new absolute file")
     result = dict(scorer.score_next_r3_proxy24(prediction=prediction, plan=plan, truth_by_query_id=truth))
     result["prediction_sha256"] = expected["prediction_sha256"]
     result["truth_sha256"] = _sha_file(args.truth)
@@ -1078,17 +1442,30 @@ def run_score(args: argparse.Namespace) -> Mapping[str, Any]:
 def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser()
     commands = parser.add_subparsers(dest="command", required=True)
+    prepare = commands.add_parser("prepare")
+    prepare.add_argument("--output-dir", required=True, type=Path)
+    prepare.add_argument("--received-iq", required=True, type=Path)
+    prepare.add_argument("--received-iq-sha256", required=True)
+    prepare.add_argument("--received-iq-receipt", required=True, type=Path)
+    prepare.add_argument("--received-iq-receipt-sha256", required=True)
+    prepare.add_argument("--phase1-cells", required=True, type=Path)
+    prepare.add_argument("--phase1-cells-sha256", required=True)
+    prepare.add_argument("--checkpoint", required=True, type=Path)
+    prepare.add_argument("--checkpoint-sha256", required=True)
+    prepare.add_argument("--capsule-id", required=True)
+    prepare.add_argument("--split-id", required=True)
+    prepare.add_argument("--validator-receipt-sha256", required=True)
+    prepare.add_argument("--device", default="cuda:0")
+    prepare.set_defaults(func=run_prepare)
     predict = commands.add_parser("predict")
     predict.add_argument("--run-id", required=True)
     predict.add_argument("--run-root", required=True, type=Path)
     predict.add_argument("--received-iq", required=True, type=Path)
     predict.add_argument("--received-iq-sha256", required=True)
-    predict.add_argument("--received-iq-receipt", type=Path)
-    predict.add_argument("--received-iq-receipt-sha256")
-    predict.add_argument("--truth-free-split", required=True, type=Path)
-    predict.add_argument("--truth-free-split-sha256", required=True)
-    predict.add_argument("--phase1-cells", required=True, type=Path)
-    predict.add_argument("--phase1-cells-sha256", required=True)
+    predict.add_argument("--received-iq-receipt", required=True, type=Path)
+    predict.add_argument("--received-iq-receipt-sha256", required=True)
+    predict.add_argument("--package", required=True, type=Path)
+    predict.add_argument("--package-sha256", required=True)
     predict.add_argument("--checkpoint", required=True, type=Path)
     predict.add_argument("--checkpoint-sha256", required=True)
     predict.add_argument("--d106-tap-archive", required=True, type=Path)
@@ -1097,9 +1474,6 @@ def _parser() -> argparse.ArgumentParser:
     predict.add_argument("--d106-tap-receipt-sha256", required=True)
     predict.add_argument("--d106-rdce-wire", required=True, type=Path)
     predict.add_argument("--d106-rdce-wire-sha256", required=True)
-    predict.add_argument("--capsule-id", required=True)
-    predict.add_argument("--split-id", required=True)
-    predict.add_argument("--validator-receipt-sha256", required=True)
     predict.add_argument("--seed", type=int, default=104713)
     predict.add_argument("--device", default="cuda:0")
     predict.add_argument("--smoke-one-row-no-truth", action="store_true")
@@ -1115,11 +1489,11 @@ def _parser() -> argparse.ArgumentParser:
 
 def main(argv: Sequence[str] | None = None) -> int:
     args = _parser().parse_args(argv)
+    if getattr(args, "command", None) in {"prepare", "predict"}:
+        _require_file(args.received_iq_receipt, args.received_iq_receipt_sha256, "received-IQ receipt")
     if getattr(args, "command", None) == "predict":
         if args.seed < 0:
             raise NextR3Proxy24Error("seed must be non-negative")
-        if args.received_iq_receipt is not None:
-            _require_file(args.received_iq_receipt, args.received_iq_receipt_sha256, "received-IQ receipt")
     args.func(args)
     return 0
 
