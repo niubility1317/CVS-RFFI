@@ -101,3 +101,25 @@ commit`4aea94c7788aa8406d0ccf486a911e8b7ab0de0b`只把封存条件改为：SHA�
 - 远端日志SHA256：`predict.log`=`b3362565c2dd1f0a3ed4114f30f1acc05a5baf5c0671e8ed66b5f952bbc67207`；`predict_retry1.log`=`f2ae150eb1525772cb0f1bb8eae3a12217c820eb9f95b8431411ed7d8824d29b`；`score.log`=`194a6e43e674a9ac12f8c7966d71f244427c5dc09212f49f2109f7282eaf7e4c`；manifest=`903f2422d776589586fa2d91898f8386d41e4bd8dd5933184280988463924d1a`；completion=`1495409761f53ab4b8ef876664b796d588b017b5edf9f6b430dd5de175c48e06`。
 - 完整回收artifact绝对路径：`E:\type10-7\automation_reports\CV-SincNet\next_r2_cvfr_bssdg_proxy24_20260804_r2\artifacts\remote_next_r2_20260804`（346文件；包含input、全部logs、96状态三类artifact及四份根JSON）。
 - 所有SSH/SCP短连接结束后本机`ssh.exe=none`、N607/bridge TCP22无ESTABLISHED连接；远端GPU0无compute进程。主agent负责后续只读故障定位和性能空结果记录。
+
+## 主agent truth-free功能审计与结案（2026-08-04）
+
+评分失败不影响对“域适应是否实际改变模型输出”的truth-free审计。主agent只读取已封存的96份state JSON/NPZ，不读取label join或query truth，并按同一outer key、同一注册状态比较DA0与DA1。
+
+|审计项|结果|
+|---|---:|
+|封存state|96|
+|DA1 state|48|
+|`DA_IDENTITY_UNIDENTIFIABLE`|48/48|
+|DA0/DA1配对surface|48|
+|配对query row|2376|
+|prediction完全相同的配对|48/48|
+|发生预测变化的query row|0/2376|
+|score数组逐元素完全相同的配对|48/48|
+|最大score绝对差|0.0|
+
+结论：`CVFR-BSSDG/r1 = NO_FUNCTION / CLOSE`。在本次冻结矩阵上，CVFR的48个DA1状态全部因不可辨识而退化为identity；域适应前后不仅类别预测完全相同，完整score数组也逐元素相同。因此不存在需要truth指标才能判断的潜在DA收益，`DA1_REG0-DA0_REG0`与`DA1_REG1-DA0_REG1`在预测函数层面均为零作用。
+
+该结论是功能性负证据，不是性能评分。由于独立scorer未生成score artifact，`A_retained、N_seen_new、H_retained_new、F_retained、total_correct`以及四个性能差分仍统一记为`N/A / NO_PERFORMANCE_RESULT`，不得补算或宣称零性能差。
+
+确定性score失败原因已只读定位：运行时state receipt未持久化`capsule_id`和`split_id`，而scorer把两者作为必需绑定字段，故完整96态在首份receipt处必然触发`state receipt binding drift`。不再修复、不再发布r3、不调CVFR trust/view/BSSDG先验，不把工程缺陷变成新的实验循环；下一轮必须换一个能够在support上产生可辨识非恒等变换的新机制。
