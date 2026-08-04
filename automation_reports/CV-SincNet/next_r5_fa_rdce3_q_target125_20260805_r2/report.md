@@ -4,7 +4,7 @@
 
 - run ID：`next_r5_fa_rdce3_q_target125_20260805_r2`
 - 日期：2026-08-05
-- 当前状态：`LOCAL_VERIFIED / RESEALED / P0=0 / P1=0 / NOT_LANDED / NOT_LAUNCHED`
+- 当前状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`（prepare CLI最终json.dumps(mappingproxy) exit1）
 - 候选：`NEXT-R5-FA-RDCE3-Q-TARGET125`
 - 主agent：`gpt-5.6-sol/high`
 - 唯一N607 runner：冻结后使用`Luna/max`
@@ -78,3 +78,25 @@ seed={713102,713103,713104,713105,713106}
 
 当前无性能结果。landed、smoke、RUNNING或partial artifact均不是性能证据；只有完整prediction封存后独立truth-side scorer的同row四状态结果可进入分析。
 
+## 9.Runner执行记录（2026-08-05）
+
+- runner：`Luna/max`，r2唯一N607 release/launch owner；r1永久停止且未触碰。
+- 本地closure只读核验：size=`73123840`bytes，SHA256=`c727b09934abd432be81432333fb9698eea63e3b405e57a82d513965f4b58840`；method-lock tar成员size=`2140`bytes，SHA256=`0934b59c81ed5f422de503528d0ef48400210c817fae8c301f55b5e2d2775e34`，`LF=63`、`CRLF=0`。
+- 直连preflight：`powershell -ExecutionPolicy Bypass -File tools\\n607_ssh_preflight.ps1`，结果`Preflight OK`；服务器时间=`2026-08-05T04:26:24+08:00`，project root可见，GPU0-7均RTX3090且`0%/1MiB/24576MiB`，本地SSH/TCP22清理为`SSH_CLEAN`。
+- 远端只读复核时间=`2026-08-05T04:26:51+08:00`：r1 root仅确认存在未触碰；r2 `RUN_ROOT=ABSENT`；compute app为空；strict tap、receipt、checkpoint、D108 plan/context的冻结SHA均匹配；远端Python=`3.10.19`。
+- 当前状态：`PRECHECK_OK / LOCAL_ARCHIVE_VERIFIED / INPUTS_VERIFIED / R2_ROOT_ABSENT / NOT_LANDED / NOT_LAUNCHED`。下一阶段仅按冻结顺序落地新closure。
+
+## 10.远端测试依赖记录（2026-08-05）
+
+- 新closure传输及解包前后archive/member/source SHA均通过：archive=`c727b09934abd432be81432333fb9698eea63e3b405e57a82d513965f4b58840`、size=`73123840`；method lock及source成员=`0934b59c81ed5f422de503528d0ef48400210c817fae8c301f55b5e2d2775e34`、size=`2140`、LF字节一致；六个新入口SHA与本地一致。
+- 远端`py_compile`六入口结果：`PY_COMPILE_OK`。
+- 四份聚焦测试命令：`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -m pytest -q tests/test_build_next_r5_fa_target125_asset.py tests/test_stage2_next_r5_fa_target125_core.py tests/test_stage2_next_r5_fa_target125_runtime.py tests/test_stage2_next_r5_fa_target125.py`；结果：`No module named pytest`。同一closure在本地已通过`14 passed`，主agent裁决该远端缺失为`REMOTE_PYTEST_UNAVAILABLE / NON-BLOCKING`。
+- 只读环境检查未发现`pytest`命令、CVS-RFFI环境内pytest二进制或source测试配置；不安装包、不改环境、不绕过本地测试证据。
+- 已执行到：preflight、输入/GPU/RUN_ROOT核验、closure传输/验签/解包、post-extract SHA、六入口py_compile、FA asset、prepare尝试；随后因CLI序列化异常停止。未执行smoke、8片预测、merge、truth-open、score；r1未触碰，不重启、不覆盖、不调参、不做性能解释或promotion。
+
+## 11.停止证据：prepare CLI返回序列化异常（2026-08-05）
+
+- 资产构建成功：`fa_rdce3_target125.wire`语义asset SHA=`1ea547d32e290c599164059d3082439e007b0239768c4ffa2bbc50e77d239779`，wire文件SHA=`dfaab95f95fdea190ea57666f8be3c4a8809b23993df1fe01c8915b4967a6bc9`，manifest SHA=`ad8bf90ca9752ae565ee0753db1d2c661a2f753b78f5a254312bac3f8d0062fc`；asset声明`target_query_rows_used=0`、`target_support_rows_used=0`。
+- prepare首次调用因预创建的空`prepared/`触发immutable output-dir保护而退出；只读确认为空后删除该空目录（未删除文件），同一冻结命令第二次执行完成输入绑定并写出`target125_plan.json`、`target125_context.json`、`prepare_receipt.json`。
+- 第二次prepare进程随后在CLI最终打印返回值时抛出：`TypeError: Object of type mappingproxy is not JSON serializable`，exit code=`1`。已写文件保持完整：plan SHA=`528f062e857952539ffb228efc503e7b72d156da7c15b9fe48cfd2ca06e92156`、context SHA=`9e9d10d7ecdc886de9470d17a67f787f9da63c497da26f9a83ec7c19ba1ee7d7`、receipt SHA=`5046506381ebd88cc94db9fc7b1d14f17a2fdbc3f83616fded9bad3490121bf7`；receipt counts=`125/375/1500/1350`、query access全`false`、status=`D108_SEALED_INPUTS_AND_TARGET_FA_ASSET_PINNED`。
+- 按主agent裁决，该CLI release defect为系统性技术停止；未执行smoke、8 shard、merge、truth-open或score；不重试、不覆盖、不续跑，r1保持未触碰。远端r2 run root及partial artifacts保留，状态固定为`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。
