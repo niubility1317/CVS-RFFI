@@ -138,6 +138,7 @@ class PR160StateMaterializer:
         self.package_cache: dict[
             tuple[tuple[str, str], ...], tuple[Any, dict[str, Any], dict[str, Any]]
         ] = {}
+        self._support_feature_cache: tuple[Any, np.ndarray] | None = None
         self.d92_fit = lambda *_args, **_kwargs: None
 
     def _package(self, reference: Mapping[str, Any]):
@@ -215,10 +216,23 @@ class PR160StateMaterializer:
         query_iq, query_ids = d108_runner._query_rows(query_payloads[scene])
         if support_iq.shape[1:] != query_iq.shape[1:]:
             raise PR160RuntimeError("support/query IQ shape drift")
+        support_iq_contiguous = np.ascontiguousarray(support_iq, dtype=np.float32)
+        support_key = (
+            tuple(int(value) for value in support_iq_contiguous.shape),
+            hashlib.sha256(support_iq_contiguous.tobytes()).hexdigest(),
+        )
+        cached_support = self._support_feature_cache
+        if cached_support is not None and cached_support[0] == support_key:
+            support_features = cached_support[1]
+        else:
+            support_features = np.ascontiguousarray(
+                self._features(support_iq_contiguous, batch_size=self.support_batch_size),
+                dtype=np.float32,
+            )
+            support_features.setflags(write=False)
+            self._support_feature_cache = (support_key, support_features)
         return {
-            "support_features": self._features(
-                support_iq, batch_size=self.support_batch_size
-            ),
+            "support_features": support_features,
             "support_labels": labels,
             "registered_classes": registry,
             "support_physical_ids": support_ids,
