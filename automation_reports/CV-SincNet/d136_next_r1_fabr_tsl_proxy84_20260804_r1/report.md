@@ -20,3 +20,7 @@
 ## 同行判定
 
 K5的DA=`R1Q-R0Q`、Lite D92=`R0L-R0F`、联合=`R1L-R1F`均需`ΔH>0`、总正确数增加且A_retained、A_held_proxy、floor不下降；完整负结果立即关闭，不调参、不复跑。
+
+## Runner终态
+
+`LOCAL_VERIFIED → LANDED → RUNNING → STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。D136在计划index18、row=`rx=1-19|held=20-19|K=1`前退出；此前18/84行成功，逐行JSON/NPZ各18，但无completion、manifest、combined predictions或score。异常为`RuntimeWarning: overflow encountered in cast`后`TailSafeLiteError: Phase1 rho_h must be finite and positive`。PID=`1033646`已退出，GPU0恢复`0%、1 MiB`，SSH已清理；partial artifact保存在根报告目录`artifacts/remote_r1`。该run未按性能停止、未重启、未评分，不产生方法结论。
