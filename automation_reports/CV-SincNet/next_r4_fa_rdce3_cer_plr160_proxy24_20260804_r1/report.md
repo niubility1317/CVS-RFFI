@@ -53,6 +53,8 @@
 
 当前聚焦验证：FA、CER、matrix、runtime、artifact、scorer共38项通过；CLI生命周期5项通过。提交`54f0723d`已经独立复审为`P0=0/P1=0`。随后对CLI的全链检查发现新的协议P0：predictor package虽不含名为truth的字段，但其`physical_binding_receipt`仍含`query_ids_by_class`和`query_observation_ids_by_class`，等价于向predict暴露query真实类别分组。当前正在把预测侧绑定改为与类别无关的扁平固定顺序；修复、复审和真实checkpoint smoke完成前不得发布。
 
+CLI独立复审结论为`P0=1/P1=2`：除上述query类别分组P0外，predict还需验证runtime返回的binding/query与package完全一致；prepare封存的权威truth SHA及package/received/checkpoint/FA manifest哈希必须贯穿completion并由score复验。现有5项CLI测试使用monkeypatch/synthetic bridge，只是功能测试，不是real-checkpoint smoke证据。
+
 ## 5.发布前最小信息
 
 以下字段在唯一runner接管前填入，不作为当前研发阶段的额外gate：
