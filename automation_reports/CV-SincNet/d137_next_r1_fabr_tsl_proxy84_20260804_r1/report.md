@@ -16,3 +16,7 @@
 |停止/重试|仅协议、安全或确定性技术故障停止；不按性能停止；`retry authority=false`|
 
 完整负结果关闭，不调参、不复跑；完整84行封存后才独立score。
+
+## Runner终态
+
+`LOCAL_VERIFIED → LANDED → RUNNING → STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。D137成功越过D136的rho_h故障点，在24/84行后于计划index24、row=`rx=14-7|held=14-10|K=1`遇到`TSLTieUnresolvedError: TIE_UNRESOLVED at 2 independent query rows`。逐行JSON/NPZ各24；无completion、manifest、combined predictions或score；未重启、未按性能停止。PID=`1045397`已退出，GPU0和SSH均清理。该候选因无法在冻结全类预测规则下产生完整唯一预测而关闭，不从partial artifact提取性能结论。
