@@ -14,7 +14,6 @@ from dataclasses import asdict, dataclass
 import hashlib
 import json
 import math
-import time
 from typing import Any, Mapping, Sequence
 
 import numpy as np
@@ -534,7 +533,6 @@ def fit_bssdg(
     Query rows and query metadata never enter this function.
     """
 
-    started_ns = time.perf_counter_ns()
     rows = _rows(support_z, "support_z")
     support_labels = _labels(labels, "labels")
     classes = _registry(registered_classes, "registered_classes")
@@ -593,7 +591,6 @@ def fit_bssdg(
     state_bytes = numeric_bytes + registry_bytes + 64
     if state_bytes > STATE_LIMIT_BYTES:
         raise BSSDGWireError("BSSDG state exceeds the 6KiB provisional limit")
-    elapsed_ns = int(time.perf_counter_ns() - started_ns)
     fit_receipt = {
         "schema": SCHEMA,
         "candidate_id": CANDIDATE_ID,
@@ -612,11 +609,13 @@ def fit_bssdg(
         "numeric_state_bytes": numeric_bytes,
         "registry_bytes": registry_bytes,
         "receipt_bytes": 64,
+        "deploy_state_bytes": state_bytes,
         "state_bytes": state_bytes,
         "state_limit_bytes": STATE_LIMIT_BYTES,
         "fit_analytic_ops": fit_ops,
         "query_analytic_ops_per_row": query_ops,
-        "fit_latency_ns": elapsed_ns,
+        "fit_latency_ns": 0,
+        "fit_latency_observed": False,
         "query_latency_ns": 0,
         "query_latency_observed": False,
         "query_rows_used_for_fit": 0,
@@ -638,6 +637,12 @@ def fit_bssdg(
     )
     object.__setattr__(state, "state_sha256", _state_digest(state))
     state.__post_init__()
+    actual_wire_bytes = len(serialize_bssdg_state(state))
+    if actual_wire_bytes > STATE_LIMIT_BYTES:
+        raise BSSDGWireError(
+            f"BSSDG canonical wire state {actual_wire_bytes} exceeds "
+            f"the {STATE_LIMIT_BYTES}-byte limit"
+        )
     return state
 
 
@@ -699,6 +704,10 @@ def bssdg_resource_receipt(state: BSSDGState) -> dict[str, Any]:
     state.__post_init__()
     result = dict(state.resource_receipt)
     result["wire_bytes"] = state.wire_bytes
+    result["actual_wire_bytes"] = result["wire_bytes"]
+    result["deploy_state_bytes"] = int(
+        result.get("deploy_state_bytes", result["state_bytes"])
+    )
     result["candidate_id"] = CANDIDATE_ID
     result["schema"] = SCHEMA
     return result

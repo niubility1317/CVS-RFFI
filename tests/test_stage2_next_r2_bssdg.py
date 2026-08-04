@@ -204,9 +204,43 @@ def test_resource_receipt_has_exact_fit_query_and_latency_fields() -> None:
     receipt = bssdg_resource_receipt(state)
     assert receipt["fit_analytic_ops"] > 0
     assert receipt["query_analytic_ops_per_row"] > 0
-    assert receipt["fit_latency_ns"] >= 0
+    assert receipt["fit_latency_ns"] == 0
+    assert receipt["fit_latency_observed"] is False
     assert receipt["query_latency_ns"] == 0
     assert receipt["query_rows_used_for_fit"] == 0
     assert receipt["query_state_updates"] == 0
     assert receipt["query_selection_count"] == 0
     assert receipt["state_bytes"] <= receipt["state_limit_bytes"]
+    assert receipt["deploy_state_bytes"] == receipt["state_bytes"]
+    assert receipt["wire_bytes"] == receipt["actual_wire_bytes"]
+    assert receipt["wire_bytes"] == len(serialize_bssdg_state(state))
+    assert receipt["wire_bytes"] <= receipt["state_limit_bytes"]
+
+
+def _wire_registry_support(class_count: int) -> tuple[np.ndarray, tuple[str, ...], tuple[str, ...]]:
+    classes = tuple(f"c{index:02d}" for index in range(class_count))
+    values = np.arange(1, class_count + 1, dtype=np.float32) * np.float32(0.125)
+    rows = np.repeat(values[:, None], 160, axis=1).astype(np.float32)
+    return rows, classes, classes
+
+
+@pytest.mark.parametrize("class_count", (5, 6))
+def test_c5_c6_canonical_wire_states_fit_under_limit(class_count: int) -> None:
+    rows, labels, classes = _wire_registry_support(class_count)
+    state = fit_bssdg(rows, labels, classes, k_shot=1)
+    receipt = bssdg_resource_receipt(state)
+    assert receipt["wire_bytes"] <= receipt["state_limit_bytes"]
+
+
+def test_c20_canonical_wire_state_is_rejected_even_when_deploy_bytes_fit() -> None:
+    rows, labels, classes = _wire_registry_support(20)
+    with pytest.raises(BSSDGWireError, match="canonical wire state"):
+        fit_bssdg(rows, labels, classes, k_shot=1)
+
+
+def test_repeated_fit_has_deterministic_state_sha_and_wire() -> None:
+    rows, labels, classes = _support(5)
+    first = fit_bssdg(rows, labels, classes, k_shot=5)
+    second = fit_bssdg(rows, labels, classes, k_shot=5)
+    assert first.state_sha256 == second.state_sha256
+    assert serialize_bssdg_state(first) == serialize_bssdg_state(second)
