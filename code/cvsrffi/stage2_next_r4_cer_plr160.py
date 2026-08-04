@@ -31,6 +31,7 @@ Z_DIM = 160
 K1 = 1
 K5 = 5
 EPS32 = float(np.finfo(np.float32).eps)
+REPRESENTATION_UNIT_ATOL = 2.0e-6
 HEAD_ID = "CER-PLR160"
 WIRE_SCHEMA = "cvs.phase2.next_r4.cer_plr160.int8_affine_wire.v1"
 FIT_SCHEMA = "cvs.phase2.next_r4.cer_plr160.fit.v1"
@@ -116,7 +117,13 @@ def _representation(value: str) -> str:
     return representation
 
 
-def _finite_float32_rows(value: np.ndarray, name: str) -> np.ndarray:
+def _representation_rows(
+    value: np.ndarray,
+    name: str,
+    *,
+    representation: str,
+) -> np.ndarray:
+    rep = _representation(representation)
     rows = np.asarray(value)
     if (
         not isinstance(value, np.ndarray)
@@ -127,9 +134,14 @@ def _finite_float32_rows(value: np.ndarray, name: str) -> np.ndarray:
         or not np.isfinite(rows).all()
     ):
         raise NextR4CERPLR160Error(f"{name} must be finite numpy float32 [N,{Z_DIM}]")
-    # Contiguity is a storage concern only.  No ReLU, normalization, or other
-    # representation transform is allowed here, especially for R1.
-    return np.ascontiguousarray(rows)
+    if rep == "R0" and bool(np.any(rows < np.float32(0.0))):
+        raise NextR4CERPLR160Error(f"{name} must be canonical nonnegative R0 rows")
+    norms = np.linalg.norm(rows.astype(np.float64), axis=1)
+    if not np.allclose(norms, 1.0, rtol=0.0, atol=REPRESENTATION_UNIT_ATOL):
+        raise NextR4CERPLR160Error(f"{name} must already be unit {rep} rows")
+    # Read-only validation: retain the exact incoming values.  No ReLU, L2
+    # normalization, sign clipping, or other semantic copy/transform occurs.
+    return rows
 
 
 def _support_contract(
@@ -142,9 +154,13 @@ def _support_contract(
 ) -> tuple[np.ndarray, tuple[str, ...], np.ndarray, int, str]:
     if type(qknn_lock) is not qknn.Phase1ZIDStudentTLock:
         raise NextR4CERPLR160Error("CER-PLR160 requires the exact frozen qKNN lock")
-    rows = _finite_float32_rows(support_zid160, "support representation")
-    classes = _classes(registered_classes)
     normalized_representation = _representation(representation)
+    rows = _representation_rows(
+        support_zid160,
+        "support representation",
+        representation=normalized_representation,
+    )
+    classes = _classes(registered_classes)
     labels = tuple(str(value) for value in support_labels)
     if len(labels) != len(rows) or any(label not in classes for label in labels):
         raise NextR4CERPLR160Error("support labels must map to the registered classes")
@@ -798,13 +814,18 @@ def score_cer_plr160(
         raise NextR4CERPLR160Error("scoring requires an exact CER-PLR160 fit")
     state = fit.state
     logits = _validate_qknn_logits(qknn_logits, class_count=len(state.classes))
+    representation = _representation(str(fit.fit_receipt.get("representation")))
+    query = _representation_rows(
+        query_zid160,
+        "query representation",
+        representation=representation,
+    )
+    if len(query) != len(logits):
+        raise NextR4CERPLR160Error("query/logit row count drift")
     if type(state) in {CERPLR160K1QKNNAliasState, CERPLR160NoFunctionAliasState}:
         return alias_qknn_logits(fit, qknn_logits)
     if type(state) is not CERPLR160State:
         raise NextR4CERPLR160Error("CER-PLR160 score state type drift")
-    query = _finite_float32_rows(query_zid160, "query representation")
-    if len(query) != len(logits):
-        raise NextR4CERPLR160Error("query/logit row count drift")
     residual = (
         query.astype(np.float64, copy=False) @ state.decoded_weight().astype(np.float64).T
         + state.intercept_fp16.astype(np.float64)[None, :]
@@ -829,6 +850,7 @@ __all__ = [
     "K5",
     "NextR4CERPLR160Error",
     "NextR4CERPLR160TieError",
+    "REPRESENTATION_UNIT_ATOL",
     "WIRE_SCHEMA",
     "Z_DIM",
     "alias_k1_qknn_logits",

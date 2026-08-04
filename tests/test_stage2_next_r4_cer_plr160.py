@@ -26,29 +26,41 @@ def _lock(k_shot: int, *, kernel_volume_gamma: float = 1.0) -> Phase1ZIDStudentT
     )
 
 
+def _unit_rows(value: np.ndarray) -> np.ndarray:
+    rows64 = np.asarray(value, dtype=np.float64)
+    norms = np.linalg.norm(rows64, axis=1, keepdims=True)
+    return np.ascontiguousarray(rows64 / norms, dtype=np.float32)
+
+
 def _case(
-    *, class_count: int = 4, k_shot: int = 5, seed: int = 4084
+    *,
+    class_count: int = 4,
+    k_shot: int = 5,
+    seed: int = 4084,
+    representation: str = "R0",
 ) -> tuple[np.ndarray, tuple[str, ...], tuple[str, ...], np.ndarray]:
     rng = np.random.default_rng(seed)
     classes = tuple(f"tx-{index}" for index in range(class_count))
-    centers = rng.normal(0.0, 0.24, size=(class_count, cer.Z_DIM)).astype(np.float32)
+    centers_raw = rng.normal(size=(class_count, cer.Z_DIM)).astype(np.float32)
+    if representation == "R0":
+        centers_raw = np.abs(centers_raw)
+    elif representation != "R1":
+        raise ValueError("test representation must be R0 or R1")
+    centers = _unit_rows(centers_raw)
     rows: list[np.ndarray] = []
     labels: list[str] = []
     for index, label in enumerate(classes):
-        # Deliberately retain signed coordinates and non-unit norms: the CER
-        # core must consume R0/R1 inputs directly rather than normalize/ReLU.
-        rows.append(
-            centers[index][None, :]
-            + np.float32(0.03)
-            * rng.normal(size=(k_shot, cer.Z_DIM)).astype(np.float32)
-        )
+        perturbation = rng.normal(size=(k_shot, cer.Z_DIM)).astype(np.float32)
+        if representation == "R0":
+            perturbation = np.abs(perturbation)
+        rows.append(_unit_rows(centers[index][None, :] + np.float32(0.03) * perturbation))
         labels.extend([label] * k_shot)
     support = np.concatenate(rows, axis=0).astype(np.float32)
-    query = (
-        centers[[0, 1, 2, 3][:class_count]]
-        + np.float32(0.02) * rng.normal(size=(class_count, cer.Z_DIM)).astype(np.float32)
-    )
-    return support, tuple(labels), classes, query.astype(np.float32)
+    query_perturbation = rng.normal(size=(class_count, cer.Z_DIM)).astype(np.float32)
+    if representation == "R0":
+        query_perturbation = np.abs(query_perturbation)
+    query = _unit_rows(centers + np.float32(0.02) * query_perturbation)
+    return support, tuple(labels), classes, query
 
 
 def _distinct_qknn_logits(query_rows: int, class_count: int) -> np.ndarray:
@@ -57,7 +69,7 @@ def _distinct_qknn_logits(query_rows: int, class_count: int) -> np.ndarray:
 
 
 def test_k1_is_an_exact_qknn_logit_object_alias_and_tie_is_unresolved() -> None:
-    support, labels, classes, query = _case(k_shot=1)
+    support, labels, classes, query = _case(k_shot=1, representation="R1")
     fit = cer.fit_cer_plr160(
         support,
         labels,
@@ -80,6 +92,17 @@ def test_k1_is_an_exact_qknn_logit_object_alias_and_tie_is_unresolved() -> None:
     tied[0, -1] = tied[0, -2]
     with pytest.raises(cer.NextR4CERPLR160TieError, match="TIE_UNRESOLVED"):
         cer.alias_k1_qknn_logits(fit, tied)
+
+    bad_query = query.copy()
+    bad_query[0, 0] = np.inf
+    with pytest.raises(cer.NextR4CERPLR160Error, match="finite numpy float32"):
+        cer.score_cer_plr160(fit, logits, bad_query)
+    with pytest.raises(cer.NextR4CERPLR160Error, match="query/logit row count drift"):
+        cer.score_cer_plr160(fit, logits, query[:-1])
+    nonunit_query = query.copy()
+    nonunit_query[0] *= np.float32(0.9)
+    with pytest.raises(cer.NextR4CERPLR160Error, match="unit R1"):
+        cer.score_cer_plr160(fit, logits, nonunit_query)
 
 
 def test_k5_state_is_164c_int8_fp16_wire_with_bounded_support_only_residual() -> None:
@@ -162,7 +185,9 @@ def test_k5_state_is_164c_int8_fp16_wire_with_bounded_support_only_residual() ->
 
 
 def test_k5_is_class_permutation_equivariant_without_role_inputs() -> None:
-    support, labels, classes, query = _case(class_count=4, seed=8124)
+    support, labels, classes, query = _case(
+        class_count=4, seed=8124, representation="R1"
+    )
     original = cer.fit_cer_plr160(
         support, labels, classes, qknn_lock=_lock(5), representation="R1"
     )
@@ -194,13 +219,13 @@ def test_k5_is_class_permutation_equivariant_without_role_inputs() -> None:
 def test_sr_zero_and_quantized_zero_are_no_head_function_exact_aliases() -> None:
     classes = ("a", "b", "c")
     centers = np.zeros((3, cer.Z_DIM), dtype=np.float32)
-    centers[0, 0] = 0.2
-    centers[1, 1] = -0.2
-    centers[2, 2] = 0.2
+    centers[0, 0] = 1.0
+    centers[1, 1] = 1.0
+    centers[2, 2] = 1.0
     exact_zero_support = np.repeat(centers, 5, axis=0)
     labels = tuple(label for label in classes for _ in range(5))
     q_logits = _distinct_qknn_logits(2, len(classes))
-    query = np.zeros((2, cer.Z_DIM), dtype=np.float32)
+    query = centers[:2].copy()
     zero_fit = cer.fit_cer_plr160(
         exact_zero_support, labels, classes, qknn_lock=_lock(5), representation="R0"
     )
@@ -209,10 +234,12 @@ def test_sr_zero_and_quantized_zero_are_no_head_function_exact_aliases() -> None
     assert zero_fit.fit_receipt["no_head_function_reason"] == "Sr_ZERO"
     assert cer.score_cer_plr160(zero_fit, q_logits, query) is q_logits
 
-    rng = np.random.default_rng(1003)
-    tiny_support = (
-        rng.normal(0.0, 1.0e-8, size=(len(classes) * 5, cer.Z_DIM)).astype(np.float32)
-    )
+    tiny_rows: list[np.ndarray] = []
+    for class_index in range(len(classes)):
+        local = np.repeat(centers[class_index][None, :], 5, axis=0)
+        local[:, 16 + class_index] = np.arange(1, 6, dtype=np.float32) * np.float32(1.0e-8)
+        tiny_rows.append(_unit_rows(local))
+    tiny_support = np.concatenate(tiny_rows, axis=0)
     tiny_fit = cer.fit_cer_plr160(
         tiny_support, labels, classes, qknn_lock=_lock(5), representation="R1"
     )
@@ -226,11 +253,12 @@ def test_sq_is_lock_only_and_r1_query_is_consumed_without_relu_or_renorm() -> No
     assert cer.qknn_score_scale_from_lock(lock) == cer.qknn_score_scale_from_lock(
         replace(lock, kernel_volume_gamma=2.5, temperature=1.1)
     )
-    support, labels, classes, query = _case(seed=619)
+    support, labels, classes, query = _case(seed=619, representation="R1")
     query[:, :4] = np.asarray(
         [[-0.8, 0.2, -0.1, 0.4], [-0.7, -0.3, 0.2, 0.5], [-0.4, 0.1, -0.5, 0.3], [-0.2, -0.7, 0.4, 0.1]],
         dtype=np.float32,
     )
+    query = _unit_rows(query)
     fit = cer.fit_cer_plr160(
         support, labels, classes, qknn_lock=lock, representation="R1"
     )
@@ -258,9 +286,42 @@ def test_public_api_is_support_only_and_fails_closed_for_nonfinite_input() -> No
     with pytest.raises(cer.NextR4CERPLR160Error, match="finite numpy float32"):
         cer.fit_cer_plr160(bad, labels, classes, qknn_lock=_lock(5))
 
+    negative_r0 = support.copy()
+    largest = int(np.argmax(negative_r0[0]))
+    negative_r0[0, largest] *= np.float32(-1.0)
+    with pytest.raises(cer.NextR4CERPLR160Error, match="nonnegative R0"):
+        cer.fit_cer_plr160(negative_r0, labels, classes, qknn_lock=_lock(5))
+
+    nonunit_r0 = support.copy()
+    nonunit_r0[0] *= np.float32(0.9)
+    with pytest.raises(cer.NextR4CERPLR160Error, match="unit R0"):
+        cer.fit_cer_plr160(nonunit_r0, labels, classes, qknn_lock=_lock(5))
+
+    r1_support, r1_labels, r1_classes, _ = _case(representation="R1")
+    nonunit_r1 = r1_support.copy()
+    nonunit_r1[0] *= np.float32(0.9)
+    with pytest.raises(cer.NextR4CERPLR160Error, match="unit R1"):
+        cer.fit_cer_plr160(
+            nonunit_r1,
+            r1_labels,
+            r1_classes,
+            qknn_lock=_lock(5),
+            representation="R1",
+        )
+
     fit = cer.fit_cer_plr160(support, labels, classes, qknn_lock=_lock(5))
     assert type(fit.state) is cer.CERPLR160State
     bad_query = query.copy()
     bad_query[0, 0] = np.inf
     with pytest.raises(cer.NextR4CERPLR160Error, match="query representation"):
         cer.score_cer_plr160(fit, _distinct_qknn_logits(len(query), len(classes)), bad_query)
+
+    negative_query = query.copy()
+    largest_query = int(np.argmax(negative_query[0]))
+    negative_query[0, largest_query] *= np.float32(-1.0)
+    with pytest.raises(cer.NextR4CERPLR160Error, match="nonnegative R0"):
+        cer.score_cer_plr160(
+            fit,
+            _distinct_qknn_logits(len(query), len(classes)),
+            negative_query,
+        )
