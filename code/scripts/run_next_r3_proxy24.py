@@ -1,0 +1,810 @@
+#!/usr/bin/env python3
+"""Run the frozen NEXT-R3 24-row proxy with a truth-free prediction phase.
+
+This entry is intentionally a thin, immutable runner around the already
+frozen NEXT-R3 matrix/runtime/artifact/scorer modules.  It accepts external
+received-IQ, source-held feature, Phase-1 cell, checkpoint, tap and D106
+RDCE-wire files.  No file is overwritten.  A missing or incomplete real
+archive is reported as ``MISSING_REAL_INPUT_ARTIFACTS``; the runner never
+substitutes synthetic cells or a historical best result.
+
+``predict`` never opens a truth catalog.  ``score`` validates the complete
+prediction, manifest and completion receipts first and only then opens the
+opaque truth mapping.
+"""
+
+from __future__ import annotations
+
+import argparse
+from dataclasses import dataclass
+import hashlib
+import io
+import json
+from pathlib import Path
+import struct
+import sys
+from types import SimpleNamespace
+from typing import Any, Mapping, Sequence
+
+import numpy as np
+
+
+SCRIPT_ROOT = Path(__file__).resolve().parent
+CODE_ROOT = SCRIPT_ROOT.parent
+for candidate in (str(SCRIPT_ROOT), str(CODE_ROOT)):
+    if candidate not in sys.path:
+        sys.path.insert(0, candidate)
+
+from run_d106_rcmr_g0_one_shot import _predecessor_locks  # noqa: E402
+from cvsrffi import stage2_d106_rdce_asset as d106_asset  # noqa: E402
+from cvsrffi import stage2_d106_rdce_runtime as d106_runtime  # noqa: E402
+from cvsrffi import stage2_next_r3_artifact as artifact  # noqa: E402
+from cvsrffi import stage2_next_r3_matrix as matrix  # noqa: E402
+from cvsrffi import stage2_next_r3_rdce_tsl_runtime as runtime  # noqa: E402
+from cvsrffi import stage2_next_r3_score as scorer  # noqa: E402
+from cvsrffi import stage2_next_r3_tsl160 as tsl  # noqa: E402
+from cvsrffi import stage2_zid_student_t_qknn as qknn  # noqa: E402
+from cvsrffi.stage2_lpo_rc_qknn import TypedValidatedOnceP2SplitHandle  # noqa: E402
+
+
+RUNNER_SCHEMA = "cvs.stage2.next_r3.proxy24.runner.v1"
+COMPLETION_SCHEMA = "cvs.stage2.next_r3.proxy24.completion.v1"
+MANIFEST_SCHEMA = "cvs.stage2.next_r3.proxy24.manifest.v1"
+RESOURCE_SCHEMA = "cvs.stage2.next_r3.proxy24.resource.v1"
+SMOKE_SCHEMA = "cvs.stage2.next_r3.proxy24.real_checkpoint_smoke.v1"
+MISSING_PREFIX = "MISSING_REAL_INPUT_ARTIFACTS"
+
+RECEIVED_MEMBERS = (
+    "received_iq",
+    "receiver_ids",
+    "day_ids",
+    "physical_ids",
+    "scenario_names",
+    "observation_ids",
+)
+SOURCE_MEMBERS = (
+    "z_dom",
+    "pre_relu",
+    "receiver_ids",
+    "day_ids",
+    "tx_labels",
+    "physical_ids",
+)
+CELL_MEMBERS = ("zid160", "receiver_ids", "class_ids", "physical_ids")
+ROW_COUNT = 588
+PHYSICAL_PER_CELL = 14
+
+
+class NextR3Proxy24Error(ValueError):
+    """The frozen NEXT-R3 runner closure did not hold."""
+
+
+class MissingRealInputArtifacts(NextR3Proxy24Error):
+    """Required real assets or Phase-1 per-physical cells are unavailable."""
+
+
+def _plain(value: Any) -> Any:
+    if isinstance(value, Mapping):
+        return {str(key): _plain(item) for key, item in value.items()}
+    if isinstance(value, (tuple, list)):
+        return [_plain(item) for item in value]
+    if isinstance(value, np.ndarray):
+        return value.tolist()
+    if isinstance(value, np.generic):
+        return value.item()
+    return value
+
+
+def _canonical(value: Any) -> bytes:
+    return json.dumps(
+        _plain(value), ensure_ascii=True, sort_keys=True, separators=(",", ":"), allow_nan=False
+    ).encode("utf-8")
+
+
+def _sha(value: bytes) -> str:
+    return hashlib.sha256(value).hexdigest()
+
+
+def _sha_file(path: Path) -> str:
+    return _sha(path.read_bytes())
+
+
+def _require_sha(value: Any, name: str) -> str:
+    text = str(value)
+    if len(text) != 64 or text != text.lower() or any(char not in "0123456789abcdef" for char in text):
+        raise NextR3Proxy24Error(f"{name} must be a lowercase SHA256")
+    return text
+
+
+def _write_json_new(path: Path, value: Any) -> None:
+    if path.exists() or path.is_symlink():
+        raise NextR3Proxy24Error(f"output overwrite refused: {path}")
+    with path.open("x", encoding="utf-8", newline="\n") as handle:
+        json.dump(_plain(value), handle, ensure_ascii=False, sort_keys=True, indent=2)
+        handle.write("\n")
+
+
+def _new_root(path: Path) -> Path:
+    resolved = path.resolve(strict=False)
+    if path != resolved or not path.is_absolute() or path.exists() or not path.parent.is_dir():
+        raise NextR3Proxy24Error("run root must be a new absolute child of an existing directory")
+    path.mkdir()
+    (path / "rows").mkdir()
+    return path
+
+
+def _require_file(path: Path | None, expected_sha256: str | None, name: str) -> bytes:
+    if path is None or expected_sha256 is None:
+        raise MissingRealInputArtifacts(f"{MISSING_PREFIX}: {name} path/SHA256 is required")
+    if not path.is_absolute() or path.is_symlink() or not path.is_file():
+        raise MissingRealInputArtifacts(f"{MISSING_PREFIX}: {name} is not a regular file")
+    expected = _require_sha(expected_sha256, f"{name} SHA256")
+    payload = path.read_bytes()
+    if _sha(payload) != expected:
+        raise MissingRealInputArtifacts(f"{MISSING_PREFIX}: {name} SHA256 mismatch")
+    return payload
+
+
+def _load_npz(payload: bytes, expected_members: Sequence[str], name: str) -> dict[str, np.ndarray]:
+    try:
+        with np.load(io.BytesIO(payload), allow_pickle=False) as loaded:
+            if tuple(loaded.files) != tuple(expected_members):
+                raise MissingRealInputArtifacts(
+                    f"{MISSING_PREFIX}: {name} members must be {tuple(expected_members)}"
+                )
+            arrays = {member: np.asarray(loaded[member]) for member in expected_members}
+    except MissingRealInputArtifacts:
+        raise
+    except Exception as error:
+        raise MissingRealInputArtifacts(f"{MISSING_PREFIX}: {name} is not a no-pickle NPZ") from error
+    if any(array.dtype.hasobject for array in arrays.values()):
+        raise MissingRealInputArtifacts(f"{MISSING_PREFIX}: {name} contains an object array")
+    return arrays
+
+
+def _strings(value: np.ndarray, *, name: str, count: int, unique: bool = False) -> tuple[str, ...]:
+    array = np.asarray(value)
+    if array.ndim != 1 or len(array) != count or array.dtype.kind not in "US":
+        raise MissingRealInputArtifacts(f"{MISSING_PREFIX}: {name} must be a string[{count}] array")
+    result = tuple(str(item) for item in array.tolist())
+    if any(not item for item in result) or (unique and len(set(result)) != len(result)):
+        suffix = "/duplicate IDs" if unique else ""
+        raise MissingRealInputArtifacts(f"{MISSING_PREFIX}: {name} contains blank{suffix}")
+    return result
+
+
+@dataclass(frozen=True, slots=True)
+class SourceRows:
+    received_iq: np.ndarray
+    pre_relu: np.ndarray
+    receiver_ids: tuple[str, ...]
+    day_ids: tuple[str, ...]
+    tx_labels: tuple[str, ...]
+    physical_ids: tuple[str, ...]
+    scenario_names: tuple[str, ...]
+    observation_ids: tuple[str, ...]
+    receiver_registry: tuple[str, ...]
+    class_registry: tuple[str, ...]
+    received_iq_sha256: str
+    source_archive_sha256: str
+
+
+@dataclass(frozen=True, slots=True)
+class CellRows:
+    receiver_ids: tuple[str, ...]
+    class_ids: tuple[str, ...]
+    physical_ids: tuple[str, ...]
+    zid160: np.ndarray
+
+
+def _load_real_rows(args: argparse.Namespace) -> tuple[SourceRows, CellRows, Mapping[str, Any]]:
+    received_bytes = _require_file(args.received_iq, args.received_iq_sha256, "received-IQ archive")
+    source_bytes = _require_file(args.source_held_archive, args.source_held_archive_sha256, "source-held archive")
+    cell_bytes = _require_file(args.phase1_cells, args.phase1_cells_sha256, "Phase-1 cell archive")
+    received = _load_npz(received_bytes, RECEIVED_MEMBERS, "received-IQ archive")
+    source = _load_npz(source_bytes, SOURCE_MEMBERS, "source-held archive")
+    received_iq = np.asarray(received["received_iq"])
+    pre_relu = np.asarray(source["pre_relu"])
+    if received_iq.dtype != np.dtype("<f4") or received_iq.ndim != 3 or received_iq.shape[0] != ROW_COUNT or received_iq.shape[1] != 2:
+        raise MissingRealInputArtifacts(f"{MISSING_PREFIX}: received_iq must be little-endian float32 [588,2,T]")
+    if pre_relu.dtype != np.dtype("<f4") or pre_relu.shape != (ROW_COUNT, tsl.Z_DIM) or not np.isfinite(pre_relu).all():
+        raise MissingRealInputArtifacts(f"{MISSING_PREFIX}: source-held pre_relu must be finite float32 [588,160]")
+    receiver_ids = _strings(received["receiver_ids"], name="received.receiver_ids", count=ROW_COUNT)
+    day_ids = _strings(received["day_ids"], name="received.day_ids", count=ROW_COUNT)
+    physical_ids = _strings(received["physical_ids"], name="received.physical_ids", count=ROW_COUNT, unique=True)
+    source_receiver_ids = _strings(source["receiver_ids"], name="source.receiver_ids", count=ROW_COUNT)
+    source_day_ids = _strings(source["day_ids"], name="source.day_ids", count=ROW_COUNT)
+    source_physical_ids = _strings(source["physical_ids"], name="source.physical_ids", count=ROW_COUNT, unique=True)
+    tx_labels = _strings(source["tx_labels"], name="source.tx_labels", count=ROW_COUNT)
+    if (receiver_ids, day_ids, physical_ids) != (source_receiver_ids, source_day_ids, source_physical_ids):
+        raise MissingRealInputArtifacts(f"{MISSING_PREFIX}: received-IQ/source-held physical join drift")
+    scenario_names = _strings(received["scenario_names"], name="received.scenario_names", count=ROW_COUNT)
+    observation_ids = _strings(received["observation_ids"], name="received.observation_ids", count=ROW_COUNT, unique=True)
+    counts = {(receiver, label): 0 for receiver in sorted(set(receiver_ids)) for label in sorted(set(tx_labels))}
+    for receiver, label in zip(receiver_ids, tx_labels, strict=True):
+        if (receiver, label) not in counts:
+            raise MissingRealInputArtifacts(f"{MISSING_PREFIX}: source registry drift")
+        counts[(receiver, label)] += 1
+    if len(set(receiver_ids)) != 7 or len(set(tx_labels)) != 6 or any(value != PHYSICAL_PER_CELL for value in counts.values()):
+        raise MissingRealInputArtifacts(f"{MISSING_PREFIX}: source archive must be a complete 7x6x14 grid")
+
+    # Phase-1 cells may be supplied either as the compact explicit cell archive
+    # or as the strict D106 tap-shaped archive.  Both paths retain all physical
+    # IDs and 160-D rows; neither is synthesized from a partial/fallback view.
+    try:
+        cell_arrays = _load_npz(cell_bytes, CELL_MEMBERS, "Phase-1 cell archive")
+        cell_zid = np.asarray(cell_arrays["zid160"])
+        cell_receiver = _strings(cell_arrays["receiver_ids"], name="cells.receiver_ids", count=len(cell_zid))
+        cell_class = _strings(cell_arrays["class_ids"], name="cells.class_ids", count=len(cell_zid))
+        cell_physical = _strings(cell_arrays["physical_ids"], name="cells.physical_ids", count=len(cell_zid), unique=True)
+    except MissingRealInputArtifacts:
+        try:
+            tap = _load_npz(cell_bytes, ("pre_relu", "z_dom", "tx_labels", "receiver_ids", "day_ids", "physical_ids", "scenario_names", "observation_ids"), "Phase-1 cell archive")
+            cell_zid = np.asarray(tap["pre_relu"])
+            cell_receiver = _strings(tap["receiver_ids"], name="cells.receiver_ids", count=len(cell_zid))
+            cell_class = _strings(tap["tx_labels"], name="cells.class_ids", count=len(cell_zid))
+            cell_physical = _strings(tap["physical_ids"], name="cells.physical_ids", count=len(cell_zid), unique=True)
+        except MissingRealInputArtifacts as error:
+            raise MissingRealInputArtifacts(
+                f"{MISSING_PREFIX}: complete Phase-1 per-physical normalized-ReLU cells are required"
+            ) from error
+    if cell_zid.dtype != np.dtype("<f4") or cell_zid.ndim != 2 or cell_zid.shape[1] != tsl.Z_DIM or not np.isfinite(cell_zid).all():
+        raise MissingRealInputArtifacts(f"{MISSING_PREFIX}: Phase-1 cell zid160 must be finite float32 [N,160]")
+    if len(cell_zid) != ROW_COUNT or (cell_receiver, cell_class, cell_physical) != (receiver_ids, tx_labels, physical_ids):
+        raise MissingRealInputArtifacts(f"{MISSING_PREFIX}: Phase-1 cells must align with the complete source physical grid")
+    if any(len([1 for r, c in zip(cell_receiver, cell_class, strict=True) if r == receiver and c == class_id]) != PHYSICAL_PER_CELL for receiver in sorted(set(cell_receiver)) for class_id in sorted(set(cell_class))):
+        raise MissingRealInputArtifacts(f"{MISSING_PREFIX}: Phase-1 cells lack a complete per-physical receiver/class cell")
+    rows = SourceRows(
+        received_iq=np.ascontiguousarray(received_iq, dtype=np.float32),
+        pre_relu=np.ascontiguousarray(pre_relu, dtype=np.float32),
+        receiver_ids=receiver_ids,
+        day_ids=day_ids,
+        tx_labels=tx_labels,
+        physical_ids=physical_ids,
+        scenario_names=scenario_names,
+        observation_ids=observation_ids,
+        receiver_registry=tuple(sorted(set(receiver_ids))),
+        class_registry=tuple(sorted(set(tx_labels))),
+        received_iq_sha256=_sha(received_bytes),
+        source_archive_sha256=_sha(source_bytes),
+    )
+    cells = CellRows(
+        receiver_ids=cell_receiver,
+        class_ids=cell_class,
+        physical_ids=cell_physical,
+        zid160=np.ascontiguousarray(cell_zid, dtype=np.float32),
+    )
+    return rows, cells, {"received_iq_sha256": _sha(received_bytes), "source_archive_sha256": _sha(source_bytes), "phase1_cells_sha256": _sha(cell_bytes)}
+
+
+def _ordered_cell_indices(rows: SourceRows) -> Mapping[tuple[str, str], tuple[int, ...]]:
+    result: dict[tuple[str, str], tuple[int, ...]] = {}
+    for receiver in rows.receiver_registry:
+        for class_id in rows.class_registry:
+            indices = [index for index, (observed_receiver, observed_class) in enumerate(zip(rows.receiver_ids, rows.tx_labels, strict=True)) if observed_receiver == receiver and observed_class == class_id]
+            if len(indices) != PHYSICAL_PER_CELL:
+                raise MissingRealInputArtifacts(f"{MISSING_PREFIX}: source cell {receiver}/{class_id} is incomplete")
+            result[(receiver, class_id)] = tuple(sorted(indices, key=lambda index: _sha(f"NEXT-R3|{receiver}|{class_id}|{rows.physical_ids[index]}".encode("utf-8"))))
+    return result
+
+
+def _build_phase1_cells(cells: CellRows) -> tuple[tsl.TSL160Phase1Cell, ...]:
+    by_key: dict[tuple[str, str], list[int]] = {}
+    for index, key in enumerate(zip(cells.receiver_ids, cells.class_ids, strict=True)):
+        by_key.setdefault(key, []).append(index)
+    if len(by_key) != 42 or any(len(indices) != PHYSICAL_PER_CELL for indices in by_key.values()):
+        raise MissingRealInputArtifacts(f"{MISSING_PREFIX}: full 7x6 Phase-1 per-physical cells are required")
+    return tuple(
+        tsl.TSL160Phase1Cell(
+            receiver_id=receiver,
+            class_handle=class_id,
+            physical_ids=tuple(cells.physical_ids[index] for index in indices),
+            zid160=np.ascontiguousarray(cells.zid160[indices], dtype=np.float32),
+        )
+        for (receiver, class_id), indices in sorted(by_key.items())
+    )
+
+
+def _build_prior(
+    cells: Sequence[tsl.TSL160Phase1Cell],
+    *,
+    held_receiver: str,
+    held_class: str,
+    binding: tsl.TSL160RuntimeBinding,
+) -> tsl.TSL160PriorBuild:
+    eligible = tuple(cell for cell in cells if cell.receiver_id != held_receiver and cell.class_handle != held_class)
+    if len(eligible) != 30:
+        raise MissingRealInputArtifacts(f"{MISSING_PREFIX}: double exclusion must leave 30 complete Phase-1 cells")
+    eligible_ids = tuple(pid for cell in eligible for pid in cell.physical_ids)
+    active_classes = tuple(class_id for class_id in binding.outer_fold_id.split("|classes=", 1)[-1].split(",") if class_id) if "|classes=" in binding.outer_fold_id else tuple(sorted({cell.class_handle for cell in eligible}))
+    if held_class in active_classes or len(active_classes) != 5:
+        active_classes = tuple(sorted({cell.class_handle for cell in eligible}))
+    folds: list[tsl.TSL160PhysicalLOOFold] = []
+    for cell in eligible:
+        for local_index, validation_id in enumerate(cell.physical_ids):
+            support_rows: list[np.ndarray] = []
+            support_labels: list[str] = []
+            support_ids: list[str] = []
+            for source_cell in eligible:
+                for row_index, physical_id in enumerate(source_cell.physical_ids):
+                    if physical_id == validation_id:
+                        continue
+                    support_rows.append(source_cell.zid160[row_index])
+                    support_labels.append(source_cell.class_handle)
+                    support_ids.append(physical_id)
+            folds.append(
+                tsl.TSL160PhysicalLOOFold(
+                    fold_id=f"{held_receiver}/{held_class}/loo/{cell.receiver_id}/{cell.class_handle}/{local_index:02d}",
+                    receiver_id=cell.receiver_id,
+                    class_handle=cell.class_handle,
+                    registered_classes=active_classes,
+                    support_zid160=np.ascontiguousarray(np.stack(support_rows), dtype=np.float32),
+                    support_labels=tuple(support_labels),
+                    support_physical_ids=tuple(support_ids),
+                    validation_zid160=np.ascontiguousarray(cell.zid160[local_index : local_index + 1], dtype=np.float32),
+                    validation_labels=(cell.class_handle,),
+                    validation_physical_ids=(validation_id,),
+                )
+            )
+    if set(eligible_ids) != {pid for fold in folds for pid in fold.validation_physical_ids} or len(folds) != len(eligible_ids):
+        raise MissingRealInputArtifacts(f"{MISSING_PREFIX}: physical-LOO validation coverage is incomplete")
+    return tsl.build_tsl160_phase1_prior(
+        cells,
+        folds,
+        binding=binding,
+        held_receiver=held_receiver,
+        held_class=held_class,
+    )
+
+
+def _read_d106_asset(
+    path: Path,
+    expected_sha256: str,
+    checkpoint_sha256: str,
+    *,
+    tap_sha256: str,
+    tap_receipt_sha256: str,
+) -> d106_asset.D106RDCEAsset:
+    payload = _require_file(path, expected_sha256, "D106 RDCE asset wire")
+    try:
+        if not payload.startswith(d106_asset.WIRE_MAGIC):
+            raise ValueError("wire magic")
+        offset = len(d106_asset.WIRE_MAGIC)
+        header_size = struct.unpack(">I", payload[offset : offset + 4])[0]
+        offset += 4
+        header = json.loads(payload[offset : offset + header_size].decode("utf-8"))
+        asset_header = header["asset"]
+        lineage_fields = {name: asset_header[name] for name in (
+            "checkpoint_sha256", "runtime_sha256", "method_lock_sha256", "split_id", "tap_sha256", "construction_code_sha256", "content_root_sha256", "source_receipt_sha256", "tap_receipt_sha256", "tap_authority_sha256"
+        )}
+        lineage = d106_asset.D106RDCEAssetLineage(**lineage_fields)
+        asset = d106_asset.deserialize_d106_rdce_asset(
+            payload,
+            expected_wire_sha256=expected_sha256,
+            expected_lineage=lineage,
+        )
+    except Exception as error:
+        raise MissingRealInputArtifacts(f"{MISSING_PREFIX}: D106 RDCE asset wire cannot be loaded") from error
+    if (
+        asset.checkpoint_sha256 != _require_sha(checkpoint_sha256, "checkpoint SHA256")
+        or asset.tap_sha256 != _require_sha(tap_sha256, "D106 tap archive SHA256")
+        or asset.tap_receipt_sha256 != _require_sha(tap_receipt_sha256, "D106 tap receipt SHA256")
+        or not asset.is_formal_deployable
+    ):
+        raise MissingRealInputArtifacts(f"{MISSING_PREFIX}: D106 RDCE asset/checkpoint binding is not formal")
+    return asset
+
+
+def _load_checkpoint_bridge(args: argparse.Namespace, checkpoint_sha256: str) -> Any:
+    """Load the existing real-checkpoint bridge after all pinned inputs close."""
+
+    if args.received_iq_receipt is None or args.received_iq_receipt_sha256 is None:
+        raise MissingRealInputArtifacts(
+            f"{MISSING_PREFIX}: received-IQ legality receipt path/SHA256 is required for the real bridge"
+        )
+    _require_file(args.received_iq_receipt, args.received_iq_receipt_sha256, "received-IQ receipt")
+    try:
+        from cvsrffi import stage2_next_r1_real as real_bridge
+
+        real_rows = real_bridge.load_next_r1_real_rows(
+            selected_iq_archive=args.received_iq,
+            selected_iq_archive_sha256=args.received_iq_sha256,
+            selected_iq_receipt=args.received_iq_receipt,
+            selected_iq_receipt_sha256=args.received_iq_receipt_sha256,
+            ls_label_join_archive=args.source_held_archive,
+            ls_label_join_archive_sha256=args.source_held_archive_sha256,
+        )
+        bridge, _model_receipt = real_bridge.load_next_r1_real_model(
+            real_rows,
+            checkpoint_path=args.checkpoint,
+            checkpoint_sha256=checkpoint_sha256,
+            device=args.device,
+        )
+        return bridge
+    except MissingRealInputArtifacts:
+        raise
+    except Exception as error:
+        raise NextR3Proxy24Error("real checkpoint/model bridge load failed") from error
+
+
+def _lock_for_k(source_receipt_sha256: str, active_k: int) -> qknn.Phase1ZIDStudentTLock:
+    # The predecessor lock is imported from the frozen D106/D129 implementation;
+    # this runner does not choose or tune any qKNN/rho/nu parameter.
+    locks = _predecessor_locks(SimpleNamespace(receipt={"source_archive_sha256": source_receipt_sha256}))
+    by_k = {lock.active_k: lock for lock in locks}
+    if active_k not in by_k:
+        raise NextR3Proxy24Error(f"frozen predecessor lock missing K{active_k}")
+    return by_k[active_k]
+
+
+def _array_receipt(value: np.ndarray) -> Mapping[str, Any]:
+    array = np.ascontiguousarray(value)
+    return {"dtype": array.dtype.str, "shape": list(array.shape), "sha256": _sha(array.tobytes(order="C"))}
+
+
+def _write_row_authority(
+    path: Path,
+    *,
+    support: np.ndarray,
+    labels: Sequence[str],
+    support_ids: Sequence[str],
+    query_ids: Sequence[str],
+    classes: Sequence[str],
+    lock: qknn.Phase1ZIDStudentTLock,
+    args: argparse.Namespace,
+    row_id: str,
+    active_k: int,
+) -> d106_runtime._D106RDCERowAuthority:
+    canonical_support = tsl.canonical_d106_relu_zid160(support)
+    bank = qknn.build_typed_zid_support_bank(canonical_support, labels, classes, config=lock)
+    support_ids = tuple(str(value) for value in support_ids)
+    query_ids = tuple(str(value) for value in query_ids)
+    validator_sha = _require_sha(args.validator_receipt_sha256, "validator receipt SHA256")
+    split = TypedValidatedOnceP2SplitHandle(
+        capsule_id=_require_sha(args.capsule_id, "capsule ID"),
+        split_id=_require_sha(args.split_id, "split ID"),
+        validator_receipt_sha256=validator_sha,
+        support_physical_root_sha256=d106_runtime._physical_root(support_ids),
+        query_physical_root_sha256=d106_runtime._physical_root(query_ids),
+        support_query_disjoint=True,
+    )
+    document = {
+        "schema": d106_runtime.ROW_AUTHORITY_SCHEMA,
+        "capsule_id": split.capsule_id,
+        "split_id": split.split_id,
+        "validator_receipt_sha256": split.validator_receipt_sha256,
+        "row_id": row_id,
+        "seed": int(args.seed),
+        "active_k": active_k,
+        "registered_classes": list(classes),
+        "support_z_id_receipt": _array_receipt(canonical_support),
+        "support_labels_receipt": _array_receipt(np.asarray(labels, dtype="<U64")),
+        "support_physical_ids_receipt": _array_receipt(np.asarray(support_ids, dtype="<U128")),
+        "ordered_support_physical_ids_sha256": d106_runtime._ordered_physical_root(support_ids),
+        "qknn_bank_sha256": bank.bank_receipt_sha256,
+        "support_physical_root_sha256": split.support_physical_root_sha256,
+        "query_physical_root_sha256": split.query_physical_root_sha256,
+        "protocol_schema": split.protocol_schema,
+        "phase2_data_status": split.phase2_data_status,
+        "support_query_disjoint": True,
+    }
+    _write_json_new(path, document)
+    return d106_runtime.load_d106_rdce_row_authority(path, expected_authority_sha256=_sha_file(path))
+
+
+def _checkpoint_smoke(bridge: Any, indices: Sequence[int], checkpoint_sha256: str) -> Mapping[str, Any]:
+    if not indices:
+        raise NextR3Proxy24Error("real checkpoint smoke needs at least one physical row")
+    try:
+        first = bridge.forward_indices(tuple(indices))
+        second = bridge.forward_indices(tuple(indices))
+        first_z = np.asarray(first[1], dtype=np.float32)
+        second_z = np.asarray(second[1], dtype=np.float32)
+        if first_z.shape != second_z.shape or not np.array_equal(first_z, second_z) or not np.isfinite(first_z).all():
+            raise ValueError("non-repeatable or non-finite checkpoint output")
+    except Exception as error:
+        raise NextR3Proxy24Error("real checkpoint no-truth smoke failed") from error
+    return {"schema": SMOKE_SCHEMA, "checkpoint_sha256": checkpoint_sha256, "sample_count": len(indices), "canonical_repeat_exact": True, "truth_loaded": False, "query_truth_access": False}
+
+
+def _build_fold_inputs(
+    rows: SourceRows,
+    cells: Sequence[tsl.TSL160Phase1Cell],
+    plan_row: Mapping[str, Any],
+    *,
+    args: argparse.Namespace,
+    asset: d106_asset.D106RDCEAsset,
+    source_meta: Mapping[str, Any],
+    bridge: Any,
+    cell_indices: Mapping[tuple[str, str], tuple[int, ...]],
+) -> tuple[runtime.NextR3RuntimeResult, Mapping[str, Any]]:
+    held_receiver = str(plan_row["held_receiver"])
+    held_class = str(plan_row["held_class"])
+    active_k = int(plan_row["active_k"])
+    all_classes = tuple(str(value) for value in plan_row["all_registered_classes"])
+    retained = tuple(str(value) for value in plan_row["retained_classes"])
+    phase1_cells = tuple(cells)
+    eligible = tuple(cell for cell in phase1_cells if cell.receiver_id != held_receiver and cell.class_handle != held_class)
+    phase1_root = tsl.phase1_physical_id_root(eligible)
+    representation_rule_sha = _sha(tsl.REPRESENTATION_RULE.encode("utf-8"))
+    outer_fold_id = f"r3/{held_receiver}/{held_class}|classes={','.join(retained)}"
+    binding = tsl.TSL160RuntimeBinding(
+        outer_fold_id=outer_fold_id,
+        checkpoint_sha256=_require_sha(args.checkpoint_sha256, "checkpoint SHA256"),
+        representation_rule_sha256=representation_rule_sha,
+        phase1_physical_id_root_sha256=phase1_root,
+        phase1_seal_sha256=_require_sha(args.phase1_cells_sha256, "Phase-1 cell SHA256"),
+    )
+    prior_build = _build_prior_from_cells(
+        phase1_cells, held_receiver=held_receiver, held_class=held_class, binding=binding
+    )
+    # K1/K5 use the same Phase-1-only prior; only the target support/query K
+    # changes.  The row runtime has no query truth or role input.
+    support5_by_class = {class_id: cell_indices[(held_receiver, class_id)][:5] for class_id in all_classes}
+    support_by_class = {class_id: support5_by_class[class_id][:active_k] for class_id in all_classes}
+    query_by_class = {class_id: cell_indices[(held_receiver, class_id)][5:] for class_id in all_classes}
+    reg0_support_indices = tuple(index for class_id in retained for index in support_by_class[class_id])
+    reg1_support_indices = tuple(index for class_id in all_classes for index in support_by_class[class_id])
+    reg0_query_indices = tuple(index for class_id in retained for index in query_by_class[class_id])
+    reg1_query_indices = tuple(index for class_id in all_classes for index in query_by_class[class_id])
+    # Bind one row pair.  K1/K5 query order is identical and K1 support is the
+    # class-wise prefix of K5 support by construction.
+    row_k1 = matrix.outer_key_from_mapping(next(item for item in matrix.build_next_r3_proxy24_plan(all_classes)["rows"] if item["held_receiver"] == held_receiver and item["held_class"] == held_class and item["active_k"] == 1))
+    row_k5 = matrix.outer_key_from_mapping(next(item for item in matrix.build_next_r3_proxy24_plan(all_classes)["rows"] if item["held_receiver"] == held_receiver and item["held_class"] == held_class and item["active_k"] == 5))
+    phase1_ids = tuple(pid for cell in eligible for pid in cell.physical_ids)
+    fold_receipt = {"held_receiver": held_receiver, "held_class": held_class, "phase1_fit_count": len(phase1_ids), "phase1_fit_physical_root_sha256": _sha(_canonical(sorted(phase1_ids)))}
+    binding_ids = matrix.bind_next_r3_physical_ids(
+        row_k1=row_k1,
+        row_k5=row_k5,
+        loco_fold_receipt=fold_receipt,
+        phase1_fit_ids=phase1_ids,
+        k1_support_ids_by_class={class_id: tuple(rows.physical_ids[index] for index in support5_by_class[class_id][:1]) for class_id in all_classes},
+        k5_support_ids_by_class={class_id: tuple(rows.physical_ids[index] for index in support5_by_class[class_id]) for class_id in all_classes},
+        query_ids_by_class={class_id: tuple(rows.physical_ids[index] for index in query_by_class[class_id]) for class_id in all_classes},
+    )
+    bridge_binding = runtime.NextR3RDCEBridgeBinding(
+        checkpoint_sha256=args.checkpoint_sha256,
+        capsule_id=args.capsule_id,
+        split_id=args.split_id,
+        row_id=str(plan_row["row_id"]),
+        seed=int(args.seed),
+        received_iq_root_sha256=rows.received_iq_sha256,
+        tap_sha256=_require_sha(args.d106_tap_archive_sha256, "D106 tap archive SHA256"),
+        representation_rule_sha256=representation_rule_sha,
+        phase1_physical_id_root_sha256=phase1_root,
+        phase1_seal_sha256=args.phase1_cells_sha256,
+        outer_fold_id=outer_fold_id,
+    )
+    raw_reg0_support = rows.pre_relu[list(reg0_support_indices)]
+    raw_reg1_support = rows.pre_relu[list(reg1_support_indices)]
+    raw_reg0_query = rows.pre_relu[list(reg0_query_indices)]
+    raw_reg1_query = rows.pre_relu[list(reg1_query_indices)]
+    reg0 = runtime.NextR3RegistrationInput(
+        registration_state="REG0", received_iq_root_sha256=rows.received_iq_sha256,
+        support_pre_relu160=raw_reg0_support, query_pre_relu160=raw_reg0_query,
+        support_labels=tuple(class_id for class_id in retained for _ in range(active_k)),
+        registered_classes=retained,
+        support_physical_ids=tuple(rows.physical_ids[index] for index in reg0_support_indices),
+        query_physical_ids=tuple(rows.physical_ids[index] for index in reg0_query_indices),
+    )
+    reg1 = runtime.NextR3RegistrationInput(
+        registration_state="REG1", received_iq_root_sha256=rows.received_iq_sha256,
+        support_pre_relu160=raw_reg1_support, query_pre_relu160=raw_reg1_query,
+        support_labels=tuple(class_id for class_id in all_classes for _ in range(active_k)),
+        registered_classes=all_classes,
+        support_physical_ids=tuple(rows.physical_ids[index] for index in reg1_support_indices),
+        query_physical_ids=tuple(rows.physical_ids[index] for index in reg1_query_indices),
+    )
+    lock = _lock_for_k(source_meta["source_archive_sha256"], active_k)
+    authority_path = args._run_root / "rows" / f"{plan_row['row_id']}.row_authority.json"
+    authority = _write_row_authority(
+        authority_path,
+        support=raw_reg0_support,
+        labels=reg0.support_labels,
+        support_ids=reg0.support_physical_ids,
+        query_ids=reg0.query_physical_ids,
+        classes=retained,
+        lock=lock,
+        args=args,
+        row_id=str(plan_row["row_id"]),
+        active_k=active_k,
+    )
+    support_rows = d106_runtime.D106RDCESupportRows(
+        support_z_id=tsl.canonical_d106_relu_zid160(raw_reg0_support),
+        support_labels=np.asarray(reg0.support_labels, dtype="<U64"),
+        support_physical_ids=np.asarray(reg0.support_physical_ids, dtype="<U128"),
+        qknn_bank=qknn.build_typed_zid_support_bank(tsl.canonical_d106_relu_zid160(raw_reg0_support), reg0.support_labels, retained, config=lock),
+        split_handle=TypedValidatedOnceP2SplitHandle(
+            capsule_id=args.capsule_id,
+            split_id=args.split_id,
+            validator_receipt_sha256=args.validator_receipt_sha256,
+            support_physical_root_sha256=d106_runtime._physical_root(reg0.support_physical_ids),
+            query_physical_root_sha256=d106_runtime._physical_root(reg0.query_physical_ids),
+            support_query_disjoint=True,
+        ),
+        row_id=str(plan_row["row_id"]), seed=int(args.seed),
+    )
+    state = d106_runtime.fit_d106_rdce_runtime(asset, support_rows, row_authority=authority)
+    result = runtime.execute_next_r3_four_state(
+        bridge=bridge_binding,
+        da1_reg0_state=state,
+        reg0=reg0,
+        reg1=reg1,
+        qknn_lock=lock,
+        tsl_prior=prior_build.prior,
+        tsl_runtime_binding=binding,
+    )
+    return result, {"prior_receipt": dict(prior_build.receipt), "physical_binding": dict(binding_ids), "smoke_receipt": {"truth_loaded": False}}
+
+
+def _build_prior_from_cells(cells: Sequence[tsl.TSL160Phase1Cell], *, held_receiver: str, held_class: str, binding: tsl.TSL160RuntimeBinding) -> tsl.TSL160PriorBuild:
+    eligible = tuple(cell for cell in cells if cell.receiver_id != held_receiver and cell.class_handle != held_class)
+    active_classes = tuple(sorted({cell.class_handle for cell in eligible}))
+    folds: list[tsl.TSL160PhysicalLOOFold] = []
+    for cell in eligible:
+        for index, pid in enumerate(cell.physical_ids):
+            support_rows = [row for source in eligible for row_pid, row in zip(source.physical_ids, source.zid160, strict=True) if row_pid != pid]
+            support_labels = [source.class_handle for source in eligible for row_pid in source.physical_ids if row_pid != pid]
+            support_ids = [row_pid for source in eligible for row_pid in source.physical_ids if row_pid != pid]
+            folds.append(tsl.TSL160PhysicalLOOFold(fold_id=f"{cell.receiver_id}/{cell.class_handle}/{index:02d}", receiver_id=cell.receiver_id, class_handle=cell.class_handle, registered_classes=active_classes, support_zid160=np.stack(support_rows).astype(np.float32), support_labels=tuple(support_labels), support_physical_ids=tuple(support_ids), validation_zid160=cell.zid160[index:index+1], validation_labels=(cell.class_handle,), validation_physical_ids=(pid,)))
+    return tsl.build_tsl160_phase1_prior(cells, folds, binding=binding, held_receiver=held_receiver, held_class=held_class)
+
+
+def _save_prediction_row(root: Path, index: int, result: runtime.NextR3RuntimeResult) -> Mapping[str, Any]:
+    row_id = result.bridge.row_id
+    stem = f"{index:03d}_{_sha(row_id.encode('utf-8'))[:16]}"
+    row_path = root / "rows" / f"{stem}.json"
+    payload = artifact.build_next_r3_prediction_artifact
+    del payload  # keep the row receipt intentionally derived below
+    row_document = {"schema": RUNNER_SCHEMA, "row_id": row_id, "runtime_receipt": _plain(result.runtime_receipt), "resource_receipt": _plain(result.resource_receipt), "smoke_receipt": {"truth_loaded": False}}
+    _write_json_new(row_path, row_document)
+    return {"row_id": row_id, "path": row_path.relative_to(root).as_posix(), "sha256": _sha_file(row_path)}
+
+
+def run_predict(args: argparse.Namespace) -> Mapping[str, Any]:
+    # Input validation precedes run-root creation, so a missing real asset
+    # leaves no misleading partial run or smoke marker behind.
+    rows, cells, source_meta = _load_real_rows(args)
+    checkpoint_sha = _require_sha(args.checkpoint_sha256, "checkpoint SHA256")
+    _require_file(args.checkpoint, checkpoint_sha, "checkpoint")
+    tap_sha = _require_sha(args.d106_tap_archive_sha256, "D106 tap archive SHA256")
+    tap_receipt_sha = _require_sha(args.d106_tap_receipt_sha256, "D106 tap receipt SHA256")
+    _require_file(args.d106_tap_archive, tap_sha, "D106 tap archive")
+    _require_file(args.d106_tap_receipt, tap_receipt_sha, "D106 tap receipt")
+    args.capsule_id = _require_sha(args.capsule_id, "capsule ID")
+    args.split_id = _require_sha(args.split_id, "split ID")
+    args.validator_receipt_sha256 = _require_sha(
+        args.validator_receipt_sha256, "validator receipt SHA256"
+    )
+    args.phase1_cells_sha256 = _require_sha(args.phase1_cells_sha256, "Phase-1 cell SHA256")
+    asset_wire = _read_d106_asset(
+        args.d106_rdce_wire,
+        args.d106_rdce_wire_sha256,
+        checkpoint_sha,
+        tap_sha256=tap_sha,
+        tap_receipt_sha256=tap_receipt_sha,
+    )
+    cells_typed = _build_phase1_cells(cells)
+    plan = matrix.build_next_r3_proxy24_plan(rows.class_registry)
+    matrix.validate_next_r3_proxy24_plan(plan)
+    root = _new_root(args.run_root)
+    args._run_root = root
+    _write_json_new(root / "plan.json", plan)
+    _write_json_new(root / "preregistration.json", {"schema": RUNNER_SCHEMA, "run_id": args.run_id, "candidate_id": matrix.CANDIDATE_ID, "matrix_sha256": plan["matrix_sha256"], "row_count": matrix.ROW_COUNT, "state_prediction_count": matrix.STATE_PREDICTION_COUNT, "truth_loaded": False, "checkpoint_sha256": checkpoint_sha, "received_iq_sha256": rows.received_iq_sha256, "source_archive_sha256": rows.source_archive_sha256, "phase1_cells_sha256": source_meta["phase1_cells_sha256"], "output_overwrite": False})
+    # The real checkpoint bridge is loaded only after archive/asset closure.
+    bridge = _load_checkpoint_bridge(args, checkpoint_sha)
+    cell_indices = _ordered_cell_indices(rows)
+    first_indices = tuple(cell_indices[(matrix.HELD_RECEIVERS[0], rows.class_registry[0])][:2])
+    smoke = _checkpoint_smoke(bridge, first_indices, checkpoint_sha)
+    _write_json_new(root / "smoke.json", smoke)
+    selected_rows = tuple(plan["rows"][:1]) if args.smoke_one_row_no_truth else tuple(plan["rows"])
+    runtime_results: dict[str, runtime.NextR3RuntimeResult] = {}
+    resources: list[Mapping[str, Any]] = []
+    row_receipts: list[Mapping[str, Any]] = []
+    for planned in selected_rows:
+        result, receipts = _build_fold_inputs(rows, cells_typed, planned, args=args, asset=asset_wire, source_meta=source_meta, bridge=bridge, cell_indices=cell_indices)
+        runtime_results[str(planned["row_id"])] = result
+        resources.append({"row_id": planned["row_id"], "resource_receipt": _plain(result.resource_receipt), "prior_receipt": receipts["prior_receipt"]})
+        row_receipts.append({"row_id": planned["row_id"], "runtime_receipt_sha256": _sha(_canonical(result.runtime_receipt)), "resource_receipt_sha256": _sha(_canonical(result.resource_receipt))})
+    if args.smoke_one_row_no_truth:
+        completion = {"schema": COMPLETION_SCHEMA, "status": "SMOKE_NO_TRUTH", "run_id": args.run_id, "row_count": 1, "truth_loaded": False, "prediction_complete": False, "smoke_receipt_sha256": _sha_file(root / "smoke.json")}
+        _write_json_new(root / "completion.json", completion)
+        return completion
+    prediction = artifact.build_next_r3_prediction_artifact(plan, runtime_results)
+    _write_json_new(root / "prediction.json", prediction)
+    _write_json_new(root / "resource.json", {"schema": RESOURCE_SCHEMA, "row_count": len(resources), "truth_loaded": False, "rows": resources})
+    manifest = {"schema": MANIFEST_SCHEMA, "candidate_id": matrix.CANDIDATE_ID, "matrix_sha256": plan["matrix_sha256"], "row_count": matrix.ROW_COUNT, "state_prediction_count": matrix.STATE_PREDICTION_COUNT, "arm_prediction_count": matrix.ARM_PREDICTION_COUNT, "rows": row_receipts, "all_rows_sealed": True, "sealed_before_scoring": True, "truth_loaded": False}
+    manifest["manifest_sha256"] = _sha(_canonical(manifest))
+    _write_json_new(root / "manifest.json", manifest)
+    completion = {"schema": COMPLETION_SCHEMA, "status": "ARTIFACTS_COMPLETE_NOT_SCORED", "run_id": args.run_id, "row_count": matrix.ROW_COUNT, "state_prediction_count": matrix.STATE_PREDICTION_COUNT, "truth_loaded": False, "prediction_sha256": _sha_file(root / "prediction.json"), "manifest_sha256": _sha_file(root / "manifest.json"), "resource_sha256": _sha_file(root / "resource.json"), "plan_sha256": _sha_file(root / "plan.json"), "smoke_receipt_sha256": _sha_file(root / "smoke.json")}
+    _write_json_new(root / "completion.json", completion)
+    return completion
+
+
+def run_score(args: argparse.Namespace) -> Mapping[str, Any]:
+    root = args.run_root.resolve(strict=True)
+    required = ("plan.json", "prediction.json", "manifest.json", "resource.json", "completion.json", "smoke.json")
+    if any(not (root / name).is_file() for name in required):
+        raise NextR3Proxy24Error("score requires a complete sealed 24-row prediction set")
+    completion = json.loads((root / "completion.json").read_text(encoding="utf-8"))
+    if completion.get("status") != "ARTIFACTS_COMPLETE_NOT_SCORED" or completion.get("row_count") != matrix.ROW_COUNT or completion.get("truth_loaded") is not False:
+        raise NextR3Proxy24Error("score refused incomplete prediction closure")
+    expected = {"prediction_sha256": _sha_file(root / "prediction.json"), "manifest_sha256": _sha_file(root / "manifest.json"), "resource_sha256": _sha_file(root / "resource.json"), "plan_sha256": _sha_file(root / "plan.json")}
+    if any(completion.get(name) != value for name, value in expected.items()):
+        raise NextR3Proxy24Error("score refused hash-mismatched prediction closure")
+    plan = matrix.validate_next_r3_proxy24_plan(json.loads((root / "plan.json").read_text(encoding="utf-8")))
+    prediction = json.loads((root / "prediction.json").read_text(encoding="utf-8"))
+    scorer._validate_prediction(prediction, plan)
+    manifest = json.loads((root / "manifest.json").read_text(encoding="utf-8"))
+    manifest_sha = manifest.pop("manifest_sha256", None)
+    if manifest_sha != _sha(_canonical(manifest)) or manifest.get("all_rows_sealed") is not True or manifest.get("sealed_before_scoring") is not True or manifest.get("row_count") != matrix.ROW_COUNT:
+        raise NextR3Proxy24Error("score refused invalid sealed manifest")
+    # Truth is opened only after all prediction-side closure checks above.
+    truth_bytes = _require_file(args.truth, args.truth_sha256, "truth catalog")
+    try:
+        truth = json.loads(truth_bytes.decode("utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError) as error:
+        raise NextR3Proxy24Error("truth catalog must be UTF-8 JSON mapping") from error
+    if not isinstance(truth, Mapping):
+        raise NextR3Proxy24Error("truth catalog must be a mapping")
+    output = args.output.resolve(strict=False)
+    if not output.is_absolute() or output.exists() or not output.parent.is_dir():
+        raise NextR3Proxy24Error("score output must be a new absolute file")
+    result = dict(scorer.score_next_r3_proxy24(prediction=prediction, plan=plan, truth_by_query_id=truth))
+    result["prediction_sha256"] = expected["prediction_sha256"]
+    result["truth_sha256"] = _sha_file(args.truth)
+    _write_json_new(output, result)
+    return {"score_sha256": _sha_file(output), "truth_opened_after_complete_prediction": True, "row_count": matrix.ROW_COUNT}
+
+
+def _parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser()
+    commands = parser.add_subparsers(dest="command", required=True)
+    predict = commands.add_parser("predict")
+    predict.add_argument("--run-id", required=True)
+    predict.add_argument("--run-root", required=True, type=Path)
+    predict.add_argument("--received-iq", required=True, type=Path)
+    predict.add_argument("--received-iq-sha256", required=True)
+    predict.add_argument("--received-iq-receipt", type=Path)
+    predict.add_argument("--received-iq-receipt-sha256")
+    predict.add_argument("--source-held-archive", required=True, type=Path)
+    predict.add_argument("--source-held-archive-sha256", required=True)
+    predict.add_argument("--phase1-cells", required=True, type=Path)
+    predict.add_argument("--phase1-cells-sha256", required=True)
+    predict.add_argument("--checkpoint", required=True, type=Path)
+    predict.add_argument("--checkpoint-sha256", required=True)
+    predict.add_argument("--d106-tap-archive", required=True, type=Path)
+    predict.add_argument("--d106-tap-archive-sha256", required=True)
+    predict.add_argument("--d106-tap-receipt", required=True, type=Path)
+    predict.add_argument("--d106-tap-receipt-sha256", required=True)
+    predict.add_argument("--d106-rdce-wire", required=True, type=Path)
+    predict.add_argument("--d106-rdce-wire-sha256", required=True)
+    predict.add_argument("--capsule-id", required=True)
+    predict.add_argument("--split-id", required=True)
+    predict.add_argument("--validator-receipt-sha256", required=True)
+    predict.add_argument("--seed", type=int, default=104713)
+    predict.add_argument("--device", default="cuda:0")
+    predict.add_argument("--smoke-one-row-no-truth", action="store_true")
+    predict.set_defaults(func=run_predict)
+    score = commands.add_parser("score")
+    score.add_argument("--run-root", required=True, type=Path)
+    score.add_argument("--truth", required=True, type=Path)
+    score.add_argument("--truth-sha256", required=True)
+    score.add_argument("--output", required=True, type=Path)
+    score.set_defaults(func=run_score)
+    return parser
+
+
+def main(argv: Sequence[str] | None = None) -> int:
+    args = _parser().parse_args(argv)
+    if getattr(args, "command", None) == "predict":
+        if args.seed < 0:
+            raise NextR3Proxy24Error("seed must be non-negative")
+        if args.received_iq_receipt is not None:
+            _require_file(args.received_iq_receipt, args.received_iq_receipt_sha256, "received-IQ receipt")
+    args.func(args)
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
