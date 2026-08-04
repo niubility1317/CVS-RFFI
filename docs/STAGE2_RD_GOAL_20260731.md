@@ -1,6 +1,6 @@
 # Stage2功能研发目标与证据门
 
-状态：`ACTIVE / D130_COMPLETE_NEGATIVE / D131_TECHNICAL_NO_RESULT / NEXT_R1_DESIGN_FROZEN / D138_PR160_DESIGN_FROZEN / D138_R1_R2_NO_RESULT / D138_R3_ONE_SHOT_DEPENDENCY_CLOSURE_PENDING / NO_TARGET_PERFORMANCE_RESULT`
+状态：`ACTIVE / D130_COMPLETE_NEGATIVE / D131_TECHNICAL_NO_RESULT / NEXT_R1_DESIGN_FROZEN / D138_PR160_DESIGN_FROZEN / D138_R1_R2_NO_RESULT / D138_R3_STOPPED_PREPARE_OUTPUT_COLLISION / NO_PERFORMANCE_RESULT`
 
 ## 0.2026-08-03闭环与目标重置
 
@@ -68,6 +68,10 @@ What_c = mu_c/v_post; bhat_c = -sum_j(mu_cj^2/v_post_j)/2
 - 每个query独立对全部已注册类竞争；最终float32最高值精确并列统一`TIE_UNRESOLVED`，不得使用registry顺序、类别ID/hash、physical ID、role或跨query重分配打破并列。任何完整125性能结论仍需同row prediction、truth和score闭合；本candidate的表示修复本身不是性能成功。
 - 状态映射固定为`DA0_REG0=before`与`DA0_REG1=after`；`DA1_REG0`和`DA1_REG1`对这个单一`M_JOINT`运输臂候选均为范围外，不生成四状态DA因果表，也不把运输臂名称当作已执行DA机制。
 - D138锁文件为`configs/d138_d92_lite_pr160_r1.json`，正式实验ID预登记为`d138_d92_lite_pr160_target125_20260804_r1`。该候选与NEXT-R1保持独立，不新增数据复验；固定received-IQ、physical IDs、receiver/TX集合、scenario、K、support/query split和`p2_min_v1`均未改变。
+
+### 0.3D138 r3远端门终态
+
+D138的本地实现、36项回归、31项source闭包、远端compile和Torch 2.1 extractor load均已通过。r1、r2分别在prepare前因隔离依赖缺失停止；r3已补齐最后两项依赖，但唯一prepare在未读取数据、未生成plan或prediction前因run-owned空目录`prepared`已存在而触发不可变输出保护：`FileExistsError: immutable prepare output already exists`。因此r3标记为`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`，没有smoke、shard、truth或score证据；不得从控制门结果推导性能结论，也不删除或覆盖r3远端run root，不自动启动r4。若后续重新释放，必须先重新登记不可覆盖run ID并修复该运行器输出目录生命周期问题。
 
 ## 1.最终目标
 
