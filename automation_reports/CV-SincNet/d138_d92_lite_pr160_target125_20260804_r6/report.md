@@ -53,3 +53,25 @@ smoke通过后立即固定启动8个分片；每个分片使用`CUDA_VISIBLE_DEV
 ## 完成后分析
 
 结果表必须按同一candidate/run/receiver/TX/K/seed/scene绑定before old、after old、seen-new、`H_old_new`、forgetting、coverage及最终判定；不得使用跨row孤立极值。若r3仍因support-only二级键真实并列而系统停止，记录为D92 PR160路线的正式负证据，不再无边界增加tie-breaker。
+
+## r6运行证据与最终状态
+
+- 最终状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。
+- 未执行：`merge`、`validate`、`build-truth`、`score`。未打开truth，未产生125/375/750完整闭合，不得从任何partial prediction推导性能结论。
+- r6是单一`M_JOINT`注册对照：`DA0_REG0=before`、`DA0_REG1=after`；`DA1_REG0`与`DA1_REG1`未纳入冻结矩阵，记为`N/A`。因此本run不报告DA主效应、注册效应或交互效应。
+
+|检查项|已记录证据|结论|
+|---|---|---|
+|直连预检|`2026-08-04T20:09:54+08:00`通过；项目根可见；8张RTX3090空闲；r6根初始不存在|通过|
+|r6落地|仅从r5复制`source`、`input`、`prepared`；未复制`control`或旧分片输出；随后仅覆盖r3 core、qKNN与method lock|不可覆盖性保持|
+|远端SHA256|core=`21aa028e7008093bfd5abe33622fa71cff4f6e10ca055de5efe2980453e8e85e`；qKNN=`6a3703d8068dec8f7dbe0c8185ac501bcda5f343642b1814ae7ceedc4469b86a`；lock=`99647a633ff937d22e9ab5928ca2a1785757cd57e1445f3dc8245c534f89222e`；extractor=`56612c66b49c8167b3fbed0be5aaa25649a3246a178903618274048d541d80a3`；plan=`13665ce5404c8ba34b3b05b7fd161baad05a96cec6d542416e115b3a9d6bd348`；context=`067a6365e9c859161407ab62ba6349d7beb93083f59f78fd7c780c6d8924731f`|6项一致|
+|远端硬门|`py_compile`通过；Torch`2.1.0+cu121`成功加载extractor；r3 import确认candidate、method lock与160维目标链|通过|
+|真实checkpoint smoke|`D92_LITE160_REAL_CHECKPOINT_NO_QUERY_FIT_SMOKE_PASS`；`query_truth/fit/update/selection=false`；smoke receipt SHA=`44350c5b9ec3a3bc4bf0bece048f130913df5710a9744f5257088909a8903c3f`|通过|
+|8个固定shard|PID=`1207327,1207328,1207329,1207330,1207331,1207335,1207338,1207339`；启动时均绑定r6 CWD、对应`CUDA_VISIBLE_DEVICES=i`和`--device cuda:0`|已唯一启动|
+|首波健康|至少5个不同shard在其失败outer row形成prediction前出现同一确定性指纹；最终控制日志计数为6次：`D92PR160CoreError: TIE_UNRESOLVED: exact tie remains after raw support centroid`|触发系统性技术停止|
+|partial保全|保留全部`control/shard_i.out`、smoke收据、partial prediction文件，以及shard2、shard6的分片manifest；未尝试合并partial artifacts|已保留，不可评分|
+|清理|停止复核时8个r6 PID均已退出；无r6进程；GPU无计算进程；每次短连接后本机无遗留SSH/SCP或到N607/bridge的TCP22连接|已清理|
+
+### 运行解释与后续边界
+
+r6证明r3的support-only raw signed-PR160类质心二级键仍不能在所有真实并列中给出唯一类别。该结论是执行与可判定性负证据，不是accuracy、`H_old_new`、floor或其他性能比较。按照冻结stop rule，本run不重启、不覆盖、不创建r7；任何后续方法修改必须由主agent重新设计、独立复核、提交并使用新的不可覆盖run ID。
