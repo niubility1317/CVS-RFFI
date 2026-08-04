@@ -217,7 +217,7 @@ def test_validation_is_called_for_all_four_signed_rank_directions_on_actual_basi
     assert set(selected_coefficients) == set(expected)
 
 
-def test_rejects_floor_regression_and_tries_the_next_block() -> None:
+def test_records_floor_regression_without_blocking_real_performance_test() -> None:
     fixture = _fixture()
 
     def callback(block_id: str, basis: np.ndarray, coefficient: np.ndarray, phase1_labels: tuple[str, ...]):
@@ -243,7 +243,9 @@ def test_rejects_floor_regression_and_tries_the_next_block() -> None:
         fixture["blocks"], fixture["labels"], fixture["seal"], fixture["receivers"], fixture["classes"],
         fixture["cells"], fixture["loo_bindings"], callback,
     )
-    assert bundle.fabr_asset.block_id != "t1_norm_affine"
+    assert bundle.receipt["phase1_performance_gate_used"] is False
+    if bundle.fabr_asset.block_id == "t1_norm_affine":
+        assert bundle.receipt["selected_phase1_floor_non_decrease_all"] is False
 
 
 def test_tie_uses_frozen_t1_then_t2_then_t3_then_joint_order() -> None:

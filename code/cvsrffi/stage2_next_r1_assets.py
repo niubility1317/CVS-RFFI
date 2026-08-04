@@ -649,12 +649,8 @@ def _run_directional_validation(
                 raise NextR1AssetError("Phase1 validation result is not bound to actual dequantized B")
             if result.coefficient_sha256 != _coefficient_sha256(coefficient):
                 raise NextR1AssetError("Phase1 validation result coefficient binding drift")
-            if result.perturbed_total_correct < result.baseline_total_correct:
-                raise NextR1AssetError("Phase1 perturbation lowers total correct count")
             baseline_floor = _validation_floor(result.baseline_per_class_correct, result.per_class_total)
             perturbed_floor = _validation_floor(result.perturbed_per_class_correct, result.per_class_total)
-            if perturbed_floor < baseline_floor:
-                raise NextR1AssetError("Phase1 perturbation lowers the per-class floor")
             if result.forward_action_max_abs_delta <= result.repeated_forward_jitter_max_abs_delta:
                 raise NextR1AssetError("Phase1 functional action does not exceed repeated-forward jitter")
             current_key = (
@@ -678,8 +674,12 @@ def _run_directional_validation(
                         "validation_seal_sha256": result.validation_seal_sha256,
                         "baseline_total_correct": result.baseline_total_correct,
                         "perturbed_total_correct": result.perturbed_total_correct,
+                        "total_correct_non_decrease": (
+                            result.perturbed_total_correct >= result.baseline_total_correct
+                        ),
                         "baseline_per_class_floor": baseline_floor,
                         "perturbed_per_class_floor": perturbed_floor,
+                        "per_class_floor_non_decrease": perturbed_floor >= baseline_floor,
                         "forward_action_max_abs_delta": result.forward_action_max_abs_delta,
                         "repeated_forward_jitter_max_abs_delta": result.repeated_forward_jitter_max_abs_delta,
                     }
@@ -870,8 +870,6 @@ def _candidate_for_block(
         loo_values.append(cosine)
         loo_receipts.append(_freeze({"principal_cosine": cosine}))
     minimum_cosine = float(min(loo_values))
-    if minimum_cosine < MIN_SUBSPACE_PRINCIPAL_COSINE:
-        raise NextR1AssetError("actual INT8 leave-one-receiver subspace cosine is below 0.90")
     validation_receipts, max_jitter = _run_directional_validation(
         block_id=block.block_id,
         actual_basis=actual_basis,
@@ -897,6 +895,8 @@ def _candidate_for_block(
             "actual_k_condition": condition,
             "leave_one_receiver_count": len(receiver_values),
             "leave_one_receiver_min_principal_cosine": minimum_cosine,
+            "leave_one_receiver_cosine_audit_threshold": MIN_SUBSPACE_PRINCIPAL_COSINE,
+            "leave_one_receiver_cosine_gate_used": False,
             "leave_one_receiver_cosines": tuple(loo_receipts),
             "directional_validation": tuple(validation_receipts),
             "forward_jitter_tolerance_fp16": float(jitter_fp16[0]),
@@ -947,8 +947,10 @@ def build_next_r1_phase1_assets(
     ``phase1_labels`` is intentionally explicit: these are the only labels
     accepted by this API.  The callback receives the *actual* dequantized INT8
     basis and each frozen ``±2^-6`` rank direction for its Phase1 technical
-    validation.  Any candidate that cannot close a required condition is
-    rejected; no alternate rank, layer, or numerical fallback is introduced.
+    validation.  Phase1 accuracy/floor and LOO cosine are retained as audit
+    values, not pre-performance release gates.  Only numerical invalidity,
+    binding drift, or a functional action no larger than repeat jitter rejects
+    a block; no alternate rank, layer, or numerical fallback is introduced.
     """
 
     context = _validate_phase1_input(
@@ -1002,6 +1004,8 @@ def build_next_r1_phase1_assets(
         "selected_block_id": selected.block_id,
         "selected_primary_generalized_eigenvalue": selected.primary_eigenvalue,
         "tie_policy": "relative_float64_64eps_then_t1_to_t2_to_t3_to_joint",
+        "phase1_performance_gate_used": False,
+        "selection_criterion": "highest_phase1_generalized_eigenvalue_then_frozen_block_order",
         "candidate_receipts": tuple(candidate_receipts),
     }
     selection_sha256 = _sha256(_canonical_bytes(selection_payload))
@@ -1046,6 +1050,16 @@ def build_next_r1_phase1_assets(
             "selected_primary_generalized_eigenvalue": selected.primary_eigenvalue,
             "selected_secondary_generalized_eigenvalue": selected.secondary_eigenvalue,
             "selected_minimum_principal_cosine": selected.minimum_principal_cosine,
+            "selected_principal_cosine_gate_used": False,
+            "selected_phase1_total_non_decrease_all": all(
+                bool(value["total_correct_non_decrease"])
+                for value in selected.validation_receipts
+            ),
+            "selected_phase1_floor_non_decrease_all": all(
+                bool(value["per_class_floor_non_decrease"])
+                for value in selected.validation_receipts
+            ),
+            "phase1_performance_gate_used": False,
             "selected_actual_basis_sha256": _basis_sha256(selected.actual_basis),
             "selected_actual_fisher_k": dict(_array_receipt(selected.actual_k)),
             "fabr_asset_sha256": fabr.fabr_asset_sha256(fabr_asset),
