@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+from collections.abc import Mapping
 import hashlib
 import json
 from pathlib import Path
@@ -20,6 +21,16 @@ from cvsrffi.stage2_next_r5_fa_target125 import (  # noqa: E402
     build_target125_truth_catalog,
     score_target125_from_files,
 )
+
+
+def _json_plain(value: object) -> object:
+    """Convert immutable runtime containers into JSON-compatible plain values."""
+
+    if isinstance(value, Mapping):
+        return {str(key): _json_plain(item) for key, item in value.items()}
+    if isinstance(value, (tuple, list)):
+        return [_json_plain(item) for item in value]
+    return value
 
 
 def _add_prepared_inputs(parser: argparse.ArgumentParser) -> None:
@@ -180,7 +191,7 @@ def main(argv: list[str] | None = None) -> int:
             expected_truth_catalog_file_sha256=args.truth_catalog_sha256,
             output_dir=args.output_dir,
         )
-    print(json.dumps(result, ensure_ascii=False, sort_keys=True))
+    print(json.dumps(_json_plain(result), ensure_ascii=False, sort_keys=True))
     return 0
 
 
