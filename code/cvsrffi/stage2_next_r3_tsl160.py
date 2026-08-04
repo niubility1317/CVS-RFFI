@@ -267,8 +267,8 @@ class TSL160PhysicalLOOFold:
             raise NextR3TSL160Error("physical LOO support/validation closure drift")
         indices = np.asarray([classes.index(label) for label in support_labels], dtype=np.int64)
         counts = np.bincount(indices, minlength=len(classes))
-        if np.any(counts < 2) or len(set(int(count) for count in counts)) != 1:
-            raise NextR3TSL160Error("physical LOO support must be balanced K>=2 over all classes")
+        if np.any(counts < 2):
+            raise NextR3TSL160Error("physical LOO support must retain at least two rows per class")
         object.__setattr__(self, "fold_id", str(self.fold_id))
         object.__setattr__(self, "receiver_id", str(self.receiver_id))
         object.__setattr__(self, "class_handle", str(self.class_handle))
@@ -530,20 +530,45 @@ def _balanced_support(
     return rows, classes, indices, active_k
 
 
+def _phase1_loo_support(
+    support_zid160: np.ndarray,
+    support_labels: Sequence[str],
+    registered_classes: Sequence[str],
+) -> tuple[np.ndarray, tuple[str, ...], np.ndarray, np.ndarray]:
+    """Validate exact single-record LOO support without requiring equal counts."""
+
+    rows = _normalized_canonical_rows(support_zid160, name="LOO support_zid160")
+    classes = _string_tuple(registered_classes, name="LOO registered_classes", minimum=2)
+    labels = tuple(str(label) for label in support_labels)
+    if len(labels) != len(rows) or any(label not in classes for label in labels):
+        raise NextR3TSL160Error("physical LOO support labels must close over registered classes")
+    class_index = {label: index for index, label in enumerate(classes)}
+    indices = np.asarray([class_index[label] for label in labels], dtype=np.int64)
+    counts = np.bincount(indices, minlength=len(classes))
+    if np.any(counts < 2):
+        raise NextR3TSL160Error("physical LOO support must retain at least two rows per class")
+    return rows, classes, indices, counts
+
+
+def _residual_degrees_of_freedom(counts: np.ndarray) -> int:
+    values = np.asarray(counts, dtype=np.int64)
+    if values.ndim != 1 or len(values) < 2 or np.any(values < 2):
+        raise NextR3TSL160Error("residual degrees of freedom require per-class counts >=2")
+    return int(np.sum(values - 1))
+
+
 def _geometry(
     rows: np.ndarray,
     indices: np.ndarray,
     classes: tuple[str, ...],
     *,
     prior: TSL160Phase1Prior,
-) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, float, float, np.ndarray, np.ndarray]:
+) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, float, float, np.ndarray, np.ndarray, int]:
     """Compute the frozen K>=2 EB diagonal and spherical reference geometry."""
 
     class_count = len(classes)
     counts = np.bincount(indices, minlength=class_count)
-    if np.any(counts < 2) or len(set(int(count) for count in counts)) != 1:
-        raise NextR3TSL160Error("TSL geometry needs balanced K>=2 support")
-    active_k = int(counts[0])
+    residual_degrees_of_freedom = _residual_degrees_of_freedom(counts)
     means = np.empty((class_count, Z_DIM), dtype=np.float64)
     residual_energy = np.zeros(Z_DIM, dtype=np.float64)
     for class_index in range(class_count):
@@ -553,7 +578,7 @@ def _geometry(
         # e_ck=((K-1)/K)[z_ck-(K-1)^-1 sum_{j!=k}z_cj] == z_ck-mu_c.
         residuals = group - mean[None, :]
         residual_energy += np.sum(residuals * residuals, axis=0)
-    denominator = prior.nu0 + class_count * (active_k - 1)
+    denominator = prior.nu0 + residual_degrees_of_freedom
     v_post = (prior.nu0 * prior.v0 + residual_energy) / denominator
     floor = max(float(np.finfo(np.float32).tiny), 64.0 * float(np.finfo(np.float32).eps) * float(np.mean(prior.v0)))
     if not np.isfinite(v_post).all() or np.any(v_post < floor):
@@ -595,6 +620,7 @@ def _geometry(
         v_sph,
         weight_hat,
         intercept_hat,
+        residual_degrees_of_freedom,
     )
 
 
@@ -681,11 +707,10 @@ def _prior_from_cells(cells: Sequence[TSL160Phase1Cell], *, binding: TSL160Runti
 
 
 def _physical_loo_radius(fold: TSL160PhysicalLOOFold, prior: TSL160Phase1Prior) -> float:
-    rows, classes, indices, _, = _balanced_support(
-        _normalized_canonical_rows(fold.support_zid160, name="LOO support_zid160"),
+    rows, classes, indices, _ = _phase1_loo_support(
+        fold.support_zid160,
         fold.support_labels,
         fold.registered_classes,
-        allowed_k=tuple(range(2, 32768)),
     )
     (
         _,
@@ -696,6 +721,7 @@ def _physical_loo_radius(fold: TSL160PhysicalLOOFold, prior: TSL160Phase1Prior) 
         _,
         weight_hat,
         intercept_hat,
+        _,
     ) = _geometry(rows, indices, classes, prior=prior)
     validation = _normalized_canonical_rows(fold.validation_zid160, name="LOO validation_zid160")
     class_index = {label: index for index, label in enumerate(classes)}
@@ -770,6 +796,8 @@ def build_tsl160_phase1_prior(
     fold_ids = [fold.fold_id for fold in folds]
     if len(fold_ids) != len(set(fold_ids)):
         raise NextR3TSL160Error("physical LOO fold IDs must be unique")
+    validation_id_counts = {physical_id: 0 for physical_id in eligible_ids}
+    loo_support_class_counts: dict[str, Mapping[str, int]] = {}
     for fold in folds:
         if fold.receiver_id == held_receiver or fold.class_handle == held_class:
             raise NextR3TSL160Error("physical LOO fold violates held receiver/class exclusion")
@@ -778,6 +806,28 @@ def build_tsl160_phase1_prior(
         fold_ids_used = set(fold.support_physical_ids).union(fold.validation_physical_ids)
         if not fold_ids_used.issubset(eligible_ids):
             raise NextR3TSL160Error("physical LOO fold uses excluded or unsealed physical IDs")
+        if len(fold.validation_physical_ids) != 1:
+            raise NextR3TSL160Error(
+                "each physical LOO fold must hold out exactly one validation physical ID"
+            )
+        validation_id = fold.validation_physical_ids[0]
+        expected_support_ids = eligible_ids - {validation_id}
+        if set(fold.support_physical_ids) != expected_support_ids:
+            raise NextR3TSL160Error(
+                "physical LOO support IDs must be the exact eligible-universe complement"
+            )
+        validation_id_counts[validation_id] += 1
+        class_counts = {
+            class_handle: int(sum(label == class_handle for label in fold.support_labels))
+            for class_handle in fold.registered_classes
+        }
+        if any(count < 2 for count in class_counts.values()):
+            raise NextR3TSL160Error("physical LOO support must retain at least two rows per class")
+        loo_support_class_counts[fold.fold_id] = class_counts
+    if any(count != 1 for count in validation_id_counts.values()):
+        raise NextR3TSL160Error(
+            "eligible Phase1 physical IDs must each appear exactly once as LOO validation"
+        )
     provisional = _prior_from_cells(eligible, binding=binding)
     radii = [_physical_loo_radius(fold, provisional) for fold in folds]
     rho_raw = _type7_quantile(radii, 0.05)
@@ -809,6 +859,13 @@ def build_tsl160_phase1_prior(
         "eligible_phase1_physical_id_root_sha256": root,
         "physical_loo_fold_count": len(folds),
         "physical_loo_fold_ids": tuple(fold_ids),
+        "physical_loo_complete_validation_coverage": True,
+        "physical_loo_validation_physical_id_count": len(validation_id_counts),
+        "physical_loo_validation_exactly_once": True,
+        "physical_loo_support_exact_complement": True,
+        "unbalanced_single_holdout_loo": True,
+        "physical_loo_residual_degrees_of_freedom_policy": "sum_c(n_c-1)",
+        "physical_loo_support_class_counts": loo_support_class_counts,
         "phase1_cell_weighting": "equal_cell",
         "rho_policy": "physical_LOO_positive_radius_type7_q05_round_down",
         "rho_raw_before_round_down": rho_raw,
@@ -1024,6 +1081,7 @@ def fit_tsl160(
         v_sph,
         weight_hat,
         intercept_hat,
+        residual_degrees_of_freedom,
     ) = _geometry(rows, indices, classes, prior=prior)
     eta = min(1.0, prior.rho_h / distance)
     weights = weight_ref + eta * (weight_hat - weight_ref)
@@ -1060,6 +1118,10 @@ def fit_tsl160(
         "v_post_max": float(np.max(v_post)),
         "v_sph": v_sph,
         "distance_centered_reference_to_hat": distance,
+        "residual_degrees_of_freedom": residual_degrees_of_freedom,
+        "balanced_residual_degrees_of_freedom": len(classes) * (active_k - 1),
+        "balanced_dof_reduction_exact": residual_degrees_of_freedom
+        == len(classes) * (active_k - 1),
         "rho_h": prior.rho_h,
         "eta": eta,
         "quantized_deployed_delta_from_spherical_reference": deployed_delta,

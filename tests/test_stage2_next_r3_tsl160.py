@@ -34,7 +34,7 @@ def _cell(receiver: str, label: str, class_index: int, *, seed: int) -> tsl.TSL1
 
 def _phase1_fixture() -> tuple[
     tuple[tsl.TSL160Phase1Cell, ...],
-    tsl.TSL160PhysicalLOOFold,
+    tuple[tsl.TSL160PhysicalLOOFold, ...],
     tsl.TSL160RuntimeBinding,
 ]:
     cells = [_cell("r0", "c0", 0, seed=10), _cell("r0", "c1", 1, seed=11), _cell("r1", "c0", 0, seed=12)]
@@ -42,25 +42,32 @@ def _phase1_fixture() -> tuple[
         for class_index in range(1, 5):
             cells.append(_cell(receiver, f"c{class_index}", class_index, seed=offset + class_index))
     cells = tuple(cells)
-    class_cells = tuple(
-        next(cell for cell in cells if cell.receiver_id == "r1" and cell.class_handle == f"c{class_index}")
-        for class_index in range(1, 5)
-    )
-    fold = tsl.TSL160PhysicalLOOFold(
-        fold_id="phase1-r1-c1-physical-loo",
-        receiver_id="r1",
-        class_handle="c1",
-        registered_classes=("c1", "c2", "c3", "c4"),
-        support_zid160=np.concatenate(tuple(cell.zid160[:5] for cell in class_cells), axis=0),
-        support_labels=tuple(f"c{class_index}" for class_index in range(1, 5) for _ in range(5)),
-        support_physical_ids=tuple(physical_id for cell in class_cells for physical_id in cell.physical_ids[:5]),
-        validation_zid160=np.concatenate(tuple(cell.zid160[5:] for cell in class_cells), axis=0),
-        validation_labels=("c1", "c2", "c3", "c4"),
-        validation_physical_ids=tuple(physical_id for cell in class_cells for physical_id in cell.physical_ids[5:]),
-    )
     eligible = tuple(
         cell for cell in cells if cell.receiver_id != "r0" and cell.class_handle != "c0"
     )
+    records = tuple(
+        (cell.receiver_id, cell.class_handle, physical_id, cell.zid160[row_index])
+        for cell in eligible
+        for row_index, physical_id in enumerate(cell.physical_ids)
+    )
+    registered_classes = ("c1", "c2", "c3", "c4")
+    folds = []
+    for validation_index, validation in enumerate(records):
+        support_records = records[:validation_index] + records[validation_index + 1 :]
+        folds.append(
+            tsl.TSL160PhysicalLOOFold(
+                fold_id=f"phase1-loo-{validation[2]}",
+                receiver_id=validation[0],
+                class_handle=validation[1],
+                registered_classes=registered_classes,
+                support_zid160=np.stack(tuple(record[3] for record in support_records)),
+                support_labels=tuple(record[1] for record in support_records),
+                support_physical_ids=tuple(record[2] for record in support_records),
+                validation_zid160=np.stack((validation[3],)),
+                validation_labels=(validation[1],),
+                validation_physical_ids=(validation[2],),
+            )
+        )
     binding = tsl.TSL160RuntimeBinding(
         outer_fold_id="outer-r0-c0",
         checkpoint_sha256=_sha("checkpoint"),
@@ -68,14 +75,14 @@ def _phase1_fixture() -> tuple[
         phase1_physical_id_root_sha256=tsl.phase1_physical_id_root(eligible),
         phase1_seal_sha256=_sha("phase1-seal"),
     )
-    return cells, fold, binding
+    return cells, tuple(folds), binding
 
 
 def _prior() -> tuple[tsl.TSL160Phase1Prior, tsl.TSL160RuntimeBinding]:
-    cells, fold, binding = _phase1_fixture()
+    cells, folds, binding = _phase1_fixture()
     built = tsl.build_tsl160_phase1_prior(
         cells,
-        (fold,),
+        folds,
         binding=binding,
         held_receiver="r0",
         held_class="c0",
@@ -121,10 +128,10 @@ def test_canonical_d106_is_relu_normalized_and_fails_on_zero() -> None:
 
 
 def test_phase1_prior_double_exclusion_binding_and_readonly_roundtrip() -> None:
-    cells, fold, binding = _phase1_fixture()
+    cells, folds, binding = _phase1_fixture()
     built = tsl.build_tsl160_phase1_prior(
         cells,
-        (fold,),
+        folds,
         binding=binding,
         held_receiver="r0",
         held_class="c0",
@@ -137,20 +144,94 @@ def test_phase1_prior_double_exclusion_binding_and_readonly_roundtrip() -> None:
     assert receipt["binding_sha256"] == binding.binding_sha256
     assert receipt["excluded_held_receiver_cell_count"] == 2
     assert receipt["excluded_held_class_cell_count"] == 2
+    assert receipt["physical_loo_complete_validation_coverage"] is True
+    assert receipt["physical_loo_validation_physical_id_count"] == 48
+    assert receipt["physical_loo_validation_exactly_once"] is True
+    assert receipt["physical_loo_support_exact_complement"] is True
+    assert receipt["unbalanced_single_holdout_loo"] is True
+    assert receipt["physical_loo_residual_degrees_of_freedom_policy"] == "sum_c(n_c-1)"
+    assert all(
+        sorted(counts.values()) == [11, 12, 12, 12]
+        for counts in receipt["physical_loo_support_class_counts"].values()
+    )
     wire = tsl.serialize_tsl160_prior(prior)
     recovered = tsl.roundtrip_tsl160_prior(prior)
     assert tsl.serialize_tsl160_prior(recovered) == wire
     assert recovered.prior_sha256 == prior.prior_sha256
 
-    bad_fold = replace(fold, receiver_id="r0")
+    bad_fold = replace(folds[0], receiver_id="r0")
     with pytest.raises(tsl.NextR3TSL160Error, match="held receiver/class exclusion"):
         tsl.build_tsl160_phase1_prior(
             cells,
-            (bad_fold,),
+            (bad_fold,) + folds[1:],
             binding=binding,
             held_receiver="r0",
             held_class="c0",
         )
+
+
+def test_phase1_prior_requires_complete_unique_single_record_loo() -> None:
+    cells, folds, binding = _phase1_fixture()
+    build_kwargs = {
+        "binding": binding,
+        "held_receiver": "r0",
+        "held_class": "c0",
+    }
+    with pytest.raises(tsl.NextR3TSL160Error, match="each appear exactly once"):
+        tsl.build_tsl160_phase1_prior(cells, folds[:-1], **build_kwargs)
+
+    duplicate = replace(folds[0], fold_id="duplicate-validation-id")
+    with pytest.raises(tsl.NextR3TSL160Error, match="each appear exactly once"):
+        tsl.build_tsl160_phase1_prior(cells, folds[:-1] + (duplicate,), **build_kwargs)
+
+    first = folds[0]
+    second = folds[1]
+    second_validation_id = second.validation_physical_ids[0]
+    keep = np.asarray(
+        [physical_id != second_validation_id for physical_id in first.support_physical_ids],
+        dtype=bool,
+    )
+    multi_validation = replace(
+        first,
+        support_zid160=first.support_zid160[keep],
+        support_labels=tuple(
+            label for label, retained in zip(first.support_labels, keep) if retained
+        ),
+        support_physical_ids=tuple(
+            physical_id
+            for physical_id, retained in zip(first.support_physical_ids, keep)
+            if retained
+        ),
+        validation_zid160=np.concatenate(
+            (first.validation_zid160, second.validation_zid160), axis=0
+        ),
+        validation_labels=first.validation_labels + second.validation_labels,
+        validation_physical_ids=(
+            first.validation_physical_ids + second.validation_physical_ids
+        ),
+    )
+    with pytest.raises(tsl.NextR3TSL160Error, match="exactly one validation physical ID"):
+        tsl.build_tsl160_phase1_prior(
+            cells,
+            (multi_validation,) + folds[2:],
+            **build_kwargs,
+        )
+
+    noncomplement = replace(
+        first,
+        support_zid160=first.support_zid160[:-1],
+        support_labels=first.support_labels[:-1],
+        support_physical_ids=first.support_physical_ids[:-1],
+    )
+    with pytest.raises(tsl.NextR3TSL160Error, match="exact eligible-universe complement"):
+        tsl.build_tsl160_phase1_prior(
+            cells,
+            (noncomplement,) + folds[1:],
+            **build_kwargs,
+        )
+
+    balanced_counts = np.asarray([5, 5, 5, 5], dtype=np.int64)
+    assert tsl._residual_degrees_of_freedom(balanced_counts) == 4 * (5 - 1)
 
 
 def test_k1_is_exact_qknn_object_alias_and_tie_fails_closed() -> None:
@@ -197,6 +278,9 @@ def test_k5_d129_wire_eb_resource_and_permutation_equivariance() -> None:
     assert fit.fit_receipt["role_input"] is False
     assert fit.fit_receipt["same_formula_all_registered_classes"] is True
     assert fit.fit_receipt["query_rows_used_for_fit"] == 0
+    assert fit.fit_receipt["trust_geometry"]["residual_degrees_of_freedom"] == 4 * (5 - 1)
+    assert fit.fit_receipt["trust_geometry"]["balanced_residual_degrees_of_freedom"] == 4 * (5 - 1)
+    assert fit.fit_receipt["trust_geometry"]["balanced_dof_reduction_exact"] is True
     assert fit.resource_receipt["fit_analytic_mac_formula"] == "4*N*160+8*160+2*C*160"
     assert fit.resource_receipt["explicit_dense_matrix_elements_constructed"] == 0
     assert fit.resource_receipt["explicit_spectral_factorization_count"] == 0
