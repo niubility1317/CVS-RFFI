@@ -3,7 +3,7 @@
 ## 状态
 
 - 实验ID：`d138_d92_lite_pr160_target125_20260804_r5`
-- 当前状态：`LOCAL_VERIFIED / REMOTE_LAUNCH_PENDING / NO_PERFORMANCE_RESULT`
+- 当前状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
 - 操作员：Codex主agent；r5由主agent直接负责N607落地、启动和短连接监控。
 - 目标：修复r4在完整125矩阵中重复出现的float32精确top tie技术故障，并执行完整125/375/750闭环。
 
@@ -46,3 +46,11 @@ r4的异常是同一高精度分数在最终float32 cast后形成数值别名。
 ## 完成后分析
 
 结果表必须逐candidate/run/receiver/TX/K/seed/scene保持before old、after old、seen-new、`H_old_new`、forgetting、coverage及最终判定同row绑定；不报告跨row孤立极值。
+
+## r5停止证据
+
+r5真实smoke通过后启动8 shard。分片0、1、3、4、5、7在未写出prediction前重复触发`D92PR160CoreError: TIE_UNRESOLVED: exact float32 tie remains tied in float64`；分片2和6仅完成partial shard manifest。该结果确认r4问题不是float32舍入别名，而是最终float64分数本身的真实并列，满足系统性技术停止规则。未执行merge、validate、truth-open或score；所有r5进程已退出，GPU已释放，r5不产生性能结果。
+
+## r5后续修复
+
+已在本地新候选`D92-Lite-PR160/r3`中加入support-only原始signed-PR160类质心余弦二级键：只在最终float64真实并列时使用同一support的原始signed-PR160类质心；若二级仍并列则继续fail-closed。没有使用registry顺序、类别hash、query truth/role、跨query回退或quota。新method lock为`configs/d138_d92_lite_pr160_r3.json`，SHA256=`99647a633ff937d22e9ab5928ca2a1785757cd57e1445f3dc8245c534f89222e`；本地`ssr-gpu`窄回归全部通过，代码提交`02334ff48a3519e63e103870f0e60d93af3c8b74`。r6复用r5已验证prepared输入，使用新的不可覆盖run ID。
