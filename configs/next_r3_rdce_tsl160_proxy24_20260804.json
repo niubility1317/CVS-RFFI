@@ -1,0 +1,93 @@
+{
+  "schema": "cvs.stage2.next_r3.rdce_tsl160.method_lock.v1",
+  "revision": "NEXT-R3-RDCE-TSL160-R1",
+  "protocol_schema": "p2_min_v1",
+  "representation_rule": "d106_canonical_normalized_relu_zid160",
+  "representation_dim": 160,
+  "matrix": {
+    "semantics": "phase1_seen_class_loco_directional_proxy",
+    "formal_new_registration_claim": false,
+    "receiver_count": 2,
+    "held_receivers": ["1-1", "18-2"],
+    "receiver_selection_policy": "preregister_one_prior_positive_and_one_prior_negative_receiver_for_heterogeneity_stress_no_posthoc_replacement",
+    "held_class_count": 6,
+    "k_values": [1, 5],
+    "atomic_row_count": 24,
+    "representations": ["R0", "R1_RDCE"],
+    "heads": ["Q_qKNN", "F_d92_full160_reference", "L_tsl160"]
+  },
+  "rdce": {
+    "candidate_id": "D106-RDCE/GTSM-r3-SCATTER02",
+    "rank": 3,
+    "phase1_numeric_payload_bytes": 504,
+    "row_dynamic_numeric_bytes": 6,
+    "query_projection_macs": 960,
+    "k1_attenuation": [0.3, 0.3, 0.3],
+    "freeze_da_state_before_registration": true,
+    "signed_pre_relu_fallback_forbidden": true
+  },
+  "tsl160": {
+    "head_id": "TSL-160",
+    "k1_policy": "exact_qknn_logit_object_alias",
+    "k5_policy": "all_registered_class_equal_formula_empirical_bayes_diagonal_with_spherical_trust_region",
+    "role_input": false,
+    "phase1_prior_representation": "d106_canonical_normalized_relu_zid160",
+    "prior_semantics": "pre_adaptation_source_anchor_same_ambient_axes",
+    "prior_transported_by_rdce": false,
+    "r1_covariance_claim": false,
+    "r1_runtime_cache_policy": "direct_signed_unit_rdce_cache_no_relu_no_renormalization",
+    "phase1_outer_fold_exclusions": ["held_receiver", "held_class"],
+    "phase1_cell_weighting": "equal_cell",
+    "rho_policy": "physical_LOO_positive_radius_type7_q05_round_down",
+    "prior_numeric_payload_bytes": 170,
+    "affine_numeric_state_formula": "164*C_B",
+    "query_affine_macs_formula": "160*C",
+    "fit_mac_formula": "4*N*160+8*160+2*C*160",
+    "dense_matrix_count": 0,
+    "spectral_factorization_count": 0,
+    "linear_solve_count": 0
+  },
+  "phase1_asset_binding": {
+    "jointly_sealed_with_checkpoint": true,
+    "runtime_sidecar": false,
+    "required_receipts": [
+      "outer_fold_id",
+      "checkpoint_sha256",
+      "representation_rule_sha256",
+      "phase1_physical_id_root_sha256",
+      "phase1_seal_sha256"
+    ]
+  },
+  "causal_comparisons_k5": [
+    "R1Q-R0Q",
+    "R0L-R0Q",
+    "(R1L-R1Q)-(R0L-R0Q)",
+    "R0L-R0F",
+    "R1L-R1F",
+    "(R1L-R1F)-(R0L-R0F)"
+  ],
+  "reporting": {
+    "formal_state_names": ["DA0_REG0", "DA1_REG0", "DA0_REG1", "DA1_REG1"],
+    "proxy_artifact_state_prefix": "SOURCE_HELD_PROXY",
+    "reg0_new_and_h": "N/A",
+    "source_held_labels": "proxy_only",
+    "l_minus_f_claim": "lite_full_pipeline_replacement_vs_role_structured_f160_not_pure_head_effect"
+  },
+  "close_without_tuning_if": [
+    "representation_binding_failure",
+    "outer_fold_exclusion_failure",
+    "query_fit_update_or_selection_nonzero",
+    "no_function_after_quantization",
+    "exact_float32_top_tie",
+    "complete_proxy_pass_rule_failure"
+  ],
+  "forbidden_runtime_inputs": [
+    "clean_or_source_samples",
+    "query_truth",
+    "query_role",
+    "class_quota",
+    "true_batch_class_count",
+    "global_reassignment",
+    "phase2_optimizer_or_backward"
+  ]
+}
