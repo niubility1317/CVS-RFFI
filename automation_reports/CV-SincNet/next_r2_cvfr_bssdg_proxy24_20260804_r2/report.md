@@ -90,3 +90,14 @@ commit`4aea94c7788aa8406d0ccf486a911e8b7ab0de0b`只把封存条件改为：SHA�
 |`CVFR-BSSDG/r1`|`DA1_REG1`|待capsule冻结|1/5|待评分|待评分|待评分|待评分|待评分|待回填|待定|
 
 完成后回填逐key同row表、四差分、共同指标DiD、CVFR identity比例、预测相同性、资源、异常和最终关闭/晋级决定。
+
+## 终态证据追加：技术停止（2026-08-04）
+
+- 终态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。未依据任何性能指标停止，未修改方法/矩阵/输入，未进行score重试。
+- 首次predict绑定尝试：PID=`1132599`自然退出，日志`predict.log`仅报告`run root must be a new resolved absolute child of an existing directory`；output不存在且0 prediction。该日志保留并标记`COMMAND_BINDING_ATTEMPT0_ZERO_OUTPUT`。
+- 经主agent授权，同一冻结r2内只做一次路径绑定纠正：`--run-root=/home/szu2070436088/2510044040/CV-SincNet/runs/next_r2_cvfr_bssdg_proxy24_20260804_r2/output`，其余参数完全不变；新日志为`predict_retry1.log`，不覆盖首日志。
+- predict retry PID=`1134441`自然退出，`CUDA_VISIBLE_DEVICES=0`/`--device cuda:0`，GPU0释放；完成JSON显示`outer_keys_completed=24`、`states_completed=96`、`all_states_sealed=true`、`truth_opened=false`、`scoring_performed=false`。远端计数：state JSON=96、NPZ=96、BSSDG wire=96、CVFR wire=48；根JSON=plan/preregistration/manifest/completion四份。
+- 独立score PID=`1135496`自然退出，GPU0释放；`score.log`唯一确定性异常为`NextR2ScoreError: state receipt binding drift`。未生成`score.json`或`scoring_completion.json`，因此没有性能结果。
+- 远端日志SHA256：`predict.log`=`b3362565c2dd1f0a3ed4114f30f1acc05a5baf5c0671e8ed66b5f952bbc67207`；`predict_retry1.log`=`f2ae150eb1525772cb0f1bb8eae3a12217c820eb9f95b8431411ed7d8824d29b`；`score.log`=`194a6e43e674a9ac12f8c7966d71f244427c5dc09212f49f2109f7282eaf7e4c`；manifest=`903f2422d776589586fa2d91898f8386d41e4bd8dd5933184280988463924d1a`；completion=`1495409761f53ab4b8ef876664b796d588b017b5edf9f6b430dd5de175c48e06`。
+- 完整回收artifact绝对路径：`E:\type10-7\automation_reports\CV-SincNet\next_r2_cvfr_bssdg_proxy24_20260804_r2\artifacts\remote_next_r2_20260804`（346文件；包含input、全部logs、96状态三类artifact及四份根JSON）。
+- 所有SSH/SCP短连接结束后本机`ssh.exe=none`、N607/bridge TCP22无ESTABLISHED连接；远端GPU0无compute进程。主agent负责后续只读故障定位和性能空结果记录。
