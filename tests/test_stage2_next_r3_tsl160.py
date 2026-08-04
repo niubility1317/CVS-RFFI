@@ -234,6 +234,74 @@ def test_phase1_prior_requires_complete_unique_single_record_loo() -> None:
     assert tsl._residual_degrees_of_freedom(balanced_counts) == 4 * (5 - 1)
 
 
+def test_geometry_clamps_finite_positive_wire_floor_undershoot() -> None:
+    prior, _ = _prior()
+    # Reproduce the Phase1 path: clamp a zero component to the existing floor,
+    # then serialize it on the INT8-log/FP16 wire. The decoded endpoint falls
+    # slightly below that same frozen floor solely due to wire rounding.
+    prequant_v0 = np.ones(160, dtype=np.float64)
+    prequant_floor = max(
+        float(np.finfo(np.float32).tiny),
+        64.0 * float(np.finfo(np.float32).eps) * float(np.mean(prequant_v0)),
+    )
+    prequant_v0[0] = prequant_floor
+    q_logv0, scale_logv0, offset_logv0 = tsl._quantize_logv0(prequant_v0)
+    edge_prior = replace(
+        prior,
+        q_logv0_int8=q_logv0,
+        scale_logv0_fp16=scale_logv0,
+        offset_logv0_fp16=offset_logv0,
+        nu0_fp16=np.asarray([np.float16(65504.0)], dtype=np.float16),
+    )
+    rows = np.zeros((4, 160), dtype=np.float32)
+    rows[:2, 0] = np.float32(1.0)
+    rows[2:, 1] = np.float32(1.0)
+    indices = np.asarray([0, 0, 1, 1], dtype=np.int64)
+    classes = ("c0", "c1")
+    floor = max(
+        float(np.finfo(np.float32).tiny),
+        64.0 * float(np.finfo(np.float32).eps) * float(np.mean(edge_prior.v0)),
+    )
+    raw_v_post = edge_prior.nu0 * edge_prior.v0 / (edge_prior.nu0 + 2.0)
+    assert raw_v_post[0] > 0.0
+    assert raw_v_post[0] < floor
+
+    _, v_post, *_ = tsl._geometry(rows, indices, classes, prior=edge_prior)
+    assert v_post[0] == pytest.approx(floor, rel=0.0, abs=0.0)
+    assert np.all(v_post >= floor)
+
+
+@pytest.mark.parametrize("invalid_offset", (np.float16("-inf"), np.float16("nan")))
+def test_geometry_still_rejects_nonpositive_or_nonfinite_posterior(
+    invalid_offset: np.float16,
+) -> None:
+    prior, _ = _prior()
+    # Model a corrupted decoded wire directly at the geometry boundary. A
+    # finite-positive floor clamp must not convert zero or NaN into a valid EB
+    # posterior.
+    object.__setattr__(prior, "q_logv0_int8", np.zeros(160, dtype=np.int8))
+    object.__setattr__(
+        prior,
+        "scale_logv0_fp16",
+        np.asarray([np.float16(1.0)], dtype=np.float16),
+    )
+    object.__setattr__(
+        prior,
+        "offset_logv0_fp16",
+        np.asarray([invalid_offset], dtype=np.float16),
+    )
+    rows = np.zeros((4, 160), dtype=np.float32)
+    rows[:2, 0] = np.float32(1.0)
+    rows[2:, 1] = np.float32(1.0)
+    with pytest.raises(tsl.NextR3TSL160Error, match="non-finite or non-positive"):
+        tsl._geometry(
+            rows,
+            np.asarray([0, 0, 1, 1], dtype=np.int64),
+            ("c0", "c1"),
+            prior=prior,
+        )
+
+
 def test_k1_is_exact_qknn_object_alias_and_tie_fails_closed() -> None:
     prior, binding = _prior()
     support = tsl.canonical_d106_relu_zid160(

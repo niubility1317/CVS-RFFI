@@ -581,8 +581,13 @@ def _geometry(
     denominator = prior.nu0 + residual_degrees_of_freedom
     v_post = (prior.nu0 * prior.v0 + residual_energy) / denominator
     floor = max(float(np.finfo(np.float32).tiny), 64.0 * float(np.finfo(np.float32).eps) * float(np.mean(prior.v0)))
-    if not np.isfinite(v_post).all() or np.any(v_post < floor):
-        raise NextR3TSL160Error("empirical-Bayes diagonal variance fell below its frozen floor")
+    if not np.isfinite(v_post).all() or np.any(v_post <= 0.0):
+        raise NextR3TSL160Error("empirical-Bayes diagonal variance is non-finite or non-positive")
+    # The sealed INT8-log/FP16 affine wire can round a finite positive endpoint
+    # slightly below this already-frozen numerical floor. Keep the
+    # scientific floor and all EB hyperparameters unchanged; only canonicalize
+    # such finite positive arithmetic to that same floor.
+    v_post = np.maximum(v_post, floor)
     v_sph = float(np.mean(v_post))
     if not math.isfinite(v_sph) or v_sph < floor:
         raise NextR3TSL160Error("spherical reference variance is invalid")
