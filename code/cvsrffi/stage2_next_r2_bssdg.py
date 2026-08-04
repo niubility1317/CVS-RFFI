@@ -553,7 +553,10 @@ def fit_bssdg(
     for class_index, class_id in enumerate(classes):
         local = rows[np.asarray([label == class_id for label in support_labels], dtype=bool)]
         zbar = np.sum(local, axis=0, dtype=np.float32) / np.float32(active_k)
-        means[class_index] = zbar
+        posterior_mean = (m0 + np.float32(active_k) * zbar) / (
+            np.float32(1.0) + np.float32(active_k)
+        )
+        means[class_index] = posterior_mean
         residual = local - zbar[None, :]
         within = np.sum(residual * residual * inv_v0[None, :], dtype=np.float32)
         shift = zbar - m0
@@ -657,7 +660,7 @@ def score_bssdg(state: BSSDGState, query_z: Any) -> np.ndarray:
     argument = d2 / (nu * rho[None, :])
     log_term = np.log1p(argument).astype(np.float32)
     scores = (
-        -np.float32(0.5 * FEATURE_WIDTH) * state.logrho_fp16.astype(np.float32)[None, :]
+        state.intercept_fp16.astype(np.float32)[None, :]
         -np.float32(0.5 * (FEATURE_WIDTH + float(nu))) * log_term
     )
     if not np.isfinite(scores).all():

@@ -7,6 +7,7 @@ after the implementation review.
 
 from __future__ import annotations
 
+from dataclasses import replace
 import inspect
 
 import numpy as np
@@ -72,14 +73,26 @@ def test_k1_is_native_continuous_student_t_not_an_alias() -> None:
     assert state.active_k == 1
 
 
+def test_posterior_mean_is_shrunk_toward_pooled_prior_before_wire_quantization() -> None:
+    rows, labels, classes = _support(1)
+    state = fit_bssdg(rows, labels, classes, k_shot=1)
+    # zbar=(0,1) on feature zero and m0=(0.5); K1 therefore yields
+    # m_c=(m0+zbar)/2=(0.25,0.75), not the raw support means (0,1).
+    decoded = state.decoded_class_means[:, 0]
+    assert np.isclose(decoded[0], 0.25, atol=2.0e-3, rtol=0.0)
+    assert np.isclose(decoded[1], 0.75, atol=2.0e-3, rtol=0.0)
+    assert not np.isclose(decoded[0], 0.0, atol=2.0e-2, rtol=0.0)
+    assert not np.isclose(decoded[1], 1.0, atol=2.0e-2, rtol=0.0)
+
+
 def test_k5_accepts_rho_below_one_and_negative_logrho() -> None:
-    # Three repeated class centers (-0.1, 0, +0.1) keep every diagonal
+    # Three repeated class centers (-0.125, 0, +0.125) keep every diagonal
     # prior representable as positive-normal FP16.  The center class equals
     # the pooled mean and has A=0, hence rho=(4/9)*(6/5)=0.533... and
     # log(rho)<0 by construction.
     rows = np.zeros((15, 160), dtype=np.float32)
-    rows[0:5, :] = np.float32(-0.1)
-    rows[10:15, :] = np.float32(0.1)
+    rows[0:5, :] = np.float32(-0.125)
+    rows[10:15, :] = np.float32(0.125)
     labels = ("left",) * 5 + ("center",) * 5 + ("right",) * 5
     classes = ("left", "center", "right")
     state = fit_bssdg(rows, labels, classes, k_shot=5)
@@ -145,6 +158,30 @@ def test_state_roundtrip_sha_and_binding_are_canonical() -> None:
     assert serialize_bssdg_state(restored) == wire
     assert restored.state_sha256 == state.state_sha256
     verify_bssdg_binding(restored, binding)
+
+
+def test_score_uses_wire_intercept_and_tampered_intercept_is_rejected() -> None:
+    rows, labels, classes = _support(1)
+    state = fit_bssdg(rows, labels, classes, k_shot=1)
+    query = np.zeros((2, 160), dtype=np.float32)
+    query[:, 0] = np.asarray((0.2, 0.8), dtype=np.float32)
+    scores = score_bssdg(state, query)
+    means = state.decoded_class_means
+    inv_v0 = np.float32(1.0) / state.decoded_v0
+    rho = state.decoded_rho
+    nu = np.float32(4.0 + state.active_k)
+    delta = query[:, None, :] - means[None, :, :]
+    d2 = np.sum(delta * delta * inv_v0[None, None, :], axis=2, dtype=np.float32)
+    expected = (
+        state.intercept_fp16.astype(np.float32)[None, :]
+        - np.float32(0.5 * (160 + float(nu)))
+        * np.log1p(d2 / (nu * rho[None, :])).astype(np.float32)
+    )
+    assert np.array_equal(scores, np.asarray(expected, dtype=np.float32))
+    tampered = np.array(state.intercept_fp16, copy=True)
+    tampered[0] = np.float16(float(tampered[0]) + 1.0)
+    with pytest.raises(BSSDGWireError, match="intercept"):
+        replace(state, intercept_fp16=tampered)
 
 
 def test_query_scoring_does_not_mutate_state_or_use_extra_metadata() -> None:
