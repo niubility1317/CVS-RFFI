@@ -202,6 +202,28 @@ def test_state_wire_roundtrip_is_canonical_and_preserves_transform() -> None:
     assert np.array_equal(observed, expected)
 
 
+def test_resource_receipt_counts_fixed_transform_work_without_legacy_320_upper_bound() -> None:
+    state = _fit(k=1, seed=9317)
+    resource = state.receipt["resource"]
+    assert resource["per_transform_helmert_matvec_multiply_count"] == (
+        cvfr.Z_DIM * cvfr.SCALE_DIM
+    )
+    assert resource["per_transform_helmert_matvec_add_count"] == (
+        cvfr.Z_DIM * (cvfr.SCALE_DIM - 1)
+    )
+    assert resource["per_transform_exp_count"] == cvfr.Z_DIM
+    assert resource["per_row_scale_multiply_count"] == cvfr.Z_DIM
+    assert resource["per_row_shift_multiply_count"] == cvfr.Z_DIM
+    assert resource["per_row_scale_shift_add_count"] == cvfr.Z_DIM
+    assert resource["per_row_totalization_norm_multiply_count"] == cvfr.Z_DIM
+    assert resource["per_row_totalization_norm_add_count"] == cvfr.Z_DIM - 1
+    assert resource["per_row_totalization_sqrt_count"] == 1
+    assert resource["per_row_totalization_divide_count_upper_bound"] == cvfr.Z_DIM
+    assert resource["per_row_affine_mac_count"] == 2 * cvfr.Z_DIM
+    assert "fixed Helmert matvec" in resource["per_row_affine_mac_scope"]
+    assert "query_cvfr_multiply_add_upper_bound" not in resource
+
+
 def test_query_transform_is_repeatable_and_does_not_mutate_state() -> None:
     canonical, plus, minus, labels, binding = _case(k=1, seed=117)
     state = cvfr.fit_cvfr_support(canonical, plus, minus, labels, binding)

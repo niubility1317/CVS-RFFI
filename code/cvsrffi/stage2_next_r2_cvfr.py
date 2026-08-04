@@ -756,10 +756,24 @@ def fit_cvfr_support(
             "fp16_parameter_count": PARAM_DIM,
             "fp32_scalar_count": 1,
             "implicit_helmert_values": Z_DIM * SCALE_DIM,
+            "per_transform_helmert_matvec_multiply_count": Z_DIM * SCALE_DIM,
+            "per_transform_helmert_matvec_add_count": Z_DIM * (SCALE_DIM - 1),
+            "per_transform_exp_count": Z_DIM,
+            "per_row_scale_multiply_count": Z_DIM,
+            "per_row_shift_multiply_count": Z_DIM,
+            "per_row_scale_shift_add_count": Z_DIM,
+            "per_row_totalization_norm_multiply_count": Z_DIM,
+            "per_row_totalization_norm_add_count": Z_DIM - 1,
+            "per_row_totalization_sqrt_count": 1,
+            "per_row_totalization_divide_count_upper_bound": Z_DIM,
+            "per_row_affine_mac_count": 2 * Z_DIM,
+            "per_row_affine_mac_scope": (
+                "rows*scale plus rms*v only; excludes fixed Helmert matvec, "
+                "exp, FP16 decode, norm and totalization divides"
+            ),
             "optimizer_steps": 0,
             "checkpoint_parameter_backward_calls": 0,
             "query_updates": 0,
-            "query_cvfr_multiply_add_upper_bound": 2 * Z_DIM,
         },
     }
     return CVFRState(
