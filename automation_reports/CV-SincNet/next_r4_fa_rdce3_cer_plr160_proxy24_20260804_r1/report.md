@@ -73,6 +73,8 @@ CLI独立复审结论为`P0=1/P1=2`：除上述query类别分组P0外，predict�
 
 技术停止仅允许协议/安全违规、错误checkout/hash、覆盖风险、缺prediction闭合或至少两个不同row出现同一确定性异常指纹；不得按运行中性能停止。
 
+本地真实性能输入准备：已确认D105 checkpoint为`E:\type10-7\automation_reports\CV-SincNet\d105_feature_tap_real_checkpoint_smoke_20260731\input\best_joint_safe_ssdg.pth`，SHA256=`2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98`。计划只读取回N607既有received-IQ：远端`/home/szu2070436088/2510044040/CV-SincNet/runs/d106_real_integration_dba10236_20260801_r7/output/selected_ls_iq/d106_ls_received_iq.npz`到本报告目录的`input/d106_ls_received_iq.npz`；先执行规定的只读SSH preflight，SCP后核验已有记录SHA256=`e3270821...52ede`，不改变远端状态。NEXT-R4 capsule和12个FA-RDCE3资产仍待本地构建与封存。
+
 ## 6.结果表
 
 当前没有真实性能结果，不填写估计值或单元测试代理值。
