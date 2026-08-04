@@ -2,10 +2,11 @@
 
 The candidate repairs D131's lossy ``registered_feature[:, :160]`` tap by
 consuming the same-forward signed-totalized ``joint_proj.0`` representation.
-K1 is an exact qKNN alias.  K5/K10 use one all-class diagonal affine head; no
-old/new split or query-side fit is present.  A float32 precision-alias tie may
-only be resolved by a unique winner in the same score's pre-cast float64
-values; a genuine high-precision tie remains fail-closed.
+K1 is an exact qKNN score path.  K5/K10 use one all-class diagonal affine
+head; no old/new split or query-side fit is present.  A float32 precision
+alias is resolved by the same score's pre-cast float64 values.  A genuine
+high-precision tie may use only the support-only raw signed-PR160 class-centroid
+cosine as a secondary key; if that also ties, execution remains fail-closed.
 """
 
 from __future__ import annotations
@@ -30,9 +31,9 @@ from .stage2_d92_pr160_runtime import (
 )
 
 
-METHOD_LOCK_SHA256 = "256aacf7b6f790ce213ac27c1bb496be1a964cbf4f21cdd46309630235fb3ca4"
-METHOD_LOCK_SCHEMA = "cvs.phase2.d138.d92_lite_pr160.method_lock.v2"
-CANDIDATE_ID = "D92-Lite-PR160/r2"
+METHOD_LOCK_SHA256 = "99647a633ff937d22e9ab5928ca2a1785757cd57e1445f3dc8245c534f89222e"
+METHOD_LOCK_SCHEMA = "cvs.phase2.d138.d92_lite_pr160.method_lock.v3"
+CANDIDATE_ID = "D92-Lite-PR160/r3"
 PROTOCOL_SCHEMA = "p2_min_v1"
 TRANSPORT_ARM = "M_JOINT"
 OLD_CLASS_COUNT = 6
@@ -101,12 +102,39 @@ class D92PR160Pair:
     after_bank: TypedINT8ZIDSupportBank
     after_metric: TypedSharedPSDMetric
     after_lite_state: SharedDiagAffineState | None
+    before_support_features160: np.ndarray
+    after_support_features160: np.ndarray
     old_registered_classes: tuple[str, ...]
     registered_classes: tuple[str, ...]
     active_k: int
     audit: Mapping[str, Any]
 
     def __post_init__(self) -> None:
+        before_support = np.asarray(self.before_support_features160)
+        after_support = np.asarray(self.after_support_features160)
+        if (
+            before_support.dtype != np.float32
+            or after_support.dtype != np.float32
+            or before_support.ndim != 2
+            or after_support.ndim != 2
+            or before_support.shape[1] != ZID_WIDTH
+            or after_support.shape[1] != ZID_WIDTH
+            or len(before_support) != self.before_bank.support_row_count
+            or len(after_support) != self.after_bank.support_row_count
+            or not np.isfinite(before_support).all()
+            or not np.isfinite(after_support).all()
+        ):
+            raise D92PR160CoreError("raw support tie-breaker feature state drift")
+        object.__setattr__(
+            self,
+            "before_support_features160",
+            _readonly(before_support, np.float32),
+        )
+        object.__setattr__(
+            self,
+            "after_support_features160",
+            _readonly(after_support, np.float32),
+        )
         if (
             self.old_registered_classes != self.before_bank.classes
             or self.registered_classes != self.after_bank.classes
@@ -286,7 +314,9 @@ def _require_unique_top(logits: np.ndarray) -> None:
 
 
 def _resolve_float32_precision_alias_ties(
-    float64_logits: np.ndarray, float32_logits: np.ndarray
+    float64_logits: np.ndarray,
+    float32_logits: np.ndarray,
+    secondary_logits: np.ndarray | None = None,
 ) -> np.ndarray:
     """Resolve only float32 rounding aliases using the same raw score."""
 
@@ -310,16 +340,57 @@ def _resolve_float32_precision_alias_ties(
         raw_top = raw[row_index, top_mask]
         raw_max = np.max(raw_top)
         raw_winners = top_indices[raw_top == raw_max]
-        if len(raw_winners) != 1:
-            raise D92PR160CoreError(
-                "TIE_UNRESOLVED: exact float32 tie remains tied in float64"
-            )
-        winner = int(raw_winners[0])
+        if len(raw_winners) == 1:
+            winner = int(raw_winners[0])
+        else:
+            if secondary_logits is None:
+                raise D92PR160CoreError(
+                    "TIE_UNRESOLVED: exact float32 tie remains tied in float64"
+                )
+            secondary = np.asarray(secondary_logits, dtype=np.float64)
+            if secondary.shape != raw.shape or not np.isfinite(secondary).all():
+                raise D92PR160CoreError("support tie-breaker logits are invalid")
+            secondary_top = secondary[row_index, top_mask]
+            secondary_max = np.max(secondary_top)
+            secondary_winners = top_indices[secondary_top == secondary_max]
+            if len(secondary_winners) != 1:
+                raise D92PR160CoreError(
+                    "TIE_UNRESOLVED: exact tie remains after raw support centroid"
+                )
+            winner = int(secondary_winners[0])
         promoted = np.nextafter(resolved[row_index, winner], np.float32(np.inf))
         if not np.isfinite(promoted):
             raise D92PR160CoreError("precision-alias tie promotion overflow")
         resolved[row_index, winner] = promoted
     return np.ascontiguousarray(resolved, dtype=np.float32)
+
+
+def _support_centroid_tie_scores(
+    pair: D92PR160Pair, phase: str, query: np.ndarray
+) -> np.ndarray:
+    """Compute a support-only raw signed-PR160 secondary score."""
+
+    if phase == "before":
+        support = pair.before_support_features160
+        class_indices = pair.before_bank.class_indices_int16
+        classes = pair.old_registered_classes
+    elif phase == "after":
+        support = pair.after_support_features160
+        class_indices = pair.after_bank.class_indices_int16
+        classes = pair.registered_classes
+    else:
+        raise D92PR160CoreError("phase must be before or after")
+    cosine = np.asarray(query, dtype=np.float64) @ np.asarray(support, dtype=np.float64).T
+    columns = []
+    for class_index in range(len(classes)):
+        local = cosine[:, class_indices == class_index]
+        if local.shape[1] < 1:
+            raise D92PR160CoreError("support tie-breaker class coverage drift")
+        columns.append(np.mean(local, axis=1))
+    result = np.stack(columns, axis=1)
+    if not np.isfinite(result).all():
+        raise D92PR160CoreError("support tie-breaker score became non-finite")
+    return np.ascontiguousarray(result, dtype=np.float64)
 
 
 def build_d92_lite_pair(
@@ -366,6 +437,8 @@ def build_d92_lite_pair(
         after_bank=after_bank,
         after_metric=after_metric,
         after_lite_state=lite_state,
+        before_support_features160=old_rows,
+        after_support_features160=all_rows,
         old_registered_classes=old_classes,
         registered_classes=registered,
         active_k=k_old,
@@ -376,6 +449,10 @@ def build_d92_lite_pair(
             "head": "shared_all_class_diagonal_affine",
             "active_k": k_old,
             "after_head": "exact_qknn_alias" if k_old == 1 else "shared_all_class_diagonal_affine",
+            "exact_top_tie_policy": (
+                "float64_unique_then_raw_signed_pr160_support_centroid_cosine"
+                "_unique_then_one_float32_ulp_else_fail_closed"
+            ),
             "old_new_role_access": False,
             "query_rows_used_for_fit": 0,
             "query_state_updates": 0,
@@ -409,7 +486,10 @@ def score(pair: D92PR160Pair, phase: str, arm: str, query_features160: np.ndarra
     expected = len(pair.old_registered_classes) if phase == "before" else len(pair.registered_classes)
     if result.shape != (len(query), expected) or not np.isfinite(result).all():
         raise D92PR160CoreError("query logits shape/value drift")
-    return _resolve_float32_precision_alias_ties(raw_logits, result)
+    raw_maxima = np.max(raw_logits, axis=1, keepdims=True)
+    raw_tie = np.any(np.sum(raw_logits == raw_maxima, axis=1) > 1)
+    secondary = _support_centroid_tie_scores(pair, phase, query) if raw_tie else None
+    return _resolve_float32_precision_alias_ties(raw_logits, result, secondary)
 
 
 __all__ = [

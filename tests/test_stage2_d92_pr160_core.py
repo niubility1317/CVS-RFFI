@@ -95,3 +95,19 @@ def test_float32_precision_alias_tie_still_fails_on_raw_tie() -> None:
     raw = np.asarray([[1.0, 1.0]], dtype=np.float64)
     with pytest.raises(core.D92PR160CoreError, match="remains tied"):
         core._resolve_float32_precision_alias_ties(raw, raw.astype(np.float32))
+
+
+def test_raw_support_centroid_is_the_only_secondary_for_a_true_score_tie() -> None:
+    raw = np.asarray([[1.0, 1.0]], dtype=np.float64)
+    rounded = raw.astype(np.float32)
+    secondary = np.asarray([[0.25, 0.5]], dtype=np.float64)
+    resolved = core._resolve_float32_precision_alias_ties(raw, rounded, secondary)
+    assert int(np.argmax(resolved[0])) == 1
+    assert resolved[0, 1] > resolved[0, 0]
+
+
+def test_raw_support_centroid_tie_remains_fail_closed() -> None:
+    raw = np.asarray([[1.0, 1.0]], dtype=np.float64)
+    secondary = np.asarray([[0.5, 0.5]], dtype=np.float64)
+    with pytest.raises(core.D92PR160CoreError, match="raw support centroid"):
+        core._resolve_float32_precision_alias_ties(raw, raw.astype(np.float32), secondary)

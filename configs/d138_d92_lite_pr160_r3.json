@@ -1,0 +1,105 @@
+{
+  "schema": "cvs.phase2.d138.d92_lite_pr160.method_lock.v3",
+  "candidate_id": "D92-Lite-PR160/r3",
+  "protocol_schema": "p2_min_v1",
+  "scientific_scope": "formal_stage2c_old_new_registration_target125_independent_system_diagnostic",
+  "matrix": {
+    "receiver_count": 5,
+    "seed_count": 5,
+    "slice_count": 5,
+    "outer_job_count": 125,
+    "scenes": [
+      "leo_clear_weak",
+      "leo_low_elev_weak",
+      "leo_rain_weak"
+    ],
+    "phases": ["before", "after"],
+    "candidate_arm_count": 1,
+    "prediction_surface_count": 750
+  },
+  "representation": {
+    "source_runtime": "sealed_D92_TorchScript_ADV3B02_z_id160",
+    "extractor": "same_forward_joint_proj_0_linear_pre_relu160",
+    "materialized_input": "signed_totalized_pre_relu160",
+    "rule": "normalize_ReLU_pre_if_positive_else_signed_pre; exact_zero_or_nonfinite_fail_closed",
+    "additional_backbone_forward": false,
+    "source_runtime_sha256": "f119e8cb3f6beda95f0d545205e91b43e4a557af2fd1d025e95d2edf2b8e6e2a",
+    "extractor_runtime_sha256": "56612c66b49c8167b3fbed0be5aaa25649a3246a178903618274048d541d80a3"
+  },
+  "before": {
+    "state": "phase1_locked_student_t_qknn",
+    "head": "phase1_locked_student_t_qknn",
+    "support": "old_registered_classes_only_same_K"
+  },
+  "after": {
+    "K5_K10": "shared_all_class_diagonal_oas_affine",
+    "K1": "same_signed_pr160_qknn_with_support_only_raw_tie_resolution_no_head_fit",
+    "old_new_role_split": false,
+    "wire": "int8_W_Cx160_plus_fp16_scale_C_plus_fp16_intercept_C"
+  },
+  "state_mapping": {
+    "DA0_REG0": {
+      "phase": "before",
+      "meaning": "no_separate_DA_intervention_old_registry_qknn",
+      "measured": true
+    },
+    "DA0_REG1": {
+      "phase": "after",
+      "meaning": "no_separate_DA_intervention_old_new_registry_pr160_head",
+      "measured": true
+    },
+    "DA1_REG0": {
+      "phase": null,
+      "meaning": "out_of_scope_single_transport_arm_candidate",
+      "measured": false
+    },
+    "DA1_REG1": {
+      "phase": null,
+      "meaning": "out_of_scope_single_transport_arm_candidate",
+      "measured": false
+    }
+  },
+  "exact_top_tie_policy": {
+    "scope": "all_final_float32_logits",
+    "trigger": "per_query_float32_or_float64_top_tie",
+    "action": "precast_float64_unique_then_raw_signed_pr160_support_centroid_cosine_unique_then_one_float32_ulp; otherwise_fail_closed",
+    "precast_score_source": "same_final_score_float64_before_cast",
+    "secondary_score_source": "same_forward_raw_signed_pr160_support_only_class_centroid_cosine",
+    "precision_alias_promotion": "one_float32_ulp",
+    "forbidden_tiebreakers": [
+      "registry_order",
+      "class_id_or_label_hash",
+      "argmax_first_index",
+      "cross_query_or_row_level_fallback",
+      "query_truth_or_query_role",
+      "class_quota_or_global_reassignment"
+    ],
+    "query_independent": true,
+    "class_label_permutation_equivariant": true
+  },
+  "query_decision": {
+    "batch_size": 1,
+    "policy": "independent_argmax_over_all_registered_classes",
+    "query_fit": false,
+    "query_update": false,
+    "query_selection": false
+  },
+  "forbidden_runtime_inputs": [
+    "clean_or_source_samples",
+    "query_truth",
+    "query_role",
+    "query_old_new_role",
+    "class_quota",
+    "true_batch_class_count",
+    "global_reassignment",
+    "phase2_optimizer_or_backward",
+    "performance_routing_or_partial_selection"
+  ],
+  "claim_boundary": {
+    "pre_relu_representation_repair": true,
+    "historical_D92_288d_head_equivalence": false,
+    "K1_head_gain": false,
+    "promotion_requires_complete_125_375_750_closure": true
+  },
+  "negative_result_policy": "close_new_PR160_route_after_complete_formal_negative_without_parameter_tuning"
+}
