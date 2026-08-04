@@ -293,7 +293,17 @@ class NextR1RealModelBridge:
         values = np.asarray(tuple(indices), dtype=np.int64)
         if values.ndim != 1 or values.size < 1 or np.any(values < 0) or np.any(values >= ROW_COUNT):
             raise NextR1RealError("row indices are outside the pinned Phase1 archive")
-        return torch.from_numpy(np.asarray(self.rows.received_iq[values], dtype=np.float32)).to(self.device)
+        array = np.ascontiguousarray(
+            self.rows.received_iq[values], dtype=np.float32
+        )
+        # N607's PyTorch/NumPy pair rejects ``torch.from_numpy`` at the C-API
+        # boundary even for an exact numpy.ndarray.  The standard writable
+        # buffer protocol is ABI-independent; clone gives the tensor owned
+        # storage before the local array leaves scope.
+        tensor = torch.frombuffer(
+            memoryview(array), dtype=torch.float32, count=int(array.size)
+        ).reshape(tuple(int(value) for value in array.shape)).clone()
+        return tensor.to(self.device)
 
     def forward_indices(
         self,

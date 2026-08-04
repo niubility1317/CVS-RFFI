@@ -154,6 +154,17 @@ def test_real_shaped_tap_four_gradient_blocks_and_exact_restore(tmp_path) -> Non
     assert all(not parameter.requires_grad for parameter in bridge.model.parameters())
 
 
+def test_iq_tensor_bridge_does_not_use_numpy_c_api_from_numpy(tmp_path, monkeypatch) -> None:
+    rows = _rows(tmp_path)
+    bridge = real.NextR1RealModelBridge(_Model(), rows, "1" * 64, "cpu")
+    monkeypatch.setattr(
+        torch, "from_numpy", lambda _value: (_ for _ in ()).throw(RuntimeError("forbidden"))
+    )
+    tensor = bridge._indices_tensor((0, 1))
+    assert tensor.dtype == torch.float32 and tuple(tensor.shape) == (2, 2, 8)
+    assert np.array_equal(tensor.numpy(), rows.received_iq[[0, 1]])
+
+
 def test_held_pair_creates_420_rows_thirty_cells_and_complete_loo(tmp_path) -> None:
     rows = _rows(tmp_path)
     bridge = real.NextR1RealModelBridge(_Model(), rows, "1" * 64, "cpu")
