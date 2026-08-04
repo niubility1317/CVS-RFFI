@@ -1,6 +1,33 @@
 # Stage2功能研发目标与证据门
 
-状态：`ACTIVE / D130_COMPLETE_NEGATIVE / D131_TECHNICAL_NO_RESULT / NEXT_R1_DESIGN_FROZEN / D138_PR160_DESIGN_FROZEN / D138_R1_R2_NO_RESULT / D138_R3_STOPPED_PREPARE_OUTPUT_COLLISION / NO_PERFORMANCE_RESULT`
+状态：`ACTIVE / NEXT_R3_TSL_ROUTE_CLOSED_NO_PERFORMANCE_RESULT / NEXT_R4_FA_RDCE3_CER_PLR160_DESIGN_FROZEN`
+
+## 0.0 2026-08-04当前活动目标与统一指标命名
+
+NEXT-R3的`R3-RDCE160×TSL-160`已在N607最终r3的prepare阶段关闭。数值wire floor下穿已按同一冻结floor修复并通过独立复核，但真实physical-LOO仍出现`physical LOO fold has no correctly classified reference margin`。这说明TSL信赖半径依赖“参考头先正确分类”的前提在真实资产上不成立。r1/r2/r3均未产生完整prediction或score，严格记为`NO_PERFORMANCE_RESULT`；不创建r4、不修补TSL、不从技术退出推断性能。
+
+下一唯一候选冻结为`NEXT-R4 FA-RDCE3×CER-PLR160`：
+
+- `FA-RDCE3`只用REG0旧类support的类等权残差，在既有RDCE rank-3基上闭式估计一个跨类共享3维域位移；Phase1只封存与checkpoint共同密封的INT8多样本聚合中心、公共Fisher精度、残差方差和公共半径。R0先减一次`B^Ta`，再执行一次RDCE；R1 signed-unit输出后禁止再次位移、ReLU或L2归一化。DA1_REG1逐字节复用DA1_REG0的`a/κ`，不得以新类support重拟合DA。
+- `CER-PLR160`保留qKNN为基座。K1的head逐logit精确alias qKNN；K5只用support构造类等权共享对角shrinkage的中心化prototype-logit残差，以无正确率、无LOO、无top-k的连续公共公式缩放。残差为零或量化后无函数时记`NO_HEAD_FUNCTION`并精确alias Q，不视为技术失败。
+- 两组件都不更新完整网络参数，不在Phase2执行Fishr式梯度方差匹配。Fishr只可用于Phase1构造/保护稳定表征；K1阶段只允许可辨识的共享低秩闭式状态。
+
+所有后续artifact、表格、报告和对话统一使用以下四个主状态；历史字段只可在括号中作映射，不再作为主名称：
+
+|状态码|唯一中文主名称|必须报告的主指标|
+|---|---|---|
+|`DA0_REG0`|域适应前/新类注册前|old BA、old-floor、总正确数；new/H=`N/A`|
+|`DA1_REG0`|域适应后/新类注册前|同一旧query上的old BA、old-floor、总正确数；new/H=`N/A`|
+|`DA0_REG1`|域适应前/新类注册后|old BA、seen-new、H、all-floor、总正确数|
+|`DA1_REG1`|域适应后/新类注册后|同上；作为联合主结果|
+
+禁止单独使用“before/after”“old-after”“注册后”而不注明DA和REG状态。注册效应必须在固定DA状态内比较REG1−REG0；域适应效应必须在固定REG状态内比较DA1−DA0。
+
+最小矩阵固定为`2 receiver(1-1,18-2)×6 held-class×K1/K5=24`个逻辑行，不扩receiver、seed、K或超参数。K1每行4个Q唯一预测，head仅保存alias receipt；K5每行4状态×Q/H，共8个唯一预测；全矩阵共144个唯一prediction、192个含alias的arm artifact。主要因果量为DA前注册、DA后注册、两种DA状态下的注册效应、K5的`H−Q`和DA×head交互。
+
+完整矩阵回收后才使用性能裁决，不作为运行中健康早停：保留候选要求`DA1_REG0−DA0_REG0`的old BA至少`+0.25pp`，`DA1_REG1−DA0_REG1`的H至少`+0.25pp`，K5的`H−Q`同时使H至少`+0.25pp`且总正确数增加，并满足seen-new、all-floor非降及4个receiver×K聚合层至少3个H非负。未达到即按组件或整条路线关闭，不调`λ/γ/K/receiver`。
+
+工作流只保留直接影响下一真实性能实验的步骤：设计已由独立监督`MERGE`；随后是科学核心实现、query零fit/update/selection等必要负测、真实checkpoint无truth smoke、独立`P0=0/P1=0`、Git提交和唯一runner发布。主agent`gpt-5.6-sol/high`负责协议、整合、数据/结果分析与裁决；`gpt-5.6-terra/max`负责DA/head科学实现和独立审查；`Luna/max`负责文件、hash、Git机械工作及冻结规格下的唯一N607 runner。不得把重复数据验证、额外签名层、完整125矩阵或文档美化加入发布gate。
 
 ## 0.2026-08-03闭环与目标重置
 
