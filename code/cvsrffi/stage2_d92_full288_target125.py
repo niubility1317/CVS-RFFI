@@ -116,6 +116,8 @@ def _base_projection():
         "TRUTH_OPEN_EVENT_SCHEMA": TRUTH_OPEN_EVENT_SCHEMA,
         "SCORE_MANIFEST_SCHEMA": SCORE_MANIFEST_SCHEMA,
         "FORMAL_ISOLATION_ENV": FORMAL_ISOLATION_ENV,
+        "TRUTH_PRIMARY_CANDIDATE_ARM": CANDIDATE_ID,
+        "TRUTH_SYSTEM_DIAGNOSTIC_ONLY": True,
         "_verify_method_lock": _verify_method_lock,
     }
     with _PROJECTION_LOCK:

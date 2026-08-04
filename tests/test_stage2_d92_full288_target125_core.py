@@ -4,6 +4,8 @@ import numpy as np
 import pytest
 
 from cvsrffi import stage2_d92_full288_target125_core as core
+from cvsrffi import stage2_d92_full288_target125 as full288_adapter
+from cvsrffi import stage2_d92_lite_target125 as lite_adapter
 
 
 def _unit_rows(seed: int, count: int) -> np.ndarray:
@@ -58,3 +60,9 @@ def test_identical_support_fingerprint_still_fails_closed() -> None:
     secondary = np.asarray([[0.5, 0.5]], dtype=np.float64)
     with pytest.raises(core.D92Full288CoreError, match="identical full-288"):
         core._resolve_ties(raw, secondary, ((1.0,), (1.0,)))
+
+
+def test_full288_truth_projection_has_candidate_specific_diagnostic_identity() -> None:
+    with full288_adapter._base_projection():
+        assert lite_adapter.TRUTH_PRIMARY_CANDIDATE_ARM == full288_adapter.CANDIDATE_ID
+        assert lite_adapter.TRUTH_SYSTEM_DIAGNOSTIC_ONLY is True

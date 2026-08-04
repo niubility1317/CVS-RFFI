@@ -51,6 +51,11 @@ QueryScorer = d108_runner.QueryScorer
 
 _LOCK = threading.RLock()
 FORMAL_ISOLATION_ENV = "CVS_D131_FORMAL_ISOLATED_PROCESS"
+# Candidate adapters may project these labels while reusing this
+# single-candidate truth/scoring implementation. Keep the historical D92-Lite
+# defaults here so the original adapter remains traceable.
+TRUTH_PRIMARY_CANDIDATE_ARM = "D92_LITE160_SYSTEM"
+TRUTH_SYSTEM_DIAGNOSTIC_ONLY = True
 
 
 class D92LiteTarget125Error(ValueError):
@@ -164,12 +169,12 @@ def _truth_projection():
         verdict = dict(verdict)
         verdict.update(
             {
-                "primary_candidate_arm": "D92_LITE160_SYSTEM",
+                "primary_candidate_arm": TRUTH_PRIMARY_CANDIDATE_ARM,
                 "transport_arm": core.TRANSPORT_ARM,
                 "transport_arm_is_D108_joint_mechanism": False,
                 "causal_arms": [],
                 "causal_table_preserved": False,
-                "system_diagnostic_only": True,
+                "system_diagnostic_only": TRUTH_SYSTEM_DIAGNOSTIC_ONLY,
             }
         )
         return coverage, resources, verdict

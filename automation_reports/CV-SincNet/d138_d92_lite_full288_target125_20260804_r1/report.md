@@ -4,8 +4,8 @@
 
 - 实验ID：`d138_d92_lite_full288_target125_20260804_r1`
 - 登记时间：`2026-08-04`
-- 当前状态：`LOCAL_VERIFIED / REMOTE_LAUNCH_PENDING / NO_PERFORMANCE_RESULT`
-- 目标：修复PR160截断导致的query可判定性故障，完成完整125 outer、375 scene、750 before/after surface及truth-side score。
+- 当前状态：`LOCAL_VERIFIED / REMOTE_LAUNCH_PENDING / DIAGNOSTIC_RESULT_ONLY_PENDING`
+- 目标：修复PR160截断导致的query可判定性故障，完成完整125 outer、375 scene、750 before/after surface及独立truth-side诊断评分。
 - 与r6关系：这是用户明确要求继续后的新candidate和新不可覆盖run，不续跑、不覆盖r6，也不把r6 partial prediction当输入。
 
 ## 冻结候选
@@ -24,6 +24,8 @@
 - 关键SHA256：core=`4d46ae943b3c60ea8250840af69d01bf3c1e0992747ecdd36c18de977da32313`；adapter=`c1a5efde69b9a8eaee5a71b29adbbfbd9fbe97b6566c6e8655af60e7e2e6f66b`；CLI=`b07026dc0594416c042f4b91db157775a4b203ce636128f493fcd30ad6d1ff71`；test=`281f86ed7cbfaa4f5d849409c43a93465724f99b74ca23834df2e020e2e4979b`。
 - 环境：Conda`ssr-gpu`。
 - 验证：`py_compile`通过；新full288核心、旧D92/D108/D129/D138及qKNN窄回归全部通过；`git diff --check`通过。
+- 追踪修复：FULL288复用D92-Lite的truth/scoring实现时，摘要候选名已由投影注入`D92-Lite-FULL288/r1`；新增回归断言通过，且保留`system_diagnostic_only=true`。
+- 输入边界：当前sealed SOMP-H loader明确返回`UNVERIFIED_UNDER_CURRENT_PROTOCOL_DIAGNOSTIC_ONLY`、`formal_launch_authority=false`、`formal_metric_claim_allowed=false`。本run可以完整执行并产生诊断结果，但不能把该结果写成正式晋级/性能声明。
 
 ## N607发布登记
 
@@ -46,7 +48,7 @@ smoke通过后立即启动8个固定分片：
 ## 健康停止与成功标准
 
 - 只在协议/安全/hash/覆盖错误，或至少两个不同outer row在prediction前出现同一确定性异常时停止；不按accuracy、H、BA、floor或中间结果停止。
-- 8个shard完整成功后执行merge、validate、build-truth、score；只有125/375/750闭合且truth-side score通过才产生性能结果。
+- 8个shard完整成功后执行merge、validate、build-truth、score；只有125/375/750闭合且truth-side score通过才产生完整诊断结果，仍保留上述非正式边界。
 - 若支持证据完全相同导致full288 fingerprint仍无法唯一判决，保留partial证据并标记`NO_PERFORMANCE_RESULT`，不使用非法类别顺序兜底。
 
 ## 完成后分析
