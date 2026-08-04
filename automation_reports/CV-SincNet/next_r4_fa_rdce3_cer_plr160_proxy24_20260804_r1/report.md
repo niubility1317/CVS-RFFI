@@ -1,6 +1,6 @@
 # NEXT-R4 FA-RDCE3×CER-PLR160 Proxy24实验报告
 
-状态：`LOCAL_VERIFIED / NO_PERFORMANCE_RESULT`
+状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
 
 ## 1.实验身份
 
@@ -73,7 +73,7 @@
 |prepare/predict/score精确命令|见下方§5.1；仅package/prepare/truth文件SHA由同次prepare后`sha256sum`机械填入|
 |GPU分配|物理GPU0；`CUDA_VISIBLE_DEVICES=0`、进程内`cuda:0`，以发布时preflight为空闲为条件|
 |run root/log/prediction/score路径|`<root>/{prepare,output,logs}`；主日志`<root>/logs/run.out`，PID`<root>/logs/main.pid`，score=`<root>/output/score.json`|
-|PID/CWD/cmdline证据|`PENDING_AFTER_LAUNCH`|
+|PID/CWD/cmdline证据|唯一PID=`1343721`；启动时CWD=`<root>/source`且cmdline绑定本run/package/checkpoint/receipt；异常后PID与run树均退出|
 |预期artifact|prepare package、truth sidecar、prediction、manifest、resource receipt、score、complete log|
 
 技术停止仅允许协议/安全违规、错误checkout/hash、覆盖风险、缺prediction闭合或至少两个不同row出现同一确定性异常指纹；不得按运行中性能停止。
@@ -99,14 +99,26 @@
 
 predict以`nohup`独立启动；runner必须在启动后核对PID/CWD/cmdline、GPU映射、日志增长、首row/首wave计数，并用短SSH连接监控。fresh-run retry未授权。
 
+### 5.2 r1正式执行结果
+
+|阶段|状态|证据|
+|---|---|---|
+|preflight/落地|`PASSED / LANDED`|直连N607普通账号；root创建前`ABSENT`；GPU0为0%/1MiB且compute-apps为空；archive、capsule、validator、qKNN receipts/locks、remote manifest及12个FA wire远端SHA全部匹配|
+|compile/import|`PASSED`|Python3.10.19、torch2.1.0+cu121、CUDA可用且8卡可见；R4 import、`py_compile`和CLI help通过|
+|prepare|`PASSED`|exit=0；package SHA=`af9201c90ac5cb76c856bea9a5e350aacfbf73254567d76a62ecbe0f31e6df2b`，prepare receipt SHA=`13295bb712a4d47c33b614f2ebfde9ac92eb29d894b030d6dcf2afc9288fcf6e`，truth SHA=`48c7291271fb79da1fa9236acc5282c4aeb20b062ce591a44af733825237731b`；24 rows，query fit/update/selection=0，truth未进predictor|
+|predict|`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`|唯一PID在首logical row、0 prediction时自然退出；异常`TIE_UNRESOLVED: direct qKNN final float32 top tie`；无prediction/manifest/completion，未score、未重启|
+|资源与取回|`CLOSED`|GPU compute-apps为空、8卡0%/1MiB；partial已取回`E:\type10-7\automation_reports\CV-SincNet\next_r4_fa_rdce3_cer_plr160_proxy24_20260804_r1\retrieved\`并复算SHA；本地`ssh.exe=0`，N607/bridge TCP22连接=0|
+
+`run.err`共23行、SHA256=`c911ecf0ebb4bb7905b9cc785cca9d4ceae4de1cf1ed724f2b08b98536069238`；同一traceback内异常文本出现4次，不表示4个不同row。output仅有`plan.json`、`preregistration.json`和`smoke.json`；其中24/144/192为预登记目标，实际完成数为0。r1不产生域适应前/后或新类注册前/后的任何性能结论。
+
 ## 6.结果表
 
 当前没有真实性能结果，不填写估计值或单元测试代理值。
 
 |receiver|held-class|K|状态码|中文状态|arm|old BA|old-floor|seen-new|H|all-floor|总正确数|判定|
 |---|---|---:|---|---|---|---:|---:|---:|---:|---:|---:|---|
-|—|—|—|—|—|—|—|—|—|—|—|—|`PENDING`|
+|—|—|—|—|—|—|—|—|—|—|—|—|`NO_PERFORMANCE_RESULT`|
 
 ## 7.完成后检查与裁决
 
-完整矩阵返回后检查same-row四态、per-class old accuracy、forgetting、seen-new、H、all-floor、总正确数和receiver×K聚合。若性能弱或为负，按冻结阈值关闭相应组件/路线并研发下一原理方法；不扩大矩阵或盲调参数。
+完整矩阵返回后检查same-row四态、per-class old accuracy、forgetting、seen-new、H、all-floor、总正确数和receiver×K聚合。r1在0 prediction时因确定性top tie退出，当前先研究只作用于精确tie、无truth/role/quota/阈值的确定性决策规则；若科学复核通过，使用新run ID发布，不覆盖或重启r1。真实性能弱或为负时才按冻结阈值关闭相应组件/路线；不扩大矩阵或盲调参数。
