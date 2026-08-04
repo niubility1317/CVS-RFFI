@@ -10,7 +10,7 @@ import cvsrffi.stage2_d92_pr160_target125 as target
 from test_stage2_d109_target125 import _common
 
 
-METHOD_LOCK = Path(__file__).resolve().parents[1] / "configs" / "d138_d92_lite_pr160_r1.json"
+METHOD_LOCK = Path(__file__).resolve().parents[1] / "configs" / "d138_d92_lite_pr160_r2.json"
 METHOD = {
     "method_lock_path": METHOD_LOCK,
     "expected_method_lock_sha256": target.core.METHOD_LOCK_SHA256,

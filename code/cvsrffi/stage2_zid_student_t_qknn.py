@@ -924,6 +924,7 @@ def _score_with_support(
     query: np.ndarray,
     config: Phase1ZIDStudentTLock,
     metric: TypedSharedPSDMetric,
+    output_dtype: Any = np.float32,
 ) -> np.ndarray:
     cosine = _precision_cosine(query, support, metric)
     distance = np.maximum(2.0 * (1.0 - cosine), 0.0)
@@ -951,7 +952,7 @@ def _score_with_support(
     logits = np.stack(columns, axis=1)
     if not np.isfinite(logits).all():
         raise ZIDStudentTQKNNError("Student-t qKNN logits became non-finite")
-    return _readonly(logits, np.float32)
+    return _readonly(logits, output_dtype)
 
 
 def score_zid_student_t_logits(
@@ -978,6 +979,34 @@ def score_zid_student_t_logits(
         query=query,
         config=bank.config,
         metric=metric,
+    )
+
+
+def score_zid_student_t_logits_float64(
+    bank: TypedINT8ZIDSupportBank,
+    query_zid: np.ndarray,
+    *,
+    metric: TypedSharedPSDMetric,
+) -> np.ndarray:
+    """Return the same qKNN score before the final float32 wire cast."""
+
+    if type(bank) is not TypedINT8ZIDSupportBank or type(metric) is not TypedSharedPSDMetric:
+        raise ZIDStudentTQKNNError("scoring requires exact typed bank and metric states")
+    _verify_bank(bank)
+    _verify_metric(metric)
+    if metric.config_lock_digest != bank.config_lock_digest:
+        raise ZIDStudentTQKNNError("support bank/metric Phase1 lock drift")
+    query = normalize_zid_rows(query_zid).astype(np.float64)
+    support = decode_zid_support_bank(bank).astype(np.float64)
+    return _score_with_support(
+        support=support,
+        class_indices=bank.class_indices_int16,
+        support_counts=bank.support_counts,
+        class_scales=bank.class_scales_fp16,
+        query=query,
+        config=bank.config,
+        metric=metric,
+        output_dtype=np.float64,
     )
 
 
@@ -1497,6 +1526,7 @@ __all__ = [
     "identity_shared_psd_metric",
     "normalize_zid_rows",
     "score_zid_student_t_logits",
+    "score_zid_student_t_logits_float64",
     "serialize_typed_zid_runtime_state",
     "softmax_probabilities",
 ]

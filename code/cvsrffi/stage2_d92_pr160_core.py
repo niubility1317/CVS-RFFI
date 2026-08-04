@@ -3,7 +3,9 @@
 The candidate repairs D131's lossy ``registered_feature[:, :160]`` tap by
 consuming the same-forward signed-totalized ``joint_proj.0`` representation.
 K1 is an exact qKNN alias.  K5/K10 use one all-class diagonal affine head; no
-old/new split, query-side fit, or tie key is present.
+old/new split or query-side fit is present.  A float32 precision-alias tie may
+only be resolved by a unique winner in the same score's pre-cast float64
+values; a genuine high-precision tie remains fail-closed.
 """
 
 from __future__ import annotations
@@ -20,7 +22,7 @@ from .stage2_zid_student_t_qknn import (
     TypedSharedPSDMetric,
     build_typed_zid_support_bank,
     identity_shared_psd_metric,
-    score_zid_student_t_logits,
+    score_zid_student_t_logits_float64,
 )
 from .stage2_d92_pr160_runtime import (
     EXTRACTOR_RUNTIME_SHA256,
@@ -28,9 +30,9 @@ from .stage2_d92_pr160_runtime import (
 )
 
 
-METHOD_LOCK_SHA256 = "019dd59780de735af3026b091ef88b600c07d75c48f96aad0c2de34d49e8cee7"
-METHOD_LOCK_SCHEMA = "cvs.phase2.d138.d92_lite_pr160.method_lock.v1"
-CANDIDATE_ID = "D92-Lite-PR160/r1"
+METHOD_LOCK_SHA256 = "256aacf7b6f790ce213ac27c1bb496be1a964cbf4f21cdd46309630235fb3ca4"
+METHOD_LOCK_SCHEMA = "cvs.phase2.d138.d92_lite_pr160.method_lock.v2"
+CANDIDATE_ID = "D92-Lite-PR160/r2"
 PROTOCOL_SCHEMA = "p2_min_v1"
 TRANSPORT_ARM = "M_JOINT"
 OLD_CLASS_COUNT = 6
@@ -264,12 +266,16 @@ def _fit_shared_diag(
 
 
 def _score_shared(state: SharedDiagAffineState, query: np.ndarray) -> np.ndarray:
+    return np.ascontiguousarray(_score_shared_float64(state, query), dtype=np.float32)
+
+
+def _score_shared_float64(state: SharedDiagAffineState, query: np.ndarray) -> np.ndarray:
     rows = _unit_rows(query, name="shared affine query")
     weights, intercepts = state.dequantized()
     logits = rows.astype(np.float64) @ weights.T + intercepts[None, :]
     if not np.isfinite(logits).all():
         raise D92PR160CoreError("shared affine score became non-finite")
-    return np.ascontiguousarray(logits, dtype=np.float32)
+    return np.ascontiguousarray(logits, dtype=np.float64)
 
 
 def _require_unique_top(logits: np.ndarray) -> None:
@@ -277,6 +283,43 @@ def _require_unique_top(logits: np.ndarray) -> None:
     maximum = np.max(values, axis=1, keepdims=True)
     if np.any(np.sum(values == maximum, axis=1) > 1):
         raise D92PR160CoreError("TIE_UNRESOLVED: exact float32 top tie")
+
+
+def _resolve_float32_precision_alias_ties(
+    float64_logits: np.ndarray, float32_logits: np.ndarray
+) -> np.ndarray:
+    """Resolve only float32 rounding aliases using the same raw score."""
+
+    raw = np.asarray(float64_logits, dtype=np.float64)
+    result = np.ascontiguousarray(float32_logits, dtype=np.float32)
+    if (
+        raw.ndim != 2
+        or result.shape != raw.shape
+        or not np.isfinite(raw).all()
+        or not np.isfinite(result).all()
+    ):
+        raise D92PR160CoreError("precision-alias tie audit received invalid logits")
+    maxima = np.max(result, axis=1, keepdims=True)
+    tie_rows = np.flatnonzero(np.sum(result == maxima, axis=1) > 1)
+    if len(tie_rows) == 0:
+        return result
+    resolved = result.copy()
+    for row_index in tie_rows:
+        top_mask = result[row_index] == maxima[row_index, 0]
+        top_indices = np.flatnonzero(top_mask)
+        raw_top = raw[row_index, top_mask]
+        raw_max = np.max(raw_top)
+        raw_winners = top_indices[raw_top == raw_max]
+        if len(raw_winners) != 1:
+            raise D92PR160CoreError(
+                "TIE_UNRESOLVED: exact float32 tie remains tied in float64"
+            )
+        winner = int(raw_winners[0])
+        promoted = np.nextafter(resolved[row_index, winner], np.float32(np.inf))
+        if not np.isfinite(promoted):
+            raise D92PR160CoreError("precision-alias tie promotion overflow")
+        resolved[row_index, winner] = promoted
+    return np.ascontiguousarray(resolved, dtype=np.float32)
 
 
 def build_d92_lite_pair(
@@ -349,21 +392,24 @@ def score(pair: D92PR160Pair, phase: str, arm: str, query_features160: np.ndarra
         raise D92PR160CoreError("invalid D92-Lite-PR160 pair or arm")
     query = _unit_rows(query_features160, name="query PR160")
     if phase == "before":
-        logits = score_zid_student_t_logits(pair.before_bank, query, metric=pair.before_metric)
+        raw_logits = score_zid_student_t_logits_float64(
+            pair.before_bank, query, metric=pair.before_metric
+        )
     elif phase == "after":
         if pair.active_k == 1:
-            logits = score_zid_student_t_logits(pair.after_bank, query, metric=pair.after_metric)
+            raw_logits = score_zid_student_t_logits_float64(
+                pair.after_bank, query, metric=pair.after_metric
+            )
         else:
             assert pair.after_lite_state is not None
-            logits = _score_shared(pair.after_lite_state, query)
+            raw_logits = _score_shared_float64(pair.after_lite_state, query)
     else:
         raise D92PR160CoreError("phase must be before or after")
-    result = np.ascontiguousarray(np.asarray(logits, dtype=np.float32))
+    result = np.ascontiguousarray(np.asarray(raw_logits, dtype=np.float32))
     expected = len(pair.old_registered_classes) if phase == "before" else len(pair.registered_classes)
     if result.shape != (len(query), expected) or not np.isfinite(result).all():
         raise D92PR160CoreError("query logits shape/value drift")
-    _require_unique_top(result)
-    return result
+    return _resolve_float32_precision_alias_ties(raw_logits, result)
 
 
 __all__ = [

@@ -80,3 +80,18 @@ def test_k1_is_exact_qknn_alias_and_k5_uses_one_all_class_head() -> None:
 def test_exact_float32_tie_fails_closed_without_a_tie_key() -> None:
     with pytest.raises(core.D92PR160CoreError, match="TIE_UNRESOLVED"):
         core._require_unique_top(np.asarray([[1.0, 1.0]], dtype=np.float32))
+
+
+def test_float32_precision_alias_tie_uses_unique_precast_winner() -> None:
+    raw = np.asarray([[1.0 + 1.0e-8, 1.0 + 2.0e-8]], dtype=np.float64)
+    rounded = raw.astype(np.float32)
+    assert np.array_equal(rounded, np.asarray([[1.0, 1.0]], dtype=np.float32))
+    resolved = core._resolve_float32_precision_alias_ties(raw, rounded)
+    assert int(np.argmax(resolved[0])) == 1
+    assert resolved[0, 1] > resolved[0, 0]
+
+
+def test_float32_precision_alias_tie_still_fails_on_raw_tie() -> None:
+    raw = np.asarray([[1.0, 1.0]], dtype=np.float64)
+    with pytest.raises(core.D92PR160CoreError, match="remains tied"):
+        core._resolve_float32_precision_alias_ties(raw, raw.astype(np.float32))
