@@ -71,7 +71,7 @@ D130完整proxy84表明CSPAR-2的K5 DA为`ΔH=-0.556pp、总正确数-9`，SRDH-
 
 |字段|值|
 |---|---|
-|本地文件与hash|见上表；Git commit在提交后补录|
+|本地文件与hash|见上表；实现提交`1e2a31a4`|
 |同步目的地|`/home/szu2070436088/2510044040/CV-SincNet/runs/d132_next_r1_fabr_tsl_proxy84_20260804_r1/source`|
 |server command|见下方冻结命令|
 |Conda/Python环境|`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`|
