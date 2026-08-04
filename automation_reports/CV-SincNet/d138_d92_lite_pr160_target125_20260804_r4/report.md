@@ -42,6 +42,7 @@ r3失败原因是runner在唯一prepare前预创建了空的`prepared`目录，�
 - 本地修复验证：`ssr-gpu`环境下`python -m py_compile code/cvsrffi/phase2_runtime_contract.py`通过；SHA256=`792c3eda489679bebdde08825e437ef93c460e8f64fd6279b166909b3ab90a78`。
 - 修复动作：将该已存在的本地验证模块同步到当前r4的`source/code/cvsrffi/`；保留既有prepared产物，不重做prepare，不删除或覆盖任何历史run。同步后重新执行smoke；若仍有硬门异常则停止并保留证据。
 - 递归闭包复核又确认并同步6个同组运行依赖：`somph_predictor_runtime.py`、`stage2_d38_strong_b3_quantized.py`、`stage2_predictor_bundle.py`、`stage2_predictor_runtime.py`、`stage2_d108_cbrrc.py`、`stage2_d108_smme.py`；6个文件均在本地`ssr-gpu`环境py_compile通过，未改变D138方法或数据。
+- smoke第三次仍只在导入阶段发现直接模块`somph_runtime_trust.py`未同步；该文件已在本地`ssr-gpu`环境py_compile通过，SHA256=`4b1dee1d8ffdc793f48c46c21a11b0fdf8b6ef6e3b253807cc1138011dc1f9fc`，补齐后继续同一prepared输入的smoke。
 
 ## 结果
 
