@@ -283,6 +283,14 @@ class BSSDGState:
             _validate_sha(self.state_sha256, "state_sha256")
             if _state_digest(self) != self.state_sha256:
                 raise BSSDGError("BSSDG state SHA256 receipt drift")
+            canonical_wire_bytes = len(
+                _canonical_json(_state_payload(self, include_digest=True))
+            )
+            if canonical_wire_bytes > STATE_LIMIT_BYTES:
+                raise BSSDGWireError(
+                    f"BSSDG canonical wire state {canonical_wire_bytes} exceeds "
+                    f"the {STATE_LIMIT_BYTES}-byte limit"
+                )
         object.__setattr__(self, "classes", classes)
         object.__setattr__(self, "class_means_qint8", _readonly(means, np.dtype(np.int8)))
         object.__setattr__(self, "class_scales_fp16", _readonly(scales, np.dtype(np.float16)))
@@ -406,7 +414,14 @@ def serialize_bssdg_state(state: BSSDGState) -> bytes:
 def deserialize_bssdg_state(value: bytes | bytearray | str) -> BSSDGState:
     try:
         raw = value.encode("utf-8") if isinstance(value, str) else bytes(value)
+        if len(raw) > STATE_LIMIT_BYTES:
+            raise BSSDGWireError(
+                f"BSSDG raw wire state {len(raw)} exceeds "
+                f"the {STATE_LIMIT_BYTES}-byte limit"
+            )
         payload = json.loads(raw.decode("utf-8"))
+    except BSSDGWireError:
+        raise
     except (TypeError, ValueError, UnicodeError) as error:
         raise BSSDGWireError("BSSDG state serialization is invalid") from error
     if not isinstance(payload, Mapping):

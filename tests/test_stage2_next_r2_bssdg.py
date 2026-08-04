@@ -13,6 +13,7 @@ import inspect
 import numpy as np
 import pytest
 
+import cvsrffi.stage2_next_r2_bssdg as bssdg
 from cvsrffi.stage2_next_r2_bssdg import (
     BSSDGBinding,
     BSSDGDuplicateFunctionError,
@@ -236,6 +237,22 @@ def test_c20_canonical_wire_state_is_rejected_even_when_deploy_bytes_fit() -> No
     rows, labels, classes = _wire_registry_support(20)
     with pytest.raises(BSSDGWireError, match="canonical wire state"):
         fit_bssdg(rows, labels, classes, k_shot=1)
+
+
+def test_self_consistent_oversized_c20_state_is_rejected_at_state_and_wire_entries(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    rows, labels, classes = _wire_registry_support(20)
+    monkeypatch.setattr(bssdg, "STATE_LIMIT_BYTES", 100_000)
+    state = fit_bssdg(rows, labels, classes, k_shot=1)
+    wire = serialize_bssdg_state(state)
+    assert len(wire) > 6_144
+
+    monkeypatch.setattr(bssdg, "STATE_LIMIT_BYTES", 6_144)
+    with pytest.raises(BSSDGWireError, match="canonical wire state"):
+        state.__post_init__()
+    with pytest.raises(BSSDGWireError, match="raw wire state"):
+        deserialize_bssdg_state(wire)
 
 
 def test_repeated_fit_has_deterministic_state_sha_and_wire() -> None:
