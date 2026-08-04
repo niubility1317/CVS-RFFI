@@ -5,11 +5,11 @@
 |字段|值|
 |---|---|
 |run ID|`next_r3_rdce_tsl_proxy24_20260804_r1`|
-|状态|`LOCAL_VERIFIED / REAL_INPUT_INVENTORY_PENDING`|
+|状态|`RUNNER_REPAIRING / NO_PERFORMANCE_RESULT`|
 |日期|2026-08-04|
 |主agent|Codex主agent（Sol/high）|
 |科学实现/审查|Terra/max分工；二次独立审查`P0=0、P1=0`|
-|机械实现/发布|Luna/max；N607 sole runner尚未交接|
+|机械实现/发布|Luna/max sole runner；直连preflight已通过，尚未inventory/sync/launch|
 |协议|`p2_min_v1`|
 |证据语义|`SOURCE_HELD_PROXY`；`formal_new_registration_claim=false`|
 
@@ -81,6 +81,10 @@
 - 在commit`19b0650f`的独立干净worktree、`ssr-gpu`环境串行执行NEXT-R3五组测试和D129 heads回归：`28 passed`。
 - 临时验证worktree已删除。
 
+### 5.3 runner独立复核与最小修复
+
+commit`f143e5d2`的runner独立复核结论为`P0=2、P1=2、NOT_READY`。两项P0分别是：实际24行仍直接消费外部`source-held pre_relu`，真实checkpoint只承担重复smoke，尚未证明预测特征由received-IQ经checkpoint生成；predict阶段读取`tx_labels`并据此构造query集合，违反query truth/role禁入。两项P1是K1/K5共同旧query未在runner入口闭合，以及新增测试只覆盖缺失输入和run-root不可覆盖。当前只修这些直接阻止真实性能实验的问题；矩阵、候选和性能阈值不变，不追加工程gate。修复并再次独立得到`P0=0、P1=0`前，不进行remote inventory、sync或launch。
+
 ## 6. 真实输入现状
 
 本地Git快照只有receipt/fixture/manifest，没有真实`d106_ls_received_iq.npz`、strict-tap/features NPZ、D106 RDCE asset wire或checkpoint PTH。因而当前不能完成real-checkpoint smoke，也不能本地构建每fold完整TSL prior。缺失的最小真实字段为：
@@ -94,6 +98,8 @@
 禁止使用合成数组、receipt占位或不完整fold把real smoke标为通过。下一步只在N607做短连接只读inventory，确认这些既有资产的精确路径；不重建数据、不启动实验。
 
 ## 7. N607发布预注册
+
+2026-08-04 20:12 CST已完成一次只读direct preflight：目标`N607`解析为`172.31.111.215`，普通用户`szu2070436088`身份通过；远端`dell-DSS8440`及项目根`/home/szu2070436088/2510044040/CV-SincNet`可见；8张RTX 3090均可见且当时利用率为0%、显存约1MiB。命令退出后本地`ssh.exe=0`，到`172.31.111.215:22`的`ESTABLISHED=0`。该证据只表示连接与资源可见，不表示runner已可发布。
 
 |字段|预注册值|
 |---|---|
