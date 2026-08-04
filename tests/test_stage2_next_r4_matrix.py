@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-import hashlib
-
 import pytest
 
 from cvsrffi import stage2_next_r4_matrix as matrix
@@ -20,7 +18,7 @@ def _maps(classes: tuple[str, ...]):
     observations = {
         cls: [f"observation-{cls}-{index}" for index in range(9)] for cls in ordered
     }
-    phase1 = [f"phase1-{index}" for index in range(matrix.PHASE1_FIT_COUNT)]
+    phase1 = [f"phase1-{index}" for index in range(11)]
     return support1, support5, query, observations, phase1
 
 
@@ -103,6 +101,49 @@ def test_query_or_fa_reuse_drift_is_rejected() -> None:
         )
     with pytest.raises(matrix.NextR4MatrixError):
         matrix.validate_fa_state_reuse({"DA1_REG0": "a" * 64, "DA1_REG1": "b" * 64})
+
+
+def test_query_and_phase1_cardinality_is_runtime_not_r3_fixed() -> None:
+    plan = matrix.build_next_r4_proxy24_plan(CLASSES)
+    rows = [matrix.outer_key_from_mapping(value) for value in plan["rows"][:2]]
+    support1, support5, query, observations, _ = _maps(CLASSES)
+    query = {key: values[:2] for key, values in query.items()}
+    observations = {key: values[:2] for key, values in observations.items()}
+    view_ids = {"K1": query, "K5": query, **{state: query for state in matrix.STATE_IDS}}
+    view_observations = {
+        "K1": observations,
+        "K5": observations,
+        **{state: observations for state in matrix.STATE_IDS},
+    }
+    receipt = matrix.bind_next_r4_physical_ids(
+        row_k1=rows[0],
+        row_k5=rows[1],
+        phase1_fit_ids=["phase1-a", "phase1-b"],
+        k1_support_ids_by_class=support1,
+        k5_support_ids_by_class=support5,
+        query_ids_by_class=query,
+        query_observation_ids_by_class=observations,
+        query_ids_by_view=view_ids,
+        query_observation_ids_by_view=view_observations,
+        fa_state_sha256_by_state={"DA1_REG0": "a" * 64, "DA1_REG1": "a" * 64},
+    )
+    assert receipt["phase1_fit_count"] == 2
+    assert receipt["query_count"] == 12
+    mismatched_observations = dict(observations)
+    mismatched_observations[sorted(CLASSES)[0]] = ["observation-short"]
+    with pytest.raises(matrix.NextR4MatrixError, match="same per-class length"):
+        matrix.bind_next_r4_physical_ids(
+            row_k1=rows[0],
+            row_k5=rows[1],
+            phase1_fit_ids=["phase1-a"],
+            k1_support_ids_by_class=support1,
+            k5_support_ids_by_class=support5,
+            query_ids_by_class=query,
+            query_observation_ids_by_class=mismatched_observations,
+            query_ids_by_view=view_ids,
+            query_observation_ids_by_view=view_observations,
+            fa_state_sha256_by_state={"DA1_REG0": "a" * 64, "DA1_REG1": "a" * 64},
+        )
 
 
 def test_plan_digest_is_immutable() -> None:

@@ -55,15 +55,11 @@ K5_ARTIFACT_COUNT = K5_ROW_COUNT * STATE_COUNT * len(ARM_IDS)
 UNIQUE_PREDICTION_COUNT = K1_UNIQUE_PREDICTION_COUNT + K5_UNIQUE_PREDICTION_COUNT
 ARTIFACT_ARM_COUNT = K1_ARTIFACT_COUNT + K5_ARTIFACT_COUNT
 
-# These physical counts are inherited from the validated source-held proxy
-# builder.  They describe binding only; no data are loaded here.
-QUERY_PER_CLASS = 9
-PHYSICAL_PER_CLASS = 14
+# Only support K values are frozen by NEXT-R4. Query and Phase1 asset
+# cardinalities are runtime facts and must not inherit an R3-specific gate.
 MAX_SUPPORT_K = 5
 K1_SUPPORT_COUNT = CLASS_COUNT
 K5_SUPPORT_COUNT = CLASS_COUNT * MAX_SUPPORT_K
-PHASE1_RECEIVER_COUNT = 7
-PHASE1_FIT_COUNT = (PHASE1_RECEIVER_COUNT - 1) * (CLASS_COUNT - 1) * PHYSICAL_PER_CLASS
 
 PRIMARY_COMPARISONS = (
     "DA1_REG0-DA0_REG0",
@@ -383,10 +379,6 @@ def registration_for_state(state_id: str) -> str:
     return _registration_for_state(state_id)
 
 
-def query_count_for_state(row: NextR4ProxyRow, state_id: str) -> int:
-    return len(registered_classes_for_state(row, state_id)) * QUERY_PER_CLASS
-
-
 def _physical_map(
     value: Mapping[str, Sequence[str]],
     *,
@@ -411,6 +403,31 @@ def _physical_map(
     return result
 
 
+def _query_map(
+    value: Mapping[str, Sequence[str]],
+    *,
+    classes: tuple[str, ...],
+    name: str,
+) -> dict[str, tuple[str, ...]]:
+    """Normalize runtime query IDs without imposing a frozen class count."""
+
+    if not isinstance(value, Mapping) or tuple(sorted(value)) != classes:
+        raise NextR4MatrixError(f"{name} class registry drift")
+    result: dict[str, tuple[str, ...]] = {}
+    for class_id in classes:
+        ids = tuple(value[class_id])
+        if (
+            not ids
+            or len(ids) != len(set(ids))
+            or any(not isinstance(item, str) or not item for item in ids)
+        ):
+            raise NextR4MatrixError(
+                f"{name}[{class_id}] must contain unique nonempty runtime IDs"
+            )
+        result[class_id] = ids
+    return result
+
+
 def _root(values: Sequence[str]) -> str:
     return hashlib.sha256("\n".join(values).encode("utf-8")).hexdigest()
 
@@ -429,16 +446,9 @@ def _check_common_view_maps(
         raise NextR4MatrixError(
             f"{name} must contain exactly K1/K5 and all four state views"
         )
-    base_norm = _physical_map(
-        base, classes=classes, expected_per_class=QUERY_PER_CLASS, name=f"{name}.base"
-    )
+    base_norm = _query_map(base, classes=classes, name=f"{name}.base")
     for view_id in views:
-        current = _physical_map(
-            value[view_id],
-            classes=classes,
-            expected_per_class=QUERY_PER_CLASS,
-            name=f"{name}[{view_id}]",
-        )
+        current = _query_map(value[view_id], classes=classes, name=f"{name}[{view_id}]")
         if current != base_norm:
             raise NextR4MatrixError(
                 f"common query {name} drift across K/state views"
@@ -514,18 +524,16 @@ def bind_next_r4_physical_ids(
         expected_per_class=5,
         name="k5_support_ids_by_class",
     )
-    query = _physical_map(
-        query_ids_by_class,
-        classes=classes,
-        expected_per_class=QUERY_PER_CLASS,
-        name="query_ids_by_class",
-    )
-    observations = _physical_map(
+    query = _query_map(query_ids_by_class, classes=classes, name="query_ids_by_class")
+    observations = _query_map(
         query_observation_ids_by_class,
         classes=classes,
-        expected_per_class=QUERY_PER_CLASS,
         name="query_observation_ids_by_class",
     )
+    if any(len(query[c]) != len(observations[c]) for c in classes):
+        raise NextR4MatrixError(
+            "query physical/observation IDs must have the same per-class length"
+        )
     if any(support1[c] != support5[c][:1] for c in classes):
         raise NextR4MatrixError("K1 support must be the exact K5 prefix")
     support_union = {item for values in support5.values() for item in values}
@@ -533,18 +541,16 @@ def bind_next_r4_physical_ids(
     observation_union = {item for values in observations.values() for item in values}
     phase1 = tuple(phase1_fit_ids)
     if (
-        len(phase1) != PHASE1_FIT_COUNT
-        or len(set(phase1)) != PHASE1_FIT_COUNT
+        not phase1
+        or len(set(phase1)) != len(phase1)
         or any(not isinstance(item, str) or not item for item in phase1)
     ):
-        raise NextR4MatrixError(
-            f"phase1_fit_ids must contain exactly {PHASE1_FIT_COUNT} unique IDs"
-        )
+        raise NextR4MatrixError("phase1_fit_ids must contain unique nonempty IDs")
     if len(support_union) != K5_SUPPORT_COUNT:
         raise NextR4MatrixError("K5 support physical IDs overlap across classes")
-    if len(query_union) != CLASS_COUNT * QUERY_PER_CLASS:
+    if len(query_union) != sum(len(query[c]) for c in classes):
         raise NextR4MatrixError("query physical IDs overlap across classes")
-    if len(observation_union) != CLASS_COUNT * QUERY_PER_CLASS:
+    if len(observation_union) != sum(len(observations[c]) for c in classes):
         raise NextR4MatrixError("query observation IDs overlap across classes")
     if support_union & query_union:
         raise NextR4MatrixError("support/query physical IDs overlap")
@@ -578,7 +584,7 @@ def bind_next_r4_physical_ids(
         "k1_row_id": row_k1.row_id,
         "k5_row_id": row_k5.row_id,
         "registered_classes": list(classes),
-        "phase1_fit_count": PHASE1_FIT_COUNT,
+        "phase1_fit_count": len(phase1),
         "phase1_fit_physical_root_sha256": _root(phase1),
         "support_k1_physical_root_sha256": _root(support1_ordered),
         "support_k5_physical_root_sha256": _root(support5_ordered),
@@ -602,7 +608,8 @@ def bind_next_r4_physical_ids(
         "fa_state_reuse_receipt": dict(fa_receipt),
         "k1_support_count": K1_SUPPORT_COUNT,
         "k5_support_count": K5_SUPPORT_COUNT,
-        "query_count": CLASS_COUNT * QUERY_PER_CLASS,
+        "query_count": sum(len(query[c]) for c in classes),
+        "query_count_by_class": {key: len(value) for key, value in query.items()},
     }
     payload["binding_sha256"] = canonical_sha256(payload)
     return MappingProxyType(_json_ready(payload))
@@ -749,12 +756,10 @@ __all__ = [
     "K_VALUES",
     "NextR4MatrixError",
     "NextR4ProxyRow",
-    "PHASE1_FIT_COUNT",
     "PRIMARY_COMPARISONS",
     "PROTOCOL_SCHEMA",
     "PROXY_SEMANTICS",
     "QUERY_VIEW_IDS",
-    "QUERY_PER_CLASS",
     "REG0_STATES",
     "REG1_STATES",
     "REGISTRATION_IDS",
@@ -772,7 +777,6 @@ __all__ = [
     "canonical_bytes",
     "canonical_sha256",
     "outer_key_from_mapping",
-    "query_count_for_state",
     "registered_classes_for_state",
     "registration_for_state",
     "validate_fa_state_reuse",
