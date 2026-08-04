@@ -1,0 +1,95 @@
+{
+  "schema": "cvs.stage2.next_r4.fa_rdce3_cer_plr160.method_lock.v1",
+  "revision": "NEXT-R4-FA-RDCE3-CER-PLR160",
+  "candidate_id": "NEXT-R4-FA-RDCE3-CER-PLR160",
+  "protocol_schema": "p2_min_v1",
+  "representation_rule": "d106_canonical_normalized_relu_zid160",
+  "representation_dim": 160,
+  "matrix": {
+    "semantics": "phase1_seen_class_loco_directional_proxy",
+    "formal_new_registration_claim": false,
+    "receiver_count": 2,
+    "held_receivers": ["1-1", "18-2"],
+    "class_registry_policy": "runtime_supplied_unique_sorted",
+    "held_class_count": 6,
+    "k_values": [1, 5],
+    "logical_row_count": 24,
+    "state_ids": ["DA0_REG0", "DA1_REG0", "DA0_REG1", "DA1_REG1"],
+    "state_names_zh": {
+      "DA0_REG0": "域适应前/新类注册前",
+      "DA1_REG0": "域适应后/新类注册前",
+      "DA0_REG1": "域适应前/新类注册后",
+      "DA1_REG1": "域适应后/新类注册后"
+    },
+    "k1_unique_prediction_count": 48,
+    "k1_artifact_count": 96,
+    "k5_unique_prediction_count": 96,
+    "k5_artifact_count": 96,
+    "unique_prediction_count": 144,
+    "artifact_arm_count": 192,
+    "k1_policy": "Q_unique_H_per_logit_alias_receipt",
+    "k5_policy": "Q_unique_H_unique_CER_PLR160",
+    "common_query_binding": {
+      "physical_ids": true,
+      "observation_ids": true,
+      "byte_exact": true,
+      "order_exact": true,
+      "reuse_across_k": true,
+      "reuse_across_states": true,
+      "required_view_ids": ["K1", "K5", "DA0_REG0", "DA1_REG0", "DA0_REG1", "DA1_REG1"]
+    },
+    "da1_reg1_fa_state_reuse": {
+      "required": true,
+      "source_state": "DA1_REG0",
+      "target_state": "DA1_REG1",
+      "same_state_sha256": true
+    }
+  },
+  "fa_rdce3": {
+    "method_id": "FA-RDCE3",
+    "phase1_aggregate_only": true,
+    "k1_support_state": "shared_cross_class_3d_state",
+    "da1_reg1_reuses_da1_reg0_state": true,
+    "query_fit_update_selection": false,
+    "signed_unit_output_no_relu_or_renorm": true
+  },
+  "cer_plr160": {
+    "method_id": "CER-PLR160",
+    "representation_dim": 160,
+    "k1_policy": "exact_qknn_logit_object_alias",
+    "k5_policy": "class_symmetric_diagonal_shrinkage_plus_centered_residual",
+    "query_fit_update_selection": false,
+    "dense_matrix_count": 0,
+    "spectral_factorization_count": 0,
+    "linear_solve_count": 0
+  },
+  "comparisons": [
+    "DA1_REG0-DA0_REG0",
+    "DA1_REG1-DA0_REG1",
+    "DA0_REG1-DA0_REG0",
+    "DA1_REG1-DA1_REG0",
+    "K5_H-K5_Q",
+    "(DA1_H-DA1_Q)-(DA0_H-DA0_Q)"
+  ],
+  "reporting": {
+    "formal_state_names": ["DA0_REG0", "DA1_REG0", "DA0_REG1", "DA1_REG1"],
+    "state_name_zh": {
+      "DA0_REG0": "域适应前/新类注册前",
+      "DA1_REG0": "域适应后/新类注册前",
+      "DA0_REG1": "域适应前/新类注册后",
+      "DA1_REG1": "域适应后/新类注册后"
+    },
+    "reg0_new_and_h": "N/A",
+    "proxy_artifact_state_prefix": "SOURCE_HELD_PROXY",
+    "no_parameter_or_seed_search": true
+  },
+  "forbidden_runtime_inputs": [
+    "clean_or_source_samples",
+    "query_truth",
+    "query_role",
+    "class_quota",
+    "true_batch_class_count",
+    "global_reassignment",
+    "phase2_optimizer_or_backward"
+  ]
+}
