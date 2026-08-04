@@ -1,16 +1,18 @@
 # Stage2功能研发目标与证据门
 
-状态：`ACTIVE / D130_COMPLETE_NEGATIVE / NEXT_R1_DESIGN_FROZEN / NO_TARGET_PERFORMANCE_RESULT`
+状态：`ACTIVE / D130_COMPLETE_NEGATIVE / D131_TECHNICAL_NO_RESULT / NEXT_R1_DESIGN_FROZEN / NO_TARGET_PERFORMANCE_RESULT`
 
 ## 0.2026-08-03闭环与目标重置
 
 `D130-JOINT6-AFFINE-SCALE-R1`已在N607完成168/168条source-held LOCO prediction和独立score。CSPAR-2的K5 DA效应为`ΔH=-0.556pp、Δ总正确数=-9`；SRDH-2的K5 DA效应为0；两者均失败。D92-Lite160相对Full160的拟合解析MAC减少99.754%、显式峰值工作集减少90.607%，但`A_held_proxy`下降0.529pp、`F_retained`下降1.270pp，因此只有效率收益，没有满足联合目标的性能收益。两候选均关闭，不进入G0、fresh63、Target25或125，也不得调layer/rank/step/view/seed/shrinkage/阈值复活。
 
+`D131-D92-Lite160-QTIE-Target125`在393条partial prediction后因7个确定性技术失败停止：5个K1 qKNN精确并列，另有2行虽存在有限full288表示但primary160为精确零。该run没有完整manifest、truth或score，严格记为`NO_PERFORMANCE_RESULT`；D131的r4补丁链和125重跑永久关闭。D131只提供两条实现约束：唯一160维表示必须对ReLU零行作同一forward内的pre-ReLU signed totalization；K1精确并列必须无truth fail-closed，不能借助类别顺序、ID或hash打破。
+
 下一研发轮只允许一条原理不同的候选，冻结名为`NEXT-R1 FABR-TSL（Fisher-Anchored Block Residual + Tail-Safe Lite）`。它同时解决：
 
 1.从特征空间共享变换转向参数空间局部残差，不更新全部checkpoint参数；
-2.层选择不能预设为浅层。先用允许的Phase1数据计算各block的receiver敏感度、TX判别保持率、Fisher曲率和跨receiver方向一致性，预注册选择一个block或至多两个不重叠block；不得用Target query、truth或局部性能选层；
-3.Phase1只联合封存类置换对称的低秩梯度/Fisher基和量化统计。Phase2只用当前K-shot support拟合至多4个共享残差系数，并用Fisher二次项约束更新；禁止encoder全参反向、checkpoint replacement、逐类adapter和query更新；
+2.层选择不能预设为浅层。先用允许的Phase1数据计算各block的receiver敏感度、TX判别保持率、Fisher曲率和跨receiver方向一致性，预注册选择一个block；不得用Target query、truth或局部性能选层；
+3.Phase1只联合封存类置换对称的低秩梯度/Fisher基和量化统计。Phase2只用当前K-shot support拟合2个共享残差系数，并用Fisher二次项约束更新；禁止encoder全参反向、checkpoint replacement、逐类adapter和query更新；
 4.D92-Lite必须同步改为尾部安全的单仿射头：保留160维INT8/FP16 wire和低成本对角统计，以类对称的公共trust region约束support拟合相对冻结参考头的偏移；不得恢复old/new role分裂、两套稠密协方差、D62 row splice或按类门控；
 5.设计必须先证明K1/K5可辨识性、公共变换对所有注册类的合法性、Fisher锚定与头部trust region不会把identity当收益，再进入实现。Fishr只作为Fisher重要性/曲率来源之一，不把“浅层Fishr”预设为答案。
 
@@ -24,7 +26,25 @@ FABR只从`t1.norm.{weight,bias}`、`t2.norm.{weight,bias}`、`t3.norm.{weight,b
 
 R1只对当前调用作功能式覆盖`phi'=phi0+Ba`，不写checkpoint或`state_dict`。Phase1只封存一个INT8`B`、每方向FP16 scale、反量化基上的完整2×2对称FP16`K`及冻结常数。Phase2用当前全部registered support等权计算类间分离；K5紧致项使用physical-LOO均值，K1紧致项严格为0。以`delta=2^-6`做rank2中心差分，固定`lambda_F=1、lambda_0=10^-3、rho=0.25、m=0.20、tau=0.10`，解`a_tilde=-(H+lambda_F K+lambda_0 I)^-1 g`并投影到`a^T K a<=rho^2`。R0 support forward可复用，额外执行4个扰动support forward和1个精确R1 support forward；query只各执行一次R0/R1 forward，不参与拟合。非有限、病态、`a`为数值零、特征与Gram变化不超过重复前向抖动或量化后仅噪声变化时，直接`REJECT_REVISION_NO_FUNCTION`，不得alias/fallback或在target侧换层。
 
+唯一表示由同一次真实functional forward捕获的`joint_proj.0`线性输出、即160维pre-ReLU向量`p`定义，不得误读该层的320维输入：先计算`h=ReLU(p)`；若`||h||2>0`则`z=h/||h||2`，否则若有限且`||p||2>0`则`z=p/||p||2`，只有`p`精确全零或非有限时拒绝。范数累积使用float64，不增加target侧阈值。R0、R1、4个`±delta`support forward、Phase1验证、Q/F/L共享cache及真实checkpoint smoke必须从该同一160维线性输出调用同一表示函数；不得读取full288、FFT96、RF32或另一个辅助表示。
+
+FABR令`N=C*K`、`mu_c=L2(K^-1 sum_k z_ck)`，support目标唯一冻结为：
+
+```text
+L = L_sep + L_comp
+L_sep = [2/(C(C-1))] * sum_{c<d} tau*log(1+exp((mu_c^T mu_d-m)/tau))
+L_comp(K=5) = [1/(C*K)] * sum_c sum_k [1-z_ck^T L2((K-1)^-1 sum_{j!=k}z_cj)]
+L_comp(K=1) = 0
+m=0.20, tau=0.10
+```
+
+若`C<2`、任一类support数不等于K或任一均值无法L2归一化则fail-closed。参数、类别和样本的canonical flatten顺序分别为method lock保存的实际参数key列表及各段shape、冻结registered-class顺序和类内physical ID升序。以4个中心差分得到`g_r=[L(+delta e_r)-L(-delta e_r)]/(2delta)`及按上述canonical顺序展平的表示Jacobian`J`，并明确取`H_FABR=J^T J/N`为Gauss-Newton矩阵，不称为真实Hessian，也不与TSL仿射头`H_TSL`混名。`B`反量化后计算`K_F=B^TFB`并用于求解。连续解先按round-to-nearest-even舍入为FP16`a16`，再反解为float32`a32`；若`a32^T K_F a32>rho^2`，仅按`sqrt(rho^2/(a32^T K_F a32))`作一次同一`K_F`径向缩放并重新舍入FP16、反解float32，随后复验；第二次仍超界即fail-closed，不循环、不clip单个系数。
+
 TSL的K1 F/L逐logit严格alias同表示Q，K1收益只归因于`R1Q-R0Q`。K5从Phase1共同封存的类/receiver对称对数方差先验`q_logv0∈INT8[160]`、FP16`scale_logv0/offset_logv0/nu0/rho_h`出发，唯一解码为`v0_j=exp(offset_logv0+scale_logv0*q_logv0_j)`。令`u_ck=L2(z_id(x_ck))`，`mu_c=K^-1 sum_k u_ck`，`mu_c`不再做第二次L2归一化；对每个独立physical support定义`e_ck=((K-1)/K)*(u_ck-(K-1)^-1 sum_{j!=k}u_cj)`，并构造：
+
+TSL的公共API只允许`fit(support_z160,support_labels,registered_classes)`，不得接收`old_count`、role字段、F臂结果、query、truth或局部性能。Phase1先验按以下唯一规则构建。对每个允许receiver×class cell按physical ID排序，至少含2个signed-pre-ReLU160单位表示；以无偏对角方差`s_rcj^2=sum_i(z_rcij-mean_i z_rcij)^2/(n_rc-1)`，令`v_floor_p1=max(float32_tiny,64*float32_eps*mean({s_rcj^2:s_rcj^2>0}))`，无正方差时拒绝，并计算`ell_j=mean_{r,c} log(s_rcj^2+v_floor_p1)`，每个cell等权。固定`offset=(max_j ell_j+min_j ell_j)/2`、`scale=(max_j ell_j-min_j ell_j)/254`；`scale<=0`时拒绝；`q_logv0_j=clip(round_to_even((ell_j-offset)/scale),-127,127)`。`offset/scale`按FP16 round-to-nearest-even封存并以实际反量化值生成最终`v0`；receipt保存最大绝对/相对解码误差及全部`v0>0`。
+
+`nu0`取全部cell自由度`n_rc-1`的几何均值，再按FP16 round-to-nearest-even封存。`rho_h`只从Phase1 physical-LOO验证构建：每个cell按同一TSL公式得到`H_ref/H_hat`及`D_cell`；对参考头判对的每个validation样本和每个错误类别计算pairwise参考margin`m_ic>0`与改变`d_ic=(hat_y-hat_c)-(ref_y-ref_c)`，令`eta_cell=min(1,min_{d_ic<0} m_ic/(-d_ic))`，空负集合取1，`rho_cell=eta_cell*D_cell`。`rho_h`取全部有限正`rho_cell`的固定Type-7 5%分位数；无有限正值时拒绝；FP16封存若向上舍入则用`nextafter(float16_value,0)`下调一格，确保实际`rho_h`不超过未量化值。最终资产绑定checkpoint hash、cell物理ID根和表示规则hash，并保存`nu0/rho_h`量化误差、正性及逐cell量化后margin-slack receipt。FABR的support/query forward成本与head因果拟合成本分开计量。
 
 ```text
 v_post = (nu0*v0 + sum_c sum_k e_ck^2) / (nu0 + C*(K-1))
@@ -35,7 +55,9 @@ What_c = mu_c/v_post; bhat_c = -sum_j(mu_cj^2/v_post_j)/2
 
 先分别执行唯一的全类仿射中心化`W-=mean_c(W_c)、b-=mean_c(b_c)`，不再作范数归一化，也不分old/new。令`D=||[What-Wref,bhat-bref]||F`、`eta=min(1,rho_h/D)`、`H=Href+eta(Hhat-Href)`。输入必须为每类恰好K个独立physical support；`u/mu/e/v0/v_post/v_sph/nu0/rho_h/D/eta/H`均须有限，`nu0>0、rho_h>0`。固定`v_floor=max(float32_tiny,64*float32_eps*mean(v0))`，任一`v0_j<v_floor`或`v_post_j<v_floor`均fail-closed，不作clip。若`D<=64*float32_eps*max(1,||Href||F,||Hhat||F)`或量化后仅有数值噪声变化，直接`REJECT_REVISION_NO_FUNCTION`，不回退。该全局Frobenius约束只限制相对spherical reference的logit扰动，不宣称保证真实floor；floor只由外部同row完整矩阵判定。H最终编译为单一`INT8 W[C,160]+FP16 scale[C]+FP16 intercept[C]`，F臂不得回流`v_post/eta/DA`。
 
-独立`FEASIBILITY_REVIEW`先后识别并闭合了Fisher正则、反量化选层、TSL均值/LOO残差、对数先验解码和唯一仿射公式问题；冻结文本现为`P0=0/P1=0`。实现若偏离本节任一公式、常数、输入边界或fail-closed语义，必须退回设计审查，不得直接发布实验。
+所有K、所有臂都必须在float32最终logit上执行精确top-tie检测；任一query出现最高logit精确并列即记为`TIE_UNRESOLVED / NO_PERFORMANCE_RESULT`。K1的Q/F/L还必须逐logit共享同一结果。不得使用registry顺序、类别ID、physical ID、hash、role或truth消除并列。发布前只执行一次无truth的K1 liveness scan；它只验证能否形成唯一prediction，不读取性能，也不形成新增调参gate。
+
+独立`FEASIBILITY_REVIEW`及差分复核最终确认上述修订已闭合，裁定`P0=0、P1=0、DESIGN_FROZEN`。现在立即进入唯一候选实现；不新增第二轮方法设计、第二表示或额外矩阵。实现若偏离本节任一公式、常数、输入边界或fail-closed语义，必须退回设计审查，不得直接发布实验。
 
 ## 1.最终目标
 
@@ -52,7 +74,7 @@ K5/new20相对matched K10/new20的注册后旧类、最低旧类、新类和`H_o
 联合方法还必须同时满足下列效率目标。基线固定为完成Target125的正式288维D92，不得用160维source-held代理状态替代：
 
 - 精简D92固定采用单平面对称INT8系数`W_q[C,160]`、每类FP16 scale和FP16 intercept，不保留FP32 sidecar。正式D92核心数组为`B_formal=1152+590C`字节，D92-Lite为`B_lite=164C`字节；在C=26时由16,492B降至4,264B，减少74.1%。计入rank2 DA资产后，联合新增数值状态仍至少减少50%；
-- K5头部拟合MAC-equivalent至少减少90%，同机同线程实测墙钟中位数至少减少50%，且不增加backbone forward次数；
+- K5头部拟合MAC-equivalent至少减少90%，同机同线程实测墙钟中位数至少减少50%；“不增加backbone forward次数”只适用于同一已缓存表示上的`head_causal_resource_receipt`，联合FABR额外4个扰动support forward、1个R1 support forward及R0/R1 query forward必须在系统receipt中如实单列，不得宣称端到端forward不增加；
 - K5的query端head MAC至少减少40%；K1严格alias到qKNN，其资源按qKNN正式口径单列，不得写成D92-Lite零成本；
 - 正式D92的old/new稠密协方差属于拟合期瞬时量，部署态本来就是单仿射头。精简目标是删除重复拟合、288维辅助块和无效计算，不得把source-held代理额外保存的两块160×160矩阵冒充正式D92部署开销。
 
