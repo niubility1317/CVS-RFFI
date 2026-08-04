@@ -4,7 +4,7 @@
 
 - 实验ID：`d138_d92_lite_full288_target125_20260804_r2`
 - 登记时间：`2026-08-04`
-- 当前状态：`LOCAL_VERIFIED / REMOTE_LAUNCH_PENDING / DIAGNOSTIC_RESULT_ONLY_PENDING`
+- 当前状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
 - 目标：在r1隔离source缺少D92 ground-fit probe依赖的技术故障修复后，完成同一冻结候选的125 outer、375 scene、750 before/after surface及独立truth-side诊断评分。
 - 与r1关系：r1在真实smoke的query prediction前因`ModuleNotFoundError: scripts.probe_d92_registration_balanced_covariance`停止；r2为新的不可覆盖run，不续写r1。
 
@@ -36,3 +36,9 @@
 - 不按accuracy、H、BA、floor或中间值停止；只按协议/hash/覆盖故障，或至少两个不同row出现同一确定性prediction前异常停止。
 - 成功条件：8/8 shard、125/125 outer、375/375 scene、750/750 surface、prediction manifest闭合、truth catalog和score summary完整；最终保留diagnostic-only标签。
 - 预计产物：`smoke_row000_scene000`、`prediction_shard_0..7`、`merged`、`truth`、`score`及启动/监控日志。
+
+## r2启动结果
+
+- r2已完成新run目录创建和probe文件同步；依赖hash与本地一致，py_compile通过。
+- 递归import复核在真实ground-fit导入前停止：`probe_d92_registration_balanced_covariance.py`继续依赖`probe_d81_ground_nuisance_cauchy_center.py`，该D81-D80-D66-D62-D61-D46-D45-D44-D43脚本闭包尚未落地。
+- r2未产生smoke、prediction、truth或score；按两轮release-engineering规则冻结r3一次性补齐该闭包，不改方法、数据或矩阵。
