@@ -36,14 +36,11 @@ HEAD_ID = "CER-PLR160"
 WIRE_SCHEMA = "cvs.phase2.next_r4.cer_plr160.int8_affine_wire.v1"
 FIT_SCHEMA = "cvs.phase2.next_r4.cer_plr160.fit.v1"
 RESOURCE_SCHEMA = "cvs.phase2.next_r4.cer_plr160.resource.v1"
+TIE_RESOLUTION_RULE = "SEALED_CLASS_HANDLE_UTF8_ASC_V1"
 
 
 class NextR4CERPLR160Error(ValueError):
     """Raised when the frozen CER-PLR160 numerical contract is violated."""
-
-
-class NextR4CERPLR160TieError(NextR4CERPLR160Error):
-    """A final float32 top-score tie has no legal deterministic resolution."""
 
 
 def _freeze_value(value: Any) -> Any:
@@ -191,22 +188,92 @@ def _validate_qknn_logits(qknn_logits: np.ndarray, *, class_count: int) -> np.nd
     return logits
 
 
-def require_unique_float32_top(logits: np.ndarray) -> None:
-    """Fail closed on a final exact float32 top tie: ``TIE_UNRESOLVED``."""
+@dataclass(frozen=True, slots=True)
+class Float32TopDecision:
+    """Per-query final-score decisions without changing the score matrix."""
 
-    scores = np.asarray(logits)
+    predictions: tuple[str, ...]
+    tie_query_count: int
+
+    def __post_init__(self) -> None:
+        if (
+            not self.predictions
+            or any(type(handle) is not str or not handle for handle in self.predictions)
+            or type(self.tie_query_count) is not int
+            or self.tie_query_count < 0
+            or self.tie_query_count > len(self.predictions)
+        ):
+            raise NextR4CERPLR160Error("final float32 top decision drift")
+
+
+def _sealed_utf8_class_handles(values: Sequence[str]) -> tuple[tuple[str, ...], tuple[bytes, ...]]:
+    """Validate the immutable class-handle order without normalizing handles."""
+
+    if isinstance(values, (str, bytes)):
+        raise NextR4CERPLR160Error("registered class handles must be a sequence")
+    try:
+        handles = tuple(values)
+    except TypeError as error:
+        raise NextR4CERPLR160Error("registered class handles must be a sequence") from error
     if (
-        not isinstance(logits, np.ndarray)
+        len(handles) < 2
+        or any(type(handle) is not str or not handle for handle in handles)
+        or len(set(handles)) != len(handles)
+    ):
+        raise NextR4CERPLR160Error("registered class handles must be unique non-empty strings")
+    try:
+        utf8 = tuple(handle.encode("utf-8") for handle in handles)
+    except UnicodeEncodeError as error:
+        raise NextR4CERPLR160Error("registered class handles must be UTF-8 encodable") from error
+    return handles, utf8
+
+
+def resolve_float32_top_handles(
+    final_float32_logits: np.ndarray,
+    registered_class_handles: Sequence[str],
+) -> Float32TopDecision:
+    """Resolve every final float32 top score from sealed class handles only.
+
+    A row with one exact maximum keeps that class.  For an exact tie, the
+    selected class is the tied handle with lexicographically smallest UTF-8
+    bytes.  The helper reads neither query identity nor any query-side role,
+    truth, quota, batch count, or cross-query assignment state.  It only reads
+    the supplied final scores and sealed registered handles; it never mutates
+    or re-quantizes the score matrix.
+    """
+
+    handles, utf8_handles = _sealed_utf8_class_handles(registered_class_handles)
+    scores = np.asarray(final_float32_logits)
+    if (
+        not isinstance(final_float32_logits, np.ndarray)
         or scores.dtype != np.float32
         or scores.ndim != 2
         or scores.shape[0] < 1
-        or scores.shape[1] < 2
+        or scores.shape[1] != len(handles)
         or not np.isfinite(scores).all()
     ):
         raise NextR4CERPLR160Error("final logits must be finite numpy float32 [Q,C]")
+
     maxima = np.max(scores, axis=1, keepdims=True)
-    if bool(np.any(np.sum(scores == maxima, axis=1) > 1)):
-        raise NextR4CERPLR160TieError("TIE_UNRESOLVED: exact final float32 top tie")
+    tied = scores == maxima
+    predictions: list[str] = []
+    tie_query_count = 0
+    for row_tied in tied:
+        tied_columns = np.flatnonzero(row_tied)
+        if len(tied_columns) == 1:
+            predictions.append(handles[int(tied_columns[0])])
+            continue
+        tie_query_count += 1
+        # The selection key is only the sealed UTF-8 handle bytes.  Column
+        # indices locate the candidate handles but never participate in order.
+        tied_handles = (
+            (utf8_handles[int(column)], handles[int(column)]) for column in tied_columns
+        )
+        predictions.append(min(tied_handles, key=lambda item: item[0])[1])
+    return Float32TopDecision(
+        predictions=tuple(predictions),
+        tie_query_count=tie_query_count,
+    )
 
 
 def qknn_score_scale_from_lock(lock: qknn.Phase1ZIDStudentTLock) -> float:
@@ -787,7 +854,7 @@ def alias_qknn_logits(fit: CERPLR160Fit, qknn_logits: np.ndarray) -> np.ndarray:
     if type(fit.state) not in {CERPLR160K1QKNNAliasState, CERPLR160NoFunctionAliasState}:
         raise NextR4CERPLR160Error("functional K5 CER state is not a qKNN alias")
     logits = _validate_qknn_logits(qknn_logits, class_count=len(fit.state.classes))
-    require_unique_float32_top(logits)
+    resolve_float32_top_handles(logits, fit.state.classes)
     return qknn_logits
 
 
@@ -834,7 +901,7 @@ def score_cer_plr160(
     if not np.isfinite(output64).all():
         raise NextR4CERPLR160Error("CER-PLR160 final logits became non-finite")
     output = _readonly(output64, np.float32)
-    require_unique_float32_top(output)
+    resolve_float32_top_handles(output, state.classes)
     return output
 
 
@@ -845,18 +912,19 @@ __all__ = [
     "CERPLR160NoFunctionAliasState",
     "CERPLR160State",
     "EPS32",
+    "Float32TopDecision",
     "HEAD_ID",
     "K1",
     "K5",
     "NextR4CERPLR160Error",
-    "NextR4CERPLR160TieError",
     "REPRESENTATION_UNIT_ATOL",
+    "TIE_RESOLUTION_RULE",
     "WIRE_SCHEMA",
     "Z_DIM",
     "alias_k1_qknn_logits",
     "alias_qknn_logits",
     "fit_cer_plr160",
     "qknn_score_scale_from_lock",
-    "require_unique_float32_top",
+    "resolve_float32_top_handles",
     "score_cer_plr160",
 ]

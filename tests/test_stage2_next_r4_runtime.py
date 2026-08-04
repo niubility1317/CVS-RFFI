@@ -102,14 +102,17 @@ def _asset(old_classes: tuple[str, ...]) -> fa.FARDCE3Phase1Asset:
     )
 
 
-def _case(active_k: int):
+def _case(active_k: int, *, shared_class_support: bool = False):
     k1, k5, _ = _rows()
     row = k1 if active_k == 1 else k5
     binding, support1, support5, _, _ = _physical_binding(k1, k5)
     physical = support1 if active_k == 1 else support5
     support: dict[str, np.ndarray] = {}
     for index, class_id in enumerate(CLASSES):
-        support[class_id] = np.stack([_unit(index, variant + 1) for variant in range(active_k)]).astype(np.float32)
+        support_index = 0 if shared_class_support else index
+        support[class_id] = np.stack(
+            [_unit(support_index, variant + 1) for variant in range(active_k)]
+        ).astype(np.float32)
     query = np.concatenate(
         [np.stack([_unit(index, 0), _unit(index, 6)]) for index in range(len(CLASSES))], axis=0
     ).astype(np.float32)
@@ -148,8 +151,11 @@ def _case(active_k: int):
     return row, binding, asset, fa_binding, reg0, reg1, _lock(active_k), support, query
 
 
-def _run(active_k: int):
-    row, binding, asset, fa_binding, reg0, reg1, lock, support, query = _case(active_k)
+def _run(active_k: int, *, shared_class_support: bool = False):
+    row, binding, asset, fa_binding, reg0, reg1, lock, support, query = _case(
+        active_k,
+        shared_class_support=shared_class_support,
+    )
     return runtime.execute_next_r4_logical_row(
         row=row,
         binding_receipt=binding,
@@ -198,6 +204,65 @@ def test_k1_four_state_truth_free_closure_uses_direct_qknn_and_aliases_h(monkeyp
     isolation = result["query_isolation_receipt"]
     assert all(isolation[field] == 0 for field in ("query_rows_used_for_fit", "query_state_updates", "query_selection_count", "global_reassignment_calls"))
     assert isolation["post_representation_l2_normalization_applied"] is False
+
+
+def test_actual_k1_equal_cosine_qknn_tie_uses_canonical_handle() -> None:
+    classes = ("tx-z", "tx-a")
+    equal_support = np.zeros((2, runtime.Z_DIM), dtype=np.float32)
+    equal_support[:, 0] = np.float32(1.0)
+    query = equal_support[:1].copy()
+    logits, q_receipt, _ = runtime._q_head(
+        support=equal_support,
+        labels=classes,
+        classes=classes,
+        query=query,
+        representation="R0",
+        lock=_lock(1),
+    )
+    assert logits.dtype == np.float32
+    assert logits[0, 0] == logits[0, 1]
+    q_arm = runtime._arm(
+        arm_id="Q",
+        logits=logits,
+        classes=classes,
+        q_receipt=q_receipt,
+        head_receipt={"head": "qKNN_base"},
+        exact_alias=False,
+        unique_prediction=True,
+        head_status="FUNCTIONAL",
+    )
+    assert q_arm["predictions"] == ("tx-a",)
+    assert q_arm["receipt"]["tie_resolution_rule"] == "SEALED_CLASS_HANDLE_UTF8_ASC_V1"
+    assert q_arm["receipt"]["tie_query_count"] == 1
+    assert q_receipt["tie_resolution_rule"] == "SEALED_CLASS_HANDLE_UTF8_ASC_V1"
+    assert q_receipt["tie_query_count"] == 1
+    assert q_receipt["exact_float32_top_tie_closed"] is True
+
+
+def test_k1_and_k5_runtime_ties_close_without_new_head_state_or_macs() -> None:
+    for active_k in (1, 5):
+        result, _ = _run(active_k, shared_class_support=True)
+        for registration, state_ids in (("REG0", ("DA0_REG0", "DA1_REG0")), ("REG1", ("DA0_REG1", "DA1_REG1"))):
+            for state_id in state_ids:
+                state = result["registrations"][registration]["states"][state_id]
+                classes = tuple(state["registered_classes"])
+                expected = min(classes, key=lambda handle: handle.encode("utf-8"))
+                q_arm = state["arms"]["Q"]
+                h_arm = state["arms"]["H"]
+                assert q_arm["predictions"] == (expected,) * len(state["query_physical_ids"])
+                assert h_arm["predictions"] == q_arm["predictions"]
+                for arm in (q_arm, h_arm):
+                    assert arm["receipt"]["tie_resolution_rule"] == "SEALED_CLASS_HANDLE_UTF8_ASC_V1"
+                    assert arm["receipt"]["tie_query_count"] == len(state["query_physical_ids"])
+                    assert arm["receipt"]["exact_float32_top_tie_closed"] is True
+                assert q_arm["receipt"]["qknn_receipt"]["tie_query_count"] == len(state["query_physical_ids"])
+                cer_resource = result["resource_receipt"]["states"][state_id]["cer_plr160"]
+                assert cer_resource["incremental_deployed_numeric_state_bytes"] == 0
+                assert cer_resource["incremental_query_head_macs_per_sample"] == 0
+                if active_k == 1:
+                    assert h_arm["receipt"]["exact_qknn_alias"] is True
+                else:
+                    assert h_arm["receipt"]["head_status"] == "NO_HEAD_FUNCTION"
 
 
 def test_k5_cer_and_direct_cosine_path_are_scale_invariant() -> None:
@@ -251,7 +316,7 @@ def test_state_reuse_is_object_level_and_r1_has_no_post_transform() -> None:
     assert np.allclose(np.linalg.norm(direct_r1, axis=1), 1.0, rtol=0.0, atol=2.0e-6)
 
 
-def test_invalid_unit_id_lock_and_tie_paths_fail_closed(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_invalid_unit_id_lock_and_binding_paths_fail_closed() -> None:
     row, binding, asset, fa_binding, reg0, reg1, lock, support, query = _case(1)
     bad_rows = support.copy()
     bad_rows[row.retained_classes[0]] = bad_rows[row.retained_classes[0]].copy()
@@ -276,16 +341,6 @@ def test_invalid_unit_id_lock_and_tie_paths_fail_closed(monkeypatch: pytest.Monk
             row=row, binding_receipt=binding, fa_asset=asset, fa_binding=fa_binding,
             reg0=reg0, reg1=reg1, qknn_lock=_lock(5),
         )
-    original = runtime._score_direct_qknn
-    def _tied(*, bank, query, metric):
-        return np.zeros((len(query), len(bank.classes)), dtype=np.float32)
-    monkeypatch.setattr(runtime, "_score_direct_qknn", _tied)
-    with pytest.raises(runtime.NextR4RuntimeError, match="TIE_UNRESOLVED"):
-        runtime.execute_next_r4_logical_row(
-            row=row, binding_receipt=binding, fa_asset=asset, fa_binding=fa_binding,
-            reg0=reg0, reg1=reg1, qknn_lock=lock,
-        )
-    monkeypatch.setattr(runtime, "_score_direct_qknn", original)
 
 
 def test_public_runtime_signature_has_no_truth_role_or_quota_input() -> None:

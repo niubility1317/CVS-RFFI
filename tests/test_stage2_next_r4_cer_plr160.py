@@ -68,7 +68,7 @@ def _distinct_qknn_logits(query_rows: int, class_count: int) -> np.ndarray:
     return np.ascontiguousarray(base + np.arange(query_rows, dtype=np.float32)[:, None] * np.float32(0.01))
 
 
-def test_k1_is_an_exact_qknn_logit_object_alias_and_tie_is_unresolved() -> None:
+def test_k1_is_an_exact_qknn_logit_object_alias_and_tie_is_handle_resolved() -> None:
     support, labels, classes, query = _case(k_shot=1, representation="R1")
     fit = cer.fit_cer_plr160(
         support,
@@ -90,8 +90,13 @@ def test_k1_is_an_exact_qknn_logit_object_alias_and_tie_is_unresolved() -> None:
 
     tied = logits.copy()
     tied[0, -1] = tied[0, -2]
-    with pytest.raises(cer.NextR4CERPLR160TieError, match="TIE_UNRESOLVED"):
-        cer.alias_k1_qknn_logits(fit, tied)
+    tied_bytes = tied.tobytes(order="C")
+    assert cer.alias_k1_qknn_logits(fit, tied) is tied
+    assert cer.score_cer_plr160(fit, tied, query) is tied
+    tied_decision = cer.resolve_float32_top_handles(tied, classes)
+    assert tied_decision.predictions[0] == "tx-2"
+    assert tied_decision.tie_query_count == 1
+    assert tied.tobytes(order="C") == tied_bytes
 
     bad_query = query.copy()
     bad_query[0, 0] = np.inf
@@ -103,6 +108,49 @@ def test_k1_is_an_exact_qknn_logit_object_alias_and_tie_is_unresolved() -> None:
     nonunit_query[0] *= np.float32(0.9)
     with pytest.raises(cer.NextR4CERPLR160Error, match="unit R1"):
         cer.score_cer_plr160(fit, logits, nonunit_query)
+
+
+def test_final_float32_top_resolver_is_handle_canonical_and_per_query_equivariant() -> None:
+    classes = ("tx-m", "tx-a", "tx-z")
+    tied = np.asarray([[0.75, 0.75, 0.20]], dtype=np.float32)
+    tied_bytes = tied.tobytes(order="C")
+    canonical = cer.resolve_float32_top_handles(tied, classes)
+    assert canonical.predictions == ("tx-a",)
+    assert canonical.tie_query_count == 1
+    assert tied.tobytes(order="C") == tied_bytes
+
+    permutation = np.asarray([2, 0, 1], dtype=np.int64)
+    jointly_permuted = cer.resolve_float32_top_handles(
+        tied[:, permutation],
+        tuple(classes[index] for index in permutation),
+    )
+    assert jointly_permuted.predictions == canonical.predictions
+    assert jointly_permuted.tie_query_count == canonical.tie_query_count
+
+    top = np.float32(1.0)
+    next_lower = np.nextafter(top, np.float32(0.0), dtype=np.float32)
+    unique = np.asarray([[next_lower, top, np.float32(-1.0)]], dtype=np.float32)
+    unique_bytes = unique.tobytes(order="C")
+    original_argmax_handle = classes[int(np.argmax(unique, axis=1)[0])]
+    unique_decision = cer.resolve_float32_top_handles(unique, classes)
+    assert unique_decision.predictions == (original_argmax_handle,)
+    assert unique_decision.tie_query_count == 0
+    assert unique.tobytes(order="C") == unique_bytes
+
+    query_logits = np.asarray(
+        [
+            [0.90, 0.10, 0.90],
+            [0.20, 0.10, 0.80],
+            [0.40, 0.40, 0.40],
+        ],
+        dtype=np.float32,
+    )
+    base = cer.resolve_float32_top_handles(query_logits, classes)
+    assert base.predictions == ("tx-m", "tx-z", "tx-a")
+    query_order = np.asarray([2, 0, 2, 1], dtype=np.int64)
+    reordered = cer.resolve_float32_top_handles(query_logits[query_order], classes)
+    assert reordered.predictions == tuple(base.predictions[index] for index in query_order)
+    assert reordered.tie_query_count == 3
 
 
 def test_k5_state_is_164c_int8_fp16_wire_with_bounded_support_only_residual() -> None:
@@ -173,6 +221,7 @@ def test_k5_state_is_164c_int8_fp16_wire_with_bounded_support_only_residual() ->
     assert fit.resource_receipt["deployed_numeric_state_bytes"] == 164 * len(classes)
 
     q_logits = _distinct_qknn_logits(len(query), len(classes))
+    q_logits_bytes = q_logits.tobytes(order="C")
     actual = cer.score_cer_plr160(fit, q_logits, query)
     manual = np.asarray(
         q_logits.astype(np.float64)
@@ -182,6 +231,8 @@ def test_k5_state_is_164c_int8_fp16_wire_with_bounded_support_only_residual() ->
     )
     np.testing.assert_array_equal(actual, manual)
     assert actual is not q_logits
+    assert q_logits.tobytes(order="C") == q_logits_bytes
+    assert cer.resolve_float32_top_handles(actual, classes).tie_query_count == 0
 
 
 def test_k5_is_class_permutation_equivariant_without_role_inputs() -> None:
@@ -233,6 +284,13 @@ def test_sr_zero_and_quantized_zero_are_no_head_function_exact_aliases() -> None
     assert zero_fit.fit_receipt["head_status"] == "NO_HEAD_FUNCTION"
     assert zero_fit.fit_receipt["no_head_function_reason"] == "Sr_ZERO"
     assert cer.score_cer_plr160(zero_fit, q_logits, query) is q_logits
+    tied_q_logits = q_logits.copy()
+    tied_q_logits[0, -1] = tied_q_logits[0, -2]
+    tied_q_bytes = tied_q_logits.tobytes(order="C")
+    h_tied_logits = cer.score_cer_plr160(zero_fit, tied_q_logits, query)
+    assert h_tied_logits is tied_q_logits
+    assert cer.resolve_float32_top_handles(tied_q_logits, classes).predictions[0] == "b"
+    assert tied_q_logits.tobytes(order="C") == tied_q_bytes
 
     tiny_rows: list[np.ndarray] = []
     for class_index in range(len(classes)):
@@ -274,11 +332,18 @@ def test_sq_is_lock_only_and_r1_query_is_consumed_without_relu_or_renorm() -> No
     np.testing.assert_array_equal(actual, expected)
 
 
-def test_public_api_is_support_only_and_fails_closed_for_nonfinite_input() -> None:
+def test_public_api_is_support_only_and_rejects_nonfinite_input() -> None:
     support, labels, classes, query = _case()
-    for function in (cer.fit_cer_plr160, cer.score_cer_plr160):
+    assert tuple(inspect.signature(cer.resolve_float32_top_handles).parameters) == (
+        "final_float32_logits",
+        "registered_class_handles",
+    )
+    for function in (cer.fit_cer_plr160, cer.score_cer_plr160, cer.resolve_float32_top_handles):
         parameters = set(inspect.signature(function).parameters)
-        forbidden = {"query_truth", "query_roles", "old_class_count", "new_class_count", "top_k", "loo"}
+        forbidden = {
+            "query_truth", "query_roles", "query_id", "query_ids", "old_class_count",
+            "new_class_count", "top_k", "loo", "class_quota", "batch_class_count",
+        }
         assert forbidden.isdisjoint(parameters)
 
     bad = support.copy()

@@ -434,9 +434,9 @@ def _q_head(
     metric = qknn.identity_shared_psd_metric(config=lock)
     logits = _score_direct_qknn(bank=bank, query=query, metric=metric)
     try:
-        cer.require_unique_float32_top(logits)
+        decision = cer.resolve_float32_top_handles(logits, classes)
     except Exception as error:
-        raise NextR4RuntimeError("TIE_UNRESOLVED: direct qKNN final float32 top tie") from error
+        raise NextR4RuntimeError("direct qKNN final float32 decision failed") from error
     resource = qknn.audit_runtime_state(bank, metric)
     receipt = {
         "schema": DIRECT_QKNN_SCHEMA,
@@ -458,6 +458,9 @@ def _q_head(
         "class_logsumexp_minus_log_k": True,
         "all_registered_classes_scored": True,
         "independent_per_query": True,
+        "tie_resolution_rule": cer.TIE_RESOLUTION_RULE,
+        "tie_query_count": decision.tie_query_count,
+        "exact_float32_top_tie_closed": True,
         "query_rows_used_for_fit": 0,
         "query_state_updates": 0,
         "query_selection_count": 0,
@@ -469,14 +472,6 @@ def _q_head(
     return logits, _freeze(receipt), _freeze(resource)
 
 
-def _predictions(logits: np.ndarray, classes: tuple[str, ...]) -> tuple[str, ...]:
-    try:
-        cer.require_unique_float32_top(logits)
-    except Exception as error:
-        raise NextR4RuntimeError("TIE_UNRESOLVED: final float32 top tie") from error
-    return tuple(classes[int(index)] for index in np.argmax(logits, axis=1))
-
-
 def _arm(
     *, arm_id: str, logits: np.ndarray, classes: tuple[str, ...], q_receipt: Mapping[str, Any], head_receipt: Mapping[str, Any], exact_alias: bool, unique_prediction: bool, head_status: str, no_head_function_reason: str | None = None
 ) -> Mapping[str, Any]:
@@ -484,6 +479,10 @@ def _arm(
         raise NextR4RuntimeError("unknown NEXT-R4 arm")
     if logits.dtype != np.float32 or logits.ndim != 2 or logits.shape[1] != len(classes):
         raise NextR4RuntimeError("arm logits dtype/shape drift")
+    try:
+        decision = cer.resolve_float32_top_handles(logits, classes)
+    except Exception as error:
+        raise NextR4RuntimeError("final float32 arm decision failed") from error
     receipt = {
         "schema": "cvs.stage2.next_r4.arm.v1",
         "arm_id": arm_id,
@@ -493,6 +492,8 @@ def _arm(
         "unique_prediction": unique_prediction,
         "all_registered_classes_scored": True,
         "independent_per_query": True,
+        "tie_resolution_rule": cer.TIE_RESOLUTION_RULE,
+        "tie_query_count": decision.tie_query_count,
         "exact_float32_top_tie_closed": True,
         "qknn_receipt": _plain(q_receipt),
         "head_receipt": _plain(head_receipt),
@@ -506,7 +507,7 @@ def _arm(
     }
     if no_head_function_reason is not None:
         receipt["no_head_function_reason"] = no_head_function_reason
-    return _freeze({"predictions": _predictions(logits, classes), "receipt": receipt})
+    return _freeze({"predictions": decision.predictions, "receipt": receipt})
 
 
 def _run_state(
