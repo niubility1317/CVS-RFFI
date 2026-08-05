@@ -1,0 +1,46 @@
+{
+  "run_id": "next_r5_fa_rdce3_q_target125_20260805_r7",
+  "status": "STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT",
+  "run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/next_r5_fa_rdce3_q_target125_20260805_r7",
+  "smoke": {
+    "device": "cuda:0",
+    "error": "REG1 must byte-preserve each REG0 old-class support row",
+    "reg0_shape": [60, 160],
+    "reg1_old_prefix_shape": [60, 160],
+    "physical_id_prefix_equal": true,
+    "label_prefix_equal": true,
+    "max_abs_diff": 0.00008180737495422363,
+    "unequal_elements": 759,
+    "total_elements": 9600,
+    "array_equal": false
+  },
+  "cpu_diagnostic": {
+    "device": "cpu",
+    "error": "TorchScript weight is CUDA while input is CPU",
+    "performance_run": false
+  },
+  "coverage": {
+    "outer": "0/125",
+    "scene": "0/375",
+    "logical": "0/1500",
+    "unique_predictions": "0/1350",
+    "k1_alias": "0/150",
+    "shards": "0/8",
+    "truth": "not opened",
+    "score": "not produced"
+  },
+  "cleanup": {
+    "remote_gpu": "0% / 1MiB each",
+    "remote_run_processes": 0,
+    "local_ssh_processes": 0,
+    "local_established_n607_connections": 0,
+    "old_runs_touched": []
+  },
+  "preserved_paths": [
+    "input/fa_asset",
+    "prepared/run",
+    "smoke",
+    "source"
+  ],
+  "next_action": "Fix the deterministic old-support byte-preservation path locally, create a new non-overwriting run ID, and rerun focused checks before release."
+}
