@@ -39,9 +39,23 @@ seed={713102,713103,713104,713105,713106}
 - 成功闭合：125/125 outer、375/375 scene、1500/1500 logical、1350 unique、150 alias、8/8 shard、完整manifest、truth和score。
 - 停止仅限P0/安全/hash/覆盖故障或至少两个不同row预测前同一确定性异常；不得因性能停止；fresh retry authority=`无`。
 
-## 结果待填
+## 执行结果
+
+- 最终状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。
+- 13:53 direct N607 preflight通过；r8在启动前为`ABSENT`，r1至r7保持存在且未触碰；GPU0至7均为`0%/1MiB`，冻结输入SHA全部匹配。
+- closure已落地并独立解压；远端closure SHA=`4688f746dfcf126980a13f2ea1bbba9ad0c4c61fb0e77f4491c938d8710d6e0a`、大小=`73164800`bytes；五个科学入口SHA和`R8_PY_COMPILE_OK`均匹配本地闭包。
+- 独立FA资产构建成功：wire=`asset/fa_rdce3_target125.wire`，wire SHA=`af971fb6829e0dd1ff7aed52df0841aed697d1d1c782f742d1918316f1e889b9`；semantic asset SHA=`cae219c47cf41c8b21c2b460f87388b3b9bdab525154ff34a8ed9e2c66250c0d`；manifest SHA=`c10a4d3c191111cd95194d3f855cbef32d26490f324f8891afd32549d7a6b73b`。
+- `prepare`成功：`D108_SEALED_INPUTS_AND_TARGET_FA_ASSET_PINNED`；125 outer、375 scene、1500 logical、1350 unique、150 alias；显式复用PR160 extractor路径及SHA；query truth/role/selection/update/fit均为`false`。最终prepared plan/context SHA=`39ab00044339532c3e60f3c08dc7e2ec02db7db531bc7017edb092f8613dad9b`/`17c4472a0862d2f58583ccaebd2dae46509d8884257a2dee2e50cb95960cf88e`。
+- 真实checkpoint truth-free smoke成功：`REAL_CHECKPOINT_TRUTH_FREE_SMOKE_PASS`；`DA0_REG0=120`、`DA1_REG0=120`、`DA0_REG1=220`、`DA1_REG1=220`，仅为技术健康证据，不是性能结果。
+- 8个分片PID=`1720239`至`1720246`已启动并分别占用GPU0至7（每卡约546MiB），命令、run-root和输出路径均指向r8；但启动后核验发现8个进程的`/proc/PID/cwd`均为`/home/szu2070436088`，不符合本报告冻结的`CWD=RUN_ROOT/source`绑定。该错误属于P0运行绑定故障，不能把该批进程或任何中途状态计作实验结果。
+- 已仅对上述8个经命令行/run-root核验的PID发送`SIGTERM`；5秒后8个PID全部退出，GPU compute-app列表为空，8个shard日志保留且均为0bytes，未产生prediction、merge、truth或score；SSH/SCP均已清理。
+- 首次asset命令末尾误校验不存在的`manifest.json`导致外层shell返回1，但builder本体已报告成功，实际manifest文件和SHA已只读复核；这不是实验运行故障。
+- 按handoff的`fresh retry authority=无`，r8不重试、不打开truth、不评分，不产生任何性能或推广结论。后续若需有效实验，必须使用新的不可覆盖run ID并重新完成绑定核验。
 
 |outer|scene|logical|unique|truth|score|结论|
 |---:|---:|---:|---:|---|---|---|
-|0/125|0/375|0/1500|0/1350|未打开|未产生|`LOCAL_VERIFIED`|
+|0/125|0/375|0/1500|0/1350|未打开|未产生|`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`|
 
+### 四状态性能字段
+
+由于r8未形成任何完整prediction manifest，`DA0_REG0`、`DA1_REG0`、`DA0_REG1`、`DA1_REG1`的准确率、old/new harmonic、floor及其差分均为`N/A`；smoke计数不参与性能评分。
