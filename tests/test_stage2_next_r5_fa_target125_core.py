@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import hashlib
+import json
 
 import numpy as np
 import pytest
@@ -19,7 +20,7 @@ def _asset() -> core.Target125FARDCE3Asset:
     basis[1, 1] = 1.0
     basis[2, 2] = 1.0
     return core.build_target_fa_asset(
-        old_classes=tuple(f"old{index}" for index in range(core.OLD_CLASS_COUNT)),
+        old_classes=tuple(f"raw-tx-{index}" for index in range(core.OLD_CLASS_COUNT)),
         aggregate_samples_per_class=(98,) * core.OLD_CLASS_COUNT,
         class_centers_3d=np.full(
             (core.OLD_CLASS_COUNT, core.FA_RANK),
@@ -72,6 +73,7 @@ def _binding(
         scene="leo_clear_weak",
         registration_phase=phase,
         registered_classes=registry,
+        registered_class_indices=tuple(range(len(registry))),
         support_physical_ids=support_ids,
         query_physical_ids=query_ids,
     )
@@ -79,13 +81,14 @@ def _binding(
 
 def _four_state_inputs(k_shot: int, new_count: int):
     asset = _asset()
-    old_rows, old_labels = _rows(asset.old_classes, k_shot, offset=10)
+    old_handles = tuple(f"cls_{index}" for index in range(core.OLD_CLASS_COUNT))
+    old_rows, old_labels = _rows(old_handles, k_shot, offset=10)
     new_classes = tuple(f"new{index}" for index in range(new_count))
     new_rows, new_labels = _rows(new_classes, k_shot, offset=32)
     old_ids = tuple(f"old-support-{index}" for index in range(len(old_rows)))
     new_ids = tuple(f"new-support-{index}" for index in range(len(new_rows)))
     reg0 = _binding(
-        registry=asset.old_classes,
+        registry=old_handles,
         k_shot=k_shot,
         new_count=new_count,
         phase="REG0",
@@ -93,7 +96,7 @@ def _four_state_inputs(k_shot: int, new_count: int):
         query_ids=("old-query-0", "old-query-1"),
     )
     reg1 = _binding(
-        registry=asset.old_classes + new_classes,
+        registry=old_handles + new_classes,
         k_shot=k_shot,
         new_count=new_count,
         phase="REG1",
@@ -121,7 +124,13 @@ def test_target_asset_is_six_class_source_only_and_roundtrips() -> None:
     recovered = core.deserialize_target_fa_asset(wire)
     assert recovered.asset_sha256 == asset.asset_sha256
     assert len(recovered.old_classes) == 6
+    assert recovered.source_class_indices == tuple(range(6))
+    assert recovered.source_old_class_order_sha256 == core._source_old_class_order_sha256(asset.old_classes)  # noqa: SLF001 - wire-root assertion.
     assert recovered.fa_asset.aggregate_samples_per_class == (98,) * 6
+    legacy = json.loads(wire.decode("ascii"))
+    legacy["schema"] = "cvs.phase2.next_r5.fa_rdce3.target125.phase1_asset_wire.v1"
+    with pytest.raises(core.NextR5FATarget125CoreError, match="source-only contract drift"):
+        core.deserialize_target_fa_asset(core._canonical_bytes(legacy))  # noqa: SLF001 - legacy-wire rejection.
 
 
 def test_k1_is_exact_fa_state_logit_prediction_and_resource_alias() -> None:
@@ -158,6 +167,48 @@ def test_k1_is_exact_fa_state_logit_prediction_and_resource_alias() -> None:
             asset.old_classes,
             1,
             binding=reg0,
+        )
+
+
+def test_raw_asset_slots_bridge_to_row_local_handles_for_k10_new5() -> None:
+    asset, reg0, reg1, old_rows, old_labels, new_rows, new_labels, new_ids = _four_state_inputs(10, 5)
+    assert asset.old_classes == tuple(f"raw-tx-{index}" for index in range(core.OLD_CLASS_COUNT))
+    assert reg0.registered_classes == tuple(f"cls_{index}" for index in range(core.OLD_CLASS_COUNT))
+    assert reg0.registered_classes != asset.old_classes
+    assert reg0.registered_class_indices == asset.source_class_indices == tuple(range(6))
+    state = core.build_fa_qknn_four_state(
+        asset,
+        reg0_binding=reg0,
+        reg1_binding=reg1,
+        old_support_features=old_rows,
+        old_support_labels=old_labels,
+        new_support_features=new_rows,
+        new_support_labels=new_labels,
+        new_support_physical_ids=new_ids,
+    )
+    assert state.fa_state is not None
+    assert state.da0_reg0.classes == reg0.registered_classes
+    assert state.da1_reg1.classes == reg1.registered_classes
+
+
+def test_noncontinuous_registered_class_indices_fail_closed() -> None:
+    with pytest.raises(core.NextR5FATarget125CoreError, match="registered_class_indices"):
+        core.Target125FARuntimeBinding(
+            checkpoint_sha256=_sha("checkpoint"),
+            capsule_id=_sha("capsule"),
+            split_id=_sha("split"),
+            outer_id=matrix.make_outer_id("20-1", 713102, 10, 5),
+            receiver="20-1",
+            seed=713102,
+            k_shot=10,
+            new_count=5,
+            source_pool_k=matrix.source_pool_k_for(10, 5),
+            scene="leo_clear_weak",
+            registration_phase="REG0",
+            registered_classes=tuple(f"cls_{index}" for index in range(6)),
+            registered_class_indices=(0, 1, 2, 3, 4, 6),
+            support_physical_ids=tuple(f"support-{index}" for index in range(60)),
+            query_physical_ids=("query-0",),
         )
 
 

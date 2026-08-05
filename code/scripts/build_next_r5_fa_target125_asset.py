@@ -32,9 +32,10 @@ from cvsrffi import stage2_next_r4_fa_rdce3 as r4  # noqa: E402
 
 
 SOURCE_AGGREGATE_SCHEMA = (
-    "cvs.phase1.next_r5.fa_rdce3.target125.source_only_aggregate.v1"
+    "cvs.phase1.next_r5.fa_rdce3.target125.source_only_aggregate.v2"
 )
-ASSET_MANIFEST_SCHEMA = "cvs.phase1.next_r5.fa_rdce3.target125.asset_manifest.v1"
+ASSET_MANIFEST_SCHEMA = "cvs.phase1.next_r5.fa_rdce3.target125.asset_manifest.v2"
+METHOD_LOCK_SCHEMA = "cvs.stage2.next_r5.fa_rdce3_qknn.target125.method_lock.v2"
 BUILD_STATUS = "NEXT_R5_TARGET125_FA_RDCE3_SOURCE_ONLY_ASSET_COMPLETE"
 STRICT_TAP_MEMBERS = d106.TAP_MEMBERS
 EXPECTED_ROWS = d106.D104_SOURCE_ROW_COUNT
@@ -53,6 +54,8 @@ _AGGREGATE_FIELDS = frozenset(
         "target_query_rows_used",
         "query_rows_used_for_fit",
         "old_classes",
+        "source_class_indices",
+        "source_old_class_order_sha256",
         "aggregate_samples_per_class",
         "class_centers_3d",
         "fisher_precision_3d",
@@ -77,6 +80,13 @@ class PreparedTarget125FAAsset:
     asset: core.Target125FARDCE3Asset
     wire: bytes
     source_aggregate_sha256: str
+
+
+@dataclass(frozen=True, slots=True)
+class _VerifiedTarget125MethodLock:
+    method_lock_sha256: str
+    source_class_indices: tuple[int, ...]
+    source_old_class_order_sha256: str
 
 
 @dataclass(frozen=True, slots=True)
@@ -276,6 +286,88 @@ def _classes(value: Any) -> tuple[str, ...]:
     return result
 
 
+def _source_class_indices(value: Any) -> tuple[int, ...]:
+    if not isinstance(value, list):
+        raise NextR5Target125AssetBuildError("source_class_indices must be a JSON integer list")
+    result = tuple(value)
+    if (
+        len(result) != core.OLD_CLASS_COUNT
+        or any(type(item) is not int for item in result)
+        or result != tuple(range(core.OLD_CLASS_COUNT))
+    ):
+        raise NextR5Target125AssetBuildError("source_class_indices must close source slots 0..5")
+    return result
+
+
+def _source_old_class_order_sha256(classes: Sequence[str]) -> str:
+    return _sha(_canonical(list(_classes(list(classes)))))
+
+
+def _load_verified_method_lock(
+    path: Path,
+    expected_sha256: str,
+) -> _VerifiedTarget125MethodLock:
+    payload = _read_regular_file(path, expected_sha256, name="method lock")
+    try:
+        lock = json.loads(payload.decode("utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError) as error:
+        raise NextR5Target125AssetBuildError("method lock must be UTF-8 JSON") from error
+    if (
+        type(lock) is not dict
+        or lock.get("schema") != METHOD_LOCK_SCHEMA
+        or lock.get("candidate_id") != core.CANDIDATE_ID
+        or lock.get("protocol_schema") != core.PROTOCOL_SCHEMA
+    ):
+        raise NextR5Target125AssetBuildError("method lock identity/schema drift")
+    bridge = lock.get("class_identity_bridge")
+    required_bridge = {
+        "source_class_indices",
+        "source_asset_old_class_order_sha256",
+        "sealed_package_class_index_to_row_local_handle",
+        "row_local_handle_scope",
+        "cross_row_handle_reuse",
+    }
+    if type(bridge) is not dict or set(bridge) != required_bridge:
+        raise NextR5Target125AssetBuildError("method lock class-identity bridge field closure drift")
+    indices = _source_class_indices(bridge["source_class_indices"])
+    root = _sha256(
+        bridge["source_asset_old_class_order_sha256"],
+        "method lock source_asset_old_class_order_sha256",
+    )
+    if (
+        bridge["sealed_package_class_index_to_row_local_handle"] is not True
+        or bridge["row_local_handle_scope"] != "per_package_row"
+        or bridge["cross_row_handle_reuse"] is not False
+    ):
+        raise NextR5Target125AssetBuildError("method lock class-identity bridge policy drift")
+    return _VerifiedTarget125MethodLock(
+        method_lock_sha256=_sha(payload),
+        source_class_indices=indices,
+        source_old_class_order_sha256=root,
+    )
+
+
+def _verify_source_aggregate_method_lock(
+    document: Mapping[str, Any],
+    verified_method_lock: _VerifiedTarget125MethodLock,
+) -> None:
+    classes = _classes(document["old_classes"])
+    if (
+        _sha256(document["method_lock_sha256"], "method_lock_sha256")
+        != verified_method_lock.method_lock_sha256
+        or _source_class_indices(document["source_class_indices"])
+        != verified_method_lock.source_class_indices
+        or _sha256(
+            document["source_old_class_order_sha256"],
+            "source_old_class_order_sha256",
+        )
+        != verified_method_lock.source_old_class_order_sha256
+        or _source_old_class_order_sha256(classes)
+        != verified_method_lock.source_old_class_order_sha256
+    ):
+        raise NextR5Target125AssetBuildError("source aggregate / method-lock class-identity drift")
+
+
 def _counts(value: Any) -> tuple[int, ...]:
     if not isinstance(value, list):
         raise NextR5Target125AssetBuildError("aggregate_samples_per_class must be a JSON integer list")
@@ -303,7 +395,10 @@ def _validate_source_only_document(value: Mapping[str, Any]) -> Mapping[str, Any
         or value["query_rows_used_for_fit"] != 0
     ):
         raise NextR5Target125AssetBuildError("source-only aggregate access contract drift")
-    _classes(value["old_classes"])
+    classes = _classes(value["old_classes"])
+    _source_class_indices(value["source_class_indices"])
+    if _sha256(value["source_old_class_order_sha256"], "source_old_class_order_sha256") != _source_old_class_order_sha256(classes):
+        raise NextR5Target125AssetBuildError("source old-class order root drift")
     _counts(value["aggregate_samples_per_class"])
     _array(value["class_centers_3d"], "class_centers_3d", (core.OLD_CLASS_COUNT, core.FA_RANK))
     _array(value["fisher_precision_3d"], "fisher_precision_3d", (core.FA_RANK,))
@@ -321,15 +416,23 @@ def _validate_source_only_document(value: Mapping[str, Any]) -> Mapping[str, Any
     return value
 
 
-def prepare_target125_fa_asset_from_source_only_aggregate(
+def _prepare_target125_fa_asset_from_source_only_aggregate(
     aggregate: Mapping[str, Any],
+    *,
+    verified_method_lock: _VerifiedTarget125MethodLock,
 ) -> PreparedTarget125FAAsset:
     """Compile one Target125 asset from a validated six-class aggregate object."""
 
     document = _validate_source_only_document(aggregate)
+    _verify_source_aggregate_method_lock(document, verified_method_lock)
     try:
         asset = core.build_target_fa_asset(
             old_classes=_classes(document["old_classes"]),
+            source_class_indices=_source_class_indices(document["source_class_indices"]),
+            source_old_class_order_sha256=_sha256(
+                document["source_old_class_order_sha256"],
+                "source_old_class_order_sha256",
+            ),
             aggregate_samples_per_class=_counts(document["aggregate_samples_per_class"]),
             class_centers_3d=_array(
                 document["class_centers_3d"],
@@ -381,12 +484,31 @@ def prepare_target125_fa_asset_from_source_only_aggregate(
     )
 
 
+def prepare_target125_fa_asset_from_source_only_aggregate(
+    aggregate: Mapping[str, Any],
+    *,
+    method_lock_path: Path,
+    method_lock_sha256: str,
+) -> PreparedTarget125FAAsset:
+    """Compile an aggregate only when its external method lock is verified."""
+
+    return _prepare_target125_fa_asset_from_source_only_aggregate(
+        aggregate,
+        verified_method_lock=_load_verified_method_lock(
+            method_lock_path,
+            method_lock_sha256,
+        ),
+    )
+
+
 def _aggregate_receipt(
     *,
     strict_tap_sha256: str,
     checkpoint_sha256: str,
     method_lock_sha256: str,
     old_classes: tuple[str, ...],
+    source_class_indices: tuple[int, ...],
+    source_old_class_order_sha256: str,
     aggregate_samples_per_class: tuple[int, ...],
     source_physical_root_sha256: str,
     values: Mapping[str, np.ndarray],
@@ -394,12 +516,14 @@ def _aggregate_receipt(
     return _sha(
         _canonical(
             {
-                "schema": "cvs.phase1.next_r5.fa_rdce3.target125.aggregate_receipt.v1",
+                "schema": "cvs.phase1.next_r5.fa_rdce3.target125.aggregate_receipt.v2",
                 "candidate_id": core.CANDIDATE_ID,
                 "strict_tap_sha256": strict_tap_sha256,
                 "checkpoint_sha256": checkpoint_sha256,
                 "method_lock_sha256": method_lock_sha256,
                 "old_classes": list(old_classes),
+                "source_class_indices": list(source_class_indices),
+                "source_old_class_order_sha256": source_old_class_order_sha256,
                 "aggregate_samples_per_class": list(aggregate_samples_per_class),
                 "source_physical_root_sha256": source_physical_root_sha256,
                 "basis_formula": "d106_receiver_day_class_balanced_scatter_canonical_rank3",
@@ -425,6 +549,7 @@ def source_only_aggregate_from_d106_strict_tap(
     strict_tap: Path,
     strict_tap_sha256: str,
     checkpoint_sha256: str,
+    method_lock_path: Path,
     method_lock_sha256: str,
 ) -> Mapping[str, Any]:
     """Derive the one six-old-class aggregate from the sealed D106 strict tap.
@@ -434,13 +559,24 @@ def source_only_aggregate_from_d106_strict_tap(
     opaque SHA256 lineage values.
     """
 
+    verified_method_lock = _load_verified_method_lock(
+        method_lock_path,
+        method_lock_sha256,
+    )
     tap = _load_strict_tap(
         strict_tap,
         _sha256(strict_tap_sha256, "strict tap SHA256"),
     )
     _receivers, _days, classes = _validate_d106_grid(tap)
     checkpoint = _sha256(checkpoint_sha256, "checkpoint_sha256")
-    method_lock = _sha256(method_lock_sha256, "method_lock_sha256")
+    source_class_indices = tuple(range(core.OLD_CLASS_COUNT))
+    source_old_class_order = _source_old_class_order_sha256(classes)
+    if (
+        source_class_indices != verified_method_lock.source_class_indices
+        or source_old_class_order != verified_method_lock.source_old_class_order_sha256
+    ):
+        raise NextR5Target125AssetBuildError("strict-tap classes / method-lock root drift")
+    method_lock = verified_method_lock.method_lock_sha256
     try:
         r0 = d106_r0.canonical_d106_relu_zid160(tap.pre_relu)
     except Exception as error:
@@ -591,6 +727,8 @@ def source_only_aggregate_from_d106_strict_tap(
         checkpoint_sha256=checkpoint,
         method_lock_sha256=method_lock,
         old_classes=classes,
+        source_class_indices=source_class_indices,
+        source_old_class_order_sha256=source_old_class_order,
         aggregate_samples_per_class=(aggregate_count,) * core.OLD_CLASS_COUNT,
         source_physical_root_sha256=_physical_root(tap.physical_ids),
         values=values,
@@ -604,6 +742,8 @@ def source_only_aggregate_from_d106_strict_tap(
         "target_query_rows_used": 0,
         "query_rows_used_for_fit": 0,
         "old_classes": list(classes),
+        "source_class_indices": list(source_class_indices),
+        "source_old_class_order_sha256": source_old_class_order,
         "aggregate_samples_per_class": [aggregate_count] * core.OLD_CLASS_COUNT,
         "class_centers_3d": values["class_centers_3d"].tolist(),
         "fisher_precision_3d": values["fisher_precision_3d"].tolist(),
@@ -623,15 +763,21 @@ def prepare_target125_fa_asset_from_d106_strict_tap(
     strict_tap: Path,
     strict_tap_sha256: str,
     checkpoint_sha256: str,
+    method_lock_path: Path,
     method_lock_sha256: str,
 ) -> PreparedTarget125FAAsset:
     aggregate = source_only_aggregate_from_d106_strict_tap(
         strict_tap=strict_tap,
         strict_tap_sha256=strict_tap_sha256,
         checkpoint_sha256=checkpoint_sha256,
+        method_lock_path=method_lock_path,
         method_lock_sha256=method_lock_sha256,
     )
-    return prepare_target125_fa_asset_from_source_only_aggregate(aggregate)
+    return prepare_target125_fa_asset_from_source_only_aggregate(
+        aggregate,
+        method_lock_path=method_lock_path,
+        method_lock_sha256=method_lock_sha256,
+    )
 
 
 def _new_output_dir(value: Path) -> Path:
@@ -689,6 +835,8 @@ def _materialize_prepared_target125_fa_asset(
         "source_aggregate_sha256": prepared.source_aggregate_sha256,
         "strict_tap_sha256": strict_tap_sha256,
         "old_classes": list(prepared.asset.old_classes),
+        "source_class_indices": list(prepared.asset.source_class_indices),
+        "source_old_class_order_sha256": prepared.asset.source_old_class_order_sha256,
         "checkpoint_sha256": prepared.asset.checkpoint_sha256,
         "phase1_bundle_sha256": prepared.asset.phase1_bundle_sha256,
         "phase1_aggregate_receipt_sha256": prepared.asset.phase1_aggregate_receipt_sha256,
@@ -710,6 +858,8 @@ def _materialize_prepared_target125_fa_asset(
         "asset_sha256": prepared.asset.asset_sha256,
         "manifest_sha256": _sha(manifest_path.read_bytes()),
         "old_class_count": len(prepared.asset.old_classes),
+        "source_class_indices": list(prepared.asset.source_class_indices),
+        "source_old_class_order_sha256": prepared.asset.source_old_class_order_sha256,
         "phase1_source_rows_retained": False,
         "phase1_per_row_features_retained": False,
         "target_support_rows_used": 0,
@@ -721,6 +871,8 @@ def build_target125_fa_asset_from_source_only_aggregate(
     *,
     source_only_aggregate_json: Path,
     source_only_aggregate_sha256: str,
+    method_lock_path: Path,
+    method_lock_sha256: str,
     output_dir: Path,
 ) -> Mapping[str, Any]:
     """Non-release helper for an already prepared source-only aggregate."""
@@ -729,7 +881,11 @@ def build_target125_fa_asset_from_source_only_aggregate(
         source_only_aggregate_json,
         source_only_aggregate_sha256,
     )
-    prepared = prepare_target125_fa_asset_from_source_only_aggregate(aggregate)
+    prepared = prepare_target125_fa_asset_from_source_only_aggregate(
+        aggregate,
+        method_lock_path=method_lock_path,
+        method_lock_sha256=method_lock_sha256,
+    )
     return _materialize_prepared_target125_fa_asset(
         prepared,
         output_dir=output_dir,
@@ -742,6 +898,7 @@ def build_target125_fa_asset(
     strict_tap: Path,
     strict_tap_sha256: str,
     checkpoint_sha256: str,
+    method_lock_path: Path,
     method_lock_sha256: str,
     output_dir: Path,
 ) -> Mapping[str, Any]:
@@ -751,6 +908,7 @@ def build_target125_fa_asset(
         strict_tap=strict_tap,
         strict_tap_sha256=strict_tap_sha256,
         checkpoint_sha256=checkpoint_sha256,
+        method_lock_path=method_lock_path,
         method_lock_sha256=method_lock_sha256,
     )
     return _materialize_prepared_target125_fa_asset(
@@ -767,6 +925,7 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument("--strict-tap", required=True, type=Path)
     parser.add_argument("--strict-tap-sha256", required=True)
     parser.add_argument("--checkpoint-sha256", required=True)
+    parser.add_argument("--method-lock", required=True, type=Path)
     parser.add_argument("--method-lock-sha256", required=True)
     parser.add_argument("--output-dir", required=True, type=Path)
     return parser
@@ -778,6 +937,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         strict_tap=args.strict_tap,
         strict_tap_sha256=args.strict_tap_sha256,
         checkpoint_sha256=args.checkpoint_sha256,
+        method_lock_path=args.method_lock,
         method_lock_sha256=args.method_lock_sha256,
         output_dir=args.output_dir,
     )

@@ -38,9 +38,9 @@ FA_FIT_K = (5, 10)
 FA_RANK = r4.RANK
 INT8_MAX = 127
 
-TARGET_ASSET_SCHEMA = "cvs.phase2.next_r5.fa_rdce3.target125.phase1_asset.v1"
-TARGET_ASSET_WIRE_SCHEMA = "cvs.phase2.next_r5.fa_rdce3.target125.phase1_asset_wire.v1"
-RUNTIME_BINDING_SCHEMA = "cvs.phase2.next_r5.fa_rdce3.target125.runtime_binding.v1"
+TARGET_ASSET_SCHEMA = "cvs.phase2.next_r5.fa_rdce3.target125.phase1_asset.v2"
+TARGET_ASSET_WIRE_SCHEMA = "cvs.phase2.next_r5.fa_rdce3.target125.phase1_asset_wire.v2"
+RUNTIME_BINDING_SCHEMA = "cvs.phase2.next_r5.fa_rdce3.target125.runtime_binding.v2"
 RUNTIME_STATE_SCHEMA = "cvs.phase2.next_r5.fa_rdce3.target125.runtime_state.v1"
 QKNN_STATE_SCHEMA = "cvs.phase2.next_r5.fa_rdce3.target125.direct_qknn_state.v1"
 FOUR_STATE_SCHEMA = "cvs.phase2.next_r5.fa_rdce3.target125.four_state.v1"
@@ -100,6 +100,29 @@ def _classes(value: Sequence[str], name: str, *, expected: int | None = None) ->
     if expected is not None and len(result) != expected:
         raise NextR5FATarget125CoreError(f"{name} cardinality drift")
     return result
+
+
+def _class_indices(
+    value: Sequence[int],
+    name: str,
+    *,
+    expected: int | None = None,
+) -> tuple[int, ...]:
+    if isinstance(value, (str, bytes)):
+        raise NextR5FATarget125CoreError(f"{name} must be an integer sequence")
+    result = tuple(value)
+    if (
+        (expected is not None and len(result) != expected)
+        or not result
+        or any(type(item) is not int for item in result)
+        or result != tuple(range(len(result)))
+    ):
+        raise NextR5FATarget125CoreError(f"{name} must be one continuous zero-based index sequence")
+    return result
+
+
+def _source_old_class_order_sha256(classes: Sequence[str]) -> str:
+    return _sha256_bytes(_canonical_bytes(list(_classes(classes, "source old classes", expected=OLD_CLASS_COUNT))))
 
 
 def _physical_ids(value: Sequence[str], name: str, *, expected: int | None = None) -> tuple[str, ...]:
@@ -182,6 +205,8 @@ def _target_asset_payload(asset: "Target125FARDCE3Asset") -> dict[str, Any]:
         "candidate_id": CANDIDATE_ID,
         "asset_schema": TARGET_ASSET_SCHEMA,
         "old_classes": list(asset.fa_asset.old_classes),
+        "source_class_indices": list(asset.source_class_indices),
+        "source_old_class_order_sha256": asset.source_old_class_order_sha256,
         "aggregate_samples_per_class": list(asset.fa_asset.aggregate_samples_per_class),
         "phase1_source_only": True,
         "phase1_source_rows_retained": False,
@@ -198,6 +223,8 @@ class Target125FARDCE3Asset:
     """A Target125-labelled wrapper around the reusable aggregate-only FA wire."""
 
     fa_asset: r4.FARDCE3Phase1Asset
+    source_class_indices: tuple[int, ...]
+    source_old_class_order_sha256: str
     schema: str = TARGET_ASSET_SCHEMA
     asset_sha256: str = field(init=False)
 
@@ -208,6 +235,19 @@ class Target125FARDCE3Asset:
             raise NextR5FATarget125CoreError("Target125 FA asset must carry exactly six old classes")
         if any(count < 2 for count in self.fa_asset.aggregate_samples_per_class):
             raise NextR5FATarget125CoreError("Target125 FA asset lost source aggregation proof")
+        indices = _class_indices(
+            self.source_class_indices,
+            "source_class_indices",
+            expected=OLD_CLASS_COUNT,
+        )
+        order_sha = _require_sha256(
+            self.source_old_class_order_sha256,
+            "source_old_class_order_sha256",
+        )
+        if order_sha != _source_old_class_order_sha256(self.fa_asset.old_classes):
+            raise NextR5FATarget125CoreError("Target125 FA source old-class order root drift")
+        object.__setattr__(self, "source_class_indices", indices)
+        object.__setattr__(self, "source_old_class_order_sha256", order_sha)
         object.__setattr__(
             self,
             "asset_sha256",
@@ -249,6 +289,8 @@ def build_target_fa_asset(
     phase1_bundle_sha256: str,
     phase1_aggregate_receipt_sha256: str,
     method_lock_sha256: str,
+    source_class_indices: Sequence[int] | None = None,
+    source_old_class_order_sha256: str | None = None,
 ) -> Target125FARDCE3Asset:
     """Build a six-old-class Target125 asset from source-only aggregates.
 
@@ -257,6 +299,17 @@ def build_target_fa_asset(
     """
 
     classes = _classes(old_classes, "old_classes", expected=OLD_CLASS_COUNT)
+    indices = _class_indices(
+        tuple(range(OLD_CLASS_COUNT)) if source_class_indices is None else source_class_indices,
+        "source_class_indices",
+        expected=OLD_CLASS_COUNT,
+    )
+    derived_order_sha = _source_old_class_order_sha256(classes)
+    if source_old_class_order_sha256 is not None and _require_sha256(
+        source_old_class_order_sha256,
+        "source_old_class_order_sha256",
+    ) != derived_order_sha:
+        raise NextR5FATarget125CoreError("source old-class order root drift")
     counts = tuple(aggregate_samples_per_class)
     if len(counts) != OLD_CLASS_COUNT or any(type(item) is not int or item < 2 for item in counts):
         raise NextR5FATarget125CoreError("aggregate_samples_per_class must prove six-class aggregation")
@@ -280,7 +333,11 @@ def build_target_fa_asset(
         )
     except r4.NextR4FARDCE3Error as error:
         raise NextR5FATarget125CoreError("source-only FA aggregate construction failed") from error
-    return Target125FARDCE3Asset(underlying)
+    return Target125FARDCE3Asset(
+        underlying,
+        source_class_indices=indices,
+        source_old_class_order_sha256=derived_order_sha,
+    )
 
 
 def validate_target_fa_asset(asset: Target125FARDCE3Asset) -> None:
@@ -311,6 +368,8 @@ def deserialize_target_fa_asset(value: bytes) -> Target125FARDCE3Asset:
         "candidate_id",
         "asset_schema",
         "old_classes",
+        "source_class_indices",
+        "source_old_class_order_sha256",
         "aggregate_samples_per_class",
         "phase1_source_only",
         "phase1_source_rows_retained",
@@ -343,9 +402,22 @@ def deserialize_target_fa_asset(value: bytes) -> Target125FARDCE3Asset:
         underlying = r4.deserialize_fa_rdce3_phase1_asset(inner_wire)
     except (ValueError, UnicodeEncodeError, r4.NextR4FARDCE3Error) as error:
         raise NextR5FATarget125CoreError("Target125 FA asset underlying wire is invalid") from error
-    asset = Target125FARDCE3Asset(underlying)
+    asset = Target125FARDCE3Asset(
+        underlying,
+        source_class_indices=_class_indices(
+            payload["source_class_indices"],
+            "source_class_indices",
+            expected=OLD_CLASS_COUNT,
+        ),
+        source_old_class_order_sha256=_require_sha256(
+            payload["source_old_class_order_sha256"],
+            "source_old_class_order_sha256",
+        ),
+    )
     if (
         tuple(payload["old_classes"]) != asset.old_classes
+        or tuple(payload["source_class_indices"]) != asset.source_class_indices
+        or payload["source_old_class_order_sha256"] != asset.source_old_class_order_sha256
         or tuple(payload["aggregate_samples_per_class"]) != asset.fa_asset.aggregate_samples_per_class
         or _require_sha256(payload["asset_sha256"], "asset_sha256") != asset.asset_sha256
         or serialize_target_fa_asset(asset) != value
@@ -370,6 +442,7 @@ class Target125FARuntimeBinding:
     scene: str
     registration_phase: str
     registered_classes: tuple[str, ...]
+    registered_class_indices: tuple[int, ...]
     support_physical_ids: tuple[str, ...]
     query_physical_ids: tuple[str, ...]
     protocol_schema: str = PROTOCOL_SCHEMA
@@ -409,6 +482,19 @@ class Target125FARuntimeBinding:
             or (self.registration_phase == "REG1" and len(registry) <= OLD_CLASS_COUNT)
         ):
             raise NextR5FATarget125CoreError("runtime binding registration registry drift")
+        indices = _class_indices(
+            self.registered_class_indices,
+            "registered_class_indices",
+            expected=len(registry),
+        )
+        if (
+            (self.registration_phase == "REG0" and indices != tuple(range(OLD_CLASS_COUNT)))
+            or (
+                self.registration_phase == "REG1"
+                and indices[:OLD_CLASS_COUNT] != tuple(range(OLD_CLASS_COUNT))
+            )
+        ):
+            raise NextR5FATarget125CoreError("runtime binding registered class-index drift")
         support = _physical_ids(
             self.support_physical_ids,
             "support_physical_ids",
@@ -418,6 +504,7 @@ class Target125FARuntimeBinding:
         if set(support).intersection(query):
             raise NextR5FATarget125CoreError("support/query physical-ID overlap is forbidden")
         object.__setattr__(self, "registered_classes", registry)
+        object.__setattr__(self, "registered_class_indices", indices)
         object.__setattr__(self, "support_physical_ids", support)
         object.__setattr__(self, "query_physical_ids", query)
 
@@ -444,6 +531,7 @@ class Target125FARuntimeBinding:
             "scene": self.scene,
             "registration_phase": self.registration_phase,
             "registered_classes": list(self.registered_classes),
+            "registered_class_indices": list(self.registered_class_indices),
             "support_physical_root_sha256": self.support_physical_root_sha256,
             "query_physical_root_sha256": self.query_physical_root_sha256,
             "protocol_schema": self.protocol_schema,
@@ -507,7 +595,7 @@ class Target125FARuntimeState:
             or self.schema != RUNTIME_STATE_SCHEMA
             or self.binding.registration_phase != "REG0"
             or self.binding.k_shot not in FA_FIT_K
-            or self.binding.registered_classes != self.asset.old_classes
+            or self.binding.registered_class_indices != self.asset.source_class_indices
             or self.binding.checkpoint_sha256 != self.asset.checkpoint_sha256
             or self.fit_mode not in (
                 FIT_MODE_FISHER_CLOSED_FORM,
@@ -586,7 +674,8 @@ def _quantize_shift_toward_zero(value: np.ndarray) -> np.ndarray:
 
 def _support_content_sha(
     asset: Target125FARDCE3Asset,
-    support: Mapping[str, np.ndarray],
+    binding: Target125FARuntimeBinding,
+    support: Mapping[int, np.ndarray],
     labels: Sequence[str],
     physical_ids: Sequence[str],
 ) -> str:
@@ -595,11 +684,13 @@ def _support_content_sha(
             {
                 "schema": "cvs.phase2.next_r5.fa_rdce3.target125.reg0_support_content.v1",
                 "asset_sha256": asset.asset_sha256,
-                "old_classes": list(asset.old_classes),
-                "arrays": {
-                    key: _array_receipt(support[key])
-                    for key in asset.old_classes
-                },
+                "source_class_indices": list(asset.source_class_indices),
+                "source_old_class_order_sha256": asset.source_old_class_order_sha256,
+                "row_local_old_class_handles": list(binding.registered_classes),
+                "arrays_by_source_class_index": [
+                    _array_receipt(support[class_index])
+                    for class_index in asset.source_class_indices
+                ],
                 "labels": list(labels),
                 "support_physical_root_sha256": _physical_root(physical_ids),
             }
@@ -630,8 +721,8 @@ def fit_fa_rdce3(
         or k_shot not in FA_FIT_K
         or binding.k_shot != k_shot
         or binding.registration_phase != "REG0"
-        or binding.registered_classes != asset.old_classes
-        or tuple(old_registered_classes) != asset.old_classes
+        or binding.registered_class_indices != asset.source_class_indices
+        or tuple(old_registered_classes) != binding.registered_classes
     ):
         raise NextR5FATarget125CoreError("FA fit K/REG0 registry drift")
     labels = tuple(_text(item, "old_support_labels") for item in old_support_labels)
@@ -644,21 +735,25 @@ def fit_fa_rdce3(
     )
     if len(labels) != expected_rows or len(binding.support_physical_ids) != expected_rows:
         raise NextR5FATarget125CoreError("FA fit old-support row/physical binding drift")
-    support: dict[str, np.ndarray] = {}
-    for class_handle in asset.old_classes:
+    support: dict[int, np.ndarray] = {}
+    for class_index, class_handle in zip(
+        binding.registered_class_indices,
+        binding.registered_classes,
+        strict=True,
+    ):
         positions = [index for index, label in enumerate(labels) if label == class_handle]
         if len(positions) != k_shot:
             raise NextR5FATarget125CoreError("FA fit requires balanced complete old support")
-        support[class_handle] = np.ascontiguousarray(rows[positions], dtype=np.float64)
-    if any(label not in asset.old_classes for label in labels):
+        support[class_index] = np.ascontiguousarray(rows[positions], dtype=np.float64)
+    if any(label not in binding.registered_classes for label in labels):
         raise NextR5FATarget125CoreError("FA fit support label is outside old registry")
     basis = r4.decode_fa_rdce3_basis(asset.fa_asset).astype(np.float64)
     centers = r4.decode_fa_rdce3_centers(asset.fa_asset).astype(np.float64)
     fisher = r4.decode_fa_rdce3_fisher_precision(asset.fa_asset).astype(np.float64)
     variance = r4.decode_fa_rdce3_residual_variance(asset.fa_asset).astype(np.float64)
     residual_sum = np.zeros(FA_RANK, dtype=np.float64)
-    for class_index, class_handle in enumerate(asset.old_classes):
-        residual_sum += np.sum(support[class_handle] @ basis.T - centers[class_index][None, :], axis=0)
+    for class_index in asset.source_class_indices:
+        residual_sum += np.sum(support[class_index] @ basis.T - centers[class_index][None, :], axis=0)
     precision = fisher + float(OLD_CLASS_COUNT * k_shot) / variance
     raw_a = (residual_sum / variance) / precision
     if not np.isfinite(raw_a).all() or np.any(precision <= 0.0):
@@ -676,7 +771,7 @@ def fit_fa_rdce3(
             raw_a = raw_a * (radius / norm)
         a_fp16 = _quantize_shift_toward_zero(raw_a)
         fit_mode = FIT_MODE_FISHER_CLOSED_FORM
-    support_sha = _support_content_sha(asset, support, labels, binding.support_physical_ids)
+    support_sha = _support_content_sha(asset, binding, support, labels, binding.support_physical_ids)
     payload = _runtime_payload(
         asset=asset,
         binding=binding,
@@ -719,7 +814,10 @@ def reuse_fa_rdce3_state_for_reg1(
     if (
         not same_outer
         or reg1_binding.registration_phase != "REG1"
-        or reg1_binding.registered_classes[:OLD_CLASS_COUNT] != state.asset.old_classes
+        or reg1_binding.registered_class_indices[:OLD_CLASS_COUNT]
+        != state.asset.source_class_indices
+        or reg1_binding.registered_classes[:OLD_CLASS_COUNT]
+        != state.binding.registered_classes
         or len(reg1_binding.registered_classes) <= OLD_CLASS_COUNT
     ):
         raise NextR5FATarget125CoreError("REG1 FA reuse binding drift")
@@ -1112,6 +1210,8 @@ class Target125FAFourState:
             or type(self.reg1_binding) is not Target125FARuntimeBinding
             or self.reg0_binding.registration_phase != "REG0"
             or self.reg1_binding.registration_phase != "REG1"
+            or self.reg1_binding.registered_class_indices[:OLD_CLASS_COUNT]
+            != self.reg0_binding.registered_class_indices
             or self.reg1_binding.registered_classes[:OLD_CLASS_COUNT]
             != self.reg0_binding.registered_classes
         ):
@@ -1184,8 +1284,11 @@ def build_fa_qknn_four_state(
     if (
         type(reg0_binding) is not Target125FARuntimeBinding
         or type(reg1_binding) is not Target125FARuntimeBinding
-        or reg0_binding.registered_classes != asset.old_classes
-        or reg1_binding.registered_classes[:OLD_CLASS_COUNT] != asset.old_classes
+        or reg0_binding.registered_class_indices != asset.source_class_indices
+        or reg1_binding.registered_class_indices[:OLD_CLASS_COUNT]
+        != asset.source_class_indices
+        or reg1_binding.registered_classes[:OLD_CLASS_COUNT]
+        != reg0_binding.registered_classes
         or reg0_binding.k_shot != reg1_binding.k_shot
     ):
         raise NextR5FATarget125CoreError("four-state asset/binding registry drift")

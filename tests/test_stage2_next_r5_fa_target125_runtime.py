@@ -32,6 +32,7 @@ def _condition() -> Target125ConditionInput:
     reg0 = Target125RegistrationInput(
         registration_phase="REG0",
         registered_classes=old,
+        registered_class_indices=tuple(range(len(old))),
         support_zid160=_rows(len(old)),
         support_labels=old,
         support_physical_ids=old_ids,
@@ -41,6 +42,7 @@ def _condition() -> Target125ConditionInput:
     reg1 = Target125RegistrationInput(
         registration_phase="REG1",
         registered_classes=old + new,
+        registered_class_indices=tuple(range(len(old) + len(new))),
         support_zid160=np.vstack((_rows(len(old)), _rows(len(new), offset=20))).astype(np.float32),
         support_labels=old + new,
         support_physical_ids=old_ids + tuple(f"new-support-{index}" for index in range(len(new))),
@@ -80,6 +82,8 @@ def test_condition_preserves_reg0_old_support_order_and_builds_core_bindings() -
     }
     reg0, reg1 = build_target125_runtime_bindings(source_plan=source_plan, condition=condition)
     assert reg0.support_physical_ids == condition.reg0.support_physical_ids
+    assert reg0.registered_class_indices == tuple(range(matrix.OLD_CLASS_COUNT))
+    assert reg1.registered_class_indices == tuple(range(matrix.OLD_CLASS_COUNT + condition.outer_row.new_count))
     assert reg1.support_physical_ids == condition.reg0.support_physical_ids + tuple(
         condition.reg1.support_physical_ids[matrix.OLD_CLASS_COUNT :]
     )
@@ -94,6 +98,7 @@ def test_query_isolation_and_reg1_old_support_reorder_fail_closed() -> None:
     reordered = Target125RegistrationInput(
         registration_phase="REG1",
         registered_classes=condition.reg1.registered_classes,
+        registered_class_indices=condition.reg1.registered_class_indices,
         support_zid160=condition.reg1.support_zid160,
         support_labels=(condition.reg1.support_labels[1], condition.reg1.support_labels[0], *condition.reg1.support_labels[2:]),
         support_physical_ids=(condition.reg1.support_physical_ids[1], condition.reg1.support_physical_ids[0], *condition.reg1.support_physical_ids[2:]),
@@ -107,6 +112,22 @@ def test_query_isolation_and_reg1_old_support_reorder_fail_closed() -> None:
             source_row=condition.source_row,
             reg0=condition.reg0,
             reg1=reordered,
+        )
+
+
+def test_sealed_package_class_records_require_exact_continuous_bridge() -> None:
+    records = [
+        {"class_index": index, "class_handle": f"cls_{index}"}
+        for index in range(matrix.OLD_CLASS_COUNT)
+    ]
+    assert runtime._registered_class_records(  # noqa: SLF001 - exact package boundary test.
+        {"registered_classes": records}, name="test package"
+    ) == (tuple(range(6)), tuple(f"cls_{index}" for index in range(6)))
+    bad = [dict(item) for item in records]
+    bad[-1]["class_index"] = 7
+    with pytest.raises(NextR5FATarget125RuntimeError, match="record/index drift"):
+        runtime._registered_class_records(  # noqa: SLF001 - exact package boundary test.
+            {"registered_classes": bad}, name="test package"
         )
 
 

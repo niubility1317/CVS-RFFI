@@ -35,6 +35,7 @@ PREPARED_PLAN_SCHEMA = "cvs.phase2.next_r5.fa_rdce3_qknn.target125.prepared_plan
 PREPARED_CONTEXT_SCHEMA = "cvs.phase2.next_r5.fa_rdce3_qknn.target125.prepared_context.v1"
 PREPARE_RECEIPT_SCHEMA = "cvs.phase2.next_r5.fa_rdce3_qknn.target125.prepare_receipt.v1"
 PREDICTION_SHARD_SCHEMA = "cvs.phase2.next_r5.fa_rdce3_qknn.target125.prediction_shard.v1"
+METHOD_LOCK_SCHEMA = "cvs.stage2.next_r5.fa_rdce3_qknn.target125.method_lock.v2"
 SHARD_COUNT = 8
 
 
@@ -132,6 +133,50 @@ def _tokens(
     return result
 
 
+def _class_indices(value: Sequence[int], *, name: str, expected: int | None = None) -> tuple[int, ...]:
+    if isinstance(value, (str, bytes)):
+        raise NextR5FATarget125RuntimeError(f"{name} must be an integer sequence")
+    result = tuple(value)
+    if (
+        (expected is not None and len(result) != expected)
+        or not result
+        or any(type(item) is not int for item in result)
+        or result != tuple(range(len(result)))
+    ):
+        raise NextR5FATarget125RuntimeError(
+            f"{name} must be one continuous zero-based index sequence"
+        )
+    return result
+
+
+def _registered_class_records(
+    manifest: Mapping[str, Any], *, name: str
+) -> tuple[tuple[int, ...], tuple[str, ...]]:
+    records = manifest.get("registered_classes")
+    if not isinstance(records, list) or not records:
+        raise NextR5FATarget125RuntimeError(f"{name} registered class records are missing")
+    indices: list[int] = []
+    handles: list[str] = []
+    for expected_index, record in enumerate(records):
+        if (
+            not isinstance(record, Mapping)
+            or set(record) != {"class_index", "class_handle"}
+            or type(record.get("class_index")) is not int
+            or record["class_index"] != expected_index
+            or type(record.get("class_handle")) is not str
+            or not record["class_handle"]
+        ):
+            raise NextR5FATarget125RuntimeError(
+                f"{name} registered class record/index drift"
+            )
+        indices.append(record["class_index"])
+        handles.append(record["class_handle"])
+    return (
+        _class_indices(indices, name=f"{name}.registered_class_indices"),
+        _tokens(handles, name=f"{name}.registered_class_handles"),
+    )
+
+
 @dataclass(frozen=True, slots=True)
 class Target125RegistrationInput:
     """One truth-free canonical R0 registration package.
@@ -143,6 +188,7 @@ class Target125RegistrationInput:
 
     registration_phase: str
     registered_classes: Sequence[str]
+    registered_class_indices: Sequence[int]
     support_zid160: np.ndarray
     support_labels: Sequence[str]
     support_physical_ids: Sequence[str]
@@ -153,6 +199,19 @@ class Target125RegistrationInput:
         if self.registration_phase not in ("REG0", "REG1"):
             raise NextR5FATarget125RuntimeError("registration_phase must be REG0 or REG1")
         classes = _tokens(self.registered_classes, name="registered_classes")
+        indices = _class_indices(
+            self.registered_class_indices,
+            name="registered_class_indices",
+            expected=len(classes),
+        )
+        if (
+            (self.registration_phase == "REG0" and indices != tuple(range(matrix.OLD_CLASS_COUNT)))
+            or (
+                self.registration_phase == "REG1"
+                and indices[: matrix.OLD_CLASS_COUNT] != tuple(range(matrix.OLD_CLASS_COUNT))
+            )
+        ):
+            raise NextR5FATarget125RuntimeError("registration class-index phase drift")
         support = _readonly_float32(self.support_zid160, name="support_zid160")
         query = _readonly_float32(self.query_zid160, name="query_zid160")
         labels = _tokens(self.support_labels, name="support_labels", expected=len(support), unique=False)
@@ -170,6 +229,7 @@ class Target125RegistrationInput:
         if set(support_ids).intersection(query_ids):
             raise NextR5FATarget125RuntimeError("support/query physical IDs overlap")
         object.__setattr__(self, "registered_classes", classes)
+        object.__setattr__(self, "registered_class_indices", indices)
         object.__setattr__(self, "support_zid160", support)
         object.__setattr__(self, "support_labels", labels)
         object.__setattr__(self, "support_physical_ids", support_ids)
@@ -242,6 +302,9 @@ class Target125ConditionInput:
             or self.reg0.active_k != row.k_shot
             or self.reg1.active_k != row.k_shot
             or len(self.reg0.registered_classes) != matrix.OLD_CLASS_COUNT
+            or self.reg0.registered_class_indices != tuple(range(matrix.OLD_CLASS_COUNT))
+            or self.reg1.registered_class_indices[: matrix.OLD_CLASS_COUNT]
+            != self.reg0.registered_class_indices
             or self.reg1.registered_classes[: matrix.OLD_CLASS_COUNT]
             != self.reg0.registered_classes
             or len(self.reg1.registered_classes) != matrix.OLD_CLASS_COUNT + row.new_count
@@ -427,13 +490,23 @@ class D108ZID160Materializer:
             from .stage2_diag_cosine_exploration import _validate_matched_packages
 
             _validate_matched_packages(support_manifest, query_manifest)
-            registry = tuple(
-                str(item.get("class_handle", ""))
-                for item in support_manifest.get("registered_classes", [])
-                if isinstance(item, Mapping)
+            support_indices, registry = _registered_class_records(
+                support_manifest,
+                name="support package",
             )
-            if not registry or len(set(registry)) != len(registry):
-                raise NextR5FATarget125RuntimeError("sealed registered-class contract drift")
+            query_indices, query_registry = _registered_class_records(
+                query_manifest,
+                name="query package",
+            )
+            if support_indices != query_indices or registry != query_registry:
+                raise NextR5FATarget125RuntimeError(
+                    "support/query sealed registered-class bridge drift"
+                )
+            if (
+                registration_phase == "REG0"
+                and support_indices != tuple(range(matrix.OLD_CLASS_COUNT))
+            ):
+                raise NextR5FATarget125RuntimeError("REG0 sealed class-index bridge drift")
             for manifest in (support_manifest, query_manifest):
                 if (
                     manifest.get("receiver") != source_row["receiver"]
@@ -450,6 +523,7 @@ class D108ZID160Materializer:
             return Target125RegistrationInput(
                 registration_phase=registration_phase,
                 registered_classes=registry,
+                registered_class_indices=support_indices,
                 support_zid160=self._zid160(
                     iq=support_iq, package_root=str(support_ref["package_root"]),
                     manifest=support_manifest, batch_size=self._support_batch_size
@@ -497,16 +571,40 @@ def _target_row_key(row: matrix.Target125OuterRow) -> tuple[str, int, int, int, 
 
 def _validate_method_lock(path: Path, expected_sha256: str) -> dict[str, Any]:
     lock = _read_json(path, expected_sha256=expected_sha256, name="NEXT-R5 method lock")
+    bridge = lock.get("class_identity_bridge")
+    bridge_fields = {
+        "source_class_indices",
+        "source_asset_old_class_order_sha256",
+        "sealed_package_class_index_to_row_local_handle",
+        "row_local_handle_scope",
+        "cross_row_handle_reuse",
+    }
     if (
-        lock.get("candidate_id") != matrix.CANDIDATE_ID
+        lock.get("schema") != METHOD_LOCK_SCHEMA
+        or lock.get("candidate_id") != matrix.CANDIDATE_ID
         or lock.get("protocol_schema") != matrix.PROTOCOL_SCHEMA
         or lock.get("matrix", {}).get("logical_surface_count")
         != matrix.LOGICAL_STATE_SURFACE_COUNT
         or lock.get("matrix", {}).get("unique_prediction_count")
         != matrix.UNIQUE_PREDICTION_COUNT
         or lock.get("matrix", {}).get("alias_count") != matrix.ALIAS_COUNT
+        or type(bridge) is not dict
+        or set(bridge) != bridge_fields
+        or _class_indices(
+            bridge.get("source_class_indices", ()),
+            name="method_lock.source_class_indices",
+            expected=matrix.OLD_CLASS_COUNT,
+        )
+        != tuple(range(matrix.OLD_CLASS_COUNT))
+        or bridge.get("sealed_package_class_index_to_row_local_handle") is not True
+        or bridge.get("row_local_handle_scope") != "per_package_row"
+        or bridge.get("cross_row_handle_reuse") is not False
     ):
         raise NextR5FATarget125RuntimeError("NEXT-R5 method-lock identity/count drift")
+    _sha(
+        bridge.get("source_asset_old_class_order_sha256"),
+        "method-lock source old-class order SHA256",
+    )
     return lock
 
 
@@ -546,7 +644,7 @@ def prepare_next_r5_fa_target125_inputs(
     ):
         raise NextR5FATarget125RuntimeError("Target FA asset binding failed")
     lock_path = Path(method_lock_path)
-    _validate_method_lock(lock_path, expected_method_lock_sha256)
+    lock = _validate_method_lock(lock_path, expected_method_lock_sha256)
     try:
         from . import stage2_next_r5_fa_target125_core as core
 
@@ -557,6 +655,13 @@ def prepare_next_r5_fa_target125_inputs(
         expected_method_lock_sha256, "method-lock SHA256"
     ):
         raise NextR5FATarget125RuntimeError("Target FA asset / method-lock binding drift")
+    bridge = lock["class_identity_bridge"]
+    if (
+        decoded_asset.source_class_indices != tuple(bridge["source_class_indices"])
+        or decoded_asset.source_old_class_order_sha256
+        != bridge["source_asset_old_class_order_sha256"]
+    ):
+        raise NextR5FATarget125RuntimeError("Target FA asset / method-lock class-identity drift")
     identity = source_plan.get("identity")
     if not isinstance(identity, Mapping) or not isinstance(identity.get("checkpoint"), Mapping):
         raise NextR5FATarget125RuntimeError("D108 prepared checkpoint identity is missing")
@@ -776,6 +881,7 @@ def build_target125_runtime_bindings(
             **common,
             registration_phase="REG0",
             registered_classes=tuple(condition.reg0.registered_classes),
+            registered_class_indices=tuple(condition.reg0.registered_class_indices),
             support_physical_ids=tuple(condition.reg0.support_physical_ids),
             query_physical_ids=tuple(condition.reg0.query_physical_ids),
         )
@@ -783,6 +889,7 @@ def build_target125_runtime_bindings(
             **common,
             registration_phase="REG1",
             registered_classes=tuple(condition.reg1.registered_classes),
+            registered_class_indices=tuple(condition.reg1.registered_class_indices),
             support_physical_ids=tuple(condition.reg1.support_physical_ids),
             query_physical_ids=tuple(condition.reg1.query_physical_ids),
         )
@@ -947,8 +1054,17 @@ def _load_target_asset(plan: Mapping[str, Any]) -> Any:
         if asset.checkpoint_sha256 != _sha(identity.get("checkpoint_sha256"), "prepared checkpoint SHA256"):
             raise NextR5FATarget125RuntimeError("Target125 FA asset checkpoint binding drift")
         method_lock = identity.get("method_lock")
-        if not isinstance(method_lock, Mapping) or asset.method_lock_sha256 != _sha(
-            method_lock.get("sha256"), "prepared method-lock SHA256"
+        if not isinstance(method_lock, Mapping):
+            raise NextR5FATarget125RuntimeError("Target125 FA asset method-lock binding drift")
+        method_lock_sha = _sha(method_lock.get("sha256"), "prepared method-lock SHA256")
+        if asset.method_lock_sha256 != method_lock_sha:
+            raise NextR5FATarget125RuntimeError("Target125 FA asset method-lock binding drift")
+        lock = _validate_method_lock(Path(str(method_lock.get("path", ""))), method_lock_sha)
+        bridge = lock["class_identity_bridge"]
+        if (
+            asset.source_class_indices != tuple(bridge["source_class_indices"])
+            or asset.source_old_class_order_sha256
+            != bridge["source_asset_old_class_order_sha256"]
         ):
             raise NextR5FATarget125RuntimeError("Target125 FA asset method-lock binding drift")
         return asset

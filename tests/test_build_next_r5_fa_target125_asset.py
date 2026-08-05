@@ -7,6 +7,7 @@ import sys
 from pathlib import Path
 
 import numpy as np
+import pytest
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -75,16 +76,52 @@ def _strict_tap_arrays(module: object) -> dict[str, np.ndarray]:
     return arrays
 
 
+def _write_method_lock(
+    module: object,
+    tmp_path: Path,
+    source_classes: tuple[str, ...],
+    *,
+    source_root_override: str | None = None,
+) -> tuple[Path, str]:
+    lock = {
+        "schema": module.METHOD_LOCK_SCHEMA,
+        "candidate_id": module.core.CANDIDATE_ID,
+        "protocol_schema": module.core.PROTOCOL_SCHEMA,
+        "class_identity_bridge": {
+            "source_class_indices": list(range(module.core.OLD_CLASS_COUNT)),
+            "source_asset_old_class_order_sha256": (
+                source_root_override
+                if source_root_override is not None
+                else module._source_old_class_order_sha256(source_classes)
+            ),
+            "sealed_package_class_index_to_row_local_handle": True,
+            "row_local_handle_scope": "per_package_row",
+            "cross_row_handle_reuse": False,
+        },
+    }
+    path = (tmp_path / "method_lock.json").resolve()
+    path.write_bytes(module._canonical(lock))
+    return path, _sha(path.read_bytes())
+
+
 def test_direct_strict_tap_cli_builds_one_six_old_class_source_only_asset(tmp_path: Path) -> None:
     module = _module()
     tap = (tmp_path / "d106_strict_tap.npz").resolve()
-    np.savez(tap, **_strict_tap_arrays(module))
+    arrays = _strict_tap_arrays(module)
+    np.savez(tap, **arrays)
+    source_classes = tuple(sorted(set(str(item) for item in arrays["tx_labels"].tolist())))
+    method_lock, method_lock_sha256 = _write_method_lock(
+        module,
+        tmp_path,
+        source_classes,
+    )
     output = (tmp_path / "target125_fa_asset").resolve()
     result = module.build_target125_fa_asset(
         strict_tap=tap,
         strict_tap_sha256=_sha(tap.read_bytes()),
         checkpoint_sha256=_sha(b"checkpoint"),
-        method_lock_sha256=_sha(b"method-lock"),
+        method_lock_path=method_lock,
+        method_lock_sha256=method_lock_sha256,
         output_dir=output,
     )
     assert result["status"] == module.BUILD_STATUS
@@ -95,12 +132,42 @@ def test_direct_strict_tap_cli_builds_one_six_old_class_source_only_asset(tmp_pa
     assert manifest["phase1_source_only"] is True
     assert manifest["strict_tap_sha256"] == _sha(tap.read_bytes())
     assert manifest["phase1_source_rows_retained"] is False
+    assert manifest["source_class_indices"] == list(range(6))
     wire = Path(str(result["asset"])).read_bytes()
     assert "pid-secret-" not in wire.decode("ascii")
     assert "pid-secret-" not in manifest_path.read_text(encoding="utf-8")
     asset = module.core.deserialize_target_fa_asset(wire)
     assert len(asset.old_classes) == 6
+    assert asset.source_class_indices == tuple(range(6))
+    assert asset.source_old_class_order_sha256 == _sha(module._canonical(list(asset.old_classes)))
+    assert manifest["source_old_class_order_sha256"] == asset.source_old_class_order_sha256
     assert asset.fa_asset.aggregate_samples_per_class == (98,) * 6
+
+
+def test_method_lock_source_order_root_tamper_fails_closed(tmp_path: Path) -> None:
+    module = _module()
+    tap = (tmp_path / "d106_strict_tap.npz").resolve()
+    arrays = _strict_tap_arrays(module)
+    np.savez(tap, **arrays)
+    source_classes = tuple(sorted(set(str(item) for item in arrays["tx_labels"].tolist())))
+    method_lock, method_lock_sha256 = _write_method_lock(
+        module,
+        tmp_path,
+        source_classes,
+        source_root_override=_sha(b"tampered-source-order"),
+    )
+    with pytest.raises(
+        module.NextR5Target125AssetBuildError,
+        match="strict-tap classes / method-lock root drift",
+    ):
+        module.build_target125_fa_asset(
+            strict_tap=tap,
+            strict_tap_sha256=_sha(tap.read_bytes()),
+            checkpoint_sha256=_sha(b"checkpoint"),
+            method_lock_path=method_lock,
+            method_lock_sha256=method_lock_sha256,
+            output_dir=(tmp_path / "must_not_exist").resolve(),
+        )
 
 
 def test_cli_accepts_only_strict_tap_lineage_inputs() -> None:
@@ -110,6 +177,7 @@ def test_cli_accepts_only_strict_tap_lineage_inputs() -> None:
         "strict_tap",
         "strict_tap_sha256",
         "checkpoint_sha256",
+        "method_lock",
         "method_lock_sha256",
         "output_dir",
     }.issubset(names)

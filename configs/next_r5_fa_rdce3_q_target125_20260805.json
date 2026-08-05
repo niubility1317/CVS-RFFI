@@ -1,5 +1,5 @@
 {
-  "schema": "cvs.stage2.next_r5.fa_rdce3_qknn.target125.method_lock.v1",
+  "schema": "cvs.stage2.next_r5.fa_rdce3_qknn.target125.method_lock.v2",
   "revision": "NEXT-R5-FA-RDCE3-Q-TARGET125",
   "candidate_id": "NEXT-R5-FA-RDCE3-Q-TARGET125",
   "protocol_schema": "p2_min_v1",
@@ -32,6 +32,13 @@
     "new_support_rows_used_for_da": 0,
     "k1_policy": "FA_STRICT_BYPASS_exact_state_logit_prediction_resource_alias",
     "target_optimizer_steps": 0
+  },
+  "class_identity_bridge": {
+    "source_class_indices": [0, 1, 2, 3, 4, 5],
+    "source_asset_old_class_order_sha256": "f23394f508cae38116e7541b7954e647d4d47aa8f6abc69620cfa2813b873212",
+    "sealed_package_class_index_to_row_local_handle": true,
+    "row_local_handle_scope": "per_package_row",
+    "cross_row_handle_reuse": false
   },
   "head": {
     "method": "phase1_locked_student_t_qknn",
