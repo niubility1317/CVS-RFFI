@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import hashlib
+import json
+from pathlib import Path
 
 import numpy as np
 import pytest
@@ -24,30 +26,64 @@ def _rows(count: int, *, offset: int = 0) -> np.ndarray:
     return value
 
 
+def _totalize(
+    pre_relu: np.ndarray, physical_ids: tuple[str, ...], *, scope: str
+) -> tuple[np.ndarray, object]:
+    return runtime._totalize_same_iq_zid160(  # noqa: SLF001 - direct boundary test.
+        pre_relu,
+        np.maximum(pre_relu, np.float32(0.0)),
+        physical_ids,
+        scope=scope,
+    )
+
+
 def _condition() -> Target125ConditionInput:
     outer = next(row for row in matrix.freeze_next_r5_fa_target125_matrix().outer_rows if row.k_shot == 1)
     old = tuple(f"old-{index}" for index in range(matrix.OLD_CLASS_COUNT))
     new = tuple(f"new-{index}" for index in range(outer.new_count))
     old_ids = tuple(f"old-support-{index}" for index in range(len(old)))
+    reg0_support = _rows(len(old))
+    reg0_query = _rows(len(old), offset=40)
+    reg0_query_ids = tuple(f"old-query-{index}" for index in range(len(old)))
+    reg0_support, reg0_support_receipt = _totalize(
+        reg0_support, old_ids, scope="REG0_support"
+    )
+    reg0_query, reg0_query_receipt = _totalize(
+        reg0_query, reg0_query_ids, scope="REG0_query"
+    )
     reg0 = Target125RegistrationInput(
         registration_phase="REG0",
         registered_classes=old,
         registered_class_indices=tuple(range(len(old))),
-        support_zid160=_rows(len(old)),
+        support_zid160=reg0_support,
         support_labels=old,
         support_physical_ids=old_ids,
-        query_zid160=_rows(len(old), offset=40),
-        query_physical_ids=tuple(f"old-query-{index}" for index in range(len(old))),
+        query_zid160=reg0_query,
+        query_physical_ids=reg0_query_ids,
+        support_totalization_receipt=reg0_support_receipt,
+        query_totalization_receipt=reg0_query_receipt,
+    )
+    reg1_support_ids = old_ids + tuple(f"new-support-{index}" for index in range(len(new)))
+    reg1_query_ids = tuple(f"reg1-query-{index}" for index in range(len(old) + len(new)))
+    reg1_support, reg1_support_receipt = _totalize(
+        np.vstack((_rows(len(old)), _rows(len(new), offset=20))).astype(np.float32),
+        reg1_support_ids,
+        scope="REG1_support",
+    )
+    reg1_query, reg1_query_receipt = _totalize(
+        _rows(len(old) + len(new), offset=80), reg1_query_ids, scope="REG1_query"
     )
     reg1 = Target125RegistrationInput(
         registration_phase="REG1",
         registered_classes=old + new,
         registered_class_indices=tuple(range(len(old) + len(new))),
-        support_zid160=np.vstack((_rows(len(old)), _rows(len(new), offset=20))).astype(np.float32),
+        support_zid160=reg1_support,
         support_labels=old + new,
-        support_physical_ids=old_ids + tuple(f"new-support-{index}" for index in range(len(new))),
-        query_zid160=_rows(len(old) + len(new), offset=80),
-        query_physical_ids=tuple(f"reg1-query-{index}" for index in range(len(old) + len(new))),
+        support_physical_ids=reg1_support_ids,
+        query_zid160=reg1_query,
+        query_physical_ids=reg1_query_ids,
+        support_totalization_receipt=reg1_support_receipt,
+        query_totalization_receipt=reg1_query_receipt,
     )
     source_row = {
         "outer_id": "d108-source-row",
@@ -95,15 +131,25 @@ def test_query_isolation_and_reg1_old_support_reorder_fail_closed() -> None:
     condition = _condition()
     assert query_isolation_receipt()["query_truth_access"] is False
     assert query_isolation_receipt()["phase2_optimizer_steps"] == 0
+    reordered_ids = (
+        condition.reg1.support_physical_ids[1],
+        condition.reg1.support_physical_ids[0],
+        *condition.reg1.support_physical_ids[2:],
+    )
+    _rows_bound, reordered_receipt = _totalize(
+        np.asarray(condition.reg1.support_zid160), reordered_ids, scope="REG1_support"
+    )
     reordered = Target125RegistrationInput(
         registration_phase="REG1",
         registered_classes=condition.reg1.registered_classes,
         registered_class_indices=condition.reg1.registered_class_indices,
         support_zid160=condition.reg1.support_zid160,
         support_labels=(condition.reg1.support_labels[1], condition.reg1.support_labels[0], *condition.reg1.support_labels[2:]),
-        support_physical_ids=(condition.reg1.support_physical_ids[1], condition.reg1.support_physical_ids[0], *condition.reg1.support_physical_ids[2:]),
+        support_physical_ids=reordered_ids,
         query_zid160=condition.reg1.query_zid160,
         query_physical_ids=condition.reg1.query_physical_ids,
+        support_totalization_receipt=reordered_receipt,
+        query_totalization_receipt=condition.reg1.query_totalization_receipt,
     )
     with pytest.raises(NextR5FATarget125RuntimeError, match="byte-preserve"):
         Target125ConditionInput(
@@ -112,6 +158,137 @@ def test_query_isolation_and_reg1_old_support_reorder_fail_closed() -> None:
             source_row=condition.source_row,
             reg0=condition.reg0,
             reg1=reordered,
+        )
+
+
+def test_real_relu_zero_row_uses_only_same_iq_signed_pre_relu_direction() -> None:
+    pre_relu = np.zeros((2, matrix.FEATURE_DIM), dtype=np.float32)
+    pre_relu[0, 0] = -2.0
+    pre_relu[0, 1] = 3.0
+    pre_relu[1, :] = -1.0
+    sealed_post_relu = np.maximum(pre_relu, np.float32(0.0))
+    result, receipt = runtime._totalize_same_iq_zid160(  # noqa: SLF001
+        pre_relu,
+        sealed_post_relu,
+        ("physical-positive", "physical-relu-zero"),
+        scope="REG1_support",
+    )
+    from cvsrffi.stage2_zid_student_t_qknn import normalize_zid_rows
+
+    # Every nonzero row is byte-identical to the original sealed-runtime
+    # normalization path; only the exact sealed zero uses the signed direction.
+    assert np.array_equal(result[0], normalize_zid_rows(sealed_post_relu[:1])[0])
+    assert result[0, 0] == 0.0
+    assert result[0, 1] == pytest.approx(1.0)
+    assert np.allclose(
+        result[1], np.full(matrix.FEATURE_DIM, -1.0 / np.sqrt(matrix.FEATURE_DIM), dtype=np.float32)
+    )
+    assert receipt["replaced_count"] == 1
+    assert receipt["same_fixed_received_iq"] is True
+    assert receipt["query_truth_access"] is False
+    assert receipt["ordered_physical_ids_sha256"] == matrix.canonical_sha256(
+        ["physical-positive", "physical-relu-zero"]
+    )
+    assert receipt["physical_id_to_sealed_runtime_post_relu_row_root_sha256"]
+    assert receipt["pre_relu_to_sealed_runtime_binding"]["all_rows_bound"] is True
+    qknn = core.fit_qknn(
+        result,
+        ("class-positive", "class-relu-zero"),
+        ("class-positive", "class-relu-zero"),
+        support_physical_ids=("physical-positive", "physical-relu-zero"),
+        representation=core.R0_REPRESENTATION,
+    )
+    logits = core.score_qknn(qknn, result)
+    assert logits.shape == (2, 2)
+    assert np.isfinite(logits).all()
+
+    exact_zero = np.zeros((1, matrix.FEATURE_DIM), dtype=np.float32)
+    with pytest.raises(NextR5FATarget125RuntimeError, match="exact-zero pre-ReLU"):
+        runtime._totalize_same_iq_zid160(  # noqa: SLF001
+            exact_zero,
+            exact_zero,
+            ("physical-exact-zero",),
+            scope="REG1_query",
+        )
+
+
+def test_sealed_runtime_relu_binding_drift_fails_closed() -> None:
+    pre_relu = _rows(2)
+    sealed_post_relu = np.maximum(pre_relu, np.float32(0.0))
+    sealed_post_relu[0, 0] += np.float32(1.0e-3)
+    with pytest.raises(NextR5FATarget125RuntimeError, match="ReLU binding drift"):
+        runtime._totalize_same_iq_zid160(  # noqa: SLF001 - direct boundary test.
+            pre_relu,
+            sealed_post_relu,
+            ("physical-0", "physical-1"),
+            scope="REG0_query",
+        )
+
+    # A numerically near-zero tap does not unlock the fallback: it must be an
+    # exact same-IQ ReLU zero before a signed pre-ReLU direction is accepted.
+    almost_zero_pre = np.full((1, matrix.FEATURE_DIM), -1.0, dtype=np.float32)
+    almost_zero_pre[0, 0] = np.float32(1.0e-7)
+    with pytest.raises(NextR5FATarget125RuntimeError, match="exact same-IQ ReLU zero"):
+        runtime._totalize_same_iq_zid160(  # noqa: SLF001 - direct boundary test.
+            almost_zero_pre,
+            np.zeros_like(almost_zero_pre),
+            ("physical-near-zero",),
+            scope="REG1_query",
+        )
+
+
+def test_materializer_uses_original_sealed_runtime_for_nonzero_rows(monkeypatch) -> None:
+    from cvsrffi import stage2_d105_query_evaluation as d105_eval
+    from cvsrffi import stage2_diag_cosine_exploration as diag
+
+    pre_relu = np.zeros((2, matrix.FEATURE_DIM), dtype=np.float32)
+    pre_relu[0, 0] = 2.0
+    pre_relu[1, :] = -1.0
+    sealed_post_relu = np.maximum(pre_relu, np.float32(0.0))
+    calls: list[tuple[str, object]] = []
+
+    def sealed_forward(model, rows, **_kwargs):
+        calls.append(("sealed", model))
+        assert np.array_equal(rows, np.zeros((2, 2, 8), dtype=np.float32))
+        return sealed_post_relu
+
+    def tapped_forward(model, rows, **_kwargs):
+        calls.append(("tap", model))
+        assert np.array_equal(rows, np.zeros((2, 2, 8), dtype=np.float32))
+        return pre_relu, np.zeros_like(pre_relu), "a" * 64
+
+    monkeypatch.setattr(diag, "forward_zid160", sealed_forward)
+    monkeypatch.setattr(d105_eval, "_tap_rows", tapped_forward)
+    materializer = object.__new__(runtime.D108ZID160Materializer)
+    materializer._device = object()  # noqa: SLF001 - isolated runtime boundary.
+    materializer._sealed_runtime_model = lambda _root, _manifest: "sealed-model"  # type: ignore[attr-defined]  # noqa: E501
+    materializer._checkpoint_tap_model = lambda *, input_len: "tap-model"  # type: ignore[attr-defined]  # noqa: E501
+
+    result, receipt = materializer._zid160(  # noqa: SLF001 - direct materializer boundary.
+        iq=np.zeros((2, 2, 8), dtype=np.float32),
+        physical_ids=("normal", "exact-sealed-zero"),
+        scope="REG1_query",
+        package_root="sealed-package",
+        manifest={},
+        batch_size=1,
+    )
+    from cvsrffi.stage2_zid_student_t_qknn import normalize_zid_rows
+
+    assert calls == [("sealed", "sealed-model"), ("tap", "tap-model")]
+    assert np.array_equal(result[0], normalize_zid_rows(sealed_post_relu[:1])[0])
+    assert receipt["replaced_count"] == 1
+    assert receipt["nonzero_rows_reuse_original_sealed_runtime"] is True
+
+
+def test_totalization_receipt_rejects_physical_binding_drift() -> None:
+    pre_relu = _rows(1)
+    result, receipt = _totalize(pre_relu, ("physical-original",), scope="REG0_support")
+    with pytest.raises(NextR5FATarget125RuntimeError, match="receipt binding drift"):
+        runtime._validate_totalization_receipt(  # noqa: SLF001 - direct boundary test.
+            receipt,
+            rows=result,
+            physical_ids=("physical-swapped",),
+            scope="REG0_support",
         )
 
 
@@ -163,3 +340,25 @@ def test_fa_asset_method_lock_mismatch_fails_closed_on_reload(tmp_path) -> None:
     }
     with pytest.raises(NextR5FATarget125RuntimeError, match="method-lock binding drift"):
         runtime._load_target_asset(plan)  # noqa: SLF001 - negative release-boundary test.
+
+
+def test_method_lock_requires_same_iq_signed_totalization_contract(tmp_path) -> None:
+    source = (
+        Path(__file__).resolve().parents[1]
+        / "configs"
+        / "next_r5_fa_rdce3_q_target125_20260805.json"
+    )
+    raw = source.read_bytes()
+    verified = runtime._validate_method_lock(  # noqa: SLF001 - exact release boundary.
+        source, hashlib.sha256(raw).hexdigest()
+    )
+    assert verified["representation"]["r0"] == core.R0_REPRESENTATION
+
+    tampered = json.loads(raw.decode("utf-8"))
+    tampered["representation"]["r0"] = "d106_canonical_normalized_relu_zid160"
+    path = tmp_path / "tampered-method-lock.json"
+    path.write_text(json.dumps(tampered), encoding="utf-8")
+    with pytest.raises(NextR5FATarget125RuntimeError, match="method-lock identity/count drift"):
+        runtime._validate_method_lock(  # noqa: SLF001 - exact release boundary.
+            path, hashlib.sha256(path.read_bytes()).hexdigest()
+        )

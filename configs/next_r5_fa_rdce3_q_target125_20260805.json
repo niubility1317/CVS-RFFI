@@ -4,7 +4,12 @@
   "candidate_id": "NEXT-R5-FA-RDCE3-Q-TARGET125",
   "protocol_schema": "p2_min_v1",
   "representation": {
-    "r0": "d106_canonical_normalized_relu_zid160",
+    "r0": "same_iq_sealed_relu_signed_totalized_zid160",
+    "r0_totalization_schema": "cvs.phase2.next_r5.fa_rdce3_qknn.target125.zid160_totalization.v1",
+    "r0_totalization_revision": "same_iq_sealed_relu_bound_signed_fallback_r2",
+    "r0_totalization_rule": "normalize_sealed_relu_if_nonzero_else_normalize_same_iq_signed_prerelu",
+    "r0_post_relu_binding": "strict_per_row_sealed_runtime_equals_relu_pre",
+    "r0_zero_policy": "exact_sealed_relu_zero_and_nonzero_finite_prerelu_required",
     "r1": "fa_rdce3_once_rdce_signed_unit_zid160",
     "dimension": 160,
     "r1_relu": false,

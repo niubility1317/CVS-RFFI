@@ -47,7 +47,7 @@ FOUR_STATE_SCHEMA = "cvs.phase2.next_r5.fa_rdce3.target125.four_state.v1"
 SCORE_SCHEMA = "cvs.phase2.next_r5.fa_rdce3.target125.four_state_score.v2"
 RESOURCE_SCHEMA = "cvs.phase2.next_r5.fa_rdce3.target125.resource.v1"
 
-R0_REPRESENTATION = "d106_canonical_normalized_relu_zid160"
+R0_REPRESENTATION = "same_iq_sealed_relu_signed_totalized_zid160"
 R1_REPRESENTATION = "fa_rdce3_once_rdce_signed_unit_zid160"
 FIT_MODE_FISHER_CLOSED_FORM = "FISHER_CLOSED_FORM"
 FIT_MODE_POSTERIOR_ZERO_FIXED_RDCE = "POSTERIOR_ZERO_FIXED_RDCE"
@@ -180,7 +180,10 @@ def _unit_rows(
 
 def _representation_rows(value: Any, representation: str, name: str) -> np.ndarray:
     if representation == R0_REPRESENTATION:
-        return _unit_rows(value, name, nonnegative=True)
+        # The trusted runtime preserves its sealed ReLU-unit row whenever it
+        # is nonzero.  Only an exactly-zero sealed row may be totalized with
+        # its byte-bound, same-IQ pre-ReLU signed direction.
+        return _unit_rows(value, name, nonnegative=None)
     if representation == R1_REPRESENTATION:
         return _unit_rows(value, name, nonnegative=None)
     raise NextR5FATarget125CoreError("representation rule is outside the frozen contract")
@@ -731,7 +734,7 @@ def fit_fa_rdce3(
     rows = _unit_rows(
         old_support_features,
         "old_support_features",
-        nonnegative=True,
+        nonnegative=None,
         expected_rows=expected_rows,
     )
     if len(labels) != expected_rows or len(binding.support_physical_ids) != expected_rows:
@@ -858,7 +861,7 @@ def transform_fa_rdce3(
 
     if type(state) is not Target125FARuntimeState:
         raise NextR5FATarget125CoreError("FA transform requires an exact runtime state")
-    r0_rows = _unit_rows(features, "R0 features", nonnegative=True)
+    r0_rows = _unit_rows(features, "R0 features", nonnegative=None)
     basis = r4.decode_fa_rdce3_basis(state.asset.fa_asset).astype(np.float64)
     kappa = r4.decode_fa_rdce3_kappa(state.asset.fa_asset).astype(np.float64)
     shift = state.a_fp16.astype(np.float64)
@@ -1319,13 +1322,13 @@ def build_fa_qknn_four_state(
     old_rows = _unit_rows(
         old_support_features,
         "old_support_features",
-        nonnegative=True,
+        nonnegative=None,
         expected_rows=OLD_CLASS_COUNT * k_shot,
     )
     new_rows = _unit_rows(
         new_support_features,
         "new_support_features",
-        nonnegative=True,
+        nonnegative=None,
         expected_rows=(len(reg1_binding.registered_classes) - OLD_CLASS_COUNT) * k_shot,
     )
     old_labels = tuple(_text(item, "old_support_labels") for item in old_support_labels)
@@ -1467,12 +1470,12 @@ def score_fa_qknn_four_state(
     reg0_query = _unit_rows(
         reg0_query_features,
         "reg0_query_features",
-        nonnegative=True,
+        nonnegative=None,
     )
     reg1_query = _unit_rows(
         reg1_query_features,
         "reg1_query_features",
-        nonnegative=True,
+        nonnegative=None,
     )
     _assert_query_binding(
         state.reg0_binding,
