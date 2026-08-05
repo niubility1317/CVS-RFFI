@@ -1,0 +1,23 @@
+Traceback (most recent call last):
+  File "/home/szu2070436088/2510044040/CV-SincNet/runs/next_r5_fa_rdce3_q_target125_20260805_r4/source/code/cvsrffi/stage2_next_r5_fa_target125_runtime.py", line 961, in __call__
+    scores = core.score_fa_qknn_four_state(
+  File "/home/szu2070436088/2510044040/CV-SincNet/runs/next_r5_fa_rdce3_q_target125_20260805_r4/source/code/cvsrffi/stage2_next_r5_fa_target125_core.py", line 1462, in score_fa_qknn_four_state
+    da0_reg0_logits = score_qknn(state.da0_reg0, np.asarray(reg0_query, dtype=np.float32))
+  File "/home/szu2070436088/2510044040/CV-SincNet/runs/next_r5_fa_rdce3_q_target125_20260805_r4/source/code/cvsrffi/stage2_next_r5_fa_target125_core.py", line 1182, in score_qknn
+    raise NextR5FATarget125CoreError("qKNN exact top tie fails closed")
+cvsrffi.stage2_next_r5_fa_target125_core.NextR5FATarget125CoreError: qKNN exact top tie fails closed
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/szu2070436088/2510044040/CV-SincNet/runs/next_r5_fa_rdce3_q_target125_20260805_r4/source/code/scripts/run_next_r5_fa_target125.py", line 199, in <module>
+    raise SystemExit(main())
+  File "/home/szu2070436088/2510044040/CV-SincNet/runs/next_r5_fa_rdce3_q_target125_20260805_r4/source/code/scripts/run_next_r5_fa_target125.py", line 162, in main
+    result = runtime.predict_next_r5_fa_target125_shard(
+  File "/home/szu2070436088/2510044040/CV-SincNet/runs/next_r5_fa_rdce3_q_target125_20260805_r4/source/code/cvsrffi/stage2_next_r5_fa_target125_runtime.py", line 1123, in predict_next_r5_fa_target125_shard
+    core_result = execute_target125_condition(condition, executor=executor)["core_result"]
+  File "/home/szu2070436088/2510044040/CV-SincNet/runs/next_r5_fa_rdce3_q_target125_20260805_r4/source/code/cvsrffi/stage2_next_r5_fa_target125_runtime.py", line 362, in execute_target125_condition
+    result = executor(
+  File "/home/szu2070436088/2510044040/CV-SincNet/runs/next_r5_fa_rdce3_q_target125_20260805_r4/source/code/cvsrffi/stage2_next_r5_fa_target125_runtime.py", line 1022, in __call__
+    raise NextR5FATarget125RuntimeError("FA-RDCE3/qKNN four-state execution failed") from error
+cvsrffi.stage2_next_r5_fa_target125_runtime.NextR5FATarget125RuntimeError: FA-RDCE3/qKNN four-state execution failed
