@@ -251,7 +251,25 @@ def test_k5_k10_share_closed_formula_and_reuse_one_reg0_state(
     assert direct.resource_receipt["r1_second_normalization"] is False
 
 
-def test_query_physical_id_drift_and_exact_top_tie_fail_closed() -> None:
+def test_exact_top_tie_uses_minimum_frozen_class_index_without_side_information() -> None:
+    classes = ("z-class-index-0", "a-class-index-1")
+    support = np.zeros((2, core.Z_DIM), dtype=np.float32)
+    support[:, 0] = 1.0
+    state = core.fit_qknn(
+        support,
+        classes,
+        classes,
+        support_physical_ids=("tie-support-0", "tie-support-1"),
+        representation=core.R0_REPRESENTATION,
+    )
+    query = support[:1].copy()
+    logits = core.score_qknn(state, query)
+    assert logits[0, 0] == logits[0, 1]
+    assert core.predict_qknn(state, query) == (classes[0],)
+    assert state.resource_receipt["tie_policy"] == core.QKNN_TIE_POLICY
+
+
+def test_query_physical_id_drift_fails_closed() -> None:
     asset, reg0, reg1, old_rows, old_labels, new_rows, new_labels, new_ids = _four_state_inputs(5, 20)
     state = core.build_fa_qknn_four_state(
         asset,

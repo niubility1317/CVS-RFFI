@@ -570,8 +570,11 @@ def _target_row_key(row: matrix.Target125OuterRow) -> tuple[str, int, int, int, 
 
 
 def _validate_method_lock(path: Path, expected_sha256: str) -> dict[str, Any]:
+    from . import stage2_next_r5_fa_target125_core as core
+
     lock = _read_json(path, expected_sha256=expected_sha256, name="NEXT-R5 method lock")
     bridge = lock.get("class_identity_bridge")
+    head = lock.get("head")
     bridge_fields = {
         "source_class_indices",
         "source_asset_old_class_order_sha256",
@@ -599,6 +602,8 @@ def _validate_method_lock(path: Path, expected_sha256: str) -> dict[str, Any]:
         or bridge.get("sealed_package_class_index_to_row_local_handle") is not True
         or bridge.get("row_local_handle_scope") != "per_package_row"
         or bridge.get("cross_row_handle_reuse") is not False
+        or not isinstance(head, Mapping)
+        or head.get("tie_policy") != core.QKNN_TIE_POLICY
     ):
         raise NextR5FATarget125RuntimeError("NEXT-R5 method-lock identity/count drift")
     _sha(
@@ -979,12 +984,13 @@ class FAqKNNCoreExecutor:
                 binding = bindings[state]
                 source_state = "DA0_REG0" if state == "DA1_REG0" else "DA0_REG1" if state == "DA1_REG1" else None
                 receipt: dict[str, Any] = {
-                    "schema": "cvs.phase2.next_r5.fa_rdce3_qknn.target125.state_receipt.v1",
+                    "schema": "cvs.phase2.next_r5.fa_rdce3_qknn.target125.state_receipt.v2",
                     "state": state,
                     "representation": qstate.representation,
                     "runtime_binding_sha256": binding.binding_sha256,
                     "qknn_state_sha256": qstate.qknn_state_receipt_sha256,
                     "fit_mode": scores.audit["fit_mode"],
+                    "tie_policy": scores.audit["tie_policy"],
                     "query_rows_used_for_fit": 0,
                     "query_state_updates": 0,
                     "query_selection_count": 0,

@@ -42,9 +42,9 @@ TARGET_ASSET_SCHEMA = "cvs.phase2.next_r5.fa_rdce3.target125.phase1_asset.v2"
 TARGET_ASSET_WIRE_SCHEMA = "cvs.phase2.next_r5.fa_rdce3.target125.phase1_asset_wire.v2"
 RUNTIME_BINDING_SCHEMA = "cvs.phase2.next_r5.fa_rdce3.target125.runtime_binding.v2"
 RUNTIME_STATE_SCHEMA = "cvs.phase2.next_r5.fa_rdce3.target125.runtime_state.v1"
-QKNN_STATE_SCHEMA = "cvs.phase2.next_r5.fa_rdce3.target125.direct_qknn_state.v1"
+QKNN_STATE_SCHEMA = "cvs.phase2.next_r5.fa_rdce3.target125.direct_qknn_state.v2"
 FOUR_STATE_SCHEMA = "cvs.phase2.next_r5.fa_rdce3.target125.four_state.v1"
-SCORE_SCHEMA = "cvs.phase2.next_r5.fa_rdce3.target125.four_state_score.v1"
+SCORE_SCHEMA = "cvs.phase2.next_r5.fa_rdce3.target125.four_state_score.v2"
 RESOURCE_SCHEMA = "cvs.phase2.next_r5.fa_rdce3.target125.resource.v1"
 
 R0_REPRESENTATION = "d106_canonical_normalized_relu_zid160"
@@ -52,6 +52,7 @@ R1_REPRESENTATION = "fa_rdce3_once_rdce_signed_unit_zid160"
 FIT_MODE_FISHER_CLOSED_FORM = "FISHER_CLOSED_FORM"
 FIT_MODE_POSTERIOR_ZERO_FIXED_RDCE = "POSTERIOR_ZERO_FIXED_RDCE"
 FIT_MODE_K1_STRICT_BYPASS = "FA_STRICT_BYPASS"
+QKNN_TIE_POLICY = "highest_logit_then_min_registered_class_index"
 
 
 class NextR5FATarget125CoreError(ValueError):
@@ -900,6 +901,7 @@ def _qknn_payload(
         "qknn_lock_digest": qknn_lock.lock_digest,
         "support_only": True,
         "all_registered_classes_scored": True,
+        "tie_policy": QKNN_TIE_POLICY,
         "query_rows_used_for_fit": 0,
         "query_state_updates": 0,
         "query_selection_count": 0,
@@ -1017,6 +1019,7 @@ class Target125QKNNState:
                 "dynamic_numeric_bytes": self.dynamic_numeric_bytes,
                 "query_mac_per_row": len(self.codes_qint8) * Z_DIM,
                 "all_registered_classes_scored": True,
+                "tie_policy": QKNN_TIE_POLICY,
                 "r1_second_normalization": False,
             }
         )
@@ -1146,7 +1149,7 @@ def fit_qknn(
 
 
 def score_qknn(state: Target125QKNNState, query_features: np.ndarray) -> np.ndarray:
-    """Score each query independently over every registered class and fail on ties."""
+    """Score each query independently over every registered class."""
 
     if type(state) is not Target125QKNNState:
         raise NextR5FATarget125CoreError("qKNN score requires an exact typed state")
@@ -1177,16 +1180,36 @@ def score_qknn(state: Target125QKNNState, query_features: np.ndarray) -> np.ndar
     result = np.asarray(np.stack(columns, axis=1), dtype=np.float32)
     if result.shape != (len(query), len(state.classes)) or not np.isfinite(result).all():
         raise NextR5FATarget125CoreError("qKNN logits shape/value drift")
-    maxima = np.max(result, axis=1, keepdims=True)
-    if np.any(np.sum(result == maxima, axis=1) != 1):
-        raise NextR5FATarget125CoreError("qKNN exact top tie fails closed")
     return _readonly(result, np.dtype(np.float32))
+
+
+def _predict_qknn_logits(
+    state: Target125QKNNState,
+    logits: np.ndarray,
+) -> tuple[str, ...]:
+    """Choose the smallest frozen registry index among exact highest logits."""
+
+    values = np.asarray(logits)
+    if (
+        type(state) is not Target125QKNNState
+        or values.dtype != np.float32
+        or values.ndim != 2
+        or values.shape != (len(values), len(state.classes))
+        or len(values) < 1
+        or not np.isfinite(values).all()
+    ):
+        raise NextR5FATarget125CoreError("qKNN prediction logits/state drift")
+    maxima = np.max(values, axis=1, keepdims=True)
+    winners = values == maxima
+    # np.argmax returns the first True, which is the minimum class index in
+    # the already frozen registered-class order. No query metadata is read.
+    indices = np.argmax(winners, axis=1)
+    return tuple(state.classes[int(index)] for index in indices.tolist())
 
 
 def predict_qknn(state: Target125QKNNState, query_features: np.ndarray) -> tuple[str, ...]:
     logits = score_qknn(state, query_features)
-    indices = np.argmax(logits, axis=1)
-    return tuple(state.classes[int(index)] for index in indices.tolist())
+    return _predict_qknn_logits(state, logits)
 
 
 @dataclass(frozen=True, slots=True)
@@ -1410,7 +1433,11 @@ class Target125FAFourStateScores:
             self.predictions_by_state
         ) != set(matrix.STATES):
             raise NextR5FATarget125CoreError("four-state score field closure drift")
-        if self.audit.get("query_rows_used_for_fit") != 0 or self.audit.get("query_truth_access") is not False:
+        if (
+            self.audit.get("query_rows_used_for_fit") != 0
+            or self.audit.get("query_truth_access") is not False
+            or self.audit.get("tie_policy") != QKNN_TIE_POLICY
+        ):
             raise NextR5FATarget125CoreError("four-state score query-access ledger drift")
 
 
@@ -1461,14 +1488,8 @@ def score_fa_qknn_four_state(
     )
     da0_reg0_logits = score_qknn(state.da0_reg0, np.asarray(reg0_query, dtype=np.float32))
     da0_reg1_logits = score_qknn(state.da0_reg1, np.asarray(reg1_query, dtype=np.float32))
-    da0_reg0_predictions = tuple(
-        state.da0_reg0.classes[int(index)]
-        for index in np.argmax(da0_reg0_logits, axis=1).tolist()
-    )
-    da0_reg1_predictions = tuple(
-        state.da0_reg1.classes[int(index)]
-        for index in np.argmax(da0_reg1_logits, axis=1).tolist()
-    )
+    da0_reg0_predictions = _predict_qknn_logits(state.da0_reg0, da0_reg0_logits)
+    da0_reg1_predictions = _predict_qknn_logits(state.da0_reg1, da0_reg1_logits)
     if state.reg0_binding.k_shot == 1:
         logits = {
             "DA0_REG0": da0_reg0_logits,
@@ -1486,6 +1507,7 @@ def score_fa_qknn_four_state(
             "schema": SCORE_SCHEMA,
             "candidate_id": CANDIDATE_ID,
             "fit_mode": FIT_MODE_K1_STRICT_BYPASS,
+            "tie_policy": QKNN_TIE_POLICY,
             "exact_logit_alias": True,
             "exact_prediction_alias": True,
             "query_rows_used_for_fit": 0,
@@ -1510,10 +1532,7 @@ def score_fa_qknn_four_state(
             "DA1_REG1": da1_reg1_logits,
         }
         predictions = {
-            name: tuple(
-                source.classes[int(index)]
-                for index in np.argmax(values, axis=1).tolist()
-            )
+            name: _predict_qknn_logits(source, values)
             for name, source, values in (
                 ("DA0_REG0", state.da0_reg0, da0_reg0_logits),
                 ("DA1_REG0", state.da1_reg0, da1_reg0_logits),
@@ -1525,6 +1544,7 @@ def score_fa_qknn_four_state(
             "schema": SCORE_SCHEMA,
             "candidate_id": CANDIDATE_ID,
             "fit_mode": FIT_MODE_FISHER_CLOSED_FORM,
+            "tie_policy": QKNN_TIE_POLICY,
             "exact_logit_alias": False,
             "exact_prediction_alias": False,
             "r1_second_normalization": False,
@@ -1555,6 +1575,7 @@ __all__ = [
     "NextR5FATarget125CoreError",
     "OLD_CLASS_COUNT",
     "PROTOCOL_SCHEMA",
+    "QKNN_TIE_POLICY",
     "R0_REPRESENTATION",
     "R1_REPRESENTATION",
     "Target125FARDCE3Asset",

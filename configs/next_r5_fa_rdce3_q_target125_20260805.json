@@ -44,7 +44,7 @@
     "method": "phase1_locked_student_t_qknn",
     "support_storage": "int8_per_row_fp16_scale",
     "query_policy": "per_sample_all_registered_classes",
-    "tie_policy": "fail_closed",
+    "tie_policy": "highest_logit_then_min_registered_class_index",
     "parameter_search": false
   },
   "reporting": {
