@@ -285,6 +285,165 @@ def test_materializer_uses_one_pr160_graph_for_normal_and_zero_rows(monkeypatch)
     assert receipt["nonzero_rows_reuse_original_r0_semantics"] is True
 
 
+def test_support_cache_reuses_reg0_prefix_across_reg1_batch_shapes(monkeypatch) -> None:
+    """REG1 must forward only its new support suffix, never its old prefix."""
+
+    from cvsrffi import stage2_diag_cosine_exploration as diag
+
+    outer = next(
+        row
+        for row in matrix.freeze_next_r5_fa_target125_matrix().outer_rows
+        if row.k_shot == 10 and row.new_count == 5
+    )
+    scene = matrix.SCENES[0]
+    old = tuple(f"old-{index}" for index in range(matrix.OLD_CLASS_COUNT))
+    new = tuple(f"new-{index}" for index in range(outer.new_count))
+    old_count = len(old) * outer.k_shot
+    new_count = len(new) * outer.k_shot
+    old_ids = tuple(f"old-support-{index}" for index in range(old_count))
+    new_ids = tuple(f"new-support-{index}" for index in range(new_count))
+    before_support = np.zeros((old_count, 2, 8), dtype=np.float32)
+    after_support = np.zeros((old_count + new_count, 2, 8), dtype=np.float32)
+    for index in range(old_count):
+        before_support[index, 0, 0] = np.float32(index + 1)
+    after_support[:old_count] = before_support
+    for index in range(new_count):
+        after_support[old_count + index, 0, 0] = np.float32(1000 + index)
+    shared_query = np.zeros((2, 2, 8), dtype=np.float32)
+    shared_query[:, 0, 0] = np.asarray((2001.0, 2002.0), dtype=np.float32)
+    query_ids = ("query-0", "query-1")
+    after_ids = list(old_ids + new_ids)
+    before_labels = tuple(label for label in old for _ in range(outer.k_shot))
+    after_labels = before_labels + tuple(
+        label for label in new for _ in range(outer.k_shot)
+    )
+
+    def reference(name: str) -> dict[str, str]:
+        return {
+            "package_root": f"/sealed/{name}",
+            "detached_seal_path": f"/sealed/{name}.seal.json",
+            "expected_seal_sha256": hashlib.sha256(name.encode("ascii")).hexdigest(),
+        }
+
+    packages = {
+        "before_enrollment": reference("before-enrollment"),
+        "before_apply": reference("before-apply"),
+        "after_enrollment": reference("after-enrollment"),
+        "after_apply": reference("after-apply"),
+    }
+
+    def manifest(classes: tuple[str, ...]) -> dict[str, object]:
+        return {
+            "registered_classes": [
+                {"class_index": index, "class_handle": label}
+                for index, label in enumerate(classes)
+            ],
+            "receiver": outer.receiver,
+            "seed": outer.seed,
+            "k_shot": outer.source_pool_k,
+        }
+
+    payloads = {
+        "/sealed/before-enrollment": ({scene: "before-support"}, manifest(old)),
+        "/sealed/before-apply": ({scene: "shared-query"}, manifest(old)),
+        "/sealed/after-enrollment": ({scene: "after-support"}, manifest(old + new)),
+        "/sealed/after-apply": ({scene: "shared-query"}, manifest(old + new)),
+    }
+
+    class FakeD108:
+        @staticmethod
+        def _support_rows(payload, *, registered_classes, active_k):
+            assert active_k == outer.k_shot
+            if payload == "before-support":
+                assert tuple(registered_classes) == old
+                return before_support.copy(), before_labels, old_ids
+            assert payload == "after-support"
+            assert tuple(registered_classes) == old + new
+            return after_support.copy(), after_labels, tuple(after_ids)
+
+        @staticmethod
+        def _query_rows(payload):
+            assert payload == "shared-query"
+            return shared_query.copy(), query_ids
+
+    calls: list[tuple[int, int]] = []
+
+    def pr160_forward(_model, rows, *, batch_size, **_kwargs):
+        rows = np.asarray(rows, dtype=np.float32)
+        calls.append((len(rows), batch_size))
+        output = np.zeros((len(rows), matrix.FEATURE_DIM), dtype=np.float32)
+        for index, row in enumerate(rows):
+            token = int(row[0, 0])
+            output[index, token % matrix.FEATURE_DIM] = 1.0
+            output[index, (token + 1) % matrix.FEATURE_DIM] = np.float32(0.25)
+            # Deliberately make an otherwise repeated GPU forward depend on
+            # its outer batch shape, reproducing the r7 failure mechanism.
+            output[index, (token + 2) % matrix.FEATURE_DIM] = np.float32(
+                len(rows) * 1.0e-4
+            )
+        return output
+
+    def fake_package(_self, reference_value):
+        return payloads[reference_value["package_root"]]
+
+    monkeypatch.setattr(diag, "forward_zid160", pr160_forward)
+    monkeypatch.setattr(diag, "_validate_matched_packages", lambda *_args: None)
+    monkeypatch.setattr(runtime.D108ZID160Materializer, "_package", fake_package)
+    monkeypatch.setattr(
+        runtime.D108ZID160Materializer,
+        "_require_package_source_runtime",
+        lambda _self, _manifest: None,
+    )
+    materializer = object.__new__(runtime.D108ZID160Materializer)
+    materializer._d108 = FakeD108()  # noqa: SLF001 - isolated sealed-package adapter.
+    materializer._device = object()  # noqa: SLF001
+    materializer._pr160_extractor_model = "pr160-model"  # noqa: SLF001
+    materializer._pr160_runtime_binding = _PR160_BINDING  # noqa: SLF001
+    materializer._support_batch_size = 64  # noqa: SLF001
+    materializer._support_feature_cache = {}  # noqa: SLF001
+    materializer._source_plan = {  # noqa: SLF001
+        "plan_receipt_sha256": hashlib.sha256(b"synthetic-source-plan").hexdigest()
+    }
+    source_row = {
+        "outer_id": outer.outer_id,
+        "receiver": outer.receiver,
+        "seed": outer.seed,
+        "k_shot": outer.k_shot,
+        "active_k": outer.k_shot,
+        "new_count": outer.new_count,
+        "source_pool_k": outer.source_pool_k,
+        "packages": packages,
+        "authority_bundle": {},
+    }
+
+    condition = materializer.materialize_condition(  # noqa: SLF001 - exact phase boundary.
+        outer_row=outer,
+        source_row=source_row,
+        scene=scene,
+    )
+    assert np.array_equal(
+        condition.reg1.support_zid160[:old_count], condition.reg0.support_zid160
+    )
+    assert calls == [(old_count, 64), (2, 1), (new_count, 64), (2, 1)]
+    assert len(materializer._support_feature_cache) == old_count + new_count  # noqa: SLF001
+
+    after_ids[0], after_ids[1] = after_ids[1], after_ids[0]
+    with pytest.raises(NextR5FATarget125RuntimeError, match="physical-ID prefix drift"):
+        materializer.materialize_condition(  # noqa: SLF001 - fail-closed cache binding.
+            outer_row=outer,
+            source_row=source_row,
+            scene=scene,
+        )
+    after_ids[0], after_ids[1] = after_ids[1], after_ids[0]
+    after_support[0, 0, 0] += np.float32(0.5)
+    with pytest.raises(NextR5FATarget125RuntimeError, match="received-IQ/cache binding drift"):
+        materializer.materialize_condition(  # noqa: SLF001 - fail-closed byte binding.
+            outer_row=outer,
+            source_row=source_row,
+            scene=scene,
+        )
+
+
 def test_totalization_receipt_rejects_physical_binding_drift() -> None:
     pre_relu = _rows(1)
     result, receipt = _totalize(pre_relu, ("physical-original",), scope="REG0_support")

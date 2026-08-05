@@ -717,6 +717,15 @@ def execute_target125_condition(
     )
 
 
+@dataclass(frozen=True, slots=True)
+class _SupportFeatureCacheEntry:
+    """One support-only PR160 result bound to immutable received-IQ bytes."""
+
+    cache_key: tuple[str, str, tuple[int, ...], str, str]
+    pre_relu: np.ndarray
+    zid160: np.ndarray
+
+
 class D108ZID160Materializer:
     """Small adapter from sealed D108 packages to totalized R0 z_id160.
 
@@ -775,6 +784,9 @@ class D108ZID160Materializer:
         self._package_cache: dict[
             tuple[tuple[str, str], ...], tuple[Any, dict[str, Any]]
         ] = {}
+        self._support_feature_cache: dict[
+            tuple[str, str, tuple[int, ...], str, str], _SupportFeatureCacheEntry
+        ] = {}
         self._pr160_runtime_binding = _pr160_receipt_binding(
             {
                 "schema": PR160_RUNTIME_BINDING_SCHEMA,
@@ -807,18 +819,226 @@ class D108ZID160Materializer:
         except Exception as error:
             raise NextR5FATarget125RuntimeError("D108 package runtime descriptor drift") from error
 
+    def _support_cache_package_binding(
+        self, *, source_row: Mapping[str, Any], scene: str
+    ) -> str:
+        """Reuse the sealed split binding already shared with the core."""
+
+        try:
+            return _sha(
+                _split_id(self._source_plan, source_row, scene),
+                "support cache package binding SHA256",
+            )
+        except NextR5FATarget125RuntimeError:
+            raise
+        except Exception as error:
+            raise NextR5FATarget125RuntimeError(
+                "support cache package binding drift"
+            ) from error
+
+    def _support_cache_key(
+        self,
+        *,
+        package_binding_sha256: str,
+        physical_id: str,
+        iq_row: np.ndarray,
+    ) -> tuple[str, str, tuple[int, ...], str, str]:
+        """Build a label-free key for one immutable support observation."""
+
+        row = np.asarray(iq_row)
+        if row.dtype != np.float32 or row.ndim < 1 or not np.isfinite(row).all():
+            raise NextR5FATarget125RuntimeError(
+                "support cache received-IQ row must be finite float32"
+            )
+        contiguous = np.ascontiguousarray(row, dtype=np.float32)
+        descriptor_sha256 = _canonical_sha256(
+            dict(_pr160_receipt_binding(self._pr160_runtime_binding))
+        )
+        return (
+            _sha(package_binding_sha256, "support cache package binding SHA256"),
+            physical_id,
+            tuple(int(value) for value in contiguous.shape),
+            hashlib.sha256(contiguous.tobytes(order="C")).hexdigest(),
+            descriptor_sha256,
+        )
+
+    def _forward_pr160_pre_relu(
+        self, *, iq: np.ndarray, batch_size: int
+    ) -> np.ndarray:
+        try:
+            from .stage2_diag_cosine_exploration import forward_zid160
+
+            return _finite_feature_rows(
+                forward_zid160(
+                    self._pr160_extractor_model,
+                    iq,
+                    device=self._device,
+                    batch_size=batch_size,
+                ),
+                name="PR160 pre-ReLU z_id160",
+            )
+        except NextR5FATarget125RuntimeError:
+            raise
+        except Exception as error:
+            raise NextR5FATarget125RuntimeError(
+                "same-graph PR160 pre-ReLU materialization failed"
+            ) from error
+
+    @staticmethod
+    def _cached_support_row(
+        entry: _SupportFeatureCacheEntry,
+        *,
+        cache_key: tuple[str, str, tuple[int, ...], str, str],
+    ) -> tuple[np.ndarray, np.ndarray]:
+        if not isinstance(entry, _SupportFeatureCacheEntry) or entry.cache_key != cache_key:
+            raise NextR5FATarget125RuntimeError("support feature cache entry binding drift")
+        pre_relu = _finite_feature_rows(
+            np.asarray(entry.pre_relu)[None, :], name="cached support PR160 pre-ReLU"
+        )[0]
+        zid160 = _readonly_float32(
+            np.asarray(entry.zid160)[None, :], name="cached support z_id160"
+        )[0]
+        return pre_relu, zid160
+
+    def _support_zid160(
+        self,
+        *,
+        iq: np.ndarray,
+        physical_ids: Sequence[str],
+        support_labels: Sequence[str],
+        source_row: Mapping[str, Any],
+        scene: str,
+        registration_phase: str,
+        expected_reg0: Target125RegistrationInput | None,
+    ) -> tuple[np.ndarray, Mapping[str, Any]]:
+        """Forward only uncached support rows and preserve the REG0 old prefix."""
+
+        if registration_phase not in ("REG0", "REG1"):
+            raise NextR5FATarget125RuntimeError("support cache registration phase drift")
+        raw_rows = np.asarray(iq)
+        if (
+            raw_rows.dtype != np.float32
+            or raw_rows.ndim < 2
+            or raw_rows.shape[0] < 1
+            or not np.isfinite(raw_rows).all()
+        ):
+            raise NextR5FATarget125RuntimeError(
+                "support cache received-IQ matrix must be finite float32"
+            )
+        support_iq = np.ascontiguousarray(raw_rows, dtype=np.float32)
+        ids = _tokens(
+            physical_ids,
+            name=f"{registration_phase} support physical_ids",
+            expected=len(support_iq),
+        )
+        labels = _tokens(
+            support_labels,
+            name=f"{registration_phase} support labels",
+            expected=len(support_iq),
+            unique=False,
+        )
+        package_binding_sha256 = self._support_cache_package_binding(
+            source_row=source_row, scene=scene
+        )
+        keys = tuple(
+            self._support_cache_key(
+                package_binding_sha256=package_binding_sha256,
+                physical_id=physical_id,
+                iq_row=row,
+            )
+            for physical_id, row in zip(ids, support_iq, strict=True)
+        )
+        cache = getattr(self, "_support_feature_cache", None)
+        if not isinstance(cache, dict):
+            raise NextR5FATarget125RuntimeError("support feature cache is unavailable")
+
+        old_count = 0
+        if registration_phase == "REG0":
+            if expected_reg0 is not None:
+                raise NextR5FATarget125RuntimeError(
+                    "REG0 support cache cannot receive a REG0 prefix"
+                )
+        else:
+            if not isinstance(expected_reg0, Target125RegistrationInput):
+                raise NextR5FATarget125RuntimeError(
+                    "REG1 support cache requires the materialized REG0 prefix"
+                )
+            old_count = len(expected_reg0.support_physical_ids)
+            if old_count != matrix.OLD_CLASS_COUNT * int(source_row["active_k"]):
+                raise NextR5FATarget125RuntimeError("REG0 support cache K binding drift")
+            if len(support_iq) <= old_count:
+                raise NextR5FATarget125RuntimeError("REG1 support suffix is missing")
+            if ids[:old_count] != tuple(expected_reg0.support_physical_ids):
+                raise NextR5FATarget125RuntimeError(
+                    "REG1 old support physical-ID prefix drift"
+                )
+            # Labels never select a cache row.  This is only the sealed
+            # registration-prefix consistency check before reuse.
+            if labels[:old_count] != tuple(expected_reg0.support_labels):
+                raise NextR5FATarget125RuntimeError(
+                    "REG1 old support label prefix drift"
+                )
+
+        pre_relu = np.empty((len(support_iq), matrix.FEATURE_DIM), dtype=np.float32)
+        cached_zid160: dict[int, np.ndarray] = {}
+        missing_indices: list[int] = []
+        for index, cache_key in enumerate(keys):
+            entry = cache.get(cache_key)
+            if registration_phase == "REG1" and index < old_count and entry is None:
+                raise NextR5FATarget125RuntimeError(
+                    "REG1 old support received-IQ/cache binding drift"
+                )
+            if entry is None:
+                missing_indices.append(index)
+                continue
+            cached_pre_relu, cached_zid = self._cached_support_row(
+                entry, cache_key=cache_key
+            )
+            pre_relu[index] = cached_pre_relu
+            cached_zid160[index] = cached_zid
+
+        if missing_indices:
+            missing_array = np.asarray(missing_indices, dtype=np.int64)
+            forwarded = self._forward_pr160_pre_relu(
+                iq=np.ascontiguousarray(support_iq[missing_array], dtype=np.float32),
+                batch_size=self._support_batch_size,
+            )
+            if forwarded.shape != (len(missing_indices), matrix.FEATURE_DIM):
+                raise NextR5FATarget125RuntimeError(
+                    "support cache PR160 forward shape drift"
+                )
+            pre_relu[missing_array] = forwarded
+
+        zid160, totalization = _totalize_same_iq_zid160(
+            pre_relu,
+            np.maximum(pre_relu, np.float32(0.0)),
+            ids,
+            scope=f"{registration_phase}_support",
+            pr160_runtime_binding=self._pr160_runtime_binding,
+        )
+        for index, cached_zid in cached_zid160.items():
+            if not np.array_equal(zid160[index], cached_zid):
+                raise NextR5FATarget125RuntimeError(
+                    "support cache totalized z_id160 binding drift"
+                )
+        for index in missing_indices:
+            cache_key = keys[index]
+            frozen_pre_relu = np.array(pre_relu[index], dtype=np.float32, copy=True)
+            frozen_zid160 = np.array(zid160[index], dtype=np.float32, copy=True)
+            frozen_pre_relu.setflags(write=False)
+            frozen_zid160.setflags(write=False)
+            cache[cache_key] = _SupportFeatureCacheEntry(
+                cache_key=cache_key,
+                pre_relu=frozen_pre_relu,
+                zid160=frozen_zid160,
+            )
+        return zid160, totalization
+
     def _zid160(
         self, *, iq: np.ndarray, physical_ids: Sequence[str], scope: str, batch_size: int
     ) -> tuple[np.ndarray, Mapping[str, Any]]:
         try:
-            from .stage2_diag_cosine_exploration import forward_zid160
-
-            pre_relu = forward_zid160(
-                self._pr160_extractor_model,
-                iq,
-                device=self._device,
-                batch_size=batch_size,
-            )
+            pre_relu = self._forward_pr160_pre_relu(iq=iq, batch_size=batch_size)
             return _totalize_same_iq_zid160(
                 pre_relu,
                 np.maximum(pre_relu, np.float32(0.0)),
@@ -831,7 +1051,14 @@ class D108ZID160Materializer:
         except Exception as error:
             raise NextR5FATarget125RuntimeError("same-graph PR160 z_id160 materialization failed") from error
 
-    def materialize(self, *, source_row: Mapping[str, Any], scene: str, registration_phase: str) -> Target125RegistrationInput:
+    def materialize(
+        self,
+        *,
+        source_row: Mapping[str, Any],
+        scene: str,
+        registration_phase: str,
+        expected_reg0: Target125RegistrationInput | None = None,
+    ) -> Target125RegistrationInput:
         if scene not in matrix.SCENES or registration_phase not in ("REG0", "REG1"):
             raise NextR5FATarget125RuntimeError("materialization scene/registration drift")
         phase = "before" if registration_phase == "REG0" else "after"
@@ -878,11 +1105,14 @@ class D108ZID160Materializer:
             query_iq, query_ids = self._d108._query_rows(query_payloads[scene])  # type: ignore[attr-defined]
             if support_iq.shape[1:] != query_iq.shape[1:]:
                 raise NextR5FATarget125RuntimeError("support/query received-IQ shape drift")
-            support_zid160, support_totalization = self._zid160(
+            support_zid160, support_totalization = self._support_zid160(
                 iq=support_iq,
                 physical_ids=support_ids,
-                scope=f"{registration_phase}_support",
-                batch_size=self._support_batch_size,
+                support_labels=labels,
+                source_row=source_row,
+                scene=scene,
+                registration_phase=registration_phase,
+                expected_reg0=expected_reg0,
             )
             query_zid160, query_totalization = self._zid160(
                 iq=query_iq,
@@ -911,7 +1141,12 @@ class D108ZID160Materializer:
         self, *, outer_row: matrix.Target125OuterRow, source_row: Mapping[str, Any], scene: str
     ) -> Target125ConditionInput:
         reg0 = self.materialize(source_row=source_row, scene=scene, registration_phase="REG0")
-        reg1 = self.materialize(source_row=source_row, scene=scene, registration_phase="REG1")
+        reg1 = self.materialize(
+            source_row=source_row,
+            scene=scene,
+            registration_phase="REG1",
+            expected_reg0=reg0,
+        )
         return Target125ConditionInput(
             outer_row=outer_row, scene=scene, source_row=source_row, reg0=reg0, reg1=reg1
         )
