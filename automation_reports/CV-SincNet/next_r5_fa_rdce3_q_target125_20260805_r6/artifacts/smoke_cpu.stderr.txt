@@ -1,0 +1,9 @@
+2026-08-05 r6 compatibility smoke, row-index=0, scene-index=0, device=cpu, exit=1
+
+Underlying exception:
+RuntimeError: Input type (torch.FloatTensor) and weight type (torch.cuda.FloatTensor) should be the same or input should be a MKLDNN tensor and weight is a dense tensor
+
+Top-level exception:
+cvsrffi.stage2_next_r5_fa_target125_runtime.NextR5FATarget125RuntimeError: sealed z_id160 materialization failed
+
+No smoke receipt or prediction artifact was written.

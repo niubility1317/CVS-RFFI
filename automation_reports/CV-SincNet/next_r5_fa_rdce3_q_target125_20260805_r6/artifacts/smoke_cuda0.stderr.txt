@@ -1,0 +1,6 @@
+2026-08-05 r6 truth-free smoke, row-index=0, scene-index=0, device=cuda:0, exit=1
+
+Top-level exception:
+cvsrffi.stage2_next_r5_fa_target125_runtime.NextR5FATarget125RuntimeError: sealed runtime / same-IQ ReLU binding drift
+
+No smoke receipt or prediction artifact was written.
