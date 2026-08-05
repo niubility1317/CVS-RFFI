@@ -1,0 +1,23 @@
+Traceback (most recent call last):
+  File "/home/szu2070436088/2510044040/CV-SincNet/runs/next_r5_fa_rdce3_q_target125_20260805_r5/source/code/cvsrffi/stage2_next_r5_fa_target125_runtime.py", line 472, in _zid160
+    return _readonly_float32(normalize_zid_rows(raw), name="sealed z_id160")
+  File "/home/szu2070436088/2510044040/CV-SincNet/runs/next_r5_fa_rdce3_q_target125_20260805_r5/source/code/cvsrffi/stage2_zid_student_t_qknn.py", line 139, in normalize_zid_rows
+    raise ZIDStudentTQKNNError("z_id rows contain a zero-norm vector")
+cvsrffi.stage2_zid_student_t_qknn.ZIDStudentTQKNNError: z_id rows contain a zero-norm vector
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/szu2070436088/2510044040/CV-SincNet/runs/next_r5_fa_rdce3_q_target125_20260805_r5/source/code/scripts/run_next_r5_fa_target125.py", line 199, in <module>
+    raise SystemExit(main())
+  File "/home/szu2070436088/2510044040/CV-SincNet/runs/next_r5_fa_rdce3_q_target125_20260805_r5/source/code/scripts/run_next_r5_fa_target125.py", line 162, in main
+    result = runtime.predict_next_r5_fa_target125_shard(
+  File "/home/szu2070436088/2510044040/CV-SincNet/runs/next_r5_fa_rdce3_q_target125_20260805_r5/source/code/cvsrffi/stage2_next_r5_fa_target125_runtime.py", line 1126, in predict_next_r5_fa_target125_shard
+    condition = materializer.materialize_condition(
+  File "/home/szu2070436088/2510044040/CV-SincNet/runs/next_r5_fa_rdce3_q_target125_20260805_r5/source/code/cvsrffi/stage2_next_r5_fa_target125_runtime.py", line 548, in materialize_condition
+    reg1 = self.materialize(source_row=source_row, scene=scene, registration_phase="REG1")
+  File "/home/szu2070436088/2510044040/CV-SincNet/runs/next_r5_fa_rdce3_q_target125_20260805_r5/source/code/cvsrffi/stage2_next_r5_fa_target125_runtime.py", line 527, in materialize
+    support_zid160=self._zid160(
+  File "/home/szu2070436088/2510044040/CV-SincNet/runs/next_r5_fa_rdce3_q_target125_20260805_r5/source/code/cvsrffi/stage2_next_r5_fa_target125_runtime.py", line 476, in _zid160
+    raise NextR5FATarget125RuntimeError("sealed z_id160 materialization failed") from error
+cvsrffi.stage2_next_r5_fa_target125_runtime.NextR5FATarget125RuntimeError: sealed z_id160 materialization failed
