@@ -747,6 +747,174 @@ def score_target125_truth_catalog(
     )
 
 
+def _preflight_d92_apply_bundle(
+    reference: Mapping[str, Any],
+) -> tuple[Mapping[str, Any], Mapping[str, Any], Mapping[str, Any]]:
+    """Load the D92 bundle verifier only on the post-seal truth side."""
+
+    from .somph_diagnostic_bundle_loader import preflight_somph_predictor_bundle
+
+    return preflight_somph_predictor_bundle(
+        reference["package_root"],
+        detached_seal_path=reference["detached_seal_path"],
+        expected_seal_sha256=reference["expected_seal_sha256"],
+    )
+
+
+def _sealed_d92_apply_registry(
+    *,
+    source_row: Mapping[str, Any],
+    outer: matrix.Target125OuterRow,
+) -> tuple[tuple[str, ...], tuple[str, ...]]:
+    """Recover row-local D92 handles from the sealed source-context packages.
+
+    The FA asset carries a Phase1-global old-class order, whereas the D92
+    packages deliberately expose per-row opaque ``cls_*`` handles.  Truth
+    opening therefore must use the latter.  This function preflights only the
+    sealed apply-package manifests; it never reads prediction labels, query
+    truth, or query IQ.
+    """
+
+    if (
+        source_row.get("receiver") != outer.receiver
+        or source_row.get("seed") != outer.seed
+        or source_row.get("k_shot") != outer.k_shot
+        or source_row.get("new_count") != outer.new_count
+        or source_row.get("active_k") != outer.k_shot
+        or source_row.get("source_pool_k") != outer.source_pool_k
+    ):
+        raise NextR5FATarget125Error("truth-side source-context outer binding drift")
+    packages = source_row.get("packages")
+    expected_package_keys = {
+        "before_enrollment",
+        "before_apply",
+        "after_enrollment",
+        "after_apply",
+    }
+    if not isinstance(packages, Mapping) or set(packages) != expected_package_keys:
+        raise NextR5FATarget125Error("truth-side sealed D92 package map drift")
+
+    def load_registry(
+        package_name: str,
+        *,
+        expected_stage: str,
+        expected_registration_state: str,
+        expected_count: int,
+    ) -> tuple[str, ...]:
+        reference = packages[package_name]
+        expected_reference_keys = {
+            "package_root",
+            "detached_seal_path",
+            "expected_seal_sha256",
+        }
+        if not isinstance(reference, Mapping) or set(reference) != expected_reference_keys:
+            raise NextR5FATarget125Error(
+                "truth-side sealed D92 apply-package reference drift"
+            )
+        try:
+            manifest, _seal, _audit = _preflight_d92_apply_bundle(reference)
+        except Exception as error:
+            raise NextR5FATarget125Error(
+                "truth-side sealed D92 apply-package preflight failed"
+            ) from error
+        if not isinstance(manifest, Mapping) or (
+            manifest.get("profile") != "apply_only"
+            or manifest.get("stage") != expected_stage
+            or manifest.get("registration_state") != expected_registration_state
+            or manifest.get("receiver") != outer.receiver
+            or manifest.get("seed") != outer.seed
+            or manifest.get("k_shot") != outer.source_pool_k
+            or manifest.get("registered_class_count") != expected_count
+        ):
+            raise NextR5FATarget125Error(
+                "truth-side sealed D92 apply-package identity/registry drift"
+            )
+        rows = manifest.get("registered_classes")
+        if not isinstance(rows, list) or len(rows) != expected_count:
+            raise NextR5FATarget125Error(
+                "truth-side sealed D92 apply-package class registry drift"
+            )
+        handles: list[str] = []
+        for class_index, item in enumerate(rows):
+            if (
+                not isinstance(item, Mapping)
+                or set(item) != {"class_index", "class_handle"}
+                or item.get("class_index") != class_index
+                or type(item.get("class_handle")) is not str
+                or not item["class_handle"]
+            ):
+                raise NextR5FATarget125Error(
+                    "truth-side sealed D92 apply-package class-index bridge drift"
+                )
+            handles.append(item["class_handle"])
+        return _tokens(
+            handles,
+            name="truth-side sealed D92 apply-package class handles",
+            expected=expected_count,
+        )
+
+    old_classes = load_registry(
+        "before_apply",
+        expected_stage="stage2b",
+        expected_registration_state="before",
+        expected_count=matrix.OLD_CLASS_COUNT,
+    )
+    all_classes = load_registry(
+        "after_apply",
+        expected_stage="stage2c",
+        expected_registration_state="after",
+        expected_count=matrix.OLD_CLASS_COUNT + outer.new_count,
+    )
+    if all_classes[: matrix.OLD_CLASS_COUNT] != old_classes:
+        raise NextR5FATarget125Error(
+            "truth-side D92 after registry does not preserve the old-class prefix"
+        )
+    return old_classes, all_classes[matrix.OLD_CLASS_COUNT :]
+
+
+def _validate_prediction_registry_binding(
+    *,
+    prediction: Mapping[str, Any],
+    outer: matrix.Target125OuterRow,
+    old_classes: tuple[str, ...],
+    new_classes: tuple[str, ...],
+) -> None:
+    """Bind the truth-side D92 registry to r10's truth-free class metadata.
+
+    This reads only the sealed ``registered_classes`` metadata, never the
+    prediction labels or query truth.  It prevents a row-local class-handle
+    mismatch from being silently scored after the prediction manifest is fixed.
+    """
+
+    records = prediction.get("records")
+    if not isinstance(records, Mapping):
+        raise NextR5FATarget125Error("sealed prediction registry records are missing")
+    expected_by_state = {
+        "DA0_REG0": old_classes,
+        "DA1_REG0": old_classes,
+        "DA0_REG1": (*old_classes, *new_classes),
+        "DA1_REG1": (*old_classes, *new_classes),
+    }
+    for scene in matrix.SCENES:
+        scene_row_id = matrix.make_scene_row_id(outer.outer_id, scene)
+        for state, expected in expected_by_state.items():
+            surface_id = matrix.make_surface_id(scene_row_id, state)
+            record = records.get(surface_id)
+            if not isinstance(record, Mapping):
+                raise NextR5FATarget125Error(
+                    "sealed prediction registry surface coverage drift"
+                )
+            actual = _tokens(
+                record.get("registered_classes"),
+                name=f"sealed prediction registry[{surface_id}]",
+                expected=len(expected),
+            )
+            if actual != expected:
+                raise NextR5FATarget125Error(
+                    "sealed prediction/D92 registry binding drift"
+                )
+
+
 def build_target125_truth_catalog(
     *,
     prediction_manifest_path: str | Path,
@@ -785,11 +953,23 @@ def build_target125_truth_catalog(
         source_row = source_context["rows"][source_index]
         if not isinstance(source_row, Mapping):
             raise NextR5FATarget125Error("truth-side D108 source row is malformed")
+        old_classes, new_classes = _sealed_d92_apply_registry(
+            source_row=source_row,
+            outer=outer,
+        )
+        _validate_prediction_registry_binding(
+            prediction=prediction,
+            outer=outer,
+            old_classes=old_classes,
+            new_classes=new_classes,
+        )
         d108_outer = {
             "receiver": outer.receiver,
             "seed": outer.seed,
             "k_shot": outer.k_shot,
             "new_count": outer.new_count,
+            "old_classes": list(old_classes),
+            "new_classes": list(new_classes),
         }
         try:
             sidecar = d108_truth._load_d92_truth_sidecar_for_outer(  # type: ignore[attr-defined]

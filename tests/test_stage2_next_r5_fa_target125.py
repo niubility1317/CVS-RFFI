@@ -101,3 +101,147 @@ def test_da_query_id_parity_fails_closed_before_truth_open() -> None:
     decoded[drift.surface_id] = (("wrong-da1-query",), ("old-0",))
     with pytest.raises(target125.NextR5FATarget125Error, match="DA0/DA1"):
         target125._validate_da_query_id_parity(plan, decoded)  # noqa: SLF001
+
+
+def _source_row_for_truth_registry(
+    outer: matrix.Target125OuterRow,
+) -> dict[str, object]:
+    def reference(name: str) -> dict[str, str]:
+        return {
+            "package_root": f"/{name}",
+            "detached_seal_path": f"/{name}.seal.json",
+            "expected_seal_sha256": "a" * 64,
+        }
+
+    return {
+        "receiver": outer.receiver,
+        "seed": outer.seed,
+        "k_shot": outer.k_shot,
+        "new_count": outer.new_count,
+        "active_k": outer.k_shot,
+        "source_pool_k": outer.source_pool_k,
+        "packages": {
+            "before_enrollment": reference("before-enrollment"),
+            "before_apply": reference("before-apply"),
+            "after_enrollment": reference("after-enrollment"),
+            "after_apply": reference("after-apply"),
+        },
+    }
+
+
+def _sealed_apply_manifest(
+    *,
+    outer: matrix.Target125OuterRow,
+    stage: str,
+    registration_state: str,
+    handles: list[str],
+) -> dict[str, object]:
+    return {
+        "profile": "apply_only",
+        "stage": stage,
+        "registration_state": registration_state,
+        "receiver": outer.receiver,
+        "seed": outer.seed,
+        "k_shot": outer.source_pool_k,
+        "registered_class_count": len(handles),
+        "registered_classes": [
+            {"class_index": index, "class_handle": handle}
+            for index, handle in enumerate(handles)
+        ],
+    }
+
+
+def test_truth_registry_uses_sealed_row_local_d92_apply_manifests(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    outer = next(
+        row
+        for row in matrix.freeze_next_r5_fa_target125_matrix().outer_rows
+        if (row.k_shot, row.new_count) == (5, 20)
+    )
+    old = [f"cls_old_{index}" for index in range(matrix.OLD_CLASS_COUNT)]
+    new = [f"cls_new_{index}" for index in range(outer.new_count)]
+    seen: list[str] = []
+
+    def preflight(package_root, **_kwargs):  # type: ignore[no-untyped-def]
+        seen.append(str(package_root))
+        if str(package_root) == "/before-apply":
+            return _sealed_apply_manifest(
+                outer=outer,
+                stage="stage2b",
+                registration_state="before",
+                handles=old,
+            ), {}, {}
+        assert str(package_root) == "/after-apply"
+        return _sealed_apply_manifest(
+            outer=outer,
+            stage="stage2c",
+            registration_state="after",
+            handles=[*old, *new],
+        ), {}, {}
+
+    monkeypatch.setattr(target125, "_preflight_d92_apply_bundle", lambda reference: preflight(reference["package_root"]))
+    actual_old, actual_new = target125._sealed_d92_apply_registry(  # noqa: SLF001
+        source_row=_source_row_for_truth_registry(outer),
+        outer=outer,
+    )
+    assert actual_old == tuple(old)
+    assert actual_new == tuple(new)
+    assert seen == ["/before-apply", "/after-apply"]
+
+
+def test_truth_registry_rejects_d92_after_prefix_drift(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    outer = matrix.freeze_next_r5_fa_target125_matrix().outer_rows[0]
+    old = [f"cls_old_{index}" for index in range(matrix.OLD_CLASS_COUNT)]
+
+    def preflight(package_root, **_kwargs):  # type: ignore[no-untyped-def]
+        if str(package_root) == "/before-apply":
+            return _sealed_apply_manifest(
+                outer=outer,
+                stage="stage2b",
+                registration_state="before",
+                handles=old,
+            ), {}, {}
+        return _sealed_apply_manifest(
+            outer=outer,
+            stage="stage2c",
+            registration_state="after",
+            handles=["cls_wrong", *old[1:], *[f"cls_new_{index}" for index in range(outer.new_count)]],
+        ), {}, {}
+
+    monkeypatch.setattr(target125, "_preflight_d92_apply_bundle", lambda reference: preflight(reference["package_root"]))
+    with pytest.raises(target125.NextR5FATarget125Error, match="old-class prefix"):
+        target125._sealed_d92_apply_registry(  # noqa: SLF001
+            source_row=_source_row_for_truth_registry(outer),
+            outer=outer,
+        )
+
+
+def test_truth_registry_requires_sealed_prediction_registry_match() -> None:
+    outer = matrix.freeze_next_r5_fa_target125_matrix().outer_rows[0]
+    old = tuple(f"cls_old_{index}" for index in range(matrix.OLD_CLASS_COUNT))
+    new = tuple(f"cls_new_{index}" for index in range(outer.new_count))
+    records: dict[str, dict[str, list[str]]] = {}
+    for scene in matrix.SCENES:
+        scene_row_id = matrix.make_scene_row_id(outer.outer_id, scene)
+        for state in matrix.STATES:
+            registry = old if state.endswith("REG0") else (*old, *new)
+            records[matrix.make_surface_id(scene_row_id, state)] = {
+                "registered_classes": list(registry)
+            }
+    target125._validate_prediction_registry_binding(  # noqa: SLF001
+        prediction={"records": records},
+        outer=outer,
+        old_classes=old,
+        new_classes=new,
+    )
+    records[next(iter(records))]["registered_classes"] = ["cls_wrong", *old[1:]]
+    with pytest.raises(target125.NextR5FATarget125Error, match="registry binding"):
+        target125._validate_prediction_registry_binding(  # noqa: SLF001
+            prediction={"records": records},
+            outer=outer,
+            old_classes=old,
+            new_classes=new,
+        )
