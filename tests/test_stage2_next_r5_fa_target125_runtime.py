@@ -19,6 +19,14 @@ from cvsrffi.stage2_next_r5_fa_target125_runtime import (
 )
 
 
+_PR160_BINDING = {
+    "schema": runtime.PR160_RUNTIME_BINDING_SCHEMA,
+    "source_runtime_sha256": runtime.PR160_SOURCE_RUNTIME_SHA256,
+    "extractor_runtime_sha256": runtime.PR160_EXTRACTOR_RUNTIME_SHA256,
+    "extractor_runtime_size_bytes": runtime.PR160_EXTRACTOR_RUNTIME_SIZE_BYTES,
+}
+
+
 def _rows(count: int, *, offset: int = 0) -> np.ndarray:
     value = np.zeros((count, matrix.FEATURE_DIM), dtype=np.float32)
     for index in range(count):
@@ -34,6 +42,7 @@ def _totalize(
         np.maximum(pre_relu, np.float32(0.0)),
         physical_ids,
         scope=scope,
+        pr160_runtime_binding=_PR160_BINDING,
     )
 
 
@@ -166,18 +175,19 @@ def test_real_relu_zero_row_uses_only_same_iq_signed_pre_relu_direction() -> Non
     pre_relu[0, 0] = -2.0
     pre_relu[0, 1] = 3.0
     pre_relu[1, :] = -1.0
-    sealed_post_relu = np.maximum(pre_relu, np.float32(0.0))
+    graph_post_relu = np.maximum(pre_relu, np.float32(0.0))
     result, receipt = runtime._totalize_same_iq_zid160(  # noqa: SLF001
         pre_relu,
-        sealed_post_relu,
+        graph_post_relu,
         ("physical-positive", "physical-relu-zero"),
         scope="REG1_support",
+        pr160_runtime_binding=_PR160_BINDING,
     )
     from cvsrffi.stage2_zid_student_t_qknn import normalize_zid_rows
 
-    # Every nonzero row is byte-identical to the original sealed-runtime
-    # normalization path; only the exact sealed zero uses the signed direction.
-    assert np.array_equal(result[0], normalize_zid_rows(sealed_post_relu[:1])[0])
+    # Every nonzero row follows the canonical R0 ReLU-normalization path; only
+    # the exact same-graph zero uses the signed pre-ReLU direction.
+    assert np.array_equal(result[0], normalize_zid_rows(graph_post_relu[:1])[0])
     assert result[0, 0] == 0.0
     assert result[0, 1] == pytest.approx(1.0)
     assert np.allclose(
@@ -189,8 +199,9 @@ def test_real_relu_zero_row_uses_only_same_iq_signed_pre_relu_direction() -> Non
     assert receipt["ordered_physical_ids_sha256"] == matrix.canonical_sha256(
         ["physical-positive", "physical-relu-zero"]
     )
-    assert receipt["physical_id_to_sealed_runtime_post_relu_row_root_sha256"]
-    assert receipt["pre_relu_to_sealed_runtime_binding"]["all_rows_bound"] is True
+    assert receipt["physical_id_to_pr160_graph_relu_row_root_sha256"]
+    assert receipt["pre_relu_to_pr160_graph_relu_binding"]["all_rows_bound"] is True
+    assert receipt["pr160_runtime_binding"] == _PR160_BINDING
     qknn = core.fit_qknn(
         result,
         ("class-positive", "class-relu-zero"),
@@ -209,10 +220,11 @@ def test_real_relu_zero_row_uses_only_same_iq_signed_pre_relu_direction() -> Non
             exact_zero,
             ("physical-exact-zero",),
             scope="REG1_query",
+            pr160_runtime_binding=_PR160_BINDING,
         )
 
 
-def test_sealed_runtime_relu_binding_drift_fails_closed() -> None:
+def test_same_graph_relu_binding_drift_fails_closed() -> None:
     pre_relu = _rows(2)
     sealed_post_relu = np.maximum(pre_relu, np.float32(0.0))
     sealed_post_relu[0, 0] += np.float32(1.0e-3)
@@ -222,62 +234,55 @@ def test_sealed_runtime_relu_binding_drift_fails_closed() -> None:
             sealed_post_relu,
             ("physical-0", "physical-1"),
             scope="REG0_query",
+            pr160_runtime_binding=_PR160_BINDING,
         )
 
-    # A numerically near-zero tap does not unlock the fallback: it must be an
-    # exact same-IQ ReLU zero before a signed pre-ReLU direction is accepted.
+    # A nonzero pre-ReLU coordinate cannot be converted into a graph zero to
+    # unlock the signed fallback.
     almost_zero_pre = np.full((1, matrix.FEATURE_DIM), -1.0, dtype=np.float32)
     almost_zero_pre[0, 0] = np.float32(1.0e-7)
-    with pytest.raises(NextR5FATarget125RuntimeError, match="exact same-IQ ReLU zero"):
+    with pytest.raises(NextR5FATarget125RuntimeError, match="same-graph pre-ReLU / ReLU binding drift"):
         runtime._totalize_same_iq_zid160(  # noqa: SLF001 - direct boundary test.
             almost_zero_pre,
             np.zeros_like(almost_zero_pre),
             ("physical-near-zero",),
             scope="REG1_query",
+            pr160_runtime_binding=_PR160_BINDING,
         )
 
 
-def test_materializer_uses_original_sealed_runtime_for_nonzero_rows(monkeypatch) -> None:
-    from cvsrffi import stage2_d105_query_evaluation as d105_eval
+def test_materializer_uses_one_pr160_graph_for_normal_and_zero_rows(monkeypatch) -> None:
     from cvsrffi import stage2_diag_cosine_exploration as diag
 
     pre_relu = np.zeros((2, matrix.FEATURE_DIM), dtype=np.float32)
     pre_relu[0, 0] = 2.0
     pre_relu[1, :] = -1.0
-    sealed_post_relu = np.maximum(pre_relu, np.float32(0.0))
+    graph_post_relu = np.maximum(pre_relu, np.float32(0.0))
     calls: list[tuple[str, object]] = []
 
-    def sealed_forward(model, rows, **_kwargs):
-        calls.append(("sealed", model))
+    def pr160_forward(model, rows, **_kwargs):
+        calls.append(("pr160", model))
         assert np.array_equal(rows, np.zeros((2, 2, 8), dtype=np.float32))
-        return sealed_post_relu
+        return pre_relu
 
-    def tapped_forward(model, rows, **_kwargs):
-        calls.append(("tap", model))
-        assert np.array_equal(rows, np.zeros((2, 2, 8), dtype=np.float32))
-        return pre_relu, np.zeros_like(pre_relu), "a" * 64
-
-    monkeypatch.setattr(diag, "forward_zid160", sealed_forward)
-    monkeypatch.setattr(d105_eval, "_tap_rows", tapped_forward)
+    monkeypatch.setattr(diag, "forward_zid160", pr160_forward)
     materializer = object.__new__(runtime.D108ZID160Materializer)
     materializer._device = object()  # noqa: SLF001 - isolated runtime boundary.
-    materializer._sealed_runtime_model = lambda _root, _manifest: "sealed-model"  # type: ignore[attr-defined]  # noqa: E501
-    materializer._checkpoint_tap_model = lambda *, input_len: "tap-model"  # type: ignore[attr-defined]  # noqa: E501
+    materializer._pr160_extractor_model = "pr160-model"  # noqa: SLF001
+    materializer._pr160_runtime_binding = _PR160_BINDING  # noqa: SLF001
 
     result, receipt = materializer._zid160(  # noqa: SLF001 - direct materializer boundary.
         iq=np.zeros((2, 2, 8), dtype=np.float32),
-        physical_ids=("normal", "exact-sealed-zero"),
+        physical_ids=("normal", "exact-graph-zero"),
         scope="REG1_query",
-        package_root="sealed-package",
-        manifest={},
         batch_size=1,
     )
     from cvsrffi.stage2_zid_student_t_qknn import normalize_zid_rows
 
-    assert calls == [("sealed", "sealed-model"), ("tap", "tap-model")]
-    assert np.array_equal(result[0], normalize_zid_rows(sealed_post_relu[:1])[0])
+    assert calls == [("pr160", "pr160-model")]
+    assert np.array_equal(result[0], normalize_zid_rows(graph_post_relu[:1])[0])
     assert receipt["replaced_count"] == 1
-    assert receipt["nonzero_rows_reuse_original_sealed_runtime"] is True
+    assert receipt["nonzero_rows_reuse_original_r0_semantics"] is True
 
 
 def test_totalization_receipt_rejects_physical_binding_drift() -> None:
@@ -289,6 +294,67 @@ def test_totalization_receipt_rejects_physical_binding_drift() -> None:
             rows=result,
             physical_ids=("physical-swapped",),
             scope="REG0_support",
+        )
+
+
+def test_prepared_pr160_runtime_requires_exact_source_plan_binding(monkeypatch) -> None:
+    source_sha = runtime.PR160_SOURCE_RUNTIME_SHA256
+    extractor_sha = runtime.PR160_EXTRACTOR_RUNTIME_SHA256
+    descriptor = {
+        "path": "C:/sealed/pr160.pt",
+        "sha256": extractor_sha,
+        "size_bytes": runtime.PR160_EXTRACTOR_RUNTIME_SIZE_BYTES,
+        "source_runtime_sha256": source_sha,
+    }
+    source_plan = {"identity": {"d92_sealed_runtime_sha256": source_sha}}
+    plan = {"identity": {"d92_sealed_runtime_sha256": source_sha, "pr160_extractor_runtime": descriptor}}
+    calls: list[dict[str, object]] = []
+
+    def bind(**kwargs: object) -> dict[str, object]:
+        calls.append(dict(kwargs))
+        return dict(descriptor)
+
+    monkeypatch.setattr(runtime, "_bind_pr160_extractor_runtime", bind)
+    assert runtime._prepared_pr160_extractor_runtime(  # noqa: SLF001
+        plan=plan, source_plan=source_plan
+    ) == descriptor
+    assert calls == [
+        {
+            "extractor_runtime_path": descriptor["path"],
+            "expected_extractor_runtime_sha256": extractor_sha,
+            "source_runtime_sha256": source_sha,
+            "expected_size_bytes": runtime.PR160_EXTRACTOR_RUNTIME_SIZE_BYTES,
+        }
+    ]
+    tampered = {"identity": {**plan["identity"], "d92_sealed_runtime_sha256": "0" * 64}}
+    with pytest.raises(NextR5FATarget125RuntimeError, match="source runtime binding drift"):
+        runtime._prepared_pr160_extractor_runtime(  # noqa: SLF001
+            plan=tampered, source_plan=source_plan
+        )
+
+
+def test_pr160_extractor_file_sha_and_size_are_fail_closed(tmp_path, monkeypatch) -> None:
+    extractor = tmp_path / "pr160.pt"
+    extractor.write_bytes(b"sealed-pr160-graph")
+    sha256 = hashlib.sha256(extractor.read_bytes()).hexdigest()
+    monkeypatch.setattr(runtime, "PR160_EXTRACTOR_RUNTIME_SHA256", sha256)
+    monkeypatch.setattr(
+        runtime, "PR160_EXTRACTOR_RUNTIME_SIZE_BYTES", extractor.stat().st_size
+    )
+    bound = runtime._bind_pr160_extractor_runtime(  # noqa: SLF001
+        extractor_runtime_path=extractor,
+        expected_extractor_runtime_sha256=sha256,
+        source_runtime_sha256=runtime.PR160_SOURCE_RUNTIME_SHA256,
+        expected_size_bytes=extractor.stat().st_size,
+    )
+    assert bound["path"] == str(extractor.resolve())
+    extractor.write_bytes(b"tampered-pr160-graph")
+    with pytest.raises(NextR5FATarget125RuntimeError, match="file binding drift"):
+        runtime._bind_pr160_extractor_runtime(  # noqa: SLF001
+            extractor_runtime_path=extractor,
+            expected_extractor_runtime_sha256=sha256,
+            source_runtime_sha256=runtime.PR160_SOURCE_RUNTIME_SHA256,
+            expected_size_bytes=len(b"sealed-pr160-graph"),
         )
 
 

@@ -53,6 +53,8 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     prepare.add_argument("--fa-asset-sha256", required=True)
     prepare.add_argument("--method-lock", type=Path, required=True)
     prepare.add_argument("--method-lock-sha256", required=True)
+    prepare.add_argument("--pr160-extractor-runtime", type=Path, required=True)
+    prepare.add_argument("--pr160-extractor-runtime-sha256", required=True)
     prepare.add_argument("--output-dir", type=Path, required=True)
 
     smoke = commands.add_parser("smoke", help="run one truth-free real-checkpoint outer/scene")
@@ -100,12 +102,19 @@ def _smoke(args: argparse.Namespace) -> dict[str, object]:
         expected_context_file_sha256=args.context_manifest_sha256,
     )
     asset = runtime._load_target_asset(plan)  # type: ignore[attr-defined]
+    pr160_extractor = runtime._prepared_pr160_extractor_runtime(  # type: ignore[attr-defined]
+        plan=plan, source_plan=source_plan
+    )
     frozen = matrix.freeze_next_r5_fa_target125_matrix()
     outer = frozen.outer_rows[args.row_index]
     target_row = context["rows"][args.row_index]
     source_row = source_context["rows"][target_row["source_row_index"]]
     scene = matrix.SCENES[args.scene_index]
-    materializer = runtime.D108ZID160Materializer(source_plan=source_plan, device=args.device)
+    materializer = runtime.D108ZID160Materializer(
+        source_plan=source_plan,
+        pr160_extractor_runtime=pr160_extractor,
+        device=args.device,
+    )
     condition = materializer.materialize_condition(outer_row=outer, source_row=source_row, scene=scene)
     result = runtime.execute_target125_condition(
         condition,
@@ -154,6 +163,8 @@ def main(argv: list[str] | None = None) -> int:
             expected_fa_asset_sha256=args.fa_asset_sha256,
             method_lock_path=args.method_lock,
             expected_method_lock_sha256=args.method_lock_sha256,
+            pr160_extractor_runtime_path=args.pr160_extractor_runtime,
+            expected_pr160_extractor_runtime_sha256=args.pr160_extractor_runtime_sha256,
             output_dir=args.output_dir,
         )
     elif args.command == "smoke":

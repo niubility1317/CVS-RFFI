@@ -26,6 +26,11 @@ from typing import Any, Protocol
 import numpy as np
 
 from . import stage2_next_r5_fa_target125_matrix as matrix
+from .stage2_d92_pr160_runtime import (
+    EXTRACTOR_RUNTIME_SHA256 as PR160_EXTRACTOR_RUNTIME_SHA256,
+    SOURCE_RUNTIME_SHA256 as PR160_SOURCE_RUNTIME_SHA256,
+    load_pr160_runtime,
+)
 
 
 RUNTIME_ADAPTER_SCHEMA = "cvs.phase2.next_r5.fa_rdce3_qknn.target125.runtime_adapter.v1"
@@ -40,9 +45,12 @@ SHARD_COUNT = 8
 ZID160_TOTALIZATION_SCHEMA = (
     "cvs.phase2.next_r5.fa_rdce3_qknn.target125.zid160_totalization.v1"
 )
-ZID160_TOTALIZATION_REVISION = "same_iq_sealed_relu_bound_signed_fallback_r2"
-SEALED_RELU_BINDING_MODE = "strict_abs_atol_2e-6"
-SEALED_RELU_BINDING_ATOL = 2.0e-6
+ZID160_TOTALIZATION_REVISION = "same_iq_pr160_graph_relu_signed_fallback_r3"
+PR160_EXTRACTOR_RUNTIME_SIZE_BYTES = 4_618_957
+PR160_RUNTIME_BINDING_SCHEMA = (
+    "cvs.phase2.next_r5.fa_rdce3_qknn.target125.pr160_runtime_binding.v1"
+)
+PR160_GRAPH_RELU_BINDING_MODE = "exact_relu_from_same_pr160_graph_pre"
 
 
 class NextR5FATarget125RuntimeError(ValueError):
@@ -157,44 +165,146 @@ def _physical_id_row_root(physical_ids: Sequence[str], rows: np.ndarray) -> str:
     )
 
 
+def _pr160_receipt_binding(value: Mapping[str, Any]) -> Mapping[str, Any]:
+    expected = {
+        "schema",
+        "source_runtime_sha256",
+        "extractor_runtime_sha256",
+        "extractor_runtime_size_bytes",
+    }
+    if not isinstance(value, Mapping) or set(value) != expected:
+        raise NextR5FATarget125RuntimeError("PR160 runtime receipt binding closure drift")
+    source_runtime_sha256 = _sha(
+        value.get("source_runtime_sha256"), "PR160 source runtime SHA256"
+    )
+    extractor_runtime_sha256 = _sha(
+        value.get("extractor_runtime_sha256"), "PR160 extractor runtime SHA256"
+    )
+    size_bytes = value.get("extractor_runtime_size_bytes")
+    if (
+        value.get("schema") != PR160_RUNTIME_BINDING_SCHEMA
+        or source_runtime_sha256 != PR160_SOURCE_RUNTIME_SHA256
+        or extractor_runtime_sha256 != PR160_EXTRACTOR_RUNTIME_SHA256
+        or type(size_bytes) is not int
+        or size_bytes != PR160_EXTRACTOR_RUNTIME_SIZE_BYTES
+    ):
+        raise NextR5FATarget125RuntimeError("PR160 runtime receipt identity drift")
+    return MappingProxyType(
+        {
+            "schema": PR160_RUNTIME_BINDING_SCHEMA,
+            "source_runtime_sha256": source_runtime_sha256,
+            "extractor_runtime_sha256": extractor_runtime_sha256,
+            "extractor_runtime_size_bytes": size_bytes,
+        }
+    )
+
+
+def _bind_pr160_extractor_runtime(
+    *,
+    extractor_runtime_path: str | Path,
+    expected_extractor_runtime_sha256: str,
+    source_runtime_sha256: str,
+    expected_size_bytes: int,
+) -> Mapping[str, Any]:
+    """Verify the graph-derived PR160 artifact before it can enter a plan."""
+
+    source_sha = _sha(source_runtime_sha256, "PR160 source runtime SHA256")
+    extractor_sha = _sha(
+        expected_extractor_runtime_sha256, "PR160 extractor runtime SHA256"
+    )
+    path = Path(extractor_runtime_path)
+    if (
+        source_sha != PR160_SOURCE_RUNTIME_SHA256
+        or extractor_sha != PR160_EXTRACTOR_RUNTIME_SHA256
+        or type(expected_size_bytes) is not int
+        or expected_size_bytes != PR160_EXTRACTOR_RUNTIME_SIZE_BYTES
+        or path.is_symlink()
+        or not path.is_file()
+    ):
+        raise NextR5FATarget125RuntimeError("PR160 extractor runtime identity drift")
+    source = path.resolve(strict=True)
+    if (
+        source.stat().st_size != expected_size_bytes
+        or _sha256_file(source) != extractor_sha
+    ):
+        raise NextR5FATarget125RuntimeError("PR160 extractor runtime file binding drift")
+    return MappingProxyType(
+        {
+            "path": str(source),
+            "sha256": extractor_sha,
+            "size_bytes": expected_size_bytes,
+            "source_runtime_sha256": source_sha,
+        }
+    )
+
+
+def _prepared_pr160_extractor_runtime(
+    *, plan: Mapping[str, Any], source_plan: Mapping[str, Any]
+) -> Mapping[str, Any]:
+    """Reload the exact PR160 graph binding from the immutable NEXT-R5 plan."""
+
+    identity = plan.get("identity")
+    source_identity = source_plan.get("identity")
+    if not isinstance(identity, Mapping) or not isinstance(source_identity, Mapping):
+        raise NextR5FATarget125RuntimeError("prepared PR160 runtime identity is missing")
+    source_runtime_sha256 = _sha(
+        source_identity.get("d92_sealed_runtime_sha256"),
+        "prepared D92 source runtime SHA256",
+    )
+    if (
+        source_runtime_sha256 != PR160_SOURCE_RUNTIME_SHA256
+        or identity.get("d92_sealed_runtime_sha256") != source_runtime_sha256
+    ):
+        raise NextR5FATarget125RuntimeError("prepared D92/PR160 source runtime binding drift")
+    descriptor = identity.get("pr160_extractor_runtime")
+    if not isinstance(descriptor, Mapping) or set(descriptor) != {
+        "path",
+        "sha256",
+        "size_bytes",
+        "source_runtime_sha256",
+    }:
+        raise NextR5FATarget125RuntimeError("prepared PR160 extractor descriptor drift")
+    if descriptor.get("source_runtime_sha256") != source_runtime_sha256:
+        raise NextR5FATarget125RuntimeError("prepared PR160 extractor source binding drift")
+    return _bind_pr160_extractor_runtime(
+        extractor_runtime_path=descriptor["path"],
+        expected_extractor_runtime_sha256=descriptor["sha256"],
+        source_runtime_sha256=source_runtime_sha256,
+        expected_size_bytes=descriptor["size_bytes"],
+    )
+
+
 def _totalize_same_iq_zid160(
     pre_relu: np.ndarray,
-    sealed_runtime_post_relu: np.ndarray,
+    pr160_graph_post_relu: np.ndarray,
     physical_ids: Sequence[str],
     *,
     scope: str,
+    pr160_runtime_binding: Mapping[str, Any],
 ) -> tuple[np.ndarray, Mapping[str, Any]]:
-    """Preserve sealed ReLU rows; totalize only exact sealed zeros from same IQ."""
+    """Preserve the canonical R0 ReLU rule; totalize only exact graph zeros."""
 
     if scope not in {"REG0_support", "REG0_query", "REG1_support", "REG1_query"}:
         raise NextR5FATarget125RuntimeError("z_id160 totalization scope drift")
     signed = _finite_feature_rows(pre_relu, name="z_id160 pre-ReLU")
-    sealed = _finite_feature_rows(
-        sealed_runtime_post_relu, name="sealed runtime post-ReLU z_id160"
+    graph_relu = _finite_feature_rows(
+        pr160_graph_post_relu, name="same-graph post-ReLU z_id160"
     )
-    if signed.shape != sealed.shape:
-        raise NextR5FATarget125RuntimeError("pre-ReLU / sealed z_id160 shape drift")
+    if signed.shape != graph_relu.shape:
+        raise NextR5FATarget125RuntimeError("pre-ReLU / same-graph z_id160 shape drift")
+    runtime_binding = _pr160_receipt_binding(pr160_runtime_binding)
     ids = _tokens(physical_ids, name=f"{scope} physical_ids", expected=len(signed))
-    if np.any(sealed < np.float32(0.0)):
-        raise NextR5FATarget125RuntimeError("sealed runtime z_id160 is not post-ReLU")
+    if np.any(graph_relu < np.float32(0.0)):
+        raise NextR5FATarget125RuntimeError("same-graph z_id160 is not post-ReLU")
     recomputed_relu = np.maximum(signed, np.float32(0.0))
-    difference = np.abs(
-        sealed.astype(np.float64) - recomputed_relu.astype(np.float64)
-    )
-    max_abs_error = float(np.max(difference))
-    if (
-        not np.isfinite(max_abs_error)
-        or max_abs_error > SEALED_RELU_BINDING_ATOL
-    ):
-        raise NextR5FATarget125RuntimeError(
-            "sealed runtime / same-IQ ReLU binding drift"
-        )
-    replace = np.all(sealed == np.float32(0.0), axis=1)
+    if not np.array_equal(graph_relu, recomputed_relu):
+        raise NextR5FATarget125RuntimeError("same-graph pre-ReLU / ReLU binding drift")
+    replace = np.all(graph_relu == np.float32(0.0), axis=1)
     if np.any(replace) and not np.all(
         recomputed_relu[replace] == np.float32(0.0)
     ):
         raise NextR5FATarget125RuntimeError(
-            "sealed zero row is not an exact same-IQ ReLU zero"
+            "same-graph zero row is not an exact same-IQ ReLU zero"
         )
     signed_norms = np.linalg.norm(signed.astype(np.float64), axis=1)
     if (
@@ -204,14 +314,14 @@ def _totalize_same_iq_zid160(
         raise NextR5FATarget125RuntimeError(
             "exact-zero pre-ReLU row cannot be signed-totalized"
         )
-    output = np.empty_like(sealed)
+    output = np.empty_like(graph_relu)
     try:
         from .stage2_zid_student_t_qknn import normalize_zid_rows
 
         if np.any(~replace):
-            # Preserve the original sealed-runtime normalization byte path for
-            # every nonzero row; the eager pre-ReLU tap is only a verifier here.
-            output[~replace] = normalize_zid_rows(sealed[~replace])
+            # Graph-derived pre-ReLU uses the original R0 ReLU map for every
+            # nonzero row.  Only an exact all-negative graph row is totalized.
+            output[~replace] = normalize_zid_rows(graph_relu[~replace])
         if np.any(replace):
             output[replace] = normalize_zid_rows(signed[replace])
     except Exception as error:
@@ -228,22 +338,22 @@ def _totalize_same_iq_zid160(
         "replaced_count": len(replaced_ids),
         "ordered_physical_ids_sha256": _canonical_sha256(list(ids)),
         "replaced_physical_id_root_sha256": _canonical_sha256(sorted(replaced_ids)),
-        "input_pre_relu_array_receipt": _array_receipt(signed),
-        "same_iq_recomputed_relu_array_receipt": _array_receipt(recomputed_relu),
-        "sealed_runtime_post_relu_array_receipt": _array_receipt(sealed),
-        "physical_id_to_pre_relu_row_root_sha256": _physical_id_row_root(ids, signed),
-        "physical_id_to_sealed_runtime_post_relu_row_root_sha256": _physical_id_row_root(
-            ids, sealed
+        "pr160_runtime_binding": dict(runtime_binding),
+        "input_pr160_pre_relu_array_receipt": _array_receipt(signed),
+        "same_iq_pr160_recomputed_relu_array_receipt": _array_receipt(recomputed_relu),
+        "same_iq_pr160_graph_relu_array_receipt": _array_receipt(graph_relu),
+        "physical_id_to_pr160_pre_relu_row_root_sha256": _physical_id_row_root(ids, signed),
+        "physical_id_to_pr160_graph_relu_row_root_sha256": _physical_id_row_root(
+            ids, graph_relu
         ),
-        "pre_relu_to_sealed_runtime_binding": {
-            "mode": SEALED_RELU_BINDING_MODE,
+        "pre_relu_to_pr160_graph_relu_binding": {
+            "mode": PR160_GRAPH_RELU_BINDING_MODE,
             "row_count": len(ids),
-            "max_abs_error": max_abs_error,
-            "byte_exact": bool(np.array_equal(sealed, recomputed_relu)),
+            "byte_exact": bool(np.array_equal(graph_relu, recomputed_relu)),
             "all_rows_bound": True,
         },
         "output_zid160_array_receipt": _array_receipt(output),
-        "nonzero_rows_reuse_original_sealed_runtime": True,
+        "nonzero_rows_reuse_original_r0_semantics": True,
         "same_fixed_received_iq": True,
         "query_truth_access": False,
         "query_role_access": False,
@@ -264,13 +374,18 @@ def _validate_totalization_receipt(
         raise NextR5FATarget125RuntimeError("z_id160 totalization receipt is missing")
     receipt = dict(value)
     claimed = receipt.pop("totalization_receipt_sha256", None)
-    binding = receipt.get("pre_relu_to_sealed_runtime_binding")
+    binding = receipt.get("pre_relu_to_pr160_graph_relu_binding")
     if not isinstance(binding, Mapping):
         raise NextR5FATarget125RuntimeError("z_id160 totalization ReLU binding is missing")
+    try:
+        runtime_binding = _pr160_receipt_binding(receipt.get("pr160_runtime_binding"))
+    except NextR5FATarget125RuntimeError as error:
+        raise NextR5FATarget125RuntimeError(
+            "z_id160 totalization PR160 runtime binding drift"
+        ) from error
     binding_fields = {
         "mode",
         "row_count",
-        "max_abs_error",
         "byte_exact",
         "all_rows_bound",
     }
@@ -282,22 +397,20 @@ def _validate_totalization_receipt(
         or receipt.get("ordered_physical_ids_sha256")
         != _canonical_sha256(list(physical_ids))
         or receipt.get("output_zid160_array_receipt") != _array_receipt(rows)
-        or not isinstance(receipt.get("input_pre_relu_array_receipt"), Mapping)
-        or not isinstance(receipt.get("same_iq_recomputed_relu_array_receipt"), Mapping)
-        or not isinstance(receipt.get("sealed_runtime_post_relu_array_receipt"), Mapping)
-        or not isinstance(receipt.get("physical_id_to_pre_relu_row_root_sha256"), str)
+        or dict(runtime_binding) != receipt.get("pr160_runtime_binding")
+        or not isinstance(receipt.get("input_pr160_pre_relu_array_receipt"), Mapping)
+        or not isinstance(receipt.get("same_iq_pr160_recomputed_relu_array_receipt"), Mapping)
+        or not isinstance(receipt.get("same_iq_pr160_graph_relu_array_receipt"), Mapping)
+        or not isinstance(receipt.get("physical_id_to_pr160_pre_relu_row_root_sha256"), str)
         or not isinstance(
-            receipt.get("physical_id_to_sealed_runtime_post_relu_row_root_sha256"), str
+            receipt.get("physical_id_to_pr160_graph_relu_row_root_sha256"), str
         )
         or set(binding) != binding_fields
-        or binding.get("mode") != SEALED_RELU_BINDING_MODE
+        or binding.get("mode") != PR160_GRAPH_RELU_BINDING_MODE
         or binding.get("row_count") != len(rows)
-        or type(binding.get("byte_exact")) is not bool
+        or binding.get("byte_exact") is not True
         or binding.get("all_rows_bound") is not True
-        or not isinstance(binding.get("max_abs_error"), float)
-        or not np.isfinite(binding["max_abs_error"])
-        or binding["max_abs_error"] > SEALED_RELU_BINDING_ATOL
-        or receipt.get("nonzero_rows_reuse_original_sealed_runtime") is not True
+        or receipt.get("nonzero_rows_reuse_original_r0_semantics") is not True
         or receipt.get("same_fixed_received_iq") is not True
         or receipt.get("query_truth_access") is not False
         or receipt.get("query_role_access") is not False
@@ -306,12 +419,12 @@ def _validate_totalization_receipt(
     ):
         raise NextR5FATarget125RuntimeError("z_id160 totalization receipt binding drift")
     _sha(
-        receipt["physical_id_to_pre_relu_row_root_sha256"],
-        "pre-ReLU physical-row root SHA256",
+        receipt["physical_id_to_pr160_pre_relu_row_root_sha256"],
+        "PR160 pre-ReLU physical-row root SHA256",
     )
     _sha(
-        receipt["physical_id_to_sealed_runtime_post_relu_row_root_sha256"],
-        "sealed runtime physical-row root SHA256",
+        receipt["physical_id_to_pr160_graph_relu_row_root_sha256"],
+        "PR160 graph ReLU physical-row root SHA256",
     )
     receipt["totalization_receipt_sha256"] = claimed
     return MappingProxyType(receipt)
@@ -610,10 +723,18 @@ class D108ZID160Materializer:
     It deliberately reuses D108's package verifier, package-pair validator,
     support-prefix selector and singleton query forward policy.  Only the
     final 288-D D92 feature concatenation is replaced with the frozen 160-D
-    same-IQ signed-totalized unit z_id materialization required by NEXT-R5.
+    same-IQ PR160 graph-derived signed-totalized unit z_id materialization
+    required by NEXT-R5.  No eager checkpoint reconstruction is permitted.
     """
 
-    def __init__(self, *, source_plan: Mapping[str, Any], device: str, support_batch_size: int = 64) -> None:
+    def __init__(
+        self,
+        *,
+        source_plan: Mapping[str, Any],
+        pr160_extractor_runtime: Mapping[str, Any],
+        device: str,
+        support_batch_size: int = 64,
+    ) -> None:
         if type(support_batch_size) is not int or support_batch_size != 64:
             raise NextR5FATarget125RuntimeError("support_batch_size must be exactly 64")
         if not isinstance(source_plan, Mapping):
@@ -621,24 +742,47 @@ class D108ZID160Materializer:
         identity = source_plan.get("identity")
         if not isinstance(identity, Mapping):
             raise NextR5FATarget125RuntimeError("prepared D108 identity is missing")
+        source_runtime_sha256 = _sha(
+            identity.get("d92_sealed_runtime_sha256"), "D108 source runtime SHA256"
+        )
+        if source_runtime_sha256 != PR160_SOURCE_RUNTIME_SHA256:
+            raise NextR5FATarget125RuntimeError("D108/PR160 source runtime binding drift")
+        descriptor = pr160_extractor_runtime
+        if not isinstance(descriptor, Mapping) or set(descriptor) != {
+            "path",
+            "sha256",
+            "size_bytes",
+            "source_runtime_sha256",
+        }:
+            raise NextR5FATarget125RuntimeError("PR160 extractor descriptor closure drift")
+        if descriptor.get("source_runtime_sha256") != source_runtime_sha256:
+            raise NextR5FATarget125RuntimeError("PR160 extractor/source runtime binding drift")
         try:
             from . import stage2_d108_target125_runner as d108
             from .stage2_diag_cosine_exploration import _device
 
-            checkpoint_path = d108._verify_bound_file(  # type: ignore[attr-defined]
-                identity["checkpoint"], path_key="path", sha_key="sha256", name="checkpoint"
-            )
             self._d108 = d108
             self._device = _device(device)
-            self._checkpoint_bytes = checkpoint_path.read_bytes()
+            self._pr160_extractor_model = load_pr160_runtime(
+                descriptor["path"],
+                expected_sha256=descriptor["sha256"],
+                device=self._device,
+            )
         except Exception as error:
-            raise NextR5FATarget125RuntimeError("D108 sealed checkpoint binding is unavailable") from error
+            raise NextR5FATarget125RuntimeError("PR160 graph runtime load failed") from error
         self._source_plan = source_plan
         self._support_batch_size = support_batch_size
-        self._package_cache: dict[tuple[tuple[str, str], ...], tuple[Any, dict[str, Any]]] = {}
-        self._sealed_runtime_model_cache: dict[tuple[str, str], Any] = {}
-        self._checkpoint_model: Any | None = None
-        self._model_input_len: int | None = None
+        self._package_cache: dict[
+            tuple[tuple[str, str], ...], tuple[Any, dict[str, Any]]
+        ] = {}
+        self._pr160_runtime_binding = _pr160_receipt_binding(
+            {
+                "schema": PR160_RUNTIME_BINDING_SCHEMA,
+                "source_runtime_sha256": source_runtime_sha256,
+                "extractor_runtime_sha256": descriptor["sha256"],
+                "extractor_runtime_size_bytes": descriptor["size_bytes"],
+            }
+        )
 
     def _package(self, reference: Mapping[str, Any]) -> tuple[Any, dict[str, Any]]:
         key = tuple(sorted((str(name), str(value)) for name, value in reference.items()))
@@ -650,79 +794,42 @@ class D108ZID160Materializer:
                 raise NextR5FATarget125RuntimeError("sealed D108 package verification failed") from error
         return self._package_cache[key]
 
-    def _sealed_runtime_model(self, package_root: str, manifest: Mapping[str, Any]) -> Any:
+    def _require_package_source_runtime(self, manifest: Mapping[str, Any]) -> None:
         try:
             from .stage2_diag_cosine_exploration import _descriptor
-            from .stage2_predictor_runtime import load_torchscript_backbone_same_fd
 
             descriptor = _descriptor(manifest, "feature_runtime")
             runtime_sha = str(descriptor.get("sha256", ""))
-            expected = self._source_plan["identity"]["d92_sealed_runtime_sha256"]
-            if runtime_sha != expected:
-                raise NextR5FATarget125RuntimeError("sealed z_id runtime SHA binding drift")
-            if not package_root:
-                raise NextR5FATarget125RuntimeError("sealed z_id package root is empty")
-            key = (package_root, runtime_sha)
-            if key not in self._sealed_runtime_model_cache:
-                self._sealed_runtime_model_cache[key] = load_torchscript_backbone_same_fd(
-                    package_root, descriptor, device=self._device
-                )
-            return self._sealed_runtime_model_cache[key]
+            if runtime_sha != self._pr160_runtime_binding["source_runtime_sha256"]:
+                raise NextR5FATarget125RuntimeError("D108 package/source runtime SHA drift")
         except NextR5FATarget125RuntimeError:
             raise
         except Exception as error:
-            raise NextR5FATarget125RuntimeError("sealed z_id runtime load failed") from error
-
-    def _checkpoint_tap_model(self, *, input_len: int) -> Any:
-        try:
-            from .stage2_d105_query_evaluation import _default_model_loader
-
-            if self._checkpoint_model is None:
-                self._checkpoint_model, _audit = _default_model_loader(
-                    self._checkpoint_bytes, input_len, self._device
-                )
-                self._model_input_len = input_len
-            elif self._model_input_len != input_len:
-                raise NextR5FATarget125RuntimeError("received-IQ input length drift")
-            return self._checkpoint_model
-        except NextR5FATarget125RuntimeError:
-            raise
-        except Exception as error:
-            raise NextR5FATarget125RuntimeError("same-IQ pre-ReLU tap model load failed") from error
+            raise NextR5FATarget125RuntimeError("D108 package runtime descriptor drift") from error
 
     def _zid160(
-        self, *, iq: np.ndarray, physical_ids: Sequence[str], scope: str,
-        package_root: str, manifest: Mapping[str, Any], batch_size: int
+        self, *, iq: np.ndarray, physical_ids: Sequence[str], scope: str, batch_size: int
     ) -> tuple[np.ndarray, Mapping[str, Any]]:
         try:
             from .stage2_diag_cosine_exploration import forward_zid160
-            from .stage2_d105_feature_tap import extract_d105_feature_tap
-            from .stage2_d105_query_evaluation import _tap_rows
 
-            # The original SHA-bound D92 runtime remains the sole source of
-            # every normal R0 row.  The checkpoint reconstruction is opened
-            # against the same received IQ only to prove its pre-ReLU tap has
-            # the same post-ReLU value, and to totalize exact sealed zeros.
-            sealed_post_relu = forward_zid160(
-                self._sealed_runtime_model(package_root, manifest),
+            pre_relu = forward_zid160(
+                self._pr160_extractor_model,
                 iq,
                 device=self._device,
                 batch_size=batch_size,
-            )
-            pre_relu, _z_dom, _tap_receipt = _tap_rows(
-                self._checkpoint_tap_model(input_len=int(iq.shape[-1])),
-                iq,
-                device=self._device,
-                batch_size=batch_size,
-                feature_extractor=extract_d105_feature_tap,
             )
             return _totalize_same_iq_zid160(
-                pre_relu, sealed_post_relu, physical_ids, scope=scope
+                pre_relu,
+                np.maximum(pre_relu, np.float32(0.0)),
+                physical_ids,
+                scope=scope,
+                pr160_runtime_binding=self._pr160_runtime_binding,
             )
         except NextR5FATarget125RuntimeError:
             raise
         except Exception as error:
-            raise NextR5FATarget125RuntimeError("sealed z_id160 materialization failed") from error
+            raise NextR5FATarget125RuntimeError("same-graph PR160 z_id160 materialization failed") from error
 
     def materialize(self, *, source_row: Mapping[str, Any], scene: str, registration_phase: str) -> Target125RegistrationInput:
         if scene not in matrix.SCENES or registration_phase not in ("REG0", "REG1"):
@@ -739,6 +846,8 @@ class D108ZID160Materializer:
             from .stage2_diag_cosine_exploration import _validate_matched_packages
 
             _validate_matched_packages(support_manifest, query_manifest)
+            self._require_package_source_runtime(support_manifest)
+            self._require_package_source_runtime(query_manifest)
             support_indices, registry = _registered_class_records(
                 support_manifest,
                 name="support package",
@@ -773,16 +882,12 @@ class D108ZID160Materializer:
                 iq=support_iq,
                 physical_ids=support_ids,
                 scope=f"{registration_phase}_support",
-                package_root=str(support_ref["package_root"]),
-                manifest=support_manifest,
                 batch_size=self._support_batch_size,
             )
             query_zid160, query_totalization = self._zid160(
                 iq=query_iq,
                 physical_ids=query_ids,
                 scope=f"{registration_phase}_query",
-                package_root=str(query_ref["package_root"]),
-                manifest=query_manifest,
                 batch_size=1,
             )
             return Target125RegistrationInput(
@@ -851,6 +956,9 @@ def _validate_method_lock(path: Path, expected_sha256: str) -> dict[str, Any]:
         "r0_totalization_rule",
         "r0_post_relu_binding",
         "r0_zero_policy",
+        "r0_source_runtime_sha256",
+        "r0_pr160_extractor_runtime_sha256",
+        "r0_pr160_extractor_runtime_size_bytes",
         "r1",
         "dimension",
         "r1_relu",
@@ -871,11 +979,17 @@ def _validate_method_lock(path: Path, expected_sha256: str) -> dict[str, Any]:
         or representation.get("r0_totalization_schema") != ZID160_TOTALIZATION_SCHEMA
         or representation.get("r0_totalization_revision") != ZID160_TOTALIZATION_REVISION
         or representation.get("r0_totalization_rule")
-        != "normalize_sealed_relu_if_nonzero_else_normalize_same_iq_signed_prerelu"
+        != "normalize_relu_pr160_graph_pre_if_nonzero_else_normalize_same_iq_signed_prerelu"
         or representation.get("r0_post_relu_binding")
-        != "strict_per_row_sealed_runtime_equals_relu_pre"
+        != "exact_relu_from_same_pr160_graph_pre"
         or representation.get("r0_zero_policy")
-        != "exact_sealed_relu_zero_and_nonzero_finite_prerelu_required"
+        != "exact_pr160_graph_relu_zero_and_nonzero_finite_prerelu_required"
+        or representation.get("r0_source_runtime_sha256")
+        != PR160_SOURCE_RUNTIME_SHA256
+        or representation.get("r0_pr160_extractor_runtime_sha256")
+        != PR160_EXTRACTOR_RUNTIME_SHA256
+        or representation.get("r0_pr160_extractor_runtime_size_bytes")
+        != PR160_EXTRACTOR_RUNTIME_SIZE_BYTES
         or representation.get("r1") != core.R1_REPRESENTATION
         or representation.get("dimension") != matrix.FEATURE_DIM
         or representation.get("r1_relu") is not False
@@ -912,6 +1026,8 @@ def prepare_next_r5_fa_target125_inputs(
     expected_fa_asset_sha256: str,
     method_lock_path: str | Path,
     expected_method_lock_sha256: str,
+    pr160_extractor_runtime_path: str | Path,
+    expected_pr160_extractor_runtime_sha256: str,
     output_dir: str | Path,
 ) -> Mapping[str, Any]:
     """Pin existing D108 inputs, the Target FA asset and method lock once.
@@ -960,6 +1076,23 @@ def prepare_next_r5_fa_target125_inputs(
     if not isinstance(identity, Mapping) or not isinstance(identity.get("checkpoint"), Mapping):
         raise NextR5FATarget125RuntimeError("D108 prepared checkpoint identity is missing")
     checkpoint_sha = _sha(identity["checkpoint"].get("sha256"), "sealed checkpoint SHA256")
+    source_runtime_sha = _sha(
+        identity.get("d92_sealed_runtime_sha256"), "sealed D92 source runtime SHA256"
+    )
+    representation = lock["representation"]
+    if (
+        source_runtime_sha != PR160_SOURCE_RUNTIME_SHA256
+        or representation["r0_source_runtime_sha256"] != source_runtime_sha
+        or representation["r0_pr160_extractor_runtime_sha256"]
+        != expected_pr160_extractor_runtime_sha256
+    ):
+        raise NextR5FATarget125RuntimeError("D108/PR160 method-lock runtime binding drift")
+    pr160_extractor = _bind_pr160_extractor_runtime(
+        extractor_runtime_path=pr160_extractor_runtime_path,
+        expected_extractor_runtime_sha256=expected_pr160_extractor_runtime_sha256,
+        source_runtime_sha256=source_runtime_sha,
+        expected_size_bytes=representation["r0_pr160_extractor_runtime_size_bytes"],
+    )
     if decoded_asset.checkpoint_sha256 != checkpoint_sha:
         raise NextR5FATarget125RuntimeError("Target FA asset / checkpoint binding drift")
     source_rows = source_context.get("rows")
@@ -998,9 +1131,8 @@ def prepare_next_r5_fa_target125_inputs(
             "sha256": _sha(expected_d108_context_file_sha256, "D108 context SHA256"),
         },
         "checkpoint_sha256": checkpoint_sha,
-        "d92_sealed_runtime_sha256": _sha(
-            identity.get("d92_sealed_runtime_sha256"), "D92 runtime SHA256"
-        ),
+        "d92_sealed_runtime_sha256": source_runtime_sha,
+        "pr160_extractor_runtime": dict(pr160_extractor),
         "fa_asset": {"path": str(asset), "sha256": _sha(expected_fa_asset_sha256, "FA asset SHA256")},
         "method_lock": {
             "path": str(lock_path),
@@ -1399,12 +1531,20 @@ def predict_next_r5_fa_target125_shard(
         expected_context_file_sha256=expected_context_file_sha256,
     )
     asset = _load_target_asset(plan)
+    pr160_extractor = _prepared_pr160_extractor_runtime(
+        plan=plan, source_plan=source_plan
+    )
     destination = _new_output_directory(output_dir, name=f"shard {shard_index}")
     frozen = matrix.freeze_next_r5_fa_target125_matrix()
     surface_by_key = {
         (surface.outer_id, surface.scene, surface.state): surface for surface in frozen.surfaces
     }
-    materializer = D108ZID160Materializer(source_plan=source_plan, device=device, support_batch_size=64)
+    materializer = D108ZID160Materializer(
+        source_plan=source_plan,
+        pr160_extractor_runtime=pr160_extractor,
+        device=device,
+        support_batch_size=64,
+    )
     executor = FAqKNNCoreExecutor(source_plan=source_plan, fa_asset=asset)
     shard_records: list[dict[str, Any]] = []
     outer_rows: list[dict[str, Any]] = []
