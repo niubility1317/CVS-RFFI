@@ -1,603 +1,278 @@
-# CVS 项目场景与数据协议
+# CVS项目场景与数据协议
 
-版本：2026-07-15
-适用范围：`E:\type10-7` 中 CVS-RFFI / CV-SincNet 的科研叙事、算法优化、实验矩阵、数据协议、自动化控制面、N607 运行设计、论文/汇报写作与结果解释。
+版本：2026-08-07
+协议模式：`p2_min_v1`
 
-## 1. 文件地位
+## 1. 文件职责
 
-本文件是 CVS 项目的场景与数据协议源文件。后续任何涉及 CVS 研究方向、实验设计、候选矩阵、数据划分、Stage2-A/B/C 解释、论文叙事、优化路线、自动化决策或指标口径的工作，都必须先读取并遵守本文件。
+本文件只定义CVS-RFFI/CV-SincNet的科学场景、数据集合、数据生成、Phase1/Phase2/Phase3边界、Stage2-A/B/C权限、Phase3部署期协同输入及可声明范围。
 
-`AGENTS.md` 仍然拥有工程安全、N607 访问、环境、报告、版本管理和远端同步规则的最高优先级。本文件拥有 CVS 科研场景、数据协议、任务边界和声明口径的优先级。若本文件与旧报告、旧记忆、旧 prompt、旧矩阵或历史 launcher 冲突，以本文件为准；若本文件与 `AGENTS.md` 冲突，以 `AGENTS.md` 为准，并在报告中记录冲突。
+本文件不保存活动性能目标、当前候选方法、实验矩阵、seed清单、epoch/参数/显存上限、优化路线、N607操作、Git流程或某次实验结论。这些内容分别属于独立目标文档、方法设计、实验报告和`AGENTS.md`。
 
-## 2. 项目主场景
+协议的Git公开正文见[PROJECT_PROTOCOL.md](github_publish/CVS-RFFI-repo/docs/PROJECT_PROTOCOL.md)；一次性Phase2数据builder/validator实现边界见[PHASE2_DATA_VALIDATION_APPENDIX.md](github_publish/CVS-RFFI-repo/docs/PHASE2_DATA_VALIDATION_APPENDIX.md)。本文件定义语义，后两份文档分别承担Git承载和实现说明，不额外创造数据权限。
 
-CVS 面向的主场景是：
+## 2. 项目场景
 
-> 天基射频指纹识别中的弱标注跨接收机域泛化与在轨跨域少样本适应。
+CVS的主场景是：
 
-这个场景由四个约束共同定义：
+> 天基射频指纹识别中的地面弱标注跨接收机域泛化、目标接收机域少样本适应与新类注册，以及部署阶段多接收节点协同的未知拒识、匿名实体关联和可信确权。
 
-1. **星上算力受限**：卫星端难以开展完整模型训练。项目采用“地面训练、天上部署”架构。地面端完成主干训练、模型选择、部署包、原型库和初始阈值；星上端只允许推理、原型更新、轻量校准、阈值微调或小 adapter 更新。
-2. **身份标签极少但域标签丰富**：广域接收能产生大量 raw IQ，但发射机身份标签难以可靠获得。地面训练阶段 TX 身份标注比例低于 `0.1`；无 TX 标签样本可以大量存在，并携带 receiver、day、rx_day、观测窗口、信道场景或其他 domain label。
-3. **星地信道破坏发射机特征**：星地链路中的残余 Doppler/CFO、相位噪声、低 SNR、低仰角、弱多径和弱 Rician/shadowed-Rician fading 会破坏 raw IQ 中的发射机相关细节。路径损耗和绝对 slant range 默认只用于 metadata/link budget，不得作为强幅度捷径直接主导 IQ；IQ imbalance 和接收链路差异归入 `R_d` 接收机响应，不再作为默认传播信道 `H_d` 扰动。clean view 不能代表部署成功。
-4. **Phase2主线是在轨目标域少样本适应与新类学习**：部署后，卫星接收机可能获得少量旧类带标签目标域样本，也可能获得少量新辐射源带标签目标域样本。旧类是地面训练已知 TX；新类必须是地面训练未见 TX。Phase2主线必须使用同一个目标卫星接收机域 `R_t` 中叠加简化LEO星地信道后的旧类样本和新类样本，完成目标域适应、旧类校准和新类学习。
+项目采用“地面训练、星上部署”。Phase1在地面学习开放世界就绪的发射机身份表征并封存deployment bundle；Phase2只使用目标接收机已经接收到的LEO弱信道IQ、合法support标签和该bundle，完成旧类域适应与新类注册；Phase3发生在部署阶段，每个接收节点先形成冻结的本地身份、域、质量和拒识证据，再由协同推理完成unknown拒识、anonymous entity关联和可信确权。Phase3不替代Phase2，也不得把unknown query直接转成Stage2-C support。
 
-项目不应被表述为普通 WiSig 少样本分类、普通全监督域泛化、纯 few-shot learning，或真实卫星部署已完成验证。
+Phase3是正式研究阶段，不是Phase2的同义改名。项目当前是否已经实现Phase3、是否完成真实在轨多星验证以及是否达到具体性能门槛，只能由对应Git实现、实验报告和完整artifact证明；阶段定义本身不构成完成声明。
 
-## 3. 核心科学问题
+WiSig/ManySig是地面代理数据，不是真实卫星数据；LEO弱信道叠加是物理启发的部署压力代理，不等价于真实在轨验证。
 
-CVS 要回答的问题是：
+### 2.1 N607实验承载角色
 
-> 在身份标签极少、无标签信号大量存在、接收机域变化强、星地信道破坏严重、部署后还会出现新辐射源的条件下，如何先在地面学习稳定的发射机身份表征，再在星上利用叠加LEO星地信道的少量目标域旧类样本和新类样本完成跨域适应、旧类校准和新类学习。
+N607是CVS-RFFI/CV-SincNet大规模训练、Phase2方法实验、125稳定性screen、独立确认矩阵和资源审计的主要计算与证据承载面。N607不是`R_s`或`R_t`中的接收机，不是source/target数据来源，不是卫星实体，也不构成clean/source访问、query拟合或其他Phase2协议的例外。所有代码与协议修改先在本地Git承载面完成并验证，再按`AGENTS.md`规定同步到N607；具体SSH、环境、GPU、launcher、日志和报告操作只由`AGENTS.md`及实验报告管理。
 
-该问题的核心矛盾是 identity-style conflict：发射机硬件指纹、接收机响应、日期漂移、采集域差异和星地信道扰动在 raw IQ 中纠缠。CVS 的价值不在于堆叠多个 DG trick，而在于用物理先验和身份-域双表征控制这种纠缠。
+## 3. 观测模型与集合
 
-未知类拒识、open-set / open-world 学习和 unknown FAR 优化自 2026-07-07 起下沉为 Phase3 备用项。它们可以作为安全扩展或诊断项保留，但不得作为 Phase2 主线成功门槛、Phase2 主线优化目标或论文主线结论。
-
-## 4. 符号与集合定义
-
-设接收 IQ 样本为 `x`，发射机身份为 `y`，域标签为 `d`。天基 RFFI 观测可抽象为：
+接收IQ抽象为：
 
 ```text
-x = R_d( H_d * T_y(s) ) + n
+x = R_d(H_d * T_y(s)) + n
 ```
 
-其中：
-
-- `T_y`：发射机硬件非理想性，是应保留的身份来源。
-- `H_d`：传播/星地信道，是域扰动来源。
-- `R_d`：接收机链路响应，是跨接收机偏移来源。
+- `T_y`：发射机硬件非理想性，是身份来源。
+- `H_d`：传播或星地信道，是域扰动。
+- `R_d`：接收机链路响应，是跨接收机偏移。
 - `n`：噪声。
 
 接收机集合：
 
 ```text
-R_s = {r_1, ..., r_m}        # 地面/source training receivers
-R_t = {r_a, ..., r_b}         # target receiver domain / deployment proxy domain
-intersection(R_t, R_s) = empty
-|R_t| >= 1
+R_s = source training receivers
+R_t = target receiver domain
+R_t ∩ R_s = ∅
 ```
-
-`R_t` 是第二阶段的 target receiver domain `R_t`。`R_t` and `R_s` must be disjoint；single `r_sat` is allowed but not mandatory。关键不是强制单接收机，而是保证 target receiver domain 不泄漏到地面训练 receiver 域，并且后续 target-old / target-new / unknown 的 support/query 权限都按 `R_t` 定义。
 
 发射机集合：
 
 ```text
-Y_old = ground-training transmitter set
-intersection(Y_new, Y_old) = empty
-intersection(Y_unknown, union(Y_old, Y_new)) = empty
+Y_old = Phase1已见发射机
+Y_new = Phase1未见、Phase2注册发射机
+Y_unknown = 未注册发射机
+Y_old ∩ Y_new = ∅
+Y_unknown ∩ (Y_old ∪ Y_new) = ∅
 ```
 
-严禁把与地面训练 TX 一致的发射机写成“新类”。如果一个 TX 在地面训练中出现过，它在部署阶段只能是旧类 target-old；它的问题是目标域校准或少样本域适应，不是新类注册。
+在Phase1出现过的TX在Phase2只能是旧类，不能重命名为新类。
 
-## 5. 地面训练阶段协议
+## 4. Phase1地面开放世界就绪表征协议
 
-地面训练阶段是 weakly labeled / semi-supervised source-domain DG，不是部署意义上的 few-shot learning。
-
-训练数据分两类：
+Phase1是weak-label/semi-supervised source-domain DG，不是部署few-shot：
 
 ```text
-L_s = {(x_i, y_i, d_i): receiver(x_i) in R_s}
-U_s = {(x_j, d_j): receiver(x_j) in R_s, y_j hidden or unavailable}
+L_s = {(x_i,y_i,d_i): receiver(x_i) ∈ R_s}
+U_s = {(x_j,d_j): receiver(x_j) ∈ R_s, y_j hidden or unavailable}
+rho_label = |L_s| / (|L_s| + |U_s|) ≤ 0.1
 ```
 
-身份标注比例：
+当前统一划分语义为相对source全池`0.07/0.63/0.30`：有TX标签训练集、无TX标签训练集、互斥source validation。三部分均不得包含`R_t`。需要研究标注率时，可使用`rho_label∈{0.005,0.01,0.02,0.05,0.1}`，但不得改变集合含义。
+
+Phase1可以使用source数据的clean与卫星信道增强视图训练；这不授予Phase2或Phase3部署期推理读取这些样本、样本级派生状态或训练期scorer结果的权限。Phase1具体模型、loss、训练轮数和选择规则属于方法/实验文档，不写入本协议。
+
+### 4.1 Phase1职责与输出
+
+Phase1只在地面训练，不执行多接收节点消息传递、anonymous track维护或真实运营身份确权。它优化底层射频特征提取器，使身份表征具备TX可分性、跨接收机稳定性、LEO弱信道鲁棒性、类内紧致和类间margin，并降低未见TX上的过度置信，为后续距离、能量、尾部分布或不确定性拒识提供可用几何。
+
+Phase1可以重新训练Sinc或时域前端、频域及PA分支、卷积层、`z_id`身份表征、`z_dom`域扰动表征、normalization、projection、fusion以及prototype、radius、energy和不确定性输出。具体启用哪些组件由独立方法设计冻结，本协议不要求一个候选同时堆叠全部机制。
+
+Phase1最终交付：
 
 ```text
-rho_label = |L_s| / (|L_s| + |U_s|) <= 0.1
+开放世界就绪的特征提取器
+已注册类基础几何
+类别半径／能量／尾部分布先验
+接收质量与域不确定性输出
+不可变deployment bundle
 ```
 
-推荐实验网格：
+这些输出只是Phase3本地证据提取的底层输入，不等于已经完成真实unknown拒识、多节点协同或可信确权。
+
+### 4.2 Source-only proxy unknown研发边界
+
+Phase1开放世界研发必须在source-only范围内建立TX身份互斥的开发集合：
 
 ```text
-rho_label in {0.005, 0.01, 0.02, 0.05, 0.1}
+source_known_train_tx
+source_known_validation_tx
+source_proxy_unknown_tx
 ```
 
-地面阶段不得使用 `R_t` 的任何样本、统计、BN 信息、阈值、prototype、adapter、伪标签、验证结果或 early stopping 信息。只要目标接收机域数据参与训练或模型选择，该结果就不再是 source-only DG，必须单独标为 DA / TTA / few-shot adaptation。
+`source_proxy_unknown_tx`的全部物理样本必须排除在任何训练池、训练view和模型选择回流之外。同一个已知TX的不同接收机、不同信道、不同日期或低信噪比view不能伪装成unknown。该TX级开发划分是现有source数据角色之上的开放世界研发约束；具体TX清单、seed和样本数属于独立目标或实验文档。
 
-无 TX 标签样本的使用边界：
+Phase1不得读取目标接收机query真值，不得使用Phase3后续确认的unknown作为训练数据，不得把source proxy unknown指标写成Phase3真实unknown结果，也不得输出真实运营身份或`registration_authorized`。候选晋级和性能门槛属于活动目标；协议层只要求所有晋级证据保持source-only、TX互斥和真实checkpoint可导出。
 
-- 若 `U_s` 的类别空间确认属于 `Y_old`，可使用闭集 semi-supervised learning，例如 Mean Teacher、FreeMatch/UPS、prototype agreement、class quota、receiver quota。
-- 若 `U_s` 可能混入 `Y_old` 外发射机，必须使用 open-set SSL / reject 机制；不能把所有无标签样本强制伪标成旧类。
-- 无标签样本的 domain label 可用于 `z_dom` 域监督、`z_id` receiver leakage 抑制、采样平衡、伪标签覆盖审计和 episode 组织。
+## 5. Phase2最小数据协议
 
-## 6. CVS 地面训练架构
+### 5.1 单物理样本单LEO接收观测
 
-CVS 地面阶段目标是学习跨域稳定的发射机身份空间：
+每个clean/raw物理IQ记录在进入Phase2前只允许进行一次随机LEO弱信道叠加：
 
 ```text
-raw IQ -> CV-SincNet/CVS -> z_id, z_dom
+received_i = H(c_i, seed_i)(clean_i)
+c_i ∈ {leo_clear_weak, leo_low_elev_weak, leo_rain_weak}
 ```
 
-- `z_id`：保留发射机硬件指纹，用于分类、原型、少样本注册和旧类校准。
-- `z_dom`：吸收 receiver、day、rx_day、channel、satellite-style nuisance，用于域诊断、域监督、adapter gate 和泄漏审计。
+对每个稳定`physical_sample_id`，只能绑定一个`c_i`、一个随机`seed_i`和一份固定`received_i`。禁止把同一clean/raw物理样本复制后分别叠加多种场景、多个随机信道实现或多个LEO状态，再作为多份support/query进入Phase2。
 
-推荐机制：
+三种LEO场景用于评估不同接收条件；同一matched实验切片中，三个场景的物理样本ID集合必须两两不交。单场景内support与query的物理样本ID也必须不交。
 
-| 模块 | 用途 | 边界 |
-|---|---|---|
-| 物理先验 CV-SincNet | 保留 raw IQ 中的硬件非理想线索 | 不应被替换成无物理解释的纯黑箱 backbone，除非作为 baseline |
-| `z_id/z_dom` 解耦 | 分离身份和域因素 | 不能让 `z_dom` 参与 TX prototype 距离 |
-| domain-supervised `z_dom` | 利用无 TX 标签样本的域标签 | 域标签不能替代 TX 标签 |
-| GRL / leakage probe | 抑制 `z_id` 中的接收机信息 | 过强会抹掉 TX identity，需报告 probe |
-| Mean Teacher / FreeMatch / UPS | 利用无 TX 标签样本 | 必须有不确定性、原型一致性和 quota |
-| Prototype agreement | 防止 logit shortcut | 原型更新需 class/receiver balance |
-| MLDG / episodic source split | 模拟未见接收机外推 | support/query 只能来自源域 |
-| satellite strong-view consistency | 提升星地压力鲁棒性 | 只能使用源域派生视图，不能使用目标卫星接收机 |
+### 5.2 K-shot与接收后计算view
 
-## 7. 在轨部署阶段协议
+`K-shot`表示每个已注册类别有K个互不重复的物理support样本。由同一固定接收IQ计算的均衡、裁剪、相位/幅度归一化、FFT或其他确定性/随机数学表征仍属于同一个物理样本，不增加K。
 
-在轨阶段面对目标接收机域 `R_t`。`R_t` 可以是一个接收机，也可以是多个接收机组成的 deployment proxy domain；Phase2 target-old 和 target-new 的 support/query 都必须来自 `R_t`，并处于相同定义的 satellite/LEO target view 下。若启用 Phase3 open-set 备用项，unknown query 也必须来自同一个 `R_t`，但它不得反向改写 Phase2 主线门槛。
+接收后计算view必须满足：
 
-Phase2 主线样本选择的核心约束：target receiver domain 必须与地面训练接收机域不同，同时 must include target-old samples from `Y_old` and target-new samples from `Y_new`；这些 support/query 样本必须按简化LEO星地信道目标视图构造和报告。其中 target-old 是与地面训练发射机类别相同的旧类，target-new 是与训练发射机类别不同且不在 `Y_old` 中的新类。若 `R_t` 中缺少旧类或新类样本，不能声明完整 Phase2 主线/Stage2-C；相关 row 必须降级为 Stage2-A/B、`LOCAL_DATASET_EXTENSION_REQUIRED`、`LOCAL_PROTOCOL_REPAIR_REQUIRED` 或 `NON_LAUNCH_DIAGNOSTIC`。
+- 输入只能是固定、已封存的`received_i`；
+- 不得调用LEO信道模拟器，不得恢复clean参考，不得产生第二个LEO观测；
+- support view可以参与适配、注册和状态更新；
+- query view只用于该query的逐样本推理，不得更新模型、原型、阈值、温度、门控、候选选择、早停或回滚状态。
 
-K-shot 设置不再是硬枚举。每个 Stage2-B/C run 必须显式记录 `K`，且 `K` 必须为正整数。
+### 5.3 Phase2允许输入
+
+Phase2运行时只允许读取：
+
+1. 不可变Phase1 deployment bundle；
+2. 已一次验证并封存的Phase2固定接收IQ capsule；
+3. 当前row的support标签、注册类别表和不含query真值的split；
+4. 与数据无关的算法配置。
+
+Phase2不得读取clean/raw/source样本、样本级source feature、source cache、source replay、clean派生logit/prototype/statistics、dataset构建路径或能够影响决策的外部source状态。
+
+唯一例外是：在任何target访问前，由Phase1多样本聚合并与checkpoint共同封存的只读int8域×类模型知识及量化尺度。该组件不得包含raw IQ、单样本feature、全精度exemplar、source cache、可逆样本索引或可独立替换sidecar；Phase2不得更新它。具体量化布局和半径/偏移编码属于bundle实现规范，不属于数据场景协议。
+
+#### 5.3.1 可选地面旧类压缩多原型组件
+
+当前研发默认继续使用原有Phase1 bundle输入面。地面旧类压缩多原型是默认关闭的未来候选项，不因本协议列出而自动向现有方法、bundle或历史实验开放。只有新的Phase1 bundle与method lock同时显式声明`ground_old_multiprototype_enabled=true`时，Phase2才可读取该组件。
+
+启用后，bundle可为每个`Y_old`类别携带不超过3个int8压缩原型及其量化尺度、粗粒度混合权重和聚合半径：
 
 ```text
-K >= 1
-recommended anchor K in {1, 2, 5, 10, 15, 20, 50}
+1 <= M_c <= 3, c in Y_old
+ground_old_prototype[c,m] = Aggregate({z_i})
+physical_sample_count({z_i}) >= 2
 ```
 
-报告口径：
+每个原型必须由至少2个互不重复的Phase1地面物理样本聚合，不能是单个clean样本、单样本feature或exemplar的改名形式。原型数量、聚合算法、量化位宽、尺度、权重和半径规则必须在任何target访问前仅由Phase1数据固定并与checkpoint共同封存；不得使用target support、target query、125结果或其它Phase2反馈选择该格式。
 
-- `{1,2,5,10,15,20,50}` 是推荐锚点，用于跨 run 对齐和画主曲线，不是唯一允许取值。
-- 自动化可选择 `3/4/8/12/16/25/30` 等中间值或任务驱动值，但必须记录 `k_shot`、选择理由和报告分层。
-- `K<=20` 可作为 few-shot / low-shot 区间报告。
-- `K>20` 应写作 higher-shot、medium-shot 或 saturation point，不能把所有结论都笼统称为 strict few-shot。
+组件只能覆盖`Y_old`，不得预置`Y_new`或`Y_unknown`知识；不得包含raw/clean IQ、成员ID、样本索引、精确成员清单、可逆聚类归属、样本级logit/cache或独立可替换sidecar。不同类别必须采用标签置换等价的同一构造和打分聚合规则；当各类原型数不同时，类别分数必须进行类内数量归一化，不能因原型更多获得裸max或累加优势。
 
-部署阶段默认冻结：
+这些地面原型是只读Phase1模型知识，不是target接收观测，不增加K，不生成第二个LEO view，也不能替代Stage2-B/C的合法target support。启用、停用或更换该组件只改变`bundle_id`；只要固定接收IQ、物理ID、receiver/TX集合、场景、K、support/query划分和schema不变，就不得触发`capsule_id/split_id`数据重验。缺少合规组件时必须回退到原有路线，不能在Phase2运行时回读地面样本重建它。
+
+### 5.4 query只用于测试
+
+Phase2 predictor的状态只能由Phase1 bundle和注册support决定。每个query必须独立面对全部已注册类别；禁止访问或利用：
+
+- query真值以及真实old/new/unknown角色；
+- 真实query batch类别集合或各类数量；
+- 每类query配额、标签排序或分块；
+- Hungarian、optimal transport、global quota或其他跨query全局重排。
+
+预测必须先形成不可变预测artifact；之后独立scorer才可按opaque query ID连接真值并计算指标。scorer输出不得回流到适配、注册、阈值、选择、排序或重跑决策。
+
+### 5.5 一次验证、跨方法复用
+
+Phase2数据builder完成唯一观测、物理ID互斥、support/query互斥、接收机/TX集合和禁止成员检查后，输出：
 
 ```text
-freeze:
-  CV-SincNet backbone
-  z_id extractor
-  source classifier or source prototype bank
-
-update:
-  target-old prototype shrinkage
-  target-new prototype
-  temperature / bias / threshold
-  small adapter or BN affine only when explicitly allowed
+protocol_schema = p2_min_v1
+phase2_data_status = VALIDATED_ONCE
+capsule_id = <content identity>
+split_id = <receiver/TX/scenario/K/support-query identity>
+single_leo_observation = true
+clean_source_runtime_access = false
+query_fit_access = false
+query_decision_policy = per_sample_all_registered_classes
 ```
 
-星上禁止默认采用 full-model fine-tuning、完整 MAML inner loop、无门控伪标签重放、强在线 GRL/DANN、大型生成模型增强、无回滚持续自训练。
+研发和评估流程只核对以上最小句柄并直接运行。只有以下数据事实变化时才重做数据验证：固定接收IQ字节、物理ID、receiver/TX集合、scenario分配、K、support/query划分或协议schema。
 
-Phase2 主线的优化目标是 target-old 域适应、target-new 新类学习和二者的同 row 平衡。open-set rejection、unknown FAR、FPR95、AUROC、Weibull/OpenMax类拒识门控和 unknown query 压力测试属于 Phase3 备用项；Phase2 可以保留相关字段作为 diagnostic/safety metadata，但不得把它们列为主线必达指标或用低 unknown FAR 掩盖旧类/新类学习不足。
+候选方法、adapter、超参数、epoch、原型更新规则、method lock、checkpoint推理状态、资源预算或报告格式变化，不得使数据capsule失效，也不得触发重新追溯clean/source构建过程。若验证失败，只修复直接失败的数据项；其他`VALIDATED_ONCE`切片继续实验。
 
-### 7.1 Phase2 LEO_weak-only运行时不可达约束（2026-07-15）
+hash、签名、allowlist、访问账本和pre-open检查由数据builder/validator一次性自动完成，详见Git承载面的`docs/PHASE2_DATA_VALIDATION_APPENDIX.md`。它们是实现证据，不在每个方法目标或实验报告中重复展开。
 
-整个Phase2链路必须对clean物理不可达，而不只是最终指标不使用clean。Phase2只接收边界外Phase1 packager生成的密封推理包；raw dataset、build spec、legacy dataset loader、clean cache、clean-derived feature/logit/prototype/normalization、truth sidecar及其路径不得进入推理包、candidate lock或predict plan。所有target-old、target-new及Phase3-backup样本必须在进入Phase2前已经叠加允许的`leo_*_weak`信道。
+## 6. Stage2阶段权限
 
-每个launchable row必须记录`phase2_sample_view_policy=leo_weak_only_no_clean_access`、`clean_sample_access=false`、`clean_derived_signal_access=false`、`phase2_clean_dataset_reachable=false`、`phase2_clean_cache_reachable=false`、`phase2_clean_control_flow_reachable=false`和`phase2_pretrained_artifact_policy=sealed_phase1_checkpoint_only`。三个`*_reachable=false`不能靠manifest自声明证明，必须配套密封包detached digest、包内文件与NPZ成员精确allowlist、相对路径和symlink/非普通文件拒绝、同一文件描述符上的pre-open审计、推理进程文件访问账本，以及操作系统级只读挂载/容器/独立UID或等价隔离记录。若只能证明逻辑未使用而没有运行时隔离证据，必须标为`PHASE2_RUNTIME_ISOLATION_UNVERIFIED`或`LOCAL_PROTOCOL_REPAIR_REQUIRED`，不得填写三个false。历史artifact缺证据与已确认发生clean访问是两种状态；后者才标记为`PROTOCOL_INVALID_FOR_PHASE2`。
+| 阶段 | 可用target信息 | 任务 | 不可声明 |
+|---|---|---|---|
+| Stage2-A | 无target TX标签；可有无标签LEO接收IQ | zero-label target-domain reference/diagnostic | 旧类few-shot适应、新类identity accuracy |
+| Stage2-B | `Y_old`的K-shot target support标签 | 旧类目标域适应与校准 | 新类注册性能 |
+| Stage2-C | `Y_old∪Y_new`的K-shot target support标签 | 在同一目标域同时完成旧类适应和新类注册 | 缺少任一侧时的完整Stage2-C成功 |
+| Phase3 | 多接收节点冻结本地证据、未注册类观测及合法外部确权上下文 | 部署期unknown拒识、anonymous entity关联、可信确权与注册授权 | 直接用unknown query训练/更新Phase2，或以unknown结果替代旧类/新类结果 |
 
-### 7.2 target query逐样本自主决策硬约束（2026-07-15）
+Stage2-C中的旧类适应与新类注册是同等任务；旧类注册前/后必须来自同一row、同一旧类query和同一推理规则。具体指标门槛与确认矩阵属于独立目标文档。
 
-对任一待识别target query，系统在决策前不知道它属于`Y_old`、已注册`Y_new`还是Phase3中的`Y_unknown`。因此，Phase2与Phase3的正式训练后评估、候选优化、消融、模型选择、晋升、论文主表和部署声明统一采用以下硬约束：
+以上Phase2数据权限、query访问和逐样本决策约束只用于Stage2主方法及其内部候选的合法性与晋级判定，不限制为论文复现和性能比较而运行的外部对比方法。CSIL、MoPC-HR等对比方法可按原论文完整训练/增量流程访问其所需的base/source数据、历史统计、训练批次和评估流程，也不受Stage2主方法资源预算约束。正式对比方法默认必须继承的项目数据条件是：凡作为新类注册或新类评测输入的样本均须叠加并明确记录LEO星地信道；其他`p2_min_v1`限制不作为对比方法结果有效性的门禁。经用户显式要求，可以另跑仅用于归因的matched无LEO新类诊断：保持方法、物理样本ID、support/query划分、K-shot、seed和旧类评测条件不变，只把新类support/query换成同一物理记录的未叠加IQ。该结果必须标为`DIAGNOSTIC_NEW_CLASS_NO_LEO_NON_FORMAL`，与正式LEO结果隔离，不能用于CVS卫星场景性能声明、方法晋级或Stage2协议有效性证明。对比结果必须标明其数据与训练权限，不能反向用作Stage2主方法满足协议的证据。
 
-- 每个query必须独立面对同一套当前已注册类别和允许的reject/defer机制；不得使用query真实old/new/unknown角色缩小候选类别集合。
-- 禁止读取或推断自评测真值构造的整批old/new类别组成或数量、每类query数量、每类quota、query排列顺序或标签分块边界；禁止据此进行Hungarian、最优传输、批量重排或等价的全局配额分配。合法的当前注册类别清单及`registered_class_count`不属于真实query batch类别数量Oracle。
-- query batch可以用于向量化计算，但不得利用评测构造提供的真实角色、真实batch类别组成或数量、每类配额、排列顺序或标签分块边界改变任何单样本决策。
-- support标签和support中的old/new注册身份可以用于enrollment；该权限不意味着query角色已知。正式推理必须在所有已注册旧类与新类之间执行同一逐样本决策。
-- 历史role/quota Oracle artifact可以原样封存用于说明信息泄漏上界，但统一标记为`PROTOCOL_INVALID_FOR_DEPLOYMENT`。自本约束生效后不得生成新的role/quota Oracle候选，不得用于超参数选择、性能门槛、方法排名、统计检验、论文主表或部署声明。
+floor是面向全部实际注册类的通用下界评价，不是预选难类清单。任何算法、loss、校准或更新规则必须对类标签置换保持同一形式；禁止按具体TX/class ID设置白名单、专属分支、专属权重、专属阈值或专属超参数。允许从各类合法support自适应估计半径、不确定度或权重，但所有类必须使用同一公式和同一超参数生成规则。
 
-本禁令只针对部署阶段target query决策，不影响Phase1源域半监督训练中基于已定义源数据池进行的伪标签class/receiver quota审计或采样平衡。
+## 7. Phase3部署期多接收节点协同协议
 
-每个launchable row必须声明`phase2_query_decision_policy=per_sample_all_registered_classes`，并将`phase2_query_role_oracle_access`、`phase2_query_true_batch_class_count_access`、`phase2_query_class_quota_access`和`phase2_query_batch_global_assignment`设为`false`。旧字段`phase2_query_class_count_access`已弃用，不能替代新字段。正式流程必须拆为Phase2外sealer、无query真值predictor、密封预测artifact和独立scorer；query ID必须opaque，predictor不得接收truth sidecar路径，main及所有诊断head都必须先对全部query预测。预测artifact冻结并校验hash后，scorer才能按opaque ID连接真值并计算指标，评分信号不得回流预测或候选选择。
+### 7.1 单节点本地证据
 
-## 8. WiSig / ManySig 数据协议
-
-### 8.1 数据集角色
-
-- 地面训练使用 WiSig/ManySig 中的源接收机域数据。
-- 在轨推理少样本阶段使用同一数据体系下的目标卫星接收机代理域，或明确保留的其他 TX 子集。
-- WiSig/ManySig 是 terrestrial proxy benchmark / ground-accessible source domain family，不是真实卫星训练集。
-- satellite-channel augmentation 和 satellite stress 是 physics-informed deployment stress，不是真实在轨 IQ 验证。
-
-### 8.2 接收机划分
-
-主协议必须使用与 source training receivers 不相交的目标接收机域：
+每个接收节点部署同一冻结或合法适配后的Phase1特征提取器。节点`m`只根据当前已接收IQ形成：
 
 ```text
-source receivers: R_s
-target receiver domain: R_t
-intersection(R_t, R_s) = empty
-|R_t| >= 1
+z_id^(m)       发射机身份表征
+z_dom^(m)      接收机／信道域表征
+q^(m)          观测质量与可靠性
+d_class^(m)    到各注册身份的距离
+e_unknown^(m)  本地未知能量或拒识分数
+p_local^(m)    本地已注册身份预测
 ```
 
-示例：
+本地证据必须先成为不可变artifact，之后才能进入协同推理。单节点决策只能是`registered identity`、`unknown`或`defer`。本地预测不得读取query真值、真实old/new/unknown角色、其他query的真实类别构成、类别配额或独立scorer结果。
+
+### 7.2 协同输入与决策边界
+
+Phase3可以融合各节点冻结的本地证据，以及与当前观测合法绑定的卫星可见性、时间窗、频率、波束、轨迹、位置约束和历史anonymous track。融合位置可以在星间链路、星座协同节点或地面网关，但必须在报告中明确。
+
+正式协同方法必须显式处理接收机响应差异、传播/SNR差异、节点缺失或延迟、本地预测冲突、同一发射事件的多节点观测、跨过境匿名实体关联以及同源或高度相关证据的重复计权。简单平均、多数投票和选择最高置信节点只能作为基线，不能单独代表完整Phase3方法。
+
+任何registered query被reject或defer，都必须在对应已注册类准确率中按错误计数。Phase3不得通过全部拒绝规避身份识别责任。
+
+### 7.3 事件、接收与shot计数
+
+Phase3区分物理发射事件与节点接收记录：
 
 ```text
-source receivers: rx0-rx6
-target receiver domain: rx7-rx11
+一个emission_event_id
+多个satellite_reception_id
+仍然只计为一个shot
 ```
 
-`R_t` 可以只包含一个 receiver，例如 `{rx7}`，也可以包含多个 receiver，例如 `{rx7, rx8, rx9, rx10, rx11}`。自动化不得再以 exactly-one `r_sat` 作为 launchability gate；它必须检查 `R_t` 是否与 `R_s` disjoint，并检查 `R_t` 中是否存在目标阶段需要的 old/new/unknown 样本覆盖。多接收机目标域的结果必须报告为 target receiver domain / deployment proxy domain，不再写成“单星接收机”证据。
+只有能够证明来自同一物理发射事件的多节点接收记录，才能作为严格same-event协同证据。不同时间、不同物理发射或无法建立事件绑定的记录不得拼接成一个K-shot样本。若现有数据不是同步多接收机采集，必须标为“多接收节点代理协同”，不得声称真实在轨同步多星验证。
 
-### 8.3 发射机划分
+### 7.4 Anonymous entity、可信确权与Stage2-C交接
 
-旧类：
+被拒识的观测只能先关联为`anonymous_entity_id`，该ID表示多个观测可能来自同一物理射频链，不是最终语义身份。可信确权至少输出候选物理身份、证据来源、证据独立性、冲突标志、标签置信度、有效期和`registration_authorized`。
+
+只有`registration_authorized=true`后，系统才能为获批身份重新采集K个独立物理发射事件作为新类support。历史unknown query保持为不可变检测证据，不得追溯改成support。新support按`p2_min_v1`形成新的`split_id`并完成对应数据验证后，交由Stage2-C执行旧类适应、新类注册、全部已注册类统一竞争以及遗忘/floor评价。
+
+### 7.5 多节点数量与因果归因
+
+活动目标可以在独立目标文档中冻结`N_sat`、receiver、seed、K和新类规模。协议要求至少保留`N_sat=1`单节点基线，并在任何协同收益声明中报告具体节点数、节点子集选择规则、缺失节点处理和证据相关性控制。
+
+同时改变Phase1底层表征和Phase3协同方法时，必须使用同一输入口径分别评价：
 
 ```text
-Y_old:
-  used in ground training
-  used for target-old support/query on R_t
+A：原Phase1基座+单节点
+B：新Phase1特征提取器+单节点
+C：原Phase1基座+多节点协同
+D：新Phase1特征提取器+多节点协同
 ```
 
-新类：
+由`B-A`估计底层表征贡献，由`C-A`估计协同推理贡献，由`D-B-C+A`估计交互贡献。不得只比较A和D后把全部收益归因于协同推理。
 
-```text
-Y_new:
-  not used in ground training
-  used for Stage2-C seen-new support/query on R_t
-```
+## 8. 数据集角色与声明边界
 
-未知类：
+- WiSig/ManySig可作为terrestrial proxy benchmark、source receiver family或目标接收机代理域。
+- `R_t`必须与`R_s`不相交；当现有合法目标接收机覆盖不足时，可使用未进入Phase1的其他接收机/数据子集，但仍须满足集合与唯一观测协议。
+- target-old与target-new必须来自同一个已定义目标接收机域和同一LEO弱信道场景口径。
+- 具体文件路径、样本数量、receiver/TX清单和hash属于数据资产登记表，不写入场景协议。
 
-```text
-Y_unknown:
-  not used in ground training
-  not used as Stage2-C seen-new support
-  used only for rejection query on R_t
-```
-
-`Y_unknown` 是 Phase3 open-set 备用项使用的集合。Phase2 主线只要求 `Y_old` 与 `Y_new` 的合法 target-domain support/query；若某个 Phase2 row 同时携带 `Y_unknown`，必须标明 unknown query 为 evaluation-only / Phase3-backup metadata，不能参与 Phase2 阈值拟合、adapter 更新、主排序或成功声明。
-
-若当前 ManySig 仅提供六个旧类 TX，可采用：
-
-```text
-Y_old = {0,1,2,3,4,5}
-Y_new = held-out non-ManySig TX set from another WiSig subset
-Y_unknown = held-out non-ManySig TX set disjoint from Y_new
-```
-
-如果本地数据暂时不能提供非旧类 TX，Stage2-C 不能声明新类识别，也不能作为 Phase2 主线完成；只能做 Stage2-A/B，或标为 `LOCAL_DATASET_EXTENSION_REQUIRED`。
-
-### 8.4 已确认的 Phase2 WiSig 候选样本池
-
-当前 N607 已确认存在以下原始 WiSig compact subsets：
-
-```text
-/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl
-/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManyTx.pkl
-/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManyRx.pkl
-/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/SingleDay.pkl
-```
-
-本地若只存在 synthetic smoke features，不能作为部署证据；真实 Phase2 样本选择应以 N607 上的 pkl 为准，或先把真实 pkl 显式同步/登记到本地。
-
-当前主候选池定义如下：
-
-```text
-Y_old = {14-10, 14-7, 20-15, 20-19, 6-15, 8-20}  # ManySig old/source TX
-R_s = {1-1, 1-19, 14-7, 18-2, 19-2, 2-1, 2-19}  # ManySig source receivers
-```
-
-Phase2 matrix generator should first choose target receiver domains from this confirmed pool before proposing new dataset routes. 当前 Phase2 主线优先构造 target-old + target-new 的简化LEO目标域少样本适应/新类学习 row：
-
-| target receiver label in `R_t` | ManySig target index | ManyTx receiver index | target-old source | target-new / unknown source | confirmed non-old TX count in ManyTx | confirmed non-old eq1 samples |
-|---|---:|---:|---|---|---:|---:|
-| `20-1` | 7 | 10 | ManySig / `Y_old` | ManyTx / non-`Y_old` TX | 144 | 27,638 |
-| `3-19` | 8 | 12 | ManySig / `Y_old` | ManyTx / non-`Y_old` TX | 143 | 26,887 |
-| `7-14` | 9 | 13 | ManySig / `Y_old` | ManyTx / non-`Y_old` TX | 137 | 26,445 |
-| `7-7` | 10 | 14 | ManySig / `Y_old` | ManyTx / non-`Y_old` TX | 142 | 26,868 |
-| `8-8` | 11 | 17 | ManySig / `Y_old` | ManyTx / non-`Y_old` TX | 140 | 26,474 |
-
-这些候选满足 Phase2 主线样本选择核心条件：`R_t` 与 `R_s` 不相交，`R_t` 中存在与训练 TX 相同的 target-old 样本，也存在与训练 TX 不同的 target-new 样本。矩阵生成时必须按 receiver label 对齐不同 pkl 的 `rx_list`，不能把 ManySig 的 index 直接当成 ManyTx 的 index。
-
-`ManyTx` 是当前 Stage2-C target-new 的主来源；若进入 Phase3，`ManyTx` 也可为 `Y_unknown` 提供备用 open-set 样本。`ManyRx` 可作为 receiver-rich 或低新类数量 control；`SingleDay` 可作为 single-day smoke/control，但它缺少 `3-19` target receiver，且只有单日样本。若使用 `ManyRx` 或 `SingleDay` 替代 `ManyTx`，矩阵必须显式标明这是 control/sensitivity 设计，而不是默认主线 Stage2-C 候选。
-
-生成 Stage2-C 时，`ManyTx` 中 non-`Y_old` TX 必须提供合法的 `Y_new` target-new support/query。若同一 row 额外携带 Phase3 open-set 备用信息，则 `Y_new` 与 `Y_unknown` 必须互斥；不得把同一个 TX 同时用于 seen-new enrollment 和 unknown rejection query。每个 Phase2 主线 row 必须记录 `target_receiver_ids`、`source_receiver_ids`、`target_old_tx_ids`、`target_new_tx_ids`、support/query 划分、`K`、satellite/LEO view 和阈值选择 label scope；Phase3 备用 row 还必须记录 `target_unknown_tx_ids` 和 unknown query evaluation-only 范围。
-
-`ManyTx` 行的 `target_new_tx_ids` 以及对应 `target_new_tx_labels` 必须是从 `ManyTx.pkl` 的 `tx_list` 解析出来的真实 TX label（例如 `1-16`、`10-1`），不得使用 synthetic numeric IDs、rank 占位或“稍后解析”的说明文字作为 launchable 字段。Phase3 备用 row 的 `unknown_tx_ids` / `unknown_tx_labels` 也必须遵守同一真实标签规则。矩阵生成器在写入 launchable row 前必须按目标 receiver label 预筛每个 `Y_new` TX 的可用样本数，确认满足该 row 的 support/query 需求；若启用 Phase3，则也必须预筛 `Y_unknown`。只记录 aggregate non-old TX count 或 aggregate samples 不足以证明 launchable。若任何 TX 与 `Y_old` 重叠、无法按 `ManyTx.tx_list` 解析、在目标 receiver 下样本不足或过滤后会产生空 tensor，该 row 必须标为 `LOCAL_PROTOCOL_REPAIR_REQUIRED` / `LOCAL_DATASET_EXTENSION_REQUIRED` / `NON_LAUNCH_DIAGNOSTIC`，不得发往 N607 runner。
-
-### 8.5 星地信道视图
-
-deployment support/query 必须按 satellite/LEO 视图报告。自 2026-06-24 起，主协议采用简化 LEO 残余信道版本：LEO-only 几何，高度、仰角和 slant range 只用于 metadata/link budget；完整 Doppler 视为已由星历/同步补偿，IQ 上只叠加 residual Doppler/CFO；默认使用 mild phase noise、flat/Rician fading、AWGN/SNR、RMS/AGC normalization，并加入弱多径。低仰角或边界场景可以使用弱 shadowed-Rician，但不得默认启用 severe LOO、强风暴多径、MEO/GEO 混合或未补偿完整 Doppler。
-
-推荐主报告视图：
-
-```text
-target_channel_view in {
-  leo_clear_weak,
-  leo_low_elev_weak,
-  leo_rain_weak
-}
-```
-
-自2026-07-13起，CVS后续Phase1/Phase2训练验证、候选比较、checkpoint终局评估和主报告中的默认测试增强统一使用上述三个`leo_*_weak`视图。训练和测试可以使用不同随机种子、不同样本扰动和独立固定评估缓存，但测试场景族不得再默认切换到`legacy_full`。任何launcher、runner或评估脚本若未显式指定测试场景，也必须解析为：
-
-```text
-eval_sat_scenarios = leo_clear_weak,leo_low_elev_weak,leo_rain_weak
-```
-
-自2026-07-14起，星上轻量化中的TTA视图数量属于同一简化LEO物理观测之后的接收侧推理机制，不构成新的信道场景，也不要求正式协议固定为5-view。允许在完全相同的物理样本、scenario、satellite seed、support/query划分、checkpoint和adapter下比较`none`、`rx_shift3`、`rx_cfo3`与`rx_light5`；其中各策略分别执行1、3、3、5次backbone前向及同数量的FFT辅助提取。不同TTA策略不得重新训练不同adapter、重新采样不同LEO扰动或混入clean view后再归因于view数量。正式晋升必须使用逐样本可部署决策，显式报告view count、backbone forward count、FFT count以及相对5-view的`old_acc`、`seen_new_acc`、`H_old_new`变化。历史legacy角色/类别配额Oracle只允许作为`PROTOCOL_INVALID_FOR_DEPLOYMENT`封存artifact，不得生成新候选或参与任何正式比较。
-
-自2026-07-15起，允许把`rx_light5`作为地面多View教师或星上逐样本自适应TTA候选进行压缩。地面蒸馏必须保留5个View的逐View特征、logit或一致性监督，不能只用5-view均值证明等价；可导出不超过50k参数、最终持久状态不超过256KB的FiLM、低秩或稀疏关键层补丁。星上自适应TTA必须先执行base view，并只依据当前单个query的margin、entropy、View分歧等部署时可得量决定是否追加`rx_shift3`或完整`rx_light5`；门限只能由source validation或注册support确定，禁止使用query标签、真实old/new/unknown角色、整批类别比例、每类quota、query排序或Hungarian分配。正式结果必须同时报告平均与P95 backbone forward count、1/3/5-view触发率、最坏5-view上界和相同row的性能指标；若默认路径仍固定执行5次backbone前向，则不得声称已完成多View计算压缩。
-
-经用户明确授权，可另设`performance-relaxed`档，在不放宽无角色Oracle、无类别配额、无query拟合、无dense query图和逐样本决策的前提下，把首选档的参数、适配轮数/步数、持久状态或平均View计算提高50%–100%；绝对上限为100k参数、40epoch、512KB和5次backbone前向。放宽档必须逐项报告实际增幅，并与首选档及identity-only单qKNN做同row Pareto比较。
-
-自2026-07-13起，CVS与外部方法的正式对比实验中，所有进入论文主表、主图、统计检验或方法排序的测试样本都必须实际叠加上述简化LEO星地信道之一；不得把未叠加星地信道的clean测试混入正式主结果。clean只允许作为单独control/reference，必须与deployment-primary结果分表。若测试入口没有记录scenario、satellite seed或增强是否实际启用，该测试结果视为artifact-incomplete，不得形成论文结论。
-
-每个正式实验的最终测试artifact必须同时保留sample-level score table和分组详细统计。分组至少包含逐receiver、逐transmitter、receiver x transmitter以及receiver x transmitter x day四个层级；每组必须记录sample count、correct count、accuracy和稀疏confusion明细。Phase2还必须保留target-old/target-new角色、support/query sample ID和support/query overlap检查。只有overall accuracy而没有逐接收机/逐发射机详细结果的实验，不满足CVS发表证据要求。
-
-该约束用于统一项目主指标口径并避免把不同星地信道实现的结果直接横向比较。由于训练与测试使用同一简化LEO场景族，主报告必须明确写作`leo_weak`族内独立随机压力鲁棒性，不得把它扩大解释为跨信道模型、跨实现或真实在轨泛化。需要检验跨增强族能力时，旧场景必须以显式`legacy stress/control`附加评估运行，单列结果，不得参与默认checkpoint选择、候选promotion或deployment-primary成功门槛。
-
-旧场景 `clear_leo`、`low_elev_leo`、`rain_leo`、`storm_mp`、`mixed_orbit` 保留为 legacy stress/control。`storm_mp` 和 `mixed_orbit` 只能作为 diagnostic/sensitivity，不再作为默认 deployment-primary 成功门槛。
-
-clean view 是 control/reference。不得把 clean view 成功提升为 satellite/LEO deployment success。
-
-## 9. Stage2-A/B/C 协议
-
-Stage2-A/B/C 自 2026-07-07 起共同归入 Phase2 deployment adaptation 主线。Phase2 主线的中心是：在叠加简化LEO星地信道的目标接收机域 `R_t` 上，利用少量 target-old 和 target-new 样本完成跨域适应、旧类校准和新类学习。unknown/open-set 拒识从 Phase2 主线中移出，作为 Phase3 备用项管理。
-
-### 9.1 Stage2-A：Zero-label target-domain LEO reference
-
-目的：无目标标签时建立目标接收机域简化LEO视图下的旧类识别和非旧类观测参考。Stage2-A 是 Phase2 前置参考/安全基线，不是新类学习完成项，也不是 open-set 主线。
-
-```text
-support:
-  empty
-
-query on R_t:
-  target-old query from Y_old
-  target-new query from Y_new for non-old reference only
-  optional Phase3-backup unknown query from Y_unknown, evaluation-only
-```
-
-允许声明：
-
-- old-class target recognition。
-- target-new is non-old reference / not-yet-enrolled reference。
-- optional Phase3-backup unknown diagnostic，必须标为非Phase2主线。
-
-禁止声明：
-
-- new identity recognition。
-- target-label threshold fitting。
-- seen-new accuracy。
-- Phase2 open-set success。
-
-Stage2-A 是目标域LEO参考底线，不是新类注册，也不是 Phase3 open-set 结果。
-
-### 9.2 Stage2-B：Target-old few-shot domain adaptation
-
-目的：在同一个卫星接收机域和简化LEO目标视图下，用少量旧类标注样本进行目标域适应和旧类校准。
-
-```text
-support on R_t:
-  K shots per old TX from Y_old
-
-query on R_t:
-  held-out target-old query from Y_old
-  target-new query from Y_new as not-yet-enrolled reference
-  optional Phase3-backup unknown query from Y_unknown, evaluation-only
-```
-
-允许声明：
-
-- target-old full accuracy / accepted accuracy。
-- old_acc_delta_pp。
-- old retention。
-- rescue / harm / net_gain。
-- target-old adaptation under LEO target view。
-- optional Phase3-backup unknown diagnostic，不作为 Phase2 主线成败。
-
-禁止声明：
-
-- seen-new identity accuracy。
-- target-new support 使用。
-- unknown query 参与阈值拟合。
-- 把 low unknown FAR 或 high AUROC 写成 Phase2 主线成功。
-
-### 9.3 Stage2-C：Old + seen-new enrollment
-
-目的：在同一个卫星接收机域和简化LEO目标视图下，同时利用旧类 support 校准和新类 support 注册。这是 Phase2 当前主线目标。
-
-```text
-support on R_t:
-  K shots per old TX from Y_old
-  K shots per seen-new TX from Y_new
-
-query on R_t:
-  held-out target-old query from Y_old
-  held-out seen-new query from Y_new
-  optional Phase3-backup unknown query from Y_unknown, evaluation-only
-```
-
-允许声明：
-
-- target-old performance。
-- seen-new identity accuracy。
-- `H_old_new`。
-- output semantics: old label, seen-new label, uncertain, defer；若启用 Phase3 备用项，可额外报告 reject。
-
-禁止声明：
-
-- 把 `Y_unknown` 当 seen-new 识别。
-- 用 unknown query 调阈值。
-- 把 clean-view success 写成 deployment success。
-- 把 Phase3 open-set 指标写成 Phase2 主线门槛。
-
-Stage2-C 是 Phase2 主线目标，但只有在 `Y_new` 与 `Y_old` 不相交、`R_t` 与 `R_s` 不相交、target-old 与 target-new support/query 都来自 `R_t`，并且这些样本按 satellite/LEO target view 构造时才成立。
-
-### 9.4 Phase3：Open-set backup
-
-Phase3 是备用项，不是当前 Phase2 主线。只有在 Phase2 已完成或用户明确要求 open-set 安全扩展时，才把 unknown/open-set 学习作为正式优化对象。
-
-Phase3 support/query 边界：
-
-```text
-support on R_t:
-  optional target-old support from Y_old
-  optional target-new support from Y_new
-
-query on R_t:
-  held-out target-old query from Y_old
-  held-out seen-new query from Y_new when Y_new is enrolled
-  unknown query from Y_unknown, evaluation-only unless a Phase3 protocol explicitly allows a separate calibration split
-```
-
-Phase3 可以报告：
-
-- unknown FAR / unknown rejection。
-- FPR95 / AUROC。
-- open-set confusion。
-- reject / uncertain / defer 行为。
-- Phase2 old/new 性能在加入拒识门控后的保留率。
-
-Phase3 禁止：
-
-- 用 unknown query 反向调 Phase2 阈值、adapter、prototype 或主排序。
-- 用 open-set 指标替代 Phase2 的 target-old / seen-new 同 row 学习指标。
-- 把 Phase3 备用项写成当前主线。
-
-### 9.5 当前阶段化优化优先级：PHASE2_ADAPT_NEWCLASS_FIRST
-
-当前H06/Phase2修复路线采用阶段化优化顺序：
-
-1. 先提升旧类目标域准确率，阶段门槛为`old_acc>=0.80`。该门槛用于判定是否进入下一阶段优化，不等同于部署成功、论文主结论或Stage2-C成功。
-2. 在同一协议边界下达到`old_acc>=0.80`后，Phase2下一主目标是Stage2-C的`seen_new_acc`、`H_old_new`和旧类/新类同 row 平衡。
-3. 若当前row仍是Stage2-B old-only / old + target-new reference，则不得报告`seen_new_acc`，此时只能把下一阶段写成“OLD80达成后进入Stage2-C seen-new enrollment优化”。
-4. unknown拒识性能（`unknown_FAR`/`unknown_rejection`）下沉为Phase3备用项。Phase2阶段可同步记录unknown diagnostic，但不得为了unknown FAR牺牲旧类或新类学习后仍称为完成Phase2主线。
-5. PHASE2_ADAPT_NEWCLASS_FIRST是当前工程/实验优先级，不会放宽`R_t`/`R_s`不相交、`Y_old`/`Y_new`互斥、target-new query不参与阈值拟合、unknown query不参与Phase2阈值拟合、clean view不代表部署成功等协议约束。
-
-### 9.6 目标域旧类微调上限诊断：TARGET_OLD_ONLY_FT_DIAG
-
-当PHASE2_ADAPT_NEWCLASS_FIRST路线的旧类阶段未达到`old_acc>=0.80`时，可以追加一个诊断性实验：只使用目标接收机域`R_t`中的旧类`Y_old`带标签样本，在目标域内部划分support/query，评估target-only微调或线性头/小adapter对旧类query准确率的上限提升。
-
-该诊断的边界如下：
-
-1. 该诊断只回答“如果暂时不考虑FAR、新类和未知拒识，目标域旧类样本本身能把旧类性能提升到什么程度”。
-2. support和query必须都来自`R_t`中的`Y_old`，且query不能与support重叠。可以使用`K`或train-per-TX网格记录目标域样本量。
-3. 该诊断不使用`Y_new`support，不使用`Y_unknown`query调阈值，也不报告`seen_new_acc`、unknown FAR、Phase2完成或部署成功。
-4. 该诊断可使用feature-level classifier/head/adapter微调或full-model target-only fine-tune，但必须标为`NON_DEPLOYMENT_DIAGNOSTIC`或`TARGET_OLD_ONLY_UPPER_BOUND_DIAGNOSTIC`。如果使用full-model fine-tune，还必须单独报告其星上不可部署或需离线重训练的边界。
-5. 若该诊断达到`old_acc>=0.80`，只能说明旧类目标域样本中存在可利用的判别信号；后续仍需回到Stage2-B/Stage2-C协议中重新加入target-new支持、新类学习和同 row 平衡门槛。unknown拒识若继续优化，应作为Phase3备用项单独进入。
-
-## 10. 指标与成功判据
-
-### 10.1 地面训练阶段
-
-- strict UDU / unseen receiver-day accuracy。
-- worst receiver / receiver floor。
-- pseudo-label audit precision。
-- pseudo-label coverage by class and receiver。
-- `z_id -> receiver` leakage probe accuracy。
-- satellite stress mean/floor，作为 deployment-oriented validation-control。
-
-### 10.2 Stage2-B
-
-- target-old full accuracy。
-- target-old accepted accuracy + coverage。
-- old_acc_delta_pp。
-- rescue / harm / net_gain。
-- PHASE2_ADAPT_NEWCLASS_FIRST第一阶段门槛：`old_acc>=0.80`，仅表示旧类校准阶段可继续进入新类学习优化。
-- rollback trigger rate。
-- TARGET_OLD_ONLY_FT_DIAG诊断指标：target-old query accuracy、相对source-only baseline的delta、support/query划分、train-per-TX，不报告FAR或seen-new。
-- optional Phase3-backup unknown diagnostic：unknown_FAR、FPR95、AUROC，必须标为备用项，不参与Phase2主线排序。
-
-### 10.3 Stage2-C
-
-- seen_new_acc。
-- old_acc。
-- `H_old_new`。
-- new_acc_drop_pp <= 2 pp，或明确标为 exploratory。
-- old->new, new->old confusion。
-- latency / memory / prototype storage。
-- 当前优化顺序必须先满足旧类`old_acc>=0.80`阶段门槛，再优化`seen_new_acc`和`H_old_new`；未达OLD80时不得把seen-new单点作为主线成功。
-- optional Phase3-backup unknown diagnostic：unknown_FAR、unknown_rejection、FPR95、AUROC、unknown->old / unknown->new confusion，必须与Phase2主线指标分表或分栏报告。
-
-### 10.4 Phase3 open-set backup
-
-- unknown_FAR <= 0.05。
-- unknown_rejection。
-- FPR95 / AUROC。
-- old/new性能保留率。
-- reject / uncertain / defer coverage。
-- unknown->old、unknown->seen-new、old/new->reject confusion。
-- Phase3结果必须绑定同一candidate/run，且不得替代Phase2的`old_acc`、`seen_new_acc`和`H_old_new`主线判断。
-
-## 11. 论文与报告声明边界
-
-可以写：
-
-- CVS 面向天基 RFFI 的弱标注跨接收机 DG 与在轨跨域 few-shot 适应。
-- WiSig/ManySig 是地面可接入源域代理。
-- satellite stress 是物理启发部署压力测试。
-- Stage2-B 是旧类目标域校准。
-- Stage2-C 是 Phase2 主线的 target-old adaptation + seen-new enrollment，前提是 `Y_new` 与 `Y_old` 不相交，且target-old / target-new support/query来自同一个LEO目标域。
-- Phase3 是 open-set / unknown rejection 备用项，不是当前主线。
-
-不能写：
-
-- WiSig/ManySig 是真实卫星训练集。
-- satellite augmentation 等价于真实在轨验证。
-- source-only DG 等价于 few-shot learning。
-- 旧类 target support 带来的提升是新类识别。
-- Stage2-A/B 的 rejection 结果是 seen-new identity accuracy。
-- open-set / unknown FAR 结果是 Phase2 主线成功。
-- target receiver domain 与 source receiver domain 重叠后仍称为部署泛化。
-- 缺少 target-old 或 target-new 样本覆盖时仍声称完整 Stage2-C。
-
-## 12. 自动化控制面约束
-
-CVS 自动化不只是工程调度层，也承担实验语义落地责任。任何 monitor、optimizer、runner、launcher、matrix generator、validator、registry、state ledger、report generator 或 N607 launch plan 都必须遵循本文件中的科研场景和数据协议。
-
-自动化生成或放行实验时，必须检查以下语义条件：
-
-- 训练阶段是否仍是 source-domain weak-label / semi-supervised DG，而不是误写成 target few-shot。
-- target receiver domain `R_t` 是否与 source receiver domain `R_s` 不相交。
-- `R_t` 是否同时包含 target-old `Y_old` 样本和 target-new `Y_new` 样本；缺任一类时不得声称完整 Stage2-C。
-- target-old、target-new、target-unknown 是否满足 `Y_old/Y_new/Y_unknown` 的互斥定义。
-- Stage2-A/B/C 是否使用对应 support/query 权限，尤其禁止 Stage2-A/B 声称 seen-new identity accuracy。
-- Stage2-B/C 是否显式记录正整数 `K`；推荐锚点 `{1, 2, 5, 10, 15, 20, 50}` 可用于主曲线，但中间值允许进入 launchable row。`K>20` 必须解释为 higher-shot / medium-shot / saturation point，而不是 strict few-shot。
-- satellite/LEO view 是否按 deployment-primary 处理，clean view 只作为 control。
-- Phase2主线是否以 target-old适应、target-new新类学习、`old_acc`、`seen_new_acc`和`H_old_new`为核心；不得把open-set / unknown FAR设为Phase2主线必达门槛。
-- 若携带unknown query，是否被标为Phase3-backup / evaluation-only metadata，且未参与Phase2阈值拟合、adapter更新、主排序或成功声明。
-- target query是否在全部已注册类别上执行逐样本自主决策；只要使用真实old/new/unknown角色、批次类别数量、每类quota、query排序/分块或Hungarian/等价配额重排，该row必须直接阻断，不得降格后继续进入正式候选矩阵。
-- 指标、阈值和成功声明是否符合第 10 节和第 11 节。
-- Phase2 row 是否满足 target receiver domain、support/query、TX split、satellite/LEO view 和本地字段要求；只要某个 Phase2 row 已满足这些要求，自动化就应继续 Runner gates，而不能用旧的整 lane local-patch 状态掩盖该 launchable row。
-
-若自动化候选与本文件冲突，默认处理为：
-
-- 不能进入 launchable row。
-- 不能写成 deployment success。
-- 不能作为论文主结论。
-- 只能标为 `NON_LAUNCH_DIAGNOSTIC`、`LOCAL_PROTOCOL_REPAIR_REQUIRED` 或先提交本文件修订。
-
-例外：第7.1节禁止的target query role/quota Oracle不得按上述通用规则新建为`NON_LAUNCH_DIAGNOSTIC`；只允许封存约束生效前已经存在的历史artifact，并统一标记为`PROTOCOL_INVALID_FOR_DEPLOYMENT`。
-
-自动化可以提出新路线，但新路线必须先被翻译为本文件允许的场景、数据集合、support/query 权限、指标和声明边界；翻译不清楚时，不得由 runner 或 launcher 通过默认参数补齐。
-
-Phase3 open-set 备用路线可以作为单独实验矩阵、后续安全扩展或诊断分支提出；它不能阻塞已经满足 target-old + target-new LEO样本协议的 Phase2 主线 row 进入Runner gates。
-
-## 13. 修改流程
-
-任何后续优化、修改或实验设计如需改变以下内容，必须先更新本文件，再改 prompt、contract、runner、matrix 或报告模板：
-
-- 项目主场景。
-- `L_s/U_s` 标注与无标注定义。
-- `rho_label` 网格。
-- `R_s/R_t` 接收机划分。
-- `Y_old/Y_new/Y_unknown` TX 划分。
-- K-shot 策略、推荐锚点或报告分层。
-- Stage2-A/B/C 边界。
-- satellite/LEO 视图是否为 deployment-primary。
-- 指标、成功判据或可声明结论。
-
-若某个新想法违反本文件，但仍有探索价值，必须标为 `NON_LAUNCH_DIAGNOSTIC` 或先提交协议修订；不得直接作为 launchable row、论文主结论或部署成功证据。
-
-第7.1节role/quota Oracle禁令优先于本段通用诊断规则：不得生成新的Oracle诊断候选。
-
-## 14. Git与Markdown同步纪律
-
-任何CVS项目相关改动都必须进入Git可追踪流程。改动前必须确认目标文件所在目录是否为Git仓库，并记录`git status -sb`或明确说明该目录尚未纳入Git。改动后必须检查`git diff`/`git status -sb`，完成必要验证，并把变更文件、验证结果和未提交风险写入对应报告或Markdown交接记录。
-
-协作输出规则：对于使用工具或长时间运行的任务，首次工具调用前、关键阶段切换时、重连或上下文压缩恢复后、出现阻塞时，以及持续工作期间至少每60秒，必须发送简洁、基于证据的进度更新；只报告可观察操作、发现和下一步，不披露私有思维链，不倾倒原始日志。仅无工具的简短问答可以省略过程更新。
-
-如果目标目录已经是Git仓库，完成验证后应提交本次意图明确的改动，除非用户明确要求不要提交。若目标目录不是Git仓库，不得把改动描述为“已版本化”；必须先选择或初始化Git承载目录，或同步到已经约定的Git-backed发布工作区/分支。
-
-任何代码、配置、脚本、矩阵、prompt、报告模板或协议改动，都必须同步检查项目相关Markdown是否需要更新：
-
-- 工作流、安全、环境、N607、Git或协作规则改动，更新`AGENTS.md`。
-- CVS科学场景、数据协议、receiver/TX划分、`rho_label`、Stage2-A/B/C边界、K-shot、satellite/LEO视图、指标或声明口径改动，先更新本文件。
-- README、docs、实验报告、发布说明或交接文档中涉及的用法、结果解释、发布范围和复现边界发生变化时，必须同步更新对应Markdown。
+可以声明CVS研究的是地面弱标注跨接收机DG、LEO压力下少样本旧类适应与新类注册，以及部署阶段多接收节点代理协同的Phase3方法。不能把WiSig称为真实卫星数据，不能把LEO模拟称为真实在轨验证，不能把非同步多接收机代理称为真实同步多星验证，不能把source-only DG称为few-shot适应，也不能把source proxy unknown、旧类提升、unknown拒识或协议无效结果当作新类注册成功。
