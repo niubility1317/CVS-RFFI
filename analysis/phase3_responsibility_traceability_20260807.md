@@ -75,3 +75,26 @@
 - Markdown围栏数分别为24、24、10和28，均为偶数；两个公开文档的相对链接均存在。
 - 中文标点后空格扫描无命中；`git diff --check`通过。
 - 本阶段没有运行训练、连接N607或生成性能结果。
+
+## 6.可行性结论（20行内）
+
+1.文档职责修订已由提交`93e67771`封存；代码和性能仍未完成。
+2.现有协同评估器支持1到receiver总数的预算、缺失组统计、固定/渐进/自适应融合和unknown拒识。
+3.现有scorer会把registered query的reject/defer计为身份错误，不能通过全拒绝抬高known accuracy。
+4.R8_SHELL真实回收证据含2200行、5个receiver、1113个代理event。
+5.这些event的观测节点数分布为1节点311、2节点541、3节点237、4节点24、5节点0。
+6.该artifact使用`receiver_domain_ranked_by_role_tx_scenario`，不是物理same-event对齐，只能作多接收节点代理协同。
+7.当前`event_id`编码role/true label，融合与scorer共处同一函数；这是必须先修复的P0隔离缺口。
+8.当前证据行没有独立`emission_event_id`和`satellite_reception_id`，也没有不可变本地证据schema。
+9.现有Phase1 runtime只导出normalized `z_id`和old logits，组件另有类/域中心及radius。
+10.主模型实际存在`z_dom`，所以扩展bundle v2可行，但`q`、`e_unknown`和本地决策口径仍需冻结。
+11.现有Phase1 proxy loss按batch轮换已知label，并不等于TX级全局互斥`source_proxy_unknown_tx`。
+12.现有feature exporter具备proxy TX与source/target集合交叠拒绝，可复用为全局split检查基础。
+13.现有协同指标含old/new逐类accuracy、floor、unknown FAR/reject和实际receiver直方图。
+14.当前协同路径缺少`H_old_new`、`DA0_REG0/DA1_REG0/DA0_REG1/DA1_REG1`、A/B/C/D和difference-in-differences。
+15.anonymous entity状态、证据独立性、可信确权凭证和授权后fresh-K桥接尚无可达实现。
+16.实施应新建独立Phase3入口，复用已验证融合/计分原语，不继续膨胀带truth的Phase2巨型评估函数。
+17.第一组实现只冻结schema、opaque ID、predictor/scorer隔离、单节点/简单基线及negative tests；科学融合候选另行评审。
+18.当前数据可运行含缺失节点的`N_sat_deployed=1..5`代理矩阵，但不得声称5节点same-event融合。
+19.严格同步多节点主张需要新的物理event绑定数据；该缺口不阻塞代理方法研发，但阻塞真实多星同步结论。
+20.在focused tests、真实checkpoint smoke和独立P0/P1审查前，不发布N607实验。
