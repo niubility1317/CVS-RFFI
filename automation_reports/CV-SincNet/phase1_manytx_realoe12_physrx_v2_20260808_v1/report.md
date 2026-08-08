@@ -92,10 +92,63 @@ cd <release>/code && nohup setsid env RUN_ID=phase1_manytx_realoe12_physrx_v2_20
 
 训练完成门：12任务均到E120，terminal与completion闭合，checkpoint和metrics齐全。随后每candidate只执行一次冻结postfreeze导出和两类只读评分：
 
-1. 从对应`final_ssdg.pth`导出同一2400行证据：source known 1600、held-known 400、proxy20共400；只使用冻结source days/RX、clean view和每TX 400 cap。
+1. 从对应`final_ssdg.pth`导出同一10400行证据：5个source known TX共2000、1个fold-held TX共400、20个proxy TX共8000；只使用冻结source days/RX、`equalized=1`、clean view和每TX 400 cap。导出固定增加`--new_wisig_pkl <project>/Dataset_WigSig/ManyTx.pkl`，source与fold-held从ManySig读取，proxy从ManyTx读取；三类TX必须互斥，checkpoint strict load必须`missing=unexpected=skipped=0`。
 2. known保护：同fold同状态比较G-C的clean、三种LEO、min-class与min-receiver floor；任一指标下降超过2pp时该G fold拒绝，不可由其他fold抵消。
 3. open-world开发诊断：energy-only gate，关闭confidence与margin gate；阈值仅由source known校准，proxy20只读评分。必须从逐样本`energy`重新计算energy AUROC与FAR，不把旧脚本基于confidence的`roc_auc`误写为energy AUROC。
 4. proxy、held-known、locked target_new、reserve均不得参与训练、epoch/checkpoint/候选/阈值选择；结果不能外推为K-shot、target unknown或Phase3正式性能。
+
+每candidate的冻结导出命令为：
+
+```text
+python export_spaceborne_features.py
+  --ckpt <run>/<candidate>/final_ssdg.pth
+  --wisig_pkl <project>/Dataset_WigSig/ManySig.pkl
+  --new_wisig_pkl <project>/Dataset_WigSig/ManyTx.pkl
+  --out_npz <run>/postfreeze_audit_v1/<candidate>/features.npz
+  --feature_name z_id
+  --source_tx_ids <fold_train_tx>
+  --target_old_tx_ids <fold_held_tx>
+  --proxy_unknown_tx_ids <frozen_proxy20>
+  --source_days 2021_03_01,2021_03_08
+  --source_rxs 1-1,1-19,14-7,18-2,19-2,2-1
+  --target_old_days 2021_03_01,2021_03_08
+  --target_old_rxs 1-1,1-19,14-7,18-2,19-2,2-1
+  --proxy_unknown_days 2021_03_01,2021_03_08
+  --proxy_unknown_rxs 1-1,1-19,14-7,18-2,19-2,2-1
+  --wisig_equalized 1 --wisig_domain rx_day --wisig_out_len 256
+  --max_samples_per_combo 0 --max_samples_per_tx 400
+  --batch_size 512 --device cuda:0 --seed 7281105
+  --source_channel_view clean --target_old_channel_view clean
+  --proxy_unknown_channel_view clean
+```
+
+12个导出沿用训练的物理GPU映射，wrapper设置`CUDA_VISIBLE_DEVICES=<physical>`，CLI统一`--device cuda:0`。每candidate随后只运行两条CPU评分：
+
+```text
+python scripts/eval_phase1_logits_open_set_reject.py
+  --feature_npz <features.npz> --source_tx_ids <fold_train_tx>
+  --unknown_tx_ids <frozen_proxy20>
+  --known_query_roles source --unknown_query_roles proxy_unknown
+  --calibration_roles source --conf_quantile 0.05
+  --margin_quantile 0.05 --energy_quantile 0.95
+  --disable_conf_gate --disable_margin_gate --unknown_far_target 0.05
+  --output_json <candidate>/proxy_metrics.json
+  --score_table_csv <candidate>/proxy_scores.csv
+```
+
+```text
+python scripts/eval_phase1_logits_open_set_reject.py
+  --feature_npz <features.npz> --source_tx_ids <fold_train_tx>
+  --unknown_tx_ids <fold_held_tx>
+  --known_query_roles source --unknown_query_roles target_old
+  --calibration_roles source --conf_quantile 0.05
+  --margin_quantile 0.05 --energy_quantile 0.95
+  --disable_conf_gate --disable_margin_gate --unknown_far_target 0.05
+  --output_json <candidate>/held_metrics.json
+  --score_table_csv <candidate>/held_scores.csv
+```
+
+audit根固定为`<run>/postfreeze_audit_v1`，日志根固定为`<log>/postfreeze_audit_v1`。每条导出和评分各执行一次，`retry=NO`。运行器只核退出码、10400行结构、角色/TX互斥、strict load、hash和异常指纹；不读取或解释性能，只回收JSON、CSV、日志、completion与manifest，不下载NPZ/checkpoint。
 
 成功只表示技术artifact完整；方法晋级要求6/6 fold通过known保护门，并在完整冻结proxy开发矩阵上报告同一candidate/fold的energy AUROC、energy-only FAR与已知指标。正式目标`unknown FAR<=5%`不可被known精度补偿，但本source proxy结果仍只作为Phase1筛选证据。
 
