@@ -4,8 +4,8 @@
 
 - 目标模式：`ACTIVE`
 - run ID：`phase1_dualreadout_bundle_v2_20260808_v3`
-- 状态：`LOCAL_VERIFIED / P0_P1_CLOSED / READY_FOR_N607`
-- 证据等级：`TECHNICAL_BUNDLE_NOT_PERFORMANCE_PROMOTED`
+- 状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
+- 证据等级：`FAILED_GPU_PARITY_PARTIAL_ZDOM_ONLY`
 - 时间：2026-08-08
 - 实现commit：`8208c9370c48832c370e3569c9197d51cd21072c`
 - 发布修复轮次：`2/2 FINAL`
@@ -35,11 +35,17 @@ v3是最后一轮发布修复。任何runtime、parity、设备或子图导出�
 
 成功和回收规则不变：两runtime parity、C `z_dom`逐行绑定、exact bundle/content root、source-only smoke、2400条无role/truth evidence和两份非部署诊断全部完成；只回收小artifact，不下载checkpoint、NPZ、runtime、calibration或完整evidence。
 
+### 4.1实际终态
+
+三条环境回执均为`CUDA_VISIBLE_DEVICES=<UNSET>`；C `z_dom`导出exit=0。angular和robust部署子图均成功保存为远端`.ts`，但GPU eager↔TorchScript parity分别为`0.0015714168548583984`和`0.0011110305786132812`，超过冻结门，故两命令exit=1且不写parity receipt。CPU build、emit和score均未启动。
+
+v3不重试，原bundle exporter不再修补。9项日志控制文件已回收且哈希一致；partial runtime、NPZ和checkpoint均未下载，Python/GPU/SSH清理完成。后续只允许全新run ID的CPU one-shot exporter，保持同一`1e-5`parity门。
+
 ## 5.结果表（待回收）
 
 | candidate | category | receiver/TX split | K-shot | seed | known/unknown | coverage/defer | bundle summary | verdict |
 |---|---|---|---:|---:|---|---|---|---|
-| P1-DUALREADOUT-BUNDLE-V2-FINAL-REPAIR | deployment-subgraph bundle | 4/1/1 | N/A | 7281105 | 待回收 | 待回收 | C class/domain+B continuous JS | `NO_PERFORMANCE_RESULT_YET` |
+| P1-DUALREADOUT-BUNDLE-V2-FINAL-REPAIR | deployment-subgraph bundle | 4/1/1 | N/A | 7281105 | N/A | N/A | GPU parity失败，无bundle | `STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE` |
 
 ## 6.科学边界
 
