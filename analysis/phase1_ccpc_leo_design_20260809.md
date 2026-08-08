@@ -1,7 +1,7 @@
 # P1-CCPC-LEO冻结设计与可追溯记录
 
-版本：2026-08-09  
-状态：`LOCAL_VERIFIED_NOT_N607_LANDED`  
+版本：2026-08-09
+状态：`LOCAL_VERIFIED_NOT_N607_LANDED`
 候选：`P1-CCPC-LEO`
 
 ## 1.边界与唯一机制
