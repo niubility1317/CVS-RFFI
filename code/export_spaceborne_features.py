@@ -200,7 +200,19 @@ def _resolve_tx_indices(tx_list: Sequence[Any], spec: str | None, *, field: str)
 
 
 def _resolve_indices(name_list: Sequence[Any], spec: str | None) -> list[int] | None:
-    items = parse_items(spec)
+    # Axis labels can look numeric while still being physical identifiers.
+    # In particular, Python int accepts underscores and would turn the WiSig
+    # date label 2021_03_01 into 20210301.  Only pure decimal tokens are axis
+    # indices; everything else must be matched as an immutable physical label.
+    items = None
+    if spec is not None and str(spec).strip():
+        items = []
+        for part in str(spec).split(","):
+            item = part.strip()
+            if not item:
+                continue
+            numeric = item[1:] if item[:1] in {"+", "-"} else item
+            items.append(int(item) if numeric.isdigit() else item)
     if items is None:
         return None
     labels = [canonical_tx_id(v) for v in name_list]
