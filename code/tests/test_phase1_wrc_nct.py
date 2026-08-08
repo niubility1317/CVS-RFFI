@@ -25,6 +25,7 @@ from cvsrffi.phase1_gi_epior import (  # noqa: E402
 from cvsrffi.phase1_wrc_nct import (  # noqa: E402
     WRC_NCT_ALPHA,
     WRCNCTError,
+    WRCNCTRuntime,
     deterministic_reference_calibration_eval_split,
     finite_upper_quantile,
 )
@@ -190,6 +191,23 @@ def test_fixed_alpha_and_no_tunable_cli_surface():
     assert "--quantile" not in parser.format_help()
     with pytest.raises(SystemExit):
         parser.parse_args(["--alpha", "0.01"])
+
+
+def test_runtime_preserves_upstream_gi_geometry_without_renormalizing():
+    raw = torch.tensor(
+        [[0.1234567, 0.7654321, 0.3333333], [0.4444444, 0.5555555, 0.6666666]], dtype=torch.float32
+    )
+    gi = GIEpiORRuntime(raw, torch.tensor([1.0e-4, 1.2e-4]), GIEpiORHead().eval()).eval()
+    runtime = WRCNCTRuntime(gi.prototypes, gi.scales, 0.95, eps=gi.eps).eval()
+    assert torch.equal(runtime.prototypes, gi.prototypes)
+    probe = torch.tensor([[0.3, 0.4, 0.5], [0.7, 0.1, 0.2]], dtype=torch.float32)
+    with torch.no_grad():
+        _, gi_d_class, gi_ratio = gi(probe)
+        d1, d2, ratio, _ = runtime(probe)
+    ordered = torch.sort(gi_d_class, dim=1).values
+    assert torch.equal(d1, ordered[:, 0])
+    assert torch.equal(d2, ordered[:, 1])
+    assert torch.equal(ratio, gi_ratio)
 
 
 def test_runtime_parity_and_output_closure(tmp_path: Path):

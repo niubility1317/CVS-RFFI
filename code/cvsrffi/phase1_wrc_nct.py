@@ -164,7 +164,13 @@ class WRCNCTRuntime(nn.Module):
             raise WRCNCTError("GI MAD scales must be finite and positive")
         if not math.isfinite(float(tau)):
             raise WRCNCTError("WRC-NCT threshold must be finite")
-        self.register_buffer("prototypes", F.normalize(prototype, dim=1))
+        norms = torch.linalg.vector_norm(prototype, dim=1)
+        if not bool(torch.allclose(norms, torch.ones_like(norms), atol=1.0e-5, rtol=1.0e-5)):
+            raise WRCNCTError("upstream GI prototypes must already be unit normalized")
+        # Preserve the upstream runtime geometry byte-for-byte.  Re-normalizing
+        # an already normalized float32 tensor can move the last bit; the very
+        # small frozen MAD scales may then amplify that into a parity failure.
+        self.register_buffer("prototypes", prototype)
         self.register_buffer("scales", rho)
         self.register_buffer("tau", torch.tensor(float(tau), dtype=torch.float32))
         self.eps = float(eps)
