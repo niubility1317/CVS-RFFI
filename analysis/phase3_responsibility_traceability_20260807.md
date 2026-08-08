@@ -5,11 +5,19 @@
 基线提交：`f9050cfa45cb5e8dd3d37181bf4ccf1683084b29`  
 目标来源：`E:\codex\home\attachments\09a65902-d4a2-49f7-966e-4b03ed53ba09\goal-objective.md`
 
+执行模式：`GOAL_MODE=ACTIVE`
+
+当前状态：`DESIGN_DRAFT`（`FEASIBILITY_REVIEW`已完成，等待独立交叉审查后才能进入`DESIGN_FROZEN`）
+
+完成边界：职责文档、代码实现、本地验证、独立`P0/P1`审查、N607非覆盖运行、完整同排artifact与证据受限结论全部闭环后，才允许把目标标为完成。
+
+禁止越级：`GOAL_MODE=ACTIVE`不等于候选已冻结、实现已验证或性能目标已达成；当前不得发布N607实验。
+
 ## 1.状态口径
 
 只允许使用`pending`、`implemented`、`verified`、`deferred`、`rejected`和`blocked`。代码或文档中出现同名概念不等于实现；只有可达路径、测试和同源artifact共同成立后才能标记为`verified`。
 
-当前阶段只做职责、现状和缺口审计。未形成冻结候选、实验矩阵、独立P0/P1审查和本地验证前，不发布N607实验。
+当前阶段在已完成职责、现状和缺口审计的基础上进行并行方法设计与独立交叉审查。未形成冻结候选、实验矩阵、独立P0/P1审查和本地验证前，不发布N607实验。
 
 ## 2.基线事实
 
