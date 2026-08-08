@@ -1,6 +1,6 @@
-+# Phase1 GeoSat Lite四臂首发报告
+# Phase1 GeoSat Lite四臂首发报告
 
-状态：`RUNNING`
+状态：`ANALYZED / NO_SINGLE_ARM_PROMOTED`
 
 目标模式：`GOAL_MODE=ACTIVE`
 
@@ -15,7 +15,7 @@
 | run ID | `phase1_geosat_lite_4arm_20260808_v1` |
 | 日期 | 2026-08-08 |
 | 主Agent | `/root` |
-| 唯一N607 runner | 待交接的Luna/max |
+| 唯一N607 runner | `/root/n607_geosat_lite_runner`（Luna/max） |
 | 目标 | 用最小四臂验证角度几何与clean→LEO一致性对Phase1高泛化表征的独立及联合贡献 |
 | 实现commit | `aaaf59ca4ce2e7137dea98cb1aa1254f23ce0f1c` |
 | 独立复核 | `STATUS=PASS; P0=0; P1=0; ALLOW_RELEASE=true` |
@@ -79,7 +79,7 @@ nohup env RUN_ID=phase1_geosat_lite_4arm_20260808_v1 CODE_ROOT=<release>/code ba
 
 ### 5.1实际落地与启动证据
 
-状态：`RUNNING`。
+状态：`ARTIFACTS_COMPLETE`。
 
 - release commit：`5f01bdfb1446603b393e5d5c89643e6f129f61c6`。
 - release root：`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_geosat_lite_4arm_20260808_v1_5f01bdfb`。
@@ -103,6 +103,8 @@ cd /home/szu2070436088/2510044040/CV-SincNet/releases/phase1_geosat_lite_4arm_20
 
 二次健康复核时四臂仍为LIVE：A/B/C/D分别到E024/E022/E021/E018，日志持续增长，错误指纹仍为0/4；GPU4–7空闲，短连接结束后本地SSH进程与N607/桥接TCP22连接均为none。
 
+四臂最终均完成E120/120，训练日志错误指纹0/4，`train_skipped_nonfinite_loss=0`且`train_skipped_nonfinite_grad=0`。每臂均落盘`final_ssdg.pth`和120行JSONL/121行CSV；`latest_ssdg.pth`因冻结的`checkpoint_selection=final_only`未生成，未伪造副本。四个exit=8均对应脚本显式终端回执`NON_PROMOTABLE_P0_DISABLED`，不是OOM、异常或不完整训练。launcher及run-owned PID均退出，GPU0–7释放，SSH无残留。
+
 ### 5.2冻结后source-only held-TX审计锁
 
 该审计是设计中已预注册的“一次冻结后审计”，不是新训练或新方法。四个`final_ssdg.pth`只读，公式和阈值规则在任何held-TX结果前固定：
@@ -117,20 +119,46 @@ cd /home/szu2070436088/2510044040/CV-SincNet/releases/phase1_geosat_lite_4arm_20
 
 本地复用测试：`test_phase1_logits_open_set_reject_eval.py`、`test_phase1_open_set_reject_eval.py`和真实checkpoint loader共5项通过。
 
+审计实际完成：四个checkpoint均严格加载，missing/unexpected/skipped=0；每臂固定导出source=1600、target_old=400、proxy_unknown=400，TX角色互斥。8次评估均exit=0；28个小型JSON/CSV/日志/manifest证据已回收，逐文件SHA256与远端清单一致，未下载NPZ或checkpoint。导出进程未预写退出码receipt，故清单如实标记`INFERRED_SUCCESS_NO_EXIT_RECEIPT`；完整NPZ、正常退出进程和零错误日志共同证明导出完成，但不补造exit code。
+
 ## 6.健康与停止规则
 
 
 启动后核对launcher PID、四个child PID、CWD/cmdline、GPU映射和日志增长。仅在P0协议/覆盖风险、错误checkout/hash、query/held-TX泄漏、CUDA OOM或至少两个不同arm在产生训练telemetry前出现同一确定性异常指纹时，停止该run的后续工作并保留所有partial artifacts。不得因准确率、floor、FAR或其它性能值中止。
 
-## 7.结果表（待完成）
+## 7.完整同排结果
 
-| arm | TX split | seed | epochs | known cross-RX | min known class | LEO floor | proxy FAR/AUROC | checkpoint/bundle | resource | verdict |
-|---|---|---:|---:|---:|---:|---:|---|---|---|---|
-| A_ADV3B02_Z0 | 4/1/1 | 7281105 | 120 | pending | pending | pending | pending | pending | pending | pending |
-| B_ANGULAR_Z0 | 4/1/1 | 7281105 | 120 | pending | pending | pending | pending | pending | pending | pending |
-| C_LEO_CONS_Z0 | 4/1/1 | 7281105 | 120 | pending | pending | pending | pending | pending | pending | pending |
-| D_GEOSAT_LITE_Z0 | 4/1/1 | 7281105 | 120 | pending | pending | pending | pending | pending | pending | pending |
+### 7.1训练终行与LEO弱信道
+
+| arm | 机制 | TX split | seed/epoch | source val acc | LEO mean | LEO floor | source-val H | best val@epoch | final epoch time | verdict |
+|---|---|---|---|---:|---:|---:|---:|---|---:|---|
+| A_ADV3B02_Z0 | closed基线 | 4/1/1 | 7281105/120 | 97.262% | 61.125% | 59.446% | 73.792 | 97.899%@E117 | 18.90s | 基线 |
+| B_ANGULAR_Z0 | known-only角度几何 | 4/1/1 | 7281105/120 | 97.065% | 60.726% | 59.214% | 73.556 | 97.935%@E118 | 19.52s | LEO无增益 |
+| C_LEO_CONS_Z0 | clean→LEO单向KL | 4/1/1 | 7281105/120 | 97.268% | 70.192% | 68.833% | 80.617 | 97.595%@E117 | 19.45s | LEO最强，但非开放世界晋级 |
+| D_GEOSAT_LITE_Z0 | 角度几何+单向KL | 4/1/1 | 7281105/120 | 97.280% | 70.022% | 68.893% | 80.662 | 97.488%@E108 | 20.82s | 与C近似，未形成互补 |
+
+相对A，C的LEO mean/floor分别提升`+9.067pp/+9.387pp`；D为`+8.897pp/+9.446pp`。B单独为`-0.399pp/-0.232pp`。D相对C仅`-0.171pp/+0.060pp`，LEO交互很小。
+
+### 7.2冻结source-only开集审计
+
+所有行使用同一source-only阈值规则；known是用于校准的source样本，因此known数值是开发诊断，不是跨域正式成绩。proxy和held TX从未用于阈值、训练或选模。
+
+| arm | source closed acc | source coverage | source full acc after reject | proxy FAR↓ | proxy AUROC↑ | held-known FAR↓ | held-known AUROC↑ | 5% FAR门 | verdict |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---|
+| A_ADV3B02_Z0 | 97.125% | 90.313% | 89.688% | 53.500% | 0.5505 | 46.000% | 0.6185 | FAIL | 基线拒识弱 |
+| B_ANGULAR_Z0 | 96.688% | 89.063% | 88.813% | 38.250% | 0.5774 | 21.250% | 0.6071 | FAIL | 相对proxy FAR明确改善，但远未达标 |
+| C_LEO_CONS_Z0 | 96.625% | 88.813% | 88.125% | 66.000% | 0.5176 | 44.500% | 0.6050 | FAIL | LEO增强损害proxy拒识 |
+| D_GEOSAT_LITE_Z0 | 97.188% | 90.188% | 89.750% | 79.250% | 0.5106 | 60.750% | 0.6087 | FAIL | 联合训练产生强负交互 |
+
+B相对A把proxy FAR降低`15.25pp`，同时source full accuracy仅下降`0.875pp`，满足“相对基线产生明确正信号”，但`38.25%`仍不具备真实部署拒识能力。C相对A把proxy FAR提高`12.50pp`；D相对A提高`25.75pp`。对proxy FAR，联合交互`D-B-C+A=+28.50pp`，表明两个目标在同一读出路径上发生冲突，而不是互补。
+
+### 7.3证据与异常边界
+
+- 四臂checkpoint SHA256、训练metrics、完整日志和审计逐样本score表均在`artifacts/`清单中；本地未复制checkpoint。
+- 所有审计FPR95均为1.0，且没有单臂通过`unknown_FAR<=5%`，不能把拒识率或AUROC包装成Phase3真实unknown结果。
+- 日志中的字符串`nan`来自未启用遥测字段占位；训练计数明确为零非有限loss/gradient，不能据此误判数值崩溃。
+- 本轮仅4个source-known TX、1个held-known TX和1个proxy TX、单seed；结论只支持机制筛选，不支持最终deployment bundle。
 
 ## 8.风险与后续
 
-最大风险是四TX随机初始化在120 epochs内欠拟合；该风险按冻结epoch如实观察，不通过结果延长或调参。只有四臂完整同排返回后，才决定是否以全部六个旧类、200 epochs重训正式Phase1 bundle。完整Phase3 v2/CARE-PoE设计已延期，不阻塞本实验。
+本轮结论为`NO_SINGLE_ARM_PROMOTED`：C证明单向clean→LEO一致性是强泛化组件；B证明known-only角度几何包含独立proxy拒识信号；D证明把两者压到同一表征/读出路径会破坏开放集边界。下一轮不增加receiver/day/channel对齐、EVT、动态门控或复杂审计，优先验证“分类读出与拒识读出解耦”的最小双读出方案：LEO分类路径继承C，开放集路径继承B，分别输出类别证据和拒识证据，再以固定source-only规则组合。该方案先做小型同输入实验，不直接扩成六类200epoch正式bundle。完整Phase3 v2/CARE-PoE设计继续延期，不阻塞Phase1实验迭代。
