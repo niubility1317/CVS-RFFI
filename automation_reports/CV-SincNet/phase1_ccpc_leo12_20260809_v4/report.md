@@ -2,7 +2,7 @@
 
 目标模式：`GOAL_MODE=ACTIVE`
 
-状态：`LOCAL_VERIFIED / PREREGISTERED / NOT_LAUNCHED`
+状态：`ARTIFACTS_COMPLETE / TRAINING_COMPLETE / NO_PERFORMANCE_RESULT / POSTFREEZE_PENDING_AUTHORIZATION`
 
 证据边界：`PHASE1_SOURCE_ONLY_OPEN_WORLD_READY_REPRESENTATION_NON_CONFIRMATORY`
 
@@ -61,3 +61,11 @@ cd /home/szu2070436088/2510044040/CV-SincNet/releases/phase1_ccpc_leo12_20260809
 
 五项非补偿门：技术健康；clean known 6/6的overall/minclass/minRX/minday G-C均>=-2pp；LEO 18/18四项G-C均>=-2pp且总体改善；source proxy连续排序相对C同向；真实checkpoint与artifact闭环。任一失败即`REJECT_CCPC_LEO_NO_RETRY`，不进入Phase3。
 
+## 6.训练终态与小artifact回收（2026-08-09）
+
+- 发布commit：`ad261d2887d867c1993bca2f993f2d7b969000e6`；实现commit：`753161c9127f72498507c8bbf4d7994bc4b7e698`。按无prefix `git archive`落地；本地/远端归档tar SHA256均为`93532637c41e491b748e522059dd7076face2090de8c5ce031e80e903aa0e559`（261314560 bytes）。归档成员按LF字节核验，工作树哈希差异仅为Windows CRLF/LF表示，不做远端代码编辑。
+- Direct N607 preflight为Connection refused；使用已验证lab bridge完成所有短连接。唯一exact launcher命令按§4执行一次；caller超时后仅清理残留SSH并只读确认已落地，未重启。
+- wrapper PID=`4071607`，launcher PID=`4071608`；12 child/GPU：F1C=4071611/GPU0，F5G=4071613/GPU0，F1G=4071615/GPU1，F5C=4071620/GPU1，F2C=4071623/GPU2，F6G=4071625/GPU2，F2G=4071627/GPU3，F6C=4071633/GPU3，F3C=4071638/GPU4，F3G=4071643/GPU5，F4C=4071646/GPU6，F4G=4071648/GPU7。
+- `completion.tsv`为header+12行，12臂均E040、final checkpoint、metrics、config、terminal、heldout/resource receipts齐全；12条exit_code=`8`且terminal=`NON_PROMOTABLE_P0_DISABLED`，这是E040后的预期P0禁用终态，不是技术异常。错误指纹计数为0。G臂raw CCPC nonzero=1200、nonfinite=0；param-finite/optimizer-step分别为F1G 1194/1194、F2G 1198/1198、F3G 1196/1196、F4G 1197/1197、F5G 1197/1197、F6G 1197/1197。
+- 小artifact已回收至`E:\type10-7\automation_reports\CV-SincNet\phase1_ccpc_leo12_20260809_v4\artifacts`：123个文件及`manifest.json`；manifest SHA256=`277fd4c775e61a80f37b71f3a32aa687c8ce05e41b458f2b403c06ce9df82bc3`，逐项SHA/大小校验0错误；未下载checkpoint或NPZ。传输tar SHA256=`0f03c9438f25a31401ce8925a04d76219b0863af778fbafb073016b6eef8af2d`（618483 bytes），远端临时tar已删除。
+- 终态复核：run-owned进程0；GPU0-7均0% utilization/1MiB；本地SSH进程0、TCP22连接0。Postfreeze未启动，等待主控另行授权；本run无retry、无性能结论。根报告与Git镜像已同步更新，未提交commit。
