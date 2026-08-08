@@ -111,3 +111,17 @@ cd <release>/code && nohup setsid env RUN_ID=phase1_wrc_nct_leo6x3_20260809_v2 P
 WRC-NCT证明相对NCT几何在clean source proxy上具有排序信号，但固定source calibration阈值在真实LEO弱信道下既不能保护最低类别、接收机与日期floor，也不能把paired-clean性能迁移到LEO观测。clean proxy信号不得补偿第3门失败，更不得写成Phase3真实unknown结果。按预注册边界，本结果关闭当前source-held Q98/NCT阈值族：不再扫描`alpha`、分位数、RX聚合或场景阈值，不以局部fold/场景挑选替代完整18格结论。
 
 Phase3本轮不启动。下一轮Phase1若继续，应转向会改变底层表征本身的训练方法，直接优化跨RX和LEO类条件稳定性，而不是继续给冻结表征叠加source-only阈值读出。
+
+## 9.三轮探索回顾与下一轮边界
+
+本回顾在第四轮发布前重读活动目标与`项目.md`，并复查RealOE、GI-EpiOR、WRC-NCT及更早LOTO/density完整报告。共同结论不是“缺少更精细阈值”，而是冻结表征在TX、RX和LEO信道变化下发生类条件几何漂移；source-only排序分数即使AUROC较高，绝对拒识边界也不能迁移。
+
+| 路线 | 获得的正经验 | 决定性失败 | 后续处理 |
+|---|---|---|---|
+| RealOE energy训练 | 真实source-held TX可形成OE训练信号；机制在个别fold有效 | 跨held TX方向不稳定，平均receiver floor下降2.90pp，多fold clean/LEO保护门失败 | 不再扩大OE TX、权重或epoch扫描 |
+| GI-EpiOR小拒识头 | 整TX episodic几何可把proxy FAR均值降至60.88% | 最低RX平均下降3.40pp，仅2/6 known-floor通过 | 不再给冻结`z_id`叠加二元拒识head |
+| WRC-NCT固定读出 | clean known四项零下降，proxy AUROC均值0.9307 | proxy FAR仍96.14%；LEO附加门16/18失败、paired-clean门18/18失败 | 关闭Q98/NCT阈值族，不调`alpha`、分位数或RX聚合 |
+
+下一候选只允许一个表征级核心变化，并继承GeoSat-C作为同fold配对基线。它必须直接训练“同一TX在clean与单次LEO弱观测之间的类条件局部稳定性”，同时保持不同TX的margin；不增加接收机标签预测、domain adversarial、MMD/CORAL、跨域全局对齐或多头融合。proxy/held TX继续保持零训练、零校准、零选参，三场景只用于完整同physical配对评价。
+
+最小发布矩阵仍为6fold×{C基线,G单机制}，共12个训练任务，每张GPU一至两个任务；达到E120后一次性导出clean与三场景LEO证据并评分。非补偿门仍为五项：技术健康；known cross-RX下降≤2pp；18个LEO原子格overall/min-class/min-RX/min-day下降均≤2pp；source proxy相对C产生明确同向信号；真实checkpoint导出不可变bundle。任一门失败即淘汰，不进入Phase3，不追加同族补丁实验。
