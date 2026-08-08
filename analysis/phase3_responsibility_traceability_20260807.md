@@ -38,7 +38,7 @@
 | P1-04 | 一 | Phase1导出开放世界就绪特征提取器、基础几何、半径/能量/尾部先验、质量/域不确定性和不可变bundle | bundle builder/schema/docs | pending | real-checkpoint no-query smoke、schema test | bundle不等于完成真实拒识 |
 | P1-05 | 二 | 建立TX互斥的`source_known_train_tx`、`source_known_validation_tx`、`source_proxy_unknown_tx`，proxy unknown物理样本完全排除训练 | 数据split/builder、tests | pending | TX集合/物理ID互斥测试 | 不允许receiver/channel/SNR伪unknown |
 | P1-06 | 二 | 支持对比、margin、energy、EVT、held-TX OE、`z_id/z_dom`解耦、半径/协方差、梯度冲突和分层解冻的开放候选空间 | 设计文档、候选配置 | pending | feasibility review、method lock | 不是要求一次候选堆叠全部机制 |
-| P1-07 | 二 | Phase1候选五项窄晋级门：不崩溃、known跨接收机不明显退化、floor不严重下降、proxy unknown正信号、真实checkpoint可导出bundle | evaluator、报告模板、release gate | pending | 同排指标、bundle smoke | 门槛中的“明显/严重/明确”需冻结量化定义 |
+| P1-07 | 二 | Phase1候选五项窄晋级门：不崩溃、known跨接收机不明显退化、floor不严重下降、proxy unknown正信号、真实checkpoint可导出bundle | evaluator、报告模板、release gate | pending | 同排指标、bundle smoke | 门槛中的“明显/严重/明确”由活动方法设计量化 |
 | LOCAL-01 | 三 | 每个节点从同一冻结或合法适配后的Phase1 extractor输出`z_id`、`z_dom`、`q`、`d_class`、`e_unknown`、`p_local` | 本地证据schema/extractor | pending | schema和真实checkpoint smoke | 每个字段需来源与形状定义 |
 | LOCAL-02 | 三 | 本地证据先不可变封存，再进入协同；单节点输出仅为registered/unknown/defer | artifact writer/validator | pending | hash/immutability和decision enum tests | scorer不得回流 |
 | LOCAL-03 | 三 | 单节点不得读取query真值、真实role、真实batch构成、类别配额和独立scorer结果 | predictor API、negative tests | pending | zero-fit/zero-update/zero-selection tests | 与`p2_min_v1`逐样本边界对齐 |

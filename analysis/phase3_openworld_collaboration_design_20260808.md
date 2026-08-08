@@ -4,11 +4,11 @@
 
 执行模式：`GOAL_MODE=ACTIVE`
 
-设计状态：`DESIGN_DRAFT/REVISION_2`
+设计状态：`DEFERRED_FULL_PHASE3_DESIGN/REVISION_3`
 
-候选标识：`P1-OWR-H__CARE-PoE_r2`
+候选标识：`P1-OWR-H__CARE-PoE_r3`
 
-本文件整合Phase1方法作者、Phase3方法作者与独立监督者的只读审查。它不是`DESIGN_FROZEN`、实现完成或性能达标声明；第8节的P0门全部关闭并经独立复审前，不得修改正式训练路径或发布N607实验。
+本文件整合Phase1方法作者、Phase3方法作者与独立监督者的只读审查。它不是`DESIGN_FROZEN`、实现完成或性能达标声明。自2026-08-08起，本文件只保留为后续完整Phase3设计，不再阻塞Phase1最小高泛化实验；Phase1快速通道以`phase1_geosat_lite_design_20260808.md`为唯一方法锁。
 
 ## 1.主代理裁决
 
@@ -88,6 +88,8 @@ L=L_{\mathrm{ADV3B02}}+\lambda_{\mathrm{ow}}L_{\mathrm{OW}}(z_{id},y,d)
 
 `L_OW`只读取`T_train`的source received IQ、允许的source TX标签和source domain标签，使用现有known-only类内紧致、类间margin和同类跨域对齐公式。以下路线显式锁零：legacy batch轮换proxy loss、soft-mixup、source episode、direct metric、EVT/tail/vacuum以及任何confirmed unknown或target/query输入。
 
+v2的共享身份核心预注册为`z_id=normalize(id_feat_cls)`，不使用混入DAC/PA defect分支与gate的`feat_joint`作为open-world核心。原ADV3B02分类logits和v1的`feat_joint`路径保持不变；该选择在任何候选结果前冻结，不允许事后在`feat_cls/feat_joint`之间切换。`L_OW`只作用于`id_feat_cls`，精确训练allowlist至少包含其生产者`id_backbone.cls_head.id_proj`，其它已有closed/domain参数是否更新由完整loss梯度审计逐项列入receipt。
+
 训练继续复用已验证的balanced TX×receiver/day采样、clean-sat同物理样本对应、source-val-only/final-only控制、TX条件泄漏probe及artifact identity/parity框架。新增`L_OW`不得关闭或旁路这些控制，也不得重新启用已被负面结果否定的动态接收域作为promotion依据。`endpoint_accept_v1`保留为legacy对照；新候选的决策公式标识固定为`open_world_evidence_v2.0`。
 
 训练allowlist不得继续使用模糊的字符串包含规则。冻结前必须从真实checkpoint解析`z_id_key=feat_joint`的可达参数，预期至少包括`id_backbone.cls_head`内产生`feat_joint`的projection/gate/joint projection及最终class head；是否训练`dom_backbone.cls_head`、`dom_head`和`adv_head`由真实梯度审计决定。allowlist外参数全部冻结。
@@ -106,14 +108,49 @@ v2与base-v1的runtime hash、content-root、class binding和checkpoint hash共�
 
 | 输出 | 冻结定义 |
 |---|---|
-| `z_id[B,E_id]` | 当前IQ经真实full-dual runtime得到的unit-normalized身份表征 |
+| `z_id[B,160]` | 当前IQ的`id_feat_cls`经unit normalization得到的共享身份核心；真实checkpoint已验证维度为160 |
 | `z_dom[B,E_dom]` | 同一IQ得到的unit-normalized域扰动表征 |
 | `d_class[B,C]` | 对全部已注册类统一计算到共享invariant class core的归一化距离 |
 | `e_unknown[B]` | `1-max_c min(a_core[c],a_density[c])`，是共享核心与局部密度AND后的连续陌生度证据，不是unknown概率 |
 | `q[B]` | `z_dom`相对sealed source-domain geometry的domain plausibility，经预注册单调映射裁剪到`[0,1]` |
 | `p_local[B,C+1]` | 由`a_known[c]=min(a_core[c],a_density[c])`与`e_unknown`经冻结温度形成的类别加unknown证据分布 |
 
-`a_core`来自共享class core的距离/半径，`a_density`来自同一类聚合component的最大局部密度支持；任一项低都不能由另一项补偿。`q`不得读取TX logits、query真值、SNR真值或scorer输出。class handle置换时`d_class/p_local`相同置换，`e_unknown/q`不变。共同正交变换同时作用于query和sealed geometry时，距离与决策必须不变。`load_any(v1)`必须显式返回`phase3_local_evidence_supported=false`，不得伪造v2字段。
+冻结构造如下，其中角距离使用弧度，`epsilon=1e-8`：
+
+\[
+\mu_c=\operatorname{normalize}\left(\frac{1}{N_c}\sum_{i:y_i=c}z_i\right),\qquad
+R_c=Q_{0.95}\{\theta(z_i,\mu_c):i\in T_{train}\cap V,y_i=c\}
+\]
+
+每个类按预注册的receiver×day×channel stratum建立聚合component；每个component至少包含2个独立物理样本，中心为`nu_ch`，尺度为该stratum角距离的固定`Q_0.95`。令`H_c`为类`c`的有效component数，`H_c=0`时整类bundle构建失败：
+
+\[
+a_{core,c}=\exp\left[-\frac{1}{2}\left(\frac{\theta(z,\mu_c)}{\max(R_c,\epsilon)}\right)^2\right]
+\]
+
+\[
+\log a_{density,c}=\operatorname{logsumexp}_{h=1}^{H_c}\left[-\frac{1}{2}\left(\frac{\theta(z,\nu_{ch})}{\max(\sigma_{ch},\epsilon)}\right)^2\right]-\log H_c
+\]
+
+`-log H_c`把component mixture归一为等stratum平均，防止component更多的类天然占优。随后：
+
+\[
+a_{known,c}=\min(a_{core,c},a_{density,c}),\qquad e_{unknown}=1-\max_c a_{known,c}
+\]
+
+\[
+p_{local}=\operatorname{softmax}\left(\left\{\frac{\log\max(a_{known,c},\epsilon)}{T_k}\right\}_{c=1}^{C},\frac{\log\max(e_{unknown},\epsilon)}{T_u}\right)
+\]
+
+`T_k/T_u`和所有阈值只由预声明`known_validation_manifest`冻结，禁止读取`T_proxy`。对top class`c*`，本地决策固定为：
+
+- `registered(c*)`：`q>=tau_q`、`a_core[c*]>=tau_core`、`a_density[c*]>=tau_density`、`p_local[c*]>=tau_accept`且top-2 margin不低于`tau_margin`；
+- `unknown`：`q>=tau_q`且`e_unknown>=tau_unknown`；
+- 其余、低质量、缺字段、非有限或阈值冲突均为`defer`。
+
+artifact必须同时写`local_decision∈{registered,unknown,defer}`和固定reason code，不能只写`p_local`。class handle置换时`d_class/p_local/local_decision handle`相同置换，`e_unknown/q/reason family`不变。共同正交变换同时作用于query和sealed geometry时，距离与决策必须不变。`load_any(v1)`必须显式返回`phase3_local_evidence_supported=false`，不得伪造v2字段。
+
+known hard-core TPR定义为`known_validation_manifest`中registered样本被正确`registered`的比例，reject/defer均为失败。它只使用注册TX的`T_train∩V`物理验证样本，禁止使用`T_proxy`：global TPR≥0.85、min-class≥0.80、每个receiver/day/三种`leo_*_weak`共同floor≥0.70，且每项相对原ADV3B02同切片下降不超过2pp。任一门失败时，proxy下降不允许解释为open-world改善。
 
 ## 4.Phase3候选`CARE-PoE`
 
@@ -123,8 +160,9 @@ v2与base-v1的runtime hash、content-root、class binding和checkpoint hash共�
 
 ```text
 schema_version
-emission_event_id
 satellite_reception_id
+linkage_mode
+emission_event_id或proxy_group_id
 node_id
 bundle_id/capsule_id/split_id及hash
 evidence_hash/sealed_at/deadline
@@ -133,7 +171,11 @@ visibility/beam/frequency/track元数据
 correlation_group_id/delay_ms
 ```
 
-两个ID必须由预测前上游manifest提供且不可逆编码`role`、`true_label`、rank、数据集路径或scorer索引。一个`emission_event_id`可对应多个唯一`satellite_reception_id`，但K-shot始终按独立`emission_event_id`计数。重复reception、跨event拼接、hash/bundle不一致或deadline后到达均不得改变已封存预测。
+`linkage_mode=verified_physical`时，采集系统必须在标签可见前生成`emission_event_id`和唯一`satellite_reception_id`，并提供物理绑定receipt；一个event可对应多个reception，但K-shot始终按独立event计数。
+
+`linkage_mode=proxy_unverified`时，不得填写或伪造`emission_event_id`，只允许使用预测前、无truth元数据生成的`proxy_group_id`；该模式不能产生same-event、同步多星或K-shot事件结论。对`role/true_label`派生键再次哈希仍属非法。当前R8 truth-ranked分组不满足任一模式。
+
+重复reception、跨group/event拼接、hash/bundle不一致或deadline后到达均不得改变已封存预测。event内任一ID/hash/bundle冲突使整event fail closed并输出`defer/EVENT_INTEGRITY_FAILURE`，不能丢弃坏节点后继续给正式决策。
 
 `LocalEvidenceV2`不得含truth、role、credential或`registration_authorized`。真值只存在于独立只读`ScorerTruthSidecar(reception_id→role,true_label)`；预测artifact封存后评分进程才可打开sidecar。sidecar缺失时预测仍必须完成且hash不变。
 
@@ -145,7 +187,7 @@ correlation_group_id/delay_ms
 r_m=\operatorname{clip}(q_m\pi_m\exp(-\lambda\Delta t_m),0,1)
 \]
 
-其中`pi_m`只来自预查询node prior。`correlation_group_id`只能由接收链、波束、频段、时间窗和共同中继等无真值元数据预先生成；不确定是否独立时必须并入同一相关组。
+其中`pi_m`只来自预查询node prior。类别先验固定为`pi_k=1/(C+1)`，不得从query batch计数估计，因而对class handle置换保持对称。`correlation_group_id`只能由接收链、波束、频段、时间窗和共同中继等无真值元数据预先生成；不确定是否独立时必须并入同一相关组。
 
 对每组`g`：
 
@@ -163,12 +205,14 @@ L_k=\log\pi_k+\sum_g\gamma_g\log P_g(k)
 P(k\mid E)=\operatorname{softmax}_k(L),\quad k\in C\cup\{U\}
 \]
 
-组内归一混合限制相关重复证据；`gamma_g`封顶该组强度；不同独立组才允许PoE累积。同组复制不得增加`gamma_g`，也不得改变结果。零分母、无有效节点或证据冲突未过门统一输出`defer`。
+所有进入log的概率先裁剪到`[1e-8,1]`并重新归一化。组内归一混合限制相关重复证据；`gamma_g`封顶该组强度；不同独立组才允许PoE累积。同组复制不得增加`gamma_g`，也不得改变结果。
+
+单有效节点时不执行上式，直接逐字节返回该节点的`p_local/local_decision/reason code`；A/B单节点与C/D的`N=1`均调用这一identity分支，从定义上满足`C=A,D=B`。零节点、零权重或整event完整性失败统一`defer`。
 
 ### 4.3三态决策
 
-- `accept(c*)`：`P(U)<tau_u`、`P(c*)-max(P(U),max_{c!=c*}P(c))>=tau_m`且跨组冲突不超过`tau_conflict`。
-- `unknown_reject`：`P(U)>=tau_reject`且达到预冻结的独立组质量门；同一相关组复制不能满足该门。
+- `accept(c*)`：`P(U)<tau_u`、`P(c*)-max(P(U),max_{c!=c*}P(c))>=tau_m`且`max_g JS(P_g,P)<=tau_conflict`。
+- `unknown_reject`：`P(U)>=tau_reject`；当有效节点数大于1时，还必须有至少2个独立相关组且`sum_g gamma_g>=tau_group_quality`。同一相关组复制不能满足该门。
 - 其余为`defer`。
 
 温度、先验、质量映射、独立组质量门和阈值只允许由source-only、合法support或pre-query deployment prior冻结，并写入`calibration_receipt`。不得使用query真值、真实角色、真实batch构成、scorer输出、类别配额或全局重分配。
@@ -203,9 +247,20 @@ LOCAL_EVIDENCE_SEALED
 | C | 原ADV3B02 bundle | CARE-PoE |
 | D | `P1-OWR-H` bundle | CARE-PoE |
 
-同输入指相同原始received-IQ/physical-ID、support/query清单、deadline、场景、K、seed和部署node roster；不同Phase1或DA状态必须保留各自bundle/adaptation receipt，不能强行共用不同模型的feature artifact。
+同输入以一个`base_manifest`和两个预封存supplement定义：`base_manifest`固定原始received-IQ/physical-ID、query、deadline、场景、K、seed和部署node roster；`old_support_supplement`只含旧类合法support；`new_support_supplement`只含授权后fresh-K新类support。不同Phase1或DA状态必须保留各自bundle/adaptation receipt，不能强行共用不同模型的feature artifact。
 
-节点全集为5个预注册receiver时，使用全部31个非空节点子集，天然覆盖`N_sat_deployed∈{1,2,3,4,5}`，不根据结果挑子集。每个event同时报告`N_sat_deployed`和deadline前的`N_rx_observed`；缺失节点不得从事件分母删除。`N=1`必须逐字节满足`C=A`和`D=B`。
+四状态的唯一干预冻结为：
+
+| 状态因子 | 允许打开的状态 |
+|---|---|
+| `DA0` | 不打开`old_support_supplement`，使用Stage2-A恒等状态 |
+| `DA1` | 只读同一`old_support_supplement`，运行已冻结的`P2-S2B-FULL`support-only旧类适配；query零fit/零update |
+| `REG0` | 不打开`new_support_supplement`，新类未注册 |
+| `REG1` | 只读同一`new_support_supplement`，运行`P2-FULL`的registration-only append子程序；对应DA状态的旧类prefix bytes/hash保持不变 |
+
+`DA0_REG1`从DA0旧状态append新类，`DA1_REG1`从DA1旧状态append同一新类；REG1不能借新support反向适配旧状态。现有Stage2-B/C arm只作为冻结接口谱系，不把历史开发性能当作当前目标达标证据。
+
+节点全集为5个预注册receiver时，使用全部31个非空节点子集，天然覆盖`N_sat_deployed∈{1,2,3,4,5}`，不根据结果挑子集。`node_order`与每个子集的leader在matrix manifest中按采集roster顺序冻结，leader为该子集中排序第一的节点，禁止按`q`、预测或结果选择。每个event同时报告`N_sat_deployed`和deadline前的`N_rx_observed`；缺失节点不得从事件分母删除。`N=1`必须逐字节满足`C=A`和`D=B`。
 
 ### 6.2四状态
 
@@ -242,13 +297,14 @@ joint interaction = D-B-C+A
 2.在`ssr-gpu`中完成真实模型反向传播可达性审计，列出允许更新的精确参数，证明`L_OW`改变`z_id`而禁训参数不变。
 3.用真实checkpoint完成full-dual runtime smoke，验证`z_id/z_dom/logits`shape、finite、归一化及v1身份输出parity。
 4.冻结v2 bundle schema、v1兼容行为、forbidden-content检查和seal/hash/class-order校验。
-5.证明`open_world_evidence_v2.0`的shared core与local density使用AND语义，local component并集不能独立接收；clean/satellite known hard-core TPR均不低于0.85后才解释proxy指标；`endpoint_accept_v1`只作为legacy基线。
-6.证明predictor schema拒绝`role/true_label`，sidecar缺失或truth置换不改变prediction bytes/hash。
-7.证明opaque双ID、一个event多reception仍计1 shot、重复/跨event/hash不一致/迟到证据均fail closed。
-8.证明节点排列不变、class handle置换等变、共同正交特征变换不改变距离决策、同相关组复制不增益。
-9.证明无节点/零权重/冲突输出`defer`，registered reject/defer计错，unknown accept/reject/defer三者分离。
-10.证明31个节点子集、A/B/C/D、四状态与同输入清单完整；`N=1`满足`C=A,D=B`。
-11.证明anonymous不能直接注册，credential fail closed，历史unknown不能变support，fresh-K使用新event并生成新`split_id`。
+5.证明`z_id=id_feat_cls`的真实checkpoint shape/parity和精确allowlist；证明`open_world_evidence_v2.0`的component构建、等stratum mixture归一、shared core与local density AND语义及local三态/reason code，local component并集不能独立接收。
+6.证明known hard-core TPR的global/min-class/receiver/day/三种LEO共同floor和相对基座门全部成立后才解释proxy指标；`endpoint_accept_v1`只作为legacy基线。
+7.证明predictor schema拒绝`role/true_label`，sidecar缺失或truth置换不改变prediction bytes/hash。
+8.证明`verified_physical/proxy_unverified`条件schema、采集前ID依赖、一个event多reception计1 shot及整event完整性fail closed。
+9.证明节点排列不变、class handle置换等变、共同正交特征变换不改变距离决策、同相关组复制不增益。
+10.证明单节点identity、无节点/零权重/冲突defer、registered reject/defer计错及unknown三态分离。
+11.证明31个节点子集、预注册leader、A/B/C/D、四状态与base/supplement干预完整；`N=1`满足`C=A,D=B`。
+12.证明anonymous不能直接注册，credential fail closed，历史unknown不能变support，fresh-K使用新event并生成新`split_id`。
 
 独立监督者必须对上述证据给出`P0=0/P1处置明确`后，主代理才能把状态改为`DESIGN_FROZEN`并拆分非重叠实现任务。
 

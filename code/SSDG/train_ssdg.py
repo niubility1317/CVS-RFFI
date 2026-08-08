@@ -883,6 +883,24 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--dry_run", action="store_true")
     add_common_data_args(parser)
     parser.add_argument(
+        "--phase1_source_train_tx_ids",
+        type=str,
+        default="",
+        help="Comma-separated source TX labels admitted to Phase1 training.",
+    )
+    parser.add_argument(
+        "--phase1_source_known_validation_tx_ids",
+        type=str,
+        default="",
+        help="Comma-separated TX-exclusive held-known labels; never loaded by training.",
+    )
+    parser.add_argument(
+        "--phase1_source_proxy_unknown_tx_ids",
+        type=str,
+        default="",
+        help="Comma-separated TX-exclusive proxy-unknown labels; never loaded by training.",
+    )
+    parser.add_argument(
         "--phase1_realized_rho_tolerance",
         type=float,
         default=0.002,
@@ -1015,6 +1033,80 @@ def split_tx_rx_day_1_6_3(
         unlabeled_ratio=unlabeled_ratio,
         source_val_ratio=source_val_ratio,
     )
+
+
+def _phase1_tx_partition_view(
+    ds_w: Mapping[str, Any],
+    *,
+    train_spec: str = "",
+    known_validation_spec: str = "",
+    proxy_unknown_spec: str = "",
+) -> Tuple[Dict[str, Any], Dict[str, Any]]:
+    """Return a contiguous TX-reindexed training view and a disjoint-role receipt."""
+
+    def _parse(value: str) -> List[str]:
+        return [item.strip() for item in str(value or "").split(",") if item.strip()]
+
+    train = _parse(train_spec)
+    known_validation = _parse(known_validation_spec)
+    proxy_unknown = _parse(proxy_unknown_spec)
+    enabled = bool(train or known_validation or proxy_unknown)
+    if not enabled:
+        labels = [str(value) for value in list(ds_w.get("tx_list", []))]
+        return dict(ds_w), {
+            "schema": "cvs.phase1.tx_partition_receipt.v1",
+            "enabled": False,
+            "source_known_train_tx": labels,
+            "source_known_validation_tx": [],
+            "source_proxy_unknown_tx": [],
+        }
+    if not train or not known_validation or not proxy_unknown:
+        raise ValueError(
+            "Phase1 TX-exclusive mode requires non-empty train, known-validation, and proxy-unknown TX sets"
+        )
+    roles = {
+        "source_known_train_tx": train,
+        "source_known_validation_tx": known_validation,
+        "source_proxy_unknown_tx": proxy_unknown,
+    }
+    for role, values in roles.items():
+        if len(values) != len(set(values)):
+            raise ValueError(f"duplicate TX label in {role}: {values}")
+    role_names = list(roles)
+    for i, left in enumerate(role_names):
+        for right in role_names[i + 1 :]:
+            overlap = sorted(set(roles[left]).intersection(roles[right]))
+            if overlap:
+                raise ValueError(f"Phase1 TX roles overlap: {left} vs {right}: {overlap}")
+
+    tx_list = [str(value) for value in list(ds_w.get("tx_list", []))]
+    index_by_label = {label: index for index, label in enumerate(tx_list)}
+    requested = [value for values in roles.values() for value in values]
+    missing = sorted(set(requested).difference(index_by_label))
+    if missing:
+        raise ValueError(f"Phase1 TX role labels are absent from dataset: {missing}")
+    train_indices = [index_by_label[label] for label in train]
+    data = ds_w.get("data")
+    if data is None:
+        raise ValueError("WiSig dataset lacks data")
+    filtered = dict(ds_w)
+    filtered["tx_list"] = list(train)
+    filtered["data"] = [data[index] for index in train_indices]
+    receipt = {
+        "schema": "cvs.phase1.tx_partition_receipt.v1",
+        "enabled": True,
+        **roles,
+        "dataset_tx_count": len(tx_list),
+        "training_tx_count": len(train),
+        "training_view_contiguous_reindex": {
+            str(new_index): label for new_index, label in enumerate(train)
+        },
+        "held_tx_loaded_by_training": False,
+    }
+    receipt["partition_sha256"] = hashlib.sha256(
+        json.dumps(receipt, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    ).hexdigest()
+    return filtered, receipt
 
 
 def _as_plain_list(value: Any) -> List[Any]:
@@ -1442,6 +1534,16 @@ def _build_source_split_receipt(
 
 def _build_ssdg_wisig_data(args, device: torch.device):
     ds_w = load_wisig_compact_pkl(args.wisig_pkl)
+    ds_w, tx_partition_receipt = _phase1_tx_partition_view(
+        ds_w,
+        train_spec=str(getattr(args, "phase1_source_train_tx_ids", "")),
+        known_validation_spec=str(
+            getattr(args, "phase1_source_known_validation_tx_ids", "")
+        ),
+        proxy_unknown_spec=str(
+            getattr(args, "phase1_source_proxy_unknown_tx_ids", "")
+        ),
+    )
     infer_nc = len(ds_w.get("tx_list", []))
     if infer_nc > 0:
         args.num_classes = infer_nc
@@ -1595,6 +1697,7 @@ def _build_ssdg_wisig_data(args, device: torch.device):
             "test": test_split_info,
             "named_test_meta": named_meta,
             "source_split_receipt": split_receipt,
+            "tx_partition_receipt": tx_partition_receipt,
         },
     }
 
