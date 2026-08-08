@@ -78,3 +78,11 @@ cd <release>/code && nohup setsid env RUN_ID=phase1_wrc_nct_clean6_20260809_v1 P
 5.六折不可变readout与TorchScript runtime导出成功，GI/WRC及eager/TS parity不超过`1e-5`。
 
 任一门失败即`REJECT`并关闭当前Q98/NCT阈值族；不得用proxy改善补偿known floor，也不得把held诊断写成Phase3真实unknown性能。当前无best epoch/checkpoint选择，因为本实验不训练模型。
+
+## 6.运行器技术终态（2026-08-09）
+
+状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`；本节不作性能解释。固定commit`5f892f49d31653f02ac3ca31dc5bb8fc200eb450`已无prefix归档至release，archive SHA256=`ae9475ff815150d1c36e11cfb1e72823a7cbefa1ae74e28c406bc2850ba59293`。远端archive代码SHA与给定Windows工作树SHA的差异仅为LF/CRLF口径，launcher两者一致；远端结构、`py_compile`、`eval --help`、`bash -n`及6条dry-run均通过。
+
+唯一冻结命令已执行一次，launcher PID=`3930268`；fold子PID=`F1:3930273,F2:3930274,F3:3930275,F4:3930276,F5:3930277,F6:3930279`。completion共6行：F1/F2/F6 exit=0，F3/F4/F5 exit=1。F1/F2/F6各生成readout、metrics、scores，CSV各10401行；F3/F4/F5仅留下runtime，readout/metrics/scores缺失。
+
+F3/F4/F5在`_parity_receipt`产生相同确定性`WRCNCTError: GI/WRC or eager/TorchScript parity exceeded`，因此按预注册的“至少两fold同一确定性异常”规则停止；未重试、未下载runtime/NPZ/GI bundle/checkpoint。小artifact已回收到`E:\type10-7\automation_reports\CV-SincNet\phase1_wrc_nct_clean6_20260809_v1\artifacts`，包含F1/F2/F6 readout+metrics+scores、六份日志、`completion.tsv`和`manifest.json`，SHA已逐项核对。完成后无run-owned进程，8卡均0%/1MiB，SSH客户端/TCP22均清理；`retry=NO`。
