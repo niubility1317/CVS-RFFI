@@ -161,4 +161,4 @@ B相对A把proxy FAR降低`15.25pp`，同时source full accuracy仅下降`0.875p
 
 ## 8.风险与后续
 
-本轮结论为`NO_SINGLE_ARM_PROMOTED`：C证明单向clean→LEO一致性是强泛化组件；B证明known-only角度几何包含独立proxy拒识信号；D证明把两者压到同一表征/读出路径会破坏开放集边界。下一轮不增加receiver/day/channel对齐、EVT、动态门控或复杂审计，优先验证“分类读出与拒识读出解耦”的最小双读出方案：LEO分类路径继承C，开放集路径继承B，分别输出类别证据和拒识证据，再以固定source-only规则组合。该方案先做小型同输入实验，不直接扩成六类200epoch正式bundle。完整Phase3 v2/CARE-PoE设计继续延期，不阻塞Phase1实验迭代。
+本轮结论为`NO_SINGLE_ARM_PROMOTED`：C证明单向clean→LEO一致性是强泛化组件；B证明known-only角度几何包含独立proxy拒识信号；D证明把两者压到同一表征/读出路径会破坏开放集边界。后续最小双读出实验已完成：proxy/held-known FAR仅改善0.75pp/1.50pp，但source full accuracy下降3.50pp，结论为`REJECTED_KNOWN_GATE`。因此不扩成六类200epoch正式bundle；Phase1只保留C类别证据与B/JS连续陌生度的研究价值，正式CARE-PoE性能矩阵等待不依赖真值的事件绑定输入。
