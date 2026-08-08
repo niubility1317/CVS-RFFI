@@ -22,6 +22,10 @@ import torch
 EXPECTED_SCENARIOS = ("leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak")
 EXPECTED_SOURCE_DAYS = ("2021_03_01", "2021_03_08")
 EXPECTED_SOURCE_RXS = ("1-1", "1-19", "14-7", "18-2", "19-2", "2-1")
+# ``channel_views`` records the post-channel TTA/runtime view name, not the
+# source channel profile.  The exporter emits ``single`` for its one frozen
+# satellite observation when ``satellite_tta_policy=none``.
+EXPECTED_LEO_RUNTIME_VIEW = "single"
 METADATA_FIELDS = (
     "dataset_role",
     "tx_ids",
@@ -268,8 +272,10 @@ def _validate_leo_payload(
         raise PAMRPostfreezePairError(
             f"{label} LEO source row count mismatch: expected={expected_source_count} observed={payload['features'].shape[0]}"
         )
-    if set(payload["channel_views"].tolist()) != {"satellite"}:
-        raise PAMRPostfreezePairError(f"{label} LEO payload must use exactly channel_view=satellite")
+    if set(payload["channel_views"].tolist()) != {EXPECTED_LEO_RUNTIME_VIEW}:
+        raise PAMRPostfreezePairError(
+            f"{label} LEO payload must use exactly channel_view={EXPECTED_LEO_RUNTIME_VIEW}"
+        )
     scenarios = payload["sat_scenarios"]
     if set(scenarios.tolist()) != set(expected_scenarios):
         raise PAMRPostfreezePairError(f"{label} LEO scenario set mismatch")

@@ -33,6 +33,7 @@ FROZEN_POSTFREEZE_TEST_CONTRACT = {
     "binding": "NPZ SHA, strict export audit, final head, local4 order",
     "isolation": "outer proxy/target rows cannot affect source pair metrics",
     "physical": "C/G ordered metadata and clean/LEO physical/scenario closure",
+    "leo_view": "source profile=satellite plus satellite_tta_policy=none emits row view=single",
     "matrix": "12 clean + 12 LEO + 12 proxy + 6 C/G pair diagnostics",
 }
 
@@ -190,7 +191,7 @@ def _payload(*, arm: str, leo: bool, checkpoint_sha256: str) -> dict[str, np.nda
             features.append(_basis(row["tx_ids"], leo=leo, arm=arm))
             logits.append(_logits(row["tx_ids"], arm=arm))
             if leo:
-                row["channel_views"] = "satellite"
+                row["channel_views"] = "single"
                 row["sat_scenarios"] = row["sig_ids"].rsplit("-", 2)[0]
         else:
             features.append(np.ones(len(TX), dtype=np.float32))
@@ -264,6 +265,8 @@ def _args(paths: dict[str, Path], out_json: Path):
 
 def test_pair_evaluator_closes_final_head_binding_floors_and_margin(tmp_path):
     paths = _write_pair(tmp_path)
+    with np.load(paths["c_leo"], allow_pickle=False) as leo_payload:
+        assert set(np.asarray(leo_payload["channel_views"]).tolist()) == {"single"}
     output = tmp_path / "pair_metrics.json"
     metrics = PAIR.evaluate(_args(paths, output))
 
@@ -406,7 +409,27 @@ def test_outer_target_proxy_values_have_zero_pair_metric_influence(tmp_path):
                 _rewrite(paths[key], lambda payload: payload["channel_views"].__setitem__(slice(None), "wrong_nonempty_view"))
                 for key in ("c_leo", "g_leo")
             ],
-            "must use exactly channel_view=satellite",
+            "must use exactly channel_view=single",
+        ),
+        (
+            lambda paths: [
+                _set_manifest(
+                    paths[key],
+                    lambda manifest: manifest["channel_profile"]["source"].__setitem__("view", "clean"),
+                )
+                for key in ("c_leo", "g_leo")
+            ],
+            "source channel profile is not satellite",
+        ),
+        (
+            lambda paths: [
+                _set_manifest(
+                    paths[key],
+                    lambda manifest: manifest.__setitem__("satellite_tta_policy", "repair_canonical1"),
+                )
+                for key in ("c_leo", "g_leo")
+            ],
+            "LEO manifest must use satellite_tta_policy=none",
         ),
     ],
 )
