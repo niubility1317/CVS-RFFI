@@ -89,7 +89,8 @@
 - 目标工具与本追踪表均显式标为`GOAL_MODE=ACTIVE`；当前生命周期为`DESIGN_DRAFT`。
 - Phase1作者提出`P1-OWR-H`与接口回退`P1-OWR-0`；Phase3作者提出相关性感知`CARE-PoE`。
 - 独立监督者初审结论为：职责文档`MERGE`，两个机制候选`REVISE`，旧R8评估器作为Phase3预测器及same-event证据`REJECT`。
-- 主代理整合修订见`analysis/phase3_openworld_collaboration_design_20260808.md`，其中冻结了proxy不回流、feature-head梯度可达性、v2 sibling bundle、双ID、预测/评分隔离、31节点子集、A/B/C/D与四状态的设计门。
+- 用户进一步要求完整继承既有Phase1 open-world探索经验；主代理已回溯V31、DualGuard16、P0Closed8、CorePath8及P0/P1控制面，禁止重复post-hoc adapter、动态软门、local component并集、reject-all和单纯放大open loss路线。
+- 主代理整合修订见`analysis/phase3_openworld_collaboration_design_20260808.md`的`REVISION_2`，其中冻结了proxy不回流、feature-head梯度可达性、`shared invariant core AND local density support`、known hard-core TPR前置门、v2 sibling bundle、双ID、预测/评分隔离、31节点子集、A/B/C/D与四状态的设计门。
 - `ssr-gpu`中89项现有loss/协同原语测试通过；真实ADV3B02 checkpoint内存内反向审计证明`L_OW`对8个`id_backbone.cls_head`feature projection tensor产生非零梯度，一步更新改变`z_id`且禁训参数不变。
 - 上述结果只关闭梯度可达性疑问；尚未运行候选实现测试、真实checkpoint v2 smoke或N607实验。
 

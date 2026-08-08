@@ -4,9 +4,9 @@
 
 执行模式：`GOAL_MODE=ACTIVE`
 
-设计状态：`DESIGN_DRAFT/REVISION_1`
+设计状态：`DESIGN_DRAFT/REVISION_2`
 
-候选标识：`P1-OWR-H__CARE-PoE_r1`
+候选标识：`P1-OWR-H__CARE-PoE_r2`
 
 本文件整合Phase1方法作者、Phase3方法作者与独立监督者的只读审查。它不是`DESIGN_FROZEN`、实现完成或性能达标声明；第8节的P0门全部关闭并经独立复审前，不得修改正式训练路径或发布N607实验。
 
@@ -18,6 +18,25 @@
 4.拒绝把现有R8路径修补成Phase3预测器。其真值参与事件构造，只能保留为`NON_DEPLOYMENT_DIAGNOSTIC`历史负面证据。
 5.正式Phase3实现新建独立预测入口、不可变本地证据artifact和真值侧scorer；旧评估器只允许复用经focused tests证明不读取真值的纯函数原语。
 6.在缺少不依赖真值的物理事件绑定时，只允许“多接收节点代理协同”结论；不得声称same-emission、真实同步多星或真实在轨验证。
+7.`P1-OWR-H`必须继承此前Phase1探索的已验证控制和负面证据，不重复post-hoc adapter、动态软门、局部球并集、reject-all或单纯放大open loss路线。
+
+### 1.1既有Phase1探索继承矩阵
+
+| 既有探索 | 已获得的同排证据或工程事实 | 本候选的继承方式 |
+|---|---|---|
+| ADV3B02 V31 feature-centered adapter | `strong_target1_pass=0/80`，最佳unknown FAR约0.542；hard receiver/TX floor未修复 | 拒绝继续post-hoc adapter扫参；把修改点前移到Phase1表示训练 |
+| DualGuard16 | 16/16训练稳定，但source-episode overflow约0.987-0.989、legacy proxy约0.616-0.623、legacy bridge=1；open梯度份额不足且U_s open路由空转 | 继承稳定训练与closed保护；首轮不把U_s当unknown负样本，不用动态DM代替最终边界 |
+| P0Closed8 | fixed p99可下降，但proxy、bridge、overflow、radius/inter无法同一候选联合改善；高open预算会收紧tail却恶化低密度/类间边界 | proxy下降只有在known覆盖和类间margin不坍缩时才可解释；不以单指标晋级 |
+| CorePath8 | 低fixed p99常由known hard-core TPR坍缩到0.010-0.111造成；异类最小间隔可缩到1.4-2.8度 | 强制known hard-core TPR前置门；先保正覆盖，再解释unknown proxy；禁止reject-all伪改善 |
+| Phase1 P0闭环 | 已有balanced TX×receiver/day采样、固定endpoint、三入口parity、terminal fail-closed和source-val-only选择 | 直接复用并写入新候选receipt，不另造重复治理层 |
+| Phase1 P1不变性 | 已有train/eval信道族隔离、TX条件receiver/day/channel泄漏probe、final-only checkpoint和local component审计 | 作为必开控制；`q/z_dom`只有在泄漏probe与独立信道评估通过后才能增加主张 |
+
+由此冻结四条经验性硬约束：
+
+1.动态batch soft gate只作训练遥测，正式证据只读取冻结source-val endpoint与最终bundle同一公式。
+2.known接收必须是`shared invariant core AND local density support`，禁止把多个receiver/day/channel局部球直接取并集形成宽接收域。
+3.当clean或satellite known hard-core TPR低于0.85时，proxy/bridge下降不具有正向含义，候选直接判为正覆盖失败。
+4.首轮`P1-OWR-H`只用有标签known几何训练`L_OW`；`U_s`继续用于既有domain/ADV/clean-sat一致性，不伪装为unknown负样本，也不启用历史上长期空转的U_s direct gate。
 
 ## 2.Phase1数据与proxy边界
 
@@ -69,6 +88,8 @@ L=L_{\mathrm{ADV3B02}}+\lambda_{\mathrm{ow}}L_{\mathrm{OW}}(z_{id},y,d)
 
 `L_OW`只读取`T_train`的source received IQ、允许的source TX标签和source domain标签，使用现有known-only类内紧致、类间margin和同类跨域对齐公式。以下路线显式锁零：legacy batch轮换proxy loss、soft-mixup、source episode、direct metric、EVT/tail/vacuum以及任何confirmed unknown或target/query输入。
 
+训练继续复用已验证的balanced TX×receiver/day采样、clean-sat同物理样本对应、source-val-only/final-only控制、TX条件泄漏probe和fixed endpoint parity。新增`L_OW`不得关闭或旁路这些控制，也不得重新启用已被负面结果否定的动态接收域作为promotion依据。
+
 训练allowlist不得继续使用模糊的字符串包含规则。冻结前必须从真实checkpoint解析`z_id_key=feat_joint`的可达参数，预期至少包括`id_backbone.cls_head`内产生`feat_joint`的projection/gate/joint projection及最终class head；是否训练`dom_backbone.cls_head`、`dom_head`和`adv_head`由真实梯度审计决定。allowlist外参数全部冻结。
 
 P0可达性条件：单个有效batch反向传播后，至少一个允许的`z_id`生产参数收到finite、非零的`L_OW`梯度；一次优化步改变`z_id`几何；禁训参数逐字节不变。若失败，则`P1-OWR-H`退回`DESIGN_DRAFT`，不得用分类head梯度替代几何可达性证据。
@@ -81,18 +102,18 @@ v1字节行为、成员allowlist和Stage2-C读取路径保持不变。新增独�
 cvs.phase1.open_world_local_evidence_bundle.v2
 ```
 
-v2与base-v1的runtime hash、content-root、class binding和checkpoint hash共同封存，包含full-dual TorchScript runtime、`id_geometry`、`dom_geometry`、公式版本、量化参数和独立seal。不得包含raw IQ、sample/member ID、特征库、source cache或可逆样本索引。
+v2与base-v1的runtime hash、content-root、class binding和checkpoint hash共同封存，包含full-dual TorchScript runtime、`id_geometry`、`dom_geometry`、公式版本、量化参数和独立seal。`id_geometry`复用已验证的聚合几何格式，但明确分为共享类核心与receiver/day/channel残差component；component只能提供局部密度支持，不能独立授予known acceptance。bundle不得包含raw IQ、sample/member ID、特征库、source cache或可逆样本索引。
 
 | 输出 | 冻结定义 |
 |---|---|
 | `z_id[B,E_id]` | 当前IQ经真实full-dual runtime得到的unit-normalized身份表征 |
 | `z_dom[B,E_dom]` | 同一IQ得到的unit-normalized域扰动表征 |
-| `d_class[B,C]` | 对全部已注册类统一计算`1-z_id·mu_id[c]` |
-| `e_unknown[B]` | `min_c d_class[c]/max(r_id[c],epsilon)`，是连续陌生度证据而非unknown概率 |
+| `d_class[B,C]` | 对全部已注册类统一计算到共享invariant class core的归一化距离 |
+| `e_unknown[B]` | `1-max_c min(a_core[c],a_density[c])`，是共享核心与局部密度AND后的连续陌生度证据，不是unknown概率 |
 | `q[B]` | `z_dom`相对sealed source-domain geometry的domain plausibility，经预注册单调映射裁剪到`[0,1]` |
-| `p_local[B,C+1]` | 由全类`d_class`与`e_unknown`经冻结温度形成的类别加unknown证据分布 |
+| `p_local[B,C+1]` | 由`a_known[c]=min(a_core[c],a_density[c])`与`e_unknown`经冻结温度形成的类别加unknown证据分布 |
 
-`q`不得读取TX logits、query真值、SNR真值或scorer输出。class handle置换时`d_class/p_local`相同置换，`e_unknown/q`不变。`load_any(v1)`必须显式返回`phase3_local_evidence_supported=false`，不得伪造v2字段。
+`a_core`来自共享class core的距离/半径，`a_density`来自同一类聚合component的最大局部密度支持；任一项低都不能由另一项补偿。`q`不得读取TX logits、query真值、SNR真值或scorer输出。class handle置换时`d_class/p_local`相同置换，`e_unknown/q`不变。共同正交变换同时作用于query和sealed geometry时，距离与决策必须不变。`load_any(v1)`必须显式返回`phase3_local_evidence_supported=false`，不得伪造v2字段。
 
 ## 4.Phase3候选`CARE-PoE`
 
@@ -221,12 +242,13 @@ joint interaction = D-B-C+A
 2.在`ssr-gpu`中完成真实模型反向传播可达性审计，列出允许更新的精确参数，证明`L_OW`改变`z_id`而禁训参数不变。
 3.用真实checkpoint完成full-dual runtime smoke，验证`z_id/z_dom/logits`shape、finite、归一化及v1身份输出parity。
 4.冻结v2 bundle schema、v1兼容行为、forbidden-content检查和seal/hash/class-order校验。
-5.证明predictor schema拒绝`role/true_label`，sidecar缺失或truth置换不改变prediction bytes/hash。
-6.证明opaque双ID、一个event多reception仍计1 shot、重复/跨event/hash不一致/迟到证据均fail closed。
-7.证明节点排列不变、class handle置换等变、共同正交特征变换不改变距离决策、同相关组复制不增益。
-8.证明无节点/零权重/冲突输出`defer`，registered reject/defer计错，unknown accept/reject/defer三者分离。
-9.证明31个节点子集、A/B/C/D、四状态与同输入清单完整；`N=1`满足`C=A,D=B`。
-10.证明anonymous不能直接注册，credential fail closed，历史unknown不能变support，fresh-K使用新event并生成新`split_id`。
+5.证明shared core与local density使用AND语义，local component并集不能独立接收；clean/satellite known hard-core TPR均不低于0.85后才解释proxy指标。
+6.证明predictor schema拒绝`role/true_label`，sidecar缺失或truth置换不改变prediction bytes/hash。
+7.证明opaque双ID、一个event多reception仍计1 shot、重复/跨event/hash不一致/迟到证据均fail closed。
+8.证明节点排列不变、class handle置换等变、共同正交特征变换不改变距离决策、同相关组复制不增益。
+9.证明无节点/零权重/冲突输出`defer`，registered reject/defer计错，unknown accept/reject/defer三者分离。
+10.证明31个节点子集、A/B/C/D、四状态与同输入清单完整；`N=1`满足`C=A,D=B`。
+11.证明anonymous不能直接注册，credential fail closed，历史unknown不能变support，fresh-K使用新event并生成新`split_id`。
 
 独立监督者必须对上述证据给出`P0=0/P1处置明确`后，主代理才能把状态改为`DESIGN_FROZEN`并拆分非重叠实现任务。
 
