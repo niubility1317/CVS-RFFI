@@ -68,3 +68,11 @@ cd <release>/code && nohup setsid env RUN_ID=phase1_manytx_realoe12_physrx_v2_po
 ## 5.分析边界
 
 主控在完整artifact返回后从score CSV逐样本`energy`重算energy AUROC，并按同fold C/G保留完整同行指标。known保护下降超过2pp时该fold G拒绝；正式`unknown FAR<=5%`不可被known精度补偿。本实验仍只提供Phase1 source-side开发证据，不构成K-shot、target unknown或Phase3正式声明。
+
+## 6.运行器闭环证据（2026-08-08）
+
+- 状态：远端`ARTIFACTS_COMPLETE`；本地小artifact回收在SSH服务临时拒绝后为`RETRIEVAL_PARTIAL_BLOCKED`，不影响远端run，也未重试任何export/score。
+- release：`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_manytx_realoe12_physrx_v2_postfreeze_20260808_v1_1e9ebcd0`；commit=`1e9ebcd02d9edfa410ac4493103ba67f49cd28c6`；本地git-archive tar SHA256=`b1a95d1e07b6b92312c2ac2fb7dcf88d7f83f41a7527cad4ceaede67ef85caba`（260884480 bytes）。归档规范哈希：exporter=`2f5ba4d2c270808b0e0ce37fba5159ffc95c91fa997d6a1ee6c26ad5035004d1`、axis test=`579fdda25e141c362e5306ad7c69f62660fd2be72368b825f859e8f1b1c59d40`、launcher=`c15681bba47ad4c592ce118fa0519a69d629a1eedf13ccc9452e2f731837c186`、scorer=`ac1cf8e45fadbc0782282625300a0c30936fdce4b2df241558dff979dafe5c04`。Windows工作树CRLF口径不同，仅记录归档字节哈希，未改远端代码。
+- exact launch：上一节命令原样执行一次；caller超时后只读确认launcher已落地，未重复启动。远端最终无run-owned进程，GPU0--7均为0%/1MiB。
+- 结构闭环：`export_completion.tsv`=12行、全部`exit_code=0`；12/12 NPZ各10400行，角色计数均为`source=2000,target_old=400,proxy_unknown=8000`，days均为`2021_03_01,2021_03_08`，channel=`clean`，strict load=`missing=0,unexpected=0,skipped=0`。`score_completion.tsv`=24行、全部`exit_code=0`；24 JSON、24 CSV均存在，每CSV=10401行；36 stdout日志存在；错误指纹扫描无Traceback/ValueError/RuntimeError/CUDA/ERROR/FAILED。
+- 本地已回收8个candidate的完整7文件（56文件）及F5C的`proxy_metrics.json`（共57文件）；F5C/F5G/F6C/F6G其余小文件、两份completion TSV和outer log待SSH服务恢复后补传。已确认本地无残留`ssh.exe`/`scp.exe`及TCP22连接。未下载NPZ或checkpoint；不作性能结论。
