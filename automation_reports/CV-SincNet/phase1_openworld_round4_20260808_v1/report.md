@@ -1,6 +1,6 @@
 # Phase1开放世界就绪表征第4轮回顾与候选冻结报告
 
-目标模式：`GOAL_MODE=ACTIVE`
+目标模式：`GOAL_MODE=BLOCKED_EXTERNAL_SSH`
 
 状态：`LOCAL_VERIFIED / PREREGISTERED / BLOCKED_EXTERNAL_SSH`
 
@@ -122,3 +122,5 @@ clean实验完成后由主Agent读取六折同行结果。模型健康、known�
 本次阻塞发生在release落地之前：远端release、run、log均未创建，GI-EpiOR未启动，没有实验退出码或性能结果。因此状态为`BLOCKED_EXTERNAL_SSH / NO_PERFORMANCE_RESULT`，不是方法失败，也不消耗实验重试。连接恢复后仍用同一不可覆盖run ID首次发布；不得另建候选、调参或先看局部性能。
 
 读取最新目标文件并把晋级口径纠正为Phase1五项条件后，设计与报告冻结于commit`01a2b7734c92ea7ae1d5cd8a4afde2c71b9e0ad9`。随后执行第二次、且仅一次的续跑恢复：direct preflight仍返回`Connection refused`，单次verified lab bridge同样在`172.31.105.18:22`返回`Connection refused`。清理后`ssh/scp=0`、TCP22=0；release/run/log仍未创建。下一次连接恢复时以commit`01a2b7734c92ea7ae1d5cd8a4afde2c71b9e0ad9`作为固定archive来源，不因后续阻塞记录改变方法版本。
+
+第三个连续goal turn再次执行一次direct preflight与一次verified lab bridge fallback；两者分别以N607与`172.31.105.18:22`的`Connection refused`结束。清理后`ssh/scp=0`、TCP22=0，且三轮均未创建或触碰release/run/log。相同外部阻塞已连续出现三轮，当前无法取得六折clean运行证据，故目标正式记为`BLOCKED_EXTERNAL_SSH`。恢复条件仅为direct N607或verified bridge的SSH服务重新可用；恢复后仍从commit`01a2b7734c92ea7ae1d5cd8a4afde2c71b9e0ad9`首次发布同一run，不需要重做设计、实现、测试或审查。
