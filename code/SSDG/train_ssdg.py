@@ -551,6 +551,13 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--proto_push_weight", type=float, default=0.1)
     parser.add_argument("--proto_min_count", type=int, default=2)
     parser.add_argument("--lambda_open_world_feat", type=float, default=0.0)
+    parser.add_argument(
+        "--ow_feat_key",
+        type=str,
+        default="z_id",
+        choices=["z_id", "id_feat_cls"],
+        help="Feature consumed only by the optional known-only open-world geometry loss.",
+    )
     parser.add_argument("--ow_feat_start_epoch", type=int, default=1)
     parser.add_argument("--ow_feat_warmup_epochs", type=int, default=0)
     parser.add_argument("--ow_feat_radius_deg", type=float, default=12.0)
@@ -1107,6 +1114,52 @@ def _phase1_tx_partition_view(
         json.dumps(receipt, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
     ).hexdigest()
     return filtered, receipt
+
+
+def _select_open_world_feature(
+    out: Mapping[str, Any],
+    z_id: "torch.Tensor",
+    *,
+    key: str,
+) -> "torch.Tensor":
+    """Select the explicitly configured feature for the optional geometry loss.
+
+    ``z_id`` is returned by identity for the default path so legacy runs keep
+    their exact feature tensor and do not enter any new validation branch.
+    The ``id_feat_cls`` route is deliberately strict because it is a separate
+    frozen experimental intervention rather than a best-effort alias.
+    """
+
+    feature_key = str(key or "z_id")
+    if feature_key == "z_id":
+        return z_id
+    if feature_key != "id_feat_cls":
+        raise ValueError(f"Unsupported open-world feature key: {feature_key!r}")
+    if not isinstance(out, Mapping):
+        raise ValueError("id_feat_cls selection requires a mapping model output")
+    feature = out.get("id_feat_cls")
+    if not torch.is_tensor(feature):
+        raise ValueError("id_feat_cls selection requires a top-level tensor output")
+    if feature.dim() != 2:
+        raise ValueError(
+            "id_feat_cls selection requires a 2D [B,D] tensor, "
+            f"got shape={tuple(feature.shape)}"
+        )
+    if not bool(torch.isfinite(feature).all().item()):
+        raise ValueError("id_feat_cls selection rejects non-finite values")
+    if not torch.is_tensor(z_id) or z_id.dim() != 2:
+        raise ValueError("id_feat_cls selection requires the current z_id to be a 2D tensor")
+    if feature.size(0) != z_id.size(0):
+        raise ValueError(
+            "id_feat_cls selection row mismatch with z_id: "
+            f"{feature.size(0)} != {z_id.size(0)}"
+        )
+    if feature.size(1) != z_id.size(1):
+        raise ValueError(
+            "id_feat_cls selection dimension mismatch with z_id: "
+            f"{feature.size(1)} != {z_id.size(1)}"
+        )
+    return feature
 
 
 def _as_plain_list(value: Any) -> List[Any]:
@@ -3914,6 +3967,7 @@ def _build_ssdg_epoch_telemetry_row(
         "concat_sat_deduplicate_tx_ce": bool(getattr(args, "concat_sat_deduplicate_tx_ce", False)),
         "concat_sat_teacher_clean_only": bool(getattr(args, "concat_sat_teacher_clean_only", False)),
         "id_feature_key": str(getattr(args, "id_feature_key", "feat_joint")),
+        "ow_feat_key": str(getattr(args, "ow_feat_key", "z_id")),
         "os_budget_scope": str(getattr(args, "os_budget_scope", "all_shared")),
         "direct_metric_hierarchical_combine": str(
             getattr(args, "direct_metric_hierarchical_combine", "product")
@@ -5016,6 +5070,7 @@ def train(args) -> int:
                 f"lambda_group_ce={float(args.lambda_group_ce):.6g} lambda_fishr={float(args.lambda_fishr):.6g} "
                 f"lambda_sat_cls={float(args.lambda_sat_cls):.6g} lambda_sat_cons={float(args.lambda_sat_cons):.6g} "
                 f"lambda_proto={float(args.lambda_proto):.6g} lambda_open_world_feat={float(args.lambda_open_world_feat):.6g} "
+                f"ow_feat_key={str(getattr(args, 'ow_feat_key', 'z_id'))} "
                 f"lambda_zid_compact={float(args.lambda_zid_compact):.6g} lambda_proxy_unknown={float(args.lambda_proxy_unknown):.6g} "
                 f"proxy_virtual_mode={args.proxy_unknown_virtual_mode} proxy_vaccept_w={float(args.proxy_unknown_vaccept_weight):.6g} "
                 f"proxy_gate_w={float(args.proxy_unknown_component_gate_weight):.6g} "
@@ -5526,8 +5581,13 @@ def train(args) -> int:
                 if float(args.lambda_open_world_feat) > 0.0 and ow_feat_stage_scale > 0.0:
                     if open_world_feature_space_loss is None:
                         raise ImportError("cvsrffi.losses.open_world_feature_space_loss is required for --lambda_open_world_feat")
-                    loss_open_world_feat_l, ow_feat_info = open_world_feature_space_loss(
+                    ow_feat_z = _select_open_world_feature(
+                        out_l,
                         z_id_l,
+                        key=str(getattr(args, "ow_feat_key", "z_id")),
+                    )
+                    loss_open_world_feat_l, ow_feat_info = open_world_feature_space_loss(
+                        ow_feat_z,
                         y_l,
                         d_l,
                         radius_rad=math.radians(float(args.ow_feat_radius_deg)),
@@ -8754,6 +8814,7 @@ def train(args) -> int:
         "zid_leakage_probe": final_zid_leakage_probe,
         "phase1_v2_final_blocked": bool(phase1_v2_final_blocked),
         "final_guard_reason": str((guard_state or {}).get("reason", "")),
+        "ow_feat_key": str(getattr(args, "ow_feat_key", "z_id")),
         "prototype_export": export_status,
         "resource_summary": resource_summary,
         "p0_mechanism_flags": p0_mechanism_flags,
@@ -8815,6 +8876,7 @@ def train(args) -> int:
         "resolved_config_hash": str(
             getattr(args, "ablation_config_hash", "")
         ),
+        "ow_feat_key": str(getattr(args, "ow_feat_key", "z_id")),
         "source_split_receipt": (
             data_ctx.get("split_info", {}) or {}
         ).get("source_split_receipt", {}),
