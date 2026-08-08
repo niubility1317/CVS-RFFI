@@ -4,11 +4,11 @@
 
 - 目标模式：`ACTIVE`
 - run ID：`phase3_care_poe_g0_synthetic_20260808_v1`
-- 状态：`LOCAL_VERIFIED / WAITING_INDEPENDENT_P0_P1`
+- 状态：`LOCAL_VERIFIED / INDEPENDENT_REVIEW_PASS / READY_N607`
 - 证据等级：`TECHNICAL_SYNTHETIC_NO_PERFORMANCE_RESULT`
 - 时间：2026-08-08
 - 操作者：Codex主代理；N607唯一runner待交接
-- Git commit：`334dd23acf2ec7ff7d17ba5e2c54b7cf588836fc`
+- 实现Git commit：`7c94aface3d9ef7b8f3c9db83da8c186df5774fa`
 
 ## 1.目标与假设
 
@@ -22,14 +22,14 @@
 
 | 文件 | 目的 | SHA256 |
 |---|---|---|
-| `code/cvsrffi/phase3_care_poe.py` | seal、CARE-PoE、矩阵、scorer、生命周期 | `a5d3cb5f0a271149605ab60e7c747bdb6b6897980bd54cb4cfe8c60d471446e7` |
-| `code/scripts/phase3_care_poe_fixture.py` | 确定性合成fixture | `88a2863442c0d7281f82c28d5d0c39f8cc338d4998a359fe3e3aceb3ea3e1ab3` |
+| `code/cvsrffi/phase3_care_poe.py` | seal、CARE-PoE、矩阵、scorer、生命周期 | `5a81e95dc730bb66fa150c2bb7d643068f7be166e62866c57ba7e177a43e73c5` |
+| `code/scripts/phase3_care_poe_fixture.py` | 确定性合成fixture | `7f1587f9213336d5270efbf7bd751d0891d1cfa1f2cc8d18881bbc77b53474a8` |
 | `code/scripts/phase3_care_poe_predict.py` | 不读真值的A/B/C/D预测入口 | `ff54f02e66d1db3f4996deec24cd3638d58b754f57e44196d698fb18587fcf98` |
 | `code/scripts/phase3_care_poe_score.py` | 独立真值评分入口 | `137bc6d60937ff650824b625a2aa4f80c75c52db1cf044022654fc658fc15a21` |
 | `code/scripts/phase3_care_poe_lifecycle.py` | anonymous、授权和fresh-K入口 | `333912b935e8c4a0cfbbee4386da8138e096cd5710fab269380d2b5fc9b19149` |
-| `code/tests/test_phase3_care_poe.py` | 12项聚焦协议/因果负测 | `81cc66cb9c0b29e9a700279766c3d513e264f6c827703d1fe4e0359086301a78` |
+| `code/tests/test_phase3_care_poe.py` | 14项聚焦协议/因果负测 | `0c3acb8439b5d9d3a196ba3144f9c3b5bb56bd8b9bcfbe7bd4599cc32e8d41ab` |
 
-本地环境：`ssr-gpu`。验证结果：`python -m pytest code/tests/test_phase3_care_poe.py -q`为`12 passed`；五个入口均通过`py_compile`；一次确定性本地CLI闭环生成60条prediction、独立metrics和fresh-K receipt。测试曾发现验证端二次概率归一化导致合法seal误拒，已改为先验证收到的canonical payload hash，再进行数值语义检查。
+本地环境：`ssr-gpu`。验证结果：`python -m pytest code/tests/test_phase3_care_poe.py -q`为`14 passed`；五个入口均通过`py_compile`；一次确定性本地CLI闭环生成60条prediction、独立metrics和fresh-K receipt。测试曾发现验证端二次概率归一化导致合法seal误拒，已改为先验证收到的canonical payload hash，再进行数值语义检查。独立复审先发现跨bundle物理reception未逐项绑定、相关组混合可受新增相关记录影响和scorer重复行/非法role未拒绝；定点修复后独立复测为`P0=0,P1=0,14 passed,ALLOW_N607_SYNTHETIC_G0=YES`。
 
 ## 3.冻结矩阵
 
@@ -44,7 +44,7 @@
 
 ## 4.N607预注册
 
-- release：`/home/szu2070436088/2510044040/CV-SincNet/releases/phase3_care_poe_g0_synthetic_20260808_v1_334dd23a`
+- release：`/home/szu2070436088/2510044040/CV-SincNet/releases/phase3_care_poe_g0_synthetic_20260808_v1_7c94afac`
 - run：`/home/szu2070436088/2510044040/CV-SincNet/runs/phase3_care_poe_g0_synthetic_20260808_v1`
 - log：`/home/szu2070436088/2510044040/CV-SincNet/logs/phase3_care_poe_g0_synthetic_20260808_v1`
 - CWD：`<release>/code`
@@ -62,7 +62,7 @@ python scripts/phase3_care_poe_score.py --predictions <run>/prediction/predictio
 python scripts/phase3_care_poe_lifecycle.py --predictions <run>/prediction/predictions.jsonl --credential-template <run>/fixture/credential_template.json --fresh-support <run>/fixture/fresh_support.jsonl --output <run>/lifecycle.json --k 5
 ```
 
-预期artifact：fixture下7个小文件、prediction下2个小文件、`metrics.json`、`lifecycle.json`、四入口stdout/exit receipt和manifest。不得下载数据、checkpoint或大型artifact。
+预期artifact：fixture下6个小文件、prediction下2个小文件、`metrics.json`、`lifecycle.json`、四入口stdout/exit receipt和manifest。不得下载数据、checkpoint或大型artifact。
 
 ## 5.成功、停止与证据读取
 
@@ -79,4 +79,3 @@ python scripts/phase3_care_poe_lifecycle.py --predictions <run>/prediction/predi
 ## 7.已知风险与下一步
 
 最大科学风险不是代码，而是缺少标签可见前生成的物理事件/接收ID。N607 G0完成后只能把接口状态推进到`ARTIFACTS_COMPLETE`；正式性能仍等待合法事件绑定。收到合法数据后，直接发布冻结A/B/C/D×`N_sat=1..5`完整矩阵，不再增加额外审查层。
-
