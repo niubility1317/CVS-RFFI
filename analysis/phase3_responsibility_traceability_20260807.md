@@ -7,7 +7,7 @@
 
 执行模式：`GOAL_MODE=ACTIVE`
 
-当前状态：`IMPLEMENTING`（Phase1最小高泛化实验与source-held审计已完成；Phase3正式性能矩阵等待不依赖真值的事件/接收绑定数据）
+当前状态：`IMPLEMENTING`（Phase1真实checkpoint不可变bundle与truth-free本地证据已完成技术闭环但未性能晋级；Phase3正式性能矩阵等待不依赖真值的事件/接收绑定数据）
 
 完成边界：职责文档、代码实现、本地验证、独立`P0/P1`审查、N607非覆盖运行、完整同排artifact与证据受限结论全部闭环后，才允许把目标标为完成。
 
@@ -35,11 +35,11 @@
 | P1-01 | 一 | Phase1表征同时覆盖TX可分性、跨接收机稳定性、LEO弱信道鲁棒性、紧致/margin、低过置信、可拒识性及后续old适应/new注册能力 | 方法设计；Phase1训练入口；bundle schema | pending | 可达训练路径、导出字段、focused tests | 需区分研发目标与已有性能 |
 | P1-02 | 一 | Phase1可训练前端、分支、卷积、`z_id/z_dom`、normalization/projection/fusion及prototype/radius/energy/uncertainty输出 | Phase1配置、模型、loss、exporter | pending | 配置到调用链、checkpoint smoke | 不预先假定全部模块已存在 |
 | P1-03 | 一 | Phase1禁止target query真值、确认unknown回流、多星消息、anonymous track、运营身份输出及proxy→真实unknown冒充 | 协议、训练入口、tests | pending | protocol-negative tests | P0边界 |
-| P1-04 | 一 | Phase1导出开放世界就绪特征提取器、基础几何、半径/能量/尾部先验、质量/域不确定性和不可变bundle | bundle builder/schema/docs | pending | real-checkpoint no-query smoke、schema test | bundle不等于完成真实拒识 |
+| P1-04 | 一 | Phase1导出开放世界就绪特征提取器、基础几何、半径/能量/尾部先验、质量/域不确定性和不可变bundle | bundle builder/schema/docs | implemented | 双真实checkpoint runtime parity=0；source-only calibration；content root `97e31efa...`；2400行smoke | bundle技术闭环，不等于真实拒识性能晋级 |
 | P1-05 | 二 | 建立TX互斥的`source_known_train_tx`、`source_known_validation_tx`、`source_proxy_unknown_tx`，proxy unknown物理样本完全排除训练 | 数据split/builder、tests | verified | `test_phase1_tx_partition.py`、checkpoint receipt、四臂同TX划分与冻结后审计 | 4/1/1开发screen已闭环；不允许receiver/channel/SNR伪unknown |
 | P1-06 | 二 | 支持对比、margin、energy、EVT、held-TX OE、`z_id/z_dom`解耦、半径/协方差、梯度冲突和分层解冻的开放候选空间 | 设计文档、候选配置 | pending | feasibility review、method lock | 不是要求一次候选堆叠全部机制 |
-| P1-07 | 二 | Phase1候选五项窄晋级门：不崩溃、known跨接收机不明显退化、floor不严重下降、proxy unknown正信号、真实checkpoint可导出bundle | evaluator、报告模板、release gate | implemented | GeoSat Lite四臂同排训练、held-TX审计与双读出窄实验 | C提供LEO正信号，B提供proxy正信号，但无单臂同时通过；正式bundle未晋级 |
-| LOCAL-01 | 三 | 每个节点从同一冻结或合法适配后的Phase1 extractor输出`z_id`、`z_dom`、`q`、`d_class`、`e_unknown`、`p_local` | 本地证据schema/extractor | implemented | `LocalEvidenceV2` schema与合成CLI闭环 | schema已可达；真实Phase1 v2 bundle仍未晋级 |
+| P1-07 | 二 | Phase1候选五项窄晋级门：不崩溃、known跨接收机不明显退化、floor不严重下降、proxy unknown正信号、真实checkpoint可导出bundle | evaluator、报告模板、release gate | implemented | GeoSat Lite四臂、held-TX审计、双读出与真实bundle同排诊断 | 导出门通过；bundle proxy/held FAR=71.75%/66.75%，无开放世界性能晋级 |
+| LOCAL-01 | 三 | 每个节点从同一冻结或合法适配后的Phase1 extractor输出`z_id`、`z_dom`、`q`、`d_class`、`e_unknown`、`p_local` | 本地证据schema/extractor | verified | 真实bundle smoke 2400行；evidence receipt无role/truth；content root绑定 | 当前证据为逐reception proxy，不主张same-event |
 | LOCAL-02 | 三 | 本地证据先不可变封存，再进入协同；单节点输出仅为registered/unknown/defer | artifact writer/validator | verified | canonical SHA、tamper负测、单节点identity、N607 manifest | scorer不得回流 |
 | LOCAL-03 | 三 | 单节点不得读取query真值、真实role、真实batch构成、类别配额和独立scorer结果 | predictor API、negative tests | verified | forbidden-field负测；prediction manifest明确`truth_sidecar_opened=false` | 与`p2_min_v1`逐样本边界对齐 |
 | P3-01 | 四 | 报告融合位置；协同输入只能来自已冻结本地证据及合法可见性、时空、频率/波束、轨迹和anonymous-track状态 | Phase3 schema/runner/docs | verified | G0 design、predictor/scorer隔离、N607 artifact | 外部确权证据未进入predictor |
@@ -55,10 +55,10 @@
 | COUNT-03 | 六 | 非同步多接收机数据只能声明“多接收节点代理协同”，不得声明真实在轨同步多星验证 | docs/report validator | pending | claim-lint tests | 当前WiSig/ManySig预计属于代理数据 |
 | ARCH-01 | 七 | 系统分为共享Phase1本地extractor和部署期Phase3协同推理器，两层接口明确 | architecture docs/schema | verified | 独立Phase3模块和三个职责分离入口的N607 smoke | 未修改Phase2 predictor |
 | ARCH-02 | 七 | 完成A原基座+单节点、B新Phase1+单节点、C原基座+协同、D新Phase1+协同的同输入消融 | ablation matrix/scorer | verified | event×node×reception同输入绑定；N1 A=C、B=D | 技术矩阵完整，正式效应值等待合法数据 |
-| N607-01 | 八 | Phase1候选八卡并行；本地证据并行提取后缓存；不同`N_sat`与子集复用缓存，不为组合重复运行backbone | launcher/report | pending | dry-run plan、cache lineage | 未进入发布阶段 |
+| N607-01 | 八 | Phase1候选八卡并行；本地证据并行提取后缓存；不同`N_sat`与子集复用缓存，不为组合重复运行backbone | launcher/report | partial | GeoSat Lite四臂GPU并行；bundle runtime/feature缓存后只读build | 尚无合法same-event数据，因此未发布正式`N_sat`性能矩阵 |
 | N607-02 | 八 | Luna/max仅负责冻结方案的发布、调度、监控和artifact回收；主Agent负责方法与结果决策 | runner handoff/report | verified | 唯一runner按commit 0242d354执行，未改方法/矩阵、未重试或解读性能 | CPU G0完成且连接/GPU清理 |
 | CLAIM-01 | 九 | 最终阶段结论必须使用附件指定的职责表述，并同时标明当前实现/证据状态 | `docs/项目介绍.md`；最终报告 | verified | 附件指定段落逐字落入“阶段职责结论”；下一段限定代理数据和未完成状态 | 最终报告仍须复用并结合届时证据状态 |
-| EVID-01 | 全文 | 所有实现进入Git，经过focused tests、独立P0/P1审查、非覆盖run ID、完整日志和同排artifact后才可晋级 | Git/tests/reports | verified | 实现7c94afac；独立P0=0/P1=0；N607四入口exit=0；16项artifact hash一致 | 只晋级技术闭环，不晋级性能 |
+| EVID-01 | 全文 | 所有实现进入Git，经过focused tests、独立P0/P1审查、非覆盖run ID、完整日志和同排artifact后才可晋级 | Git/tests/reports | verified | CARE-PoE与bundle均Git-backed；bundle 14 tests、P0=0/P1=0、15项artifact hash一致 | 只晋级技术闭环，不晋级性能 |
 
 ## 4.反向审计清单
 
@@ -104,9 +104,18 @@
 - Phase1后续只保留C的类别证据及B/JS连续`e_unknown`研究价值，不再使用跨模型一致性硬拒识。
 - Phase3正式性能实验仍被数据语义阻断：旧R8按role/true-label排名构组，缺少采集前生成的独立事件/接收ID；可保留非部署诊断，不可冒充same-emission或真实多星。
 
+### 2026-08-08 Phase1真实bundle闭环
+
+- B/C真实checkpoint先经CPU one-shot导出两个部署子图，batch 1/8/64 eager↔TorchScript parity最大误差均为0；训练期GradReverse和对抗头不进入runtime。
+- source-only build使用`(TX,RX,day,sig)`全局作用域physical ID；真实NPZ全体2400行及source 1600行均唯一，裸`sig_id`仅913个唯一值，因此不能直接作为全局ID。
+- bundle exact allowlist为两个runtime、`calibration.npz`和receipt；content root=`97e31efaac65cf02ef895b089ffb24ceae2633ffc45aa2ef604e4c3572cb25ff`，无checkpoint、raw IQ、role或truth。
+- smoke覆盖2400行且800条proxy/target全部排除fit；emit receipt确认2400条逐reception证据、无role/truth、无same-event主张。
+- source-held非部署诊断为known acc=92.5625%、min-class=87.25%、proxy FAR=71.75%、held FAR=66.75%；未达到开放世界目标，结论为`TECHNICAL_BUNDLE_COMPLETE / NOT_PERFORMANCE_PROMOTED`。
+- 三轮回顾已拒绝继续做threshold sweep、hard disagreement、receiver/day对齐和同一`feat_joint`角度loss；下一候选只考虑C式LEO一致性加`id_feat_cls`几何，并先补足合法外部proxy TX证据。
+
 ## 6.可行性结论（20行内）
 
-1.文档职责修订已封存；Phase1快速实验代码、审计入口和两轮N607证据已进入Git，正式bundle与Phase3性能仍未完成。
+1.文档职责修订已封存；Phase1真实checkpoint bundle与2400条truth-free本地证据已完成，Phase3正式性能仍未完成。
 2.现有协同评估器支持1到receiver总数的预算、缺失组统计、固定/渐进/自适应融合和unknown拒识。
 3.现有scorer会把registered query的reject/defer计为身份错误，不能通过全拒绝抬高known accuracy。
 4.R8_SHELL真实回收证据含2200行、5个receiver、1113个代理event。
@@ -114,8 +123,8 @@
 6.该artifact使用`receiver_domain_ranked_by_role_tx_scenario`，不是物理same-event对齐，只能作多接收节点代理协同。
 7.旧R8的`event_id`仍编码role/true label且融合与scorer共处同一历史函数；新CARE-PoE已用独立预测/评分入口关闭该技术缺口，但不能修复旧数据语义。
 8.新`LocalEvidenceV2`已实现双ID、canonical seal、同输入跨bundle reception绑定和不可变本地证据schema；旧R8证据行仍不满足输入契约。
-9.本轮Phase1 checkpoint已验证导出`z_id`和old logits；CARE-PoE消费接口已完成，真实Phase1 v2 bundle及其`z_dom/q/d_class/e_unknown/p_local`仍未晋级。
-10.主模型实际存在`z_dom`，所以扩展bundle v2可行，但`q`、`e_unknown`和本地决策口径仍需冻结。
+9.真实Phase1 v2 bundle已从B/C checkpoint导出`z_id/z_dom/q/d_class/e_unknown/p_local`，content root为`97e31efa...`；它只完成技术接口。
+10.bundle source-held proxy/held FAR为71.75%/66.75%，未达到5%目标，也未形成相对C的开放世界正信号，因此不得性能晋级。
 11.GeoSat Lite入口已用TX级全局互斥替代本轮batch轮换proxy语义；旧proxy loss仍只作历史实现，不进入该run。
 12.现有feature exporter具备proxy TX与source/target集合交叠拒绝，可复用为全局split检查基础。
 13.现有协同指标含old/new逐类accuracy、floor、unknown FAR/reject和实际receiver直方图。
@@ -125,7 +134,7 @@
 17.CARE-PoE已冻结并通过相关组代表、缺失/延迟、完整性失败、单节点identity和同输入A/B/C/D测试；科学性能尚未读取。
 18.R8的truth-ranked分组不满足`proxy_unverified`输入，继续只作历史非部署诊断，不得声称5节点same-event融合。
 19.严格同步多节点和正式性能主张需要新的物理event绑定数据；该缺口不阻塞技术闭环，但阻塞真实多星同步结论。
-20.Phase3合成G0已完成focused tests、独立`P0=0/P1=0`和N607 artifact闭环；正式性能发布只等待不依赖真值的物理事件绑定输入。
+20.Phase3合成G0与真实Phase1 bundle均已完成focused tests、独立`P0=0/P1=0`和N607 artifact闭环；正式性能发布只等待不依赖真值的物理事件绑定输入及后续性能达标候选。
 
 ### 2026-08-08 CARE-PoE G0技术闭环
 
