@@ -2,7 +2,7 @@
 
 目标模式：`GOAL_MODE=ACTIVE`
 
-状态：`LOCAL_VERIFIED / PREREGISTERED_FOR_N607`
+状态：`LOCAL_VERIFIED / PREREGISTERED / BLOCKED_EXTERNAL_SSH`
 
 证据边界：`PHASE1_SOURCE_ONLY_DEVELOPMENT_NON_CONFIRMATORY`
 
@@ -114,3 +114,9 @@ Terra实现者只负责新core/evaluator/tests；主Agent负责设计稿、launc
 - 回收：只回收小型receipt、metrics、scores、日志与manifest；不回收输入NPZ、checkpoint或runtime/bundle大文件。runner只报告技术闭环，不解释性能。
 
 clean实验完成后由主Agent读取六折同行结果。任一fold的known保护门或held`FAR<=5%`门失败即`REJECT`，不进入LEO实验；六折全部通过才登记下一阶段三种LEO视图验证。
+
+## 12.首次发布尝试终态
+
+唯一runner按预注册流程先执行N607直连只读预检，SSH端口返回`Connection refused`；随后仅尝试一次已验证lab bridge，bridge的22端口同样返回`Connection refused`。本地已确认`ssh/scp`进程为0、TCP22连接为0。
+
+本次阻塞发生在release落地之前：远端release、run、log均未创建，GI-EpiOR未启动，没有实验退出码或性能结果。因此状态为`BLOCKED_EXTERNAL_SSH / NO_PERFORMANCE_RESULT`，不是方法失败，也不消耗实验重试。连接恢复后仍从commit`2e400d12b93ba492bf8bba5504095fdaa0b8ccc7`和同一不可覆盖run ID首次发布；不得另建候选、调参或先看局部性能。
