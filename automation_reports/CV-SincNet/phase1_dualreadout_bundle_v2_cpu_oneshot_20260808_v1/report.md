@@ -4,8 +4,8 @@
 
 - 目标模式：`ACTIVE`
 - run ID：`phase1_dualreadout_bundle_v2_cpu_oneshot_20260808_v1`
-- 状态：`LOCAL_VERIFIED / P0_P1_CLOSED / READY_FOR_N607`
-- 证据等级：`TECHNICAL_BUNDLE_NOT_PERFORMANCE_PROMOTED`
+- 状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
+- 证据等级：`RUNTIMES_COMPLETE_BUILD_FAILED`
 - 时间：2026-08-08
 - 实现commit：`f9bc845cc723e3d886275fcdc824e5912118afb9`
 
@@ -32,11 +32,17 @@ v1–v3已完成两轮发布修复并停止原GPU exporter。新one-shot不是�
 
 任何CPU parity、checkpoint/代码hash、设备、`z_dom`行绑定、source-only fit、bundle allowlist/content root、evidence字段或执行错误均立即停止且无性能结果。不得放宽tolerance、复用partial、按指标调参或覆盖旧run。
 
+### 3.1实际终态
+
+CPU one-shot和GPU2 `z_dom`均exit=0；B/C parity最大误差均为`0.0`，冻结门仍为`1e-5`，部署图不含GradReverse/adv heads。随后build因把局部作用域`sig_id`误当全局physical ID而失败：2400行中`sig_id`仅913个唯一值，但`(TX,RX,day,sig)`为2400个唯一值；source 1600行也全部唯一。emit和score未启动。
+
+该run不重试、不覆盖。11项日志/control/manifest已回收且哈希一致；runtime、parity和`z_dom`作为已完成技术子产物保留在远端，未下载。后续新build one-shot可在验证固定哈希后引用这些只读产物，但不得把本run重标为完整bundle或性能结果。
+
 ## 4.结果表（待回收）
 
 | candidate | category | receiver/TX split | K-shot | seed | known/unknown | coverage/defer | bundle summary | verdict |
 |---|---|---|---:|---:|---|---|---|---|
-| P1-DUALREADOUT-CPU-ONESHOT | deterministic deployment export | 4/1/1 | N/A | 7281105 | 待回收 | 待回收 | C class/domain+B continuous JS | `NO_PERFORMANCE_RESULT_YET` |
+| P1-DUALREADOUT-CPU-ONESHOT | deterministic deployment export | 4/1/1 | N/A | 7281105 | N/A | N/A | runtime/parity完成，bundle未生成 | `STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE` |
 
 ## 5.科学边界
 

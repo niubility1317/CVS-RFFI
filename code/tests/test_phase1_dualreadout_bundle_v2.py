@@ -19,7 +19,7 @@ from cvsrffi.phase1_dualreadout_bundle_v2 import (
     sha256_file,
 )
 from scripts.phase1_dualreadout_bundle_v2 import FullDualReadoutRuntime, emit, score
-from scripts.phase1_dualreadout_bundle_v2 import _validate_parity_receipt
+from scripts.phase1_dualreadout_bundle_v2 import _globally_scoped_physical_ids, _validate_parity_receipt
 
 
 class ToyRuntime(nn.Module):
@@ -199,6 +199,28 @@ def test_fit_rejects_duplicate_source_physical_ids():
     arrays["physical_ids"][1] = arrays["physical_ids"][0]
     with pytest.raises(DualReadoutBundleError, match="unique"):
         fit(arrays)
+
+
+def test_globally_scoped_physical_ids_accept_local_sig_scope_but_reject_duplicate_rows():
+    values = {
+        "tx_ids": np.asarray(["a", "b", "a"]),
+        "rx_ids": np.asarray(["0", "0", "1"]),
+        "day_ids": np.asarray(["0", "0", "0"]),
+        "sig_ids": np.asarray(["7", "7", "7"]),
+    }
+    scoped = _globally_scoped_physical_ids(values)
+    assert len(scoped) == len(set(scoped)) == 3
+    duplicate = {key: np.concatenate([array, array[:1]]) for key, array in values.items()}
+    with pytest.raises(ValueError, match="not unique"):
+        _globally_scoped_physical_ids(duplicate)
+    missing_none = {key: array.astype(object).copy() for key, array in values.items()}
+    missing_none["sig_ids"][0] = None
+    with pytest.raises(ValueError, match="missing component"):
+        _globally_scoped_physical_ids(missing_none)
+    missing_nan = {key: array.astype(object).copy() for key, array in values.items()}
+    missing_nan["sig_ids"][0] = np.nan
+    with pytest.raises(ValueError, match="missing component"):
+        _globally_scoped_physical_ids(missing_nan)
 
 
 def test_fit_rejects_any_non_source_calibration_role():

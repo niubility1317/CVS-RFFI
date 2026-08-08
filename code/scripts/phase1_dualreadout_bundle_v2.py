@@ -165,6 +165,29 @@ def _verify_same_rows(left: Mapping[str, np.ndarray], right: Mapping[str, np.nda
                 raise ValueError(f"feature NPZ physical-row binding differs for {key}")
 
 
+def _globally_scoped_physical_ids(values: Mapping[str, np.ndarray]) -> list[str]:
+    required = ("tx_ids", "rx_ids", "day_ids", "sig_ids")
+    if any(key not in values for key in required):
+        raise ValueError("feature NPZ lacks globally scoped physical ID fields")
+    lengths = {len(np.asarray(values[key])) for key in required}
+    if len(lengths) != 1:
+        raise ValueError("globally scoped physical ID fields have different lengths")
+    result = []
+    for raw_components in zip(*(np.asarray(values[key]) for key in required)):
+        components = []
+        for value in raw_components:
+            if value is None or (isinstance(value, (float, np.floating)) and not np.isfinite(value)):
+                raise ValueError("globally scoped physical ID has a missing component")
+            component = value.decode("utf-8").strip() if isinstance(value, bytes) else str(value).strip()
+            if not component or component.lower() in {"nan", "none", "null"}:
+                raise ValueError("globally scoped physical ID has an empty component")
+            components.append(component)
+        result.append(canonical_json(dict(zip(required, components))))
+    if len(set(result)) != len(result):
+        raise ValueError("globally scoped physical IDs are not unique")
+    return result
+
+
 def _validate_parity_receipt(
     path: str | Path,
     *,
@@ -221,7 +244,7 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
         roles=robust["dataset_role"].astype(str).tolist(),
         rx_ids=robust["rx_ids"].astype(str).tolist(),
         day_ids=robust["day_ids"].astype(str).tolist(),
-        physical_ids=robust["sig_ids"].astype(str).tolist(),
+        physical_ids=_globally_scoped_physical_ids(robust),
         class_handles=handles,
         calibration_roles=["source"],
     )
