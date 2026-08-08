@@ -2,7 +2,7 @@
 
 目标模式：`GOAL_MODE=ACTIVE`
 
-状态：`PREREGISTERED / NOT_LAUNCHED`
+状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
 
 证据边界：`PHASE1_SOURCE_ONLY_OPEN_WORLD_READY_REPRESENTATION_NON_CONFIRMATORY`
 
@@ -76,4 +76,15 @@ proxy AUROC/FAR与paired cosine仅诊断，不能补偿。全部通过才可标`
 
 ## 7.运行终态与结果
 
-待artifact返回后填写。
+v2按冻结命令唯一启动一次，未重试、未复用或修改v1 partial。caller等待超时后清理本地SSH残留并只读确认已落地；没有重复启动。release为`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_pamr12_postfreeze_20260809_v2_c9b3fb31`，CWD为`<release>/code`，postfreeze修复commit=`c9b3fb313ec979a5a1105b22312903f0437b98db`，无prefix归档SHA256=`bc571ba2e6af4e1be03f9556ecd358fb171e0e21f31d410f69c722b5fd6966b6`（261570560 bytes）。worktree与远端archive成员双hash、compile/help/bash-n、dry-run=42证据见manifest。
+
+launcher PID=`3993`，candidate PID/GPU由`candidate_pids.tsv`固定记录：`F1C 3996/0; F5G 3997/0; F1G 3998/1; F5C 3999/1; F2C 4001/2; F6G 4002/2; F2G 4004/3; F6C 4007/3; F3C 4009/4; F3G 4010/5; F4C 4012/6; F4G 4015/7`。12个candidate pipeline均完成clean/LEO export与proxy score：clean NPZ=12（每个2400行、`channel_views=clean`）、LEO NPZ=12（每个1600行、source-only、三场景齐全、修复后行级`channel_views=single`）、proxy metrics JSON=12、proxy scores CSV=12。首个pair `F1_C_vs_G`阶段发生执行级系统故障；outer精确记录`launch_phase1_pamr_postfreeze_20260809.sh: line 196: 7853 Segmentation fault (core dumped) ... eval_phase1_pamr_pair.py`，F1 pair日志为空、pair JSON=0，launcher退出码=139并因该故障停止，F2–F6 pair未启动。该停止不涉及性能值。
+
+|阶段|完成/总数|技术状态|
+|---|---:|---|
+|clean export|12/12|每NPZ 2400行；metadata clean/source+target_old+proxy_unknown|
+|LEO export|12/12|每NPZ 1600行；source-only/三场景；行级channel_view=single、TTA=none、simplified_leo_residual|
+|proxy score|12/12|JSON/CSV均存在；仅partial技术artifact|
+|pair score|0/6|F1 pair segfault，F2–F6未启动|
+
+partial小artifact已回收至`E:\type10-7\automation_reports\CV-SincNet\phase1_pamr12_20260809_v1_postfreeze_v2\artifacts`：41个文件（40条manifest条目+manifest），manifest SHA256=`2ec907b13c9c35c30d0ef00f4a9071b56cae5a6e0935332504a57034bf97e975`，completion.tsv SHA256=`41cefb01d3ad08ba2309e2d18ac944344193789c4a2ef6fd871172a93cfd6c57`；逐项bytes/SHA匹配，无NPZ/checkpoint下载。传输包SHA256=`9292068a9de66e178aa79b48cc7da359e193309dc1f62a3ce10bc7a06e7c0724`，远端临时包已删除；GPU、run-owned进程、SSH/TCP22均已清理。v2状态固定为`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`，retry=`NO`。
