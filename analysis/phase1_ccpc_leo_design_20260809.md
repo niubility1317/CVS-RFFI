@@ -42,11 +42,14 @@ G总损失为原GeoSat-C loss加`0.02*L_CCPC`。CCPC只从`z_l`回传；clean分
 | CCPC-07 | 默认GeoSat-C根路径必须指向已冻结的`phase1_loto_clsgeo12_20260808_v1` | `code/scripts/launch_phase1_ccpc_leo12_20260809.sh`,`code/tests/test_phase1_ccpc_leo.py` | verified | launcher字符串断言及DRY_RUN | 环境变量覆盖仍可用。 |
 | CCPC-08 | C/G均只warm-start模型权重，严格拒绝missing/unexpected keys；新建AdamW/AMP状态 | `code/cvsrffi/phase1_ccpc_leo.py`,`code/SSDG/train_ssdg.py`,`code/tests/test_phase1_ccpc_leo.py` | verified | 严格load正反例和receipt测试 | 不是optimizer/RNG resume。 |
 | CCPC-09 | 禁止teacher checkpoint及三项teacher distillation权重 | `code/cvsrffi/phase1_ccpc_leo.py`,`code/scripts/launch_phase1_ccpc_leo12_20260809.sh`,`code/tests/test_phase1_ccpc_leo.py` | verified | CLI负测与launcher检查 | 不改变原GeoSat-C损失。 |
+| CCPC-10 | 有限的零CCPC-LEO特征梯度仅记录，不作为逐batch技术停止；None或非有限仍fail-closed；终态须证明至少一个非零批且无非有限批 | `code/cvsrffi/phase1_ccpc_leo.py`,`code/SSDG/train_ssdg.py`,`code/tests/test_phase1_ccpc_leo.py` | verified | `py_compile`及focused pytest（15 passed） | 仅修改监控/receipt语义；不改loss、lambda、T、数据或AMP。 |
+| CCPC-11 | CCPC梯度审计的None或非有限异常在传播前，向当前candidate output_dir原子落盘数据无关的失败receipt；非有限计数随receipt持久化 | `code/cvsrffi/phase1_ccpc_leo.py`,`code/SSDG/train_ssdg.py`,`code/tests/test_phase1_ccpc_leo.py` | verified | 实际临时output_dir持久化测试 | 只记录schema、candidate/run、聚合CCPC receipt和固定错误指纹；不记录raw或批数据。 |
+| CCPC-12 | failure receipt的mkstemp/write/fsync/replace/unlink异常不得遮蔽原始CCPC梯度异常 | `code/SSDG/train_ssdg.py`,`code/tests/test_phase1_ccpc_leo.py` | verified | 模拟writer失败及原异常身份测试 | 仅输出固定诊断marker和writer异常类型；随后重抛原始CCPCLEORuntimeError。 |
 
 ## 4.失败边界
 
-P0：分区泄漏、成对行数/顺序不一致、batch少于两类、任一anchor无同TX clean正例、非有限输入或损失、clean未detach或LEO新梯度为零，均立即fail-closed。P1：完整12任务后任一冻结结果门失败则标记`REJECT_CCPC_LEO_NO_RETRY`；不得借改变lambda、温度、采样、阈值、head或proxy/held反馈修补。中途不因性能早停。
+P0：分区泄漏、成对行数/顺序不一致、batch少于两类、任一anchor无同TX clean正例、非有限输入或损失、clean未detach、LEO梯度为None或非有限，均立即fail-closed；其中梯度审计异常先best-effort原子写入数据无关的`ccpc_failure_receipt.json`，写入自身失败只输出固定诊断marker和writer异常类型，绝不遮蔽原异常。有限的零LEO梯度是可记录的合法驻点，不单独终止；终态必须证明至少一个非零梯度批且没有非有限梯度批。P1：完整12任务后任一冻结结果门失败则标记`REJECT_CCPC_LEO_NO_RETRY`；不得借改变lambda、温度、采样、阈值、head或proxy/held反馈修补。中途不因性能早停。
 
 ## 5.本地验证
 
-已在`ssr-gpu`串行通过`py_compile`、`pytest -q code/tests/test_phase1_ccpc_leo.py`（10 passed）、`bash -n`及launcher的`--dry-run`（12条冻结任务）。C/G只严格装载同一GeoSat-C模型权重，随后新建AdamW和AMP状态；receipt记录baseline路径、SHA、checkpoint epoch/role和未恢复optimizer/RNG。这只证明本地实现闭环，不构成N607落地、性能或晋级结论。
+已在`ssr-gpu`串行通过`py_compile`、`pytest -q code/tests/test_phase1_ccpc_leo.py`（15 passed）、`bash -n`及launcher的`--dry-run`（12条冻结任务）。CCPC-10额外验证有限零梯度驻点可继续、None/非有限仍fail-closed，以及终态`nonzero>=1 && nonfinite=0`；CCPC-11验证train侧写入的`ccpc_failure_receipt.json`完整可解析、含nonfinite聚合计数，且None使用独立固定错误指纹；CCPC-12验证writer异常只产生固定诊断marker，原CCPC异常身份与文本保持不变。C/G只严格装载同一GeoSat-C模型权重，随后新建AdamW和AMP状态；receipt记录baseline路径、SHA、checkpoint epoch/role和未恢复optimizer/RNG。这只证明本地实现闭环，不构成N607落地、性能或晋级结论。

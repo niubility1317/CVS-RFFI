@@ -8,8 +8,12 @@ set or denominator.
 
 from __future__ import annotations
 
+import json
 import math
+import os
 from dataclasses import dataclass
+from pathlib import Path
+from tempfile import mkstemp
 from typing import Any, Dict, Mapping, Tuple
 
 import torch
@@ -195,7 +199,7 @@ def ccpc_config_receipt(config: CCPCLEOConfig) -> Dict[str, Any]:
     """Create the immutable, data-free part of the CCPC run receipt."""
 
     return {
-        "schema": "cvs.phase1.ccpc_leo_receipt.v1",
+        "schema": "cvs.phase1.ccpc_leo_receipt.v2",
         "frozen_mode": bool(config.frozen_mode),
         "enabled": bool(config.enabled),
         "lambda": float(config.loss_weight),
@@ -227,6 +231,11 @@ def ccpc_config_receipt(config: CCPCLEOConfig) -> Dict[str, Any]:
         "classes": 0,
         "positive_pairs": 0,
         "leo_grad_nonzero": False,
+        "ccpc_grad_nonzero_batches": 0,
+        "ccpc_grad_zero_batches": 0,
+        "ccpc_grad_nonfinite_batches": 0,
+        "ccpc_terminal_gradient_contract": "PENDING",
+        "ccpc_terminal_gradient_contract_passed": False,
         "proxy_rows": 0,
         "held_rows": 0,
     }
@@ -389,21 +398,158 @@ def add_ccpc_to_loss(
     return base_loss + float(config.loss_weight) * ccpc_loss
 
 
+def ccpc_leo_gradient_status(gradient: torch.Tensor | None) -> Dict[str, bool]:
+    """Classify the retained LEO feature gradient for one CCPC batch.
+
+    A finite all-zero gradient is a valid stationary point of the frozen
+    objective, not proof that the graph was severed.  Missing gradients still
+    indicate a broken path, while non-finite gradients remain a P0 condition.
+    """
+
+    if gradient is None:
+        raise CCPCLEORuntimeError(
+            "CCPC-LEO fail-closed: no LEO feature gradient reached the paired loss"
+        )
+    if not torch.is_tensor(gradient):
+        raise CCPCLEORuntimeError("CCPC-LEO fail-closed: LEO feature gradient must be a tensor")
+    detached = gradient.detach()
+    finite = bool(torch.isfinite(detached).all().item())
+    nonzero = bool(finite and torch.count_nonzero(detached).item() > 0)
+    return {
+        "finite": finite,
+        "nonzero": nonzero,
+        "zero": bool(finite and not nonzero),
+        "nonfinite": bool(not finite),
+    }
+
+
+def require_finite_ccpc_leo_gradient(status: Mapping[str, Any]) -> None:
+    """Retain fail-closed semantics for a non-finite retained CCPC gradient."""
+
+    if not bool(status.get("finite", False)) or bool(status.get("nonfinite", False)):
+        raise CCPCLEORuntimeError(
+            "CCPC-LEO fail-closed: paired LEO feature gradient is non-finite"
+        )
+
+
+def _ccpc_failure_fingerprint(error: BaseException) -> str:
+    """Return a stable, data-free code for an audited CCPC failure."""
+
+    message = str(error)
+    if "no LEO feature gradient" in message:
+        return "CCPC_LEO_GRADIENT_MISSING"
+    if "LEO feature gradient must be a tensor" in message:
+        return "CCPC_LEO_GRADIENT_INVALID"
+    if "paired LEO feature gradient is non-finite" in message:
+        return "CCPC_LEO_GRADIENT_NONFINITE"
+    return "CCPC_LEO_RUNTIME_FAILURE"
+
+
+def write_ccpc_failure_receipt(
+    output_dir: str | Path,
+    *,
+    candidate_id: str,
+    run_id: str,
+    receipt: Mapping[str, Any],
+    error: BaseException,
+    failure_stage: str,
+) -> Path:
+    """Atomically persist the minimal fail-closed record for one CCPC run.
+
+    This record intentionally stores only frozen run identifiers, the existing
+    aggregate CCPC receipt, and a fixed error code.  It never serializes batch
+    tensors, physical IDs, receiver/day metadata, or error text.
+    """
+
+    target_dir = Path(output_dir)
+    if not target_dir.is_dir():
+        raise CCPCLEORuntimeError(
+            "CCPC-LEO failure receipt requires an existing candidate output directory"
+        )
+    target = target_dir / "ccpc_failure_receipt.json"
+    payload = {
+        "schema": "cvs.phase1.ccpc_leo_failure_receipt.v1",
+        "status": "FAIL_CLOSED",
+        "candidate_id": str(candidate_id or ""),
+        "run_id": str(run_id or ""),
+        "failure_stage": str(failure_stage),
+        "error_type": type(error).__name__,
+        "error_fingerprint": _ccpc_failure_fingerprint(error),
+        "ccpc_receipt": dict(receipt),
+    }
+    encoded = (
+        json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True) + "\n"
+    ).encode("utf-8")
+    fd, temporary_name = mkstemp(
+        prefix=".ccpc_failure_receipt.",
+        suffix=".tmp",
+        dir=str(target_dir),
+    )
+    temporary = Path(temporary_name)
+    try:
+        with os.fdopen(fd, "wb") as handle:
+            handle.write(encoded)
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(temporary, target)
+    finally:
+        if temporary.exists():
+            temporary.unlink()
+    return target
+
+
 def update_ccpc_receipt(
     receipt: Mapping[str, Any],
     batch_info: Mapping[str, Any],
     *,
     leo_grad_nonzero: bool,
+    leo_grad_zero: bool,
+    leo_grad_nonfinite: bool,
 ) -> Dict[str, Any]:
     """Accumulate one CCPC batch without introducing a persistent feature bank."""
 
     out = dict(receipt)
     if not bool(out.get("enabled", False)):
         return out
+    outcomes = int(bool(leo_grad_nonzero)) + int(bool(leo_grad_zero)) + int(bool(leo_grad_nonfinite))
+    if outcomes != 1:
+        raise CCPCLEORuntimeError(
+            "CCPC-LEO receipt requires exactly one gradient outcome per enabled batch"
+        )
     out["rows"] = int(out.get("rows", 0)) + int(batch_info.get("rows", 0))
     out["positive_pairs"] = int(out.get("positive_pairs", 0)) + int(batch_info.get("positive_pairs", 0))
     out["classes"] = max(int(out.get("classes", 0)), int(batch_info.get("classes", 0)))
     out["clean_detached"] = bool(out.get("clean_detached", False)) and bool(batch_info.get("clean_detached", False))
     out["leo_grad_nonzero"] = bool(out.get("leo_grad_nonzero", False)) or bool(leo_grad_nonzero)
     out["ccpc_batches"] = int(out.get("ccpc_batches", 0)) + 1
+    out["ccpc_grad_nonzero_batches"] = int(out.get("ccpc_grad_nonzero_batches", 0)) + int(bool(leo_grad_nonzero))
+    out["ccpc_grad_zero_batches"] = int(out.get("ccpc_grad_zero_batches", 0)) + int(bool(leo_grad_zero))
+    out["ccpc_grad_nonfinite_batches"] = int(out.get("ccpc_grad_nonfinite_batches", 0)) + int(bool(leo_grad_nonfinite))
+    return out
+
+
+def validate_ccpc_terminal_receipt(receipt: Mapping[str, Any]) -> Dict[str, Any]:
+    """Require a completed G run to show usable, finite CCPC-gradient evidence."""
+
+    out = dict(receipt)
+    if not bool(out.get("enabled", False)):
+        out["ccpc_terminal_gradient_contract"] = "NOT_APPLICABLE_CONTROL"
+        out["ccpc_terminal_gradient_contract_passed"] = True
+        return out
+    nonzero = int(out.get("ccpc_grad_nonzero_batches", 0))
+    zero = int(out.get("ccpc_grad_zero_batches", 0))
+    nonfinite = int(out.get("ccpc_grad_nonfinite_batches", 0))
+    batches = int(out.get("ccpc_batches", 0))
+    if nonzero < 0 or zero < 0 or nonfinite < 0 or nonzero + zero + nonfinite != batches:
+        raise CCPCLEORuntimeError("CCPC-LEO terminal receipt has inconsistent gradient-batch counts")
+    if nonfinite != 0:
+        raise CCPCLEORuntimeError(
+            "CCPC-LEO terminal receipt rejects non-finite paired LEO feature gradients"
+        )
+    if nonzero < 1:
+        raise CCPCLEORuntimeError(
+            "CCPC-LEO terminal receipt requires at least one nonzero paired LEO feature gradient batch"
+        )
+    out["ccpc_terminal_gradient_contract"] = "NONZERO_OBSERVED_NO_NONFINITE"
+    out["ccpc_terminal_gradient_contract_passed"] = True
     return out

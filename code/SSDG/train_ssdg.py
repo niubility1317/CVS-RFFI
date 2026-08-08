@@ -62,10 +62,14 @@ try:
         CCPCLEORuntimeError,
         add_ccpc_to_loss,
         ccpc_config_receipt,
+        ccpc_leo_gradient_status,
         ccpc_leo_loss,
+        require_finite_ccpc_leo_gradient,
         strict_ccpc_warm_start,
         update_ccpc_receipt,
+        validate_ccpc_terminal_receipt,
         validate_ccpc_leo_args,
+        write_ccpc_failure_receipt,
     )
     from cvsrffi.balanced_tx_rx_sampler import BalancedTxDomainBatchSampler
     from cvsrffi.eval import (
@@ -192,7 +196,9 @@ except ModuleNotFoundError:
     format_named_test_lines = format_sat_test_lines = None
     CCPCLEOConfig = None
     CCPCLEOConfigurationError = CCPCLEORuntimeError = None
-    add_ccpc_to_loss = ccpc_config_receipt = ccpc_leo_loss = strict_ccpc_warm_start = update_ccpc_receipt = validate_ccpc_leo_args = None
+    add_ccpc_to_loss = ccpc_config_receipt = ccpc_leo_gradient_status = ccpc_leo_loss = None
+    require_finite_ccpc_leo_gradient = strict_ccpc_warm_start = update_ccpc_receipt = None
+    validate_ccpc_terminal_receipt = validate_ccpc_leo_args = write_ccpc_failure_receipt = None
 
 
 _MANYTX_REAL_OE_LOCKED_TARGET_NEW_TX = tuple(
@@ -4902,7 +4908,9 @@ def format_ssdg_epoch_block(
         f"classes={int(round(_log_value(train_logs, 'train/ccpc_classes', 0.0)))} "
         f"positive_pairs={int(round(_log_value(train_logs, 'train/ccpc_positive_pairs', 0.0)))} "
         f"clean_detached={int(_log_value(train_logs, 'train/ccpc_clean_detached', 0.0) >= 0.5)} "
-        f"leo_grad_nonzero={int(_log_value(train_logs, 'train/ccpc_leo_grad_nonzero', 0.0) >= 0.5)}"
+        f"leo_grad_nonzero={int(_log_value(train_logs, 'train/ccpc_leo_grad_nonzero', 0.0) >= 0.5)} "
+        f"leo_grad_zero={int(_log_value(train_logs, 'train/ccpc_leo_grad_zero', 0.0) >= 0.5)} "
+        f"leo_grad_nonfinite={int(_log_value(train_logs, 'train/ccpc_leo_grad_nonfinite', 0.0) >= 0.5)}"
     )
     lines.append(f"[LOSS-SAT-W]    cls_sat={w_sat:.4f} sat_cons={w_sat_cons:.4f}")
     lines.append(
@@ -5307,6 +5315,42 @@ def _prepare_concat_sat_batch_for_training(
     return _safe_iq_tensor(concat_batch.x), concat_batch.y, concat_batch.d_raw, None, info
 
 
+def _persist_ccpc_failure_receipt(
+    *,
+    out_dir: Path,
+    args: Any,
+    ccpc_receipt: Mapping[str, Any],
+    error: BaseException,
+) -> Optional[Path]:
+    """Best-effort persistence that never masks the primary CCPC failure."""
+
+    def _emit_writer_failure(exception_type: str) -> None:
+        try:
+            print(
+                "[CCPC-LEO-FAILURE-RECEIPT] persistence_failed "
+                f"writer_exception_type={exception_type}",
+                flush=True,
+            )
+        except Exception:
+            pass
+
+    if write_ccpc_failure_receipt is None:
+        _emit_writer_failure("ImportError")
+        return None
+    try:
+        return write_ccpc_failure_receipt(
+            out_dir,
+            candidate_id=str(getattr(args, "candidate_id", "") or ""),
+            run_id=str(getattr(args, "run_id", "") or ""),
+            receipt=ccpc_receipt,
+            error=error,
+            failure_stage="post_backward_leo_gradient_audit",
+        )
+    except Exception as receipt_error:
+        _emit_writer_failure(type(receipt_error).__name__)
+        return None
+
+
 def train(args) -> int:
     training_wall_started = time.time()
     ablation_manifest = None
@@ -5350,7 +5394,7 @@ def train(args) -> int:
             raise ImportError("cvsrffi.phase1_ccpc_leo is required for P1-CCPC-LEO")
         ccpc_config = None
         ccpc_receipt: Dict[str, Any] = {
-            "schema": "cvs.phase1.ccpc_leo_receipt.v1",
+            "schema": "cvs.phase1.ccpc_leo_receipt.v2",
             "frozen_mode": False,
             "enabled": False,
             "lambda": 0.0,
@@ -5360,6 +5404,11 @@ def train(args) -> int:
             "positive_pairs": 0,
             "clean_detached": False,
             "leo_grad_nonzero": False,
+            "ccpc_grad_nonzero_batches": 0,
+            "ccpc_grad_zero_batches": 0,
+            "ccpc_grad_nonfinite_batches": 0,
+            "ccpc_terminal_gradient_contract": "PENDING",
+            "ccpc_terminal_gradient_contract_passed": False,
             "proxy_rows": 0,
             "held_rows": 0,
         }
@@ -7641,6 +7690,8 @@ def train(args) -> int:
             skipped_nonfinite_grad = 0
             optimizer_step_applied = False
             ccpc_leo_grad_nonzero = False
+            ccpc_leo_grad_zero = False
+            ccpc_leo_grad_nonfinite = False
             os_grad_info = {
                 "active": 0.0,
                 "conflict": 0.0,
@@ -7737,18 +7788,35 @@ def train(args) -> int:
                     scaler.scale(loss).backward()
                 scaler.unscale_(optimizer)
                 if bool(getattr(ccpc_config, "enabled", False)):
-                    if ccpc_leo_feature is None or ccpc_leo_feature.grad is None:
-                        raise CCPCLEORuntimeError(
-                            "CCPC-LEO fail-closed: no LEO feature gradient reached the paired loss"
+                    if (
+                        ccpc_leo_gradient_status is None
+                        or require_finite_ccpc_leo_gradient is None
+                        or update_ccpc_receipt is None
+                    ):
+                        raise ImportError("cvsrffi.phase1_ccpc_leo gradient receipt support is required")
+                    try:
+                        ccpc_gradient_status = ccpc_leo_gradient_status(
+                            ccpc_leo_feature.grad if ccpc_leo_feature is not None else None
                         )
-                    ccpc_leo_grad_nonzero = bool(
-                        torch.isfinite(ccpc_leo_feature.grad.detach()).all().item()
-                        and torch.count_nonzero(ccpc_leo_feature.grad.detach()).item() > 0
-                    )
-                    if not ccpc_leo_grad_nonzero:
-                        raise CCPCLEORuntimeError(
-                            "CCPC-LEO fail-closed: paired LEO feature gradient is zero or non-finite"
+                        ccpc_leo_grad_nonzero = bool(ccpc_gradient_status["nonzero"])
+                        ccpc_leo_grad_zero = bool(ccpc_gradient_status["zero"])
+                        ccpc_leo_grad_nonfinite = bool(ccpc_gradient_status["nonfinite"])
+                        ccpc_receipt = update_ccpc_receipt(
+                            ccpc_receipt,
+                            ccpc_batch_info,
+                            leo_grad_nonzero=ccpc_leo_grad_nonzero,
+                            leo_grad_zero=ccpc_leo_grad_zero,
+                            leo_grad_nonfinite=ccpc_leo_grad_nonfinite,
                         )
+                        require_finite_ccpc_leo_gradient(ccpc_gradient_status)
+                    except CCPCLEORuntimeError as error:
+                        _persist_ccpc_failure_receipt(
+                            out_dir=out_dir,
+                            args=args,
+                            ccpc_receipt=ccpc_receipt,
+                            error=error,
+                        )
+                        raise
                 grad_norm_before_clip = _grad_norm(model)
                 if float(getattr(args, "max_grad_norm", 0.0)) > 0.0:
                     torch.nn.utils.clip_grad_norm_(
@@ -7782,14 +7850,6 @@ def train(args) -> int:
                 grad_backbone = float("nan")
                 grad_aux = float("nan")
                 grad_domain = float("nan")
-            if bool(getattr(ccpc_config, "enabled", False)):
-                if update_ccpc_receipt is None:
-                    raise ImportError("cvsrffi.phase1_ccpc_leo.update_ccpc_receipt is required")
-                ccpc_receipt = update_ccpc_receipt(
-                    ccpc_receipt,
-                    ccpc_batch_info,
-                    leo_grad_nonzero=ccpc_leo_grad_nonzero,
-                )
             if proto_bank is not None and optimizer_step_applied:
                 proto_bank.update(out_l["z_id"].detach(), y_l.detach(), d_l.detach() if d_l is not None else None)
                 if proto_bank.class_count is not None:
@@ -7960,6 +8020,8 @@ def train(args) -> int:
                     "train/ccpc_positive_pairs": float(ccpc_batch_info.get("positive_pairs", 0)),
                     "train/ccpc_clean_detached": 1.0 if bool(ccpc_batch_info.get("clean_detached", False)) else 0.0,
                     "train/ccpc_leo_grad_nonzero": 1.0 if ccpc_leo_grad_nonzero else 0.0,
+                    "train/ccpc_leo_grad_zero": 1.0 if ccpc_leo_grad_zero else 0.0,
+                    "train/ccpc_leo_grad_nonfinite": 1.0 if ccpc_leo_grad_nonfinite else 0.0,
                     "train/loss_teacher_clean_kl": loss_teacher_clean_kl_l.detach(),
                     "train/loss_teacher_sat_kl": loss_teacher_sat_kl_l.detach(),
                     "train/loss_teacher_zid_mse": loss_teacher_zid_mse_l.detach(),
@@ -9133,6 +9195,10 @@ def train(args) -> int:
         if not local_gate_ready:
             phase1_v2_final_blocked = True
             phase1_v2_reasons.append("FINAL_LOCAL_COMPONENT_GEOMETRY_INCOMPLETE")
+    if ccpc_frozen_mode:
+        if validate_ccpc_terminal_receipt is None:
+            raise ImportError("cvsrffi.phase1_ccpc_leo.validate_ccpc_terminal_receipt is required")
+        ccpc_receipt = validate_ccpc_terminal_receipt(ccpc_receipt)
 
     final_payload = deepcopy(payload)
     final_payload.update(

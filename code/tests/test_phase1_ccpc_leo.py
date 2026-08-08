@@ -1,10 +1,12 @@
 from __future__ import annotations
 
 import inspect
+import json
 import re
 import subprocess
 import sys
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 import torch
@@ -13,7 +15,8 @@ CODE_ROOT = Path(__file__).resolve().parents[1]
 if str(CODE_ROOT) not in sys.path:
     sys.path.insert(0, str(CODE_ROOT))
 
-from SSDG.train_ssdg import build_arg_parser  # noqa: E402
+import SSDG.train_ssdg as train_ssdg  # noqa: E402
+from SSDG.train_ssdg import _persist_ccpc_failure_receipt, build_arg_parser  # noqa: E402
 from cvsrffi.phase1_ccpc_leo import (  # noqa: E402
     CCPCLEOConfig,
     CCPCLEOConfigurationError,
@@ -23,8 +26,12 @@ from cvsrffi.phase1_ccpc_leo import (  # noqa: E402
     _contrastive_loss_from_positive_mask,
     add_ccpc_to_loss,
     ccpc_config_receipt,
+    ccpc_leo_gradient_status,
     ccpc_leo_loss,
+    require_finite_ccpc_leo_gradient,
     strict_ccpc_warm_start,
+    update_ccpc_receipt,
+    validate_ccpc_terminal_receipt,
     validate_ccpc_leo_args,
 )
 
@@ -152,6 +159,145 @@ def test_ccpc_detaches_clean_but_backpropagates_nonzero_gradient_to_leo():
     assert clean.grad is None
     assert leo.grad is not None
     assert float(leo.grad.abs().sum()) > 0.0
+
+
+def test_ccpc_accepts_a_finite_zero_gradient_at_a_legal_stationary_point():
+    clean = torch.ones((4, 8), requires_grad=True)
+    leo = torch.ones((4, 8), requires_grad=True)
+    labels = torch.tensor([3, 3, 8, 8])
+    loss, info = ccpc_leo_loss(leo, clean, labels)
+    loss.backward()
+
+    status = ccpc_leo_gradient_status(leo.grad)
+    assert status == {"finite": True, "nonzero": False, "zero": True, "nonfinite": False}
+    require_finite_ccpc_leo_gradient(status)
+    receipt = update_ccpc_receipt(
+        ccpc_config_receipt(CCPCLEOConfig(True, True, 0.02, 0.12)),
+        info,
+        leo_grad_nonzero=status["nonzero"],
+        leo_grad_zero=status["zero"],
+        leo_grad_nonfinite=status["nonfinite"],
+    )
+    assert receipt["ccpc_grad_zero_batches"] == 1
+    assert receipt["ccpc_grad_nonzero_batches"] == 0
+
+
+def test_ccpc_gradient_none_and_nonfinite_remain_fail_closed_and_receipted():
+    with pytest.raises(CCPCLEORuntimeError, match="no LEO feature gradient"):
+        ccpc_leo_gradient_status(None)
+
+    status = ccpc_leo_gradient_status(torch.tensor([float("nan")]))
+    assert status == {"finite": False, "nonzero": False, "zero": False, "nonfinite": True}
+    with pytest.raises(CCPCLEORuntimeError, match="gradient is non-finite"):
+        require_finite_ccpc_leo_gradient(status)
+    receipt = update_ccpc_receipt(
+        ccpc_config_receipt(CCPCLEOConfig(True, True, 0.02, 0.12)),
+        {"rows": 4, "classes": 2, "positive_pairs": 8, "clean_detached": True},
+        leo_grad_nonzero=status["nonzero"],
+        leo_grad_zero=status["zero"],
+        leo_grad_nonfinite=status["nonfinite"],
+    )
+    assert receipt["ccpc_grad_nonfinite_batches"] == 1
+    with pytest.raises(CCPCLEORuntimeError, match="rejects non-finite"):
+        validate_ccpc_terminal_receipt(receipt)
+
+
+def test_train_side_ccpc_gradient_failures_atomically_persist_data_free_receipts(tmp_path):
+    args = SimpleNamespace(candidate_id="F1G", run_id="phase1_ccpc_leo12_v3")
+    receipt = ccpc_config_receipt(CCPCLEOConfig(True, True, 0.02, 0.12))
+    nonfinite = ccpc_leo_gradient_status(torch.tensor([float("nan")]))
+    receipt = update_ccpc_receipt(
+        receipt,
+        {"rows": 4, "classes": 2, "positive_pairs": 8, "clean_detached": True},
+        leo_grad_nonzero=nonfinite["nonzero"],
+        leo_grad_zero=nonfinite["zero"],
+        leo_grad_nonfinite=nonfinite["nonfinite"],
+    )
+    failure_path = _persist_ccpc_failure_receipt(
+        out_dir=tmp_path,
+        args=args,
+        ccpc_receipt=receipt,
+        error=CCPCLEORuntimeError(
+            "CCPC-LEO fail-closed: paired LEO feature gradient is non-finite"
+        ),
+    )
+    payload = json.loads(failure_path.read_text(encoding="utf-8"))
+    assert failure_path == tmp_path / "ccpc_failure_receipt.json"
+    assert payload["schema"] == "cvs.phase1.ccpc_leo_failure_receipt.v1"
+    assert payload["candidate_id"] == "F1G"
+    assert payload["run_id"] == "phase1_ccpc_leo12_v3"
+    assert payload["error_fingerprint"] == "CCPC_LEO_GRADIENT_NONFINITE"
+    assert payload["ccpc_receipt"]["ccpc_grad_nonfinite_batches"] == 1
+    assert "raw" not in json.dumps(payload, ensure_ascii=False).lower()
+    assert not list(tmp_path.glob(".ccpc_failure_receipt.*.tmp"))
+
+    missing_path = _persist_ccpc_failure_receipt(
+        out_dir=tmp_path,
+        args=args,
+        ccpc_receipt=ccpc_config_receipt(CCPCLEOConfig(True, True, 0.02, 0.12)),
+        error=CCPCLEORuntimeError(
+            "CCPC-LEO fail-closed: no LEO feature gradient reached the paired loss"
+        ),
+    )
+    missing_payload = json.loads(missing_path.read_text(encoding="utf-8"))
+    assert missing_payload["error_fingerprint"] == "CCPC_LEO_GRADIENT_MISSING"
+
+
+def test_ccpc_failure_receipt_writer_error_never_masks_original_gradient_failure(
+    tmp_path, monkeypatch, capsys
+):
+    original = CCPCLEORuntimeError(
+        "CCPC-LEO fail-closed: paired LEO feature gradient is non-finite"
+    )
+
+    def _writer_failure(*_args, **_kwargs):
+        raise OSError("simulated receipt writer failure")
+
+    monkeypatch.setattr(train_ssdg, "write_ccpc_failure_receipt", _writer_failure)
+    with pytest.raises(CCPCLEORuntimeError) as caught:
+        try:
+            raise original
+        except CCPCLEORuntimeError as error:
+            persisted = _persist_ccpc_failure_receipt(
+                out_dir=tmp_path,
+                args=SimpleNamespace(candidate_id="F1G", run_id="phase1_ccpc_leo12_v3"),
+                ccpc_receipt=ccpc_config_receipt(CCPCLEOConfig(True, True, 0.02, 0.12)),
+                error=error,
+            )
+            assert persisted is None
+            raise
+
+    marker = capsys.readouterr().out
+    assert caught.value is original
+    assert str(caught.value) == str(original)
+    assert "[CCPC-LEO-FAILURE-RECEIPT] persistence_failed writer_exception_type=OSError" in marker
+    assert str(original) not in marker
+    assert str(tmp_path) not in marker
+    assert not (tmp_path / "ccpc_failure_receipt.json").exists()
+
+
+def test_ccpc_terminal_receipt_requires_nonzero_and_no_nonfinite_batches():
+    base = ccpc_config_receipt(CCPCLEOConfig(True, True, 0.02, 0.12))
+    zero_only = update_ccpc_receipt(
+        base,
+        {"rows": 4, "classes": 2, "positive_pairs": 8, "clean_detached": True},
+        leo_grad_nonzero=False,
+        leo_grad_zero=True,
+        leo_grad_nonfinite=False,
+    )
+    with pytest.raises(CCPCLEORuntimeError, match="at least one nonzero"):
+        validate_ccpc_terminal_receipt(zero_only)
+
+    passed = update_ccpc_receipt(
+        zero_only,
+        {"rows": 4, "classes": 2, "positive_pairs": 8, "clean_detached": True},
+        leo_grad_nonzero=True,
+        leo_grad_zero=False,
+        leo_grad_nonfinite=False,
+    )
+    terminal = validate_ccpc_terminal_receipt(passed)
+    assert terminal["ccpc_terminal_gradient_contract_passed"] is True
+    assert terminal["ccpc_terminal_gradient_contract"] == "NONZERO_OBSERVED_NO_NONFINITE"
 
 
 def test_ccpc_is_label_permutation_equivariant():
