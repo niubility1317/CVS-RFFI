@@ -39,26 +39,26 @@
 | P1-05 | 二 | 建立TX互斥的`source_known_train_tx`、`source_known_validation_tx`、`source_proxy_unknown_tx`，proxy unknown物理样本完全排除训练 | 数据split/builder、tests | verified | `test_phase1_tx_partition.py`、checkpoint receipt、四臂同TX划分与冻结后审计 | 4/1/1开发screen已闭环；不允许receiver/channel/SNR伪unknown |
 | P1-06 | 二 | 支持对比、margin、energy、EVT、held-TX OE、`z_id/z_dom`解耦、半径/协方差、梯度冲突和分层解冻的开放候选空间 | 设计文档、候选配置 | pending | feasibility review、method lock | 不是要求一次候选堆叠全部机制 |
 | P1-07 | 二 | Phase1候选五项窄晋级门：不崩溃、known跨接收机不明显退化、floor不严重下降、proxy unknown正信号、真实checkpoint可导出bundle | evaluator、报告模板、release gate | implemented | GeoSat Lite四臂同排训练、held-TX审计与双读出窄实验 | C提供LEO正信号，B提供proxy正信号，但无单臂同时通过；正式bundle未晋级 |
-| LOCAL-01 | 三 | 每个节点从同一冻结或合法适配后的Phase1 extractor输出`z_id`、`z_dom`、`q`、`d_class`、`e_unknown`、`p_local` | 本地证据schema/extractor | pending | schema和真实checkpoint smoke | 每个字段需来源与形状定义 |
-| LOCAL-02 | 三 | 本地证据先不可变封存，再进入协同；单节点输出仅为registered/unknown/defer | artifact writer/validator | pending | hash/immutability和decision enum tests | scorer不得回流 |
-| LOCAL-03 | 三 | 单节点不得读取query真值、真实role、真实batch构成、类别配额和独立scorer结果 | predictor API、negative tests | pending | zero-fit/zero-update/zero-selection tests | 与`p2_min_v1`逐样本边界对齐 |
-| P3-01 | 四 | 报告融合位置；协同输入只能来自已冻结本地证据及合法可见性、时空、频率/波束、轨迹和anonymous-track状态 | Phase3 schema/runner/docs | pending | manifest验证、forbidden input tests | 外部确权证据不能直接更新Phase2 predictor |
-| P3-02 | 四 | 显式处理接收机差异、信道/SNR差异、缺失/延迟、冲突、同一事件、多过境匿名实体和相关证据去重 | fusion core、tests | pending | synthetic invariance/fault tests | 高风险核心项 |
-| P3-03 | 四 | 正式方法必须有真实节点交互；平均、投票、最高置信节点仅作为基线 | fusion core、ablation configs | pending | baseline与正式方法结构审计 | 方法尚未冻结 |
+| LOCAL-01 | 三 | 每个节点从同一冻结或合法适配后的Phase1 extractor输出`z_id`、`z_dom`、`q`、`d_class`、`e_unknown`、`p_local` | 本地证据schema/extractor | implemented | `LocalEvidenceV2` schema与合成CLI闭环 | schema已可达；真实Phase1 v2 bundle仍未晋级 |
+| LOCAL-02 | 三 | 本地证据先不可变封存，再进入协同；单节点输出仅为registered/unknown/defer | artifact writer/validator | verified | canonical SHA、tamper负测、单节点identity、N607 manifest | scorer不得回流 |
+| LOCAL-03 | 三 | 单节点不得读取query真值、真实role、真实batch构成、类别配额和独立scorer结果 | predictor API、negative tests | verified | forbidden-field负测；prediction manifest明确`truth_sidecar_opened=false` | 与`p2_min_v1`逐样本边界对齐 |
+| P3-01 | 四 | 报告融合位置；协同输入只能来自已冻结本地证据及合法可见性、时空、频率/波束、轨迹和anonymous-track状态 | Phase3 schema/runner/docs | verified | G0 design、predictor/scorer隔离、N607 artifact | 外部确权证据未进入predictor |
+| P3-02 | 四 | 显式处理接收机差异、信道/SNR差异、缺失/延迟、冲突、同一事件、多过境匿名实体和相关证据去重 | fusion core、tests | verified | late/missing/integrity/相关复制/顺序不变性及same-input负测 | 合成技术证据，不是实际在轨性能 |
+| P3-03 | 四 | 正式方法必须有真实节点交互；平均、投票、最高置信节点仅作为基线 | fusion core、ablation configs | implemented | CARE-PoE与leader单节点A/B/C/D已可运行 | 真实节点性能等待合法物理事件数据 |
 | TASK-01 | 5.1 | 协同unknown拒识以`unknown_false_accept_rate<=5%`和`unknown_safe_rejection_rate>=95%`为目标；registered被reject/defer按身份错误计数 | scorer、report schema | pending | hand-calculated fixtures、same-row metrics | 不允许全拒绝取巧 |
 | TASK-02 | 5.2 | 协同旧类适应比较独立、共享平均、质量加权和完整协同域状态；K10注册后old acc≥92%、最低old acc≥88% | adaptation/fusion matrix、scorer | pending | 同一row四状态指标 | 需沿用`DA0_REG0`等四状态命名 |
-| TASK-03 | 5.3 | unknown观测只能关联为`anonymous_entity_id`，不能直接成为新类 | track store/association/tests | pending | 生命周期状态机测试 | 不等于语义身份 |
-| TASK-04 | 5.4 | 可信确权输出候选物理身份、证据来源/独立性、冲突、置信度、有效期和`registration_authorized` | authorization credential schema | pending | fail-closed schema tests | RFFI只是多源证据之一 |
-| TASK-05 | 5.5 | 授权后重新采集K个独立物理事件；历史unknown query不得转support；再交Stage2-C统一竞争 | Phase3→Stage2-C bridge、tests | pending | lineage/physical-ID negative tests | 新support将产生新`split_id`并按协议验证 |
-| COUNT-01 | 六 | 代理实验固定评价`N_sat∈{1,2,3,4,5}`，其中1为本地基线、2为最低协同点 | matrix/config/runner | pending | matrix coverage test | 不从结果挑有利子集 |
-| COUNT-02 | 六 | 一个`emission_event_id`可对应多个`satellite_reception_id`，跨节点接收仍只计1 shot | data/evidence schema、grouping code | pending | exact-K/event-count fixtures | 必须核对现有数据能否绑定同一事件 |
+| TASK-03 | 5.3 | unknown观测只能关联为`anonymous_entity_id`，不能直接成为新类 | track store/association/tests | verified | anonymous无语义身份且非unknown拒绝生成负测 | 不等于语义身份 |
+| TASK-04 | 5.4 | 可信确权输出候选物理身份、证据来源/独立性、冲突、置信度、有效期和`registration_authorized` | authorization credential schema | verified | 缺失/过期/冲突/非独立来源fail-closed测试 | G0使用外部credential fixture，不是现实授权服务 |
+| TASK-05 | 5.5 | 授权后重新采集K个独立物理事件；历史unknown query不得转support；再交Stage2-C统一竞争 | Phase3→Stage2-C bridge、tests | verified | fresh-K唯一event/physical ID、历史unknown交叠负测与N607 receipt | 已生成新`split_id`，未执行正式Stage2-C性能矩阵 |
+| COUNT-01 | 六 | 代理实验固定评价`N_sat∈{1,2,3,4,5}`，其中1为本地基线、2为最低协同点 | matrix/config/runner | verified | 60行N607预测完整覆盖A-D×N1-N5×3events | 不从结果挑有利子集 |
+| COUNT-02 | 六 | 一个`emission_event_id`可对应多个`satellite_reception_id`，跨节点接收仍只计1 shot | data/evidence schema、grouping code | verified | `shot_count_all=1`与same-input reception绑定负测 | 合成fixture证明接口，实际数据仍需采集绑定 |
 | COUNT-03 | 六 | 非同步多接收机数据只能声明“多接收节点代理协同”，不得声明真实在轨同步多星验证 | docs/report validator | pending | claim-lint tests | 当前WiSig/ManySig预计属于代理数据 |
-| ARCH-01 | 七 | 系统分为共享Phase1本地extractor和部署期Phase3协同推理器，两层接口明确 | architecture docs/schema | pending | interface smoke | 不把Phase3塞入Phase2 predictor |
-| ARCH-02 | 七 | 完成A原基座+单节点、B新Phase1+单节点、C原基座+协同、D新Phase1+协同的同输入消融 | ablation matrix/scorer | pending | A/B/C/D覆盖和输入parity | 计算`B-A`、`C-A`、`D-B-C+A` |
+| ARCH-01 | 七 | 系统分为共享Phase1本地extractor和部署期Phase3协同推理器，两层接口明确 | architecture docs/schema | verified | 独立Phase3模块和三个职责分离入口的N607 smoke | 未修改Phase2 predictor |
+| ARCH-02 | 七 | 完成A原基座+单节点、B新Phase1+单节点、C原基座+协同、D新Phase1+协同的同输入消融 | ablation matrix/scorer | verified | event×node×reception同输入绑定；N1 A=C、B=D | 技术矩阵完整，正式效应值等待合法数据 |
 | N607-01 | 八 | Phase1候选八卡并行；本地证据并行提取后缓存；不同`N_sat`与子集复用缓存，不为组合重复运行backbone | launcher/report | pending | dry-run plan、cache lineage | 未进入发布阶段 |
-| N607-02 | 八 | Luna/max仅负责冻结方案的发布、调度、监控和artifact回收；主Agent负责方法与结果决策 | runner handoff/report | pending | handoff完整性审计 | 仅在正式N607 release时执行 |
+| N607-02 | 八 | Luna/max仅负责冻结方案的发布、调度、监控和artifact回收；主Agent负责方法与结果决策 | runner handoff/report | verified | 唯一runner按commit 0242d354执行，未改方法/矩阵、未重试或解读性能 | CPU G0完成且连接/GPU清理 |
 | CLAIM-01 | 九 | 最终阶段结论必须使用附件指定的职责表述，并同时标明当前实现/证据状态 | `docs/项目介绍.md`；最终报告 | verified | 附件指定段落逐字落入“阶段职责结论”；下一段限定代理数据和未完成状态 | 最终报告仍须复用并结合届时证据状态 |
-| EVID-01 | 全文 | 所有实现进入Git，经过focused tests、独立P0/P1审查、非覆盖run ID、完整日志和同排artifact后才可晋级 | Git/tests/reports | pending | commit、test、review、artifact receipts | landing/completion/performance三者分开 |
+| EVID-01 | 全文 | 所有实现进入Git，经过focused tests、独立P0/P1审查、非覆盖run ID、完整日志和同排artifact后才可晋级 | Git/tests/reports | verified | 实现7c94afac；独立P0=0/P1=0；N607四入口exit=0；16项artifact hash一致 | 只晋级技术闭环，不晋级性能 |
 
 ## 4.反向审计清单
 
@@ -112,17 +112,27 @@
 4.R8_SHELL真实回收证据含2200行、5个receiver、1113个代理event。
 5.这些event的观测节点数分布为1节点311、2节点541、3节点237、4节点24、5节点0。
 6.该artifact使用`receiver_domain_ranked_by_role_tx_scenario`，不是物理same-event对齐，只能作多接收节点代理协同。
-7.当前`event_id`编码role/true label，融合与scorer共处同一函数；这是必须先修复的P0隔离缺口。
-8.当前证据行没有独立`emission_event_id`和`satellite_reception_id`，也没有不可变本地证据schema。
-9.本轮Phase1 checkpoint已验证导出`z_id`和old logits；不可变v2 bundle及`z_dom/q/d_class/e_unknown/p_local`完整接口仍待实现。
+7.旧R8的`event_id`仍编码role/true label且融合与scorer共处同一历史函数；新CARE-PoE已用独立预测/评分入口关闭该技术缺口，但不能修复旧数据语义。
+8.新`LocalEvidenceV2`已实现双ID、canonical seal、同输入跨bundle reception绑定和不可变本地证据schema；旧R8证据行仍不满足输入契约。
+9.本轮Phase1 checkpoint已验证导出`z_id`和old logits；CARE-PoE消费接口已完成，真实Phase1 v2 bundle及其`z_dom/q/d_class/e_unknown/p_local`仍未晋级。
 10.主模型实际存在`z_dom`，所以扩展bundle v2可行，但`q`、`e_unknown`和本地决策口径仍需冻结。
 11.GeoSat Lite入口已用TX级全局互斥替代本轮batch轮换proxy语义；旧proxy loss仍只作历史实现，不进入该run。
 12.现有feature exporter具备proxy TX与source/target集合交叠拒绝，可复用为全局split检查基础。
 13.现有协同指标含old/new逐类accuracy、floor、unknown FAR/reject和实际receiver直方图。
 14.当前协同路径缺少`H_old_new`、`DA0_REG0/DA1_REG0/DA0_REG1/DA1_REG1`、A/B/C/D和difference-in-differences。
-15.anonymous entity状态、证据独立性、可信确权凭证和授权后fresh-K桥接尚无可达实现。
-16.实施应新建独立Phase3入口，复用已验证融合/计分原语，不继续膨胀带truth的Phase2巨型评估函数。
-17.第一组实现只冻结schema、opaque ID、predictor/scorer隔离、单节点/简单基线及negative tests；科学融合候选另行评审。
-18.当前R8可运行含缺失节点的`N_sat_deployed=1..5`非部署诊断矩阵，但其truth-ranked分组不满足正式`proxy_unverified`输入，且不得声称5节点same-event融合。
-19.严格同步多节点主张需要新的物理event绑定数据；该缺口不阻塞代理方法研发，但阻塞真实多星同步结论。
-20.Phase1 focused tests、独立P0/P1和N607证据已完成；Phase3正式N607性能发布等待合法本地证据schema及不依赖真值的事件绑定输入。
+15.anonymous entity、外部credential fail-closed和授权后fresh-K桥接均已可达；它们是技术fixture，不是现实运营授权证据。
+16.独立Phase3 fixture/predict/score/lifecycle入口已实现，没有继续膨胀带truth的Phase2历史评估函数。
+17.CARE-PoE已冻结并通过相关组代表、缺失/延迟、完整性失败、单节点identity和同输入A/B/C/D测试；科学性能尚未读取。
+18.R8的truth-ranked分组不满足`proxy_unverified`输入，继续只作历史非部署诊断，不得声称5节点same-event融合。
+19.严格同步多节点和正式性能主张需要新的物理event绑定数据；该缺口不阻塞技术闭环，但阻塞真实多星同步结论。
+20.Phase3合成G0已完成focused tests、独立`P0=0/P1=0`和N607 artifact闭环；正式性能发布只等待不依赖真值的物理事件绑定输入。
+
+### 2026-08-08 CARE-PoE G0技术闭环
+
+- 冻结实现位于`code/cvsrffi/phase3_care_poe.py`及三个职责分离入口；实现commit为`7c94afac`，release archive commit为`0242d354`。
+- 独立初审发现跨bundle reception未逐项绑定、同相关组混合受新增记录影响和scorer重复行/非法role未拒绝；修复后独立复审为`P0=0,P1=0,14 passed`。
+- N607 run `phase3_care_poe_g0_synthetic_20260808_v1`四入口各执行一次且exit=0，无retry；60条预测完整覆盖A/B/C/D×`N_sat=1..5`×3events。
+- 全部prediction的`shot_count=1`；`N_sat=1`逐event满足A=C、B=D；predictor manifest明确`truth_sidecar_opened=false`。
+- anonymous→外部credential→5个fresh independent event已生成`FRESH_K_READY_FOR_STAGE2_C` receipt，历史unknown event未转support。
+- 16项小artifact与远端manifest逐项hash匹配；无异常指纹，评估进程、SSH/TCP22均清理，8卡保持空闲。
+- 本run状态严格为`ARTIFACTS_COMPLETE_NO_PERFORMANCE_RESULT`；合成metrics不得用于unknown FAR、安全拒绝率或旧类准确率主张。

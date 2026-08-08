@@ -1,13 +1,13 @@
-+# Phase3 CARE-PoE G0合成技术闭环报告
+# Phase3 CARE-PoE G0合成技术闭环报告
 
 ## 0.状态
 
 - 目标模式：`ACTIVE`
 - run ID：`phase3_care_poe_g0_synthetic_20260808_v1`
-- 状态：`LOCAL_VERIFIED / INDEPENDENT_REVIEW_PASS / READY_N607`
+- 状态：`ARTIFACTS_COMPLETE_NO_PERFORMANCE_RESULT`
 - 证据等级：`TECHNICAL_SYNTHETIC_NO_PERFORMANCE_RESULT`
 - 时间：2026-08-08
-- 操作者：Codex主代理；N607唯一runner待交接
+- 操作者：Codex主代理；N607唯一runner已完成
 - 实现Git commit：`7c94aface3d9ef7b8f3c9db83da8c186df5774fa`
 
 ## 1.目标与假设
@@ -70,12 +70,20 @@ python scripts/phase3_care_poe_lifecycle.py --predictions <run>/prediction/predi
 
 停止仅限：hash/commit不匹配、run/log目标已存在、协议字段泄漏、prediction不是60行、确定性异常或写入覆盖风险。不得根据合成metrics停止或晋级方法。
 
-## 6.结果表（待N607回收后填写）
+## 6.N607技术结果
+
+- 四个冻结入口各执行一次，`fixture/predict/score/lifecycle`均`exit=0`，无retry。
+- base/new各15条本地证据，truth sidecar为3条，fresh support为5个独立事件。
+- prediction为60行：A/B/C/D各15行，完整覆盖`N_sat=1..5×3 events`；全部`shot_count=1`。
+- `N_sat=1`逐event满足`A=C`、`B=D`；prediction manifest确认`truth_sidecar_opened=false`。
+- lifecycle到达`FRESH_K_READY_FOR_STAGE2_C`；历史unknown event未进入fresh support。
+- 四份stdout无异常指纹；运行后无活跃评估进程，8卡均空闲，SSH/TCP22连接已清理。
+- 本地16项小artifact与远端manifest逐项hash匹配；Git archive/worktree的CRLF双hash口径均已记录。
 
 | candidate | category | receiver/TX split | K-shot | seed | old/seen-new/unknown | coverage/rollback/defer | mechanism | verdict |
 |---|---|---|---:|---:|---|---|---|---|
-| CARE-PoE-G0 A/B/C/D | synthetic technical | synthetic roster/event | 5 fresh events仅状态机 | deterministic | 不作性能解释 | 待回收 | seal+correlation-aware fusion+lifecycle | `NO_PERFORMANCE_RESULT` |
+| CARE-PoE-G0 A/B/C/D | synthetic technical | synthetic roster/event | 5 fresh events仅状态机 | deterministic | 不作性能解释 | 60/60 prediction；defer/rollback不作性能统计 | seal+correlation-aware fusion+lifecycle | `ARTIFACTS_COMPLETE_NO_PERFORMANCE_RESULT` |
 
 ## 7.已知风险与下一步
 
-最大科学风险不是代码，而是缺少标签可见前生成的物理事件/接收ID。N607 G0完成后只能把接口状态推进到`ARTIFACTS_COMPLETE`；正式性能仍等待合法事件绑定。收到合法数据后，直接发布冻结A/B/C/D×`N_sat=1..5`完整矩阵，不再增加额外审查层。
+最大科学风险不是代码，而是缺少标签可见前生成的物理事件/接收ID。G0技术接口已推进到`ARTIFACTS_COMPLETE_NO_PERFORMANCE_RESULT`；正式性能仍等待合法事件绑定。收到合法数据后，直接发布冻结A/B/C/D×`N_sat=1..5`完整矩阵，不再增加额外审查层。
