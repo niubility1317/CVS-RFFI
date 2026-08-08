@@ -57,6 +57,8 @@ def _load_npz(path: str | Path) -> dict[str, Any]:
             "tx_ids": _as_str_array(pick("tx_ids", np.asarray([""] * n)), n),
             "rx_ids": _as_str_array(pick("rx_ids", np.asarray([""] * n)), n),
             "day_ids": _as_str_array(pick("day_ids", np.asarray([""] * n)), n),
+            "eq_ids": _as_str_array(pick("eq_ids", np.asarray([""] * n)), n),
+            "sig_ids": _as_str_array(pick("sig_ids", np.asarray([""] * n)), n),
             "sat_scenarios": _as_str_array(pick("sat_scenarios", np.asarray([""] * n)), n),
             "channel_views": _as_str_array(pick("channel_views", np.asarray([""] * n)), n),
             "manifest": manifest,
