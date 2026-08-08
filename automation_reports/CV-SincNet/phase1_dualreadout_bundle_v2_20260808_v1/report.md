@@ -4,8 +4,8 @@
 
 - 目标模式：`ACTIVE`
 - run ID：`phase1_dualreadout_bundle_v2_20260808_v1`
-- 状态：`LOCAL_VERIFIED / P0_P1_CLOSED / READY_FOR_N607`
-- 证据等级：`TECHNICAL_BUNDLE_NOT_PERFORMANCE_PROMOTED`
+- 状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
+- 证据等级：`FAILED_TECHNICAL_LANDING_NO_BUNDLE`
 - 时间：2026-08-08
 - 实现commit：`ebf9764caeb31562c41f4fb520d969e542803ee0`
 
@@ -56,11 +56,17 @@ bundle成员固定为两个TorchScript、`calibration.npz`、source-only receipt
 
 停止：checkpoint/NPZ/代码hash不匹配、旧run/log/release已存在、runtime parity失败、物理行绑定不一致、proxy/target进入fit、bundle出现禁用成员、证据出现truth/role或覆盖风险。不得根据proxy/held性能决定重试或调参。
 
+### 4.1实际终态
+
+三条GPU命令均只执行一次并exit=1；CPU build、emit和两次score均未启动。angular exporter因默认forward返回二维logits张量却按`result['z_id']`读取而失败；robust和`z_dom`导出因runner同时设置`CUDA_VISIBLE_DEVICES`并传物理`cuda:1/2`造成`invalid device ordinal`。三条任务均未生成runtime、parity receipt或`z_dom` NPZ。
+
+该run不重试、不覆盖。完整命令、PID、completion、三份stdout和manifest已回收到`artifacts/logs/`，8项小文件逐项哈希匹配；GPU0–7、Python进程和SSH连接均已释放。修复只允许进入新的不可覆盖v2 run。
+
 ## 5.结果表（待回收）
 
 | candidate | category | receiver/TX split | K-shot | seed | known/unknown | coverage/defer | bundle summary | verdict |
 |---|---|---|---:|---:|---|---|---|---|
-| P1-DUALREADOUT-BUNDLE-V2 | source-calibrated technical bundle | 4/1/1 | N/A | 7281105 | 待回收 | 待回收 | C class/domain+B continuous JS | `NO_PERFORMANCE_RESULT_YET` |
+| P1-DUALREADOUT-BUNDLE-V2 | source-calibrated technical bundle | 4/1/1 | N/A | 7281105 | N/A | N/A | 未生成bundle | `STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE` |
 
 ## 6.科学边界
 

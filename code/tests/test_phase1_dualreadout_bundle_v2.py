@@ -18,7 +18,7 @@ from cvsrffi.phase1_dualreadout_bundle_v2 import (
     load_bundle,
     sha256_file,
 )
-from scripts.phase1_dualreadout_bundle_v2 import emit, score
+from scripts.phase1_dualreadout_bundle_v2 import FullDualReadoutRuntime, emit, score
 from scripts.phase1_dualreadout_bundle_v2 import _validate_parity_receipt
 
 
@@ -29,6 +29,19 @@ class ToyRuntime(nn.Module):
         z_dom = torch.nn.functional.normalize(torch.cat([mean[:, :1], -mean[:, 1:2], mean], dim=1), dim=1)
         logits = torch.stack([mean[:, 0] * 4.0, mean[:, 1] * 4.0], dim=1)
         return z_id, z_dom, logits
+
+
+class DefaultLogitsAuxModel(nn.Module):
+    def forward(self, rows: torch.Tensor, return_aux: bool = False):
+        mean = rows.mean(dim=2)
+        logits = torch.stack([mean[:, 0], mean[:, 1]], dim=1)
+        if not return_aux:
+            return logits
+        return {
+            "z_id": torch.cat([mean, mean], dim=1),
+            "z_dom": torch.cat([mean[:, :1], -mean[:, 1:2], mean], dim=1),
+            "tx_logits": logits,
+        }
 
 
 def fixture_arrays():
@@ -92,6 +105,20 @@ def scripted_runtime(path: Path):
     path.parent.mkdir(parents=True, exist_ok=True)
     runtime = torch.jit.trace(ToyRuntime().eval(), torch.randn(2, 2, 16), strict=False)
     torch.jit.save(runtime, str(path))
+
+
+def test_full_runtime_explicitly_requests_auxiliary_features():
+    rows = torch.randn(3, 2, 16)
+    wrapper = FullDualReadoutRuntime(DefaultLogitsAuxModel().eval(), runtime_batch_size=4).eval()
+    z_id, z_dom, logits = wrapper(rows)
+    assert z_id.shape == (3, 4)
+    assert z_dom.shape == (3, 4)
+    assert logits.shape == (3, 2)
+    traced = torch.jit.trace(wrapper, rows, strict=False, check_trace=False)
+    traced_z_id, traced_z_dom, traced_logits = traced(rows)
+    assert torch.allclose(z_id, traced_z_id)
+    assert torch.allclose(z_dom, traced_z_dom)
+    assert torch.allclose(logits, traced_logits)
 
 
 def build_toy_bundle(tmp_path: Path):

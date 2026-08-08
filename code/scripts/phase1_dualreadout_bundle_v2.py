@@ -41,7 +41,7 @@ class FullDualReadoutRuntime(nn.Module):
         count = rows.size(0)
         padded = rows.new_zeros((self.runtime_batch_size, rows.size(1), rows.size(2)))
         padded[:count].copy_(rows)
-        result = self.model(padded)
+        result = self.model(padded, return_aux=True)
         z_id = F.normalize(result["z_id"].float(), dim=1)
         z_dom = F.normalize(result["z_dom"].float(), dim=1)
         logits = result["tx_logits"].float()
