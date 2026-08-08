@@ -4,10 +4,10 @@
 
 - 目标模式：`ACTIVE`
 - run ID：`phase1_dualreadout_bundle_v2_20260808_v1`
-- 状态：`LOCAL_VERIFIED / WAITING_INDEPENDENT_P0_P1`
+- 状态：`LOCAL_VERIFIED / P0_P1_CLOSED / READY_FOR_N607`
 - 证据等级：`TECHNICAL_BUNDLE_NOT_PERFORMANCE_PROMOTED`
 - 时间：2026-08-08
-- 实现commit：`5a78b37b495c3268771530bfca35031d483fd373`
+- 实现commit：`ebf9764caeb31562c41f4fb520d969e542803ee0`
 
 ## 1.目标与冻结假设
 
@@ -26,15 +26,19 @@
 
 | 本地文件 | SHA256 |
 |---|---|
-| `code/cvsrffi/phase1_dualreadout_bundle_v2.py` | `91cf72c86dac0a6d2d4625390689a4e780dd72c342a6af0987bf92114a12aa59` |
-| `code/scripts/phase1_dualreadout_bundle_v2.py` | `b18d9524b808289c460a95f7b8afd25f02d9fbf890e1c389e4bc0d33e1575c7c` |
-| `code/tests/test_phase1_dualreadout_bundle_v2.py` | `86ee0d7ca619e3787a526a02b3f3a9284d45c4e3a653adc151962a44f3a5431d` |
+| `code/cvsrffi/phase1_dualreadout_bundle_v2.py` | `257ac635b0b7b400848b5c9a9896b9c27b69f06e416c92d7598d433207f69a29` |
+| `code/scripts/phase1_dualreadout_bundle_v2.py` | `38176226d160622317809a0e1d033246043d9f8b12e17d7a395d51ace4358c56` |
+| `code/tests/test_phase1_dualreadout_bundle_v2.py` | `f2446998131a73be0f495c5712e26453be7104197b603cda618675fa58daa666` |
 
-本地`ssr-gpu`验证：9项focused tests通过；CLI compile/help通过。覆盖source-only fit、proxy数值不影响、physical ID唯一、两runtime加载、B/C职责、member篡改/额外文件、外部content-root、无role/truth evidence和defer评分语义。
+固定commit的`git archive`CRLF字节SHA256依次为`c177dc87d547bf2f74b11808cec31343805151e80c472744fe8e4e2440d55896`、`3baf32d9cb49c664c9a56bc5de92e2563da187444644e4ba7bb394af2faec12a`、`cfa51dfb4b345e4c83b4f3e2914ab007e3c1a0d8cffdfe4ac66314aff08560c3`，N607按该归档口径核验。
+
+本地`ssr-gpu`验证：12项focused tests通过；CLI compile/help通过；`git diff --check`通过。新增覆盖严格source-only calibration role、receipt exact allowlist，以及parity receipt与runtime/checkpoint/shape/batch/numerical gate绑定。
+
+独立定向审查：`P0=0`、`P1=0`、`ALLOW_N607_REAL_BUNDLE=YES`。审查仅复核上述3个原P0，不增加P2发布门。
 
 ## 3.N607冻结发布
 
-- release：`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_dualreadout_bundle_v2_20260808_v1_5a78b37b`
+- release：`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_dualreadout_bundle_v2_20260808_v1_ebf9764c`
 - run：`/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_dualreadout_bundle_v2_20260808_v1`
 - log：`/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_dualreadout_bundle_v2_20260808_v1`
 - CWD：`<release>/code`
@@ -61,4 +65,3 @@ bundle成员固定为两个TorchScript、`calibration.npz`、source-only receipt
 ## 6.科学边界
 
 proxy=`8-20`和held=`6-15`只能形成source-held非部署诊断。即使达到数值目标，也不能替代Phase3合法物理event/reception绑定、真实unknown或同步多星结论。
-
