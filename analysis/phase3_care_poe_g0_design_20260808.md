@@ -39,7 +39,7 @@ deadline前节点的可靠性为：
 r_m=\operatorname{clip}(q_m\pi_m\exp(-\lambda\Delta t_m),0,1)
 \]
 
-同一`correlation_group_id`内先按可靠性归一混合，组强度取`\gamma_g=\max r_m`；不同组再以均匀类别先验执行加权PoE。相同相关组的完全重复证据不得改变融合结果。单有效节点走identity分支，逐项返回其`p_local/local_decision/local_label/reason_code`。零有效节点输出`defer/NO_VALID_RECEPTION`。
+同一`correlation_group_id`只允许冻结node roster中排序最前的有效节点作为确定性代表，组强度取该代表的`r_m`；同组其它节点既不重加权组分布，也不增加组强度。不同组再以均匀类别先验执行加权PoE。任意新增同组相关证据不得改变融合结果。单有效节点走identity分支，逐项返回其`p_local/local_decision/local_label/reason_code`。零有效节点输出`defer/NO_VALID_RECEPTION`。
 
 多节点unknown必须同时满足`P(U)>=tau_reject`、至少2个独立相关组和组质量和门；registered必须满足unknown上界、top margin和组间冲突门；其余均defer。缺失节点自然不进入事件，late节点被排除；事件最终始终只有1个prediction且`shot_count=1`。
 
@@ -54,7 +54,7 @@ r_m=\operatorname{clip}(q_m\pi_m\exp(-\lambda\Delta t_m),0,1)
 | C | base bundle | CARE-PoE |
 | D | new bundle | CARE-PoE |
 
-四臂读取同一`base_manifest_id`、event集合、deadline和roster。`N_sat=1`时强制`C=A,D=B`。节点顺序和class handle同步置换不得改变语义结果。
+四臂读取同一`base_manifest_id`、event集合、deadline和roster。base/new按event×node逐项绑定同一`satellite_reception_id`、相关组、delay和deadline，任何不一致都拒绝运行。`N_sat=1`时强制`C=A,D=B`。节点输入顺序和class handle同步置换不得改变语义结果。
 
 ## 5.评分语义
 
@@ -72,4 +72,3 @@ unknown决策只能生成不带语义身份的`anonymous_entity_id`。CARE-PoE�
 2. 独立P0/P1审查为0/0。
 3. Git commit、不可覆盖run ID和本地报告完成。
 4. N607只运行确定性合成fixture与CPU入口，回收小artifact；不得读取为性能结果。
-

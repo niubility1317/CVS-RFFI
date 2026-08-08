@@ -56,7 +56,7 @@ def main() -> int:
                             "schema_version": SCHEMA,
                             "linkage_mode": "verified_physical",
                             "emission_event_id": event_id,
-                            "satellite_reception_id": f"{event_id}-{node}-{bundle_kind}",
+                            "satellite_reception_id": f"{event_id}-{node}",
                             "node_id": node,
                             "base_manifest_id": "SYNTH-G0-SAME-INPUT-V1",
                             "bundle_id": f"synthetic-{bundle_kind}-bundle-v1",
@@ -117,4 +117,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

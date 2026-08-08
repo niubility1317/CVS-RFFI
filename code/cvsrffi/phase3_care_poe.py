@@ -213,6 +213,7 @@ def fuse_event(
     config: FusionConfig,
     *,
     node_priors: Mapping[str, float] | None = None,
+    node_order: Mapping[str, int] | None = None,
 ) -> dict[str, Any]:
     """Fuse one event without opening a truth sidecar."""
 
@@ -280,16 +281,18 @@ def fuse_event(
         grouped[record["correlation_group_id"]].append((record, reliability))
     group_probabilities: list[list[float]] = []
     gammas: list[float] = []
+    order = dict(node_order or {})
     for group_id in sorted(grouped):
         members = grouped[group_id]
-        denominator = sum(reliability for _, reliability in members)
-        mixture = [0.0] * (len(handles) + 1)
-        for record, reliability in members:
-            alpha = reliability / denominator
-            for index, probability in enumerate(record["p_local"]):
-                mixture[index] += alpha * probability
-        group_probabilities.append(_normalize(mixture, config.epsilon))
-        gammas.append(max(reliability for _, reliability in members))
+        # A correlation group contributes exactly one pre-query roster-selected
+        # representative. Additional correlated receptions cannot reweight the
+        # group distribution or increase its strength.
+        representative, reliability = min(
+            members,
+            key=lambda item: (order.get(item[0]["node_id"], 10**9), item[0]["node_id"]),
+        )
+        group_probabilities.append(_normalize(representative["p_local"], config.epsilon))
+        gammas.append(reliability)
 
     logits = [-math.log(len(handles) + 1)] * (len(handles) + 1)
     for probabilities, gamma in zip(group_probabilities, gammas):
@@ -362,6 +365,25 @@ def run_abcd_matrix(
     for key in sorted(base_events):
         if {record["base_manifest_id"] for record in base_events[key] + new_events[key]}.__len__() != 1:
             raise EvidenceError("base/new base_manifest_id differs")
+        base_by_node = {record["node_id"]: record for record in base_events[key]}
+        new_by_node = {record["node_id"]: record for record in new_events[key]}
+        if len(base_by_node) != len(base_events[key]) or len(new_by_node) != len(new_events[key]):
+            raise EvidenceError("base/new contains duplicate node evidence")
+        if set(base_by_node) != set(new_by_node):
+            raise EvidenceError("base/new node sets differ")
+        same_input_fields = (
+            "linkage_mode",
+            "satellite_reception_id",
+            "base_manifest_id",
+            "class_handles",
+            "correlation_group_id",
+            "delay_ms",
+            "deadline_ms",
+        )
+        for node_id in base_by_node:
+            if any(base_by_node[node_id][name] != new_by_node[node_id][name] for name in same_input_fields):
+                raise EvidenceError(f"base/new physical reception binding differs for node {node_id}")
+        node_order = {node_id: index for index, node_id in enumerate(node_roster)}
         for budget in budgets:
             selected = set(node_roster[:budget])
             base_selected = [record for record in base_events[key] if record["node_id"] in selected]
@@ -374,7 +396,12 @@ def run_abcd_matrix(
                 "D": new_selected,
             }
             for arm, arm_records in arms.items():
-                result = fuse_event(arm_records, config, node_priors=node_priors)
+                result = fuse_event(
+                    arm_records,
+                    config,
+                    node_priors=node_priors,
+                    node_order=node_order,
+                )
                 result.update({"arm": arm, "node_budget": int(budget), "event_key": key})
                 rows.append(result)
     return rows
@@ -387,17 +414,27 @@ def score_predictions(
     """Score sealed predictions; this is the only truth-reading function."""
 
     truth: dict[str, Mapping[str, Any]] = {}
+    allowed_roles = {"registered", "known", "source", "target_old", "unknown"}
     for row in truth_sidecar:
         key = str(row.get("event_key", ""))
         if not key or key in truth or "true_label" not in row or "role" not in row:
             raise ValueError("invalid truth sidecar")
+        if row["role"] not in allowed_roles:
+            raise ValueError(f"invalid truth role={row['role']!r}")
         truth[key] = row
     buckets: dict[tuple[str, int], list[Mapping[str, Any]]] = defaultdict(list)
+    seen_prediction_keys: set[tuple[str, int, str]] = set()
     for prediction in predictions:
         key = str(prediction.get("event_key", ""))
         if key not in truth:
             raise ValueError(f"missing truth for event {key!r}")
-        buckets[(str(prediction["arm"]), int(prediction["node_budget"]))].append(prediction)
+        arm = str(prediction["arm"])
+        budget = int(prediction["node_budget"])
+        prediction_key = (arm, budget, key)
+        if prediction_key in seen_prediction_keys:
+            raise ValueError(f"duplicate prediction row={prediction_key!r}")
+        seen_prediction_keys.add(prediction_key)
+        buckets[(arm, budget)].append(prediction)
     metrics: dict[str, Any] = {}
     for (arm, budget), rows in sorted(buckets.items()):
         known_total = known_correct = 0

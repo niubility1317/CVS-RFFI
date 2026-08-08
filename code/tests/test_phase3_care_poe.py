@@ -41,7 +41,7 @@ def evidence(
             "schema_version": SCHEMA,
             "linkage_mode": "verified_physical",
             "emission_event_id": event_id,
-            "satellite_reception_id": f"{event_id}-{node}-{bundle}",
+            "satellite_reception_id": f"{event_id}-{node}",
             "node_id": node,
             "base_manifest_id": "M1",
             "bundle_id": bundle,
@@ -108,7 +108,7 @@ def test_single_node_is_exact_identity_and_one_shot():
 def test_same_correlation_copy_does_not_add_strength():
     first = evidence(node="SAT-01", group="G1", probabilities=(0.15, 0.10, 0.75), decision="unknown", label=None)
     second = evidence(node="SAT-02", group="G1", probabilities=(0.15, 0.10, 0.75), decision="unknown", label=None)
-    third = evidence(node="SAT-03", group="G1", probabilities=(0.15, 0.10, 0.75), decision="unknown", label=None)
+    third = evidence(node="SAT-03", group="G1", probabilities=(0.80, 0.10, 0.10), decision="registered", label="a")
     two = fuse_event([first, second], FusionConfig())
     three = fuse_event([first, second, third], FusionConfig())
     assert two["p_fused"] == pytest.approx(three["p_fused"])
@@ -171,6 +171,17 @@ def test_abcd_same_input_all_budgets_and_n1_parity():
     assert all(row["shot_count"] == 1 for row in rows)
 
 
+def test_abcd_rejects_different_physical_reception_binding():
+    base = event_bundle("base")
+    new = event_bundle("new")
+    unsigned = copy.deepcopy(new[0])
+    unsigned.pop("evidence_hash")
+    unsigned["satellite_reception_id"] = "DIFFERENT-RECEPTION"
+    new[0] = seal_local_evidence(unsigned)
+    with pytest.raises(EvidenceError, match="physical reception binding"):
+        run_abcd_matrix(base, new, FusionConfig(), node_roster=NODES)
+
+
 def test_scorer_counts_known_defer_as_error_and_unknown_defer_unresolved():
     predictions = [
         {"event_key": "K1", "arm": "A", "node_budget": 1, "decision": "defer", "label": None},
@@ -186,6 +197,15 @@ def test_scorer_counts_known_defer_as_error_and_unknown_defer_unresolved():
     assert row["known_accuracy"] == 0.0
     assert row["safe_reject_rate"] == 0.5
     assert row["unknown_defer_rate"] == 0.5
+
+
+def test_scorer_rejects_duplicate_prediction_and_illegal_role():
+    prediction = {"event_key": "E1", "arm": "A", "node_budget": 1, "decision": "defer", "label": None}
+    truth = [{"event_key": "E1", "role": "registered", "true_label": "a"}]
+    with pytest.raises(ValueError, match="duplicate prediction"):
+        score_predictions([prediction, dict(prediction)], truth)
+    with pytest.raises(ValueError, match="invalid truth role"):
+        score_predictions([prediction], [{"event_key": "E1", "role": "oracle_proxy", "true_label": "a"}])
 
 
 def test_truth_sidecar_never_changes_prediction_bytes():
