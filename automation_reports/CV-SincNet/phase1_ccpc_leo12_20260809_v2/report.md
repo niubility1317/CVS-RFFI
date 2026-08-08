@@ -2,7 +2,7 @@
 
 目标模式：`GOAL_MODE=ACTIVE`
 
-状态：`LOCAL_VERIFIED / PREREGISTERED`
+状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
 
 证据边界：`PHASE1_SOURCE_ONLY_OPEN_WORLD_READY_REPRESENTATION_NON_CONFIRMATORY`
 
@@ -53,3 +53,11 @@ cd /home/szu2070436088/2510044040/CV-SincNet/releases/phase1_ccpc_leo12_20260809
 每任务预期`final_ssdg.pth`、metrics CSV/JSONL、CCPC config/terminal/heldout/resource receipt；log根预期`pids.tsv`和`completion.tsv`。训练完整后执行新run ID的唯一postfreeze评估：clean known、source proxy连续排序与三场景同physical LEO C/G对照，proxy/held零fit、零校准、零选参。
 
 五项门仍为：技术健康；6/6 clean known四项G-C≥−2pp；18/18 LEO原子格四项G-C≥−2pp且总体明确改善；source proxy连续排序相对C同向；真实checkpoint与bundle闭环。任一门失败即`REJECT_CCPC_LEO_NO_RETRY`，不进入Phase3。
+
+## 6.运行终态（2026-08-09）
+
+v2按冻结命令仅启动一次，复用只读release，wrapper PID=`4007683`、launcher PID=`4007684`；12个child的GPU绑定记录在`artifacts/pids.tsv`和`artifacts/manifest.json`。首波健康检查确认`CONFIG-CCPC-LEO`及EPOCH telemetry存在，且`sat_cos=nan`、禁用domain的`dom=nan%`、未执行test的`overall_tx=nan%(0/0)`均作为N/A占位忽略；未发现`loss_total`/`loss_ccpc_leo`或梯度/模型输出的真实非有限值。
+
+F1G与F4G在E002后均明确抛出同一确定性异常：`cvsrffi.phase1_ccpc_leo.CCPCLEORuntimeError: CCPC-LEO fail-closed: paired LEO feature gradient is zero or non-finite`。该相同指纹满足预注册“至少两个任务”系统性技术停止条件；F2G/F3G日志随后也保留同指纹。停止前核对roots=`{4007683,4007684}`及精确run树，TERM后无存活bound PID，必要KILL后仍为0；未触碰无关任务，未重试、未重启、未远端改码。
+
+远端GPU0–7停止后均为0%/1MiB；SSH/SCP短连接已断开，TCP22无残留。只回收小证据至`E:\type10-7\automation_reports\CV-SincNet\phase1_ccpc_leo12_20260809_v2\artifacts`：原始回收51文件（12×metrics CSV/JSONL/config receipt、12 stdout、pids/completion/outer），另生成本地`manifest.json`，当前共52文件；未下载checkpoint、dataset或大型数组。`completion.tsv`为header-only，outer为空；run在停止时无`final_ssdg.pth/latest_ssdg.pth`。本run标记`NO_PERFORMANCE_RESULT`，不用于性能比较、晋级或Phase3结论；retry=NO。
