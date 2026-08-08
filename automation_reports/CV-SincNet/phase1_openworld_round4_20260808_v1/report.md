@@ -2,7 +2,7 @@
 
 目标模式：`GOAL_MODE=ACTIVE`
 
-状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
+状态：`ANALYZED / GI_EPIOR_REJECTED_CLEAN_KNOWN_RX_FLOOR`
 
 证据边界：`PHASE1_SOURCE_ONLY_DEVELOPMENT_NON_CONFIRMATORY`
 
@@ -132,3 +132,11 @@ clean实验完成后由主Agent读取六折同行结果。模型健康、known�
 该archive错误使用`git archive --prefix=code/`，而仓库自身已经包含顶层`code/`，导致release形成`<release>/code/code/scripts/...`，与冻结CWD及launcher路径`<release>/code/scripts/...`不符。问题在任何run/log/outer创建和任何fit/score启动之前被发现；GPU保持空闲。因此v1记为`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`，保留partial release，不覆盖、不修补、不把它计为科学实验。
 
 最小修复仅为：新建不可覆盖v2 release/run/log，archive不加`--prefix`并解包到release根；方法commit、代码、输入、参数、矩阵和晋级门全部保持不变。
+
+## 14.GI-EpiOR最终结果
+
+v2关闭了release路径问题但fit因NumPy整数dtype推断失败；v3以显式`torch.long`完成6/6 fit及bundle导出，score又因N607 Tensor→NumPy桥接dtype失败。按两轮修复上限，最终使用独立score-only one-shot复用v3不可变bundle；6/6 score exit0，六份CSV各10401行，artifact逐项hash匹配。
+
+科学结果为：known closed/full平均98.22%/97.35%，overall下降0.87个百分点；proxy FAR从冻结C无拒识基线100%降至60.88%，proxy AUROC为0.7569。最低RX平均下降3.40个百分点，且F1/F3/F5/F6分别下降3.70/4.27/5.92/4.02个百分点；F5/F6最低类别各下降2.50个百分点。五项门中的模型健康、proxy正信号和bundle导出通过，known跨接收机及最低类别保护失败。
+
+裁决：`REJECT_CLEAN_KNOWN_RX_FLOOR`。不发布GI-EpiOR的LEO三视图，也不把source proxy结果写成Phase3 unknown能力。连续NCT ratio仅保留为下一轮设计证据，其平均proxy/held AUROC为0.9290/0.7955。
