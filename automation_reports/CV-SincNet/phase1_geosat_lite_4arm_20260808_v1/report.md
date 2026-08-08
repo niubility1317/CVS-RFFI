@@ -103,7 +103,22 @@ cd /home/szu2070436088/2510044040/CV-SincNet/releases/phase1_geosat_lite_4arm_20
 
 二次健康复核时四臂仍为LIVE：A/B/C/D分别到E024/E022/E021/E018，日志持续增长，错误指纹仍为0/4；GPU4–7空闲，短连接结束后本地SSH进程与N607/桥接TCP22连接均为none。
 
+### 5.2冻结后source-only held-TX审计锁
+
+该审计是设计中已预注册的“一次冻结后审计”，不是新训练或新方法。四个`final_ssdg.pth`只读，公式和阈值规则在任何held-TX结果前固定：
+
+- exporter：现有`export_spaceborne_features.py`；`z_id+tx_logits`；clean view；source days=`0,1`，source receivers=`0..6`，每TX最多400条；seed=`7281105`；
+- known/calibration TX：`14-10,14-7,20-15,20-19`，role=`source`；
+- held-known TX：`6-15`，role=`target_old`，只作第二未见TX诊断；
+- proxy-unknown TX：`8-20`，role=`proxy_unknown`，作为主要proxy审计；
+- evaluator：现有`eval_phase1_logits_open_set_reject.py`；只从source正确分类样本冻结`confidence Q0.05`、`margin Q0.05`、`energy Q0.95`；held TX不参与阈值、公式或模型更新；
+- primary输出：source known full accuracy、proxy FAR、AUROC、safe rejection；secondary输出：把held-known作为另一未见TX的同公式诊断；
+- 四臂同输入、同样本上限、同量化规则。审计通过或失败均不触发重训、fallback或阈值重选。
+
+本地复用测试：`test_phase1_logits_open_set_reject_eval.py`、`test_phase1_open_set_reject_eval.py`和真实checkpoint loader共5项通过。
+
 ## 6.健康与停止规则
+
 
 启动后核对launcher PID、四个child PID、CWD/cmdline、GPU映射和日志增长。仅在P0协议/覆盖风险、错误checkout/hash、query/held-TX泄漏、CUDA OOM或至少两个不同arm在产生训练telemetry前出现同一确定性异常指纹时，停止该run的后续工作并保留所有partial artifacts。不得因准确率、floor、FAR或其它性能值中止。
 
