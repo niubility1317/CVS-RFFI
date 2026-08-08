@@ -83,3 +83,10 @@ known保护按同fold同一行比较G-C的clean、三种LEO、min-class与min-re
 ## 8.待回填
 
 运行器回填精确release commit/archive SHA、PID/GPU、epoch/terminal/completion、artifact hash、异常与资源清理；主控仅在完整12臂和24条postfreeze评分返回后作paired分析。
+
+## 9.N607终态（2026-08-08）
+
+- 训练`STATUS=ARTIFACTS_COMPLETE`：release=`.../phase1_manytx_realoe12_physrx_v2_20260808_v2_eaf24235`，commit=`eaf2423524b0b4fc4025968c3acc0a866aa2691d`，implementation parent=`23a2a73d76c144fea7d8ad54342c24c3868ce8de`，archive tar SHA256=`af6e1125b84c833c5bffc18a463c4a77258b052126c0a58148427174fdc75cd3`。
+- launcher PID=`3785839`，12任务固定GPU映射；12/12均E120、metrics CSV=121行/JSONL=120行、`final_ssdg.pth`与terminal receipt齐全；`completion.tsv` 12行全`exit_code=8`为预期技术终态；无训练异常，GPU收口0%/1MiB。
+- postfreeze按冻结命令仅执行12次export，各PID已退出，NPZ=0/12，未启动任何score。12条日志同一确定性异常：`ValueError: cannot resolve 20210301 from ['2021_03_01', '2021_03_08', '2021_03_15', '2021_03_23']`，位置为`export_spaceborne_features.py:_resolve_indices`；因此`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`，retry=NO。
+- postfreeze小证据已回收至`E:\type10-7\automation_reports\CV-SincNet\phase1_manytx_realoe12_physrx_v2_20260808_v2\artifacts`：audit logs、export_pids/completion、训练metrics/receipt/log小归档；未下载checkpoint/NPZ。SSH/SCP/TCP22均清理。
