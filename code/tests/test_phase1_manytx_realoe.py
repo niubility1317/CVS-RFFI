@@ -16,6 +16,7 @@ from SSDG.train_ssdg import (
     _MANYTX_REAL_OE_TRAIN_TX,
     _ManyTxRealOeBalancedBatchSampler,
     _manytx_real_oe_coverage_meets_contract,
+    _parse_wisig_axis_spec,
     _phase1_tx_partition_view,
     _validate_manytx_real_oe_config,
     build_arg_parser,
@@ -85,6 +86,15 @@ def test_manytx_realoe_parser_and_frozen_partition_receipt():
     assert receipt["proxy_loaded_by_training"] is False
     assert receipt["locked_target_new_loaded_by_training"] is False
     assert receipt["reserve_loaded_by_training"] is False
+
+
+def test_wisig_axis_parser_preserves_physical_day_labels_and_numeric_indices():
+    assert _parse_wisig_axis_spec("2021_03_01,2021_03_08") == [
+        "2021_03_01",
+        "2021_03_08",
+    ]
+    assert _parse_wisig_axis_spec("0,1") == [0, 1]
+    assert _parse_wisig_axis_spec("1-1,14-7") == ["1-1", "14-7"]
 
 
 def test_manytx_realoe_rejects_any_locked_target_new_redefinition():

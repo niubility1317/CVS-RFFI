@@ -1181,6 +1181,28 @@ def _parse_manytx_tx_ids(value: Any) -> Tuple[str, ...]:
     return items
 
 
+def _parse_wisig_axis_spec(value: Any) -> Optional[List[Any]]:
+    """Parse numeric indices without coercing physical labels such as dates.
+
+    Python's ``int`` accepts underscores, so the generic CSV helper turns the
+    physical day label ``2021_03_01`` into ``20210301``.  WiSig axes must only
+    interpret an item as an index when every character (apart from an optional
+    sign) is a decimal digit.
+    """
+
+    raw = str(value or "").strip()
+    if not raw:
+        return None
+    parsed: List[Any] = []
+    for part in raw.split(","):
+        item = part.strip()
+        if not item:
+            continue
+        numeric = item[1:] if item[:1] in {"+", "-"} else item
+        parsed.append(int(item) if numeric.isdigit() else item)
+    return parsed or None
+
+
 def _require_frozen_physical_labels(
     value: Any,
     expected: Sequence[str],
@@ -2110,10 +2132,10 @@ def _build_ssdg_wisig_data(args, device: torch.device):
     eq = "both" if str(args.wisig_equalized).lower() == "both" else int(args.wisig_equalized)
     day_list = list(ds_w.get("capture_date_list", []))
     rx_list = list(ds_w.get("rx_list", []))
-    train_days = _resolve_days(day_list, parse_csv_indices(args.wisig_train_days), list(range(min(3, len(day_list)))))
-    test_days = _resolve_days(day_list, parse_csv_indices(args.wisig_test_days), [len(day_list) - 1])
-    train_rxs = _resolve_rxs(rx_list, parse_csv_indices(args.wisig_train_rxs), list(range(len(rx_list))))
-    test_rxs = _resolve_rxs(rx_list, parse_csv_indices(args.wisig_test_rxs), [])
+    train_days = _resolve_days(day_list, _parse_wisig_axis_spec(args.wisig_train_days), list(range(min(3, len(day_list)))))
+    test_days = _resolve_days(day_list, _parse_wisig_axis_spec(args.wisig_test_days), [len(day_list) - 1])
+    train_rxs = _resolve_rxs(rx_list, _parse_wisig_axis_spec(args.wisig_train_rxs), list(range(len(rx_list))))
+    test_rxs = _resolve_rxs(rx_list, _parse_wisig_axis_spec(args.wisig_test_rxs), [])
     train_days = [d for d in train_days if d not in test_days]
     train_rxs = [r for r in train_rxs if r not in test_rxs]
     known_physical_receipt = _manytx_known_source_physical_receipt(
