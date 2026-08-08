@@ -58,6 +58,7 @@ export_one() {
     "${PYTHON}" -u "${EXPORTER}"
     --ckpt "${TRAIN_ROOT}/${candidate}/final_ssdg.pth"
     --wisig_pkl "${WISIG_PKL}"
+    --source_only_export
     --out_npz "${RUN_ROOT}/${fold}/leo_features.npz"
     --feature_name z_id --source_tx_ids "${SOURCE_TX[index]}"
     --source_days "${SOURCE_DAYS}" --source_rxs "${SOURCE_RXS}"

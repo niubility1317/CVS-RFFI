@@ -788,6 +788,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--new_tx_ids", required=False)
     parser.add_argument("--unknown_tx_ids", default=None)
     parser.add_argument("--proxy_unknown_tx_ids", default=None)
+    parser.add_argument(
+        "--source_only_export",
+        action="store_true",
+        help="Export only source rows; forbids target/proxy role arguments.",
+    )
     parser.add_argument("--wisig_equalized", default="1")
     parser.add_argument("--wisig_domain", default="rx_day")
     parser.add_argument("--wisig_out_len", type=int, default=256)
@@ -845,8 +850,19 @@ def main() -> int:
     if not args.source_tx_ids:
         raise ValueError("--source_tx_ids is required for real WiSig export")
     requested_new_tx_ids = parse_tx_id_list(args.new_tx_ids)
+    source_only_export = bool(args.source_only_export)
+    if source_only_export:
+        forbidden = {
+            "target_old_tx_ids": parse_tx_id_list(args.target_old_tx_ids),
+            "new_tx_ids": requested_new_tx_ids,
+            "unknown_tx_ids": parse_tx_id_list(args.unknown_tx_ids),
+            "proxy_unknown_tx_ids": parse_tx_id_list(args.proxy_unknown_tx_ids),
+        }
+        active = sorted(name for name, values in forbidden.items() if values)
+        if active:
+            raise ValueError(f"--source_only_export forbids role arguments: {','.join(active)}")
     old_unknown_only = not requested_new_tx_ids
-    if old_unknown_only and not parse_tx_id_list(args.target_old_tx_ids):
+    if not source_only_export and old_unknown_only and not parse_tx_id_list(args.target_old_tx_ids):
         raise ValueError("--target_old_tx_ids is required when --new_tx_ids is omitted")
 
     source_ds, source_info = _build_wisig_dataset(
@@ -863,7 +879,7 @@ def main() -> int:
         seed=int(args.seed),
     )
     new_pkl_path = str(args.new_wisig_pkl or args.wisig_pkl)
-    new_raw = load_wisig_compact_pkl(new_pkl_path)
+    new_raw = {} if source_only_export else load_wisig_compact_pkl(new_pkl_path)
     resolved_new_labels: list[str] = []
     if requested_new_tx_ids:
         _, resolved_new_labels = _resolve_tx_indices(new_raw.get("tx_list", []), args.new_tx_ids, field="new_tx_ids")
@@ -1201,8 +1217,13 @@ def main() -> int:
         ),
         "checkpoint_load_audit": checkpoint_load_audit,
         "target_new_channel_view": "disabled" if old_unknown_only else target_new_view,
-        "target_unknown_channel_view": target_unknown_view,
-        "target_channel_view": "satellite/LEO" if target_unknown_view == "satellite" else "clean",
+        "target_unknown_channel_view": "disabled" if source_only_export else target_unknown_view,
+        "target_channel_view": (
+            "disabled_source_only"
+            if source_only_export
+            else ("satellite/LEO" if target_unknown_view == "satellite" else "clean")
+        ),
+        "source_only_export": source_only_export,
         "star_ground_channel_impl": star_ground_impl,
         "target_channel_scenarios": target_unknown_scenarios,
         "satellite_tta_policy": str(args.satellite_tta_policy),
