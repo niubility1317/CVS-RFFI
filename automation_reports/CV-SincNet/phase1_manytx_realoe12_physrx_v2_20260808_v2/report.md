@@ -90,3 +90,21 @@ known保护按同fold同一行比较G-C的clean、三种LEO、min-class与min-re
 - launcher PID=`3785839`，12任务固定GPU映射；12/12均E120、metrics CSV=121行/JSONL=120行、`final_ssdg.pth`与terminal receipt齐全；`completion.tsv` 12行全`exit_code=8`为预期技术终态；无训练异常，GPU收口0%/1MiB。
 - postfreeze按冻结命令仅执行12次export，各PID已退出，NPZ=0/12，未启动任何score。12条日志同一确定性异常：`ValueError: cannot resolve 20210301 from ['2021_03_01', '2021_03_08', '2021_03_15', '2021_03_23']`，位置为`export_spaceborne_features.py:_resolve_indices`；因此`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`，retry=NO。
 - postfreeze小证据已回收至`E:\type10-7\automation_reports\CV-SincNet\phase1_manytx_realoe12_physrx_v2_20260808_v2\artifacts`：audit logs、export_pids/completion、训练metrics/receipt/log小归档；未下载checkpoint/NPZ。SSH/SCP/TCP22均清理。
+
+## 10.完整6fold已知泛化分析
+
+以下数值均来自各candidate同一个`final_ssdg.pth`对应的`frozen_phase1_heldout_eval.json`，单位为百分点。`Δ=G-C`；任一预注册保护项低于`-2pp`即该fold拒绝，不允许跨fold补偿。
+
+|Fold|C overall|G overall|Δ overall|C RX floor|G RX floor|Δ RX floor|C LEO strict floor|G LEO strict floor|Δ LEO strict floor|门结论|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|
+|F1|81.98|80.77|-1.21|57.11|62.30|+5.19|60.35|55.70|-4.65|拒绝|
+|F2|89.57|87.85|-1.72|78.66|68.87|-9.79|60.51|58.55|-1.97|拒绝|
+|F3|83.59|86.47|+2.89|64.51|64.51|0.00|56.12|57.91|+1.79|通过|
+|F4|89.91|89.98|+0.07|79.95|76.76|-3.19|62.68|61.14|-1.54|拒绝|
+|F5|80.48|76.51|-3.97|52.97|45.47|-7.50|52.56|50.14|-2.42|拒绝|
+|F6|84.08|81.25|-2.83|58.61|56.49|-2.12|42.42|43.27|+0.85|拒绝|
+|6fold均值|84.93|83.81|-1.13|65.30|62.40|-2.90|55.77|54.45|-1.32|仅1/6通过|
+
+逐场景检查与上述结论一致：F1三种LEO accuracy均下降约3.89--4.20pp；F5三种LEO accuracy均下降约2.50--2.85pp；F4的`leo_clear_weak` strict指标下降2.30pp。F6虽在三种LEO上小幅改善，但clean overall、strict unseen-day/unseen-RX与receiver floor分别下降2.83、4.38和2.12pp，仍不能通过非补偿门。
+
+因此RealOE-G不是高泛化Phase1候选：它在F3有效，但跨held TX不稳定，并把平均receiver floor拉低2.90pp。该结论只使用完整6fold已知保护证据，已经足以否决bundle晋级；后续proxy/held score仅用于解释机制，不可能推翻这一非补偿结论。

@@ -76,3 +76,23 @@ cd <release>/code && nohup setsid env RUN_ID=phase1_manytx_realoe12_physrx_v2_po
 - exact launch：上一节命令原样执行一次；caller超时后只读确认launcher已落地，未重复启动。远端最终无run-owned进程，GPU0--7均为0%/1MiB。
 - 结构闭环：`export_completion.tsv`=12行、全部`exit_code=0`；12/12 NPZ各10400行，角色计数均为`source=2000,target_old=400,proxy_unknown=8000`，days均为`2021_03_01,2021_03_08`，channel=`clean`，strict load=`missing=0,unexpected=0,skipped=0`。`score_completion.tsv`=24行、全部`exit_code=0`；24 JSON、24 CSV均存在，每CSV=10401行；36 stdout日志存在；错误指纹扫描无Traceback/ValueError/RuntimeError/CUDA/ERROR/FAILED。
 - 本地已回收8个candidate的完整7文件（56文件）及F5C的`proxy_metrics.json`（共57文件）；F5C/F5G/F6C/F6G其余小文件、两份completion TSV和outer log待SSH服务恢复后补传。已确认本地无残留`ssh.exe`/`scp.exe`及TCP22连接。未下载NPZ或checkpoint；不作性能结论。
+- 2026-08-08 resume retrieval：单次direct N607 preflight与单次已验证lab bridge均因`Connection refused`失败；身份/本地SSH配置正常，随后确认本地SSH进程与TCP22连接均为0。未重复抓取已有文件，未改变远端状态。
+
+## 7.F1--F4已回收同行诊断
+
+本节只使用本地已完整回收的F1--F4八个candidate；F5/F6文件仍在远端，因此明确标记为`PARTIAL_DIAGNOSTIC`，不得据此声称完整open-world矩阵。energy AUROC由逐样本`energy`重算，正类为对应unknown role；FAR使用source正确样本Q0.95校准的energy-only gate。
+
+|Fold|Arm|proxy energy AUROC|proxy FAR(%)|fold-held energy AUROC|fold-held FAR(%)|source known coverage(%)|
+|---|---|---:|---:|---:|---:|---:|
+|F1|C|0.77974|52.838|0.53623|77.50|93.85|
+|F1|G|0.87886|42.437|0.62734|88.75|94.10|
+|F2|C|0.75296|54.413|0.28098|94.00|94.50|
+|F2|G|0.89399|39.475|0.50246|95.75|94.40|
+|F3|C|0.72667|63.937|0.75954|61.25|93.95|
+|F3|G|0.88028|41.800|0.62151|96.50|94.45|
+|F4|C|0.75922|43.450|0.44631|83.75|94.30|
+|F4|G|0.89268|32.625|0.63610|89.50|94.15|
+
+在已回收4fold中，G相对C的proxy energy AUROC平均提高0.13180，proxy FAR平均降低14.575pp；但G的proxy FAR仍为32.625%--42.437%，远高于5%目标。同时fold-held FAR平均从79.125%恶化到92.625%（+13.50pp）。这说明固定RealOE损失学到了ManyTx proxy分布的energy分离，却没有形成可迁移的held-TX拒识边界；F3甚至出现proxy改善而fold-held FAR从61.25%升至96.50%的典型反向迁移。
+
+结合完整6fold已知保护门仅1/6通过，本方法结论冻结为`REJECT_NO_BUNDLE_PROMOTION`。缺失的F5/F6小artifact仍需回收以补齐完整表，但不会改变这一由非补偿known门决定的晋级结论。
