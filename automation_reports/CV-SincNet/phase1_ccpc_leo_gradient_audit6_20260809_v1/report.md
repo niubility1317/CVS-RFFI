@@ -2,7 +2,7 @@
 
 目标模式：`GOAL_MODE=ACTIVE`
 
-状态：`LOCAL_VERIFIED / PREREGISTERED / NOT_LAUNCHED`
+状态：`ARTIFACTS_COMPLETE / TECHNICAL_ONLY / NO_PERFORMANCE_RESULT / NO_POSTFREEZE`
 
 用途：`TECHNICAL_ONLY / NO_PERFORMANCE_RESULT / NO_POSTFREEZE`
 
@@ -59,3 +59,12 @@ cd /home/szu2070436088/2510044040/CV-SincNet/releases/phase1_ccpc_leo_gradient_a
 
 N/A占位与有限零梯度不停止；GradScaler合法skip可计数。raw未缩放梯度None/nonfinite、真实loss/model故障、路径/hash/overwrite错误、OOM/CUDA或至少2fold同一确定性异常才触发系统停止。只停止精确run树，保留partial；不重启、不调参、不远端改码，retry=`NO`。只回收小receipt、metrics和日志，不下载checkpoint，不读取/解释任何性能。
 
+## 6.运行终态与技术artifact（2026-08-09）
+
+远端direct N607 preflight因TCP/SSH拒绝，按规则使用verified lab bridge；本地SSH/TCP22在每次连接后均清理。commit=`753161c9127f72498507c8bbf4d7994bc4b7e698`以无prefix archive落地release；archive tar SHA256=`93b3c7a878a5c0724b74fbc6218d45f3ba862de794fa02504de465619aaae40c`、261253120B。远端archive成员SHA与worktree SHA的差异仅为CRLF/LF字节口径，五文件双口径及验证结果记录于`artifacts/manifest.json`，未远端改码。
+
+按冻结命令唯一启动一次；caller超时后短连接确认已落地，未重复启动。wrapper PID=`4058152`、launcher PID=`4058153`；F1G/F2G/F3G/F4G/F5G/F6G分别为PID `4058160/4058166/4058171/4058176/4058179/4058181`，GPU `0/1/2/3/4/5`，GPU6–7空闲。`pids.tsv`、`completion.tsv`和六份stdout均已生成；completion为header+6行、六个exit_code均为0。
+
+六折均达到E015/015并写入`TECHNICAL_AUDIT_COMPLETE` terminal receipt；每折未缩放CCPC梯度`nonzero_batches=450、nonfinite_batches=0`，参数有限梯度与optimizer step均观测到（F1–F6分别447/447、448/448、447/447、448/448、447/447、446/446）。参数梯度非有限/未应用step各为2–4个，receipt合同仍为`NONZERO_OBSERVED_NO_NONFINITE_PARAM_FINITE_AND_STEP_OBSERVED`；按冻结规则作为GradScaler合法skip记录，不触发停止。六折`technical_only=true、promotion_ready=false`，heldout均为`SKIPPED_TECHNICAL_AUDIT`。
+
+小artifact已回收至`E:\type10-7\automation_reports\CV-SincNet\phase1_ccpc_leo_gradient_audit6_20260809_v1\artifacts`：63个文件（六折metrics、terminal/config/completion/resource/status/heldout/安全receipt、六份stdout、pids/completion/outer）及`manifest.json`；manifest SHA256=`6a8f3083f327c4e9d62463f6b7f4f4106893caf2e037f0779364331bc594908f`，逐项本地哈希校验`BAD=0`，未下载checkpoint/NPZ。远端临时tar已删除，远端进程数=0，GPU0–7均0%/1MiB，SSH/TCP22均清理。该run仅作技术审计，不产生性能、晋级或Phase3结论；retry=`NO`。
