@@ -1,6 +1,6 @@
 +# Phase1 GeoSat Lite四臂首发报告
 
-状态：`LOCAL_VERIFIED / READY_FOR_N607_HANDOFF`
+状态：`RUNNING`
 
 目标模式：`GOAL_MODE=ACTIVE`
 
@@ -76,6 +76,32 @@ runner exact command在release路径/hash确定后补记，形式固定为：
 ```text
 nohup env RUN_ID=phase1_geosat_lite_4arm_20260808_v1 CODE_ROOT=<release>/code bash <release>/code/scripts/launch_phase1_geosat_lite_4gpu_20260808.sh > <log_root>.launch.out 2>&1 < /dev/null &
 ```
+
+### 5.1实际落地与启动证据
+
+状态：`RUNNING`。
+
+- release commit：`5f01bdfb1446603b393e5d5c89643e6f129f61c6`。
+- release root：`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_geosat_lite_4arm_20260808_v1_5f01bdfb`。
+- Git archive SHA256：`train_ssdg.py=2fdac77aa38a2c5bdede3fc47f23047e33df3fb0e13f8bdaa19243ec7376435f`；`launcher=42c1aea7c2aa12a7cced8f9968da58d0943a2ebead29c5037979c0bdfb900e03`；`test=8fa2f8cea16de3b552201cd95f5a7879a573a0b3529cdf60c4793eaa7c554240`。与Windows工作树hash差异仅来自Git属性/换行口径，远端字节与固定commit归档一致。
+- exact command：
+
+```text
+cd /home/szu2070436088/2510044040/CV-SincNet/releases/phase1_geosat_lite_4arm_20260808_v1_5f01bdfb/code && nohup setsid env RUN_ID=phase1_geosat_lite_4arm_20260808_v1 PROJECT_ROOT=/home/szu2070436088/2510044040/CV-SincNet CODE_ROOT=/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_geosat_lite_4arm_20260808_v1_5f01bdfb/code PYTHON=/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python bash /home/szu2070436088/2510044040/CV-SincNet/releases/phase1_geosat_lite_4arm_20260808_v1_5f01bdfb/code/scripts/launch_phase1_geosat_lite_4gpu_20260808.sh > /home/szu2070436088/2510044040/CV-SincNet/logs/phase1_geosat_lite_4arm_20260808_v1.launch.out 2>&1 < /dev/null & echo $!
+```
+
+| 进程 | PID | GPU | 首波状态 |
+|---|---:|---:|---|
+| launcher | 3494462 | N/A | CWD与release绑定，PGID/SID=3494462 |
+| A_ADV3B02_Z0 | 3494468 | 0 | E013，约2214MiB |
+| B_ANGULAR_Z0 | 3494470 | 1 | E012，约1996MiB |
+| C_LEO_CONS_Z0 | 3494472 | 2 | E011，约2242MiB |
+| D_GEOSAT_LITE_Z0 | 3494474 | 3 | E010，约2454MiB |
+
+四臂均出现`CONFIG-RUN/DATA/LOSS/SAT/TELEMETRY`与`SSDG-TRAIN`，错误指纹0/4；每臂已生成`metrics_epoch.csv`与`metrics_epoch.jsonl`。启动SSH命令超时后未重启，runner先用远端证据确认同一进程已运行，再关闭本地PID25020并确认TCP22无残留。
+
+
+二次健康复核时四臂仍为LIVE：A/B/C/D分别到E024/E022/E021/E018，日志持续增长，错误指纹仍为0/4；GPU4–7空闲，短连接结束后本地SSH进程与N607/桥接TCP22连接均为none。
 
 ## 6.健康与停止规则
 
