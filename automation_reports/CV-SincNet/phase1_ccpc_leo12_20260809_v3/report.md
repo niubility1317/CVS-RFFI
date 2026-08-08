@@ -2,7 +2,7 @@
 
 目标模式：`GOAL_MODE=ACTIVE`
 
-状态：`LOCAL_VERIFIED / PREREGISTERED / NOT_LAUNCHED`
+状态：`STOPPED_EARLY_TECHNICAL_AUDIT_DEFECT / NO_PERFORMANCE_RESULT`
 
 证据边界：`PHASE1_SOURCE_ONLY_OPEN_WORLD_READY_REPRESENTATION_NON_CONFIRMATORY`
 
@@ -66,3 +66,18 @@ cd /home/szu2070436088/2510044040/CV-SincNet/releases/phase1_ccpc_leo12_20260809
 
 训练闭环后才执行独立postfreeze：clean known、source proxy连续排序、三LEO场景同physical C/G配对；proxy/held/LEO均零fit、零校准、零选参。性能门仍为clean known 6/6四项G-C>=-2pp、LEO 18/18四项G-C>=-2pp且总体改善、proxy排序同向和artifact闭环；任一失败即`REJECT_CCPC_LEO_NO_RETRY`，不得进入Phase3。
 
+## 6.运行终态（2026-08-09）
+
+v3按冻结命令仅启动一次，复用commit=`90fac195606a8598cf2c734a950b1967e2e778b7`的无prefix归档；wrapper PID=`4030420`、launcher PID=`4030421`，12个child的C/G与GPU绑定记录在`artifacts/pids.tsv`和`artifacts/manifest.json`。归档SHA=`dfed9477ba427fd0943194bf322541e2a41ab9128a6b084f061402bc68ec069c`（261212160B），远端五文件archive SHA按LF口径记录；worktree与archive差异仅为换行，不涉及远端改码。
+
+首波确认12个`CONFIG-CCPC-LEO`与日志增长。`sat_cos=nan`、禁用domain的`dom=nan%`、未执行test的`overall_tx=nan%(0/0)`等N/A占位被正确忽略；有限零梯度也按v3规则继续。F1G（E002）、F3G（E013）、F4G（E005）分别写出`ccpc_failure_receipt.json`，均为`error_fingerprint=CCPC_LEO_GRADIENT_NONFINITE`、`failure_stage=post_backward_leo_gradient_audit`、`ccpc_grad_nonfinite_batches=1`且`ccpc_grad_zero_batches=0`，随后抛出同一明确异常：`CCPCLEORuntimeError: CCPC-LEO fail-closed: paired LEO feature gradient is non-finite`。该指纹满足至少两个任务系统性技术停止条件；未发现日志中的真实`loss_total`/`loss_ccpc_leo`非有限值。
+
+停止前核对roots=`{4030420,4030421}`及精确run树，bound count=83；TERM后仅roots短暂残留且无训练子进程，随后reap，最终v3进程数为0。未触碰无关任务、未重试、未重启、未远端修码。停止后GPU0–7均0%/1MiB；SSH/SCP短连接已断开，TCP22无残留。
+
+只回收小证据至`E:\type10-7\automation_reports\CV-SincNet\phase1_ccpc_leo12_20260809_v3\artifacts`：原始54文件（39 run小文件含3失败回执、12 stdout、pids/completion/outer），另生成本地`manifest.json`，当前共55文件；未下载checkpoint、dataset或大型数组。`completion.tsv`为header-only，outer为空；run在停止时无`final_ssdg.pth/latest_ssdg.pth`。本run标记`NO_PERFORMANCE_RESULT`，不用于性能比较、晋级或Phase3结论；retry=NO。
+
+## 7.主控技术复判与下一步
+
+独立复核确认，v3的停止证据是有效的runner触发证据，但不是CCPC方法数值失败证据。代码在`scaler.scale(total_loss).backward()`之后读取`retain_grad()`得到的非parameter中间张量`ccpc_leo_feature.grad`；`scaler.unscale_(optimizer)`只还原optimizer参数梯度，不会还原该中间梯度。因此receipt中的`NONFINITE`表示“被GradScaler放大后的中间梯度溢出”，不能证明未缩放的`d(lambda*L_CCPC)/dz_leo`非有限，也不能据此REJECT方法。v3重新归类为`STOPPED_EARLY_TECHNICAL_AUDIT_DEFECT / NO_PERFORMANCE_RESULT`。
+
+按两轮发布修复上限，不直接重跑完整12任务。下一步冻结一个新run ID的6fold G-only、15epoch真实checkpoint one-shot：在scaled backward前用`torch.autograd.grad(lambda*loss_ccpc, z_leo)`审计未缩放且CCPC专属的梯度，并同时记录参数梯度有限性和optimizer step；loss、lambda、T、AMP、数据、checkpoint和seed均不变。该one-shot只决定技术可运行性，不读取性能、不执行postfreeze；通过后才允许重新发布完整C/G矩阵。
