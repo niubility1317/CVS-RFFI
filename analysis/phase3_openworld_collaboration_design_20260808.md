@@ -230,6 +230,20 @@ joint interaction = D-B-C+A
 
 独立监督者必须对上述证据给出`P0=0/P1处置明确`后，主代理才能把状态改为`DESIGN_FROZEN`并拆分非重叠实现任务。
 
+### 8.1当前可行性证据
+
+2026-08-08在`ssr-gpu`中完成只读/内存内审计，未写回checkpoint：
+
+| 检查 | 结果 | 证据边界 |
+|---|---|---|
+| 现有loss与协同原语回归 | `python -m pytest -q code/tests/test_open_world_feature_space_loss.py code/tests/test_proxy_unknown_loss.py code/tests/test_collaborative_open_set_qknn_eval.py`通过 | 共89项，只证明现有原语未回归，不证明新候选 |
+| 真实checkpoint身份 | SHA256=`2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98`，CPU，`input_len=256` | 只读加载，不访问dataset、support或query |
+| `L_OW`反向可达性 | loss=`0.234210`；8个非零梯度tensor | 全部位于`id_backbone.cls_head`的`id_proj/pa_proj/id_gate/joint_proj`权重与偏置 |
+| 单步更新 | 8个允许tensor改变，禁训参数改变数为0；`z_id`最大绝对变化=`0.0444369` | 证明feature-head路线可达，不证明训练稳定或性能增益 |
+| 旧allowlist审计 | 旧字符串规则共放开44个tensor，但本项loss只触达8个 | 正式实现仍须替换为精确allowlist并测试全部启用loss的梯度归属 |
+
+该证据关闭“`L_OW`完全无法改变`z_id`”这一可行性疑问，但未关闭第8节其余P0门，也不把设计状态提升为`DESIGN_FROZEN`。
+
 ## 9.本轮明确拒绝项
 
 - 拒绝legacy batch轮换label作为TX级proxy unknown。
