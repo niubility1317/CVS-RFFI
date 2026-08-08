@@ -24,6 +24,17 @@ MEMBER_PATHS = (
     "calibration/calibration.npz",
     "calibration/receipt.json",
 )
+BASE_RECEIPT_FIELDS = {
+    "schema", "formula_id", "threshold_scope", "class_handles", "domain_handles",
+    "source_known_count", "source_joint_correct_count", "class_counts", "domain_counts",
+    "source_physical_id_set_sha256", "radius_quantile", "js_quantile",
+    "threshold_quantiles", "excluded_non_calibration_row_count", "raw_iq_persisted",
+    "physical_ids_persisted",
+}
+LINEAGE_RECEIPT_FIELDS = {
+    "angular_feature_npz_sha256", "robust_zid_npz_sha256", "robust_zdom_npz_sha256",
+    "angular_runtime_parity_receipt_sha256", "robust_runtime_parity_receipt_sha256",
+}
 
 
 class DualReadoutBundleError(ValueError):
@@ -174,7 +185,9 @@ def fit_source_calibration(
     handles = tuple(str(value) for value in class_handles)
     if len(handles) < 2 or len(set(handles)) != len(handles):
         raise DualReadoutBundleError("class_handles must be unique with C>=2")
-    role_allow = {str(value) for value in calibration_roles}
+    if tuple(str(value) for value in calibration_roles) != ("source",):
+        raise DualReadoutBundleError("calibration_roles is frozen to source only")
+    role_allow = {"source"}
     mask = np.asarray([str(role) in role_allow and str(tx) in handles for role, tx in zip(roles, tx_ids)])
     if not bool(mask.any()):
         raise DualReadoutBundleError("no source-known calibration rows")
@@ -290,6 +303,8 @@ def build_bundle(
     receipt = dict(calibration_receipt)
     if receipt.get("schema") != CALIBRATION_SCHEMA or receipt.get("formula_id") != FORMULA_ID:
         raise DualReadoutBundleError("calibration receipt schema/formula drift")
+    if set(receipt) not in (BASE_RECEIPT_FIELDS, BASE_RECEIPT_FIELDS | LINEAGE_RECEIPT_FIELDS):
+        raise DualReadoutBundleError("calibration receipt field allowlist mismatch")
     receipt_path = root / "calibration/receipt.json"
     receipt_path.write_text(canonical_json(receipt) + "\n", encoding="utf-8")
     members = []
@@ -414,8 +429,10 @@ def load_bundle(
     if list(np.asarray(calibration["class_handles"]).astype(str)) != list(manifest.get("class_handles", [])):
         raise DualReadoutBundleError("class handle binding drift")
     receipt = json.loads((package / "calibration/receipt.json").read_text(encoding="utf-8"))
-    forbidden = {"role", "true_label", "proxy_rows", "physical_ids", "raw_iq"}
-    if receipt.get("schema") != CALIBRATION_SCHEMA or forbidden.intersection(receipt):
+    if (
+        receipt.get("schema") != CALIBRATION_SCHEMA
+        or set(receipt) not in (BASE_RECEIPT_FIELDS, BASE_RECEIPT_FIELDS | LINEAGE_RECEIPT_FIELDS)
+    ):
         raise DualReadoutBundleError("calibration receipt schema/forbidden field drift")
     angular = torch.jit.load(str(package / "runtimes/angular.ts"), map_location="cpu").eval()
     robust = torch.jit.load(str(package / "runtimes/robust.ts"), map_location="cpu").eval()
@@ -424,5 +441,6 @@ def load_bundle(
 
 __all__ = [
     "BUNDLE_SCHEMA", "CALIBRATION_SCHEMA", "FORMULA_ID", "DualReadoutBundleError",
-    "LoadedDualReadoutBundle", "fit_source_calibration", "build_bundle", "load_bundle", "sha256_file",
+    "BASE_RECEIPT_FIELDS", "LINEAGE_RECEIPT_FIELDS", "LoadedDualReadoutBundle",
+    "fit_source_calibration", "build_bundle", "load_bundle", "sha256_file",
 ]

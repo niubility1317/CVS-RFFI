@@ -19,6 +19,7 @@ from cvsrffi.phase1_dualreadout_bundle_v2 import (
     sha256_file,
 )
 from scripts.phase1_dualreadout_bundle_v2 import emit, score
+from scripts.phase1_dualreadout_bundle_v2 import _validate_parity_receipt
 
 
 class ToyRuntime(nn.Module):
@@ -135,6 +136,24 @@ def test_fit_rejects_duplicate_source_physical_ids():
         fit(arrays)
 
 
+def test_fit_rejects_any_non_source_calibration_role():
+    arrays = fixture_arrays()
+    with pytest.raises(DualReadoutBundleError, match="frozen to source"):
+        fit_source_calibration(
+            angular_logits=arrays["angular_logits"],
+            robust_z_id=arrays["robust_z_id"],
+            robust_z_dom=arrays["robust_z_dom"],
+            robust_logits=arrays["robust_logits"],
+            tx_ids=arrays["tx_ids"].tolist(),
+            roles=arrays["roles"].tolist(),
+            rx_ids=arrays["rx_ids"].tolist(),
+            day_ids=arrays["day_ids"].tolist(),
+            physical_ids=arrays["physical_ids"].tolist(),
+            class_handles=["a", "b"],
+            calibration_roles=["source", "proxy_unknown"],
+        )
+
+
 def test_bundle_build_load_and_runtime_no_query_smoke(tmp_path):
     root, manifest = build_toy_bundle(tmp_path)
     loaded = load_bundle(root, expected_content_root_sha256=manifest["content_root_sha256"])
@@ -240,6 +259,48 @@ def test_bundle_receipt_persists_no_source_ids_or_roles(tmp_path):
     assert "physical_ids" not in receipt
     assert "role" not in receipt
     assert receipt["physical_ids_persisted"] is False
+
+
+def test_bundle_rejects_extra_receipt_fields(tmp_path):
+    calibration, receipt = fit()
+    receipt["member_ids"] = ["forbidden"]
+    angular = tmp_path / "angular.ts"
+    robust = tmp_path / "robust.ts"
+    scripted_runtime(angular)
+    scripted_runtime(robust)
+    with pytest.raises(DualReadoutBundleError, match="field allowlist"):
+        build_bundle(
+            tmp_path / "bundle",
+            angular_runtime=angular,
+            robust_runtime=robust,
+            calibration=calibration,
+            calibration_receipt=receipt,
+            angular_checkpoint_sha256="a" * 64,
+            robust_checkpoint_sha256="b" * 64,
+        )
+
+
+def test_parity_receipt_binds_runtime_and_checkpoint(tmp_path):
+    runtime = tmp_path / "runtime.ts"
+    scripted_runtime(runtime)
+    receipt = {
+        "schema": "cvs.phase1.dualreadout_runtime_parity.v2",
+        "checkpoint_sha256": "a" * 64,
+        "runtime_sha256": sha256_file(runtime),
+        "input_len": 256,
+        "validated_batch_sizes": [1, 8, 64],
+        "max_abs": 0.0,
+        "tolerance": 1e-5,
+        "checkpoint_load_audit": {},
+        "vectors": [],
+    }
+    path = tmp_path / "parity.json"
+    path.write_text(json.dumps(receipt), encoding="utf-8")
+    _validate_parity_receipt(path, runtime_path=runtime, checkpoint_sha256="a" * 64)
+    receipt["runtime_sha256"] = "0" * 64
+    path.write_text(json.dumps(receipt), encoding="utf-8")
+    with pytest.raises(ValueError, match="runtime binding"):
+        _validate_parity_receipt(path, runtime_path=runtime, checkpoint_sha256="a" * 64)
 
 
 def test_truth_scorer_counts_defer_separately_and_never_as_safe_reject(tmp_path):

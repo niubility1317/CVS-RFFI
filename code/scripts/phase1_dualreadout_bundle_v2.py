@@ -132,12 +132,52 @@ def _verify_same_rows(left: Mapping[str, np.ndarray], right: Mapping[str, np.nda
                 raise ValueError(f"feature NPZ physical-row binding differs for {key}")
 
 
+def _validate_parity_receipt(
+    path: str | Path,
+    *,
+    runtime_path: str | Path,
+    checkpoint_sha256: str,
+) -> dict[str, Any]:
+    value = json.loads(Path(path).read_text(encoding="utf-8"))
+    fields = {
+        "schema", "checkpoint_sha256", "runtime_sha256", "input_len",
+        "validated_batch_sizes", "max_abs", "tolerance", "checkpoint_load_audit", "vectors",
+    }
+    if not isinstance(value, Mapping) or set(value) != fields:
+        raise ValueError("runtime parity receipt field allowlist mismatch")
+    if value.get("schema") != "cvs.phase1.dualreadout_runtime_parity.v2":
+        raise ValueError("runtime parity receipt schema mismatch")
+    if str(value.get("checkpoint_sha256", "")).lower() != str(checkpoint_sha256).lower():
+        raise ValueError("runtime parity checkpoint binding mismatch")
+    if value.get("runtime_sha256") != sha256_file(runtime_path):
+        raise ValueError("runtime parity runtime binding mismatch")
+    if int(value.get("input_len", -1)) != 256 or value.get("validated_batch_sizes") != [1, 8, 64]:
+        raise ValueError("runtime parity shape/batch contract mismatch")
+    maximum = float(value.get("max_abs", float("nan")))
+    tolerance = float(value.get("tolerance", float("nan")))
+    if not np.isfinite(maximum) or not np.isfinite(tolerance) or tolerance <= 0.0 or maximum > tolerance:
+        raise ValueError("runtime parity numerical gate failed")
+    return dict(value)
+
+
 def build(args: argparse.Namespace) -> dict[str, Any]:
     angular = _load_feature_npz(args.angular_zid_npz)
     robust = _load_feature_npz(args.robust_zid_npz)
     robust_dom = _load_feature_npz(args.robust_zdom_npz)
     _verify_same_rows(angular, robust)
     _verify_same_rows(robust, robust_dom)
+    if str(args.calibration_roles) != "source":
+        raise ValueError("--calibration-roles is frozen to source")
+    _validate_parity_receipt(
+        args.angular_parity_receipt,
+        runtime_path=args.angular_runtime,
+        checkpoint_sha256=args.angular_checkpoint_sha256,
+    )
+    _validate_parity_receipt(
+        args.robust_parity_receipt,
+        runtime_path=args.robust_runtime,
+        checkpoint_sha256=args.robust_checkpoint_sha256,
+    )
     handles = [value for value in str(args.class_handles).split(",") if value]
     calibration, receipt = fit_source_calibration(
         angular_logits=angular["tx_logits"],
@@ -150,7 +190,7 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
         day_ids=robust["day_ids"].astype(str).tolist(),
         physical_ids=robust["sig_ids"].astype(str).tolist(),
         class_handles=handles,
-        calibration_roles=[value for value in str(args.calibration_roles).split(",") if value],
+        calibration_roles=["source"],
     )
     receipt.update(
         {
