@@ -133,4 +133,3 @@ cd <release>/code && nohup setsid env RUN_ID=phase1_loto_clsgeo12_20260808_v1 PR
 每fold已知保护至少包括clean、三种`leo_*_weak`、min-class、min-receiver和min-day。若任一预指定保护项`G-C<-2pp`，该fold G直接拒绝，其他指标不得补偿。缺少场景、receiver/day或类floor字段的fold不进入主汇总。
 
 本轮结论上限为“source-held cross-TX开发性泛化证据”。它不是独立确认，不是K-shot注册，不是正式unknown-FAR，也不更新Phase3能力声明。
-
