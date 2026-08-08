@@ -119,4 +119,6 @@ clean实验完成后由主Agent读取六折同行结果。模型健康、known�
 
 唯一runner按预注册流程先执行N607直连只读预检，SSH端口返回`Connection refused`；随后仅尝试一次已验证lab bridge，bridge的22端口同样返回`Connection refused`。本地已确认`ssh/scp`进程为0、TCP22连接为0。
 
-本次阻塞发生在release落地之前：远端release、run、log均未创建，GI-EpiOR未启动，没有实验退出码或性能结果。因此状态为`BLOCKED_EXTERNAL_SSH / NO_PERFORMANCE_RESULT`，不是方法失败，也不消耗实验重试。连接恢复后仍从commit`2e400d12b93ba492bf8bba5504095fdaa0b8ccc7`和同一不可覆盖run ID首次发布；不得另建候选、调参或先看局部性能。
+本次阻塞发生在release落地之前：远端release、run、log均未创建，GI-EpiOR未启动，没有实验退出码或性能结果。因此状态为`BLOCKED_EXTERNAL_SSH / NO_PERFORMANCE_RESULT`，不是方法失败，也不消耗实验重试。连接恢复后仍用同一不可覆盖run ID首次发布；不得另建候选、调参或先看局部性能。
+
+读取最新目标文件并把晋级口径纠正为Phase1五项条件后，设计与报告冻结于commit`01a2b7734c92ea7ae1d5cd8a4afde2c71b9e0ad9`。随后执行第二次、且仅一次的续跑恢复：direct preflight仍返回`Connection refused`，单次verified lab bridge同样在`172.31.105.18:22`返回`Connection refused`。清理后`ssh/scp=0`、TCP22=0；release/run/log仍未创建。下一次连接恢复时以commit`01a2b7734c92ea7ae1d5cd8a4afde2c71b9e0ad9`作为固定archive来源，不因后续阻塞记录改变方法版本。
