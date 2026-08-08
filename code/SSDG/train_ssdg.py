@@ -33,6 +33,7 @@ try:
 
     from dataset_wisig import (
         WiSigCompactDataset,
+        WiSigMetaSslSubsetDataset,
         WiSigSubsetDataset,
         _resolve_days,
         _resolve_rxs,
@@ -76,6 +77,7 @@ try:
         make_soft_unknown_mixup,
         open_world_feature_space_loss,
         proxy_unknown_energy_loss,
+        real_oe_energy_ranking_loss,
         one_way_kl_from_teacher,
         sanitize_loss,
         soft_unknown_mixup_loss,
@@ -131,7 +133,7 @@ except ModuleNotFoundError:
     F = None
     GradScaler = autocast = DataLoader = None
     BalancedTxDomainBatchSampler = None
-    WiSigCompactDataset = WiSigSubsetDataset = None
+    WiSigCompactDataset = WiSigMetaSslSubsetDataset = WiSigSubsetDataset = None
     PrototypeMemoryBank = None
     direct_metric_acceptance_loss = None
     multiview_direct_metric_acceptance_loss = None
@@ -139,6 +141,7 @@ except ModuleNotFoundError:
     make_soft_unknown_mixup = None
     open_world_feature_space_loss = None
     proxy_unknown_energy_loss = None
+    real_oe_energy_ranking_loss = None
     sanitize_loss = None
     soft_unknown_mixup_loss = None
     source_episode_three_sigma_loss = None
@@ -176,6 +179,34 @@ except ModuleNotFoundError:
     build_aug_base_cfg = build_stage_state = configure_augmentor_for_epoch = configure_mixstyle_for_epoch = None
     format_stage_state = make_augmentor = None
     format_named_test_lines = format_sat_test_lines = None
+
+
+_MANYTX_REAL_OE_LOCKED_TARGET_NEW_TX = tuple(
+    "1-16,1-18,18-10,14-11,8-3,18-8,10-10,16-19,20-12,4-10,"
+    "13-14,2-5,1-8,19-13,19-9,3-8,19-8,11-19,2-16,19-6".split(",")
+)
+_MANYTX_REAL_OE_TRAIN_TX = tuple(
+    "10-4,3-1,7-8,16-20,11-17,8-14,19-1,2-13,11-1,19-19,18-1,4-1,13-19,18-4,13-3,11-10,"
+    "19-11,7-20,1-11,18-11,14-8,3-19,13-20,14-9,19-4,18-17,19-7,2-17,7-10,1-10,2-7,9-1,"
+    "18-14,11-4,18-15,20-18,19-2,14-12,3-20,1-12,3-2,5-1,7-13,11-20,20-4,18-5,18-2,6-1,20-7,"
+    "10-17,8-1,18-16,17-10,20-1,2-19,14-20,8-8,10-7,9-20,6-6,19-20,2-6,20-5,1-15,1-14,8-13,"
+    "18-20,8-18,7-11,8-7,9-7,18-12,11-7,16-16,14-14,20-14,15-19,2-8,14-13,20-8".split(",")
+)
+_MANYTX_REAL_OE_PROXY_TX = tuple(
+    "20-20,20-16,19-3,1-19,3-18,19-12,5-20,7-14,12-7,7-9,17-11,20-3,12-20,16-1,18-7,2-3,19-10,18-9,2-4,15-6".split(",")
+)
+_MANYTX_REAL_OE_RESERVE_TX = tuple(
+    "2-14,10-11,9-14,13-7,2-12,7-12,5-5,2-15,18-13,5-16,19-14,15-1,12-19,3-13,7-7,4-11".split(",")
+)
+_MANYTX_REAL_OE_PARTITION_ROOT_SHA256 = (
+    "ca3ed65a533359d2abb022fa513c49101ad93235738a39b362b5cdd15879c3d1"
+)
+_MANYTX_REAL_OE_SOURCE_RX_LABELS = ("1-1", "1-19", "14-7", "18-2", "19-2", "2-1")
+_MANYTX_REAL_OE_SOURCE_DAY_LABELS = ("2021_03_01", "2021_03_08")
+_MANYTX_REAL_OE_TARGET_RX_LABELS = ("20-1", "3-19", "7-14", "7-7", "8-8")
+_MANYTX_REAL_OE_INSUFFICIENT_TX = (
+    "1-1", "1-2", "10-1", "12-1", "13-18", "16-5", "2-1", "2-20"
+)
 
 
 def build_arg_parser() -> argparse.ArgumentParser:
@@ -908,6 +939,31 @@ def build_arg_parser() -> argparse.ArgumentParser:
         help="Comma-separated TX-exclusive proxy-unknown labels; never loaded by training.",
     )
     parser.add_argument(
+        "--phase1_allow_empty_proxy_unknown",
+        type=str2bool,
+        default=False,
+        help="Allow a known-train/known-validation-only main TX split only for frozen external real-OE runs.",
+    )
+    parser.add_argument("--manytx_real_oe_protocol_enabled", type=str2bool, default=False)
+    parser.add_argument("--manytx_real_oe_enabled", type=str2bool, default=False)
+    parser.add_argument("--manytx_real_oe_pkl", type=str, default="")
+    parser.add_argument("--manytx_real_oe_train_tx_ids", type=str, default="")
+    parser.add_argument("--manytx_real_oe_proxy_tx_ids", type=str, default="")
+    parser.add_argument("--manytx_real_oe_reserve_tx_ids", type=str, default="")
+    parser.add_argument("--manytx_locked_target_new_tx_ids", type=str, default="")
+    parser.add_argument("--manytx_real_oe_partition_root_sha256", type=str, default="")
+    parser.add_argument("--manytx_real_oe_days", type=str, default="2021_03_01,2021_03_08")
+    parser.add_argument("--manytx_real_oe_rxs", type=str, default="1-1,1-19,14-7,18-2,19-2,2-1")
+    parser.add_argument("--manytx_real_oe_equalized", type=int, default=1)
+    parser.add_argument("--manytx_real_oe_tx_per_batch", type=int, default=16)
+    parser.add_argument("--manytx_real_oe_samples_per_tx", type=int, default=8)
+    parser.add_argument("--lambda_manytx_real_oe", type=float, default=0.0)
+    parser.add_argument("--manytx_real_oe_start_epoch", type=int, default=61)
+    parser.add_argument("--manytx_real_oe_warmup_epochs", type=int, default=10)
+    parser.add_argument("--manytx_real_oe_temperature", type=float, default=1.0)
+    parser.add_argument("--manytx_real_oe_margin", type=float, default=1.0)
+    parser.add_argument("--manytx_real_oe_tau", type=float, default=1.0)
+    parser.add_argument(
         "--phase1_realized_rho_tolerance",
         type=float,
         default=0.002,
@@ -1048,6 +1104,7 @@ def _phase1_tx_partition_view(
     train_spec: str = "",
     known_validation_spec: str = "",
     proxy_unknown_spec: str = "",
+    allow_empty_proxy_unknown: bool = False,
 ) -> Tuple[Dict[str, Any], Dict[str, Any]]:
     """Return a contiguous TX-reindexed training view and a disjoint-role receipt."""
 
@@ -1067,7 +1124,7 @@ def _phase1_tx_partition_view(
             "source_known_validation_tx": [],
             "source_proxy_unknown_tx": [],
         }
-    if not train or not known_validation or not proxy_unknown:
+    if not train or not known_validation or (not proxy_unknown and not bool(allow_empty_proxy_unknown)):
         raise ValueError(
             "Phase1 TX-exclusive mode requires non-empty train, known-validation, and proxy-unknown TX sets"
         )
@@ -1105,6 +1162,7 @@ def _phase1_tx_partition_view(
         **roles,
         "dataset_tx_count": len(tx_list),
         "training_tx_count": len(train),
+        "allow_empty_proxy_unknown": bool(allow_empty_proxy_unknown),
         "training_view_contiguous_reindex": {
             str(new_index): label for new_index, label in enumerate(train)
         },
@@ -1114,6 +1172,418 @@ def _phase1_tx_partition_view(
         json.dumps(receipt, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
     ).hexdigest()
     return filtered, receipt
+
+
+def _parse_manytx_tx_ids(value: Any) -> Tuple[str, ...]:
+    items = tuple(item.strip() for item in str(value or "").split(",") if item.strip())
+    if len(items) != len(set(items)):
+        raise ValueError(f"duplicate ManyTx identity in frozen role list: {items}")
+    return items
+
+
+def _require_frozen_physical_labels(
+    value: Any,
+    expected: Sequence[str],
+    *,
+    field: str,
+) -> Tuple[str, ...]:
+    labels = tuple(item.strip() for item in str(value or "").split(",") if item.strip())
+    if labels == tuple(expected):
+        return labels
+    if any(item.isdigit() for item in labels):
+        raise ValueError(
+            f"{field} rejects raw index strings; use the frozen physical labels"
+        )
+    raise ValueError(
+        f"{field} must exactly equal the frozen physical labels: {','.join(expected)}"
+    )
+
+
+def _manytx_tx_list_sha256(items: Sequence[str]) -> str:
+    # Match the authority manifest convention, rather than a display-oriented
+    # comma join: compact JSON preserves list order and unambiguously encodes
+    # each canonical transmitter identifier.
+    payload = json.dumps(
+        [str(item) for item in items],
+        ensure_ascii=False,
+        separators=(",", ":"),
+    )
+    return hashlib.sha256(payload.encode("utf-8")).hexdigest()
+
+
+def _validate_manytx_real_oe_config(args: Any) -> Dict[str, Any]:
+    """Fail closed on the immutable ManyTx OE/proxy/reserve/locked partition."""
+
+    protocol_enabled = bool(getattr(args, "manytx_real_oe_protocol_enabled", False))
+    enabled = bool(getattr(args, "manytx_real_oe_enabled", False))
+    weight = float(getattr(args, "lambda_manytx_real_oe", 0.0))
+    if not protocol_enabled:
+        if enabled or weight != 0.0:
+            raise ValueError(
+                "ManyTx real-OE activity requires --manytx_real_oe_protocol_enabled true"
+            )
+        return {
+            "schema": "cvs.phase1.manytx_real_oe_receipt.v2",
+            "protocol_enabled": False,
+            "enabled": False,
+            "training_loader_constructed": False,
+            "proxy_loaded_by_training": False,
+            "locked_target_new_loaded_by_training": False,
+            "reserve_loaded_by_training": False,
+        }
+    if enabled and weight <= 0.0:
+        raise ValueError("enabled ManyTx real-OE requires --lambda_manytx_real_oe > 0")
+    if (not enabled) and weight != 0.0:
+        raise ValueError("disabled ManyTx real-OE requires --lambda_manytx_real_oe = 0")
+    if enabled and not str(getattr(args, "manytx_real_oe_pkl", "")).strip():
+        raise ValueError("enabled ManyTx real-OE requires --manytx_real_oe_pkl")
+    # This frozen arm measures one mechanism only: observed, label-masked
+    # source OE.  Do not silently stack historical virtual/proxy/geometry
+    # routes onto it.
+    forbidden_stacked_losses = (
+        "lambda_open_world_feat",
+        "lambda_proxy_unknown",
+        "lambda_soft_unknown_mixup",
+        "lambda_source_episode",
+        "lambda_direct_metric_accept",
+    )
+    if enabled:
+        nonzero_stacked = [
+            name
+            for name in forbidden_stacked_losses
+            if float(getattr(args, name, 0.0)) != 0.0
+        ]
+        if nonzero_stacked:
+            raise ValueError(
+                "ManyTx real-OE forbids stacked proxy/virtual/geometry losses: "
+                + ",".join(nonzero_stacked)
+            )
+    if str(getattr(args, "manytx_real_oe_partition_root_sha256", "")).strip().lower() != _MANYTX_REAL_OE_PARTITION_ROOT_SHA256:
+        raise ValueError("ManyTx real-OE partition root does not match the frozen authority lock")
+
+    oe_tx = _parse_manytx_tx_ids(getattr(args, "manytx_real_oe_train_tx_ids", ""))
+    proxy_tx = _parse_manytx_tx_ids(getattr(args, "manytx_real_oe_proxy_tx_ids", ""))
+    reserve_tx = _parse_manytx_tx_ids(getattr(args, "manytx_real_oe_reserve_tx_ids", ""))
+    locked_target_new_tx = _parse_manytx_tx_ids(
+        getattr(args, "manytx_locked_target_new_tx_ids", "")
+    )
+    frozen_roles = {
+        "manytx_real_oe_train_tx": oe_tx,
+        "manytx_real_oe_proxy_tx": proxy_tx,
+        "manytx_real_oe_reserve_tx": reserve_tx,
+        "locked_target_new_tx": locked_target_new_tx,
+    }
+    expected_roles = {
+        "manytx_real_oe_train_tx": _MANYTX_REAL_OE_TRAIN_TX,
+        "manytx_real_oe_proxy_tx": _MANYTX_REAL_OE_PROXY_TX,
+        "manytx_real_oe_reserve_tx": _MANYTX_REAL_OE_RESERVE_TX,
+        "locked_target_new_tx": _MANYTX_REAL_OE_LOCKED_TARGET_NEW_TX,
+    }
+    for role, values in frozen_roles.items():
+        if values != expected_roles[role]:
+            raise ValueError(f"{role} does not match the frozen ManyTx authority list")
+    role_names = list(frozen_roles)
+    for index, left in enumerate(role_names):
+        for right in role_names[index + 1 :]:
+            overlap = sorted(set(frozen_roles[left]).intersection(frozen_roles[right]))
+            if overlap:
+                raise ValueError(f"ManyTx frozen roles overlap: {left} vs {right}: {overlap}")
+    if len(oe_tx) != 80 or len(proxy_tx) != 20 or len(reserve_tx) != 16 or len(locked_target_new_tx) != 20:
+        raise ValueError("ManyTx frozen partition must be 80 OE / 20 proxy / 16 reserve / 20 locked target-new")
+    eligible_tx = set(oe_tx).union(proxy_tx, reserve_tx)
+    if len(eligible_tx) != 116 or len(set(eligible_tx).union(locked_target_new_tx)) != 136:
+        raise ValueError("ManyTx frozen partition must contain 116 eligible extras plus 20 locked target-new identities")
+    insufficient_overlap = sorted(eligible_tx.intersection(_MANYTX_REAL_OE_INSUFFICIENT_TX))
+    if insufficient_overlap:
+        raise ValueError(f"ManyTx frozen roles include insufficient physical-RX identities: {insufficient_overlap}")
+
+    source_days = _require_frozen_physical_labels(
+        getattr(args, "wisig_train_days", ""),
+        _MANYTX_REAL_OE_SOURCE_DAY_LABELS,
+        field="--wisig_train_days",
+    )
+    source_rxs = _require_frozen_physical_labels(
+        getattr(args, "wisig_train_rxs", ""),
+        _MANYTX_REAL_OE_SOURCE_RX_LABELS,
+        field="--wisig_train_rxs",
+    )
+    target_rxs = _require_frozen_physical_labels(
+        getattr(args, "wisig_test_rxs", ""),
+        _MANYTX_REAL_OE_TARGET_RX_LABELS,
+        field="--wisig_test_rxs",
+    )
+    oe_days = _require_frozen_physical_labels(
+        getattr(args, "manytx_real_oe_days", ""),
+        _MANYTX_REAL_OE_SOURCE_DAY_LABELS,
+        field="--manytx_real_oe_days",
+    )
+    oe_rxs = _require_frozen_physical_labels(
+        getattr(args, "manytx_real_oe_rxs", ""),
+        _MANYTX_REAL_OE_SOURCE_RX_LABELS,
+        field="--manytx_real_oe_rxs",
+    )
+    if set(source_rxs).intersection(target_rxs):
+        raise ValueError("frozen source and target physical receiver labels must be disjoint")
+    if int(getattr(args, "manytx_real_oe_equalized", -1)) != 1:
+        raise ValueError("ManyTx real-OE is frozen to equalized=1")
+    if int(getattr(args, "manytx_real_oe_tx_per_batch", 0)) <= 0 or int(
+        getattr(args, "manytx_real_oe_samples_per_tx", 0)
+    ) <= 0:
+        raise ValueError("ManyTx real-OE balanced batch dimensions must be positive")
+    if int(getattr(args, "manytx_real_oe_tx_per_batch", 0)) > len(oe_tx):
+        raise ValueError("ManyTx real-OE tx_per_batch exceeds the frozen OE identity count")
+    if float(getattr(args, "manytx_real_oe_temperature", 0.0)) <= 0.0 or float(
+        getattr(args, "manytx_real_oe_tau", 0.0)
+    ) <= 0.0:
+        raise ValueError("ManyTx real-OE temperature and tau must be positive")
+
+    known_ids = set(
+        _parse_manytx_tx_ids(getattr(args, "phase1_source_train_tx_ids", ""))
+        + _parse_manytx_tx_ids(getattr(args, "phase1_source_known_validation_tx_ids", ""))
+        + _parse_manytx_tx_ids(getattr(args, "phase1_source_proxy_unknown_tx_ids", ""))
+    )
+    external_ids = set().union(*[set(values) for values in frozen_roles.values()])
+    overlap = sorted(known_ids.intersection(external_ids))
+    if overlap:
+        raise ValueError(f"ManyTx roles overlap the known Phase1 TX roles: {overlap}")
+    return {
+        "schema": "cvs.phase1.manytx_real_oe_receipt.v2",
+        "protocol_enabled": True,
+        "enabled": bool(enabled),
+        "partition_root_sha256": _MANYTX_REAL_OE_PARTITION_ROOT_SHA256,
+        "oe_train_tx": list(oe_tx),
+        "proxy_tx": list(proxy_tx),
+        "reserve_tx": list(reserve_tx),
+        "locked_target_new_tx": list(locked_target_new_tx),
+        "oe_train_tx_sha256": _manytx_tx_list_sha256(oe_tx),
+        "proxy_tx_sha256": _manytx_tx_list_sha256(proxy_tx),
+        "reserve_tx_sha256": _manytx_tx_list_sha256(reserve_tx),
+        "locked_target_new_tx_sha256": _manytx_tx_list_sha256(locked_target_new_tx),
+        "known_source_day_labels": list(source_days),
+        "known_source_receiver_labels": list(source_rxs),
+        "known_target_receiver_labels": list(target_rxs),
+        "oe_source_day_labels": list(oe_days),
+        "oe_source_receiver_labels": list(oe_rxs),
+        "insufficient_physical_rx_tx": list(_MANYTX_REAL_OE_INSUFFICIENT_TX),
+        "eligible_extra_count": 116,
+        "equalized": 1,
+        "proxy_loaded_by_training": False,
+        "locked_target_new_loaded_by_training": False,
+        "reserve_loaded_by_training": False,
+        "training_loader_constructed": False,
+    }
+
+
+class _ManyTxRealOeBalancedBatchSampler:
+    """Deterministically emits equal-count batches over real OE transmitter IDs."""
+
+    def __init__(
+        self,
+        dataset: Any,
+        *,
+        tx_per_batch: int,
+        samples_per_tx: int,
+        batches_per_epoch: int,
+        seed: int,
+    ) -> None:
+        self.tx_per_batch = int(tx_per_batch)
+        self.samples_per_tx = int(samples_per_tx)
+        self.batches_per_epoch = max(1, int(batches_per_epoch))
+        self.seed = int(seed)
+        self.epoch = 0
+        grouped: Dict[int, List[int]] = defaultdict(list)
+        direct_index = getattr(dataset, "index", None)
+        if direct_index is not None:
+            indexed_items = enumerate(direct_index)
+        else:
+            # WiSigMetaSslSubsetDataset deliberately exposes only its selected
+            # positions; recover their immutable base index for batch balance
+            # without recovering labels in the returned batch.
+            base = getattr(dataset, "base", None)
+            selected = getattr(dataset, "selected", None)
+            base_index = getattr(base, "index", None)
+            if selected is None or base_index is None:
+                raise ValueError("ManyTx real-OE sampler cannot locate dataset TX metadata")
+            indexed_items = (
+                (sample_index, base_index[int(base_sample_index)])
+                for sample_index, base_sample_index in enumerate(selected)
+            )
+        for sample_index, item in indexed_items:
+            grouped[int(item.tx_i)].append(int(sample_index))
+        self.groups = {tx_i: tuple(indices) for tx_i, indices in sorted(grouped.items()) if indices}
+        if len(self.groups) < self.tx_per_batch:
+            raise ValueError("ManyTx real-OE sampler has fewer populated TX identities than tx_per_batch")
+
+    @property
+    def batch_size(self) -> int:
+        return int(self.tx_per_batch * self.samples_per_tx)
+
+    def set_epoch(self, epoch: int) -> None:
+        self.epoch = int(epoch)
+
+    def __len__(self) -> int:
+        return int(self.batches_per_epoch)
+
+    def __iter__(self):
+        rng = np.random.default_rng(self.seed + self.epoch)
+        tx_ids = np.asarray(sorted(self.groups), dtype=np.int64)
+        for _ in range(self.batches_per_epoch):
+            chosen_tx = rng.choice(tx_ids, size=self.tx_per_batch, replace=False)
+            batch: List[int] = []
+            for tx_i in chosen_tx.tolist():
+                members = np.asarray(self.groups[int(tx_i)], dtype=np.int64)
+                picks = rng.choice(members, size=self.samples_per_tx, replace=members.size < self.samples_per_tx)
+                batch.extend(int(value) for value in picks.tolist())
+            rng.shuffle(batch)
+            yield batch
+
+
+def _manytx_real_oe_coverage(
+    ds_w: Mapping[str, Any],
+    tx_index: int,
+    *,
+    rx_indices: Sequence[int],
+    day_indices: Sequence[int],
+    eq_index: int,
+) -> Tuple[int, set[int], set[int]]:
+    data = ds_w.get("data")
+    if data is None:
+        raise ValueError("ManyTx real-OE dataset lacks data")
+    total = 0
+    seen_days: set[int] = set()
+    seen_rxs: set[int] = set()
+    for rx_i in rx_indices:
+        for day_i in day_indices:
+            arr = data[tx_index][int(rx_i)][int(day_i)][int(eq_index)]
+            if arr is None:
+                continue
+            count = int(arr.shape[0])
+            if count > 0:
+                total += count
+                seen_days.add(int(day_i))
+                seen_rxs.add(int(rx_i))
+    return total, seen_days, seen_rxs
+
+
+def _manytx_real_oe_coverage_meets_contract(
+    count: int,
+    seen_days: Sequence[int],
+    seen_rxs: Sequence[int],
+    *,
+    expected_days: Sequence[int],
+) -> bool:
+    return (
+        int(count) >= 400
+        and set(seen_days) == set(expected_days)
+        and len(set(seen_rxs)) >= 2
+    )
+
+
+def _build_manytx_real_oe_data(
+    args: Any,
+    device: Any,
+    *,
+    batches_per_epoch: int,
+) -> Dict[str, Any]:
+    receipt = _validate_manytx_real_oe_config(args)
+    if not bool(receipt.get("enabled", False)):
+        return {"loader": None, "sampler": None, "receipt": receipt}
+    if WiSigCompactDataset is None or WiSigMetaSslSubsetDataset is None or DataLoader is None:
+        raise ImportError("WiSig dataset and DataLoader support are required for ManyTx real-OE")
+
+    ds_w = load_wisig_compact_pkl(str(args.manytx_real_oe_pkl))
+    tx_list = [str(value) for value in list(ds_w.get("tx_list", []))]
+    tx_index = {tx: index for index, tx in enumerate(tx_list)}
+    missing = sorted(set(receipt["oe_train_tx"]).difference(tx_index))
+    if missing:
+        raise ValueError(f"ManyTx frozen identity is absent from the supplied pkl: {missing}")
+    day_list = list(ds_w.get("capture_date_list", []))
+    rx_list = list(ds_w.get("rx_list", []))
+    day_indices = _resolve_days(
+        day_list,
+        list(receipt["oe_source_day_labels"]),
+        [],
+    )
+    rx_indices = _resolve_rxs(
+        rx_list,
+        list(receipt["oe_source_receiver_labels"]),
+        [],
+    )
+    if tuple(str(day_list[index]) for index in day_indices) != tuple(receipt["oe_source_day_labels"]):
+        raise ValueError("ManyTx real-OE physical day-label resolution drift")
+    if tuple(str(rx_list[index]) for index in rx_indices) != tuple(receipt["oe_source_receiver_labels"]):
+        raise ValueError("ManyTx real-OE physical receiver-label resolution drift")
+    eq_list = list(ds_w.get("equalized_list", [0]))
+    if 1 not in eq_list:
+        raise ValueError("ManyTx real-OE requires equalized=1")
+    eq_index = int(eq_list.index(1))
+    for tx in receipt["oe_train_tx"]:
+        count, seen_days, seen_rxs = _manytx_real_oe_coverage(
+            ds_w,
+            tx_index[str(tx)],
+            rx_indices=rx_indices,
+            day_indices=day_indices,
+            eq_index=eq_index,
+        )
+        if not _manytx_real_oe_coverage_meets_contract(
+            count,
+            seen_days,
+            seen_rxs,
+            expected_days=day_indices,
+        ):
+            raise ValueError(
+                f"ManyTx real-OE coverage contract failed for {tx}: "
+                f"count={count} days={sorted(seen_days)} rxs={sorted(seen_rxs)}"
+            )
+    base = WiSigCompactDataset(
+        ds_w,
+        out_len=int(args.wisig_out_len),
+        crop_mode="center",
+        normalize=True,
+        equalized=1,
+        tx_keep=[tx_index[str(tx)] for tx in receipt["oe_train_tx"]],
+        rx_keep=rx_indices,
+        day_keep=day_indices,
+        domain="rx_day",
+        seed=int(args.seed) + 611,
+        build_index=True,
+    )
+    oe_dataset = WiSigMetaSslSubsetDataset(
+        base,
+        list(range(len(base))),
+        split_source="manytx_real_oe_train_tx_hidden",
+        role="manytx_real_oe",
+        tx_label_visible=False,
+    )
+    sampler = _ManyTxRealOeBalancedBatchSampler(
+        oe_dataset,
+        tx_per_batch=int(args.manytx_real_oe_tx_per_batch),
+        samples_per_tx=int(args.manytx_real_oe_samples_per_tx),
+        batches_per_epoch=int(batches_per_epoch),
+        seed=int(args.seed) + 611,
+    )
+    loader_kwargs: Dict[str, Any] = {
+        "batch_sampler": sampler,
+        "num_workers": int(args.num_workers),
+        "pin_memory": getattr(device, "type", "cpu") == "cuda",
+        "persistent_workers": int(args.num_workers) > 0,
+    }
+    if int(args.num_workers) > 0:
+        loader_kwargs["prefetch_factor"] = max(1, int(args.prefetch_factor))
+    loader = DataLoader(oe_dataset, **loader_kwargs)
+    receipt = {
+        **receipt,
+        "training_loader_constructed": True,
+        "oe_loader_sample_count": int(len(oe_dataset)),
+        "oe_batch_size": int(sampler.batch_size),
+        "oe_batches_per_epoch": int(len(sampler)),
+        "oe_labels_masked_to_minus_one": True,
+        "oe_source_day_indices": [int(value) for value in day_indices],
+        "oe_source_receiver_indices": [int(value) for value in rx_indices],
+        "oe_source_day_labels_resolved": [str(day_list[value]) for value in day_indices],
+        "oe_source_receiver_labels_resolved": [str(rx_list[value]) for value in rx_indices],
+    }
+    return {"loader": loader, "sampler": sampler, "receipt": receipt}
 
 
 def _select_open_world_feature(
@@ -1585,6 +2055,39 @@ def _build_source_split_receipt(
     return receipt
 
 
+def _manytx_known_source_physical_receipt(
+    args: Any,
+    *,
+    day_list: Sequence[Any],
+    rx_list: Sequence[Any],
+    train_days: Sequence[int],
+    train_rxs: Sequence[int],
+    test_rxs: Sequence[int],
+) -> Dict[str, Any]:
+    if not bool(getattr(args, "manytx_real_oe_protocol_enabled", False)):
+        return {}
+    resolved_source_days = tuple(str(day_list[index]) for index in train_days)
+    resolved_source_rxs = tuple(str(rx_list[index]) for index in train_rxs)
+    resolved_target_rxs = tuple(str(rx_list[index]) for index in test_rxs)
+    if resolved_source_days != _MANYTX_REAL_OE_SOURCE_DAY_LABELS:
+        raise ValueError("known source physical day-label resolution drift")
+    if resolved_source_rxs != _MANYTX_REAL_OE_SOURCE_RX_LABELS:
+        raise ValueError("known source physical receiver-label resolution drift")
+    if resolved_target_rxs != _MANYTX_REAL_OE_TARGET_RX_LABELS:
+        raise ValueError("known target physical receiver-label resolution drift")
+    if set(train_rxs).intersection(test_rxs):
+        raise ValueError("known source and target physical receiver indices overlap")
+    return {
+        "known_source_day_labels": list(resolved_source_days),
+        "known_source_day_indices": [int(value) for value in train_days],
+        "known_source_receiver_labels": list(resolved_source_rxs),
+        "known_source_receiver_indices": [int(value) for value in train_rxs],
+        "known_target_receiver_labels": list(resolved_target_rxs),
+        "known_target_receiver_indices": [int(value) for value in test_rxs],
+        "known_source_target_receiver_disjoint": True,
+    }
+
+
 def _build_ssdg_wisig_data(args, device: torch.device):
     ds_w = load_wisig_compact_pkl(args.wisig_pkl)
     ds_w, tx_partition_receipt = _phase1_tx_partition_view(
@@ -1595,6 +2098,10 @@ def _build_ssdg_wisig_data(args, device: torch.device):
         ),
         proxy_unknown_spec=str(
             getattr(args, "phase1_source_proxy_unknown_tx_ids", "")
+        ),
+        allow_empty_proxy_unknown=bool(
+            getattr(args, "phase1_allow_empty_proxy_unknown", False)
+            and getattr(args, "manytx_real_oe_protocol_enabled", False)
         ),
     )
     infer_nc = len(ds_w.get("tx_list", []))
@@ -1609,6 +2116,14 @@ def _build_ssdg_wisig_data(args, device: torch.device):
     test_rxs = _resolve_rxs(rx_list, parse_csv_indices(args.wisig_test_rxs), [])
     train_days = [d for d in train_days if d not in test_days]
     train_rxs = [r for r in train_rxs if r not in test_rxs]
+    known_physical_receipt = _manytx_known_source_physical_receipt(
+        args,
+        day_list=day_list,
+        rx_list=rx_list,
+        train_days=train_days,
+        train_rxs=train_rxs,
+        test_rxs=test_rxs,
+    )
 
     source_base = WiSigCompactDataset(
         ds_w,
@@ -1751,6 +2266,7 @@ def _build_ssdg_wisig_data(args, device: torch.device):
             "named_test_meta": named_meta,
             "source_split_receipt": split_receipt,
             "tx_partition_receipt": tx_partition_receipt,
+            "manytx_known_physical_receipt": known_physical_receipt,
         },
     }
 
@@ -3968,6 +4484,13 @@ def _build_ssdg_epoch_telemetry_row(
         "concat_sat_teacher_clean_only": bool(getattr(args, "concat_sat_teacher_clean_only", False)),
         "id_feature_key": str(getattr(args, "id_feature_key", "feat_joint")),
         "ow_feat_key": str(getattr(args, "ow_feat_key", "z_id")),
+        "manytx_real_oe_protocol_enabled": bool(
+            getattr(args, "manytx_real_oe_protocol_enabled", False)
+        ),
+        "manytx_real_oe_enabled": bool(getattr(args, "manytx_real_oe_enabled", False)),
+        "manytx_real_oe_partition_root_sha256": str(
+            getattr(args, "manytx_real_oe_partition_root_sha256", "")
+        ),
         "os_budget_scope": str(getattr(args, "os_budget_scope", "all_shared")),
         "direct_metric_hierarchical_combine": str(
             getattr(args, "direct_metric_hierarchical_combine", "product")
@@ -3998,6 +4521,14 @@ def _build_ssdg_epoch_telemetry_row(
         "lambda_open_world_feat",
         "lambda_zid_compact",
         "lambda_proxy_unknown",
+        "lambda_manytx_real_oe",
+        "manytx_real_oe_start_epoch",
+        "manytx_real_oe_warmup_epochs",
+        "manytx_real_oe_temperature",
+        "manytx_real_oe_margin",
+        "manytx_real_oe_tau",
+        "manytx_real_oe_tx_per_batch",
+        "manytx_real_oe_samples_per_tx",
         "lambda_soft_unknown_mixup",
         "lambda_direct_metric_accept",
         "lambda_u_domain",
@@ -4978,7 +5509,27 @@ def train(args) -> int:
     safe_best_path = Path(str(args.safe_best_path).strip()) if str(args.safe_best_path).strip() else out_dir / default_safe_best_name
     safe_latest_path = Path(str(args.safe_latest_path).strip()) if str(args.safe_latest_path).strip() else out_dir / "latest_safe_ssdg.pth"
     phase2_audit_state = _phase2_audit_state(args)
+    manytx_real_oe_preflight = _validate_manytx_real_oe_config(args)
+    if bool(getattr(args, "phase1_allow_empty_proxy_unknown", False)) and not bool(
+        manytx_real_oe_preflight.get("protocol_enabled", False)
+    ):
+        raise ValueError(
+            "--phase1_allow_empty_proxy_unknown requires the frozen ManyTx real-OE protocol"
+        )
     data_ctx = _build_ssdg_wisig_data(args, device)
+    manytx_real_oe_data = _build_manytx_real_oe_data(
+        args,
+        device,
+        batches_per_epoch=len(data_ctx["train_loader"]),
+    )
+    data_ctx["manytx_real_oe_loader"] = manytx_real_oe_data["loader"]
+    data_ctx["manytx_real_oe_sampler"] = manytx_real_oe_data["sampler"]
+    data_ctx["split_info"]["manytx_real_oe_receipt"] = {
+        **manytx_real_oe_data["receipt"],
+        "known_physical_rx_receipt": data_ctx["split_info"].get(
+            "manytx_known_physical_receipt", {}
+        ),
+    }
     use_ckpt = bool(str(args.baseline_ckpt).strip()) and not bool(args.from_scratch)
     ckpt = load_checkpoint(args.baseline_ckpt, device) if use_ckpt else {"model": None, "args": {}, "stats": {}, "split_info": None}
     model_args = merge_checkpoint_args(ckpt, args, input_len=int(data_ctx["input_len"]), num_domains=int(data_ctx["num_domains"]))
@@ -5072,6 +5623,7 @@ def train(args) -> int:
                 f"lambda_proto={float(args.lambda_proto):.6g} lambda_open_world_feat={float(args.lambda_open_world_feat):.6g} "
                 f"ow_feat_key={str(getattr(args, 'ow_feat_key', 'z_id'))} "
                 f"lambda_zid_compact={float(args.lambda_zid_compact):.6g} lambda_proxy_unknown={float(args.lambda_proxy_unknown):.6g} "
+                f"lambda_manytx_real_oe={float(getattr(args, 'lambda_manytx_real_oe', 0.0)):.6g} "
                 f"proxy_virtual_mode={args.proxy_unknown_virtual_mode} proxy_vaccept_w={float(args.proxy_unknown_vaccept_weight):.6g} "
                 f"proxy_gate_w={float(args.proxy_unknown_component_gate_weight):.6g} "
                 f"lambda_soft_unknown_mixup={float(args.lambda_soft_unknown_mixup):.6g} "
@@ -5083,6 +5635,28 @@ def train(args) -> int:
                 f"lambda_u_direct_metric_accept={float(args.lambda_u_direct_metric_accept):.6g} "
                 f"lambda_u_quarantine_accept={float(args.lambda_u_quarantine_accept):.6g} "
                 f"label_smoothing={float(args.label_smoothing):.6g}",
+                "[CONFIG-MANYTX-REAL-OE] "
+                f"protocol={int(bool(manytx_real_oe_preflight.get('protocol_enabled', False)))} "
+                f"enabled={int(bool(manytx_real_oe_preflight.get('enabled', False)))} "
+                f"partition_root={str(manytx_real_oe_preflight.get('partition_root_sha256', '-'))} "
+                f"oe_train={len(manytx_real_oe_preflight.get('oe_train_tx', []))} "
+                f"proxy={len(manytx_real_oe_preflight.get('proxy_tx', []))} "
+                f"reserve={len(manytx_real_oe_preflight.get('reserve_tx', []))} "
+                f"locked_target_new={len(manytx_real_oe_preflight.get('locked_target_new_tx', []))} "
+                f"known_days={','.join(manytx_real_oe_preflight.get('known_source_day_labels', [])) or '-'} "
+                f"known_rxs={','.join(manytx_real_oe_preflight.get('known_source_receiver_labels', [])) or '-'} "
+                f"target_rxs={','.join(manytx_real_oe_preflight.get('known_target_receiver_labels', [])) or '-'} "
+                f"oe_days={','.join(manytx_real_oe_preflight.get('oe_source_day_labels', [])) or '-'} "
+                f"oe_rxs={','.join(manytx_real_oe_preflight.get('oe_source_receiver_labels', [])) or '-'} "
+                f"equalized={manytx_real_oe_preflight.get('equalized', '-')} "
+                f"start={int(getattr(args, 'manytx_real_oe_start_epoch', 61))} "
+                f"warmup={int(getattr(args, 'manytx_real_oe_warmup_epochs', 10))} "
+                f"T={float(getattr(args, 'manytx_real_oe_temperature', 1.0)):.6g} "
+                f"margin={float(getattr(args, 'manytx_real_oe_margin', 1.0)):.6g} "
+                f"tau={float(getattr(args, 'manytx_real_oe_tau', 1.0)):.6g} "
+                f"tx_per_batch={int(getattr(args, 'manytx_real_oe_tx_per_batch', 0))} "
+                f"samples_per_tx={int(getattr(args, 'manytx_real_oe_samples_per_tx', 0))} "
+                f"proxy_loaded=0 locked_loaded=0 reserve_loaded=0 labels_masked=1",
                 "[CONFIG-P1-INVARIANCE] "
                 f"checkpoint_selection={args.checkpoint_selection} "
                 f"sat_disjoint_required={int(bool(args.sat_protocol_disjoint_required))} "
@@ -5358,8 +5932,16 @@ def train(args) -> int:
         balanced_train_sampler = data_ctx.get("balanced_train_sampler")
         if balanced_train_sampler is not None and hasattr(balanced_train_sampler, "set_epoch"):
             balanced_train_sampler.set_epoch(epoch)
+        manytx_real_oe_sampler = data_ctx.get("manytx_real_oe_sampler")
+        if manytx_real_oe_sampler is not None and hasattr(manytx_real_oe_sampler, "set_epoch"):
+            manytx_real_oe_sampler.set_epoch(epoch)
         epoch_logs = []
         unlabeled_iter = iter(data_ctx["unlabeled_loader"]) if phase == "pseudo" and bool(args.use_unlabeled) else None
+        manytx_real_oe_iter = (
+            iter(data_ctx["manytx_real_oe_loader"])
+            if data_ctx.get("manytx_real_oe_loader") is not None
+            else None
+        )
         for batch_idx, labeled_batch in enumerate(data_ctx["train_loader"], start=1):
             x_l, y_l, extra_l = move_batch(labeled_batch, device)
             labeled_clean_count = int(y_l.numel())
@@ -5462,6 +6044,57 @@ def train(args) -> int:
                 else:
                     loss_fishr_l = out_l["tx_logits"].sum() * 0.0
                 z_id_l = out_l["z_id"]
+                loss_manytx_real_oe_l = z_id_l.sum() * 0.0
+                manytx_real_oe_info: Dict[str, float] = {
+                    "active": 0.0,
+                    "known_energy": float("nan"),
+                    "oe_energy": float("nan"),
+                    "energy_gap": float("nan"),
+                    "batch_size": 0.0,
+                    "labels_masked": 0.0,
+                }
+                manytx_real_oe_stage_scale = _stage_gate_scale(
+                    epoch,
+                    start_epoch=int(getattr(args, "manytx_real_oe_start_epoch", 61)),
+                    warmup_epochs=int(getattr(args, "manytx_real_oe_warmup_epochs", 10)),
+                )
+                manytx_real_oe_active = (
+                    bool(getattr(args, "manytx_real_oe_enabled", False))
+                    and float(getattr(args, "lambda_manytx_real_oe", 0.0)) > 0.0
+                    and manytx_real_oe_stage_scale > 0.0
+                )
+                if manytx_real_oe_active:
+                    if real_oe_energy_ranking_loss is None:
+                        raise ImportError("cvsrffi.losses.real_oe_energy_ranking_loss is required for ManyTx real-OE")
+                    if manytx_real_oe_iter is None:
+                        raise RuntimeError("ManyTx real-OE is active but its training loader is unavailable")
+                    try:
+                        oe_batch = next(manytx_real_oe_iter)
+                    except StopIteration:
+                        manytx_real_oe_iter = iter(data_ctx["manytx_real_oe_loader"])
+                        oe_batch = next(manytx_real_oe_iter)
+                    x_oe, y_oe, _ = move_batch(oe_batch, device)
+                    if y_oe.numel() == 0 or not bool((y_oe == -1).all().item()):
+                        raise ValueError("ManyTx real-OE labels must be fully masked to -1 before the model")
+                    out_oe = model(
+                        x_oe,
+                        y_tx=None,
+                        grl_lambda=1.0,
+                        return_aux=True,
+                        domain_labels=None,
+                    )
+                    loss_manytx_real_oe_l, manytx_real_oe_info = real_oe_energy_ranking_loss(
+                        out_l["tx_logits"][:labeled_clean_count],
+                        out_oe["tx_logits"],
+                        margin=float(getattr(args, "manytx_real_oe_margin", 1.0)),
+                        temperature=float(getattr(args, "manytx_real_oe_temperature", 1.0)),
+                        tau=float(getattr(args, "manytx_real_oe_tau", 1.0)),
+                    )
+                    manytx_real_oe_info = {
+                        **manytx_real_oe_info,
+                        "batch_size": float(y_oe.numel()),
+                        "labels_masked": 1.0,
+                    }
                 loss_zid_invariance_l = z_id_l.sum() * 0.0
                 zid_invariance_info: Dict[str, float] = {
                     "active": 0.0,
@@ -6188,6 +6821,8 @@ def train(args) -> int:
                     + (cur_w["proxy_unknown"] * proxy_stage_scale) * sanitize_loss("ssdg_proxy_unknown", loss_proxy_unknown_l, z_id_l, loss_warn_counts)
                     + (cur_w["soft_unknown_mixup"] * soft_unknown_mixup_stage_scale) * sanitize_loss("ssdg_soft_unknown_mixup", loss_soft_unknown_mixup_l, z_id_l, loss_warn_counts)
                     + (cur_w["direct_metric_accept"] * direct_metric_stage_scale) * sanitize_loss("ssdg_direct_metric_accept", loss_direct_metric_accept_l, z_id_l, loss_warn_counts)
+                    + (float(getattr(args, "lambda_manytx_real_oe", 0.0)) * manytx_real_oe_stage_scale)
+                    * sanitize_loss("ssdg_manytx_real_oe", loss_manytx_real_oe_l, z_id_l, loss_warn_counts)
                 )
                 loss_open_source_l = (cur_w["source_episode"] * source_episode_stage_scale) * sanitize_loss(
                     "ssdg_source_episode", loss_source_episode_l, z_id_l, loss_warn_counts
@@ -7079,6 +7714,13 @@ def train(args) -> int:
                     "train/loss_open_world_feat": loss_open_world_feat_l.detach(),
                     "train/loss_zid_compact": loss_zid_compact_l.detach(),
                     "train/loss_proxy_unknown": loss_proxy_unknown_l.detach(),
+                    "train/loss_manytx_real_oe": loss_manytx_real_oe_l.detach(),
+                    "train/manytx_real_oe_active": manytx_real_oe_info.get("active", 0.0),
+                    "train/manytx_real_oe_known_energy": manytx_real_oe_info.get("known_energy", float("nan")),
+                    "train/manytx_real_oe_energy": manytx_real_oe_info.get("oe_energy", float("nan")),
+                    "train/manytx_real_oe_energy_gap": manytx_real_oe_info.get("energy_gap", float("nan")),
+                    "train/manytx_real_oe_batch_size": manytx_real_oe_info.get("batch_size", 0.0),
+                    "train/manytx_real_oe_labels_masked": manytx_real_oe_info.get("labels_masked", 0.0),
                     "train/loss_soft_unknown_mixup": loss_soft_unknown_mixup_l.detach(),
                     "train/loss_source_episode": loss_source_episode_l.detach(),
                     "train/loss_direct_metric_accept": loss_direct_metric_accept_l.detach(),
@@ -7098,6 +7740,10 @@ def train(args) -> int:
                     "train/w_loss_open_world_feat": ((cur_w["open_world_feat"] * ow_feat_stage_scale) * loss_open_world_feat_l).detach(),
                     "train/w_loss_zid_compact": ((cur_w["zid_compact"] * zid_warm) * loss_zid_compact_l).detach(),
                     "train/w_loss_proxy_unknown": ((cur_w["proxy_unknown"] * proxy_stage_scale) * loss_proxy_unknown_l).detach(),
+                    "train/w_loss_manytx_real_oe": (
+                        (float(getattr(args, "lambda_manytx_real_oe", 0.0)) * manytx_real_oe_stage_scale)
+                        * loss_manytx_real_oe_l
+                    ).detach(),
                     "train/w_loss_soft_unknown_mixup": ((cur_w["soft_unknown_mixup"] * soft_unknown_mixup_stage_scale) * loss_soft_unknown_mixup_l).detach(),
                     "train/w_loss_source_episode": ((cur_w["source_episode"] * source_episode_stage_scale) * loss_source_episode_l).detach(),
                     "train/w_loss_direct_metric_accept": ((cur_w["direct_metric_accept"] * direct_metric_stage_scale) * loss_direct_metric_accept_l).detach(),
@@ -8815,6 +9461,9 @@ def train(args) -> int:
         "phase1_v2_final_blocked": bool(phase1_v2_final_blocked),
         "final_guard_reason": str((guard_state or {}).get("reason", "")),
         "ow_feat_key": str(getattr(args, "ow_feat_key", "z_id")),
+        "manytx_real_oe_receipt": (
+            data_ctx.get("split_info", {}) or {}
+        ).get("manytx_real_oe_receipt", {}),
         "prototype_export": export_status,
         "resource_summary": resource_summary,
         "p0_mechanism_flags": p0_mechanism_flags,
@@ -8877,6 +9526,9 @@ def train(args) -> int:
             getattr(args, "ablation_config_hash", "")
         ),
         "ow_feat_key": str(getattr(args, "ow_feat_key", "z_id")),
+        "manytx_real_oe_receipt": (
+            data_ctx.get("split_info", {}) or {}
+        ).get("manytx_real_oe_receipt", {}),
         "source_split_receipt": (
             data_ctx.get("split_info", {}) or {}
         ).get("source_split_receipt", {}),

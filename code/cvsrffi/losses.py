@@ -976,6 +976,58 @@ def soft_unknown_mixup_loss(
     return total, metrics
 
 
+def real_oe_energy_ranking_loss(
+    known_logits: torch.Tensor,
+    oe_logits: torch.Tensor,
+    *,
+    margin: float = 1.0,
+    temperature: float = 1.0,
+    tau: float = 1.0,
+) -> Tuple[torch.Tensor, Dict[str, float]]:
+    """Rank observed source-OE logits above a detached known-energy anchor.
+
+    This uses actual source transmitter IQ.  It does not synthesize virtual
+    feature outliers or turn a batch-held known label into a proxy unknown.
+    The known anchor is detached, so the auxiliary loss only backpropagates
+    through the OE forward path; ordinary known losses retain known fitting.
+    """
+
+    if not torch.is_tensor(known_logits) or known_logits.dim() != 2:
+        raise ValueError("real_oe_energy_ranking_loss requires known [B,C] logits")
+    if not torch.is_tensor(oe_logits) or oe_logits.dim() != 2:
+        raise ValueError("real_oe_energy_ranking_loss requires OE [B,C] logits")
+    if known_logits.size(1) != oe_logits.size(1):
+        raise ValueError(
+            "real_oe_energy_ranking_loss class dimension mismatch: "
+            f"{known_logits.size(1)} != {oe_logits.size(1)}"
+        )
+    if known_logits.numel() == 0 or oe_logits.numel() == 0:
+        return oe_logits.sum() * 0.0, {
+            "active": 0.0,
+            "known_energy": float("nan"),
+            "oe_energy": float("nan"),
+            "energy_gap": float("nan"),
+        }
+    if not bool(torch.isfinite(known_logits).all().item()):
+        raise ValueError("real_oe_energy_ranking_loss rejects non-finite known logits")
+    if not bool(torch.isfinite(oe_logits).all().item()):
+        raise ValueError("real_oe_energy_ranking_loss rejects non-finite OE logits")
+
+    temp = max(1e-6, float(temperature))
+    softplus_tau = max(1e-6, float(tau))
+    known_energy = -temp * torch.logsumexp(known_logits.float() / temp, dim=1)
+    oe_energy = -temp * torch.logsumexp(oe_logits.float() / temp, dim=1)
+    known_anchor = known_energy.detach().mean()
+    gaps = oe_energy - known_anchor
+    loss = F.softplus((float(margin) - gaps) / softplus_tau).mean()
+    return loss.to(dtype=oe_logits.dtype), {
+        "active": 1.0,
+        "known_energy": float(known_energy.detach().mean().item()),
+        "oe_energy": float(oe_energy.detach().mean().item()),
+        "energy_gap": float(gaps.detach().mean().item()),
+    }
+
+
 def proxy_unknown_energy_loss(
     z: torch.Tensor,
     y: torch.Tensor,
