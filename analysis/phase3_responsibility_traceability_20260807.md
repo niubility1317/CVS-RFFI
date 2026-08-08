@@ -7,11 +7,11 @@
 
 执行模式：`GOAL_MODE=ACTIVE`
 
-当前状态：`DESIGN_DRAFT`（`FEASIBILITY_REVIEW`已完成，等待独立交叉审查后才能进入`DESIGN_FROZEN`）
+当前状态：`IMPLEMENTING`（Phase1最小高泛化实验与source-held审计已完成；Phase3正式性能矩阵等待不依赖真值的事件/接收绑定数据）
 
 完成边界：职责文档、代码实现、本地验证、独立`P0/P1`审查、N607非覆盖运行、完整同排artifact与证据受限结论全部闭环后，才允许把目标标为完成。
 
-禁止越级：`GOAL_MODE=ACTIVE`不等于候选已冻结、实现已验证或性能目标已达成；当前不得发布N607实验。
+禁止越级：`GOAL_MODE=ACTIVE`不等于性能目标已达成。Phase1快速实验已经按独立P0/P1审查发布；Phase3在合法事件绑定前不得发布正式性能矩阵，旧R8只保留非部署诊断边界。
 
 ## 1.状态口径
 
@@ -36,9 +36,9 @@
 | P1-02 | 一 | Phase1可训练前端、分支、卷积、`z_id/z_dom`、normalization/projection/fusion及prototype/radius/energy/uncertainty输出 | Phase1配置、模型、loss、exporter | pending | 配置到调用链、checkpoint smoke | 不预先假定全部模块已存在 |
 | P1-03 | 一 | Phase1禁止target query真值、确认unknown回流、多星消息、anonymous track、运营身份输出及proxy→真实unknown冒充 | 协议、训练入口、tests | pending | protocol-negative tests | P0边界 |
 | P1-04 | 一 | Phase1导出开放世界就绪特征提取器、基础几何、半径/能量/尾部先验、质量/域不确定性和不可变bundle | bundle builder/schema/docs | pending | real-checkpoint no-query smoke、schema test | bundle不等于完成真实拒识 |
-| P1-05 | 二 | 建立TX互斥的`source_known_train_tx`、`source_known_validation_tx`、`source_proxy_unknown_tx`，proxy unknown物理样本完全排除训练 | 数据split/builder、tests | pending | TX集合/物理ID互斥测试 | 不允许receiver/channel/SNR伪unknown |
+| P1-05 | 二 | 建立TX互斥的`source_known_train_tx`、`source_known_validation_tx`、`source_proxy_unknown_tx`，proxy unknown物理样本完全排除训练 | 数据split/builder、tests | verified | `test_phase1_tx_partition.py`、checkpoint receipt、四臂同TX划分与冻结后审计 | 4/1/1开发screen已闭环；不允许receiver/channel/SNR伪unknown |
 | P1-06 | 二 | 支持对比、margin、energy、EVT、held-TX OE、`z_id/z_dom`解耦、半径/协方差、梯度冲突和分层解冻的开放候选空间 | 设计文档、候选配置 | pending | feasibility review、method lock | 不是要求一次候选堆叠全部机制 |
-| P1-07 | 二 | Phase1候选五项窄晋级门：不崩溃、known跨接收机不明显退化、floor不严重下降、proxy unknown正信号、真实checkpoint可导出bundle | evaluator、报告模板、release gate | pending | 同排指标、bundle smoke | 门槛中的“明显/严重/明确”由活动方法设计量化 |
+| P1-07 | 二 | Phase1候选五项窄晋级门：不崩溃、known跨接收机不明显退化、floor不严重下降、proxy unknown正信号、真实checkpoint可导出bundle | evaluator、报告模板、release gate | implemented | GeoSat Lite四臂同排训练、held-TX审计与双读出窄实验 | C提供LEO正信号，B提供proxy正信号，但无单臂同时通过；正式bundle未晋级 |
 | LOCAL-01 | 三 | 每个节点从同一冻结或合法适配后的Phase1 extractor输出`z_id`、`z_dom`、`q`、`d_class`、`e_unknown`、`p_local` | 本地证据schema/extractor | pending | schema和真实checkpoint smoke | 每个字段需来源与形状定义 |
 | LOCAL-02 | 三 | 本地证据先不可变封存，再进入协同；单节点输出仅为registered/unknown/defer | artifact writer/validator | pending | hash/immutability和decision enum tests | scorer不得回流 |
 | LOCAL-03 | 三 | 单节点不得读取query真值、真实role、真实batch构成、类别配额和独立scorer结果 | predictor API、negative tests | pending | zero-fit/zero-update/zero-selection tests | 与`p2_min_v1`逐样本边界对齐 |
@@ -94,9 +94,19 @@
 - `ssr-gpu`中89项现有loss/协同原语测试通过；真实ADV3B02 checkpoint内存内反向审计证明`L_OW`对8个`id_backbone.cls_head`feature projection tensor产生非零梯度，一步更新改变`z_id`且禁训参数不变。
 - 上述结果只关闭梯度可达性疑问；尚未运行候选实现测试、真实checkpoint v2 smoke或N607实验。
 
+### 2026-08-08 Phase1快速实验闭环
+
+- `phase1_geosat_lite_4arm_20260808_v1`以TX级4/1/1互斥划分完成四臂E120/120；独立审查`P0=0/P1=0`，完整metrics/log/checkpoint清单已回收。
+- C的clean→LEO一致性相对A把LEO mean/floor提升`9.067pp/9.387pp`；B的known-only角度几何把source proxy FAR从53.50%降到38.25%；D的联合训练把proxy FAR恶化到79.25%，证明两项目标在同一路径上冲突。
+- 四臂均未达到5% proxy FAR，故`NO_SINGLE_ARM_PROMOTED`；这些数值全部是source-held开发诊断，不是Phase3真实unknown。
+- `phase1_dualreadout_disagree_20260808_v1`完成物理`sig_id`逐行绑定、预测/拒识职责解耦和独立`P0=0/P1=0`复核；两条N607 CPU评估均exit=0。
+- 双读出把proxy FAR从B的38.25%降到37.50%、held-known FAR从21.25%降到19.75%，但source full accuracy下降3.50pp，超过预注册2pp门，结论为`REJECTED_KNOWN_GATE`。
+- Phase1后续只保留C的类别证据及B/JS连续`e_unknown`研究价值，不再使用跨模型一致性硬拒识。
+- Phase3正式性能实验仍被数据语义阻断：旧R8按role/true-label排名构组，缺少采集前生成的独立事件/接收ID；可保留非部署诊断，不可冒充same-emission或真实多星。
+
 ## 6.可行性结论（20行内）
 
-1.文档职责修订已由提交`93e67771`封存；代码和性能仍未完成。
+1.文档职责修订已封存；Phase1快速实验代码、审计入口和两轮N607证据已进入Git，正式bundle与Phase3性能仍未完成。
 2.现有协同评估器支持1到receiver总数的预算、缺失组统计、固定/渐进/自适应融合和unknown拒识。
 3.现有scorer会把registered query的reject/defer计为身份错误，不能通过全拒绝抬高known accuracy。
 4.R8_SHELL真实回收证据含2200行、5个receiver、1113个代理event。
@@ -104,15 +114,15 @@
 6.该artifact使用`receiver_domain_ranked_by_role_tx_scenario`，不是物理same-event对齐，只能作多接收节点代理协同。
 7.当前`event_id`编码role/true label，融合与scorer共处同一函数；这是必须先修复的P0隔离缺口。
 8.当前证据行没有独立`emission_event_id`和`satellite_reception_id`，也没有不可变本地证据schema。
-9.现有Phase1 runtime只导出normalized `z_id`和old logits，组件另有类/域中心及radius。
+9.本轮Phase1 checkpoint已验证导出`z_id`和old logits；不可变v2 bundle及`z_dom/q/d_class/e_unknown/p_local`完整接口仍待实现。
 10.主模型实际存在`z_dom`，所以扩展bundle v2可行，但`q`、`e_unknown`和本地决策口径仍需冻结。
-11.现有Phase1 proxy loss按batch轮换已知label，并不等于TX级全局互斥`source_proxy_unknown_tx`。
+11.GeoSat Lite入口已用TX级全局互斥替代本轮batch轮换proxy语义；旧proxy loss仍只作历史实现，不进入该run。
 12.现有feature exporter具备proxy TX与source/target集合交叠拒绝，可复用为全局split检查基础。
 13.现有协同指标含old/new逐类accuracy、floor、unknown FAR/reject和实际receiver直方图。
 14.当前协同路径缺少`H_old_new`、`DA0_REG0/DA1_REG0/DA0_REG1/DA1_REG1`、A/B/C/D和difference-in-differences。
 15.anonymous entity状态、证据独立性、可信确权凭证和授权后fresh-K桥接尚无可达实现。
 16.实施应新建独立Phase3入口，复用已验证融合/计分原语，不继续膨胀带truth的Phase2巨型评估函数。
 17.第一组实现只冻结schema、opaque ID、predictor/scorer隔离、单节点/简单基线及negative tests；科学融合候选另行评审。
-18.当前数据可运行含缺失节点的`N_sat_deployed=1..5`代理矩阵，但不得声称5节点same-event融合。
+18.当前R8可运行含缺失节点的`N_sat_deployed=1..5`非部署诊断矩阵，但其truth-ranked分组不满足正式`proxy_unverified`输入，且不得声称5节点same-event融合。
 19.严格同步多节点主张需要新的物理event绑定数据；该缺口不阻塞代理方法研发，但阻塞真实多星同步结论。
-20.在focused tests、真实checkpoint smoke和独立P0/P1审查前，不发布N607实验。
+20.Phase1 focused tests、独立P0/P1和N607证据已完成；Phase3正式N607性能发布等待合法本地证据schema及不依赖真值的事件绑定输入。
