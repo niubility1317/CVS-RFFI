@@ -56,6 +56,17 @@ try:
     from baseline_origin_sat_view import parse_sat_view_schedule
     from concat_sat_channel_aug import ConcatSatChannelAugment
     from cvsrffi.tensors import build_domain_label_map
+    from cvsrffi.phase1_ccpc_leo import (
+        CCPCLEOConfig,
+        CCPCLEOConfigurationError,
+        CCPCLEORuntimeError,
+        add_ccpc_to_loss,
+        ccpc_config_receipt,
+        ccpc_leo_loss,
+        strict_ccpc_warm_start,
+        update_ccpc_receipt,
+        validate_ccpc_leo_args,
+    )
     from cvsrffi.balanced_tx_rx_sampler import BalancedTxDomainBatchSampler
     from cvsrffi.eval import (
         aggregate_named_stats,
@@ -179,6 +190,9 @@ except ModuleNotFoundError:
     build_aug_base_cfg = build_stage_state = configure_augmentor_for_epoch = configure_mixstyle_for_epoch = None
     format_stage_state = make_augmentor = None
     format_named_test_lines = format_sat_test_lines = None
+    CCPCLEOConfig = None
+    CCPCLEOConfigurationError = CCPCLEORuntimeError = None
+    add_ccpc_to_loss = ccpc_config_receipt = ccpc_leo_loss = strict_ccpc_warm_start = update_ccpc_receipt = validate_ccpc_leo_args = None
 
 
 _MANYTX_REAL_OE_LOCKED_TARGET_NEW_TX = tuple(
@@ -342,6 +356,30 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--lambda_sat_cls", type=float, default=0.10)
     parser.add_argument("--lambda_sat_cons", type=float, default=0.0)
     parser.add_argument("--sat_cons_start_epoch", type=int, default=20)
+    parser.add_argument(
+        "--phase1_ccpc_leo_frozen_mode",
+        type=str2bool,
+        default=False,
+        help="Enable the frozen P1-CCPC-LEO C/G continuation contract.",
+    )
+    parser.add_argument(
+        "--phase1_ccpc_leo_enabled",
+        type=str2bool,
+        default=False,
+        help="Enable the sole CCPC loss inside a frozen P1-CCPC-LEO G arm.",
+    )
+    parser.add_argument(
+        "--lambda_ccpc_leo",
+        type=float,
+        default=0.0,
+        help="Frozen at 0 for C and 0.02 for G when CCPC-LEO mode is enabled.",
+    )
+    parser.add_argument(
+        "--ccpc_leo_temperature",
+        type=float,
+        default=0.12,
+        help="Frozen paired-contrastive temperature for P1-CCPC-LEO.",
+    )
     parser.add_argument(
         "--best_metric",
         type=str,
@@ -4497,6 +4535,10 @@ def _build_ssdg_epoch_telemetry_row(
         "pseudo_strong_agreement": bool(getattr(args, "pseudo_strong_agreement", False)),
         "use_ema_teacher": bool(getattr(args, "use_ema_teacher", False)),
         "use_sat_consistency": bool(getattr(args, "use_sat_consistency", False)),
+        "phase1_ccpc_leo_frozen_mode": bool(getattr(args, "phase1_ccpc_leo_frozen_mode", False)),
+        "phase1_ccpc_leo_enabled": bool(getattr(args, "phase1_ccpc_leo_enabled", False)),
+        "lambda_ccpc_leo": float(getattr(args, "lambda_ccpc_leo", 0.0)),
+        "ccpc_leo_temperature": float(getattr(args, "ccpc_leo_temperature", 0.12)),
         "sat_train_scenario": str(getattr(args, "sat_train_scenario", "")),
         "sat_train_scenarios": ",".join(getattr(args, "sat_train_scenario_list", []) or []),
         "sat_view_schedule": str(getattr(args, "sat_view_schedule", "") or ""),
@@ -4758,6 +4800,7 @@ def format_ssdg_epoch_block(
     loss_group_ce = _log_value(train_logs, "train/loss_group_ce_labeled")
     loss_sat = _log_value(train_logs, "train/loss_sat_cls_labeled")
     loss_sat_cons = _log_value(train_logs, "train/loss_sat_cons_labeled")
+    loss_ccpc = _log_value(train_logs, "train/loss_ccpc_leo")
     loss_fishr = _log_value(train_logs, "train/loss_fishr_labeled")
     loss_proto = _log_value(train_logs, "train/loss_proto_labeled")
     loss_ow_feat = _log_value(train_logs, "train/loss_open_world_feat")
@@ -4774,6 +4817,7 @@ def format_ssdg_epoch_block(
     w_group_ce = _log_value(train_logs, "train/w_loss_group_ce_labeled", loss_group_ce)
     w_sat = _log_value(train_logs, "train/w_loss_sat_cls_labeled", loss_sat)
     w_sat_cons = _log_value(train_logs, "train/w_loss_sat_cons_labeled", loss_sat_cons)
+    w_ccpc = _log_value(train_logs, "train/w_loss_ccpc_leo", loss_ccpc)
     w_fishr = _log_value(train_logs, "train/w_loss_fishr_labeled", loss_fishr)
     w_proto = _log_value(train_logs, "train/w_loss_proto_labeled", loss_proto)
     w_ow_feat = _log_value(train_logs, "train/w_loss_open_world_feat", loss_ow_feat)
@@ -4850,6 +4894,16 @@ def format_ssdg_epoch_block(
     lines.append("[LOSS-AUX-RAW]  cls_pa=0.0000 cls_dac=0.0000 pa_joint_inv=0.0000 pa_kl=0.0000 dac_reg=0.0000 pa_reg=0.0000")
     lines.append("[LOSS-AUX-W]    cls_pa=0.0000 cls_dac=0.0000 pa_joint_inv=0.0000 pa_kl=0.0000 dac_reg=0.0000 pa_reg=0.0000")
     lines.append(f"[LOSS-SAT-RAW]  cls_sat={loss_sat:.4f} sat_cons={loss_sat_cons:.4f} sat_cos=nan")
+    lines.append(
+        "[CCPC-LEO] "
+        f"enabled={int(_log_value(train_logs, 'train/ccpc_enabled', 0.0) >= 0.5)} "
+        f"loss={loss_ccpc:.6f} weighted={w_ccpc:.6f} "
+        f"rows={int(round(_log_value(train_logs, 'train/ccpc_rows', 0.0)))} "
+        f"classes={int(round(_log_value(train_logs, 'train/ccpc_classes', 0.0)))} "
+        f"positive_pairs={int(round(_log_value(train_logs, 'train/ccpc_positive_pairs', 0.0)))} "
+        f"clean_detached={int(_log_value(train_logs, 'train/ccpc_clean_detached', 0.0) >= 0.5)} "
+        f"leo_grad_nonzero={int(_log_value(train_logs, 'train/ccpc_leo_grad_nonzero', 0.0) >= 0.5)}"
+    )
     lines.append(f"[LOSS-SAT-W]    cls_sat={w_sat:.4f} sat_cons={w_sat_cons:.4f}")
     lines.append(
         f"[LOSS-DG-RAW]   proto={loss_proto:.4f} "
@@ -5289,6 +5343,30 @@ def train(args) -> int:
         )
     total_epochs = _resolve_epoch_schedule(args)
     args.epochs = total_epochs
+    if validate_ccpc_leo_args is None or ccpc_config_receipt is None or strict_ccpc_warm_start is None:
+        if bool(getattr(args, "phase1_ccpc_leo_frozen_mode", False)) or bool(
+            getattr(args, "phase1_ccpc_leo_enabled", False)
+        ):
+            raise ImportError("cvsrffi.phase1_ccpc_leo is required for P1-CCPC-LEO")
+        ccpc_config = None
+        ccpc_receipt: Dict[str, Any] = {
+            "schema": "cvs.phase1.ccpc_leo_receipt.v1",
+            "frozen_mode": False,
+            "enabled": False,
+            "lambda": 0.0,
+            "temperature": float(getattr(args, "ccpc_leo_temperature", 0.12)),
+            "rows": 0,
+            "classes": 0,
+            "positive_pairs": 0,
+            "clean_detached": False,
+            "leo_grad_nonzero": False,
+            "proxy_rows": 0,
+            "held_rows": 0,
+        }
+    else:
+        ccpc_config = validate_ccpc_leo_args(args)
+        ccpc_receipt = ccpc_config_receipt(ccpc_config)
+    ccpc_frozen_mode = bool(getattr(ccpc_config, "frozen_mode", False))
     args.lambda_dom = float(args.lambda_domain)
     if float(args.tau_conf) > 0.0:
         args.tau_min = float(args.tau_conf)
@@ -5539,6 +5617,34 @@ def train(args) -> int:
             "--phase1_allow_empty_proxy_unknown requires the frozen ManyTx real-OE protocol"
         )
     data_ctx = _build_ssdg_wisig_data(args, device)
+    if ccpc_frozen_mode:
+        tx_partition_receipt = (
+            (data_ctx.get("split_info", {}) or {}).get("tx_partition_receipt", {})
+        )
+        if not bool(tx_partition_receipt.get("enabled", False)):
+            raise CCPCLEOConfigurationError(
+                "Frozen CCPC-LEO requires an explicit TX-role partition receipt"
+            )
+        if bool(tx_partition_receipt.get("held_tx_loaded_by_training", True)):
+            raise CCPCLEOConfigurationError(
+                "Frozen CCPC-LEO rejects any held/proxy TX loaded by training"
+            )
+        ccpc_receipt.update(
+            {
+                "source_train_tx": list(tx_partition_receipt.get("source_known_train_tx", [])),
+                "source_known_validation_tx": list(
+                    tx_partition_receipt.get("source_known_validation_tx", [])
+                ),
+                "source_proxy_unknown_tx": list(
+                    tx_partition_receipt.get("source_proxy_unknown_tx", [])
+                ),
+                "source_partition_sha256": str(
+                    tx_partition_receipt.get("partition_sha256", "")
+                ),
+                "proxy_rows": 0,
+                "held_rows": 0,
+            }
+        )
     manytx_real_oe_data = _build_manytx_real_oe_data(
         args,
         device,
@@ -5558,7 +5664,28 @@ def train(args) -> int:
     model_args = _apply_model_cli_args(model_args, args)
     model = build_baseline_model(model_args, device)
     if use_ckpt:
-        model.load_state_dict(ckpt["model"], strict=False)
+        if ccpc_frozen_mode:
+            ccpc_receipt.update(
+                strict_ccpc_warm_start(
+                    model,
+                    ckpt["model"],
+                    baseline_path=str(args.baseline_ckpt),
+                    baseline_sha256=_sha256_file(args.baseline_ckpt),
+                    checkpoint_epoch=ckpt.get("epoch", -1),
+                    checkpoint_role=ckpt.get(
+                        "checkpoint_role",
+                        ckpt.get("checkpoint_selection", "UNSPECIFIED"),
+                    ),
+                )
+            )
+        else:
+            model.load_state_dict(ckpt["model"], strict=False)
+    if ccpc_frozen_mode:
+        (out_dir / "phase1_ccpc_leo_config_receipt.json").write_text(
+            json.dumps(ccpc_receipt, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+            newline="\n",
+        )
     if bool(args.freeze_backbone):
         for name, param in model.named_parameters():
             param.requires_grad = any(key in name for key in ("cls_head", "dom_head", "adv_head"))
@@ -5759,6 +5886,18 @@ def train(args) -> int:
                 f"view_prob={float(getattr(args, 'sat_view_prob', 1.0)):.3f} "
                 f"seed={int(getattr(args, 'sat_view_seed', args.seed))} "
                 f"ce_weight={float(getattr(args, 'concat_sat_ce_weight', 1.0)):.3f}",
+                "[CONFIG-CCPC-LEO] "
+                f"frozen_mode={int(bool(ccpc_receipt.get('frozen_mode', False)))} "
+                f"enabled={int(bool(ccpc_receipt.get('enabled', False)))} "
+                f"lambda={float(ccpc_receipt.get('lambda', 0.0)):.6g} "
+                f"T={float(ccpc_receipt.get('temperature', 0.12)):.6g} "
+                f"clean_detached={int(bool(ccpc_receipt.get('clean_detached', False)))} "
+                f"baseline_strict={int(bool(ccpc_receipt.get('strict_model_keys', False)))} "
+                f"checkpoint_epoch={int(ccpc_receipt.get('checkpoint_epoch', -1))} "
+                f"checkpoint_role={str(ccpc_receipt.get('checkpoint_role', '') or '-')} "
+                f"optimizer_state_restored={int(bool(ccpc_receipt.get('optimizer_state_restored', False)))} "
+                f"rng_state_restored={int(bool(ccpc_receipt.get('rng_state_restored', False)))} "
+                f"rx_or_domain_labels=0 proxy_rows=0 held_rows=0",
                 "[CONFIG-TELEMETRY] "
                 f"metrics_csv={metrics_csv_path} metrics_jsonl={metrics_jsonl_path} "
                 "per_epoch_loss_terms=raw_and_weighted",
@@ -5967,9 +6106,16 @@ def train(args) -> int:
         for batch_idx, labeled_batch in enumerate(data_ctx["train_loader"], start=1):
             x_l, y_l, extra_l = move_batch(labeled_batch, device)
             labeled_clean_count = int(y_l.numel())
-            receiver_l_base = _metadata_label_tensor(extra_l, "rx_i", device, labeled_clean_count)
-            day_l_base = _metadata_label_tensor(extra_l, "day_i", device, labeled_clean_count)
-            d_l = domain_from_extra(extra_l, data_ctx["domain_label_map"], device)
+            if ccpc_frozen_mode:
+                # The frozen C/G experiment is intentionally blind to RX/day/domain
+                # metadata.  CCPC itself receives only paired z_id rows and TX labels.
+                receiver_l_base = None
+                day_l_base = None
+                d_l = None
+            else:
+                receiver_l_base = _metadata_label_tensor(extra_l, "rx_i", device, labeled_clean_count)
+                day_l_base = _metadata_label_tensor(extra_l, "day_i", device, labeled_clean_count)
+                d_l = domain_from_extra(extra_l, data_ctx["domain_label_map"], device)
             concat_active = concat_sat_aug is not None and epoch >= int(getattr(args, "concat_sat_start_epoch", 1))
             if concat_active and augmentor is not None:
                 x_l = torch.nan_to_num(
@@ -6711,6 +6857,16 @@ def train(args) -> int:
                 zero_sat = out_l["tx_logits"].sum() * 0.0
                 loss_sat_cls_l = zero_sat
                 loss_sat_cons_l = zero_sat
+                out_sat = None
+                loss_ccpc_leo_l = zero_sat
+                ccpc_batch_info: Dict[str, Any] = {
+                    "rows": 0,
+                    "classes": 0,
+                    "positive_pairs": 0,
+                    "clean_detached": False,
+                    "leo_grad_nonzero": False,
+                }
+                ccpc_leo_feature = None
                 use_sat_train = (
                     bool(args.use_sat_consistency)
                     and (not concat_sat_full_batch)
@@ -6819,6 +6975,23 @@ def train(args) -> int:
                             teacher_clean_out["tx_logits"],
                             temperature=float(args.teacher_distill_temperature),
                         )
+                if bool(getattr(ccpc_config, "enabled", False)):
+                    if out_sat is None:
+                        raise CCPCLEORuntimeError(
+                            "Enabled CCPC-LEO requires one paired clean/LEO forward per batch"
+                        )
+                    if ccpc_leo_loss is None:
+                        raise ImportError("cvsrffi.phase1_ccpc_leo.ccpc_leo_loss is required")
+                    ccpc_leo_feature = out_sat["z_id"]
+                    if not torch.is_tensor(ccpc_leo_feature):
+                        raise CCPCLEORuntimeError("CCPC-LEO requires the LEO z_id feature")
+                    ccpc_leo_feature.retain_grad()
+                    loss_ccpc_leo_l, ccpc_batch_info = ccpc_leo_loss(
+                        ccpc_leo_feature,
+                        z_id_l,
+                        y_l,
+                        temperature=float(getattr(ccpc_config, "temperature", 0.12)),
+                    )
                 loss_closed_l = (
                     loss_tx_l
                     + cur_w["dom"] * loss_dom_l
@@ -6850,6 +7023,12 @@ def train(args) -> int:
                     "ssdg_source_episode", loss_source_episode_l, z_id_l, loss_warn_counts
                 )
                 loss_open_l = loss_open_invariant_l + loss_open_boundary_l + loss_open_source_l
+                if add_ccpc_to_loss is not None:
+                    loss_closed_l = add_ccpc_to_loss(
+                        loss_closed_l,
+                        loss_ccpc_leo_l if bool(getattr(ccpc_config, "enabled", False)) else None,
+                        ccpc_config,
+                    )
                 loss_l = loss_closed_l + loss_open_l
                 if phase == "pseudo" and bool(args.use_unlabeled):
                     try:
@@ -7461,6 +7640,7 @@ def train(args) -> int:
             skipped_nonfinite_loss = 0
             skipped_nonfinite_grad = 0
             optimizer_step_applied = False
+            ccpc_leo_grad_nonzero = False
             os_grad_info = {
                 "active": 0.0,
                 "conflict": 0.0,
@@ -7556,6 +7736,19 @@ def train(args) -> int:
                 else:
                     scaler.scale(loss).backward()
                 scaler.unscale_(optimizer)
+                if bool(getattr(ccpc_config, "enabled", False)):
+                    if ccpc_leo_feature is None or ccpc_leo_feature.grad is None:
+                        raise CCPCLEORuntimeError(
+                            "CCPC-LEO fail-closed: no LEO feature gradient reached the paired loss"
+                        )
+                    ccpc_leo_grad_nonzero = bool(
+                        torch.isfinite(ccpc_leo_feature.grad.detach()).all().item()
+                        and torch.count_nonzero(ccpc_leo_feature.grad.detach()).item() > 0
+                    )
+                    if not ccpc_leo_grad_nonzero:
+                        raise CCPCLEORuntimeError(
+                            "CCPC-LEO fail-closed: paired LEO feature gradient is zero or non-finite"
+                        )
                 grad_norm_before_clip = _grad_norm(model)
                 if float(getattr(args, "max_grad_norm", 0.0)) > 0.0:
                     torch.nn.utils.clip_grad_norm_(
@@ -7578,6 +7771,10 @@ def train(args) -> int:
                     optimizer.zero_grad(set_to_none=True)
                 scaler.update()
             else:
+                if bool(getattr(ccpc_config, "enabled", False)):
+                    raise CCPCLEORuntimeError(
+                        "CCPC-LEO fail-closed: total loss is non-finite before backward"
+                    )
                 skipped_nonfinite_loss = 1
                 optimizer.zero_grad(set_to_none=True)
                 grad_norm_before_clip = float("nan")
@@ -7585,6 +7782,14 @@ def train(args) -> int:
                 grad_backbone = float("nan")
                 grad_aux = float("nan")
                 grad_domain = float("nan")
+            if bool(getattr(ccpc_config, "enabled", False)):
+                if update_ccpc_receipt is None:
+                    raise ImportError("cvsrffi.phase1_ccpc_leo.update_ccpc_receipt is required")
+                ccpc_receipt = update_ccpc_receipt(
+                    ccpc_receipt,
+                    ccpc_batch_info,
+                    leo_grad_nonzero=ccpc_leo_grad_nonzero,
+                )
             if proto_bank is not None and optimizer_step_applied:
                 proto_bank.update(out_l["z_id"].detach(), y_l.detach(), d_l.detach() if d_l is not None else None)
                 if proto_bank.class_count is not None:
@@ -7748,6 +7953,13 @@ def train(args) -> int:
                     "train/loss_direct_metric_accept": loss_direct_metric_accept_l.detach(),
                     "train/loss_sat_cls_labeled": loss_sat_cls_l.detach(),
                     "train/loss_sat_cons_labeled": loss_sat_cons_l.detach(),
+                    "train/loss_ccpc_leo": loss_ccpc_leo_l.detach(),
+                    "train/ccpc_enabled": 1.0 if bool(getattr(ccpc_config, "enabled", False)) else 0.0,
+                    "train/ccpc_rows": float(ccpc_batch_info.get("rows", 0)),
+                    "train/ccpc_classes": float(ccpc_batch_info.get("classes", 0)),
+                    "train/ccpc_positive_pairs": float(ccpc_batch_info.get("positive_pairs", 0)),
+                    "train/ccpc_clean_detached": 1.0 if bool(ccpc_batch_info.get("clean_detached", False)) else 0.0,
+                    "train/ccpc_leo_grad_nonzero": 1.0 if ccpc_leo_grad_nonzero else 0.0,
                     "train/loss_teacher_clean_kl": loss_teacher_clean_kl_l.detach(),
                     "train/loss_teacher_sat_kl": loss_teacher_sat_kl_l.detach(),
                     "train/loss_teacher_zid_mse": loss_teacher_zid_mse_l.detach(),
@@ -7771,6 +7983,9 @@ def train(args) -> int:
                     "train/w_loss_direct_metric_accept": ((cur_w["direct_metric_accept"] * direct_metric_stage_scale) * loss_direct_metric_accept_l).detach(),
                     "train/w_loss_sat_cls_labeled": (cur_w["sat_cls"] * loss_sat_cls_l).detach(),
                     "train/w_loss_sat_cons_labeled": (cur_w["sat_cons"] * loss_sat_cons_l).detach(),
+                    "train/w_loss_ccpc_leo": (
+                        float(getattr(ccpc_config, "loss_weight", 0.0)) * loss_ccpc_leo_l
+                    ).detach(),
                     "train/w_loss_teacher_clean_kl": ((float(args.lambda_teacher_clean_kl) * teacher_scale) * loss_teacher_clean_kl_l).detach(),
                     "train/w_loss_teacher_sat_kl": ((float(args.lambda_teacher_sat_kl) * teacher_scale) * loss_teacher_sat_kl_l).detach(),
                     "train/w_loss_teacher_zid_mse": ((float(args.lambda_teacher_zid_mse) * teacher_scale) * loss_teacher_zid_mse_l).detach(),
@@ -8479,6 +8694,8 @@ def train(args) -> int:
             "split_info": data_ctx["split_info"],
             "stats": stats,
         }
+        if ccpc_frozen_mode:
+            payload["ccpc_leo_receipt"] = dict(ccpc_receipt)
         latest_path = out_dir / "NOT_SAVED_FINAL_ONLY"
         best_path = (
             source_validation_path
@@ -8935,6 +9152,8 @@ def train(args) -> int:
             "selection_epoch": int(selected_epoch),
         }
     )
+    if ccpc_frozen_mode:
+        final_payload["ccpc_leo_receipt"] = dict(ccpc_receipt)
     final_payload.setdefault("stats", {})
     final_payload["stats"]["source_val_tail_geometry"] = final_source_val_tail
     final_payload["stats"]["zid_leakage_probe"] = final_zid_leakage_probe
@@ -9505,11 +9724,31 @@ def train(args) -> int:
         "promotion_ready": terminal_status == "COMPLETE",
         "claim": "PHASE1_SOURCE_ONLY_NO_TRUE_UNKNOWN_SUCCESS_CLAIM",
     }
+    if ccpc_frozen_mode:
+        terminal_manifest["ccpc_leo_receipt"] = dict(ccpc_receipt)
     (out_dir / "phase1_terminal_status.json").write_text(
         json.dumps(terminal_manifest, ensure_ascii=False, indent=2, default=str),
         encoding="utf-8",
     )
     terminal_manifest_path = out_dir / "phase1_terminal_status.json"
+    if ccpc_frozen_mode:
+        (out_dir / "phase1_ccpc_leo_terminal_receipt.json").write_text(
+            json.dumps(
+                {
+                    **dict(ccpc_receipt),
+                    "terminal_status": terminal_status,
+                    "terminal_exit_code": int(terminal_exit_code),
+                    "selected_checkpoint": str(selected_checkpoint),
+                    "selected_checkpoint_sha256": selected_checkpoint_sha256,
+                },
+                ensure_ascii=False,
+                indent=2,
+                sort_keys=True,
+            )
+            + "\n",
+            encoding="utf-8",
+            newline="\n",
+        )
     prototype_paths = {
         key: str(export_status.get(key, "") or "")
         for key in ("prototype_path", "prototype_json_path")
