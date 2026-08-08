@@ -56,10 +56,10 @@
 | COUNT-03 | 六 | 非同步多接收机数据只能声明“多接收节点代理协同”，不得声明真实在轨同步多星验证 | docs/report validator | pending | claim-lint tests | 当前WiSig/ManySig预计属于代理数据 |
 | ARCH-01 | 七 | 系统分为共享Phase1本地extractor和部署期Phase3协同推理器，两层接口明确 | architecture docs/schema | verified | 独立Phase3模块和三个职责分离入口的N607 smoke | 未修改Phase2 predictor |
 | ARCH-02 | 七 | 完成A原基座+单节点、B新Phase1+单节点、C原基座+协同、D新Phase1+协同的同输入消融 | ablation matrix/scorer | verified | event×node×reception同输入绑定；N1 A=C、B=D | 技术矩阵完整，正式效应值等待合法数据 |
-| N607-01 | 八 | Phase1候选八卡并行；本地证据并行提取后缓存；不同`N_sat`与子集复用缓存，不为组合重复运行backbone | launcher/report | partial | GeoSat Lite四臂GPU并行；bundle runtime/feature缓存后只读build | 尚无合法same-event数据，因此未发布正式`N_sat`性能矩阵 |
-| N607-02 | 八 | Luna/max仅负责冻结方案的发布、调度、监控和artifact回收；主Agent负责方法与结果决策 | runner handoff/report | verified | 唯一runner按commit 0242d354执行，未改方法/矩阵、未重试或解读性能 | CPU G0完成且连接/GPU清理 |
+| N607-01 | 八 | Phase1候选八卡并行；本地证据并行提取后缓存；不同`N_sat`与子集复用缓存，不为组合重复运行backbone | launcher/report | deferred | GeoSat Lite与12臂LOTO已并行；bundle runtime/feature缓存后只读build；v3合成矩阵复用15条每bundle evidence生成60行预测 | 尚无合法same-event数据，因此正式`N_sat`性能矩阵延期 |
+| N607-02 | 八 | Luna/max仅负责冻结方案的发布、调度、监控和artifact回收；主Agent负责方法与结果决策 | runner handoff/report | verified | 唯一runner按release commit `5501990e`执行v3 CPU闭环，未改方法/矩阵、未重试或解读性能 | 5步exit0；21项artifact回收；连接/GPU清理 |
 | CLAIM-01 | 九 | 最终阶段结论必须使用附件指定的职责表述，并同时标明当前实现/证据状态 | `docs/项目介绍.md`；最终报告 | verified | 附件指定段落逐字落入“阶段职责结论”；下一段限定代理数据和未完成状态 | 最终报告仍须复用并结合届时证据状态 |
-| EVID-01 | 全文 | 所有实现进入Git，经过focused tests、独立P0/P1审查、非覆盖run ID、完整日志和同排artifact后才可晋级 | Git/tests/reports | verified | CARE-PoE与bundle均Git-backed；bundle 14 tests、P0=0/P1=0、15项artifact hash一致 | 只晋级技术闭环，不晋级性能 |
+| EVID-01 | 全文 | 所有实现进入Git，经过focused tests、独立P0/P1审查、非覆盖run ID、完整日志和同排artifact后才可晋级 | Git/tests/reports | verified | v3实现commit `77d9a0e8`、release commit `5501990e`；39 tests、P0=0/P1=0、21项artifact hash一致 | 只晋级技术闭环，不晋级性能 |
 
 ## 4.反向审计清单
 
@@ -157,3 +157,13 @@
 - 正式predictor要求调用方同时提供binding JSONL与冻结binding root；scorer要求prediction manifest并验证预测hash、行数、`truth_sidecar_opened=false`及A/B/C/D×N1-N5完整覆盖，关闭仅靠行内自报hash或替换预测文件进入评分的旁路。
 - N607普通账户只读库存审计未发现任何真实`emission_event_id/satellite_reception_id`资产或采集binding/provenance receipt；现有ManySig/ManyRx/ManyTx/SingleDay和Oracle X/Y文件不能据此形成`verified_physical`输入。
 - 远端日志唯一命中只是字段名文本引用，`runtime_cache_audit.json`只有`physical_id_unique`计数；均不是event级资产。库存审计未读IQ/features/labels，未写服务器，结束时GPU、SSH和TCP22全部清零。
+
+### 2026-08-08 LocalEvidenceV3合成技术发布
+
+- 实现commit为`77d9a0e8471603fef60126ad57b822149c09f727`，release commit为`5501990e666cbd42a8eb3e6f89cf8e2bd8d5ab3a`；独立复审关闭为`P0=0,P1=0`。
+- N607 run `phase3_care_poe_g0_binding_v3_20260808_v1`的fixture、binding root只读、predict、score和lifecycle五步各执行一次且exit=0，无retry。
+- fixture含15条binding、3个event和每bundle 15条reception；binding root为`ca91e1fc2a12547c1935ba378ffd5eeb5c1034e9a1ffd582d9b7b44e8a8c5774`。
+- prediction共60行，A/B/C/D各15、N1-N5各12、3个event各20，全部`shot_count=1`；N1的三个event均满足A=C、B=D。
+- prediction manifest为`truth_sidecar_opened=false`且binding root匹配；lifecycle到达`FRESH_K_READY_FOR_STAGE2_C`。
+- 21项小artifact逐项hash匹配，manifest SHA256为`89fe8230ab976bfab90908cbafd2e5d2a2ad09b72eec334abfeaf0d11e73d132`；无NPZ/checkpoint，错误指纹、残留进程、GPU任务和SSH/TCP22均为0。
+- 本run仅证明v3接口、矩阵和生命周期技术闭环；N607仍无真实预标签物理binding，故正式unknown FAR、安全拒绝率和旧类性能保持未评估。
