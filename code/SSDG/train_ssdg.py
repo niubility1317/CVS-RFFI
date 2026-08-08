@@ -73,6 +73,28 @@ try:
         validate_ccpc_leo_args,
         write_ccpc_failure_receipt,
     )
+    from cvsrffi.phase1_pamr import (
+        PAMRConfig,
+        PAMRConfigurationError,
+        PAMRRuntimeError,
+        add_pamr_to_loss,
+        pamr_config_receipt,
+        pamr_gradient_status,
+        pamr_loss,
+        pamr_shared_encoder_parameters,
+        pamr_shared_gradient_relation,
+        pamr_unscaled_gradient,
+        require_finite_pamr_gradient,
+        resolve_pamr_classifier_weight,
+        strict_pamr_warm_start,
+        update_pamr_gradient_receipt,
+        update_pamr_gradient_relation_receipt,
+        update_pamr_receipt,
+        validate_pamr_args,
+        validate_pamr_binding,
+        validate_pamr_terminal_receipt,
+        write_pamr_failure_receipt,
+    )
     from cvsrffi.balanced_tx_rx_sampler import BalancedTxDomainBatchSampler
     from cvsrffi.eval import (
         aggregate_named_stats,
@@ -203,6 +225,13 @@ except ModuleNotFoundError:
     require_finite_ccpc_leo_gradient = strict_ccpc_warm_start = update_ccpc_receipt = None
     update_ccpc_optimizer_receipt = None
     validate_ccpc_terminal_receipt = validate_ccpc_leo_args = write_ccpc_failure_receipt = None
+    PAMRConfig = None
+    PAMRConfigurationError = PAMRRuntimeError = None
+    add_pamr_to_loss = pamr_config_receipt = pamr_gradient_status = pamr_loss = None
+    pamr_shared_encoder_parameters = pamr_shared_gradient_relation = pamr_unscaled_gradient = None
+    require_finite_pamr_gradient = resolve_pamr_classifier_weight = strict_pamr_warm_start = None
+    update_pamr_gradient_receipt = update_pamr_gradient_relation_receipt = update_pamr_receipt = None
+    validate_pamr_args = validate_pamr_binding = validate_pamr_terminal_receipt = write_pamr_failure_receipt = None
 
 
 _MANYTX_REAL_OE_LOCKED_TARGET_NEW_TX = tuple(
@@ -395,6 +424,30 @@ def build_arg_parser() -> argparse.ArgumentParser:
         type=float,
         default=0.12,
         help="Frozen paired-contrastive temperature for P1-CCPC-LEO.",
+    )
+    parser.add_argument(
+        "--phase1_pamr_frozen_mode",
+        type=str2bool,
+        default=False,
+        help="Enable the frozen P1-PAMR C/G continuation contract.",
+    )
+    parser.add_argument(
+        "--phase1_pamr_enabled",
+        type=str2bool,
+        default=False,
+        help="Enable the sole angular-margin restoration loss in a frozen P1-PAMR G arm.",
+    )
+    parser.add_argument(
+        "--phase1_pamr_audit_only",
+        type=str2bool,
+        default=False,
+        help="Permit the frozen one-epoch, G-only P1-PAMR technical gradient audit.",
+    )
+    parser.add_argument(
+        "--lambda_pamr",
+        type=float,
+        default=0.0,
+        help="Frozen at 0 for C and 0.05 for G when P1-PAMR mode is enabled.",
     )
     parser.add_argument(
         "--best_metric",
@@ -4591,6 +4644,10 @@ def _build_ssdg_epoch_telemetry_row(
         ),
         "lambda_ccpc_leo": float(getattr(args, "lambda_ccpc_leo", 0.0)),
         "ccpc_leo_temperature": float(getattr(args, "ccpc_leo_temperature", 0.12)),
+        "phase1_pamr_frozen_mode": bool(getattr(args, "phase1_pamr_frozen_mode", False)),
+        "phase1_pamr_enabled": bool(getattr(args, "phase1_pamr_enabled", False)),
+        "phase1_pamr_audit_only": bool(getattr(args, "phase1_pamr_audit_only", False)),
+        "lambda_pamr": float(getattr(args, "lambda_pamr", 0.0)),
         "sat_train_scenario": str(getattr(args, "sat_train_scenario", "")),
         "sat_train_scenarios": ",".join(getattr(args, "sat_train_scenario_list", []) or []),
         "sat_view_schedule": str(getattr(args, "sat_view_schedule", "") or ""),
@@ -4853,6 +4910,7 @@ def format_ssdg_epoch_block(
     loss_sat = _log_value(train_logs, "train/loss_sat_cls_labeled")
     loss_sat_cons = _log_value(train_logs, "train/loss_sat_cons_labeled")
     loss_ccpc = _log_value(train_logs, "train/loss_ccpc_leo")
+    loss_pamr = _log_value(train_logs, "train/loss_pamr")
     loss_fishr = _log_value(train_logs, "train/loss_fishr_labeled")
     loss_proto = _log_value(train_logs, "train/loss_proto_labeled")
     loss_ow_feat = _log_value(train_logs, "train/loss_open_world_feat")
@@ -4870,6 +4928,7 @@ def format_ssdg_epoch_block(
     w_sat = _log_value(train_logs, "train/w_loss_sat_cls_labeled", loss_sat)
     w_sat_cons = _log_value(train_logs, "train/w_loss_sat_cons_labeled", loss_sat_cons)
     w_ccpc = _log_value(train_logs, "train/w_loss_ccpc_leo", loss_ccpc)
+    w_pamr = _log_value(train_logs, "train/w_loss_pamr", loss_pamr)
     w_fishr = _log_value(train_logs, "train/w_loss_fishr_labeled", loss_fishr)
     w_proto = _log_value(train_logs, "train/w_loss_proto_labeled", loss_proto)
     w_ow_feat = _log_value(train_logs, "train/w_loss_open_world_feat", loss_ow_feat)
@@ -4957,6 +5016,22 @@ def format_ssdg_epoch_block(
         f"leo_grad_nonzero={int(_log_value(train_logs, 'train/ccpc_leo_grad_nonzero', 0.0) >= 0.5)} "
         f"leo_grad_zero={int(_log_value(train_logs, 'train/ccpc_leo_grad_zero', 0.0) >= 0.5)} "
         f"leo_grad_nonfinite={int(_log_value(train_logs, 'train/ccpc_leo_grad_nonfinite', 0.0) >= 0.5)}"
+    )
+    lines.append(
+        "[P1-PAMR] "
+        f"enabled={int(_log_value(train_logs, 'train/pamr_enabled', 0.0) >= 0.5)} "
+        f"loss={loss_pamr:.6f} weighted={w_pamr:.6f} "
+        f"rows={int(round(_log_value(train_logs, 'train/pamr_rows', 0.0)))} "
+        f"classes={int(round(_log_value(train_logs, 'train/pamr_classes', 0.0)))} "
+        f"valid_anchors={int(round(_log_value(train_logs, 'train/pamr_valid_anchors', 0.0)))} "
+        f"active_hinges={int(round(_log_value(train_logs, 'train/pamr_active_hinges', 0.0)))} "
+        f"clean_margin_detached={int(_log_value(train_logs, 'train/pamr_clean_margin_detached', 0.0) >= 0.5)} "
+        f"weight_detached={int(_log_value(train_logs, 'train/pamr_class_weight_detached', 0.0) >= 0.5)} "
+        f"leo_grad_nonzero={int(_log_value(train_logs, 'train/pamr_leo_grad_nonzero', 0.0) >= 0.5)} "
+        f"leo_grad_zero={int(_log_value(train_logs, 'train/pamr_leo_grad_zero', 0.0) >= 0.5)} "
+        f"leo_grad_nonfinite={int(_log_value(train_logs, 'train/pamr_leo_grad_nonfinite', 0.0) >= 0.5)} "
+        f"shared_cos={_log_value(train_logs, 'train/pamr_shared_grad_cosine'):.6f} "
+        f"shared_ratio={_log_value(train_logs, 'train/pamr_shared_grad_norm_ratio'):.6f}"
     )
     lines.append(f"[LOSS-SAT-W]    cls_sat={w_sat:.4f} sat_cons={w_sat_cons:.4f}")
     lines.append(
@@ -5398,6 +5473,54 @@ def _persist_ccpc_failure_receipt(
         return None
 
 
+def _persist_pamr_failure_receipt(
+    *,
+    out_dir: Path,
+    args: Any,
+    pamr_receipt: Mapping[str, Any],
+    error: BaseException,
+    failure_stage: str,
+) -> Optional[Path]:
+    """Best-effort persistence that never masks the primary PAMR failure."""
+
+    def _emit_writer_failure(exception_type: str) -> None:
+        try:
+            print(
+                "[P1-PAMR-FAILURE-RECEIPT] persistence_failed "
+                f"writer_exception_type={exception_type}",
+                flush=True,
+            )
+        except Exception:
+            pass
+
+    if write_pamr_failure_receipt is None:
+        _emit_writer_failure("ImportError")
+        return None
+    try:
+        return write_pamr_failure_receipt(
+            out_dir,
+            candidate_id=str(getattr(args, "candidate_id", "") or ""),
+            run_id=str(getattr(args, "run_id", "") or ""),
+            receipt=pamr_receipt,
+            error=error,
+            failure_stage=str(failure_stage),
+        )
+    except Exception as receipt_error:
+        _emit_writer_failure(type(receipt_error).__name__)
+        return None
+
+
+def _pamr_technical_audit_skip_receipt(scope: str) -> Dict[str, str]:
+    """Fixed non-performance placeholder for the isolated PAMR audit path."""
+
+    return {
+        "status": "SKIPPED_TECHNICAL_AUDIT",
+        "selection_source": "TECHNICAL_ONLY",
+        "claim": "NO_PERFORMANCE_RESULT",
+        "scope": str(scope),
+    }
+
+
 def train(args) -> int:
     training_wall_started = time.time()
     ablation_manifest = None
@@ -5476,6 +5599,44 @@ def train(args) -> int:
     ccpc_gradient_audit_only = bool(
         getattr(ccpc_config, "gradient_audit_only", False)
     )
+    if (
+        validate_pamr_args is None
+        or pamr_config_receipt is None
+        or strict_pamr_warm_start is None
+    ):
+        if bool(getattr(args, "phase1_pamr_frozen_mode", False)) or bool(
+            getattr(args, "phase1_pamr_enabled", False)
+        ):
+            raise ImportError("cvsrffi.phase1_pamr is required for P1-PAMR")
+        pamr_config = None
+        pamr_receipt: Dict[str, Any] = {
+            "schema": "cvs.phase1.pamr_receipt.v1",
+            "frozen_mode": False,
+            "enabled": False,
+            "lambda": 0.0,
+            "audit_only": False,
+            "technical_only": False,
+            "technical_only_claim": "",
+            "pamr_batches": 0,
+            "pamr_grad_nonzero_batches": 0,
+            "pamr_grad_zero_batches": 0,
+            "pamr_grad_nonfinite_batches": 0,
+            "pamr_valid_anchors_by_tx": {},
+            "pamr_active_hinges_by_tx": {},
+            "pamr_terminal_gradient_contract": "PENDING",
+            "pamr_terminal_gradient_contract_passed": False,
+            "proxy_rows": 0,
+            "held_rows": 0,
+        }
+    else:
+        pamr_config = validate_pamr_args(args)
+        pamr_receipt = pamr_config_receipt(pamr_config)
+    pamr_frozen_mode = bool(getattr(pamr_config, "frozen_mode", False))
+    pamr_audit_only = bool(getattr(pamr_config, "audit_only", False))
+    if pamr_audit_only:
+        pamr_receipt["evaluation"] = _pamr_technical_audit_skip_receipt(
+            "all_source_val_leo_tail_leakage_and_heldout"
+        )
     args.lambda_dom = float(args.lambda_domain)
     if float(args.tau_conf) > 0.0:
         args.tau_min = float(args.tau_conf)
@@ -5726,34 +5887,45 @@ def train(args) -> int:
             "--phase1_allow_empty_proxy_unknown requires the frozen ManyTx real-OE protocol"
         )
     data_ctx = _build_ssdg_wisig_data(args, device)
-    if ccpc_frozen_mode:
+    if ccpc_frozen_mode or pamr_frozen_mode:
         tx_partition_receipt = (
             (data_ctx.get("split_info", {}) or {}).get("tx_partition_receipt", {})
         )
         if not bool(tx_partition_receipt.get("enabled", False)):
-            raise CCPCLEOConfigurationError(
-                "Frozen CCPC-LEO requires an explicit TX-role partition receipt"
+            raise (PAMRConfigurationError if pamr_frozen_mode else CCPCLEOConfigurationError)(
+                "Frozen Phase1 continuation requires an explicit TX-role partition receipt"
             )
         if bool(tx_partition_receipt.get("held_tx_loaded_by_training", True)):
-            raise CCPCLEOConfigurationError(
-                "Frozen CCPC-LEO rejects any held/proxy TX loaded by training"
+            raise (PAMRConfigurationError if pamr_frozen_mode else CCPCLEOConfigurationError)(
+                "Frozen Phase1 continuation rejects any held/proxy TX loaded by training"
             )
-        ccpc_receipt.update(
-            {
-                "source_train_tx": list(tx_partition_receipt.get("source_known_train_tx", [])),
-                "source_known_validation_tx": list(
-                    tx_partition_receipt.get("source_known_validation_tx", [])
-                ),
-                "source_proxy_unknown_tx": list(
-                    tx_partition_receipt.get("source_proxy_unknown_tx", [])
-                ),
-                "source_partition_sha256": str(
-                    tx_partition_receipt.get("partition_sha256", "")
-                ),
-                "proxy_rows": 0,
-                "held_rows": 0,
-            }
-        )
+        frozen_source_roles = {
+            "source_train_tx": list(tx_partition_receipt.get("source_known_train_tx", [])),
+            "source_known_validation_tx": list(
+                tx_partition_receipt.get("source_known_validation_tx", [])
+            ),
+            "source_proxy_unknown_tx": list(
+                tx_partition_receipt.get("source_proxy_unknown_tx", [])
+            ),
+            "source_partition_sha256": str(tx_partition_receipt.get("partition_sha256", "")),
+            "proxy_rows": 0,
+            "held_rows": 0,
+        }
+        if ccpc_frozen_mode:
+            ccpc_receipt.update(frozen_source_roles)
+        if pamr_frozen_mode:
+            expected_class_ids = list(range(int(data_ctx.get("num_classes", 0))))
+            if len(expected_class_ids) != len(frozen_source_roles["source_train_tx"]):
+                raise PAMRConfigurationError(
+                    "P1-PAMR requires source TX role count to equal local classifier class count"
+                )
+            pamr_receipt.update(
+                {
+                    **frozen_source_roles,
+                    "expected_tx_class_ids": expected_class_ids,
+                    "class_count": int(data_ctx.get("num_classes", 0)),
+                }
+            )
     manytx_real_oe_data = _build_manytx_real_oe_data(
         args,
         device,
@@ -5787,11 +5959,40 @@ def train(args) -> int:
                     ),
                 )
             )
+        elif pamr_frozen_mode:
+            pamr_receipt.update(
+                strict_pamr_warm_start(
+                    model,
+                    ckpt["model"],
+                    baseline_path=str(args.baseline_ckpt),
+                    baseline_sha256=_sha256_file(args.baseline_ckpt),
+                    checkpoint_epoch=ckpt.get("epoch", -1),
+                    checkpoint_role=ckpt.get(
+                        "checkpoint_role",
+                        ckpt.get("checkpoint_selection", "UNSPECIFIED"),
+                    ),
+                )
+            )
         else:
             model.load_state_dict(ckpt["model"], strict=False)
     if ccpc_frozen_mode:
         (out_dir / "phase1_ccpc_leo_config_receipt.json").write_text(
             json.dumps(ccpc_receipt, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+            newline="\n",
+        )
+    if pamr_frozen_mode:
+        # Resolve the exact live GeoSat-C head path before training.  The PAMR
+        # loss later uses a detached view of this parameter, never a new head.
+        if resolve_pamr_classifier_weight is None:
+            raise ImportError("cvsrffi.phase1_pamr classifier binding support is required")
+        pamr_weight = resolve_pamr_classifier_weight(model)
+        if int(pamr_weight.size(0)) != int(data_ctx.get("num_classes", 0)):
+            raise PAMRConfigurationError(
+                "P1-PAMR classifier-head rows must equal the source local class count"
+            )
+        (out_dir / "phase1_pamr_config_receipt.json").write_text(
+            json.dumps(pamr_receipt, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
             encoding="utf-8",
             newline="\n",
         )
@@ -6009,6 +6210,19 @@ def train(args) -> int:
                 f"optimizer_state_restored={int(bool(ccpc_receipt.get('optimizer_state_restored', False)))} "
                 f"rng_state_restored={int(bool(ccpc_receipt.get('rng_state_restored', False)))} "
                 f"rx_or_domain_labels=0 proxy_rows=0 held_rows=0",
+                "[CONFIG-P1-PAMR] "
+                f"frozen_mode={int(bool(pamr_receipt.get('frozen_mode', False)))} "
+                f"enabled={int(bool(pamr_receipt.get('enabled', False)))} "
+                f"audit_only={int(bool(pamr_receipt.get('audit_only', False)))} "
+                f"lambda={float(pamr_receipt.get('lambda', 0.0)):.6g} "
+                f"feature_key={str(pamr_receipt.get('id_feature_key', '') or '-')} "
+                f"weight_path={str(pamr_receipt.get('class_weight_path', '') or '-')} "
+                f"clean_margin_detached={int(bool(pamr_receipt.get('clean_margin_detached', False)))} "
+                f"weight_detached={int(bool(pamr_receipt.get('class_weight_detached', False)))} "
+                f"baseline_strict={int(bool(pamr_receipt.get('strict_model_keys', False)))} "
+                f"checkpoint_epoch={int(pamr_receipt.get('checkpoint_epoch', -1))} "
+                f"checkpoint_role={str(pamr_receipt.get('checkpoint_role', '') or '-')} "
+                "rx_or_domain_labels=0 proxy_rows=0 held_rows=0",
                 "[CONFIG-TELEMETRY] "
                 f"metrics_csv={metrics_csv_path} metrics_jsonl={metrics_jsonl_path} "
                 "per_epoch_loss_terms=raw_and_weighted",
@@ -6217,9 +6431,9 @@ def train(args) -> int:
         for batch_idx, labeled_batch in enumerate(data_ctx["train_loader"], start=1):
             x_l, y_l, extra_l = move_batch(labeled_batch, device)
             labeled_clean_count = int(y_l.numel())
-            if ccpc_frozen_mode:
+            if ccpc_frozen_mode or pamr_frozen_mode:
                 # The frozen C/G experiment is intentionally blind to RX/day/domain
-                # metadata.  CCPC itself receives only paired z_id rows and TX labels.
+                # metadata.  CCPC/PAMR receive only paired z_id rows and TX labels.
                 receiver_l_base = None
                 day_l_base = None
                 d_l = None
@@ -6970,6 +7184,7 @@ def train(args) -> int:
                 loss_sat_cons_l = zero_sat
                 out_sat = None
                 loss_ccpc_leo_l = zero_sat
+                loss_pamr_l = zero_sat
                 ccpc_batch_info: Dict[str, Any] = {
                     "rows": 0,
                     "classes": 0,
@@ -6978,6 +7193,20 @@ def train(args) -> int:
                     "leo_grad_nonzero": False,
                 }
                 ccpc_leo_feature = None
+                pamr_leo_feature = None
+                pamr_base_loss_l = None
+                pamr_batch_info: Dict[str, Any] = {
+                    "rows": 0,
+                    "classes": 0,
+                    "valid_anchors": 0,
+                    "active_hinges": 0,
+                    "valid_anchors_by_tx": {},
+                    "active_hinges_by_tx": {},
+                    "clean_margin_detached": False,
+                    "class_weight_detached": False,
+                    "clean_gate_raw_cosine": False,
+                    "tx_equal_aggregation": False,
+                }
                 use_sat_train = (
                     bool(args.use_sat_consistency)
                     and (not concat_sat_full_batch)
@@ -7102,6 +7331,36 @@ def train(args) -> int:
                         y_l,
                         temperature=float(getattr(ccpc_config, "temperature", 0.12)),
                     )
+                if bool(getattr(pamr_config, "enabled", False)):
+                    try:
+                        if out_sat is None:
+                            raise PAMRRuntimeError(
+                                "Enabled P1-PAMR requires one paired clean/LEO forward per batch"
+                            )
+                        if pamr_loss is None or validate_pamr_binding is None:
+                            raise ImportError("cvsrffi.phase1_pamr loss and binding support are required")
+                        pamr_weight = validate_pamr_binding(
+                            model=model,
+                            out_clean=out_l,
+                            out_leo=out_sat,
+                            tx_labels=y_l,
+                        )
+                        pamr_leo_feature = out_sat["z_id"]
+                        loss_pamr_l, pamr_batch_info = pamr_loss(
+                            pamr_leo_feature,
+                            z_id_l,
+                            y_l,
+                            pamr_weight,
+                        )
+                    except Exception as error:
+                        _persist_pamr_failure_receipt(
+                            out_dir=out_dir,
+                            args=args,
+                            pamr_receipt=pamr_receipt,
+                            error=error,
+                            failure_stage="paired_feature_binding_or_pamr_loss",
+                        )
+                        raise
                 loss_closed_l = (
                     loss_tx_l
                     + cur_w["dom"] * loss_dom_l
@@ -7116,6 +7375,7 @@ def train(args) -> int:
                     + (float(args.lambda_teacher_sat_kl) * teacher_scale) * sanitize_loss("teacher_sat_kl", loss_teacher_sat_kl_l, z_id_l, loss_warn_counts)
                     + (float(args.lambda_teacher_zid_mse) * teacher_scale) * sanitize_loss("teacher_zid_mse", loss_teacher_zid_mse_l, z_id_l, loss_warn_counts)
                 )
+                pamr_base_loss_l = loss_closed_l
                 loss_open_invariant_l = (
                     sanitize_loss("ssdg_zid_domain_invariance", loss_zid_invariance_l, z_id_l, loss_warn_counts)
                     + cur_w["proto"] * sanitize_loss("ssdg_proto", loss_proto_l, z_id_l, loss_warn_counts)
@@ -7138,6 +7398,12 @@ def train(args) -> int:
                         loss_closed_l,
                         loss_ccpc_leo_l if bool(getattr(ccpc_config, "enabled", False)) else None,
                         ccpc_config,
+                    )
+                if add_pamr_to_loss is not None:
+                    loss_closed_l = add_pamr_to_loss(
+                        loss_closed_l,
+                        loss_pamr_l if bool(getattr(pamr_config, "enabled", False)) else None,
+                        pamr_config,
                     )
                 loss_l = loss_closed_l + loss_open_l
                 if phase == "pseudo" and bool(args.use_unlabeled):
@@ -7753,6 +8019,16 @@ def train(args) -> int:
             ccpc_leo_grad_nonzero = False
             ccpc_leo_grad_zero = False
             ccpc_leo_grad_nonfinite = False
+            pamr_leo_grad_nonzero = False
+            pamr_leo_grad_zero = False
+            pamr_leo_grad_nonfinite = False
+            pamr_shared_gradient_info: Dict[str, Any] = {
+                "shared_parameter_count": 0.0,
+                "base_norm": float("nan"),
+                "pamr_norm": float("nan"),
+                "cosine": None,
+                "norm_ratio": float("nan"),
+            }
             os_grad_info = {
                 "active": 0.0,
                 "conflict": 0.0,
@@ -7811,6 +8087,80 @@ def train(args) -> int:
                         ccpc_receipt=ccpc_receipt,
                         error=error,
                         failure_stage="pre_scaled_backward_unscaled_ccpc_gradient_audit",
+                    )
+                    raise
+            if bool(getattr(pamr_config, "enabled", False)):
+                try:
+                    if update_pamr_receipt is None:
+                        raise ImportError("cvsrffi.phase1_pamr coverage receipt support is required")
+                    # Every formal G batch proves only its frozen source-TX coverage;
+                    # raw autograd diagnostics are intentionally excluded from 40E.
+                    pamr_receipt = update_pamr_receipt(pamr_receipt, pamr_batch_info)
+                except Exception as error:
+                    _persist_pamr_failure_receipt(
+                        out_dir=out_dir,
+                        args=args,
+                        pamr_receipt=pamr_receipt,
+                        error=error,
+                        failure_stage="pamr_forward_coverage_receipt",
+                    )
+                    raise
+            pamr_audit_has_effective_batch = (
+                int(pamr_batch_info.get("valid_anchors", 0)) > 0
+                and int(pamr_batch_info.get("active_hinges", 0)) > 0
+            )
+            if (
+                loss_is_finite
+                and bool(getattr(pamr_config, "enabled", False))
+                and pamr_audit_only
+                and pamr_audit_has_effective_batch
+                and not bool(pamr_receipt.get("pamr_gradient_audit_completed", False))
+            ):
+                try:
+                    if (
+                        pamr_unscaled_gradient is None
+                        or pamr_gradient_status is None
+                        or require_finite_pamr_gradient is None
+                        or update_pamr_gradient_receipt is None
+                        or pamr_shared_encoder_parameters is None
+                        or pamr_shared_gradient_relation is None
+                        or update_pamr_gradient_relation_receipt is None
+                    ):
+                        raise ImportError("cvsrffi.phase1_pamr raw gradient audit support is required")
+                    if pamr_base_loss_l is None or pamr_leo_feature is None:
+                        raise PAMRRuntimeError("P1-PAMR requires paired loss and baseline loss bindings")
+                    pamr_gradient_state = pamr_gradient_status(
+                        pamr_unscaled_gradient(
+                            loss_pamr_l,
+                            pamr_leo_feature,
+                            loss_weight=float(getattr(pamr_config, "loss_weight", 0.0)),
+                        )
+                    )
+                    pamr_receipt = update_pamr_gradient_receipt(
+                        pamr_receipt,
+                        leo_grad_nonzero=bool(pamr_gradient_state["nonzero"]),
+                        leo_grad_zero=bool(pamr_gradient_state["zero"]),
+                        leo_grad_nonfinite=bool(pamr_gradient_state["nonfinite"]),
+                    )
+                    require_finite_pamr_gradient(pamr_gradient_state)
+                    pamr_shared_gradient_info = pamr_shared_gradient_relation(
+                        pamr_base_loss_l,
+                        loss_pamr_l,
+                        pamr_shared_encoder_parameters(model),
+                        loss_weight=float(getattr(pamr_config, "loss_weight", 0.0)),
+                    )
+                    pamr_receipt = update_pamr_gradient_relation_receipt(
+                        pamr_receipt,
+                        pamr_shared_gradient_info,
+                    )
+                    pamr_receipt["pamr_gradient_audit_completed"] = True
+                except Exception as error:
+                    _persist_pamr_failure_receipt(
+                        out_dir=out_dir,
+                        args=args,
+                        pamr_receipt=pamr_receipt,
+                        error=error,
+                        failure_stage="pre_scaled_backward_first_effective_pamr_gradient_audit",
                     )
                     raise
             if loss_is_finite:
@@ -7920,6 +8270,18 @@ def train(args) -> int:
                     raise CCPCLEORuntimeError(
                         "CCPC-LEO fail-closed: total loss is non-finite before backward"
                     )
+                if bool(getattr(pamr_config, "enabled", False)):
+                    error = PAMRRuntimeError(
+                        "P1-PAMR fail-closed: total loss is non-finite before backward"
+                    )
+                    _persist_pamr_failure_receipt(
+                        out_dir=out_dir,
+                        args=args,
+                        pamr_receipt=pamr_receipt,
+                        error=error,
+                        failure_stage="pre_backward_total_loss_nonfinite",
+                    )
+                    raise error
                 skipped_nonfinite_loss = 1
                 optimizer.zero_grad(set_to_none=True)
                 grad_norm_before_clip = float("nan")
@@ -8099,6 +8461,25 @@ def train(args) -> int:
                     "train/ccpc_leo_grad_nonzero": 1.0 if ccpc_leo_grad_nonzero else 0.0,
                     "train/ccpc_leo_grad_zero": 1.0 if ccpc_leo_grad_zero else 0.0,
                     "train/ccpc_leo_grad_nonfinite": 1.0 if ccpc_leo_grad_nonfinite else 0.0,
+                    "train/loss_pamr": loss_pamr_l.detach(),
+                    "train/pamr_enabled": 1.0 if bool(getattr(pamr_config, "enabled", False)) else 0.0,
+                    "train/pamr_rows": float(pamr_batch_info.get("rows", 0)),
+                    "train/pamr_classes": float(pamr_batch_info.get("classes", 0)),
+                    "train/pamr_valid_anchors": float(pamr_batch_info.get("valid_anchors", 0)),
+                    "train/pamr_active_hinges": float(pamr_batch_info.get("active_hinges", 0)),
+                    "train/pamr_clean_margin_detached": 1.0 if bool(pamr_batch_info.get("clean_margin_detached", False)) else 0.0,
+                    "train/pamr_class_weight_detached": 1.0 if bool(pamr_batch_info.get("class_weight_detached", False)) else 0.0,
+                    "train/pamr_leo_grad_nonzero": 1.0 if pamr_leo_grad_nonzero else 0.0,
+                    "train/pamr_leo_grad_zero": 1.0 if pamr_leo_grad_zero else 0.0,
+                    "train/pamr_leo_grad_nonfinite": 1.0 if pamr_leo_grad_nonfinite else 0.0,
+                    "train/pamr_shared_grad_cosine": (
+                        float(pamr_shared_gradient_info["cosine"])
+                        if pamr_shared_gradient_info.get("cosine") is not None
+                        else float("nan")
+                    ),
+                    "train/pamr_shared_grad_norm_ratio": float(
+                        pamr_shared_gradient_info.get("norm_ratio", float("nan"))
+                    ),
                     "train/loss_teacher_clean_kl": loss_teacher_clean_kl_l.detach(),
                     "train/loss_teacher_sat_kl": loss_teacher_sat_kl_l.detach(),
                     "train/loss_teacher_zid_mse": loss_teacher_zid_mse_l.detach(),
@@ -8124,6 +8505,9 @@ def train(args) -> int:
                     "train/w_loss_sat_cons_labeled": (cur_w["sat_cons"] * loss_sat_cons_l).detach(),
                     "train/w_loss_ccpc_leo": (
                         float(getattr(ccpc_config, "loss_weight", 0.0)) * loss_ccpc_leo_l
+                    ).detach(),
+                    "train/w_loss_pamr": (
+                        float(getattr(pamr_config, "loss_weight", 0.0)) * loss_pamr_l
                     ).detach(),
                     "train/w_loss_teacher_clean_kl": ((float(args.lambda_teacher_clean_kl) * teacher_scale) * loss_teacher_clean_kl_l).detach(),
                     "train/w_loss_teacher_sat_kl": ((float(args.lambda_teacher_sat_kl) * teacher_scale) * loss_teacher_sat_kl_l).detach(),
@@ -8696,14 +9080,30 @@ def train(args) -> int:
                 }
             )
 
-        val_stats = evaluate_loader(model, data_ctx["val_loader"], device, data_ctx["domain_label_map"], max_batches=int(args.eval_max_batches))
-        current_source_val = float(val_stats.get("tx_acc", float("nan")))
-        if math.isfinite(current_source_val):
-            dg_health_best_val = max(float(dg_health_best_val), current_source_val)
-            dg_health_drop_pp = max(0.0, float(dg_health_best_val) - current_source_val)
+        if pamr_audit_only:
+            val_stats = {
+                **_pamr_technical_audit_skip_receipt("source_val_clean"),
+                "tx_acc": float("nan"),
+                "tx_correct": 0,
+                "tx_total": 0,
+            }
+            current_source_val = float("nan")
+            dg_health_drop_pp = 0.0
         else:
-            dg_health_drop_pp = float("inf")
-        if bool(getattr(args, "source_val_dg_health_guard", False)) and epoch >= int(
+            val_stats = evaluate_loader(
+                model,
+                data_ctx["val_loader"],
+                device,
+                data_ctx["domain_label_map"],
+                max_batches=int(args.eval_max_batches),
+            )
+            current_source_val = float(val_stats.get("tx_acc", float("nan")))
+            if math.isfinite(current_source_val):
+                dg_health_best_val = max(float(dg_health_best_val), current_source_val)
+                dg_health_drop_pp = max(0.0, float(dg_health_best_val) - current_source_val)
+            else:
+                dg_health_drop_pp = float("inf")
+        if (not pamr_audit_only) and bool(getattr(args, "source_val_dg_health_guard", False)) and epoch >= int(
             getattr(args, "source_val_dg_health_start_epoch", 10)
         ):
             warning_drop = float(getattr(args, "source_val_dg_health_warning_drop_pp", 3.0))
@@ -8724,13 +9124,18 @@ def train(args) -> int:
             dg_health_bad_epochs = int(dg_health_bad_epochs + 1) if hard_bad else 0
             if dg_health_bad_epochs >= int(getattr(args, "source_val_dg_health_stop_patience", 1)):
                 dg_health_early_stop_requested = True
-        source_val_heavy_eval_ran = _should_run_source_val_heavy_eval(epoch, total_epochs, args)
+        source_val_heavy_eval_ran = (not pamr_audit_only) and _should_run_source_val_heavy_eval(
+            epoch, total_epochs, args
+        )
         if source_val_heavy_eval_ran:
             source_val_tail_geometry = _evaluate_source_val_tail_geometry(model, data_ctx, device, args)
             source_val_sat_stats = _evaluate_source_val_sat_if_enabled(model, data_ctx, device, args)
             last_source_val_tail_geometry = deepcopy(source_val_tail_geometry)
             last_source_val_sat_stats = deepcopy(source_val_sat_stats)
             last_source_val_heavy_eval_epoch = int(epoch)
+        elif pamr_audit_only:
+            source_val_tail_geometry = _pamr_technical_audit_skip_receipt("source_val_tail_geometry")
+            source_val_sat_stats = _pamr_technical_audit_skip_receipt("source_val_leo")
         else:
             source_val_tail_geometry = deepcopy(last_source_val_tail_geometry)
             source_val_sat_stats = deepcopy(last_source_val_sat_stats)
@@ -8835,6 +9240,8 @@ def train(args) -> int:
         }
         if ccpc_frozen_mode:
             payload["ccpc_leo_receipt"] = dict(ccpc_receipt)
+        if pamr_frozen_mode:
+            payload["pamr_receipt"] = dict(pamr_receipt)
         latest_path = out_dir / "NOT_SAVED_FINAL_ONLY"
         best_path = (
             source_validation_path
@@ -9257,13 +9664,22 @@ def train(args) -> int:
         selected_epoch = int(epoch)
         selected_role = "training_final_only"
         selected_source = "training_final_only"
-    final_source_val_tail = _evaluate_source_val_tail_geometry(model, data_ctx, device, args)
-    final_zid_leakage_probe = _evaluate_zid_leakage_probes(model, data_ctx, device, args)
-    leakage_decision = _assess_zid_leakage_probe(final_zid_leakage_probe, args)
+    if pamr_audit_only:
+        final_source_val_tail = _pamr_technical_audit_skip_receipt("final_source_val_tail_geometry")
+        final_zid_leakage_probe = _pamr_technical_audit_skip_receipt("zid_leakage_probe")
+        leakage_decision = {
+            "fired": False,
+            "reason": "SKIPPED_TECHNICAL_AUDIT",
+            "details": _pamr_technical_audit_skip_receipt("zid_leakage_probe_gate"),
+        }
+    else:
+        final_source_val_tail = _evaluate_source_val_tail_geometry(model, data_ctx, device, args)
+        final_zid_leakage_probe = _evaluate_zid_leakage_probes(model, data_ctx, device, args)
+        leakage_decision = _assess_zid_leakage_probe(final_zid_leakage_probe, args)
     if bool(leakage_decision["fired"]):
         phase1_v2_final_blocked = True
         phase1_v2_reasons.extend(str(leakage_decision["reason"]).split(";"))
-    if bool(args.direct_metric_require_domain_local_components):
+    if (not pamr_audit_only) and bool(args.direct_metric_require_domain_local_components):
         local_gate_ready = (
             float(final_source_val_tail.get("domain_local_component_gate", 0.0)) > 0.0
             and float(final_source_val_tail.get("global_ball_accept", 1.0)) == 0.0
@@ -9276,6 +9692,20 @@ def train(args) -> int:
         if validate_ccpc_terminal_receipt is None:
             raise ImportError("cvsrffi.phase1_ccpc_leo.validate_ccpc_terminal_receipt is required")
         ccpc_receipt = validate_ccpc_terminal_receipt(ccpc_receipt)
+    if pamr_frozen_mode:
+        if validate_pamr_terminal_receipt is None:
+            raise ImportError("cvsrffi.phase1_pamr.validate_pamr_terminal_receipt is required")
+        try:
+            pamr_receipt = validate_pamr_terminal_receipt(pamr_receipt)
+        except Exception as error:
+            _persist_pamr_failure_receipt(
+                out_dir=out_dir,
+                args=args,
+                pamr_receipt=pamr_receipt,
+                error=error,
+                failure_stage="terminal_pamr_receipt_validation",
+            )
+            raise
 
     final_payload = deepcopy(payload)
     final_payload.update(
@@ -9297,12 +9727,16 @@ def train(args) -> int:
     )
     if ccpc_frozen_mode:
         final_payload["ccpc_leo_receipt"] = dict(ccpc_receipt)
+    if pamr_frozen_mode:
+        final_payload["pamr_receipt"] = dict(pamr_receipt)
     final_payload.setdefault("stats", {})
     final_payload["stats"]["source_val_tail_geometry"] = final_source_val_tail
     final_payload["stats"]["zid_leakage_probe"] = final_zid_leakage_probe
     final_payload["stats"]["satellite_protocol"] = dict(getattr(args, "sat_protocol_manifest", {}) or {})
     final_payload["final_only_evidence"] = {
-        "selection_source": selected_source,
+        "selection_source": "TECHNICAL_ONLY" if pamr_audit_only else selected_source,
+        "status": "SKIPPED_TECHNICAL_AUDIT" if pamr_audit_only else "FINAL_ONLY",
+        "claim": "NO_PERFORMANCE_RESULT" if pamr_audit_only else "",
         "telemetry_best_metric": str(args.best_metric),
         "telemetry_best_epoch": int(best_epoch),
         "telemetry_best_score": float(best_score) if math.isfinite(float(best_score)) else None,
@@ -9316,17 +9750,19 @@ def train(args) -> int:
         else {"status": "NOT_AVAILABLE", "reason": "tail_reference_metric_missing"}
     )
     reference_final_tail_gate: Dict[str, Any] = {
-        "status": "FAILED",
+        "status": "SKIPPED_TECHNICAL_AUDIT" if pamr_audit_only else "FAILED",
         "protocol": "fixed_source_val_multiview_local_component_v2",
         "selection_policy": str(args.checkpoint_selection),
+        "selection_source": "TECHNICAL_ONLY" if pamr_audit_only else selected_source,
+        "claim": "NO_PERFORMANCE_RESULT" if pamr_audit_only else "",
         "reference": reference_source_val_tail,
         "final": final_source_val_tail,
         "p99_delta_deg": None,
         "tail_cvar_delta_deg": None,
         "proxy_vaccept_delta": None,
         "satellite_protocol_registry_sha256": (args.sat_protocol_manifest or {}).get("registry_sha256", ""),
-        "blocks_final_export": True,
-        "blocks_promotion": True,
+        "blocks_final_export": False if pamr_audit_only else True,
+        "blocks_promotion": False if pamr_audit_only else True,
     }
     try:
         reference_p99 = float(reference_source_val_tail.get("local_zid_p99_deg", float("nan")))
@@ -9391,10 +9827,10 @@ def train(args) -> int:
             if block_promotion:
                 phase1_v2_final_blocked = True
                 phase1_v2_reasons.append("REFERENCE_FINAL_TAIL_SAFETY_BLOCKS_PROMOTION")
-        elif phase1_v2_tail_machine is not None:
+        elif (not pamr_audit_only) and phase1_v2_tail_machine is not None:
             phase1_v2_final_blocked = True
             phase1_v2_reasons.append("REFERENCE_FINAL_TAIL_GEOMETRY_INCOMPLETE")
-        else:
+        elif not pamr_audit_only:
             reference_final_tail_gate.update(
                 {
                     "status": "NOT_REQUIRED",
@@ -9404,10 +9840,10 @@ def train(args) -> int:
             )
     except Exception as exc:
         reference_final_tail_gate["reason"] = str(exc)
-        if phase1_v2_tail_machine is not None:
+        if (not pamr_audit_only) and phase1_v2_tail_machine is not None:
             phase1_v2_final_blocked = True
             phase1_v2_reasons.append("REFERENCE_FINAL_TAIL_GEOMETRY_INCOMPLETE")
-    if bool(getattr(args, "phase1_v2_hard_gates", False)):
+    if (not pamr_audit_only) and bool(getattr(args, "phase1_v2_hard_gates", False)):
         final_train_logs = (final_payload.get("stats", {}) or {}).get("train", {}) or {}
         p1_preexport_checks = {
             "SATELLITE_PROTOCOL_REQUIREMENT_FAILED": (
@@ -9478,15 +9914,32 @@ def train(args) -> int:
         json.dumps(reference_final_tail_gate, ensure_ascii=False, indent=2, default=str),
         encoding="utf-8",
     )
-    frozen_eval = _resolve_frozen_phase1_evaluation(
-        args,
-        model,
-        data_ctx,
-        device,
-        selected_checkpoint,
-        technical_only=ccpc_gradient_audit_only,
-        selection_source=selected_source,
-    )
+    if ccpc_gradient_audit_only:
+        frozen_eval = _resolve_frozen_phase1_evaluation(
+            args,
+            model,
+            data_ctx,
+            device,
+            selected_checkpoint,
+            technical_only=ccpc_gradient_audit_only,
+            selection_source=selected_source,
+        )
+    elif pamr_audit_only:
+        frozen_eval = {
+            **_pamr_technical_audit_skip_receipt("frozen_phase1_heldout"),
+            "promotion_ready": False,
+            "performance_result_available": False,
+        }
+    else:
+        frozen_eval = _resolve_frozen_phase1_evaluation(
+            args,
+            model,
+            data_ctx,
+            device,
+            selected_checkpoint,
+            technical_only=False,
+            selection_source=selected_source,
+        )
     heldout_eval_path = out_dir / "frozen_phase1_heldout_eval.json"
     heldout_eval_path.write_text(
         json.dumps(frozen_eval, ensure_ascii=False, indent=2, default=str),
@@ -9741,7 +10194,9 @@ def train(args) -> int:
         p0_mechanisms_ready=bool(p0_mechanisms_ready),
         p1_mechanisms_ready=bool(p1_mechanisms_ready),
         endpoint_export_ready=bool(endpoint_export_ready),
-        technical_only=ccpc_gradient_audit_only,
+        technical_only=(
+            ccpc_gradient_audit_only if ccpc_gradient_audit_only else pamr_audit_only
+        ),
     )
     terminal_exit_code = int(exit_code)
     if terminal_exit_code == 0 and terminal_status not in {
@@ -9867,21 +10322,27 @@ def train(args) -> int:
         },
         "p1_mechanisms_ready": bool(p1_mechanisms_ready),
         "endpoint_export_ready": bool(endpoint_export_ready),
-        "technical_only": bool(ccpc_gradient_audit_only),
+        "technical_only": bool(ccpc_gradient_audit_only) if ccpc_gradient_audit_only else bool(pamr_audit_only),
         "promotion_ready": (
             False
             if ccpc_gradient_audit_only
-            else terminal_status == "COMPLETE"
+            else (False if pamr_audit_only else terminal_status == "COMPLETE")
         ),
         "performance_result_available": False,
         "claim": (
             "NO_PERFORMANCE_RESULT"
             if ccpc_gradient_audit_only
-            else "PHASE1_SOURCE_ONLY_NO_TRUE_UNKNOWN_SUCCESS_CLAIM"
+            else (
+                "NO_PERFORMANCE_RESULT"
+                if pamr_audit_only
+                else "PHASE1_SOURCE_ONLY_NO_TRUE_UNKNOWN_SUCCESS_CLAIM"
+            )
         ),
     }
     if ccpc_frozen_mode:
         terminal_manifest["ccpc_leo_receipt"] = dict(ccpc_receipt)
+    if pamr_frozen_mode:
+        terminal_manifest["pamr_receipt"] = dict(pamr_receipt)
     (out_dir / "phase1_terminal_status.json").write_text(
         json.dumps(terminal_manifest, ensure_ascii=False, indent=2, default=str),
         encoding="utf-8",
@@ -9906,6 +10367,34 @@ def train(args) -> int:
                     "claim": (
                         "NO_PERFORMANCE_RESULT"
                         if ccpc_gradient_audit_only
+                        else "PHASE1_SOURCE_ONLY_TRAINING_RECEIPT"
+                    ),
+                },
+                ensure_ascii=False,
+                indent=2,
+                sort_keys=True,
+            )
+            + "\n",
+            encoding="utf-8",
+            newline="\n",
+        )
+    if pamr_frozen_mode:
+        (out_dir / "phase1_pamr_terminal_receipt.json").write_text(
+            json.dumps(
+                {
+                    **dict(pamr_receipt),
+                    "terminal_status": terminal_status,
+                    "terminal_exit_code": int(terminal_exit_code),
+                    "selected_checkpoint": str(selected_checkpoint),
+                    "selected_checkpoint_sha256": selected_checkpoint_sha256,
+                    "technical_only": bool(pamr_audit_only),
+                    "promotion_ready": (
+                        False if pamr_audit_only else terminal_status == "COMPLETE"
+                    ),
+                    "performance_result_available": False,
+                    "claim": (
+                        "NO_PERFORMANCE_RESULT"
+                        if pamr_audit_only
                         else "PHASE1_SOURCE_ONLY_TRAINING_RECEIPT"
                     ),
                 },
@@ -9978,13 +10467,17 @@ def train(args) -> int:
         "terminal_status": terminal_status,
         "exit_code": int(terminal_exit_code),
         "phase1_training_complete": terminal_status == "COMPLETE",
-        "technical_only": bool(ccpc_gradient_audit_only),
+        "technical_only": bool(ccpc_gradient_audit_only) if ccpc_gradient_audit_only else bool(pamr_audit_only),
         "deployment_bundle_status": "PENDING_PHASE1_W2_SEAL",
         "formal_performance_claim": False,
         "claim": (
             "NO_PERFORMANCE_RESULT"
             if ccpc_gradient_audit_only
-            else "PHASE1_SOURCE_ONLY_TRAINING_RECEIPT"
+            else (
+                "NO_PERFORMANCE_RESULT"
+                if pamr_audit_only
+                else "PHASE1_SOURCE_ONLY_TRAINING_RECEIPT"
+            )
         ),
     }
     (out_dir / "phase1_training_completion_receipt.json").write_text(
