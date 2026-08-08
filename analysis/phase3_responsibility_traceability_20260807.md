@@ -84,6 +84,14 @@
 - 中文标点后空格扫描无命中；`git diff --check`通过。
 - 本阶段没有运行训练、连接N607或生成性能结果。
 
+### 2026-08-08并行设计与独立初审
+
+- 目标工具与本追踪表均显式标为`GOAL_MODE=ACTIVE`；当前生命周期为`DESIGN_DRAFT`。
+- Phase1作者提出`P1-OWR-H`与接口回退`P1-OWR-0`；Phase3作者提出相关性感知`CARE-PoE`。
+- 独立监督者初审结论为：职责文档`MERGE`，两个机制候选`REVISE`，旧R8评估器作为Phase3预测器及same-event证据`REJECT`。
+- 主代理整合修订见`analysis/phase3_openworld_collaboration_design_20260808.md`，其中冻结了proxy不回流、feature-head梯度可达性、v2 sibling bundle、双ID、预测/评分隔离、31节点子集、A/B/C/D与四状态的设计门。
+- 本记录只证明设计过程可追踪；尚未运行候选实现测试、真实checkpoint v2 smoke或N607实验。
+
 ## 6.可行性结论（20行内）
 
 1.文档职责修订已由提交`93e67771`封存；代码和性能仍未完成。
