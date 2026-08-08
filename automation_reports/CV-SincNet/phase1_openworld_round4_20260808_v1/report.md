@@ -1,8 +1,8 @@
 # Phase1开放世界就绪表征第4轮回顾与候选冻结报告
 
-目标模式：`GOAL_MODE=BLOCKED_EXTERNAL_SSH`
+目标模式：`GOAL_MODE=ACTIVE`
 
-状态：`LOCAL_VERIFIED / PREREGISTERED / BLOCKED_EXTERNAL_SSH`
+状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
 
 证据边界：`PHASE1_SOURCE_ONLY_DEVELOPMENT_NON_CONFIRMATORY`
 
@@ -124,3 +124,11 @@ clean实验完成后由主Agent读取六折同行结果。模型健康、known�
 读取最新目标文件并把晋级口径纠正为Phase1五项条件后，设计与报告冻结于commit`01a2b7734c92ea7ae1d5cd8a4afde2c71b9e0ad9`。随后执行第二次、且仅一次的续跑恢复：direct preflight仍返回`Connection refused`，单次verified lab bridge同样在`172.31.105.18:22`返回`Connection refused`。清理后`ssh/scp=0`、TCP22=0；release/run/log仍未创建。下一次连接恢复时以commit`01a2b7734c92ea7ae1d5cd8a4afde2c71b9e0ad9`作为固定archive来源，不因后续阻塞记录改变方法版本。
 
 第三个连续goal turn再次执行一次direct preflight与一次verified lab bridge fallback；两者分别以N607与`172.31.105.18:22`的`Connection refused`结束。清理后`ssh/scp=0`、TCP22=0，且三轮均未创建或触碰release/run/log。相同外部阻塞已连续出现三轮，当前无法取得六折clean运行证据，故目标正式记为`BLOCKED_EXTERNAL_SSH`。恢复条件仅为direct N607或verified bridge的SSH服务重新可用；恢复后仍从commit`01a2b7734c92ea7ae1d5cd8a4afde2c71b9e0ad9`首次发布同一run，不需要重做设计、实现、测试或审查。
+
+## 13.服务器恢复后的v1发布终态
+
+2026-08-09用户确认服务器恢复后，direct preflight通过：8卡均空闲，六个冻结C-arm输入存在，目标release/run/log/outer均不存在。runner上传固定commit`01a2b7734c92ea7ae1d5cd8a4afde2c71b9e0ad9`的archive，SHA256=`d7a0f4af3487fad2c20ecb338355a3d6553e9679a37123b5fd9e0e7ae76e00ab`，大小`260956160B`。
+
+该archive错误使用`git archive --prefix=code/`，而仓库自身已经包含顶层`code/`，导致release形成`<release>/code/code/scripts/...`，与冻结CWD及launcher路径`<release>/code/scripts/...`不符。问题在任何run/log/outer创建和任何fit/score启动之前被发现；GPU保持空闲。因此v1记为`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`，保留partial release，不覆盖、不修补、不把它计为科学实验。
+
+最小修复仅为：新建不可覆盖v2 release/run/log，archive不加`--prefix`并解包到release根；方法commit、代码、输入、参数、矩阵和晋级门全部保持不变。
