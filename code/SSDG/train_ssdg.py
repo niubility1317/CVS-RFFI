@@ -64,9 +64,11 @@ try:
         ccpc_config_receipt,
         ccpc_leo_gradient_status,
         ccpc_leo_loss,
+        ccpc_leo_unscaled_gradient,
         require_finite_ccpc_leo_gradient,
         strict_ccpc_warm_start,
         update_ccpc_receipt,
+        update_ccpc_optimizer_receipt,
         validate_ccpc_terminal_receipt,
         validate_ccpc_leo_args,
         write_ccpc_failure_receipt,
@@ -197,7 +199,9 @@ except ModuleNotFoundError:
     CCPCLEOConfig = None
     CCPCLEOConfigurationError = CCPCLEORuntimeError = None
     add_ccpc_to_loss = ccpc_config_receipt = ccpc_leo_gradient_status = ccpc_leo_loss = None
+    ccpc_leo_unscaled_gradient = None
     require_finite_ccpc_leo_gradient = strict_ccpc_warm_start = update_ccpc_receipt = None
+    update_ccpc_optimizer_receipt = None
     validate_ccpc_terminal_receipt = validate_ccpc_leo_args = write_ccpc_failure_receipt = None
 
 
@@ -373,6 +377,12 @@ def build_arg_parser() -> argparse.ArgumentParser:
         type=str2bool,
         default=False,
         help="Enable the sole CCPC loss inside a frozen P1-CCPC-LEO G arm.",
+    )
+    parser.add_argument(
+        "--phase1_ccpc_leo_gradient_audit_only",
+        type=str2bool,
+        default=False,
+        help="Permit the frozen 15-epoch, G-only CCPC unscaled-gradient health audit.",
     )
     parser.add_argument(
         "--lambda_ccpc_leo",
@@ -3207,6 +3217,36 @@ def _evaluate_frozen_phase1_checkpoint(args, model, data_ctx, device, checkpoint
         model.load_state_dict(restore_state, strict=True)
 
 
+def _resolve_frozen_phase1_evaluation(
+    args,
+    model,
+    data_ctx,
+    device,
+    checkpoint_path: str | Path,
+    *,
+    technical_only: bool,
+    selection_source: str,
+) -> Dict[str, Any]:
+    """Return the only legal frozen-evaluation receipt for the run mode."""
+
+    if bool(technical_only):
+        return {
+            "status": "SKIPPED_TECHNICAL_AUDIT",
+            "selection_source": "TECHNICAL_ONLY",
+            "claim": "NO_PERFORMANCE_RESULT",
+        }
+    try:
+        return _evaluate_frozen_phase1_checkpoint(args, model, data_ctx, device, checkpoint_path)
+    except Exception as exc:
+        return {
+            "status": "FAILED",
+            "reason": str(exc),
+            "selection_source": str(selection_source),
+            "checkpoint": str(checkpoint_path),
+            "claim": "PHASE1_FROZEN_HELDOUT_EVAL_INCOMPLETE",
+        }
+
+
 def _evaluate_checkpoint_source_val_tail_geometry(args, model, data_ctx, device, checkpoint_path: str | Path) -> Dict[str, Any]:
     path = Path(checkpoint_path)
     if not path.is_file():
@@ -3242,6 +3282,7 @@ def _resolve_phase1_terminal_status(
     p0_mechanisms_ready: bool = True,
     p1_mechanisms_ready: bool = True,
     endpoint_export_ready: bool = True,
+    technical_only: bool = False,
 ) -> str:
     """Resolve a fail-closed Phase1 terminal state without overstating promotion readiness."""
 
@@ -3249,14 +3290,16 @@ def _resolve_phase1_terminal_status(
         return "STOPPED_TAIL"
     if export_failed:
         return "FAILED_EXPORT"
+    if not selected_checkpoint_exists:
+        return "NO_SAFE_CHECKPOINT"
+    if technical_only:
+        return "TECHNICAL_AUDIT_COMPLETE"
     if final_blocked:
         return "NON_PROMOTABLE_GUARD_BLOCKED"
     if not p0_mechanisms_ready:
         return "NON_PROMOTABLE_P0_DISABLED"
     if not p1_mechanisms_ready:
         return "NON_PROMOTABLE_P1_DISABLED"
-    if not selected_checkpoint_exists:
-        return "NO_SAFE_CHECKPOINT"
     if str(heldout_eval_status).upper() != "COMPLETE":
         return "HELDOUT_EVAL_INCOMPLETE"
     if not endpoint_export_ready:
@@ -4543,6 +4586,9 @@ def _build_ssdg_epoch_telemetry_row(
         "use_sat_consistency": bool(getattr(args, "use_sat_consistency", False)),
         "phase1_ccpc_leo_frozen_mode": bool(getattr(args, "phase1_ccpc_leo_frozen_mode", False)),
         "phase1_ccpc_leo_enabled": bool(getattr(args, "phase1_ccpc_leo_enabled", False)),
+        "phase1_ccpc_leo_gradient_audit_only": bool(
+            getattr(args, "phase1_ccpc_leo_gradient_audit_only", False)
+        ),
         "lambda_ccpc_leo": float(getattr(args, "lambda_ccpc_leo", 0.0)),
         "ccpc_leo_temperature": float(getattr(args, "ccpc_leo_temperature", 0.12)),
         "sat_train_scenario": str(getattr(args, "sat_train_scenario", "")),
@@ -5321,6 +5367,7 @@ def _persist_ccpc_failure_receipt(
     args: Any,
     ccpc_receipt: Mapping[str, Any],
     error: BaseException,
+    failure_stage: str = "pre_scaled_backward_unscaled_ccpc_gradient_audit",
 ) -> Optional[Path]:
     """Best-effort persistence that never masks the primary CCPC failure."""
 
@@ -5344,7 +5391,7 @@ def _persist_ccpc_failure_receipt(
             run_id=str(getattr(args, "run_id", "") or ""),
             receipt=ccpc_receipt,
             error=error,
-            failure_stage="post_backward_leo_gradient_audit",
+            failure_stage=str(failure_stage),
         )
     except Exception as receipt_error:
         _emit_writer_failure(type(receipt_error).__name__)
@@ -5394,19 +5441,29 @@ def train(args) -> int:
             raise ImportError("cvsrffi.phase1_ccpc_leo is required for P1-CCPC-LEO")
         ccpc_config = None
         ccpc_receipt: Dict[str, Any] = {
-            "schema": "cvs.phase1.ccpc_leo_receipt.v2",
+            "schema": "cvs.phase1.ccpc_leo_receipt.v3",
             "frozen_mode": False,
             "enabled": False,
             "lambda": 0.0,
             "temperature": float(getattr(args, "ccpc_leo_temperature", 0.12)),
+            "gradient_audit_only": False,
+            "gradient_audit_method": "AUTOGRAD_UNSCALED_CCPC_FEATURE_V1",
+            "technical_only": False,
+            "performance_result_available": False,
+            "technical_only_claim": "",
             "rows": 0,
             "classes": 0,
             "positive_pairs": 0,
             "clean_detached": False,
             "leo_grad_nonzero": False,
+            "ccpc_batches": 0,
             "ccpc_grad_nonzero_batches": 0,
             "ccpc_grad_zero_batches": 0,
             "ccpc_grad_nonfinite_batches": 0,
+            "ccpc_param_grad_finite_batches": 0,
+            "ccpc_param_grad_nonfinite_batches": 0,
+            "ccpc_optimizer_step_applied_batches": 0,
+            "ccpc_optimizer_step_not_applied_batches": 0,
             "ccpc_terminal_gradient_contract": "PENDING",
             "ccpc_terminal_gradient_contract_passed": False,
             "proxy_rows": 0,
@@ -5416,6 +5473,9 @@ def train(args) -> int:
         ccpc_config = validate_ccpc_leo_args(args)
         ccpc_receipt = ccpc_config_receipt(ccpc_config)
     ccpc_frozen_mode = bool(getattr(ccpc_config, "frozen_mode", False))
+    ccpc_gradient_audit_only = bool(
+        getattr(ccpc_config, "gradient_audit_only", False)
+    )
     args.lambda_dom = float(args.lambda_domain)
     if float(args.tau_conf) > 0.0:
         args.tau_min = float(args.tau_conf)
@@ -5938,6 +5998,8 @@ def train(args) -> int:
                 "[CONFIG-CCPC-LEO] "
                 f"frozen_mode={int(bool(ccpc_receipt.get('frozen_mode', False)))} "
                 f"enabled={int(bool(ccpc_receipt.get('enabled', False)))} "
+                f"gradient_audit_only={int(bool(ccpc_receipt.get('gradient_audit_only', False)))} "
+                f"gradient_audit={str(ccpc_receipt.get('gradient_audit_method', '') or '-')} "
                 f"lambda={float(ccpc_receipt.get('lambda', 0.0)):.6g} "
                 f"T={float(ccpc_receipt.get('temperature', 0.12)):.6g} "
                 f"clean_detached={int(bool(ccpc_receipt.get('clean_detached', False)))} "
@@ -7034,7 +7096,6 @@ def train(args) -> int:
                     ccpc_leo_feature = out_sat["z_id"]
                     if not torch.is_tensor(ccpc_leo_feature):
                         raise CCPCLEORuntimeError("CCPC-LEO requires the LEO z_id feature")
-                    ccpc_leo_feature.retain_grad()
                     loss_ccpc_leo_l, ccpc_batch_info = ccpc_leo_loss(
                         ccpc_leo_feature,
                         z_id_l,
@@ -7716,6 +7777,42 @@ def train(args) -> int:
                 "conflict_projection_priority_code": 0.0,
                 "nonfinite_gradient_bundle": 0.0,
             }
+            if loss_is_finite and bool(getattr(ccpc_config, "enabled", False)):
+                if (
+                    ccpc_leo_unscaled_gradient is None
+                    or ccpc_leo_gradient_status is None
+                    or require_finite_ccpc_leo_gradient is None
+                    or update_ccpc_receipt is None
+                ):
+                    raise ImportError("cvsrffi.phase1_ccpc_leo unscaled gradient audit support is required")
+                try:
+                    ccpc_gradient_status = ccpc_leo_gradient_status(
+                        ccpc_leo_unscaled_gradient(
+                            loss_ccpc_leo_l,
+                            ccpc_leo_feature,
+                            loss_weight=float(getattr(ccpc_config, "loss_weight", 0.0)),
+                        )
+                    )
+                    ccpc_leo_grad_nonzero = bool(ccpc_gradient_status["nonzero"])
+                    ccpc_leo_grad_zero = bool(ccpc_gradient_status["zero"])
+                    ccpc_leo_grad_nonfinite = bool(ccpc_gradient_status["nonfinite"])
+                    ccpc_receipt = update_ccpc_receipt(
+                        ccpc_receipt,
+                        ccpc_batch_info,
+                        leo_grad_nonzero=ccpc_leo_grad_nonzero,
+                        leo_grad_zero=ccpc_leo_grad_zero,
+                        leo_grad_nonfinite=ccpc_leo_grad_nonfinite,
+                    )
+                    require_finite_ccpc_leo_gradient(ccpc_gradient_status)
+                except CCPCLEORuntimeError as error:
+                    _persist_ccpc_failure_receipt(
+                        out_dir=out_dir,
+                        args=args,
+                        ccpc_receipt=ccpc_receipt,
+                        error=error,
+                        failure_stage="pre_scaled_backward_unscaled_ccpc_gradient_audit",
+                    )
+                    raise
             if loss_is_finite:
                 os_control_epoch_ready = bool(getattr(args, "phase1_v2_os_eff_all_phases", True)) or (
                     epoch >= int(args.direct_metric_start_epoch)
@@ -7787,36 +7884,6 @@ def train(args) -> int:
                 else:
                     scaler.scale(loss).backward()
                 scaler.unscale_(optimizer)
-                if bool(getattr(ccpc_config, "enabled", False)):
-                    if (
-                        ccpc_leo_gradient_status is None
-                        or require_finite_ccpc_leo_gradient is None
-                        or update_ccpc_receipt is None
-                    ):
-                        raise ImportError("cvsrffi.phase1_ccpc_leo gradient receipt support is required")
-                    try:
-                        ccpc_gradient_status = ccpc_leo_gradient_status(
-                            ccpc_leo_feature.grad if ccpc_leo_feature is not None else None
-                        )
-                        ccpc_leo_grad_nonzero = bool(ccpc_gradient_status["nonzero"])
-                        ccpc_leo_grad_zero = bool(ccpc_gradient_status["zero"])
-                        ccpc_leo_grad_nonfinite = bool(ccpc_gradient_status["nonfinite"])
-                        ccpc_receipt = update_ccpc_receipt(
-                            ccpc_receipt,
-                            ccpc_batch_info,
-                            leo_grad_nonzero=ccpc_leo_grad_nonzero,
-                            leo_grad_zero=ccpc_leo_grad_zero,
-                            leo_grad_nonfinite=ccpc_leo_grad_nonfinite,
-                        )
-                        require_finite_ccpc_leo_gradient(ccpc_gradient_status)
-                    except CCPCLEORuntimeError as error:
-                        _persist_ccpc_failure_receipt(
-                            out_dir=out_dir,
-                            args=args,
-                            ccpc_receipt=ccpc_receipt,
-                            error=error,
-                        )
-                        raise
                 grad_norm_before_clip = _grad_norm(model)
                 if float(getattr(args, "max_grad_norm", 0.0)) > 0.0:
                     torch.nn.utils.clip_grad_norm_(
@@ -7838,6 +7905,16 @@ def train(args) -> int:
                     skipped_nonfinite_grad = 1
                     optimizer.zero_grad(set_to_none=True)
                 scaler.update()
+                if bool(getattr(ccpc_config, "enabled", False)):
+                    if update_ccpc_optimizer_receipt is None:
+                        raise ImportError(
+                            "cvsrffi.phase1_ccpc_leo optimizer receipt support is required"
+                        )
+                    ccpc_receipt = update_ccpc_optimizer_receipt(
+                        ccpc_receipt,
+                        parameter_grad_finite=bool(grads_finite),
+                        optimizer_step_applied=bool(optimizer_step_applied),
+                    )
             else:
                 if bool(getattr(ccpc_config, "enabled", False)):
                     raise CCPCLEORuntimeError(
@@ -9401,16 +9478,15 @@ def train(args) -> int:
         json.dumps(reference_final_tail_gate, ensure_ascii=False, indent=2, default=str),
         encoding="utf-8",
     )
-    try:
-        frozen_eval = _evaluate_frozen_phase1_checkpoint(args, model, data_ctx, device, selected_checkpoint)
-    except Exception as exc:
-        frozen_eval = {
-            "status": "FAILED",
-            "reason": str(exc),
-            "selection_source": selected_source,
-            "checkpoint": str(selected_checkpoint),
-            "claim": "PHASE1_FROZEN_HELDOUT_EVAL_INCOMPLETE",
-        }
+    frozen_eval = _resolve_frozen_phase1_evaluation(
+        args,
+        model,
+        data_ctx,
+        device,
+        selected_checkpoint,
+        technical_only=ccpc_gradient_audit_only,
+        selection_source=selected_source,
+    )
     heldout_eval_path = out_dir / "frozen_phase1_heldout_eval.json"
     heldout_eval_path.write_text(
         json.dumps(frozen_eval, ensure_ascii=False, indent=2, default=str),
@@ -9665,9 +9741,13 @@ def train(args) -> int:
         p0_mechanisms_ready=bool(p0_mechanisms_ready),
         p1_mechanisms_ready=bool(p1_mechanisms_ready),
         endpoint_export_ready=bool(endpoint_export_ready),
+        technical_only=ccpc_gradient_audit_only,
     )
     terminal_exit_code = int(exit_code)
-    if terminal_exit_code == 0 and terminal_status != "COMPLETE":
+    if terminal_exit_code == 0 and terminal_status not in {
+        "COMPLETE",
+        "TECHNICAL_AUDIT_COMPLETE",
+    }:
         terminal_exit_code = {
             "STOPPED_TAIL": 4,
             "NON_PROMOTABLE_GUARD_BLOCKED": 5,
@@ -9787,8 +9867,18 @@ def train(args) -> int:
         },
         "p1_mechanisms_ready": bool(p1_mechanisms_ready),
         "endpoint_export_ready": bool(endpoint_export_ready),
-        "promotion_ready": terminal_status == "COMPLETE",
-        "claim": "PHASE1_SOURCE_ONLY_NO_TRUE_UNKNOWN_SUCCESS_CLAIM",
+        "technical_only": bool(ccpc_gradient_audit_only),
+        "promotion_ready": (
+            False
+            if ccpc_gradient_audit_only
+            else terminal_status == "COMPLETE"
+        ),
+        "performance_result_available": False,
+        "claim": (
+            "NO_PERFORMANCE_RESULT"
+            if ccpc_gradient_audit_only
+            else "PHASE1_SOURCE_ONLY_NO_TRUE_UNKNOWN_SUCCESS_CLAIM"
+        ),
     }
     if ccpc_frozen_mode:
         terminal_manifest["ccpc_leo_receipt"] = dict(ccpc_receipt)
@@ -9806,6 +9896,18 @@ def train(args) -> int:
                     "terminal_exit_code": int(terminal_exit_code),
                     "selected_checkpoint": str(selected_checkpoint),
                     "selected_checkpoint_sha256": selected_checkpoint_sha256,
+                    "technical_only": bool(ccpc_gradient_audit_only),
+                    "promotion_ready": (
+                        False
+                        if ccpc_gradient_audit_only
+                        else terminal_status == "COMPLETE"
+                    ),
+                    "performance_result_available": False,
+                    "claim": (
+                        "NO_PERFORMANCE_RESULT"
+                        if ccpc_gradient_audit_only
+                        else "PHASE1_SOURCE_ONLY_TRAINING_RECEIPT"
+                    ),
                 },
                 ensure_ascii=False,
                 indent=2,
@@ -9876,9 +9978,14 @@ def train(args) -> int:
         "terminal_status": terminal_status,
         "exit_code": int(terminal_exit_code),
         "phase1_training_complete": terminal_status == "COMPLETE",
+        "technical_only": bool(ccpc_gradient_audit_only),
         "deployment_bundle_status": "PENDING_PHASE1_W2_SEAL",
         "formal_performance_claim": False,
-        "claim": "PHASE1_SOURCE_ONLY_TRAINING_RECEIPT",
+        "claim": (
+            "NO_PERFORMANCE_RESULT"
+            if ccpc_gradient_audit_only
+            else "PHASE1_SOURCE_ONLY_TRAINING_RECEIPT"
+        ),
     }
     (out_dir / "phase1_training_completion_receipt.json").write_text(
         json.dumps(
@@ -9894,7 +10001,7 @@ def train(args) -> int:
     )
     print(
         f"[PHASE1-TERMINAL] status={terminal_status} exit_code={int(terminal_exit_code)} "
-        f"promotion_ready={int(terminal_status == 'COMPLETE')} "
+        f"promotion_ready={int(bool(terminal_manifest['promotion_ready']))} "
         f"endpoint_export_ready={int(endpoint_export_ready)}",
         flush=True,
     )

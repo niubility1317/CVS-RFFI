@@ -28,18 +28,21 @@ from cvsrffi.phase1_ccpc_leo import (  # noqa: E402
     ccpc_config_receipt,
     ccpc_leo_gradient_status,
     ccpc_leo_loss,
+    ccpc_leo_unscaled_gradient,
     require_finite_ccpc_leo_gradient,
     strict_ccpc_warm_start,
     update_ccpc_receipt,
+    update_ccpc_optimizer_receipt,
     validate_ccpc_terminal_receipt,
     validate_ccpc_leo_args,
 )
 
 
 LAUNCHER = CODE_ROOT / "scripts" / "launch_phase1_ccpc_leo12_20260809.sh"
+AUDIT_LAUNCHER = CODE_ROOT / "scripts" / "launch_phase1_ccpc_leo_gradient_audit6_20260809.sh"
 
 
-def _frozen_args(*, enabled: bool) -> object:
+def _frozen_args(*, enabled: bool, gradient_audit_only: bool = False, epochs: int = 40) -> object:
     argv = [
         "--output_dir",
         "unused",
@@ -50,15 +53,17 @@ def _frozen_args(*, enabled: bool) -> object:
         "--freeze_backbone",
         "false",
         "--epochs",
-        "40",
+        str(epochs),
         "--label_epochs",
-        "40",
+        str(epochs),
         "--pseudo_epochs",
         "0",
         "--phase1_ccpc_leo_frozen_mode",
         "true",
         "--phase1_ccpc_leo_enabled",
         str(enabled).lower(),
+        "--phase1_ccpc_leo_gradient_audit_only",
+        str(gradient_audit_only).lower(),
         "--lambda_ccpc_leo",
         "0.02" if enabled else "0",
         "--ccpc_leo_temperature",
@@ -182,6 +187,39 @@ def test_ccpc_accepts_a_finite_zero_gradient_at_a_legal_stationary_point():
     assert receipt["ccpc_grad_nonzero_batches"] == 0
 
 
+def test_unscaled_ccpc_gradient_audit_ignores_simulated_scaled_intermediate_overflow():
+    clean, leo, labels = _paired_features()
+    loss, _ = ccpc_leo_loss(leo, clean, labels)
+    raw_gradient = ccpc_leo_unscaled_gradient(
+        loss,
+        leo,
+        loss_weight=FROZEN_CCPC_LAMBDA,
+    )
+    raw_status = ccpc_leo_gradient_status(raw_gradient)
+    assert raw_status["finite"] is True
+    assert raw_status["nonzero"] is True
+    require_finite_ccpc_leo_gradient(raw_status)
+
+    # A retained intermediate after GradScaler.scale(loss).backward() can
+    # overflow even when this unscaled autograd.grad result is finite.
+    max_abs = float(raw_gradient.detach().abs().max().item())
+    factor = torch.tensor(
+        (float(torch.finfo(torch.float32).max) / max_abs) * 2.0,
+        dtype=torch.float64,
+    )
+    scaled_emulation = (raw_gradient.detach().to(torch.float64) * factor).to(torch.float32)
+    assert ccpc_leo_gradient_status(scaled_emulation)["nonfinite"] is True
+
+
+def test_unscaled_ccpc_gradient_audit_none_and_nonfinite_remain_fail_closed():
+    with pytest.raises(CCPCLEORuntimeError, match="no LEO feature gradient"):
+        ccpc_leo_gradient_status(None)
+    raw_nonfinite = ccpc_leo_gradient_status(torch.tensor([float("nan")]))
+    assert raw_nonfinite["nonfinite"] is True
+    with pytest.raises(CCPCLEORuntimeError, match="gradient is non-finite"):
+        require_finite_ccpc_leo_gradient(raw_nonfinite)
+
+
 def test_ccpc_gradient_none_and_nonfinite_remain_fail_closed_and_receipted():
     with pytest.raises(CCPCLEORuntimeError, match="no LEO feature gradient"):
         ccpc_leo_gradient_status(None)
@@ -295,9 +333,95 @@ def test_ccpc_terminal_receipt_requires_nonzero_and_no_nonfinite_batches():
         leo_grad_zero=False,
         leo_grad_nonfinite=False,
     )
+    passed = update_ccpc_optimizer_receipt(
+        passed,
+        parameter_grad_finite=True,
+        optimizer_step_applied=True,
+    )
+    passed = update_ccpc_optimizer_receipt(
+        passed,
+        parameter_grad_finite=True,
+        optimizer_step_applied=True,
+    )
     terminal = validate_ccpc_terminal_receipt(passed)
     assert terminal["ccpc_terminal_gradient_contract_passed"] is True
-    assert terminal["ccpc_terminal_gradient_contract"] == "NONZERO_OBSERVED_NO_NONFINITE"
+    assert terminal["ccpc_terminal_gradient_contract"] == (
+        "NONZERO_OBSERVED_NO_NONFINITE_PARAM_FINITE_AND_STEP_OBSERVED"
+    )
+    assert terminal["ccpc_param_grad_finite_batches"] == 2
+    assert terminal["ccpc_optimizer_step_applied_batches"] == 2
+
+
+def test_ccpc_terminal_receipt_requires_a_finite_parameter_batch_and_step_but_allows_scaler_skip():
+    base = ccpc_config_receipt(CCPCLEOConfig(True, True, 0.02, 0.12))
+    single = update_ccpc_receipt(
+        base,
+        {"rows": 4, "classes": 2, "positive_pairs": 8, "clean_detached": True},
+        leo_grad_nonzero=True,
+        leo_grad_zero=False,
+        leo_grad_nonfinite=False,
+    )
+    no_finite_parameter = update_ccpc_optimizer_receipt(
+        single,
+        parameter_grad_finite=False,
+        optimizer_step_applied=False,
+    )
+    with pytest.raises(CCPCLEORuntimeError, match="finite parameter-gradient"):
+        validate_ccpc_terminal_receipt(no_finite_parameter)
+
+    no_step = update_ccpc_optimizer_receipt(
+        single,
+        parameter_grad_finite=True,
+        optimizer_step_applied=False,
+    )
+    with pytest.raises(CCPCLEORuntimeError, match="at least one optimizer step"):
+        validate_ccpc_terminal_receipt(no_step)
+
+    with_legal_scaler_skip = update_ccpc_receipt(
+        single,
+        {"rows": 4, "classes": 2, "positive_pairs": 8, "clean_detached": True},
+        leo_grad_nonzero=False,
+        leo_grad_zero=True,
+        leo_grad_nonfinite=False,
+    )
+    with_legal_scaler_skip = update_ccpc_optimizer_receipt(
+        with_legal_scaler_skip,
+        parameter_grad_finite=True,
+        optimizer_step_applied=True,
+    )
+    with_legal_scaler_skip = update_ccpc_optimizer_receipt(
+        with_legal_scaler_skip,
+        parameter_grad_finite=False,
+        optimizer_step_applied=False,
+    )
+    terminal = validate_ccpc_terminal_receipt(with_legal_scaler_skip)
+    assert terminal["ccpc_param_grad_nonfinite_batches"] == 1
+    assert terminal["ccpc_optimizer_step_not_applied_batches"] == 1
+    assert terminal["ccpc_terminal_gradient_contract_passed"] is True
+
+
+def test_ccpc_optimizer_receipt_records_parameter_gradient_and_step_outcomes():
+    receipt = ccpc_config_receipt(CCPCLEOConfig(True, True, 0.02, 0.12))
+    receipt = update_ccpc_optimizer_receipt(
+        receipt,
+        parameter_grad_finite=True,
+        optimizer_step_applied=True,
+    )
+    receipt = update_ccpc_optimizer_receipt(
+        receipt,
+        parameter_grad_finite=False,
+        optimizer_step_applied=False,
+    )
+    assert receipt["ccpc_param_grad_finite_batches"] == 1
+    assert receipt["ccpc_param_grad_nonfinite_batches"] == 1
+    assert receipt["ccpc_optimizer_step_applied_batches"] == 1
+    assert receipt["ccpc_optimizer_step_not_applied_batches"] == 1
+    with pytest.raises(CCPCLEORuntimeError, match="cannot record an optimizer step"):
+        update_ccpc_optimizer_receipt(
+            receipt,
+            parameter_grad_finite=False,
+            optimizer_step_applied=True,
+        )
 
 
 def test_ccpc_is_label_permutation_equivariant():
@@ -374,6 +498,104 @@ def test_cli_forbids_all_teacher_routes_and_teacher_checkpoint():
         setattr(bad, name, value)
         with pytest.raises(CCPCLEOConfigurationError, match=name):
             validate_ccpc_leo_args(bad)
+
+
+def test_gradient_audit_mode_is_g_only_and_exactly_15_epochs():
+    audit = _frozen_args(enabled=True, gradient_audit_only=True, epochs=15)
+    config = validate_ccpc_leo_args(audit)
+    assert config.enabled is True
+    assert config.gradient_audit_only is True
+    receipt = ccpc_config_receipt(config)
+    assert receipt["technical_only"] is True
+    assert receipt["performance_result_available"] is False
+    assert receipt["technical_only_claim"] == "NO_PERFORMANCE_RESULT"
+
+    not_g = _frozen_args(enabled=False, gradient_audit_only=True, epochs=15)
+    with pytest.raises(CCPCLEOConfigurationError, match="requires the frozen enabled G arm"):
+        validate_ccpc_leo_args(not_g)
+
+    wrong_length = _frozen_args(enabled=True, gradient_audit_only=True, epochs=40)
+    with pytest.raises(CCPCLEOConfigurationError, match="--epochs 15"):
+        validate_ccpc_leo_args(wrong_length)
+
+    ordinary = _frozen_args(enabled=True, gradient_audit_only=False, epochs=15)
+    with pytest.raises(CCPCLEOConfigurationError, match="--epochs 40"):
+        validate_ccpc_leo_args(ordinary)
+
+
+def test_trainer_uses_unscaled_ccpc_gradient_before_gradscaler_backward():
+    source = inspect.getsource(train_ssdg.train)
+    raw_audit = source.index("ccpc_leo_unscaled_gradient(")
+    scaled_backward = source.index("scaler.scale(loss).backward()")
+    assert raw_audit < scaled_backward
+    assert "ccpc_leo_feature.retain_grad()" not in source
+    assert source.index("scaler.unscale_(optimizer)") > scaled_backward
+    assert "update_ccpc_optimizer_receipt(" in source
+
+
+def test_gradient_audit_skips_heldout_evaluator_and_uses_fixed_receipt(monkeypatch):
+    def _heldout_must_not_run(*_args, **_kwargs):
+        raise AssertionError("heldout evaluator must be unreachable in technical audit mode")
+
+    monkeypatch.setattr(
+        train_ssdg,
+        "_evaluate_frozen_phase1_checkpoint",
+        _heldout_must_not_run,
+    )
+    frozen_eval = train_ssdg._resolve_frozen_phase1_evaluation(
+        SimpleNamespace(),
+        object(),
+        {},
+        object(),
+        "unused_checkpoint.pth",
+        technical_only=True,
+        selection_source="training_final_only",
+    )
+    assert frozen_eval == {
+        "status": "SKIPPED_TECHNICAL_AUDIT",
+        "selection_source": "TECHNICAL_ONLY",
+        "claim": "NO_PERFORMANCE_RESULT",
+    }
+
+
+def test_gradient_audit_terminal_manifest_path_is_nonpromotable_and_has_no_heldout_call():
+    status = train_ssdg._resolve_phase1_terminal_status(
+        tail_stopped=False,
+        export_failed=False,
+        final_blocked=True,
+        selected_checkpoint_exists=True,
+        heldout_eval_status="FAILED",
+        p0_mechanisms_ready=False,
+        p1_mechanisms_ready=False,
+        endpoint_export_ready=False,
+        technical_only=True,
+    )
+    assert status == "TECHNICAL_AUDIT_COMPLETE"
+
+    source = inspect.getsource(train_ssdg.train)
+    assert "_evaluate_frozen_phase1_checkpoint(" not in source
+    assert "_resolve_frozen_phase1_evaluation(" in source
+    assert "technical_only=ccpc_gradient_audit_only" in source
+    assert re.search(
+        r'"promotion_ready":\s*\(\s*False\s*if ccpc_gradient_audit_only',
+        source,
+    )
+    assert re.search(
+        r'"claim":\s*\(\s*"NO_PERFORMANCE_RESULT"\s*if ccpc_gradient_audit_only',
+        source,
+    )
+    assert '"technical_only": bool(ccpc_gradient_audit_only)' in source
+    ccpc_terminal_receipt_source = source[
+        source.index('"phase1_ccpc_leo_terminal_receipt.json"') : source.index(
+            "completion_receipt ="
+        )
+    ]
+    assert '"technical_only": bool(ccpc_gradient_audit_only)' in ccpc_terminal_receipt_source
+    assert re.search(
+        r'"promotion_ready":\s*\(\s*False\s*if ccpc_gradient_audit_only',
+        ccpc_terminal_receipt_source,
+    )
+    assert '"NO_PERFORMANCE_RESULT"' in ccpc_terminal_receipt_source
 
 
 def test_strict_warm_start_proves_exact_keys_and_fresh_optimizer_rng_receipt():
@@ -465,3 +687,40 @@ def test_launcher_has_the_frozen_12_row_matrix_and_dry_run_closure():
     dry_lines = [line for line in completed.stdout.splitlines() if line.startswith("[DRY-RUN]")]
     assert len(dry_lines) == 12
     assert all("--epochs 40" in line and "--checkpoint_selection final_only" in line for line in dry_lines)
+
+
+def test_gradient_audit_launcher_has_six_g_only_rows_and_dry_run_closure():
+    text = AUDIT_LAUNCHER.read_text(encoding="utf-8")
+    calls = re.findall(r"^launch_fold (\d) (\d)$", text, flags=re.MULTILINE)
+    assert calls == [(str(index), str(index - 1)) for index in range(1, 7)]
+    for required in (
+        "phase1_loto_clsgeo12_20260808_v1",
+        "--epochs 15",
+        "--label_epochs 15",
+        "--phase1_ccpc_leo_enabled true",
+        "--phase1_ccpc_leo_gradient_audit_only true",
+        "--lambda_ccpc_leo 0.02",
+        "--ccpc_leo_temperature 0.12",
+        "--checkpoint_selection final_only",
+        "--amp true",
+        "--teacher_ckpt \"\"",
+    ):
+        assert required in text
+    assert "launch_arm" not in text
+    assert "eval_phase1_ccpc_leo_pair.py" not in text
+    completed = subprocess.run(
+        ["bash", "scripts/launch_phase1_ccpc_leo_gradient_audit6_20260809.sh", "--dry-run"],
+        cwd=str(CODE_ROOT),
+        text=True,
+        capture_output=True,
+        check=True,
+    )
+    dry_lines = [line for line in completed.stdout.splitlines() if line.startswith("[DRY-RUN]")]
+    assert len(dry_lines) == 6
+    assert all(
+        "--epochs 15" in line
+        and "--phase1_ccpc_leo_enabled true" in line
+        and "--phase1_ccpc_leo_gradient_audit_only true" in line
+        and "--checkpoint_selection final_only" in line
+        for line in dry_lines
+    )

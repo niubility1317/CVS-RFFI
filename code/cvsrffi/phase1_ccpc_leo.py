@@ -40,6 +40,7 @@ class CCPCLEOConfig:
     enabled: bool
     loss_weight: float
     temperature: float
+    gradient_audit_only: bool = False
 
 
 def _bool_arg(args: Any, name: str, default: bool = False) -> bool:
@@ -90,14 +91,20 @@ def validate_ccpc_leo_args(args: Any) -> CCPCLEOConfig:
 
     frozen_mode = _bool_arg(args, "phase1_ccpc_leo_frozen_mode", False)
     enabled = _bool_arg(args, "phase1_ccpc_leo_enabled", False)
+    gradient_audit_only = _bool_arg(args, "phase1_ccpc_leo_gradient_audit_only", False)
     loss_weight = _float_arg(args, "lambda_ccpc_leo", 0.0)
     temperature = _float_arg(args, "ccpc_leo_temperature", FROZEN_CCPC_TEMPERATURE)
+    if gradient_audit_only and not (frozen_mode and enabled):
+        raise CCPCLEOConfigurationError(
+            "CCPC-LEO gradient-audit mode requires the frozen enabled G arm"
+        )
     if not frozen_mode and not enabled:
         return CCPCLEOConfig(
             frozen_mode=False,
             enabled=False,
             loss_weight=0.0,
             temperature=temperature,
+            gradient_audit_only=False,
         )
     if enabled and not frozen_mode:
         raise CCPCLEOConfigurationError(
@@ -114,8 +121,11 @@ def validate_ccpc_leo_args(args: Any) -> CCPCLEOConfig:
         raise CCPCLEOConfigurationError("Frozen CCPC-LEO requires --baseline_ckpt")
     if bool(getattr(args, "freeze_backbone", False)):
         raise CCPCLEOConfigurationError("Frozen CCPC-LEO must train the shared encoder, not a head")
-    if int(getattr(args, "epochs", 0)) != 40:
-        raise CCPCLEOConfigurationError("Frozen CCPC-LEO requires exactly --epochs 40")
+    required_epochs = 15 if gradient_audit_only else 40
+    if int(getattr(args, "epochs", 0)) != required_epochs:
+        raise CCPCLEOConfigurationError(
+            f"Frozen CCPC-LEO requires exactly --epochs {required_epochs}"
+        )
     if str(getattr(args, "checkpoint_selection", "")) != "final_only":
         raise CCPCLEOConfigurationError("Frozen CCPC-LEO requires --checkpoint_selection final_only")
     if not bool(getattr(args, "phase1_source_val_selection_only", True)):
@@ -192,6 +202,7 @@ def validate_ccpc_leo_args(args: Any) -> CCPCLEOConfig:
         enabled=enabled,
         loss_weight=loss_weight,
         temperature=temperature,
+        gradient_audit_only=gradient_audit_only,
     )
 
 
@@ -199,11 +210,18 @@ def ccpc_config_receipt(config: CCPCLEOConfig) -> Dict[str, Any]:
     """Create the immutable, data-free part of the CCPC run receipt."""
 
     return {
-        "schema": "cvs.phase1.ccpc_leo_receipt.v2",
+        "schema": "cvs.phase1.ccpc_leo_receipt.v3",
         "frozen_mode": bool(config.frozen_mode),
         "enabled": bool(config.enabled),
         "lambda": float(config.loss_weight),
         "temperature": float(config.temperature),
+        "gradient_audit_only": bool(config.gradient_audit_only),
+        "gradient_audit_method": "AUTOGRAD_UNSCALED_CCPC_FEATURE_V1",
+        "technical_only": bool(config.gradient_audit_only),
+        "performance_result_available": False,
+        "technical_only_claim": (
+            "NO_PERFORMANCE_RESULT" if bool(config.gradient_audit_only) else ""
+        ),
         "positive_rule": "same_tx_clean",
         "denominator_rule": "batch_all_tx_clean",
         "clean_detached": bool(config.enabled),
@@ -231,9 +249,14 @@ def ccpc_config_receipt(config: CCPCLEOConfig) -> Dict[str, Any]:
         "classes": 0,
         "positive_pairs": 0,
         "leo_grad_nonzero": False,
+        "ccpc_batches": 0,
         "ccpc_grad_nonzero_batches": 0,
         "ccpc_grad_zero_batches": 0,
         "ccpc_grad_nonfinite_batches": 0,
+        "ccpc_param_grad_finite_batches": 0,
+        "ccpc_param_grad_nonfinite_batches": 0,
+        "ccpc_optimizer_step_applied_batches": 0,
+        "ccpc_optimizer_step_not_applied_batches": 0,
         "ccpc_terminal_gradient_contract": "PENDING",
         "ccpc_terminal_gradient_contract_passed": False,
         "proxy_rows": 0,
@@ -398,8 +421,42 @@ def add_ccpc_to_loss(
     return base_loss + float(config.loss_weight) * ccpc_loss
 
 
+def ccpc_leo_unscaled_gradient(
+    ccpc_loss: torch.Tensor,
+    z_leo: torch.Tensor,
+    *,
+    loss_weight: float,
+) -> torch.Tensor | None:
+    """Return the CCPC-only LEO-feature gradient before GradScaler scaling.
+
+    ``GradScaler.unscale_(optimizer)`` only unscales optimizer-parameter
+    gradients.  A retained intermediate feature gradient remains scaled and
+    may therefore overflow even when the actual CCPC branch gradient is
+    finite.  This helper deliberately differentiates the weighted CCPC term
+    itself before the scaled total-loss backward call.
+    """
+
+    if not torch.is_tensor(ccpc_loss) or ccpc_loss.ndim != 0:
+        raise CCPCLEORuntimeError("CCPC-LEO unscaled audit requires a scalar CCPC loss")
+    if not torch.is_tensor(z_leo):
+        raise CCPCLEORuntimeError("CCPC-LEO unscaled audit requires the LEO feature tensor")
+    try:
+        weight = float(loss_weight)
+    except (TypeError, ValueError) as exc:
+        raise CCPCLEORuntimeError("CCPC-LEO unscaled audit requires a numeric loss weight") from exc
+    if not math.isfinite(weight) or weight <= 0.0:
+        raise CCPCLEORuntimeError("CCPC-LEO unscaled audit requires a positive finite loss weight")
+    return torch.autograd.grad(
+        weight * ccpc_loss,
+        z_leo,
+        retain_graph=True,
+        create_graph=False,
+        allow_unused=True,
+    )[0]
+
+
 def ccpc_leo_gradient_status(gradient: torch.Tensor | None) -> Dict[str, bool]:
-    """Classify the retained LEO feature gradient for one CCPC batch.
+    """Classify an unscaled CCPC-only LEO feature gradient for one batch.
 
     A finite all-zero gradient is a valid stationary point of the frozen
     objective, not proof that the graph was severed.  Missing gradients still
@@ -424,7 +481,7 @@ def ccpc_leo_gradient_status(gradient: torch.Tensor | None) -> Dict[str, bool]:
 
 
 def require_finite_ccpc_leo_gradient(status: Mapping[str, Any]) -> None:
-    """Retain fail-closed semantics for a non-finite retained CCPC gradient."""
+    """Retain fail-closed semantics for a non-finite unscaled CCPC gradient."""
 
     if not bool(status.get("finite", False)) or bool(status.get("nonfinite", False)):
         raise CCPCLEORuntimeError(
@@ -528,6 +585,36 @@ def update_ccpc_receipt(
     return out
 
 
+def update_ccpc_optimizer_receipt(
+    receipt: Mapping[str, Any],
+    *,
+    parameter_grad_finite: bool,
+    optimizer_step_applied: bool,
+) -> Dict[str, Any]:
+    """Record total-loss parameter-gradient health without changing AMP flow."""
+
+    out = dict(receipt)
+    if not bool(out.get("enabled", False)):
+        return out
+    if bool(optimizer_step_applied) and not bool(parameter_grad_finite):
+        raise CCPCLEORuntimeError(
+            "CCPC-LEO receipt cannot record an optimizer step with non-finite parameter gradients"
+        )
+    out["ccpc_param_grad_finite_batches"] = int(
+        out.get("ccpc_param_grad_finite_batches", 0)
+    ) + int(bool(parameter_grad_finite))
+    out["ccpc_param_grad_nonfinite_batches"] = int(
+        out.get("ccpc_param_grad_nonfinite_batches", 0)
+    ) + int(not bool(parameter_grad_finite))
+    out["ccpc_optimizer_step_applied_batches"] = int(
+        out.get("ccpc_optimizer_step_applied_batches", 0)
+    ) + int(bool(optimizer_step_applied))
+    out["ccpc_optimizer_step_not_applied_batches"] = int(
+        out.get("ccpc_optimizer_step_not_applied_batches", 0)
+    ) + int(not bool(optimizer_step_applied))
+    return out
+
+
 def validate_ccpc_terminal_receipt(receipt: Mapping[str, Any]) -> Dict[str, Any]:
     """Require a completed G run to show usable, finite CCPC-gradient evidence."""
 
@@ -550,6 +637,31 @@ def validate_ccpc_terminal_receipt(receipt: Mapping[str, Any]) -> Dict[str, Any]
         raise CCPCLEORuntimeError(
             "CCPC-LEO terminal receipt requires at least one nonzero paired LEO feature gradient batch"
         )
-    out["ccpc_terminal_gradient_contract"] = "NONZERO_OBSERVED_NO_NONFINITE"
+    param_finite = int(out.get("ccpc_param_grad_finite_batches", 0))
+    param_nonfinite = int(out.get("ccpc_param_grad_nonfinite_batches", 0))
+    stepped = int(out.get("ccpc_optimizer_step_applied_batches", 0))
+    not_stepped = int(out.get("ccpc_optimizer_step_not_applied_batches", 0))
+    if (
+        param_finite < 0
+        or param_nonfinite < 0
+        or stepped < 0
+        or not_stepped < 0
+        or param_finite + param_nonfinite != batches
+        or stepped + not_stepped != batches
+    ):
+        raise CCPCLEORuntimeError(
+            "CCPC-LEO terminal receipt has inconsistent parameter-gradient or optimizer-step counts"
+        )
+    if param_finite < 1:
+        raise CCPCLEORuntimeError(
+            "CCPC-LEO terminal receipt requires at least one finite parameter-gradient batch"
+        )
+    if stepped < 1:
+        raise CCPCLEORuntimeError(
+            "CCPC-LEO terminal receipt requires at least one optimizer step"
+        )
+    out["ccpc_terminal_gradient_contract"] = (
+        "NONZERO_OBSERVED_NO_NONFINITE_PARAM_FINITE_AND_STEP_OBSERVED"
+    )
     out["ccpc_terminal_gradient_contract_passed"] = True
     return out
