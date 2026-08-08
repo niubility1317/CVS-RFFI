@@ -81,6 +81,8 @@ try:
         pamr_config_receipt,
         pamr_gradient_status,
         pamr_loss,
+        remap_pamr_local_labels_to_head_rows,
+        resolve_pamr_local_head_class_binding,
         pamr_shared_encoder_parameters,
         pamr_shared_gradient_relation,
         pamr_unscaled_gradient,
@@ -228,6 +230,7 @@ except ModuleNotFoundError:
     PAMRConfig = None
     PAMRConfigurationError = PAMRRuntimeError = None
     add_pamr_to_loss = pamr_config_receipt = pamr_gradient_status = pamr_loss = None
+    remap_pamr_local_labels_to_head_rows = resolve_pamr_local_head_class_binding = None
     pamr_shared_encoder_parameters = pamr_shared_gradient_relation = pamr_unscaled_gradient = None
     require_finite_pamr_gradient = resolve_pamr_classifier_weight = strict_pamr_warm_start = None
     update_pamr_gradient_receipt = update_pamr_gradient_relation_receipt = update_pamr_receipt = None
@@ -1230,6 +1233,7 @@ def _phase1_tx_partition_view(
             "source_known_train_tx": labels,
             "source_known_validation_tx": [],
             "source_proxy_unknown_tx": [],
+            "dataset_tx_order": labels,
         }
     if not train or not known_validation or (not proxy_unknown and not bool(allow_empty_proxy_unknown)):
         raise ValueError(
@@ -1267,6 +1271,7 @@ def _phase1_tx_partition_view(
         "schema": "cvs.phase1.tx_partition_receipt.v1",
         "enabled": True,
         **roles,
+        "dataset_tx_order": list(tx_list),
         "dataset_tx_count": len(tx_list),
         "training_tx_count": len(train),
         "allow_empty_proxy_unknown": bool(allow_empty_proxy_unknown),
@@ -2382,6 +2387,7 @@ def _build_ssdg_wisig_data(args, device: torch.device):
         "domain_label_map": domain_label_map,
         "num_domains": max(1, len(domain_label_map)),
         "input_len": int(args.wisig_out_len),
+        "num_classes": int(infer_nc),
         "class_id_to_tx": [str(value) for value in list(getattr(source_base, "tx_list", []) or [])],
         "split_info": {
             "mode": str(args.split_mode),
@@ -5633,6 +5639,7 @@ def train(args) -> int:
         pamr_receipt = pamr_config_receipt(pamr_config)
     pamr_frozen_mode = bool(getattr(pamr_config, "frozen_mode", False))
     pamr_audit_only = bool(getattr(pamr_config, "audit_only", False))
+    pamr_local_to_head_class_ids: Optional[Tuple[int, ...]] = None
     if pamr_audit_only:
         pamr_receipt["evaluation"] = _pamr_technical_audit_skip_receipt(
             "all_source_val_leo_tail_leakage_and_heldout"
@@ -5914,16 +5921,21 @@ def train(args) -> int:
         if ccpc_frozen_mode:
             ccpc_receipt.update(frozen_source_roles)
         if pamr_frozen_mode:
-            expected_class_ids = list(range(int(data_ctx.get("num_classes", 0))))
-            if len(expected_class_ids) != len(frozen_source_roles["source_train_tx"]):
+            local_data_class_count = int(data_ctx.get("num_classes", 0))
+            local_tx_order = list(data_ctx.get("class_id_to_tx", []) or [])
+            if local_data_class_count != len(local_tx_order):
                 raise PAMRConfigurationError(
-                    "P1-PAMR requires source TX role count to equal local classifier class count"
+                    "P1-PAMR data_ctx local class count must equal its local TX class-order receipt"
+                )
+            if local_tx_order != frozen_source_roles["source_train_tx"]:
+                raise PAMRConfigurationError(
+                    "P1-PAMR data_ctx local TX class order must equal the source-train TX receipt"
                 )
             pamr_receipt.update(
                 {
                     **frozen_source_roles,
-                    "expected_tx_class_ids": expected_class_ids,
-                    "class_count": int(data_ctx.get("num_classes", 0)),
+                    "local_data_class_count": local_data_class_count,
+                    "local_tx_class_order": local_tx_order,
                 }
             )
     manytx_real_oe_data = _build_manytx_real_oe_data(
@@ -5984,13 +5996,39 @@ def train(args) -> int:
     if pamr_frozen_mode:
         # Resolve the exact live GeoSat-C head path before training.  The PAMR
         # loss later uses a detached view of this parameter, never a new head.
-        if resolve_pamr_classifier_weight is None:
+        if (
+            resolve_pamr_classifier_weight is None
+            or resolve_pamr_local_head_class_binding is None
+            or remap_pamr_local_labels_to_head_rows is None
+        ):
             raise ImportError("cvsrffi.phase1_pamr classifier binding support is required")
         pamr_weight = resolve_pamr_classifier_weight(model)
-        if int(pamr_weight.size(0)) != int(data_ctx.get("num_classes", 0)):
+        checkpoint_args = ckpt.get("args", {}) or {}
+        if not isinstance(checkpoint_args, Mapping):
             raise PAMRConfigurationError(
-                "P1-PAMR classifier-head rows must equal the source local class count"
+                "P1-PAMR strict baseline checkpoint must contain an argument mapping"
             )
+        checkpoint_train_tx = [
+            item.strip()
+            for item in str(checkpoint_args.get("phase1_source_train_tx_ids", "") or "").split(",")
+            if item.strip()
+        ]
+        tx_partition_receipt = (data_ctx.get("split_info", {}) or {}).get(
+            "tx_partition_receipt", {}
+        )
+        pamr_head_binding = resolve_pamr_local_head_class_binding(
+            local_class_order=list(data_ctx.get("class_id_to_tx", []) or []),
+            source_train_tx=list(tx_partition_receipt.get("source_known_train_tx", []) or []),
+            checkpoint_train_tx=checkpoint_train_tx,
+            dataset_class_order=list(tx_partition_receipt.get("dataset_tx_order", []) or []),
+            local_data_class_count=data_ctx.get("num_classes", 0),
+            checkpoint_head_class_count=checkpoint_args.get("num_classes", None),
+            live_head_class_count=int(pamr_weight.size(0)),
+        )
+        pamr_local_to_head_class_ids = tuple(
+            int(value) for value in pamr_head_binding["local_to_head_class_ids"]
+        )
+        pamr_receipt.update(pamr_head_binding)
         (out_dir / "phase1_pamr_config_receipt.json").write_text(
             json.dumps(pamr_receipt, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
             encoding="utf-8",
@@ -6430,6 +6468,22 @@ def train(args) -> int:
         )
         for batch_idx, labeled_batch in enumerate(data_ctx["train_loader"], start=1):
             x_l, y_l, extra_l = move_batch(labeled_batch, device)
+            if pamr_frozen_mode and bool(getattr(pamr_config, "enabled", False)):
+                try:
+                    if pamr_local_to_head_class_ids is None or remap_pamr_local_labels_to_head_rows is None:
+                        raise PAMRRuntimeError("P1-PAMR local-to-head class binding is unavailable")
+                    y_l = remap_pamr_local_labels_to_head_rows(
+                        y_l, pamr_local_to_head_class_ids
+                    )
+                except Exception as error:
+                    _persist_pamr_failure_receipt(
+                        out_dir=out_dir,
+                        args=args,
+                        pamr_receipt=pamr_receipt,
+                        error=error,
+                        failure_stage="local_tx_label_to_live_head_row_binding",
+                    )
+                    raise
             labeled_clean_count = int(y_l.numel())
             if ccpc_frozen_mode or pamr_frozen_mode:
                 # The frozen C/G experiment is intentionally blind to RX/day/domain

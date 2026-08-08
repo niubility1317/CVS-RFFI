@@ -31,3 +31,4 @@ P1-PAMR（Paired Angular-Margin Restoration）从每折GeoSat-C C checkpoint续�
 |PAMR-R1|独立复核P1|1epoch技术审计必须跳过全部source-val、LEO、tail与leakage性能评估，并固定声明`SKIPPED_TECHNICAL_AUDIT`/`NO_PERFORMANCE_RESULT`|`train_ssdg.py`、测试|verified|py_compile、41 focused tests、dry-run6/12|不改变训练数据、loss或矩阵|
 |PAMR-R2|独立复核P1|None、nonfinite与shared-gradient异常以best-effort原子failure receipt持久化，写盘失败不得遮蔽原异常|`phase1_pamr.py`、`train_ssdg.py`、测试|verified|原子写入与writer失败不遮蔽原异常测试|不含raw样本或原始异常文本|
 |PAMR-R3|独立复核P1|raw feature/shared-encoder梯度关系只在audit的首个有效batch审计；40epoch正式路径只计coverage并正常反传|`phase1_pamr.py`、`train_ssdg.py`、测试|verified|audit/formal终态分离与训练路径静态测试|正式terminal不要求梯度关系receipt|
+|PAMR-R4|audit v1系统性技术失败|`data_ctx`必须显式携带局部训练类数；局部TX类序、checkpoint训练TX类序与live classifier head行数必须逐项绑定，禁止把全局数据集6类误当作局部训练4类或反之|`train_ssdg.py`、`phase1_pamr.py`、测试|verified|py_compile、CCPC+PAMR focused43项、bash-n、dry-run6/12|不改变loss、`lambda=.05`、C/G矩阵或audit边界；v1无性能结果|

@@ -26,6 +26,8 @@ from cvsrffi.phase1_pamr import (  # noqa: E402
     pamr_config_receipt,
     pamr_gradient_status,
     pamr_loss,
+    remap_pamr_local_labels_to_head_rows,
+    resolve_pamr_local_head_class_binding,
     pamr_shared_encoder_parameters,
     pamr_shared_gradient_relation,
     pamr_unscaled_gradient,
@@ -392,6 +394,66 @@ def test_model_binding_requires_feat_joint_head_dimension_and_class_order():
     out_leo["z_id_key"] = "feat_cls"
     with pytest.raises(PAMRRuntimeError, match="feat_joint"):
         validate_pamr_binding(model=model, out_clean=out_clean, out_leo=out_leo, tx_labels=torch.tensor([0, 1]))
+
+
+def test_pamr_global_six_to_local_four_binding_is_explicit_and_live_head_strict():
+    global_tx_order = ["14-10", "14-7", "20-15", "20-19", "6-15", "8-20"]
+    local_tx_order = ["20-15", "20-19", "6-15", "8-20"]
+    filtered, partition = train_ssdg._phase1_tx_partition_view(
+        {"tx_list": global_tx_order, "data": list(range(6))},
+        train_spec=",".join(local_tx_order),
+        known_validation_spec="14-7",
+        proxy_unknown_spec="14-10",
+    )
+    assert filtered["tx_list"] == local_tx_order
+    assert partition["dataset_tx_order"] == global_tx_order
+    assert partition["training_view_contiguous_reindex"] == {
+        "0": "20-15", "1": "20-19", "2": "6-15", "3": "8-20"
+    }
+    binding = resolve_pamr_local_head_class_binding(
+        local_class_order=local_tx_order,
+        source_train_tx=partition["source_known_train_tx"],
+        checkpoint_train_tx=local_tx_order,
+        dataset_class_order=partition["dataset_tx_order"],
+        local_data_class_count=4,
+        checkpoint_head_class_count=4,
+        live_head_class_count=4,
+    )
+    assert binding["dataset_class_count"] == 6
+    assert binding["local_data_class_count"] == 4
+    assert binding["local_to_dataset_class_ids"] == [2, 3, 4, 5]
+    assert binding["local_to_head_class_ids"] == [0, 1, 2, 3]
+    assert len(binding["class_order_binding_sha256"]) == 64
+    assert torch.equal(
+        remap_pamr_local_labels_to_head_rows(torch.tensor([3, 0, 2]), binding["local_to_head_class_ids"]),
+        torch.tensor([3, 0, 2]),
+    )
+    assert '"num_classes": int(infer_nc)' in inspect.getsource(train_ssdg._build_ssdg_wisig_data)
+
+
+def test_pamr_rejects_global_six_head_or_checkpoint_tx_order_drift_for_local_four_data():
+    global_tx_order = ["14-10", "14-7", "20-15", "20-19", "6-15", "8-20"]
+    local_tx_order = ["20-15", "20-19", "6-15", "8-20"]
+    with pytest.raises(PAMRConfigurationError, match="live classifier head row count"):
+        resolve_pamr_local_head_class_binding(
+            local_class_order=local_tx_order,
+            source_train_tx=local_tx_order,
+            checkpoint_train_tx=local_tx_order,
+            dataset_class_order=global_tx_order,
+            local_data_class_count=4,
+            checkpoint_head_class_count=6,
+            live_head_class_count=6,
+        )
+    with pytest.raises(PAMRConfigurationError, match="checkpoint train TX class order"):
+        resolve_pamr_local_head_class_binding(
+            local_class_order=local_tx_order,
+            source_train_tx=local_tx_order,
+            checkpoint_train_tx=["20-19", "20-15", "6-15", "8-20"],
+            dataset_class_order=global_tx_order,
+            local_data_class_count=4,
+            checkpoint_head_class_count=4,
+            live_head_class_count=4,
+        )
 
 
 def test_strict_warm_start_is_weights_only_with_exact_keys():

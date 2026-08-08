@@ -8,6 +8,7 @@ only through the LEO feature branch and the shared encoder that produced it.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import math
 import os
@@ -206,7 +207,7 @@ def pamr_config_receipt(config: PAMRConfig) -> Dict[str, Any]:
         "clean_gate_rule": "RAW_COSINE_ARGMAX_EQUALS_TX_LABEL",
         "id_feature_key": "feat_joint",
         "class_weight_path": "id_backbone.cls_head.head.weight",
-        "class_order_contract": "DATASET_TX_LABEL_INDEX_EQUALS_HEAD_WEIGHT_ROW_INDEX",
+        "class_order_contract": "PENDING_LOCAL_DATA_TX_ORDER_CHECKPOINT_TRAIN_TX_ORDER_AND_LIVE_HEAD_ROWS",
         "clean_margin_detached": bool(config.enabled),
         "class_weight_detached": bool(config.enabled),
         "uses_detached_clean_boundary_self_distillation": bool(config.enabled),
@@ -235,6 +236,16 @@ def pamr_config_receipt(config: PAMRConfig) -> Dict[str, Any]:
         "source_train_tx": [],
         "source_known_validation_tx": [],
         "source_proxy_unknown_tx": [],
+        "dataset_tx_class_order": [],
+        "local_tx_class_order": [],
+        "checkpoint_train_tx_class_order": [],
+        "local_to_dataset_class_ids": [],
+        "local_to_head_class_ids": [],
+        "dataset_class_count": 0,
+        "local_data_class_count": 0,
+        "checkpoint_head_class_count": 0,
+        "live_head_class_count": 0,
+        "class_order_binding_sha256": "",
         "proxy_rows": 0,
         "held_rows": 0,
         "expected_tx_class_ids": [],
@@ -266,6 +277,126 @@ def pamr_config_receipt(config: PAMRConfig) -> Dict[str, Any]:
         "pamr_terminal_gradient_contract": "PENDING",
         "pamr_terminal_gradient_contract_passed": False,
     }
+
+
+def _normalized_tx_class_order(name: str, values: Sequence[Any]) -> Tuple[str, ...]:
+    """Return a non-empty, order-preserving physical TX class order."""
+
+    if isinstance(values, (str, bytes)) or not isinstance(values, Sequence):
+        raise PAMRConfigurationError(f"P1-PAMR {name} must be a TX class sequence")
+    order = tuple(str(value).strip() for value in values)
+    if not order or any(not value for value in order):
+        raise PAMRConfigurationError(f"P1-PAMR {name} must contain non-empty TX labels")
+    if len(order) != len(set(order)):
+        raise PAMRConfigurationError(f"P1-PAMR {name} contains duplicate TX labels")
+    return order
+
+
+def _positive_class_count(name: str, value: Any) -> int:
+    try:
+        count = int(value)
+    except (TypeError, ValueError) as exc:
+        raise PAMRConfigurationError(f"P1-PAMR {name} must be an integer") from exc
+    if count <= 0:
+        raise PAMRConfigurationError(f"P1-PAMR {name} must be positive")
+    return count
+
+
+def resolve_pamr_local_head_class_binding(
+    *,
+    local_class_order: Sequence[Any],
+    source_train_tx: Sequence[Any],
+    checkpoint_train_tx: Sequence[Any],
+    dataset_class_order: Sequence[Any],
+    local_data_class_count: Any,
+    checkpoint_head_class_count: Any,
+    live_head_class_count: Any,
+) -> Dict[str, Any]:
+    """Bind local reindexed TX labels to the strict warm-start classifier rows.
+
+    The WiSig role partition intentionally turns four source-train TXs into
+    local labels ``0..3`` even when the unfiltered dataset exposes six TXs.
+    A frozen GeoSat-C checkpoint is legal only when its recorded train TX order
+    is identical to that local order and its live head has exactly those local
+    rows.  This prevents a global dataset index from silently targeting a
+    different classifier row.
+    """
+
+    local = _normalized_tx_class_order("local data class order", local_class_order)
+    source = _normalized_tx_class_order("source-train TX receipt", source_train_tx)
+    checkpoint = _normalized_tx_class_order("checkpoint train TX receipt", checkpoint_train_tx)
+    dataset = _normalized_tx_class_order("dataset TX class order", dataset_class_order)
+    local_count = _positive_class_count("local data class count", local_data_class_count)
+    checkpoint_count = _positive_class_count(
+        "checkpoint classifier head row count", checkpoint_head_class_count
+    )
+    live_count = _positive_class_count("live classifier head row count", live_head_class_count)
+    if local != source:
+        raise PAMRConfigurationError(
+            "P1-PAMR local data TX class order must exactly match the source-train TX receipt"
+        )
+    if checkpoint != source:
+        raise PAMRConfigurationError(
+            "P1-PAMR checkpoint train TX class order must exactly match the source-train TX receipt"
+        )
+    if local_count != len(local):
+        raise PAMRConfigurationError(
+            "P1-PAMR local data class count must equal the local TX class-order receipt length"
+        )
+    if checkpoint_count != live_count:
+        raise PAMRConfigurationError(
+            "P1-PAMR checkpoint classifier head row count must equal the live classifier head row count"
+        )
+    if live_count != local_count:
+        raise PAMRConfigurationError(
+            "P1-PAMR live classifier head row count must equal the local training class count"
+        )
+    missing = sorted(set(local).difference(dataset))
+    if missing:
+        raise PAMRConfigurationError(
+            "P1-PAMR local TX labels are absent from the dataset TX class-order receipt"
+        )
+    local_to_dataset = [int(dataset.index(tx)) for tx in local]
+    binding = {
+        "class_order_contract": "LOCAL_DATA_TX_ORDER_EQUALS_CHECKPOINT_TRAIN_TX_ORDER_EQUALS_LIVE_HEAD_ROW_ORDER",
+        "dataset_tx_class_order": list(dataset),
+        "local_tx_class_order": list(local),
+        "checkpoint_train_tx_class_order": list(checkpoint),
+        "local_to_dataset_class_ids": local_to_dataset,
+        "local_to_head_class_ids": list(range(local_count)),
+        "expected_tx_class_ids": list(range(local_count)),
+        "dataset_class_count": len(dataset),
+        "local_data_class_count": local_count,
+        "checkpoint_head_class_count": checkpoint_count,
+        "live_head_class_count": live_count,
+        # Retained for consumers of the v1 receipt field; it is the local,
+        # live classifier width, never the unfiltered dataset width.
+        "class_count": live_count,
+    }
+    binding["class_order_binding_sha256"] = hashlib.sha256(
+        json.dumps(binding, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    ).hexdigest()
+    return binding
+
+
+def remap_pamr_local_labels_to_head_rows(
+    local_labels: torch.Tensor,
+    local_to_head_class_ids: Sequence[Any],
+) -> torch.Tensor:
+    """Map contiguous local dataset labels through the frozen head-row receipt."""
+
+    if not torch.is_tensor(local_labels):
+        raise PAMRRuntimeError("P1-PAMR local TX labels must be a tensor")
+    mapping = tuple(int(value) for value in local_to_head_class_ids)
+    if not mapping or min(mapping) < 0 or len(mapping) != len(set(mapping)):
+        raise PAMRRuntimeError("P1-PAMR local-to-head class mapping is invalid")
+    labels = local_labels.reshape(-1).long()
+    if labels.numel() == 0:
+        raise PAMRRuntimeError("P1-PAMR cannot remap an empty local TX label batch")
+    if int(labels.min().item()) < 0 or int(labels.max().item()) >= len(mapping):
+        raise PAMRRuntimeError("P1-PAMR local TX labels are outside the frozen local class order")
+    lookup = torch.as_tensor(mapping, dtype=torch.long, device=labels.device)
+    return lookup.index_select(0, labels).reshape(local_labels.shape)
 
 
 def _validate_loss_inputs(
