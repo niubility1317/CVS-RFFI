@@ -67,3 +67,11 @@ cd /home/szu2070436088/2510044040/CV-SincNet/releases/phase1_ccpc_leo12_20260809
 ## 6.风险与完成后检查
 
 最高技术风险是N607真实GeoSat-C checkpoint模型键或checkpoint metadata与当前代码不匹配；实现会在任何训练前fail-closed。最高科学风险是CCPC缩短clean↔LEO同类距离但同时压缩异类margin，或把收益集中到少数TX/RX。完成后必须同时检查同类距离、最近异类margin、clean floor、18格LEO floor和proxy方向，不能以均值补偿任何fold或原子格失败。
+
+## 7.技术终态（2026-08-09）
+
+状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`；`retry=NO`。release已以commit `e999a6c526dc676dfa0ce193b00ce11cac3d308c`的no-prefix archive落地，archive SHA256=`f0b22ab6a2c961b20a3f70fd578ff3b60eb80def70d23985f6c3ba95c32a8e4d`（261181440 bytes）；archive/LF与Windows/worktree CRLF双hash见artifact manifest，未远端改码。py_compile、train_ssdg `--help`、bash-n和launcher dry-run 12行通过；ManySig SHA=`2b0a7a7488dd3650bcae7b1d80efbcffd1598aaa671ae6b0a0df2a24dc0f694f`，6个GeoSat-C checkpoint存在且hash已登记。
+
+唯一启动在caller超时后经短连接确认已landed：wrapper PID=`3992860`、launcher PID=`3992861`、12 child已按pids.tsv绑定release/code、GPU0–7与F1C/F1G…F6C/F6G固定矩阵。首波12个`CONFIG-CCPC-LEO`及E001 marker均出现。日志中的`sat_cos=nan`、禁用domain的`dom=nan%`及空test分区`overall_tx=nan% (0/0)`后来核对为既有N/A占位；未建立`loss_total`/`loss_ccpc`、梯度或模型输出非有限、Traceback、OOM或代码fail-closed证据。runner先按预注册nonfinite规则停止了已验证的run-owned进程树（TERM后剩余0，未触碰其他进程），随后不重启，保留partial。
+
+停止后GPU0–7均0%/1MiB、run进程0、临时archive已删除。小artifact已回收到`E:\type10-7\automation_reports\CV-SincNet\phase1_ccpc_leo12_20260809_v1\artifacts`：12候选的metrics CSV/JSONL/config receipt、12 stdout、pids/completion/outer及manifest（总52文件；未下载checkpoint、dataset或大数组）。direct回收短暂Connection refused，按AGENTS仅使用一次已验证lab bridge补齐缺失小文件；SSH/SCP/TCP22最终均清理。此run不提供性能结果，且不能据此推进任何性能/晋级结论。
