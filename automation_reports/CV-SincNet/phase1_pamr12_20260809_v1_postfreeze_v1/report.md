@@ -2,7 +2,7 @@
 
 目标模式：`GOAL_MODE=ACTIVE`
 
-状态：`PREREGISTERED / NOT_LAUNCHED`
+状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
 
 证据边界：`PHASE1_SOURCE_ONLY_OPEN_WORLD_READY_REPRESENTATION_NON_CONFIRMATORY`
 
@@ -84,4 +84,15 @@ proxy AUROC/FAR与paired cosine只作机制诊断，不能补偿任一门。全�
 
 ## 7.运行终态与结果
 
-待N607 artifact返回后填写。
+本run按冻结命令唯一启动一次，未重试、未修改代码或训练输入。caller等待超时后清理本地SSH残留并以短连接确认已落地；没有重复启动。release为`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_pamr12_postfreeze_20260809_v1_20f43b0e`，CWD为`<release>/code`，postfreeze commit=`20f43b0e774cf6ca922796cc298e4fa43960e517`，无prefix归档SHA256=`4472aed7a7c346cbbd51f932370e9b6da5da081cf1c225f9dc114305891f57c8`（261560320 bytes）。远端archive成员以LF字节核验；worktree与archive的换行口径双hash及compile/help/bash-n/dry-run=42证据见manifest。
+
+launcher PID=`4186877`，candidate PID/GPU由`candidate_pids.tsv`固定记录：`F1C 4186880/0; F5G 4186881/0; F1G 4186882/1; F5C 4186883/1; F2C 4186886/2; F6G 4186887/2; F2G 4186888/3; F6C 4186891/3; F3C 4186893/4; F3G 4186897/5; F4C 4186899/6; F4G 4186902/7`。12个candidate pipeline均完成clean/LEO export与proxy score：clean NPZ=12（每个2400行、`channel_views=clean`）、LEO NPZ=12（每个1600行、source-only、三场景齐全）、proxy metrics JSON=12、proxy scores CSV=12。首个pair `F1_C_vs_G`退出1，错误指纹为`PAMRPostfreezePairError: C LEO payload must use exactly channel_view=satellite`；只读metadata显示全部LEO NPZ的`channel_views=['single']`，而冻结pair要求`satellite`，属于launcher-wide确定性协议闭环故障。launcher因`set -e`在F1 pair后退出1，F2–F6 pair未启动；pair JSON=0、pair score CSV=0、pair日志=1。该停止不涉及性能值。
+
+|阶段|完成/总数|技术状态|
+|---|---:|---|
+|clean export|12/12|每NPZ 2400行；metadata clean/source+target_old+proxy_unknown|
+|LEO export|12/12|每NPZ 1600行；source-only/三场景；channel_view错误为single（预期satellite）|
+|proxy score|12/12|JSON/CSV均存在；仅作partial技术artifact|
+|pair score|0/6|F1首个命令确定性校验失败，F2–F6未启动|
+
+partial小artifact已回收至`E:\type10-7\automation_reports\CV-SincNet\phase1_pamr12_20260809_v1_postfreeze_v1\artifacts`：41个文件（40条manifest条目+manifest），manifest SHA256=`baa37c7a67af497055fecc23c7d52de43c72519b961dae2101b0c98d58451e2e`，completion.tsv SHA256=`1003321f930cac72611d9eba4899854fa2922e3d20d2d3e023944eed3c37d6dd`；逐项bytes/SHA匹配，无NPZ/checkpoint下载。传输包SHA256=`39190d58823bc215c53f27c18092757b60df4873c9fc99b4260654fe8a516920`，远端临时包已删除；GPU、run-owned进程、SSH/TCP22均已清理。保留远端partial NPZ仅供主控后续技术修复审计；本run状态固定为`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`，retry=`NO`。
