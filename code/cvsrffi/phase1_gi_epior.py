@@ -247,8 +247,10 @@ def fit_gi_epior(
         negative_rows = np.flatnonzero(query & np.isin(tx, np.asarray(registry, dtype=object)))
         if positive_rows.size == 0 or negative_rows.size == 0:
             raise GIEpiORError(f"episode {held_tx} has empty positive or negative query")
-        positive, _, _ = geometry_descriptors(z[torch.as_tensor(positive_rows)], prototypes, scales, eps=eps)
-        negative, _, _ = geometry_descriptors(z[torch.as_tensor(negative_rows)], prototypes, scales, eps=eps)
+        positive_index = torch.tensor(positive_rows.tolist(), dtype=torch.long)
+        negative_index = torch.tensor(negative_rows.tolist(), dtype=torch.long)
+        positive, _, _ = geometry_descriptors(z[positive_index], prototypes, scales, eps=eps)
+        negative, _, _ = geometry_descriptors(z[negative_index], prototypes, scales, eps=eps)
         descriptors.extend([positive, negative])
         labels.extend([torch.ones(positive.size(0)), torch.zeros(negative.size(0))])
         episode_rows[held_tx] = {

@@ -124,6 +124,21 @@ def test_entire_tx_is_excluded_and_identity_features_receive_no_gradient():
     assert all(value["held_reference_rows"] == 0 for value in result.receipt["episodes"].values())
 
 
+def test_numpy_int64_episode_indices_do_not_require_dtype_inference(monkeypatch):
+    features, tx, _, _, _, _, physical = _source_arrays()
+    original = torch.as_tensor
+
+    def guarded_as_tensor(value, *args, **kwargs):
+        dtype = kwargs.get("dtype", args[0] if args else None)
+        if isinstance(value, np.ndarray) and np.issubdtype(value.dtype, np.integer) and dtype is None:
+            raise RuntimeError("Could not infer dtype of numpy.int64")
+        return original(value, *args, **kwargs)
+
+    monkeypatch.setattr(torch, "as_tensor", guarded_as_tensor)
+    result = fit_gi_epior(features, tx, physical, SOURCE)
+    assert result.receipt["train_rows"] > 0
+
+
 def test_class_permutation_keeps_class_symmetric_scores():
     features, tx, _, _, _, _, physical = _source_arrays()
     direct = fit_gi_epior(features, tx, physical, SOURCE)

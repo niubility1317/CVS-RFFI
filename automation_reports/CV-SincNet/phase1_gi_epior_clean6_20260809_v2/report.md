@@ -44,3 +44,11 @@ cd <release>/code && nohup setsid env RUN_ID=phase1_gi_epior_clean6_20260809_v2 
 ## 5.晋级口径
 
 clean阶段关闭：模型健康、known跨接收机性能无明显退化、source proxy相对C产生明确正信号、真实bundle导出。外层held-TX完整报告但不作为额外5%强门。上述clean四项通过后立即发布三种LEO视图，以验证最低类别和LEO弱信道floor无严重下降。
+
+## 6.运行器技术终态（2026-08-09）
+
+- 状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。v2无prefix归档落地结构正确，未触碰v1 partial release。
+- 归档SHA256=`c4d358299a5f8e4b1b9e9a6e1f4156f2a4ee3f15613181fb6c4b363b3103a7c8`（260956160 bytes）。规范哈希：design=`4788033aa429b32954f886b7414a0d7f0f1cd03c27f6be390890c64d91ff005c`、core=`c24575d68eabdf7c20fbc6df0c6dcbe83d0bc3c384a48e96b7130ea898ad955a`、eval=`00e9715538f545dba9633e7e92d51f7feabbd17e15f378650d68907c3a15f454`、test=`8f3332eaac32f8c9896fc1952db4c6e55eff3c6d6e9a53ada1e4cb8ff9386b33`、launcher=`a18bfa57e2807a4b77624371408cc678d9b2f2a0fc7d8e0ebc61b6b44ad83477`；工作树哈希按预注册记录，CRLF/LF差异仅记录。
+- launcher PID=`3894460`；F1--F6 fit child PID=`3894466,3894467,3894468,3894469,3894471,3894473`，均exit=1。统一指纹：`RuntimeError: Could not infer dtype of numpy.int64`，调用位于`eval_phase1_gi_epior.py:166`与`cvsrffi/phase1_gi_epior.py:250`。score未启动。
+- 远端bundle/runtime/fit_receipt/metrics/scores均0；fit_completion.tsv=6行且exit1=6；score_completion.tsv不存在；GPU0--7=0%/1MiB，run-owned进程退出，SSH清理完成。
+- 本地artifact：`E:\type10-7\automation_reports\CV-SincNet\phase1_gi_epior_clean6_20260809_v2\artifacts`，已回收6份fit stdout、fit_completion.tsv、outer log和manifest；不下载NPZ/checkpoint/runtime/bundle，不解读性能，不重试。
