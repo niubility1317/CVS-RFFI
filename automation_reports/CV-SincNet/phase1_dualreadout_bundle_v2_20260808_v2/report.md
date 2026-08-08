@@ -4,8 +4,8 @@
 
 - 目标模式：`ACTIVE`
 - run ID：`phase1_dualreadout_bundle_v2_20260808_v2`
-- 状态：`LOCAL_VERIFIED / P0_P1_CLOSED / READY_FOR_N607`
-- 证据等级：`TECHNICAL_BUNDLE_NOT_PERFORMANCE_PROMOTED`
+- 状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
+- 证据等级：`FAILED_TECHNICAL_LANDING_PARTIAL_ZDOM_ONLY`
 - 时间：2026-08-08
 - 实现commit：`ab3b2f663b830cd6a3facd99d7fa9bb65c75f6cd`
 
@@ -44,11 +44,17 @@ GPU0导出B runtime，GPU1导出C runtime，GPU2导出C `z_dom` actual-IQ特征�
 
 只回收manifest、source-only receipt、两份parity receipt、smoke/evidence receipt、两份metrics JSON、日志、completion和哈希清单；不下载checkpoint、NPZ、runtime、calibration NPZ或完整evidence。
 
+### 4.1实际终态
+
+设备修复生效：三条子进程均回执`CUDA_VISIBLE_DEVICES=<UNSET>`，C `z_dom`导出exit=0并生成远端NPZ。angular和robust runtime均在`torch.jit.save`阶段出现同一`Could not export Python function call 'GradReverse'`，各exit=1；虽生成临时`.ts`，但没有parity receipt，因此不得进入bundle。CPU build、emit和score均未启动。
+
+本run不重试、不覆盖。9项命令、环境、PID、completion、stdout和manifest小文件已回收且远端/本地哈希一致；partial runtime、NPZ和checkpoint均未下载。Python进程、GPU和SSH均清理完成。第2轮且最后一轮修复只允许导出不含训练期对抗头的部署子图，并使用新的v3 run。
+
 ## 5.结果表（待回收）
 
 | candidate | category | receiver/TX split | K-shot | seed | known/unknown | coverage/defer | bundle summary | verdict |
 |---|---|---|---:|---:|---|---|---|---|
-| P1-DUALREADOUT-BUNDLE-V2-REPAIR | source-calibrated technical bundle | 4/1/1 | N/A | 7281105 | 待回收 | 待回收 | C class/domain+B continuous JS | `NO_PERFORMANCE_RESULT_YET` |
+| P1-DUALREADOUT-BUNDLE-V2-REPAIR | source-calibrated technical bundle | 4/1/1 | N/A | 7281105 | N/A | N/A | 仅`z_dom` partial，无bundle | `STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE` |
 
 ## 6.科学边界
 

@@ -31,17 +31,48 @@ class ToyRuntime(nn.Module):
         return z_id, z_dom, logits
 
 
-class DefaultLogitsAuxModel(nn.Module):
-    def forward(self, rows: torch.Tensor, return_aux: bool = False):
+class AuxBackbone(nn.Module):
+    def forward(
+        self,
+        rows: torch.Tensor,
+        y=None,
+        return_aux: bool = False,
+        domain_labels=None,
+    ):
         mean = rows.mean(dim=2)
         logits = torch.stack([mean[:, 0], mean[:, 1]], dim=1)
         if not return_aux:
             return logits
         return {
-            "z_id": torch.cat([mean, mean], dim=1),
-            "z_dom": torch.cat([mean[:, :1], -mean[:, 1:2], mean], dim=1),
-            "tx_logits": logits,
+            "logits": logits,
+            "feat_joint": torch.cat([mean, mean], dim=1),
+            "feat_imp": torch.cat([mean[:, :1], -mean[:, 1:2], mean], dim=1),
         }
+
+
+class IdentityCapacity(nn.Module):
+    def forward(self, rows: torch.Tensor):
+        return rows, rows.new_zeros((rows.size(0), 2))
+
+
+class DomainEnhancer(nn.Module):
+    def forward(self, features: torch.Tensor, rows: torch.Tensor):
+        return features, features.new_zeros(features.shape)
+
+
+class TrainingModelWithForbiddenForward(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.id_backbone = AuxBackbone()
+        self.dom_backbone = AuxBackbone()
+        self.identity_capacity = IdentityCapacity()
+        self.dom_enhancer = DomainEnhancer()
+        self.representation_mode = "dual_disentangled"
+        self.id_feature_key = "feat_joint"
+        self.dom_feature_key = "feat_imp"
+
+    def forward(self, rows: torch.Tensor, return_aux: bool = False):
+        raise RuntimeError("training forward must not enter deployment trace")
 
 
 def fixture_arrays():
@@ -107,9 +138,9 @@ def scripted_runtime(path: Path):
     torch.jit.save(runtime, str(path))
 
 
-def test_full_runtime_explicitly_requests_auxiliary_features():
+def test_full_runtime_saves_deployment_subgraph_without_training_forward(tmp_path):
     rows = torch.randn(3, 2, 16)
-    wrapper = FullDualReadoutRuntime(DefaultLogitsAuxModel().eval(), runtime_batch_size=4).eval()
+    wrapper = FullDualReadoutRuntime(TrainingModelWithForbiddenForward().eval(), runtime_batch_size=4).eval()
     z_id, z_dom, logits = wrapper(rows)
     assert z_id.shape == (3, 4)
     assert z_dom.shape == (3, 4)
@@ -119,6 +150,13 @@ def test_full_runtime_explicitly_requests_auxiliary_features():
     assert torch.allclose(z_id, traced_z_id)
     assert torch.allclose(z_dom, traced_z_dom)
     assert torch.allclose(logits, traced_logits)
+    runtime_path = tmp_path / "deployment_runtime.ts"
+    torch.jit.save(traced, str(runtime_path))
+    loaded = torch.jit.load(str(runtime_path)).eval()
+    loaded_z_id, loaded_z_dom, loaded_logits = loaded(rows)
+    assert torch.allclose(z_id, loaded_z_id)
+    assert torch.allclose(z_dom, loaded_z_dom)
+    assert torch.allclose(logits, loaded_logits)
 
 
 def build_toy_bundle(tmp_path: Path):

@@ -29,22 +29,55 @@ from cvsrffi.phase1_dualreadout_bundle_v2 import (
 )
 from cvsrffi.phase3_care_poe import SCHEMA as LOCAL_EVIDENCE_SCHEMA
 from cvsrffi.phase3_care_poe import seal_local_evidence, write_jsonl
+from model_dual_cvsincnet import backbone_forward_compat
 
 
 class FullDualReadoutRuntime(nn.Module):
     def __init__(self, model: nn.Module, *, runtime_batch_size: int = 256) -> None:
         super().__init__()
-        self.model = model
+        self.id_backbone = model.id_backbone
+        self.dom_backbone = model.dom_backbone
+        self.identity_capacity = model.identity_capacity
+        self.dom_enhancer = model.dom_enhancer
+        self.representation_mode = str(model.representation_mode)
+        self.id_feature_key = str(model.id_feature_key)
+        self.dom_feature_key = str(model.dom_feature_key)
         self.runtime_batch_size = int(runtime_batch_size)
+
+    @staticmethod
+    def _pick_feature(result: Mapping[str, torch.Tensor], preferred: str, fallbacks: Sequence[str]) -> torch.Tensor:
+        for key in (preferred, *fallbacks):
+            value = result.get(key)
+            if torch.is_tensor(value):
+                return value
+        raise KeyError(f"deployment feature missing: preferred={preferred}")
 
     def forward(self, rows: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
         count = rows.size(0)
         padded = rows.new_zeros((self.runtime_batch_size, rows.size(1), rows.size(2)))
         padded[:count].copy_(rows)
-        result = self.model(padded, return_aux=True)
-        z_id = F.normalize(result["z_id"].float(), dim=1)
-        z_dom = F.normalize(result["z_dom"].float(), dim=1)
-        logits = result["tx_logits"].float()
+        aux_id = backbone_forward_compat(self.id_backbone, padded, return_aux=True)
+        base_logits = aux_id["logits"]
+        base_z_id = self._pick_feature(
+            aux_id, self.id_feature_key, ("feat_joint", "feat_cls", "feat_con", "base")
+        )
+        if self.representation_mode == "single_parameter_matched":
+            z_id, correction = self.identity_capacity(base_z_id)
+            z_dom = z_id
+            logits = base_logits + correction
+        else:
+            aux_dom = backbone_forward_compat(self.dom_backbone, padded, return_aux=True)
+            z_id = base_z_id
+            z_dom_raw = self._pick_feature(
+                aux_dom,
+                self.dom_feature_key,
+                ("feat_imp", "feat_pa", "feat_dac", "base", "feat_con", "feat_cls", "feat_joint"),
+            )
+            z_dom, _ = self.dom_enhancer(z_dom_raw, padded)
+            logits = base_logits
+        z_id = F.normalize(z_id.float(), dim=1)
+        z_dom = F.normalize(z_dom.float(), dim=1)
+        logits = logits.float()
         return z_id[:count], z_dom[:count], logits[:count]
 
 
