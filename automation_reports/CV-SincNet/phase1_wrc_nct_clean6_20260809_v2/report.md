@@ -70,3 +70,35 @@ cd <release>/code && nohup setsid env RUN_ID=phase1_wrc_nct_clean6_20260809_v2 P
 5.每fold不可变readout/runtime导出成功，GI/WRC及eager/TS parity不超过`1e-5`。
 
 任一门失败即`REJECT`并关闭Q98/NCT阈值族；outer-held只作方向诊断，不得称为Phase3真实unknown。
+
+## 6.运行器技术终态（2026-08-09）
+
+状态：`ARTIFACTS_COMPLETE`；边界：`NO_PERFORMANCE_INTERPRETATION`。固定commit`59492f1b68e50a5181f2e753eb0dc7db3ab7945b`已无prefix归档至release，archive SHA256=`62e7e253783bdb07fbb3786081e612d961789759313fff2be1eb85d2fa650dd3`。远端archive代码SHA与给定Windows工作树SHA的差异仅为LF/CRLF口径，launcher两者一致；结构、`py_compile`、`eval --help`、`bash -n`和v2精确6条dry-run均通过。
+
+唯一冻结命令已执行一次，launcher PID=`3938012`；fold子PID=`F1:3938016,F2:3938017,F3:3938018,F4:3938019,F5:3938021,F6:3938023`。completion共6行且6条exit均为0；F1–F6均生成readout、runtime、metrics、scores，CSV均10401行。日志未发现Traceback、WRCNCTError、RuntimeError、TypeError、OOM等错误指纹。
+
+只读结构核验：六fold parity、eager/TorchScript接受一致性、`outer_used_for_fit_or_calibration=false`、outer rows=0、每RX calibration计数≥50、R/C/E行闭合、immutable和prototype不二次归一化（`new_geometry=false`）均通过。小artifact已回收至`E:\type10-7\automation_reports\CV-SincNet\phase1_wrc_nct_clean6_20260809_v2\artifacts`，包含6 readout、6 metrics、6 scores、6日志、`completion.tsv`和`manifest.json`；未下载runtime/NPZ/GI bundle/checkpoint。完成后无run-owned进程，8卡均0%/1MiB，SSH客户端/TCP22均清理；`retry=NO`。
+
+## 7.六折clean同行结果与裁决
+
+下表只使用v2完整矩阵。下降值均为同fold、同一E子集上“无拒识closed−WRC完整判决full”；正值代表WRC造成退化。held仅为跨TX方向诊断，不参与晋级。
+
+| Fold | known closed/full | overall下降(pp) | min-class下降 | min-RX下降 | min-day下降 | proxy FAR | proxy AUROC | held FAR | held AUROC |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| F1 | 98.20%/98.20% | 0.00 | 0.00 | 0.00 | 0.00 | 98.56% | 0.9260 | 100.00% | 0.9172 |
+| F2 | 99.80%/99.80% | 0.00 | 0.00 | 0.00 | 0.00 | 96.48% | 0.9399 | 99.75% | 0.4878 |
+| F3 | 98.20%/98.20% | 0.00 | 0.00 | 0.00 | 0.00 | 96.04% | 0.9270 | 93.75% | 0.9561 |
+| F4 | 99.00%/99.00% | 0.00 | 0.00 | 0.00 | 0.00 | 92.94% | 0.9375 | 97.25% | 0.6688 |
+| F5 | 98.40%/98.40% | 0.00 | 0.00 | 0.00 | 0.00 | 95.38% | 0.9271 | 97.25% | 0.8528 |
+| F6 | 97.80%/97.80% | 0.00 | 0.00 | 0.00 | 0.00 | 97.48% | 0.9267 | 99.00% | 0.8861 |
+| 平均 | 98.57%/98.57% | 0.00 | 0.00 | 0.00 | 0.00 | 96.14% | 0.9307 | 97.83% | 0.7948 |
+
+五项门裁决：
+
+1.模型与数据健康：通过，6/6完整且无错误。
+2.已知跨接收机性能：通过，overall与min-RX六折下降均为0。
+3.clean最低类别/最低day：通过，六折下降均为0；LEO floor仍待三场景实验。
+4.source proxy正信号：通过，6/6 FAR低于100%且AUROC高于0.926。FAR仍高，说明只是明确但很弱的拒识出口，不能称为真实unknown能力。
+5.deployment bundle：通过，6/6 readout/runtime导出且parity为0。
+
+clean裁决：`CLEAN_PASS / RELEASE_THREE_LEO_FLOOR_VIEWS`。WRC-NCT保留了NCT排序，但worst-RX上包络非常保守：平均只拒绝3.86%的proxy。该结果满足本轮预注册的“明确正信号”门，不满足也不冒充Phase3的unknown FAR≤5%目标。下一步只把同一clean readout冻结应用到`leo_clear_weak`、`leo_low_elev_weak`和`leo_rain_weak`三种物理样本互斥切片；不得在LEO上重新校准阈值。
