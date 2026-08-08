@@ -1,6 +1,6 @@
 # Phase1 DualReadout-Disagreement窄实验报告
 
-状态：`REVIEWED / READY_TO_RELEASE`
+状态：`ANALYZED / REJECTED_KNOWN_GATE`
 
 目标模式：`GOAL_MODE=ACTIVE`
 
@@ -55,6 +55,8 @@ pytest -q code/tests/test_phase1_dualreadout_disagreement_eval.py code/tests/tes
 | log root | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_dualreadout_disagree_20260808_v1` |
 | 资源 | CPU单进程；GPU不占用 |
 
+实际release：`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_dualreadout_disagree_20260808_v1_5c510e8d`；commit=`5c510e8d03ca0e6d3e2ece2b9ca620e68a6ec422`。B/C输入SHA256分别为`31fc239a…`和`b4e980a5…`，与上一run冻结清单一致。两条命令均只执行一次并exit=0；无错误指纹，GPU0–7空闲，SSH清理完成。manifest的首次`active_eval`被生成manifest的shell命令自身误匹配；随后用不自匹配表达式复核实际评估Python进程为none。
+
 冻结执行两行：
 
 ```text
@@ -68,9 +70,17 @@ python scripts/eval_phase1_dualreadout_disagreement.py --angular_npz <B.npz> --r
 
 元数据/shape不一致、输入hash/checkout错误、输出覆盖或确定性异常时停止并保留证据；不得按FAR或accuracy中止。晋级窄门：proxy FAR<38.25%，source full accuracy不低于86.813%，held-known FAR<=21.25%。即使通过但FAR>5%，也只允许进入下一次LEO弱信道窄实验，不得写成Phase3真实unknown或正式deployment bundle。
 
-## 6.结果（待回收）
+## 6.完整同排结果
 
 | row | known count | unknown count | source full acc | unknown FAR | JS AUROC | verdict |
 |---|---:|---:|---:|---:|---:|---|
-| proxy | pending | pending | pending | pending | pending | pending |
-| held-known | pending | pending | pending | pending | pending | pending |
+| proxy | 1600 | 400 | 85.313% | 37.500% | 0.6848 | proxy FAR通过相对门；known门失败 |
+| held-known | 1600 | 400 | 85.313% | 19.750% | 0.6994 | FAR相对门通过；known门失败 |
+
+共同known closed accuracy=96.625%、coverage=85.438%、accepted accuracy=99.854%、old retention=88.292%。JS Q0.95阈值仅由1517条B/C联合正确source样本确定；两个held集合均未参与拟合。
+
+相对单读出B，proxy FAR改善`0.75pp`，held-known FAR改善`1.50pp`，但source full accuracy从88.813%降到85.313%，下降`3.50pp`，超过预注册的2pp容忍度。因此整体结论为`REJECTED_KNOWN_GATE`，不进入LEO弱信道窄实验，也不导出正式bundle。
+
+## 7.解释与下一步
+
+JS连续分歧本身具有诊断信号，但把`top-1一致+JS Q0.95`作为硬门只换来很小FAR收益，却明显损失已知覆盖。下一步保留C作为LEO鲁棒类别路径、B/JS只作为连续`e_unknown`候选，不再把跨模型一致性设为本地硬拒识；是否利用该连续证据应在Phase3多接收节点协同中通过非补偿旧类准确率门验证。本结果仍是source proxy开发证据，不是Phase3真实unknown。
