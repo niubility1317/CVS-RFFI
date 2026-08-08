@@ -3,11 +3,11 @@
 版本：2026-08-07  
 目标分支：`codex/phase3-responsibility-20260807`  
 基线提交：`f9050cfa45cb5e8dd3d37181bf4ccf1683084b29`  
-目标来源：`E:\codex\home\attachments\09a65902-d4a2-49f7-966e-4b03ed53ba09\goal-objective.md`
+目标来源：`E:\codex\home\attachments\c75febfd-60b9-42bb-9825-a0b3b9eda0bb\goal-objective.md`
 
 执行模式：`GOAL_MODE=ACTIVE`
 
-当前状态：`IMPLEMENTING`（Phase1真实checkpoint不可变bundle与truth-free本地证据已完成技术闭环但未性能晋级；Phase3正式性能矩阵等待不依赖真值的事件/接收绑定数据）
+当前状态：`IMPLEMENTING`（Phase1真实checkpoint不可变bundle、truth-free本地证据及预标签物理binding桥已完成本地技术闭环但未性能晋级；Phase3正式性能矩阵等待真实采集receipt）
 
 完成边界：职责文档、代码实现、本地验证、独立`P0/P1`审查、N607非覆盖运行、完整同排artifact与证据受限结论全部闭环后，才允许把目标标为完成。
 
@@ -40,12 +40,13 @@
 | P1-06 | 二 | 支持对比、margin、energy、EVT、held-TX OE、`z_id/z_dom`解耦、半径/协方差、梯度冲突和分层解冻的开放候选空间 | 设计文档、候选配置 | pending | feasibility review、method lock | 不是要求一次候选堆叠全部机制 |
 | P1-07 | 二 | Phase1候选五项窄晋级门：不崩溃、known跨接收机不明显退化、floor不严重下降、proxy unknown正信号、真实checkpoint可导出bundle | evaluator、报告模板、release gate | implemented | GeoSat Lite四臂、held-TX审计、双读出与真实bundle同排诊断 | 导出门通过；bundle proxy/held FAR=71.75%/66.75%，无开放世界性能晋级 |
 | LOCAL-01 | 三 | 每个节点从同一冻结或合法适配后的Phase1 extractor输出`z_id`、`z_dom`、`q`、`d_class`、`e_unknown`、`p_local` | 本地证据schema/extractor | verified | 真实bundle smoke 2400行；evidence receipt无role/truth；content root绑定 | 当前证据为逐reception proxy，不主张same-event |
-| LOCAL-02 | 三 | 本地证据先不可变封存，再进入协同；单节点输出仅为registered/unknown/defer | artifact writer/validator | verified | canonical SHA、tamper负测、单节点identity、N607 manifest | scorer不得回流 |
+| LOCAL-02 | 三 | 本地证据先不可变封存，再进入协同；单节点输出仅为registered/unknown/defer | artifact writer/validator | verified | 精确allowlist；`z_id/z_dom/d_class/e_unknown`必需；raw/cache/member负测；canonical SHA、tamper负测、单节点identity | scorer不得回流 |
 | LOCAL-03 | 三 | 单节点不得读取query真值、真实role、真实batch构成、类别配额和独立scorer结果 | predictor API、negative tests | verified | forbidden-field负测；prediction manifest明确`truth_sidecar_opened=false` | 与`p2_min_v1`逐样本边界对齐 |
+| BIND-01 | 六；`项目.md`7.3 | 将采集系统在标签可见前生成的物理绑定receipt一对一连接到既有truth-free逐reception证据，形成最终`verified_physical`本地证据；不得由TX、role或truth推导event | `code/cvsrffi/phase3_care_poe.py`；`code/scripts/phase3_bind_physical_evidence.py`；focused tests | implemented | 输入/绑定全覆盖、双ID唯一、event内node唯一、hash tamper、truth/role禁入、输出直入CARE-PoE；39项focused tests通过 | 本地接口闭环；N607库存审计未发现真实receipt，因此尚无正式数据运行 |
 | P3-01 | 四 | 报告融合位置；协同输入只能来自已冻结本地证据及合法可见性、时空、频率/波束、轨迹和anonymous-track状态 | Phase3 schema/runner/docs | verified | G0 design、predictor/scorer隔离、N607 artifact | 外部确权证据未进入predictor |
 | P3-02 | 四 | 显式处理接收机差异、信道/SNR差异、缺失/延迟、冲突、同一事件、多过境匿名实体和相关证据去重 | fusion core、tests | verified | late/missing/integrity/相关复制/顺序不变性及same-input负测 | 合成技术证据，不是实际在轨性能 |
 | P3-03 | 四 | 正式方法必须有真实节点交互；平均、投票、最高置信节点仅作为基线 | fusion core、ablation configs | implemented | CARE-PoE与leader单节点A/B/C/D已可运行 | 真实节点性能等待合法物理事件数据 |
-| TASK-01 | 5.1 | 协同unknown拒识以`unknown_false_accept_rate<=5%`和`unknown_safe_rejection_rate>=95%`为目标；registered被reject/defer按身份错误计数 | scorer、report schema | pending | hand-calculated fixtures、same-row metrics | 不允许全拒绝取巧 |
+| TASK-01 | 5.1 | 协同unknown拒识以`unknown_false_accept_rate<=5%`和`unknown_safe_rejection_rate>=95%`为目标；registered被reject/defer按身份错误计数 | scorer、report schema | pending | scorer已验证prediction manifest/hash/行数、冻结矩阵完整覆盖及registered reject/defer计错；正式同排性能尚无合法输入 | 不允许全拒绝取巧；技术评分器完成不等于目标达成 |
 | TASK-02 | 5.2 | 协同旧类适应比较独立、共享平均、质量加权和完整协同域状态；K10注册后old acc≥92%、最低old acc≥88% | adaptation/fusion matrix、scorer | pending | 同一row四状态指标 | 需沿用`DA0_REG0`等四状态命名 |
 | TASK-03 | 5.3 | unknown观测只能关联为`anonymous_entity_id`，不能直接成为新类 | track store/association/tests | verified | anonymous无语义身份且非unknown拒绝生成负测 | 不等于语义身份 |
 | TASK-04 | 5.4 | 可信确权输出候选物理身份、证据来源/独立性、冲突、置信度、有效期和`registration_authorized` | authorization credential schema | verified | 缺失/过期/冲突/非独立来源fail-closed测试 | G0使用外部credential fixture，不是现实授权服务 |
@@ -122,7 +123,7 @@
 5.这些event的观测节点数分布为1节点311、2节点541、3节点237、4节点24、5节点0。
 6.该artifact使用`receiver_domain_ranked_by_role_tx_scenario`，不是物理same-event对齐，只能作多接收节点代理协同。
 7.旧R8的`event_id`仍编码role/true label且融合与scorer共处同一历史函数；新CARE-PoE已用独立预测/评分入口关闭该技术缺口，但不能修复旧数据语义。
-8.新`LocalEvidenceV2`已实现双ID、canonical seal、同输入跨bundle reception绑定和不可变本地证据schema；旧R8证据行仍不满足输入契约。
+8.新`LocalEvidenceV3`已实现双ID、canonical seal、同输入跨bundle reception绑定和不可变本地证据schema；v3预测还必须核对外部binding sidecar/root，旧v2与R8证据行均不满足输入契约。
 9.真实Phase1 v2 bundle已从B/C checkpoint导出`z_id/z_dom/q/d_class/e_unknown/p_local`，content root为`97e31efa...`；它只完成技术接口。
 10.bundle source-held proxy/held FAR为71.75%/66.75%，未达到5%目标，也未形成相对C的开放世界正信号，因此不得性能晋级。
 11.GeoSat Lite入口已用TX级全局互斥替代本轮batch轮换proxy语义；旧proxy loss仍只作历史实现，不进入该run。
@@ -145,3 +146,14 @@
 - anonymous→外部credential→5个fresh independent event已生成`FRESH_K_READY_FOR_STAGE2_C` receipt，历史unknown event未转support。
 - 16项小artifact与远端manifest逐项hash匹配；无异常指纹，评估进程、SSH/TCP22均清理，8卡保持空闲。
 - 本run状态严格为`ARTIFACTS_COMPLETE_NO_PERFORMANCE_RESULT`；合成metrics不得用于unknown FAR、安全拒绝率或旧类准确率主张。
+
+### 2026-08-08物理binding桥与当前库存
+
+- 独立完成审计发现旧`LocalEvidenceV2`会接受未登记额外字段；新`LocalEvidenceV3`已改为精确allowlist，并把`z_id/z_dom/d_class/e_unknown`设为必需输入。旧v2拒绝加载，必须从源证据重新封存；`raw_iq`、`source_cache`、`member_ids`、truth和role负测均fail closed。
+- 新增`cvs.phase3.physical_reception_binding.v1`与`phase3_bind_physical_evidence.py`：binding必须由采集系统在标签可见前生成，包含source reception引用、双ID、node、相关组、delay/deadline和canonical hash。
+- 绑定器要求输入reception一对一全覆盖、同一binding receipt和base manifest、node一致、输出`satellite_reception_id`全局唯一且同event内node唯一；不得根据TX、role、truth、rank或score推导event。
+- G0 fixture已不再手工伪造verified evidence，而是先生成truth-free proxy evidence及15条封存binding，再通过同一绑定器生成base/new verified evidence，最后运行60行A/B/C/D×N1-N5预测。
+- `ssr-gpu`中Phase3与真实bundle相关39项focused tests、`py_compile`和新CLI `--help`通过；独立复审先发现scorer信任manifest自报预算轴的P0，定点修复为强制`[1,2,3,4,5]`并加入自洽截断负测后，复审结论为`P0=0,P1=0,ALLOW_N607_SYNTHETIC_G0_BINDING_V3=YES`。
+- 正式predictor要求调用方同时提供binding JSONL与冻结binding root；scorer要求prediction manifest并验证预测hash、行数、`truth_sidecar_opened=false`及A/B/C/D×N1-N5完整覆盖，关闭仅靠行内自报hash或替换预测文件进入评分的旁路。
+- N607普通账户只读库存审计未发现任何真实`emission_event_id/satellite_reception_id`资产或采集binding/provenance receipt；现有ManySig/ManyRx/ManyTx/SingleDay和Oracle X/Y文件不能据此形成`verified_physical`输入。
+- 远端日志唯一命中只是字段名文本引用，`runtime_cache_audit.json`只有`physical_id_unique`计数；均不是event级资产。库存审计未读IQ/features/labels，未写服务器，结束时GPU、SSH和TCP22全部清零。

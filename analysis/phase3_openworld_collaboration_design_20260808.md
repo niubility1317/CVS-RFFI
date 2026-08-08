@@ -156,7 +156,7 @@ known hard-core TPR定义为`known_validation_manifest`中registered样本被正
 
 ### 4.1本地证据与双ID
 
-每个接收节点只发布已封存的`LocalEvidenceV2`：
+每个接收节点只发布已封存的`LocalEvidenceV3`：
 
 ```text
 schema_version
@@ -177,7 +177,7 @@ correlation_group_id/delay_ms
 
 重复reception、跨group/event拼接、hash/bundle不一致或deadline后到达均不得改变已封存预测。event内任一ID/hash/bundle冲突使整event fail closed并输出`defer/EVENT_INTEGRITY_FAILURE`，不能丢弃坏节点后继续给正式决策。
 
-`LocalEvidenceV2`不得含truth、role、credential或`registration_authorized`。真值只存在于独立只读`ScorerTruthSidecar(reception_id→role,true_label)`；预测artifact封存后评分进程才可打开sidecar。sidecar缺失时预测仍必须完成且hash不变。
+`LocalEvidenceV3`不得含truth、role、credential或`registration_authorized`。正式预测还必须读取采集系统封存的物理binding sidecar并核对冻结binding root，不能只信任evidence行内自报的receipt ID/hash。旧v2明确拒绝加载，必须从源证据重新封存。真值只存在于独立只读`ScorerTruthSidecar(reception_id→role,true_label)`；预测artifact封存后评分进程才可打开sidecar。sidecar缺失时预测仍必须完成且hash不变。
 
 ### 4.2相关性感知融合
 

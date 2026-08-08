@@ -15,7 +15,9 @@ from pathlib import Path
 from typing import Any, Iterable, Mapping, Sequence
 
 
-SCHEMA = "cvs.phase3.local_evidence.v2"
+SCHEMA = "cvs.phase3.local_evidence.v3"
+LEGACY_SCHEMA_V2 = "cvs.phase3.local_evidence.v2"
+PHYSICAL_BINDING_SCHEMA = "cvs.phase3.physical_reception_binding.v1"
 FORBIDDEN_PREDICTOR_FIELDS = {
     "role",
     "true_label",
@@ -23,6 +25,34 @@ FORBIDDEN_PREDICTOR_FIELDS = {
     "credential",
 }
 ALLOWED_DECISIONS = {"registered", "unknown", "defer"}
+LOCAL_EVIDENCE_ALLOWED_FIELDS = {
+    "schema_version",
+    "linkage_mode",
+    "emission_event_id",
+    "proxy_group_id",
+    "satellite_reception_id",
+    "node_id",
+    "base_manifest_id",
+    "bundle_id",
+    "class_handles",
+    "z_id",
+    "z_dom",
+    "q",
+    "d_class",
+    "e_unknown",
+    "p_local",
+    "correlation_group_id",
+    "delay_ms",
+    "deadline_ms",
+    "local_decision",
+    "local_label",
+    "reason_code",
+    "sealed_at_ms",
+    "js_disagreement",
+    "physical_binding_receipt_id",
+    "physical_binding_hash",
+    "evidence_hash",
+}
 
 
 class EvidenceError(ValueError):
@@ -58,6 +88,9 @@ def _finite_float(value: Any, name: str) -> float:
 
 def _validate_payload(payload: Mapping[str, Any], *, require_hash: bool) -> dict[str, Any]:
     raw = dict(payload)
+    unexpected = sorted(set(raw).difference(LOCAL_EVIDENCE_ALLOWED_FIELDS))
+    if unexpected:
+        raise EvidenceError(f"unexpected local evidence fields: {unexpected}")
     if require_hash:
         digest = raw.get("evidence_hash")
         if not isinstance(digest, str) or len(digest) != 64:
@@ -77,8 +110,12 @@ def _validate_payload(payload: Mapping[str, Any], *, require_hash: bool) -> dict
         "base_manifest_id",
         "bundle_id",
         "class_handles",
+        "z_id",
+        "z_dom",
         "p_local",
         "q",
+        "d_class",
+        "e_unknown",
         "correlation_group_id",
         "delay_ms",
         "deadline_ms",
@@ -89,15 +126,23 @@ def _validate_payload(payload: Mapping[str, Any], *, require_hash: bool) -> dict
     missing = sorted(required.difference(raw))
     if missing:
         raise EvidenceError(f"missing local evidence fields: {missing}")
+    if raw["schema_version"] == LEGACY_SCHEMA_V2:
+        raise EvidenceError("local evidence v2 is incompatible with the physical-binding contract; re-emit as v3")
     if raw["schema_version"] != SCHEMA:
         raise EvidenceError(f"unsupported schema_version={raw['schema_version']!r}")
     mode = raw["linkage_mode"]
     if mode == "verified_physical":
         if not raw.get("emission_event_id") or raw.get("proxy_group_id"):
             raise EvidenceError("verified_physical requires only emission_event_id")
+        if not raw.get("physical_binding_receipt_id") or not raw.get("physical_binding_hash"):
+            raise EvidenceError("verified_physical requires a sealed physical binding receipt")
+        if not isinstance(raw["physical_binding_hash"], str) or len(raw["physical_binding_hash"]) != 64:
+            raise EvidenceError("physical_binding_hash must be a SHA256 hex digest")
     elif mode == "proxy_unverified":
         if not raw.get("proxy_group_id") or raw.get("emission_event_id"):
             raise EvidenceError("proxy_unverified requires only proxy_group_id")
+        if raw.get("physical_binding_receipt_id") or raw.get("physical_binding_hash"):
+            raise EvidenceError("proxy_unverified must not carry physical binding fields")
     else:
         raise EvidenceError("invalid linkage_mode")
     for name in (
@@ -115,6 +160,24 @@ def _validate_payload(payload: Mapping[str, Any], *, require_hash: bool) -> dict
         raise EvidenceError("class_handles must be a non-empty unique list")
     if any(not isinstance(handle, str) or not handle for handle in handles):
         raise EvidenceError("class_handles entries must be non-empty strings")
+    for name in ("z_id", "z_dom"):
+        vector = raw[name]
+        if not isinstance(vector, list) or not vector:
+            raise EvidenceError(f"{name} must be a non-empty vector")
+        raw[name] = [_finite_float(value, name) for value in vector]
+    distances = raw["d_class"]
+    if not isinstance(distances, list) or len(distances) != len(handles):
+        raise EvidenceError("d_class must contain one distance per registered class")
+    raw["d_class"] = [_finite_float(value, "d_class") for value in distances]
+    if any(value < 0.0 for value in raw["d_class"]):
+        raise EvidenceError("d_class values must be non-negative")
+    raw["e_unknown"] = _finite_float(raw["e_unknown"], "e_unknown")
+    if not 0.0 <= raw["e_unknown"] <= 1.0:
+        raise EvidenceError("e_unknown must be in [0,1]")
+    if "js_disagreement" in raw:
+        raw["js_disagreement"] = _finite_float(raw["js_disagreement"], "js_disagreement")
+        if raw["js_disagreement"] < 0.0:
+            raise EvidenceError("js_disagreement must be non-negative")
     probabilities = raw["p_local"]
     if not isinstance(probabilities, list) or len(probabilities) != len(handles) + 1:
         raise EvidenceError("p_local must contain C registered values plus one unknown value")
@@ -155,6 +218,195 @@ def seal_local_evidence(payload: Mapping[str, Any]) -> dict[str, Any]:
 
 def validate_local_evidence(payload: Mapping[str, Any]) -> dict[str, Any]:
     return _validate_payload(payload, require_hash=True)
+
+
+def _validate_physical_binding(payload: Mapping[str, Any], *, require_hash: bool) -> dict[str, Any]:
+    raw = dict(payload)
+    required = {
+        "schema_version",
+        "binding_receipt_id",
+        "base_manifest_id",
+        "source_satellite_reception_id",
+        "emission_event_id",
+        "satellite_reception_id",
+        "node_id",
+        "correlation_group_id",
+        "delay_ms",
+        "deadline_ms",
+        "sealed_at_ms",
+        "created_before_label_access",
+    }
+    allowed = required | {"binding_hash"}
+    unexpected = sorted(set(raw).difference(allowed))
+    if unexpected:
+        raise EvidenceError(f"unexpected physical binding fields: {unexpected}")
+    missing = sorted(required.difference(raw))
+    if missing:
+        raise EvidenceError(f"missing physical binding fields: {missing}")
+    if require_hash:
+        digest = raw.get("binding_hash")
+        if not isinstance(digest, str) or len(digest) != 64:
+            raise EvidenceError("missing or malformed binding_hash")
+        unsigned_received = dict(raw)
+        unsigned_received.pop("binding_hash", None)
+        if sha256_json(unsigned_received) != digest:
+            raise EvidenceError("binding_hash mismatch")
+    if raw["schema_version"] != PHYSICAL_BINDING_SCHEMA:
+        raise EvidenceError(f"unsupported physical binding schema={raw['schema_version']!r}")
+    for name in (
+        "binding_receipt_id",
+        "base_manifest_id",
+        "source_satellite_reception_id",
+        "emission_event_id",
+        "satellite_reception_id",
+        "node_id",
+        "correlation_group_id",
+    ):
+        if not isinstance(raw[name], str) or not raw[name]:
+            raise EvidenceError(f"{name} must be a non-empty string")
+    if raw["created_before_label_access"] is not True:
+        raise EvidenceError("physical binding must be created before label access")
+    for name in ("delay_ms", "deadline_ms", "sealed_at_ms"):
+        raw[name] = _finite_float(raw[name], name)
+        if raw[name] < 0.0:
+            raise EvidenceError(f"{name} must be non-negative")
+    return raw
+
+
+def seal_physical_binding(payload: Mapping[str, Any]) -> dict[str, Any]:
+    """Seal one truth-free acquisition-system event/reception binding."""
+
+    unsigned = dict(payload)
+    unsigned.pop("binding_hash", None)
+    normalized = _validate_physical_binding(unsigned, require_hash=False)
+    normalized["binding_hash"] = sha256_json(normalized)
+    return normalized
+
+
+def validate_physical_binding(payload: Mapping[str, Any]) -> dict[str, Any]:
+    return _validate_physical_binding(payload, require_hash=True)
+
+
+def physical_binding_root(bindings: Sequence[Mapping[str, Any]]) -> str:
+    validated = [validate_physical_binding(binding) for binding in bindings]
+    ordered = sorted(validated, key=lambda binding: binding["source_satellite_reception_id"])
+    return sha256_json(ordered)
+
+
+def validate_evidence_physical_bindings(
+    records: Sequence[Mapping[str, Any]],
+    bindings: Sequence[Mapping[str, Any]],
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    """Verify that every physical evidence row is backed by one capture receipt."""
+
+    evidence = [validate_local_evidence(record) for record in records]
+    if not evidence or any(record["linkage_mode"] != "verified_physical" for record in evidence):
+        raise EvidenceError("physical binding verification requires verified_physical evidence")
+    validated_bindings = [validate_physical_binding(binding) for binding in bindings]
+    if not validated_bindings:
+        raise EvidenceError("verified_physical evidence requires physical binding records")
+    if len({binding["binding_receipt_id"] for binding in validated_bindings}) != 1:
+        raise EvidenceError("physical bindings must share one binding_receipt_id")
+    source_ids = [binding["source_satellite_reception_id"] for binding in validated_bindings]
+    if len(source_ids) != len(set(source_ids)):
+        raise EvidenceError("physical binding source receptions must be unique")
+    by_reception: dict[str, dict[str, Any]] = {}
+    for binding in validated_bindings:
+        reception_id = binding["satellite_reception_id"]
+        if reception_id in by_reception:
+            raise EvidenceError("physical binding output receptions must be unique")
+        by_reception[reception_id] = binding
+    evidence_ids = [record["satellite_reception_id"] for record in evidence]
+    if len(evidence_ids) != len(set(evidence_ids)) or set(evidence_ids) != set(by_reception):
+        raise EvidenceError("physical binding records must exactly cover verified evidence receptions")
+    compared_fields = (
+        ("base_manifest_id", "base_manifest_id"),
+        ("emission_event_id", "emission_event_id"),
+        ("satellite_reception_id", "satellite_reception_id"),
+        ("node_id", "node_id"),
+        ("correlation_group_id", "correlation_group_id"),
+        ("delay_ms", "delay_ms"),
+        ("deadline_ms", "deadline_ms"),
+        ("sealed_at_ms", "sealed_at_ms"),
+        ("physical_binding_receipt_id", "binding_receipt_id"),
+        ("physical_binding_hash", "binding_hash"),
+    )
+    for record in evidence:
+        binding = by_reception[record["satellite_reception_id"]]
+        if any(record[evidence_name] != binding[binding_name] for evidence_name, binding_name in compared_fields):
+            raise EvidenceError("verified evidence does not match its physical binding receipt")
+    return evidence, validated_bindings
+
+
+def bind_verified_physical_evidence(
+    records: Sequence[Mapping[str, Any]],
+    bindings: Sequence[Mapping[str, Any]],
+) -> list[dict[str, Any]]:
+    """Bind pre-label acquisition receipts to already sealed local evidence.
+
+    The function never infers events from identity, role, truth, receiver rank, or
+    score.  Every proxy reception must have exactly one sealed physical binding.
+    """
+
+    if not records or not bindings:
+        raise EvidenceError("physical binding requires non-empty evidence and bindings")
+    evidence = [validate_local_evidence(record) for record in records]
+    if any(record["linkage_mode"] != "proxy_unverified" for record in evidence):
+        raise EvidenceError("physical binding input must be proxy_unverified evidence")
+    sealed_bindings = [validate_physical_binding(binding) for binding in bindings]
+    if len({binding["binding_receipt_id"] for binding in sealed_bindings}) != 1:
+        raise EvidenceError("physical bindings must share one binding_receipt_id")
+    if len({binding["base_manifest_id"] for binding in sealed_bindings}) != 1:
+        raise EvidenceError("physical bindings must share one base_manifest_id")
+
+    by_source: dict[str, dict[str, Any]] = {}
+    for binding in sealed_bindings:
+        source_id = binding["source_satellite_reception_id"]
+        if source_id in by_source:
+            raise EvidenceError("duplicate source_satellite_reception_id in physical bindings")
+        by_source[source_id] = binding
+    evidence_ids = [record["satellite_reception_id"] for record in evidence]
+    if len(evidence_ids) != len(set(evidence_ids)):
+        raise EvidenceError("duplicate source reception in local evidence")
+    if set(evidence_ids) != set(by_source):
+        raise EvidenceError("physical bindings must exactly cover local evidence receptions")
+
+    rebound: list[dict[str, Any]] = []
+    for record in evidence:
+        binding = by_source[record["satellite_reception_id"]]
+        if binding["base_manifest_id"] != record["base_manifest_id"]:
+            raise EvidenceError("physical binding base_manifest_id mismatch")
+        if binding["node_id"] != record["node_id"]:
+            raise EvidenceError("physical binding node_id mismatch")
+        payload = dict(record)
+        payload.pop("evidence_hash", None)
+        payload.pop("proxy_group_id", None)
+        payload.update(
+            {
+                "linkage_mode": "verified_physical",
+                "emission_event_id": binding["emission_event_id"],
+                "satellite_reception_id": binding["satellite_reception_id"],
+                "correlation_group_id": binding["correlation_group_id"],
+                "delay_ms": binding["delay_ms"],
+                "deadline_ms": binding["deadline_ms"],
+                "sealed_at_ms": binding["sealed_at_ms"],
+                "physical_binding_receipt_id": binding["binding_receipt_id"],
+                "physical_binding_hash": binding["binding_hash"],
+            }
+        )
+        rebound.append(seal_local_evidence(payload))
+
+    reception_ids = [record["satellite_reception_id"] for record in rebound]
+    if len(reception_ids) != len(set(reception_ids)):
+        raise EvidenceError("physical satellite_reception_id must be globally unique")
+    event_nodes: set[tuple[str, str]] = set()
+    for record in rebound:
+        pair = (record["emission_event_id"], record["node_id"])
+        if pair in event_nodes:
+            raise EvidenceError("an emission event cannot contain duplicate node evidence")
+        event_nodes.add(pair)
+        validate_local_evidence(record)
+    return rebound
 
 
 @dataclass(frozen=True)
@@ -212,6 +464,7 @@ def fuse_event(
     records: Sequence[Mapping[str, Any]],
     config: FusionConfig,
     *,
+    physical_bindings: Sequence[Mapping[str, Any]] | None = None,
     node_priors: Mapping[str, float] | None = None,
     node_order: Mapping[str, int] | None = None,
 ) -> dict[str, Any]:
@@ -221,7 +474,13 @@ def fuse_event(
     if not records:
         return _defer_result("", "NO_RECEPTION")
     try:
-        valid = [validate_local_evidence(record) for record in records]
+        modes = {record.get("linkage_mode") for record in records}
+        if modes == {"verified_physical"}:
+            valid, _ = validate_evidence_physical_bindings(records, list(physical_bindings or []))
+        elif physical_bindings:
+            raise EvidenceError("proxy_unverified evidence must not receive physical bindings")
+        else:
+            valid = [validate_local_evidence(record) for record in records]
         keys = {event_key(record) for record in valid}
         if len(keys) != 1:
             raise EvidenceError("mixed event keys")
@@ -350,6 +609,8 @@ def run_abcd_matrix(
     config: FusionConfig,
     *,
     node_roster: Sequence[str],
+    physical_bindings: Sequence[Mapping[str, Any]] | None = None,
+    expected_physical_binding_root: str | None = None,
     budgets: Sequence[int] = (1, 2, 3, 4, 5),
     node_priors: Mapping[str, float] | None = None,
 ) -> list[dict[str, Any]]:
@@ -357,8 +618,25 @@ def run_abcd_matrix(
 
     if len(node_roster) < max(budgets) or len(set(node_roster)) != len(node_roster):
         raise ValueError("node_roster must uniquely cover every budget")
-    base_events = _group_events(base_records)
-    new_events = _group_events(new_records)
+    modes = {record.get("linkage_mode") for record in list(base_records) + list(new_records)}
+    binding_records: list[Mapping[str, Any]] = []
+    if modes == {"verified_physical"}:
+        if physical_bindings is None or expected_physical_binding_root is None:
+            raise EvidenceError("verified_physical matrix requires binding records and an expected binding root")
+        binding_records = list(physical_bindings)
+        base_valid, _ = validate_evidence_physical_bindings(base_records, binding_records)
+        new_valid, _ = validate_evidence_physical_bindings(new_records, binding_records)
+        if physical_binding_root(binding_records) != expected_physical_binding_root:
+            raise EvidenceError("physical binding root mismatch")
+    elif modes == {"proxy_unverified"}:
+        if physical_bindings is not None or expected_physical_binding_root is not None:
+            raise EvidenceError("proxy_unverified matrix must not receive physical binding inputs")
+        base_valid = [validate_local_evidence(record) for record in base_records]
+        new_valid = [validate_local_evidence(record) for record in new_records]
+    else:
+        raise EvidenceError("base/new linkage modes must be identical")
+    base_events = _group_events(base_valid)
+    new_events = _group_events(new_valid)
     if set(base_events) != set(new_events):
         raise EvidenceError("base/new event sets differ")
     rows: list[dict[str, Any]] = []
@@ -379,6 +657,8 @@ def run_abcd_matrix(
             "correlation_group_id",
             "delay_ms",
             "deadline_ms",
+            "physical_binding_receipt_id",
+            "physical_binding_hash",
         )
         for node_id in base_by_node:
             if any(base_by_node[node_id][name] != new_by_node[node_id][name] for name in same_input_fields):
@@ -399,6 +679,16 @@ def run_abcd_matrix(
                 result = fuse_event(
                     arm_records,
                     config,
+                    physical_bindings=(
+                        [
+                            binding
+                            for binding in binding_records
+                            if binding["satellite_reception_id"]
+                            in {record["satellite_reception_id"] for record in arm_records}
+                        ]
+                        if binding_records
+                        else None
+                    ),
                     node_priors=node_priors,
                     node_order=node_order,
                 )
@@ -410,6 +700,9 @@ def run_abcd_matrix(
 def score_predictions(
     predictions: Sequence[Mapping[str, Any]],
     truth_sidecar: Sequence[Mapping[str, Any]],
+    *,
+    expected_arms: Sequence[str] | None = None,
+    expected_budgets: Sequence[int] | None = None,
 ) -> dict[str, Any]:
     """Score sealed predictions; this is the only truth-reading function."""
 
@@ -435,6 +728,25 @@ def score_predictions(
             raise ValueError(f"duplicate prediction row={prediction_key!r}")
         seen_prediction_keys.add(prediction_key)
         buckets[(arm, budget)].append(prediction)
+    truth_keys = set(truth)
+    for bucket, rows in buckets.items():
+        row_keys = {str(row["event_key"]) for row in rows}
+        if row_keys != truth_keys:
+            missing = sorted(truth_keys.difference(row_keys))
+            extra = sorted(row_keys.difference(truth_keys))
+            raise ValueError(f"prediction/truth event coverage mismatch for {bucket!r}: missing={missing}, extra={extra}")
+    if expected_arms is not None or expected_budgets is not None:
+        if expected_arms is None or expected_budgets is None:
+            raise ValueError("expected_arms and expected_budgets must be provided together")
+        arms = tuple(str(value) for value in expected_arms)
+        budgets_expected = tuple(int(value) for value in expected_budgets)
+        if not arms or len(set(arms)) != len(arms) or not budgets_expected or len(set(budgets_expected)) != len(budgets_expected):
+            raise ValueError("expected matrix axes must be non-empty and unique")
+        expected_buckets = {(arm, budget) for arm in arms for budget in budgets_expected}
+        if set(buckets) != expected_buckets:
+            missing = sorted(expected_buckets.difference(buckets))
+            extra = sorted(set(buckets).difference(expected_buckets))
+            raise ValueError(f"prediction matrix coverage mismatch: missing={missing}, extra={extra}")
     metrics: dict[str, Any] = {}
     for (arm, budget), rows in sorted(buckets.items()):
         known_total = known_correct = 0

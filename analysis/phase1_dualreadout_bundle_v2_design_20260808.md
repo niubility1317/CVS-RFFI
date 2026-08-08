@@ -68,7 +68,7 @@ q=\sqrt{a_{dom}(1-H(p_C)/\log C)}
 
 ## 5.Phase3接口
 
-每个接收节点把v2输出封装为`LocalEvidenceV2`：`p_local/q/local_decision/local_label`来自bundle；event/reception/node/correlation/deadline来自标签可见前的采集元数据。bundle runtime不得自行构造same-event关系。缺少合法事件绑定时只允许逐reception或`proxy_unverified`技术审计。
+每个接收节点把v2 bundle输出重新封装为`LocalEvidenceV3`：`p_local/q/local_decision/local_label`来自bundle；event/reception/node/correlation/deadline来自标签可见前的采集元数据。bundle runtime不得自行构造same-event关系。缺少合法事件绑定时只允许逐reception或`proxy_unverified`技术审计；旧Phase3 evidence v2不得直接升级，必须从源证据重新封存。
 
 ## 6.发布矩阵
 
@@ -77,4 +77,3 @@ q=\sqrt{a_{dom}(1-H(p_C)/\log C)}
 3.复用已封存B/C actual-IQ feature NPZ并补充C `z_dom` source-only导出，构建不可覆盖bundle。
 4.真实received-IQ no-query smoke输出本地证据；proxy/held只在bundle封存后审计。
 5.独立P0/P1后发布；不增加签名权限层作为本轮前置门。
-
