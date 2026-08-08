@@ -242,4 +242,4 @@ G的平均已知clean closed accuracy相对C仅`+0.021pp`，但平均strict UDU�
 
 最终判决：`P1-LOTO-CLSGeo12_REJECTED_NO_STABLE_GAIN`。顶层分类特征的known-only角度几何并未继承为稳定的open-world方法经验；它保持了平均clean性能，却在不同held-TX之间产生大幅方向反转，并让primary主汇总整体变差。不得用F2的单fold改善、F6的secondary低FAR或任何边际最优值晋级G，也不得用本轮结果更新Phase3正式unknown声明或deployment bundle。
 
-保留结论：GeoSat-C的clean->LEO一致性仍是当前较稳健的Phase1表征基线；后续不再训练相同的角度对齐/几何变体。下一轮应优先做零训练变更的source-only后处理：在六个C checkpoint和相同primary轮转上，预注册一个固定cosine class-prototype Q95与一个固定cosine kNN-5 Q95读出，只检验冻结表征是否存在可用密度信号；若仍无候选同时满足primary`FAR<=5%`、safe rejection`>=95%`和已知下降`<=2pp`，则停止source-proxy拒识优化，等待满足`项目.md`的真实同步事件与物理事件ID数据。
+保留结论：GeoSat-C的clean->LEO一致性仍是当前较稳健的Phase1表征基线；后续不再训练相同的角度对齐/几何变体。下一轮应优先做零训练变更的source-only后处理：在六个C checkpoint和相同primary轮转上，预注册一个固定cosine class-prototype Q98与一个固定cosine kNN-5 Q98读出，只检验冻结表征是否存在可用密度信号；Q98由已知下降不超过2pp直接确定，不扫描阈值。若仍无候选同时满足primary`FAR<=5%`、safe rejection`>=95%`和已知下降`<=2pp`，则停止source-proxy拒识优化，等待满足`项目.md`的真实同步事件与物理事件ID数据。
