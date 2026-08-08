@@ -132,4 +132,55 @@ cd <release>/code && nohup setsid env RUN_ID=phase1_loto_clsgeo12_20260808_v1 PR
 
 每fold已知保护至少包括clean、三种`leo_*_weak`、min-class、min-receiver和min-day。若任一预指定保护项`G-C<-2pp`，该fold G直接拒绝，其他指标不得补偿。缺少场景、receiver/day或类floor字段的fold不进入主汇总。
 
+
+### 8.1冻结postfreeze audit命令
+
+只有12个训练任务全部达到E120并形成完整terminal/metrics后，runner才执行一次`postfreeze_audit_v1`；训练不完整时不得执行。审计复用同一release中的`export_spaceborne_features.py`与`scripts/eval_phase1_logits_open_set_reject.py`，不修改代码。
+
+每个candidate的冻结导出参数：
+
+```text
+python export_spaceborne_features.py
+  --ckpt <run>/<candidate>/final_ssdg.pth
+  --wisig_pkl <project>/Dataset_WigSig/ManySig.pkl
+  --out_npz <run>/postfreeze_audit_v1/<candidate>/features.npz
+  --feature_name z_id
+  --source_tx_ids <fold_train_tx>
+  --target_old_tx_ids <fold_secondary_tx>
+  --proxy_unknown_tx_ids <fold_primary_tx>
+  --source_days 0,1 --source_rxs 0,1,2,3,4,5,6
+  --target_old_days 0,1 --target_old_rxs 0,1,2,3,4,5,6
+  --proxy_unknown_days 0,1 --proxy_unknown_rxs 0,1,2,3,4,5,6
+  --max_samples_per_tx 400 --batch_size 512 --device cuda:0 --seed 7281105
+  --source_channel_view clean --target_old_channel_view clean --proxy_unknown_channel_view clean
+```
+
+12个导出沿用训练的物理GPU映射；wrapper用`CUDA_VISIBLE_DEVICES=<physical_gpu>`，CLI统一`--device cuda:0`。每张卡仍不超过两个进程。每个NPZ预期`source=1600,target_old=400,proxy_unknown=400`，三类TX必须互斥，checkpoint strict load必须`missing=unexpected=skipped=0`。
+
+每个candidate随后执行两条CPU评分命令，阈值固定为source正确分类样本的confidence Q0.05、margin Q0.05和energy Q0.95：
+
+```text
+python scripts/eval_phase1_logits_open_set_reject.py
+  --feature_npz <features.npz> --source_tx_ids <fold_train_tx>
+  --unknown_tx_ids <fold_primary_tx> --known_query_roles source
+  --unknown_query_roles proxy_unknown --calibration_roles source
+  --conf_quantile 0.05 --margin_quantile 0.05 --energy_quantile 0.95
+  --unknown_far_target 0.05
+  --output_json <candidate>/primary_metrics.json
+  --score_table_csv <candidate>/primary_scores.csv
+```
+
+```text
+python scripts/eval_phase1_logits_open_set_reject.py
+  --feature_npz <features.npz> --source_tx_ids <fold_train_tx>
+  --unknown_tx_ids <fold_secondary_tx> --known_query_roles source
+  --unknown_query_roles target_old --calibration_roles source
+  --conf_quantile 0.05 --margin_quantile 0.05 --energy_quantile 0.95
+  --unknown_far_target 0.05
+  --output_json <candidate>/secondary_metrics.json
+  --score_table_csv <candidate>/secondary_scores.csv
+```
+
+audit根固定为`<run>/postfreeze_audit_v1`，日志根固定为`<log>/postfreeze_audit_v1`。每条导出和评分只执行一次，`retry=NO`。runner只核对退出码、行数、角色/TX互斥、strict load、hash和错误指纹，不解释性能；仅回收JSON、CSV、日志、completion和manifest，不下载NPZ/checkpoint。
+
 本轮结论上限为“source-held cross-TX开发性泛化证据”。它不是独立确认，不是K-shot注册，不是正式unknown-FAR，也不更新Phase3能力声明。
