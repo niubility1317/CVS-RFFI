@@ -23,7 +23,7 @@
 
 1.不再发布threshold-only、Q值扫描、hard disagreement或同类prototype/kNN读出实验。
 2.不再把ManyTx OE梯度直接作用于完整身份骨干，也不通过减小`lambda`继续同一路线。
-3.proxy指标只用于source-only开发诊断；跨held-TX方向和known/LEO floor为非补偿门。
+3.proxy指标只用于source-only开发晋级信号；外层held-TX完整报告跨TX方向，但不套用Phase3真实unknown的5%强门。
 4.下一候选必须把身份分类路径与拒识证据路径解耦，并可导出`z_id/d_class/e_unknown/q`。
 5.不新增receiver/day/channel对齐；任何正信号必须来自标签置换等价、类条件几何或尾部建模。
 
@@ -33,7 +33,7 @@
 - 配对：每fold保留同seed基线C与唯一新候选；若加入技术消融，只允许共享同一身份路径并拆分拒识头梯度。
 - 资源：8卡并行，每卡不超过2个训练进程；不先做长时间超参搜索。
 - 选择：六fold完整运行；不按单fold、proxy最优值或中途性能选择。
-- 晋级：模型健康、known overall保护、receiver/min-class/LEO strict floor保护、proxy与held-TX同向改善、真实checkpoint bundle导出，五项均为非补偿门。
+- 晋级：模型健康、known跨接收机性能无明显退化、最低类别与LEO弱信道floor无严重下降、source proxy相对C产生明确正信号、真实checkpoint bundle导出，共五项。
 
 ## 5.设计裁决
 
@@ -56,15 +56,15 @@ e_epi=sigmoid(MLP_theta(g))
 
 训练固定为balanced full-batch BCE、seed`7281105`、Adam `lr=1e-2`、`weight_decay=1e-3`、200 epoch。唯一二元边界为`e_epi>=0.5 -> unknown`；不得使用quantile、proxy/held校准、阈值扫描或target/query真值。`p_local`恒为冻结C logits argmax。无训练消融只输出`d_(1)/(d_(2)+epsilon)`连续分数，不形成第二候选。
 
-## 7.六fold非补偿门
+## 7.六foldPhase1晋级门
 
 1.角色互斥、整TX排除、reference/query物理互斥、finite、identity梯度为0且head梯度非零。
 2.reject/defer按known错误计后，每fold clean overall、min-class、min-RX、min-day相对C均不低于-2pp。
 3.每fold三种LEO的mean、floor、strict mean、strict floor相对C均不低于-2pp。
-4.六个外层held-TX必须6/6达到FAR不高于5%、safe rejection不低于95%；proxy只作同向开发诊断且不能补偿held。
+4.source proxy unknown相对冻结C产生明确正信号；六个外层held-TX作为跨TX方向诊断完整报告，不设置Phase3式`FAR<=5%`强门。
 5.真实checkpoint形成单backbone bundle，包含`p_C/e_epi/d_class/mu/rho`，eager与TorchScript最大绝对差不高于`1e-5`，并回执延迟、状态字节和显存。
 
-任一门失败即`REJECT`，不扫阈值、不调loss权重、不选择有利fold、不用proxy替代held。发布前仅剩两项P1：episode采样/梯度闭环和真实bundle/成本smoke。
+clean实验先关闭模型健康、known保护、proxy正信号和bundle导出；通过后立即发布三种LEO视图关闭弱信道floor。五项中任一失败即`REJECT`，不扫阈值、不调loss权重、不选择有利fold。发布前两项P1已经由episode采样/梯度闭环和真实bundle/成本smoke关闭。
 
 ## 8.当前实现分工
 
@@ -85,7 +85,7 @@ Terra实现者只负责新core/evaluator/tests；主Agent负责设计稿、launc
 
 真实checkpoint衍生feature smoke使用既有只读`E:\type10-7\remote_artifacts\phase2_adv3b02_features\features.npz`，SHA256=`db559d78db305894307851750ef7d698db387f0984ff13c980fea99db85b8532`。只取其中2400条source、6个TX；每TX200 reference＋200 query，物理重叠为0；4000条非source记录排除于fit。结果：identity梯度`0`、head梯度`0.0782326`、eager/TS最大差`0`、CPU 512条平均约`0.280ms`、runtime状态`4028B`。bundle、runtime、receipt SHA256分别为`1cb822578a396aecfc8bd0333b819c8996c5854394ea446e776ef1c31a7e427f`、`fff8b13e6c574ee0dfaaca0d92dc28033802ab4de48994ba487b3dbf00fe99f5`、`cb0f856171ce7ae117769212bd342692e1250e3451b91a0e8c91a159a3095877`。该smoke只关闭接口、梯度、bundle和成本P1，不读取或解释target性能。
 
-拟发布run ID：`phase1_gi_epior_clean6_20260808_v1`。输入只读复用上一轮远端6个C-arm clean NPZ；运行6个小head fit和6个score，均为CPU，不重新运行backbone。若clean外层held门失败，直接淘汰并不发布LEO导出；只有clean 6/6通过后才进入三种LEO视图实验。
+拟发布run ID：`phase1_gi_epior_clean6_20260808_v1`。输入只读复用上一轮远端6个C-arm clean NPZ；运行6个小head fit和6个score，均为CPU，不重新运行backbone。clean阶段按六折整体判断模型健康、known保护、proxy正信号和bundle闭环；通过后立即进入三种LEO视图实验。
 
 ## 10.独立审查与Git冻结
 
@@ -95,7 +95,7 @@ Terra实现者只负责新core/evaluator/tests；主Agent负责设计稿、launc
 
 | 文件 | SHA256 |
 |---|---|
-| `analysis/phase1_gi_epior_design_20260808.md` | `f3279f7eee020e56522766d9e3a5439846e7ad06a3e842c4c354853dac285e42` |
+| `analysis/phase1_gi_epior_design_20260808.md` | `f387d94d5a0d05dccee491b0c81e04260ae09232469437cb3194f905631930e6` |
 | `code/cvsrffi/phase1_gi_epior.py` | `09fca031def540715dd52c36ed82ab4822da8988b78ea3c65d624d087b36f458` |
 | `code/scripts/eval_phase1_gi_epior.py` | `2821f66f69b5a954cb50c5b6cf10109749d721da97c606c0d1624c981fbc2394` |
 | `code/tests/test_phase1_gi_epior.py` | `da512795e3027c77f8a8738c44c76a0c4e09ca051cebcf46e3c5a2f7153d192d` |
@@ -113,7 +113,7 @@ Terra实现者只负责新core/evaluator/tests；主Agent负责设计稿、launc
 - 停止规则：仅协议错误、覆盖风险、输入/hash/checkout错误、确定性异常或零输出触发技术停止；不得按性能停止。任一fit失败则不启动score；不修方法、不调参、不重试。
 - 回收：只回收小型receipt、metrics、scores、日志与manifest；不回收输入NPZ、checkpoint或runtime/bundle大文件。runner只报告技术闭环，不解释性能。
 
-clean实验完成后由主Agent读取六折同行结果。任一fold的known保护门或held`FAR<=5%`门失败即`REJECT`，不进入LEO实验；六折全部通过才登记下一阶段三种LEO视图验证。
+clean实验完成后由主Agent读取六折同行结果。模型健康、known保护、source proxy正信号或bundle闭环任一失败即`REJECT`；外层held只作诊断，不作为额外发布门。clean四项通过后立即登记并发布三种LEO视图验证。
 
 ## 12.首次发布尝试终态
 

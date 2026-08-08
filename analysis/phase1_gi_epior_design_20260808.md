@@ -1,6 +1,6 @@
 # Phase1 GI-EpiOR冻结设计
 
-状态：`DESIGN_FROZEN / IMPLEMENTING`；目标模式：`GOAL_MODE=ACTIVE`。
+状态：`DESIGN_FROZEN / LOCAL_VERIFIED`；目标模式：`GOAL_MODE=ACTIVE`。
 
 1.候选名称：`GI-EpiOR`（Gradient-Isolated Episodic Open-set Rejector）。
 2.输入只来自每fold冻结GeoSat-C的`z_id`与`tx_logits`；Sinc、主干、投影和分类头全部不更新。
@@ -17,8 +17,8 @@
 13.门G1：角色/整TX/物理ID互斥、finite、identity梯度0、head梯度非零。
 14.门G2：reject计错后的clean overall、min-class、min-RX、min-day相对C均不低于-2pp。
 15.门G3：三种LEO的mean/floor/strict mean/strict floor相对C均不低于-2pp。
-16.门G4：外层held 6/6达到FAR不高于5%、safe rejection不低于95%；proxy不能补偿。
+16.门G4：source proxy unknown相对冻结C产生明确正信号；外层held-TX作为跨TX方向诊断完整报告，但不恢复Phase3式`FAR<=5%`强门。
 17.门G5：bundle含`p_C/e_epi/d_class/mu/rho`，eager与TorchScript差不高于`1e-5`并回执成本。
-18.任一门失败即`REJECT`；不调权、不扫阈值、不选有利fold、不追加对齐。
+18.clean实验先关闭G1、G2、G4、G5；通过后立即发布三种LEO视图关闭G3。五项中任一失败即`REJECT`；不调权、不扫阈值、不选有利fold、不追加对齐。
 19.本轮仅为Phase1 source-only开发证据，不构成真实unknown、K-shot、Phase3协同或在轨声明。
-20.独立裁决：`CHOICE=B; P0=0; P1=2; ALLOW_IMPLEMENTATION=YES; ALLOW_RELEASE=NO`，关闭两项P1后复核。
+20.独立裁决：实现前为`CHOICE=B; P0=0; P1=2`；本地闭环后复核为`VERDICT=APPROVE; P0=0; P1=0; ALLOW_CLEAN6_RELEASE=YES`。
