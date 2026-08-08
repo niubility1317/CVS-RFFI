@@ -155,3 +155,11 @@ audit根固定为`<run>/postfreeze_audit_v1`，日志根固定为`<log>/postfree
 ## 9.待回填
 
 运行器完成后回填发布commit/archive SHA、代码文件hash、精确launcher PID/children/GPU、completion、artifact hash、异常、资源清理和本地回收路径。主控仅在完整同fold C/G paired artifacts返回后分析性能与决定是否进入Phase1 bundle。
+
+## 10.N607技术终态（2026-08-08）
+
+- `STATUS=STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`；仅执行一次冻结launcher，无retry。
+- training release=`phase1_manytx_realoe12_physrx_v2_20260808_v1_748a9f41`，发布报告commit=`748a9f41f04a80e8d2eac1a366f1ad250d917e28`，训练实现父commit=`2d44ace3c502c189b1a43965e9d06e6400fffa8e`；archive tar SHA256=`3f1ff8eb36fdded25f9641dd746d0f2374c2cc251920b8548d73cec26ea659a1`。
+- exact launcher PID=`3776491`；`pids.tsv`记录12个固定GPU映射子任务，`completion.tsv`为12/12 `exit_code=1`；GPU收口为8卡`0%/1MiB`，无run-owned live process。
+- 首波同一确定性异常（12/12，训练telemetry前）：`ValueError: Cannot resolve day 20210301 from ['2021_03_01', '2021_03_08', '2021_03_15', '2021_03_23']`，源自`_resolve_days`解析launcher传入的day标签；因此不执行postfreeze export/score。
+- 小型证据已回收至`E:\type10-7\automation_reports\CV-SincNet\phase1_manytx_realoe12_physrx_v2_20260808_v1\artifacts`（remote_logs、outer.launch.out）；SSH/SCP客户端与TCP22均清理。
