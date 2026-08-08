@@ -229,16 +229,16 @@ def _score(args: argparse.Namespace) -> dict[str, Any]:
     proxy = payload["dataset_role"] == str(args.proxy_role)
     with torch.no_grad():
         e_epi_t, d_class_t, ratio_t = runtime(torch.as_tensor(payload["features"], dtype=torch.float32))
-    e_epi = e_epi_t.cpu().numpy()
-    d_class = d_class_t.cpu().numpy()
-    ratio = ratio_t.cpu().numpy()
-    accepted = e_epi < GI_EPIOR_THRESHOLD
+    e_epi = np.asarray(e_epi_t.cpu().tolist(), dtype=np.float32).reshape(-1)
+    d_class = np.asarray(d_class_t.cpu().tolist(), dtype=np.float32)
+    ratio = np.asarray(ratio_t.cpu().tolist(), dtype=np.float32).reshape(-1)
+    accepted = np.asarray(e_epi < GI_EPIOR_THRESHOLD, dtype=bool)
     pred_class = np.asarray(payload["tx_logits"]).argmax(axis=1)
     pred_tx = np.asarray(
         [source_tx_ids[index] if 0 <= int(index) < len(source_tx_ids) else str(index) for index in pred_class],
         dtype=object,
     )
-    closed_correct = pred_tx == payload["tx_ids"]
+    closed_correct = np.asarray(pred_tx == payload["tx_ids"], dtype=bool)
     full_correct = closed_correct & accepted
     known_closed = _rate(known_query, closed_correct)
     known_full = _rate(known_query, full_correct)

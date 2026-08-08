@@ -48,3 +48,11 @@ cd <release>/code && nohup setsid env RUN_ID=phase1_gi_epior_clean6_20260809_v3 
 ## 5.Phase1晋级口径
 
 clean结果关闭模型健康、known跨接收机性能无明显退化、source proxy相对C明确正信号及真实bundle导出。外层held-TX完整报告但不设置额外5%强门。clean四项通过后立即发布三种LEO视图，验证最低类别和LEO弱信道floor。
+
+## 6.运行器技术终态（2026-08-09）
+
+- 状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。v3为最终repair，未触碰v1/v2。
+- 归档SHA256=`31f22c55d975014e519828e2534b3cb082917d03042bff99e13fce4df0b5705d`（260966400 bytes）。归档规范哈希：design=`4788033aa429b32954f886b7414a0d7f0f1cd03c27f6be390890c64d91ff005c`、core=`b16b9ee7b90a79148d3858d0eb382d26cc0700b1ee1b6721fa912ebcea5f0b67`、eval=`00e9715538f545dba9633e7e92d51f7feabbd17e15f378650d68907c3a15f454`、test=`41e0bab42aa32b792d8eb35d693f49ca364be54f627aabed2d647abdffe3a52b`、launcher=`a18bfa57e2807a4b77624371408cc678d9b2f2a0fc7d8e0ebc61b6b44ad83477`。
+- launcher PID=`3902152`；fit F1--F6 child PID=`3902156,3902157,3902158,3902159,3902161,3902163`，全部exit0并产生bundle/runtime/fit_receipt；score PID=`3902309,3902310,3902311,3902313,3902315,3902318`，全部exit1。
+- 统一score异常指纹：`TypeError`，`eval_phase1_gi_epior.py:242`的`full_correct = closed_correct & accepted`，NumPy array ufunc formatter在后续栈失败；score metrics/scores均0。fit/score completion各6行。
+- GPU0--7均0%/1MiB，run-owned进程退出，SSH清理完成。本地artifact：`E:\type10-7\automation_reports\CV-SincNet\phase1_gi_epior_clean6_20260809_v3\artifacts`，含6 fit receipt、12 stdout、2 completion、outer与manifest；不下载NPZ/checkpoint/runtime/bundle，不解读性能，不重试。

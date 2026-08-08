@@ -254,3 +254,50 @@ def test_fit_then_score_outputs_nonconfirmatory_metrics(tmp_path: Path):
     assert metrics["nct_ratio_continuous_only"]["thresholded"] is False
     assert json.loads((tmp_path / "metrics.json").read_text(encoding="utf-8"))["method"] == "GI-EpiOR"
     assert len((tmp_path / "scores.csv").read_text(encoding="utf-8").splitlines()) == 85
+
+
+def test_score_does_not_use_tensor_numpy_bridge(tmp_path: Path, monkeypatch):
+    feature_npz = tmp_path / "features.npz"
+    _write_npz(feature_npz)
+    fit_args = build_parser().parse_args(
+        [
+            "fit",
+            "--feature-npz",
+            str(feature_npz),
+            "--source-tx-ids",
+            ",".join(SOURCE),
+            "--output-bundle",
+            str(tmp_path / "bundle.npz"),
+            "--output-torchscript",
+            str(tmp_path / "runtime.ts"),
+            "--output-receipt",
+            str(tmp_path / "fit.json"),
+        ]
+    )
+    _fit(fit_args)
+
+    def forbidden_numpy(_tensor):
+        raise TypeError("tensor numpy bridge is unavailable")
+
+    monkeypatch.setattr(torch.Tensor, "numpy", forbidden_numpy)
+    score_args = build_parser().parse_args(
+        [
+            "score",
+            "--feature-npz",
+            str(feature_npz),
+            "--bundle",
+            str(tmp_path / "bundle.npz"),
+            "--source-tx-ids",
+            ",".join(SOURCE),
+            "--held-tx-ids",
+            "9-1",
+            "--view-name",
+            "clean",
+            "--output-json",
+            str(tmp_path / "metrics.json"),
+            "--output-csv",
+            str(tmp_path / "scores.csv"),
+        ]
+    )
+    metrics = _score(score_args)
+    assert metrics["known_query_count"] > 0
