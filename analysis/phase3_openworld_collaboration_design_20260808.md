@@ -28,12 +28,12 @@
 | DualGuard16 | 16/16训练稳定，但source-episode overflow约0.987-0.989、legacy proxy约0.616-0.623、legacy bridge=1；open梯度份额不足且U_s open路由空转 | 继承稳定训练与closed保护；首轮不把U_s当unknown负样本，不用动态DM代替最终边界 |
 | P0Closed8 | fixed p99可下降，但proxy、bridge、overflow、radius/inter无法同一候选联合改善；高open预算会收紧tail却恶化低密度/类间边界 | proxy下降只有在known覆盖和类间margin不坍缩时才可解释；不以单指标晋级 |
 | CorePath8 | 低fixed p99常由known hard-core TPR坍缩到0.010-0.111造成；异类最小间隔可缩到1.4-2.8度 | 强制known hard-core TPR前置门；先保正覆盖，再解释unknown proxy；禁止reject-all伪改善 |
-| Phase1 P0闭环 | 已有balanced TX×receiver/day采样、固定endpoint、三入口parity、terminal fail-closed和source-val-only选择 | 直接复用并写入新候选receipt，不另造重复治理层 |
+| Phase1 P0闭环 | 已有balanced TX×receiver/day采样、`endpoint_accept_v1`密封、三入口parity、terminal fail-closed和source-val-only选择 | 复用hash/seal/reason-code/parity与终态控制；旧local-component接收公式只作legacy基线，不继承为新决策 |
 | Phase1 P1不变性 | 已有train/eval信道族隔离、TX条件receiver/day/channel泄漏probe、final-only checkpoint和local component审计 | 作为必开控制；`q/z_dom`只有在泄漏probe与独立信道评估通过后才能增加主张 |
 
 由此冻结四条经验性硬约束：
 
-1.动态batch soft gate只作训练遥测，正式证据只读取冻结source-val endpoint与最终bundle同一公式。
+1.动态batch soft gate只作训练遥测，正式证据只读取冻结source-val的`open_world_evidence_v2`与最终bundle同一公式。
 2.known接收必须是`shared invariant core AND local density support`，禁止把多个receiver/day/channel局部球直接取并集形成宽接收域。
 3.当clean或satellite known hard-core TPR低于0.85时，proxy/bridge下降不具有正向含义，候选直接判为正覆盖失败。
 4.首轮`P1-OWR-H`只用有标签known几何训练`L_OW`；`U_s`继续用于既有domain/ADV/clean-sat一致性，不伪装为unknown负样本，也不启用历史上长期空转的U_s direct gate。
@@ -88,7 +88,7 @@ L=L_{\mathrm{ADV3B02}}+\lambda_{\mathrm{ow}}L_{\mathrm{OW}}(z_{id},y,d)
 
 `L_OW`只读取`T_train`的source received IQ、允许的source TX标签和source domain标签，使用现有known-only类内紧致、类间margin和同类跨域对齐公式。以下路线显式锁零：legacy batch轮换proxy loss、soft-mixup、source episode、direct metric、EVT/tail/vacuum以及任何confirmed unknown或target/query输入。
 
-训练继续复用已验证的balanced TX×receiver/day采样、clean-sat同物理样本对应、source-val-only/final-only控制、TX条件泄漏probe和fixed endpoint parity。新增`L_OW`不得关闭或旁路这些控制，也不得重新启用已被负面结果否定的动态接收域作为promotion依据。
+训练继续复用已验证的balanced TX×receiver/day采样、clean-sat同物理样本对应、source-val-only/final-only控制、TX条件泄漏probe及artifact identity/parity框架。新增`L_OW`不得关闭或旁路这些控制，也不得重新启用已被负面结果否定的动态接收域作为promotion依据。`endpoint_accept_v1`保留为legacy对照；新候选的决策公式标识固定为`open_world_evidence_v2.0`。
 
 训练allowlist不得继续使用模糊的字符串包含规则。冻结前必须从真实checkpoint解析`z_id_key=feat_joint`的可达参数，预期至少包括`id_backbone.cls_head`内产生`feat_joint`的projection/gate/joint projection及最终class head；是否训练`dom_backbone.cls_head`、`dom_head`和`adv_head`由真实梯度审计决定。allowlist外参数全部冻结。
 
@@ -102,7 +102,7 @@ v1字节行为、成员allowlist和Stage2-C读取路径保持不变。新增独�
 cvs.phase1.open_world_local_evidence_bundle.v2
 ```
 
-v2与base-v1的runtime hash、content-root、class binding和checkpoint hash共同封存，包含full-dual TorchScript runtime、`id_geometry`、`dom_geometry`、公式版本、量化参数和独立seal。`id_geometry`复用已验证的聚合几何格式，但明确分为共享类核心与receiver/day/channel残差component；component只能提供局部密度支持，不能独立授予known acceptance。bundle不得包含raw IQ、sample/member ID、特征库、source cache或可逆样本索引。
+v2与base-v1的runtime hash、content-root、class binding和checkpoint hash共同封存，包含full-dual TorchScript runtime、`id_geometry`、`dom_geometry`、`open_world_evidence_v2.0`公式版本、量化参数和独立seal。`id_geometry`复用已验证的聚合几何格式，但明确分为共享类核心与receiver/day/channel残差component；component只能提供局部密度支持，不能独立授予known acceptance。bundle不得包含raw IQ、sample/member ID、特征库、source cache或可逆样本索引。
 
 | 输出 | 冻结定义 |
 |---|---|
@@ -242,7 +242,7 @@ joint interaction = D-B-C+A
 2.在`ssr-gpu`中完成真实模型反向传播可达性审计，列出允许更新的精确参数，证明`L_OW`改变`z_id`而禁训参数不变。
 3.用真实checkpoint完成full-dual runtime smoke，验证`z_id/z_dom/logits`shape、finite、归一化及v1身份输出parity。
 4.冻结v2 bundle schema、v1兼容行为、forbidden-content检查和seal/hash/class-order校验。
-5.证明shared core与local density使用AND语义，local component并集不能独立接收；clean/satellite known hard-core TPR均不低于0.85后才解释proxy指标。
+5.证明`open_world_evidence_v2.0`的shared core与local density使用AND语义，local component并集不能独立接收；clean/satellite known hard-core TPR均不低于0.85后才解释proxy指标；`endpoint_accept_v1`只作为legacy基线。
 6.证明predictor schema拒绝`role/true_label`，sidecar缺失或truth置换不改变prediction bytes/hash。
 7.证明opaque双ID、一个event多reception仍计1 shot、重复/跨event/hash不一致/迟到证据均fail closed。
 8.证明节点排列不变、class handle置换等变、共同正交特征变换不改变距离决策、同相关组复制不增益。
