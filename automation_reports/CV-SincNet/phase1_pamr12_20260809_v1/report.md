@@ -2,7 +2,7 @@
 
 目标模式：`GOAL_MODE=ACTIVE`
 
-状态：`LOCAL_VERIFIED / PREREGISTERED / NOT_LAUNCHED`
+状态：`ARTIFACTS_COMPLETE / NON_PROMOTABLE_P0_DISABLED_EXPECTED / NO_PERFORMANCE_RESULT`
 
 证据边界：`PHASE1_SOURCE_ONLY_OPEN_WORLD_READY_REPRESENTATION_NON_CONFIRMATORY`
 
@@ -47,3 +47,26 @@ cd /home/szu2070436088/2510044040/CV-SincNet/releases/phase1_pamr12_20260809_v1_
 启动后核launcher/CWD/cmdline、12 child/GPU、日志增长、CONFIG/E001。仅P0/路径/hash/覆盖、OOM/CUDA、至少2任务同一确定性异常、PAMR绑定/coverage/total-loss异常或无进展触发停止；不因性能停止，retry=`NO`。成功要求12×E040、final/metrics/config/terminal/heldout/resource receipt；G每个source TX均valid anchor和active hinge>0，正式路径无额外梯度审计。
 
 训练完整后另行运行冻结postfreeze，不在本run内选模。五项非补偿门：技术健康；clean known保护；18个fold×LEO场景overall与min-class/min-RX/min-day不退化；18格angular margin不退化；真实checkpoint/artifact闭环。proxy和paired cosine仅诊断，不能补偿。任一失败即`REJECT_P1_PAMR_PERMANENT`，不调lambda、不改sampler、不挑fold、不进入Phase3。
+
+## 6.N607训练终态与artifact（2026-08-09）
+
+训练已按冻结命令唯一启动一次。首次caller SSH在等待窗口超时；随后清理本地残留`ssh.exe` PID 10192，并以短连接只读确认落地，因此没有重复启动。远端release为`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_pamr12_20260809_v1_ee31aa33`，CWD为`<release>/code`；归档commit为`ee31aa3345f9e5e3251bacf7de17098377b67bc0`，无prefix归档SHA256=`043cd042ef8c3ce89538a812ee953dfee2a44841bea85a6d3bf1b9e00f5940b5`（261468160 bytes）。远端代码以git-archive LF字节核验，未做远端代码编辑；成员hash与CRLF/LF口径、输入ManySig hash均记录在manifest。
+
+精确命令、Python、run/log/outer路径见§4；launcher PID=`4161623`，12 child PID/GPU映射为`F1C 4161626/GPU0; F5G 4161628/GPU0; F1G 4161630/GPU1; F5C 4161632/GPU1; F2C 4161636/GPU2; F6G 4161640/GPU2; F2G 4161642/GPU3; F6C 4161644/GPU3; F3C 4161652/GPU4; F3G 4161657/GPU5; F4C 4161661/GPU6; F4G 4161663/GPU7`。12臂均完成E040/40并产生final、metrics、PAMR config/terminal、training、resource、heldout receipts；child exit均为8，终态`NON_PROMOTABLE_P0_DISABLED`，这是当前Phase1 final gate的预期技术终态。launcher脚本聚合非零child后退出码为1；错误指纹计数为0；GPU计算进程、run-owned进程与SSH/TCP22均已清理。
+
+|arm|PAMR|GPU|child exit|PAMR batches/rows|valid anchors|active hinges|gradient contract|
+|---|---:|---:|---:|---:|---:|---:|---|
+|F1C|off|0|8|0/0|0|0|CONTROL_ARM_NOT_APPLICABLE / pass|
+|F1G|on|1|8|1200/153600|153200|105860|FORMAL_PER_TX_ANCHOR_HINGE_COVERAGE / pass|
+|F2C|off|2|8|0/0|0|0|CONTROL_ARM_NOT_APPLICABLE / pass|
+|F2G|on|3|8|1200/153600|152997|120007|FORMAL_PER_TX_ANCHOR_HINGE_COVERAGE / pass|
+|F3C|off|4|8|0/0|0|0|CONTROL_ARM_NOT_APPLICABLE / pass|
+|F3G|on|5|8|1200/153600|153128|121836|FORMAL_PER_TX_ANCHOR_HINGE_COVERAGE / pass|
+|F4C|off|6|8|0/0|0|0|CONTROL_ARM_NOT_APPLICABLE / pass|
+|F4G|on|7|8|1200/153600|153264|117546|FORMAL_PER_TX_ANCHOR_HINGE_COVERAGE / pass|
+|F5C|off|1|8|0/0|0|0|CONTROL_ARM_NOT_APPLICABLE / pass|
+|F5G|on|0|8|1200/153600|151385|133576|FORMAL_PER_TX_ANCHOR_HINGE_COVERAGE / pass|
+|F6C|off|3|8|0/0|0|0|CONTROL_ARM_NOT_APPLICABLE / pass|
+|F6G|on|2|8|1200/153600|151932|129345|FORMAL_PER_TX_ANCHOR_HINGE_COVERAGE / pass|
+
+所有臂`class_count=local_data_class_count=live_head_class_count=4`且source role count=4；G臂每TX anchor/hinge均为正，正式路径`gradient_audit_mode=NOT_REQUIRED_FORMAL`且shared relation计数为0；C臂合同不适用且通过。artifact已回收至`E:\type10-7\automation_reports\CV-SincNet\phase1_pamr12_20260809_v1\artifacts`：124个文件（123条小文件manifest条目+manifest），manifest SHA256=`b8d2c9b379439e47f4f17d263f015359cbe18a97d0d6ca82eac12f9b56bc97e0`，completion.tsv SHA256=`60dbc6394fcf9dbeb8f64066caff1b12188c30e792a459b29e7aca264751b9c7`；逐项bytes/SHA匹配，未下载checkpoint/NPZ。传输包SHA256=`85c742a8b90eb256e6a9085554a822b643497a114bafcb347bbb54cbabe8a360`；远端临时包已删除。本run未启动postfreeze，retry=`NO`，不作性能结论。
