@@ -77,3 +77,11 @@ cd <release>/code && nohup setsid env RUN_ID=phase1_wrc_nct_leo6x3_20260809_v1 P
 3.physical/scenario/R/C/E闭包与GI/WRC parity≤`1e-5`。
 
 任一原子格任一floor失败即`REJECT_LEO_FLOOR`且不得进入Phase3。18格全过才可标记Phase1五门完成；这仍只是WiSig上的LEO压力代理，不是真实卫星或真实unknown结果。
+
+## 6.运行器技术终态（2026-08-09）
+
+状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`；本节不作性能解释。固定commit`02e8fbe73d9e3d438963b7c2c6c3a50b28ee7cb4`已无prefix归档至release，archive SHA256=`0bb55f4bdc5e099f69fff850f7872d5c7a4c16e872a1b84c5749ddb22e0ae1ac`。远端archive代码SHA与给定Windows工作树SHA的差异仅为LF/CRLF口径，launcher一致；远端结构、`py_compile`、exporter/evaluator `--help`、`bash -n`和精确6 export+6 score dry-run均通过。
+
+唯一冻结命令已执行一次，launcher PID=`3954381`；6 export子PID=`3954384,3954385,3954386,3954388,3954389,3954390`，GPU映射0–5。6条export均exit=1，score阶段未启动、NPZ未生成。六fold产生同一确定性`ValueError: --target_old_tx_ids is required when --new_tx_ids is omitted`（`export_spaceborne_features.py:850`），按预注册规则停止；未重试、未修改release/run。
+
+小artifact已回收到`E:\type10-7\automation_reports\CV-SincNet\phase1_wrc_nct_leo6x3_20260809_v1\artifacts`，包含6 export日志、`export_completion.tsv`、outer launch log和`manifest.json`；未下载NPZ、checkpoint、GI bundle、readout、runtime、metrics或scores。完成后无run-owned进程，8卡均0%/1MiB，SSH客户端/TCP22均清理；`retry=NO`。
