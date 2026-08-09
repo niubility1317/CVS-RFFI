@@ -1,6 +1,6 @@
 # Phase1 CAGM 12臂正式训练v2预登记报告
 
-状态：`REMOTE_PREFLIGHT_OK / LANDING_PENDING / NO_PERFORMANCE_RESULT`
+状态：`LANDED / PRELAUNCH_VERIFIED / NO_PERFORMANCE_RESULT`
 
 ## Runner阶段记录（2026-08-10，Revision2独立发布链）
 
@@ -8,6 +8,8 @@
 - direct `n607_ssh_preflight.ps1`通过；v2 release/run/log/outer/temp均确认不存在，v1 release/run/log/outer均存在且保留。SSH/TCP22在连接后均清零。
 - ManySig SHA与6个GeoSat-C warm-start SHA全部匹配；GPU0–6各约1MiB，GPU7仅既有SCB PID 608786约488MiB，未发现v1/v2 CAGM训练进程，不干预SCB。
 - 本地完整归档SHA=`2cb14fc5689c9de1fd450edf3286508d016ebbcb8d6712f2c7733f88f7767e44`、260669440字节、4912 members、`code/code=0`；归档内6个关键成员SHA与§2一致（训练`train_ssdg.py`采用归档规范化字节SHA=`c842c0d830e7c39d5005ab6dcccbf3b580848f79574f787eaa6c900e60c432b5`）。下一步仅执行一次SCP与远端解包。
+- 唯一SCP已成功；远端归档大小、SHA、4912 members、`code/code=0`和6个目标成员核验通过。已解包到v2冻结release，release成员SHA完全匹配，launcher mode=`775`。
+- release内远端`py_compile`（训练/CAGM/postfreeze评估脚本）、`train_ssdg.py --help`、训练与postfreeze launcher `bash -n`均通过；训练dry-run恰好12臂且全为v2、无v1泄漏。训练启动调用次数仍为`0`，未启动postfreeze。
 
 日期：2026-08-10
 
