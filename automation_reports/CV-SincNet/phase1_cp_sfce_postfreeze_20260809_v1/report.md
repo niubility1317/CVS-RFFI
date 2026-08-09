@@ -65,4 +65,10 @@ cd /home/szu2070436088/2510044040/CV-SincNet/releases/phase1_cp_sfce_postfreeze_
 
 ## 6.运行回填
 
-- 状态：`PENDING_N607`
+- 状态：`ARTIFACTS_PARTIAL / POSTFREEZE_TECHNICAL_COMPLETE / NO_PERFORMANCE_RESULT / RETRIEVAL_BLOCKED_EXTERNAL_SSH`
+- 固定commit：`3accce402f3bbce7712889227593baf7fe8b1409`；本地归档及远端归档SHA：`5fbec9c03addc9b89eaff69226c0195a6b3d1be2d69591af21691cb5667d8e50`。
+- 归档成员采用双口径：commit/worktree LF SHA为eval=`ca3796a04503efb166b13968758baa65a7310e41bccdbd52e1c1465db6e6b083`、launcher=`3008b7e7b753a136c82f77cf681fc1096aee069ff9da5ccbcfd1f8819ac65e57`、test=`8c77a81d5f9461fbbe1672ca393c71cae9750087cffbac2ae51f9e5269fe75fa`、design=`71cd359b0d2ade823abca973147e283524f4643cc59d3316d455f531c6eb97ee`；Windows`core.autocrlf=true`归档/远端CRLF SHA为eval=`c35cb44cf4349975814d3f941b6f01cba0e3009289572d7d14c8cbdb101eaeee`、launcher同上、test=`f74db1a41f9143257c5ed4aebeae7c9aa5b91fc9cb5ae8891d73e85a67261015`、design=`014dd68963ee3d79b963286f94f95d7ecd788cf744c3a2ebf7a2762e5cea516a`；未改远端代码。
+- 远端release已落地且`release/code`存在、无`release/code/code`；compile、help、`bash -n`、`DRY_COUNT=42`通过。唯一启动launcher PID=`166322`，CWD=`<release>/code`；GPU映射复用训练：GPU0=F1C/F5G、1=F1G/F5C、2=F2C/F6G、3=F2G/F6C、4=F3C、5=F3G、6=F4C、7=F4G。
+- 42步结构：12/12 clean NPZ、12/12 source-only LEO NPZ、12/12 proxy JSON+CSV、6/6 pair JSON；clean每臂2400行（source1600/target_old400/proxy_unknown400），LEO每臂1600行（source-only）；12 candidate日志、6 pair日志、`candidate_pids.tsv`存在；结构核均无Traceback/OOM/ERROR指纹。NPZ与checkpoint未下载。
+- 只读metadata核验：clean角色/行数、LEO`channel_view=single`、satellite profile/TTA none、三场景、两天六RX、strict checkpoint load和`dual_cvsincnet_tx_logits_v1`均闭合；pair JSON schema和technical binding字段存在，未读取数值性能。
+- 本地artifact已回收29件（F1C/F1G/F2C/F2G/F3C/F3G/F4C各3件，F5C各3件，F5G仅JSON+CSV）；artifact根：`E:\type10-7\automation_reports\CV-SincNet\phase1_cp_sfce_postfreeze_20260809_v1\artifacts`。bridge在续传F5G日志及F6C/F6G、pair、pids/outer时Connection reset/refused；本地SSH/SCP/TCP22已清理，未重启或重跑。后续仅允许retrieval-only续传并补齐manifest/completion。
