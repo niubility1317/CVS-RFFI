@@ -47,7 +47,7 @@
 
 |字段|冻结值|
 |---|---|
-|release|`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_single_control_bundle_v1_build_20260810_v4_c3949740`|
+|release|`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_single_control_bundle_v1_build_20260810_v4_c3949740_full`|
 |CWD|release根|
 |output|`/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_single_control_bundle_v1_build_20260810_v4`，启动前必须ABSENT|
 |log root|`/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_single_control_bundle_v1_build_20260810_v4`|
@@ -57,10 +57,12 @@
 Runner在确认log root为新路径后先创建该目录，再从release根仅执行下列detached命令一次；wrapper在`build.exit`保留真实退出码，外层PID写入`build.pid`：
 
 ```bash
-nohup bash -lc 'CUDA_VISIBLE_DEVICES=7 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python code/scripts/build_phase1_single_control_bundle_v1.py --real-build --project-root /home/szu2070436088/2510044040/CV-SincNet/releases/phase1_single_control_bundle_v1_build_20260810_v4_c3949740 --checkpoint /home/szu2070436088/2510044040/CV-SincNet/runs/phase1_cp_sfce12_20260809_v2/F1C_CP_SFCE12/final_ssdg.pth --wisig-pkl /home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl --completion-receipt /home/szu2070436088/2510044040/CV-SincNet/runs/phase1_cp_sfce12_20260809_v2/F1C_CP_SFCE12/phase1_training_completion_receipt.json --terminal-receipt /home/szu2070436088/2510044040/CV-SincNet/runs/phase1_cp_sfce12_20260809_v2/F1C_CP_SFCE12/phase1_terminal_status.json --cp-terminal-receipt /home/szu2070436088/2510044040/CV-SincNet/runs/phase1_cp_sfce12_20260809_v2/F1C_CP_SFCE12/phase1_cp_sfce_terminal_receipt.json --output-dir /home/szu2070436088/2510044040/CV-SincNet/runs/phase1_single_control_bundle_v1_build_20260810_v4 --device cuda; rc=$?; printf "%s\n" "$rc" > /home/szu2070436088/2510044040/CV-SincNet/logs/phase1_single_control_bundle_v1_build_20260810_v4/build.exit; exit "$rc"' > /home/szu2070436088/2510044040/CV-SincNet/logs/phase1_single_control_bundle_v1_build_20260810_v4/build.out 2>&1 < /dev/null & printf '%s\n' "$!" > /home/szu2070436088/2510044040/CV-SincNet/logs/phase1_single_control_bundle_v1_build_20260810_v4/build.pid
+nohup bash -lc 'CUDA_VISIBLE_DEVICES=7 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python code/scripts/build_phase1_single_control_bundle_v1.py --real-build --project-root /home/szu2070436088/2510044040/CV-SincNet/releases/phase1_single_control_bundle_v1_build_20260810_v4_c3949740_full --checkpoint /home/szu2070436088/2510044040/CV-SincNet/runs/phase1_cp_sfce12_20260809_v2/F1C_CP_SFCE12/final_ssdg.pth --wisig-pkl /home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl --completion-receipt /home/szu2070436088/2510044040/CV-SincNet/runs/phase1_cp_sfce12_20260809_v2/F1C_CP_SFCE12/phase1_training_completion_receipt.json --terminal-receipt /home/szu2070436088/2510044040/CV-SincNet/runs/phase1_cp_sfce12_20260809_v2/F1C_CP_SFCE12/phase1_terminal_status.json --cp-terminal-receipt /home/szu2070436088/2510044040/CV-SincNet/runs/phase1_cp_sfce12_20260809_v2/F1C_CP_SFCE12/phase1_cp_sfce_terminal_receipt.json --output-dir /home/szu2070436088/2510044040/CV-SincNet/runs/phase1_single_control_bundle_v1_build_20260810_v4 --device cuda; rc=$?; printf "%s\n" "$rc" > /home/szu2070436088/2510044040/CV-SincNet/logs/phase1_single_control_bundle_v1_build_20260810_v4/build.exit; exit "$rc"' > /home/szu2070436088/2510044040/CV-SincNet/logs/phase1_single_control_bundle_v1_build_20260810_v4/build.out 2>&1 < /dev/null & printf '%s\n' "$!" > /home/szu2070436088/2510044040/CV-SincNet/logs/phase1_single_control_bundle_v1_build_20260810_v4/build.pid
 ```
 
 ## 5.发布、健康监控与终态
+
+预发布修复记录：首个仅含5个冻结文件的partial release`phase1_single_control_bundle_v1_build_20260810_v4_c3949740`已落地并保留；远端`py_compile`通过，但公开build CLI`--help`在导入阶段失败，指纹为`ModuleNotFoundError: cvsrffi.checkpoint_loading`。本run未启动，output/log未创建；partial release及小归档作为失败证据保留。经授权仅新增同一commit的全依赖树release`phase1_single_control_bundle_v1_build_20260810_v4_c3949740_full`，不覆盖或清理partial。
 
 唯一Runner先执行direct N607 preflight；启动前核release/output/log/staging/temp均ABSENT、输入SHA、commit/archive/member SHA、无`code/code`、GPU进程数。落地后运行`py_compile`、公开build CLI`--help`和focused Revision12定向测试；通过后唯一启动。
 
