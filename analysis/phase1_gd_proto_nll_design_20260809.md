@@ -35,4 +35,14 @@
 |GD-10|v3修订：计数闭合|批/12格封存total/valid/zero及解析梯度见证，terminal闭合且zero只诊断|`phase1_gd_proto_nll.py`,`train_ssdg.py`,`test_phase1_gd_proto_nll.py`|verified|focused pytest|缺valid类在任何状态更新前fatal；批级和终态计数漂移负测|
 |GD-11|v3修订：不可覆盖运行|launcher默认run ID升级为`phase1_gd_proto_nll12_20260809_v3`|`launch_phase1_gd_proto_nll12_20260809.sh`|verified|`bash -n`与dry-run12|矩阵与参数不变|
 
-v3本地证据：`py_compile`通过；GD、CB、CP聚焦回归为31 passed，其中包括lite_d无query前后向smoke；`bash -n`与dry-run12通过；`git diff --check`通过。v3实现尚待独立代码复审；未运行N607，也没有性能结果。
+### Postfreeze追溯
+
+|ID|来源|要求|目标文件|状态|验证|备注|
+|---|---|---|---|---|---|---|
+|GD-PF-01|后冻结连续几何|GD专用clean导出按checkpoint同参数重建local4 L/U/V并逐字段闭合split/partition receipt；只forward L、V与proxy，U forward/persist均为0；Gaussian仅拟合L|`export_phase1_gd_proto_nll_features.py`,`eval_phase1_gd_proto_nll_pair.py`|verified|`py_compile`与focused pytest|逐样本精确L2；4类`n_c>1`；ddof=1；0.9/0.1 shrink；1e-6 floor|
+|GD-PF-02|后冻结连续几何|以稳定logsumexp输出连续`u`，known仅为local4`source_validation_known`（V），unknown仅为`proxy_unknown`；逐折两项G-C均严格大于0|`eval_phase1_gd_proto_nll_pair.py`,`test_phase1_gd_proto_nll_postfreeze.py`|verified|连续公式、零范数与无严格改善负测|无阈值、校准、选择或补偿；外层held TX不代替V|
+|GD-PF-03|后冻结绑定|四NPZ、两proxy JSON、head、manifest、checkpoint SHA、固定ManySig SHA、v3 root、arm、pair、source TX、L/V index与matrix严格绑定|`export_phase1_gd_proto_nll_features.py`,`eval_phase1_gd_proto_nll_pair.py`,`test_phase1_gd_proto_nll_postfreeze.py`|verified|U/index/head/arm/root/错SHA负测|checkpoint原receipt的dataset SHA为空时显式封存caveat；实际输入仍必须匹配冻结SHA|
+|GD-PF-04|淘汰门|clean V 6/6四floor、LEO 18格四floor、每折三场景overall与18格overall非负；proxy两项6/6严格改善；任一失败永久淘汰|`eval_phase1_gd_proto_nll_pair.py`|verified|六折同matrix/root/training root/prior聚合测试|proxy非补偿；分类clean V与通用LEO随机source-only是两个独立诊断slice|
+|GD-PF-05|一次性执行|固定v3训练root、12 GD-clean+12 LEO+12 proxy+6 pair共42步，LEO single/satellite/TTA none|`launch_phase1_gd_proto_nll_postfreeze_20260810.sh`,`test_phase1_gd_proto_nll_postfreeze.py`|verified|`bash -n`、dry-run=`12+12+12+6=42`|每candidate内顺序执行；12candidate按冻结GPU映射并发；不训练、不重试、不覆盖|
+
+v3训练本地证据：`py_compile`通过；GD、CB、CP聚焦回归为31 passed，其中包括lite_d无query前后向smoke；训练launcher的`bash -n`与dry-run12通过。postfreeze本地证据：专用focused pytest为9 passed，`bash -n`与dry-run42通过。v3实现尚待独立代码复审；postfreeze未运行N607，也没有性能结果。
