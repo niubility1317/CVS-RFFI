@@ -1,6 +1,6 @@
-# Phase1单读出local4控制bundle v1设计卡（Revision10）
+# Phase1单读出local4控制bundle v1设计卡（Revision11）
 
-状态：`LOCAL_REVISION10_VERIFIED_PENDING_REAL_BUILD_V2`。真实F1C＋ManySig v1构建在resolved-model-config闭合前停止：sanitized checkpoint args与训练parser→merge→apply后的final namespace均缺少九个由`build_baseline_model`以`getattr`读取的属性。未写出bundle、未产生runtime／资源／性能结果；Revision10只修复该严格重建边界，不改变模型、数据、公式、descriptor、bundle schema或资源门，并已获独立复审`P0=0／P1=0／ALLOW`。
+状态：`LOCAL_REVISION11_VERIFIED_PENDING_REAL_BUILD_V3`。Revision10已获独立复审`P0=0／P1=0／ALLOW`，但真实F1C＋ManySig v2构建在source day／RX轴重建前停止：receipt中字符串化的训练轴索引被误作ManySig物理日期／接收机标签。未写出bundle、未产生runtime／资源／性能结果；Revision11只恢复训练同一轴索引语义，不改变模型、数据、公式、descriptor、bundle schema或资源门，并已获独立复审`P0=0／P1=0／ALLOW`。
 
 日期：2026-08-09
 
@@ -226,6 +226,12 @@ Revision9首轮实际diff复核确认CUDA、label-blind、早碰撞、live场景
 |ID|来源段落|要求|目标文件|状态|验证|备注|
 |---|---|---|---|---|---|---|
 |SCB-R10-01|resolved model config表、真实F1C v1停止证据|区分ABSENT与显式`None`；仅当checkpoint args和final namespace均缺失时，按`build_baseline_model`真实默认物化九键：`dom_feature_key`、四个stability mode、两个stability channel数、`fast_infer_when_no_aux`、`arch_family`。任何checkpoint有值而namespace缺、显式`None`、错类型或非白名单缺失均失败；`sample_rate_hz`仅保留既有缺失／`<=0`归一规则。|`phase1_single_control_bundle_v1.py`、`test_phase1_single_control_bundle_v1.py`、本设计卡|verified|`ssr-gpu py_compile`、27项focused SCB tests（含真实parser→merge→apply九键正测和三类逐项负测）、CLI fixture build＋external-root verify、`git diff --check`|sanitized真实checkpoint和parser链的九键缺失是v1停止根因；本行不表示真实build已恢复或完成。|
+
+### Revision11日／接收机轴重建追溯
+
+|ID|来源段落|要求|目标文件|状态|验证|备注|
+|---|---|---|---|---|---|---|
+|SCB-R11-01|source split receipt、真实F1C v2停止证据|把冻结receipt中的ASCII数字字符串严格解析为非负训练轴索引，复用`dataset_wisig._resolve_days／_resolve_rxs`；范围、去重和固定F1C source／target索引均严格核验。不得把这些receipt值与ManySig物理日期／接收机标签混用。|`phase1_single_control_bundle_v1.py`、`test_phase1_single_control_bundle_v1.py`、本设计卡|independent_review_allow|`ssr-gpu py_compile`、28项focused SCB tests、CLI`--help`、`git diff --check`及独立复审`P0=0／P1=0／ALLOW`|v2停止为技术接口错误，不代表真实build恢复或完成。|
 
 ## 文献定位
 

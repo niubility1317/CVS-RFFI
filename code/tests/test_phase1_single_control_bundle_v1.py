@@ -532,6 +532,43 @@ def test_preprocess_seed_tail_and_config_contracts() -> None:
         scb.resolve_model_config_projection(checkpoint=checkpoint, resolved_namespace=namespace)
 
 
+def test_receipt_day_and_rx_strings_resolve_as_training_axis_indices() -> None:
+    from dataset_wisig import _resolve_days, _resolve_rxs
+
+    physical_days = ["2021-03-01", "2021-03-08", "2021-03-15", "2021-03-22"]
+    physical_receivers = [f"receiver-{index:02d}" for index in range(12)]
+    source_days = scb._frozen_receipt_axis_indices(
+        ["0", "1"], physical_days, axis="day", expected_indices=scb.F1C_SOURCE_DAY_INDICES
+    )
+    source_receivers = scb._frozen_receipt_axis_indices(
+        [str(index) for index in scb.F1C_SOURCE_RX_INDICES],
+        physical_receivers,
+        axis="receiver",
+        expected_indices=scb.F1C_SOURCE_RX_INDICES,
+    )
+    target_days = scb._frozen_receipt_axis_indices(
+        ["2", "3"], physical_days, axis="day", expected_indices=scb.F1C_TARGET_DAY_INDICES
+    )
+    target_receivers = scb._frozen_receipt_axis_indices(
+        [str(index) for index in scb.F1C_TARGET_RX_INDICES],
+        physical_receivers,
+        axis="receiver",
+        expected_indices=scb.F1C_TARGET_RX_INDICES,
+    )
+    assert source_days == _resolve_days(physical_days, [0, 1], [])
+    assert source_receivers == _resolve_rxs(physical_receivers, list(scb.F1C_SOURCE_RX_INDICES), [])
+    assert target_days == _resolve_days(physical_days, [2, 3], [])
+    assert target_receivers == _resolve_rxs(physical_receivers, list(scb.F1C_TARGET_RX_INDICES), [])
+    with pytest.raises(scb.SingleControlBundleError, match="duplicates"):
+        scb._frozen_receipt_axis_indices(
+            ["0", "0"], physical_days, axis="day", expected_indices=scb.F1C_SOURCE_DAY_INDICES
+        )
+    with pytest.raises(scb.SingleControlBundleError, match="out of range"):
+        scb._frozen_receipt_axis_indices(
+            ["0", "1"], physical_days[:1], axis="day", expected_indices=scb.F1C_SOURCE_DAY_INDICES
+        )
+
+
 def test_real_parser_namespace_materializes_exact_nine_model_fallbacks() -> None:
     checkpoint = _minimal_real_parser_checkpoint()
     namespace = scb._resolved_ssdg_namespace(checkpoint, device=torch.device("cpu"))

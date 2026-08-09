@@ -2678,6 +2678,51 @@ def _label_index(values: Sequence[Any], wanted: Sequence[str], *, axis: str) -> 
     return output
 
 
+F1C_SOURCE_DAY_INDICES = (0, 1)
+F1C_TARGET_DAY_INDICES = (2, 3)
+F1C_SOURCE_RX_INDICES = (0, 1, 2, 3, 4, 5, 6)
+F1C_TARGET_RX_INDICES = (10, 11, 7, 8, 9)
+
+
+def _frozen_receipt_axis_indices(
+    receipt_values: Any,
+    axis_values: Sequence[Any],
+    *,
+    axis: str,
+    expected_indices: Sequence[int],
+) -> list[int]:
+    """Resolve the receipt's stringified train-axis indices, never physical labels."""
+
+    if axis not in {"day", "receiver"}:
+        raise AssertionError("unsupported frozen receipt axis")
+    if not isinstance(receipt_values, list):
+        raise _error(f"frozen {axis} receipt indices must be a list")
+    strings = [_require_nfc_string(value, field=f"frozen {axis} receipt index") for value in receipt_values]
+    if any(not value.isascii() or not value.isdecimal() for value in strings):
+        raise _error(f"frozen {axis} receipt indices must be ASCII decimal strings")
+    indices = [int(value) for value in strings]
+    if len(indices) != len(set(indices)):
+        raise _error(f"frozen {axis} receipt indices must not contain duplicates")
+    expected = tuple(expected_indices)
+    if tuple(indices) != expected or strings != [str(index) for index in expected]:
+        raise _error(f"frozen {axis} receipt indices drift")
+    if any(index < 0 or index >= len(axis_values) for index in indices):
+        raise _error(f"frozen {axis} receipt indices are out of range")
+    physical_labels = [_require_nfc_string(value, field=f"ManySig {axis} physical label") for value in axis_values]
+    if len(physical_labels) != len(set(physical_labels)):
+        raise _error(f"ManySig {axis} labels are not unique")
+    from dataset_wisig import _resolve_days, _resolve_rxs
+
+    resolver = _resolve_days if axis == "day" else _resolve_rxs
+    try:
+        resolved = list(resolver(physical_labels, indices, ()))
+    except (TypeError, ValueError) as exc:
+        raise _error(f"frozen {axis} receipt indices cannot resolve through training axis logic") from exc
+    if resolved != indices or len(resolved) != len(set(resolved)):
+        raise _error(f"frozen {axis} receipt axis resolution drift")
+    return resolved
+
+
 def _source_dataset_and_indices(
     *,
     pkl_path: str | Path,
@@ -2705,8 +2750,18 @@ def _source_dataset_and_indices(
         field="source source_receivers",
         expected=("0", "1", "2", "3", "4", "5", "6"),
     )
-    day_keep = _label_index(source_view.get("capture_date_list", []), days, axis="day")
-    rx_keep = _label_index(source_view.get("rx_list", []), receivers, axis="receiver")
+    day_keep = _frozen_receipt_axis_indices(
+        days,
+        source_view.get("capture_date_list", []),
+        axis="day",
+        expected_indices=F1C_SOURCE_DAY_INDICES,
+    )
+    rx_keep = _frozen_receipt_axis_indices(
+        receivers,
+        source_view.get("rx_list", []),
+        axis="receiver",
+        expected_indices=F1C_SOURCE_RX_INDICES,
+    )
     # Explicit equalized=1 is the only accepted constructor path; neither
     # ``both`` nor a default list is reachable.
     dataset = WiSigCompactDataset(
@@ -3366,8 +3421,50 @@ def build_real_bundle_from_paths(
             calibration_set_sha256=physical_set_sha256(calibration_keys),
         )
         full_dataset = _load_manysig_no_default_equalized(wisig_pkl_path)
-        source_days = tuple(source_split["source_days"])
-        source_receivers = tuple(source_split["source_receivers"])
+        full_day_labels = [
+            _require_nfc_string(value, field="ManySig day physical label")
+            for value in full_dataset.get("capture_date_list", [])
+        ]
+        full_receiver_labels = [
+            _require_nfc_string(value, field="ManySig receiver physical label")
+            for value in full_dataset.get("rx_list", [])
+        ]
+        source_days = tuple(
+            full_day_labels[index]
+            for index in _frozen_receipt_axis_indices(
+                source_split["source_days"],
+                full_day_labels,
+                axis="day",
+                expected_indices=F1C_SOURCE_DAY_INDICES,
+            )
+        )
+        source_receivers = tuple(
+            full_receiver_labels[index]
+            for index in _frozen_receipt_axis_indices(
+                source_split["source_receivers"],
+                full_receiver_labels,
+                axis="receiver",
+                expected_indices=F1C_SOURCE_RX_INDICES,
+            )
+        )
+        target_days = tuple(
+            full_day_labels[index]
+            for index in _frozen_receipt_axis_indices(
+                source_split["target_days"],
+                full_day_labels,
+                axis="day",
+                expected_indices=F1C_TARGET_DAY_INDICES,
+            )
+        )
+        target_receivers = tuple(
+            full_receiver_labels[index]
+            for index in _frozen_receipt_axis_indices(
+                source_split["target_receivers"],
+                full_receiver_labels,
+                axis="receiver",
+                expected_indices=F1C_TARGET_RX_INDICES,
+            )
+        )
         excluded = {
             "proxy": _enumerate_role_physical_keys(
                 full_dataset, tx_labels=(PROXY_UNKNOWN_TX,), rx_labels=source_receivers, day_labels=source_days
@@ -3378,8 +3475,8 @@ def build_real_bundle_from_paths(
             "target": _enumerate_role_physical_keys(
                 full_dataset,
                 tx_labels=LOCAL4_HANDLES,
-                rx_labels=tuple(source_split["target_receivers"]),
-                day_labels=tuple(source_split["target_days"]),
+                rx_labels=target_receivers,
+                day_labels=target_days,
             ),
         }
         partition = build_source_partition_receipt(
