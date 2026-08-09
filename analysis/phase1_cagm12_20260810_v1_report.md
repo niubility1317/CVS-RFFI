@@ -1,6 +1,6 @@
 # Phase1 CAGM 12臂正式训练v1预登记报告
 
-状态：`READY_TO_LAUNCH / PRELAUNCH_VERIFIED / NO_PERFORMANCE_RESULT`
+状态：`RUNNING / FIRST_WAVE_HEALTHY / NO_PERFORMANCE_RESULT`
 
 ## Runner阶段记录（2026-08-10，单次发布链）
 
@@ -11,6 +11,8 @@
 - 唯一SCP已成功；远端归档大小`260515840`字节、SHA、4905 members、`code/code=0`及五个成员核验通过。已解包到冻结release，五个release成员SHA完全匹配，launcher mode=`775`。
 - release内远端`py_compile`、`train_ssdg.py --help`、`bash -n`和dry-run矩阵均通过；dry-run恰好12臂、GPU/候选映射匹配预登记。训练启动调用次数仍为`0`。
 - 启动前二次只读复核：run/log/outer仍不存在；GPU0–6各1MiB、GPU7为既有PID 608786约488MiB，目标run进程为0，资源规则满足。下一步严格执行第5节唯一命令一次。
+- 第5节逐字启动命令调用`1`次；本地SSH通道约124秒超时，已识别并终止唯一残留本地SSH PID、确认TCP22清零，未重发。只读确认远端已落地：wrapper=`665612`、launcher=`665613`、PGID=`665611`，12个child PID均存在且CWD统一为冻结release/code，`pids.tsv`记录的GPU映射为0/1/2/3/4/5/6/7预登记表。
+- 首波健康检查：run/log/outer存在；12个arm日志均已生成并增长（约123–165KB），GPU上12个训练进程加既有SCB PID 608786，未超过每GPU两进程规则；首批日志仅见配置标记，未见Traceback/OOM/CUDA异常。当前仍无性能结果，继续短连接监控。
 
 日期：2026-08-10
 
