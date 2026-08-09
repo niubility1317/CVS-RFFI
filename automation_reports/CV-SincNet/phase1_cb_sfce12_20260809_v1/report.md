@@ -2,7 +2,7 @@
 
 ## 1. 预注册状态
 
-- 状态：`LOCAL_VERIFIED / READY_FOR_N607_RELEASE / NO_PERFORMANCE_RESULT`
+- 状态：`ARTIFACTS_COMPLETE / TRAINING_CONTRACT_COMPLETE / NO_PERFORMANCE_RESULT / POSTFREEZE_PENDING`
 - 日期：2026-08-09
 - 负责人：`/root`；N607唯一runner：`/root/n607_geosat_lite_runner`
 - 目标：检验固定的P1-CB-SFCE是否能在不引入表示对齐、teacher、拒识head或阈值的前提下，改善有标签source-known LEO决策风险，并保持clean known稳定。
@@ -84,4 +84,9 @@ GPU矩阵：GPU0=`F1C+F5G`；GPU1=`F1G+F5C`；GPU2=`F2C+F6G`；GPU3=`F2G+F6C`；
 
 ## 7. 运行回填
 
-待runner回填release archive SHA、远端成员SHA、launcher/child PID、实际GPU占用、completion、产物哈希、异常与清理状态。当前无N607性能结果。
+- 2026-08-09按§4冻结命令唯一启动。无prefix release archive SHA256=`d88a2f8fe8c1948633eb88f36293ca54ca5d50385671238826ecafd564182412`（261703680 bytes）；远端release成员SHA（LF归档口径）为：`train_ssdg.py=439ce211aab0a073015bb8c505ab81a1c72b0a57cf4b6214634e274059395bce`、`phase1_cb_sfce.py=ec8d4351143322647245b87790f473c2e8c6c2f5224dfc92f5c712963d333f1b`、launcher=`94d1d669ab29ddadc57cebc342c541669c7b4c3cb8b2de18cde7e95e34705291`、test=`3e110d4e6bfc2003a6badcdab824cb6fae08ff93478ee68d0dfd6ac3d322e9c4`、design=`92309a459c700e799788922af61d6bedf649c3563a574c4a46b9898abb2242d8`。归档解包后存在`release/code`且无`release/code/code`；远端py_compile、`train_ssdg.py --help`、`bash -n`和12行dry-run均通过。
+- 启动caller因远端shell保持等待而超时；按AGENTS清理本地SSH后只读确认已落地，未重复启动。launcher PID=`50207`；child PID=`50210,50212,50214,50216,50218,50223,50226,50228,50233,50239,50244,50246`。物理GPU映射：GPU0=`F1C+F5G`、GPU1=`F1G+F5C`、GPU2=`F2C+F6G`、GPU3=`F2G+F6C`、GPU4=`F3C`、GPU5=`F3G`、GPU6=`F4C`、GPU7=`F4G`；结束后GPU均0%/1MiB、run进程退出。
+- 12/12臂均到E040/040并写出`final_ssdg.pth`、metrics CSV/JSONL、config、terminal、training-completion、resource、heldout receipts。每臂terminal=`NON_PROMOTABLE_P0_DISABLED`、`terminal_exit_code=8`、`promotion_ready=false`，属于冻结P0 final gate预期；未发现Traceback、RuntimeError、OOM、FloatingPointError、fail-closed或参数错误。launcher脚本本身不写`completion.tsv`，该文件未产生；每臂training-completion receipt作为终态证据。
+- 6个G臂的终态receipt均显示`cb_sfce_batches=1200`、`cb_sfce_rows=153600`、`cb_sfce_cells=12`、`cb_sfce_gradient_relation_attempted=true`、`cb_sfce_gradient_relation_completed=true`、`raw_unscaled=true`、`diagnostic_only=true`、`cb_sfce_terminal_contract_passed=true`，因此local4×3（每臂12格）/gradient relation合同为`6/6臂闭合`；C臂为disabled对照。这里仅报告技术合同，不解释性能。初次manifest误读了启动config receipt（其中字段为0/PENDING），现已依据`phase1_terminal_status.json`与`phase1_cb_sfce_terminal_receipt.json`更正；未重跑且未修改远端训练产物。
+- 远端原始manifest SHA256=`c9357bbd5aaa68fa0b27d9f11c1d2dead6c356f1d50eee87441dd5c4c409514a`；本地更正后manifest SHA256=`4e671bd0c299c57dfce5311c4537b52c8eb27793911bf6c707fdafdd4a15e6dc`（本地路径为`artifacts\logs\phase1_cb_sfce12_20260809_v1\manifest.json`）。小artifact已回收到`E:\type10-7\automation_reports\CV-SincNet\phase1_cb_sfce12_20260809_v1\artifacts`：本地123文件（远端manifest列出的122项逐项大小/SHA全部匹配，另含manifest），不含checkpoint/NPZ；manifest记录6个C/6个G基线hash、12 child、GPU map与更正后的合同字段。性能值未读取/未解释，retry=`NO`。
+- root报告与Git镜像已同步更新；Git镜像仅提交本报告修正，`git diff --check`通过。SSH/SCP/TCP22均清理，无残留连接。
