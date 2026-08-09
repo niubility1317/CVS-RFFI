@@ -191,3 +191,15 @@ proxy双门仅`4/6`通过。六折平均AUROC增量为`−0.003264`，平均u-ga
 CAGM相对已拒绝的ICMT明显更接近目标：LEO四floor单格从`3/18`提高到`9/18`，完整fold从`0/6`提高到`1/6`，全18格overall由`−4.309002pp`收窄到`−0.128294pp`，proxy双门由`1/6`提高到`4/6`；两者clean门均为`5/6`。这表明“类内角半径＋类间质心Gram保持”比独立视图margin尾收紧更能保留整体几何，但仍没有稳定控制receiver-conditioned最坏尾部。
 
 失败模式集中在两处：其一，F6 clean与LEO同时出现类/RX地板坍缩；其二，F3/F5/F6在LEO下的min-RX变化与overall或min-class方向分离。下一候选应直接约束source-L内可合法观测的逐接收机类内尾部，同时保持类置换对称和C/G共同forward；不能依赖target/proxy训练、跨样本事件配对、性能驱动调参，也不能再只优化全局类几何后假设RX地板自然改善。
+
+## 8.三轮探索复盘与第四轮准入
+
+本轮在启动第四个机制前，重新核对`项目.md`的Phase1职责与权限：`L_s`合法包含source receiver域标记`d_i`，Phase1可使用clean与LEO增强；target、V、proxy不得进入loss、optimizer、校准或选参，具体TX/RX ID不得获得专属公式或超参。项目conversation index以“GD ProtoNLL ICMT CAGM receiver RX floor postfreeze”检索未命中，因此以下只采用当前Git报告、同run pair JSON和完整日志，不用历史摘要替代。三个postfreeze目录各有19份`.out`，技术异常指纹均为0。
+
+|探索轮|唯一新增机制|同合同真实结果|保留结论|
+|---|---|---|---|
+|GD-ProtoNLL|class×scene lagged风险与prototype NLL|clean5/6；LEO完整fold3/6、全18格overall`+1.500pp`；proxy双门1/6|动态风险可提高LEO平均值，但局部RX/day地板和proxy方向未被固定|
+|ICMT|每类每视图低margin尾部收紧|clean5/6；LEO3/18、完整fold0/6、全18格overall`−4.309002pp`；proxy1/6|独立视图margin尾收紧在跨域弱信道下产生明显负迁移|
+|CAGM|类内角半径＋类间质心Gram保持|clean5/6；LEO9/18、完整fold1/6、全18格overall`−0.128294pp`；proxy4/6|全局类几何更稳，但无法保证receiver-conditioned最坏尾部|
+
+已永久拒绝：GD-ProtoNLL、ICMT、CAGM原机制及其同机制调参重试。剩余可证伪假设仅保留“source-L中按receiver分层、但对RX与class标签置换等价的通用尾部约束，可能把整体几何收益转成逐接收机地板收益”。第四轮必须使用同一GeoSat-C基座、同一clean＋单LEO共同forward、同一数据顺序与AdamW初态；只能读取source-L的TX与receiver标记，禁止target/proxy/V训练和按具体RX定制，并继续使用12臂训练与42步非补偿门。候选在独立P0/P1签字前不得实现或发布。
