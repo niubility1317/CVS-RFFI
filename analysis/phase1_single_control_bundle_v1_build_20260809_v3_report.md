@@ -65,3 +65,17 @@ CUDA_VISIBLE_DEVICES=7 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python code/
 
 若出现错误commit／SHA／路径、覆盖风险、receipt／split／class／scenario／strict-load漂移、Traceback／OOM／nonfinite／parity／state／resource／loader失败、非零exit或成员不全，标记`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`，保留partial，不重试、不调门。只回收log、manifest及JSON小receipt／PID／exit；不下载ManySig、源checkpoint、embedded runtime或NPZ。
 
+## 6.运行终态（2026-08-10）
+
+状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`；`retry=NO`。唯一detached进程PID`420208`在约4小时35分钟CPU密集计算后退出；未观察到输出根、manifest、payload或worker。退出码因nohup detached启动未保留wait状态，诚实记录为`null`，归因指纹为`UNOBSERVED_PROCESS_EXIT_AFTER_SUSTAINED_CPU`，不猜测OOM或其他原因。
+
+|证据|结果|
+|---|---|
+|远端archive SHA256|`faef637b2d9af836eeb932baf1d5200006d4a69344a86681104f3a6bd6f7c8ff`|
+|远端archive成员SHA256（LF）|core=`9788cfec06715def97a7461141331e3e8be6f04ad845e52b8b89df1bde192ef2`；CLI=`c843a49ec152105f7841e941c4415d80f9a4e7e47c88a3cfec2e39a844ad151b`；test=`edaea6a756ca9b882991beef6cf5aba836b2dd1b115c99f734e06213bc580455`；design=`58bdaabe047b130db02cec105b31a8d530d09ea44dc674dc9dfb9bd54a1cf75f`；trace=`243d54783bc387aa0697ae3cd4eca3c3635ed6e5506145704486e4329b901125`|
+|PID/CWD/GPU|启动时PID`420208`、CWD为release根、GPU7；终态PID不存在，GPU7释放至1MiB级别|
+|运行观测|CPU≈100%；04:15:58时cpu_ticks=1,536,591、rchar=9,486,939,700、syscr=10,940、read_bytes=0、write_bytes=5,582,848；04:30:53时cpu_ticks=1,626,141（约5分钟增29,742ticks）；GPU7瞬时util=0%、mem=498MiB（run compute=488MiB）|
+|技术输出|output根ABSENT；build.out 4,747 bytes，内容仅PyTorch`TracerWarning`；无Traceback/OOM/nonfinite；无子worker、`--resource-probe`、`.scb-n1-staging`或`/tmp/scb1-resource-*`|
+|系统归因核验|目标日志无wait/exit记录；最近6小时`journalctl -k`/`dmesg`无OOM、out-of-memory、killed-process或kill命中；标记`UNOBSERVED_PROCESS_EXIT_AFTER_SUSTAINED_CPU`|
+
+远端小证据：`logs/phase1_single_control_bundle_v1_build_20260809_v3/build.out` SHA256=`9ea28e8e36899d495f3733a6548416ca4482c739117657b2ed14d7a7e94c98eb`；`build_pid_exit.json` SHA256=`753a0fba035b7ade34c481ce275101457a92462f364b10b4581770eb95caec1b`（495 bytes）。本地回收目录`E:\type10-7\automation_reports\CV-SincNet\phase1_single_control_bundle_v1_build_20260809_v3\artifacts`中两文件与远端bytes/SHA逐项一致。SSH/SCP/TCP22、run进程及GPU均已清理；release保留且未覆盖。无任何性能结果或bundle晋级结论。
