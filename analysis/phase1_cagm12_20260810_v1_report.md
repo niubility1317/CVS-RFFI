@@ -1,6 +1,13 @@
 # Phase1 CAGM 12臂正式训练v1预登记报告
 
-状态：`LOCAL_VERIFIED / PREREGISTERED_NOT_LAUNCHED / NO_PERFORMANCE_RESULT`
+状态：`REMOTE_PREFLIGHT_OK / LANDING_PENDING / NO_PERFORMANCE_RESULT`
+
+## Runner阶段记录（2026-08-10，单次发布链）
+
+- 指定工作树`phase3_responsibility_20260807_wt`与实现commit`979f0bfd3ac1d8c2d99f360d2a74fbcf3a780e2c`已核对；仅保留既有未跟踪`conversation_index/`，未改动。
+- direct `n607_ssh_preflight.ps1`通过；用户`N607`、项目根、8张GPU可见，SSH进程/TCP22在连接后均已清零。
+- 远端release、run、log、outer及临时归档路径均确认不存在；ManySig与6个GeoSat-C checkpoint SHA与预登记完全匹配。GPU7仅见既有PID 608786、488MiB进程，按预登记SCB v4无关占用处理，不干预。
+- 本地完整归档SHA=`3aa98c55335ff3ba7d9f51ad06fc87a2be0083c67feca2275854d9c23a49489d`、4905 members、五个目标成员和`code/code=0`核验通过；下一步仅执行一次SCP与远端解包，仍无性能结果。
 
 日期：2026-08-10
 
@@ -128,4 +135,3 @@ cd /home/szu2070436088/2510044040/CV-SincNet/releases/phase1_cagm12_20260810_v1_
 |F4C/F4G|4 C/G|6/7|待运行|待运行|未开始|`NO_PERFORMANCE_RESULT`|
 |F5C/F5G|5 C/G|1/0|待运行|待运行|未开始|`NO_PERFORMANCE_RESULT`|
 |F6C/F6G|6 C/G|3/2|待运行|待运行|未开始|`NO_PERFORMANCE_RESULT`|
-
