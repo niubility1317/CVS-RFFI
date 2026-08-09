@@ -128,11 +128,13 @@ try:
         cp_sfce_config_receipt,
         cp_sfce_loss,
         cp_sfce_scaled_backward_and_project,
+        finalize_cp_sfce_amp_overflow_skip,
         remap_cp_sfce_local_labels_to_head_rows,
         resolve_cp_sfce_classifier_weight,
         resolve_cp_sfce_local_head_class_binding,
         strict_cp_sfce_warm_start,
         update_cp_sfce_coverage_receipt,
+        update_cp_sfce_amp_overflow_receipt,
         update_cp_sfce_optimizer_step_receipt,
         update_cp_sfce_projection_receipt,
         validate_cp_sfce_args,
@@ -293,10 +295,12 @@ except ModuleNotFoundError:
     FROZEN_CP_SFCE_SCENARIOS = tuple()
     cp_sfce_capture_optimizer_steps = cp_sfce_capture_optimizer_steps_for_model = None
     cp_sfce_config_receipt = cp_sfce_loss = None
-    cp_sfce_scaled_backward_and_project = remap_cp_sfce_local_labels_to_head_rows = None
+    cp_sfce_scaled_backward_and_project = finalize_cp_sfce_amp_overflow_skip = None
+    remap_cp_sfce_local_labels_to_head_rows = None
     resolve_cp_sfce_classifier_weight = resolve_cp_sfce_local_head_class_binding = None
     strict_cp_sfce_warm_start = None
-    update_cp_sfce_coverage_receipt = update_cp_sfce_optimizer_step_receipt = None
+    update_cp_sfce_coverage_receipt = update_cp_sfce_amp_overflow_receipt = None
+    update_cp_sfce_optimizer_step_receipt = None
     update_cp_sfce_projection_receipt = validate_cp_sfce_args = validate_cp_sfce_logit_binding = None
     validate_cp_sfce_terminal_receipt = write_cp_sfce_failure_receipt = None
 
@@ -8659,6 +8663,10 @@ def train(args) -> int:
             pamr_leo_grad_nonzero = False
             pamr_leo_grad_zero = False
             pamr_leo_grad_nonfinite = False
+            # C never invokes CP projection; keep telemetry total and C-safe.
+            cp_sfce_projection_info: Dict[str, Any] = {}
+            cp_sfce_amp_overflow_info: Dict[str, Any] = {}
+            cp_sfce_amp_overflow_pending = False
             pamr_shared_gradient_info: Dict[str, Any] = {
                 "shared_parameter_count": 0.0,
                 "base_norm": float("nan"),
@@ -8913,7 +8921,7 @@ def train(args) -> int:
                             )
                         if (
                             cp_sfce_scaled_backward_and_project is None
-                            or update_cp_sfce_projection_receipt is None
+                            or update_cp_sfce_amp_overflow_receipt is None
                         ):
                             raise ImportError(
                                 "cvsrffi.phase1_cp_sfce scaled projection support is required"
@@ -8926,13 +8934,19 @@ def train(args) -> int:
                             sfce_loss=loss_cp_sfce_l,
                             loss_weight=float(getattr(cp_sfce_config, "loss_weight", 0.0)),
                         )
-                        cp_sfce_projection_info["projection_applied"] = True
-                        cp_sfce_receipt = update_cp_sfce_projection_receipt(
-                            cp_sfce_receipt,
-                            cp_sfce_projection_info,
-                            epoch=epoch,
-                            batch_index=batch_idx,
-                        )
+                        if bool(cp_sfce_projection_info.get("amp_overflow_detected", False)):
+                            cp_sfce_amp_overflow_info = dict(cp_sfce_projection_info)
+                            if cp_sfce_projection_info.get("amp_overflow_recoverable") is not True:
+                                cp_sfce_receipt = update_cp_sfce_amp_overflow_receipt(
+                                    cp_sfce_receipt,
+                                    overflow=cp_sfce_projection_info,
+                                )
+                                raise CPSFCERuntimeError(
+                                    "P1-CP-SFCE raw gradient audit failed after scaled AMP overflow"
+                                )
+                            cp_sfce_amp_overflow_pending = True
+                        else:
+                            cp_sfce_projection_info["projection_applied"] = True
                     except Exception as error:
                         _persist_cp_sfce_failure_receipt(
                             out_dir=out_dir,
@@ -8994,64 +9008,110 @@ def train(args) -> int:
                     )
                 else:
                     scaler.scale(loss).backward()
-                if not bool(getattr(cp_sfce_config, "enabled", False)):
-                    scaler.unscale_(optimizer)
-                grad_norm_before_clip = _grad_norm(model)
-                if float(getattr(args, "max_grad_norm", 0.0)) > 0.0:
-                    torch.nn.utils.clip_grad_norm_(
-                        model.parameters(),
-                        max_norm=float(args.max_grad_norm),
-                        error_if_nonfinite=False,
-                    )
-                grad_total = _grad_norm(model)
-                grad_backbone = _grad_norm(model, lambda name: "backbone" in name)
-                grad_aux = _grad_norm(model, lambda name: "aux" in name)
-                grad_domain = _grad_norm(model, lambda name: "dom" in name or "domain" in name)
-                grads_finite = _grads_are_finite(model)
-                if grads_finite:
-                    scaler.step(optimizer)
-                    if bool(getattr(cp_sfce_config, "enabled", False)):
-                        try:
-                            if (
-                                cp_sfce_capture_optimizer_steps_for_model is None
-                                or update_cp_sfce_optimizer_step_receipt is None
-                            ):
-                                raise ImportError(
-                                    "cvsrffi.phase1_cp_sfce optimizer-state receipt support is required"
-                                )
-                            cp_sfce_receipt = update_cp_sfce_optimizer_step_receipt(
-                                cp_sfce_receipt,
-                                before=cp_sfce_projection_info.get("optimizer_state_before", {}),
-                                after=cp_sfce_capture_optimizer_steps_for_model(model, optimizer),
+                if cp_sfce_amp_overflow_pending:
+                    try:
+                        if (
+                            finalize_cp_sfce_amp_overflow_skip is None
+                            or update_cp_sfce_amp_overflow_receipt is None
+                        ):
+                            raise ImportError(
+                                "cvsrffi.phase1_cp_sfce AMP overflow recovery support is required"
                             )
-                        except Exception as error:
-                            _persist_cp_sfce_failure_receipt(
-                                out_dir=out_dir,
-                                args=args,
-                                cp_sfce_receipt=cp_sfce_receipt,
-                                error=error,
-                                failure_stage="post_scaler_step_optimizer_state_increment",
-                            )
-                            raise
-                    optimizer_step_applied = True
-                    if ema_model is not None:
-                        _update_ema_model(ema_model, model, float(args.ema_decay))
-                else:
-                    if bool(getattr(cp_sfce_config, "enabled", False)):
-                        error = CPSFCERuntimeError(
-                            "P1-CP-SFCE combined parameter gradient is non-finite"
+                        cp_sfce_amp_skip = finalize_cp_sfce_amp_overflow_skip(
+                            model=model,
+                            optimizer=optimizer,
+                            scaler=scaler,
+                            overflow=cp_sfce_amp_overflow_info,
                         )
+                        cp_sfce_receipt = update_cp_sfce_amp_overflow_receipt(
+                            cp_sfce_receipt,
+                            overflow=cp_sfce_amp_overflow_info,
+                            finalized_skip=cp_sfce_amp_skip,
+                        )
+                    except Exception as error:
                         _persist_cp_sfce_failure_receipt(
                             out_dir=out_dir,
                             args=args,
                             cp_sfce_receipt=cp_sfce_receipt,
                             error=error,
-                            failure_stage="post_projection_combined_gradient_nonfinite",
+                            failure_stage="raw_finite_amp_overflow_skip_backoff",
                         )
-                        raise error
+                        raise
+                    grad_norm_before_clip = float("nan")
+                    grad_total = float("nan")
+                    grad_backbone = float("nan")
+                    grad_aux = float("nan")
+                    grad_domain = float("nan")
+                    grads_finite = False
                     skipped_nonfinite_grad = 1
-                    optimizer.zero_grad(set_to_none=True)
-                scaler.update()
+                else:
+                    if not bool(getattr(cp_sfce_config, "enabled", False)):
+                        scaler.unscale_(optimizer)
+                    grad_norm_before_clip = _grad_norm(model)
+                    if float(getattr(args, "max_grad_norm", 0.0)) > 0.0:
+                        torch.nn.utils.clip_grad_norm_(
+                            model.parameters(),
+                            max_norm=float(args.max_grad_norm),
+                            error_if_nonfinite=False,
+                        )
+                    grad_total = _grad_norm(model)
+                    grad_backbone = _grad_norm(model, lambda name: "backbone" in name)
+                    grad_aux = _grad_norm(model, lambda name: "aux" in name)
+                    grad_domain = _grad_norm(model, lambda name: "dom" in name or "domain" in name)
+                    grads_finite = _grads_are_finite(model)
+                    if grads_finite:
+                        scaler.step(optimizer)
+                        if bool(getattr(cp_sfce_config, "enabled", False)):
+                            try:
+                                if (
+                                    cp_sfce_capture_optimizer_steps_for_model is None
+                                    or update_cp_sfce_optimizer_step_receipt is None
+                                    or update_cp_sfce_projection_receipt is None
+                                ):
+                                    raise ImportError(
+                                        "cvsrffi.phase1_cp_sfce optimizer-state receipt support is required"
+                                    )
+                                cp_sfce_receipt = update_cp_sfce_optimizer_step_receipt(
+                                    cp_sfce_receipt,
+                                    before=cp_sfce_projection_info.get("optimizer_state_before", {}),
+                                    after=cp_sfce_capture_optimizer_steps_for_model(model, optimizer),
+                                )
+                                cp_sfce_receipt = update_cp_sfce_projection_receipt(
+                                    cp_sfce_receipt,
+                                    cp_sfce_projection_info,
+                                    epoch=epoch,
+                                    batch_index=batch_idx,
+                                    scenario=cp_sfce_satellite_scenario,
+                                    batch_info=cp_sfce_batch_info,
+                                )
+                            except Exception as error:
+                                _persist_cp_sfce_failure_receipt(
+                                    out_dir=out_dir,
+                                    args=args,
+                                    cp_sfce_receipt=cp_sfce_receipt,
+                                    error=error,
+                                    failure_stage="post_scaler_step_optimizer_state_increment",
+                                )
+                                raise
+                        optimizer_step_applied = True
+                        if ema_model is not None:
+                            _update_ema_model(ema_model, model, float(args.ema_decay))
+                    else:
+                        if bool(getattr(cp_sfce_config, "enabled", False)):
+                            error = CPSFCERuntimeError(
+                                "P1-CP-SFCE combined parameter gradient is non-finite"
+                            )
+                            _persist_cp_sfce_failure_receipt(
+                                out_dir=out_dir,
+                                args=args,
+                                cp_sfce_receipt=cp_sfce_receipt,
+                                error=error,
+                                failure_stage="post_projection_combined_gradient_nonfinite",
+                            )
+                            raise error
+                        skipped_nonfinite_grad = 1
+                        optimizer.zero_grad(set_to_none=True)
+                    scaler.update()
                 if bool(getattr(ccpc_config, "enabled", False)):
                     if update_ccpc_optimizer_receipt is None:
                         raise ImportError(

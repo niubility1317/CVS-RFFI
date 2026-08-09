@@ -30,11 +30,13 @@ from cvsrffi.phase1_cp_sfce import (  # noqa: E402
     cp_sfce_loss,
     cp_sfce_parameter_scopes,
     cp_sfce_scaled_backward_and_project,
+    finalize_cp_sfce_amp_overflow_skip,
     remap_cp_sfce_local_labels_to_head_rows,
     resolve_cp_sfce_classifier_weight,
     resolve_cp_sfce_local_head_class_binding,
     strict_cp_sfce_warm_start,
     update_cp_sfce_coverage_receipt,
+    update_cp_sfce_amp_overflow_receipt,
     update_cp_sfce_optimizer_step_receipt,
     update_cp_sfce_projection_receipt,
     validate_cp_sfce_args,
@@ -86,6 +88,28 @@ class _TinyModel(torch.nn.Module):
 
     def forward(self, x):
         return self.id_backbone.cls_head.head(self.id_backbone.encoder(x))
+
+
+class _FiniteForwardNonfiniteBackward(torch.autograd.Function):
+    @staticmethod
+    def forward(ctx, value):
+        return value.clone()
+
+    @staticmethod
+    def backward(ctx, gradient):
+        return torch.full_like(gradient, float("nan"))
+
+
+class _ScaleSensitiveGradient(torch.autograd.Function):
+    @staticmethod
+    def forward(ctx, value):
+        return value.clone()
+
+    @staticmethod
+    def backward(ctx, gradient):
+        if float(gradient.detach().abs().max().item()) > 8.0:
+            return torch.full_like(gradient, float("inf"))
+        return None
 
 
 def _frozen_args(*, enabled: bool = True):
@@ -312,6 +336,129 @@ def test_zero_base_gradient_is_legal_but_missing_nonfinite_and_outside_aux_fail_
         )
 
 
+@pytest.mark.skipif(not torch.cuda.is_available(), reason="real GradScaler overflow test requires CUDA")
+def test_real_amp_scaled_base_and_aux_overflow_skip_only_when_raw_vjp_is_finite():
+    device = torch.device("cuda")
+    labels = torch.arange(4, device=device)
+
+    def run_overflow(kind: str):
+        model = _TinyModel().to(device).train()
+        optimizer = torch.optim.AdamW(model.parameters(), lr=1e-3, weight_decay=0.0)
+        scaler = torch.amp.GradScaler("cuda", init_scale=65536.0)
+        logits = model(_data()[0].to(device))
+        stable = F.cross_entropy(logits, labels)
+        if kind == "base":
+            base_loss = logits.sum() * 1e35
+            sfce_loss = stable
+            expected = "BASE_SCALED_OVERFLOW_RAW_FINITE"
+        else:
+            base_loss = stable
+            sfce_loss = stable * 1e35
+            expected = "AUX_SCALED_OVERFLOW_RAW_FINITE"
+        before_parameters = [parameter.detach().clone() for parameter in model.parameters()]
+        overflow = cp_sfce_scaled_backward_and_project(
+            model=model,
+            optimizer=optimizer,
+            scaler=scaler,
+            base_loss=base_loss,
+            sfce_loss=sfce_loss,
+            loss_weight=0.10,
+        )
+        assert overflow["amp_overflow_detected"] is True
+        assert overflow["amp_overflow_recoverable"] is True
+        assert overflow["amp_overflow_kind"] == expected
+        finalized = finalize_cp_sfce_amp_overflow_skip(
+            model=model, optimizer=optimizer, scaler=scaler, overflow=overflow
+        )
+        torch.cuda.synchronize()
+        assert finalized["optimizer_state_unchanged"] is True
+        assert finalized["optimizer_step_applied"] is False
+        assert 0.0 < finalized["scale_after"] < finalized["captured_scale"]
+        assert all(torch.equal(before, after.detach()) for before, after in zip(before_parameters, model.parameters()))
+        receipt = update_cp_sfce_amp_overflow_receipt(
+            cp_sfce_config_receipt(CPSFCEConfig(True, True, 0.10, 1.0)),
+            overflow=overflow,
+            finalized_skip=finalized,
+        )
+        return receipt
+
+    base_receipt = run_overflow("base")
+    aux_receipt = run_overflow("aux")
+    assert base_receipt["cp_sfce_base_scaled_overflow_raw_finite_batches"] == 1
+    assert aux_receipt["cp_sfce_aux_scaled_overflow_raw_finite_batches"] == 1
+
+
+def test_raw_base_and_aux_failures_do_not_be_misclassified_as_recoverable_amp_overflows():
+    x, labels = _data()
+
+    model = _TinyModel().train()
+    optimizer = torch.optim.AdamW(model.parameters(), lr=1e-3, weight_decay=0.0)
+    logits = model(x)
+    base_overflow = cp_sfce_scaled_backward_and_project(
+        model=model,
+        optimizer=optimizer,
+        scaler=_FixedScaler(1024.0),
+        base_loss=_FiniteForwardNonfiniteBackward.apply(logits).sum(),
+        sfce_loss=F.cross_entropy(logits, labels),
+        loss_weight=0.10,
+    )
+    assert base_overflow["amp_overflow_kind"] == "BASE_RAW_NONFINITE_OR_DISCONNECTED"
+    assert base_overflow["amp_overflow_recoverable"] is False
+    with pytest.raises(CPSFCERuntimeError, match="raw-finite.*evidence"):
+        finalize_cp_sfce_amp_overflow_skip(
+            model=model,
+            optimizer=optimizer,
+            scaler=_FixedScaler(1024.0),
+            overflow=base_overflow,
+        )
+    receipt = update_cp_sfce_amp_overflow_receipt(
+        cp_sfce_config_receipt(CPSFCEConfig(True, True, 0.10, 1.0)), overflow=base_overflow
+    )
+    assert receipt["cp_sfce_base_raw_nonfinite_or_disconnected_batches"] == 1
+
+    model = _TinyModel().train()
+    optimizer = torch.optim.AdamW(model.parameters(), lr=1e-3, weight_decay=0.0)
+    logits = model(x)
+    aux_nonfinite = cp_sfce_scaled_backward_and_project(
+        model=model,
+        optimizer=optimizer,
+        scaler=_FixedScaler(1024.0),
+        base_loss=F.cross_entropy(logits, labels),
+        sfce_loss=_FiniteForwardNonfiniteBackward.apply(logits).sum(),
+        loss_weight=0.10,
+    )
+    assert aux_nonfinite["amp_overflow_kind"] == "AUX_RAW_NONFINITE_OR_DISCONNECTED"
+
+    model = _TinyModel().train()
+    optimizer = torch.optim.AdamW(model.parameters(), lr=1e-3, weight_decay=0.0)
+    logits = model(x)
+    aux_disconnected = cp_sfce_scaled_backward_and_project(
+        model=model,
+        optimizer=optimizer,
+        scaler=_FixedScaler(1024.0),
+        base_loss=F.cross_entropy(logits, labels),
+        sfce_loss=_ScaleSensitiveGradient.apply(logits).sum(),
+        loss_weight=0.10,
+    )
+    assert aux_disconnected["amp_overflow_kind"] == "AUX_RAW_NONFINITE_OR_DISCONNECTED"
+    assert aux_disconnected["raw_aux_missing_scope_parameter_names"]
+
+    model = _TinyModel().train()
+    optimizer = torch.optim.AdamW(model.parameters(), lr=1e-3, weight_decay=0.0)
+    logits = model(x)
+    aux_outside = cp_sfce_scaled_backward_and_project(
+        model=model,
+        optimizer=optimizer,
+        scaler=_FixedScaler(65536.0),
+        base_loss=F.cross_entropy(logits, labels),
+        sfce_loss=(F.cross_entropy(logits, labels) * 1e35)
+        + 0.1 * model.id_backbone.cls_head.imp_merge.weight.sum(),
+        loss_weight=0.10,
+    )
+    assert aux_outside["amp_overflow_kind"] == "AUX_RAW_OUTSIDE_VIOLATION"
+    assert aux_outside["raw_aux_outside_nonzero_parameter_names"]
+
+
 def test_local4_binding_receipt_terminal_and_failure_persistence_are_fail_closed(tmp_path, monkeypatch, capsys):
     global_order = ["14-10", "14-7", "20-15", "20-19", "6-15", "8-20"]
     local_order = ["20-15", "20-19", "6-15", "8-20"]
@@ -342,6 +489,8 @@ def test_local4_binding_receipt_terminal_and_failure_persistence_are_fail_closed
                 _projection_receipt(),
                 epoch=1 if batch_index == 1 else 2,
                 batch_index=batch_index,
+                scenario=scenario,
+                batch_info=_coverage(class_id),
             )
             receipt = update_cp_sfce_optimizer_step_receipt(
                 receipt,
@@ -350,6 +499,67 @@ def test_local4_binding_receipt_terminal_and_failure_persistence_are_fail_closed
             )
     terminal = validate_cp_sfce_terminal_receipt(receipt)
     assert terminal["cp_sfce_terminal_contract_passed"] is True
+    recovered_skip = update_cp_sfce_coverage_receipt(
+        receipt, _coverage(0), scenario=FROZEN_CP_SFCE_SCENARIOS[0]
+    )
+    recovered_skip = update_cp_sfce_amp_overflow_receipt(
+        recovered_skip,
+        overflow={
+            "amp_overflow_detected": True,
+            "amp_overflow_recoverable": True,
+            "amp_overflow_kind": "BASE_SCALED_OVERFLOW_RAW_FINITE",
+            "captured_scale": 65536.0,
+            "scaled_base_nonfinite_parameter_names": ("id_backbone.encoder.weight",),
+            "raw_base_vjp_finite": True,
+            "raw_base_nonfinite_parameter_names": (),
+            "raw_base_missing_scope_parameter_names": (),
+        },
+        finalized_skip={
+            "amp_overflow_kind": "BASE_SCALED_OVERFLOW_RAW_FINITE",
+            "captured_scale": 65536.0,
+            "scale_after": 32768.0,
+            "optimizer_state_unchanged": True,
+            "optimizer_step_applied": False,
+            "scaled_parameter_names": ("id_backbone.encoder.weight",),
+        },
+    )
+    assert validate_cp_sfce_terminal_receipt(recovered_skip)["cp_sfce_terminal_contract_passed"] is True
+    bad_skip = {
+        "amp_overflow_kind": "BASE_SCALED_OVERFLOW_RAW_FINITE",
+        "captured_scale": 65536.0,
+        "scale_after": 65536.0,
+        "optimizer_state_unchanged": True,
+        "optimizer_step_applied": False,
+        "scaled_parameter_names": ("id_backbone.encoder.weight",),
+    }
+    with pytest.raises(CPSFCERuntimeError, match="scale did not decrease"):
+        update_cp_sfce_amp_overflow_receipt(
+            receipt,
+            overflow={
+                "amp_overflow_detected": True,
+                "amp_overflow_recoverable": True,
+                "amp_overflow_kind": "BASE_SCALED_OVERFLOW_RAW_FINITE",
+                "captured_scale": 65536.0,
+                "scaled_base_nonfinite_parameter_names": ("id_backbone.encoder.weight",),
+                "raw_base_vjp_finite": True,
+            },
+            finalized_skip=bad_skip,
+        )
+    bad_skip["scale_after"] = 32768.0
+    bad_skip["optimizer_state_unchanged"] = False
+    with pytest.raises(CPSFCERuntimeError, match="optimizer state changed"):
+        update_cp_sfce_amp_overflow_receipt(
+            receipt,
+            overflow={
+                "amp_overflow_detected": True,
+                "amp_overflow_recoverable": True,
+                "amp_overflow_kind": "BASE_SCALED_OVERFLOW_RAW_FINITE",
+                "captured_scale": 65536.0,
+                "scaled_base_nonfinite_parameter_names": ("id_backbone.encoder.weight",),
+                "raw_base_vjp_finite": True,
+            },
+            finalized_skip=bad_skip,
+        )
     for count_key in (
         "cp_sfce_projection_batches",
         "cp_sfce_outside_aux_zero_or_none_batches",
@@ -357,7 +567,7 @@ def test_local4_binding_receipt_terminal_and_failure_persistence_are_fail_closed
     ):
         incomplete = dict(receipt)
         incomplete[count_key] = int(incomplete[count_key]) - 1
-        with pytest.raises(CPSFCERuntimeError, match="batchwise"):
+        with pytest.raises(CPSFCERuntimeError, match="batchwise|inconsistent"):
             validate_cp_sfce_terminal_receipt(incomplete)
     no_step = dict(receipt)
     no_step["cp_sfce_optimizer_state_no_step_batches"] = 1
@@ -374,6 +584,11 @@ def test_local4_binding_receipt_terminal_and_failure_persistence_are_fail_closed
     inert["cp_sfce_conflict_batches"] = {"shared_encoder": 0, "classifier_head": int(receipt["cp_sfce_batches"])}
     with pytest.raises(CPSFCERuntimeError, match="inert"):
         validate_cp_sfce_terminal_receipt(inert)
+
+    control = validate_cp_sfce_terminal_receipt(
+        cp_sfce_config_receipt(CPSFCEConfig(True, False, 0.0, 1.0))
+    )
+    assert control["cp_sfce_terminal_contract"] == "CONTROL_ARM_NOT_APPLICABLE"
 
     source = torch.nn.Linear(3, 2)
     target = torch.nn.Linear(3, 2)
@@ -467,6 +682,19 @@ def test_train_integration_and_launcher_freeze_the_single_cp_backward_path():
     assert "cp_sfce_scaled_backward_and_project(" in source
     assert "scaled_base_backward_unscale_aux_vjp_projection" in source
     assert "post_scaler_step_optimizer_state_increment" in source
+    assert "raw_finite_amp_overflow_skip_backoff" in source
+    assert source.index("cp_sfce_projection_info: Dict[str, Any] = {}") < source.index(
+        'cp_sfce_projection_info.get("projection_applied"'
+    )
+    overflow_branch = source[
+        source.index("if cp_sfce_amp_overflow_pending:") : source.index(
+            "else:\n                    if not bool(getattr(cp_sfce_config, \"enabled\", False))",
+            source.index("if cp_sfce_amp_overflow_pending:"),
+        )
+    ]
+    assert "optimizer_step_applied = True" not in overflow_branch
+    assert "_update_ema_model" not in overflow_branch
+    assert "if proto_bank is not None and optimizer_step_applied" in source
     assert "unprojected_sfce_backward_count" in Path(
         CODE_ROOT / "cvsrffi" / "phase1_cp_sfce.py"
     ).read_text(encoding="utf-8")
@@ -479,7 +707,7 @@ def test_train_integration_and_launcher_freeze_the_single_cp_backward_path():
         ("2", "C", "2"), ("6", "G", "2"), ("2", "G", "3"), ("6", "C", "3"),
         ("3", "C", "4"), ("3", "G", "5"), ("4", "C", "6"), ("4", "G", "7"),
     ]
-    assert "phase1_cp_sfce12_20260809_v1" in text
+    assert "phase1_cp_sfce12_20260809_v2" in text
     assert "GEOSAT_CKPT_ROOT:-${PROJECT_ROOT}/runs/phase1_loto_clsgeo12_20260808_v1" in text
     assert "--phase1_cb_sfce_enabled false" in text
     assert "--lambda_cp_sfce 0.10" in text and "--lambda_cp_sfce 0" in text

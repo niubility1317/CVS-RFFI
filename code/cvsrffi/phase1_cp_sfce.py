@@ -144,7 +144,7 @@ def cp_sfce_config_receipt(config: CPSFCEConfig) -> Dict[str, Any]:
             base.pop(key, None)
     base.update(
         {
-            "schema": "cvs.phase1.cp_sfce_receipt.v1",
+            "schema": "cvs.phase1.cp_sfce_receipt.v2",
             "method": "P1_CP_SFCE",
             "loss_rule": "PRESENT_TX_EQUAL_MEAN_FOCAL_CE_ON_SINGLE_LEO_TX_LOGITS",
             "gradient_rule": "PROJECT_ADDITIONAL_SFCE_GRADIENT_AGAINST_COMMON_BASE_ON_CONFLICT",
@@ -175,6 +175,14 @@ def cp_sfce_config_receipt(config: CPSFCEConfig) -> Dict[str, Any]:
             "cp_sfce_outside_aux_zero_or_none_batches": 0,
             "cp_sfce_optimizer_state_step_batches": 0,
             "cp_sfce_optimizer_state_no_step_batches": 0,
+            "cp_sfce_base_scaled_overflow_raw_finite_batches": 0,
+            "cp_sfce_aux_scaled_overflow_raw_finite_batches": 0,
+            "cp_sfce_base_raw_nonfinite_or_disconnected_batches": 0,
+            "cp_sfce_aux_raw_nonfinite_or_disconnected_batches": 0,
+            "cp_sfce_aux_raw_outside_violation_batches": 0,
+            "cp_sfce_amp_skip_scale_decreased_batches": 0,
+            "cp_sfce_amp_skip_optimizer_state_unchanged_batches": 0,
+            "cp_sfce_last_amp_overflow": {},
             "cp_sfce_last_projection": {},
             "cp_sfce_terminal_contract": "PENDING",
             "cp_sfce_terminal_contract_passed": False,
@@ -317,6 +325,77 @@ def cp_sfce_parameter_scopes(model: torch.nn.Module) -> Dict[str, Tuple[torch.nn
     }
 
 
+def _trainable_parameter_names(
+    model: torch.nn.Module, parameters: Sequence[torch.nn.Parameter]
+) -> Dict[int, str]:
+    """Bind data-free gradient diagnostics to live named parameters."""
+
+    raw_model = getattr(model, "_orig_mod", model)
+    required_ids = {id(parameter) for parameter in parameters}
+    names = {
+        id(parameter): str(name)
+        for name, parameter in raw_model.named_parameters()
+        if parameter.requires_grad and id(parameter) in required_ids
+    }
+    if required_ids != set(names):
+        raise CPSFCERuntimeError("P1-CP-SFCE trainable parameter-name binding is incomplete")
+    return names
+
+
+def _raw_vjp_overflow_audit(
+    *,
+    loss: torch.Tensor,
+    all_trainable: Sequence[torch.nn.Parameter],
+    parameter_scopes: Mapping[str, Sequence[torch.nn.Parameter]],
+    names: Mapping[int, str],
+    term_name: str,
+    require_outside_zero: bool,
+) -> Dict[str, Any]:
+    """Differentiate an unscaled term once only after its scaled VJP overflow.
+
+    The extra VJP is deliberately exceptional-path work.  It distinguishes a
+    finite base gradient whose loss-scale multiplication overflowed from an
+    actual raw gradient failure without changing any successful-batch path.
+    """
+
+    try:
+        gradients = torch.autograd.grad(
+            loss,
+            tuple(all_trainable),
+            retain_graph=False,
+            create_graph=False,
+            allow_unused=True,
+        )
+    except RuntimeError as error:
+        raise CPSFCERuntimeError(f"P1-CP-SFCE raw {term_name} VJP audit failed") from error
+    scope_ids = {
+        id(parameter)
+        for group in ("shared_encoder", "classifier_head")
+        for parameter in parameter_scopes[group]
+    }
+    nonfinite = []
+    missing_scope = []
+    outside_nonzero = []
+    for parameter, gradient in zip(all_trainable, gradients):
+        name = names[id(parameter)]
+        if gradient is None:
+            if id(parameter) in scope_ids:
+                missing_scope.append(name)
+            continue
+        if not bool(torch.isfinite(gradient.detach()).all().item()):
+            nonfinite.append(name)
+        elif require_outside_zero and id(parameter) not in scope_ids and int(
+            torch.count_nonzero(gradient.detach()).item()
+        ) != 0:
+            outside_nonzero.append(name)
+    return {
+        "raw_vjp_finite": not nonfinite and not missing_scope and not outside_nonzero,
+        "raw_nonfinite_parameter_names": tuple(sorted(nonfinite)),
+        "raw_missing_scope_parameter_names": tuple(sorted(missing_scope)),
+        "raw_outside_nonzero_parameter_names": tuple(sorted(outside_nonzero)),
+    }
+
+
 def _require_scalar_finite(name: str, tensor: torch.Tensor) -> None:
     if not torch.is_tensor(tensor) or tensor.ndim != 0:
         raise CPSFCERuntimeError(f"P1-CP-SFCE requires scalar {name}")
@@ -390,6 +469,122 @@ def cp_sfce_capture_optimizer_steps_for_model(
     """Recapture the same frozen encoder/head scope after ``scaler.step``."""
 
     return cp_sfce_capture_optimizer_steps(optimizer, cp_sfce_parameter_scopes(model))
+
+
+def _optimizer_steps_unchanged(
+    before: Mapping[str, Sequence[float]], after: Mapping[str, Sequence[float]]
+) -> bool:
+    for group in ("shared_encoder", "classifier_head"):
+        before_values = tuple(float(value) for value in before.get(group, ()))
+        after_values = tuple(float(value) for value in after.get(group, ()))
+        if not before_values or len(before_values) != len(after_values):
+            return False
+        if not all(math.isfinite(value) for value in (*before_values, *after_values)):
+            return False
+        if any(before_value != after_value for before_value, after_value in zip(before_values, after_values)):
+            return False
+    return True
+
+
+def finalize_cp_sfce_amp_overflow_skip(
+    *,
+    model: torch.nn.Module,
+    optimizer: torch.optim.Optimizer,
+    scaler: Any,
+    overflow: Mapping[str, Any],
+) -> Dict[str, Any]:
+    """Skip one raw-finite scaled overflow through public GradScaler APIs.
+
+    Base-gradient overflow is already known to GradScaler after ``unscale_``;
+    its public ``step`` therefore skips AdamW and ``update`` applies the
+    configured backoff.  Auxiliary-VJP overflow is not in ``.grad`` buffers,
+    so the batch is deliberately zeroed without a step and the public scaler
+    backoff is requested explicitly.  Neither path retries the batch.
+    """
+
+    if overflow.get("amp_overflow_detected") is not True or overflow.get(
+        "amp_overflow_recoverable"
+    ) is not True:
+        raise CPSFCERuntimeError("P1-CP-SFCE AMP overflow skip requires raw-finite overflow evidence")
+    kind = str(overflow.get("amp_overflow_kind", ""))
+    if kind not in {"BASE_SCALED_OVERFLOW_RAW_FINITE", "AUX_SCALED_OVERFLOW_RAW_FINITE"}:
+        raise CPSFCERuntimeError("P1-CP-SFCE AMP overflow kind is invalid")
+    if kind == "BASE_SCALED_OVERFLOW_RAW_FINITE":
+        raw_finite = overflow.get("raw_base_vjp_finite") is True
+        raw_bad = tuple(overflow.get("raw_base_nonfinite_parameter_names", ())) + tuple(
+            overflow.get("raw_base_missing_scope_parameter_names", ())
+        )
+        scaled_bad = tuple(overflow.get("scaled_base_nonfinite_parameter_names", ()))
+    else:
+        raw_finite = overflow.get("raw_aux_vjp_finite") is True
+        raw_bad = (
+            tuple(overflow.get("raw_aux_nonfinite_parameter_names", ()))
+            + tuple(overflow.get("raw_aux_missing_scope_parameter_names", ()))
+            + tuple(overflow.get("raw_aux_outside_nonzero_parameter_names", ()))
+        )
+        scaled_bad = tuple(overflow.get("scaled_aux_nonfinite_parameter_names", ()))
+    if not raw_finite or raw_bad or not scaled_bad:
+        raise CPSFCERuntimeError("P1-CP-SFCE AMP overflow lacks raw-finite gradient evidence")
+    try:
+        scale_before = float(overflow["captured_scale"])
+    except (KeyError, TypeError, ValueError) as error:
+        raise CPSFCERuntimeError("P1-CP-SFCE AMP overflow lacks a captured scale") from error
+    if not math.isfinite(scale_before) or scale_before <= 0.0:
+        raise CPSFCERuntimeError("P1-CP-SFCE AMP overflow captured scale is invalid")
+    before = overflow.get("optimizer_state_before", {})
+    if kind == "BASE_SCALED_OVERFLOW_RAW_FINITE":
+        scaler.step(optimizer)
+        scaler.update()
+    else:
+        if not hasattr(scaler, "get_backoff_factor"):
+            raise CPSFCERuntimeError("P1-CP-SFCE auxiliary AMP overflow requires GradScaler backoff API")
+        backoff = float(scaler.get_backoff_factor())
+        scale_after_requested = scale_before * backoff
+        if not math.isfinite(backoff) or not (0.0 < backoff < 1.0) or not math.isfinite(
+            scale_after_requested
+        ) or scale_after_requested <= 0.0:
+            raise CPSFCERuntimeError("P1-CP-SFCE auxiliary AMP overflow backoff is invalid")
+        optimizer.zero_grad(set_to_none=True)
+        scaler.update(new_scale=scale_after_requested)
+    after = cp_sfce_capture_optimizer_steps_for_model(model, optimizer)
+    scale_after = float(scaler.get_scale())
+    if not math.isfinite(scale_after) or not (0.0 < scale_after < scale_before):
+        raise CPSFCERuntimeError("P1-CP-SFCE AMP overflow skip did not lower GradScaler scale")
+    if not _optimizer_steps_unchanged(before, after):
+        raise CPSFCERuntimeError("P1-CP-SFCE AMP overflow skip advanced optimizer state")
+    optimizer.zero_grad(set_to_none=True)
+    return {
+        "amp_overflow_kind": kind,
+        "captured_scale": scale_before,
+        "scale_after": scale_after,
+        "optimizer_state_unchanged": True,
+        "optimizer_step_applied": False,
+        "scaled_parameter_names": tuple(
+            str(value)
+            for value in overflow.get(
+                "scaled_base_nonfinite_parameter_names",
+                overflow.get("scaled_aux_nonfinite_parameter_names", ()),
+            )
+        ),
+        "raw_nonfinite_parameter_names": tuple(
+            str(value)
+            for value in overflow.get(
+                "raw_base_nonfinite_parameter_names",
+                overflow.get("raw_aux_nonfinite_parameter_names", ()),
+            )
+        ),
+        "raw_missing_scope_parameter_names": tuple(
+            str(value)
+            for value in overflow.get(
+                "raw_base_missing_scope_parameter_names",
+                overflow.get("raw_aux_missing_scope_parameter_names", ()),
+            )
+        ),
+        "raw_outside_nonzero_parameter_names": tuple(
+            str(value)
+            for value in overflow.get("raw_aux_outside_nonzero_parameter_names", ())
+        ),
+    }
 
 
 def _projection_group(
@@ -471,6 +666,43 @@ def cp_sfce_scaled_backward_and_project(
         raise CPSFCERuntimeError("P1-CP-SFCE captured GradScaler scale is invalid")
     scaler.scale(base_loss).backward(retain_graph=True)
     scaler.unscale_(optimizer)
+    names = _trainable_parameter_names(model, all_trainable)
+    scaled_base_nonfinite_parameter_names = tuple(
+        sorted(
+            names[id(parameter)]
+            for parameter in all_trainable
+            if parameter.grad is not None
+            and not bool(torch.isfinite(parameter.grad.detach()).all().item())
+        )
+    )
+    if scaled_base_nonfinite_parameter_names:
+        raw_audit = _raw_vjp_overflow_audit(
+            loss=base_loss,
+            all_trainable=all_trainable,
+            parameter_scopes=parameter_scopes,
+            names=names,
+            term_name="base",
+            require_outside_zero=False,
+        )
+        optimizer_state_before = cp_sfce_capture_optimizer_steps(optimizer, parameter_scopes)
+        return {
+            "projection_applied": False,
+            "amp_overflow_detected": True,
+            "amp_overflow_kind": "BASE_SCALED_OVERFLOW_RAW_FINITE"
+            if bool(raw_audit["raw_vjp_finite"])
+            else "BASE_RAW_NONFINITE_OR_DISCONNECTED",
+            "amp_overflow_recoverable": bool(raw_audit["raw_vjp_finite"]),
+            "captured_scale": float(captured_scale),
+            "base_scaled_backward_count": 1,
+            "optimizer_unscale_count": 1,
+            "scaled_aux_vjp_count": 0,
+            "unprojected_sfce_backward_count": 0,
+            "scaled_base_nonfinite_parameter_names": scaled_base_nonfinite_parameter_names,
+            "raw_base_nonfinite_parameter_names": raw_audit["raw_nonfinite_parameter_names"],
+            "raw_base_missing_scope_parameter_names": raw_audit["raw_missing_scope_parameter_names"],
+            "raw_base_vjp_finite": bool(raw_audit["raw_vjp_finite"]),
+            "optimizer_state_before": optimizer_state_before,
+        }
     base_by_id = {
         id(parameter): _require_finite_gradient("common base", parameter.grad)
         for parameter in all_trainable
@@ -479,10 +711,50 @@ def cp_sfce_scaled_backward_and_project(
     scaled_aux = torch.autograd.grad(
         scaler.scale(float(loss_weight) * sfce_loss),
         all_trainable,
-        retain_graph=False,
+        retain_graph=True,
         create_graph=False,
         allow_unused=True,
     )
+    scaled_aux_nonfinite_parameter_names = tuple(
+        sorted(
+            names[id(parameter)]
+            for parameter, gradient in zip(all_trainable, scaled_aux)
+            if gradient is not None and not bool(torch.isfinite(gradient.detach()).all().item())
+        )
+    )
+    if scaled_aux_nonfinite_parameter_names:
+        raw_audit = _raw_vjp_overflow_audit(
+            loss=float(loss_weight) * sfce_loss,
+            all_trainable=all_trainable,
+            parameter_scopes=parameter_scopes,
+            names=names,
+            term_name="auxiliary",
+            require_outside_zero=True,
+        )
+        optimizer_state_before = cp_sfce_capture_optimizer_steps(optimizer, parameter_scopes)
+        raw_valid = bool(raw_audit["raw_vjp_finite"])
+        raw_outside = tuple(raw_audit["raw_outside_nonzero_parameter_names"])
+        return {
+            "projection_applied": False,
+            "amp_overflow_detected": True,
+            "amp_overflow_kind": "AUX_SCALED_OVERFLOW_RAW_FINITE"
+            if raw_valid
+            else (
+                "AUX_RAW_OUTSIDE_VIOLATION" if raw_outside else "AUX_RAW_NONFINITE_OR_DISCONNECTED"
+            ),
+            "amp_overflow_recoverable": raw_valid,
+            "captured_scale": float(captured_scale),
+            "base_scaled_backward_count": 1,
+            "optimizer_unscale_count": 1,
+            "scaled_aux_vjp_count": 1,
+            "unprojected_sfce_backward_count": 0,
+            "scaled_aux_nonfinite_parameter_names": scaled_aux_nonfinite_parameter_names,
+            "raw_aux_nonfinite_parameter_names": raw_audit["raw_nonfinite_parameter_names"],
+            "raw_aux_missing_scope_parameter_names": raw_audit["raw_missing_scope_parameter_names"],
+            "raw_aux_outside_nonzero_parameter_names": raw_outside,
+            "raw_aux_vjp_finite": raw_valid,
+            "optimizer_state_before": optimizer_state_before,
+        }
     aux_by_id: Dict[int, torch.Tensor] = {}
     for parameter, scaled_gradient in zip(all_trainable, scaled_aux):
         if scaled_gradient is None:
@@ -508,6 +780,8 @@ def cp_sfce_scaled_backward_and_project(
         parameter.grad = merged_by_id[id(parameter)].detach().clone()
     optimizer_state_before = cp_sfce_capture_optimizer_steps(optimizer, parameter_scopes)
     return {
+        "projection_applied": True,
+        "amp_overflow_detected": False,
         "raw_unscaled": True,
         "diagnostic_only": False,
         "captured_scale": float(captured_scale),
@@ -577,6 +851,8 @@ def update_cp_sfce_projection_receipt(
     *,
     epoch: int,
     batch_index: int,
+    scenario: str,
+    batch_info: Mapping[str, Any],
 ) -> Dict[str, Any]:
     """Seal a finite per-batch projection and the one first-epoch marker."""
 
@@ -593,6 +869,8 @@ def update_cp_sfce_projection_receipt(
     )
     if projection.get("raw_unscaled") is not True or projection.get("diagnostic_only") is not False:
         raise CPSFCERuntimeError("P1-CP-SFCE projection is not raw-unscaled operational evidence")
+    if str(scenario) not in FROZEN_CP_SFCE_SCENARIOS:
+        raise CPSFCERuntimeError("P1-CP-SFCE applied projection has an invalid satellite scenario")
     if any(key not in projection for key in required_top):
         raise CPSFCERuntimeError("P1-CP-SFCE projection receipt lacks required fields")
     if int(projection["base_scaled_backward_count"]) != 1 or int(projection["optimizer_unscale_count"]) != 1:
@@ -638,6 +916,31 @@ def update_cp_sfce_projection_receipt(
     result["cp_sfce_outside_aux_zero_or_none_batches"] = int(
         result.get("cp_sfce_outside_aux_zero_or_none_batches", 0)
     ) + 1
+    rows = {str(key): int(value) for key, value in dict(batch_info.get("per_tx_rows", {})).items()}
+    losses = {str(key): float(value) for key, value in dict(batch_info.get("per_tx_loss", {})).items()}
+    finite = {str(key): bool(value) for key, value in dict(batch_info.get("per_tx_finite", {})).items()}
+    nonzero = {
+        str(key): bool(value)
+        for key, value in dict(batch_info.get("per_tx_nonzero_logit_gradient", {})).items()
+    }
+    if set(rows) != set(losses) or set(rows) != set(finite) or set(rows) != set(nonzero):
+        raise CPSFCERuntimeError("P1-CP-SFCE applied projection coverage keys do not match")
+    cells = {str(key): dict(value) for key, value in dict(result.get("cp_sfce_cells", {})).items()}
+    for key, row_count in rows.items():
+        if row_count <= 0:
+            raise CPSFCERuntimeError("P1-CP-SFCE applied projection has an invalid local TX row count")
+        cell_key = f"tx{int(key)}|{str(scenario)}"
+        cell = dict(cells.get(cell_key, {}))
+        if not cell:
+            raise CPSFCERuntimeError("P1-CP-SFCE applied projection has no observed local TX cell")
+        cell["applied_rows"] = int(cell.get("applied_rows", 0)) + row_count
+        cell["applied_loss_batches"] = int(cell.get("applied_loss_batches", 0)) + 1
+        cell["applied_finite_batches"] = int(cell.get("applied_finite_batches", 0)) + int(finite[key])
+        cell["applied_nonzero_logit_gradient_batches"] = int(
+            cell.get("applied_nonzero_logit_gradient_batches", 0)
+        ) + int(nonzero[key])
+        cells[cell_key] = cell
+    result["cp_sfce_cells"] = cells
     result["cp_sfce_last_projection"] = dict(projection)
     if not bool(result.get("cp_sfce_first_epoch_marker_completed", False)):
         if int(epoch) != 1:
@@ -653,6 +956,124 @@ def update_cp_sfce_projection_receipt(
             "shared_encoder_conflict": bool(projection["shared_encoder"].get("conflict", False)),
             "classifier_head_conflict": bool(projection["classifier_head"].get("conflict", False)),
         }
+    return result
+
+
+def update_cp_sfce_amp_overflow_receipt(
+    receipt: Mapping[str, Any],
+    *,
+    overflow: Mapping[str, Any],
+    finalized_skip: Optional[Mapping[str, Any]] = None,
+) -> Dict[str, Any]:
+    """Record a data-free AMP overflow classification without retrying a batch."""
+
+    result = dict(receipt)
+    if overflow.get("amp_overflow_detected") is not True:
+        raise CPSFCERuntimeError("P1-CP-SFCE AMP overflow receipt requires overflow evidence")
+    kind = str(overflow.get("amp_overflow_kind", ""))
+    base_recoverable = kind == "BASE_SCALED_OVERFLOW_RAW_FINITE"
+    aux_recoverable = kind == "AUX_SCALED_OVERFLOW_RAW_FINITE"
+    if base_recoverable or aux_recoverable:
+        if overflow.get("amp_overflow_recoverable") is not True or finalized_skip is None:
+            raise CPSFCERuntimeError("P1-CP-SFCE raw-finite AMP overflow was not finalized as a skip")
+        if str(finalized_skip.get("amp_overflow_kind", "")) != kind:
+            raise CPSFCERuntimeError("P1-CP-SFCE AMP overflow kind changed before receipt")
+        if base_recoverable:
+            raw_finite = overflow.get("raw_base_vjp_finite") is True
+            raw_bad = tuple(overflow.get("raw_base_nonfinite_parameter_names", ())) + tuple(
+                overflow.get("raw_base_missing_scope_parameter_names", ())
+            )
+            scaled_bad = tuple(overflow.get("scaled_base_nonfinite_parameter_names", ()))
+        else:
+            raw_finite = overflow.get("raw_aux_vjp_finite") is True
+            raw_bad = (
+                tuple(overflow.get("raw_aux_nonfinite_parameter_names", ()))
+                + tuple(overflow.get("raw_aux_missing_scope_parameter_names", ()))
+                + tuple(overflow.get("raw_aux_outside_nonzero_parameter_names", ()))
+            )
+            scaled_bad = tuple(overflow.get("scaled_aux_nonfinite_parameter_names", ()))
+        if not raw_finite or raw_bad or not scaled_bad:
+            raise CPSFCERuntimeError("P1-CP-SFCE AMP overflow receipt lacks raw-finite evidence")
+        try:
+            scale_before = float(finalized_skip["captured_scale"])
+            scale_after = float(finalized_skip["scale_after"])
+        except (KeyError, TypeError, ValueError) as error:
+            raise CPSFCERuntimeError("P1-CP-SFCE AMP overflow receipt lacks scale evidence") from error
+        if not math.isfinite(scale_before) or not math.isfinite(scale_after) or not (
+            0.0 < scale_after < scale_before
+        ):
+            raise CPSFCERuntimeError("P1-CP-SFCE AMP overflow receipt scale did not decrease")
+        if finalized_skip.get("optimizer_state_unchanged") is not True or finalized_skip.get(
+            "optimizer_step_applied"
+        ) is not False:
+            raise CPSFCERuntimeError("P1-CP-SFCE AMP overflow receipt optimizer state changed")
+        if base_recoverable:
+            result["cp_sfce_base_scaled_overflow_raw_finite_batches"] = int(
+                result.get("cp_sfce_base_scaled_overflow_raw_finite_batches", 0)
+            ) + 1
+        else:
+            result["cp_sfce_aux_scaled_overflow_raw_finite_batches"] = int(
+                result.get("cp_sfce_aux_scaled_overflow_raw_finite_batches", 0)
+            ) + 1
+        result["cp_sfce_amp_skip_scale_decreased_batches"] = int(
+            result.get("cp_sfce_amp_skip_scale_decreased_batches", 0)
+        ) + 1
+        result["cp_sfce_amp_skip_optimizer_state_unchanged_batches"] = int(
+            result.get("cp_sfce_amp_skip_optimizer_state_unchanged_batches", 0)
+        ) + 1
+        result["cp_sfce_last_amp_overflow"] = {
+            "kind": kind,
+            "pre_scale": scale_before,
+            "post_scale": scale_after,
+            "scaled_parameter_names": list(finalized_skip.get("scaled_parameter_names", ())),
+            "raw_parameter_names": list(finalized_skip.get("raw_nonfinite_parameter_names", ())),
+            "count": int(
+                result.get("cp_sfce_base_scaled_overflow_raw_finite_batches", 0)
+            )
+            + int(result.get("cp_sfce_aux_scaled_overflow_raw_finite_batches", 0)),
+        }
+        return result
+    if finalized_skip is not None:
+        raise CPSFCERuntimeError("P1-CP-SFCE fatal raw overflow cannot finalize an optimizer skip")
+    if kind == "BASE_RAW_NONFINITE_OR_DISCONNECTED":
+        result["cp_sfce_base_raw_nonfinite_or_disconnected_batches"] = int(
+            result.get("cp_sfce_base_raw_nonfinite_or_disconnected_batches", 0)
+        ) + 1
+    elif kind == "AUX_RAW_NONFINITE_OR_DISCONNECTED":
+        result["cp_sfce_aux_raw_nonfinite_or_disconnected_batches"] = int(
+            result.get("cp_sfce_aux_raw_nonfinite_or_disconnected_batches", 0)
+        ) + 1
+    elif kind == "AUX_RAW_OUTSIDE_VIOLATION":
+        result["cp_sfce_aux_raw_outside_violation_batches"] = int(
+            result.get("cp_sfce_aux_raw_outside_violation_batches", 0)
+        ) + 1
+    else:
+        raise CPSFCERuntimeError("P1-CP-SFCE AMP overflow receipt kind is invalid")
+    result["cp_sfce_last_amp_overflow"] = {
+        "kind": kind,
+        "pre_scale": float(overflow.get("captured_scale", float("nan"))),
+        "scaled_parameter_names": list(
+            overflow.get(
+                "scaled_base_nonfinite_parameter_names",
+                overflow.get("scaled_aux_nonfinite_parameter_names", ()),
+            )
+        ),
+        "raw_parameter_names": list(
+            overflow.get(
+                "raw_base_nonfinite_parameter_names",
+                overflow.get("raw_aux_nonfinite_parameter_names", ()),
+            )
+        ),
+        "raw_missing_scope_parameter_names": list(
+            overflow.get(
+                "raw_base_missing_scope_parameter_names",
+                overflow.get("raw_aux_missing_scope_parameter_names", ()),
+            )
+        ),
+        "raw_outside_nonzero_parameter_names": list(
+            overflow.get("raw_aux_outside_nonzero_parameter_names", ())
+        ),
+    }
     return result
 
 
@@ -713,11 +1134,10 @@ def validate_cp_sfce_terminal_receipt(receipt: Mapping[str, Any]) -> Dict[str, A
             key = f"tx{class_id}|{scenario}"
             cell = cells.get(key)
             if cell is None or (
-                int(cell.get("rows", 0)) <= 0
-                or int(cell.get("loss_batches", 0)) <= 0
-                or int(cell.get("finite_batches", 0)) <= 0
-                or int(cell.get("nonzero_logit_gradient_batches", 0)) <= 0
-                or int(cell.get("nonfinite_batches", 0)) != 0
+                int(cell.get("applied_rows", 0)) <= 0
+                or int(cell.get("applied_loss_batches", 0)) <= 0
+                or int(cell.get("applied_finite_batches", 0)) <= 0
+                or int(cell.get("applied_nonzero_logit_gradient_batches", 0)) <= 0
             ):
                 failed_cells.append(key)
     if failed_cells:
@@ -742,21 +1162,59 @@ def validate_cp_sfce_terminal_receipt(receipt: Mapping[str, Any]) -> Dict[str, A
             "cp_sfce_optimizer_state_no_step_batches": int(
                 result.get("cp_sfce_optimizer_state_no_step_batches", 0)
             ),
+            "cp_sfce_base_scaled_overflow_raw_finite_batches": int(
+                result.get("cp_sfce_base_scaled_overflow_raw_finite_batches", 0)
+            ),
+            "cp_sfce_aux_scaled_overflow_raw_finite_batches": int(
+                result.get("cp_sfce_aux_scaled_overflow_raw_finite_batches", 0)
+            ),
+            "cp_sfce_base_raw_nonfinite_or_disconnected_batches": int(
+                result.get("cp_sfce_base_raw_nonfinite_or_disconnected_batches", 0)
+            ),
+            "cp_sfce_aux_raw_nonfinite_or_disconnected_batches": int(
+                result.get("cp_sfce_aux_raw_nonfinite_or_disconnected_batches", 0)
+            ),
+            "cp_sfce_aux_raw_outside_violation_batches": int(
+                result.get("cp_sfce_aux_raw_outside_violation_batches", 0)
+            ),
+            "cp_sfce_amp_skip_scale_decreased_batches": int(
+                result.get("cp_sfce_amp_skip_scale_decreased_batches", 0)
+            ),
+            "cp_sfce_amp_skip_optimizer_state_unchanged_batches": int(
+                result.get("cp_sfce_amp_skip_optimizer_state_unchanged_batches", 0)
+            ),
         }
     except (TypeError, ValueError) as error:
         raise CPSFCERuntimeError("P1-CP-SFCE terminal receipt has invalid batchwise counts") from error
     batch_total = batch_counts["cp_sfce_batches"]
-    if batch_total <= 0 or any(
-        batch_counts[key] != batch_total
+    applied = batch_counts["cp_sfce_projection_batches"]
+    base_skips = batch_counts["cp_sfce_base_scaled_overflow_raw_finite_batches"]
+    aux_skips = batch_counts["cp_sfce_aux_scaled_overflow_raw_finite_batches"]
+    skip_total = base_skips + aux_skips
+    if batch_total <= 0 or applied <= 0 or batch_total != applied + skip_total:
+        raise CPSFCERuntimeError("P1-CP-SFCE terminal batchwise projection/step evidence is incomplete")
+    if any(
+        batch_counts[key] != applied
         for key in (
-            "cp_sfce_projection_batches",
             "cp_sfce_outside_aux_zero_or_none_batches",
             "cp_sfce_optimizer_state_step_batches",
         )
     ):
-        raise CPSFCERuntimeError("P1-CP-SFCE terminal batchwise projection/step evidence is incomplete")
-    if batch_counts["cp_sfce_optimizer_state_no_step_batches"] != 0:
+        raise CPSFCERuntimeError("P1-CP-SFCE terminal applied projection/step counts are inconsistent")
+    if batch_counts["cp_sfce_optimizer_state_no_step_batches"] != 0 or any(
+        batch_counts[key] != 0
+        for key in (
+            "cp_sfce_base_raw_nonfinite_or_disconnected_batches",
+            "cp_sfce_aux_raw_nonfinite_or_disconnected_batches",
+            "cp_sfce_aux_raw_outside_violation_batches",
+        )
+    ):
         raise CPSFCERuntimeError("P1-CP-SFCE terminal optimizer-step contract failed")
+    if (
+        batch_counts["cp_sfce_amp_skip_scale_decreased_batches"] != skip_total
+        or batch_counts["cp_sfce_amp_skip_optimizer_state_unchanged_batches"] != skip_total
+    ):
+        raise CPSFCERuntimeError("P1-CP-SFCE terminal AMP skip evidence is incomplete")
     conflicts = dict(result.get("cp_sfce_conflict_batches", {}))
     base_zero = dict(result.get("cp_sfce_base_zero_batches", {}))
     for group in ("shared_encoder", "classifier_head"):
@@ -765,12 +1223,12 @@ def validate_cp_sfce_terminal_receipt(receipt: Mapping[str, Any]) -> Dict[str, A
             base_zero_count = int(base_zero.get(group, 0))
         except (TypeError, ValueError) as error:
             raise CPSFCERuntimeError("P1-CP-SFCE terminal scope count is invalid") from error
-        if not (0 <= conflict_count <= batch_total) or not (0 <= base_zero_count <= batch_total):
+        if not (0 <= conflict_count <= applied) or not (0 <= base_zero_count <= applied):
             raise CPSFCERuntimeError("P1-CP-SFCE terminal scope count exceeds observed batches")
         if conflict_count < 1:
             raise CPSFCERuntimeError(f"P1-CP-SFCE terminal {group} conflict coverage is inert")
     result["cp_sfce_terminal_contract"] = (
-        "FORMAL_LOCAL4_X_SCENARIO3_COVERAGE_EPOCH1_MARKER_BATCHWISE_RAW_SCALED_AUX_VJP_AND_SCOPE_CONFLICTS"
+        "FORMAL_LOCAL4_X_SCENARIO3_APPLIED_OR_RAW_FINITE_AMP_SKIP_BATCHWISE_RAW_SCALED_AUX_VJP_AND_SCOPE_CONFLICTS"
     )
     result["cp_sfce_terminal_contract_passed"] = True
     return result
@@ -778,6 +1236,10 @@ def validate_cp_sfce_terminal_receipt(receipt: Mapping[str, Any]) -> Dict[str, A
 
 def _cp_sfce_failure_fingerprint(error: BaseException) -> str:
     message = str(error).lower()
+    if "raw gradient audit" in message:
+        return "CP_SFCE_RAW_GRADIENT_AUDIT_FAILURE"
+    if "amp overflow" in message:
+        return "CP_SFCE_AMP_OVERFLOW_FAILURE"
     if "missing or disconnected" in message or "scope audit" in message:
         return "CP_SFCE_GRADIENT_MISSING"
     if "non-finite" in message:
@@ -809,7 +1271,7 @@ def write_cp_sfce_failure_receipt(
         raise CPSFCERuntimeError("P1-CP-SFCE failure receipt requires an existing output directory")
     target = target_dir / "cp_sfce_failure_receipt.json"
     payload = {
-        "schema": "cvs.phase1.cp_sfce_failure_receipt.v1",
+        "schema": "cvs.phase1.cp_sfce_failure_receipt.v2",
         "status": "FAIL_CLOSED",
         "candidate_id": str(candidate_id or ""),
         "run_id": str(run_id or ""),
