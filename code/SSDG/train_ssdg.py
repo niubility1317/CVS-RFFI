@@ -118,6 +118,30 @@ try:
         validate_cb_sfce_terminal_receipt,
         write_cb_sfce_failure_receipt,
     )
+    from cvsrffi.phase1_gd_proto_nll import (
+        GDProtoNLLConfig,
+        GDProtoNLLConfigurationError,
+        GDProtoNLLRuntimeError,
+        FROZEN_GD_PROTO_NLL_SCENARIOS,
+        add_gd_proto_nll_to_loss,
+        advance_gd_proto_nll_state,
+        gd_proto_nll_config_receipt,
+        gd_proto_nll_loss,
+        gd_proto_nll_shared_encoder_and_head_parameters,
+        gd_proto_nll_shared_gradient_relation,
+        make_gd_proto_nll_state,
+        remap_gd_proto_nll_local_labels_to_head_rows,
+        resolve_gd_proto_nll_classifier_weight,
+        resolve_gd_proto_nll_local_head_class_binding,
+        strict_gd_proto_nll_warm_start,
+        update_gd_proto_nll_gradient_relation_receipt,
+        update_gd_proto_nll_receipt,
+        update_gd_proto_nll_state_receipt,
+        validate_gd_proto_nll_args,
+        validate_gd_proto_nll_feature_binding,
+        validate_gd_proto_nll_terminal_receipt,
+        write_gd_proto_nll_failure_receipt,
+    )
     from cvsrffi.phase1_cp_sfce import (
         CPSFCEConfig,
         CPSFCEConfigurationError,
@@ -290,6 +314,18 @@ except ModuleNotFoundError:
     update_cb_sfce_gradient_relation_receipt = update_cb_sfce_receipt = None
     validate_cb_sfce_args = validate_cb_sfce_logit_binding = validate_cb_sfce_terminal_receipt = None
     write_cb_sfce_failure_receipt = None
+    GDProtoNLLConfig = None
+    GDProtoNLLConfigurationError = GDProtoNLLRuntimeError = None
+    FROZEN_GD_PROTO_NLL_SCENARIOS = tuple()
+    add_gd_proto_nll_to_loss = advance_gd_proto_nll_state = gd_proto_nll_config_receipt = None
+    gd_proto_nll_loss = gd_proto_nll_shared_encoder_and_head_parameters = None
+    gd_proto_nll_shared_gradient_relation = make_gd_proto_nll_state = None
+    remap_gd_proto_nll_local_labels_to_head_rows = resolve_gd_proto_nll_classifier_weight = None
+    resolve_gd_proto_nll_local_head_class_binding = strict_gd_proto_nll_warm_start = None
+    update_gd_proto_nll_gradient_relation_receipt = update_gd_proto_nll_receipt = None
+    update_gd_proto_nll_state_receipt = validate_gd_proto_nll_args = None
+    validate_gd_proto_nll_feature_binding = validate_gd_proto_nll_terminal_receipt = None
+    write_gd_proto_nll_failure_receipt = None
     CPSFCEConfig = None
     CPSFCEConfigurationError = CPSFCERuntimeError = None
     FROZEN_CP_SFCE_SCENARIOS = tuple()
@@ -543,6 +579,30 @@ def build_arg_parser() -> argparse.ArgumentParser:
         type=float,
         default=1.0,
         help="Frozen focal exponent for P1-CB-SFCE; must remain 1.",
+    )
+    parser.add_argument(
+        "--phase1_gd_proto_nll_frozen_mode",
+        type=str2bool,
+        default=False,
+        help="Enable the frozen P1-GD-ProtoNLL C/G continuation contract.",
+    )
+    parser.add_argument(
+        "--phase1_gd_proto_nll_enabled",
+        type=str2bool,
+        default=False,
+        help="Enable lagged-EMA local4xscenario DRO prototype focal CE in a frozen G arm.",
+    )
+    parser.add_argument(
+        "--lambda_gd_proto_nll",
+        type=float,
+        default=0.0,
+        help="Frozen at 0 for C and 0.10 for G when P1-GD-ProtoNLL mode is enabled.",
+    )
+    parser.add_argument(
+        "--gd_proto_nll_gamma",
+        type=float,
+        default=1.0,
+        help="Frozen focal exponent for P1-GD-ProtoNLL; must remain 1.",
     )
     parser.add_argument(
         "--phase1_cp_sfce_frozen_mode",
@@ -4774,6 +4834,10 @@ def _build_ssdg_epoch_telemetry_row(
         "phase1_cb_sfce_enabled": bool(getattr(args, "phase1_cb_sfce_enabled", False)),
         "lambda_cb_sfce": float(getattr(args, "lambda_cb_sfce", 0.0)),
         "cb_sfce_gamma": float(getattr(args, "cb_sfce_gamma", 1.0)),
+        "phase1_gd_proto_nll_frozen_mode": bool(getattr(args, "phase1_gd_proto_nll_frozen_mode", False)),
+        "phase1_gd_proto_nll_enabled": bool(getattr(args, "phase1_gd_proto_nll_enabled", False)),
+        "lambda_gd_proto_nll": float(getattr(args, "lambda_gd_proto_nll", 0.0)),
+        "gd_proto_nll_gamma": float(getattr(args, "gd_proto_nll_gamma", 1.0)),
         "phase1_cp_sfce_frozen_mode": bool(getattr(args, "phase1_cp_sfce_frozen_mode", False)),
         "phase1_cp_sfce_enabled": bool(getattr(args, "phase1_cp_sfce_enabled", False)),
         "lambda_cp_sfce": float(getattr(args, "lambda_cp_sfce", 0.0)),
@@ -5677,6 +5741,43 @@ def _persist_cb_sfce_failure_receipt(
         return None
 
 
+def _persist_gd_proto_nll_failure_receipt(
+    *,
+    out_dir: Path,
+    args: Any,
+    gd_proto_nll_receipt: Mapping[str, Any],
+    error: BaseException,
+    failure_stage: str,
+) -> Optional[Path]:
+    """Best-effort persistence that never masks the primary GD-ProtoNLL failure."""
+
+    def _emit_writer_failure(exception_type: str) -> None:
+        try:
+            print(
+                "[P1-GD-PROTO-NLL-FAILURE-RECEIPT] persistence_failed "
+                f"writer_exception_type={exception_type}",
+                flush=True,
+            )
+        except Exception:
+            pass
+
+    if write_gd_proto_nll_failure_receipt is None:
+        _emit_writer_failure("ImportError")
+        return None
+    try:
+        return write_gd_proto_nll_failure_receipt(
+            out_dir,
+            candidate_id=str(getattr(args, "candidate_id", "") or ""),
+            run_id=str(getattr(args, "run_id", "") or ""),
+            receipt=gd_proto_nll_receipt,
+            error=error,
+            failure_stage=str(failure_stage),
+        )
+    except Exception as receipt_error:
+        _emit_writer_failure(type(receipt_error).__name__)
+        return None
+
+
 def _persist_cp_sfce_failure_receipt(
     *,
     out_dir: Path,
@@ -5870,6 +5971,35 @@ def train(args) -> int:
         cb_sfce_receipt = cb_sfce_config_receipt(cb_sfce_config)
     cb_sfce_frozen_mode = bool(getattr(cb_sfce_config, "frozen_mode", False))
     cb_sfce_local_to_head_class_ids: Optional[Tuple[int, ...]] = None
+    if (
+        validate_gd_proto_nll_args is None
+        or gd_proto_nll_config_receipt is None
+        or strict_gd_proto_nll_warm_start is None
+    ):
+        if bool(getattr(args, "phase1_gd_proto_nll_frozen_mode", False)) or bool(
+            getattr(args, "phase1_gd_proto_nll_enabled", False)
+        ):
+            raise ImportError("cvsrffi.phase1_gd_proto_nll is required for P1-GD-ProtoNLL")
+        gd_proto_nll_config = None
+        gd_proto_nll_receipt: Dict[str, Any] = {
+            "schema": "cvs.phase1.gd_proto_nll_receipt.v1",
+            "frozen_mode": False,
+            "enabled": False,
+            "lambda": 0.0,
+            "gamma": 1.0,
+            "gd_proto_nll_cells": {},
+            "gd_proto_nll_gradient_relation_completed": False,
+            "gd_proto_nll_terminal_contract": "PENDING",
+            "gd_proto_nll_terminal_contract_passed": False,
+            "proxy_rows": 0,
+            "held_rows": 0,
+        }
+    else:
+        gd_proto_nll_config = validate_gd_proto_nll_args(args)
+        gd_proto_nll_receipt = gd_proto_nll_config_receipt(gd_proto_nll_config)
+    gd_proto_nll_frozen_mode = bool(getattr(gd_proto_nll_config, "frozen_mode", False))
+    gd_proto_nll_local_to_head_class_ids: Optional[Tuple[int, ...]] = None
+    gd_proto_nll_state: Optional[Dict[str, torch.Tensor]] = None
     if (
         validate_cp_sfce_args is None
         or cp_sfce_config_receipt is None
@@ -6147,7 +6277,7 @@ def train(args) -> int:
             "--phase1_allow_empty_proxy_unknown requires the frozen ManyTx real-OE protocol"
         )
     data_ctx = _build_ssdg_wisig_data(args, device)
-    if ccpc_frozen_mode or pamr_frozen_mode or cb_sfce_frozen_mode or cp_sfce_frozen_mode:
+    if ccpc_frozen_mode or pamr_frozen_mode or cb_sfce_frozen_mode or gd_proto_nll_frozen_mode or cp_sfce_frozen_mode:
         tx_partition_receipt = (
             (data_ctx.get("split_info", {}) or {}).get("tx_partition_receipt", {})
         )
@@ -6158,6 +6288,10 @@ def train(args) -> int:
                 )
             if cb_sfce_frozen_mode:
                 raise CBSFCEConfigurationError(
+                    "Frozen Phase1 continuation requires an explicit TX-role partition receipt"
+                )
+            if gd_proto_nll_frozen_mode:
+                raise GDProtoNLLConfigurationError(
                     "Frozen Phase1 continuation requires an explicit TX-role partition receipt"
                 )
             if cp_sfce_frozen_mode:
@@ -6174,6 +6308,10 @@ def train(args) -> int:
                 )
             if cb_sfce_frozen_mode:
                 raise CBSFCEConfigurationError(
+                    "Frozen Phase1 continuation rejects any held/proxy TX loaded by training"
+                )
+            if gd_proto_nll_frozen_mode:
+                raise GDProtoNLLConfigurationError(
                     "Frozen Phase1 continuation rejects any held/proxy TX loaded by training"
                 )
             if cp_sfce_frozen_mode:
@@ -6227,6 +6365,24 @@ def train(args) -> int:
                     "P1-CB-SFCE data_ctx local TX class order must equal the source-train TX receipt"
                 )
             cb_sfce_receipt.update(
+                {
+                    **frozen_source_roles,
+                    "local_data_class_count": local_data_class_count,
+                    "local_tx_class_order": local_tx_order,
+                }
+            )
+        if gd_proto_nll_frozen_mode:
+            local_data_class_count = int(data_ctx.get("num_classes", 0))
+            local_tx_order = list(data_ctx.get("class_id_to_tx", []) or [])
+            if local_data_class_count != len(local_tx_order):
+                raise GDProtoNLLConfigurationError(
+                    "P1-GD-ProtoNLL data_ctx local class count must equal its local TX class-order receipt"
+                )
+            if local_tx_order != frozen_source_roles["source_train_tx"]:
+                raise GDProtoNLLConfigurationError(
+                    "P1-GD-ProtoNLL data_ctx local TX class order must equal the source-train TX receipt"
+                )
+            gd_proto_nll_receipt.update(
                 {
                     **frozen_source_roles,
                     "local_data_class_count": local_data_class_count,
@@ -6301,6 +6457,20 @@ def train(args) -> int:
         elif cb_sfce_frozen_mode:
             cb_sfce_receipt.update(
                 strict_cb_sfce_warm_start(
+                    model,
+                    ckpt["model"],
+                    baseline_path=str(args.baseline_ckpt),
+                    baseline_sha256=_sha256_file(args.baseline_ckpt),
+                    checkpoint_epoch=ckpt.get("epoch", -1),
+                    checkpoint_role=ckpt.get(
+                        "checkpoint_role",
+                        ckpt.get("checkpoint_selection", "UNSPECIFIED"),
+                    ),
+                )
+            )
+        elif gd_proto_nll_frozen_mode:
+            gd_proto_nll_receipt.update(
+                strict_gd_proto_nll_warm_start(
                     model,
                     ckpt["model"],
                     baseline_path=str(args.baseline_ckpt),
@@ -6411,6 +6581,47 @@ def train(args) -> int:
         cb_sfce_receipt.update(cb_sfce_head_binding)
         (out_dir / "phase1_cb_sfce_config_receipt.json").write_text(
             json.dumps(cb_sfce_receipt, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+            newline="\n",
+        )
+    if gd_proto_nll_frozen_mode:
+        if (
+            resolve_gd_proto_nll_classifier_weight is None
+            or resolve_gd_proto_nll_local_head_class_binding is None
+            or remap_gd_proto_nll_local_labels_to_head_rows is None
+            or make_gd_proto_nll_state is None
+        ):
+            raise ImportError("cvsrffi.phase1_gd_proto_nll classifier binding support is required")
+        gd_proto_nll_weight = resolve_gd_proto_nll_classifier_weight(model)
+        checkpoint_args = ckpt.get("args", {}) or {}
+        if not isinstance(checkpoint_args, Mapping):
+            raise GDProtoNLLConfigurationError(
+                "P1-GD-ProtoNLL strict baseline checkpoint must contain an argument mapping"
+            )
+        checkpoint_train_tx = [
+            item.strip()
+            for item in str(checkpoint_args.get("phase1_source_train_tx_ids", "") or "").split(",")
+            if item.strip()
+        ]
+        tx_partition_receipt = (data_ctx.get("split_info", {}) or {}).get(
+            "tx_partition_receipt", {}
+        )
+        gd_proto_nll_head_binding = resolve_gd_proto_nll_local_head_class_binding(
+            local_class_order=list(data_ctx.get("class_id_to_tx", []) or []),
+            source_train_tx=list(tx_partition_receipt.get("source_known_train_tx", []) or []),
+            checkpoint_train_tx=checkpoint_train_tx,
+            dataset_class_order=list(tx_partition_receipt.get("dataset_tx_order", []) or []),
+            local_data_class_count=data_ctx.get("num_classes", 0),
+            checkpoint_head_class_count=checkpoint_args.get("num_classes", None),
+            live_head_class_count=int(gd_proto_nll_weight.size(0)),
+        )
+        gd_proto_nll_local_to_head_class_ids = tuple(
+            int(value) for value in gd_proto_nll_head_binding["local_to_head_class_ids"]
+        )
+        gd_proto_nll_receipt.update(gd_proto_nll_head_binding)
+        gd_proto_nll_state = make_gd_proto_nll_state(device)
+        (out_dir / "phase1_gd_proto_nll_config_receipt.json").write_text(
+            json.dumps(gd_proto_nll_receipt, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
             encoding="utf-8",
             newline="\n",
         )
@@ -6691,6 +6902,18 @@ def train(args) -> int:
                 f"checkpoint_epoch={int(cb_sfce_receipt.get('checkpoint_epoch', -1))} "
                 f"checkpoint_role={str(cb_sfce_receipt.get('checkpoint_role', '') or '-')} "
                 "rx_or_domain_labels=0 proxy_rows=0 held_rows=0",
+                "[CONFIG-P1-GD-PROTO-NLL] "
+                f"frozen_mode={int(bool(gd_proto_nll_receipt.get('frozen_mode', False)))} "
+                f"enabled={int(bool(gd_proto_nll_receipt.get('enabled', False)))} "
+                f"lambda={float(gd_proto_nll_receipt.get('lambda', 0.0)):.6g} "
+                f"gamma={float(gd_proto_nll_receipt.get('gamma', 1.0)):.6g} "
+                f"beta={float(gd_proto_nll_receipt.get('beta', 0.0)):.6g} "
+                f"eta={float(gd_proto_nll_receipt.get('eta_dro', 0.0)):.6g} "
+                f"scenarios={','.join(gd_proto_nll_receipt.get('satellite_scenarios', [])) or '-'} "
+                f"baseline_strict={int(bool(gd_proto_nll_receipt.get('strict_model_keys', False)))} "
+                f"checkpoint_epoch={int(gd_proto_nll_receipt.get('checkpoint_epoch', -1))} "
+                f"checkpoint_role={str(gd_proto_nll_receipt.get('checkpoint_role', '') or '-')} "
+                "rx_or_domain_labels=0 proxy_rows=0 held_rows=0",
                 "[CONFIG-P1-CP-SFCE] "
                 f"frozen_mode={int(bool(cp_sfce_receipt.get('frozen_mode', False)))} "
                 f"enabled={int(bool(cp_sfce_receipt.get('enabled', False)))} "
@@ -6944,6 +7167,27 @@ def train(args) -> int:
                         out_dir=out_dir,
                         args=args,
                         cb_sfce_receipt=cb_sfce_receipt,
+                        error=error,
+                        failure_stage="local_tx_label_to_live_head_row_binding",
+                    )
+                    raise
+            if gd_proto_nll_frozen_mode:
+                try:
+                    if (
+                        gd_proto_nll_local_to_head_class_ids is None
+                        or remap_gd_proto_nll_local_labels_to_head_rows is None
+                    ):
+                        raise GDProtoNLLRuntimeError(
+                            "P1-GD-ProtoNLL local-to-head class binding is unavailable"
+                        )
+                    y_l = remap_gd_proto_nll_local_labels_to_head_rows(
+                        y_l, gd_proto_nll_local_to_head_class_ids
+                    )
+                except Exception as error:
+                    _persist_gd_proto_nll_failure_receipt(
+                        out_dir=out_dir,
+                        args=args,
+                        gd_proto_nll_receipt=gd_proto_nll_receipt,
                         error=error,
                         failure_stage="local_tx_label_to_live_head_row_binding",
                     )
@@ -7725,9 +7969,12 @@ def train(args) -> int:
                 loss_ccpc_leo_l = zero_sat
                 loss_pamr_l = zero_sat
                 loss_cb_sfce_l = zero_sat
+                loss_gd_proto_nll_l = zero_sat
                 loss_cp_sfce_l = zero_sat
                 cb_sfce_base_loss_l = None
+                gd_proto_nll_base_loss_l = None
                 cb_sfce_satellite_scenario = ""
+                gd_proto_nll_satellite_scenario = ""
                 cp_sfce_satellite_scenario = ""
                 cb_sfce_batch_info: Dict[str, Any] = {
                     "rows": 0,
@@ -7744,6 +7991,15 @@ def train(args) -> int:
                     "per_tx_loss": {},
                     "per_tx_finite": {},
                     "per_tx_nonzero_logit_gradient": {},
+                }
+                gd_proto_nll_batch_info: Dict[str, Any] = {
+                    "rows": 0,
+                    "classes": 0,
+                    "scenario": "",
+                    "per_tx_rows": {},
+                    "per_tx_loss": {},
+                    "per_tx_finite": {},
+                    "per_tx_nonzero_aux_logit_gradient": {},
                 }
                 ccpc_batch_info: Dict[str, Any] = {
                     "rows": 0,
@@ -7920,6 +8176,46 @@ def train(args) -> int:
                             failure_stage="satellite_logit_binding_or_cb_sfce_loss",
                         )
                         raise
+                if bool(getattr(gd_proto_nll_config, "enabled", False)):
+                    try:
+                        if out_sat is None or gd_proto_nll_state is None:
+                            raise GDProtoNLLRuntimeError(
+                                "Enabled P1-GD-ProtoNLL requires one satellite forward and prior DRO state"
+                            )
+                        if (
+                            gd_proto_nll_loss is None
+                            or validate_gd_proto_nll_feature_binding is None
+                        ):
+                            raise ImportError(
+                                "cvsrffi.phase1_gd_proto_nll loss and binding support is required"
+                            )
+                        gd_proto_nll_weight = validate_gd_proto_nll_feature_binding(
+                            model=model,
+                            satellite_feature=out_sat["z_id"],
+                            tx_labels=y_l,
+                            expected_class_ids=gd_proto_nll_receipt.get(
+                                "expected_tx_class_ids", []
+                            ),
+                            z_id_key=str(out_sat.get("z_id_key", "")),
+                        )
+                        loss_gd_proto_nll_l, gd_proto_nll_batch_info = gd_proto_nll_loss(
+                            out_sat["z_id"],
+                            gd_proto_nll_weight,
+                            y_l,
+                            scenario=str(sat_train_scenario),
+                            state=gd_proto_nll_state,
+                            gamma=float(getattr(gd_proto_nll_config, "gamma", 1.0)),
+                        )
+                        gd_proto_nll_satellite_scenario = str(sat_train_scenario)
+                    except Exception as error:
+                        _persist_gd_proto_nll_failure_receipt(
+                            out_dir=out_dir,
+                            args=args,
+                            gd_proto_nll_receipt=gd_proto_nll_receipt,
+                            error=error,
+                            failure_stage="satellite_feat_joint_binding_or_gd_proto_nll_loss",
+                        )
+                        raise
                 if bool(getattr(cp_sfce_config, "enabled", False)):
                     try:
                         if out_sat is None:
@@ -8011,6 +8307,7 @@ def train(args) -> int:
                 )
                 pamr_base_loss_l = loss_closed_l
                 cb_sfce_base_loss_l = loss_closed_l
+                gd_proto_nll_base_loss_l = loss_closed_l
                 loss_open_invariant_l = (
                     sanitize_loss("ssdg_zid_domain_invariance", loss_zid_invariance_l, z_id_l, loss_warn_counts)
                     + cur_w["proto"] * sanitize_loss("ssdg_proto", loss_proto_l, z_id_l, loss_warn_counts)
@@ -8045,6 +8342,14 @@ def train(args) -> int:
                         loss_closed_l,
                         loss_cb_sfce_l if bool(getattr(cb_sfce_config, "enabled", False)) else None,
                         cb_sfce_config,
+                    )
+                if add_gd_proto_nll_to_loss is not None:
+                    loss_closed_l = add_gd_proto_nll_to_loss(
+                        loss_closed_l,
+                        loss_gd_proto_nll_l
+                        if bool(getattr(gd_proto_nll_config, "enabled", False))
+                        else None,
+                        gd_proto_nll_config,
                     )
                 loss_l = loss_closed_l + loss_open_l
                 if phase == "pseudo" and bool(args.use_unlabeled):
@@ -8690,6 +8995,22 @@ def train(args) -> int:
                     "norm_ratio": float("nan"),
                 },
             }
+            gd_proto_nll_gradient_relation_info: Dict[str, Any] = {
+                "shared_encoder": {
+                    "parameter_count": 0.0,
+                    "base_norm": float("nan"),
+                    "gd_proto_nll_norm": float("nan"),
+                    "cosine": None,
+                    "norm_ratio": float("nan"),
+                },
+                "classifier_head": {
+                    "parameter_count": 0.0,
+                    "base_norm": float("nan"),
+                    "gd_proto_nll_norm": float("nan"),
+                    "cosine": None,
+                    "norm_ratio": float("nan"),
+                },
+            }
             os_grad_info = {
                 "active": 0.0,
                 "conflict": 0.0,
@@ -8784,6 +9105,24 @@ def train(args) -> int:
                         failure_stage="cb_sfce_local_tx_scenario_coverage_receipt",
                     )
                     raise
+            if bool(getattr(gd_proto_nll_config, "enabled", False)):
+                try:
+                    if update_gd_proto_nll_receipt is None:
+                        raise ImportError("cvsrffi.phase1_gd_proto_nll coverage receipt support is required")
+                    gd_proto_nll_receipt = update_gd_proto_nll_receipt(
+                        gd_proto_nll_receipt,
+                        gd_proto_nll_batch_info,
+                        scenario=gd_proto_nll_satellite_scenario,
+                    )
+                except Exception as error:
+                    _persist_gd_proto_nll_failure_receipt(
+                        out_dir=out_dir,
+                        args=args,
+                        gd_proto_nll_receipt=gd_proto_nll_receipt,
+                        error=error,
+                        failure_stage="gd_proto_nll_local4_scenario_coverage_receipt",
+                    )
+                    raise
             if bool(getattr(cp_sfce_config, "enabled", False)):
                 try:
                     if update_cp_sfce_coverage_receipt is None:
@@ -8835,6 +9174,41 @@ def train(args) -> int:
                         cb_sfce_receipt=cb_sfce_receipt,
                         error=error,
                         failure_stage="pre_scaled_backward_first_effective_cb_sfce_gradient_audit",
+                    )
+                    raise
+            if (
+                loss_is_finite
+                and bool(getattr(gd_proto_nll_config, "enabled", False))
+                and not bool(gd_proto_nll_receipt.get("gd_proto_nll_gradient_relation_completed", False))
+            ):
+                try:
+                    if (
+                        gd_proto_nll_shared_encoder_and_head_parameters is None
+                        or gd_proto_nll_shared_gradient_relation is None
+                        or update_gd_proto_nll_gradient_relation_receipt is None
+                    ):
+                        raise ImportError("cvsrffi.phase1_gd_proto_nll raw gradient audit support is required")
+                    if gd_proto_nll_base_loss_l is None:
+                        raise GDProtoNLLRuntimeError(
+                            "P1-GD-ProtoNLL requires the common base loss for first-batch audit"
+                        )
+                    gd_proto_nll_gradient_relation_info = gd_proto_nll_shared_gradient_relation(
+                        gd_proto_nll_base_loss_l,
+                        loss_gd_proto_nll_l,
+                        gd_proto_nll_shared_encoder_and_head_parameters(model),
+                        loss_weight=float(getattr(gd_proto_nll_config, "loss_weight", 0.0)),
+                    )
+                    gd_proto_nll_receipt = update_gd_proto_nll_gradient_relation_receipt(
+                        gd_proto_nll_receipt,
+                        gd_proto_nll_gradient_relation_info,
+                    )
+                except Exception as error:
+                    _persist_gd_proto_nll_failure_receipt(
+                        out_dir=out_dir,
+                        args=args,
+                        gd_proto_nll_receipt=gd_proto_nll_receipt,
+                        error=error,
+                        failure_stage="pre_scaled_backward_first_effective_gd_proto_nll_gradient_audit",
                     )
                     raise
             pamr_audit_has_effective_batch = (
@@ -9008,6 +9382,33 @@ def train(args) -> int:
                     )
                 else:
                     scaler.scale(loss).backward()
+                    if bool(getattr(gd_proto_nll_config, "enabled", False)):
+                        try:
+                            if (
+                                gd_proto_nll_state is None
+                                or advance_gd_proto_nll_state is None
+                                or update_gd_proto_nll_state_receipt is None
+                            ):
+                                raise GDProtoNLLRuntimeError(
+                                    "P1-GD-ProtoNLL post-backward EMA state support is unavailable"
+                                )
+                            gd_proto_nll_state = advance_gd_proto_nll_state(
+                                gd_proto_nll_state,
+                                gd_proto_nll_batch_info,
+                            )
+                            gd_proto_nll_receipt = update_gd_proto_nll_state_receipt(
+                                gd_proto_nll_receipt,
+                                gd_proto_nll_state,
+                            )
+                        except Exception as error:
+                            _persist_gd_proto_nll_failure_receipt(
+                                out_dir=out_dir,
+                                args=args,
+                                gd_proto_nll_receipt=gd_proto_nll_receipt,
+                                error=error,
+                                failure_stage="post_backward_detached_ema_then_full12_softmax",
+                            )
+                            raise
                 if cp_sfce_amp_overflow_pending:
                     try:
                         if (
@@ -9147,6 +9548,18 @@ def train(args) -> int:
                         out_dir=out_dir,
                         args=args,
                         cb_sfce_receipt=cb_sfce_receipt,
+                        error=error,
+                        failure_stage="pre_backward_total_loss_nonfinite",
+                    )
+                    raise error
+                if bool(getattr(gd_proto_nll_config, "enabled", False)):
+                    error = GDProtoNLLRuntimeError(
+                        "P1-GD-ProtoNLL fail-closed: total loss is non-finite before backward"
+                    )
+                    _persist_gd_proto_nll_failure_receipt(
+                        out_dir=out_dir,
+                        args=args,
+                        gd_proto_nll_receipt=gd_proto_nll_receipt,
                         error=error,
                         failure_stage="pre_backward_total_loss_nonfinite",
                     )
@@ -9415,6 +9828,29 @@ def train(args) -> int:
                     ),
                     "train/w_loss_cb_sfce": (
                         float(getattr(cb_sfce_config, "loss_weight", 0.0)) * loss_cb_sfce_l
+                    ).detach(),
+                    "train/loss_gd_proto_nll": loss_gd_proto_nll_l.detach(),
+                    "train/gd_proto_nll_enabled": 1.0 if bool(getattr(gd_proto_nll_config, "enabled", False)) else 0.0,
+                    "train/gd_proto_nll_rows": float(gd_proto_nll_batch_info.get("rows", 0)),
+                    "train/gd_proto_nll_classes": float(gd_proto_nll_batch_info.get("classes", 0)),
+                    "train/gd_proto_nll_state_updates": float(
+                        gd_proto_nll_receipt.get("gd_proto_nll_state_update_batches", 0)
+                    ),
+                    "train/gd_proto_nll_gradient_relation_completed": 1.0 if bool(
+                        gd_proto_nll_receipt.get("gd_proto_nll_gradient_relation_completed", False)
+                    ) else 0.0,
+                    "train/gd_proto_nll_encoder_grad_cosine": (
+                        float(gd_proto_nll_gradient_relation_info["shared_encoder"]["cosine"])
+                        if gd_proto_nll_gradient_relation_info["shared_encoder"].get("cosine") is not None
+                        else float("nan")
+                    ),
+                    "train/gd_proto_nll_head_grad_cosine": (
+                        float(gd_proto_nll_gradient_relation_info["classifier_head"]["cosine"])
+                        if gd_proto_nll_gradient_relation_info["classifier_head"].get("cosine") is not None
+                        else float("nan")
+                    ),
+                    "train/w_loss_gd_proto_nll": (
+                        float(getattr(gd_proto_nll_config, "loss_weight", 0.0)) * loss_gd_proto_nll_l
                     ).detach(),
                     "train/loss_cp_sfce": loss_cp_sfce_l.detach(),
                     "train/cp_sfce_enabled": 1.0 if bool(getattr(cp_sfce_config, "enabled", False)) else 0.0,
@@ -10176,6 +10612,8 @@ def train(args) -> int:
             payload["pamr_receipt"] = dict(pamr_receipt)
         if cb_sfce_frozen_mode:
             payload["cb_sfce_receipt"] = dict(cb_sfce_receipt)
+        if gd_proto_nll_frozen_mode:
+            payload["gd_proto_nll_receipt"] = dict(gd_proto_nll_receipt)
         if cp_sfce_frozen_mode:
             payload["cp_sfce_receipt"] = dict(cp_sfce_receipt)
         latest_path = out_dir / "NOT_SAVED_FINAL_ONLY"
@@ -10656,6 +11094,20 @@ def train(args) -> int:
                 failure_stage="terminal_cb_sfce_receipt_validation",
             )
             raise
+    if gd_proto_nll_frozen_mode:
+        if validate_gd_proto_nll_terminal_receipt is None:
+            raise ImportError("cvsrffi.phase1_gd_proto_nll.validate_gd_proto_nll_terminal_receipt is required")
+        try:
+            gd_proto_nll_receipt = validate_gd_proto_nll_terminal_receipt(gd_proto_nll_receipt)
+        except Exception as error:
+            _persist_gd_proto_nll_failure_receipt(
+                out_dir=out_dir,
+                args=args,
+                gd_proto_nll_receipt=gd_proto_nll_receipt,
+                error=error,
+                failure_stage="terminal_gd_proto_nll_receipt_validation",
+            )
+            raise
     if cp_sfce_frozen_mode:
         if validate_cp_sfce_terminal_receipt is None:
             raise ImportError("cvsrffi.phase1_cp_sfce.validate_cp_sfce_terminal_receipt is required")
@@ -10695,6 +11147,8 @@ def train(args) -> int:
         final_payload["pamr_receipt"] = dict(pamr_receipt)
     if cb_sfce_frozen_mode:
         final_payload["cb_sfce_receipt"] = dict(cb_sfce_receipt)
+    if gd_proto_nll_frozen_mode:
+        final_payload["gd_proto_nll_receipt"] = dict(gd_proto_nll_receipt)
     if cp_sfce_frozen_mode:
         final_payload["cp_sfce_receipt"] = dict(cp_sfce_receipt)
     final_payload.setdefault("stats", {})
@@ -11313,6 +11767,8 @@ def train(args) -> int:
         terminal_manifest["pamr_receipt"] = dict(pamr_receipt)
     if cb_sfce_frozen_mode:
         terminal_manifest["cb_sfce_receipt"] = dict(cb_sfce_receipt)
+    if gd_proto_nll_frozen_mode:
+        terminal_manifest["gd_proto_nll_receipt"] = dict(gd_proto_nll_receipt)
     if cp_sfce_frozen_mode:
         terminal_manifest["cp_sfce_receipt"] = dict(cp_sfce_receipt)
     (out_dir / "phase1_terminal_status.json").write_text(
@@ -11383,6 +11839,28 @@ def train(args) -> int:
             json.dumps(
                 {
                     **dict(cb_sfce_receipt),
+                    "terminal_status": terminal_status,
+                    "terminal_exit_code": int(terminal_exit_code),
+                    "selected_checkpoint": str(selected_checkpoint),
+                    "selected_checkpoint_sha256": selected_checkpoint_sha256,
+                    "technical_only": False,
+                    "promotion_ready": terminal_status == "COMPLETE",
+                    "performance_result_available": False,
+                    "claim": "PHASE1_SOURCE_ONLY_TRAINING_RECEIPT",
+                },
+                ensure_ascii=False,
+                indent=2,
+                sort_keys=True,
+            )
+            + "\n",
+            encoding="utf-8",
+            newline="\n",
+        )
+    if gd_proto_nll_frozen_mode:
+        (out_dir / "phase1_gd_proto_nll_terminal_receipt.json").write_text(
+            json.dumps(
+                {
+                    **dict(gd_proto_nll_receipt),
                     "terminal_status": terminal_status,
                     "terminal_exit_code": int(terminal_exit_code),
                     "selected_checkpoint": str(selected_checkpoint),
@@ -11496,6 +11974,8 @@ def train(args) -> int:
             )
         ),
     }
+    if gd_proto_nll_frozen_mode:
+        completion_receipt["gd_proto_nll_receipt"] = dict(gd_proto_nll_receipt)
     (out_dir / "phase1_training_completion_receipt.json").write_text(
         json.dumps(
             completion_receipt,
