@@ -97,6 +97,27 @@ try:
         validate_pamr_terminal_receipt,
         write_pamr_failure_receipt,
     )
+    from cvsrffi.phase1_cb_sfce import (
+        CBSFCEConfig,
+        CBSFCEConfigurationError,
+        CBSFCERuntimeError,
+        FROZEN_CB_SFCE_SCENARIOS,
+        add_cb_sfce_to_loss,
+        cb_sfce_config_receipt,
+        cb_sfce_loss,
+        cb_sfce_shared_encoder_and_head_parameters,
+        cb_sfce_shared_gradient_relation,
+        remap_cb_sfce_local_labels_to_head_rows,
+        resolve_cb_sfce_classifier_weight,
+        resolve_cb_sfce_local_head_class_binding,
+        strict_cb_sfce_warm_start,
+        update_cb_sfce_gradient_relation_receipt,
+        update_cb_sfce_receipt,
+        validate_cb_sfce_args,
+        validate_cb_sfce_logit_binding,
+        validate_cb_sfce_terminal_receipt,
+        write_cb_sfce_failure_receipt,
+    )
     from cvsrffi.balanced_tx_rx_sampler import BalancedTxDomainBatchSampler
     from cvsrffi.eval import (
         aggregate_named_stats,
@@ -235,6 +256,16 @@ except ModuleNotFoundError:
     require_finite_pamr_gradient = resolve_pamr_classifier_weight = strict_pamr_warm_start = None
     update_pamr_gradient_receipt = update_pamr_gradient_relation_receipt = update_pamr_receipt = None
     validate_pamr_args = validate_pamr_binding = validate_pamr_terminal_receipt = write_pamr_failure_receipt = None
+    CBSFCEConfig = None
+    CBSFCEConfigurationError = CBSFCERuntimeError = None
+    FROZEN_CB_SFCE_SCENARIOS = tuple()
+    add_cb_sfce_to_loss = cb_sfce_config_receipt = cb_sfce_loss = None
+    cb_sfce_shared_encoder_and_head_parameters = cb_sfce_shared_gradient_relation = None
+    remap_cb_sfce_local_labels_to_head_rows = resolve_cb_sfce_classifier_weight = None
+    resolve_cb_sfce_local_head_class_binding = strict_cb_sfce_warm_start = None
+    update_cb_sfce_gradient_relation_receipt = update_cb_sfce_receipt = None
+    validate_cb_sfce_args = validate_cb_sfce_logit_binding = validate_cb_sfce_terminal_receipt = None
+    write_cb_sfce_failure_receipt = None
 
 
 _MANYTX_REAL_OE_LOCKED_TARGET_NEW_TX = tuple(
@@ -451,6 +482,30 @@ def build_arg_parser() -> argparse.ArgumentParser:
         type=float,
         default=0.0,
         help="Frozen at 0 for C and 0.05 for G when P1-PAMR mode is enabled.",
+    )
+    parser.add_argument(
+        "--phase1_cb_sfce_frozen_mode",
+        type=str2bool,
+        default=False,
+        help="Enable the frozen P1-CB-SFCE C/G continuation contract.",
+    )
+    parser.add_argument(
+        "--phase1_cb_sfce_enabled",
+        type=str2bool,
+        default=False,
+        help="Enable the sole class-balanced satellite focal CE in a frozen P1-CB-SFCE G arm.",
+    )
+    parser.add_argument(
+        "--lambda_cb_sfce",
+        type=float,
+        default=0.0,
+        help="Frozen at 0 for C and 0.10 for G when P1-CB-SFCE mode is enabled.",
+    )
+    parser.add_argument(
+        "--cb_sfce_gamma",
+        type=float,
+        default=1.0,
+        help="Frozen focal exponent for P1-CB-SFCE; must remain 1.",
     )
     parser.add_argument(
         "--best_metric",
@@ -4654,6 +4709,10 @@ def _build_ssdg_epoch_telemetry_row(
         "phase1_pamr_enabled": bool(getattr(args, "phase1_pamr_enabled", False)),
         "phase1_pamr_audit_only": bool(getattr(args, "phase1_pamr_audit_only", False)),
         "lambda_pamr": float(getattr(args, "lambda_pamr", 0.0)),
+        "phase1_cb_sfce_frozen_mode": bool(getattr(args, "phase1_cb_sfce_frozen_mode", False)),
+        "phase1_cb_sfce_enabled": bool(getattr(args, "phase1_cb_sfce_enabled", False)),
+        "lambda_cb_sfce": float(getattr(args, "lambda_cb_sfce", 0.0)),
+        "cb_sfce_gamma": float(getattr(args, "cb_sfce_gamma", 1.0)),
         "sat_train_scenario": str(getattr(args, "sat_train_scenario", "")),
         "sat_train_scenarios": ",".join(getattr(args, "sat_train_scenario_list", []) or []),
         "sat_view_schedule": str(getattr(args, "sat_view_schedule", "") or ""),
@@ -5516,6 +5575,43 @@ def _persist_pamr_failure_receipt(
         return None
 
 
+def _persist_cb_sfce_failure_receipt(
+    *,
+    out_dir: Path,
+    args: Any,
+    cb_sfce_receipt: Mapping[str, Any],
+    error: BaseException,
+    failure_stage: str,
+) -> Optional[Path]:
+    """Best-effort persistence that never masks the primary CB-SFCE failure."""
+
+    def _emit_writer_failure(exception_type: str) -> None:
+        try:
+            print(
+                "[P1-CB-SFCE-FAILURE-RECEIPT] persistence_failed "
+                f"writer_exception_type={exception_type}",
+                flush=True,
+            )
+        except Exception:
+            pass
+
+    if write_cb_sfce_failure_receipt is None:
+        _emit_writer_failure("ImportError")
+        return None
+    try:
+        return write_cb_sfce_failure_receipt(
+            out_dir,
+            candidate_id=str(getattr(args, "candidate_id", "") or ""),
+            run_id=str(getattr(args, "run_id", "") or ""),
+            receipt=cb_sfce_receipt,
+            error=error,
+            failure_stage=str(failure_stage),
+        )
+    except Exception as receipt_error:
+        _emit_writer_failure(type(receipt_error).__name__)
+        return None
+
+
 def _pamr_technical_audit_skip_receipt(scope: str) -> Dict[str, str]:
     """Fixed non-performance placeholder for the isolated PAMR audit path."""
 
@@ -5644,6 +5740,34 @@ def train(args) -> int:
         pamr_receipt["evaluation"] = _pamr_technical_audit_skip_receipt(
             "all_source_val_leo_tail_leakage_and_heldout"
         )
+    if (
+        validate_cb_sfce_args is None
+        or cb_sfce_config_receipt is None
+        or strict_cb_sfce_warm_start is None
+    ):
+        if bool(getattr(args, "phase1_cb_sfce_frozen_mode", False)) or bool(
+            getattr(args, "phase1_cb_sfce_enabled", False)
+        ):
+            raise ImportError("cvsrffi.phase1_cb_sfce is required for P1-CB-SFCE")
+        cb_sfce_config = None
+        cb_sfce_receipt: Dict[str, Any] = {
+            "schema": "cvs.phase1.cb_sfce_receipt.v1",
+            "frozen_mode": False,
+            "enabled": False,
+            "lambda": 0.0,
+            "gamma": 1.0,
+            "cb_sfce_cells": {},
+            "cb_sfce_gradient_relation_completed": False,
+            "cb_sfce_terminal_contract": "PENDING",
+            "cb_sfce_terminal_contract_passed": False,
+            "proxy_rows": 0,
+            "held_rows": 0,
+        }
+    else:
+        cb_sfce_config = validate_cb_sfce_args(args)
+        cb_sfce_receipt = cb_sfce_config_receipt(cb_sfce_config)
+    cb_sfce_frozen_mode = bool(getattr(cb_sfce_config, "frozen_mode", False))
+    cb_sfce_local_to_head_class_ids: Optional[Tuple[int, ...]] = None
     args.lambda_dom = float(args.lambda_domain)
     if float(args.tau_conf) > 0.0:
         args.tau_min = float(args.tau_conf)
@@ -5894,16 +6018,32 @@ def train(args) -> int:
             "--phase1_allow_empty_proxy_unknown requires the frozen ManyTx real-OE protocol"
         )
     data_ctx = _build_ssdg_wisig_data(args, device)
-    if ccpc_frozen_mode or pamr_frozen_mode:
+    if ccpc_frozen_mode or pamr_frozen_mode or cb_sfce_frozen_mode:
         tx_partition_receipt = (
             (data_ctx.get("split_info", {}) or {}).get("tx_partition_receipt", {})
         )
         if not bool(tx_partition_receipt.get("enabled", False)):
-            raise (PAMRConfigurationError if pamr_frozen_mode else CCPCLEOConfigurationError)(
+            if pamr_frozen_mode:
+                raise PAMRConfigurationError(
+                    "Frozen Phase1 continuation requires an explicit TX-role partition receipt"
+                )
+            if cb_sfce_frozen_mode:
+                raise CBSFCEConfigurationError(
+                    "Frozen Phase1 continuation requires an explicit TX-role partition receipt"
+                )
+            raise CCPCLEOConfigurationError(
                 "Frozen Phase1 continuation requires an explicit TX-role partition receipt"
             )
         if bool(tx_partition_receipt.get("held_tx_loaded_by_training", True)):
-            raise (PAMRConfigurationError if pamr_frozen_mode else CCPCLEOConfigurationError)(
+            if pamr_frozen_mode:
+                raise PAMRConfigurationError(
+                    "Frozen Phase1 continuation rejects any held/proxy TX loaded by training"
+                )
+            if cb_sfce_frozen_mode:
+                raise CBSFCEConfigurationError(
+                    "Frozen Phase1 continuation rejects any held/proxy TX loaded by training"
+                )
+            raise CCPCLEOConfigurationError(
                 "Frozen Phase1 continuation rejects any held/proxy TX loaded by training"
             )
         frozen_source_roles = {
@@ -5932,6 +6072,24 @@ def train(args) -> int:
                     "P1-PAMR data_ctx local TX class order must equal the source-train TX receipt"
                 )
             pamr_receipt.update(
+                {
+                    **frozen_source_roles,
+                    "local_data_class_count": local_data_class_count,
+                    "local_tx_class_order": local_tx_order,
+                }
+            )
+        if cb_sfce_frozen_mode:
+            local_data_class_count = int(data_ctx.get("num_classes", 0))
+            local_tx_order = list(data_ctx.get("class_id_to_tx", []) or [])
+            if local_data_class_count != len(local_tx_order):
+                raise CBSFCEConfigurationError(
+                    "P1-CB-SFCE data_ctx local class count must equal its local TX class-order receipt"
+                )
+            if local_tx_order != frozen_source_roles["source_train_tx"]:
+                raise CBSFCEConfigurationError(
+                    "P1-CB-SFCE data_ctx local TX class order must equal the source-train TX receipt"
+                )
+            cb_sfce_receipt.update(
                 {
                     **frozen_source_roles,
                     "local_data_class_count": local_data_class_count,
@@ -5974,6 +6132,20 @@ def train(args) -> int:
         elif pamr_frozen_mode:
             pamr_receipt.update(
                 strict_pamr_warm_start(
+                    model,
+                    ckpt["model"],
+                    baseline_path=str(args.baseline_ckpt),
+                    baseline_sha256=_sha256_file(args.baseline_ckpt),
+                    checkpoint_epoch=ckpt.get("epoch", -1),
+                    checkpoint_role=ckpt.get(
+                        "checkpoint_role",
+                        ckpt.get("checkpoint_selection", "UNSPECIFIED"),
+                    ),
+                )
+            )
+        elif cb_sfce_frozen_mode:
+            cb_sfce_receipt.update(
+                strict_cb_sfce_warm_start(
                     model,
                     ckpt["model"],
                     baseline_path=str(args.baseline_ckpt),
@@ -6031,6 +6203,45 @@ def train(args) -> int:
         pamr_receipt.update(pamr_head_binding)
         (out_dir / "phase1_pamr_config_receipt.json").write_text(
             json.dumps(pamr_receipt, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+            newline="\n",
+        )
+    if cb_sfce_frozen_mode:
+        if (
+            resolve_cb_sfce_classifier_weight is None
+            or resolve_cb_sfce_local_head_class_binding is None
+            or remap_cb_sfce_local_labels_to_head_rows is None
+        ):
+            raise ImportError("cvsrffi.phase1_cb_sfce classifier binding support is required")
+        cb_sfce_weight = resolve_cb_sfce_classifier_weight(model)
+        checkpoint_args = ckpt.get("args", {}) or {}
+        if not isinstance(checkpoint_args, Mapping):
+            raise CBSFCEConfigurationError(
+                "P1-CB-SFCE strict baseline checkpoint must contain an argument mapping"
+            )
+        checkpoint_train_tx = [
+            item.strip()
+            for item in str(checkpoint_args.get("phase1_source_train_tx_ids", "") or "").split(",")
+            if item.strip()
+        ]
+        tx_partition_receipt = (data_ctx.get("split_info", {}) or {}).get(
+            "tx_partition_receipt", {}
+        )
+        cb_sfce_head_binding = resolve_cb_sfce_local_head_class_binding(
+            local_class_order=list(data_ctx.get("class_id_to_tx", []) or []),
+            source_train_tx=list(tx_partition_receipt.get("source_known_train_tx", []) or []),
+            checkpoint_train_tx=checkpoint_train_tx,
+            dataset_class_order=list(tx_partition_receipt.get("dataset_tx_order", []) or []),
+            local_data_class_count=data_ctx.get("num_classes", 0),
+            checkpoint_head_class_count=checkpoint_args.get("num_classes", None),
+            live_head_class_count=int(cb_sfce_weight.size(0)),
+        )
+        cb_sfce_local_to_head_class_ids = tuple(
+            int(value) for value in cb_sfce_head_binding["local_to_head_class_ids"]
+        )
+        cb_sfce_receipt.update(cb_sfce_head_binding)
+        (out_dir / "phase1_cb_sfce_config_receipt.json").write_text(
+            json.dumps(cb_sfce_receipt, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
             encoding="utf-8",
             newline="\n",
         )
@@ -6261,6 +6472,16 @@ def train(args) -> int:
                 f"checkpoint_epoch={int(pamr_receipt.get('checkpoint_epoch', -1))} "
                 f"checkpoint_role={str(pamr_receipt.get('checkpoint_role', '') or '-')} "
                 "rx_or_domain_labels=0 proxy_rows=0 held_rows=0",
+                "[CONFIG-P1-CB-SFCE] "
+                f"frozen_mode={int(bool(cb_sfce_receipt.get('frozen_mode', False)))} "
+                f"enabled={int(bool(cb_sfce_receipt.get('enabled', False)))} "
+                f"lambda={float(cb_sfce_receipt.get('lambda', 0.0)):.6g} "
+                f"gamma={float(cb_sfce_receipt.get('gamma', 1.0)):.6g} "
+                f"scenarios={','.join(cb_sfce_receipt.get('satellite_scenarios', [])) or '-'} "
+                f"baseline_strict={int(bool(cb_sfce_receipt.get('strict_model_keys', False)))} "
+                f"checkpoint_epoch={int(cb_sfce_receipt.get('checkpoint_epoch', -1))} "
+                f"checkpoint_role={str(cb_sfce_receipt.get('checkpoint_role', '') or '-')} "
+                "rx_or_domain_labels=0 proxy_rows=0 held_rows=0",
                 "[CONFIG-TELEMETRY] "
                 f"metrics_csv={metrics_csv_path} metrics_jsonl={metrics_jsonl_path} "
                 "per_epoch_loss_terms=raw_and_weighted",
@@ -6393,6 +6614,7 @@ def train(args) -> int:
     phase1_v2_tail_machine = None
     phase1_v2_final_blocked = False
     phase1_v2_reasons: List[str] = []
+    cb_sfce_satellite_step = 0
     if bool(getattr(args, "tail_safety_state_machine", False)):
         if TailSafetyStateMachine is None or TailSafetyConfig is None:
             raise ImportError("cvsrffi.phase1_v2_control is required for --tail_safety_state_machine.")
@@ -6484,10 +6706,31 @@ def train(args) -> int:
                         failure_stage="local_tx_label_to_live_head_row_binding",
                     )
                     raise
+            if cb_sfce_frozen_mode:
+                try:
+                    if (
+                        cb_sfce_local_to_head_class_ids is None
+                        or remap_cb_sfce_local_labels_to_head_rows is None
+                    ):
+                        raise CBSFCERuntimeError(
+                            "P1-CB-SFCE local-to-head class binding is unavailable"
+                        )
+                    y_l = remap_cb_sfce_local_labels_to_head_rows(
+                        y_l, cb_sfce_local_to_head_class_ids
+                    )
+                except Exception as error:
+                    _persist_cb_sfce_failure_receipt(
+                        out_dir=out_dir,
+                        args=args,
+                        cb_sfce_receipt=cb_sfce_receipt,
+                        error=error,
+                        failure_stage="local_tx_label_to_live_head_row_binding",
+                    )
+                    raise
             labeled_clean_count = int(y_l.numel())
-            if ccpc_frozen_mode or pamr_frozen_mode:
+            if ccpc_frozen_mode or pamr_frozen_mode or cb_sfce_frozen_mode:
                 # The frozen C/G experiment is intentionally blind to RX/day/domain
-                # metadata.  CCPC/PAMR receive only paired z_id rows and TX labels.
+                # metadata.  Frozen candidates receive only source TX labels.
                 receiver_l_base = None
                 day_l_base = None
                 d_l = None
@@ -7239,6 +7482,17 @@ def train(args) -> int:
                 out_sat = None
                 loss_ccpc_leo_l = zero_sat
                 loss_pamr_l = zero_sat
+                loss_cb_sfce_l = zero_sat
+                cb_sfce_base_loss_l = None
+                cb_sfce_satellite_scenario = ""
+                cb_sfce_batch_info: Dict[str, Any] = {
+                    "rows": 0,
+                    "classes": 0,
+                    "per_tx_rows": {},
+                    "per_tx_loss": {},
+                    "per_tx_finite": {},
+                    "per_tx_nonzero_logit_gradient": {},
+                }
                 ccpc_batch_info: Dict[str, Any] = {
                     "rows": 0,
                     "classes": 0,
@@ -7312,9 +7566,17 @@ def train(args) -> int:
                             else:
                                 break
                         sat_train_scenarios = list(active_stage.scenarios) or sat_train_scenarios
-                    sat_train_scenario = sat_train_scenarios[
-                        (int(epoch) + int(batch_idx) - 2) % max(1, len(sat_train_scenarios))
-                    ]
+                    if cb_sfce_frozen_mode:
+                        # C/G share an explicit global clear/low/rain cycle.
+                        sat_train_scenarios = list(FROZEN_CB_SFCE_SCENARIOS)
+                        sat_train_scenario = sat_train_scenarios[
+                            cb_sfce_satellite_step % len(sat_train_scenarios)
+                        ]
+                        cb_sfce_satellite_step += 1
+                    else:
+                        sat_train_scenario = sat_train_scenarios[
+                            (int(epoch) + int(batch_idx) - 2) % max(1, len(sat_train_scenarios))
+                        ]
                     with torch.no_grad():
                         x_sat, _ = apply_sat_channel_for_scenario(
                             x_l,
@@ -7369,6 +7631,35 @@ def train(args) -> int:
                             teacher_clean_out["tx_logits"],
                             temperature=float(args.teacher_distill_temperature),
                         )
+                if bool(getattr(cb_sfce_config, "enabled", False)):
+                    try:
+                        if out_sat is None:
+                            raise CBSFCERuntimeError(
+                                "Enabled P1-CB-SFCE requires one single satellite forward per batch"
+                            )
+                        if cb_sfce_loss is None or validate_cb_sfce_logit_binding is None:
+                            raise ImportError("cvsrffi.phase1_cb_sfce loss and binding support is required")
+                        validate_cb_sfce_logit_binding(
+                            model=model,
+                            tx_logits=out_sat["tx_logits"],
+                            tx_labels=y_l,
+                            expected_class_ids=cb_sfce_receipt.get("expected_tx_class_ids", []),
+                        )
+                        loss_cb_sfce_l, cb_sfce_batch_info = cb_sfce_loss(
+                            out_sat["tx_logits"],
+                            y_l,
+                            gamma=float(getattr(cb_sfce_config, "gamma", 1.0)),
+                        )
+                        cb_sfce_satellite_scenario = str(sat_train_scenario)
+                    except Exception as error:
+                        _persist_cb_sfce_failure_receipt(
+                            out_dir=out_dir,
+                            args=args,
+                            cb_sfce_receipt=cb_sfce_receipt,
+                            error=error,
+                            failure_stage="satellite_logit_binding_or_cb_sfce_loss",
+                        )
+                        raise
                 if bool(getattr(ccpc_config, "enabled", False)):
                     if out_sat is None:
                         raise CCPCLEORuntimeError(
@@ -7430,6 +7721,7 @@ def train(args) -> int:
                     + (float(args.lambda_teacher_zid_mse) * teacher_scale) * sanitize_loss("teacher_zid_mse", loss_teacher_zid_mse_l, z_id_l, loss_warn_counts)
                 )
                 pamr_base_loss_l = loss_closed_l
+                cb_sfce_base_loss_l = loss_closed_l
                 loss_open_invariant_l = (
                     sanitize_loss("ssdg_zid_domain_invariance", loss_zid_invariance_l, z_id_l, loss_warn_counts)
                     + cur_w["proto"] * sanitize_loss("ssdg_proto", loss_proto_l, z_id_l, loss_warn_counts)
@@ -7458,6 +7750,12 @@ def train(args) -> int:
                         loss_closed_l,
                         loss_pamr_l if bool(getattr(pamr_config, "enabled", False)) else None,
                         pamr_config,
+                    )
+                if add_cb_sfce_to_loss is not None:
+                    loss_closed_l = add_cb_sfce_to_loss(
+                        loss_closed_l,
+                        loss_cb_sfce_l if bool(getattr(cb_sfce_config, "enabled", False)) else None,
+                        cb_sfce_config,
                     )
                 loss_l = loss_closed_l + loss_open_l
                 if phase == "pseudo" and bool(args.use_unlabeled):
@@ -8083,6 +8381,22 @@ def train(args) -> int:
                 "cosine": None,
                 "norm_ratio": float("nan"),
             }
+            cb_sfce_gradient_relation_info: Dict[str, Any] = {
+                "shared_encoder": {
+                    "parameter_count": 0.0,
+                    "base_norm": float("nan"),
+                    "cb_sfce_norm": float("nan"),
+                    "cosine": None,
+                    "norm_ratio": float("nan"),
+                },
+                "classifier_head": {
+                    "parameter_count": 0.0,
+                    "base_norm": float("nan"),
+                    "cb_sfce_norm": float("nan"),
+                    "cosine": None,
+                    "norm_ratio": float("nan"),
+                },
+            }
             os_grad_info = {
                 "active": 0.0,
                 "conflict": 0.0,
@@ -8157,6 +8471,59 @@ def train(args) -> int:
                         pamr_receipt=pamr_receipt,
                         error=error,
                         failure_stage="pamr_forward_coverage_receipt",
+                    )
+                    raise
+            if bool(getattr(cb_sfce_config, "enabled", False)):
+                try:
+                    if update_cb_sfce_receipt is None:
+                        raise ImportError("cvsrffi.phase1_cb_sfce coverage receipt support is required")
+                    cb_sfce_receipt = update_cb_sfce_receipt(
+                        cb_sfce_receipt,
+                        cb_sfce_batch_info,
+                        scenario=cb_sfce_satellite_scenario,
+                    )
+                except Exception as error:
+                    _persist_cb_sfce_failure_receipt(
+                        out_dir=out_dir,
+                        args=args,
+                        cb_sfce_receipt=cb_sfce_receipt,
+                        error=error,
+                        failure_stage="cb_sfce_local_tx_scenario_coverage_receipt",
+                    )
+                    raise
+            if (
+                loss_is_finite
+                and bool(getattr(cb_sfce_config, "enabled", False))
+                and not bool(cb_sfce_receipt.get("cb_sfce_gradient_relation_completed", False))
+            ):
+                try:
+                    if (
+                        cb_sfce_shared_encoder_and_head_parameters is None
+                        or cb_sfce_shared_gradient_relation is None
+                        or update_cb_sfce_gradient_relation_receipt is None
+                    ):
+                        raise ImportError("cvsrffi.phase1_cb_sfce raw gradient audit support is required")
+                    if cb_sfce_base_loss_l is None:
+                        raise CBSFCERuntimeError(
+                            "P1-CB-SFCE requires the common base loss for first-batch audit"
+                        )
+                    cb_sfce_gradient_relation_info = cb_sfce_shared_gradient_relation(
+                        cb_sfce_base_loss_l,
+                        loss_cb_sfce_l,
+                        cb_sfce_shared_encoder_and_head_parameters(model),
+                        loss_weight=float(getattr(cb_sfce_config, "loss_weight", 0.0)),
+                    )
+                    cb_sfce_receipt = update_cb_sfce_gradient_relation_receipt(
+                        cb_sfce_receipt,
+                        cb_sfce_gradient_relation_info,
+                    )
+                except Exception as error:
+                    _persist_cb_sfce_failure_receipt(
+                        out_dir=out_dir,
+                        args=args,
+                        cb_sfce_receipt=cb_sfce_receipt,
+                        error=error,
+                        failure_stage="pre_scaled_backward_first_effective_cb_sfce_gradient_audit",
                     )
                     raise
             pamr_audit_has_effective_batch = (
@@ -8332,6 +8699,18 @@ def train(args) -> int:
                         out_dir=out_dir,
                         args=args,
                         pamr_receipt=pamr_receipt,
+                        error=error,
+                        failure_stage="pre_backward_total_loss_nonfinite",
+                    )
+                    raise error
+                if bool(getattr(cb_sfce_config, "enabled", False)):
+                    error = CBSFCERuntimeError(
+                        "P1-CB-SFCE fail-closed: total loss is non-finite before backward"
+                    )
+                    _persist_cb_sfce_failure_receipt(
+                        out_dir=out_dir,
+                        args=args,
+                        cb_sfce_receipt=cb_sfce_receipt,
                         error=error,
                         failure_stage="pre_backward_total_loss_nonfinite",
                     )
@@ -8562,6 +8941,32 @@ def train(args) -> int:
                     ).detach(),
                     "train/w_loss_pamr": (
                         float(getattr(pamr_config, "loss_weight", 0.0)) * loss_pamr_l
+                    ).detach(),
+                    "train/loss_cb_sfce": loss_cb_sfce_l.detach(),
+                    "train/cb_sfce_enabled": 1.0 if bool(getattr(cb_sfce_config, "enabled", False)) else 0.0,
+                    "train/cb_sfce_rows": float(cb_sfce_batch_info.get("rows", 0)),
+                    "train/cb_sfce_classes": float(cb_sfce_batch_info.get("classes", 0)),
+                    "train/cb_sfce_gradient_relation_completed": 1.0 if bool(
+                        cb_sfce_receipt.get("cb_sfce_gradient_relation_completed", False)
+                    ) else 0.0,
+                    "train/cb_sfce_encoder_grad_cosine": (
+                        float(cb_sfce_gradient_relation_info["shared_encoder"]["cosine"])
+                        if cb_sfce_gradient_relation_info["shared_encoder"].get("cosine") is not None
+                        else float("nan")
+                    ),
+                    "train/cb_sfce_encoder_grad_norm_ratio": float(
+                        cb_sfce_gradient_relation_info["shared_encoder"].get("norm_ratio", float("nan"))
+                    ),
+                    "train/cb_sfce_head_grad_cosine": (
+                        float(cb_sfce_gradient_relation_info["classifier_head"]["cosine"])
+                        if cb_sfce_gradient_relation_info["classifier_head"].get("cosine") is not None
+                        else float("nan")
+                    ),
+                    "train/cb_sfce_head_grad_norm_ratio": float(
+                        cb_sfce_gradient_relation_info["classifier_head"].get("norm_ratio", float("nan"))
+                    ),
+                    "train/w_loss_cb_sfce": (
+                        float(getattr(cb_sfce_config, "loss_weight", 0.0)) * loss_cb_sfce_l
                     ).detach(),
                     "train/w_loss_teacher_clean_kl": ((float(args.lambda_teacher_clean_kl) * teacher_scale) * loss_teacher_clean_kl_l).detach(),
                     "train/w_loss_teacher_sat_kl": ((float(args.lambda_teacher_sat_kl) * teacher_scale) * loss_teacher_sat_kl_l).detach(),
@@ -9296,6 +9701,8 @@ def train(args) -> int:
             payload["ccpc_leo_receipt"] = dict(ccpc_receipt)
         if pamr_frozen_mode:
             payload["pamr_receipt"] = dict(pamr_receipt)
+        if cb_sfce_frozen_mode:
+            payload["cb_sfce_receipt"] = dict(cb_sfce_receipt)
         latest_path = out_dir / "NOT_SAVED_FINAL_ONLY"
         best_path = (
             source_validation_path
@@ -9760,6 +10167,20 @@ def train(args) -> int:
                 failure_stage="terminal_pamr_receipt_validation",
             )
             raise
+    if cb_sfce_frozen_mode:
+        if validate_cb_sfce_terminal_receipt is None:
+            raise ImportError("cvsrffi.phase1_cb_sfce.validate_cb_sfce_terminal_receipt is required")
+        try:
+            cb_sfce_receipt = validate_cb_sfce_terminal_receipt(cb_sfce_receipt)
+        except Exception as error:
+            _persist_cb_sfce_failure_receipt(
+                out_dir=out_dir,
+                args=args,
+                cb_sfce_receipt=cb_sfce_receipt,
+                error=error,
+                failure_stage="terminal_cb_sfce_receipt_validation",
+            )
+            raise
 
     final_payload = deepcopy(payload)
     final_payload.update(
@@ -9783,6 +10204,8 @@ def train(args) -> int:
         final_payload["ccpc_leo_receipt"] = dict(ccpc_receipt)
     if pamr_frozen_mode:
         final_payload["pamr_receipt"] = dict(pamr_receipt)
+    if cb_sfce_frozen_mode:
+        final_payload["cb_sfce_receipt"] = dict(cb_sfce_receipt)
     final_payload.setdefault("stats", {})
     final_payload["stats"]["source_val_tail_geometry"] = final_source_val_tail
     final_payload["stats"]["zid_leakage_probe"] = final_zid_leakage_probe
@@ -10397,6 +10820,8 @@ def train(args) -> int:
         terminal_manifest["ccpc_leo_receipt"] = dict(ccpc_receipt)
     if pamr_frozen_mode:
         terminal_manifest["pamr_receipt"] = dict(pamr_receipt)
+    if cb_sfce_frozen_mode:
+        terminal_manifest["cb_sfce_receipt"] = dict(cb_sfce_receipt)
     (out_dir / "phase1_terminal_status.json").write_text(
         json.dumps(terminal_manifest, ensure_ascii=False, indent=2, default=str),
         encoding="utf-8",
@@ -10451,6 +10876,28 @@ def train(args) -> int:
                         if pamr_audit_only
                         else "PHASE1_SOURCE_ONLY_TRAINING_RECEIPT"
                     ),
+                },
+                ensure_ascii=False,
+                indent=2,
+                sort_keys=True,
+            )
+            + "\n",
+            encoding="utf-8",
+            newline="\n",
+        )
+    if cb_sfce_frozen_mode:
+        (out_dir / "phase1_cb_sfce_terminal_receipt.json").write_text(
+            json.dumps(
+                {
+                    **dict(cb_sfce_receipt),
+                    "terminal_status": terminal_status,
+                    "terminal_exit_code": int(terminal_exit_code),
+                    "selected_checkpoint": str(selected_checkpoint),
+                    "selected_checkpoint_sha256": selected_checkpoint_sha256,
+                    "technical_only": False,
+                    "promotion_ready": terminal_status == "COMPLETE",
+                    "performance_result_available": False,
+                    "claim": "PHASE1_SOURCE_ONLY_TRAINING_RECEIPT",
                 },
                 ensure_ascii=False,
                 indent=2,
