@@ -13,6 +13,7 @@
 - 启动前二次只读复核：v2 run/log/outer仍不存在；v1 release/run/log/outer均保留；GPU0–6各约1MiB、GPU7为既有SCB PID 608786约488MiB，目标run进程为0。资源规则满足，下一步严格执行第5节唯一命令一次。
 - 第5节逐字启动命令调用`1`次；本地SSH通道约124秒超时，已识别并终止唯一残留本地SSH PID、确认TCP22清零，未重发。只读确认v2已落地：wrapper=`703747`、launcher=`703748`、PGID=`703746`，12个child PID均存在且CWD统一为冻结v2 release/code，`pids.tsv`的GPU映射与预登记一致。
 - 首波健康检查：v2 run/log/outer存在；12个arm日志均已生成并增长（约117–165KB），GPU0–6各一训练进程、GPU7为F4G加既有SCB两进程，未超过上限；首批日志未见Traceback/OOM/CUDA/CAGM失败指纹。v1路径保持不变，当前仍无性能结果。
+- 约4–5分钟技术窗口：F3C/F3G/F4C/F4G四臂child已退出并各具备training completion、terminal、resource、heldout与final工件；其余8臂仍live。12/12 config已生成，日志持续增长，未见技术异常指纹；GPU4–6已释放，GPU7仍仅SCB占用。继续短连接监控，不读取性能。
 
 日期：2026-08-10
 
