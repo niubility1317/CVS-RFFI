@@ -63,4 +63,14 @@ GPU0=`F1C+F5G`，GPU1=`F1G+F5C`，GPU2=`F2C+F6G`，GPU3=`F2G+F6C`，GPU4=`F3C`�
 
 ## 6. 运行回填
 
-待runner回填archive/member SHA、launcher/child PID、GPU、epochs/exits、逐batchCP合同、artifact SHA与清理状态；当前无性能结果。
+- 状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`；`retry=NO`。该状态只反映执行故障，不含任何性能结论。
+- 归档：固定实现commit=`20b166b69acf7537c85037f1543007577c22ab9f`；本地无prefix archive=`E:\type10-7\phase1_cp_sfce12_20260809_v1_20b166b6.tar`，SHA256=`b49e5daf8035d6e883d813b39a120bac2c0be373a7f0de9e987d7aa33354712b`，远端release archive SHA一致。远端LF archive member SHA：`train_ssdg.py=d0c453fc313c6550d741dbce9cb14a66e83a6361029d13e5814205770781066d`、`phase1_cp_sfce.py=221650bb03dba6f79557d1fcd8f6de23458332402861320f7e794362e98a2cea`、`test_phase1_cp_sfce.py=eae15cccf15e9287134a9c1e4ca5c67d4b085408af0ce197d7f10ca8f1fc24bf`、launcher=`ca53b5bf0a64db84b640ed55146ff114e7005b021847abcdc32307dc7d9c0810`、design=`763daaa43bd454bb7b2df893441431c3e90aa50d63cdb65ed0f240eeb3257076`。工作树SHA保留在§3；归档LF/工作树换行口径不同，未改远端代码。
+- 远端核验：`py_compile`、`train_ssdg.py --help`、`bash -n`、launcher dry-run=12均通过；release结构无`code/code`。
+- 启动：严格执行§4命令一次；caller在等待期间超时，随后只读确认run/log/outer已创建、12 child均已退出。`pids.tsv`记录12 child PID及固定GPU映射；launcher PID因caller timeout未捕获，未重启。outer log为空；GPU 0–7无残留计算进程。
+- 首波结构：12/12日志出现一条`[TELEMETRY]`，12/12`[EPOCH-BEGIN]`缺失；E0/E40=0；无metrics、final/latest checkpoint、terminal/resource/heldout receipt。
+- 确定性故障指纹（每类均在至少6臂重复）：
+  - C臂（F1C/F2C/F3C/F4C/F5C/F6C，6/6）：`UnboundLocalError: local variable 'cp_sfce_projection_info' referenced before assignment`，`code/SSDG/train_ssdg.py:9364`（调用栈含`11466 -> 11462 -> 9364`）。仅生成config receipt。
+  - G臂（F1G/F2G/F3G/F4G/F5G/F6G，6/6）：`cvsrffi.phase1_cp_sfce.CPSFCERuntimeError: P1-CP-SFCE common base gradient is non-finite`，`code/cvsrffi/phase1_cp_sfce.py:331`，训练栈`train_ssdg.py:11462`。生成`cp_sfce_failure_receipt.json`且`status=FAIL_CLOSED`、`failure_stage=scaled_base_backward_unscale_aux_vjp_projection`。
+- exit记录：launcher未写原生completion，caller timeout使数值exit未被捕获；本地`completion.tsv`逐臂标记`UNOBSERVED_NONZERO_TRACEBACK`，不将其伪记为正常`exit8`。
+- 小artifact已回收到`E:\type10-7\automation_reports\CV-SincNet\phase1_cp_sfce12_20260809_v1\artifacts`：32个远端小文件（12日志、`pids.tsv`、18个config/failure receipt、空outer）以及本地`completion.tsv`、`artifact_manifest.json`；manifest SHA256=`58de4251c66fd71b607a2336a2b4c7bae1d2f00caebdff4317895b81693589c6`。未下载checkpoint/NPZ/dataset。
+- 清理：本次SSH/SCP均为短连接，完成后本地`ssh.exe`与N607 TCP/22无残留；远端训练进程已退出、GPU空闲。保留远端partial run/log，不删除、不覆盖。
