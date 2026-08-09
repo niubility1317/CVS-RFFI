@@ -1,6 +1,6 @@
 # P1-ICMT冻结设计与实现追踪卡
 
-状态：`IMPLEMENTING`；设计审查：`P0=0/P1=0/ALLOW-MERGE`；实现审查与实验结果均待独立完成。
+状态：`LOCAL_VERIFIED_V2_P1_FIX_PENDING_INDEPENDENT_P0_P1_REVIEW`；设计审查：`P0=0/P1=0/ALLOW-MERGE`；postfreeze v2实现复审已关闭原两项P0，正式proxy输入冻结的`P1=1/REVISE`已完成本地最小修复，但尚未获得独立实现复审，实验结果亦未产生。
 
 ## 冻结对象
 
@@ -27,7 +27,9 @@ G的每个辅助batch要求四个local TX均`n_c>=2`，且两视图`z_id`和logi
 
 训练更新与ICMT严格`L-only`：仅`source_known_train`的L标签进入loss、backward和optimizer。共同trainer可以构建U loader，但不迭代U、不给U做forward；V仅执行C/G共有的`source-validation diagnostic forward`并读取V标签计算诊断指标，V不进入loss、backward、optimizer、校准或选模。proxy/held保持零loader、零forward。receipt中的`uses_*_rows=false`仅表示ICMT与训练更新不消费这些行，不表示共同trainer未构建U loader。C/G收据封存clean×4与LEO×4×3共16格的rows/active/finite：每场景全类覆盖、`active<=rows`，且终态每个clean类别rows等于其三种LEO场景rows之和。收据还绑定initial checkpoint SHA、head/class order、物理批/数据顺序SHA及新AdamW初态。C的ICMT字段为`N/A`或0。
 
-后冻结42步仅预注册、当前不实现：12clean、12source-only三LEO、12proxy、6pair；Gaussian-NLL仅在L上以同一路径`z_id`作float64 totalized-L2拟合，V/proxy零fit。门包括clean6/6、LEO18/18四floor、三场景及18格overall非负、每fold`ΔAUROC>0`和`Δ(mean u_proxy-mean u_V)>0`。任一完整门失败即`REJECT_P1_ICMT_PERMANENT`，均值不得补偿floor。
+后冻结42步已冻结为独立实现目标：12个ICMT专用clean export（单次输出L-fit、V-known、proxy，U只核hash且zero loader/forward/persist）、12个source-only三LEO export、12个proxy/binding step和6个同fold C/G pair。Gaussian-NLL仅在L上以同一路径`z_id=feat_joint`作float64 totalized-L2拟合，V/proxy零fit。门包括clean6/6、LEO18/18四floor、三场景及18格overall非负、每fold`ΔAUROC>0`和`Δ(mean u_proxy-mean u_V)>0`。任一完整门失败即`REJECT_P1_ICMT_PERMANENT`，均值不得补偿floor；实现与局部测试不构成门已执行或性能结论。
+
+正式source proxy选择与已签GD postfreeze v2保持同一唯一口径：days=`2021_03_01,2021_03_08`、RXs=`1-1,1-19,14-7,18-2,19-2,2-1`、selection seed=`7281148`（训练seed`7281105+43`）、每个proxy TX最多`400`个物理样本、单fold总数严格为`400`。这些值不是CLI可调超参数；clean export、manifest、proxy JSON/CSV绑定、pair及F6 prior重算必须分别重新断言，不能接受prior自报的正整数count。
 
 ## 实现追踪
 
@@ -40,7 +42,21 @@ G的每个辅助batch要求四个local TX均`n_c>=2`，且两视图`z_id`和logi
 | ICMT-05 | 严格warm-start、head/class与data-order绑定、新AdamW初态 | `code/cvsrffi/phase1_icmt.py`、`code/SSDG/train_ssdg.py` | local verified | focused tests | 只加载model权重 |
 | ICMT-06 | 12臂40E同资源launcher与显式bash调用 | `code/scripts/launch_phase1_icmt12_20260810.sh` | local verified | `bash -n`、dry-run12 | 固定通过`bash scripts/launch_phase1_icmt12_20260810.sh`调用；run id为`phase1_icmt12_20260810_v1` |
 | ICMT-07 | 实际lite_d no-query smoke和回归验证 | `code/tests/test_phase1_icmt.py` | local verified | `pytest` | 不实现postfreeze |
-| ICMT-08 | 后冻结42步及非补偿门 | 本设计卡 | deferred | 后冻结独立实现 | 当前明确`PENDING_NOT_IMPLEMENTED` |
+| ICMT-08 | 后冻结42步及非补偿门 | `code/export_phase1_icmt_features.py`、`code/export_phase1_icmt_leo_features.py`、`code/evaluate_phase1_icmt_postfreeze_pair.py`、`code/scripts/launch_phase1_icmt_postfreeze_20260810.sh`、`code/tests/test_phase1_icmt_postfreeze.py` | local verified v2 | postfreeze focused pytest、GD模板回归、dry-run42 | 独立ICMT schema/receipt，不复用GD pair JSON |
+
+### Postfreeze实现追踪
+
+| ID | 冻结要求 | 目标文件 | 状态 | 验证 | 备注 |
+|---|---|---|---|---|---|
+| ICMT-PF-01 | 逐checkpoint重建同一local4 L/U/V；只forward并保留L、V、proxy，U仅核hash且zero loader/forward/persist | `code/export_phase1_icmt_features.py` | local verified | split/hash/role/U-loader负测 | clean一次输出三角色；绑定训练receipt与final-only checkpoint |
+| ICMT-PF-02 | 仅L的`z_id=feat_joint`拟合Gaussian；float64 totalized-L2；ddof=1、class-equal pooled、`.9/.1` shrink、`1e-6` floor；完整NLL与stable logsumexp连续`u` | `code/evaluate_phase1_icmt_postfreeze_pair.py` | local verified | 公式、positive等价、zero、nonfinite与L-only fit测试 | V/proxy零fit；所有L/V/proxy行保留 |
+| ICMT-PF-03 | C/G×L/V/proxy封存total/zero/nonfinite/retained/dropped，L逐类计数闭合 | `code/evaluate_phase1_icmt_postfreeze_pair.py`、`code/tests/test_phase1_icmt_postfreeze.py` | local verified | L/V/proxy zero保留及计数篡改负测 | zero允许且按`T(0)=0`计分；nonfinite fatal |
+| ICMT-PF-04 | clean6/6与LEO18/18四floor不低于`C-2pp`；每fold三场景overall及全18格overall不低于0；proxy两项逐fold严格正且6/6 | `code/evaluate_phase1_icmt_postfreeze_pair.py` | local verified v2 | 原始artifact重算、clean/LEO delta及同步摘要篡改负测 | 所有门非补偿；无阈值、选参或重试 |
+| ICMT-PF-05 | pair严格绑定ICMT训练root、`F{fold}{C|G}_ICMT12`、checkpoint SHA、head/class、matrix/output root与fold1..6恰好一次 | `code/evaluate_phase1_icmt_postfreeze_pair.py` | local verified v2 | prior raw artifact当前SHA替换、跨run与计数篡改负测 | 不读取或复用GD pair receipt |
+| ICMT-PF-06 | 固定v1 root、冻结GPU映射和`12+12+12+6=42`步 | `code/scripts/launch_phase1_icmt_postfreeze_20260810.sh` | local verified | `bash -n`、dry-run=`12+12+12+6=42` | 只后冻结导出/评分，不训练、不覆盖 |
+| ICMT-PF-07 | 每个ICMT LEO步骤核冻结ManySig路径/SHA并封存NPZ SHA、source selection与可重建physical-key receipt；逐场景TX/RX/day完整 | `code/export_phase1_icmt_leo_features.py`、`code/evaluate_phase1_icmt_postfreeze_pair.py` | local verified v2 | 非冻结dataset字节、错误dataset绑定、source artifact替换及单场景缺day负测 | binding与LEO export同一步产生，不增加第43步 |
+| ICMT-PF-08 | F6逐个重读F1–F5绑定的clean/LEO/proxy/sidecar，核当前SHA并重算分类摘要、连续几何与fold gates后逐字段比对 | `code/evaluate_phase1_icmt_postfreeze_pair.py`、`code/tests/test_phase1_icmt_postfreeze.py` | local verified v2 | clean/LEO delta、同步摘要+delta及prior raw artifact替换负测 | 聚合只消费重算结果，不信任prior派生delta |
+| ICMT-PF-09 | 冻结proxy days/RXs/seed/max-per-TX/total=400并闭合clean manifest、physical-key、proxy JSON/CSV、pair与F6重算 | `code/export_phase1_icmt_features.py`、`code/evaluate_phase1_icmt_postfreeze_pair.py`、`code/scripts/launch_phase1_icmt_postfreeze_20260810.sh`、`code/tests/test_phase1_icmt_postfreeze.py` | verified locally | 1-row全链同步缩行、JSON/CSV/physical count及days/RXs/seed/max漂移隔离负测 | 正式值逐项来自已签GD postfreeze v2实现与launcher，不从prior receipt推断 |
 
 ## CB/CP/GD三轮复盘（不扩门）
 
@@ -48,6 +64,6 @@ G的每个辅助batch要求四个local TX均`n_c>=2`，且两视图`z_id`和logi
 
 ## 实现边界
 
-本次仅落地训练路径、收据、launcher和局部测试。不实现postfreeze scorer、42步执行器或任何proxy拟合/选择逻辑；不修改GD、CB、CP、SCB、CARE或CIRF文件；不访问N607、不启动实验、不提交Git。
+本轮在既有训练实现之外，仅新增独立ICMT postfreeze exporter、pair evaluator、42步launcher与focused tests，并更新本卡的实现追踪；不改变冻结公式、训练行为、超参数或训练launcher。不得修改GD、CB、CP、SCB、CARE、CIRF、`phase1_icmt.py`或`train_ssdg.py`，不得访问N607、启动性能实验、修改automation report/conversation index或提交Git。
 
-本地验证不替代独立实现审查：当前状态仅为`LOCAL_VERIFIED_PENDING_INDEPENDENT_P0_P1_REVIEW`，不构成实验放行、性能结论或最终实现签署。
+postfreeze v1本地证据为：`py_compile`通过；ICMT专用测试16项与GD模板回归10项合计26 passed；`bash -n`与dry-run42通过。独立复审随后指出F6未从prior原始artifact重算、通用LEO导出缺少冻结dataset/source-selection/逐场景覆盖信任链，因此v1不得放行。v2已最小修复这两项P0，不改变Gaussian、门限、矩阵或42步数量；复审确认原P0关闭，但指出proxy days/RXs/seed/max-per-TX/total尚未作为正式常量贯穿全链，裁决为`P0=0/P1=1/REVISE`。ICMT-PF-09现已本地闭合：`py_compile`通过；ICMT专用测试31项与GD模板回归10项合计41 passed；`bash -n`通过；dry-run仍为12个clean、12个LEO、12个proxy和6个pair，共42步。1-row攻击同步修改C/G clean、manifest、proxy JSON/CSV、artifact SHA及prior expected count后，在当前pair与F6 prior路径的首个固定400门失败；四类selection和三类count receipt均有隔离负测。当前仅标记`LOCAL_VERIFIED_V2_P1_FIX_PENDING_INDEPENDENT_P0_P1_REVIEW`。未访问N607、未运行性能矩阵，不构成实验放行、性能结论或最终实现签署。
