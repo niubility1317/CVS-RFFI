@@ -190,6 +190,30 @@ try:
         validate_cagm_terminal_receipt,
         write_cagm_failure_receipt,
     )
+    from cvsrffi.phase1_rcrmd import (
+        RCRMDConfig,
+        RCRMDConfigurationError,
+        RCRMDRuntimeError,
+        FROZEN_RCRMD_SCENARIOS,
+        add_rcrmd_to_loss,
+        bind_rcrmd_optimizer_initial_state,
+        bind_rcrmd_source_data_order,
+        rcrmd_aux_gradient_audit,
+        rcrmd_config_receipt,
+        rcrmd_loss,
+        rcrmd_shared_encoder_and_head_parameters,
+        remap_rcrmd_local_labels_to_head_rows,
+        resolve_rcrmd_classifier_weight,
+        resolve_rcrmd_local_head_class_binding,
+        strict_rcrmd_warm_start,
+        update_rcrmd_common_batch_sequence_receipt,
+        update_rcrmd_gradient_audit_receipt,
+        update_rcrmd_receipt,
+        validate_rcrmd_args,
+        validate_rcrmd_binding,
+        validate_rcrmd_terminal_receipt,
+        write_rcrmd_failure_receipt,
+    )
     from cvsrffi.phase1_cp_sfce import (
         CPSFCEConfig,
         CPSFCEConfigurationError,
@@ -396,6 +420,17 @@ except ModuleNotFoundError:
     update_cagm_gradient_audit_receipt = update_cagm_receipt = None
     validate_cagm_args = validate_cagm_binding = validate_cagm_terminal_receipt = None
     write_cagm_failure_receipt = None
+    RCRMDConfig = None
+    RCRMDConfigurationError = RCRMDRuntimeError = None
+    FROZEN_RCRMD_SCENARIOS = tuple()
+    add_rcrmd_to_loss = bind_rcrmd_optimizer_initial_state = bind_rcrmd_source_data_order = None
+    rcrmd_aux_gradient_audit = rcrmd_config_receipt = rcrmd_loss = None
+    rcrmd_shared_encoder_and_head_parameters = remap_rcrmd_local_labels_to_head_rows = None
+    resolve_rcrmd_classifier_weight = resolve_rcrmd_local_head_class_binding = None
+    strict_rcrmd_warm_start = update_rcrmd_common_batch_sequence_receipt = None
+    update_rcrmd_gradient_audit_receipt = update_rcrmd_receipt = None
+    validate_rcrmd_args = validate_rcrmd_binding = validate_rcrmd_terminal_receipt = None
+    write_rcrmd_failure_receipt = None
     CPSFCEConfig = None
     CPSFCEConfigurationError = CPSFCERuntimeError = None
     FROZEN_CP_SFCE_SCENARIOS = tuple()
@@ -709,6 +744,24 @@ def build_arg_parser() -> argparse.ArgumentParser:
         type=float,
         default=0.0,
         help="Frozen at 0 for C and 0.02 for G when P1-CAGM mode is enabled.",
+    )
+    parser.add_argument(
+        "--phase1_rcrmd_frozen_mode",
+        type=str2bool,
+        default=False,
+        help="Enable the frozen P1-RCRMD C/G continuation contract.",
+    )
+    parser.add_argument(
+        "--phase1_rcrmd_enabled",
+        type=str2bool,
+        default=False,
+        help="Enable the source-L receiver-conditioned relative margin-drop term in a P1-RCRMD G arm.",
+    )
+    parser.add_argument(
+        "--lambda_rcrmd",
+        type=float,
+        default=0.0,
+        help="Frozen at 0 for C and 0.02 for G when P1-RCRMD mode is enabled.",
     )
     parser.add_argument(
         "--phase1_cp_sfce_frozen_mode",
@@ -4950,6 +5003,9 @@ def _build_ssdg_epoch_telemetry_row(
         "phase1_cagm_frozen_mode": bool(getattr(args, "phase1_cagm_frozen_mode", False)),
         "phase1_cagm_enabled": bool(getattr(args, "phase1_cagm_enabled", False)),
         "lambda_cagm": float(getattr(args, "lambda_cagm", 0.0)),
+        "phase1_rcrmd_frozen_mode": bool(getattr(args, "phase1_rcrmd_frozen_mode", False)),
+        "phase1_rcrmd_enabled": bool(getattr(args, "phase1_rcrmd_enabled", False)),
+        "lambda_rcrmd": float(getattr(args, "lambda_rcrmd", 0.0)),
         "phase1_cp_sfce_frozen_mode": bool(getattr(args, "phase1_cp_sfce_frozen_mode", False)),
         "phase1_cp_sfce_enabled": bool(getattr(args, "phase1_cp_sfce_enabled", False)),
         "lambda_cp_sfce": float(getattr(args, "lambda_cp_sfce", 0.0)),
@@ -5964,6 +6020,43 @@ def _persist_cagm_failure_receipt(
         return None
 
 
+def _persist_rcrmd_failure_receipt(
+    *,
+    out_dir: Path,
+    args: Any,
+    rcrmd_receipt: Mapping[str, Any],
+    error: BaseException,
+    failure_stage: str,
+) -> Optional[Path]:
+    """Best-effort persistence that never masks the primary P1-RCRMD failure."""
+
+    def _emit_writer_failure(exception_type: str) -> None:
+        try:
+            print(
+                "[P1-RCRMD-FAILURE-RECEIPT] persistence_failed "
+                f"writer_exception_type={exception_type}",
+                flush=True,
+            )
+        except Exception:
+            pass
+
+    if write_rcrmd_failure_receipt is None:
+        _emit_writer_failure("ImportError")
+        return None
+    try:
+        return write_rcrmd_failure_receipt(
+            out_dir,
+            candidate_id=str(getattr(args, "candidate_id", "") or ""),
+            run_id=str(getattr(args, "run_id", "") or ""),
+            receipt=rcrmd_receipt,
+            error=error,
+            failure_stage=str(failure_stage),
+        )
+    except Exception as receipt_error:
+        _emit_writer_failure(type(receipt_error).__name__)
+        return None
+
+
 def _persist_cp_sfce_failure_receipt(
     *,
     out_dir: Path,
@@ -6250,6 +6343,34 @@ def train(args) -> int:
     cagm_frozen_mode = bool(getattr(cagm_config, "frozen_mode", False))
     cagm_local_to_head_class_ids: Optional[Tuple[int, ...]] = None
     if (
+        validate_rcrmd_args is None
+        or rcrmd_config_receipt is None
+        or strict_rcrmd_warm_start is None
+    ):
+        if bool(getattr(args, "phase1_rcrmd_frozen_mode", False)) or bool(
+            getattr(args, "phase1_rcrmd_enabled", False)
+        ):
+            raise ImportError("cvsrffi.phase1_rcrmd is required for P1-RCRMD")
+        rcrmd_config = None
+        rcrmd_receipt: Dict[str, Any] = {
+            "schema": "cvs.phase1.rcrmd_receipt.v1",
+            "frozen_mode": False,
+            "enabled": False,
+            "lambda": 0.0,
+            "rcrmd_common_cells": {},
+            "rcrmd_scenes": {},
+            "rcrmd_gradient_audit_completed": False,
+            "rcrmd_terminal_contract": "PENDING",
+            "rcrmd_terminal_contract_passed": False,
+            "proxy_rows": 0,
+            "held_rows": 0,
+        }
+    else:
+        rcrmd_config = validate_rcrmd_args(args)
+        rcrmd_receipt = rcrmd_config_receipt(rcrmd_config)
+    rcrmd_frozen_mode = bool(getattr(rcrmd_config, "frozen_mode", False))
+    rcrmd_local_to_head_class_ids: Optional[Tuple[int, ...]] = None
+    if (
         validate_cp_sfce_args is None
         or cp_sfce_config_receipt is None
         or strict_cp_sfce_warm_start is None
@@ -6526,7 +6647,7 @@ def train(args) -> int:
             "--phase1_allow_empty_proxy_unknown requires the frozen ManyTx real-OE protocol"
         )
     data_ctx = _build_ssdg_wisig_data(args, device)
-    if ccpc_frozen_mode or pamr_frozen_mode or cb_sfce_frozen_mode or gd_proto_nll_frozen_mode or icmt_frozen_mode or cagm_frozen_mode or cp_sfce_frozen_mode:
+    if ccpc_frozen_mode or pamr_frozen_mode or cb_sfce_frozen_mode or gd_proto_nll_frozen_mode or icmt_frozen_mode or cagm_frozen_mode or rcrmd_frozen_mode or cp_sfce_frozen_mode:
         tx_partition_receipt = (
             (data_ctx.get("split_info", {}) or {}).get("tx_partition_receipt", {})
         )
@@ -6549,6 +6670,10 @@ def train(args) -> int:
                 )
             if cagm_frozen_mode:
                 raise CAGMConfigurationError(
+                    "Frozen Phase1 continuation requires an explicit TX-role partition receipt"
+                )
+            if rcrmd_frozen_mode:
+                raise RCRMDConfigurationError(
                     "Frozen Phase1 continuation requires an explicit TX-role partition receipt"
                 )
             if cp_sfce_frozen_mode:
@@ -6577,6 +6702,10 @@ def train(args) -> int:
                 )
             if cagm_frozen_mode:
                 raise CAGMConfigurationError(
+                    "Frozen Phase1 continuation rejects any held/proxy TX loaded by training"
+                )
+            if rcrmd_frozen_mode:
+                raise RCRMDConfigurationError(
                     "Frozen Phase1 continuation rejects any held/proxy TX loaded by training"
                 )
             if cp_sfce_frozen_mode:
@@ -6716,6 +6845,37 @@ def train(args) -> int:
                     "local_tx_class_order": local_tx_order,
                 }
             )
+        if rcrmd_frozen_mode:
+            local_data_class_count = int(data_ctx.get("num_classes", 0))
+            local_tx_order = list(data_ctx.get("class_id_to_tx", []) or [])
+            if local_data_class_count != len(local_tx_order):
+                raise RCRMDConfigurationError(
+                    "P1-RCRMD data_ctx local class count must equal its local TX class-order receipt"
+                )
+            if local_tx_order != frozen_source_roles["source_train_tx"]:
+                raise RCRMDConfigurationError(
+                    "P1-RCRMD data_ctx local TX class order must equal the source-train TX receipt"
+                )
+            if bind_rcrmd_source_data_order is None:
+                raise ImportError("cvsrffi.phase1_rcrmd source data-order binding support is required")
+            rcrmd_receipt.update(
+                bind_rcrmd_source_data_order(
+                    {
+                        **rcrmd_receipt,
+                        **frozen_source_roles,
+                        "local_data_class_count": local_data_class_count,
+                        "local_tx_class_order": local_tx_order,
+                    },
+                    (data_ctx.get("split_info", {}) or {}).get("source_split_receipt", {}),
+                )
+            )
+            rcrmd_receipt.update(
+                {
+                    **frozen_source_roles,
+                    "local_data_class_count": local_data_class_count,
+                    "local_tx_class_order": local_tx_order,
+                }
+            )
         if cp_sfce_frozen_mode:
             local_data_class_count = int(data_ctx.get("num_classes", 0))
             local_tx_order = list(data_ctx.get("class_id_to_tx", []) or [])
@@ -6826,6 +6986,20 @@ def train(args) -> int:
         elif cagm_frozen_mode:
             cagm_receipt.update(
                 strict_cagm_warm_start(
+                    model,
+                    ckpt["model"],
+                    baseline_path=str(args.baseline_ckpt),
+                    baseline_sha256=_sha256_file(args.baseline_ckpt),
+                    checkpoint_epoch=ckpt.get("epoch", -1),
+                    checkpoint_role=ckpt.get(
+                        "checkpoint_role",
+                        ckpt.get("checkpoint_selection", "UNSPECIFIED"),
+                    ),
+                )
+            )
+        elif rcrmd_frozen_mode:
+            rcrmd_receipt.update(
+                strict_rcrmd_warm_start(
                     model,
                     ckpt["model"],
                     baseline_path=str(args.baseline_ckpt),
@@ -7058,6 +7232,45 @@ def train(args) -> int:
             encoding="utf-8",
             newline="\n",
         )
+    if rcrmd_frozen_mode:
+        if (
+            resolve_rcrmd_classifier_weight is None
+            or resolve_rcrmd_local_head_class_binding is None
+            or remap_rcrmd_local_labels_to_head_rows is None
+        ):
+            raise ImportError("cvsrffi.phase1_rcrmd classifier binding support is required")
+        rcrmd_weight = resolve_rcrmd_classifier_weight(model)
+        checkpoint_args = ckpt.get("args", {}) or {}
+        if not isinstance(checkpoint_args, Mapping):
+            raise RCRMDConfigurationError(
+                "P1-RCRMD strict baseline checkpoint must contain an argument mapping"
+            )
+        checkpoint_train_tx = [
+            item.strip()
+            for item in str(checkpoint_args.get("phase1_source_train_tx_ids", "") or "").split(",")
+            if item.strip()
+        ]
+        tx_partition_receipt = (data_ctx.get("split_info", {}) or {}).get(
+            "tx_partition_receipt", {}
+        )
+        rcrmd_head_binding = resolve_rcrmd_local_head_class_binding(
+            local_class_order=list(data_ctx.get("class_id_to_tx", []) or []),
+            source_train_tx=list(tx_partition_receipt.get("source_known_train_tx", []) or []),
+            checkpoint_train_tx=checkpoint_train_tx,
+            dataset_class_order=list(tx_partition_receipt.get("dataset_tx_order", []) or []),
+            local_data_class_count=data_ctx.get("num_classes", 0),
+            checkpoint_head_class_count=checkpoint_args.get("num_classes", None),
+            live_head_class_count=int(rcrmd_weight.size(0)),
+        )
+        rcrmd_local_to_head_class_ids = tuple(
+            int(value) for value in rcrmd_head_binding["local_to_head_class_ids"]
+        )
+        rcrmd_receipt.update(rcrmd_head_binding)
+        (out_dir / "phase1_rcrmd_config_receipt.json").write_text(
+            json.dumps(rcrmd_receipt, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+            newline="\n",
+        )
     if cp_sfce_frozen_mode:
         if (
             resolve_cp_sfce_classifier_weight is None
@@ -7148,6 +7361,25 @@ def train(args) -> int:
                 out_dir=out_dir,
                 args=args,
                 icmt_receipt=icmt_receipt,
+                error=error,
+                failure_stage="new_adamw_initial_state_binding",
+            )
+            raise
+    if rcrmd_frozen_mode:
+        try:
+            if bind_rcrmd_optimizer_initial_state is None:
+                raise ImportError("cvsrffi.phase1_rcrmd AdamW initial-state receipt support is required")
+            rcrmd_receipt = bind_rcrmd_optimizer_initial_state(rcrmd_receipt, optimizer)
+            (out_dir / "phase1_rcrmd_config_receipt.json").write_text(
+                json.dumps(rcrmd_receipt, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+                encoding="utf-8",
+                newline="\n",
+            )
+        except Exception as error:
+            _persist_rcrmd_failure_receipt(
+                out_dir=out_dir,
+                args=args,
+                rcrmd_receipt=rcrmd_receipt,
                 error=error,
                 failure_stage="new_adamw_initial_state_binding",
             )
@@ -7405,6 +7637,15 @@ def train(args) -> int:
                 f"baseline_strict={int(bool(cagm_receipt.get('strict_model_keys', False)))} "
                 f"checkpoint_role={str(cagm_receipt.get('checkpoint_role', '') or '-')} "
                 "rx_or_domain_labels=0 proxy_rows=0 held_rows=0",
+                "[CONFIG-P1-RCRMD] "
+                f"frozen_mode={int(bool(rcrmd_receipt.get('frozen_mode', False)))} "
+                f"enabled={int(bool(rcrmd_receipt.get('enabled', False)))} "
+                f"lambda={float(rcrmd_receipt.get('lambda', 0.0)):.6g} "
+                f"rule={str(rcrmd_receipt.get('loss_rule', '') or '-')} "
+                f"source_r_count={int(rcrmd_receipt.get('source_receiver_count', 0))} "
+                f"baseline_strict={int(bool(rcrmd_receipt.get('strict_model_keys', False)))} "
+                f"checkpoint_role={str(rcrmd_receipt.get('checkpoint_role', '') or '-')} "
+                "source_L_rx_i_only=1 day_target_proxy=0",
                 "[CONFIG-P1-CP-SFCE] "
                 f"frozen_mode={int(bool(cp_sfce_receipt.get('frozen_mode', False)))} "
                 f"enabled={int(bool(cp_sfce_receipt.get('enabled', False)))} "
@@ -7725,6 +7966,27 @@ def train(args) -> int:
                         failure_stage="local_tx_label_to_live_head_row_binding",
                     )
                     raise
+            if rcrmd_frozen_mode:
+                try:
+                    if (
+                        rcrmd_local_to_head_class_ids is None
+                        or remap_rcrmd_local_labels_to_head_rows is None
+                    ):
+                        raise RCRMDRuntimeError(
+                            "P1-RCRMD local-to-head class binding is unavailable"
+                        )
+                    y_l = remap_rcrmd_local_labels_to_head_rows(
+                        y_l, rcrmd_local_to_head_class_ids
+                    )
+                except Exception as error:
+                    _persist_rcrmd_failure_receipt(
+                        out_dir=out_dir,
+                        args=args,
+                        rcrmd_receipt=rcrmd_receipt,
+                        error=error,
+                        failure_stage="local_tx_label_to_live_head_row_binding",
+                    )
+                    raise
             if cp_sfce_frozen_mode:
                 try:
                     if (
@@ -7747,7 +8009,28 @@ def train(args) -> int:
                     )
                     raise
             labeled_clean_count = int(y_l.numel())
-            if ccpc_frozen_mode or pamr_frozen_mode or cb_sfce_frozen_mode or icmt_frozen_mode or cagm_frozen_mode or cp_sfce_frozen_mode:
+            if rcrmd_frozen_mode:
+                # Revision2 permits only the source-L physical receiver field.
+                # RCRMD does not read day/domain/target/proxy metadata and this
+                # lookup does not affect loader order or sampling.
+                receiver_l_base = _metadata_label_tensor(
+                    extra_l, "rx_i", device, labeled_clean_count
+                )
+                if receiver_l_base is None:
+                    error = RCRMDRuntimeError(
+                        "P1-RCRMD requires source-L physical rx_i metadata"
+                    )
+                    _persist_rcrmd_failure_receipt(
+                        out_dir=out_dir,
+                        args=args,
+                        rcrmd_receipt=rcrmd_receipt,
+                        error=error,
+                        failure_stage="source_l_rx_i_allowlist_binding",
+                    )
+                    raise error
+                day_l_base = None
+                d_l = None
+            elif ccpc_frozen_mode or pamr_frozen_mode or cb_sfce_frozen_mode or icmt_frozen_mode or cagm_frozen_mode or cp_sfce_frozen_mode:
                 # The frozen C/G experiment is intentionally blind to RX/day/domain
                 # metadata.  Frozen candidates receive only source TX labels.
                 receiver_l_base = None
@@ -8505,6 +8788,7 @@ def train(args) -> int:
                 loss_gd_proto_nll_l = zero_sat
                 loss_icmt_l = zero_sat
                 loss_cagm_l = zero_sat
+                loss_rcrmd_l = zero_sat
                 loss_cp_sfce_l = zero_sat
                 cb_sfce_base_loss_l = None
                 gd_proto_nll_base_loss_l = None
@@ -8514,6 +8798,7 @@ def train(args) -> int:
                 gd_proto_nll_satellite_scenario = ""
                 icmt_satellite_scenario = ""
                 cagm_satellite_scenario = ""
+                rcrmd_satellite_scenario = ""
                 cp_sfce_satellite_scenario = ""
                 cb_sfce_batch_info: Dict[str, Any] = {
                     "rows": 0,
@@ -8566,6 +8851,19 @@ def train(args) -> int:
                     "finite": False,
                     "clean_statistics_detached": False,
                     "loss_divisor": 0,
+                }
+                rcrmd_batch_info: Dict[str, Any] = {
+                    "rows": 0,
+                    "active_q": 0,
+                    "finite_q": 0,
+                    "loss_sum": 0.0,
+                    "global_denominator": 0,
+                    "fixed_scale": 0.0,
+                    "cells": {},
+                    "finite": False,
+                    "clean_margin_detached": False,
+                    "empty_cell_zero": False,
+                    "no_active_renormalization": False,
                 }
                 ccpc_batch_info: Dict[str, Any] = {
                     "rows": 0,
@@ -8765,6 +9063,44 @@ def train(args) -> int:
                             cagm_receipt=cagm_receipt,
                             error=error,
                             failure_stage="common_clean_leo_batch_sequence_receipt",
+                        )
+                        raise
+                if rcrmd_frozen_mode:
+                    try:
+                        if out_sat is None:
+                            raise RCRMDRuntimeError(
+                                "Frozen P1-RCRMD requires the common single LEO forward in both C and G"
+                            )
+                        if int(y_l.numel()) != labeled_clean_count:
+                            raise RCRMDRuntimeError(
+                                "P1-RCRMD forbids expanded or reindexed source-L rows"
+                            )
+                        if update_rcrmd_common_batch_sequence_receipt is None:
+                            raise ImportError(
+                                "cvsrffi.phase1_rcrmd common coverage receipt support is required"
+                            )
+                        source_meta = _meta_from_extra(extra_l)
+                        rcrmd_physical_metadata = {
+                            key: source_meta[key]
+                            for key in ("base_index", "sig_i")
+                            if source_meta is not None and key in source_meta
+                        }
+                        rcrmd_receipt = update_rcrmd_common_batch_sequence_receipt(
+                            rcrmd_receipt,
+                            epoch=int(epoch),
+                            batch_index=int(batch_idx),
+                            scenario=str(sat_train_scenario),
+                            source_tx_labels=y_l,
+                            source_rx_labels=receiver_l_base,
+                            metadata=rcrmd_physical_metadata,
+                        )
+                    except Exception as error:
+                        _persist_rcrmd_failure_receipt(
+                            out_dir=out_dir,
+                            args=args,
+                            rcrmd_receipt=rcrmd_receipt,
+                            error=error,
+                            failure_stage="common_physical_rx_class_scene_n_rc_receipt",
                         )
                         raise
                 if bool(getattr(cb_sfce_config, "enabled", False)):
@@ -9017,6 +9353,45 @@ def train(args) -> int:
                             failure_stage="paired_feat_joint_binding_or_cagm_loss",
                         )
                         raise
+                # RCRMD receives only the already-computed same-physical clean
+                # and single-LEO raw local4 logits.  Its source-L rx_i grouping
+                # has been bound above and never changes the sampler/forward.
+                if bool(getattr(rcrmd_config, "enabled", False)):
+                    try:
+                        if out_sat is None:
+                            raise RCRMDRuntimeError(
+                                "Enabled P1-RCRMD requires one existing clean and single LEO forward"
+                            )
+                        if rcrmd_loss is None or validate_rcrmd_binding is None:
+                            raise ImportError(
+                                "cvsrffi.phase1_rcrmd loss and binding support is required"
+                            )
+                        validate_rcrmd_binding(
+                            model=model,
+                            out_clean=out_l,
+                            out_leo=out_sat,
+                            tx_labels=y_l,
+                            source_rx_labels=receiver_l_base,
+                            expected_class_ids=rcrmd_receipt.get("expected_tx_class_ids", []),
+                            expected_receiver_ids=rcrmd_receipt.get("source_receiver_ids", []),
+                        )
+                        loss_rcrmd_l, rcrmd_batch_info = rcrmd_loss(
+                            out_l["tx_logits"],
+                            out_sat["tx_logits"],
+                            y_l,
+                            receiver_l_base,
+                            rcrmd_receipt.get("source_receiver_ids", []),
+                        )
+                        rcrmd_satellite_scenario = str(sat_train_scenario)
+                    except Exception as error:
+                        _persist_rcrmd_failure_receipt(
+                            out_dir=out_dir,
+                            args=args,
+                            rcrmd_receipt=rcrmd_receipt,
+                            error=error,
+                            failure_stage="paired_raw_local4_margin_rx_cell_binding_or_rcrmd_loss",
+                        )
+                        raise
                 if add_ccpc_to_loss is not None:
                     loss_closed_l = add_ccpc_to_loss(
                         loss_closed_l,
@@ -9054,6 +9429,12 @@ def train(args) -> int:
                         loss_closed_l,
                         loss_cagm_l if bool(getattr(cagm_config, "enabled", False)) else None,
                         cagm_config,
+                    )
+                if add_rcrmd_to_loss is not None:
+                    loss_closed_l = add_rcrmd_to_loss(
+                        loss_closed_l,
+                        loss_rcrmd_l if bool(getattr(rcrmd_config, "enabled", False)) else None,
+                        rcrmd_config,
                     )
                 loss_l = loss_closed_l + loss_open_l
                 if phase == "pseudo" and bool(args.use_unlabeled):
@@ -9744,6 +10125,16 @@ def train(args) -> int:
                     "none_or_zero_expected": False,
                 },
             }
+            rcrmd_gradient_audit_info: Dict[str, Any] = {
+                "shared_encoder": {
+                    "parameter_count": 0.0,
+                    "norm": float("nan"),
+                },
+                "classifier_head": {
+                    "parameter_count": 0.0,
+                    "norm": float("nan"),
+                },
+            }
             os_grad_info = {
                 "active": 0.0,
                 "conflict": 0.0,
@@ -9890,6 +10281,26 @@ def train(args) -> int:
                         cagm_receipt=cagm_receipt,
                         error=error,
                         failure_stage="cagm_scene_joint_zero_four_radius_six_gram_receipt",
+                    )
+                    raise
+            if bool(getattr(rcrmd_config, "enabled", False)):
+                try:
+                    if update_rcrmd_receipt is None:
+                        raise ImportError("cvsrffi.phase1_rcrmd G-only receipt support is required")
+                    rcrmd_receipt = update_rcrmd_receipt(
+                        rcrmd_receipt,
+                        rcrmd_batch_info,
+                        scenario=rcrmd_satellite_scenario,
+                        epoch=int(epoch),
+                        batch_index=int(batch_idx),
+                    )
+                except Exception as error:
+                    _persist_rcrmd_failure_receipt(
+                        out_dir=out_dir,
+                        args=args,
+                        rcrmd_receipt=rcrmd_receipt,
+                        error=error,
+                        failure_stage="g_only_rx_class_scene_q_loss_receipt",
                     )
                     raise
             if bool(getattr(cp_sfce_config, "enabled", False)):
@@ -10042,6 +10453,36 @@ def train(args) -> int:
                         cagm_receipt=cagm_receipt,
                         error=error,
                         failure_stage="pre_scaled_backward_first_valid_raw_cagm_encoder_vjp_head_no_aux_grad",
+                    )
+                    raise
+            if (
+                loss_is_finite
+                and bool(getattr(rcrmd_config, "enabled", False))
+                and int(rcrmd_batch_info.get("active_q", 0)) > 0
+                and not bool(rcrmd_receipt.get("rcrmd_gradient_audit_completed", False))
+            ):
+                try:
+                    if (
+                        rcrmd_shared_encoder_and_head_parameters is None
+                        or rcrmd_aux_gradient_audit is None
+                        or update_rcrmd_gradient_audit_receipt is None
+                    ):
+                        raise ImportError("cvsrffi.phase1_rcrmd raw VJP audit support is required")
+                    rcrmd_gradient_audit_info = rcrmd_aux_gradient_audit(
+                        loss_rcrmd_l,
+                        rcrmd_shared_encoder_and_head_parameters(model),
+                    )
+                    rcrmd_receipt = update_rcrmd_gradient_audit_receipt(
+                        rcrmd_receipt,
+                        rcrmd_gradient_audit_info,
+                    )
+                except Exception as error:
+                    _persist_rcrmd_failure_receipt(
+                        out_dir=out_dir,
+                        args=args,
+                        rcrmd_receipt=rcrmd_receipt,
+                        error=error,
+                        failure_stage="pre_scaled_backward_first_active_raw_encoder_and_exact_head_vjp",
                     )
                     raise
             pamr_audit_has_effective_batch = (
@@ -10732,6 +11173,27 @@ def train(args) -> int:
                     ),
                     "train/w_loss_cagm": (
                         float(getattr(cagm_config, "loss_weight", 0.0)) * loss_cagm_l
+                    ).detach(),
+                    "train/loss_rcrmd": loss_rcrmd_l.detach(),
+                    "train/rcrmd_enabled": 1.0 if bool(getattr(rcrmd_config, "enabled", False)) else 0.0,
+                    "train/rcrmd_rows": float(rcrmd_batch_info.get("rows", 0)),
+                    "train/rcrmd_active_q": float(rcrmd_batch_info.get("active_q", 0)),
+                    "train/rcrmd_finite_q": float(rcrmd_batch_info.get("finite_q", 0)),
+                    "train/rcrmd_loss_sum": float(rcrmd_batch_info.get("loss_sum", 0.0)),
+                    "train/rcrmd_global_denominator": float(
+                        rcrmd_batch_info.get("global_denominator", 0)
+                    ),
+                    "train/rcrmd_gradient_audit_completed": 1.0 if bool(
+                        rcrmd_receipt.get("rcrmd_gradient_audit_completed", False)
+                    ) else 0.0,
+                    "train/rcrmd_encoder_aux_grad_norm": float(
+                        rcrmd_gradient_audit_info["shared_encoder"].get("norm", float("nan"))
+                    ),
+                    "train/rcrmd_head_aux_grad_norm": float(
+                        rcrmd_gradient_audit_info["classifier_head"].get("norm", float("nan"))
+                    ),
+                    "train/w_loss_rcrmd": (
+                        float(getattr(rcrmd_config, "loss_weight", 0.0)) * loss_rcrmd_l
                     ).detach(),
                     "train/loss_cp_sfce": loss_cp_sfce_l.detach(),
                     "train/cp_sfce_enabled": 1.0 if bool(getattr(cp_sfce_config, "enabled", False)) else 0.0,
@@ -11499,6 +11961,8 @@ def train(args) -> int:
             payload["icmt_receipt"] = dict(icmt_receipt)
         if cagm_frozen_mode:
             payload["cagm_receipt"] = dict(cagm_receipt)
+        if rcrmd_frozen_mode:
+            payload["rcrmd_receipt"] = dict(rcrmd_receipt)
         if cp_sfce_frozen_mode:
             payload["cp_sfce_receipt"] = dict(cp_sfce_receipt)
         latest_path = out_dir / "NOT_SAVED_FINAL_ONLY"
@@ -12021,6 +12485,20 @@ def train(args) -> int:
                 failure_stage="terminal_cagm_receipt_validation",
             )
             raise
+    if rcrmd_frozen_mode:
+        if validate_rcrmd_terminal_receipt is None:
+            raise ImportError("cvsrffi.phase1_rcrmd.validate_rcrmd_terminal_receipt is required")
+        try:
+            rcrmd_receipt = validate_rcrmd_terminal_receipt(rcrmd_receipt)
+        except Exception as error:
+            _persist_rcrmd_failure_receipt(
+                out_dir=out_dir,
+                args=args,
+                rcrmd_receipt=rcrmd_receipt,
+                error=error,
+                failure_stage="terminal_rcrmd_receipt_validation",
+            )
+            raise
     if cp_sfce_frozen_mode:
         if validate_cp_sfce_terminal_receipt is None:
             raise ImportError("cvsrffi.phase1_cp_sfce.validate_cp_sfce_terminal_receipt is required")
@@ -12066,6 +12544,8 @@ def train(args) -> int:
         final_payload["icmt_receipt"] = dict(icmt_receipt)
     if cagm_frozen_mode:
         final_payload["cagm_receipt"] = dict(cagm_receipt)
+    if rcrmd_frozen_mode:
+        final_payload["rcrmd_receipt"] = dict(rcrmd_receipt)
     if cp_sfce_frozen_mode:
         final_payload["cp_sfce_receipt"] = dict(cp_sfce_receipt)
     final_payload.setdefault("stats", {})
@@ -12690,6 +13170,8 @@ def train(args) -> int:
         terminal_manifest["icmt_receipt"] = dict(icmt_receipt)
     if cagm_frozen_mode:
         terminal_manifest["cagm_receipt"] = dict(cagm_receipt)
+    if rcrmd_frozen_mode:
+        terminal_manifest["rcrmd_receipt"] = dict(rcrmd_receipt)
     if cp_sfce_frozen_mode:
         terminal_manifest["cp_sfce_receipt"] = dict(cp_sfce_receipt)
     (out_dir / "phase1_terminal_status.json").write_text(
@@ -12843,6 +13325,28 @@ def train(args) -> int:
             encoding="utf-8",
             newline="\n",
         )
+    if rcrmd_frozen_mode:
+        (out_dir / "phase1_rcrmd_terminal_receipt.json").write_text(
+            json.dumps(
+                {
+                    **dict(rcrmd_receipt),
+                    "terminal_status": terminal_status,
+                    "terminal_exit_code": int(terminal_exit_code),
+                    "selected_checkpoint": str(selected_checkpoint),
+                    "selected_checkpoint_sha256": selected_checkpoint_sha256,
+                    "technical_only": False,
+                    "promotion_ready": terminal_status == "COMPLETE",
+                    "performance_result_available": False,
+                    "claim": "PHASE1_SOURCE_ONLY_TRAINING_RECEIPT",
+                },
+                ensure_ascii=False,
+                indent=2,
+                sort_keys=True,
+            )
+            + "\n",
+            encoding="utf-8",
+            newline="\n",
+        )
     if cp_sfce_frozen_mode:
         (out_dir / "phase1_cp_sfce_terminal_receipt.json").write_text(
             json.dumps(
@@ -12945,6 +13449,8 @@ def train(args) -> int:
         completion_receipt["icmt_receipt"] = dict(icmt_receipt)
     if cagm_frozen_mode:
         completion_receipt["cagm_receipt"] = dict(cagm_receipt)
+    if rcrmd_frozen_mode:
+        completion_receipt["rcrmd_receipt"] = dict(rcrmd_receipt)
     (out_dir / "phase1_training_completion_receipt.json").write_text(
         json.dumps(
             completion_receipt,
