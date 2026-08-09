@@ -43,6 +43,7 @@
 - bundle大小=`28733440`字节，SHA256=`4453ec5f6eeabb801a83152fd68c2da277306d56856a37ca3a13ed4e80398762`，members=`63`（62个小工件＋manifest），`.pth/.npz=0`。
 - 本地manifest=`E:\type10-7\automation_reports\CV-SincNet\phase1_cagm_postfreeze_20260810_v2\artifacts\returned_small\phase1_cagm_postfreeze_20260810_v2_small_artifacts.manifest.txt`，大小=`8955`字节，62条，SHA256=`4d903062a9845c3274fd8c1ff2108b9056912af753ed307096b938f04fda6967`。
 - 远端目标postfreeze进程已为0；GPU0–6回到约1MiB，GPU7仅既有SCB v4约498MiB；本地SSH/TCP22均为0。未下载`.pth`或`.npz`；pair JSON与小工件已准备给主代理分析。
+- 本地bundle验证的隔离提取目录`E:\type10-7\automation_reports\CV-SincNet\phase1_cagm_postfreeze_20260810_v2\artifacts\returned_small\_manifest_extract_tmp2`仍保留；其仅含manifest临时副本，不在bundle、不含`.pth/.npz`，不影响远端或实验工件。
 
 日期：2026-08-10
 
