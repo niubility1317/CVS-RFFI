@@ -64,11 +64,12 @@ FROZEN_WISIG_SHA256 = "2b0a7a7488dd3650bcae7b1d80efbcffd1598aaa671ae6b0a0df2a24d
 
 FROZEN_POSTFREEZE_CONTRACT = {
     "GD-PF-01": "final-only z_id; diagonal Gaussian fit from checkpoint-identical labelled L rows only",
-    "GD-PF-02": "float64 exact row L2, ddof=1, 0.9/0.1 variance shrinkage, floor 1e-6",
+    "GD-PF-02": "totalized float64 row L2: positive norm maps to z/norm and exact zero norm maps to zero",
     "GD-PF-03": "continuous u=log4-logsumexp(-NLL); no threshold, calibration, sweep, or selection",
     "GD-PF-04": "local4 source-validation V is registered-known; proxy_unknown is source-proxy; neither enters fit",
     "GD-PF-05": "strict C/G L/V+clean+LEO NPZ, proxy, head, manifest, checkpoint, arm, root, pair, TX, and matrix binding",
     "GD-PF-06": "clean/LEO classification gates plus two strictly positive proxy deltas, all non-compensating",
+    "GD-PF-07": "retain every L/V/proxy row and seal C/G role plus labelled-fit per-class norm counts",
 }
 
 
@@ -438,15 +439,113 @@ def _validate_lv_payload(
 
 
 def _normalize_float64(features: Any, *, label: str) -> np.ndarray:
+    """Apply the exact totalized row-L2 map without eps or row deletion."""
+
     values = np.asarray(features, dtype=np.float64)
     if values.ndim != 2 or values.shape[0] <= 0 or values.shape[1] <= 0:
         raise GDProtoNLLPostfreezePairError(f"{label} features must be non-empty rank-2")
     if not np.isfinite(values).all():
         raise GDProtoNLLPostfreezePairError(f"{label} features contain non-finite values")
     norms = np.linalg.norm(values, axis=1)
-    if not np.isfinite(norms).all() or np.any(norms == 0.0):
-        raise GDProtoNLLPostfreezePairError(f"{label} features contain non-finite or zero L2 norm")
-    return values / norms[:, None]
+    if not np.isfinite(norms).all():
+        raise GDProtoNLLPostfreezePairError(f"{label} features produce a non-finite L2 norm")
+    normalized = np.zeros_like(values, dtype=np.float64)
+    positive = norms > 0.0
+    normalized[positive] = values[positive] / norms[positive, None]
+    return normalized
+
+
+def _row_norm_stats(features: Any, *, label: str) -> dict[str, Any]:
+    values = np.asarray(features, dtype=np.float64)
+    if values.ndim != 2 or values.shape[0] <= 0 or values.shape[1] <= 0:
+        raise GDProtoNLLPostfreezePairError(f"{label} features must be non-empty rank-2")
+    finite_rows = np.all(np.isfinite(values), axis=1)
+    norms = np.full(values.shape[0], np.nan, dtype=np.float64)
+    norms[finite_rows] = np.linalg.norm(values[finite_rows], axis=1)
+    finite_norm_rows = finite_rows & np.isfinite(norms)
+    nonfinite_rows = ~finite_norm_rows
+    zero_rows = finite_norm_rows & (norms == 0.0)
+    positive_rows = finite_norm_rows & (norms > 0.0)
+    total = int(values.shape[0])
+    nonfinite = int(nonfinite_rows.sum())
+    zero = int(zero_rows.sum())
+    positive = int(positive_rows.sum())
+    if positive + zero + nonfinite != total:
+        raise GDProtoNLLPostfreezePairError(f"{label} norm counts do not close")
+    if nonfinite != 0:
+        raise GDProtoNLLPostfreezePairError(f"{label} contains non-finite feature rows or norms")
+    return {
+        "total_rows": total,
+        "positive_norm_rows": positive,
+        "zero_norm_rows": zero,
+        "nonfinite_rows": nonfinite,
+        "retained_rows": total,
+        "dropped_rows": 0,
+        "count_closed": True,
+    }
+
+
+def _feature_norm_receipt(
+    payload: Mapping[str, Any],
+    binding: Mapping[str, Any],
+    source_tx_ids: Sequence[str],
+    *,
+    label: str,
+) -> dict[str, Any]:
+    role_masks = {
+        "labeled_fit": np.asarray(binding["labeled_mask"], dtype=bool),
+        "source_validation_known": np.asarray(binding["validation_mask"], dtype=bool),
+        "proxy_unknown": np.asarray(binding["proxy_mask"], dtype=bool),
+    }
+    row_membership = np.stack(list(role_masks.values()), axis=0).sum(axis=0)
+    if row_membership.shape[0] != int(payload["features"].shape[0]) or not np.all(row_membership == 1):
+        raise GDProtoNLLPostfreezePairError(f"{label} feature norm role masks do not partition all rows")
+    roles = {
+        role: _row_norm_stats(payload["features"][mask], label=f"{label} {role}")
+        for role, mask in role_masks.items()
+    }
+    per_class: dict[str, dict[str, Any]] = {}
+    labeled_mask = role_masks["labeled_fit"]
+    for tx_id in source_tx_ids:
+        mask = labeled_mask & np.asarray(payload["tx_ids"] == tx_id, dtype=bool)
+        stats = _row_norm_stats(payload["features"][mask], label=f"{label} labeled_fit {tx_id}")
+        if int(stats["total_rows"]) <= GEOMETRY_DDOF:
+            raise GDProtoNLLPostfreezePairError(
+                f"{label} labeled_fit per-class total must exceed ddof=1 for {tx_id}"
+            )
+        per_class[str(tx_id)] = stats
+    clean_total = int(payload["features"].shape[0])
+    role_total = sum(int(stats["total_rows"]) for stats in roles.values())
+    total_zero = sum(int(stats["zero_norm_rows"]) for stats in roles.values())
+    total_nonfinite = sum(int(stats["nonfinite_rows"]) for stats in roles.values())
+    labeled = roles["labeled_fit"]
+    if (
+        role_total != clean_total
+        or sum(int(stats["total_rows"]) for stats in per_class.values()) != int(labeled["total_rows"])
+        or sum(int(stats["zero_norm_rows"]) for stats in per_class.values())
+        != int(labeled["zero_norm_rows"])
+    ):
+        raise GDProtoNLLPostfreezePairError(f"{label} feature norm receipt counts do not close")
+    return {
+        "normalization_rule": "TOTALIZED_EXACT_ROW_L2_FLOAT64_POSITIVE_ELSE_ZERO_NO_EPS",
+        "zero_map_continuous_at_origin": False,
+        "epsilon_used": False,
+        "threshold_used": False,
+        "topk_used": False,
+        "fixed_zero_penalty_used": False,
+        "rows_deleted": False,
+        "roles": roles,
+        "labeled_fit_per_class": per_class,
+        "clean_total_rows": clean_total,
+        "role_total_rows_sum": role_total,
+        "total_zero_norm_rows": total_zero,
+        "role_zero_norm_rows_sum": total_zero,
+        "total_nonfinite_rows": total_nonfinite,
+        "role_nonfinite_rows_sum": total_nonfinite,
+        "retained_rows": clean_total,
+        "dropped_rows": 0,
+        "counts_closed": True,
+    }
 
 
 def fit_frozen_diagonal_gaussian(
@@ -580,7 +679,7 @@ def _continuous_proxy_diagnostic(
             "row_count": int(labeled_mask.sum()),
             "class_counts": dict(geometry["class_counts"]),
             "feature_dimension": int(np.asarray(geometry["means"]).shape[1]),
-            "normalization": "EXACT_ROW_L2_FLOAT64_NO_EPS",
+            "normalization": "TOTALIZED_EXACT_ROW_L2_FLOAT64_POSITIVE_ELSE_ZERO_NO_EPS",
             "ddof": GEOMETRY_DDOF,
             "variance_shrinkage": GEOMETRY_SHRINKAGE,
             "variance_floor": GEOMETRY_VARIANCE_FLOOR,
@@ -717,6 +816,10 @@ def _validate_proxy_receipt(proxy: Mapping[str, Any], *, label: str) -> None:
         fit = diagnostic.get("fit") if isinstance(diagnostic, Mapping) else None
         if not isinstance(fit, Mapping) or fit.get("role") != "labeled_fit":
             raise GDProtoNLLPostfreezePairError(f"{label} {arm} geometry fit role is not labeled_fit")
+        if fit.get("normalization") != "TOTALIZED_EXACT_ROW_L2_FLOAT64_POSITIVE_ELSE_ZERO_NO_EPS":
+            raise GDProtoNLLPostfreezePairError(
+                f"{label} {arm} geometry normalization is not frozen totalized L2"
+            )
         for field in (
             "source_validation_fit_rows",
             "proxy_unknown_fit_rows",
@@ -732,6 +835,129 @@ def _validate_proxy_receipt(proxy: Mapping[str, Any], *, label: str) -> None:
             raise GDProtoNLLPostfreezePairError(f"{label} {arm} known role is not source_validation_known")
 
 
+def _strict_count(mapping: Mapping[str, Any], field: str, *, label: str) -> int:
+    value = mapping.get(field)
+    if type(value) is not int or int(value) < 0:
+        raise GDProtoNLLPostfreezePairError(f"{label} {field} is not a non-negative integer")
+    return int(value)
+
+
+def _validate_norm_stats(
+    stats: Mapping[str, Any], expected_total: int, *, label: str
+) -> tuple[int, int]:
+    total = _strict_count(stats, "total_rows", label=label)
+    positive = _strict_count(stats, "positive_norm_rows", label=label)
+    zero = _strict_count(stats, "zero_norm_rows", label=label)
+    nonfinite = _strict_count(stats, "nonfinite_rows", label=label)
+    retained = _strict_count(stats, "retained_rows", label=label)
+    dropped = _strict_count(stats, "dropped_rows", label=label)
+    if total != int(expected_total):
+        raise GDProtoNLLPostfreezePairError(f"{label} total_rows does not bind expected role count")
+    if positive + zero + nonfinite != total:
+        raise GDProtoNLLPostfreezePairError(f"{label} positive/zero/nonfinite counts do not close")
+    if nonfinite != 0 or retained != total or dropped != 0 or stats.get("count_closed") is not True:
+        raise GDProtoNLLPostfreezePairError(f"{label} retention or finite-count contract drifted")
+    return zero, nonfinite
+
+
+def _validate_feature_norm_receipt(record: Mapping[str, Any], *, label: str) -> None:
+    receipt = record.get("feature_norm_receipt")
+    expected_counts = record.get("expected_role_counts")
+    source_tx_ids = tuple(str(item) for item in record.get("source_tx_ids", []))
+    if not isinstance(receipt, Mapping) or set(receipt) != {"C", "G"}:
+        raise GDProtoNLLPostfreezePairError(f"{label} feature norm receipt lacks exact C/G arms")
+    if not isinstance(expected_counts, Mapping) or len(source_tx_ids) != 4:
+        raise GDProtoNLLPostfreezePairError(f"{label} feature norm receipt lacks role/class expectations")
+    role_expected = {
+        role: _strict_count(expected_counts, role, label=f"{label} expected_role_counts")
+        for role in ("labeled_fit", "source_validation_known", "proxy_unknown")
+    }
+    expected_clean_total = sum(role_expected.values())
+    for arm in ("C", "G"):
+        arm_receipt = receipt.get(arm)
+        if not isinstance(arm_receipt, Mapping):
+            raise GDProtoNLLPostfreezePairError(f"{label} feature norm receipt {arm} is malformed")
+        exact_policy = {
+            "normalization_rule": "TOTALIZED_EXACT_ROW_L2_FLOAT64_POSITIVE_ELSE_ZERO_NO_EPS",
+            "zero_map_continuous_at_origin": False,
+            "epsilon_used": False,
+            "threshold_used": False,
+            "topk_used": False,
+            "fixed_zero_penalty_used": False,
+            "rows_deleted": False,
+            "counts_closed": True,
+        }
+        for field, expected in exact_policy.items():
+            if arm_receipt.get(field) != expected or type(arm_receipt.get(field)) is not type(expected):
+                raise GDProtoNLLPostfreezePairError(
+                    f"{label} feature norm receipt {arm} policy {field} drifted"
+                )
+        roles = arm_receipt.get("roles")
+        if not isinstance(roles, Mapping) or set(roles) != set(role_expected):
+            raise GDProtoNLLPostfreezePairError(f"{label} feature norm receipt {arm} roles drifted")
+        role_zero_sum = 0
+        role_nonfinite_sum = 0
+        for role, expected_total in role_expected.items():
+            stats = roles.get(role)
+            if not isinstance(stats, Mapping):
+                raise GDProtoNLLPostfreezePairError(
+                    f"{label} feature norm receipt {arm}/{role} is malformed"
+                )
+            zero, nonfinite = _validate_norm_stats(
+                stats, expected_total, label=f"{label} feature norm receipt {arm}/{role}"
+            )
+            role_zero_sum += zero
+            role_nonfinite_sum += nonfinite
+        per_class = arm_receipt.get("labeled_fit_per_class")
+        if not isinstance(per_class, Mapping) or set(per_class) != set(source_tx_ids):
+            raise GDProtoNLLPostfreezePairError(
+                f"{label} feature norm receipt {arm} labelled-fit class order drifted"
+            )
+        class_total_sum = 0
+        class_zero_sum = 0
+        for tx_id in source_tx_ids:
+            stats = per_class.get(tx_id)
+            if not isinstance(stats, Mapping):
+                raise GDProtoNLLPostfreezePairError(
+                    f"{label} feature norm receipt {arm} labelled-fit {tx_id} is malformed"
+                )
+            class_total = _strict_count(
+                stats, "total_rows", label=f"{label} feature norm receipt {arm}/labeled_fit/{tx_id}"
+            )
+            if class_total <= GEOMETRY_DDOF:
+                raise GDProtoNLLPostfreezePairError(
+                    f"{label} feature norm receipt {arm} labelled-fit {tx_id} total must exceed one"
+                )
+            class_zero, _ = _validate_norm_stats(
+                stats,
+                class_total,
+                label=f"{label} feature norm receipt {arm}/labeled_fit/{tx_id}",
+            )
+            class_total_sum += class_total
+            class_zero_sum += class_zero
+        if class_total_sum != role_expected["labeled_fit"] or class_zero_sum != int(
+            roles["labeled_fit"]["zero_norm_rows"]
+        ):
+            raise GDProtoNLLPostfreezePairError(
+                f"{label} feature norm receipt {arm} labelled-fit per-class counts do not close"
+            )
+        top_level_counts = {
+            "clean_total_rows": expected_clean_total,
+            "role_total_rows_sum": expected_clean_total,
+            "total_zero_norm_rows": role_zero_sum,
+            "role_zero_norm_rows_sum": role_zero_sum,
+            "total_nonfinite_rows": role_nonfinite_sum,
+            "role_nonfinite_rows_sum": role_nonfinite_sum,
+            "retained_rows": expected_clean_total,
+            "dropped_rows": 0,
+        }
+        for field, expected in top_level_counts.items():
+            if _strict_count(arm_receipt, field, label=f"{label} feature norm receipt {arm}") != expected:
+                raise GDProtoNLLPostfreezePairError(
+                    f"{label} feature norm receipt {arm} top-level {field} does not close"
+                )
+
+
 def _validate_pair_record_contract(
     record: Mapping[str, Any],
     *,
@@ -741,7 +967,7 @@ def _validate_pair_record_contract(
     label: str,
 ) -> int:
     fold_index = _as_fold_index(record, label=label)
-    if record.get("schema") != "cvs.phase1.gd_proto_nll_postfreeze_pair.v1":
+    if record.get("schema") != "cvs.phase1.gd_proto_nll_postfreeze_pair.v2":
         raise GDProtoNLLPostfreezePairError(f"{label} schema mismatch")
     if str(record.get("candidate_pair", "")) != f"F{fold_index}_C_vs_G":
         raise GDProtoNLLPostfreezePairError(f"{label} candidate_pair does not match frozen fold {fold_index}")
@@ -776,6 +1002,14 @@ def _validate_pair_record_contract(
         raise GDProtoNLLPostfreezePairError(f"{label} lacks policy receipt")
     if policy.get("geometry_fit_performed") is not True or policy.get("geometry_fit_role") != "labeled_fit":
         raise GDProtoNLLPostfreezePairError(f"{label} geometry fit policy is not L-only")
+    if policy.get("normalization_rule") != "TOTALIZED_EXACT_ROW_L2_FLOAT64_POSITIVE_ELSE_ZERO_NO_EPS":
+        raise GDProtoNLLPostfreezePairError(f"{label} totalized normalization policy drifted")
+    if type(policy.get("zero_norm_rows_dropped")) is not int or int(
+        policy["zero_norm_rows_dropped"]
+    ) != 0:
+        raise GDProtoNLLPostfreezePairError(f"{label} zero-norm row drop count is not zero")
+    if policy.get("fixed_zero_penalty_used") is not False:
+        raise GDProtoNLLPostfreezePairError(f"{label} fixed zero penalty must remain disabled")
     for field in ("calibration_performed", "threshold_used", "model_selection_performed", "checkpoint_weights_loaded"):
         if policy.get(field) is not False:
             raise GDProtoNLLPostfreezePairError(f"{label} policy {field} is not strictly false")
@@ -792,6 +1026,7 @@ def _validate_pair_record_contract(
         raise GDProtoNLLPostfreezePairError(f"{label} lacks technical binding receipt")
     if gates["technical_binding"].get("passed") is not True:
         raise GDProtoNLLPostfreezePairError(f"{label} technical binding is not strictly true")
+    _validate_feature_norm_receipt(record, label=label)
     proxy = record.get("proxy_continuous_guardrail")
     if not isinstance(proxy, Mapping):
         raise GDProtoNLLPostfreezePairError(f"{label} lacks continuous proxy guardrail")
@@ -1140,6 +1375,14 @@ def evaluate(args: argparse.Namespace) -> dict[str, Any]:
             expected_proxy_count,
             label="G clean",
         )
+        feature_norm_receipt = {
+            "C": _feature_norm_receipt(
+                c_clean, c_role_binding, source_tx_ids, label="C clean"
+            ),
+            "G": _feature_norm_receipt(
+                g_clean, g_role_binding, source_tx_ids, label="G clean"
+            ),
+        }
         c_leo_keys = _cb._validate_leo_payload(
             c_leo,
             source_tx_ids,
@@ -1227,7 +1470,7 @@ def evaluate(args: argparse.Namespace) -> dict[str, Any]:
             clean_delta, scenario_metrics, proxy_guardrail, expected_scenarios
         )
         metrics: dict[str, Any] = {
-            "schema": "cvs.phase1.gd_proto_nll_postfreeze_pair.v1",
+            "schema": "cvs.phase1.gd_proto_nll_postfreeze_pair.v2",
             "candidate_pair": str(args.candidate_pair),
             "fold_index": fold_index,
             "postfreeze_matrix_id": matrix_id,
@@ -1249,6 +1492,9 @@ def evaluate(args: argparse.Namespace) -> dict[str, Any]:
                 "checkpoint_weights_loaded": False,
                 "legacy_logits_proxy_metrics_used_for_verdict": False,
                 "proxy_guardrail_non_compensating": True,
+                "normalization_rule": "TOTALIZED_EXACT_ROW_L2_FLOAT64_POSITIVE_ELSE_ZERO_NO_EPS",
+                "zero_norm_rows_dropped": 0,
+                "fixed_zero_penalty_used": False,
             },
             "source_tx_ids": list(source_tx_ids),
             "outer_known_validation_tx_id": FROZEN_FOLD_KNOWN_HELDOUT_TX[fold_index],
@@ -1298,6 +1544,7 @@ def evaluate(args: argparse.Namespace) -> dict[str, Any]:
                 },
                 "used_for_verdict": False,
             },
+            "feature_norm_receipt": feature_norm_receipt,
             "clean_source_validation": {
                 "C": c_clean_summary,
                 "G": g_clean_summary,
@@ -1308,6 +1555,7 @@ def evaluate(args: argparse.Namespace) -> dict[str, Any]:
             "postfreeze_gates": postfreeze_gates,
             "matrix_aggregate": None,
         }
+        _validate_feature_norm_receipt(metrics, label="current pair")
         if fold_index == 6:
             metrics["matrix_aggregate"] = _matrix_aggregate(
                 metrics,

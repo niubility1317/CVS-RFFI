@@ -27,7 +27,7 @@ _SPEC.loader.exec_module(PAIR)
 RXS = PAIR.EXPECTED_SOURCE_RXS
 DAYS = PAIR.EXPECTED_SOURCE_DAYS
 SCENARIOS = PAIR.EXPECTED_SCENARIOS
-TEST_MATRIX_ID = "test_phase1_gd_proto_nll_postfreeze_matrix_v1"
+TEST_MATRIX_ID = "test_phase1_gd_proto_nll_postfreeze_matrix_v2"
 
 
 def _sha(path: Path) -> str:
@@ -390,7 +390,7 @@ def _args(
     return PAIR.build_parser().parse_args(command)
 
 
-def test_float64_geometry_matches_frozen_formula_and_rejects_zero_rows():
+def test_float64_geometry_matches_formula_totalizes_zero_and_rejects_nonfinite():
     tx_ids = ("a", "b", "c", "d")
     features = np.asarray(
         [
@@ -424,8 +424,15 @@ def test_float64_geometry_matches_frozen_formula_and_rejects_zero_rows():
     observed = PAIR.score_frozen_gd_proto_nll(probe, geometry)
     assert observed.dtype == np.float64
     np.testing.assert_allclose(observed, expected, rtol=0.0, atol=1e-12)
-    with pytest.raises(PAIR.GDProtoNLLPostfreezePairError, match="zero L2 norm"):
-        PAIR.score_frozen_gd_proto_nll(np.zeros((1, 2), dtype=np.float32), geometry)
+    piecewise_input = np.concatenate((probe, np.zeros((1, 2), dtype=np.float32)), axis=0)
+    normalized = PAIR._normalize_float64(piecewise_input, label="piecewise test")
+    np.testing.assert_allclose(normalized[:2], probe64, rtol=0.0, atol=1e-15)
+    np.testing.assert_array_equal(normalized[2], np.zeros(2, dtype=np.float64))
+    totalized_scores = PAIR.score_frozen_gd_proto_nll(piecewise_input, geometry)
+    assert totalized_scores.shape == (3,)
+    assert np.isfinite(totalized_scores).all()
+    with pytest.raises(PAIR.GDProtoNLLPostfreezePairError, match="non-finite"):
+        PAIR.score_frozen_gd_proto_nll(np.asarray([[np.nan, 0.0]], dtype=np.float32), geometry)
 
 
 def test_pair_closes_l_only_v_known_proxy_strict_and_classifier_gates(tmp_path):
@@ -433,6 +440,7 @@ def test_pair_closes_l_only_v_known_proxy_strict_and_classifier_gates(tmp_path):
     output = Path(paths["root"]) / "F1_C_vs_G_pair_metrics.json"
     metrics = PAIR.evaluate(_args(paths, output))
     assert json.loads(output.read_text(encoding="utf-8"))["schema"] == metrics["schema"]
+    assert metrics["schema"] == "cvs.phase1.gd_proto_nll_postfreeze_pair.v2"
     assert metrics["policy"]["geometry_fit_role"] == "labeled_fit"
     assert metrics["policy"]["source_validation_fit_rows"] == 0
     assert metrics["clean_source_validation"]["C"]["count"] == 8
@@ -442,6 +450,32 @@ def test_pair_closes_l_only_v_known_proxy_strict_and_classifier_gates(tmp_path):
     assert metrics["phase3_unknown_capability_claim"] == "NOT_EVALUATED"
     with pytest.raises(PAIR.GDProtoNLLPostfreezePairError, match="refusing to overwrite"):
         PAIR.evaluate(_args(paths, output))
+
+
+def test_zero_v_row_is_retained_and_counted_for_both_arms(tmp_path):
+    paths = _write_pair(tmp_path / "matrix")
+
+    def zero_first_validation(payload: dict[str, np.ndarray]) -> None:
+        index = int(np.flatnonzero(payload["dataset_role"] == "source_validation_known")[0])
+        payload["features"][index] = 0.0
+
+    for key in ("c_clean", "g_clean"):
+        _rewrite(paths[key], zero_first_validation)
+    metrics = PAIR.evaluate(_args(paths, Path(paths["root"]) / "zero_v_retained.json"))
+    assert metrics["clean_source_validation"]["C"]["count"] == 8
+    assert metrics["clean_source_validation"]["G"]["count"] == 8
+    for arm in ("C", "G"):
+        role = metrics["feature_norm_receipt"][arm]["roles"]["source_validation_known"]
+        assert role == {
+            "total_rows": 8,
+            "positive_norm_rows": 7,
+            "zero_norm_rows": 1,
+            "nonfinite_rows": 0,
+            "retained_rows": 8,
+            "dropped_rows": 0,
+            "count_closed": True,
+        }
+        assert metrics["proxy_continuous_guardrail"][arm]["known_heldout"]["count"] == 8
 
 
 def test_pair_permanently_rejects_without_both_strict_continuous_improvements(tmp_path):
@@ -527,9 +561,9 @@ def test_six_fold_aggregate_closes_same_matrix_root_training_root_and_prior_rece
         metric: 0.0 for metric in PAIR.CLASSIFICATION_METRICS
     }
     receipt = json.loads(priors[0].read_text(encoding="utf-8"))
-    receipt["postfreeze_matrix_id"] = "forged-matrix"
+    receipt["feature_norm_receipt"]["C"]["roles"]["labeled_fit"]["zero_norm_rows"] += 1
     priors[0].write_text(json.dumps(receipt), encoding="utf-8")
-    with pytest.raises(PAIR.GDProtoNLLPostfreezePairError, match="matrix_id mismatch"):
+    with pytest.raises(PAIR.GDProtoNLLPostfreezePairError, match="positive/zero/nonfinite counts do not close"):
         PAIR.evaluate(_args(final_paths, root / "F6_retry.json", fold=6, priors=tuple(priors)))
 
 
@@ -538,7 +572,7 @@ def test_launcher_is_exactly_42_steps_and_exporter_never_forwards_u():
     exporter = EXPORTER_PATH.read_text(encoding="utf-8")
     evaluator = EVALUATOR_PATH.read_text(encoding="utf-8")
     for required in (
-        "phase1_gd_proto_nll_postfreeze_20260810_v1",
+        "phase1_gd_proto_nll_postfreeze_20260810_v2",
         "phase1_gd_proto_nll12_20260809_v3",
         "export_phase1_gd_proto_nll_features.py",
         "F${fold}${arm}_GD_PROTO_NLL12",
@@ -567,6 +601,8 @@ def test_launcher_is_exactly_42_steps_and_exporter_never_forwards_u():
     assert sum(line.startswith("[DRY-RUN][PROXY_SCORE]") for line in lines) == 12
     assert sum(line.startswith("[DRY-RUN][PAIR_SCORE]") for line in lines) == 6
     assert len(lines) == 42
+    assert all("phase1_gd_proto_nll_postfreeze_20260810_v2" in line for line in lines)
+    assert "phase1_gd_proto_nll_postfreeze_20260810_v1" not in launcher
     invalid = subprocess.run(
         [
             "bash", "-c",

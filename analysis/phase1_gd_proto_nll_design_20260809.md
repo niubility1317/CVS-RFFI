@@ -1,6 +1,6 @@
 # P1-GD-ProtoNLL冻结设计卡
 
-状态：`LOCAL_VERIFIED_V3_PENDING_IMPLEMENTATION_REVIEW`。上一版独立复审结论为`P0=0、P1=0、ALLOW`；F1G E009暴露精确零范数feature方向未定义，当前已按后续独立科学复核`P0=0、P1=0、MERGE`完成最小v3修订。本卡只定义Phase1 source-only C/G训练与后冻结连续几何诊断，不构成开放世界拒识、未知能力或晋级结论。
+状态：`LOCAL_VERIFIED_V3_PENDING_IMPLEMENTATION_REVIEW`。上一版独立复审结论为`P0=0、P1=0、ALLOW`；F1G E009暴露精确零范数feature方向未定义，当前已按后续独立科学复核`P0=0、P1=0、MERGE`完成最小v3修订。postfreeze v1因V中存在1条精确零范数行而技术停止；totalized-L2 v2已获独立科学复核`P0=0、P1=0、MERGE`并完成本地验证。本卡只定义Phase1 source-only C/G训练与后冻结连续几何诊断，不构成开放世界拒识、未知能力或晋级结论。
 
 ## 冻结机制
 
@@ -12,8 +12,8 @@
 
 ## 后冻结连续几何
 
-- 仅以封存检查点后的L真标签拟合：float64逐样本L2，`n_c>1`，`s²_cj=sum_i(z_ij-mu_cj)²/(n_c-1)`，`s²_pool,j=1/4 sum_c s²_cj`，`v_cj=max(1e-6,.9s²_cj+.1s²_pool,j)`。
-- 对任何仅评分特征输出连续`u=log(4)-logsumexp_c(-NLL_c)`；没有阈值、拟合或选择，且formal训练路径不读V/proxy。
+- 仅以封存检查点后的L真标签拟合。后冻结归一化固定为分段映射`T(z)=z/||z||₂`（`||z||₂>0`）和`T(z)=0`（`||z||₂=0`）；输入先转float64，任何非有限feature或由其产生的非有限范数均fatal。该映射不使用eps、阈值或top-k，不删除L/V/proxy行。`T`在原点不连续，这是定义本身，不是平滑近似。
+- Gaussian公式保持不变：每类`n_c>1`，`s²_cj=sum_i(T(z)_ij-mu_cj)²/(n_c-1)`，`s²_pool,j=1/4 sum_c s²_cj`，`v_cj=max(1e-6,.9s²_cj+.1s²_pool,j)`。对V和proxy每一行输出`u=log(4)-logsumexp_c(-NLL_c)`；没有阈值、拟合或选择，formal训练路径不读V/proxy。零向量按同一Gaussian/NLL公式评分；设计不预设该分数必然高于或低于任何正范数known样本。
 
 ## 矩阵、终态与淘汰
 
@@ -39,10 +39,18 @@
 
 |ID|来源|要求|目标文件|状态|验证|备注|
 |---|---|---|---|---|---|---|
-|GD-PF-01|后冻结连续几何|GD专用clean导出按checkpoint同参数重建local4 L/U/V并逐字段闭合split/partition receipt；只forward L、V与proxy，U forward/persist均为0；Gaussian仅拟合L|`export_phase1_gd_proto_nll_features.py`,`eval_phase1_gd_proto_nll_pair.py`|verified|`py_compile`与focused pytest|逐样本精确L2；4类`n_c>1`；ddof=1；0.9/0.1 shrink；1e-6 floor|
-|GD-PF-02|后冻结连续几何|以稳定logsumexp输出连续`u`，known仅为local4`source_validation_known`（V），unknown仅为`proxy_unknown`；逐折两项G-C均严格大于0|`eval_phase1_gd_proto_nll_pair.py`,`test_phase1_gd_proto_nll_postfreeze.py`|verified|连续公式、零范数与无严格改善负测|无阈值、校准、选择或补偿；外层held TX不代替V|
+|GD-PF-01|后冻结连续几何|GD专用clean导出按checkpoint同参数重建local4 L/U/V并逐字段闭合split/partition receipt；只forward L、V与proxy，U forward/persist均为0；Gaussian仅拟合L|`export_phase1_gd_proto_nll_features.py`,`eval_phase1_gd_proto_nll_pair.py`|verified|`py_compile`与focused pytest|totalized float64 L2；4类`n_c>1`；ddof=1；0.9/0.1 shrink；1e-6 floor|
+|GD-PF-02|后冻结连续几何|以稳定logsumexp输出连续`u`，known仅为local4`source_validation_known`（V），unknown仅为`proxy_unknown`；逐折两项G-C均严格大于0|`eval_phase1_gd_proto_nll_pair.py`,`test_phase1_gd_proto_nll_postfreeze.py`|verified|连续公式、zero V全行保留与无严格改善负测|无阈值、校准、选择或补偿；外层held TX不代替V；不预设zero known的惩罚方向|
 |GD-PF-03|后冻结绑定|四NPZ、两proxy JSON、head、manifest、checkpoint SHA、固定ManySig SHA、v3 root、arm、pair、source TX、L/V index与matrix严格绑定|`export_phase1_gd_proto_nll_features.py`,`eval_phase1_gd_proto_nll_pair.py`,`test_phase1_gd_proto_nll_postfreeze.py`|verified|U/index/head/arm/root/错SHA负测|checkpoint原receipt的dataset SHA为空时显式封存caveat；实际输入仍必须匹配冻结SHA|
 |GD-PF-04|淘汰门|clean V 6/6四floor、LEO 18格四floor、每折三场景overall与18格overall非负；proxy两项6/6严格改善；任一失败永久淘汰|`eval_phase1_gd_proto_nll_pair.py`|verified|六折同matrix/root/training root/prior聚合测试|proxy非补偿；分类clean V与通用LEO随机source-only是两个独立诊断slice|
 |GD-PF-05|一次性执行|固定v3训练root、12 GD-clean+12 LEO+12 proxy+6 pair共42步，LEO single/satellite/TTA none|`launch_phase1_gd_proto_nll_postfreeze_20260810.sh`,`test_phase1_gd_proto_nll_postfreeze.py`|verified|`bash -n`、dry-run=`12+12+12+6=42`|每candidate内顺序执行；12candidate按冻结GPU映射并发；不训练、不重试、不覆盖|
+|GD-PF-06|独立科学复核：v1停止|记录v1全矩阵feature有限性与精确零范数分布，并将v1标记为`STOPPED_EARLY/NO_PERFORMANCE_RESULT`|`phase1_gd_proto_nll_design_20260809.md`|verified|独立只读诊断与反向追溯审核|zero只定位totalized变换的必要性，不解释性能|
+|GD-PF-07|独立科学复核：totalized L2|后冻结改用分段映射：正范数行保持`z/||z||₂`，精确零范数行映射为零向量；保留全部L/V/proxy行，非有限仍fatal|`eval_phase1_gd_proto_nll_pair.py`,`test_phase1_gd_proto_nll_postfreeze.py`|verified|piecewise等价、zero V保留与nonfinite负测|无eps、阈值、top-k、删行或固定惩罚；映射在0不连续|
+|GD-PF-08|独立科学复核：计数闭合|每个pair按C/G×L/V/proxy封存total/zero/nonfinite/retained/dropped，并对L逐类封存total/zero；所有计数严格闭合|`eval_phase1_gd_proto_nll_pair.py`,`test_phase1_gd_proto_nll_postfreeze.py`|verified|计数漂移负测与六折prior校验|每类L total>1；zero允许大于0；nonfinite必须为0|
+|GD-PF-09|独立科学复核：不可覆盖v2|postfreeze默认root升级为`phase1_gd_proto_nll_postfreeze_20260810_v2`，仍从同一v3训练root完整重算42步且不复用v1 prior|`launch_phase1_gd_proto_nll_postfreeze_20260810.sh`,`test_phase1_gd_proto_nll_postfreeze.py`|verified|`bash -n`、dry-run=`12+12+12+6=42`且42条均绑定v2 root|训练、矩阵、GPU映射与门限均不变|
 
-v3训练本地证据：`py_compile`通过；GD、CB、CP聚焦回归为31 passed，其中包括lite_d无query前后向smoke；训练launcher的`bash -n`与dry-run12通过。postfreeze本地证据：专用focused pytest为9 passed，`bash -n`与dry-run42通过。v3实现尚待独立代码复审；postfreeze未运行N607，也没有性能结果。
+#### Postfreeze v1技术停止记录
+
+独立只读诊断覆盖12个arm、每arm 21,120行，共253,440行；非有限feature为0。唯一精确零范数行为F6C的`source_validation_known`，计数为1/16,800；F6C的L为0/3,920，proxy为0/400，F6G及其余arm均为0。v1因此记为`STOPPED_EARLY/NO_PERFORMANCE_RESULT`。该诊断只证明后冻结归一化需要在零向量上有定义；它不支持对C/G性能、未知拒识或该known-zero行得分方向作任何解释。
+
+v3训练本地证据：`py_compile`通过；GD、CB、CP聚焦回归为31 passed，其中包括lite_d无query前后向smoke；训练launcher的`bash -n`与dry-run12通过。postfreeze v2本地证据：专用focused pytest为10 passed，`bash -n`与dry-run42通过，42条命令均使用v2新root且不含v1 root。postfreeze v2未运行N607，也没有性能结果。

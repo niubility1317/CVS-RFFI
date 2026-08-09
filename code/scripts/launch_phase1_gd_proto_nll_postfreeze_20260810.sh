@@ -5,7 +5,7 @@ set -euo pipefail
 # Each candidate runs exactly one GD clean L/V/proxy export, one generic
 # source-only LEO export, and one logits proxy binding.  Six CPU-serial pair
 # evaluations then close the non-compensating matrix gates (42 commands total).
-POSTFREEZE_RUN_ID="${POSTFREEZE_RUN_ID:-phase1_gd_proto_nll_postfreeze_20260810_v1}"
+POSTFREEZE_RUN_ID="${POSTFREEZE_RUN_ID:-phase1_gd_proto_nll_postfreeze_20260810_v2}"
 PROJECT_ROOT="${PROJECT_ROOT:-/home/szu2070436088/2510044040/CV-SincNet}"
 CODE_ROOT="${CODE_ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 PYTHON="${PYTHON:-/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python}"
