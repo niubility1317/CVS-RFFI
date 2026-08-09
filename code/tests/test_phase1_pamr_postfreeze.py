@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import os
 import re
 import subprocess
 import sys
@@ -15,6 +16,7 @@ import torch
 CODE_ROOT = Path(__file__).resolve().parents[1]
 EVALUATOR_PATH = CODE_ROOT / "scripts" / "eval_phase1_pamr_pair.py"
 LAUNCHER_PATH = CODE_ROOT / "scripts" / "launch_phase1_pamr_postfreeze_20260809.sh"
+PAIR_ONLY_LAUNCHER_PATH = CODE_ROOT / "scripts" / "launch_phase1_pamr_pair6_20260809.sh"
 _SPEC = importlib.util.spec_from_file_location("pamr_postfreeze_pair", EVALUATOR_PATH)
 assert _SPEC is not None and _SPEC.loader is not None
 PAIR = importlib.util.module_from_spec(_SPEC)
@@ -35,6 +37,30 @@ FROZEN_POSTFREEZE_TEST_CONTRACT = {
     "physical": "C/G ordered metadata and clean/LEO physical/scenario closure",
     "leo_view": "source profile=satellite plus satellite_tta_policy=none emits row view=single",
     "matrix": "12 clean + 12 LEO + 12 proxy + 6 C/G pair diagnostics",
+}
+
+# Traceability record for the second release-engineering repair.  It is kept
+# in the owned focused test because this handoff authorizes no standalone
+# report/edit surface and must not overwrite the runner's terminal report.
+PAIR_ONLY_TRACEABILITY = {
+    "PAIR6-01": {
+        "requirement": "consume only v2 closed NPZ plus immutable final checkpoints",
+        "target": "launch_phase1_pamr_pair6_20260809.sh",
+        "status": "verified",
+        "verification": "launcher dry-run is exactly six pair commands",
+    },
+    "PAIR6-02": {
+        "requirement": "native failure leaves a Python-visible diagnostic boundary without scientific changes",
+        "target": "eval_phase1_pamr_pair.py",
+        "status": "verified",
+        "verification": "subprocess fixture with faulthandler/thread isolation",
+    },
+    "PAIR6-03": {
+        "requirement": "retain all strict binding and frozen five-gate inputs",
+        "target": "eval_phase1_pamr_pair.py",
+        "status": "verified",
+        "verification": "existing postfreeze closure negatives plus focused regression",
+    },
 }
 
 
@@ -244,23 +270,36 @@ def _write_pair(tmp_path: Path) -> dict[str, Path]:
     return paths
 
 
+def _cli_args(
+    paths: dict[str, Path],
+    out_json: Path,
+    *,
+    native_diagnostic: bool = False,
+    native_thread_limit: int = 0,
+) -> list[str]:
+    args = [
+        "--c-clean-npz", str(paths["c_clean"]),
+        "--g-clean-npz", str(paths["g_clean"]),
+        "--c-leo-npz", str(paths["c_leo"]),
+        "--g-leo-npz", str(paths["g_leo"]),
+        "--c-final-checkpoint", str(paths["c_checkpoint"]),
+        "--g-final-checkpoint", str(paths["g_checkpoint"]),
+        "--candidate-pair", "F1_C_vs_G",
+        "--source-tx-ids", ",".join(TX),
+        "--expected-source-count", "72",
+        "--expected-target-old-count", "1",
+        "--expected-proxy-count", "1",
+    ]
+    if native_thread_limit:
+        args.extend(["--native-thread-limit", str(native_thread_limit)])
+    if native_diagnostic:
+        args.append("--native-diagnostic")
+    args.extend(["--output-metrics-json", str(out_json)])
+    return args
+
+
 def _args(paths: dict[str, Path], out_json: Path):
-    return PAIR.build_parser().parse_args(
-        [
-            "--c-clean-npz", str(paths["c_clean"]),
-            "--g-clean-npz", str(paths["g_clean"]),
-            "--c-leo-npz", str(paths["c_leo"]),
-            "--g-leo-npz", str(paths["g_leo"]),
-            "--c-final-checkpoint", str(paths["c_checkpoint"]),
-            "--g-final-checkpoint", str(paths["g_checkpoint"]),
-            "--candidate-pair", "F1_C_vs_G",
-            "--source-tx-ids", ",".join(TX),
-            "--expected-source-count", "72",
-            "--expected-target-old-count", "1",
-            "--expected-proxy-count", "1",
-            "--output-metrics-json", str(out_json),
-        ]
-    )
+    return PAIR.build_parser().parse_args(_cli_args(paths, out_json))
 
 
 def test_pair_evaluator_closes_final_head_binding_floors_and_margin(tmp_path):
@@ -293,6 +332,78 @@ def test_pair_evaluator_closes_final_head_binding_floors_and_margin(tmp_path):
     ] > 0.0
     with pytest.raises(PAIR.PAMRPostfreezePairError, match="refusing to overwrite"):
         PAIR.evaluate(_args(paths, output))
+
+
+def test_pair_only_numeric_kernel_matches_frozen_raw_cosine_formula():
+    rng = np.random.default_rng(7281105)
+    rows = rng.normal(size=(17, len(TX))).astype(np.float64)
+    heads = rng.normal(size=(len(TX), len(TX))).astype(np.float64)
+    normalized_rows = rows / np.linalg.norm(rows, axis=1, keepdims=True)
+    normalized_heads = heads / np.linalg.norm(heads, axis=1, keepdims=True)
+
+    observed = PAIR._safe_cosine_table(normalized_rows, normalized_heads)
+    expected = normalized_rows @ normalized_heads.T
+    np.testing.assert_allclose(observed, expected, rtol=1.0e-12, atol=1.0e-12)
+    np.testing.assert_allclose(
+        PAIR._row_l2_norms(rows), np.linalg.norm(rows, axis=1, keepdims=True), rtol=1.0e-12, atol=1.0e-12
+    )
+    assert PAIR._safe_inner_product(normalized_rows[0], normalized_heads[0]) == pytest.approx(
+        float(np.dot(normalized_rows[0], normalized_heads[0])), rel=1.0e-12, abs=1.0e-12
+    )
+
+
+def test_pair_evaluator_pair_only_subprocess_has_native_stages_and_same_metrics(tmp_path):
+    paths = _write_pair(tmp_path)
+    baseline = PAIR.evaluate(_args(paths, tmp_path / "baseline.json"))
+    output = tmp_path / "isolated.json"
+    environment = dict(os.environ)
+    environment.update(
+        {
+            "PYTHONFAULTHANDLER": "1",
+            "PAMR_PAIR_NATIVE_DIAGNOSTIC": "1",
+            "OMP_NUM_THREADS": "1",
+            "OPENBLAS_NUM_THREADS": "1",
+            "MKL_NUM_THREADS": "1",
+            "NUMEXPR_NUM_THREADS": "1",
+            "CUDA_VISIBLE_DEVICES": "",
+        }
+    )
+    completed = subprocess.run(
+        [
+            sys.executable,
+            "-X",
+            "faulthandler",
+            "-u",
+            str(EVALUATOR_PATH),
+            *_cli_args(paths, output, native_diagnostic=True, native_thread_limit=1),
+        ],
+        cwd=str(CODE_ROOT),
+        env=environment,
+        text=True,
+        capture_output=True,
+        check=True,
+    )
+    persisted = json.loads(output.read_text(encoding="utf-8"))
+    assert persisted["clean_source"] == baseline["clean_source"]
+    assert persisted["leo_scenarios"] == baseline["leo_scenarios"]
+    assert persisted["technical_runtime"]["native_diagnostic_enabled"] is True
+    assert persisted["technical_runtime"]["requested_native_thread_limit"] == 1
+    assert persisted["technical_runtime"]["torch_num_threads"] == 1
+    for stage in (
+        "before_numpy_import",
+        "imported_numpy",
+        "before_torch_import",
+        "imported_torch",
+        "runtime_configured",
+        "loaded_c_clean_npz",
+        "loaded_g_leo_npz",
+        "extracted_c_final_head",
+        "extracted_g_final_head",
+        "compute_source_metrics",
+        "complete",
+    ):
+        assert f"[PAMR-PAIR-NATIVE] stage={stage}" in completed.stderr
+    assert "Segmentation fault" not in completed.stderr
 
 
 def test_pair_evaluator_fails_closed_on_npz_checkpoint_binding_drift(tmp_path):
@@ -482,3 +593,47 @@ def test_postfreeze_launcher_dry_run_has_frozen_42_steps_and_new_roots():
     assert sum(line.startswith("[DRY-RUN][PROXY_SCORE]") for line in lines) == 12
     assert sum(line.startswith("[DRY-RUN][PAIR_SCORE]") for line in lines) == 6
     assert all("phase1_pamr_postfreeze_20260809_v1" in line for line in lines)
+
+
+def test_pair_only_launcher_is_exactly_six_v2_final_only_isolated_pair_commands():
+    text = PAIR_ONLY_LAUNCHER_PATH.read_text(encoding="utf-8")
+    for required in (
+        "phase1_pamr12_20260809_v1_postfreeze_v2",
+        "phase1_pamr12_20260809_v1_pair6_20260809_v1",
+        "eval_phase1_pamr_pair.py",
+        "-X faulthandler",
+        "--native-thread-limit 1",
+        "--native-diagnostic",
+        "PYTHONFAULTHANDLER=1",
+        "PAMR_PAIR_NATIVE_DIAGNOSTIC=1",
+        "OMP_NUM_THREADS=1",
+        "OPENBLAS_NUM_THREADS=1",
+        "MKL_NUM_THREADS=1",
+        "NUMEXPR_NUM_THREADS=1",
+        "CUDA_VISIBLE_DEVICES=",
+        "--expected-source-count 1600",
+        "--expected-target-old-count 400",
+        "--expected-proxy-count 400",
+        "final_ssdg.pth",
+        "pair-only input must be the frozen v2 postfreeze root",
+        "pair-only output root must differ from immutable inputs",
+        "pair_completion.tsv",
+        "stopping pair-only dispatch after two distinct rows share",
+    ):
+        assert required in text
+    assert "CLEAN_EXPORT" not in text
+    assert "LEO_EXPORT" not in text
+    assert "PROXY_SCORE" not in text
+    completed = subprocess.run(
+        ["bash", "scripts/launch_phase1_pamr_pair6_20260809.sh", "--dry-run"],
+        cwd=str(CODE_ROOT), text=True, capture_output=True, check=True,
+    )
+    lines = completed.stdout.splitlines()
+    assert len(lines) == 6
+    assert all(line.startswith("[DRY-RUN][PAIR6]") for line in lines)
+    assert all("phase1_pamr12_20260809_v1_postfreeze_v2" in line for line in lines)
+    assert all("--native-thread-limit 1" in line and "--native-diagnostic" in line for line in lines)
+    assert all("--c-clean-npz" in line and "--g-leo-npz" in line for line in lines)
+    assert all("--c-final-checkpoint" in line and "--g-final-checkpoint" in line for line in lines)
+    assert all("CUDA_VISIBLE_DEVICES=''" in line for line in lines)
+    assert all(value["status"] == "verified" for value in PAIR_ONLY_TRACEABILITY.values())

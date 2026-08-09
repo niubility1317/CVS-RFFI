@@ -10,13 +10,33 @@ source-LEO classifier floors plus raw-cosine angular-margin diagnostics.
 from __future__ import annotations
 
 import argparse
+import faulthandler
 import hashlib
 import json
+import os
 from pathlib import Path
+import sys
 from typing import Any, Mapping, Sequence
 
+# Enable a Python traceback for a native signal before importing the two
+# extension-heavy libraries below.  The pair-only launcher additionally uses
+# ``-X faulthandler`` so this remains active even under site customization.
+try:  # pragma: no branch - platform support is established by the runtime receipt.
+    faulthandler.enable(all_threads=True)
+except (OSError, RuntimeError):  # pragma: no cover - unavailable stderr platform
+    pass
+
+_EARLY_NATIVE_DIAGNOSTIC = str(os.environ.get("PAMR_PAIR_NATIVE_DIAGNOSTIC", "")).strip() == "1"
+if _EARLY_NATIVE_DIAGNOSTIC:
+    print("[PAMR-PAIR-NATIVE] stage=before_numpy_import", file=sys.stderr, flush=True)
 import numpy as np
+if _EARLY_NATIVE_DIAGNOSTIC:
+    print("[PAMR-PAIR-NATIVE] stage=imported_numpy", file=sys.stderr, flush=True)
+if _EARLY_NATIVE_DIAGNOSTIC:
+    print("[PAMR-PAIR-NATIVE] stage=before_torch_import", file=sys.stderr, flush=True)
 import torch
+if _EARLY_NATIVE_DIAGNOSTIC:
+    print("[PAMR-PAIR-NATIVE] stage=imported_torch", file=sys.stderr, flush=True)
 
 
 EXPECTED_SCENARIOS = ("leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak")
@@ -65,6 +85,39 @@ FROZEN_POSTFREEZE_CONTRACT = {
 
 class PAMRPostfreezePairError(RuntimeError):
     """Raised when a frozen P1-PAMR postfreeze pair fails to close."""
+
+
+def _native_marker(enabled: bool, stage: str) -> None:
+    """Emit a non-scientific, flush-before-native-boundary diagnostic marker."""
+
+    if bool(enabled):
+        print(f"[PAMR-PAIR-NATIVE] stage={stage}", file=sys.stderr, flush=True)
+
+
+def _configure_native_runtime(thread_limit: int) -> dict[str, Any]:
+    """Apply the optional one-shot CPU thread cap before pair input loading."""
+
+    requested = int(thread_limit)
+    if requested < 0:
+        raise PAMRPostfreezePairError("native_thread_limit must be zero or positive")
+    if requested > 0:
+        try:
+            torch.set_num_threads(requested)
+            torch.set_num_interop_threads(requested)
+        except RuntimeError as exc:
+            raise PAMRPostfreezePairError(
+                f"cannot apply frozen native_thread_limit={requested} before pair evaluation"
+            ) from exc
+    return {
+        "faulthandler_enabled": bool(faulthandler.is_enabled()),
+        "requested_native_thread_limit": requested,
+        "torch_num_threads": int(torch.get_num_threads()),
+        "torch_num_interop_threads": int(torch.get_num_interop_threads()),
+        "omp_num_threads_env": str(os.environ.get("OMP_NUM_THREADS", "")),
+        "openblas_num_threads_env": str(os.environ.get("OPENBLAS_NUM_THREADS", "")),
+        "mkl_num_threads_env": str(os.environ.get("MKL_NUM_THREADS", "")),
+        "cuda_visible_devices_env": str(os.environ.get("CUDA_VISIBLE_DEVICES", "")),
+    }
 
 
 def _sha256_file(path: str | Path) -> str:
@@ -407,7 +460,7 @@ def _strict_extract_pamr_head(
         raise PAMRPostfreezePairError(
             f"{label} head shape mismatch: expected={(4, int(feature_dim))} observed={tuple(weight.shape)}"
         )
-    if not np.isfinite(weight).all() or np.any(np.linalg.norm(weight, axis=1) <= 1.0e-12):
+    if not np.isfinite(weight).all() or np.any(_row_l2_norms(weight) <= 1.0e-12):
         raise PAMRPostfreezePairError(f"{label} head has non-finite/zero-norm rows")
 
     split_info = _as_mapping(checkpoint.get("split_info"), label=f"{label} split_info")
@@ -504,10 +557,40 @@ def _delta_pp(c_metrics: Mapping[str, Any], g_metrics: Mapping[str, Any]) -> dic
 
 def _normalize_rows(values: np.ndarray, *, label: str) -> np.ndarray:
     rows = np.asarray(values, dtype=np.float64)
-    norms = np.linalg.norm(rows, axis=1, keepdims=True)
+    norms = _row_l2_norms(rows)
     if np.any(~np.isfinite(norms)) or np.any(norms <= 1.0e-12):
         raise PAMRPostfreezePairError(f"{label} contains zero/non-finite z_id rows")
     return rows / norms
+
+
+def _row_l2_norms(values: np.ndarray) -> np.ndarray:
+    """Thread-pool-free row norms for the small final-only pair matrices."""
+
+    rows = np.asarray(values, dtype=np.float64)
+    if rows.ndim != 2:
+        raise PAMRPostfreezePairError("row norm input must be rank-2")
+    return np.sqrt(np.add.reduce(rows * rows, axis=1, keepdims=True))
+
+
+def _safe_cosine_table(normalized_rows: np.ndarray, normalized_heads: np.ndarray) -> np.ndarray:
+    """Compute the unchanged raw cosine table without BLAS/OpenMP matmul."""
+
+    rows = np.asarray(normalized_rows, dtype=np.float64)
+    heads = np.asarray(normalized_heads, dtype=np.float64)
+    if rows.ndim != 2 or heads.ndim != 2 or int(rows.shape[1]) != int(heads.shape[1]):
+        raise PAMRPostfreezePairError("raw-cosine table dimension mismatch")
+    out = np.empty((int(rows.shape[0]), int(heads.shape[0])), dtype=np.float64)
+    for head_index in range(int(heads.shape[0])):
+        out[:, head_index] = np.add.reduce(rows * heads[head_index], axis=1)
+    return out
+
+
+def _safe_inner_product(left: np.ndarray, right: np.ndarray) -> float:
+    first = np.asarray(left, dtype=np.float64).reshape(-1)
+    second = np.asarray(right, dtype=np.float64).reshape(-1)
+    if int(first.size) != int(second.size):
+        raise PAMRPostfreezePairError("paired cosine vector dimension mismatch")
+    return float(np.add.reduce(first * second))
 
 
 def _raw_cosine_margin_summary(
@@ -522,7 +605,7 @@ def _raw_cosine_margin_summary(
         raise PAMRPostfreezePairError("raw-cosine angular margin selected zero rows")
     z = _normalize_rows(payload["features"][selected], label="selected source")
     weight = _normalize_rows(head_weight, label="classifier head")
-    cosine = np.clip(z @ weight.T, -1.0, 1.0)
+    cosine = np.clip(_safe_cosine_table(z, weight), -1.0, 1.0)
     tx_to_index = {tx: index for index, tx in enumerate(source_tx_ids)}
     labels = np.asarray([tx_to_index.get(str(tx), -1) for tx in payload["tx_ids"][selected]], dtype=np.int64)
     if np.any(labels < 0):
@@ -578,7 +661,7 @@ def _paired_cosine_distance_summary(
     for z, key in zip(leo_z, leo_keys.tolist()):
         if key not in bank:
             raise PAMRPostfreezePairError("LEO paired-cosine row lacks clean physical binding")
-        distances.append(float(1.0 - np.clip(np.dot(z, bank[key]), -1.0, 1.0)))
+        distances.append(float(1.0 - np.clip(_safe_inner_product(z, bank[key]), -1.0, 1.0)))
     if not distances:
         raise PAMRPostfreezePairError("paired-cosine diagnostic selected zero rows")
     return {"paired_clean_leo_cosine_distance_mean": float(np.mean(distances))}
@@ -604,6 +687,9 @@ def _atomic_write_json(path: str | Path, payload: Mapping[str, Any]) -> None:
 
 
 def evaluate(args: argparse.Namespace) -> dict[str, Any]:
+    native_diagnostic = bool(getattr(args, "native_diagnostic", False))
+    native_runtime = _configure_native_runtime(int(getattr(args, "native_thread_limit", 0)))
+    _native_marker(native_diagnostic, "runtime_configured")
     source_tx_ids = _parse_items(args.source_tx_ids, field="source_tx_ids")
     if len(source_tx_ids) != 4:
         raise PAMRPostfreezePairError("P1-PAMR postfreeze is frozen to local4 source TX classes")
@@ -622,10 +708,18 @@ def evaluate(args: argparse.Namespace) -> dict[str, Any]:
     if min(expected_source_count, expected_target_old_count, expected_proxy_count) <= 0:
         raise PAMRPostfreezePairError("expected role counts must be positive")
 
+    _native_marker(native_diagnostic, "load_c_clean_npz")
     c_clean = _load_npz(args.c_clean_npz)
+    _native_marker(native_diagnostic, "loaded_c_clean_npz")
+    _native_marker(native_diagnostic, "load_g_clean_npz")
     g_clean = _load_npz(args.g_clean_npz)
+    _native_marker(native_diagnostic, "loaded_g_clean_npz")
+    _native_marker(native_diagnostic, "load_c_leo_npz")
     c_leo = _load_npz(args.c_leo_npz)
+    _native_marker(native_diagnostic, "loaded_c_leo_npz")
+    _native_marker(native_diagnostic, "load_g_leo_npz")
     g_leo = _load_npz(args.g_leo_npz)
+    _native_marker(native_diagnostic, "loaded_g_leo_npz")
     _assert_pair_metadata(c_clean, g_clean, label="clean")
     _assert_pair_metadata(c_leo, g_leo, label="LEO")
     if int(c_clean["features"].shape[1]) != int(c_leo["features"].shape[1]):
@@ -664,17 +758,22 @@ def evaluate(args: argparse.Namespace) -> dict[str, Any]:
         raise PAMRPostfreezePairError("C clean/LEO source checkpoint SHA256 differs")
     if g_manifest_sha != _checkpoint_sha256_from_manifest(g_leo, label="G LEO"):
         raise PAMRPostfreezePairError("G clean/LEO source checkpoint SHA256 differs")
+    _native_marker(native_diagnostic, "extract_c_final_head")
     c_head, c_head_binding = _strict_extract_pamr_head(
         args.c_final_checkpoint, arm="C", source_tx_ids=source_tx_ids, feature_dim=int(c_clean["features"].shape[1])
     )
+    _native_marker(native_diagnostic, "extracted_c_final_head")
+    _native_marker(native_diagnostic, "extract_g_final_head")
     g_head, g_head_binding = _strict_extract_pamr_head(
         args.g_final_checkpoint, arm="G", source_tx_ids=source_tx_ids, feature_dim=int(g_clean["features"].shape[1])
     )
+    _native_marker(native_diagnostic, "extracted_g_final_head")
     if c_head_binding["final_checkpoint_sha256"] != c_manifest_sha:
         raise PAMRPostfreezePairError("C final checkpoint SHA256 does not bind the C NPZ exports")
     if g_head_binding["final_checkpoint_sha256"] != g_manifest_sha:
         raise PAMRPostfreezePairError("G final checkpoint SHA256 does not bind the G NPZ exports")
 
+    _native_marker(native_diagnostic, "compute_source_metrics")
     c_clean_source = _source_mask(c_clean)
     g_clean_source = _source_mask(g_clean)
     c_clean_summary = _classification_summary(c_clean, c_clean_source, source_tx_ids)
@@ -723,6 +822,11 @@ def evaluate(args: argparse.Namespace) -> dict[str, Any]:
             "paired_cosine_is_diagnostic_only": True,
             "raw_cosine_head_source": "strict_final_checkpoint:id_backbone.cls_head.head.weight",
         },
+        "technical_runtime": {
+            **native_runtime,
+            "native_diagnostic_enabled": native_diagnostic,
+            "numeric_kernel": "numpy_ufunc_raw_cosine_v1",
+        },
         "source_tx_ids": list(source_tx_ids),
         "expected_source_days": list(expected_days),
         "expected_source_rxs": list(expected_rxs),
@@ -755,7 +859,9 @@ def evaluate(args: argparse.Namespace) -> dict[str, Any]:
         },
         "leo_scenarios": scenario_metrics,
     }
+    _native_marker(native_diagnostic, "write_metrics_json")
     _atomic_write_json(args.output_metrics_json, metrics)
+    _native_marker(native_diagnostic, "complete")
     return metrics
 
 
@@ -776,6 +882,8 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--expected-source-count", type=int, default=1600)
     parser.add_argument("--expected-target-old-count", type=int, default=400)
     parser.add_argument("--expected-proxy-count", type=int, default=400)
+    parser.add_argument("--native-thread-limit", type=int, default=0)
+    parser.add_argument("--native-diagnostic", action="store_true")
     parser.add_argument("--output-metrics-json", required=True)
     return parser
 
