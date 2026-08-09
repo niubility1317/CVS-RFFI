@@ -1,6 +1,6 @@
 # Phase1 ICMT postfreeze v2报告
 
-状态：`PREREGISTERED / NOT_LAUNCHED / NO_PERFORMANCE_RESULT`
+状态：`LANDED / NOT_LAUNCHED / NO_PERFORMANCE_RESULT`
 
 日期：2026-08-10
 
@@ -125,3 +125,48 @@ cd /home/szu2070436088/2510044040/CV-SincNet/releases/phase1_icmt_postfreeze_202
 |F5|待运行|待运行|待运行|待运行|待运行|`NO_PERFORMANCE_RESULT`|
 |F6|待运行|待运行|待运行|待运行|待运行|`NO_PERFORMANCE_RESULT`|
 
+## 9.Runner技术记录（落地前）
+
+记录时间：2026-08-10；角色：Luna/max唯一N607 Runner。当前仍未启动postfreeze任务，以下仅为落地前只读核验与归档证据，不构成性能结果。
+
+|项目|证据|
+|---|---|
+|直连预检|`tools\\n607_ssh_preflight.ps1`通过；N607=`dell-DSS8440`，项目根可见，8×RTX3090可见；预检后本地无残留`ssh.exe`或N607:22连接|
+|目标覆盖核验|release、postfreeze run、log root、outer和远端临时archive均`ABSENT`|
+|既有任务|GPU7存在既有SCB v4构建PID=`608786`（父PID=`608774`），GPU0–6空闲；不干预该任务或其它run|
+|ManySig|`/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl`；SHA256=`2b0a7a7488dd3650bcae7b1d80efbcffd1598aaa671ae6b0a0df2a24dc0f694f`|
+|完整归档|实现commit=`7f6f4cfea1fa1af154997c3ab1ccd3d02616d8f3`；本地无prefix完整树archive共4900项，bytes=`34881856`，SHA256=`28ee60ccdd5fccce01448b5c41f6eb92a06a38fea5276ca4533e411e6b2adf51`；临时远端目标=`/tmp/phase1_icmt_postfreeze_20260810_v2_7f6f4cfe_fulltree.tar.gz`|
+
+### 9.1训练checkpoint只读身份
+
+|候选|bytes|SHA256|
+|---|---:|---|
+|F1C|6968891|`26f10abf883e69115db694c6cf963f21a22425dcd95a1af5a4be4f2ea231a6bd`|
+|F1G|6970683|`b11753a4d4735997d0b14731a078ef356ebf3f10227ec29ff0de07d204050921`|
+|F2C|6968891|`ef563e8ab269c6c8f9967b8e5f002ef199c3baad1ca1f148d11f0789f29d482a`|
+|F2G|6970683|`6ad7edea5154b2fbd8491ba81a5251e5d43435c958254e6f111a66307a9ba00a`|
+|F3C|6968891|`dd559e12bb6bc77fe2b9971ac9619ed9230717b8ee913cf02171579f9ee14665`|
+|F3G|6970683|`4b50a5694883bf2a71449d039f08eb90500c59b45ef66487f6bb08516ed580b9`|
+|F4C|6968891|`478c523213dd115f27cc4a32c591607e5bf2b42c9e307b945a30abd337015e57`|
+|F4G|6970683|`24fd30fdb9df3ac12ce74ba9e275b5774497c88f097ccb26210fba330386155f`|
+|F5C|6968891|`b569682222e837f1286b5f61d67978489c4f01e9b4cc514644c55b567ea6d78e`|
+|F5G|6970683|`b0393bbe294968fa40acb241ef764dd0c563b2ae8035c2db7cacfb4a7a35e1d1`|
+|F6C|6968891|`864f1164516127d62e789226e9c53a63fb99a511b8e3b833368f05b7f8a4f18c`|
+|F6G|6970683|`5cb7708213d5e858cb746e9266edac08cf5de7a80b2366a80410716ed9ea6009`|
+
+### 9.2同commit归档成员的LF映射
+
+说明：§2中的冻结SHA是Windows工作树直接字节SHA；release由实现commit的无prefixarchive解包，Linux成员按LF字节落地。以下远端SHA与本地archive解包成员一致，属于同一commit的明确EOL映射，不是算法改写或替换。
+
+|文件|§2工作树SHA|release归档LF SHA|
+|---|---|---|
+|`code/export_phase1_icmt_features.py`|`6a84de402784e27af0488037b4f8c9f4aa51be44396356b9fe314164bd349614`|`b0c4c2b6d8e1e31570f4c003dd1fdd24b3af2878f69aacc4ad5605f44f507d33`|
+|`code/export_phase1_icmt_leo_features.py`|`fd39c77209bfc5548c80aa9ef45abe8b48a0d71e6466fb71fe776aa5575ec585`|`ec6aedacc36db7e265c1fc5b90f0980ab03020c33821bc513acc86171e2de7c6`|
+|`code/evaluate_phase1_icmt_postfreeze_pair.py`|`a76123e66fdac7961b4535724aead6f1d7a48cf5deda0468929b5773382ab858`|`33265cf2f75fd8b322d959489ecdf30873e215ec4394fc57cdd049cbae106f06`|
+|`code/scripts/launch_phase1_icmt_postfreeze_20260810.sh`|`3607b741655823df1c98d8ff2d086e0a3df87673aada50c3db5a460f17a6829b`|`3607b741655823df1c98d8ff2d086e0a3df87673aada50c3db5a460f17a6829b`|
+|`code/tests/test_phase1_icmt_postfreeze.py`|`cf4fac55510a4d98d071330f8f5950bc9e45002d775d4d6d5dea481cb457c934`|`88a31a212f5e5c0e6a1c96beeaadbc36a7667108529934913cddc359b3a58923`|
+|`analysis/phase1_icmt_design_20260810.md`|`ee731b06d6781645e6c137b66883fa761b8d295bf454ab956bb02d4f78382120`|`84b2680809ce3c51acfa3ceeb63c346d88f5171103fcab6f57082df5d8f1ef4e`|
+
+### 9.3远端静态核验
+
+release落地后仅执行必要静态检查：5个Python入口（含测试与实际proxy脚本）`py_compile=PASS`；4个入口`--help=PASS`；launcher`bash -n=PASS`；冻结环境变量下`--dry-run`精确输出`42`条（`12 clean+12 LEO+12 proxy+6 pair`）并通过计数断言。未安装包、未读取性能、未创建postfreeze输出目录。
