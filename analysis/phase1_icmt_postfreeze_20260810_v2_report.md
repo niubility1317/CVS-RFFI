@@ -1,6 +1,6 @@
 # Phase1 ICMT postfreeze v2报告
 
-状态：`ARTIFACTS_COMPLETE / TECHNICAL_ONLY / NO_PERFORMANCE_RESULT`
+状态：`ANALYZED / REJECT_P1_ICMT_PERMANENT / NO_PHASE3_PROMOTION`
 
 日期：2026-08-10
 
@@ -114,16 +114,16 @@ cd /home/szu2070436088/2510044040/CV-SincNet/releases/phase1_icmt_postfreeze_202
 
 技术成功预期：12个clean NPZ、12个LEO NPZ及binding、12个proxy JSON/CSV、6个pair JSON和完整stdout。只回收JSON、CSV、日志、PID、completion、manifest、逐项SHA等小工件；不下载`.pth`和特征NPZ。Runner只报告技术闭合，不解释性能。主控收到完整6折pair与配套小工件后，才读取同run性能并按§4给出唯一裁决。
 
-## 8.结果占位
+## 8.主控结果摘要
 
 |fold|clean四floor|LEO 3格四floor|三场景overall|proxy AUROC增量|proxy u-gap增量|fold结论|
 |---:|---|---|---:|---:|---:|---|
-|F1|待运行|待运行|待运行|待运行|待运行|`NO_PERFORMANCE_RESULT`|
-|F2|待运行|待运行|待运行|待运行|待运行|`NO_PERFORMANCE_RESULT`|
-|F3|待运行|待运行|待运行|待运行|待运行|`NO_PERFORMANCE_RESULT`|
-|F4|待运行|待运行|待运行|待运行|待运行|`NO_PERFORMANCE_RESULT`|
-|F5|待运行|待运行|待运行|待运行|待运行|`NO_PERFORMANCE_RESULT`|
-|F6|待运行|待运行|待运行|待运行|待运行|`NO_PERFORMANCE_RESULT`|
+|F1|通过|2/3通过|+0.513pp|−0.01056|−190.405|`REJECT_P1_ICMT_PERMANENT`|
+|F2|通过|1/3通过|−0.253pp|−0.26812|−338.330|`REJECT_P1_ICMT_PERMANENT`|
+|F3|通过|0/3通过|−8.506pp|−0.03095|+1,406.342|`REJECT_P1_ICMT_PERMANENT`|
+|F4|通过|0/3通过|−1.509pp|+0.13444|−411.630|`REJECT_P1_ICMT_PERMANENT`|
+|F5|通过|0/3通过|−11.918pp|−0.03366|−105.624|`REJECT_P1_ICMT_PERMANENT`|
+|F6|失败|0/3通过|−4.182pp|+0.01689|+820.120|`REJECT_P1_ICMT_PERMANENT`|
 
 ## 9.Runner技术记录（落地前）
 
@@ -217,3 +217,55 @@ Git镜像报告commit=`b012ddaa`（仅本报告文件）；实现commit=`7f6f4cf
 |完成JSON|`remote_artifacts/small_bundle_v2_extract/logs/phase1_icmt_postfreeze_20260810_v2/phase1_icmt_postfreeze_20260810_v2_completion.json`；SHA256=`6d506b74591e1259d59dfa06f4a287438b8d90aee5b3bfd4d896eaa087bba6db`|
 
 首次小bundle尝试因outer日志路径登记层级错误在打包前中止，仅留下未完成manifest，不影响实验输出；未覆盖或删除任何既有工件。校正v2使用实际outer路径并完成上述验证。未下载checkpoint或特征NPZ；远端release、run、log、fulltree archive及全部原始工件保留。
+
+## 11.完整性能分析与永久裁决
+
+主控在Runner完成42步、确认6/6技术绑定和本run进程归零后，读取校正small bundle v2中的6份pair JSON、12份proxy JSON/CSV、12份LEO binding与18份完整stdout。所有数值均来自同一postfreeze v2 run的同fold C/G配对；分类差值单位为pp。`u-gap=mean(u_proxy)−mean(u_V)`仅是source-proxy连续几何诊断，不是真实unknown、FAR或Phase3能力证据。
+
+### 11.1clean与连续proxy同折结果
+
+|fold|clean C→G overall|δoverall|δmin-class|δmin-RX|δmin-day|clean floor|LEO三场景overall均值|proxy AUROC C→G（δ）|u-gap C→G（δ）|proxy双门|
+|---:|---:|---:|---:|---:|---:|:---:|---:|---:|---:|:---:|
+|F1|99.274%→99.304%|+0.030|+0.024|+0.250|−0.036|通过|+0.513|0.86108→0.85052（−0.01056）|935.958→745.554（−190.405）|失败|
+|F2|99.244%→99.149%|−0.095|−0.429|−0.375|−0.095|通过|−0.253|0.72060→0.45249（−0.26812）|411.689→73.359（−338.330）|失败|
+|F3|99.321%→99.244%|−0.077|+0.143|−0.042|−0.071|通过|−8.506|0.94562→0.91467（−0.03095）|2,474.098→3,880.440（+1,406.342）|失败|
+|F4|99.304%→99.327%|+0.024|0.000|+0.083|−0.036|通过|−1.509|0.44557→0.58001（+0.13444）|1,861.198→1,449.568（−411.630）|失败|
+|F5|98.054%→98.226%|+0.173|−0.048|+1.083|+0.167|通过|−11.918|0.93532→0.90166（−0.03366）|629.280→523.656（−105.624）|失败|
+|F6|98.101%→97.363%|−0.738|−3.810|−4.333|−0.929|失败|−4.182|0.79663→0.81352（+0.01689）|648.727→1,468.848（+820.120）|通过|
+
+clean六折等权平均差为overall=`−0.114pp`、min-class=`−0.687pp`、min-RX=`−0.556pp`、min-day=`−0.167pp`。F1–F5未越过−2pp floor，但F6的min-class=`−3.810pp`和min-RX=`−4.333pp`直接使clean 6/6门失败。
+
+proxy方面，六折平均AUROC从C的`0.78414`降至G的`0.75215`，平均差=`−0.03199`；平均u-gap从`1,160.158`增至`1,356.904`，平均差=`+196.746`。方向并不一致：只有F6同时满足AUROC和u-gap严格正增益，因此6/6双门实际为`1/6`。平均u-gap为正不能补偿逐折AUROC和联合门失败。
+
+### 11.2LEO 18格同场景结果
+
+|fold|scene|C→G overall|δoverall|δmin-class|δmin-RX|δmin-day|四floor|
+|---:|---|---:|---:|---:|---:|---:|:---:|
+|F1|clear|95.588%→96.140%|+0.551|0.000|+3.093|+0.157|通过|
+|F1|low-elev|95.956%→95.772%|−0.184|−0.781|−2.247|−1.442|失败|
+|F1|rain|94.727%→95.898%|+1.172|+3.906|+5.063|+0.893|通过|
+|F2|clear|94.118%→93.750%|−0.368|−0.694|0.000|−0.450|通过|
+|F2|low-elev|90.257%→90.257%|0.000|−2.344|−8.989|+0.962|失败|
+|F2|rain|90.430%→90.039%|−0.391|0.000|−6.329|+0.694|失败|
+|F3|clear|94.669%→84.007%|−10.662|−45.833|−10.843|−13.018|失败|
+|F3|low-elev|87.316%→81.250%|−6.066|−43.750|−1.124|−6.616|失败|
+|F3|rain|88.477%→79.688%|−8.789|−46.875|−7.595|−10.764|失败|
+|F4|clear|93.934%→92.647%|−1.287|−4.167|−3.093|−2.174|失败|
+|F4|low-elev|90.809%→89.522%|−1.287|−3.125|+1.124|−1.786|失败|
+|F4|rain|90.234%→88.281%|−1.953|−4.688|−4.794|−1.736|失败|
+|F5|clear|78.493%→65.074%|−13.419|−30.556|−12.371|−15.315|失败|
+|F5|low-elev|70.772%→59.375%|−11.397|−35.156|−0.016|−16.827|失败|
+|F5|rain|66.992%→56.055%|−10.938|−32.812|−9.211|−11.062|失败|
+|F6|clear|80.882%→75.735%|−5.147|−21.528|−14.772|−6.757|失败|
+|F6|low-elev|82.721%→79.228%|−3.493|−25.000|−2.247|−2.404|失败|
+|F6|rain|79.883%→75.977%|−3.906|−19.531|−1.266|−5.208|失败|
+
+18格只有F1-clear、F1-rain和F2-clear共`3/18`通过四floor，六个fold都未实现3/3格通过。各场景六折等权overall差分别为clear=`−5.055pp`、low-elev=`−3.738pp`、rain=`−4.134pp`；全18格等权差为overall=`−4.309pp`、min-class=`−17.385pp`、min-RX=`−4.201pp`、min-day=`−5.159pp`。逐fold三场景overall均值只有F1为正，其余F2–F6均为负；因此逐foldoverall门、18/18 floor门和全局overall门全部失败。
+
+### 11.3技术完整性与解释
+
+6/6 pair的`technical_binding.passed=true`，F6 aggregate确认F1–F5均从当前原始工件重算；12/12 LEO binding闭合完整三场景与source重建；全部clean特征nonfinite计数为0，仅F4C有1条精确零范数行，按预注册totalized L2保留，未删除、未加固定惩罚，也未触发技术失败。最终aggregate门为：clean=`false`、LEO 18格floor=`false`、逐fold三场景overall=`false`、全18格overall=`false`、proxy 6/6双门=`false`；技术绑定=`true`。
+
+ICMT在clean上总体变化很小，但对多个fold的LEO鲁棒性产生了明显负迁移，尤其F3和F5；这说明“独立视图内收紧低margin尾部”没有形成可跨fold稳定的天基弱信道表示，且连续proxy方向也不稳定。该结论仅针对冻结P1-ICMT机制和当前source-proxy诊断，不能外推为真实unknown拒识结论。
+
+最终裁决：`REJECT_P1_ICMT_PERMANENT`。不允许用F1局部收益、F6 proxy双门或任何平均项补偿完整门失败；不调`lambda_icmt`、不换fold/场景、不重试，不进入Phase3候选。SCB单控制bundle与真实N=1证据链继续独立推进；真实N>1协同仍等待truth-blind same-event多接收manifest。
