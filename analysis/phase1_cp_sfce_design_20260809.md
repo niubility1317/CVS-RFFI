@@ -28,3 +28,17 @@ C每batch初始化CP遥测为空字典，冻结终态固定为`CONTROL_ARM_NOT_A
 v2本地已完成：`py_compile`；CP-SFCE focused 8项；CP-SFCE+CB-SFCE必要回归19项；真实CUDA GradScaler的base/aux伪溢出回退与raw非有限/断图/scope外负测；真实lite_d无query forward/backward；C控制臂终态遥测测试；`bash -n`；12条dry-run；`git diff --check`。独立复核实际运行上述验证并给出`P0=0，P1=0，ALLOW`；既有AMP弃用警告不影响本次结果。
 
 追溯汇总：verified-local-v2=8，deferred=0，rejected=0，blocked=0。
+
+## CP-SFCE postfreeze追溯（INDEPENDENT_REVIEW_ALLOW）
+
+本节只定义训练技术完整后的final-only证据闭环；不读取性能来选择训练、阈值或checkpoint，也不构成Phase3 unknown能力声明。
+
+|ID|来源要求|目标文件|状态|验证|备注|
+|---|---|---|---|---|---|
+|CPSFCE-PF-01|12个clean开发导出、12个source-only三LEO场景导出、12个source-proxy连续诊断、6个CPU串行C/G pair，共42步|`launch_phase1_cp_sfce_postfreeze_20260809.sh`|verified-local|`bash -n`、dry-run42|训练root固定`phase1_cp_sfce12_20260809_v2`，新postfreeze根不可覆盖|
+|CPSFCE-PF-02|严格checkpoint/NPZ SHA、strict-load、`dual_cvsincnet_tx_logits_v1`分类头合同、local4类序、C/G逐行metadata/physical/scenario绑定|`eval_phase1_cp_sfce_pair.py`、测试|verified-local|head-contract/manifest-path/C-G swap负测|不加载checkpoint权重，不拟合/校准/选参|
+|CPSFCE-PF-03|runtime view=`single`与manifest satellite profile、三场景物理互斥、每场景完整TX/RX|evaluator、测试|verified-local|payload负测|source-only LEO，固定seed和场景|
+|CPSFCE-PF-04|clean四floor、每LEO场景四floor、fold三场景等权overall、全局18格等权overall及proxy非补偿门|evaluator、测试|verified-local|six-fold aggregate测试|proxy仅guardrail，不能补偿任何分类门|
+|CPSFCE-PF-05|prior JSON只能来自同matrix/root、固定v2 training root、冻结pair/source-TX/C-G候选路径；technical严格true、proxy finite[0,1]，F6仅聚合F1--F5|evaluator、测试|verified-local|cross-root/v1-root/pair/source/arm-swap/technical/proxy负测|输出必须final-only且拒绝覆盖|
+
+本地与独立验证：`python -m py_compile`通过；CP与未修改CB postfreeze focused合计`38 passed`；`bash -n`通过；dry-run精确为12个clean＋12个LEO＋12个proxy＋6个pair；`git diff --check`通过（仅CRLF提示）。独立复核结论`P0=0，P1=0，ALLOW`；不发布、不访问N607。
