@@ -1,6 +1,6 @@
 # Phase1 CAGM 12臂正式训练v2预登记报告
 
-状态：`ARTIFACTS_COMPLETE / CONTRACT_VERIFIED / SMALL_BUNDLE_PENDING / NO_PERFORMANCE_RESULT`
+状态：`ARTIFACTS_COMPLETE / TECHNICAL_SUCCESS / CONTRACT_VERIFIED / NON_PROMOTABLE_P0_DISABLED / NO_PERFORMANCE_RESULT`
 
 ## Runner阶段记录（2026-08-10，Revision2独立发布链）
 
@@ -15,6 +15,7 @@
 - 首波健康检查：v2 run/log/outer存在；12个arm日志均已生成并增长（约117–165KB），GPU0–6各一训练进程、GPU7为F4G加既有SCB两进程，未超过上限；首批日志未见Traceback/OOM/CUDA/CAGM失败指纹。v1路径保持不变，当前仍无性能结果。
 - 约4–5分钟技术窗口：F3C/F3G/F4C/F4G四臂child已退出并各具备training completion、terminal、resource、heldout与final工件；其余8臂仍live。12/12 config已生成，日志持续增长，未见技术异常指纹；GPU4–6已释放，GPU7仍仅SCB占用。继续短连接监控，不读取性能。
 - 终态合同验证：12/12 child退出，completion/terminal/resource/heldout/config/CAGM receipt/final均存在；12/12 terminal schema v2、`NON_PROMOTABLE_P0_DISABLED`、`exit_code=8`且pass。C6/6为`joint_zero_mask_aux_only=false`、control contract pass；G6/6为v2 receipt、`joint_zero_mask_aux_only=true`、`G_AUXILIARY_ONLY_BASE_RETAINS_FULL_BATCH`、AdamW、initial state empty+SHA、gradient audit/finite字段与terminal pass。未读取性能字段。
+- 终态技术表已闭合：12/12 final checkpoint、training completion、terminal、resource、heldout、config和receipt均存在；wrapper/launcher/12 child均已退出，未触发技术停止规则。第5节唯一exact启动命令调用次数=`1`，无retry；CWD均为冻结v2 release/code。
 
 ### v2 final checkpoint SHA（远端只读计算，未下载）
 
@@ -32,6 +33,31 @@
 |F5G_CAGM12|6973371|`1d51e86d23319bb765f4a01916d345de04b1b28a25c31d258015f9f6cbff6a8b`|
 |F6C_CAGM12|6969531|`d1fc8c35c4455835e0b30d71ec909e224e8105d45b799617e40ac7f058de13a7`|
 |F6G_CAGM12|6973371|`56ddec04a3f6fe48a69fe986e8b6b3b544468036fded9edb69dabe87c555787b`|
+
+### v2最终技术交接表（仅技术字段，无性能读取）
+
+|candidate|GPU|child PID|final SHA256|receipt/terminal|技术结论|
+|---|---:|---:|---|---|---|
+|F1C_CAGM12|0|703751|`c2c1142135015ac362d0338af59b60195181682ecae9aca0a2c391b68415f4cb`|v2 / exit8 / pass|完成|
+|F1G_CAGM12|1|703755|`8e209eae17f614c4aa564c7f0268e8543d68c0c9a6c28c1db62bfcac670b352a`|v2 / exit8 / pass|完成|
+|F2C_CAGM12|2|703759|`80eebbf6462b40b4e6084eb09d3a74d0449cd13972b2e786c90bc3f50f99ecb1`|v2 / exit8 / pass|完成|
+|F2G_CAGM12|3|703763|`5b588bc9b8314690990c8e69c9d1b747fe8cf3efd3d1a0c19f11ec0263c4ea52`|v2 / exit8 / pass|完成|
+|F3C_CAGM12|4|703767|`92c7881db019df8f837213135f2e80fb593d08e010dadec857df635e169014b7`|v2 / exit8 / pass|完成|
+|F3G_CAGM12|5|703769|`6ee3072f6785d9b7c54eb1bcce19110bb935fbad5a56ad2761f8740a8939d81c`|v2 / exit8 / pass|完成|
+|F4C_CAGM12|6|703771|`875574ed683207df5c6aadab1e17293b3a89bdc99cec1815903a711b934db0a9`|v2 / exit8 / pass|完成|
+|F4G_CAGM12|7|703773|`e62a3b02885fb394433c63f7a00dddd9507bace80f600bab66c62f8c8fdc2f61`|v2 / exit8 / pass|完成|
+|F5C_CAGM12|1|703757|`6d28eb0d0e81c4c5df95a4d8b606a106bd111b437075e86327ceacac72b2ffb6`|v2 / exit8 / pass|完成|
+|F5G_CAGM12|0|703753|`1d51e86d23319bb765f4a01916d345de04b1b28a25c31d258015f9f6cbff6a8b`|v2 / exit8 / pass|完成|
+|F6C_CAGM12|3|703765|`d1fc8c35c4455835e0b30d71ec909e224e8105d45b799617e40ac7f058de13a7`|v2 / exit8 / pass|完成|
+|F6G_CAGM12|2|703761|`56ddec04a3f6fe48a69fe986e8b6b3b544468036fded9edb69dabe87c555787b`|v2 / exit8 / pass|完成|
+
+### 小工件bundle与清理
+
+- 远端bundle=`/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_cagm12_20260810_v2/phase1_cagm12_20260810_v2_small_artifacts.tar`；本地回收路径=`E:\type10-7\automation_reports\CV-SincNet\phase1_cagm12_20260810_v2\artifacts\returned_small\phase1_cagm12_20260810_v2_small_artifacts.tar`。
+- bundle大小=`17346560`字节，SHA256=`b2d75dca0d6f7be19ee19875e36b7bf39a81159cf705fe5395febc1e8aa5fe3f`，members=`122`，`.pth/.npz=0`。
+- 本地manifest=`E:\type10-7\automation_reports\CV-SincNet\phase1_cagm12_20260810_v2\artifacts\returned_small\phase1_cagm12_20260810_v2_small_artifacts.manifest.txt`，大小=`8522`字节，SHA256=`2e36add93d8c0cdfd303f87dc874beb553704e29c536e670f1873b84d620a17c`。
+- 组包首个外层日志路径存在拼写偏差，已在同一远端tar中追加正确outer文件并重新核验；仅影响组包步骤，不影响训练、工件或合同，未重启/重试训练。
+- 清理状态：远端v2 run树目标进程=`0`，GPU0–6回到约1MiB，GPU7仅保留既有SCB v4约498MiB；本地SSH进程与N607 TCP22=`0`。v1路径保留未改；未下载checkpoint，未启动postfreeze。
 
 日期：2026-08-10
 
@@ -141,4 +167,4 @@ cd /home/szu2070436088/2510044040/CV-SincNet/releases/phase1_cagm12_20260810_v2_
 
 预期每臂生成final checkpoint、metrics、config、training completion、terminal、resource、heldout；G必须CAGM receipt v2 terminal pass，C必须control pass。`NON_PROMOTABLE_P0_DISABLED/exit8`为预期终态。只回收小工件，不下载`.pth/.npz`，不读性能。
 
-v2训练技术完成后立即执行已提交的CAGM postfreeze v2 42步；评价核固定为source-L-only float64 totalized-L2 Gaussian-NLL、固定400 proxy、三场景LEO、F6原始工件重算与非补偿门。任一完整门失败即`REJECT_P1_CAGM_PERMANENT`。
+postfreeze v2 42步属于后续独立阶段；本Runner按任务边界不启动postfreeze、不读取性能。若后续获授权，评价核固定为source-L-only float64 totalized-L2 Gaussian-NLL、固定400 proxy、三场景LEO、F6原始工件重算与非补偿门；任一完整门失败即`REJECT_P1_CAGM_PERMANENT`。
