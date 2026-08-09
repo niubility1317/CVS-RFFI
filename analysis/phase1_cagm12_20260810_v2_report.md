@@ -1,6 +1,13 @@
 # Phase1 CAGM 12臂正式训练v2预登记报告
 
-状态：`LOCAL_VERIFIED / PREREGISTERED_NOT_LAUNCHED / NO_PERFORMANCE_RESULT`
+状态：`REMOTE_PREFLIGHT_OK / LANDING_PENDING / NO_PERFORMANCE_RESULT`
+
+## Runner阶段记录（2026-08-10，Revision2独立发布链）
+
+- 指定快照工作树commit链与预登记镜像已核对；镜像预登记SHA=`96155d7f8f5ba5c65dccbf8ea02ef00338f400cde346676e821a8691f73f0f1f`，既有未跟踪`conversation_index/`保留未改。
+- direct `n607_ssh_preflight.ps1`通过；v2 release/run/log/outer/temp均确认不存在，v1 release/run/log/outer均存在且保留。SSH/TCP22在连接后均清零。
+- ManySig SHA与6个GeoSat-C warm-start SHA全部匹配；GPU0–6各约1MiB，GPU7仅既有SCB PID 608786约488MiB，未发现v1/v2 CAGM训练进程，不干预SCB。
+- 本地完整归档SHA=`2cb14fc5689c9de1fd450edf3286508d016ebbcb8d6712f2c7733f88f7767e44`、260669440字节、4912 members、`code/code=0`；归档内6个关键成员SHA与§2一致（训练`train_ssdg.py`采用归档规范化字节SHA=`c842c0d830e7c39d5005ab6dcccbf3b580848f79574f787eaa6c900e60c432b5`）。下一步仅执行一次SCP与远端解包。
 
 日期：2026-08-10
 
@@ -111,4 +118,3 @@ cd /home/szu2070436088/2510044040/CV-SincNet/releases/phase1_cagm12_20260810_v2_
 预期每臂生成final checkpoint、metrics、config、training completion、terminal、resource、heldout；G必须CAGM receipt v2 terminal pass，C必须control pass。`NON_PROMOTABLE_P0_DISABLED/exit8`为预期终态。只回收小工件，不下载`.pth/.npz`，不读性能。
 
 v2训练技术完成后立即执行已提交的CAGM postfreeze v2 42步；评价核固定为source-L-only float64 totalized-L2 Gaussian-NLL、固定400 proxy、三场景LEO、F6原始工件重算与非补偿门。任一完整门失败即`REJECT_P1_CAGM_PERMANENT`。
-
