@@ -202,7 +202,9 @@ def gd_proto_nll_config_receipt(config: GDProtoNLLConfig) -> Dict[str, Any]:
         "q0": [1.0 / 12.0] * 12,
         "barl0": [0.0] * 12,
         "loss_rule": "L_ONLY_LOCAL4_REQUIRED_LAGGED_EMA_ENTROPY_REGULARIZED_CLASS_SCENARIO_DRO",
-        "prototype_logit_rule": "ROW_L2_HEAD_WEIGHT_AND_FEAT_JOINT_RAW_COSINE_SCALE16",
+        "prototype_logit_rule": "EXACT_ZERO_FEATURE_FILTER_THEN_ROW_L2_HEAD_WEIGHT_AND_FEAT_JOINT_RAW_COSINE_SCALE16_NO_EPS",
+        "feature_zero_filter_rule": "EXACT_NORM_ZERO_ONLY_VALID_LOCAL4_REQUIRED",
+        "gradient_witness_rule": "ANALYTIC_NONZERO_D_FOCAL_GAMMA1_D_LOGITS",
         "satellite_scenarios": list(FROZEN_GD_PROTO_NLL_SCENARIOS),
         "satellite_schedule": "BASELINE_EPOCH_BATCH_MODULO_CLEAR_LOW_RAIN",
         "common_lambda_sat_cons": 0.10,
@@ -247,7 +249,10 @@ def gd_proto_nll_config_receipt(config: GDProtoNLLConfig) -> Dict[str, Any]:
         "proxy_rows": 0,
         "held_rows": 0,
         "gd_proto_nll_batches": 0,
-        "gd_proto_nll_rows": 0,
+        "gd_proto_nll_total_rows": 0,
+        "gd_proto_nll_valid_rows": 0,
+        "gd_proto_nll_zero_rows": 0,
+        "gd_proto_nll_all_local4_valid_batches": 0,
         "gd_proto_nll_cells": {},
         "gd_proto_nll_state_update_batches": 0,
         "gd_proto_nll_q_final": [],
@@ -380,7 +385,9 @@ def validate_gd_proto_nll_feature_binding(
     if int(labels.min().item()) < 0 or int(labels.max().item()) >= 4:
         raise GDProtoNLLRuntimeError("P1-GD-ProtoNLL labels do not bind to local classifier rows")
     if not bool(torch.isfinite(satellite_feature.detach()).all().item()):
-        raise GDProtoNLLRuntimeError("P1-GD-ProtoNLL satellite feature contains non-finite values")
+        raise GDProtoNLLRuntimeError(
+            "P1-GD-ProtoNLL feature_nonfinite: satellite feature contains non-finite values"
+        )
     return weight
 
 
@@ -443,62 +450,111 @@ def gd_proto_nll_loss(
         raise GDProtoNLLRuntimeError("P1-GD-ProtoNLL every G auxiliary batch must contain all local4 classes")
     if int(class_weight.size(0)) != 4 or int(class_weight.size(1)) != int(satellite_feature.size(1)):
         raise GDProtoNLLRuntimeError("P1-GD-ProtoNLL feature/head dimensions drifted")
-    if not bool(torch.isfinite(satellite_feature.detach()).all().item()) or not bool(torch.isfinite(class_weight.detach()).all().item()):
-        raise GDProtoNLLRuntimeError("P1-GD-ProtoNLL feature/head contains non-finite values")
-    feature_norms = torch.linalg.vector_norm(satellite_feature.detach().float(), dim=1)
-    head_norms = torch.linalg.vector_norm(class_weight.detach().float(), dim=1)
-    if (
-        not bool(torch.isfinite(feature_norms).all().item())
-        or not bool(torch.isfinite(head_norms).all().item())
-        or bool((feature_norms <= 0.0).any().item())
-        or bool((head_norms <= 0.0).any().item())
-    ):
+    if not bool(torch.isfinite(satellite_feature.detach()).all().item()):
         raise GDProtoNLLRuntimeError(
-            "P1-GD-ProtoNLL feature/head contains non-finite or zero L2 norm before raw cosine"
+            "P1-GD-ProtoNLL feature_nonfinite: satellite feature contains non-finite values"
+        )
+    if not bool(torch.isfinite(class_weight.detach()).all().item()):
+        raise GDProtoNLLRuntimeError(
+            "P1-GD-ProtoNLL head_nonfinite_or_zero: classifier head contains non-finite values"
+        )
+    feature_float = satellite_feature.float()
+    weight_float = class_weight.float()
+    feature_norms_live = torch.linalg.vector_norm(feature_float, dim=1)
+    head_norms_live = torch.linalg.vector_norm(weight_float, dim=1)
+    feature_norms = feature_norms_live.detach()
+    head_norms = head_norms_live.detach()
+    if not bool(torch.isfinite(feature_norms).all().item()):
+        raise GDProtoNLLRuntimeError(
+            "P1-GD-ProtoNLL feature_nonfinite: feature L2 norm is non-finite"
+        )
+    if not bool(torch.isfinite(head_norms).all().item()) or bool((head_norms <= 0.0).any().item()):
+        raise GDProtoNLLRuntimeError(
+            "P1-GD-ProtoNLL head_nonfinite_or_zero: classifier head L2 norm is non-finite or zero"
+        )
+    valid_mask = feature_norms > 0.0
+    valid_labels = labels[valid_mask]
+    if tuple(torch.unique(valid_labels, sorted=True).tolist()) != FROZEN_GD_PROTO_NLL_CLASS_IDS:
+        raise GDProtoNLLRuntimeError(
+            "P1-GD-ProtoNLL feature_zero_filtered: every local4 class must retain at least one valid feature"
         )
     q, _ = _validated_state(state, satellite_feature.device)
-    feature = F.normalize(satellite_feature.float(), dim=1, eps=_EPS)
-    weight = F.normalize(class_weight.float(), dim=1, eps=_EPS)
+    valid_feature = feature_float[valid_mask]
+    feature = valid_feature / feature_norms_live[valid_mask].unsqueeze(1)
+    weight = weight_float / head_norms_live.unsqueeze(1)
     cosine_logits = float(logit_scale) * F.linear(feature, weight)
     log_prob = F.log_softmax(cosine_logits, dim=1)
-    true_log_prob = log_prob.gather(1, labels.unsqueeze(1)).squeeze(1)
+    true_log_prob = log_prob.gather(1, valid_labels.unsqueeze(1)).squeeze(1)
     true_prob = true_log_prob.exp()
     per_row = (1.0 - true_prob).pow(float(gamma)) * (-true_log_prob)
     if not bool(torch.isfinite(per_row.detach()).all().item()):
         raise GDProtoNLLRuntimeError("P1-GD-ProtoNLL focal per-row loss is non-finite")
+    probability64 = torch.softmax(cosine_logits.detach().double(), dim=1)
+    true_probability64 = probability64.gather(1, valid_labels.unsqueeze(1)).squeeze(1)
+    cross_entropy64 = -torch.log(true_probability64)
+    focal_factor64 = 1.0 - true_probability64 + cross_entropy64 * true_probability64
+    one_hot64 = F.one_hot(valid_labels, num_classes=4).double()
+    analytic_logit_gradient64 = focal_factor64.unsqueeze(1) * (probability64 - one_hot64)
+    analytic_witness_by_row = (
+        torch.isfinite(analytic_logit_gradient64).all(dim=1)
+        & (torch.linalg.vector_norm(analytic_logit_gradient64, dim=1) > 0.0)
+    )
+    if not bool(analytic_witness_by_row.all().item()):
+        raise GDProtoNLLRuntimeError(
+            "P1-GD-ProtoNLL analytic logit-gradient witness is non-finite or zero"
+        )
     class_means = []
-    per_tx_rows: Dict[str, int] = {}
-    per_tx_loss: Dict[str, float] = {}
+    per_tx_total_rows: Dict[str, int] = {}
+    per_tx_valid_rows: Dict[str, int] = {}
+    per_tx_zero_rows: Dict[str, int] = {}
+    per_tx_valid_loss: Dict[str, float] = {}
     per_tx_finite: Dict[str, bool] = {}
-    per_tx_nonzero: Dict[str, bool] = {}
+    per_tx_analytic_witness: Dict[str, bool] = {}
     q_by_tx: Dict[str, float] = {}
     for class_id in FROZEN_GD_PROTO_NLL_CLASS_IDS:
-        values = per_row[labels.eq(class_id)]
+        total_class_mask = labels.eq(class_id)
+        valid_class_mask = valid_labels.eq(class_id)
+        values = per_row[valid_class_mask]
         if values.numel() == 0:
-            raise GDProtoNLLRuntimeError("P1-GD-ProtoNLL local4 class is missing from batch")
+            raise GDProtoNLLRuntimeError(
+                "P1-GD-ProtoNLL feature_zero_filtered: local4 class has no valid feature"
+            )
         mean_loss = values.mean()
         group_index = _group_index(class_id, scenario)
         class_means.append(q[group_index] * mean_loss)
         key = str(class_id)
-        per_tx_rows[key] = int(values.numel())
-        per_tx_loss[key] = float(mean_loss.detach().item())
+        total_rows = int(total_class_mask.sum().item())
+        valid_rows = int(values.numel())
+        per_tx_total_rows[key] = total_rows
+        per_tx_valid_rows[key] = valid_rows
+        per_tx_zero_rows[key] = total_rows - valid_rows
+        per_tx_valid_loss[key] = float(mean_loss.detach().item())
         per_tx_finite[key] = bool(torch.isfinite(values.detach()).all().item())
-        per_tx_nonzero[key] = bool((values.detach() > 0.0).any().item())
+        per_tx_analytic_witness[key] = bool(analytic_witness_by_row[valid_class_mask].all().item())
         q_by_tx[key] = float(q[group_index].detach().item())
     loss = float(len(FROZEN_GD_PROTO_NLL_SCENARIOS)) * torch.stack(class_means).sum()
     if not bool(torch.isfinite(loss.detach()).item()):
         raise GDProtoNLLRuntimeError("P1-GD-ProtoNLL weighted DRO loss is non-finite")
+    total_rows = int(labels.numel())
+    valid_rows = int(valid_labels.numel())
+    zero_rows = total_rows - valid_rows
     return loss, {
-        "rows": int(labels.numel()),
+        "total_rows": total_rows,
+        "valid_rows": valid_rows,
+        "zero_rows": zero_rows,
         "classes": 4,
         "scenario": str(scenario),
-        "per_tx_rows": per_tx_rows,
-        "per_tx_loss": per_tx_loss,
+        "per_tx_total_rows": per_tx_total_rows,
+        "per_tx_valid_rows": per_tx_valid_rows,
+        "per_tx_zero_rows": per_tx_zero_rows,
+        "per_tx_valid_loss": per_tx_valid_loss,
         "per_tx_finite": per_tx_finite,
-        "per_tx_nonzero_aux_logit_gradient": per_tx_nonzero,
+        "per_tx_analytic_nonzero_logit_gradient_witness": per_tx_analytic_witness,
         "q_old_by_tx": q_by_tx,
         "fixed_scene_scale": float(len(FROZEN_GD_PROTO_NLL_SCENARIOS)),
-        "all_local4_present": True,
+        "all_local4_present_before_filter": True,
+        "all_local4_valid_after_filter": True,
+        "feature_zero_filtered": bool(zero_rows > 0),
         "uses_old_q": True,
     }
 
@@ -513,7 +569,33 @@ def advance_gd_proto_nll_state(
     if not torch.is_tensor(state_q):
         raise GDProtoNLLRuntimeError("P1-GD-ProtoNLL state lacks q tensor")
     q, barl = _validated_state(state, state_q.device)
-    losses = {str(key): float(value) for key, value in dict(batch_info.get("per_tx_loss", {})).items()}
+    if (
+        batch_info.get("all_local4_present_before_filter") is not True
+        or batch_info.get("all_local4_valid_after_filter") is not True
+    ):
+        raise GDProtoNLLRuntimeError(
+            "P1-GD-ProtoNLL feature_zero_filtered: state update requires valid local4 coverage"
+        )
+    total_rows = int(batch_info.get("total_rows", -1))
+    valid_rows = int(batch_info.get("valid_rows", -1))
+    zero_rows = int(batch_info.get("zero_rows", -1))
+    valid_rows_by_tx = {
+        str(key): int(value)
+        for key, value in dict(batch_info.get("per_tx_valid_rows", {})).items()
+    }
+    if (
+        total_rows <= 0
+        or valid_rows <= 0
+        or zero_rows < 0
+        or total_rows != valid_rows + zero_rows
+        or set(valid_rows_by_tx) != {"0", "1", "2", "3"}
+        or any(value <= 0 for value in valid_rows_by_tx.values())
+        or valid_rows != sum(valid_rows_by_tx.values())
+    ):
+        raise GDProtoNLLRuntimeError(
+            "P1-GD-ProtoNLL feature_zero_filtered: state update row coverage does not close"
+        )
+    losses = {str(key): float(value) for key, value in dict(batch_info.get("per_tx_valid_loss", {})).items()}
     if set(losses) != {"0", "1", "2", "3"}:
         raise GDProtoNLLRuntimeError("P1-GD-ProtoNLL state update requires all four detached class losses")
     updated = barl.clone()
@@ -608,28 +690,78 @@ def update_gd_proto_nll_receipt(receipt: Mapping[str, Any], batch_info: Mapping[
         raise GDProtoNLLRuntimeError("P1-GD-ProtoNLL scenario coverage drifted")
     if tuple(int(value) for value in result.get("expected_tx_class_ids", [])) != FROZEN_GD_PROTO_NLL_CLASS_IDS:
         raise GDProtoNLLRuntimeError("P1-GD-ProtoNLL receipt lacks local4 binding")
-    rows = {str(key): int(value) for key, value in dict(batch_info.get("per_tx_rows", {})).items()}
-    losses = {str(key): float(value) for key, value in dict(batch_info.get("per_tx_loss", {})).items()}
-    finite = {str(key): bool(value) for key, value in dict(batch_info.get("per_tx_finite", {})).items()}
-    nonzero = {str(key): bool(value) for key, value in dict(batch_info.get("per_tx_nonzero_aux_logit_gradient", {})).items()}
-    if set(rows) != {"0", "1", "2", "3"} or set(rows) != set(losses) or set(rows) != set(finite) or set(rows) != set(nonzero):
+    total_rows = {str(key): int(value) for key, value in dict(batch_info.get("per_tx_total_rows", {})).items()}
+    valid_rows = {str(key): int(value) for key, value in dict(batch_info.get("per_tx_valid_rows", {})).items()}
+    zero_rows = {str(key): int(value) for key, value in dict(batch_info.get("per_tx_zero_rows", {})).items()}
+    losses = {str(key): float(value) for key, value in dict(batch_info.get("per_tx_valid_loss", {})).items()}
+    finite = {str(key): value for key, value in dict(batch_info.get("per_tx_finite", {})).items()}
+    analytic_witness = {
+        str(key): value
+        for key, value in dict(
+            batch_info.get("per_tx_analytic_nonzero_logit_gradient_witness", {})
+        ).items()
+    }
+    expected_keys = {"0", "1", "2", "3"}
+    maps = (total_rows, valid_rows, zero_rows, losses, finite, analytic_witness)
+    if any(set(values) != expected_keys for values in maps):
         raise GDProtoNLLRuntimeError("P1-GD-ProtoNLL every batch must seal all local4 class cells")
+    if (
+        batch_info.get("all_local4_present_before_filter") is not True
+        or batch_info.get("all_local4_valid_after_filter") is not True
+    ):
+        raise GDProtoNLLRuntimeError("P1-GD-ProtoNLL batch lacks pre/post-filter local4 coverage")
+    batch_total_rows = int(batch_info.get("total_rows", -1))
+    batch_valid_rows = int(batch_info.get("valid_rows", -1))
+    batch_zero_rows = int(batch_info.get("zero_rows", -1))
+    if (
+        batch_total_rows <= 0
+        or batch_valid_rows <= 0
+        or batch_zero_rows < 0
+        or batch_total_rows != batch_valid_rows + batch_zero_rows
+        or batch_total_rows != sum(total_rows.values())
+        or batch_valid_rows != sum(valid_rows.values())
+        or batch_zero_rows != sum(zero_rows.values())
+    ):
+        raise GDProtoNLLRuntimeError("P1-GD-ProtoNLL batch total/valid/zero row counts do not close")
     cells = {str(key): dict(value) for key, value in dict(result.get("gd_proto_nll_cells", {})).items()}
     for key in ("0", "1", "2", "3"):
-        if rows[key] <= 0 or not math.isfinite(losses[key]):
-            raise GDProtoNLLRuntimeError("P1-GD-ProtoNLL cell has invalid rows or loss")
+        if (
+            total_rows[key] <= 0
+            or valid_rows[key] <= 0
+            or zero_rows[key] < 0
+            or total_rows[key] != valid_rows[key] + zero_rows[key]
+            or not math.isfinite(losses[key])
+            or finite[key] is not True
+            or analytic_witness[key] is not True
+        ):
+            raise GDProtoNLLRuntimeError(
+                "P1-GD-ProtoNLL cell has invalid total/valid/zero rows, loss, or analytic gradient witness"
+            )
         cell_key = f"tx{key}|{scenario}"
         cell = dict(cells.get(cell_key, {}))
-        cell["rows"] = int(cell.get("rows", 0)) + rows[key]
-        cell["loss_batches"] = int(cell.get("loss_batches", 0)) + 1
-        cell["loss_sum"] = float(cell.get("loss_sum", 0.0)) + losses[key]
+        cell["total_rows"] = int(cell.get("total_rows", 0)) + total_rows[key]
+        cell["valid_rows"] = int(cell.get("valid_rows", 0)) + valid_rows[key]
+        cell["zero_rows"] = int(cell.get("zero_rows", 0)) + zero_rows[key]
+        cell["valid_loss_batches"] = int(cell.get("valid_loss_batches", 0)) + 1
+        cell["valid_loss_sum"] = float(cell.get("valid_loss_sum", 0.0)) + losses[key]
         cell["finite_batches"] = int(cell.get("finite_batches", 0)) + int(finite[key])
-        cell["nonzero_aux_logit_gradient_batches"] = int(cell.get("nonzero_aux_logit_gradient_batches", 0)) + int(nonzero[key])
+        cell["analytic_nonzero_logit_gradient_witness_batches"] = int(
+            cell.get("analytic_nonzero_logit_gradient_witness_batches", 0)
+        ) + int(analytic_witness[key])
         cell["nonfinite_batches"] = int(cell.get("nonfinite_batches", 0)) + int(not finite[key])
         cells[cell_key] = cell
     result["gd_proto_nll_cells"] = cells
     result["gd_proto_nll_batches"] = int(result.get("gd_proto_nll_batches", 0)) + 1
-    result["gd_proto_nll_rows"] = int(result.get("gd_proto_nll_rows", 0)) + int(batch_info.get("rows", 0))
+    result["gd_proto_nll_total_rows"] = int(result.get("gd_proto_nll_total_rows", 0)) + batch_total_rows
+    result["gd_proto_nll_valid_rows"] = int(result.get("gd_proto_nll_valid_rows", 0)) + batch_valid_rows
+    result["gd_proto_nll_zero_rows"] = int(result.get("gd_proto_nll_zero_rows", 0)) + batch_zero_rows
+    result["gd_proto_nll_all_local4_valid_batches"] = int(
+        result.get("gd_proto_nll_all_local4_valid_batches", 0)
+    ) + 1
+    if int(result["gd_proto_nll_total_rows"]) != int(result["gd_proto_nll_valid_rows"]) + int(
+        result["gd_proto_nll_zero_rows"]
+    ):
+        raise GDProtoNLLRuntimeError("P1-GD-ProtoNLL cumulative total/valid/zero row counts do not close")
     return result
 
 
@@ -682,6 +814,10 @@ def validate_gd_proto_nll_terminal_receipt(receipt: Mapping[str, Any]) -> Dict[s
     cells = {str(key): dict(value) for key, value in dict(result.get("gd_proto_nll_cells", {})).items()}
     missing = []
     invalid = []
+    cell_total_rows = 0
+    cell_valid_rows = 0
+    cell_zero_rows = 0
+    cell_loss_batches = 0
     for class_id in FROZEN_GD_PROTO_NLL_CLASS_IDS:
         for scenario in FROZEN_GD_PROTO_NLL_SCENARIOS:
             key = f"tx{class_id}|{scenario}"
@@ -689,12 +825,49 @@ def validate_gd_proto_nll_terminal_receipt(receipt: Mapping[str, Any]) -> Dict[s
             if cell is None:
                 missing.append(key)
                 continue
-            if int(cell.get("rows", 0)) <= 0 or int(cell.get("loss_batches", 0)) <= 0 or int(cell.get("finite_batches", 0)) <= 0 or int(cell.get("nonzero_aux_logit_gradient_batches", 0)) <= 0 or int(cell.get("nonfinite_batches", 0)) != 0:
+            total_rows = int(cell.get("total_rows", -1))
+            valid_rows = int(cell.get("valid_rows", -1))
+            zero_rows = int(cell.get("zero_rows", -1))
+            loss_batches = int(cell.get("valid_loss_batches", 0))
+            finite_batches = int(cell.get("finite_batches", 0))
+            witness_batches = int(cell.get("analytic_nonzero_logit_gradient_witness_batches", 0))
+            loss_sum = float(cell.get("valid_loss_sum", float("nan")))
+            if (
+                total_rows <= 0
+                or valid_rows <= 0
+                or zero_rows < 0
+                or total_rows != valid_rows + zero_rows
+                or loss_batches <= 0
+                or finite_batches != loss_batches
+                or witness_batches != loss_batches
+                or int(cell.get("nonfinite_batches", 0)) != 0
+                or not math.isfinite(loss_sum)
+            ):
                 invalid.append(key)
+                continue
+            cell_total_rows += total_rows
+            cell_valid_rows += valid_rows
+            cell_zero_rows += zero_rows
+            cell_loss_batches += loss_batches
     if missing or invalid:
         raise GDProtoNLLRuntimeError("P1-GD-ProtoNLL terminal local4x3 coverage failed: " + "; ".join((["missing=" + ",".join(missing)] if missing else []) + (["invalid=" + ",".join(invalid)] if invalid else [])))
     batches = int(result.get("gd_proto_nll_batches", 0))
-    if batches <= 0 or int(result.get("gd_proto_nll_state_update_batches", 0)) != batches:
+    total_rows = int(result.get("gd_proto_nll_total_rows", -1))
+    valid_rows = int(result.get("gd_proto_nll_valid_rows", -1))
+    zero_rows = int(result.get("gd_proto_nll_zero_rows", -1))
+    if (
+        batches <= 0
+        or int(result.get("gd_proto_nll_all_local4_valid_batches", 0)) != batches
+        or int(result.get("gd_proto_nll_state_update_batches", 0)) != batches
+        or total_rows <= 0
+        or valid_rows <= 0
+        or zero_rows < 0
+        or total_rows != valid_rows + zero_rows
+        or total_rows != cell_total_rows
+        or valid_rows != cell_valid_rows
+        or zero_rows != cell_zero_rows
+        or cell_loss_batches != 4 * batches
+    ):
         raise GDProtoNLLRuntimeError("P1-GD-ProtoNLL DRO state update count does not close")
     q = result.get("gd_proto_nll_q_final", [])
     barl = result.get("gd_proto_nll_barl_final", [])
@@ -706,13 +879,19 @@ def validate_gd_proto_nll_terminal_receipt(receipt: Mapping[str, Any]) -> Dict[s
         raise GDProtoNLLRuntimeError("P1-GD-ProtoNLL terminal state is invalid")
     if not bool(result.get("gd_proto_nll_gradient_relation_completed", False)):
         raise GDProtoNLLRuntimeError("P1-GD-ProtoNLL terminal receipt lacks first-batch raw gradient audit")
-    result["gd_proto_nll_terminal_contract"] = "FORMAL_L_ONLY_LOCAL4_X_SCENARIO3_LAGGED_EMA_DRO_FINITE_NONZERO_AUX_AND_FIRST_BATCH_RAW_RELATION"
+    result["gd_proto_nll_terminal_contract"] = "FORMAL_L_ONLY_LOCAL4_X_SCENARIO3_EXACT_ZERO_FILTER_LAGGED_EMA_DRO_ANALYTIC_LOGIT_GRADIENT_WITNESS_AND_FIRST_BATCH_RAW_RELATION"
     result["gd_proto_nll_terminal_contract_passed"] = True
     return result
 
 
 def _failure_fingerprint(error: BaseException) -> str:
     message = str(error).lower()
+    if "feature_nonfinite" in message:
+        return "GD_PROTO_NLL_FEATURE_NONFINITE"
+    if "head_nonfinite_or_zero" in message:
+        return "GD_PROTO_NLL_HEAD_NONFINITE_OR_ZERO"
+    if "feature_zero_filtered" in message:
+        return "GD_PROTO_NLL_FEATURE_ZERO_FILTERED_INVALID_COVERAGE"
     if "missing" in message or "disconnected" in message:
         return "GD_PROTO_NLL_GRADIENT_MISSING"
     if "non-finite" in message or "nonfinite" in message:

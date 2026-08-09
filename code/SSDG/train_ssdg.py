@@ -5987,7 +5987,13 @@ def train(args) -> int:
             "enabled": False,
             "lambda": 0.0,
             "gamma": 1.0,
+            "gd_proto_nll_batches": 0,
+            "gd_proto_nll_total_rows": 0,
+            "gd_proto_nll_valid_rows": 0,
+            "gd_proto_nll_zero_rows": 0,
+            "gd_proto_nll_all_local4_valid_batches": 0,
             "gd_proto_nll_cells": {},
+            "gd_proto_nll_state_update_batches": 0,
             "gd_proto_nll_gradient_relation_completed": False,
             "gd_proto_nll_terminal_contract": "PENDING",
             "gd_proto_nll_terminal_contract_passed": False,
@@ -7993,13 +7999,17 @@ def train(args) -> int:
                     "per_tx_nonzero_logit_gradient": {},
                 }
                 gd_proto_nll_batch_info: Dict[str, Any] = {
-                    "rows": 0,
+                    "total_rows": 0,
+                    "valid_rows": 0,
+                    "zero_rows": 0,
                     "classes": 0,
                     "scenario": "",
-                    "per_tx_rows": {},
-                    "per_tx_loss": {},
+                    "per_tx_total_rows": {},
+                    "per_tx_valid_rows": {},
+                    "per_tx_zero_rows": {},
+                    "per_tx_valid_loss": {},
                     "per_tx_finite": {},
-                    "per_tx_nonzero_aux_logit_gradient": {},
+                    "per_tx_analytic_nonzero_logit_gradient_witness": {},
                 }
                 ccpc_batch_info: Dict[str, Any] = {
                     "rows": 0,
@@ -9831,7 +9841,9 @@ def train(args) -> int:
                     ).detach(),
                     "train/loss_gd_proto_nll": loss_gd_proto_nll_l.detach(),
                     "train/gd_proto_nll_enabled": 1.0 if bool(getattr(gd_proto_nll_config, "enabled", False)) else 0.0,
-                    "train/gd_proto_nll_rows": float(gd_proto_nll_batch_info.get("rows", 0)),
+                    "train/gd_proto_nll_total_rows": float(gd_proto_nll_batch_info.get("total_rows", 0)),
+                    "train/gd_proto_nll_valid_rows": float(gd_proto_nll_batch_info.get("valid_rows", 0)),
+                    "train/gd_proto_nll_zero_rows": float(gd_proto_nll_batch_info.get("zero_rows", 0)),
                     "train/gd_proto_nll_classes": float(gd_proto_nll_batch_info.get("classes", 0)),
                     "train/gd_proto_nll_state_updates": float(
                         gd_proto_nll_receipt.get("gd_proto_nll_state_update_batches", 0)

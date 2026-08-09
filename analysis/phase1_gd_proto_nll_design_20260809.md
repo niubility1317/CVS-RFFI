@@ -1,12 +1,12 @@
 # P1-GD-ProtoNLL冻结设计卡
 
-状态：`LOCAL_VERIFIED_INDEPENDENT_REVIEW_ALLOW`。独立复审结论为`P0=0、P1=0、ALLOW`；本卡只定义Phase1 source-only C/G训练与后冻结连续几何诊断，不构成开放世界拒识、未知能力或晋级结论。
+状态：`LOCAL_VERIFIED_V3_PENDING_IMPLEMENTATION_REVIEW`。上一版独立复审结论为`P0=0、P1=0、ALLOW`；F1G E009暴露精确零范数feature方向未定义，当前已按后续独立科学复核`P0=0、P1=0、MERGE`完成最小v3修订。本卡只定义Phase1 source-only C/G训练与后冻结连续几何诊断，不构成开放世界拒识、未知能力或晋级结论。
 
 ## 冻结机制
 
 - 起点与共同项：每折C/G都从同一GeoSat-C`training_final_only`检查点严格加载，使用同一F1C本地4类L、同一40epoch、同一优化器新状态、同一`lambda_sat_cons=.10`和同一既有场景序列`(epoch+batch_idx-2)%3`。不得为G设置独立场景计数器；C完全不启用新增GD项。
-- G唯一新增项：对单次卫星LEO forward的`feat_joint`与既有`id_backbone.cls_head.head.weight`逐行L2归一，`a_ic=16*<z_i/||z_i||,w_c/||w_c||>`；`ell_c=mean_{i:y_i=c}(1-softmax(a_i)_c)^1[-log softmax(a_i)_c]`。
-- 每个G辅助批必须有本地4类。对当前场景`s`使用旧权重：`L_GD=3*sum_{c=0}^3q_t[c,s]ell_c`，总损失仅为既有共同base损失加`.10*L_GD`。不得读取clean特征/logit、teacher、RX/domain标签、U、V、proxy或held。
+- G唯一新增项：对单次卫星LEO forward的`feat_joint`先检查有限性，再仅过滤精确`||z_i||₂=0`的方向未定义行；不得使用eps、近零阈值、top-k或开关。既有`id_backbone.cls_head.head.weight`每行必须有限且范数严格大于0。对valid feature与head逐行L2归一，`a_ic=16*<z_i/||z_i||,w_c/||w_c||>`；`ell_c=mean_{i:y_i=c,valid_i}(1-softmax(a_i)_c)^1[-log softmax(a_i)_c]`。
+- 每个G辅助批过滤前必须有本地4类，过滤后每类至少1条valid feature，否则在backward、receipt、q和EMA更新前fail-closed。对当前场景`s`使用旧权重：`L_GD=3*sum_{c=0}^3q_t[c,s]ell_c`，总损失仅为既有共同base损失加`.10*L_GD`。共同base和sat-cons仍使用完整batch；不得读取clean特征/logit、teacher、RX/domain标签、U、V、proxy或held。
 - 初值`q0=1/12,barl0=0`。总损失反传后，停止梯度地对四个活跃格更新`barl[c,s]=.95barl[c,s]+.05ell_c`，再令12格`q=softmax(barl)`；不在同批重算辅助损失。
 - 首个有效G批仅做一次未缩放`base`对`.10L_GD`的shared encoder与精确head梯度范数/余弦审计；其符号只诊断，不改权重、采样、优化器或选择。
 
@@ -17,7 +17,7 @@
 
 ## 矩阵、终态与淘汰
 
-固定12臂、每GPU不超过2：GPU0:F1C/F5G；1:F1G/F5C；2:F2C/F6G；3:F2G/F6C；4:F3C；5:F3G；6:F4C；7:F4G。每个G终态必须封存本地4TX×3场景的12格`rows/loss/finite/nonzero-aux-gradient`，首批审计和每批EMA更新；缺格、None、非有限或零辅助梯度即fail-closed。后冻结仅按已冻结的clean六折四floor、18个LEO格四floor、18格等权overall、每折三场景等权overall和逐折proxy连续诊断执行非补偿门；任何失败永久淘汰，不以proxy补偿。
+固定12臂、每GPU不超过2：GPU0:F1C/F5G；1:F1G/F5C；2:F2C/F6G；3:F2G/F6C；4:F3C；5:F3G；6:F4C；7:F4G。每个G终态必须封存本地4TX×3场景的12格`total_rows/valid_rows/zero_rows/valid_loss/finite/analytic_nonzero_logit_gradient_witness`；批级和格级计数必须闭合，每个批的四类valid覆盖必须成立，zero只作诊断且不要求为0。首批审计和每批EMA更新仍为硬门。后冻结仅按已冻结的clean六折四floor、18个LEO格四floor、18格等权overall、每折三场景等权overall和逐折proxy连续诊断执行非补偿门；任何失败永久淘汰，不以proxy补偿。
 
 ## 追溯记录
 
@@ -31,5 +31,8 @@
 |GD-06|冻结卡：终态|12格覆盖、状态更新、failure receipt|`phase1_gd_proto_nll.py`,`train_ssdg.py`|verified|focused pytest|failure写盘best-effort且不遮蔽原异常|
 |GD-07|冻结卡：NLL|L-only float64对角Gaussian连续评分|`phase1_gd_proto_nll.py`,`test_phase1_gd_proto_nll.py`|verified|focused pytest|无阈值、训练未调用|
 |GD-08|冻结卡：资源|固定40E final-only12臂、GPU映射与不可覆盖根|`launch_phase1_gd_proto_nll12_20260809.sh`|verified|`bash -n`与12臂dry-run|不含postfreeze|
+|GD-09|v3修订：零feature|仅过滤精确零范数feature；nonfinite feature与zero/nonfinite head fatal；各类valid>=1|`phase1_gd_proto_nll.py`,`test_phase1_gd_proto_nll.py`|verified|focused pytest|无eps/阈值/top-k/开关；合法零行不进入辅助损失且梯度为零|
+|GD-10|v3修订：计数闭合|批/12格封存total/valid/zero及解析梯度见证，terminal闭合且zero只诊断|`phase1_gd_proto_nll.py`,`train_ssdg.py`,`test_phase1_gd_proto_nll.py`|verified|focused pytest|缺valid类在任何状态更新前fatal；批级和终态计数漂移负测|
+|GD-11|v3修订：不可覆盖运行|launcher默认run ID升级为`phase1_gd_proto_nll12_20260809_v3`|`launch_phase1_gd_proto_nll12_20260809.sh`|verified|`bash -n`与dry-run12|矩阵与参数不变|
 
-v3本地验证：`py_compile`通过；`pytest -q code/tests/test_phase1_gd_proto_nll.py code/tests/test_phase1_cb_sfce.py code/tests/test_phase1_cp_sfce.py`为29 passed；`bash -n`与12臂dry-run通过；`git diff --check`通过。独立复审确认C/G场景序列一致、`training_final_only`绑定及feature/head有限正范数边界闭合，结论`P0=0、P1=0、ALLOW`。以上均为实现证据，未运行N607，也没有性能结果。
+v3本地证据：`py_compile`通过；GD、CB、CP聚焦回归为31 passed，其中包括lite_d无query前后向smoke；`bash -n`与dry-run12通过；`git diff --check`通过。v3实现尚待独立代码复审；未运行N607，也没有性能结果。

@@ -145,7 +145,10 @@ def test_lagged_dro_uses_old_q_fixed_scene_scale_and_detached_ema_update() -> No
     )
     assert info["uses_old_q"] is True
     assert info["fixed_scene_scale"] == 3.0
-    assert info["per_tx_rows"] == {"0": 2, "1": 2, "2": 2, "3": 2}
+    assert info["per_tx_total_rows"] == {"0": 2, "1": 2, "2": 2, "3": 2}
+    assert info["per_tx_valid_rows"] == {"0": 2, "1": 2, "2": 2, "3": 2}
+    assert info["per_tx_zero_rows"] == {"0": 0, "1": 0, "2": 0, "3": 0}
+    assert all(info["per_tx_analytic_nonzero_logit_gradient_witness"].values())
     assert loss.requires_grad and torch.isfinite(loss)
     loss.backward()
     assert features.grad is not None and float(features.grad.abs().sum()) > 0.0
@@ -153,7 +156,7 @@ def test_lagged_dro_uses_old_q_fixed_scene_scale_and_detached_ema_update() -> No
     next_state = advance_gd_proto_nll_state(state, info)
     assert torch.isclose(next_state["q"].sum(), torch.tensor(1.0), atol=1e-6)
     assert float(next_state["barl"][1]) == pytest.approx(
-        FROZEN_GD_PROTO_NLL_BETA * info["per_tx_loss"]["0"], rel=1e-6
+        FROZEN_GD_PROTO_NLL_BETA * info["per_tx_valid_loss"]["0"], rel=1e-6
     )
     assert float(next_state["barl"][0]) == 0.0
 
@@ -187,18 +190,78 @@ def test_loss_requires_every_local_four_and_is_label_permutation_equivariant() -
             scenario="leo_clear_weak",
             state=state,
         )
-    with pytest.raises(GDProtoNLLRuntimeError, match="zero L2 norm"):
+
+
+def test_exact_zero_feature_rows_are_filtered_without_eps_and_keep_full_batch_base_path() -> None:
+    features, labels = _features_and_labels()
+    filtered = features.detach().clone()
+    filtered[0].zero_()
+    filtered.requires_grad_(True)
+    weight = _nonzero_class_weight()
+    loss, info = gd_proto_nll_loss(
+        filtered,
+        weight,
+        labels,
+        scenario="leo_clear_weak",
+        state=make_gd_proto_nll_state("cpu"),
+    )
+    assert info["total_rows"] == 8 and info["valid_rows"] == 7 and info["zero_rows"] == 1
+    assert info["per_tx_total_rows"]["0"] == 2
+    assert info["per_tx_valid_rows"]["0"] == 1
+    assert info["per_tx_zero_rows"]["0"] == 1
+    assert info["feature_zero_filtered"] is True
+    assert info["all_local4_present_before_filter"] is True
+    assert info["all_local4_valid_after_filter"] is True
+    assert all(info["per_tx_analytic_nonzero_logit_gradient_witness"].values())
+    loss.backward()
+    assert filtered.grad is not None
+    assert torch.equal(filtered.grad[0], torch.zeros_like(filtered.grad[0]))
+    assert float(filtered.grad[1:].abs().sum()) > 0.0
+    source = inspect.getsource(gd_proto_nll_loss)
+    assert "F.normalize" not in source and "eps=" not in source
+
+    missing_valid_class = features.detach().clone()
+    missing_valid_class[:2].zero_()
+    missing_valid_class.requires_grad_(True)
+    with pytest.raises(GDProtoNLLRuntimeError, match="feature_zero_filtered"):
         gd_proto_nll_loss(
-            torch.zeros_like(features, requires_grad=True),
-            weight,
+            missing_valid_class,
+            _nonzero_class_weight(),
+            labels,
+            scenario="leo_clear_weak",
+            state=make_gd_proto_nll_state("cpu"),
+        )
+
+
+def test_feature_nonfinite_and_head_nonfinite_or_zero_have_distinct_failures() -> None:
+    features, labels = _features_and_labels()
+    state = make_gd_proto_nll_state("cpu")
+    weight = _nonzero_class_weight()
+    with pytest.raises(GDProtoNLLRuntimeError, match="head_nonfinite_or_zero"):
+        gd_proto_nll_loss(
+            features,
+            torch.nn.Parameter(torch.zeros_like(weight)),
             labels,
             scenario="leo_clear_weak",
             state=state,
         )
-    with pytest.raises(GDProtoNLLRuntimeError, match="zero L2 norm"):
+    nonfinite_head = weight.detach().clone()
+    nonfinite_head[0, 0] = float("nan")
+    with pytest.raises(GDProtoNLLRuntimeError, match="head_nonfinite_or_zero"):
         gd_proto_nll_loss(
             features,
-            torch.nn.Parameter(torch.zeros_like(weight)),
+            torch.nn.Parameter(nonfinite_head),
+            labels,
+            scenario="leo_clear_weak",
+            state=state,
+        )
+    nonfinite_feature = features.detach().clone()
+    nonfinite_feature[0, 0] = float("nan")
+    nonfinite_feature.requires_grad_(True)
+    with pytest.raises(GDProtoNLLRuntimeError, match="feature_nonfinite"):
+        gd_proto_nll_loss(
+            nonfinite_feature,
+            weight,
             labels,
             scenario="leo_clear_weak",
             state=state,
@@ -209,7 +272,7 @@ def test_loss_requires_every_local_four_and_is_label_permutation_equivariant() -
         dtype=torch.float32,
         requires_grad=True,
     )
-    with pytest.raises(GDProtoNLLRuntimeError, match="non-finite or zero L2 norm"):
+    with pytest.raises(GDProtoNLLRuntimeError, match="feature_nonfinite"):
         gd_proto_nll_loss(
             overflow_feature,
             weight,
@@ -303,8 +366,16 @@ def test_terminal_receipt_requires_all_twelve_cells_state_and_first_relation() -
     state = make_gd_proto_nll_state("cpu")
     for scenario in FROZEN_GD_PROTO_NLL_SCENARIOS:
         features, labels = _features_and_labels()
+        if scenario == "leo_low_elev_weak":
+            with_zero = features.detach().clone()
+            with_zero[0].zero_()
+            features = with_zero.requires_grad_(True)
         weight = _nonzero_class_weight()
         _, info = gd_proto_nll_loss(features, weight, labels, scenario=scenario, state=state)
+        if scenario == "leo_clear_weak":
+            bad_info = {**info, "valid_rows": int(info["valid_rows"]) + 1}
+            with pytest.raises(GDProtoNLLRuntimeError, match="counts do not close"):
+                update_gd_proto_nll_receipt(receipt, bad_info, scenario=scenario)
         receipt = update_gd_proto_nll_receipt(receipt, info, scenario=scenario)
         state = advance_gd_proto_nll_state(state, info)
         receipt = update_gd_proto_nll_state_receipt(receipt, state)
@@ -320,6 +391,15 @@ def test_terminal_receipt_requires_all_twelve_cells_state_and_first_relation() -
     terminal = validate_gd_proto_nll_terminal_receipt(receipt)
     assert terminal["gd_proto_nll_terminal_contract_passed"] is True
     assert len(terminal["gd_proto_nll_cells"]) == 12
+    assert terminal["gd_proto_nll_total_rows"] == 24
+    assert terminal["gd_proto_nll_valid_rows"] == 23
+    assert terminal["gd_proto_nll_zero_rows"] == 1
+    assert terminal["gd_proto_nll_all_local4_valid_batches"] == 3
+    assert terminal["gd_proto_nll_cells"]["tx0|leo_low_elev_weak"]["zero_rows"] == 1
+    drifted = dict(terminal)
+    drifted["gd_proto_nll_valid_rows"] = int(drifted["gd_proto_nll_valid_rows"]) + 1
+    with pytest.raises(GDProtoNLLRuntimeError, match="does not close"):
+        validate_gd_proto_nll_terminal_receipt(drifted)
     bad = {**relation, "shared_encoder": {**relation["shared_encoder"], "base_norm": 0.0}}
     with pytest.raises(GDProtoNLLRuntimeError, match="zero norm"):
         update_gd_proto_nll_gradient_relation_receipt(gd_proto_nll_config_receipt(GDProtoNLLConfig(True, True, 0.10, 1.0)), bad)
@@ -369,6 +449,23 @@ def test_warm_start_failure_receipt_is_best_effort_and_does_not_mask(tmp_path, m
         tmp_path, candidate_id="F1G", run_id="gd12", receipt=receipt, error=original, failure_stage="test"
     )
     assert json.loads(written.read_text(encoding="utf-8"))["error_fingerprint"] == "GD_PROTO_NLL_NONFINITE"
+    for message, expected in (
+        ("P1-GD-ProtoNLL feature_nonfinite: test", "GD_PROTO_NLL_FEATURE_NONFINITE"),
+        ("P1-GD-ProtoNLL head_nonfinite_or_zero: test", "GD_PROTO_NLL_HEAD_NONFINITE_OR_ZERO"),
+        (
+            "P1-GD-ProtoNLL feature_zero_filtered: test",
+            "GD_PROTO_NLL_FEATURE_ZERO_FILTERED_INVALID_COVERAGE",
+        ),
+    ):
+        split = write_gd_proto_nll_failure_receipt(
+            tmp_path,
+            candidate_id="F1G",
+            run_id="gd12",
+            receipt=receipt,
+            error=GDProtoNLLRuntimeError(message),
+            failure_stage="test",
+        )
+        assert json.loads(split.read_text(encoding="utf-8"))["error_fingerprint"] == expected
 
     def writer_failure(*args, **kwargs):
         raise OSError("simulated write failure")
@@ -424,7 +521,7 @@ def test_launcher_has_frozen_twelve_arm_matrix_and_dry_run() -> None:
         ("2", "C", "2"), ("6", "G", "2"), ("2", "G", "3"), ("6", "C", "3"),
         ("3", "C", "4"), ("3", "G", "5"), ("4", "C", "6"), ("4", "G", "7"),
     ]
-    assert "phase1_gd_proto_nll12_20260809_v1" in text
+    assert "phase1_gd_proto_nll12_20260809_v3" in text
     assert "--lambda_gd_proto_nll 0.10" in text and "--lambda_gd_proto_nll 0" in text
     assert "--gd_proto_nll_gamma 1" in text
     assert "postfreeze" not in text.lower()

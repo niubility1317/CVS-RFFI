@@ -3,7 +3,7 @@ set -euo pipefail
 
 # Frozen six-fold P1-GD-ProtoNLL C/G continuation matrix.  C is the exact
 # GeoSat-C continuation control; G adds only the frozen L-only GD focal term.
-RUN_ID="${RUN_ID:-phase1_gd_proto_nll12_20260809_v1}"
+RUN_ID="${RUN_ID:-phase1_gd_proto_nll12_20260809_v3}"
 PROJECT_ROOT="${PROJECT_ROOT:-/home/szu2070436088/2510044040/CV-SincNet}"
 CODE_ROOT="${CODE_ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 PYTHON="${PYTHON:-/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python}"
