@@ -179,6 +179,8 @@ Git镜像报告commit=`b012ddaa`（仅本报告文件）；实现commit=`7f6f4cf
 
 状态：`ARTIFACTS_COMPLETE / TECHNICAL_ONLY / NO_PERFORMANCE_RESULT`。冻结命令实际调用1次；SSH调用端约34秒超时后仅只读确认已landed，未重发。wrapper PID=`630495`、launcher PID=`630496`；launcher按冻结GPU矩阵登记12个candidate PID，随后wrapper/launcher/所有子进程自然退出。GPU7既有SCB v4构建PID=`608786`持续存在，未被干预。
 
+启动绑定核验：wrapper、launcher及candidate继承CWD=`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_icmt_postfreeze_20260810_v2_7f6f4cfe/code`；wrapper/launcher cmdline逐字等同§6并绑定冻结run/log roots，`candidate_pids.tsv`记录12个PID、GPU与日志路径。首波candidate日志在03:42:55–03:43:24（+0800）形成，F1–F6 pair日志在03:43:27–03:43:48（+0800）收尾；outer保持0字节（子步骤stdout按冻结设计写入`LOG_ROOT`独立日志）。
+
 |fold|arm|candidate PID|GPU|candidate|日志|
 |---:|---|---:|---:|---|---|
 |1|C|630499|0|F1C_ICMT12|`F1C_ICMT12.out`|
