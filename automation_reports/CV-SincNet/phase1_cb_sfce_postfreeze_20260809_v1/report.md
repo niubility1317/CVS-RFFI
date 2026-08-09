@@ -2,7 +2,7 @@
 
 ## 1. 预注册状态
 
-- 状态：`LOCAL_VERIFIED / READY_FOR_N607_RELEASE / NO_PERFORMANCE_RESULT`
+- 状态：`ARTIFACTS_COMPLETE / POSTFREEZE_TECHNICAL_COMPLETE / NO_PERFORMANCE_RESULT`
 - 日期：2026-08-09
 - 负责人：`/root`；N607唯一runner：`/root/n607_geosat_lite_runner`
 - 目标：对已完成的`phase1_cb_sfce12_20260809_v1`执行唯一final-only 42步闭环，按冻结非补偿门裁决P1-CB-SFCE。
@@ -65,4 +65,8 @@ GPU映射与训练相同：GPU0–3各2个candidate，GPU4–7各1个；pair阶�
 - expected：12 clean NPZ、12 LEO NPZ、12 proxy JSON/CSV、6 pair JSON、completion/manifest/log；只回收小JSON/CSV/log，不下载checkpoint/NPZ。
 - 任一export/score失败不得继续生成promotion verdict；retry=NO。
 
-待runner回填archive/member SHA、PID/GPU、42步exit、结构计数、artifact SHA和最终非补偿门结果。
+- 2026-08-09按冻结命令唯一启动，launcher PID=`79633`；candidate PID/GPU记录为`79646:F1C@0,79648:F5G@0,79649:F1G@1,79651:F5C@1,79652:F2C@2,79654:F6G@2,79656:F2G@3,79658:F6C@3,79660:F3C@4,79664:F3G@5,79667:F4C@6,79669:F4G@7`。launcher与所有child均已退出，GPU回到0%/1MiB；无SSH/TCP22残留。
+- 无prefix release archive SHA256=`6911dfa4b616574b526cc44776e89a8cfb2f07918d31f93dc0b24bd35a77cc20`（261795840 bytes）。远端成员SHA（LF归档口径）：`eval_phase1_cb_sfce_pair.py=bd3fec8c41001933fd69f03b70b0a17843afa30cc3a71f221982ff802c6147c2`、launcher=`16c0574553675eac96b1c3468d09956bf37d99fec5891dd5a78097558b1163d8`、`export_spaceborne_features.py=5bd7b4fa184741b9918453eb8bf0773e6a84032da634954ee339f3576124f6fe`、logits scorer=`ac1cf8e45fadbc0782282625300a0c30936fdce4b2df241558dff979dafe5c04`、postfreeze test=`8a0d86fee3fdb1c29517767293cdf222ea3e73608e0639ae63524bc908c4861a`、design=`cb33ebf5a0f6c13b952daddd63b639dedd8ec52277eb4a2b92a702e82bf42b4c`；py_compile/help/bash-n通过，dry-run=`42`。
+- 42步技术产物闭合：clean export=`12/12`、source-only LEO export=`12/12`、proxy score=`12/12`、CPU pair=`6/6`，均按完成闭环推断exit 0；日志无Traceback/RuntimeError/OOM/CUDA/FileNotFound/ValueError指纹。clean每候选2400行（source1600/target_old400/proxy_unknown400），LEO每候选1600行（source-only、`channel_views=single`、三场景、两天、六RX），各自物理row-binding unique且checkpoint SHA strict binding为12/12；pair technical binding为6/6。F6 aggregate机械字段：fold_indices=`[1,2,3,4,5,6]`、prior_pair_count=`5`、technical_binding=`true`、`phase3_unknown_capability_claim=NOT_EVALUATED`；pair JSON中的aggregate verdict字段原样为`REJECT_CB_SFCE_PERMANENT`，runner不解释该字段。
+- 小artifact回收至`E:\type10-7\automation_reports\CV-SincNet\phase1_cb_sfce_postfreeze_20260809_v1\artifacts`：远端小tar SHA256=`aeee6e0433890e239b3913cd6204693f87403062c4b2c0be804fb7873a427fcd`（528714 bytes，49项）；本地共51项（49远端文件+本地completion/manifest），不含NPZ/checkpoint。`manifest.json` SHA256=`2dfd40cc855893d82265796c38387fa31a1edfdc0301a2416e00d6ff047aa0aa`，`completion.tsv` SHA256=`d7424046ffd55b34517e22d6776ccd13e72c5fb52c886dc6b2446f8b35aa6699`；launcher原生仅写`candidate_pids.tsv`，未写completion/manifest，故两者为本地机械receipt，不改变远端run。
+- 本runner仅报告技术闭环与结构字段，未读取/解释性能，不启动后续run，retry=`NO`；root/Git报告待提交仅本报告终态修正。
