@@ -142,6 +142,30 @@ try:
         validate_gd_proto_nll_terminal_receipt,
         write_gd_proto_nll_failure_receipt,
     )
+    from cvsrffi.phase1_icmt import (
+        ICMTConfig,
+        ICMTConfigurationError,
+        ICMTRuntimeError,
+        FROZEN_ICMT_SCENARIOS,
+        add_icmt_to_loss,
+        bind_icmt_optimizer_initial_state,
+        bind_icmt_source_data_order,
+        icmt_config_receipt,
+        icmt_loss,
+        icmt_shared_encoder_and_head_parameters,
+        icmt_shared_gradient_relation,
+        remap_icmt_local_labels_to_head_rows,
+        resolve_icmt_classifier_weight,
+        resolve_icmt_local_head_class_binding,
+        strict_icmt_warm_start,
+        update_icmt_common_batch_sequence_receipt,
+        update_icmt_gradient_relation_receipt,
+        update_icmt_receipt,
+        validate_icmt_args,
+        validate_icmt_binding,
+        validate_icmt_terminal_receipt,
+        write_icmt_failure_receipt,
+    )
     from cvsrffi.phase1_cp_sfce import (
         CPSFCEConfig,
         CPSFCEConfigurationError,
@@ -326,6 +350,17 @@ except ModuleNotFoundError:
     update_gd_proto_nll_state_receipt = validate_gd_proto_nll_args = None
     validate_gd_proto_nll_feature_binding = validate_gd_proto_nll_terminal_receipt = None
     write_gd_proto_nll_failure_receipt = None
+    ICMTConfig = None
+    ICMTConfigurationError = ICMTRuntimeError = None
+    FROZEN_ICMT_SCENARIOS = tuple()
+    add_icmt_to_loss = bind_icmt_optimizer_initial_state = bind_icmt_source_data_order = None
+    icmt_config_receipt = icmt_loss = icmt_shared_encoder_and_head_parameters = None
+    icmt_shared_gradient_relation = remap_icmt_local_labels_to_head_rows = None
+    resolve_icmt_classifier_weight = resolve_icmt_local_head_class_binding = None
+    strict_icmt_warm_start = update_icmt_common_batch_sequence_receipt = None
+    update_icmt_gradient_relation_receipt = update_icmt_receipt = None
+    validate_icmt_args = validate_icmt_binding = validate_icmt_terminal_receipt = None
+    write_icmt_failure_receipt = None
     CPSFCEConfig = None
     CPSFCEConfigurationError = CPSFCERuntimeError = None
     FROZEN_CP_SFCE_SCENARIOS = tuple()
@@ -603,6 +638,24 @@ def build_arg_parser() -> argparse.ArgumentParser:
         type=float,
         default=1.0,
         help="Frozen focal exponent for P1-GD-ProtoNLL; must remain 1.",
+    )
+    parser.add_argument(
+        "--phase1_icmt_frozen_mode",
+        type=str2bool,
+        default=False,
+        help="Enable the frozen P1-ICMT C/G continuation contract.",
+    )
+    parser.add_argument(
+        "--phase1_icmt_enabled",
+        type=str2bool,
+        default=False,
+        help="Enable the sole independent-view classwise margin-tail term in a P1-ICMT G arm.",
+    )
+    parser.add_argument(
+        "--lambda_icmt",
+        type=float,
+        default=0.0,
+        help="Frozen at 0 for C and 0.05 for G when P1-ICMT mode is enabled.",
     )
     parser.add_argument(
         "--phase1_cp_sfce_frozen_mode",
@@ -4838,6 +4891,9 @@ def _build_ssdg_epoch_telemetry_row(
         "phase1_gd_proto_nll_enabled": bool(getattr(args, "phase1_gd_proto_nll_enabled", False)),
         "lambda_gd_proto_nll": float(getattr(args, "lambda_gd_proto_nll", 0.0)),
         "gd_proto_nll_gamma": float(getattr(args, "gd_proto_nll_gamma", 1.0)),
+        "phase1_icmt_frozen_mode": bool(getattr(args, "phase1_icmt_frozen_mode", False)),
+        "phase1_icmt_enabled": bool(getattr(args, "phase1_icmt_enabled", False)),
+        "lambda_icmt": float(getattr(args, "lambda_icmt", 0.0)),
         "phase1_cp_sfce_frozen_mode": bool(getattr(args, "phase1_cp_sfce_frozen_mode", False)),
         "phase1_cp_sfce_enabled": bool(getattr(args, "phase1_cp_sfce_enabled", False)),
         "lambda_cp_sfce": float(getattr(args, "lambda_cp_sfce", 0.0)),
@@ -5778,6 +5834,43 @@ def _persist_gd_proto_nll_failure_receipt(
         return None
 
 
+def _persist_icmt_failure_receipt(
+    *,
+    out_dir: Path,
+    args: Any,
+    icmt_receipt: Mapping[str, Any],
+    error: BaseException,
+    failure_stage: str,
+) -> Optional[Path]:
+    """Best-effort persistence that never masks the primary P1-ICMT failure."""
+
+    def _emit_writer_failure(exception_type: str) -> None:
+        try:
+            print(
+                "[P1-ICMT-FAILURE-RECEIPT] persistence_failed "
+                f"writer_exception_type={exception_type}",
+                flush=True,
+            )
+        except Exception:
+            pass
+
+    if write_icmt_failure_receipt is None:
+        _emit_writer_failure("ImportError")
+        return None
+    try:
+        return write_icmt_failure_receipt(
+            out_dir,
+            candidate_id=str(getattr(args, "candidate_id", "") or ""),
+            run_id=str(getattr(args, "run_id", "") or ""),
+            receipt=icmt_receipt,
+            error=error,
+            failure_stage=str(failure_stage),
+        )
+    except Exception as receipt_error:
+        _emit_writer_failure(type(receipt_error).__name__)
+        return None
+
+
 def _persist_cp_sfce_failure_receipt(
     *,
     out_dir: Path,
@@ -6006,6 +6099,34 @@ def train(args) -> int:
     gd_proto_nll_frozen_mode = bool(getattr(gd_proto_nll_config, "frozen_mode", False))
     gd_proto_nll_local_to_head_class_ids: Optional[Tuple[int, ...]] = None
     gd_proto_nll_state: Optional[Dict[str, torch.Tensor]] = None
+    if (
+        validate_icmt_args is None
+        or icmt_config_receipt is None
+        or strict_icmt_warm_start is None
+    ):
+        if bool(getattr(args, "phase1_icmt_frozen_mode", False)) or bool(
+            getattr(args, "phase1_icmt_enabled", False)
+        ):
+            raise ImportError("cvsrffi.phase1_icmt is required for P1-ICMT")
+        icmt_config = None
+        icmt_receipt: Dict[str, Any] = {
+            "schema": "cvs.phase1.icmt_receipt.v1",
+            "frozen_mode": False,
+            "enabled": False,
+            "lambda": 0.0,
+            "icmt_clean_cells": {},
+            "icmt_leo_cells": {},
+            "icmt_gradient_relation_completed": False,
+            "icmt_terminal_contract": "PENDING",
+            "icmt_terminal_contract_passed": False,
+            "proxy_rows": 0,
+            "held_rows": 0,
+        }
+    else:
+        icmt_config = validate_icmt_args(args)
+        icmt_receipt = icmt_config_receipt(icmt_config)
+    icmt_frozen_mode = bool(getattr(icmt_config, "frozen_mode", False))
+    icmt_local_to_head_class_ids: Optional[Tuple[int, ...]] = None
     if (
         validate_cp_sfce_args is None
         or cp_sfce_config_receipt is None
@@ -6283,7 +6404,7 @@ def train(args) -> int:
             "--phase1_allow_empty_proxy_unknown requires the frozen ManyTx real-OE protocol"
         )
     data_ctx = _build_ssdg_wisig_data(args, device)
-    if ccpc_frozen_mode or pamr_frozen_mode or cb_sfce_frozen_mode or gd_proto_nll_frozen_mode or cp_sfce_frozen_mode:
+    if ccpc_frozen_mode or pamr_frozen_mode or cb_sfce_frozen_mode or gd_proto_nll_frozen_mode or icmt_frozen_mode or cp_sfce_frozen_mode:
         tx_partition_receipt = (
             (data_ctx.get("split_info", {}) or {}).get("tx_partition_receipt", {})
         )
@@ -6298,6 +6419,10 @@ def train(args) -> int:
                 )
             if gd_proto_nll_frozen_mode:
                 raise GDProtoNLLConfigurationError(
+                    "Frozen Phase1 continuation requires an explicit TX-role partition receipt"
+                )
+            if icmt_frozen_mode:
+                raise ICMTConfigurationError(
                     "Frozen Phase1 continuation requires an explicit TX-role partition receipt"
                 )
             if cp_sfce_frozen_mode:
@@ -6318,6 +6443,10 @@ def train(args) -> int:
                 )
             if gd_proto_nll_frozen_mode:
                 raise GDProtoNLLConfigurationError(
+                    "Frozen Phase1 continuation rejects any held/proxy TX loaded by training"
+                )
+            if icmt_frozen_mode:
+                raise ICMTConfigurationError(
                     "Frozen Phase1 continuation rejects any held/proxy TX loaded by training"
                 )
             if cp_sfce_frozen_mode:
@@ -6389,6 +6518,37 @@ def train(args) -> int:
                     "P1-GD-ProtoNLL data_ctx local TX class order must equal the source-train TX receipt"
                 )
             gd_proto_nll_receipt.update(
+                {
+                    **frozen_source_roles,
+                    "local_data_class_count": local_data_class_count,
+                    "local_tx_class_order": local_tx_order,
+                }
+            )
+        if icmt_frozen_mode:
+            local_data_class_count = int(data_ctx.get("num_classes", 0))
+            local_tx_order = list(data_ctx.get("class_id_to_tx", []) or [])
+            if local_data_class_count != len(local_tx_order):
+                raise ICMTConfigurationError(
+                    "P1-ICMT data_ctx local class count must equal its local TX class-order receipt"
+                )
+            if local_tx_order != frozen_source_roles["source_train_tx"]:
+                raise ICMTConfigurationError(
+                    "P1-ICMT data_ctx local TX class order must equal the source-train TX receipt"
+                )
+            if bind_icmt_source_data_order is None:
+                raise ImportError("cvsrffi.phase1_icmt source data-order binding support is required")
+            icmt_receipt.update(
+                bind_icmt_source_data_order(
+                    {
+                        **icmt_receipt,
+                        **frozen_source_roles,
+                        "local_data_class_count": local_data_class_count,
+                        "local_tx_class_order": local_tx_order,
+                    },
+                    (data_ctx.get("split_info", {}) or {}).get("source_split_receipt", {}),
+                )
+            )
+            icmt_receipt.update(
                 {
                     **frozen_source_roles,
                     "local_data_class_count": local_data_class_count,
@@ -6477,6 +6637,20 @@ def train(args) -> int:
         elif gd_proto_nll_frozen_mode:
             gd_proto_nll_receipt.update(
                 strict_gd_proto_nll_warm_start(
+                    model,
+                    ckpt["model"],
+                    baseline_path=str(args.baseline_ckpt),
+                    baseline_sha256=_sha256_file(args.baseline_ckpt),
+                    checkpoint_epoch=ckpt.get("epoch", -1),
+                    checkpoint_role=ckpt.get(
+                        "checkpoint_role",
+                        ckpt.get("checkpoint_selection", "UNSPECIFIED"),
+                    ),
+                )
+            )
+        elif icmt_frozen_mode:
+            icmt_receipt.update(
+                strict_icmt_warm_start(
                     model,
                     ckpt["model"],
                     baseline_path=str(args.baseline_ckpt),
@@ -6631,6 +6805,45 @@ def train(args) -> int:
             encoding="utf-8",
             newline="\n",
         )
+    if icmt_frozen_mode:
+        if (
+            resolve_icmt_classifier_weight is None
+            or resolve_icmt_local_head_class_binding is None
+            or remap_icmt_local_labels_to_head_rows is None
+        ):
+            raise ImportError("cvsrffi.phase1_icmt classifier binding support is required")
+        icmt_weight = resolve_icmt_classifier_weight(model)
+        checkpoint_args = ckpt.get("args", {}) or {}
+        if not isinstance(checkpoint_args, Mapping):
+            raise ICMTConfigurationError(
+                "P1-ICMT strict baseline checkpoint must contain an argument mapping"
+            )
+        checkpoint_train_tx = [
+            item.strip()
+            for item in str(checkpoint_args.get("phase1_source_train_tx_ids", "") or "").split(",")
+            if item.strip()
+        ]
+        tx_partition_receipt = (data_ctx.get("split_info", {}) or {}).get(
+            "tx_partition_receipt", {}
+        )
+        icmt_head_binding = resolve_icmt_local_head_class_binding(
+            local_class_order=list(data_ctx.get("class_id_to_tx", []) or []),
+            source_train_tx=list(tx_partition_receipt.get("source_known_train_tx", []) or []),
+            checkpoint_train_tx=checkpoint_train_tx,
+            dataset_class_order=list(tx_partition_receipt.get("dataset_tx_order", []) or []),
+            local_data_class_count=data_ctx.get("num_classes", 0),
+            checkpoint_head_class_count=checkpoint_args.get("num_classes", None),
+            live_head_class_count=int(icmt_weight.size(0)),
+        )
+        icmt_local_to_head_class_ids = tuple(
+            int(value) for value in icmt_head_binding["local_to_head_class_ids"]
+        )
+        icmt_receipt.update(icmt_head_binding)
+        (out_dir / "phase1_icmt_config_receipt.json").write_text(
+            json.dumps(icmt_receipt, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+            newline="\n",
+        )
     if cp_sfce_frozen_mode:
         if (
             resolve_cp_sfce_classifier_weight is None
@@ -6706,6 +6919,25 @@ def train(args) -> int:
             param.requires_grad = False
     optimizer = torch.optim.AdamW([p for p in model.parameters() if p.requires_grad], lr=float(args.lr), weight_decay=float(args.weight_decay))
     scaler = GradScaler(enabled=bool(args.amp and device.type == "cuda"))
+    if icmt_frozen_mode:
+        try:
+            if bind_icmt_optimizer_initial_state is None:
+                raise ImportError("cvsrffi.phase1_icmt AdamW initial-state receipt support is required")
+            icmt_receipt = bind_icmt_optimizer_initial_state(icmt_receipt, optimizer)
+            (out_dir / "phase1_icmt_config_receipt.json").write_text(
+                json.dumps(icmt_receipt, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+                encoding="utf-8",
+                newline="\n",
+            )
+        except Exception as error:
+            _persist_icmt_failure_receipt(
+                out_dir=out_dir,
+                args=args,
+                icmt_receipt=icmt_receipt,
+                error=error,
+                failure_stage="new_adamw_initial_state_binding",
+            )
+            raise
     proto_bank = None
     if bool(getattr(args, "use_proto_memory", False)) or float(getattr(args, "lambda_proto", 0.0)) > 0.0:
         if PrototypeMemoryBank is None:
@@ -6919,6 +7151,16 @@ def train(args) -> int:
                 f"baseline_strict={int(bool(gd_proto_nll_receipt.get('strict_model_keys', False)))} "
                 f"checkpoint_epoch={int(gd_proto_nll_receipt.get('checkpoint_epoch', -1))} "
                 f"checkpoint_role={str(gd_proto_nll_receipt.get('checkpoint_role', '') or '-')} "
+                "rx_or_domain_labels=0 proxy_rows=0 held_rows=0",
+                "[CONFIG-P1-ICMT] "
+                f"frozen_mode={int(bool(icmt_receipt.get('frozen_mode', False)))} "
+                f"enabled={int(bool(icmt_receipt.get('enabled', False)))} "
+                f"lambda={float(icmt_receipt.get('lambda', 0.0)):.6g} "
+                f"rule={str(icmt_receipt.get('loss_rule', '') or '-')} "
+                f"divisor={int(icmt_receipt.get('loss_divisor', 0))} "
+                f"zid={str(icmt_receipt.get('z_id_key', '') or '-')} "
+                f"baseline_strict={int(bool(icmt_receipt.get('strict_model_keys', False)))} "
+                f"checkpoint_role={str(icmt_receipt.get('checkpoint_role', '') or '-')} "
                 "rx_or_domain_labels=0 proxy_rows=0 held_rows=0",
                 "[CONFIG-P1-CP-SFCE] "
                 f"frozen_mode={int(bool(cp_sfce_receipt.get('frozen_mode', False)))} "
@@ -7198,6 +7440,27 @@ def train(args) -> int:
                         failure_stage="local_tx_label_to_live_head_row_binding",
                     )
                     raise
+            if icmt_frozen_mode:
+                try:
+                    if (
+                        icmt_local_to_head_class_ids is None
+                        or remap_icmt_local_labels_to_head_rows is None
+                    ):
+                        raise ICMTRuntimeError(
+                            "P1-ICMT local-to-head class binding is unavailable"
+                        )
+                    y_l = remap_icmt_local_labels_to_head_rows(
+                        y_l, icmt_local_to_head_class_ids
+                    )
+                except Exception as error:
+                    _persist_icmt_failure_receipt(
+                        out_dir=out_dir,
+                        args=args,
+                        icmt_receipt=icmt_receipt,
+                        error=error,
+                        failure_stage="local_tx_label_to_live_head_row_binding",
+                    )
+                    raise
             if cp_sfce_frozen_mode:
                 try:
                     if (
@@ -7220,7 +7483,7 @@ def train(args) -> int:
                     )
                     raise
             labeled_clean_count = int(y_l.numel())
-            if ccpc_frozen_mode or pamr_frozen_mode or cb_sfce_frozen_mode or cp_sfce_frozen_mode:
+            if ccpc_frozen_mode or pamr_frozen_mode or cb_sfce_frozen_mode or icmt_frozen_mode or cp_sfce_frozen_mode:
                 # The frozen C/G experiment is intentionally blind to RX/day/domain
                 # metadata.  Frozen candidates receive only source TX labels.
                 receiver_l_base = None
@@ -7976,11 +8239,14 @@ def train(args) -> int:
                 loss_pamr_l = zero_sat
                 loss_cb_sfce_l = zero_sat
                 loss_gd_proto_nll_l = zero_sat
+                loss_icmt_l = zero_sat
                 loss_cp_sfce_l = zero_sat
                 cb_sfce_base_loss_l = None
                 gd_proto_nll_base_loss_l = None
+                icmt_base_loss_l = None
                 cb_sfce_satellite_scenario = ""
                 gd_proto_nll_satellite_scenario = ""
+                icmt_satellite_scenario = ""
                 cp_sfce_satellite_scenario = ""
                 cb_sfce_batch_info: Dict[str, Any] = {
                     "rows": 0,
@@ -8010,6 +8276,14 @@ def train(args) -> int:
                     "per_tx_valid_loss": {},
                     "per_tx_finite": {},
                     "per_tx_analytic_nonzero_logit_gradient_witness": {},
+                }
+                icmt_batch_info: Dict[str, Any] = {
+                    "rows": 0,
+                    "classes": 0,
+                    "views": {},
+                    "loss_divisor": 0,
+                    "strict_tie_zero": False,
+                    "all_n_c_mean_denominator": False,
                 }
                 ccpc_batch_info: Dict[str, Any] = {
                     "rows": 0,
@@ -8157,6 +8431,33 @@ def train(args) -> int:
                             teacher_clean_out["tx_logits"],
                             temperature=float(args.teacher_distill_temperature),
                         )
+                if icmt_frozen_mode:
+                    try:
+                        if out_sat is None:
+                            raise ICMTRuntimeError(
+                                "Frozen P1-ICMT requires the common single LEO forward in both C and G"
+                            )
+                        if update_icmt_common_batch_sequence_receipt is None:
+                            raise ImportError(
+                                "cvsrffi.phase1_icmt common batch-sequence receipt support is required"
+                            )
+                        icmt_receipt = update_icmt_common_batch_sequence_receipt(
+                            icmt_receipt,
+                            epoch=int(epoch),
+                            batch_index=int(batch_idx),
+                            scenario=str(sat_train_scenario),
+                            source_tx_labels=y_l,
+                            metadata=_meta_from_extra(extra_l),
+                        )
+                    except Exception as error:
+                        _persist_icmt_failure_receipt(
+                            out_dir=out_dir,
+                            args=args,
+                            icmt_receipt=icmt_receipt,
+                            error=error,
+                            failure_stage="common_clean_leo_batch_sequence_receipt",
+                        )
+                        raise
                 if bool(getattr(cb_sfce_config, "enabled", False)):
                     try:
                         if out_sat is None:
@@ -8335,6 +8636,42 @@ def train(args) -> int:
                     "ssdg_source_episode", loss_source_episode_l, z_id_l, loss_warn_counts
                 )
                 loss_open_l = loss_open_invariant_l + loss_open_boundary_l + loss_open_source_l
+                # In the frozen ICMT lane every non-common route above is
+                # validated off. Keep the raw audit denominator equal to the
+                # full shared base objective before its sole G addition.
+                icmt_base_loss_l = loss_closed_l + loss_open_l
+                if bool(getattr(icmt_config, "enabled", False)):
+                    try:
+                        if out_sat is None:
+                            raise ICMTRuntimeError(
+                                "Enabled P1-ICMT requires one existing clean and single LEO forward"
+                            )
+                        if icmt_loss is None or validate_icmt_binding is None:
+                            raise ImportError(
+                                "cvsrffi.phase1_icmt loss and binding support is required"
+                            )
+                        validate_icmt_binding(
+                            model=model,
+                            out_clean=out_l,
+                            out_leo=out_sat,
+                            tx_labels=y_l,
+                            expected_class_ids=icmt_receipt.get("expected_tx_class_ids", []),
+                        )
+                        loss_icmt_l, icmt_batch_info = icmt_loss(
+                            out_l["tx_logits"],
+                            out_sat["tx_logits"],
+                            y_l,
+                        )
+                        icmt_satellite_scenario = str(sat_train_scenario)
+                    except Exception as error:
+                        _persist_icmt_failure_receipt(
+                            out_dir=out_dir,
+                            args=args,
+                            icmt_receipt=icmt_receipt,
+                            error=error,
+                            failure_stage="paired_raw_logit_zid_head_binding_or_icmt_loss",
+                        )
+                        raise
                 if add_ccpc_to_loss is not None:
                     loss_closed_l = add_ccpc_to_loss(
                         loss_closed_l,
@@ -8360,6 +8697,12 @@ def train(args) -> int:
                         if bool(getattr(gd_proto_nll_config, "enabled", False))
                         else None,
                         gd_proto_nll_config,
+                    )
+                if add_icmt_to_loss is not None:
+                    loss_closed_l = add_icmt_to_loss(
+                        loss_closed_l,
+                        loss_icmt_l if bool(getattr(icmt_config, "enabled", False)) else None,
+                        icmt_config,
                     )
                 loss_l = loss_closed_l + loss_open_l
                 if phase == "pseudo" and bool(args.use_unlabeled):
@@ -9021,6 +9364,22 @@ def train(args) -> int:
                     "norm_ratio": float("nan"),
                 },
             }
+            icmt_gradient_relation_info: Dict[str, Any] = {
+                "shared_encoder": {
+                    "parameter_count": 0.0,
+                    "base_norm": float("nan"),
+                    "icmt_norm": float("nan"),
+                    "cosine": None,
+                    "norm_ratio": float("nan"),
+                },
+                "classifier_head": {
+                    "parameter_count": 0.0,
+                    "base_norm": float("nan"),
+                    "icmt_norm": float("nan"),
+                    "cosine": None,
+                    "norm_ratio": float("nan"),
+                },
+            }
             os_grad_info = {
                 "active": 0.0,
                 "conflict": 0.0,
@@ -9133,6 +9492,24 @@ def train(args) -> int:
                         failure_stage="gd_proto_nll_local4_scenario_coverage_receipt",
                     )
                     raise
+            if bool(getattr(icmt_config, "enabled", False)):
+                try:
+                    if update_icmt_receipt is None:
+                        raise ImportError("cvsrffi.phase1_icmt coverage receipt support is required")
+                    icmt_receipt = update_icmt_receipt(
+                        icmt_receipt,
+                        icmt_batch_info,
+                        scenario=icmt_satellite_scenario,
+                    )
+                except Exception as error:
+                    _persist_icmt_failure_receipt(
+                        out_dir=out_dir,
+                        args=args,
+                        icmt_receipt=icmt_receipt,
+                        error=error,
+                        failure_stage="icmt_clean4_leo4x3_rows_active_finite_receipt",
+                    )
+                    raise
             if bool(getattr(cp_sfce_config, "enabled", False)):
                 try:
                     if update_cp_sfce_coverage_receipt is None:
@@ -9219,6 +9596,41 @@ def train(args) -> int:
                         gd_proto_nll_receipt=gd_proto_nll_receipt,
                         error=error,
                         failure_stage="pre_scaled_backward_first_effective_gd_proto_nll_gradient_audit",
+                    )
+                    raise
+            if (
+                loss_is_finite
+                and bool(getattr(icmt_config, "enabled", False))
+                and not bool(icmt_receipt.get("icmt_gradient_relation_completed", False))
+            ):
+                try:
+                    if (
+                        icmt_shared_encoder_and_head_parameters is None
+                        or icmt_shared_gradient_relation is None
+                        or update_icmt_gradient_relation_receipt is None
+                    ):
+                        raise ImportError("cvsrffi.phase1_icmt raw VJP audit support is required")
+                    if icmt_base_loss_l is None:
+                        raise ICMTRuntimeError(
+                            "P1-ICMT requires the common base loss for first-valid-batch VJP audit"
+                        )
+                    icmt_gradient_relation_info = icmt_shared_gradient_relation(
+                        icmt_base_loss_l,
+                        loss_icmt_l,
+                        icmt_shared_encoder_and_head_parameters(model),
+                        loss_weight=float(getattr(icmt_config, "loss_weight", 0.0)),
+                    )
+                    icmt_receipt = update_icmt_gradient_relation_receipt(
+                        icmt_receipt,
+                        icmt_gradient_relation_info,
+                    )
+                except Exception as error:
+                    _persist_icmt_failure_receipt(
+                        out_dir=out_dir,
+                        args=args,
+                        icmt_receipt=icmt_receipt,
+                        error=error,
+                        failure_stage="pre_scaled_backward_first_valid_raw_unscaled_icmt_vjp_audit",
                     )
                     raise
             pamr_audit_has_effective_batch = (
@@ -9863,6 +10275,31 @@ def train(args) -> int:
                     ),
                     "train/w_loss_gd_proto_nll": (
                         float(getattr(gd_proto_nll_config, "loss_weight", 0.0)) * loss_gd_proto_nll_l
+                    ).detach(),
+                    "train/loss_icmt": loss_icmt_l.detach(),
+                    "train/icmt_enabled": 1.0 if bool(getattr(icmt_config, "enabled", False)) else 0.0,
+                    "train/icmt_rows": float(icmt_batch_info.get("rows", 0)),
+                    "train/icmt_gradient_relation_completed": 1.0 if bool(
+                        icmt_receipt.get("icmt_gradient_relation_completed", False)
+                    ) else 0.0,
+                    "train/icmt_encoder_grad_cosine": (
+                        float(icmt_gradient_relation_info["shared_encoder"]["cosine"])
+                        if icmt_gradient_relation_info["shared_encoder"].get("cosine") is not None
+                        else float("nan")
+                    ),
+                    "train/icmt_encoder_grad_norm_ratio": float(
+                        icmt_gradient_relation_info["shared_encoder"].get("norm_ratio", float("nan"))
+                    ),
+                    "train/icmt_head_grad_cosine": (
+                        float(icmt_gradient_relation_info["classifier_head"]["cosine"])
+                        if icmt_gradient_relation_info["classifier_head"].get("cosine") is not None
+                        else float("nan")
+                    ),
+                    "train/icmt_head_grad_norm_ratio": float(
+                        icmt_gradient_relation_info["classifier_head"].get("norm_ratio", float("nan"))
+                    ),
+                    "train/w_loss_icmt": (
+                        float(getattr(icmt_config, "loss_weight", 0.0)) * loss_icmt_l
                     ).detach(),
                     "train/loss_cp_sfce": loss_cp_sfce_l.detach(),
                     "train/cp_sfce_enabled": 1.0 if bool(getattr(cp_sfce_config, "enabled", False)) else 0.0,
@@ -10626,6 +11063,8 @@ def train(args) -> int:
             payload["cb_sfce_receipt"] = dict(cb_sfce_receipt)
         if gd_proto_nll_frozen_mode:
             payload["gd_proto_nll_receipt"] = dict(gd_proto_nll_receipt)
+        if icmt_frozen_mode:
+            payload["icmt_receipt"] = dict(icmt_receipt)
         if cp_sfce_frozen_mode:
             payload["cp_sfce_receipt"] = dict(cp_sfce_receipt)
         latest_path = out_dir / "NOT_SAVED_FINAL_ONLY"
@@ -11120,6 +11559,20 @@ def train(args) -> int:
                 failure_stage="terminal_gd_proto_nll_receipt_validation",
             )
             raise
+    if icmt_frozen_mode:
+        if validate_icmt_terminal_receipt is None:
+            raise ImportError("cvsrffi.phase1_icmt.validate_icmt_terminal_receipt is required")
+        try:
+            icmt_receipt = validate_icmt_terminal_receipt(icmt_receipt)
+        except Exception as error:
+            _persist_icmt_failure_receipt(
+                out_dir=out_dir,
+                args=args,
+                icmt_receipt=icmt_receipt,
+                error=error,
+                failure_stage="terminal_icmt_receipt_validation",
+            )
+            raise
     if cp_sfce_frozen_mode:
         if validate_cp_sfce_terminal_receipt is None:
             raise ImportError("cvsrffi.phase1_cp_sfce.validate_cp_sfce_terminal_receipt is required")
@@ -11161,6 +11614,8 @@ def train(args) -> int:
         final_payload["cb_sfce_receipt"] = dict(cb_sfce_receipt)
     if gd_proto_nll_frozen_mode:
         final_payload["gd_proto_nll_receipt"] = dict(gd_proto_nll_receipt)
+    if icmt_frozen_mode:
+        final_payload["icmt_receipt"] = dict(icmt_receipt)
     if cp_sfce_frozen_mode:
         final_payload["cp_sfce_receipt"] = dict(cp_sfce_receipt)
     final_payload.setdefault("stats", {})
@@ -11781,6 +12236,8 @@ def train(args) -> int:
         terminal_manifest["cb_sfce_receipt"] = dict(cb_sfce_receipt)
     if gd_proto_nll_frozen_mode:
         terminal_manifest["gd_proto_nll_receipt"] = dict(gd_proto_nll_receipt)
+    if icmt_frozen_mode:
+        terminal_manifest["icmt_receipt"] = dict(icmt_receipt)
     if cp_sfce_frozen_mode:
         terminal_manifest["cp_sfce_receipt"] = dict(cp_sfce_receipt)
     (out_dir / "phase1_terminal_status.json").write_text(
@@ -11873,6 +12330,28 @@ def train(args) -> int:
             json.dumps(
                 {
                     **dict(gd_proto_nll_receipt),
+                    "terminal_status": terminal_status,
+                    "terminal_exit_code": int(terminal_exit_code),
+                    "selected_checkpoint": str(selected_checkpoint),
+                    "selected_checkpoint_sha256": selected_checkpoint_sha256,
+                    "technical_only": False,
+                    "promotion_ready": terminal_status == "COMPLETE",
+                    "performance_result_available": False,
+                    "claim": "PHASE1_SOURCE_ONLY_TRAINING_RECEIPT",
+                },
+                ensure_ascii=False,
+                indent=2,
+                sort_keys=True,
+            )
+            + "\n",
+            encoding="utf-8",
+            newline="\n",
+        )
+    if icmt_frozen_mode:
+        (out_dir / "phase1_icmt_terminal_receipt.json").write_text(
+            json.dumps(
+                {
+                    **dict(icmt_receipt),
                     "terminal_status": terminal_status,
                     "terminal_exit_code": int(terminal_exit_code),
                     "selected_checkpoint": str(selected_checkpoint),
@@ -11988,6 +12467,8 @@ def train(args) -> int:
     }
     if gd_proto_nll_frozen_mode:
         completion_receipt["gd_proto_nll_receipt"] = dict(gd_proto_nll_receipt)
+    if icmt_frozen_mode:
+        completion_receipt["icmt_receipt"] = dict(icmt_receipt)
     (out_dir / "phase1_training_completion_receipt.json").write_text(
         json.dumps(
             completion_receipt,
