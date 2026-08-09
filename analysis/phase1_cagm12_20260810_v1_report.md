@@ -1,6 +1,6 @@
 # Phase1 CAGM 12臂正式训练v1预登记报告
 
-状态：`REMOTE_PREFLIGHT_OK / LANDING_PENDING / NO_PERFORMANCE_RESULT`
+状态：`LANDED / PRELAUNCH_VERIFIED / NO_PERFORMANCE_RESULT`
 
 ## Runner阶段记录（2026-08-10，单次发布链）
 
@@ -8,6 +8,8 @@
 - direct `n607_ssh_preflight.ps1`通过；用户`N607`、项目根、8张GPU可见，SSH进程/TCP22在连接后均已清零。
 - 远端release、run、log、outer及临时归档路径均确认不存在；ManySig与6个GeoSat-C checkpoint SHA与预登记完全匹配。GPU7仅见既有PID 608786、488MiB进程，按预登记SCB v4无关占用处理，不干预。
 - 本地完整归档SHA=`3aa98c55335ff3ba7d9f51ad06fc87a2be0083c67feca2275854d9c23a49489d`、4905 members、五个目标成员和`code/code=0`核验通过；下一步仅执行一次SCP与远端解包，仍无性能结果。
+- 唯一SCP已成功；远端归档大小`260515840`字节、SHA、4905 members、`code/code=0`及五个成员核验通过。已解包到冻结release，五个release成员SHA完全匹配，launcher mode=`775`。
+- release内远端`py_compile`、`train_ssdg.py --help`、`bash -n`和dry-run矩阵均通过；dry-run恰好12臂、GPU/候选映射匹配预登记。训练启动调用次数仍为`0`。
 
 日期：2026-08-10
 
