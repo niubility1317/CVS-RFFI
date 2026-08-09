@@ -1,6 +1,6 @@
 # Phase1 GD-ProtoNLL 12臂正式训练v1报告
 
-状态：`PREREGISTERED_LOCAL_VERIFIED / NOT_LAUNCHED / NO_PERFORMANCE_RESULT`
+状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
 
 日期：2026-08-09
 
@@ -71,3 +71,12 @@ cd /home/szu2070436088/2510044040/CV-SincNet/releases/phase1_gd_proto_nll12_2026
 
 完成后回收小日志、JSON／CSV、PID、completion与manifest；不下载checkpoint或NPZ。更新本报告根与Git镜像，仅由主控在完整postfreeze后解释性能。
 
+## 6.Runner预检与release封存（2026-08-09）
+
+直连`N607`只读预检通过：项目根与8卡可见。启动前release、run、log和outer均为`ABSENT`。GPU7已有SCB v3技术构建PID=`420208`、显存=`488MiB`；其余卡约`1MiB`。ManySig与6个GeoSat-C baseline SHA均与§3匹配。实现commit=`6465a7f33abb730ae58de4f6e0bec5181f128d0a`无prefix archive大小=`262952960` bytes、SHA256=`08b1d785df403f59e11cb68fb542629ed6724eaf0e1a3872aeb810e854fbffef`，无`code/code`。远端`py_compile`、CLI help、`bash -n`和dry-run12均PASS。
+
+## 7.唯一启动终态与失败证据（2026-08-09）
+
+按§4命令于`22:52`唯一启动一次。outer立即记录`Permission denied`：冻结launcher Git mode=`100644`、远端mode=`664`，但命令直接执行脚本而未显式调用`bash`。因此未进入launcher；launcher／12 child、run root、log root和`pids.tsv`均未产生，SCB v3未受影响。outer为178 bytes，SHA256=`cdf3cc59c87439f181c18b300c43fe75a6dab57e0b282404ac9acabb1fd6817a`。
+
+本run未产生epoch、checkpoint、metrics或任何GD训练合同，状态为`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`，retry=`NO`。本地artifact含archive、outer、`completion.tsv`、`runner_handoff.json`和`manifest.json`；manifest为2219 bytes，SHA256=`6052bd277b098ecb962c36f96ee1091320d272f44ccde2f136caf0310ca3d40b`。未下载`.pth`／`.npz`；远端临时archive、SSH／SCP／TCP22均已清理。机械修复另以不可覆盖v2和显式`bash launcher.sh`发布，不修改方法或矩阵。
