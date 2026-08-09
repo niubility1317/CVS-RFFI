@@ -2727,8 +2727,8 @@ def _source_dataset_and_indices(
     *,
     pkl_path: str | Path,
     source_split: Mapping[str, Any],
-) -> tuple[dict[str, Any], Any, list[int], list[int], list[int], dict[str, Any]]:
-    """Build F1C-local source index in the required TX -> day/RX -> eq=1 order."""
+) -> tuple[dict[str, Any], Mapping[str, Any], Any, list[int], list[int], list[int], dict[str, Any]]:
+    """Build the local4 source index and retain the same read-only full dataset."""
 
     from dataset_wisig import WiSigCompactDataset
     from SSDG.train_ssdg import _build_source_split_receipt, _phase1_tx_partition_view, split_tx_rx_day_1_6_3
@@ -2807,7 +2807,10 @@ def _source_dataset_and_indices(
     for field in ("labeled_size", "unlabeled_size", "source_validation_size", "source_pool_size"):
         if rebuilt.get(field) != source_split.get(field):
             raise _error(f"reconstructed F1C source split size drift: {field}")
-    return source_view, dataset, labeled, unlabeled, calibration, tx_partition
+    # ``source_view`` is a shallow local4 view.  Return the exact first-load
+    # object separately so the later exclusion audit can read the held/proxy
+    # TX rows without materializing ManySig a second time.
+    return source_view, original, dataset, labeled, unlabeled, calibration, tx_partition
 
 
 def _validate_source_view_indices(
@@ -3328,9 +3331,15 @@ def build_real_bundle_from_paths(
         scenario_code_sha256=scenario_code_sha,
     )
     source_split = receipts["completion"]["source_split_receipt"]
-    source_view, dataset, labeled_indices, unlabeled_indices, calibration_indices, tx_partition = _source_dataset_and_indices(
-        pkl_path=wisig_pkl_path, source_split=source_split
-    )
+    (
+        source_view,
+        full_dataset,
+        dataset,
+        labeled_indices,
+        unlabeled_indices,
+        calibration_indices,
+        tx_partition,
+    ) = _source_dataset_and_indices(pkl_path=wisig_pkl_path, source_split=source_split)
     with tempfile.TemporaryDirectory(prefix="scb1-runtime-") as temporary:
         runtime_path = Path(temporary) / "local_evidence.ts"
         runtime, eager_runtime, strict_audit = build_torchscript_runtime(
@@ -3420,7 +3429,6 @@ def build_real_bundle_from_paths(
             domain_scores=domain_atoms,
             calibration_set_sha256=physical_set_sha256(calibration_keys),
         )
-        full_dataset = _load_manysig_no_default_equalized(wisig_pkl_path)
         full_day_labels = [
             _require_nfc_string(value, field="ManySig day physical label")
             for value in full_dataset.get("capture_date_list", [])

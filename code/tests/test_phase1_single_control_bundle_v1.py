@@ -237,6 +237,217 @@ def _minimal_real_parser_checkpoint(*, extra_args: dict[str, object] | None = No
     return {"args": args, "model": {"dom_head.net.3.bias": torch.zeros(2)}}
 
 
+def _six_tx_manysig_fixture() -> dict[str, object]:
+    tx_labels = [*scb.LOCAL4_HANDLES, scb.KNOWN_VALIDATION_TX, scb.PROXY_UNKNOWN_TX]
+    rx_labels = [f"receiver-{index:02d}" for index in range(12)]
+    day_labels = [f"day-{index:02d}" for index in range(4)]
+    data = []
+    for tx_index, _ in enumerate(tx_labels):
+        tx_rows = []
+        for rx_index, _ in enumerate(rx_labels):
+            rx_rows = []
+            for day_index, _ in enumerate(day_labels):
+                value = float(100 * tx_index + 10 * rx_index + day_index)
+                rx_rows.append([np.full((1, 8, 2), value, dtype=np.float32)])
+            tx_rows.append(rx_rows)
+        data.append(tx_rows)
+    return {
+        "tx_list": tx_labels,
+        "rx_list": rx_labels,
+        "capture_date_list": day_labels,
+        "equalized_list": [1],
+        "data": data,
+    }
+
+
+def test_source_dataset_helper_returns_original_six_tx_object_and_local4_shallow_view(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    import dataset_wisig
+    from SSDG import train_ssdg as ssdg
+
+    full_dataset = _six_tx_manysig_fixture()
+    fixture_path = tmp_path / "fixture.pkl"
+    fixture_path.write_bytes(b"manysig-fixture")
+    loader_results: list[object] = []
+
+    def fake_loader(_path: str | Path) -> dict[str, object]:
+        loader_results.append(full_dataset)
+        return full_dataset
+
+    class _Dataset:
+        def __init__(self, source_view, **kwargs):
+            self.source_view = source_view
+            self.kwargs = kwargs
+
+    monkeypatch.setattr(scb, "_load_manysig_no_default_equalized", fake_loader)
+    monkeypatch.setattr(dataset_wisig, "WiSigCompactDataset", _Dataset)
+    monkeypatch.setattr(
+        ssdg,
+        "split_tx_rx_day_1_6_3",
+        lambda dataset, **kwargs: ([0], [1], [2]),
+    )
+    monkeypatch.setattr(
+        ssdg,
+        "_build_source_split_receipt",
+        lambda **kwargs: dict(_source_split()),
+    )
+
+    (
+        source_view,
+        original,
+        dataset,
+        labeled,
+        unlabeled,
+        calibration,
+        _tx_partition,
+    ) = scb._source_dataset_and_indices(pkl_path=fixture_path, source_split=_source_split())
+
+    assert loader_results == [full_dataset]
+    assert original is full_dataset
+    assert source_view is not original
+    assert source_view["tx_list"] == list(scb.LOCAL4_HANDLES)
+    assert original["tx_list"] == [*scb.LOCAL4_HANDLES, scb.KNOWN_VALIDATION_TX, scb.PROXY_UNKNOWN_TX]
+    assert source_view["data"] is not original["data"]
+    assert all(source_view["data"][index] is original["data"][index] for index in range(4))
+    assert source_view["rx_list"] is original["rx_list"]
+    assert source_view["capture_date_list"] is original["capture_date_list"]
+    assert source_view["equalized_list"] is original["equalized_list"]
+    assert dataset.source_view is source_view
+    assert dataset.kwargs["equalized"] == 1
+    assert (labeled, unlabeled, calibration) == ([0], [1], [2])
+
+    proxy_keys = scb._enumerate_role_physical_keys(
+        original,
+        tx_labels=(scb.PROXY_UNKNOWN_TX,),
+        rx_labels=(original["rx_list"][0],),
+        day_labels=(original["capture_date_list"][0],),
+    )
+    held_keys = scb._enumerate_role_physical_keys(
+        original,
+        tx_labels=(scb.KNOWN_VALIDATION_TX,),
+        rx_labels=(original["rx_list"][0],),
+        day_labels=(original["capture_date_list"][0],),
+    )
+    assert proxy_keys == [(scb.PROXY_UNKNOWN_TX, original["rx_list"][0], original["capture_date_list"][0], 0)]
+    assert held_keys == [(scb.KNOWN_VALIDATION_TX, original["rx_list"][0], original["capture_date_list"][0], 0)]
+
+
+def test_real_builder_loads_manysig_once_and_reuses_original_for_exclusion_audit(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    checkpoint_path = tmp_path / "checkpoint.pth"
+    wisig_path = tmp_path / "ManySig.pkl"
+    checkpoint_path.write_bytes(b"checkpoint-fixture")
+    wisig_path.write_bytes(b"manysig-fixture")
+    full_dataset = _six_tx_manysig_fixture()
+    source_view = {
+        **full_dataset,
+        "tx_list": list(scb.LOCAL4_HANDLES),
+        "data": list(full_dataset["data"][:4]),
+    }
+    loader_calls: list[Path] = []
+    enumeration_datasets: list[object] = []
+
+    def fake_loader(path: str | Path) -> dict[str, object]:
+        loader_calls.append(Path(path))
+        return full_dataset
+
+    def fake_source_dataset_and_indices(*, pkl_path, source_split):
+        del source_split
+        original = scb._load_manysig_no_default_equalized(pkl_path)
+        return source_view, original, object(), [0], [1], [2], {"tx_partition": "fixture"}
+
+    receipts = {
+        "completion": {"source_split_receipt": _source_split()},
+        "cp_terminal": {
+            "class_order_binding_sha256": _sha("c"),
+            "checkpoint_head_class_count": 4,
+            "live_head_class_count": 4,
+            "checkpoint_train_tx_class_order": list(scb.LOCAL4_HANDLES),
+        },
+        "satellite_protocol": {"registry_sha256": _sha("7")},
+    }
+    fixture_state = _state(calibration_set_sha256=_sha("6"))
+    runtime_sentinel = object()
+
+    monkeypatch.setattr(scb, "_load_manysig_no_default_equalized", fake_loader)
+    monkeypatch.setattr(scb, "_source_dataset_and_indices", fake_source_dataset_and_indices)
+    monkeypatch.setattr(scb, "validate_f1c_receipts", lambda **kwargs: receipts)
+    monkeypatch.setattr(torch, "load", lambda *args, **kwargs: {"args": {}, "model": {}})
+    monkeypatch.setattr(scb, "_resolved_ssdg_namespace", lambda *args, **kwargs: types.SimpleNamespace())
+    monkeypatch.setattr(
+        scb,
+        "resolve_model_config_projection",
+        lambda **kwargs: {"strict_state_tensor_schema_sha256": _sha("5")},
+    )
+    monkeypatch.setattr(
+        scb,
+        "_project_root_code_hashes",
+        lambda project_root: ({name: _sha("4") for name in scb.EXPECTED_CODE_SHA_PATHS}, _sha("3"), _sha("2")),
+    )
+    monkeypatch.setattr(scb, "resolved_config_sha256", lambda **kwargs: _sha("1"))
+
+    def fake_build_runtime(*, checkpoint, device, runtime_path):
+        del checkpoint, device
+        Path(runtime_path).write_bytes(b"runtime-fixture")
+        return runtime_sentinel, runtime_sentinel, {"checkpoint_load_strict": True}
+
+    monkeypatch.setattr(scb, "build_torchscript_runtime", fake_build_runtime)
+    monkeypatch.setattr(scb, "_validate_source_view_indices", lambda *args: ([0], [], []))
+    monkeypatch.setattr(
+        scb,
+        "_dataset_item_key_and_raw",
+        lambda source_view, dataset, index: ((scb.LOCAL4_HANDLES[0], "receiver-00", "day-00", 0), np.zeros((256, 2), dtype=np.float32)),
+    )
+    monkeypatch.setattr(
+        scb,
+        "_scb_views_for_source_sample",
+        lambda **kwargs: [torch.zeros((1, 2, 256), dtype=torch.float32) for _ in scb.VIEW_ORDER],
+    )
+    monkeypatch.setattr(
+        scb,
+        "_identity_features_for_views",
+        lambda runtime, views, device: (np.ones((4, 2), dtype=np.float64), np.ones((4, 4), dtype=np.float64)),
+    )
+    monkeypatch.setattr(scb, "fit_class_geometry", lambda rows: fixture_state.geometry)
+    monkeypatch.setattr(scb, "fit_descriptor_stats", lambda rows: fixture_state.descriptor)
+    monkeypatch.setattr(scb, "fit_tail_summary", lambda **kwargs: fixture_state.tail)
+
+    def fake_enumerate(dataset, *, tx_labels, rx_labels, day_labels):
+        enumeration_datasets.append(dataset)
+        return [(tx_labels[0], rx_labels[0], day_labels[0], len(enumeration_datasets) - 1)]
+
+    monkeypatch.setattr(scb, "_enumerate_role_physical_keys", fake_enumerate)
+    monkeypatch.setattr(scb, "build_source_partition_receipt", lambda **kwargs: {"partition": kwargs["excluded_role_keys"]})
+    monkeypatch.setattr(scb, "make_runtime_parity_receipt", lambda **kwargs: {"parity": True})
+    monkeypatch.setattr(scb, "make_resource_receipt", lambda **kwargs: {"resource": True})
+    monkeypatch.setattr(scb, "build_bundle", lambda **kwargs: {"content_root": _sha("0")})
+    monkeypatch.setattr(
+        scb,
+        "load_bundle",
+        lambda *args, **kwargs: types.SimpleNamespace(content_root=_sha("0"), state=fixture_state, runtime=runtime_sentinel),
+    )
+    monkeypatch.setattr(scb, "assert_full_path_parity", lambda **kwargs: {"state_unchanged": True})
+
+    result = scb.build_real_bundle_from_paths(
+        project_root=tmp_path,
+        checkpoint_path=checkpoint_path,
+        wisig_pkl_path=wisig_path,
+        completion_receipt_path=tmp_path / "completion.json",
+        terminal_receipt_path=tmp_path / "terminal.json",
+        cp_terminal_receipt_path=tmp_path / "cp.json",
+        output_dir=tmp_path / "bundle",
+        device="cpu",
+    )
+
+    assert result["content_root"] == _sha("0")
+    assert loader_calls == [wisig_path]
+    assert len(enumeration_datasets) == 3
+    assert all(dataset is full_dataset for dataset in enumeration_datasets)
+    assert all(dataset is not source_view for dataset in enumeration_datasets)
+
+
 def test_fixture_bundle_has_exact_ten_members_and_full_path_care_n1_parity(tmp_path: Path) -> None:
     material = _materials()
     result = scb.build_bundle(output_dir=tmp_path / "bundle", bundle_status=scb.FIXTURE_STATUS, **{key: value for key, value in material.items() if key != "eager_runtime"})

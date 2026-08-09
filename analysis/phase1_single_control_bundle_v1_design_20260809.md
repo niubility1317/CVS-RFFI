@@ -1,8 +1,8 @@
-# Phase1单读出local4控制bundle v1设计卡（Revision11）
+# Phase1单读出local4控制bundle v1设计卡（Revision12）
 
-状态：`LOCAL_REVISION11_VERIFIED_PENDING_REAL_BUILD_V3`。Revision10已获独立复审`P0=0／P1=0／ALLOW`，但真实F1C＋ManySig v2构建在source day／RX轴重建前停止：receipt中字符串化的训练轴索引被误作ManySig物理日期／接收机标签。未写出bundle、未产生runtime／资源／性能结果；Revision11只恢复训练同一轴索引语义，不改变模型、数据、公式、descriptor、bundle schema或资源门，并已获独立复审`P0=0／P1=0／ALLOW`。
+状态：`LOCAL_REVISION12_VERIFIED / INDEPENDENT_REVIEW_PENDING / REAL_BUILD_V3_STOPPED / NO_PERFORMANCE_RESULT`。Revision11已获独立复审`P0=0／P1=0／ALLOW`；真实F1C＋ManySig v3唯一进程PID`420208`持续CPU密集计算约4小时35分钟后无可观察exit退出，未生成output、staging、worker或resource工件，日志仅有`TracerWarning`。无kernel OOM／kill证据，归因指纹只能写`UNOBSERVED_PROCESS_EXIT_AFTER_SUSTAINED_CPU`。Revision12仅让首次加载的完整ManySig对象随source helper返回并在后段排除审计复用，删除第二次完整PKL加载；它只降低重复加载与峰值风险，不证明v3根因，也不表示真实build已成功。
 
-日期：2026-08-09
+日期：2026-08-09；Revision12更新：2026-08-10
 
 ## FEASIBILITY（20行内）
 
@@ -232,6 +232,13 @@ Revision9首轮实际diff复核确认CUDA、label-blind、早碰撞、live场景
 |ID|来源段落|要求|目标文件|状态|验证|备注|
 |---|---|---|---|---|---|---|
 |SCB-R11-01|source split receipt、真实F1C v2停止证据|把冻结receipt中的ASCII数字字符串严格解析为非负训练轴索引，复用`dataset_wisig._resolve_days／_resolve_rxs`；范围、去重和固定F1C source／target索引均严格核验。不得把这些receipt值与ManySig物理日期／接收机标签混用。|`phase1_single_control_bundle_v1.py`、`test_phase1_single_control_bundle_v1.py`、本设计卡|independent_review_allow|`ssr-gpu py_compile`、28项focused SCB tests、CLI`--help`、`git diff --check`及独立复审`P0=0／P1=0／ALLOW`|v2停止为技术接口错误，不代表真实build恢复或完成。|
+
+### Revision12单次完整加载追溯
+
+|ID|来源段落|要求|目标文件|状态|验证|备注|
+|---|---|---|---|---|---|---|
+|SCB-R12-01|真实F1C v3停止证据、ManySig对象生命周期|`_source_dataset_and_indices`把首次加载的原始完整dataset作为同一只读对象返回；真实builder后段proxy／held／target排除审计直接复用该对象，调用链最多一次ManySig loader。不得改split／view seed、样本集合、descriptor、geometry、tail、runtime、bundle schema／root、resource或CARE语义。|`phase1_single_control_bundle_v1.py`|verified|动态builder调用链记录loader恰好一次；三类排除审计均以对象identity确认收到首次完整dataset，且不是local4 source view|仅降低重复加载与峰值风险；不把v3停止归因为OOM或本点。|
+|SCB-R12-02|Revision12回归合同|测试锁定loader调用上限、排除审计对象identity、local4浅视图及原始6TX可枚举性；保留全部既有focused SCB回归。|`test_phase1_single_control_bundle_v1.py`|verified|`ssr-gpu`下`py_compile`通过、focused SCB`30 passed`、`git diff --check`通过；core模块无公开CLI，`--help`按内部worker合同预期拒绝；实际公开build CLI未改，本轮不以此为验证项|未运行真实ManySig；独立P0／P1复核待主agent安排，不声明真实build成功。|
 
 ## 文献定位
 
