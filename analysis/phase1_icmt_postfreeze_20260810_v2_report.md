@@ -1,6 +1,6 @@
 # Phase1 ICMT postfreeze v2报告
 
-状态：`LANDED / NOT_LAUNCHED / NO_PERFORMANCE_RESULT`
+状态：`ARTIFACTS_COMPLETE / TECHNICAL_ONLY / NO_PERFORMANCE_RESULT`
 
 日期：2026-08-10
 
@@ -174,3 +174,44 @@ release落地后仅执行必要静态检查：5个Python入口（含测试与实
 ### 9.4启动前版本与调用登记
 
 Git镜像报告commit=`b012ddaa`（仅本报告文件）；实现commit=`7f6f4cfea1fa1af154997c3ab1ccd3d02616d8f3`。远端release已按完整树archive落地并完成成员SHA核验；`postfreeze run/log/outer`仍不存在。下一步只调用§6逐字冻结命令一次，调用端异常仅只读确认是否landed，禁止重发。
+
+## 10.Runner技术终态
+
+状态：`ARTIFACTS_COMPLETE / TECHNICAL_ONLY / NO_PERFORMANCE_RESULT`。冻结命令实际调用1次；SSH调用端约34秒超时后仅只读确认已landed，未重发。wrapper PID=`630495`、launcher PID=`630496`；launcher按冻结GPU矩阵登记12个candidate PID，随后wrapper/launcher/所有子进程自然退出。GPU7既有SCB v4构建PID=`608786`持续存在，未被干预。
+
+|fold|arm|candidate PID|GPU|candidate|日志|
+|---:|---|---:|---:|---|---|
+|1|C|630499|0|F1C_ICMT12|`F1C_ICMT12.out`|
+|5|G|630500|0|F5G_ICMT12|`F5G_ICMT12.out`|
+|1|G|630501|1|F1G_ICMT12|`F1G_ICMT12.out`|
+|5|C|630502|1|F5C_ICMT12|`F5C_ICMT12.out`|
+|2|C|630504|2|F2C_ICMT12|`F2C_ICMT12.out`|
+|6|G|630505|2|F6G_ICMT12|`F6G_ICMT12.out`|
+|2|G|630507|3|F2G_ICMT12|`F2G_ICMT12.out`|
+|6|C|630508|3|F6C_ICMT12|`F6C_ICMT12.out`|
+|3|C|630509|4|F3C_ICMT12|`F3C_ICMT12.out`|
+|3|G|630511|5|F3G_ICMT12|`F3G_ICMT12.out`|
+|4|C|630513|6|F4C_ICMT12|`F4C_ICMT12.out`|
+|4|G|630514|7|F4G_ICMT12|`F4G_ICMT12.out`|
+
+### 10.1矩阵闭合与技术检查
+
+|项|结果|
+|---|---|
+|42步|12 clean、12 LEO、12 proxy、6 pair；candidate PID清单13行（含表头）|
+|小工件计数|12 clean NPZ、12 LEO NPZ、12 binding、12 proxy JSON、12 proxy CSV、6 pair JSON、18非空日志|
+|技术绑定|6/6 pair的`technical_binding=true`，schema=`cvs.phase1.icmt_postfreeze_pair.v2`，matrix/root/training-root绑定通过；12/12 LEO binding的`all_scenarios_complete=true`与`all_source_rows_reconstructed=true`|
+|错误指纹|Traceback、RuntimeError、CUDA error、OOM、非零`nonfinite_rows`/`total_nonfinite_rows`均为0；未按任何性能值停止|
+|进程/GPU收尾|完成检查时本run进程=0；GPU7的SCB v4仍在；本地SSH客户端及N607:22连接均清理为0|
+
+### 10.2小工件bundle与逐项SHA
+
+|项目|路径或SHA|
+|---|---|
+|远端bundle|`/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_icmt_postfreeze_20260810_v2/phase1_icmt_postfreeze_20260810_v2_small_bundle_v2.tar.gz`|
+|本地bundle|`automation_reports/CV-SincNet/phase1_icmt_postfreeze_20260810_v2/remote_artifacts/phase1_icmt_postfreeze_20260810_v2_small_bundle_v2.tar.gz`|
+|bundle|64成员、0个`.npz/.pth`；bytes=`3860792`；SHA256=`dd27a9edb7e51e0ff1937aeb251b0462b1fee2e555af94bf8109aa7995f6fc5f`|
+|逐项manifest|`remote_artifacts/small_bundle_v2_extract/logs/phase1_icmt_postfreeze_20260810_v2/phase1_icmt_postfreeze_20260810_v2_small_manifest_v2.tsv`；63项，SHA256=`fd810411ce84aba4470517bb1add443d2ec52759fadef39977854c6a73c545a4`；本地逐项校验`0 mismatch`|
+|完成JSON|`remote_artifacts/small_bundle_v2_extract/logs/phase1_icmt_postfreeze_20260810_v2/phase1_icmt_postfreeze_20260810_v2_completion.json`；SHA256=`6d506b74591e1259d59dfa06f4a287438b8d90aee5b3bfd4d896eaa087bba6db`|
+
+首次小bundle尝试因outer日志路径登记层级错误在打包前中止，仅留下未完成manifest，不影响实验输出；未覆盖或删除任何既有工件。校正v2使用实际outer路径并完成上述验证。未下载checkpoint或特征NPZ；远端release、run、log、fulltree archive及全部原始工件保留。
