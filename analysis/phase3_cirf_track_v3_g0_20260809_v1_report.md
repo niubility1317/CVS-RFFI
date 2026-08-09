@@ -1,9 +1,9 @@
 # Phase3 CIRF-Track v3 G0技术发布报告
 
-状态：`LOCAL_VERIFIED_PENDING_GIT_COMMIT`
+状态：`PREREGISTERED_READY_FOR_RUNNER`
 
-日期：2026-08-09  
-实验ID：`phase3_cirf_track_v3_g0_20260809_v1`  
+日期：2026-08-09
+实验ID：`phase3_cirf_track_v3_g0_20260809_v1`
 操作方：主代理集成；N607发布由唯一实验runner执行
 
 ## 1.目标与边界
@@ -16,9 +16,9 @@
 
 ## 2.本地实现与验证
 
-Git工作树：`E:\type10-7\code\snapshots\phase3_responsibility_20260807_wt`  
-分支：`codex/phase3-responsibility-20260807`  
-实现commit：`PENDING_LOCAL_COMMIT`
+Git工作树：`E:\type10-7\code\snapshots\phase3_responsibility_20260807_wt`
+分支：`codex/phase3-responsibility-20260807`
+实现及发布commit：`f76cee26f00a21968ed1849e3610b9fb15309fd0`
 
 |文件|用途|SHA256|
 |---|---|---|
@@ -46,17 +46,17 @@ Git工作树：`E:\type10-7\code\snapshots\phase3_responsibility_20260807_wt`
 
 预定路径：
 
-- release：`/home/szu2070436088/2510044040/CV-SincNet/releases/phase3_cirf_track_v3_g0_20260809_v1_<commit8>`
+- release：`/home/szu2070436088/2510044040/CV-SincNet/releases/phase3_cirf_track_v3_g0_20260809_v1_f76cee26`
 - run：`/home/szu2070436088/2510044040/CV-SincNet/runs/phase3_cirf_track_v3_g0_20260809_v1`
 - log：`/home/szu2070436088/2510044040/CV-SincNet/logs/phase3_cirf_track_v3_g0_20260809_v1.out`
 - Python：`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`
 - CWD：`<release>/code`
 - GPU：CPU-only，不分配GPU；仍记录8卡只读占用情况
 
-固定启动命令模板；提交后仅替换`<release>`：
+固定启动命令：
 
 ```bash
-nohup setsid env PYTHONPATH=<release>/code /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -W error <release>/code/scripts/phase3_cirf_track_v3_g0.py --output-dir /home/szu2070436088/2510044040/CV-SincNet/runs/phase3_cirf_track_v3_g0_20260809_v1 > /home/szu2070436088/2510044040/CV-SincNet/logs/phase3_cirf_track_v3_g0_20260809_v1.out 2>&1 < /dev/null & echo $!
+nohup setsid env PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/phase3_cirf_track_v3_g0_20260809_v1_f76cee26/code /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -W error /home/szu2070436088/2510044040/CV-SincNet/releases/phase3_cirf_track_v3_g0_20260809_v1_f76cee26/code/scripts/phase3_cirf_track_v3_g0.py --output-dir /home/szu2070436088/2510044040/CV-SincNet/runs/phase3_cirf_track_v3_g0_20260809_v1 > /home/szu2070436088/2510044040/CV-SincNet/logs/phase3_cirf_track_v3_g0_20260809_v1.out 2>&1 < /dev/null & echo $!
 ```
 
 ## 4.预期工件与技术门
@@ -92,4 +92,3 @@ nohup setsid env PYTHONPATH=<release>/code /home/szu2070436088/.conda/envs/CVS-R
 - 当前Phase1仍缺一个未被拒绝、真实checkpoint绑定并输出`z_id、z_dom、q、d_class、e_unknown、p_local`的完整deployment bundle。
 - old-class协同适应、授权fresh-K到Stage2-C、四状态`DA0_REG0／DA1_REG0／DA0_REG1／DA1_REG1`、真实`N_sat={1..5}`与A/B/C/D完整矩阵仍未完成。
 - N607技术工件闭合后，目标保持active，不得把本次G0标为完整Phase3完成。
-
