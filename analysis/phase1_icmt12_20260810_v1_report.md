@@ -122,3 +122,35 @@ cd /home/szu2070436088/2510044040/CV-SincNet/releases/phase1_icmt12_20260810_v1_
 |F4C/F4G|4|C/G|6/7|待运行|待运行|未开始|`NO_PERFORMANCE_RESULT`|
 |F5C/F5G|5|C/G|1/0|待运行|待运行|未开始|`NO_PERFORMANCE_RESULT`|
 |F6C/F6G|6|C/G|3/2|待运行|待运行|未开始|`NO_PERFORMANCE_RESULT`|
+
+## 8.运行段：LANDED（2026-08-10）
+
+Runner：`Luna/max`；角色边界为本run的N607落地、静态验证、唯一启动、短连接监控和小工件回收，不读取或解释性能，不改变算法、矩阵、超参或重试策略。
+
+### 8.1落地身份与EOL字节映射
+
+实现身份固定为commit`08fb6a5282971a0ae73b9ab3d3d89935ffaa4bfa`，预注册报告commit为`6f311930edbec9a583b3dc3278f9e5856be16f7f`。默认无prefix归档从该实现commit生成，远端实际使用归档为`263321600`字节、SHA256=`9d230a6542136055b666974e1f10fa7f9b9c723565bf83c1ff8454892ad4dcac`、`4893`个members、`code/code=0`；远端release成员集合与该归档逐字一致，无partial解包或额外代码层级。一次传输partial（`155287552`字节，SHA256=`d042626034b19034b4e09a9c6ee925302c1b0a00cac80abebe09ee4fbd6daf1f`）仅作为失败证据保留，未用于解包。
+
+|文件|预注册local raw SHA（原冻结）|同一commit的reviewed LF-normalized SHA|远端release direct SHA|远端CRLF→LF校验|
+|---|---|---|---|---|
+|`analysis/phase1_icmt_design_20260810.md`|`3cdbfe3edd6b93571f972e56dec7efd2e0b82b28ea98999ef6c0f9c9d91027be`|`3cdbfe3edd6b93571f972e56dec7efd2e0b82b28ea98999ef6c0f9c9d91027be`|`601600bcc6e8912f77457da1e185d68b9db3467c33dc1bda7b08c20fb96ec1dd`|PASS|
+|`code/cvsrffi/phase1_icmt.py`|`f81bd010949b2b0e2e95a3246e53359a2d430d492d01a9e0642b00974c526b33`|`f81bd010949b2b0e2e95a3246e53359a2d430d492d01a9e0642b00974c526b33`|`198a4036d0105d18321d14fe099e5737a49db6646b405a30f1e23100cb3f95cc`|PASS|
+|`code/SSDG/train_ssdg.py`|`b1623d4ee30ed16c7f9181617a4a8c88776b601a8d48cf998a97da45896a85d9`|`31f8a920c3b470463029c89209f6261dbf4ff63fe63a2d9900fef0d95a2a6fd3`|`45ef46681b91bd7937b955f2dd4f7f462216b86048936a47083b63884ba9c87c`|PASS|
+|`code/tests/test_phase1_icmt.py`|`60a3af504238a2d790e21924543046455399c0c487dbce1888f17e00590da985`|`60a3af504238a2d790e21924543046455399c0c487dbce1888f17e00590da985`|`3a5f4d3e4b0495f71fe38323d2303b533a675ce8e8eea533f54df51f9529db75`|PASS|
+|`code/scripts/launch_phase1_icmt12_20260810.sh`|`3dd1e66f1ace3017605c328016d36853f38d25936634207698be987fb69b7be6`|`3dd1e66f1ace3017605c328016d36853f38d25936634207698be987fb69b7be6`|`3dd1e66f1ace3017605c328016d36853f38d25936634207698be987fb69b7be6`|PASS|
+
+`train_ssdg.py`的预注册raw值`b1623d4e...`是本地mixed-EOL工作树字节；commit归档的canonical LF member为`31f8a920c3b470463029c89209f6261dbf4ff63fe63a2d9900fef0d95a2a6fd3`。远端direct SHA保留实际CRLF传输字节，五项均已按CRLF→LF规范化后与同一commit内容闭合；这只是EOL传输映射，不是算法或矩阵变化。canonical诊断归档（本地，未同步）SHA256=`24c222d9f0ef913df2967859778eaea66c4aecd7df95fc6b518b866b7d3659ba`，不覆盖当前release。
+
+### 8.2落地路径与静态验证
+
+远端release=`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_icmt12_20260810_v1_08fb6a52`，CWD=`<release>/code`；run root、log root和outer在静态验证后仍为`ABSENT`。launcher远端mode=`775`、可执行位保持（Git mode=`100755`）。ManySig与6个GeoSat-C基线SHA在启动前均匹配冻结值；当时8卡无compute进程，未干预其它任务。
+
+|检查|结果|
+|---|---|
+|远端`py_compile`（ICMT、train、test）|PASS|
+|`train_ssdg.py --help`|PASS，92729字节，`--lambda_icmt`命中2处|
+|launcher`bash -n`|PASS|
+|launcher`--dry-run`|PASS，12行，SHA256=`9b8f39bed78508f876a309e3ffd3056b3134ddcd2c486fea04d5ce56dc84860c`|
+|唯一exact命令调用次数（截至本段）|0|
+
+本段状态为`LANDED / NOT_LAUNCHED / NO_PERFORMANCE_RESULT`；静态检查不构成训练或性能结果。下一步仅执行§5冻结exact命令一次。
