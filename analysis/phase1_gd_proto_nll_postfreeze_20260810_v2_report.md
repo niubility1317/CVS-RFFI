@@ -1,6 +1,6 @@
 # Phase1 GD-ProtoNLL postfreeze v2报告
 
-状态：`ARTIFACTS_COMPLETE / NO_PERFORMANCE_RESULT`
+状态：`ANALYZED / REJECT_GD_PROTO_NLL_PERMANENT / NO_PHASE3_PROMOTION`
 
 日期：2026-08-10
 
@@ -66,3 +66,24 @@ cd /home/szu2070436088/2510044040/CV-SincNet/releases/phase1_gd_proto_nll_postfr
 - NPZ只读技术诊断（未下载NPZ、未输出特征值）：12个GD-clean均`21120×160`，nonfinite行总数=`0`；仅`F6C_GD_PROTO_NLL12`有1个zero-norm行，归属`source_validation_known`（`16800`行、zero=`1`；`labeled_fit`=`3920/0`、`proxy_unknown`=`400/0`），该行按冻结totalized L2保留为零向量，未触发技术失败门。
 - 仅回收50-member小bundle（无`.npz/.pth`）与诊断JSON；bundle=`3864595` bytes、SHA256=`1dc723c196f945d4f090804eafebc80d60e571eedb540a083e086e2f2d2629a8`；诊断JSON=`10333` bytes、SHA256=`09d8e01e040e4adfc480bea46784c3d6922e7ebc7aea7f8f8b381fa7033099c9`。逐项清单`remote_artifact_sha256.tsv`共53 rows、`8807` bytes、SHA256=`9a5b4b8a2b7686439b388977a6164277d771b7f17d1a9ff5ae744bd139dc627a`；`completion.tsv`=`2097` bytes、SHA256=`51b97b58a5d393caab9ec419147fc7efc14a4c4e78e4672e951a481cf4680975`；`manifest.json`=`7762` bytes、SHA256=`680bfc69a0fda435540ef2a2f7beffbb0f419d867a49831ff399b4c94aaf15d6`；`runner_handoff.json`=`2758` bytes、SHA256=`022adadf44ca7c11e69d6ee6d2ef5d0b84f78bf9d7521c3c14c0a5806a65fb93`。
 - 远端临时archive/list/static/bundle/diagnostic均已删除并核验`ABSENT`；run-owned进程=`0`；本地每次SSH/SCP后`ssh.exe=0`、N607/bridge TCP22=`0`。本run只报告技术闭合，无性能结论；runner不再启动新run。
+
+## 7.完整结果分析与裁决
+
+主控在6个pair JSON、12个proxy metrics JSON、12个21,120行score CSV和18个完整stdout全部回收后进行分析。全6个pair的technical binding通过，18个日志未出现Traceback、RuntimeError、CUDA/OOM或nonfinite异常。以下数值全部来自同一v2 run的C/G配对行，单位为pp；`u gap`仅在同折C/G内比较。
+
+|fold|cleanδoverall|δmin-class|δmin-RX|δmin-day|3场景overall均值|clean四floor|LEO逐格四floor|δproxy AUROC|δ(proxy−known mean u)|proxy双门|
+|---:|---:|---:|---:|---:|---:|:---:|:---:|---:|---:|:---:|
+|F1|+0.012|0.000|−0.042|+0.071|+0.314|通过|通过|+0.02149|−102.275|失败|
+|F2|−0.012|+0.167|−0.167|−0.048|+0.590|通过|失败|+0.25006|+202.541|通过|
+|F3|−0.042|+0.119|−0.292|−0.119|+0.632|通过|通过|−0.02420|−843.697|失败|
+|F4|+0.095|+0.190|+0.083|+0.036|+0.314|通过|失败|−0.01294|−1,084.010|失败|
+|F5|−0.512|−2.238|−2.250|−0.488|+4.776|失败|失败|−0.07485|−93.214|失败|
+|F6|+0.280|+1.810|+0.958|+0.452|+2.374|通过|通过|−0.03200|−263.957|失败|
+
+全局结果：
+
+- clean六折均值为δoverall=`−0.030pp`、δmin-class=`+0.008pp`、δmin-RX=`−0.285pp`、δmin-day=`−0.016pp`；F5的min-class=`−2.238pp`和min-RX=`−2.250pp`越过预注册的−2pp底线，因此clean 6/6失败。
+- 18个LEO cell等权均值为δoverall=`+1.500pp`、δmin-class=`+3.684pp`、δmin-RX=`+2.777pp`、δmin-day=`+1.760pp`。三场景overall均值分别为clear=`+1.838pp`、low-elev=`+0.643pp`、rain=`+2.018pp`。但逐格四floor仅F1/F3/F6通过：F2-clear min-day=`−2.252pp`、F4-rain min-RX=`−3.797pp`、F5-low-elev min-RX=`−2.247pp`等局部退化不能被均值补偿。
+- proxy连续几何诊断中，六折平均AUROC由C的`0.7371`变为G的`0.7583`，但只有F1/F2的AUROC增量为正，而且只有F2同时提高proxy−known的mean-u gap；预注册的6/6双严格正增益门实际为1/6。该proxy是source-proxy，不是真实unknown性能证据。
+
+裁决：`REJECT_GD_PROTO_NLL_PERMANENT`。该机制显示了明确的LEO平均收益，但收益集中在部分fold/场景，clean、LEO局部floor与proxy连续拒识方向均未闭合。不允许换折、换场景、调阈值或用平均增益补偿失败项；不进入Phase3、不重试该候选。SCB的F1C单控制bundle路线与本候选独立，继续按既定真实build执行。
