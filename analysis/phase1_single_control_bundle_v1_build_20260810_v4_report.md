@@ -64,6 +64,8 @@ nohup bash -lc 'CUDA_VISIBLE_DEVICES=7 /home/szu2070436088/.conda/envs/CVS-RFFI/
 
 预发布修复记录：首个仅含5个冻结文件的partial release`phase1_single_control_bundle_v1_build_20260810_v4_c3949740`已落地并保留；远端`py_compile`通过，但公开build CLI`--help`在导入阶段失败，指纹为`ModuleNotFoundError: cvsrffi.checkpoint_loading`。本run未启动，output/log未创建；partial release及小归档作为失败证据保留。经授权仅新增同一commit的全依赖树release`phase1_single_control_bundle_v1_build_20260810_v4_c3949740_full`，不覆盖或清理partial。
 
+`_full`发布与静态验证：由commit`c3949740356d478459cd4a3c30094b7bcab025b7`以`git -c core.autocrlf=false archive`生成LF归档，SHA=`b9974f409eccc67e24c395561e9bc6b251f80dd90e27cedbcac64ded1d7a76a2`、260126720 bytes、4894成员（4274文件）、`code/code=0`；远端归档SHA及五冻结成员SHA逐项匹配。远端`py_compile`和公开build CLI`--help`通过。冻结CVS-RFFI环境无`pytest`（`No module named pytest`，未安装或改动环境）；同一commit在本地`ssr-gpu`按Revision12两项定向测试通过（`.. [100%]`，exit 0）。
+
 唯一Runner先执行direct N607 preflight；启动前核release/output/log/staging/temp均ABSENT、输入SHA、commit/archive/member SHA、无`code/code`、GPU进程数。落地后运行`py_compile`、公开build CLI`--help`和focused Revision12定向测试；通过后唯一启动。
 
 启动后核PID、CWD、cmdline、GPU、CPU时间、日志增长、output/staging/resource worker。只因路径/hash/覆盖、receipt/split/class/scenario/strict-load漂移、Traceback/OOM/nonfinite/parity/state/resource/loader错误、非零exit或成员不全而停止；不得因耗时、静默、accuracy、loss或其它性能值停止。若技术停止，只终止已证明属于本run的进程树，保留partial，标记`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`，不重试。
