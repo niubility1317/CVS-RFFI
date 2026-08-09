@@ -127,3 +127,22 @@ proxy同fold原值：
 - proxy门：仅3/6通过。六折平均ΔAUROC`+0.00296`、ΔFAR`-0.792pp`，但F2、F5、F6逐折失败，平均值不得补偿。
 - 最终裁决：`REJECT_CB_SFCE_PERMANENT`。不调整lambda、gamma或场景采样，不重跑，不进入Phase1 advancement或Phase3。
 - 科学含义：直接优化有标签LEO决策风险确实产生了广泛正向信号，且没有破坏clean总体稳定性；但它仍未消除跨fold的最差RX/最差day尾部风险，并且proxy拒识稳定性不足。因此它是有价值的负结果，而不是可晋级方法。
+
+## 8. 三轮回顾与下一轮决定
+
+本节在第3个探索轮完成后、启动第4轮前记录。已复核`项目.md`、会话索引及CCPC、PAMR、CB-SFCE完整报告。
+
+|轮次|路线|有效证据|失败边界|结论|
+|---|---|---|---|---|
+|1|CCPC clean↔LEO配对几何|clean 6/6通过；proxy方向较好|LEO四floor仅6/18通过，Δoverall均值-0.624pp、Δmin-class均值-4.152pp|永久拒绝表示配对/对齐路线|
+|2|PAMR原始余弦margin|训练与技术合同闭合|postfreeze在严格final-head读取处两fold native SIGSEGV，无性能闭环|技术证据链永久拒绝，不再修复|
+|3|CB-SFCE有标签LEO决策风险|clean 6/6；LEO 6/6 fold等权overall为正；18格均值+1.839pp|LEO四floor16/18，proxy 3/6|永久拒绝当前固定实现，但保留“监督LEO风险”方向|
+
+共同结论：
+
+- clean↔LEO特征、标量或teacher匹配会压制合法的LEO判别偏移，不再进入候选空间。
+- unknown readout、Q98/NCT阈值和proxy驱动路线已被跨TX稳定性证据否定，不再复开。
+- 当前最可信的正信号来自“直接优化有标签LEO分类风险”，但新增梯度必须避免与共同clean分类梯度冲突；不能通过调lambda、gamma或采样来追逐失败格。
+- 下一轮唯一允许的研究假设为“固定CB-SFCE风险的冲突投影版本”：保持同一损失、权重、场景、数据和矩阵，仅在共享encoder/head上把与共同base梯度冲突的新增梯度投影到非冲突半空间。它不是表示对齐，也不使用RX/day/domain、proxy或held信息。
+- 第4轮在科学设计复核、实际代码P0/P1=0和最小本地验证前不得发布；通过后应立即单次N607实验，不增加额外治理层。
+- 本回顾仍是Phase1 source-only。Phase2新类注册、`DA0_REG0/DA1_REG0/DA0_REG1/DA1_REG1`及K-shot query不在本轮数据权限内，均不得从这些结果推断；若未来进入Phase2，必须另行做同一sealed输入的四状态完整矩阵。
