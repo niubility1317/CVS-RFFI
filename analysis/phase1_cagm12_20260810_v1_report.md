@@ -1,6 +1,6 @@
 # Phase1 CAGM 12臂正式训练v1预登记报告
 
-状态：`RUNNING / FIRST_WAVE_HEALTHY / NO_PERFORMANCE_RESULT`
+状态：`ARTIFACTS_COMPLETE / TECHNICAL_SUCCESS / NON_PROMOTABLE_P0_DISABLED / NO_PERFORMANCE_RESULT`
 
 ## Runner阶段记录（2026-08-10，单次发布链）
 
@@ -13,6 +13,26 @@
 - 启动前二次只读复核：run/log/outer仍不存在；GPU0–6各1MiB、GPU7为既有PID 608786约488MiB，目标run进程为0，资源规则满足。下一步严格执行第5节唯一命令一次。
 - 第5节逐字启动命令调用`1`次；本地SSH通道约124秒超时，已识别并终止唯一残留本地SSH PID、确认TCP22清零，未重发。只读确认远端已落地：wrapper=`665612`、launcher=`665613`、PGID=`665611`，12个child PID均存在且CWD统一为冻结release/code，`pids.tsv`记录的GPU映射为0/1/2/3/4/5/6/7预登记表。
 - 首波健康检查：run/log/outer存在；12个arm日志均已生成并增长（约123–165KB），GPU上12个训练进程加既有SCB PID 608786，未超过每GPU两进程规则；首批日志仅见配置标记，未见Traceback/OOM/CUDA异常。当前仍无性能结果，继续短连接监控。
+- 终态检查：12/12 child已退出，12/12均具备`metrics_epoch`、CAGM config、training completion、terminal status、resource summary、heldout receipt和final checkpoint；12/12 terminal为`NON_PROMOTABLE_P0_DISABLED`、`exit_code=8`。C臂6/6为`CONTROL_ARM_NOT_APPLICABLE_COMMON_SEQUENCE_BOUND`且pass，G臂6/6 CAGM terminal contract pass并完成gradient audit；未见Traceback/OOM/CUDA/CAGM失败指纹。
+- 资源回收：GPU0–6回到约1MiB，GPU7保留既有SCB PID 608786约488MiB；wrapper/launcher已退出，无目标run进程，SSH/TCP22已清零。未下载`.pth`或`.npz`。
+- 小工件bundle：远端`/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_cagm12_20260810_v1/phase1_cagm12_20260810_v1_small_artifacts.tar`，`17336320`字节、122 members、SHA=`2c966cd1cd7358844f448abe5981f09606e5953cdd79e7a3ca4e2d31cbdfec23`、`.pth/.npz=0`；本地回收路径`E:\type10-7\automation_reports\CV-SincNet\phase1_cagm12_20260810_v1\artifacts\returned_small\phase1_cagm12_20260810_v1_small_artifacts.tar`，manifest SHA=`6c945404f991ca2132c9c422b6bda151d8b0c5bbcec481149e3c2ded2903f68c`。首次构建因outer路径误写退出，随后在同一路径追加正确outer并完成最终校验；未影响训练。
+
+### Runner技术结果（不含性能字段）
+
+|candidate|GPU|child PID|final checkpoint|metrics/config|completion/terminal/resource/heldout|CAGM contract|技术判定|
+|---|---:|---:|---|---|---|---|---|
+|F1C_CAGM12|0|665616|有|有|有|C控制pass|`TECHNICAL_SUCCESS / NO_PERFORMANCE_RESULT`|
+|F5G_CAGM12|0|665618|有|有|有|G pass|`TECHNICAL_SUCCESS / NO_PERFORMANCE_RESULT`|
+|F1G_CAGM12|1|665620|有|有|有|G pass|`TECHNICAL_SUCCESS / NO_PERFORMANCE_RESULT`|
+|F5C_CAGM12|1|665622|有|有|有|C控制pass|`TECHNICAL_SUCCESS / NO_PERFORMANCE_RESULT`|
+|F2C_CAGM12|2|665624|有|有|有|C控制pass|`TECHNICAL_SUCCESS / NO_PERFORMANCE_RESULT`|
+|F6G_CAGM12|2|665626|有|有|有|G pass|`TECHNICAL_SUCCESS / NO_PERFORMANCE_RESULT`|
+|F2G_CAGM12|3|665628|有|有|有|G pass|`TECHNICAL_SUCCESS / NO_PERFORMANCE_RESULT`|
+|F6C_CAGM12|3|665630|有|有|有|C控制pass|`TECHNICAL_SUCCESS / NO_PERFORMANCE_RESULT`|
+|F3C_CAGM12|4|665632|有|有|有|C控制pass|`TECHNICAL_SUCCESS / NO_PERFORMANCE_RESULT`|
+|F3G_CAGM12|5|665634|有|有|有|G pass|`TECHNICAL_SUCCESS / NO_PERFORMANCE_RESULT`|
+|F4C_CAGM12|6|665636|有|有|有|C控制pass|`TECHNICAL_SUCCESS / NO_PERFORMANCE_RESULT`|
+|F4G_CAGM12|7|665638|有|有|有|G pass|`TECHNICAL_SUCCESS / NO_PERFORMANCE_RESULT`|
 
 日期：2026-08-10
 
