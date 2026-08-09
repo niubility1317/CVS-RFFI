@@ -1,6 +1,6 @@
 # Phase3阶段职责最终目标追溯表
 
-状态：`G0_COMPLETE_PHASE1_LOCAL4_CONTROL_BUNDLE_LOCAL_VERIFIED_PENDING_REAL_BUILD`
+状态：`G0_COMPLETE_PHASE1_LOCAL4_CONTROL_BUNDLE_REVISION10_VERIFIED_PENDING_REAL_BUILD_V2`
 
 日期：2026-08-09
 
@@ -73,3 +73,5 @@ CARE v3的`proxy_unverified`接口本身可用，但G0中的`P-*`分组是人工
 首轮独立只读复审给出`P0=0、P1=5、REVISE`；第二轮仍为`P0=0、P1=5、REVISE`。Revision 4关闭L/U泄漏、RMS退化维、V/runtime exchangeability误称、有限rank floor和CARE context缺口；第三轮复核为`P0=0、P1=4、REVISE`。Revision 5进一步唯一化：①float64 129点quantile、`searchsorted(side=left)`、重复平台、端点和插值伪代码；②`[B,2,256]`布局、center crop/pad、RMS、periodic Hann、FFT、dtype及descriptor/model同tensor hook；③以进入`evidence_hash`的`bundle_id=content root`绑定语义，不扩展CARE v3字段；④三份receipt只读JSON pointer、外部ManySig root、resolved config projection和CPU/CUDA资源测量口径。Revision 6又以实际F1C小工件字节核对schema：`phase1_terminal_status_v2`使用顶层`status`，CP v2 receipt本身为顶层对象，并封存三份receipt SHA及formal C臂P0-disabled原值。Revision 6复审为`P0=0、P1=2、REVISE`；Revision 7将manifest从自身member列表中移除，唯一定义外部锚定content root，并枚举resolved model config、canonical JSON、场景代码SHA与per-physical seed公式；其复审为`P0=0、P1=2、REVISE`。Revision 8禁止resource receipt记录任何member／bundle总字节，并将physical-key类型与seed byte encoding写成精确合同。Revision 8独立复审为`P0=0、P1=0、ALLOW`，设计据此冻结。
 
 Revision9实现先关闭CUDA空缓存调用、CPU输入送CUDA runtime、资源测量非fresh、U标签进入view seed、输出根晚拒绝、全量IQ驻留、live场景未重算和context语义等实现缺口。首轮实现复核随后发现257槽descriptor priority sketch未经科学冻结批准且会改变最终证据，判为`P0=1、P1=0、REVISE`；最终实现恢复流式IQ＋全量N×5 float64 descriptor的精确median／MAD，删除sketch配置并以300行及独立1000行reference验证严格相等。冻结字节复审为`P0=0、P1=0、ALLOW`，`ssr-gpu`下`py_compile`、16项focused tests、CLI fixture build＋外部root verify和`git diff --check`均通过。因此P1-03／P1-06／L-01只提升为`local_verified_pending_real_build`；真实checkpoint＋ManySig构建、N607资源／parity回执及任何性能结论仍未完成，不得写成部署完成或Phase1晋级。
+
+真实构建v1随后因训练parser未声明的九个模型真实默认字段在resolved config审计中被误作显式非法值而技术停止，未产生bundle或性能结果。Revision10仅增加presence-aware九键白名单：只有checkpoint args和final namespace双ABSENT时物化与`build_baseline_model`完全一致的默认值，显式`None`、错型、单边缺失及非白名单缺失继续fail-closed；27项focused tests和独立复审`P0=0、P1=0、ALLOW`已闭合。状态仍是等待不可覆盖v2真实构建，不增加方法、schema或数据对齐门。

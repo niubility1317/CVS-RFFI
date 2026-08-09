@@ -1,6 +1,6 @@
-# Phase1单读出local4控制bundle v1设计卡（Revision9）
+# Phase1单读出local4控制bundle v1设计卡（Revision10）
 
-状态：`LOCAL_VERIFIED_PENDING_REAL_BUILD`；Revision9仅修复部署纵切的可复现性与fail-closed合同，已完成本地验证与独立复核`P0=0／P1=0／ALLOW`，真实F1C＋ManySig构建仍待执行，不产生性能结论。
+状态：`LOCAL_REVISION10_VERIFIED_PENDING_REAL_BUILD_V2`。真实F1C＋ManySig v1构建在resolved-model-config闭合前停止：sanitized checkpoint args与训练parser→merge→apply后的final namespace均缺少九个由`build_baseline_model`以`getattr`读取的属性。未写出bundle、未产生runtime／资源／性能结果；Revision10只修复该严格重建边界，不改变模型、数据、公式、descriptor、bundle schema或资源门，并已获独立复审`P0=0／P1=0／ALLOW`。
 
 日期：2026-08-09
 
@@ -217,9 +217,15 @@ content root唯一定义为`SHA256(canonical_json(manifest_without_content_root)
 |SCB-R9-02|资源门|fresh Python子进程在payload读取前采基线；CPU／CUDA独立load并走完整local-evidence路径|`phase1_single_control_bundle_v1.py`、测试|verified|fresh worker实测、无`psutil`fallback、实际CUDA parameter runtime|state digest只在测量边界检查|
 |SCB-R9-03|runtime／CARE桥接|runtime input跟随唯一parameter／buffer device；完整context才可seal；仅已绑定超时生成`SCB_CONTEXT_DEFER`|core、测试|verified|CUDA参数runtime、缺context拒绝、有效超时defer|上层负责把不可封存错误映射为传输defer|
 |SCB-R9-04|场景与输出根|live三scenario／registry projection闭合；既有output或staging在任何昂贵读取前拒绝|core、测试|verified|真实F1C receipt projection＋模拟live drift；missing-input前existing-root负测|不读取proxy／held／query|
-|SCB-R9-05|真实输入纵切|用真实F1C checkpoint和ManySig完成build、resource、full six-field parity smoke|CLI、core|pending|尚未执行；必须在本地可用的冻结输入上运行|当前状态仍为`LOCAL_VERIFIED_PENDING_REAL_BUILD`，不构成部署或性能声明|
+|SCB-R9-05|真实输入纵切|用真实F1C checkpoint和ManySig完成build、resource、full six-field parity smoke|CLI、core|blocked|v1在resolved-model-config闭合前`STOPPED_EARLY/NO_PERFORMANCE_RESULT`；Revision10仅修复该确定性接口问题|未写出bundle，不构成部署或性能声明|
 
-Revision9首轮实际diff复核确认CUDA、label-blind、早碰撞、live场景、fresh subprocess资源与context等工程闭合，但发现未经科学冻结批准的257槽descriptor priority sketch会改变`z_dom→r_dom／q→C+1决策`，因此返回`P0=1、P1=0、REVISE`。最终实现删除sketch、容量常量和配置字段，保持IQ逐行流式，并以紧凑`array('d')`保存全量N×5 float64 descriptor后精确计算median与`1.4826MAD`。300行测试及独立1000行reference重放均严格相等；冻结字节最终复审为`P0=0、P1=0、ALLOW`。`ssr-gpu`下`py_compile`、16项focused tests、CLI fixture build＋外部root verify和`git diff --check`均通过；这些仅是本地技术证据，不替代SCB-R9-05真实输入构建。
+Revision9首轮实际diff复核确认CUDA、label-blind、早碰撞、live场景、fresh subprocess资源与context等工程闭合，但发现未经科学冻结批准的257槽descriptor priority sketch会改变`z_dom→r_dom／q→C+1决策`，因此返回`P0=1、P1=0、REVISE`。最终实现删除sketch、容量常量和配置字段，保持IQ逐行流式，并以紧凑`array('d')`保存全量N×5 float64 descriptor后精确计算median与`1.4826MAD`。300行测试及独立1000行reference重放均严格相等；冻结字节最终复审为`P0=0、P1=0、ALLOW`。`ssr-gpu`下的`py_compile`、focused tests、CLI fixture build＋外部root verify和`git diff --check`只证明本地技术入口；v1真实输入构建随后在Revision10所述config闭合前停止，仍不替代SCB-R9-05真实输入构建。
+
+### Revision10配置投影追溯
+
+|ID|来源段落|要求|目标文件|状态|验证|备注|
+|---|---|---|---|---|---|---|
+|SCB-R10-01|resolved model config表、真实F1C v1停止证据|区分ABSENT与显式`None`；仅当checkpoint args和final namespace均缺失时，按`build_baseline_model`真实默认物化九键：`dom_feature_key`、四个stability mode、两个stability channel数、`fast_infer_when_no_aux`、`arch_family`。任何checkpoint有值而namespace缺、显式`None`、错类型或非白名单缺失均失败；`sample_rate_hz`仅保留既有缺失／`<=0`归一规则。|`phase1_single_control_bundle_v1.py`、`test_phase1_single_control_bundle_v1.py`、本设计卡|verified|`ssr-gpu py_compile`、27项focused SCB tests（含真实parser→merge→apply九键正测和三类逐项负测）、CLI fixture build＋external-root verify、`git diff --check`|sanitized真实checkpoint和parser链的九键缺失是v1停止根因；本行不表示真实build已恢复或完成。|
 
 ## 文献定位
 

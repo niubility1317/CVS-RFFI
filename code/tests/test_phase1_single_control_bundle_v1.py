@@ -228,6 +228,15 @@ def _context() -> dict[str, object]:
     }
 
 
+def _minimal_real_parser_checkpoint(*, extra_args: dict[str, object] | None = None) -> dict[str, object]:
+    """Minimal checkpoint shape that exercises the actual SSDG parser/merge path."""
+
+    args: dict[str, object] = {"num_classes": 4}
+    if extra_args is not None:
+        args.update(extra_args)
+    return {"args": args, "model": {"dom_head.net.3.bias": torch.zeros(2)}}
+
+
 def test_fixture_bundle_has_exact_ten_members_and_full_path_care_n1_parity(tmp_path: Path) -> None:
     material = _materials()
     result = scb.build_bundle(output_dir=tmp_path / "bundle", bundle_status=scb.FIXTURE_STATUS, **{key: value for key, value in material.items() if key != "eager_runtime"})
@@ -521,6 +530,53 @@ def test_preprocess_seed_tail_and_config_contracts() -> None:
     namespace["sample_rate_hz"] = "bad"
     with pytest.raises(scb.SingleControlBundleError):
         scb.resolve_model_config_projection(checkpoint=checkpoint, resolved_namespace=namespace)
+
+
+def test_real_parser_namespace_materializes_exact_nine_model_fallbacks() -> None:
+    checkpoint = _minimal_real_parser_checkpoint()
+    namespace = scb._resolved_ssdg_namespace(checkpoint, device=torch.device("cpu"))
+    observed_absent = {key for key in scb.MODEL_CONFIG_SPEC if not hasattr(namespace, key)}
+    assert observed_absent == set(scb.MODEL_NAMESPACE_ABSENT_DEFAULTS)
+    config = scb.resolve_model_config_projection(checkpoint=checkpoint, resolved_namespace=namespace)
+    assert {key: config[key] for key in scb.MODEL_NAMESPACE_ABSENT_DEFAULTS} == scb.MODEL_NAMESPACE_ABSENT_DEFAULTS
+
+
+@pytest.mark.parametrize("key", sorted(scb.MODEL_NAMESPACE_ABSENT_DEFAULTS))
+def test_model_fallback_keys_reject_explicit_none_wrong_type_and_checkpoint_namespace_loss(key: str) -> None:
+    checkpoint = _minimal_real_parser_checkpoint()
+    namespace = scb._resolved_ssdg_namespace(checkpoint, device=torch.device("cpu"))
+    base = dict(vars(namespace))
+    explicit_none = dict(base)
+    explicit_none[key] = None
+    with pytest.raises(scb.SingleControlBundleError, match=key):
+        scb.resolve_model_config_projection(checkpoint=checkpoint, resolved_namespace=explicit_none)
+    wrong_type = dict(base)
+    wrong_type[key] = 7 if isinstance(scb.MODEL_NAMESPACE_ABSENT_DEFAULTS[key], str) else "wrong"
+    with pytest.raises(scb.SingleControlBundleError, match=key):
+        scb.resolve_model_config_projection(checkpoint=checkpoint, resolved_namespace=wrong_type)
+
+    checkpoint_with_key = _minimal_real_parser_checkpoint(
+        extra_args={key: scb.MODEL_NAMESPACE_ABSENT_DEFAULTS[key]}
+    )
+    namespace_with_key = dict(
+        vars(scb._resolved_ssdg_namespace(checkpoint_with_key, device=torch.device("cpu")))
+    )
+    namespace_with_key.pop(key)
+    with pytest.raises(scb.SingleControlBundleError, match="despite checkpoint args"):
+        scb.resolve_model_config_projection(checkpoint=checkpoint_with_key, resolved_namespace=namespace_with_key)
+
+
+def test_model_config_rejects_checkpoint_none_and_nonallowlist_namespace_absence() -> None:
+    checkpoint = _minimal_real_parser_checkpoint(extra_args={"dom_feature_key": None})
+    namespace = scb._resolved_ssdg_namespace(checkpoint, device=torch.device("cpu"))
+    with pytest.raises(scb.SingleControlBundleError, match="dom_feature_key"):
+        scb.resolve_model_config_projection(checkpoint=checkpoint, resolved_namespace=namespace)
+
+    clean_checkpoint = _minimal_real_parser_checkpoint()
+    clean_namespace = dict(vars(scb._resolved_ssdg_namespace(clean_checkpoint, device=torch.device("cpu"))))
+    clean_namespace.pop("model_variant")
+    with pytest.raises(scb.SingleControlBundleError, match="model_variant is absent"):
+        scb.resolve_model_config_projection(checkpoint=clean_checkpoint, resolved_namespace=clean_namespace)
 
 
 def test_real_receipt_projection_and_false_false_satellite_semantics(

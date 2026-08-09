@@ -1040,6 +1040,26 @@ MODEL_CONFIG_SPEC: dict[str, tuple[type, Any]] = {
 }
 
 
+# ``build_baseline_model`` reads these nine attributes through ``getattr`` but
+# the frozen F1C training parser does not declare them.  They are therefore
+# permitted *only* when both the checkpoint args and the final reconstructed
+# namespace prove the attribute was absent.  This is deliberately narrower
+# than MODEL_CONFIG_SPEC: parser-backed keys must remain present in the final
+# namespace, and explicit ``None`` remains a configuration error.
+MODEL_NAMESPACE_ABSENT_DEFAULTS: dict[str, Any] = {
+    "dom_feature_key": "feat_imp",
+    "id_time_stability_mode": "off",
+    "id_freq_stability_mode": "off",
+    "domain_time_stability_mode": "off",
+    "domain_freq_stability_mode": "off",
+    "time_stability_channels": 8,
+    "freq_stability_channels": 4,
+    "fast_infer_when_no_aux": True,
+    "arch_family": "cvsincnet",
+}
+_MISSING = object()
+
+
 def _sha256_bytes(raw: bytes) -> str:
     return hashlib.sha256(raw).hexdigest()
 
@@ -1459,9 +1479,11 @@ def validate_f1c_receipts(
 
 
 def _namespace_value(namespace: Any, key: str) -> Any:
+    """Return a presence sentinel instead of conflating absent and ``None``."""
+
     if isinstance(namespace, Mapping):
-        return namespace.get(key)
-    return getattr(namespace, key, None)
+        return namespace[key] if key in namespace else _MISSING
+    return getattr(namespace, key, _MISSING)
 
 
 def _typed_config_value(value: Any, *, expected_type: type, field: str) -> Any:
@@ -1529,10 +1551,20 @@ def resolve_model_config_projection(
         raise _error("frozen checkpoint arch_family must be cvsincnet")
     for key, expected in config.items():
         actual = _namespace_value(resolved_namespace, key)
-        if key == "num_domains":
-            actual = int(actual) if actual is not None else None
-        elif key == "input_len":
-            actual = int(actual) if actual is not None else None
+        if actual is _MISSING:
+            if key not in MODEL_NAMESPACE_ABSENT_DEFAULTS:
+                raise _error(f"resolved model config {key} is absent")
+            if key in checkpoint_args:
+                raise _error(f"resolved model config {key} is absent despite checkpoint args")
+            actual = _typed_config_value(
+                MODEL_NAMESPACE_ABSENT_DEFAULTS[key],
+                expected_type=MODEL_CONFIG_SPEC[key][0],
+                field=f"frozen model fallback {key}",
+            )
+            if actual != expected:
+                raise _error(f"frozen model fallback drift for {key}")
+        elif key in ("num_domains", "input_len"):
+            actual = _require_nonbool_int(actual, field=f"resolved {key}")
         elif key in MODEL_CONFIG_SPEC:
             if key == "sample_rate_hz":
                 actual = _normalized_sample_rate(actual, field=f"resolved {key}")
