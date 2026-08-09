@@ -170,3 +170,7 @@ cd /home/szu2070436088/2510044040/CV-SincNet/releases/phase1_icmt_postfreeze_202
 ### 9.3远端静态核验
 
 release落地后仅执行必要静态检查：5个Python入口（含测试与实际proxy脚本）`py_compile=PASS`；4个入口`--help=PASS`；launcher`bash -n=PASS`；冻结环境变量下`--dry-run`精确输出`42`条（`12 clean+12 LEO+12 proxy+6 pair`）并通过计数断言。未安装包、未读取性能、未创建postfreeze输出目录。
+
+### 9.4启动前版本与调用登记
+
+Git镜像报告commit=`b012ddaa`（仅本报告文件）；实现commit=`7f6f4cfea1fa1af154997c3ab1ccd3d02616d8f3`。远端release已按完整树archive落地并完成成员SHA核验；`postfreeze run/log/outer`仍不存在。下一步只调用§6逐字冻结命令一次，调用端异常仅只读确认是否landed，禁止重发。
