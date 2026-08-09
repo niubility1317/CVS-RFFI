@@ -1,10 +1,10 @@
 # Phase3 CIRF-Track v3 G0技术发布报告
 
-状态：`PREREGISTERED_READY_FOR_RUNNER`
+状态：`ARTIFACTS_COMPLETE / TECHNICAL_ONLY / NO_PERFORMANCE_RESULT`
 
 日期：2026-08-09
 实验ID：`phase3_cirf_track_v3_g0_20260809_v1`
-操作方：主代理集成；N607发布由唯一实验runner执行
+操作方：主代理集成；N607发布由唯一实验runner执行；本地回收与技术状态由Luna/max runner完成
 
 ## 1.目标与边界
 
@@ -67,7 +67,9 @@ nohup setsid env PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/p
 - `scheduler_replay_receipt.json`
 - `g0_manifest.json`
 - `g0_manifest_receipt.json`
-- `scheduler_replay_store/<session>/generations/*.json`
+- `scheduler_replay_store/<session>/*.json`（冻结实现/测试实际口径）
+
+路径修正说明：预注册文字曾写`<session>/generations/*.json`；冻结实现与测试在session根目录直接写入两代`00000000000000000000.json`和`00000000000000000001.json`。本次不补目录、不改写或复制远端工件。
 
 成功条件：
 
@@ -80,13 +82,23 @@ nohup setsid env PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/p
 
 系统性技术停止条件：错误checkout／hash、覆盖风险、truth／role泄漏、launcher-wide确定性异常、零工件或协议receipt不闭合。不得依据任何性能字段停止或选择。fresh retry：`NO`；若失败，仅保留证据并返回`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE／NO_PERFORMANCE_RESULT`。
 
-## 5.结果表
+## 5.N607终态与小工件回收
+
+- direct N607 preflight通过；8卡只读状态为0%利用率、1MiB；CPU-only运行未分配GPU。
+- 唯一启动PID：`296080`；固定命令、CWD和Python与第3节一致；进程约2秒内自然退出，exit=0；GPU compute进程为空。
+- release归档SHA256：`9096c0c5a8a6ee00618de383e3fe2b2c2cfc14b61575c0f2df350b8e541ce161`（262461440 bytes）。归档成员为Git archive LF字节口径：core=`52f1d4bb0e6e04011f456f4b68e4a0f63ce1e91a696efe4ff8ccfa8e93cc2ae1`、CLI=`9b3d93136a0a7670ff1fdd60b0663c4cfad0873b0f06f08e947b81825ab5d2f1`、tests=`9b78f337ca87ad9f78261732ed290094ab5def85f464f7a294be10c68f9ce740`、trace=`1fa53aa9bc187746d5151234bdfee36d40cae4aa19b59d0d59df8448661b7abb`；与Windows工作树换行口径不同，未改远端代码。
+- 远端小工件结构：`g0_technical_artifacts.json`、`scheduler_replay_receipt.json`、`g0_manifest.json`、`g0_manifest_receipt.json`、session根两代ledger JSON；manifest/receipt schema、自哈希、external receipt、`cpu_only=true`、`technical_synthetic=true`、`performance_result=false`、`truth_sidecar_opened=false`均闭合。
+- 日志无`Traceback`、`RuntimeError`、`warning`、`nonfinite`或`NaN`指纹；无性能读取或性能停止。
+
+本地artifact根：`E:\type10-7\automation_reports\CV-SincNet\phase3_cirf_track_v3_g0_20260809_v1\artifacts`。`retrieval_manifest.json`：2232 bytes，SHA256=`8eddb920f233b1e70e349ea571cf8260f8ea9930dc99ea25bd4a9fea26f58260`；其中7个远端小文件逐项bytes/SHA均匹配。
+
+## 6.结果表
 
 |候选|类别|数据／角色|节点数|性能指标|技术状态|最终判定|
 |---|---|---|---:|---|---|---|
-|CIRF-Track v3 G0|CPU合成技术闭环|无真实query／无truth scorer|技术fixture|N/A|PENDING_N607|不得作性能或晋级结论|
+|CIRF-Track v3 G0|CPU合成技术闭环|无真实query／无truth scorer|技术fixture|N/A|ARTIFACTS_COMPLETE / TECHNICAL_ONLY / NO_PERFORMANCE_RESULT|不得作性能或晋级结论|
 
-## 6.已知风险与后续边界
+## 7.已知风险与后续边界
 
 - G0只证明实现性质和工件闭合，不证明真实unknown FAR、safe rejection、定位、追踪或确权性能。
 - 当前Phase1仍缺一个未被拒绝、真实checkpoint绑定并输出`z_id、z_dom、q、d_class、e_unknown、p_local`的完整deployment bundle。
