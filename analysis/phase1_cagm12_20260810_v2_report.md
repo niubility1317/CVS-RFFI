@@ -1,6 +1,6 @@
 # Phase1 CAGM 12臂正式训练v2预登记报告
 
-状态：`RUNNING / FIRST_WAVE_HEALTHY / NO_PERFORMANCE_RESULT`
+状态：`ARTIFACTS_COMPLETE / CONTRACT_VERIFIED / SMALL_BUNDLE_PENDING / NO_PERFORMANCE_RESULT`
 
 ## Runner阶段记录（2026-08-10，Revision2独立发布链）
 
@@ -14,6 +14,24 @@
 - 第5节逐字启动命令调用`1`次；本地SSH通道约124秒超时，已识别并终止唯一残留本地SSH PID、确认TCP22清零，未重发。只读确认v2已落地：wrapper=`703747`、launcher=`703748`、PGID=`703746`，12个child PID均存在且CWD统一为冻结v2 release/code，`pids.tsv`的GPU映射与预登记一致。
 - 首波健康检查：v2 run/log/outer存在；12个arm日志均已生成并增长（约117–165KB），GPU0–6各一训练进程、GPU7为F4G加既有SCB两进程，未超过上限；首批日志未见Traceback/OOM/CUDA/CAGM失败指纹。v1路径保持不变，当前仍无性能结果。
 - 约4–5分钟技术窗口：F3C/F3G/F4C/F4G四臂child已退出并各具备training completion、terminal、resource、heldout与final工件；其余8臂仍live。12/12 config已生成，日志持续增长，未见技术异常指纹；GPU4–6已释放，GPU7仍仅SCB占用。继续短连接监控，不读取性能。
+- 终态合同验证：12/12 child退出，completion/terminal/resource/heldout/config/CAGM receipt/final均存在；12/12 terminal schema v2、`NON_PROMOTABLE_P0_DISABLED`、`exit_code=8`且pass。C6/6为`joint_zero_mask_aux_only=false`、control contract pass；G6/6为v2 receipt、`joint_zero_mask_aux_only=true`、`G_AUXILIARY_ONLY_BASE_RETAINS_FULL_BATCH`、AdamW、initial state empty+SHA、gradient audit/finite字段与terminal pass。未读取性能字段。
+
+### v2 final checkpoint SHA（远端只读计算，未下载）
+
+|candidate|size(bytes)|SHA256|
+|---|---:|---|
+|F1C_CAGM12|6969531|`c2c1142135015ac362d0338af59b60195181682ecae9aca0a2c391b68415f4cb`|
+|F1G_CAGM12|6973371|`8e209eae17f614c4aa564c7f0268e8543d68c0c9a6c28c1db62bfcac670b352a`|
+|F2C_CAGM12|6969531|`80eebbf6462b40b4e6084eb09d3a74d0449cd13972b2e786c90bc3f50f99ecb1`|
+|F2G_CAGM12|6973371|`5b588bc9b8314690990c8e69c9d1b747fe8cf3efd3d1a0c19f11ec0263c4ea52`|
+|F3C_CAGM12|6969531|`92c7881db019df8f837213135f2e80fb593d08e010dadec857df635e169014b7`|
+|F3G_CAGM12|6973371|`6ee3072f6785d9b7c54eb1bcce19110bb935fbad5a56ad2761f8740a8939d81c`|
+|F4C_CAGM12|6969531|`875574ed683207df5c6aadab1e17293b3a89bdc99cec1815903a711b934db0a9`|
+|F4G_CAGM12|6973371|`e62a3b02885fb394433c63f7a00dddd9507bace80f600bab66c62f8c8fdc2f61`|
+|F5C_CAGM12|6969531|`6d28eb0d0e81c4c5df95a4d8b606a106bd111b437075e86327ceacac72b2ffb6`|
+|F5G_CAGM12|6973371|`1d51e86d23319bb765f4a01916d345de04b1b28a25c31d258015f9f6cbff6a8b`|
+|F6C_CAGM12|6969531|`d1fc8c35c4455835e0b30d71ec909e224e8105d45b799617e40ac7f058de13a7`|
+|F6G_CAGM12|6973371|`56ddec04a3f6fe48a69fe986e8b6b3b544468036fded9edb69dabe87c555787b`|
 
 日期：2026-08-10
 
