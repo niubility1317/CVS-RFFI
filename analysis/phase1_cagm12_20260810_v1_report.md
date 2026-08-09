@@ -150,13 +150,13 @@ cd /home/szu2070436088/2510044040/CV-SincNet/releases/phase1_cagm12_20260810_v1_
 
 训练成功后另行冻结并执行统一postfreeze 42步；公平评价原则是沿用已签字的source-L-only totalized-L2 Gaussian-NLL、固定400 proxy、三场景LEO、F6原始工件重算及非补偿门，但必须在CAGM专用postfreeze设计中显式写出，不能隐式复用旧候选结论。
 
-## 7.结果占位
+## 7.结果（技术终态；无性能）
 
 |candidate|fold/arm|GPU|final checkpoint|terminal|postfreeze|当前结论|
 |---|---|---:|---|---|---|---|
-|F1C/F1G|1 C/G|0/1|待运行|待运行|未开始|`NO_PERFORMANCE_RESULT`|
-|F2C/F2G|2 C/G|2/3|待运行|待运行|未开始|`NO_PERFORMANCE_RESULT`|
-|F3C/F3G|3 C/G|4/5|待运行|待运行|未开始|`NO_PERFORMANCE_RESULT`|
-|F4C/F4G|4 C/G|6/7|待运行|待运行|未开始|`NO_PERFORMANCE_RESULT`|
-|F5C/F5G|5 C/G|1/0|待运行|待运行|未开始|`NO_PERFORMANCE_RESULT`|
-|F6C/F6G|6 C/G|3/2|待运行|待运行|未开始|`NO_PERFORMANCE_RESULT`|
+|F1C/F1G|1 C/G|0/1|12臂均有|12臂均为`NON_PROMOTABLE_P0_DISABLED/exit8`|未开始|`TECHNICAL_SUCCESS / NO_PERFORMANCE_RESULT`|
+|F2C/F2G|2 C/G|2/3|12臂均有|12臂均为`NON_PROMOTABLE_P0_DISABLED/exit8`|未开始|`TECHNICAL_SUCCESS / NO_PERFORMANCE_RESULT`|
+|F3C/F3G|3 C/G|4/5|12臂均有|12臂均为`NON_PROMOTABLE_P0_DISABLED/exit8`|未开始|`TECHNICAL_SUCCESS / NO_PERFORMANCE_RESULT`|
+|F4C/F4G|4 C/G|6/7|12臂均有|12臂均为`NON_PROMOTABLE_P0_DISABLED/exit8`|未开始|`TECHNICAL_SUCCESS / NO_PERFORMANCE_RESULT`|
+|F5C/F5G|5 C/G|1/0|12臂均有|12臂均为`NON_PROMOTABLE_P0_DISABLED/exit8`|未开始|`TECHNICAL_SUCCESS / NO_PERFORMANCE_RESULT`|
+|F6C/F6G|6 C/G|3/2|12臂均有|12臂均为`NON_PROMOTABLE_P0_DISABLED/exit8`|未开始|`TECHNICAL_SUCCESS / NO_PERFORMANCE_RESULT`|
