@@ -25,6 +25,8 @@
 |`code/tests/test_phase1_rcrmd.py`|`a4753b5629cb0fc157e25214721932a77c489218b6fe7edecb8275f129f61996`|公式、权限、账本、lite_d和launcher测试|
 |`code/scripts/launch_phase1_rcrmd12_20260810.sh`|`ee5e91f39737beabfe054aebbdbf8ad94832f6c32d0bc2a7d25e55c89a7200cb`|冻结12臂launcher，Git mode100755|
 
+表中为本地工作树原始字节SHA。Git commit/archive的LF成员中，仅`code/SSDG/train_ssdg.py`因本地mixed-EOL而使用SHA`89280a76f32bee8c7f9df19aef0e447f047938ada35e3e6c56123b54d14794e6`；其余四项与表中相同。远端release必须按commit/archive成员SHA核验，不得把EOL差异误判为算法漂移。
+
 本地`ssr-gpu`串行验证：
 
 - `py_compile`：通过。
