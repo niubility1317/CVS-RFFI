@@ -4,7 +4,7 @@ set -euo pipefail
 # Invoke explicitly as: bash scripts/launch_phase1_cagm12_20260810.sh [--dry-run]
 # Frozen six-fold P1-CAGM C/G continuation matrix. C is the exact GeoSat-C
 # continuation; G adds only fixed Clean-Anchored Class Geometry Matching.
-RUN_ID="${RUN_ID:-phase1_cagm12_20260810_v1}"
+RUN_ID="${RUN_ID:-phase1_cagm12_20260810_v2}"
 PROJECT_ROOT="${PROJECT_ROOT:-/home/szu2070436088/2510044040/CV-SincNet}"
 CODE_ROOT="${CODE_ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 PYTHON="${PYTHON:-/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python}"

@@ -41,11 +41,25 @@ L_G=L_base+0.02L_CAGM
 |CAGM-08|CAGM及GD/ICMT/CB/CP窄回归|`code/tests/test_phase1_cagm.py`|verified|串行pytest共49项通过|不构成性能结果|
 |CAGM-09|后冻结42步复用门|不在本轮文件集合内|deferred|不执行|仅记录未来边界|
 
+## Revision2收据修复追踪
+
+v1训练实现已达到`ARTIFACTS_COMPLETE`，但其`cvs.phase1.cagm_receipt.v1`没有把联合零掩码的aux-only语义和真实optimizer类型封入严格终态合同，因此v1 checkpoint不得进入postfreeze。Revision2不改变科学公式、loss、forward、seed、C/G矩阵或GPU映射，只修复训练证据；新训练根固定为`phase1_cagm12_20260810_v2`，不兼容或覆盖v1。
+
+|ID|冻结要求|目标文件|状态|验证|说明|
+|---|---|---|---|---|---|
+|CAGM-R2-01|收据schema升级为`cvs.phase1.cagm_receipt.v2`并拒绝v1终态|`code/cvsrffi/phase1_cagm.py`、`code/tests/test_phase1_cagm.py`|verified|focused v1篡改负测通过|禁止宽松兼容|
+|CAGM-R2-02|G逐batch严格证明`joint_zero_mask_aux_only is True`，C终态明确False/N/A|`code/cvsrffi/phase1_cagm.py`、`code/tests/test_phase1_cagm.py`|verified|缺失、False、批漂移及C/G终态负测通过|不改变base全batch覆盖|
+|CAGM-R2-03|真实optimizer类型严格为AdamW并与初态empty/SHA共同闭合|`code/cvsrffi/phase1_cagm.py`、`code/tests/test_phase1_cagm.py`|verified|非AdamW、缺失、empty/SHA终态漂移负测通过|不恢复optimizer state|
+|CAGM-R2-04|新run ID非覆盖，12臂候选和GPU映射不变|`code/scripts/launch_phase1_cagm12_20260810.sh`、`code/tests/test_phase1_cagm.py`|verified|`bash -n`及dry-run12通过，12条均绑定v2|仅`v1`改`v2`|
+|CAGM-R2-05|CAGM focused及GD/ICMT/CB/CP窄回归保持通过|本卡授权代码与测试|verified|focused 11项、联合51项通过|不触碰postfreeze|
+
 ## 完成判定
 
 本卡的`verified`仅表示本地实现和窄验证通过，不表示N607已落地、12臂已运行、后冻结门已执行或存在性能结论。
 
 本地验证：`python -m py_compile code/cvsrffi/phase1_cagm.py code/SSDG/train_ssdg.py code/tests/test_phase1_cagm.py`通过；`python -m pytest -q code/tests/test_phase1_cagm.py`为9 passed；与GD、ICMT、CB、CP的窄回归为49 passed；`bash -n`和启动器dry-run为12臂；`git diff --check`通过。
+
+Revision2本地验证：同一`ssr-gpu`环境串行`py_compile`通过；CAGM focused为11 passed；与GD、ICMT、CB、CP联合窄回归为51 passed；`bash -n`通过，dry-run恰为12条且全部绑定`phase1_cagm12_20260810_v2`。这些结果仅证明训练证据修复的本地实现，不自签P0/P1，也不授权v1 checkpoint进入postfreeze。
 
 ## 研究动机边界
 

@@ -29,6 +29,8 @@ FROZEN_CAGM_SCENARIOS = (
 )
 FROZEN_CAGM_CLASS_IDS = (0, 1, 2, 3)
 FROZEN_CAGM_TERM_DIVISOR = 10
+FROZEN_CAGM_OPTIMIZER_TYPE = "AdamW"
+CAGM_RECEIPT_SCHEMA = "cvs.phase1.cagm_receipt.v2"
 _TOLERANCE = 1e-12
 
 
@@ -230,7 +232,7 @@ def cagm_config_receipt(config: CAGMConfig) -> Dict[str, Any]:
     """Create a data-free receipt skeleton for either frozen arm."""
 
     return {
-        "schema": "cvs.phase1.cagm_receipt.v1",
+        "schema": CAGM_RECEIPT_SCHEMA,
         "method": "P1_CAGM",
         "frozen_mode": bool(config.frozen_mode),
         "enabled": bool(config.enabled),
@@ -239,6 +241,12 @@ def cagm_config_receipt(config: CAGMConfig) -> Dict[str, Any]:
         "loss_divisor": FROZEN_CAGM_TERM_DIVISOR,
         "z_id_key": "feat_joint",
         "clean_statistics_detached": True,
+        "joint_zero_mask_aux_only": bool(config.enabled),
+        "joint_zero_mask_aux_only_semantics": (
+            "G_AUXILIARY_ONLY_BASE_RETAINS_FULL_BATCH"
+            if bool(config.enabled)
+            else "C_CONTROL_NOT_APPLICABLE"
+        ),
         "aux_gradient_scope": "LEO_SHARED_ENCODER_ONLY_HEAD_NONE_OR_ZERO_EXPECTED",
         "satellite_scenarios": list(FROZEN_CAGM_SCENARIOS),
         "satellite_schedule": "GLOBAL_BATCH_INDEX_(EPOCH_PLUS_BATCH_MINUS_2)_MOD_3",
@@ -266,6 +274,7 @@ def cagm_config_receipt(config: CAGMConfig) -> Dict[str, Any]:
         "unexpected_model_keys": [],
         "optimizer_state_restored": False,
         "rng_state_restored": False,
+        "optimizer_type": "",
         "optimizer_initial_state_sha256": "",
         "optimizer_initial_state_empty": False,
         "source_train_tx": [],
@@ -850,6 +859,12 @@ def bind_cagm_optimizer_initial_state(
     """Seal the newly created AdamW state before the first backward call."""
 
     result = dict(receipt)
+    optimizer_type = type(optimizer).__name__
+    if optimizer_type != FROZEN_CAGM_OPTIMIZER_TYPE:
+        raise CAGMConfigurationError(
+            "P1-CAGM requires optimizer_type=AdamW, "
+            f"got {optimizer_type or '<empty>'}"
+        )
     state = optimizer.state_dict()
     if dict(state.get("state", {})):
         raise CAGMConfigurationError("P1-CAGM requires a new AdamW state, not a restored optimizer")
@@ -859,8 +874,9 @@ def bind_cagm_optimizer_initial_state(
         normalized["parameter_count"] = len(list(dict(group).get("params", [])))
         groups.append(normalized)
     result["optimizer_initial_state_sha256"] = _canonical_sha256(
-        {"optimizer_type": type(optimizer).__name__, "state_empty": True, "param_groups": groups}
+        {"optimizer_type": optimizer_type, "state_empty": True, "param_groups": groups}
     )
+    result["optimizer_type"] = optimizer_type
     result["optimizer_initial_state_empty"] = True
     return result
 
@@ -913,6 +929,18 @@ def update_cagm_receipt(
     """Accumulate every G batch/scene's joint-mask and ten-term CAGM evidence."""
 
     result = dict(receipt)
+    if str(result.get("schema", "")) != CAGM_RECEIPT_SCHEMA:
+        raise CAGMRuntimeError("P1-CAGM receipt schema must be strict v2")
+    if result.get("enabled") is not True:
+        raise CAGMRuntimeError("P1-CAGM batch receipt update is G-arm only")
+    if result.get("joint_zero_mask_aux_only") is not True:
+        raise CAGMRuntimeError(
+            "P1-CAGM G receipt joint_zero_mask_aux_only must remain strictly True"
+        )
+    if batch_info.get("joint_zero_mask_aux_only") is not True:
+        raise CAGMRuntimeError(
+            "P1-CAGM every G batch requires joint_zero_mask_aux_only is True"
+        )
     if str(scenario) not in FROZEN_CAGM_SCENARIOS:
         raise CAGMRuntimeError("P1-CAGM scenario is outside frozen clear/low/rain cycle")
     if tuple(int(value) for value in result.get("expected_tx_class_ids", [])) != FROZEN_CAGM_CLASS_IDS:
@@ -988,6 +1016,8 @@ def update_cagm_receipt(
 
 
 def _validate_common_terminal_contract(result: Mapping[str, Any]) -> None:
+    if str(result.get("schema", "")) != CAGM_RECEIPT_SCHEMA:
+        raise CAGMRuntimeError("P1-CAGM terminal receipt schema must be strict v2")
     for key in (
         "baseline_sha256",
         "initial_checkpoint_sha256",
@@ -1003,6 +1033,8 @@ def _validate_common_terminal_contract(result: Mapping[str, Any]) -> None:
         raise CAGMRuntimeError("P1-CAGM requires a training_final_only warm-start checkpoint")
     if result.get("optimizer_state_restored") is not False or result.get("rng_state_restored") is not False:
         raise CAGMRuntimeError("P1-CAGM optimizer/RNG restoration is forbidden")
+    if str(result.get("optimizer_type", "")) != FROZEN_CAGM_OPTIMIZER_TYPE:
+        raise CAGMRuntimeError("P1-CAGM terminal optimizer_type must be AdamW")
     if result.get("optimizer_initial_state_empty") is not True:
         raise CAGMRuntimeError("P1-CAGM missing new AdamW initial-state receipt")
     batches = int(result.get("common_batch_sequence_batches", 0))
@@ -1033,7 +1065,28 @@ def validate_cagm_terminal_receipt(receipt: Mapping[str, Any]) -> Dict[str, Any]
     if not bool(result.get("frozen_mode", False)):
         return result
     _validate_common_terminal_contract(result)
-    if not bool(result.get("enabled", False)):
+    enabled = result.get("enabled")
+    if enabled is not True and enabled is not False:
+        raise CAGMRuntimeError("P1-CAGM terminal enabled flag must be strict bool")
+    if enabled is True:
+        if result.get("joint_zero_mask_aux_only") is not True:
+            raise CAGMRuntimeError(
+                "P1-CAGM terminal G joint_zero_mask_aux_only must be strictly True"
+            )
+        if str(result.get("joint_zero_mask_aux_only_semantics", "")) != (
+            "G_AUXILIARY_ONLY_BASE_RETAINS_FULL_BATCH"
+        ):
+            raise CAGMRuntimeError("P1-CAGM terminal G joint-zero-mask semantics drifted")
+    else:
+        if result.get("joint_zero_mask_aux_only") is not False:
+            raise CAGMRuntimeError(
+                "P1-CAGM terminal C joint_zero_mask_aux_only must be explicitly False"
+            )
+        if str(result.get("joint_zero_mask_aux_only_semantics", "")) != (
+            "C_CONTROL_NOT_APPLICABLE"
+        ):
+            raise CAGMRuntimeError("P1-CAGM terminal C joint-zero-mask semantics drifted")
+    if enabled is False:
         forbidden = (
             "cagm_batches",
             "cagm_total_rows",

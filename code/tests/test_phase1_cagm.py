@@ -20,8 +20,10 @@ if str(CODE_ROOT) not in sys.path:
 
 import SSDG.train_ssdg as train_ssdg  # noqa: E402
 from cvsrffi.phase1_cagm import (  # noqa: E402
+    CAGM_RECEIPT_SCHEMA,
     FROZEN_CAGM_CLASS_IDS,
     FROZEN_CAGM_LAMBDA,
+    FROZEN_CAGM_OPTIMIZER_TYPE,
     FROZEN_CAGM_SCENARIOS,
     CAGMConfig,
     CAGMConfigurationError,
@@ -161,6 +163,7 @@ def _sealed_receipt(*, enabled: bool) -> dict[str, object]:
             "class_order_binding_sha256": "b" * 64,
             "source_labeled_indices_sha256": "c" * 64,
             "source_split_manifest_sha256": "d" * 64,
+            "optimizer_type": FROZEN_CAGM_OPTIMIZER_TYPE,
             "optimizer_initial_state_sha256": "e" * 64,
             "optimizer_initial_state_empty": True,
             "optimizer_state_restored": False,
@@ -323,8 +326,19 @@ def test_local_binding_config_and_control_identity_are_strict() -> None:
         )
     config = validate_cagm_args(_frozen_args())
     assert config == CAGMConfig(True, True, 0.02)
-    assert cagm_config_receipt(config)["loss_rule"].startswith("DETACHED_CLEAN")
+    guided_receipt = cagm_config_receipt(config)
+    assert guided_receipt["schema"] == CAGM_RECEIPT_SCHEMA
+    assert guided_receipt["loss_rule"].startswith("DETACHED_CLEAN")
+    assert guided_receipt["joint_zero_mask_aux_only"] is True
+    assert guided_receipt["joint_zero_mask_aux_only_semantics"] == (
+        "G_AUXILIARY_ONLY_BASE_RETAINS_FULL_BATCH"
+    )
     control = validate_cagm_args(_frozen_args(enabled=False))
+    control_receipt = cagm_config_receipt(control)
+    assert control_receipt["joint_zero_mask_aux_only"] is False
+    assert control_receipt["joint_zero_mask_aux_only_semantics"] == (
+        "C_CONTROL_NOT_APPLICABLE"
+    )
     base = torch.tensor(1.5, requires_grad=True)
     assert add_cagm_to_loss(base, None, control) is base
     for name, value in (
@@ -416,6 +430,8 @@ def test_receipt_closes_scene_and_ten_term_coverage_and_control_stays_zero() -> 
     receipt = update_cagm_gradient_audit_receipt(receipt, _audit())
     terminal = validate_cagm_terminal_receipt(receipt)
     assert terminal["cagm_terminal_contract_passed"] is True
+    assert terminal["schema"] == CAGM_RECEIPT_SCHEMA
+    assert terminal["joint_zero_mask_aux_only"] is True
     assert len(terminal["cagm_scenes"]) == 3
     assert len(terminal["cagm_radius_terms"]) == 4
     assert len(terminal["cagm_gram_terms"]) == 6
@@ -430,8 +446,52 @@ def test_receipt_closes_scene_and_ten_term_coverage_and_control_stays_zero() -> 
     with pytest.raises(CAGMRuntimeError, match="zero-mask closure"):
         validate_cagm_terminal_receipt(drifted)
 
+    legacy = dict(terminal)
+    legacy["schema"] = "cvs.phase1.cagm_receipt.v1"
+    with pytest.raises(CAGMRuntimeError, match="schema must be strict v2"):
+        validate_cagm_terminal_receipt(legacy)
+
+    mask_drifted = dict(terminal)
+    mask_drifted["joint_zero_mask_aux_only"] = False
+    with pytest.raises(CAGMRuntimeError, match="terminal G joint_zero_mask_aux_only"):
+        validate_cagm_terminal_receipt(mask_drifted)
+
     control = validate_cagm_terminal_receipt(_sealed_receipt(enabled=False))
     assert control["cagm_terminal_contract"] == "CONTROL_ARM_NOT_APPLICABLE_COMMON_SEQUENCE_BOUND"
+    assert control["joint_zero_mask_aux_only"] is False
+    control_drifted = dict(control)
+    control_drifted["joint_zero_mask_aux_only"] = True
+    with pytest.raises(CAGMRuntimeError, match="terminal C joint_zero_mask_aux_only"):
+        validate_cagm_terminal_receipt(control_drifted)
+
+
+def test_every_g_batch_requires_strict_joint_zero_mask_aux_only() -> None:
+    clean, leo, labels = _geometry_inputs()
+    _, info = cagm_loss(clean.requires_grad_(True), leo.requires_grad_(True), labels)
+
+    missing = dict(info)
+    missing.pop("joint_zero_mask_aux_only")
+    with pytest.raises(CAGMRuntimeError, match="every G batch requires"):
+        update_cagm_receipt(
+            _sealed_receipt(enabled=True), missing, scenario=FROZEN_CAGM_SCENARIOS[0]
+        )
+
+    false = dict(info)
+    false["joint_zero_mask_aux_only"] = False
+    with pytest.raises(CAGMRuntimeError, match="every G batch requires"):
+        update_cagm_receipt(
+            _sealed_receipt(enabled=True), false, scenario=FROZEN_CAGM_SCENARIOS[0]
+        )
+
+    first = update_cagm_receipt(
+        _sealed_receipt(enabled=True), info, scenario=FROZEN_CAGM_SCENARIOS[0]
+    )
+    receipt_drifted = dict(first)
+    receipt_drifted["joint_zero_mask_aux_only"] = False
+    with pytest.raises(CAGMRuntimeError, match="must remain strictly True"):
+        update_cagm_receipt(
+            receipt_drifted, info, scenario=FROZEN_CAGM_SCENARIOS[1]
+        )
 
 
 def test_common_batch_sequence_new_adamw_warm_start_and_failure_receipt(tmp_path, monkeypatch, capsys) -> None:
@@ -454,8 +514,12 @@ def test_common_batch_sequence_new_adamw_warm_start_and_failure_receipt(tmp_path
         )
     optimizer = torch.optim.AdamW(_binding_model().parameters(), lr=2e-4, weight_decay=1e-4)
     initialized = bind_cagm_optimizer_initial_state(_sealed_receipt(enabled=True), optimizer)
+    assert initialized["optimizer_type"] == FROZEN_CAGM_OPTIMIZER_TYPE
     assert initialized["optimizer_initial_state_empty"] is True
     assert len(initialized["optimizer_initial_state_sha256"]) == 64
+    non_adamw = torch.optim.SGD(_binding_model().parameters(), lr=2e-4)
+    with pytest.raises(CAGMConfigurationError, match="optimizer_type=AdamW"):
+        bind_cagm_optimizer_initial_state(_sealed_receipt(enabled=True), non_adamw)
     bound = bind_cagm_source_data_order(
         _sealed_receipt(enabled=True), {"labeled_indices_sha256": "1" * 64, "split_manifest_sha256": "2" * 64}
     )
@@ -498,6 +562,28 @@ def test_common_batch_sequence_new_adamw_warm_start_and_failure_receipt(tmp_path
     assert "writer_exception_type=OSError" in capsys.readouterr().out
 
 
+def test_terminal_optimizer_type_and_initial_state_receipt_fail_closed() -> None:
+    missing = _sealed_receipt(enabled=False)
+    missing.pop("optimizer_type")
+    with pytest.raises(CAGMRuntimeError, match="optimizer_type must be AdamW"):
+        validate_cagm_terminal_receipt(missing)
+
+    wrong_type = _sealed_receipt(enabled=False)
+    wrong_type["optimizer_type"] = "SGD"
+    with pytest.raises(CAGMRuntimeError, match="optimizer_type must be AdamW"):
+        validate_cagm_terminal_receipt(wrong_type)
+
+    nonempty = _sealed_receipt(enabled=False)
+    nonempty["optimizer_initial_state_empty"] = False
+    with pytest.raises(CAGMRuntimeError, match="missing new AdamW initial-state receipt"):
+        validate_cagm_terminal_receipt(nonempty)
+
+    sha_drifted = _sealed_receipt(enabled=False)
+    sha_drifted["optimizer_initial_state_sha256"] = "not-a-sha"
+    with pytest.raises(CAGMRuntimeError, match="lacks optimizer_initial_state_sha256"):
+        validate_cagm_terminal_receipt(sha_drifted)
+
+
 def test_train_integration_and_launcher_dry_run_have_only_the_frozen_cagm_route() -> None:
     source = inspect.getsource(train_ssdg.train)
     assert "cagm_loss(" in source and "validate_cagm_terminal_receipt" in source
@@ -518,7 +604,8 @@ def test_train_integration_and_launcher_dry_run_have_only_the_frozen_cagm_route(
     assert launcher_text.startswith("#!/usr/bin/env bash\n")
     calls = re.findall(r"^launch_arm (\d) ([CG]) (\d)$", launcher_text, flags=re.MULTILINE)
     assert len(calls) == 12 and {arm for _, arm, _ in calls} == {"C", "G"}
-    assert "phase1_cagm12_20260810_v1" in launcher_text
+    assert "phase1_cagm12_20260810_v2" in launcher_text
+    assert "phase1_cagm12_20260810_v1" not in launcher_text
     assert "--lambda_cagm 0.02" in launcher_text and "--lambda_cagm 0" in launcher_text
     assert "postfreeze" not in launcher_text.lower()
     completed = subprocess.run(
