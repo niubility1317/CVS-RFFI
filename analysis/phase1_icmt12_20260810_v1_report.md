@@ -123,7 +123,7 @@ cd /home/szu2070436088/2510044040/CV-SincNet/releases/phase1_icmt12_20260810_v1_
 |F5C/F5G|5|C/G|1/0|待运行|待运行|未开始|`NO_PERFORMANCE_RESULT`|
 |F6C/F6G|6|C/G|3/2|待运行|待运行|未开始|`NO_PERFORMANCE_RESULT`|
 
-## 8.运行段：LANDED（2026-08-10）
+## 8.运行段：RUNNING（2026-08-10）
 
 Runner：`Luna/max`；角色边界为本run的N607落地、静态验证、唯一启动、短连接监控和小工件回收，不读取或解释性能，不改变算法、矩阵、超参或重试策略。
 
@@ -151,6 +151,29 @@ Runner：`Luna/max`；角色边界为本run的N607落地、静态验证、唯一
 |`train_ssdg.py --help`|PASS，92729字节，`--lambda_icmt`命中2处|
 |launcher`bash -n`|PASS|
 |launcher`--dry-run`|PASS，12行，SHA256=`9b8f39bed78508f876a309e3ffd3056b3134ddcd2c486fea04d5ce56dc84860c`|
-|唯一exact命令调用次数（截至本段）|0|
+|唯一exact命令调用次数（截至本段）|1（调用端超时后只读确认已落地，未重发）|
 
-本段状态为`LANDED / NOT_LAUNCHED / NO_PERFORMANCE_RESULT`；静态检查不构成训练或性能结果。下一步仅执行§5冻结exact命令一次。
+静态检查不构成训练或性能结果；唯一启动与健康证据见§8.3。
+
+### 8.3唯一启动与首波健康证据
+
+按§5冻结字符串执行exact命令一次（调用端SSH于约120秒超时，未重发）。超时后发现并终止唯一残留本地SSH客户端PID=`31848`，随后确认本地`ssh.exe=0`、N607 TCP22=`0`；远端命令已经落地并继续运行。
+
+远端wrapper PID=`581240`、launcher PID=`581241`，二者CWD/cmdline均绑定release`.../releases/phase1_icmt12_20260810_v1_08fb6a52/code`与run ID；12个child与GPU绑定如下，均为唯一run-owned进程：
+
+|PID|candidate|GPU|output/log绑定|
+|---:|---|---:|---|
+|581249|F1C_ICMT12|0|run/F1C_ICMT12；log/F1C_ICMT12.out|
+|581256|F5G_ICMT12|0|run/F5G_ICMT12；log/F5G_ICMT12.out|
+|581259|F1G_ICMT12|1|run/F1G_ICMT12；log/F1G_ICMT12.out|
+|581263|F5C_ICMT12|1|run/F5C_ICMT12；log/F5C_ICMT12.out|
+|581265|F2C_ICMT12|2|run/F2C_ICMT12；log/F2C_ICMT12.out|
+|581268|F6G_ICMT12|2|run/F6G_ICMT12；log/F6G_ICMT12.out|
+|581270|F2G_ICMT12|3|run/F2G_ICMT12；log/F2G_ICMT12.out|
+|581272|F6C_ICMT12|3|run/F6C_ICMT12；log/F6C_ICMT12.out|
+|581274|F3C_ICMT12|4|run/F3C_ICMT12；log/F3C_ICMT12.out|
+|581276|F3G_ICMT12|5|run/F3G_ICMT12；log/F3G_ICMT12.out|
+|581278|F4C_ICMT12|6|run/F4C_ICMT12；log/F4C_ICMT12.out|
+|581280|F4G_ICMT12|7|run/F4G_ICMT12；log/F4G_ICMT12.out|
+
+启动后首个短连接快照显示12个GPU compute各1个本run child（每卡两臂），12个candidate log均已增长；`pids.tsv`为2380字节、SHA256=`8319bd5b47b17b5cca70191341060e9d3a1787993fabba629e54536c4d7d1f6d`。outer启动日志当时为0字节且无错误marker；未读取任何accuracy、loss或其它性能字段。当前状态为`RUNNING / NO_PERFORMANCE_RESULT`，继续仅按技术健康规则短连接监控。
