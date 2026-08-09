@@ -2,6 +2,12 @@
 
 状态：`LOCAL_VERIFIED / TRAINING_ARTIFACTS_COMPLETE / PREREGISTERED_NOT_LAUNCHED / NO_PERFORMANCE_RESULT`
 
+## Runner阶段记录（2026-08-10，postfreeze Revision2独立执行链）
+
+- direct `n607_ssh_preflight.ps1`通过且`preflight_exit=0`；本地SSH进程/TCP22均为0。N607项目根可见，GPU0–6各约1MiB，GPU7约498MiB为既有SCB v4；未干预SCB。
+- 不可变release六个postfreeze成员SHA、ManySig SHA与训练v2的12个final checkpoint SHA全部匹配；training v2 receipt/status合同已核到schema v2、C/G joint-mask/AdamW约束，training进程为0。
+- postfreeze root/log/outer启动前均确认ABSENT；v1/v2训练路径保留不改。远端`py_compile`（5个postfreeze Python文件）、4个脚本`--help`、launcher`bash -n`均通过；`--dry-run`严格42条：`CAGM_CLEAN_EXPORT=12`、`CAGM_LEO_EXPORT_AND_BIND=12`、`FROZEN_LOGITS_PROXY_BINDING=12`、`CAGM_PAIR_SCORE=6`，无路径创建或性能读取。
+
 日期：2026-08-10
 
 ## 1.目标与冻结评价合同
@@ -81,4 +87,3 @@ cd /home/szu2070436088/2510044040/CV-SincNet/releases/phase1_cagm12_20260810_v2_
 唯一Runner启动前只做一次必要的release/member、ManySig、12 checkpoint SHA、不可覆盖root和GPU核验；复用已验证release，不重新同步或修改远端代码。唯一命令后记录wrapper/launcher/12 candidate PID、CWD/cmdline、GPU和日志。仅路径/hash/覆盖、协议/receipt、Traceback/OOM/CUDA、nonfinite、两个distinct candidate同一确定性异常或缺必要工件可技术停止；绝不按性能停止，NO RETRY。
 
 完整预期：12 clean NPZ、12 LEO NPZ、12 LEO binding、12 proxy JSON＋12 CSV、6 pair JSON、18日志与PID表。Runner在42步完整闭合前不读取或解释性能；闭合后只回收小JSON/CSV/log/binding与manifest，不下载checkpoint或NPZ。主代理随后从6个pair JSON和F6 aggregate读取完整性能、逐fold/逐场景非补偿门并更新本报告。
-
