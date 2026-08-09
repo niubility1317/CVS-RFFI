@@ -1,6 +1,6 @@
 # Phase1 ICMT 12臂正式训练v1报告
 
-状态：`PREREGISTERED / NOT_LAUNCHED / NO_PERFORMANCE_RESULT`
+状态：`ARTIFACTS_COMPLETE / NO_PERFORMANCE_RESULT`
 
 日期：2026-08-10
 
@@ -177,3 +177,28 @@ Runner：`Luna/max`；角色边界为本run的N607落地、静态验证、唯一
 |581280|F4G_ICMT12|7|run/F4G_ICMT12；log/F4G_ICMT12.out|
 
 启动后首个短连接快照显示12个GPU compute各1个本run child（每卡两臂），12个candidate log均已增长；`pids.tsv`为2380字节、SHA256=`8319bd5b47b17b5cca70191341060e9d3a1787993fabba629e54536c4d7d1f6d`。outer启动日志当时为0字节且无错误marker；未读取任何accuracy、loss或其它性能字段。当前状态为`RUNNING / NO_PERFORMANCE_RESULT`，继续仅按技术健康规则短连接监控。
+
+## 9.运行终态：ARTIFACTS_COMPLETE（2026-08-10）
+
+12臂均自然结束；没有触发健康停止，也没有因accuracy、loss或其它性能字段停止。所有终态均为预期`NON_PROMOTABLE_P0_DISABLED/exit8`，这不是性能失败；本run不产生可晋级性能结果，postfreeze未启动。
+
+|candidate|fold/arm|GPU/PID|final checkpoint|metrics/config/completion/terminal/resource/heldout|ICMT合同与闭合|终态|Runner verdict|
+|---|---|---|---|---|---|---|---|
+|F1C_ICMT12|F1/C|0/581249|存在（不下载）|7类工件齐全|C：N/A/0，contract pass|`NON_PROMOTABLE_P0_DISABLED/8`|`TECHNICALLY_COMPLETE / NO_PERFORMANCE_RESULT`|
+|F1G_ICMT12|F1/G|1/581259|存在（不下载）|7类工件齐全|G：contract pass，VJP完成，clean/LEO rows=`153600/153600`|`NON_PROMOTABLE_P0_DISABLED/8`|`TECHNICALLY_COMPLETE / NO_PERFORMANCE_RESULT`|
+|F2C_ICMT12|F2/C|2/581265|存在（不下载）|7类工件齐全|C：N/A/0，contract pass|`NON_PROMOTABLE_P0_DISABLED/8`|`TECHNICALLY_COMPLETE / NO_PERFORMANCE_RESULT`|
+|F2G_ICMT12|F2/G|3/581270|存在（不下载）|7类工件齐全|G：contract pass，VJP完成，clean/LEO rows=`153600/153600`|`NON_PROMOTABLE_P0_DISABLED/8`|`TECHNICALLY_COMPLETE / NO_PERFORMANCE_RESULT`|
+|F3C_ICMT12|F3/C|4/581274|存在（不下载）|7类工件齐全|C：N/A/0，contract pass|`NON_PROMOTABLE_P0_DISABLED/8`|`TECHNICALLY_COMPLETE / NO_PERFORMANCE_RESULT`|
+|F3G_ICMT12|F3/G|5/581276|存在（不下载）|7类工件齐全|G：contract pass，VJP完成，clean/LEO rows=`153600/153600`|`NON_PROMOTABLE_P0_DISABLED/8`|`TECHNICALLY_COMPLETE / NO_PERFORMANCE_RESULT`|
+|F4C_ICMT12|F4/C|6/581278|存在（不下载）|7类工件齐全|C：N/A/0，contract pass|`NON_PROMOTABLE_P0_DISABLED/8`|`TECHNICALLY_COMPLETE / NO_PERFORMANCE_RESULT`|
+|F4G_ICMT12|F4/G|7/581280|存在（不下载）|7类工件齐全|G：contract pass，VJP完成，clean/LEO rows=`153600/153600`|`NON_PROMOTABLE_P0_DISABLED/8`|`TECHNICALLY_COMPLETE / NO_PERFORMANCE_RESULT`|
+|F5C_ICMT12|F5/C|1/581263|存在（不下载）|7类工件齐全|C：N/A/0，contract pass|`NON_PROMOTABLE_P0_DISABLED/8`|`TECHNICALLY_COMPLETE / NO_PERFORMANCE_RESULT`|
+|F5G_ICMT12|F5/G|0/581256|存在（不下载）|7类工件齐全|G：contract pass，VJP完成，clean/LEO rows=`153600/153600`|`NON_PROMOTABLE_P0_DISABLED/8`|`TECHNICALLY_COMPLETE / NO_PERFORMANCE_RESULT`|
+|F6C_ICMT12|F6/C|3/581272|存在（不下载）|7类工件齐全|C：N/A/0，contract pass|`NON_PROMOTABLE_P0_DISABLED/8`|`TECHNICALLY_COMPLETE / NO_PERFORMANCE_RESULT`|
+|F6G_ICMT12|F6/G|2/581268|存在（不下载）|7类工件齐全|G：contract pass，VJP完成，clean/LEO rows=`153600/153600`|`NON_PROMOTABLE_P0_DISABLED/8`|`TECHNICALLY_COMPLETE / NO_PERFORMANCE_RESULT`|
+
+每臂工件为`final_ssdg.pth`、`metrics_epoch.csv`、`metrics_epoch.jsonl`、`phase1_icmt_config_receipt.json`、`phase1_training_completion_receipt.json`、`phase1_terminal_status.json`、`phase1_icmt_terminal_receipt.json`、`phase1_resource_summary.json`和`frozen_phase1_heldout_eval.json`；`.pth`与任何NPZ均未下载。远端12/12主child退出、GPU compute=`0`、异常指纹=`0`，release/run/log/outer保留。
+
+只回收的小工件bundle本地路径为`release_evidence/phase1_icmt12_20260810_v1_small_artifacts.tar`，SHA256=`0e219eb9b50b8ae31894f02703603a3b5ac43cb087922d8e2dca4a5bb596b744`、大小`17141760`字节、`122`members、`.pth/.npz`成员数`0`。远端临时partial archive、retry archive和bundle均已清理并核验`ABSENT`。本地manifest为`release_evidence/runner_manifest.json`，SHA256=`1ce4c49c7022745a72f0500bc4ff2481207704dd41c9ab7fe7c5149bc6664b1c`、大小`2873`字节；manifest记录完整run-owned PID/GPU/CWD绑定、artifact计数、合同字段和清理证据。
+
+本run最终状态：`ARTIFACTS_COMPLETE / NO_PERFORMANCE_RESULT`。后续postfreeze与性能读取不属于本Runner授权范围。
