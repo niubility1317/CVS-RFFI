@@ -1,12 +1,48 @@
 # Phase1 CAGM后冻结42步v2预登记报告
 
-状态：`LOCAL_VERIFIED / TRAINING_ARTIFACTS_COMPLETE / PREREGISTERED_NOT_LAUNCHED / NO_PERFORMANCE_RESULT`
+状态：`ARTIFACTS_COMPLETE / TECHNICAL_BINDING_PASS / PAIR_JSON_READY / NO_PERFORMANCE_INTERPRETATION`
 
 ## Runner阶段记录（2026-08-10，postfreeze Revision2独立执行链）
 
 - direct `n607_ssh_preflight.ps1`通过且`preflight_exit=0`；本地SSH进程/TCP22均为0。N607项目根可见，GPU0–6各约1MiB，GPU7约498MiB为既有SCB v4；未干预SCB。
 - 不可变release六个postfreeze成员SHA、ManySig SHA与训练v2的12个final checkpoint SHA全部匹配；training v2 receipt/status合同已核到schema v2、C/G joint-mask/AdamW约束，training进程为0。
 - postfreeze root/log/outer启动前均确认ABSENT；v1/v2训练路径保留不改。远端`py_compile`（5个postfreeze Python文件）、4个脚本`--help`、launcher`bash -n`均通过；`--dry-run`严格42条：`CAGM_CLEAN_EXPORT=12`、`CAGM_LEO_EXPORT_AND_BIND=12`、`FROZEN_LOGITS_PROXY_BINDING=12`、`CAGM_PAIR_SCORE=6`，无路径创建或性能读取。
+- 第4节exact命令调用次数=`1`；SSH约49秒超时后仅清理本地SSH PID=`28260`并确认TCP22清零，未重发。远端已落地并完成；wrapper/launcher在确认前已退出，12个candidate PID及GPU由`candidate_pids.tsv`持久记录，CWD统一为不可变release/code。
+- 完整42步计数：12 clean NPZ、12 LEO NPZ、12 LEO binding、12 proxy JSON、12 proxy CSV、6 pair JSON；18阶段日志（12 candidate＋6 pair）和1份PID表，outer存在但大小为0。F6 pair JSON存在`matrix_aggregate`技术字段。
+- 6/6 pair JSON技术binding通过：postfreeze root、matrix ID、training root、C/G checkpoint binding、common training binding、receipt revalidation与technical binding均通过；C/G joint-mask与AdamW/initial-state合同保持训练v2证据。18阶段日志中Traceback、RuntimeError、CUDA OOM、argparse、协议/技术失败指纹计数均为0。
+
+### 42步最终技术交接表（不读取或解释性能）
+
+|candidate|GPU|child PID|CWD|5项candidate工件|binding技术结论|
+|---|---:|---:|---|---|---|
+|F1C_CAGM12|0|724341|immutable release/code|clean/LEO/binding/proxy JSON+CSV=5/5|PASS|
+|F1G_CAGM12|1|724343|immutable release/code|5/5|PASS|
+|F2C_CAGM12|2|724346|immutable release/code|5/5|PASS|
+|F2G_CAGM12|3|724349|immutable release/code|5/5|PASS|
+|F3C_CAGM12|4|724353|immutable release/code|5/5|PASS|
+|F3G_CAGM12|5|724356|immutable release/code|5/5|PASS|
+|F4C_CAGM12|6|724357|immutable release/code|5/5|PASS|
+|F4G_CAGM12|7|724361|immutable release/code|5/5|PASS|
+|F5C_CAGM12|1|724344|immutable release/code|5/5|PASS|
+|F5G_CAGM12|0|724342|immutable release/code|5/5|PASS|
+|F6C_CAGM12|3|724351|immutable release/code|5/5|PASS|
+|F6G_CAGM12|2|724347|immutable release/code|5/5|PASS|
+
+|pair|pair JSON|root/matrix|C/G binding|common/receipt|technical binding|
+|---|---|---|---|---|---|
+|F1_C_vs_G|present|PASS|PASS|PASS|PASS|
+|F2_C_vs_G|present|PASS|PASS|PASS|PASS|
+|F3_C_vs_G|present|PASS|PASS|PASS|PASS|
+|F4_C_vs_G|present|PASS|PASS|PASS|PASS|
+|F5_C_vs_G|present|PASS|PASS|PASS|PASS|
+|F6_C_vs_G|present＋matrix_aggregate|PASS|PASS|PASS|PASS|
+
+### 小工件bundle、manifest与清理
+
+- 远端bundle=`/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_cagm_postfreeze_20260810_v2/phase1_cagm_postfreeze_20260810_v2_small_artifacts.tar`；本地=`E:\type10-7\automation_reports\CV-SincNet\phase1_cagm_postfreeze_20260810_v2\artifacts\returned_small\phase1_cagm_postfreeze_20260810_v2_small_artifacts.tar`。
+- bundle大小=`28733440`字节，SHA256=`4453ec5f6eeabb801a83152fd68c2da277306d56856a37ca3a13ed4e80398762`，members=`63`（62个小工件＋manifest），`.pth/.npz=0`。
+- 本地manifest=`E:\type10-7\automation_reports\CV-SincNet\phase1_cagm_postfreeze_20260810_v2\artifacts\returned_small\phase1_cagm_postfreeze_20260810_v2_small_artifacts.manifest.txt`，大小=`8955`字节，62条，SHA256=`4d903062a9845c3274fd8c1ff2108b9056912af753ed307096b938f04fda6967`。
+- 远端目标postfreeze进程已为0；GPU0–6回到约1MiB，GPU7仅既有SCB v4约498MiB；本地SSH/TCP22均为0。未下载`.pth`或`.npz`；pair JSON与小工件已准备给主代理分析。
 
 日期：2026-08-10
 
