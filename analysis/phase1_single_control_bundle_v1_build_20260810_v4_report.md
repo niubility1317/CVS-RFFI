@@ -1,6 +1,6 @@
 # Phase1单读出local4控制bundle v1真实构建v4报告
 
-状态：`LANDED / NOT_LAUNCHED / NO_PERFORMANCE_RESULT`
+状态：`RUNNING / NO_PERFORMANCE_RESULT`
 
 日期：2026-08-10
 
@@ -65,6 +65,8 @@ nohup bash -lc 'CUDA_VISIBLE_DEVICES=7 /home/szu2070436088/.conda/envs/CVS-RFFI/
 预发布修复记录：首个仅含5个冻结文件的partial release`phase1_single_control_bundle_v1_build_20260810_v4_c3949740`已落地并保留；远端`py_compile`通过，但公开build CLI`--help`在导入阶段失败，指纹为`ModuleNotFoundError: cvsrffi.checkpoint_loading`。本run未启动，output/log未创建；partial release及小归档作为失败证据保留。经授权仅新增同一commit的全依赖树release`phase1_single_control_bundle_v1_build_20260810_v4_c3949740_full`，不覆盖或清理partial。
 
 `_full`发布与静态验证：由commit`c3949740356d478459cd4a3c30094b7bcab025b7`以`git -c core.autocrlf=false archive`生成LF归档，SHA=`b9974f409eccc67e24c395561e9bc6b251f80dd90e27cedbcac64ded1d7a76a2`、260126720 bytes、4894成员（4274文件）、`code/code=0`；远端归档SHA及五冻结成员SHA逐项匹配。远端`py_compile`和公开build CLI`--help`通过。冻结CVS-RFFI环境无`pytest`（`No module named pytest`，未安装或改动环境）；同一commit在本地`ssr-gpu`按Revision12两项定向测试通过（`.. [100%]`，exit 0）。
+
+启动事实：2026-08-10 03:01:23 CST从`_full` release根执行预注册exact detached命令唯一一次，调用返回`0`；`build.pid` wrapper=`608774`，Python子PID=`608786`，CWD精确为`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_single_control_bundle_v1_build_20260810_v4_c3949740_full`，GPU7映射正确。首检及约1小时短连均显示CPU约100%、RSS约3.56GB、GPU进程显存488MiB（卡占用498MiB）、日志4802B仅两条PyTorch`TracerWarning`，`output/staging/resource/build.exit`均未出现；无Traceback/OOM/nonfinite/parity/state/resource/loader错误。当前为长CPU计算中的`RUNNING / NO_PERFORMANCE_RESULT`，不按耗时或静默停止。
 
 唯一Runner先执行direct N607 preflight；启动前核release/output/log/staging/temp均ABSENT、输入SHA、commit/archive/member SHA、无`code/code`、GPU进程数。落地后运行`py_compile`、公开build CLI`--help`和focused Revision12定向测试；通过后唯一启动。
 
