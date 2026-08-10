@@ -1,6 +1,6 @@
 # Phase1单读出local4控制bundle v1真实构建v5报告
 
-状态：`LOCAL_VERIFIED / LANDED / STATIC_VERIFIED / NOT_LAUNCHED / NO_PERFORMANCE_RESULT`
+状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
 
 日期：2026-08-10
 
@@ -78,3 +78,20 @@ nohup bash -lc 'CUDA_VISIBLE_DEVICES=7 /home/szu2070436088/.conda/envs/CVS-RFFI/
 成功输出严格为9 payload＋`manifest.json`，随后从外部content root运行同一公开CLI verify。成功门：10文件及SHA/root闭合；真实IQ六字段/decision parity；state digest不变；bundle≤32MiB；evidence≤64KiB；CPU RSS≤512MiB；CPU p99≤250ms；CUDA VRAM≤256MiB；CARE N=1规范化恒等。只回收日志、manifest和JSON小receipt；不下载ManySig、源checkpoint、embedded runtime或NPZ。
 
 本run是Phase3前置技术构建，不读取分类性能，不提供unknown、多卫星、协同收益或Phase1晋级结论。若真实bundle成功，下一步仅执行已实现的真实N=1 bridge；N=2..5仍须真实同事件多接收机输入或明确标记proxy，不能由本run推断。
+
+## 6.v5真实构建终态（技术失败闭合）
+
+|字段|证据|
+|---|---|
+|launch调用次数|`1`（exact detached命令；不retry、不restart）|
+|终态|`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`|
+|wrapper PID|`958321`，终态短连时已退出；主build PID `958333`亦已退出|
+|worker证据|前置fresh worker `958466`为`L_RUNTIME`、CPU持续满载；最终fail-closed证据为fresh `L_DESCRIPTOR`、`chunk=0`、`exit=-11 signal=11`（该失败worker在自然终态短连前已退出）|
+|主退出|`build.exit=1`（非零）|
+|失败指纹|`SingleControlBundleError: native worker failed closed role=L_DESCRIPTOR chunk=0 exit=-11 signal=11`；未观察OOM，不能将SIGSEGV解释为OOM|
+|GPU7终态|`utilization=0%`、`memory.used=1MiB/24576MiB`、`temperature=33°C`；无run进程残留|
+|输出闭合|`output=ABSENT`、`staging_entries=0`；未生成manifest、payload、verify、resource或CARE证据|
+|最小回收证据|`build.pid` 7B SHA256=`f2b2f9144d63f1aea79856ad77871c9dd8374898492456ca611c98b6d0edc881`；`build.exit` 2B SHA256=`4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865`；`build.out` 6538B SHA256=`a57c77f71a32093c901c1e71bfa35b1078b7548ef8ea30a54e2ef3961223f7ab`|
+|证据边界|本run未读性能、未产生bundle、未运行公开verify，不提供任何性能或Phase1晋级结论|
+
+远端终态复核（2026-08-10 server `22:09:54`）确认run树无wrapper/main/worker，GPU7空闲，`output=ABSENT`且staging为空。只回收上述3个小日志文件；未下载core、checkpoint、ManySig、runtime或NPZ。SSH/SCP后本地均复核`no_ssh_process`与`no_n607_ssh_tcp`。
