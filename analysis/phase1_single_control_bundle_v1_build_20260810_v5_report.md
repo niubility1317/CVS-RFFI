@@ -34,7 +34,7 @@
 
 首次在Windows默认`core.autocrlf=true`下生成的完整归档SHA为`7d8ecda413b930851373fb0525ce3e117bdfbdc3275c74469579908593889bf2`。远端展开后检测到CRLF，核心成员SHA为`e2ac4b3ff6fadd4194ad37796881c1a0f86e0dd6164ef590e0861e4786ad9168`，不满足冻结LF要求；该归档与展开树已安全改名为`*_crlf_mismatch_prelaunch`保留审计证据。该修正发生在launch前，不计实验retry，未创建log/output且未调用build。
 
-使用`git -c core.autocrlf=false -c core.eol=lf archive`从commit`728b4029507ce5bf5a79002999f709778fe3ff53`重新生成完整无prefix归档：本地与远端tar SHA均为`c8d21d7e141a396d721af861b859e0521a5f410d144f06b84b350a9a0da58fbe`，4307个文件成员、无`code/code`。六个冻结关键成员SHA逐项匹配目标，关键文本CR字节均为0，展开后模式为`664`并与tar闭合。远端LF release已完成展开；`CVS-RFFI` Python`3.10.19`下core、build CLI、test三文件`py_compile=PASS`，公开build CLI`--help=PASS`。输入SHA、GPU7空闲、目标release/output/log/build文件覆盖检查均通过；目前仍未创建log root、未launch、无性能结果。
+使用`git -c core.autocrlf=false -c core.eol=lf archive`从commit`728b4029507ce5bf5a79002999f709778fe3ff53`重新生成完整无prefix归档：本地与远端tar SHA均为`c8d21d7e141a396d721af861b859e0521a5f410d144f06b84b350a9a0da58fbe`，4307个文件成员、无`code/code`。六个冻结关键成员SHA逐项匹配目标，关键文本CR字节均为0，展开后模式为`664`并与tar闭合。远端LF release已完成展开；`CVS-RFFI` Python`3.10.19`下core、build CLI、test三文件`py_compile=PASS`，公开build CLI`--help=PASS`。输入SHA、GPU7空闲、目标release/output/log/build文件覆盖检查均通过；随后按唯一exact命令launch，最终技术失败，详见§6；无性能结果。
 
 上述远端`py_compile`在release内产生16个`__pycache__`文件；该树已安全改名为`*_pycompile_sideeffects_prelaunch`保留证据，冻结release随后从同一LF tar干净重展开，最终4307文件、无pycache、关键SHA/mode/LF再次闭合。此为launch前机械清理，不计实验retry；之后不再在release内运行会写文件的Python。
 
@@ -91,7 +91,7 @@ nohup bash -lc 'CUDA_VISIBLE_DEVICES=7 /home/szu2070436088/.conda/envs/CVS-RFFI/
 |失败指纹|`SingleControlBundleError: native worker failed closed role=L_DESCRIPTOR chunk=0 exit=-11 signal=11`；未观察OOM，不能将SIGSEGV解释为OOM|
 |GPU7终态|`utilization=0%`、`memory.used=1MiB/24576MiB`、`temperature=33°C`；无run进程残留|
 |输出闭合|`output=ABSENT`、`staging_entries=0`；未生成manifest、payload、verify、resource或CARE证据|
-|最小回收证据|`build.pid` 7B SHA256=`f2b2f9144d63f1aea79856ad77871c9dd8374898492456ca611c98b6d0edc881`；`build.exit` 2B SHA256=`4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865`；`build.out` 6538B SHA256=`a57c77f71a32093c901c1e71bfa35b1078b7548ef8ea30a54e2ef3961223f7ab`|
+|最小回收证据|持久目录`E:\type10-7\automation_reports\CV-SincNet\phase1_single_control_bundle_v1_build_20260810_v5\artifacts\`：`build.pid` 7B SHA256=`f2b2f9144d63f1aea79856ad77871c9dd8374898492456ca611c98b6d0edc881`；`build.exit` 2B SHA256=`4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865`；`build.out` 6538B SHA256=`a57c77f71a32093c901c1e71bfa35b1078b7548ef8ea30a54e2ef3961223f7ab`|
 |证据边界|本run未读性能、未产生bundle、未运行公开verify，不提供任何性能或Phase1晋级结论|
 
 远端终态复核（2026-08-10 server `22:09:54`）确认run树无wrapper/main/worker，GPU7空闲，`output=ABSENT`且staging为空。只回收上述3个小日志文件；未下载core、checkpoint、ManySig、runtime或NPZ。SSH/SCP后本地均复核`no_ssh_process`与`no_n607_ssh_tcp`。
