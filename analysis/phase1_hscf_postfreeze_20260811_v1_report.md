@@ -4,7 +4,7 @@
 
 - 实验ID：`phase1_hscf_postfreeze_20260811_v1`
 - 日期：2026-08-11
-- 当前状态：`PREREGISTERED / LOCAL_VERIFIED / P0=0 / P1=0 / NO_PERFORMANCE_INTERPRETATION`
+- 当前状态：`ARTIFACTS_COMPLETE / P0=0 / P1=0 / NO_PERFORMANCE_INTERPRETATION`
 - 操作边界：主控冻结评价合同、矩阵和判定门；唯一N607 Runner只负责release落地、唯一启动、技术监控与小工件回收，不读取或解释性能字段。
 - 训练输入：`phase1_hscf12_20260811_v2`，12/12臂技术闭合；训练报告SHA256=`e282a9657eaa06206d027decc88c375c512690441206ca895a4fd9f84bce356e`，Git镜像commit=`9aff4d20242ea124f96f4a979bc4bf4b0f381a58`。
 - 目标：在不改变训练、fold、seed、receiver、TX、场景或阈值的前提下，对同fold C/G执行固定clean、三LEO、fixed400 proxy和连续Gaussian-NLL公平评价，产出6份pair JSON及F6矩阵聚合。
