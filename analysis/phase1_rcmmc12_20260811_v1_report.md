@@ -149,3 +149,10 @@ G臂额外必须闭合：
 - ManySig SHA=`2b0a7a7488dd3650bcae7b1d80efbcffd1598aaa671ae6b0a0df2a24dc0f694f`；F1C--F6C六个GeoSat-C checkpoint均存在并已取SHA；三文件`py_compile`=0、`train_ssdg.py --help`=0且含RCMMC flags、launcher `bash -n`=0、dry-run=12（C=6/G=6，GPU计数0:2/1:2/2:2/3:2/4:1/5:1/6:1/7:1，旧候选=0）。
 - 真实F1C checkpoint no-query smoke通过：从checkpoint args解析`input_len=256,num_domains=14`，state load missing/unexpected=0，前向`z=[128,160]`，RCMMC rows=128/cells=28/positive-D=28，receipt schema=`cvs.phase1.rcmmc_receipt.v1`且VJP receipt闭合；LEO feat_joint与shared encoder finite-nonzero，exact classifier head与clean feat_joint None-or-zero，`rcmmc_loss`签名无query参数。一次错误的128/1默认构造仅产生shape mismatch，未进入训练且已用checkpoint args正确重做。
 - 本次Runner启动前release/run/log/outer分别为PRESENT/ABSENT/ABSENT/ABSENT；无匹配训练进程，8 GPU均0%/1MiB；当前`launch=0`、`retry=NO`，SSH/TCP22每次短连后均清零。
+
+## 10.Runner唯一启动与首波技术健康（2026-08-11）
+
+- 最后只读prelaunch gate：direct preflight=0；release=PRESENT(mode=`0775`)，run/log/outer=ABSENT；无匹配进程；8 GPU均0%/1MiB。随后严格执行§5冻结命令恰1次，`retry=NO`，本Runner累计`launch=1`，未重发SCP。
+- SSH启动通道未在有界时间内返回；已核对其cmdline为逐字冻结命令，仅清理绑定本地SSH客户端PID=`21936`，未终止远端run；清理后本地`ssh.exe`与N607/bridge TCP22均为0。短连只读确认run/log/outer均PRESENT，launcher outer暂为空，12候选目录和12 arm日志已生成。
+- `pids.tsv`为13行（header+12）；12/12主PID全部alive，CWD均为release code，fold/arm/GPU映射与冻结矩阵一致；12日志首行均为`[CONFIG-RUN]`，技术异常扫描（Traceback、RuntimeError、CUDA、OOM、argparse、权限、Killed）=0。GPU进程计数为0:2、1:2、2:2、3:2、4:1、5:1、6:1、7:1，util约19--91%、显存约2.5--5.4GiB。
+- 当前状态：`RUNNING / NO_PERFORMANCE_RESULT`。不得依据accuracy、loss、floor、proxy或任何性能值停止；仅按预注册P0、launcher-wide故障、重复确定性异常、OOM/CUDA/argparse/路径权限、零final/receipt技术规则处理。
