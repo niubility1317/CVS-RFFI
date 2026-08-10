@@ -5,7 +5,7 @@
 - 实验ID：`phase1_rcrmd_postfreeze_20260810_v1`
 - 日期：2026-08-10
 - 操作：主代理冻结方法、门和分析；唯一N607 Runner负责落地、42步执行、技术监控和小工件回收
-- 当前状态：`LANDED / STATIC_PASS / NO_PERFORMANCE_RESULT`
+- 当前状态：`ARTIFACTS_COMPLETE / TECHNICAL_BINDING_PASS / PAIR_JSON_READY / NO_PERFORMANCE_INTERPRETATION`
 - 训练证据：`phase1_rcrmd12_20260810_v1`已完成12/12臂技术合同，报告commit=`92646094a3da90632fb5c5dec2caadd2eb796892`
 - 目标：对同一fold的C/G final checkpoint执行固定42步后冻结评估，判断P1-RCRMD是否同时满足known分类floor、LEO弱信道floor、整体不退化和source proxy连续几何双门。
 - 结论边界：通过只能`PHASE1_ADVANCEMENT_CANDIDATE_PENDING_MAIN_REVIEW`；不得声称修复RX/day、真实unknown、多卫星协同或Phase3。
@@ -113,3 +113,20 @@ Runner只读取技术binding并回收JSON/CSV/log/manifest小工件，不下载c
 - 冻结环境`POSTFREEZE_RUN_ID=phase1_rcrmd_postfreeze_20260810_v1`下`--dry-run`严格42条：`RCRMD_CLEAN_EXPORT=12`、`RCRMD_LEO_EXPORT_AND_BIND=12`、`FROZEN_LOGITS_PROXY_BINDING=12`、`RCRMD_PAIR_SCORE=6`；训练root引用30、postfreeze引用42；无路径创建。
 - 首次静态探针仅因runner在`release/code`内重复添加`code/`前缀而失败；未改代码、未产生远端运行工件；一次机械修正后所有门通过。
 - 当前状态：`LANDED / STATIC_PASS / NO_PERFORMANCE_RESULT`；exact launch调用次数=`0`，retry=`NO`。
+
+## 9.唯一launch与技术终态
+
+- §5 exact command调用次数=`1`；SSH调用端约124秒超时，按规则清理本地残留并只读确认已landed，未重发，retry=`NO`。
+- 12候选PID/GPU登记（来自`candidate_pids.tsv`）：F1C=`859360`/0，F5G=`859361`/0，F1G=`859362`/1，F5C=`859363`/1，F2C=`859365`/2，F6G=`859366`/2，F2G=`859367`/3，F6C=`859368`/3，F3C=`859372`/4，F3G=`859376`/5，F4C=`859377`/6，F4G=`859379`/7。wrapper/launcher未在outer中持久化；自然终态核验时其进程均为0。
+- 42步完整计数：clean NPZ=`12/12`，LEO NPZ=`12/12`，LEO binding=`12/12`，proxy JSON=`12/12`，proxy CSV=`12/12`，pair JSON=`6/6`；candidate日志=`12/12`，pair日志=`6/6`，PID表=`1/1`，outer=`0`字节。
+- 6/6 pair技术字段均通过：schema、postfreeze root、matrix ID、training root、common training binding、C/G receipt revalidation、proxy binding和technical binding均为`true`；F6的`matrix_aggregate`存在。C/G冻结收据字段保持`C enabled=false/lambda=0`、`G enabled=true/lambda=0.02`、每场景28 cells、source receiver `0..6`。
+- 18阶段日志技术异常指纹（Traceback、RuntimeError、CUDA OOM、unrecognized arguments等）计数=`0`；自然终态后目标进程=`0`，GPU compute进程=`0`，GPU0–7各约1MiB。Runner未读取或解释accuracy、floor、AUROC、u-gap或任何pair性能。
+
+## 10.小工件回收与清理
+
+- 远端校正bundle：`/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_rcrmd_postfreeze_20260810_v1/phase1_rcrmd_postfreeze_20260810_v1_small_artifacts_v2.tar`；63 members（62条小工件＋manifest）、大小=`84142080`字节、SHA256=`6baf6d26c0d6570d91ad49a7b3390668460f6b63ca17308aceffd7288324bf53`。
+- 远端/本地manifest：`phase1_rcrmd_postfreeze_20260810_v1_small_artifacts_v2.manifest.txt`；大小=`9071`字节、SHA256=`3e4c25a402f3defdd111f784f9374fe66fc7aa474a034b2bf7e20091e4158c66`。bundle禁含`.pth/.npz/.pt/.npy`（计数=`0`）。本地回收目录：`E:\type10-7\automation_reports\CV-SincNet\phase1_rcrmd_postfreeze_20260810_v1\artifacts\returned_small\`。
+- 首个runner包`phase1_rcrmd_postfreeze_20260810_v1_small_artifacts.tar`因manifest相对路径机械错误未含manifest成员；未作为交接包使用，校正v2已独立生成并核验，训练/评估输出未受影响。
+- 最终本地SSH进程=`0`、N607/bridge TCP22=`0`；远端release、run、log、checkpoint和NPZ均保留，未下载checkpoint/NPZ/特征值，未启动任何后续任务。
+
+当前状态：`ARTIFACTS_COMPLETE / TECHNICAL_BINDING_PASS / PAIR_JSON_READY / NO_PERFORMANCE_INTERPRETATION`。Runner不作promotion/reject，不提供性能结论；后续pair性能分析由主代理独立完成。
