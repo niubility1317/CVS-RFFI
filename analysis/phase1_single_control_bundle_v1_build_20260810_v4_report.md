@@ -1,6 +1,6 @@
 # Phase1单读出local4控制bundle v1真实构建v4报告
 
-状态：`RUNNING / NO_PERFORMANCE_RESULT`
+状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
 
 日期：2026-08-10
 
@@ -66,7 +66,7 @@ nohup bash -lc 'CUDA_VISIBLE_DEVICES=7 /home/szu2070436088/.conda/envs/CVS-RFFI/
 
 `_full`发布与静态验证：由commit`c3949740356d478459cd4a3c30094b7bcab025b7`以`git -c core.autocrlf=false archive`生成LF归档，SHA=`b9974f409eccc67e24c395561e9bc6b251f80dd90e27cedbcac64ded1d7a76a2`、260126720 bytes、4894成员（4274文件）、`code/code=0`；远端归档SHA及五冻结成员SHA逐项匹配。远端`py_compile`和公开build CLI`--help`通过。冻结CVS-RFFI环境无`pytest`（`No module named pytest`，未安装或改动环境）；同一commit在本地`ssr-gpu`按Revision12两项定向测试通过（`.. [100%]`，exit 0）。
 
-启动事实：2026-08-10 03:01:23 CST从`_full` release根执行预注册exact detached命令唯一一次，调用返回`0`；`build.pid` wrapper=`608774`，Python子PID=`608786`，CWD精确为`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_single_control_bundle_v1_build_20260810_v4_c3949740_full`，GPU7映射正确。首检及约1小时短连均显示CPU约100%、RSS约3.56GB、GPU进程显存488MiB（卡占用498MiB）、日志4802B仅两条PyTorch`TracerWarning`，`output/staging/resource/build.exit`均未出现；无Traceback/OOM/nonfinite/parity/state/resource/loader错误。当前为长CPU计算中的`RUNNING / NO_PERFORMANCE_RESULT`，不按耗时或静默停止。
+启动事实：2026-08-10 03:01:23 CST从`_full` release根执行预注册exact detached命令唯一一次，调用返回`0`；`build.pid` wrapper=`608774`，Python子PID=`608786`，CWD精确为`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_single_control_bundle_v1_build_20260810_v4_c3949740_full`，GPU7映射正确。首检及约1小时短连均显示CPU约100%、RSS约3.56GB、GPU进程显存488MiB（卡占用498MiB）、日志4802B仅两条PyTorch`TracerWarning`，`output/staging/resource/build.exit`均未出现；无Traceback/OOM/nonfinite/parity/state/resource/loader错误。该段是启动期快照，不能覆盖后续终态。
 
 唯一Runner先执行direct N607 preflight；启动前核release/output/log/staging/temp均ABSENT、输入SHA、commit/archive/member SHA、无`code/code`、GPU进程数。落地后运行`py_compile`、公开build CLI`--help`和focused Revision12定向测试；通过后唯一启动。
 
@@ -74,4 +74,20 @@ nohup bash -lc 'CUDA_VISIBLE_DEVICES=7 /home/szu2070436088/.conda/envs/CVS-RFFI/
 
 成功输出严格为9 payload＋`manifest.json`，随后以外部content root执行同一公开CLI verify。技术门：10文件及SHA/root闭合；真实IQ六字段/decision parity；state digest不变；bundle≤32MiB；evidence≤64KiB；CPU RSS≤512MiB；CPU p99≤250ms；CUDA VRAM≤256MiB；CARE N=1规范化恒等。只回收日志、manifest和JSON小receipt；不下载ManySig、源checkpoint、embedded runtime或NPZ。
 
-当前终态：`NOT_LAUNCHED / NO_PERFORMANCE_RESULT`。
+## 6.终态只读收集（2026-08-10 09:48:05 CST）
+
+|证据|结果|
+|---|---|
+|run-owned进程|wrapper`608774`、Python`608786`均已消失；未发现子进程|
+|退出证据|`build.exit=139`；`build.out`明确记录`608786 Segmentation fault (core dumped)`|
+|异常指纹|仅观测到PyTorch`TracerWarning`后发生SIGSEGV；无Traceback、OOM、`Killed`、nonfinite、parity、state、resource或loader错误|
+|output|目录不存在，10成员=`0/10`；`manifest.json`、bundle、IQ六字段/decision parity、state digest、resource receipt和CARE N=1均未生成，外部verify=`N/A`|
+|staging/resource/temp|run下`staging`、`resource`、`tmp`、`.tmp`均不存在|
+|GPU|GPU7=`0%`利用率、`1MiB/24576MiB`；compute app为空，已释放|
+|内核补查|`journalctl -k`目标窗口无可见条目；`dmesg`因权限拒绝；远端无`coredumpctl`，因此不推断OOM或kernel kill|
+|小receipt回收|仅读取log目录下`build.pid`、`build.exit`、`build.out`；不下载checkpoint、ManySig、NPZ或runtime大payload|
+|SSH清理|本地`ssh.exe`进程=`none`，N607/bridge TCP22 established=`none`|
+
+远端小文件SHA256：`build.pid=eb8252ebb7281cbf3c10a31eacdd9db05c63fd133c166cd9c78dca27ad86b970`；`build.exit=690e07064753123c967bbac0180f32da6a753a5bd8b79a47644cef58e776d9f0`；`build.out=a4c5aaeeb3b93f036a5054ba070ce145d65fb69123ce30c66bda335f4d580d74`。
+
+当前终态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。该终态由run-owned进程的明确SIGSEGV和非零退出码支持；不重试、不重启、不作性能或Phase1晋级声明。
