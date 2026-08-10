@@ -238,6 +238,31 @@ try:
         validate_rcat_terminal_receipt,
         write_rcat_failure_receipt,
     )
+    from cvsrffi.phase1_rcmmc import (
+        RCMMCConfig,
+        RCMMCConfigurationError,
+        RCMMCRuntimeError,
+        FROZEN_RCMMC_SCENARIOS,
+        add_rcmmc_to_loss,
+        bind_rcmmc_optimizer_initial_state,
+        bind_rcmmc_source_data_order,
+        rcmmc_aux_gradient_audit,
+        rcmmc_config_receipt,
+        rcmmc_loss,
+        rcmmc_shared_encoder_and_head_parameters,
+        remap_rcmmc_local_labels_to_head_rows,
+        resolve_rcmmc_classifier_weight,
+        resolve_rcmmc_local_head_class_binding,
+        resolve_rcmmc_source_receiver_tokens,
+        strict_rcmmc_warm_start,
+        update_rcmmc_common_batch_sequence_receipt,
+        update_rcmmc_gradient_audit_receipt,
+        update_rcmmc_receipt,
+        validate_rcmmc_args,
+        validate_rcmmc_binding,
+        validate_rcmmc_terminal_receipt,
+        write_rcmmc_failure_receipt,
+    )
     from cvsrffi.phase1_hscf import (
         HSCFConfig,
         HSCFConfigurationError,
@@ -520,6 +545,17 @@ except ModuleNotFoundError:
     update_rcat_gradient_audit_receipt = update_rcat_receipt = None
     validate_rcat_args = validate_rcat_binding = validate_rcat_terminal_receipt = None
     write_rcat_failure_receipt = None
+    RCMMCConfig = None
+    RCMMCConfigurationError = RCMMCRuntimeError = None
+    FROZEN_RCMMC_SCENARIOS = tuple()
+    add_rcmmc_to_loss = bind_rcmmc_optimizer_initial_state = bind_rcmmc_source_data_order = None
+    rcmmc_aux_gradient_audit = rcmmc_config_receipt = rcmmc_loss = None
+    rcmmc_shared_encoder_and_head_parameters = remap_rcmmc_local_labels_to_head_rows = None
+    resolve_rcmmc_classifier_weight = resolve_rcmmc_local_head_class_binding = None
+    resolve_rcmmc_source_receiver_tokens = strict_rcmmc_warm_start = None
+    update_rcmmc_common_batch_sequence_receipt = update_rcmmc_gradient_audit_receipt = None
+    update_rcmmc_receipt = validate_rcmmc_args = validate_rcmmc_binding = None
+    validate_rcmmc_terminal_receipt = write_rcmmc_failure_receipt = None
     HSCFConfig = None
     HSCFConfigurationError = HSCFRuntimeError = None
     FROZEN_HSCF_SCENARIOS = tuple()
@@ -895,6 +931,24 @@ def build_arg_parser() -> argparse.ArgumentParser:
         type=float,
         default=0.0,
         help="Frozen at 0 for C and 0.02 for G when P1-RCAT mode is enabled.",
+    )
+    parser.add_argument(
+        "--phase1_rcmmc_frozen_mode",
+        type=str2bool,
+        default=False,
+        help="Enable the frozen P1-RCMMC C/G continuation contract.",
+    )
+    parser.add_argument(
+        "--phase1_rcmmc_enabled",
+        type=str2bool,
+        default=False,
+        help="Enable the sole source-L receiver-conditional moment-matrix congruence term in a P1-RCMMC G arm.",
+    )
+    parser.add_argument(
+        "--lambda_rcmmc",
+        type=float,
+        default=0.0,
+        help="Frozen at 0 for C and 0.02 for G when P1-RCMMC mode is enabled.",
     )
     parser.add_argument(
         "--phase1_hscf_frozen_mode",
@@ -5178,6 +5232,9 @@ def _build_ssdg_epoch_telemetry_row(
         "phase1_rcat_frozen_mode": bool(getattr(args, "phase1_rcat_frozen_mode", False)),
         "phase1_rcat_enabled": bool(getattr(args, "phase1_rcat_enabled", False)),
         "lambda_rcat": float(getattr(args, "lambda_rcat", 0.0)),
+        "phase1_rcmmc_frozen_mode": bool(getattr(args, "phase1_rcmmc_frozen_mode", False)),
+        "phase1_rcmmc_enabled": bool(getattr(args, "phase1_rcmmc_enabled", False)),
+        "lambda_rcmmc": float(getattr(args, "lambda_rcmmc", 0.0)),
         "phase1_hscf_frozen_mode": bool(getattr(args, "phase1_hscf_frozen_mode", False)),
         "phase1_hscf_enabled": bool(getattr(args, "phase1_hscf_enabled", False)),
         "lambda_hscf": float(getattr(args, "lambda_hscf", 0.0)),
@@ -6272,6 +6329,43 @@ def _persist_rcat_failure_receipt(
         return None
 
 
+def _persist_rcmmc_failure_receipt(
+    *,
+    out_dir: Path,
+    args: Any,
+    rcmmc_receipt: Mapping[str, Any],
+    error: BaseException,
+    failure_stage: str,
+) -> Optional[Path]:
+    """Best-effort persistence that never masks the primary P1-RCMMC failure."""
+
+    def _emit_writer_failure(exception_type: str) -> None:
+        try:
+            print(
+                "[P1-RCMMC-FAILURE-RECEIPT] persistence_failed "
+                f"writer_exception_type={exception_type}",
+                flush=True,
+            )
+        except Exception:
+            pass
+
+    if write_rcmmc_failure_receipt is None:
+        _emit_writer_failure("ImportError")
+        return None
+    try:
+        return write_rcmmc_failure_receipt(
+            out_dir,
+            candidate_id=str(getattr(args, "candidate_id", "") or ""),
+            run_id=str(getattr(args, "run_id", "") or ""),
+            receipt=rcmmc_receipt,
+            error=error,
+            failure_stage=str(failure_stage),
+        )
+    except Exception as receipt_error:
+        _emit_writer_failure(type(receipt_error).__name__)
+        return None
+
+
 def _persist_hscf_failure_receipt(
     *,
     out_dir: Path,
@@ -6688,6 +6782,36 @@ def train(args) -> int:
     rcat_frozen_mode = bool(getattr(rcat_config, "frozen_mode", False))
     rcat_local_to_head_class_ids: Optional[Tuple[int, ...]] = None
     if (
+        validate_rcmmc_args is None
+        or rcmmc_config_receipt is None
+        or strict_rcmmc_warm_start is None
+        or resolve_rcmmc_source_receiver_tokens is None
+    ):
+        if bool(getattr(args, "phase1_rcmmc_frozen_mode", False)) or bool(
+            getattr(args, "phase1_rcmmc_enabled", False)
+        ):
+            raise ImportError("cvsrffi.phase1_rcmmc is required for P1-RCMMC")
+        rcmmc_config = None
+        rcmmc_receipt: Dict[str, Any] = {
+            "schema": "cvs.phase1.rcmmc_receipt.v1",
+            "frozen_mode": False,
+            "enabled": False,
+            "lambda": 0.0,
+            "rcmmc_common_cells": {},
+            "rcmmc_scenes": {},
+            "rcmmc_gradient_audit_completed": False,
+            "rcmmc_terminal_contract": "PENDING",
+            "rcmmc_terminal_contract_passed": False,
+            "proxy_rows": 0,
+            "held_rows": 0,
+        }
+    else:
+        rcmmc_config = validate_rcmmc_args(args)
+        rcmmc_receipt = rcmmc_config_receipt(rcmmc_config)
+    rcmmc_frozen_mode = bool(getattr(rcmmc_config, "frozen_mode", False))
+    rcmmc_local_to_head_class_ids: Optional[Tuple[int, ...]] = None
+    rcmmc_source_receiver_tokens: Optional[Tuple[int, ...]] = None
+    if (
         validate_hscf_args is None
         or hscf_config_receipt is None
         or strict_hscf_warm_start is None
@@ -7028,7 +7152,7 @@ def train(args) -> int:
             "--phase1_allow_empty_proxy_unknown requires the frozen ManyTx real-OE protocol"
         )
     data_ctx = _build_ssdg_wisig_data(args, device)
-    if ccpc_frozen_mode or pamr_frozen_mode or cb_sfce_frozen_mode or gd_proto_nll_frozen_mode or icmt_frozen_mode or cagm_frozen_mode or rcrmd_frozen_mode or rcat_frozen_mode or hscf_frozen_mode or recte_frozen_mode or cp_sfce_frozen_mode:
+    if ccpc_frozen_mode or pamr_frozen_mode or cb_sfce_frozen_mode or gd_proto_nll_frozen_mode or icmt_frozen_mode or cagm_frozen_mode or rcrmd_frozen_mode or rcat_frozen_mode or rcmmc_frozen_mode or hscf_frozen_mode or recte_frozen_mode or cp_sfce_frozen_mode:
         tx_partition_receipt = (
             (data_ctx.get("split_info", {}) or {}).get("tx_partition_receipt", {})
         )
@@ -7059,6 +7183,10 @@ def train(args) -> int:
                 )
             if rcat_frozen_mode:
                 raise RCATConfigurationError(
+                    "Frozen Phase1 continuation requires an explicit TX-role partition receipt"
+                )
+            if rcmmc_frozen_mode:
+                raise RCMMCConfigurationError(
                     "Frozen Phase1 continuation requires an explicit TX-role partition receipt"
                 )
             if recte_frozen_mode:
@@ -7103,6 +7231,10 @@ def train(args) -> int:
                 )
             if rcat_frozen_mode:
                 raise RCATConfigurationError(
+                    "Frozen Phase1 continuation rejects any held/proxy TX loaded by training"
+                )
+            if rcmmc_frozen_mode:
+                raise RCMMCConfigurationError(
                     "Frozen Phase1 continuation rejects any held/proxy TX loaded by training"
                 )
             if recte_frozen_mode:
@@ -7312,6 +7444,35 @@ def train(args) -> int:
                     "local_tx_class_order": local_tx_order,
                 }
             )
+        if rcmmc_frozen_mode:
+            local_data_class_count = int(data_ctx.get("num_classes", 0))
+            local_tx_order = list(data_ctx.get("class_id_to_tx", []) or [])
+            if local_data_class_count != len(local_tx_order):
+                raise RCMMCConfigurationError(
+                    "P1-RCMMC data_ctx local class count must equal its local TX class-order receipt"
+                )
+            if local_tx_order != frozen_source_roles["source_train_tx"]:
+                raise RCMMCConfigurationError(
+                    "P1-RCMMC data_ctx local TX class order must equal the source-train TX receipt"
+                )
+            source_split_receipt = (data_ctx.get("split_info", {}) or {}).get(
+                "source_split_receipt", {}
+            )
+            if bind_rcmmc_source_data_order is None or resolve_rcmmc_source_receiver_tokens is None:
+                raise ImportError("cvsrffi.phase1_rcmmc source data-order binding support is required")
+            rcmmc_source_receiver_tokens = tuple(
+                int(value) for value in resolve_rcmmc_source_receiver_tokens(source_split_receipt)
+            )
+            rcmmc_receipt.update(
+                bind_rcmmc_source_data_order(
+                    {
+                        **rcmmc_receipt,
+                        "source_partition_sha256": str(frozen_source_roles["source_partition_sha256"]),
+                        "local_data_class_count": local_data_class_count,
+                    },
+                    source_split_receipt,
+                )
+            )
         if recte_frozen_mode:
             local_data_class_count = int(data_ctx.get("num_classes", 0))
             local_tx_order = list(data_ctx.get("class_id_to_tx", []) or [])
@@ -7512,6 +7673,20 @@ def train(args) -> int:
         elif rcat_frozen_mode:
             rcat_receipt.update(
                 strict_rcat_warm_start(
+                    model,
+                    ckpt["model"],
+                    baseline_path=str(args.baseline_ckpt),
+                    baseline_sha256=_sha256_file(args.baseline_ckpt),
+                    checkpoint_epoch=ckpt.get("epoch", -1),
+                    checkpoint_role=ckpt.get(
+                        "checkpoint_role",
+                        ckpt.get("checkpoint_selection", "UNSPECIFIED"),
+                    ),
+                )
+            )
+        elif rcmmc_frozen_mode:
+            rcmmc_receipt.update(
+                strict_rcmmc_warm_start(
                     model,
                     ckpt["model"],
                     baseline_path=str(args.baseline_ckpt),
@@ -7850,6 +8025,54 @@ def train(args) -> int:
             encoding="utf-8",
             newline="\n",
         )
+    if rcmmc_frozen_mode:
+        if (
+            resolve_rcmmc_classifier_weight is None
+            or resolve_rcmmc_local_head_class_binding is None
+            or remap_rcmmc_local_labels_to_head_rows is None
+            or rcmmc_source_receiver_tokens is None
+        ):
+            raise ImportError("cvsrffi.phase1_rcmmc classifier/source-receiver binding support is required")
+        rcmmc_weight = resolve_rcmmc_classifier_weight(model)
+        checkpoint_args = ckpt.get("args", {}) or {}
+        if not isinstance(checkpoint_args, Mapping):
+            raise RCMMCConfigurationError(
+                "P1-RCMMC strict baseline checkpoint must contain an argument mapping"
+            )
+        checkpoint_train_tx = [
+            item.strip()
+            for item in str(checkpoint_args.get("phase1_source_train_tx_ids", "") or "").split(",")
+            if item.strip()
+        ]
+        tx_partition_receipt = (data_ctx.get("split_info", {}) or {}).get(
+            "tx_partition_receipt", {}
+        )
+        rcmmc_head_binding = resolve_rcmmc_local_head_class_binding(
+            local_class_order=list(data_ctx.get("class_id_to_tx", []) or []),
+            source_train_tx=list(tx_partition_receipt.get("source_known_train_tx", []) or []),
+            checkpoint_train_tx=checkpoint_train_tx,
+            dataset_class_order=list(tx_partition_receipt.get("dataset_tx_order", []) or []),
+            local_data_class_count=data_ctx.get("num_classes", 0),
+            checkpoint_head_class_count=checkpoint_args.get("num_classes", None),
+            live_head_class_count=int(rcmmc_weight.size(0)),
+        )
+        rcmmc_local_to_head_class_ids = tuple(
+            int(value) for value in rcmmc_head_binding["local_to_head_class_ids"]
+        )
+        rcmmc_receipt.update(
+            {
+                "class_order_contract": str(rcmmc_head_binding["class_order_contract"]),
+                "class_order_binding_sha256": str(rcmmc_head_binding["class_order_binding_sha256"]),
+                "local_data_class_count": int(rcmmc_head_binding["local_data_class_count"]),
+                "checkpoint_head_class_count": int(rcmmc_head_binding["checkpoint_head_class_count"]),
+                "live_head_class_count": int(rcmmc_head_binding["live_head_class_count"]),
+            }
+        )
+        (out_dir / "phase1_rcmmc_config_receipt.json").write_text(
+            json.dumps(rcmmc_receipt, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+            newline="\n",
+        )
     if hscf_frozen_mode:
         if (
             resolve_hscf_classifier_weight is None
@@ -8056,6 +8279,25 @@ def train(args) -> int:
                 out_dir=out_dir,
                 args=args,
                 rcat_receipt=rcat_receipt,
+                error=error,
+                failure_stage="new_adamw_initial_state_binding",
+            )
+            raise
+    if rcmmc_frozen_mode:
+        try:
+            if bind_rcmmc_optimizer_initial_state is None:
+                raise ImportError("cvsrffi.phase1_rcmmc AdamW initial-state receipt support is required")
+            rcmmc_receipt = bind_rcmmc_optimizer_initial_state(rcmmc_receipt, optimizer)
+            (out_dir / "phase1_rcmmc_config_receipt.json").write_text(
+                json.dumps(rcmmc_receipt, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+                encoding="utf-8",
+                newline="\n",
+            )
+        except Exception as error:
+            _persist_rcmmc_failure_receipt(
+                out_dir=out_dir,
+                args=args,
+                rcmmc_receipt=rcmmc_receipt,
                 error=error,
                 failure_stage="new_adamw_initial_state_binding",
             )
@@ -8369,6 +8611,17 @@ def train(args) -> int:
                 f"baseline_strict={int(bool(rcat_receipt.get('strict_model_keys', False)))} "
                 f"checkpoint_role={str(rcat_receipt.get('checkpoint_role', '') or '-')} "
                 "source_L_rx_i_only=1 day_target_proxy=0",
+                "[CONFIG-P1-RCMMC] "
+                f"frozen_mode={int(bool(rcmmc_receipt.get('frozen_mode', False)))} "
+                f"enabled={int(bool(rcmmc_receipt.get('enabled', False)))} "
+                f"lambda={float(rcmmc_receipt.get('lambda', 0.0)):.6g} "
+                f"rule={str(rcmmc_receipt.get('loss_rule', '') or '-')} "
+                f"source_r_count={int(rcmmc_receipt.get('source_receiver_count', 0))} "
+                f"batch={int(rcmmc_receipt.get('frozen_batch_size', 0))} "
+                f"dim={int(rcmmc_receipt.get('frozen_feature_dim', 0))} "
+                f"baseline_strict={int(bool(rcmmc_receipt.get('strict_model_keys', False)))} "
+                f"checkpoint_role={str(rcmmc_receipt.get('checkpoint_role', '') or '-')} "
+                "source_L_rx_i_only=1 day_fold_target_proxy=0",
                 "[CONFIG-P1-HSCF] "
                 f"frozen_mode={int(bool(hscf_receipt.get('frozen_mode', False)))} "
                 f"enabled={int(bool(hscf_receipt.get('enabled', False)))} "
@@ -8752,6 +9005,27 @@ def train(args) -> int:
                         failure_stage="local_tx_label_to_live_head_row_binding",
                     )
                     raise
+            if rcmmc_frozen_mode:
+                try:
+                    if (
+                        rcmmc_local_to_head_class_ids is None
+                        or remap_rcmmc_local_labels_to_head_rows is None
+                    ):
+                        raise RCMMCRuntimeError(
+                            "P1-RCMMC local-to-head class binding is unavailable"
+                        )
+                    y_l = remap_rcmmc_local_labels_to_head_rows(
+                        y_l, rcmmc_local_to_head_class_ids
+                    )
+                except Exception as error:
+                    _persist_rcmmc_failure_receipt(
+                        out_dir=out_dir,
+                        args=args,
+                        rcmmc_receipt=rcmmc_receipt,
+                        error=error,
+                        failure_stage="local_tx_label_to_live_head_row_binding",
+                    )
+                    raise
             if recte_frozen_mode:
                 try:
                     if (
@@ -8816,7 +9090,7 @@ def train(args) -> int:
                     )
                     raise
             labeled_clean_count = int(y_l.numel())
-            if rcrmd_frozen_mode or rcat_frozen_mode or recte_frozen_mode:
+            if rcrmd_frozen_mode or rcat_frozen_mode or rcmmc_frozen_mode or recte_frozen_mode:
                 # Only P1 source-L physical receiver metadata is read. This
                 # lookup never affects loader order, sampler, or model input.
                 receiver_l_base = _metadata_label_tensor(
@@ -8829,8 +9103,12 @@ def train(args) -> int:
                         else (
                             RCATRuntimeError("P1-RCAT requires source-L physical rx_i metadata")
                             if rcat_frozen_mode
-                            else RECTERuntimeError(
-                                "P1-RECTE requires source-L physical rx_i metadata"
+                            else (
+                                RCMMCRuntimeError("P1-RCMMC requires source-L physical rx_i metadata")
+                                if rcmmc_frozen_mode
+                                else RECTERuntimeError(
+                                    "P1-RECTE requires source-L physical rx_i metadata"
+                                )
                             )
                         )
                     )
@@ -8847,6 +9125,14 @@ def train(args) -> int:
                             out_dir=out_dir,
                             args=args,
                             rcat_receipt=rcat_receipt,
+                            error=error,
+                            failure_stage="source_l_rx_i_allowlist_binding",
+                        )
+                    if rcmmc_frozen_mode:
+                        _persist_rcmmc_failure_receipt(
+                            out_dir=out_dir,
+                            args=args,
+                            rcmmc_receipt=rcmmc_receipt,
                             error=error,
                             failure_stage="source_l_rx_i_allowlist_binding",
                         )
@@ -9621,6 +9907,7 @@ def train(args) -> int:
                 loss_cagm_l = zero_sat
                 loss_rcrmd_l = zero_sat
                 loss_rcat_l = zero_sat
+                loss_rcmmc_l = zero_sat
                 loss_hscf_l = zero_sat
                 loss_recte_l = zero_sat
                 loss_cp_sfce_l = zero_sat
@@ -9634,6 +9921,7 @@ def train(args) -> int:
                 cagm_satellite_scenario = ""
                 rcrmd_satellite_scenario = ""
                 rcat_satellite_scenario = ""
+                rcmmc_satellite_scenario = ""
                 hscf_satellite_scenario = ""
                 recte_satellite_scenario = ""
                 cp_sfce_satellite_scenario = ""
@@ -9720,6 +10008,28 @@ def train(args) -> int:
                     "training_accumulation_dtype": "",
                     "empty_cell_zero": False,
                     "no_active_renormalization": False,
+                }
+                rcmmc_batch_info: Dict[str, Any] = {
+                    "rows": 0,
+                    "positive_d_cells": 0,
+                    "finite_d_cells": 0,
+                    "clean_zero_rows": 0,
+                    "leo_zero_rows": 0,
+                    "both_zero_rows": 0,
+                    "sum_d": 0.0,
+                    "loss_sum": 0.0,
+                    "global_denominator": 0,
+                    "fixed_scale": 0.0,
+                    "cells": {},
+                    "finite": False,
+                    "clean_feature_detached": False,
+                    "totalized_l2_rule": "",
+                    "training_accumulation_dtype": "",
+                    "empty_cell_zero": False,
+                    "no_active_renormalization": False,
+                    "streamed_cell_xtx": False,
+                    "forbids_batch_d2_materialization": False,
+                    "forbids_batch_cell_d2_materialization": False,
                 }
                 hscf_batch_info: Dict[str, Any] = {
                     "rows": 0,
@@ -9848,6 +10158,14 @@ def train(args) -> int:
                             cp_sfce_satellite_step % len(sat_train_scenarios)
                         ]
                         cp_sfce_satellite_step += 1
+                    elif rcmmc_frozen_mode:
+                        # The sealed RCMMC cycle is explicit rather than an
+                        # inferred launcher default; C and G therefore see
+                        # exactly the same clear/low/rain order.
+                        sat_train_scenarios = list(FROZEN_RCMMC_SCENARIOS)
+                        sat_train_scenario = sat_train_scenarios[
+                            (int(epoch) + int(batch_idx) - 2) % len(sat_train_scenarios)
+                        ]
                     else:
                         sat_train_scenario = sat_train_scenarios[
                             (int(epoch) + int(batch_idx) - 2) % max(1, len(sat_train_scenarios))
@@ -10048,6 +10366,61 @@ def train(args) -> int:
                             rcat_receipt=rcat_receipt,
                             error=error,
                             failure_stage="common_physical_rx_class_scene_n_rc_receipt",
+                        )
+                        raise
+                if rcmmc_frozen_mode:
+                    try:
+                        if out_sat is None:
+                            raise RCMMCRuntimeError(
+                                "Frozen P1-RCMMC requires the common single LEO forward in both C and G"
+                            )
+                        if int(y_l.numel()) != labeled_clean_count:
+                            raise RCMMCRuntimeError(
+                                "P1-RCMMC forbids expanded or reindexed source-L rows"
+                            )
+                        if (
+                            validate_rcmmc_binding is None
+                            or update_rcmmc_common_batch_sequence_receipt is None
+                            or rcmmc_source_receiver_tokens is None
+                            or rcmmc_local_to_head_class_ids is None
+                        ):
+                            raise ImportError(
+                                "cvsrffi.phase1_rcmmc common binding/receipt support is required"
+                            )
+                        validate_rcmmc_binding(
+                            model=model,
+                            out_clean=out_l,
+                            out_leo=out_sat,
+                            tx_labels=y_l,
+                            source_rx_labels=receiver_l_base,
+                            expected_class_ids=rcmmc_local_to_head_class_ids,
+                            source_receiver_tokens=rcmmc_source_receiver_tokens,
+                            enforce_frozen_shape=True,
+                        )
+                        rcmmc_receipt["common_l_base_head_input_path_verified"] = True
+                        source_meta = _meta_from_extra(extra_l)
+                        rcmmc_physical_metadata = {
+                            key: source_meta[key]
+                            for key in ("base_index", "sig_i")
+                            if source_meta is not None and key in source_meta
+                        }
+                        rcmmc_receipt = update_rcmmc_common_batch_sequence_receipt(
+                            rcmmc_receipt,
+                            epoch=int(epoch),
+                            batch_index=int(batch_idx),
+                            scenario=str(sat_train_scenario),
+                            source_tx_labels=y_l,
+                            source_rx_labels=receiver_l_base,
+                            source_receiver_tokens=rcmmc_source_receiver_tokens,
+                            metadata=rcmmc_physical_metadata,
+                        )
+                    except Exception as error:
+                        _persist_rcmmc_failure_receipt(
+                            out_dir=out_dir,
+                            args=args,
+                            rcmmc_receipt=rcmmc_receipt,
+                            error=error,
+                            failure_stage="common_same_physical_rx_class_scene_n_rc_feat_joint_binding",
                         )
                         raise
                 if hscf_frozen_mode:
@@ -10470,6 +10843,37 @@ def train(args) -> int:
                             failure_stage="paired_feat_joint_totalized_l2_rx_cell_binding_or_rcat_loss",
                         )
                         raise
+                # RCMMC is the frozen strict relaxation of RCAT: it keeps the
+                # identical same-physical clean/single-LEO feat_joint input
+                # and RX×local4 cells, but compares only each cell's streamed
+                # totalized-L2 first/second moments.  The clean side is
+                # detached inside rcmmc_loss; no head auxiliary is added.
+                if bool(getattr(rcmmc_config, "enabled", False)):
+                    try:
+                        if out_sat is None:
+                            raise RCMMCRuntimeError(
+                                "Enabled P1-RCMMC requires one existing clean and single LEO forward"
+                            )
+                        if rcmmc_loss is None or rcmmc_source_receiver_tokens is None:
+                            raise ImportError("cvsrffi.phase1_rcmmc loss/source-receiver support is required")
+                        loss_rcmmc_l, rcmmc_batch_info = rcmmc_loss(
+                            out_l["z_id"],
+                            out_sat["z_id"],
+                            y_l,
+                            receiver_l_base,
+                            rcmmc_source_receiver_tokens,
+                            require_frozen_shape=True,
+                        )
+                        rcmmc_satellite_scenario = str(sat_train_scenario)
+                    except Exception as error:
+                        _persist_rcmmc_failure_receipt(
+                            out_dir=out_dir,
+                            args=args,
+                            rcmmc_receipt=rcmmc_receipt,
+                            error=error,
+                            failure_stage="paired_feat_joint_totalized_l2_streamed_rx_class_moment_matrix_loss",
+                        )
+                        raise
                 # HSCF reuses exactly the existing same-physical clean and
                 # one-LEO raw local4 logits.  It adds neither a head forward
                 # nor an RX/day/class-conditioned term: clean is detached
@@ -10577,6 +10981,12 @@ def train(args) -> int:
                         loss_closed_l,
                         loss_rcat_l if bool(getattr(rcat_config, "enabled", False)) else None,
                         rcat_config,
+                    )
+                if add_rcmmc_to_loss is not None:
+                    loss_closed_l = add_rcmmc_to_loss(
+                        loss_closed_l,
+                        loss_rcmmc_l if bool(getattr(rcmmc_config, "enabled", False)) else None,
+                        rcmmc_config,
                     )
                 if add_hscf_to_loss is not None:
                     loss_closed_l = add_hscf_to_loss(
@@ -11308,6 +11718,23 @@ def train(args) -> int:
                     "none_or_zero_expected": False,
                 },
             }
+            rcmmc_gradient_audit_info: Dict[str, Any] = {
+                "feat_joint_leo": {
+                    "parameter_count": 0.0,
+                    "norm": float("nan"),
+                },
+                "shared_encoder": {
+                    "parameter_count": 0.0,
+                    "norm": float("nan"),
+                },
+                "classifier_head": {
+                    "parameter_count": 0.0,
+                    "none_parameters": 0.0,
+                    "zero_parameters": 0.0,
+                    "nonzero_parameters": float("nan"),
+                    "none_or_zero_expected": False,
+                },
+            }
             hscf_gradient_audit_info: Dict[str, Any] = {
                 "leo_raw_logits": {
                     "parameter_count": 0.0,
@@ -11539,6 +11966,26 @@ def train(args) -> int:
                         rcat_receipt=rcat_receipt,
                         error=error,
                         failure_stage="g_only_rx_class_scene_totalized_l2_q_loss_receipt",
+                    )
+                    raise
+            if bool(getattr(rcmmc_config, "enabled", False)):
+                try:
+                    if update_rcmmc_receipt is None:
+                        raise ImportError("cvsrffi.phase1_rcmmc G-only receipt support is required")
+                    rcmmc_receipt = update_rcmmc_receipt(
+                        rcmmc_receipt,
+                        rcmmc_batch_info,
+                        scenario=rcmmc_satellite_scenario,
+                        epoch=int(epoch),
+                        batch_index=int(batch_idx),
+                    )
+                except Exception as error:
+                    _persist_rcmmc_failure_receipt(
+                        out_dir=out_dir,
+                        args=args,
+                        rcmmc_receipt=rcmmc_receipt,
+                        error=error,
+                        failure_stage="g_only_rx_class_scene_streamed_moment_matrix_loss_receipt",
                     )
                     raise
             if bool(getattr(hscf_config, "enabled", False)):
@@ -11792,6 +12239,40 @@ def train(args) -> int:
                         out_dir=out_dir,
                         args=args,
                         rcat_receipt=rcat_receipt,
+                        error=error,
+                        failure_stage="pre_scaled_backward_first_positive_feat_joint_and_shared_encoder_vjp_head_aux_na",
+                    )
+                    raise
+            if (
+                loss_is_finite
+                and bool(getattr(rcmmc_config, "enabled", False))
+                and int(rcmmc_batch_info.get("positive_d_cells", 0)) > 0
+                and not bool(rcmmc_receipt.get("rcmmc_gradient_audit_completed", False))
+            ):
+                try:
+                    if (
+                        rcmmc_shared_encoder_and_head_parameters is None
+                        or rcmmc_aux_gradient_audit is None
+                        or update_rcmmc_gradient_audit_receipt is None
+                    ):
+                        raise ImportError("cvsrffi.phase1_rcmmc raw VJP audit support is required")
+                    if out_sat is None:
+                        raise RCMMCRuntimeError("P1-RCMMC first-positive VJP audit lacks LEO feat_joint")
+                    rcmmc_gradient_audit_info = rcmmc_aux_gradient_audit(
+                        loss_rcmmc_l,
+                        out_l["z_id"],
+                        out_sat["z_id"],
+                        rcmmc_shared_encoder_and_head_parameters(model),
+                    )
+                    rcmmc_receipt = update_rcmmc_gradient_audit_receipt(
+                        rcmmc_receipt,
+                        rcmmc_gradient_audit_info,
+                    )
+                except Exception as error:
+                    _persist_rcmmc_failure_receipt(
+                        out_dir=out_dir,
+                        args=args,
+                        rcmmc_receipt=rcmmc_receipt,
                         error=error,
                         failure_stage="pre_scaled_backward_first_positive_feat_joint_and_shared_encoder_vjp_head_aux_na",
                     )
@@ -12753,6 +13234,36 @@ def train(args) -> int:
                     "train/w_loss_rcat": (
                         float(getattr(rcat_config, "loss_weight", 0.0)) * loss_rcat_l
                     ).detach(),
+                    "train/loss_rcmmc": loss_rcmmc_l.detach(),
+                    "train/rcmmc_enabled": 1.0 if bool(getattr(rcmmc_config, "enabled", False)) else 0.0,
+                    "train/rcmmc_rows": float(rcmmc_batch_info.get("rows", 0)),
+                    "train/rcmmc_positive_d_cells": float(rcmmc_batch_info.get("positive_d_cells", 0)),
+                    "train/rcmmc_finite_d_cells": float(rcmmc_batch_info.get("finite_d_cells", 0)),
+                    "train/rcmmc_clean_zero_rows": float(rcmmc_batch_info.get("clean_zero_rows", 0)),
+                    "train/rcmmc_leo_zero_rows": float(rcmmc_batch_info.get("leo_zero_rows", 0)),
+                    "train/rcmmc_both_zero_rows": float(rcmmc_batch_info.get("both_zero_rows", 0)),
+                    "train/rcmmc_sum_d": float(rcmmc_batch_info.get("sum_d", 0.0)),
+                    "train/rcmmc_loss_sum": float(rcmmc_batch_info.get("loss_sum", 0.0)),
+                    "train/rcmmc_global_denominator": float(
+                        rcmmc_batch_info.get("global_denominator", 0)
+                    ),
+                    "train/rcmmc_gradient_audit_completed": 1.0 if bool(
+                        rcmmc_receipt.get("rcmmc_gradient_audit_completed", False)
+                    ) else 0.0,
+                    "train/rcmmc_feat_joint_aux_grad_norm": float(
+                        rcmmc_gradient_audit_info["feat_joint_leo"].get("norm", float("nan"))
+                    ),
+                    "train/rcmmc_encoder_aux_grad_norm": float(
+                        rcmmc_gradient_audit_info["shared_encoder"].get("norm", float("nan"))
+                    ),
+                    "train/rcmmc_head_aux_nonzero_parameters": float(
+                        rcmmc_gradient_audit_info["classifier_head"].get(
+                            "nonzero_parameters", float("nan")
+                        )
+                    ),
+                    "train/w_loss_rcmmc": (
+                        float(getattr(rcmmc_config, "loss_weight", 0.0)) * loss_rcmmc_l
+                    ).detach(),
                     "train/loss_hscf": loss_hscf_l.detach(),
                     "train/hscf_enabled": 1.0 if bool(getattr(hscf_config, "enabled", False)) else 0.0,
                     "train/hscf_rows": float(hscf_batch_info.get("rows", 0)),
@@ -13453,6 +13964,7 @@ def train(args) -> int:
                         "loss_cagm_l": loss_cagm_l,
                         "loss_rcrmd_l": loss_rcrmd_l,
                         "loss_rcat_l": loss_rcat_l,
+                        "loss_rcmmc_l": loss_rcmmc_l,
                         "loss_hscf_l": loss_hscf_l,
                         "loss_recte_l": loss_recte_l,
                         "loss_cp_sfce_l": loss_cp_sfce_l,
@@ -13493,7 +14005,7 @@ def train(args) -> int:
                     del loss_soft_unknown_mixup_l, loss_source_episode_l
                     del loss_direct_metric_accept_l, zero_sat, loss_sat_cls_l, loss_sat_cons_l
                     del loss_ccpc_leo_l, loss_pamr_l, loss_cb_sfce_l, loss_gd_proto_nll_l
-                    del loss_icmt_l, loss_cagm_l, loss_rcrmd_l, loss_rcat_l, loss_hscf_l
+                    del loss_icmt_l, loss_cagm_l, loss_rcrmd_l, loss_rcat_l, loss_rcmmc_l, loss_hscf_l
                     del loss_recte_l, loss_cp_sfce_l, pamr_base_loss_l, cb_sfce_base_loss_l
                     del gd_proto_nll_base_loss_l, icmt_base_loss_l, cagm_base_loss_l
                     del loss_closed_l, loss_open_invariant_l, loss_open_boundary_l
@@ -13687,6 +14199,8 @@ def train(args) -> int:
             payload["rcrmd_receipt"] = dict(rcrmd_receipt)
         if rcat_frozen_mode:
             payload["rcat_receipt"] = dict(rcat_receipt)
+        if rcmmc_frozen_mode:
+            payload["rcmmc_receipt"] = dict(rcmmc_receipt)
         if hscf_frozen_mode:
             payload["hscf_receipt"] = dict(hscf_receipt)
         if recte_frozen_mode:
@@ -14241,6 +14755,20 @@ def train(args) -> int:
                 failure_stage="terminal_rcat_receipt_validation",
             )
             raise
+    if rcmmc_frozen_mode:
+        if validate_rcmmc_terminal_receipt is None:
+            raise ImportError("cvsrffi.phase1_rcmmc.validate_rcmmc_terminal_receipt is required")
+        try:
+            rcmmc_receipt = validate_rcmmc_terminal_receipt(rcmmc_receipt)
+        except Exception as error:
+            _persist_rcmmc_failure_receipt(
+                out_dir=out_dir,
+                args=args,
+                rcmmc_receipt=rcmmc_receipt,
+                error=error,
+                failure_stage="terminal_rcmmc_receipt_validation",
+            )
+            raise
     if hscf_frozen_mode:
         if validate_hscf_terminal_receipt is None:
             raise ImportError("cvsrffi.phase1_hscf.validate_hscf_terminal_receipt is required")
@@ -14318,6 +14846,8 @@ def train(args) -> int:
         final_payload["rcrmd_receipt"] = dict(rcrmd_receipt)
     if rcat_frozen_mode:
         final_payload["rcat_receipt"] = dict(rcat_receipt)
+    if rcmmc_frozen_mode:
+        final_payload["rcmmc_receipt"] = dict(rcmmc_receipt)
     if hscf_frozen_mode:
         final_payload["hscf_receipt"] = dict(hscf_receipt)
     if recte_frozen_mode:
@@ -14950,6 +15480,8 @@ def train(args) -> int:
         terminal_manifest["rcrmd_receipt"] = dict(rcrmd_receipt)
     if rcat_frozen_mode:
         terminal_manifest["rcat_receipt"] = dict(rcat_receipt)
+    if rcmmc_frozen_mode:
+        terminal_manifest["rcmmc_receipt"] = dict(rcmmc_receipt)
     if hscf_frozen_mode:
         terminal_manifest["hscf_receipt"] = dict(hscf_receipt)
     if recte_frozen_mode:
@@ -15152,6 +15684,29 @@ def train(args) -> int:
             encoding="utf-8",
             newline="\n",
         )
+    if rcmmc_frozen_mode:
+        (out_dir / "phase1_rcmmc_terminal_receipt.json").write_text(
+            json.dumps(
+                {
+                    **dict(rcmmc_receipt),
+                    "terminal_status": terminal_status,
+                    "terminal_exit_code": int(terminal_exit_code),
+                    "selected_checkpoint": str(selected_checkpoint),
+                    "selected_checkpoint_sha256": selected_checkpoint_sha256,
+                    "technical_only": False,
+                    "promotion_ready": terminal_status == "COMPLETE",
+                    "performance_result_available": False,
+                    "claim": "PHASE1_SOURCE_ONLY_TRAINING_RECEIPT",
+                },
+                ensure_ascii=False,
+                indent=2,
+                sort_keys=True,
+                default=str,
+            )
+            + "\n",
+            encoding="utf-8",
+            newline="\n",
+        )
     if hscf_frozen_mode:
         (out_dir / "phase1_hscf_terminal_receipt.json").write_text(
             json.dumps(
@@ -15304,6 +15859,8 @@ def train(args) -> int:
         completion_receipt["rcrmd_receipt"] = dict(rcrmd_receipt)
     if rcat_frozen_mode:
         completion_receipt["rcat_receipt"] = dict(rcat_receipt)
+    if rcmmc_frozen_mode:
+        completion_receipt["rcmmc_receipt"] = dict(rcmmc_receipt)
     if hscf_frozen_mode:
         completion_receipt["hscf_receipt"] = dict(hscf_receipt)
     if recte_frozen_mode:
