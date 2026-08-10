@@ -108,4 +108,3 @@ Runner只回收小JSON/CSV/binding/log/PID/manifest，不下载checkpoint或NPZ�
 - 根报告与Git镜像：本次预注册后应逐字一致。
 - N607 release/42步：尚未执行。
 - 性能分析：尚未开始。
-
