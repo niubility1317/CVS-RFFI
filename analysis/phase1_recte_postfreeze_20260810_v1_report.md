@@ -133,3 +133,16 @@ Runner只回收小JSON/CSV/binding/log/PID/manifest，不下载checkpoint或NPZ�
 - 验证：py_compile通过；RECTE后冻结33 passed；真实F1C terminal receipt内存校验通过；git diff --check通过。
 - 独立修复终裁：P0=0 / P1=0 / ALLOW。该ALLOW只覆盖prelaunch兼容修复，不代表N607已执行或产生性能结论。
 - 新release固定为.../phase1_recte_postfreeze_20260810_v1_cb92090f；旧b95aac57 release不得覆盖或用于启动。
+
+## 10.新release Runner执行与技术闭合（2026-08-10）
+
+- 状态：`ARTIFACTS_COMPLETE / TECHNICAL_BINDING_PASS / PAIR_JSON_READY / NO_PERFORMANCE_INTERPRETATION`。
+- 冻结版本：实现commit=`cb92090fd3247e9e9fb0d4bff9f28496a071ef6c`，reprereg commit=`cc17988e8c2f5a93408c35b6487745aa3dbee001`，新release=`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_recte_postfreeze_20260810_v1_cb92090f`。最终LF-only无prefix archive SHA256=`b1b3f5aa694bc8b32842d34501ccc9f3f67ed484cf470fb507deb92376d3c1af`、bytes=`266772480`、4952成员；code/code=0，launcher mode=`775`，六member SHA全匹配。
+- 唯一启动：冻结新路径命令调用恰好1次，SSH exit=0（约112秒返回），retry=NO；未覆盖旧b95 release、stage或raw archive。
+- PID/GPU/CWD：`candidate_pids.tsv`记录12个候选PID及预注册GPU映射，启动CWD为新release`code`；首波核验时12个run-owned PID均已退出，8张GPU均无compute app、显存占用各1MiB，未发现run-owned残留进程。
+- 工件闭合：run内文件总数66（12 clean NPZ、12 LEO NPZ、12 binding、12 proxy JSON、12 proxy CSV、6 pair JSON）；log内19文件（18阶段日志+PID表）；outer存在且为0 bytes；0个禁止的`.pth/.pt/.npy`输出。
+- 技术schema核验：12/12 binding的LEO schema、P1_RECTE receipt、terminal contract、source receiver count=7、28 cells、378分母、common physical/RX/class/scene与batch-order绑定均通过；12/12 proxy JSON可解析、CSV非空；6/6 pair schema、C/G receipt revalidation、common training binding、proxy recomputation和F6 raw-reopen标志通过，F6 aggregate键存在。
+- 健康证据：阶段日志均非空；预定义`Traceback/RuntimeError/CUDA error/OOM/unrecognized argument/No such file/Permission denied`技术指纹计数为0。未按任何性能字段停止或作解释。
+- 小工件bundle：远端`/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_recte_postfreeze_20260810_v1/phase1_recte_postfreeze_20260810_v1_small_bundle.tar`，SHA256=`1642deea7824b73a8654e2e3eba6d0cda45805d132077d5aa6b2d6a71afff28e`、bytes=`55910400`、63成员；manifest为同目录`phase1_recte_postfreeze_20260810_v1_small_bundle_manifest.tsv`（6793 bytes）。本地回收副本为`E:\type10-7\automation_reports\CV-SincNet\phase1_recte_postfreeze_20260810_v1\retrieved_cb92090f\phase1_recte_postfreeze_20260810_v1_small_bundle.tar`，SHA/bytes一致，bundle内无NPZ/pth/pt/npy。
+- SSH清理：启动及回收后均确认本地`ssh.exe=0`、N607/bridge TCP22 established=0；当前无遗留连接。
+- 审计备注：首个落地探针曾因错误使用`nan`匹配模式触发单行日志内容输出；该输出未被读取、解释或用于任何判断，随后已改为仅计数技术错误指纹和校验结构字段。本节及Runner交接不包含性能结论；主代理在同一run的完整原始工件闭合后自行进行性能分析。
