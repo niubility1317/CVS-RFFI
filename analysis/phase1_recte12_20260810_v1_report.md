@@ -5,7 +5,7 @@
 - 实验ID：`phase1_recte12_20260810_v1`
 - 日期：2026-08-10
 - 操作边界：主代理冻结候选、矩阵、版本和证据边界；唯一N607 Runner仅负责落地、启动、监控与小工件回收。
-- 当前状态：`LANDED / STATIC_VERIFIED / NOT_LAUNCHED`
+- 当前状态：`RUNNING / NO_PERFORMANCE_RESULT`
 - 目标：从相同GeoSat-C final-only checkpoint继续训练，比较同折C控制臂与唯一增加P1-RECTE辅助项的G实验臂。
 - 可证伪假设：source-known-train L中，同一物理样本clean→LEO真实类margin位移若在RX×local-class格之间长期出现相对低端尾部，则只上推较低格、允许共同位移的RECTE可能改善min-RX/min-class分类端点，同时不破坏后冻结proxy反退化端点。
 - 声明边界：不得预称修复RX、day、proxy、真实unknown或Phase3；完整门通过也只能进入`PHASE1_ADVANCEMENT_CANDIDATE_PENDING_MAIN_REVIEW`。
@@ -105,6 +105,14 @@ cd /home/szu2070436088/2510044040/CV-SincNet/releases/phase1_recte12_20260810_v1
 ```
 
 Runner只能调用一次。调用端超时后必须先清理本地残留SSH，并只读确认run/log/PID/CWD/cmdline是否已landed；严禁盲目重发。retry=`NO`。
+
+### 5.1 唯一启动与初始技术健康（2026-08-10）
+
+- 唯一启动调用：报告§5原样命令调用1次。SSH通道约34秒超时（exit124），未重发；本地残留SSH PID`22288`经命令行核对后定向清理，之后`ssh.exe=0`、TCP22 established=0。远端只读确认已landed。
+- wrapper/launcher：wrapper PID`1085062`、launcher PID`1085063`；CWD均为`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_recte12_20260810_v1_48a2c284/code`。outer launcher=`.../logs/phase1_recte12_20260810_v1_launcher.out`，初始bytes=`0`。
+- 12臂PID/GPU绑定（`pids.tsv` 13行，12/12 alive）：F1C=`1085066`/GPU0，F5G=`1085068`/GPU0；F1G=`1085070`/GPU1，F5C=`1085072`/GPU1；F2C=`1085074`/GPU2，F6G=`1085076`/GPU2；F2G=`1085078`/GPU3，F6C=`1085080`/GPU3；F3C=`1085082`/GPU4；F3G=`1085084`/GPU5；F4C=`1085086`/GPU6；F4G=`1085088`/GPU7。
+- GPU7并发边界：RECTE F4G与既有SCB v5主/worker`958333/958466`共存，仍为两项实验，未停止或修改SCB；其它GPU仅对应冻结RECTE双臂。
+- 初始健康：12个arm日志与config receipt均已创建并增长；只读技术扫描未见`Traceback`、`RuntimeError`、OOM、argparse/unrecognized-argument、Permission denied或No such file错误指纹。当前仅记录技术运行状态，`NO_PERFORMANCE_RESULT`。
 
 ## 6.预期工件、健康规则与成功条件
 
