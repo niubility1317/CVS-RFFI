@@ -5,7 +5,7 @@
 - 实验ID：`phase1_rcat12_20260810_v1`
 - 日期：2026-08-10
 - 操作角色：主代理冻结候选、矩阵和证据边界；唯一N607 Runner负责落地、启动、监控与小工件回收
-- 当前状态：`LOCAL_VERIFIED / NOT_LAUNCHED / NO_PERFORMANCE_RESULT`
+- 当前状态：`ARTIFACTS_COMPLETE / NO_PERFORMANCE_RESULT`
 - 目标：从相同GeoSat-C final-only checkpoint继续训练，比较同折C控制臂与唯一增加P1-RCAT辅助项的G实验臂。
 - 可证伪假设：在source-L上保持同一物理样本clean→单LEO的特征角方向，可能减少分类head核空间中的卫星视图漂移，并改善后冻结totalized-L2 Gaussian几何，同时不破坏分类floor。
 - 声明边界：不得预称修复RX/day、proxy、真实unknown或Phase3；完整门通过也只能进入`PHASE1_ADVANCEMENT_CANDIDATE_PENDING_MAIN_REVIEW`。
