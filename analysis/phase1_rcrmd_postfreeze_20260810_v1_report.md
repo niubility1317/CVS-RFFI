@@ -5,7 +5,7 @@
 - 实验ID：`phase1_rcrmd_postfreeze_20260810_v1`
 - 日期：2026-08-10
 - 操作：主代理冻结方法、门和分析；唯一N607 Runner负责落地、42步执行、技术监控和小工件回收
-- 当前状态：`LOCAL_VERIFIED / NOT_LANDED / NO_PERFORMANCE_RESULT`
+- 当前状态：`LANDED / STATIC_PASS / NO_PERFORMANCE_RESULT`
 - 训练证据：`phase1_rcrmd12_20260810_v1`已完成12/12臂技术合同，报告commit=`92646094a3da90632fb5c5dec2caadd2eb796892`
 - 目标：对同一fold的C/G final checkpoint执行固定42步后冻结评估，判断P1-RCRMD是否同时满足known分类floor、LEO弱信道floor、整体不退化和source proxy连续几何双门。
 - 结论边界：通过只能`PHASE1_ADVANCEMENT_CANDIDATE_PENDING_MAIN_REVIEW`；不得声称修复RX/day、真实unknown、多卫星协同或Phase3。
@@ -99,3 +99,17 @@ Runner调用次数必须为1；调用端超时先清理本地SSH并只读确认l
 - F6 pair含完整matrix aggregate和原始工件重算证据。
 
 Runner只读取技术binding并回收JSON/CSV/log/manifest小工件，不下载checkpoint或NPZ，不解释性能。主代理在工件完整后读取6个pair同run结果并作唯一最终判定。
+
+## 7.Runner落地登记（静态门待闭合）
+
+- 恢复后只读核验：release/run/log/outer/temp在启动前均ABSENT；无postfreeze进程；GPU0–7各约1MiB；12个训练final checkpoint、RCRMD terminal receipt、ManySig SHA均与训练报告§8.1闭合。
+- 本地归档：`artifacts/phase1_rcrmd_postfreeze_20260810_v1_e84c4560_fulltree.tar`；无前缀、4925 members、无`code/code`重复路径；大小=`260976640`字节；SHA256=`aa2ef42e9454d2362ece03a0bed2dc92795dcce727429bf74f53afb31f3939f3`。
+- 归档6成员SHA全部匹配冻结清单；launcher归档/远端release mode=`0755`。远端release已解包为`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_rcrmd_postfreeze_20260810_v1_e84c4560`；临时归档已移除。
+- 当前状态：`LANDED / STATIC_PENDING / NO_PERFORMANCE_RESULT`；尚未执行任何postfreeze launch。
+
+## 8.远端静态门（launch前）
+
+- 远端release/code：5个postfreeze Python文件`py_compile=PASS`（含test）；4个公开CLI `--help=PASS`；launcher`bash -n=PASS`。
+- 冻结环境`POSTFREEZE_RUN_ID=phase1_rcrmd_postfreeze_20260810_v1`下`--dry-run`严格42条：`RCRMD_CLEAN_EXPORT=12`、`RCRMD_LEO_EXPORT_AND_BIND=12`、`FROZEN_LOGITS_PROXY_BINDING=12`、`RCRMD_PAIR_SCORE=6`；训练root引用30、postfreeze引用42；无路径创建。
+- 首次静态探针仅因runner在`release/code`内重复添加`code/`前缀而失败；未改代码、未产生远端运行工件；一次机械修正后所有门通过。
+- 当前状态：`LANDED / STATIC_PASS / NO_PERFORMANCE_RESULT`；exact launch调用次数=`0`，retry=`NO`。
