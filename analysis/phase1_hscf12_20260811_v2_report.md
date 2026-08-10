@@ -1,6 +1,6 @@
 # Phase1 HSCF 12臂v2训练实验报告
 
-状态：`PREREGISTERED / LOCAL_VERIFIED / P0=0 / P1=0 / NO_PERFORMANCE_RESULT`
+状态：`ARTIFACTS_COMPLETE / TECHNICALLY_CLOSED / P0=0 / P1=0 / NO_PERFORMANCE_RESULT`
 
 ## 1.实验身份与目标
 
@@ -149,3 +149,37 @@ G臂额外必须闭合：
 - 显式graph-release清理64个冻结路径别名；独立AST和无GC weakref测试已闭合，但真实双view训练仍需观察显存与receipt。
 - v2不得因AMP skip数量或中间性能调参；公式、scale策略和matrix均冻结。
 - v2若技术失败，保留证据并回本地修具体缺陷；不得把失败run转为性能实验。
+
+## 10.Runner技术收口（2026-08-11）
+
+状态：`ARTIFACTS_COMPLETE / TECHNICALLY_CLOSED / NO_PERFORMANCE_RESULT`。唯一Runner完成一次release SCP、一次精确启动和一次技术bundle SCP；`retry=NO`。启动SSH在124秒超时，按规则仅清理绑定的本地`ssh.exe` PID=`14756`并只读确认已落地，未重发。两次prelaunch探针中止均为机械验证器路径/计数错误，未改变代码、矩阵、命令、SCP或启动次数。
+
+### 10.1归档、发布与输入闭合
+
+- 最终归档：`automation_reports/CV-SincNet/phase1_hscf12_20260811_v2/release/phase1_hscf12_20260811_v2_6e1a032f_final.tar`；SHA256=`0760e1dad9f6aa0be5f30c3b23ee9401d9b4a158e9a7111200ecd2aab5480acd`，`266977280`字节，4957 members（4337 files、620 dirs），无顶层prefix、`code/code=0`、文本CR字节=0。`code/SYNC_MANIFEST.txt`仅在归档层做CR→LF规范化；科学代码与commit未改动。关键归档成员：design=`c4e5911df8559c370aaee2cd40f5e6524bbc5b324220f0cd194515b512e2a7df`，core=`b1851976563a859637b40209f69f812f187fc5187047afc95bb0e5c33781b721`，train archive-LF=`eae726be9e8b332eeda1b36a45cce999f3e96e1e2a3520eec78533fe493985ff`（工作树换行SHA=`efd3885208da61b42ce56865eeb7b5d0e710f99a2ebac1a3845e35d57253573b`），test=`421772f678acc3c1cd6f2ff043bd9ef025cb5b4a505d9e4d333967576f0f2c8f`，launcher=`03dd8505657eca3249a0ee38368ddb93a43fd05ce1f4b41964b4dd9af72ac33f`，mode=`775`。
+- 远端incoming归档SHA/字节数与本地一致；release静态门`py_compile`、`train_ssdg.py --help`（95932 bytes，HSCF命中9）、`bash -n`和dry-run=`12`（C=6、G=6）均通过。release落地后无pycache；训练期间自然生成5个runtime`__pycache__`，按证据保留。
+- ManySig SHA=`2b0a7a7488dd3650bcae7b1d80efbcffd1598aaa671ae6b0a0df2a24dc0f694f`。GeoSat-C checkpoint SHA：F1=`4d515204f2cea62c5b82313a01b722b3b3d13a3e4fe647ff4b723b69e8a0c040`，F2=`29c7d7ca31d80d90d7c0235fa234707b05866914dc0acdae5c44505af1bbd76d`，F3=`39c6cdd65aade504efdea956db02cc5e762aee299a9e9319c07ed6fb839434b7`，F4=`32d956f44f60844471ba2ef04526c5f40cad0f8bc8acb7249be6035aa85005e4`，F5=`2b9381546878b19e7e8e2106a82b0d0a4672a3012ef79bd7f28eadfd03b75a9f`，F6=`573ca9d039a8c854f9c0927b5b5c303ab8eeaf527ccd42cd0d764b81e630de6f`。
+
+### 10.2运行绑定与技术结果
+
+|候选|arm/GPU|child PID|终态|final/完成/terminal/resource/heldout/config|HSCF技术计数|判定|
+|---|---|---:|---|---|---|---|
+|F1C_HSCF12|C/0|1320599|exit=8`NON_PROMOTABLE_P0_DISABLED`|1/1/1/1/1/1|aux=N/A；contract=true|技术闭合|
+|F5G_HSCF12|G/0|1320601|exit=8`NON_PROMOTABLE_P0_DISABLED`|1/1/1/1/1/1|batches=1200；effective/attempts=1197/1200；raw-finite skip=3；raw/material nonfinite=0；scale↓=optimizer unchanged=3；persistent=false；3×scene400/51200/positive400；audit=true|技术闭合|
+|F1G_HSCF12|G/1|1320603|exit=8`NON_PROMOTABLE_P0_DISABLED`|1/1/1/1/1/1|batches=1200；effective/attempts=1197/1200；raw-finite skip=3；raw/material nonfinite=0；scale↓=optimizer unchanged=3；persistent=false；3×scene400/51200/positive400；audit=true|技术闭合|
+|F5C_HSCF12|C/1|1320605|exit=8`NON_PROMOTABLE_P0_DISABLED`|1/1/1/1/1/1|aux=N/A；contract=true|技术闭合|
+|F2C_HSCF12|C/2|1320607|exit=8`NON_PROMOTABLE_P0_DISABLED`|1/1/1/1/1/1|aux=N/A；contract=true|技术闭合|
+|F6G_HSCF12|G/2|1320609|exit=8`NON_PROMOTABLE_P0_DISABLED`|1/1/1/1/1/1|batches=1200；effective/attempts=1197/1200；raw-finite skip=3；raw/material nonfinite=0；scale↓=optimizer unchanged=3；persistent=false；3×scene400/51200/positive400；audit=true|技术闭合|
+|F2G_HSCF12|G/3|1320614|exit=8`NON_PROMOTABLE_P0_DISABLED`|1/1/1/1/1/1|batches=1200；effective/attempts=1198/1200；raw-finite skip=2；raw/material nonfinite=0；scale↓=optimizer unchanged=2；persistent=false；3×scene400/51200/positive400；audit=true|技术闭合|
+|F6C_HSCF12|C/3|1320617|exit=8`NON_PROMOTABLE_P0_DISABLED`|1/1/1/1/1/1|aux=N/A；contract=true|技术闭合|
+|F3C_HSCF12|C/4|1320619|exit=8`NON_PROMOTABLE_P0_DISABLED`|1/1/1/1/1/1|aux=N/A；contract=true|技术闭合|
+|F3G_HSCF12|G/5|1320627|exit=8`NON_PROMOTABLE_P0_DISABLED`|1/1/1/1/1/1|batches=1200；effective/attempts=1197/1200；raw-finite skip=3；raw/material nonfinite=0；scale↓=optimizer unchanged=3；persistent=false；3×scene400/51200/positive400；audit=true|技术闭合|
+|F4C_HSCF12|C/6|1320632|exit=8`NON_PROMOTABLE_P0_DISABLED`|1/1/1/1/1/1|aux=N/A；contract=true|技术闭合|
+|F4G_HSCF12|G/7|1320636|exit=8`NON_PROMOTABLE_P0_DISABLED`|1/1/1/1/1/1|batches=1200；effective/attempts=1198/1200；raw-finite skip=2；raw/material nonfinite=0；scale↓=optimizer unchanged=2；persistent=false；3×scene400/51200/positive400；audit=true|技术闭合|
+
+12/12 child PID均自然退出，12/12 arm日志存在；技术异常扫描（Traceback、RuntimeError、argparse、OOM、CUDA、SIGSEGV、HSCF异常指纹）和graph-release failure扫描均为空。所有GPU最终为0%利用率、1MiB显存。`performance_result_available=false`、`promotion_ready=false`；本节不读取或解释accuracy、loss、floor、proxy或metrics_epoch。
+
+### 10.3证据bundle与远端保留
+
+- 远端技术bundle：`/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_hscf12_20260811_v2/phase1_hscf12_20260811_v2_technical_evidence.tar`；本地回收于`automation_reports/CV-SincNet/phase1_hscf12_20260811_v2/retrieved/phase1_hscf12_20260811_v2_technical_evidence.tar`；SHA256=`045eb94c1200f00e9a7779882558ad03de2c06e1479dbb87b53da53e4c657d5f`，`26071040`字节，98 members；manifest=`d190b9901860ee5616e9d442d7a99ffd29649e8ac02b8930ff39a306e8866c7d`，14026 bytes。bundle含12 arm日志、12臂技术JSON、pids.tsv和manifest，排除`metrics_epoch*`、`.pth/.npz/.pt/.npy`；outer为其父目录的0字节文件，SHA=`e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855`，远端保留。
+- 远端release、run、log、incoming归档、checkpoint和technical bundle均保留；未删除或覆盖任何既有数据、权重、日志或未归属文件。实验仅达到技术收口，不触发postfreeze或性能分析。
