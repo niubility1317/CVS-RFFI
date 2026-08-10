@@ -246,16 +246,22 @@ try:
         add_hscf_to_loss,
         bind_hscf_optimizer_initial_state,
         bind_hscf_source_data_order,
+        finalize_hscf_amp_overflow_skip,
         hscf_aux_gradient_audit,
         hscf_config_receipt,
         hscf_loss,
+        hscf_scaled_backward_and_classify,
         hscf_shared_encoder_and_head_parameters,
+        release_hscf_retained_graph_roots,
+        record_hscf_material_nonfinite_receipt,
         remap_hscf_local_labels_to_head_rows,
         resolve_hscf_classifier_weight,
         resolve_hscf_local_head_class_binding,
         strict_hscf_warm_start,
+        update_hscf_amp_overflow_receipt,
         update_hscf_common_batch_sequence_receipt,
         update_hscf_gradient_audit_receipt,
+        update_hscf_optimizer_step_receipt,
         update_hscf_receipt,
         validate_hscf_args,
         validate_hscf_binding,
@@ -518,11 +524,15 @@ except ModuleNotFoundError:
     HSCFConfigurationError = HSCFRuntimeError = None
     FROZEN_HSCF_SCENARIOS = tuple()
     add_hscf_to_loss = bind_hscf_optimizer_initial_state = bind_hscf_source_data_order = None
-    hscf_aux_gradient_audit = hscf_config_receipt = hscf_loss = None
+    finalize_hscf_amp_overflow_skip = hscf_aux_gradient_audit = hscf_config_receipt = None
+    hscf_loss = hscf_scaled_backward_and_classify = None
     hscf_shared_encoder_and_head_parameters = remap_hscf_local_labels_to_head_rows = None
+    release_hscf_retained_graph_roots = None
+    record_hscf_material_nonfinite_receipt = remap_hscf_local_labels_to_head_rows = None
     resolve_hscf_classifier_weight = resolve_hscf_local_head_class_binding = None
     strict_hscf_warm_start = update_hscf_common_batch_sequence_receipt = None
-    update_hscf_gradient_audit_receipt = update_hscf_receipt = None
+    update_hscf_amp_overflow_receipt = update_hscf_gradient_audit_receipt = None
+    update_hscf_optimizer_step_receipt = update_hscf_receipt = None
     validate_hscf_args = validate_hscf_binding = validate_hscf_terminal_receipt = None
     write_hscf_failure_receipt = None
     RECTEConfig = None
@@ -6681,6 +6691,11 @@ def train(args) -> int:
         validate_hscf_args is None
         or hscf_config_receipt is None
         or strict_hscf_warm_start is None
+        or hscf_scaled_backward_and_classify is None
+        or finalize_hscf_amp_overflow_skip is None
+        or update_hscf_amp_overflow_receipt is None
+        or update_hscf_optimizer_step_receipt is None
+        or record_hscf_material_nonfinite_receipt is None
     ):
         if bool(getattr(args, "phase1_hscf_frozen_mode", False)) or bool(
             getattr(args, "phase1_hscf_enabled", False)
@@ -11196,6 +11211,8 @@ def train(args) -> int:
             cp_sfce_projection_info: Dict[str, Any] = {}
             cp_sfce_amp_overflow_info: Dict[str, Any] = {}
             cp_sfce_amp_overflow_pending = False
+            hscf_amp_overflow_info: Dict[str, Any] = {}
+            hscf_amp_overflow_pending = False
             pamr_shared_gradient_info: Dict[str, Any] = {
                 "shared_parameter_count": 0.0,
                 "base_norm": float("nan"),
@@ -12019,6 +12036,40 @@ def train(args) -> int:
                         float(os_grad_info["closed_scale"]) * scaled_closed_loss
                         + float(os_grad_info["os_scale"]) * scaled_open_loss
                     )
+                elif bool(getattr(hscf_config, "enabled", False)):
+                    try:
+                        if (
+                            hscf_scaled_backward_and_classify is None
+                            or update_hscf_amp_overflow_receipt is None
+                        ):
+                            raise ImportError(
+                                "cvsrffi.phase1_hscf AMP overflow recovery support is required"
+                            )
+                        hscf_amp_overflow_info = hscf_scaled_backward_and_classify(
+                            model=model,
+                            optimizer=optimizer,
+                            scaler=scaler,
+                            loss=loss,
+                        )
+                        if bool(hscf_amp_overflow_info.get("amp_overflow_detected", False)):
+                            if hscf_amp_overflow_info.get("amp_overflow_recoverable") is not True:
+                                hscf_receipt = update_hscf_amp_overflow_receipt(
+                                    hscf_receipt,
+                                    overflow=hscf_amp_overflow_info,
+                                )
+                                raise HSCFRuntimeError(
+                                    "P1-HSCF raw material gradient audit failed after scaled AMP overflow"
+                                )
+                            hscf_amp_overflow_pending = True
+                    except Exception as error:
+                        _persist_hscf_failure_receipt(
+                            out_dir=out_dir,
+                            args=args,
+                            hscf_receipt=hscf_receipt,
+                            error=error,
+                            failure_stage="scaled_backward_unscale_raw_material_gradient_audit",
+                        )
+                        raise
                 else:
                     scaler.scale(loss).backward()
                     if bool(getattr(gd_proto_nll_config, "enabled", False)):
@@ -12084,8 +12135,45 @@ def train(args) -> int:
                     grad_domain = float("nan")
                     grads_finite = False
                     skipped_nonfinite_grad = 1
+                elif hscf_amp_overflow_pending:
+                    try:
+                        if (
+                            finalize_hscf_amp_overflow_skip is None
+                            or update_hscf_amp_overflow_receipt is None
+                        ):
+                            raise ImportError(
+                                "cvsrffi.phase1_hscf AMP overflow recovery support is required"
+                            )
+                        hscf_amp_skip = finalize_hscf_amp_overflow_skip(
+                            optimizer=optimizer,
+                            scaler=scaler,
+                            overflow=hscf_amp_overflow_info,
+                        )
+                        hscf_receipt = update_hscf_amp_overflow_receipt(
+                            hscf_receipt,
+                            overflow=hscf_amp_overflow_info,
+                            finalized_skip=hscf_amp_skip,
+                        )
+                    except Exception as error:
+                        _persist_hscf_failure_receipt(
+                            out_dir=out_dir,
+                            args=args,
+                            hscf_receipt=hscf_receipt,
+                            error=error,
+                            failure_stage="raw_finite_amp_overflow_skip_backoff",
+                        )
+                        raise
+                    grad_norm_before_clip = float("nan")
+                    grad_total = float("nan")
+                    grad_backbone = float("nan")
+                    grad_aux = float("nan")
+                    grad_domain = float("nan")
+                    grads_finite = False
+                    skipped_nonfinite_grad = 1
                 else:
-                    if not bool(getattr(cp_sfce_config, "enabled", False)):
+                    if not bool(getattr(cp_sfce_config, "enabled", False)) and not bool(
+                        getattr(hscf_config, "enabled", False)
+                    ):
                         scaler.unscale_(optimizer)
                     grad_norm_before_clip = _grad_norm(model)
                     if float(getattr(args, "max_grad_norm", 0.0)) > 0.0:
@@ -12133,6 +12221,22 @@ def train(args) -> int:
                                     failure_stage="post_scaler_step_optimizer_state_increment",
                                 )
                                 raise
+                        if bool(getattr(hscf_config, "enabled", False)):
+                            try:
+                                if update_hscf_optimizer_step_receipt is None:
+                                    raise ImportError(
+                                        "cvsrffi.phase1_hscf effective optimizer-step receipt support is required"
+                                    )
+                                hscf_receipt = update_hscf_optimizer_step_receipt(hscf_receipt)
+                            except Exception as error:
+                                _persist_hscf_failure_receipt(
+                                    out_dir=out_dir,
+                                    args=args,
+                                    hscf_receipt=hscf_receipt,
+                                    error=error,
+                                    failure_stage="post_scaler_step_effective_optimizer_step_receipt",
+                                )
+                                raise
                         optimizer_step_applied = True
                         if ema_model is not None:
                             _update_ema_model(ema_model, model, float(args.ema_decay))
@@ -12150,6 +12254,24 @@ def train(args) -> int:
                             )
                             raise error
                         if bool(getattr(hscf_config, "enabled", False)):
+                            try:
+                                if record_hscf_material_nonfinite_receipt is None:
+                                    raise ImportError(
+                                        "cvsrffi.phase1_hscf material non-finite receipt support is required"
+                                    )
+                                hscf_receipt = record_hscf_material_nonfinite_receipt(
+                                    hscf_receipt,
+                                    reason="post_clip_combined_gradient_nonfinite",
+                                )
+                            except Exception as receipt_error:
+                                _persist_hscf_failure_receipt(
+                                    out_dir=out_dir,
+                                    args=args,
+                                    hscf_receipt=hscf_receipt,
+                                    error=receipt_error,
+                                    failure_stage="post_clip_material_nonfinite_receipt",
+                                )
+                                raise
                             error = HSCFRuntimeError(
                                 "P1-HSCF combined parameter gradient is non-finite"
                             )
@@ -12192,6 +12314,24 @@ def train(args) -> int:
                     )
                     raise error
                 if bool(getattr(hscf_config, "enabled", False)):
+                    try:
+                        if record_hscf_material_nonfinite_receipt is None:
+                            raise ImportError(
+                                "cvsrffi.phase1_hscf material non-finite receipt support is required"
+                            )
+                        hscf_receipt = record_hscf_material_nonfinite_receipt(
+                            hscf_receipt,
+                            reason="total_loss_nonfinite",
+                        )
+                    except Exception as receipt_error:
+                        _persist_hscf_failure_receipt(
+                            out_dir=out_dir,
+                            args=args,
+                            hscf_receipt=hscf_receipt,
+                            error=receipt_error,
+                            failure_stage="pre_backward_material_nonfinite_receipt",
+                        )
+                        raise
                     error = HSCFRuntimeError(
                         "P1-HSCF fail-closed: total loss is non-finite before backward"
                     )
@@ -13267,6 +13407,111 @@ def train(args) -> int:
                     "train/dm_accept_stage_scale": float(direct_metric_stage_scale),
                 }
             )
+            if bool(getattr(hscf_config, "enabled", False)):
+                # The exceptional raw VJP requires the common scaled backward
+                # to retain its graph.  All batch telemetry above is now a
+                # detached tensor or Python value, so move every remaining
+                # graph-bearing caller alias into one table, delete the
+                # originals, and clear the sole owner before the next forward.
+                try:
+                    if release_hscf_retained_graph_roots is None:
+                        raise ImportError(
+                            "cvsrffi.phase1_hscf retained-graph release support is required"
+                        )
+                    hscf_retained_graph_roots = {
+                        "out_l": out_l,
+                        "out_sat": out_sat,
+                        "core_losses": core_losses,
+                        "z_id_l": z_id_l,
+                        "loss_tx_l": loss_tx_l,
+                        "loss_dom_l": loss_dom_l,
+                        "loss_adv_l": loss_adv_l,
+                        "loss_cons_l": loss_cons_l,
+                        "loss_orth_l": loss_orth_l,
+                        "loss_group_ce_l": loss_group_ce_l,
+                        "loss_fishr_l": loss_fishr_l,
+                        "loss_manytx_real_oe_l": loss_manytx_real_oe_l,
+                        "loss_zid_invariance_l": loss_zid_invariance_l,
+                        "loss_teacher_clean_kl_l": loss_teacher_clean_kl_l,
+                        "loss_teacher_sat_kl_l": loss_teacher_sat_kl_l,
+                        "loss_teacher_zid_mse_l": loss_teacher_zid_mse_l,
+                        "loss_proto_l": loss_proto_l,
+                        "loss_open_world_feat_l": loss_open_world_feat_l,
+                        "loss_zid_compact_l": loss_zid_compact_l,
+                        "loss_proxy_unknown_l": loss_proxy_unknown_l,
+                        "loss_soft_unknown_mixup_l": loss_soft_unknown_mixup_l,
+                        "loss_source_episode_l": loss_source_episode_l,
+                        "loss_direct_metric_accept_l": loss_direct_metric_accept_l,
+                        "zero_sat": zero_sat,
+                        "loss_sat_cls_l": loss_sat_cls_l,
+                        "loss_sat_cons_l": loss_sat_cons_l,
+                        "loss_ccpc_leo_l": loss_ccpc_leo_l,
+                        "loss_pamr_l": loss_pamr_l,
+                        "loss_cb_sfce_l": loss_cb_sfce_l,
+                        "loss_gd_proto_nll_l": loss_gd_proto_nll_l,
+                        "loss_icmt_l": loss_icmt_l,
+                        "loss_cagm_l": loss_cagm_l,
+                        "loss_rcrmd_l": loss_rcrmd_l,
+                        "loss_rcat_l": loss_rcat_l,
+                        "loss_hscf_l": loss_hscf_l,
+                        "loss_recte_l": loss_recte_l,
+                        "loss_cp_sfce_l": loss_cp_sfce_l,
+                        "pamr_base_loss_l": pamr_base_loss_l,
+                        "cb_sfce_base_loss_l": cb_sfce_base_loss_l,
+                        "gd_proto_nll_base_loss_l": gd_proto_nll_base_loss_l,
+                        "icmt_base_loss_l": icmt_base_loss_l,
+                        "cagm_base_loss_l": cagm_base_loss_l,
+                        "loss_closed_l": loss_closed_l,
+                        "loss_open_invariant_l": loss_open_invariant_l,
+                        "loss_open_boundary_l": loss_open_boundary_l,
+                        "loss_open_source_l": loss_open_source_l,
+                        "loss_open_l": loss_open_l,
+                        "loss_l": loss_l,
+                        "z": z,
+                        "loss_u": loss_u,
+                        "loss_ent": loss_ent,
+                        "loss_u_domain": loss_u_domain,
+                        "loss_u_adv": loss_u_adv,
+                        "loss_u_sat_cons": loss_u_sat_cons,
+                        "loss_u_direct_metric": loss_u_direct_metric,
+                        "loss_u_quarantine": loss_u_quarantine,
+                        "loss_u_zid_invariance": loss_u_zid_invariance,
+                        "loss_closed": loss_closed,
+                        "loss_open_u": loss_open_u,
+                        "loss_open": loss_open,
+                        "open_objective_losses": open_objective_losses,
+                        "scaled_closed_loss": scaled_closed_loss,
+                        "scaled_open_loss": scaled_open_loss,
+                        "loss": loss,
+                    }
+                    del out_l, out_sat, core_losses, z_id_l
+                    del loss_tx_l, loss_dom_l, loss_adv_l, loss_cons_l, loss_orth_l
+                    del loss_group_ce_l, loss_fishr_l, loss_manytx_real_oe_l
+                    del loss_zid_invariance_l, loss_teacher_clean_kl_l
+                    del loss_teacher_sat_kl_l, loss_teacher_zid_mse_l, loss_proto_l
+                    del loss_open_world_feat_l, loss_zid_compact_l, loss_proxy_unknown_l
+                    del loss_soft_unknown_mixup_l, loss_source_episode_l
+                    del loss_direct_metric_accept_l, zero_sat, loss_sat_cls_l, loss_sat_cons_l
+                    del loss_ccpc_leo_l, loss_pamr_l, loss_cb_sfce_l, loss_gd_proto_nll_l
+                    del loss_icmt_l, loss_cagm_l, loss_rcrmd_l, loss_rcat_l, loss_hscf_l
+                    del loss_recte_l, loss_cp_sfce_l, pamr_base_loss_l, cb_sfce_base_loss_l
+                    del gd_proto_nll_base_loss_l, icmt_base_loss_l, cagm_base_loss_l
+                    del loss_closed_l, loss_open_invariant_l, loss_open_boundary_l
+                    del loss_open_source_l, loss_open_l, loss_l, z, loss_u, loss_ent
+                    del loss_u_domain, loss_u_adv, loss_u_sat_cons, loss_u_direct_metric
+                    del loss_u_quarantine, loss_u_zid_invariance, loss_closed, loss_open_u
+                    del loss_open, open_objective_losses, scaled_closed_loss, scaled_open_loss, loss
+                    release_hscf_retained_graph_roots(hscf_retained_graph_roots)
+                    del hscf_retained_graph_roots
+                except Exception as error:
+                    _persist_hscf_failure_receipt(
+                        out_dir=out_dir,
+                        args=args,
+                        hscf_receipt=hscf_receipt,
+                        error=error,
+                        failure_stage="post_telemetry_retained_graph_release",
+                    )
+                    raise
 
         if pamr_audit_only:
             val_stats = {

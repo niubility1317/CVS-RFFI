@@ -370,6 +370,20 @@ def hscf_config_receipt(config: HSCFConfig) -> Dict[str, Any]:
         "hscf_gradient_audit_attempted": False,
         "hscf_gradient_audit_completed": False,
         "hscf_gradient_audit_scenes": {},
+        "hscf_amp_overflow_raw_finite_batches": 0,
+        "hscf_amp_overflow_raw_nonfinite_batches": 0,
+        "hscf_amp_overflow_material_nonfinite_batches": 0,
+        "hscf_amp_skip_scale_decreased_batches": 0,
+        "hscf_amp_skip_optimizer_state_unchanged_batches": 0,
+        "hscf_effective_optimizer_steps": 0,
+        "hscf_optimizer_step_attempts": 0,
+        "hscf_consecutive_amp_overflow_skips": 0,
+        "hscf_max_consecutive_amp_overflow_skips": 0,
+        "hscf_persistent_amp_overflow": False,
+        "hscf_last_amp_overflow": {},
+        "hscf_last_material_nonfinite": {},
+        "hscf_last_optimizer_step": {},
+        "hscf_optimizer_events": [],
         "hscf_terminal_contract": "PENDING",
         "hscf_terminal_contract_passed": False,
         "proxy_rows": 0,
@@ -942,6 +956,434 @@ def bind_hscf_optimizer_initial_state(
     return result
 
 
+def _require_hscf_material_loss_finite(loss: torch.Tensor) -> None:
+    """Reject a non-finite combined loss before AMP classification."""
+
+    if not torch.is_tensor(loss) or loss.ndim != 0:
+        raise HSCFRuntimeError("P1-HSCF material loss must be a scalar tensor")
+    if not bool(torch.isfinite(loss.detach()).item()):
+        raise HSCFRuntimeError("P1-HSCF material loss is non-finite")
+
+
+def _hscf_trainable_parameter_binding(
+    model: torch.nn.Module,
+) -> Tuple[Tuple[torch.nn.Parameter, ...], Dict[int, str]]:
+    """Bind the exceptional raw-material audit to live trainable parameters."""
+
+    raw_model = getattr(model, "_orig_mod", model)
+    parameters = tuple(parameter for parameter in raw_model.parameters() if parameter.requires_grad)
+    if not parameters:
+        raise HSCFRuntimeError("P1-HSCF raw material audit has no trainable parameters")
+    names = {
+        id(parameter): str(name)
+        for name, parameter in raw_model.named_parameters()
+        if parameter.requires_grad
+    }
+    if {id(parameter) for parameter in parameters} != set(names):
+        raise HSCFRuntimeError("P1-HSCF raw material parameter-name binding is incomplete")
+    return parameters, names
+
+
+def _hscf_state_step_value(state: Mapping[str, Any]) -> float:
+    value = state.get("step", 0)
+    if torch.is_tensor(value):
+        value = value.detach().cpu().item()
+    try:
+        result = float(value)
+    except (TypeError, ValueError) as error:
+        raise HSCFRuntimeError("P1-HSCF optimizer state step is invalid") from error
+    if not math.isfinite(result) or result < 0.0:
+        raise HSCFRuntimeError("P1-HSCF optimizer state step is non-finite")
+    return result
+
+
+def _hscf_optimizer_state_steps(optimizer: torch.optim.Optimizer) -> Tuple[float, ...]:
+    """Capture all optimizer-state steps to prove an AMP skip did not update AdamW."""
+
+    parameters = []
+    seen = set()
+    for group in optimizer.param_groups:
+        for parameter in group.get("params", ()):
+            if not isinstance(parameter, torch.nn.Parameter) or id(parameter) in seen:
+                continue
+            seen.add(id(parameter))
+            parameters.append(parameter)
+    if not parameters:
+        raise HSCFRuntimeError("P1-HSCF optimizer has no parameters")
+    return tuple(_hscf_state_step_value(optimizer.state.get(parameter, {})) for parameter in parameters)
+
+
+def _hscf_optimizer_steps_unchanged(before: Sequence[float], after: Sequence[float]) -> bool:
+    before_values = tuple(float(value) for value in before)
+    after_values = tuple(float(value) for value in after)
+    return bool(
+        before_values
+        and len(before_values) == len(after_values)
+        and all(math.isfinite(value) and value >= 0.0 for value in (*before_values, *after_values))
+        and all(left == right for left, right in zip(before_values, after_values))
+    )
+
+
+def _hscf_pending_optimizer_event(receipt: Mapping[str, Any]) -> Tuple[Dict[str, Any], list[Dict[str, Any]]]:
+    """Bind exactly one step-or-skip event to the latest sealed HSCF batch."""
+
+    batches = list(receipt.get("hscf_g_batch_aux", []))
+    if not batches:
+        raise HSCFRuntimeError("P1-HSCF optimizer event lacks a sealed G batch")
+    batch = dict(batches[-1])
+    try:
+        epoch = int(batch["epoch"])
+        batch_index = int(batch["batch_index"])
+    except (KeyError, TypeError, ValueError) as error:
+        raise HSCFRuntimeError("P1-HSCF optimizer event batch identity is invalid") from error
+    scenario = str(batch.get("scenario", ""))
+    if epoch <= 0 or batch_index < 0 or scenario not in FROZEN_HSCF_SCENARIOS:
+        raise HSCFRuntimeError("P1-HSCF optimizer event batch identity drifted")
+    history = [dict(event) for event in list(receipt.get("hscf_optimizer_events", []))]
+    identity = (epoch, batch_index, scenario)
+    if any(
+        (int(event.get("epoch", -1)), int(event.get("batch_index", -1)), str(event.get("scenario", "")))
+        == identity
+        for event in history
+    ):
+        raise HSCFRuntimeError("P1-HSCF optimizer event duplicates a G batch")
+    return {"epoch": epoch, "batch_index": batch_index, "scenario": scenario}, history
+
+
+def _hscf_raw_material_gradient_audit(
+    loss: torch.Tensor,
+    parameters: Sequence[torch.nn.Parameter],
+    names: Mapping[int, str],
+    scaled_nonfinite_parameter_ids: Sequence[int],
+) -> Dict[str, Any]:
+    """Differentiate the existing combined loss once only after AMP overflow.
+
+    This exceptional VJP distinguishes a raw combined-gradient failure from a
+    finite gradient whose multiplication by the current GradScaler scale
+    overflowed.  It neither performs another forward nor retries the batch.
+    """
+
+    try:
+        gradients = torch.autograd.grad(
+            loss,
+            tuple(parameters),
+            retain_graph=False,
+            create_graph=False,
+            allow_unused=True,
+        )
+    except RuntimeError as error:
+        raise HSCFRuntimeError("P1-HSCF raw material gradient audit failed") from error
+    affected = {int(value) for value in scaled_nonfinite_parameter_ids}
+    if not affected:
+        raise HSCFRuntimeError("P1-HSCF raw material audit lacks scaled non-finite parameters")
+    raw_nonfinite = []
+    raw_missing = []
+    for parameter, gradient in zip(parameters, gradients):
+        if id(parameter) not in affected:
+            continue
+        name = names[id(parameter)]
+        if gradient is None:
+            raw_missing.append(name)
+        elif not bool(torch.isfinite(gradient.detach()).all().item()):
+            raw_nonfinite.append(name)
+    return {
+        "raw_material_vjp_finite": not raw_nonfinite and not raw_missing,
+        "raw_material_nonfinite_parameter_names": tuple(sorted(raw_nonfinite)),
+        "raw_material_missing_parameter_names": tuple(sorted(raw_missing)),
+    }
+
+
+def release_hscf_retained_graph_roots(roots: Dict[str, Any]) -> None:
+    """Drop the caller-owned roots of one retained HSCF backward graph.
+
+    The trainer must first move every graph-bearing batch local into ``roots``
+    and delete its original local alias.  Clearing that sole remaining owner
+    releases saved activations before the next forward without another
+    backward, unscale, forward, allocator flush, or cache-policy change.
+    """
+
+    if not isinstance(roots, dict) or not roots:
+        raise HSCFRuntimeError("P1-HSCF retained-graph root table is missing")
+    if any(not isinstance(name, str) or not name for name in roots):
+        raise HSCFRuntimeError("P1-HSCF retained-graph root name is invalid")
+    roots.clear()
+    if roots:
+        raise HSCFRuntimeError("P1-HSCF retained-graph roots were not released")
+
+
+def hscf_scaled_backward_and_classify(
+    *,
+    model: torch.nn.Module,
+    optimizer: torch.optim.Optimizer,
+    scaler: Any,
+    loss: torch.Tensor,
+) -> Dict[str, Any]:
+    """Run one HSCF scaled backward and classify only its exceptional overflow.
+
+    Successful batches retain the common single scaled backward, unscale,
+    clipping and optimizer path.  If a parameter buffer is non-finite after
+    unscale, the retained existing graph is used exactly once for a raw
+    combined-loss VJP.  Only raw-finite evidence may become a GradScaler
+    backoff/skip; raw/material failures remain fail-closed.
+    """
+
+    _require_hscf_material_loss_finite(loss)
+    try:
+        captured_scale = float(scaler.get_scale())
+    except (AttributeError, TypeError, ValueError) as error:
+        raise HSCFRuntimeError("P1-HSCF GradScaler scale is unavailable") from error
+    if not math.isfinite(captured_scale) or captured_scale <= 0.0:
+        raise HSCFRuntimeError("P1-HSCF GradScaler scale is invalid")
+    parameters, names = _hscf_trainable_parameter_binding(model)
+    scaler.scale(loss).backward(retain_graph=True)
+    scaler.unscale_(optimizer)
+    scaled_nonfinite = tuple(
+        parameter for parameter in parameters
+        if parameter.grad is not None and not bool(torch.isfinite(parameter.grad.detach()).all().item())
+    )
+    if not scaled_nonfinite:
+        return {
+            "amp_overflow_detected": False,
+            "captured_scale": captured_scale,
+            "scaled_backward_count": 1,
+            "optimizer_unscale_count": 1,
+        }
+    raw_audit = _hscf_raw_material_gradient_audit(
+        loss,
+        parameters,
+        names,
+        tuple(id(parameter) for parameter in scaled_nonfinite),
+    )
+    raw_finite = bool(raw_audit["raw_material_vjp_finite"])
+    return {
+        "amp_overflow_detected": True,
+        "amp_overflow_kind": (
+            "COMBINED_SCALED_OVERFLOW_RAW_FINITE"
+            if raw_finite
+            else "COMBINED_RAW_NONFINITE_OR_DISCONNECTED"
+        ),
+        "amp_overflow_recoverable": raw_finite,
+        "captured_scale": captured_scale,
+        "scaled_backward_count": 1,
+        "optimizer_unscale_count": 1,
+        "scaled_nonfinite_parameter_names": tuple(sorted(names[id(parameter)] for parameter in scaled_nonfinite)),
+        "raw_material_vjp_finite": raw_finite,
+        "raw_material_nonfinite_parameter_names": raw_audit[
+            "raw_material_nonfinite_parameter_names"
+        ],
+        "raw_material_missing_parameter_names": raw_audit[
+            "raw_material_missing_parameter_names"
+        ],
+        "optimizer_state_before": _hscf_optimizer_state_steps(optimizer),
+    }
+
+
+def finalize_hscf_amp_overflow_skip(
+    *,
+    optimizer: torch.optim.Optimizer,
+    scaler: Any,
+    overflow: Mapping[str, Any],
+) -> Dict[str, Any]:
+    """Use public GradScaler APIs to back off one raw-finite overflow batch."""
+
+    if overflow.get("amp_overflow_detected") is not True or overflow.get(
+        "amp_overflow_recoverable"
+    ) is not True:
+        raise HSCFRuntimeError("P1-HSCF AMP overflow skip requires raw-finite evidence")
+    if str(overflow.get("amp_overflow_kind", "")) != "COMBINED_SCALED_OVERFLOW_RAW_FINITE":
+        raise HSCFRuntimeError("P1-HSCF AMP overflow kind is invalid")
+    if overflow.get("raw_material_vjp_finite") is not True or tuple(
+        overflow.get("raw_material_nonfinite_parameter_names", ())
+    ) or tuple(overflow.get("raw_material_missing_parameter_names", ())):
+        raise HSCFRuntimeError("P1-HSCF AMP overflow lacks raw-finite material gradient evidence")
+    scaled_names = tuple(str(value) for value in overflow.get("scaled_nonfinite_parameter_names", ()))
+    if not scaled_names:
+        raise HSCFRuntimeError("P1-HSCF AMP overflow lacks scaled non-finite parameter evidence")
+    try:
+        scale_before = float(overflow["captured_scale"])
+    except (KeyError, TypeError, ValueError) as error:
+        raise HSCFRuntimeError("P1-HSCF AMP overflow lacks a captured scale") from error
+    if not math.isfinite(scale_before) or scale_before <= 0.0:
+        raise HSCFRuntimeError("P1-HSCF AMP overflow captured scale is invalid")
+    before = tuple(float(value) for value in overflow.get("optimizer_state_before", ()))
+    if not before:
+        raise HSCFRuntimeError("P1-HSCF AMP overflow lacks optimizer-state evidence")
+    scaler.step(optimizer)
+    scaler.update()
+    after = _hscf_optimizer_state_steps(optimizer)
+    try:
+        scale_after = float(scaler.get_scale())
+    except (AttributeError, TypeError, ValueError) as error:
+        raise HSCFRuntimeError("P1-HSCF AMP overflow post-scale is unavailable") from error
+    if not math.isfinite(scale_after) or not (0.0 < scale_after < scale_before):
+        raise HSCFRuntimeError("P1-HSCF AMP overflow skip did not lower GradScaler scale")
+    if not _hscf_optimizer_steps_unchanged(before, after):
+        raise HSCFRuntimeError("P1-HSCF AMP overflow skip advanced optimizer state")
+    optimizer.zero_grad(set_to_none=True)
+    return {
+        "amp_overflow_kind": "COMBINED_SCALED_OVERFLOW_RAW_FINITE",
+        "pre_scale": scale_before,
+        "post_scale": scale_after,
+        "optimizer_state_unchanged": True,
+        "optimizer_step_applied": False,
+        "scaled_parameter_names": scaled_names,
+    }
+
+
+def update_hscf_amp_overflow_receipt(
+    receipt: Mapping[str, Any],
+    *,
+    overflow: Mapping[str, Any],
+    finalized_skip: Optional[Mapping[str, Any]] = None,
+) -> Dict[str, Any]:
+    """Record a data-free HSCF AMP classification without retrying a batch."""
+
+    result = dict(receipt)
+    if result.get("enabled") is not True:
+        raise HSCFRuntimeError("P1-HSCF AMP overflow receipt is G-arm only")
+    if overflow.get("amp_overflow_detected") is not True:
+        raise HSCFRuntimeError("P1-HSCF AMP overflow receipt requires overflow evidence")
+    kind = str(overflow.get("amp_overflow_kind", ""))
+    recoverable = kind == "COMBINED_SCALED_OVERFLOW_RAW_FINITE"
+    raw_failure = kind == "COMBINED_RAW_NONFINITE_OR_DISCONNECTED"
+    if not (recoverable or raw_failure):
+        raise HSCFRuntimeError("P1-HSCF AMP overflow receipt kind is invalid")
+    if recoverable:
+        if overflow.get("amp_overflow_recoverable") is not True or finalized_skip is None:
+            raise HSCFRuntimeError("P1-HSCF raw-finite AMP overflow was not finalized as a skip")
+        if str(finalized_skip.get("amp_overflow_kind", "")) != kind:
+            raise HSCFRuntimeError("P1-HSCF AMP overflow kind changed before receipt")
+        if overflow.get("raw_material_vjp_finite") is not True or tuple(
+            overflow.get("raw_material_nonfinite_parameter_names", ())
+        ) or tuple(overflow.get("raw_material_missing_parameter_names", ())):
+            raise HSCFRuntimeError("P1-HSCF AMP overflow receipt lacks raw-finite material evidence")
+        scaled_names = tuple(str(value) for value in overflow.get("scaled_nonfinite_parameter_names", ()))
+        if not scaled_names:
+            raise HSCFRuntimeError("P1-HSCF AMP overflow receipt lacks scaled non-finite evidence")
+        try:
+            pre_scale = float(finalized_skip["pre_scale"])
+            post_scale = float(finalized_skip["post_scale"])
+        except (KeyError, TypeError, ValueError) as error:
+            raise HSCFRuntimeError("P1-HSCF AMP overflow receipt lacks scale evidence") from error
+        if not math.isfinite(pre_scale) or not math.isfinite(post_scale) or not (
+            0.0 < post_scale < pre_scale
+        ):
+            raise HSCFRuntimeError("P1-HSCF AMP overflow receipt scale did not decrease")
+        if finalized_skip.get("optimizer_state_unchanged") is not True or finalized_skip.get(
+            "optimizer_step_applied"
+        ) is not False:
+            raise HSCFRuntimeError("P1-HSCF AMP overflow receipt optimizer state changed")
+        attempts = int(result.get("hscf_optimizer_step_attempts", 0)) + 1
+        consecutive = int(result.get("hscf_consecutive_amp_overflow_skips", 0)) + 1
+        maximum = max(int(result.get("hscf_max_consecutive_amp_overflow_skips", 0)), consecutive)
+        result["hscf_amp_overflow_raw_finite_batches"] = int(
+            result.get("hscf_amp_overflow_raw_finite_batches", 0)
+        ) + 1
+        result["hscf_amp_skip_scale_decreased_batches"] = int(
+            result.get("hscf_amp_skip_scale_decreased_batches", 0)
+        ) + 1
+        result["hscf_amp_skip_optimizer_state_unchanged_batches"] = int(
+            result.get("hscf_amp_skip_optimizer_state_unchanged_batches", 0)
+        ) + 1
+        result["hscf_optimizer_step_attempts"] = attempts
+        result["hscf_consecutive_amp_overflow_skips"] = consecutive
+        result["hscf_max_consecutive_amp_overflow_skips"] = maximum
+        result["hscf_persistent_amp_overflow"] = bool(consecutive > 0)
+        batch_event, event_history = _hscf_pending_optimizer_event(result)
+        event_history.append(
+            {
+                **batch_event,
+                "action": "AMP_OVERFLOW_SKIP",
+                "pre_scale": pre_scale,
+                "post_scale": post_scale,
+                "optimizer_step_skipped": True,
+                "effective_optimizer_steps": int(result.get("hscf_effective_optimizer_steps", 0)),
+            }
+        )
+        result["hscf_optimizer_events"] = event_history
+        result["hscf_last_amp_overflow"] = {
+            "kind": kind,
+            "pre_scale": pre_scale,
+            "post_scale": post_scale,
+            "optimizer_step_skipped": True,
+            "effective_optimizer_steps": int(result.get("hscf_effective_optimizer_steps", 0)),
+            "scaled_parameter_names": list(scaled_names),
+        }
+        return result
+    if finalized_skip is not None:
+        raise HSCFRuntimeError("P1-HSCF raw gradient failure cannot finalize an optimizer skip")
+    result["hscf_amp_overflow_raw_nonfinite_batches"] = int(
+        result.get("hscf_amp_overflow_raw_nonfinite_batches", 0)
+    ) + 1
+    result["hscf_last_amp_overflow"] = {
+        "kind": kind,
+        "pre_scale": float(overflow.get("captured_scale", float("nan"))),
+        "post_scale": None,
+        "optimizer_step_skipped": False,
+        "effective_optimizer_steps": int(result.get("hscf_effective_optimizer_steps", 0)),
+        "scaled_parameter_names": list(overflow.get("scaled_nonfinite_parameter_names", ())),
+        "raw_nonfinite_parameter_names": list(
+            overflow.get("raw_material_nonfinite_parameter_names", ())
+        ),
+        "raw_missing_parameter_names": list(
+            overflow.get("raw_material_missing_parameter_names", ())
+        ),
+    }
+    return result
+
+
+def record_hscf_material_nonfinite_receipt(
+    receipt: Mapping[str, Any], *, reason: str
+) -> Dict[str, Any]:
+    """Record a fail-closed material non-finite without exposing training data."""
+
+    result = dict(receipt)
+    if result.get("enabled") is not True:
+        raise HSCFRuntimeError("P1-HSCF material non-finite receipt is G-arm only")
+    allowed = {"total_loss_nonfinite", "post_clip_combined_gradient_nonfinite"}
+    if str(reason) not in allowed:
+        raise HSCFRuntimeError("P1-HSCF material non-finite reason is invalid")
+    result["hscf_amp_overflow_material_nonfinite_batches"] = int(
+        result.get("hscf_amp_overflow_material_nonfinite_batches", 0)
+    ) + 1
+    result["hscf_last_material_nonfinite"] = {
+        "reason": str(reason),
+        "effective_optimizer_steps": int(result.get("hscf_effective_optimizer_steps", 0)),
+    }
+    return result
+
+
+def update_hscf_optimizer_step_receipt(receipt: Mapping[str, Any]) -> Dict[str, Any]:
+    """Record one effective optimizer step after a finite unscaled HSCF batch."""
+
+    result = dict(receipt)
+    if result.get("enabled") is not True:
+        raise HSCFRuntimeError("P1-HSCF optimizer-step receipt is G-arm only")
+    attempts = int(result.get("hscf_optimizer_step_attempts", 0)) + 1
+    effective = int(result.get("hscf_effective_optimizer_steps", 0)) + 1
+    if attempts <= 0 or effective <= 0 or effective > attempts:
+        raise HSCFRuntimeError("P1-HSCF optimizer-step receipt counters are invalid")
+    result["hscf_optimizer_step_attempts"] = attempts
+    result["hscf_effective_optimizer_steps"] = effective
+    result["hscf_consecutive_amp_overflow_skips"] = 0
+    result["hscf_persistent_amp_overflow"] = False
+    batch_event, event_history = _hscf_pending_optimizer_event(result)
+    event_history.append(
+        {
+            **batch_event,
+            "action": "EFFECTIVE_OPTIMIZER_STEP",
+            "optimizer_step_applied": True,
+            "effective_optimizer_steps": effective,
+        }
+    )
+    result["hscf_optimizer_events"] = event_history
+    result["hscf_last_optimizer_step"] = {
+        "optimizer_step_applied": True,
+        "effective_optimizer_steps": effective,
+    }
+    return result
+
+
 def update_hscf_receipt(
     receipt: Mapping[str, Any],
     batch_info: Mapping[str, Any],
@@ -1125,10 +1567,40 @@ def validate_hscf_terminal_receipt(receipt: Mapping[str, Any]) -> Dict[str, Any]
     if enabled is not True and enabled is not False:
         raise HSCFRuntimeError("P1-HSCF terminal enabled flag must be strict bool")
     if enabled is False:
-        zero_keys = ("hscf_batches", "hscf_total_rows", "hscf_positive_batches", "hscf_positive_components")
+        zero_keys = (
+            "hscf_batches",
+            "hscf_total_rows",
+            "hscf_positive_batches",
+            "hscf_positive_components",
+            "hscf_amp_overflow_raw_finite_batches",
+            "hscf_amp_overflow_raw_nonfinite_batches",
+            "hscf_amp_overflow_material_nonfinite_batches",
+            "hscf_amp_skip_scale_decreased_batches",
+            "hscf_amp_skip_optimizer_state_unchanged_batches",
+            "hscf_effective_optimizer_steps",
+            "hscf_optimizer_step_attempts",
+            "hscf_consecutive_amp_overflow_skips",
+            "hscf_max_consecutive_amp_overflow_skips",
+        )
         if any(int(result.get(key, 0)) != 0 for key in zero_keys) or abs(float(result.get("hscf_loss_sum", 0.0))) > _TOLERANCE:
             raise HSCFRuntimeError("P1-HSCF C arm must retain zero auxiliary counters")
-        if any(bool(result.get(key)) for key in ("hscf_scenes", "hscf_g_batch_aux", "hscf_gradient_audit_scenes")) or bool(result.get("hscf_gradient_audit_attempted", False)) or bool(result.get("hscf_gradient_audit_completed", False)):
+        if (
+            any(
+                bool(result.get(key))
+                for key in (
+                    "hscf_scenes",
+                    "hscf_g_batch_aux",
+                    "hscf_gradient_audit_scenes",
+                    "hscf_last_amp_overflow",
+                    "hscf_last_material_nonfinite",
+                    "hscf_last_optimizer_step",
+                    "hscf_optimizer_events",
+                )
+            )
+            or bool(result.get("hscf_gradient_audit_attempted", False))
+            or bool(result.get("hscf_gradient_audit_completed", False))
+            or bool(result.get("hscf_persistent_amp_overflow", False))
+        ):
             raise HSCFRuntimeError("P1-HSCF C arm must retain N/A-or-zero auxiliary fields")
         result["hscf_terminal_contract"] = "CONTROL_ARM_COMMON_SAME_PHYSICAL_ORDER_B128_LOCAL4_DENOM512_SCENE_COVERAGE_AUX_NA_OR_ZERO"
         result["hscf_terminal_contract_passed"] = True
@@ -1196,7 +1668,112 @@ def validate_hscf_terminal_receipt(receipt: Mapping[str, Any]) -> Dict[str, Any]
             _validate_nonzero_audit(audit.get(group_name), group_name=group_name)
         _validate_none_or_zero_audit(audit.get("clean_raw_logits"), group_name="clean_raw_logits", allow_absent=False)
         _validate_none_or_zero_audit(audit.get("head_bias"), group_name="head_bias", allow_absent=True)
-    result["hscf_terminal_contract"] = "FORMAL_COMMON_C_G_SAME_PHYSICAL_ORDER_B128_LOCAL4_DENOM512_CLEAR_LOW_RAIN_WITH_G_ONLY_HSCF_AND_PER_SCENE_RAW_LOGIT_ENCODER_HEAD_WEIGHT_VJP"
+    try:
+        optimizer_counts = {
+            "attempts": int(result.get("hscf_optimizer_step_attempts", 0)),
+            "effective": int(result.get("hscf_effective_optimizer_steps", 0)),
+            "raw_finite_skips": int(result.get("hscf_amp_overflow_raw_finite_batches", 0)),
+            "raw_nonfinite": int(result.get("hscf_amp_overflow_raw_nonfinite_batches", 0)),
+            "material_nonfinite": int(result.get("hscf_amp_overflow_material_nonfinite_batches", 0)),
+            "scale_decreased": int(result.get("hscf_amp_skip_scale_decreased_batches", 0)),
+            "state_unchanged": int(result.get("hscf_amp_skip_optimizer_state_unchanged_batches", 0)),
+            "consecutive": int(result.get("hscf_consecutive_amp_overflow_skips", 0)),
+            "maximum": int(result.get("hscf_max_consecutive_amp_overflow_skips", 0)),
+        }
+    except (TypeError, ValueError) as error:
+        raise HSCFRuntimeError("P1-HSCF terminal optimizer/AMP counters are invalid") from error
+    if any(value < 0 for value in optimizer_counts.values()):
+        raise HSCFRuntimeError("P1-HSCF terminal optimizer/AMP counters are negative")
+    batch_total = int(result.get("hscf_batches", 0))
+    if (
+        optimizer_counts["effective"] <= 0
+        or optimizer_counts["attempts"] != batch_total
+        or optimizer_counts["attempts"]
+        != optimizer_counts["effective"] + optimizer_counts["raw_finite_skips"]
+    ):
+        raise HSCFRuntimeError("P1-HSCF terminal has zero or incomplete effective optimizer steps")
+    if optimizer_counts["raw_nonfinite"] != 0 or optimizer_counts["material_nonfinite"] != 0:
+        raise HSCFRuntimeError("P1-HSCF terminal contains raw or material non-finite gradients")
+    if (
+        optimizer_counts["scale_decreased"] != optimizer_counts["raw_finite_skips"]
+        or optimizer_counts["state_unchanged"] != optimizer_counts["raw_finite_skips"]
+    ):
+        raise HSCFRuntimeError("P1-HSCF terminal AMP skip evidence is incomplete")
+    if optimizer_counts["maximum"] < optimizer_counts["consecutive"]:
+        raise HSCFRuntimeError("P1-HSCF terminal AMP overflow streak receipt is invalid")
+    if bool(result.get("hscf_persistent_amp_overflow", False)) != bool(
+        optimizer_counts["consecutive"] > 0
+    ):
+        raise HSCFRuntimeError("P1-HSCF terminal AMP overflow persistence receipt is invalid")
+    if optimizer_counts["consecutive"] > 0:
+        raise HSCFRuntimeError("P1-HSCF terminal persistent AMP overflow is rejected")
+    optimizer_events = [dict(event) for event in list(result.get("hscf_optimizer_events", []))]
+    expected_event_identity = [
+        (int(event.get("epoch", -1)), int(event.get("batch_index", -1)), str(event.get("scenario", "")))
+        for event in events
+    ]
+    actual_event_identity = [
+        (int(event.get("epoch", -1)), int(event.get("batch_index", -1)), str(event.get("scenario", "")))
+        for event in optimizer_events
+    ]
+    if len(optimizer_events) != batch_total or actual_event_identity != expected_event_identity:
+        raise HSCFRuntimeError("P1-HSCF terminal optimizer events do not close per G batch")
+    effective_seen = 0
+    skip_seen = 0
+    for event in optimizer_events:
+        action = str(event.get("action", ""))
+        if action == "EFFECTIVE_OPTIMIZER_STEP":
+            effective_seen += 1
+            if (
+                event.get("optimizer_step_applied") is not True
+                or int(event.get("effective_optimizer_steps", -1)) != effective_seen
+            ):
+                raise HSCFRuntimeError("P1-HSCF terminal effective optimizer event is invalid")
+        elif action == "AMP_OVERFLOW_SKIP":
+            skip_seen += 1
+            try:
+                pre_scale = float(event["pre_scale"])
+                post_scale = float(event["post_scale"])
+            except (KeyError, TypeError, ValueError) as error:
+                raise HSCFRuntimeError("P1-HSCF terminal AMP skip event lacks scale receipt") from error
+            if (
+                event.get("optimizer_step_skipped") is not True
+                or int(event.get("effective_optimizer_steps", -1)) != effective_seen
+                or not math.isfinite(pre_scale)
+                or not math.isfinite(post_scale)
+                or not (0.0 < post_scale < pre_scale)
+            ):
+                raise HSCFRuntimeError("P1-HSCF terminal AMP skip event is invalid")
+        else:
+            raise HSCFRuntimeError("P1-HSCF terminal optimizer event action is invalid")
+    if (
+        effective_seen != optimizer_counts["effective"]
+        or skip_seen != optimizer_counts["raw_finite_skips"]
+    ):
+        raise HSCFRuntimeError("P1-HSCF terminal optimizer events do not match counters")
+    last_step = dict(result.get("hscf_last_optimizer_step", {}))
+    if (
+        last_step.get("optimizer_step_applied") is not True
+        or int(last_step.get("effective_optimizer_steps", -1))
+        != optimizer_counts["effective"]
+    ):
+        raise HSCFRuntimeError("P1-HSCF terminal effective optimizer-step receipt is invalid")
+    if optimizer_counts["raw_finite_skips"] > 0:
+        overflow = dict(result.get("hscf_last_amp_overflow", {}))
+        try:
+            pre_scale = float(overflow["pre_scale"])
+            post_scale = float(overflow["post_scale"])
+        except (KeyError, TypeError, ValueError) as error:
+            raise HSCFRuntimeError("P1-HSCF terminal AMP skip lacks scale receipt") from error
+        if (
+            overflow.get("kind") != "COMBINED_SCALED_OVERFLOW_RAW_FINITE"
+            or overflow.get("optimizer_step_skipped") is not True
+            or not math.isfinite(pre_scale)
+            or not math.isfinite(post_scale)
+            or not (0.0 < post_scale < pre_scale)
+        ):
+            raise HSCFRuntimeError("P1-HSCF terminal AMP skip receipt is invalid")
+    result["hscf_terminal_contract"] = "FORMAL_COMMON_C_G_SAME_PHYSICAL_ORDER_B128_LOCAL4_DENOM512_RAW_MATERIAL_FAIL_CLOSED_WITH_GRADSCALER_SKIP_BACKOFF_AND_EFFECTIVE_OPTIMIZER_STEPS"
     result["hscf_terminal_contract_passed"] = True
     return result
 

@@ -1,9 +1,12 @@
 from __future__ import annotations
 
+import ast
+import gc
 import inspect
 import re
 import subprocess
 import sys
+import weakref
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -31,16 +34,22 @@ from cvsrffi.phase1_hscf import (  # noqa: E402
     add_hscf_to_loss,
     bind_hscf_optimizer_initial_state,
     bind_hscf_source_data_order,
+    finalize_hscf_amp_overflow_skip,
     hscf_aux_gradient_audit,
     hscf_config_receipt,
     hscf_loss,
+    hscf_scaled_backward_and_classify,
     hscf_shared_encoder_and_head_parameters,
+    release_hscf_retained_graph_roots,
+    record_hscf_material_nonfinite_receipt,
     remap_hscf_local_labels_to_head_rows,
     resolve_hscf_classifier_weight,
     resolve_hscf_local_head_class_binding,
     strict_hscf_warm_start,
     update_hscf_common_batch_sequence_receipt,
     update_hscf_gradient_audit_receipt,
+    update_hscf_amp_overflow_receipt,
+    update_hscf_optimizer_step_receipt,
     update_hscf_receipt,
     validate_hscf_args,
     validate_hscf_binding,
@@ -49,6 +58,66 @@ from cvsrffi.phase1_hscf import (  # noqa: E402
 
 
 LAUNCHER = CODE_ROOT / "scripts" / "launch_phase1_hscf12_20260810.sh"
+
+
+class _RecoveringScaler:
+    """CPU scaler double with the public skip/backoff behavior used by HSCF."""
+
+    def __init__(self, scale: float = 1.0e5) -> None:
+        self._scale = float(scale)
+        self._found_nonfinite = False
+        self.scale_calls = 0
+        self.unscale_calls = 0
+        self.step_calls = 0
+        self.update_calls = 0
+
+    def get_scale(self) -> float:
+        return self._scale
+
+    def scale(self, value: torch.Tensor) -> torch.Tensor:
+        self.scale_calls += 1
+        return value * self._scale
+
+    def unscale_(self, optimizer: torch.optim.Optimizer) -> None:
+        self.unscale_calls += 1
+        self._found_nonfinite = False
+        for group in optimizer.param_groups:
+            for parameter in group["params"]:
+                if parameter.grad is None:
+                    continue
+                parameter.grad.div_(self._scale)
+                if not bool(torch.isfinite(parameter.grad.detach()).all().item()):
+                    self._found_nonfinite = True
+
+    def step(self, optimizer: torch.optim.Optimizer):
+        self.step_calls += 1
+        if self._found_nonfinite:
+            return None
+        return optimizer.step()
+
+    def update(self) -> None:
+        self.update_calls += 1
+        if self._found_nonfinite:
+            self._scale *= 0.5
+
+
+class _SavedTensorToken:
+    __slots__ = ("tensor", "__weakref__")
+
+    def __init__(self, tensor: torch.Tensor) -> None:
+        # The token observes ownership by autograd's saved-tensor slot without
+        # itself pointing back into the graph under test.
+        self.tensor = tensor.detach()
+
+
+class _FiniteForwardNonfiniteBackward(torch.autograd.Function):
+    @staticmethod
+    def forward(ctx, value: torch.Tensor) -> torch.Tensor:
+        return value.clone()
+
+    @staticmethod
+    def backward(ctx, gradient: torch.Tensor) -> torch.Tensor:
+        return torch.full_like(gradient, float("nan"))
 
 
 def _frozen_args(*, enabled: bool = True, epochs: int = 40, batch_size: int = 128) -> SimpleNamespace:
@@ -170,6 +239,32 @@ def _sealed_receipt(*, enabled: bool) -> dict[str, object]:
     return receipt
 
 
+def _pending_hscf_amp_receipt(*, batch_index: int = 1) -> dict[str, object]:
+    receipt = hscf_config_receipt(_config(enabled=True))
+    receipt["hscf_g_batch_aux"] = [
+        {
+            "epoch": 1,
+            "batch_index": int(batch_index),
+            "scenario": FROZEN_HSCF_SCENARIOS[0],
+        }
+    ]
+    return receipt
+
+
+def _append_pending_hscf_amp_batch(receipt: dict[str, object], *, batch_index: int) -> dict[str, object]:
+    result = dict(receipt)
+    events = list(result["hscf_g_batch_aux"])
+    events.append(
+        {
+            "epoch": 1,
+            "batch_index": int(batch_index),
+            "scenario": FROZEN_HSCF_SCENARIOS[0],
+        }
+    )
+    result["hscf_g_batch_aux"] = events
+    return result
+
+
 def _bind_common(receipt: dict[str, object], *, index: int, scenario: str) -> dict[str, object]:
     return update_hscf_common_batch_sequence_receipt(
         receipt,
@@ -181,7 +276,9 @@ def _bind_common(receipt: dict[str, object], *, index: int, scenario: str) -> di
     )
 
 
-def _build_g_terminal_receipt() -> tuple[dict[str, object], dict[str, object]]:
+def _build_g_terminal_receipt(
+    *, include_effective_optimizer_steps: bool = True
+) -> tuple[dict[str, object], dict[str, object]]:
     torch.manual_seed(23)
     model = _BindingModel().train()
     labels = _labels()
@@ -206,6 +303,8 @@ def _build_g_terminal_receipt() -> tuple[dict[str, object], dict[str, object]]:
             receipt, info, scenario=scenario, epoch=1, batch_index=index
         )
         receipt = update_hscf_gradient_audit_receipt(receipt, audit, scenario=scenario)
+        if include_effective_optimizer_steps:
+            receipt = update_hscf_optimizer_step_receipt(receipt)
     return receipt, info
 
 
@@ -314,6 +413,8 @@ def test_common_control_vs_g_auxiliary_and_three_scene_terminal_closure() -> Non
     assert c_terminal["hscf_terminal_contract_passed"] is True
     assert c_terminal["hscf_terminal_contract"].startswith("CONTROL_ARM")
     assert int(c_terminal["hscf_batches"]) == 0 and float(c_terminal["hscf_loss_sum"]) == 0.0
+    assert c_terminal["hscf_effective_optimizer_steps"] == 0
+    assert c_terminal["hscf_amp_overflow_raw_finite_batches"] == 0
 
     receipt, info = _build_g_terminal_receipt()
     assert info["positive_batch"] is True
@@ -323,6 +424,228 @@ def test_common_control_vs_g_auxiliary_and_three_scene_terminal_closure() -> Non
     assert set(terminal["hscf_scenes"]) == set(FROZEN_HSCF_SCENARIOS)
     assert all(terminal["hscf_scenes"][scene]["positive_batches"] > 0 for scene in FROZEN_HSCF_SCENARIOS)
     assert set(terminal["hscf_gradient_audit_scenes"]) == set(FROZEN_HSCF_SCENARIOS)
+    assert terminal["hscf_optimizer_step_attempts"] == terminal["hscf_batches"]
+    assert terminal["hscf_effective_optimizer_steps"] == terminal["hscf_batches"]
+    assert len(terminal["hscf_optimizer_events"]) == terminal["hscf_batches"]
+    assert all(event["action"] == "EFFECTIVE_OPTIMIZER_STEP" for event in terminal["hscf_optimizer_events"])
+
+
+def test_raw_finite_scaled_overflow_uses_one_gradscaler_skip_backoff_without_update() -> None:
+    torch.manual_seed(29)
+    model = _BindingModel().train()
+    optimizer = torch.optim.AdamW(model.parameters(), lr=1e-3, weight_decay=0.0)
+    scaler = _RecoveringScaler()
+    logits = model.paired_output(torch.ones((128, 4)))["tx_logits"]
+    # The raw float32 gradient is finite; only multiplication by the captured
+    # AMP scale overflows the backward buffer.
+    loss = logits.sum() * 1.0e33
+    before = [parameter.detach().clone() for parameter in model.parameters()]
+    overflow = hscf_scaled_backward_and_classify(
+        model=model,
+        optimizer=optimizer,
+        scaler=scaler,
+        loss=loss,
+    )
+    assert overflow["amp_overflow_detected"] is True
+    assert overflow["amp_overflow_recoverable"] is True
+    assert overflow["amp_overflow_kind"] == "COMBINED_SCALED_OVERFLOW_RAW_FINITE"
+    assert overflow["scaled_backward_count"] == 1
+    assert overflow["optimizer_unscale_count"] == 1
+    assert scaler.scale_calls == 1 and scaler.unscale_calls == 1
+    finalized = finalize_hscf_amp_overflow_skip(
+        optimizer=optimizer,
+        scaler=scaler,
+        overflow=overflow,
+    )
+    assert finalized["optimizer_state_unchanged"] is True
+    assert finalized["optimizer_step_applied"] is False
+    assert 0.0 < finalized["post_scale"] < finalized["pre_scale"]
+    assert all(torch.equal(before_value, after.detach()) for before_value, after in zip(before, model.parameters()))
+    receipt = update_hscf_amp_overflow_receipt(
+        _pending_hscf_amp_receipt(),
+        overflow=overflow,
+        finalized_skip=finalized,
+    )
+    assert receipt["hscf_amp_overflow_raw_finite_batches"] == 1
+    assert receipt["hscf_optimizer_step_attempts"] == 1
+    assert receipt["hscf_effective_optimizer_steps"] == 0
+    assert receipt["hscf_last_amp_overflow"]["optimizer_step_skipped"] is True
+    assert receipt["hscf_persistent_amp_overflow"] is True
+
+
+def test_normal_hscf_batch_uses_no_raw_material_vjp_or_second_backward(monkeypatch) -> None:
+    torch.manual_seed(30)
+    model = _BindingModel().train()
+    optimizer = torch.optim.AdamW(model.parameters(), lr=1e-3, weight_decay=0.0)
+    loss = model.paired_output(torch.ones((128, 4)))["tx_logits"].square().mean()
+
+    def _unexpected_raw_vjp(*args, **kwargs):
+        raise AssertionError("normal HSCF batch must not run a raw material VJP")
+
+    monkeypatch.setattr(torch.autograd, "grad", _unexpected_raw_vjp)
+    scaler = _RecoveringScaler(scale=1.0)
+    info = hscf_scaled_backward_and_classify(
+        model=model,
+        optimizer=optimizer,
+        scaler=scaler,
+        loss=loss,
+    )
+    assert info["amp_overflow_detected"] is False
+    assert info["scaled_backward_count"] == 1
+    assert info["optimizer_unscale_count"] == 1
+    assert scaler.scale_calls == 1 and scaler.unscale_calls == 1
+    helper_source = inspect.getsource(hscf_scaled_backward_and_classify)
+    assert helper_source.count(".backward(") == 1
+
+
+@pytest.mark.parametrize("scaled_overflow", [False, True])
+def test_retained_graph_release_drops_saved_tensors_before_next_forward(
+    scaled_overflow: bool,
+) -> None:
+    saved_tokens: list[weakref.ReferenceType[_SavedTensorToken]] = []
+
+    def pack(tensor: torch.Tensor) -> _SavedTensorToken:
+        token = _SavedTensorToken(tensor)
+        saved_tokens.append(weakref.ref(token))
+        return token
+
+    def unpack(token: _SavedTensorToken) -> torch.Tensor:
+        return token.tensor
+
+    def run_one_batch() -> tuple[dict[str, object], dict[str, object]]:
+        torch.manual_seed(300 + int(scaled_overflow))
+        model = _BindingModel().train()
+        optimizer = torch.optim.AdamW(model.parameters(), lr=1e-3, weight_decay=0.0)
+        scaler = _RecoveringScaler(scale=1.0e5 if scaled_overflow else 1.0)
+        with torch.autograd.graph.saved_tensors_hooks(pack, unpack):
+            logits = model.paired_output(torch.ones((128, 4)))["tx_logits"]
+            loss = logits.sum() * 1.0e33 if scaled_overflow else logits.square().mean()
+            backward_info = hscf_scaled_backward_and_classify(
+                model=model,
+                optimizer=optimizer,
+                scaler=scaler,
+                loss=loss,
+            )
+            if scaled_overflow:
+                finalize_hscf_amp_overflow_skip(
+                    optimizer=optimizer,
+                    scaler=scaler,
+                    overflow=backward_info,
+                )
+            else:
+                scaler.step(optimizer)
+                scaler.update()
+        roots = {"out_l": {"tx_logits": logits}, "loss": loss}
+        del logits, loss
+        return roots, backward_info
+
+    roots, backward_info = run_one_batch()
+    assert saved_tokens
+    assert backward_info["amp_overflow_detected"] is scaled_overflow
+    if not scaled_overflow:
+        # retain_graph=True must still own saved activations before the explicit
+        # train-loop boundary; otherwise this test would be vacuous.
+        assert any(reference() is not None for reference in saved_tokens)
+    release_hscf_retained_graph_roots(roots)
+    assert roots == {}
+    # Production performs no forced GC or allocator flush.  CPython refcount
+    # release at the clear boundary must be sufficient before the next forward.
+    assert all(reference() is None for reference in saved_tokens)
+    gc.collect()
+    assert all(reference() is None for reference in saved_tokens)
+
+
+def test_raw_and_material_nonfinite_paths_remain_fail_closed() -> None:
+    torch.manual_seed(31)
+    model = _BindingModel().train()
+    optimizer = torch.optim.AdamW(model.parameters(), lr=1e-3, weight_decay=0.0)
+    logits = model.paired_output(torch.ones((128, 4)))["tx_logits"]
+    overflow = hscf_scaled_backward_and_classify(
+        model=model,
+        optimizer=optimizer,
+        scaler=_RecoveringScaler(),
+        loss=_FiniteForwardNonfiniteBackward.apply(logits).sum(),
+    )
+    assert overflow["amp_overflow_detected"] is True
+    assert overflow["amp_overflow_recoverable"] is False
+    assert overflow["amp_overflow_kind"] == "COMBINED_RAW_NONFINITE_OR_DISCONNECTED"
+    assert overflow["raw_material_nonfinite_parameter_names"]
+    with pytest.raises(HSCFRuntimeError, match="raw-finite"):
+        finalize_hscf_amp_overflow_skip(
+            optimizer=optimizer,
+            scaler=_RecoveringScaler(),
+            overflow=overflow,
+        )
+    receipt = update_hscf_amp_overflow_receipt(
+        _pending_hscf_amp_receipt(),
+        overflow=overflow,
+    )
+    assert receipt["hscf_amp_overflow_raw_nonfinite_batches"] == 1
+
+    material_receipt = record_hscf_material_nonfinite_receipt(
+        hscf_config_receipt(_config(enabled=True)),
+        reason="total_loss_nonfinite",
+    )
+    assert material_receipt["hscf_amp_overflow_material_nonfinite_batches"] == 1
+    material_model = _BindingModel().train()
+    with pytest.raises(HSCFRuntimeError, match="material loss is non-finite"):
+        hscf_scaled_backward_and_classify(
+            model=material_model,
+            optimizer=torch.optim.AdamW(material_model.parameters(), lr=1e-3),
+            scaler=_RecoveringScaler(),
+            loss=torch.tensor(float("nan"), requires_grad=True),
+        )
+
+
+def test_persistent_overflow_and_zero_effective_steps_are_terminal_rejections() -> None:
+    overflow = {
+        "amp_overflow_detected": True,
+        "amp_overflow_recoverable": True,
+        "amp_overflow_kind": "COMBINED_SCALED_OVERFLOW_RAW_FINITE",
+        "raw_material_vjp_finite": True,
+        "raw_material_nonfinite_parameter_names": (),
+        "raw_material_missing_parameter_names": (),
+        "scaled_nonfinite_parameter_names": ("id_backbone.encoder.weight",),
+    }
+    finalized = {
+        "amp_overflow_kind": "COMBINED_SCALED_OVERFLOW_RAW_FINITE",
+        "pre_scale": 65536.0,
+        "post_scale": 32768.0,
+        "optimizer_state_unchanged": True,
+        "optimizer_step_applied": False,
+    }
+    receipt = update_hscf_amp_overflow_receipt(
+        _pending_hscf_amp_receipt(),
+        overflow=overflow,
+        finalized_skip=finalized,
+    )
+    assert receipt["hscf_consecutive_amp_overflow_skips"] == 1
+    assert receipt["hscf_persistent_amp_overflow"] is True
+    recovered = update_hscf_optimizer_step_receipt(
+        _append_pending_hscf_amp_batch(receipt, batch_index=2)
+    )
+    assert recovered["hscf_consecutive_amp_overflow_skips"] == 0
+    assert recovered["hscf_persistent_amp_overflow"] is False
+    assert recovered["hscf_optimizer_step_attempts"] == 2
+    assert recovered["hscf_effective_optimizer_steps"] == 1
+    receipt = update_hscf_amp_overflow_receipt(
+        _append_pending_hscf_amp_batch(receipt, batch_index=2),
+        overflow=overflow,
+        finalized_skip=finalized,
+    )
+    assert receipt["hscf_persistent_amp_overflow"] is True
+    assert receipt["hscf_max_consecutive_amp_overflow_skips"] == 2
+
+    persistent_terminal, _ = _build_g_terminal_receipt()
+    persistent_terminal["hscf_consecutive_amp_overflow_skips"] = 2
+    persistent_terminal["hscf_max_consecutive_amp_overflow_skips"] = 2
+    persistent_terminal["hscf_persistent_amp_overflow"] = True
+    with pytest.raises(HSCFRuntimeError, match="persistent AMP overflow"):
+        validate_hscf_terminal_receipt(persistent_terminal)
+
+    zero_step_terminal, _ = _build_g_terminal_receipt(include_effective_optimizer_steps=False)
+    with pytest.raises(HSCFRuntimeError, match="zero or incomplete effective optimizer steps"):
+        validate_hscf_terminal_receipt(zero_step_terminal)
 
 
 def test_vjp_scope_clean_none_leo_encoder_head_live_and_bias_zero_or_none() -> None:
@@ -431,9 +754,69 @@ def test_train_integration_uses_hscf_only_on_g_and_validates_terminal() -> None:
     module_source = Path(train_ssdg.__file__).read_text(encoding="utf-8")
     assert "hscf_loss(" in source
     assert "hscf_aux_gradient_audit(" in module_source
+    assert "hscf_scaled_backward_and_classify(" in source
+    assert "finalize_hscf_amp_overflow_skip(" in source
+    assert "update_hscf_optimizer_step_receipt(" in source
+    assert "release_hscf_retained_graph_roots(" in source
     assert "validate_hscf_terminal_receipt" in source
     assert "phase1_hscf_enabled" in source
     assert "query" not in source[source.index("hscf_loss(") : source.index("hscf_loss(") + 500].lower()
+
+    tree = ast.parse(source)
+    root_assignment = next(
+        node
+        for node in ast.walk(tree)
+        if isinstance(node, ast.Assign)
+        and any(isinstance(target, ast.Name) and target.id == "hscf_retained_graph_roots" for target in node.targets)
+    )
+    release_call = next(
+        node
+        for node in ast.walk(tree)
+        if isinstance(node, ast.Call)
+        and isinstance(node.func, ast.Name)
+        and node.func.id == "release_hscf_retained_graph_roots"
+    )
+    mapped_roots = {
+        key.value
+        for key in root_assignment.value.keys
+        if isinstance(key, ast.Constant) and isinstance(key.value, str)
+    }
+    deleted_roots = {
+        name.id
+        for node in ast.walk(tree)
+        if isinstance(node, ast.Delete) and root_assignment.lineno < node.lineno < release_call.lineno
+        for target in node.targets
+        for name in ast.walk(target)
+        if isinstance(name, ast.Name)
+    }
+    assert root_assignment.lineno < release_call.lineno
+    assert mapped_roots == deleted_roots
+    assert {
+        "out_l",
+        "out_sat",
+        "core_losses",
+        "z_id_l",
+        "loss_hscf_l",
+        "loss_sat_cons_l",
+        "loss_closed_l",
+        "loss_open_l",
+        "loss_l",
+        "loss_closed",
+        "loss_open",
+        "scaled_closed_loss",
+        "scaled_open_loss",
+        "loss",
+    } <= mapped_roots
+    append_line = next(
+        node.lineno
+        for node in ast.walk(tree)
+        if isinstance(node, ast.Call)
+        and isinstance(node.func, ast.Attribute)
+        and node.func.attr == "append"
+        and isinstance(node.func.value, ast.Name)
+        and node.func.value.id == "epoch_logs"
+    )
+    assert append_line < root_assignment.lineno
 
 
 def test_launcher_has_exact_12_arm_frozen_matrix_and_dry_run() -> None:
