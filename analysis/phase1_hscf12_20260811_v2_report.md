@@ -149,4 +149,3 @@ G臂额外必须闭合：
 - 显式graph-release清理64个冻结路径别名；独立AST和无GC weakref测试已闭合，但真实双view训练仍需观察显存与receipt。
 - v2不得因AMP skip数量或中间性能调参；公式、scale策略和matrix均冻结。
 - v2若技术失败，保留证据并回本地修具体缺陷；不得把失败run转为性能实验。
-
