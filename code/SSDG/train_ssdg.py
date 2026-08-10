@@ -238,6 +238,30 @@ try:
         validate_rcat_terminal_receipt,
         write_rcat_failure_receipt,
     )
+    from cvsrffi.phase1_recte import (
+        RECTEConfig,
+        RECTEConfigurationError,
+        RECTERuntimeError,
+        FROZEN_RECTE_SCENARIOS,
+        add_recte_to_loss,
+        bind_recte_optimizer_initial_state,
+        bind_recte_source_data_order,
+        recte_aux_gradient_audit,
+        recte_config_receipt,
+        recte_loss,
+        recte_shared_encoder_and_head_parameters,
+        remap_recte_local_labels_to_head_rows,
+        resolve_recte_classifier_weight,
+        resolve_recte_local_head_class_binding,
+        strict_recte_warm_start,
+        update_recte_common_batch_sequence_receipt,
+        update_recte_gradient_audit_receipt,
+        update_recte_receipt,
+        validate_recte_args,
+        validate_recte_binding,
+        validate_recte_terminal_receipt,
+        write_recte_failure_receipt,
+    )
     from cvsrffi.phase1_cp_sfce import (
         CPSFCEConfig,
         CPSFCEConfigurationError,
@@ -466,6 +490,17 @@ except ModuleNotFoundError:
     update_rcat_gradient_audit_receipt = update_rcat_receipt = None
     validate_rcat_args = validate_rcat_binding = validate_rcat_terminal_receipt = None
     write_rcat_failure_receipt = None
+    RECTEConfig = None
+    RECTEConfigurationError = RECTERuntimeError = None
+    FROZEN_RECTE_SCENARIOS = tuple()
+    add_recte_to_loss = bind_recte_optimizer_initial_state = bind_recte_source_data_order = None
+    recte_aux_gradient_audit = recte_config_receipt = recte_loss = None
+    recte_shared_encoder_and_head_parameters = remap_recte_local_labels_to_head_rows = None
+    resolve_recte_classifier_weight = resolve_recte_local_head_class_binding = None
+    strict_recte_warm_start = update_recte_common_batch_sequence_receipt = None
+    update_recte_gradient_audit_receipt = update_recte_receipt = None
+    validate_recte_args = validate_recte_binding = validate_recte_terminal_receipt = None
+    write_recte_failure_receipt = None
     CPSFCEConfig = None
     CPSFCEConfigurationError = CPSFCERuntimeError = None
     FROZEN_CP_SFCE_SCENARIOS = tuple()
@@ -815,6 +850,24 @@ def build_arg_parser() -> argparse.ArgumentParser:
         type=float,
         default=0.0,
         help="Frozen at 0 for C and 0.02 for G when P1-RCAT mode is enabled.",
+    )
+    parser.add_argument(
+        "--phase1_recte_frozen_mode",
+        type=str2bool,
+        default=False,
+        help="Enable the frozen P1-RECTE C/G continuation contract.",
+    )
+    parser.add_argument(
+        "--phase1_recte_enabled",
+        type=str2bool,
+        default=False,
+        help="Enable the sole source-L receiver-equivariant cell-tail equalization term in a P1-RECTE G arm.",
+    )
+    parser.add_argument(
+        "--lambda_recte",
+        type=float,
+        default=0.0,
+        help="Frozen at 0 for C and 0.02 for G when P1-RECTE mode is enabled.",
     )
     parser.add_argument(
         "--phase1_cp_sfce_frozen_mode",
@@ -5062,6 +5115,9 @@ def _build_ssdg_epoch_telemetry_row(
         "phase1_rcat_frozen_mode": bool(getattr(args, "phase1_rcat_frozen_mode", False)),
         "phase1_rcat_enabled": bool(getattr(args, "phase1_rcat_enabled", False)),
         "lambda_rcat": float(getattr(args, "lambda_rcat", 0.0)),
+        "phase1_recte_frozen_mode": bool(getattr(args, "phase1_recte_frozen_mode", False)),
+        "phase1_recte_enabled": bool(getattr(args, "phase1_recte_enabled", False)),
+        "lambda_recte": float(getattr(args, "lambda_recte", 0.0)),
         "phase1_cp_sfce_frozen_mode": bool(getattr(args, "phase1_cp_sfce_frozen_mode", False)),
         "phase1_cp_sfce_enabled": bool(getattr(args, "phase1_cp_sfce_enabled", False)),
         "lambda_cp_sfce": float(getattr(args, "lambda_cp_sfce", 0.0)),
@@ -6150,6 +6206,43 @@ def _persist_rcat_failure_receipt(
         return None
 
 
+def _persist_recte_failure_receipt(
+    *,
+    out_dir: Path,
+    args: Any,
+    recte_receipt: Mapping[str, Any],
+    error: BaseException,
+    failure_stage: str,
+) -> Optional[Path]:
+    """Best-effort persistence that never masks the primary P1-RECTE failure."""
+
+    def _emit_writer_failure(exception_type: str) -> None:
+        try:
+            print(
+                "[P1-RECTE-FAILURE-RECEIPT] persistence_failed "
+                f"writer_exception_type={exception_type}",
+                flush=True,
+            )
+        except Exception:
+            pass
+
+    if write_recte_failure_receipt is None:
+        _emit_writer_failure("ImportError")
+        return None
+    try:
+        return write_recte_failure_receipt(
+            out_dir,
+            candidate_id=str(getattr(args, "candidate_id", "") or ""),
+            run_id=str(getattr(args, "run_id", "") or ""),
+            receipt=recte_receipt,
+            error=error,
+            failure_stage=str(failure_stage),
+        )
+    except Exception as receipt_error:
+        _emit_writer_failure(type(receipt_error).__name__)
+        return None
+
+
 def _persist_cp_sfce_failure_receipt(
     *,
     out_dir: Path,
@@ -6492,6 +6585,36 @@ def train(args) -> int:
     rcat_frozen_mode = bool(getattr(rcat_config, "frozen_mode", False))
     rcat_local_to_head_class_ids: Optional[Tuple[int, ...]] = None
     if (
+        validate_recte_args is None
+        or recte_config_receipt is None
+        or strict_recte_warm_start is None
+    ):
+        if bool(getattr(args, "phase1_recte_frozen_mode", False)) or bool(
+            getattr(args, "phase1_recte_enabled", False)
+        ):
+            raise ImportError("cvsrffi.phase1_recte is required for P1-RECTE")
+        recte_config = None
+        recte_receipt: Dict[str, Any] = {
+            "schema": "cvs.phase1.recte_receipt.v1",
+            "frozen_mode": False,
+            "enabled": False,
+            "lambda": 0.0,
+            "recte_common_cells": {},
+            "recte_scenes": {},
+            "recte_gradient_audit_scenes": {},
+            "recte_gradient_audit_completed": False,
+            "recte_terminal_contract": "PENDING",
+            "recte_terminal_contract_passed": False,
+            "proxy_rows": 0,
+            "held_rows": 0,
+        }
+    else:
+        recte_config = validate_recte_args(args)
+        recte_receipt = recte_config_receipt(recte_config)
+    recte_frozen_mode = bool(getattr(recte_config, "frozen_mode", False))
+    recte_local_to_head_class_ids: Optional[Tuple[int, ...]] = None
+    recte_exact_head: Optional[torch.nn.Module] = None
+    if (
         validate_cp_sfce_args is None
         or cp_sfce_config_receipt is None
         or strict_cp_sfce_warm_start is None
@@ -6768,7 +6891,7 @@ def train(args) -> int:
             "--phase1_allow_empty_proxy_unknown requires the frozen ManyTx real-OE protocol"
         )
     data_ctx = _build_ssdg_wisig_data(args, device)
-    if ccpc_frozen_mode or pamr_frozen_mode or cb_sfce_frozen_mode or gd_proto_nll_frozen_mode or icmt_frozen_mode or cagm_frozen_mode or rcrmd_frozen_mode or rcat_frozen_mode or cp_sfce_frozen_mode:
+    if ccpc_frozen_mode or pamr_frozen_mode or cb_sfce_frozen_mode or gd_proto_nll_frozen_mode or icmt_frozen_mode or cagm_frozen_mode or rcrmd_frozen_mode or rcat_frozen_mode or recte_frozen_mode or cp_sfce_frozen_mode:
         tx_partition_receipt = (
             (data_ctx.get("split_info", {}) or {}).get("tx_partition_receipt", {})
         )
@@ -6799,6 +6922,10 @@ def train(args) -> int:
                 )
             if rcat_frozen_mode:
                 raise RCATConfigurationError(
+                    "Frozen Phase1 continuation requires an explicit TX-role partition receipt"
+                )
+            if recte_frozen_mode:
+                raise RECTEConfigurationError(
                     "Frozen Phase1 continuation requires an explicit TX-role partition receipt"
                 )
             if cp_sfce_frozen_mode:
@@ -6835,6 +6962,10 @@ def train(args) -> int:
                 )
             if rcat_frozen_mode:
                 raise RCATConfigurationError(
+                    "Frozen Phase1 continuation rejects any held/proxy TX loaded by training"
+                )
+            if recte_frozen_mode:
+                raise RECTEConfigurationError(
                     "Frozen Phase1 continuation rejects any held/proxy TX loaded by training"
                 )
             if cp_sfce_frozen_mode:
@@ -7036,6 +7167,37 @@ def train(args) -> int:
                     "local_tx_class_order": local_tx_order,
                 }
             )
+        if recte_frozen_mode:
+            local_data_class_count = int(data_ctx.get("num_classes", 0))
+            local_tx_order = list(data_ctx.get("class_id_to_tx", []) or [])
+            if local_data_class_count != len(local_tx_order):
+                raise RECTEConfigurationError(
+                    "P1-RECTE data_ctx local class count must equal its local TX class-order receipt"
+                )
+            if local_tx_order != frozen_source_roles["source_train_tx"]:
+                raise RECTEConfigurationError(
+                    "P1-RECTE data_ctx local TX class order must equal the source-train TX receipt"
+                )
+            if bind_recte_source_data_order is None:
+                raise ImportError("cvsrffi.phase1_recte source data-order binding support is required")
+            recte_receipt.update(
+                bind_recte_source_data_order(
+                    {
+                        **recte_receipt,
+                        **frozen_source_roles,
+                        "local_data_class_count": local_data_class_count,
+                        "local_tx_class_order": local_tx_order,
+                    },
+                    (data_ctx.get("split_info", {}) or {}).get("source_split_receipt", {}),
+                )
+            )
+            recte_receipt.update(
+                {
+                    **frozen_source_roles,
+                    "local_data_class_count": local_data_class_count,
+                    "local_tx_class_order": local_tx_order,
+                }
+            )
         if cp_sfce_frozen_mode:
             local_data_class_count = int(data_ctx.get("num_classes", 0))
             local_tx_order = list(data_ctx.get("class_id_to_tx", []) or [])
@@ -7174,6 +7336,20 @@ def train(args) -> int:
         elif rcat_frozen_mode:
             rcat_receipt.update(
                 strict_rcat_warm_start(
+                    model,
+                    ckpt["model"],
+                    baseline_path=str(args.baseline_ckpt),
+                    baseline_sha256=_sha256_file(args.baseline_ckpt),
+                    checkpoint_epoch=ckpt.get("epoch", -1),
+                    checkpoint_role=ckpt.get(
+                        "checkpoint_role",
+                        ckpt.get("checkpoint_selection", "UNSPECIFIED"),
+                    ),
+                )
+            )
+        elif recte_frozen_mode:
+            recte_receipt.update(
+                strict_recte_warm_start(
                     model,
                     ckpt["model"],
                     baseline_path=str(args.baseline_ckpt),
@@ -7484,6 +7660,45 @@ def train(args) -> int:
             encoding="utf-8",
             newline="\n",
         )
+    if recte_frozen_mode:
+        if (
+            resolve_recte_classifier_weight is None
+            or resolve_recte_local_head_class_binding is None
+            or remap_recte_local_labels_to_head_rows is None
+        ):
+            raise ImportError("cvsrffi.phase1_recte classifier binding support is required")
+        recte_weight = resolve_recte_classifier_weight(model)
+        checkpoint_args = ckpt.get("args", {}) or {}
+        if not isinstance(checkpoint_args, Mapping):
+            raise RECTEConfigurationError(
+                "P1-RECTE strict baseline checkpoint must contain an argument mapping"
+            )
+        checkpoint_train_tx = [
+            item.strip()
+            for item in str(checkpoint_args.get("phase1_source_train_tx_ids", "") or "").split(",")
+            if item.strip()
+        ]
+        tx_partition_receipt = (data_ctx.get("split_info", {}) or {}).get(
+            "tx_partition_receipt", {}
+        )
+        recte_head_binding = resolve_recte_local_head_class_binding(
+            local_class_order=list(data_ctx.get("class_id_to_tx", []) or []),
+            source_train_tx=list(tx_partition_receipt.get("source_known_train_tx", []) or []),
+            checkpoint_train_tx=checkpoint_train_tx,
+            dataset_class_order=list(tx_partition_receipt.get("dataset_tx_order", []) or []),
+            local_data_class_count=data_ctx.get("num_classes", 0),
+            checkpoint_head_class_count=checkpoint_args.get("num_classes", None),
+            live_head_class_count=int(recte_weight.size(0)),
+        )
+        recte_local_to_head_class_ids = tuple(
+            int(value) for value in recte_head_binding["local_to_head_class_ids"]
+        )
+        recte_receipt.update(recte_head_binding)
+        (out_dir / "phase1_recte_config_receipt.json").write_text(
+            json.dumps(recte_receipt, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+            newline="\n",
+        )
     if cp_sfce_frozen_mode:
         if (
             resolve_cp_sfce_classifier_weight is None
@@ -7612,6 +7827,25 @@ def train(args) -> int:
                 out_dir=out_dir,
                 args=args,
                 rcat_receipt=rcat_receipt,
+                error=error,
+                failure_stage="new_adamw_initial_state_binding",
+            )
+            raise
+    if recte_frozen_mode:
+        try:
+            if bind_recte_optimizer_initial_state is None:
+                raise ImportError("cvsrffi.phase1_recte AdamW initial-state receipt support is required")
+            recte_receipt = bind_recte_optimizer_initial_state(recte_receipt, optimizer)
+            (out_dir / "phase1_recte_config_receipt.json").write_text(
+                json.dumps(recte_receipt, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+                encoding="utf-8",
+                newline="\n",
+            )
+        except Exception as error:
+            _persist_recte_failure_receipt(
+                out_dir=out_dir,
+                args=args,
+                recte_receipt=recte_receipt,
                 error=error,
                 failure_stage="new_adamw_initial_state_binding",
             )
@@ -7887,6 +8121,16 @@ def train(args) -> int:
                 f"baseline_strict={int(bool(rcat_receipt.get('strict_model_keys', False)))} "
                 f"checkpoint_role={str(rcat_receipt.get('checkpoint_role', '') or '-')} "
                 "source_L_rx_i_only=1 day_target_proxy=0",
+                "[CONFIG-P1-RECTE] "
+                f"frozen_mode={int(bool(recte_receipt.get('frozen_mode', False)))} "
+                f"enabled={int(bool(recte_receipt.get('enabled', False)))} "
+                f"lambda={float(recte_receipt.get('lambda', 0.0)):.6g} "
+                f"rule={str(recte_receipt.get('loss_rule', '') or '-')} "
+                f"unordered_pair_denominator={int(recte_receipt.get('loss_global_denominator', 0))} "
+                f"source_r_count={int(recte_receipt.get('source_receiver_count', 0))} "
+                f"baseline_strict={int(bool(recte_receipt.get('strict_model_keys', False)))} "
+                f"checkpoint_role={str(recte_receipt.get('checkpoint_role', '') or '-')} "
+                "source_L_rx_i_only=1 day_fold_target_proxy=0",
                 "[CONFIG-P1-CP-SFCE] "
                 f"frozen_mode={int(bool(cp_sfce_receipt.get('frozen_mode', False)))} "
                 f"enabled={int(bool(cp_sfce_receipt.get('enabled', False)))} "
@@ -8249,6 +8493,27 @@ def train(args) -> int:
                         failure_stage="local_tx_label_to_live_head_row_binding",
                     )
                     raise
+            if recte_frozen_mode:
+                try:
+                    if (
+                        recte_local_to_head_class_ids is None
+                        or remap_recte_local_labels_to_head_rows is None
+                    ):
+                        raise RECTERuntimeError(
+                            "P1-RECTE local-to-head class binding is unavailable"
+                        )
+                    y_l = remap_recte_local_labels_to_head_rows(
+                        y_l, recte_local_to_head_class_ids
+                    )
+                except Exception as error:
+                    _persist_recte_failure_receipt(
+                        out_dir=out_dir,
+                        args=args,
+                        recte_receipt=recte_receipt,
+                        error=error,
+                        failure_stage="local_tx_label_to_live_head_row_binding",
+                    )
+                    raise
             if cp_sfce_frozen_mode:
                 try:
                     if (
@@ -8271,7 +8536,7 @@ def train(args) -> int:
                     )
                     raise
             labeled_clean_count = int(y_l.numel())
-            if rcrmd_frozen_mode or rcat_frozen_mode:
+            if rcrmd_frozen_mode or rcat_frozen_mode or recte_frozen_mode:
                 # Only P1 source-L physical receiver metadata is read. This
                 # lookup never affects loader order, sampler, or model input.
                 receiver_l_base = _metadata_label_tensor(
@@ -8281,7 +8546,13 @@ def train(args) -> int:
                     error = (
                         RCRMDRuntimeError("P1-RCRMD requires source-L physical rx_i metadata")
                         if rcrmd_frozen_mode
-                        else RCATRuntimeError("P1-RCAT requires source-L physical rx_i metadata")
+                        else (
+                            RCATRuntimeError("P1-RCAT requires source-L physical rx_i metadata")
+                            if rcat_frozen_mode
+                            else RECTERuntimeError(
+                                "P1-RECTE requires source-L physical rx_i metadata"
+                            )
+                        )
                     )
                     if rcrmd_frozen_mode:
                         _persist_rcrmd_failure_receipt(
@@ -8296,6 +8567,14 @@ def train(args) -> int:
                             out_dir=out_dir,
                             args=args,
                             rcat_receipt=rcat_receipt,
+                            error=error,
+                            failure_stage="source_l_rx_i_allowlist_binding",
+                        )
+                    if recte_frozen_mode:
+                        _persist_recte_failure_receipt(
+                            out_dir=out_dir,
+                            args=args,
+                            recte_receipt=recte_receipt,
                             error=error,
                             failure_stage="source_l_rx_i_allowlist_binding",
                         )
@@ -9062,6 +9341,7 @@ def train(args) -> int:
                 loss_cagm_l = zero_sat
                 loss_rcrmd_l = zero_sat
                 loss_rcat_l = zero_sat
+                loss_recte_l = zero_sat
                 loss_cp_sfce_l = zero_sat
                 cb_sfce_base_loss_l = None
                 gd_proto_nll_base_loss_l = None
@@ -9073,6 +9353,7 @@ def train(args) -> int:
                 cagm_satellite_scenario = ""
                 rcrmd_satellite_scenario = ""
                 rcat_satellite_scenario = ""
+                recte_satellite_scenario = ""
                 cp_sfce_satellite_scenario = ""
                 cb_sfce_batch_info: Dict[str, Any] = {
                     "rows": 0,
@@ -9157,6 +9438,26 @@ def train(args) -> int:
                     "training_accumulation_dtype": "",
                     "empty_cell_zero": False,
                     "no_active_renormalization": False,
+                }
+                recte_batch_info: Dict[str, Any] = {
+                    "rows": 0,
+                    "loss_sum": 0.0,
+                    "global_denominator": 0,
+                    "fixed_scale": 0.0,
+                    "cells": {},
+                    "cell_order": [],
+                    "occupied_unordered_pair_count": 0,
+                    "positive_tail_pair_count": 0,
+                    "functional_logits_equal_live": False,
+                    "functional_head_readout_count": 0,
+                    "finite": False,
+                    "clean_raw_logits_detached": False,
+                    "functional_head_parameters_stopgrad": False,
+                    "tail_only_lower_delta_gradient": False,
+                    "empty_pair_zero_contribution": False,
+                    "no_active_pair_renormalization": False,
+                    "zero_feature_rows_preserved": False,
+                    "training_accumulation_dtype": "",
                 }
                 ccpc_batch_info: Dict[str, Any] = {
                     "rows": 0,
@@ -9446,6 +9747,58 @@ def train(args) -> int:
                             rcat_receipt=rcat_receipt,
                             error=error,
                             failure_stage="common_physical_rx_class_scene_n_rc_receipt",
+                        )
+                        raise
+                if recte_frozen_mode:
+                    try:
+                        if out_sat is None:
+                            raise RECTERuntimeError(
+                                "Frozen P1-RECTE requires the common single LEO forward in both C and G"
+                            )
+                        if int(y_l.numel()) != labeled_clean_count:
+                            raise RECTERuntimeError(
+                                "P1-RECTE forbids expanded or reindexed source-L rows"
+                            )
+                        if validate_recte_binding is None:
+                            raise ImportError(
+                                "cvsrffi.phase1_recte common feat_joint/exact-head binding support is required"
+                            )
+                        recte_exact_head = validate_recte_binding(
+                            model=model,
+                            out_clean=out_l,
+                            out_leo=out_sat,
+                            tx_labels=y_l,
+                            source_rx_labels=receiver_l_base,
+                            expected_class_ids=recte_receipt.get("expected_tx_class_ids", []),
+                            expected_receiver_ids=recte_receipt.get("source_receiver_ids", []),
+                        )
+                        recte_receipt["common_l_base_head_input_path_verified"] = True
+                        if update_recte_common_batch_sequence_receipt is None:
+                            raise ImportError(
+                                "cvsrffi.phase1_recte common coverage receipt support is required"
+                            )
+                        source_meta = _meta_from_extra(extra_l)
+                        recte_physical_metadata = {
+                            key: source_meta[key]
+                            for key in ("base_index", "sig_i")
+                            if source_meta is not None and key in source_meta
+                        }
+                        recte_receipt = update_recte_common_batch_sequence_receipt(
+                            recte_receipt,
+                            epoch=int(epoch),
+                            batch_index=int(batch_idx),
+                            scenario=str(sat_train_scenario),
+                            source_tx_labels=y_l,
+                            source_rx_labels=receiver_l_base,
+                            metadata=recte_physical_metadata,
+                        )
+                    except Exception as error:
+                        _persist_recte_failure_receipt(
+                            out_dir=out_dir,
+                            args=args,
+                            recte_receipt=recte_receipt,
+                            error=error,
+                            failure_stage="common_physical_rx_class_scene_order_and_live_head_binding",
                         )
                         raise
                 if bool(getattr(cb_sfce_config, "enabled", False)):
@@ -9767,6 +10120,39 @@ def train(args) -> int:
                             failure_stage="paired_feat_joint_totalized_l2_rx_cell_binding_or_rcat_loss",
                         )
                         raise
+                # RECTE reuses the existing clean logits and one LEO feat_joint
+                # row.  Its only added computation is an exact-head functional
+                # readout with detached current head state; equality to the
+                # already-computed live LEO logits is fail-closed in recte_loss.
+                if bool(getattr(recte_config, "enabled", False)):
+                    try:
+                        if out_sat is None:
+                            raise RECTERuntimeError(
+                                "Enabled P1-RECTE requires one existing clean and single LEO forward"
+                            )
+                        if recte_loss is None or recte_exact_head is None:
+                            raise ImportError(
+                                "cvsrffi.phase1_recte loss and exact-head binding support is required"
+                            )
+                        loss_recte_l, recte_batch_info = recte_loss(
+                            out_l["tx_logits"],
+                            out_sat["z_id"],
+                            out_sat["tx_logits"],
+                            y_l,
+                            receiver_l_base,
+                            recte_receipt.get("source_receiver_ids", []),
+                            classifier_head=recte_exact_head,
+                        )
+                        recte_satellite_scenario = str(sat_train_scenario)
+                    except Exception as error:
+                        _persist_recte_failure_receipt(
+                            out_dir=out_dir,
+                            args=args,
+                            recte_receipt=recte_receipt,
+                            error=error,
+                            failure_stage="paired_raw_clean_exact_functional_head_leo_rx_cell_tail_loss",
+                        )
+                        raise
                 if add_ccpc_to_loss is not None:
                     loss_closed_l = add_ccpc_to_loss(
                         loss_closed_l,
@@ -9816,6 +10202,12 @@ def train(args) -> int:
                         loss_closed_l,
                         loss_rcat_l if bool(getattr(rcat_config, "enabled", False)) else None,
                         rcat_config,
+                    )
+                if add_recte_to_loss is not None:
+                    loss_closed_l = add_recte_to_loss(
+                        loss_closed_l,
+                        loss_recte_l if bool(getattr(recte_config, "enabled", False)) else None,
+                        recte_config,
                     )
                 loss_l = loss_closed_l + loss_open_l
                 if phase == "pseudo" and bool(args.use_unlabeled):
@@ -10533,6 +10925,23 @@ def train(args) -> int:
                     "none_or_zero_expected": False,
                 },
             }
+            recte_gradient_audit_info: Dict[str, Any] = {
+                "feat_joint_leo": {
+                    "parameter_count": 0.0,
+                    "norm": float("nan"),
+                },
+                "shared_encoder": {
+                    "parameter_count": 0.0,
+                    "norm": float("nan"),
+                },
+                "classifier_head": {
+                    "parameter_count": 0.0,
+                    "none_parameters": 0.0,
+                    "zero_parameters": 0.0,
+                    "nonzero_parameters": float("nan"),
+                    "none_or_zero_expected": False,
+                },
+            }
             os_grad_info = {
                 "active": 0.0,
                 "conflict": 0.0,
@@ -10719,6 +11128,26 @@ def train(args) -> int:
                         rcat_receipt=rcat_receipt,
                         error=error,
                         failure_stage="g_only_rx_class_scene_totalized_l2_q_loss_receipt",
+                    )
+                    raise
+            if bool(getattr(recte_config, "enabled", False)):
+                try:
+                    if update_recte_receipt is None:
+                        raise ImportError("cvsrffi.phase1_recte G-only receipt support is required")
+                    recte_receipt = update_recte_receipt(
+                        recte_receipt,
+                        recte_batch_info,
+                        scenario=recte_satellite_scenario,
+                        epoch=int(epoch),
+                        batch_index=int(batch_idx),
+                    )
+                except Exception as error:
+                    _persist_recte_failure_receipt(
+                        out_dir=out_dir,
+                        args=args,
+                        recte_receipt=recte_receipt,
+                        error=error,
+                        failure_stage="g_only_fixed_378_occupied_unordered_pair_tail_receipt",
                     )
                     raise
             if bool(getattr(cp_sfce_config, "enabled", False)):
@@ -10934,6 +11363,41 @@ def train(args) -> int:
                         rcat_receipt=rcat_receipt,
                         error=error,
                         failure_stage="pre_scaled_backward_first_positive_feat_joint_and_shared_encoder_vjp_head_aux_na",
+                    )
+                    raise
+            if (
+                loss_is_finite
+                and bool(getattr(recte_config, "enabled", False))
+                and int(recte_batch_info.get("positive_tail_pair_count", 0)) > 0
+                and str(recte_satellite_scenario)
+                not in dict(recte_receipt.get("recte_gradient_audit_scenes", {}))
+            ):
+                try:
+                    if (
+                        recte_shared_encoder_and_head_parameters is None
+                        or recte_aux_gradient_audit is None
+                        or update_recte_gradient_audit_receipt is None
+                    ):
+                        raise ImportError("cvsrffi.phase1_recte raw VJP audit support is required")
+                    if out_sat is None:
+                        raise RECTERuntimeError("P1-RECTE first-positive VJP audit lacks LEO feat_joint")
+                    recte_gradient_audit_info = recte_aux_gradient_audit(
+                        loss_recte_l,
+                        out_sat["z_id"],
+                        recte_shared_encoder_and_head_parameters(model),
+                    )
+                    recte_receipt = update_recte_gradient_audit_receipt(
+                        recte_receipt,
+                        recte_gradient_audit_info,
+                        scenario=recte_satellite_scenario,
+                    )
+                except Exception as error:
+                    _persist_recte_failure_receipt(
+                        out_dir=out_dir,
+                        args=args,
+                        recte_receipt=recte_receipt,
+                        error=error,
+                        failure_stage="pre_scaled_backward_first_positive_tail_feat_joint_shared_encoder_vjp_head_aux_na",
                     )
                     raise
             pamr_audit_has_effective_batch = (
@@ -11674,6 +12138,38 @@ def train(args) -> int:
                     ),
                     "train/w_loss_rcat": (
                         float(getattr(rcat_config, "loss_weight", 0.0)) * loss_rcat_l
+                    ).detach(),
+                    "train/loss_recte": loss_recte_l.detach(),
+                    "train/recte_enabled": 1.0 if bool(getattr(recte_config, "enabled", False)) else 0.0,
+                    "train/recte_rows": float(recte_batch_info.get("rows", 0)),
+                    "train/recte_occupied_unordered_pair_count": float(
+                        recte_batch_info.get("occupied_unordered_pair_count", 0)
+                    ),
+                    "train/recte_positive_tail_pair_count": float(
+                        recte_batch_info.get("positive_tail_pair_count", 0)
+                    ),
+                    "train/recte_functional_logits_equal_live": 1.0 if bool(
+                        recte_batch_info.get("functional_logits_equal_live", False)
+                    ) else 0.0,
+                    "train/recte_global_denominator": float(
+                        recte_batch_info.get("global_denominator", 0)
+                    ),
+                    "train/recte_gradient_audit_completed": 1.0 if bool(
+                        recte_receipt.get("recte_gradient_audit_completed", False)
+                    ) else 0.0,
+                    "train/recte_feat_joint_aux_grad_norm": float(
+                        recte_gradient_audit_info["feat_joint_leo"].get("norm", float("nan"))
+                    ),
+                    "train/recte_encoder_aux_grad_norm": float(
+                        recte_gradient_audit_info["shared_encoder"].get("norm", float("nan"))
+                    ),
+                    "train/recte_head_aux_nonzero_parameters": float(
+                        recte_gradient_audit_info["classifier_head"].get(
+                            "nonzero_parameters", float("nan")
+                        )
+                    ),
+                    "train/w_loss_recte": (
+                        float(getattr(recte_config, "loss_weight", 0.0)) * loss_recte_l
                     ).detach(),
                     "train/loss_cp_sfce": loss_cp_sfce_l.detach(),
                     "train/cp_sfce_enabled": 1.0 if bool(getattr(cp_sfce_config, "enabled", False)) else 0.0,
@@ -12445,6 +12941,8 @@ def train(args) -> int:
             payload["rcrmd_receipt"] = dict(rcrmd_receipt)
         if rcat_frozen_mode:
             payload["rcat_receipt"] = dict(rcat_receipt)
+        if recte_frozen_mode:
+            payload["recte_receipt"] = dict(recte_receipt)
         if cp_sfce_frozen_mode:
             payload["cp_sfce_receipt"] = dict(cp_sfce_receipt)
         latest_path = out_dir / "NOT_SAVED_FINAL_ONLY"
@@ -12995,6 +13493,20 @@ def train(args) -> int:
                 failure_stage="terminal_rcat_receipt_validation",
             )
             raise
+    if recte_frozen_mode:
+        if validate_recte_terminal_receipt is None:
+            raise ImportError("cvsrffi.phase1_recte.validate_recte_terminal_receipt is required")
+        try:
+            recte_receipt = validate_recte_terminal_receipt(recte_receipt)
+        except Exception as error:
+            _persist_recte_failure_receipt(
+                out_dir=out_dir,
+                args=args,
+                recte_receipt=recte_receipt,
+                error=error,
+                failure_stage="terminal_recte_receipt_validation",
+            )
+            raise
     if cp_sfce_frozen_mode:
         if validate_cp_sfce_terminal_receipt is None:
             raise ImportError("cvsrffi.phase1_cp_sfce.validate_cp_sfce_terminal_receipt is required")
@@ -13044,6 +13556,8 @@ def train(args) -> int:
         final_payload["rcrmd_receipt"] = dict(rcrmd_receipt)
     if rcat_frozen_mode:
         final_payload["rcat_receipt"] = dict(rcat_receipt)
+    if recte_frozen_mode:
+        final_payload["recte_receipt"] = dict(recte_receipt)
     if cp_sfce_frozen_mode:
         final_payload["cp_sfce_receipt"] = dict(cp_sfce_receipt)
     final_payload.setdefault("stats", {})
@@ -13672,6 +14186,8 @@ def train(args) -> int:
         terminal_manifest["rcrmd_receipt"] = dict(rcrmd_receipt)
     if rcat_frozen_mode:
         terminal_manifest["rcat_receipt"] = dict(rcat_receipt)
+    if recte_frozen_mode:
+        terminal_manifest["recte_receipt"] = dict(recte_receipt)
     if cp_sfce_frozen_mode:
         terminal_manifest["cp_sfce_receipt"] = dict(cp_sfce_receipt)
     (out_dir / "phase1_terminal_status.json").write_text(
@@ -13870,6 +14386,29 @@ def train(args) -> int:
             encoding="utf-8",
             newline="\n",
         )
+    if recte_frozen_mode:
+        (out_dir / "phase1_recte_terminal_receipt.json").write_text(
+            json.dumps(
+                {
+                    **dict(recte_receipt),
+                    "terminal_status": terminal_status,
+                    "terminal_exit_code": int(terminal_exit_code),
+                    "selected_checkpoint": str(selected_checkpoint),
+                    "selected_checkpoint_sha256": selected_checkpoint_sha256,
+                    "technical_only": False,
+                    "promotion_ready": terminal_status == "COMPLETE",
+                    "performance_result_available": False,
+                    "claim": "PHASE1_SOURCE_ONLY_TRAINING_RECEIPT",
+                },
+                ensure_ascii=False,
+                indent=2,
+                sort_keys=True,
+                default=str,
+            )
+            + "\n",
+            encoding="utf-8",
+            newline="\n",
+        )
     if cp_sfce_frozen_mode:
         (out_dir / "phase1_cp_sfce_terminal_receipt.json").write_text(
             json.dumps(
@@ -13976,6 +14515,8 @@ def train(args) -> int:
         completion_receipt["rcrmd_receipt"] = dict(rcrmd_receipt)
     if rcat_frozen_mode:
         completion_receipt["rcat_receipt"] = dict(rcat_receipt)
+    if recte_frozen_mode:
+        completion_receipt["recte_receipt"] = dict(recte_receipt)
     (out_dir / "phase1_training_completion_receipt.json").write_text(
         json.dumps(
             completion_receipt,
