@@ -107,3 +107,10 @@ Runner落地前必须完成：direct preflight；LF无prefix archive、成员SHA
 - 归档SHA256=`0754fc9d214c8712f1cc367afd719323a30b986e8b318364b392312055962556`，bytes=`267151360`。
 - 本地静态验证：`py_compile=0`、focused pytest=`0`（12 passed）、三个`--help=0`、Git Bash`bash -n=0`、冻结dry-run=`42`行且exit=`0`；过程日志仅作技术记录。
 - 远端启动前只读状态：release/run/log/outer均`ABSENT`；ManySig SHA=`2b0a7a7488dd3650bcae7b1d80efbcffd1598aaa671ae6b0a0df2a24dc0f694f`；v2训练根12份`final_ssdg.pth`均存在，SHA记录于`artifacts/runner_20260811/checkpoint_sha256.tsv`；未读取性能字段。
+
+## 9.Runner远端静态与receipt技术记录（2026-08-11）
+
+- 唯一SCP调用次数=`1`，SCP exit=`0`；incoming archive SHA/bytes/members分别为`0754fc9d214c8712f1cc367afd719323a30b986e8b318364b392312055962556`/`267151360`/`4964`；staging到release原子落地成功，远端六成员SHA与launcher`755`匹配。
+- release内静态门：`py_compile=PASS`、4个`--help=PASS`、`bash -n=PASS`、冻结dry-run=`42`行、旧候选身份行=`0`；静态命令未创建run/log输出。
+- 当前release validator顺序重开12份真实terminal receipt：`terminal_contract_passed=12`、`B128/local4/denom512=12`、C零辅助=`6`、G三scene raw-unscaled VJP=`6`、C/G common binding=`6`。这些是技术闭合证据，不含性能读取或解释。
+- 远端release状态=`LANDED`；尚未启动，launch调用次数仍=`0`，retry=`NO`。
