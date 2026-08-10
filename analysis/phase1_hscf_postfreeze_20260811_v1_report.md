@@ -4,7 +4,7 @@
 
 - 实验ID：`phase1_hscf_postfreeze_20260811_v1`
 - 日期：2026-08-11
-- 当前状态：`ARTIFACTS_COMPLETE / P0=0 / P1=0 / NO_PERFORMANCE_INTERPRETATION`
+- 当前状态：`ANALYZED / REJECT_P1_HSCF_PERMANENT / NO_PHASE3_CAPABILITY_CLAIM`
 - 操作边界：主控冻结评价合同、矩阵和判定门；唯一N607 Runner只负责release落地、唯一启动、技术监控与小工件回收，不读取或解释性能字段。
 - 训练输入：`phase1_hscf12_20260811_v2`，12/12臂技术闭合；训练报告SHA256=`e282a9657eaa06206d027decc88c375c512690441206ca895a4fd9f84bce356e`，Git镜像commit=`9aff4d20242ea124f96f4a979bc4bf4b0f381a58`。
 - 目标：在不改变训练、fold、seed、receiver、TX、场景或阈值的前提下，对同fold C/G执行固定clean、三LEO、fixed400 proxy和连续Gaussian-NLL公平评价，产出6份pair JSON及F6矩阵聚合。
@@ -85,18 +85,18 @@ Runner落地前必须完成：direct preflight；LF无prefix archive、成员SHA
 
 预期工件：12 clean NPZ、12 LEO NPZ、12 LEO binding JSON、12 proxy JSON、12 proxy CSV、6 pair JSON、12候选日志、6 pair日志、`candidate_pids.tsv`与outer。Runner只核技术schema、输入绑定、计数、SHA、异常与F6 raw-reopen键；回收仅JSON/CSV/binding/log/PID/manifest的小bundle，排除NPZ、pth、pt和npy。性能字段由主控在技术闭合并回收后读取。
 
-## 7.冻结非补偿门与结果占位
+## 7.冻结非补偿门与最终结果
 
 |冻结门|要求|当前结果|判定|
 |---|---:|---:|---|
-|技术绑定|6/6 pair|待运行|PENDING|
-|clean四floor|6/6 fold，每项Δ≥-2pp|待运行|PENDING|
-|LEO四floor|18/18 scene-cell，每项Δ≥-2pp|待运行|PENDING|
-|逐fold三场景overall|6/6 fold等权Δ≥0|待运行|PENDING|
-|全18格overall|等权Δ≥0|待运行|PENDING|
-|fixed400 proxy双门|6/6 fold同时ΔAUROC>0且Δu-gap>0|待运行|PENDING|
+|技术绑定|6/6 pair|6/6|PASS|
+|clean四floor|6/6 fold，每项Δ≥-2pp|6/6|PASS|
+|LEO四floor|18/18 scene-cell，每项Δ≥-2pp|16/18；5/6 fold完整|FAIL|
+|逐fold三场景overall|6/6 fold等权Δ≥0|6/6|PASS|
+|全18格overall|等权Δ≥0|+1.813343pp|PASS|
+|fixed400 proxy双门|6/6 fold同时ΔAUROC>0且Δu-gap>0|2/6|FAIL|
 
-最终分析必须按同fold、同scene保留C/G完整行，报告overall、min-class、min-RX、min-day及proxy AUROC/u-gap；不得用不同fold或不同指标的边际最值拼接成结论。当前状态保持`PREREGISTERED / LOCAL_VERIFIED / NO_PERFORMANCE_INTERPRETATION`。
+最终分析按同fold、同scene保留C/G完整行，独立重算与F6 aggregate一致。LEO四floor和proxy双门均为预注册不可补偿失败，最终状态为`ANALYZED / REJECT_P1_HSCF_PERMANENT / NO_PHASE3_CAPABILITY_CLAIM`。
 
 ## 8.Runner本地发布前技术记录（2026-08-11）
 
@@ -128,3 +128,79 @@ Runner落地前必须完成：direct preflight；LF无prefix archive、成员SHA
 - 回收范围严格为JSON/CSV/binding/log/PID/manifest；排除`.npz/.pth/.pt/.npy`。远端manifest：`/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_hscf_postfreeze_20260811_v1/phase1_hscf_postfreeze_20260811_v1_small_manifest_v2.json`，SHA256=`a4530038fdc10fda0b7ca86940669823ede32ea1f238d7d588bb5eb2a6a9eeae`，bytes=`19468`；`outer_status=ABSENT`且manifest明确记录该状态，成员（不含manifest）=`61`。
 - 远端bundle：`/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_hscf_postfreeze_20260811_v1/phase1_hscf_postfreeze_20260811_v1_small_bundle_v2.tar`；本地回收：`E:\type10-7\automation_reports\CV-SincNet\phase1_hscf_postfreeze_20260811_v1\artifacts\retrieved_small\phase1_hscf_postfreeze_20260811_v1_small_bundle_v2.tar`，SHA256=`4dae782af6bef23c7c55d0077a04047d82330c3ff9af25b07faddae6e0fe3010`，bytes=`32542720`，成员=`62`（含manifest），禁入成员=`0`。本地manifest副本同SHA/bytes并经`inspect_bundle_v2.py`验证通过。
 - 技术状态=`ARTIFACTS_COMPLETE / NO_PERFORMANCE_INTERPRETATION`；不据此晋级或拒绝候选。Runner未读取`accuracy/floor/AUROC/u-gap`等性能字段，未做任何性能解释、调参、重启或候选判定。
+
+## 12.主控完整解析与复核边界
+
+主控在Runner技术交接后解包最终v2小bundle到`artifacts/analysis_extract_main/`。完整读取18份阶段日志：12份候选日志各845行，6份pair日志均为完整单行JSON；Traceback、RuntimeError、OOM、CUDA、SIGSEGV、argparse、HSCF异常、NaN和Inf标记均为0。6份pair JSON的schema、matrix/training root、技术绑定、HSCF receipt重验、C/G common binding与proxy recomputation均为6/6；F6包含5份prior pair原始工件重开记录，`raw_artifacts_recomputed=true`为5/5。
+
+主控没有采用Runner的性能判断，而是从6份pair JSON逐项独立重算clean四floor、18个LEO scene-cell四floor、每fold三场景等权overall、全18格等权overall和每foldproxy双严格门。全部数值与F6 matrix aggregate逐字义一致，F6最终verdict为`REJECT_P1_HSCF_PERMANENT`。
+
+## 13.clean同fold结果
+
+|fold|C overall(%)|G overall(%)|Δoverall(pp)|Δmin-class(pp)|Δmin-RX(pp)|Δmin-day(pp)|四floor|
+|---|---:|---:|---:|---:|---:|---:|---|
+|F1|99.273810|99.297619|+0.023810|+0.119048|+0.208333|+0.059524|PASS|
+|F2|99.202381|99.184524|-0.017857|-0.071429|-0.250000|-0.011905|PASS|
+|F3|99.119048|99.267857|+0.148810|+0.809524|+0.625000|+0.202381|PASS|
+|F4|99.226190|99.285714|+0.059524|+0.095238|+0.083333|+0.107143|PASS|
+|F5|97.494048|97.898810|+0.404762|+2.309524|+0.875000|+0.571429|PASS|
+|F6|97.386905|97.607143|+0.220238|+0.976190|+0.833333|+0.357143|PASS|
+
+clean四floor为6/6；F2的轻微负增量远高于-2pp floor，不构成失败。HSCF没有以LEO收益换取明显clean退化。
+
+## 14.LEO三场景同fold结果
+
+|fold|scene|C overall(%)|G overall(%)|Δoverall(pp)|Δmin-class(pp)|Δmin-RX(pp)|Δmin-day(pp)|四floor|
+|---|---|---:|---:|---:|---:|---:|---:|---|
+|F1|clear|96.323529|96.323529|+0.000000|+0.000000|-1.030928|+0.310559|PASS|
+|F1|low-elev|95.588235|96.139706|+0.551471|-0.781250|+1.123596|+1.442308|PASS|
+|F1|rain|95.312500|96.289062|+0.976562|+3.906250|+3.797468|+0.892857|PASS|
+|F2|clear|92.647059|93.750000|+1.102941|+2.777778|+2.061856|+0.450450|PASS|
+|F2|low-elev|89.889706|92.463235|+2.573529|+4.687500|+2.247191|+2.884615|PASS|
+|F2|rain|90.625000|92.382812|+1.757812|+3.906250|+0.000000|+2.628968|PASS|
+|F3|clear|91.727941|95.220588|+3.492647|+8.333333|+6.227361|+4.658385|PASS|
+|F3|low-elev|85.477941|88.235294|+2.757353|+6.250000|-1.123596|+3.273810|PASS|
+|F3|rain|85.156250|88.867188|+3.710938|+12.500000|+2.531646|+3.819444|PASS|
+|F4|clear|93.198529|94.852941|+1.654412|+2.777778|+0.752299|+2.529237|PASS|
+|F4|low-elev|88.419118|91.360294|+2.941176|+6.250000|+6.741573|+3.846154|PASS|
+|F4|rain|90.039062|90.625000|+0.585938|+0.781250|+0.000000|+1.736111|PASS|
+|F5|clear|80.147059|82.169118|+2.022059|+10.937500|+8.247423|+3.105590|PASS|
+|F5|low-elev|71.691176|73.345588|+1.654412|+9.722222|+5.617978|-0.480769|PASS|
+|F5|rain|68.359375|71.679688|+3.320312|+13.281250|+0.000000|+4.910714|PASS|
+|F6|clear|78.860294|79.595588|+0.735294|-5.555556|-7.462687|-0.450450|FAIL|
+|F6|low-elev|82.720588|84.742647|+2.022059|-0.781250|+6.741573|+0.480769|PASS|
+|F6|rain|80.078125|80.859375|+0.781250|-4.687500|+6.329114|+1.041667|FAIL|
+
+LEO四floor为16/18，完整fold为5/6。F6-clear的min-class与min-RX分别下降5.555556pp和7.462687pp；F6-rain的min-class下降4.687500pp。虽然这两个scene的overall仍上升，但非补偿尾部floor失败，不能由均值补偿。
+
+逐fold三场景等权overall增量为F1=`+0.509344pp`、F2=`+1.811428pp`、F3=`+3.320312pp`、F4=`+1.727175pp`、F5=`+2.332261pp`、F6=`+1.179534pp`，达到6/6。全18格等权增量为overall=`+1.813343pp`、min-class=`+4.128086pp`、min-RX=`+2.377881pp`、min-day=`+2.060023pp`。这证明HSCF对平均LEO分类具有跨fold一致的正贡献，但不能证明所有receiver/class尾部均被保护。
+
+## 15.fixed400 proxy连续双门
+
+|fold|C AUROC|G AUROC|ΔAUROC|C u-gap|G u-gap|Δu-gap|双严格门|
+|---|---:|---:|---:|---:|---:|---:|---|
+|F1|0.797673|0.792503|-0.005170|846.024808|1403.062439|+557.037631|FAIL|
+|F2|0.375816|0.436440|+0.060624|184.899931|425.374560|+240.474630|PASS|
+|F3|0.940728|0.908695|-0.032032|1293.801802|1613.599518|+319.797716|FAIL|
+|F4|0.475547|0.462573|-0.012974|828.357743|1119.578372|+291.220629|FAIL|
+|F5|0.862321|0.876164|+0.013844|365.903380|419.142565|+53.239185|PASS|
+|F6|0.740645|0.745080|+0.004435|1346.486270|836.134095|-510.352176|FAIL|
+
+proxy双严格门仅2/6。HSCF把u-gap提高到5/6，但F1、F3、F4的AUROC轻微下降，F6则AUROC上升而u-gap明显下降；二者必须同fold同时严格为正，不能跨fold或跨指标补偿。proxy仍只是TX隔离、L-only fit的连续几何诊断，不是真实unknown能力证据。
+
+## 16.完整门、阶段复盘与最终裁决
+
+|候选|clean四floor|LEO四floor|完整LEO fold|全18格overall|proxy双门|最终状态|
+|---|---:|---:|---:|---:|---:|---|
+|ICMT|5/6|3/18|0/6|-4.309002pp|1/6|永久拒绝|
+|CAGM|5/6|9/18|1/6|-0.128294pp|4/6|永久拒绝|
+|RCRMD|5/6|15/18|5/6|+2.180990pp|0/6|永久拒绝|
+|RCAT|6/6|10/18|3/6|+0.149357pp|2/6|永久拒绝|
+|RECTE|6/6|17/18|5/6|+2.304815pp|0/6|永久拒绝|
+|HSCF|6/6|16/18|5/6|+1.813343pp|2/6|永久拒绝|
+
+HSCF的新增证据不是一次全面退化：它守住clean 6/6，使6个fold的LEO overall全部为正，并把proxy u-gap改善到5/6；但它没有同时守住F6的receiver/class尾部，也没有让proxy AUROC与u-gap在6折共同改善。相较RECTE，HSCF牺牲了一个LEO四floor cell并多恢复两个proxy双门；相较RCAT，它显著提高LEO覆盖但没有提高proxy完整通过数。这表明当前机制族仍存在“平均LEO鲁棒性、最坏cell保护、source-only proxy排序”三者不能同时闭合的结构性张力。
+
+本节构成超过三轮探索后的记录性复盘。ICMT、CAGM、RCRMD、RCAT、RECTE和HSCF均已在同一非补偿合同下完成，不再复活、改名或以局部成功拼接；下一候选不得从F6、某receiver/day或proxy结果反向定制阈值、权重、seed或超参。若继续研发，必须先提出单一source-L-only原语，形式上同时解释平均构型、cell尾部和Gaussian几何为何不互相逃逸，再经过`DESIGN_DRAFT→FEASIBILITY_REVIEW→DESIGN_FROZEN`与独立P0/P1；postfreeze仍只作为结果门，不进入训练反馈。
+
+F6 matrix aggregate与主控独立重算的最终verdict均为`REJECT_P1_HSCF_PERMANENT`。本轮不调lambda、不重跑、不选择F2/F5局部proxy成功，也不以6/6 fold overall或全18格正均值补偿失败。最终状态：`ANALYZED / REJECT_P1_HSCF_PERMANENT / NO_PHASE3_CAPABILITY_CLAIM`。
