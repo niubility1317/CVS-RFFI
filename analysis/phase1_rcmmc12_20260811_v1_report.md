@@ -1,12 +1,12 @@
 # Phase1 RCMMC 12臂训练实验报告
 
-状态：LOCAL_VERIFIED / PREREGISTERED / P0=0 / P1=0 / NO_PERFORMANCE_RESULT
+状态：ARTIFACTS_COMPLETE_TECHNICALLY_CLOSED / PARTIAL_LOCAL_EVIDENCE_RETRIEVAL / P0=0 / P1=0 / NO_PERFORMANCE_RESULT
 
 ## 1.实验身份与目标
 
 - 实验ID：phase1_rcmmc12_20260811_v1
 - 日期：2026-08-11
-- 操作方：Codex主控；N607唯一Runner待交接
+- 操作方：Codex主控；N607唯一Runner
 - 实现commit：021a639ddfd4e485c179dce8d08e436dd8880c80
 - 目标：运行冻结P1-RCMMC的6fold×C/G共12臂训练矩阵，检验source-L同物理clean→单LEO的receiver×local4 cell一、二阶totalized-feature矩约束是否技术闭合，并为后续固定42步后冻结评价生成12份final checkpoint。
 - 对照：C为GeoSat-C training_final_only共同续训；G只在同一共同路径上增加P1-RCMMC。
@@ -156,3 +156,11 @@ G臂额外必须闭合：
 - SSH启动通道未在有界时间内返回；已核对其cmdline为逐字冻结命令，仅清理绑定本地SSH客户端PID=`21936`，未终止远端run；清理后本地`ssh.exe`与N607/bridge TCP22均为0。短连只读确认run/log/outer均PRESENT，launcher outer暂为空，12候选目录和12 arm日志已生成。
 - `pids.tsv`为13行（header+12）；12/12主PID全部alive，CWD均为release code，fold/arm/GPU映射与冻结矩阵一致；12日志首行均为`[CONFIG-RUN]`，技术异常扫描（Traceback、RuntimeError、CUDA、OOM、argparse、权限、Killed）=0。GPU进程计数为0:2、1:2、2:2、3:2、4:1、5:1、6:1、7:1，util约19--91%、显存约2.5--5.4GiB。
 - 当前状态：`RUNNING / NO_PERFORMANCE_RESULT`。不得依据accuracy、loss、floor、proxy或任何性能值停止；仅按预注册P0、launcher-wide故障、重复确定性异常、OOM/CUDA/argparse/路径权限、零final/receipt技术规则处理。
+
+## 11.Runner终态技术闭合与小证据回收（2026-08-11）
+
+- 唯一启动命令已执行恰1次（`launch=1`、`retry=NO`、本Runner SCP=0）；启动SSH通道有界超时后仅清理绑定本地客户端PID=`21936`，只读确认远端已落地。随后12/12候选均有final、terminal、completion、RCMMC、resource、heldout、config收据文件及arm日志；12/12 final checkpoint文件SHA均与terminal receipt中的selected SHA匹配。未下载12个`final_ssdg.pth`，远端文件保留。
+- 12/12 arm日志均1632行、218778--218782B，标准化技术异常指纹=0；无OOM/CUDA/argparse/权限/路径/覆盖错误。C臂lambda=0控制；G臂三scene均28/28 cell且每scene正D：`leo_clear_weak=28/28/11094`、`leo_low_elev_weak=28/28/11101`、`leo_rain_weak=28/28/11095`，共1200 batches、153600 rows、33290 positive-D cells、1200 positive batches。G四参VJP均满足：classifier head与clean feat_joint None-or-zero，LEO feat_joint与shared encoder finite-nonzero；仅持久化scalars/counts/SHA，source receiver count=7且ordered receiver SHA一致；FP32 streamed resource ledger与参数计数收据齐全。
+- 所有12臂overall terminal均为冻结代码的`NON_PROMOTABLE_P0_DISABLED`/RC=8（`p0_mechanisms_ready=false`），并非launcher异常指纹；`performance_result_available=false`、`promotion_ready=false`、`formal_performance_claim=false`。因此只记录技术闭合与NO_PERFORMANCE_RESULT，不读取或解释heldout/metrics_epoch中的性能值。
+- 本地小技术bundle：目录=`release/technical_bundle/`，原始传输37文件/118835B；加入摘要与manifest后目录39文件/127922B。压缩包=`release/phase1_rcmmc12_20260811_v1_technical_bundle_partial.tar`，161280B，50个tar entries（39个文件），SHA256=`cac28754b19d37f2aeb0dab136440bbeca87297bc4b8f0fafb2945320f8e00ea`；`MANIFEST.sha256`文件SHA=`34a29c2fae1ff50f38414717aed77d025f86db46aec245f2c2b0f7e27e02d350`。bundle排除`metrics_epoch`、`pth`、`npz`、`pt`、`npy`；F5G剩余小收据及F6本地副本因direct拒绝和bounded bridge-SCP hang未回收，完整远端工件仍保留。
+- 终态：`ARTIFACTS_COMPLETE_TECHNICALLY_CLOSED / PARTIAL_LOCAL_EVIDENCE_RETRIEVAL / NO_PERFORMANCE_RESULT`。最后一次清理后本地`ssh.exe=0`、N607 TCP22=`0`、bridge TCP22=`0`；无运行进程，GPU0--7均0%/1MiB。后续不得重发SCP、重启或读取性能。
