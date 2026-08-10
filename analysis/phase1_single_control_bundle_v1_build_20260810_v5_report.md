@@ -36,6 +36,8 @@
 
 使用`git -c core.autocrlf=false -c core.eol=lf archive`从commit`728b4029507ce5bf5a79002999f709778fe3ff53`重新生成完整无prefix归档：本地与远端tar SHA均为`c8d21d7e141a396d721af861b859e0521a5f410d144f06b84b350a9a0da58fbe`，4307个文件成员、无`code/code`。六个冻结关键成员SHA逐项匹配目标，关键文本CR字节均为0，展开后模式为`664`并与tar闭合。远端LF release已完成展开；`CVS-RFFI` Python`3.10.19`下core、build CLI、test三文件`py_compile=PASS`，公开build CLI`--help=PASS`。输入SHA、GPU7空闲、目标release/output/log/build文件覆盖检查均通过；目前仍未创建log root、未launch、无性能结果。
 
+上述远端`py_compile`在release内产生16个`__pycache__`文件；该树已安全改名为`*_pycompile_sideeffects_prelaunch`保留证据，冻结release随后从同一LF tar干净重展开，最终4307文件、无pycache、关键SHA/mode/LF再次闭合。此为launch前机械清理，不计实验retry；之后不再在release内运行会写文件的Python。
+
 ## 3.冻结输入与数据轴
 
 |输入|远端路径|SHA256|
