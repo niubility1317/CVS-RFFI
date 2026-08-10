@@ -97,3 +97,13 @@ Runner落地前必须完成：direct preflight；LF无prefix archive、成员SHA
 |fixed400 proxy双门|6/6 fold同时ΔAUROC>0且Δu-gap>0|待运行|PENDING|
 
 最终分析必须按同fold、同scene保留C/G完整行，报告overall、min-class、min-RX、min-day及proxy AUROC/u-gap；不得用不同fold或不同指标的边际最值拼接成结论。当前状态保持`PREREGISTERED / LOCAL_VERIFIED / NO_PERFORMANCE_INTERPRETATION`。
+
+## 8.Runner本地发布前技术记录（2026-08-11）
+
+- Runner角色：`Luna/max`，唯一N607启动所有权；本阶段未启动，launch调用次数=`0`，retry=`NO`。
+- direct preflight：`tools\\n607_ssh_preflight.ps1`通过；普通账号`N607`、项目根可见、8张RTX3090空闲；每次短SSH后本地`ssh.exe=0`且N607/bridge TCP22 established=`0`。
+- 本地仓：`ce162329af1076c4b829715d0e027a2d8b4f5723`；工作树仅保留既有未跟踪`conversation_index/`，未修改冻结实现。
+- LF无prefix完整Git archive：成员=`4964`，prefix成员=`0`，`code/code/`成员=`0`，文本CR字节=`0`；六冻结成员SHA全部匹配；launcher归档mode=`100755`。归档工件与检查JSON保存在本报告`artifacts/runner_20260811/`目录。
+- 归档SHA256=`0754fc9d214c8712f1cc367afd719323a30b986e8b318364b392312055962556`，bytes=`267151360`。
+- 本地静态验证：`py_compile=0`、focused pytest=`0`（12 passed）、三个`--help=0`、Git Bash`bash -n=0`、冻结dry-run=`42`行且exit=`0`；过程日志仅作技术记录。
+- 远端启动前只读状态：release/run/log/outer均`ABSENT`；ManySig SHA=`2b0a7a7488dd3650bcae7b1d80efbcffd1598aaa671ae6b0a0df2a24dc0f694f`；v2训练根12份`final_ssdg.pth`均存在，SHA记录于`artifacts/runner_20260811/checkpoint_sha256.tsv`；未读取性能字段。
