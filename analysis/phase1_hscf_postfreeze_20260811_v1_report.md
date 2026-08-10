@@ -114,3 +114,17 @@ Runner落地前必须完成：direct preflight；LF无prefix archive、成员SHA
 - release内静态门：`py_compile=PASS`、4个`--help=PASS`、`bash -n=PASS`、冻结dry-run=`42`行、旧候选身份行=`0`；静态命令未创建run/log输出。
 - 当前release validator顺序重开12份真实terminal receipt：`terminal_contract_passed=12`、`B128/local4/denom512=12`、C零辅助=`6`、G三scene raw-unscaled VJP=`6`、C/G common binding=`6`。这些是技术闭合证据，不含性能读取或解释。
 - 远端release状态=`LANDED`；尚未启动，launch调用次数仍=`0`，retry=`NO`。
+
+## 10.Runner唯一启动、监控与技术闭合记录（2026-08-11）
+
+- 唯一冻结启动命令调用次数=`1`，SSH返回`0`；retry=`NO`，未发生重发。启动后主PID/CWD/cmdline/run-root绑定、GPU映射与日志增长均完成短连接核验；12个候选PID均已退出，GPU计算进程已释放。
+- 最终工件计数：clean NPZ=`12`、LEO NPZ=`12`、LEO binding JSON=`12`、proxy JSON=`12`、proxy CSV=`12`、pair JSON=`6`、候选/ pair阶段日志=`18`、`candidate_pids.tsv`数据行=`12`。标准化技术异常指纹扫描为`0`（未见Traceback、RuntimeError、OOM/CUDA、argparse、路径/权限类错误）。
+- 6份pair技术闭合：schema=`6/6`、roots=`6/6`、common C/G binding=`6/6`、proxy C/G recomputation=`6/6`、F6 raw-reopen键=`6/6`、binding path issue=`0`；F6已重开F1--F5原始clean/LEO NPZ、binding、proxy JSON/CSV、C/G checkpoint与receipt后完成技术聚合。上述仅为工件/绑定/重开证据，不读取性能值。
+- 预期outer路径`/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_hscf_postfreeze_20260811_v1/phase1_hscf_postfreeze_20260811_v1_launcher.out`最终状态=`ABSENT`。该文件不参与计算、绑定或判定；42项核心工件、18阶段日志、PID表、6份pair技术闭合均完整，故按主控决定记为非阻断缺项，不补造、不重跑。
+- 机械探针曾出现一次合并闭合脚本断言失败及两次诊断脚本语法错误；均为只读探针、未改动远端状态且不影响release、唯一launch或工件，随后独立最终技术扫描通过。
+
+## 11.小bundle回收与最终状态（2026-08-11）
+
+- 回收范围严格为JSON/CSV/binding/log/PID/manifest；排除`.npz/.pth/.pt/.npy`。远端manifest：`/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_hscf_postfreeze_20260811_v1/phase1_hscf_postfreeze_20260811_v1_small_manifest_v2.json`，SHA256=`a4530038fdc10fda0b7ca86940669823ede32ea1f238d7d588bb5eb2a6a9eeae`，bytes=`19468`；`outer_status=ABSENT`且manifest明确记录该状态，成员（不含manifest）=`61`。
+- 远端bundle：`/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_hscf_postfreeze_20260811_v1/phase1_hscf_postfreeze_20260811_v1_small_bundle_v2.tar`；本地回收：`E:\type10-7\automation_reports\CV-SincNet\phase1_hscf_postfreeze_20260811_v1\artifacts\retrieved_small\phase1_hscf_postfreeze_20260811_v1_small_bundle_v2.tar`，SHA256=`4dae782af6bef23c7c55d0077a04047d82330c3ff9af25b07faddae6e0fe3010`，bytes=`32542720`，成员=`62`（含manifest），禁入成员=`0`。本地manifest副本同SHA/bytes并经`inspect_bundle_v2.py`验证通过。
+- 技术状态=`ARTIFACTS_COMPLETE / NO_PERFORMANCE_INTERPRETATION`；不据此晋级或拒绝候选。Runner未读取`accuracy/floor/AUROC/u-gap`等性能字段，未做任何性能解释、调参、重启或候选判定。
