@@ -135,3 +135,17 @@ G臂额外必须闭合：
 - 28个cell逐批FP32 XᵀX会增加计算与同步开销；不得据中间耗时或GPU利用率停止。
 - safe-zero和空cell合法，但终态每scene必须28/28覆盖并有正D批。
 - 若VJP、resource ledger或terminal收据失败，按技术失败处理，不得改公式、λ、fold、seed或矩阵后在同run ID重试。
+
+## 8.Runner预启动证据（2026-08-11）
+
+- 治理入口：根目录direct `tools\\n607_ssh_preflight.ps1`通过；普通N607账号`szu2070436088`，未使用admin或bridge；SSH进程与TCP22均已清零。
+- Git/archive输入：实现commit=`021a639ddfd4e485c179dce8d08e436dd8880c80`；最终无prefix、LF-only full archive=`release/phase1_rcmmc12_20260811_v1_021a639d_lfnorm.tar`，SHA256=`50f06763940c276604e74f386a5d3ef900190e3788c31c360e12f0addd4d358b`，267294720B，4969 members（4349 files、620 dirs），`code/code=0`，4291个无NUL文本成员CR字节=0。五冻结成员SHA与预登记一致：design=`59965e4f0baf05976b1a5a92ffede8e33406b3cc5f6af1f9efdc6a763fcfa42d`、core=`190c27d2334aa322b933e4db3c7861963bc33f76c436e4daa1ce2ea2572d52c3`、train archive-LF=`7a0a431280d8f782a638a74491459f279be429f9b32926ef93b3fbdc31107b73`（worktree=`933e4e990b24fdecbcf9492dda0a025adb4c2aa4071639bf9bb638b31e0102f4`）、test=`66980be7dd61f19c226e1b5911436479d21024fca562b7ddc14c604dc9f32b87`、launcher=`9aaafd22a7f3e265ef05da6cdf23e0ccf92cb6b3655ac5bab22cbb7461c46e05`；launcher归档mode=`0664`（实现commit实际Git mode=`100644`，冻结命令显式用`bash`）。首次worktree-attributes CRLF包保留为未放行证据，未传输。
+- 远端输入与覆盖门（预SCP快照）：ManySig SHA=`2b0a7a7488dd3650bcae7b1d80efbcffd1598aaa671ae6b0a0df2a24dc0f694f`；六个GeoSat-C checkpoint SHA逐项匹配预登记；release/run/log/outer启动前均`ABSENT`；8GPU均0%利用率、1MiB显存、无训练进程。SCP次数=`0`，launch次数=`0`，retry=`NO`。
+
+## 9.Runner落地与启动前静态门（2026-08-11）
+
+- 新Runner只读审计发现远端预存incoming归档`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_rcmmc12_20260811_v1_021a639d.incoming.tar`（mode=`0664`，267294720B），SHA=`50f06763940c276604e74f386a5d3ef900190e3788c31c360e12f0addd4d358b`与本地final archive一致；按规则未重复SCP（本Runner `SCP=0`）。
+- release目录已存在且mode=`0775`，五冻结member均mode=`0664`且SHA匹配预登记（train为archive-LF SHA=`7a0a431280d8f782a638a74491459f279be429f9b32926ef93b3fbdc31107b73`）；远端归档4969 members、4349 files、621 dirs，`code/code=0`、prefix=0、文本4291/CR bytes=0、`__pycache__`=0。
+- ManySig SHA=`2b0a7a7488dd3650bcae7b1d80efbcffd1598aaa671ae6b0a0df2a24dc0f694f`；F1C--F6C六个GeoSat-C checkpoint均存在并已取SHA；三文件`py_compile`=0、`train_ssdg.py --help`=0且含RCMMC flags、launcher `bash -n`=0、dry-run=12（C=6/G=6，GPU计数0:2/1:2/2:2/3:2/4:1/5:1/6:1/7:1，旧候选=0）。
+- 真实F1C checkpoint no-query smoke通过：从checkpoint args解析`input_len=256,num_domains=14`，state load missing/unexpected=0，前向`z=[128,160]`，RCMMC rows=128/cells=28/positive-D=28，receipt schema=`cvs.phase1.rcmmc_receipt.v1`且VJP receipt闭合；LEO feat_joint与shared encoder finite-nonzero，exact classifier head与clean feat_joint None-or-zero，`rcmmc_loss`签名无query参数。一次错误的128/1默认构造仅产生shape mismatch，未进入训练且已用checkpoint args正确重做。
+- 本次Runner启动前release/run/log/outer分别为PRESENT/ABSENT/ABSENT/ABSENT；无匹配训练进程，8 GPU均0%/1MiB；当前`launch=0`、`retry=NO`，SSH/TCP22每次短连后均清零。
