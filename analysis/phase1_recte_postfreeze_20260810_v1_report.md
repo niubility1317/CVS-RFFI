@@ -4,7 +4,7 @@
 
 - 实验ID：phase1_recte_postfreeze_20260810_v1
 - 日期：2026-08-10
-- 当前状态：LOCAL_VERIFIED / PREREGISTERED / NOT_LAUNCHED / NO_PERFORMANCE_RESULT
+- 当前状态：PRELAUNCH_REPAIR_VERIFIED / PREREGISTERED / NOT_LAUNCHED / NO_PERFORMANCE_RESULT
 - 操作边界：主代理冻结评价合同、矩阵和判定门；唯一N607 Runner只负责release落地、唯一启动、技术监控和小工件回收。
 - 训练输入：phase1_recte12_20260810_v1，已技术闭合12/12臂；训练报告SHA256=013216a56da310ea4ae0b082904719255099fcc54985724870bdb8fc4c4a85bf，Git镜像commit=cd8daa75。
 - 目标：对同fold C/G执行固定clean、三LEO、fixed400 proxy和连续Gaussian-NLL公平评价，产出6份pair JSON及F6矩阵聚合。
@@ -13,23 +13,24 @@
 ## 2.冻结版本、本地文件与独立审查
 
 - Git仓库：E:\type10-7\code\snapshots\phase3_responsibility_20260807_wt
-- 后冻结实现commit：b95aac57b82f623f729c2ac24c1793664c112ca1
+- 后冻结实现commit：cb92090fd3247e9e9fb0d4bff9f28496a071ef6c
 - 独立actual-diff终裁：P0=0 / P1=0 / ALLOW
 - 审查边界：ALLOW只允许技术发布与Runner交接，不包含性能结果、方法晋级或N607已执行声明。
 
 |文件|工作树SHA256|用途|
 |---|---|---|
 |analysis/phase1_recte_postfreeze_design_20260810.md|47c24a0e0cf45082e7849fd39bbad9f4d3804a87d8f1caea1d6a22f2076c1865|后冻结设计、追踪和证据边界|
-|code/export_phase1_recte_features.py|75eb27705fa479b923c8322cc791c9d3723dd47197edde87ae20a35a10e04d58|clean L/V/proxy专用导出|
+|code/export_phase1_recte_features.py|d3a99ede833d961fa4092841e2eb69f5c8cf608b12cf827c6cc2ba1fa76c2ea3|clean L/V/proxy专用导出|
 |code/export_phase1_recte_leo_features.py|37b248a0c80e05538d941ee8e51df8f3aaed6d49ecefeb55cc85d0aa8d6359bb|三LEO导出与物理绑定|
-|code/evaluate_phase1_recte_postfreeze_pair.py|69a4cd941094196c99e8c78d10c9bbca9a43742b46a00ffc9e2463c725ba7364|同fold C/G评分与F6原始工件聚合|
-|code/tests/test_phase1_recte_postfreeze.py|fb4ad2aa28ee5b8f6873ff93f5df5c49a8bbc748d95ac37ccbb6aa740f8dd01d|receipt、物理绑定、篡改与门测试|
+|code/evaluate_phase1_recte_postfreeze_pair.py|78bd0de61d1ddb64c75fb6f3dcea0e4465592fc019dc1d310112876c5ad2ab00|同fold C/G评分与F6原始工件聚合|
+|code/tests/test_phase1_recte_postfreeze.py|1921589e0d1d1f4dd0c9989a97866992230af4966d3a2da1ae96f5c46f477540|receipt、物理绑定、篡改与门测试|
 |code/scripts/launch_phase1_recte_postfreeze_20260810.sh|4aa54708540be5e4eeae5d42165e9ef1ca35ad4218981a7c33c49a2f4f8a1abe|冻结42步launcher，Git mode100755|
 
 本地ssr-gpu串行验证：
 
 - 四个Python文件py_compile通过。
 - RECTE后冻结专项：33 passed。
+- 真实F1C签字terminal receipt内存回归：source/frozen receiver IDs、source_receiver_count=7、SHA/provenance、28/378全部通过；不再要求训练core从未定义的frozen_source_receiver_count。
 - RCAT+RCRMD共享公平核回归：60 passed。
 - bash -n通过。
 - dry-run精确42步=12 clean+12 LEO/binding+12 proxy+6 pair，旧ICMT/RCAT/RCRMD/CAGM运行身份为0。
@@ -75,7 +76,7 @@ Runner必须逐项重验ManySig、12个checkpoint SHA和RECTE terminal receipt�
 
 - Python：/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python
 - 项目根：/home/szu2070436088/2510044040/CV-SincNet
-- 预计release：/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_recte_postfreeze_20260810_v1_b95aac57
+- 预计release：/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_recte_postfreeze_20260810_v1_cb92090f
 - 精确CWD：<release>/code
 - 训练root：/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_recte12_20260810_v1
 - 后冻结root：/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_recte_postfreeze_20260810_v1
@@ -86,7 +87,7 @@ GPU映射沿用训练：F1C+F5G/0，F1G+F5C/1，F2C+F6G/2，F2G+F6C/3，F3C/4，
 
 唯一启动命令：
 
-    cd /home/szu2070436088/2510044040/CV-SincNet/releases/phase1_recte_postfreeze_20260810_v1_b95aac57/code && nohup env POSTFREEZE_RUN_ID=phase1_recte_postfreeze_20260810_v1 PROJECT_ROOT=/home/szu2070436088/2510044040/CV-SincNet CODE_ROOT=/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_recte_postfreeze_20260810_v1_b95aac57/code TRAIN_RUN_ROOT=/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_recte12_20260810_v1 POSTFREEZE_ROOT=/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_recte_postfreeze_20260810_v1 LOG_ROOT=/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_recte_postfreeze_20260810_v1 bash /home/szu2070436088/2510044040/CV-SincNet/releases/phase1_recte_postfreeze_20260810_v1_b95aac57/code/scripts/launch_phase1_recte_postfreeze_20260810.sh > /home/szu2070436088/2510044040/CV-SincNet/logs/phase1_recte_postfreeze_20260810_v1_launcher.out 2>&1 < /dev/null &
+    cd /home/szu2070436088/2510044040/CV-SincNet/releases/phase1_recte_postfreeze_20260810_v1_cb92090f/code && nohup env POSTFREEZE_RUN_ID=phase1_recte_postfreeze_20260810_v1 PROJECT_ROOT=/home/szu2070436088/2510044040/CV-SincNet CODE_ROOT=/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_recte_postfreeze_20260810_v1_cb92090f/code TRAIN_RUN_ROOT=/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_recte12_20260810_v1 POSTFREEZE_ROOT=/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_recte_postfreeze_20260810_v1 LOG_ROOT=/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_recte_postfreeze_20260810_v1 bash /home/szu2070436088/2510044040/CV-SincNet/releases/phase1_recte_postfreeze_20260810_v1_cb92090f/code/scripts/launch_phase1_recte_postfreeze_20260810.sh > /home/szu2070436088/2510044040/CV-SincNet/logs/phase1_recte_postfreeze_20260810_v1_launcher.out 2>&1 < /dev/null &
 
 调用只能1次，retry=NO。调用端超时后先清理本地SSH/TCP22，再只读核run/log/PID/CWD/cmdline是否已landed，严禁重发。
 
@@ -122,4 +123,13 @@ Runner只回收小JSON/CSV/binding/log/PID/manifest，不下载checkpoint或NPZ�
 - RECTE terminal receipt只读审计：12/12臂均为`schema=cvs.phase1.recte_receipt.v1`、`method=P1_RECTE`、`frozen_mode=true`、`checkpoint_role=training_final_only`，C/G的`enabled/lambda`与候选一致，`recte_terminal_contract_passed=true`；共同`common_l_base_head_input_path_verified=true`、`common_batch_sequence=1200/153600`、三场景各28cells、`source_receiver_count=7`。但12臂均缺少键`frozen_source_receiver_count`（不存在/None），而当前release validator要求该键严格等于7；首个F1C在`validate_recte_training_checkpoint`处因该确定性schema缺键失败。该训练原件与实现commit均冻结，Runner未修改任何方法、代码、checkpoint或远端证据，因此不启动。
 - 工件与回收：预期42步均为0；12 clean NPZ、12 LEO NPZ、12 binding、12 proxy JSON、12 proxy CSV、6 pair JSON、18日志、PID表和bundle均未生成/未回收；未下载NPZ、pth、pt、npy。
 - SSH清理：每次SSH/SCP返回后本地`ssh.exe=0`且N607/bridge TCP22 established=0；当前无遗留连接。
-- 报告边界：本节记录技术落地与预启动阻断，不构成方法晋级或任何性能结论。修复receipt schema后必须由主代理重新冻结并创建新的非覆盖run ID；本次run保持`NO_PERFORMANCE_RESULT`。
+- 报告边界：本节记录旧release的技术落地与预启动阻断，不构成方法晋级或任何性能结论。由于唯一启动调用仍为0且run/log/outer始终不存在，修复后保留同一冻结run ID，但必须使用新的非覆盖release路径；旧release与partial证据继续保留。
+
+## 9.真实receipt兼容修复与重新放行
+
+- 根因：签字训练core只产出frozen_source_receiver_ids和source_receiver_count，从未定义frozen_source_receiver_count；旧后冻结夹具人为补入该字段，掩盖了首次真实receipt不兼容。
+- 最小修复commit：cb92090fd3247e9e9fb0d4bff9f28496a071ef6c，仅在export/pair/test删除4行虚构字段要求；方法、评价公式、门、矩阵、launcher和运行ID均未改变。
+- 严格性保持：两个receiver-ID列表仍必须为0..6，source_receiver_count必须为7，且IDs SHA、provenance、28 cells、378分母和C/G共同投影继续fail-closed。
+- 验证：py_compile通过；RECTE后冻结33 passed；真实F1C terminal receipt内存校验通过；git diff --check通过。
+- 独立修复终裁：P0=0 / P1=0 / ALLOW。该ALLOW只覆盖prelaunch兼容修复，不代表N607已执行或产生性能结论。
+- 新release固定为.../phase1_recte_postfreeze_20260810_v1_cb92090f；旧b95aac57 release不得覆盖或用于启动。
