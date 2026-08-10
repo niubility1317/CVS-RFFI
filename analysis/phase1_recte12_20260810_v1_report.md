@@ -5,7 +5,7 @@
 - 实验ID：`phase1_recte12_20260810_v1`
 - 日期：2026-08-10
 - 操作边界：主代理冻结候选、矩阵、版本和证据边界；唯一N607 Runner仅负责落地、启动、监控与小工件回收。
-- 当前状态：`RUNNING / NO_PERFORMANCE_RESULT`
+- 当前状态：`ARTIFACTS_COMPLETE / NO_PERFORMANCE_RESULT`
 - 目标：从相同GeoSat-C final-only checkpoint继续训练，比较同折C控制臂与唯一增加P1-RECTE辅助项的G实验臂。
 - 可证伪假设：source-known-train L中，同一物理样本clean→LEO真实类margin位移若在RX×local-class格之间长期出现相对低端尾部，则只上推较低格、允许共同位移的RECTE可能改善min-RX/min-class分类端点，同时不破坏后冻结proxy反退化端点。
 - 声明边界：不得预称修复RX、day、proxy、真实unknown或Phase3；完整门通过也只能进入`PHASE1_ADVANCEMENT_CANDIDATE_PENDING_MAIN_REVIEW`。
@@ -128,8 +128,32 @@ Runner完成后只回收小日志、JSON/CSV、PID与manifest，不下载checkpo
 
 非补偿门：clean 6/6四floor不低于C−2pp；LEO 18/18四floor不低于C−2pp；每fold三场景overall和全18格overall均不低于C；每fold proxy AUROC增量>0且proxy−V mean-u gap增量>0，必须6/6。任一完整门失败即`REJECT_P1_RECTE_PERMANENT`。
 
-## 8.结果表占位
+## 8.Runner终态与小bundle
 
-|候选|机制|fold/arm|source RX/TX|K-shot|seed|训练技术状态|后冻结clean/LEO/proxy|最终判定|
-|---|---|---|---|---:|---:|---|---|---|
-|F1–F6 C/G|RECTE或共同控制|固定六fold配对|见launcher冻结数组|N/A|7281105|待Runner回填|未启动|待完整非补偿门|
+- 终态：12/12 child自然退出；12/12 `phase1_training_completion_receipt.json`、`phase1_terminal_status.json`、`phase1_recte_terminal_receipt.json`、`frozen_phase1_heldout_eval.json`、`phase1_resource_summary.json`、metrics CSV/JSONL、config receipt和`final_ssdg.pth`齐全；12个RECTE terminal receipt均为`NON_PROMOTABLE_P0_DISABLED`，对应exit8为预期非促销终态，不是技术失败。
+- 无健康停止：错误指纹扫描为空；wrapper/launcher PID`1085062/1085063`均已退出；outer launcher bytes=`0`；GPU0–6回到空闲，GPU7仅保留既有SCB v5主/worker`958333/958466`（约845MiB），未干预SCB。
+- 小bundle远端：`/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_recte12_20260810_v1/phase1_recte12_20260810_v1_runner_bundle.tar`，123 members、164485120 bytes、SHA256=`a4649e41c5d524399d392711bbbb60b55eb3977d47e26d14324b1a7d00c39d0c`；manifest=`phase1_recte12_20260810_v1_runner_manifest.txt`，21880 bytes、SHA256=`7c55ccd0b7148d3cdc263332cc4e5fb00a310165208ad32226f932188cf16180`。本地SCP目录：`E:\type10-7\automation_reports\CV-SincNet\phase1_recte12_20260810_v1\runner_bundle`，本地hash与远端一致；bundle禁入后缀`.pth/.npz/.pt/.npy`成员数=0，未下载任何权重或数组归档。
+- 终态SSH/GPU清理：最后一次SCP后本地`ssh.exe=0`、N607 TCP22 established=0；GPU7 SCB保持运行，未停止或修改。
+
+### 8.1 C/G逐场景技术合同
+
+- C六臂（F1C–F6C）：`leo_clear_weak`、`leo_low_elev_weak`、`leo_rain_weak`均为28/28冻结cells；functional head aux readout=`0`，occupied/positive pair=`0/0`；`recte_terminal_contract_passed=true`。
+- G五臂（F1G、F2G、F3G、F5G、F6G）：三场景均400/400 functional-equal batches；clear pair=`148347/148347`、low=`148535/148535`、rain=`148376/148376`；每场景`feat_joint`与shared encoder VJP finite/nonzero，exact-head aux none/nonzero=`1/0`；contract均通过。
+- G臂F4G：low/rain同上；clear为occupied=`148347`、positive-tail=`148346`，属于一个合法zero-tie pair（冻结合同允许`0≤positive≤occupied`且每scene仍有positive tail），标记为`VALID_ZERO_TIE_PAIR / CONTRACT_PASS`，不重跑、不作性能解释。
+
+## 9.逐臂技术结果表（不含性能解释）
+
+|候选|fold/arm|GPU|PID|必需工件|terminal status|exit|final checkpoint SHA256|bytes|最终判定|
+|---|---|---:|---:|---:|---|---:|---|---:|---|
+|F1C_RECTE12|F1/C|0|1085066|10/10|NON_PROMOTABLE_P0_DISABLED|8|4b8c24733196644b0cf0839efc7a165ba79a268086eb1457920633ae9e2afd49|8481659|NO_PERFORMANCE_RESULT|
+|F1G_RECTE12|F1/G|1|1085070|10/10|NON_PROMOTABLE_P0_DISABLED|8|fe0688d39d42b1746b3f2137e58764167395f09e14fd0bb397f8e4bc8b8e3d3a|9636347|NO_PERFORMANCE_RESULT|
+|F2C_RECTE12|F2/C|2|1085074|10/10|NON_PROMOTABLE_P0_DISABLED|8|5cc84ad5984a4c45627228734caff0f6b8c9e0cb36830bf93bcbd33122c3b1bc|8481659|NO_PERFORMANCE_RESULT|
+|F2G_RECTE12|F2/G|3|1085078|10/10|NON_PROMOTABLE_P0_DISABLED|8|d9971a30d7718fe75effb43cad0cc0995c660eaf0dc6e822cdbb9a6641d12a92|9636347|NO_PERFORMANCE_RESULT|
+|F3C_RECTE12|F3/C|4|1085082|10/10|NON_PROMOTABLE_P0_DISABLED|8|1b143700a15e378c6961f4a232d2a25151caa448c3fb3300ae29e2555668577c|8481659|NO_PERFORMANCE_RESULT|
+|F3G_RECTE12|F3/G|5|1085084|10/10|NON_PROMOTABLE_P0_DISABLED|8|53dc14892610ca9908170ab2d939a32beba7b3a2a3408f3fe4086b0b9b14c4d9|9636347|NO_PERFORMANCE_RESULT|
+|F4C_RECTE12|F4/C|6|1085086|10/10|NON_PROMOTABLE_P0_DISABLED|8|e8940f6b1366b6ebfe7f00f2f0b5a6fb1c5d8dff41a7fdfdd7b1a05e2fd25ac7|8481659|NO_PERFORMANCE_RESULT|
+|F4G_RECTE12|F4/G|7|1085088|10/10|NON_PROMOTABLE_P0_DISABLED|8|117f58eca2277c9dc212e1dbe8ffd07c879d9411fa4eed9080eb3f0e783d7172|9636347|NO_PERFORMANCE_RESULT|
+|F5C_RECTE12|F5/C|1|1085072|10/10|NON_PROMOTABLE_P0_DISABLED|8|5e4df2aea0065e08a401826dc977094349a16958d3aaa5021c4c496efd67f98a|8481659|NO_PERFORMANCE_RESULT|
+|F5G_RECTE12|F5/G|0|1085068|10/10|NON_PROMOTABLE_P0_DISABLED|8|fcb5406a56b23a65627bf556cc00f31371ff931a927aa78d3a06bed533f0d4a9|9636347|NO_PERFORMANCE_RESULT|
+|F6C_RECTE12|F6/C|3|1085080|10/10|NON_PROMOTABLE_P0_DISABLED|8|9055408c27b034cf02b4a67b6ddaae1d9bf7dea36c27b6289fe99e6d946478c8|8481659|NO_PERFORMANCE_RESULT|
+|F6G_RECTE12|F6/G|2|1085076|10/10|NON_PROMOTABLE_P0_DISABLED|8|728bea80024a758fe473ace53196233448553165091571b7d236140b51428416|9636347|NO_PERFORMANCE_RESULT|
