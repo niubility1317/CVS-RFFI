@@ -104,7 +104,7 @@ Runner只读取技术binding并回收JSON/CSV/log/manifest小工件，不下载c
 
 - 恢复后只读核验：release/run/log/outer/temp在启动前均ABSENT；无postfreeze进程；GPU0–7各约1MiB；12个训练final checkpoint、RCRMD terminal receipt、ManySig SHA均与训练报告§8.1闭合。
 - 本地归档：`artifacts/phase1_rcrmd_postfreeze_20260810_v1_e84c4560_fulltree.tar`；无前缀、4925 members、无`code/code`重复路径；大小=`260976640`字节；SHA256=`aa2ef42e9454d2362ece03a0bed2dc92795dcce727429bf74f53afb31f3939f3`。
-- 归档6成员SHA全部匹配冻结清单；launcher归档/远端release mode=`0755`。远端release已解包为`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_rcrmd_postfreeze_20260810_v1_e84c4560`；临时归档已移除。
+- 归档6成员SHA全部匹配冻结清单；launcher Git树mode=`100755`，归档/远端release可执行位保留（远端`stat`=`775`，未改内容）。远端release已解包为`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_rcrmd_postfreeze_20260810_v1_e84c4560`；临时归档已移除。
 - 当前状态：`LANDED / STATIC_PENDING / NO_PERFORMANCE_RESULT`；尚未执行任何postfreeze launch。
 
 ## 8.远端静态门（launch前）
