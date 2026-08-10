@@ -4,7 +4,7 @@
 
 - 实验ID：`phase1_hscf12_20260810_v1`
 - 预登记日期：2026-08-11；ID沿用2026-08-10冻结设计与launcher命名，不代表已提前运行。
-- 当前状态：`PREREGISTERED / LOCAL_VERIFIED / NOT_LAUNCHED / NO_PERFORMANCE_RESULT`
+- 当前状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
 - 操作边界：主代理冻结候选、矩阵、版本和证据边界；唯一N607 Runner只负责归档落地、一次启动、短连接监控和小工件回收。
 - 目标：从相同GeoSat-C final-only checkpoint继续训练，比较同折C控制臂与唯一增加P1-HSCF辅助项的G实验臂。
 - 可证伪假设：source-known-train L中，同一物理样本clean→单LEO的local4 head-contrast若发生跨样本相对构型压缩或旋转，固定双中心化保真项可能在维持分类端点的同时减少连续Gaussian几何退化。
