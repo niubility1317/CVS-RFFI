@@ -85,3 +85,25 @@ cd /home/szu2070436088/2510044040/CV-SincNet/releases/phase1_rcat_postfreeze_202
 停止仅限错误checkout/hash、覆盖风险、协议/P0违反、launcher-wide确定性故障，或至少两个distinct candidate在产出目标工件前出现相同确定性异常。停止前精确核run-owned PID/CWD/cmdline，只停止本run并保留partial。不得读取accuracy、floor、AUROC、u-gap或其他性能值决定是否停止。
 
 Runner只回收小JSON/CSV/binding/log/PID/manifest，不下载checkpoint或NPZ；技术交接先标记`PAIR_JSON_READY / NO_PERFORMANCE_INTERPRETATION`。主代理在全部pair和原始工件闭合后才读取性能并作最终判定。
+
+## 7.Runner落地与技术交接
+
+- 当前状态：`PAIR_JSON_READY / NO_PERFORMANCE_INTERPRETATION`。本节只记录版本、落地、资源、工件和技术绑定，不读取或解释accuracy、floor、AUROC、u-gap等性能字段。
+- 实现commit：`51bc94b935fa289e0ce624f0157efdddc0a5d00d`；预注册commit：`d77158830a895340cba22bd3677407b9e72ecff2`。
+- 归档由实现commit生成，完整无prefix、4939 members、`code/code=0`、文本成员CRLF计数为0；LF归档SHA=`e578fc977ca7f664851820ce65514ba5e151ca234c5490eaa667685ad8ea9776`，大小=`34479529`字节。远端临时归档SHA、大小和成员数一致，解包后release launcher mode=`775`，六个目标member逐项一致：
+
+|member|LF SHA256|
+|---|---|
+|`analysis/phase1_rcat_postfreeze_design_20260810.md`|`cff7d149bd166ebf9110c8e97bcd102aedcf254d497812b4c530d4eec7f4c1ba`|
+|`code/export_phase1_rcat_features.py`|`2d0603d23de51447afbbe532931ef76e4d2a9f34f0d0c5fe54151c2d124d7673`|
+|`code/export_phase1_rcat_leo_features.py`|`404c51f15f2a872c7253bb6cc7e158471c20a4fe5c06d35d4321e5a57e859cdc`|
+|`code/evaluate_phase1_rcat_postfreeze_pair.py`|`41472ca0e178ecc4806e63a7f26976d873b8b272ca9d413d9de32c513bf78408`|
+|`code/tests/test_phase1_rcat_postfreeze.py`|`1681843dbdadea0556ff5065bd7318f143a1f8f18604d8017bf134cbb75e8cc0`|
+|`code/scripts/launch_phase1_rcat_postfreeze_20260810.sh`|`dcc709ba84e4f23021c7ad4a0e5ec7d85c1afdfdc96658740801477c6dec5bf1`|
+
+- direct N607 preflight通过；ManySig SHA=`2b0a7a7488dd3650bcae7b1d80efbcffd1598aaa671ae6b0a0df2a24dc0f694f`；训练root的12个`final_ssdg.pth`仅远端逐SHA核验并未下载，12个RCAT receipt schema/root均闭合。启动前release、postfreeze run、log、outer及临时路径均`ABSENT`。GPU7既有SCB实时PID=`958466`（父PID=`958333`，约845MiB）；未干预，GPU0--6启动前空闲。
+- 远端静态门全部通过：release内5个Python入口`py_compile`、4个公开CLI`--help`、`bash -n`；冻结环境dry-run精确42步=`12 clean+12 LEO/binding+12 proxy+6 pair`，RCAT candidate/root、固定seed/400和无旧身份均通过，且未留下release pycache。
+- 第5节逐字唯一启动命令调用次数=`1`，调用端约77秒无stdout异常返回；按`retry=NO`未重发。只读确认已落地：wrapper PID=`1038841`、launcher PID=`1038842`，12个candidate PID写入`candidate_pids.tsv`并绑定冻结release/code与预登记GPU映射（0/1/2/3/4/5/6/7）；F6 pair短时PID=`1044070`。全部进程随后自然退出；未执行kill，run-owned进程终态=`0`。
+- 技术工件闭合：12/12 clean NPZ、12/12 LEO NPZ、12/12 LEO binding、12/12 proxy JSON、12/12 proxy CSV、6/6 pair JSON、18阶段日志和PID表均存在；6份pair JSON schema、matrix/output root、training root、common training binding、receipt revalidation、proxy recomputation技术键及F6 aggregate键均存在；Traceback、RuntimeError、argparse、OOM、SIGSEGV等技术异常文件名为0。上述只作技术闭合记录，不作性能判断。
+- 小工件bundle已回收至`automation_reports/CV-SincNet/phase1_rcat_postfreeze_20260810_v1/artifacts/phase1_rcat_postfreeze_20260810_v1_small_bundle.tar.gz`：SHA=`0d9cdd92bc764eebce1a46d681dea91757ec36ecc039235c02ea7f0be759415a`，大小=`5534914`字节，63 members；manifest SHA=`444e8dea10490e2475880a2b7ae3f6f2ec67b2e81c9130d25c31e0857c9ef8a3`，大小=`13872`字节。bundle含18日志、12 binding、12 proxy JSON、12 proxy CSV、6 pair JSON、PID/outer和manifest，不含`.pth/.npz`；远端临时archive、bundle及bundle目录均已清理并核验`ABSENT`。
+- 每次SSH/SCP后本地`ssh.exe=0`、N607 TCP22=`0`；release、run和log按约定保留。Runner不启动后续run，不做性能读取/解释或晋级签字。
