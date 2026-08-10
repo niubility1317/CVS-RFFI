@@ -108,3 +108,18 @@ Runner只回收小JSON/CSV/binding/log/PID/manifest，不下载checkpoint或NPZ�
 - 根报告与Git镜像：本次预注册后应逐字一致。
 - N607 release/42步：尚未执行。
 - 性能分析：尚未开始。
+
+## 8.Runner技术交接（2026-08-10）
+
+- 状态：`PRELAUNCH_BLOCKED_RECEIPT_SCHEMA_MISMATCH / NO_PERFORMANCE_RESULT`。
+- Runner边界：唯一启动调用次数为0；未读取或解释任何性能字段；未启动后续实验。
+- Direct preflight：`tools\\n607_ssh_preflight.ps1`通过。N607时间为2026-08-10 22:35:48 CST，项目根可见，8张RTX3090均无compute app、显存占用各1MiB。
+- 启动目标保护：run root、log root和outer在静态门后仍为`ABSENT`；无run-owned PID、无GPU任务、无阶段日志。
+- 训练原件只读核验：ManySig SHA256与12个`final_ssdg.pth`逐项匹配§3预注册值；未下载checkpoint。
+- Release archive：从实现commit`b95aac57b82f623f729c2ac24c1793664c112ca1`生成raw Git archive（SHA256=`f9502a3bc48fe6f2fc5dfdda6b3bb3fec2aba7ebd3becdd841b2a6023e76529a`），仅做launch前机械CRLF→LF规范化后最终archive SHA256=`bf734f3be45d0dd3b4a2fc87b8dcdf686c10c92a09546fbc58cbfa417f4b69bc`、bytes=`266762240`。最终archive为无prefix、4951成员、文本CR计数0；六个冻结member SHA全匹配，launcher mode=`775`。远端archive保留于`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_recte_postfreeze_20260810_v1_b95aac57.gitarchive_lf.tar`。
+- 原子落地：首轮stage误将含顶层`code/`的archive解压到`stage/code`，触发`code/code=1`并在`mv`前安全退出；partial证据保留于`.../phase1_recte_postfreeze_20260810_v1_b95aac57.stage`。随后使用全新`stage2`从archive根解压，核验`code/code=0`、4951成员、无prefix、launcher可执行和六member SHA后原子`mv`到`.../releases/phase1_recte_postfreeze_20260810_v1_b95aac57`。
+- 远端静态门：release内5个Python源以无写盘compile通过；4个CLI`--help`通过；`bash -n`通过；launcher`--dry-run`精确42步。未产生pycache、run、log或outer。
+- RECTE terminal receipt只读审计：12/12臂均为`schema=cvs.phase1.recte_receipt.v1`、`method=P1_RECTE`、`frozen_mode=true`、`checkpoint_role=training_final_only`，C/G的`enabled/lambda`与候选一致，`recte_terminal_contract_passed=true`；共同`common_l_base_head_input_path_verified=true`、`common_batch_sequence=1200/153600`、三场景各28cells、`source_receiver_count=7`。但12臂均缺少键`frozen_source_receiver_count`（不存在/None），而当前release validator要求该键严格等于7；首个F1C在`validate_recte_training_checkpoint`处因该确定性schema缺键失败。该训练原件与实现commit均冻结，Runner未修改任何方法、代码、checkpoint或远端证据，因此不启动。
+- 工件与回收：预期42步均为0；12 clean NPZ、12 LEO NPZ、12 binding、12 proxy JSON、12 proxy CSV、6 pair JSON、18日志、PID表和bundle均未生成/未回收；未下载NPZ、pth、pt、npy。
+- SSH清理：每次SSH/SCP返回后本地`ssh.exe=0`且N607/bridge TCP22 established=0；当前无遗留连接。
+- 报告边界：本节记录技术落地与预启动阻断，不构成方法晋级或任何性能结论。修复receipt schema后必须由主代理重新冻结并创建新的非覆盖run ID；本次run保持`NO_PERFORMANCE_RESULT`。
