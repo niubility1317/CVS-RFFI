@@ -43,7 +43,7 @@ Runner必须从该commit生成无prefix、LF-only完整Git archive，记录archi
 - 本地Git archive：由实现commit`48a2c284b2cca8430320da16560748898ed3b9d5`生成，无prefix、4944 members（4324 regular）、261,509,120 bytes，SHA256=`d77cb7895c14ec07c7a5859244f83170c527102941b35a5565a7e276586c2dfa`；五冻结成员均按Git LF blob核对，launcher archive mode=`0775`。
 - 远端archive：`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_recte12_20260810_v1_48a2c284.tar`，SHA256/bytes/member count与本地一致；无绝对路径与commit-prefix；由隐藏incoming目录解包后原子落地release`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_recte12_20260810_v1_48a2c284`，未覆盖既有路径。
 - 远端关键输入：ManySig SHA256=`2b0a7a7488dd3650bcae7b1d80efbcffd1598aaa671ae6b0a0df2a24dc0f694f`，bytes=`2359341461`。GeoSat-C final checkpoint（六个均bytes=`14977627`）：F1=`4d515204f2cea62c5b82313a01b722b3b3d13a3e4fe647ff4b723b69e8a0c040`；F2=`29c7d7ca31d80d90d7c0235fa234707b05866914dc0acdae5c44505af1bbd76d`；F3=`39c6cdd65aade504efdea956db02cc5e762aee299a9e9319c07ed6fb839434b7`；F4=`32d956f44f60844471ba2ef04526c5f40cad0f8bc8acb7249be6035aa85005e4`；F5=`2b9381546878b19e7e8e2106a82b0d0a4672a3012ef79bd7f28eadfd03b75a9f`；F6=`573ca9d039a8c854f9c0927b5b5c303ab8eeaf527ccd42cd0d764b81e630de6f`。
-- Release静态门：关键五成员SHA与冻结值一致；`py_compile=0`（core/train/test，外置`PYTHONPYCACHEPREFIX`）；`train_ssdg.py --help=0`；`bash -n=0`；launcher dry-run=`0`、12行/12臂（C=6、G=6、旧GD/ICMT/CAGM/RCRMD/RCAT启用数=0）；release内`__pycache__`数量=0。
+- Release静态门：`code/code=0`（release/code存在且代码静态检查闭合）；关键五成员SHA与冻结值一致；`py_compile=0`（core/train/test，外置`PYTHONPYCACHEPREFIX`）；`train_ssdg.py --help=0`；`bash -n=0`；launcher dry-run=`0`、12行/12臂（C=6、G=6、旧GD/ICMT/CAGM/RCRMD/RCAT启用数=0）；release内`__pycache__`数量=0。
 - 启动前状态：release已落地，run根与log根仍为`ABSENT`；每次SSH/SCP后本地`ssh.exe=0`、N607 TCP22 established=0。
 
 ## 3.方法与冻结配置
