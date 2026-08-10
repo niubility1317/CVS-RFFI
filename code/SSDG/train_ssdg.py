@@ -214,6 +214,30 @@ try:
         validate_rcrmd_terminal_receipt,
         write_rcrmd_failure_receipt,
     )
+    from cvsrffi.phase1_rcat import (
+        RCATConfig,
+        RCATConfigurationError,
+        RCATRuntimeError,
+        FROZEN_RCAT_SCENARIOS,
+        add_rcat_to_loss,
+        bind_rcat_optimizer_initial_state,
+        bind_rcat_source_data_order,
+        rcat_aux_gradient_audit,
+        rcat_config_receipt,
+        rcat_loss,
+        rcat_shared_encoder_and_head_parameters,
+        remap_rcat_local_labels_to_head_rows,
+        resolve_rcat_classifier_weight,
+        resolve_rcat_local_head_class_binding,
+        strict_rcat_warm_start,
+        update_rcat_common_batch_sequence_receipt,
+        update_rcat_gradient_audit_receipt,
+        update_rcat_receipt,
+        validate_rcat_args,
+        validate_rcat_binding,
+        validate_rcat_terminal_receipt,
+        write_rcat_failure_receipt,
+    )
     from cvsrffi.phase1_cp_sfce import (
         CPSFCEConfig,
         CPSFCEConfigurationError,
@@ -431,6 +455,17 @@ except ModuleNotFoundError:
     update_rcrmd_gradient_audit_receipt = update_rcrmd_receipt = None
     validate_rcrmd_args = validate_rcrmd_binding = validate_rcrmd_terminal_receipt = None
     write_rcrmd_failure_receipt = None
+    RCATConfig = None
+    RCATConfigurationError = RCATRuntimeError = None
+    FROZEN_RCAT_SCENARIOS = tuple()
+    add_rcat_to_loss = bind_rcat_optimizer_initial_state = bind_rcat_source_data_order = None
+    rcat_aux_gradient_audit = rcat_config_receipt = rcat_loss = None
+    rcat_shared_encoder_and_head_parameters = remap_rcat_local_labels_to_head_rows = None
+    resolve_rcat_classifier_weight = resolve_rcat_local_head_class_binding = None
+    strict_rcat_warm_start = update_rcat_common_batch_sequence_receipt = None
+    update_rcat_gradient_audit_receipt = update_rcat_receipt = None
+    validate_rcat_args = validate_rcat_binding = validate_rcat_terminal_receipt = None
+    write_rcat_failure_receipt = None
     CPSFCEConfig = None
     CPSFCEConfigurationError = CPSFCERuntimeError = None
     FROZEN_CP_SFCE_SCENARIOS = tuple()
@@ -762,6 +797,24 @@ def build_arg_parser() -> argparse.ArgumentParser:
         type=float,
         default=0.0,
         help="Frozen at 0 for C and 0.02 for G when P1-RCRMD mode is enabled.",
+    )
+    parser.add_argument(
+        "--phase1_rcat_frozen_mode",
+        type=str2bool,
+        default=False,
+        help="Enable the frozen P1-RCAT C/G continuation contract.",
+    )
+    parser.add_argument(
+        "--phase1_rcat_enabled",
+        type=str2bool,
+        default=False,
+        help="Enable the sole source-L receiver-conditioned angular transport term in a P1-RCAT G arm.",
+    )
+    parser.add_argument(
+        "--lambda_rcat",
+        type=float,
+        default=0.0,
+        help="Frozen at 0 for C and 0.02 for G when P1-RCAT mode is enabled.",
     )
     parser.add_argument(
         "--phase1_cp_sfce_frozen_mode",
@@ -5006,6 +5059,9 @@ def _build_ssdg_epoch_telemetry_row(
         "phase1_rcrmd_frozen_mode": bool(getattr(args, "phase1_rcrmd_frozen_mode", False)),
         "phase1_rcrmd_enabled": bool(getattr(args, "phase1_rcrmd_enabled", False)),
         "lambda_rcrmd": float(getattr(args, "lambda_rcrmd", 0.0)),
+        "phase1_rcat_frozen_mode": bool(getattr(args, "phase1_rcat_frozen_mode", False)),
+        "phase1_rcat_enabled": bool(getattr(args, "phase1_rcat_enabled", False)),
+        "lambda_rcat": float(getattr(args, "lambda_rcat", 0.0)),
         "phase1_cp_sfce_frozen_mode": bool(getattr(args, "phase1_cp_sfce_frozen_mode", False)),
         "phase1_cp_sfce_enabled": bool(getattr(args, "phase1_cp_sfce_enabled", False)),
         "lambda_cp_sfce": float(getattr(args, "lambda_cp_sfce", 0.0)),
@@ -6057,6 +6113,43 @@ def _persist_rcrmd_failure_receipt(
         return None
 
 
+def _persist_rcat_failure_receipt(
+    *,
+    out_dir: Path,
+    args: Any,
+    rcat_receipt: Mapping[str, Any],
+    error: BaseException,
+    failure_stage: str,
+) -> Optional[Path]:
+    """Best-effort persistence that never masks the primary P1-RCAT failure."""
+
+    def _emit_writer_failure(exception_type: str) -> None:
+        try:
+            print(
+                "[P1-RCAT-FAILURE-RECEIPT] persistence_failed "
+                f"writer_exception_type={exception_type}",
+                flush=True,
+            )
+        except Exception:
+            pass
+
+    if write_rcat_failure_receipt is None:
+        _emit_writer_failure("ImportError")
+        return None
+    try:
+        return write_rcat_failure_receipt(
+            out_dir,
+            candidate_id=str(getattr(args, "candidate_id", "") or ""),
+            run_id=str(getattr(args, "run_id", "") or ""),
+            receipt=rcat_receipt,
+            error=error,
+            failure_stage=str(failure_stage),
+        )
+    except Exception as receipt_error:
+        _emit_writer_failure(type(receipt_error).__name__)
+        return None
+
+
 def _persist_cp_sfce_failure_receipt(
     *,
     out_dir: Path,
@@ -6371,6 +6464,34 @@ def train(args) -> int:
     rcrmd_frozen_mode = bool(getattr(rcrmd_config, "frozen_mode", False))
     rcrmd_local_to_head_class_ids: Optional[Tuple[int, ...]] = None
     if (
+        validate_rcat_args is None
+        or rcat_config_receipt is None
+        or strict_rcat_warm_start is None
+    ):
+        if bool(getattr(args, "phase1_rcat_frozen_mode", False)) or bool(
+            getattr(args, "phase1_rcat_enabled", False)
+        ):
+            raise ImportError("cvsrffi.phase1_rcat is required for P1-RCAT")
+        rcat_config = None
+        rcat_receipt: Dict[str, Any] = {
+            "schema": "cvs.phase1.rcat_receipt.v1",
+            "frozen_mode": False,
+            "enabled": False,
+            "lambda": 0.0,
+            "rcat_common_cells": {},
+            "rcat_scenes": {},
+            "rcat_gradient_audit_completed": False,
+            "rcat_terminal_contract": "PENDING",
+            "rcat_terminal_contract_passed": False,
+            "proxy_rows": 0,
+            "held_rows": 0,
+        }
+    else:
+        rcat_config = validate_rcat_args(args)
+        rcat_receipt = rcat_config_receipt(rcat_config)
+    rcat_frozen_mode = bool(getattr(rcat_config, "frozen_mode", False))
+    rcat_local_to_head_class_ids: Optional[Tuple[int, ...]] = None
+    if (
         validate_cp_sfce_args is None
         or cp_sfce_config_receipt is None
         or strict_cp_sfce_warm_start is None
@@ -6647,7 +6768,7 @@ def train(args) -> int:
             "--phase1_allow_empty_proxy_unknown requires the frozen ManyTx real-OE protocol"
         )
     data_ctx = _build_ssdg_wisig_data(args, device)
-    if ccpc_frozen_mode or pamr_frozen_mode or cb_sfce_frozen_mode or gd_proto_nll_frozen_mode or icmt_frozen_mode or cagm_frozen_mode or rcrmd_frozen_mode or cp_sfce_frozen_mode:
+    if ccpc_frozen_mode or pamr_frozen_mode or cb_sfce_frozen_mode or gd_proto_nll_frozen_mode or icmt_frozen_mode or cagm_frozen_mode or rcrmd_frozen_mode or rcat_frozen_mode or cp_sfce_frozen_mode:
         tx_partition_receipt = (
             (data_ctx.get("split_info", {}) or {}).get("tx_partition_receipt", {})
         )
@@ -6674,6 +6795,10 @@ def train(args) -> int:
                 )
             if rcrmd_frozen_mode:
                 raise RCRMDConfigurationError(
+                    "Frozen Phase1 continuation requires an explicit TX-role partition receipt"
+                )
+            if rcat_frozen_mode:
+                raise RCATConfigurationError(
                     "Frozen Phase1 continuation requires an explicit TX-role partition receipt"
                 )
             if cp_sfce_frozen_mode:
@@ -6706,6 +6831,10 @@ def train(args) -> int:
                 )
             if rcrmd_frozen_mode:
                 raise RCRMDConfigurationError(
+                    "Frozen Phase1 continuation rejects any held/proxy TX loaded by training"
+                )
+            if rcat_frozen_mode:
+                raise RCATConfigurationError(
                     "Frozen Phase1 continuation rejects any held/proxy TX loaded by training"
                 )
             if cp_sfce_frozen_mode:
@@ -6876,6 +7005,37 @@ def train(args) -> int:
                     "local_tx_class_order": local_tx_order,
                 }
             )
+        if rcat_frozen_mode:
+            local_data_class_count = int(data_ctx.get("num_classes", 0))
+            local_tx_order = list(data_ctx.get("class_id_to_tx", []) or [])
+            if local_data_class_count != len(local_tx_order):
+                raise RCATConfigurationError(
+                    "P1-RCAT data_ctx local class count must equal its local TX class-order receipt"
+                )
+            if local_tx_order != frozen_source_roles["source_train_tx"]:
+                raise RCATConfigurationError(
+                    "P1-RCAT data_ctx local TX class order must equal the source-train TX receipt"
+                )
+            if bind_rcat_source_data_order is None:
+                raise ImportError("cvsrffi.phase1_rcat source data-order binding support is required")
+            rcat_receipt.update(
+                bind_rcat_source_data_order(
+                    {
+                        **rcat_receipt,
+                        **frozen_source_roles,
+                        "local_data_class_count": local_data_class_count,
+                        "local_tx_class_order": local_tx_order,
+                    },
+                    (data_ctx.get("split_info", {}) or {}).get("source_split_receipt", {}),
+                )
+            )
+            rcat_receipt.update(
+                {
+                    **frozen_source_roles,
+                    "local_data_class_count": local_data_class_count,
+                    "local_tx_class_order": local_tx_order,
+                }
+            )
         if cp_sfce_frozen_mode:
             local_data_class_count = int(data_ctx.get("num_classes", 0))
             local_tx_order = list(data_ctx.get("class_id_to_tx", []) or [])
@@ -7000,6 +7160,20 @@ def train(args) -> int:
         elif rcrmd_frozen_mode:
             rcrmd_receipt.update(
                 strict_rcrmd_warm_start(
+                    model,
+                    ckpt["model"],
+                    baseline_path=str(args.baseline_ckpt),
+                    baseline_sha256=_sha256_file(args.baseline_ckpt),
+                    checkpoint_epoch=ckpt.get("epoch", -1),
+                    checkpoint_role=ckpt.get(
+                        "checkpoint_role",
+                        ckpt.get("checkpoint_selection", "UNSPECIFIED"),
+                    ),
+                )
+            )
+        elif rcat_frozen_mode:
+            rcat_receipt.update(
+                strict_rcat_warm_start(
                     model,
                     ckpt["model"],
                     baseline_path=str(args.baseline_ckpt),
@@ -7271,6 +7445,45 @@ def train(args) -> int:
             encoding="utf-8",
             newline="\n",
         )
+    if rcat_frozen_mode:
+        if (
+            resolve_rcat_classifier_weight is None
+            or resolve_rcat_local_head_class_binding is None
+            or remap_rcat_local_labels_to_head_rows is None
+        ):
+            raise ImportError("cvsrffi.phase1_rcat classifier binding support is required")
+        rcat_weight = resolve_rcat_classifier_weight(model)
+        checkpoint_args = ckpt.get("args", {}) or {}
+        if not isinstance(checkpoint_args, Mapping):
+            raise RCATConfigurationError(
+                "P1-RCAT strict baseline checkpoint must contain an argument mapping"
+            )
+        checkpoint_train_tx = [
+            item.strip()
+            for item in str(checkpoint_args.get("phase1_source_train_tx_ids", "") or "").split(",")
+            if item.strip()
+        ]
+        tx_partition_receipt = (data_ctx.get("split_info", {}) or {}).get(
+            "tx_partition_receipt", {}
+        )
+        rcat_head_binding = resolve_rcat_local_head_class_binding(
+            local_class_order=list(data_ctx.get("class_id_to_tx", []) or []),
+            source_train_tx=list(tx_partition_receipt.get("source_known_train_tx", []) or []),
+            checkpoint_train_tx=checkpoint_train_tx,
+            dataset_class_order=list(tx_partition_receipt.get("dataset_tx_order", []) or []),
+            local_data_class_count=data_ctx.get("num_classes", 0),
+            checkpoint_head_class_count=checkpoint_args.get("num_classes", None),
+            live_head_class_count=int(rcat_weight.size(0)),
+        )
+        rcat_local_to_head_class_ids = tuple(
+            int(value) for value in rcat_head_binding["local_to_head_class_ids"]
+        )
+        rcat_receipt.update(rcat_head_binding)
+        (out_dir / "phase1_rcat_config_receipt.json").write_text(
+            json.dumps(rcat_receipt, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+            newline="\n",
+        )
     if cp_sfce_frozen_mode:
         if (
             resolve_cp_sfce_classifier_weight is None
@@ -7380,6 +7593,25 @@ def train(args) -> int:
                 out_dir=out_dir,
                 args=args,
                 rcrmd_receipt=rcrmd_receipt,
+                error=error,
+                failure_stage="new_adamw_initial_state_binding",
+            )
+            raise
+    if rcat_frozen_mode:
+        try:
+            if bind_rcat_optimizer_initial_state is None:
+                raise ImportError("cvsrffi.phase1_rcat AdamW initial-state receipt support is required")
+            rcat_receipt = bind_rcat_optimizer_initial_state(rcat_receipt, optimizer)
+            (out_dir / "phase1_rcat_config_receipt.json").write_text(
+                json.dumps(rcat_receipt, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+                encoding="utf-8",
+                newline="\n",
+            )
+        except Exception as error:
+            _persist_rcat_failure_receipt(
+                out_dir=out_dir,
+                args=args,
+                rcat_receipt=rcat_receipt,
                 error=error,
                 failure_stage="new_adamw_initial_state_binding",
             )
@@ -7645,6 +7877,15 @@ def train(args) -> int:
                 f"source_r_count={int(rcrmd_receipt.get('source_receiver_count', 0))} "
                 f"baseline_strict={int(bool(rcrmd_receipt.get('strict_model_keys', False)))} "
                 f"checkpoint_role={str(rcrmd_receipt.get('checkpoint_role', '') or '-')} "
+                "source_L_rx_i_only=1 day_target_proxy=0",
+                "[CONFIG-P1-RCAT] "
+                f"frozen_mode={int(bool(rcat_receipt.get('frozen_mode', False)))} "
+                f"enabled={int(bool(rcat_receipt.get('enabled', False)))} "
+                f"lambda={float(rcat_receipt.get('lambda', 0.0)):.6g} "
+                f"rule={str(rcat_receipt.get('loss_rule', '') or '-')} "
+                f"source_r_count={int(rcat_receipt.get('source_receiver_count', 0))} "
+                f"baseline_strict={int(bool(rcat_receipt.get('strict_model_keys', False)))} "
+                f"checkpoint_role={str(rcat_receipt.get('checkpoint_role', '') or '-')} "
                 "source_L_rx_i_only=1 day_target_proxy=0",
                 "[CONFIG-P1-CP-SFCE] "
                 f"frozen_mode={int(bool(cp_sfce_receipt.get('frozen_mode', False)))} "
@@ -7987,6 +8228,27 @@ def train(args) -> int:
                         failure_stage="local_tx_label_to_live_head_row_binding",
                     )
                     raise
+            if rcat_frozen_mode:
+                try:
+                    if (
+                        rcat_local_to_head_class_ids is None
+                        or remap_rcat_local_labels_to_head_rows is None
+                    ):
+                        raise RCATRuntimeError(
+                            "P1-RCAT local-to-head class binding is unavailable"
+                        )
+                    y_l = remap_rcat_local_labels_to_head_rows(
+                        y_l, rcat_local_to_head_class_ids
+                    )
+                except Exception as error:
+                    _persist_rcat_failure_receipt(
+                        out_dir=out_dir,
+                        args=args,
+                        rcat_receipt=rcat_receipt,
+                        error=error,
+                        failure_stage="local_tx_label_to_live_head_row_binding",
+                    )
+                    raise
             if cp_sfce_frozen_mode:
                 try:
                     if (
@@ -8009,24 +8271,34 @@ def train(args) -> int:
                     )
                     raise
             labeled_clean_count = int(y_l.numel())
-            if rcrmd_frozen_mode:
-                # Revision2 permits only the source-L physical receiver field.
-                # RCRMD does not read day/domain/target/proxy metadata and this
-                # lookup does not affect loader order or sampling.
+            if rcrmd_frozen_mode or rcat_frozen_mode:
+                # Only P1 source-L physical receiver metadata is read. This
+                # lookup never affects loader order, sampler, or model input.
                 receiver_l_base = _metadata_label_tensor(
                     extra_l, "rx_i", device, labeled_clean_count
                 )
                 if receiver_l_base is None:
-                    error = RCRMDRuntimeError(
-                        "P1-RCRMD requires source-L physical rx_i metadata"
+                    error = (
+                        RCRMDRuntimeError("P1-RCRMD requires source-L physical rx_i metadata")
+                        if rcrmd_frozen_mode
+                        else RCATRuntimeError("P1-RCAT requires source-L physical rx_i metadata")
                     )
-                    _persist_rcrmd_failure_receipt(
-                        out_dir=out_dir,
-                        args=args,
-                        rcrmd_receipt=rcrmd_receipt,
-                        error=error,
-                        failure_stage="source_l_rx_i_allowlist_binding",
-                    )
+                    if rcrmd_frozen_mode:
+                        _persist_rcrmd_failure_receipt(
+                            out_dir=out_dir,
+                            args=args,
+                            rcrmd_receipt=rcrmd_receipt,
+                            error=error,
+                            failure_stage="source_l_rx_i_allowlist_binding",
+                        )
+                    if rcat_frozen_mode:
+                        _persist_rcat_failure_receipt(
+                            out_dir=out_dir,
+                            args=args,
+                            rcat_receipt=rcat_receipt,
+                            error=error,
+                            failure_stage="source_l_rx_i_allowlist_binding",
+                        )
                     raise error
                 day_l_base = None
                 d_l = None
@@ -8789,6 +9061,7 @@ def train(args) -> int:
                 loss_icmt_l = zero_sat
                 loss_cagm_l = zero_sat
                 loss_rcrmd_l = zero_sat
+                loss_rcat_l = zero_sat
                 loss_cp_sfce_l = zero_sat
                 cb_sfce_base_loss_l = None
                 gd_proto_nll_base_loss_l = None
@@ -8799,6 +9072,7 @@ def train(args) -> int:
                 icmt_satellite_scenario = ""
                 cagm_satellite_scenario = ""
                 rcrmd_satellite_scenario = ""
+                rcat_satellite_scenario = ""
                 cp_sfce_satellite_scenario = ""
                 cb_sfce_batch_info: Dict[str, Any] = {
                     "rows": 0,
@@ -8862,6 +9136,25 @@ def train(args) -> int:
                     "cells": {},
                     "finite": False,
                     "clean_margin_detached": False,
+                    "empty_cell_zero": False,
+                    "no_active_renormalization": False,
+                }
+                rcat_batch_info: Dict[str, Any] = {
+                    "rows": 0,
+                    "positive_q": 0,
+                    "finite_q": 0,
+                    "clean_zero_rows": 0,
+                    "leo_zero_rows": 0,
+                    "union_zero_rows": 0,
+                    "both_zero_rows": 0,
+                    "nonfinite_rows": 0,
+                    "loss_sum": 0.0,
+                    "global_denominator": 0,
+                    "fixed_scale": 0.0,
+                    "cells": {},
+                    "finite": False,
+                    "clean_feature_detached": False,
+                    "training_accumulation_dtype": "",
                     "empty_cell_zero": False,
                     "no_active_renormalization": False,
                 }
@@ -9099,6 +9392,58 @@ def train(args) -> int:
                             out_dir=out_dir,
                             args=args,
                             rcrmd_receipt=rcrmd_receipt,
+                            error=error,
+                            failure_stage="common_physical_rx_class_scene_n_rc_receipt",
+                        )
+                        raise
+                if rcat_frozen_mode:
+                    try:
+                        if out_sat is None:
+                            raise RCATRuntimeError(
+                                "Frozen P1-RCAT requires the common single LEO forward in both C and G"
+                            )
+                        if int(y_l.numel()) != labeled_clean_count:
+                            raise RCATRuntimeError(
+                                "P1-RCAT forbids expanded or reindexed source-L rows"
+                            )
+                        if validate_rcat_binding is None:
+                            raise ImportError(
+                                "cvsrffi.phase1_rcat common feat_joint/head binding support is required"
+                            )
+                        validate_rcat_binding(
+                            model=model,
+                            out_clean=out_l,
+                            out_leo=out_sat,
+                            tx_labels=y_l,
+                            source_rx_labels=receiver_l_base,
+                            expected_class_ids=rcat_receipt.get("expected_tx_class_ids", []),
+                            expected_receiver_ids=rcat_receipt.get("source_receiver_ids", []),
+                        )
+                        rcat_receipt["common_l_base_head_input_path_verified"] = True
+                        if update_rcat_common_batch_sequence_receipt is None:
+                            raise ImportError(
+                                "cvsrffi.phase1_rcat common coverage receipt support is required"
+                            )
+                        source_meta = _meta_from_extra(extra_l)
+                        rcat_physical_metadata = {
+                            key: source_meta[key]
+                            for key in ("base_index", "sig_i")
+                            if source_meta is not None and key in source_meta
+                        }
+                        rcat_receipt = update_rcat_common_batch_sequence_receipt(
+                            rcat_receipt,
+                            epoch=int(epoch),
+                            batch_index=int(batch_idx),
+                            scenario=str(sat_train_scenario),
+                            source_tx_labels=y_l,
+                            source_rx_labels=receiver_l_base,
+                            metadata=rcat_physical_metadata,
+                        )
+                    except Exception as error:
+                        _persist_rcat_failure_receipt(
+                            out_dir=out_dir,
+                            args=args,
+                            rcat_receipt=rcat_receipt,
                             error=error,
                             failure_stage="common_physical_rx_class_scene_n_rc_receipt",
                         )
@@ -9392,6 +9737,36 @@ def train(args) -> int:
                             failure_stage="paired_raw_local4_margin_rx_cell_binding_or_rcrmd_loss",
                         )
                         raise
+                # RCAT consumes the same paired feat_joint tensors as the
+                # common detached-clean logits KL. It adds no head loss: the
+                # exact head is bound only to prove the common L_base path.
+                if bool(getattr(rcat_config, "enabled", False)):
+                    try:
+                        if out_sat is None:
+                            raise RCATRuntimeError(
+                                "Enabled P1-RCAT requires one existing clean and single LEO forward"
+                            )
+                        if rcat_loss is None:
+                            raise ImportError(
+                                "cvsrffi.phase1_rcat loss support is required"
+                            )
+                        loss_rcat_l, rcat_batch_info = rcat_loss(
+                            out_l["z_id"],
+                            out_sat["z_id"],
+                            y_l,
+                            receiver_l_base,
+                            rcat_receipt.get("source_receiver_ids", []),
+                        )
+                        rcat_satellite_scenario = str(sat_train_scenario)
+                    except Exception as error:
+                        _persist_rcat_failure_receipt(
+                            out_dir=out_dir,
+                            args=args,
+                            rcat_receipt=rcat_receipt,
+                            error=error,
+                            failure_stage="paired_feat_joint_totalized_l2_rx_cell_binding_or_rcat_loss",
+                        )
+                        raise
                 if add_ccpc_to_loss is not None:
                     loss_closed_l = add_ccpc_to_loss(
                         loss_closed_l,
@@ -9435,6 +9810,12 @@ def train(args) -> int:
                         loss_closed_l,
                         loss_rcrmd_l if bool(getattr(rcrmd_config, "enabled", False)) else None,
                         rcrmd_config,
+                    )
+                if add_rcat_to_loss is not None:
+                    loss_closed_l = add_rcat_to_loss(
+                        loss_closed_l,
+                        loss_rcat_l if bool(getattr(rcat_config, "enabled", False)) else None,
+                        rcat_config,
                     )
                 loss_l = loss_closed_l + loss_open_l
                 if phase == "pseudo" and bool(args.use_unlabeled):
@@ -10135,6 +10516,23 @@ def train(args) -> int:
                     "norm": float("nan"),
                 },
             }
+            rcat_gradient_audit_info: Dict[str, Any] = {
+                "feat_joint_leo": {
+                    "parameter_count": 0.0,
+                    "norm": float("nan"),
+                },
+                "shared_encoder": {
+                    "parameter_count": 0.0,
+                    "norm": float("nan"),
+                },
+                "classifier_head": {
+                    "parameter_count": 0.0,
+                    "none_parameters": 0.0,
+                    "zero_parameters": 0.0,
+                    "nonzero_parameters": float("nan"),
+                    "none_or_zero_expected": False,
+                },
+            }
             os_grad_info = {
                 "active": 0.0,
                 "conflict": 0.0,
@@ -10301,6 +10699,26 @@ def train(args) -> int:
                         rcrmd_receipt=rcrmd_receipt,
                         error=error,
                         failure_stage="g_only_rx_class_scene_q_loss_receipt",
+                    )
+                    raise
+            if bool(getattr(rcat_config, "enabled", False)):
+                try:
+                    if update_rcat_receipt is None:
+                        raise ImportError("cvsrffi.phase1_rcat G-only receipt support is required")
+                    rcat_receipt = update_rcat_receipt(
+                        rcat_receipt,
+                        rcat_batch_info,
+                        scenario=rcat_satellite_scenario,
+                        epoch=int(epoch),
+                        batch_index=int(batch_idx),
+                    )
+                except Exception as error:
+                    _persist_rcat_failure_receipt(
+                        out_dir=out_dir,
+                        args=args,
+                        rcat_receipt=rcat_receipt,
+                        error=error,
+                        failure_stage="g_only_rx_class_scene_totalized_l2_q_loss_receipt",
                     )
                     raise
             if bool(getattr(cp_sfce_config, "enabled", False)):
@@ -10483,6 +10901,39 @@ def train(args) -> int:
                         rcrmd_receipt=rcrmd_receipt,
                         error=error,
                         failure_stage="pre_scaled_backward_first_active_raw_encoder_and_exact_head_vjp",
+                    )
+                    raise
+            if (
+                loss_is_finite
+                and bool(getattr(rcat_config, "enabled", False))
+                and int(rcat_batch_info.get("positive_q", 0)) > 0
+                and not bool(rcat_receipt.get("rcat_gradient_audit_completed", False))
+            ):
+                try:
+                    if (
+                        rcat_shared_encoder_and_head_parameters is None
+                        or rcat_aux_gradient_audit is None
+                        or update_rcat_gradient_audit_receipt is None
+                    ):
+                        raise ImportError("cvsrffi.phase1_rcat raw VJP audit support is required")
+                    if out_sat is None:
+                        raise RCATRuntimeError("P1-RCAT first-positive VJP audit lacks LEO feat_joint")
+                    rcat_gradient_audit_info = rcat_aux_gradient_audit(
+                        loss_rcat_l,
+                        out_sat["z_id"],
+                        rcat_shared_encoder_and_head_parameters(model),
+                    )
+                    rcat_receipt = update_rcat_gradient_audit_receipt(
+                        rcat_receipt,
+                        rcat_gradient_audit_info,
+                    )
+                except Exception as error:
+                    _persist_rcat_failure_receipt(
+                        out_dir=out_dir,
+                        args=args,
+                        rcat_receipt=rcat_receipt,
+                        error=error,
+                        failure_stage="pre_scaled_backward_first_positive_feat_joint_and_shared_encoder_vjp_head_aux_na",
                     )
                     raise
             pamr_audit_has_effective_batch = (
@@ -11194,6 +11645,35 @@ def train(args) -> int:
                     ),
                     "train/w_loss_rcrmd": (
                         float(getattr(rcrmd_config, "loss_weight", 0.0)) * loss_rcrmd_l
+                    ).detach(),
+                    "train/loss_rcat": loss_rcat_l.detach(),
+                    "train/rcat_enabled": 1.0 if bool(getattr(rcat_config, "enabled", False)) else 0.0,
+                    "train/rcat_rows": float(rcat_batch_info.get("rows", 0)),
+                    "train/rcat_positive_q": float(rcat_batch_info.get("positive_q", 0)),
+                    "train/rcat_finite_q": float(rcat_batch_info.get("finite_q", 0)),
+                    "train/rcat_clean_zero_rows": float(rcat_batch_info.get("clean_zero_rows", 0)),
+                    "train/rcat_leo_zero_rows": float(rcat_batch_info.get("leo_zero_rows", 0)),
+                    "train/rcat_nonfinite_rows": float(rcat_batch_info.get("nonfinite_rows", 0)),
+                    "train/rcat_loss_sum": float(rcat_batch_info.get("loss_sum", 0.0)),
+                    "train/rcat_global_denominator": float(
+                        rcat_batch_info.get("global_denominator", 0)
+                    ),
+                    "train/rcat_gradient_audit_completed": 1.0 if bool(
+                        rcat_receipt.get("rcat_gradient_audit_completed", False)
+                    ) else 0.0,
+                    "train/rcat_feat_joint_aux_grad_norm": float(
+                        rcat_gradient_audit_info["feat_joint_leo"].get("norm", float("nan"))
+                    ),
+                    "train/rcat_encoder_aux_grad_norm": float(
+                        rcat_gradient_audit_info["shared_encoder"].get("norm", float("nan"))
+                    ),
+                    "train/rcat_head_aux_nonzero_parameters": float(
+                        rcat_gradient_audit_info["classifier_head"].get(
+                            "nonzero_parameters", float("nan")
+                        )
+                    ),
+                    "train/w_loss_rcat": (
+                        float(getattr(rcat_config, "loss_weight", 0.0)) * loss_rcat_l
                     ).detach(),
                     "train/loss_cp_sfce": loss_cp_sfce_l.detach(),
                     "train/cp_sfce_enabled": 1.0 if bool(getattr(cp_sfce_config, "enabled", False)) else 0.0,
@@ -11963,6 +12443,8 @@ def train(args) -> int:
             payload["cagm_receipt"] = dict(cagm_receipt)
         if rcrmd_frozen_mode:
             payload["rcrmd_receipt"] = dict(rcrmd_receipt)
+        if rcat_frozen_mode:
+            payload["rcat_receipt"] = dict(rcat_receipt)
         if cp_sfce_frozen_mode:
             payload["cp_sfce_receipt"] = dict(cp_sfce_receipt)
         latest_path = out_dir / "NOT_SAVED_FINAL_ONLY"
@@ -12499,6 +12981,20 @@ def train(args) -> int:
                 failure_stage="terminal_rcrmd_receipt_validation",
             )
             raise
+    if rcat_frozen_mode:
+        if validate_rcat_terminal_receipt is None:
+            raise ImportError("cvsrffi.phase1_rcat.validate_rcat_terminal_receipt is required")
+        try:
+            rcat_receipt = validate_rcat_terminal_receipt(rcat_receipt)
+        except Exception as error:
+            _persist_rcat_failure_receipt(
+                out_dir=out_dir,
+                args=args,
+                rcat_receipt=rcat_receipt,
+                error=error,
+                failure_stage="terminal_rcat_receipt_validation",
+            )
+            raise
     if cp_sfce_frozen_mode:
         if validate_cp_sfce_terminal_receipt is None:
             raise ImportError("cvsrffi.phase1_cp_sfce.validate_cp_sfce_terminal_receipt is required")
@@ -12546,6 +13042,8 @@ def train(args) -> int:
         final_payload["cagm_receipt"] = dict(cagm_receipt)
     if rcrmd_frozen_mode:
         final_payload["rcrmd_receipt"] = dict(rcrmd_receipt)
+    if rcat_frozen_mode:
+        final_payload["rcat_receipt"] = dict(rcat_receipt)
     if cp_sfce_frozen_mode:
         final_payload["cp_sfce_receipt"] = dict(cp_sfce_receipt)
     final_payload.setdefault("stats", {})
@@ -13172,6 +13670,8 @@ def train(args) -> int:
         terminal_manifest["cagm_receipt"] = dict(cagm_receipt)
     if rcrmd_frozen_mode:
         terminal_manifest["rcrmd_receipt"] = dict(rcrmd_receipt)
+    if rcat_frozen_mode:
+        terminal_manifest["rcat_receipt"] = dict(rcat_receipt)
     if cp_sfce_frozen_mode:
         terminal_manifest["cp_sfce_receipt"] = dict(cp_sfce_receipt)
     (out_dir / "phase1_terminal_status.json").write_text(
@@ -13347,6 +13847,29 @@ def train(args) -> int:
             encoding="utf-8",
             newline="\n",
         )
+    if rcat_frozen_mode:
+        (out_dir / "phase1_rcat_terminal_receipt.json").write_text(
+            json.dumps(
+                {
+                    **dict(rcat_receipt),
+                    "terminal_status": terminal_status,
+                    "terminal_exit_code": int(terminal_exit_code),
+                    "selected_checkpoint": str(selected_checkpoint),
+                    "selected_checkpoint_sha256": selected_checkpoint_sha256,
+                    "technical_only": False,
+                    "promotion_ready": terminal_status == "COMPLETE",
+                    "performance_result_available": False,
+                    "claim": "PHASE1_SOURCE_ONLY_TRAINING_RECEIPT",
+                },
+                ensure_ascii=False,
+                indent=2,
+                sort_keys=True,
+                default=str,
+            )
+            + "\n",
+            encoding="utf-8",
+            newline="\n",
+        )
     if cp_sfce_frozen_mode:
         (out_dir / "phase1_cp_sfce_terminal_receipt.json").write_text(
             json.dumps(
@@ -13451,6 +13974,8 @@ def train(args) -> int:
         completion_receipt["cagm_receipt"] = dict(cagm_receipt)
     if rcrmd_frozen_mode:
         completion_receipt["rcrmd_receipt"] = dict(rcrmd_receipt)
+    if rcat_frozen_mode:
+        completion_receipt["rcat_receipt"] = dict(rcat_receipt)
     (out_dir / "phase1_training_completion_receipt.json").write_text(
         json.dumps(
             completion_receipt,
