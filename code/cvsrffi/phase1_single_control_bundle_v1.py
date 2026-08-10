@@ -9,7 +9,9 @@ L/U/V physical records before :func:`build_bundle` writes a new package.
 from __future__ import annotations
 
 from array import array
+import base64
 from dataclasses import dataclass
+import gc
 import hashlib
 import io
 import json
@@ -22,6 +24,7 @@ import subprocess
 import sys
 import tempfile
 import time
+from types import SimpleNamespace
 import unicodedata
 from typing import Any, Callable, Iterable, Mapping, MutableMapping, Sequence
 
@@ -105,6 +108,18 @@ SCENARIOS = ("leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak")
 VIEW_ORDER = ("clean", *SCENARIOS)
 SEED_RULE_ID = "SCB1-SOURCE-VIEW-SEED-v2"
 PREPROCESS_OPERATOR_ID = "wisig_center256_rms_iq_v1"
+NATIVE_EXECUTION_CHUNK_SIZE = 512
+NATIVE_CHUNK_INPUT_SCHEMA = "cvs.phase1.single_control_native_chunk_input.v5"
+NATIVE_CHUNK_RESULT_SCHEMA = "cvs.phase1.single_control_native_chunk_result.v5"
+NATIVE_EXECUTION_TRACE_SCHEMA = "cvs.phase1.single_control_native_execution_trace.v5"
+NATIVE_IPC_MAX_BYTES = 64 * 1024 * 1024
+NATIVE_WORKER_ENVIRONMENT = (
+    "OMP_NUM_THREADS",
+    "MKL_NUM_THREADS",
+    "OPENBLAS_NUM_THREADS",
+    "NUMEXPR_NUM_THREADS",
+)
+NATIVE_WORKER_ROLES = frozenset(("L_DESCRIPTOR", "U_DESCRIPTOR", "V_DESCRIPTOR", "L_RUNTIME", "V_RUNTIME"))
 
 PAYLOAD_MEMBERS = (
     "runtime/local_evidence.ts",
@@ -560,35 +575,36 @@ def score_class_geometry(z_id: Any, geometry: ClassGeometry) -> tuple[np.ndarray
     return distances.astype(np.float64), float(np.min(distances))
 
 
-def fit_descriptor_stats(opaque_descriptor_rows: Iterable[Mapping[str, Any]]) -> DescriptorStats:
-    """Fit exact robust descriptor statistics from label-free streamed rows.
+def fit_descriptor_stats(descriptor_rows: Iterable[Mapping[str, Any]] | np.ndarray) -> DescriptorStats:
+    """Reduce already-computed five-value descriptors with frozen median/MAD.
 
-    The builder releases every IQ/view before the next row.  This accumulator
-    retains only all five-float descriptors in a compact ``array('d')`` so the
-    frozen full-population ``median`` and ``1.4826*MAD`` remain exact without
-    materializing the 39,200-by-4 source IQ tensors or sample identities.
+    Native workers own IQ-to-descriptor evaluation.  This pure reducer receives
+    only opaque indices plus finite descriptor arrays, retains the exact full
+    population in compact ``array('d')`` storage, and applies the unchanged
+    frozen median and ``1.4826*MAD`` calculation.
     """
 
     values = array("d")
     descriptor_count = 0
-    for row in opaque_descriptor_rows:
-        if not isinstance(row, Mapping) or set(row) != {"opaque_hash", "iq_views"}:
-            raise _error("descriptor rows accept only opaque_hash and iq_views")
-        _require_sha256(row["opaque_hash"], field="opaque descriptor hash")
-        views = row["iq_views"]
-        if not isinstance(views, Sequence) or isinstance(views, (str, bytes)) or not views:
-            raise _error("descriptor row must have non-empty IQ views")
-        for view_index, view in enumerate(views):
-            tensor = torch.as_tensor(view)
-            if tensor.ndim == 3 and tensor.shape[0] == 1:
-                tensor = tensor[0]
-            if tensor.dtype != torch.float32 or tuple(tensor.shape) != (2, INPUT_LEN) or not tensor.is_contiguous():
-                raise _error("descriptor IQ views must be exact model-input tensors")
-            descriptor = domain_descriptor(tensor)
-            descriptor_count += 1
-            values.extend(float(value) for value in descriptor)
+
+    def append_matrix(matrix_value: Any, *, field: str) -> None:
+        nonlocal descriptor_count
+        matrix = np.asarray(matrix_value, dtype=np.float64)
+        if matrix.ndim != 2 or matrix.shape[0] < 1 or matrix.shape[1] != 5 or not np.isfinite(matrix).all():
+            raise _error(f"{field} must be a non-empty finite [N,5] descriptor matrix")
+        descriptor_count += int(matrix.shape[0])
+        values.extend(float(value) for value in matrix.reshape(-1))
+
+    if isinstance(descriptor_rows, np.ndarray):
+        append_matrix(descriptor_rows, field="descriptor array")
+    else:
+        for row in descriptor_rows:
+            if not isinstance(row, Mapping) or set(row) != {"opaque_index", "descriptors"}:
+                raise _error("descriptor rows accept only opaque_index and descriptors")
+            _require_nonbool_int(row["opaque_index"], field="opaque descriptor index", minimum=0)
+            append_matrix(row["descriptors"], field="descriptor row")
     if descriptor_count < 1 or not values:
-        raise _error("descriptor fitting requires at least one opaque physical")
+        raise _error("descriptor fitting requires at least one descriptor")
     if values.itemsize != np.dtype(np.float64).itemsize or len(values) != descriptor_count * 5:
         raise _error("descriptor accumulator layout drift")
     descriptors = np.frombuffer(values, dtype=np.float64).reshape(descriptor_count, 5)
@@ -863,6 +879,14 @@ def build_torchscript_runtime(
     audit = dict(audit)
     audit.update({"runtime_batch_capacity": 1, "runtime_internal_padding": False, "raw_model_direct_identity_parity": True})
     return runtime, reference, audit
+
+
+def _build_short_lived_eager_runtime(*, checkpoint: Mapping[str, Any], device: torch.device) -> nn.Module:
+    """Rebuild only the eager reference after native source workers have exited."""
+
+    model, _ = build_exact_ssdg_model_from_checkpoint(checkpoint, input_len=INPUT_LEN, device=device)
+    model.to(device).eval()
+    return DirectIdentityReference(model).to(device).eval()
 
 
 def runtime_state_schema(runtime: torch.jit.ScriptModule) -> dict[str, Any]:
@@ -2641,7 +2665,7 @@ def _resolved_ssdg_namespace(checkpoint: Mapping[str, Any], *, device: torch.dev
 
 
 def _load_manysig_no_default_equalized(pkl_path: str | Path) -> dict[str, Any]:
-    """Refuse the dataset loader's historical missing-equalized default."""
+    """Strictly load ManySig once without invoking the historical loader twice."""
 
     path = Path(pkl_path)
     if path.is_symlink() or not path.is_file():
@@ -2651,19 +2675,26 @@ def _load_manysig_no_default_equalized(pkl_path: str | Path) -> dict[str, Any]:
             raw = pickle.load(handle)
     except Exception as exc:
         raise _error("ManySig PKL is unreadable") from exc
-    if not isinstance(raw, Mapping) or "equalized_list" not in raw:
-        raise _error("ManySig PKL must explicitly carry equalized_list; loader defaults are forbidden")
-    equalized_values = raw.get("equalized_list")
+    if not isinstance(raw, dict):
+        raise _error("ManySig PKL must decode to a dictionary")
+    # Keep the one historical compatibility rule that is deterministic from
+    # already-loaded bytes, but never synthesize RX/day/equalized defaults.
+    if "tx_list" not in raw and "node_list" in raw:
+        raw["tx_list"] = raw["node_list"]
+    for field in ("data", "tx_list", "rx_list", "capture_date_list", "equalized_list"):
+        if field not in raw:
+            raise _error(f"ManySig PKL must explicitly carry {field}; loader defaults are forbidden")
+    if not isinstance(raw["data"], (list, tuple)):
+        raise _error("ManySig data must be a nested list/tuple payload")
+    for field in ("tx_list", "rx_list", "capture_date_list"):
+        if not isinstance(raw[field], list):
+            raise _error(f"ManySig {field} must be an explicit list")
+    equalized_values = raw["equalized_list"]
     if not isinstance(equalized_values, list) or any(isinstance(value, bool) or not isinstance(value, int) for value in equalized_values):
         raise _error("ManySig equalized_list must be an explicit integer list")
     if 1 not in equalized_values:
         raise _error("ManySig equalized_list must explicitly contain equalized=1")
-    from dataset_wisig import load_wisig_compact_pkl
-
-    loaded = load_wisig_compact_pkl(str(path))
-    if list(loaded.get("equalized_list", [])) != list(equalized_values):
-        raise _error("ManySig equalized_list changed across strict load")
-    return dict(loaded)
+    return raw
 
 
 def _label_index(values: Sequence[Any], wanted: Sequence[str], *, axis: str) -> list[int]:
@@ -2780,7 +2811,6 @@ def _source_dataset_and_indices(
     labeled, unlabeled, calibration = split_tx_rx_day_1_6_3(
         dataset, labeled_ratio=0.07, unlabeled_ratio=0.63, source_val_ratio=0.30
     )
-    dataset_sha = sha256_file(pkl_path)
     rebuilt = _build_source_split_receipt(
         seed=7281105,
         split_mode="tx_rx_day_1_6_3",
@@ -2924,6 +2954,344 @@ def _scb_views_for_source_sample(
     if len(views) != len(VIEW_ORDER):
         raise _error("SCB view count drift")
     return views
+
+
+def _native_role_is_descriptor(role: str) -> bool:
+    return role in {"L_DESCRIPTOR", "U_DESCRIPTOR", "V_DESCRIPTOR"}
+
+
+def _native_role_is_runtime(role: str) -> bool:
+    return role in {"L_RUNTIME", "V_RUNTIME"}
+
+
+def _assert_u_native_ipc_minimal(value: Any, *, role: str, direction: str) -> None:
+    """Reject label/physical identity material from the U-worker IPC schema."""
+
+    if role != "U_DESCRIPTOR":
+        return
+    forbidden = {"label", "labels", "class", "classes", "tx", "txlabel", "physical", "physicalkey", "physicaltoken", "hash", "opaquehash"}
+
+    def visit(item: Any) -> None:
+        if isinstance(item, Mapping):
+            for key, nested in item.items():
+                if not isinstance(key, str):
+                    raise _error(f"U native IPC {direction} has a non-string field")
+                normalized = "".join(character for character in key.lower() if character.isalnum())
+                if normalized in forbidden or "label" in normalized or "physical" in normalized or normalized.endswith("hash"):
+                    raise _error(f"U native IPC {direction} contains forbidden identity field: {key}")
+                visit(nested)
+        elif isinstance(item, (list, tuple)):
+            for nested in item:
+                visit(nested)
+
+    visit(value)
+
+
+def _encode_native_raw_record(index: Any, raw_iq: Any) -> dict[str, Any]:
+    opaque_index = _require_nonbool_int(index, field="native opaque source index", minimum=0)
+    values = np.asarray(raw_iq)
+    if values.ndim != 2 or values.shape[0] < 1 or values.shape[1] < 1 or values.dtype.hasobject:
+        raise _error("native worker raw IQ must be a non-object two-dimensional array")
+    contiguous = np.ascontiguousarray(values)
+    return {
+        "opaque_index": opaque_index,
+        "iq_dtype": contiguous.dtype.str,
+        "iq_shape": [int(dimension) for dimension in contiguous.shape],
+        "iq_bytes_b64": base64.b64encode(contiguous.tobytes(order="C")).decode("ascii"),
+    }
+
+
+def _decode_native_raw_record(record: Mapping[str, Any]) -> tuple[int, np.ndarray]:
+    if set(record) != {"opaque_index", "iq_dtype", "iq_shape", "iq_bytes_b64"}:
+        raise _error("native worker raw record schema drift")
+    opaque_index = _require_nonbool_int(record["opaque_index"], field="native opaque source index", minimum=0)
+    if not isinstance(record["iq_dtype"], str) or not isinstance(record["iq_shape"], list):
+        raise _error("native worker raw record dtype/shape drift")
+    try:
+        dtype = np.dtype(record["iq_dtype"])
+    except TypeError as exc:
+        raise _error("native worker raw record has invalid dtype") from exc
+    if dtype.hasobject or len(record["iq_shape"]) != 2:
+        raise _error("native worker raw record has invalid dtype/shape")
+    shape = tuple(_require_nonbool_int(value, field="native raw IQ dimension", minimum=1) for value in record["iq_shape"])
+    if not isinstance(record["iq_bytes_b64"], str):
+        raise _error("native worker raw IQ bytes must be base64 text")
+    try:
+        payload = base64.b64decode(record["iq_bytes_b64"].encode("ascii"), validate=True)
+    except (UnicodeEncodeError, ValueError) as exc:
+        raise _error("native worker raw IQ bytes are not valid base64") from exc
+    expected_bytes = int(np.prod(shape, dtype=np.int64)) * int(dtype.itemsize)
+    if expected_bytes < 1 or len(payload) != expected_bytes:
+        raise _error("native worker raw IQ byte count drift")
+    return opaque_index, np.frombuffer(payload, dtype=dtype).reshape(shape).copy()
+
+
+def _validate_native_chunk_input(payload: Any, *, expected_role: str | None = None) -> tuple[str, int, list[tuple[int, np.ndarray]]]:
+    mapping = _require_mapping(payload, field="native worker input")
+    if set(mapping) != {"schema", "role", "chunk_id", "records"}:
+        raise _error("native worker input schema drift")
+    if mapping["schema"] != NATIVE_CHUNK_INPUT_SCHEMA:
+        raise _error("native worker input schema version drift")
+    role = _require_nfc_string(mapping["role"], field="native worker role")
+    if role not in NATIVE_WORKER_ROLES or (expected_role is not None and role != expected_role):
+        raise _error("native worker role drift")
+    chunk_id = _require_nonbool_int(mapping["chunk_id"], field="native worker chunk", minimum=0)
+    if not isinstance(mapping["records"], list) or not mapping["records"]:
+        raise _error("native worker requires a non-empty record chunk")
+    _assert_u_native_ipc_minimal(mapping, role=role, direction="input")
+    decoded = [_decode_native_raw_record(_require_mapping(record, field="native raw record")) for record in mapping["records"]]
+    indices = [index for index, _ in decoded]
+    if len(indices) != len(set(indices)):
+        raise _error("native worker chunk has duplicate opaque indices")
+    return role, chunk_id, decoded
+
+
+def _validate_native_chunk_result(
+    payload: Any,
+    *,
+    expected_role: str,
+    expected_chunk_id: int,
+    expected_indices: Sequence[int],
+) -> list[dict[str, Any]]:
+    mapping = _require_mapping(payload, field="native worker result")
+    if set(mapping) != {"schema", "role", "chunk_id", "record_count", "rows"}:
+        raise _error("native worker result schema drift")
+    if mapping["schema"] != NATIVE_CHUNK_RESULT_SCHEMA or mapping["role"] != expected_role:
+        raise _error("native worker result role/schema drift")
+    if _require_nonbool_int(mapping["chunk_id"], field="native worker result chunk", minimum=0) != expected_chunk_id:
+        raise _error("native worker result chunk order drift")
+    if _require_nonbool_int(mapping["record_count"], field="native worker result count", minimum=0) != len(expected_indices):
+        raise _error("native worker result row-count drift")
+    if not isinstance(mapping["rows"], list) or len(mapping["rows"]) != len(expected_indices):
+        raise _error("native worker result rows are incomplete")
+    _assert_u_native_ipc_minimal(mapping, role=expected_role, direction="output")
+    rows: list[dict[str, Any]] = []
+    actual_indices: list[int] = []
+    for row in mapping["rows"]:
+        checked = _require_mapping(row, field="native worker result row")
+        if _native_role_is_descriptor(expected_role):
+            if set(checked) != {"opaque_index", "descriptors"}:
+                raise _error("native descriptor worker result row schema drift")
+            descriptors = np.asarray(checked["descriptors"], dtype=np.float64)
+            if descriptors.shape != (len(VIEW_ORDER), 5) or not np.isfinite(descriptors).all():
+                raise _error("native descriptor worker result values drift")
+        else:
+            if set(checked) != {"opaque_index", "z_views", "logits"}:
+                raise _error("native runtime worker result row schema drift")
+            z_views = np.asarray(checked["z_views"], dtype=np.float64)
+            logits = np.asarray(checked["logits"], dtype=np.float64)
+            if z_views.ndim != 2 or z_views.shape[0] != len(VIEW_ORDER) or z_views.shape[1] < 1 or not np.isfinite(z_views).all():
+                raise _error("native runtime worker z_id values drift")
+            if logits.shape != (len(VIEW_ORDER), len(LOCAL4_HANDLES)) or not np.isfinite(logits).all():
+                raise _error("native runtime worker logits values drift")
+        actual_indices.append(_require_nonbool_int(checked["opaque_index"], field="native worker opaque index", minimum=0))
+        rows.append(dict(checked))
+    if actual_indices != [int(index) for index in expected_indices]:
+        raise _error("native worker result row order drift")
+    return rows
+
+
+def _native_worker_environment() -> dict[str, str]:
+    environment = dict(os.environ)
+    code_root = str(Path(__file__).resolve().parents[1])
+    environment["PYTHONPATH"] = code_root + (os.pathsep + environment["PYTHONPATH"] if environment.get("PYTHONPATH") else "")
+    for name in NATIVE_WORKER_ENVIRONMENT:
+        environment[name] = "1"
+    return environment
+
+
+def _native_worker_failure(*, role: str, chunk_id: int, returncode: int) -> SingleControlBundleError:
+    fields = [f"role={role}", f"chunk={chunk_id}", f"exit={returncode}"]
+    signal_number: int | None = None
+    if returncode < 0:
+        signal_number = -returncode
+    elif 128 <= returncode <= 255:
+        signal_number = returncode - 128
+    if signal_number is not None:
+        fields.append(f"signal={signal_number}")
+    return _error("native worker failed closed " + " ".join(fields))
+
+
+def _run_native_chunk_worker(
+    *,
+    role: str,
+    chunk_id: int,
+    raw_records: Sequence[tuple[int, Any]],
+    runtime_path: str | Path | None,
+    device: str | torch.device,
+) -> list[dict[str, Any]]:
+    """Run exactly one fresh interpreter for one ordered, current-run chunk."""
+
+    if role not in NATIVE_WORKER_ROLES or not raw_records:
+        raise _error("native worker role/records are invalid")
+    if _native_role_is_runtime(role):
+        if runtime_path is None:
+            raise _error("native runtime worker requires a runtime path")
+        runtime = Path(runtime_path)
+        if runtime.is_symlink() or not runtime.is_file():
+            raise _error("native runtime worker requires a regular current-run runtime")
+        runtime_argument = str(runtime)
+    else:
+        if runtime_path is not None:
+            raise _error("native descriptor worker must not receive a runtime path")
+        runtime_argument = "-"
+    payload = {
+        "schema": NATIVE_CHUNK_INPUT_SCHEMA,
+        "role": role,
+        "chunk_id": _require_nonbool_int(chunk_id, field="native worker chunk", minimum=0),
+        "records": [_encode_native_raw_record(index, raw_iq) for index, raw_iq in raw_records],
+    }
+    _assert_u_native_ipc_minimal(payload, role=role, direction="input")
+    encoded = json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":"), allow_nan=False).encode("utf-8")
+    if len(encoded) > NATIVE_IPC_MAX_BYTES:
+        raise _error("native worker IPC input exceeds the fixed current-run limit")
+    command = [
+        sys.executable,
+        "-m",
+        "cvsrffi.phase1_single_control_bundle_v1",
+        "--native-chunk-worker",
+        role,
+        runtime_argument,
+        str(torch.device(device)),
+    ]
+    try:
+        completed = subprocess.run(
+            command,
+            cwd=str(Path(__file__).resolve().parents[1]),
+            env=_native_worker_environment(),
+            input=encoded,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            check=False,
+        )
+    except OSError as exc:
+        raise _error(f"native worker failed closed role={role} chunk={chunk_id} launch_error") from exc
+    if int(completed.returncode) != 0:
+        raise _native_worker_failure(role=role, chunk_id=chunk_id, returncode=int(completed.returncode))
+    stdout = completed.stdout if isinstance(completed.stdout, bytes) else str(completed.stdout).encode("utf-8")
+    if len(stdout) > NATIVE_IPC_MAX_BYTES:
+        raise _error(f"native worker failed closed role={role} chunk={chunk_id} oversized_output")
+    try:
+        result = json.loads(stdout.decode("utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise _error(f"native worker failed closed role={role} chunk={chunk_id} unreadable_output") from exc
+    try:
+        return _validate_native_chunk_result(
+            result,
+            expected_role=role,
+            expected_chunk_id=int(chunk_id),
+            expected_indices=[int(index) for index, _ in raw_records],
+        )
+    except SingleControlBundleError as exc:
+        raise _error(f"native worker failed closed role={role} chunk={chunk_id} result_contract: {exc}") from exc
+
+
+def _source_raw_chunks(
+    *,
+    indices: Sequence[int],
+    source_iq_data: Any,
+    equalized_values: Any,
+    dataset: Any,
+) -> Iterable[list[tuple[int, np.ndarray]]]:
+    if NATIVE_EXECUTION_CHUNK_SIZE < 1:
+        raise _error("native execution chunk size must be positive")
+    chunk: list[tuple[int, np.ndarray]] = []
+    for index in indices:
+        opaque_index = _require_nonbool_int(index, field="native source chunk index", minimum=0)
+        chunk.append(
+            (
+                opaque_index,
+                _dataset_item_raw(
+                    source_iq_data=source_iq_data,
+                    equalized_values=equalized_values,
+                    dataset=dataset,
+                    index=opaque_index,
+                ),
+            )
+        )
+        if len(chunk) == NATIVE_EXECUTION_CHUNK_SIZE:
+            yield chunk
+            chunk = []
+    if chunk:
+        yield chunk
+
+
+def _new_native_execution_trace() -> dict[str, Any]:
+    return {
+        "schema": NATIVE_EXECUTION_TRACE_SCHEMA,
+        "execution_mode": "fresh_python_subprocess_per_chunk",
+        "chunk_size": NATIVE_EXECUTION_CHUNK_SIZE,
+        "worker_environment": {name: 1 for name in NATIVE_WORKER_ENVIRONMENT},
+        "torch_num_threads": 1,
+        "torch_num_interop_threads": 1,
+        "roles": {},
+    }
+
+
+def _record_native_chunk(trace: MutableMapping[str, Any], *, role: str, row_count: int) -> None:
+    roles = trace.get("roles")
+    if not isinstance(roles, dict):
+        raise _error("native execution trace role registry drift")
+    entry = roles.setdefault(role, {"chunks": 0, "rows": 0})
+    if not isinstance(entry, dict) or set(entry) != {"chunks", "rows"}:
+        raise _error("native execution trace role entry drift")
+    entry["chunks"] = _require_nonbool_int(entry["chunks"], field="native trace chunks", minimum=0) + 1
+    entry["rows"] = _require_nonbool_int(entry["rows"], field="native trace rows", minimum=0) + int(row_count)
+
+
+def _native_worker_thread_setup() -> None:
+    for name in NATIVE_WORKER_ENVIRONMENT:
+        os.environ[name] = "1"
+    torch.set_num_threads(1)
+    torch.set_num_interop_threads(1)
+
+
+def _native_chunk_worker_from_stdin(*, role: str, runtime_path: str, device: str) -> None:
+    """Internal worker entry point; all IQ IPC is limited to this stdin/stdout call."""
+
+    if role not in NATIVE_WORKER_ROLES:
+        raise _error("native worker received an unknown role")
+    _native_worker_thread_setup()
+    raw_input = sys.stdin.buffer.read(NATIVE_IPC_MAX_BYTES + 1)
+    if len(raw_input) > NATIVE_IPC_MAX_BYTES:
+        raise _error("native worker IPC input exceeds the fixed limit")
+    try:
+        payload = json.loads(raw_input.decode("utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise _error("native worker input is unreadable") from exc
+    checked_role, chunk_id, records = _validate_native_chunk_input(payload, expected_role=role)
+    view_args = SimpleNamespace(sat_fs_hz=25_000_000.0, sat_fc_hz=2_462_000_000.0)
+    rows: list[dict[str, Any]] = []
+    if _native_role_is_descriptor(checked_role):
+        if runtime_path != "-":
+            raise _error("native descriptor worker received an unexpected runtime path")
+        for opaque_index, raw_iq in records:
+            views = _scb_views_for_source_sample(raw_iq=raw_iq, opaque_sample_index=opaque_index, args=view_args)
+            descriptors = np.asarray(
+                [domain_descriptor(view[0].cpu().contiguous()) for view in views], dtype=np.float64
+            )
+            rows.append({"opaque_index": opaque_index, "descriptors": descriptors.tolist()})
+    else:
+        runtime_file = Path(runtime_path)
+        if runtime_file.is_symlink() or not runtime_file.is_file():
+            raise _error("native runtime worker requires a regular current-run runtime")
+        runtime = torch.jit.load(str(runtime_file), map_location=torch.device(device)).eval()
+        try:
+            for opaque_index, raw_iq in records:
+                views = _scb_views_for_source_sample(raw_iq=raw_iq, opaque_sample_index=opaque_index, args=view_args)
+                z_views, logits = _identity_features_for_views(runtime, views, device=torch.device(device))
+                rows.append({"opaque_index": opaque_index, "z_views": z_views.tolist(), "logits": logits.tolist()})
+        finally:
+            del runtime
+    result = {
+        "schema": NATIVE_CHUNK_RESULT_SCHEMA,
+        "role": checked_role,
+        "chunk_id": chunk_id,
+        "record_count": len(records),
+        "rows": rows,
+    }
+    _assert_u_native_ipc_minimal(result, role=checked_role, direction="output")
+    sys.stdout.buffer.write(json.dumps(result, ensure_ascii=False, sort_keys=True, separators=(",", ":"), allow_nan=False).encode("utf-8"))
 
 
 def _resource_context() -> dict[str, Any]:
@@ -3331,15 +3699,7 @@ def build_real_bundle_from_paths(
         scenario_code_sha256=scenario_code_sha,
     )
     source_split = receipts["completion"]["source_split_receipt"]
-    (
-        source_view,
-        full_dataset,
-        dataset,
-        labeled_indices,
-        unlabeled_indices,
-        calibration_indices,
-        tx_partition,
-    ) = _source_dataset_and_indices(pkl_path=wisig_pkl_path, source_split=source_split)
+    native_trace = _new_native_execution_trace()
     with tempfile.TemporaryDirectory(prefix="scb1-runtime-") as temporary:
         runtime_path = Path(temporary) / "local_evidence.ts"
         runtime, eager_runtime, strict_audit = build_torchscript_runtime(
@@ -3348,87 +3708,32 @@ def build_real_bundle_from_paths(
             runtime_path=runtime_path,
         )
         runtime_bytes = runtime_path.read_bytes()
-        labeled_rows: list[dict[str, Any]] = []
-        labeled_keys: list[tuple[str, str, str, int]] = []
-        unlabeled_keys: list[tuple[str, str, str, int]] = []
-        calibration_keys: list[tuple[str, str, str, int]] = []
-        first_raw: np.ndarray | None = None
+        # The exported runtime is immutable bytes from this point.  Do not keep
+        # eager/loaded native state alive while ManySig and the long L/U/V loops
+        # are resident in the parent process.
+        del runtime
+        del eager_runtime
+        gc.collect()
+        if runtime_device.type == "cuda":
+            torch.cuda.empty_cache()
+
+        (
+            source_view,
+            full_dataset,
+            dataset,
+            labeled_indices,
+            unlabeled_indices,
+            calibration_indices,
+            tx_partition,
+        ) = _source_dataset_and_indices(pkl_path=wisig_pkl_path, source_split=source_split)
         labeled_indices, unlabeled_indices, calibration_indices = _validate_source_view_indices(
             labeled_indices, unlabeled_indices, calibration_indices
         )
         source_iq_data = source_view.get("data")
         source_equalized_values = source_view.get("equalized_list")
 
-        def descriptor_row_stream() -> Iterable[Mapping[str, Any]]:
-            for descriptor_index in labeled_indices:
-                descriptor_raw = _dataset_item_raw(
-                    source_iq_data=source_iq_data,
-                    equalized_values=source_equalized_values,
-                    dataset=dataset,
-                    index=descriptor_index,
-                )
-                descriptor_views = _scb_views_for_source_sample(
-                    raw_iq=descriptor_raw, opaque_sample_index=descriptor_index, args=namespace
-                )
-                yield {
-                    "opaque_hash": opaque_source_sample_hash(descriptor_index),
-                    "iq_views": [view[0].cpu().contiguous() for view in descriptor_views],
-                }
-            for descriptor_index in unlabeled_indices:
-                descriptor_raw = _dataset_item_raw(
-                    source_iq_data=source_iq_data,
-                    equalized_values=source_equalized_values,
-                    dataset=dataset,
-                    index=descriptor_index,
-                )
-                descriptor_views = _scb_views_for_source_sample(
-                    raw_iq=descriptor_raw, opaque_sample_index=descriptor_index, args=namespace
-                )
-                yield {
-                    "opaque_hash": opaque_source_sample_hash(descriptor_index),
-                    "iq_views": [view[0].cpu().contiguous() for view in descriptor_views],
-                }
-
-        for index in labeled_indices:
-            key, raw = _dataset_item_key_and_raw(source_view, dataset, index)
-            views = _scb_views_for_source_sample(raw_iq=raw, opaque_sample_index=index, args=namespace)
-            z_views, _ = _identity_features_for_views(runtime, views, device=runtime_device)
-            token = physical_token(key)
-            labeled_rows.append({"physical_token": token, "label": key[0], "z_views": z_views})
-            labeled_keys.append(key)
-            if first_raw is None:
-                first_raw = raw
-        geometry = fit_class_geometry(labeled_rows)
-        for index in unlabeled_indices:
-            key = _dataset_item_physical_key(source_view, dataset, index)
-            unlabeled_keys.append(key)
-        descriptor = fit_descriptor_stats(descriptor_row_stream())
-        distance_atoms: list[float] = []
-        energy_atoms: list[float] = []
-        domain_atoms: list[float] = []
-        for index in calibration_indices:
-            key, raw = _dataset_item_key_and_raw(source_view, dataset, index)
-            views = _scb_views_for_source_sample(raw_iq=raw, opaque_sample_index=index, args=namespace)
-            z_views, logits = _identity_features_for_views(runtime, views, device=runtime_device)
-            per_view_distance: list[float] = []
-            per_view_energy: list[float] = []
-            per_view_domain: list[float] = []
-            for view_index, view in enumerate(views):
-                _, distance = score_class_geometry(z_views[view_index], geometry)
-                per_view_distance.append(distance)
-                per_view_energy.append(-_logsumexp(logits[view_index]))
-                _, domain = normalize_descriptor(domain_descriptor(view[0].cpu().contiguous()), descriptor)
-                per_view_domain.append(domain)
-            distance_atoms.append(max(per_view_distance))
-            energy_atoms.append(max(per_view_energy))
-            domain_atoms.append(max(per_view_domain))
-            calibration_keys.append(key)
-        tail = fit_tail_summary(
-            distance_scores=distance_atoms,
-            energy_scores=energy_atoms,
-            domain_scores=domain_atoms,
-            calibration_set_sha256=physical_set_sha256(calibration_keys),
-        )
+        # Complete the role-exclusion audit while the full six-TX object is
+        # necessary, then discard it before the long source worker loops.
         full_day_labels = [
             _require_nfc_string(value, field="ManySig day physical label")
             for value in full_dataset.get("capture_date_list", [])
@@ -3487,6 +3792,127 @@ def build_real_bundle_from_paths(
                 day_labels=target_days,
             ),
         }
+        del full_dataset
+        gc.collect()
+
+        labeled_rows: list[dict[str, Any]] = []
+        labeled_keys: list[tuple[str, str, str, int]] = []
+        unlabeled_keys: list[tuple[str, str, str, int]] = []
+        calibration_keys: list[tuple[str, str, str, int]] = []
+        first_raw = _dataset_item_raw(
+            source_iq_data=source_iq_data,
+            equalized_values=source_equalized_values,
+            dataset=dataset,
+            index=labeled_indices[0],
+        )
+
+        def descriptor_row_stream() -> Iterable[Mapping[str, Any]]:
+            for chunk_id, raw_chunk in enumerate(
+                _source_raw_chunks(
+                    indices=labeled_indices,
+                    source_iq_data=source_iq_data,
+                    equalized_values=source_equalized_values,
+                    dataset=dataset,
+                )
+            ):
+                runtime_rows = _run_native_chunk_worker(
+                    role="L_RUNTIME",
+                    chunk_id=chunk_id,
+                    raw_records=raw_chunk,
+                    runtime_path=runtime_path,
+                    device=runtime_device,
+                )
+                _record_native_chunk(native_trace, role="L_RUNTIME", row_count=len(runtime_rows))
+                descriptor_rows = _run_native_chunk_worker(
+                    role="L_DESCRIPTOR",
+                    chunk_id=chunk_id,
+                    raw_records=raw_chunk,
+                    runtime_path=None,
+                    device=runtime_device,
+                )
+                _record_native_chunk(native_trace, role="L_DESCRIPTOR", row_count=len(descriptor_rows))
+                for (index, _raw_iq), runtime_row in zip(raw_chunk, runtime_rows):
+                    key = _dataset_item_physical_key(source_view, dataset, index)
+                    z_views = np.asarray(runtime_row["z_views"], dtype=np.float64)
+                    labeled_rows.append({"physical_token": physical_token(key), "label": key[0], "z_views": z_views})
+                    labeled_keys.append(key)
+                yield from descriptor_rows
+            for chunk_id, raw_chunk in enumerate(
+                _source_raw_chunks(
+                    indices=unlabeled_indices,
+                    source_iq_data=source_iq_data,
+                    equalized_values=source_equalized_values,
+                    dataset=dataset,
+                )
+            ):
+                descriptor_rows = _run_native_chunk_worker(
+                    role="U_DESCRIPTOR",
+                    chunk_id=chunk_id,
+                    raw_records=raw_chunk,
+                    runtime_path=None,
+                    device=runtime_device,
+                )
+                _record_native_chunk(native_trace, role="U_DESCRIPTOR", row_count=len(descriptor_rows))
+                yield from descriptor_rows
+
+        descriptor = fit_descriptor_stats(descriptor_row_stream())
+        geometry = fit_class_geometry(labeled_rows)
+        for index in unlabeled_indices:
+            unlabeled_keys.append(_dataset_item_physical_key(source_view, dataset, index))
+
+        distance_atoms: list[float] = []
+        energy_atoms: list[float] = []
+        domain_atoms: list[float] = []
+        for chunk_id, raw_chunk in enumerate(
+            _source_raw_chunks(
+                indices=calibration_indices,
+                source_iq_data=source_iq_data,
+                equalized_values=source_equalized_values,
+                dataset=dataset,
+            )
+        ):
+            runtime_rows = _run_native_chunk_worker(
+                role="V_RUNTIME",
+                chunk_id=chunk_id,
+                raw_records=raw_chunk,
+                runtime_path=runtime_path,
+                device=runtime_device,
+            )
+            _record_native_chunk(native_trace, role="V_RUNTIME", row_count=len(runtime_rows))
+            descriptor_rows = _run_native_chunk_worker(
+                role="V_DESCRIPTOR",
+                chunk_id=chunk_id,
+                raw_records=raw_chunk,
+                runtime_path=None,
+                device=runtime_device,
+            )
+            _record_native_chunk(native_trace, role="V_DESCRIPTOR", row_count=len(descriptor_rows))
+            for (index, _raw_iq), runtime_row, descriptor_row in zip(raw_chunk, runtime_rows, descriptor_rows):
+                if runtime_row["opaque_index"] != descriptor_row["opaque_index"] or runtime_row["opaque_index"] != index:
+                    raise _error("native V worker row binding drift")
+                key = _dataset_item_physical_key(source_view, dataset, index)
+                z_views = np.asarray(runtime_row["z_views"], dtype=np.float64)
+                logits = np.asarray(runtime_row["logits"], dtype=np.float64)
+                descriptors = np.asarray(descriptor_row["descriptors"], dtype=np.float64)
+                per_view_distance: list[float] = []
+                per_view_energy: list[float] = []
+                per_view_domain: list[float] = []
+                for view_index in range(len(VIEW_ORDER)):
+                    _, distance = score_class_geometry(z_views[view_index], geometry)
+                    per_view_distance.append(distance)
+                    per_view_energy.append(-_logsumexp(logits[view_index]))
+                    _, domain = normalize_descriptor(descriptors[view_index], descriptor)
+                    per_view_domain.append(domain)
+                distance_atoms.append(max(per_view_distance))
+                energy_atoms.append(max(per_view_energy))
+                domain_atoms.append(max(per_view_domain))
+                calibration_keys.append(key)
+        tail = fit_tail_summary(
+            distance_scores=distance_atoms,
+            energy_scores=energy_atoms,
+            domain_scores=domain_atoms,
+            calibration_set_sha256=physical_set_sha256(calibration_keys),
+        )
         partition = build_source_partition_receipt(
             dataset_sha256=dataset_sha,
             source_split_projection=source_split,
@@ -3517,6 +3943,18 @@ def build_real_bundle_from_paths(
             "live_head_class_count": cp["live_head_class_count"],
             "checkpoint_train_tx_class_order": cp["checkpoint_train_tx_class_order"],
         }
+
+        # Only after every native source worker has exited do we recreate the
+        # short-lived eager/runtime pair required by the unchanged parity gate.
+        del source_iq_data
+        del source_equalized_values
+        del source_view
+        del dataset
+        gc.collect()
+        if runtime_device.type == "cuda":
+            torch.cuda.empty_cache()
+        eager_runtime = _build_short_lived_eager_runtime(checkpoint=checkpoint_map, device=runtime_device)
+        runtime = torch.jit.load(io.BytesIO(runtime_bytes), map_location=runtime_device).eval()
         parity = make_runtime_parity_receipt(
             eager_runtime=eager_runtime,
             runtime=runtime,
@@ -3526,6 +3964,10 @@ def build_real_bundle_from_paths(
             runtime_bytes=runtime_bytes,
             raw_iq=first_raw,
         )
+        del runtime
+        gc.collect()
+        if runtime_device.type == "cuda":
+            torch.cuda.empty_cache()
         resource = make_resource_receipt(runtime_bytes=runtime_bytes, state=state, device=runtime_device)
         result = build_bundle(
             output_dir=output_dir,
@@ -3543,8 +3985,6 @@ def build_real_bundle_from_paths(
             scenario_registry_sha256=receipts["satellite_protocol"]["registry_sha256"],
             bundle_status=BUNDLE_STATUS,
         )
-        if first_raw is None:
-            raise _error("real source partition has no labelled raw IQ for final smoke")
         loaded = load_bundle(
             output_dir,
             expected_content_root=result["content_root"],
@@ -3559,14 +3999,19 @@ def build_real_bundle_from_paths(
             raw_iq=first_raw,
             context=smoke_context,
         )
-        return result
+        enriched_result = dict(result)
+        enriched_result["native_execution_trace"] = native_trace
+        return enriched_result
 
 
 def _module_main(argv: Sequence[str]) -> int:
     if len(argv) == 2 and argv[0] == "--resource-probe":
         _resource_probe_subprocess(argv[1])
         return 0
-    raise SystemExit("single-control core accepts only internal --resource-probe")
+    if len(argv) == 4 and argv[0] == "--native-chunk-worker":
+        _native_chunk_worker_from_stdin(role=argv[1], runtime_path=argv[2], device=argv[3])
+        return 0
+    raise SystemExit("single-control core accepts only internal resource/native-worker modes")
 
 
 if __name__ == "__main__":  # pragma: no cover - invoked by the fresh worker.

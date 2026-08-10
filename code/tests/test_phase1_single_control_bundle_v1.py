@@ -3,6 +3,7 @@ from __future__ import annotations
 import io
 import inspect
 import json
+import pickle
 from pathlib import Path
 import subprocess
 import sys
@@ -333,6 +334,193 @@ def test_source_dataset_helper_returns_original_six_tx_object_and_local4_shallow
     assert held_keys == [(scb.KNOWN_VALIDATION_TX, original["rx_list"][0], original["capture_date_list"][0], 0)]
 
 
+def test_strict_manysig_loader_uses_one_pickle_load_without_legacy_loader(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    import dataset_wisig
+
+    fixture_path = tmp_path / "ManySig.pkl"
+    fixture_path.write_bytes(pickle.dumps(_six_tx_manysig_fixture(), protocol=pickle.HIGHEST_PROTOCOL))
+    original_load = pickle.load
+    calls: list[object] = []
+
+    def counted_load(handle):
+        calls.append(handle)
+        return original_load(handle)
+
+    monkeypatch.setattr(scb.pickle, "load", counted_load)
+    monkeypatch.setattr(
+        dataset_wisig,
+        "load_wisig_compact_pkl",
+        lambda *_args, **_kwargs: pytest.fail("strict SCB loader must not call dataset_wisig.load_wisig_compact_pkl"),
+    )
+    loaded = scb._load_manysig_no_default_equalized(fixture_path)
+    assert len(calls) == 1
+    assert loaded["data"][0][0][0][0][0].shape == (8, 2)
+    assert loaded["tx_list"] == list(scb.LOCAL4_HANDLES) + [scb.KNOWN_VALIDATION_TX, scb.PROXY_UNKNOWN_TX]
+    assert loaded["equalized_list"] == [1]
+
+
+def _native_raw_records(count: int) -> list[tuple[int, np.ndarray]]:
+    generator = torch.Generator(device="cpu").manual_seed(705)
+    records: list[tuple[int, np.ndarray]] = []
+    for index in range(count):
+        rows = torch.randn((256, 2), generator=generator, dtype=torch.float32)
+        rows[:, 0] += 0.01 * float(index)
+        records.append((index, rows.numpy().copy()))
+    return records
+
+
+def _native_descriptor_reference(records: list[tuple[int, np.ndarray]]) -> list[dict[str, object]]:
+    args = types.SimpleNamespace(sat_fs_hz=25_000_000.0, sat_fc_hz=2_462_000_000.0)
+    rows: list[dict[str, object]] = []
+    for index, raw_iq in records:
+        views = scb._scb_views_for_source_sample(raw_iq=raw_iq, opaque_sample_index=index, args=args)
+        rows.append(
+            {
+                "opaque_index": index,
+                "descriptors": np.asarray(
+                    [scb.domain_descriptor(view[0].cpu().contiguous()) for view in views], dtype=np.float64
+                ),
+            }
+        )
+    return rows
+
+
+def test_native_descriptor_chunks_match_single_process_reference(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(scb, "NATIVE_EXECUTION_CHUNK_SIZE", 2)
+    records = _native_raw_records(5)
+    expected = _native_descriptor_reference(records)
+    for role in ("L_DESCRIPTOR", "U_DESCRIPTOR", "V_DESCRIPTOR"):
+        actual: list[dict[str, object]] = []
+        for chunk_id, start in enumerate(range(0, len(records), scb.NATIVE_EXECUTION_CHUNK_SIZE)):
+            actual.extend(
+                scb._run_native_chunk_worker(
+                    role=role,
+                    chunk_id=chunk_id,
+                    raw_records=records[start : start + scb.NATIVE_EXECUTION_CHUNK_SIZE],
+                    runtime_path=None,
+                    device="cpu",
+                )
+            )
+        assert len(actual) == len(expected) == 5
+        assert [row["opaque_index"] for row in actual] == list(range(5))
+        for observed, reference in zip(actual, expected):
+            assert np.array_equal(np.asarray(observed["descriptors"], dtype=np.float64), reference["descriptors"])
+        actual_stats = scb.fit_descriptor_stats(actual)
+        expected_stats = scb.fit_descriptor_stats(expected)
+        assert actual_stats.descriptor_count == expected_stats.descriptor_count == len(records) * len(scb.VIEW_ORDER)
+        assert np.array_equal(actual_stats.median, expected_stats.median)
+        assert np.array_equal(actual_stats.scale, expected_stats.scale)
+
+
+def test_native_l_and_v_runtime_chunks_match_single_process_torchscript(tmp_path: Path) -> None:
+    runtime_path = tmp_path / "local_evidence.ts"
+    runtime_path.write_bytes(_runtime_bytes())
+    runtime = torch.jit.load(str(runtime_path), map_location="cpu").eval()
+    records = _native_raw_records(2)
+    args = types.SimpleNamespace(sat_fs_hz=25_000_000.0, sat_fc_hz=2_462_000_000.0)
+    expected: list[tuple[np.ndarray, np.ndarray]] = []
+    for index, raw_iq in records:
+        views = scb._scb_views_for_source_sample(raw_iq=raw_iq, opaque_sample_index=index, args=args)
+        expected.append(scb._identity_features_for_views(runtime, views, device=torch.device("cpu")))
+    for role in ("L_RUNTIME", "V_RUNTIME"):
+        actual = scb._run_native_chunk_worker(
+            role=role,
+            chunk_id=0,
+            raw_records=records,
+            runtime_path=runtime_path,
+            device="cpu",
+        )
+        for observed, (z_views, logits) in zip(actual, expected):
+            assert np.array_equal(np.asarray(observed["z_views"], dtype=np.float64), z_views)
+            assert np.array_equal(np.asarray(observed["logits"], dtype=np.float64), logits)
+
+
+@pytest.mark.parametrize("field", ("label", "physical_key", "opaque_hash"))
+def test_u_native_ipc_rejects_label_physical_or_hash_fields(field: str) -> None:
+    record = scb._encode_native_raw_record(3, _native_raw_records(1)[0][1])
+    input_payload = {
+        "schema": scb.NATIVE_CHUNK_INPUT_SCHEMA,
+        "role": "U_DESCRIPTOR",
+        "chunk_id": 0,
+        "records": [{**record, field: "forbidden"}],
+    }
+    with pytest.raises(scb.SingleControlBundleError, match="forbidden identity field"):
+        scb._validate_native_chunk_input(input_payload, expected_role="U_DESCRIPTOR")
+    output_payload = {
+        "schema": scb.NATIVE_CHUNK_RESULT_SCHEMA,
+        "role": "U_DESCRIPTOR",
+        "chunk_id": 0,
+        "record_count": 1,
+        "rows": [{"opaque_index": 3, "descriptors": np.ones((len(scb.VIEW_ORDER), 5)).tolist(), field: "forbidden"}],
+    }
+    with pytest.raises(scb.SingleControlBundleError, match="forbidden identity field"):
+        scb._validate_native_chunk_result(
+            output_payload, expected_role="U_DESCRIPTOR", expected_chunk_id=0, expected_indices=[3]
+        )
+
+
+def test_native_worker_failure_and_result_order_fail_closed_without_retry(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    records = _native_raw_records(2)
+    target = tmp_path / "bundle"
+    calls: list[object] = []
+
+    def exit_139(*_args, **_kwargs):
+        calls.append(object())
+        return types.SimpleNamespace(returncode=139, stdout=b"", stderr=b"")
+
+    monkeypatch.setattr(scb.subprocess, "run", exit_139)
+    with pytest.raises(scb.SingleControlBundleError, match=r"role=L_DESCRIPTOR chunk=0 exit=139 signal=11"):
+        scb._run_native_chunk_worker(
+            role="L_DESCRIPTOR", chunk_id=0, raw_records=records, runtime_path=None, device="cpu"
+        )
+    assert len(calls) == 1
+    assert not target.exists()
+    assert not list(tmp_path.glob(".bundle.single-control-staging-*"))
+
+    reversed_result = {
+        "schema": scb.NATIVE_CHUNK_RESULT_SCHEMA,
+        "role": "L_DESCRIPTOR",
+        "chunk_id": 0,
+        "record_count": 2,
+        "rows": [
+            {"opaque_index": 1, "descriptors": np.ones((len(scb.VIEW_ORDER), 5)).tolist()},
+            {"opaque_index": 0, "descriptors": np.ones((len(scb.VIEW_ORDER), 5)).tolist()},
+        ],
+    }
+
+    def out_of_order(*_args, **_kwargs):
+        return types.SimpleNamespace(
+            returncode=0,
+            stdout=json.dumps(reversed_result, sort_keys=True).encode("utf-8"),
+            stderr=b"",
+        )
+
+    monkeypatch.setattr(scb.subprocess, "run", out_of_order)
+    with pytest.raises(scb.SingleControlBundleError, match="row order drift"):
+        scb._run_native_chunk_worker(
+            role="L_DESCRIPTOR", chunk_id=0, raw_records=records, runtime_path=None, device="cpu"
+        )
+
+    missing_result = {**reversed_result, "rows": reversed_result["rows"][:1]}
+
+    def missing_row(*_args, **_kwargs):
+        return types.SimpleNamespace(
+            returncode=0,
+            stdout=json.dumps(missing_result, sort_keys=True).encode("utf-8"),
+            stderr=b"",
+        )
+
+    monkeypatch.setattr(scb.subprocess, "run", missing_row)
+    with pytest.raises(scb.SingleControlBundleError, match="incomplete"):
+        scb._run_native_chunk_worker(
+            role="L_DESCRIPTOR", chunk_id=0, raw_records=records, runtime_path=None, device="cpu"
+        )
+
+
 def test_real_builder_loads_manysig_once_and_reuses_original_for_exclusion_audit(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
@@ -396,22 +584,41 @@ def test_real_builder_loads_manysig_once_and_reuses_original_for_exclusion_audit
     monkeypatch.setattr(scb, "build_torchscript_runtime", fake_build_runtime)
     monkeypatch.setattr(scb, "_validate_source_view_indices", lambda *args: ([0], [], []))
     monkeypatch.setattr(
-        scb,
-        "_dataset_item_key_and_raw",
-        lambda source_view, dataset, index: ((scb.LOCAL4_HANDLES[0], "receiver-00", "day-00", 0), np.zeros((256, 2), dtype=np.float32)),
+        scb, "_dataset_item_raw", lambda **kwargs: np.zeros((256, 2), dtype=np.float32)
     )
     monkeypatch.setattr(
         scb,
-        "_scb_views_for_source_sample",
-        lambda **kwargs: [torch.zeros((1, 2, 256), dtype=torch.float32) for _ in scb.VIEW_ORDER],
+        "_dataset_item_physical_key",
+        lambda source_view, dataset, index: (scb.LOCAL4_HANDLES[0], "receiver-00", "day-00", int(index)),
     )
-    monkeypatch.setattr(
-        scb,
-        "_identity_features_for_views",
-        lambda runtime, views, device: (np.ones((4, 2), dtype=np.float64), np.ones((4, 4), dtype=np.float64)),
-    )
+
+    worker_calls: list[tuple[str, int]] = []
+
+    def fake_worker(*, role, chunk_id, raw_records, runtime_path, device):
+        del runtime_path, device
+        worker_calls.append((role, chunk_id))
+        if role.endswith("DESCRIPTOR"):
+            return [
+                {"opaque_index": index, "descriptors": np.ones((len(scb.VIEW_ORDER), 5), dtype=np.float64).tolist()}
+                for index, _ in raw_records
+            ]
+        return [
+            {
+                "opaque_index": index,
+                "z_views": np.ones((len(scb.VIEW_ORDER), 2), dtype=np.float64).tolist(),
+                "logits": np.ones((len(scb.VIEW_ORDER), 4), dtype=np.float64).tolist(),
+            }
+            for index, _ in raw_records
+        ]
+
+    monkeypatch.setattr(scb, "_run_native_chunk_worker", fake_worker)
     monkeypatch.setattr(scb, "fit_class_geometry", lambda rows: fixture_state.geometry)
-    monkeypatch.setattr(scb, "fit_descriptor_stats", lambda rows: fixture_state.descriptor)
+
+    def fake_fit_descriptor_stats(rows):
+        list(rows)
+        return fixture_state.descriptor
+
+    monkeypatch.setattr(scb, "fit_descriptor_stats", fake_fit_descriptor_stats)
     monkeypatch.setattr(scb, "fit_tail_summary", lambda **kwargs: fixture_state.tail)
 
     def fake_enumerate(dataset, *, tx_labels, rx_labels, day_labels):
@@ -423,6 +630,8 @@ def test_real_builder_loads_manysig_once_and_reuses_original_for_exclusion_audit
     monkeypatch.setattr(scb, "make_runtime_parity_receipt", lambda **kwargs: {"parity": True})
     monkeypatch.setattr(scb, "make_resource_receipt", lambda **kwargs: {"resource": True})
     monkeypatch.setattr(scb, "build_bundle", lambda **kwargs: {"content_root": _sha("0")})
+    monkeypatch.setattr(scb, "_build_short_lived_eager_runtime", lambda **kwargs: runtime_sentinel)
+    monkeypatch.setattr(torch.jit, "load", lambda *args, **kwargs: types.SimpleNamespace(eval=lambda: runtime_sentinel))
     monkeypatch.setattr(
         scb,
         "load_bundle",
@@ -446,6 +655,34 @@ def test_real_builder_loads_manysig_once_and_reuses_original_for_exclusion_audit
     assert len(enumeration_datasets) == 3
     assert all(dataset is full_dataset for dataset in enumeration_datasets)
     assert all(dataset is not source_view for dataset in enumeration_datasets)
+    assert worker_calls == [("L_RUNTIME", 0), ("L_DESCRIPTOR", 0)]
+    assert result["native_execution_trace"]["chunk_size"] == scb.NATIVE_EXECUTION_CHUNK_SIZE
+
+    failed_target = tmp_path / "failed-bundle"
+    failed_calls: list[tuple[str, int]] = []
+    build_calls: list[object] = []
+
+    def failed_worker(*, role, chunk_id, **_kwargs):
+        failed_calls.append((role, chunk_id))
+        raise scb.SingleControlBundleError(f"native worker failed closed role={role} chunk={chunk_id} exit=139 signal=11")
+
+    monkeypatch.setattr(scb, "_run_native_chunk_worker", failed_worker)
+    monkeypatch.setattr(scb, "build_bundle", lambda **_kwargs: build_calls.append(object()))
+    with pytest.raises(scb.SingleControlBundleError, match=r"role=L_RUNTIME chunk=0 exit=139 signal=11"):
+        scb.build_real_bundle_from_paths(
+            project_root=tmp_path,
+            checkpoint_path=checkpoint_path,
+            wisig_pkl_path=wisig_path,
+            completion_receipt_path=tmp_path / "completion.json",
+            terminal_receipt_path=tmp_path / "terminal.json",
+            cp_terminal_receipt_path=tmp_path / "cp.json",
+            output_dir=failed_target,
+            device="cpu",
+        )
+    assert failed_calls == [("L_RUNTIME", 0)]
+    assert build_calls == []
+    assert not failed_target.exists()
+    assert not list(tmp_path.glob(".failed-bundle.single-control-staging-*"))
 
 
 def test_fixture_bundle_has_exact_ten_members_and_full_path_care_n1_parity(tmp_path: Path) -> None:
@@ -541,7 +778,7 @@ def test_opaque_descriptor_schema_and_state_partition_closure_fail_closed(tmp_pa
     material = _materials()
     opaque = scb.opaque_source_sample_hash(7)
     assert len(opaque) == 64 and "20-15" not in opaque
-    with pytest.raises(scb.SingleControlBundleError, match="opaque_hash"):
+    with pytest.raises(scb.SingleControlBundleError, match="opaque_index"):
         scb.fit_descriptor_stats([{"opaque_token": "20-15", "iq_views": []}])
     bad_geometry = scb.ClassGeometry(
         class_handles=scb.LOCAL4_HANDLES,
@@ -666,7 +903,9 @@ def test_label_blind_source_view_and_descriptor_contract(monkeypatch: pytest.Mon
     opaque = scb.opaque_source_sample_hash(17)
     assert all(handle not in opaque for handle in scb.LOCAL4_HANDLES)
     with pytest.raises(scb.SingleControlBundleError, match="descriptor rows"):
-        scb.fit_descriptor_stats([{"opaque_hash": opaque, "iq_views": [first[0][0]], "tx_label": "20-15"}])
+        scb.fit_descriptor_stats(
+            [{"opaque_index": 17, "descriptors": [scb.domain_descriptor(first[0][0])], "tx_label": "20-15"}]
+        )
 
     def descriptor_rows(fake_labels: dict[int, str]):
         # ``fake_labels`` simulates a TX relabeling but never crosses the
@@ -677,7 +916,7 @@ def test_label_blind_source_view_and_descriptor_contract(monkeypatch: pytest.Mon
         for index in range(32):
             view = torch.randn((2, 256), generator=generator, dtype=torch.float32).contiguous()
             view = view / torch.sqrt(torch.mean(view.square()) + 1.0e-12)
-            rows.append({"opaque_hash": scb.opaque_source_sample_hash(index), "iq_views": [view]})
+            rows.append({"opaque_index": index, "descriptors": [scb.domain_descriptor(view)]})
         return rows
 
     stats_a = scb.fit_descriptor_stats(descriptor_rows({index: scb.LOCAL4_HANDLES[index % 4] for index in range(32)}))
@@ -701,7 +940,7 @@ def test_streaming_descriptor_and_opaque_index_partition_boundaries() -> None:
             view = torch.randn((2, 256), generator=generator, dtype=torch.float32).contiguous()
             view = view / torch.sqrt(torch.mean(view.square()) + 1.0e-12)
             reference.append(scb.domain_descriptor(view))
-            streamed.append({"opaque_hash": scb.opaque_source_sample_hash(index), "iq_views": [view]})
+            streamed.append({"opaque_index": index, "descriptors": [reference[-1]]})
         return iter(streamed), np.asarray(reference, dtype=np.float64)
 
     stream, reference = rows_and_reference()

@@ -1,8 +1,8 @@
-# Phase1单读出local4控制bundle v1设计卡（Revision12）
+# Phase1单读出local4控制bundle v1设计卡（Revision13）
 
-状态：`LOCAL_REVISION12_VERIFIED / INDEPENDENT_REVIEW_PENDING / REAL_BUILD_V3_STOPPED / NO_PERFORMANCE_RESULT`。Revision11已获独立复审`P0=0／P1=0／ALLOW`；真实F1C＋ManySig v3唯一进程PID`420208`持续CPU密集计算约4小时35分钟后无可观察exit退出，未生成output、staging、worker或resource工件，日志仅有`TracerWarning`。无kernel OOM／kill证据，归因指纹只能写`UNOBSERVED_PROCESS_EXIT_AFTER_SUSTAINED_CPU`。Revision12仅让首次加载的完整ManySig对象随source helper返回并在后段排除审计复用，删除第二次完整PKL加载；它只降低重复加载与峰值风险，不证明v3根因，也不表示真实build已成功。
+状态：`LOCAL_REVISION13_NATIVE_ISOLATION_VERIFIED / INDEPENDENT_REVIEW_P0_0_P1_0_ALLOW / REAL_BUILD_V3_V4_STOPPED / NO_PERFORMANCE_RESULT`。Revision11与Revision13均已获独立复审`P0=0／P1=0／ALLOW`；真实F1C＋ManySig v3唯一进程PID`420208`持续CPU密集计算约4小时35分钟后无可观察exit退出，未生成output、staging、worker或resource工件，日志仅有`TracerWarning`。无kernel OOM／kill证据，归因指纹只能写`UNOBSERVED_PROCESS_EXIT_AFTER_SUSTAINED_CPU`。v4随后以明确`build.exit=139`和`Segmentation fault`停止，仍未生成bundle。Revision12让首次加载的完整ManySig对象随source helper返回并在后段排除审计复用；Revision13进一步把L/U descriptor、L/V runtime与V descriptor迁至固定工程chunk的全新解释器，删除历史loader造成的隐藏第二次PKL读取。它们只降低native生命周期和重复加载风险，不证明v3/v4根因，也不表示真实build已成功。
 
-日期：2026-08-09；Revision12更新：2026-08-10
+日期：2026-08-09；Revision13更新：2026-08-10
 
 ## FEASIBILITY（20行内）
 
@@ -239,6 +239,12 @@ Revision9首轮实际diff复核确认CUDA、label-blind、早碰撞、live场景
 |---|---|---|---|---|---|---|
 |SCB-R12-01|真实F1C v3停止证据、ManySig对象生命周期|`_source_dataset_and_indices`把首次加载的原始完整dataset作为同一只读对象返回；真实builder后段proxy／held／target排除审计直接复用该对象，调用链最多一次ManySig loader。不得改split／view seed、样本集合、descriptor、geometry、tail、runtime、bundle schema／root、resource或CARE语义。|`phase1_single_control_bundle_v1.py`|verified|动态builder调用链记录loader恰好一次；三类排除审计均以对象identity确认收到首次完整dataset，且不是local4 source view|仅降低重复加载与峰值风险；不把v3停止归因为OOM或本点。|
 |SCB-R12-02|Revision12回归合同|测试锁定loader调用上限、排除审计对象identity、local4浅视图及原始6TX可枚举性；保留全部既有focused SCB回归。|`test_phase1_single_control_bundle_v1.py`|verified|`ssr-gpu`下`py_compile`通过、focused SCB`30 passed`、`git diff --check`通过；core模块无公开CLI，`--help`按内部worker合同预期拒绝；实际公开build CLI未改，本轮不以此为验证项|未运行真实ManySig；独立P0／P1复核待主agent安排，不声明真实build成功。|
+
+### Revision13本地native隔离追溯
+
+|ID|来源段落|要求|目标文件|状态|验证|备注|
+|---|---|---|---|---|---|---|
+|SCB-R13-01|v4`SIGSEGV`终态、数据与身份边界|严格ManySig路径只执行一次`pickle.load`并直接校验dict/data/TX/RX/day/equalized；L/U descriptor、L/V runtime和V descriptor由固定`512`条工程chunk的新Python解释器完成；U IPC只含opaque index、raw IQ bytes和descriptor数值。|`phase1_single_control_bundle_v1.py`、`test_phase1_single_control_bundle_v1.py`、`phase1_single_control_bundle_v1_v5_native_isolation_20260810.md`|verified|真实小PKL`pickle.load==1`、历史loader不可达；多chunk descriptor及L/V TorchScript与单进程reference为`np.array_equal`；label/physical/hash、exit139、乱序和缺行均fail-closed；focused SCB`37 passed`；独立复审`P0=0／P1=0／ALLOW`|不改变split/index/view seed/scenario/geometry/descriptor/tail/runtime/bundle schema/10成员/resource/CARE；真实ManySig build仍未运行。|
 
 ## 文献定位
 
