@@ -4,7 +4,7 @@
 
 - 实验ID：phase1_recte_postfreeze_20260810_v1
 - 日期：2026-08-10
-- 当前状态：PRELAUNCH_REPAIR_VERIFIED / PREREGISTERED / NOT_LAUNCHED / NO_PERFORMANCE_RESULT
+- 当前状态：ANALYZED / REJECT_P1_RECTE_PERMANENT / NO_PHASE3_CAPABILITY_CLAIM
 - 操作边界：主代理冻结评价合同、矩阵和判定门；唯一N607 Runner只负责release落地、唯一启动、技术监控和小工件回收。
 - 训练输入：phase1_recte12_20260810_v1，已技术闭合12/12臂；训练报告SHA256=013216a56da310ea4ae0b082904719255099fcc54985724870bdb8fc4c4a85bf，Git镜像commit=cd8daa75。
 - 目标：对同fold C/G执行固定clean、三LEO、fixed400 proxy和连续Gaussian-NLL公平评价，产出6份pair JSON及F6矩阵聚合。
@@ -107,8 +107,8 @@ Runner只回收小JSON/CSV/binding/log/PID/manifest，不下载checkpoint或NPZ�
 - 本地验证：已完成。
 - 独立P0/P1：已通过。
 - 根报告与Git镜像：本次预注册后应逐字一致。
-- N607 release/42步：尚未执行。
-- 性能分析：尚未开始。
+- N607 release/42步：已完成，ARTIFACTS_COMPLETE / TECHNICAL_BINDING_PASS / PAIR_JSON_READY。
+- 性能分析：已完成，最终REJECT_P1_RECTE_PERMANENT。
 
 ## 8.Runner技术交接（2026-08-10）
 
@@ -146,3 +146,94 @@ Runner只回收小JSON/CSV/binding/log/PID/manifest，不下载checkpoint或NPZ�
 - 小工件bundle：远端`/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_recte_postfreeze_20260810_v1/phase1_recte_postfreeze_20260810_v1_small_bundle.tar`，SHA256=`1642deea7824b73a8654e2e3eba6d0cda45805d132077d5aa6b2d6a71afff28e`、bytes=`55910400`、63成员；manifest为同目录`phase1_recte_postfreeze_20260810_v1_small_bundle_manifest.tsv`（6793 bytes）。本地回收副本为`E:\type10-7\automation_reports\CV-SincNet\phase1_recte_postfreeze_20260810_v1\retrieved_cb92090f\phase1_recte_postfreeze_20260810_v1_small_bundle.tar`，SHA/bytes一致，bundle内无NPZ/pth/pt/npy。
 - SSH清理：启动及回收后均确认本地`ssh.exe=0`、N607/bridge TCP22 established=0；当前无遗留连接。
 - 审计备注：首个落地探针曾因错误使用`nan`匹配模式触发单行日志内容输出；该输出未被读取、解释或用于任何判断，随后已改为仅计数技术错误指纹和校验结构字段。本节及Runner交接不包含性能结论；主代理在同一run的完整原始工件闭合后自行进行性能分析。
+
+## 11.主代理同排性能分析
+
+### 11.1输入完整性与计算复核
+
+- 分析输入：本地回收bundle SHA256=1642deea7824b73a8654e2e3eba6d0cda45805d132077d5aa6b2d6a71afff28e，解包目录为E:\type10-7\automation_reports\CV-SincNet\phase1_recte_postfreeze_20260810_v1\analysis_extract_main。
+- 6份pair JSON的bytes与SHA均逐项匹配bundle manifest：F1=c2748af5a1c2552dc3078c14849252c2e4367948bb5ad581eaaa970f084b9888；F2=94085fb83d9685b9443bd295ad5cb2bf963db3d3f74acbcb18f8a8f75ed67ea7；F3=6159e762f78441833898513b55e1a36e635f2dad89672fc3d2818dcb7327c7fd；F4=ebc01a2fd04ad1873aa49f3cfe22f515ebdea05d3c994b8fa90442151fe33848；F5=683aaf5629d33a02715e9fa83ce3dc146e8497ecef5f660e1fadb0569f76295e；F6=411d5d3df3dcc5c61887cfcac56821bc820208e03b54c24af84063bdaecb06c1。
+- 6/6技术绑定、C/G训练receipt终态、共同训练投影和proxy原始logit重算均通过。F6逐项绑定F1--F5当前pair SHA，且raw_artifacts_recomputed=true。
+- 下表accuracy绝对值按百分比显示，G−C使用百分点；proxy AUROC使用0--1标度，u-gap=mean(u_proxy)−mean(u_V)。
+
+### 11.2clean source-validation
+
+|fold|C overall(%)|G overall(%)|Δoverall(pp)|Δmin-class(pp)|Δmin-RX(pp)|Δmin-day(pp)|四floor|
+|---|---:|---:|---:|---:|---:|---:|---|
+|F1|99.285714|99.309524|+0.023810|+0.142857|+0.083333|-0.011905|PASS|
+|F2|99.196429|98.922619|-0.273810|-1.166667|-0.958333|-0.238095|PASS|
+|F3|99.208333|99.142857|-0.065476|0.000000|-0.125000|-0.130952|PASS|
+|F4|99.255952|99.166667|-0.089286|-0.214286|-0.291667|-0.154762|PASS|
+|F5|98.178571|97.815476|-0.363095|-1.261905|-1.208333|-0.345238|PASS|
+|F6|97.095238|97.041667|-0.053571|+0.642857|+0.583333|+0.130952|PASS|
+
+clean四floor达到6/6。F2与F5有超过1pp的min-class下降，但仍高于预注册C−2pp地板；该门只证明没有clean灾难性退化，不能补偿LEO或proxy失败。
+
+### 11.3LEO三场景18格
+
+|fold|场景|C overall(%)|G overall(%)|Δoverall(pp)|Δmin-class(pp)|Δmin-RX(pp)|Δmin-day(pp)|四floor|
+|---|---|---:|---:|---:|---:|---:|---:|---|
+|F1|clear|94.117647|95.772059|+1.654412|+2.777778|+4.123711|+1.958480|PASS|
+|F1|low-elev|95.955882|95.772059|-0.183824|+2.343750|+1.123596|-0.480769|PASS|
+|F1|rain|94.726562|94.726562|0.000000|+0.781250|+1.265823|-0.446429|PASS|
+|F2|clear|93.382353|93.382353|0.000000|+2.951389|+5.154639|+0.450450|PASS|
+|F2|low-elev|90.808824|89.705882|-1.102941|+6.250000|+3.370787|-1.350733|PASS|
+|F2|rain|92.382812|90.429688|-1.953125|-4.687500|0.000000|-2.182540|FAIL|
+|F3|clear|93.566176|95.220588|+1.654412|+4.861111|+3.092784|+1.426893|PASS|
+|F3|low-elev|86.213235|90.257353|+4.044118|+10.156250|+6.741573|+4.189560|PASS|
+|F3|rain|86.328125|89.062500|+2.734375|+9.375000|+5.063291|+2.777778|PASS|
+|F4|clear|92.830882|94.117647|+1.286765|+2.777778|+3.092784|+2.795031|PASS|
+|F4|low-elev|90.992647|91.544118|+0.551471|+3.125000|+5.617978|+0.297619|PASS|
+|F4|rain|89.453125|91.601562|+2.148438|+0.781250|+6.329114|+3.472222|PASS|
+|F5|clear|78.676471|81.801471|+3.125000|+8.593750|+3.092784|+4.504505|PASS|
+|F5|low-elev|71.323529|76.470588|+5.147059|+5.295139|+2.247191|+4.807692|PASS|
+|F5|rain|66.992188|72.851562|+5.859375|+7.812500|+7.894737|+6.250000|PASS|
+|F6|clear|76.838235|84.007353|+7.169118|+27.083333|+10.447761|+7.103688|PASS|
+|F6|low-elev|81.250000|84.742647|+3.492647|+24.218750|+6.741573|+4.326923|PASS|
+|F6|rain|77.929688|83.789062|+5.859375|+24.218750|+8.860759|+6.944444|PASS|
+
+LEO四floor达到17/18，完整fold为5/6；唯一失败是F2-rain，其min-class下降4.687500pp、min-day下降2.182540pp。逐fold三场景等权overall增量为F1=+0.490196pp、F2=−1.018689pp、F3=+2.810968pp、F4=+1.328891pp、F5=+4.710478pp、F6=+5.507047pp，因此fold overall也只达到5/6。
+
+全18格等权增量为overall=+2.304815pp、min-class=+7.706404pp、min-RX=+4.681160pp、min-day=+2.602490pp。RECTE显著改善了多数LEO格，尤其F5和F6尾部；但F2-rain和F2 fold overall是预注册不可补偿失败。
+
+### 11.4fixed400 proxy连续双门
+
+|fold|C AUROC|G AUROC|ΔAUROC|C u-gap|G u-gap|Δu-gap|双严格门|
+|---|---:|---:|---:|---:|---:|---:|---|
+|F1|0.851397|0.716530|-0.134868|1006.221568|568.318607|-437.902961|FAIL|
+|F2|0.610136|0.459799|-0.150336|395.557000|197.731148|-197.825852|FAIL|
+|F3|0.923430|0.836259|-0.087171|1630.760486|1493.414836|-137.345650|FAIL|
+|F4|0.497876|0.357963|-0.139913|1629.433595|172.593529|-1456.840066|FAIL|
+|F5|0.949616|0.867431|-0.082185|524.567288|271.565027|-253.002261|FAIL|
+|F6|0.812988|0.898099|+0.085110|1328.257631|1068.918838|-259.338793|FAIL|
+
+proxy双严格门为0/6。F1--F5的AUROC和u-gap同时下降；F6虽然AUROC上升0.085110，u-gap仍下降259.338793。六折u-gap全负是跨fold一致的反退化失败，不能由LEO分类改善补偿。该proxy仅为TX隔离、L-only fit的连续几何诊断，不是真实unknown能力证据。
+
+### 11.5完整门与最终裁决
+
+|冻结门|RECTE结果|要求|判定|
+|---|---:|---:|---|
+|技术绑定|6/6|6/6|PASS|
+|clean四floor|6/6 fold|6/6|PASS|
+|LEO四floor|17/18 cell；5/6 fold完整|18/18；6/6|FAIL|
+|逐fold三场景overall|5/6非负|6/6|FAIL|
+|全18格overall|+2.304815pp|≥0|PASS|
+|proxy连续双门|0/6 fold|6/6|FAIL|
+
+F6 matrix aggregate给出的最终verdict为REJECT_P1_RECTE_PERMANENT，主代理独立重算一致。按预注册，不调lambda、不换fold、receiver、TX、场景或seed，不选择F3--F6局部成功，不以全18格正均值补偿失败，也不重试同一机制。
+
+## 12.同合同复盘与方法结论
+
+|候选|clean四floor|LEO四floor|完整LEO fold|全18格overall|proxy双门|最终状态|
+|---|---:|---:|---:|---:|---:|---|
+|ICMT|5/6|3/18|0/6|-4.309002pp|1/6|永久拒绝|
+|CAGM|5/6|9/18|1/6|-0.128294pp|4/6|永久拒绝|
+|RCRMD|5/6|15/18|5/6|+2.180990pp|0/6|永久拒绝|
+|RCAT|6/6|10/18|3/6|+0.149357pp|2/6|永久拒绝|
+|RECTE|6/6|17/18|5/6|+2.304815pp|0/6|永久拒绝|
+
+RECTE提供了目前最强的LEO分类证据：它同时守住clean 6/6，并把LEO四floor提高到17/18。结果支持“相对cell-tail上推”可以修复大部分receiver×class条件下的LEO margin退化。它没有保住source-proxy连续几何：六折u-gap全部下降，proxy双门0/6。一个与证据一致、但尚未被因果隔离的解释是，cell-tail equalization提升了已知类在LEO扰动下的决策鲁棒性，同时压缩了L-only Gaussian几何对proxy TX的离群分离。
+
+本轮是自ICMT起超过三轮探索后的记录性复盘。五个候选均未同时闭合分类端和proxy端；下一候选不得从本轮postfreeze性能反向选择receiver、day、fold、阈值或超参。若继续研发，应预注册一个source-L-only、类/RX置换等价的几何保持原语，明确保留RECTE已验证的cell-tail收益，同时把proxy保持作为独立可证伪结果而非训练反馈。任何新实验仍须先经过DESIGN_DRAFT→FEASIBILITY_REVIEW→DESIGN_FROZEN、本地窄验证与独立P0/P1。
+
+最终状态：ANALYZED / REJECT_P1_RECTE_PERMANENT / NO_PHASE3_CAPABILITY_CLAIM。
