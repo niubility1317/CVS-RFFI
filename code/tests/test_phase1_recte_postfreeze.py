@@ -95,7 +95,6 @@ def _receipt(
              "source_receiver_ids": list(RECTE.FROZEN_RECTE_SOURCE_RECEIVER_IDS),
              "frozen_source_receiver_ids": list(RECTE.FROZEN_RECTE_SOURCE_RECEIVER_IDS),
              "source_receiver_count": 7,
-             "frozen_source_receiver_count": 7,
              "frozen_cells_per_scene": 28,
              "loss_global_denominator": 378,
              "fixed_unordered_pair_count": 378,

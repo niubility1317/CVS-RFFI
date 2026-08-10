@@ -63,7 +63,6 @@ COMMON_TRAINING_BINDING_FIELDS = (
     "source_receiver_ids",
     "source_receiver_count",
     "frozen_source_receiver_ids",
-    "frozen_source_receiver_count",
     "frozen_cells_per_scene",
     "loss_global_denominator",
     "fixed_unordered_pair_count",
@@ -392,7 +391,6 @@ def _strict_common_training_projection(
             raise RECTEPostfreezePairError(f"{label} common training binding {field} drifted")
     for field, expected in (
         ("source_receiver_count", _recte_export.FROZEN_SOURCE_RECEIVER_COUNT),
-        ("frozen_source_receiver_count", _recte_export.FROZEN_SOURCE_RECEIVER_COUNT),
         ("frozen_cells_per_scene", _recte_export.FROZEN_CELLS_PER_SCENE),
         ("loss_global_denominator", _recte_export.FROZEN_UNORDERED_PAIR_COUNT),
         ("fixed_unordered_pair_count", _recte_export.FROZEN_UNORDERED_PAIR_COUNT),

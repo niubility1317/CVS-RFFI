@@ -101,7 +101,6 @@ def _validate_source_receiver_binding(receipt: Mapping[str, Any]) -> None:
         ):
             raise RECTESplitExportError(f"RECTE receipt {field} drifted")
     for field, expected in (
-        ("frozen_source_receiver_count", FROZEN_SOURCE_RECEIVER_COUNT),
         ("source_receiver_count", FROZEN_SOURCE_RECEIVER_COUNT),
         ("frozen_cells_per_scene", FROZEN_CELLS_PER_SCENE),
         ("loss_global_denominator", FROZEN_UNORDERED_PAIR_COUNT),
