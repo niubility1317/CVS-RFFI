@@ -86,6 +86,7 @@ nohup bash -lc 'CUDA_VISIBLE_DEVICES=7 /home/szu2070436088/.conda/envs/CVS-RFFI/
 |GPU|GPU7=`0%`利用率、`1MiB/24576MiB`；compute app为空，已释放|
 |内核补查|`journalctl -k`目标窗口无可见条目；`dmesg`因权限拒绝；远端无`coredumpctl`，因此不推断OOM或kernel kill|
 |小receipt回收|仅读取log目录下`build.pid`、`build.exit`、`build.out`；不下载checkpoint、ManySig、NPZ或runtime大payload|
+|本地artifact|`E:/type10-7/automation_reports/CV-SincNet/phase1_single_control_bundle_v1_build_20260810_v4/artifacts/{build.pid,build.exit,build.out}`；三项文件大小与SHA均已逐项匹配远端|
 |SSH清理|本地`ssh.exe`进程=`none`，N607/bridge TCP22 established=`none`|
 
 远端小文件SHA256：`build.pid=eb8252ebb7281cbf3c10a31eacdd9db05c63fd133c166cd9c78dca27ad86b970`；`build.exit=690e07064753123c967bbac0180f32da6a753a5bd8b79a47644cef58e776d9f0`；`build.out=a4c5aaeeb3b93f036a5054ba070ce145d65fb69123ce30c66bda335f4d580d74`。
