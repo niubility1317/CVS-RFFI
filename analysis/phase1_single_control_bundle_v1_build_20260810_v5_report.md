@@ -1,6 +1,6 @@
 # Phase1单读出local4控制bundle v1真实构建v5报告
 
-状态：`LOCAL_VERIFIED / PREREGISTERED / NOT_LAUNCHED / NO_PERFORMANCE_RESULT`
+状态：`LOCAL_VERIFIED / LANDED / STATIC_VERIFIED / NOT_LAUNCHED / NO_PERFORMANCE_RESULT`
 
 日期：2026-08-10
 
@@ -29,6 +29,12 @@
 |`analysis/phase3_final_goal_traceability_20260809.md`|`5bd512fec04d5797e79596feaa2fa2404c0b323faecdfae023e0dd5b5d0e0d4a`|
 
 `ssr-gpu`串行验证：`py_compile`通过；完整focused SCB回归`37 passed`；公开build CLI`--help`通过；`git diff --check`通过。新增直接证据：真实小PKL恰好一次`pickle.load`且历史loader不可达；L/U/V descriptor多chunk与单进程reference为`np.array_equal`；L/V TorchScript runtime同样等价；U IPC输入/输出的label、physical key和hash字段均拒绝；exit139无重试且output/staging不存在；乱序、缺行与IPC超限在worker/bundle前fail-closed；既有10成员、schema、parity、resource和CARE回归通过。
+
+### 2.1 Runner prelaunch归档修正与静态落地
+
+首次在Windows默认`core.autocrlf=true`下生成的完整归档SHA为`7d8ecda413b930851373fb0525ce3e117bdfbdc3275c74469579908593889bf2`。远端展开后检测到CRLF，核心成员SHA为`e2ac4b3ff6fadd4194ad37796881c1a0f86e0dd6164ef590e0861e4786ad9168`，不满足冻结LF要求；该归档与展开树已安全改名为`*_crlf_mismatch_prelaunch`保留审计证据。该修正发生在launch前，不计实验retry，未创建log/output且未调用build。
+
+使用`git -c core.autocrlf=false -c core.eol=lf archive`从commit`728b4029507ce5bf5a79002999f709778fe3ff53`重新生成完整无prefix归档：本地与远端tar SHA均为`c8d21d7e141a396d721af861b859e0521a5f410d144f06b84b350a9a0da58fbe`，4307个文件成员、无`code/code`。六个冻结关键成员SHA逐项匹配目标，关键文本CR字节均为0，展开后模式为`664`并与tar闭合。远端LF release已完成展开；`CVS-RFFI` Python`3.10.19`下core、build CLI、test三文件`py_compile=PASS`，公开build CLI`--help=PASS`。输入SHA、GPU7空闲、目标release/output/log/build文件覆盖检查均通过；目前仍未创建log root、未launch、无性能结果。
 
 ## 3.冻结输入与数据轴
 
