@@ -106,3 +106,63 @@ Runner完成后仅回收小日志、JSON/CSV、PID与manifest，不下载checkpo
 训练技术闭合后另行实现并运行固定42步：12 clean export+12 LEO/binding+12 proxy+6 same-fold pair。Gaussian只用L拟合，V/proxy零fit；使用float64的同一totalized-L2分段规则，保留zero且nonfinite fatal；proxy days/RX/seed/400、ManySig SHA和physical keys固定。
 
 非补偿门：clean 6/6四floor不低于C−2pp；LEO 18/18四floor不低于C−2pp；每fold三场景overall和全18格overall均不低于C；每foldproxy AUROC增量>0且proxy−V mean-u gap增量>0，必须6/6。任一完整门失败即`REJECT_P1_RCAT_PERMANENT`。
+
+## 8.Runner执行收据（2026-08-10）
+
+- 交接状态：`ARTIFACTS_COMPLETE / NO_PERFORMANCE_RESULT`；本Runner仅执行冻结实现、落地、启动、监控和小工件回收，不读取或解释性能。
+- 实现commit：`97353bcbce4202c42a2e76e19c39b80f6fa3b645`；预登记report commit：`e6e26b318e06cfbd5993d4d612fa07c1c8c69f38`。
+- 精确Git archive：无prefix、LF-only，`261171200`B，tar成员`4932`（文件`4312`、目录`620`），archive SHA256=`4b242d60f6dcee74d6e764ecb46a93562f0d3fa1cb1852a0805c41a0fadd2bbd`；`code/code*`成员数=`0`；code下`.py/.sh`文本`1347`个、CRLF=`0`；launcher mode=`775`。
+
+|archive member|SHA256|mode|
+|---|---|---:|
+|`analysis/phase1_rcat_design_20260810.md`|`52d3b95a1914aa1aa80ff7cf9d02d60e6c4b60dfea5e61d65cc2c9e8e0707b08`|`664`|
+|`code/cvsrffi/phase1_rcat.py`|`4b9c0eec667478fff2071e56f193e1133e5aad205de0d3b82a8e99e24109441d`|`664`|
+|`code/SSDG/train_ssdg.py`|`4148ddd823d11cc17efa7dca23960a777311f001a34c508cd5e25006db61a593`|`664`|
+|`code/tests/test_phase1_rcat.py`|`1ac9a9282a4a4804336bff2f5619bb0bdcdc2464013efd7b9e7dfb9629797eb1`|`664`|
+|`code/scripts/launch_phase1_rcat12_20260810.sh`|`ca5e1c885882d6a2cc07d2b4428d2a6120a2d055320c32baf13482cbc48b9e87`|`775`|
+
+工作树中的`train_ssdg.py`SHA=`359cc53d39b96ca3b59016cc4ead21a4ef8328b2d2e0d527f76a24b11e5a7f6a`为Windows CRLF smudge字节；release严格使用上述Git archive LF blob（`4148ddd...`），未对科学代码做修补。
+
+本地静态门（`ssr-gpu`串行）：实现core/train/test`py_compile`通过；`train_ssdg.py --help`通过；`bash -n`通过；launcher dry-run精确12行（C=6、G=6、旧候选启用行=0）。远端release复核同样通过，且release内`__pycache__`目录=`0`。
+
+远端只读preflight与落地：ManySig SHA256=`2b0a7a7488dd3650bcae7b1d80efbcffd1598aaa671ae6b0a0df2a24dc0f694f`；release/run/log/outer启动前均`ABSENT`；GPU7既有SCB的compute PID=`958333,958466`（约845MiB），启动前后均未干预。archive远端SHA与本地一致，release成员数和5个目标member SHA/mode一致。
+
+唯一启动：报告§5命令调用`1`次，`retry=NO`。调用端约45秒返回`-1`且无成功文本；按规则未重发。随后只读确认launcher已落地：父PID=`997307`，CWD=`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_rcat12_20260810_v1_97353bcb/code`，`pids.tsv`为13行（含表头），12个子PID均绑定该CWD和冻结命令；父launcher及12个子PID自然退出。GPU映射与实际PID如下：
+
+|PID|fold/arm|GPU|epochs/final_only|
+|---:|---|---:|---|
+|997310|F1C|0|40/true|
+|997312|F5G|0|40/true|
+|997314|F1G|1|40/true|
+|997316|F5C|1|40/true|
+|997318|F2C|2|40/true|
+|997320|F6G|2|40/true|
+|997322|F2G|3|40/true|
+|997324|F6C|3|40/true|
+|997326|F3C|4|40/true|
+|997328|F3G|5|40/true|
+|997330|F4C|6|40/true|
+|997332|F4G|7|40/true|
+
+技术健康与工件：12/12日志达到`E040/040`；严格`Traceback/RuntimeError/argparse/OOM/SIGSEGV/NaN`异常指纹均为`0`。曾有一次粗grep命中`leo_grad_nonfinite=0`遥测字段，复核后不属于异常。9类必需工件均为12/12：`final_ssdg.pth`、`metrics_epoch.csv`、`metrics_epoch.jsonl`、`phase1_rcat_config_receipt.json`、`phase1_training_completion_receipt.json`、`phase1_terminal_status.json`、`phase1_rcat_terminal_receipt.json`、`frozen_phase1_heldout_eval.json`、`phase1_resource_summary.json`。所有终态为`NON_PROMOTABLE_P0_DISABLED`/exit8，未转为性能结果。
+
+RCAT合同逐臂复核：C=`6/6`通过，三场景各28格common覆盖、`rcat_total_rows=0`、`rcat_positive_q=0`、RCAT aux/audit/scenes为空或N/A；G=`6/6`通过，三场景各28格、`rcat_batches=1200`、`rcat_total_rows=153600`、`rcat_positive_q>0`，`feat_joint_leo`与shared encoder raw VJP finite/nonzero，exact head aux为none/zero，终态合同通过。未读取或报告accuracy/loss等性能字段。
+
+12个final checkpoint仅记录远端SHA，均未下载：
+
+|arm|bytes|远端SHA256|
+|---|---:|---|
+|F1C|9480955|`d96eccecb65cbae8d29751fa4a4217171c211afffbe51129c3d8362458bd0f5c`|
+|F1G|10697851|`e4b64bd1d0037bab42f46b2df497c6a9fb5063683999960fb0e29a8ca7a11e99`|
+|F2C|9480955|`1834b4d5dda556fb9a2a7084596d23532ae8b0c6c17c3a77488b3c9ef7ca1e9f`|
+|F2G|10697851|`2f0628254d1361c1ac14a7acfd67459b429dd55fc52f92e09d62a015c5aaa6ad`|
+|F3C|9480955|`3f0f3049c33647b6d0d7f5ceb45ecaa6234dfbd483ecc876814fc4b407f823c4`|
+|F3G|10697851|`84e2e67c853b8cb009af05ad9ee429898a2a6a95de3f19c01048166f0e917c6f`|
+|F4C|9480955|`40529f92d629b645a2cc5f2df850b3fa9471ccfde388f8b37008ad73fddda799`|
+|F4G|10697851|`1aeae68b3c74ba28ba1b0ac31aa74ba6d10d74ba5dd2cc24fa121445370352a9`|
+|F5C|9480955|`30dac552d1a52a8f7bab70d7d73b90a764b57589038db07b3890411fc7ac98c5`|
+|F5G|10697851|`d0f1b138955e43ef3eb0f1727edf8d23c901bc36e2364ec74e99b7dea23a7f41`|
+|F6C|9480955|`a116db53be8d3b19d719f32a457b91b626514eb4af3631b86c8f79edcffbf424`|
+|F6G|10697851|`3e08a692a723b73e4503316f60106d7e185d2893ed6a84eeb810e65facd6b0a1`|
+
+回收与清理：远端manifest含73个小文件行和12个`NO_DOWNLOAD` final行，SHA256=`55dcc9793dbedb0535d13037d4b788c1a3a62f2766ffeea8f2c2c8de3c5eed0c`，12766B；小工件bundle不含`.pth/.npz`，SHA256=`baa406d29556d275bcd305d476a3d9c1c2c40ae1d8cd1d7dc7cae499eb1e38f6`，4966400B。bundle和manifest已回收到`E:\type10-7\automation_reports\CV-SincNet\phase1_rcat12_20260810_v1\artifacts\`，本地SHA与远端一致。每次SSH/SCP后本地`ssh.exe=0`、TCP22`ESTABLISHED=0`；SCB进程未受影响。
