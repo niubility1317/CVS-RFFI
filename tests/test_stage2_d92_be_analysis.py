@@ -272,3 +272,37 @@ def test_analysis_accepts_local_overrides_for_retrieved_remote_artifacts(tmp_pat
         method_lock_path=local_method_lock,
     )
     assert result["verdict"] == "STRICT_PARETO_PROMOTE_TO_TARGET125_CONFIRMATION"
+
+
+def test_zero_mean_floor_delta_is_not_failed_by_binary_roundoff(tmp_path: Path) -> None:
+    manifest_path = _build_matrix(tmp_path)
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    performance = [
+        row
+        for row in manifest["selected_rows"]
+        if row["outer_role"] == "performance"
+    ]
+    candidate_floors = [
+        0.41666666666666663,
+        0.38333333333333336,
+        *([0.4] * 8),
+    ]
+    for selected, floor in zip(performance, candidate_floors):
+        job = next(
+            row
+            for row in manifest["jobs"]
+            if row["outer_key"] == selected["outer_key"] and row["arm_id"] == "B0E0"
+        )
+        job_root = Path(job["output_root"])
+        score_path = job_root / "scorer" / "diag_cosine_score.json"
+        score = json.loads(score_path.read_text(encoding="utf-8"))
+        score["per_old_class_floor_after"] = floor
+        _write_json(score_path, score)
+        receipt_path = job_root / "job_receipt.json"
+        receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+        receipt["score_sha256"] = _sha256(score_path)
+        _write_json(receipt_path, receipt)
+    result = analyze_d92_be_hard12(manifest_path)
+    gate = result["gates"]["mean_delta_old_floor"]
+    assert gate["observed"] == pytest.approx(0.0, abs=1e-15)
+    assert gate["passed"] is True

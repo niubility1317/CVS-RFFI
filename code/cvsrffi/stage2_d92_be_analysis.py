@@ -17,6 +17,7 @@ from cvsrffi.stage2_d92_be_slim import D92_BE_ARMS
 
 ARMS = ("FULL", "B0", "E0", "B0E0")
 SCENES = ("leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak")
+_GATE_TOLERANCE = 1e-12
 
 
 class D92BEAnalysisError(ValueError):
@@ -389,7 +390,8 @@ def analyze_d92_be_hard12(
     max_query_increase = max(row["query_macs_increase"] for row in paired_rows)
     gates = {
         "mean_delta_h": _gate(
-            mean_delta_h >= float(thresholds["mean_delta_h_min"]),
+            mean_delta_h
+            >= float(thresholds["mean_delta_h_min"]) - _GATE_TOLERANCE,
             mean_delta_h,
             {">=": float(thresholds["mean_delta_h_min"])},
         ),
@@ -399,29 +401,35 @@ def analyze_d92_be_hard12(
             {">=": int(thresholds["nonnegative_delta_h_outer_min"])},
         ),
         "mean_delta_old_balanced": _gate(
-            mean_delta_old >= float(thresholds["mean_delta_old_balanced_min"]),
+            mean_delta_old
+            >= float(thresholds["mean_delta_old_balanced_min"])
+            - _GATE_TOLERANCE,
             mean_delta_old,
             {">=": float(thresholds["mean_delta_old_balanced_min"])},
         ),
         "mean_delta_seen_new": _gate(
-            mean_delta_new >= float(thresholds["mean_delta_seen_new_min"]),
+            mean_delta_new
+            >= float(thresholds["mean_delta_seen_new_min"]) - _GATE_TOLERANCE,
             mean_delta_new,
             {">=": float(thresholds["mean_delta_seen_new_min"])},
         ),
         "mean_delta_old_floor": _gate(
-            mean_delta_floor >= float(thresholds["mean_delta_old_floor_min"]),
+            mean_delta_floor
+            >= float(thresholds["mean_delta_old_floor_min"]) - _GATE_TOLERANCE,
             mean_delta_floor,
             {">=": float(thresholds["mean_delta_old_floor_min"])},
         ),
         "mean_delta_forgetting": _gate(
-            mean_delta_forgetting <= float(thresholds["mean_delta_forgetting_max"]),
+            mean_delta_forgetting
+            <= float(thresholds["mean_delta_forgetting_max"]) + _GATE_TOLERANCE,
             mean_delta_forgetting,
             {"<=": float(thresholds["mean_delta_forgetting_max"])},
         ),
         "median_wall_reduction": _gate(
             resource_denominator_valid
             and median_wall_reduction is not None
-            and median_wall_reduction >= float(thresholds["median_wall_reduction_min"]),
+            and median_wall_reduction
+            >= float(thresholds["median_wall_reduction_min"]) - _GATE_TOLERANCE,
             median_wall_reduction,
             {">=": float(thresholds["median_wall_reduction_min"])},
         ),
@@ -429,12 +437,14 @@ def analyze_d92_be_hard12(
             resource_denominator_valid
             and median_peak_reduction is not None
             and median_peak_reduction
-            >= float(thresholds["median_incremental_peak_reduction_min"]),
+            >= float(thresholds["median_incremental_peak_reduction_min"])
+            - _GATE_TOLERANCE,
             median_peak_reduction,
             {">=": float(thresholds["median_incremental_peak_reduction_min"])},
         ),
         "query_cost_nonincrease": _gate(
-            max_query_increase <= float(thresholds["query_cost_increase_max"]),
+            max_query_increase
+            <= float(thresholds["query_cost_increase_max"]) + _GATE_TOLERANCE,
             max_query_increase,
             {"<=": float(thresholds["query_cost_increase_max"])},
         ),
