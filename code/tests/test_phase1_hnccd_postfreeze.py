@@ -611,6 +611,61 @@ def test_hnccd_four_floor_overall_and_proxy_double_gate_are_noncompensating(tmp_
     assert "non-compensating" in str(PAIR.FROZEN_POSTFREEZE_CONTRACT)
 
 
+def test_hnccd_fold_overall_uses_preregistered_minus2pp_floor() -> None:
+    clean = {
+        "overall_accuracy": 0.0,
+        "min_class_accuracy": 0.0,
+        "min_rx_accuracy": 0.0,
+        "min_day_accuracy": 0.0,
+    }
+    leo = {
+        scene: {"G_minus_C_pp": dict(clean, overall_accuracy=-1.5)}
+        for scene in SCENARIOS
+    }
+    proxy = {
+        "strict_AUROC_improvement": True,
+        "strict_proxy_known_gap_improvement": True,
+        "passed": True,
+        "diagnostic_only_non_compensating": True,
+    }
+    gates = PAIR._hnccd_fold_gates(clean, leo, proxy, SCENARIOS)
+    overall = gates["fold_three_scenario_equal_weight_overall_delta_pp"]
+    assert overall["value"] == pytest.approx(-1.5)
+    assert overall["threshold_pp"] == -2.0
+    assert overall["passed"] is True
+    assert gates["fold_verdict"] == "PENDING_MAIN_REVIEW_FULL_6_FOLD"
+
+
+def test_hnccd_matrix_fold_and_global_overall_use_minus2pp_floor() -> None:
+    result = {
+        "gates": {
+            "technical_binding": {"passed": True},
+            "clean_6of6_four_floors_ge_minus2pp": {"passed": True},
+            "leo_18of18_four_floors_ge_minus2pp": {"passed": True},
+            "fold_three_scenario_equal_weight_overall_delta_pp": {
+                "values": {f"F{fold}": (-2.0 if fold == 6 else -1.5) for fold in range(1, 7)},
+                "passed": False,
+            },
+            "global_18_cell_equal_weight_overall_delta_pp": {
+                "value": -1.5,
+                "passed": False,
+            },
+            "proxy_continuous_6of6_two_strict_improvements": {"passed": True},
+        },
+        "verdict": "REJECT_P1_ICMT_PERMANENT",
+    }
+    corrected = PAIR._apply_hnccd_matrix_gate_contract(result)
+    gates = corrected["gates"]
+    assert gates["fold_three_scenario_equal_weight_overall_delta_pp"]["passed"] is True
+    assert gates["global_18_cell_equal_weight_overall_delta_pp"]["passed"] is True
+    assert corrected["verdict"] == "PHASE1_ADVANCEMENT_CANDIDATE_PENDING_MAIN_REVIEW"
+
+    result["gates"]["fold_three_scenario_equal_weight_overall_delta_pp"]["values"]["F6"] = -2.0001
+    corrected = PAIR._apply_hnccd_matrix_gate_contract(result)
+    assert corrected["gates"]["fold_three_scenario_equal_weight_overall_delta_pp"]["passed"] is False
+    assert corrected["verdict"] == "REJECT_P1_HNCCD_PERMANENT"
+
+
 @pytest.mark.parametrize("legacy_field", ["icmt_receipt_schema", "rcmmc_enabled", "hscf_source_split_manifest_sha256"])
 def test_hnccd_rejects_old_method_identity_even_when_proxy_is_recomputed(tmp_path: Path, legacy_field: str) -> None:
     paths = _build_hnccd_pair_fixture(tmp_path)

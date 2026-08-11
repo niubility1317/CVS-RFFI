@@ -36,6 +36,7 @@ EXPECTED_PAIR_SCHEMA = "cvs.phase1.hnccd_postfreeze_pair.v1"
 EXPECTED_HNCCD_RECEIPT_SCHEMA = "cvs.phase1.hnccd_receipt.v1"
 EXPECTED_HEAD_CONTRACT = "dual_cvsincnet_tx_logits_v1"
 EXPECTED_CLEAN_ARTIFACT = "icmt_clean_l_v_proxy_final_only.npz"
+HNCCD_FLOOR_DELTA_LIMIT_PP = -2.0
 LEGACY_IDENTITY_PREFIXES = ("icmt_", "hscf_", "rcmmc_", "rcat_", "recte_", "rcrmd_", "cagm_")
 RAW_RECEIVER_TOKEN_FIELDS = frozenset({"source_receiver_ids", "frozen_source_receiver_ids"})
 
@@ -685,11 +686,72 @@ def _hnccd_fold_gates(
     expected_scenarios: Sequence[str],
 ) -> dict[str, Any]:
     result = dict(_ORIGINAL_FOLD_GATES(clean_delta, leo_scenarios, proxy_guardrail, expected_scenarios))
-    if result.get("fold_verdict") == "REJECT_P1_ICMT_PERMANENT":
-        result["fold_verdict"] = "REJECT_P1_HNCCD_PERMANENT"
-    elif result.get("fold_verdict") == "PENDING_GLOBAL_18_GRID":
-        result["fold_verdict"] = "PENDING_MAIN_REVIEW_FULL_6_FOLD"
+    fold_overall = dict(result["fold_three_scenario_equal_weight_overall_delta_pp"])
+    fold_value = float(fold_overall["value"])
+    fold_overall["threshold_pp"] = HNCCD_FLOOR_DELTA_LIMIT_PP
+    fold_overall["passed"] = bool(
+        math.isfinite(fold_value) and fold_value >= HNCCD_FLOOR_DELTA_LIMIT_PP
+    )
+    result["fold_three_scenario_equal_weight_overall_delta_pp"] = fold_overall
+    passed = bool(
+        result["technical_binding"]["passed"] is True
+        and result["clean_four_floors_ge_minus2pp"]["passed"] is True
+        and result["leo_scenario_four_floors_ge_minus2pp"]["passed"] is True
+        and fold_overall["passed"] is True
+        and result["proxy_continuous_two_strict_improvements"]["passed"] is True
+    )
+    result["fold_verdict"] = (
+        "PENDING_MAIN_REVIEW_FULL_6_FOLD" if passed else "REJECT_P1_HNCCD_PERMANENT"
+    )
     return result
+
+
+def _apply_hnccd_matrix_gate_contract(result: Mapping[str, Any]) -> dict[str, Any]:
+    """Apply HNCCD's preregistered -2pp floor to fold/global overall gates."""
+
+    corrected = dict(result)
+    raw_gates = corrected.get("gates")
+    if not isinstance(raw_gates, Mapping):
+        raise HNCCDPostfreezePairError("HNCCD matrix aggregate lacks gates")
+    gates = {str(name): dict(gate) for name, gate in raw_gates.items()}
+
+    fold_gate = gates.get("fold_three_scenario_equal_weight_overall_delta_pp")
+    if not isinstance(fold_gate, dict) or not isinstance(fold_gate.get("values"), Mapping):
+        raise HNCCDPostfreezePairError("HNCCD matrix aggregate lacks fold overall values")
+    fold_values = {str(name): float(value) for name, value in fold_gate["values"].items()}
+    fold_gate["threshold_pp"] = HNCCD_FLOOR_DELTA_LIMIT_PP
+    fold_gate["passed"] = bool(
+        set(fold_values) == {f"F{fold}" for fold in range(1, 7)}
+        and all(math.isfinite(value) and value >= HNCCD_FLOOR_DELTA_LIMIT_PP for value in fold_values.values())
+    )
+
+    global_gate = gates.get("global_18_cell_equal_weight_overall_delta_pp")
+    if not isinstance(global_gate, dict):
+        raise HNCCDPostfreezePairError("HNCCD matrix aggregate lacks global overall gate")
+    global_value = float(global_gate.get("value", float("nan")))
+    global_gate["threshold_pp"] = HNCCD_FLOOR_DELTA_LIMIT_PP
+    global_gate["passed"] = bool(
+        math.isfinite(global_value) and global_value >= HNCCD_FLOOR_DELTA_LIMIT_PP
+    )
+
+    gates["fold_three_scenario_equal_weight_overall_delta_pp"] = fold_gate
+    gates["global_18_cell_equal_weight_overall_delta_pp"] = global_gate
+    corrected["gates"] = gates
+    required = (
+        "technical_binding",
+        "clean_6of6_four_floors_ge_minus2pp",
+        "leo_18of18_four_floors_ge_minus2pp",
+        "fold_three_scenario_equal_weight_overall_delta_pp",
+        "global_18_cell_equal_weight_overall_delta_pp",
+        "proxy_continuous_6of6_two_strict_improvements",
+    )
+    passed = all(gates[name].get("passed") is True for name in required)
+    corrected["verdict"] = (
+        "PHASE1_ADVANCEMENT_CANDIDATE_PENDING_MAIN_REVIEW"
+        if passed
+        else "REJECT_P1_HNCCD_PERMANENT"
+    )
+    return corrected
 
 
 def _hnccd_matrix_aggregate(
@@ -730,8 +792,7 @@ def _hnccd_matrix_aggregate(
         )
     except _icmt.ICMTPostfreezePairError as exc:
         raise _translate(exc) from exc
-    result["verdict"] = "REJECT_P1_HNCCD_PERMANENT" if result.get("verdict") == "REJECT_P1_ICMT_PERMANENT" else "PENDING_MAIN_REVIEW"
-    return _strip_legacy_identity_fields(result)
+    return _strip_legacy_identity_fields(_apply_hnccd_matrix_gate_contract(result))
 
 
 @contextmanager

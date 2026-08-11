@@ -24,18 +24,18 @@ LEO导出只能读取既有source IQ，固定`leo_clear_weak`、`leo_low_elev_we
 |HNCCD-PF-02|真实receipt重开|checkpoint args、HNCCD terminal receipt、C辅助N/A/0、G三scene positive/raw VJP、资源观察|clean、LEO、pair|verified|合成C/G terminal receipt经当前HNCCD validator重开|不伪造不存在字段；真实checkpoint仍deferred|
 |HNCCD-PF-03|同fold公平|共同warm-start、strict keys、新AdamW、AMP、source split、TX/class、physical/order、scene与live head路径|pair|verified|合成same-fold C/G common-binding闭合|G-only辅助字段不强求相等|
 |HNCCD-PF-04|clean几何|仅clean L拟合；float64 totalized-L2零行保留、nonfinite拒绝、full Gaussian-NLL|clean、pair|verified|float64正行/零行、nonfinite拒绝和L-only合成Gaussian/NLL|V/proxy零fit|
-|HNCCD-PF-05|LEO绑定|既有IQ单LEO三scene、same-physical TX/RX/day/class/order、ManySig/current SHA|LEO、pair|implemented|冻结binding路径已编译、导入并进行raw-token拒绝|真实ManySig/LEO原件由Runner重开|
-|HNCCD-PF-06|fixed400 proxy|固定days/RX/seed/400；NPZ、JSON、CSV、physical key和current SHA重算|clean、pair|implemented|固定常量与raw-logit重算路径已编译、导入|真实JSON/CSV/NPZ仍deferred；只评分|
-|HNCCD-PF-07|非补偿门|clean6/6、LEO18/18四floor、fold三sceneoverall6/6、global18-cell、双strict proxy门|pair|implemented|签字公平核gate映射已编译、导入|任一失败永久拒绝|
-|HNCCD-PF-08|F6原件重开|F1--F5 raw clean/LEO/binding/proxy/checkpoint和current SHA重算|pair|implemented|F6 raw reload/current receipt/proxy重算路径已编译、导入|禁止prior self-report|
+|HNCCD-PF-05|LEO绑定|既有IQ单LEO三scene、same-physical TX/RX/day/class/order、ManySig/current SHA|LEO、pair|verified|12/12 LEO NPZ与binding经当前validator重开，三scene和physical/current SHA闭合|真实ManySig/LEO原件已由唯一Runner重开|
+|HNCCD-PF-06|fixed400 proxy|固定days/RX/seed/400；NPZ、JSON、CSV、physical key和current SHA重算|clean、pair|verified|12/12 proxy JSON/CSV与当前NPZ raw logits重算通过|只评分；未反馈训练或停止|
+|HNCCD-PF-07|非补偿门|clean6/6、LEO18/18四floor、fold三sceneoverall6/6、global18-cell、双strict proxy门|pair|verified|42步闭合；主控从6个pair原始同row数值独立重算全部门|HNCCD专属fold/global overall阈值固定为预注册`−2pp`|
+|HNCCD-PF-08|F6原件重开|F1--F5 raw clean/LEO/binding/proxy/checkpoint和current SHA重算|pair|verified|F6标记raw reopen，5/5 prior binding均`raw_artifacts_recomputed=true`|禁止prior self-report|
 |HNCCD-PF-09|本地技术验证|官方`ssr-gpu`串行编译、导入、纯函数、合成receipt/binding、旧identity/raw-token对抗和CLI help|全部4文件|verified|三脚本py_compile、三模块导入、几何/receipt/负例、三份help均通过|不读性能或N607|
-|HNCCD-PF-10|真实42步接口|12个真实checkpoint、ManySig、sealed42输出、独立P0/P1和性能解释|外部唯一Runner|deferred|本卡不访问真实artifact|最高剩余风险|
+|HNCCD-PF-10|真实42步接口|12个真实checkpoint、ManySig、sealed42输出、独立P0/P1和性能解释|外部唯一Runner+主控|verified|Runner完成技术闭合；主控在bundle SHA绑定后完成同row性能解释|最终为永久拒绝，不进入晋级|
 
 ## 交付与状态边界
 
-本卡只交付4个本地后冻结接口：clean sealed export、LEO export/binding、same-fold evaluator和本追踪卡。它不新增训练forward、补偿门、模型状态、缓存、第二LEO view、query访问、proxy拟合或性能报告。即使所有本地技术检查通过，状态也只能是`LOCAL_VERIFIED / NO_PERFORMANCE_INTERPRETATION`；真实artifact闭合前，HNCCD-PF-10保持`deferred`。
+本卡交付clean sealed export、LEO export/binding、same-fold evaluator和本追踪卡。它不新增训练forward、补偿门、模型状态、缓存、第二LEO view、query访问或proxy拟合。真实42步现已闭合并由主控完成性能解释；这不扩大HNCCD的训练权限或科学声明边界。
 
-当前追踪计数：`verified=5,implemented=4,deferred=1,rejected=0,blocked=0`。已实际执行的本地验证为：
+当前追踪计数：`verified=10,implemented=0,deferred=0,rejected=0,blocked=0`。已实际执行的本地验证为：
 
 ```text
 . F:\App\miniconda3\shell\condabin\conda-hook.ps1; conda activate ssr-gpu; python -m py_compile code/export_phase1_hnccd_features.py code/export_phase1_hnccd_leo_features.py code/evaluate_phase1_hnccd_postfreeze_pair.py
@@ -46,4 +46,12 @@ LEO导出只能读取既有source IQ，固定`leo_clear_weak`、`leo_low_elev_we
 git diff --check
 ```
 
-这些检查只证明本地接口可导入、receipt与公平合同的合成路径可失败闭合；没有读取真实checkpoint、ManySig、训练日志指标、sealed42步artifact或性能数值。最高剩余风险仍是首次真实12臂receipt与sealed42步原件闭合。
+本地检查证明接口、receipt、公平合同与fail-closed路径闭合；唯一Runner随后完成真实12 checkpoint、ManySig、sealed42和F6原件重开，主控才读取6个pair JSON中的同row性能数值。
+
+## 真实42步与最终边界
+
+真实矩阵技术工件为12 clean、12 LEO/binding、12 fixed400 proxy和6 pair，技术异常为0。主控独立重算得到clean四floor`5/6`、LEO四floor`6/18`、fold三sceneoverall`6/6`、global18-cell overall`−0.451900pp`通过、proxy双strict门`1/6`。因此多个互不补偿的冻结门失败，唯一结论为`REJECT_P1_HNCCD_PERMANENT`。
+
+运行时pair JSON沿用了ICMT旧核对fold/global overall的`≥0pp`布尔判定，而HNCCD预注册合同是`≥−2pp`。原始同row数值、clean/LEO/proxy门和最终拒绝均不受影响；HNCCD专属包装层已改为显式`−2pp`并加入边界回归，未修改旧ICMT或远端不可变原件。该修订只纠正报告语义，不能把失败门补偿为通过。
+
+本结论只拒绝P1-HNCCD这一机制。它不构成真实unknown、FAR、注册授权、Phase2、Phase3或多卫星协同能力结论，也不得通过调参、挑fold、换checkpoint、改名或与旧机制拼接复活。
