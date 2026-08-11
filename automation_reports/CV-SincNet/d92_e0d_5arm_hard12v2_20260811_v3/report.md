@@ -48,7 +48,7 @@
 |---|---|
 |runtime archive|`E:\type10-7\code\snapshots\d92_e0d_runtime_closure_053b4347.tar.gz`；3525036B；912个Git跟踪成员；SHA256=`933df4742c328c6d97669f7d040f05ef4f1d0d5d7559504ecaaf154c9b2aac93`|
 |method lock|`configs/stage2_d92_e0d_5arm_hard12v2_v1.json`；2177B；SHA256=`b80f967e1fc070a730a7b193f691036339930af022682fe2fca81c2e4d229f86`|
-|launch|`automation_reports/CV-SincNet/d92_e0d_5arm_hard12v2_20260811_v3/launch.sh`；3520B；SHA256=`6645542edad147a41ddec53bf5e2a692cd3bb6e6a0d2a33fe491340c897ecac4`；`bash -n`通过|
+|launch|`automation_reports/CV-SincNet/d92_e0d_5arm_hard12v2_20260811_v3/launch.sh`；3519B；SHA256=`4aa3c7a2b800cd6de3fbe97d5d2c1cb7e5a33ae2fed4c37d3937c2bd60664662`；`bash -n`通过|
 
 ## 6.N607预注册
 

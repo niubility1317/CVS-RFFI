@@ -92,4 +92,3 @@ for shard in 0 1 2 3 4 5 6 7; do
       </dev/null &
   printf 'shard=%s gpu=%s pid=%s\n' "$shard" "$shard" "$!"
 done
-
