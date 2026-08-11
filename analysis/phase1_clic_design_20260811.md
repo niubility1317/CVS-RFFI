@@ -202,7 +202,15 @@ bundle schema固定为<code>cvs.phase1.clic_deployment_bundle.v1</code>。每个
 
 bundle不得包含raw／clean IQ、单样本feature／logit、source replay、成员ID、unknown query、proxy rows、target rows或可替换sidecar。bundle通过只表示Phase1交付物形成，不表示真实unknown拒识或Phase3完成。
 
-每个bundle还必须支持对封存<code>p2_min_v1</code>目标capsule进行无support、无更新的<code>reload→forward</code>。该接口输出<code>z_id,z_dom,q_clic,tx_logits,e_unknown,decision∈{registered,unknown,defer}</code>与状态SHA；<code>e_unknown</code>方向、threshold和defer规则只由source-L／source validation几何冻结，目标域真值和角色不进入bundle或模型进程。
+每个bundle还必须支持对封存<code>p2_min_v1</code>目标capsule进行无support、无更新的<code>reload→forward</code>。该接口输出<code>z_id,z_dom,q_clic,tx_logits,e_unknown,decision∈{registered,unknown,defer}</code>与状态SHA；目标域真值和角色不进入bundle或模型进程。
+
+### 10.1 Source-only拒识规则（冻结）
+
+拒识状态只由当前fold的clean source-L和其既有单LEO postfreeze输出冻结，既不使用source-V／proxy／target行拟合或确定阈值，也不读取它们的真值或角色。令<code>K=4</code>，对clean source-L的全部<code>z_id</code>行（包括严格zero行）按float64总化L2映射<code>T(z)=z/||z||₂</code>（仅正范数相除，zero行原样保持0）拟合：<code>μ_c=mean(T(z))</code>，<code>s²_cj=Σ(T(z)_j-μ_cj)²/(n_c-1)</code>，每类要求<code>n_c&gt;1</code>，<code>v_cj=max(1e-6,0.9s²_cj+0.1K⁻¹Σ_k s²_kj)</code>。以<code>d²_c(z)=Σ_j(T(z)_j-μ_cj)²/v_cj</code>、<code>N_c(z)=0.5[d²_c(z)+Σ_jlog(2πv_cj)]</code>和<code>e_unknown(z)=logK-logsumexp_c(-N_c(z))</code>定义连续分数；分数越大越unknown。
+
+每个fold×scene的C／G必须重用同一source-L物理行顺序、同一既有<code>received_i</code>字节和同一received-IQ／物理顺序SHA。每个scene、7个source RX和4个真类的cell仅以finite且正范数的source-L LEO行校准；每cell总行数和正范数行数都必须不少于20，否则fail-closed。令<code>Q_p↑(A)=A_(ceil(p|A|)-1)</code>为升序的固定higher规则，<code>a_s=max_(r,c)Q_0.90↑(V_src,L[s,r,c])</code>，<code>b_s=max_(r,c)Q_0.95↑(V_src,L[s,r,c])</code>。因此每个cell仅获得经验上界<code>P(e&gt;a_s)≤10%</code>与<code>P(e&gt;b_s)≤5%</code>；max和ties只会使界更保守，且不得把defer比例写成固定5%或任何总体概率声明。
+
+运行时先验证state、输入、shape、SHA、NLL和quantile均有限且闭合；任一失败不得输出<code>registered</code>并必须fail-closed。其后优先级固定为：zero行<code>→defer</code>；exact-head <code>tx_logits</code>最大值不唯一<code>→defer</code>；其余唯一<code>ĉ=argmax(tx_logits)</code>只决定registered身份，且按scene的全局尾部规则决策：<code>e_unknown&gt;b_s→unknown</code>，<code>a_s&lt;e_unknown≤b_s→defer</code>，<code>e_unknown≤a_s→registered(ĉ)</code>。source-V、fixed400 TX互斥proxy和target均为零fit、零阈值、零训练／停止／选择反馈；proxy只报告连续<code>e_unknown</code>、AUROC和<code>u_gap</code>。bundle只保存类几何、radius／energy／tail、上述方向／阈值／defer规则、覆盖聚合和SHA，不保存RX、物理行、raw IQ、样本feature／logit或任何target／proxy行。
 
 ## 11. 后冻结矩阵与五项非补偿门
 
@@ -258,7 +266,7 @@ Phase2旧类support适应继续使用现有合法同公式接口；新类只有�
 |ID|来源|要求|目标文件|状态|验证|备注|
 |---|---|---|---|---|---|---|
 |CLIC-01|用户条件／项目协议|同一<code>received_i</code>内多lag数学表征不增加LEO观测、物理样本、shot或K|本卡第1、12节|verified|逐条对照<code>项目.md</code>第4、5.1、5.2、7.1节|正式registered／unknown同规单LEO|
-|CLIC-02|独立监督|本轮target registered／unknown LEO weak修订达到<code>P0=0/P1=0/ALLOW-DESIGN-REVISION</code>|本卡全篇|verified|独立监督对latest actual diff终裁为ALLOW-DESIGN-REVISION|仅设计许可|
+|CLIC-02|独立监督|本轮target registered／unknown LEO weak及source-only拒识修订达到<code>P0=0/P1=0/P2=0/ALLOW-DESIGN-FREEZE</code>|本卡全篇|verified|独立监督对latest actual diff终裁为ALLOW-DESIGN-FREEZE|仅设计许可，不是实现、性能或Phase3声明|
 |CLIC-03|数学合同|无epsilon的<code>u/h/r</code>、zero-mask、nonfinite fail-closed和幅相／CFO不变性|code/cvsrffi/phase1_clic.py|verified|本卡解析证明；ssr-gpu数值微验证最大误差：u=6.80e-7、h=5.96e-7、r=2.38e-7|实现仍pending|
 |CLIC-04|算子实现|固定<code>L={1,2,4,8}</code>的C／G同shape token|code/cvsrffi/phase1_clic.py|implemented/local verified|<code>ssr-gpu</code>下纯函数与shape测试：8 passed|仅<code>T_C↔T_G</code>|
 |CLIC-05|模型结构|固定depthwise E、gate、<code>W_c</code>、单exact head和<code>q_clic</code>|code/cvsrffi/phase1_clic.py、code/model.py|verified|<code>ssr-gpu</code>下Task1—3 CLIC测试29 passed；identity exact-head hook每个top-level forward仅1次；state仅含<code>id_backbone.clic.*</code>|同一pad/crop IQ与<code>feat_joint_base</code>经共享pre-head seam变为<code>z_id</code>；无第二readout／head／forward|
@@ -270,8 +278,8 @@ Phase2旧类support适应继续使用现有合法同公式接口；新类只有�
 |CLIC-11|receipt终态|scalar／count／SHA-only config、failure、terminal和资源逐batch闭合|code/cvsrffi/phase1_clic.py、code/SSDG/train_ssdg.py|implemented/local verified|`ssr-gpu`下strict warm-start、common实际物理行SHA、resource／AMP／failure及noncircular checkpoint→SHA→strict core→versioned envelope terminal篡改负测通过|严格core可原样重验；外层只绑定checkpoint path／SHA，不存IQ／feature／ID|
 |CLIC-12|训练机械验证|CLI、py_compile、focused测试、help、12臂dry-run和旧机制关闭|test／launcher目标文件|implemented/local verified|`ssr-gpu`下Task5完整CLIC164项、HNCCD／HSCF／RCMMC含postfreeze共享280项、py_compile、help、bash-n、12臂dry-run、diff-check及真实C／G一批动态烟测通过；fresh独立终审P0=0/P1=0|不得以AST替代真实forward；当前NO_N607／NO_PERFORMANCE_RESULT|
 |CLIC-13|训练矩阵|6fold×C／G、40E、固定seed和immutable run root|training launcher／report|pending|本地12臂dry-run和独立审查通过；仅授权后由唯一Runner执行|N607未跑；P2：正式launcher固定seed，但direct CLI seed fail-closed门留待后续，不构成Task5阻塞|
-|CLIC-14|后冻结五门|sealed60、F6 raw reopen和五项非补偿门|postfreeze目标文件|pending|本地合成测试后真实artifact重开|无性能补偿|
-|CLIC-15|deployment bundle|6／6真实G checkpoint导出、reload和禁止成员闭合|bundle exporter／tests|pending|真实checkpoint bundle验证|第五门，不等于Phase3|
+|CLIC-14|后冻结五门|sealed60、F6 raw reopen、source-L clean几何、三scene同字节LEO尾部校准和五项非补偿门|postfreeze目标文件|pending|本地合成测试后真实artifact重开；每scene×7RX×4class总／正范数行均≥20，global higher-q90/q95只作经验上界|V／proxy／target零fit／零阈值，无性能补偿|
+|CLIC-15|deployment bundle|6／6真实G checkpoint导出、reload、source-only几何／tail规则和禁止成员闭合|bundle exporter／tests|pending|真实checkpoint bundle验证；strict reload复现<code>z_id,z_dom,q_clic,tx_logits,e_unknown,decision</code>|只存聚合state／规则／SHA，第五门不等于Phase3|
 |CLIC-16|N607训练|唯一release、launch、监控和小工件回收|N607 runner／automation report|deferred|仅在本地实现、复审、commit后执行|当前未授权启动|
 |CLIC-17|性能与晋级|读取sealed同row性能并作五门判定|主Agent／最终报告|deferred|需ARTIFACTS_COMPLETE后独立分析|当前NO_PERFORMANCE_RESULT|
 |CLIC-18|旧路线去重|八个永久拒绝机制及其它旧loss不得复活或拼接|全实现面|rejected|设计静态排除；实现复审再搜旧identity|非CLIC组成|
