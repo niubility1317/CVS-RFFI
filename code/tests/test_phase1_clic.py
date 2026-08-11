@@ -695,6 +695,10 @@ def _scene_audit() -> dict[str, object]:
     def group() -> dict[str, object]:
         return {"count": 1, "norm": 1.0, "finite": True, "nonzero": True}
 
+    clic_groups = {
+        name: group()
+        for name in ("depthwise", "pointwise", "embed", "correction", "gate")
+    }
     return {
         "valid_token_coverage": 1.0,
         "gate_or_correction_nonzero": True,
@@ -706,6 +710,7 @@ def _scene_audit() -> dict[str, object]:
         "clic": group(),
         "base": group(),
         "head": group(),
+        "clic_groups": clic_groups,
     }
 
 
@@ -886,6 +891,44 @@ def test_terminal_rejects_missing_or_zero_scene_vjp_group(scene: str, group: str
         validate_clic_terminal_receipt(receipt, arm="G")
 
 
+@pytest.mark.parametrize("scene", FORMAL_LEO_WEAK_SCENARIOS)
+def test_terminal_rejects_scene_without_clic_group_map(scene: str) -> None:
+    receipt = _complete_receipt("G")
+    del receipt["scene_audits"][scene]["clic_groups"]
+    with pytest.raises(CLICTerminalError, match="CLIC VJP group|audit|scene"):
+        validate_clic_terminal_receipt(receipt, arm="G")
+
+
+@pytest.mark.parametrize(
+    "scene,group",
+    [
+        (scene, group)
+        for scene in FORMAL_LEO_WEAK_SCENARIOS
+        for group in ("depthwise", "pointwise", "embed", "correction", "gate")
+    ],
+)
+def test_terminal_rejects_scene_missing_one_clic_group(scene: str, group: str) -> None:
+    receipt = _complete_receipt("G")
+    del receipt["scene_audits"][scene]["clic_groups"][group]
+    with pytest.raises(CLICTerminalError, match="CLIC VJP group|audit|scene"):
+        validate_clic_terminal_receipt(receipt, arm="G")
+
+
+@pytest.mark.parametrize(
+    "scene,group",
+    [
+        (scene, group)
+        for scene in FORMAL_LEO_WEAK_SCENARIOS
+        for group in ("depthwise", "pointwise", "embed", "correction", "gate")
+    ],
+)
+def test_terminal_rejects_zero_scene_clic_group(scene: str, group: str) -> None:
+    receipt = _complete_receipt("G")
+    receipt["scene_audits"][scene]["clic_groups"][group]["norm"] = 0.0
+    with pytest.raises(CLICTerminalError, match="VJP|audit|scene"):
+        validate_clic_terminal_receipt(receipt, arm="G")
+
+
 def test_c_and_g_share_one_common_binding_but_both_have_active_scene_audits() -> None:
     c = _complete_receipt("C")
     g = _complete_receipt("G")
@@ -959,6 +1002,10 @@ def test_terminal_revalidates_contract_after_fake_completed_flag() -> None:
         "scorer_path",
         "query_row",
         "legacy_method_identity",
+        "token_tensor",
+        "token_payload",
+        "source_label_values",
+        "truth",
     ),
 )
 def test_terminal_recursively_rejects_nested_forbidden_receipt_fields(forbidden: str) -> None:
@@ -1148,3 +1195,23 @@ def test_clic_failure_receipt_is_data_free_and_records_stage_error_and_message_d
         for name in _walk_keys(payload["receipt"])
     )
     assert not any(isinstance(value, torch.Tensor) for value in payload["receipt"].values())
+
+
+@pytest.mark.parametrize(
+    "forbidden",
+    ("token_tensor", "token_payload", "source_label_values", "target_metric", "truth"),
+)
+def test_clic_failure_receipt_rejects_nested_forbidden_fields_before_projection(
+    tmp_path: Path, forbidden: str
+) -> None:
+    receipt = _receipt_base("G")
+    receipt["nested"] = {"deep": {forbidden: "forbidden"}}
+    with pytest.raises(CLICTerminalError, match="forbidden|receipt|target|truth|token|label"):
+        write_clic_failure_receipt(
+            tmp_path,
+            candidate_id="P1_CLIC_G",
+            run_id=f"phase1_clic_g_forbidden_{forbidden}",
+            receipt=receipt,
+            error=CLICRuntimeError("receipt field policy violation"),
+            failure_stage="receipt_validation",
+        )
