@@ -197,3 +197,5 @@ K>2的100行mean ΔH为**+0.2965pp**，但只有**70/100**行ΔH≥0，低于冻
 因此保留E0_FULL_ONLY为高效率候选/对照，不恢复整套Fisher和K折LOO；下一轮如果继续，应只补一个support-only、固定强度的旧类floor guard，重点约束K5/new20、K10/new10及7-7/8-8，不扫描query结果。任何新候选仍需重新跑完整125后才能晋级。
 
 分析产物位于`E:\type10-7\local_artifacts\d92_e0_full_only_target125_20260812_v1\analysis`：`summary.json` SHA256=`5c7395d5210db52b1a6b2969e6942769a3ae734c5e87a77f5cce61b7a322d6f2`；`paired_rows.csv` SHA256=`6ebb37fac77d5a218924bcb51ad27424abff4a162a3b8a45a340947fe6d8de6a`；`gates.json` SHA256=`febdc49f99186c7309dfc4cfe10dedaeaa13d95e6fdaf659d3bf3f65d18dc9e8`。逐receiver、seed、slice、场景、旧类和资源表均在同目录。
+
+结果解析器、对应测试和本报告首版结果已进入Git commit`ca28763b`。`ssr-gpu`下Target125 builder/runner/analyzer共11项通过，四个相关模块`py_compile`通过；随后使用真实125产物完整复算，得到`ANALYZED NO_TARGET125_PROMOTION 0.00237227279132053 70 -0.0021333333333333356`，与独立直接读取125份score的复算一致。
