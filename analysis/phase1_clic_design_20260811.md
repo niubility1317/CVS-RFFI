@@ -263,11 +263,11 @@ Phase2旧类support适应继续使用现有合法同公式接口；新类只有�
 |CLIC-04|算子实现|固定<code>L={1,2,4,8}</code>的C／G同shape token|code/cvsrffi/phase1_clic.py|implemented/local verified|<code>ssr-gpu</code>下纯函数与shape测试：8 passed|仅<code>T_C↔T_G</code>|
 |CLIC-05|模型结构|固定depthwise E、gate、<code>W_c</code>、单exact head和<code>q_clic</code>|code/cvsrffi/phase1_clic.py、code/model.py|verified|<code>ssr-gpu</code>下Task1—3 CLIC测试29 passed；identity exact-head hook每个top-level forward仅1次；state仅含<code>id_backbone.clic.*</code>|同一pad/crop IQ与<code>feat_joint_base</code>经共享pre-head seam变为<code>z_id</code>；无第二readout／head／forward|
 |CLIC-06|dual接口|CLIC后的<code>z_id</code>与existing<code>z_dom</code>／quality暴露|code/model_dual_cvsincnet.py、code/post_stage_common.py|verified|<code>ssr-gpu</code>下Task3 CLIC与identity-core／latency／identity-only／arch-family回归通过；legacy checkpoint CLI kwargs与domain features-only hook微测通过|dual顶层暴露<code>z_id</code>和<code>q_clic</code>；<code>dom_backbone.clic=None</code>且CLIC启用时无domain logits；关闭时保留旧aux合同|
-|CLIC-07|C／G公平|同模块、同初始SHA、同forward／参数／资源，仅operator不同|code/SSDG/train_ssdg.py|pending|实现后pair receipt和tamper负测|C也主动训练token支路|
+|CLIC-07|C／G公平|同模块、同初始SHA、同forward／参数／资源，仅operator不同|code/cvsrffi/phase1_clic.py、code/SSDG/train_ssdg.py|implemented/local verified|`ssr-gpu`下Task4 C／G共同binding、三scene active audit、resource／AMP terminal及tamper负测通过；trainer接线留给Task5|C也主动训练token支路|
 |CLIC-08|数据权限|source-L-only、U／V／proxy／target／unknown零训练反馈、single-LEO|本卡第1、6、12节|verified|协议逐项审计|不把source proxy写成unknown|
-|CLIC-09|VJP合同|C／G三scene分别验证token、CLIC参数、base和head finite-nonzero VJP|code/cvsrffi/phase1_clic.py、code/SSDG/train_ssdg.py|pending|实现后正例与detach／zero篡改负测|raw-unscaled诊断|
-|CLIC-10|AMP／图释放|一次正常backward／unscale／step，finite与skip均释放图根|code/cvsrffi/phase1_clic.py、code/SSDG/train_ssdg.py|pending|实现后saved-tensor与AMP skip测试|禁gc／empty_cache|
-|CLIC-11|receipt终态|scalar／count／SHA-only config、failure、terminal和资源逐batch闭合|code/cvsrffi/phase1_clic.py、code/SSDG/train_ssdg.py|pending|实现后terminal／tamper负测|不存IQ／feature／ID|
+|CLIC-09|VJP合同|C／G三scene分别验证token、CLIC参数、base和head finite-nonzero VJP|code/cvsrffi/phase1_clic.py、code/SSDG/train_ssdg.py|implemented/local verified|`ssr-gpu`下raw-unscaled VJP正例与逐scene／逐group零值篡改负测通过；trainer调用留给Task5|raw-unscaled诊断|
+|CLIC-10|AMP／图释放|一次正常backward／unscale／step，finite与skip均释放图根|code/cvsrffi/phase1_clic.py、code/SSDG/train_ssdg.py|implemented/local verified|`ssr-gpu`下finite／overflow AMP、saved-tensor释放及CUDA小batch微测通过；trainer释放接线留给Task5|禁gc／empty_cache|
+|CLIC-11|receipt终态|scalar／count／SHA-only config、failure、terminal和资源逐batch闭合|code/cvsrffi/phase1_clic.py、code/SSDG/train_ssdg.py|implemented/local verified|`ssr-gpu`下strict warm-start、common SHA聚合、resource／AMP／terminal／failure及禁字段篡改负测通过；trainer持久化留给Task5|不存IQ／feature／ID|
 |CLIC-12|训练机械验证|CLI、py_compile、focused测试、help、12臂dry-run和旧机制关闭|test／launcher目标文件|pending|本地ssr-gpu验证|不得以AST替代真实forward|
 |CLIC-13|训练矩阵|6fold×C／G、40E、固定seed和immutable run root|training launcher／report|pending|本地dry-run、独立审查、唯一Runner|N607前另建报告|
 |CLIC-14|后冻结五门|sealed60、F6 raw reopen和五项非补偿门|postfreeze目标文件|pending|本地合成测试后真实artifact重开|无性能补偿|
