@@ -38,6 +38,9 @@ def build_d92_fit(
     basis: np.ndarray,
     spectral_weights: np.ndarray,
     ground_audit: dict[str, Any],
+    *,
+    disable_registered_ground_center: bool = False,
+    disable_registered_fisher: bool = False,
 ) -> tuple[Callable[..., Any], list[dict[str, Any]], list[dict[str, Any]]]:
     aliases = (d62.d43, d62.d61.d43, d62.d61.d46.d43, d62.d61.d46.d45.d43)
     if any(alias is not d43 for alias in aliases):
@@ -78,14 +81,32 @@ def build_d92_fit(
 
         return fit
 
-    full_fit = d81.core.build_robust_center_component_fit(
-        collect(d92_full, "full"),
+    full_component = collect(d92_full, "full")
+    centered_full_fit = d81.core.build_robust_center_component_fit(
+        full_component,
         basis,
         spectral_weights,
         basis_audit,
         "full",
         transform_records,
     )
+
+    def ground_center_active(class_count: int, k_shot: int) -> bool:
+        return not (
+            disable_registered_ground_center
+            and int(class_count) > OLD_CLASS_COUNT
+            and int(k_shot) > 2
+        )
+
+    def full_fit(
+        rows: np.ndarray, labels: np.ndarray, class_count: int, k_shot: int
+    ):
+        selected = (
+            centered_full_fit
+            if ground_center_active(class_count, k_shot)
+            else full_component
+        )
+        return selected(rows, labels, class_count, k_shot)
 
     def structured_builder(d42_arg: Any, arm: str) -> Callable[..., Any]:
         if d42_arg is not d42 or arm != "block3_centered":
@@ -97,8 +118,9 @@ def build_d92_fit(
         d92_block = build_registration_balanced_equal_lda(
             d42, baseline_block, arm="block3_centered"
         )
-        return d81.core.build_robust_center_component_fit(
-            collect(d92_block, arm),
+        block_component = collect(d92_block, arm)
+        centered_block_fit = d81.core.build_robust_center_component_fit(
+            block_component,
             basis,
             spectral_weights,
             basis_audit,
@@ -106,25 +128,61 @@ def build_d92_fit(
             transform_records,
         )
 
+        def block_fit(
+            rows: np.ndarray,
+            labels: np.ndarray,
+            class_count: int,
+            k_shot: int,
+        ):
+            selected = (
+                centered_block_fit
+                if ground_center_active(class_count, k_shot)
+                else block_component
+            )
+            return selected(rows, labels, class_count, k_shot)
+
+        return block_fit
+
     try:
         d42._fit_equal_prior_lda = full_fit
         d43.build_structured_fit = structured_builder
-        base_fit, call_records = d62.build_d62_fit(d42)
+        fisher_fit, call_records = d62.build_d62_fit(d42)
+        no_fisher_fit = (
+            d62.d61.d46.build_classwise_loo_reliability_fit(d42)
+            if disable_registered_fisher
+            else None
+        )
     finally:
         d42._fit_equal_prior_lda = original_fit
         d43.build_structured_fit = original_builder
 
     def fit(rows: np.ndarray, labels: np.ndarray, class_count: int, k_shot: int):
         start = len(component_records)
-        coefficient, intercept, base_audit = base_fit(
-            rows, labels, class_count, k_shot
+        transform_start = len(transform_records)
+        registered = int(class_count) > OLD_CLASS_COUNT
+        exact_full_alias = int(k_shot) <= 2
+        fisher_active = not (
+            disable_registered_fisher and registered and not exact_full_alias
         )
+        selected_fit = fisher_fit if fisher_active else no_fisher_fit
+        if selected_fit is None:
+            raise D92ProbeError("D92 no-Fisher fit was not constructed")
+        original_centering_policy = d43.ALLOW_FP32_CENTERING_ARGMAX_DRIFT
+        if not ground_center_active(class_count, k_shot):
+            d43.ALLOW_FP32_CENTERING_ARGMAX_DRIFT = True
+        try:
+            coefficient, intercept, base_audit = selected_fit(
+                rows, labels, class_count, k_shot
+            )
+        finally:
+            d43.ALLOW_FP32_CENTERING_ARGMAX_DRIFT = original_centering_policy
         current = component_records[start:]
-        expected_active = int(class_count) > OLD_CLASS_COUNT and int(k_shot) > 2
+        expected_active = registered and int(k_shot) > 2
         if current and any(bool(row["active"]) != expected_active for row in current):
             raise D92ProbeError("D92 component activity drift")
         audit = dict(base_audit)
-        audit.update(
+        center_active = ground_center_active(class_count, k_shot)
+        d81_audit = (
             {
                 "d81_probe_arm": ARM,
                 "d81_structure": STRUCTURE,
@@ -157,6 +215,35 @@ def build_d92_fit(
                 "d81_weight_scan_count": 0,
                 "d81_optimizer_steps": 0,
                 "d81_single_affine_state_only": True,
+            }
+            if center_active
+            else {
+                "d81_probe_arm": "registered_robust_center_disabled",
+                "d81_structure": "registered_support_plain_mean_no_ground_spectrum",
+                "d81_formula": "registered support uses the unshifted 288D rows",
+                "d81_ground_int8_component_used": False,
+                "d81_ground_component_input_count": 0,
+                "d81_ground_component_update_access": False,
+                "d81_ground_bundle_contains_sample_radius": False,
+                "d81_ground_bundle_contains_sample_count": False,
+                "d81_all_full_block_outer_held_fits_transformed": False,
+                "d81_target_covariance_preserved_by_class_translation": True,
+                "d81_query_metric_source": "target_registered_support_only_d92",
+                "d81_old_new_role_specific_branch": False,
+                "d81_class_id_specific_formula": False,
+                "d81_scene_receiver_handle_specific_branch": False,
+                "d81_uses_outer_held_or_query": False,
+                "d81_query_rows_used": 0,
+                "d81_hyperparameter_count": 0,
+                "d81_rank_scan_count": 0,
+                "d81_weight_scan_count": 0,
+                "d81_optimizer_steps": 0,
+                "d81_single_affine_state_only": True,
+            }
+        )
+        audit.update(
+            {
+                **d81_audit,
                 "d81_actual_coefficient_fp32": np.asarray(
                     coefficient, dtype=np.float32
                 ).tolist(),
@@ -188,6 +275,12 @@ def build_d92_fit(
                 "d92_class_id_specific_formula": False,
                 "d92_registration_state_support_only": True,
                 "d92_component_fit_count": len(current),
+                "d92_ground_center_active": center_active,
+                "d92_ground_transform_execution_count": (
+                    len(transform_records) - transform_start
+                ),
+                "d92_fisher_residual_pareto_active": fisher_active,
+                "d92_k1_k2_exact_full_alias": exact_full_alias,
             }
         )
         return coefficient, intercept, audit
