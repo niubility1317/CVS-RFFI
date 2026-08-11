@@ -49,7 +49,9 @@ _STATE_ARRAY_NAMES = (
     "coef_fp32",
     "intercept_fp32",
 )
-_OCF_ARM_IDS = frozenset({"E0_OCF25", "E0_OCF50"})
+_OCF_ARM_IDS = frozenset(
+    {"E0_OCF25", "E0_OCF50", "E0_FULL_MAXMIN_FLOORBOOST"}
+)
 _OCF_RECEIPT_FIELDS = (
     "d92_e0d_ocf_active",
     "d92_e0d_ocf_lambda",
@@ -59,6 +61,31 @@ _OCF_RECEIPT_FIELDS = (
     "d92_e0d_ocf_support_alignment_transient_bytes_upper_bound",
 )
 _OCF_MAC_RECEIPT_FIELDS = _OCF_RECEIPT_FIELDS[2:5]
+_FLOORBOOST_ARM_IDS = frozenset({"E0_FULL_MAXMIN_FLOORBOOST"})
+_FLOORBOOST_RECEIPT_FIELDS = (
+    "d92_e0d_floorboost_active",
+    "d92_e0d_floorboost_lambda",
+    "d92_e0d_floorboost_quantile",
+    "d92_e0d_floorboost_quantile_method",
+    "d92_e0d_floorboost_kappa",
+    "d92_e0d_floorboost_fallback_active",
+    "d92_e0d_floorboost_fallback_reason",
+    "d92_e0d_floorboost_new_rows_byte_exact",
+    "d92_e0d_floorboost_full_head_byte_exact",
+    "d92_e0d_floorboost_old_bias_zero_sum_residual_abs",
+    "d92_e0d_floorboost_old_intercept_mean_residual_abs",
+    "d92_e0d_floorboost_max_abs_delta_over_rms",
+    "d92_e0d_floorboost_full_old_rms",
+    "d92_e0d_floorboost_retention_score_by_old_class",
+    "d92_e0d_floorboost_registration_drift_by_old_class",
+    "d92_e0d_floorboost_delta_bias_by_old_class",
+    "d92_e0d_floorboost_support_ocf_alignment_macs_upper_bound",
+    "d92_e0d_floorboost_support_retention_affine_macs_upper_bound",
+    "d92_e0d_floorboost_support_bias_calibration_macs_upper_bound",
+    "d92_e0d_floorboost_support_macs_upper_bound",
+    "d92_e0d_floorboost_support_transient_bytes_upper_bound",
+    "d92_e0d_floorboost_persistent_state_bytes_delta",
+)
 
 
 class D92E0DQueryEvaluationError(ValueError):
@@ -132,8 +159,15 @@ def _ocf_support_receipt(
     registered: bool,
     k_shot: int,
 ) -> dict[str, Any]:
-    expected_active = (
-        registered and int(k_shot) > 2 and arm.arm_id in _OCF_ARM_IDS
+    floorboost_fallback = bool(
+        arm.arm_id in _FLOORBOOST_ARM_IDS
+        and audit.get("d92_e0d_floorboost_fallback_active") is True
+    )
+    expected_active = bool(
+        registered
+        and int(k_shot) > 2
+        and arm.arm_id in _OCF_ARM_IDS
+        and not floorboost_fallback
     )
     if any(field not in audit for field in _OCF_RECEIPT_FIELDS):
         raise D92E0DQueryEvaluationError("D92-E0D OCF support receipt drift")
@@ -217,6 +251,146 @@ def _ocf_support_receipt(
     return receipt
 
 
+def _floorboost_support_receipt(
+    audit: dict[str, Any],
+    *,
+    arm: D92E0DSlimArmSpec,
+    registered: bool,
+    k_shot: int,
+    class_count: int,
+) -> dict[str, Any]:
+    """Validate the four-state floorboost receipt without reading query data."""
+
+    if any(field not in audit for field in _FLOORBOOST_RECEIPT_FIELDS):
+        raise D92E0DQueryEvaluationError("D92-E0D floorboost receipt drift")
+    receipt = {field: audit[field] for field in _FLOORBOOST_RECEIPT_FIELDS}
+    applies = arm.arm_id in _FLOORBOOST_ARM_IDS
+    active_state = bool(registered and int(k_shot) > 2 and applies)
+    if not applies:
+        if (
+            receipt["d92_e0d_floorboost_active"] is not False
+            or receipt["d92_e0d_floorboost_fallback_active"] is not False
+            or receipt["d92_e0d_floorboost_fallback_reason"] is not None
+        ):
+            raise D92E0DQueryEvaluationError("D92-E0D floorboost receipt drift")
+        return receipt
+    if not registered:
+        expected_reason = "NOT_REGISTERED_STATE"
+    elif int(k_shot) <= 2:
+        expected_reason = "K1_K2_EXACT_D92_FULL_ALIAS"
+    else:
+        expected_reason = None
+    fallback_active = receipt["d92_e0d_floorboost_fallback_active"]
+    active = receipt["d92_e0d_floorboost_active"]
+    reason = receipt["d92_e0d_floorboost_fallback_reason"]
+    if not active_state:
+        if active is not False or fallback_active is not False or reason != expected_reason:
+            raise D92E0DQueryEvaluationError("D92-E0D floorboost receipt drift")
+        return receipt
+    if fallback_active is True:
+        if active is not False or not isinstance(reason, str) or not reason:
+            raise D92E0DQueryEvaluationError("D92-E0D floorboost receipt drift")
+    elif fallback_active is False:
+        if active is not True or reason is not None:
+            raise D92E0DQueryEvaluationError("D92-E0D floorboost receipt drift")
+    else:
+        raise D92E0DQueryEvaluationError("D92-E0D floorboost receipt drift")
+    try:
+        values = {
+            "lambda": float(receipt["d92_e0d_floorboost_lambda"]),
+            "quantile": float(receipt["d92_e0d_floorboost_quantile"]),
+            "kappa": float(receipt["d92_e0d_floorboost_kappa"]),
+            "zero_sum": float(receipt["d92_e0d_floorboost_old_bias_zero_sum_residual_abs"]),
+            "old_mean": float(receipt["d92_e0d_floorboost_old_intercept_mean_residual_abs"]),
+            "max_delta": float(receipt["d92_e0d_floorboost_max_abs_delta_over_rms"]),
+            "ocf_macs": float(receipt["d92_e0d_floorboost_support_ocf_alignment_macs_upper_bound"]),
+            "retention_macs": float(receipt["d92_e0d_floorboost_support_retention_affine_macs_upper_bound"]),
+            "bias_macs": float(receipt["d92_e0d_floorboost_support_bias_calibration_macs_upper_bound"]),
+            "total_macs": float(receipt["d92_e0d_floorboost_support_macs_upper_bound"]),
+            "transient": float(receipt["d92_e0d_floorboost_support_transient_bytes_upper_bound"]),
+            "persistent_state_delta": int(
+                receipt["d92_e0d_floorboost_persistent_state_bytes_delta"]
+            ),
+        }
+    except (TypeError, ValueError) as error:
+        raise D92E0DQueryEvaluationError("D92-E0D floorboost receipt drift") from error
+    expected_ocf = int(
+        2 * (OLD_CLASS_COUNT * int(k_shot)) * OLD_CLASS_COUNT * 288
+        + 5 * OLD_CLASS_COUNT * (288 + 1)
+    )
+    expected_retention = int(OLD_CLASS_COUNT * int(k_shot) * int(class_count) * 288)
+    expected_bias = int(6 * OLD_CLASS_COUNT)
+    if (
+        receipt["d92_e0d_floorboost_quantile_method"] != "lower"
+        or not all(np.isfinite(value) for value in values.values())
+        or values["lambda"] != float(arm.ocf_lambda)
+        or values["quantile"] != float(arm.floorboost_quantile)
+        or values["kappa"] != float(arm.floorboost_kappa)
+        or values["zero_sum"] < 0.0
+        or values["old_mean"] < 0.0
+        or values["max_delta"] < 0.0
+        or values["max_delta"] > values["kappa"] + 1.0e-5
+        or values["ocf_macs"] != expected_ocf
+        or values["retention_macs"] != expected_retention
+        or values["bias_macs"] != expected_bias
+        or values["total_macs"]
+        != values["ocf_macs"] + values["retention_macs"] + values["bias_macs"]
+        or values["transient"] < 0.0
+        or receipt["d92_e0d_floorboost_new_rows_byte_exact"] is not True
+        or values["persistent_state_delta"] != 0
+    ):
+        raise D92E0DQueryEvaluationError("D92-E0D floorboost receipt drift")
+    if fallback_active is True:
+        if (
+            receipt["d92_e0d_floorboost_full_head_byte_exact"] is not True
+            or values["max_delta"] != 0.0
+            or any(
+                receipt[field] is not None
+                for field in (
+                    "d92_e0d_floorboost_retention_score_by_old_class",
+                    "d92_e0d_floorboost_registration_drift_by_old_class",
+                    "d92_e0d_floorboost_delta_bias_by_old_class",
+                )
+            )
+        ):
+            raise D92E0DQueryEvaluationError("D92-E0D floorboost receipt drift")
+        rms_value = receipt["d92_e0d_floorboost_full_old_rms"]
+        if rms_value is not None:
+            try:
+                numeric_rms = float(rms_value)
+            except (TypeError, ValueError) as error:
+                raise D92E0DQueryEvaluationError(
+                    "D92-E0D floorboost receipt drift"
+                ) from error
+            if not np.isfinite(numeric_rms) or numeric_rms <= 0.0:
+                raise D92E0DQueryEvaluationError("D92-E0D floorboost receipt drift")
+    else:
+        try:
+            numeric_rms = float(receipt["d92_e0d_floorboost_full_old_rms"])
+        except (TypeError, ValueError) as error:
+            raise D92E0DQueryEvaluationError(
+                "D92-E0D floorboost receipt drift"
+            ) from error
+        if (
+            not np.isfinite(numeric_rms)
+            or numeric_rms <= 0.0
+            or values["max_delta"] > values["kappa"] + 1.0e-5
+        ):
+            raise D92E0DQueryEvaluationError("D92-E0D floorboost receipt drift")
+        for field in (
+            "d92_e0d_floorboost_retention_score_by_old_class",
+            "d92_e0d_floorboost_registration_drift_by_old_class",
+            "d92_e0d_floorboost_delta_bias_by_old_class",
+        ):
+            values_by_class = np.asarray(receipt[field], dtype=np.float64)
+            if (
+                values_by_class.shape != (OLD_CLASS_COUNT,)
+                or not np.isfinite(values_by_class).all()
+            ):
+                raise D92E0DQueryEvaluationError("D92-E0D floorboost receipt drift")
+    return receipt
+
+
 def _audit_d92_e0d_fit(
     result: Any,
     *,
@@ -252,6 +426,13 @@ def _audit_d92_e0d_fit(
             arm=arm,
             registered=registered,
             k_shot=k_shot,
+        )
+        _floorboost_support_receipt(
+            audit,
+            arm=arm,
+            registered=registered,
+            k_shot=k_shot,
+            class_count=class_count if registered else old_count,
         )
         inventory = audit.get("d92_e0d_actual_component_inventory")
         if (
@@ -337,6 +518,13 @@ def _audit_d92_e0d_fit(
         registered=True,
         k_shot=k_shot,
     )
+    after_floorboost_receipt = _floorboost_support_receipt(
+        after,
+        arm=arm,
+        registered=True,
+        k_shot=k_shot,
+        class_count=class_count,
+    )
     before_resource = _resource_receipt(before)
     after_resource = _resource_receipt(after)
     return {
@@ -398,6 +586,7 @@ def _audit_d92_e0d_fit(
         "d92_e0d_ocf_support_alignment_transient_bytes_upper_bound": after_ocf_receipt[
             "d92_e0d_ocf_support_alignment_transient_bytes_upper_bound"
         ],
+        **after_floorboost_receipt,
         "query_macs": int(after["d92_e0d_query_macs"]),
         "query_truth_access": False,
         "query_fit_access": False,

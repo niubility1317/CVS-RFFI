@@ -32,10 +32,16 @@ REGISTERED_D_MODES = (
     "fixed50",
     "ocf25",
     "ocf50",
+    "floorboost",
 )
 OCF_LAMBDA_BY_MODE = {"ocf25": 0.25, "ocf50": 0.50}
 OCF_RMS_EPSILON = 1.0e-12
 OCF_AFFINE_INVARIANT_ATOL = 1.0e-5
+FLOORBOOST_LAMBDA = 0.25
+FLOORBOOST_QUANTILE = 0.20
+FLOORBOOST_QUANTILE_METHOD = "lower"
+FLOORBOOST_KAPPA = 0.35
+FLOORBOOST_NUMERICAL_EPSILON = 1.0e-12
 d43.ARM_STRUCTURES[ARM] = STRUCTURE
 if ARM not in d43.ARMS:
     d43.ARMS = tuple((*d43.ARMS, ARM))
@@ -43,6 +49,206 @@ if ARM not in d43.ARMS:
 
 class D92ProbeError(RuntimeError):
     """Raised when D92 integration or audit evidence drifts."""
+
+
+class D92FloorboostNumericalError(RuntimeError):
+    """A support-side numerical degeneration eligible for full-only fallback."""
+
+
+_FLOORBOOST_OCF_NUMERICAL_REASONS = {
+    "D92 OCF old-class centered RMS is degenerate": (
+        "ocf_old_class_centered_rms_degenerate"
+    ),
+    "D92 OCF RMS alignment ratio is invalid": "ocf_rms_alignment_ratio_invalid",
+    "D92 OCF affine input is non-finite": "ocf_affine_input_nonfinite",
+    "D92 OCF affine output became non-finite": "ocf_affine_output_nonfinite",
+}
+
+
+def _floorboost_ocf_numerical_reason(error: D92ProbeError) -> str | None:
+    """Return the narrow OCF numeric failures eligible for full-only fallback."""
+
+    return _FLOORBOOST_OCF_NUMERICAL_REASONS.get(str(error))
+
+
+def _floorboost_support_upper_bounds(
+    *, classes: int, shots: int, dimension: int
+) -> dict[str, int]:
+    """Conservative support-only cost bounds shared by success and fallback."""
+
+    old_rows_count = int(OLD_CLASS_COUNT * shots)
+    ocf_affine_macs = int(2 * old_rows_count * OLD_CLASS_COUNT * dimension)
+    ocf_contrast_mix_macs = int(5 * OLD_CLASS_COUNT * (dimension + 1))
+    ocf_macs = int(ocf_affine_macs + ocf_contrast_mix_macs)
+    head_width = int(dimension + 1)
+    ocf_transient = int(
+        2 * classes * head_width * 8
+        + 3 * classes * head_width * 4
+        + classes * shots * dimension * 8
+        + 2 * classes * shots * dimension * 4
+        + old_rows_count * dimension * 8
+        + 3 * old_rows_count * OLD_CLASS_COUNT * 8
+        + 8 * OLD_CLASS_COUNT * head_width * 8
+        + OLD_CLASS_COUNT * head_width * 4
+        + 3 * classes * shots * 8
+        + classes * shots
+    )
+    retention_macs = int(old_rows_count * classes * dimension)
+    bias_macs = int(6 * OLD_CLASS_COUNT)
+    return {
+        "ocf_affine_macs": ocf_affine_macs,
+        "ocf_contrast_mix_macs": ocf_contrast_mix_macs,
+        "ocf_macs": ocf_macs,
+        "ocf_transient_bytes": ocf_transient,
+        "retention_macs": retention_macs,
+        "bias_macs": bias_macs,
+        "total_macs": int(ocf_macs + retention_macs + bias_macs),
+        "transient_bytes": int(
+            ocf_transient
+            + 3 * old_rows_count * classes * 8
+            + 8 * OLD_CLASS_COUNT * 8
+        ),
+    }
+
+
+def _build_floorboost_ocf_numerical_fallback(
+    *,
+    full_rows: np.ndarray,
+    full_labels: np.ndarray,
+    block_rows: np.ndarray,
+    block_labels: np.ndarray,
+    full_coefficient: np.ndarray,
+    full_intercept: np.ndarray,
+    block_coefficient: np.ndarray,
+    block_intercept: np.ndarray,
+    class_count: int,
+    k_shot: int,
+    fallback_reason: str,
+) -> tuple[np.ndarray, np.ndarray, dict[str, Any]]:
+    """Fail closed to the FULL head after a classified OCF numeric failure."""
+
+    classes, shots = int(class_count), int(k_shot)
+    raw_full_rows = np.asarray(full_rows)
+    raw_block_rows = np.asarray(block_rows)
+    raw_full_labels = np.asarray(full_labels)
+    raw_block_labels = np.asarray(block_labels)
+    raw_full_coefficient = np.asarray(full_coefficient)
+    raw_full_intercept = np.asarray(full_intercept)
+    raw_block_coefficient = np.asarray(block_coefficient)
+    raw_block_intercept = np.asarray(block_intercept)
+    if (
+        classes <= OLD_CLASS_COUNT
+        or shots <= 2
+        or raw_full_rows.ndim != 2
+        or raw_full_rows.shape[0] != classes * shots
+        or raw_full_labels.shape != (classes * shots,)
+        or raw_block_rows.shape != raw_full_rows.shape
+        or raw_block_labels.shape != raw_full_labels.shape
+        or raw_full_rows.dtype != raw_block_rows.dtype
+        or raw_full_labels.dtype != raw_block_labels.dtype
+        or not np.array_equal(raw_full_rows, raw_block_rows)
+        or not np.array_equal(raw_full_labels, raw_block_labels)
+    ):
+        raise D92ProbeError("D92 floorboost fallback registry drift")
+    dimension = int(raw_full_rows.shape[1])
+    if not (
+        np.issubdtype(raw_full_labels.dtype, np.integer)
+        and raw_full_coefficient.dtype == np.float32
+        and raw_full_intercept.dtype == np.float32
+        and raw_block_coefficient.dtype == np.float32
+        and raw_block_intercept.dtype == np.float32
+        and raw_full_coefficient.shape == (classes, dimension)
+        and raw_full_intercept.shape == (classes,)
+        and raw_block_coefficient.shape == (classes, dimension)
+        and raw_block_intercept.shape == (classes,)
+        and np.isfinite(raw_full_rows).all()
+        and np.isfinite(raw_full_coefficient).all()
+        and np.isfinite(raw_full_intercept).all()
+    ):
+        raise D92ProbeError("D92 floorboost fallback full-head input drift")
+    labels = np.asarray(raw_full_labels, dtype=np.int64)
+    if (
+        not np.array_equal(np.unique(labels), np.arange(classes, dtype=np.int64))
+        or any(int(np.sum(labels == index)) != shots for index in range(classes))
+    ):
+        raise D92ProbeError("D92 floorboost fallback registry is incomplete")
+    coefficient = np.asarray(raw_full_coefficient, dtype=np.float32).copy()
+    intercept = np.asarray(raw_full_intercept, dtype=np.float32).copy()
+    new_rows_byte_exact = bool(
+        coefficient[OLD_CLASS_COUNT:].tobytes()
+        == raw_full_coefficient[OLD_CLASS_COUNT:].tobytes()
+        and intercept[OLD_CLASS_COUNT:].tobytes()
+        == raw_full_intercept[OLD_CLASS_COUNT:].tobytes()
+    )
+    if not new_rows_byte_exact:
+        raise D92ProbeError("D92 floorboost fallback new-row byte drift")
+    old_weight = np.asarray(raw_full_coefficient[:OLD_CLASS_COUNT], dtype=np.float64)
+    old_bias = np.asarray(raw_full_intercept[:OLD_CLASS_COUNT], dtype=np.float64)
+    affine_scale = max(
+        1.0,
+        float(np.max(np.abs(old_weight))),
+        float(np.max(np.abs(old_bias))),
+    )
+    invariant_tolerance = float(
+        2.0 * OLD_CLASS_COUNT * np.finfo(np.float32).eps * affine_scale
+    )
+    bounds = _floorboost_support_upper_bounds(
+        classes=classes,
+        shots=shots,
+        dimension=dimension,
+    )
+    return coefficient, intercept, {
+        "d92_ocf_active": False,
+        "d92_ocf_lambda": None,
+        "d92_ocf_same_after_joint_state": True,
+        "d92_ocf_new_rows_byte_exact": new_rows_byte_exact,
+        "d92_ocf_affine_invariant_tolerance": invariant_tolerance,
+        "d92_ocf_support_alignment_affine_macs_upper_bound": None,
+        "d92_ocf_support_alignment_contrast_mix_macs_upper_bound": None,
+        "d92_ocf_support_alignment_macs_upper_bound": None,
+        "d92_ocf_support_alignment_transient_bytes_upper_bound": None,
+        "d92_floorboost_active": False,
+        "d92_floorboost_lambda": FLOORBOOST_LAMBDA,
+        "d92_floorboost_quantile": FLOORBOOST_QUANTILE,
+        "d92_floorboost_quantile_method": FLOORBOOST_QUANTILE_METHOD,
+        "d92_floorboost_kappa": FLOORBOOST_KAPPA,
+        "d92_floorboost_same_after_joint_state": True,
+        "d92_floorboost_old_row_count": int(OLD_CLASS_COUNT * shots),
+        "d92_floorboost_full_old_rms": None,
+        "d92_floorboost_retention_score_by_old_class": None,
+        "d92_floorboost_registration_drift_by_old_class": None,
+        "d92_floorboost_delta_bias_by_old_class": None,
+        "d92_floorboost_old_bias_zero_sum_residual_abs": 0.0,
+        "d92_floorboost_old_intercept_mean_residual_abs": 0.0,
+        "d92_floorboost_old_weight_mean_residual_max": 0.0,
+        "d92_floorboost_max_abs_delta_over_rms": 0.0,
+        "d92_floorboost_new_rows_byte_exact": new_rows_byte_exact,
+        "d92_floorboost_full_head_byte_exact": True,
+        "d92_floorboost_fallback_active": True,
+        "d92_floorboost_fallback_reason": str(fallback_reason),
+        "d92_floorboost_support_ocf_alignment_macs_upper_bound": bounds[
+            "ocf_macs"
+        ],
+        "d92_floorboost_support_retention_affine_macs_upper_bound": bounds[
+            "retention_macs"
+        ],
+        "d92_floorboost_support_bias_calibration_macs_upper_bound": bounds[
+            "bias_macs"
+        ],
+        "d92_floorboost_support_macs_upper_bound": bounds["total_macs"],
+        "d92_floorboost_support_transient_bytes_upper_bound": bounds[
+            "transient_bytes"
+        ],
+        "d92_floorboost_persistent_state_bytes_delta": 0,
+        "d92_floorboost_query_rows_used": 0,
+        "d92_floorboost_query_fit_access": False,
+        "d92_floorboost_query_update_access": False,
+        "d92_floorboost_query_selection_access": False,
+        "d92_floorboost_query_truth_access": False,
+        "d92_floorboost_query_role_oracle_access": False,
+        "d92_floorboost_query_class_quota_access": False,
+        "d92_floorboost_query_global_reassignment": False,
+    }
 
 
 def _component_inventory(
@@ -328,6 +534,280 @@ def _build_ocf_affine_state(
     return coefficient, intercept, audit
 
 
+def _build_floorboost_affine_state(
+    *,
+    full_rows: np.ndarray,
+    full_labels: np.ndarray,
+    block_rows: np.ndarray,
+    block_labels: np.ndarray,
+    full_coefficient: np.ndarray,
+    full_intercept: np.ndarray,
+    block_coefficient: np.ndarray,
+    block_intercept: np.ndarray,
+    class_count: int,
+    k_shot: int,
+) -> tuple[np.ndarray, np.ndarray, dict[str, Any]]:
+    """Apply frozen support-only max-min retention bias after same-after OCF25.
+
+    Registry/label/head violations are raised.  Only classified OCF numeric
+    degeneration or finite-but-degenerate retention calibration falls back.
+    """
+
+    classes, shots = int(class_count), int(k_shot)
+    raw_rows = np.asarray(full_rows)
+    raw_labels = np.asarray(full_labels)
+    raw_full_coefficient = np.asarray(full_coefficient)
+    raw_full_intercept = np.asarray(full_intercept)
+    try:
+        ocf_coefficient, ocf_intercept, ocf_audit = _build_ocf_affine_state(
+            full_rows=full_rows,
+            full_labels=full_labels,
+            block_rows=block_rows,
+            block_labels=block_labels,
+            full_coefficient=full_coefficient,
+            full_intercept=full_intercept,
+            block_coefficient=block_coefficient,
+            block_intercept=block_intercept,
+            class_count=class_count,
+            k_shot=k_shot,
+            lambda_value=FLOORBOOST_LAMBDA,
+        )
+    except D92ProbeError as error:
+        fallback_reason = _floorboost_ocf_numerical_reason(error)
+        if fallback_reason is None:
+            raise
+        return _build_floorboost_ocf_numerical_fallback(
+            full_rows=full_rows,
+            full_labels=full_labels,
+            block_rows=block_rows,
+            block_labels=block_labels,
+            full_coefficient=full_coefficient,
+            full_intercept=full_intercept,
+            block_coefficient=block_coefficient,
+            block_intercept=block_intercept,
+            class_count=class_count,
+            k_shot=k_shot,
+            fallback_reason=fallback_reason,
+        )
+    dimension = int(raw_rows.shape[1])
+    old_rows_count = OLD_CLASS_COUNT * shots
+    bounds = _floorboost_support_upper_bounds(
+        classes=classes,
+        shots=shots,
+        dimension=dimension,
+    )
+    if (
+        int(ocf_audit["d92_ocf_support_alignment_macs_upper_bound"])
+        != bounds["ocf_macs"]
+        or int(ocf_audit["d92_ocf_support_alignment_transient_bytes_upper_bound"])
+        != bounds["ocf_transient_bytes"]
+    ):
+        raise D92ProbeError("D92 floorboost OCF resource receipt drift")
+    support_ocf_macs = bounds["ocf_macs"]
+    support_retention_affine_macs = bounds["retention_macs"]
+    support_bias_calibration_macs = bounds["bias_macs"]
+    support_macs = bounds["total_macs"]
+    support_transient_bytes = bounds["transient_bytes"]
+    full_rms = float(ocf_audit["d92_ocf_full_old_rms"])
+
+    def finalize(
+        coefficient: np.ndarray,
+        intercept: np.ndarray,
+        *,
+        fallback_active: bool,
+        fallback_reason: str | None,
+        retention_score: list[float] | None,
+        registration_drift: list[float] | None,
+        delta_bias: list[float] | None,
+        delta_reference_intercept: np.ndarray,
+    ) -> tuple[np.ndarray, np.ndarray, dict[str, Any]]:
+        output_coefficient = np.asarray(coefficient, dtype=np.float32)
+        output_intercept = np.asarray(intercept, dtype=np.float32)
+        if not (
+            output_coefficient.shape == (classes, dimension)
+            and output_intercept.shape == (classes,)
+            and np.isfinite(output_coefficient).all()
+            and np.isfinite(output_intercept).all()
+        ):
+            raise D92ProbeError("D92 floorboost affine output drift")
+        new_rows_byte_exact = bool(
+            output_coefficient[OLD_CLASS_COUNT:].tobytes()
+            == raw_full_coefficient[OLD_CLASS_COUNT:].tobytes()
+            and output_intercept[OLD_CLASS_COUNT:].tobytes()
+            == raw_full_intercept[OLD_CLASS_COUNT:].tobytes()
+        )
+        if not new_rows_byte_exact:
+            raise D92ProbeError("D92 floorboost new-row byte drift")
+        full_head_byte_exact = bool(
+            output_coefficient.tobytes() == raw_full_coefficient.tobytes()
+            and output_intercept.tobytes() == raw_full_intercept.tobytes()
+        )
+        if fallback_active and not full_head_byte_exact:
+            raise D92ProbeError("D92 floorboost fallback full-head byte drift")
+        full_old_mean_weight = np.asarray(
+            raw_full_coefficient[:OLD_CLASS_COUNT], dtype=np.float64
+        ).mean(axis=0)
+        full_old_mean_intercept = float(
+            np.asarray(raw_full_intercept[:OLD_CLASS_COUNT], dtype=np.float64).mean()
+        )
+        old_weight_mean_residual = float(
+            np.max(
+                np.abs(
+                    np.asarray(output_coefficient[:OLD_CLASS_COUNT], dtype=np.float64).mean(axis=0)
+                    - full_old_mean_weight
+                )
+            )
+        )
+        old_intercept_mean_residual = float(
+            abs(
+                np.asarray(output_intercept[:OLD_CLASS_COUNT], dtype=np.float64).mean()
+                - full_old_mean_intercept
+            )
+        )
+        delta_effective = (
+            np.asarray(output_intercept[:OLD_CLASS_COUNT], dtype=np.float64)
+            - np.asarray(delta_reference_intercept[:OLD_CLASS_COUNT], dtype=np.float64)
+        )
+        old_bias_zero_sum_residual = float(abs(np.sum(delta_effective)))
+        invariant_tolerance = float(
+            ocf_audit["d92_ocf_affine_invariant_tolerance"]
+        )
+        if max(
+            old_weight_mean_residual,
+            old_intercept_mean_residual,
+            old_bias_zero_sum_residual,
+        ) > invariant_tolerance:
+            raise D92ProbeError("D92 floorboost old-group affine invariant drift")
+        max_abs_delta_over_rms = float(
+            np.max(np.abs(delta_effective)) / full_rms
+        )
+        audit = dict(ocf_audit)
+        audit.update(
+            {
+                "d92_floorboost_active": not fallback_active,
+                "d92_floorboost_lambda": FLOORBOOST_LAMBDA,
+                "d92_floorboost_quantile": FLOORBOOST_QUANTILE,
+                "d92_floorboost_quantile_method": FLOORBOOST_QUANTILE_METHOD,
+                "d92_floorboost_kappa": FLOORBOOST_KAPPA,
+                "d92_floorboost_same_after_joint_state": True,
+                "d92_floorboost_old_row_count": old_rows_count,
+                "d92_floorboost_full_old_rms": full_rms,
+                "d92_floorboost_retention_score_by_old_class": retention_score,
+                "d92_floorboost_registration_drift_by_old_class": registration_drift,
+                "d92_floorboost_delta_bias_by_old_class": delta_bias,
+                "d92_floorboost_old_bias_zero_sum_residual_abs": old_bias_zero_sum_residual,
+                "d92_floorboost_old_intercept_mean_residual_abs": old_intercept_mean_residual,
+                "d92_floorboost_old_weight_mean_residual_max": old_weight_mean_residual,
+                "d92_floorboost_max_abs_delta_over_rms": max_abs_delta_over_rms,
+                "d92_floorboost_new_rows_byte_exact": new_rows_byte_exact,
+                "d92_floorboost_full_head_byte_exact": full_head_byte_exact,
+                "d92_floorboost_fallback_active": fallback_active,
+                "d92_floorboost_fallback_reason": fallback_reason,
+                "d92_floorboost_support_ocf_alignment_macs_upper_bound": support_ocf_macs,
+                "d92_floorboost_support_retention_affine_macs_upper_bound": support_retention_affine_macs,
+                "d92_floorboost_support_bias_calibration_macs_upper_bound": support_bias_calibration_macs,
+                "d92_floorboost_support_macs_upper_bound": support_macs,
+                "d92_floorboost_support_transient_bytes_upper_bound": support_transient_bytes,
+                "d92_floorboost_persistent_state_bytes_delta": 0,
+                "d92_floorboost_query_rows_used": 0,
+                "d92_floorboost_query_fit_access": False,
+                "d92_floorboost_query_update_access": False,
+                "d92_floorboost_query_selection_access": False,
+                "d92_floorboost_query_truth_access": False,
+                "d92_floorboost_query_role_oracle_access": False,
+                "d92_floorboost_query_class_quota_access": False,
+                "d92_floorboost_query_global_reassignment": False,
+            }
+        )
+        return output_coefficient, output_intercept, audit
+
+    try:
+        if not np.isfinite(full_rms) or full_rms <= FLOORBOOST_NUMERICAL_EPSILON:
+            raise D92FloorboostNumericalError("full_old_rms_degenerate")
+        rows = np.asarray(raw_rows, dtype=np.float64)
+        labels = np.asarray(raw_labels, dtype=np.int64)
+        old_mask = labels < OLD_CLASS_COUNT
+        old_rows = rows[old_mask]
+        old_labels = labels[old_mask]
+        if old_rows.shape != (old_rows_count, dimension):
+            raise D92ProbeError("D92 floorboost old support registry drift")
+        scores = old_rows @ np.asarray(ocf_coefficient, dtype=np.float64).T
+        scores += np.asarray(ocf_intercept, dtype=np.float64)[None, :]
+        if not np.isfinite(scores).all():
+            raise D92FloorboostNumericalError("all_registered_scores_nonfinite")
+        row_indices = np.arange(old_rows_count, dtype=np.int64)
+        target = scores[row_indices, old_labels]
+        all_competitors = scores.copy()
+        all_competitors[row_indices, old_labels] = -np.inf
+        all_margin = target - np.max(all_competitors, axis=1)
+        old_competitors = scores[:, :OLD_CLASS_COUNT].copy()
+        old_competitors[row_indices, old_labels] = -np.inf
+        old_margin = target - np.max(old_competitors, axis=1)
+        if not np.isfinite(all_margin).all() or not np.isfinite(old_margin).all():
+            raise D92FloorboostNumericalError("retention_margin_nonfinite")
+        retention = []
+        drift = []
+        for old_class in range(OLD_CLASS_COUNT):
+            class_mask = old_labels == old_class
+            if int(np.sum(class_mask)) != shots:
+                raise D92ProbeError("D92 floorboost old support class-count drift")
+            lower_margin = float(
+                np.quantile(
+                    all_margin[class_mask],
+                    FLOORBOOST_QUANTILE,
+                    method=FLOORBOOST_QUANTILE_METHOD,
+                )
+            )
+            class_drift = float(np.mean(old_margin[class_mask] - all_margin[class_mask]))
+            retention.append(lower_margin - class_drift)
+            drift.append(class_drift)
+        retention_array = np.asarray(retention, dtype=np.float64)
+        drift_array = np.asarray(drift, dtype=np.float64)
+        if not np.isfinite(retention_array).all() or not np.isfinite(drift_array).all():
+            raise D92FloorboostNumericalError("retention_statistic_nonfinite")
+        priority = np.tanh(
+            (float(np.median(retention_array)) - retention_array) / full_rms
+        )
+        centered_priority = priority - float(np.mean(priority))
+        span = float(np.max(np.abs(centered_priority)))
+        if not np.isfinite(span) or span <= FLOORBOOST_NUMERICAL_EPSILON:
+            raise D92FloorboostNumericalError("retention_priority_span_degenerate")
+        delta64 = FLOORBOOST_KAPPA * full_rms * centered_priority / span
+        if not np.isfinite(delta64).all():
+            raise D92FloorboostNumericalError("retention_bias_nonfinite")
+        if float(np.max(np.abs(delta64)) / full_rms) > FLOORBOOST_KAPPA + 1.0e-10:
+            raise D92FloorboostNumericalError("retention_bias_cap_drift")
+        output_coefficient = np.asarray(ocf_coefficient, dtype=np.float32).copy()
+        output_intercept64 = np.asarray(ocf_intercept, dtype=np.float64).copy()
+        output_intercept64[:OLD_CLASS_COUNT] += delta64
+        output_intercept64[:OLD_CLASS_COUNT] += (
+            float(np.asarray(raw_full_intercept[:OLD_CLASS_COUNT], dtype=np.float64).mean())
+            - float(output_intercept64[:OLD_CLASS_COUNT].mean())
+        )
+        output_intercept = np.asarray(output_intercept64, dtype=np.float32)
+        return finalize(
+            output_coefficient,
+            output_intercept,
+            fallback_active=False,
+            fallback_reason=None,
+            retention_score=[float(value) for value in retention_array],
+            registration_drift=[float(value) for value in drift_array],
+            delta_bias=[float(value) for value in delta64],
+            delta_reference_intercept=np.asarray(ocf_intercept, dtype=np.float32),
+        )
+    except D92FloorboostNumericalError as error:
+        return finalize(
+            np.asarray(raw_full_coefficient, dtype=np.float32).copy(),
+            np.asarray(raw_full_intercept, dtype=np.float32).copy(),
+            fallback_active=True,
+            fallback_reason=str(error),
+            retention_score=None,
+            registration_drift=None,
+            delta_bias=None,
+            delta_reference_intercept=np.asarray(raw_full_intercept, dtype=np.float32),
+        )
+
+
 def build_d92_fit(
     d42: Any,
     basis: np.ndarray,
@@ -598,6 +1078,72 @@ def build_d92_fit(
             current_support.clear()
             component_support_capture = None
 
+    def floorboost_fit(
+        rows: np.ndarray,
+        labels: np.ndarray,
+        class_count: int,
+        k_shot: int,
+    ) -> tuple[np.ndarray, np.ndarray, dict[str, Any]]:
+        nonlocal component_support_capture
+        if component_support_capture is not None:
+            raise D92ProbeError("D92 floorboost support capture re-entry")
+        current_support: list[dict[str, Any]] = []
+        component_support_capture = current_support
+        try:
+            full_coefficient, full_intercept, full_audit = full_fit(
+                rows, labels, class_count, k_shot
+            )
+            block_coefficient, block_intercept, block_audit = direct_block_fit(
+                rows, labels, class_count, k_shot
+            )
+            if (
+                len(current_support) != 2
+                or [record["arm"] for record in current_support]
+                != ["full", "block3_centered"]
+                or any(
+                    record["class_count"] != int(class_count)
+                    or record["k_shot"] != int(k_shot)
+                    for record in current_support
+                )
+            ):
+                raise D92ProbeError("D92 floorboost component inventory drift")
+            coefficient, intercept, floorboost_audit = _build_floorboost_affine_state(
+                full_rows=current_support[0]["rows"],
+                full_labels=current_support[0]["labels"],
+                block_rows=current_support[1]["rows"],
+                block_labels=current_support[1]["labels"],
+                full_coefficient=full_coefficient,
+                full_intercept=full_intercept,
+                block_coefficient=block_coefficient,
+                block_intercept=block_intercept,
+                class_count=class_count,
+                k_shot=k_shot,
+            )
+            audit = dict(full_audit)
+            audit.update(
+                {
+                    "coefficient_source": (
+                        "d92_floorboost_same_after_ocf25_retention_bias_"
+                        "or_full_only_numerical_fallback"
+                    ),
+                    "covariance_equation_residual_max": float(
+                        max(
+                            float(full_audit["covariance_equation_residual_max"]),
+                            float(block_audit["covariance_equation_residual_max"]),
+                        )
+                    ),
+                    "d92_floorboost_component_arms": [
+                        "full",
+                        "block3_centered",
+                    ],
+                    **floorboost_audit,
+                }
+            )
+            return coefficient, intercept, audit
+        finally:
+            current_support.clear()
+            component_support_capture = None
+
     def fit(rows: np.ndarray, labels: np.ndarray, class_count: int, k_shot: int):
         start = len(component_records)
         transform_start = len(transform_records)
@@ -621,6 +1167,9 @@ def build_d92_fit(
             effective_d_mode = registered_d_mode
         elif registered_d_mode == "fixed50":
             selected_fit = fixed50_fit
+            effective_d_mode = registered_d_mode
+        elif registered_d_mode == "floorboost":
+            selected_fit = floorboost_fit
             effective_d_mode = registered_d_mode
         elif registered_d_mode in OCF_LAMBDA_BY_MODE:
             selected_fit = lambda *call: ocf_fit(
@@ -654,6 +1203,19 @@ def build_d92_fit(
         expected_active = registered and int(k_shot) > 2
         if current and any(bool(row["active"]) != expected_active for row in current):
             raise D92ProbeError("D92 component activity drift")
+        floorboost_mode = registered_d_mode == "floorboost"
+        floorboost_numeric_fallback = bool(
+            base_audit.get("d92_floorboost_fallback_active", False)
+        )
+        if floorboost_mode and not registered:
+            floorboost_reason = "NOT_REGISTERED_STATE"
+        elif floorboost_mode and exact_full_alias:
+            floorboost_reason = "K1_K2_EXACT_D92_FULL_ALIAS"
+        else:
+            floorboost_reason = base_audit.get("d92_floorboost_fallback_reason")
+        floorboost_active = bool(
+            d_mode_active and floorboost_mode and not floorboost_numeric_fallback
+        )
         audit = dict(base_audit)
         center_active = ground_center_active(class_count, k_shot)
         d81_audit = (
@@ -759,12 +1321,33 @@ def build_d92_fit(
                 "d92_registered_d_mode_active": d_mode_active,
                 "d92_registered_d_mode_effective": effective_d_mode,
                 "d92_ocf_active": bool(
-                    d_mode_active and registered_d_mode in OCF_LAMBDA_BY_MODE
+                    d_mode_active
+                    and (
+                        registered_d_mode in OCF_LAMBDA_BY_MODE
+                        or registered_d_mode == "floorboost"
+                    )
+                    and not floorboost_numeric_fallback
                 ),
                 "d92_ocf_lambda": (
-                    OCF_LAMBDA_BY_MODE[registered_d_mode]
-                    if d_mode_active and registered_d_mode in OCF_LAMBDA_BY_MODE
+                    (
+                        FLOORBOOST_LAMBDA
+                        if registered_d_mode == "floorboost"
+                        else OCF_LAMBDA_BY_MODE[registered_d_mode]
+                    )
+                    if d_mode_active
+                    and (
+                        registered_d_mode in OCF_LAMBDA_BY_MODE
+                        or registered_d_mode == "floorboost"
+                    )
+                    and not floorboost_numeric_fallback
                     else None
+                ),
+                "d92_floorboost_active": floorboost_active,
+                "d92_floorboost_fallback_active": bool(
+                    floorboost_mode and floorboost_numeric_fallback
+                ),
+                "d92_floorboost_fallback_reason": (
+                    floorboost_reason if floorboost_mode else None
                 ),
                 "d92_component_fit_inventory": component_inventory,
                 "d92_component_support_retained_count": (

@@ -22,6 +22,8 @@ class D92E0DSlimArmSpec:
     b_enabled: bool
     e_enabled: bool
     ocf_lambda: float | None = None
+    floorboost_quantile: float | None = None
+    floorboost_kappa: float | None = None
 
 
 D92_E0D_ARMS: Mapping[str, D92E0DSlimArmSpec] = MappingProxyType(
@@ -46,6 +48,16 @@ D92_E0D_ARMS: Mapping[str, D92E0DSlimArmSpec] = MappingProxyType(
         ),
         "E0_OCF50": D92E0DSlimArmSpec(
             "E0_OCF50", "d92_e0ocf_e0_ocf50", "ocf50", True, False, 0.50
+        ),
+        "E0_FULL_MAXMIN_FLOORBOOST": D92E0DSlimArmSpec(
+            "E0_FULL_MAXMIN_FLOORBOOST",
+            "d92_e0_full_maxmin_floorboost",
+            "floorboost",
+            True,
+            False,
+            0.25,
+            0.20,
+            0.35,
         ),
     }
 )
@@ -75,7 +87,7 @@ def expected_total_component_fit_count(k_shot: int, *, arm_id: str) -> int:
         return 4 * (k + 1)
     if arm.registered_d_mode in ("full_only", "block_only"):
         return 2
-    if arm.registered_d_mode in ("fixed50", "ocf25", "ocf50"):
+    if arm.registered_d_mode in ("fixed50", "ocf25", "ocf50", "floorboost"):
         return 4
     raise D92E0DSlimError("D92-E0D frozen D mode drift")
 
@@ -146,8 +158,64 @@ def build_d92_e0d_fit(
             # The common before/K1/K2 D92_FULL alias is intentionally not
             # reinterpreted by the E0D two-state registered count convention.
             total_count = actual_count
+        floorboost_mode = arm.registered_d_mode == "floorboost"
+        floorboost_registered_state = bool(
+            floorboost_mode and registered and int(k_shot) > 2
+        )
+        base_floorboost_active = base_audit.get("d92_floorboost_active", False)
+        base_floorboost_fallback = base_audit.get(
+            "d92_floorboost_fallback_active", False
+        )
+        base_floorboost_reason = base_audit.get("d92_floorboost_fallback_reason")
+        if floorboost_mode:
+            if not registered:
+                if (
+                    base_floorboost_active is not False
+                    or base_floorboost_fallback is not False
+                    or base_floorboost_reason != "NOT_REGISTERED_STATE"
+                ):
+                    raise D92E0DSlimError("D92-E0D floorboost before receipt drift")
+            elif int(k_shot) <= 2:
+                if (
+                    base_floorboost_active is not False
+                    or base_floorboost_fallback is not False
+                    or base_floorboost_reason != "K1_K2_EXACT_D92_FULL_ALIAS"
+                ):
+                    raise D92E0DSlimError("D92-E0D floorboost K1/K2 receipt drift")
+            elif base_floorboost_fallback is True:
+                if (
+                    base_floorboost_active is not False
+                    or not isinstance(base_floorboost_reason, str)
+                    or not base_floorboost_reason
+                    or base_audit.get("d92_floorboost_new_rows_byte_exact") is not True
+                    or base_audit.get("d92_floorboost_full_head_byte_exact")
+                    is not True
+                ):
+                    raise D92E0DSlimError("D92-E0D floorboost fallback receipt drift")
+            elif base_floorboost_fallback is False:
+                if base_floorboost_active is not True or base_floorboost_reason is not None:
+                    raise D92E0DSlimError("D92-E0D floorboost base receipt drift")
+            else:
+                raise D92E0DSlimError("D92-E0D floorboost fallback flag drift")
+            if floorboost_registered_state and (
+                base_audit.get("d92_floorboost_lambda") != arm.ocf_lambda
+                or base_audit.get("d92_floorboost_quantile")
+                != arm.floorboost_quantile
+                or base_audit.get("d92_floorboost_quantile_method") != "lower"
+                or base_audit.get("d92_floorboost_kappa") != arm.floorboost_kappa
+            ):
+                raise D92E0DSlimError("D92-E0D floorboost parameter receipt drift")
+        elif (
+            base_floorboost_active is not False
+            or base_floorboost_fallback is not False
+            or base_floorboost_reason is not None
+        ):
+            raise D92E0DSlimError("D92-E0D floorboost inactive receipt drift")
         ocf_expected_active = bool(
-            arm.ocf_lambda is not None and registered and int(k_shot) > 2
+            arm.ocf_lambda is not None
+            and registered
+            and int(k_shot) > 2
+            and not (floorboost_registered_state and base_floorboost_fallback is True)
         )
         base_ocf_active = base_audit.get("d92_ocf_active")
         base_ocf_lambda = base_audit.get("d92_ocf_lambda")
@@ -171,6 +239,9 @@ def build_d92_e0d_fit(
         )
         if not finite:
             raise D92E0DSlimError("D92-E0D affine state became non-finite")
+        ocf_receipt_masked_by_floorboost_fallback = bool(
+            floorboost_registered_state and base_floorboost_fallback is True
+        )
         audit = dict(base_audit)
         audit.update(
             {
@@ -196,8 +267,16 @@ def build_d92_e0d_fit(
                 "d92_e0d_registered_d_mode_effective": base_audit[
                     "d92_registered_d_mode_effective"
                 ],
-                "d92_e0d_ocf_active": bool(base_audit.get("d92_ocf_active", False)),
-                "d92_e0d_ocf_lambda": base_audit.get("d92_ocf_lambda"),
+                "d92_e0d_ocf_active": (
+                    False
+                    if ocf_receipt_masked_by_floorboost_fallback
+                    else bool(base_audit.get("d92_ocf_active", False))
+                ),
+                "d92_e0d_ocf_lambda": (
+                    None
+                    if ocf_receipt_masked_by_floorboost_fallback
+                    else base_audit.get("d92_ocf_lambda")
+                ),
                 "d92_e0d_ocf_same_after_joint_state": base_audit.get(
                     "d92_ocf_same_after_joint_state"
                 ),
@@ -205,22 +284,98 @@ def build_d92_e0d_fit(
                     "d92_ocf_new_rows_byte_exact"
                 ),
                 "d92_e0d_ocf_support_alignment_affine_macs_upper_bound": (
-                    base_audit.get(
+                    None
+                    if ocf_receipt_masked_by_floorboost_fallback
+                    else base_audit.get(
                         "d92_ocf_support_alignment_affine_macs_upper_bound"
                     )
                 ),
                 "d92_e0d_ocf_support_alignment_contrast_mix_macs_upper_bound": (
-                    base_audit.get(
+                    None
+                    if ocf_receipt_masked_by_floorboost_fallback
+                    else base_audit.get(
                         "d92_ocf_support_alignment_contrast_mix_macs_upper_bound"
                     )
                 ),
-                "d92_e0d_ocf_support_alignment_macs_upper_bound": base_audit.get(
-                    "d92_ocf_support_alignment_macs_upper_bound"
+                "d92_e0d_ocf_support_alignment_macs_upper_bound": (
+                    None
+                    if ocf_receipt_masked_by_floorboost_fallback
+                    else base_audit.get(
+                        "d92_ocf_support_alignment_macs_upper_bound"
+                    )
                 ),
                 "d92_e0d_ocf_support_alignment_transient_bytes_upper_bound": (
-                    base_audit.get(
+                    None
+                    if ocf_receipt_masked_by_floorboost_fallback
+                    else base_audit.get(
                         "d92_ocf_support_alignment_transient_bytes_upper_bound"
                     )
+                ),
+                "d92_e0d_floorboost_active": base_audit.get(
+                    "d92_floorboost_active", False
+                ),
+                "d92_e0d_floorboost_lambda": base_audit.get(
+                    "d92_floorboost_lambda"
+                ),
+                "d92_e0d_floorboost_quantile": base_audit.get(
+                    "d92_floorboost_quantile"
+                ),
+                "d92_e0d_floorboost_quantile_method": base_audit.get(
+                    "d92_floorboost_quantile_method"
+                ),
+                "d92_e0d_floorboost_kappa": base_audit.get(
+                    "d92_floorboost_kappa"
+                ),
+                "d92_e0d_floorboost_fallback_active": base_audit.get(
+                    "d92_floorboost_fallback_active", False
+                ),
+                "d92_e0d_floorboost_fallback_reason": base_audit.get(
+                    "d92_floorboost_fallback_reason"
+                ),
+                "d92_e0d_floorboost_new_rows_byte_exact": base_audit.get(
+                    "d92_floorboost_new_rows_byte_exact"
+                ),
+                "d92_e0d_floorboost_full_head_byte_exact": base_audit.get(
+                    "d92_floorboost_full_head_byte_exact"
+                ),
+                "d92_e0d_floorboost_old_bias_zero_sum_residual_abs": base_audit.get(
+                    "d92_floorboost_old_bias_zero_sum_residual_abs"
+                ),
+                "d92_e0d_floorboost_old_intercept_mean_residual_abs": base_audit.get(
+                    "d92_floorboost_old_intercept_mean_residual_abs"
+                ),
+                "d92_e0d_floorboost_max_abs_delta_over_rms": base_audit.get(
+                    "d92_floorboost_max_abs_delta_over_rms"
+                ),
+                "d92_e0d_floorboost_full_old_rms": base_audit.get(
+                    "d92_floorboost_full_old_rms"
+                ),
+                "d92_e0d_floorboost_retention_score_by_old_class": base_audit.get(
+                    "d92_floorboost_retention_score_by_old_class"
+                ),
+                "d92_e0d_floorboost_registration_drift_by_old_class": base_audit.get(
+                    "d92_floorboost_registration_drift_by_old_class"
+                ),
+                "d92_e0d_floorboost_delta_bias_by_old_class": base_audit.get(
+                    "d92_floorboost_delta_bias_by_old_class"
+                ),
+                "d92_e0d_floorboost_support_ocf_alignment_macs_upper_bound": base_audit.get(
+                    "d92_floorboost_support_ocf_alignment_macs_upper_bound"
+                ),
+                "d92_e0d_floorboost_support_retention_affine_macs_upper_bound": base_audit.get(
+                    "d92_floorboost_support_retention_affine_macs_upper_bound"
+                ),
+                "d92_e0d_floorboost_support_bias_calibration_macs_upper_bound": base_audit.get(
+                    "d92_floorboost_support_bias_calibration_macs_upper_bound"
+                ),
+                "d92_e0d_floorboost_support_macs_upper_bound": base_audit.get(
+                    "d92_floorboost_support_macs_upper_bound"
+                ),
+                "d92_e0d_floorboost_support_transient_bytes_upper_bound": base_audit.get(
+                    "d92_floorboost_support_transient_bytes_upper_bound"
+                ),
+                "d92_e0d_floorboost_persistent_state_bytes_delta": base_audit.get(
+                    "d92_floorboost_persistent_state_bytes_delta", 0
                 ),
                 "d92_e0d_k1_k2_exact_full_alias": bool(
                     base_audit["d92_k1_k2_exact_full_alias"]

@@ -116,6 +116,31 @@ def test_ocf25_registered_mode_has_the_frozen_public_identity():
     ) == ("d92_e0ocf_e0_ocf25", "ocf25", True, False)
 
 
+def test_floorboost_arm_locks_the_single_after_state_full_block_graph():
+    """Would fail if floorboost drifted from its frozen identity, constants, or two fits."""
+
+    arm = D92_E0D_ARMS["E0_FULL_MAXMIN_FLOORBOOST"]
+    assert (
+        arm.candidate_id,
+        arm.registered_d_mode,
+        arm.ocf_lambda,
+        arm.floorboost_quantile,
+        arm.floorboost_kappa,
+    ) == ("d92_e0_full_maxmin_floorboost", "floorboost", 0.25, 0.20, 0.35)
+    _, _, audit, _, _ = _run(
+        "E0_FULL_MAXMIN_FLOORBOOST", class_count=11, k_shot=5
+    )
+    inventory = audit["d92_e0d_actual_component_inventory"]
+    assert audit["d92_e0d_actual_component_fit_count"] == 2
+    assert audit["d92_e0d_total_component_fit_count"] == 4
+    assert inventory["full_component_fit_count"] == 1
+    assert inventory["block3_component_fit_count"] == 1
+    assert audit["d92_e0d_floorboost_active"] is True
+    assert audit["d92_e0d_floorboost_new_rows_byte_exact"] is True
+    assert audit["d92_e0d_floorboost_persistent_state_bytes_delta"] == 0
+    assert audit["d92_e0d_query_macs"] == 11 * 288
+
+
 def test_ocf25_registered_state_keeps_new_rows_byte_exact_to_full_only():
     """Would fail if OCF touched a registered new-class affine row."""
 

@@ -557,3 +557,102 @@ def test_registered_e0_d_mode_keeps_k1_and_k2_as_exact_d92_full_aliases():
         np.testing.assert_array_equal(intercept, full_intercept)
         assert audit["d92_registered_d_mode_effective"] == "d92_full_alias"
         assert audit["d92_k1_k2_exact_full_alias"] is True
+
+
+def _floorboost_hand_fixture():
+    """Return a support set whose Q20 lower statistic is hand-checkable."""
+
+    classes, shots, dimension = 8, 5, 8
+    labels = np.repeat(np.arange(classes), shots).astype(np.int64)
+    rows = np.zeros((classes * shots, dimension), dtype=np.float32)
+    all_margin_patterns = (
+        (0.0, 4.0, 4.0, 4.0, 4.0),
+        (1.0, 5.0, 5.0, 5.0, 5.0),
+        (2.0, 4.0, 4.0, 4.0, 4.0),
+        (3.0, 5.0, 5.0, 5.0, 5.0),
+        (4.0, 5.0, 5.0, 5.0, 5.0),
+        (5.0, 5.0, 5.0, 5.0, 5.0),
+    )
+    for old_class, margins in enumerate(all_margin_patterns):
+        for shot, margin in enumerate(margins):
+            row = rows[old_class * shots + shot]
+            row[old_class] = 10.0
+            row[(old_class + 1) % 6] = 5.0
+            row[6] = 10.0 - margin
+    for new_class in (6, 7):
+        rows[new_class * shots : (new_class + 1) * shots, new_class] = 10.0
+    coefficient = np.eye(classes, dimension, dtype=np.float32)
+    intercept = np.zeros(classes, dtype=np.float32)
+    return rows, labels, coefficient, intercept, classes, shots
+
+
+def test_floorboost_uses_lower_q20_and_preserves_new_rows_and_old_bias_mean():
+    """Would fail if floorboost interpolated Q20, moved new rows, or broke zero-sum bias."""
+
+    rows, labels, coefficient, intercept, classes, shots = _floorboost_hand_fixture()
+    output_coefficient, output_intercept, audit = probe._build_floorboost_affine_state(
+        full_rows=rows,
+        full_labels=labels,
+        block_rows=rows,
+        block_labels=labels,
+        full_coefficient=coefficient,
+        full_intercept=intercept,
+        block_coefficient=coefficient,
+        block_intercept=intercept,
+        class_count=classes,
+        k_shot=shots,
+    )
+
+    np.testing.assert_allclose(
+        audit["d92_floorboost_retention_score_by_old_class"],
+        [-1.8, 0.2, 0.6, 2.6, 3.8, 5.0],
+        rtol=0.0,
+        atol=1.0e-6,
+    )
+    np.testing.assert_allclose(
+        audit["d92_floorboost_registration_drift_by_old_class"],
+        [1.8, 0.8, 1.4, 0.4, 0.2, 0.0],
+        rtol=0.0,
+        atol=1.0e-6,
+    )
+    assert audit["d92_floorboost_quantile"] == pytest.approx(0.20)
+    assert audit["d92_floorboost_quantile_method"] == "lower"
+    assert audit["d92_floorboost_kappa"] == pytest.approx(0.35)
+    assert audit["d92_floorboost_fallback_active"] is False
+    assert output_coefficient[6:].tobytes() == coefficient[6:].tobytes()
+    assert output_intercept[6:].tobytes() == intercept[6:].tobytes()
+    np.testing.assert_allclose(output_coefficient[:6], coefficient[:6], rtol=0.0, atol=0.0)
+    assert abs(float(np.sum(audit["d92_floorboost_delta_bias_by_old_class"]))) <= 1.0e-6
+    assert max(abs(value) for value in audit["d92_floorboost_delta_bias_by_old_class"]) <= (
+        0.35 * audit["d92_floorboost_full_old_rms"] + 1.0e-6
+    )
+    assert abs(float(output_intercept[:6].mean() - intercept[:6].mean())) <= 1.0e-6
+
+
+def test_floorboost_ocf_numeric_degeneracy_fails_closed_to_full_head():
+    """Would fail if an OCF RMS degeneration escaped or returned a hybrid head."""
+
+    rows, labels, coefficient, intercept, classes, shots = _floorboost_hand_fixture()
+    output_coefficient, output_intercept, audit = probe._build_floorboost_affine_state(
+        full_rows=rows,
+        full_labels=labels,
+        block_rows=rows,
+        block_labels=labels,
+        full_coefficient=coefficient,
+        full_intercept=intercept,
+        block_coefficient=np.zeros_like(coefficient),
+        block_intercept=np.zeros_like(intercept),
+        class_count=classes,
+        k_shot=shots,
+    )
+
+    assert output_coefficient.tobytes() == coefficient.tobytes()
+    assert output_intercept.tobytes() == intercept.tobytes()
+    assert audit["d92_floorboost_active"] is False
+    assert audit["d92_floorboost_fallback_active"] is True
+    assert audit["d92_floorboost_fallback_reason"] == (
+        "ocf_old_class_centered_rms_degenerate"
+    )
+    assert audit["d92_floorboost_full_head_byte_exact"] is True
+    assert audit["d92_floorboost_new_rows_byte_exact"] is True
+    assert audit["d92_floorboost_delta_bias_by_old_class"] is None

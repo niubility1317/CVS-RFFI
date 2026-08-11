@@ -34,10 +34,24 @@ def _resource(
     arm: slim.D92E0DSlimArmSpec, *, registered: bool, k_shot: int
 ) -> dict:
     active = registered and k_shot > 2 and not arm.e_enabled
+    floorboost_applies = arm.arm_id == "E0_FULL_MAXMIN_FLOORBOOST"
+    floorboost_active = bool(
+        floorboost_applies and registered and k_shot > 2
+    )
+    floorboost_reason = (
+        "NOT_REGISTERED_STATE"
+        if floorboost_applies and not registered
+        else (
+            "K1_K2_EXACT_D92_FULL_ALIAS"
+            if floorboost_applies and k_shot <= 2
+            else None
+        )
+    )
     ocf_active = (
         registered
         and k_shot > 2
-        and arm.arm_id in {"E0_OCF25", "E0_OCF50"}
+        and arm.arm_id
+        in {"E0_OCF25", "E0_OCF50", "E0_FULL_MAXMIN_FLOORBOOST"}
     )
     effective_mode = arm.registered_d_mode if active else "d92_full_alias"
     total = (
@@ -55,6 +69,15 @@ def _resource(
     contrast_mix_macs = (
         5 * OLD_CLASS_COUNT * (288 + 1) if ocf_active else None
     )
+    floorboost_ocf_macs = (
+        affine_macs + contrast_mix_macs if floorboost_active else None
+    )
+    floorboost_retention_macs = (
+        OLD_CLASS_COUNT * k_shot * class_count * 288
+        if floorboost_active
+        else None
+    )
+    floorboost_bias_macs = 6 * OLD_CLASS_COUNT if floorboost_active else None
     return {
         "d92_registration_state_support_only": True,
         "d92_query_rows_used": 0,
@@ -100,6 +123,62 @@ def _resource(
         "d92_e0d_ocf_support_alignment_transient_bytes_upper_bound": (
             864 if ocf_active else None
         ),
+        "d92_e0d_floorboost_active": floorboost_active,
+        "d92_e0d_floorboost_lambda": 0.25 if floorboost_active else None,
+        "d92_e0d_floorboost_quantile": 0.20 if floorboost_active else None,
+        "d92_e0d_floorboost_quantile_method": (
+            "lower" if floorboost_active else None
+        ),
+        "d92_e0d_floorboost_kappa": 0.35 if floorboost_active else None,
+        "d92_e0d_floorboost_fallback_active": False,
+        "d92_e0d_floorboost_fallback_reason": floorboost_reason,
+        "d92_e0d_floorboost_new_rows_byte_exact": (
+            True if floorboost_active else None
+        ),
+        "d92_e0d_floorboost_full_head_byte_exact": (
+            False if floorboost_active else None
+        ),
+        "d92_e0d_floorboost_old_bias_zero_sum_residual_abs": (
+            0.0 if floorboost_active else None
+        ),
+        "d92_e0d_floorboost_old_intercept_mean_residual_abs": (
+            0.0 if floorboost_active else None
+        ),
+        "d92_e0d_floorboost_max_abs_delta_over_rms": (
+            0.35 if floorboost_active else None
+        ),
+        "d92_e0d_floorboost_full_old_rms": (
+            1.0 if floorboost_active else None
+        ),
+        "d92_e0d_floorboost_retention_score_by_old_class": (
+            [-1.8, 0.2, 0.6, 2.6, 3.8, 5.0] if floorboost_active else None
+        ),
+        "d92_e0d_floorboost_registration_drift_by_old_class": (
+            [1.8, 0.8, 1.4, 0.4, 0.2, 0.0] if floorboost_active else None
+        ),
+        "d92_e0d_floorboost_delta_bias_by_old_class": (
+            [0.35, 0.1, 0.05, -0.1, -0.15, -0.25]
+            if floorboost_active
+            else None
+        ),
+        "d92_e0d_floorboost_support_ocf_alignment_macs_upper_bound": (
+            floorboost_ocf_macs
+        ),
+        "d92_e0d_floorboost_support_retention_affine_macs_upper_bound": (
+            floorboost_retention_macs
+        ),
+        "d92_e0d_floorboost_support_bias_calibration_macs_upper_bound": (
+            floorboost_bias_macs
+        ),
+        "d92_e0d_floorboost_support_macs_upper_bound": (
+            floorboost_ocf_macs + floorboost_retention_macs + floorboost_bias_macs
+            if floorboost_active
+            else None
+        ),
+        "d92_e0d_floorboost_support_transient_bytes_upper_bound": (
+            1_024 if floorboost_active else None
+        ),
+        "d92_e0d_floorboost_persistent_state_bytes_delta": 0,
         "d81_transform_audit": {
             "schema": "cvs.phase2.d81.support_center_translation.v1",
             "support_rows": class_count * k_shot,
@@ -252,6 +331,33 @@ def test_audit_exposes_active_ocf_support_receipt_from_after_state(
         affine_formula + mix_formula
     )
     assert row["d92_e0d_ocf_support_alignment_transient_bytes_upper_bound"] == 864
+
+
+def test_audit_exposes_active_floorboost_receipt_with_lower_quantile():
+    """Would fail if the formal row lost the frozen floorboost support-only receipt."""
+
+    arm = slim.D92_E0D_ARMS["E0_FULL_MAXMIN_FLOORBOOST"]
+    row = e0d_eval._audit_d92_e0d_fit(
+        _result(arm),
+        arm=arm,
+        scenario="leo_clear_weak",
+        k_shot=5,
+        old_count=6,
+        class_count=11,
+    )
+    assert row["d92_e0d_floorboost_active"] is True
+    assert row["d92_e0d_floorboost_lambda"] == pytest.approx(0.25)
+    assert row["d92_e0d_floorboost_quantile"] == pytest.approx(0.20)
+    assert row["d92_e0d_floorboost_quantile_method"] == "lower"
+    assert row["d92_e0d_floorboost_kappa"] == pytest.approx(0.35)
+    assert row["d92_e0d_floorboost_fallback_active"] is False
+    assert row["d92_e0d_floorboost_new_rows_byte_exact"] is True
+    assert row["d92_e0d_floorboost_persistent_state_bytes_delta"] == 0
+    assert row["d92_e0d_floorboost_support_macs_upper_bound"] == (
+        row["d92_e0d_floorboost_support_ocf_alignment_macs_upper_bound"]
+        + row["d92_e0d_floorboost_support_retention_affine_macs_upper_bound"]
+        + row["d92_e0d_floorboost_support_bias_calibration_macs_upper_bound"]
+    )
 
 
 def test_audit_rejects_active_ocf_total_macs_sum_tamper():
