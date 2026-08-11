@@ -5,7 +5,7 @@ project=/home/szu2070436088/2510044040/CV-SincNet
 python=/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python
 source_root="$project/runs/d92_e0d_source_snapshot_20260811_v3"
 code_root="$source_root/code"
-runtime_archive="$source_root/d92_e0d_runtime_closure_053b4347.tar.gz"
+runtime_archive="$source_root/d92_e0d_runtime_closure_96a48fc3.tar.gz"
 context="$project/runs/d131_d92_lite160_qtie_target125_20260804_r3/prepared/target125_context.json"
 method_lock="$source_root/stage2_d92_e0d_5arm_hard12v2_v1.json"
 smoke="$project/runs/d92_e0d_truthfree_smoke_20260811_v3"
@@ -21,7 +21,7 @@ require_file() {
 
 require_file "$runtime_archive"
 test "$(sha256sum "$runtime_archive" | awk '{print $1}')" = \
-  "933df4742c328c6d97669f7d040f05ef4f1d0d5d7559504ecaaf154c9b2aac93"
+  "599914382516f3cf66a142b5420a524ef09887bdb58057951fef9af2b84c82a1"
 require_file "$method_lock"
 test "$(sha256sum "$method_lock" | awk '{print $1}')" = \
   "b80f967e1fc070a730a7b193f691036339930af022682fe2fca81c2e4d229f86"

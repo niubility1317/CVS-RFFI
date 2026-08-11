@@ -18,7 +18,7 @@
 
 本run继续执行已经冻结的五臂科学矩阵，不改变方法、输入或门限。v2真实checkpoint truth-free smoke证明E0D私有fit-audit遗漏了通用D81 evaluator资源汇总所需的`before/after_center_shift_l2_max`和`before/after_effective_sample_size_min`。该遗漏在任何prediction落盘前触发`KeyError`，不是算法性能结果。
 
-修复提交`053b4347c0fa5fe8377121c3e47951ea55ac7d5c`仅恢复这4个既有审计兼容字段；center-shift沿用D92-BE已验证的安全提取方式，无D81 transform时为0；effective sample size沿用现有D92-BE契约取K-shot。预测state、score、D几何、B/E开关、fit计数、query图和truth-side scorer均未改变。
+最终修复提交`96a48fc333c0b356bd89c470877dbb80edd34a84`恢复这4个既有审计字段，并要求before/after都存在合法`d81_transform_audit`：原样读取有限的`center_shift_l2_max`和每类effective sample size最小值，同时核对schema、support行数、class count、K-shot、query rows=0和无outer/query访问；缺失或不合法一律fail closed。真实K5非均匀权重回归锁定最小ESS=`4.42187`，不再用K或0伪造审计值。预测state、score、D几何、B/E开关、fit计数、query图和truth-side scorer均未改变。
 
 ## 3.冻结科学矩阵与门
 
@@ -36,7 +36,7 @@
 |---|---|---|
 |v2真实失败复现|PASS|`KeyError: before_center_shift_l2_max`；固定K1 smoke；无prediction/score/shard|
 |TDD红灯|PASS|新增契约断言在修复前精确复现KeyError|
-|相关回归|PASS|`ssr-gpu`环境中35项D92-E0D/runner/probe测试通过|
+|相关回归|PASS|`ssr-gpu`环境中36项D92-E0D/runner/probe测试通过|
 |静态检查|PASS|修复文件`py_compile`及`git diff --check`通过|
 |独立P0/P1复审|待执行|只审运行时契约修复与v3发布包；P2不阻塞|
 
@@ -46,9 +46,9 @@
 
 |交付物|本地路径与身份|
 |---|---|
-|runtime archive|`E:\type10-7\code\snapshots\d92_e0d_runtime_closure_053b4347.tar.gz`；3525036B；912个Git跟踪成员；SHA256=`933df4742c328c6d97669f7d040f05ef4f1d0d5d7559504ecaaf154c9b2aac93`|
+|runtime archive|`E:\type10-7\code\snapshots\d92_e0d_runtime_closure_96a48fc3.tar.gz`；3525455B；912个Git跟踪成员；SHA256=`599914382516f3cf66a142b5420a524ef09887bdb58057951fef9af2b84c82a1`|
 |method lock|`configs/stage2_d92_e0d_5arm_hard12v2_v1.json`；2177B；SHA256=`b80f967e1fc070a730a7b193f691036339930af022682fe2fca81c2e4d229f86`|
-|launch|`automation_reports/CV-SincNet/d92_e0d_5arm_hard12v2_20260811_v3/launch.sh`；3519B；SHA256=`4aa3c7a2b800cd6de3fbe97d5d2c1cb7e5a33ae2fed4c37d3937c2bd60664662`；`bash -n`通过|
+|launch|`automation_reports/CV-SincNet/d92_e0d_5arm_hard12v2_20260811_v3/launch.sh`；3519B；SHA256=`6f2f6dffd88faf964ac509a09b11b7c90a0020bccd18c7ac4a8caac85e908e05`；`bash -n`通过|
 
 ## 6.N607预注册
 
@@ -65,7 +65,7 @@
 |GPU|8个shard固定映射GPU0–7，每卡一个本run进程，进程内`cuda:0`|
 |expected artifacts|60 job receipt、120 COMMIT、120 prediction artifact、60 score、180 fit audit、180 resource audit、8 shard summary|
 
-同步映射：archive→`source_root/d92_e0d_runtime_closure_053b4347.tar.gz`；config→`source_root/stage2_d92_e0d_5arm_hard12v2_v1.json`；launch→`source_root/launch.sh`。
+同步映射：archive→`source_root/d92_e0d_runtime_closure_96a48fc3.tar.gz`；config→`source_root/stage2_d92_e0d_5arm_hard12v2_v1.json`；launch→`source_root/launch.sh`。
 
 精确远端命令：
 
