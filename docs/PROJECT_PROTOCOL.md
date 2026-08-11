@@ -103,6 +103,8 @@ floor评价覆盖全部实际注册类，不使用预选难类清单。算法、
 
 每个节点部署同一冻结或合法适配后的Phase1特征提取器，只根据当前已接收IQ形成`z_id`、`z_dom`、质量`q`、类距离`d_class`、本地未知分数`e_unknown`和本地已注册身份预测`p_local`。本地证据必须先冻结为不可变artifact，节点决策只能是registered、unknown或defer。predictor不得读取query真值、真实old/new/unknown角色、真实batch构成、类别配额或独立scorer结果。
 
+正式Phase3未知类拒识必须叠加LEO弱星地信道。registered query与unknown query在连接真值或角色前使用同一生成与场景分配规则；每个接收记录只绑定一份固定`leo_clear_weak`、`leo_low_elev_weak`或`leo_rain_weak`接收IQ，方法只能读取该`received_i`。禁止registered使用clean而仅对unknown施加弱信道，禁止按真实known/unknown角色选择scene/seed，禁止从同一物理记录生成多scene或多随机信道实现后挑选或融合。clean unknown只能作为`DIAGNOSTIC_UNKNOWN_NO_LEO_NON_FORMAL`隔离诊断，不得进入正式拒识指标、候选晋级或卫星场景声明。
+
 Phase3可以融合冻结本地证据以及合法绑定的卫星可见性、时间窗、频率/波束、轨迹、位置和历史anonymous track。正式方法必须处理接收机/信道差异、节点缺失或延迟、本地冲突、同一事件的多节点观测、跨过境关联及相关证据去重；平均、投票和最高置信节点只能作为基线。任何registered query被reject或defer都按身份错误计数。
 
 ```text
