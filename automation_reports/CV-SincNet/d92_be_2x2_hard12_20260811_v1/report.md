@@ -5,7 +5,7 @@
 |实验ID|`d92_be_2x2_hard12_20260811_v1`|
 |登记时间|2026-08-11 15:03:40+08:00|
 |操作方|Codex primary；N607唯一runner待交接|
-|当前状态|`LOCAL_VERIFIED`|
+|当前状态|`LOCAL_VERIFIED_P0P1_REVIEWING`|
 |目标|在D92共同路径内验证删除注册后B/E能否同时提升`H_old_new`并降低注册计算|
 |声明范围|`DEVELOPMENT_ONLY_COVERAGE_CONSTRAINED_STRESS_SCREEN`|
 
@@ -26,14 +26,15 @@
 
 - 工作树：`E:\type10-7\code\snapshots\d92_125wt`。
 - 分支：`codex/d92-be-hard12-strict-pareto-20260811`。
-- 方法/runner提交：`afde865b123f7236e5d3724745f223773093c215`。
+- 方法/runner提交：`afde865b123f7236e5d3724745f223773093c215`；严格汇总器提交：`83fe1565af690d130f46d66ab856700c7aa1a2b8`。
+- 预注册报告/启动器提交：`a8e310c2`。
 - method lock：`configs/stage2_d92_be_2x2_hard12_v1.json`，SHA256=`282d4343adcecc124d76bcbafae8d3c473d7301d0a455797f1bbce57bb2af520`。
 - 关键实现：注册资源计量、D92注册后B/E开关、arm truth-free evaluator、Hard12选择与package定位、prediction/scorer隔离启动器。
-- 根目录`E:\type10-7`不是Git仓库；本报告先在该Git工作树版本化，随后逐字镜像到根目录要求路径。
+- 根目录`E:\type10-7`不是Git仓库；本报告已从Git工作树逐字镜像到根目录要求路径。
 
 ## 本地验证
 
-在`ssr-gpu`环境串行运行34项聚焦测试，结果全部通过：
+在`ssr-gpu`环境串行运行38项聚焦测试，结果全部通过：
 
 ```text
 python -m pytest tests/test_stage2_registration_resource_probe.py
@@ -44,9 +45,10 @@ python -m pytest tests/test_stage2_registration_resource_probe.py
   tests/test_run_d92_be_prediction.py
   tests/test_stage2_d92_be_hard12.py
   tests/test_run_d92_be_hard12.py
+  tests/test_stage2_d92_be_analysis.py
   tests/test_stage2_d92_role_oracle_query_evaluation.py
   tests/test_run_d92_role_oracle_125.py -q
-结果：34 passed
+结果：38 passed
 ```
 
 新增和修改的8个Python入口已通过`py_compile`，`git diff --check`通过。Hard12 manifest本地只读构造闭合为48job、144 scene-arm；远端`prepare`会对实际12个源job的四组seal和truth sidecar做存在性验证。
@@ -65,7 +67,7 @@ python -m pytest tests/test_stage2_registration_resource_probe.py
 |GPU|shard0–7分别绑定GPU0–7，child使用`cuda:0`|
 |CPU|每job BLAS/OMP线程2，interop线程1|
 
-实际启动器为同目录`launch.sh`。runner先执行一次本地N607只读预检，检查输出根不存在和当前GPU/进程占用；仅同步本轮9个实际执行文件并核对这些文件。随后依次执行：
+实际启动器为同目录`launch.sh`。runner先执行一次本地N607只读预检，检查输出根不存在和当前GPU/进程占用。为避免Python完整包覆盖局部namespace导致新模块不可见，runner把当前Git提交中的完整`code/cvsrffi`和`code/scripts`打成一个运行闭包归档，同步到全新源码快照；另同步method lock和启动器。最低审查只核对归档、method lock身份，并执行所有本轮入口都来自新快照的真实import closure，不做整树或逐文件SHA。随后依次执行：
 
 1. `prepare`：验证12个源D92 job并独占写48job manifest；
 2. `smoke`：`rx_3_19__seed_713104__k_1__new_20/FULL`真实sealed checkpoint链，无truth参数；

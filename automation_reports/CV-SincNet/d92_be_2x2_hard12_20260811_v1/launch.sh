@@ -10,11 +10,37 @@ smoke="$project/runs/d92_be_truthfree_smoke_20260811_v1"
 output="$project/runs/d92_be_2x2_hard12_20260811_v1"
 logs="$project/logs/d92_be_2x2_hard12_20260811_v1"
 
+test -f "$source_root/cvsrffi/__init__.py"
+test -f "$source_root/scripts/probe_d81_ground_nuisance_cauchy_center.py"
+test -f "$source_root/scripts/probe_d92_registration_balanced_covariance.py"
 test ! -e "$smoke"
 test ! -e "$output"
 test ! -e "$logs"
 mkdir -p "$logs"
 cd "$source_root"
+
+env PYTHONPATH="$source_root:$project" "$python" -c '
+import importlib
+import pathlib
+import sys
+root = pathlib.Path(sys.argv[1]).resolve()
+names = (
+    "cvsrffi.stage2_registration_resource_probe",
+    "cvsrffi.stage2_d92_be_slim",
+    "cvsrffi.stage2_d92_be_query_evaluation",
+    "cvsrffi.stage2_d92_be_hard12",
+    "scripts.probe_d81_ground_nuisance_cauchy_center",
+    "scripts.probe_d92_registration_balanced_covariance",
+    "scripts.run_d92_be_prediction",
+    "scripts.score_d92_be_prediction",
+    "scripts.run_d92_be_hard12",
+)
+for name in names:
+    module = importlib.import_module(name)
+    path = pathlib.Path(module.__file__).resolve()
+    if root not in path.parents:
+        raise SystemExit(f"runtime import escaped frozen source root: {name} -> {path}")
+' "$source_root" >"$logs/import_closure.out" 2>"$logs/import_closure.err"
 
 env PYTHONPATH="$source_root:$project" "$python" -u scripts/run_d92_be_hard12.py prepare \
   --context-manifest "$context" \
