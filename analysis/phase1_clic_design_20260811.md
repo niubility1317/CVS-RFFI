@@ -181,7 +181,7 @@ receipt只保存标量、计数、枚举和SHA，不保存raw IQ、receiver toke
 - 每common batch一项peak CUDA bytes、step-time和<code>selection_feedback=false</code>；
 - final checkpoint SHA、terminal contract和failure stage。
 
-训练receipt不得写入target指标或target成员信息。后冻结target测试另用<code>cvs.phase1.clic_target_leo_eval.v1</code>封存capsule／split／scenario assignment／received-IQ聚合SHA、checkpoint／bundle SHA、source-only决策规则SHA、预测SHA、truth-side scorer SHA、逐scene计数和指标；不得保存raw IQ、成员ID或把scorer输出回写checkpoint。模型侧prediction artifact不得包含label、真实registered／unknown role、receiver／day真值或truth-sidecar路径。
+训练receipt不得写入target指标或target成员信息。PAIR阶段须为12个C／G row各封存一个只含聚合几何、三scene尾部规则、fold／arm／operator、checkpoint／terminal SHA和自身state SHA的<code>clic_source_policy_state</code>；该状态不含模型参数、raw IQ、单样本行或target信息，也不新增后冻结阶段。G状态同时嵌入对应deployment bundle；C状态与对应C checkpoint／terminal共同组成control predictor state。后冻结target测试另用<code>cvs.phase1.clic_target_leo_eval.v1</code>封存capsule／split／scenario assignment／received-IQ聚合SHA、predictor-state／checkpoint／bundle SHA、source-only决策规则SHA、预测SHA、truth-side scorer SHA、逐scene计数和指标；不得保存raw IQ、成员ID或把scorer输出回写checkpoint。模型侧prediction artifact不得包含label、真实registered／unknown role、receiver／day真值或truth-sidecar路径。
 
 ## 9. 资源合同
 
@@ -202,7 +202,7 @@ bundle schema固定为<code>cvs.phase1.clic_deployment_bundle.v1</code>。每个
 
 bundle不得包含raw／clean IQ、单样本feature／logit、source replay、成员ID、unknown query、proxy rows、target rows或可替换sidecar。bundle通过只表示Phase1交付物形成，不表示真实unknown拒识或Phase3完成。
 
-每个bundle还必须支持对封存<code>p2_min_v1</code>目标capsule进行无support、无更新的<code>reload→forward</code>。该接口输出<code>z_id,z_dom,q_clic,tx_logits,e_unknown,decision∈{registered,unknown,defer}</code>与状态SHA；目标域真值和角色不进入bundle或模型进程。
+每个G bundle还必须支持对封存<code>p2_min_v1</code>目标capsule进行无support、无更新的<code>reload→forward</code>。C目标行不得复用G模型：它必须严格重开同fold的C final checkpoint、terminal envelope与PAIR封存的C <code>clic_source_policy_state</code>；G目标行只能从对应已验证G bundle加载。两条路径先归一为同一不可变predictor-state结构<code>{fold,arm,operator,model_state,source_policy,checkpoint_sha256,state_sha256}</code>，且必须在打开target IQ-only package之前完成。统一接口输出<code>z_id,z_dom,q_clic,tx_logits,e_unknown,decision∈{registered,unknown,defer}</code>与predictor-state SHA；目标域真值和角色不进入状态、bundle或模型进程。C／G仅共享IQ-only package SHA，各自predictor-state SHA不得被要求相等。
 
 ### 10.1 Source-only拒识规则（冻结）
 
@@ -214,7 +214,7 @@ bundle不得包含raw／clean IQ、单样本feature／logit、source replay、�
 
 ## 11. 后冻结矩阵与五项非补偿门
 
-后冻结run ID固定为<code>phase1_clic_postfreeze_20260811_v1</code>。保留既有42步：12 source clean export、12 source LEO export／binding、12 fixed400 TX互斥source-proxy和6 same-fold pair；再增加6个G deployment bundle export，并为12个C／G final checkpoint各执行1次封存目标capsule的registered／unknown共同LEO weak零适配推理／隔离评分，总计60步。阶段计数固定为<code>12+12+12+6+6+12=60</code>，不因target unknown增加训练臂、fold、epoch、checkpoint或反馈式重试。F6必须重开F1—F5原始source clean／LEO／binding／proxy／checkpoint／bundle和12份target预测／评分原件，不能信任prior pair自报摘要。
+后冻结run ID固定为<code>phase1_clic_postfreeze_20260811_v1</code>。保留既有42步：12 source clean export、12 source LEO export／binding、12 fixed400 TX互斥source-proxy和6 same-fold pair；每个pair同时封存C／G两个<code>clic_source_policy_state</code>，不另计步骤。再增加6个G deployment bundle export，并为12个C／G final checkpoint各执行1次封存目标capsule的registered／unknown共同LEO weak零适配推理／隔离评分，总计60步。阶段计数固定为<code>12+12+12+6+6+12=60</code>，不因C control predictor state或target unknown增加训练臂、fold、epoch、checkpoint、bundle阶段或反馈式重试。F6必须重开F1—F5原始source clean／LEO／binding／proxy／checkpoint／bundle、C／G source-policy state和12份target预测／评分原件，不能信任prior pair自报摘要。
 
 目标capsule必须在启动前固定<code>protocol_schema=p2_min_v1</code>、<code>capsule_id</code>、<code>split_id</code>、<code>R_t</code>集合SHA、registered-known／unknown TX集合SHA、两种角色合并后的physical-ID集合SHA、三scene物理ID两两不交分区SHA、truth／role-blind scene／seed assignment SHA和received-IQ聚合SHA。C／G及六fold共用这些字节；任何checkpoint、operator或运行状态变化不得触发数据重建、数据重验证或重新分scene。offline sealer只复核既有builder／validator receipt并输出IQ-only predictor package与隔离truth sidecar；模型进程只可见opaque token、scene和received-IQ SHA。每个target阶段只允许一次backbone forward／样本，12份输出全部按字节SHA封存并验真后，truth-side scorer才可独立读取标签与角色。
 
