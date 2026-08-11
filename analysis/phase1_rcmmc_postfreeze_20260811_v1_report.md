@@ -4,9 +4,9 @@
 
 - 实验ID：`phase1_rcmmc_postfreeze_20260811_v1`
 - 日期：2026-08-11
-- 当前状态：`PREREGISTERED_LOCAL_VERIFIED / WAITING_TRAINING_TECHNICAL_HANDOFF / NO_PERFORMANCE_RESULT`
+- 当前状态：`PREREGISTERED_LOCAL_VERIFIED / READY_FOR_N607_HANDOFF / NO_PERFORMANCE_RESULT`
 - 操作边界：主控冻结评价合同、矩阵和非补偿门；唯一N607 Runner只负责release落地、唯一启动、技术监控与小工件回收，不读取或解释性能字段。
-- 训练输入：`phase1_rcmmc12_20260811_v1`。12臂已自然结束且final/terminal/completion表面计数为12/12，仍须等待Runner逐臂receipt、common binding、资源收据和小bundle最终交接后，才允许后冻结启动。
+- 训练输入：`phase1_rcmmc12_20260811_v1`，状态=`ARTIFACTS_COMPLETE_TECHNICALLY_CLOSED / PARTIAL_LOCAL_EVIDENCE_RETRIEVAL / NO_PERFORMANCE_RESULT`。12/12 final、terminal、completion及RCMMC/resource/heldout/config收据远端齐全，逐臂checkpoint SHA、C/G合同和四参VJP已只读核验；本地仅部分小证据回收不影响远端不可变训练输入。
 - 目标：不改变训练、fold、seed、receiver、TX、场景、Gaussian或阈值，对同fold C/G执行固定clean、三LEO、fixed400 proxy和连续Gaussian-NLL公平评价，产出6份pair JSON及F6矩阵聚合。
 - 假设：RCMMC对每个source RX×class cell的totalized-feature一、二阶矩做clean→LEO同物理约束，可能在保持clean和LEO分类floor的同时改善后冻结source-only Gaussian几何；该假设只能由完整42步非补偿矩阵证伪或支持。
 - 声明边界：技术完成不等于性能通过；任一非补偿门失败即`REJECT_P1_RCMMC_PERMANENT`。全部通过也只能`PENDING_MAIN_REVIEW_FULL_6_FOLD`，不构成unknown、真实开放集、Phase2或Phase3能力声明。
@@ -104,4 +104,12 @@ Runner落地前必须完成：direct preflight；LF无prefix archive、六成员
 - 首次真实postfreeze validator可能暴露训练receipt或sealed artifact字段漂移；这是合法技术阻断，不得放宽合同或补造字段。
 - F6必须重开5份prior raw artifacts；任何SHA、common binding、proxy重算或prior receipt篡改均须fail-closed。
 - 运行期release可能生成`__pycache__`；只记录其为运行时副作用，不得因此修改科学工件或重跑。
-- 下一检查点：训练Runner给出12/12逐臂技术合同、小bundle/report最终SHA后，主控更新本报告训练输入证据、提交mirror，并把本报告连同commit/六SHA/唯一命令交给新的单一N607 Runner。
+- 下一检查点：新的单一N607 Runner先做direct preflight；若direct路径不可用而身份与key合法，则按治理使用已验证bridge。它必须重新核12个checkpoint SHA和当前validator receipt、确认release/run/log/outer均不存在，再执行唯一命令一次。
+
+## 9.训练输入技术闭合证据
+
+- 训练报告root/mirror逐字一致，SHA256=`b676127262c1c3312c2345828dbfd9c5bfc618c2d02dcccde11dd15e6d657f8b`，Git镜像commit=`8f9310259b5cf5bf0c0000bd7c0c165fedc7471f`。
+- 唯一训练launch=1、retry=NO；12/12候选自然退出，12/12 final、terminal、completion及RCMMC terminal receipt齐全，arm日志均无Traceback、RuntimeError、OOM/CUDA、argparse、权限、路径或Killed指纹，最终GPU与SSH/TCP22清零。
+- 六个C臂lambda=0且RCMMC辅助计数为0；六个G臂三scene均28/28 cell、有positive-D，合计每臂1200 batches/153600 rows，四参VJP证明LEO feat_joint与shared encoder finite-nonzero、clean feat_joint与exact head None-or-zero，raw-unscaled且不触碰AMP/optimizer/RNG。
+- 训练terminal的`NON_PROMOTABLE_P0_DISABLED/8`来自冻结代码`p0_mechanisms_ready=false`总guard，不是执行异常；所有训练性能声明字段均false。本轮不读取训练heldout或metrics_epoch性能。
+- 本地部分技术bundle=`phase1_rcmmc12_20260811_v1_technical_bundle_partial.tar`，SHA256=`cac28754b19d37f2aeb0dab136440bbeca87297bc4b8f0fafb2945320f8e00ea`，161280B、39 files/50 tar entries；未完整回收F5G/F6小副本，12个checkpoint未下载，完整远端run/log/checkpoint仍保留。后冻结Runner必须直接以远端原件重开，不得用该部分bundle代替科学输入。
