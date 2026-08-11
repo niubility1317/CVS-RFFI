@@ -5,7 +5,7 @@
 |实验ID|`d92_be_2x2_hard12_20260811_v1`|
 |登记时间|2026-08-11 15:03:40+08:00|
 |操作方|Codex primary；N607唯一runner待交接|
-|当前状态|`LOCAL_VERIFIED_P0P1_REVIEWING`|
+|当前状态|`LOCAL_VERIFIED_P0P1_APPROVED_READY_TO_LAND`|
 |目标|在D92共同路径内验证删除注册后B/E能否同时提升`H_old_new`并降低注册计算|
 |声明范围|`DEVELOPMENT_ONLY_COVERAGE_CONSTRAINED_STRESS_SCREEN`|
 
@@ -52,6 +52,8 @@ python -m pytest tests/test_stage2_registration_resource_probe.py
 ```
 
 新增和修改的8个Python入口已通过`py_compile`，`git diff --check`通过。Hard12 manifest本地只读构造闭合为48job、144 scene-arm；远端`prepare`会对实际12个源job的四组seal和truth sidecar做存在性验证。
+
+独立Terra/max审查在提交`25e68eaf`上给出`P0=0、P1=0、VERDICT=APPROVE_RELEASE`，并独立复跑同一38项聚焦测试全部通过。P2仅要求runner在首波健康检查中汇总8个shard异常指纹，不阻塞发布。
 
 ## N607落地与运行锁
 
