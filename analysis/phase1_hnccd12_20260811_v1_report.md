@@ -1,12 +1,12 @@
 # Phase1 HNCCD 12臂训练实验报告
 
-状态：`LOCAL_VERIFIED / LANDED / RUNNING / NO_PERFORMANCE_RESULT`
+状态：`ARTIFACTS_COMPLETE / TECHNICALLY_CLOSED / NON_PROMOTABLE_P0_DISABLED / NO_PERFORMANCE_RESULT`
 
 ## 1.实验身份、目标与声明边界
 
 - 实验ID：`phase1_hnccd12_20260811_v1`
 - 日期：2026-08-11
-- 操作方：Codex主控；N607唯一Runner待交接
+- 操作方：Codex主控；N607唯一Runner（Terra/max接手）
 - 实现commit：`b6afc5a3e19ae3146dd6afcfe8a90abff35f3cbb`
 - 候选：P1-HNCCD（head-nullspace cross-covariance decorrelation）
 - 对照：C为GeoSat-C `training_final_only`共同续训；G只在同一共同路径上增加固定`0.02L_HNCCD`
@@ -186,7 +186,7 @@ G臂额外闭合：
 
 |矩阵|技术状态|性能状态|最终判定|
 |---|---|---|---|
-|F1C/F1G…F6C/F6G|待唯一N607 Runner|NO_PERFORMANCE_RESULT|PENDING|
+|F1C/F1G…F6C/F6G|ARTIFACTS_COMPLETE / TECHNICALLY_CLOSED / NON_PROMOTABLE_P0_DISABLED|NO_PERFORMANCE_RESULT|不作晋级或拒绝|
 
 ## 9.已知风险
 
@@ -237,3 +237,29 @@ G臂额外闭合：
 |F4G_HNCCD12|1652273|7|存活、绑定通过、日志增长|
 
 - 首波核验：12/12主PID存活且CWD均为release的`code`目录；命令行逐臂闭合`run_id`、输出目录、C/G开关与`lambda_hnccd`；12/12 arm日志非空并增长，12个GPU计算进程与映射一致。只扫描技术异常指纹，当前`Traceback/RuntimeError/OOM/Cholesky/full-rank/SIGSEGV/argparse/权限`标记均为0；`final_ssdg.pth`数量为0，仍为运行中而非性能结果。
+
+## 13.终态技术闭合与小型工件回收（2026-08-11）
+
+- 唯一启动已自然终态：12个主PID均已退出、GPU compute进程=0。本run未重启、未重传、未进行第二次SCP；累计`SCP=1`、`launch=1`、`retry=NO`。
+- 12/12臂均有`final_ssdg.pth`、config、resource、heldout、completion、terminal status和HNCCD terminal receipt；六个warm-start SHA及每臂selected final checkpoint SHA均闭合。冻结顺序、GPU、40E和C/G lambda闭合。
+- 12/12`hnccd_terminal_contract_passed=true`。C臂辅助为N/A/0；G臂均为1200batch、clear/low/rain各400、coverage/positive/raw VJP闭合、每共同batch资源观察1200。G的AMP按`attempts=effective steps+raw-finite skips`闭合；raw/material nonfinite=0、terminal consecutive skip=0、无persistent overflow。
+- 12/12统一记录`exit_code=8`与`NON_PROMOTABLE_P0_DISABLED`，这是冻结trainer的formal promotion/P0未启用guard，不是训练异常：`final_guard_reason`为空、`phase1_v2_final_blocked=false`、HNCCD terminal contract通过。该guard同时保持`performance_result_available=false`和`promotion_ready=false`；本Runner未读取任何性能字段。
+- `failure receipt=0`；完整arm/outer日志只按技术指纹扫描，`Traceback/RuntimeError/OOM/Cholesky/full-rank/CUDA/argparse/权限/SIGSEGV/graph-release`均为0。每个有界SSH结束后均确认本地`ssh.exe=0`、N607/bridge TCP22=0。
+
+|候选|GPU|final与checkpoint SHA|HNCCD/资源技术合同|终态guard|
+|---|---:|---|---|---|
+|F1C_HNCCD12|0|闭合|C aux N/A/0；共同资源1200|预期`NON_PROMOTABLE_P0_DISABLED`|
+|F5G_HNCCD12|0|闭合|1200；3×400；VJP；AMP1200/1196/4；raw/material=0；terminal skip=0；资源1200|预期`NON_PROMOTABLE_P0_DISABLED`|
+|F1G_HNCCD12|1|闭合|1200；3×400；VJP；AMP1200/1196/4；raw/material=0；terminal skip=0；资源1200|预期`NON_PROMOTABLE_P0_DISABLED`|
+|F5C_HNCCD12|1|闭合|C aux N/A/0；共同资源1200|预期`NON_PROMOTABLE_P0_DISABLED`|
+|F2C_HNCCD12|2|闭合|C aux N/A/0；共同资源1200|预期`NON_PROMOTABLE_P0_DISABLED`|
+|F6G_HNCCD12|2|闭合|1200；3×400；VJP；AMP1200/1197/3；raw/material=0；terminal skip=0；资源1200|预期`NON_PROMOTABLE_P0_DISABLED`|
+|F2G_HNCCD12|3|闭合|1200；3×400；VJP；AMP1200/1194/6；raw/material=0；terminal skip=0；资源1200|预期`NON_PROMOTABLE_P0_DISABLED`|
+|F6C_HNCCD12|3|闭合|C aux N/A/0；共同资源1200|预期`NON_PROMOTABLE_P0_DISABLED`|
+|F3C_HNCCD12|4|闭合|C aux N/A/0；共同资源1200|预期`NON_PROMOTABLE_P0_DISABLED`|
+|F3G_HNCCD12|5|闭合|1200；3×400；VJP；AMP1200/1194/6；raw/material=0；terminal skip=0；资源1200|预期`NON_PROMOTABLE_P0_DISABLED`|
+|F4C_HNCCD12|6|闭合|C aux N/A/0；共同资源1200|预期`NON_PROMOTABLE_P0_DISABLED`|
+|F4G_HNCCD12|7|闭合|1200；3×400；VJP；AMP1200/1197/3；raw/material=0；terminal skip=0；资源1200|预期`NON_PROMOTABLE_P0_DISABLED`|
+
+- 本地小型技术bundle：`phase1_hnccd12_20260811_v1_technical_bundle.tar.gz`，SHA256=`18dab2c4436d815c8ff33f7ced9aba12bde30ae916ae9ee6cce27a3ccc81f2fe`，6,874,571B，74个唯一成员。内容为pids、outer+12 arm日志及每臂config/resource/completion/status/HNCCD terminal receipt；未包含`pth/npz/pt/npy/metrics_epoch`，forbidden=0、unexpected path=0。相邻`phase1_hnccd12_20260811_v1_technical_bundle_manifest.json`（SHA256=`91c3ee696dcd2ef40776dbaf2da6ec598c931f58a468c1e13fb614c02bbfd88b`，1,135B）记录传输和清单。远端工件保留不动。
+- 本run以`ARTIFACTS_COMPLETE / TECHNICALLY_CLOSED / NON_PROMOTABLE_P0_DISABLED / NO_PERFORMANCE_RESULT`交接；不作任何性能解释、晋级或拒绝。
