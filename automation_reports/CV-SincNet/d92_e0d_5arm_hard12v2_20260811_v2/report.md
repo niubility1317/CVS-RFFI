@@ -8,7 +8,7 @@
 |run ID|`d92_e0d_5arm_hard12v2_20260811_v2`|
 |日期|2026-08-11|
 |operator|Codex primary；N607唯一runner待交接|
-|当前状态|`LOCAL_RELEASE_REPAIR_VERIFIED_PENDING_REVIEW`|
+|当前状态|`LOCAL_VERIFIED_APPROVED_FOR_N607`|
 |协议|`p2_min_v1`|
 |证据范围|`DEVELOPMENT_ONLY_PSEUDO_BLIND_DISJOINT_STRESS_SCREEN`|
 |唯一晋级候选|`E0_FULL_ONLY`|
@@ -40,9 +40,9 @@
 |runtime archive|`E:\type10-7\code\snapshots\d92_e0d_runtime_closure_7d11a701.tar.gz`；3519772B；SHA256=`36fc9df5e174ecd87863dcb6663afb6875d5f07ca6d17282648adfa38a7f32df`|
 |method lock|`configs/stage2_d92_e0d_5arm_hard12v2_v1.json`；2177B；SHA256=`b80f967e1fc070a730a7b193f691036339930af022682fe2fca81c2e4d229f86`|
 |launch|`automation_reports/CV-SincNet/d92_e0d_5arm_hard12v2_20260811_v2/launch.sh`；3519B；SHA256=`a552e35c5ba25910d6b16a999cbead459e9fa5b8062fb447d24a159888ac1391`|
-|代码版本|release base=`3217a88a00e6ee36c46e48fc158c76fb6e4acb96`；runtime source commit=`7d11a7012ab62058db40f878f925c38160311311`|
+|代码版本|release repair commit=`0d8039b3`；release base=`3217a88a00e6ee36c46e48fc158c76fb6e4acb96`；runtime source commit=`7d11a7012ab62058db40f878f925c38160311311`|
 
-本轮不重复数据验证、不做整树SHA或额外签名。`ssr-gpu`环境中`bash -n`、5项runner聚焦回归和`git diff --check`均已通过；发布前只剩独立P0/P1复审与Git提交。
+本轮不重复数据验证、不做整树SHA或额外签名。`ssr-gpu`环境中`bash -n`、5项runner聚焦回归和`git diff --check`均已通过；独立复审确认P0=0、P1=0并给出`APPROVE_RELEASE`。
 
 ## 5.N607预注册
 
