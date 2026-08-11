@@ -145,3 +145,11 @@ FULL_ONLY相对D92_FULL的10个outer配对如下；所有指标来自同一outer
 |query MAC、fit计数、state/prediction parity、query协议|全部精确|全部精确|PASS|
 
 冻结分析器裁决为`NO_D_GEOMETRY_PROMOTION`。FULL_ONLY证明了D46的K折LOO融合可以把注册fit从K5/K10的24/44（E0_FUSION）或48/88（D92_FULL）降到2/2，并把wall降低95%–98%，同时H平均略有提高；但它没有达到预注册的+0.5个百分点H门，并牺牲old-class floor，因此不进入完整Target125确认。BLOCK_ONLY和FIXED50也不晋级。本轮属于有效的“效率显著、性能门未全过”负晋级结果。
+
+## 9.三轮回顾与第四轮去向
+
+本轮是D92完整部件消融、D92-BE Hard12-v1和D92-E0D Hard12-v2组成的第三个已完成探索轮。回读目标、`项目.md`、conversation index、D69/D70历史生命周期行交换报告及本run完整score后，确认下一轮仍同时评价域适应前后旧类、注册后seen-new、H、逐类floor和forgetting，并保持LEO_weak-only、no clean/source、no query truth/role/quota/global assignment。
+
+进一步分解表明，FULL_ONLY相对D92_FULL在10个performance outer上的old→new仅增加0.083个百分点；四个floor退化outer的old→old错误反而下降0.764个百分点。最严重的floor下降5个百分点outer中，old→new、old→old均下降且old BA上升。因此停止“统一压低新类分数”和按历史困难类定向修补。D69/D70已否决跨注册状态旧行拼接/替换，故也不采用DA0_REG0旧head锚定。
+
+第四轮只检验同一个DA0_REG1 joint state内的full/block旧类contrast融合：保持FULL_ONLY的旧类组均值和全部新类行，只用旧support RMS对齐并混合block旧类contrast。fresh Hard12-v3与v1/v2零交集；冻结设计见`docs/superpowers/plans/2026-08-11-d92-e0ocf-hard12v3.md`。在该回顾落盘前未发布第四轮实验。
