@@ -1,6 +1,6 @@
 # Phase1 HNCCD 12臂训练实验报告
 
-状态：`LOCAL_VERIFIED / P0=0 / P1=0 / N607_PRELAUNCH_PENDING / NO_PERFORMANCE_RESULT`
+状态：`LOCAL_VERIFIED / LANDED / N607_PRELAUNCH_PASSED / NO_PERFORMANCE_RESULT`
 
 ## 1.实验身份、目标与声明边界
 
@@ -196,3 +196,22 @@ G臂额外闭合：
 - HNCCD不保证proxy或真实unknown改善；
 - 本地缺少严格4类GeoSat-C checkpoint，远端启动前真实smoke是不可跳过的唯一外部正确性门。
 
+## 10.Runner预检与发布封存（2026-08-11）
+
+状态仍为：`LOCAL_VERIFIED / P0=0 / P1=0 / N607_PRELAUNCH_PENDING / NO_PERFORMANCE_RESULT`。
+
+- direct`tools\n607_ssh_preflight.ps1`通过；普通账号`szu2070436088`、项目根、8张RTX3090可见。当前GPU0–7均为0%利用率、约1MiB显存；本run无活动进程。每次短SSH结束后本地`ssh.exe=0`且N607/bridge TCP22均为0。
+- 启动前远端release、run、log、outer均为`ABSENT`；ManySig SHA=`2b0a7a7488dd3650bcae7b1d80efbcffd1598aaa671ae6b0a0df2a24dc0f694f`。
+- F1C/F2C/F3C/F4C/F5C/F6C warm-start checkpoint均存在，SHA分别为`4d515204f2cea62c5b82313a01b722b3b3d13a3e4fe647ff4b723b69e8a0c040`、`29c7d7ca31d80d90d7c0235fa234707b05866914dc0acdae5c44505af1bbd76d`、`39c6cdd65aade504efdea956db02cc5e762aee299a9e9319c07ed6fb839434b7`、`32d956f44f60844471ba2ef04526c5f40cad0f8bc8acb7249be6035aa85005e4`、`2b9381546878b19e7e8e2106a82b0d0a4672a3012ef79bd7f28eadfd03b75a9f`、`573ca9d039a8c854f9c0927b5b5c303ab8eeaf527ccd42cd0d764b81e630de6f`。
+- F2C预注册SHA抄录少末尾`d`；六个checkpoint经只读`sha256sum`逐一复核后更正为上述64位值。这是报告事实修正，不是warm-start输入、checkpoint、矩阵或方法变更。
+- 原始Git archive仅作本地证据：`phase1_hnccd12_20260811_v1_b6afc5a3.tar`，262615040B，SHA=`bdebe028a9dee9dcf8f1ff5644b45e0ac1b330413721617e4fb5dbe12eabf435`，4981成员，无prefix，`code/code`=0。其train工作树SHA=`7d7674cb0782880e0eFAF7CEDF3F04B372E373709CC43D093FC41E3246328F2D`对应CRLF；`git show b6afc5a3:code/SSDG/train_ssdg.py`与原始archive成员均为commit-LF SHA=`5b873c26bc00aa01edc4ad0caa9076f7d3ed63394f4abfc75a1e8d4c816e82c7`。
+- 为满足远端发布LF/mode合同，在本run artifact目录由上述原始archive生成final artifact-only LF层（只归一化无NUL UTF-8文本EOL；不改科学内容）：`phase1_hnccd12_20260811_v1_b6afc5a3_final_lf.tar`，264089600B，SHA=`41d338266919d743c4971e99086e23cb097c64a501f1ac50f9623545904e460a`，4981成员，common prefix为空，`code/code`=0；4303个无NUL regular成员CR=0；目录模式0755、普通文件0644、launcher模式0755。五关键成员SHA闭合：design=`886a2784ad338d64ef91f2cb028925e37ddfdf7bc42bcf497823d72937f98ea0`、core=`7d2d80d69892a42a14cbd32cda82ba001652f04e0976dbA765f6da430fee4a9b`、train(commit-LF)=`5b873c26bc00aa01edc4ad0caa9076f7d3ed63394f4abfc75a1e8d4c816e82c7`、test=`25378f427a0f67037aa7b52a28985ba7bad63172c05fc168ccdd4d927164580f`、launcher=`889d998fbf7612d3c95ea0d6f0b88dc3d05c9e2bbd81c2a25c5c7fe753604c71`。
+- archive QA manifest：`final_archive_manifest.json`（SHA=`e8bcc9bd6009c0417c7742aa50ac6c820a94ceee4130fe1dea4e8fad4930b69b`，2705B）。截至本节，SCP=0、launch=0；strict F1C checkpoint/HNCCD no-query smoke尚未执行。
+
+## 11.Runner静态与严格smoke闭合（2026-08-11）
+
+- 本运行唯一SCP已完成：final LF archive仅落地到预登记release；incoming已不存在。release经精确清理5个历史`__pycache__`目录和45个`.pyc`后复核为4981成员、`code/code=0`、text CR=0、目录0755、普通文件0644、launcher0755；五冻结成员SHA均闭合。清理对象均为已验证的生成字节码，不涉及科学源文件。
+- 外置`PYTHONPYCACHEPREFIX`静态门通过：core/trainer/test的`py_compile`3/3通过，`train_ssdg.py --help`的3个HNCCD flag存在，`bash -n`通过，dry-run精确12行、C=6、G=6、40E=12、G `lambda_hnccd=0.02`=6，12项旧机制`enabled=false`均为12；检查结束release仍为pycache=0和4981成员。
+- `ManySig.pkl`SHA=`2b0a7a7488dd3650bcae7b1d80efbcffd1598aaa671ae6b0a0df2a24dc0f694f`，F1C–F6C checkpoint均经只读SHA256复核；F2C抄录修正见第10节，不代表任何输入变更。
+- 严格F1C no-query smoke通过：真实F1C checkpoint strict load为missing=0、unexpected=0，checkpoint domain head=14；exact `W=[4,160]`，真实CUDA及`leo_clear_weak`前向`z=[128,160]`且finite。仅source-L合成metadata产生28个positive cell；LEO `z`、shared encoder、exact `W`的raw VJP均finite/nonzero；clean和head bias均None-or-zero；`query_rows_opened=0`。smoke只使用临时外置字节码路径，未写release、run或log。
+- 至本节唯一启动命令仍未调用：SCP=1、launch=0、retry=NO、NO_PERFORMANCE_RESULT。待新的direct预检、run/log/outer空路径、run PID=0和GPU并发复核后，唯一Runner才可调用第6节命令一次。
