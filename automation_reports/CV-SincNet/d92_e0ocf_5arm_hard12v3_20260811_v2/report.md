@@ -6,7 +6,7 @@
 |---|---|
 |run ID|`d92_e0ocf_5arm_hard12v3_20260811_v2`|
 |日期|2026-08-11|
-|当前状态|`LOCAL_VERIFIED / RELEASE_READY / NOT_LAUNCHED`|
+|当前状态|`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`|
 |operator|Codex primary；N607唯一runner待交接|
 |协议|`p2_min_v1`；复用`VALIDATED_ONCE`数据|
 |证据范围|`DEVELOPMENT_ONLY_PSEUDO_BLIND_DISJOINT_STRESS_SCREEN`|
@@ -83,4 +83,4 @@ output=`/home/szu2070436088/2510044040/CV-SincNet/runs/d92_e0ocf_5arm_hard12v3_2
 
 ## 7.结果
 
-尚未启动、尚无性能结果。artifact返回后在本报告追加同排指标、old→old/old→new/new→old、资源表、异常与最终`PROMOTE/NO_PROMOTION`裁决。
+N607普通账号preflight、全新路径检查与三文件同步均通过；exact launch仅执行一次。launcher在prepare/smoke/job之前因归档布局为`code/code/...`而找不到`code/cvsrffi/__init__.py`，立即退出。未创建output/logs，未启动shard/GPU任务，未产生性能artifact；v2不重试。修正仅涉及本地归档布局，方法、矩阵、配置与代码不变，后续使用全新v3路径。
