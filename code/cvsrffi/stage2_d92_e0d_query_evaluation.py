@@ -183,12 +183,45 @@ def _audit_d92_e0d_fit(
     if int(after.get("d92_e0d_query_macs", -1)) != int(class_count) * 288:
         raise D92E0DQueryEvaluationError("D92-E0D query affine MAC drift")
 
-    def center_shift(audit: dict[str, Any]) -> float:
+    def transform_receipt(
+        audit: dict[str, Any], *, expected_class_count: int
+    ) -> tuple[float, float]:
         transform = audit.get("d81_transform_audit")
-        if isinstance(transform, dict):
-            return float(transform.get("center_shift_l2_max", 0.0))
-        return 0.0
+        if not isinstance(transform, dict):
+            raise D92E0DQueryEvaluationError("D92-E0D D81 transform audit missing")
+        try:
+            center_shift = float(transform["center_shift_l2_max"])
+            effective_samples = np.asarray(
+                transform["effective_sample_size_by_class"], dtype=np.float64
+            )
+        except (KeyError, TypeError, ValueError) as error:
+            raise D92E0DQueryEvaluationError(
+                "D92-E0D D81 transform receipt drift"
+            ) from error
+        if (
+            transform.get("schema")
+            != "cvs.phase2.d81.support_center_translation.v1"
+            or int(transform.get("support_rows", -1))
+            != int(expected_class_count) * int(k_shot)
+            or int(transform.get("class_count", -1)) != int(expected_class_count)
+            or int(transform.get("k_shot", -1)) != int(k_shot)
+            or transform.get("uses_outer_held_or_query") is not False
+            or int(transform.get("query_rows_used", -1)) != 0
+            or not np.isfinite(center_shift)
+            or center_shift < 0.0
+            or effective_samples.ndim != 1
+            or effective_samples.size != int(expected_class_count)
+            or not np.isfinite(effective_samples).all()
+            or np.any(effective_samples <= 0.0)
+            or np.any(effective_samples > float(k_shot) + 1e-9)
+        ):
+            raise D92E0DQueryEvaluationError(
+                "D92-E0D D81 transform receipt drift"
+            )
+        return center_shift, float(np.min(effective_samples))
 
+    before_transform = transform_receipt(before, expected_class_count=old_count)
+    after_transform = transform_receipt(after, expected_class_count=class_count)
     before_resource = _resource_receipt(before)
     after_resource = _resource_receipt(after)
     return {
@@ -201,10 +234,10 @@ def _audit_d92_e0d_fit(
         ),
         "before_covariance_policy": str(before.get("covariance_policy")),
         "after_covariance_policy": str(after.get("covariance_policy")),
-        "before_center_shift_l2_max": center_shift(before),
-        "after_center_shift_l2_max": center_shift(after),
-        "before_effective_sample_size_min": float(k_shot),
-        "after_effective_sample_size_min": float(k_shot),
+        "before_center_shift_l2_max": before_transform[0],
+        "after_center_shift_l2_max": after_transform[0],
+        "before_effective_sample_size_min": before_transform[1],
+        "after_effective_sample_size_min": after_transform[1],
         "before_state_bytes": int(result.before_state.persistent_state_bytes),
         "after_state_bytes": int(result.state.persistent_state_bytes),
         "before_state_fingerprint_sha256": _state_fingerprint_sha256(

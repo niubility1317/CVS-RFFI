@@ -40,6 +40,7 @@ def _resource(
         else 1
     )
     actual = total // 2 if registered and k_shot > 2 else 1
+    class_count = 11 if registered else 6
     return {
         "d92_registration_state_support_only": True,
         "d92_query_rows_used": 0,
@@ -73,6 +74,21 @@ def _resource(
         "d92_e0d_query_class_quota_access": False,
         "d92_e0d_query_global_reassignment": False,
         "d92_e0d_finite_output_pass": True,
+        "d81_transform_audit": {
+            "schema": "cvs.phase2.d81.support_center_translation.v1",
+            "support_rows": class_count * k_shot,
+            "class_count": class_count,
+            "k_shot": k_shot,
+            "uses_outer_held_or_query": False,
+            "query_rows_used": 0,
+            "center_shift_l2_max": 0.0 if k_shot == 1 else 0.125,
+            "effective_sample_size_by_class": (
+                [1.0] * class_count
+                if k_shot == 1
+                else [4.42187]
+                + [float(k_shot) - 0.5] * (class_count - 1)
+            ),
+        },
         "covariance_policy": "sklearn_lsqr_auto_shrinkage_equal_prior",
         "schema": "cvs.phase2.registration_resource_receipt.v1",
         "registration_wall_time_ns": 5_000,
@@ -149,10 +165,10 @@ def test_audit_keeps_existing_resource_fields_and_adds_state_fingerprints():
     assert row["query_role_oracle_access"] is False
     assert row["query_class_quota_access"] is False
     assert row["query_global_reassignment"] is False
-    assert row["before_center_shift_l2_max"] == 0.0
-    assert row["after_center_shift_l2_max"] == 0.0
-    assert row["before_effective_sample_size_min"] == 5.0
-    assert row["after_effective_sample_size_min"] == 5.0
+    assert row["before_center_shift_l2_max"] == 0.125
+    assert row["after_center_shift_l2_max"] == 0.125
+    assert row["before_effective_sample_size_min"] == 4.42187
+    assert row["after_effective_sample_size_min"] == 4.42187
     assert len(row["before_state_fingerprint_sha256"]) == 64
     assert len(row["after_state_fingerprint_sha256"]) == 64
     assert row["after_state_fingerprint_sha256"] != changed[
@@ -167,6 +183,21 @@ def test_audit_rejects_query_selection_access():
         "d92_e0d_query_selection_access"
     ] = True
     with pytest.raises(e0d_eval.D92E0DQueryEvaluationError, match="protocol"):
+        e0d_eval._audit_d92_e0d_fit(
+            result,
+            arm=arm,
+            scenario="leo_clear_weak",
+            k_shot=5,
+            old_count=6,
+            class_count=11,
+        )
+
+
+def test_audit_rejects_missing_d81_transform_receipt():
+    arm = slim.D92_E0D_ARMS["D92_FULL"]
+    result = _result(arm)
+    del result.geometry_audit["before_covariance_audit"]["d81_transform_audit"]
+    with pytest.raises(e0d_eval.D92E0DQueryEvaluationError, match="transform"):
         e0d_eval._audit_d92_e0d_fit(
             result,
             arm=arm,
