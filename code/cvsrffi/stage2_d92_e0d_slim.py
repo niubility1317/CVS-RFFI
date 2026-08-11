@@ -146,6 +146,23 @@ def build_d92_e0d_fit(
             # The common before/K1/K2 D92_FULL alias is intentionally not
             # reinterpreted by the E0D two-state registered count convention.
             total_count = actual_count
+        ocf_expected_active = bool(
+            arm.ocf_lambda is not None and registered and int(k_shot) > 2
+        )
+        base_ocf_active = base_audit.get("d92_ocf_active")
+        base_ocf_lambda = base_audit.get("d92_ocf_lambda")
+        if ocf_expected_active:
+            if (
+                base_ocf_active is not True
+                or base_ocf_lambda != arm.ocf_lambda
+            ):
+                raise D92E0DSlimError(
+                    "D92-E0D OCF base receipt active/lambda drift"
+                )
+        elif base_ocf_active is not False or base_ocf_lambda is not None:
+            raise D92E0DSlimError(
+                "D92-E0D OCF base receipt must be inactive outside registered K>2"
+            )
         coefficient_array = np.asarray(coefficient, dtype=np.float32)
         intercept_array = np.asarray(intercept, dtype=np.float32)
         finite = bool(

@@ -3,8 +3,10 @@ from __future__ import annotations
 from typing import Any, Callable
 
 import numpy as np
+import pytest
 
 from cvsrffi import stage2_d42_unified_shrinkage_lda as d42
+from cvsrffi import stage2_d92_e0d_slim as slim
 from cvsrffi.stage2_d92_e0d_slim import (
     D92_E0D_ARMS,
     build_d92_e0d_fit,
@@ -146,6 +148,84 @@ def test_ocf25_registered_state_preserves_full_only_old_group_means():
     np.testing.assert_allclose(
         intercept[:6].mean(), full_intercept[:6].mean(), rtol=0.0, atol=tolerance
     )
+
+
+def test_ocf_receipt_crosscheck_rejects_active_or_lambda_drift(monkeypatch):
+    """Would fail if slim accepted an OCF base receipt from a different frozen arm."""
+
+    def fake_builder(*_args, **_kwargs):
+        def fake_fit(_rows, _labels, class_count, k_shot):
+            return (
+                np.zeros((class_count, 288), dtype=np.float32),
+                np.zeros(class_count, dtype=np.float32),
+                {
+                    "d92_component_fit_count": 2,
+                    "d92_component_fit_inventory": {
+                        "actual_component_fit_count": 2,
+                    },
+                    "d92_ground_center_active": True,
+                    "d92_fisher_residual_pareto_active": False,
+                    "d92_registered_d_mode_effective": "ocf25",
+                    "d92_k1_k2_exact_full_alias": False,
+                    "d92_ocf_active": True,
+                    "d92_ocf_lambda": 0.50,
+                },
+            )
+
+        return fake_fit, [], []
+
+    monkeypatch.setattr(slim.d92_probe, "build_d92_fit", fake_builder)
+    basis, weights, ground_audit = _ground()
+    fit, _, _ = slim.build_d92_e0d_fit(
+        d42,
+        basis,
+        weights,
+        ground_audit,
+        arm_id="E0_OCF25",
+        resource_measure=_measure,
+    )
+    rows, labels = _support(class_count=11, k_shot=5)
+    with pytest.raises(slim.D92E0DSlimError, match="OCF"):
+        fit(rows, labels, 11, 5)
+
+
+def test_ocf_receipt_crosscheck_rejects_low_k_activity(monkeypatch):
+    """Would fail if an OCF receipt stayed active for an exact full alias."""
+
+    def fake_builder(*_args, **_kwargs):
+        def fake_fit(_rows, _labels, class_count, _k_shot):
+            return (
+                np.zeros((class_count, 288), dtype=np.float32),
+                np.zeros(class_count, dtype=np.float32),
+                {
+                    "d92_component_fit_count": 3,
+                    "d92_component_fit_inventory": {
+                        "actual_component_fit_count": 3,
+                    },
+                    "d92_ground_center_active": True,
+                    "d92_fisher_residual_pareto_active": True,
+                    "d92_registered_d_mode_effective": "d92_full_alias",
+                    "d92_k1_k2_exact_full_alias": True,
+                    "d92_ocf_active": True,
+                    "d92_ocf_lambda": 0.25,
+                },
+            )
+
+        return fake_fit, [], []
+
+    monkeypatch.setattr(slim.d92_probe, "build_d92_fit", fake_builder)
+    basis, weights, ground_audit = _ground()
+    fit, _, _ = slim.build_d92_e0d_fit(
+        d42,
+        basis,
+        weights,
+        ground_audit,
+        arm_id="E0_OCF25",
+        resource_measure=_measure,
+    )
+    rows, labels = _support(class_count=11, k_shot=2)
+    with pytest.raises(slim.D92E0DSlimError, match="OCF"):
+        fit(rows, labels, 11, 2)
 
 
 def test_registered_k5_arms_emit_frozen_counts_and_actual_inventory():

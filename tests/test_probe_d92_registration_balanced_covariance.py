@@ -168,6 +168,100 @@ def test_ocf_math_rejects_invalid_lambda_label_nonfinite_or_degenerate_inputs():
         )
 
 
+def test_ocf_cn20_transient_bound_covers_explicit_full_class_workspace():
+    """Would fail if a Cn20 OCF receipt omitted live full-class FP64/FP32 arrays."""
+
+    classes, shots, dimension = 26, 5, 288
+    rng = np.random.default_rng(92_026)
+    labels = np.repeat(np.arange(classes), shots).astype(np.int64)
+    after_rows = rng.normal(size=(classes * shots, dimension)).astype(np.float32)
+    full_coefficient = rng.normal(size=(classes, dimension)).astype(np.float32)
+    full_intercept = rng.normal(size=classes).astype(np.float32)
+    block_coefficient = rng.normal(size=(classes, dimension)).astype(np.float32)
+    block_intercept = rng.normal(size=classes).astype(np.float32)
+    _, _, audit = probe._build_ocf_affine_state(
+        full_rows=after_rows,
+        full_labels=labels,
+        block_rows=after_rows,
+        block_labels=labels,
+        full_coefficient=full_coefficient,
+        full_intercept=full_intercept,
+        block_coefficient=block_coefficient,
+        block_intercept=block_intercept,
+        class_count=classes,
+        k_shot=shots,
+        lambda_value=0.25,
+    )
+    old_rows = probe.OLD_CLASS_COUNT * shots
+    explicit_live_array_bytes = (
+        2 * classes * (dimension + 1) * 8
+        + 3 * classes * (dimension + 1) * 4
+        + classes * shots * dimension * 8
+        + old_rows * dimension * 8
+        + 3 * old_rows * probe.OLD_CLASS_COUNT * 8
+        + 5 * probe.OLD_CLASS_COUNT * (dimension + 1) * 8
+        + probe.OLD_CLASS_COUNT * (dimension + 1) * 4
+    )
+    assert audit["d92_ocf_support_alignment_transient_bytes_upper_bound"] >= (
+        explicit_live_array_bytes
+    )
+
+
+def test_ocf_is_equivariant_under_independent_old_and_new_label_permutations():
+    """Would fail if an OCF formula used an individual old or new class identity."""
+
+    fixture = _ocf_hand_fixture()
+    rows = fixture[0].copy()
+    rows[:, 0] = np.linspace(-1.5, 2.5, num=len(rows), dtype=np.float32)
+    labels = fixture[1]
+    full_coefficient, full_intercept = fixture[2], fixture[3]
+    block_coefficient, block_intercept = fixture[4], fixture[5]
+    classes, shots = fixture[6], fixture[7]
+    coefficient, intercept, audit = probe._build_ocf_affine_state(
+        full_rows=rows,
+        full_labels=labels,
+        block_rows=rows,
+        block_labels=labels,
+        full_coefficient=full_coefficient,
+        full_intercept=full_intercept,
+        block_coefficient=block_coefficient,
+        block_intercept=block_intercept,
+        class_count=classes,
+        k_shot=shots,
+        lambda_value=0.50,
+    )
+    mapping = np.asarray([2, 0, 5, 1, 4, 3, 7, 6], dtype=np.int64)
+    inverse = np.argsort(mapping)
+    row_order = np.asarray(
+        [7, 2, 18, 4, 20, 1, 11, 0, 22, 5, 16, 3, 10, 8, 6, 9, 12, 13, 14, 15, 17, 19, 21, 23],
+        dtype=np.int64,
+    )
+    permuted_rows = rows[row_order]
+    permuted_labels = mapping[labels[row_order]]
+    p_coefficient, p_intercept, p_audit = probe._build_ocf_affine_state(
+        full_rows=permuted_rows,
+        full_labels=permuted_labels,
+        block_rows=permuted_rows,
+        block_labels=permuted_labels,
+        full_coefficient=full_coefficient[inverse],
+        full_intercept=full_intercept[inverse],
+        block_coefficient=block_coefficient[inverse],
+        block_intercept=block_intercept[inverse],
+        class_count=classes,
+        k_shot=shots,
+        lambda_value=0.50,
+    )
+    tolerance = max(
+        audit["d92_ocf_affine_invariant_tolerance"],
+        p_audit["d92_ocf_affine_invariant_tolerance"],
+    )
+    np.testing.assert_allclose(p_coefficient[mapping], coefficient, rtol=0.0, atol=tolerance)
+    np.testing.assert_allclose(p_intercept[mapping], intercept, rtol=0.0, atol=tolerance)
+    assert p_coefficient[6:].tobytes() == full_coefficient[inverse][6:].tobytes()
+    assert p_intercept[6:].tobytes() == full_intercept[inverse][6:].tobytes()
+    assert p_audit["d92_ocf_new_rows_byte_exact"] is True
+
+
 def test_synthetic_d62_stack_uses_d92_in_all_registered_components():
     rng = np.random.default_rng(920)
     basis, _ = np.linalg.qr(rng.normal(size=(160, 3)))

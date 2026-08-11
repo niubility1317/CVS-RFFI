@@ -248,14 +248,30 @@ def _build_ocf_affine_state(
     support_alignment_macs = int(
         2 * old_rows_count * OLD_CLASS_COUNT * dimension
     )
+    # Conservatively account for every full-class/old-group ndarray that can
+    # coexist while the two RMS calls and the subsequent affine fusion are
+    # live.  This is intentionally analytic rather than a runtime allocator
+    # trace, because NumPy temporary lifetimes are implementation dependent.
+    head_width = dimension + 1
+    full_class_head_fp64_bytes = 2 * classes * head_width * 8
+    full_class_head_fp32_bytes = 3 * classes * head_width * 4
+    full_support_fp64_bytes = classes * shots * dimension * 8
+    full_support_fp32_bytes = 2 * classes * shots * dimension * 4
+    old_support_fp64_bytes = old_rows_count * dimension * 8
+    score_workspace_fp64_bytes = 3 * old_rows_count * OLD_CLASS_COUNT * 8
+    old_affine_fp64_bytes = 8 * OLD_CLASS_COUNT * head_width * 8
+    old_affine_fp32_bytes = OLD_CLASS_COUNT * head_width * 4
+    registry_bytes = 3 * classes * shots * 8 + classes * shots
     transient_bytes_upper_bound = int(
-        8
-        * (
-            2 * old_rows_count * OLD_CLASS_COUNT
-            + old_rows_count * dimension
-            + 4 * OLD_CLASS_COUNT * dimension
-            + 4 * OLD_CLASS_COUNT
-        )
+        full_class_head_fp64_bytes
+        + full_class_head_fp32_bytes
+        + full_support_fp64_bytes
+        + full_support_fp32_bytes
+        + old_support_fp64_bytes
+        + score_workspace_fp64_bytes
+        + old_affine_fp64_bytes
+        + old_affine_fp32_bytes
+        + registry_bytes
     )
     audit = {
         "d92_ocf_active": True,
@@ -282,7 +298,7 @@ def _build_ocf_affine_state(
             transient_bytes_upper_bound
         ),
         "d92_ocf_support_alignment_cost_basis": (
-            "two_old_support_affine_logit_products_only"
+            "full_class_fp64_fp32_heads_full_old_support_score_and_old_fusion"
         ),
         "d92_ocf_uses_estimated_lda_fit_macs": False,
         "d92_ocf_no_second_all_class_centering": True,
@@ -718,6 +734,14 @@ def build_d92_fit(
                 "d92_registered_d_mode_requested": registered_d_mode,
                 "d92_registered_d_mode_active": d_mode_active,
                 "d92_registered_d_mode_effective": effective_d_mode,
+                "d92_ocf_active": bool(
+                    d_mode_active and registered_d_mode in OCF_LAMBDA_BY_MODE
+                ),
+                "d92_ocf_lambda": (
+                    OCF_LAMBDA_BY_MODE[registered_d_mode]
+                    if d_mode_active and registered_d_mode in OCF_LAMBDA_BY_MODE
+                    else None
+                ),
                 "d92_component_fit_inventory": component_inventory,
             }
         )
