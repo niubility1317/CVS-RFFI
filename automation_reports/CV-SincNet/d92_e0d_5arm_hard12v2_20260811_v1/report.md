@@ -8,7 +8,7 @@
 |run ID|`d92_e0d_5arm_hard12v2_20260811_v1`|
 |日期|2026-08-11|
 |operator|Codex primary；N607唯一runner待独立交接|
-|当前状态|`LOCAL_VERIFIED_AWAITING_INDEPENDENT_REVIEW`|
+|当前状态|`LOCAL_REVERIFIED_AWAITING_P0_P1_REREVIEW`|
 |协议|`p2_min_v1`|
 |证据范围|`DEVELOPMENT_ONLY_PSEUDO_BLIND_DISJOINT_STRESS_SCREEN`|
 |唯一晋级候选|`E0_FULL_ONLY`|
@@ -81,10 +81,13 @@ Selection SHA256：`2e3b3333a4a325bd0443a31065d3340d6a650a3e89620951a786637e6bce
 |Hard12-v2 builder与runner|LOCAL_VERIFIED|机械聚焦7项、既有BE回归7项、`py_compile`均通过；selection SHA由完整canonical payload真实复算|
 |严格分析器|LOCAL_VERIFIED|先写失败测试；7项通过，除two-state fit外同时核对真实after组件inventory|
 |primary集成回归|PASS|E0D核心、机械层、分析器及既有BE相关回归共47项通过；随后分析器新增inventory红灯/修复并7项通过|
-|独立P0/P1审查|待执行|必须`P0=0,P1=0`|
+|首轮独立P0/P1审查|REVISE_CLOSED_FOR_REREVIEW|`P0=0,P1=4`；K1真实计数、跨shard distinct-outer共享失败账本、selection一次复算和发布预注册均已闭合|
+|当前运行源码commit|PASS|`7d11a7012ab62058db40f878f925c38160311311`|
+|Hard12-v2一次selection audit|PASS|D92/R5各125outer、R5`DA0_REG1`375scene；HiGHS optimal；12行、coverage、v1交集0和输入SHA精确；receipt SHA256=`4c7579337cb18dfb640891d77d3d327c8d2f7e9f3a96e637effb4a383be748f5`|
+|P1修复后总回归|PASS|E0D、selection audit和既有BE相关共54项通过；`py_compile`、`bash -n`、`git diff --check`通过|
 |真实checkpoint无truth smoke|待执行|N607发布前必过|
 
-计划纳入本轮Git提交的核心文件：
+已纳入本轮Git提交的核心文件：
 
 - `code/scripts/probe_d92_registration_balanced_covariance.py`；
 - `code/cvsrffi/stage2_d92_e0d_slim.py`；
@@ -94,6 +97,7 @@ Selection SHA256：`2e3b3333a4a325bd0443a31065d3340d6a650a3e89620951a786637e6bce
 - `code/scripts/run_d92_e0d_hard12v2.py`；
 - `code/cvsrffi/stage2_d92_e0d_analysis.py`；
 - `code/scripts/summarize_d92_e0d_hard12v2.py`；
+- `code/scripts/audit_d92_e0d_hard12v2_selection.py`；
 - `configs/stage2_d92_e0d_5arm_hard12v2_v1.json`及对应测试。
 
 ## 7.N607发布预注册
@@ -111,8 +115,26 @@ Selection SHA256：`2e3b3333a4a325bd0443a31065d3340d6a650a3e89620951a786637e6bce
 |GPU|8个shard固定映射GPU0–7，每卡一个本run进程，`cuda:0`进程内可见|
 |CPU threads|每shard 2|
 |重试权限|无fresh-run retry；失败保留artifact并回主agent|
+|运行源码commit|`7d11a7012ab62058db40f878f925c38160311311`|
+|运行闭包|`E:\type10-7\code\snapshots\d92_e0d_runtime_closure_7d11a701.tar.gz`；3519772B；SHA256=`36fc9df5e174ecd87863dcb6663afb6875d5f07ca6d17282648adfa38a7f32df`|
+|method lock|`configs/stage2_d92_e0d_5arm_hard12v2_v1.json`；2177B；SHA256=`b80f967e1fc070a730a7b193f691036339930af022682fe2fca81c2e4d229f86`|
+|launch|`automation_reports/CV-SincNet/d92_e0d_5arm_hard12v2_20260811_v1/launch.sh`；3396B；SHA256=`ed4e7fc9ba34bb1e30def280d0f5790c96ac117a7875e1d8e5d320dbd87feaa7`；`bash -n`通过|
 
-精确launch脚本、Git commit、运行闭包文件和最小文件身份将在本地验证完成后写入本节。发布只核对运行闭包、method lock、launch三项，不做整树SHA、重复数据验证或额外签名。
+同步映射固定为：
+
+|本地文件|N607目标|
+|---|---|
+|`E:\type10-7\code\snapshots\d92_e0d_runtime_closure_7d11a701.tar.gz`|`runs/d92_e0d_source_snapshot_20260811_v1/d92_e0d_runtime_closure_7d11a701.tar.gz`|
+|`configs/stage2_d92_e0d_5arm_hard12v2_v1.json`|`runs/d92_e0d_source_snapshot_20260811_v1/configs/stage2_d92_e0d_5arm_hard12v2_v1.json`|
+|`automation_reports/CV-SincNet/d92_e0d_5arm_hard12v2_20260811_v1/launch.sh`|`runs/d92_e0d_source_snapshot_20260811_v1/launch.sh`|
+
+精确服务器启动命令：
+
+```bash
+cd /home/szu2070436088/2510044040/CV-SincNet/runs/d92_e0d_source_snapshot_20260811_v1 && nohup bash ./launch.sh >./launch_driver.out 2>./launch_driver.err </dev/null &
+```
+
+launch解包后工作目录为`/home/szu2070436088/2510044040/CV-SincNet/runs/d92_e0d_source_snapshot_20260811_v1/code`。它依次执行运行闭包import、prepare、GPU0真实sealed-checkpoint truth-free smoke，再把shard0–7固定映射到GPU0–7。发布只核对运行闭包、method lock、launch三项，不做整树SHA、重复数据验证或额外签名。
 
 预期输出：`matrix_manifest.json`、60份`job_receipt.json`、120份before/after immutable prediction COMMIT、60份独立score、每scene fit/resource audit、8份shard summary、truth-free smoke receipt和取回后的严格分析目录。
 
@@ -121,7 +143,7 @@ Selection SHA256：`2e3b3333a4a325bd0443a31065d3340d6a650a3e89620951a786637e6bce
 性能数值不得触发提前停止。仅在以下技术条件触发停止：
 
 - query泄漏、错误checkout/运行闭包、输出覆盖或其他P0；
-- 至少两个不同job在产生prediction前出现相同确定性异常指纹；
+- 至少两个不同outer在产生prediction前出现相同确定性异常指纹；8个shard使用同一run-root共享账本和`SYSTEMIC_TECHNICAL_FAILURE_STOP.json`协调停派，同outer不同arm不重复计数；
 - launcher级不可恢复故障或prediction闭合缺失。
 
 停止前必须绑定本run的PID/CWD/cmdline，只停止本run进程树，保留partial artifacts并标记`NO_PERFORMANCE_RESULT`。正常成功条件为8/8 shard PASS、60/60job receipt、120/120 prediction COMMIT且0失败。
