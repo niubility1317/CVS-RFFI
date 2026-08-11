@@ -3,9 +3,13 @@ from __future__ import annotations
 """RED contract tests for the frozen Phase1 CLIC token operators."""
 
 import sys
+import ast
 import gc
 import inspect
 import json
+import re
+import subprocess
+import textwrap
 import weakref
 from pathlib import Path
 from types import SimpleNamespace
@@ -51,6 +55,11 @@ from cvsrffi.phase1_clic import (  # noqa: E402
 from model import build_model  # noqa: E402
 from model_dual_cvsincnet import build_dual_model  # noqa: E402
 from post_stage_common import build_baseline_model, merge_checkpoint_args  # noqa: E402
+import SSDG.train_ssdg as train_ssdg  # noqa: E402
+
+
+TRAIN_SCRIPT = CODE_ROOT / "SSDG" / "train_ssdg.py"
+CLIC_LAUNCHER = CODE_ROOT / "scripts" / "launch_phase1_clic12_20260811.sh"
 
 
 def _lite_backbone_kwargs(**overrides):
@@ -1215,3 +1224,341 @@ def test_clic_failure_receipt_rejects_nested_forbidden_fields_before_projection(
             error=CLICRuntimeError("receipt field policy violation"),
             failure_stage="receipt_validation",
         )
+
+
+# ---------------------------------------------------------------------------
+# Task 5 RED contracts: source-only trainer integration and immutable launcher.
+# These tests intentionally fail until Terra wires the frozen trainer path and
+# the model exposes the live token tensor from the already executed CLIC seam.
+# ---------------------------------------------------------------------------
+
+
+def _tensor_paths(value: object, target: torch.Tensor, prefix: str = "") -> list[str]:
+    paths: list[str] = []
+    if torch.is_tensor(value):
+        same_object = value is target
+        same_storage = (
+            value.untyped_storage().data_ptr() == target.untyped_storage().data_ptr()
+            and tuple(value.shape) == tuple(target.shape)
+        )
+        if same_object or same_storage:
+            paths.append(prefix or "<root>")
+        return paths
+    if isinstance(value, dict):
+        for key, child in value.items():
+            child_prefix = f"{prefix}.{key}" if prefix else str(key)
+            paths.extend(_tensor_paths(child, target, child_prefix))
+    elif isinstance(value, (list, tuple)):
+        for index, child in enumerate(value):
+            paths.extend(_tensor_paths(child, target, f"{prefix}[{index}]"))
+    return paths
+
+
+def test_train_parser_exposes_frozen_clic_flags_defaults_choices_and_rejection() -> None:
+    parser = train_ssdg.build_arg_parser()
+    defaults = parser.parse_args(["--output_dir", "clic-red-default"])
+    assert defaults.phase1_clic_frozen_mode is False
+    assert defaults.phase1_clic_operator_mode == "raw_phase_control"
+
+    args = parser.parse_args(
+        [
+            "--output_dir",
+            "clic-red",
+            "--phase1_clic_frozen_mode",
+            "true",
+            "--phase1_clic_operator_mode",
+            "complex_local_invariant_curvature",
+        ]
+    )
+    assert args.phase1_clic_frozen_mode is True
+    assert args.phase1_clic_operator_mode == "complex_local_invariant_curvature"
+    action = next(
+        action
+        for action in parser._actions
+        if "--phase1_clic_operator_mode" in action.option_strings
+    )
+    assert tuple(action.choices) == (
+        "raw_phase_control",
+        "complex_local_invariant_curvature",
+    )
+    with pytest.raises(SystemExit):
+        parser.parse_args(
+            [
+                "--output_dir",
+                "clic-red-invalid",
+                "--phase1_clic_operator_mode",
+                "not-a-clic-operator",
+            ]
+        )
+
+
+@pytest.mark.parametrize(
+    "operator_mode",
+    ("raw_phase_control", "complex_local_invariant_curvature"),
+)
+def test_clic_forward_exposes_the_exact_live_token_tensor_as_training_aux(operator_mode: str) -> None:
+    model = build_lite_clic_backbone(operator_mode=operator_mode)
+    model.train()
+    clic = model.clic
+    calls: list[CLICForwardResult] = []
+    original_forward = clic.forward
+
+    def wrapped_forward(received_i: torch.Tensor, z_base: torch.Tensor, **kwargs):
+        result = original_forward(received_i, z_base, **kwargs)
+        calls.append(result)
+        return result
+
+    clic.forward = wrapped_forward
+    try:
+        output = model(_nonzero_iq(batch=2).requires_grad_(True), return_aux=True)
+    finally:
+        clic.forward = original_forward
+
+    assert len(calls) == 1, "one model forward must execute one CLIC forward"
+    live_tokens = calls[0].token_batch.tokens
+    assert live_tokens.requires_grad
+    aliases = _tensor_paths(output, live_tokens)
+    assert aliases, "training-only aux must expose result.token_batch.tokens"
+    assert any("token" in path.lower() for path in aliases)
+    loss = output["logits"].square().mean()
+    token_grad = torch.autograd.grad(loss, live_tokens, retain_graph=True, allow_unused=True)[0]
+    assert token_grad is not None
+    assert torch.isfinite(token_grad).all()
+    assert torch.count_nonzero(token_grad) > 0
+
+    disabled = build_lite_clic_backbone(frozen_mode=False)
+    disabled.eval()
+    with torch.no_grad():
+        disabled_output = disabled(_nonzero_iq(batch=2), return_aux=True)
+    assert not _tensor_paths(disabled_output, live_tokens)
+
+
+def test_clic_launcher_has_the_frozen_12_arm_matrix_and_no_target_or_unknown_training_args() -> None:
+    launcher_text = CLIC_LAUNCHER.read_text(encoding="utf-8")
+    assert launcher_text.startswith("#!/usr/bin/env bash\n")
+    assert 'RUN_ID="${RUN_ID:-phase1_clic12_20260811_v1}"' in launcher_text
+    assert "--phase1_clic_frozen_mode true" in launcher_text
+    assert "--epochs 40" in launcher_text
+    assert "--batch_size 128" in launcher_text
+    assert 'C) operator="raw_phase_control"' in launcher_text
+    assert 'G) operator="complex_local_invariant_curvature"' in launcher_text
+    calls = re.findall(r"^launch_arm (\d) ([CG]) (\d)$", launcher_text, flags=re.MULTILINE)
+    assert len(calls) == 12
+    assert sum(arm == "C" for _, arm, _ in calls) == 6
+    assert sum(arm == "G" for _, arm, _ in calls) == 6
+    assert [gpu for _, _, gpu in calls] == ["0", "0", "1", "1", "2", "2", "3", "3", "4", "5", "6", "7"]
+    for flag in (
+        "ccpc_leo",
+        "pamr",
+        "cb_sfce",
+        "gd_proto_nll",
+        "icmt",
+        "cagm",
+        "rcrmd",
+        "rcat",
+        "rcmmc",
+        "hscf",
+        "hnccd",
+        "recte",
+        "cp_sfce",
+    ):
+        assert f"--phase1_{flag}_enabled false" in launcher_text
+        assert f"--lambda_{flag} 0" in launcher_text
+    assert not re.search(r"--[^\s=]*(?:target|proxy|unknown)[^\s=]*", launcher_text, re.I)
+
+    relative = f"scripts/{CLIC_LAUNCHER.name}"
+    syntax = subprocess.run(["bash", "-n", relative], cwd=str(CODE_ROOT), text=True, capture_output=True)
+    assert syntax.returncode == 0, syntax.stderr
+    dry = subprocess.run(["bash", relative, "--dry-run"], cwd=str(CODE_ROOT), text=True, capture_output=True)
+    assert dry.returncode == 0, dry.stderr
+    rows = [line for line in dry.stdout.splitlines() if "[DRY-RUN]" in line]
+    assert len(rows) == 12
+    assert sum("--phase1_clic_operator_mode raw_phase_control" in line for line in rows) == 6
+    assert sum("--phase1_clic_operator_mode complex_local_invariant_curvature" in line for line in rows) == 6
+    assert all("phase1_clic12_20260811_v1" in line for line in rows)
+    assert all("--epochs 40" in line and "--batch_size 128" in line for line in rows)
+    assert all("--seed 7281164" in line for line in rows)
+    assert not re.search(r"--[^\s=]*(?:target|proxy|unknown)[^\s=]*", "\n".join(rows), re.I)
+
+
+def _ast_call_name(node: ast.Call) -> str:
+    function = node.func
+    if isinstance(function, ast.Name):
+        return function.id
+    if isinstance(function, ast.Attribute):
+        return function.attr
+    return ""
+
+
+def test_train_clic_static_path_orders_config_warm_start_and_task4_lifecycle() -> None:
+    """RED contract for the source-only trainer's single CLIC lifecycle."""
+
+    source = inspect.getsource(train_ssdg.train)
+    tree = ast.parse(textwrap.dedent(source))
+
+    def calls(name: str) -> list[ast.Call]:
+        return [
+            node
+            for node in ast.walk(tree)
+            if isinstance(node, ast.Call) and _ast_call_name(node) == name
+        ]
+
+    required = (
+        "new_clic_receipt",
+        "strict_clic_warm_start",
+        "update_clic_common_binding_receipt",
+        "clic_raw_unscaled_vjp_audit",
+        "clic_scaled_backward_and_classify",
+        "update_clic_amp_receipt",
+        "update_clic_resource_receipt",
+        "release_clic_retained_graph_roots",
+        "validate_clic_terminal_receipt",
+        "write_clic_failure_receipt",
+    )
+    line: dict[str, int] = {}
+    for name in required:
+        found = calls(name)
+        assert found, f"CLIC train path does not call {name}"
+        line[name] = min(node.lineno for node in found)
+
+    assert len(calls("clic_raw_unscaled_vjp_audit")) == 1
+    assert len(calls("clic_scaled_backward_and_classify")) == 1
+    assert len(calls("validate_clic_terminal_receipt")) == 1
+    assert (
+        line["update_clic_common_binding_receipt"]
+        < line["clic_raw_unscaled_vjp_audit"]
+        < line["clic_scaled_backward_and_classify"]
+        < line["update_clic_amp_receipt"]
+        < line["update_clic_resource_receipt"]
+        < line["release_clic_retained_graph_roots"]
+        < line["validate_clic_terminal_receipt"]
+    )
+
+    config_calls = [
+        node
+        for node in ast.walk(tree)
+        if isinstance(node, ast.Call)
+        and _ast_call_name(node)
+        in {"CLICConfig", "validate_clic_config", "validate_clic_args", "validate_clic_configuration"}
+    ]
+    assert config_calls, "CLIC config validation/construction is absent from train()"
+    config_line = min(node.lineno for node in config_calls)
+    data_line = min(node.lineno for node in calls("_build_ssdg_wisig_data"))
+    model_line = min(node.lineno for node in calls("build_baseline_model"))
+    assert config_line < data_line
+    assert config_line < model_line
+
+    adamw_lines = [
+        node.lineno
+        for node in ast.walk(tree)
+        if isinstance(node, ast.Call) and _ast_call_name(node) == "AdamW"
+    ]
+    assert adamw_lines
+    assert line["strict_clic_warm_start"] < min(adamw_lines)
+
+    assert "phase1_clic_config_receipt.json" in source
+    assert "phase1_clic_terminal_receipt.json" in source
+    assert "raw_phase_control" in source
+    assert "complex_local_invariant_curvature" in source
+
+    clic_source = source[source.find("new_clic_receipt") :]
+    assert clic_source
+    for marker in (
+        "source_l_only",
+        "use_u",
+        "use_v",
+        "use_proxy",
+        "use_held",
+        "use_target",
+        "registered",
+        "unknown",
+        "state_feedback_count",
+        "second_forward_count",
+    ):
+        assert marker in clic_source, f"CLIC zero-access marker missing: {marker}"
+    assert not re.search(r"(?:clic_.*loss|loss_.*clic)", clic_source, re.I)
+
+    batch_loops = [
+        node
+        for node in ast.walk(tree)
+        if isinstance(node, (ast.For, ast.AsyncFor))
+        and node.lineno <= line["clic_raw_unscaled_vjp_audit"]
+        and int(getattr(node, "end_lineno", node.lineno)) >= line["release_clic_retained_graph_roots"]
+    ]
+    assert batch_loops, "CLIC retained-graph release is not inside a batch loop"
+    batch_loop = min(batch_loops, key=lambda node: int(getattr(node, "end_lineno", node.lineno)) - node.lineno)
+    assert line["validate_clic_terminal_receipt"] > int(getattr(batch_loop, "end_lineno", batch_loop.lineno))
+
+
+def test_train_clic_graph_root_map_is_deleted_and_released_after_resource_telemetry() -> None:
+    """RED graph-lifetime contract: no CLIC root survives its release."""
+
+    source = inspect.getsource(train_ssdg.train)
+    tree = ast.parse(textwrap.dedent(source))
+
+    def calls(name: str) -> list[ast.Call]:
+        return [
+            node
+            for node in ast.walk(tree)
+            if isinstance(node, ast.Call) and _ast_call_name(node) == name
+        ]
+
+    assignments = [
+        node
+        for node in ast.walk(tree)
+        if isinstance(node, ast.Assign)
+        and any(
+            isinstance(target, ast.Name) and target.id == "clic_retained_graph_roots"
+            for target in node.targets
+        )
+    ]
+    assert assignments, "CLIC retained graph root mapping is absent"
+    root_assignment = assignments[0]
+    assert isinstance(root_assignment.value, ast.Dict)
+    release_calls = calls("release_clic_retained_graph_roots")
+    assert len(release_calls) == 1
+    release_call = release_calls[0]
+    assert root_assignment.lineno < release_call.lineno
+
+    mapped_roots = {
+        key.value
+        for key in root_assignment.value.keys
+        if isinstance(key, ast.Constant) and isinstance(key.value, str)
+    }
+    assert mapped_roots
+    deleted_roots = {
+        name.id
+        for node in ast.walk(tree)
+        if isinstance(node, ast.Delete) and root_assignment.lineno < node.lineno < release_call.lineno
+        for target in node.targets
+        for name in ast.walk(target)
+        if isinstance(name, ast.Name)
+    }
+    assert mapped_roots == deleted_roots
+
+    enclosing_loops = [
+        node
+        for node in ast.walk(tree)
+        if isinstance(node, (ast.For, ast.AsyncFor))
+        and node.lineno <= root_assignment.lineno
+        and int(getattr(node, "end_lineno", node.lineno)) >= release_call.lineno
+    ]
+    assert enclosing_loops
+    batch_loop = min(
+        enclosing_loops,
+        key=lambda node: int(getattr(node, "end_lineno", node.lineno)) - node.lineno,
+    )
+    post_release_loads = {
+        node.id
+        for node in ast.walk(batch_loop)
+        if isinstance(node, ast.Name)
+        and isinstance(node.ctx, ast.Load)
+        and release_call.lineno < node.lineno <= int(getattr(batch_loop, "end_lineno", batch_loop.lineno))
+    }
+    assert not mapped_roots.intersection(post_release_loads)
+    resource_calls = calls("update_clic_resource_receipt")
+    assert resource_calls and max(node.lineno for node in resource_calls) < release_call.lineno
+
+    release_source = inspect.getsource(release_clic_retained_graph_roots)
+    for forbidden in ("gc.collect", "empty_cache", ".backward(", ".unscale_(", "forward("):
+        assert forbidden not in release_source
