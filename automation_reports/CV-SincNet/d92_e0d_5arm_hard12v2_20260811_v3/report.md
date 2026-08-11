@@ -7,8 +7,8 @@
 |实验ID|`D92-E0D-5arm-Hard12-v2`|
 |run ID|`d92_e0d_5arm_hard12v2_20260811_v3`|
 |日期|2026-08-11|
-|operator|Codex primary；N607唯一runner待交接|
-|当前状态|`LOCAL_VERIFIED_APPROVED_FOR_N607`|
+|operator|Codex primary；N607唯一runner|
+|当前状态|`ANALYZED / NO_D_GEOMETRY_PROMOTION`|
 |协议|`p2_min_v1`|
 |证据范围|`DEVELOPMENT_ONLY_PSEUDO_BLIND_DISJOINT_STRESS_SCREEN`|
 |唯一晋级候选|`E0_FULL_ONLY`|
@@ -63,7 +63,7 @@
 |output|`/home/szu2070436088/2510044040/CV-SincNet/runs/d92_e0d_5arm_hard12v2_20260811_v3`|
 |logs|`/home/szu2070436088/2510044040/CV-SincNet/logs/d92_e0d_5arm_hard12v2_20260811_v3`|
 |GPU|8个shard固定映射GPU0–7，每卡一个本run进程，进程内`cuda:0`|
-|expected artifacts|60 job receipt、120 COMMIT、120 prediction artifact、60 score、180 fit audit、180 resource audit、8 shard summary|
+|expected artifacts（实际文件布局）|60 job receipt、120 COMMIT、120 prediction artifact、60 score、120 fit-audit文件（每文件3场景，共360行）、120 state-level resource-audit文件、8 shard summary|
 
 同步映射：archive→`source_root/d92_e0d_runtime_closure_96a48fc3.tar.gz`；config→`source_root/stage2_d92_e0d_5arm_hard12v2_v1.json`；launch→`source_root/launch.sh`。
 
@@ -83,4 +83,65 @@ launch先执行运行闭包import、prepare 60任务和GPU0真实sealed-checkpoi
 
 ## 8.结果区
 
-待N607 artifacts完整取回后补充五臂聚合表、逐outer配对、资源表、异常、严格门和最终裁决。
+### 8.1运行与artifact闭环
+
+- 真实checkpoint truth-free smoke为`D92_E0D_REAL_CHECKPOINT_TRUTH_FREE_SMOKE_PASS`；query truth、fit、selection和update均为false。
+- 60/60 job完成；8/8 shard summary为PASS且failed=0；120个COMMIT、120个prediction artifact、60个score完整；stderr与异常指纹为空。
+- v3 matrix manifest SHA256=`d9f8b4aae89a05d544ac00fa129863031509a7190f55fb753061d29a5c0a0fef`；method lock与selection身份在manifest、job receipt和分析器中一致。
+- 120个fit-audit文件各包含clear/low_elev/rain 3行，共360条scene-state审计；120个resource-audit文件对应60个job的`DA0_REG0`/`DA0_REG1`两个状态。预注册曾误写“180/180文件”，这是文件布局口径错误，不是缺失运行，不补跑。
+- 五臂`DA0_REG0`state/prediction精确一致；两条K1的`DA0_REG1`严格别名一致；fit计数、query MAC和query零访问均通过冻结分析器检查。
+- 完整artifact位于`E:\type10-7\local_artifacts\d92_e0d_5arm_hard12v2_20260811_v3`；冻结分析位于其`analysis_r1`子目录。
+- 独立结果复核逐值复算summary、gates和10行paired rows，结论为P0=0、P1=0。
+
+### 8.2五臂聚合结果
+
+下表只汇总10个performance outer的`DA0_REG1`结果；H、old BA、old floor、seen-new和forgetting单位均为百分比。unknown rejection、defer与coverage在本实验中为N/A。wall和peak是注册阶段配对资源统计，query MAC五臂完全相同。
+
+|候选|机制|H|old BA|old floor|seen-new|forgetting|wall中位(ms)|增量peak中位(MiB)|K5/K10 fit|结论|
+|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---|
+|D92_FULL|B+E+full/block LOO-soft fusion|63.153|65.139|36.167|62.250|16.417|2979.98|2.311|48/88|原D92对照|
+|E0_FUSION|E关闭，保留full/block LOO-soft fusion|63.129|65.139|36.333|62.217|16.417|1479.67|1.512|24/44|效率对照|
+|E0_FULL_ONLY|E关闭，仅full主几何，无LOO|63.489|65.611|35.333|62.425|15.944|92.03|1.574|2/2|唯一晋级候选；严格门失败|
+|E0_BLOCK_ONLY|E关闭，仅block3主几何，无LOO|62.383|64.639|36.333|61.317|16.917|92.00|1.582|2/2|性能下降|
+|E0_FIXED50|E关闭，full/block固定0.5/0.5，无LOO|63.051|65.222|36.500|62.008|16.333|191.06|1.469|4/4|未超过FULL_ONLY|
+
+### 8.3FULL_ONLY配对效应
+
+|参考臂|mean ΔH(pp)|H非负outer|Δold BA(pp)|Δold floor(pp)|Δseen-new(pp)|Δforgetting(pp)|wall下降|peak变化|query MAC变化|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|D92_FULL|+0.336|9/10|+0.472|−0.833|+0.175|−0.472|97.70%|−700KiB|0|
+|E0_FUSION|+0.360|9/10|+0.472|−1.000|+0.208|−0.472|95.41%|+46KiB|0|
+
+FULL_ONLY相对D92_FULL的10个outer配对如下；所有指标来自同一outer和同一候选，不拼接边际最值。
+
+|outer|K|Cn|ΔH(pp)|Δold BA(pp)|Δold floor(pp)|Δseen-new(pp)|Δforgetting(pp)|wall下降|peak变化(KiB)|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|`rx_20_1__seed_713103__k_10__new_20`|10|20|+0.734|+0.556|+1.667|+0.833|−0.556|97.74%|−1044|
+|`rx_20_1__seed_713103__k_5__new_20`|5|20|+0.141|+0.556|0.000|+0.083|−0.556|95.96%|−752|
+|`rx_20_1__seed_713105__k_5__new_20`|5|20|+0.373|+1.389|+3.333|−0.500|−1.389|96.02%|−748|
+|`rx_3_19__seed_713102__k_10__new_20`|10|20|+0.650|+0.556|−1.667|+0.667|−0.556|97.65%|−544|
+|`rx_3_19__seed_713106__k_10__new_10`|10|10|−0.246|−0.556|−3.333|0.000|+0.556|97.99%|−72|
+|`rx_3_19__seed_713106__k_10__new_5`|10|5|+0.005|0.000|0.000|0.000|0.000|97.84%|−652|
+|`rx_7_14__seed_713102__k_10__new_5`|10|5|+0.688|+1.389|−5.000|−0.333|−1.389|97.80%|−212|
+|`rx_7_14__seed_713103__k_5__new_20`|5|20|+0.093|−0.278|−3.333|+0.500|+0.278|95.21%|−928|
+|`rx_7_7__seed_713105__k_10__new_10`|10|10|+0.050|−0.278|0.000|+0.333|+0.278|97.63%|−640|
+|`rx_8_8__seed_713104__k_10__new_20`|10|20|+0.869|+1.389|0.000|+0.167|−1.389|97.86%|−1216|
+
+### 8.4严格门与裁决
+
+|门|观测|阈值|结果|
+|---|---:|---:|---|
+|FULL_ONLY mean ΔH vs E0_FUSION|+0.360pp|>0|PASS|
+|FULL_ONLY H非负outer vs E0_FUSION|9/10|≥8/10|PASS|
+|FULL_ONLY mean ΔH vs D92_FULL|+0.336pp|≥0.500pp|FAIL|
+|FULL_ONLY H非负outer vs D92_FULL|9/10|≥8/10|PASS|
+|Δold BA vs D92_FULL|+0.472pp|≥0|PASS|
+|Δold floor vs D92_FULL|−0.833pp|≥0|FAIL|
+|Δseen-new vs D92_FULL|+0.175pp|≥0|PASS|
+|Δforgetting vs D92_FULL|−0.472pp|≤0|PASS|
+|wall下降 vs E0_FUSION|95.41%|≥40%|PASS|
+|wall下降 vs D92_FULL|97.70%|≥60%|PASS|
+|peak变化 vs E0_FUSION|+47,104B|≤0B|FAIL|
+|query MAC、fit计数、state/prediction parity、query协议|全部精确|全部精确|PASS|
+
+冻结分析器裁决为`NO_D_GEOMETRY_PROMOTION`。FULL_ONLY证明了D46的K折LOO融合可以把注册fit从K5/K10的24/44（E0_FUSION）或48/88（D92_FULL）降到2/2，并把wall降低95%–98%，同时H平均略有提高；但它没有达到预注册的+0.5个百分点H门，并牺牲old-class floor，因此不进入完整Target125确认。BLOCK_ONLY和FIXED50也不晋级。本轮属于有效的“效率显著、性能门未全过”负晋级结果。
