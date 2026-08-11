@@ -5,7 +5,7 @@
 |实验ID|`d92_be_2x2_hard12_20260811_v1`|
 |登记时间|2026-08-11 15:03:40+08:00|
 |操作方|Codex primary；N607唯一runner待交接|
-|当前状态|`LOCAL_VERIFIED_P0P1_APPROVED_READY_TO_LAND`|
+|当前状态|`RUNNING`|
 |目标|在D92共同路径内验证删除注册后B/E能否同时提升`H_old_new`并降低注册计算|
 |声明范围|`DEVELOPMENT_ONLY_COVERAGE_CONSTRAINED_STRESS_SCREEN`|
 
@@ -104,4 +104,14 @@ python -m pytest tests/test_stage2_registration_resource_probe.py
 
 ## 运行后更新区
 
-待runner返回后补充PID/GPU/日志、artifact closure、详细四臂同row表、异常、严格门和最终建议。
+### 2026-08-11 15:34:06+08:00启动与首波
+
+- 直连N607只读预检、GPU占用检查和四个不可覆盖目标检查通过；没有使用管理员账号或bridge。
+- 三项最小同步身份全部匹配；远端关键入口`py_compile`通过，启动器完成归档解包和9模块新快照import closure。
+- `prepare`生成48job manifest；真实sealed checkpoint、无truth的K1/FULL smoke通过，receipt确认query truth/fit/update/selection均为false。
+- driver PID=`1755987`，CWD、cmdline和source root绑定一致；完成编排后正常退出。
+- shard0–7分别启动为PID`1756430`至`1756437`，各自绑定GPU0–7；driver退出后shard转为PPID1，仍属预期detach状态。
+- 首波已有20份`job_receipt`、40份prediction COMMIT；shard4已`4/4 PASS`，总体失败数0，stderr异常数0，无重复pre-prediction异常指纹、无P0/P1。
+- GPU显存约544–564MiB/卡，GPU利用率抽样0%–58%，未超过冻结并发映射。runner继续使用短连接监控到8个shard全部结束。
+
+完整结束后继续补充artifact closure、详细四臂同row表、严格Pareto门和最终建议。
