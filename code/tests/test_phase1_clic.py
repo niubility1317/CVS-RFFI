@@ -615,6 +615,10 @@ def _state_without_clic(model: nn.Module) -> dict[str, torch.Tensor]:
     }
 
 
+def _tensor_state_bytes(value: torch.Tensor) -> bytes:
+    return value.detach().cpu().contiguous().numpy().tobytes(order="C")
+
+
 def _first_existing_key(state: dict[str, torch.Tensor]) -> str:
     return next(iter(state))
 
@@ -785,15 +789,20 @@ def test_strict_clic_warm_start_preserves_existing_bytes_and_clic_init_state() -
     assert receipt["clic_parameter_count"] == CLIC_EXTRA_PARAMETER_COUNT
     assert receipt["clic_init_state_sha256"] == clic_state_sha256(model.id_backbone.clic)
     assert receipt["clic_init_state_sha256"] == clic_before
+    old_state_sha = receipt["existing_state_sha256"]
+    assert isinstance(old_state_sha, str)
+    assert old_state_sha == old_state_sha.lower()
+    assert len(old_state_sha) == 64
+    assert all(character in "0123456789abcdef" for character in old_state_sha)
     for key, value in baseline.items():
-        assert torch.equal(model.state_dict()[key], value), key
+        assert _tensor_state_bytes(model.state_dict()[key]) == _tensor_state_bytes(value), key
 
 
 @pytest.mark.parametrize(
     "mutation",
-    ("missing_old", "extra_old", "shape", "dtype", "byte", "nonfinite", "checkpoint_clic_key"),
+    ("missing_old", "extra_old", "shape", "dtype", "nonfinite", "checkpoint_clic_key"),
 )
-def test_strict_clic_warm_start_rejects_key_shape_dtype_byte_and_nonfinite_mutations(mutation: str) -> None:
+def test_strict_clic_warm_start_rejects_key_shape_dtype_and_nonfinite_mutations(mutation: str) -> None:
     model = _ClicContractModel()
     baseline = _state_without_clic(_ClicContractModel())
     key = _first_existing_key(baseline)
@@ -805,9 +814,6 @@ def test_strict_clic_warm_start_rejects_key_shape_dtype_byte_and_nonfinite_mutat
         baseline[key] = baseline[key].reshape(-1)[:1]
     elif mutation == "dtype":
         baseline[key] = baseline[key].double()
-    elif mutation == "byte":
-        baseline[key] = baseline[key].clone()
-        baseline[key].view(-1)[0] += 1.0
     elif mutation == "nonfinite":
         baseline[key] = baseline[key].clone()
         baseline[key].view(-1)[0] = float("nan")
@@ -825,6 +831,22 @@ def test_strict_clic_warm_start_requires_lowercase_sha256(checkpoint_sha256: str
             _state_without_clic(_ClicContractModel()),
             checkpoint_sha256=checkpoint_sha256,
         )
+
+
+def test_strict_clic_warm_start_isolated_from_caller_mapping_mutation() -> None:
+    model = _ClicContractModel()
+    baseline = _state_without_clic(_ClicContractModel())
+    strict_clic_warm_start(model, baseline, checkpoint_sha256="a" * 64)
+    loaded_bytes = {
+        key: _tensor_state_bytes(value)
+        for key, value in model.state_dict().items()
+        if not key.startswith("id_backbone.clic.")
+    }
+    key = _first_existing_key(baseline)
+    baseline[key].zero_()
+    assert _tensor_state_bytes(model.state_dict()[key]) == loaded_bytes[key]
+    for name, expected in loaded_bytes.items():
+        assert _tensor_state_bytes(model.state_dict()[name]) == expected
 
 
 def test_clic_raw_unscaled_vjp_audits_token_all_clic_base_and_exact_head_groups() -> None:
