@@ -261,8 +261,8 @@ Phase2旧类support适应继续使用现有合法同公式接口；新类只有�
 |CLIC-02|独立监督|本轮target registered／unknown LEO weak修订达到<code>P0=0/P1=0/ALLOW-DESIGN-REVISION</code>|本卡全篇|verified|独立监督对latest actual diff终裁为ALLOW-DESIGN-REVISION|仅设计许可|
 |CLIC-03|数学合同|无epsilon的<code>u/h/r</code>、zero-mask、nonfinite fail-closed和幅相／CFO不变性|code/cvsrffi/phase1_clic.py|verified|本卡解析证明；ssr-gpu数值微验证最大误差：u=6.80e-7、h=5.96e-7、r=2.38e-7|实现仍pending|
 |CLIC-04|算子实现|固定<code>L={1,2,4,8}</code>的C／G同shape token|code/cvsrffi/phase1_clic.py|implemented/local verified|<code>ssr-gpu</code>下纯函数与shape测试：8 passed|仅<code>T_C↔T_G</code>|
-|CLIC-05|模型结构|固定depthwise E、gate、<code>W_c</code>、单exact head和<code>q_clic</code>|code/cvsrffi/phase1_clic.py、code/model.py|implemented/local verified|<code>ssr-gpu</code>下Task1+2纯函数／融合测试18 passed；32529参数、CPU／全部CUDA RNG恢复与独立实例state SHA一致|新增参数32529；模型exact-head接线仍由CLIC-06后续任务负责|
-|CLIC-06|dual接口|CLIC后的<code>z_id</code>与existing<code>z_dom</code>／quality暴露|code/model_dual_cvsincnet.py、code/post_stage_common.py|pending|实现后strict reload／aux测试|不增加第二readout|
+|CLIC-05|模型结构|固定depthwise E、gate、<code>W_c</code>、单exact head和<code>q_clic</code>|code/cvsrffi/phase1_clic.py、code/model.py|verified|<code>ssr-gpu</code>下Task1—3 CLIC测试29 passed；identity exact-head hook每个top-level forward仅1次；state仅含<code>id_backbone.clic.*</code>|同一pad/crop IQ与<code>feat_joint_base</code>经共享pre-head seam变为<code>z_id</code>；无第二readout／head／forward|
+|CLIC-06|dual接口|CLIC后的<code>z_id</code>与existing<code>z_dom</code>／quality暴露|code/model_dual_cvsincnet.py、code/post_stage_common.py|verified|<code>ssr-gpu</code>下Task3 CLIC与identity-core／latency／identity-only／arch-family回归通过；legacy checkpoint CLI kwargs与domain features-only hook微测通过|dual顶层暴露<code>z_id</code>和<code>q_clic</code>；<code>dom_backbone.clic=None</code>且CLIC启用时无domain logits；关闭时保留旧aux合同|
 |CLIC-07|C／G公平|同模块、同初始SHA、同forward／参数／资源，仅operator不同|code/SSDG/train_ssdg.py|pending|实现后pair receipt和tamper负测|C也主动训练token支路|
 |CLIC-08|数据权限|source-L-only、U／V／proxy／target／unknown零训练反馈、single-LEO|本卡第1、6、12节|verified|协议逐项审计|不把source proxy写成unknown|
 |CLIC-09|VJP合同|C／G三scene分别验证token、CLIC参数、base和head finite-nonzero VJP|code/cvsrffi/phase1_clic.py、code/SSDG/train_ssdg.py|pending|实现后正例与detach／zero篡改负测|raw-unscaled诊断|
@@ -278,7 +278,7 @@ Phase2旧类support适应继续使用现有合法同公式接口；新类只有�
 |CLIC-19|SQSF替代案|Sinc频率轴假设与warm-start映射未闭合，本轮不采用|无目标文件|rejected|独立二选一审查|不是性能永久拒绝|
 |CLIC-20|用户目标域补充|每个C／G checkpoint均报告同一封存目标capsule的registered-known DG与registered／unknown单LEO weak盲态开放集指标，并与source-proxy研发信号同row封存|code/evaluate_phase1_clic_target_leo.py及postfreeze矩阵|pending|IQ-only package、目标预测SHA、source-frozen规则、隔离scorer、逐scene分母／指标、C／G same-row及zero-feedback负测|单节点确认，不等于Phase3协同|
 
-当前追踪计数：verified=4，pending=12，deferred=2，rejected=2，blocked=0。
+当前追踪计数：verified=6，pending=10，deferred=2，rejected=2，blocked=0。
 
 最高风险项是CLIC-14／CLIC-20：解析不变性只覆盖全局复增益、常相位和线性CFO，不能保证时变多径下的identity／channel分离；必须同时由source 18个LEO最差切片、封存目标域LEO weak零适配切片和6fold source-proxy双门证伪，不能由本地纯函数测试解除。
 

@@ -1,10 +1,18 @@
 import math
 import numpy as np
-from typing import Optional, Tuple, Sequence
+from typing import Callable, Dict, Optional, Tuple, Sequence
 
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+
+from cvsrffi.phase1_clic import CLIC_EMBED_DIM, CLIC_INPUT_LENGTH, CLICFusion
+
+
+_ALLOWED_CLIC_OPERATOR_MODES = {
+    "raw_phase_control",
+    "complex_local_invariant_curvature",
+}
 
 
 # ----------------------- input length adapter -----------------------
@@ -832,6 +840,42 @@ class PhysicalAwareClassifier(nn.Module):
         feat_joint = self.joint_proj(torch.cat([feat_id_joint] + defect_feats, dim=1))
         return feat_id, feat_dac, feat_pa, defect_feats, feat_joint, zero_emb
 
+    def _compute_prehead_features(
+        self,
+        base: torch.Tensor,
+        dac_local: torch.Tensor,
+        pa_local: torch.Tensor,
+        dac_delta: Optional[torch.Tensor],
+        pa_delta: Optional[torch.Tensor],
+        *,
+        received_i: Optional[torch.Tensor] = None,
+        prehead_transform: Optional[Callable[[torch.Tensor, torch.Tensor], object]] = None,
+    ):
+        """Compute the one shared feature seam immediately before CosFace."""
+        feat_id, feat_dac, feat_pa, defect_feats, feat_joint_base, zero_emb = self._compute_features_for_head(
+            base,
+            dac_local=dac_local,
+            pa_local=pa_local,
+            dac_delta=dac_delta,
+            pa_delta=pa_delta,
+        )
+        if prehead_transform is None:
+            return feat_id, feat_dac, feat_pa, defect_feats, feat_joint_base, zero_emb, {}
+        if received_i is None:
+            raise ValueError("received_i is required for a pre-head identity transform")
+
+        result = prehead_transform(received_i, feat_joint_base)
+        z_id = getattr(result, "z_id", None)
+        q_clic = getattr(result, "q_clic", None)
+        if not torch.is_tensor(z_id) or not torch.is_tensor(q_clic):
+            raise ValueError("pre-head identity transform must return z_id and q_clic tensors")
+        return feat_id, feat_dac, feat_pa, defect_feats, z_id, zero_emb, {
+            "feat_joint_base": feat_joint_base,
+            "feat_joint": z_id,
+            "z_id": z_id,
+            "q_clic": q_clic,
+        }
+
     def forward_logits(
         self,
         base: torch.Tensor,
@@ -840,15 +884,56 @@ class PhysicalAwareClassifier(nn.Module):
         labels: Optional[torch.Tensor] = None,
         dac_delta: Optional[torch.Tensor] = None,
         pa_delta: Optional[torch.Tensor] = None,
+        received_i: Optional[torch.Tensor] = None,
+        prehead_transform: Optional[Callable[[torch.Tensor, torch.Tensor], object]] = None,
     ) -> torch.Tensor:
-        _, _, _, _, feat_joint, _ = self._compute_features_for_head(
+        _, _, _, _, feat_joint, _, _ = self._compute_prehead_features(
             base,
             dac_local=dac_local,
             pa_local=pa_local,
             dac_delta=dac_delta,
             pa_delta=pa_delta,
+            received_i=received_i,
+            prehead_transform=prehead_transform,
         )
         return self.head(feat_joint, labels=labels)
+
+    def forward_with_prehead(
+        self,
+        base: torch.Tensor,
+        dac_local: torch.Tensor,
+        pa_local: torch.Tensor,
+        labels: Optional[torch.Tensor] = None,
+        dac_delta: Optional[torch.Tensor] = None,
+        pa_delta: Optional[torch.Tensor] = None,
+        *,
+        received_i: Optional[torch.Tensor] = None,
+        prehead_transform: Optional[Callable[[torch.Tensor, torch.Tensor], object]] = None,
+    ):
+        """Return legacy embeddings plus optional pre-head CLIC evidence."""
+        feat_id, feat_dac, feat_pa, defect_feats, feat_joint, zero_emb, prehead_aux = self._compute_prehead_features(
+            base,
+            dac_local=dac_local,
+            pa_local=pa_local,
+            dac_delta=dac_delta,
+            pa_delta=pa_delta,
+            received_i=received_i,
+            prehead_transform=prehead_transform,
+        )
+        feat_imp = self.imp_merge(torch.cat(defect_feats, dim=1)) if self.imp_merge is not None else zero_emb
+        logits = self.head(feat_joint, labels=labels)
+        dac_pred = torch.sigmoid(self.dac_head(feat_dac).squeeze(-1)) if self.dac_head is not None else base.new_zeros(base.size(0))
+        pa_pred = torch.sigmoid(self.pa_head(feat_pa).squeeze(-1)) if self.pa_head is not None else base.new_zeros(base.size(0))
+        return (
+            logits,
+            dac_pred,
+            pa_pred,
+            feat_id,
+            feat_dac,
+            feat_pa,
+            feat_imp,
+            feat_joint,
+        ), prehead_aux
 
     def forward(
         self,
@@ -860,7 +945,7 @@ class PhysicalAwareClassifier(nn.Module):
         dac_delta: Optional[torch.Tensor] = None,
         pa_delta: Optional[torch.Tensor] = None,
     ):
-        feat_id, feat_dac, feat_pa, defect_feats, feat_joint, zero_emb = self._compute_features_for_head(
+        feat_id, feat_dac, feat_pa, defect_feats, feat_joint, zero_emb, _ = self._compute_prehead_features(
             base,
             dac_local=dac_local,
             pa_local=pa_local,
@@ -949,6 +1034,8 @@ class CVSincNet(nn.Module):
         freq_stability_mode: str = "off",
         time_stability_channels: int = 8,
         freq_stability_channels: int = 4,
+        phase1_clic_frozen_mode: bool = False,
+        phase1_clic_operator_mode: str = "raw_phase_control",
     ):
         super().__init__()
         self.dataset = str(dataset)
@@ -957,6 +1044,9 @@ class CVSincNet(nn.Module):
         self.emb_dim = int(emb_dim)
         self.pad_crop_mode = str(pad_crop_mode)
         self.sample_rate = float(sample_rate)
+        self.phase1_clic_frozen_mode = bool(phase1_clic_frozen_mode)
+        self.clic_operator_mode = str(phase1_clic_operator_mode)
+        self.clic = None
         self.freq_bands = int(freq_bands)
         self.use_rfft_pair = bool(use_rfft_pair)
         self.use_circularity = bool(use_circularity)
@@ -1161,6 +1251,10 @@ class CVSincNet(nn.Module):
         )
 
         self._init_weights()
+        if self.phase1_clic_frozen_mode:
+            self._validate_clic_identity_head_contract()
+            self._validate_clic_operator_mode()
+            self.clic = CLICFusion(embed_dim=self.emb_dim, input_length=self.input_len)
 
     @staticmethod
     def _parse_branch_ablation(branch_ablation: str):
@@ -1231,6 +1325,41 @@ class CVSincNet(nn.Module):
                 nn.init.kaiming_normal_(m.weight, nonlinearity="linear")
                 if m.bias is not None:
                     nn.init.zeros_(m.bias)
+
+    def _validate_clic_operator_mode(self) -> None:
+        if self.clic_operator_mode not in _ALLOWED_CLIC_OPERATOR_MODES:
+            raise ValueError(
+                "phase1_clic_operator_mode must be 'raw_phase_control' or "
+                "'complex_local_invariant_curvature'"
+            )
+
+    def _validate_clic_identity_head_contract(self) -> None:
+        head = getattr(getattr(self, "cls_head", None), "head", None)
+        weight = getattr(head, "weight", None)
+        if not isinstance(weight, nn.Parameter):
+            raise ValueError("CLIC requires the existing exact identity head weight parameter")
+        if tuple(weight.shape) != (4, CLIC_EMBED_DIM):
+            raise ValueError(
+                "CLIC requires the existing exact identity head weight shape [4, 160], "
+                f"got {tuple(weight.shape)}"
+            )
+        if not bool(weight.requires_grad):
+            raise ValueError("CLIC requires a trainable exact identity head weight")
+        if self.emb_dim != CLIC_EMBED_DIM:
+            raise ValueError(f"CLIC requires identity embedding dimension {CLIC_EMBED_DIM}")
+        if self.input_len != CLIC_INPUT_LENGTH:
+            raise ValueError(f"CLIC requires padded/cropped IQ length {CLIC_INPUT_LENGTH}")
+
+    def _apply_clic_prehead(self, received_i: torch.Tensor, feat_joint_base: torch.Tensor):
+        self._validate_clic_identity_head_contract()
+        self._validate_clic_operator_mode()
+        if not isinstance(self.clic, CLICFusion):
+            raise ValueError("CLIC frozen mode requires an identity-backbone CLICFusion module")
+        return self.clic(
+            received_i,
+            feat_joint_base,
+            operator_mode=self.clic_operator_mode,
+        )
 
     @staticmethod
     def _to_complex(iq: torch.Tensor) -> torch.Tensor:
@@ -1430,6 +1559,7 @@ class CVSincNet(nn.Module):
         y: Optional[torch.Tensor] = None,
         return_aux: bool = False,
         domain_labels: Optional[torch.Tensor] = None,
+        features_only: bool = False,
     ):
         x = pad_crop_iq(x, self.input_len, mode=self.pad_crop_mode)
         B = x.size(0)
@@ -1539,8 +1669,9 @@ class CVSincNet(nn.Module):
             base_parts.append(zero_emb)
         base_in = torch.cat(base_parts, dim=1)
         base = self.fuse(base_in)
+        prehead_transform = self._apply_clic_prehead if self.clic is not None else None
 
-        if not return_aux:
+        if not return_aux and not features_only:
             return self.cls_head.forward_logits(
                 base,
                 dac_local=dac_local,
@@ -1548,21 +1679,70 @@ class CVSincNet(nn.Module):
                 labels=y,
                 dac_delta=dac_delta,
                 pa_delta=pa_delta,
+                received_i=x,
+                prehead_transform=prehead_transform,
             )
 
         feat_con = self.con_proj(base)
 
-        logits, dac_pred, pa_pred, feat_id, feat_dac, feat_pa, feat_imp, feat_joint = self.cls_head(
+        if features_only:
+            feat_id, feat_dac, feat_pa, defect_feats, feat_joint, zero_emb, prehead_aux = self.cls_head._compute_prehead_features(
+                base,
+                dac_local=dac_local,
+                pa_local=pa_local,
+                dac_delta=dac_delta,
+                pa_delta=pa_delta,
+                received_i=x,
+                prehead_transform=prehead_transform,
+            )
+            feat_imp = self.cls_head.imp_merge(torch.cat(defect_feats, dim=1)) if self.cls_head.imp_merge is not None else zero_emb
+            dac_pred = torch.sigmoid(self.cls_head.dac_head(feat_dac).squeeze(-1)) if self.cls_head.dac_head is not None else base.new_zeros(base.size(0))
+            pa_pred = torch.sigmoid(self.cls_head.pa_head(feat_pa).squeeze(-1)) if self.cls_head.pa_head is not None else base.new_zeros(base.size(0))
+            if not return_aux:
+                return feat_joint
+            out: Dict[str, torch.Tensor] = {
+                'dac_pred': dac_pred,
+                'pa_pred': pa_pred,
+                'feat_cls': feat_id,
+                'feat_imp': feat_imp,
+                'feat_dac': feat_dac,
+                'feat_pa': feat_pa,
+                'feat_con': feat_con,
+                't_emb': t_emb,
+                'f_emb': f_emb,
+                'dac_local': dac_local,
+                'pa_local': pa_local,
+                'rho': rho,
+                'f_stats': dac_stats,
+                'dac_stats': dac_stats,
+                'pa_stats': pa_stats,
+                'base': base,
+                'feat_joint': feat_joint,
+            }
+            out.update(prehead_aux)
+            return out
+
+        (
+            logits,
+            dac_pred,
+            pa_pred,
+            feat_id,
+            feat_dac,
+            feat_pa,
+            feat_imp,
+            feat_joint,
+        ), prehead_aux = self.cls_head.forward_with_prehead(
             base,
             dac_local=dac_local,
             pa_local=pa_local,
             labels=y,
-            return_emb=True,
             dac_delta=dac_delta,
             pa_delta=pa_delta,
+            received_i=x,
+            prehead_transform=prehead_transform,
         )
 
-        return {
+        out = {
             'logits': logits,
             'dac_pred': dac_pred,
             'pa_pred': pa_pred,
@@ -1582,6 +1762,8 @@ class CVSincNet(nn.Module):
             'base': base,
             'feat_joint': feat_joint,
         }
+        out.update(prehead_aux)
+        return out
 
 
 # ----------------------- factory -----------------------
@@ -1615,6 +1797,8 @@ def build_model(
     freq_stability_mode: str = "off",
     time_stability_channels: int = 8,
     freq_stability_channels: int = 4,
+    phase1_clic_frozen_mode: bool = False,
+    phase1_clic_operator_mode: str = "raw_phase_control",
 ):
     ds = str(dataset).lower()
     ms = str(model_size).upper().strip()
@@ -1786,5 +1970,7 @@ def build_model(
         freq_stability_mode=freq_stability_mode,
         time_stability_channels=time_stability_channels,
         freq_stability_channels=freq_stability_channels,
+        phase1_clic_frozen_mode=phase1_clic_frozen_mode,
+        phase1_clic_operator_mode=phase1_clic_operator_mode,
         **cfg,
     )

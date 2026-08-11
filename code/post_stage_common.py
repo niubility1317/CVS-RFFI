@@ -142,6 +142,8 @@ def default_data_args() -> Dict[str, Any]:
         "seed": 1337,
         "eval_max_batches": 0,
         "sample_rate_hz": 0.0,
+        "phase1_clic_frozen_mode": False,
+        "phase1_clic_operator_mode": "raw_phase_control",
     }
 
 
@@ -295,11 +297,20 @@ def load_checkpoint(path: str, device: torch.device) -> Dict[str, Any]:
 
 
 def merge_checkpoint_args(ckpt: Mapping[str, Any], cli_args, *, input_len: int, num_domains: int) -> SimpleNamespace:
+    checkpoint_args = dict(ckpt.get("args") or {})
+    cli_values = vars(cli_args)
     merged = default_data_args()
-    merged.update(dict(ckpt.get("args") or {}))
-    for key, value in vars(cli_args).items():
+    merged.update(checkpoint_args)
+    for key, value in cli_values.items():
         if key in merged:
             merged[key] = value
+    if (
+        bool(merged.get("phase1_clic_frozen_mode", False))
+        and "num_classes" not in checkpoint_args
+        and "num_classes" not in cli_values
+    ):
+        # CLIC's frozen local classification contract is exactly [4, 160].
+        merged["num_classes"] = 4
     if float(merged.get("sample_rate_hz", 0.0)) <= 0.0:
         merged["sample_rate_hz"] = 25e6 if str(merged.get("dataset", "wisig")) == "wisig" else 5e6
     merged["input_len"] = int(input_len)
@@ -341,6 +352,12 @@ def build_baseline_model(model_args, device: torch.device) -> nn.Module:
         arch_family=str(getattr(model_args, "arch_family", "cvsincnet")),
         representation_mode=str(
             getattr(model_args, "representation_mode", "dual")
+        ),
+        phase1_clic_frozen_mode=bool(
+            getattr(model_args, "phase1_clic_frozen_mode", False)
+        ),
+        phase1_clic_operator_mode=str(
+            getattr(model_args, "phase1_clic_operator_mode", "raw_phase_control")
         ),
     ).to(device)
 

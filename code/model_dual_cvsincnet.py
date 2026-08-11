@@ -9,6 +9,8 @@ from typing import Dict, Optional, Sequence, Tuple
 import torch
 import torch.nn as nn
 
+from cvsrffi.phase1_clic import CLICFusion
+
 _CODE_ROOT = Path(__file__).resolve().parent
 _REPO_ROOT = Path(__file__).resolve().parents[1]
 for _path in (_CODE_ROOT, _REPO_ROOT):
@@ -64,6 +66,20 @@ def backbone_forward_compat(backbone, x, *, y=None, return_aux: bool = True, dom
         return backbone(x, y=y, return_aux=return_aux, domain_labels=domain_labels)
     except TypeError:
         return backbone(x, y=y, return_aux=return_aux)
+
+
+def backbone_features_only_compat(backbone, x, *, y=None, domain_labels=None):
+    """Read a backbone's auxiliary features without invoking its class head."""
+    try:
+        return backbone(
+            x,
+            y=y,
+            return_aux=True,
+            domain_labels=domain_labels,
+            features_only=True,
+        )
+    except TypeError as exc:
+        raise TypeError("domain backbone must support the features_only interface") from exc
 
 
 class GradReverse(torch.autograd.Function):
@@ -333,13 +349,33 @@ class FeatureBackboneAdapter(nn.Module):
         y: Optional[torch.Tensor] = None,
         return_aux: bool = False,
         domain_labels: Optional[torch.Tensor] = None,
+        features_only: bool = False,
     ):
         del y, domain_labels
         if self.arch_family == "resnet18_1d":
             z = self.encoder(x)
-            logits = self.classifier(z)
         else:
             z = self.encoder.forward_features(x)
+        if features_only:
+            if not return_aux:
+                return z
+            zero_feat = torch.zeros_like(z)
+            zero_score = z.new_zeros(z.size(0))
+            return {
+                "feat_cls": z,
+                "feat_imp": z,
+                "feat_dac": zero_feat,
+                "feat_pa": zero_feat,
+                "feat_joint": z,
+                "feat_con": z,
+                "base": z,
+                "dac_pred": zero_score,
+                "pa_pred": zero_score,
+                "arch_family": self.arch_family,
+            }
+        if self.arch_family == "resnet18_1d":
+            logits = self.classifier(z)
+        else:
             logits = self.encoder.classifier(z)
         if not return_aux:
             return logits
@@ -393,6 +429,8 @@ def build_arch_backbone(
     freq_stability_mode: str = "off",
     time_stability_channels: int = 8,
     freq_stability_channels: int = 4,
+    phase1_clic_frozen_mode: bool = False,
+    phase1_clic_operator_mode: str = "raw_phase_control",
 ) -> nn.Module:
     family = str(arch_family or "cvsincnet").lower().strip()
     if family == "cvsincnet":
@@ -426,6 +464,8 @@ def build_arch_backbone(
             freq_stability_mode=freq_stability_mode,
             time_stability_channels=int(time_stability_channels),
             freq_stability_channels=int(freq_stability_channels),
+            phase1_clic_frozen_mode=bool(phase1_clic_frozen_mode),
+            phase1_clic_operator_mode=str(phase1_clic_operator_mode),
         )
     return FeatureBackboneAdapter(
         family,
@@ -490,6 +530,8 @@ class DualCVSincNetDisentangle(nn.Module):
         use_tx_adv_on_zdom: bool = False,
         arch_family: str = "cvsincnet",
         representation_mode: str = "dual",
+        phase1_clic_frozen_mode: bool = False,
+        phase1_clic_operator_mode: str = "raw_phase_control",
     ):
         super().__init__()
         self.num_classes = int(num_classes)
@@ -500,6 +542,12 @@ class DualCVSincNetDisentangle(nn.Module):
             raise ValueError(
                 "representation_mode must be dual or single_parameter_matched"
             )
+        self.phase1_clic_frozen_mode = bool(phase1_clic_frozen_mode)
+        self.phase1_clic_operator_mode = str(phase1_clic_operator_mode)
+        if self.phase1_clic_frozen_mode and self.representation_mode != "dual":
+            raise ValueError("CLIC requires representation_mode=dual; single_parameter_matched is not legal")
+        if self.phase1_clic_frozen_mode and self.arch_family != "cvsincnet":
+            raise ValueError("CLIC requires the CVSincNet dual identity backbone")
         self.id_feature_key = str(id_feature_key)
         self.dom_feature_key = str(dom_feature_key)
         self.model_variant = str(model_variant or "base").lower().strip()
@@ -554,6 +602,8 @@ class DualCVSincNetDisentangle(nn.Module):
             freq_stability_mode=self.id_freq_stability_mode,
             time_stability_channels=int(time_stability_channels),
             freq_stability_channels=int(freq_stability_channels),
+            phase1_clic_frozen_mode=self.phase1_clic_frozen_mode,
+            phase1_clic_operator_mode=self.phase1_clic_operator_mode,
         )
         self.dom_backbone = build_arch_backbone(
             self.arch_family,
@@ -578,7 +628,10 @@ class DualCVSincNetDisentangle(nn.Module):
             freq_stability_mode=self.domain_freq_stability_mode,
             time_stability_channels=int(time_stability_channels),
             freq_stability_channels=int(freq_stability_channels),
+            phase1_clic_frozen_mode=False,
+            phase1_clic_operator_mode=self.phase1_clic_operator_mode,
         )
+        self._validate_clic_topology()
         if self.arch_family == "cvsincnet" and self.model_variant in {"lite_b", "lite_d", "lite_e", "lite_f", "lite_g", "lite_h"}:
             self._share_early_stem()
 
@@ -646,6 +699,16 @@ class DualCVSincNetDisentangle(nn.Module):
                 if src is not None and dst is not None:
                     setattr(self.dom_backbone, name, src)
 
+    def _validate_clic_topology(self) -> None:
+        if self.dom_backbone is not None and getattr(self.dom_backbone, "clic", None) is not None:
+            raise ValueError("domain backbone must not own a CLIC module")
+        if not self.phase1_clic_frozen_mode:
+            return
+        if self.representation_mode != "dual":
+            raise ValueError("CLIC requires representation_mode=dual")
+        if not isinstance(getattr(self.id_backbone, "clic", None), CLICFusion):
+            raise ValueError("CLIC frozen mode requires id_backbone.clic")
+
     @staticmethod
     def _resolve_domain_stability_mode(domain_mode: str, id_mode: str) -> str:
         mode = str(domain_mode or "off").lower().strip()
@@ -692,6 +755,7 @@ class DualCVSincNetDisentangle(nn.Module):
         return_aux: bool = False,
         domain_labels: Optional[torch.Tensor] = None,
     ):
+        self._validate_clic_topology()
         if self.representation_mode == "single_parameter_matched":
             aux_id = backbone_forward_compat(
                 self.id_backbone,
@@ -739,10 +803,21 @@ class DualCVSincNetDisentangle(nn.Module):
             )
 
         aux_id = backbone_forward_compat(self.id_backbone, x, y=y_tx, return_aux=True, domain_labels=domain_labels)
-        aux_dom = backbone_forward_compat(self.dom_backbone, x, y=None, return_aux=True, domain_labels=None)
+        aux_dom = (
+            backbone_features_only_compat(self.dom_backbone, x, y=None, domain_labels=None)
+            if self.phase1_clic_frozen_mode
+            else backbone_forward_compat(self.dom_backbone, x, y=None, return_aux=True, domain_labels=None)
+        )
 
         tx_logits = aux_id["logits"]
-        z_id = self._pick_z_id(aux_id)
+        if self.phase1_clic_frozen_mode:
+            z_id = aux_id.get("z_id")
+            q_clic = aux_id.get("q_clic")
+            if not torch.is_tensor(z_id) or not torch.is_tensor(q_clic):
+                raise ValueError("CLIC identity backbone must expose z_id and q_clic")
+        else:
+            z_id = self._pick_z_id(aux_id)
+            q_clic = None
         z_dom_raw = self._pick_z_dom(aux_dom)
         z_dom, z_dom_rcn = self.dom_enhancer(z_dom_raw, x)
 
@@ -760,7 +835,7 @@ class DualCVSincNetDisentangle(nn.Module):
             "z_id": z_id,
             "z_dom": z_dom,
             "z_dom_raw": z_dom_raw,
-            "z_id_key": self.id_feature_key,
+            "z_id_key": "z_id" if self.phase1_clic_frozen_mode else self.id_feature_key,
             "z_dom_key": self.dom_feature_key,
             "domain_branch_ablation": self.domain_branch_ablation,
             "id_time_stability_mode": self.id_time_stability_mode,
@@ -776,6 +851,8 @@ class DualCVSincNetDisentangle(nn.Module):
             out["tx_adv_logits"] = tx_adv_logits
         if torch.is_tensor(z_dom_rcn):
             out["z_dom_rcn"] = z_dom_rcn
+        if torch.is_tensor(q_clic):
+            out["q_clic"] = q_clic
 
         # top-level aliases: no parameter changes, only easier access
         alias_map = {
@@ -847,6 +924,8 @@ def build_dual_model(
     use_tx_adv_on_zdom: bool = False,
     arch_family: str = "cvsincnet",
     representation_mode: str = "dual",
+    phase1_clic_frozen_mode: bool = False,
+    phase1_clic_operator_mode: str = "raw_phase_control",
 ) -> DualCVSincNetDisentangle:
     return DualCVSincNetDisentangle(
         num_classes=num_classes,
@@ -890,4 +969,6 @@ def build_dual_model(
         use_tx_adv_on_zdom=use_tx_adv_on_zdom,
         arch_family=arch_family,
         representation_mode=representation_mode,
+        phase1_clic_frozen_mode=phase1_clic_frozen_mode,
+        phase1_clic_operator_mode=phase1_clic_operator_mode,
     )
