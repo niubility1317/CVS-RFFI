@@ -101,7 +101,7 @@ def _checkpoint_fixture(tmp_path: Path, *, arm: str = "G", fold: int = 1) -> dic
         "labeled_ratio": 0.07,
         "unlabeled_ratio": 0.63,
         "source_val_ratio": 0.30,
-        "seed": 7281105,
+        "seed": 7281164,
         "candidate_id": candidate,
         "run_id": TRAINING_RUN,
         "phase1_clic_frozen_mode": True,
@@ -288,6 +288,39 @@ def test_clic_clean_exporter_reopens_versioned_terminal_and_checkpoint_contract(
     assert receipt["terminal_contract"] != "AWAITING_EXTERNAL_CHECKPOINT_SHA"
     assert receipt["source_l_only"] is True
     assert CLEAN.EXPECTED_LV_EXPORT_SCHEMA == "cvs.phase1.clic_lv_export.v1"
+
+
+def test_clic_clean_rejects_synchronized_checkpoint_seed_drift(tmp_path: Path) -> None:
+    """A valid fixture reopens, but a rehashed seed mutation fails closed."""
+
+    paths = _checkpoint_fixture(tmp_path, arm="G")
+    checkpoint = torch.load(paths["checkpoint"], map_location="cpu")
+    CLEAN.validate_clic_training_checkpoint(
+        checkpoint,
+        checkpoint_path=paths["checkpoint"],
+        terminal_receipt_path=paths["terminal"],
+        source_tx_ids=SOURCE_TX,
+        known_validation_tx_ids=HELD_TX,
+        proxy_unknown_tx_ids=PROXY_TX,
+    )
+
+    checkpoint["args"]["seed"] = 7281105
+    torch.save(checkpoint, paths["checkpoint"])
+    drift_sha = _sha_file(paths["checkpoint"])
+    envelope = json.loads(paths["terminal"].read_text(encoding="utf-8"))
+    envelope["selected_checkpoint_sha256"] = drift_sha
+    envelope["strict_core"]["final_checkpoint_sha256"] = drift_sha
+    paths["terminal"].write_text(json.dumps(envelope, ensure_ascii=False, sort_keys=True) + "\n", encoding="utf-8")
+    drifted_checkpoint = torch.load(paths["checkpoint"], map_location="cpu")
+    with pytest.raises(Exception, match="seed|drift"):
+        CLEAN.validate_clic_training_checkpoint(
+            drifted_checkpoint,
+            checkpoint_path=paths["checkpoint"],
+            terminal_receipt_path=paths["terminal"],
+            source_tx_ids=SOURCE_TX,
+            known_validation_tx_ids=HELD_TX,
+            proxy_unknown_tx_ids=PROXY_TX,
+        )
 
 
 @pytest.mark.parametrize("forbidden", ("icmt_receipt_schema", "source_receiver_ids", "target_rows", "raw_iq", "sample_ids"))
