@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import sys
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 import torch
@@ -29,6 +30,63 @@ from cvsrffi.phase1_clic import (  # noqa: E402
     initialize_clic_module_,
     totalized_clic_tokens,
 )
+from model import build_model  # noqa: E402
+from model_dual_cvsincnet import build_dual_model  # noqa: E402
+from post_stage_common import build_baseline_model, merge_checkpoint_args  # noqa: E402
+
+
+def _lite_backbone_kwargs(**overrides):
+    """Construct the smallest real CVSincNet with the frozen d=160 head."""
+
+    kwargs = {
+        "num_classes": 4,
+        "model_size": "S",
+        "dataset": "wisig",
+        "input_len": 256,
+        "sample_rate_hz": 25e6,
+        "model_variant": "lite_d",
+        "branch_ablation": "time_only",
+    }
+    kwargs.update(overrides)
+    return kwargs
+
+
+def build_lite_clic_backbone(
+    *,
+    operator_mode: str = "raw_phase_control",
+    frozen_mode: bool = True,
+    **overrides,
+):
+    kwargs = _lite_backbone_kwargs(**overrides)
+    kwargs.update(
+        phase1_clic_frozen_mode=bool(frozen_mode),
+        phase1_clic_operator_mode=str(operator_mode),
+    )
+    return build_model(**kwargs)
+
+
+def build_lite_dual_clic_model(
+    *,
+    operator_mode: str = "raw_phase_control",
+    frozen_mode: bool = True,
+    **overrides,
+):
+    kwargs = _lite_backbone_kwargs(**overrides)
+    kwargs.pop("num_classes", None)
+    kwargs.pop("sample_rate_hz", None)
+    return build_dual_model(
+        num_classes=4,
+        num_domains=2,
+        model_size=kwargs.pop("model_size"),
+        dataset=kwargs.pop("dataset"),
+        input_len=kwargs.pop("input_len"),
+        sample_rate_hz=25e6,
+        domain_enhancer="off",
+        fast_infer_when_no_aux=False,
+        phase1_clic_frozen_mode=bool(frozen_mode),
+        phase1_clic_operator_mode=str(operator_mode),
+        **kwargs,
+    )
 
 
 def _nonzero_iq(*, batch: int = 2, length: int = CLIC_INPUT_LENGTH) -> torch.Tensor:
@@ -284,3 +342,154 @@ def test_clic_fusion_nonfinite_intermediate_fails_closed():
             torch.zeros(1, 160),
             operator_mode="complex_local_invariant_curvature",
         )
+
+
+def test_clic_runs_before_the_only_exact_identity_head():
+    model = build_lite_dual_clic_model(
+        operator_mode="complex_local_invariant_curvature",
+    )
+    model.eval()
+    events = []
+    clic = getattr(model.id_backbone, "clic", None)
+    assert isinstance(clic, CLICFusion)
+    assert getattr(model.dom_backbone, "clic", None) is None
+    clic_hook = clic.register_forward_pre_hook(lambda *_: events.append("clic"))
+    head_hook = model.id_backbone.cls_head.head.register_forward_pre_hook(
+        lambda *_: events.append("head")
+    )
+    try:
+        with torch.no_grad():
+            out = model(
+                _nonzero_iq(batch=2),
+                y_tx=torch.tensor([0, 1]),
+                return_aux=True,
+            )
+    finally:
+        clic_hook.remove()
+        head_hook.remove()
+
+    assert events == ["clic", "head"]
+    assert out["z_id"].shape == (2, 160)
+    assert out["z_dom"].shape == (2, 160)
+    assert out["q_clic"].shape == (2, 4)
+    assert out["tx_logits"].shape == (2, 4)
+    assert out["aux_id"]["feat_joint_base"].shape == (2, 160)
+    assert out["aux_id"]["feat_joint"].shape == (2, 160)
+    assert out["aux_id"]["z_id"].shape == (2, 160)
+    assert out["aux_id"]["q_clic"].shape == (2, 4)
+
+
+def test_fast_and_aux_logits_share_the_same_clic_prehead_path():
+    model = build_lite_clic_backbone(operator_mode="raw_phase_control")
+    model.eval()
+    x = _nonzero_iq(batch=2)
+    with torch.no_grad():
+        fast = model(x, return_aux=False)
+        aux = model(x, return_aux=True)
+    torch.testing.assert_close(fast, aux["logits"], rtol=0, atol=0)
+    torch.testing.assert_close(aux["feat_joint"], aux["z_id"], rtol=0, atol=0)
+    assert aux["feat_joint_base"].shape == (2, 160)
+    assert aux["q_clic"].shape == (2, 4)
+
+
+def test_domain_backbone_is_features_only_and_never_owns_or_calls_a_head():
+    model = build_lite_dual_clic_model(operator_mode="raw_phase_control")
+    model.eval()
+    calls = []
+    assert getattr(model.dom_backbone, "clic", None) is None
+    handle = model.dom_backbone.cls_head.head.register_forward_hook(
+        lambda *_: calls.append("domain-head")
+    )
+    try:
+        with torch.no_grad():
+            out = model(_nonzero_iq(batch=2), return_aux=True)
+    finally:
+        handle.remove()
+    assert calls == []
+    assert out["z_dom"].shape == (2, 160)
+    assert "logits" not in out["aux_dom"]
+
+
+def test_disabled_clic_preserves_the_legacy_backbone_contract():
+    model = build_lite_clic_backbone(frozen_mode=False)
+    model.eval()
+    assert getattr(model, "clic", None) is None
+    x = _nonzero_iq(batch=2)
+    with torch.no_grad():
+        fast = model(x, return_aux=False)
+        aux = model(x, return_aux=True)
+    torch.testing.assert_close(fast, aux["logits"], rtol=0, atol=0)
+    for key in ("feat_cls", "feat_imp", "feat_dac", "feat_pa", "feat_con", "feat_joint"):
+        assert key in aux
+    for key in ("feat_joint_base", "z_id", "q_clic"):
+        assert key not in aux
+
+
+def test_disabled_clic_preserves_the_legacy_dual_contract():
+    model = build_lite_dual_clic_model(frozen_mode=False)
+    model.eval()
+    assert getattr(model.id_backbone, "clic", None) is None
+    with torch.no_grad():
+        out = model(_nonzero_iq(batch=2), return_aux=True)
+    assert out["tx_logits"].shape == (2, 4)
+    assert out["z_id"].shape == (2, 160)
+    assert out["z_dom"].shape == (2, 160)
+    assert "q_clic" not in out
+
+
+def test_clic_rejects_single_parameter_matched_representation():
+    with pytest.raises(ValueError, match="single_parameter_matched|CLIC"):
+        build_lite_dual_clic_model(
+            representation_mode="single_parameter_matched",
+        )
+
+
+def test_clic_rejects_a_domain_backbone_clic_module():
+    model = build_lite_dual_clic_model(frozen_mode=False)
+    model.dom_backbone.clic = CLICFusion(embed_dim=160, input_length=256)
+    with pytest.raises(ValueError, match="domain.*CLIC|CLIC.*domain"):
+        model(_nonzero_iq(batch=2), return_aux=True)
+
+
+def test_clic_rejects_wrong_shape_identity_head():
+    with pytest.raises(ValueError, match="160|head"):
+        build_lite_clic_backbone(model_variant="lite_c")
+
+
+def test_clic_rejects_a_non_trainable_exact_identity_head():
+    model = build_lite_clic_backbone()
+    model.eval()
+    model.cls_head.head.weight.requires_grad_(False)
+    with pytest.raises(ValueError, match="trainable|requires_grad|head"):
+        model(_nonzero_iq(batch=2), return_aux=False)
+
+
+def test_clic_rejects_an_invalid_operator_mode_fail_closed():
+    with pytest.raises(ValueError, match="operator|mode"):
+        build_lite_clic_backbone(operator_mode="not-a-clic-operator")
+
+
+def test_checkpoint_and_model_kwargs_reach_the_clic_constructor():
+    ckpt = {
+        "args": {
+            "dataset": "wisig",
+            "model_variant": "lite_d",
+        }
+    }
+    cli_args = SimpleNamespace(
+        phase1_clic_frozen_mode=True,
+        phase1_clic_operator_mode="complex_local_invariant_curvature",
+        model_variant="lite_d",
+    )
+    model_args = merge_checkpoint_args(
+        ckpt,
+        cli_args,
+        input_len=256,
+        num_domains=2,
+    )
+    assert model_args.phase1_clic_frozen_mode is True
+    assert model_args.phase1_clic_operator_mode == "complex_local_invariant_curvature"
+    model = build_baseline_model(model_args, torch.device("cpu"))
+    assert isinstance(model.id_backbone.clic, CLICFusion)
+    assert model.id_backbone.clic_operator_mode == "complex_local_invariant_curvature"
+    assert getattr(model.dom_backbone, "clic", None) is None
