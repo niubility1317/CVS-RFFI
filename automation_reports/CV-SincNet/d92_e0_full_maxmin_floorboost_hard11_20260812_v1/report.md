@@ -112,11 +112,24 @@ K1 liveness outer为rx_20_1__seed_713106__k_1__new_20，不进入性能均值。
 |主线整合回归|PASS|11个相关测试文件共130项通过；包含既有E0OCF与E0_FULL_ONLY回归|
 |静态检查|PASS|7个生产文件py_compile、config JSON、两个CLI help、git diff --check均通过|
 |独立P0/P1|PASS|独立Terra复审：P0=0、P1=0、APPROVE|
-|Git commit|PENDING|待填|
+|Git commit|PASS|方法与Hard11实现commit=`25047050`；发布控制面commit待填|
 |N607 preflight/smoke/run|PENDING|待填|
 |完整取回与分析|PENDING|待填|
 
 核心实现已经明确区分四种状态：DA1_REG0不激活、K1/K2精确D92 FULL别名、K>2正常FloorBoost、K>2仅数值退化时完整FULL头逐字节回退。registry、标签、query访问和新类行漂移不进入回退分支，必须报错。尚未读取任何新候选性能。
+
+### 8.1冻结发布包
+
+|项目|冻结值|
+|---|---|
+|方法commit|`25047050`|
+|runtime archive|`d92_floorboost_runtime_closure_25047050.tar.gz`；5014801B；1302成员|
+|archive SHA256|`da99c0d36541c12b355f947c706092f569d04fbfb7e26b8e7c8f6773282041dc`|
+|method lock SHA256|`8d5ca23cc2f0cdbe995dd7cb5ba382550d9ca172ec2d81e39abd029669bfd510`|
+|launch SHA256|`c2e9afce282e2b5d041a12f1549039149f2cde5f7f541bca03f42b7e25d72c48`|
+|archive闭包|包含`code/cvsrffi/__init__.py`、FloorBoost核心/runner及D81/D92复用入口；不存在`code/code`层级|
+
+同步映射固定为：archive→`source_root/d92_floorboost_runtime_closure_25047050.tar.gz`；method lock→`source_root/configs/stage2_d92_full_maxmin_floorboost_hard11_v1.json`；launch→`source_root/launch.sh`。`launch.sh`先核对两份SHA和全新路径，再解包、核对import闭包、prepare 11job、执行真实checkpoint truth-free K1 smoke；只有smoke闭合后才启动8个shard。
 
 ## 9.结果表
 
