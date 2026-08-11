@@ -55,6 +55,7 @@ from cvsrffi.phase1_clic import (  # noqa: E402
 from model import build_model  # noqa: E402
 from model_dual_cvsincnet import build_dual_model  # noqa: E402
 from post_stage_common import build_baseline_model, merge_checkpoint_args  # noqa: E402
+import cvsrffi.phase1_clic as phase1_clic_module  # noqa: E402
 import SSDG.train_ssdg as train_ssdg  # noqa: E402
 
 
@@ -1292,6 +1293,173 @@ def test_train_parser_exposes_frozen_clic_flags_defaults_choices_and_rejection()
         )
 
 
+def _clic_validation_args(tmp_path: Path):
+    """Build parser args that reach CLIC config validation without data access."""
+
+    parser = train_ssdg.build_arg_parser()
+    args = parser.parse_args(
+        [
+            "--output_dir",
+            str(tmp_path / "clic-config"),
+            "--baseline_ckpt",
+            "baseline-for-config-only.pth",
+            "--from_scratch",
+            "false",
+            "--freeze_backbone",
+            "false",
+            "--amp",
+            "true",
+            "--epochs",
+            "40",
+            "--label_epochs",
+            "40",
+            "--pseudo_epochs",
+            "0",
+            "--batch_size",
+            "128",
+            "--checkpoint_selection",
+            "final_only",
+            "--phase1_clic_frozen_mode",
+            "true",
+            "--phase1_clic_operator_mode",
+            "raw_phase_control",
+            "--use_sat_consistency",
+            "--lambda_sat_cons",
+            "0.10",
+            "--lambda_sat_cls",
+            "0",
+            "--sat_cons_start_epoch",
+            "1",
+            "--sat_train_scenarios",
+            ",".join(FORMAL_LEO_WEAK_SCENARIOS),
+            "--sat_view_prob",
+            "1.0",
+        ]
+    )
+    # The trainer's CLIC gate consumes this legacy input-length attribute even
+    # though the public parser does not expose it as a CLI switch.
+    args.wisig_out_len = CLIC_INPUT_LENGTH
+    for action in parser._actions:
+        if action.dest.startswith("lambda_"):
+            setattr(args, action.dest, 0.0)
+    args.lambda_sat_cons = 0.10
+    args.lambda_sat_cls = 0.0
+    for field in (
+        "phase1_ccpc_leo_frozen_mode",
+        "phase1_ccpc_leo_enabled",
+        "phase1_pamr_frozen_mode",
+        "phase1_pamr_enabled",
+        "phase1_cb_sfce_frozen_mode",
+        "phase1_cb_sfce_enabled",
+        "phase1_gd_proto_nll_frozen_mode",
+        "phase1_gd_proto_nll_enabled",
+        "phase1_icmt_frozen_mode",
+        "phase1_icmt_enabled",
+        "phase1_cagm_frozen_mode",
+        "phase1_cagm_enabled",
+        "phase1_rcrmd_frozen_mode",
+        "phase1_rcrmd_enabled",
+        "phase1_rcat_frozen_mode",
+        "phase1_rcat_enabled",
+        "phase1_rcmmc_frozen_mode",
+        "phase1_rcmmc_enabled",
+        "phase1_hscf_frozen_mode",
+        "phase1_hscf_enabled",
+        "phase1_hnccd_frozen_mode",
+        "phase1_hnccd_enabled",
+        "phase1_recte_frozen_mode",
+        "phase1_recte_enabled",
+        "phase1_cp_sfce_frozen_mode",
+        "phase1_cp_sfce_enabled",
+        "manytx_real_oe_enabled",
+        "manytx_real_oe_protocol_enabled",
+        "use_unlabeled",
+        "use_ema_teacher",
+        "use_concat_sat_channel_aug",
+        "use_aug",
+        "use_mixstyle",
+        "use_phase2_ground_prototypes",
+        "pseudo_domain_gate",
+        "pseudo_temporal_gate",
+        "use_proto_memory",
+        "use_feature_masks",
+        "use_txrx_geometry_losses",
+        "reject_head",
+    ):
+        if hasattr(args, field):
+            setattr(args, field, False)
+    args.sat_view_schedule = ""
+    args.phase1_source_proxy_unknown_tx_ids = ""
+    return args
+
+
+def test_clic_zero_gate_covers_every_parser_lambda_except_satellite_consistency() -> None:
+    parser = train_ssdg.build_arg_parser()
+    parser_lambda_fields = {
+        action.dest
+        for action in parser._actions
+        if action.dest.startswith("lambda_")
+    }
+    source = inspect.getsource(train_ssdg.train)
+    tree = ast.parse(textwrap.dedent(source))
+    clic_scopes = [
+        node
+        for node in ast.walk(tree)
+        if isinstance(node, ast.If)
+        and any(
+            isinstance(name, ast.Name) and name.id == "clic_frozen_mode_active"
+            for name in ast.walk(node.test)
+        )
+    ]
+    config_scopes = [
+        scope
+        for scope in clic_scopes
+        if any(
+            isinstance(node, ast.Call) and _ast_call_name(node) == "CLICConfig"
+            for node in ast.walk(scope)
+        )
+    ]
+    assert len(config_scopes) == 1, "CLIC config gate scope is absent or duplicated"
+    gate_literals = {
+        node.value
+        for node in ast.walk(config_scopes[0])
+        if isinstance(node, ast.Constant) and isinstance(node.value, str)
+    }
+    missing = sorted(parser_lambda_fields - {"lambda_sat_cons"} - gate_literals)
+    assert not missing, f"CLIC config zero gate misses parser lambda fields: {missing}"
+
+
+@pytest.mark.parametrize(
+    "lambda_field",
+    (
+        "lambda_energy_in",
+        "lambda_energy_out",
+        "lambda_reject_neg",
+        "lambda_inter_neg",
+        "lambda_shell_neg",
+        "lambda_tail_outward_neg",
+        "lambda_bridge_neg",
+        "lambda_tail_cvar",
+        "lambda_overflow_cap",
+        "lambda_risk_energy_out",
+    ),
+)
+def test_clic_config_dynamically_rejects_nonzero_parser_lambda(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    lambda_field: str,
+) -> None:
+    args = _clic_validation_args(tmp_path)
+    setattr(args, lambda_field, 1.0)
+
+    def data_must_not_be_reached(*_args, **_kwargs):
+        pytest.fail(f"CLIC config accepted nonzero {lambda_field} before data construction")
+
+    monkeypatch.setattr(train_ssdg, "_build_ssdg_wisig_data", data_must_not_be_reached)
+    with pytest.raises(CLICConfigError, match=lambda_field):
+        train_ssdg.train(args)
+
+
 @pytest.mark.parametrize(
     "operator_mode",
     ("raw_phase_control", "complex_local_invariant_curvature"),
@@ -1723,25 +1891,10 @@ def test_train_clic_checkpoint_receipt_binds_external_sha_without_checkpoint_rew
     ]
     assert final_sha_writes, "external CLIC receipt must bind the final checkpoint SHA"
     assert any(_ast_is_name(value, "selected_checkpoint_sha256") for _, value in final_sha_writes)
-
-    checkpoint_hash_writes = [
-        (line, value)
-        for line, field, value in terminal_writes
-        if field in {"checkpoint_sha256", "selected_checkpoint_sha256"} and line > sha_line
-    ]
-    assert checkpoint_hash_writes, "external CLIC receipt must expose a checkpoint hash binding"
-
-    checkpoint_path_writes = [
-        (line, value)
-        for line, field, value in terminal_writes
-        if field in {"checkpoint_path", "selected_checkpoint", "selected_checkpoint_path"}
-    ]
-    assert checkpoint_path_writes, "external CLIC receipt must bind the selected checkpoint path"
-    assert any(
-        _ast_is_name(value, "selected_checkpoint")
-        or any(_ast_is_name(child, "selected_checkpoint") for child in ast.walk(value))
-        for _, value in checkpoint_path_writes
-    )
+    assert not any(
+        field in {"selected_checkpoint_path", "selected_checkpoint_sha256"}
+        for _, field, _ in terminal_writes
+    ), "strict CLIC core must not be extended with envelope path/hash fields"
 
     completed_after_sha = [
         value
@@ -1762,6 +1915,30 @@ def test_train_clic_checkpoint_receipt_binds_external_sha_without_checkpoint_rew
     validation_line = validation_calls[0].lineno
     assert validation_line > max(line for line, value in [(line, value) for line, field, value in terminal_writes if field == "completed" and line > sha_line])
 
+    envelope_writes = _ast_mapping_field_writes(clic_scope, "clic_terminal_envelope")
+    assert envelope_writes, "versioned CLIC terminal envelope construction is absent"
+    envelope_fields = {field: (line, value) for line, field, value in envelope_writes}
+    assert _ast_is_literal(envelope_fields["schema"][1], "cvs.phase1.clic_terminal_envelope.v1")
+    assert _ast_is_literal(envelope_fields["method"][1], "P1_CLIC")
+    assert _ast_is_name(envelope_fields["strict_core"][1], "clic_terminal_receipt")
+    path_line, path_value = envelope_fields["selected_checkpoint_path"]
+    hash_line, hash_value = envelope_fields["selected_checkpoint_sha256"]
+    assert path_line > validation_line and hash_line > validation_line
+    assert any(_ast_is_name(child, "selected_checkpoint") for child in ast.walk(path_value))
+    assert _ast_is_name(hash_value, "selected_checkpoint_sha256")
+
+    envelope_validation_calls = [
+        node
+        for node in ast.walk(clic_scope)
+        if isinstance(node, ast.Call)
+        and _ast_call_name(node) == "validate_clic_terminal_envelope"
+        and node.args
+        and _ast_is_name(node.args[0], "clic_terminal_envelope")
+    ]
+    assert len(envelope_validation_calls) == 1
+    envelope_validation_line = envelope_validation_calls[0].lineno
+    assert envelope_validation_line > max(path_line, hash_line)
+
     external_writes = [
         node
         for node in ast.walk(clic_scope)
@@ -1775,7 +1952,11 @@ def test_train_clic_checkpoint_receipt_binds_external_sha_without_checkpoint_rew
         )
     ]
     assert len(external_writes) == 1
-    assert external_writes[0].lineno > validation_line
+    assert external_writes[0].lineno > envelope_validation_line
+    assert any(
+        _ast_is_name(child, "clic_terminal_envelope")
+        for child in ast.walk(external_writes[0])
+    )
 
     # Restrict the no-overwrite assertion to the CLIC-named payload call above;
     # legacy Phase1 mechanism checkpoints use different payload/path variables.
@@ -1789,3 +1970,86 @@ def test_train_clic_checkpoint_receipt_binds_external_sha_without_checkpoint_rew
         and _ast_is_name(node.args[0], "selected_checkpoint")
     ]
     assert not later_selected_checkpoint_saves, "selected_checkpoint must not be overwritten after SHA binding"
+
+
+def _valid_clic_terminal_envelope() -> dict[str, object]:
+    strict_core = validate_clic_terminal_receipt(_complete_receipt("G"), arm="G")
+    return {
+        "schema": "cvs.phase1.clic_terminal_envelope.v1",
+        "method": "P1_CLIC",
+        "strict_core": strict_core,
+        "selected_checkpoint_path": "runs/phase1_clic/F6G/final_ssdg.pth",
+        "selected_checkpoint_sha256": strict_core["final_checkpoint_sha256"],
+    }
+
+
+def _validate_clic_terminal_envelope(envelope: dict[str, object]) -> dict[str, object]:
+    validator = getattr(phase1_clic_module, "validate_clic_terminal_envelope", None)
+    assert callable(validator), "CLIC terminal envelope validator API is absent"
+    return validator(envelope)
+
+
+@pytest.mark.parametrize("field", ("selected_checkpoint_path", "selected_checkpoint_sha256"))
+def test_strict_clic_core_rejects_external_envelope_fields(field: str) -> None:
+    strict_core = _complete_receipt("G")
+    strict_core[field] = "runs/final_ssdg.pth" if field.endswith("path") else "f" * 64
+    with pytest.raises(CLICTerminalError):
+        validate_clic_terminal_receipt(strict_core, arm="G")
+
+
+def test_valid_clic_terminal_envelope_revalidates_strict_core() -> None:
+    envelope = _valid_clic_terminal_envelope()
+    validated = _validate_clic_terminal_envelope(envelope)
+    assert validated["schema"] == "cvs.phase1.clic_terminal_envelope.v1"
+    assert validated["method"] == "P1_CLIC"
+    strict_core = validated["strict_core"]
+    assert strict_core["final_checkpoint_sha256"] == validated["selected_checkpoint_sha256"]
+    revalidated_core = validate_clic_terminal_receipt(strict_core, arm=str(strict_core["arm"]))
+    assert revalidated_core["final_checkpoint_sha256"] == validated["selected_checkpoint_sha256"]
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    (
+        "missing_schema",
+        "missing_method",
+        "missing_strict_core",
+        "missing_path",
+        "missing_hash",
+        "wrong_schema",
+        "wrong_method",
+        "empty_path",
+        "invalid_hash",
+        "hash_mismatch",
+        "strict_core_drift",
+        "extra_key",
+    ),
+)
+def test_clic_terminal_envelope_rejects_binding_and_schema_drift(mutation: str) -> None:
+    envelope = _valid_clic_terminal_envelope()
+    if mutation == "missing_schema":
+        envelope.pop("schema")
+    elif mutation == "missing_method":
+        envelope.pop("method")
+    elif mutation == "missing_strict_core":
+        envelope.pop("strict_core")
+    elif mutation == "missing_path":
+        envelope.pop("selected_checkpoint_path")
+    elif mutation == "missing_hash":
+        envelope.pop("selected_checkpoint_sha256")
+    elif mutation == "wrong_schema":
+        envelope["schema"] = "cvs.phase1.clic_terminal_envelope.v0"
+    elif mutation == "wrong_method":
+        envelope["method"] = "OTHER"
+    elif mutation == "empty_path":
+        envelope["selected_checkpoint_path"] = ""
+    elif mutation == "invalid_hash":
+        envelope["selected_checkpoint_sha256"] = "g" * 64
+    elif mutation == "hash_mismatch":
+        envelope["selected_checkpoint_sha256"] = "a" * 64
+    elif mutation == "strict_core_drift":
+        envelope["strict_core"]["final_checkpoint_sha256"] = "a" * 64
+    elif mutation == "extra_key":
+        envelope["unexpected"] = False
+    with pytest.raises(CLICTerminalError):
+        _validate_clic_terminal_envelope(envelope)
