@@ -4,7 +4,7 @@
 |---|---|
 |run ID|`d92_e0_full_only_target125_20260812_v1`|
 |日期|2026-08-12|
-|状态|`RELEASE_READY`|
+|状态|`ANALYZED_NO_PROMOTION`|
 |协议|`p2_min_v1`；复用`VALIDATED_ONCE`数据|
 |候选|`E0_FULL_ONLY`，candidate=`d92_e0d_e0_full_only`|
 |目标|验证完整Target125上是否同时保持或提高性能，并显著缩减D92注册计算|
@@ -100,3 +100,100 @@ cd /home/szu2070436088/2510044040/CV-SincNet/runs/d92_e0_full_only_source_snapsh
 独立release review结论为`APPROVE`，`P0=0，P1=0`。审查确认单臂身份、K1 smoke、125×3覆盖、源包/seal、预测后独立评分以及跨outer共享技术停止均已闭合；N607 preflight与真实smoke属于下一执行步骤。
 
 同步映射固定为：runtime archive→`source_root/d92_e0_full_only_runtime_closure_ba1aeb7a.tar.gz`；config→`source_root/configs/stage2_d92_e0_full_only_target125_v1.json`；launch→`source_root/launch.sh`。归档来自Git commit`ba1aeb7a`的完整`code/`树，共1296个成员，已核对包含`code/cvsrffi/__init__.py`、目标builder/runner及复用的E0OCF closure入口，且不存在`code/code`层级。
+
+## 6.N607执行与产物闭合
+
+唯一Runner使用普通N607账号完成一次冻结启动，未重试、未覆盖、未按性能干预。manifest SHA256为`5910674066e8bbf93684fddd6af6fd2cef7e8f208d64e403ac7e58030a2a8cc5`；shard PID为`1997150–1997157`，GPU0–7一一绑定。真实checkpoint smoke状态为`D92_E0_FULL_ONLY_TARGET125_REAL_CHECKPOINT_TRUTH_FREE_SMOKE_PASS`。
+
+|闭合项|结果|
+|---|---:|
+|job prediction/score|125/125、125/125|
+|正式prediction/COMMIT|250/250|
+|正式fit/resource audit|250/250；fit内含750个scene row|
+|shard|8/8 `PASS`；failed=0|
+|事件|prediction start/complete=125/125；score start/complete=125/125|
+|运行事件跨度|326.05秒|
+|stderr/确定性异常/stop marker|0/0/0|
+|终态|run进程0；8张GPU释放；SSH/TCP22残留0|
+
+完整产物取回到`E:\type10-7\local_artifacts\d92_e0_full_only_target125_20260812_v1`。本地与远端全树一致：source snapshot为1310文件、69865562B、树SHA256=`3958fda500c46e514fb23d1385c465d519d5986a013326d6cd9e9de389d8d97f`；logs为22文件、15756B、树SHA256=`120452e5add4b335ceaa7b3eef8283e76a66f3682ad6ebdf3354d166f745c5f7`；output为2030文件、137247913B、树SHA256=`434b8a2bc26bb24e046ec01634f1f206d90fe6233e018bfa184cfcfd5c2a892a`。
+
+完整读取534个文本日志/事件文件，共633503B；所有`.err`为空，精确异常模式为0，四类事件各125条且无畸形JSON。不是抽样或tail判断。
+
+## 7.完整Target125同排结果
+
+### 7.1总体结果
+
+|候选|机制|outer/场景|H_old_new|旧类平衡准确率|旧类最低准确率|已见新类准确率|平均遗忘|裁决|
+|---|---|---:|---:|---:|---:|---:|---:|---|
+|原始D92|E开启；full/block K折LOO-soft fusion|125/375|61.5658%|65.5600%|36.8133%|58.9340%|15.9889%|冻结基线|
+|E0_FULL_ONLY|E关闭；注册态仅full一次拟合|125/375|61.8030%|65.7200%|36.6000%|59.2573%|15.8289%|`NO_TARGET125_PROMOTION`|
+|同排差值|E0_FULL_ONLY−D92|125/375|**+0.2372pp**|**+0.1600pp**|**−0.2133pp**|**+0.3233pp**|**−0.1600pp**|均值多数改善，但稳健门失败|
+
+K>2的100行mean ΔH为**+0.2965pp**，但只有**70/100**行ΔH≥0，低于冻结的80/100门。H差值中位数为+0.2642pp，最小−2.1502pp，最大+2.1165pp。25个K1行与D92完全一致，全部指标差值为0，确认exact alias。
+
+### 7.2冻结门
+
+|冻结门|观测|结果|
+|---|---:|---|
+|完整125闭合|125/125|PASS|
+|K>2 mean ΔH>0|+0.2965pp|PASS|
+|K>2非负H行数≥80/100|70/100|**FAIL**|
+|全125 mean Δ旧类准确率≥0|+0.1600pp|PASS|
+|全125 mean Δ旧类floor≥0|−0.2133pp|**FAIL**|
+|全125 mean Δ已见新类≥0|+0.3233pp|PASS|
+|全125 mean Δ遗忘≤0|−0.1600pp|PASS|
+|fit计数|K1=3/3；K5/K10=2/1|PASS|
+|query禁止访问|全部为false|PASS|
+
+因此本轮不能把E0_FULL_ONLY替换为通用D92默认方法；这是预注册判据失败，不以总体H均值为由改门。
+
+### 7.3K/new-count分解
+
+|slice|行数|H非负行|ΔH|Δ旧类准确率|Δ旧类floor|Δ已见新类|Δ遗忘|
+|---|---:|---:|---:|---:|---:|---:|---:|
+|K1/new20|25|25/25|0.0000pp|0.0000pp|0.0000pp|0.0000pp|0.0000pp|
+|K5/new20|25|15/25|+0.0671pp|−0.0889pp|**−1.0000pp**|+0.2233pp|+0.0889pp|
+|K10/new5|25|14/25|+0.0051pp|−0.0222pp|0.0000pp|+0.1067pp|+0.0222pp|
+|K10/new10|25|18/25|+0.4209pp|+0.2444pp|**−0.6000pp**|+0.5867pp|−0.2444pp|
+|K10/new20|25|23/25|**+0.6931pp**|+0.6667pp|+0.5333pp|+0.7000pp|−0.6667pp|
+
+收益主要集中在K10/new20；K5/new20的旧类floor和K10/new5的行级一致性是主要短板。最差行为`rx_7_7__seed_713106__k_10__new_5`：ΔH=−2.1502pp、Δ旧类准确率=−1.9444pp、Δfloor=−5.0000pp、Δ已见新类=−2.3333pp、Δ遗忘=+1.9444pp。
+
+### 7.4receiver、场景与旧类分解
+
+|receiver|K>2 H非负行|ΔH（全25行）|Δ旧类floor|
+|---|---:|---:|---:|
+|20-1|18/20|+0.4569pp|+1.2667pp|
+|3-19|13/20|+0.2233pp|−0.3333pp|
+|7-14|16/20|+0.4052pp|−0.8000pp|
+|7-7|13/20|+0.0580pp|−0.6667pp|
+|8-8|10/20|+0.0428pp|−0.5333pp|
+
+|场景|ΔH|Δ旧类准确率|Δ已见新类|Δ遗忘|
+|---|---:|---:|---:|---:|
+|leo_clear_weak|+0.2089pp|+0.0667pp|+0.3300pp|−0.0667pp|
+|leo_low_elev_weak|+0.2915pp|+0.3133pp|+0.2840pp|−0.3133pp|
+|leo_rain_weak|+0.2217pp|+0.1000pp|+0.3560pp|−0.1000pp|
+
+三个场景均为正向，说明问题不是某个LEO场景整体失效，而是outer/receiver/弱旧类的局部不稳。逐旧类125行均值中，`14-10`为+0.8400pp，`14-7`为+0.0533pp，`20-15`为+0.0267pp，`20-19`为−0.0667pp，`6-15`为+0.0400pp，`8-20`为+0.0667pp。尽管类均值大多不降，rowwise floor仍有42行下降、31行上升、52行不变；123/125行的最弱旧类身份没有变化，故floor失败是真实的行级弱类波动，而非最弱类换位假象。
+
+## 8.计算量与状态
+
+|slice|E0_FULL_ONLY two-state fit|原D92 two-state fit|拟合次数下降|注册wall中位数|CPU中位数|增量peak中位数|query MAC|state bytes|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+|K1/new20|3|3|0%|9.656ms|20.238ms|968KiB|7488|18503|
+|K5/new20|2|48|**95.83%**|101.409ms|308.754ms|1608KiB|7488|18498|
+|K10/new5|2|88|**97.73%**|60.724ms|183.794ms|1148KiB|3168|8583|
+|K10/new10|2|88|**97.73%**|76.418ms|232.612ms|1236KiB|4608|11888|
+|K10/new20|2|88|**97.73%**|105.651ms|322.695ms|1996KiB|7488|18498|
+
+全125矩阵的理论two-state component fit由原D92的7875次降到275次，下降**96.51%**。实测全行注册wall中位数为76.418ms，P90为107.626ms；增量peak中位数为1236KiB，P90约1984.8KiB。完整125历史D92没有同口径资源receipt，因此这里不伪造paired wall加速倍数；Hard12-v3已有paired wall下降97.63%的独立开发证据。
+
+## 9.最终解释与下一步
+
+本实验回答是：**D92的E（Fisher/Pareto）和K折full/block LOO融合可以大幅瘦身，E0_FULL_ONLY把组件拟合数减少96.51%，并让总体H、旧类均值、新类准确率和遗忘均改善；但它尚不能作为通用替代，因为旧类floor下降0.2133pp且H仅70/100行非负。**
+
+因此保留E0_FULL_ONLY为高效率候选/对照，不恢复整套Fisher和K折LOO；下一轮如果继续，应只补一个support-only、固定强度的旧类floor guard，重点约束K5/new20、K10/new10及7-7/8-8，不扫描query结果。任何新候选仍需重新跑完整125后才能晋级。
+
+分析产物位于`E:\type10-7\local_artifacts\d92_e0_full_only_target125_20260812_v1\analysis`：`summary.json` SHA256=`5c7395d5210db52b1a6b2969e6942769a3ae734c5e87a77f5cce61b7a322d6f2`；`paired_rows.csv` SHA256=`6ebb37fac77d5a218924bcb51ad27424abff4a162a3b8a45a340947fe6d8de6a`；`gates.json` SHA256=`febdc49f99186c7309dfc4cfe10dedaeaa13d95e6fdaf659d3bf3f65d18dc9e8`。逐receiver、seed、slice、场景、旧类和资源表均在同目录。
