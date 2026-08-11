@@ -242,6 +242,29 @@ def _write_received_iq_fixture(path: Path) -> None:
     )
 
 
+def _write_leo_export_received_iq_fixture(path: Path) -> None:
+    """Write the runtime-shaped 7-RX×4-TX×3-scene existing IQ input."""
+
+    rows = []
+    iq = []
+    for scene_index, scene in enumerate(SCENARIOS):
+        for rx_index in range(7):
+            for tx_index, tx in enumerate(SOURCE_TX):
+                physical = f"runtime-{scene_index}-{rx_index}-{tx_index}"
+                rows.append((tx, f"rx-{rx_index}", f"day-{rx_index % 2}", physical, scene))
+                iq.append(np.full((2, 256), scene_index + rx_index + tx_index + 1, dtype=np.float32))
+    arr = np.asarray(rows, dtype=str)
+    np.savez(
+        path,
+        received_iq=np.asarray(iq, dtype=np.float32),
+        tx_ids=arr[:, 0],
+        rx_ids=arr[:, 1],
+        day_ids=arr[:, 2],
+        physical_sample_id=arr[:, 3],
+        sat_scenarios=arr[:, 4],
+    )
+
+
 def _common_receipt(arm: str) -> dict[str, object]:
     receipt = _receipt(arm)
     return {
@@ -288,6 +311,120 @@ def test_clic_clean_exporter_reopens_versioned_terminal_and_checkpoint_contract(
     assert receipt["terminal_contract"] != "AWAITING_EXTERNAL_CHECKPOINT_SHA"
     assert receipt["source_l_only"] is True
     assert CLEAN.EXPECTED_LV_EXPORT_SCHEMA == "cvs.phase1.clic_lv_export.v1"
+
+
+def test_clic_clean_export_writes_feature_npz_not_manifest_only(tmp_path: Path) -> None:
+    """The public export path must materialize finite feature rows and manifest."""
+
+    import cvsrffi.checkpoint_loading as checkpoint_loading
+    import dataset_wisig
+    import export_spaceborne_features
+
+    paths = _checkpoint_fixture(tmp_path, arm="G")
+    dataset_path = tmp_path / "synthetic_wisig.pkl"
+    dataset_path.write_bytes(b"mechanical-clic-export-fixture")
+    dataset_sha = _sha_file(dataset_path)
+    checkpoint = torch.load(paths["checkpoint"], map_location="cpu")
+    checkpoint["args"].update({"wisig_pkl": str(dataset_path), "wisig_pkl_sha256": dataset_sha})
+    torch.save(checkpoint, paths["checkpoint"])
+    checkpoint_sha = _sha_file(paths["checkpoint"])
+    terminal = json.loads(paths["terminal"].read_text(encoding="utf-8"))
+    terminal["selected_checkpoint_sha256"] = checkpoint_sha
+    terminal["strict_core"]["final_checkpoint_sha256"] = checkpoint_sha
+    paths["terminal"].write_text(json.dumps(terminal, ensure_ascii=False, sort_keys=True) + "\n", encoding="utf-8")
+
+    class DummyRows:
+        tx_list = list(SOURCE_TX)
+
+        def __init__(self, count: int):
+            self.count = int(count)
+
+        def __len__(self) -> int:
+            return self.count
+
+        def __getitem__(self, index: int):
+            return (
+                torch.zeros(3, dtype=torch.float32),
+                torch.tensor(0, dtype=torch.long),
+                torch.tensor(0, dtype=torch.long),
+                {"tx": SOURCE_TX[index % len(SOURCE_TX)], "rx": SOURCE_RX[0], "day": SOURCE_DAYS[0], "equalized": "eq", "sig_i": str(index)},
+            )
+
+    class DummyModel:
+        def eval(self):
+            return self
+
+    def fake_extract(_model, _loader, *, role: str, **_kwargs):
+        count = {"labeled_fit": 4, "source_validation_known": 2, "proxy_unknown": 400}[role]
+        tx = np.asarray([SOURCE_TX[index % len(SOURCE_TX)] for index in range(count)])
+        return {
+            "features": np.ones((count, 2), dtype=np.float32),
+            "tx_logits": np.zeros((count, 4), dtype=np.float32),
+            "raw_labels": np.zeros(count, dtype=np.int64),
+            "domain_labels": np.zeros(count, dtype=np.int64),
+            "tx_ids": tx,
+            "rx_ids": np.asarray([SOURCE_RX[0]] * count),
+            "day_ids": np.asarray([SOURCE_DAYS[0]] * count),
+            "eq_ids": np.asarray(["eq"] * count),
+            "sig_ids": np.asarray([str(index) for index in range(count)]),
+            "dataset_role": np.asarray([role] * count),
+            "channel_views": np.asarray(["clean"] * count),
+            "sat_scenarios": np.asarray([""] * count),
+        }
+
+    fake_source = DummyRows(6)
+    fake_reconstructed = {
+        "source_base": fake_source,
+        "labeled_indices": (0, 1, 2, 3),
+        "validation_indices": (4, 5),
+        "unlabeled_indices": (),
+        "source_split_receipt": {},
+        "tx_partition_receipt": {},
+    }
+    monkeypatch = pytest.MonkeyPatch()
+    try:
+        monkeypatch.setattr(CLEAN, "FROZEN_WISIG_SHA256", dataset_sha)
+        monkeypatch.setattr(CLEAN, "_reconstruct_source_l_v", lambda **_kwargs: fake_reconstructed)
+        monkeypatch.setattr(CLEAN, "_assert_current_source_split", lambda **_kwargs: None)
+        monkeypatch.setattr(CLEAN, "_physical_keys_for_indices", lambda base, indices: tuple(f"{id(base)}-{int(index)}" for index in indices))
+        monkeypatch.setattr(dataset_wisig, "load_wisig_compact_pkl", lambda _path: {})
+        monkeypatch.setattr(dataset_wisig, "WiSigSubsetDataset", lambda _base, indices, split_source: DummyRows(len(tuple(indices))))
+        monkeypatch.setattr(export_spaceborne_features, "_build_wisig_dataset", lambda **_kwargs: (DummyRows(400), {}))
+        monkeypatch.setattr(export_spaceborne_features, "extract_features_with_metadata", fake_extract)
+        monkeypatch.setattr(checkpoint_loading, "build_exact_ssdg_model_from_checkpoint", lambda *_args, **_kwargs: (DummyModel(), {}))
+
+        output = tmp_path / "source_l_export.npz"
+        args = argparse.Namespace(
+            ckpt=str(paths["checkpoint"]),
+            terminal_receipt_json=str(paths["terminal"]),
+            wisig_pkl=str(dataset_path),
+            expected_wisig_sha256=dataset_sha,
+            source_tx_ids=",".join(SOURCE_TX),
+            known_validation_tx_ids=",".join(HELD_TX),
+            proxy_unknown_tx_ids=",".join(PROXY_TX),
+            source_feature_npz="",
+            source_l_npz="",
+            output_npz=str(output),
+            out_npz=str(output),
+            batch_size=32,
+            device="cpu",
+        )
+        result = CLEAN.export(args)
+    finally:
+        monkeypatch.undo()
+    assert output.is_file(), "CLEAN.export must write args.output_npz"
+    if isinstance(result, dict) and "out_npz" in result:
+        assert Path(str(result["out_npz"])).resolve() == output.resolve()
+    with np.load(output, allow_pickle=False) as data:
+        members = set(data.files)
+        assert {"z_id", "features", "tx_logits", "tx_ids", "dataset_role", "manifest_json"} <= members
+        z_id = np.asarray(data["z_id"])
+        assert z_id.ndim == 2 and z_id.shape[0] == 406 and z_id.shape[0] > 0
+        assert np.issubdtype(z_id.dtype, np.floating)
+        assert np.isfinite(z_id).all()
+        manifest = json.loads(str(np.asarray(data["manifest_json"]).item()))
+    assert manifest["schema"] == "cvs.phase1.clic_lv_export.v1"
+    assert manifest["source_only"] is True
 
 
 def test_clic_clean_rejects_synchronized_checkpoint_seed_drift(tmp_path: Path) -> None:
@@ -375,6 +512,83 @@ def test_clic_leo_exporter_reuses_one_existing_received_iq_with_three_scene_and_
             assert int(binding["scenario_coverage"][scene]["count"]) > 0
     assert bindings["C"]["existing_received_iq_sha256"] == bindings["G"]["existing_received_iq_sha256"]
     assert bindings["C"]["physical_keys"] == bindings["G"]["physical_keys"]
+
+
+def test_clic_leo_main_writes_existing_iq_features_before_binding_without_regeneration(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """LEO main must materialize out_npz from one existing received-IQ table."""
+
+    import cvsrffi.checkpoint_loading as checkpoint_loading
+    import export_spaceborne_features
+
+    paths = _checkpoint_fixture(tmp_path, arm="G")
+    existing = tmp_path / "existing_received_iq.npz"
+    _write_leo_export_received_iq_fixture(existing)
+    output = tmp_path / "leo_features.npz"
+    binding_path = tmp_path / "leo_binding.json"
+    calls: list[Path] = []
+    original_loader = LEO._load_existing_received_iq
+
+    def counted_loader(path: Path, *, source_tx_ids: tuple[str, ...]):
+        calls.append(Path(path).resolve())
+        return original_loader(path, source_tx_ids=source_tx_ids)
+
+    class DummyModel:
+        def eval(self):
+            return self
+
+    def fake_extract(_model, loader, *, role: str, **_kwargs):
+        count = len(loader.dataset)
+        return {
+            "features": np.ones((count, 2), dtype=np.float32),
+            "tx_logits": np.zeros((count, 4), dtype=np.float32),
+            "raw_labels": np.zeros(count, dtype=np.int64),
+            "domain_labels": np.zeros(count, dtype=np.int64),
+            "tx_ids": np.asarray([SOURCE_TX[index % len(SOURCE_TX)] for index in range(count)]),
+            "rx_ids": np.asarray([f"rx-{index % 7}" for index in range(count)]),
+            "day_ids": np.asarray([f"day-{index % 2}" for index in range(count)]),
+            "eq_ids": np.asarray(["existing_received_iq"] * count),
+            "sig_ids": np.asarray([str(index) for index in range(count)]),
+            "dataset_role": np.asarray([role] * count),
+            "channel_views": np.asarray(["received_existing"] * count),
+            "sat_scenarios": np.asarray([SCENARIOS[index // 28] for index in range(count)]),
+        }
+
+    monkeypatch.setattr(LEO, "_load_existing_received_iq", counted_loader)
+    monkeypatch.setattr(checkpoint_loading, "build_exact_ssdg_model_from_checkpoint", lambda *_args, **_kwargs: (DummyModel(), {}))
+    monkeypatch.setattr(export_spaceborne_features, "extract_features_with_metadata", fake_extract)
+    before_sha = _sha_file(existing)
+    rc = LEO.main(
+        [
+            "--ckpt", str(paths["checkpoint"]),
+            "--terminal-receipt-json", str(paths["terminal"]),
+            "--existing-received-iq-npz", str(existing),
+            "--out-npz", str(output),
+            "--binding-json", str(binding_path),
+            "--training-run-root", str(paths["training_root"]),
+            "--postfreeze-output-root", str(tmp_path),
+            "--candidate-id", str(paths["candidate"]),
+            "--fold-index", "1",
+            "--arm", "G",
+            "--source-tx-ids", ",".join(SOURCE_TX),
+        ]
+    )
+    assert rc == 0
+    assert output.is_file(), "LEO export must write out_npz before binding"
+    assert binding_path.is_file()
+    assert calls and set(calls) == {existing.resolve()}, "LEO must reuse one existing received-IQ table"
+    assert _sha_file(existing) == before_sha
+    assert len(list(tmp_path.glob("*received_iq*.npz"))) == 1
+    with np.load(existing, allow_pickle=False) as source, np.load(output, allow_pickle=False) as exported:
+        assert {"z_id", "features", "tx_logits", "manifest_json"} <= set(exported.files)
+        assert exported["z_id"].shape[0] == source["received_iq"].shape[0]
+        assert np.isfinite(np.asarray(exported["z_id"], dtype=np.float64)).all()
+        leo_manifest = json.loads(str(np.asarray(exported["manifest_json"]).item()))
+    binding = json.loads(binding_path.read_text(encoding="utf-8"))
+    assert binding["existing_received_iq_sha256"] == before_sha
+    assert binding["single_leo_observation"] is True
+    assert leo_manifest["received_iq_sha256"] == before_sha
 
 
 def test_clic_float64_totalized_l2_preserves_exact_zero_and_rejects_nonfinite() -> None:
@@ -680,6 +894,8 @@ def _mutate_bundle_manifest(path: Path, mutation: str) -> None:
             manifest["z_id_dtype"] = "float32"
         elif mutation == "operator":
             manifest["operator_mode"] = "raw_phase_control"
+        elif mutation == "real":
+            manifest["real_checkpoint_reload_verified"] = True
         elif mutation == "hash":
             manifest["state_sha256"] = "0" * 64
         return (json.dumps(manifest, ensure_ascii=True, sort_keys=True) + "\n").encode("utf-8")
@@ -714,6 +930,18 @@ def test_clic_bundle_schema_exact_members_and_reload_forward_are_strict(tmp_path
         else:
             assert first[field] == second[field]
     assert first["state_sha256"] == second["state_sha256"] == verified["state_sha256"]
+
+
+def test_clic_bundle_synthetic_fixture_cannot_claim_real_checkpoint_reload(tmp_path: Path) -> None:
+    """The real-state marker requires checkpoint model/hash/forward evidence."""
+
+    bundle_path, _, _ = _bundle_fixture(tmp_path)
+    verified = BUNDLE.verify_clic_bundle(bundle_path)
+    assert verified["real_checkpoint_reload_verified"] is False
+    synthetic_claim = _copy_bundle(bundle_path, tmp_path / "synthetic_claim")
+    _mutate_bundle_manifest(synthetic_claim, "real")
+    with pytest.raises(BUNDLE.CLICBundleError, match="real|checkpoint|model|forward|synthetic|receipt|state|hash"):
+        BUNDLE.verify_clic_bundle(synthetic_claim)
 
 
 @pytest.mark.parametrize("mutation", ("member", "byte", "shape", "dtype", "operator", "hash"))
