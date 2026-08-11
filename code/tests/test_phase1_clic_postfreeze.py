@@ -177,31 +177,46 @@ def _clean_manifest(paths: dict[str, Path | str | dict[str, object]], *, arm: st
         "clic_terminal_contract_passed": True,
         "clic_enabled": arm == "G",
         "z_id_source_key": "z_id",
+        "feature_name": "z_id",
+        "feature_key": "z_id",
+        "classification_head_contract": "dual_cvsincnet_tx_logits_v1",
         "source_tx_ids": list(SOURCE_TX),
         "known_validation_tx_ids": list(HELD_TX),
         "proxy_unknown_tx_ids": list(PROXY_TX),
         "proxy_selection_frozen_not_cli_tunable": True,
         "clean_source_runtime_access": False,
         "query_fit_access": False,
+        "labeled_row_count": 8,
+        "source_validation_row_count": 4,
+        "proxy_row_count": 400,
+        "forwarded_roles": ["labeled_fit", "source_validation_known", "proxy_unknown"],
+        "geometry_fit_role": "labeled_fit_only",
+        "validation_proxy_fit_rows": 0,
+        "validation_proxy_threshold_rows": 0,
     }
 
 
 def _write_feature_npz(path: Path, paths: dict[str, Path | str | dict[str, object]], *, arm: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    labels = np.asarray([SOURCE_TX[0], SOURCE_TX[0], SOURCE_TX[1], SOURCE_TX[1], PROXY_TX[0]], dtype=str)
+    fit_labels = np.asarray([tx for tx in SOURCE_TX for _ in range(2)], dtype=str)
+    validation_labels = np.asarray([HELD_TX[0]] * 4, dtype=str)
+    proxy_labels = np.asarray([PROXY_TX[0]] * 400, dtype=str)
+    labels = np.concatenate([fit_labels, validation_labels, proxy_labels])
     roles = np.asarray(
-        ["labeled_fit", "labeled_fit", "source_validation_known", "source_validation_known", "proxy_unknown"],
+        ["labeled_fit"] * fit_labels.size + ["source_validation_known"] * validation_labels.size + ["proxy_unknown"] * proxy_labels.size,
         dtype=str,
     )
-    z_id = np.asarray(
-        [[1.0, 0.0], [1.0, 0.5], [0.0, 1.0], [0.0, 1.5], [-1.0, -1.0]],
-        dtype=np.float32,
-    )
-    logits = np.asarray(
-        [[3.0, 0.0, 0.0, 0.0], [2.5, 0.0, 0.0, 0.0], [0.0, 3.0, 0.0, 0.0], [0.0, 2.5, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0]],
-        dtype=np.float32,
-    )
+    base = np.asarray([[1.0, 0.0], [0.0, 1.0], [-1.0, 0.0], [0.0, -1.0]], dtype=np.float32)
+    fit_z = np.vstack([base[index] + np.asarray([0.0, offset * 0.1], dtype=np.float32) for index in range(4) for offset in (0.0, 1.0)])
+    validation_z = np.asarray([[0.25, 0.25], [0.30, 0.20], [0.20, 0.30], [0.25, 0.20]], dtype=np.float32)
+    proxy_z = np.tile(np.asarray([[2.0, 2.0]], dtype=np.float32), (400, 1))
+    z_id = np.vstack([fit_z, validation_z, proxy_z])
+    fit_logits = np.asarray([[3.0 if column == index else 0.0 for column in range(4)] for index in range(4) for _ in (0, 1)], dtype=np.float32)
+    validation_logits = np.zeros((validation_labels.size, 4), dtype=np.float32)
+    logits = np.vstack([fit_logits, validation_logits, np.zeros((proxy_labels.size, 4), dtype=np.float32)])
     physical = np.asarray([f"p-{i}" for i in range(labels.size)], dtype=str)
+    receiver = np.asarray([SOURCE_RX[index % len(SOURCE_RX)] for index in range(labels.size)], dtype=str)
+    days = np.asarray([SOURCE_DAYS[index % len(SOURCE_DAYS)] for index in range(labels.size)], dtype=str)
     manifest = _clean_manifest(paths, arm=arm)
     np.savez(
         path,
@@ -210,9 +225,9 @@ def _write_feature_npz(path: Path, paths: dict[str, Path | str | dict[str, objec
         tx_logits=logits,
         tx_ids=labels,
         dataset_role=roles,
-        receiver_ids=np.asarray([SOURCE_RX[0], SOURCE_RX[1], SOURCE_RX[0], SOURCE_RX[1], SOURCE_RX[0]], dtype=str),
-        rx_ids=np.asarray([SOURCE_RX[0], SOURCE_RX[1], SOURCE_RX[0], SOURCE_RX[1], SOURCE_RX[0]], dtype=str),
-        day_ids=np.asarray([SOURCE_DAYS[0], SOURCE_DAYS[0], SOURCE_DAYS[1], SOURCE_DAYS[1], SOURCE_DAYS[0]], dtype=str),
+        receiver_ids=receiver,
+        rx_ids=receiver,
+        day_ids=days,
         physical_sample_id=physical,
         sig_ids=physical,
         sat_scenarios=np.asarray(["", "", "", "", ""], dtype=str),
@@ -293,58 +308,135 @@ def _clic_proxy_arrays() -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray
     return source, source_labels, validation, proxy
 
 
-def _write_pair_leo_npz(path: Path, *, arm: str) -> dict[str, object]:
-    """Write source-only LEO feature rows plus the binding metadata consumed by PAIR."""
+def _write_pair_received_iq(path: Path) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+    """Create one existing source-L observation: 3 scenes × 7 RX × 4 TX × 20 rows."""
 
-    rows = []
-    for scene in SCENARIOS:
+    rows: list[tuple[str, str, str, str, str, int, int]] = []
+    iq: list[np.ndarray] = []
+    for scene_index, scene in enumerate(SCENARIOS):
         for rx_slot in range(7):
             for tx_index, tx in enumerate(SOURCE_TX):
-                rows.append((scene, rx_slot, tx, f"{arm}-{scene}-{rx_slot}-{tx_index}"))
-    scene_rows = np.asarray([row[0] for row in rows], dtype=str)
-    rx_slots = np.asarray([row[1] for row in rows], dtype=np.int64)
-    tx_ids = np.asarray([row[2] for row in rows], dtype=str)
-    physical_ids = np.asarray([row[3] for row in rows], dtype=str)
-    z_id = np.asarray([[1.0 + 0.01 * int(rx), 0.1 * (index % 4)] for index, (_, rx, _, _) in enumerate(rows)], dtype=np.float64)
-    tx_logits = np.zeros((len(rows), len(SOURCE_TX)), dtype=np.float64)
-    tx_logits[:, 0] = 1.0
+                for repeat in range(20):
+                    rows.append((tx, f"rx-{rx_slot}", f"day-{repeat % 2}", f"pair-{scene_index}-{rx_slot}-{tx_index}-{repeat}", scene, rx_slot, tx_index))
+                    iq.append(np.full((2, 256), scene_index + rx_slot + tx_index + repeat + 1, dtype=np.float32))
+    table = np.asarray(rows, dtype=object)
     path.parent.mkdir(parents=True, exist_ok=True)
     np.savez(
         path,
-        z_id=z_id,
-        tx_logits=tx_logits,
-        sat_scenarios=scene_rows,
-        scene=scene_rows,
-        rx_slot=rx_slots,
-        tx_ids=tx_ids,
-        physical_sample_id=physical_ids,
-        source_only=np.asarray(True),
+        received_iq=np.asarray(iq, dtype=np.float32),
+        tx_ids=np.asarray(table[:, 0], dtype=str),
+        rx_ids=np.asarray(table[:, 1], dtype=str),
+        day_ids=np.asarray(table[:, 2], dtype=str),
+        physical_sample_id=np.asarray(table[:, 3], dtype=str),
+        sat_scenarios=np.asarray(table[:, 4], dtype=str),
     )
-    return {
-        "schema": "cvs.phase1.clic_leo_binding.v1",
-        "arm": arm,
-        "fold_index": 1,
-        "source_only": True,
-        "single_leo_observation": True,
-        "source_tx_ids": list(SOURCE_TX),
-        "scene_order": list(SCENARIOS),
-        "received_iq_sha256": _sha_text("common-existing-received-iq"),
-        "physical_order_sha256": _sha_text("common-physical-order"),
-        "leo_npz_sha256": _sha_file(path),
-        "physical_row_count": len(rows),
-    }
+    return (
+        np.asarray(table[:, 0], dtype=str),
+        np.asarray(table[:, 1], dtype=str),
+        np.asarray(table[:, 2], dtype=str),
+        np.asarray(table[:, 3], dtype=str),
+        np.asarray(table[:, 4], dtype=str),
+    )
+
+
+def _write_pair_leo_npz(
+    path: Path,
+    *,
+    arm: str,
+    paths: dict[str, Path | str | dict[str, object]],
+    existing: Path,
+    rows: tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray],
+) -> dict[str, object]:
+    """Use the production LEO exporter to seal manifest/member/binding hashes."""
+
+    import cvsrffi.checkpoint_loading as checkpoint_loading
+    import export_spaceborne_features
+
+    tx_ids, rx_ids, day_ids, physical_ids, scenes = rows
+
+    class DummyModel:
+        def eval(self):
+            return self
+
+    def fake_extract(_model, loader, *, role: str, **_kwargs):
+        count = len(loader.dataset)
+        if count != len(tx_ids):
+            raise AssertionError("pair LEO fixture row count drifted")
+        tx_index = np.asarray([SOURCE_TX.index(value) for value in tx_ids], dtype=np.int64)
+        rx_slot = np.asarray([int(value.split("-")[1]) for value in rx_ids], dtype=np.int64)
+        repeat = np.asarray([int(value.rsplit("-", 1)[1]) for value in physical_ids], dtype=np.float64)
+        base = np.asarray([[1.0, 0.0], [0.0, 1.0], [-1.0, 0.0], [0.0, -1.0]], dtype=np.float32)
+        features = base[tx_index] + np.column_stack([rx_slot * 1e-3, repeat * 1e-4]).astype(np.float32)
+        logits = np.zeros((count, len(SOURCE_TX)), dtype=np.float32)
+        logits[np.arange(count), tx_index] = 3.0
+        return {
+            "features": features,
+            "tx_logits": logits,
+            "raw_labels": tx_index,
+            "domain_labels": np.zeros(count, dtype=np.int64),
+            "tx_ids": tx_ids,
+            "rx_ids": rx_ids,
+            "day_ids": day_ids,
+            "eq_ids": np.asarray(["existing_received_iq"] * count, dtype=str),
+            "sig_ids": physical_ids,
+            "dataset_role": np.asarray([role] * count, dtype=str),
+            "channel_views": np.asarray(["received_existing"] * count, dtype=str),
+            "sat_scenarios": scenes,
+        }
+
+    args = LEO.build_parser().parse_args(
+        [
+            "--ckpt", str(paths["checkpoint"]),
+            "--terminal-receipt-json", str(paths["terminal"]),
+            "--existing-received-iq-npz", str(existing),
+            "--out-npz", str(path),
+            "--binding-json", str(path.with_name(path.stem + "_binding.json")),
+            "--training-run-root", str(paths["training_root"]),
+            "--postfreeze-output-root", str(path.parent),
+            "--candidate-id", str(paths["candidate"]),
+            "--fold-index", "1",
+            "--arm", arm,
+            "--source-tx-ids", ",".join(SOURCE_TX),
+            "--device", "cpu",
+            "--batch-size", "64",
+        ]
+    )
+    patch = pytest.MonkeyPatch()
+    try:
+        patch.setattr(checkpoint_loading, "build_exact_ssdg_model_from_checkpoint", lambda *_args, **_kwargs: (DummyModel(), {"fixture": True}))
+        patch.setattr(export_spaceborne_features, "extract_features_with_metadata", fake_extract)
+        LEO.export(args)
+    finally:
+        patch.undo()
+    binding_path = Path(args.binding_json)
+    binding = json.loads(binding_path.read_text(encoding="utf-8"))
+    with np.load(path, allow_pickle=False) as exported:
+        assert {"z_id", "features", "tx_logits", "dataset_role", "manifest_json", "source_rx_slot", "sat_scenarios"} <= set(exported.files)
+        assert np.asarray(exported["z_id"]).shape == (len(tx_ids), 2)
+        assert np.isfinite(np.asarray(exported["z_id"], dtype=np.float64)).all()
+        manifest = json.loads(str(np.asarray(exported["manifest_json"]).item()))
+    assert manifest["schema"] == "cvs.phase1.clic_leo_export.v1"
+    assert manifest["single_leo_observation_required"] is True
+    assert manifest["single_leo_forward_count"] == len(tx_ids)
+    assert binding["schema"] == "cvs.phase1.clic_leo_binding.v1"
+    assert binding["leo_npz_sha256"] == _sha_file(path)
+    assert binding["leo_manifest_sha256"] == _canonical(manifest)
+    assert binding["received_iq_sha256"] == _sha_file(existing)
+    return binding
 
 
 def _pair_artifact_fixture(tmp_path: Path) -> dict[str, object]:
     """Create C/G raw feature, binding, receipt, and proxy-summary artifacts."""
 
     artifacts: dict[str, object] = {}
+    existing = tmp_path / "existing_received_iq.npz"
+    pair_rows = _write_pair_received_iq(existing)
     for arm in ("C", "G"):
         paths = _checkpoint_fixture(tmp_path / arm, arm=arm)
         clean = tmp_path / arm / "clean.npz"
         _write_feature_npz(clean, paths, arm=arm)
         leo = tmp_path / arm / "leo.npz"
-        binding = _write_pair_leo_npz(leo, arm=arm)
+        binding = _write_pair_leo_npz(leo, arm=arm, paths=paths, existing=existing, rows=pair_rows)
         binding_path = tmp_path / arm / "leo_binding.json"
         binding_path.write_text(json.dumps(binding, sort_keys=True) + "\n", encoding="utf-8")
         receipt_path = tmp_path / arm / "common_receipt.json"
@@ -373,6 +465,7 @@ def _pair_artifact_fixture(tmp_path: Path) -> dict[str, object]:
         artifacts[f"{arm.lower()}_binding"] = binding_path
         artifacts[f"{arm.lower()}_receipt"] = receipt_path
         artifacts[f"{arm.lower()}_proxy"] = proxy_path
+    artifacts["existing_received_iq"] = existing
     pair_json = tmp_path / "pair.json"
     artifacts["pair_json"] = pair_json
     return artifacts
