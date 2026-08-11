@@ -74,7 +74,36 @@ def _receipt(arm: str) -> dict[str, object]:
     return dict(_CORE._complete_receipt(arm))
 
 
-def _checkpoint_fixture(tmp_path: Path, *, arm: str = "G", fold: int = 1) -> dict[str, Path | str | dict[str, object]]:
+_REAL_G_MODEL_STATE: dict[str, torch.Tensor] | None = None
+
+
+def _real_g_model_state() -> dict[str, torch.Tensor]:
+    """Build one exact production G model state for the F6 bundle chain."""
+
+    global _REAL_G_MODEL_STATE
+    if _REAL_G_MODEL_STATE is None:
+        from model_dual_cvsincnet import build_dual_model
+
+        runtime_defaults = dict(BUNDLE.RUNTIME_MODEL_DEFAULTS)
+        runtime_defaults["id_feature_key"] = "z_id"
+        model = build_dual_model(**runtime_defaults)
+        _REAL_G_MODEL_STATE = {
+            key: value.detach().cpu().contiguous().clone()
+            for key, value in model.state_dict().items()
+        }
+    return {
+        key: value.detach().cpu().contiguous().clone()
+        for key, value in _REAL_G_MODEL_STATE.items()
+    }
+
+
+def _checkpoint_fixture(
+    tmp_path: Path,
+    *,
+    arm: str = "G",
+    fold: int = 1,
+    real_model: bool = False,
+) -> dict[str, Path | str | dict[str, object]]:
     """Create one final-only checkpoint plus the external versioned envelope."""
 
     candidate = f"F{fold}{arm}_CLIC12"
@@ -108,6 +137,17 @@ def _checkpoint_fixture(tmp_path: Path, *, arm: str = "G", fold: int = 1) -> dic
         "phase1_clic_enabled": arm == "G",
         "phase1_clic_operator_mode": "complex_local_invariant_curvature" if arm == "G" else "raw_phase_control",
     }
+    model_state: dict[str, torch.Tensor] = {}
+    if real_model:
+        if arm != "G":
+            raise AssertionError("only the frozen G arm may carry a real deployment model fixture")
+        args.update({key: value for key, value in BUNDLE.RUNTIME_MODEL_DEFAULTS.items()})
+        args["wisig_out_len"] = int(BUNDLE.RUNTIME_MODEL_DEFAULTS["input_len"])
+        args["id_feature_key"] = "z_id"
+        args["phase1_clic_enabled"] = True
+        args["phase1_clic_frozen_mode"] = True
+        args["phase1_clic_operator_mode"] = "complex_local_invariant_curvature"
+        model_state = _real_g_model_state()
     payload = {
         "checkpoint_schema": "ssdg_phase1_training_state_v2",
         "checkpoint_role": "training_final_only",
@@ -115,7 +155,7 @@ def _checkpoint_fixture(tmp_path: Path, *, arm: str = "G", fold: int = 1) -> dic
         "candidate_id": candidate,
         "run_id": TRAINING_RUN,
         "args": args,
-        "model": {},
+        "model": model_state,
         "optimizer": {},
         "scaler": {},
         "epoch": 40,
@@ -172,6 +212,7 @@ def _clean_manifest(paths: dict[str, Path | str | dict[str, object]], *, arm: st
         "training_run_contract": TRAINING_RUN,
         "checkpoint": str(paths["checkpoint"]),
         "source_checkpoint_sha256": paths["checkpoint_sha"],
+        "terminal_receipt_sha256": _sha_file(Path(paths["terminal"])),
         "clic_receipt_schema": "cvs.phase1.clic_receipt.v1",
         "clic_terminal_contract": "STRICT_CLIC_SOURCE_L_COMMON_C_G_RAW_UNSCALED_VJP_AMP_RESOURCE_GRAPH_RELEASE",
         "clic_terminal_contract_passed": True,
@@ -193,10 +234,20 @@ def _clean_manifest(paths: dict[str, Path | str | dict[str, object]], *, arm: st
         "geometry_fit_role": "labeled_fit_only",
         "validation_proxy_fit_rows": 0,
         "validation_proxy_threshold_rows": 0,
+        "unlabeled_loader_constructed": False,
+        "unlabeled_forward_rows": 0,
     }
 
 
-def _write_feature_npz(path: Path, paths: dict[str, Path | str | dict[str, object]], *, arm: str) -> None:
+def _write_feature_npz(
+    path: Path,
+    paths: dict[str, Path | str | dict[str, object]],
+    *,
+    arm: str,
+    feature_dim: int = 2,
+) -> None:
+    if type(feature_dim) is not int or feature_dim < 2:
+        raise AssertionError("feature fixture dimension must be at least two")
     path.parent.mkdir(parents=True, exist_ok=True)
     fit_labels = np.asarray([tx for tx in SOURCE_TX for _ in range(2)], dtype=str)
     validation_labels = np.asarray([HELD_TX[0]] * 4, dtype=str)
@@ -206,10 +257,21 @@ def _write_feature_npz(path: Path, paths: dict[str, Path | str | dict[str, objec
         ["labeled_fit"] * fit_labels.size + ["source_validation_known"] * validation_labels.size + ["proxy_unknown"] * proxy_labels.size,
         dtype=str,
     )
-    base = np.asarray([[1.0, 0.0], [0.0, 1.0], [-1.0, 0.0], [0.0, -1.0]], dtype=np.float32)
-    fit_z = np.vstack([base[index] + np.asarray([0.0, offset * 0.1], dtype=np.float32) for index in range(4) for offset in (0.0, 1.0)])
-    validation_z = np.asarray([[0.25, 0.25], [0.30, 0.20], [0.20, 0.30], [0.25, 0.20]], dtype=np.float32)
-    proxy_z = np.tile(np.asarray([[2.0, 2.0]], dtype=np.float32), (400, 1))
+    base = np.zeros((len(SOURCE_TX), feature_dim), dtype=np.float32)
+    base[:, :2] = np.asarray([[1.0, 0.0], [0.0, 1.0], [-1.0, 0.0], [0.0, -1.0]], dtype=np.float32)
+    if feature_dim > len(SOURCE_TX):
+        base[:, len(SOURCE_TX)] = np.arange(len(SOURCE_TX), dtype=np.float32) * 0.05
+    fit_rows: list[np.ndarray] = []
+    for index in range(len(SOURCE_TX)):
+        for offset in (0.0, 1.0):
+            row = base[index].copy()
+            row[0] += np.float32(offset * 0.1)
+            fit_rows.append(row)
+    fit_z = np.vstack(fit_rows)
+    validation_z = np.zeros((validation_labels.size, feature_dim), dtype=np.float32)
+    validation_z[:, :2] = np.asarray([[0.25, 0.25], [0.30, 0.20], [0.20, 0.30], [0.25, 0.20]], dtype=np.float32)
+    proxy_z = np.zeros((400, feature_dim), dtype=np.float32)
+    proxy_z[:, :2] = np.asarray([2.0, 2.0], dtype=np.float32)
     z_id = np.vstack([fit_z, validation_z, proxy_z])
     fit_logits = np.asarray([[3.0 if column == index else 0.0 for column in range(4)] for index in range(4) for _ in (0, 1)], dtype=np.float32)
     validation_logits = np.zeros((validation_labels.size, 4), dtype=np.float32)
@@ -217,20 +279,24 @@ def _write_feature_npz(path: Path, paths: dict[str, Path | str | dict[str, objec
     physical = np.asarray([f"p-{i}" for i in range(labels.size)], dtype=str)
     receiver = np.asarray([SOURCE_RX[index % len(SOURCE_RX)] for index in range(labels.size)], dtype=str)
     days = np.asarray([SOURCE_DAYS[index % len(SOURCE_DAYS)] for index in range(labels.size)], dtype=str)
+    raw_labels = np.asarray([SOURCE_TX.index(value) if value in SOURCE_TX else -1 for value in labels], dtype=np.int64)
+    domain_labels = np.zeros(labels.size, dtype=np.int64)
     manifest = _clean_manifest(paths, arm=arm)
     np.savez(
         path,
         z_id=z_id,
         features=z_id.copy(),
         tx_logits=logits,
+        raw_labels=raw_labels,
+        domain_labels=domain_labels,
         tx_ids=labels,
-        dataset_role=roles,
-        receiver_ids=receiver,
         rx_ids=receiver,
         day_ids=days,
-        physical_sample_id=physical,
+        eq_ids=np.asarray([f"eq-{index}" for index in range(labels.size)], dtype=str),
         sig_ids=physical,
-        sat_scenarios=np.asarray(["", "", "", "", ""], dtype=str),
+        dataset_role=roles,
+        channel_views=np.asarray(["clean"] * labels.size, dtype=str),
+        sat_scenarios=np.asarray([""] * labels.size, dtype=str),
         manifest_json=np.asarray(json.dumps(manifest, ensure_ascii=True, sort_keys=True)),
     )
 
@@ -346,6 +412,8 @@ def _write_pair_leo_npz(
     paths: dict[str, Path | str | dict[str, object]],
     existing: Path,
     rows: tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray],
+    fold: int = 1,
+    feature_dim: int = 2,
 ) -> dict[str, object]:
     """Use the production LEO exporter to seal manifest/member/binding hashes."""
 
@@ -365,8 +433,13 @@ def _write_pair_leo_npz(
         tx_index = np.asarray([SOURCE_TX.index(value) for value in tx_ids], dtype=np.int64)
         rx_slot = np.asarray([int(value.split("-")[1]) for value in rx_ids], dtype=np.int64)
         repeat = np.asarray([int(value.rsplit("-", 1)[1]) for value in physical_ids], dtype=np.float64)
-        base = np.asarray([[1.0, 0.0], [0.0, 1.0], [-1.0, 0.0], [0.0, -1.0]], dtype=np.float32)
-        features = base[tx_index] + np.column_stack([rx_slot * 1e-3, repeat * 1e-4]).astype(np.float32)
+        base = np.zeros((len(SOURCE_TX), feature_dim), dtype=np.float32)
+        base[:, :2] = np.asarray([[1.0, 0.0], [0.0, 1.0], [-1.0, 0.0], [0.0, -1.0]], dtype=np.float32)
+        features = base[tx_index]
+        features[:, 0] += (rx_slot * 1e-3).astype(np.float32)
+        features[:, 1] += (repeat * 1e-4).astype(np.float32)
+        if feature_dim > len(SOURCE_TX):
+            features[:, len(SOURCE_TX)] = (rx_slot * 1e-3 + repeat * 1e-4).astype(np.float32)
         logits = np.zeros((count, len(SOURCE_TX)), dtype=np.float32)
         logits[np.arange(count), tx_index] = 3.0
         return {
@@ -394,7 +467,7 @@ def _write_pair_leo_npz(
             "--training-run-root", str(paths["training_root"]),
             "--postfreeze-output-root", str(path.parent),
             "--candidate-id", str(paths["candidate"]),
-            "--fold-index", "1",
+            "--fold-index", str(fold),
             "--arm", arm,
             "--source-tx-ids", ",".join(SOURCE_TX),
             "--device", "cpu",
@@ -412,7 +485,7 @@ def _write_pair_leo_npz(
     binding = json.loads(binding_path.read_text(encoding="utf-8"))
     with np.load(path, allow_pickle=False) as exported:
         assert {"z_id", "features", "tx_logits", "dataset_role", "manifest_json", "source_rx_slot", "sat_scenarios"} <= set(exported.files)
-        assert np.asarray(exported["z_id"]).shape == (len(tx_ids), 2)
+        assert np.asarray(exported["z_id"]).shape == (len(tx_ids), feature_dim)
         assert np.isfinite(np.asarray(exported["z_id"], dtype=np.float64)).all()
         manifest = json.loads(str(np.asarray(exported["manifest_json"]).item()))
     assert manifest["schema"] == "cvs.phase1.clic_leo_export.v1"
@@ -471,7 +544,90 @@ def _pair_artifact_fixture(tmp_path: Path) -> dict[str, object]:
     return artifacts
 
 
-def _pair_cli_argv(artifacts: dict[str, object]) -> list[str]:
+def _pair_fold_artifact_fixture(
+    tmp_path: Path,
+    *,
+    fold: int,
+    real_g_bundle: bool = False,
+) -> dict[str, object]:
+    """Build one complete C/G pair chain with the frozen shared LEO bytes."""
+
+    if fold not in range(1, 7):
+        raise AssertionError("pair fixture fold must be one-based and bounded")
+    artifacts: dict[str, object] = {}
+    existing = tmp_path / "existing_received_iq.npz"
+    pair_rows = _write_pair_received_iq(existing)
+    feature_dim = 160 if real_g_bundle else 2
+    for arm in ("C", "G"):
+        paths = _checkpoint_fixture(
+            tmp_path / arm,
+            arm=arm,
+            fold=fold,
+            real_model=bool(real_g_bundle and arm == "G"),
+        )
+        clean = tmp_path / arm / "clean.npz"
+        _write_feature_npz(clean, paths, arm=arm, feature_dim=feature_dim)
+        leo = tmp_path / arm / "leo.npz"
+        binding = _write_pair_leo_npz(
+            leo,
+            arm=arm,
+            paths=paths,
+            existing=existing,
+            rows=pair_rows,
+            fold=fold,
+            feature_dim=feature_dim,
+        )
+        binding_path = tmp_path / arm / "leo_binding.json"
+        binding_path.write_text(json.dumps(binding, sort_keys=True) + "\n", encoding="utf-8")
+        receipt = _common_receipt(arm)
+        receipt["fold_index"] = fold
+        receipt_path = tmp_path / arm / "common_receipt.json"
+        receipt_path.write_text(json.dumps(receipt, sort_keys=True) + "\n", encoding="utf-8")
+        proxy_path = tmp_path / arm / "proxy_diagnostic.json"
+        proxy_path.write_text(
+            json.dumps(
+                {
+                    "schema": "cvs.phase1.clic_proxy_diagnostic.v1",
+                    "fit": {"role": "source_L_only", "fit_rows": 8, "threshold_fit_rows": 0},
+                    "source_validation_known": {"fit_rows": 0, "threshold_fit_rows": 0},
+                    "proxy_unknown": {"count": 400, "fit_rows": 0, "threshold_fit_rows": 0},
+                    "AUROC_unknown": 0.5,
+                    "u_gap": 0.0,
+                    "threshold_used": False,
+                    "tail_policy_used": False,
+                },
+                sort_keys=True,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+        artifacts[f"{arm.lower()}_paths"] = paths
+        artifacts[f"{arm.lower()}_clean"] = clean
+        artifacts[f"{arm.lower()}_leo"] = leo
+        artifacts[f"{arm.lower()}_binding"] = binding_path
+        artifacts[f"{arm.lower()}_receipt"] = receipt_path
+        artifacts[f"{arm.lower()}_proxy"] = proxy_path
+    if real_g_bundle:
+        bundle_path = tmp_path / "G" / "deployment.bundle.zip"
+        BUNDLE.export_bundle(
+            checkpoint_path=artifacts["g_paths"]["checkpoint"],
+            terminal_receipt_path=artifacts["g_paths"]["terminal"],
+            output_path=bundle_path,
+            clean_npz_path=artifacts["g_clean"],
+            leo_npz_path=artifacts["g_leo"],
+            leo_binding_path=artifacts["g_binding"],
+        )
+        verified = BUNDLE.verify_clic_bundle(bundle_path)
+        assert verified["state_origin"] == "checkpoint_model_exact"
+        assert verified["real_checkpoint_state_rebuild_verified"] is True
+        assert verified["real_checkpoint_reload_verified"] is False
+        artifacts["g_bundle"] = bundle_path
+    artifacts["existing_received_iq"] = existing
+    artifacts["pair_json"] = tmp_path / "pair.json"
+    return artifacts
+
+
+def _pair_cli_argv(artifacts: dict[str, object], *, fold: int = 1) -> list[str]:
     return [
         "--c-checkpoint", str(artifacts["c_paths"]["checkpoint"]),
         "--g-checkpoint", str(artifacts["g_paths"]["checkpoint"]),
@@ -487,7 +643,7 @@ def _pair_cli_argv(artifacts: dict[str, object]) -> list[str]:
         "--g-common-receipt-json", str(artifacts["g_receipt"]),
         "--c-proxy-diagnostic-json", str(artifacts["c_proxy"]),
         "--g-proxy-diagnostic-json", str(artifacts["g_proxy"]),
-        "--fold-index", "1",
+        "--fold-index", str(fold),
         "--training-run-root", TRAINING_RUN,
         "--source-tx-ids", ",".join(SOURCE_TX),
         "--output-pair-json", str(artifacts["pair_json"]),
@@ -1008,6 +1164,12 @@ def test_clic_pair_parser_evaluate_writes_cg_artifact_summary_and_common_binding
     assert payload["common_binding"]["passed"] is True
     assert set(payload["geometry"]) == {"C", "G"}
     assert set(payload["policies"]) == {"C", "G"}
+    assert set(payload["clic_source_policy_state"]) == {"C", "G"}
+    for arm in ("C", "G"):
+        state = payload["clic_source_policy_state"][arm]
+        assert state["checkpoint_sha256"] == _sha_file(artifacts[f"{arm.lower()}_paths"]["checkpoint"])
+        assert state["terminal_receipt_sha256"] == _sha_file(artifacts[f"{arm.lower()}_paths"]["terminal"])
+        assert len(state["state_sha256"]) == 64
     assert set(payload["proxy_diagnostic"]) == {"C", "G"}
     assert payload["raw_artifacts"]["C"]["clean"] == str(Path(artifacts["c_clean"]).resolve())
     assert payload["raw_artifacts"]["G"]["leo_binding"] == str(Path(artifacts["g_binding"]).resolve())
@@ -1132,58 +1294,38 @@ def test_clic_f6_positive_reopens_all_cg_raw_artifacts_and_rejects_binding_byte_
     raw_by_fold: dict[int, dict[str, object]] = {}
     binding_paths: list[Path] = []
     for fold in range(1, 6):
-        c_paths = _checkpoint_fixture(tmp_path / f"F{fold}C", arm="C", fold=fold)
-        g_paths = _checkpoint_fixture(tmp_path / f"F{fold}G", arm="G", fold=fold)
-        clean = tmp_path / f"F{fold}G" / "clean.npz"
-        _write_feature_npz(clean, g_paths, arm="G")
-        leo_binding = tmp_path / f"F{fold}G" / "leo_binding.json"
-        leo_binding.write_text(
-            json.dumps(
-                {
-                    "schema": "cvs.phase1.clic_leo_binding.v1",
-                    "fold_index": fold,
-                    "source_only": True,
-                    "single_leo_observation": True,
-                    "received_iq_sha256": _sha_text("common-existing-received-iq"),
-                    "physical_order_sha256": _sha_text("common-physical-order"),
-                },
-                sort_keys=True,
-            )
-            + "\n",
-            encoding="utf-8",
+        artifacts = _pair_fold_artifact_fixture(
+            tmp_path / f"F{fold}", fold=fold, real_g_bundle=True
         )
-        binding_paths.append(leo_binding)
-        proxy = tmp_path / f"F{fold}G" / "proxy.json"
-        proxy.write_text(json.dumps({"schema": "cvs.phase1.clic_proxy.v1", "proxy_row_count": 400}, sort_keys=True), encoding="utf-8")
-        bundle = tmp_path / f"F{fold}G" / "bundle.tar"
-        bundle.write_bytes(f"bundle-{fold}".encode("ascii"))
-        record = tmp_path / f"F{fold}G" / f"F{fold}_pair.json"
-        record.write_text(
-            json.dumps(
-                {
-                    "schema": "cvs.phase1.clic_postfreeze_pair.v1",
-                    "fold_index": fold,
-                    "postfreeze_matrix_id": POSTFREEZE_MATRIX,
-                    "training_run_root": TRAINING_RUN,
-                    "raw_artifacts": {
-                        "checkpoint": str(g_paths["checkpoint"]),
-                        "terminal": str(g_paths["terminal"]),
-                        "clean": str(clean),
-                        "leo_binding": str(leo_binding),
-                        "proxy": str(proxy),
-                        "bundle": str(bundle),
-                    },
-                },
-                sort_keys=True,
+        args = PAIR.build_parser().parse_args(_pair_cli_argv(artifacts, fold=fold))
+        pair_payload = PAIR.evaluate(args)
+        pair_path = Path(args.output_pair_json)
+        assert pair_path.is_file()
+        persisted = json.loads(pair_path.read_text(encoding="utf-8"))
+        assert persisted == pair_payload
+        assert set(pair_payload["clic_source_policy_state"]) == {"C", "G"}
+        for arm in ("C", "G"):
+            state = pair_payload["clic_source_policy_state"][arm]
+            paths = artifacts[f"{arm.lower()}_paths"]
+            assert state["checkpoint_sha256"] == _sha_file(paths["checkpoint"])
+            assert state["terminal_receipt_sha256"] == _sha_file(paths["terminal"])
+            assert state["state_sha256"] == _canonical(
+                {key: value for key, value in state.items() if key != "state_sha256"}
             )
-            + "\n",
-            encoding="utf-8",
-        )
-        priors.append(record)
+            assert PAIR._validated_clic_source_policy_state(
+                state,
+                fold_index=fold,
+                arm=arm,
+                checkpoint_sha256=_sha_file(paths["checkpoint"]),
+                terminal_receipt_sha256=_sha_file(paths["terminal"]),
+            ) == state
+        assert pair_payload["clic_source_policy_state"]["C"]["state_sha256"] != pair_payload["clic_source_policy_state"]["G"]["state_sha256"]
         raw_by_fold[fold] = {
-            "C": {"checkpoint": c_paths["checkpoint"], "terminal": c_paths["terminal"]},
-            "G": {"checkpoint": g_paths["checkpoint"], "terminal": g_paths["terminal"]},
+            arm: dict(pair_payload["raw_artifacts"][arm]) for arm in ("C", "G")
         }
+        raw_by_fold[fold]["G"]["bundle"] = artifacts["g_bundle"]
+        binding_paths.append(Path(artifacts["g_binding"]))
+        priors.append(pair_path)
     f6 = _checkpoint_fixture(tmp_path / "F6G", arm="G", fold=6)
     calls: list[tuple[str, str]] = []
     original_load_json = PAIR._load_json
