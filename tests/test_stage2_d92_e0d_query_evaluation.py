@@ -149,6 +149,10 @@ def test_audit_keeps_existing_resource_fields_and_adds_state_fingerprints():
     assert row["query_role_oracle_access"] is False
     assert row["query_class_quota_access"] is False
     assert row["query_global_reassignment"] is False
+    assert row["before_center_shift_l2_max"] == 0.0
+    assert row["after_center_shift_l2_max"] == 0.0
+    assert row["before_effective_sample_size_min"] == 5.0
+    assert row["after_effective_sample_size_min"] == 5.0
     assert len(row["before_state_fingerprint_sha256"]) == 64
     assert len(row["after_state_fingerprint_sha256"]) == 64
     assert row["after_state_fingerprint_sha256"] != changed[

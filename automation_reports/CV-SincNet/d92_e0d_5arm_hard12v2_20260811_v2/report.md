@@ -7,8 +7,8 @@
 |实验ID|`D92-E0D-5arm-Hard12-v2`|
 |run ID|`d92_e0d_5arm_hard12v2_20260811_v2`|
 |日期|2026-08-11|
-|operator|Codex primary；N607唯一runner待交接|
-|当前状态|`LOCAL_VERIFIED_APPROVED_FOR_N607`|
+|operator|Codex primary；N607唯一runner|
+|当前状态|`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`|
 |协议|`p2_min_v1`|
 |证据范围|`DEVELOPMENT_ONLY_PSEUDO_BLIND_DISJOINT_STRESS_SCREEN`|
 |唯一晋级候选|`E0_FULL_ONLY`|
@@ -83,4 +83,8 @@ runner须先执行只读preflight，确认四个v2路径不存在、GPU/进程�
 
 ## 7.结果区
 
-待N607 artifacts完整取回后补充五臂聚合表、逐outer配对、资源表、异常、严格门和最终裁决。
+2026-08-11，v2在全新路径完成三项同步、运行闭包import和prepare；冻结manifest闭合为12个outer、60个job、180个scene-arm，SHA256=`99c25f000e64d6dc60fe13b74028ce33505fdccb404d658c518baaa37e3a6dc7`。真实checkpoint truth-free smoke固定执行`rx_7_7__seed_713104__k_1__new_20`的`D92_FULL`时，prediction在通用D81资源汇总读取`before_center_shift_l2_max`处触发`KeyError`。E0D审计行遗漏了该既有兼容字段。
+
+driver在任何shard启动前退出；prediction stdout为0B，没有COMMIT、receipt、score或性能结果，8张GPU保持空闲，run-owned进程和SSH连接最终均为0。远端四个v2路径与partial artifacts原样保留；证据取回到`E:\type10-7\local_artifacts\d92_e0d_5arm_hard12v2_20260811_v2`。
+
+因此v2禁止性能分析。修复范围仅为恢复E0D fit-audit与既有D81 evaluator的字段契约，不改变预测状态、方法、矩阵、门限或输入；后续必须使用全新run ID。

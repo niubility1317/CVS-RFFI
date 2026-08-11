@@ -182,6 +182,13 @@ def _audit_d92_e0d_fit(
             raise D92E0DQueryEvaluationError("D92-E0D registered fit-count drift")
     if int(after.get("d92_e0d_query_macs", -1)) != int(class_count) * 288:
         raise D92E0DQueryEvaluationError("D92-E0D query affine MAC drift")
+
+    def center_shift(audit: dict[str, Any]) -> float:
+        transform = audit.get("d81_transform_audit")
+        if isinstance(transform, dict):
+            return float(transform.get("center_shift_l2_max", 0.0))
+        return 0.0
+
     before_resource = _resource_receipt(before)
     after_resource = _resource_receipt(after)
     return {
@@ -194,6 +201,10 @@ def _audit_d92_e0d_fit(
         ),
         "before_covariance_policy": str(before.get("covariance_policy")),
         "after_covariance_policy": str(after.get("covariance_policy")),
+        "before_center_shift_l2_max": center_shift(before),
+        "after_center_shift_l2_max": center_shift(after),
+        "before_effective_sample_size_min": float(k_shot),
+        "after_effective_sample_size_min": float(k_shot),
         "before_state_bytes": int(result.before_state.persistent_state_bytes),
         "after_state_bytes": int(result.state.persistent_state_bytes),
         "before_state_fingerprint_sha256": _state_fingerprint_sha256(
