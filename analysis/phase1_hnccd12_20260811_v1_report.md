@@ -1,6 +1,6 @@
 # Phase1 HNCCD 12臂训练实验报告
 
-状态：`LOCAL_VERIFIED / LANDED / N607_PRELAUNCH_PASSED / NO_PERFORMANCE_RESULT`
+状态：`LOCAL_VERIFIED / LANDED / RUNNING / NO_PERFORMANCE_RESULT`
 
 ## 1.实验身份、目标与声明边界
 
@@ -215,3 +215,25 @@ G臂额外闭合：
 - `ManySig.pkl`SHA=`2b0a7a7488dd3650bcae7b1d80efbcffd1598aaa671ae6b0a0df2a24dc0f694f`，F1C–F6C checkpoint均经只读SHA256复核；F2C抄录修正见第10节，不代表任何输入变更。
 - 严格F1C no-query smoke通过：真实F1C checkpoint strict load为missing=0、unexpected=0，checkpoint domain head=14；exact `W=[4,160]`，真实CUDA及`leo_clear_weak`前向`z=[128,160]`且finite。仅source-L合成metadata产生28个positive cell；LEO `z`、shared encoder、exact `W`的raw VJP均finite/nonzero；clean和head bias均None-or-zero；`query_rows_opened=0`。smoke只使用临时外置字节码路径，未写release、run或log。
 - 至本节唯一启动命令仍未调用：SCP=1、launch=0、retry=NO、NO_PERFORMANCE_RESULT。待新的direct预检、run/log/outer空路径、run PID=0和GPU并发复核后，唯一Runner才可调用第6节命令一次。
+
+## 12.N607唯一启动与首波技术健康（2026-08-11）
+
+- 最终direct预检通过：普通账号、项目根、GPU0–7可见；发射前release=4981成员、pycache=0、launcher SHA闭合，run/log/outer与incoming均为空，run PID=0、GPU计算进程=0。
+- 第6节冻结命令只调用1次，retry=NO。提交连接在34秒后超时，但只读落地核验确认远端submit shell PID=`1652232`、launcher PID=`1652233`和12行`pids.tsv`均已生成；本地残留`ssh.exe` PID=`27392`已精确关闭后确认TCP22=0，未重发命令。
+
+|候选|主PID|GPU|首波技术状态|
+|---|---:|---:|---|
+|F1C_HNCCD12|1652236|0|存活、绑定通过、日志增长|
+|F5G_HNCCD12|1652238|0|存活、绑定通过、日志增长|
+|F1G_HNCCD12|1652240|1|存活、绑定通过、日志增长|
+|F5C_HNCCD12|1652242|1|存活、绑定通过、日志增长|
+|F2C_HNCCD12|1652248|2|存活、绑定通过、日志增长|
+|F6G_HNCCD12|1652250|2|存活、绑定通过、日志增长|
+|F2G_HNCCD12|1652256|3|存活、绑定通过、日志增长|
+|F6C_HNCCD12|1652261|3|存活、绑定通过、日志增长|
+|F3C_HNCCD12|1652267|4|存活、绑定通过、日志增长|
+|F3G_HNCCD12|1652269|5|存活、绑定通过、日志增长|
+|F4C_HNCCD12|1652271|6|存活、绑定通过、日志增长|
+|F4G_HNCCD12|1652273|7|存活、绑定通过、日志增长|
+
+- 首波核验：12/12主PID存活且CWD均为release的`code`目录；命令行逐臂闭合`run_id`、输出目录、C/G开关与`lambda_hnccd`；12/12 arm日志非空并增长，12个GPU计算进程与映射一致。只扫描技术异常指纹，当前`Traceback/RuntimeError/OOM/Cholesky/full-rank/SIGSEGV/argparse/权限`标记均为0；`final_ssdg.pth`数量为0，仍为运行中而非性能结果。
