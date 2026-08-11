@@ -8,7 +8,7 @@
 |run ID|`d92_e0ocf_5arm_hard12v3_20260811_v1`|
 |日期|2026-08-11|
 |operator|Codex primary；N607唯一runner待指派|
-|当前状态|`DESIGN_FROZEN / IMPLEMENTATION_PENDING`|
+|当前状态|`LOCAL_VERIFIED / TASK_REVIEWS_P0_P1_CLEAR / WHOLE_BRANCH_REVIEW_PENDING`|
 |协议|`p2_min_v1`|
 |证据范围|`DEVELOPMENT_ONLY_PSEUDO_BLIND_DISJOINT_STRESS_SCREEN`|
 |唯一晋级候选|`E0_OCF25`|
@@ -70,6 +70,36 @@ Hard12-v3从125个历史outer的冻结难度中，在排除Hard12-v1/v2共24行�
 
 仅保留：Git方法入口、聚焦协议负测、真实checkpoint truth-free smoke、独立P0=0/P1=0、不可覆盖run/output/report、一次N607普通账号preflight和必要交付文件hash。明确不做重复数据验证、整树hash、额外签名/authority层、重复selection receipt或报告润色门。
 
-## 8.实施、发布与结果
+## 8.本地实施与验证
 
-待实现后补充changed files、验证命令、Git commit、交付物映射、精确N607命令、环境/CWD、GPU、日志/output、PID、smoke、artifact计数、同排结果和最终裁决。
+### 8.1 Git提交
+
+|commit|内容|独立复审|
+|---|---|---|
+|`b495811e`|新增OCF25/50科学核心、RMS对齐融合与不变量测试|初审后修订|
+|`8851ed95`|修正瞬态内存上界、补组内标签置换、闭合lambda收据|`APPROVE，P0=0、P1=0、P2=0`|
+|`dd13490d`|新增Hard12-v3矩阵、runner、analysis、CLI与配置|初审后修订|
+|`ec6195f0`|将OCF active/lambda/support成本透传到正式fit audit|纳入Task2集成复审|
+|`da6422e8`|闭合首次smoke、shard前置收据、非OCF成本与精确分片集合|复审后继续修订|
+|`94d84dc4`|冻结双K1矩阵中的唯一技术smoke outer|`APPROVE，P0=0、P1=0、P2=0`|
+
+核心实现位于`probe_d92_registration_balanced_covariance.py`与`stage2_d92_e0d_slim.py`；正式fit audit桥接位于`stage2_d92_e0d_query_evaluation.py`；矩阵、runner、analysis、CLI和method lock分别位于新增的`stage2_d92_e0ocf_*`、`run_d92_e0ocf_hard12v3.py`、`analyze_d92_e0ocf_hard12v3.py`和`stage2_d92_e0ocf_5arm_hard12v3_v1.json`。
+
+### 8.2 本地验证
+
+|验证|结果|
+|---|---|
+|OCF核心新增与既有probe/slim/query聚焦集|`23 passed`|
+|fit-audit桥接evaluator回归|`9 passed`；同时slim回归`9 passed`|
+|最终Task2/E0D聚焦回归|`30 passed`|
+|Python语法编译、配置JSON解析、runner/analyzer CLI help、`git diff --check`|全部通过|
+|Task1独立复审|`APPROVE，P0=0、P1=0、P2=0`|
+|Task2最终独立复审|`APPROVE，P0=0、P1=0、P2=0`|
+
+测试已覆盖：新类行byte-exact、旧类W/b组均值、组内标签置换等变、K1/K2别名、OCF fit与support成本收据、非OCF成本篡改拒绝、60-job双K1 smoke、smoke先于shard、跨distinct-outer停派、精确8-shard job集合、OCF50不得改变verdict及混淆率公式。
+
+技术smoke固定为`rx_20_1__seed_713106__k_1__new_20`的`D92_FULL`；另一个K1 liveness outer仍保留用于五臂别名闭包。selection SHA保持`20edc97b914c1031d9f917c63dee8e8ddb94223b31750151a05aabf0375d65f1`。
+
+## 9.发布与结果待办
+
+当前尚未产生Hard12-v3性能结果。下一步只剩：全分支独立P0/P1复审、最小Git运行闭包与launch生成、一次N607普通账号preflight、真实checkpoint truth-free smoke、8-shard完整60-job执行、artifact取回和冻结analysis。精确交付物映射、N607命令、环境/CWD、GPU、日志/output、PID、smoke、artifact计数、同排结果与最终裁决将在同一报告续写。
