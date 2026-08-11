@@ -65,7 +65,7 @@ COMMON=(
   --lambda_teacher_clean_kl 0 --lambda_teacher_sat_kl 0 --lambda_teacher_zid_mse 0
   --use_aug false --use_mixstyle false --mixstyle_use_domain_label false --use_sat_consistency true
   --sat_train_scenarios leo_clear_weak,leo_low_elev_weak,leo_rain_weak --sat_view_prob 1.0
-  --lambda_sat_cls 0 --lambda_sat_cons 0 --no_use_concat_sat_channel_aug
+  --lambda_sat_cls 0 --lambda_sat_cons 0.10 --sat_cons_start_epoch 1 --no_use_concat_sat_channel_aug
   --use_tx_rx_balanced_sampler false --use_phase2_ground_prototypes false --use_feature_masks false
   --use_txrx_geometry_losses false --use_proto_memory false --reject_head false
   --phase1_ccpc_leo_frozen_mode false --phase1_ccpc_leo_enabled false --lambda_ccpc_leo 0

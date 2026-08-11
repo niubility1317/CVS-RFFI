@@ -1340,6 +1340,10 @@ def test_clic_launcher_has_the_frozen_12_arm_matrix_and_no_target_or_unknown_tra
     assert "--phase1_clic_frozen_mode true" in launcher_text
     assert "--epochs 40" in launcher_text
     assert "--batch_size 128" in launcher_text
+    assert "--lambda_sat_cls 0" in launcher_text
+    assert "--lambda_sat_cons 0.10" in launcher_text
+    assert "--sat_cons_start_epoch 1" in launcher_text
+    assert not re.search(r"--(?:lambda_clic|clic_loss|loss_clic)(?:\s|=)", launcher_text, re.I)
     assert 'C) operator="raw_phase_control"' in launcher_text
     assert 'G) operator="complex_local_invariant_curvature"' in launcher_text
     calls = re.findall(r"^launch_arm (\d) ([CG]) (\d)$", launcher_text, flags=re.MULTILINE)
@@ -1378,6 +1382,10 @@ def test_clic_launcher_has_the_frozen_12_arm_matrix_and_no_target_or_unknown_tra
     assert all("phase1_clic12_20260811_v1" in line for line in rows)
     assert all("--epochs 40" in line and "--batch_size 128" in line for line in rows)
     assert all("--seed 7281164" in line for line in rows)
+    assert all("--lambda_sat_cls 0" in line for line in rows)
+    assert all("--lambda_sat_cons 0.10" in line for line in rows)
+    assert all("--sat_cons_start_epoch 1" in line for line in rows)
+    assert not re.search(r"--(?:lambda_clic|clic_loss|loss_clic)(?:\s|=)", "\n".join(rows), re.I)
     assert not re.search(r"--[^\s=]*(?:target|proxy|unknown)[^\s=]*", "\n".join(rows), re.I)
 
 
