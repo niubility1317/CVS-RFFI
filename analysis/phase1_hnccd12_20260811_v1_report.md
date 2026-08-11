@@ -1,6 +1,6 @@
 # Phase1 HNCCD 12臂训练实验报告
 
-状态：`ARTIFACTS_COMPLETE / TECHNICALLY_CLOSED / NON_PROMOTABLE_P0_DISABLED / NO_PERFORMANCE_RESULT`
+状态：`TRAINING_TELEMETRY_ANALYZED / POSTFREEZE_LOCAL_IMPLEMENTING / NO_POSTFREEZE_RESULT`
 
 ## 1.实验身份、目标与声明边界
 
@@ -264,3 +264,18 @@ G臂额外闭合：
 
 - 本地小型技术bundle：`phase1_hnccd12_20260811_v1_technical_bundle.tar.gz`，SHA256=`18dab2c4436d815c8ff33f7ced9aba12bde30ae916ae9ee6cce27a3ccc81f2fe`，6,874,571B，74个唯一成员。内容为pids、outer+12 arm日志及每臂config/resource/completion/status/HNCCD terminal receipt；未包含`pth/npz/pt/npy/metrics_epoch`，forbidden=0、unexpected path=0。相邻`phase1_hnccd12_20260811_v1_technical_bundle_manifest.json`（SHA256=`669ab8868d89f11db38d86d82bf67a3c3187b8e68a2ed83e3e7282024f0b21ae`，1,449B）记录传输、清单和release卫生回执。远端工件保留不动。
 - 本run以`ARTIFACTS_COMPLETE / TECHNICALLY_CLOSED / NON_PROMOTABLE_P0_DISABLED / NO_PERFORMANCE_RESULT`交接；不作任何性能解释、晋级或拒绝。
+
+## 14.主控训练telemetry同row复核（2026-08-11）
+
+在12/12臂技术闭合后，主控只读解析完整arm日志中的40个source-known validation点。该telemetry不含sealed clean/LEO/fixed400 proxy后冻结结果，不能替代42步非补偿门，也不用于改变候选、lambda、fold、seed、checkpoint选择或停止规则。训练checkpoint仍严格为`final_only`；历史best只作为轨迹说明，不替代终态checkpoint。
+
+|fold|C终态source-val|G终态source-val|G−C终态|C历史best|G历史best|G−C历史best|
+|---:|---:|---:|---:|---:|---:|---:|
+|F1|99.29%|99.30%|+0.01pp|99.33%|99.31%|−0.02pp|
+|F2|99.24%|99.18%|−0.06pp|99.26%|99.27%|+0.01pp|
+|F3|99.35%|99.31%|−0.04pp|99.37%|99.39%|+0.02pp|
+|F4|99.26%|99.23%|−0.03pp|99.35%|99.33%|−0.02pp|
+|F5|98.28%|98.10%|−0.18pp|98.28%|98.10%|−0.18pp|
+|F6|97.53%|96.33%|−1.20pp|98.32%|98.39%|+0.07pp|
+
+观察边界：F1–F4终态差异很小，F5轻微下降；F6终态G相对C下降1.20pp，但历史best并未下降，提示的是`final_only`终态稳定性风险而非可挑选checkpoint的许可。现有训练证据既不能晋级也不能永久拒绝HNCCD；按预注册继续实现并执行固定42步，由clean6/6、LEO18/18、fold/global overall及fixed400 proxy双门统一裁决。
