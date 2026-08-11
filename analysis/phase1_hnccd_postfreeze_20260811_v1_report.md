@@ -1,13 +1,13 @@
 # Phase1 HNCCD后冻结42步实验报告
 
-状态：`LOCAL_VERIFIED / P0=0 / P1=0 / N607_PRELAUNCH_PENDING / NO_POSTFREEZE_RESULT`
+状态：`ARTIFACTS_COMPLETE / TECHNICALLY_CLOSED / P0=0 / P1=0 / NO_PERFORMANCE_RESULT`
 
 ## 1.实验身份与目标
 
 - 后冻结ID：`phase1_hnccd_postfreeze_20260811_v1`
 - 训练输入ID：`phase1_hnccd12_20260811_v1`
 - 日期：2026-08-11
-- 操作方：Codex主控；N607唯一Runner待交接
+- 操作方：Codex主控；N607唯一Runner已完成技术闭合
 - 后冻结实现commit：`fa30a77032e9db4acbf8efb17d4a81ab8dd37dc8`
 - 训练实现commit：`b6afc5a3e19ae3146dd6afcfe8a90abff35f3cbb`
 - 候选：P1-HNCCD（head-nullspace cross-covariance decorrelation）
@@ -71,7 +71,7 @@ F6必须从F1至F5的raw clean NPZ、LEO NPZ、LEO binding、proxy JSON/CSV和�
 - 独立actual-diff审查：`P0=0 / P1=0 / ALLOW`；
 - `git diff --check`通过。
 
-追踪卡状态：`verified=5,implemented=4,deferred=1,rejected=0,blocked=0`。唯一deferred为真实12 checkpoint、ManySig、sealed42与F6原件，由唯一Runner在N607重开。
+追踪卡状态：`verified=5,implemented=4,deferred=0,rejected=0,blocked=0`。真实12 checkpoint、ManySig、sealed42与F6原件已由唯一Runner在N607重开并完成技术闭合。
 
 ## 5.冻结矩阵与资源
 
@@ -133,3 +133,13 @@ launch最多1次；SSH超时先只终止并清理绑定本地客户端，再用�
 
 只有42步工件技术闭合后，主控才从6个pair JSON及raw绑定读取同row结果，逐项计算clean6/6、LEO18/18、fold/global overall和proxy双门，更新本报告并作唯一永久判定。
 
+## 10.唯一Runner技术回收与终态（2026-08-11）
+
+- 远端完整Git archive来自`fa30a77032e9db4acbf8efb17d4a81ab8dd37dc8`，无prefix、无`code/code`或`code0`，4988个成员；artifact-only LF归一化final archive为`release_git_archive_fa30a770_final_lf.tar`，bytes=`267909120`，SHA256=`260BA78A4689B596343BD486DA46001C52FDF31E98B4A828FD4483D6460DE48B`。raw archive保留为`release_git_archive_fa30a770_raw.tar`，SHA256=`46E208573A0CA5D4815392787E94D78048CC8E2F016FA66F78C8641754870DF1`；raw文本CR证据保留，未改repo。release archive直接SCP一次，远端SHA与final archive一致，atomic landing成功。
+- release静态门通过：4个`py_compile`、3个`--help`、`bash -n`、dry-run精确42（clean12/LEO12/proxy12/pair6），pair source1600为6/6、proxy400为6/6、F6 prior为1；release内pycache=0。
+- 当前validator技术重开通过：12/12 training checkpoint与HNCCD terminal receipt；6折C/G common binding；C auxiliary=0；G三scene positive、raw-unscaled VJP和resource1200均闭合。真实F1C clean+LEO窄smoke通过，schema/terminal/source-only/binding闭合，`query_rows_opened=0`；临时输出未写入final postfreeze根。
+- 最终prelaunch门通过后唯一启动命令调用1次，SSH exit=0，retry=`NO`。12个candidate PID均按`candidate_pids.tsv`与fold/arm/GPU绑定并自然退出；GPU compute apps=0，未发生技术停止、重试或干预。
+- 终态技术计数：12 clean NPZ、12 LEO NPZ、12 binding JSON、12 proxy JSON、12 proxy CSV、6 pair JSON、12 candidate log、6 pair log、outer和`candidate_pids.tsv`；schema/receipt/common binding/proxy raw复算/F6 raw reopen validator均PASS。terminal技术扫描JSON=30、CSV=12、stage logs=18，技术异常指纹为空，禁止输出扫描=0。远端完整原件保留。
+- 小bundle转移SCP一次。raw SCP证据保留为`phase1_hnccd_postfreeze_20260811_v1_technical_bundle_scp_raw.tar.gz`，bytes=`13384195`，SHA256=`4C63AFBA94191361BA1836A87636B27CF8A20BF3416359C93B6C6E0BAFF307C5`。artifact-only final bundle为`phase1_hnccd_postfreeze_20260811_v1_technical_bundle.tar.gz`，bytes=`4895620`，SHA256=`E01738387D8A854B14DB7CAC0F0AFFEF23CE0B491EAC0BA35997ED2D480DA3D1`，78个tar成员（63文件、15目录、重复成员0），manifest类别为30 JSON、12 CSV、18 logs、outer、pids，forbidden=0，成员bytes/SHA审计PASS。raw SCP tar仅保留传输证据；final为本run artifact-only去重归一化，不改远端原件。
+- 每次SSH/SCP后均主动断开并核验本地`ssh.exe=0`、N607/bridge TCP22 established=0；终态仍为0。
+- 本节仅记录发布、启动、路径、hash、schema、receipt、binding、资源和工件技术事实；状态为`NO_PERFORMANCE_RESULT / NO_PERFORMANCE_INTERPRETATION`。不得据此读取、解释或判定accuracy、floor、AUROC、u-gap、pair数值或晋级/拒绝。
