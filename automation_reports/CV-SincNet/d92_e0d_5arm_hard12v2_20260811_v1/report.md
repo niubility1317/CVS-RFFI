@@ -7,8 +7,8 @@
 |实验ID|`D92-E0D-5arm-Hard12-v2`|
 |run ID|`d92_e0d_5arm_hard12v2_20260811_v1`|
 |日期|2026-08-11|
-|operator|Codex primary；N607唯一runner待独立交接|
-|当前状态|`LOCAL_VERIFIED_APPROVED_FOR_N607`|
+|operator|Codex primary；N607唯一runner|
+|当前状态|`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`|
 |协议|`p2_min_v1`|
 |证据范围|`DEVELOPMENT_ONLY_PSEUDO_BLIND_DISJOINT_STRESS_SCREEN`|
 |唯一晋级候选|`E0_FULL_ONLY`|
@@ -158,4 +158,6 @@ launch解包后工作目录为`/home/szu2070436088/2510044040/CV-SincNet/runs/d9
 
 ## 10.结果区
 
-待N607 artifacts完整取回后补充五臂聚合表、两组逐outer配对、资源表、异常、严格门和最终裁决。
+2026-08-11首次落地时，runner把method lock同步到`source_root`根目录，而冻结launch只读取`source_root/configs/`。driver PID`1803467`在`prepare`、真实checkpoint smoke和任何GPU shard启动前因`test -f`失败退出；`launch_driver.out`与`launch_driver.err`均为0B，smoke/output/logs均未创建，8张GPU保持空闲。
+
+因此本run没有prediction、score或性能结果，禁止进入性能分析。远端source root及三份已同步文件原样保留，不覆盖、不删除、不重启。证据已取回到`E:\type10-7\local_artifacts\d92_e0d_5arm_hard12v2_20260811_v1`，SSH/SCP无残留连接。修复仅改变交付映射和run路径，不改变方法、矩阵、阈值或输入；后续使用新run ID`d92_e0d_5arm_hard12v2_20260811_v2`。
