@@ -34,6 +34,7 @@ ARM_ORDER = (
 )
 PRIMARY_ARM = "E0_OCF25"
 DIAGNOSTIC_ONLY_ARM = "E0_OCF50"
+SMOKE_OUTER_KEY = "rx_20_1__seed_713106__k_1__new_20"
 OUTER_PATTERN = re.compile(
     r"^rx_(?P<receiver>[0-9_]+)__seed_(?P<seed>[0-9]+)"
     r"__k_(?P<k>[0-9]+)__new_(?P<new>[0-9]+)$"
@@ -221,8 +222,20 @@ def build_hard12v3_manifest(
         context_rows[key] = dict(row)
     lock_file = Path(method_lock_path).resolve(strict=True)
     lock = json.loads(lock_file.read_text(encoding="utf-8-sig"))
-    if lock.get("schema") != "cvs.phase2.d92_e0ocf.method_lock.v1" or lock.get("protocol_schema") != "p2_min_v1" or lock.get("selection_sha256") != CANONICAL_SELECTION_SHA256 or lock.get("only_promotion_candidate") != PRIMARY_ARM:
+    if lock.get("schema") != "cvs.phase2.d92_e0ocf.method_lock.v1" or lock.get("protocol_schema") != "p2_min_v1" or lock.get("selection_sha256") != CANONICAL_SELECTION_SHA256 or lock.get("only_promotion_candidate") != PRIMARY_ARM or lock.get("smoke_outer_key") != SMOKE_OUTER_KEY:
         raise D92E0OCFHard12V3Error("D92-E0OCF method lock drift")
+    smoke_rows = []
+    for row in HARD12_ROWS:
+        if str(row.get("outer_key")) != SMOKE_OUTER_KEY:
+            continue
+        try:
+            _, _, row_k, _ = _parse_outer(str(row["outer_key"]))
+        except (KeyError, TypeError, ValueError) as error:
+            raise D92E0OCFHard12V3Error("smoke outer identity drift") from error
+        if row.get("role") == "liveness" and row_k == 1:
+            smoke_rows.append(row)
+    if len(smoke_rows) != 1:
+        raise D92E0OCFHard12V3Error("smoke outer must identify exactly one frozen liveness K1 outer")
     source_root = Path(str(context["identity"]["d92_output_root"]))
     output = Path(output_root)
     selected_rows: list[dict[str, Any]] = []
@@ -258,7 +271,7 @@ def build_hard12v3_manifest(
         "protocol_schema": "p2_min_v1", "selection_sha256": CANONICAL_SELECTION_SHA256, "context_path": str(context_file), "context_sha256": CONTEXT_SHA256,
         "method_lock": str(lock_file), "method_lock_sha256": _sha256_file(lock_file), "ground_component_dir": identity["ground_component"]["directory"], "ground_manifest_sha256": identity["ground_component"]["manifest_sha256"],
         "output_root": str(output), "shard_count": 8, "outer_count": len(selected_rows), "performance_outer_count": sum(row["outer_role"] == "performance" for row in selected_rows), "liveness_outer_count": sum(row["outer_role"] == "liveness" for row in selected_rows),
-        "job_count": len(jobs), "scene_arm_count": len(jobs) * len(SCENES), "arms": list(ARM_ORDER), "candidate_ids": {arm: _arm_candidate(arm) for arm in ARM_ORDER}, "primary_arm": PRIMARY_ARM, "diagnostic_only_arm": DIAGNOSTIC_ONLY_ARM,
+        "job_count": len(jobs), "scene_arm_count": len(jobs) * len(SCENES), "arms": list(ARM_ORDER), "candidate_ids": {arm: _arm_candidate(arm) for arm in ARM_ORDER}, "primary_arm": PRIMARY_ARM, "diagnostic_only_arm": DIAGNOSTIC_ONLY_ARM, "smoke_outer_key": SMOKE_OUTER_KEY,
         "arm_roles": {arm: ("primary" if arm == PRIMARY_ARM else ("diagnostic_only" if arm == DIAGNOSTIC_ONLY_ARM else "baseline")) for arm in ARM_ORDER}, "coverage": coverage, "selected_rows": selected_rows, "jobs": jobs,
     }
 
@@ -267,5 +280,5 @@ build_hard12_manifest = build_hard12v3_manifest
 
 
 __all__ = [
-    "ARM_ORDER", "CANONICAL_SELECTION_SHA256", "CONTEXT_SHA256", "D92E0OCFHard12Error", "D92E0OCFHard12V3Error", "DIAGNOSTIC_ONLY_ARM", "EXCLUDED_OUTER_KEYS", "HARD12_ROWS", "HARD12_V1_ROWS", "HARD12_V2_ROWS", "HARD12_V3_ROWS", "PRIMARY_ARM", "SCENES", "SELECTION_PAYLOAD", "build_hard12_manifest", "build_hard12v3_manifest", "canonical_selection_sha256", "_canonical_bytes",
+    "ARM_ORDER", "CANONICAL_SELECTION_SHA256", "CONTEXT_SHA256", "D92E0OCFHard12Error", "D92E0OCFHard12V3Error", "DIAGNOSTIC_ONLY_ARM", "EXCLUDED_OUTER_KEYS", "HARD12_ROWS", "HARD12_V1_ROWS", "HARD12_V2_ROWS", "HARD12_V3_ROWS", "PRIMARY_ARM", "SCENES", "SELECTION_PAYLOAD", "SMOKE_OUTER_KEY", "build_hard12_manifest", "build_hard12v3_manifest", "canonical_selection_sha256", "_canonical_bytes",
 ]

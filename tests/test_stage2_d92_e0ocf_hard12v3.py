@@ -6,6 +6,7 @@ from pathlib import Path
 from cvsrffi.stage2_d92_e0ocf_hard12 import (
     ARM_ORDER,
     HARD12_ROWS,
+    SMOKE_OUTER_KEY,
     build_hard12v3_manifest,
 )
 
@@ -41,6 +42,7 @@ def test_hard12v3_manifest_expands_sixty_jobs_and_marks_primary(tmp_path: Path) 
     assert manifest["scene_arm_count"] == 180
     assert manifest["shard_count"] == 8
     assert manifest["primary_arm"] == "E0_OCF25"
+    assert manifest["smoke_outer_key"] == SMOKE_OUTER_KEY
     assert manifest["arms"] == list(ARM_ORDER)
     assert {job["arm_id"] for job in manifest["jobs"]} == set(ARM_ORDER)
     assert Counter(job["outer_role"] for job in manifest["jobs"]) == {
@@ -49,3 +51,37 @@ def test_hard12v3_manifest_expands_sixty_jobs_and_marks_primary(tmp_path: Path) 
     }
     assert sum(job["role"] == "primary" for job in manifest["jobs"]) == 12
     assert sum(job["role"] == "diagnostic_only" for job in manifest["jobs"]) == 12
+
+
+def test_hard12v3_smoke_outer_is_the_first_frozen_liveness_row() -> None:
+    import json
+
+    assert SMOKE_OUTER_KEY == "rx_20_1__seed_713106__k_1__new_20"
+    assert json.loads(METHOD_LOCK.read_text(encoding="utf-8"))["smoke_outer_key"] == SMOKE_OUTER_KEY
+    matches = [row for row in HARD12_ROWS if row["outer_key"] == SMOKE_OUTER_KEY]
+    assert len(matches) == 1
+    assert matches[0]["role"] == "liveness"
+
+
+def test_hard12v3_builder_rejects_missing_or_tampered_smoke_outer_key(tmp_path: Path) -> None:
+    import json
+
+    for value in (None, "rx_7_14__seed_713105__k_1__new_20"):
+        lock = json.loads(METHOD_LOCK.read_text(encoding="utf-8"))
+        if value is None:
+            lock.pop("smoke_outer_key", None)
+        else:
+            lock["smoke_outer_key"] = value
+        lock_path = tmp_path / ("lock_missing.json" if value is None else "lock_tampered.json")
+        lock_path.write_text(json.dumps(lock, sort_keys=True), encoding="utf-8")
+        try:
+            build_hard12v3_manifest(
+                context_path=CONTEXT,
+                method_lock_path=lock_path,
+                output_root=tmp_path / ("matrix_missing" if value is None else "matrix_tampered"),
+                require_package_files=False,
+            )
+        except ValueError:
+            pass
+        else:
+            raise AssertionError("builder accepted invalid smoke_outer_key")

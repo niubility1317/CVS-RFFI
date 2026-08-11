@@ -24,10 +24,15 @@ def _write_json(path: Path, payload: object) -> None:
 def _full_manifest(tmp_path: Path) -> tuple[Path, str, dict[str, object]]:
     output = tmp_path / "matrix"
     jobs: list[dict[str, object]] = []
+    outer_keys = [
+        runner.SMOKE_OUTER_KEY,
+        "rx_7_14__seed_713105__k_1__new_20",
+        *[f"outer_{outer_index:02d}" for outer_index in range(2, 12)],
+    ]
     for outer_index in range(12):
-        outer_key = f"outer_{outer_index:02d}"
-        role = "liveness" if outer_index == 0 else "performance"
-        k_shot = 1 if outer_index == 0 else 5
+        outer_key = outer_keys[outer_index]
+        role = "liveness" if outer_index < 2 else "performance"
+        k_shot = 1 if outer_index < 2 else 5
         for arm_index, arm_id in enumerate(runner.ARM_ORDER):
             root = output / "jobs" / outer_key / arm_id
             package = {
@@ -68,6 +73,7 @@ def _full_manifest(tmp_path: Path) -> tuple[Path, str, dict[str, object]]:
         "job_count": 60,
         "arms": list(runner.ARM_ORDER),
         "primary_arm": runner.PRIMARY_ARM,
+        "smoke_outer_key": runner.SMOKE_OUTER_KEY,
         "jobs": jobs,
     }
     manifest_path = tmp_path / "matrix_manifest.json"
@@ -129,7 +135,8 @@ def test_full_matrix_first_smoke_publishes_exact_shared_receipt(monkeypatch: pyt
     assert (smoke_root / "smoke_receipt.json").is_file()
     assert receipt["matrix_manifest_sha256"] == digest
     assert receipt["selection_sha256"] == runner.CANONICAL_SELECTION_SHA256
-    assert receipt["job_id"] == "outer_00__arm_d92_full"
+    assert receipt["outer_key"] == runner.SMOKE_OUTER_KEY
+    assert receipt["job_id"] == f"{runner.SMOKE_OUTER_KEY}__arm_d92_full"
     assert receipt["arm_id"] == "D92_FULL"
     assert receipt["k_shot"] == 1
     assert receipt["truth_open"] is False
@@ -161,3 +168,17 @@ def test_full_matrix_run_shard_accepts_valid_shared_smoke(monkeypatch: pytest.Mo
     expected_ids = [job["job_id"] for job in manifest["jobs"] if job["planned_shard_index"] == 0]
     assert summary["selected_job_count"] == len(expected_ids) == 10
     assert summary["completed_job_ids"] == expected_ids
+
+
+def test_full_manifest_rejects_missing_or_tampered_smoke_outer_key(tmp_path: Path) -> None:
+    manifest_path, _, manifest = _full_manifest(tmp_path)
+    for value in (None, "rx_7_14__seed_713105__k_1__new_20"):
+        payload = dict(manifest)
+        if value is None:
+            payload.pop("smoke_outer_key", None)
+        else:
+            payload["smoke_outer_key"] = value
+        _write_json(manifest_path, payload)
+        digest = hashlib.sha256(manifest_path.read_bytes()).hexdigest()
+        with pytest.raises(runner.D92E0OCFHard12V3RunnerError, match="smoke_outer_key"):
+            runner._load_manifest(manifest_path, digest)

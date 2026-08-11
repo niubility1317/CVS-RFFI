@@ -25,6 +25,7 @@ from cvsrffi.stage2_d92_e0ocf_hard12 import (  # noqa: E402
     CONTEXT_SHA256,
     D92E0OCFHard12V3Error,
     PRIMARY_ARM,
+    SMOKE_OUTER_KEY,
     build_hard12v3_manifest,
 )
 
@@ -94,6 +95,8 @@ def _load_manifest(path: str | Path, expected_sha256: str) -> dict[str, Any]:
     jobs = payload.get("jobs")
     job_count = int(payload.get("job_count", -1))
     full_matrix = job_count == 60 and isinstance(jobs, list) and len(jobs) == 60
+    if full_matrix and payload.get("smoke_outer_key") != SMOKE_OUTER_KEY:
+        raise D92E0OCFHard12V3RunnerError("matrix manifest smoke_outer_key drift")
     if (
         payload.get("schema") != "cvs.phase2.d92_e0ocf_hard12v3.matrix.v1"
         or payload.get("status") != "FROZEN_DEVELOPMENT_MATRIX"
@@ -106,6 +109,16 @@ def _load_manifest(path: str | Path, expected_sha256: str) -> dict[str, Any]:
         or (full_matrix and (payload.get("arms") != list(ARM_ORDER) or payload.get("primary_arm") != PRIMARY_ARM))
     ):
         raise D92E0OCFHard12V3RunnerError("matrix manifest contract drift")
+    if full_matrix:
+        smoke_rows = [
+            job for job in jobs
+            if job.get("outer_key") == payload.get("smoke_outer_key")
+            and job.get("outer_role") == "liveness"
+            and int(job.get("k_shot", -1)) == 1
+            and job.get("arm_id") == "D92_FULL"
+        ]
+        if len(smoke_rows) != 1:
+            raise D92E0OCFHard12V3RunnerError("smoke_outer_key must identify exactly one liveness K1 D92_FULL job")
     return payload
 
 
@@ -215,7 +228,14 @@ def _is_full_matrix(manifest: Mapping[str, Any]) -> bool:
 
 
 def _smoke_job(manifest: Mapping[str, Any]) -> Mapping[str, Any]:
-    matches = [job for job in manifest["jobs"] if job.get("outer_role") == "liveness" and int(job.get("k_shot", -1)) == 1 and job.get("arm_id") == "D92_FULL"]
+    smoke_outer_key = manifest.get("smoke_outer_key")
+    matches = [
+        job for job in manifest["jobs"]
+        if (smoke_outer_key is None or job.get("outer_key") == smoke_outer_key)
+        and job.get("outer_role") == "liveness"
+        and int(job.get("k_shot", -1)) == 1
+        and job.get("arm_id") == "D92_FULL"
+    ]
     if len(matches) != 1:
         raise D92E0OCFHard12V3RunnerError("K1 liveness smoke row identity drift")
     return matches[0]
@@ -256,6 +276,7 @@ def _validate_shared_smoke(manifest: Mapping[str, Any], *, manifest_sha256: str,
         and receipt.get("status") == "D92_E0OCF_REAL_CHECKPOINT_TRUTH_FREE_SMOKE_PASS"
         and str(receipt.get("matrix_manifest_sha256", "")).lower() == str(manifest_sha256).lower()
         and receipt.get("selection_sha256") == manifest.get("selection_sha256") == CANONICAL_SELECTION_SHA256
+        and receipt.get("smoke_outer_key") == manifest.get("smoke_outer_key", SMOKE_OUTER_KEY)
         and receipt.get("outer_index") == job.get("outer_index")
         and receipt.get("outer_key") == job.get("outer_key")
         and receipt.get("job_id") == job.get("job_id")
@@ -337,6 +358,7 @@ def truth_free_smoke(args: argparse.Namespace) -> dict[str, Any]:
         "status": "D92_E0OCF_REAL_CHECKPOINT_TRUTH_FREE_SMOKE_PASS",
         "matrix_manifest_sha256": str(args.matrix_manifest_sha256).lower(),
         "selection_sha256": manifest["selection_sha256"],
+        "smoke_outer_key": manifest.get("smoke_outer_key", SMOKE_OUTER_KEY),
         "outer_index": job["outer_index"],
         "outer_key": job["outer_key"],
         "job_id": job["job_id"],
