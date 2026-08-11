@@ -4,8 +4,8 @@
 |---|---|
 |日期|2026-08-11|
 |分支|`codex/d92-be-hard12-strict-pareto-20260811`|
-|设计状态|用户已批准“性能提升且计算量下降”的严格Pareto方向；书面规格待用户复核|
-|实现状态|未开始|
+|设计状态|用户已批准书面规格|
+|实现状态|进行中；四臂共同fit与truth-free预测入口已完成本地聚焦测试|
 |首轮实验代号|`D92-BE-2x2-Hard12-v1`|
 
 ## 1.目标与判定原则
@@ -141,7 +141,7 @@ Hard_i=0.5*D92_i+0.5*R5_i
 - 强制包含全局共识最难sentinel `rx_3_19__seed_713104__k_1__new_20`；
 - 同目标值按`(receiver,seed,K,new_count)`字典序和`1e-9`固定扰动闭合。
 
-本规格对应的canonical manifest草案SHA256为`26ca470a4cc79d13498493863e6958c3fc5c82af1b3dbecd06cf6277d0a650e4`。实施时生成的manifest若不能复现该摘要，必须在发布前停止并解释差异。
+早期讨论只保留了摘要`26ca470a4cc79d13498493863e6958c3fc5c82af1b3dbecd06cf6277d0a650e4`，但未保留原始payload字段、编码和换行规则，因此该摘要不可复现，不再作为发布门。实施冻结一个完整最小payload：包含三项输入SHA、困难度公式、约束、角色、12行及coverage；`hard_score`使用12位小数字符串，`outer_rows`按`outer_key`排序，采用UTF-8、`ensure_ascii=False`、sorted-key compact JSON且不追加换行。其唯一可复现SHA256为`95d94d586f5084d4982d67ec6402c4244f80e818ef3f95a5a03771085a6885a4`，后者是本轮权威selection SHA。
 
 ### 6.3精确outer清单
 
@@ -210,7 +210,7 @@ Hard_i=0.5*D92_i+0.5*R5_i
 
 ## 9.实现边界与测试设计
 
-实现阶段应把B和E开关限制在同一D92共同代码路径，不复制四套方法。配置、状态receipt和method lock必须显式记录`B_enabled`、`E_enabled`、`A/C/D/F`固定值、fallback身份及资源计数。
+实现阶段应把B和E开关限制在同一D92共同代码路径，不复制四套方法。为闭合共享`DA0_REG0`，B/E只在注册后且`K>2`时切换；注册前与`K<=2`四臂均使用FULL精确路径。配置、状态receipt和method lock必须显式记录请求开关、实际生效开关、`A/C/D/F`固定值、fallback身份及资源计数。
 
 最低测试集合：
 

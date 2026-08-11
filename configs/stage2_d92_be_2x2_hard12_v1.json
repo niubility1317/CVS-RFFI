@@ -1,0 +1,43 @@
+{
+  "schema": "cvs.phase2.d92_be.method_lock.v1",
+  "experiment_id": "D92-BE-2x2-Hard12-v1",
+  "protocol_schema": "p2_min_v1",
+  "claim_scope": "DEVELOPMENT_ONLY_COVERAGE_CONSTRAINED_STRESS_SCREEN",
+  "selection_sha256": "95d94d586f5084d4982d67ec6402c4244f80e818ef3f95a5a03771085a6885a4",
+  "registered_state_only_switches": true,
+  "arms": {
+    "FULL": {"B_enabled": true, "E_enabled": true},
+    "B0": {"B_enabled": false, "E_enabled": true},
+    "E0": {"B_enabled": true, "E_enabled": false},
+    "B0E0": {"B_enabled": false, "E_enabled": false}
+  },
+  "fixed_components": {
+    "A": "joint288_z160_fft96_rf32",
+    "C": "task_balanced_covariance_0.5_0.5",
+    "D": "full_block3_loo_reliability_fusion",
+    "F": "f0_fp32_weight_fp32_bias"
+  },
+  "fallback": "K1_K2_exact_FULL_alias",
+  "query_contract": {
+    "decision": "per_sample_all_registered_classes",
+    "truth_access": false,
+    "fit_access": false,
+    "update_access": false,
+    "selection_access": false,
+    "role_oracle_access": false,
+    "class_quota_access": false,
+    "global_reassignment": false
+  },
+  "strict_pareto_gate": {
+    "mean_delta_h_min": 0.005,
+    "nonnegative_delta_h_outer_min": 8,
+    "mean_delta_old_balanced_min": 0.0,
+    "mean_delta_seen_new_min": 0.0,
+    "mean_delta_old_floor_min": 0.0,
+    "mean_delta_forgetting_max": 0.0,
+    "median_wall_reduction_min": 0.4,
+    "median_incremental_peak_reduction_min": 0.4,
+    "query_cost_increase_max": 0.0
+  },
+  "only_promotion_candidate": "B0E0"
+}

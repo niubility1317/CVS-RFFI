@@ -85,8 +85,9 @@ assert {
 - [ ] 写计数失败测试。保留旧字段`d92_component_fit_count`，新增：
 
 ```text
-d92_be_base_component_fit_count = d92_component_fit_count
+d92_be_raw_component_call_count = d92_component_fit_count
 d92_be_fisher_component_fit_count = 2 * 本次fit新增的D62 call_records数
+d92_be_base_component_fit_count = 2 * (raw_component_call_count - 新增D62 call_records数)
 d92_be_total_component_fit_count = base + fisher
 ```
 
@@ -150,7 +151,7 @@ git commit -m "feat: add truth free D92 BE prediction entry"
 - Modify: `docs/superpowers/specs/2026-08-11-d92-be-hard12-strict-pareto-design.md`
 
 - [ ] 写失败测试，使用本地`E:\type10-7\automation_reports\CV-SincNet\d131_d92_lite160_qtie_target125_20260804_r3\artifacts\prepared\target125_context.json`；先验证文件SHA为`067a6365e9c859161407ab62ba6349d7beb93083f59f78fd7c780c6d8924731f`、schema为`cvs.phase2.d108.cbrrc_smme.target125.input_context.v1`、125个`source_d92_job_id`唯一。
-- [ ] 在模块中写入规格的12个精确outer及role/Hard值，canonical selection payload只含`schema`、三个历史输入SHA、困难度公式ID、constraints、scenarios和12个outer；使用`json.dumps(..., ensure_ascii=True, sort_keys=True, separators=(",", ":"), allow_nan=False)`复算SHA，必须等于`26ca470a4cc79d13498493863e6958c3fc5c82af1b3dbecd06cf6277d0a650e4`。
+- [ ] 在模块中写入规格的12个精确outer及role/Hard值，canonical selection payload固定为三项历史输入SHA、困难度公式、constraints、roles、scenarios、12个outer和coverage；使用`json.dumps(..., ensure_ascii=False, sort_keys=True, separators=(",", ":"), allow_nan=False)`复算SHA，必须等于`95d94d586f5084d4982d67ec6402c4244f80e818ef3f95a5a03771085a6885a4`。旧`26ca...`只标记为缺少原payload的历史摘要，不作门槛。
 - [ ] 实现`build_hard12_manifest`：从上下文精确join 12行，扩展四臂得到48 jobs/144 scene-arm；同一outer的四臂绑定同一shard，arm执行顺序按outer索引循环旋转，避免固定顺序偏差。输出路径固定为`jobs/<outer_key>/<arm>`。
 - [ ] 验证覆盖：receiver`{20-1:3,3-19:3,7-14:2,7-7:2,8-8:2}`；seed`{713102:2,713103:2,713104:3,713105:3,713106:2}`；slice`{K1/N20:2,K5/N20:3,K10/N5:2,K10/N10:2,K10/N20:3}`；每arm恰有2 liveness和10 performance outer。
 - [ ] method lock固定四臂、A/C/D/F、K fallback、Hard12 SHA、context SHA、严格门、query禁用项、claim scope及唯一晋级臂B0E0。规格首表状态改为`书面规格已由用户批准；实现中`，并明确B/E只在注册后切换以闭合共享`DA0_REG0`。
@@ -236,7 +237,7 @@ git commit -m "feat: add strict D92 BE Pareto analysis"
 conda run --no-capture-output -n ssr-gpu python -m pytest tests/test_stage2_registration_resource_probe.py tests/test_stage2_d92_registration_balanced_covariance.py tests/test_probe_d92_registration_balanced_covariance.py tests/test_stage2_d92_be_slim.py tests/test_stage2_d92_be_query_evaluation.py tests/test_run_d92_be_prediction.py tests/test_stage2_d92_be_hard12.py tests/test_run_d92_be_hard12.py tests/test_stage2_d92_be_analysis.py tests/test_summarize_d92_be_hard12.py tests/test_stage2_d92_role_oracle_query_evaluation.py tests/test_run_d92_role_oracle_125.py -q
 ```
 
-- [ ] 运行`python -m py_compile`覆盖所有新增/修改Python；验证`git diff --check`；生成方法锁、计划、代码和测试SHA表。
+- [ ] 运行`python -m py_compile`覆盖所有新增/修改Python；验证`git diff --check`；只记录Git commit、method lock SHA、context SHA和实际同步文件SHA，不增加重复签名层。
 - [ ] 报告先登记目标、假设、Git commit、精确文件、验证命令、Hard12、四臂、远端路径、CPU/GPU计划、期望artifact、技术停止规则和严格Pareto门。根目录不是Git仓库，因此把Git承载面的已提交报告逐字镜像到要求的根报告路径并记录两者SHA相同。
 - [ ] `launch.sh`固定：
 
@@ -275,7 +276,7 @@ git commit -m "docs: preregister D92 BE Hard12 run"
 - [ ] 先运行`prepare`生成不可变matrix manifest，再运行`smoke`：固定`rx_3_19__seed_713104__k_1__new_20/FULL`、真实sealed TorchScript/checkpoint链、无truth参数。确认两态prediction/COMMIT、query zero-fit/update/selection、truth未打开、K1 exact fallback和进程自然退出。
 - [ ] smoke通过后，8个shard分别绑定GPU0–7并用短连接detached启动；立即核对PID、CWD、cmdline、run-root、GPU映射和日志增长。第一完成/失败job及第一worker wave后检查launched/completed/failed、prediction/score计数、异常指纹和GPU状态。
 - [ ] 技术健康时持续短连接监控至48/48；不读取中间性能做停止或调参。完成后验证所有PID退出、GPU释放、本地无残留`ssh.exe`及对N607:22的ESTABLISHED连接。
-- [ ] 取回matrix manifest、8份events/summary/log、48份job receipt、96份prediction/COMMIT/fit/resource audit和48份score。逐文件SHA核对，报告状态更新为`ARTIFACTS_COMPLETE`。
+- [ ] 取回matrix manifest、8份events/summary/log、48份job receipt、96份prediction/COMMIT/fit/resource audit和48份score。只核对manifest、job receipt以及prediction→score所需绑定，不做重复全树哈希包装；报告状态更新为`ARTIFACTS_COMPLETE`。
 
 ### Task 9: 汇总结果并作唯一晋级决策
 
