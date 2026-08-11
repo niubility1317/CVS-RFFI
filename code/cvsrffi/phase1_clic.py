@@ -775,6 +775,16 @@ class CLICFusion(nn.Module):
 
 _CLIC_RECEIPT_SCHEMA = "cvs.phase1.clic_receipt.v1"
 _CLIC_METHOD = "P1_CLIC"
+_CLIC_TERMINAL_ENVELOPE_SCHEMA = "cvs.phase1.clic_terminal_envelope.v1"
+_CLIC_TERMINAL_ENVELOPE_FIELDS = frozenset(
+    {
+        "schema",
+        "method",
+        "strict_core",
+        "selected_checkpoint_path",
+        "selected_checkpoint_sha256",
+    }
+)
 _CLIC_OPERATOR_IDS = {
     "C": "C_RAW_PHASE_CONTROL",
     "G": "G_INVARIANT_CURVATURE",
@@ -1657,6 +1667,48 @@ def validate_clic_terminal_receipt(
     return result
 
 
+def validate_clic_terminal_envelope(envelope: Mapping[str, object]) -> Dict[str, Any]:
+    """Validate the external checkpoint binding without extending the strict core.
+
+    The terminal core deliberately stays within the Task4 receipt grammar so a
+    later postfreeze reader can revalidate it unchanged.  The selected file
+    location and immutable file digest belong only to this small versioned
+    envelope, whose digest must agree with the validated core final digest.
+    """
+
+    if not isinstance(envelope, Mapping):
+        raise CLICTerminalError("CLIC terminal envelope must be a mapping")
+    if set(envelope) != _CLIC_TERMINAL_ENVELOPE_FIELDS:
+        raise CLICTerminalError("CLIC terminal envelope fields drifted")
+    _validate_clic_receipt_data_free(envelope, path="terminal_envelope")
+    if envelope.get("schema") != _CLIC_TERMINAL_ENVELOPE_SCHEMA:
+        raise CLICTerminalError("CLIC terminal envelope schema drifted")
+    if envelope.get("method") != _CLIC_METHOD:
+        raise CLICTerminalError("CLIC terminal envelope method drifted")
+    selected_checkpoint_path = envelope.get("selected_checkpoint_path")
+    if not isinstance(selected_checkpoint_path, str) or not selected_checkpoint_path.strip():
+        raise CLICTerminalError("CLIC terminal envelope checkpoint path is absent")
+    selected_checkpoint_sha256 = envelope.get("selected_checkpoint_sha256")
+    if not _is_lowercase_sha256(selected_checkpoint_sha256):
+        raise CLICTerminalError("CLIC terminal envelope checkpoint SHA is invalid")
+    strict_core = envelope.get("strict_core")
+    if not isinstance(strict_core, Mapping):
+        raise CLICTerminalError("CLIC terminal envelope strict core is absent")
+    validated_core = validate_clic_terminal_receipt(
+        strict_core,
+        arm=str(strict_core.get("arm", "")),
+    )
+    if validated_core.get("final_checkpoint_sha256") != selected_checkpoint_sha256:
+        raise CLICTerminalError("CLIC terminal envelope checkpoint SHA does not bind strict core")
+    return {
+        "schema": _CLIC_TERMINAL_ENVELOPE_SCHEMA,
+        "method": _CLIC_METHOD,
+        "strict_core": validated_core,
+        "selected_checkpoint_path": selected_checkpoint_path,
+        "selected_checkpoint_sha256": str(selected_checkpoint_sha256),
+    }
+
+
 def _clic_gradient_summary(gradients: Sequence[Optional[torch.Tensor]]) -> Dict[str, object]:
     """Reduce a gradient group to data-free finite/nonzero scalar evidence."""
 
@@ -1978,6 +2030,7 @@ __all__ = [
     "update_clic_amp_receipt",
     "update_clic_common_binding_receipt",
     "update_clic_resource_receipt",
+    "validate_clic_terminal_envelope",
     "validate_clic_terminal_receipt",
     "write_clic_failure_receipt",
 ]

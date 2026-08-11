@@ -867,13 +867,21 @@ class PhysicalAwareClassifier(nn.Module):
         result = prehead_transform(received_i, feat_joint_base)
         z_id = getattr(result, "z_id", None)
         q_clic = getattr(result, "q_clic", None)
-        if not torch.is_tensor(z_id) or not torch.is_tensor(q_clic):
-            raise ValueError("pre-head identity transform must return z_id and q_clic tensors")
+        live_tokens = getattr(getattr(result, "token_batch", None), "tokens", None)
+        if not torch.is_tensor(z_id) or not torch.is_tensor(q_clic) or not torch.is_tensor(live_tokens):
+            raise ValueError(
+                "pre-head identity transform must return z_id, q_clic, and live token_batch.tokens"
+            )
         return feat_id, feat_dac, feat_pa, defect_feats, z_id, zero_emb, {
             "feat_joint_base": feat_joint_base,
             "feat_joint": z_id,
             "z_id": z_id,
             "q_clic": q_clic,
+            # This is intentionally the exact live training tensor from the
+            # already executed CLIC forward.  It is not detached, recomputed,
+            # cached, or persisted; the trainer consumes it only for the
+            # same-graph raw-unscaled VJP audit before releasing batch roots.
+            "clic_live_tokens": live_tokens,
         }
 
     def forward_logits(

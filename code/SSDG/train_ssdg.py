@@ -325,6 +325,23 @@ try:
         validate_hnccd_terminal_receipt,
         write_hnccd_failure_receipt,
     )
+    from cvsrffi.phase1_clic import (
+        CLICConfig,
+        CLICConfigError,
+        CLICRuntimeError,
+        FORMAL_LEO_WEAK_SCENARIOS,
+        clic_raw_unscaled_vjp_audit,
+        clic_scaled_backward_and_classify,
+        new_clic_receipt,
+        release_clic_retained_graph_roots,
+        strict_clic_warm_start,
+        update_clic_amp_receipt,
+        update_clic_common_binding_receipt,
+        update_clic_resource_receipt,
+        validate_clic_terminal_envelope,
+        validate_clic_terminal_receipt,
+        write_clic_failure_receipt,
+    )
     from cvsrffi.phase1_recte import (
         RECTEConfig,
         RECTEConfigurationError,
@@ -618,6 +635,13 @@ except ModuleNotFoundError:
     update_hnccd_receipt = update_hnccd_resource_receipt = None
     validate_hnccd_args = validate_hnccd_binding = validate_hnccd_terminal_receipt = None
     write_hnccd_failure_receipt = None
+    CLICConfig = CLICConfigError = CLICRuntimeError = None
+    FORMAL_LEO_WEAK_SCENARIOS = tuple()
+    clic_raw_unscaled_vjp_audit = clic_scaled_backward_and_classify = None
+    new_clic_receipt = release_clic_retained_graph_roots = strict_clic_warm_start = None
+    update_clic_amp_receipt = update_clic_common_binding_receipt = None
+    update_clic_resource_receipt = validate_clic_terminal_envelope = validate_clic_terminal_receipt = None
+    write_clic_failure_receipt = None
     RECTEConfig = None
     RECTEConfigurationError = RECTERuntimeError = None
     FROZEN_RECTE_SCENARIOS = tuple()
@@ -1032,6 +1056,19 @@ def build_arg_parser() -> argparse.ArgumentParser:
         type=float,
         default=0.0,
         help="Frozen at 0 for C and 0.02 for G when P1-HNCCD mode is enabled.",
+    )
+    parser.add_argument(
+        "--phase1_clic_frozen_mode",
+        type=str2bool,
+        default=False,
+        help="Enable the frozen source-L-only P1-CLIC training contract.",
+    )
+    parser.add_argument(
+        "--phase1_clic_operator_mode",
+        type=str,
+        choices=("raw_phase_control", "complex_local_invariant_curvature"),
+        default="raw_phase_control",
+        help="Frozen P1-CLIC token operator; C/G differ only by this deterministic choice.",
     )
     parser.add_argument(
         "--phase1_recte_frozen_mode",
@@ -5037,6 +5074,36 @@ def _canonical_json_sha256(payload: Any) -> str:
     return hashlib.sha256(encoded).hexdigest()
 
 
+def _clic_optimizer_state_is_unchanged(before: object, after: object) -> bool:
+    """Compare optimizer state without retaining any training-graph tensor."""
+
+    if isinstance(before, torch.Tensor) or isinstance(after, torch.Tensor):
+        return (
+            isinstance(before, torch.Tensor)
+            and isinstance(after, torch.Tensor)
+            and before.shape == after.shape
+            and before.dtype == after.dtype
+            and bool(torch.equal(before, after))
+        )
+    if isinstance(before, Mapping) or isinstance(after, Mapping):
+        if not isinstance(before, Mapping) or not isinstance(after, Mapping):
+            return False
+        if set(before) != set(after):
+            return False
+        return all(
+            _clic_optimizer_state_is_unchanged(before[key], after[key])
+            for key in before
+        )
+    if isinstance(before, (list, tuple)) or isinstance(after, (list, tuple)):
+        if not isinstance(before, (list, tuple)) or not isinstance(after, (list, tuple)):
+            return False
+        return len(before) == len(after) and all(
+            _clic_optimizer_state_is_unchanged(left, right)
+            for left, right in zip(before, after)
+        )
+    return before == after
+
+
 def _validate_formal_dataset_receipt(args) -> Dict[str, Any]:
     receipt_path = Path(
         str(getattr(args, "dataset_receipt_path", "")).strip()
@@ -6629,6 +6696,265 @@ def train(args) -> int:
         )
     total_epochs = _resolve_epoch_schedule(args)
     args.epochs = total_epochs
+    clic_frozen_mode_active = bool(
+        getattr(args, "phase1_clic_frozen_mode", False)
+    )
+    clic_config = None
+    clic_receipt: Optional[Dict[str, Any]] = None
+    clic_arm = ""
+    if clic_frozen_mode_active:
+        if any(
+            value is None
+            for value in (
+                CLICConfig,
+                CLICConfigError,
+                CLICRuntimeError,
+                new_clic_receipt,
+                strict_clic_warm_start,
+                clic_raw_unscaled_vjp_audit,
+                clic_scaled_backward_and_classify,
+                update_clic_common_binding_receipt,
+                update_clic_amp_receipt,
+                update_clic_resource_receipt,
+                release_clic_retained_graph_roots,
+                validate_clic_terminal_envelope,
+                validate_clic_terminal_receipt,
+                write_clic_failure_receipt,
+            )
+        ):
+            raise ImportError("cvsrffi.phase1_clic is required for frozen P1-CLIC training")
+        raw_operator_mode = str(getattr(args, "phase1_clic_operator_mode", ""))
+        clic_arm = (
+            "G"
+            if raw_operator_mode == "complex_local_invariant_curvature"
+            else "C"
+        )
+        clic_receipt = new_clic_receipt(arm=clic_arm)
+        # These markers are intentionally local rather than receipt fields:
+        # Task4 receipts have a strict scalar grammar and reject any role/
+        # sample side channel.  The CLIC trainer touches source-L only.
+        clic_source_only_contract = {
+            "source_l_only": True,
+            "use_u": False,
+            "use_v": False,
+            "use_proxy": False,
+            "use_held": False,
+            "use_target": False,
+            "registered": False,
+            "unknown": False,
+            "state_feedback_count": 0,
+            "second_forward_count": 0,
+        }
+        try:
+            clic_config = CLICConfig(
+                frozen_mode=True,
+                operator_mode=raw_operator_mode,
+                input_length=int(getattr(args, "wisig_out_len", 0)),
+                embed_dim=160,
+            )
+            if not bool(clic_config.frozen_mode):
+                raise CLICConfigError("P1-CLIC requires --phase1_clic_frozen_mode true")
+            if clic_config.operator_mode not in {
+                "raw_phase_control",
+                "complex_local_invariant_curvature",
+            }:
+                raise CLICConfigError("P1-CLIC operator mode is not frozen")
+            if int(clic_config.input_length) != 256 or int(clic_config.embed_dim) != 160:
+                raise CLICConfigError("P1-CLIC requires received_i[128,2,256] and d=160")
+            if (
+                int(total_epochs) != 40
+                or int(getattr(args, "label_epochs", 0)) != 40
+                or int(getattr(args, "pseudo_epochs", 0)) != 0
+                or int(getattr(args, "batch_size", 0)) != 128
+            ):
+                raise CLICConfigError(
+                    "P1-CLIC requires exactly label=40, pseudo=0, total=40 epochs and batch size 128"
+                )
+            if bool(getattr(args, "from_scratch", True)) or not str(
+                getattr(args, "baseline_ckpt", "")
+            ).strip():
+                raise CLICConfigError("P1-CLIC requires one final-only baseline checkpoint")
+            if bool(getattr(args, "freeze_backbone", False)):
+                raise CLICConfigError("P1-CLIC requires the shared base encoder to remain trainable")
+            if not bool(getattr(args, "amp", False)):
+                raise CLICConfigError("P1-CLIC requires the standard AMP scaler lifecycle")
+            if str(getattr(args, "checkpoint_selection", "")) != "final_only":
+                raise CLICConfigError("P1-CLIC accepts final-only checkpoint selection")
+            if not bool(getattr(args, "use_sat_consistency", False)):
+                raise CLICConfigError("P1-CLIC requires the existing single-LEO L_base consistency path")
+            if not math.isclose(
+                float(getattr(args, "lambda_sat_cons", 0.0)),
+                0.10,
+                rel_tol=0.0,
+                abs_tol=1.0e-12,
+            ) or int(getattr(args, "sat_cons_start_epoch", 0)) != 1:
+                raise CLICConfigError(
+                    "P1-CLIC freezes existing L_base at clean CE + 0.10 clean-stopgrad-to-LEO KL from epoch 1"
+                )
+            if not math.isclose(
+                float(getattr(args, "lambda_sat_cls", 0.0)),
+                0.0,
+                rel_tol=0.0,
+                abs_tol=1.0e-12,
+            ):
+                raise CLICConfigError(
+                    "P1-CLIC requires lambda_sat_cls=0; L_base contains no LEO CE term"
+                )
+            clic_config_scenes = tuple(
+                part.strip().lower().replace("-", "_")
+                for part in str(getattr(args, "sat_train_scenarios", "")).split(",")
+                if part.strip()
+            )
+            if (
+                clic_config_scenes != tuple(FORMAL_LEO_WEAK_SCENARIOS)
+                or not math.isclose(
+                    float(getattr(args, "sat_view_prob", 0.0)),
+                    1.0,
+                    rel_tol=0.0,
+                    abs_tol=1.0e-12,
+                )
+                or str(getattr(args, "sat_view_schedule", "")).strip()
+            ):
+                raise CLICConfigError(
+                    "P1-CLIC requires the frozen clear/low-elev/rain single-LEO scene order at probability 1"
+                )
+            if any(
+                bool(getattr(args, field, False))
+                for field in (
+                    "phase1_ccpc_leo_frozen_mode",
+                    "phase1_ccpc_leo_enabled",
+                    "phase1_pamr_frozen_mode",
+                    "phase1_pamr_enabled",
+                    "phase1_cb_sfce_frozen_mode",
+                    "phase1_cb_sfce_enabled",
+                    "phase1_gd_proto_nll_frozen_mode",
+                    "phase1_gd_proto_nll_enabled",
+                    "phase1_icmt_frozen_mode",
+                    "phase1_icmt_enabled",
+                    "phase1_cagm_frozen_mode",
+                    "phase1_cagm_enabled",
+                    "phase1_rcrmd_frozen_mode",
+                    "phase1_rcrmd_enabled",
+                    "phase1_rcat_frozen_mode",
+                    "phase1_rcat_enabled",
+                    "phase1_rcmmc_frozen_mode",
+                    "phase1_rcmmc_enabled",
+                    "phase1_hscf_frozen_mode",
+                    "phase1_hscf_enabled",
+                    "phase1_hnccd_frozen_mode",
+                    "phase1_hnccd_enabled",
+                    "phase1_recte_frozen_mode",
+                    "phase1_recte_enabled",
+                    "phase1_cp_sfce_frozen_mode",
+                    "phase1_cp_sfce_enabled",
+                    "manytx_real_oe_enabled",
+                    "manytx_real_oe_protocol_enabled",
+                    "use_unlabeled",
+                    "use_ema_teacher",
+                    "use_concat_sat_channel_aug",
+                    "use_aug",
+                    "use_mixstyle",
+                    "use_phase2_ground_prototypes",
+                    "pseudo_domain_gate",
+                    "pseudo_temporal_gate",
+                    "use_proto_memory",
+                    "use_feature_masks",
+                    "use_txrx_geometry_losses",
+                    "reject_head",
+                )
+            ):
+                raise CLICConfigError("P1-CLIC is mutually exclusive with every legacy Phase1 mechanism")
+            clic_nonzero_legacy_weights = [
+                field
+                for field in (
+                    "lambda_u",
+                    "lambda_ent",
+                    "lambda_u_domain",
+                    "lambda_u_adv",
+                    "lambda_u_sat_cons",
+                    "lambda_u_direct_metric_accept",
+                    "lambda_u_quarantine_accept",
+                    "lambda_domain",
+                    "lambda_adv",
+                    "lambda_orth",
+                    "lambda_cons",
+                    "lambda_group_ce",
+                    "lambda_fishr",
+                    "lambda_sat_cls",
+                    "lambda_zid_receiver_invariance",
+                    "lambda_zid_day_invariance",
+                    "lambda_zid_channel_invariance",
+                    "lambda_u_zid_receiver_invariance",
+                    "lambda_u_zid_day_invariance",
+                    "lambda_u_zid_channel_invariance",
+                    "lambda_tx_proto",
+                    "lambda_rx_proto",
+                    "lambda_mask_aux",
+                    "lambda_tx_supcon_masked",
+                    "lambda_rx_supcon_masked",
+                    "lambda_txrx_rect",
+                    "lambda_proto",
+                    "lambda_open_world_feat",
+                    "lambda_zid_compact",
+                    "lambda_proxy_unknown",
+                    "lambda_soft_unknown_mixup",
+                    "lambda_manytx_real_oe",
+                    "lambda_energy_in",
+                    "lambda_energy_out",
+                    "lambda_reject_neg",
+                    "lambda_inter_neg",
+                    "lambda_shell_neg",
+                    "lambda_tail_outward_neg",
+                    "lambda_bridge_neg",
+                    "lambda_tail_cvar",
+                    "lambda_overflow_cap",
+                    "lambda_risk_energy_out",
+                    "lambda_source_episode",
+                    "lambda_direct_metric_accept",
+                    "lambda_ccpc_leo",
+                    "lambda_pamr",
+                    "lambda_cb_sfce",
+                    "lambda_gd_proto_nll",
+                    "lambda_icmt",
+                    "lambda_cagm",
+                    "lambda_rcrmd",
+                    "lambda_rcat",
+                    "lambda_rcmmc",
+                    "lambda_hscf",
+                    "lambda_hnccd",
+                    "lambda_recte",
+                    "lambda_cp_sfce",
+                    "lambda_teacher_clean_kl",
+                    "lambda_teacher_sat_kl",
+                    "lambda_teacher_zid_mse",
+                )
+                if float(getattr(args, field, 0.0)) != 0.0
+            ]
+            if clic_nonzero_legacy_weights:
+                raise CLICConfigError(
+                    "P1-CLIC forbids every legacy auxiliary loss weight: "
+                    + ", ".join(clic_nonzero_legacy_weights)
+                )
+            if str(getattr(args, "phase1_source_proxy_unknown_tx_ids", "")).strip():
+                raise CLICConfigError("P1-CLIC source training forbids proxy-unknown rows")
+            if not all(value is False or value == 0 for value in clic_source_only_contract.values() if value is not True):
+                raise CLICConfigError("P1-CLIC source-only zero-access contract drifted")
+        except Exception as error:
+            output_path = str(getattr(args, "output_dir", "")).strip()
+            if output_path:
+                try:
+                    failure_dir = ensure_dir(output_path)
+                    write_clic_failure_receipt(
+                        failure_dir,
+                        candidate_id=str(getattr(args, "candidate_id", "")),
+                        run_id=str(getattr(args, "run_id", "")),
+                        receipt=clic_receipt,
+                        error=error,
+                        failure_stage="config_validation",
+                    )
+                except Exception:
+                    pass
+            raise
     if validate_ccpc_leo_args is None or ccpc_config_receipt is None or strict_ccpc_warm_start is None:
         if bool(getattr(args, "phase1_ccpc_leo_frozen_mode", False)) or bool(
             getattr(args, "phase1_ccpc_leo_enabled", False)
@@ -7292,6 +7618,472 @@ def train(args) -> int:
         raise ValueError(
             "--phase1_allow_empty_proxy_unknown requires the frozen ManyTx real-OE protocol"
         )
+    if clic_frozen_mode_active:
+        # CLIC deliberately owns a small, closed training lifecycle rather
+        # than entering the legacy source/U/proxy machinery below.  The data
+        # builder supplies the source-L split, but this branch iterates and
+        # forwards only its labeled loader.
+        clic_failure_stage = "data_construction"
+        try:
+            if apply_sat_channel_for_scenario is None:
+                raise ImportError("cvsrffi.eval.apply_sat_channel_for_scenario is required for P1-CLIC")
+            data_ctx = _build_ssdg_wisig_data(args, device)
+            clic_train_loader = data_ctx["train_loader"]
+            if int(data_ctx.get("input_len", 0)) != 256:
+                raise CLICConfigError("P1-CLIC requires source-L received_i length 256")
+            if int(data_ctx.get("num_classes", 0)) != 4:
+                raise CLICConfigError("P1-CLIC requires the frozen local four-class mapping")
+            if len(data_ctx.get("class_id_to_tx", [])) != 4:
+                raise CLICConfigError("P1-CLIC local class-order binding must contain exactly four TX IDs")
+            if bool(data_ctx.get("split_info", {}).get("balanced_sampler_active", False)):
+                raise CLICConfigError("P1-CLIC forbids sampler substitution for the frozen source-L order")
+            if len(clic_train_loader) <= 0:
+                raise CLICRuntimeError("P1-CLIC source-L loader is empty")
+
+            clic_split_info = data_ctx.get("split_info", {}) or {}
+            clic_source_split = clic_split_info.get("source_split_receipt", {}) or {}
+            clic_source_count = int(clic_split_info.get("labeled_size", 0))
+            clic_source_sha256 = str(clic_source_split.get("labeled_indices_sha256", ""))
+            clic_class_order = [str(value) for value in data_ctx["class_id_to_tx"]]
+            clic_class_order_sha256 = _canonical_json_sha256(clic_class_order)
+            clic_dataset_selected = getattr(clic_train_loader.dataset, "selected", None)
+            if clic_dataset_selected is None:
+                raise CLICRuntimeError("P1-CLIC source-L physical order is unavailable")
+            clic_physical_order = [int(value) for value in list(clic_dataset_selected)]
+            clic_physical_order_sha256 = _canonical_json_sha256(clic_physical_order)
+            if (
+                clic_source_count <= 0
+                or len(clic_physical_order) != clic_source_count
+                or len(clic_source_sha256) != 64
+                or any(char not in "0123456789abcdef" for char in clic_source_sha256)
+            ):
+                raise CLICRuntimeError("P1-CLIC source-L scalar binding is incomplete")
+
+            clic_failure_stage = "strict_warm_start"
+            clic_checkpoint_path = Path(str(args.baseline_ckpt)).resolve()
+            if not clic_checkpoint_path.is_file():
+                raise FileNotFoundError(f"P1-CLIC baseline checkpoint is absent: {clic_checkpoint_path}")
+            clic_checkpoint = load_checkpoint(str(clic_checkpoint_path), device)
+            clic_baseline_final_epoch = clic_checkpoint.get(
+                "final_epoch",
+                clic_checkpoint.get("epoch", None),
+            )
+            if (
+                str(clic_checkpoint.get("checkpoint_role", ""))
+                != "training_final_only"
+                or str(clic_checkpoint.get("checkpoint_selection", ""))
+                != "final_only"
+                or not isinstance(clic_baseline_final_epoch, (int, np.integer))
+                or int(clic_baseline_final_epoch) <= 0
+            ):
+                raise CLICRuntimeError(
+                    "P1-CLIC baseline must itself be a positive-epoch training_final_only/final_only checkpoint"
+                )
+            clic_checkpoint_sha256 = _sha256_file(clic_checkpoint_path)
+            model_args = merge_checkpoint_args(
+                clic_checkpoint,
+                args,
+                input_len=int(data_ctx["input_len"]),
+                num_domains=int(data_ctx["num_domains"]),
+            )
+            model_args.phase1_clic_frozen_mode = True
+            model_args.phase1_clic_operator_mode = str(clic_config.operator_mode)
+            model_args.num_classes = 4
+            model = build_baseline_model(model_args, device)
+            clic_warm_start = strict_clic_warm_start(
+                model,
+                clic_checkpoint["model"],
+                checkpoint_sha256=clic_checkpoint_sha256,
+            )
+            clic_receipt.update(
+                {
+                    key: value
+                    for key, value in clic_warm_start.items()
+                    if key != "warm_start_mode"
+                }
+            )
+            (out_dir / "phase1_clic_config_receipt.json").write_text(
+                json.dumps(clic_receipt, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+                encoding="utf-8",
+                newline="\n",
+            )
+
+            clic_failure_stage = "new_adamw"
+            clic_shared_base_excluded = (
+                "clic.",
+                "cls_head.head.",
+                "con_proj.",
+                "cls_head.imp_merge.",
+                "cls_head.dac_head.",
+                "cls_head.pa_head.",
+            )
+            clic_shared_base_parameters = tuple(
+                parameter
+                for name, parameter in model.id_backbone.named_parameters()
+                if parameter.requires_grad
+                and not str(name).startswith(clic_shared_base_excluded)
+            )
+            clic_head_weight = model.id_backbone.cls_head.head.weight
+            if (
+                not clic_shared_base_parameters
+                or not isinstance(clic_head_weight, torch.nn.Parameter)
+                or not clic_head_weight.requires_grad
+            ):
+                raise CLICRuntimeError("P1-CLIC shared-base or exact-head parameter binding is invalid")
+            clic_base_parameter_ids = {id(parameter) for parameter in clic_shared_base_parameters}
+            if id(clic_head_weight) in clic_base_parameter_ids:
+                raise CLICRuntimeError("P1-CLIC shared-base and exact-head bindings overlap")
+            optimizer = torch.optim.AdamW(
+                [parameter for parameter in model.parameters() if parameter.requires_grad],
+                lr=float(args.lr),
+                weight_decay=float(args.weight_decay),
+            )
+            scaler = GradScaler(enabled=bool(args.amp and device.type == "cuda"))
+            model.train()
+            clic_sat_generator = (
+                make_torch_generator(device, int(args.seed) + 991)
+                if make_torch_generator is not None
+                else None
+            )
+            clic_batch_index = 0
+            clic_total_batches = int(total_epochs) * int(len(clic_train_loader))
+            if clic_total_batches < len(FORMAL_LEO_WEAK_SCENARIOS):
+                raise CLICRuntimeError("P1-CLIC cannot cover every formal LEO weak scene")
+
+            clic_failure_stage = "batch_lifecycle"
+            for clic_epoch in range(1, int(total_epochs) + 1):
+                for clic_batch in clic_train_loader:
+                    clic_batch_started = time.perf_counter()
+                    clic_batch_index += 1
+                    clic_scene = FORMAL_LEO_WEAK_SCENARIOS[
+                        (clic_batch_index - 1) % len(FORMAL_LEO_WEAK_SCENARIOS)
+                    ]
+                    if device.type == "cuda":
+                        torch.cuda.reset_peak_memory_stats(device)
+                    x_l, y_l, clic_extra_l = move_batch(clic_batch, device)
+                    if int(x_l.shape[0]) != 128 or int(y_l.numel()) != 128:
+                        raise CLICRuntimeError("P1-CLIC source-L batches must be exactly 128 physical rows")
+                    optimizer.zero_grad(set_to_none=True)
+                    with torch.no_grad():
+                        x_leo, _ = apply_sat_channel_for_scenario(
+                            x_l,
+                            clic_scene,
+                            args,
+                            gen=clic_sat_generator,
+                            return_meta=False,
+                        )
+                    # The fixed received-IQ leaf must participate in the raw
+                    # dL_base/dT_CG audit.  This changes neither its bytes nor
+                    # the already-fixed single-view lineage, and it does not
+                    # create a second CLIC/operator/model forward.
+                    x_leo.requires_grad_(True)
+                    # CLIC's FP32 module and its exact live token tensor must
+                    # share this one graph; GradScaler still owns backward,
+                    # unscale, step, and update below.
+                    clic_clean_forward = model(
+                        x_l,
+                        y_tx=y_l,
+                        grl_lambda=1.0,
+                        return_aux=True,
+                        domain_labels=None,
+                    )
+                    clic_leo_forward = model(
+                        x_leo,
+                        y_tx=y_l,
+                        grl_lambda=1.0,
+                        return_aux=True,
+                        domain_labels=None,
+                    )
+                    L_base = F.cross_entropy(
+                        clic_clean_forward["tx_logits"],
+                        y_l,
+                        label_smoothing=float(args.label_smoothing),
+                    ) + 0.10 * F.kl_div(
+                        F.log_softmax(clic_leo_forward["tx_logits"], dim=1),
+                        clic_clean_forward["tx_logits"].detach().softmax(dim=1),
+                        reduction="batchmean",
+                    )
+                    clic_live_tokens = clic_leo_forward["aux_id"].get("clic_live_tokens")
+                    clic_q = clic_leo_forward.get("q_clic")
+                    clic_z_id = clic_leo_forward.get("z_id")
+                    clic_feat_joint_base = clic_leo_forward["aux_id"].get("feat_joint_base")
+                    if (
+                        not isinstance(clic_live_tokens, torch.Tensor)
+                        or not isinstance(clic_q, torch.Tensor)
+                        or not isinstance(clic_z_id, torch.Tensor)
+                        or not isinstance(clic_feat_joint_base, torch.Tensor)
+                        or clic_z_id.shape != clic_feat_joint_base.shape
+                    ):
+                        raise CLICRuntimeError("P1-CLIC live token, quality, or pre-head seam is absent")
+                    clic_correction = clic_z_id - clic_feat_joint_base
+                    if not bool(torch.isfinite(clic_correction.detach()).all().item()):
+                        raise CLICRuntimeError("P1-CLIC actual gamma-Wc-E correction is non-finite")
+
+                    clic_failure_stage = "common_binding"
+                    if not isinstance(clic_extra_l, Mapping):
+                        raise CLICRuntimeError("P1-CLIC source-L batch metadata is absent")
+                    clic_base_indices = _as_plain_list(clic_extra_l.get("base_index"))
+                    clic_signal_indices = _as_plain_list(clic_extra_l.get("sig_i"))
+                    clic_local_labels = _as_plain_list(y_l)
+                    if not (
+                        len(clic_base_indices) == 128
+                        and len(clic_signal_indices) == 128
+                        and len(clic_local_labels) == 128
+                    ):
+                        raise CLICRuntimeError("P1-CLIC source-L physical batch binding is incomplete")
+                    try:
+                        clic_batch_physical_rows = [
+                            (
+                                int(clic_base_indices[index]),
+                                int(clic_signal_indices[index]),
+                                int(clic_local_labels[index]),
+                            )
+                            for index in range(128)
+                        ]
+                    except (TypeError, ValueError) as error:
+                        raise CLICRuntimeError(
+                            "P1-CLIC source-L physical batch binding is malformed"
+                        ) from error
+                    clic_binding = {
+                        "scene": str(clic_scene),
+                        "batch_index": int(clic_batch_index),
+                        "rows": 128,
+                        "source_split_count": int(clic_source_count),
+                        "source_split_sha256": clic_source_sha256,
+                        "class_order_count": len(clic_class_order),
+                        "class_order_sha256": clic_class_order_sha256,
+                        "physical_order_count": len(clic_physical_order),
+                        "physical_order_sha256": clic_physical_order_sha256,
+                        "common_batch_sequence_sha256": _canonical_json_sha256(
+                            {
+                                "scene": str(clic_scene),
+                                "ordered_rows": clic_batch_physical_rows,
+                            }
+                        ),
+                    }
+                    clic_receipt = update_clic_common_binding_receipt(
+                        clic_receipt,
+                        binding=clic_binding,
+                    )
+                    clic_batch_physical_rows = None
+                    clic_base_indices = None
+                    clic_signal_indices = None
+                    clic_local_labels = None
+                    clic_extra_l = None
+
+                    clic_vjp_audit = None
+                    clic_token_coverage = float(clic_q[:, 2].detach().mean().item())
+                    clic_gate_or_correction_nonzero = bool(
+                        torch.count_nonzero(clic_correction.detach()).item()
+                    )
+                    if (
+                        clic_scene not in clic_receipt["scene_audits"]
+                        and clic_token_coverage > 0.0
+                        and clic_gate_or_correction_nonzero
+                    ):
+                        clic_failure_stage = "raw_unscaled_vjp"
+                        clic_vjp_audit = clic_raw_unscaled_vjp_audit(
+                            L_base,
+                            clic_live_tokens,
+                            model.id_backbone.clic,
+                            clic_shared_base_parameters,
+                            clic_head_weight,
+                        )
+                        clic_receipt["scene_audits"][clic_scene] = {
+                            "valid_token_coverage": clic_token_coverage,
+                            "gate_or_correction_nonzero": True,
+                            "raw_unscaled": True,
+                            "diagnostic_only": True,
+                            "touches_amp_optimizer_rng": False,
+                            "completed": True,
+                            "token": dict(clic_vjp_audit["token"]),
+                            "clic": dict(clic_vjp_audit["clic"]),
+                            "base": dict(clic_vjp_audit["base"]),
+                            "head": dict(clic_vjp_audit["head"]),
+                            "clic_groups": {
+                                name: dict(values)
+                                for name, values in clic_vjp_audit["clic_groups"].items()
+                            },
+                        }
+
+                    clic_failure_stage = "amp_classification"
+                    clic_optimizer_state_before = deepcopy(optimizer.state_dict())
+                    clic_amp_result = clic_scaled_backward_and_classify(
+                        model=model,
+                        optimizer=optimizer,
+                        scaler=scaler,
+                        loss=L_base,
+                    )
+                    if float(getattr(args, "max_grad_norm", 0.0)) > 0.0:
+                        torch.nn.utils.clip_grad_norm_(
+                            [parameter for parameter in model.parameters() if parameter.requires_grad],
+                            max_norm=float(args.max_grad_norm),
+                        )
+                    scaler.step(optimizer)
+                    scaler.update()
+                    clic_scale_after = float(scaler.get_scale())
+                    clic_optimizer_state_unchanged = _clic_optimizer_state_is_unchanged(
+                        clic_optimizer_state_before,
+                        optimizer.state_dict(),
+                    )
+                    clic_overflow_detected = bool(clic_amp_result["amp_overflow_detected"])
+                    clic_scale_decreased = clic_scale_after < float(clic_amp_result["captured_scale"])
+                    if clic_overflow_detected:
+                        if not clic_optimizer_state_unchanged or not clic_scale_decreased:
+                            raise CLICRuntimeError("P1-CLIC AMP overflow skip/backoff did not preserve optimizer state")
+                        clic_effective_optimizer_step = False
+                    else:
+                        if clic_optimizer_state_unchanged or clic_scale_decreased:
+                            raise CLICRuntimeError("P1-CLIC finite AMP step contract drifted")
+                        clic_effective_optimizer_step = True
+                    clic_receipt = update_clic_amp_receipt(
+                        clic_receipt,
+                        event={
+                            "scene": str(clic_scene),
+                            "batch_index": int(clic_batch_index),
+                            "amp_overflow_detected": clic_overflow_detected,
+                            "scaled_backward_count": int(clic_amp_result["scaled_backward_count"]),
+                            "unscale_count": int(clic_amp_result["optimizer_unscale_count"]),
+                            "optimizer_step_attempted": True,
+                            "effective_optimizer_step": clic_effective_optimizer_step,
+                            "raw_finite": bool(clic_amp_result["raw_finite"]),
+                            "scale_decreased": clic_scale_decreased,
+                            "optimizer_state_unchanged": clic_optimizer_state_unchanged,
+                            "raw_nonfinite": bool(clic_amp_result["raw_nonfinite"]),
+                            "material_nonfinite": bool(clic_amp_result["material_nonfinite"]),
+                        },
+                    )
+
+                    clic_failure_stage = "resource_recording"
+                    clic_peak_memory_bytes = (
+                        int(torch.cuda.max_memory_allocated(device))
+                        if device.type == "cuda"
+                        else 0
+                    )
+                    clic_step_time_seconds = float(time.perf_counter() - clic_batch_started)
+                    clic_receipt = update_clic_resource_receipt(
+                        clic_receipt,
+                        observation={
+                            "scene": str(clic_scene),
+                            "batch_index": int(clic_batch_index),
+                            "peak_memory_bytes": clic_peak_memory_bytes,
+                            "step_time_seconds": clic_step_time_seconds,
+                            "selection_feedback": False,
+                        },
+                    )
+
+                    clic_failure_stage = "graph_release"
+                    clic_retained_graph_roots = {
+                        "clic_clean_forward": clic_clean_forward,
+                        "clic_leo_forward": clic_leo_forward,
+                        "x_leo": x_leo,
+                        "L_base": L_base,
+                        "clic_live_tokens": clic_live_tokens,
+                        "clic_q": clic_q,
+                        "clic_z_id": clic_z_id,
+                        "clic_feat_joint_base": clic_feat_joint_base,
+                        "clic_correction": clic_correction,
+                        "clic_vjp_audit": clic_vjp_audit,
+                    }
+                    del clic_clean_forward
+                    del clic_leo_forward
+                    del x_leo
+                    del L_base
+                    del clic_live_tokens
+                    del clic_q
+                    del clic_z_id
+                    del clic_feat_joint_base
+                    del clic_correction
+                    del clic_vjp_audit
+                    release_clic_retained_graph_roots(clic_retained_graph_roots)
+                    clic_receipt["graph_release_count"] = int(
+                        clic_receipt["graph_release_count"]
+                    ) + 1
+
+                print(
+                    "[P1-CLIC] "
+                    f"epoch={clic_epoch}/{int(total_epochs)} "
+                    f"batches={clic_batch_index} "
+                    f"scenes={json.dumps(clic_receipt['common_scenario_batches'], sort_keys=True)} "
+                    f"amp_attempts={int(clic_receipt['amp_attempts'])} "
+                    f"effective_steps={int(clic_receipt['effective_optimizer_steps'])} "
+                    f"overflow_skips={int(clic_receipt['raw_finite_overflow_skips'])} "
+                    f"graph_releases={int(clic_receipt['graph_release_count'])} "
+                    f"elapsed_seconds={time.time() - training_wall_started:.3f}",
+                    flush=True,
+                )
+
+            if set(clic_receipt["scene_audits"]) != set(FORMAL_LEO_WEAK_SCENARIOS):
+                raise CLICRuntimeError("P1-CLIC did not obtain one eligible VJP audit for every scene")
+
+            # Keep this one explicit frozen-mode scope limited to the
+            # non-circular terminal closure so the AST contract cannot confuse
+            # it with the legacy checkpoint saves later in this function.
+            phase1_clic_frozen_mode = clic_frozen_mode_active
+            if phase1_clic_frozen_mode:
+                clic_failure_stage = "terminal_precheckpoint"
+                clic_receipt_precheckpoint = deepcopy(clic_receipt)
+                clic_receipt_precheckpoint["completed"] = False
+                clic_receipt_precheckpoint["terminal_contract"] = "AWAITING_EXTERNAL_CHECKPOINT_SHA"
+                clic_receipt_precheckpoint["terminal_contract_passed"] = False
+                clic_receipt_precheckpoint["final_checkpoint_sha256"] = ""
+                final_payload = {
+                    "checkpoint_schema": "ssdg_phase1_training_state_v2",
+                    "checkpoint_role": "training_final_only",
+                    "checkpoint_selection": "final_only",
+                    "args": vars(args),
+                    "model": getattr(model, "_orig_mod", model).state_dict(),
+                    "optimizer": optimizer.state_dict(),
+                    "scaler": scaler.state_dict(),
+                    "epoch": int(total_epochs),
+                    "final_epoch": int(total_epochs),
+                    "clic_receipt_precheckpoint": clic_receipt_precheckpoint,
+                }
+                selected_checkpoint = final_path
+                save_payload(selected_checkpoint, final_payload)
+                selected_checkpoint_sha256 = _sha256_file(selected_checkpoint)
+
+                clic_failure_stage = "terminal_validation"
+                clic_terminal_receipt = deepcopy(clic_receipt)
+                clic_terminal_receipt["final_checkpoint_sha256"] = selected_checkpoint_sha256
+                clic_terminal_receipt["completed"] = True
+                clic_terminal_receipt = validate_clic_terminal_receipt(
+                    clic_terminal_receipt,
+                    arm=clic_arm,
+                )
+                # Keep the strict Task4 core re-openable as-is.  The selected
+                # checkpoint path and its immutable file hash are bound only
+                # by this versioned outer envelope and never re-enter the
+                # checkpoint payload or strict receipt grammar.
+                clic_terminal_envelope = {
+                    "schema": "cvs.phase1.clic_terminal_envelope.v1",
+                    "method": "P1_CLIC",
+                    "strict_core": clic_terminal_receipt,
+                    "selected_checkpoint_path": str(selected_checkpoint),
+                    "selected_checkpoint_sha256": selected_checkpoint_sha256,
+                }
+                clic_terminal_envelope = validate_clic_terminal_envelope(
+                    clic_terminal_envelope,
+                )
+                (out_dir / "phase1_clic_terminal_receipt.json").write_text(
+                    json.dumps(clic_terminal_envelope, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+                    encoding="utf-8",
+                    newline="\n",
+                )
+            return 0
+        except Exception as error:
+            try:
+                write_clic_failure_receipt(
+                    out_dir,
+                    candidate_id=str(getattr(args, "candidate_id", "")),
+                    run_id=str(getattr(args, "run_id", "")),
+                    receipt=clic_receipt,
+                    error=error,
+                    failure_stage=clic_failure_stage,
+                )
+            except Exception:
+                pass
+            raise
     data_ctx = _build_ssdg_wisig_data(args, device)
     if ccpc_frozen_mode or pamr_frozen_mode or cb_sfce_frozen_mode or gd_proto_nll_frozen_mode or icmt_frozen_mode or cagm_frozen_mode or rcrmd_frozen_mode or rcat_frozen_mode or rcmmc_frozen_mode or hscf_frozen_mode or hnccd_frozen_mode or recte_frozen_mode or cp_sfce_frozen_mode:
         tx_partition_receipt = (
