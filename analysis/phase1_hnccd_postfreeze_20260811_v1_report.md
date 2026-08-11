@@ -1,6 +1,6 @@
 # Phase1 HNCCD后冻结42步实验报告
 
-状态：`ARTIFACTS_COMPLETE / TECHNICALLY_CLOSED / P0=0 / P1=0 / NO_PERFORMANCE_RESULT`
+状态：`ANALYZED / REJECT_P1_HNCCD_PERMANENT / P0=0 / P1=0 / NO_PHASE2_OR_UNKNOWN_CLAIM`
 
 ## 1.实验身份与目标
 
@@ -9,6 +9,8 @@
 - 日期：2026-08-11
 - 操作方：Codex主控；N607唯一Runner已完成技术闭合
 - 后冻结实现commit：`fa30a77032e9db4acbf8efb17d4a81ab8dd37dc8`
+- 后运行门控一致性修订commit：`eb2053037536151f7bf2bcf067165a587228f627`
+- 正式unknown输入LEO弱信道协议补充commit：`e609975c4c4d885dd5d2fcc5ec7d53c02f7e0510`
 - 训练实现commit：`b6afc5a3e19ae3146dd6afcfe8a90abff35f3cbb`
 - 候选：P1-HNCCD（head-nullspace cross-covariance decorrelation）
 - 目标：对12个`training_final_only`checkpoint执行固定42步，完整比较同fold C/G在clean、三scene LEO和fixed400 proxy上的连续几何与分类稳定性，并给出唯一非补偿判定
@@ -52,26 +54,27 @@ F6必须从F1至F5的raw clean NPZ、LEO NPZ、LEO binding、proxy JSON/CSV和�
 
 |文件|SHA256|Git mode|
 |---|---|---|
-|`analysis/phase1_hnccd_postfreeze_design_20260811.md`|`c1aba90a5abb88c9f9e523823c9513d0829e31d659e0c48f6cb973ab4125e87f`|100644|
+|`analysis/phase1_hnccd_postfreeze_design_20260811.md`|`7742e62962ef0d900335229ff04706cf93b1ec248dabf8b51593b2ee1079ee3c`|100644|
 |`code/export_phase1_hnccd_features.py`|`d1de22b56f21dfca623a4d010b36d2b9deae553e9d5eefa1528efb678fa38621`|100644|
 |`code/export_phase1_hnccd_leo_features.py`|`80ba306db4808ca3102e0657ec7ba50954f78455ee33547223664b12707fed02`|100644|
-|`code/evaluate_phase1_hnccd_postfreeze_pair.py`|`43caa293e45966e6ab5d6fc980b4e12d5b55ff52bedd0dfaeae1c478145557c`|100644|
-|`code/tests/test_phase1_hnccd_postfreeze.py`|`afdfd3eb3e82b23d7893268968fc6808ef9e0e605880a29c282f2450c1fc9e6b`|100644|
+|`code/evaluate_phase1_hnccd_postfreeze_pair.py`|`e4be001531031038c90f6e7a780f659c1dbda2f851225992b5d8cb6e1261a39a`|100644|
+|`code/tests/test_phase1_hnccd_postfreeze.py`|`11d28e8754b4ca7d1f96ec4aaf56b808506ac493abfd3e553d1be1a6a3eaf30d`|100644|
 |`code/scripts/launch_phase1_hnccd_postfreeze_20260811.sh`|`2338442dc460df725c26b3d691664c5a5d5b32ea76e5b9771640aec4dc317e3b`|100755|
 
 本地官方Conda hook激活`ssr-gpu`后验证：
 
 - 4个Python文件`py_compile`通过；
-- HNCCD core+postfreeze联合49/49通过；
+- HNCCD core+postfreeze联合51/51通过，后冻结focused22/22通过；
 - 3个CLI`--help`通过；
 - launcher`bash -n`通过；
 - dry-run精确42行：clean12、LEO12、proxy12、pair6；
 - 6个pair均`expected-source-count=1600`、`expected-proxy-count=400`，F6唯一携带5个prior路径；
 - 嵌套raw receiver token、旧identity、nonfinite、zero-row、checkpoint/binding/proxy/F6原件篡改均有fail-closed覆盖；
-- 独立actual-diff审查：`P0=0 / P1=0 / ALLOW`；
+- 后运行门控修订覆盖`−2.0pp`inclusive、`−2.0001pp`拒绝、F1至F6精确键集和nonfinite；
+- 独立actual-diff复审：`P0=0 / P1=0 / ALLOW`；
 - `git diff --check`通过。
 
-追踪卡状态：`verified=5,implemented=4,deferred=0,rejected=0,blocked=0`。真实12 checkpoint、ManySig、sealed42与F6原件已由唯一Runner在N607重开并完成技术闭合。
+追踪卡状态：`verified=10,implemented=0,deferred=0,rejected=0,blocked=0`。真实12 checkpoint、ManySig、sealed42与F6原件已由唯一Runner在N607重开并完成技术闭合；主控已从SHA绑定bundle完成同row性能解释。
 
 ## 5.冻结矩阵与资源
 
@@ -143,3 +146,104 @@ launch最多1次；SSH超时先只终止并清理绑定本地客户端，再用�
 - 小bundle转移SCP一次。raw SCP证据保留为`phase1_hnccd_postfreeze_20260811_v1_technical_bundle_scp_raw.tar.gz`，bytes=`13384195`，SHA256=`4C63AFBA94191361BA1836A87636B27CF8A20BF3416359C93B6C6E0BAFF307C5`。artifact-only final bundle为`phase1_hnccd_postfreeze_20260811_v1_technical_bundle.tar.gz`，bytes=`4895620`，SHA256=`E01738387D8A854B14DB7CAC0F0AFFEF23CE0B491EAC0BA35997ED2D480DA3D1`，78个tar成员（63文件、15目录、重复成员0），manifest类别为30 JSON、12 CSV、18 logs、outer、pids，forbidden=0，成员bytes/SHA审计PASS。raw SCP tar仅保留传输证据；final为本run artifact-only去重归一化，不改远端原件。
 - 每次SSH/SCP后均主动断开并核验本地`ssh.exe=0`、N607/bridge TCP22 established=0；终态仍为0。
 - 本节仅记录发布、启动、路径、hash、schema、receipt、binding、资源和工件技术事实；状态为`NO_PERFORMANCE_RESULT / NO_PERFORMANCE_INTERPRETATION`。不得据此读取、解释或判定accuracy、floor、AUROC、u-gap、pair数值或晋级/拒绝。
+
+## 11.主控分析证据与门控一致性修订
+
+主控只读取技术闭合后的artifact-only bundle：`E:\type10-7\automation_reports\CV-SincNet\phase1_hnccd_postfreeze_20260811_v1\phase1_hnccd_postfreeze_20260811_v1_technical_bundle.tar.gz`，SHA256=`E01738387D8A854B14DB7CAC0F0AFFEF23CE0B491EAC0BA35997ED2D480DA3D1`。分析对象为其中6个pair JSON；所有比较都保持同fold C/G、同source TX、同known validation TX、同proxy TX和同seed，不跨row拼接极值。
+
+|fold|候选对|source TX|known validation TX|proxy TX|seed|
+|---|---|---|---|---|---:|
+|F1|F1C/F1G|20-15、20-19、6-15、8-20|14-7|14-10|7281718|
+|F2|F2C/F2G|14-10、20-19、6-15、8-20|20-15|14-7|7281718|
+|F3|F3C/F3G|14-10、14-7、6-15、8-20|20-19|20-15|7281718|
+|F4|F4C/F4G|14-10、14-7、20-15、8-20|6-15|20-19|7281718|
+|F5|F5C/F5G|14-10、14-7、20-15、20-19|8-20|6-15|7281718|
+|F6|F6C/F6G|14-7、20-15、20-19、6-15|14-10|8-20|7281718|
+
+分析时发现pair评估器沿用了ICMT旧核对fold/global overall的`G−C≥0pp`判定，而本报告与HNCCD设计卡在运行前已冻结为`G−C≥−2pp`。这造成F6 matrix JSON中的两个汇总布尔为false，但不改变任何原始数值、clean/LEO/proxy门或最终拒绝。修订commit`eb2053037536151f7bf2bcf067165a587228f627`只在HNCCD包装层显式应用`−2pp`，旧ICMT和远端不可变原件均未改。
+
+|汇总门|原始JSON布尔|按预注册合同复算|说明|
+|---|---|---|---|
+|fold三scene overall 6/6|FAIL|PASS|6折值均`≥−2pp`|
+|global 18-cell overall|FAIL|PASS|`−0.451900pp≥−2pp`|
+|最终矩阵verdict|REJECT|REJECT|clean、LEO与proxy仍有独立失败门|
+
+复算使用6个pair JSON内的原始同row数值，不覆盖、不重写、不重跑远端实验。修订后focused22/22、HNCCD core+postfreeze51/51、dry-run42和8项边界/键集对抗通过；独立复审为`P0=0 / P1=0 / ALLOW`。
+
+## 12.clean四floor结果
+
+下表单位均为百分点（pp）；PASS要求同一fold四项全部`≥−2pp`。
+
+|fold|overall G−C|min-class G−C|min-RX G−C|min-day G−C|门|
+|---|---:|---:|---:|---:|---|
+|F1|+0.0119|−0.0952|+0.0000|+0.0476|PASS|
+|F2|−0.0595|−0.3810|−0.4583|−0.0595|PASS|
+|F3|−0.0357|−0.1905|−0.1667|+0.0238|PASS|
+|F4|−0.0238|+0.0000|−0.0417|−0.0595|PASS|
+|F5|−0.1845|−1.1190|−1.0417|−0.2381|PASS|
+|F6|−1.2024|−5.2381|−3.0000|−1.7619|FAIL|
+
+clean门为`5/6`，未达到冻结要求`6/6`。决定性失败来自F6的min-class和min-RX，分别为`−5.2381pp`和`−3.0000pp`；即使F6 overall仍在`−2pp`以内，也不能补偿切片floor失败。
+
+## 13.LEO三scene四floor结果
+
+每一行都必须四项`≥−2pp`；scene和fold之间不可补偿。
+
+|fold|scene|overall G−C|min-class G−C|min-RX G−C|min-day G−C|门|
+|---|---|---:|---:|---:|---:|---|
+|F1|clear|+0.9191|+4.1667|+3.0928|+1.2422|PASS|
+|F1|low|+0.3676|+2.3438|+1.1236|−0.4808|PASS|
+|F1|rain|−0.1953|+0.0000|−2.5316|+0.4960|FAIL|
+|F2|clear|−0.9191|−0.6944|+0.0000|−1.3514|PASS|
+|F2|low|−0.7353|+3.1250|+0.0000|+0.3434|PASS|
+|F2|rain|+0.0000|−2.3438|−1.2658|+0.6944|FAIL|
+|F3|clear|+0.7353|−1.3889|−1.0309|+0.8058|PASS|
+|F3|low|+0.1838|−2.3438|−1.1236|+0.0000|FAIL|
+|F3|rain|+0.9766|+0.0000|−3.7975|+2.4306|FAIL|
+|F4|clear|−0.3676|−6.9444|−2.0619|+0.5875|FAIL|
+|F4|low|−2.5735|−8.5938|−4.4944|−2.7930|FAIL|
+|F4|rain|−0.7812|−5.4688|−2.0153|−1.0417|FAIL|
+|F5|clear|−0.7353|+1.3889|−2.0619|−0.9009|FAIL|
+|F5|low|+0.5515|+7.0312|+4.4944|+3.3425|PASS|
+|F5|rain|−0.9766|−5.4688|−5.2632|−0.5952|FAIL|
+|F6|clear|−2.5735|−9.0278|−4.4776|−2.2523|FAIL|
+|F6|low|−2.2059|−10.1562|−1.1236|−2.4038|FAIL|
+|F6|rain|+0.1953|−8.5938|+6.3291|+0.0000|FAIL|
+
+LEO门为`6/18`；每个fold至少有一个scene失败，F4和F6三个scene全部失败。失败主要集中在min-class和min-RX尾部，说明HNCCD没有稳定保住按类或按接收机的最差切片，不能用部分scene的overall正增益补偿。
+
+## 14.fold/global overall与fixed400 proxy
+
+|fold|三scene等权overall G−C(pp)|overall门|AUROC G−C|u-gap G−C|proxy双门|fold最终|
+|---|---:|---|---:|---:|---|---|
+|F1|+0.3638|PASS|−0.026741|−158.146137|FAIL|REJECT|
+|F2|−0.5515|PASS|−0.146605|−128.817432|FAIL|REJECT|
+|F3|+0.6319|PASS|+0.014216|−295.571568|FAIL|REJECT|
+|F4|−1.2408|PASS|−0.028183|−368.618269|FAIL|REJECT|
+|F5|−0.3868|PASS|−0.023154|+57.846202|FAIL|REJECT|
+|F6|−1.5280|PASS|+0.068076|+552.929178|PASS|REJECT|
+
+fold三sceneoverall为`6/6`，global 18-cell overall为`−0.451900pp`并通过。global 18-cell描述性均值还包括min-class`−2.387153pp`、min-RX`−0.900409pp`和min-day`−0.104254pp`；冻结global门只检查overall，不能替代18个scene四floor门。
+
+proxy双strict门仅`1/6`。F3只改善AUROC而u-gap下降，F5只改善u-gap而AUROC下降；只有F6两项同时严格正，但F6的clean和三个LEO scene均存在不可补偿失败，因此不得以proxy改善覆盖分类floor退化。
+
+## 15.最终非补偿判定与解释边界
+
+|矩阵门|结果|冻结要求|判定|
+|---|---:|---:|---|
+|技术绑定|6/6|6/6|PASS|
+|clean四floor|5/6|6/6|FAIL|
+|LEO三scene四floor|6/18|18/18|FAIL|
+|fold三sceneoverall|6/6|6/6|PASS|
+|global 18-cell overall|−0.451900pp|`≥−2pp`|PASS|
+|fixed400 proxy双strict|1/6|6/6|FAIL|
+
+至少三个独立冻结门失败，唯一结论为：
+
+```text
+REJECT_P1_HNCCD_PERMANENT
+```
+
+HNCCD在部分fold/scene上出现overall正增益，也在F6同时改善两个proxy连续量，但这些局部现象没有形成跨6折、按类、按RX和三scene稳定的共同增益。尤其是F4至F6的LEO尾部退化与F6 clean切片退化，表明“head行空间与零空间残差去相关”没有可靠转化为本轮要求的分类floor稳定性；这只是对冻结假设的反证，不证明更一般的因果机制。
+
+P1-HNCCD不得调参、挑fold、换checkpoint、重命名、拼接旧机制或借后运行阈值修订复活。proxy仍只是source-side连续诊断，不是真实unknown证据；本轮不产生FAR、注册授权、Phase2、Phase3、多卫星协同或论文晋级声明。后续正式未知类拒识必须让registered/unknown query在连接真值前共同经过单次固定`leo_*_weak`弱星地信道，clean unknown仅可作为隔离的非正式诊断。
