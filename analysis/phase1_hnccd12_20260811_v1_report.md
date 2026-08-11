@@ -245,6 +245,7 @@ G臂额外闭合：
 - 12/12`hnccd_terminal_contract_passed=true`。C臂辅助为N/A/0；G臂均为1200batch、clear/low/rain各400、coverage/positive/raw VJP闭合、每共同batch资源观察1200。G的AMP按`attempts=effective steps+raw-finite skips`闭合；raw/material nonfinite=0、terminal consecutive skip=0、无persistent overflow。
 - 12/12统一记录`exit_code=8`与`NON_PROMOTABLE_P0_DISABLED`，这是冻结trainer的formal promotion/P0未启用guard，不是训练异常：`final_guard_reason`为空、`phase1_v2_final_blocked=false`、HNCCD terminal contract通过。该guard同时保持`performance_result_available=false`和`promotion_ready=false`；本Runner未读取任何性能字段。
 - `failure receipt=0`；完整arm/outer日志只按技术指纹扫描，`Traceback/RuntimeError/OOM/Cholesky/full-rank/CUDA/argparse/权限/SIGSEGV/graph-release`均为0。每个有界SSH结束后均确认本地`ssh.exe=0`、N607/bridge TCP22=0。
+- 终态后只读卫生核验发现训练生成的5个`__pycache__`目录和45个`.pyc`；在12个run PID和GPU compute均为0后，Runner只删除这5个已逐路径验证且仅含`.pyc`的目录。release复核回4981成员、pycache=0、pyc=0，未改科学源文件。
 
 |候选|GPU|final与checkpoint SHA|HNCCD/资源技术合同|终态guard|
 |---|---:|---|---|---|
@@ -261,5 +262,5 @@ G臂额外闭合：
 |F4C_HNCCD12|6|闭合|C aux N/A/0；共同资源1200|预期`NON_PROMOTABLE_P0_DISABLED`|
 |F4G_HNCCD12|7|闭合|1200；3×400；VJP；AMP1200/1197/3；raw/material=0；terminal skip=0；资源1200|预期`NON_PROMOTABLE_P0_DISABLED`|
 
-- 本地小型技术bundle：`phase1_hnccd12_20260811_v1_technical_bundle.tar.gz`，SHA256=`18dab2c4436d815c8ff33f7ced9aba12bde30ae916ae9ee6cce27a3ccc81f2fe`，6,874,571B，74个唯一成员。内容为pids、outer+12 arm日志及每臂config/resource/completion/status/HNCCD terminal receipt；未包含`pth/npz/pt/npy/metrics_epoch`，forbidden=0、unexpected path=0。相邻`phase1_hnccd12_20260811_v1_technical_bundle_manifest.json`（SHA256=`91c3ee696dcd2ef40776dbaf2da6ec598c931f58a468c1e13fb614c02bbfd88b`，1,135B）记录传输和清单。远端工件保留不动。
+- 本地小型技术bundle：`phase1_hnccd12_20260811_v1_technical_bundle.tar.gz`，SHA256=`18dab2c4436d815c8ff33f7ced9aba12bde30ae916ae9ee6cce27a3ccc81f2fe`，6,874,571B，74个唯一成员。内容为pids、outer+12 arm日志及每臂config/resource/completion/status/HNCCD terminal receipt；未包含`pth/npz/pt/npy/metrics_epoch`，forbidden=0、unexpected path=0。相邻`phase1_hnccd12_20260811_v1_technical_bundle_manifest.json`（SHA256=`669ab8868d89f11db38d86d82bf67a3c3187b8e68a2ed83e3e7282024f0b21ae`，1,449B）记录传输、清单和release卫生回执。远端工件保留不动。
 - 本run以`ARTIFACTS_COMPLETE / TECHNICALLY_CLOSED / NON_PROMOTABLE_P0_DISABLED / NO_PERFORMANCE_RESULT`交接；不作任何性能解释、晋级或拒绝。
