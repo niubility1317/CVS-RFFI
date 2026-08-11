@@ -5,7 +5,7 @@
 |字段|冻结值|
 |---|---|
 |run ID|d92_e0_full_maxmin_floorboost_hard11_20260812_v1|
-|状态|LOCAL_VERIFIED / APPROVED_FOR_N607|
+|状态|ANALYZED / REJECT_FLOORBOOST|
 |日期|2026-08-12|
 |操作者|Codex主Agent；N607由唯一专用runner执行|
 |候选|E0_FULL_MAXMIN_FLOORBOOST|
@@ -113,8 +113,8 @@ K1 liveness outer为rx_20_1__seed_713106__k_1__new_20，不进入性能均值。
 |静态检查|PASS|7个生产文件py_compile、config JSON、两个CLI help、git diff --check均通过|
 |独立P0/P1|PASS|独立Terra复审：P0=0、P1=0、APPROVE|
 |Git commit|PASS|方法与Hard11实现commit=`25047050`；发布控制面commit=`c9328ade`|
-|N607 preflight/smoke/run|PENDING|待填|
-|完整取回与分析|PENDING|待填|
+|N607 preflight/smoke/run|PASS|唯一run；真实K1 smoke通过；11/11job、8/8shard PASS|
+|完整取回与分析|PASS|本地/远端树一致；冻结分析器裁决`REJECT_FLOORBOOST`|
 
 核心实现已经明确区分四种状态：DA1_REG0不激活、K1/K2精确D92 FULL别名、K>2正常FloorBoost、K>2仅数值退化时完整FULL头逐字节回退。registry、标签、query访问和新类行漂移不进入回退分支，必须报错。尚未读取任何新候选性能。
 
@@ -131,6 +131,82 @@ K1 liveness outer为rx_20_1__seed_713106__k_1__new_20，不进入性能均值。
 
 同步映射固定为：archive→`source_root/d92_floorboost_runtime_closure_25047050.tar.gz`；method lock→`source_root/configs/stage2_d92_full_maxmin_floorboost_hard11_v1.json`；launch→`source_root/launch.sh`。`launch.sh`先核对两份SHA和全新路径，再解包、核对import闭包、prepare 11job、执行真实checkpoint truth-free K1 smoke；只有smoke闭合后才启动8个shard。
 
-## 9.结果表
+## 9.N607执行与证据闭合
 
-实验完成后必须在此填入D92、E0_FULL_ONLY和E0_FULL_MAXMIN_FLOORBOOST三方法同排表、10行paired表、三场景分解、floor/遗忘最差行、资源表和最终裁决。运行前不填写或推测性能。
+普通N607账号完成一次冻结启动，未重试、未按性能停止。manifest SHA256=`a86165df46e37322316bb24a507306ac473954daba5bbb80dfc9be4e019f68a9`；shard PID为`2053720–2053727`，GPU0–7一一绑定。真实checkpoint smoke状态为`D92_FLOORBOOST_HARD11_REAL_CHECKPOINT_TRUTH_FREE_SMOKE_PASS`，全部query禁止访问字段为`false`。
+
+|闭合项|结果|
+|---|---:|
+|prediction/score事件|11/11、11/11|
+|正式prediction/COMMIT|22/22|
+|正式fit/resource audit|22/22；after内含30个performance scene row和3个K1 scene row|
+|job receipt|11；truth未回流、scorer隔离、fresh retry=false|
+|shard|8/8`PASS`；failed=0|
+|stderr/异常指纹/stop marker|0/0/0|
+|终态|run进程0；8张GPU释放；SSH/TCP22残留0|
+
+完整产物取回到`E:\type10-7\local_artifacts\d92_e0_full_maxmin_floorboost_hard11_20260812_v1`。source逐文件manifest为1317条，missing/extra/hash mismatch均为0；output树摘要=`6dcb32bf3ac4d615d77c819815277e3e9f60a1c209534b12022dd1ad72d82416`，logs树摘要=`ae76cff87a93b9f52d5cd909aa4e75909effe4a59485db4423680262b870b81e`。主Agent完整读取24个执行日志/driver文件，共9942B；所有err为空，错误指纹为0。8个events文件共44条合法JSON，四类事件各11条，无畸形行。
+
+## 10.三方法Hard10同排结果
+
+以下10行是针对E0_FULL_ONLY弱点冻结的压力屏，不是完整Target125无偏均值。历史D92和E0_FULL_ONLY均来自冻结125分析CSV，不重跑、不择优。
+
+|方法|机制|H_old_new|旧类平衡准确率|旧类floor|已见新类准确率|平均遗忘|结论|
+|---|---|---:|---:|---:|---:|---:|---|
+|D92|Fisher/Pareto＋full/block K折LOO融合|74.1673%|76.1389%|48.5000%|72.3750%|11.6389%|冻结基线|
+|E0_FULL_ONLY|E关闭＋注册态仅FULL一次拟合|73.3472%|74.8611%|44.8333%|72.0333%|12.9167%|高效率对照|
+|E0_FULL_MAXMIN_FLOORBOOST|FULL＋BLOCK各一次；旧类Q20零和bias校正|67.2838%|77.8056%|55.1667%|59.8750%|9.9722%|`REJECT_FLOORBOOST`|
+
+FloorBoost相对E0_FULL_ONLY把floor提高**10.3333pp**、旧类均值提高**2.9444pp**、遗忘降低**2.9444pp**，三个直接旧类目标都达到进取幅度；但已见新类下降**12.1583pp**，H下降**6.0634pp**。相对D92同样出现floor`+6.6667pp`、遗忘`−1.6667pp`，同时新类`−12.5000pp`、H`−6.8835pp`。10/10行H均低于D92，因此不能用旧类收益掩盖整体退化。
+
+## 11.十行paired压力结果
+
+表中均为百分点差值；遗忘为负表示改善。
+
+|outer|ΔH/D92|ΔH/E0|Δfloor/D92|Δfloor/E0|Δnew/D92|Δnew/E0|Δforget/D92|Δforget/E0|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+|`rx_7_7__seed_713106__k_10__new_5`|−7.282|−5.132|+3.333|+8.333|−11.333|−9.000|+2.222|+0.278|
+|`rx_7_7__seed_713104__k_5__new_20`|−3.459|−3.498|+3.333|+10.000|−3.500|−4.167|+3.333|+2.500|
+|`rx_7_7__seed_713103__k_10__new_5`|−5.571|−3.934|+16.667|+20.000|−9.667|−10.333|+0.833|−3.056|
+|`rx_8_8__seed_713103__k_5__new_20`|−4.194|−3.567|0.000|+6.667|−10.583|−10.417|−4.444|−5.556|
+|`rx_8_8__seed_713103__k_10__new_5`|−13.444|−13.580|0.000|+6.667|−23.333|−25.000|−1.667|−3.056|
+|`rx_8_8__seed_713106__k_5__new_20`|−3.972|−2.769|−3.333|0.000|−8.667|−8.500|−1.667|−3.889|
+|`rx_7_14__seed_713104__k_10__new_10`|−4.931|−4.463|+26.667|+31.667|−14.500|−14.667|−8.889|−10.000|
+|`rx_3_19__seed_713102__k_10__new_5`|−17.249|−16.177|−1.667|−3.333|−25.000|−22.667|−2.500|−1.944|
+|`rx_7_7__seed_713105__k_10__new_20`|−1.954|−1.789|0.000|+5.000|−5.750|−6.167|−3.056|−3.889|
+|`rx_7_7__seed_713104__k_10__new_5`|−6.778|−5.725|+21.667|+18.333|−12.667|−10.667|−0.833|−0.833|
+
+相对D92，floor不下降为8/10，但最差仍为−3.333pp；遗忘不增加仅7/10，最差增加3.333pp。相对E0_FULL_ONLY，floor下降行从历史8行降到1行、另1行持平；遗忘8/10行不增加。旧类方向有真实收益，但不够稳定，也没有守住新类与H。
+
+## 12.失败机制：零和不等于任务边界中性
+
+30个K>2场景全部激活FloorBoost，fallback为0。每个场景的`max_abs_delta_over_rms`都几乎精确等于0.35：最小0.34999993、均值0.35000000、最大0.35000010；bias实际范围为−34.0705至+23.1024 logit。当前算法先把类间优先级除以其最大绝对值，再乘固定0.35RMS，所以不论support证据强弱，至少一个旧类都会用满上界。
+
+旧类bias之和为0只保持旧类组均值，却不保持`max(old logits)`。逐query决策取旧类最大值：被抬高的弱旧类扩大了旧类包络，强旧类的负bias无法在max运算中抵消。相对E0_FULL_ONLY，10行×3场景的new→old错误率由15.0417%升到32.5083%，增加**17.4667pp**；old→new错误率从15.3333%降到5.3056%，减少10.0278pp。方法把任务边界明显推向旧类，正好解释了“旧类更好、新类大跌”。
+
+|场景|候选H|ΔH/E0|候选旧类|Δ旧类/E0|候选新类|Δ新类/E0|new→old|Δnew→old/E0|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+|leo_clear_weak|72.4100%|−6.6500pp|82.0000%|+2.6700pp|65.7500%|−13.2500pp|28.5500%|+17.4000pp|
+|leo_low_elev_weak|63.3800%|−6.4600pp|77.0000%|+2.3300pp|54.2500%|−11.5300pp|37.3000%|+17.6500pp|
+|leo_rain_weak|65.6600%|−5.0400pp|74.4200%|+3.8300pp|59.6200%|−11.7000pp|31.6800%|+17.3500pp|
+
+该方向确实完成了旧类内部再分配：相对E0_FULL_ONLY，`14-7`、`20-19`和`6-15`分别提高16.83、7.50和13.50pp；但`14-10`、`20-15`和`8-20`分别下降12.50、5.17和2.50pp。floor上升来自把容量从强旧类转移到弱旧类；问题不是旧类max-min思想无效，而是它缺少对旧类最大包络和新类support的硬约束。
+
+## 13.资源结果
+
+|项目|FloorBoost|E0_FULL_ONLY同排|解释|
+|---|---:|---:|---|
+|two-state/DA1_REG1 actual fit|4/2|2/1|FloorBoost增加一次BLOCK拟合|
+|注册wall中位数|142.708ms|68.836ms|paired中位倍率1.907×|
+|注册wall P90|199.324ms|107.504ms|超过冻结180ms门19.324ms|
+|增量peak中位数|1159168B|1282048B|未增加|
+|增量peak P90|1658880B|1650688B|均低于3MiB门|
+|query MAC/state|与E0完全一致|基准|PASS|
+
+相对原D92，FloorBoost仍把two-state组件拟合数从K5的48降到4、K10的88降到4，分别减少91.67%和95.45%；但它相对E0_FULL_ONLY不再是更瘦的注册路径，wall接近翻倍。
+
+## 14.最终裁决与下一方向
+
+最终裁决为**`REJECT_FLOORBOOST`**，不启动完整125。候选成功证明了support-only旧类内部再分配能显著抬高floor并降低平均遗忘；失败来自固定满幅bias改变old-vs-new包络，而非数据、协议或运行故障。下一候选应回到E0_FULL_ONLY单FULL拟合，只保留旧类内部再分配方向，并增加确定性的new-support envelope guard：任何正向旧类bias造成的`max(old logits)`抬升必须由公共旧类offset抵消；若同时不能守住逐旧类old-vs-new低分位margin，则解析缩放到可行幅度或回退E0_FULL_ONLY。这样才能把“提高弱旧类”与“整体偏向旧类”拆开。
+
+分析产物位于`E:\type10-7\local_artifacts\d92_e0_full_maxmin_floorboost_hard11_20260812_v1\analysis`：`summary.json` SHA256=`0a2b4681d3c9e1a74cc00bae1d9d275d2f0213e225396bb638f4270ed4f3ec9e`；`gates.json` SHA256=`f04b46dbb36ddde720ac4d54ae4a2971dad9c4fa8d62344aba7ab316a7514510`；`paired_rows.csv` SHA256=`d6c53ddb3a9d85ff6ed8f72b39ecb62933f8e75d00f3d5cd82e278786b26325f`；`scenario_rows.csv` SHA256=`6d17f1a8eb0f9f06ac7bab9f8b65e8651a6c6401cd74bd1f86ebdaa633a048f8`。
