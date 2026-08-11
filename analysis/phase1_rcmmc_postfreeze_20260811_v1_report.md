@@ -113,3 +113,19 @@ Runner落地前必须完成：direct preflight；LF无prefix archive、六成员
 - 六个C臂lambda=0且RCMMC辅助计数为0；六个G臂三scene均28/28 cell、有positive-D，合计每臂1200 batches/153600 rows，四参VJP证明LEO feat_joint与shared encoder finite-nonzero、clean feat_joint与exact head None-or-zero，raw-unscaled且不触碰AMP/optimizer/RNG。
 - 训练terminal的`NON_PROMOTABLE_P0_DISABLED/8`来自冻结代码`p0_mechanisms_ready=false`总guard，不是执行异常；所有训练性能声明字段均false。本轮不读取训练heldout或metrics_epoch性能。
 - 本地部分技术bundle=`phase1_rcmmc12_20260811_v1_technical_bundle_partial.tar`，SHA256=`cac28754b19d37f2aeb0dab136440bbeca87297bc4b8f0fafb2945320f8e00ea`，161280B、39 files/50 tar entries；未完整回收F5G/F6小副本，12个checkpoint未下载，完整远端run/log/checkpoint仍保留。后冻结Runner必须直接以远端原件重开，不得用该部分bundle代替科学输入。
+
+## 10.Runner发布、唯一启动与技术闭合
+
+- Direct preflight通过：普通账号`N607`、项目根可见、GPU0--7均为0%/1MiB、身份/key有效；每次SSH/SCP完成后本地`ssh.exe`与N607 TCP22均清零。
+- 首次release工程输入为六成员LF归档`phase1_rcmmc_postfreeze_20260811_v1_aabd8358_lfnorm.tar`（163840B，SHA=`1973e9e3b28269ea9482e84c5c75ab2d8fbe15d3ea9ab1d9cf70c7a01cec1924`）。它仅用于记录首个不完整incoming；曾短暂原子落地后按P0发布修复精确改名为`..._aabd8358_sixfile_incomplete_prelaunch`，未删除、未覆盖、未启动。
+- 从科学实现commit=`aabd8358cb5303e34b546b6e4485afc1575fccf0`生成完整无prefix归档并只做归档层LF规范化：`phase1_rcmmc_postfreeze_20260811_v1_aabd8358_full_lfnorm.tar`，264417280B，SHA=`ebb95db7345dc6b1e362aeac242ba7bf43ff26182d0220db7019161bdaed37fb`，4976 members（4356 files、620 dirs），`code/code=0`，文本成员CR=0；六冻结成员SHA、launcher归档mode=0755及5项依赖均匹配。第二次且最后一次SCP使用`.full.incoming.tar`，累计`SCP=2`；原子stage→final后远端launcher显示0775，归档成员仍为0755，判定为tar/umask权限差异，脚本冻结命令显式使用`bash`，未chmod、未重包。
+- 最后prelaunch只读门：final release存在，run/log/outer目标均ABSENT，无关联PID/CWD，8GPU均0%/1MiB；ManySig SHA=`2b0a7a7488dd3650bcae7b1d80efbcffd1598aaa671ae6b0a0df2a24dc0f694f`，远端4文件`py_compile`、4个CLI help、`bash -n`与冻结dry-run`42=12+12+12+6`均通过，12个checkpoint/current terminal receipt重开、checkpoint/terminal/status/completion/heldout SHA closure、6折C/G common binding、G三scene×28 positive和四参VJP均通过。配置receipt只核schema/method/flags/存在，不冒充terminal receipt。
+- 严格逐字执行报告§5冻结命令恰1次，`launch=1`、`retry=NO`。SSH通道约34s超时后仅清理绑定本地客户端，并只读确认已落地；未重发。初始launcher PID=`1551037`、launcher bash PID=`1551038`，`candidate_pids.tsv`记录12候选及GPU映射`0,0,1,1,2,2,3,3,4,5,6,7`。
+- 12候选与6个pair均自然退出；每候选日志849行，18份候选/pair日志技术错误指纹（Traceback、RuntimeError、CUDA/OOM、argparse、权限、路径、Killed）为0；终态绑定进程=0，GPU0--7均0%/1MiB，SSH/TCP22=0。远端工件计数为24 NPZ、30 JSON、12 CSV；本Runner不读取或解释任何性能字段。
+
+## 11.终态技术重开与证据回收
+
+- 12/12 raw clean NPZ、12/12 LEO NPZ、12/12 binding由当前release validator重开通过，12/12 proxy JSON/CSV由当前clean NPZ字节独立重算通过；每个pair的schema、postfreeze matrix ID、training/output root、C/G receipt revalidation、common binding、proxy SHA closure均通过。
+- F6 pair含`rcmmc_f6_raw_reopen_required=true`及5项`matrix_aggregate.prior_pair_metrics_bindings`，全部`raw_artifacts_recomputed=true`；结合当前F6 C/G receipt/common/proxy重验，F6 raw-reopen技术门通过。该证据不构成性能结论。
+- 仅回收小技术bundle，排除NPZ、pth、pt、npy、jsonl及`metrics_epoch`：最终引用`release/phase1_rcmmc_postfreeze_20260811_v1_technical_bundle_v2.tar`（84520960B，76 members=62 files+14 dirs，SHA=`787d420f9ecc1d69d6361d7c17055683c55ed8d2aa35430a84b6584df5351e24`；JSON=30、CSV=12、`.out`=19，含0B outer、`candidate_pids.tsv`=1，禁入=0）。v1首包（遗漏outer）保留为证据；v2外部manifest=`phase1_rcmmc_postfreeze_20260811_v1_technical_bundle_v2_MANIFEST.sha256`，9233B，SHA=`b5216145147c92759987c74d891bed2effeeb4d736b4a25a93cf79660c827859`。远端bundle路径仍保留。
+- 当前状态：`ARTIFACTS_COMPLETE_TECHNICALLY_CLOSED / NO_PERFORMANCE_RESULT`。性能读取、解释、晋级和科学结论由主控独立完成；本Runner未因耗时、静默或任何性能字段停止。
