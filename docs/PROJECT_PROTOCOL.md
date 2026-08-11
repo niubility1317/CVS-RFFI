@@ -42,6 +42,8 @@ Phase1只在地面训练开放世界就绪的底层特征提取器，可优化�
 
 Phase1开放世界研发必须使用TX互斥的`source_known_train_tx`、`source_known_validation_tx`和`source_proxy_unknown_tx`。proxy unknown的全部物理样本排除训练；同一已知TX的不同receiver、channel、day或SNR view不能伪装成unknown。Phase1不得读取target query真值、回流Phase3确认unknown、执行多节点消息或anonymous track，也不得把source proxy unknown指标写成Phase3真实unknown结果。
 
+候选的训练、模型选择、超参数／阈值确定和source侧开发晋级排序必须保持source-only、TX互斥和真实checkpoint可导出。上述内容完全冻结后，允许对预注册的单一候选开展一次性、role／truth-blind、零适配的`R_t`LEO弱信道确认性评测；registered与unknown必须同样遵守单物理样本单观测、scene／seed分配和预测先封存规则。独立scorer只能在预测封存后评分；结果仅可用于该冻结候选的预先声明确认记录或下一阶段准入，不得用于候选重排、阈值或模型调整、重训、重跑选择或任何反馈。`source_proxy_unknown`只代表source研发信号，不得替代目标确认或写成Phase3真实unknown；该单节点确认也不构成Phase3运营unknown、协同、anonymous entity、可信确权或`registration_authorized`声明。
+
 ## Phase2最小数据协议
 
 ### 单物理样本单LEO接收观测
@@ -104,6 +106,8 @@ floor评价覆盖全部实际注册类，不使用预选难类清单。算法、
 每个节点部署同一冻结或合法适配后的Phase1特征提取器，只根据当前已接收IQ形成`z_id`、`z_dom`、质量`q`、类距离`d_class`、本地未知分数`e_unknown`和本地已注册身份预测`p_local`。本地证据必须先冻结为不可变artifact，节点决策只能是registered、unknown或defer。predictor不得读取query真值、真实old/new/unknown角色、真实batch构成、类别配额或独立scorer结果。
 
 正式Phase3未知类拒识必须叠加LEO弱星地信道。registered query与unknown query在连接真值或角色前使用同一生成与场景分配规则；每个接收记录只绑定一份固定`leo_clear_weak`、`leo_low_elev_weak`或`leo_rain_weak`接收IQ，方法只能读取该`received_i`。禁止registered使用clean而仅对unknown施加弱信道，禁止按真实known/unknown角色选择scene/seed，禁止从同一物理记录生成多scene或多随机信道实现后挑选或融合。clean unknown只能作为`DIAGNOSTIC_UNKNOWN_NO_LEO_NON_FORMAL`隔离诊断，不得进入正式拒识指标、候选晋级或卫星场景声明。
+
+若对已冻结Phase1 bundle开展单节点目标域确认性unknown评测，registered与unknown均须在连接真值或角色前，按本节相同的单物理样本单LEO观测、scene／seed分配和三scene物理ID两两不交规则构建；候选及其unknown决策规则／阈值必须已由source-only冻结，全部预测artifact封存后才可由独立scorer评分。该评测零训练、零适配、零更新、零调参和零重试反馈，只能报告冻结bundle的单节点确认性指标，不构成Phase3多节点协同、anonymous entity、可信确权或注册授权结果。
 
 Phase3可以融合冻结本地证据以及合法绑定的卫星可见性、时间窗、频率/波束、轨迹、位置和历史anonymous track。正式方法必须处理接收机/信道差异、节点缺失或延迟、本地冲突、同一事件的多节点观测、跨过境关联及相关证据去重；平均、投票和最高置信节点只能作为基线。任何registered query被reject或defer都按身份错误计数。
 
