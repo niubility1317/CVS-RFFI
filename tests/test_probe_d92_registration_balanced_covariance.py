@@ -1,10 +1,171 @@
 from __future__ import annotations
 
 import numpy as np
+import pytest
 
 from cvsrffi import stage2_d42_unified_shrinkage_lda as d42
 from scripts import probe_d81_ground_nuisance_cauchy_center as d81_probe
 from scripts import probe_d92_registration_balanced_covariance as probe
+
+
+def _ocf_hand_fixture():
+    """Return independently hand-checked full/block affine components."""
+
+    classes, shots = 8, 3
+    labels = np.repeat(np.arange(classes), shots).astype(np.int64)
+    after_rows = np.ones((classes * shots, 1), dtype=np.float32)
+    full_coefficient = np.asarray(
+        [[8.0], [12.0], [8.0], [12.0], [8.0], [12.0], [31.0], [32.0]],
+        dtype=np.float32,
+    )
+    full_intercept = np.asarray(
+        [6.0, 2.0, 6.0, 4.0, 8.0, 4.0, 40.0, 41.0], dtype=np.float32
+    )
+    block_coefficient = np.asarray(
+        [[96.0], [96.0], [104.0], [96.0], [104.0], [104.0], [500.0], [600.0]],
+        dtype=np.float32,
+    )
+    block_intercept = np.asarray(
+        [-5.0, -5.0, -13.0, -1.0, -9.0, -9.0, -50.0, -60.0],
+        dtype=np.float32,
+    )
+    return (
+        after_rows,
+        labels,
+        full_coefficient,
+        full_intercept,
+        block_coefficient,
+        block_intercept,
+        classes,
+        shots,
+    )
+
+
+def test_ocf_math_uses_old_class_centered_rms_without_second_canonical_centering(
+    monkeypatch,
+):
+    """Would fail if OCF changed new rows, old means, RMS alignment, or re-centered."""
+
+    (
+        after_rows,
+        labels,
+        full_coefficient,
+        full_intercept,
+        block_coefficient,
+        block_intercept,
+        classes,
+        shots,
+    ) = _ocf_hand_fixture()
+
+    def forbidden_centering(*_args, **_kwargs):
+        raise AssertionError("OCF must not invoke all-class canonical centering")
+
+    monkeypatch.setattr(probe.d43, "_center_affine_scores", forbidden_centering)
+    coefficient25, intercept25, audit25 = probe._build_ocf_affine_state(
+        full_rows=after_rows,
+        full_labels=labels,
+        block_rows=after_rows,
+        block_labels=labels,
+        full_coefficient=full_coefficient,
+        full_intercept=full_intercept,
+        block_coefficient=block_coefficient,
+        block_intercept=block_intercept,
+        class_count=classes,
+        k_shot=shots,
+        lambda_value=0.25,
+    )
+    coefficient50, intercept50, audit50 = probe._build_ocf_affine_state(
+        full_rows=after_rows,
+        full_labels=labels,
+        block_rows=after_rows,
+        block_labels=labels,
+        full_coefficient=full_coefficient,
+        full_intercept=full_intercept,
+        block_coefficient=block_coefficient,
+        block_intercept=block_intercept,
+        class_count=classes,
+        k_shot=shots,
+        lambda_value=0.50,
+    )
+    np.testing.assert_array_equal(
+        coefficient25,
+        np.asarray([[8.0], [11.0], [9.0], [11.0], [9.0], [12.0], [31.0], [32.0]], dtype=np.float32),
+    )
+    np.testing.assert_array_equal(
+        intercept25,
+        np.asarray([6.0, 3.0, 5.0, 5.0, 7.0, 4.0, 40.0, 41.0], dtype=np.float32),
+    )
+    np.testing.assert_array_equal(
+        coefficient50,
+        np.asarray([[8.0], [10.0], [10.0], [10.0], [10.0], [12.0], [31.0], [32.0]], dtype=np.float32),
+    )
+    np.testing.assert_array_equal(
+        intercept50,
+        np.asarray([6.0, 4.0, 4.0, 6.0, 6.0, 4.0, 40.0, 41.0], dtype=np.float32),
+    )
+    for coefficient, intercept, audit, expected_lambda in (
+        (coefficient25, intercept25, audit25, 0.25),
+        (coefficient50, intercept50, audit50, 0.50),
+    ):
+        assert coefficient.dtype == np.float32
+        assert intercept.dtype == np.float32
+        assert coefficient[6:].tobytes() == full_coefficient[6:].tobytes()
+        assert intercept[6:].tobytes() == full_intercept[6:].tobytes()
+        np.testing.assert_allclose(
+            coefficient[:6].mean(axis=0), full_coefficient[:6].mean(axis=0), atol=1.0e-5
+        )
+        np.testing.assert_allclose(intercept[:6].mean(), full_intercept[:6].mean(), atol=1.0e-5)
+        np.testing.assert_allclose(coefficient[:6].sum(axis=0), 6.0 * full_coefficient[:6].mean(axis=0), atol=1.0e-5)
+        np.testing.assert_allclose(intercept[:6].sum(), 6.0 * full_intercept[:6].mean(), atol=1.0e-5)
+        assert audit["d92_ocf_lambda"] == expected_lambda
+        assert audit["d92_ocf_full_old_rms"] == pytest.approx(1.0)
+        assert audit["d92_ocf_block_old_rms"] == pytest.approx(2.0)
+        assert audit["d92_ocf_unclipped_block_to_full_ratio"] == pytest.approx(0.5)
+        assert audit["d92_ocf_new_rows_byte_exact"] is True
+        assert audit["d92_ocf_no_second_all_class_centering"] is True
+
+
+def test_ocf_math_rejects_invalid_lambda_label_nonfinite_or_degenerate_inputs():
+    """Would fail if OCF accepted an unsafe fixed-arm support state."""
+
+    fixture = _ocf_hand_fixture()
+    kwargs = dict(
+        full_rows=fixture[0],
+        full_labels=fixture[1],
+        block_rows=fixture[0],
+        block_labels=fixture[1],
+        full_coefficient=fixture[2],
+        full_intercept=fixture[3],
+        block_coefficient=fixture[4],
+        block_intercept=fixture[5],
+        class_count=fixture[6],
+        k_shot=fixture[7],
+    )
+    with pytest.raises(probe.D92ProbeError, match="lambda"):
+        probe._build_ocf_affine_state(lambda_value=0.30, **kwargs)
+    missing_labels = fixture[1].copy()
+    missing_labels[-1] = 6
+    with pytest.raises(probe.D92ProbeError, match="registry"):
+        probe._build_ocf_affine_state(
+            lambda_value=0.25, full_labels=missing_labels, **{key: value for key, value in kwargs.items() if key != "full_labels"}
+        )
+    nonfinite_rows = fixture[0].copy()
+    nonfinite_rows[0, 0] = np.nan
+    with pytest.raises(probe.D92ProbeError, match="finite"):
+        probe._build_ocf_affine_state(
+            lambda_value=0.25, full_rows=nonfinite_rows, **{key: value for key, value in kwargs.items() if key != "full_rows"}
+        )
+    zero_full = np.zeros_like(fixture[2])
+    zero_block = np.zeros_like(fixture[4])
+    with pytest.raises(probe.D92ProbeError, match="RMS"):
+        probe._build_ocf_affine_state(
+            lambda_value=0.25,
+            full_coefficient=zero_full,
+            block_coefficient=zero_block,
+            full_intercept=np.zeros_like(fixture[3]),
+            block_intercept=np.zeros_like(fixture[5]),
+            **{key: value for key, value in kwargs.items() if key not in {"full_coefficient", "block_coefficient", "full_intercept", "block_intercept"}},
+        )
 
 
 def test_synthetic_d62_stack_uses_d92_in_all_registered_components():

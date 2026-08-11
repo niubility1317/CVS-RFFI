@@ -25,7 +25,17 @@ FORMULA = (
     "auto-shrinkage covariance separately; use fixed Sigma=0.5*Sigma_old+0.5*Sigma_new; "
     "compile one equal-prior affine head over all registered classes"
 )
-REGISTERED_D_MODES = ("fusion_loo", "full_only", "block_only", "fixed50")
+REGISTERED_D_MODES = (
+    "fusion_loo",
+    "full_only",
+    "block_only",
+    "fixed50",
+    "ocf25",
+    "ocf50",
+)
+OCF_LAMBDA_BY_MODE = {"ocf25": 0.25, "ocf50": 0.50}
+OCF_RMS_EPSILON = 1.0e-12
+OCF_AFFINE_INVARIANT_ATOL = 1.0e-5
 d43.ARM_STRUCTURES[ARM] = STRUCTURE
 if ARM not in d43.ARMS:
     d43.ARMS = tuple((*d43.ARMS, ARM))
@@ -66,6 +76,230 @@ def _require_registered_d_mode(registered_d_mode: str) -> str:
     return mode
 
 
+def _build_ocf_affine_state(
+    *,
+    full_rows: np.ndarray,
+    full_labels: np.ndarray,
+    block_rows: np.ndarray,
+    block_labels: np.ndarray,
+    full_coefficient: np.ndarray,
+    full_intercept: np.ndarray,
+    block_coefficient: np.ndarray,
+    block_intercept: np.ndarray,
+    class_count: int,
+    k_shot: int,
+    lambda_value: float,
+) -> tuple[np.ndarray, np.ndarray, dict[str, Any]]:
+    """Fuse old-row contrasts while retaining the full component's new rows."""
+
+    try:
+        weight = float(lambda_value)
+    except (TypeError, ValueError) as error:
+        raise D92ProbeError("D92 OCF lambda is invalid") from error
+    if weight not in set(OCF_LAMBDA_BY_MODE.values()):
+        raise D92ProbeError("D92 OCF lambda is not a frozen arm value")
+    classes, shots = int(class_count), int(k_shot)
+    raw_full_rows = np.asarray(full_rows)
+    raw_block_rows = np.asarray(block_rows)
+    raw_full_labels = np.asarray(full_labels)
+    raw_block_labels = np.asarray(block_labels)
+    raw_full_coefficient = np.asarray(full_coefficient)
+    raw_full_intercept = np.asarray(full_intercept)
+    raw_block_coefficient = np.asarray(block_coefficient)
+    raw_block_intercept = np.asarray(block_intercept)
+    if not (
+        np.issubdtype(raw_full_rows.dtype, np.number)
+        and np.issubdtype(raw_block_rows.dtype, np.number)
+        and np.isfinite(raw_full_rows).all()
+        and np.isfinite(raw_block_rows).all()
+    ):
+        raise D92ProbeError("D92 OCF after-support input is non-finite")
+    if (
+        classes <= OLD_CLASS_COUNT
+        or shots <= 2
+        or raw_full_rows.ndim != 2
+        or raw_full_rows.shape[0] != classes * shots
+        or raw_full_labels.shape != (classes * shots,)
+        or raw_block_rows.shape != raw_full_rows.shape
+        or raw_block_labels.shape != raw_full_labels.shape
+        or raw_full_rows.dtype != raw_block_rows.dtype
+        or raw_full_labels.dtype != raw_block_labels.dtype
+        or not np.array_equal(raw_full_rows, raw_block_rows)
+        or not np.array_equal(raw_full_labels, raw_block_labels)
+    ):
+        raise D92ProbeError("D92 OCF after-support registry drift")
+    if not (
+        np.issubdtype(raw_full_labels.dtype, np.integer)
+        and raw_full_coefficient.dtype == np.float32
+        and raw_full_intercept.dtype == np.float32
+        and raw_block_coefficient.dtype == np.float32
+        and raw_block_intercept.dtype == np.float32
+    ):
+        raise D92ProbeError("D92 OCF requires FP32 affine components and integer labels")
+    labels = np.asarray(raw_full_labels, dtype=np.int64)
+    dimension = int(raw_full_rows.shape[1])
+    if (
+        raw_full_coefficient.shape != (classes, dimension)
+        or raw_block_coefficient.shape != (classes, dimension)
+        or raw_full_intercept.shape != (classes,)
+        or raw_block_intercept.shape != (classes,)
+        or not np.array_equal(np.unique(labels), np.arange(classes, dtype=np.int64))
+        or any(int(np.sum(labels == index)) != shots for index in range(classes))
+    ):
+        raise D92ProbeError("D92 OCF after-support registry is incomplete")
+    try:
+        rows = np.asarray(raw_full_rows, dtype=np.float64)
+        full_weight = np.asarray(raw_full_coefficient, dtype=np.float64)
+        full_bias = np.asarray(raw_full_intercept, dtype=np.float64)
+        block_weight = np.asarray(raw_block_coefficient, dtype=np.float64)
+        block_bias = np.asarray(raw_block_intercept, dtype=np.float64)
+    except (TypeError, ValueError) as error:
+        raise D92ProbeError("D92 OCF affine input conversion drift") from error
+    if not (
+        np.isfinite(rows).all()
+        and np.isfinite(full_weight).all()
+        and np.isfinite(full_bias).all()
+        and np.isfinite(block_weight).all()
+        and np.isfinite(block_bias).all()
+    ):
+        raise D92ProbeError("D92 OCF affine input is non-finite")
+    old_mask = labels < OLD_CLASS_COUNT
+    old_rows = rows[old_mask]
+    expected_old_rows = OLD_CLASS_COUNT * shots
+    if old_rows.shape != (expected_old_rows, dimension):
+        raise D92ProbeError("D92 OCF old support row count drift")
+    full_old_mean_weight = full_weight[:OLD_CLASS_COUNT].mean(axis=0)
+    full_old_mean_bias = float(full_bias[:OLD_CLASS_COUNT].mean())
+    full_old_contrast_weight = (
+        full_weight[:OLD_CLASS_COUNT] - full_old_mean_weight[None, :]
+    )
+    full_old_contrast_bias = full_bias[:OLD_CLASS_COUNT] - full_old_mean_bias
+    block_old_mean_weight = block_weight[:OLD_CLASS_COUNT].mean(axis=0)
+    block_old_mean_bias = float(block_bias[:OLD_CLASS_COUNT].mean())
+    block_old_contrast_weight = (
+        block_weight[:OLD_CLASS_COUNT] - block_old_mean_weight[None, :]
+    )
+    block_old_contrast_bias = block_bias[:OLD_CLASS_COUNT] - block_old_mean_bias
+
+    def old_class_centered_rms(
+        coefficient: np.ndarray, intercept: np.ndarray
+    ) -> float:
+        scores = old_rows @ coefficient.T + intercept[None, :]
+        scores -= scores.mean(axis=1, keepdims=True)
+        rms = float(np.sqrt(np.mean(np.square(scores))))
+        if not np.isfinite(rms) or rms <= OCF_RMS_EPSILON:
+            raise D92ProbeError("D92 OCF old-class centered RMS is degenerate")
+        return rms
+
+    full_rms = old_class_centered_rms(
+        full_old_contrast_weight, full_old_contrast_bias
+    )
+    block_rms = old_class_centered_rms(
+        block_old_contrast_weight, block_old_contrast_bias
+    )
+    ratio = float(full_rms / block_rms)
+    if not np.isfinite(ratio) or ratio <= 0.0:
+        raise D92ProbeError("D92 OCF RMS alignment ratio is invalid")
+    aligned_block_weight = ratio * block_old_contrast_weight
+    aligned_block_bias = ratio * block_old_contrast_bias
+    fused_old_weight = full_old_mean_weight[None, :] + (
+        (1.0 - weight) * full_old_contrast_weight
+        + weight * aligned_block_weight
+    )
+    fused_old_bias = full_old_mean_bias + (
+        (1.0 - weight) * full_old_contrast_bias + weight * aligned_block_bias
+    )
+    coefficient = raw_full_coefficient.copy()
+    intercept = raw_full_intercept.copy()
+    coefficient[:OLD_CLASS_COUNT] = fused_old_weight.astype(np.float32)
+    intercept[:OLD_CLASS_COUNT] = fused_old_bias.astype(np.float32)
+    if not np.isfinite(coefficient).all() or not np.isfinite(intercept).all():
+        raise D92ProbeError("D92 OCF affine output became non-finite")
+    output_old_weight = np.asarray(coefficient[:OLD_CLASS_COUNT], dtype=np.float64)
+    output_old_bias = np.asarray(intercept[:OLD_CLASS_COUNT], dtype=np.float64)
+    mean_weight_residual = float(
+        np.max(np.abs(output_old_weight.mean(axis=0) - full_old_mean_weight))
+    )
+    mean_bias_residual = float(abs(output_old_bias.mean() - full_old_mean_bias))
+    contrast_weight_sum_residual = float(
+        np.max(np.abs(np.sum(output_old_weight - full_old_mean_weight, axis=0)))
+    )
+    contrast_bias_sum_residual = float(
+        abs(np.sum(output_old_bias - full_old_mean_bias))
+    )
+    affine_scale = max(
+        1.0,
+        float(np.max(np.abs(full_old_mean_weight))),
+        abs(full_old_mean_bias),
+        float(np.max(np.abs(aligned_block_weight))),
+        float(np.max(np.abs(aligned_block_bias))),
+    )
+    invariant_tolerance = float(
+        2.0 * OLD_CLASS_COUNT * np.finfo(np.float32).eps * affine_scale
+    )
+    if max(
+        mean_weight_residual,
+        mean_bias_residual,
+        contrast_weight_sum_residual,
+        contrast_bias_sum_residual,
+    ) > invariant_tolerance:
+        raise D92ProbeError("D92 OCF old-group affine invariant drift")
+    old_rows_count = int(old_rows.shape[0])
+    support_alignment_macs = int(
+        2 * old_rows_count * OLD_CLASS_COUNT * dimension
+    )
+    transient_bytes_upper_bound = int(
+        8
+        * (
+            2 * old_rows_count * OLD_CLASS_COUNT
+            + old_rows_count * dimension
+            + 4 * OLD_CLASS_COUNT * dimension
+            + 4 * OLD_CLASS_COUNT
+        )
+    )
+    audit = {
+        "d92_ocf_active": True,
+        "d92_ocf_lambda": weight,
+        "d92_ocf_same_after_joint_state": True,
+        "d92_ocf_old_row_count": old_rows_count,
+        "d92_ocf_new_row_count": classes - OLD_CLASS_COUNT,
+        "d92_ocf_full_old_rms": full_rms,
+        "d92_ocf_block_old_rms": block_rms,
+        "d92_ocf_unclipped_block_to_full_ratio": ratio,
+        "d92_ocf_new_rows_byte_exact": bool(
+            coefficient[OLD_CLASS_COUNT:].tobytes()
+            == raw_full_coefficient[OLD_CLASS_COUNT:].tobytes()
+            and intercept[OLD_CLASS_COUNT:].tobytes()
+            == raw_full_intercept[OLD_CLASS_COUNT:].tobytes()
+        ),
+        "d92_ocf_old_group_weight_mean_residual_max": mean_weight_residual,
+        "d92_ocf_old_group_intercept_mean_residual_abs": mean_bias_residual,
+        "d92_ocf_old_contrast_weight_sum_residual_max": contrast_weight_sum_residual,
+        "d92_ocf_old_contrast_intercept_sum_residual_abs": contrast_bias_sum_residual,
+        "d92_ocf_affine_invariant_tolerance": invariant_tolerance,
+        "d92_ocf_support_alignment_macs_upper_bound": support_alignment_macs,
+        "d92_ocf_support_alignment_transient_bytes_upper_bound": (
+            transient_bytes_upper_bound
+        ),
+        "d92_ocf_support_alignment_cost_basis": (
+            "two_old_support_affine_logit_products_only"
+        ),
+        "d92_ocf_uses_estimated_lda_fit_macs": False,
+        "d92_ocf_no_second_all_class_centering": True,
+        "d92_ocf_class_id_specific_branch": False,
+        "d92_ocf_scene_receiver_seed_specific_branch": False,
+        "d92_ocf_query_rows_used": 0,
+        "d92_ocf_query_fit_access": False,
+        "d92_ocf_query_update_access": False,
+        "d92_ocf_query_selection_access": False,
+        "d92_ocf_query_truth_access": False,
+        "d92_ocf_query_role_oracle_access": False,
+        "d92_ocf_query_class_quota_access": False,
+        "d92_ocf_query_global_reassignment": False,
+    }
+    return coefficient, intercept, audit
+
+
 def build_d92_fit(
     d42: Any,
     basis: np.ndarray,
@@ -84,6 +318,7 @@ def build_d92_fit(
     original_builder = d43.build_structured_fit
     transform_records: list[dict[str, Any]] = []
     component_records: list[dict[str, Any]] = []
+    component_support_records: list[dict[str, Any]] = []
     basis_audit = {
         "basis_sha256": ground_audit["d81_basis_sha256"],
         "spectral_weight_sha256": ground_audit["d81_spectral_weight_sha256"],
@@ -110,6 +345,15 @@ def build_d92_fit(
                     "k_shot": int(k_shot),
                     "status": audit["d92_status"],
                     "active": bool(audit["d92_registration_balanced_active"]),
+                }
+            )
+            component_support_records.append(
+                {
+                    "arm": arm,
+                    "rows": np.asarray(rows),
+                    "labels": np.asarray(labels),
+                    "class_count": int(class_count),
+                    "k_shot": int(k_shot),
                 }
             )
             return coefficient, intercept, audit
@@ -257,6 +501,70 @@ def build_d92_fit(
         )
         return coefficient, intercept, audit
 
+    def ocf_fit(
+        rows: np.ndarray,
+        labels: np.ndarray,
+        class_count: int,
+        k_shot: int,
+        *,
+        lambda_value: float,
+    ) -> tuple[np.ndarray, np.ndarray, dict[str, Any]]:
+        support_start = len(component_support_records)
+        try:
+            full_coefficient, full_intercept, full_audit = full_fit(
+                rows, labels, class_count, k_shot
+            )
+            block_coefficient, block_intercept, block_audit = direct_block_fit(
+                rows, labels, class_count, k_shot
+            )
+            current_support = component_support_records[support_start:]
+            if (
+                len(current_support) != 2
+                or [record["arm"] for record in current_support]
+                != ["full", "block3_centered"]
+                or any(
+                    record["class_count"] != int(class_count)
+                    or record["k_shot"] != int(k_shot)
+                    for record in current_support
+                )
+            ):
+                raise D92ProbeError("D92 OCF component inventory drift")
+            coefficient, intercept, ocf_audit = _build_ocf_affine_state(
+                full_rows=current_support[0]["rows"],
+                full_labels=current_support[0]["labels"],
+                block_rows=current_support[1]["rows"],
+                block_labels=current_support[1]["labels"],
+                full_coefficient=full_coefficient,
+                full_intercept=full_intercept,
+                block_coefficient=block_coefficient,
+                block_intercept=block_intercept,
+                class_count=class_count,
+                k_shot=k_shot,
+                lambda_value=lambda_value,
+            )
+            audit = dict(full_audit)
+            audit.update(
+                {
+                    "coefficient_source": (
+                        "d92_ocf_old_contrast_full_block_rms_aligned_"
+                        "with_full_new_rows"
+                    ),
+                    "covariance_equation_residual_max": float(
+                        max(
+                            float(full_audit["covariance_equation_residual_max"]),
+                            float(
+                                block_audit["covariance_equation_residual_max"]
+                            ),
+                        )
+                    ),
+                    "d92_ocf_component_arms": ["full", "block3_centered"],
+                    **ocf_audit,
+                }
+            )
+            return coefficient, intercept, audit
+        finally:
+            del component_support_records[support_start:]
+
     def fit(rows: np.ndarray, labels: np.ndarray, class_count: int, k_shot: int):
         start = len(component_records)
         transform_start = len(transform_records)
@@ -278,9 +586,16 @@ def build_d92_fit(
         elif registered_d_mode == "block_only":
             selected_fit = direct_block_fit
             effective_d_mode = registered_d_mode
-        else:
+        elif registered_d_mode == "fixed50":
             selected_fit = fixed50_fit
             effective_d_mode = registered_d_mode
+        elif registered_d_mode in OCF_LAMBDA_BY_MODE:
+            selected_fit = lambda *call: ocf_fit(
+                *call, lambda_value=OCF_LAMBDA_BY_MODE[registered_d_mode]
+            )
+            effective_d_mode = registered_d_mode
+        else:
+            raise D92ProbeError("D92 registered D mode dispatch drift")
         if selected_fit is None:
             raise D92ProbeError("D92 selected registered D fit was not constructed")
         original_centering_policy = d43.ALLOW_FP32_CENTERING_ARGMAX_DRIFT

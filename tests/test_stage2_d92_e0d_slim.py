@@ -73,15 +73,7 @@ def _run(arm_id: str, *, class_count: int, k_shot: int, repeated: bool = False):
 def test_arm_registry_locks_the_five_frozen_e0d_graphs():
     """Would fail if an arm changed Fisher or its registered D mode."""
 
-    assert {
-        key: (
-            value.candidate_id,
-            value.registered_d_mode,
-            value.b_enabled,
-            value.e_enabled,
-        )
-        for key, value in D92_E0D_ARMS.items()
-    } == {
+    expected_historical = {
         "D92_FULL": ("d92_e0d_d92_full", "fusion_loo", True, True),
         "E0_FUSION": ("d92_e0d_e0_fusion", "fusion_loo", True, False),
         "E0_FULL_ONLY": (
@@ -98,6 +90,62 @@ def test_arm_registry_locks_the_five_frozen_e0d_graphs():
         ),
         "E0_FIXED50": ("d92_e0d_e0_fixed50", "fixed50", True, False),
     }
+    assert {
+        key: (
+            D92_E0D_ARMS[key].candidate_id,
+            D92_E0D_ARMS[key].registered_d_mode,
+            D92_E0D_ARMS[key].b_enabled,
+            D92_E0D_ARMS[key].e_enabled,
+        )
+        for key in expected_historical
+    } == expected_historical
+
+
+def test_ocf25_registered_mode_has_the_frozen_public_identity():
+    """Would fail if the new OCF25 arm or its fixed mode drifted or vanished."""
+
+    arm = D92_E0D_ARMS["E0_OCF25"]
+    assert (
+        arm.candidate_id,
+        arm.registered_d_mode,
+        arm.b_enabled,
+        arm.e_enabled,
+    ) == ("d92_e0ocf_e0_ocf25", "ocf25", True, False)
+
+
+def test_ocf25_registered_state_keeps_new_rows_byte_exact_to_full_only():
+    """Would fail if OCF touched a registered new-class affine row."""
+
+    full_coefficient, full_intercept, _, _, _ = _run(
+        "E0_FULL_ONLY", class_count=11, k_shot=5
+    )
+    coefficient, intercept, _, _, _ = _run(
+        "E0_OCF25", class_count=11, k_shot=5
+    )
+    assert coefficient[6:].tobytes() == full_coefficient[6:].tobytes()
+    assert intercept[6:].tobytes() == full_intercept[6:].tobytes()
+
+
+def test_ocf25_registered_state_preserves_full_only_old_group_means():
+    """Would fail if OCF changed either full-component old-group mean."""
+
+    full_coefficient, full_intercept, _, _, _ = _run(
+        "E0_FULL_ONLY", class_count=11, k_shot=5
+    )
+    coefficient, intercept, audit, _, _ = _run(
+        "E0_OCF25", class_count=11, k_shot=5
+    )
+    tolerance = audit["d92_ocf_affine_invariant_tolerance"]
+    assert tolerance > 0.0
+    np.testing.assert_allclose(
+        coefficient[:6].mean(axis=0),
+        full_coefficient[:6].mean(axis=0),
+        rtol=0.0,
+        atol=tolerance,
+    )
+    np.testing.assert_allclose(
+        intercept[:6].mean(), full_intercept[:6].mean(), rtol=0.0, atol=tolerance
+    )
 
 
 def test_registered_k5_arms_emit_frozen_counts_and_actual_inventory():
@@ -109,6 +157,8 @@ def test_registered_k5_arms_emit_frozen_counts_and_actual_inventory():
         "E0_FULL_ONLY": (2, 1, "full_only"),
         "E0_BLOCK_ONLY": (2, 1, "block_only"),
         "E0_FIXED50": (4, 2, "fixed50"),
+        "E0_OCF25": (4, 2, "ocf25"),
+        "E0_OCF50": (4, 2, "ocf50"),
     }
     for arm_id, (two_state_count, actual_count, mode) in expected.items():
         coefficient, intercept, audit, _, _ = _run(
@@ -128,6 +178,15 @@ def test_registered_k5_arms_emit_frozen_counts_and_actual_inventory():
         assert audit["d92_e0d_query_update_access"] is False
         assert audit["d92_e0d_query_selection_access"] is False
         assert audit["registration_incremental_peak_working_set_bytes"] == 80
+        if arm_id.startswith("E0_OCF"):
+            assert inventory["full_component_fit_count"] == 1
+            assert inventory["block3_component_fit_count"] == 1
+            assert inventory["loo_component_fit_count"] == 0
+            assert audit["d92_e0d_ocf_lambda"] == (
+                0.25 if arm_id == "E0_OCF25" else 0.50
+            )
+            assert audit["d92_e0d_ocf_new_rows_byte_exact"] is True
+            assert audit["d92_e0d_ocf_support_alignment_macs_upper_bound"] > 0
 
 
 def test_k10_total_count_uses_the_frozen_mode_formula():
@@ -137,6 +196,8 @@ def test_k10_total_count_uses_the_frozen_mode_formula():
         "E0_FULL_ONLY": 2,
         "E0_BLOCK_ONLY": 2,
         "E0_FIXED50": 4,
+        "E0_OCF25": 4,
+        "E0_OCF50": 4,
     }
     for arm_id, count in expected.items():
         _, _, audit, _, _ = _run(arm_id, class_count=11, k_shot=10)

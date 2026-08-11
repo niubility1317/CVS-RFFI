@@ -21,6 +21,7 @@ class D92E0DSlimArmSpec:
     registered_d_mode: str
     b_enabled: bool
     e_enabled: bool
+    ocf_lambda: float | None = None
 
 
 D92_E0D_ARMS: Mapping[str, D92E0DSlimArmSpec] = MappingProxyType(
@@ -39,6 +40,12 @@ D92_E0D_ARMS: Mapping[str, D92E0DSlimArmSpec] = MappingProxyType(
         ),
         "E0_FIXED50": D92E0DSlimArmSpec(
             "E0_FIXED50", "d92_e0d_e0_fixed50", "fixed50", True, False
+        ),
+        "E0_OCF25": D92E0DSlimArmSpec(
+            "E0_OCF25", "d92_e0ocf_e0_ocf25", "ocf25", True, False, 0.25
+        ),
+        "E0_OCF50": D92E0DSlimArmSpec(
+            "E0_OCF50", "d92_e0ocf_e0_ocf50", "ocf50", True, False, 0.50
         ),
     }
 )
@@ -68,7 +75,7 @@ def expected_total_component_fit_count(k_shot: int, *, arm_id: str) -> int:
         return 4 * (k + 1)
     if arm.registered_d_mode in ("full_only", "block_only"):
         return 2
-    if arm.registered_d_mode == "fixed50":
+    if arm.registered_d_mode in ("fixed50", "ocf25", "ocf50"):
         return 4
     raise D92E0DSlimError("D92-E0D frozen D mode drift")
 
@@ -172,6 +179,22 @@ def build_d92_e0d_fit(
                 "d92_e0d_registered_d_mode_effective": base_audit[
                     "d92_registered_d_mode_effective"
                 ],
+                "d92_e0d_ocf_active": bool(base_audit.get("d92_ocf_active", False)),
+                "d92_e0d_ocf_lambda": base_audit.get("d92_ocf_lambda"),
+                "d92_e0d_ocf_same_after_joint_state": base_audit.get(
+                    "d92_ocf_same_after_joint_state"
+                ),
+                "d92_e0d_ocf_new_rows_byte_exact": base_audit.get(
+                    "d92_ocf_new_rows_byte_exact"
+                ),
+                "d92_e0d_ocf_support_alignment_macs_upper_bound": base_audit.get(
+                    "d92_ocf_support_alignment_macs_upper_bound"
+                ),
+                "d92_e0d_ocf_support_alignment_transient_bytes_upper_bound": (
+                    base_audit.get(
+                        "d92_ocf_support_alignment_transient_bytes_upper_bound"
+                    )
+                ),
                 "d92_e0d_k1_k2_exact_full_alias": bool(
                     base_audit["d92_k1_k2_exact_full_alias"]
                 ),
