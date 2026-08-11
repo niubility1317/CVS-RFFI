@@ -112,7 +112,7 @@ K1 liveness outer为rx_20_1__seed_713106__k_1__new_20，不进入性能均值。
 |主线整合回归|PASS|11个相关测试文件共130项通过；包含既有E0OCF与E0_FULL_ONLY回归|
 |静态检查|PASS|7个生产文件py_compile、config JSON、两个CLI help、git diff --check均通过|
 |独立P0/P1|PASS|独立Terra复审：P0=0、P1=0、APPROVE|
-|Git commit|PASS|方法与Hard11实现commit=`25047050`；发布控制面commit待填|
+|Git commit|PASS|方法与Hard11实现commit=`25047050`；发布控制面commit=`c9328ade`|
 |N607 preflight/smoke/run|PENDING|待填|
 |完整取回与分析|PENDING|待填|
 
