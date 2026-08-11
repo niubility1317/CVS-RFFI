@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import copy
 import json
 from collections import Counter
 from pathlib import Path
@@ -98,6 +99,23 @@ def test_method_lock_validator_rejects_ocf_lambda_drift() -> None:
         validate_method_lock(lock)
 
 
+@pytest.mark.parametrize("tamper", ("extra", "missing", "nested_drift"))
+def test_method_lock_validator_rejects_incomplete_allowlist_contract(
+    tamper: str,
+) -> None:
+    """Would fail if unvalidated lock sections could drift or grow silently."""
+
+    lock = json.loads(METHOD_LOCK.read_text(encoding="utf-8"))
+    if tamper == "extra":
+        lock["unexpected"] = "accepted-by-subset-validation"
+    elif tamper == "missing":
+        lock.pop("outputs")
+    else:
+        lock["fixed_components"]["query"] = "query_batch_assignment"
+    with pytest.raises(D92E0OCFHard12V3Error, match="method lock"):
+        validate_method_lock(lock)
+
+
 @pytest.mark.parametrize("tamper", ("outer", "role"))
 def test_manifest_validator_rejects_tampered_outer_or_role(
     tmp_path: Path, tamper: str
@@ -119,3 +137,76 @@ def test_manifest_validator_rejects_tampered_outer_or_role(
             manifest,
             expected_method_lock_sha256=manifest["method_lock_sha256"],
         )
+
+
+@pytest.mark.parametrize(
+    "tamper",
+    (
+        "manifest_extra",
+        "job_extra",
+        "package_extra",
+        "source_job_root",
+        "truth_sidecar",
+        "package_root",
+        "seal_path",
+        "seal_hash",
+    ),
+)
+def test_manifest_validator_rejects_unbound_job_and_package_contract(
+    tmp_path: Path,
+    tamper: str,
+) -> None:
+    """Would fail if ignored manifest fields could redirect a formal job."""
+
+    manifest = build_hard12v3_manifest(
+        context_path=CONTEXT,
+        method_lock_path=METHOD_LOCK,
+        output_root=tmp_path / "matrix",
+        require_package_files=False,
+    )
+    manifest = copy.deepcopy(manifest)
+    job = manifest["jobs"][0]
+    package = job["packages"]["before_enrollment"]
+    if tamper == "manifest_extra":
+        manifest["unexpected"] = True
+    elif tamper == "job_extra":
+        job["unexpected"] = True
+    elif tamper == "package_extra":
+        package["unexpected"] = True
+    elif tamper == "source_job_root":
+        job["source_job_root"] = "/tmp/redirected-job"
+    elif tamper == "truth_sidecar":
+        job["truth_sidecar"] = "/tmp/truth.json"
+    elif tamper == "package_root":
+        package["package_root"] = "/tmp/redirected-package"
+    elif tamper == "seal_path":
+        package["detached_seal_path"] = "/tmp/redirected-seal.json"
+    else:
+        package["expected_seal_sha256"] = "not-a-sha256"
+    with pytest.raises(D92E0OCFHard12V3Error, match="manifest"):
+        validate_hard12v3_manifest(
+            manifest,
+            expected_method_lock_sha256=manifest["method_lock_sha256"],
+        )
+
+
+def test_manifest_validator_uses_frozen_posix_paths_on_windows(tmp_path: Path) -> None:
+    """Would fail if host WindowsPath semantics rewrote a Linux manifest."""
+
+    manifest = build_hard12v3_manifest(
+        context_path=CONTEXT,
+        method_lock_path=METHOD_LOCK,
+        output_root=tmp_path / "matrix",
+        require_package_files=False,
+    )
+    manifest["context_path"] = "/srv/e0ocf/context.json"
+    manifest["method_lock"] = "/srv/e0ocf/method-lock.json"
+    manifest["output_root"] = "/srv/e0ocf/run"
+    for job in manifest["jobs"]:
+        job["output_root"] = (
+            f"/srv/e0ocf/run/jobs/{job['outer_key']}/{job['arm_id']}"
+        )
+    validate_hard12v3_manifest(
+        manifest,
+        expected_method_lock_sha256=manifest["method_lock_sha256"],
+    )

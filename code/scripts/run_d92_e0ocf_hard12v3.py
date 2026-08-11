@@ -15,6 +15,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Mapping
 
+import numpy as np
+
 CODE_ROOT = Path(__file__).resolve().parents[1]
 if str(CODE_ROOT) not in sys.path:
     sys.path.insert(0, str(CODE_ROOT))
@@ -41,6 +43,27 @@ _QUERY_ZERO_FIELDS = (
     "query_truth_access", "query_fit_access", "query_update_access", "query_selection_access",
     "query_role_oracle_access", "query_class_quota_access", "query_global_reassignment",
 )
+_SCENES = ("leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak")
+_PREDICTION_KEYS = {
+    "query_tokens",
+    "scenarios",
+    "predicted_class_handles",
+}
+_COMMIT_SCHEMA = "cvs.phase2.diag_cosine_exploration_commit.v1"
+_COMMIT_KEYS = {
+    "schema",
+    "members",
+    "artifact_root_sha256",
+    "execution_receipt_sha256",
+    "prediction_artifact_sha256",
+}
+_COMMIT_MEMBER_NAMES = (
+    "execution_receipt.json",
+    "fit_audit.json",
+    "prediction_artifact.npz",
+    "resource_audit.json",
+)
+_COMMIT_MEMBER_KEYS = {"relative_path", "sha256", "size_bytes"}
 
 
 class D92E0OCFHard12V3RunnerError(RuntimeError):
@@ -64,6 +87,16 @@ def _sha256_file(path: Path) -> str:
 
 def _json_bytes(value: Mapping[str, Any]) -> bytes:
     return (json.dumps(dict(value), ensure_ascii=True, sort_keys=True, separators=(",", ":"), allow_nan=False) + "\n").encode("utf-8")
+
+
+def _canonical_json_bytes(value: Any) -> bytes:
+    return json.dumps(
+        value,
+        ensure_ascii=True,
+        sort_keys=True,
+        separators=(",", ":"),
+        allow_nan=False,
+    ).encode("utf-8")
 
 
 def _write_json_new(path: Path, value: Mapping[str, Any]) -> str:
@@ -119,6 +152,7 @@ def _load_manifest(path: str | Path, expected_sha256: str) -> dict[str, Any]:
         validate_hard12v3_manifest(
             payload,
             expected_method_lock_sha256=method_lock_sha256,
+            require_package_hashes=True,
         )
     except D92E0OCFHard12V3Error as error:
         raise D92E0OCFHard12V3RunnerError(
@@ -208,19 +242,135 @@ def _fit_audit_status(path: Path) -> tuple[str, str]:
         for field in _QUERY_ZERO_FIELDS:
             if row.get(field) is not False:
                 return "protocol_p0", f"fit_audit_{field}_not_false"
+    if len(rows) != len(_SCENES):
+        return "technical_failure", "fit_audit_invalid_rows"
+    scenarios = [row.get("scenario") for row in rows]
+    if (
+        any(not isinstance(scenario, str) for scenario in scenarios)
+        or len(set(scenarios)) != len(_SCENES)
+        or set(scenarios) != set(_SCENES)
+    ):
+        return "technical_failure", "fit_audit_scenario_identity_drift"
+    return "closed", "closed"
+
+
+def _prediction_artifact_status(
+    path: Path,
+) -> tuple[str, str, np.ndarray | None, np.ndarray | None]:
+    if not path.is_file() or path.is_symlink() or path.stat().st_size <= 0:
+        return "technical_failure", "prediction_artifact_missing_or_empty", None, None
+    try:
+        with np.load(path, allow_pickle=False) as payload:
+            if (
+                len(payload.files) != len(_PREDICTION_KEYS)
+                or set(payload.files) != _PREDICTION_KEYS
+            ):
+                return "technical_failure", "prediction_artifact_key_drift", None, None
+            query_tokens = np.asarray(payload["query_tokens"])
+            scenarios = np.asarray(payload["scenarios"])
+            predictions = np.asarray(payload["predicted_class_handles"])
+    except (OSError, TypeError, ValueError, KeyError):
+        return "technical_failure", "prediction_artifact_invalid_npz", None, None
+    arrays = (query_tokens, scenarios, predictions)
+    if (
+        any(array.ndim != 1 or array.size == 0 for array in arrays)
+        or len({int(array.size) for array in arrays}) != 1
+    ):
+        return "technical_failure", "prediction_artifact_shape_drift", None, None
+    scenario_values = [str(value) for value in scenarios.tolist()]
+    if set(scenario_values) != set(_SCENES) or any(
+        scenario_values.count(scene) <= 0 for scene in _SCENES
+    ):
+        return "technical_failure", "prediction_artifact_scenario_drift", None, None
+    return "closed", "closed", query_tokens, scenarios
+
+
+def _commit_status(state_root: Path) -> tuple[str, str]:
+    commit_path = state_root / "COMMIT.json"
+    if (
+        not commit_path.is_file()
+        or commit_path.is_symlink()
+        or commit_path.stat().st_size <= 0
+    ):
+        return "technical_failure", "commit_missing_or_empty"
+    try:
+        commit = json.loads(commit_path.read_text(encoding="utf-8-sig"))
+    except (OSError, ValueError):
+        return "technical_failure", "commit_invalid_json"
+    if (
+        not isinstance(commit, Mapping)
+        or set(commit) != _COMMIT_KEYS
+        or commit.get("schema") != _COMMIT_SCHEMA
+    ):
+        return "technical_failure", "commit_schema_or_key_drift"
+    members = commit.get("members")
+    if not isinstance(members, list) or len(members) != len(_COMMIT_MEMBER_NAMES):
+        return "technical_failure", "commit_member_count_drift"
+    if any(
+        not isinstance(member, Mapping) or set(member) != _COMMIT_MEMBER_KEYS
+        for member in members
+    ):
+        return "technical_failure", "commit_member_schema_drift"
+    if tuple(member.get("relative_path") for member in members) != _COMMIT_MEMBER_NAMES:
+        return "technical_failure", "commit_member_name_drift"
+    for member in members:
+        member_path = state_root / str(member["relative_path"])
+        expected_sha256 = member.get("sha256")
+        expected_size = member.get("size_bytes")
+        if (
+            not member_path.is_file()
+            or member_path.is_symlink()
+            or not isinstance(expected_sha256, str)
+            or re.fullmatch(r"[0-9a-f]{64}", expected_sha256) is None
+            or type(expected_size) is not int
+            or expected_size <= 0
+            or member_path.stat().st_size != expected_size
+            or _sha256_file(member_path) != expected_sha256
+        ):
+            return "technical_failure", "commit_member_binding_drift"
+    by_name = {str(member["relative_path"]): member for member in members}
+    try:
+        artifact_root_sha256 = hashlib.sha256(
+            _canonical_json_bytes(members)
+        ).hexdigest()
+    except (TypeError, ValueError):
+        return "technical_failure", "commit_artifact_root_invalid"
+    if (
+        commit.get("artifact_root_sha256") != artifact_root_sha256
+        or commit.get("execution_receipt_sha256")
+        != by_name["execution_receipt.json"]["sha256"]
+        or commit.get("prediction_artifact_sha256")
+        != by_name["prediction_artifact.npz"]["sha256"]
+    ):
+        return "technical_failure", "commit_root_or_receipt_binding_drift"
     return "closed", "closed"
 
 
 def _prediction_closure_status(prediction_root: Path) -> tuple[str, str]:
     paths = _prediction_closure_paths(prediction_root)
-    for label in ("before_prediction", "after_prediction", "before_commit", "after_commit"):
-        path = paths[label]
-        if not path.is_file() or path.is_symlink() or path.stat().st_size <= 0:
-            return "technical_failure", f"prediction_closure_{label}_missing_or_empty"
+    prediction_identity: dict[str, tuple[np.ndarray, np.ndarray]] = {}
     for state in ("before", "after"):
+        status, reason, query_tokens, scenarios = _prediction_artifact_status(
+            paths[f"{state}_prediction"]
+        )
+        if status != "closed" or query_tokens is None or scenarios is None:
+            return status, f"prediction_closure_{state}_{reason}"
+        prediction_identity[state] = (query_tokens, scenarios)
+        status, reason = _commit_status(Path(prediction_root) / state)
+        if status != "closed":
+            return status, f"prediction_closure_{state}_{reason}"
         status, reason = _fit_audit_status(paths[f"{state}_fit_audit"])
         if status != "closed":
             return status, f"prediction_closure_{state}_{reason}"
+    before_tokens, before_scenarios = prediction_identity["before"]
+    after_tokens, after_scenarios = prediction_identity["after"]
+    if (
+        before_tokens.dtype != after_tokens.dtype
+        or before_scenarios.dtype != after_scenarios.dtype
+        or not np.array_equal(before_tokens, after_tokens)
+        or not np.array_equal(before_scenarios, after_scenarios)
+    ):
+        return "technical_failure", "prediction_closure_cross_state_query_identity_drift"
     return "closed", "closed"
 
 

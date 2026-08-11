@@ -35,7 +35,12 @@ def _sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def _make_manifest(tmp_path: Path, *, ocf50_wins: bool = False) -> Path:
+def _make_manifest(
+    tmp_path: Path,
+    *,
+    ocf50_wins: bool = False,
+    linux_manifest_paths: bool = False,
+) -> Path:
     output = tmp_path / "run"
     lock_path = tmp_path / "method_lock.json"
     _write_json(
@@ -48,6 +53,17 @@ def _make_manifest(tmp_path: Path, *, ocf50_wins: bool = False) -> Path:
         output_root=output,
         require_package_files=False,
     )
+    for job in manifest["jobs"]:
+        for package in job["packages"].values():
+            package["expected_seal_sha256"] = "a" * 64
+    if linux_manifest_paths:
+        manifest["context_path"] = "/srv/e0ocf/context.json"
+        manifest["method_lock"] = "/srv/e0ocf/method-lock.json"
+        manifest["output_root"] = "/srv/e0ocf/run"
+        for job in manifest["jobs"]:
+            job["output_root"] = (
+                f"/srv/e0ocf/run/jobs/{job['outer_key']}/{job['arm_id']}"
+            )
     manifest_path = output / "matrix_manifest.json"
     _write_json(manifest_path, manifest)
     manifest_sha256 = _sha256(manifest_path)
@@ -57,7 +73,7 @@ def _make_manifest(tmp_path: Path, *, ocf50_wins: bool = False) -> Path:
         outer_key = str(job["outer_key"])
         arm = str(job["arm_id"])
         before_fp = hashlib.sha256(f"before:{outer_key}".encode()).hexdigest()
-        root = Path(str(job["output_root"]))
+        root = output / "jobs" / outer_key / arm
         before = root / "diag" / "before" / "prediction_artifact.npz"
         after = root / "diag" / "after" / "prediction_artifact.npz"
         before.parent.mkdir(parents=True, exist_ok=True)
@@ -129,6 +145,21 @@ def test_analysis_reports_confusion_formula_and_excludes_ocf50(tmp_path: Path) -
     assert result["aggregate"]["E0_OCF25"][
         "median_ocf_support_alignment_macs"
     ] == 216030
+
+
+def test_analysis_accepts_linux_manifest_with_windows_local_overrides(
+    tmp_path: Path,
+) -> None:
+    """Would fail if frozen POSIX paths were rebuilt with host path semantics."""
+
+    manifest_path = _make_manifest(tmp_path, linux_manifest_paths=True)
+    result = analyze_d92_e0ocf_hard12v3(
+        manifest_path,
+        run_root=manifest_path.parent,
+        method_lock_path=tmp_path / "method_lock.json",
+    )
+    assert result["status"] == "ANALYZED"
+    assert result["job_count"] == 60
 
 
 def test_analysis_rejects_missing_complete_matrix(tmp_path: Path) -> None:

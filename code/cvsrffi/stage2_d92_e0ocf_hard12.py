@@ -12,7 +12,7 @@ import hashlib
 import json
 import re
 from collections import Counter
-from pathlib import Path
+from pathlib import Path, PurePath, PurePosixPath, PureWindowsPath
 from typing import Any, Mapping
 
 from cvsrffi.stage2_d92_be_hard12 import HARD12_ROWS as HARD12_V1_ROWS
@@ -97,6 +97,81 @@ _STRICT_GEOMETRY_GATE = {
     "ocf_k5_k10_two_state_fit": "4/4",
     "ocf_k5_k10_after_actual_fit": "2/2",
 }
+_FIXED_COMPONENTS = {
+    "A": "joint288_z160_fft96_rf32",
+    "B": "ground-spectrum_cauchy_robust_center",
+    "C": "task_balanced_covariance_0.5_0.5",
+    "F": "f0_fp32_weight_fp32_bias",
+    "query": "single_f0_all_registered_classes",
+}
+_QUERY_CONTRACT = {
+    "decision": "per_sample_all_registered_classes",
+    "truth_access": False,
+    "fit_access": False,
+    "update_access": False,
+    "selection_access": False,
+    "role_oracle_access": False,
+    "class_quota_access": False,
+    "global_reassignment": False,
+}
+_STOP_RULE = {
+    "same_normalized_exception_fingerprint_distinct_outer_count": 2,
+    "pre_prediction_only": True,
+    "shared_run_root_ledger": True,
+    "fresh_run_retry_authorized": False,
+}
+_OUTPUTS = {
+    "summary": "summary.json",
+    "gates": "gates.json",
+    "paired_rows": "paired_rows.csv",
+    "markdown": "analysis.md",
+}
+_SOURCE_D92_OUTPUT_ROOT = "/home/szu2070436088/2510044040/CV-SincNet/runs/d92_registration_balanced_125_retry2_20260720"
+_GROUND_COMPONENT_DIR = "/home/szu2070436088/2510044040/CV-SincNet/runs/d19_ciaf_int8_proto_20260717_1039/input/int8_component"
+_GROUND_MANIFEST_PATH = f"{_GROUND_COMPONENT_DIR}/manifest.json"
+_GROUND_MANIFEST_SHA256 = "15b5e144f9af3989421d8e925c17758479c327be47e79222f6363dc63994629c"
+_MANIFEST_KEYS = frozenset(
+    {
+        "schema", "status", "claim_scope", "protocol_schema",
+        "selection_sha256", "context_path", "context_sha256", "method_lock",
+        "method_lock_sha256", "source_d92_output_root", "ground_component_dir",
+        "ground_manifest_path", "ground_manifest_sha256", "output_root",
+        "shard_count", "outer_count", "performance_outer_count",
+        "liveness_outer_count", "job_count", "scene_count", "scene_arm_count",
+        "arms", "candidate_ids", "primary_arm", "diagnostic_only_arm",
+        "smoke_outer_key", "arm_roles", "coverage", "selected_rows", "jobs",
+    }
+)
+_JOB_KEYS = frozenset(
+    {
+        "index", "outer_index", "arm_position", "planned_shard_index",
+        "job_id", "outer_key", "outer_role", "hard_score", "receiver", "seed",
+        "k_shot", "new_class_count", "arm_id", "candidate", "role", "primary",
+        "diagnostic_only", "scenarios", "source_job_root", "packages",
+        "truth_sidecar", "output_root",
+    }
+)
+_PACKAGE_KEYS = frozenset(
+    {"package_root", "detached_seal_path", "expected_seal_sha256"}
+)
+_PACKAGE_LAYOUT = {
+    "before_enrollment": (
+        ("offline", "predictor", "before", "enrollment_only"),
+        ("offline", "seals", "before_enrollment.seal.json"),
+    ),
+    "before_apply": (
+        ("offline", "predictor", "before", "apply_only_staging"),
+        ("apply_seals", "before_apply.seal.json"),
+    ),
+    "after_enrollment": (
+        ("offline", "predictor", "after", "enrollment_only"),
+        ("offline", "seals", "after_enrollment.seal.json"),
+    ),
+    "after_apply": (
+        ("offline", "predictor", "after", "apply_only_staging"),
+        ("apply_seals", "after_apply.seal.json"),
+    ),
+}
 OUTER_PATTERN = re.compile(
     r"^rx_(?P<receiver>[0-9_]+)__seed_(?P<seed>[0-9]+)"
     r"__k_(?P<k>[0-9]+)__new_(?P<new>[0-9]+)$"
@@ -152,6 +227,25 @@ def _exact_json_identity(actual: Any, expected: Any) -> bool:
         )
     except (TypeError, ValueError):
         return False
+
+
+def _pure_frozen_path(value: Any) -> PurePath:
+    if not isinstance(value, str) or not value or "\x00" in value:
+        raise D92E0OCFHard12V3Error("Hard12-v3 manifest path identity drift")
+    if re.match(r"^(?:[A-Za-z]:[\\/]|\\\\)", value) or "\\" in value:
+        return PureWindowsPath(value)
+    return PurePosixPath(value)
+
+
+def _path_matches(actual: Any, root: Any, *relative_parts: str) -> bool:
+    try:
+        actual_path = _pure_frozen_path(actual)
+        root_path = _pure_frozen_path(root)
+    except D92E0OCFHard12V3Error:
+        return False
+    return type(actual_path) is type(root_path) and actual_path == root_path.joinpath(
+        *relative_parts
+    )
 
 
 def _historical_exclusions() -> tuple[str, ...]:
@@ -216,6 +310,30 @@ EXCLUDED_OUTER_KEYS = tuple(_historical_exclusions())
 CANONICAL_SELECTION_SHA256 = hashlib.sha256(_canonical_bytes(SELECTION_PAYLOAD)).hexdigest()
 
 
+def _expected_method_lock() -> dict[str, Any]:
+    return {
+        "schema": "cvs.phase2.d92_e0ocf.method_lock.v1",
+        "matrix_schema": "cvs.phase2.d92_e0ocf_hard12v3.matrix.v1",
+        "job_receipt_schema": "cvs.phase2.d92_e0ocf_hard12v3.job_receipt.v1",
+        "experiment_id": "D92-E0OCF-5arm-Hard12-v3",
+        "protocol_schema": "p2_min_v1",
+        "claim_scope": CLAIM_SCOPE,
+        "selection_sha256": CANONICAL_SELECTION_SHA256,
+        "arms": _METHOD_LOCK_ARMS,
+        "primary_arm": PRIMARY_ARM,
+        "diagnostic_only_arm": DIAGNOSTIC_ONLY_ARM,
+        "smoke_outer_key": SMOKE_OUTER_KEY,
+        "fixed_components": _FIXED_COMPONENTS,
+        "fallback": "K1_K2_exact_D92_FULL_alias",
+        "query_contract": _QUERY_CONTRACT,
+        "matrix": _MATRIX_COUNTS,
+        "strict_geometry_gate": _STRICT_GEOMETRY_GATE,
+        "stop_rule": _STOP_RULE,
+        "only_promotion_candidate": PRIMARY_ARM,
+        "outputs": _OUTPUTS,
+    }
+
+
 def canonical_selection_sha256() -> str:
     return hashlib.sha256(_canonical_bytes(SELECTION_PAYLOAD)).hexdigest()
 
@@ -248,23 +366,24 @@ def _coverage(rows: list[dict[str, Any]]) -> dict[str, dict[str, int]]:
     }
 
 
-def _package_layout(source_job_root: Path, *, require_files: bool) -> dict[str, Any]:
-    paths = {
-        "before_enrollment": (source_job_root / "offline" / "predictor" / "before" / "enrollment_only", source_job_root / "offline" / "seals" / "before_enrollment.seal.json"),
-        "before_apply": (source_job_root / "offline" / "predictor" / "before" / "apply_only_staging", source_job_root / "apply_seals" / "before_apply.seal.json"),
-        "after_enrollment": (source_job_root / "offline" / "predictor" / "after" / "enrollment_only", source_job_root / "offline" / "seals" / "after_enrollment.seal.json"),
-        "after_apply": (source_job_root / "offline" / "predictor" / "after" / "apply_only_staging", source_job_root / "apply_seals" / "after_apply.seal.json"),
-    }
+def _package_layout(source_job_root: PurePath, *, require_files: bool) -> dict[str, Any]:
     result: dict[str, Any] = {}
-    for name, (package_root, seal_path) in paths.items():
+    for name, (package_parts, seal_parts) in _PACKAGE_LAYOUT.items():
+        package_root = source_job_root.joinpath(*package_parts)
+        seal_path = source_job_root.joinpath(*seal_parts)
+        package_local = Path(str(package_root))
+        seal_local = Path(str(seal_path))
         if require_files and (
-            not package_root.is_dir() or package_root.is_symlink() or not seal_path.is_file() or seal_path.is_symlink()
+            not package_local.is_dir()
+            or package_local.is_symlink()
+            or not seal_local.is_file()
+            or seal_local.is_symlink()
         ):
             raise D92E0OCFHard12V3Error(f"sealed source package is missing: {name}")
         result[name] = {
             "package_root": str(package_root),
             "detached_seal_path": str(seal_path),
-            "expected_seal_sha256": _sha256_file(seal_path) if require_files else None,
+            "expected_seal_sha256": _sha256_file(seal_local) if require_files else None,
         }
     return result
 
@@ -308,28 +427,8 @@ def validate_method_lock(lock: Mapping[str, Any]) -> dict[str, Any]:
 
     if not isinstance(lock, Mapping):
         raise D92E0OCFHard12V3Error("D92-E0OCF method lock must be an object")
-    expected_top = {
-        "schema": "cvs.phase2.d92_e0ocf.method_lock.v1",
-        "matrix_schema": "cvs.phase2.d92_e0ocf_hard12v3.matrix.v1",
-        "job_receipt_schema": "cvs.phase2.d92_e0ocf_hard12v3.job_receipt.v1",
-        "protocol_schema": "p2_min_v1",
-        "claim_scope": CLAIM_SCOPE,
-        "selection_sha256": CANONICAL_SELECTION_SHA256,
-        "primary_arm": PRIMARY_ARM,
-        "diagnostic_only_arm": DIAGNOSTIC_ONLY_ARM,
-        "only_promotion_candidate": PRIMARY_ARM,
-        "smoke_outer_key": SMOKE_OUTER_KEY,
-    }
-    if any(lock.get(key) != value for key, value in expected_top.items()):
+    if not _exact_json_identity(lock, _expected_method_lock()):
         raise D92E0OCFHard12V3Error("D92-E0OCF method lock identity drift")
-    if not _exact_json_identity(lock.get("arms"), _METHOD_LOCK_ARMS):
-        raise D92E0OCFHard12V3Error("D92-E0OCF method lock arm identity drift")
-    if not _exact_json_identity(lock.get("matrix"), _MATRIX_COUNTS):
-        raise D92E0OCFHard12V3Error("D92-E0OCF method lock matrix identity drift")
-    if not _exact_json_identity(
-        lock.get("strict_geometry_gate"), _STRICT_GEOMETRY_GATE
-    ):
-        raise D92E0OCFHard12V3Error("D92-E0OCF method lock strict gate identity drift")
     return dict(lock)
 
 
@@ -337,11 +436,14 @@ def validate_hard12v3_manifest(
     manifest: Mapping[str, Any],
     *,
     expected_method_lock_sha256: str | None = None,
+    require_package_hashes: bool = False,
 ) -> dict[str, Any]:
     """Validate the complete canonical Hard12-v3 matrix identity."""
 
     if not isinstance(manifest, Mapping):
         raise D92E0OCFHard12V3Error("Hard12-v3 manifest must be an object")
+    if set(manifest) != _MANIFEST_KEYS:
+        raise D92E0OCFHard12V3Error("Hard12-v3 manifest allowed-key drift")
     expected_top = {
         "schema": "cvs.phase2.d92_e0ocf_hard12v3.matrix.v1",
         "status": "FROZEN_DEVELOPMENT_MATRIX",
@@ -378,16 +480,29 @@ def validate_hard12v3_manifest(
         and method_lock_sha256 != str(expected_method_lock_sha256).lower()
     ):
         raise D92E0OCFHard12V3Error("Hard12-v3 manifest method-lock SHA drift")
+    try:
+        _pure_frozen_path(manifest.get("method_lock"))
+        _pure_frozen_path(manifest.get("context_path"))
+        _pure_frozen_path(manifest.get("output_root"))
+        _pure_frozen_path(manifest.get("source_d92_output_root"))
+        _pure_frozen_path(manifest.get("ground_component_dir"))
+        _pure_frozen_path(manifest.get("ground_manifest_path"))
+    except D92E0OCFHard12V3Error as error:
+        raise D92E0OCFHard12V3Error(
+            "Hard12-v3 manifest path/hash identity drift"
+        ) from error
     if (
-        not isinstance(manifest.get("method_lock"), str)
-        or not str(manifest["method_lock"])
-        or not isinstance(manifest.get("context_path"), str)
-        or not str(manifest["context_path"])
-        or not isinstance(manifest.get("output_root"), str)
-        or not str(manifest["output_root"])
-        or not isinstance(manifest.get("ground_component_dir"), str)
-        or not str(manifest["ground_component_dir"])
-        or not _is_sha256(manifest.get("ground_manifest_sha256"))
+        not _path_matches(
+            manifest["source_d92_output_root"], _SOURCE_D92_OUTPUT_ROOT
+        )
+        or not _path_matches(manifest["ground_component_dir"], _GROUND_COMPONENT_DIR)
+        or not _path_matches(manifest["ground_manifest_path"], _GROUND_MANIFEST_PATH)
+        or not _path_matches(
+            manifest["ground_manifest_path"],
+            manifest["ground_component_dir"],
+            "manifest.json",
+        )
+        or manifest.get("ground_manifest_sha256") != _GROUND_MANIFEST_SHA256
     ):
         raise D92E0OCFHard12V3Error("Hard12-v3 manifest path/hash identity drift")
 
@@ -401,8 +516,8 @@ def validate_hard12v3_manifest(
     jobs = manifest.get("jobs")
     if not isinstance(jobs, list) or len(jobs) != 60:
         raise D92E0OCFHard12V3Error("Hard12-v3 manifest job-count drift")
-    output_root = Path(str(manifest["output_root"]))
     seen_job_ids: set[str] = set()
+    package_hash_states: set[bool] = set()
     for outer_index, row in enumerate(expected_rows):
         rotation = outer_index % len(ARM_ORDER)
         arm_order = ARM_ORDER[rotation:] + ARM_ORDER[:rotation]
@@ -411,6 +526,10 @@ def validate_hard12v3_manifest(
             job = jobs[job_index]
             if not isinstance(job, Mapping):
                 raise D92E0OCFHard12V3Error("Hard12-v3 manifest job identity drift")
+            if set(job) != _JOB_KEYS:
+                raise D92E0OCFHard12V3Error(
+                    "Hard12-v3 manifest job allowed-key drift"
+                )
             job_id = f"{row['outer_key']}__arm_{arm_id.lower()}"
             expected_job = {
                 "index": job_index,
@@ -431,17 +550,84 @@ def validate_hard12v3_manifest(
                 "primary": arm_id == PRIMARY_ARM,
                 "diagnostic_only": arm_id == DIAGNOSTIC_ONLY_ARM,
                 "scenarios": list(SCENES),
-                "output_root": str(output_root / "jobs" / row["outer_key"] / arm_id),
             }
             if not _exact_json_identity(
                 {key: job.get(key) for key in expected_job}, expected_job
             ):
                 raise D92E0OCFHard12V3Error("Hard12-v3 manifest canonical job identity drift")
+            if (
+                not _path_matches(
+                    job.get("output_root"),
+                    manifest["output_root"],
+                    "jobs",
+                    row["outer_key"],
+                    arm_id,
+                )
+                or not _path_matches(
+                    job.get("source_job_root"),
+                    manifest["source_d92_output_root"],
+                    "jobs",
+                    row["outer_key"],
+                )
+                or not _path_matches(
+                    job.get("truth_sidecar"),
+                    job.get("source_job_root"),
+                    "offline",
+                    "scorer",
+                    "truth_sidecar.json",
+                )
+            ):
+                raise D92E0OCFHard12V3Error(
+                    "Hard12-v3 manifest canonical job path drift"
+                )
+            packages = job.get("packages")
+            if not isinstance(packages, Mapping) or set(packages) != set(
+                _PACKAGE_LAYOUT
+            ):
+                raise D92E0OCFHard12V3Error(
+                    "Hard12-v3 manifest package identity drift"
+                )
+            for package_name, (package_parts, seal_parts) in _PACKAGE_LAYOUT.items():
+                package = packages[package_name]
+                if not isinstance(package, Mapping) or set(package) != _PACKAGE_KEYS:
+                    raise D92E0OCFHard12V3Error(
+                        "Hard12-v3 manifest package allowed-key drift"
+                    )
+                seal_sha256 = package.get("expected_seal_sha256")
+                if seal_sha256 is None:
+                    package_hash_states.add(False)
+                elif _is_sha256(seal_sha256):
+                    package_hash_states.add(True)
+                else:
+                    raise D92E0OCFHard12V3Error(
+                        "Hard12-v3 manifest package seal hash drift"
+                    )
+                if (
+                    not _path_matches(
+                        package.get("package_root"),
+                        job.get("source_job_root"),
+                        *package_parts,
+                    )
+                    or not _path_matches(
+                        package.get("detached_seal_path"),
+                        job.get("source_job_root"),
+                        *seal_parts,
+                    )
+                ):
+                    raise D92E0OCFHard12V3Error(
+                        "Hard12-v3 manifest package path drift"
+                    )
             if job_id in seen_job_ids:
                 raise D92E0OCFHard12V3Error("Hard12-v3 manifest duplicate job identity")
             seen_job_ids.add(job_id)
     if len(seen_job_ids) != 60:
         raise D92E0OCFHard12V3Error("Hard12-v3 manifest job closure drift")
+    if len(package_hash_states) != 1 or (
+        bool(require_package_hashes) and package_hash_states != {True}
+    ):
+        raise D92E0OCFHard12V3Error(
+            "Hard12-v3 manifest package seal hash materialization drift"
+        )
     return dict(manifest)
 
 
@@ -462,6 +648,21 @@ def build_hard12v3_manifest(
     context = json.loads(context_file.read_text(encoding="utf-8-sig"))
     if context.get("schema") != "cvs.phase2.d108.cbrrc_smme.target125.input_context.v1" or context.get("protocol_schema") != "p2_min_v1" or not isinstance(context.get("rows"), list) or len(context["rows"]) != 125:
         raise D92E0OCFHard12V3Error("target125 context schema/count drift")
+    identity = context.get("identity")
+    ground_identity = (
+        identity.get("ground_component") if isinstance(identity, Mapping) else None
+    )
+    if (
+        not isinstance(identity, Mapping)
+        or not isinstance(ground_identity, Mapping)
+        or set(ground_identity)
+        != {"directory", "manifest_path", "manifest_sha256"}
+        or not _path_matches(identity.get("d92_output_root"), _SOURCE_D92_OUTPUT_ROOT)
+        or not _path_matches(ground_identity.get("directory"), _GROUND_COMPONENT_DIR)
+        or not _path_matches(ground_identity.get("manifest_path"), _GROUND_MANIFEST_PATH)
+        or ground_identity.get("manifest_sha256") != _GROUND_MANIFEST_SHA256
+    ):
+        raise D92E0OCFHard12V3Error("target125 context source identity drift")
     context_rows: dict[tuple[str, int, int, int], dict[str, Any]] = {}
     for row in context["rows"]:
         key = (str(row["receiver"]), int(row["active_k"]), int(row["seed"]), int(row["new_count"]))
@@ -484,8 +685,8 @@ def build_hard12v3_manifest(
             smoke_rows.append(row)
     if len(smoke_rows) != 1:
         raise D92E0OCFHard12V3Error("smoke outer must identify exactly one frozen liveness K1 outer")
-    source_root = Path(str(context["identity"]["d92_output_root"]))
-    output = Path(output_root)
+    source_root = _pure_frozen_path(str(identity["d92_output_root"]))
+    output = _pure_frozen_path(str(output_root))
     selected_rows: list[dict[str, Any]] = []
     jobs: list[dict[str, Any]] = []
     for outer_index, frozen in enumerate(HARD12_ROWS):
@@ -496,7 +697,10 @@ def build_hard12v3_manifest(
         source_job_root = source_root / "jobs" / frozen["outer_key"]
         packages = _package_layout(source_job_root, require_files=bool(require_package_files))
         truth_sidecar = source_job_root / "offline" / "scorer" / "truth_sidecar.json"
-        if require_package_files and (not truth_sidecar.is_file() or truth_sidecar.is_symlink()):
+        truth_sidecar_local = Path(str(truth_sidecar))
+        if require_package_files and (
+            not truth_sidecar_local.is_file() or truth_sidecar_local.is_symlink()
+        ):
             raise D92E0OCFHard12V3Error("source truth sidecar is missing")
         rotation = outer_index % len(ARM_ORDER)
         arm_order = ARM_ORDER[rotation:] + ARM_ORDER[:rotation]
@@ -513,11 +717,10 @@ def build_hard12v3_manifest(
     expected = {name: dict(SELECTION_PAYLOAD["coverage"][name]) for name in ("receiver_counts", "seed_counts", "slice_counts")}
     if coverage != expected or len(jobs) != 60:
         raise D92E0OCFHard12V3Error("Hard12-v3 coverage/job-count drift")
-    identity = context["identity"]
     manifest = {
         "schema": "cvs.phase2.d92_e0ocf_hard12v3.matrix.v1", "status": "FROZEN_DEVELOPMENT_MATRIX", "claim_scope": SELECTION_PAYLOAD["claim_scope"],
         "protocol_schema": "p2_min_v1", "selection_sha256": CANONICAL_SELECTION_SHA256, "context_path": str(context_file), "context_sha256": CONTEXT_SHA256,
-        "method_lock": str(lock_file), "method_lock_sha256": method_lock_sha256, "ground_component_dir": identity["ground_component"]["directory"], "ground_manifest_sha256": identity["ground_component"]["manifest_sha256"],
+        "method_lock": str(lock_file), "method_lock_sha256": method_lock_sha256, "source_d92_output_root": str(source_root), "ground_component_dir": str(ground_identity["directory"]), "ground_manifest_path": str(ground_identity["manifest_path"]), "ground_manifest_sha256": str(ground_identity["manifest_sha256"]),
         "output_root": str(output), "shard_count": 8, "outer_count": len(selected_rows), "performance_outer_count": sum(row["outer_role"] == "performance" for row in selected_rows), "liveness_outer_count": sum(row["outer_role"] == "liveness" for row in selected_rows),
         "job_count": len(jobs), "scene_count": len(SCENES), "scene_arm_count": len(jobs) * len(SCENES), "arms": list(ARM_ORDER), "candidate_ids": {arm: _arm_candidate(arm) for arm in ARM_ORDER}, "primary_arm": PRIMARY_ARM, "diagnostic_only_arm": DIAGNOSTIC_ONLY_ARM, "smoke_outer_key": SMOKE_OUTER_KEY,
         "arm_roles": dict(ARM_ROLES), "coverage": coverage, "selected_rows": selected_rows, "jobs": jobs,
@@ -525,6 +728,7 @@ def build_hard12v3_manifest(
     validate_hard12v3_manifest(
         manifest,
         expected_method_lock_sha256=method_lock_sha256,
+        require_package_hashes=bool(require_package_files),
     )
     return manifest
 

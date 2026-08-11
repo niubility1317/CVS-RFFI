@@ -387,6 +387,7 @@ def analyze_d92_e0ocf_hard12v3(matrix_manifest_path: str | Path, *, run_root: st
         validate_hard12v3_manifest(
             manifest,
             expected_method_lock_sha256=method_lock_sha256,
+            require_package_hashes=True,
         )
     except D92E0OCFHard12V3Error as error:
         raise D92E0OCFAnalysisError(

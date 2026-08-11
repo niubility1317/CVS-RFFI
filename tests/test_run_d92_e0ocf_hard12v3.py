@@ -14,6 +14,7 @@ QUERY_ZERO_FIELDS = (
     "query_truth_access", "query_fit_access", "query_update_access", "query_selection_access",
     "query_role_oracle_access", "query_class_quota_access", "query_global_reassignment",
 )
+SCENES = ("leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak")
 CONTEXT = Path(
     r"E:\type10-7\automation_reports\CV-SincNet\d131_d92_lite160_qtie_target125_20260804_r3\artifacts\prepared\target125_context.json"
 )
@@ -23,6 +24,20 @@ METHOD_LOCK = Path("configs/stage2_d92_e0ocf_5arm_hard12v3_v1.json").resolve()
 def _write_json(path: Path, payload: object) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(payload, sort_keys=True), encoding="utf-8")
+
+
+def _sha256(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def _canonical_bytes(payload: object) -> bytes:
+    return json.dumps(
+        payload,
+        ensure_ascii=True,
+        sort_keys=True,
+        separators=(",", ":"),
+        allow_nan=False,
+    ).encode("utf-8")
 
 
 def _full_manifest(
@@ -49,19 +64,32 @@ def _write_prediction_closure(
     *,
     missing: str | None = None,
     query_violation: bool = False,
+    corruption: str | None = None,
 ) -> None:
     for state in ("before", "after"):
         state_root = root / state
         state_root.mkdir(parents=True, exist_ok=True)
+        query_tokens = np.asarray(["q0", "q1", "q2"])
+        scenarios = np.asarray(SCENES)
+        if state == "after" and corruption == "query_token_drift":
+            query_tokens = np.asarray(["q0", "q1", "q9"])
+        if state == "after" and corruption == "scenario_order_drift":
+            scenarios = scenarios[::-1]
         if missing != f"{state}_prediction":
-            (state_root / "prediction_artifact.npz").write_bytes(
-                f"{state}-prediction".encode()
+            arrays = {
+                "query_tokens": query_tokens,
+                "scenarios": scenarios,
+                "predicted_class_handles": np.asarray(["old_0", "old_1", "old_2"]),
+            }
+            if corruption == "extra_npz_key":
+                arrays["extra"] = np.asarray([1, 2, 3])
+            np.savez(
+                state_root / "prediction_artifact.npz",
+                **arrays,
             )
-        if missing != f"{state}_commit":
-            (state_root / "COMMIT.json").write_text("{}", encoding="utf-8")
         rows = [
             {
-                "scenario": "leo_clear_weak",
+                "scenario": scenario,
                 "query_truth_access": query_violation and state == "before",
                 "query_fit_access": False,
                 "query_update_access": False,
@@ -70,9 +98,55 @@ def _write_prediction_closure(
                 "query_class_quota_access": False,
                 "query_global_reassignment": False,
             }
+            for scenario in SCENES
         ]
+        if corruption == "duplicate_scene":
+            rows[1]["scenario"] = SCENES[0]
+        elif corruption == "missing_scene":
+            rows.pop()
         if missing != f"{state}_fit_audit":
             _write_json(state_root / "fit_audit.json", rows)
+        _write_json(state_root / "resource_audit.json", {"state": state})
+        _write_json(
+            state_root / "execution_receipt.json",
+            {"schema": "cvs.phase2.diag_cosine_exploration_receipt.v1"},
+        )
+        member_names = (
+            "execution_receipt.json",
+            "fit_audit.json",
+            "prediction_artifact.npz",
+            "resource_audit.json",
+        )
+        if all((state_root / name).is_file() for name in member_names):
+            members = [
+                {
+                    "relative_path": name,
+                    "sha256": _sha256(state_root / name),
+                    "size_bytes": (state_root / name).stat().st_size,
+                }
+                for name in member_names
+            ]
+            commit = {
+                "schema": "cvs.phase2.diag_cosine_exploration_commit.v1",
+                "members": members,
+                "artifact_root_sha256": hashlib.sha256(
+                    _canonical_bytes(members)
+                ).hexdigest(),
+                "execution_receipt_sha256": _sha256(
+                    state_root / "execution_receipt.json"
+                ),
+                "prediction_artifact_sha256": _sha256(
+                    state_root / "prediction_artifact.npz"
+                ),
+            }
+            if corruption == "stale_commit":
+                commit["members"][0]["sha256"] = "0" * 64
+            if missing != f"{state}_commit":
+                _write_json(state_root / "COMMIT.json", commit)
+        if corruption == "corrupt_npz":
+            (state_root / "prediction_artifact.npz").write_bytes(b"not-an-npz")
+        elif corruption == "empty_commit":
+            (state_root / "COMMIT.json").write_bytes(b"")
 
 
 def _fake_child_run(command: list[str], **_: object) -> SimpleNamespace:
@@ -193,6 +267,73 @@ def test_run_shard_routes_same_missing_commit_on_two_outers_to_shared_stop(
             encoding="utf-8"
         )
     )
+    assert summary["status"] == "STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE"
+    assert stop["reason"] == "same_pre_prediction_fingerprint_on_two_distinct_outers"
+    assert stop["distinct_outer_count"] == 2
+    assert score_calls == []
+
+
+@pytest.mark.parametrize(
+    "corruption",
+    (
+        "corrupt_npz",
+        "extra_npz_key",
+        "empty_commit",
+        "stale_commit",
+        "duplicate_scene",
+        "missing_scene",
+        "query_token_drift",
+        "scenario_order_drift",
+    ),
+)
+def test_run_shard_routes_invalid_prediction_closure_through_shared_ledger(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+    corruption: str,
+) -> None:
+    """Would fail if rc0 malformed artifacts reached the truth-side scorer."""
+
+    manifest_path, digest, manifest = _full_manifest(tmp_path)
+    smoke_root = Path(str(manifest["output_root"])) / "smoke" / "diag"
+    score_calls: list[list[str]] = []
+
+    def fake_run(command: list[str], **_: object) -> SimpleNamespace:
+        if "run_d92_e0d_prediction.py" in str(command[1]):
+            root = Path(command[command.index("--output-root") + 1])
+            _write_prediction_closure(
+                root,
+                corruption=None if root == smoke_root else corruption,
+            )
+        else:
+            score_calls.append(command)
+        return SimpleNamespace(returncode=0)
+
+    monkeypatch.setattr(runner.subprocess, "run", fake_run)
+    runner.truth_free_smoke(
+        SimpleNamespace(
+            matrix_manifest=str(manifest_path),
+            matrix_manifest_sha256=digest,
+            output_root=str(smoke_root.parent),
+            device="cpu",
+            cpu_threads=1,
+        )
+    )
+    summary = runner.run_shard(
+        SimpleNamespace(
+            matrix_manifest=str(manifest_path),
+            matrix_manifest_sha256=digest,
+            shard_index=0,
+            shard_count=8,
+            device="cpu",
+            cpu_threads=1,
+        )
+    )
+    stop_path = (
+        Path(str(manifest["output_root"]))
+        / "SYSTEMIC_TECHNICAL_FAILURE_STOP.json"
+    )
+    assert stop_path.is_file()
+    stop = json.loads(stop_path.read_text(encoding="utf-8"))
     assert summary["status"] == "STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE"
     assert stop["reason"] == "same_pre_prediction_fingerprint_on_two_distinct_outers"
     assert stop["distinct_outer_count"] == 2
