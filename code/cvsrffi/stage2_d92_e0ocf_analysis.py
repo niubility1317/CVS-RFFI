@@ -224,17 +224,28 @@ def _job_evidence(job: Mapping[str, Any], *, run_root: Path | None = None) -> di
                 raise D92E0OCFAnalysisError("OCF active/lambda receipt drift") from error
             if ocf_active is not True or lambda_value != expected_lambda:
                 raise D92E0OCFAnalysisError("OCF active/lambda receipt drift")
-        elif ocf_active not in (None, False) or ocf_lambda is not None:
-            raise D92E0OCFAnalysisError("non-OCF arm must be inactive with no lambda")
+        else:
+            if ocf_active is not False or ocf_lambda is not None:
+                raise D92E0OCFAnalysisError("non-OCF arm must be inactive with no lambda")
         support_macs_value = _first_value(row, "ocf_support_alignment_macs", "d92_e0d_ocf_support_alignment_macs_upper_bound")
         support_bytes_value = _first_value(row, "ocf_support_alignment_transient_bytes", "d92_e0d_ocf_support_alignment_transient_bytes_upper_bound")
-        if support_macs_value is None or support_bytes_value is None:
-            if arm in {"E0_OCF25", "E0_OCF50"} and int(job["k_shot"]) > 2:
+        if arm in {"E0_OCF25", "E0_OCF50"} and int(job["k_shot"]) > 2:
+            if support_macs_value is None or support_bytes_value is None:
                 raise D92E0OCFAnalysisError("OCF support-side cost fields missing")
-            support_macs_value = 0.0 if support_macs_value is None else support_macs_value
-            support_bytes_value = 0.0 if support_bytes_value is None else support_bytes_value
-        support_macs.append(_finite(support_macs_value, label="OCF support alignment MACs", lower=0.0))
-        support_bytes.append(_finite(support_bytes_value, label="OCF support alignment transient bytes", lower=0.0))
+            support_macs.append(_finite(support_macs_value, label="OCF support alignment MACs", lower=0.0))
+            support_bytes.append(_finite(support_bytes_value, label="OCF support alignment transient bytes", lower=0.0))
+        else:
+            for value, label in (
+                (support_macs_value, "OCF support alignment MACs"),
+                (support_bytes_value, "OCF support alignment transient bytes"),
+            ):
+                if value is None:
+                    continue
+                numeric = _finite(value, label=label, lower=0.0)
+                if abs(numeric) > _TOLERANCE:
+                    raise D92E0OCFAnalysisError("non-OCF support-side cost must be zero")
+            support_macs.append(0.0)
+            support_bytes.append(0.0)
     if fit_counts != {expected_total} or actual_counts != {expected_actual} or len(query_macs) != 1 or len(state_bytes) != 1:
         raise D92E0OCFAnalysisError("fit inventory/count/state closure drift")
     rates = _confusion_rates(score)
@@ -302,14 +313,49 @@ def analyze_d92_e0ocf_hard12v3(matrix_manifest_path: str | Path, *, run_root: st
     if not isinstance(thresholds, Mapping):
         raise D92E0OCFAnalysisError("strict geometry gate missing")
     output_root = Path(run_root) if run_root is not None else Path(str(manifest["output_root"]))
+    expected_by_shard: dict[int, list[str]] = {shard: [] for shard in range(8)}
+    seen_job_ids: set[str] = set()
+    for job in jobs:
+        if not isinstance(job, Mapping):
+            raise D92E0OCFAnalysisError("matrix job identity drift")
+        job_id = str(job.get("job_id", ""))
+        try:
+            shard_index = int(job.get("planned_shard_index", -1))
+        except (TypeError, ValueError) as error:
+            raise D92E0OCFAnalysisError("matrix planned shard identity drift") from error
+        if not job_id or job_id in seen_job_ids or shard_index not in expected_by_shard:
+            raise D92E0OCFAnalysisError("matrix planned shard identity drift")
+        seen_job_ids.add(job_id)
+        expected_by_shard[shard_index].append(job_id)
     selected_total = 0
     completed_total = 0
     for shard in range(8):
         summary = _read_json(output_root / "summaries" / f"shard_{shard}.json")
-        if summary.get("status") != "PASS" or int(summary.get("shard_index", -1)) != shard or int(summary.get("failed_job_count", 0)) != 0 or summary.get("performance_result_allowed") is not True:
-            raise D92E0OCFAnalysisError("matrix has a non-PASS shard")
-        selected_total += int(summary.get("selected_job_count", -1))
-        completed_total += int(summary.get("completed_job_count", -1))
+        expected_ids = expected_by_shard[shard]
+        completed_ids = summary.get("completed_job_ids")
+        try:
+            selected_count = int(summary.get("selected_job_count", -1))
+            completed_count = int(summary.get("completed_job_count", -1))
+            failed_count = int(summary.get("failed_job_count", -1))
+            summary_shard = int(summary.get("shard_index", -1))
+        except (TypeError, ValueError) as error:
+            raise D92E0OCFAnalysisError("shard summary schema drift") from error
+        if (
+            summary.get("schema") != "cvs.phase2.d92_e0ocf_hard12v3.shard_summary.v1"
+            or summary.get("status") != "PASS"
+            or summary_shard != shard
+            or failed_count != 0
+            or summary.get("performance_result_allowed") is not True
+            or selected_count != len(expected_ids)
+            or completed_count != len(expected_ids)
+            or not isinstance(completed_ids, list)
+            or any(not isinstance(job_id, str) for job_id in completed_ids)
+            or len(completed_ids) != len(set(completed_ids))
+            or set(completed_ids) != set(expected_ids)
+        ):
+            raise D92E0OCFAnalysisError("shard completed job IDs/summary closure drift")
+        selected_total += selected_count
+        completed_total += completed_count
     if selected_total != 60 or completed_total != 60:
         raise D92E0OCFAnalysisError("shard job receipt closure drift")
     evidence = [_job_evidence(job, run_root=output_root if run_root is not None else None) for job in jobs]

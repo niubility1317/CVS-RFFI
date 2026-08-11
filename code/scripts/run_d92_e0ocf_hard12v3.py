@@ -34,6 +34,10 @@ SCORING_ENTRY = CODE_ROOT / "scripts" / "score_d92_be_prediction.py"
 CPU_THREAD_ENV_VARS = (
     "OMP_NUM_THREADS", "MKL_NUM_THREADS", "OPENBLAS_NUM_THREADS", "NUMEXPR_NUM_THREADS", "VECLIB_MAXIMUM_THREADS", "BLIS_NUM_THREADS"
 )
+_QUERY_ZERO_FIELDS = (
+    "query_truth_access", "query_fit_access", "query_update_access", "query_selection_access",
+    "query_role_oracle_access", "query_class_quota_access", "query_global_reassignment",
+)
 
 
 class D92E0OCFHard12V3RunnerError(RuntimeError):
@@ -205,6 +209,91 @@ def _smoke_receipt_path(output_root: Path) -> Path | None:
     return None
 
 
+def _is_full_matrix(manifest: Mapping[str, Any]) -> bool:
+    jobs = manifest.get("jobs")
+    return int(manifest.get("job_count", -1)) == 60 and isinstance(jobs, list) and len(jobs) == 60
+
+
+def _smoke_job(manifest: Mapping[str, Any]) -> Mapping[str, Any]:
+    matches = [job for job in manifest["jobs"] if job.get("outer_role") == "liveness" and int(job.get("k_shot", -1)) == 1 and job.get("arm_id") == "D92_FULL"]
+    if len(matches) != 1:
+        raise D92E0OCFHard12V3RunnerError("K1 liveness smoke row identity drift")
+    return matches[0]
+
+
+def _read_json_object(path: Path) -> dict[str, Any]:
+    if not path.is_file() or path.is_symlink():
+        raise D92E0OCFHard12V3RunnerError(f"shared smoke artifact is missing: {path}")
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8-sig"))
+    except (OSError, ValueError) as error:
+        raise D92E0OCFHard12V3RunnerError(f"shared smoke artifact is invalid: {path}") from error
+    if not isinstance(payload, dict):
+        raise D92E0OCFHard12V3RunnerError(f"shared smoke artifact must be an object: {path}")
+    return payload
+
+
+def _validate_shared_smoke(manifest: Mapping[str, Any], *, manifest_sha256: str, device: str) -> None:
+    """Validate the immutable full-matrix smoke contract before shard dispatch."""
+
+    if not _is_full_matrix(manifest):
+        return
+    matrix_root = Path(str(manifest["output_root"])).resolve()
+    smoke_root = matrix_root / "smoke"
+    receipt_path = smoke_root / "smoke_receipt.json"
+    receipt = _read_json_object(receipt_path)
+    job = _smoke_job(manifest)
+    expected_prediction_root = smoke_root / "diag"
+    expected_files = {
+        "before_prediction_sha256": expected_prediction_root / "before" / "prediction_artifact.npz",
+        "after_prediction_sha256": expected_prediction_root / "after" / "prediction_artifact.npz",
+        "before_commit_sha256": expected_prediction_root / "before" / "COMMIT.json",
+        "after_commit_sha256": expected_prediction_root / "after" / "COMMIT.json",
+        "fit_audit_sha256": expected_prediction_root / "after" / "fit_audit.json",
+    }
+    identity_ok = (
+        receipt.get("schema") == "cvs.phase2.d92_e0ocf_hard12v3.smoke_receipt.v1"
+        and receipt.get("status") == "D92_E0OCF_REAL_CHECKPOINT_TRUTH_FREE_SMOKE_PASS"
+        and str(receipt.get("matrix_manifest_sha256", "")).lower() == str(manifest_sha256).lower()
+        and receipt.get("selection_sha256") == manifest.get("selection_sha256") == CANONICAL_SELECTION_SHA256
+        and receipt.get("outer_index") == job.get("outer_index")
+        and receipt.get("outer_key") == job.get("outer_key")
+        and receipt.get("job_id") == job.get("job_id")
+        and receipt.get("arm_id") == "D92_FULL"
+        and int(receipt.get("k_shot", -1)) == 1
+        and receipt.get("outer_role") == "liveness"
+        and receipt.get("truth_open") is False
+        and all(receipt.get(field) is False for field in _QUERY_ZERO_FIELDS)
+    )
+    if not identity_ok:
+        raise D92E0OCFHard12V3RunnerError("shared smoke receipt identity/protocol drift")
+    expected_command = _prediction_command(
+        job,
+        ground_component_dir=str(manifest["ground_component_dir"]),
+        ground_manifest_sha256=str(manifest["ground_manifest_sha256"]),
+        device=str(device),
+        output_root=expected_prediction_root,
+    )
+    if receipt.get("command") != expected_command:
+        raise D92E0OCFHard12V3RunnerError("shared smoke command identity drift")
+    try:
+        if Path(str(receipt.get("prediction_root"))).resolve() != expected_prediction_root:
+            raise D92E0OCFHard12V3RunnerError("shared smoke prediction root drift")
+    except (OSError, TypeError, ValueError) as error:
+        raise D92E0OCFHard12V3RunnerError("shared smoke prediction root drift") from error
+    closure = receipt.get("prediction_closure")
+    if not isinstance(closure, Mapping):
+        raise D92E0OCFHard12V3RunnerError("shared smoke prediction closure missing")
+    for field, path in expected_files.items():
+        if not path.is_file() or path.is_symlink():
+            raise D92E0OCFHard12V3RunnerError(f"shared smoke prediction closure missing: {path}")
+        digest = _sha256_file(path)
+        if receipt.get(field) != digest or closure.get(field) != digest:
+            raise D92E0OCFHard12V3RunnerError("shared smoke prediction hash drift")
+    if receipt.get("fit_audit_protocol_closed") is not True or not _fit_audit_protocol_closed(expected_files["fit_audit_sha256"]):
+        raise D92E0OCFHard12V3RunnerError("shared smoke fit audit protocol closure drift")
+
+
 def prepare(args: argparse.Namespace) -> dict[str, Any]:
     output = Path(args.output_root)
     if output.exists():
@@ -218,28 +307,56 @@ def prepare(args: argparse.Namespace) -> dict[str, Any]:
 
 def truth_free_smoke(args: argparse.Namespace) -> dict[str, Any]:
     manifest = _load_manifest(args.matrix_manifest, args.matrix_manifest_sha256)
-    if int(manifest.get("job_count", -1)) == 60:
-        smoke_path = _smoke_receipt_path(Path(manifest["output_root"]))
-        if smoke_path is None:
-            raise D92E0OCFHard12V3RunnerError("truth-free smoke must pass before shard dispatch")
-        smoke_receipt = json.loads(smoke_path.read_text(encoding="utf-8-sig"))
-        if smoke_receipt.get("status") != "D92_E0OCF_REAL_CHECKPOINT_TRUTH_FREE_SMOKE_PASS" or smoke_receipt.get("query_truth_access") is not False:
-            raise D92E0OCFHard12V3RunnerError("truth-free smoke receipt is not closed")
-    matches = [job for job in manifest["jobs"] if job["outer_role"] == "liveness" and int(job["k_shot"]) == 1 and job["arm_id"] == "D92_FULL"]
-    if len(matches) != 1:
-        raise D92E0OCFHard12V3RunnerError("K1 liveness smoke row identity drift")
-    output = Path(args.output_root)
+    job = _smoke_job(manifest)
+    if _is_full_matrix(manifest):
+        output = Path(str(manifest["output_root"])).resolve() / "smoke"
+        if Path(args.output_root).resolve() != output.resolve():
+            raise D92E0OCFHard12V3RunnerError("full-matrix smoke output must be manifest output_root/smoke")
+    else:
+        output = Path(args.output_root)
     if output.exists():
         raise D92E0OCFHard12V3RunnerError("smoke output already exists")
     output.mkdir(parents=True)
     prediction_root = output / "diag"
-    command = _prediction_command(matches[0], ground_component_dir=manifest["ground_component_dir"], ground_manifest_sha256=manifest["ground_manifest_sha256"], device=args.device, output_root=prediction_root)
+    command = _prediction_command(job, ground_component_dir=manifest["ground_component_dir"], ground_manifest_sha256=manifest["ground_manifest_sha256"], device=args.device, output_root=prediction_root)
     stdout_path, stderr_path = output / "prediction.stdout.log", output / "prediction.stderr.log"
     with stdout_path.open("x", encoding="utf-8", newline="\n") as stdout, stderr_path.open("x", encoding="utf-8", newline="\n") as stderr:
         completed = subprocess.run(command, cwd=CODE_ROOT, stdout=stdout, stderr=stderr, text=True, check=False, env=_child_env(args.cpu_threads))
-    if completed.returncode != 0 or not all((prediction_root / state / "COMMIT.json").is_file() for state in ("before", "after")) or not _fit_audit_protocol_closed(prediction_root / "after" / "fit_audit.json"):
+    prediction_paths = {
+        "before_prediction_sha256": prediction_root / "before" / "prediction_artifact.npz",
+        "after_prediction_sha256": prediction_root / "after" / "prediction_artifact.npz",
+        "before_commit_sha256": prediction_root / "before" / "COMMIT.json",
+        "after_commit_sha256": prediction_root / "after" / "COMMIT.json",
+        "fit_audit_sha256": prediction_root / "after" / "fit_audit.json",
+    }
+    if completed.returncode != 0 or any(not path.is_file() or path.is_symlink() for path in prediction_paths.values()) or not _fit_audit_protocol_closed(prediction_paths["fit_audit_sha256"]):
         raise D92E0OCFHard12V3RunnerError("truth-free smoke prediction closure failed")
-    receipt = {"schema": "cvs.phase2.d92_e0ocf_hard12v3.smoke_receipt.v1", "status": "D92_E0OCF_REAL_CHECKPOINT_TRUTH_FREE_SMOKE_PASS", "outer_key": matches[0]["outer_key"], "arm_id": "D92_FULL", "command": command, "query_truth_access": False, "query_fit_access": False, "query_update_access": False, "query_selection_access": False, "query_role_oracle_access": False, "query_class_quota_access": False, "query_global_reassignment": False, "truth_open": False}
+    hashes = {field: _sha256_file(path) for field, path in prediction_paths.items()}
+    receipt = {
+        "schema": "cvs.phase2.d92_e0ocf_hard12v3.smoke_receipt.v1",
+        "status": "D92_E0OCF_REAL_CHECKPOINT_TRUTH_FREE_SMOKE_PASS",
+        "matrix_manifest_sha256": str(args.matrix_manifest_sha256).lower(),
+        "selection_sha256": manifest["selection_sha256"],
+        "outer_index": job["outer_index"],
+        "outer_key": job["outer_key"],
+        "job_id": job["job_id"],
+        "outer_role": job["outer_role"],
+        "arm_id": "D92_FULL",
+        "k_shot": int(job["k_shot"]),
+        "prediction_root": str(prediction_root),
+        "command": command,
+        **hashes,
+        "prediction_closure": hashes,
+        "fit_audit_protocol_closed": True,
+        "query_truth_access": False,
+        "query_fit_access": False,
+        "query_update_access": False,
+        "query_selection_access": False,
+        "query_role_oracle_access": False,
+        "query_class_quota_access": False,
+        "query_global_reassignment": False,
+        "truth_open": False,
+    }
     _write_json_new(output / "smoke_receipt.json", receipt)
     return receipt
 
@@ -249,6 +366,7 @@ smoke = truth_free_smoke
 
 def run_shard(args: argparse.Namespace) -> dict[str, Any]:
     manifest = _load_manifest(args.matrix_manifest, args.matrix_manifest_sha256)
+    _validate_shared_smoke(manifest, manifest_sha256=str(args.matrix_manifest_sha256).lower(), device=str(args.device))
     if int(args.shard_count) != 8 or int(args.shard_index) not in range(8):
         raise D92E0OCFHard12V3RunnerError("shard identity drift")
     selected = [job for job in manifest["jobs"] if int(job["planned_shard_index"]) == int(args.shard_index)]

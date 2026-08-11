@@ -105,10 +105,10 @@ def _make_manifest(tmp_path: Path, *, ocf50_wins: bool = False) -> Path:
             _write_json(root / "diag" / "after" / "fit_audit.json", fit)
             receipt = {"schema": "cvs.phase2.d92_e0ocf_hard12v3.job_receipt.v1", "status": "PREDICTIONS_AND_POST_PREDICTION_SCORE_COMPLETE", "job_id": f"{outer_key}__arm_{arm.lower()}", "outer_key": outer_key, "outer_role": role, "k_shot": k_shot, "arm_id": arm, "candidate": D92_E0D_ARMS[arm].candidate_id, "before_prediction_sha256": _sha256(before), "after_prediction_sha256": _sha256(after), "score_sha256": _sha256(score_path), "truth_sidecar_exposed_to_predictor": False, "query_truth_joined_only_after_immutable_predictions": True, "query_truth_fed_back_to_predictor": False}
             _write_json(root / "job_receipt.json", receipt)
-            jobs.append({"job_id": receipt["job_id"], "outer_key": outer_key, "outer_role": role, "k_shot": k_shot, "arm_id": arm, "candidate": receipt["candidate"], "output_root": str(root)})
-    for shard in range(8):
-        count = 60 if shard == 0 else 0
-        _write_json(output / "summaries" / f"shard_{shard}.json", {"schema": "cvs.phase2.d92_e0ocf_hard12v3.shard_summary.v1", "status": "PASS", "shard_index": shard, "selected_job_count": count, "completed_job_count": count, "failed_job_count": 0, "performance_result_allowed": True})
+            jobs.append({"job_id": receipt["job_id"], "outer_key": outer_key, "outer_role": role, "k_shot": k_shot, "arm_id": arm, "candidate": receipt["candidate"], "output_root": str(root), "planned_shard_index": outer_index % 8})
+    jobs_by_shard = {shard: [job["job_id"] for job in jobs if job["planned_shard_index"] == shard] for shard in range(8)}
+    for shard, job_ids in jobs_by_shard.items():
+        _write_json(output / "summaries" / f"shard_{shard}.json", {"schema": "cvs.phase2.d92_e0ocf_hard12v3.shard_summary.v1", "status": "PASS", "shard_index": shard, "selected_job_count": len(job_ids), "completed_job_count": len(job_ids), "failed_job_count": 0, "completed_job_ids": job_ids, "performance_result_allowed": True})
     manifest = {"schema": "cvs.phase2.d92_e0ocf_hard12v3.matrix.v1", "status": "FROZEN_DEVELOPMENT_MATRIX", "claim_scope": "DEVELOPMENT_ONLY_PSEUDO_BLIND_DISJOINT_STRESS_SCREEN", "protocol_schema": "p2_min_v1", "selection_sha256": CANONICAL_SELECTION_SHA256, "method_lock": str(lock_path), "method_lock_sha256": _sha256(lock_path), "output_root": str(output), "shard_count": 8, "outer_count": 12, "performance_outer_count": 10, "liveness_outer_count": 2, "job_count": 60, "scene_arm_count": 180, "primary_arm": "E0_OCF25", "arms": list(ARMS), "selected_rows": selected_rows, "jobs": jobs}
     manifest_path = output / "matrix_manifest.json"
     _write_json(manifest_path, manifest)
@@ -156,4 +156,40 @@ def test_analysis_rejects_missing_ocf_support_cost(tmp_path: Path) -> None:
     rows[0].pop("d92_e0d_ocf_support_alignment_macs_upper_bound")
     _write_json(fit_path, rows)
     with pytest.raises(D92E0OCFAnalysisError, match="support-side cost"):
+        analyze_d92_e0ocf_hard12v3(path)
+
+
+def test_analysis_rejects_non_ocf_nonzero_support_cost(tmp_path: Path) -> None:
+    path = _make_manifest(tmp_path)
+    manifest = json.loads(path.read_text(encoding="utf-8"))
+    job = next(row for row in manifest["jobs"] if row["arm_id"] == "E0_FULL_ONLY" and row["k_shot"] == 5)
+    fit_path = Path(job["output_root"]) / "diag" / "after" / "fit_audit.json"
+    rows = json.loads(fit_path.read_text(encoding="utf-8"))
+    rows[0]["d92_e0d_ocf_support_alignment_macs_upper_bound"] = 1
+    _write_json(fit_path, rows)
+    with pytest.raises(D92E0OCFAnalysisError, match="non-OCF support-side cost"):
+        analyze_d92_e0ocf_hard12v3(path)
+
+
+def test_analysis_rejects_non_ocf_nan_support_cost(tmp_path: Path) -> None:
+    path = _make_manifest(tmp_path)
+    manifest = json.loads(path.read_text(encoding="utf-8"))
+    job = next(row for row in manifest["jobs"] if row["arm_id"] == "E0_FULL_ONLY" and row["k_shot"] == 5)
+    fit_path = Path(job["output_root"]) / "diag" / "after" / "fit_audit.json"
+    rows = json.loads(fit_path.read_text(encoding="utf-8"))
+    rows[0]["d92_e0d_ocf_support_alignment_transient_bytes_upper_bound"] = "NaN"
+    _write_json(fit_path, rows)
+    with pytest.raises(D92E0OCFAnalysisError):
+        analyze_d92_e0ocf_hard12v3(path)
+
+
+def test_analysis_rejects_redistributed_or_duplicate_shard_job_ids(tmp_path: Path) -> None:
+    path = _make_manifest(tmp_path)
+    manifest = json.loads(path.read_text(encoding="utf-8"))
+    summary_path = Path(manifest["output_root"]) / "summaries" / "shard_0.json"
+    summary = json.loads(summary_path.read_text(encoding="utf-8"))
+    assert len(summary["completed_job_ids"]) >= 2
+    summary["completed_job_ids"][1] = summary["completed_job_ids"][0]
+    _write_json(summary_path, summary)
+    with pytest.raises(D92E0OCFAnalysisError, match="shard completed job IDs"):
         analyze_d92_e0ocf_hard12v3(path)
