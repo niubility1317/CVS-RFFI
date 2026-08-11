@@ -33,6 +33,11 @@ def _resource(
     arm: slim.D92E0DSlimArmSpec, *, registered: bool, k_shot: int
 ) -> dict:
     active = registered and k_shot > 2 and not arm.e_enabled
+    ocf_active = (
+        registered
+        and k_shot > 2
+        and arm.arm_id in {"E0_OCF25", "E0_OCF50"}
+    )
     effective_mode = arm.registered_d_mode if active else "d92_full_alias"
     total = (
         slim.expected_total_component_fit_count(k_shot, arm_id=arm.arm_id)
@@ -74,6 +79,14 @@ def _resource(
         "d92_e0d_query_class_quota_access": False,
         "d92_e0d_query_global_reassignment": False,
         "d92_e0d_finite_output_pass": True,
+        "d92_e0d_ocf_active": ocf_active,
+        "d92_e0d_ocf_lambda": arm.ocf_lambda if ocf_active else None,
+        "d92_e0d_ocf_support_alignment_macs_upper_bound": (
+            432 if ocf_active else None
+        ),
+        "d92_e0d_ocf_support_alignment_transient_bytes_upper_bound": (
+            864 if ocf_active else None
+        ),
         "d81_transform_audit": {
             "schema": "cvs.phase2.d81.support_center_translation.v1",
             "support_rows": class_count * k_shot,
@@ -174,6 +187,49 @@ def test_audit_keeps_existing_resource_fields_and_adds_state_fingerprints():
     assert row["after_state_fingerprint_sha256"] != changed[
         "after_state_fingerprint_sha256"
     ]
+
+
+def test_audit_exposes_active_ocf_support_receipt_from_after_state():
+    """Would fail if the formal fit row dropped its active OCF support receipt."""
+
+    arm = slim.D92_E0D_ARMS["E0_OCF25"]
+    row = e0d_eval._audit_d92_e0d_fit(
+        _result(arm),
+        arm=arm,
+        scenario="leo_clear_weak",
+        k_shot=5,
+        old_count=6,
+        class_count=11,
+    )
+    assert row["d92_e0d_ocf_active"] is True
+    assert row["d92_e0d_ocf_lambda"] == pytest.approx(0.25)
+    assert row["d92_e0d_ocf_support_alignment_macs_upper_bound"] == 432
+    assert row["d92_e0d_ocf_support_alignment_transient_bytes_upper_bound"] == 864
+
+
+@pytest.mark.parametrize(
+    ("field", "invalid_value"),
+    (
+        ("d92_e0d_ocf_lambda", 0.5),
+        ("d92_e0d_ocf_support_alignment_macs_upper_bound", None),
+        ("d92_e0d_ocf_support_alignment_transient_bytes_upper_bound", float("nan")),
+    ),
+)
+def test_audit_rejects_invalid_active_ocf_support_receipt(field, invalid_value):
+    """Would fail if a malformed active OCF receipt reached formal analysis."""
+
+    arm = slim.D92_E0D_ARMS["E0_OCF25"]
+    result = _result(arm)
+    result.geometry_audit["final_covariance_audit"][field] = invalid_value
+    with pytest.raises(e0d_eval.D92E0DQueryEvaluationError, match="OCF"):
+        e0d_eval._audit_d92_e0d_fit(
+            result,
+            arm=arm,
+            scenario="leo_clear_weak",
+            k_shot=5,
+            old_count=6,
+            class_count=11,
+        )
 
 
 def test_audit_rejects_query_selection_access():

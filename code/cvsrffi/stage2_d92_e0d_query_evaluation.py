@@ -48,6 +48,13 @@ _STATE_ARRAY_NAMES = (
     "coef_fp32",
     "intercept_fp32",
 )
+_OCF_ARM_IDS = frozenset({"E0_OCF25", "E0_OCF50"})
+_OCF_RECEIPT_FIELDS = (
+    "d92_e0d_ocf_active",
+    "d92_e0d_ocf_lambda",
+    "d92_e0d_ocf_support_alignment_macs_upper_bound",
+    "d92_e0d_ocf_support_alignment_transient_bytes_upper_bound",
+)
 
 
 class D92E0DQueryEvaluationError(ValueError):
@@ -114,6 +121,51 @@ def _resource_receipt(audit: dict[str, Any]) -> dict[str, Any]:
     return result
 
 
+def _ocf_support_receipt(
+    audit: dict[str, Any],
+    *,
+    arm: D92E0DSlimArmSpec,
+    registered: bool,
+    k_shot: int,
+) -> dict[str, Any]:
+    expected_active = (
+        registered and int(k_shot) > 2 and arm.arm_id in _OCF_ARM_IDS
+    )
+    if any(field not in audit for field in _OCF_RECEIPT_FIELDS):
+        raise D92E0DQueryEvaluationError("D92-E0D OCF support receipt drift")
+    receipt = {field: audit[field] for field in _OCF_RECEIPT_FIELDS}
+    if receipt["d92_e0d_ocf_active"] is not expected_active:
+        raise D92E0DQueryEvaluationError("D92-E0D OCF support receipt drift")
+    if not expected_active:
+        if any(receipt[field] is not None for field in _OCF_RECEIPT_FIELDS[1:]):
+            raise D92E0DQueryEvaluationError("D92-E0D OCF support receipt drift")
+        return receipt
+    try:
+        expected_lambda = float(arm.ocf_lambda)
+        actual_lambda = float(receipt["d92_e0d_ocf_lambda"])
+        macs_upper_bound = float(
+            receipt["d92_e0d_ocf_support_alignment_macs_upper_bound"]
+        )
+        transient_bytes_upper_bound = float(
+            receipt["d92_e0d_ocf_support_alignment_transient_bytes_upper_bound"]
+        )
+    except (AttributeError, TypeError, ValueError) as error:
+        raise D92E0DQueryEvaluationError(
+            "D92-E0D OCF support receipt drift"
+        ) from error
+    if (
+        not np.isfinite(expected_lambda)
+        or not np.isfinite(actual_lambda)
+        or actual_lambda != expected_lambda
+        or not np.isfinite(macs_upper_bound)
+        or macs_upper_bound < 0.0
+        or not np.isfinite(transient_bytes_upper_bound)
+        or transient_bytes_upper_bound < 0.0
+    ):
+        raise D92E0DQueryEvaluationError("D92-E0D OCF support receipt drift")
+    return receipt
+
+
 def _audit_d92_e0d_fit(
     result: Any,
     *,
@@ -144,6 +196,12 @@ def _audit_d92_e0d_fit(
         ),
     )
     for audit, registered, expected_e, expected_mode, expected_mode_active in checks:
+        _ocf_support_receipt(
+            audit,
+            arm=arm,
+            registered=registered,
+            k_shot=k_shot,
+        )
         inventory = audit.get("d92_e0d_actual_component_inventory")
         if (
             audit.get("d92_registration_state_support_only") is not True
@@ -222,6 +280,12 @@ def _audit_d92_e0d_fit(
 
     before_transform = transform_receipt(before, expected_class_count=old_count)
     after_transform = transform_receipt(after, expected_class_count=class_count)
+    after_ocf_receipt = _ocf_support_receipt(
+        after,
+        arm=arm,
+        registered=True,
+        k_shot=k_shot,
+    )
     before_resource = _resource_receipt(before)
     after_resource = _resource_receipt(after)
     return {
@@ -265,6 +329,14 @@ def _audit_d92_e0d_fit(
         ),
         "before_registration_resource": before_resource,
         "after_registration_resource": after_resource,
+        "d92_e0d_ocf_active": after_ocf_receipt["d92_e0d_ocf_active"],
+        "d92_e0d_ocf_lambda": after_ocf_receipt["d92_e0d_ocf_lambda"],
+        "d92_e0d_ocf_support_alignment_macs_upper_bound": after_ocf_receipt[
+            "d92_e0d_ocf_support_alignment_macs_upper_bound"
+        ],
+        "d92_e0d_ocf_support_alignment_transient_bytes_upper_bound": after_ocf_receipt[
+            "d92_e0d_ocf_support_alignment_transient_bytes_upper_bound"
+        ],
         "query_macs": int(after["d92_e0d_query_macs"]),
         "query_truth_access": False,
         "query_fit_access": False,
