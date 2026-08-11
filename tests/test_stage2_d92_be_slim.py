@@ -110,6 +110,8 @@ def test_registered_four_arms_close_switches_counts_and_resource_receipt():
         assert audit["d92_be_arm_id"] == arm_id
         assert audit["d92_be_B_enabled"] is b_enabled
         assert audit["d92_be_E_enabled"] is e_enabled
+        assert audit["d92_be_B_effective"] is b_enabled
+        assert audit["d92_be_E_effective"] is e_enabled
         assert audit["d92_be_total_component_fit_count"] == total_fit_count
         assert audit["d92_be_base_component_fit_count"] == 24
         assert audit["d92_be_fisher_component_fit_count"] == (
@@ -139,6 +141,11 @@ def test_old_only_da0_reg0_head_is_identical_across_all_arms():
     for coefficient, intercept in heads[1:]:
         np.testing.assert_array_equal(coefficient, heads[0][0])
         np.testing.assert_array_equal(intercept, heads[0][1])
+    for _, _, audit, _, _ in (
+        _run(arm_id, class_count=6, k_shot=5) for arm_id in D92_BE_ARMS
+    ):
+        assert audit["d92_be_B_effective"] is True
+        assert audit["d92_be_E_effective"] is True
 
 
 def test_k1_registered_head_is_exact_alias_and_global_drift_flag_is_restored():
@@ -151,4 +158,6 @@ def test_k1_registered_head_is_exact_alias_and_global_drift_flag_is_restored():
         np.testing.assert_array_equal(coefficient, heads[0][0])
         np.testing.assert_array_equal(intercept, heads[0][1])
         assert audit["d92_be_k1_k2_exact_full_alias"] is True
+        assert audit["d92_be_B_effective"] is True
+        assert audit["d92_be_E_effective"] is True
     assert d92_probe.d43.ALLOW_FP32_CENTERING_ARGMAX_DRIFT is original_policy

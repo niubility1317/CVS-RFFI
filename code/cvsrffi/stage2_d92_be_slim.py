@@ -114,6 +114,12 @@ def build_d92_be_fit(
                 "d92_be_candidate_id": arm.candidate_id,
                 "d92_be_B_enabled": arm.b_enabled,
                 "d92_be_E_enabled": arm.e_enabled,
+                "d92_be_B_effective": bool(
+                    base_audit["d92_ground_center_active"]
+                ),
+                "d92_be_E_effective": bool(
+                    base_audit["d92_fisher_residual_pareto_active"]
+                ),
                 "d92_be_A_lock": "joint288_z160_fft96_rf32",
                 "d92_be_C_lock": "task_balanced_covariance_0.5_0.5",
                 "d92_be_D_lock": "full_block3_loo_reliability_fusion",
