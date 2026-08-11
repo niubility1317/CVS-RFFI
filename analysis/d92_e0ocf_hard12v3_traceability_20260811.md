@@ -19,4 +19,4 @@
 |OCF-13|分析|只允许OCF25晋级并执行两组性能/资源门|analysis、analyzer|verified_local|golden与OCF50反例|OCF50不参与promotion|
 |OCF-14|分析|报告old→old、old→new、new→old和同排指标|analysis、report|verified_local|混淆率与paired rows测试|禁止孤立floor结论|
 |OCF-15|发布|真实checkpoint truth-free smoke、P0=0/P1=0、Git提交、唯一N607 runner|report、launch|release_ready|三项独立复审P0=0/P1=0；153项主回归通过；v2 launch已冻结，N607 smoke待runner|不增加重复数据验证|
-|OCF-16|结果|完整取回、冻结分析、报告更新、晋级或否决|report、artifacts|pending|artifact counts+analyzer|Hard12-v3非正式确认|
+|OCF-16|结果|完整取回、冻结分析、报告更新、晋级或否决|report、artifacts|complete_no_promotion|60/60、8/8 PASS；analyzer verdict=NO_E0_OCF25_PROMOTION；E0_FULL_ONLY为下一正式确认候选|Hard12-v3非正式确认|
