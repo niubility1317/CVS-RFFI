@@ -1562,3 +1562,222 @@ def test_train_clic_graph_root_map_is_deleted_and_released_after_resource_teleme
     release_source = inspect.getsource(release_clic_retained_graph_roots)
     for forbidden in ("gc.collect", "empty_cache", ".backward(", ".unscale_(", "forward("):
         assert forbidden not in release_source
+
+
+def _ast_target_name(node: ast.AST) -> str:
+    """Return a simple assignment target name without source-text slicing."""
+
+    return node.id if isinstance(node, ast.Name) else ""
+
+
+def _ast_subscript_field(node: ast.AST, base: str) -> str:
+    """Return a literal mapping field for ``base[field]`` assignments."""
+
+    if not isinstance(node, ast.Subscript) or not isinstance(node.value, ast.Name):
+        return ""
+    if node.value.id != base:
+        return ""
+    key = node.slice
+    return key.value if isinstance(key, ast.Constant) and isinstance(key.value, str) else ""
+
+
+def _ast_dict_fields(node: ast.AST) -> dict[str, ast.AST]:
+    """Collect literal keys from a mapping expression for local AST checks."""
+
+    if not isinstance(node, ast.Dict):
+        return {}
+    fields: dict[str, ast.AST] = {}
+    for key, value in zip(node.keys, node.values):
+        if isinstance(key, ast.Constant) and isinstance(key.value, str):
+            fields[key.value] = value
+    return fields
+
+
+def _ast_mapping_field_writes(tree: ast.AST, base: str) -> list[tuple[int, str, ast.AST]]:
+    """Find direct mapping writes while leaving unrelated mechanism receipts alone."""
+
+    writes: list[tuple[int, str, ast.AST]] = []
+    for node in ast.walk(tree):
+        if isinstance(node, (ast.Assign, ast.AnnAssign)):
+            targets = node.targets if isinstance(node, ast.Assign) else [node.target]
+            value = node.value
+            for target in targets:
+                field = _ast_subscript_field(target, base)
+                if field:
+                    writes.append((node.lineno, field, value))
+                elif _ast_target_name(target) == base:
+                    writes.extend((node.lineno, key, child) for key, child in _ast_dict_fields(value).items())
+        elif isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute):
+            if node.func.attr != "update" or not isinstance(node.func.value, ast.Name) or node.func.value.id != base:
+                continue
+            if node.args:
+                writes.extend((node.lineno, key, child) for key, child in _ast_dict_fields(node.args[0]).items())
+    return writes
+
+
+def _ast_is_name(node: ast.AST, name: str) -> bool:
+    return isinstance(node, ast.Name) and node.id == name
+
+
+def _ast_is_literal(node: ast.AST, value: object) -> bool:
+    return isinstance(node, ast.Constant) and node.value == value
+
+
+def _ast_call_with_selected_checkpoint_sha(node: ast.AST) -> bool:
+    if not isinstance(node, ast.Call) or _ast_call_name(node) != "_sha256_file":
+        return False
+    return bool(node.args) and _ast_is_name(node.args[0], "selected_checkpoint")
+
+
+def _ast_clic_terminal_scope(tree: ast.AST) -> ast.If:
+    """Select the explicit frozen-mode branch, excluding legacy saves."""
+
+    scopes = [
+        node
+        for node in ast.walk(tree)
+        if isinstance(node, ast.If)
+        and any(
+            isinstance(name, ast.Name) and name.id == "phase1_clic_frozen_mode"
+            for name in ast.walk(node.test)
+        )
+    ]
+    assert len(scopes) == 1, "CLIC terminal scope must be one explicit frozen-mode branch"
+    return scopes[0]
+
+
+def test_train_clic_checkpoint_receipt_binds_external_sha_without_checkpoint_rewrite() -> None:
+    """CLIC terminal closure must be one-way: save, hash, bind, validate, then write."""
+
+    source = inspect.getsource(train_ssdg.train)
+    tree = ast.parse(textwrap.dedent(source))
+    clic_scope = _ast_clic_terminal_scope(tree)
+
+    save_calls = [
+        node
+        for node in ast.walk(clic_scope)
+        if isinstance(node, ast.Call)
+        and _ast_call_name(node) == "save_payload"
+        and len(node.args) >= 2
+        and _ast_is_name(node.args[0], "selected_checkpoint")
+        and _ast_is_name(node.args[1], "final_payload")
+    ]
+    assert len(save_calls) == 1, "CLIC selected checkpoint must be saved exactly once"
+    save_line = save_calls[0].lineno
+
+    precheckpoint_fields = _ast_mapping_field_writes(clic_scope, "clic_receipt_precheckpoint")
+    assert precheckpoint_fields, "CLIC precheckpoint receipt snapshot is absent"
+    completed_before_save = [
+        value
+        for line, field, value in precheckpoint_fields
+        if field == "completed" and line < save_line
+    ]
+    contract_before_save = [
+        value
+        for line, field, value in precheckpoint_fields
+        if field == "terminal_contract" and line < save_line
+    ]
+    assert any(_ast_is_literal(value, False) for value in completed_before_save)
+    assert any(
+        _ast_is_literal(value, "AWAITING_EXTERNAL_CHECKPOINT_SHA")
+        for value in contract_before_save
+    )
+    # A precheckpoint snapshot may inherit the empty schema field, but it must not
+    # write a fake/non-empty final SHA before the file itself has been hashed.
+    for line, field, value in precheckpoint_fields:
+        if line < save_line and field == "final_checkpoint_sha256":
+            assert _ast_is_literal(value, ""), "precheckpoint must not claim a placeholder final SHA"
+
+    final_payload_dicts = [
+        node
+        for node in ast.walk(clic_scope)
+        if isinstance(node, ast.Assign)
+        and any(_ast_target_name(target) == "final_payload" for target in node.targets)
+        and "clic_receipt_precheckpoint" in _ast_dict_fields(node.value)
+    ]
+    assert len(final_payload_dicts) == 1, "CLIC final payload must carry the named precheckpoint receipt"
+
+    sha_assignments = [
+        node
+        for node in ast.walk(clic_scope)
+        if isinstance(node, ast.Assign)
+        and any(_ast_target_name(target) == "selected_checkpoint_sha256" for target in node.targets)
+        and _ast_call_with_selected_checkpoint_sha(node.value)
+        and node.lineno > save_line
+    ]
+    assert len(sha_assignments) == 1, "CLIC must hash selected_checkpoint exactly after its sole save"
+    sha_line = sha_assignments[0].lineno
+
+    terminal_writes = _ast_mapping_field_writes(clic_scope, "clic_terminal_receipt")
+    final_sha_writes = [
+        (line, value)
+        for line, field, value in terminal_writes
+        if field == "final_checkpoint_sha256" and line > sha_line
+    ]
+    assert final_sha_writes, "external CLIC receipt must bind the final checkpoint SHA"
+    assert any(_ast_is_name(value, "selected_checkpoint_sha256") for _, value in final_sha_writes)
+
+    checkpoint_hash_writes = [
+        (line, value)
+        for line, field, value in terminal_writes
+        if field in {"checkpoint_sha256", "selected_checkpoint_sha256"} and line > sha_line
+    ]
+    assert checkpoint_hash_writes, "external CLIC receipt must expose a checkpoint hash binding"
+
+    checkpoint_path_writes = [
+        (line, value)
+        for line, field, value in terminal_writes
+        if field in {"checkpoint_path", "selected_checkpoint", "selected_checkpoint_path"}
+    ]
+    assert checkpoint_path_writes, "external CLIC receipt must bind the selected checkpoint path"
+    assert any(
+        _ast_is_name(value, "selected_checkpoint")
+        or any(_ast_is_name(child, "selected_checkpoint") for child in ast.walk(value))
+        for _, value in checkpoint_path_writes
+    )
+
+    completed_after_sha = [
+        value
+        for line, field, value in terminal_writes
+        if field == "completed" and line > sha_line
+    ]
+    assert any(_ast_is_literal(value, True) for value in completed_after_sha)
+
+    validation_calls = [
+        node
+        for node in ast.walk(clic_scope)
+        if isinstance(node, ast.Call)
+        and _ast_call_name(node) == "validate_clic_terminal_receipt"
+        and node.args
+        and _ast_is_name(node.args[0], "clic_terminal_receipt")
+    ]
+    assert len(validation_calls) == 1
+    validation_line = validation_calls[0].lineno
+    assert validation_line > max(line for line, value in [(line, value) for line, field, value in terminal_writes if field == "completed" and line > sha_line])
+
+    external_writes = [
+        node
+        for node in ast.walk(clic_scope)
+        if isinstance(node, ast.Call)
+        and isinstance(node.func, ast.Attribute)
+        and node.func.attr == "write_text"
+        and any(
+            isinstance(const, ast.Constant)
+            and const.value == "phase1_clic_terminal_receipt.json"
+            for const in ast.walk(node)
+        )
+    ]
+    assert len(external_writes) == 1
+    assert external_writes[0].lineno > validation_line
+
+    # Restrict the no-overwrite assertion to the CLIC-named payload call above;
+    # legacy Phase1 mechanism checkpoints use different payload/path variables.
+    later_selected_checkpoint_saves = [
+        node
+        for node in ast.walk(clic_scope)
+        if isinstance(node, ast.Call)
+        and _ast_call_name(node) == "save_payload"
+        and node.lineno > sha_line
+        and node.args
+        and _ast_is_name(node.args[0], "selected_checkpoint")
+    ]
+    assert not later_selected_checkpoint_saves, "selected_checkpoint must not be overwritten after SHA binding"
