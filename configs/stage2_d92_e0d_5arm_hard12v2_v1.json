@@ -1,0 +1,51 @@
+{
+  "schema": "cvs.phase2.d92_e0d.method_lock.v1",
+  "matrix_schema": "cvs.phase2.d92_e0d_hard12v2.matrix.v1",
+  "job_receipt_schema": "cvs.phase2.d92_e0d_hard12v2.job_receipt.v1",
+  "experiment_id": "D92-E0D-5arm-Hard12-v2",
+  "protocol_schema": "p2_min_v1",
+  "claim_scope": "DEVELOPMENT_ONLY_PSEUDO_BLIND_DISJOINT_STRESS_SCREEN",
+  "selection_sha256": "2e3b3333a4a325bd0443a31065d3340d6a650a3e89620951a786637e6bce8d3a",
+  "registered_state_only_switches": true,
+  "arms": {
+    "D92_FULL": {"B_enabled": true, "E_enabled": true, "D_mode": "fusion_loo"},
+    "E0_FUSION": {"B_enabled": true, "E_enabled": false, "D_mode": "fusion_loo"},
+    "E0_FULL_ONLY": {"B_enabled": true, "E_enabled": false, "D_mode": "full_only"},
+    "E0_BLOCK_ONLY": {"B_enabled": true, "E_enabled": false, "D_mode": "block_only"},
+    "E0_FIXED50": {"B_enabled": true, "E_enabled": false, "D_mode": "fixed50"}
+  },
+  "fixed_components": {
+    "A": "joint288_z160_fft96_rf32",
+    "B": "ground-spectrum_cauchy_robust_center",
+    "C": "task_balanced_covariance_0.5_0.5",
+    "F": "f0_fp32_weight_fp32_bias",
+    "query": "single_f0_all_registered_classes"
+  },
+  "fallback": "K1_K2_exact_D92_FULL_alias",
+  "query_contract": {
+    "decision": "per_sample_all_registered_classes",
+    "truth_access": false,
+    "fit_access": false,
+    "update_access": false,
+    "selection_access": false,
+    "role_oracle_access": false,
+    "class_quota_access": false,
+    "global_reassignment": false
+  },
+  "strict_geometry_gate": {
+    "mean_delta_h_vs_e0_fusion_min_exclusive": 0.0,
+    "nonnegative_delta_h_vs_e0_fusion_outer_min": 8,
+    "mean_delta_h_vs_d92_full_min": 0.005,
+    "nonnegative_delta_h_vs_d92_full_outer_min": 8,
+    "mean_delta_old_balanced_vs_d92_full_min": 0.0,
+    "mean_delta_seen_new_vs_d92_full_min": 0.0,
+    "mean_delta_old_floor_vs_d92_full_min": 0.0,
+    "mean_delta_forgetting_vs_d92_full_max": 0.0,
+    "median_wall_reduction_vs_e0_fusion_min": 0.4,
+    "median_wall_reduction_vs_d92_full_min": 0.6,
+    "median_incremental_peak_increase_vs_e0_fusion_max": 0.0,
+    "query_cost_increase_max": 0.0
+  },
+  "only_promotion_candidate": "E0_FULL_ONLY",
+  "fresh_run_retry": false
+}

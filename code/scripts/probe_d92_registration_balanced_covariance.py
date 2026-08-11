@@ -15,6 +15,7 @@ from cvsrffi.stage2_d92_registration_balanced_covariance import (
 
 
 d62, d43 = d81.d62, d81.d43
+d44 = d62.d61.d46.d44
 load_ground_basis = d81.load_ground_basis
 ARM = "registration_balanced_covariance"
 STRUCTURE = "d81_center_with_fixed_equal_old_new_auto_shrinkage_covariance"
@@ -24,6 +25,7 @@ FORMULA = (
     "auto-shrinkage covariance separately; use fixed Sigma=0.5*Sigma_old+0.5*Sigma_new; "
     "compile one equal-prior affine head over all registered classes"
 )
+REGISTERED_D_MODES = ("fusion_loo", "full_only", "block_only", "fixed50")
 d43.ARM_STRUCTURES[ARM] = STRUCTURE
 if ARM not in d43.ARMS:
     d43.ARMS = tuple((*d43.ARMS, ARM))
@@ -31,6 +33,37 @@ if ARM not in d43.ARMS:
 
 class D92ProbeError(RuntimeError):
     """Raised when D92 integration or audit evidence drifts."""
+
+
+def _component_inventory(
+    records: list[dict[str, Any]], *, requested_k_shot: int
+) -> dict[str, Any]:
+    """Report the component fits actually invoked for one D92 state build."""
+
+    current = [dict(row) for row in records]
+    requested_k = int(requested_k_shot)
+    full_count = sum(row["arm"] == "full" for row in current)
+    block_count = sum(row["arm"] == "block3_centered" for row in current)
+    inner_count = sum(int(row["k_shot"]) < requested_k for row in current)
+    return {
+        "schema": "cvs.phase2.d92.actual_component_fit_inventory.v1",
+        "actual_component_fit_count": len(current),
+        "full_component_fit_count": int(full_count),
+        "block3_component_fit_count": int(block_count),
+        "outer_component_fit_count": int(
+            sum(int(row["k_shot"]) == requested_k for row in current)
+        ),
+        "loo_component_fit_count": int(inner_count),
+        "loo_fold_count": requested_k if inner_count else 0,
+        "actual_component_calls": current,
+    }
+
+
+def _require_registered_d_mode(registered_d_mode: str) -> str:
+    mode = str(registered_d_mode)
+    if mode not in REGISTERED_D_MODES:
+        raise D92ProbeError(f"unknown D92 registered D mode: {registered_d_mode}")
+    return mode
 
 
 def build_d92_fit(
@@ -41,7 +74,9 @@ def build_d92_fit(
     *,
     disable_registered_ground_center: bool = False,
     disable_registered_fisher: bool = False,
+    registered_d_mode: str = "fusion_loo",
 ) -> tuple[Callable[..., Any], list[dict[str, Any]], list[dict[str, Any]]]:
+    registered_d_mode = _require_registered_d_mode(registered_d_mode)
     aliases = (d62.d43, d62.d61.d43, d62.d61.d46.d43, d62.d61.d46.d45.d43)
     if any(alias is not d43 for alias in aliases):
         raise D92ProbeError("D92 D43 module alias identity drift")
@@ -156,17 +191,98 @@ def build_d92_fit(
         d42._fit_equal_prior_lda = original_fit
         d43.build_structured_fit = original_builder
 
+    direct_block_fit = structured_builder(d42, "block3_centered")
+
+    def fixed50_fit(
+        rows: np.ndarray,
+        labels: np.ndarray,
+        class_count: int,
+        k_shot: int,
+    ) -> tuple[np.ndarray, np.ndarray, dict[str, Any]]:
+        full_coefficient, full_intercept, full_audit = full_fit(
+            rows, labels, class_count, k_shot
+        )
+        block_coefficient, block_intercept, block_audit = direct_block_fit(
+            rows, labels, class_count, k_shot
+        )
+        full_scale = d44._class_centered_logit_rms(
+            rows, full_coefficient, full_intercept
+        )
+        block_scale = d44._class_centered_logit_rms(
+            rows, block_coefficient, block_intercept
+        )
+        fused_coefficient64 = 0.5 * (
+            np.asarray(full_coefficient, dtype=np.float64) / full_scale
+            + np.asarray(block_coefficient, dtype=np.float64) / block_scale
+        )
+        fused_intercept64 = 0.5 * (
+            np.asarray(full_intercept, dtype=np.float64) / full_scale
+            + np.asarray(block_intercept, dtype=np.float64) / block_scale
+        )
+        centered_coefficient, centered_intercept = d43._center_affine_scores(
+            fused_coefficient64, fused_intercept64
+        )
+        coefficient = np.asarray(centered_coefficient, dtype=np.float32)
+        intercept = np.asarray(centered_intercept, dtype=np.float32)
+        if (
+            coefficient.shape != (int(class_count), int(d42.FEATURE_DIM))
+            or intercept.shape != (int(class_count),)
+            or not np.isfinite(coefficient).all()
+            or not np.isfinite(intercept).all()
+        ):
+            raise D92ProbeError("D92 fixed50 affine state drift")
+        audit = dict(full_audit)
+        audit.update(
+            {
+                "coefficient_source": (
+                    "d92_registered_fixed50_support_logit_rms_"
+                    "full_block_equal_affine_fusion"
+                ),
+                "covariance_equation_residual_max": float(
+                    max(
+                        float(full_audit["covariance_equation_residual_max"]),
+                        float(block_audit["covariance_equation_residual_max"]),
+                    )
+                ),
+                "d92_fixed50_component_arms": ["full", "block3_centered"],
+                "d92_fixed50_full_support_logit_rms": float(full_scale),
+                "d92_fixed50_block_support_logit_rms": float(block_scale),
+                "d92_fixed50_full_weight": 0.5,
+                "d92_fixed50_block_weight": 0.5,
+                "d92_fixed50_weight_scan_count": 0,
+                "d92_fixed50_uses_labels_or_roles": False,
+                "d92_fixed50_uses_outer_held_or_query": False,
+                "d92_fixed50_class_or_scenario_specific_branch": False,
+            }
+        )
+        return coefficient, intercept, audit
+
     def fit(rows: np.ndarray, labels: np.ndarray, class_count: int, k_shot: int):
         start = len(component_records)
         transform_start = len(transform_records)
         registered = int(class_count) > OLD_CLASS_COUNT
         exact_full_alias = int(k_shot) <= 2
-        fisher_active = not (
+        d_mode_active = bool(
             disable_registered_fisher and registered and not exact_full_alias
         )
-        selected_fit = fisher_fit if fisher_active else no_fisher_fit
+        fisher_active = not d_mode_active
+        if not d_mode_active:
+            selected_fit = fisher_fit
+            effective_d_mode = "d92_full_alias"
+        elif registered_d_mode == "fusion_loo":
+            selected_fit = no_fisher_fit
+            effective_d_mode = registered_d_mode
+        elif registered_d_mode == "full_only":
+            selected_fit = full_fit
+            effective_d_mode = registered_d_mode
+        elif registered_d_mode == "block_only":
+            selected_fit = direct_block_fit
+            effective_d_mode = registered_d_mode
+        else:
+            selected_fit = fixed50_fit
+            effective_d_mode = registered_d_mode
         if selected_fit is None:
-            raise D92ProbeError("D92 no-Fisher fit was not constructed")
+            raise D92ProbeError("D92 selected registered D fit was not constructed")
         original_centering_policy = d43.ALLOW_FP32_CENTERING_ARGMAX_DRIFT
         if not ground_center_active(class_count, k_shot):
             d43.ALLOW_FP32_CENTERING_ARGMAX_DRIFT = True
@@ -177,6 +293,9 @@ def build_d92_fit(
         finally:
             d43.ALLOW_FP32_CENTERING_ARGMAX_DRIFT = original_centering_policy
         current = component_records[start:]
+        component_inventory = _component_inventory(
+            current, requested_k_shot=int(k_shot)
+        )
         expected_active = registered and int(k_shot) > 2
         if current and any(bool(row["active"]) != expected_active for row in current):
             raise D92ProbeError("D92 component activity drift")
@@ -281,6 +400,10 @@ def build_d92_fit(
                 ),
                 "d92_fisher_residual_pareto_active": fisher_active,
                 "d92_k1_k2_exact_full_alias": exact_full_alias,
+                "d92_registered_d_mode_requested": registered_d_mode,
+                "d92_registered_d_mode_active": d_mode_active,
+                "d92_registered_d_mode_effective": effective_d_mode,
+                "d92_component_fit_inventory": component_inventory,
             }
         )
         return coefficient, intercept, audit
@@ -288,4 +411,11 @@ def build_d92_fit(
     return fit, call_records, transform_records
 
 
-__all__ = ["ARM", "FORMULA", "STRUCTURE", "build_d92_fit", "load_ground_basis"]
+__all__ = [
+    "ARM",
+    "FORMULA",
+    "REGISTERED_D_MODES",
+    "STRUCTURE",
+    "build_d92_fit",
+    "load_ground_basis",
+]
