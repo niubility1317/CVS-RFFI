@@ -260,7 +260,7 @@ Phase2旧类support适应继续使用现有合法同公式接口；新类只有�
 |CLIC-01|用户条件／项目协议|同一<code>received_i</code>内多lag数学表征不增加LEO观测、物理样本、shot或K|本卡第1、12节|verified|逐条对照<code>项目.md</code>第4、5.1、5.2、7.1节|正式registered／unknown同规单LEO|
 |CLIC-02|独立监督|本轮target registered／unknown LEO weak修订达到<code>P0=0/P1=0/ALLOW-DESIGN-REVISION</code>|本卡全篇|verified|独立监督对latest actual diff终裁为ALLOW-DESIGN-REVISION|仅设计许可|
 |CLIC-03|数学合同|无epsilon的<code>u/h/r</code>、zero-mask、nonfinite fail-closed和幅相／CFO不变性|code/cvsrffi/phase1_clic.py|verified|本卡解析证明；ssr-gpu数值微验证最大误差：u=6.80e-7、h=5.96e-7、r=2.38e-7|实现仍pending|
-|CLIC-04|算子实现|固定<code>L={1,2,4,8}</code>的C／G同shape token|code/cvsrffi/phase1_clic.py|pending|实现后纯函数与shape测试|仅<code>T_C↔T_G</code>|
+|CLIC-04|算子实现|固定<code>L={1,2,4,8}</code>的C／G同shape token|code/cvsrffi/phase1_clic.py|implemented/local verified|<code>ssr-gpu</code>下纯函数与shape测试：8 passed|仅<code>T_C↔T_G</code>|
 |CLIC-05|模型结构|固定depthwise E、gate、<code>W_c</code>、单exact head和<code>q_clic</code>|code/cvsrffi/phase1_clic.py、code/model.py|pending|实现后模型forward／state SHA测试|新增参数32529|
 |CLIC-06|dual接口|CLIC后的<code>z_id</code>与existing<code>z_dom</code>／quality暴露|code/model_dual_cvsincnet.py、code/post_stage_common.py|pending|实现后strict reload／aux测试|不增加第二readout|
 |CLIC-07|C／G公平|同模块、同初始SHA、同forward／参数／资源，仅operator不同|code/SSDG/train_ssdg.py|pending|实现后pair receipt和tamper负测|C也主动训练token支路|
