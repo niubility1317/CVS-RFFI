@@ -245,8 +245,14 @@ def _build_ocf_affine_state(
     ) > invariant_tolerance:
         raise D92ProbeError("D92 OCF old-group affine invariant drift")
     old_rows_count = int(old_rows.shape[0])
-    support_alignment_macs = int(
+    support_alignment_affine_macs = int(
         2 * old_rows_count * OLD_CLASS_COUNT * dimension
+    )
+    support_alignment_contrast_mix_macs = int(
+        5 * OLD_CLASS_COUNT * (dimension + 1)
+    )
+    support_alignment_macs = int(
+        support_alignment_affine_macs + support_alignment_contrast_mix_macs
     )
     # Conservatively account for every full-class/old-group ndarray that can
     # coexist while the two RMS calls and the subsequent affine fusion are
@@ -293,12 +299,18 @@ def _build_ocf_affine_state(
         "d92_ocf_old_contrast_weight_sum_residual_max": contrast_weight_sum_residual,
         "d92_ocf_old_contrast_intercept_sum_residual_abs": contrast_bias_sum_residual,
         "d92_ocf_affine_invariant_tolerance": invariant_tolerance,
+        "d92_ocf_support_alignment_affine_macs_upper_bound": (
+            support_alignment_affine_macs
+        ),
+        "d92_ocf_support_alignment_contrast_mix_macs_upper_bound": (
+            support_alignment_contrast_mix_macs
+        ),
         "d92_ocf_support_alignment_macs_upper_bound": support_alignment_macs,
         "d92_ocf_support_alignment_transient_bytes_upper_bound": (
             transient_bytes_upper_bound
         ),
         "d92_ocf_support_alignment_cost_basis": (
-            "full_class_fp64_fp32_heads_full_old_support_score_and_old_fusion"
+            "two_old_support_affine_products_plus_old_contrast_scale_and_fusion"
         ),
         "d92_ocf_uses_estimated_lda_fit_macs": False,
         "d92_ocf_no_second_all_class_centering": True,
@@ -334,7 +346,7 @@ def build_d92_fit(
     original_builder = d43.build_structured_fit
     transform_records: list[dict[str, Any]] = []
     component_records: list[dict[str, Any]] = []
-    component_support_records: list[dict[str, Any]] = []
+    component_support_capture: list[dict[str, Any]] | None = None
     basis_audit = {
         "basis_sha256": ground_audit["d81_basis_sha256"],
         "spectral_weight_sha256": ground_audit["d81_spectral_weight_sha256"],
@@ -363,15 +375,16 @@ def build_d92_fit(
                     "active": bool(audit["d92_registration_balanced_active"]),
                 }
             )
-            component_support_records.append(
-                {
-                    "arm": arm,
-                    "rows": np.asarray(rows),
-                    "labels": np.asarray(labels),
-                    "class_count": int(class_count),
-                    "k_shot": int(k_shot),
-                }
-            )
+            if component_support_capture is not None:
+                component_support_capture.append(
+                    {
+                        "arm": arm,
+                        "rows": np.asarray(rows),
+                        "labels": np.asarray(labels),
+                        "class_count": int(class_count),
+                        "k_shot": int(k_shot),
+                    }
+                )
             return coefficient, intercept, audit
 
         return fit
@@ -525,7 +538,11 @@ def build_d92_fit(
         *,
         lambda_value: float,
     ) -> tuple[np.ndarray, np.ndarray, dict[str, Any]]:
-        support_start = len(component_support_records)
+        nonlocal component_support_capture
+        if component_support_capture is not None:
+            raise D92ProbeError("D92 OCF support capture re-entry")
+        current_support: list[dict[str, Any]] = []
+        component_support_capture = current_support
         try:
             full_coefficient, full_intercept, full_audit = full_fit(
                 rows, labels, class_count, k_shot
@@ -533,7 +550,6 @@ def build_d92_fit(
             block_coefficient, block_intercept, block_audit = direct_block_fit(
                 rows, labels, class_count, k_shot
             )
-            current_support = component_support_records[support_start:]
             if (
                 len(current_support) != 2
                 or [record["arm"] for record in current_support]
@@ -579,7 +595,8 @@ def build_d92_fit(
             )
             return coefficient, intercept, audit
         finally:
-            del component_support_records[support_start:]
+            current_support.clear()
+            component_support_capture = None
 
     def fit(rows: np.ndarray, labels: np.ndarray, class_count: int, k_shot: int):
         start = len(component_records)
@@ -627,6 +644,13 @@ def build_d92_fit(
         component_inventory = _component_inventory(
             current, requested_k_shot=int(k_shot)
         )
+        component_support_retained_count = (
+            0
+            if component_support_capture is None
+            else len(component_support_capture)
+        )
+        if component_support_retained_count != 0:
+            raise D92ProbeError("D92 component support capture escaped OCF scope")
         expected_active = registered and int(k_shot) > 2
         if current and any(bool(row["active"]) != expected_active for row in current):
             raise D92ProbeError("D92 component activity drift")
@@ -743,6 +767,9 @@ def build_d92_fit(
                     else None
                 ),
                 "d92_component_fit_inventory": component_inventory,
+                "d92_component_support_retained_count": (
+                    component_support_retained_count
+                ),
             }
         )
         return coefficient, intercept, audit

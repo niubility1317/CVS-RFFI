@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import gc
+import weakref
+
 import numpy as np
 import pytest
 
@@ -207,6 +210,56 @@ def test_ocf_cn20_transient_bound_covers_explicit_full_class_workspace():
     )
 
 
+@pytest.mark.parametrize(
+    ("shots", "expected_affine_macs", "expected_mix_macs", "expected_total_macs"),
+    (
+        (5, 103_680, 8_670, 112_350),
+        (10, 207_360, 8_670, 216_030),
+    ),
+)
+def test_ocf_support_alignment_macs_include_affine_and_contrast_mix(
+    shots,
+    expected_affine_macs,
+    expected_mix_macs,
+    expected_total_macs,
+):
+    """Would fail if the frozen total omitted either old-support work term."""
+
+    classes, dimension = 11, 288
+    rng = np.random.default_rng(92_100 + shots)
+    labels = np.repeat(np.arange(classes), shots).astype(np.int64)
+    after_rows = rng.normal(size=(classes * shots, dimension)).astype(np.float32)
+    full_coefficient = rng.normal(size=(classes, dimension)).astype(np.float32)
+    full_intercept = rng.normal(size=classes).astype(np.float32)
+    block_coefficient = rng.normal(size=(classes, dimension)).astype(np.float32)
+    block_intercept = rng.normal(size=classes).astype(np.float32)
+    _, _, audit = probe._build_ocf_affine_state(
+        full_rows=after_rows,
+        full_labels=labels,
+        block_rows=after_rows,
+        block_labels=labels,
+        full_coefficient=full_coefficient,
+        full_intercept=full_intercept,
+        block_coefficient=block_coefficient,
+        block_intercept=block_intercept,
+        class_count=classes,
+        k_shot=shots,
+        lambda_value=0.25,
+    )
+    assert (
+        audit["d92_ocf_support_alignment_affine_macs_upper_bound"]
+        == expected_affine_macs
+    )
+    assert (
+        audit["d92_ocf_support_alignment_contrast_mix_macs_upper_bound"]
+        == expected_mix_macs
+    )
+    assert (
+        audit["d92_ocf_support_alignment_macs_upper_bound"]
+        == expected_total_macs
+    )
+
+
 def test_ocf_is_equivariant_under_independent_old_and_new_label_permutations():
     """Would fail if an OCF formula used an individual old or new class identity."""
 
@@ -260,6 +313,70 @@ def test_ocf_is_equivariant_under_independent_old_and_new_label_permutations():
     assert p_coefficient[6:].tobytes() == full_coefficient[inverse][6:].tobytes()
     assert p_intercept[6:].tobytes() == full_intercept[inverse][6:].tobytes()
     assert p_audit["d92_ocf_new_rows_byte_exact"] is True
+
+
+@pytest.mark.parametrize(
+    ("run_arm", "disable_fisher", "registered_d_mode", "expected_fit_count"),
+    (
+        ("D92_FULL", False, "fusion_loo", 24),
+        ("E0_FULL_ONLY", True, "full_only", 1),
+        ("E0_FIXED50", True, "fixed50", 2),
+        ("E0_OCF25", True, "ocf25", 2),
+        ("E0_OCF50", True, "ocf50", 2),
+    ),
+)
+def test_component_support_capture_retains_nothing_across_three_scenarios(
+    run_arm,
+    disable_fisher,
+    registered_d_mode,
+    expected_fit_count,
+):
+    """Would fail if any run arm kept support arrays after a completed fit."""
+
+    rng = np.random.default_rng(92_200)
+    basis, _ = np.linalg.qr(rng.normal(size=(160, 3)))
+    weights = np.asarray([0.5, 0.3, 0.2], dtype=np.float64)
+    ground_audit = {
+        "d81_basis_sha256": "7" * 64,
+        "d81_spectral_weight_sha256": "8" * 64,
+        "d81_participation_ratio_effective_rank": 2.6,
+        "d81_retained_rank": 3,
+        "d81_rank_policy": "ceil_participation_ratio_effective_rank",
+        "ground_component_input_count": 84,
+        "ground_statistic_semantics": (
+            "class_centered_cross_domain_centroid_drift_eigenspectrum"
+        ),
+    }
+    fit, _, _ = probe.build_d92_fit(
+        d42,
+        basis,
+        weights,
+        ground_audit,
+        disable_registered_fisher=disable_fisher,
+        registered_d_mode=registered_d_mode,
+    )
+    classes, shots = 11, 5
+    for scenario_index in range(3):
+        labels = np.repeat(np.arange(classes), shots).astype(np.int64)
+        means = rng.normal(size=(classes, 288)) + float(scenario_index)
+        rows = (
+            means[labels] + 0.08 * rng.normal(size=(classes * shots, 288))
+        ).astype(np.float32)
+        rows_ref = weakref.ref(rows)
+        labels_ref = weakref.ref(labels)
+        coefficient, intercept, audit = fit(rows, labels, classes, shots)
+        retained_count = audit.get("d92_component_support_retained_count", -1)
+        actual_fit_count = audit["d92_component_fit_inventory"][
+            "actual_component_fit_count"
+        ]
+        del rows, labels, means, coefficient, intercept, audit
+        gc.collect()
+        assert rows_ref() is None, f"{run_arm} retained scenario {scenario_index} rows"
+        assert labels_ref() is None, (
+            f"{run_arm} retained scenario {scenario_index} labels"
+        )
+        assert retained_count == 0
+        assert actual_fit_count == expected_fit_count
 
 
 def test_synthetic_d62_stack_uses_d92_in_all_registered_components():
