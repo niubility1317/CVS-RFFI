@@ -16,13 +16,18 @@ from cvsrffi.stage2_d92_e0d_slim import D92_E0D_ARMS
 from cvsrffi.stage2_d92_e0ocf_hard12 import (
     ARM_ORDER,
     CANONICAL_SELECTION_SHA256,
+    D92E0OCFHard12V3Error,
     PRIMARY_ARM,
+    validate_hard12v3_manifest,
+    validate_method_lock,
 )
 
 
 SCENES = ("leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak")
 ARMS = ARM_ORDER
 SELECTION_SHA256 = CANONICAL_SELECTION_SHA256
+OLD_CLASS_COUNT = 6
+FEATURE_DIM = 288
 _TOLERANCE = 1e-12
 _QUERY_ZERO_FIELDS = (
     "query_truth_access", "query_fit_access", "query_update_access", "query_selection_access", "query_role_oracle_access", "query_class_quota_access", "query_global_reassignment"
@@ -174,7 +179,14 @@ def _expected_fit_count(k_shot: int, arm: str) -> tuple[int, int]:
     return total, total // 2
 
 
-def _job_evidence(job: Mapping[str, Any], *, run_root: Path | None = None) -> dict[str, Any]:
+def _job_evidence(
+    job: Mapping[str, Any],
+    *,
+    matrix_manifest_sha256: str,
+    method_lock_sha256: str,
+    selection_sha256: str,
+    run_root: Path | None = None,
+) -> dict[str, Any]:
     arm = str(job.get("arm_id"))
     if arm not in D92_E0D_ARMS or job.get("candidate") != D92_E0D_ARMS[arm].candidate_id:
         raise D92E0OCFAnalysisError("job arm/candidate identity drift")
@@ -183,7 +195,7 @@ def _job_evidence(job: Mapping[str, Any], *, run_root: Path | None = None) -> di
     score_path = job_root / "scorer" / "diag_cosine_score.json"
     before_path, after_path = job_root / "diag" / "before" / "prediction_artifact.npz", job_root / "diag" / "after" / "prediction_artifact.npz"
     score = _read_json(score_path)
-    if receipt.get("schema") != "cvs.phase2.d92_e0ocf_hard12v3.job_receipt.v1" or receipt.get("status") != "PREDICTIONS_AND_POST_PREDICTION_SCORE_COMPLETE" or receipt.get("job_id") != job.get("job_id") or receipt.get("outer_key") != job.get("outer_key") or receipt.get("arm_id") != arm or receipt.get("candidate") != job.get("candidate") or receipt.get("role") not in (None, job.get("role")) or receipt.get("truth_sidecar_exposed_to_predictor") is not False or receipt.get("query_truth_joined_only_after_immutable_predictions") is not True or receipt.get("query_truth_fed_back_to_predictor") is not False:
+    if receipt.get("schema") != "cvs.phase2.d92_e0ocf_hard12v3.job_receipt.v1" or receipt.get("status") != "PREDICTIONS_AND_POST_PREDICTION_SCORE_COMPLETE" or receipt.get("job_id") != job.get("job_id") or receipt.get("outer_key") != job.get("outer_key") or receipt.get("arm_id") != arm or receipt.get("candidate") != job.get("candidate") or receipt.get("role") not in (None, job.get("role")) or receipt.get("matrix_manifest_sha256") != matrix_manifest_sha256 or receipt.get("method_lock_sha256") != method_lock_sha256 or receipt.get("selection_sha256") != selection_sha256 or receipt.get("truth_sidecar_exposed_to_predictor") is not False or receipt.get("query_truth_joined_only_after_immutable_predictions") is not True or receipt.get("query_truth_fed_back_to_predictor") is not False:
         raise D92E0OCFAnalysisError("job receipt identity/protocol drift")
     before_sha, after_sha, score_sha = _sha256(before_path), _sha256(after_path), _sha256(score_path)
     if score.get("schema") != "cvs.phase2.diag_cosine_dev_pair_score.v1" or receipt.get("before_prediction_sha256") != before_sha or receipt.get("after_prediction_sha256") != after_sha or receipt.get("score_sha256") != score_sha or score.get("before_prediction_sha256") != before_sha or score.get("after_prediction_sha256") != after_sha or score.get("candidate") != job.get("candidate") or score.get("query_truth_joined_only_after_immutable_predictions") is not True or score.get("query_truth_fed_back_to_predictor") is not False:
@@ -193,7 +205,13 @@ def _job_evidence(job: Mapping[str, Any], *, run_root: Path | None = None) -> di
     fit_rows = _load_fit_rows(job_root / "diag" / "after" / "fit_audit.json")
     expected_total, expected_actual = _expected_fit_count(int(job["k_shot"]), arm)
     fit_counts, actual_counts, query_macs, state_bytes = set(), set(), set(), set()
-    wall_values, peak_values, support_macs, support_bytes = [], [], [], []
+    wall_values, peak_values = [], []
+    support_affine_macs, support_mix_macs, support_macs, support_bytes = (
+        [],
+        [],
+        [],
+        [],
+    )
     for row in fit_rows:
         fit_counts.add(int(row.get("after_total_component_fit_count", -1)))
         inventory = row.get("after_actual_component_inventory")
@@ -227,23 +245,83 @@ def _job_evidence(job: Mapping[str, Any], *, run_root: Path | None = None) -> di
         else:
             if ocf_active is not False or ocf_lambda is not None:
                 raise D92E0OCFAnalysisError("non-OCF arm must be inactive with no lambda")
+        support_affine_macs_value = row.get(
+            "d92_e0d_ocf_support_alignment_affine_macs_upper_bound"
+        )
+        support_mix_macs_value = row.get(
+            "d92_e0d_ocf_support_alignment_contrast_mix_macs_upper_bound"
+        )
         support_macs_value = _first_value(row, "ocf_support_alignment_macs", "d92_e0d_ocf_support_alignment_macs_upper_bound")
         support_bytes_value = _first_value(row, "ocf_support_alignment_transient_bytes", "d92_e0d_ocf_support_alignment_transient_bytes_upper_bound")
         if arm in {"E0_OCF25", "E0_OCF50"} and int(job["k_shot"]) > 2:
-            if support_macs_value is None or support_bytes_value is None:
+            if (
+                support_affine_macs_value is None
+                or support_mix_macs_value is None
+                or support_macs_value is None
+                or support_bytes_value is None
+            ):
                 raise D92E0OCFAnalysisError("OCF support-side cost fields missing")
-            support_macs.append(_finite(support_macs_value, label="OCF support alignment MACs", lower=0.0))
+            expected_affine_macs = (
+                2
+                * (OLD_CLASS_COUNT * int(job["k_shot"]))
+                * OLD_CLASS_COUNT
+                * FEATURE_DIM
+            )
+            expected_mix_macs = 5 * OLD_CLASS_COUNT * (FEATURE_DIM + 1)
+            expected_total_macs = expected_affine_macs + expected_mix_macs
+            actual_affine_macs = _finite(
+                support_affine_macs_value,
+                label="OCF support alignment affine MACs",
+                lower=0.0,
+            )
+            actual_mix_macs = _finite(
+                support_mix_macs_value,
+                label="OCF support alignment contrast-mix MACs",
+                lower=0.0,
+            )
+            actual_total_macs = _finite(
+                support_macs_value,
+                label="OCF support alignment MACs",
+                lower=0.0,
+            )
+            if (
+                actual_affine_macs != expected_affine_macs
+                or actual_mix_macs != expected_mix_macs
+                or actual_total_macs != expected_total_macs
+                or actual_total_macs != actual_affine_macs + actual_mix_macs
+            ):
+                raise D92E0OCFAnalysisError(
+                    "OCF support alignment MAC closure drift"
+                )
+            support_affine_macs.append(actual_affine_macs)
+            support_mix_macs.append(actual_mix_macs)
+            support_macs.append(actual_total_macs)
             support_bytes.append(_finite(support_bytes_value, label="OCF support alignment transient bytes", lower=0.0))
         else:
             for value, label in (
+                (support_affine_macs_value, "OCF support alignment affine MACs"),
+                (support_mix_macs_value, "OCF support alignment contrast-mix MACs"),
                 (support_macs_value, "OCF support alignment MACs"),
-                (support_bytes_value, "OCF support alignment transient bytes"),
             ):
                 if value is None:
                     continue
                 numeric = _finite(value, label=label, lower=0.0)
                 if abs(numeric) > _TOLERANCE:
-                    raise D92E0OCFAnalysisError("non-OCF support-side cost must be zero")
+                    raise D92E0OCFAnalysisError(
+                        "non-OCF support-side cost/support alignment MAC must be zero"
+                    )
+            if support_bytes_value is not None:
+                numeric_bytes = _finite(
+                    support_bytes_value,
+                    label="OCF support alignment transient bytes",
+                    lower=0.0,
+                )
+                if abs(numeric_bytes) > _TOLERANCE:
+                    raise D92E0OCFAnalysisError(
+                        "non-OCF support-side cost must be zero"
+                    )
+            support_affine_macs.append(0.0)
+            support_mix_macs.append(0.0)
             support_macs.append(0.0)
             support_bytes.append(0.0)
     if fit_counts != {expected_total} or actual_counts != {expected_actual} or len(query_macs) != 1 or len(state_bytes) != 1:
@@ -252,7 +330,7 @@ def _job_evidence(job: Mapping[str, Any], *, run_root: Path | None = None) -> di
     return {
         "job_id": str(job["job_id"]), "outer_key": str(job["outer_key"]), "outer_role": str(job["outer_role"]), "k_shot": int(job["k_shot"]), "arm_id": arm, "candidate": str(job["candidate"]),
         "h_old_new": _scenario_mean(score, "after", "h_old_new"), "old_balanced_accuracy": _old_balanced_accuracy(score), "seen_new_accuracy": _scenario_mean(score, "after", "seen_new_acc"), "old_floor": _finite(score.get("per_old_class_floor_after"), label="old floor", lower=0.0, upper=1.0), "forgetting": _finite(score.get("old_forgetting_pp"), label="forgetting") / 100.0,
-        **rates, "registration_wall_time_ns": float(statistics.median(wall_values)), "registration_incremental_peak_working_set_bytes": float(statistics.median(peak_values)), "fit_count": expected_total, "actual_fit_count": expected_actual, "query_macs": next(iter(query_macs)), "state_bytes": next(iter(state_bytes)), "ocf_support_alignment_macs": float(statistics.median(support_macs)), "ocf_support_alignment_transient_bytes": float(statistics.median(support_bytes)),
+        **rates, "registration_wall_time_ns": float(statistics.median(wall_values)), "registration_incremental_peak_working_set_bytes": float(statistics.median(peak_values)), "fit_count": expected_total, "actual_fit_count": expected_actual, "query_macs": next(iter(query_macs)), "state_bytes": next(iter(state_bytes)), "ocf_support_alignment_affine_macs": float(statistics.median(support_affine_macs)), "ocf_support_alignment_contrast_mix_macs": float(statistics.median(support_mix_macs)), "ocf_support_alignment_macs": float(statistics.median(support_macs)), "ocf_support_alignment_transient_bytes": float(statistics.median(support_bytes)),
         "_before_prediction": _prediction_key(before_path), "_after_prediction": _prediction_key(after_path), "_before_state": tuple((str(row["scenario"]), str(row["before_state_fingerprint_sha256"])) for row in fit_rows), "_after_state": tuple((str(row["scenario"]), str(row["after_state_fingerprint_sha256"])) for row in fit_rows),
     }
 
@@ -297,21 +375,25 @@ def _paired_summary(by_outer: Mapping[str, Mapping[str, Mapping[str, Any]]], per
 
 def analyze_d92_e0ocf_hard12v3(matrix_manifest_path: str | Path, *, run_root: str | Path | None = None, method_lock_path: str | Path | None = None) -> dict[str, Any]:
     manifest_path = Path(matrix_manifest_path).resolve(strict=True)
+    matrix_manifest_sha256 = _sha256(manifest_path)
     manifest = _read_json(manifest_path)
-    if manifest.get("schema") != "cvs.phase2.d92_e0ocf_hard12v3.matrix.v1" or manifest.get("status") != "FROZEN_DEVELOPMENT_MATRIX" or manifest.get("claim_scope") != "DEVELOPMENT_ONLY_PSEUDO_BLIND_DISJOINT_STRESS_SCREEN" or manifest.get("protocol_schema") != "p2_min_v1" or manifest.get("selection_sha256") != SELECTION_SHA256 or int(manifest.get("outer_count", -1)) != 12 or int(manifest.get("performance_outer_count", -1)) != 10 or int(manifest.get("liveness_outer_count", -1)) != 2 or int(manifest.get("job_count", -1)) != 60 or int(manifest.get("scene_arm_count", -1)) != 180 or int(manifest.get("shard_count", -1)) != 8 or manifest.get("arms") != list(ARMS) or manifest.get("primary_arm") != PRIMARY_ARM:
-        raise D92E0OCFAnalysisError("matrix identity/count drift")
-    jobs = manifest.get("jobs")
-    if not isinstance(jobs, list) or len(jobs) != 60:
-        raise D92E0OCFAnalysisError("matrix jobs are incomplete")
     lock_path = Path(method_lock_path) if method_lock_path is not None else Path(str(manifest["method_lock"]))
-    if _sha256(lock_path) != manifest.get("method_lock_sha256"):
+    method_lock_sha256 = _sha256(lock_path)
+    if method_lock_sha256 != manifest.get("method_lock_sha256"):
         raise D92E0OCFAnalysisError("method lock identity drift")
     method_lock = _read_json(lock_path)
-    if method_lock.get("schema") != "cvs.phase2.d92_e0ocf.method_lock.v1" or method_lock.get("only_promotion_candidate") != PRIMARY_ARM:
-        raise D92E0OCFAnalysisError("promotion candidate drift")
-    thresholds = method_lock.get("strict_geometry_gate")
-    if not isinstance(thresholds, Mapping):
-        raise D92E0OCFAnalysisError("strict geometry gate missing")
+    try:
+        validate_method_lock(method_lock)
+        validate_hard12v3_manifest(
+            manifest,
+            expected_method_lock_sha256=method_lock_sha256,
+        )
+    except D92E0OCFHard12V3Error as error:
+        raise D92E0OCFAnalysisError(
+            "matrix manifest/method lock validation drift"
+        ) from error
+    jobs = manifest["jobs"]
+    thresholds = method_lock["strict_geometry_gate"]
     output_root = Path(run_root) if run_root is not None else Path(str(manifest["output_root"]))
     expected_by_shard: dict[int, list[str]] = {shard: [] for shard in range(8)}
     seen_job_ids: set[str] = set()
@@ -358,7 +440,16 @@ def analyze_d92_e0ocf_hard12v3(matrix_manifest_path: str | Path, *, run_root: st
         completed_total += completed_count
     if selected_total != 60 or completed_total != 60:
         raise D92E0OCFAnalysisError("shard job receipt closure drift")
-    evidence = [_job_evidence(job, run_root=output_root if run_root is not None else None) for job in jobs]
+    evidence = [
+        _job_evidence(
+            job,
+            matrix_manifest_sha256=matrix_manifest_sha256,
+            method_lock_sha256=method_lock_sha256,
+            selection_sha256=CANONICAL_SELECTION_SHA256,
+            run_root=output_root if run_root is not None else None,
+        )
+        for job in jobs
+    ]
     if len(evidence) != 60:
         raise D92E0OCFAnalysisError("job receipt closure drift")
     by_outer: dict[str, dict[str, dict[str, Any]]] = defaultdict(dict)
@@ -396,7 +487,7 @@ def analyze_d92_e0ocf_hard12v3(matrix_manifest_path: str | Path, *, run_root: st
     aggregate: dict[str, dict[str, float]] = {}
     for arm in ARMS:
         rows = [row for row in public if row["outer_role"] == "performance" and row["arm_id"] == arm]
-        aggregate[arm] = {"mean_h_old_new": _mean([row["h_old_new"] for row in rows]), "mean_old_balanced_accuracy": _mean([row["old_balanced_accuracy"] for row in rows]), "mean_seen_new_accuracy": _mean([row["seen_new_accuracy"] for row in rows]), "mean_old_floor": _mean([row["old_floor"] for row in rows]), "mean_forgetting": _mean([row["forgetting"] for row in rows]), "mean_old_to_old_rate": _mean([row["old_to_old_rate"] for row in rows]), "mean_old_to_new_rate": _mean([row["old_to_new_rate"] for row in rows]), "mean_new_to_old_rate": _mean([row["new_to_old_rate"] for row in rows]), "median_registration_wall_time_ns": float(statistics.median(row["registration_wall_time_ns"] for row in rows)), "median_registration_incremental_peak_working_set_bytes": float(statistics.median(row["registration_incremental_peak_working_set_bytes"] for row in rows)), "mean_query_macs": _mean([float(row["query_macs"]) for row in rows]), "mean_state_bytes": _mean([float(row["state_bytes"]) for row in rows]), "median_ocf_support_alignment_macs": float(statistics.median(row["ocf_support_alignment_macs"] for row in rows)), "median_ocf_support_alignment_transient_bytes": float(statistics.median(row["ocf_support_alignment_transient_bytes"] for row in rows))}
+        aggregate[arm] = {"mean_h_old_new": _mean([row["h_old_new"] for row in rows]), "mean_old_balanced_accuracy": _mean([row["old_balanced_accuracy"] for row in rows]), "mean_seen_new_accuracy": _mean([row["seen_new_accuracy"] for row in rows]), "mean_old_floor": _mean([row["old_floor"] for row in rows]), "mean_forgetting": _mean([row["forgetting"] for row in rows]), "mean_old_to_old_rate": _mean([row["old_to_old_rate"] for row in rows]), "mean_old_to_new_rate": _mean([row["old_to_new_rate"] for row in rows]), "mean_new_to_old_rate": _mean([row["new_to_old_rate"] for row in rows]), "median_registration_wall_time_ns": float(statistics.median(row["registration_wall_time_ns"] for row in rows)), "median_registration_incremental_peak_working_set_bytes": float(statistics.median(row["registration_incremental_peak_working_set_bytes"] for row in rows)), "mean_query_macs": _mean([float(row["query_macs"]) for row in rows]), "mean_state_bytes": _mean([float(row["state_bytes"]) for row in rows]), "median_ocf_support_alignment_affine_macs": float(statistics.median(row["ocf_support_alignment_affine_macs"] for row in rows)), "median_ocf_support_alignment_contrast_mix_macs": float(statistics.median(row["ocf_support_alignment_contrast_mix_macs"] for row in rows)), "median_ocf_support_alignment_macs": float(statistics.median(row["ocf_support_alignment_macs"] for row in rows)), "median_ocf_support_alignment_transient_bytes": float(statistics.median(row["ocf_support_alignment_transient_bytes"] for row in rows))}
     paired_full_only, rows_full_only = _paired_summary(by_outer, performance_outers, candidate_arm=PRIMARY_ARM, reference_arm="E0_FULL_ONLY")
     paired_d92, rows_d92 = _paired_summary(by_outer, performance_outers, candidate_arm=PRIMARY_ARM, reference_arm="D92_FULL")
     full_only_by_outer = {row["outer_key"]: row for row in evidence if row["arm_id"] == "E0_FULL_ONLY" and row["outer_role"] == "performance"}
@@ -433,7 +524,7 @@ def analyze_d92_e0ocf_hard12v3(matrix_manifest_path: str | Path, *, run_root: st
     d92_by_outer = {row["outer_key"]: row for row in rows_d92}
     for row in rows_full_only:
         paired_rows.append({**row, **{f"d92_{key}": value for key, value in d92_by_outer[row["outer_key"]].items() if key not in {"outer_key", "k_shot"}}})
-    return {"schema": "cvs.phase2.d92_e0ocf_hard12v3.analysis.v1", "status": "ANALYZED", "claim_scope": manifest.get("claim_scope"), "matrix_manifest": str(manifest_path), "matrix_manifest_sha256": _sha256(manifest_path), "method_lock_sha256": manifest.get("method_lock_sha256"), "selection_sha256": manifest.get("selection_sha256"), "performance_outer_count": 10, "liveness_outer_count": 2, "job_count": 60, "promotion_candidate": PRIMARY_ARM, "diagnostic_only_arm": "E0_OCF50", "aggregate": aggregate, "paired": {"E0_OCF25_minus_E0_FULL_ONLY": paired_full_only, "E0_OCF25_minus_D92_FULL": paired_d92}, "paired_rows": paired_rows, "gates": gates, "all_gates_pass": all_gates_pass, "verdict": "PROMOTE_E0_OCF25_TO_TARGET125_CONFIRMATION" if all_gates_pass else "NO_E0_OCF25_PROMOTION"}
+    return {"schema": "cvs.phase2.d92_e0ocf_hard12v3.analysis.v1", "status": "ANALYZED", "claim_scope": manifest.get("claim_scope"), "matrix_manifest": str(manifest_path), "matrix_manifest_sha256": matrix_manifest_sha256, "method_lock_sha256": manifest.get("method_lock_sha256"), "selection_sha256": manifest.get("selection_sha256"), "performance_outer_count": 10, "liveness_outer_count": 2, "job_count": 60, "promotion_candidate": PRIMARY_ARM, "diagnostic_only_arm": "E0_OCF50", "aggregate": aggregate, "paired": {"E0_OCF25_minus_E0_FULL_ONLY": paired_full_only, "E0_OCF25_minus_D92_FULL": paired_d92}, "paired_rows": paired_rows, "gates": gates, "all_gates_pass": all_gates_pass, "verdict": "PROMOTE_E0_OCF25_TO_TARGET125_CONFIRMATION" if all_gates_pass else "NO_E0_OCF25_PROMOTION"}
 
 
 analyze_d92_e0ocf_hard12 = analyze_d92_e0ocf_hard12v3

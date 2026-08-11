@@ -1,13 +1,19 @@
 from __future__ import annotations
 
+import json
 from collections import Counter
 from pathlib import Path
 
+import pytest
+
 from cvsrffi.stage2_d92_e0ocf_hard12 import (
     ARM_ORDER,
+    D92E0OCFHard12V3Error,
     HARD12_ROWS,
     SMOKE_OUTER_KEY,
     build_hard12v3_manifest,
+    validate_hard12v3_manifest,
+    validate_method_lock,
 )
 
 
@@ -54,8 +60,6 @@ def test_hard12v3_manifest_expands_sixty_jobs_and_marks_primary(tmp_path: Path) 
 
 
 def test_hard12v3_smoke_outer_is_the_first_frozen_liveness_row() -> None:
-    import json
-
     assert SMOKE_OUTER_KEY == "rx_20_1__seed_713106__k_1__new_20"
     assert json.loads(METHOD_LOCK.read_text(encoding="utf-8"))["smoke_outer_key"] == SMOKE_OUTER_KEY
     matches = [row for row in HARD12_ROWS if row["outer_key"] == SMOKE_OUTER_KEY]
@@ -64,8 +68,6 @@ def test_hard12v3_smoke_outer_is_the_first_frozen_liveness_row() -> None:
 
 
 def test_hard12v3_builder_rejects_missing_or_tampered_smoke_outer_key(tmp_path: Path) -> None:
-    import json
-
     for value in (None, "rx_7_14__seed_713105__k_1__new_20"):
         lock = json.loads(METHOD_LOCK.read_text(encoding="utf-8"))
         if value is None:
@@ -85,3 +87,35 @@ def test_hard12v3_builder_rejects_missing_or_tampered_smoke_outer_key(tmp_path: 
             pass
         else:
             raise AssertionError("builder accepted invalid smoke_outer_key")
+
+
+def test_method_lock_validator_rejects_ocf_lambda_drift() -> None:
+    """Would fail if a changed OCF scientific identity reused the frozen lock."""
+
+    lock = json.loads(METHOD_LOCK.read_text(encoding="utf-8"))
+    lock["arms"]["E0_OCF25"]["lambda"] = 0.50
+    with pytest.raises(D92E0OCFHard12V3Error, match="method lock"):
+        validate_method_lock(lock)
+
+
+@pytest.mark.parametrize("tamper", ("outer", "role"))
+def test_manifest_validator_rejects_tampered_outer_or_role(
+    tmp_path: Path, tamper: str
+) -> None:
+    """Would fail if a noncanonical outer or arm role reached runner/analysis."""
+
+    manifest = build_hard12v3_manifest(
+        context_path=CONTEXT,
+        method_lock_path=METHOD_LOCK,
+        output_root=tmp_path / "matrix",
+        require_package_files=False,
+    )
+    if tamper == "outer":
+        manifest["selected_rows"][0]["receiver"] = "3-19"
+    else:
+        manifest["jobs"][0]["role"] = "primary"
+    with pytest.raises(D92E0OCFHard12V3Error, match="manifest"):
+        validate_hard12v3_manifest(
+            manifest,
+            expected_method_lock_sha256=manifest["method_lock_sha256"],
+        )

@@ -27,6 +27,8 @@ from cvsrffi.stage2_d92_e0ocf_hard12 import (  # noqa: E402
     PRIMARY_ARM,
     SMOKE_OUTER_KEY,
     build_hard12v3_manifest,
+    validate_hard12v3_manifest,
+    validate_method_lock,
 )
 
 
@@ -91,34 +93,37 @@ def _load_manifest(path: str | Path, expected_sha256: str) -> dict[str, Any]:
     source = Path(path).resolve(strict=True)
     if source.is_symlink() or not source.is_file() or _sha256_file(source) != str(expected_sha256).lower():
         raise D92E0OCFHard12V3RunnerError("matrix manifest must be immutable regular file")
-    payload = json.loads(source.read_text(encoding="utf-8-sig"))
-    jobs = payload.get("jobs")
-    job_count = int(payload.get("job_count", -1))
-    full_matrix = job_count == 60 and isinstance(jobs, list) and len(jobs) == 60
-    if full_matrix and payload.get("smoke_outer_key") != SMOKE_OUTER_KEY:
+    try:
+        payload = json.loads(source.read_text(encoding="utf-8-sig"))
+    except (OSError, ValueError) as error:
+        raise D92E0OCFHard12V3RunnerError("matrix manifest JSON drift") from error
+    if not isinstance(payload, dict):
+        raise D92E0OCFHard12V3RunnerError("matrix manifest must be an object")
+    if payload.get("smoke_outer_key") != SMOKE_OUTER_KEY:
         raise D92E0OCFHard12V3RunnerError("matrix manifest smoke_outer_key drift")
-    if (
-        payload.get("schema") != "cvs.phase2.d92_e0ocf_hard12v3.matrix.v1"
-        or payload.get("status") != "FROZEN_DEVELOPMENT_MATRIX"
-        or payload.get("protocol_schema") != "p2_min_v1"
-        or payload.get("selection_sha256") != CANONICAL_SELECTION_SHA256
-        or payload.get("context_sha256") != CONTEXT_SHA256
-        or int(payload.get("shard_count", -1)) != 8
-        or not isinstance(jobs, list)
-        or job_count != len(jobs)
-        or (full_matrix and (payload.get("arms") != list(ARM_ORDER) or payload.get("primary_arm") != PRIMARY_ARM))
-    ):
-        raise D92E0OCFHard12V3RunnerError("matrix manifest contract drift")
-    if full_matrix:
-        smoke_rows = [
-            job for job in jobs
-            if job.get("outer_key") == payload.get("smoke_outer_key")
-            and job.get("outer_role") == "liveness"
-            and int(job.get("k_shot", -1)) == 1
-            and job.get("arm_id") == "D92_FULL"
-        ]
-        if len(smoke_rows) != 1:
-            raise D92E0OCFHard12V3RunnerError("smoke_outer_key must identify exactly one liveness K1 D92_FULL job")
+    try:
+        lock_source = Path(str(payload["method_lock"]))
+        if lock_source.is_symlink():
+            raise OSError("method lock symlink is forbidden")
+        lock_source = lock_source.resolve(strict=True)
+        if not lock_source.is_file():
+            raise OSError("method lock is not a regular file")
+        method_lock_sha256 = _sha256_file(lock_source)
+        if method_lock_sha256 != payload.get("method_lock_sha256"):
+            raise OSError("method lock SHA mismatch")
+        method_lock = json.loads(lock_source.read_text(encoding="utf-8-sig"))
+        validate_method_lock(method_lock)
+    except (KeyError, OSError, TypeError, ValueError, D92E0OCFHard12V3Error) as error:
+        raise D92E0OCFHard12V3RunnerError("method lock identity/content drift") from error
+    try:
+        validate_hard12v3_manifest(
+            payload,
+            expected_method_lock_sha256=method_lock_sha256,
+        )
+    except D92E0OCFHard12V3Error as error:
+        raise D92E0OCFHard12V3RunnerError(
+            f"matrix manifest contract drift: {error}"
+        ) from error
     return payload
 
 
@@ -172,6 +177,53 @@ def _fingerprint(path: Path) -> str:
     return hashlib.sha256(message.encode("utf-8")).hexdigest()
 
 
+def _normalized_fingerprint(reason: str) -> str:
+    return hashlib.sha256(str(reason).strip().lower().encode("utf-8")).hexdigest()
+
+
+def _prediction_closure_paths(prediction_root: Path) -> dict[str, Path]:
+    root = Path(prediction_root)
+    return {
+        "before_prediction": root / "before" / "prediction_artifact.npz",
+        "after_prediction": root / "after" / "prediction_artifact.npz",
+        "before_commit": root / "before" / "COMMIT.json",
+        "after_commit": root / "after" / "COMMIT.json",
+        "before_fit_audit": root / "before" / "fit_audit.json",
+        "after_fit_audit": root / "after" / "fit_audit.json",
+    }
+
+
+def _fit_audit_status(path: Path) -> tuple[str, str]:
+    if not path.is_file() or path.is_symlink() or path.stat().st_size <= 0:
+        return "technical_failure", "fit_audit_missing_or_empty"
+    try:
+        rows = json.loads(path.read_text(encoding="utf-8-sig"))
+    except (OSError, ValueError):
+        return "technical_failure", "fit_audit_invalid_json"
+    if not isinstance(rows, list) or not rows or any(
+        not isinstance(row, Mapping) for row in rows
+    ):
+        return "technical_failure", "fit_audit_invalid_rows"
+    for row in rows:
+        for field in _QUERY_ZERO_FIELDS:
+            if row.get(field) is not False:
+                return "protocol_p0", f"fit_audit_{field}_not_false"
+    return "closed", "closed"
+
+
+def _prediction_closure_status(prediction_root: Path) -> tuple[str, str]:
+    paths = _prediction_closure_paths(prediction_root)
+    for label in ("before_prediction", "after_prediction", "before_commit", "after_commit"):
+        path = paths[label]
+        if not path.is_file() or path.is_symlink() or path.stat().st_size <= 0:
+            return "technical_failure", f"prediction_closure_{label}_missing_or_empty"
+    for state in ("before", "after"):
+        status, reason = _fit_audit_status(paths[f"{state}_fit_audit"])
+        if status != "closed":
+            return status, f"prediction_closure_{state}_{reason}"
+    return "closed", "closed"
+
+
 def _shared_systemic_stop_path(output_root: Path) -> Path:
     return Path(output_root) / "SYSTEMIC_TECHNICAL_FAILURE_STOP.json"
 
@@ -203,16 +255,7 @@ def _record_shared_pre_prediction_failure(output_root: Path, job: Mapping[str, A
 
 
 def _fit_audit_protocol_closed(path: Path) -> bool:
-    if not path.is_file() or path.is_symlink():
-        return False
-    try:
-        rows = json.loads(path.read_text(encoding="utf-8-sig"))
-    except (OSError, ValueError):
-        return False
-    if not isinstance(rows, list) or not rows:
-        return False
-    fields = ("query_truth_access", "query_fit_access", "query_update_access", "query_selection_access", "query_role_oracle_access", "query_class_quota_access", "query_global_reassignment")
-    return all(isinstance(row, Mapping) and all(row.get(field) is False for field in fields) for row in rows)
+    return _fit_audit_status(path)[0] == "closed"
 
 
 def _smoke_receipt_path(output_root: Path) -> Path | None:
@@ -264,12 +307,15 @@ def _validate_shared_smoke(manifest: Mapping[str, Any], *, manifest_sha256: str,
     receipt = _read_json_object(receipt_path)
     job = _smoke_job(manifest)
     expected_prediction_root = smoke_root / "diag"
+    closure_paths = _prediction_closure_paths(expected_prediction_root)
     expected_files = {
-        "before_prediction_sha256": expected_prediction_root / "before" / "prediction_artifact.npz",
-        "after_prediction_sha256": expected_prediction_root / "after" / "prediction_artifact.npz",
-        "before_commit_sha256": expected_prediction_root / "before" / "COMMIT.json",
-        "after_commit_sha256": expected_prediction_root / "after" / "COMMIT.json",
-        "fit_audit_sha256": expected_prediction_root / "after" / "fit_audit.json",
+        "before_prediction_sha256": closure_paths["before_prediction"],
+        "after_prediction_sha256": closure_paths["after_prediction"],
+        "before_commit_sha256": closure_paths["before_commit"],
+        "after_commit_sha256": closure_paths["after_commit"],
+        "before_fit_audit_sha256": closure_paths["before_fit_audit"],
+        "after_fit_audit_sha256": closure_paths["after_fit_audit"],
+        "fit_audit_sha256": closure_paths["after_fit_audit"],
     }
     identity_ok = (
         receipt.get("schema") == "cvs.phase2.d92_e0ocf_hard12v3.smoke_receipt.v1"
@@ -311,7 +357,10 @@ def _validate_shared_smoke(manifest: Mapping[str, Any], *, manifest_sha256: str,
         digest = _sha256_file(path)
         if receipt.get(field) != digest or closure.get(field) != digest:
             raise D92E0OCFHard12V3RunnerError("shared smoke prediction hash drift")
-    if receipt.get("fit_audit_protocol_closed") is not True or not _fit_audit_protocol_closed(expected_files["fit_audit_sha256"]):
+    if (
+        receipt.get("fit_audit_protocol_closed") is not True
+        or _prediction_closure_status(expected_prediction_root)[0] != "closed"
+    ):
         raise D92E0OCFHard12V3RunnerError("shared smoke fit audit protocol closure drift")
 
 
@@ -343,14 +392,38 @@ def truth_free_smoke(args: argparse.Namespace) -> dict[str, Any]:
     stdout_path, stderr_path = output / "prediction.stdout.log", output / "prediction.stderr.log"
     with stdout_path.open("x", encoding="utf-8", newline="\n") as stdout, stderr_path.open("x", encoding="utf-8", newline="\n") as stderr:
         completed = subprocess.run(command, cwd=CODE_ROOT, stdout=stdout, stderr=stderr, text=True, check=False, env=_child_env(args.cpu_threads))
+    closure_paths = _prediction_closure_paths(prediction_root)
     prediction_paths = {
-        "before_prediction_sha256": prediction_root / "before" / "prediction_artifact.npz",
-        "after_prediction_sha256": prediction_root / "after" / "prediction_artifact.npz",
-        "before_commit_sha256": prediction_root / "before" / "COMMIT.json",
-        "after_commit_sha256": prediction_root / "after" / "COMMIT.json",
-        "fit_audit_sha256": prediction_root / "after" / "fit_audit.json",
+        "before_prediction_sha256": closure_paths["before_prediction"],
+        "after_prediction_sha256": closure_paths["after_prediction"],
+        "before_commit_sha256": closure_paths["before_commit"],
+        "after_commit_sha256": closure_paths["after_commit"],
+        "before_fit_audit_sha256": closure_paths["before_fit_audit"],
+        "after_fit_audit_sha256": closure_paths["after_fit_audit"],
+        "fit_audit_sha256": closure_paths["after_fit_audit"],
     }
-    if completed.returncode != 0 or any(not path.is_file() or path.is_symlink() for path in prediction_paths.values()) or not _fit_audit_protocol_closed(prediction_paths["fit_audit_sha256"]):
+    if completed.returncode != 0:
+        _record_shared_pre_prediction_failure(
+            Path(str(manifest["output_root"])),
+            job,
+            _fingerprint(stderr_path),
+        )
+        raise D92E0OCFHard12V3RunnerError("truth-free smoke prediction closure failed")
+    closure_status, closure_reason = _prediction_closure_status(prediction_root)
+    if closure_status == "protocol_p0":
+        _publish_shared_systemic_stop(
+            Path(str(manifest["output_root"])),
+            reason="query_audit_protocol_violation",
+            fingerprint=_normalized_fingerprint(closure_reason),
+            distinct_outer_count=1,
+        )
+        raise D92E0OCFHard12V3RunnerError("truth-free smoke query protocol closure failed")
+    if closure_status != "closed":
+        _record_shared_pre_prediction_failure(
+            Path(str(manifest["output_root"])),
+            job,
+            _normalized_fingerprint(closure_reason),
+        )
         raise D92E0OCFHard12V3RunnerError("truth-free smoke prediction closure failed")
     hashes = {field: _sha256_file(path) for field, path in prediction_paths.items()}
     receipt = {
@@ -428,8 +501,47 @@ def run_shard(args: argparse.Namespace) -> dict[str, Any]:
                 systemic_stop = True
                 break
             continue
-        if not all((job_root / "diag" / state / "COMMIT.json").is_file() for state in ("before", "after")):
-            raise D92E0OCFHard12V3RunnerError("prediction child returned without commit")
+        closure_status, closure_reason = _prediction_closure_status(job_root / "diag")
+        if closure_status == "technical_failure":
+            fingerprint = _normalized_fingerprint(closure_reason)
+            failure = {
+                "job_id": job["job_id"],
+                "stage": "pre_prediction",
+                "returncode": prediction_result.returncode,
+                "error": closure_reason,
+                "fingerprint": fingerprint,
+            }
+            failures.append(failure)
+            _append_event(
+                events_path,
+                {"timestamp": _now(), "event": "JOB_PREDICTION_CLOSURE_FAILED", **failure},
+            )
+            if _record_shared_pre_prediction_failure(output, job, fingerprint):
+                systemic_stop = True
+                break
+            continue
+        if closure_status == "protocol_p0":
+            fingerprint = _normalized_fingerprint(closure_reason)
+            failure = {
+                "job_id": job["job_id"],
+                "stage": "protocol_p0",
+                "returncode": prediction_result.returncode,
+                "error": closure_reason,
+                "fingerprint": fingerprint,
+            }
+            failures.append(failure)
+            _append_event(
+                events_path,
+                {"timestamp": _now(), "event": "JOB_QUERY_PROTOCOL_P0", **failure},
+            )
+            _publish_shared_systemic_stop(
+                output,
+                reason="query_audit_protocol_violation",
+                fingerprint=fingerprint,
+                distinct_outer_count=1,
+            )
+            systemic_stop = True
+            break
         _append_event(events_path, {"timestamp": _now(), "event": "JOB_PREDICTION_COMPLETE", "job_id": job["job_id"]})
         score_command = _score_command(job)
         _append_event(events_path, {"timestamp": _now(), "event": "JOB_SCORE_START", "job_id": job["job_id"], "command": score_command})

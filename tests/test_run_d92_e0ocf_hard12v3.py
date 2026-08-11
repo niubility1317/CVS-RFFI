@@ -14,6 +14,10 @@ QUERY_ZERO_FIELDS = (
     "query_truth_access", "query_fit_access", "query_update_access", "query_selection_access",
     "query_role_oracle_access", "query_class_quota_access", "query_global_reassignment",
 )
+CONTEXT = Path(
+    r"E:\type10-7\automation_reports\CV-SincNet\d131_d92_lite160_qtie_target125_20260804_r3\artifacts\prepared\target125_context.json"
+)
+METHOD_LOCK = Path("configs/stage2_d92_e0ocf_5arm_hard12v3_v1.json").resolve()
 
 
 def _write_json(path: Path, payload: object) -> None:
@@ -21,86 +25,60 @@ def _write_json(path: Path, payload: object) -> None:
     path.write_text(json.dumps(payload, sort_keys=True), encoding="utf-8")
 
 
-def _full_manifest(tmp_path: Path) -> tuple[Path, str, dict[str, object]]:
+def _full_manifest(
+    tmp_path: Path, *, method_lock_path: Path = METHOD_LOCK
+) -> tuple[Path, str, dict[str, object]]:
     output = tmp_path / "matrix"
-    jobs: list[dict[str, object]] = []
-    outer_keys = [
-        runner.SMOKE_OUTER_KEY,
-        "rx_7_14__seed_713105__k_1__new_20",
-        *[f"outer_{outer_index:02d}" for outer_index in range(2, 12)],
-    ]
-    for outer_index in range(12):
-        outer_key = outer_keys[outer_index]
-        role = "liveness" if outer_index < 2 else "performance"
-        k_shot = 1 if outer_index < 2 else 5
-        for arm_index, arm_id in enumerate(runner.ARM_ORDER):
-            root = output / "jobs" / outer_key / arm_id
-            package = {
-                f"{state}_{phase}": {
-                    "package_root": str(root / "package"),
-                    "detached_seal_path": str(root / f"{state}_{phase}.seal.json"),
-                    "expected_seal_sha256": "a" * 64,
-                }
-                for state in ("before", "after")
-                for phase in ("enrollment", "apply")
-            }
-            jobs.append({
-                "index": len(jobs),
-                "outer_index": outer_index,
-                "arm_position": arm_index,
-                "planned_shard_index": outer_index % 8,
-                "job_id": f"{outer_key}__arm_{arm_id.lower()}",
-                "outer_key": outer_key,
-                "outer_role": role,
-                "k_shot": k_shot,
-                "arm_id": arm_id,
-                "candidate": f"candidate_{arm_id.lower()}",
-                "role": "primary" if arm_id == "E0_OCF25" else "diagnostic_only" if arm_id == "E0_OCF50" else "baseline",
-                "packages": package,
-                "truth_sidecar": str(root / "truth_sidecar.json"),
-                "output_root": str(root),
-            })
-    manifest = {
-        "schema": "cvs.phase2.d92_e0ocf_hard12v3.matrix.v1",
-        "status": "FROZEN_DEVELOPMENT_MATRIX",
-        "protocol_schema": "p2_min_v1",
-        "selection_sha256": runner.CANONICAL_SELECTION_SHA256,
-        "context_sha256": runner.CONTEXT_SHA256,
-        "ground_component_dir": str(tmp_path / "ground"),
-        "ground_manifest_sha256": "b" * 64,
-        "output_root": str(output),
-        "shard_count": 8,
-        "job_count": 60,
-        "arms": list(runner.ARM_ORDER),
-        "primary_arm": runner.PRIMARY_ARM,
-        "smoke_outer_key": runner.SMOKE_OUTER_KEY,
-        "jobs": jobs,
-    }
+    manifest = runner.build_hard12v3_manifest(
+        context_path=CONTEXT,
+        method_lock_path=method_lock_path,
+        output_root=output,
+        require_package_files=False,
+    )
+    for job in manifest["jobs"]:
+        for package in job["packages"].values():
+            package["expected_seal_sha256"] = "a" * 64
     manifest_path = tmp_path / "matrix_manifest.json"
     _write_json(manifest_path, manifest)
     digest = hashlib.sha256(manifest_path.read_bytes()).hexdigest()
     return manifest_path, digest, manifest
 
 
+def _write_prediction_closure(
+    root: Path,
+    *,
+    missing: str | None = None,
+    query_violation: bool = False,
+) -> None:
+    for state in ("before", "after"):
+        state_root = root / state
+        state_root.mkdir(parents=True, exist_ok=True)
+        if missing != f"{state}_prediction":
+            (state_root / "prediction_artifact.npz").write_bytes(
+                f"{state}-prediction".encode()
+            )
+        if missing != f"{state}_commit":
+            (state_root / "COMMIT.json").write_text("{}", encoding="utf-8")
+        rows = [
+            {
+                "scenario": "leo_clear_weak",
+                "query_truth_access": query_violation and state == "before",
+                "query_fit_access": False,
+                "query_update_access": False,
+                "query_selection_access": False,
+                "query_role_oracle_access": False,
+                "query_class_quota_access": False,
+                "query_global_reassignment": False,
+            }
+        ]
+        if missing != f"{state}_fit_audit":
+            _write_json(state_root / "fit_audit.json", rows)
+
+
 def _fake_child_run(command: list[str], **_: object) -> SimpleNamespace:
     if "run_d92_e0d_prediction.py" in str(command[1]):
         root = Path(command[command.index("--output-root") + 1])
-        for state in ("before", "after"):
-            state_root = root / state
-            state_root.mkdir(parents=True, exist_ok=True)
-            (state_root / "prediction_artifact.npz").write_bytes(f"{state}-prediction".encode())
-            (state_root / "COMMIT.json").write_text("{}", encoding="utf-8")
-        rows = [{
-            "scenario": "leo_clear_weak",
-            "query_truth_access": False,
-            "query_fit_access": False,
-            "query_update_access": False,
-            "query_selection_access": False,
-            "query_role_oracle_access": False,
-            "query_class_quota_access": False,
-            "query_global_reassignment": False,
-        }]
-        _write_json(root / "after" / "fit_audit.json", rows)
+        _write_prediction_closure(root)
     else:
         path = Path(command[command.index("--output-path") + 1])
         _write_json(path, {"status": "PASS"})
@@ -170,6 +148,109 @@ def test_full_matrix_run_shard_accepts_valid_shared_smoke(monkeypatch: pytest.Mo
     assert summary["completed_job_ids"] == expected_ids
 
 
+def test_run_shard_routes_same_missing_commit_on_two_outers_to_shared_stop(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    """Would fail if returncode-zero closure gaps bypassed the shared ledger."""
+
+    manifest_path, digest, manifest = _full_manifest(tmp_path)
+    smoke_root = Path(str(manifest["output_root"])) / "smoke" / "diag"
+    score_calls: list[list[str]] = []
+
+    def fake_run(command: list[str], **_: object) -> SimpleNamespace:
+        if "run_d92_e0d_prediction.py" in str(command[1]):
+            root = Path(command[command.index("--output-root") + 1])
+            _write_prediction_closure(
+                root,
+                missing=None if root == smoke_root else "before_commit",
+            )
+        else:
+            score_calls.append(command)
+        return SimpleNamespace(returncode=0)
+
+    monkeypatch.setattr(runner.subprocess, "run", fake_run)
+    runner.truth_free_smoke(
+        SimpleNamespace(
+            matrix_manifest=str(manifest_path),
+            matrix_manifest_sha256=digest,
+            output_root=str(smoke_root.parent),
+            device="cpu",
+            cpu_threads=1,
+        )
+    )
+    summary = runner.run_shard(
+        SimpleNamespace(
+            matrix_manifest=str(manifest_path),
+            matrix_manifest_sha256=digest,
+            shard_index=0,
+            shard_count=8,
+            device="cpu",
+            cpu_threads=1,
+        )
+    )
+    stop = json.loads(
+        (Path(str(manifest["output_root"])) / "SYSTEMIC_TECHNICAL_FAILURE_STOP.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    assert summary["status"] == "STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE"
+    assert stop["reason"] == "same_pre_prediction_fingerprint_on_two_distinct_outers"
+    assert stop["distinct_outer_count"] == 2
+    assert score_calls == []
+
+
+def test_run_shard_query_audit_violation_publishes_p0_stop_before_scorer(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    """Would fail if a query-access audit violation reached truth-side scoring."""
+
+    manifest_path, digest, manifest = _full_manifest(tmp_path)
+    smoke_root = Path(str(manifest["output_root"])) / "smoke" / "diag"
+    prediction_calls: list[list[str]] = []
+    score_calls: list[list[str]] = []
+
+    def fake_run(command: list[str], **_: object) -> SimpleNamespace:
+        if "run_d92_e0d_prediction.py" in str(command[1]):
+            root = Path(command[command.index("--output-root") + 1])
+            _write_prediction_closure(root, query_violation=root != smoke_root)
+            if root != smoke_root:
+                prediction_calls.append(command)
+        else:
+            score_calls.append(command)
+        return SimpleNamespace(returncode=0)
+
+    monkeypatch.setattr(runner.subprocess, "run", fake_run)
+    runner.truth_free_smoke(
+        SimpleNamespace(
+            matrix_manifest=str(manifest_path),
+            matrix_manifest_sha256=digest,
+            output_root=str(smoke_root.parent),
+            device="cpu",
+            cpu_threads=1,
+        )
+    )
+    summary = runner.run_shard(
+        SimpleNamespace(
+            matrix_manifest=str(manifest_path),
+            matrix_manifest_sha256=digest,
+            shard_index=0,
+            shard_count=8,
+            device="cpu",
+            cpu_threads=1,
+        )
+    )
+    stop = json.loads(
+        (Path(str(manifest["output_root"])) / "SYSTEMIC_TECHNICAL_FAILURE_STOP.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    assert summary["status"] == "STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE"
+    assert stop["reason"] == "query_audit_protocol_violation"
+    assert stop["distinct_outer_count"] == 1
+    assert len(prediction_calls) == 1
+    assert score_calls == []
+
+
 def test_full_manifest_rejects_missing_or_tampered_smoke_outer_key(tmp_path: Path) -> None:
     manifest_path, _, manifest = _full_manifest(tmp_path)
     for value in (None, "rx_7_14__seed_713105__k_1__new_20"):
@@ -182,3 +263,29 @@ def test_full_manifest_rejects_missing_or_tampered_smoke_outer_key(tmp_path: Pat
         digest = hashlib.sha256(manifest_path.read_bytes()).hexdigest()
         with pytest.raises(runner.D92E0OCFHard12V3RunnerError, match="smoke_outer_key"):
             runner._load_manifest(manifest_path, digest)
+
+
+def test_load_manifest_rejects_tampered_canonical_job_role(tmp_path: Path) -> None:
+    """Would fail if runner bypassed the shared canonical manifest validator."""
+
+    manifest_path, _, manifest = _full_manifest(tmp_path)
+    manifest["jobs"][0]["role"] = "primary"
+    _write_json(manifest_path, manifest)
+    digest = hashlib.sha256(manifest_path.read_bytes()).hexdigest()
+    with pytest.raises(runner.D92E0OCFHard12V3RunnerError, match="manifest"):
+        runner._load_manifest(manifest_path, digest)
+
+
+def test_load_manifest_rejects_tampered_on_disk_method_lock(tmp_path: Path) -> None:
+    """Would fail if runner trusted only the method-lock hash stored in manifest."""
+
+    lock_path = tmp_path / "method_lock.json"
+    lock = json.loads(METHOD_LOCK.read_text(encoding="utf-8"))
+    _write_json(lock_path, lock)
+    manifest_path, digest, _ = _full_manifest(
+        tmp_path, method_lock_path=lock_path
+    )
+    lock["arms"]["E0_OCF50"]["lambda"] = 0.25
+    _write_json(lock_path, lock)
+    with pytest.raises(runner.D92E0OCFHard12V3RunnerError, match="method lock"):
+        runner._load_manifest(manifest_path, digest)

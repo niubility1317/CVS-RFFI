@@ -35,6 +35,68 @@ ARM_ORDER = (
 PRIMARY_ARM = "E0_OCF25"
 DIAGNOSTIC_ONLY_ARM = "E0_OCF50"
 SMOKE_OUTER_KEY = "rx_20_1__seed_713106__k_1__new_20"
+CLAIM_SCOPE = "DEVELOPMENT_ONLY_PSEUDO_BLIND_DISJOINT_STRESS_SCREEN"
+ARM_CANDIDATE_IDS = {
+    "D92_FULL": "d92_e0d_d92_full",
+    "E0_FULL_ONLY": "d92_e0d_e0_full_only",
+    "E0_FIXED50": "d92_e0d_e0_fixed50",
+    "E0_OCF25": "d92_e0ocf_e0_ocf25",
+    "E0_OCF50": "d92_e0ocf_e0_ocf50",
+}
+ARM_ROLES = {
+    "D92_FULL": "baseline",
+    "E0_FULL_ONLY": "baseline",
+    "E0_FIXED50": "baseline",
+    "E0_OCF25": "primary",
+    "E0_OCF50": "diagnostic_only",
+}
+_METHOD_LOCK_ARMS = {
+    "D92_FULL": {"candidate_id": "d92_e0d_d92_full", "role": "baseline"},
+    "E0_FULL_ONLY": {
+        "candidate_id": "d92_e0d_e0_full_only",
+        "role": "baseline",
+    },
+    "E0_FIXED50": {"candidate_id": "d92_e0d_e0_fixed50", "role": "baseline"},
+    "E0_OCF25": {
+        "candidate_id": "d92_e0ocf_e0_ocf25",
+        "role": "primary",
+        "lambda": 0.25,
+    },
+    "E0_OCF50": {
+        "candidate_id": "d92_e0ocf_e0_ocf50",
+        "role": "diagnostic_only",
+        "lambda": 0.50,
+    },
+}
+_MATRIX_COUNTS = {
+    "outer_count": 12,
+    "performance_outer_count": 10,
+    "liveness_outer_count": 2,
+    "job_count": 60,
+    "scene_arm_count": 180,
+    "scene_count": 3,
+    "shard_count": 8,
+}
+_STRICT_GEOMETRY_GATE = {
+    "mean_delta_old_floor_vs_full_only_min_exclusive": 0.0,
+    "old_floor_nonnegative_vs_full_only_min": 8,
+    "mean_delta_h_vs_full_only_min": 0.0,
+    "mean_delta_old_balanced_vs_full_only_min": 0.0,
+    "mean_delta_seen_new_vs_full_only_min": 0.0,
+    "mean_delta_forgetting_vs_full_only_max": 0.0,
+    "mean_delta_h_vs_d92_full_min": 0.005,
+    "h_nonnegative_vs_d92_full_min": 8,
+    "mean_delta_old_balanced_vs_d92_full_min": 0.0,
+    "mean_delta_old_floor_vs_d92_full_min": 0.0,
+    "mean_delta_seen_new_vs_d92_full_min": 0.0,
+    "mean_delta_forgetting_vs_d92_full_max": 0.0,
+    "median_wall_reduction_vs_d92_full_min": 0.6,
+    "median_incremental_peak_vs_d92_full_max": 0.0,
+    "query_macs_equal_full_only": True,
+    "state_bytes_equal_full_only": True,
+    "ocf_k5_k10_two_state_fit": "4/4",
+    "ocf_k5_k10_after_actual_fit": "2/2",
+}
 OUTER_PATTERN = re.compile(
     r"^rx_(?P<receiver>[0-9_]+)__seed_(?P<seed>[0-9]+)"
     r"__k_(?P<k>[0-9]+)__new_(?P<new>[0-9]+)$"
@@ -71,6 +133,25 @@ def _canonical_bytes(value: Mapping[str, Any]) -> bytes:
         separators=(",", ":"),
         allow_nan=False,
     ).encode("utf-8")
+
+
+def _exact_json_identity(actual: Any, expected: Any) -> bool:
+    try:
+        return json.dumps(
+            actual,
+            ensure_ascii=False,
+            sort_keys=True,
+            separators=(",", ":"),
+            allow_nan=False,
+        ) == json.dumps(
+            expected,
+            ensure_ascii=False,
+            sort_keys=True,
+            separators=(",", ":"),
+            allow_nan=False,
+        )
+    except (TypeError, ValueError):
+        return False
 
 
 def _historical_exclusions() -> tuple[str, ...]:
@@ -192,9 +273,176 @@ def _arm_candidate(arm_id: str) -> str:
     if arm_id not in ARM_ORDER:
         raise D92E0OCFHard12V3Error(f"unknown Hard12-v3 arm: {arm_id}")
     try:
-        return str(D92_E0D_ARMS[arm_id].candidate_id)
+        candidate_id = str(D92_E0D_ARMS[arm_id].candidate_id)
     except KeyError as error:
         raise D92E0OCFHard12V3Error(f"D92-E0D arm has no candidate identity: {arm_id}") from error
+    if candidate_id != ARM_CANDIDATE_IDS[arm_id]:
+        raise D92E0OCFHard12V3Error(f"D92-E0D candidate identity drift: {arm_id}")
+    return candidate_id
+
+
+def _is_sha256(value: Any) -> bool:
+    return isinstance(value, str) and re.fullmatch(r"[0-9a-f]{64}", value) is not None
+
+
+def _expected_selected_rows() -> list[dict[str, Any]]:
+    result: list[dict[str, Any]] = []
+    for frozen in HARD12_ROWS:
+        receiver, seed, k_shot, new_count = _parse_outer(str(frozen["outer_key"]))
+        result.append(
+            {
+                "outer_key": str(frozen["outer_key"]),
+                "outer_role": str(frozen["role"]),
+                "hard_score": str(frozen["hard_score"]),
+                "receiver": receiver,
+                "seed": seed,
+                "k_shot": k_shot,
+                "new_class_count": new_count,
+            }
+        )
+    return result
+
+
+def validate_method_lock(lock: Mapping[str, Any]) -> dict[str, Any]:
+    """Validate every frozen scientific identity in the E0OCF method lock."""
+
+    if not isinstance(lock, Mapping):
+        raise D92E0OCFHard12V3Error("D92-E0OCF method lock must be an object")
+    expected_top = {
+        "schema": "cvs.phase2.d92_e0ocf.method_lock.v1",
+        "matrix_schema": "cvs.phase2.d92_e0ocf_hard12v3.matrix.v1",
+        "job_receipt_schema": "cvs.phase2.d92_e0ocf_hard12v3.job_receipt.v1",
+        "protocol_schema": "p2_min_v1",
+        "claim_scope": CLAIM_SCOPE,
+        "selection_sha256": CANONICAL_SELECTION_SHA256,
+        "primary_arm": PRIMARY_ARM,
+        "diagnostic_only_arm": DIAGNOSTIC_ONLY_ARM,
+        "only_promotion_candidate": PRIMARY_ARM,
+        "smoke_outer_key": SMOKE_OUTER_KEY,
+    }
+    if any(lock.get(key) != value for key, value in expected_top.items()):
+        raise D92E0OCFHard12V3Error("D92-E0OCF method lock identity drift")
+    if not _exact_json_identity(lock.get("arms"), _METHOD_LOCK_ARMS):
+        raise D92E0OCFHard12V3Error("D92-E0OCF method lock arm identity drift")
+    if not _exact_json_identity(lock.get("matrix"), _MATRIX_COUNTS):
+        raise D92E0OCFHard12V3Error("D92-E0OCF method lock matrix identity drift")
+    if not _exact_json_identity(
+        lock.get("strict_geometry_gate"), _STRICT_GEOMETRY_GATE
+    ):
+        raise D92E0OCFHard12V3Error("D92-E0OCF method lock strict gate identity drift")
+    return dict(lock)
+
+
+def validate_hard12v3_manifest(
+    manifest: Mapping[str, Any],
+    *,
+    expected_method_lock_sha256: str | None = None,
+) -> dict[str, Any]:
+    """Validate the complete canonical Hard12-v3 matrix identity."""
+
+    if not isinstance(manifest, Mapping):
+        raise D92E0OCFHard12V3Error("Hard12-v3 manifest must be an object")
+    expected_top = {
+        "schema": "cvs.phase2.d92_e0ocf_hard12v3.matrix.v1",
+        "status": "FROZEN_DEVELOPMENT_MATRIX",
+        "claim_scope": CLAIM_SCOPE,
+        "protocol_schema": "p2_min_v1",
+        "selection_sha256": CANONICAL_SELECTION_SHA256,
+        "context_sha256": CONTEXT_SHA256,
+        "shard_count": 8,
+        "outer_count": 12,
+        "performance_outer_count": 10,
+        "liveness_outer_count": 2,
+        "job_count": 60,
+        "scene_count": 3,
+        "scene_arm_count": 180,
+        "primary_arm": PRIMARY_ARM,
+        "diagnostic_only_arm": DIAGNOSTIC_ONLY_ARM,
+        "smoke_outer_key": SMOKE_OUTER_KEY,
+    }
+    if not _exact_json_identity(
+        {key: manifest.get(key) for key in expected_top}, expected_top
+    ):
+        raise D92E0OCFHard12V3Error("Hard12-v3 manifest identity/count drift")
+    if (
+        manifest.get("arms") != list(ARM_ORDER)
+        or not _exact_json_identity(manifest.get("candidate_ids"), ARM_CANDIDATE_IDS)
+        or not _exact_json_identity(manifest.get("arm_roles"), ARM_ROLES)
+    ):
+        raise D92E0OCFHard12V3Error("Hard12-v3 manifest arm identity drift")
+    method_lock_sha256 = manifest.get("method_lock_sha256")
+    if not _is_sha256(method_lock_sha256):
+        raise D92E0OCFHard12V3Error("Hard12-v3 manifest method-lock SHA drift")
+    if (
+        expected_method_lock_sha256 is not None
+        and method_lock_sha256 != str(expected_method_lock_sha256).lower()
+    ):
+        raise D92E0OCFHard12V3Error("Hard12-v3 manifest method-lock SHA drift")
+    if (
+        not isinstance(manifest.get("method_lock"), str)
+        or not str(manifest["method_lock"])
+        or not isinstance(manifest.get("context_path"), str)
+        or not str(manifest["context_path"])
+        or not isinstance(manifest.get("output_root"), str)
+        or not str(manifest["output_root"])
+        or not isinstance(manifest.get("ground_component_dir"), str)
+        or not str(manifest["ground_component_dir"])
+        or not _is_sha256(manifest.get("ground_manifest_sha256"))
+    ):
+        raise D92E0OCFHard12V3Error("Hard12-v3 manifest path/hash identity drift")
+
+    expected_rows = _expected_selected_rows()
+    if not _exact_json_identity(manifest.get("selected_rows"), expected_rows):
+        raise D92E0OCFHard12V3Error("Hard12-v3 manifest selected outer identity drift")
+    expected_coverage = _coverage(expected_rows)
+    if not _exact_json_identity(manifest.get("coverage"), expected_coverage):
+        raise D92E0OCFHard12V3Error("Hard12-v3 manifest coverage drift")
+
+    jobs = manifest.get("jobs")
+    if not isinstance(jobs, list) or len(jobs) != 60:
+        raise D92E0OCFHard12V3Error("Hard12-v3 manifest job-count drift")
+    output_root = Path(str(manifest["output_root"]))
+    seen_job_ids: set[str] = set()
+    for outer_index, row in enumerate(expected_rows):
+        rotation = outer_index % len(ARM_ORDER)
+        arm_order = ARM_ORDER[rotation:] + ARM_ORDER[:rotation]
+        for arm_position, arm_id in enumerate(arm_order):
+            job_index = outer_index * len(ARM_ORDER) + arm_position
+            job = jobs[job_index]
+            if not isinstance(job, Mapping):
+                raise D92E0OCFHard12V3Error("Hard12-v3 manifest job identity drift")
+            job_id = f"{row['outer_key']}__arm_{arm_id.lower()}"
+            expected_job = {
+                "index": job_index,
+                "outer_index": outer_index,
+                "arm_position": arm_position,
+                "planned_shard_index": outer_index % 8,
+                "job_id": job_id,
+                "outer_key": row["outer_key"],
+                "outer_role": row["outer_role"],
+                "hard_score": row["hard_score"],
+                "receiver": row["receiver"],
+                "seed": row["seed"],
+                "k_shot": row["k_shot"],
+                "new_class_count": row["new_class_count"],
+                "arm_id": arm_id,
+                "candidate": ARM_CANDIDATE_IDS[arm_id],
+                "role": ARM_ROLES[arm_id],
+                "primary": arm_id == PRIMARY_ARM,
+                "diagnostic_only": arm_id == DIAGNOSTIC_ONLY_ARM,
+                "scenarios": list(SCENES),
+                "output_root": str(output_root / "jobs" / row["outer_key"] / arm_id),
+            }
+            if not _exact_json_identity(
+                {key: job.get(key) for key in expected_job}, expected_job
+            ):
+                raise D92E0OCFHard12V3Error("Hard12-v3 manifest canonical job identity drift")
+            if job_id in seen_job_ids:
+                raise D92E0OCFHard12V3Error("Hard12-v3 manifest duplicate job identity")
+            seen_job_ids.add(job_id)
+    if len(seen_job_ids) != 60:
+        raise D92E0OCFHard12V3Error("Hard12-v3 manifest job closure drift")
+    return dict(manifest)
 
 
 def build_hard12v3_manifest(
@@ -222,8 +470,8 @@ def build_hard12v3_manifest(
         context_rows[key] = dict(row)
     lock_file = Path(method_lock_path).resolve(strict=True)
     lock = json.loads(lock_file.read_text(encoding="utf-8-sig"))
-    if lock.get("schema") != "cvs.phase2.d92_e0ocf.method_lock.v1" or lock.get("protocol_schema") != "p2_min_v1" or lock.get("selection_sha256") != CANONICAL_SELECTION_SHA256 or lock.get("only_promotion_candidate") != PRIMARY_ARM or lock.get("smoke_outer_key") != SMOKE_OUTER_KEY:
-        raise D92E0OCFHard12V3Error("D92-E0OCF method lock drift")
+    validate_method_lock(lock)
+    method_lock_sha256 = _sha256_file(lock_file)
     smoke_rows = []
     for row in HARD12_ROWS:
         if str(row.get("outer_key")) != SMOKE_OUTER_KEY:
@@ -266,19 +514,24 @@ def build_hard12v3_manifest(
     if coverage != expected or len(jobs) != 60:
         raise D92E0OCFHard12V3Error("Hard12-v3 coverage/job-count drift")
     identity = context["identity"]
-    return {
+    manifest = {
         "schema": "cvs.phase2.d92_e0ocf_hard12v3.matrix.v1", "status": "FROZEN_DEVELOPMENT_MATRIX", "claim_scope": SELECTION_PAYLOAD["claim_scope"],
         "protocol_schema": "p2_min_v1", "selection_sha256": CANONICAL_SELECTION_SHA256, "context_path": str(context_file), "context_sha256": CONTEXT_SHA256,
-        "method_lock": str(lock_file), "method_lock_sha256": _sha256_file(lock_file), "ground_component_dir": identity["ground_component"]["directory"], "ground_manifest_sha256": identity["ground_component"]["manifest_sha256"],
+        "method_lock": str(lock_file), "method_lock_sha256": method_lock_sha256, "ground_component_dir": identity["ground_component"]["directory"], "ground_manifest_sha256": identity["ground_component"]["manifest_sha256"],
         "output_root": str(output), "shard_count": 8, "outer_count": len(selected_rows), "performance_outer_count": sum(row["outer_role"] == "performance" for row in selected_rows), "liveness_outer_count": sum(row["outer_role"] == "liveness" for row in selected_rows),
-        "job_count": len(jobs), "scene_arm_count": len(jobs) * len(SCENES), "arms": list(ARM_ORDER), "candidate_ids": {arm: _arm_candidate(arm) for arm in ARM_ORDER}, "primary_arm": PRIMARY_ARM, "diagnostic_only_arm": DIAGNOSTIC_ONLY_ARM, "smoke_outer_key": SMOKE_OUTER_KEY,
-        "arm_roles": {arm: ("primary" if arm == PRIMARY_ARM else ("diagnostic_only" if arm == DIAGNOSTIC_ONLY_ARM else "baseline")) for arm in ARM_ORDER}, "coverage": coverage, "selected_rows": selected_rows, "jobs": jobs,
+        "job_count": len(jobs), "scene_count": len(SCENES), "scene_arm_count": len(jobs) * len(SCENES), "arms": list(ARM_ORDER), "candidate_ids": {arm: _arm_candidate(arm) for arm in ARM_ORDER}, "primary_arm": PRIMARY_ARM, "diagnostic_only_arm": DIAGNOSTIC_ONLY_ARM, "smoke_outer_key": SMOKE_OUTER_KEY,
+        "arm_roles": dict(ARM_ROLES), "coverage": coverage, "selected_rows": selected_rows, "jobs": jobs,
     }
+    validate_hard12v3_manifest(
+        manifest,
+        expected_method_lock_sha256=method_lock_sha256,
+    )
+    return manifest
 
 
 build_hard12_manifest = build_hard12v3_manifest
 
 
 __all__ = [
-    "ARM_ORDER", "CANONICAL_SELECTION_SHA256", "CONTEXT_SHA256", "D92E0OCFHard12Error", "D92E0OCFHard12V3Error", "DIAGNOSTIC_ONLY_ARM", "EXCLUDED_OUTER_KEYS", "HARD12_ROWS", "HARD12_V1_ROWS", "HARD12_V2_ROWS", "HARD12_V3_ROWS", "PRIMARY_ARM", "SCENES", "SELECTION_PAYLOAD", "SMOKE_OUTER_KEY", "build_hard12_manifest", "build_hard12v3_manifest", "canonical_selection_sha256", "_canonical_bytes",
+    "ARM_CANDIDATE_IDS", "ARM_ORDER", "ARM_ROLES", "CANONICAL_SELECTION_SHA256", "CLAIM_SCOPE", "CONTEXT_SHA256", "D92E0OCFHard12Error", "D92E0OCFHard12V3Error", "DIAGNOSTIC_ONLY_ARM", "EXCLUDED_OUTER_KEYS", "HARD12_ROWS", "HARD12_V1_ROWS", "HARD12_V2_ROWS", "HARD12_V3_ROWS", "PRIMARY_ARM", "SCENES", "SELECTION_PAYLOAD", "SMOKE_OUTER_KEY", "build_hard12_manifest", "build_hard12v3_manifest", "canonical_selection_sha256", "validate_hard12v3_manifest", "validate_method_lock", "_canonical_bytes",
 ]
