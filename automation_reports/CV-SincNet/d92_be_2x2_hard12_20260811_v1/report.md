@@ -69,6 +69,12 @@ python -m pytest tests/test_stage2_registration_resource_probe.py
 
 实际启动器为同目录`launch.sh`。runner先执行一次本地N607只读预检，检查输出根不存在和当前GPU/进程占用。为避免Python完整包覆盖局部namespace导致新模块不可见，runner把当前Git提交中的完整`code/cvsrffi`和`code/scripts`打成一个运行闭包归档，同步到全新源码快照；另同步method lock和启动器。最低审查只核对归档、method lock身份，并执行所有本轮入口都来自新快照的真实import closure，不做整树或逐文件SHA。随后依次执行：
 
+|本地文件|N607目标|最低身份值|
+|---|---|---|
+|`E:\type10-7\code\snapshots\d92_be_runtime_closure_bf05869b.tar.gz`|`runs/d92_be_source_snapshot_20260811_v1/runtime_closure_bf05869b.tar.gz`|SHA256=`183b04e256ef94a4a946bf17b114ce0de51606f94751af9681b0ea700af61c04`|
+|`configs/stage2_d92_be_2x2_hard12_v1.json`|`runs/d92_be_source_snapshot_20260811_v1/configs/stage2_d92_be_2x2_hard12_v1.json`|SHA256=`282d4343adcecc124d76bcbafae8d3c473d7301d0a455797f1bbce57bb2af520`|
+|同目录`launch.sh`|`runs/d92_be_source_snapshot_20260811_v1/launch.sh`|SHA256=`bde90e2de0636b370fa922c91b807fda76d29302ff2da15a377647c1be80f09e`|
+
 1. `prepare`：验证12个源D92 job并独占写48job manifest；
 2. `smoke`：`rx_3_19__seed_713104__k_1__new_20/FULL`真实sealed checkpoint链，无truth参数；
 3. smoke通过后才启动8个shard；primary不重复启动。
