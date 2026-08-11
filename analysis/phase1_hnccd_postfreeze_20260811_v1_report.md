@@ -247,3 +247,37 @@ REJECT_P1_HNCCD_PERMANENT
 HNCCD在部分fold/scene上出现overall正增益，也在F6同时改善两个proxy连续量，但这些局部现象没有形成跨6折、按类、按RX和三scene稳定的共同增益。尤其是F4至F6的LEO尾部退化与F6 clean切片退化，表明“head行空间与零空间残差去相关”没有可靠转化为本轮要求的分类floor稳定性；这只是对冻结假设的反证，不证明更一般的因果机制。
 
 P1-HNCCD不得调参、挑fold、换checkpoint、重命名、拼接旧机制或借后运行阈值修订复活。proxy仍只是source-side连续诊断，不是真实unknown证据；本轮不产生FAR、注册授权、Phase2、Phase3、多卫星协同或论文晋级声明。后续正式未知类拒识必须让registered/unknown query在连接真值前共同经过单次固定`leo_*_weak`弱星地信道，clean unknown仅可作为隔离的非正式诊断。
+
+## 16.HSCF／RCMMC／HNCCD三轮探索复盘
+
+本节按`AGENTS.md`的三轮复盘规则，在启动下一条Phase1路线前重读当前目标、`项目.md`、conversation index、三份训练／postfreeze报告及回收的完整日志。复盘范围只覆盖HSCF、RCMMC和HNCCD，不重算或改写远端原始工件，也不把source proxy解释为真实unknown。
+
+完整日志核验结果为：HSCF共18个候选／pair日志、10146行；RCMMC共18个日志、10194行；HNCCD共19个日志、10194行。三组日志对`Traceback`、`RuntimeError`、CUDA OOM、SIGSEGV、argparse、权限和路径异常的扫描命中均为0。三轮的技术执行和同row工件已经闭合，永久拒绝来自预注册性能门，而不是训练或后冻结执行故障。
+
+|候选|技术稳定|clean四floor|LEO四floor|fold整体／全18格|proxy双strict|第五门|终态|
+|---|---|---:|---:|---|---:|---|---|
+|HSCF|PASS（v1失败后由不可覆盖v2修复闭合）|6/6|16/18，完整fold5/6|fold5/6；全18格`+1.813343pp`|2/6|checkpoint到sealed postfreeze技术路径PASS；deployment bundle未晋级|`REJECT_P1_HSCF_PERMANENT`|
+|RCMMC|PASS|6/6|6/18，完整fold0/6|全18格`−0.527854pp`|2/6|checkpoint到sealed postfreeze技术路径PASS；deployment bundle未晋级|`REJECT_P1_RCMMC_PERMANENT`|
+|HNCCD|PASS|5/6|6/18，完整fold0/6|fold6/6；全18格`−0.451900pp`按其预注册`≥−2pp`通过|1/6|checkpoint到sealed postfreeze技术路径PASS；deployment bundle未晋级|`REJECT_P1_HNCCD_PERMANENT`|
+
+三轮给出三个相互补充的反证。HSCF最接近守住LEO分类floor，但没有把这一稳定性转化为跨6折proxy双正；RCMMC匹配按receiver×class的一、二阶矩后，LEO完整fold从HSCF的5/6降为0/6，说明cell矩一致不能替代最差类／接收机尾部；HNCCD将fold整体控制在`−2pp`内，却在F4至F6继续出现min-class和min-RX退化，且proxy只过1/6。结果不支持“再增加一个局部几何辅助项，平均收益便会自动闭合floor与unknown proxy”这一假设。
+
+现阶段的共同缺口不是缺少第九个同类loss，而是缺少一个能够在同一候选上同时守住clean、三种LEO弱信道最差切片和TX互斥proxy方向的表征级pivot。下一方案可以依法调整Sinc／时频分支、`z_id`／`z_dom`、normalization、projection和fusion，但不得复活、改名或拼接HSCF、RCMMC、HNCCD及更早永久拒绝的原语；也不得从失败fold、receiver、day或proxy结果反向选择阈值、seed、权重或结构。
+
+## 17.Phase1到Phase3入口与LEO weak硬边界
+
+这三轮均只有“真实checkpoint可被当前exporter读取并形成sealed后冻结工件”的技术证据。该事实不等于第五门已经生成并晋级不可变deployment bundle。当前没有任何一条已审计路线同时通过五门，因此不能把现有SCB／CARE／CIRF的N=1技术fixture升级为正式Phase3未知拒识实验。
+
+正式Phase3还有一项独立输入缺口。现有`LocalEvidenceV3`与SCB N=1桥没有封存`physical_sample_id`、唯一`leo_*_weak`场景、信道seed、`received_i`字节SHA和`single_observation=true`，因而不能证明registered与unknown在连接真值／角色前走过同一单观测弱星地信道管线。后续入口必须同时满足：
+
+1.每条registered或unknown接收记录只绑定一份固定`leo_clear_weak`、`leo_low_elev_weak`或`leo_rain_weak`的`received_i`；
+2.scene和seed的分配不读取known／unknown真值、角色、预测或scorer结果；
+3.同一物理接收记录不得生成多scene或多随机实现后挑选、融合；
+4.clean unknown只可标为`DIAGNOSTIC_UNKNOWN_NO_LEO_NON_FORMAL`，不得进入正式FAR、安全拒识率或晋级判断；
+5.在合格Phase1 bundle出现前，LEO lineage桥最多进行本地N=1技术正／负测，不启动Phase3性能矩阵。
+
+## 18.下一轮准入决定
+
+在未提供审计范围外的既有五门合格bundle时，下一主线仍停留在Phase1。顺序固定为：先形成一个单一、非旧机制拼接的表征级`DESIGN_DRAFT`，再做独立`FEASIBILITY_REVIEW`和`P0=0／P1=0`冻结；实现后仅运行同一12臂训练和42步非补偿后冻结矩阵。只有五门同一候选全部通过并封存deployment bundle，才进入registered／unknown共同叠加单次LEO weak的N=1正式入口。
+
+Phase3的LEO lineage合同可以作为独立技术准备，但不得产生性能、晋级或unknown能力声明。真实`N_sat>1`仍等待标签可见前封存的truth-blind same-event／grouping资产；不得用跨RX的`sig_i`、truth-ranked分组或合成fixture替代。
