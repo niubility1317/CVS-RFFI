@@ -256,33 +256,37 @@ def _fit_audit_status(path: Path) -> tuple[str, str]:
 
 def _prediction_artifact_status(
     path: Path,
-) -> tuple[str, str, np.ndarray | None, np.ndarray | None]:
+) -> tuple[str, str, tuple[tuple[str, str], ...] | None]:
     if not path.is_file() or path.is_symlink() or path.stat().st_size <= 0:
-        return "technical_failure", "prediction_artifact_missing_or_empty", None, None
+        return "technical_failure", "prediction_artifact_missing_or_empty", None
     try:
         with np.load(path, allow_pickle=False) as payload:
             if (
                 len(payload.files) != len(_PREDICTION_KEYS)
                 or set(payload.files) != _PREDICTION_KEYS
             ):
-                return "technical_failure", "prediction_artifact_key_drift", None, None
+                return "technical_failure", "prediction_artifact_key_drift", None
             query_tokens = np.asarray(payload["query_tokens"])
             scenarios = np.asarray(payload["scenarios"])
             predictions = np.asarray(payload["predicted_class_handles"])
     except (OSError, TypeError, ValueError, KeyError):
-        return "technical_failure", "prediction_artifact_invalid_npz", None, None
+        return "technical_failure", "prediction_artifact_invalid_npz", None
     arrays = (query_tokens, scenarios, predictions)
     if (
         any(array.ndim != 1 or array.size == 0 for array in arrays)
         or len({int(array.size) for array in arrays}) != 1
     ):
-        return "technical_failure", "prediction_artifact_shape_drift", None, None
+        return "technical_failure", "prediction_artifact_shape_drift", None
+    query_values = [str(value) for value in query_tokens.tolist()]
     scenario_values = [str(value) for value in scenarios.tolist()]
     if set(scenario_values) != set(_SCENES) or any(
         scenario_values.count(scene) <= 0 for scene in _SCENES
     ):
-        return "technical_failure", "prediction_artifact_scenario_drift", None, None
-    return "closed", "closed", query_tokens, scenarios
+        return "technical_failure", "prediction_artifact_scenario_drift", None
+    query_pairs = tuple(zip(scenario_values, query_values))
+    if len(set(query_pairs)) != len(query_pairs):
+        return "technical_failure", "prediction_artifact_query_pair_duplicate", None
+    return "closed", "closed", query_pairs
 
 
 def _commit_status(state_root: Path) -> tuple[str, str]:
@@ -348,27 +352,32 @@ def _commit_status(state_root: Path) -> tuple[str, str]:
 
 def _prediction_closure_status(prediction_root: Path) -> tuple[str, str]:
     paths = _prediction_closure_paths(prediction_root)
-    prediction_identity: dict[str, tuple[np.ndarray, np.ndarray]] = {}
+    prediction_identity: dict[str, tuple[tuple[str, str], ...]] = {}
     for state in ("before", "after"):
-        status, reason, query_tokens, scenarios = _prediction_artifact_status(
+        status, reason, query_pairs = _prediction_artifact_status(
             paths[f"{state}_prediction"]
         )
-        if status != "closed" or query_tokens is None or scenarios is None:
+        if status != "closed" or query_pairs is None:
             return status, f"prediction_closure_{state}_{reason}"
-        prediction_identity[state] = (query_tokens, scenarios)
+        prediction_identity[state] = query_pairs
         status, reason = _commit_status(Path(prediction_root) / state)
         if status != "closed":
             return status, f"prediction_closure_{state}_{reason}"
         status, reason = _fit_audit_status(paths[f"{state}_fit_audit"])
         if status != "closed":
             return status, f"prediction_closure_{state}_{reason}"
-    before_tokens, before_scenarios = prediction_identity["before"]
-    after_tokens, after_scenarios = prediction_identity["after"]
-    if (
-        before_tokens.dtype != after_tokens.dtype
-        or before_scenarios.dtype != after_scenarios.dtype
-        or not np.array_equal(before_tokens, after_tokens)
-        or not np.array_equal(before_scenarios, after_scenarios)
+    before_pairs = set(prediction_identity["before"])
+    after_pairs = set(prediction_identity["after"])
+    before_token_scenarios: dict[str, set[str]] = {}
+    after_token_scenarios: dict[str, set[str]] = {}
+    for scenario, token in before_pairs:
+        before_token_scenarios.setdefault(token, set()).add(scenario)
+    for scenario, token in after_pairs:
+        after_token_scenarios.setdefault(token, set()).add(scenario)
+    shared_tokens = set(before_token_scenarios) & set(after_token_scenarios)
+    if not before_pairs.issubset(after_pairs) or any(
+        before_token_scenarios[token] != after_token_scenarios[token]
+        for token in shared_tokens
     ):
         return "technical_failure", "prediction_closure_cross_state_query_identity_drift"
     return "closed", "closed"

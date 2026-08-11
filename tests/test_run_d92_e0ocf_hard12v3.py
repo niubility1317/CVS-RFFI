@@ -69,17 +69,44 @@ def _write_prediction_closure(
     for state in ("before", "after"):
         state_root = root / state
         state_root.mkdir(parents=True, exist_ok=True)
-        query_tokens = np.asarray(["q0", "q1", "q2"])
-        scenarios = np.asarray(SCENES)
-        if state == "after" and corruption == "query_token_drift":
-            query_tokens = np.asarray(["q0", "q1", "q9"])
-        if state == "after" and corruption == "scenario_order_drift":
-            scenarios = scenarios[::-1]
+        if state == "before":
+            query_tokens = np.asarray(
+                ["old_clear", "old_low_elev", "old_rain"], dtype="U16"
+            )
+            scenarios = np.asarray(SCENES, dtype="U24")
+            if corruption == "unknown_before_token":
+                query_tokens[0] = "unknown_before"
+        else:
+            # The real writer keeps every old-query pair and appends new-query
+            # pairs.  Its ordering and fixed-width string dtypes are not a
+            # cross-state identity contract.
+            query_tokens = np.asarray(
+                [
+                    "new_rain",
+                    "old_low_elev",
+                    "new_clear",
+                    "old_clear",
+                    "new_low_elev",
+                    "old_rain",
+                ],
+                dtype="U32",
+            )
+            scenarios = np.asarray(
+                [SCENES[2], SCENES[1], SCENES[0], SCENES[0], SCENES[1], SCENES[2]],
+                dtype="U40",
+            )
+            if corruption == "overlap_scenario_drift":
+                scenarios[3] = SCENES[2]
+            elif corruption == "duplicate_pair":
+                query_tokens = np.append(query_tokens, query_tokens[0])
+                scenarios = np.append(scenarios, scenarios[0])
         if missing != f"{state}_prediction":
             arrays = {
                 "query_tokens": query_tokens,
                 "scenarios": scenarios,
-                "predicted_class_handles": np.asarray(["old_0", "old_1", "old_2"]),
+                "predicted_class_handles": np.asarray(
+                    [f"pred_{index}" for index in range(len(query_tokens))]
+                ),
             }
             if corruption == "extra_npz_key":
                 arrays["extra"] = np.asarray([1, 2, 3])
@@ -195,6 +222,14 @@ def test_full_matrix_first_smoke_publishes_exact_shared_receipt(monkeypatch: pyt
     assert all(receipt[field] is False for field in QUERY_ZERO_FIELDS)
 
 
+def test_prediction_closure_accepts_real_writer_before_subset_after(
+    tmp_path: Path,
+) -> None:
+    root = tmp_path / "diag"
+    _write_prediction_closure(root)
+    assert runner._prediction_closure_status(root) == ("closed", "closed")
+
+
 def test_full_matrix_run_shard_rejects_absent_or_tampered_smoke_before_events(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     manifest_path, digest, manifest = _full_manifest(tmp_path)
     args = SimpleNamespace(matrix_manifest=str(manifest_path), matrix_manifest_sha256=digest, shard_index=0, shard_count=8, device="cpu", cpu_threads=1)
@@ -282,8 +317,9 @@ def test_run_shard_routes_same_missing_commit_on_two_outers_to_shared_stop(
         "stale_commit",
         "duplicate_scene",
         "missing_scene",
-        "query_token_drift",
-        "scenario_order_drift",
+        "unknown_before_token",
+        "overlap_scenario_drift",
+        "duplicate_pair",
     ),
 )
 def test_run_shard_routes_invalid_prediction_closure_through_shared_ledger(
