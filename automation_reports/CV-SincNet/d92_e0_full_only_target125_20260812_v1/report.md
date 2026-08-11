@@ -4,7 +4,7 @@
 |---|---|
 |run ID|`d92_e0_full_only_target125_20260812_v1`|
 |日期|2026-08-12|
-|状态|`LOCAL_VERIFIED / INDEPENDENT_REVIEW_PENDING`|
+|状态|`RELEASE_READY`|
 |协议|`p2_min_v1`；复用`VALIDATED_ONCE`数据|
 |候选|`E0_FULL_ONLY`，candidate=`d92_e0d_e0_full_only`|
 |目标|验证完整Target125上是否同时保持或提高性能，并显著缩减D92注册计算|
@@ -73,8 +73,10 @@ Hard12-v3的10个fresh performance outer上，`E0_FULL_ONLY−D92_FULL`得到H`+
 |远端output root|`/home/szu2070436088/2510044040/CV-SincNet/runs/d92_e0_full_only_target125_20260812_v1`|
 |远端logs root|`/home/szu2070436088/2510044040/CV-SincNet/logs/d92_e0_full_only_target125_20260812_v1`|
 |GPU|GPU0–7各一个shard，每child CPU threads=2|
-|代码commit|待本地验证后填写|
-|archive/config/launch SHA|待发布封装后填写|
+|代码commit|`ba1aeb7a`（runtime method/runner）|
+|runtime archive|`E:\type10-7\code\snapshots\d92_e0_full_only_runtime_closure_ba1aeb7a.tar.gz`；4987764B；SHA256=`899e409d742c2135a2a5a09bdfb5055e918dd86d5704ac014c9c606ed92ca1b0`|
+|config SHA|`13709fb300239526b1d7885bb5ceb90257ff70a0ac29d7f8e6c2a04b2f11c2c1`|
+|launch SHA|`7646376b4f3e2860552ac3a084d90af4f3533e5c51c6f95a3361638d61ec9ab2`|
 
 唯一启动命令预注册为：
 
@@ -94,3 +96,7 @@ cd /home/szu2070436088/2510044040/CV-SincNet/runs/d92_e0_full_only_source_snapsh
 |两份对应测试|125/375覆盖、arm/path篡改负测、smoke前置、正常分派与distinct-outer停派|
 
 `ssr-gpu`下新封装9项通过；连同E0D slim/query、D92 probe和既有E0OCF runner的相关回归共80项通过，`py_compile`、CLI help和`git diff --check`通过。config SHA256=`13709fb300239526b1d7885bb5ceb90257ff70a0ac29d7f8e6c2a04b2f11c2c1`；selection SHA256=`e2d7a22c3f6968a661e9fc28a4b4259b33c286e1eb944a4d20bb42f0c49da67c`。
+
+独立release review结论为`APPROVE`，`P0=0，P1=0`。审查确认单臂身份、K1 smoke、125×3覆盖、源包/seal、预测后独立评分以及跨outer共享技术停止均已闭合；N607 preflight与真实smoke属于下一执行步骤。
+
+同步映射固定为：runtime archive→`source_root/d92_e0_full_only_runtime_closure_ba1aeb7a.tar.gz`；config→`source_root/configs/stage2_d92_e0_full_only_target125_v1.json`；launch→`source_root/launch.sh`。归档来自Git commit`ba1aeb7a`的完整`code/`树，共1296个成员，已核对包含`code/cvsrffi/__init__.py`、目标builder/runner及复用的E0OCF closure入口，且不存在`code/code`层级。
