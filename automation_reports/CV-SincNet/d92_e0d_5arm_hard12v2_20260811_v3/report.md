@@ -8,7 +8,7 @@
 |run ID|`d92_e0d_5arm_hard12v2_20260811_v3`|
 |日期|2026-08-11|
 |operator|Codex primary；N607唯一runner待交接|
-|当前状态|`LOCAL_RUNTIME_CONTRACT_FIX_VERIFIED_PENDING_REVIEW`|
+|当前状态|`LOCAL_VERIFIED_APPROVED_FOR_N607`|
 |协议|`p2_min_v1`|
 |证据范围|`DEVELOPMENT_ONLY_PSEUDO_BLIND_DISJOINT_STRESS_SCREEN`|
 |唯一晋级候选|`E0_FULL_ONLY`|
@@ -38,7 +38,7 @@
 |TDD红灯|PASS|新增契约断言在修复前精确复现KeyError|
 |相关回归|PASS|`ssr-gpu`环境中36项D92-E0D/runner/probe测试通过|
 |静态检查|PASS|修复文件`py_compile`及`git diff --check`通过|
-|独立P0/P1复审|待执行|只审运行时契约修复与v3发布包；P2不阻塞|
+|独立P0/P1复审|PASS|复审HEAD=`75c11546`；P0=0、P1=0；`APPROVE_RELEASE`|
 
 本轮不重复数据验证、不做整树SHA或额外签名。
 
