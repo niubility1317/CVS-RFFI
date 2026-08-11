@@ -11,7 +11,6 @@ import re
 import stat
 import subprocess
 import sys
-from collections import Counter
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Mapping
@@ -206,6 +205,80 @@ def _fingerprint(path: Path) -> str:
     return hashlib.sha256(message.encode("utf-8")).hexdigest()
 
 
+def _shared_systemic_stop_path(output_root: Path) -> Path:
+    return Path(output_root) / "SYSTEMIC_TECHNICAL_FAILURE_STOP.json"
+
+
+def _publish_shared_systemic_stop(
+    output_root: Path,
+    *,
+    reason: str,
+    fingerprint: str,
+    distinct_outer_count: int,
+) -> None:
+    marker = _shared_systemic_stop_path(output_root)
+    try:
+        _write_json_new(
+            marker,
+            {
+                "schema": "cvs.phase2.d92_e0d_hard12v2.systemic_stop.v1",
+                "status": "STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE",
+                "timestamp": _now(),
+                "reason": str(reason),
+                "fingerprint": str(fingerprint),
+                "distinct_outer_count": int(distinct_outer_count),
+                "performance_result_allowed": False,
+                "fresh_run_retry_authorized": False,
+            },
+        )
+    except FileExistsError:
+        pass
+
+
+def _record_shared_pre_prediction_failure(
+    output_root: Path,
+    job: Mapping[str, Any],
+    fingerprint: str,
+) -> bool:
+    """Record one immutable failure and stop after two distinct outers agree."""
+
+    root = Path(output_root)
+    normalized = str(fingerprint).lower()
+    if re.fullmatch(r"[0-9a-f]{64}", normalized) is None:
+        normalized = hashlib.sha256(normalized.encode("utf-8")).hexdigest()
+    outer_key = str(job["outer_key"])
+    job_id = str(job["job_id"])
+    outer_digest = hashlib.sha256(outer_key.encode("utf-8")).hexdigest()
+    job_digest = hashlib.sha256(job_id.encode("utf-8")).hexdigest()
+    fingerprint_root = root / "systemic_pre_prediction_failures" / normalized
+    record = fingerprint_root / outer_digest / f"{job_digest}.json"
+    try:
+        _write_json_new(
+            record,
+            {
+                "schema": "cvs.phase2.d92_e0d_hard12v2.pre_prediction_failure.v1",
+                "timestamp": _now(),
+                "fingerprint": normalized,
+                "outer_key": outer_key,
+                "job_id": job_id,
+                "arm_id": str(job["arm_id"]),
+            },
+        )
+    except FileExistsError:
+        pass
+    distinct_outer_count = sum(
+        1 for child in fingerprint_root.iterdir() if child.is_dir()
+    )
+    if distinct_outer_count >= 2:
+        _publish_shared_systemic_stop(
+            root,
+            reason="same_pre_prediction_fingerprint_on_two_distinct_outers",
+            fingerprint=normalized,
+            distinct_outer_count=distinct_outer_count,
+        )
+    return _shared_systemic_stop_path(root).is_file()
+
+
 def prepare(args: argparse.Namespace) -> dict[str, Any]:
     output = Path(args.output_root)
     if output.exists():
@@ -301,16 +374,25 @@ def run_shard(args: argparse.Namespace) -> dict[str, Any]:
         raise D92E0DHard12V2RunnerError("shard evidence already exists")
     completed_jobs: list[str] = []
     failures: list[dict[str, Any]] = []
-    fingerprints: Counter[str] = Counter()
     child_env = _child_env(args.cpu_threads)
     systemic_stop = False
     for job in selected:
+        if _shared_systemic_stop_path(output).is_file():
+            systemic_stop = True
+            break
         job_root = Path(job["output_root"])
         if job_root.exists():
             failure = {"job_id": job["job_id"], "stage": "preflight", "error": "job output exists"}
             failures.append(failure)
             _append_event(events_path, {"timestamp": _now(), "event": "JOB_REFUSED_EXISTING_OUTPUT", **failure})
-            continue
+            _publish_shared_systemic_stop(
+                output,
+                reason="immutable_job_output_overwrite_risk",
+                fingerprint="job_output_exists",
+                distinct_outer_count=1,
+            )
+            systemic_stop = True
+            break
         job_root.mkdir(parents=True)
         prediction_command = _prediction_command(
             job,
@@ -334,11 +416,10 @@ def run_shard(args: argparse.Namespace) -> dict[str, Any]:
                 )
         if prediction_result.returncode != 0:
             fingerprint = _fingerprint(prediction_stderr)
-            fingerprints[fingerprint] += 1
             failure = {"job_id": job["job_id"], "stage": "pre_prediction", "returncode": prediction_result.returncode, "fingerprint": fingerprint}
             failures.append(failure)
             _append_event(events_path, {"timestamp": _now(), "event": "JOB_PREDICTION_FAILED", **failure})
-            if fingerprints[fingerprint] >= 2:
+            if _record_shared_pre_prediction_failure(output, job, fingerprint):
                 systemic_stop = True
                 break
             continue
@@ -394,6 +475,7 @@ def run_shard(args: argparse.Namespace) -> dict[str, Any]:
         _write_json_new(job_root / "job_receipt.json", receipt)
         completed_jobs.append(str(job["job_id"]))
         _append_event(events_path, {"timestamp": _now(), "event": "JOB_SCORE_COMPLETE", "job_id": job["job_id"]})
+    systemic_stop = systemic_stop or _shared_systemic_stop_path(output).is_file()
     status = (
         "STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE"
         if systemic_stop
@@ -410,6 +492,7 @@ def run_shard(args: argparse.Namespace) -> dict[str, Any]:
         "failures": failures,
         "performance_result_allowed": status == "PASS",
         "fresh_run_retry_authorized": False,
+        "shared_systemic_stop_path": str(_shared_systemic_stop_path(output)),
     }
     _write_json_new(summary_path, summary)
     return summary

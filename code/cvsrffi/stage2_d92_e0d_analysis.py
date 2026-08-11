@@ -244,7 +244,9 @@ def _gate(passed: bool, observed: Any, threshold: Any) -> dict[str, Any]:
 
 
 def _expected_fit_count(k_shot: int, arm: str) -> int:
-    if int(k_shot) <= 2 or arm == "D92_FULL":
+    if int(k_shot) <= 2:
+        return 3
+    if arm == "D92_FULL":
         return 8 * (int(k_shot) + 1)
     if arm == "E0_FUSION":
         return 4 * (int(k_shot) + 1)

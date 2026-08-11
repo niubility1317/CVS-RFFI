@@ -95,7 +95,7 @@ def _score_payload(*, arm: str, candidate_h: float, k_shot: int) -> dict:
 
 def _expected_fit_count(k_shot: int, arm: str) -> int:
     if k_shot <= 2:
-        return 8 * (k_shot + 1)
+        return 3
     if arm == "D92_FULL":
         return 8 * (k_shot + 1)
     if arm == "E0_FUSION":
@@ -348,6 +348,13 @@ def test_analysis_rejects_hidden_component_inventory_drift(tmp_path: Path) -> No
     _write_json(fit_path, fit_rows)
     with pytest.raises(D92E0DAnalysisError, match="actual component inventory drift"):
         analyze_d92_e0d_hard12v2(manifest_path)
+
+
+def test_k1_alias_uses_the_real_three_component_inventory(tmp_path: Path) -> None:
+    result = analyze_d92_e0d_hard12v2(_build_matrix(tmp_path))
+    k1_rows = [row for row in result["paired_rows"] if row["vs_d92_full_k_shot"] == 1]
+    assert k1_rows == []
+    assert result["gates"]["fit_count_exact"]["passed"] is True
 
 
 def test_analysis_accepts_local_overrides_for_retrieved_remote_artifacts(

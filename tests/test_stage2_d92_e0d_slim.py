@@ -163,3 +163,6 @@ def test_before_and_k1_k2_states_are_exact_d92_full_aliases_across_arms():
             assert audit["d92_e0d_registered_d_mode_effective"] == "d92_full_alias"
             if k_shot <= 2:
                 assert audit["d92_e0d_k1_k2_exact_full_alias"] is True
+        if k_shot == 1:
+            assert {head[2]["d92_e0d_total_component_fit_count"] for head in heads} == {3}
+            assert {head[2]["d92_e0d_actual_component_fit_count"] for head in heads} == {3}

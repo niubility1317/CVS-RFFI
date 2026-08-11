@@ -150,6 +150,74 @@ def test_run_shard_refuses_existing_job_output_without_launch(monkeypatch, tmp_p
             cpu_threads=2,
         )
     )
-    assert result["status"] == "PARTIAL_FAILURE"
+    assert result["status"] == "STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE"
     assert result["failed_job_count"] == 1
+    assert called == []
+    assert runner._shared_systemic_stop_path(Path(job["output_root"]).parents[2]).is_file()
+
+
+def test_shared_failure_ledger_counts_distinct_outers_not_arms(tmp_path: Path):
+    output = tmp_path / "matrix"
+    output.mkdir()
+    fingerprint = "a" * 64
+    first = {
+        "job_id": "outer_a__arm_full",
+        "outer_key": "outer_a",
+        "arm_id": "D92_FULL",
+    }
+    same_outer = {
+        "job_id": "outer_a__arm_e0",
+        "outer_key": "outer_a",
+        "arm_id": "E0_FUSION",
+    }
+    second_outer = {
+        "job_id": "outer_b__arm_full",
+        "outer_key": "outer_b",
+        "arm_id": "D92_FULL",
+    }
+    assert runner._record_shared_pre_prediction_failure(output, first, fingerprint) is False
+    assert (
+        runner._record_shared_pre_prediction_failure(output, same_outer, fingerprint)
+        is False
+    )
+    assert (
+        runner._record_shared_pre_prediction_failure(output, second_outer, fingerprint)
+        is True
+    )
+    assert runner._shared_systemic_stop_path(output).is_file()
+
+
+def test_run_shard_honors_existing_cross_shard_stop_before_dispatch(
+    monkeypatch, tmp_path: Path
+):
+    manifest, digest, _job = _manifest(tmp_path)
+    payload = json.loads(manifest.read_text(encoding="utf-8"))
+    output = Path(payload["output_root"])
+    output.mkdir(parents=True)
+    runner._write_json_new(
+        runner._shared_systemic_stop_path(output),
+        {
+            "schema": "cvs.phase2.d92_e0d_hard12v2.systemic_stop.v1",
+            "status": "STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE",
+        },
+    )
+    called = []
+    monkeypatch.setattr(
+        runner.subprocess,
+        "run",
+        lambda *_args, **_kwargs: called.append(True),
+    )
+    result = runner.run_shard(
+        argparse.Namespace(
+            matrix_manifest=str(manifest),
+            matrix_manifest_sha256=digest,
+            shard_index=0,
+            shard_count=8,
+            device="cuda:0",
+            cpu_threads=2,
+        )
+    )
+    assert result["status"] == "STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE"
+    assert result["selected_job_count"] == 1
+    assert result["completed_job_count"] == 0
     assert called == []
