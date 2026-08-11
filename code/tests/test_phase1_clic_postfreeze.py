@@ -293,6 +293,114 @@ def _clic_proxy_arrays() -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray
     return source, source_labels, validation, proxy
 
 
+def _write_pair_leo_npz(path: Path, *, arm: str) -> dict[str, object]:
+    """Write source-only LEO feature rows plus the binding metadata consumed by PAIR."""
+
+    rows = []
+    for scene in SCENARIOS:
+        for rx_slot in range(7):
+            for tx_index, tx in enumerate(SOURCE_TX):
+                rows.append((scene, rx_slot, tx, f"{arm}-{scene}-{rx_slot}-{tx_index}"))
+    scene_rows = np.asarray([row[0] for row in rows], dtype=str)
+    rx_slots = np.asarray([row[1] for row in rows], dtype=np.int64)
+    tx_ids = np.asarray([row[2] for row in rows], dtype=str)
+    physical_ids = np.asarray([row[3] for row in rows], dtype=str)
+    z_id = np.asarray([[1.0 + 0.01 * int(rx), 0.1 * (index % 4)] for index, (_, rx, _, _) in enumerate(rows)], dtype=np.float64)
+    tx_logits = np.zeros((len(rows), len(SOURCE_TX)), dtype=np.float64)
+    tx_logits[:, 0] = 1.0
+    path.parent.mkdir(parents=True, exist_ok=True)
+    np.savez(
+        path,
+        z_id=z_id,
+        tx_logits=tx_logits,
+        sat_scenarios=scene_rows,
+        scene=scene_rows,
+        rx_slot=rx_slots,
+        tx_ids=tx_ids,
+        physical_sample_id=physical_ids,
+        source_only=np.asarray(True),
+    )
+    return {
+        "schema": "cvs.phase1.clic_leo_binding.v1",
+        "arm": arm,
+        "fold_index": 1,
+        "source_only": True,
+        "single_leo_observation": True,
+        "source_tx_ids": list(SOURCE_TX),
+        "scene_order": list(SCENARIOS),
+        "received_iq_sha256": _sha_text("common-existing-received-iq"),
+        "physical_order_sha256": _sha_text("common-physical-order"),
+        "leo_npz_sha256": _sha_file(path),
+        "physical_row_count": len(rows),
+    }
+
+
+def _pair_artifact_fixture(tmp_path: Path) -> dict[str, object]:
+    """Create C/G raw feature, binding, receipt, and proxy-summary artifacts."""
+
+    artifacts: dict[str, object] = {}
+    for arm in ("C", "G"):
+        paths = _checkpoint_fixture(tmp_path / arm, arm=arm)
+        clean = tmp_path / arm / "clean.npz"
+        _write_feature_npz(clean, paths, arm=arm)
+        leo = tmp_path / arm / "leo.npz"
+        binding = _write_pair_leo_npz(leo, arm=arm)
+        binding_path = tmp_path / arm / "leo_binding.json"
+        binding_path.write_text(json.dumps(binding, sort_keys=True) + "\n", encoding="utf-8")
+        receipt_path = tmp_path / arm / "common_receipt.json"
+        receipt_path.write_text(json.dumps(_common_receipt(arm), sort_keys=True) + "\n", encoding="utf-8")
+        proxy_path = tmp_path / arm / "proxy_diagnostic.json"
+        proxy_path.write_text(
+            json.dumps(
+                {
+                    "schema": "cvs.phase1.clic_proxy_diagnostic.v1",
+                    "fit": {"role": "source_L_only", "fit_rows": 8, "threshold_fit_rows": 0},
+                    "source_validation_known": {"fit_rows": 0, "threshold_fit_rows": 0},
+                    "proxy_unknown": {"count": 400, "fit_rows": 0, "threshold_fit_rows": 0},
+                    "AUROC_unknown": 0.5,
+                    "u_gap": 0.0,
+                    "threshold_used": False,
+                    "tail_policy_used": False,
+                },
+                sort_keys=True,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+        artifacts[f"{arm.lower()}_paths"] = paths
+        artifacts[f"{arm.lower()}_clean"] = clean
+        artifacts[f"{arm.lower()}_leo"] = leo
+        artifacts[f"{arm.lower()}_binding"] = binding_path
+        artifacts[f"{arm.lower()}_receipt"] = receipt_path
+        artifacts[f"{arm.lower()}_proxy"] = proxy_path
+    pair_json = tmp_path / "pair.json"
+    artifacts["pair_json"] = pair_json
+    return artifacts
+
+
+def _pair_cli_argv(artifacts: dict[str, object]) -> list[str]:
+    return [
+        "--c-checkpoint", str(artifacts["c_paths"]["checkpoint"]),
+        "--g-checkpoint", str(artifacts["g_paths"]["checkpoint"]),
+        "--c-terminal-receipt-json", str(artifacts["c_paths"]["terminal"]),
+        "--g-terminal-receipt-json", str(artifacts["g_paths"]["terminal"]),
+        "--c-clean-npz", str(artifacts["c_clean"]),
+        "--g-clean-npz", str(artifacts["g_clean"]),
+        "--c-leo-npz", str(artifacts["c_leo"]),
+        "--g-leo-npz", str(artifacts["g_leo"]),
+        "--c-leo-binding-json", str(artifacts["c_binding"]),
+        "--g-leo-binding-json", str(artifacts["g_binding"]),
+        "--c-common-receipt-json", str(artifacts["c_receipt"]),
+        "--g-common-receipt-json", str(artifacts["g_receipt"]),
+        "--c-proxy-diagnostic-json", str(artifacts["c_proxy"]),
+        "--g-proxy-diagnostic-json", str(artifacts["g_proxy"]),
+        "--fold-index", "1",
+        "--training-run-root", TRAINING_RUN,
+        "--source-tx-ids", ",".join(SOURCE_TX),
+        "--output-pair-json", str(artifacts["pair_json"]),
+    ]
+
+
 def test_clic_clean_exporter_reopens_versioned_terminal_and_checkpoint_contract(tmp_path: Path) -> None:
     paths = _checkpoint_fixture(tmp_path, arm="G")
     checkpoint = torch.load(paths["checkpoint"], map_location="cpu")
@@ -733,6 +841,103 @@ def test_clic_fixed400_proxy_scores_continuous_unknown_energy_without_fit_or_thr
         PAIR.score_clic_open_set(geometry, policy, proxy[:399], tx_logits[:399], SCENARIOS[0], expected_proxy_count=400)
 
 
+def test_clic_proxy_diagnostic_is_source_l_fit_only_and_fixed400_score_only() -> None:
+    source, source_labels, validation, proxy = _clic_proxy_arrays()
+    result = PAIR.compute_clic_proxy_diagnostic(
+        source_l_features=source,
+        source_l_tx_ids=source_labels,
+        source_validation_features=validation,
+        proxy_features=proxy,
+        proxy_tx_ids=np.asarray([PROXY_TX[0]] * proxy.shape[0], dtype=str),
+        source_tx_ids=SOURCE_TX,
+    )
+    assert result["schema"] == "cvs.phase1.clic_proxy_diagnostic.v1"
+    assert result["fit"]["role"] == "source_L_only"
+    assert int(result["fit"]["fit_rows"]) == source.shape[0]
+    assert int(result["fit"]["threshold_fit_rows"]) == 0
+    assert int(result["source_validation_known"]["count"]) == validation.shape[0]
+    assert int(result["source_validation_known"]["fit_rows"]) == 0
+    assert int(result["source_validation_known"]["threshold_fit_rows"]) == 0
+    assert int(result["proxy_unknown"]["count"]) == 400
+    assert int(result["proxy_unknown"]["fit_rows"]) == 0
+    assert int(result["proxy_unknown"]["threshold_fit_rows"]) == 0
+    assert result["threshold_used"] is False
+    assert result["tail_policy_used"] is False
+    assert np.isfinite(float(result["AUROC_unknown"]))
+    assert 0.0 <= float(result["AUROC_unknown"]) <= 1.0
+    assert np.isfinite(float(result["u_gap"]))
+
+
+@pytest.mark.parametrize("case", ("short_proxy", "validation_in_fit", "proxy_overlap"))
+def test_clic_proxy_diagnostic_rejects_short_vfit_or_nonmutual_proxy_tx(case: str) -> None:
+    source, source_labels, validation, proxy = _clic_proxy_arrays()
+    source_fit = source
+    fit_labels = source_labels
+    proxy_rows = proxy
+    if case == "short_proxy":
+        proxy_rows = proxy[:399]
+        proxy_labels = np.asarray([PROXY_TX[0]] * proxy_rows.shape[0], dtype=str)
+    elif case == "validation_in_fit":
+        source_fit = np.vstack([source, validation[:1]])
+        fit_labels = np.concatenate([source_labels, np.asarray([HELD_TX[0]], dtype=str)])
+        proxy_labels = np.asarray([PROXY_TX[0]] * proxy_rows.shape[0], dtype=str)
+    else:
+        proxy_labels = np.asarray([SOURCE_TX[0]] * proxy_rows.shape[0], dtype=str)
+    with pytest.raises(Exception, match="400|proxy|source|validation|disjoint|overlap|TX|label"):
+        PAIR.compute_clic_proxy_diagnostic(
+            source_l_features=source_fit,
+            source_l_tx_ids=fit_labels,
+            source_validation_features=validation,
+            proxy_features=proxy_rows,
+            proxy_tx_ids=proxy_labels,
+            source_tx_ids=SOURCE_TX,
+        )
+
+
+def test_clic_pair_parser_evaluate_writes_cg_artifact_summary_and_common_binding(tmp_path: Path) -> None:
+    artifacts = _pair_artifact_fixture(tmp_path)
+    parser = PAIR.build_parser()
+    option_strings = {option for action in parser._actions for option in action.option_strings}
+    required_options = {
+        "--c-checkpoint", "--g-checkpoint", "--c-terminal-receipt-json", "--g-terminal-receipt-json",
+        "--c-clean-npz", "--g-clean-npz", "--c-leo-npz", "--g-leo-npz",
+        "--c-leo-binding-json", "--g-leo-binding-json", "--c-common-receipt-json", "--g-common-receipt-json",
+        "--c-proxy-diagnostic-json", "--g-proxy-diagnostic-json", "--output-pair-json",
+    }
+    assert required_options.issubset(option_strings)
+    args = parser.parse_args(_pair_cli_argv(artifacts))
+    result = PAIR.evaluate(args)
+    output = Path(args.output_pair_json)
+    assert output.is_file()
+    payload = json.loads(output.read_text(encoding="utf-8"))
+    assert result["schema"] == payload["schema"] == "cvs.phase1.clic_postfreeze_pair.v1"
+    assert payload["same_fold"] is True
+    assert payload["common_binding"]["passed"] is True
+    assert set(payload["geometry"]) == {"C", "G"}
+    assert set(payload["policies"]) == {"C", "G"}
+    assert set(payload["proxy_diagnostic"]) == {"C", "G"}
+    assert payload["raw_artifacts"]["C"]["clean"] == str(Path(artifacts["c_clean"]).resolve())
+    assert payload["raw_artifacts"]["G"]["leo_binding"] == str(Path(artifacts["g_binding"]).resolve())
+
+
+def test_clic_pair_evaluate_rejects_missing_raw_npz_or_tampered_binding(tmp_path: Path) -> None:
+    artifacts = _pair_artifact_fixture(tmp_path / "missing")
+    parser = PAIR.build_parser()
+    args = parser.parse_args(_pair_cli_argv(artifacts))
+    Path(artifacts["g_clean"]).unlink()
+    with pytest.raises(Exception, match="missing|raw|artifact|NPZ|clean"):
+        PAIR.evaluate(args)
+
+    tampered = _pair_artifact_fixture(tmp_path / "tampered")
+    tampered_binding = Path(tampered["g_binding"])
+    binding = json.loads(tampered_binding.read_text(encoding="utf-8"))
+    binding["physical_order_sha256"] = "0" * 64
+    tampered_binding.write_text(json.dumps(binding, sort_keys=True) + "\n", encoding="utf-8")
+    tampered_args = parser.parse_args(_pair_cli_argv(tampered))
+    with pytest.raises(Exception, match="binding|physical|order|SHA|tamper|drift"):
+        PAIR.evaluate(tampered_args)
+
+
 def test_clic_same_fold_binding_and_noncompensating_gate_are_strict() -> None:
     c = _common_receipt("C")
     g = _common_receipt("G")
@@ -817,6 +1022,105 @@ def test_clic_f6_reopens_f1_f5_raw_checkpoint_terminal_clean_leo_binding_proxy_b
     tampered["raw_artifacts"]["clean"] = str(tmp_path / "missing-or-tampered.npz")
     priors[0].write_text(json.dumps(tampered, sort_keys=True), encoding="utf-8")
     with pytest.raises(Exception, match="raw|artifact|SHA|tamper|missing"):
+        PAIR.reopen_f6_raw_artifacts(
+            prior_pair_metrics=priors,
+            current_fold=6,
+            expected_matrix_id=POSTFREEZE_MATRIX,
+            expected_training_run=TRAINING_RUN,
+            current_checkpoint=f6["checkpoint"],
+            raw_artifacts_by_fold=raw_by_fold,
+        )
+
+
+def test_clic_f6_positive_reopens_all_cg_raw_artifacts_and_rejects_binding_byte_tamper(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    priors: list[Path] = []
+    raw_by_fold: dict[int, dict[str, object]] = {}
+    binding_paths: list[Path] = []
+    for fold in range(1, 6):
+        c_paths = _checkpoint_fixture(tmp_path / f"F{fold}C", arm="C", fold=fold)
+        g_paths = _checkpoint_fixture(tmp_path / f"F{fold}G", arm="G", fold=fold)
+        clean = tmp_path / f"F{fold}G" / "clean.npz"
+        _write_feature_npz(clean, g_paths, arm="G")
+        leo_binding = tmp_path / f"F{fold}G" / "leo_binding.json"
+        leo_binding.write_text(
+            json.dumps(
+                {
+                    "schema": "cvs.phase1.clic_leo_binding.v1",
+                    "fold_index": fold,
+                    "source_only": True,
+                    "single_leo_observation": True,
+                    "received_iq_sha256": _sha_text("common-existing-received-iq"),
+                    "physical_order_sha256": _sha_text("common-physical-order"),
+                },
+                sort_keys=True,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+        binding_paths.append(leo_binding)
+        proxy = tmp_path / f"F{fold}G" / "proxy.json"
+        proxy.write_text(json.dumps({"schema": "cvs.phase1.clic_proxy.v1", "proxy_row_count": 400}, sort_keys=True), encoding="utf-8")
+        bundle = tmp_path / f"F{fold}G" / "bundle.tar"
+        bundle.write_bytes(f"bundle-{fold}".encode("ascii"))
+        record = tmp_path / f"F{fold}G" / f"F{fold}_pair.json"
+        record.write_text(
+            json.dumps(
+                {
+                    "schema": "cvs.phase1.clic_postfreeze_pair.v1",
+                    "fold_index": fold,
+                    "postfreeze_matrix_id": POSTFREEZE_MATRIX,
+                    "training_run_root": TRAINING_RUN,
+                    "raw_artifacts": {
+                        "checkpoint": str(g_paths["checkpoint"]),
+                        "terminal": str(g_paths["terminal"]),
+                        "clean": str(clean),
+                        "leo_binding": str(leo_binding),
+                        "proxy": str(proxy),
+                        "bundle": str(bundle),
+                    },
+                },
+                sort_keys=True,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+        priors.append(record)
+        raw_by_fold[fold] = {
+            "C": {"checkpoint": c_paths["checkpoint"], "terminal": c_paths["terminal"]},
+            "G": {"checkpoint": g_paths["checkpoint"], "terminal": g_paths["terminal"]},
+        }
+    f6 = _checkpoint_fixture(tmp_path / "F6G", arm="G", fold=6)
+    calls: list[tuple[str, str]] = []
+    original_load_json = PAIR._load_json
+    original_require_existing = PAIR._require_regular_existing
+
+    def recording_load_json(path: str | Path, *, label: str) -> dict[str, object]:
+        calls.append(("json", label))
+        return original_load_json(path, label=label)
+
+    def recording_require_existing(value: object, *, label: str) -> Path:
+        calls.append(("file", label))
+        return original_require_existing(value, label=label)
+
+    monkeypatch.setattr(PAIR, "_load_json", recording_load_json)
+    monkeypatch.setattr(PAIR, "_require_regular_existing", recording_require_existing)
+    reopened = PAIR.reopen_f6_raw_artifacts(
+        prior_pair_metrics=priors,
+        current_fold=6,
+        expected_matrix_id=POSTFREEZE_MATRIX,
+        expected_training_run=TRAINING_RUN,
+        current_checkpoint=f6["checkpoint"],
+        raw_artifacts_by_fold=raw_by_fold,
+    )
+    assert reopened["passed"] is True
+    assert reopened["raw_reopen_only"] is True
+    assert sum(kind == "json" for kind, _ in calls) >= 5
+    assert sum(kind == "file" for kind, _ in calls) >= 5 * 6 + 1 + 2 * 5 * 2
+
+    binding_paths[0].write_text("{\"physical_order_sha256\":\"tampered\"}\n", encoding="utf-8")
+    with pytest.raises(Exception, match="binding|physical|order|SHA|tamper|drift|invalid"):
         PAIR.reopen_f6_raw_artifacts(
             prior_pair_metrics=priors,
             current_fold=6,
@@ -942,6 +1246,56 @@ def test_clic_bundle_synthetic_fixture_cannot_claim_real_checkpoint_reload(tmp_p
     _mutate_bundle_manifest(synthetic_claim, "real")
     with pytest.raises(BUNDLE.CLICBundleError, match="real|checkpoint|model|forward|synthetic|receipt|state|hash"):
         BUNDLE.verify_clic_bundle(synthetic_claim)
+
+
+def test_clic_bundle_main_reads_g_artifacts_and_has_no_cli_state_geometry_or_rule_overrides(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    artifacts = _pair_artifact_fixture(tmp_path / "inputs")
+    g_paths = artifacts["g_paths"]
+    baseline, _, _ = _bundle_fixture(tmp_path / "baseline")
+    output = tmp_path / "deployment.bundle.zip"
+    parser = BUNDLE.build_parser()
+    option_strings = {option for action in parser._actions for option in action.option_strings}
+    required_options = {
+        "--checkpoint", "--terminal-receipt-json", "--clean-npz", "--leo-npz", "--leo-binding-json", "--output-bundle",
+    }
+    assert required_options.issubset(option_strings)
+    forbidden_options = {"--model-state", "--model-state-json", "--source-geometry", "--source-geometry-json", "--source-frozen-unknown-rule", "--rule-json"}
+    assert not forbidden_options.intersection(option_strings)
+
+    argv = [
+        "--checkpoint", str(g_paths["checkpoint"]),
+        "--terminal-receipt-json", str(g_paths["terminal"]),
+        "--clean-npz", str(artifacts["g_clean"]),
+        "--leo-npz", str(artifacts["g_leo"]),
+        "--leo-binding-json", str(artifacts["g_binding"]),
+        "--output-bundle", str(output),
+    ]
+    calls: dict[str, object] = {}
+
+    def fake_export_bundle(**kwargs: object) -> str:
+        calls.update(kwargs)
+        expected = {
+            "checkpoint_path": g_paths["checkpoint"],
+            "terminal_receipt_path": g_paths["terminal"],
+            "clean_npz_path": artifacts["g_clean"],
+            "leo_npz_path": artifacts["g_leo"],
+            "leo_binding_path": artifacts["g_binding"],
+        }
+        for key, value in expected.items():
+            assert Path(str(kwargs[key])).resolve() == Path(value).resolve()
+            assert Path(value).is_file()
+        destination = Path(str(kwargs["output_path"]))
+        shutil.copy2(baseline, destination)
+        return str(destination)
+
+    monkeypatch.setattr(BUNDLE, "export_bundle", fake_export_bundle)
+    BUNDLE.main(argv)
+    assert output.is_file()
+    verified = BUNDLE.verify_clic_bundle(output)
+    assert verified["real_checkpoint_reload_verified"] is False
+    assert verified["state_origin"] == "synthetic_fixture"
 
 
 @pytest.mark.parametrize("mutation", ("member", "byte", "shape", "dtype", "operator", "hash"))
