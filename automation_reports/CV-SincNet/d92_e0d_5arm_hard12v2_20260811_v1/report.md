@@ -8,7 +8,7 @@
 |run ID|`d92_e0d_5arm_hard12v2_20260811_v1`|
 |日期|2026-08-11|
 |operator|Codex primary；N607唯一runner待独立交接|
-|当前状态|`LOCAL_REVERIFIED_AWAITING_P0_P1_REREVIEW`|
+|当前状态|`LOCAL_VERIFIED_APPROVED_FOR_N607`|
 |协议|`p2_min_v1`|
 |证据范围|`DEVELOPMENT_ONLY_PSEUDO_BLIND_DISJOINT_STRESS_SCREEN`|
 |唯一晋级候选|`E0_FULL_ONLY`|
@@ -85,6 +85,7 @@ Selection SHA256：`2e3b3333a4a325bd0443a31065d3340d6a650a3e89620951a786637e6bce
 |当前运行源码commit|PASS|`7d11a7012ab62058db40f878f925c38160311311`|
 |Hard12-v2一次selection audit|PASS|D92/R5各125outer、R5`DA0_REG1`375scene；HiGHS optimal；12行、coverage、v1交集0和输入SHA精确；receipt SHA256=`4c7579337cb18dfb640891d77d3d327c8d2f7e9f3a96e637effb4a383be748f5`|
 |P1修复后总回归|PASS|E0D、selection audit和既有BE相关共54项通过；`py_compile`、`bash -n`、`git diff --check`通过|
+|独立P0/P1复审|APPROVE_RELEASE|`P0=0,P1=0`；独立59项通过；原4项P1全部闭合|
 |真实checkpoint无truth smoke|待执行|N607发布前必过|
 
 已纳入本轮Git提交的核心文件：
