@@ -4,12 +4,12 @@
 
 - 实验ID：`phase1_rcmmc_postfreeze_20260811_v1`
 - 日期：2026-08-11
-- 当前状态：`PREREGISTERED_LOCAL_VERIFIED / READY_FOR_N607_HANDOFF / NO_PERFORMANCE_RESULT`
-- 操作边界：主控冻结评价合同、矩阵和非补偿门；唯一N607 Runner只负责release落地、唯一启动、技术监控与小工件回收，不读取或解释性能字段。
+- 当前状态：`ANALYZED / REJECT_P1_RCMMC_PERMANENT / NO_PHASE3_CAPABILITY_CLAIM`
+- 操作边界：主控冻结评价合同、矩阵和非补偿门；唯一N607 Runner只负责release落地、唯一启动、技术监控与小工件回收且不读取或解释性能字段；Runner技术闭合后由主控完整读取回收证据并独立重算性能门。
 - 训练输入：`phase1_rcmmc12_20260811_v1`，状态=`ARTIFACTS_COMPLETE_TECHNICALLY_CLOSED / PARTIAL_LOCAL_EVIDENCE_RETRIEVAL / NO_PERFORMANCE_RESULT`。12/12 final、terminal、completion及RCMMC/resource/heldout/config收据远端齐全，逐臂checkpoint SHA、C/G合同和四参VJP已只读核验；本地仅部分小证据回收不影响远端不可变训练输入。
 - 目标：不改变训练、fold、seed、receiver、TX、场景、Gaussian或阈值，对同fold C/G执行固定clean、三LEO、fixed400 proxy和连续Gaussian-NLL公平评价，产出6份pair JSON及F6矩阵聚合。
 - 假设：RCMMC对每个source RX×class cell的totalized-feature一、二阶矩做clean→LEO同物理约束，可能在保持clean和LEO分类floor的同时改善后冻结source-only Gaussian几何；该假设只能由完整42步非补偿矩阵证伪或支持。
-- 声明边界：技术完成不等于性能通过；任一非补偿门失败即`REJECT_P1_RCMMC_PERMANENT`。全部通过也只能`PENDING_MAIN_REVIEW_FULL_6_FOLD`，不构成unknown、真实开放集、Phase2或Phase3能力声明。
+- 声明边界：技术完成不等于性能通过；任一非补偿门失败即`REJECT_P1_RCMMC_PERMANENT`。全部通过也只能`PHASE1_ADVANCEMENT_CANDIDATE_PENDING_MAIN_REVIEW`，不构成unknown、真实开放集、Phase2或Phase3能力声明。
 
 ## 2.冻结版本、本地文件与独立审查
 
@@ -86,18 +86,18 @@ Runner落地前必须完成：direct preflight；LF无prefix archive、六成员
 
 预期工件：12 clean NPZ、12 LEO NPZ、12 LEO binding JSON、12 proxy JSON、12 proxy CSV、6 pair JSON、12候选日志、6 pair日志、`candidate_pids.tsv`和outer。Runner只核技术schema、输入绑定、计数、SHA、异常与F6 raw-reopen键；回收仅JSON/CSV/binding/log/PID/manifest的小bundle，排除NPZ、pth、pt和npy。性能字段由主控在技术闭合并回收后读取。
 
-## 7.冻结非补偿门与结果表
+## 7.冻结非补偿门与最终结果
 
 |冻结门|要求|当前结果|判定|
 |---|---:|---:|---|
-|技术绑定|6/6 pair|待运行|PENDING|
-|clean四floor|6/6 fold，每项Δ≥-2pp|待运行|PENDING|
-|LEO四floor|18/18 scene-cell，每项Δ≥-2pp|待运行|PENDING|
-|逐fold三场景overall|6/6 fold等权Δ≥0|待运行|PENDING|
-|全18格overall|等权Δ≥0|待运行|PENDING|
-|fixed400 proxy双门|6/6 fold同时ΔAUROC>0且Δu-gap>0|待运行|PENDING|
+|技术绑定|6/6 pair|6/6|PASS|
+|clean四floor|6/6 fold，每项Δ≥-2pp|6/6|PASS|
+|LEO四floor|18/18 scene-cell，每项Δ≥-2pp|6/18；0/6 fold完整|FAIL|
+|逐fold三场景overall|6/6 fold等权Δ≥0|2/6|FAIL|
+|全18格overall|等权Δ≥0|-0.527854pp|FAIL|
+|fixed400 proxy双门|6/6 fold同时ΔAUROC>0且Δu-gap>0|2/6|FAIL|
 
-最终分析必须按同fold、同scene保留C/G完整行，并由主控从6份pair JSON独立重算后与F6 aggregate核对。禁止用不同fold或不同候选的单项极值拼接结论。
+最终分析按同fold、同scene保留C/G完整行；主控从6份pair JSON的C/G原始字段独立重算，结果与F6 aggregate零差异。LEO四floor、逐fold overall、全18格overall和proxy双门均为预注册不可补偿失败，最终状态为`ANALYZED / REJECT_P1_RCMMC_PERMANENT / NO_PHASE3_CAPABILITY_CLAIM`。
 
 ## 8.已知风险与下一检查点
 
@@ -117,8 +117,8 @@ Runner落地前必须完成：direct preflight；LF无prefix archive、六成员
 ## 10.Runner发布、唯一启动与技术闭合
 
 - Direct preflight通过：普通账号`N607`、项目根可见、GPU0--7均为0%/1MiB、身份/key有效；每次SSH/SCP完成后本地`ssh.exe`与N607 TCP22均清零。
-- 首次release工程输入为六成员LF归档`phase1_rcmmc_postfreeze_20260811_v1_aabd8358_lfnorm.tar`（163840B，SHA=`1973e9e3b28269ea9482e84c5c75ab2d8fbe15d3ea9ab1d9cf70c7a01cec1924`）。它仅用于记录首个不完整incoming；曾短暂原子落地后按P0发布修复精确改名为`..._aabd8358_sixfile_incomplete_prelaunch`，未删除、未覆盖、未启动。
-- 从科学实现commit=`aabd8358cb5303e34b546b6e4485afc1575fccf0`生成完整无prefix归档并只做归档层LF规范化：`phase1_rcmmc_postfreeze_20260811_v1_aabd8358_full_lfnorm.tar`，264417280B，SHA=`ebb95db7345dc6b1e362aeac242ba7bf43ff26182d0220db7019161bdaed37fb`，4976 members（4356 files、620 dirs），`code/code=0`，文本成员CR=0；六冻结成员SHA、launcher归档mode=0755及5项依赖均匹配。第二次且最后一次SCP使用`.full.incoming.tar`，累计`SCP=2`；原子stage→final后远端launcher显示0775，归档成员仍为0755，判定为tar/umask权限差异，脚本冻结命令显式使用`bash`，未chmod、未重包。
+- 首次release工程输入为六成员LF归档`phase1_rcmmc_postfreeze_20260811_v1_aabd8358_lfnorm.tar`（163840B，SHA=`1973e9e3b28269ea9482e84c5c75ab2d8fbe15d3ea9ab1d9cf70c7a01cec1924`），唯一首incoming=`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_rcmmc_postfreeze_20260811_v1_aabd8358.incoming.tar`；它仅用于记录首个不完整incoming，曾短暂原子落地后按P0发布修复精确改名为`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_rcmmc_postfreeze_20260811_v1_aabd8358_sixfile_incomplete_prelaunch`，未删除、未覆盖、未启动。
+- 从科学实现commit=`aabd8358cb5303e34b546b6e4485afc1575fccf0`生成完整无prefix归档并只做归档层LF规范化：`phase1_rcmmc_postfreeze_20260811_v1_aabd8358_full_lfnorm.tar`，264417280B，SHA=`ebb95db7345dc6b1e362aeac242ba7bf43ff26182d0220db7019161bdaed37fb`，4976 members（4356 files、620 dirs），`code/code=0`，文本成员CR=0；六冻结成员SHA、launcher归档mode=0755及5项依赖均匹配。第二次且最后一次SCP使用`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_rcmmc_postfreeze_20260811_v1_aabd8358.full.incoming.tar`，累计`SCP=2`；原子stage→final到`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_rcmmc_postfreeze_20260811_v1_aabd8358`后远端launcher显示0775，归档成员仍为0755，判定为tar/umask权限差异，脚本冻结命令显式使用`bash`，未chmod、未重包。
 - 最后prelaunch只读门：final release存在，run/log/outer目标均ABSENT，无关联PID/CWD，8GPU均0%/1MiB；ManySig SHA=`2b0a7a7488dd3650bcae7b1d80efbcffd1598aaa671ae6b0a0df2a24dc0f694f`，远端4文件`py_compile`、4个CLI help、`bash -n`与冻结dry-run`42=12+12+12+6`均通过，12个checkpoint/current terminal receipt重开、checkpoint/terminal/status/completion/heldout SHA closure、6折C/G common binding、G三scene×28 positive和四参VJP均通过。配置receipt只核schema/method/flags/存在，不冒充terminal receipt。
 - 严格逐字执行报告§5冻结命令恰1次，`launch=1`、`retry=NO`。SSH通道约34s超时后仅清理绑定本地客户端，并只读确认已落地；未重发。初始launcher PID=`1551037`、launcher bash PID=`1551038`，`candidate_pids.tsv`记录12候选及GPU映射`0,0,1,1,2,2,3,3,4,5,6,7`。
 - 12候选与6个pair均自然退出；每候选日志849行，18份候选/pair日志技术错误指纹（Traceback、RuntimeError、CUDA/OOM、argparse、权限、路径、Killed）为0；终态绑定进程=0，GPU0--7均0%/1MiB，SSH/TCP22=0。远端工件计数为24 NPZ、30 JSON、12 CSV；本Runner不读取或解释任何性能字段。
@@ -129,3 +129,88 @@ Runner落地前必须完成：direct preflight；LF无prefix archive、六成员
 - F6 pair含`rcmmc_f6_raw_reopen_required=true`及5项`matrix_aggregate.prior_pair_metrics_bindings`，全部`raw_artifacts_recomputed=true`；结合当前F6 C/G receipt/common/proxy重验，F6 raw-reopen技术门通过。该证据不构成性能结论。
 - 仅回收小技术bundle，排除NPZ、pth、pt、npy、jsonl及`metrics_epoch`：最终引用`release/phase1_rcmmc_postfreeze_20260811_v1_technical_bundle_v2.tar`（84520960B，76 members=62 files+14 dirs，SHA=`787d420f9ecc1d69d6361d7c17055683c55ed8d2aa35430a84b6584df5351e24`；JSON=30、CSV=12、`.out`=19，含0B outer、`candidate_pids.tsv`=1，禁入=0）。v1首包（遗漏outer）保留为证据；v2外部manifest=`phase1_rcmmc_postfreeze_20260811_v1_technical_bundle_v2_MANIFEST.sha256`，9233B，SHA=`b5216145147c92759987c74d891bed2effeeb4d736b4a25a93cf79660c827859`。远端bundle路径仍保留。
 - 当前状态：`ARTIFACTS_COMPLETE_TECHNICALLY_CLOSED / NO_PERFORMANCE_RESULT`。性能读取、解释、晋级和科学结论由主控独立完成；本Runner未因耗时、静默或任何性能字段停止。
+
+## 12.主控完整解析与复核边界
+
+主控在Runner技术交接后把最终v2 bundle解包到`artifacts/analysis_extract_main/`。bundle SHA256重新计算为`787d420f9ecc1d69d6361d7c17055683c55ed8d2aa35430a84b6584df5351e24`；外部manifest中的62个文件逐一通过size与SHA256核验。30份JSON均以拒绝NaN/Inf的严格解析器完整读取并递归确认所有浮点有限；12份候选日志各849行且各含4个完整顺序JSON文档，6份pair日志各含1个完整JSON文档并与对应pair JSON对象完全相同，outer为0B。12份CSV共253440行，逐值有限性检查通过。19份日志中的Traceback、RuntimeError、CUDA、OOM、SIGSEGV、argparse、权限、路径、Killed、RCMMC异常、ERROR、NaN和Inf指纹均为0。
+
+主控没有采用Runner或pair文件的最终verdict，而是从6份pair JSON的C/G原始字段独立计算clean四floor、18个LEO scene-cell四floor、每fold三场景等权overall、全18格等权overall以及每fold proxy双严格门。所有原始差值、门布尔值、逐fold聚合、全局聚合和最终verdict均与F6 matrix aggregate一致，差异项为0。
+
+## 13.clean同fold结果
+
+|fold|C overall(%)|G overall(%)|Δoverall(pp)|Δmin-class(pp)|Δmin-RX(pp)|Δmin-day(pp)|四floor|
+|---|---:|---:|---:|---:|---:|---:|---|
+|F1|99.279762|99.244048|-0.035714|-0.071429|-0.166667|-0.011905|PASS|
+|F2|99.232143|99.119048|-0.113095|-0.238095|+0.166667|-0.178571|PASS|
+|F3|99.345238|99.255952|-0.089286|-0.595238|-0.083333|-0.095238|PASS|
+|F4|99.279762|99.273810|-0.005952|+0.047619|+0.041667|+0.000000|PASS|
+|F5|98.065476|98.023810|-0.041667|+1.095238|+0.541667|-0.059524|PASS|
+|F6|97.904762|97.809524|-0.095238|-0.928571|-0.625000|-0.119048|PASS|
+
+clean四floor达到6/6。六折overall均略低于C，但最大下降仅0.113095pp；所有class、RX和day尾部差值均高于-2pp。RCMMC没有造成明显clean退化。
+
+## 14.LEO三场景同fold结果
+
+|fold|scene|C overall(%)|G overall(%)|Δoverall(pp)|Δmin-class(pp)|Δmin-RX(pp)|Δmin-day(pp)|四floor|
+|---|---|---:|---:|---:|---:|---:|---:|---|
+|F1|clear|95.955882|95.404412|-0.551471|+0.000000|-1.030928|-0.621118|PASS|
+|F1|low-elev|95.955882|95.036765|-0.919118|-2.343750|-2.247191|-0.961538|FAIL|
+|F1|rain|95.312500|94.726562|-0.585938|-1.562500|-1.265823|+0.000000|PASS|
+|F2|clear|93.382353|85.661765|-7.720588|-30.555556|-12.371134|-9.459459|FAIL|
+|F2|low-elev|90.073529|86.764706|-3.308824|-18.750000|-6.741573|-2.815934|FAIL|
+|F2|rain|91.210938|83.398438|-7.812500|-29.687500|-13.924051|-12.847222|FAIL|
+|F3|clear|95.404412|93.750000|-1.654412|-3.472222|-1.142379|-2.669129|FAIL|
+|F3|low-elev|89.338235|86.764706|-2.573529|-10.937500|-3.370787|-2.678571|FAIL|
+|F3|rain|89.648438|86.718750|-2.929688|-12.500000|-3.797468|-2.777778|FAIL|
+|F4|clear|91.911765|93.566176|+1.654412|+8.333333|+6.157704|+1.863354|PASS|
+|F4|low-elev|89.522059|89.522059|+0.000000|+7.031250|-2.247191|+0.892857|FAIL|
+|F4|rain|87.500000|90.429688|+2.929688|+11.718750|+2.531646|+4.513889|PASS|
+|F5|clear|72.610294|80.698529|+8.088235|+17.187500|+15.463918|+9.459459|PASS|
+|F5|low-elev|68.750000|71.139706|+2.389706|+10.156250|-4.494382|+4.326923|FAIL|
+|F5|rain|61.914062|68.750000|+6.835938|+29.687500|+3.947368|+8.779762|PASS|
+|F6|clear|81.433824|78.308824|-3.125000|-14.583333|-11.940299|-2.252252|FAIL|
+|F6|low-elev|82.720588|83.088235|+0.367647|-3.819444|-3.370787|-1.442308|FAIL|
+|F6|rain|80.859375|80.273438|-0.585938|-13.281250|+5.063291|-2.083333|FAIL|
+
+LEO四floor仅达到6/18，六个fold均至少有一个scene-cell失败。F2三场景overall分别下降7.720588pp、3.308824pp和7.812500pp，且class、RX、day尾部同时大幅下降；F3三场景也全部失败。F4和F5虽有明显平均收益，仍分别因low-elev的min-RX下降2.247191pp和4.494382pp而不完整。跨fold局部增益不能补偿这些失败。
+
+逐fold三场景等权overall增量为F1=`-0.685509pp`、F2=`-6.280637pp`、F3=`-2.385876pp`、F4=`+1.528033pp`、F5=`+5.771293pp`、F6=`-1.114430pp`，仅2/6通过。全18格等权增量为overall=`-0.527854pp`、min-class=`-3.187693pp`、min-RX=`-1.932226pp`、min-day=`-0.598467pp`。RCMMC没有形成跨fold一致的LEO鲁棒性。
+
+## 15.fixed400 proxy连续双门
+
+|fold|C AUROC|G AUROC|ΔAUROC|C u-gap|G u-gap|Δu-gap|双严格门|
+|---|---:|---:|---:|---:|---:|---:|---|
+|F1|0.818572|0.798242|-0.020330|1092.419496|905.171646|-187.247850|FAIL|
+|F2|0.502658|0.671929|+0.169271|532.837718|770.753610|+237.915893|PASS|
+|F3|0.932221|0.930673|-0.001548|1875.463646|2607.543859|+732.080212|FAIL|
+|F4|0.479142|0.520209|+0.041067|1111.865524|2103.744477|+991.878953|PASS|
+|F5|0.932860|0.925593|-0.007267|474.047491|566.363743|+92.316252|FAIL|
+|F6|0.804666|0.816158|+0.011492|1528.415754|1222.018602|-306.397152|FAIL|
+
+proxy双严格门仅2/6。F2和F4同时改善AUROC与u-gap；F1两项均下降，F3和F5的u-gap上升但AUROC下降，F6的AUROC上升但u-gap下降。二者必须在同一fold同时严格为正，不能跨fold或跨指标补偿。proxy仍是TX互斥、L-only fit的source-only连续几何诊断，不是真实unknown或Phase3能力证据。
+
+## 16.Phase1五项核对、阶段复盘与最终裁决
+
+|Phase1晋级条件|当前证据|判定|
+|---|---|---|
+|没有模型崩溃|12/12训练checkpoint与42步后冻结工件技术闭合；异常指纹为0|PASS|
+|已知类跨接收机性能无明显退化|clean四floor为6/6，最差单项差值为-0.928571pp|PASS|
+|最低类别和LEO弱信道floor无严重下降|LEO四floor仅6/18，完整fold为0/6；F2和F3存在系统性下降|FAIL|
+|source proxy unknown产生明确正信号|同fold AUROC与u-gap双严格改善仅2/6|FAIL|
+|真实checkpoint可导出新deployment bundle|12份真实checkpoint可被当前exporter读取并形成sealed后冻结工件；因前述性能门失败，不晋级、不封存为Phase1 deployment bundle|TECHNICAL_PATH_PASS / NOT_PROMOTED|
+
+|候选|clean四floor|LEO四floor|完整LEO fold|全18格overall|proxy双门|最终状态|
+|---|---:|---:|---:|---:|---:|---|
+|ICMT|5/6|3/18|0/6|-4.309002pp|1/6|永久拒绝|
+|CAGM|5/6|9/18|1/6|-0.128294pp|4/6|永久拒绝|
+|RCRMD|5/6|15/18|5/6|+2.180990pp|0/6|永久拒绝|
+|RCAT|6/6|10/18|3/6|+0.149357pp|2/6|永久拒绝|
+|RECTE|6/6|17/18|5/6|+2.304815pp|0/6|永久拒绝|
+|HSCF|6/6|16/18|5/6|+1.813343pp|2/6|永久拒绝|
+|RCMMC|6/6|6/18|0/6|-0.527854pp|2/6|永久拒绝|
+
+RCMMC守住了clean，却把逐行totalized-feature约束放松为cell一、二阶矩后，没有获得proxy通过数提升，LEO覆盖反而由RCAT的10/18降至6/18，并出现F2、F3跨三场景一致下降。该比较只支持本冻结矩阵下的候选选择：cell矩匹配不足以同时保护同物理身份、最坏receiver/class尾部和source-only Gaussian排序；它不证明所有矩方法均无效。
+
+ICMT、CAGM、RCRMD、RCAT、RECTE、HSCF和RCMMC均已在同一非补偿合同下完成，后续不得复活、改名、拼接，或根据F2/F4/F5、某receiver/day和proxy结果反向定制lambda、阈值、权重、seed或超参数。下一候选仍须从单一source-L-only原语出发，在任何postfreeze性能读取前完成`DESIGN_DRAFT→FEASIBILITY_REVIEW→DESIGN_FROZEN`和独立P0/P1；它必须同时解释逐样本身份保持、cell尾部与Gaussian几何为何不会互相逃逸。
+
+F6 matrix aggregate与主控独立重算均得到`REJECT_P1_RCMMC_PERMANENT`，差异项为0。本轮不调lambda、不重跑、不选择F2/F4的局部proxy成功，也不以F4/F5的LEO收益补偿其余fold失败。最终状态：`ANALYZED / REJECT_P1_RCMMC_PERMANENT / NO_PHASE3_CAPABILITY_CLAIM`。
