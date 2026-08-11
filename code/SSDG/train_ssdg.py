@@ -293,6 +293,38 @@ try:
         validate_hscf_terminal_receipt,
         write_hscf_failure_receipt,
     )
+    from cvsrffi.phase1_hnccd import (
+        HNCCDConfig,
+        HNCCDConfigurationError,
+        HNCCDRuntimeError,
+        FROZEN_HNCCD_SCENARIOS,
+        add_hnccd_to_loss,
+        bind_hnccd_optimizer_initial_state,
+        bind_hnccd_source_data_order,
+        finalize_hnccd_amp_overflow_skip,
+        hnccd_aux_gradient_audit,
+        hnccd_config_receipt,
+        hnccd_loss,
+        hnccd_scaled_backward_and_classify,
+        hnccd_shared_encoder_and_head_parameters,
+        release_hnccd_retained_graph_roots,
+        record_hnccd_material_nonfinite_receipt,
+        remap_hnccd_local_labels_to_head_rows,
+        resolve_hnccd_classifier_weight,
+        resolve_hnccd_local_head_class_binding,
+        resolve_hnccd_source_receiver_tokens,
+        strict_hnccd_warm_start,
+        update_hnccd_amp_overflow_receipt,
+        update_hnccd_common_batch_sequence_receipt,
+        update_hnccd_gradient_audit_receipt,
+        update_hnccd_optimizer_step_receipt,
+        update_hnccd_receipt,
+        update_hnccd_resource_receipt,
+        validate_hnccd_args,
+        validate_hnccd_binding,
+        validate_hnccd_terminal_receipt,
+        write_hnccd_failure_receipt,
+    )
     from cvsrffi.phase1_recte import (
         RECTEConfig,
         RECTEConfigurationError,
@@ -571,6 +603,21 @@ except ModuleNotFoundError:
     update_hscf_optimizer_step_receipt = update_hscf_receipt = None
     validate_hscf_args = validate_hscf_binding = validate_hscf_terminal_receipt = None
     write_hscf_failure_receipt = None
+    HNCCDConfig = None
+    HNCCDConfigurationError = HNCCDRuntimeError = None
+    FROZEN_HNCCD_SCENARIOS = tuple()
+    add_hnccd_to_loss = bind_hnccd_optimizer_initial_state = bind_hnccd_source_data_order = None
+    finalize_hnccd_amp_overflow_skip = hnccd_aux_gradient_audit = hnccd_config_receipt = None
+    hnccd_loss = hnccd_scaled_backward_and_classify = None
+    hnccd_shared_encoder_and_head_parameters = remap_hnccd_local_labels_to_head_rows = None
+    release_hnccd_retained_graph_roots = record_hnccd_material_nonfinite_receipt = None
+    resolve_hnccd_classifier_weight = resolve_hnccd_local_head_class_binding = None
+    resolve_hnccd_source_receiver_tokens = strict_hnccd_warm_start = None
+    update_hnccd_amp_overflow_receipt = update_hnccd_common_batch_sequence_receipt = None
+    update_hnccd_gradient_audit_receipt = update_hnccd_optimizer_step_receipt = None
+    update_hnccd_receipt = update_hnccd_resource_receipt = None
+    validate_hnccd_args = validate_hnccd_binding = validate_hnccd_terminal_receipt = None
+    write_hnccd_failure_receipt = None
     RECTEConfig = None
     RECTEConfigurationError = RECTERuntimeError = None
     FROZEN_RECTE_SCENARIOS = tuple()
@@ -967,6 +1014,24 @@ def build_arg_parser() -> argparse.ArgumentParser:
         type=float,
         default=0.0,
         help="Frozen at 0 for C and 0.02 for G when P1-HSCF mode is enabled.",
+    )
+    parser.add_argument(
+        "--phase1_hnccd_frozen_mode",
+        type=str2bool,
+        default=False,
+        help="Enable the frozen P1-HNCCD C/G continuation contract.",
+    )
+    parser.add_argument(
+        "--phase1_hnccd_enabled",
+        type=str2bool,
+        default=False,
+        help="Enable the sole source-L RX-by-local4 LEO head/null cross-covariance term in a P1-HNCCD G arm.",
+    )
+    parser.add_argument(
+        "--lambda_hnccd",
+        type=float,
+        default=0.0,
+        help="Frozen at 0 for C and 0.02 for G when P1-HNCCD mode is enabled.",
     )
     parser.add_argument(
         "--phase1_recte_frozen_mode",
@@ -5238,6 +5303,9 @@ def _build_ssdg_epoch_telemetry_row(
         "phase1_hscf_frozen_mode": bool(getattr(args, "phase1_hscf_frozen_mode", False)),
         "phase1_hscf_enabled": bool(getattr(args, "phase1_hscf_enabled", False)),
         "lambda_hscf": float(getattr(args, "lambda_hscf", 0.0)),
+        "phase1_hnccd_frozen_mode": bool(getattr(args, "phase1_hnccd_frozen_mode", False)),
+        "phase1_hnccd_enabled": bool(getattr(args, "phase1_hnccd_enabled", False)),
+        "lambda_hnccd": float(getattr(args, "lambda_hnccd", 0.0)),
         "phase1_recte_frozen_mode": bool(getattr(args, "phase1_recte_frozen_mode", False)),
         "phase1_recte_enabled": bool(getattr(args, "phase1_recte_enabled", False)),
         "lambda_recte": float(getattr(args, "lambda_recte", 0.0)),
@@ -6403,6 +6471,43 @@ def _persist_hscf_failure_receipt(
         return None
 
 
+def _persist_hnccd_failure_receipt(
+    *,
+    out_dir: Path,
+    args: Any,
+    hnccd_receipt: Mapping[str, Any],
+    error: BaseException,
+    failure_stage: str,
+) -> Optional[Path]:
+    """Best-effort persistence that never masks the primary P1-HNCCD failure."""
+
+    def _emit_writer_failure(exception_type: str) -> None:
+        try:
+            print(
+                "[P1-HNCCD-FAILURE-RECEIPT] persistence_failed "
+                f"writer_exception_type={exception_type}",
+                flush=True,
+            )
+        except Exception:
+            pass
+
+    if write_hnccd_failure_receipt is None:
+        _emit_writer_failure("ImportError")
+        return None
+    try:
+        return write_hnccd_failure_receipt(
+            out_dir,
+            candidate_id=str(getattr(args, "candidate_id", "") or ""),
+            run_id=str(getattr(args, "run_id", "") or ""),
+            receipt=hnccd_receipt,
+            error=error,
+            failure_stage=str(failure_stage),
+        )
+    except Exception as receipt_error:
+        _emit_writer_failure(type(receipt_error).__name__)
+        return None
+
+
 def _persist_recte_failure_receipt(
     *,
     out_dir: Path,
@@ -6846,6 +6951,42 @@ def train(args) -> int:
     hscf_frozen_mode = bool(getattr(hscf_config, "frozen_mode", False))
     hscf_local_to_head_class_ids: Optional[Tuple[int, ...]] = None
     if (
+        validate_hnccd_args is None
+        or hnccd_config_receipt is None
+        or strict_hnccd_warm_start is None
+        or resolve_hnccd_source_receiver_tokens is None
+        or hnccd_scaled_backward_and_classify is None
+        or finalize_hnccd_amp_overflow_skip is None
+        or update_hnccd_amp_overflow_receipt is None
+        or update_hnccd_optimizer_step_receipt is None
+        or record_hnccd_material_nonfinite_receipt is None
+    ):
+        if bool(getattr(args, "phase1_hnccd_frozen_mode", False)) or bool(
+            getattr(args, "phase1_hnccd_enabled", False)
+        ):
+            raise ImportError("cvsrffi.phase1_hnccd is required for P1-HNCCD")
+        hnccd_config = None
+        hnccd_receipt: Dict[str, Any] = {
+            "schema": "cvs.phase1.hnccd_receipt.v1",
+            "frozen_mode": False,
+            "enabled": False,
+            "lambda": 0.0,
+            "hnccd_common_cells": {},
+            "hnccd_scenes": {},
+            "hnccd_gradient_audit_scenes": {},
+            "hnccd_gradient_audit_completed": False,
+            "hnccd_terminal_contract": "PENDING",
+            "hnccd_terminal_contract_passed": False,
+            "proxy_rows": 0,
+            "held_rows": 0,
+        }
+    else:
+        hnccd_config = validate_hnccd_args(args)
+        hnccd_receipt = hnccd_config_receipt(hnccd_config)
+    hnccd_frozen_mode = bool(getattr(hnccd_config, "frozen_mode", False))
+    hnccd_local_to_head_class_ids: Optional[Tuple[int, ...]] = None
+    hnccd_source_receiver_tokens: Optional[Tuple[int, ...]] = None
+    if (
         validate_recte_args is None
         or recte_config_receipt is None
         or strict_recte_warm_start is None
@@ -7152,7 +7293,7 @@ def train(args) -> int:
             "--phase1_allow_empty_proxy_unknown requires the frozen ManyTx real-OE protocol"
         )
     data_ctx = _build_ssdg_wisig_data(args, device)
-    if ccpc_frozen_mode or pamr_frozen_mode or cb_sfce_frozen_mode or gd_proto_nll_frozen_mode or icmt_frozen_mode or cagm_frozen_mode or rcrmd_frozen_mode or rcat_frozen_mode or rcmmc_frozen_mode or hscf_frozen_mode or recte_frozen_mode or cp_sfce_frozen_mode:
+    if ccpc_frozen_mode or pamr_frozen_mode or cb_sfce_frozen_mode or gd_proto_nll_frozen_mode or icmt_frozen_mode or cagm_frozen_mode or rcrmd_frozen_mode or rcat_frozen_mode or rcmmc_frozen_mode or hscf_frozen_mode or hnccd_frozen_mode or recte_frozen_mode or cp_sfce_frozen_mode:
         tx_partition_receipt = (
             (data_ctx.get("split_info", {}) or {}).get("tx_partition_receipt", {})
         )
@@ -7195,6 +7336,10 @@ def train(args) -> int:
                 )
             if hscf_frozen_mode:
                 raise HSCFConfigurationError(
+                    "Frozen Phase1 continuation requires an explicit TX-role partition receipt"
+                )
+            if hnccd_frozen_mode:
+                raise HNCCDConfigurationError(
                     "Frozen Phase1 continuation requires an explicit TX-role partition receipt"
                 )
             if cp_sfce_frozen_mode:
@@ -7243,6 +7388,10 @@ def train(args) -> int:
                 )
             if hscf_frozen_mode:
                 raise HSCFConfigurationError(
+                    "Frozen Phase1 continuation rejects any held/proxy TX loaded by training"
+                )
+            if hnccd_frozen_mode:
+                raise HNCCDConfigurationError(
                     "Frozen Phase1 continuation rejects any held/proxy TX loaded by training"
                 )
             if cp_sfce_frozen_mode:
@@ -7468,6 +7617,42 @@ def train(args) -> int:
                     {
                         **rcmmc_receipt,
                         "source_partition_sha256": str(frozen_source_roles["source_partition_sha256"]),
+                        "local_data_class_count": local_data_class_count,
+                    },
+                    source_split_receipt,
+                )
+            )
+        if hnccd_frozen_mode:
+            local_data_class_count = int(data_ctx.get("num_classes", 0))
+            local_tx_order = list(data_ctx.get("class_id_to_tx", []) or [])
+            if local_data_class_count != len(local_tx_order):
+                raise HNCCDConfigurationError(
+                    "P1-HNCCD data_ctx local class count must equal its local TX class-order receipt"
+                )
+            if local_tx_order != frozen_source_roles["source_train_tx"]:
+                raise HNCCDConfigurationError(
+                    "P1-HNCCD data_ctx local TX class order must equal the source-train TX receipt"
+                )
+            source_split_receipt = (data_ctx.get("split_info", {}) or {}).get(
+                "source_split_receipt", {}
+            )
+            if bind_hnccd_source_data_order is None or resolve_hnccd_source_receiver_tokens is None:
+                raise ImportError("cvsrffi.phase1_hnccd source data-order binding support is required")
+            hnccd_source_receiver_tokens = tuple(
+                int(value) for value in resolve_hnccd_source_receiver_tokens(source_split_receipt)
+            )
+            hnccd_receipt.update(
+                bind_hnccd_source_data_order(
+                    {
+                        **hnccd_receipt,
+                        "source_partition_sha256": str(frozen_source_roles["source_partition_sha256"]),
+                        "source_train_tx_count": int(len(frozen_source_roles["source_train_tx"])),
+                        "source_known_validation_tx_count": int(
+                            len(frozen_source_roles["source_known_validation_tx"])
+                        ),
+                        "source_proxy_unknown_tx_count": int(
+                            len(frozen_source_roles["source_proxy_unknown_tx"])
+                        ),
                         "local_data_class_count": local_data_class_count,
                     },
                     source_split_receipt,
@@ -7701,6 +7886,20 @@ def train(args) -> int:
         elif hscf_frozen_mode:
             hscf_receipt.update(
                 strict_hscf_warm_start(
+                    model,
+                    ckpt["model"],
+                    baseline_path=str(args.baseline_ckpt),
+                    baseline_sha256=_sha256_file(args.baseline_ckpt),
+                    checkpoint_epoch=ckpt.get("epoch", -1),
+                    checkpoint_role=ckpt.get(
+                        "checkpoint_role",
+                        ckpt.get("checkpoint_selection", "UNSPECIFIED"),
+                    ),
+                )
+            )
+        elif hnccd_frozen_mode:
+            hnccd_receipt.update(
+                strict_hnccd_warm_start(
                     model,
                     ckpt["model"],
                     baseline_path=str(args.baseline_ckpt),
@@ -8112,6 +8311,46 @@ def train(args) -> int:
             encoding="utf-8",
             newline="\n",
         )
+    if hnccd_frozen_mode:
+        if (
+            resolve_hnccd_classifier_weight is None
+            or resolve_hnccd_local_head_class_binding is None
+            or remap_hnccd_local_labels_to_head_rows is None
+            or hnccd_source_receiver_tokens is None
+        ):
+            raise ImportError("cvsrffi.phase1_hnccd classifier/source-receiver binding support is required")
+        hnccd_weight = resolve_hnccd_classifier_weight(model)
+        checkpoint_args = ckpt.get("args", {}) or {}
+        if not isinstance(checkpoint_args, Mapping):
+            raise HNCCDConfigurationError(
+                "P1-HNCCD strict baseline checkpoint must contain an argument mapping"
+            )
+        checkpoint_train_tx = [
+            item.strip()
+            for item in str(checkpoint_args.get("phase1_source_train_tx_ids", "") or "").split(",")
+            if item.strip()
+        ]
+        tx_partition_receipt = (data_ctx.get("split_info", {}) or {}).get(
+            "tx_partition_receipt", {}
+        )
+        hnccd_head_binding = resolve_hnccd_local_head_class_binding(
+            local_class_order=list(data_ctx.get("class_id_to_tx", []) or []),
+            source_train_tx=list(tx_partition_receipt.get("source_known_train_tx", []) or []),
+            checkpoint_train_tx=checkpoint_train_tx,
+            dataset_class_order=list(tx_partition_receipt.get("dataset_tx_order", []) or []),
+            local_data_class_count=data_ctx.get("num_classes", 0),
+            checkpoint_head_class_count=checkpoint_args.get("num_classes", None),
+            live_head_class_count=int(hnccd_weight.size(0)),
+        )
+        hnccd_local_to_head_class_ids = tuple(
+            int(value) for value in hnccd_head_binding["local_to_head_class_ids"]
+        )
+        hnccd_receipt.update(hnccd_head_binding)
+        (out_dir / "phase1_hnccd_config_receipt.json").write_text(
+            json.dumps(hnccd_receipt, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+            newline="\n",
+        )
     if recte_frozen_mode:
         if (
             resolve_recte_classifier_weight is None
@@ -8317,6 +8556,25 @@ def train(args) -> int:
                 out_dir=out_dir,
                 args=args,
                 hscf_receipt=hscf_receipt,
+                error=error,
+                failure_stage="new_adamw_initial_state_binding",
+            )
+            raise
+    if hnccd_frozen_mode:
+        try:
+            if bind_hnccd_optimizer_initial_state is None:
+                raise ImportError("cvsrffi.phase1_hnccd AdamW initial-state receipt support is required")
+            hnccd_receipt = bind_hnccd_optimizer_initial_state(hnccd_receipt, optimizer)
+            (out_dir / "phase1_hnccd_config_receipt.json").write_text(
+                json.dumps(hnccd_receipt, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+                encoding="utf-8",
+                newline="\n",
+            )
+        except Exception as error:
+            _persist_hnccd_failure_receipt(
+                out_dir=out_dir,
+                args=args,
+                hnccd_receipt=hnccd_receipt,
                 error=error,
                 failure_stage="new_adamw_initial_state_binding",
             )
@@ -8862,6 +9120,7 @@ def train(args) -> int:
             else None
         )
         for batch_idx, labeled_batch in enumerate(data_ctx["train_loader"], start=1):
+            hnccd_step_started = time.perf_counter() if hnccd_frozen_mode else None
             x_l, y_l, extra_l = move_batch(labeled_batch, device)
             if pamr_frozen_mode and bool(getattr(pamr_config, "enabled", False)):
                 try:
@@ -9068,6 +9327,27 @@ def train(args) -> int:
                         failure_stage="local_tx_label_to_live_head_row_binding",
                     )
                     raise
+            if hnccd_frozen_mode:
+                try:
+                    if (
+                        hnccd_local_to_head_class_ids is None
+                        or remap_hnccd_local_labels_to_head_rows is None
+                    ):
+                        raise HNCCDRuntimeError(
+                            "P1-HNCCD local-to-head class binding is unavailable"
+                        )
+                    y_l = remap_hnccd_local_labels_to_head_rows(
+                        y_l, hnccd_local_to_head_class_ids
+                    )
+                except Exception as error:
+                    _persist_hnccd_failure_receipt(
+                        out_dir=out_dir,
+                        args=args,
+                        hnccd_receipt=hnccd_receipt,
+                        error=error,
+                        failure_stage="local_tx_label_to_live_head_row_binding",
+                    )
+                    raise
             if cp_sfce_frozen_mode:
                 try:
                     if (
@@ -9090,7 +9370,7 @@ def train(args) -> int:
                     )
                     raise
             labeled_clean_count = int(y_l.numel())
-            if rcrmd_frozen_mode or rcat_frozen_mode or rcmmc_frozen_mode or recte_frozen_mode:
+            if rcrmd_frozen_mode or rcat_frozen_mode or rcmmc_frozen_mode or hnccd_frozen_mode or recte_frozen_mode:
                 # Only P1 source-L physical receiver metadata is read. This
                 # lookup never affects loader order, sampler, or model input.
                 receiver_l_base = _metadata_label_tensor(
@@ -9106,8 +9386,14 @@ def train(args) -> int:
                             else (
                                 RCMMCRuntimeError("P1-RCMMC requires source-L physical rx_i metadata")
                                 if rcmmc_frozen_mode
-                                else RECTERuntimeError(
-                                    "P1-RECTE requires source-L physical rx_i metadata"
+                                else (
+                                    HNCCDRuntimeError(
+                                        "P1-HNCCD requires source-L physical rx_i metadata"
+                                    )
+                                    if hnccd_frozen_mode
+                                    else RECTERuntimeError(
+                                        "P1-RECTE requires source-L physical rx_i metadata"
+                                    )
                                 )
                             )
                         )
@@ -9133,6 +9419,14 @@ def train(args) -> int:
                             out_dir=out_dir,
                             args=args,
                             rcmmc_receipt=rcmmc_receipt,
+                            error=error,
+                            failure_stage="source_l_rx_i_allowlist_binding",
+                        )
+                    if hnccd_frozen_mode:
+                        _persist_hnccd_failure_receipt(
+                            out_dir=out_dir,
+                            args=args,
+                            hnccd_receipt=hnccd_receipt,
                             error=error,
                             failure_stage="source_l_rx_i_allowlist_binding",
                         )
@@ -9909,6 +10203,7 @@ def train(args) -> int:
                 loss_rcat_l = zero_sat
                 loss_rcmmc_l = zero_sat
                 loss_hscf_l = zero_sat
+                loss_hnccd_l = zero_sat
                 loss_recte_l = zero_sat
                 loss_cp_sfce_l = zero_sat
                 cb_sfce_base_loss_l = None
@@ -9923,6 +10218,7 @@ def train(args) -> int:
                 rcat_satellite_scenario = ""
                 rcmmc_satellite_scenario = ""
                 hscf_satellite_scenario = ""
+                hnccd_satellite_scenario = ""
                 recte_satellite_scenario = ""
                 cp_sfce_satellite_scenario = ""
                 cb_sfce_batch_info: Dict[str, Any] = {
@@ -10050,6 +10346,25 @@ def train(args) -> int:
                     "no_active_renormalization": False,
                     "no_rx_day_fold_read": False,
                 }
+                hnccd_batch_info: Dict[str, Any] = {
+                    "rows": 0,
+                    "positive_c_cells": 0,
+                    "finite_c_cells": 0,
+                    "insufficient_cells": 0,
+                    "sum_c": 0.0,
+                    "loss_sum": 0.0,
+                    "global_denominator": 0,
+                    "cells": {},
+                    "finite": False,
+                    "n_lt_2_differentiable_zero": False,
+                    "no_active_renormalization": False,
+                    "streamed_cell_cross_covariance": False,
+                    "head_null_basis": "",
+                    "training_accumulation_dtype": "",
+                    "forbids_detach_on_leo_or_head": False,
+                    "forbids_batch_d2_materialization": False,
+                    "forbids_batch_cell_d2_materialization": False,
+                }
                 recte_batch_info: Dict[str, Any] = {
                     "rows": 0,
                     "loss_sum": 0.0,
@@ -10163,6 +10478,13 @@ def train(args) -> int:
                         # inferred launcher default; C and G therefore see
                         # exactly the same clear/low/rain order.
                         sat_train_scenarios = list(FROZEN_RCMMC_SCENARIOS)
+                        sat_train_scenario = sat_train_scenarios[
+                            (int(epoch) + int(batch_idx) - 2) % len(sat_train_scenarios)
+                        ]
+                    elif hnccd_frozen_mode:
+                        # HNCCD is sealed to the same deterministic one-LEO
+                        # clear/low/rain cycle in both C and G arms.
+                        sat_train_scenarios = list(FROZEN_HNCCD_SCENARIOS)
                         sat_train_scenario = sat_train_scenarios[
                             (int(epoch) + int(batch_idx) - 2) % len(sat_train_scenarios)
                         ]
@@ -10470,6 +10792,61 @@ def train(args) -> int:
                             hscf_receipt=hscf_receipt,
                             error=error,
                             failure_stage="common_physical_local4_scene_order_b128_denominator512_and_live_head_binding",
+                        )
+                        raise
+                if hnccd_frozen_mode:
+                    try:
+                        if out_sat is None:
+                            raise HNCCDRuntimeError(
+                                "Frozen P1-HNCCD requires the common single LEO forward in both C and G"
+                            )
+                        if int(y_l.numel()) != labeled_clean_count:
+                            raise HNCCDRuntimeError(
+                                "P1-HNCCD forbids expanded or reindexed source-L rows"
+                            )
+                        if (
+                            validate_hnccd_binding is None
+                            or update_hnccd_common_batch_sequence_receipt is None
+                            or hnccd_source_receiver_tokens is None
+                            or hnccd_local_to_head_class_ids is None
+                        ):
+                            raise ImportError(
+                                "cvsrffi.phase1_hnccd common binding/receipt support is required"
+                            )
+                        validate_hnccd_binding(
+                            model=model,
+                            out_clean=out_l,
+                            out_leo=out_sat,
+                            tx_labels=y_l,
+                            source_rx_labels=receiver_l_base,
+                            expected_class_ids=hnccd_local_to_head_class_ids,
+                            source_receiver_tokens=hnccd_source_receiver_tokens,
+                            enforce_frozen_shape=True,
+                        )
+                        hnccd_receipt["common_l_base_head_input_path_verified"] = True
+                        source_meta = _meta_from_extra(extra_l)
+                        hnccd_physical_metadata = {
+                            key: source_meta[key]
+                            for key in ("base_index", "sig_i")
+                            if source_meta is not None and key in source_meta
+                        }
+                        hnccd_receipt = update_hnccd_common_batch_sequence_receipt(
+                            hnccd_receipt,
+                            epoch=int(epoch),
+                            batch_index=int(batch_idx),
+                            scenario=str(sat_train_scenario),
+                            source_tx_labels=y_l,
+                            source_rx_labels=receiver_l_base,
+                            source_receiver_tokens=hnccd_source_receiver_tokens,
+                            metadata=hnccd_physical_metadata,
+                        )
+                    except Exception as error:
+                        _persist_hnccd_failure_receipt(
+                            out_dir=out_dir,
+                            args=args,
+                            hnccd_receipt=hnccd_receipt,
+                            error=error,
+                            failure_stage="common_same_physical_rx_class_scene_n_rc_feat_joint_exact_head_binding",
                         )
                         raise
                 if recte_frozen_mode:
@@ -10899,6 +11276,39 @@ def train(args) -> int:
                             failure_stage="paired_raw_clean_leo_local4_double_centered_hscf_loss",
                         )
                         raise
+                # HNCCD uses only the already-computed source-L LEO feat_joint
+                # rows and the exact live local4 classifier weight.  It does
+                # not read the clean feature, form another view, or retain a
+                # cross-batch statistic.
+                if bool(getattr(hnccd_config, "enabled", False)):
+                    try:
+                        if out_sat is None:
+                            raise HNCCDRuntimeError(
+                                "Enabled P1-HNCCD requires one existing clean and single LEO forward"
+                            )
+                        if hnccd_loss is None or hnccd_source_receiver_tokens is None:
+                            raise ImportError(
+                                "cvsrffi.phase1_hnccd loss/source-receiver support is required"
+                            )
+                        hnccd_weight = resolve_hnccd_classifier_weight(model)
+                        loss_hnccd_l, hnccd_batch_info = hnccd_loss(
+                            out_sat["z_id"],
+                            hnccd_weight,
+                            y_l,
+                            receiver_l_base,
+                            hnccd_source_receiver_tokens,
+                            require_frozen_shape=True,
+                        )
+                        hnccd_satellite_scenario = str(sat_train_scenario)
+                    except Exception as error:
+                        _persist_hnccd_failure_receipt(
+                            out_dir=out_dir,
+                            args=args,
+                            hnccd_receipt=hnccd_receipt,
+                            error=error,
+                            failure_stage="leo_feat_joint_fp32_cholesky_exact_head_rx_class_cross_covariance_loss",
+                        )
+                        raise
                 # RECTE reuses the existing clean logits and one LEO feat_joint
                 # row.  Its only added computation is an exact-head functional
                 # readout with detached current head state; equality to the
@@ -10993,6 +11403,12 @@ def train(args) -> int:
                         loss_closed_l,
                         loss_hscf_l if bool(getattr(hscf_config, "enabled", False)) else None,
                         hscf_config,
+                    )
+                if add_hnccd_to_loss is not None:
+                    loss_closed_l = add_hnccd_to_loss(
+                        loss_closed_l,
+                        loss_hnccd_l if bool(getattr(hnccd_config, "enabled", False)) else None,
+                        hnccd_config,
                     )
                 if add_recte_to_loss is not None:
                     loss_closed_l = add_recte_to_loss(
@@ -11623,6 +12039,8 @@ def train(args) -> int:
             cp_sfce_amp_overflow_pending = False
             hscf_amp_overflow_info: Dict[str, Any] = {}
             hscf_amp_overflow_pending = False
+            hnccd_amp_overflow_info: Dict[str, Any] = {}
+            hnccd_amp_overflow_pending = False
             pamr_shared_gradient_info: Dict[str, Any] = {
                 "shared_parameter_count": 0.0,
                 "base_norm": float("nan"),
@@ -12008,6 +12426,26 @@ def train(args) -> int:
                         failure_stage="g_only_fixed_b128_local4_denominator512_configuration_loss_receipt",
                     )
                     raise
+            if bool(getattr(hnccd_config, "enabled", False)):
+                try:
+                    if update_hnccd_receipt is None:
+                        raise ImportError("cvsrffi.phase1_hnccd G-only receipt support is required")
+                    hnccd_receipt = update_hnccd_receipt(
+                        hnccd_receipt,
+                        hnccd_batch_info,
+                        scenario=hnccd_satellite_scenario,
+                        epoch=int(epoch),
+                        batch_index=int(batch_idx),
+                    )
+                except Exception as error:
+                    _persist_hnccd_failure_receipt(
+                        out_dir=out_dir,
+                        args=args,
+                        hnccd_receipt=hnccd_receipt,
+                        error=error,
+                        failure_stage="g_only_rx7_local4_fixed28_fp32_head_null_cross_covariance_loss_receipt",
+                    )
+                    raise
             if bool(getattr(recte_config, "enabled", False)):
                 try:
                     if update_recte_receipt is None:
@@ -12315,6 +12753,42 @@ def train(args) -> int:
                     raise
             if (
                 loss_is_finite
+                and bool(getattr(hnccd_config, "enabled", False))
+                and int(hnccd_batch_info.get("positive_c_cells", 0)) > 0
+                and str(hnccd_satellite_scenario)
+                not in dict(hnccd_receipt.get("hnccd_gradient_audit_scenes", {}))
+            ):
+                try:
+                    if (
+                        hnccd_shared_encoder_and_head_parameters is None
+                        or hnccd_aux_gradient_audit is None
+                        or update_hnccd_gradient_audit_receipt is None
+                    ):
+                        raise ImportError("cvsrffi.phase1_hnccd raw VJP audit support is required")
+                    if out_sat is None:
+                        raise HNCCDRuntimeError("P1-HNCCD first-positive VJP audit lacks LEO feat_joint")
+                    hnccd_gradient_audit_info = hnccd_aux_gradient_audit(
+                        loss_hnccd_l,
+                        out_l["z_id"],
+                        out_sat["z_id"],
+                        hnccd_shared_encoder_and_head_parameters(model),
+                    )
+                    hnccd_receipt = update_hnccd_gradient_audit_receipt(
+                        hnccd_receipt,
+                        hnccd_gradient_audit_info,
+                        scenario=hnccd_satellite_scenario,
+                    )
+                except Exception as error:
+                    _persist_hnccd_failure_receipt(
+                        out_dir=out_dir,
+                        args=args,
+                        hnccd_receipt=hnccd_receipt,
+                        error=error,
+                        failure_stage="pre_scaled_backward_first_positive_raw_leo_feat_joint_shared_encoder_exact_head_vjp_clean_bias_na",
+                    )
+                    raise
+            if (
+                loss_is_finite
                 and bool(getattr(recte_config, "enabled", False))
                 and int(recte_batch_info.get("positive_tail_pair_count", 0)) > 0
                 and str(recte_satellite_scenario)
@@ -12551,6 +13025,40 @@ def train(args) -> int:
                             failure_stage="scaled_backward_unscale_raw_material_gradient_audit",
                         )
                         raise
+                elif bool(getattr(hnccd_config, "enabled", False)):
+                    try:
+                        if (
+                            hnccd_scaled_backward_and_classify is None
+                            or update_hnccd_amp_overflow_receipt is None
+                        ):
+                            raise ImportError(
+                                "cvsrffi.phase1_hnccd AMP overflow recovery support is required"
+                            )
+                        hnccd_amp_overflow_info = hnccd_scaled_backward_and_classify(
+                            model=model,
+                            optimizer=optimizer,
+                            scaler=scaler,
+                            loss=loss,
+                        )
+                        if bool(hnccd_amp_overflow_info.get("amp_overflow_detected", False)):
+                            if hnccd_amp_overflow_info.get("amp_overflow_recoverable") is not True:
+                                hnccd_receipt = update_hnccd_amp_overflow_receipt(
+                                    hnccd_receipt,
+                                    overflow=hnccd_amp_overflow_info,
+                                )
+                                raise HNCCDRuntimeError(
+                                    "P1-HNCCD raw material gradient audit failed after scaled AMP overflow"
+                                )
+                            hnccd_amp_overflow_pending = True
+                    except Exception as error:
+                        _persist_hnccd_failure_receipt(
+                            out_dir=out_dir,
+                            args=args,
+                            hnccd_receipt=hnccd_receipt,
+                            error=error,
+                            failure_stage="scaled_backward_unscale_raw_material_gradient_audit",
+                        )
+                        raise
                 else:
                     scaler.scale(loss).backward()
                     if bool(getattr(gd_proto_nll_config, "enabled", False)):
@@ -12651,9 +13159,46 @@ def train(args) -> int:
                     grad_domain = float("nan")
                     grads_finite = False
                     skipped_nonfinite_grad = 1
+                elif hnccd_amp_overflow_pending:
+                    try:
+                        if (
+                            finalize_hnccd_amp_overflow_skip is None
+                            or update_hnccd_amp_overflow_receipt is None
+                        ):
+                            raise ImportError(
+                                "cvsrffi.phase1_hnccd AMP overflow recovery support is required"
+                            )
+                        hnccd_amp_skip = finalize_hnccd_amp_overflow_skip(
+                            optimizer=optimizer,
+                            scaler=scaler,
+                            overflow=hnccd_amp_overflow_info,
+                        )
+                        hnccd_receipt = update_hnccd_amp_overflow_receipt(
+                            hnccd_receipt,
+                            overflow=hnccd_amp_overflow_info,
+                            finalized_skip=hnccd_amp_skip,
+                        )
+                    except Exception as error:
+                        _persist_hnccd_failure_receipt(
+                            out_dir=out_dir,
+                            args=args,
+                            hnccd_receipt=hnccd_receipt,
+                            error=error,
+                            failure_stage="raw_finite_amp_overflow_skip_backoff",
+                        )
+                        raise
+                    grad_norm_before_clip = float("nan")
+                    grad_total = float("nan")
+                    grad_backbone = float("nan")
+                    grad_aux = float("nan")
+                    grad_domain = float("nan")
+                    grads_finite = False
+                    skipped_nonfinite_grad = 1
                 else:
                     if not bool(getattr(cp_sfce_config, "enabled", False)) and not bool(
                         getattr(hscf_config, "enabled", False)
+                    ) and not bool(
+                        getattr(hnccd_config, "enabled", False)
                     ):
                         scaler.unscale_(optimizer)
                     grad_norm_before_clip = _grad_norm(model)
@@ -12718,6 +13263,22 @@ def train(args) -> int:
                                     failure_stage="post_scaler_step_effective_optimizer_step_receipt",
                                 )
                                 raise
+                        if bool(getattr(hnccd_config, "enabled", False)):
+                            try:
+                                if update_hnccd_optimizer_step_receipt is None:
+                                    raise ImportError(
+                                        "cvsrffi.phase1_hnccd effective optimizer-step receipt support is required"
+                                    )
+                                hnccd_receipt = update_hnccd_optimizer_step_receipt(hnccd_receipt)
+                            except Exception as error:
+                                _persist_hnccd_failure_receipt(
+                                    out_dir=out_dir,
+                                    args=args,
+                                    hnccd_receipt=hnccd_receipt,
+                                    error=error,
+                                    failure_stage="post_scaler_step_effective_optimizer_step_receipt",
+                                )
+                                raise
                         optimizer_step_applied = True
                         if ema_model is not None:
                             _update_ema_model(ema_model, model, float(args.ema_decay))
@@ -12760,6 +13321,36 @@ def train(args) -> int:
                                 out_dir=out_dir,
                                 args=args,
                                 hscf_receipt=hscf_receipt,
+                                error=error,
+                                failure_stage="post_backward_combined_gradient_nonfinite",
+                            )
+                            raise error
+                        if bool(getattr(hnccd_config, "enabled", False)):
+                            try:
+                                if record_hnccd_material_nonfinite_receipt is None:
+                                    raise ImportError(
+                                        "cvsrffi.phase1_hnccd material non-finite receipt support is required"
+                                    )
+                                hnccd_receipt = record_hnccd_material_nonfinite_receipt(
+                                    hnccd_receipt,
+                                    reason="post_clip_combined_gradient_nonfinite",
+                                )
+                            except Exception as receipt_error:
+                                _persist_hnccd_failure_receipt(
+                                    out_dir=out_dir,
+                                    args=args,
+                                    hnccd_receipt=hnccd_receipt,
+                                    error=receipt_error,
+                                    failure_stage="post_clip_material_nonfinite_receipt",
+                                )
+                                raise
+                            error = HNCCDRuntimeError(
+                                "P1-HNCCD combined parameter gradient is non-finite"
+                            )
+                            _persist_hnccd_failure_receipt(
+                                out_dir=out_dir,
+                                args=args,
+                                hnccd_receipt=hnccd_receipt,
                                 error=error,
                                 failure_stage="post_backward_combined_gradient_nonfinite",
                             )
@@ -12820,6 +13411,36 @@ def train(args) -> int:
                         out_dir=out_dir,
                         args=args,
                         hscf_receipt=hscf_receipt,
+                        error=error,
+                        failure_stage="pre_backward_total_loss_nonfinite",
+                    )
+                    raise error
+                if bool(getattr(hnccd_config, "enabled", False)):
+                    try:
+                        if record_hnccd_material_nonfinite_receipt is None:
+                            raise ImportError(
+                                "cvsrffi.phase1_hnccd material non-finite receipt support is required"
+                            )
+                        hnccd_receipt = record_hnccd_material_nonfinite_receipt(
+                            hnccd_receipt,
+                            reason="total_loss_nonfinite",
+                        )
+                    except Exception as receipt_error:
+                        _persist_hnccd_failure_receipt(
+                            out_dir=out_dir,
+                            args=args,
+                            hnccd_receipt=hnccd_receipt,
+                            error=receipt_error,
+                            failure_stage="pre_backward_material_nonfinite_receipt",
+                        )
+                        raise
+                    error = HNCCDRuntimeError(
+                        "P1-HNCCD fail-closed: total loss is non-finite before backward"
+                    )
+                    _persist_hnccd_failure_receipt(
+                        out_dir=out_dir,
+                        args=args,
+                        hnccd_receipt=hnccd_receipt,
                         error=error,
                         failure_stage="pre_backward_total_loss_nonfinite",
                     )
@@ -12907,6 +13528,18 @@ def train(args) -> int:
                 {
                     "train/loss": loss.detach(),
                     "train/loss_labeled": loss_l.detach(),
+                    "train/hnccd_loss": (
+                        float(loss_hnccd_l.detach().float().item())
+                        if bool(getattr(hnccd_config, "enabled", False))
+                        else 0.0
+                    ),
+                    "train/hnccd_positive_c_cells": float(
+                        hnccd_batch_info.get("positive_c_cells", 0)
+                    ),
+                    "train/hnccd_insufficient_cells": float(
+                        hnccd_batch_info.get("insufficient_cells", 0)
+                    ),
+                    "train/hnccd_amp_overflow": 1.0 if hnccd_amp_overflow_pending else 0.0,
                     "train/loss_closed_group": loss_closed.detach(),
                     "train/loss_open_group": loss_open.detach(),
                     "train/os_budget_controller_active": float(os_budget_info["active"]),
@@ -13918,6 +14551,29 @@ def train(args) -> int:
                     "train/dm_accept_stage_scale": float(direct_metric_stage_scale),
                 }
             )
+            if hnccd_frozen_mode:
+                try:
+                    if update_hnccd_resource_receipt is None or hnccd_step_started is None:
+                        raise ImportError("cvsrffi.phase1_hnccd resource receipt support is required")
+                    hnccd_peak_memory = (
+                        int(torch.cuda.max_memory_allocated(device))
+                        if device.type == "cuda"
+                        else 0
+                    )
+                    hnccd_receipt = update_hnccd_resource_receipt(
+                        hnccd_receipt,
+                        peak_memory_bytes=hnccd_peak_memory,
+                        step_time_seconds=float(time.perf_counter() - hnccd_step_started),
+                    )
+                except Exception as error:
+                    _persist_hnccd_failure_receipt(
+                        out_dir=out_dir,
+                        args=args,
+                        hnccd_receipt=hnccd_receipt,
+                        error=error,
+                        failure_stage="post_step_resource_observation_without_selection_feedback",
+                    )
+                    raise
             if bool(getattr(hscf_config, "enabled", False)):
                 # The exceptional raw VJP requires the common scaled backward
                 # to retain its graph.  All batch telemetry above is now a
@@ -14020,6 +14676,113 @@ def train(args) -> int:
                         out_dir=out_dir,
                         args=args,
                         hscf_receipt=hscf_receipt,
+                        error=error,
+                        failure_stage="post_telemetry_retained_graph_release",
+                    )
+                    raise
+            elif bool(getattr(hnccd_config, "enabled", False)):
+                # HNCCD uses retain_graph for the one normal AMP backward so
+                # its exceptional raw material audit can operate on that same
+                # graph.  Telemetry above contains only detached tensors or
+                # scalars; make this dictionary the sole remaining caller
+                # owner and release it before the next forward.
+                try:
+                    if release_hnccd_retained_graph_roots is None:
+                        raise ImportError(
+                            "cvsrffi.phase1_hnccd retained-graph release support is required"
+                        )
+                    hnccd_retained_graph_roots = {
+                        "out_l": out_l,
+                        "out_sat": out_sat,
+                        "core_losses": core_losses,
+                        "z_id_l": z_id_l,
+                        "loss_tx_l": loss_tx_l,
+                        "loss_dom_l": loss_dom_l,
+                        "loss_adv_l": loss_adv_l,
+                        "loss_cons_l": loss_cons_l,
+                        "loss_orth_l": loss_orth_l,
+                        "loss_group_ce_l": loss_group_ce_l,
+                        "loss_fishr_l": loss_fishr_l,
+                        "loss_manytx_real_oe_l": loss_manytx_real_oe_l,
+                        "loss_zid_invariance_l": loss_zid_invariance_l,
+                        "loss_teacher_clean_kl_l": loss_teacher_clean_kl_l,
+                        "loss_teacher_sat_kl_l": loss_teacher_sat_kl_l,
+                        "loss_teacher_zid_mse_l": loss_teacher_zid_mse_l,
+                        "loss_proto_l": loss_proto_l,
+                        "loss_open_world_feat_l": loss_open_world_feat_l,
+                        "loss_zid_compact_l": loss_zid_compact_l,
+                        "loss_proxy_unknown_l": loss_proxy_unknown_l,
+                        "loss_soft_unknown_mixup_l": loss_soft_unknown_mixup_l,
+                        "loss_source_episode_l": loss_source_episode_l,
+                        "loss_direct_metric_accept_l": loss_direct_metric_accept_l,
+                        "zero_sat": zero_sat,
+                        "loss_sat_cls_l": loss_sat_cls_l,
+                        "loss_sat_cons_l": loss_sat_cons_l,
+                        "loss_ccpc_leo_l": loss_ccpc_leo_l,
+                        "loss_pamr_l": loss_pamr_l,
+                        "loss_cb_sfce_l": loss_cb_sfce_l,
+                        "loss_gd_proto_nll_l": loss_gd_proto_nll_l,
+                        "loss_icmt_l": loss_icmt_l,
+                        "loss_cagm_l": loss_cagm_l,
+                        "loss_rcrmd_l": loss_rcrmd_l,
+                        "loss_rcat_l": loss_rcat_l,
+                        "loss_rcmmc_l": loss_rcmmc_l,
+                        "loss_hscf_l": loss_hscf_l,
+                        "loss_hnccd_l": loss_hnccd_l,
+                        "loss_recte_l": loss_recte_l,
+                        "loss_cp_sfce_l": loss_cp_sfce_l,
+                        "pamr_base_loss_l": pamr_base_loss_l,
+                        "cb_sfce_base_loss_l": cb_sfce_base_loss_l,
+                        "gd_proto_nll_base_loss_l": gd_proto_nll_base_loss_l,
+                        "icmt_base_loss_l": icmt_base_loss_l,
+                        "cagm_base_loss_l": cagm_base_loss_l,
+                        "loss_closed_l": loss_closed_l,
+                        "loss_open_invariant_l": loss_open_invariant_l,
+                        "loss_open_boundary_l": loss_open_boundary_l,
+                        "loss_open_source_l": loss_open_source_l,
+                        "loss_open_l": loss_open_l,
+                        "loss_l": loss_l,
+                        "z": z,
+                        "loss_u": loss_u,
+                        "loss_ent": loss_ent,
+                        "loss_u_domain": loss_u_domain,
+                        "loss_u_adv": loss_u_adv,
+                        "loss_u_sat_cons": loss_u_sat_cons,
+                        "loss_u_direct_metric": loss_u_direct_metric,
+                        "loss_u_quarantine": loss_u_quarantine,
+                        "loss_u_zid_invariance": loss_u_zid_invariance,
+                        "loss_closed": loss_closed,
+                        "loss_open_u": loss_open_u,
+                        "loss_open": loss_open,
+                        "open_objective_losses": open_objective_losses,
+                        "scaled_closed_loss": scaled_closed_loss,
+                        "scaled_open_loss": scaled_open_loss,
+                        "loss": loss,
+                    }
+                    del out_l, out_sat, core_losses, z_id_l
+                    del loss_tx_l, loss_dom_l, loss_adv_l, loss_cons_l, loss_orth_l
+                    del loss_group_ce_l, loss_fishr_l, loss_manytx_real_oe_l
+                    del loss_zid_invariance_l, loss_teacher_clean_kl_l
+                    del loss_teacher_sat_kl_l, loss_teacher_zid_mse_l, loss_proto_l
+                    del loss_open_world_feat_l, loss_zid_compact_l, loss_proxy_unknown_l
+                    del loss_soft_unknown_mixup_l, loss_source_episode_l
+                    del loss_direct_metric_accept_l, zero_sat, loss_sat_cls_l, loss_sat_cons_l
+                    del loss_ccpc_leo_l, loss_pamr_l, loss_cb_sfce_l, loss_gd_proto_nll_l
+                    del loss_icmt_l, loss_cagm_l, loss_rcrmd_l, loss_rcat_l, loss_rcmmc_l, loss_hscf_l
+                    del loss_hnccd_l, loss_recte_l, loss_cp_sfce_l, pamr_base_loss_l, cb_sfce_base_loss_l
+                    del gd_proto_nll_base_loss_l, icmt_base_loss_l, cagm_base_loss_l
+                    del loss_closed_l, loss_open_invariant_l, loss_open_boundary_l
+                    del loss_open_source_l, loss_open_l, loss_l, z, loss_u, loss_ent
+                    del loss_u_domain, loss_u_adv, loss_u_sat_cons, loss_u_direct_metric
+                    del loss_u_quarantine, loss_u_zid_invariance, loss_closed, loss_open_u
+                    del loss_open, open_objective_losses, scaled_closed_loss, scaled_open_loss, loss
+                    release_hnccd_retained_graph_roots(hnccd_retained_graph_roots)
+                    del hnccd_retained_graph_roots
+                except Exception as error:
+                    _persist_hnccd_failure_receipt(
+                        out_dir=out_dir,
+                        args=args,
+                        hnccd_receipt=hnccd_receipt,
                         error=error,
                         failure_stage="post_telemetry_retained_graph_release",
                     )
@@ -14203,6 +14966,8 @@ def train(args) -> int:
             payload["rcmmc_receipt"] = dict(rcmmc_receipt)
         if hscf_frozen_mode:
             payload["hscf_receipt"] = dict(hscf_receipt)
+        if hnccd_frozen_mode:
+            payload["hnccd_receipt"] = dict(hnccd_receipt)
         if recte_frozen_mode:
             payload["recte_receipt"] = dict(recte_receipt)
         if cp_sfce_frozen_mode:
@@ -14783,6 +15548,20 @@ def train(args) -> int:
                 failure_stage="terminal_hscf_receipt_validation",
             )
             raise
+    if hnccd_frozen_mode:
+        if validate_hnccd_terminal_receipt is None:
+            raise ImportError("cvsrffi.phase1_hnccd.validate_hnccd_terminal_receipt is required")
+        try:
+            hnccd_receipt = validate_hnccd_terminal_receipt(hnccd_receipt)
+        except Exception as error:
+            _persist_hnccd_failure_receipt(
+                out_dir=out_dir,
+                args=args,
+                hnccd_receipt=hnccd_receipt,
+                error=error,
+                failure_stage="terminal_hnccd_receipt_validation",
+            )
+            raise
     if recte_frozen_mode:
         if validate_recte_terminal_receipt is None:
             raise ImportError("cvsrffi.phase1_recte.validate_recte_terminal_receipt is required")
@@ -14850,6 +15629,8 @@ def train(args) -> int:
         final_payload["rcmmc_receipt"] = dict(rcmmc_receipt)
     if hscf_frozen_mode:
         final_payload["hscf_receipt"] = dict(hscf_receipt)
+    if hnccd_frozen_mode:
+        final_payload["hnccd_receipt"] = dict(hnccd_receipt)
     if recte_frozen_mode:
         final_payload["recte_receipt"] = dict(recte_receipt)
     if cp_sfce_frozen_mode:
@@ -15484,6 +16265,8 @@ def train(args) -> int:
         terminal_manifest["rcmmc_receipt"] = dict(rcmmc_receipt)
     if hscf_frozen_mode:
         terminal_manifest["hscf_receipt"] = dict(hscf_receipt)
+    if hnccd_frozen_mode:
+        terminal_manifest["hnccd_receipt"] = dict(hnccd_receipt)
     if recte_frozen_mode:
         terminal_manifest["recte_receipt"] = dict(recte_receipt)
     if cp_sfce_frozen_mode:
@@ -15730,6 +16513,29 @@ def train(args) -> int:
             encoding="utf-8",
             newline="\n",
         )
+    if hnccd_frozen_mode:
+        (out_dir / "phase1_hnccd_terminal_receipt.json").write_text(
+            json.dumps(
+                {
+                    **dict(hnccd_receipt),
+                    "terminal_status": terminal_status,
+                    "terminal_exit_code": int(terminal_exit_code),
+                    "selected_checkpoint": str(selected_checkpoint),
+                    "selected_checkpoint_sha256": selected_checkpoint_sha256,
+                    "technical_only": False,
+                    "promotion_ready": terminal_status == "COMPLETE",
+                    "performance_result_available": False,
+                    "claim": "PHASE1_SOURCE_ONLY_TRAINING_RECEIPT",
+                },
+                ensure_ascii=False,
+                indent=2,
+                sort_keys=True,
+                default=str,
+            )
+            + "\n",
+            encoding="utf-8",
+            newline="\n",
+        )
     if recte_frozen_mode:
         (out_dir / "phase1_recte_terminal_receipt.json").write_text(
             json.dumps(
@@ -15863,6 +16669,8 @@ def train(args) -> int:
         completion_receipt["rcmmc_receipt"] = dict(rcmmc_receipt)
     if hscf_frozen_mode:
         completion_receipt["hscf_receipt"] = dict(hscf_receipt)
+    if hnccd_frozen_mode:
+        completion_receipt["hnccd_receipt"] = dict(hnccd_receipt)
     if recte_frozen_mode:
         completion_receipt["recte_receipt"] = dict(recte_receipt)
     (out_dir / "phase1_training_completion_receipt.json").write_text(
