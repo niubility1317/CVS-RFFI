@@ -8,7 +8,7 @@
 |run ID|`d92_e0ocf_5arm_hard12v3_20260811_v1`|
 |日期|2026-08-11|
 |operator|Codex primary；N607唯一runner待指派|
-|当前状态|`LOCAL_VERIFIED / TASK_REVIEWS_P0_P1_CLEAR / WHOLE_BRANCH_REVIEW_PENDING`|
+|当前状态|`LOCAL_ONLY_SUPERSEDED_BY_V2 / NEVER_LAUNCHED`|
 |协议|`p2_min_v1`|
 |证据范围|`DEVELOPMENT_ONLY_PSEUDO_BLIND_DISJOINT_STRESS_SCREEN`|
 |唯一晋级候选|`E0_OCF25`|
@@ -102,4 +102,4 @@ Hard12-v3从125个历史outer的冻结难度中，在排除Hard12-v1/v2共24行�
 
 ## 9.发布与结果待办
 
-当前尚未产生Hard12-v3性能结果。下一步只剩：全分支独立P0/P1复审、最小Git运行闭包与launch生成、一次N607普通账号preflight、真实checkpoint truth-free smoke、8-shard完整60-job执行、artifact取回和冻结analysis。精确交付物映射、N607命令、环境/CWD、GPU、日志/output、PID、smoke、artifact计数、同排结果与最终裁决将在同一报告续写。
+本run ID从未同步或启动，也没有性能结果。发布工程在本地闭合后按不可覆盖原则改用`d92_e0ocf_5arm_hard12v3_20260811_v2`；后续启动、artifact和结果只写入v2报告。
