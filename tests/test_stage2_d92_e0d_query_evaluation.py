@@ -8,6 +8,7 @@ import pytest
 from cvsrffi import stage2_d81_query_evaluation as d81_eval
 from cvsrffi import stage2_d92_e0d_query_evaluation as e0d_eval
 from cvsrffi import stage2_d92_e0d_slim as slim
+from cvsrffi.stage2_d92_registration_balanced_covariance import OLD_CLASS_COUNT
 from scripts import probe_d81_ground_nuisance_cauchy_center as d81_probe
 
 
@@ -46,6 +47,14 @@ def _resource(
     )
     actual = total // 2 if registered and k_shot > 2 else 1
     class_count = 11 if registered else 6
+    affine_macs = (
+        2 * (OLD_CLASS_COUNT * k_shot) * OLD_CLASS_COUNT * 288
+        if ocf_active
+        else None
+    )
+    contrast_mix_macs = (
+        5 * OLD_CLASS_COUNT * (288 + 1) if ocf_active else None
+    )
     return {
         "d92_registration_state_support_only": True,
         "d92_query_rows_used": 0,
@@ -81,8 +90,12 @@ def _resource(
         "d92_e0d_finite_output_pass": True,
         "d92_e0d_ocf_active": ocf_active,
         "d92_e0d_ocf_lambda": arm.ocf_lambda if ocf_active else None,
+        "d92_e0d_ocf_support_alignment_affine_macs_upper_bound": affine_macs,
+        "d92_e0d_ocf_support_alignment_contrast_mix_macs_upper_bound": (
+            contrast_mix_macs
+        ),
         "d92_e0d_ocf_support_alignment_macs_upper_bound": (
-            432 if ocf_active else None
+            affine_macs + contrast_mix_macs if ocf_active else None
         ),
         "d92_e0d_ocf_support_alignment_transient_bytes_upper_bound": (
             864 if ocf_active else None
@@ -98,7 +111,7 @@ def _resource(
             "effective_sample_size_by_class": (
                 [1.0] * class_count
                 if k_shot == 1
-                else [4.42187]
+                else [min(4.42187, float(k_shot) - 0.5)]
                 + [float(k_shot) - 0.5] * (class_count - 1)
             ),
         },
@@ -113,14 +126,18 @@ def _resource(
     }
 
 
-def _result(arm: slim.D92E0DSlimArmSpec, *, after_marker: int = 2):
+def _result(
+    arm: slim.D92E0DSlimArmSpec, *, after_marker: int = 2, k_shot: int = 5
+):
     return SimpleNamespace(
         geometry_audit={
             "k1_unit_covariance_fallback": False,
             "before_covariance_audit": _resource(
-                arm, registered=False, k_shot=5
+                arm, registered=False, k_shot=k_shot
             ),
-            "final_covariance_audit": _resource(arm, registered=True, k_shot=5),
+            "final_covariance_audit": _resource(
+                arm, registered=True, k_shot=k_shot
+            ),
         },
         before_state=_state(classes=6, old_count=6, marker=1),
         state=_state(classes=11, old_count=6, marker=after_marker),
@@ -189,28 +206,159 @@ def test_audit_keeps_existing_resource_fields_and_adds_state_fingerprints():
     ]
 
 
-def test_audit_exposes_active_ocf_support_receipt_from_after_state():
+@pytest.mark.parametrize(
+    ("k_shot", "expected_affine", "expected_mix", "expected_total"),
+    (
+        (5, 103_680, 8_670, 112_350),
+        (10, 207_360, 8_670, 216_030),
+    ),
+)
+def test_audit_exposes_active_ocf_support_receipt_from_after_state(
+    k_shot,
+    expected_affine,
+    expected_mix,
+    expected_total,
+):
     """Would fail if the formal fit row dropped its active OCF support receipt."""
 
     arm = slim.D92_E0D_ARMS["E0_OCF25"]
     row = e0d_eval._audit_d92_e0d_fit(
-        _result(arm),
+        _result(arm, k_shot=k_shot),
         arm=arm,
         scenario="leo_clear_weak",
-        k_shot=5,
+        k_shot=k_shot,
         old_count=6,
         class_count=11,
     )
+    affine_formula = 2 * (OLD_CLASS_COUNT * k_shot) * OLD_CLASS_COUNT * 288
+    mix_formula = 5 * OLD_CLASS_COUNT * (288 + 1)
+    assert OLD_CLASS_COUNT == 6
+    assert (affine_formula, mix_formula, affine_formula + mix_formula) == (
+        expected_affine,
+        expected_mix,
+        expected_total,
+    )
     assert row["d92_e0d_ocf_active"] is True
     assert row["d92_e0d_ocf_lambda"] == pytest.approx(0.25)
-    assert row["d92_e0d_ocf_support_alignment_macs_upper_bound"] == 432
+    assert (
+        row["d92_e0d_ocf_support_alignment_affine_macs_upper_bound"]
+        == affine_formula
+    )
+    assert (
+        row["d92_e0d_ocf_support_alignment_contrast_mix_macs_upper_bound"]
+        == mix_formula
+    )
+    assert row["d92_e0d_ocf_support_alignment_macs_upper_bound"] == (
+        affine_formula + mix_formula
+    )
     assert row["d92_e0d_ocf_support_alignment_transient_bytes_upper_bound"] == 864
+
+
+def test_audit_rejects_active_ocf_total_macs_sum_tamper():
+    """Would fail if a positive but inconsistent OCF MAC total were accepted."""
+
+    arm = slim.D92_E0D_ARMS["E0_OCF25"]
+    result = _result(arm)
+    result.geometry_audit["final_covariance_audit"][
+        "d92_e0d_ocf_support_alignment_macs_upper_bound"
+    ] += 1
+    with pytest.raises(e0d_eval.D92E0DQueryEvaluationError, match="OCF"):
+        e0d_eval._audit_d92_e0d_fit(
+            result,
+            arm=arm,
+            scenario="leo_clear_weak",
+            k_shot=5,
+            old_count=6,
+            class_count=11,
+        )
+
+
+@pytest.mark.parametrize(
+    "field",
+    (
+        "d92_e0d_ocf_support_alignment_affine_macs_upper_bound",
+        "d92_e0d_ocf_support_alignment_contrast_mix_macs_upper_bound",
+    ),
+)
+def test_audit_rejects_sum_consistent_ocf_k_formula_tamper(field):
+    """Would fail if consistent positive fields could evade the frozen K formula."""
+
+    arm = slim.D92_E0D_ARMS["E0_OCF25"]
+    result = _result(arm)
+    receipt = result.geometry_audit["final_covariance_audit"]
+    receipt[field] += 1
+    receipt["d92_e0d_ocf_support_alignment_macs_upper_bound"] += 1
+    with pytest.raises(e0d_eval.D92E0DQueryEvaluationError, match="OCF"):
+        e0d_eval._audit_d92_e0d_fit(
+            result,
+            arm=arm,
+            scenario="leo_clear_weak",
+            k_shot=5,
+            old_count=6,
+            class_count=11,
+        )
+
+
+def test_audit_keeps_low_k_ocf_mac_receipt_inactive():
+    """Would fail if the exact-full K2 lifecycle reported active OCF work."""
+
+    arm = slim.D92_E0D_ARMS["E0_OCF25"]
+    row = e0d_eval._audit_d92_e0d_fit(
+        _result(arm, k_shot=2),
+        arm=arm,
+        scenario="leo_clear_weak",
+        k_shot=2,
+        old_count=6,
+        class_count=11,
+    )
+    assert row["d92_e0d_ocf_active"] is False
+    assert row["d92_e0d_ocf_lambda"] is None
+    assert row["d92_e0d_ocf_support_alignment_affine_macs_upper_bound"] is None
+    assert (
+        row["d92_e0d_ocf_support_alignment_contrast_mix_macs_upper_bound"]
+        is None
+    )
+    assert row["d92_e0d_ocf_support_alignment_macs_upper_bound"] is None
+
+
+@pytest.mark.parametrize(
+    ("arm_id", "k_shot"),
+    (("E0_FULL_ONLY", 5), ("E0_OCF25", 2)),
+)
+@pytest.mark.parametrize(
+    "field",
+    (
+        "d92_e0d_ocf_support_alignment_affine_macs_upper_bound",
+        "d92_e0d_ocf_support_alignment_contrast_mix_macs_upper_bound",
+        "d92_e0d_ocf_support_alignment_macs_upper_bound",
+    ),
+)
+def test_audit_rejects_inactive_nonzero_mac_receipt(arm_id, k_shot, field):
+    """Would fail if an inactive arm carried any nonzero OCF MAC receipt."""
+
+    arm = slim.D92_E0D_ARMS[arm_id]
+    result = _result(arm, k_shot=k_shot)
+    result.geometry_audit["final_covariance_audit"][field] = 1
+    with pytest.raises(e0d_eval.D92E0DQueryEvaluationError, match="OCF"):
+        e0d_eval._audit_d92_e0d_fit(
+            result,
+            arm=arm,
+            scenario="leo_clear_weak",
+            k_shot=k_shot,
+            old_count=6,
+            class_count=11,
+        )
 
 
 @pytest.mark.parametrize(
     ("field", "invalid_value"),
     (
         ("d92_e0d_ocf_lambda", 0.5),
+        ("d92_e0d_ocf_support_alignment_affine_macs_upper_bound", -1),
+        (
+            "d92_e0d_ocf_support_alignment_contrast_mix_macs_upper_bound",
+            float("nan"),
+        ),
         ("d92_e0d_ocf_support_alignment_macs_upper_bound", None),
         ("d92_e0d_ocf_support_alignment_transient_bytes_upper_bound", float("nan")),
     ),

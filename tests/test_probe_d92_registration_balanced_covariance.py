@@ -246,17 +246,28 @@ def test_ocf_support_alignment_macs_include_affine_and_contrast_mix(
         k_shot=shots,
         lambda_value=0.25,
     )
+    affine_formula = (
+        2
+        * (probe.OLD_CLASS_COUNT * shots)
+        * probe.OLD_CLASS_COUNT
+        * dimension
+    )
+    mix_formula = 5 * probe.OLD_CLASS_COUNT * (dimension + 1)
+    assert probe.OLD_CLASS_COUNT == 6
+    assert affine_formula == expected_affine_macs
+    assert mix_formula == expected_mix_macs
+    assert affine_formula + mix_formula == expected_total_macs
     assert (
         audit["d92_ocf_support_alignment_affine_macs_upper_bound"]
-        == expected_affine_macs
+        == affine_formula
     )
     assert (
         audit["d92_ocf_support_alignment_contrast_mix_macs_upper_bound"]
-        == expected_mix_macs
+        == mix_formula
     )
     assert (
         audit["d92_ocf_support_alignment_macs_upper_bound"]
-        == expected_total_macs
+        == affine_formula + mix_formula
     )
 
 

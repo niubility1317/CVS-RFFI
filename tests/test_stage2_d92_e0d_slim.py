@@ -7,6 +7,7 @@ import pytest
 
 from cvsrffi import stage2_d42_unified_shrinkage_lda as d42
 from cvsrffi import stage2_d92_e0d_slim as slim
+from cvsrffi.stage2_d92_registration_balanced_covariance import OLD_CLASS_COUNT
 from cvsrffi.stage2_d92_e0d_slim import (
     D92_E0D_ARMS,
     build_d92_e0d_fit,
@@ -283,6 +284,45 @@ def test_k10_total_count_uses_the_frozen_mode_formula():
         _, _, audit, _, _ = _run(arm_id, class_count=11, k_shot=10)
         assert expected_total_component_fit_count(10, arm_id=arm_id) == count
         assert audit["d92_e0d_total_component_fit_count"] == count
+
+
+@pytest.mark.parametrize(
+    ("k_shot", "expected_affine", "expected_mix", "expected_total"),
+    (
+        (5, 103_680, 8_670, 112_350),
+        (10, 207_360, 8_670, 216_030),
+    ),
+)
+@pytest.mark.parametrize("arm_id", ("E0_OCF25", "E0_OCF50"))
+def test_ocf_k5_k10_slim_receipt_forwards_frozen_mac_parts(
+    arm_id,
+    k_shot,
+    expected_affine,
+    expected_mix,
+    expected_total,
+):
+    """Would fail if slim dropped or changed either frozen OCF MAC term."""
+
+    _, _, audit, _, _ = _run(arm_id, class_count=11, k_shot=k_shot)
+    affine_formula = 2 * (OLD_CLASS_COUNT * k_shot) * OLD_CLASS_COUNT * 288
+    mix_formula = 5 * OLD_CLASS_COUNT * (288 + 1)
+    assert OLD_CLASS_COUNT == 6
+    assert (affine_formula, mix_formula, affine_formula + mix_formula) == (
+        expected_affine,
+        expected_mix,
+        expected_total,
+    )
+    assert (
+        audit["d92_e0d_ocf_support_alignment_affine_macs_upper_bound"]
+        == affine_formula
+    )
+    assert (
+        audit["d92_e0d_ocf_support_alignment_contrast_mix_macs_upper_bound"]
+        == mix_formula
+    )
+    assert audit["d92_e0d_ocf_support_alignment_macs_upper_bound"] == (
+        affine_formula + mix_formula
+    )
 
 
 def test_before_and_k1_k2_states_are_exact_d92_full_aliases_across_arms():

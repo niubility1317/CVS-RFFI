@@ -204,6 +204,16 @@ def build_d92_e0d_fit(
                 "d92_e0d_ocf_new_rows_byte_exact": base_audit.get(
                     "d92_ocf_new_rows_byte_exact"
                 ),
+                "d92_e0d_ocf_support_alignment_affine_macs_upper_bound": (
+                    base_audit.get(
+                        "d92_ocf_support_alignment_affine_macs_upper_bound"
+                    )
+                ),
+                "d92_e0d_ocf_support_alignment_contrast_mix_macs_upper_bound": (
+                    base_audit.get(
+                        "d92_ocf_support_alignment_contrast_mix_macs_upper_bound"
+                    )
+                ),
                 "d92_e0d_ocf_support_alignment_macs_upper_bound": base_audit.get(
                     "d92_ocf_support_alignment_macs_upper_bound"
                 ),

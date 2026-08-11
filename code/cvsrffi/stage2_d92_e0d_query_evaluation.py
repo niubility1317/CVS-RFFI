@@ -9,6 +9,7 @@ from typing import Any
 
 import numpy as np
 
+from cvsrffi.stage2_d92_registration_balanced_covariance import OLD_CLASS_COUNT
 from cvsrffi.stage2_d92_e0d_slim import (
     D92E0DSlimArmSpec,
     D92_E0D_ARMS,
@@ -52,9 +53,12 @@ _OCF_ARM_IDS = frozenset({"E0_OCF25", "E0_OCF50"})
 _OCF_RECEIPT_FIELDS = (
     "d92_e0d_ocf_active",
     "d92_e0d_ocf_lambda",
+    "d92_e0d_ocf_support_alignment_affine_macs_upper_bound",
+    "d92_e0d_ocf_support_alignment_contrast_mix_macs_upper_bound",
     "d92_e0d_ocf_support_alignment_macs_upper_bound",
     "d92_e0d_ocf_support_alignment_transient_bytes_upper_bound",
 )
+_OCF_MAC_RECEIPT_FIELDS = _OCF_RECEIPT_FIELDS[2:5]
 
 
 class D92E0DQueryEvaluationError(ValueError):
@@ -137,12 +141,42 @@ def _ocf_support_receipt(
     if receipt["d92_e0d_ocf_active"] is not expected_active:
         raise D92E0DQueryEvaluationError("D92-E0D OCF support receipt drift")
     if not expected_active:
-        if any(receipt[field] is not None for field in _OCF_RECEIPT_FIELDS[1:]):
+        if (
+            receipt["d92_e0d_ocf_lambda"] is not None
+            or receipt[
+                "d92_e0d_ocf_support_alignment_transient_bytes_upper_bound"
+            ]
+            is not None
+        ):
             raise D92E0DQueryEvaluationError("D92-E0D OCF support receipt drift")
+        for field in _OCF_MAC_RECEIPT_FIELDS:
+            value = receipt[field]
+            if value is None:
+                continue
+            try:
+                numeric = float(value)
+            except (TypeError, ValueError) as error:
+                raise D92E0DQueryEvaluationError(
+                    "D92-E0D OCF support receipt drift"
+                ) from error
+            if not np.isfinite(numeric) or numeric != 0.0:
+                raise D92E0DQueryEvaluationError(
+                    "D92-E0D OCF support receipt drift"
+                )
         return receipt
     try:
         expected_lambda = float(arm.ocf_lambda)
         actual_lambda = float(receipt["d92_e0d_ocf_lambda"])
+        affine_macs_upper_bound = float(
+            receipt[
+                "d92_e0d_ocf_support_alignment_affine_macs_upper_bound"
+            ]
+        )
+        contrast_mix_macs_upper_bound = float(
+            receipt[
+                "d92_e0d_ocf_support_alignment_contrast_mix_macs_upper_bound"
+            ]
+        )
         macs_upper_bound = float(
             receipt["d92_e0d_ocf_support_alignment_macs_upper_bound"]
         )
@@ -153,12 +187,29 @@ def _ocf_support_receipt(
         raise D92E0DQueryEvaluationError(
             "D92-E0D OCF support receipt drift"
         ) from error
+    expected_affine_macs = int(
+        2
+        * (OLD_CLASS_COUNT * int(k_shot))
+        * OLD_CLASS_COUNT
+        * 288
+    )
+    expected_contrast_mix_macs = int(
+        5 * OLD_CLASS_COUNT * (288 + 1)
+    )
     if (
         not np.isfinite(expected_lambda)
         or not np.isfinite(actual_lambda)
         or actual_lambda != expected_lambda
+        or not np.isfinite(affine_macs_upper_bound)
+        or affine_macs_upper_bound < 0.0
+        or affine_macs_upper_bound != expected_affine_macs
+        or not np.isfinite(contrast_mix_macs_upper_bound)
+        or contrast_mix_macs_upper_bound < 0.0
+        or contrast_mix_macs_upper_bound != expected_contrast_mix_macs
         or not np.isfinite(macs_upper_bound)
         or macs_upper_bound < 0.0
+        or macs_upper_bound
+        != affine_macs_upper_bound + contrast_mix_macs_upper_bound
         or not np.isfinite(transient_bytes_upper_bound)
         or transient_bytes_upper_bound < 0.0
     ):
@@ -331,6 +382,16 @@ def _audit_d92_e0d_fit(
         "after_registration_resource": after_resource,
         "d92_e0d_ocf_active": after_ocf_receipt["d92_e0d_ocf_active"],
         "d92_e0d_ocf_lambda": after_ocf_receipt["d92_e0d_ocf_lambda"],
+        "d92_e0d_ocf_support_alignment_affine_macs_upper_bound": (
+            after_ocf_receipt[
+                "d92_e0d_ocf_support_alignment_affine_macs_upper_bound"
+            ]
+        ),
+        "d92_e0d_ocf_support_alignment_contrast_mix_macs_upper_bound": (
+            after_ocf_receipt[
+                "d92_e0d_ocf_support_alignment_contrast_mix_macs_upper_bound"
+            ]
+        ),
         "d92_e0d_ocf_support_alignment_macs_upper_bound": after_ocf_receipt[
             "d92_e0d_ocf_support_alignment_macs_upper_bound"
         ],
