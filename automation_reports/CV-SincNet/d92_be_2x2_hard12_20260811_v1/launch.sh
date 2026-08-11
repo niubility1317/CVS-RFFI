@@ -4,18 +4,25 @@ set -euo pipefail
 project=/home/szu2070436088/2510044040/CV-SincNet
 python=/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python
 source_root="$project/runs/d92_be_source_snapshot_20260811_v1"
+runtime_archive="$source_root/runtime_closure_bf05869b.tar.gz"
 context="$project/runs/d131_d92_lite160_qtie_target125_20260804_r3/prepared/target125_context.json"
 method_lock="$source_root/configs/stage2_d92_be_2x2_hard12_v1.json"
 smoke="$project/runs/d92_be_truthfree_smoke_20260811_v1"
 output="$project/runs/d92_be_2x2_hard12_20260811_v1"
 logs="$project/logs/d92_be_2x2_hard12_20260811_v1"
 
-test -f "$source_root/cvsrffi/__init__.py"
-test -f "$source_root/scripts/probe_d81_ground_nuisance_cauchy_center.py"
-test -f "$source_root/scripts/probe_d92_registration_balanced_covariance.py"
+test -f "$runtime_archive"
+test "$(sha256sum "$runtime_archive" | awk '{print $1}')" = \
+  "183b04e256ef94a4a946bf17b114ce0de51606f94751af9681b0ea700af61c04"
+test ! -e "$source_root/cvsrffi"
+test ! -e "$source_root/scripts"
 test ! -e "$smoke"
 test ! -e "$output"
 test ! -e "$logs"
+tar -xzf "$runtime_archive" -C "$source_root"
+test -f "$source_root/cvsrffi/__init__.py"
+test -f "$source_root/scripts/probe_d81_ground_nuisance_cauchy_center.py"
+test -f "$source_root/scripts/probe_d92_registration_balanced_covariance.py"
 mkdir -p "$logs"
 cd "$source_root"
 
