@@ -44,6 +44,40 @@ class CLICSourceLeoCacheError(RuntimeError):
     """Raised when a source-L LEO cache cannot be built fail-closed."""
 
 
+def _tensor_to_numpy_float32(value: torch.Tensor) -> np.ndarray:
+    """Cross the Torch/NumPy boundary without Tensor.numpy().
+
+    N607 pairs Torch 2.1 with NumPy 2.x.  That combination's legacy ndarray
+    C-API bridge can terminate the process inside ``Tensor.numpy()``.  A plain
+    Python-list boundary is slower but deterministic and safe for this one-off
+    source-only cache build.
+    """
+
+    if not torch.is_tensor(value):
+        raise CLICSourceLeoCacheError("source-L cache tensor conversion input is invalid")
+    source = value.detach().cpu().float().contiguous()
+    try:
+        observed = np.asarray(source.tolist(), dtype=np.float32)
+    except (TypeError, ValueError, RuntimeError) as exc:
+        raise CLICSourceLeoCacheError("source-L cache tensor conversion failed") from exc
+    if observed.shape != tuple(source.shape) or not observed.flags.c_contiguous:
+        raise CLICSourceLeoCacheError("source-L cache tensor conversion shape drifted")
+    return observed
+
+
+def _numpy_float32_to_tensor(value: np.ndarray, *, device: torch.device) -> torch.Tensor:
+    """Cross the NumPy/Torch boundary without torch.from_numpy()."""
+
+    source = np.ascontiguousarray(value, dtype=np.float32)
+    try:
+        # frombuffer uses the buffer protocol rather than NumPy's ndarray
+        # C-API, then clone detaches the tensor from the NumPy allocation.
+        tensor = torch.frombuffer(memoryview(source), dtype=torch.float32)
+        return tensor.reshape(source.shape).clone().to(device)
+    except (TypeError, ValueError, RuntimeError) as exc:
+        raise CLICSourceLeoCacheError("source-L cache NumPy conversion failed") from exc
+
+
 def _strict_string_rows(values: Sequence[str], *, label: str) -> tuple[str, ...]:
     try:
         rows = tuple(values)
@@ -305,7 +339,7 @@ def _collect_source_l_rows(
         x, y, _domain, meta = batch
         if not torch.is_tensor(x) or not torch.is_tensor(y):
             raise CLICSourceLeoCacheError("source-L cache batch tensors are malformed")
-        clean = x.detach().cpu().float().numpy().astype(np.float32)
+        clean = _tensor_to_numpy_float32(x)
         if clean.ndim != 3 or clean.shape[1] != 2 or not np.isfinite(clean).all():
             raise CLICSourceLeoCacheError("source-L clean IQ rows are non-finite or malformed")
         count = int(clean.shape[0])
@@ -501,7 +535,7 @@ def build_source_l_received_iq(args: argparse.Namespace) -> dict[str, Any]:
             raise CLICSourceLeoCacheError("source-L cache scene assignment is empty")
         for start in range(0, int(positions.size), batch_size):
             current = positions[start : start + batch_size]
-            source = torch.from_numpy(clean_iq[current]).to(device)
+            source = _numpy_float32_to_tensor(clean_iq[current], device=device)
             with torch.no_grad():
                 received, metadata = apply_sat_channel_for_scenario(
                     source,
@@ -512,7 +546,7 @@ def build_source_l_received_iq(args: argparse.Namespace) -> dict[str, Any]:
                 )
             if not isinstance(metadata, Mapping) or metadata.get("channel_model") != "leo_residual":
                 raise CLICSourceLeoCacheError("source-L cache channel metadata drifted")
-            observed = received.detach().cpu().float().numpy().astype(np.float32)
+            observed = _tensor_to_numpy_float32(received)
             if observed.shape != clean_iq[current].shape or not np.isfinite(observed).all():
                 raise CLICSourceLeoCacheError("source-L received-IQ rows are malformed or non-finite")
             received_iq[current] = observed

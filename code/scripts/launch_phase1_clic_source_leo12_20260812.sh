@@ -3,7 +3,7 @@ set -euo pipefail
 
 # Second source-only postfreeze wave.  Build one immutable received-IQ cache
 # per fold, then reuse those exact bytes for the corresponding C and G forward.
-RUN_ID="${RUN_ID:-phase1_clic_source_leo_20260812_v1}"
+RUN_ID="${RUN_ID:-phase1_clic_source_leo_20260812_v2}"
 TRAINING_RUN_ID="${TRAINING_RUN_ID:-phase1_clic12_20260812_v5}"
 PROJECT_ROOT="${PROJECT_ROOT:-/home/szu2070436088/2510044040/CV-SincNet}"
 CODE_ROOT="${CODE_ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
@@ -24,7 +24,7 @@ for arg in "$@"; do
   esac
 done
 [[ "${DRY_RUN}" == "0" || "${DRY_RUN}" == "1" ]] || { echo "DRY_RUN must be 0 or 1" >&2; exit 2; }
-[[ "${RUN_ID}" == "phase1_clic_source_leo_20260812_v1" ]] || { echo "source LEO run ID drift" >&2; exit 2; }
+[[ "${RUN_ID}" == "phase1_clic_source_leo_20260812_v2" ]] || { echo "source LEO run ID drift" >&2; exit 2; }
 [[ "${TRAINING_RUN_ID}" == "phase1_clic12_20260812_v5" ]] || { echo "training run ID drift" >&2; exit 2; }
 [[ -f "${CACHE_BUILDER}" && -f "${LEO_EXPORTER}" ]] || { echo "missing source LEO builder/exporter" >&2; exit 2; }
 

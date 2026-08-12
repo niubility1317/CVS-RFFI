@@ -26,6 +26,42 @@ TX_IDS = tuple(f"tx-{index}" for index in range(4))
 RX_IDS = tuple(f"rx-{index}" for index in range(7))
 
 
+def test_tensor_to_numpy_float32_avoids_legacy_numpy_c_api_bridge(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """N607 runs Torch 2.1 with NumPy 2.x; Tensor.numpy() is unsafe there."""
+
+    source = torch.arange(24, dtype=torch.float32).reshape(3, 2, 4)
+
+    def forbidden_numpy(_tensor: torch.Tensor):
+        raise AssertionError("Tensor.numpy() must not be used by the source-LEO builder")
+
+    monkeypatch.setattr(torch.Tensor, "numpy", forbidden_numpy)
+    observed = BUILDER._tensor_to_numpy_float32(source)
+
+    assert observed.dtype == np.float32
+    assert observed.shape == (3, 2, 4)
+    assert observed.tolist() == source.tolist()
+    assert observed.flags.c_contiguous
+
+
+def test_numpy_float32_to_tensor_avoids_legacy_numpy_c_api_bridge(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    source = np.arange(24, dtype=np.float32).reshape(3, 2, 4)
+
+    def forbidden_from_numpy(_array: np.ndarray):
+        raise AssertionError("torch.from_numpy() must not be used by the source-LEO builder")
+
+    monkeypatch.setattr(torch, "from_numpy", forbidden_from_numpy)
+    observed = BUILDER._numpy_float32_to_tensor(source, device=torch.device("cpu"))
+
+    assert observed.dtype == torch.float32
+    assert tuple(observed.shape) == (3, 2, 4)
+    assert observed.tolist() == source.tolist()
+    assert observed.is_contiguous()
+
+
 def _source_l_rows(*, rows_per_cell: int = 140) -> tuple[list[str], list[str], list[str]]:
     tx_ids: list[str] = []
     rx_ids: list[str] = []
