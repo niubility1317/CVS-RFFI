@@ -106,3 +106,20 @@ def test_fit_audit_rejects_k_greater_than_two_numeric_fallback(tmp_path: Path) -
         match="did not activate",
     ):
         runner._validate_fit_audit(path, k_shot=10)
+
+
+def test_shared_smoke_schema_translation_is_in_memory_only() -> None:
+    tpce = {
+        "schema": "cvs.phase2.d92_tpce_hard11.smoke_receipt.v1",
+        "status": "D92_TPCE_HARD11_REAL_CHECKPOINT_TRUTH_FREE_SMOKE_PASS",
+        "marker": 92,
+    }
+    translated = runner._base_smoke_receipt_view(tpce)
+    assert translated == {
+        "schema": "cvs.phase2.d92_pareto_distill_hard11.smoke_receipt.v1",
+        "status": (
+            "D92_PARETO_DISTILL_HARD11_REAL_CHECKPOINT_TRUTH_FREE_SMOKE_PASS"
+        ),
+        "marker": 92,
+    }
+    assert tpce["schema"] == "cvs.phase2.d92_tpce_hard11.smoke_receipt.v1"

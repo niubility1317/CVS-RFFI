@@ -199,6 +199,21 @@ def _rewrite_output(root: Path, *, to_tpce: bool) -> None:
             _rewrite_schema(path, to_tpce=to_tpce)
 
 
+def _base_smoke_receipt_view(payload: Mapping[str, Any]) -> dict[str, Any]:
+    """Translate TPCE smoke identity in memory for the proven base validator."""
+
+    result = dict(payload)
+    if result.get("schema") == "cvs.phase2.d92_tpce_hard11.smoke_receipt.v1":
+        result["schema"] = (
+            "cvs.phase2.d92_pareto_distill_hard11.smoke_receipt.v1"
+        )
+    if result.get("status") == "D92_TPCE_HARD11_REAL_CHECKPOINT_TRUTH_FREE_SMOKE_PASS":
+        result["status"] = (
+            "D92_PARETO_DISTILL_HARD11_REAL_CHECKPOINT_TRUTH_FREE_SMOKE_PASS"
+        )
+    return result
+
+
 def build_hard11_manifest(**kwargs: Any) -> dict[str, Any]:
     return _matrix.build_hard11_manifest(**kwargs)
 
@@ -221,17 +236,22 @@ def truth_free_smoke(args: argparse.Namespace) -> dict[str, Any]:
 
 
 def run_shard(args: argparse.Namespace) -> dict[str, Any]:
-    output = Path(args.matrix_manifest).resolve().parent
     manifest_root: Path | None = None
     try:
         manifest_root = Path(json.loads(Path(args.matrix_manifest).read_text(encoding="utf-8-sig"))["output_root"])
     except (OSError, ValueError, KeyError, TypeError):
         pass
-    smoke = manifest_root / "smoke" / "smoke_receipt.json" if manifest_root else None
-    if smoke is not None:
-        _rewrite_schema(smoke, to_tpce=False)
+    original_read_json_object = _base_runner._read_json_object
+
+    def read_json_object(path: str | Path) -> dict[str, Any]:
+        return _base_smoke_receipt_view(original_read_json_object(path))
+
     with _runner_context():
-        result = _base_runner.run_shard(args)
+        _base_runner._read_json_object = read_json_object
+        try:
+            result = _base_runner.run_shard(args)
+        finally:
+            _base_runner._read_json_object = original_read_json_object
     if manifest_root:
         _rewrite_output(manifest_root, to_tpce=True)
     result["schema"] = "cvs.phase2.d92_tpce_hard11.shard_summary.v1"
