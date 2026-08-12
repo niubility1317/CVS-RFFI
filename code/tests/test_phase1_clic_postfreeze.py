@@ -2058,6 +2058,7 @@ def _target_train_config() -> dict[str, object]:
 def _target_known_test_config(*, capsule_id: str = "candidate-capsule-v1") -> dict[str, object]:
     return {
         "target_receiver_ids": ["target-rx-0", "target-rx-1"],
+        "target_day_ids": ["day-0", "day-1"],
         "target_known_tx_ids": ["known-tx-a", "known-tx-b"],
         "class_order": ["known-tx-a", "known-tx-b"],
         "scenes": list(SCENARIOS),
@@ -2086,8 +2087,13 @@ def _write_target_cache_set_fixture(
     *,
     duplicate_cross_scene: bool = False,
     non_leo_view: bool = False,
+    unknown_rows: int = 2,
+    unknown_defer_rows: int = 0,
 ) -> dict[str, Path | str | dict[str, object]]:
     """Create a valid tiny three-scene p2_min_v1 cache-set and receipt."""
+
+    if unknown_rows <= 0 or not 0 <= unknown_defer_rows <= unknown_rows:
+        raise ValueError("synthetic unknown/defer fixture counts are invalid")
 
     from cvsrffi.leo_weak_cache import (
         LEO_WEAK_CACHE_SCHEMA,
@@ -2121,10 +2127,11 @@ def _write_target_cache_set_fixture(
     for scene_index, scene in enumerate(SCENARIOS):
         rows: list[dict[str, object]] = []
         for role_index, role in enumerate(roles):
-            for repeat in range(2):
+            repeat_count = 2 if role == "registered_known" else unknown_rows
+            for repeat in range(repeat_count):
                 identity_scene = 0 if duplicate_cross_scene and scene_index == 1 and role_index == 0 and repeat == 0 else scene_index
-                identity_index = role_index * 2 + repeat
-                source_index = identity_scene * 100 + identity_index
+                identity_index = role_index * max(2, unknown_rows) + repeat
+                source_index = identity_scene * 10000 + identity_index
                 if role == "registered_known":
                     tx_id = known_class_order[repeat % len(known_class_order)]
                 else:
@@ -2143,7 +2150,12 @@ def _write_target_cache_set_fixture(
                     eq_id=eq_id,
                     sig_id=sig_id,
                 )
-                iq_level = (10.0 if role == "registered_known" else 100.0) + scene_index + repeat
+                if role == "registered_known":
+                    iq_level = 10.0 + scene_index + repeat
+                elif repeat < unknown_rows - unknown_defer_rows:
+                    iq_level = 100.0 + scene_index
+                else:
+                    iq_level = 200.0 + scene_index
                 iq = np.full((2, 16), iq_level, dtype=np.float32)
                 rows.append(
                     {
@@ -2222,7 +2234,9 @@ def _write_target_cache_set_fixture(
         np.savez(
             cache_path,
             leo_weak_iq=iq_rows,
-            raw_labels=np.asarray([0, 1, 0, 1], dtype=np.int64),
+            raw_labels=np.asarray(
+                [0, 1] + [-1] * int(unknown_rows), dtype=np.int64
+            ),
             domain_labels=np.zeros(len(rows), dtype=np.int64),
             tx_ids=tx_ids,
             rx_ids=rx_ids,
@@ -2304,6 +2318,27 @@ def _target_manifest(package: Path | str) -> dict[str, object]:
         return json.loads(archive.read("manifest.json").decode("utf-8"))
 
 
+def _target_fixture_universe_ids(artifacts: Mapping[str, object]) -> dict[str, list[str]]:
+    cache_manifest = json.loads(Path(str(artifacts["manifest"])).read_text(encoding="utf-8"))
+    values = {"receiver": [], "registered_tx": [], "unknown_tx": [], "day": [], "physical": []}
+    for scene in SCENARIOS:
+        cache_path = Path(str(artifacts["manifest"])).parent / str(
+            cache_manifest["cache_npz_by_scenario"][scene]
+        )
+        with np.load(cache_path, allow_pickle=False) as archive:
+            roles = np.asarray(archive["dataset_role"]).astype(str)
+            tx_ids = np.asarray(archive["tx_ids"]).astype(str)
+            for role, tx_id in zip(roles.tolist(), tx_ids.tolist(), strict=True):
+                if role == "registered_known":
+                    values["registered_tx"].append(tx_id)
+                elif role == "unknown":
+                    values["unknown_tx"].append(tx_id)
+            values["receiver"].extend(np.asarray(archive["rx_ids"]).astype(str).tolist())
+            values["day"].extend(np.asarray(archive["day_ids"]).astype(str).tolist())
+            values["physical"].extend(np.asarray(archive["sample_ids"]).astype(str).tolist())
+    return {key: sorted(set(items)) for key, items in values.items()}
+
+
 def _target_prediction_path(result: object, fallback: Path) -> Path:
     if isinstance(result, (str, Path)):
         return Path(result)
@@ -2362,6 +2397,7 @@ def _fake_runtime_factory(
     calls: list[Path],
     forward_calls: list[np.ndarray],
     scene_calls: list[str] | None = None,
+    fold_index: int = 1,
 ) -> object:
     class FakeRuntime(TARGET._CLICTargetPredictorRuntime):
         def __init__(self, path: Path) -> None:
@@ -2377,6 +2413,7 @@ def _fake_runtime_factory(
                 train_config_raw_sha256=_sha_file(paths["train_config"]),
                 train_config_normalized_sha256=_canonical(_target_train_config()),
                 train_config_member_name=None,
+                fold_index=fold_index,
                 forward_impl=self._forward_impl,
             )
 
@@ -2387,7 +2424,13 @@ def _fake_runtime_factory(
                 scene_calls.append(scene)
             values = np.asarray(received_i, dtype=np.float32)
             forward_calls.append(np.array(values, copy=True))
-            decision = "unknown" if float(values.mean()) >= 50.0 else "registered"
+            mean_value = float(values.mean())
+            if mean_value >= 150.0:
+                decision = "defer"
+            elif mean_value >= 50.0:
+                decision = "unknown"
+            else:
+                decision = "registered"
             return {
                 "z_id": np.asarray([1.0, 0.0], dtype=np.float32),
                 "z_dom": np.asarray([0.0, 1.0], dtype=np.float32),
@@ -2405,7 +2448,12 @@ def _fake_runtime_factory(
     return load
 
 
-def _write_adv3b02_reference_fixture(tmp_path: Path, *, different_capsule: bool = True) -> dict[str, Path | dict[str, object]]:
+def _write_adv3b02_reference_fixture(
+    tmp_path: Path,
+    *,
+    different_capsule: bool = True,
+    rich_cells: bool = False,
+) -> dict[str, Path | dict[str, object]]:
     train = _target_train_config()
     known = _target_known_test_config(capsule_id="baseline-capsule-v2" if different_capsule else "candidate-capsule-v1")
     train_path = _write_target_config_manifest(
@@ -2425,22 +2473,62 @@ def _write_adv3b02_reference_fixture(tmp_path: Path, *, different_capsule: bool 
     receiver_sha = _canonical(["target-rx-0", "target-rx-1"])
     tx_sha = _canonical(["known-tx-a", "known-tx-b"])
     class_sha = _canonical(["known-tx-a", "known-tx-b"])
-    known_sha = _canonical(known)
+    day_sha = _canonical(["day-0", "day-1"])
+    known_sha = _canonical(TARGET.normalize_known_test_config(known))
+    fold_config_key = _canonical(TARGET.normalize_train_data_config(train))
+
+    def _triplet(numerator: int, denominator: int) -> dict[str, object]:
+        return {
+            "numerator": numerator,
+            "denominator": denominator,
+            "accuracy": numerator / denominator,
+        }
+
     for fold in range(1, 2):
         for scene in SCENARIOS:
-            cells.append(
-                {
-                    "fold_config_key": f"adv-f{fold}",
+            cell = {
+                    "fold_config_key": fold_config_key,
                     "scene": scene,
                     "target_receiver_set_sha256": receiver_sha,
                     "target_known_tx_set_sha256": tx_sha,
                     "class_order_sha256": class_sha,
                     "known_test_config_sha256": known_sha,
-                    "numerator": 1,
-                    "denominator": 1,
+                    "numerator": 2,
+                    "denominator": 2,
                     "accuracy": 1.0,
                 }
-            )
+            if rich_cells:
+                cell.update(
+                    {
+                        "target_day_set_sha256": day_sha,
+                        "overall": _triplet(2, 2),
+                        "by_class": {
+                            tx_id: _triplet(1, 1)
+                            for tx_id in ("known-tx-a", "known-tx-b")
+                        },
+                        "by_receiver": {
+                            rx_id: _triplet(1, 1)
+                            for rx_id in ("target-rx-0", "target-rx-1")
+                        },
+                        "by_day": {
+                            day_id: _triplet(1, 1)
+                            for day_id in ("day-0", "day-1")
+                        },
+                        "macro_accuracy": 1.0,
+                        "min_class_accuracy": 1.0,
+                        "min_receiver_accuracy": 1.0,
+                        "min_day_accuracy": 1.0,
+                        "known_false_reject": _triplet(0, 2),
+                        "known_defer": _triplet(0, 2),
+                        "accepted_known": {
+                            "correct": 2,
+                            "denominator": 2,
+                            "accuracy": 1.0,
+                            "coverage": 1.0,
+                        },
+                    }
+                )
+            cells.append(cell)
     metrics_path.write_text(json.dumps({"schema": "cvs.phase1.adv3b02_target_known_metrics.v1", "cells": cells}, sort_keys=True) + "\n", encoding="utf-8")
     return {
         "checkpoint": checkpoint,
@@ -2492,6 +2580,85 @@ def test_target_sealer_reuses_validated_receipt_and_emits_iq_only_role_blind_pac
     truth_payload = json.loads(Path(truth).read_text(encoding="utf-8"))
     assert truth_payload["schema"] == "cvs.phase1.clic_target_truth_sidecar.v1"
     assert called == []
+
+
+def test_target_package_manifest_seals_cache_truth_and_known_config_universe_roots(
+    tmp_path: Path,
+) -> None:
+    artifacts = _write_target_cache_set_fixture(tmp_path)
+    package, truth = TARGET_EVAL.seal_clic_target_package(
+        artifacts["manifest"],
+        tmp_path / "sealed_target",
+        validator_receipt_path=artifacts["receipt"],
+        expected_capsule_id=artifacts["capsule_id"],
+        expected_split_id=artifacts["split_id"],
+    )
+    manifest = _target_manifest(package)
+    universe = _target_fixture_universe_ids(artifacts)
+    expected_roots = {
+        "target_receiver_set_sha256": _canonical(universe["receiver"]),
+        "target_registered_tx_set_sha256": _canonical(universe["registered_tx"]),
+        "target_unknown_tx_set_sha256": _canonical(universe["unknown_tx"]),
+        "target_day_set_sha256": _canonical(universe["day"]),
+        "merged_physical_sample_ids_sha256": _canonical(universe["physical"]),
+    }
+    assert all(field in manifest for field in expected_roots)
+    assert {field: manifest[field] for field in expected_roots} == expected_roots
+
+    known_payload = json.loads(Path(artifacts["known_test_config"]).read_text(encoding="utf-8"))
+    known = known_payload["normalized"]
+    assert sorted(set(known["target_receiver_ids"])) == universe["receiver"]
+    assert sorted(set(known["target_known_tx_ids"])) == universe["registered_tx"]
+    assert sorted(set(known["target_day_ids"])) == universe["day"]
+    truth_payload = json.loads(Path(truth).read_text(encoding="utf-8"))
+    truth_rows = truth_payload["rows"]
+    assert all(
+        set(row) == {"opaque_token", "scene", "role", "truth", "tx_id", "rx_id", "day_id", "physical_sample_id"}
+        for row in truth_rows
+    )
+    assert len({str(row["physical_sample_id"]) for row in truth_rows}) == len(truth_rows)
+    assert sorted({str(row["rx_id"]) for row in truth_rows}) == universe["receiver"]
+    assert sorted({str(row["tx_id"]) for row in truth_rows if row["role"] == "registered_known"}) == universe["registered_tx"]
+    assert sorted({str(row["tx_id"]) for row in truth_rows if row["role"] == "unknown"}) == universe["unknown_tx"]
+    assert sorted({str(row["day_id"]) for row in truth_rows}) == universe["day"]
+    assert sorted({str(row["physical_sample_id"]) for row in truth_rows}) == universe["physical"]
+
+
+@pytest.mark.parametrize(
+    "root_field",
+    (
+        "target_receiver_set_sha256",
+        "target_registered_tx_set_sha256",
+        "target_unknown_tx_set_sha256",
+        "target_day_set_sha256",
+        "merged_physical_sample_ids_sha256",
+    ),
+)
+def test_target_package_rejects_universe_root_drift(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    root_field: str,
+) -> None:
+    artifacts = _write_target_cache_set_fixture(tmp_path)
+    package, _truth = TARGET_EVAL.seal_clic_target_package(
+        artifacts["manifest"],
+        tmp_path / "sealed_target",
+        validator_receipt_path=artifacts["receipt"],
+        expected_capsule_id=artifacts["capsule_id"],
+        expected_split_id=artifacts["split_id"],
+    )
+    manifest_path = Path(package) / "manifest.json"
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    manifest[root_field] = "0" * 64
+    manifest_path.write_text(json.dumps(manifest, sort_keys=True) + "\n", encoding="utf-8")
+    predictor_artifacts = _write_fake_predictor_artifacts(tmp_path / "predictor")
+    loader = _fake_runtime_factory(predictor_artifacts, calls=[], forward_calls=[])
+    monkeypatch.setattr(TARGET_EVAL, "load_verified_clic_predictor_state", loader, raising=False)
+    monkeypatch.setattr(TARGET, "load_verified_clic_predictor_state", loader, raising=False)
+    with pytest.raises(Exception, match="universe|receiver|TX|day|physical|root|manifest|SHA|hash|drift"):
+        TARGET_EVAL.publish_clic_target_prediction(
+            predictor_artifacts["c_state"], package, tmp_path / "prediction.json"
+        )
 
 
 @pytest.mark.parametrize(
@@ -2608,6 +2775,38 @@ def test_c_and_g_prediction_bind_identical_iq_package_and_forward_once_per_sampl
     assert _target_prediction_path(g_result, g_out).is_file()
 
 
+def test_prediction_binds_internal_fold_index_and_normalized_train_fold_config_key(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    artifacts = _write_target_cache_set_fixture(tmp_path)
+    package, _truth = TARGET_EVAL.seal_clic_target_package(
+        artifacts["manifest"],
+        tmp_path / "sealed_target",
+        validator_receipt_path=artifacts["receipt"],
+        expected_capsule_id=artifacts["capsule_id"],
+        expected_split_id=artifacts["split_id"],
+    )
+    predictor_artifacts = _write_fake_predictor_artifacts(tmp_path / "predictor")
+    loader = _fake_runtime_factory(
+        predictor_artifacts,
+        calls=[],
+        forward_calls=[],
+        fold_index=1,
+    )
+    monkeypatch.setattr(TARGET_EVAL, "load_verified_clic_predictor_state", loader, raising=False)
+    monkeypatch.setattr(TARGET, "load_verified_clic_predictor_state", loader, raising=False)
+    prediction = tmp_path / "prediction.json"
+    TARGET_EVAL.publish_clic_target_prediction(
+        predictor_artifacts["c_state"], package, prediction
+    )
+    payload = json.loads(prediction.read_text(encoding="utf-8"))
+    assert payload["fold_index"] == 1
+    assert payload["fold_config_key"] == _canonical(
+        TARGET.normalize_train_data_config(_target_train_config())
+    )
+
+
 @pytest.mark.parametrize("tampered_config", ("train", "known_test"))
 def test_prediction_seals_candidate_config_paths_raw_and_normalized_sha_and_rejects_postseal_tamper(
     tmp_path: Path,
@@ -2668,6 +2867,72 @@ def test_adv3b02_reference_ingest_binds_own_artifacts_without_unknown_claim(tmp_
     assert all(int(cell["denominator"]) > 0 for cell in payload["semantic_cells"])
     assert "unknown" not in json.dumps(payload, ensure_ascii=True).lower()
     assert _target_prediction_path(result, output).is_file()
+
+
+@pytest.mark.parametrize("mutation", ("missing_scene", "duplicate_cell", "free_fold_key"))
+def test_adv3b02_reference_requires_sha_fold_key_and_exact_three_scene_cells(
+    tmp_path: Path,
+    mutation: str,
+) -> None:
+    baseline = _write_adv3b02_reference_fixture(tmp_path / "baseline")
+    metrics = json.loads(Path(baseline["metrics"]).read_text(encoding="utf-8"))
+    if mutation == "missing_scene":
+        metrics["cells"] = metrics["cells"][:2]
+    elif mutation == "duplicate_cell":
+        metrics["cells"][1] = dict(metrics["cells"][0])
+    else:
+        metrics["cells"][0]["fold_config_key"] = "adv-f1"
+    bad_metrics = tmp_path / f"bad_{mutation}.json"
+    bad_metrics.write_text(json.dumps(metrics, sort_keys=True) + "\n", encoding="utf-8")
+    with pytest.raises(Exception, match="fold|config|SHA|scene|cell|duplicate|missing|three"):
+        TARGET_EVAL.ingest_adv3b02_target_known_reference(
+            baseline["checkpoint"],
+            baseline["train_config"],
+            baseline["known_test_config"],
+            bad_metrics,
+            tmp_path / f"bad_{mutation}_reference.json",
+        )
+
+
+def test_adv3b02_reference_requires_complete_class_receiver_day_subcells_and_derived_recompute(
+    tmp_path: Path,
+) -> None:
+    baseline = _write_adv3b02_reference_fixture(tmp_path / "baseline", rich_cells=True)
+    output = tmp_path / "rich_reference.json"
+    result = TARGET_EVAL.ingest_adv3b02_target_known_reference(
+        baseline["checkpoint"],
+        baseline["train_config"],
+        baseline["known_test_config"],
+        baseline["metrics"],
+        output,
+    )
+    assert _target_prediction_path(result, output).is_file()
+
+
+@pytest.mark.parametrize("mutation", ("missing_class", "zero_day", "derived_drift"))
+def test_adv3b02_reference_rejects_missing_zero_or_derived_subcell(
+    tmp_path: Path,
+    mutation: str,
+) -> None:
+    baseline = _write_adv3b02_reference_fixture(tmp_path / "baseline", rich_cells=True)
+    metrics = json.loads(Path(baseline["metrics"]).read_text(encoding="utf-8"))
+    cell = metrics["cells"][0]
+    if mutation == "missing_class":
+        del cell["by_class"]["known-tx-a"]
+    elif mutation == "zero_day":
+        cell["by_day"]["day-0"]["denominator"] = 0
+    else:
+        cell["min_day_accuracy"] = 0.5
+    drifted = tmp_path / f"drifted_{mutation}.json"
+    drifted.write_text(json.dumps(metrics, sort_keys=True) + "\n", encoding="utf-8")
+    with pytest.raises(Exception, match="subcell|class|receiver|day|denominator|derived|accuracy|recompute|drift|cell|float|mapping|type"):
+        TARGET_EVAL.ingest_adv3b02_target_known_reference(
+            baseline["checkpoint"],
+            baseline["train_config"],
+            baseline["known_test_config"],
+            drifted,
+            tmp_path / f"drifted_{mutation}_reference.json",
+        )
 
 
 def test_adv3b02_config_equivalence_ignores_capsule_physical_seed_but_rejects_train_or_test_drift(tmp_path: Path) -> None:
@@ -2858,6 +3123,66 @@ def test_target_scorer_receipt_has_zero_feedback_counters_and_never_reopens_pred
         assert payload[field] == 0
     assert payload["target_selection_feedback"] is False
     assert payload["truth_sidecar_opened"] is True
+    required_score_fields = {
+        "fold_config_key",
+        "open_set_audit",
+        "adv3b02_noninferiority",
+    }
+    missing_score_fields = sorted(required_score_fields - set(payload))
+    assert not missing_score_fields, f"score receipt missing frozen fields: {missing_score_fields}"
+    assert payload["fold_index"] == 1
+    assert payload["fold_config_key"] == _canonical(TARGET.normalize_train_data_config(_target_train_config()))
+    known_audit = payload["known_target_audit"]
+    assert set(known_audit["by_scene"]) == set(SCENARIOS)
+    for scene in SCENARIOS:
+        scene_audit = known_audit["by_scene"][scene]
+        assert set(scene_audit["overall"]) >= {"numerator", "denominator", "accuracy"}
+        for group in ("by_class", "by_receiver", "by_day"):
+            assert scene_audit[group]
+            assert all(
+                set(value) >= {"numerator", "denominator", "accuracy"}
+                for value in scene_audit[group].values()
+            )
+        assert set(scene_audit) >= {
+            "macro_accuracy",
+            "min_class_accuracy",
+            "min_receiver_accuracy",
+            "min_day_accuracy",
+            "known_false_reject",
+            "known_defer",
+            "accepted_known",
+        }
+    open_set = payload["open_set_audit"]
+    assert set(open_set["by_scene"]) == set(SCENARIOS)
+    assert set(open_set) >= {"global", "by_scene", "unknown_slices"}
+    for scope in ["global", *SCENARIOS]:
+        metrics = open_set["global"] if scope == "global" else open_set["by_scene"][scope]
+        assert set(metrics) >= {
+            "AUROC_unknown",
+            "AUPR_out",
+            "FPR95",
+            "unknown_rejection",
+            "unknown_FAR",
+            "unknown_safe_handling",
+            "known_false_reject",
+            "known_defer",
+            "accepted_known",
+            "coverage",
+        }
+    for group in ("by_tx", "by_receiver", "by_day"):
+        assert open_set["unknown_slices"][group]
+        assert all(
+            set(value) >= {"coverage", "rejection", "safe_handling"}
+            for value in open_set["unknown_slices"][group].values()
+        )
+    noninferiority = payload["adv3b02_noninferiority"]
+    assert noninferiority["fold_index"] == 1
+    assert noninferiority["fold_config_key"] == payload["fold_config_key"]
+    assert set(noninferiority["by_scene"]) == set(SCENARIOS)
+    assert all(
+        set(noninferiority["by_scene"][scene]) >= {"candidate", "baseline", "passed"}
+        for scene in SCENARIOS
+    )
     assert isinstance(result, (str, Path, Mapping))
 
 
@@ -2885,6 +3210,102 @@ def test_true_unknown_gate_accepts_exact_70_percent_and_ignores_registered_rows(
     assert result["explicit_unknown_gate_passed"] is True
 
 
+def test_formal_scorer_seals_69_unknown_plus_31_defer_with_gate_false_without_raising(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    artifacts = _write_target_cache_set_fixture(
+        tmp_path / "inputs",
+        unknown_rows=100,
+        unknown_defer_rows=31,
+    )
+    package, truth = TARGET_EVAL.seal_clic_target_package(
+        artifacts["manifest"],
+        tmp_path / "sealed_target",
+        validator_receipt_path=artifacts["receipt"],
+        expected_capsule_id=artifacts["capsule_id"],
+        expected_split_id=artifacts["split_id"],
+    )
+    predictor_artifacts = _write_fake_predictor_artifacts(tmp_path / "predictor")
+    loader = _fake_runtime_factory(predictor_artifacts, calls=[], forward_calls=[])
+    monkeypatch.setattr(TARGET_EVAL, "load_verified_clic_predictor_state", loader, raising=False)
+    monkeypatch.setattr(TARGET, "load_verified_clic_predictor_state", loader, raising=False)
+    prediction = tmp_path / "prediction.json"
+    TARGET_EVAL.publish_clic_target_prediction(
+        predictor_artifacts["c_state"], package, prediction
+    )
+    baseline = _write_adv3b02_reference_fixture(tmp_path / "baseline")
+    reference = tmp_path / "adv_reference.json"
+    TARGET_EVAL.ingest_adv3b02_target_known_reference(
+        baseline["checkpoint"],
+        baseline["train_config"],
+        baseline["known_test_config"],
+        baseline["metrics"],
+        reference,
+    )
+    score_path = tmp_path / "score.json"
+    result = TARGET_EVAL.score_clic_target_prediction(
+        prediction, truth, reference, score_path
+    )
+    assert _target_prediction_path(result, score_path).is_file()
+    score = json.loads(score_path.read_text(encoding="utf-8"))
+    assert score["explicit_unknown_gate"]["passed"] is False
+    assert score["unknown_target_audit"]["unknown_numerator_global"] == 207
+    assert score["unknown_target_audit"]["unknown_denominator_global"] == 300
+    assert score["unknown_target_audit"]["unknown_defer_global"] == 93
+
+
+def test_target_open_set_metrics_uses_tie_aware_auroc_for_unknown_energy() -> None:
+    """The pure open-set helper must count an energy tie as one half."""
+
+    rows = [
+        {"role": "registered_known", "e_unknown": 0.0},
+        {"role": "registered_known", "e_unknown": 1.0},
+        {"role": "unknown", "e_unknown": 1.0},
+        {"role": "unknown", "e_unknown": 2.0},
+    ]
+    metrics = TARGET_EVAL.compute_target_open_set_metrics(rows)
+    assert metrics["AUROC_unknown"] == pytest.approx(0.875)
+
+
+def test_target_open_set_metrics_uses_distinct_score_grouped_aupr_and_fpr95() -> None:
+    """AUPR-out and FPR95 must be recomputable with grouped score ties."""
+
+    # Descending score groups are:
+    #   2: U       -> precision 1,   recall delta 1/2
+    #   1: U,K     -> precision 2/3, recall delta 1/2
+    #   0: K
+    # Therefore grouped AP = 1/2 + 1/3 = 5/6.  At the first threshold
+    # with TPR >= .95 (score >= 1), one of two known rows is falsely
+    # rejected, so FPR95 = 1/2.
+    rows = [
+        {"role": "unknown", "e_unknown": 2.0},
+        {"role": "registered_known", "e_unknown": 1.0},
+        {"role": "unknown", "e_unknown": 1.0},
+        {"role": "registered_known", "e_unknown": 0.0},
+    ]
+    metrics = TARGET_EVAL.compute_target_open_set_metrics(rows)
+    assert metrics["AUPR_out"] == pytest.approx(5.0 / 6.0)
+    assert metrics["FPR95"] == pytest.approx(0.5)
+
+
+@pytest.mark.parametrize(
+    "rows",
+    (
+        [],
+        [{"role": "registered_known", "e_unknown": 0.0, "decision": "registered"}],
+        [{"role": "unknown", "e_unknown": 1.0, "decision": "unknown"}],
+        [
+            {"role": "registered_known", "e_unknown": 0.0, "decision": "registered"},
+            {"role": "unknown", "e_unknown": float("nan"), "decision": "unknown"},
+        ],
+    ),
+)
+def test_target_open_set_metrics_rejects_empty_class_or_nonfinite_energy(rows: list[dict[str, object]]) -> None:
+    with pytest.raises(Exception, match="known|unknown|empty|finite|nonfinite|energy"):
+        TARGET_EVAL.compute_target_open_set_metrics(rows)
+
+
 @pytest.mark.parametrize(
     "surface",
     (
@@ -2892,6 +3313,7 @@ def test_true_unknown_gate_accepts_exact_70_percent_and_ignores_registered_rows(
         "train_days",
         "train_preprocess",
         "known_channel",
+        "known_days",
         "known_scenes",
     ),
 )
@@ -2908,6 +3330,8 @@ def test_adv3b02_equivalence_rejects_training_or_known_test_data_surface_drift(s
         baseline_train["preprocessing"]["input_len"] = 512
     elif surface == "known_channel":
         baseline_known["leo_weak_channel"]["rain"]["attenuation_db"] = 9.0
+    elif surface == "known_days":
+        baseline_known["target_day_ids"] = ["day-drift"]
     elif surface == "known_scenes":
         baseline_known["scenes"] = [SCENARIOS[1], SCENARIOS[0], SCENARIOS[2]]
     with pytest.raises(Exception, match="config|equivalence|receiver|day|split|preprocess|channel|scene|drift"):
