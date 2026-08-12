@@ -146,7 +146,8 @@ def _validate_checkpoint_args(
     if type(args.get("seed")) is not int or int(args["seed"]) != int(_clic.CLIC_INIT_SEED):
         raise CLICSplitExportError("checkpoint seed drifted")
     _require_bool(args.get("phase1_clic_frozen_mode"), label="CLIC frozen mode", expected=True)
-    _require_bool(args.get("phase1_clic_enabled"), label="CLIC enabled arm binding", expected=arm == "G")
+    if "phase1_clic_enabled" in args:
+        _require_bool(args.get("phase1_clic_enabled"), label="CLIC enabled arm binding", expected=arm == "G")
     expected_operator = "complex_local_invariant_curvature" if arm == "G" else "raw_phase_control"
     if args.get("phase1_clic_operator_mode") != expected_operator:
         raise CLICSplitExportError("CLIC operator mode does not bind C/G arm")
@@ -182,8 +183,13 @@ def validate_clic_training_checkpoint(
     arm = _validate_checkpoint_args(
         args, checkpoint_path=path, source_tx_ids=source, known_validation_tx_ids=known, proxy_unknown_tx_ids=proxy
     )
-    if checkpoint.get("candidate_id") != path.parent.name or checkpoint.get("run_id") != EXPECTED_TRAINING_RUN_ID:
-        raise CLICSplitExportError("CLIC checkpoint candidate/run binding drifted")
+    # The dedicated CLIC v5 final payload records candidate/run in args and in
+    # its immutable path, but does not duplicate them at the payload root.
+    # Historical payloads that do carry the optional root copies remain strict.
+    if "candidate_id" in checkpoint and checkpoint.get("candidate_id") != path.parent.name:
+        raise CLICSplitExportError("CLIC checkpoint candidate binding drifted")
+    if "run_id" in checkpoint and checkpoint.get("run_id") != EXPECTED_TRAINING_RUN_ID:
+        raise CLICSplitExportError("CLIC checkpoint run binding drifted")
     if path.parent.parent.name != EXPECTED_TRAINING_RUN_ID:
         raise CLICSplitExportError("CLIC checkpoint is outside the frozen training run root")
     pre = checkpoint.get("clic_receipt_precheckpoint")
@@ -372,25 +378,58 @@ def _reconstruct_source_l_v(
 def _assert_current_source_split(
     *, checkpoint: Mapping[str, Any], receipt: Mapping[str, Any],
     reconstructed: Mapping[str, Any], source_tx_ids: Sequence[str],
+    known_validation_tx_ids: Sequence[str], proxy_unknown_tx_ids: Sequence[str],
 ) -> None:
     split_info = checkpoint.get("split_info")
-    if not isinstance(split_info, Mapping):
-        raise CLICSplitExportError("CLIC checkpoint lacks source split receipt")
-    if split_info.get("source_split_receipt") != reconstructed["source_split_receipt"]:
-        raise CLICSplitExportError("CLIC reconstructed source split receipt does not equal checkpoint")
-    if split_info.get("tx_partition_receipt") != reconstructed["tx_partition_receipt"]:
-        raise CLICSplitExportError("CLIC reconstructed TX partition receipt does not equal checkpoint")
+    # The frozen CLIC v5 final payload intentionally contains only the model,
+    # optimizer/scaler, args, and pre-terminal receipt.  Its strict external
+    # terminal carries the source-order bindings.  Older mechanical fixtures
+    # may still include split_info; when present it must remain byte-equivalent
+    # to the deterministic reconstruction.
+    if split_info is not None:
+        if not isinstance(split_info, Mapping):
+            raise CLICSplitExportError("CLIC checkpoint source split state is malformed")
+        if split_info.get("source_split_receipt") != reconstructed["source_split_receipt"]:
+            raise CLICSplitExportError("CLIC reconstructed source split receipt does not equal checkpoint")
+        if split_info.get("tx_partition_receipt") != reconstructed["tx_partition_receipt"]:
+            raise CLICSplitExportError("CLIC reconstructed TX partition receipt does not equal checkpoint")
     labeled = tuple(reconstructed["labeled_indices"])
+    reconstructed_split = reconstructed.get("source_split_receipt")
+    reconstructed_partition = reconstructed.get("tx_partition_receipt")
+    labeled_sha = _canonical_json_sha256(list(labeled))
+    if (
+        not isinstance(reconstructed_split, Mapping)
+        or reconstructed_split.get("schema") != "cvs.phase1.source_split_receipt.v1"
+        or reconstructed_split.get("labeled_indices_sha256") != labeled_sha
+    ):
+        raise CLICSplitExportError("CLIC reconstructed source split receipt is not self-consistent")
+    if (
+        not isinstance(reconstructed_partition, Mapping)
+        or reconstructed_partition.get("schema") != "cvs.phase1.tx_partition_receipt.v1"
+        or reconstructed_partition.get("enabled") is not True
+        or reconstructed_partition.get("held_tx_loaded_by_training") is not False
+        or tuple(str(item) for item in reconstructed_partition.get("source_known_train_tx", ()))
+        != tuple(str(item) for item in source_tx_ids)
+        or tuple(str(item) for item in reconstructed_partition.get("source_known_validation_tx", ()))
+        != tuple(str(item) for item in known_validation_tx_ids)
+        or tuple(str(item) for item in reconstructed_partition.get("source_proxy_unknown_tx", ()))
+        != tuple(str(item) for item in proxy_unknown_tx_ids)
+    ):
+        raise CLICSplitExportError("CLIC reconstructed TX partition receipt drifted")
     if int(receipt.get("source_split_count", -1)) != len(labeled):
         raise CLICSplitExportError("CLIC terminal source-L count does not equal reconstructed split")
-    if str(receipt.get("source_split_sha256", "")) != _canonical_json_sha256(list(labeled)):
+    if str(receipt.get("source_split_sha256", "")) != labeled_sha:
         raise CLICSplitExportError("CLIC terminal source-L index SHA does not equal reconstructed split")
     class_order = [str(item) for item in getattr(reconstructed["source_base"], "tx_list", ())]
     if tuple(class_order) != tuple(source_tx_ids):
         raise CLICSplitExportError("CLIC reconstructed local class order drifted")
+    if int(receipt.get("class_order_count", -1)) != len(class_order):
+        raise CLICSplitExportError("CLIC terminal class-order count does not equal reconstructed split")
     if str(receipt.get("class_order_sha256", "")) != _canonical_json_sha256(class_order):
         raise CLICSplitExportError("CLIC terminal class-order SHA does not equal reconstructed split")
-    if str(receipt.get("physical_order_sha256", "")) != _canonical_json_sha256(list(labeled)):
+    if int(receipt.get("physical_order_count", -1)) != len(labeled):
+        raise CLICSplitExportError("CLIC terminal physical-order count does not equal reconstructed split")
+    if str(receipt.get("physical_order_sha256", "")) != labeled_sha:
         raise CLICSplitExportError("CLIC terminal source-L physical-order SHA does not equal reconstructed split")
 
 
@@ -461,7 +500,12 @@ def export(args: argparse.Namespace) -> dict[str, Any]:
         wisig_sha256=str(checkpoint_args.get("wisig_pkl_sha256", "")),
     )
     _assert_current_source_split(
-        checkpoint=checkpoint, receipt=terminal_receipt, reconstructed=reconstructed, source_tx_ids=source
+        checkpoint=checkpoint,
+        receipt=terminal_receipt,
+        reconstructed=reconstructed,
+        source_tx_ids=source,
+        known_validation_tx_ids=known,
+        proxy_unknown_tx_ids=proxy,
     )
     proxy_days = _parse_csv(getattr(args, "proxy_days", ",".join(FROZEN_PROXY_DAYS)), label="proxy days")
     proxy_rxs = _parse_csv(getattr(args, "proxy_rxs", ",".join(FROZEN_PROXY_RXS)), label="proxy RXs")

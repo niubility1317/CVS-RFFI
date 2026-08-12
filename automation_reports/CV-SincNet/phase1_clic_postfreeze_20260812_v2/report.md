@@ -43,7 +43,9 @@
 - `py_compile`通过；`git diff --check`通过。
 - launcher本地dry-run逐行解析为12行、C6／G6、12行全部绑定v2、target／query／truth／role入口为0。
 - 独立Terra审查结论：`P0=0/P1=0/ALLOW`；另以C／G两种operator逐元素确认identity-only导出的`z_id`和`tx_logits`与完整`return_aux`路径一致。
-- 导出器SHA256=`FA2EDC5DCD5DE1A21D1EEBFBADDAF12BEEB0398243EBFD401C8258B8AB91D436`；launcher SHA256=`936319E8289E3FC1E8B509A927D03B4569D91C5CD82432812AABA0DC5ED53F0A`。
+- 对v5真实payload的只读库存核对确认其不含`split_info`、顶层`candidate_id／run_id`副本或冗余`phase1_clic_enabled`；新增回归要求这些副本缺失时由args、目录、operator、terminal checkpoint路径／字节SHA／arm及source／class／physical count+SHA闭合，若旧副本存在但漂移仍拒绝。
+- 第二次独立Terra窄审同样为`P0=0/P1=0/ALLOW`，确认`WiSigSubsetDataset.selected`与训练terminal的physical-order哈希正对应重建的labeled索引序列。
+- 最终导出器SHA256=`7A9FFC614C56F8D1879967FB5BAB93B49F7B36AF639FE8DDB3F97A6F3EF9C952`；launcher SHA256=`936319E8289E3FC1E8B509A927D03B4569D91C5CD82432812AABA0DC5ED53F0A`。
 - 发布前剩余门：本地Git commit、N607只读preflight、远端release hash／compile／help／launcher dry-run及一个真实v5 checkpoint重开smoke。
 
 ## 6. 运行与停止合同

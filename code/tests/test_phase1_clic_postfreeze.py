@@ -727,6 +727,128 @@ def test_clic_clean_exporter_reopens_versioned_terminal_and_checkpoint_contract(
     assert CLEAN.EXPECTED_LV_EXPORT_SCHEMA == "cvs.phase1.clic_lv_export.v1"
 
 
+def test_clic_clean_reopens_real_v5_payload_without_root_candidate_run_duplicates(tmp_path: Path) -> None:
+    paths = _checkpoint_fixture(tmp_path, arm="G")
+    checkpoint = torch.load(paths["checkpoint"], map_location="cpu")
+    checkpoint.pop("candidate_id")
+    checkpoint.pop("run_id")
+    torch.save(checkpoint, paths["checkpoint"])
+    checkpoint_sha = _sha_file(paths["checkpoint"])
+    terminal = json.loads(paths["terminal"].read_text(encoding="utf-8"))
+    terminal["selected_checkpoint_sha256"] = checkpoint_sha
+    terminal["strict_core"]["final_checkpoint_sha256"] = checkpoint_sha
+    paths["terminal"].write_text(json.dumps(terminal, sort_keys=True) + "\n", encoding="utf-8")
+
+    CLEAN.validate_clic_training_checkpoint(
+        checkpoint,
+        checkpoint_path=paths["checkpoint"],
+        terminal_receipt_path=paths["terminal"],
+        source_tx_ids=SOURCE_TX,
+        known_validation_tx_ids=HELD_TX,
+        proxy_unknown_tx_ids=PROXY_TX,
+    )
+
+    checkpoint["candidate_id"] = "F6G_CLIC12"
+    with pytest.raises(Exception, match="candidate|binding|drift"):
+        CLEAN.validate_clic_training_checkpoint(
+            checkpoint,
+            checkpoint_path=paths["checkpoint"],
+            terminal_receipt_path=paths["terminal"],
+            source_tx_ids=SOURCE_TX,
+            known_validation_tx_ids=HELD_TX,
+            proxy_unknown_tx_ids=PROXY_TX,
+        )
+
+
+@pytest.mark.parametrize("arm", ("C", "G"))
+def test_clic_clean_reopens_real_v5_args_without_redundant_enabled_flag(tmp_path: Path, arm: str) -> None:
+    paths = _checkpoint_fixture(tmp_path, arm=arm)
+    checkpoint = torch.load(paths["checkpoint"], map_location="cpu")
+    checkpoint["args"].pop("phase1_clic_enabled")
+    torch.save(checkpoint, paths["checkpoint"])
+    checkpoint_sha = _sha_file(paths["checkpoint"])
+    terminal = json.loads(paths["terminal"].read_text(encoding="utf-8"))
+    terminal["selected_checkpoint_sha256"] = checkpoint_sha
+    terminal["strict_core"]["final_checkpoint_sha256"] = checkpoint_sha
+    paths["terminal"].write_text(json.dumps(terminal, sort_keys=True) + "\n", encoding="utf-8")
+
+    _, receipt, reopened_arm = CLEAN.validate_clic_training_checkpoint(
+        checkpoint,
+        checkpoint_path=paths["checkpoint"],
+        terminal_receipt_path=paths["terminal"],
+        source_tx_ids=SOURCE_TX,
+        known_validation_tx_ids=HELD_TX,
+        proxy_unknown_tx_ids=PROXY_TX,
+    )
+    assert reopened_arm == arm
+    assert receipt["arm"] == arm
+
+    checkpoint["args"]["phase1_clic_enabled"] = arm == "C"
+    with pytest.raises(Exception, match="enabled|arm|binding|drift"):
+        CLEAN.validate_clic_training_checkpoint(
+            checkpoint,
+            checkpoint_path=paths["checkpoint"],
+            terminal_receipt_path=paths["terminal"],
+            source_tx_ids=SOURCE_TX,
+            known_validation_tx_ids=HELD_TX,
+            proxy_unknown_tx_ids=PROXY_TX,
+        )
+
+
+def test_clic_source_split_reopen_accepts_v5_final_payload_without_split_info_and_binds_terminal() -> None:
+    """The CLIC final payload omits split_info; the terminal binds its deterministic rebuild."""
+
+    class SourceBase:
+        tx_list = list(SOURCE_TX)
+
+    labeled = (2, 5, 7, 11)
+    reconstructed = {
+        "source_base": SourceBase(),
+        "labeled_indices": labeled,
+        "source_split_receipt": {
+            "schema": "cvs.phase1.source_split_receipt.v1",
+            "labeled_indices_sha256": CLEAN._canonical_json_sha256(list(labeled)),
+        },
+        "tx_partition_receipt": {
+            "schema": "cvs.phase1.tx_partition_receipt.v1",
+            "enabled": True,
+            "held_tx_loaded_by_training": False,
+            "source_known_train_tx": list(SOURCE_TX),
+            "source_known_validation_tx": list(HELD_TX),
+            "source_proxy_unknown_tx": list(PROXY_TX),
+        },
+    }
+    receipt = {
+        "source_split_count": len(labeled),
+        "source_split_sha256": CLEAN._canonical_json_sha256(list(labeled)),
+        "class_order_count": len(SOURCE_TX),
+        "class_order_sha256": CLEAN._canonical_json_sha256(list(SOURCE_TX)),
+        "physical_order_count": len(labeled),
+        "physical_order_sha256": CLEAN._canonical_json_sha256(list(labeled)),
+    }
+    CLEAN._assert_current_source_split(
+        checkpoint={},
+        receipt=receipt,
+        reconstructed=reconstructed,
+        source_tx_ids=SOURCE_TX,
+        known_validation_tx_ids=HELD_TX,
+        proxy_unknown_tx_ids=PROXY_TX,
+    )
+
+    for field in ("source_split_sha256", "class_order_sha256", "physical_order_sha256"):
+        drifted = dict(receipt)
+        drifted[field] = "f" * 64
+        with pytest.raises(Exception, match="SHA|order|split|class"):
+            CLEAN._assert_current_source_split(
+                checkpoint={},
+                receipt=drifted,
+                reconstructed=reconstructed,
+                source_tx_ids=SOURCE_TX,
+                known_validation_tx_ids=HELD_TX,
+                proxy_unknown_tx_ids=PROXY_TX,
+            )
+
+
 def test_clic_clean_export_writes_feature_npz_not_manifest_only(tmp_path: Path) -> None:
     """The public export path must materialize finite feature rows and manifest."""
 
