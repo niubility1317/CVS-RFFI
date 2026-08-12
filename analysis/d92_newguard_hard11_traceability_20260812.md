@@ -16,11 +16,12 @@
 | NG-14 | 三.4 | 共享`tau<=0`降低旧类包络，联合优化双向margin | probe | pending | support margin测试 | 新类support内部残差为零 |
 | NG-15 | 三.4、四 | 不可行/秩/有限值失败时精确回退E0 | probe/slim/query | pending | 故障注入测试 | 回退不能算性能成功 |
 | NG-16 | 四 | K<=2保持D92 FULL精确alias | probe/slim/query | pending | K1/K2回归 | liveness不入性能均值 |
+| NG-17 | 四 | 正式int8/FP16部署头重新核对新类保护与tail约束 | core/probe/query | pending | 量化后保护测试 | 失败则整头回退E0 |
 | NG-20 | 五 | 输出完整NewGuard数学、资源、fallback和零访问receipt | probe/slim/query | pending | receipt漂移负测 | 只增加直接必需字段 |
 | NG-21 | 五、六 | query truth/fit/update/selection/role/quota/global全部false | query/runner | pending | 协议负测+真实smoke | scorer后连接truth |
 | NG-30 | 七 | 冻结原Hard10+1个K1、3scene、1arm、8shard | config/hard11/runner | pending | manifest测试 | 11job、33scene-arm |
-| NG-31 | 七 | 复用历史paired_rows且SHA=`6ebb37...de6a` | config/analyzer | pending | 本地hash+analyzer测试 | 不重跑D92/E0 |
-| NG-32 | 七、十 | 唯一runner、smoke先于shard、共享技术停派、不可覆盖 | runner/launch/report | pending | runner测试+N607 handoff | 不按性能停止 |
+| NG-31 | 七 | 复用历史paired_rows且SHA=`6ebb37...de6a`，并冻结E0 raw score/per-old-class扩展证据 | config/analyzer | pending | 本地hash+analyzer测试 | 不重跑D92/E0；补足old BA/双向混淆/逐类门 |
+| NG-32 | 七、十 | 唯一runner、K>2真实smoke先于shard、共享技术停派、不可覆盖 | runner/launch/report | pending | runner测试+N607 handoff | K1单独核exact alias；不按性能停止 |
 | NG-40 | 八 | 八项均值严格Pareto，任一反向即REJECT | analyzer/config | pending | gate分支测试 | tie不算成功 |
 | NG-41 | 八.2 | 达成规定幅度才ADVANCE；全正但幅度不足仅REVISE_ONCE | analyzer/config | pending | 三分支测试 | 不自动跑125 |
 | NG-42 | 八.3 | outer、slice、旧类、receiver、scene稳定性门 | analyzer | pending | 分组fixture | 不由单一切片承担收益 |
@@ -33,12 +34,12 @@
 1. 新方法不再正向抬升旧类整体bias；共享截距只允许`tau<=0`，方向上直接抑制new→old。
 2. K5/new20的新类增广support最多100行，289维零空间至少189维。
 3. K10/new20最多200行，零空间至少89维；new5/new10的零空间更大。
-4. 零空间用确定性SVD机器精度阈值计算，不按outer或query调秩。
+4. 零空间用紧凑行空间算子和确定性机器精度阈值计算，不显式构造289×289投影矩阵。
 5. 每个旧类从E0基线固定的bottom-20%support构造同公式投影方向。
 6. 6个旧类方向先作组内零和，再由小型线性max-min确定6个强度和共享`tau`。
 7. 约束同时要求旧类tail对所有竞争类的margin与新类new-vs-old margin共同提高。
 8. 类置换只同步置换方向、变量和约束，算法形式不变。
 9. 新类权重行不变；新类support上的内部旧类logit变化为零，只有统一非正`tau`。
-10. 求解完成后仅发布一个FP32仿射头，query MAC和state布局与E0完全相同。
+10. 求解完成后同时核对FP32中间头和正式int8/FP16部署头；正式保护失败即回退E0。
 11. 额外工作只发生在support端，主LDA仍仅一次FULL fit。
 12. 数值、约束或闭包失败时整头逐字节回退E0；K1/K2继续D92 FULL exact alias。
