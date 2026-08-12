@@ -1,6 +1,6 @@
 # D92 E0 FULL CSOAS Hard9+K1 v2实验报告
 
-状态：`LOCAL_VERIFIED / READY_FOR_N607_HANDOFF`
+状态：`ANALYZED / REJECT_ROUTE / TARGET125_NOT_AUTHORIZED`
 
 ## 1.目标与冻结范围
 
@@ -64,4 +64,47 @@ primary只在artifact闭环后运行冻结analyzer。若八项严格Pareto及稳
 
 ## 6.运行与分析结果
 
-待sole runner回填。
+### 6.1技术闭包
+
+v2唯一launch完成。prepare生成10 jobs/30 scene rows，manifest SHA=`be0dd760dce70c20db4f10bca4a30bc5058450c55cf9fda907f36d84f5ffe808`；K5/new20真实checkpoint truth-free smoke通过；8/8 shard summaries为PASS，failed job=0。正式产物为10 job receipts、before/after prediction/COMMIT/fit/resource/execution各20、score 10；另有smoke before/after各2份结构产物。stderr非空=0，systemic stop=0，query禁用字段全false。
+
+完整取回根为`E:\type10-7\local_artifacts\d92_e0_full_csoas_hard9k1_20260812_v2`。远端=本地树：source 1438 files/73,811,362B/SHA `8c76ed6036388a1df04ee98890f41187bc5bb408ff823a1aad4cbc1bbbbac464`；output 190/16,527,849B/`c7edae513b9e52278ff55f949959b4887d4f9f7bc3f6974f85ee2fbd14473e93`；logs 22/9,554B/`3cc185ca127665c802a2510bd977b46d0194f672fc408226cd4ccd2e361171cc`。10份truth sidecar逐SHA取回；runner未读取性能，最终run/GPU/SSH/TCP22均清零。
+
+### 6.2同排九个最难outer结果
+
+下表每格为`CSOAS/E0_FULL_ONLY（Δpp）`；forgetting与两向混淆的负Δ为改善。
+
+|outer|K/new|H|old BA|old acc|old floor|seen-new|forgetting|new→old|old→new|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|`rx_7_7__seed_713104__k_5__new_20`|K5/20|70.27/69.78（+0.48）|81.94/75.56（+6.39）|81.94/75.56（+6.39）|68.33/41.67（+26.67）|61.50/64.83（-3.33）|9.44/15.83（-6.39）|14.08/13.67（+0.42）|13.61/17.22（-3.61）|
+|`rx_7_7__seed_713103__k_10__new_5`|K10/5|77.85/82.69（-4.84）|86.67/81.11（+5.56）|86.67/81.11（+5.56）|76.67/53.33（+23.33）|70.67/84.33（-13.67）|6.67/12.22（-5.56）|26.00/13.67（+12.33）|8.89/12.22（-3.33）|
+|`rx_8_8__seed_713103__k_5__new_20`|K5/20|67.63/66.38（+1.25）|72.78/66.94（+5.83）|72.78/66.94（+5.83）|31.67/28.33（+3.33）|63.17/65.83（-2.67）|11.11/16.94（-5.83）|13.00/13.33（-0.33）|20.56/22.78（-2.22）|
+|`rx_8_8__seed_713103__k_10__new_5`|K10/5|77.70/77.49（+0.21）|83.06/76.67（+6.39）|83.06/76.67（+6.39）|63.33/53.33（+10.00）|73.00/78.33（-5.33）|2.22/8.61（-6.39）|22.67/17.67（+5.00）|8.61/10.83（-2.22）|
+|`rx_8_8__seed_713106__k_5__new_20`|K5/20|63.37/64.38（-1.01）|65.56/63.61（+1.94）|65.56/63.61（+1.94）|35.00/36.67（-1.67）|61.33/65.17（-3.83）|13.33/15.28（-1.94）|11.83/9.75（+2.08）|26.39/19.44（+6.94）|
+|`rx_7_14__seed_713104__k_10__new_10`|K10/10|75.54/73.11（+2.43）|82.50/73.06（+9.44）|82.50/73.06（+9.44）|36.67/33.33（+3.33）|69.67/73.17（-3.50）|5.56/15.00（-9.44）|14.50/12.50（+2.00）|11.39/17.22（-5.83）|
+|`rx_3_19__seed_713102__k_10__new_5`|K10/5|54.90/54.16（+0.74）|59.44/58.61（+0.83）|59.44/58.61（+0.83）|28.33/30.00（-1.67）|51.00/50.33（+0.67）|10.56/11.39（-0.83）|29.00/29.67（-0.67）|25.56/19.17（+6.39）|
+|`rx_7_7__seed_713105__k_10__new_20`|K10/20|77.72/76.98（+0.73）|85.83/79.44（+6.39）|85.83/79.44（+6.39）|70.00/50.00（+20.00）|71.00/74.67（-3.67）|9.17/15.56（-6.39）|9.92/7.83（+2.08）|13.06/16.67（-3.61）|
+|`rx_7_7__seed_713104__k_10__new_5`|K10/5|81.15/84.97（-3.81）|87.50/87.78（-0.28）|87.50/87.78（-0.28）|68.33/58.33（+10.00）|75.67/82.33（-6.67）|8.89/8.61（+0.28）|22.33/15.33（+7.00）|7.78/8.33（-0.56）|
+
+### 6.3总体八项与资源
+
+|指标|CSOAS均值|E0均值|Δpp|冻结方向|结果|
+|---|---:|---:|---:|---|---|
+|`H_old_new`|71.7933%|72.2166%|-0.4233|升高|FAIL|
+|old balanced accuracy|78.3642%|73.6420%|+4.7222|升高|PASS|
+|`c_old_acc`|78.3642%|73.6420%|+4.7222|升高|PASS|
+|old floor|53.1481%|42.7778%|+10.3704|升高|PASS|
+|seen-new accuracy|66.3333%|71.0000%|-4.6667|升高|FAIL|
+|average forgetting|8.5494%|13.2716%|-4.7222|降低|PASS|
+|new→old rate|18.1481%|14.8241%|+3.3241|降低|FAIL|
+|old→new rate|15.0926%|15.9877%|-0.8951|降低|PASS|
+
+CSOAS通过资源完整性、硬门和目标门：query MAC/state逐row等同E0；registration wall P90=`30.895252ms`，paired wall ratio median=`0.2324×`，peak delta max=`520,192B`≤512KiB；相对原D92的component-fit reduction最差=`95.8333%`。K1为精确alias，不进入性能均值。
+
+稳定性不通过。严格方向逐row命中数为：H 6/9、old BA 8/9、old acc 8/9、floor 7/9、seen-new 1/9、forgetting 8/9、new→old 2/9、old→new 7/9。三个scene的seen-new均下降：clear -7.0278pp、low-elev -3.7778pp、rain -3.1944pp。逐旧类也发生明显分化：TX `14-7`均值+25.37pp，但TX `14-10`均值-5.93pp且最差-23.33pp，TX `20-15`均值-2.96pp且最差-21.67pp。
+
+### 6.4解释与裁决
+
+同排证据表明CSOAS成功把协方差几何推向旧类保留：old BA/old acc各提高4.72pp，floor提高10.37pp，forgetting降低4.72pp；代价是新类边界系统性收缩，seen-new降低4.67pp，new→old增加3.32pp，最终H下降0.42pp。该结果否证了“仅用D81 Cauchy权重和OAS重估共享FULL协方差即可同时改善旧类floor、遗忘与新类准确率”的假设。这里可以确认的是同一冻结矩阵上的关联模式；不能把退化归因到某一个公式项而不做新的受控实验。
+
+冻结analyzer输出`REJECT_ROUTE`：artifact closure、performance closure、resource integrity、resource hard/target和compute reduction通过；strict Pareto、magnitude和stability失败。CSOAS不进入target125，不调权重、不扫参、不挑outer重跑。完整analysis位于`E:\type10-7\local_artifacts\d92_e0_full_csoas_hard9k1_20260812_v2\analysis`；`summary.json` SHA=`c55b9c197f6cc44f798b0cdcb7b499a08a734f2a49dba1f491265994d4a2efb2`，`paired_rows.csv` SHA=`fb187bd1a3cdddbe942e49223d05850a9ebb015260e117f095262d44079eb7a4`。
