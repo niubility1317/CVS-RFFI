@@ -79,6 +79,8 @@ label_epochs=130
 pseudo_epochs=70
 from_scratch=true
 checkpoint_selection=final_only
+best_metric=source_val_sat_hmean
+enable_joint_safe_guard=false
 profile.lambda_open_world_feat=0.0024
 profile.lambda_zid_compact=0.032
 profile.lambda_proxy_unknown=0.0045
@@ -183,10 +185,10 @@ COMMON=(
   --label_epochs 130
   --pseudo_epochs 70
   --from_scratch true
-  --best_metric joint_safe
+  --best_metric source_val_sat_hmean
   --checkpoint_selection final_only
   --phase1_source_val_selection_only true
-  --enable_joint_safe_guard true
+  --enable_joint_safe_guard false
   --one_epoch_drop_guard_pp 2.0
   --paic_guard_enabled true
   --paic_guard_sat_ce_delta 0.12
@@ -354,6 +356,27 @@ for fold_index in 0 1 2 3 4 5; do
 done
 
 [[ "${DRY_RUN}" == "1" ]] && exit 0
+
+preflight_planned_fold_paths() {
+  local fold_index candidate output_dir log_path
+  for fold_index in 0 1 2 3 4 5; do
+    candidate="F$((fold_index + 1))_ADV3B02_CLIC"
+    output_dir="${RUN_ROOT}/${candidate}"
+    log_path="${LOG_ROOT}/${candidate}.out"
+    [[ ! -e "${output_dir}" ]] || {
+      echo "refusing to overwrite planned fold output: ${candidate}" >&2
+      exit 3
+    }
+    [[ ! -e "${log_path}" ]] || {
+      echo "refusing to overwrite planned fold log: ${candidate}" >&2
+      exit 3
+    }
+  done
+}
+
+# Check every planned child artifact before the root guard or any mkdir/child
+# launch.  A later-fold collision must never permit an earlier fold to start.
+preflight_planned_fold_paths
 
 # Check roots before the dataset so a collision is always a no-mutation failure.
 [[ ! -e "${RUN_ROOT}" && ! -e "${LOG_ROOT}" ]] || {

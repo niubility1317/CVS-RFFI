@@ -44,12 +44,17 @@ def _require_launcher() -> None:
     assert LAUNCHER.is_file(), f"missing launcher under test: {LAUNCHER}"
 
 
-def _launcher_argv(tmp_path: Path, *args: str) -> list[str]:
+def _launcher_argv(
+    tmp_path: Path,
+    *args: str,
+    env_overrides: dict[str, str] | None = None,
+) -> list[str]:
     # WSL's bash.exe does not inherit arbitrary Windows subprocess env values.
     # Inject only this test's explicit contract inputs inside the WSL shell.
-    assignments = " ".join(
-        f"{key}={shlex.quote(value)}" for key, value in _launcher_env(tmp_path).items()
-    )
+    env = _launcher_env(tmp_path)
+    if env_overrides:
+        env.update(env_overrides)
+    assignments = " ".join(f"{key}={shlex.quote(value)}" for key, value in env.items())
     command = " ".join(
         [
             assignments,
@@ -61,10 +66,15 @@ def _launcher_argv(tmp_path: Path, *args: str) -> list[str]:
     return ["bash", "-lc", command]
 
 
-def _run_launcher(tmp_path: Path, *args: str, check: bool = True) -> subprocess.CompletedProcess[str]:
+def _run_launcher(
+    tmp_path: Path,
+    *args: str,
+    check: bool = True,
+    env_overrides: dict[str, str] | None = None,
+) -> subprocess.CompletedProcess[str]:
     _require_launcher()
     return subprocess.run(
-        _launcher_argv(tmp_path, *args),
+        _launcher_argv(tmp_path, *args, env_overrides=env_overrides),
         cwd=REPO_ROOT,
         check=check,
         capture_output=True,
@@ -134,10 +144,10 @@ EXPECTED_PROFILE = {
     "--epochs": "200",
     "--label_epochs": "130",
     "--pseudo_epochs": "70",
-    "--best_metric": "joint_safe",
+    "--best_metric": "source_val_sat_hmean",
     "--checkpoint_selection": "final_only",
     "--phase1_source_val_selection_only": "true",
-    "--enable_joint_safe_guard": "true",
+    "--enable_joint_safe_guard": "false",
     "--one_epoch_drop_guard_pp": "2.0",
     "--paic_guard_enabled": "true",
     "--paic_guard_sat_ce_delta": "0.12",
@@ -319,6 +329,17 @@ def test_dry_run_command_is_accepted_by_the_real_train_parser(tmp_path: Path) ->
         assert parsed.source_val_ratio == 0.30
 
 
+def test_all_six_commands_pass_the_real_train_runtime_dry_run_guard(tmp_path: Path) -> None:
+    """Break caught: a parsed ADV command violates train_ssdg's runtime guards."""
+
+    from SSDG import train_ssdg
+
+    parser = train_ssdg.build_arg_parser()
+    for line in _dry_run_lines(tmp_path):
+        args = parser.parse_args(_trainer_args(_command_tokens(line)) + ["--dry_run"])
+        assert train_ssdg.train(args) == 0
+
+
 def test_dry_run_has_no_target_side_input_and_creates_no_roots(tmp_path: Path) -> None:
     """Break caught: source-only dry-run touches roots or emits target-side input."""
 
@@ -358,6 +379,28 @@ def test_existing_root_fails_before_any_new_output_mutation(tmp_path: Path) -> N
     assert "refusing to overwrite run/log root" in result.stderr
     assert marker.read_text(encoding="utf-8") == "preserve"
     assert not (tmp_path / "logs").exists()
+
+
+def test_later_fold_collision_is_rejected_before_any_child_or_log_mutation(tmp_path: Path) -> None:
+    """Break caught: F1--F5 can launch before a pre-existing later-fold collision is seen."""
+
+    collision = tmp_path / "runs" / "F6_ADV3B02_CLIC"
+    collision.mkdir(parents=True)
+    marker = collision / "preserve.txt"
+    marker.write_text("preserve", encoding="utf-8")
+
+    result = _run_launcher(
+        tmp_path,
+        check=False,
+        env_overrides={"PYTHON": "/bin/false"},
+    )
+
+    assert result.returncode != 0
+    assert "refusing to overwrite planned fold output: F6_ADV3B02_CLIC" in result.stderr
+    assert marker.read_text(encoding="utf-8") == "preserve"
+    assert not (tmp_path / "logs").exists()
+    assert not any((tmp_path / "runs").glob("F[1-5]_ADV3B02_CLIC"))
+    assert not list(tmp_path.rglob("*.pid"))
 
 
 def test_contract_validator_rejects_profile_role_split_and_checkpoint_drift(tmp_path: Path) -> None:
