@@ -970,6 +970,15 @@ def test_tcra_evaluator_runs_direct_postprocess_with_zero_query_access(
     assert row["d92_e0d_tcra_generated_atomic_ascent_count"] == row[
         "d92_e0d_tcra_selected_atomic_ascent_count"
     ] + row["d92_e0d_tcra_rejected_atomic_ascent_count"]
+    assert row["d92_e0d_tcra_final_gate_revision"] == "safe_directional_v2"
+    assert row["d92_e0d_tcra_old_tail_gain_sum"] == float(
+        np.sum(
+            np.asarray(row["d92_e0d_tcra_old_tail_gain_by_class"]),
+            dtype=np.float64,
+        )
+    )
+    assert row["d92_e0d_tcra_old_tail_strict_positive_count"] > 0
+    assert row["d92_e0d_tcra_safe_directional_pass"] is True
     assert row["after_total_component_fit_count"] == 2
     assert row["after_actual_component_inventory"]["actual_component_fit_count"] == 1
     assert all(
@@ -1013,6 +1022,10 @@ def test_tcra_query_audit_keeps_low_k_full_alias(k_shot):
     assert row["d92_e0d_tcra_active"] is False
     assert row["d92_e0d_tcra_fallback_active"] is False
     assert row["d92_e0d_tcra_fallback_reason"] == "K1_K2_EXACT_D92_FULL_ALIAS"
+    assert row["d92_e0d_tcra_final_gate_revision"] == "safe_directional_v2"
+    assert row["d92_e0d_tcra_old_tail_gain_sum"] is None
+    assert row["d92_e0d_tcra_old_tail_strict_positive_count"] is None
+    assert row["d92_e0d_tcra_safe_directional_pass"] is False
 
 
 def test_tcra_query_audit_rejects_query_access_tamper():
@@ -1035,6 +1048,63 @@ def test_tcra_query_audit_rejects_query_access_tamper():
     result.geometry_audit["final_covariance_audit"][
         "d92_e0d_tcra_query_selection_access"
     ] = True
+    with pytest.raises(e0d_eval.D92E0DQueryEvaluationError, match="TCRA"):
+        e0d_eval._audit_d92_e0d_fit(
+            result,
+            arm=arm,
+            scenario="leo_clear_weak",
+            k_shot=5,
+            old_count=OLD_CLASS_COUNT,
+            class_count=11,
+        )
+
+
+@pytest.mark.parametrize(
+    ("field", "tampered"),
+    [
+        ("final_gate_revision", "strict_positive_v1"),
+        ("old_tail_gain_sum", -1.0),
+        ("old_tail_strict_positive_count", 0),
+        ("safe_directional_pass", False),
+    ],
+)
+def test_tcra_query_audit_rejects_safe_directional_receipt_tamper(
+    field, tampered
+):
+    from cvsrffi import stage2_d92_d42_tail_class_row_ascent as tcra
+
+    arm = slim.D92_E0D_ARMS["E0_FULL_D42_TAIL_CLASS_ROW_ASCENT"]
+    state = _tpce_state()
+    rows, targets = _tpce_support()
+    candidate, receipt = tcra.apply_d42_tail_class_row_ascent(
+        state, rows, targets, old_class_count=OLD_CLASS_COUNT
+    )
+    tolerance = receipt["d92_tcra_guard_tolerance"]
+    old_gains = receipt["d92_tcra_old_tail_gain_by_class"]
+    receipt.update(
+        {
+            "d92_tcra_final_gate_revision": "safe_directional_v2",
+            "d92_tcra_old_tail_gain_sum": float(
+                np.sum(np.asarray(old_gains), dtype=np.float64)
+            ),
+            "d92_tcra_old_tail_strict_positive_count": sum(
+                value > tolerance for value in old_gains
+            ),
+            "d92_tcra_safe_directional_pass": True,
+        }
+    )
+    result = _result(arm, k_shot=5)
+    result.state = candidate
+    result.geometry_audit["final_covariance_audit"].update(
+        {
+            key.replace("d92_tcra_", "d92_e0d_tcra_"): value
+            for key, value in receipt.items()
+        }
+    )
+    result.geometry_audit["final_covariance_audit"][
+        f"d92_e0d_tcra_{field}"
+    ] = tampered
+
     with pytest.raises(e0d_eval.D92E0DQueryEvaluationError, match="TCRA"):
         e0d_eval._audit_d92_e0d_fit(
             result,

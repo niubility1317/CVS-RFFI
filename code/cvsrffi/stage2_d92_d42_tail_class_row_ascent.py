@@ -22,6 +22,7 @@ from cvsrffi import stage2_d42_unified_shrinkage_lda as d42
 QUANTILE = 0.20
 QUANTILE_METHOD = "lower"
 STATE_POSTPROCESS_MODE = "d42_tcra"
+FINAL_GATE_REVISION = "safe_directional_v2"
 GUARD_EPSILON_MULTIPLIER = 64.0
 
 
@@ -586,8 +587,40 @@ def _final_guard_pass(
     new_to_old: float,
     tolerance: float,
 ) -> bool:
+    values = np.asarray(gains, dtype=np.float64)
+    scalars = np.asarray(
+        [all_gain, old_to_new, new_to_old, tolerance], dtype=np.float64
+    )
+    if (
+        values.ndim != 1
+        or values.size < 2
+        or not np.isfinite(values).all()
+        or not np.isfinite(scalars).all()
+        or tolerance < 0.0
+    ):
+        return False
+    old_gains = values[:-1]
     return bool(
-        np.all(gains > tolerance)
+        np.all(values >= -tolerance)
+        and all_gain >= -tolerance
+        and old_to_new <= tolerance
+        and new_to_old <= tolerance
+        and np.max(old_gains) > tolerance
+        and np.sum(old_gains, dtype=np.float64) > tolerance
+    )
+
+
+def _strict_search_target_pass(
+    gains: np.ndarray,
+    all_gain: float,
+    old_to_new: float,
+    new_to_old: float,
+    tolerance: float,
+) -> bool:
+    """Preserve the frozen v1 greedy stopping target; only final acceptance changed."""
+
+    return bool(
+        np.all(np.asarray(gains, dtype=np.float64) > tolerance)
         and all_gain >= -tolerance
         and old_to_new <= tolerance
         and new_to_old <= tolerance
@@ -626,6 +659,22 @@ def _base_audit(
 ) -> dict[str, Any]:
     e0_sha = _state_sha256(state)
     rejected = int(generated - selected)
+    old_gain_sum = (
+        None
+        if old_gains is None
+        else float(
+            np.sum(np.asarray(old_gains, dtype=np.float64), dtype=np.float64)
+        )
+    )
+    old_strict_positive_count = (
+        None
+        if old_gains is None or tolerance is None
+        else int(
+            np.sum(
+                np.asarray(old_gains, dtype=np.float64) > float(tolerance)
+            )
+        )
+    )
     return {
         "d92_tcra_active": bool(active),
         "d92_tcra_fallback_active": bool(fallback_active),
@@ -633,6 +682,7 @@ def _base_audit(
         "d92_tcra_quantile": QUANTILE,
         "d92_tcra_quantile_method": QUANTILE_METHOD,
         "d92_tcra_state_postprocess_mode": STATE_POSTPROCESS_MODE,
+        "d92_tcra_final_gate_revision": FINAL_GATE_REVISION,
         "d92_tcra_direct_state_publish": True,
         "d92_tcra_requantize_call_count": 0,
         "d92_tcra_e0_state_sha256": e0_sha,
@@ -659,11 +709,14 @@ def _base_audit(
         "d92_tcra_guard_tolerance": tolerance,
         "d92_tcra_old_tail_gain_by_class": old_gains,
         "d92_tcra_old_tail_min_gain": min(old_gains) if old_gains else None,
+        "d92_tcra_old_tail_gain_sum": old_gain_sum,
+        "d92_tcra_old_tail_strict_positive_count": old_strict_positive_count,
         "d92_tcra_pooled_new_cross_tail_gain": new_cross_gain,
         "d92_tcra_pooled_new_allclass_tail_gain": new_all_gain,
         "d92_tcra_old_to_new_hinge_delta": old_to_new_delta,
         "d92_tcra_new_to_old_hinge_delta": new_to_old_delta,
         "d92_tcra_support_guard_pass": bool(support_guard_pass),
+        "d92_tcra_safe_directional_pass": bool(support_guard_pass),
         "d92_tcra_true_class_row_only": True,
         "d92_tcra_competitor_code_decrement_count": 0,
         "d92_tcra_class_permutation_equivariant": True,
@@ -874,7 +927,7 @@ def apply_d42_tail_class_row_ascent(
         else:
             remaining.append(atom)
 
-    while remaining and not _final_guard_pass(
+    while remaining and not _strict_search_target_pass(
         current_gains,
         current_all_gain,
         current_old_to_new,
@@ -1045,6 +1098,7 @@ def apply_d42_tail_class_row_ascent(
 
 __all__ = [
     "D92D42TCRAError",
+    "FINAL_GATE_REVISION",
     "GUARD_EPSILON_MULTIPLIER",
     "QUANTILE",
     "QUANTILE_METHOD",

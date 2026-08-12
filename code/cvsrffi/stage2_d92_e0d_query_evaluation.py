@@ -123,6 +123,7 @@ _TCRA_RECEIPT_SUFFIXES = (
     "quantile",
     "quantile_method",
     "state_postprocess_mode",
+    "final_gate_revision",
     "direct_state_publish",
     "requantize_call_count",
     "e0_state_sha256",
@@ -149,11 +150,14 @@ _TCRA_RECEIPT_SUFFIXES = (
     "guard_tolerance",
     "old_tail_gain_by_class",
     "old_tail_min_gain",
+    "old_tail_gain_sum",
+    "old_tail_strict_positive_count",
     "pooled_new_cross_tail_gain",
     "pooled_new_allclass_tail_gain",
     "old_to_new_hinge_delta",
     "new_to_old_hinge_delta",
     "support_guard_pass",
+    "safe_directional_pass",
     "true_class_row_only",
     "competitor_code_decrement_count",
     "class_permutation_equivariant",
@@ -1237,6 +1241,7 @@ def _tcra_support_receipt(
             raise D92E0DQueryEvaluationError("D92-E0D TCRA state guard drift")
     if (
         receipt[prefix + "state_postprocess_mode"] != "d42_tcra"
+        or receipt[prefix + "final_gate_revision"] != "safe_directional_v2"
         or receipt[prefix + "direct_state_publish"] is not True
         or receipt[prefix + "requantize_call_count"] != 0
         or receipt[prefix + "quantile"] != 0.20
@@ -1298,6 +1303,66 @@ def _tcra_support_receipt(
     ):
         raise D92E0DQueryEvaluationError("D92-E0D TCRA atomic receipt drift")
 
+    support_guard_pass = receipt[prefix + "support_guard_pass"]
+    safe_directional_pass = receipt[prefix + "safe_directional_pass"]
+    if (
+        not isinstance(support_guard_pass, bool)
+        or not isinstance(safe_directional_pass, bool)
+        or safe_directional_pass is not support_guard_pass
+    ):
+        raise D92E0DQueryEvaluationError(
+            "D92-E0D TCRA safe-directional receipt drift"
+        )
+    old_gains = receipt[prefix + "old_tail_gain_by_class"]
+    if old_gains is None:
+        if any(
+            receipt[prefix + name] is not None
+            for name in (
+                "guard_tolerance",
+                "old_tail_min_gain",
+                "old_tail_gain_sum",
+                "old_tail_strict_positive_count",
+                "pooled_new_cross_tail_gain",
+                "pooled_new_allclass_tail_gain",
+                "old_to_new_hinge_delta",
+                "new_to_old_hinge_delta",
+            )
+        ):
+            raise D92E0DQueryEvaluationError(
+                "D92-E0D TCRA empty support summary drift"
+            )
+    else:
+        if (
+            not isinstance(old_gains, list)
+            or len(old_gains) != OLD_CLASS_COUNT
+            or any(
+                isinstance(value, bool)
+                or not isinstance(value, (int, float))
+                or not np.isfinite(float(value))
+                for value in old_gains
+            )
+        ):
+            raise D92E0DQueryEvaluationError(
+                "D92-E0D TCRA old-tail receipt drift"
+            )
+        summary_tolerance = finite("guard_tolerance", lower=0.0)
+        expected_sum = float(
+            np.sum(np.asarray(old_gains, dtype=np.float64), dtype=np.float64)
+        )
+        expected_count = int(
+            np.sum(
+                np.asarray(old_gains, dtype=np.float64) > summary_tolerance
+            )
+        )
+        if (
+            finite("old_tail_min_gain") != float(min(old_gains))
+            or finite("old_tail_gain_sum") != expected_sum
+            or integer("old_tail_strict_positive_count") != expected_count
+        ):
+            raise D92E0DQueryEvaluationError(
+                "D92-E0D TCRA old-tail summary drift"
+            )
+
     if not active_state:
         if (
             active is not False
@@ -1326,6 +1391,7 @@ def _tcra_support_receipt(
             )
             or receipt[prefix + "coef2_byte_exact"] is not True
             or receipt[prefix + "support_guard_pass"] is not False
+            or safe_directional_pass is not False
         ):
             raise D92E0DQueryEvaluationError("D92-E0D TCRA alias receipt drift")
         return receipt
@@ -1342,6 +1408,7 @@ def _tcra_support_receipt(
             or state_l1 != 0
             or receipt[prefix + "coef2_byte_exact"] is not True
             or receipt[prefix + "support_guard_pass"] is not False
+            or safe_directional_pass is not False
         ):
             raise D92E0DQueryEvaluationError("D92-E0D TCRA fallback receipt drift")
         return receipt
@@ -1361,6 +1428,7 @@ def _tcra_support_receipt(
         or modified_fields != ["coef2_qint8"]
         or receipt[prefix + "coef2_byte_exact"] is not False
         or receipt[prefix + "support_guard_pass"] is not True
+        or safe_directional_pass is not True
         or saturation < 0
         or full_scores != steps + 2
         or analytic <= 0
@@ -1369,7 +1437,6 @@ def _tcra_support_receipt(
     ):
         raise D92E0DQueryEvaluationError("D92-E0D TCRA active receipt drift")
     old_counts = receipt[prefix + "old_tail_count_by_class"]
-    old_gains = receipt[prefix + "old_tail_gain_by_class"]
     if (
         not isinstance(old_counts, list)
         or len(old_counts) != OLD_CLASS_COUNT
@@ -1382,14 +1449,17 @@ def _tcra_support_receipt(
     tolerance = finite("guard_tolerance", lower=0.0)
     if (
         any(
-            not np.isfinite(float(value)) or float(value) <= tolerance
+            float(value) < -tolerance
             for value in old_gains
         )
-        or finite("old_tail_min_gain") <= tolerance
-        or finite("pooled_new_cross_tail_gain") <= tolerance
+        or finite("old_tail_min_gain") < -tolerance
+        or finite("pooled_new_cross_tail_gain") < -tolerance
         or finite("pooled_new_allclass_tail_gain") < -tolerance
         or finite("old_to_new_hinge_delta") > tolerance
         or finite("new_to_old_hinge_delta") > tolerance
+        or finite("old_tail_gain_sum") <= tolerance
+        or integer("old_tail_strict_positive_count") <= 0
+        or max(float(value) for value in old_gains) <= tolerance
     ):
         raise D92E0DQueryEvaluationError("D92-E0D TCRA support guard drift")
     return receipt

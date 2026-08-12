@@ -144,6 +144,18 @@ def test_tcra_is_active_on_the_fixed_pair_interference_fixture() -> None:
     assert audit["d92_tcra_pooled_new_allclass_tail_gain"] >= -tolerance
     assert audit["d92_tcra_old_to_new_hinge_delta"] <= tolerance
     assert audit["d92_tcra_new_to_old_hinge_delta"] <= tolerance
+    assert audit["d92_tcra_final_gate_revision"] == "safe_directional_v2"
+    assert audit["d92_tcra_old_tail_gain_sum"] == float(
+        np.sum(
+            np.asarray(audit["d92_tcra_old_tail_gain_by_class"]),
+            dtype=np.float64,
+        )
+    )
+    assert audit["d92_tcra_old_tail_strict_positive_count"] == sum(
+        value > tolerance
+        for value in audit["d92_tcra_old_tail_gain_by_class"]
+    )
+    assert audit["d92_tcra_safe_directional_pass"] is True
     assert audit["d92_tcra_modified_state_field_names"] == ["coef2_qint8"]
     difference = candidate.coef2_qint8.astype(np.int16) - state.coef2_qint8
     assert np.all(np.abs(difference[difference != 0]) == 1)
@@ -156,6 +168,63 @@ def test_tcra_is_active_on_the_fixed_pair_interference_fixture() -> None:
         "log_diag_fp32",
     ):
         assert getattr(candidate, name).tobytes() == getattr(state, name).tobytes()
+
+
+def test_tcra_safe_directional_v2_activates_the_real_clear_g0_values() -> None:
+    """The v1 all-strict gate rejected clear's within-tolerance new tail."""
+
+    tolerance = 0.0008059885585680604
+    old_gains = np.asarray(
+        [
+            -0.0006160736083984375,
+            -0.00021839141845703125,
+            0.005859375,
+            -0.0000858306884765625,
+            0.00125885009765625,
+            0.006592750549316406,
+        ],
+        dtype=np.float64,
+    )
+    new_cross_gain = -0.00023097991943359374
+    gains = np.concatenate([old_gains, [new_cross_gain]])
+
+    assert new_cross_gain < 0.0
+    assert new_cross_gain >= -tolerance
+    assert not np.all(gains > tolerance)  # frozen v1 strict gate
+    assert tcra._final_guard_pass(gains, new_cross_gain, 0.0, 0.0, tolerance)
+
+
+@pytest.mark.parametrize(
+    ("gains", "all_gain", "old_to_new", "new_to_old"),
+    [
+        ([-0.1000001, 0.2, 0.05, 0.05, 0.05, 0.05, 0.0], 0.0, 0.0, 0.0),
+        ([0.2, 0.05, 0.05, 0.05, 0.05, 0.05, -0.1000001], 0.0, 0.0, 0.0),
+        ([0.2, 0.05, 0.05, 0.05, 0.05, 0.05, 0.0], -0.1000001, 0.0, 0.0),
+        ([0.2, 0.05, 0.05, 0.05, 0.05, 0.05, 0.0], 0.0, 0.1000001, 0.0),
+        ([0.2, 0.05, 0.05, 0.05, 0.05, 0.05, 0.0], 0.0, 0.0, 0.1000001),
+        ([0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.0], 0.0, 0.0, 0.0),
+        ([0.2, -0.1, -0.1, 0.0, 0.0, 0.0, 0.0], 0.0, 0.0, 0.0),
+    ],
+    ids=(
+        "old_below_negative_tolerance",
+        "new_cross_below_negative_tolerance",
+        "new_all_below_negative_tolerance",
+        "old_to_new_hinge_above_tolerance",
+        "new_to_old_hinge_above_tolerance",
+        "no_old_strictly_positive",
+        "old_gain_sum_not_strictly_positive",
+    ),
+)
+def test_tcra_safe_directional_v2_fails_closed_when_any_condition_breaks(
+    gains, all_gain, old_to_new, new_to_old
+) -> None:
+    assert not tcra._final_guard_pass(
+        np.asarray(gains, dtype=np.float64),
+        all_gain,
+        old_to_new,
+        new_to_old,
+        0.1,
+    )
 
 
 def test_tcra_fast_batch_is_byte_exact_to_the_frozen_reference_c26_k10(
@@ -310,6 +379,10 @@ def test_tcra_all_prefixes_fail_with_byte_exact_e0_fallback(
         "d92_tcra_e0_state_sha256"
     ]
     assert audit["d92_tcra_modified_state_field_names"] == []
+    assert audit["d92_tcra_final_gate_revision"] == "safe_directional_v2"
+    assert audit["d92_tcra_old_tail_gain_sum"] == 0.0
+    assert audit["d92_tcra_old_tail_strict_positive_count"] == 0
+    assert audit["d92_tcra_safe_directional_pass"] is False
 
 
 def test_tcra_int8_boundary_falls_back_exactly_to_e0() -> None:
@@ -354,6 +427,10 @@ def test_tcra_k1_k2_inactive_receipt_is_an_exact_full_alias(k_shot: int) -> None
     assert receipt["d92_tcra_rejected_atomic_ascent_count"] == 0
     assert receipt["d92_tcra_prefix_guard_rejected_count"] == 0
     assert receipt["d92_tcra_modified_state_field_names"] == []
+    assert receipt["d92_tcra_final_gate_revision"] == "safe_directional_v2"
+    assert receipt["d92_tcra_old_tail_gain_sum"] is None
+    assert receipt["d92_tcra_old_tail_strict_positive_count"] is None
+    assert receipt["d92_tcra_safe_directional_pass"] is False
     assert all(
         receipt[f"d92_tcra_query_{name}"] is False
         for name in (
