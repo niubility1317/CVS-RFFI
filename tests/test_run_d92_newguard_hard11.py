@@ -52,6 +52,12 @@ def _write_prediction_closure(root: Path, *, force_newguard_fallback: bool = Fal
     newguard_reason = "K1_K2_EXACT_D92_FULL_ALIAS" if k1 else (
         "deployment_protection_failed" if force_newguard_fallback else None
     )
+    deployment_scale = None if k1 else 0.5
+    deployment_attempt_count = 0 if k1 else 9
+    deployment_full_head_byte_exact = True if k1 else False
+    protection_tolerance = None if k1 else 0.0001220703125
+    protected_value = None if k1 else 0.0
+    protected_tail = None if k1 else [0.0] * 6
     for state in ("before", "after"):
         state_root = root / state
         state_root.mkdir(parents=True, exist_ok=True)
@@ -71,6 +77,19 @@ def _write_prediction_closure(root: Path, *, force_newguard_fallback: bool = Fal
             "d92_e0d_newguard_active": newguard_active,
             "d92_e0d_newguard_fallback_active": newguard_fallback,
             "d92_e0d_newguard_fallback_reason": newguard_reason,
+            "d92_e0d_newguard_deployment_backtrack_scale": deployment_scale,
+            "d92_e0d_newguard_deployment_attempt_count": deployment_attempt_count,
+            "d92_e0d_newguard_deployment_full_head_byte_exact": deployment_full_head_byte_exact,
+            "d92_e0d_newguard_new_rows_byte_exact": True,
+            "d92_e0d_newguard_deployment_new_rows_byte_exact": True if not k1 else None,
+            "d92_e0d_newguard_deployment_protection_pass": False if k1 else True,
+            "d92_e0d_newguard_protection_tolerance": protection_tolerance,
+            "d92_e0d_newguard_new_support_min_margin_change": protected_value,
+            "d92_e0d_newguard_deployment_new_support_min_margin_change": protected_value,
+            "d92_e0d_newguard_new_support_old_envelope_change_max": protected_value,
+            "d92_e0d_newguard_deployment_new_support_old_envelope_change_max": protected_value,
+            "d92_e0d_newguard_tail_margin_change_by_old_class": protected_tail,
+            "d92_e0d_newguard_deployment_tail_margin_change_by_old_class": protected_tail,
             "after_registration_resource": {"registration_wall_time_ns": 100.0, "registration_incremental_peak_working_set_bytes": 100.0},
             "query_macs": 7488,
             "after_state_bytes": 18503,
@@ -225,6 +244,98 @@ def test_fit_audit_requires_exact_k1_alias_reason(tmp_path: Path) -> None:
     _write_json(path, rows)
     with pytest.raises(runner.D92NewGuardHard11RunnerError, match="NewGuard"):
         runner._validate_fit_audit(path, k_shot=1)
+
+
+def _fit_audit_row(*, k_shot: int = 10) -> dict[str, object]:
+    k1 = k_shot <= 2
+    return {
+        "scenario": SCENES[0],
+        "arm_id": runner.ARM_ID,
+        "candidate_id": runner.CANDIDATE_ID,
+        "after_registered_d_mode_effective": "d92_full_alias" if k1 else "newguard_maxmin",
+        "after_total_component_fit_count": 3 if k1 else 2,
+        "after_actual_component_inventory": {"actual_component_fit_count": 3 if k1 else 1},
+        "d92_e0d_newguard_active": False if k1 else True,
+        "d92_e0d_newguard_fallback_active": False,
+        "d92_e0d_newguard_fallback_reason": "K1_K2_EXACT_D92_FULL_ALIAS" if k1 else None,
+        "d92_e0d_newguard_deployment_backtrack_scale": None if k1 else 0.25,
+        "d92_e0d_newguard_deployment_attempt_count": 0 if k1 else 10,
+        "d92_e0d_newguard_deployment_full_head_byte_exact": True if k1 else False,
+        "d92_e0d_newguard_new_rows_byte_exact": True,
+        "d92_e0d_newguard_deployment_new_rows_byte_exact": None if k1 else True,
+        "d92_e0d_newguard_deployment_protection_pass": False if k1 else True,
+        "d92_e0d_newguard_protection_tolerance": None if k1 else 0.0001220703125,
+        "d92_e0d_newguard_new_support_min_margin_change": None if k1 else 0.0,
+        "d92_e0d_newguard_deployment_new_support_min_margin_change": None if k1 else 0.0,
+        "d92_e0d_newguard_new_support_old_envelope_change_max": None if k1 else 0.0,
+        "d92_e0d_newguard_deployment_new_support_old_envelope_change_max": None if k1 else 0.0,
+        "d92_e0d_newguard_tail_margin_change_by_old_class": None if k1 else [0.0] * 6,
+        "d92_e0d_newguard_deployment_tail_margin_change_by_old_class": None if k1 else [0.0] * 6,
+        **{field: False for field in runner.QUERY_ZERO_FIELDS},
+    }
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    (
+        ("d92_e0d_newguard_deployment_backtrack_scale", 0.3),
+        ("d92_e0d_newguard_deployment_attempt_count", 1),
+        ("d92_e0d_newguard_deployment_full_head_byte_exact", True),
+    ),
+)
+def test_fit_audit_rejects_k_gt_2_deployment_backtrack_receipt_drift(
+    tmp_path: Path, field: str, value: object
+) -> None:
+    path = tmp_path / "fit_audit.json"
+    rows = []
+    for scene in SCENES:
+        row = _fit_audit_row(k_shot=10)
+        row["scenario"] = scene
+        row[field] = value
+        rows.append(row)
+    _write_json(path, rows)
+    with pytest.raises(runner.D92NewGuardHard11RunnerError, match="deployment"):
+        runner._validate_fit_audit(path, k_shot=10)
+
+
+def test_fit_audit_accepts_k1_exact_alias_deployment_receipt(tmp_path: Path) -> None:
+    path = tmp_path / "fit_audit.json"
+    rows = []
+    for scene in SCENES:
+        row = _fit_audit_row(k_shot=1)
+        row["scenario"] = scene
+        rows.append(row)
+    _write_json(path, rows)
+    runner._validate_fit_audit(path, k_shot=1)
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    (
+        ("d92_e0d_newguard_protection_tolerance", 1.0),
+        ("d92_e0d_newguard_new_rows_byte_exact", False),
+        ("d92_e0d_newguard_deployment_new_rows_byte_exact", False),
+        ("d92_e0d_newguard_new_support_min_margin_change", -1.0),
+        ("d92_e0d_newguard_deployment_new_support_min_margin_change", -1.0),
+        ("d92_e0d_newguard_new_support_old_envelope_change_max", 1.0),
+        ("d92_e0d_newguard_deployment_new_support_old_envelope_change_max", 1.0),
+        ("d92_e0d_newguard_tail_margin_change_by_old_class", [-1.0] * 6),
+        ("d92_e0d_newguard_deployment_tail_margin_change_by_old_class", [-1.0] * 6),
+    ),
+)
+def test_fit_audit_rejects_explicit_newguard_protection_drift(
+    tmp_path: Path, field: str, value: object
+) -> None:
+    path = tmp_path / "fit_audit.json"
+    rows = []
+    for scene in SCENES:
+        row = _fit_audit_row(k_shot=10)
+        row["scenario"] = scene
+        row[field] = value
+        rows.append(row)
+    _write_json(path, rows)
+    with pytest.raises(runner.D92NewGuardHard11RunnerError, match="protection"):
+        runner._validate_fit_audit(path, k_shot=10)
 
 
 def test_k_gt_2_smoke_rejects_newguard_fallback_before_shards(

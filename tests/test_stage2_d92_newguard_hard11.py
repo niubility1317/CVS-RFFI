@@ -122,3 +122,44 @@ def test_config_freezes_raw_score_and_per_old_sha_identities() -> None:
         "c4b90161d18482b0eedf978389557871cbf9676197f0a2889d547c95c76fbf97"
     )
     assert validate_method_lock(lock)["claim_scope"] == CLAIM_SCOPE
+
+
+def test_config_freezes_deployment_backtrack_lock() -> None:
+    lock = json.loads(METHOD_LOCK.read_text(encoding="utf-8"))
+    assert lock["deployment_backtrack"] == {
+        "scales": [
+            128.0,
+            64.0,
+            32.0,
+            16.0,
+            8.0,
+            4.0,
+            2.0,
+            1.0,
+            0.5,
+            0.25,
+            0.125,
+            0.0625,
+            0.03125,
+            0.015625,
+            0.0078125,
+            0.00390625,
+            0.001953125,
+            0.0009765625,
+            0.00048828125,
+            0.000244140625,
+        ],
+        "selection": "largest_safe_nonzero_after_actual_d42_roundtrip",
+        "all_fail": "exact_e0_fallback",
+        "protection_tolerance_formula": "1024*float32_eps",
+        "protection_tolerance_value": 0.0001220703125,
+        "negative_tail_accepted": False,
+        "max_trust_region_fraction": 0.0128,
+    }
+
+
+def test_method_lock_rejects_deployment_backtrack_scale_drift(tmp_path: Path) -> None:
+    lock = json.loads(METHOD_LOCK.read_text(encoding="utf-8"))
+    lock["deployment_backtrack"]["scales"][-1] = 0.0
+    with pytest.raises(ValueError, match="method lock"):
+        validate_method_lock(lock)

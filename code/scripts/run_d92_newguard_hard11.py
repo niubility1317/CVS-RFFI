@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import math
 import os
 import stat
 import subprocess
@@ -22,6 +23,7 @@ from cvsrffi.stage2_d92_newguard_hard11 import (  # noqa: E402
     ARM_ID,
     CANDIDATE_ID,
     CANONICAL_SELECTION_SHA256,
+    DEPLOYMENT_BACKTRACK,
     LIVENESS_OUTER_KEY,
     SCENES,
     SHARD_COUNT,
@@ -146,12 +148,110 @@ def _validate_fit_audit(path: str | Path, *, k_shot: int) -> None:
                 or row.get("d92_e0d_newguard_fallback_reason") is not None
             ):
                 raise D92NewGuardHard11RunnerError("fit audit NewGuard active/fallback drift")
+            scale = row.get("d92_e0d_newguard_deployment_backtrack_scale")
+            attempt_count = row.get("d92_e0d_newguard_deployment_attempt_count")
+            full_head_byte_exact = row.get(
+                "d92_e0d_newguard_deployment_full_head_byte_exact"
+            )
+            scales = tuple(float(value) for value in DEPLOYMENT_BACKTRACK["scales"])
+            if (
+                isinstance(scale, bool)
+                or not isinstance(scale, (int, float))
+                or not any(float(scale) == value for value in scales)
+            ):
+                raise D92NewGuardHard11RunnerError(
+                    "fit audit deployment backtrack scale drift"
+                )
+            expected_attempt_count = scales.index(float(scale)) + 1
+            if type(attempt_count) is not int or attempt_count != expected_attempt_count:
+                raise D92NewGuardHard11RunnerError(
+                    "fit audit deployment backtrack attempt drift"
+                )
+            if full_head_byte_exact is not False:
+                raise D92NewGuardHard11RunnerError(
+                    "fit audit deployment full-head byte-exact drift"
+                )
+            try:
+                tolerance = float(row["d92_e0d_newguard_protection_tolerance"])
+                raw_new_margin = float(
+                    row["d92_e0d_newguard_new_support_min_margin_change"]
+                )
+                deployed_new_margin = float(
+                    row[
+                        "d92_e0d_newguard_deployment_new_support_min_margin_change"
+                    ]
+                )
+                raw_envelope = float(
+                    row[
+                        "d92_e0d_newguard_new_support_old_envelope_change_max"
+                    ]
+                )
+                deployed_envelope = float(
+                    row[
+                        "d92_e0d_newguard_deployment_new_support_old_envelope_change_max"
+                    ]
+                )
+                raw_tail = tuple(
+                    float(value)
+                    for value in row[
+                        "d92_e0d_newguard_tail_margin_change_by_old_class"
+                    ]
+                )
+                deployed_tail = tuple(
+                    float(value)
+                    for value in row[
+                        "d92_e0d_newguard_deployment_tail_margin_change_by_old_class"
+                    ]
+                )
+            except (KeyError, TypeError, ValueError) as error:
+                raise D92NewGuardHard11RunnerError(
+                    "fit audit NewGuard protection receipt drift"
+                ) from error
+            expected_tolerance = float(
+                DEPLOYMENT_BACKTRACK["protection_tolerance_value"]
+            )
+            protected_scalars = (
+                tolerance,
+                raw_new_margin,
+                deployed_new_margin,
+                raw_envelope,
+                deployed_envelope,
+                *raw_tail,
+                *deployed_tail,
+            )
+            if (
+                row.get("d92_e0d_newguard_new_rows_byte_exact") is not True
+                or row.get("d92_e0d_newguard_deployment_new_rows_byte_exact")
+                is not True
+                or row.get("d92_e0d_newguard_deployment_protection_pass") is not True
+                or tolerance != expected_tolerance
+                or len(raw_tail) != 6
+                or len(deployed_tail) != 6
+                or not all(math.isfinite(value) for value in protected_scalars)
+                or raw_new_margin < -tolerance
+                or deployed_new_margin < -tolerance
+                or raw_envelope > tolerance
+                or deployed_envelope > tolerance
+                or any(value < -tolerance for value in raw_tail)
+                or any(value < -tolerance for value in deployed_tail)
+            ):
+                raise D92NewGuardHard11RunnerError(
+                    "fit audit NewGuard protection drift"
+                )
         elif (
             row.get("d92_e0d_newguard_active") is not False
             or row.get("d92_e0d_newguard_fallback_active") is not False
             or row.get("d92_e0d_newguard_fallback_reason") != "K1_K2_EXACT_D92_FULL_ALIAS"
         ):
             raise D92NewGuardHard11RunnerError("fit audit NewGuard K1 alias drift")
+        elif (
+            row.get("d92_e0d_newguard_deployment_backtrack_scale") is not None
+            or row.get("d92_e0d_newguard_deployment_attempt_count") != 0
+            or row.get("d92_e0d_newguard_deployment_full_head_byte_exact") is not True
+        ):
+            raise D92NewGuardHard11RunnerError(
+                "fit audit deployment K1 alias receipt drift"
+            )
         if (total_i, actual_i, str(mode)) != (expected_total, expected_actual, expected_mode):
             raise D92NewGuardHard11RunnerError("fit audit K/mode inventory drift")
 

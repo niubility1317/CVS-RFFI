@@ -24,6 +24,36 @@
     "query": "single_f0_all_registered_classes"
   },
   "fallback": "K1_K2_exact_D92_FULL_alias",
+  "deployment_backtrack": {
+    "scales": [
+      128.0,
+      64.0,
+      32.0,
+      16.0,
+      8.0,
+      4.0,
+      2.0,
+      1.0,
+      0.5,
+      0.25,
+      0.125,
+      0.0625,
+      0.03125,
+      0.015625,
+      0.0078125,
+      0.00390625,
+      0.001953125,
+      0.0009765625,
+      0.00048828125,
+      0.000244140625
+    ],
+    "selection": "largest_safe_nonzero_after_actual_d42_roundtrip",
+    "all_fail": "exact_e0_fallback",
+    "protection_tolerance_formula": "1024*float32_eps",
+    "protection_tolerance_value": 0.0001220703125,
+    "negative_tail_accepted": false,
+    "max_trust_region_fraction": 0.0128
+  },
   "query_contract": {
     "decision": "per_sample_all_registered_classes",
     "truth_access": false,
