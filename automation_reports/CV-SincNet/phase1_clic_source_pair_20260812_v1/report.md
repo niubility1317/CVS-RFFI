@@ -3,7 +3,7 @@
 ## 状态与目标
 
 - 实验ID：`phase1_clic_source_pair_20260812_v1`。
-- 当前状态：`LOCAL_VERIFIED / FORMAL_LAUNCH=0 / NO_PERFORMANCE_RESULT`。
+- 当前状态：`READY_TO_LAUNCH / FORMAL_LAUNCH=0 / NO_PERFORMANCE_RESULT_YET`。
 - 操作者：主控Codex；N607唯一runner：`Luna/max`。
 - 目标：复用已完成且不可覆盖的v5训练、clean v2和source-LEO v4工件，为F1—F6×C／G生成12份common receipt、12份fixed400 proxy diagnostic，并为每个fold生成1份C／G source-only PAIR记录，共6份。
 - 假设：完整重开checkpoint、terminal、clean、LEO NPZ／binding后，C／G同fold的训练物理顺序和received-IQ绑定一致；source-L拟合的Gaussian geometry与三场景tail policy可被无target输入地封存，为后续bundle及target盲态评分提供冻结source规则。
@@ -58,3 +58,10 @@
 - 错误checkout／hash、输出覆盖、target／query访问、协议字段漂移或至少2个fold在pair前出现同一确定性异常时，只停止本run的确切进程树并保留所有工件。
 - 不因AUROC、u-gap或任何性能数值停止。技术失败标记`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`；完整工件只标记`ARTIFACTS_COMPLETE / NO_PERFORMANCE_RESULT`。
 - 完成后回填commit／文件SHA、archive／release／SCP、PID／日志／工件计数与逐fold技术结论；性能分析属于后续独立阶段。
+
+## v1发布与静态门检查点（2026-08-12）
+
+- 冻结commit=`8fa919c1855806316088ad598aeb09cdc265563f`；Task7 dirty/untracked未打包、未stage。干净archive=`E:\type10-7\code\runner_tmp_phase1_clic_source_pair_20260812_v1_8fa919c1_git_archive.tar`，SHA256=`5C06A9B7316C61F23943B9B2D32D261FDC39EDFD5522C483F766F455FDD0C494`，bytes=`267079680`。
+- SCP恰1次，远端archive SHA／bytes闭合；原子release=`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_clic_source_pair_20260812_v1_8fa919c1`。launcher SHA=`0039046E2C528EF2758127904728DF8BC37B8AC26269C422A712E5D492B14427`。
+- 远端静态门通过：`evaluate_phase1_clic_postfreeze_pair.py`及依赖`py_compile`、common/proxy `--help`、launcher`bash -n`、dry-run精确30行（common=12、proxy=12、PAIR=6），输出无target/query/truth/role输入。一次只读脚本误假设不存在的`export_phase1_clic_pair.py`而退出，未写远端、未启动；随后已按release实际入口复验通过。
+- v1正式launch仍为0；下一步在报告提交后，唯一调用`bash "$REL/code/scripts/launch_phase1_clic_source_pair6_20260812.sh"`，retry=NO。
