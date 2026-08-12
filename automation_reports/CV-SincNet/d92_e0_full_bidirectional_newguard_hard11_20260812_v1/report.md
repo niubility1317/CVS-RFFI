@@ -7,7 +7,7 @@
 - candidate ID：`d92_e0_full_bidirectional_newguard_maxmin`
 - 日期：2026-08-12
 - 操作：Codex主代理集成；唯一N607 runner待本地冻结后接管
-- 当前状态：`IMPLEMENTING / NO_PERFORMANCE_RESULT`
+- 当前状态：`LOCAL_VERIFIED / READY_TO_LAND / NO_PERFORMANCE_RESULT`
 - 声明范围：`DEVELOPMENT_ONLY_HARD_SCREEN`
 - 协议：`p2_min_v1`
 - 数据状态：复用`VALIDATED_ONCE`，不重复数据验证
@@ -83,12 +83,12 @@ K1 liveness：
 - 分支：`codex/d92-be-hard12-strict-pareto-20260811`
 - 设计/追溯提交：`282072f6`
 - 可行性缺口修订：`85d26143`
-- 科学实现提交：尚未产生
-- 机械实现提交：尚未产生
-- 集成发布提交：尚未产生
-- 本地聚焦测试：尚未执行完成
-- 独立P0/P1：尚未执行
-- real-checkpoint smoke：尚未执行
+- 科学实现提交：`2df14f90`；部署回退修订：`35309a43`
+- 机械实现提交：`474242c6`；P0/P1闭环：`ed1db427`、`ef9c7249`、`2d2ea755`
+- 集成发布提交：待本报告和`launch.sh`提交后冻结
+- 本地集成测试：`81/81`通过；Task2最终回归`52/52`通过；相关历史回归通过
+- 独立P0/P1：科学复核`P0=0/P1=0`；机械复核`P0=0/P1=0`
+- real-checkpoint smoke：已冻结为N607启动前的K>2 active-method强制门；只有`active=true`、无fallback、2/1fit和query零访问全部闭合才启动shard
 
 ## 8. 计划N607发布
 
@@ -106,6 +106,16 @@ nohup bash ./launch.sh >./launch_driver.out 2>./launch_driver.err </dev/null &
 ```
 
 只有本地方法、测试、真实smoke、独立P0/P1、Git和三件套哈希冻结后，以上命令才成为获准的exact command。
+
+发布三件套已冻结：
+
+| 文件 | 字节 | SHA256 |
+|---|---:|---|
+| `d92_newguard_runtime_closure_2d2ea755.tar.gz` | 5,033,754 | `48074423354da375dde3b6488396bde31daadb490f2afc14cb93208469cee607` |
+| `stage2_d92_full_bidirectional_newguard_hard11_v1.json` | 6,345 | `d41b116b2bb7fb8be1fb56512e9e47e7915e94b5fae57776ced9c875ceb5f523` |
+| `launch.sh` | 4,058 | `38267ad139ed89a402cf663eaa668b4581d0589e7471e6dfca37f2e7fbcc2b6f` |
+
+runtime archive共1,307个成员，包含`code/cvsrffi/__init__.py`、NewGuard核心、D92/E0D执行链、Hard11 runner/analyzer及其依赖，不存在`code/code`错误层级。同步映射固定为archive→`source_root/d92_newguard_runtime_closure_2d2ea755.tar.gz`、method lock→`source_root/configs/stage2_d92_full_bidirectional_newguard_hard11_v1.json`、launch→`source_root/launch.sh`。
 
 ## 9. 健康停止规则
 
