@@ -3,7 +3,7 @@
 ## 状态与目标
 
 - 实验ID：`phase1_clic_source_leo_20260812_v4`。
-- 当前状态：`READY_TO_LAUNCH / FORMAL_LAUNCH=0 / NO_PERFORMANCE_RESULT_YET`。
+- 当前状态：`ARTIFACTS_COMPLETE / FORMAL_LAUNCH=1 / NO_PERFORMANCE_RESULT`。
 - 目标：复用v3已经完整生成的6份不可变source-L received-IQ cache，只执行F1—F6×C／G共12个source-LEO forward与binding封存。
 - 这是两轮发布工程修复后的更小独立one-shot：不重建cache、不改变物理样本、scene、seed、模型、checkpoint、矩阵、GPU映射或停止规则。
 
@@ -47,3 +47,10 @@
 - 远端静态门通过：exporter/shared extractor/phase1_clic `py_compile`、exporter`--help`含sealed cache参数、v4入口`bash -n`、dry-run精确12行（C6/G6、cache_run=v3）通过，输出无target/query/truth/role输入。
 - F1真实consumer smoke未执行forward：sealed asset校验强制`postfreeze-output-root`必须为正式v4 run root且输出目录必须位于正式候选目录，与“smoke不得写正式v4输出、临时路径可用”要求冲突；主控裁定不放宽sealed边界、不在正式root做临时smoke、不新commit，按已存在的v2真实F1 smoke、v3真实6 cache与本次动态安全桥接审查证据直接跳过。smoke跳过不是失败；v4 run/log/outer仍ABSENT，launch计数=0。
 - 下一步仅调用正确v4入口：检查文件存在后以`bash "$REL/code/scripts/launch_phase1_clic_source_leo_export12_20260812.sh"`启动一次，retry=NO。
+
+## v4唯一正式运行与工件闭合（2026-08-12）
+
+- 唯一formal launcher invocation=`1`，入口为新文件`launch_phase1_clic_source_leo_export12_20260812.sh`，outer PID=`2555605`；未重试。启动后12个export子PID按冻结GPU映射（F1→0、F2→1、F3→2、F4→3、F5→4、F6→5，同fold C/G并发）写入`pids_source_leo_export12.tsv`，共12行。
+- 工件完整：`source_leo.npz=12/12`、`source_leo.binding.json=12/12`、export日志`12/12`。每个NPZ row_count=`3920`、features finite；schema成员集合包含features、z_id、物理与场景元数据、manifest。每个binding schema=`cvs.phase1.clic_leo_binding.v1`、`source_only=true`、`single_leo_forward_bound=true`、`policy_fit_rows=0`、`threshold_fit_rows=0`。
+- 同fold C/G均绑定同一v3 cache SHA：F1=`bd9d2813522fcc722957bfdbf90a33462a23c2f4e77a8fdefd88708345842dbd`；F2=`4e824a40a152928532cb28987d267bb075b9aad042b89a3afeb4bf1b51947d60`；F3=`b172617e1cc63f577a36308dc8d3aed50c1ca077422af216c7cf2f45b3ddbe6b`；F4=`11f245f8c7f26da34fe21edd599646b940c8682fd996fc78e90a5fb89c412568`；F5=`8951c2c0f2189bc3155421fd22cbcf13f4ee955d4cf8527c2dbbac7976936644`；F6=`540d7c7c69a9c58d51a7565a1d21e1debe14241ecb42d6d6435769d2cc51f6d0`。
+- 12日志技术异常标记（Traceback／TypeError／RuntimeError／CLICLEOBindingError／ERROR／Exception）均为0。outer与12子进程已退出，GPU compute=0，run-owned PID=0，SSH/TCP22=0；未读取accuracy、loss或其他性能值。结论仅为`ARTIFACTS_COMPLETE / NO_PERFORMANCE_RESULT`，后续source common/proxy/PAIR与指标分析另行执行。
