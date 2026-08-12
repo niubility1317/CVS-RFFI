@@ -37,6 +37,9 @@ D92_E0D_ARMS: Mapping[str, D92E0DSlimArmSpec] = MappingProxyType(
         "E0_FULL_ONLY": D92E0DSlimArmSpec(
             "E0_FULL_ONLY", "d92_e0d_e0_full_only", "full_only", True, False
         ),
+        "E0_FULL_CSOAS": D92E0DSlimArmSpec(
+            "E0_FULL_CSOAS", "d92_e0_full_csoas", "csoas_full", True, False
+        ),
         "E0_BLOCK_ONLY": D92E0DSlimArmSpec(
             "E0_BLOCK_ONLY", "d92_e0d_e0_block_only", "block_only", True, False
         ),
@@ -113,7 +116,7 @@ def expected_total_component_fit_count(k_shot: int, *, arm_id: str) -> int:
         return 8 * (k + 1)
     if arm.registered_d_mode == "fusion_loo":
         return 4 * (k + 1)
-    if arm.registered_d_mode in ("full_only", "block_only"):
+    if arm.registered_d_mode in ("full_only", "block_only", "csoas_full"):
         return 2
     if arm.registered_d_mode == "newguard_maxmin":
         return 2
@@ -135,6 +138,111 @@ def _expected_actual_registered_component_fit_count(
     """One state is half the frozen two-state receipt by construction."""
 
     return expected_total_component_fit_count(k_shot, arm_id=arm.arm_id) // 2
+
+
+def _csoas_receipt(
+    base_audit: dict[str, Any],
+    *,
+    arm: D92E0DSlimArmSpec,
+    registered: bool,
+    k_shot: int,
+    class_count: int,
+) -> dict[str, Any]:
+    """Validate CSOAS support-only lifecycle evidence without inventing a fit."""
+
+    if arm.registered_d_mode != "csoas_full":
+        return {}
+    active_lifecycle = bool(registered and int(k_shot) > 2)
+    inactive_reason = (
+        "NOT_REGISTERED_STATE"
+        if not registered
+        else "K1_K2_EXACT_D92_FULL_ALIAS"
+    )
+    if not active_lifecycle:
+        return {
+            "d92_csoas_active": False,
+            "d92_csoas_fallback_active": False,
+            "d92_csoas_fallback_reason": inactive_reason,
+            "d92_csoas_candidate_attempt_fit_count": 0,
+            "d92_csoas_fallback_reference_fit_count": 0,
+            "d92_csoas_candidate_statistic_receipt_available": False,
+            "d92_csoas_fallback_reference_full_head_byte_exact": None,
+            "d92_csoas_paired_e0_codec_state_equal": None,
+            "d92_csoas_query_rows_used": 0,
+            "d92_csoas_query_fit_access": False,
+            "d92_csoas_query_update_access": False,
+            "d92_csoas_query_selection_access": False,
+            "d92_csoas_query_truth_access": False,
+            "d92_csoas_query_role_oracle_access": False,
+            "d92_csoas_query_class_quota_access": False,
+            "d92_csoas_query_global_reassignment": False,
+            "d92_e0d_csoas_g0_eligible": False,
+            "d92_e0d_csoas_g0_block_reason": inactive_reason,
+        }
+    required = (
+        "d92_csoas_active",
+        "d92_csoas_fallback_active",
+        "d92_csoas_fallback_reason",
+        "d92_csoas_candidate_attempt_fit_count",
+        "d92_csoas_fallback_reference_fit_count",
+        "d92_csoas_candidate_statistic_receipt_available",
+        "d92_csoas_fallback_reference_full_head_byte_exact",
+        "d92_csoas_paired_e0_codec_state_equal",
+        "d92_csoas_query_rows_used",
+        "d92_csoas_query_fit_access",
+        "d92_csoas_query_update_access",
+        "d92_csoas_query_selection_access",
+        "d92_csoas_query_truth_access",
+        "d92_csoas_query_role_oracle_access",
+        "d92_csoas_query_class_quota_access",
+        "d92_csoas_query_global_reassignment",
+    )
+    if any(field not in base_audit for field in required):
+        raise D92E0DSlimError("D92-E0D CSOAS receipt missing")
+    result = {field: base_audit[field] for field in required}
+    if (
+        int(result["d92_csoas_candidate_attempt_fit_count"]) != 1
+        or result["d92_csoas_paired_e0_codec_state_equal"] is not None
+        or int(result["d92_csoas_query_rows_used"]) != 0
+        or any(result[field] is not False for field in required[9:])
+    ):
+        raise D92E0DSlimError("D92-E0D CSOAS support/query receipt drift")
+    fallback = result["d92_csoas_fallback_active"]
+    active = result["d92_csoas_active"]
+    if fallback is True:
+        if (
+            active is not False
+            or not isinstance(result["d92_csoas_fallback_reason"], str)
+            or not result["d92_csoas_fallback_reason"]
+            or int(result["d92_csoas_fallback_reference_fit_count"]) != 1
+            or result["d92_csoas_fallback_reference_full_head_byte_exact"] is not True
+        ):
+            raise D92E0DSlimError("D92-E0D CSOAS numeric fallback receipt drift")
+        result.update(
+            {
+                "d92_e0d_csoas_g0_eligible": False,
+                "d92_e0d_csoas_g0_block_reason": "NUMERIC_FALLBACK_EXACT_E0",
+            }
+        )
+        return result
+    if (
+        fallback is not False
+        or active is not True
+        or result["d92_csoas_fallback_reason"] is not None
+        or int(result["d92_csoas_fallback_reference_fit_count"]) != 0
+        or result["d92_csoas_fallback_reference_full_head_byte_exact"] is not None
+        or result["d92_csoas_candidate_statistic_receipt_available"] is not True
+    ):
+        raise D92E0DSlimError("D92-E0D CSOAS active receipt drift")
+    result.update(
+        {
+            # The online support fit cannot compare its D42 state against an
+            # immutable paired E0 state.  G0 does that after codec publication.
+            "d92_e0d_csoas_g0_eligible": False,
+            "d92_e0d_csoas_g0_block_reason": "PENDING_DEPLOYED_CODEC_PAIRED_E0",
+        }
+    )
+    return result
 
 
 def build_d92_e0d_fit(
@@ -177,6 +285,16 @@ def build_d92_e0d_fit(
         )
         actual_count = int(base_audit["d92_component_fit_count"])
         inventory = dict(base_audit["d92_component_fit_inventory"])
+        csoas_receipt = _csoas_receipt(
+            base_audit,
+            arm=arm,
+            registered=registered,
+            k_shot=k_shot,
+            class_count=class_count,
+        )
+        csoas_numeric_fallback = bool(
+            csoas_receipt.get("d92_csoas_fallback_active") is True
+        )
         if registered and int(k_shot) > 2:
             total_count = expected_total_component_fit_count(
                 k_shot, arm_id=arm.arm_id
@@ -184,6 +302,11 @@ def build_d92_e0d_fit(
             expected_actual = _expected_actual_registered_component_fit_count(
                 k_shot, arm=arm
             )
+            if csoas_numeric_fallback:
+                # Before-state E0 has one fit and the after-state has the
+                # failed candidate attempt plus one exact E0 reference fit.
+                expected_actual = 2
+                total_count = 3
             if actual_count != expected_actual:
                 raise D92E0DSlimError(
                     "D92-E0D actual registered component-fit count drift: "
@@ -803,6 +926,7 @@ def build_d92_e0d_fit(
                 "d92_e0d_query_class_quota_access": False,
                 "d92_e0d_query_global_reassignment": False,
                 "d92_e0d_finite_output_pass": finite,
+                **csoas_receipt,
                 **newguard_receipt,
                 **pareto_receipt,
                 **resource,

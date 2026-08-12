@@ -15,6 +15,12 @@ from cvsrffi.stage2_d92_registration_balanced_covariance import (
     build_registration_balanced_statistics,
     compile_registration_balanced_affine,
 )
+from cvsrffi.stage2_d92_cauchy_scatter_oas import (
+    D92CauchyScatterOASError,
+    D92CauchyScatterOASNumericalError,
+    build_cauchy_scatter_oas_statistics,
+    compile_cauchy_scatter_oas_affine,
+)
 from cvsrffi import stage2_d92_bidirectional_newguard as newguard
 from cvsrffi import stage2_d92_full_block_pareto_distill as pareto_distill
 
@@ -40,6 +46,7 @@ REGISTERED_D_MODES = (
     "floorboost",
     "newguard_maxmin",
     "pareto_distill",
+    "csoas_full",
 )
 OCF_LAMBDA_BY_MODE = {"ocf25": 0.25, "ocf50": 0.50}
 OCF_RMS_EPSILON = 1.0e-12
@@ -1357,6 +1364,153 @@ def build_d92_fit(
 
     direct_block_fit = structured_builder(d42, "block3_centered")
 
+    def _record_csoas_transform(
+        transform_audit: dict[str, Any],
+        *,
+        class_count: int,
+        k_shot: int,
+    ) -> None:
+        """Record one D81 transform without retaining its support arrays."""
+
+        transform_records.append(
+            {
+                "component_arm": "csoas_full",
+                "class_count": int(class_count),
+                "k_shot": int(k_shot),
+                "center_shift_l2_max": transform_audit["center_shift_l2_max"],
+                "normalized_weight_min": transform_audit["normalized_weight_min"],
+                "effective_sample_size_min": min(
+                    transform_audit["effective_sample_size_by_class"]
+                ),
+            }
+        )
+
+    def csoas_fit(
+        rows: np.ndarray,
+        labels: np.ndarray,
+        class_count: int,
+        k_shot: int,
+    ) -> tuple[np.ndarray, np.ndarray, dict[str, Any]]:
+        """Use one D81 transform and one CSOAS FULL solve, fail-closed to E0."""
+
+        try:
+            transformed, transform_audit = d81.core.translate_to_robust_centers(
+                rows,
+                labels,
+                class_count,
+                k_shot,
+                basis,
+                spectral_weights,
+            )
+            csoas_statistics = build_cauchy_scatter_oas_statistics(
+                transformed,
+                labels,
+                transform_audit["normalized_cauchy_weight_by_class"],
+                class_count=class_count,
+                k_shot=k_shot,
+                old_class_count=OLD_CLASS_COUNT,
+            )
+            coefficient, intercept, csoas_audit = compile_cauchy_scatter_oas_affine(
+                csoas_statistics
+            )
+        except D92CauchyScatterOASNumericalError as error:
+            # The attempt is support-only and its output is discarded.  The
+            # only legal recovery is an independent exact E0 FULL reference.
+            component_records.append(
+                {
+                    "arm": "full",
+                    "class_count": int(class_count),
+                    "k_shot": int(k_shot),
+                    "status": "csoas_numeric_fallback_attempt",
+                    # This denotes a real registered FULL attempt; mechanism
+                    # activation is recorded separately below as false.
+                    "active": True,
+                }
+            )
+            if "transform_audit" in locals():
+                _record_csoas_transform(
+                    transform_audit, class_count=class_count, k_shot=k_shot
+                )
+            reference_coefficient, reference_intercept, reference_audit = full_fit(
+                rows, labels, class_count, k_shot
+            )
+            audit = dict(reference_audit)
+            candidate_statistic_receipt = (
+                {
+                    key: value
+                    for key, value in csoas_statistics.audit.items()
+                    if key.startswith("d92_csoas_")
+                }
+                if "csoas_statistics" in locals()
+                else {}
+            )
+            audit.update(
+                {
+                    **candidate_statistic_receipt,
+                    "coefficient_source": "d92_csoas_numeric_exact_e0_full_fallback",
+                    "d92_csoas_active": False,
+                    "d92_csoas_fallback_active": True,
+                    "d92_csoas_fallback_reason": str(error),
+                    "d92_csoas_candidate_attempt_fit_count": 1,
+                    "d92_csoas_fallback_reference_fit_count": 1,
+                    "d92_csoas_candidate_statistic_receipt_available": bool(
+                        candidate_statistic_receipt
+                    ),
+                    "d92_csoas_fallback_reference_full_head_byte_exact": True,
+                    "d92_csoas_paired_e0_codec_state_equal": None,
+                    "d92_csoas_query_rows_used": 0,
+                    "d92_csoas_query_fit_access": False,
+                    "d92_csoas_query_update_access": False,
+                    "d92_csoas_query_selection_access": False,
+                    "d92_csoas_query_truth_access": False,
+                    "d92_csoas_query_role_oracle_access": False,
+                    "d92_csoas_query_class_quota_access": False,
+                    "d92_csoas_query_global_reassignment": False,
+                }
+            )
+            return reference_coefficient, reference_intercept, audit
+        except D92CauchyScatterOASError as error:
+            raise D92ProbeError(f"D92 CSOAS registry/receipt drift: {error}") from error
+
+        component_records.append(
+            {
+                "arm": "full",
+                "class_count": int(class_count),
+                "k_shot": int(k_shot),
+                "status": "csoas_active",
+                "active": True,
+            }
+        )
+        _record_csoas_transform(
+            transform_audit, class_count=class_count, k_shot=k_shot
+        )
+        audit = dict(csoas_audit)
+        audit.update(
+            {
+                "coefficient_source": "d92_csoas_d81_weighted_scatter_oas_single_full",
+                "d81_component_arm": "csoas_full",
+                "d81_ground_basis_sha256": basis_audit["basis_sha256"],
+                "d81_ground_spectral_weight_sha256": basis_audit[
+                    "spectral_weight_sha256"
+                ],
+                "d81_ground_effective_rank": basis_audit[
+                    "participation_ratio_effective_rank"
+                ],
+                "d81_ground_retained_rank": basis_audit["retained_rank"],
+                "d81_ground_rank_policy": basis_audit["rank_policy"],
+                "d81_transform_audit": transform_audit,
+                "d92_csoas_classification_mean_by_class": csoas_statistics.classification_means.tolist(),
+                "d92_csoas_candidate_attempt_fit_count": 1,
+                "d92_csoas_fallback_reference_fit_count": 0,
+                "d92_csoas_candidate_statistic_receipt_available": True,
+                "d92_csoas_fallback_reference_full_head_byte_exact": None,
+                # Only G0 compares this deployed state to its paired immutable
+                # E0 state.  The online fit never runs a second reference fit.
+                "d92_csoas_paired_e0_codec_state_equal": None,
+            }
+        )
+        return coefficient, intercept, audit
+
     def fixed50_fit(
         rows: np.ndarray,
         labels: np.ndarray,
@@ -1572,6 +1726,9 @@ def build_d92_fit(
             effective_d_mode = registered_d_mode
         elif registered_d_mode == "full_only":
             selected_fit = full_fit
+            effective_d_mode = registered_d_mode
+        elif registered_d_mode == "csoas_full":
+            selected_fit = csoas_fit
             effective_d_mode = registered_d_mode
         elif registered_d_mode == "block_only":
             selected_fit = direct_block_fit

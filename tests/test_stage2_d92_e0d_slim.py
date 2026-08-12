@@ -7,6 +7,7 @@ import pytest
 
 from cvsrffi import stage2_d42_unified_shrinkage_lda as d42
 from cvsrffi import stage2_d92_e0d_slim as slim
+from cvsrffi.stage2_d92_cauchy_scatter_oas import D92CauchyScatterOASNumericalError
 from cvsrffi.stage2_d92_registration_balanced_covariance import OLD_CLASS_COUNT
 from cvsrffi.stage2_d92_e0d_slim import (
     D92_E0D_ARMS,
@@ -569,3 +570,75 @@ def test_tcra_arm_reuses_one_full_fit_and_adds_no_postprocess_fit() -> None:
         )
         assert low_audit["d92_e0d_registered_d_mode_effective"] == "d92_full_alias"
         assert low_audit["d92_e0d_k1_k2_exact_full_alias"] is True
+
+
+def test_csoas_arm_has_one_active_full_fit_and_an_explicit_low_k_e0_alias():
+    """Would fail if CSOAS added a LOO/BLOCK fit or changed the frozen K2 route."""
+
+    arm = D92_E0D_ARMS["E0_FULL_CSOAS"]
+    assert (
+        arm.candidate_id,
+        arm.registered_d_mode,
+        arm.b_enabled,
+        arm.e_enabled,
+    ) == ("d92_e0_full_csoas", "csoas_full", True, False)
+    assert expected_total_component_fit_count(5, arm_id=arm.arm_id) == 2
+    coefficient, intercept, audit, _, _ = _run(
+        arm.arm_id, class_count=11, k_shot=5
+    )
+    inventory = audit["d92_e0d_actual_component_inventory"]
+    assert coefficient.shape == (11, 288)
+    assert intercept.shape == (11,)
+    assert audit["d92_e0d_registered_d_mode_effective"] == "csoas_full"
+    assert audit["d92_e0d_total_component_fit_count"] == 2
+    assert audit["d92_e0d_actual_component_fit_count"] == 1
+    assert inventory["full_component_fit_count"] == 1
+    assert inventory["block3_component_fit_count"] == 0
+    assert audit["d92_csoas_active"] is True
+    assert audit["d92_csoas_fallback_active"] is False
+    assert audit["d92_csoas_paired_e0_codec_state_equal"] is None
+    _, _, low_k_audit, _, _ = _run(
+        arm.arm_id, class_count=11, k_shot=2, repeated=True
+    )
+    assert low_k_audit["d92_e0d_registered_d_mode_effective"] == "d92_full_alias"
+    assert low_k_audit["d92_e0d_k1_k2_exact_full_alias"] is True
+    assert low_k_audit["d92_csoas_active"] is False
+    assert low_k_audit["d92_csoas_fallback_active"] is False
+    assert low_k_audit["d92_csoas_fallback_reason"] == (
+        "K1_K2_EXACT_D92_FULL_ALIAS"
+    )
+
+
+def test_csoas_numeric_fallback_reports_two_after_fits_and_is_not_g0_eligible(
+    monkeypatch,
+):
+    """Would fail if a fallback was counted as one active CSOAS fit or passed G0."""
+
+    def injected_numeric_failure(_statistics):
+        raise D92CauchyScatterOASNumericalError("injected_csoas_numeric_failure")
+
+    monkeypatch.setattr(
+        slim.d92_probe, "compile_cauchy_scatter_oas_affine", injected_numeric_failure
+    )
+    basis, weights, ground_audit = _ground()
+    fit, _, _ = slim.build_d92_e0d_fit(
+        d42,
+        basis,
+        weights,
+        ground_audit,
+        arm_id="E0_FULL_CSOAS",
+        resource_measure=_measure,
+    )
+    rows, labels = _support(class_count=11, k_shot=5)
+    coefficient, intercept, audit = fit(rows, labels, 11, 5)
+
+    inventory = audit["d92_e0d_actual_component_inventory"]
+    assert coefficient.shape == (11, 288)
+    assert intercept.shape == (11,)
+    assert audit["d92_csoas_active"] is False
+    assert audit["d92_csoas_fallback_active"] is True
+    assert audit["d92_e0d_actual_component_fit_count"] == 2
+    assert inventory["actual_component_fit_count"] == 2
+    assert inventory["full_component_fit_count"] == 2
+    assert audit["d92_e0d_total_component_fit_count"] == 3
+    assert audit["d92_e0d_csoas_g0_eligible"] is False

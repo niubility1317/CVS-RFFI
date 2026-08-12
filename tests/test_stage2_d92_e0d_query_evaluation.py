@@ -82,6 +82,44 @@ def _resource(
     arm: slim.D92E0DSlimArmSpec, *, registered: bool, k_shot: int
 ) -> dict:
     active = registered and k_shot > 2 and not arm.e_enabled
+    csoas_arm = arm.arm_id == "E0_FULL_CSOAS"
+    csoas_active = bool(csoas_arm and registered and k_shot > 2)
+    csoas_receipt = (
+        _active_csoas_receipt(class_count=11, k_shot=k_shot)
+        if csoas_active
+        else (
+            {
+                "d92_csoas_active": False,
+                "d92_csoas_fallback_active": False,
+                "d92_csoas_fallback_reason": (
+                    "NOT_REGISTERED_STATE"
+                    if not registered
+                    else "K1_K2_EXACT_D92_FULL_ALIAS"
+                ),
+                "d92_csoas_candidate_attempt_fit_count": 0,
+                "d92_csoas_fallback_reference_fit_count": 0,
+                "d92_csoas_candidate_statistic_receipt_available": False,
+                "d92_csoas_fallback_reference_full_head_byte_exact": None,
+                "d92_csoas_paired_e0_codec_state_equal": None,
+                "d92_csoas_query_rows_used": 0,
+                "d92_csoas_query_fit_access": False,
+                "d92_csoas_query_update_access": False,
+                "d92_csoas_query_selection_access": False,
+                "d92_csoas_query_truth_access": False,
+                "d92_csoas_query_role_oracle_access": False,
+                "d92_csoas_query_class_quota_access": False,
+                "d92_csoas_query_global_reassignment": False,
+                "d92_e0d_csoas_g0_eligible": False,
+                "d92_e0d_csoas_g0_block_reason": (
+                    "NOT_REGISTERED_STATE"
+                    if not registered
+                    else "K1_K2_EXACT_D92_FULL_ALIAS"
+                ),
+            }
+            if csoas_arm
+            else {}
+        )
+    )
     floorboost_applies = arm.arm_id == "E0_FULL_MAXMIN_FLOORBOOST"
     floorboost_active = bool(
         floorboost_applies and registered and k_shot > 2
@@ -155,6 +193,7 @@ def _resource(
         )
     )
     return {
+        **csoas_receipt,
         "d92_registration_state_support_only": True,
         "d92_query_rows_used": 0,
         "d92_query_role_oracle_access": False,
@@ -444,6 +483,63 @@ def _allowed_kwargs() -> dict[str, str]:
     }
 
 
+def _active_csoas_receipt(*, class_count: int = 11, k_shot: int = 5) -> dict:
+    """Minimal independently recomputable CSOAS support-only receipt."""
+
+    weights = [[1.0 / k_shot] * k_shot for _ in range(class_count)]
+    trace = [2.0] * class_count
+    tau = 2.0 / 288.0
+    alpha = 1.0e-4
+    denominator = (float(k_shot) + 1.0) * (alpha - tau * tau / 288.0)
+    rho = min(1.0, (alpha + tau * tau) / denominator)
+    return {
+        "d92_csoas_active": True,
+        "d92_csoas_fallback_active": False,
+        "d92_csoas_fallback_reason": None,
+        "d92_csoas_candidate_attempt_fit_count": 1,
+        "d92_csoas_fallback_reference_fit_count": 0,
+        "d92_csoas_candidate_statistic_receipt_available": True,
+        "d92_csoas_fallback_reference_full_head_byte_exact": None,
+        "d92_csoas_paired_e0_codec_state_equal": None,
+        "d92_csoas_support_rows": class_count * k_shot,
+        "d92_csoas_class_count": class_count,
+        "d92_csoas_k_shot": k_shot,
+        "d92_csoas_old_class_count": OLD_CLASS_COUNT,
+        "d92_csoas_new_class_count": class_count - OLD_CLASS_COUNT,
+        "d92_csoas_normalized_cauchy_weight_by_class": weights,
+        "d92_csoas_weighted_center_by_class": [[0.0] * 288] * class_count,
+        "d92_csoas_effective_sample_size_by_class": [float(k_shot)] * class_count,
+        "d92_csoas_scatter_trace_by_class": trace,
+        "d92_csoas_oas_tau_by_class": [tau] * class_count,
+        "d92_csoas_oas_alpha_by_class": [alpha] * class_count,
+        "d92_csoas_oas_denominator_by_class": [denominator] * class_count,
+        "d92_csoas_oas_rho_by_class": [rho] * class_count,
+        "d92_csoas_shrunk_trace_by_class": trace,
+        "d92_csoas_old_group_trace": 2.0,
+        "d92_csoas_new_group_trace": 2.0,
+        "d92_csoas_final_trace": 2.0,
+        "d92_csoas_final_eigenvalue_min": 1.0e-3,
+        "d92_csoas_final_eigenvalue_max": 1.0,
+        "d92_csoas_spd_pass": True,
+        "d92_csoas_live_class_scatter_buffers": 1,
+        "d92_csoas_class_matrix_stack": False,
+        "d92_csoas_single_scatter_buffer_bytes": 288 * 288 * 8,
+        "d92_csoas_final_covariance_buffer_bytes": 288 * 288 * 8,
+        "d92_csoas_support_scatter_macs_upper_bound": 1,
+        "d92_csoas_support_transient_bytes_upper_bound": 1,
+        "d92_csoas_query_rows_used": 0,
+        "d92_csoas_query_fit_access": False,
+        "d92_csoas_query_update_access": False,
+        "d92_csoas_query_selection_access": False,
+        "d92_csoas_query_truth_access": False,
+        "d92_csoas_query_role_oracle_access": False,
+        "d92_csoas_query_class_quota_access": False,
+        "d92_csoas_query_global_reassignment": False,
+        "d92_e0d_csoas_g0_eligible": False,
+        "d92_e0d_csoas_g0_block_reason": "PENDING_DEPLOYED_CODEC_PAIRED_E0",
+    }
+
+
 def test_audit_keeps_existing_resource_fields_and_adds_state_fingerprints():
     """Would fail if a state array was omitted from the per-scene parity receipt."""
 
@@ -481,6 +577,173 @@ def test_audit_keeps_existing_resource_fields_and_adds_state_fingerprints():
     assert row["after_state_fingerprint_sha256"] != changed[
         "after_state_fingerprint_sha256"
     ]
+
+
+def test_csoas_query_audit_closes_active_receipt_and_rejects_rho_tamper():
+    """Would fail if CSOAS rows could bypass support-only receipt closure."""
+
+    arm = slim.D92_E0D_ARMS["E0_FULL_CSOAS"]
+    result = _result(arm)
+    receipt = result.geometry_audit["final_covariance_audit"]
+    receipt.update(_active_csoas_receipt())
+    row = e0d_eval._audit_d92_e0d_fit(
+        result,
+        arm=arm,
+        scenario="leo_clear_weak",
+        k_shot=5,
+        old_count=OLD_CLASS_COUNT,
+        class_count=11,
+    )
+    assert row["d92_csoas_active"] is True
+    assert row["d92_csoas_fallback_active"] is False
+    assert row["d92_csoas_paired_e0_codec_state_equal"] is None
+    receipt["d92_csoas_oas_rho_by_class"][0] = 0.5
+    with pytest.raises(e0d_eval.D92E0DQueryEvaluationError, match="CSOAS"):
+        e0d_eval._audit_d92_e0d_fit(
+            result,
+            arm=arm,
+            scenario="leo_clear_weak",
+            k_shot=5,
+            old_count=OLD_CLASS_COUNT,
+            class_count=11,
+        )
+
+
+def test_csoas_codec_numeric_error_retries_once_with_e0_reference_builder(
+    monkeypatch,
+):
+    """Would fail if a D42 codec overflow escaped or retried CSOAS again."""
+
+    build_arms: list[str] = []
+
+    def fake_build(_d42, _basis, _weights, _ground_audit, *, arm_id):
+        build_arms.append(arm_id)
+        return (lambda *_args: (None, None, {})), [], []
+
+    def fake_d42_fit(*_args, **_kwargs):
+        return d42._compile_state(
+            tuple(f"tx_{index}" for index in range(11)),
+            OLD_CLASS_COUNT,
+            None,
+            None,
+            None,
+            "frozen",
+            precision="int8",
+        )
+
+    def overflow_compile(*_args, **_kwargs):
+        raise d42.D42UnifiedShrinkageLDAError("D42 intercept FP16 overflow")
+
+    calls = 0
+
+    def fake_run(**_kwargs):
+        nonlocal calls
+        calls += 1
+        d81_probe.build_d81_fit(None, None, None, {})
+        if calls == 1:
+            d81_eval.fit_d42_unified_shrinkage_lda()
+        return {"candidate": d81_eval.CANDIDATE_D81, "schema": d81_eval.SCHEMA}
+
+    monkeypatch.setattr(e0d_eval, "build_d92_e0d_fit", fake_build)
+    monkeypatch.setattr(d81_eval, "fit_d42_unified_shrinkage_lda", fake_d42_fit)
+    monkeypatch.setattr(d42, "_compile_state", overflow_compile)
+    monkeypatch.setattr(d81_eval, "run_d81_query_evaluation", fake_run)
+    result = e0d_eval.run_d92_e0d_query_evaluation(
+        arm_id="E0_FULL_CSOAS", **_allowed_kwargs()
+    )
+    assert calls == 2
+    assert build_arms == ["E0_FULL_CSOAS", "E0_FULL_ONLY"]
+    assert result["d92_csoas_codec_numeric_fallback"] is True
+
+
+def test_csoas_before_state_codec_numeric_error_does_not_fallback(monkeypatch):
+    """Would fail if a before-state codec error were mislabeled after-CSOAS."""
+
+    build_arms: list[str] = []
+
+    def fake_build(_d42, _basis, _weights, _ground_audit, *, arm_id):
+        build_arms.append(arm_id)
+        return (lambda *_args: (None, None, {})), [], []
+
+    def fake_d42_fit(*_args, **_kwargs):
+        return d42._compile_state(
+            tuple(f"tx_{index}" for index in range(OLD_CLASS_COUNT)),
+            OLD_CLASS_COUNT,
+            None,
+            None,
+            None,
+            "frozen",
+            precision="int8",
+        )
+
+    def overflow_compile(*_args, **_kwargs):
+        raise d42.D42UnifiedShrinkageLDAError("D42 intercept FP16 overflow")
+
+    def fake_run(**_kwargs):
+        d81_probe.build_d81_fit(None, None, None, {})
+        return d81_eval.fit_d42_unified_shrinkage_lda()
+
+    monkeypatch.setattr(e0d_eval, "build_d92_e0d_fit", fake_build)
+    monkeypatch.setattr(d81_eval, "fit_d42_unified_shrinkage_lda", fake_d42_fit)
+    monkeypatch.setattr(d42, "_compile_state", overflow_compile)
+    monkeypatch.setattr(d81_eval, "run_d81_query_evaluation", fake_run)
+    with pytest.raises(d42.D42UnifiedShrinkageLDAError, match="FP16 overflow"):
+        e0d_eval.run_d92_e0d_query_evaluation(
+            arm_id="E0_FULL_CSOAS", **_allowed_kwargs()
+        )
+    assert build_arms == ["E0_FULL_CSOAS"]
+
+
+def test_csoas_query_audit_reports_four_whole_retry_component_executions():
+    """Would fail if an all-D42 codec retry concealed its repeated before fit."""
+
+    arm = slim.D92_E0D_ARMS["E0_FULL_CSOAS"]
+    result = _result(arm)
+    receipt = result.geometry_audit["final_covariance_audit"]
+    receipt.update(
+        {
+            "d92_csoas_active": False,
+            "d92_csoas_fallback_active": True,
+            "d92_csoas_fallback_reason": "D42_CODEC_NUMERIC_RETRY_E0_FULL",
+            "d92_csoas_candidate_attempt_fit_count": 1,
+            "d92_csoas_fallback_reference_fit_count": 1,
+            "d92_csoas_candidate_statistic_receipt_available": False,
+            "d92_csoas_fallback_reference_full_head_byte_exact": True,
+            "d92_e0d_csoas_g0_block_reason": "NUMERIC_FALLBACK_EXACT_E0",
+            "d92_e0d_actual_component_fit_count": 4,
+            "d92_e0d_actual_component_inventory": {
+                "schema": "cvs.phase2.d92.actual_component_fit_inventory.v1",
+                "actual_component_fit_count": 4,
+                "actual_component_calls": [],
+            },
+            "d92_e0d_total_component_fit_count": 4,
+            "d92_csoas_codec_fallback_component_execution_count": 4,
+            "d92_csoas_codec_fallback_scope": "whole_d42_retry_before_and_after",
+        }
+    )
+    row = e0d_eval._audit_d92_e0d_fit(
+        result,
+        arm=arm,
+        scenario="leo_rain_weak",
+        k_shot=5,
+        old_count=OLD_CLASS_COUNT,
+        class_count=11,
+    )
+    assert row["after_total_component_fit_count"] == 4
+    assert row["after_actual_component_inventory"]["actual_component_fit_count"] == 4
+
+
+def test_csoas_codec_structural_error_does_not_fallback(monkeypatch):
+    """Would fail if registry/state drift were silently turned into E0."""
+
+    def fake_run(**_kwargs):
+        raise d42.D42UnifiedShrinkageLDAError("D42 state drift")
+
+    monkeypatch.setattr(d81_eval, "run_d81_query_evaluation", fake_run)
+    with pytest.raises(d42.D42UnifiedShrinkageLDAError, match="state drift"):
+        e0d_eval.run_d92_e0d_query_evaluation(
+            arm_id="E0_FULL_CSOAS", **_allowed_kwargs()
+        )
 
 
 @pytest.mark.parametrize(

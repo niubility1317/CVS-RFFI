@@ -67,6 +67,7 @@ _OCF_MAC_RECEIPT_FIELDS = _OCF_RECEIPT_FIELDS[2:5]
 _FLOORBOOST_ARM_IDS = frozenset({"E0_FULL_MAXMIN_FLOORBOOST"})
 _NEWGUARD_ARM_IDS = frozenset({"E0_FULL_BIDIRECTIONAL_NEWGUARD_MAXMIN"})
 _PARETO_DISTILL_ARM_IDS = frozenset({"E0_FULL_BLOCK_PARETO_DISTILL"})
+_CSOAS_ARM_IDS = frozenset({"E0_FULL_CSOAS"})
 _TPCE_ARM_IDS = frozenset({"E0_FULL_D42_TAIL_PAIR_CODE_EXCHANGE"})
 _TPCE_RECEIPT_SUFFIXES = (
     "active",
@@ -988,6 +989,193 @@ def _pareto_deployed_state_closure(
     }
 
 
+def _csoas_support_receipt(
+    audit: dict[str, Any],
+    *,
+    arm: D92E0DSlimArmSpec,
+    registered: bool,
+    k_shot: int,
+    class_count: int,
+) -> dict[str, Any]:
+    """Validate frozen CSOAS lifecycle and independently checkable statistics."""
+
+    if arm.arm_id not in _CSOAS_ARM_IDS:
+        return {}
+    lifecycle = (
+        "d92_csoas_active",
+        "d92_csoas_fallback_active",
+        "d92_csoas_fallback_reason",
+        "d92_csoas_candidate_attempt_fit_count",
+        "d92_csoas_fallback_reference_fit_count",
+        "d92_csoas_candidate_statistic_receipt_available",
+        "d92_csoas_fallback_reference_full_head_byte_exact",
+        "d92_csoas_paired_e0_codec_state_equal",
+        "d92_csoas_query_rows_used",
+        "d92_csoas_query_fit_access",
+        "d92_csoas_query_update_access",
+        "d92_csoas_query_selection_access",
+        "d92_csoas_query_truth_access",
+        "d92_csoas_query_role_oracle_access",
+        "d92_csoas_query_class_quota_access",
+        "d92_csoas_query_global_reassignment",
+        "d92_e0d_csoas_g0_eligible",
+        "d92_e0d_csoas_g0_block_reason",
+    )
+    if any(field not in audit for field in lifecycle):
+        raise D92E0DQueryEvaluationError("D92-E0D CSOAS receipt missing")
+    receipt = {field: audit[field] for field in lifecycle}
+    if (
+        receipt["d92_csoas_paired_e0_codec_state_equal"] is not None
+        or int(receipt["d92_csoas_query_rows_used"]) != 0
+        or any(receipt[field] is not False for field in lifecycle[9:16])
+        or receipt["d92_e0d_csoas_g0_eligible"] is not False
+    ):
+        raise D92E0DQueryEvaluationError("D92-E0D CSOAS query receipt drift")
+    enabled = bool(registered and int(k_shot) > 2)
+    if not enabled:
+        reason = (
+            "NOT_REGISTERED_STATE"
+            if not registered
+            else "K1_K2_EXACT_D92_FULL_ALIAS"
+        )
+        if (
+            receipt["d92_csoas_active"] is not False
+            or receipt["d92_csoas_fallback_active"] is not False
+            or receipt["d92_csoas_fallback_reason"] != reason
+            or int(receipt["d92_csoas_candidate_attempt_fit_count"]) != 0
+            or int(receipt["d92_csoas_fallback_reference_fit_count"]) != 0
+            or receipt["d92_csoas_candidate_statistic_receipt_available"] is not False
+            or receipt["d92_csoas_fallback_reference_full_head_byte_exact"]
+            is not None
+            or receipt["d92_e0d_csoas_g0_block_reason"] != reason
+        ):
+            raise D92E0DQueryEvaluationError("D92-E0D CSOAS alias receipt drift")
+        return receipt
+    if int(receipt["d92_csoas_candidate_attempt_fit_count"]) != 1:
+        raise D92E0DQueryEvaluationError("D92-E0D CSOAS candidate count drift")
+    if receipt["d92_csoas_fallback_active"] is True:
+        if (
+            receipt["d92_csoas_active"] is not False
+            or not isinstance(receipt["d92_csoas_fallback_reason"], str)
+            or not receipt["d92_csoas_fallback_reason"]
+            or int(receipt["d92_csoas_fallback_reference_fit_count"]) != 1
+            or receipt["d92_csoas_fallback_reference_full_head_byte_exact"]
+            is not True
+            or receipt["d92_e0d_csoas_g0_block_reason"]
+            != "NUMERIC_FALLBACK_EXACT_E0"
+        ):
+            raise D92E0DQueryEvaluationError("D92-E0D CSOAS fallback receipt drift")
+        return receipt
+    if (
+        receipt["d92_csoas_active"] is not True
+        or receipt["d92_csoas_fallback_active"] is not False
+        or receipt["d92_csoas_fallback_reason"] is not None
+        or int(receipt["d92_csoas_fallback_reference_fit_count"]) != 0
+        or receipt["d92_csoas_candidate_statistic_receipt_available"] is not True
+        or receipt["d92_csoas_fallback_reference_full_head_byte_exact"] is not None
+        or receipt["d92_e0d_csoas_g0_block_reason"]
+        != "PENDING_DEPLOYED_CODEC_PAIRED_E0"
+    ):
+        raise D92E0DQueryEvaluationError("D92-E0D CSOAS active receipt drift")
+    statistics = (
+        "d92_csoas_support_rows",
+        "d92_csoas_class_count",
+        "d92_csoas_k_shot",
+        "d92_csoas_old_class_count",
+        "d92_csoas_new_class_count",
+        "d92_csoas_normalized_cauchy_weight_by_class",
+        "d92_csoas_weighted_center_by_class",
+        "d92_csoas_effective_sample_size_by_class",
+        "d92_csoas_scatter_trace_by_class",
+        "d92_csoas_oas_tau_by_class",
+        "d92_csoas_oas_alpha_by_class",
+        "d92_csoas_oas_denominator_by_class",
+        "d92_csoas_oas_rho_by_class",
+        "d92_csoas_shrunk_trace_by_class",
+        "d92_csoas_old_group_trace",
+        "d92_csoas_new_group_trace",
+        "d92_csoas_final_trace",
+        "d92_csoas_final_eigenvalue_min",
+        "d92_csoas_final_eigenvalue_max",
+        "d92_csoas_spd_pass",
+        "d92_csoas_live_class_scatter_buffers",
+        "d92_csoas_class_matrix_stack",
+        "d92_csoas_single_scatter_buffer_bytes",
+        "d92_csoas_final_covariance_buffer_bytes",
+        "d92_csoas_support_scatter_macs_upper_bound",
+        "d92_csoas_support_transient_bytes_upper_bound",
+    )
+    if any(field not in audit for field in statistics):
+        raise D92E0DQueryEvaluationError("D92-E0D CSOAS statistic receipt missing")
+    receipt.update({field: audit[field] for field in statistics})
+    try:
+        weights = np.asarray(receipt[statistics[5]], dtype=np.float64)
+        centers = np.asarray(receipt[statistics[6]], dtype=np.float64)
+        effective = np.asarray(receipt[statistics[7]], dtype=np.float64)
+        traces = np.asarray(receipt[statistics[8]], dtype=np.float64)
+        tau = np.asarray(receipt[statistics[9]], dtype=np.float64)
+        alpha = np.asarray(receipt[statistics[10]], dtype=np.float64)
+        denominator = np.asarray(receipt[statistics[11]], dtype=np.float64)
+        rho = np.asarray(receipt[statistics[12]], dtype=np.float64)
+        shrunk = np.asarray(receipt[statistics[13]], dtype=np.float64)
+    except (TypeError, ValueError) as error:
+        raise D92E0DQueryEvaluationError("D92-E0D CSOAS statistic receipt drift") from error
+    vectors = (effective, traces, tau, alpha, denominator, rho, shrunk)
+    expected_tau = traces / 288.0
+    expected_denominator = (effective + 1.0) * (
+        alpha - expected_tau * expected_tau / 288.0
+    )
+    expected_rho = np.ones_like(expected_denominator)
+    valid_denominator = expected_denominator > 0.0
+    expected_rho[valid_denominator] = np.clip(
+        (alpha[valid_denominator] + expected_tau[valid_denominator] ** 2)
+        / expected_denominator[valid_denominator],
+        0.0,
+        1.0,
+    )
+    if (
+        int(receipt[statistics[0]]) != int(class_count) * int(k_shot)
+        or int(receipt[statistics[1]]) != int(class_count)
+        or int(receipt[statistics[2]]) != int(k_shot)
+        or int(receipt[statistics[3]]) != int(OLD_CLASS_COUNT)
+        or int(receipt[statistics[4]]) != int(class_count) - int(OLD_CLASS_COUNT)
+        or weights.shape != (int(class_count), int(k_shot))
+        or centers.shape != (int(class_count), 288)
+        or any(value.shape != (int(class_count),) for value in vectors)
+        or not all(np.isfinite(value).all() for value in (weights, centers, *vectors))
+        or np.any(weights <= 0.0)
+        or not np.allclose(weights.sum(axis=1), 1.0, rtol=0.0, atol=1.0e-12)
+        or not np.allclose(
+            effective, 1.0 / np.sum(weights * weights, axis=1), rtol=1.0e-10, atol=1.0e-12
+        )
+        or np.any(rho < 0.0)
+        or np.any(rho > 1.0)
+        or not np.allclose(tau, expected_tau, rtol=1.0e-10, atol=1.0e-12)
+        or not np.allclose(
+            denominator, expected_denominator, rtol=1.0e-10, atol=1.0e-12
+        )
+        or not np.allclose(rho, expected_rho, rtol=1.0e-10, atol=1.0e-12)
+        or not np.allclose(traces, shrunk, rtol=1.0e-10, atol=1.0e-12)
+        or receipt["d92_csoas_spd_pass"] is not True
+        or float(receipt["d92_csoas_final_eigenvalue_min"]) <= 0.0
+        or float(receipt["d92_csoas_final_eigenvalue_max"])
+        < float(receipt["d92_csoas_final_eigenvalue_min"])
+        or int(receipt["d92_csoas_live_class_scatter_buffers"]) != 1
+        or receipt["d92_csoas_class_matrix_stack"] is not False
+        or any(int(receipt[field]) <= 0 for field in statistics[-4:])
+    ):
+        raise D92E0DQueryEvaluationError("D92-E0D CSOAS statistic receipt drift")
+    expected_trace = 0.5 * (
+        float(receipt["d92_csoas_old_group_trace"])
+        + float(receipt["d92_csoas_new_group_trace"])
+    )
+    if not np.isfinite(expected_trace) or not np.isclose(
+        float(receipt["d92_csoas_final_trace"]), expected_trace, rtol=1.0e-10, atol=1.0e-12
+    ):
+        raise D92E0DQueryEvaluationError("D92-E0D CSOAS trace receipt drift")
+    return receipt
+
+
 def _tpce_support_receipt(
     audit: dict[str, Any],
     *,
@@ -1522,6 +1710,13 @@ def _audit_d92_e0d_fit(
             k_shot=k_shot,
             class_count=class_count if registered else old_count,
         )
+        _csoas_support_receipt(
+            audit,
+            arm=arm,
+            registered=registered,
+            k_shot=k_shot,
+            class_count=class_count if registered else old_count,
+        )
         inventory = audit.get("d92_e0d_actual_component_inventory")
         if (
             audit.get("d92_registration_state_support_only") is not True
@@ -1546,15 +1741,33 @@ def _audit_d92_e0d_fit(
             != int(audit.get("d92_e0d_actual_component_fit_count", -2))
         ):
             raise D92E0DQueryEvaluationError("D92-E0D protocol closure drift")
+    after_csoas_receipt = _csoas_support_receipt(
+        after,
+        arm=arm,
+        registered=True,
+        k_shot=k_shot,
+        class_count=class_count,
+    )
     if int(k_shot) > 2:
         expected_total = expected_total_component_fit_count(
             k_shot, arm_id=arm.arm_id
         )
+        expected_actual = expected_total // 2
+        if after_csoas_receipt.get("d92_csoas_fallback_active") is True:
+            if (
+                after.get("d92_csoas_codec_fallback_scope")
+                == "whole_d42_retry_before_and_after"
+            ):
+                expected_total = 4
+                expected_actual = 4
+            else:
+                expected_total = 3
+                expected_actual = 2
         if (
             int(after.get("d92_e0d_total_component_fit_count", -1))
             != expected_total
             or int(after.get("d92_e0d_actual_component_fit_count", -1))
-            != expected_total // 2
+            != expected_actual
             or after.get("d92_e0d_two_state_registered_count_applies") is not True
         ):
             raise D92E0DQueryEvaluationError("D92-E0D registered fit-count drift")
@@ -1719,6 +1932,7 @@ def _audit_d92_e0d_fit(
         **after_floorboost_receipt,
         **after_newguard_receipt,
         **after_pareto_distill_receipt,
+        **after_csoas_receipt,
         **after_pareto_deployed_state_closure,
         **after_tpce_receipt,
         **after_tcra_receipt,
@@ -1767,6 +1981,7 @@ def run_d92_e0d_query_evaluation(
     original_schema = d81_eval.SCHEMA
     original_audit = d81_eval._audit_fit
     original_d42_fit = d81_eval.fit_d42_unified_shrinkage_lda
+    after_state_codec_errors: list[Exception] = []
 
     def builder(d42: Any, basis: Any, weights: Any, ground_audit: dict[str, Any]):
         return build_d92_e0d_fit(
@@ -1776,6 +1991,184 @@ def run_d92_e0d_query_evaluation(
             ground_audit,
             arm_id=arm.arm_id,
         )
+
+    def codec_fallback_builder(
+        d42: Any, basis: Any, weights: Any, ground_audit: dict[str, Any]
+    ):
+        """Use the only legal codec-recovery reference after CSOAS fails."""
+
+        reference_fit, call_records, transform_records = build_d92_e0d_fit(
+            d42,
+            basis,
+            weights,
+            ground_audit,
+            arm_id="E0_FULL_ONLY",
+        )
+
+        def fallback_fit(
+            rows: np.ndarray,
+            labels: np.ndarray,
+            class_count: int,
+            k_shot: int,
+        ) -> tuple[np.ndarray, np.ndarray, dict[str, Any]]:
+            coefficient, intercept, reference_audit = reference_fit(
+                rows, labels, class_count, k_shot
+            )
+            audit_copy = dict(reference_audit)
+            registered = int(class_count) > int(OLD_CLASS_COUNT)
+            audit_copy.update(
+                {
+                    # The published candidate remains CSOAS even though this
+                    # exceptional state uses the byte-exact E0 reference.
+                    "d92_e0d_arm_id": arm.arm_id,
+                    "d92_e0d_candidate_id": arm.candidate_id,
+                    "d92_e0d_registered_d_mode": arm.registered_d_mode,
+                }
+            )
+            if not registered:
+                audit_copy.update(
+                    {
+                        "d92_csoas_active": False,
+                        "d92_csoas_fallback_active": False,
+                        "d92_csoas_fallback_reason": "NOT_REGISTERED_STATE",
+                        "d92_csoas_candidate_attempt_fit_count": 0,
+                        "d92_csoas_fallback_reference_fit_count": 0,
+                        "d92_csoas_candidate_statistic_receipt_available": False,
+                        "d92_csoas_fallback_reference_full_head_byte_exact": None,
+                        "d92_csoas_paired_e0_codec_state_equal": None,
+                        "d92_csoas_query_rows_used": 0,
+                        "d92_csoas_query_fit_access": False,
+                        "d92_csoas_query_update_access": False,
+                        "d92_csoas_query_selection_access": False,
+                        "d92_csoas_query_truth_access": False,
+                        "d92_csoas_query_role_oracle_access": False,
+                        "d92_csoas_query_class_quota_access": False,
+                        "d92_csoas_query_global_reassignment": False,
+                        "d92_e0d_csoas_g0_eligible": False,
+                        "d92_e0d_csoas_g0_block_reason": "NOT_REGISTERED_STATE",
+                    }
+                )
+                return coefficient, intercept, audit_copy
+            calls = [
+                {
+                    "arm": "full",
+                    "class_count": int(OLD_CLASS_COUNT),
+                    "k_shot": int(k_shot),
+                    "status": "csoas_codec_candidate_before_e0",
+                    "active": True,
+                },
+                {
+                    "arm": "full",
+                    "class_count": int(class_count),
+                    "k_shot": int(k_shot),
+                    "status": "csoas_codec_numeric_attempt",
+                    "active": True,
+                },
+                {
+                    "arm": "full",
+                    "class_count": int(OLD_CLASS_COUNT),
+                    "k_shot": int(k_shot),
+                    "status": "csoas_codec_retry_before_e0",
+                    "active": True,
+                },
+                {
+                    "arm": "full",
+                    "class_count": int(class_count),
+                    "k_shot": int(k_shot),
+                    "status": "csoas_codec_retry_after_e0_reference",
+                    "active": True,
+                },
+            ]
+            inventory = dict(audit_copy["d92_e0d_actual_component_inventory"])
+            inventory.update(
+                {
+                    "actual_component_fit_count": 4,
+                    "actual_component_calls": calls,
+                    "full_component_fit_count": 4,
+                }
+            )
+            audit_copy.update(
+                {
+                    "d92_e0d_actual_component_fit_count": 4,
+                    "d92_e0d_actual_component_inventory": inventory,
+                    "d92_e0d_total_component_fit_count": 4,
+                    "d92_e0d_two_state_registered_count_applies": True,
+                    "d92_e0d_registered_d_mode_active": True,
+                    "d92_e0d_registered_d_mode_effective": arm.registered_d_mode,
+                    "d92_csoas_active": False,
+                    "d92_csoas_fallback_active": True,
+                    "d92_csoas_fallback_reason": "D42_CODEC_NUMERIC_RETRY_E0_FULL",
+                    "d92_csoas_candidate_attempt_fit_count": 1,
+                    "d92_csoas_fallback_reference_fit_count": 1,
+                    "d92_csoas_candidate_statistic_receipt_available": False,
+                    "d92_csoas_fallback_reference_full_head_byte_exact": True,
+                    "d92_csoas_paired_e0_codec_state_equal": None,
+                    "d92_csoas_query_rows_used": 0,
+                    "d92_csoas_query_fit_access": False,
+                    "d92_csoas_query_update_access": False,
+                    "d92_csoas_query_selection_access": False,
+                    "d92_csoas_query_truth_access": False,
+                    "d92_csoas_query_role_oracle_access": False,
+                    "d92_csoas_query_class_quota_access": False,
+                    "d92_csoas_query_global_reassignment": False,
+                    "d92_e0d_csoas_g0_eligible": False,
+                    "d92_e0d_csoas_g0_block_reason": "NUMERIC_FALLBACK_EXACT_E0",
+                    # The safe whole-D42 retry re-executes its before E0 fit;
+                    # expose all four component executions instead of hiding it.
+                    "d92_csoas_codec_fallback_component_execution_count": 4,
+                    "d92_csoas_codec_fallback_scope": "whole_d42_retry_before_and_after",
+                }
+            )
+            return coefficient, intercept, audit_copy
+
+        return fallback_fit, call_records, transform_records
+
+    def is_d42_codec_numerical_error(error: BaseException) -> bool:
+        from cvsrffi import stage2_d42_unified_shrinkage_lda as d42
+
+        return isinstance(error, d42.D42UnifiedShrinkageLDAError) and str(error) in {
+            "D42 quantization scale overflow",
+            "D42 coefficient decode became non-finite",
+            "D42 intercept FP16 overflow",
+        }
+
+    def fit_with_csoas_codec_guard(*args: Any, **kwargs: Any) -> Any:
+        """Identify only the registered int8 final-codec numerical boundary."""
+
+        from cvsrffi import stage2_d42_unified_shrinkage_lda as d42
+
+        after_state_codec_errors.clear()
+        original_compile_state = d42._compile_state
+
+        def guarded_compile_state(
+            classes: tuple[str, ...],
+            old_class_count: int,
+            *compile_args: Any,
+            precision: str,
+            **compile_kwargs: Any,
+        ) -> Any:
+            try:
+                return original_compile_state(
+                    classes,
+                    old_class_count,
+                    *compile_args,
+                    precision=precision,
+                    **compile_kwargs,
+                )
+            except Exception as error:
+                if (
+                    len(classes) > int(old_class_count)
+                    and str(precision).lower() == "int8"
+                    and is_d42_codec_numerical_error(error)
+                ):
+                    after_state_codec_errors.append(error)
+                raise
+
+        try:
+            d42._compile_state = guarded_compile_state
+            return original_d42_fit(*args, **kwargs)
+        finally:
+            d42._compile_state = original_compile_state
 
     def audit(
         result: Any,
@@ -1942,24 +2335,44 @@ def run_d92_e0d_query_evaluation(
         d81_eval._audit_fit = audit
         if arm.arm_id in (_TPCE_ARM_IDS | _TCRA_ARM_IDS):
             d81_eval.fit_d42_unified_shrinkage_lda = fit_with_state_postprocess
-        result = d81_eval.run_d81_query_evaluation(
-            before_enrollment_package_root=before_enrollment_package_root,
-            before_enrollment_seal_path=before_enrollment_seal_path,
-            before_enrollment_seal_sha256=before_enrollment_seal_sha256,
-            before_apply_package_root=before_apply_package_root,
-            before_apply_seal_path=before_apply_seal_path,
-            before_apply_seal_sha256=before_apply_seal_sha256,
-            after_enrollment_package_root=after_enrollment_package_root,
-            after_enrollment_seal_path=after_enrollment_seal_path,
-            after_enrollment_seal_sha256=after_enrollment_seal_sha256,
-            after_apply_package_root=after_apply_package_root,
-            after_apply_seal_path=after_apply_seal_path,
-            after_apply_seal_sha256=after_apply_seal_sha256,
-            ground_component_dir=ground_component_dir,
-            ground_manifest_sha256=ground_manifest_sha256,
-            output_root=output_root,
-            device=device,
-        )
+        elif arm.arm_id in _CSOAS_ARM_IDS:
+            d81_eval.fit_d42_unified_shrinkage_lda = fit_with_csoas_codec_guard
+        evaluation_kwargs = {
+            "before_enrollment_package_root": before_enrollment_package_root,
+            "before_enrollment_seal_path": before_enrollment_seal_path,
+            "before_enrollment_seal_sha256": before_enrollment_seal_sha256,
+            "before_apply_package_root": before_apply_package_root,
+            "before_apply_seal_path": before_apply_seal_path,
+            "before_apply_seal_sha256": before_apply_seal_sha256,
+            "after_enrollment_package_root": after_enrollment_package_root,
+            "after_enrollment_seal_path": after_enrollment_seal_path,
+            "after_enrollment_seal_sha256": after_enrollment_seal_sha256,
+            "after_apply_package_root": after_apply_package_root,
+            "after_apply_seal_path": after_apply_seal_path,
+            "after_apply_seal_sha256": after_apply_seal_sha256,
+            "ground_component_dir": ground_component_dir,
+            "ground_manifest_sha256": ground_manifest_sha256,
+            "output_root": output_root,
+            "device": device,
+        }
+        try:
+            result = d81_eval.run_d81_query_evaluation(**evaluation_kwargs)
+        except Exception as error:
+            if (
+                arm.arm_id not in _CSOAS_ARM_IDS
+                or not after_state_codec_errors
+                or error is not after_state_codec_errors[-1]
+            ):
+                raise
+            # D81 only creates the output after all three scene fits close, so
+            # this retry cannot overwrite a partially published artifact.
+            d81_probe.build_d81_fit = codec_fallback_builder
+            result = {
+                **d81_eval.run_d81_query_evaluation(**evaluation_kwargs),
+                "d92_csoas_codec_numeric_fallback": True,
+                "d92_csoas_codec_fallback_component_execution_count": 4,
+                "d92_csoas_codec_fallback_scope": "whole_d42_retry_before_and_after",
+            }
     finally:
         d81_probe.build_d81_fit = original_builder
         d81_eval.CANDIDATE_D81 = original_candidate

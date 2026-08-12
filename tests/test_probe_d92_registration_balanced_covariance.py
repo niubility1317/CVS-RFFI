@@ -7,6 +7,9 @@ import numpy as np
 import pytest
 
 from cvsrffi import stage2_d42_unified_shrinkage_lda as d42
+from cvsrffi.stage2_d92_cauchy_scatter_oas import (
+    D92CauchyScatterOASNumericalError,
+)
 from scripts import probe_d81_ground_nuisance_cauchy_center as d81_probe
 from scripts import probe_d92_registration_balanced_covariance as probe
 
@@ -937,3 +940,127 @@ def test_newguard_d42_codec_value_error_routes_to_exact_full_fallback(monkeypatc
     assert audit["d92_newguard_active"] is False
     assert audit["d92_newguard_fallback_active"] is True
     assert audit["d92_newguard_full_head_byte_exact"] is True
+
+
+def test_csoas_registered_path_consumes_the_same_d81_weights_once_for_one_full_fit():
+    """Would fail if CSOAS rebuilt Cauchy weights, added a component fit, or skipped its receipt."""
+
+    rng = np.random.default_rng(92_813)
+    basis, _ = np.linalg.qr(rng.normal(size=(160, 3)))
+    spectral_weights = np.asarray([0.5, 0.3, 0.2], dtype=np.float64)
+    ground_audit = {
+        "d81_basis_sha256": "b" * 64,
+        "d81_spectral_weight_sha256": "c" * 64,
+        "d81_participation_ratio_effective_rank": 2.6,
+        "d81_retained_rank": 3,
+        "d81_rank_policy": "ceil_participation_ratio_effective_rank",
+        "ground_component_input_count": 84,
+        "ground_statistic_semantics": (
+            "class_centered_cross_domain_centroid_drift_eigenspectrum"
+        ),
+    }
+    classes, shots = 11, 5
+    labels = np.repeat(np.arange(classes), shots).astype(np.int64)
+    means = rng.normal(size=(classes, 288))
+    rows = (
+        means[labels] + 0.08 * rng.normal(size=(classes * shots, 288))
+    ).astype(np.float32)
+    fit, _, transform_records = probe.build_d92_fit(
+        d42,
+        basis,
+        spectral_weights,
+        ground_audit,
+        disable_registered_fisher=True,
+        registered_d_mode="csoas_full",
+    )
+
+    coefficient, intercept, audit = fit(rows, labels, classes, shots)
+
+    inventory = audit["d92_component_fit_inventory"]
+    assert coefficient.shape == (classes, 288)
+    assert intercept.shape == (classes,)
+    assert np.isfinite(coefficient).all()
+    assert np.isfinite(intercept).all()
+    assert audit["d92_registered_d_mode_effective"] == "csoas_full"
+    assert audit["d92_csoas_active"] is True
+    assert audit["d92_csoas_fallback_active"] is False
+    assert audit["d92_csoas_candidate_attempt_fit_count"] == 1
+    assert audit["d92_csoas_fallback_reference_fit_count"] == 0
+    assert audit["d92_component_fit_count"] == 1
+    assert inventory["actual_component_fit_count"] == 1
+    assert inventory["full_component_fit_count"] == 1
+    assert inventory["block3_component_fit_count"] == 0
+    assert len(transform_records) == 1
+    assert audit["d92_csoas_normalized_cauchy_weight_by_class"] == audit[
+        "d81_transform_audit"
+    ]["normalized_cauchy_weight_by_class"]
+
+
+def test_csoas_numeric_failure_records_both_candidate_and_exact_e0_reference_full_fits(
+    monkeypatch,
+):
+    """Would fail if a numeric CSOAS attempt disappeared from the fallback inventory."""
+
+    rng = np.random.default_rng(92_814)
+    basis, _ = np.linalg.qr(rng.normal(size=(160, 3)))
+    spectral_weights = np.asarray([0.5, 0.3, 0.2], dtype=np.float64)
+    ground_audit = {
+        "d81_basis_sha256": "d" * 64,
+        "d81_spectral_weight_sha256": "e" * 64,
+        "d81_participation_ratio_effective_rank": 2.6,
+        "d81_retained_rank": 3,
+        "d81_rank_policy": "ceil_participation_ratio_effective_rank",
+        "ground_component_input_count": 84,
+        "ground_statistic_semantics": (
+            "class_centered_cross_domain_centroid_drift_eigenspectrum"
+        ),
+    }
+    classes, shots = 11, 5
+    labels = np.repeat(np.arange(classes), shots).astype(np.int64)
+    means = rng.normal(size=(classes, 288))
+    rows = (
+        means[labels] + 0.08 * rng.normal(size=(classes * shots, 288))
+    ).astype(np.float32)
+    e0_fit, _, _ = probe.build_d92_fit(
+        d42,
+        basis,
+        spectral_weights,
+        ground_audit,
+        disable_registered_fisher=True,
+        registered_d_mode="full_only",
+    )
+    expected_coefficient, expected_intercept, _ = e0_fit(
+        rows, labels, classes, shots
+    )
+    csoas_fit, _, transform_records = probe.build_d92_fit(
+        d42,
+        basis,
+        spectral_weights,
+        ground_audit,
+        disable_registered_fisher=True,
+        registered_d_mode="csoas_full",
+    )
+
+    def injected_numeric_failure(_statistics):
+        raise D92CauchyScatterOASNumericalError("injected_csoas_numeric_failure")
+
+    monkeypatch.setattr(
+        probe, "compile_cauchy_scatter_oas_affine", injected_numeric_failure
+    )
+    coefficient, intercept, audit = csoas_fit(rows, labels, classes, shots)
+
+    inventory = audit["d92_component_fit_inventory"]
+    assert coefficient.tobytes() == expected_coefficient.tobytes()
+    assert intercept.tobytes() == expected_intercept.tobytes()
+    assert audit["d92_csoas_active"] is False
+    assert audit["d92_csoas_fallback_active"] is True
+    assert audit["d92_csoas_fallback_reason"] == "injected_csoas_numeric_failure"
+    assert audit["d92_csoas_candidate_attempt_fit_count"] == 1
+    assert audit["d92_csoas_fallback_reference_fit_count"] == 1
+    assert audit["d92_csoas_fallback_reference_full_head_byte_exact"] is True
+    assert audit["d92_csoas_paired_e0_codec_state_equal"] is None
+    assert audit["d92_component_fit_count"] == 2
+    assert inventory["actual_component_fit_count"] == 2
+    assert inventory["full_component_fit_count"] == 2
+    assert inventory["block3_component_fit_count"] == 0
+    assert len(transform_records) == 2
