@@ -51,8 +51,28 @@ ADV3B02无需与CLIC共享capsule、物理样本、received-IQ或seed；只要�
 - 技术停止：错误checkout/hash、覆盖风险、协议越权或至少两个独立row在prediction前出现同一确定性异常指纹时停止精确run-owned进程；不因任何性能值停止或选择。
 - retry：`NO`。技术故障使用新run ID修复，不覆盖本run。
 
+## N607唯一运行席检查点（2026-08-12）
+
+- 冻结提交：`fe086aa81a19a48590ad9b24e83dbac47717b235`；主工作树仍含并行agent dirty/untracked改动，未纳入发布包。
+- 本地commit归档：`C:\Users\lh594\AppData\Local\Temp\phase1_clic_target_confirmation_20260812_v1\clean_commit.tar`，SHA256=`7D052A0A34E99AEF0E33521A18B859178ADEE947F43118D94EB60C7637055424`，bytes=`267120640`；未在Windows解包，避免长路径改变归档验证边界。
+- 冻结文件SHA：spec=`0A35055A4D1CF1537E3F1D5137C38C376798C0F579EB26A7C7D99906E99D4510`；launcher=`F76C2B6D6A2DC8D6EC0FEAEEC33E097DCFBAED6EA6AC8C44BC3C479E95F2C0DB`；builder=`D58335F7608A99616E91CC3C7578A79ABB205EC073E050406A95248DB849CE6D`；loader=`82A5BA41DF8017CFEC2F02154D928DF20473BA7C627A13D088F485C89955C19E`。
+- N607直连preflight：通过；普通账号`szu2070436088`，项目根可见，GPU0为`0%/1MiB`，目标release/run/log路径均ABSENT；形式化启动计数仍为0。
+- 当前阶段：`LANDED / SCP=1 / FORMAL_LAUNCH=0 / NO_PERFORMANCE_RESULT`。`SCP`仅一次成功；首次错误路径探针未落地。
+
 ## 风险与待闭合项
 
 - N607的Torch2.1+NumPy2旧桥曾导致原生崩溃；当前直接cache、C forward、G reload路径均已有禁桥回归，但仍需真实F1烟测。
 - 当前N607无已证实匹配的新scope cache，也无满足新crossed local4 RX/day合同的ADV3B02 immutable reference；必须新建cache，并为正式非劣评分补齐匹配reference。缺reference不得阻塞IQ-only预测封存，但不得发布非劣结论。
 - 本报告当前不含性能数值，不作晋级结论。
+
+- 远端release：/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_clic_target_confirmation_20260812_v1_fe086aa8；远端归档SHA=7d052a0a34e99aef0e33521a18b859178adee947f43118d94eb60c7637055424，四文件静态门和dry-run均通过。
+
+## 运行席最终封存（2026-08-12）
+
+- 最终状态：`LAUNCH_ENTRY_TECHNICAL_FAILURE / FORMAL_BUILDER_LAUNCH=0 / NO_PERFORMANCE_RESULT`。
+- 唯一formal launcher invocation计数为`1`，命令为`bash <release>/code/scripts/launch_phase1_clic_target_cache_20260812.sh`；退出码为`3`，输出为`refusing to overwrite target cache run/log root`。未重试。
+- builder实际PID=`0`；`pids_target_cache.tsv`、`target_cache.out`、3个NPZ、`cache_set.json`及其他本run cache工件均不存在，故`artifacts=0`，不能进入性能分析。
+- 根因：formal入口外层已预创建受保护的`runs/phase1_clic_target_confirmation_20260812_v1`和`logs/phase1_clic_target_confirmation_20260812_v1`目录，冻结launcher按防覆盖规则在builder启动前拒绝退出；未执行删除、改名或远端修复。残留目录及`launcher.out`均由普通账号`szu2070436088`创建，目录mtime约为20:18:33，`launcher.out`全文仅含上述拒绝信息。
+- 只读收尾：目标run目录为空；目标log目录仅有48B`launcher.out`；无匹配的旧launcher/builder进程；8卡均为`0%`GPU利用率、约`1MiB`显存占用；本地`ssh/scp`进程及到N607:22连接均为0。
+- 远端release静态内容也未形成本次冻结包闭合：实测spec SHA=`2d7f2a93d26b86b037040d4d1d7d90dcd46c053650ea8d887d08bf69efccd280`、launcher SHA=`f76c2b6d6a2dc8d6ec0feaeec33e097dcfbaed6ea6ac8c44bc3c479e95f2c0db`、builder SHA=`bcd6b0d1dd784ae518d26c1889645d2dd4b22bbcdee4158fea3dc606404370f2`，冻结loader文件缺失；上述证据只用于解释本run为何不能晋级，不构成性能结果。
+- 后续边界：若继续，必须创建全新的`v2`run/release ID并重新走完整落地门；`v2`是新run，不是对`v1`的retry。`v1`保持不可覆盖、不可重启、不可作性能比较。
