@@ -10,6 +10,7 @@ from cvsrffi.stage2_d92_newguard_hard11_analysis import (
     EIGHT_PARETO_METRICS,
     HISTORICAL_BASELINE_SHA256,
     HISTORICAL_PER_OLD_CLASS_SHA256,
+    _fit_resource,
     compute_confusion_rates,
     compute_old_balanced_accuracy,
     compute_score_metrics,
@@ -19,6 +20,8 @@ from cvsrffi.stage2_d92_newguard_hard11_analysis import (
     validate_per_old_class_join,
     strict_pareto_deltas,
 )
+from cvsrffi.stage2_d92_newguard_hard11 import SCENES
+from scripts.run_d92_newguard_hard11 import QUERY_ZERO_FIELDS
 
 
 def _score() -> dict[str, object]:
@@ -157,3 +160,61 @@ def test_truth_binding_requires_manifest_receipt_score_and_actual_hash(tmp_path:
     truth.write_text("tampered", encoding="utf-8")
     with pytest.raises(ValueError, match="truth"):
         validate_truth_binding(score, receipt, job, truth)
+
+
+def test_truth_binding_accepts_a_hash_exact_cross_platform_retrieval_root(
+    tmp_path: Path,
+) -> None:
+    outer = "rx_7_7__seed_713106__k_10__new_5"
+    truth = (
+        tmp_path
+        / "truth_sidecars"
+        / "jobs"
+        / outer
+        / "offline"
+        / "scorer"
+        / "truth_sidecar.json"
+    )
+    truth.parent.mkdir(parents=True)
+    truth.write_text("{}", encoding="utf-8")
+    digest = hashlib.sha256(truth.read_bytes()).hexdigest()
+    score = _score()
+    score["truth_sidecar_sha256"] = digest
+    receipt = {"truth_sidecar_sha256": digest}
+    job = {
+        "outer_key": outer,
+        "truth_sidecar": (
+            "/home/user/project/runs/d92_registration/jobs/"
+            f"{outer}/offline/scorer/truth_sidecar.json"
+        ),
+        "truth_sidecar_sha256": digest,
+    }
+
+    validate_truth_binding(score, receipt, job, truth)
+
+
+def test_fit_resource_accepts_three_scene_newguard_inventory(tmp_path: Path) -> None:
+    rows = []
+    for scenario in SCENES:
+        rows.append({
+            "scenario": scenario,
+            **{field: False for field in QUERY_ZERO_FIELDS},
+            "after_total_component_fit_count": 2,
+            "after_actual_component_inventory": {"actual_component_fit_count": 1},
+            "query_macs": 123,
+            "after_state_bytes": 456,
+            "after_registered_d_mode_effective": "newguard_maxmin",
+            "after_registration_resource": {
+                "registration_wall_time_ns": 1000,
+                "registration_incremental_peak_working_set_bytes": 2000,
+            },
+        })
+    path = tmp_path / "job" / "diag" / "after" / "fit_audit.json"
+    path.parent.mkdir(parents=True)
+    path.write_text(json.dumps(rows), encoding="utf-8")
+
+    result = _fit_resource(tmp_path / "job", 10)
+
+    assert result["fit_count"] == 2
+    assert result["actual_fit_count"] == 1
+    assert result["registered_d_mode"] == "newguard_maxmin"

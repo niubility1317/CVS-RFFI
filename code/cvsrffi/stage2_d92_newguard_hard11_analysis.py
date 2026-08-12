@@ -212,10 +212,18 @@ def evaluate_resource_gate(candidate_rows: Sequence[Mapping[str, Any]], baseline
 
 def validate_truth_binding(score: Mapping[str, Any], receipt: Mapping[str, Any], job: Mapping[str, Any], truth_path: str | Path) -> str:
     """Require manifest, receipt, scorer and actual truth-sidecar hashes to agree."""
-    manifest_path = Path(str(job.get("truth_sidecar"))).resolve()
+    manifest_value = str(job.get("truth_sidecar", ""))
     actual_path = Path(truth_path).resolve()
     expected = str(job.get("truth_sidecar_sha256", "")).lower()
-    if manifest_path != actual_path or not actual_path.is_file() or actual_path.is_symlink() or not re.fullmatch(r"[0-9a-f]{64}", expected):
+    same_absolute_path = Path(manifest_value).resolve() == actual_path
+    outer_key = str(job.get("outer_key", ""))
+    expected_suffix = ("jobs", outer_key, "offline", "scorer", "truth_sidecar.json")
+
+    def logical_suffix(value: str | Path) -> tuple[str, ...]:
+        return tuple(part for part in str(value).replace("\\", "/").split("/") if part)[-5:]
+
+    same_logical_path = bool(outer_key) and logical_suffix(manifest_value) == expected_suffix and logical_suffix(actual_path) == expected_suffix
+    if not (same_absolute_path or same_logical_path) or not actual_path.is_file() or actual_path.is_symlink() or not re.fullmatch(r"[0-9a-f]{64}", expected):
         raise D92NewGuardHard11AnalysisError("truth sidecar path/hash closure drift")
     actual = _sha256(actual_path)
     if actual != expected or str(receipt.get("truth_sidecar_sha256", "")).lower() != actual or str(score.get("truth_sidecar_sha256", "")).lower() != actual:
@@ -314,7 +322,8 @@ def _fit_resource(job_root: Path, k_shot: int, *, baseline: Mapping[str, Any] | 
         raise D92NewGuardHard11AnalysisError("after fit audit invalid") from error
     if not isinstance(rows, list) or len(rows) != 3:
         raise D92NewGuardHard11AnalysisError("after fit audit scene closure drift")
-    totals, actuals, macs, states, modes, walls, peaks = set(), set(), set(), set(), [], [], []
+    totals, actuals, macs, states, modes = set(), set(), set(), set(), set()
+    walls, peaks = [], []
     scenarios = set()
     for row in rows:
         if not isinstance(row, Mapping):
@@ -406,7 +415,7 @@ def _group_stability(rows: Sequence[Mapping[str, Any]], group_field: str) -> dic
     return result
 
 
-def analyze_d92_newguard_hard11(matrix_manifest_path: str | Path, *, run_root: str | Path | None, method_lock_path: str | Path, baseline_paired_rows_path: str | Path = HISTORICAL_BASELINE_PATH, per_old_class_rows_path: str | Path = HISTORICAL_PER_OLD_CLASS_PATH) -> dict[str, Any]:
+def analyze_d92_newguard_hard11(matrix_manifest_path: str | Path, *, run_root: str | Path | None, method_lock_path: str | Path, baseline_paired_rows_path: str | Path = HISTORICAL_BASELINE_PATH, per_old_class_rows_path: str | Path = HISTORICAL_PER_OLD_CLASS_PATH, truth_sidecar_root: str | Path | None = None) -> dict[str, Any]:
     manifest_path = Path(matrix_manifest_path).resolve(strict=True); manifest_sha = _sha256(manifest_path); manifest = _read_json(manifest_path)
     lock_path = Path(method_lock_path).resolve(strict=True); lock_sha = _sha256(lock_path); lock = _read_json(lock_path)
     try:
@@ -414,6 +423,7 @@ def analyze_d92_newguard_hard11(matrix_manifest_path: str | Path, *, run_root: s
     except ValueError as error:
         raise D92NewGuardHard11AnalysisError("matrix/method lock drift") from error
     root = Path(run_root or manifest["output_root"]).resolve(strict=True)
+    truth_root = Path(truth_sidecar_root).resolve(strict=True) if truth_sidecar_root is not None else None
     if (root / "SYSTEMIC_TECHNICAL_FAILURE_STOP.json").exists():
         raise D92NewGuardHard11AnalysisError("systemic stop marker exists")
     baseline_path = Path(baseline_paired_rows_path).resolve(strict=True); per_old_path = Path(per_old_class_rows_path).resolve(strict=True)
@@ -444,7 +454,8 @@ def analyze_d92_newguard_hard11(matrix_manifest_path: str | Path, *, run_root: s
             raise D92NewGuardHard11AnalysisError("prediction closure drift")
         if score.get("candidate") != CANDIDATE_ID or score.get("query_truth_fed_back_to_predictor") is not False or score.get("query_truth_joined_only_after_immutable_predictions") is not True or score.get("before_prediction_sha256") != receipt.get("before_prediction_sha256") or score.get("after_prediction_sha256") != receipt.get("after_prediction_sha256"):
             raise D92NewGuardHard11AnalysisError("score binding drift")
-        validate_truth_binding(score, receipt, job, Path(str(job["truth_sidecar"])))
+        truth_path = Path(str(job["truth_sidecar"])) if truth_root is None else truth_root / "jobs" / str(job["outer_key"]) / "offline" / "scorer" / "truth_sidecar.json"
+        validate_truth_binding(score, receipt, job, truth_path)
         candidate = compute_score_metrics(score); baseline_score = _read_json(raw_path); baseline = compute_score_metrics(baseline_score)
         historical_join = validate_per_old_class_join(per_old_by_outer.get(str(job["outer_key"]), []), baseline_score, outer_key=str(job["outer_key"]))
         resource = _fit_resource(job_root, int(job["k_shot"]), baseline=baseline)

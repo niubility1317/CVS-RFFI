@@ -24,6 +24,7 @@ def parser() -> argparse.ArgumentParser:
     result.add_argument("--method-lock", required=True)
     result.add_argument("--baseline-paired-rows", default="E:/type10-7/local_artifacts/d92_e0_full_only_target125_20260812_v1/analysis/paired_rows.csv")
     result.add_argument("--per-old-class-rows", default="E:/type10-7/local_artifacts/d92_e0_full_only_target125_20260812_v1/analysis/per_old_class_rows.csv")
+    result.add_argument("--truth-sidecar-root", help="Local retrieval root containing jobs/<outer>/offline/scorer/truth_sidecar.json")
     result.add_argument("--output-root", required=True)
     result.add_argument("--dry-run", action="store_true")
     return result
@@ -65,7 +66,7 @@ def main() -> int:
     if args.dry_run:
         payload = json.loads(manifest.read_text(encoding="utf-8-sig"))
         print(json.dumps({"status": "DRY_RUN", "matrix_manifest": str(manifest), "job_count": payload.get("job_count"), "scene_arm_count": payload.get("scene_arm_count")}, ensure_ascii=True, sort_keys=True)); return 0
-    result = analyze_d92_newguard_hard11(manifest, run_root=args.run_root, method_lock_path=args.method_lock, baseline_paired_rows_path=args.baseline_paired_rows, per_old_class_rows_path=args.per_old_class_rows)
+    result = analyze_d92_newguard_hard11(manifest, run_root=args.run_root, method_lock_path=args.method_lock, baseline_paired_rows_path=args.baseline_paired_rows, per_old_class_rows_path=args.per_old_class_rows, truth_sidecar_root=args.truth_sidecar_root)
     output = Path(args.output_root)
     if output.exists():
         raise FileExistsError(f"immutable analysis output already exists: {output}")

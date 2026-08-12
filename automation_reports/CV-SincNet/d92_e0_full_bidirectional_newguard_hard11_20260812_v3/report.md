@@ -118,11 +118,21 @@ nohup bash ./launch.sh >./launch_driver.out 2>./launch_driver.err </dev/null &
 
 预期正式artifact：11 job receipt、22 before/after prediction NPZ和COMMIT、22 fit/resource audit、11 score、8 shard summary，以及smoke闭包。完成后完整取回source/output/logs并核对树摘要。
 
-## 结果
+## 正式分析与裁决（2026-08-12）
 
-当前没有性能结果。只有11/11完成、artifact取回并由冻结analyzer连接truth后，才填写同排表并裁决。
+- 11份manifest指定truth sidecar已从原D92任务路径只读取回，11/11实际SHA与manifest一致；本地映射仍锁定`jobs/<outer>/offline/scorer/truth_sidecar.json`，receipt、score、manifest与实际文件四方SHA闭合。
+- 分析artifact闭合：11个paired row、66个逐旧类row、33个scene row；10个performance outer与1个K1 liveness完整。
+- analyzer输出：`E:\type10-7\local_artifacts\d92_e0_full_bidirectional_newguard_hard11_20260812_v3\analysis`。
+- 本地分析适配只增加跨平台truth-root映射并修正资源汇总集合初始化；NewGuard matrix/runner/analyzer聚焦回归`37 passed`，`py_compile`与`git diff --check`通过。
 
 | candidate | H | old BA | c_old_acc | old floor | seen-new | forgetting | new→old | old→new | verdict |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---|
-| NewGuard v3 | ANALYSIS_PENDING | ANALYSIS_PENDING | ANALYSIS_PENDING | ANALYSIS_PENDING | ANALYSIS_PENDING | ANALYSIS_PENDING | ANALYSIS_PENDING | ANALYSIS_PENDING | ANALYSIS_PENDING |
+| E0_FULL_ONLY | 73.3472% | 74.8611% | 74.8611% | 44.8333% | 72.0333% | 12.9167% | 15.0417% | 15.3333% | baseline |
+| NewGuard v3 | 73.3472% | 74.8611% | 74.8611% | 44.8333% | 72.0333% | 12.9167% | 15.0417% | 15.3333% | `REJECT_ROUTE` |
+| NewGuard−E0 | +0.0000pp | +0.0000pp | +0.0000pp | +0.0000pp | +0.0000pp | +0.0000pp | +0.0000pp | +0.0000pp | 八项严格方向均未通过 |
 
+NewGuard在10/10 performance outer均`active=true`、无fallback，部署尺度为0.015625–0.25、尝试次数为10–14，但所有正式score指标均与E0完全相同。说明量化保护后的安全扰动虽然改变了部署头字节，却没有改变这些难例上的最终类别决策，不能带来floor、遗忘或新类收益。
+
+资源方面，query MAC与永久state保持E0精确一致，peak p90只增加20KiB；但注册wall p90为175.999ms、相对E0为1.856×，超过150ms和1.5×冻结门。额外成本主要来自多轮真实D42 codec回检。
+
+最终裁决：`REJECT_ROUTE`。不运行完整Target125，不继续微调NewGuard尺度或放宽保护容差。下一方法应直接在D42部署格点上做一次闭式/小规模联合margin求解，允许同时调整旧类与新类行，显式优化旧类CVaR/floor、遗忘、新类margin及双向混淆；必须保持单FULL fit、query/state不增，并避免多轮codec回缩。
