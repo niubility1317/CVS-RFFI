@@ -23,14 +23,14 @@ ADV3B02在本任务中没有独立source-frozen的端点真实unknown决策规�
 |F5|`F5_ADV3B02_CLIC`|`14-10,14-7,20-15,20-19`|`8-20`|`6-15`|4|392002|
 |F6|`F6_ADV3B02_CLIC`|`14-7,20-15,20-19,6-15`|`14-10`|`8-20`|5|392002|
 
-每折训练、held-known和proxy-unknown TX集合两两互斥。启动器在派生命令前检查角色数量和互斥性；`--dry-run`固定按F1→F6输出六条完整命令且不创建run/log根目录。
+每折训练、held-known和proxy-unknown TX集合两两互斥。启动器在派生命令前检查角色数量和互斥性；`--dry-run`固定按F1→F6输出六条完整命令且不创建run/log根目录。正式模式在创建根目录、PID、日志或启动任一child前，先遍历检查六个`F#_ADV3B02_CLIC`的output_dir和log_path；任一后续折碰撞都必须整体拒绝，不能让F1—F5先启动。
 
 ## 3.冻结配置
 
 |类别|固定值|
 |---|---|
 |数据与时间表|`split_mode=tx_rx_day_1_6_3`；`labeled_ratio=0.07`；`unlabeled_ratio=0.63`；`source_val_ratio=0.30`；`epochs=200`；`label_epochs=130`；`pseudo_epochs=70`；`from_scratch=true`；`seed=392002`。|
-|选择边界|`checkpoint_selection=final_only`；`phase1_source_val_selection_only=true`；`best_metric=joint_safe`仅保留源侧遥测，不参与checkpoint选择。|
+|选择边界|`checkpoint_selection=final_only`；`phase1_source_val_selection_only=true`；`best_metric=source_val_sat_hmean`仅保留source validation遥测，不参与checkpoint选择；`enable_joint_safe_guard=false`，避免held-out joint guard路径。|
 |历史机制与守卫|保留historical`set_candidate_defaults`和`ADV3B02_CORE90_SOFT_E200`分支的全部有效与零权重旗标：ground prototype、feature mask、TX/RX geometry、prototype memory、open-world feature、z-id compact、proxy unknown、soft unknown mixup、source episode、prototype export/fusion、satellite consistency与半监督/域/Fishr项。|
 |关键分支值|`lambda_open_world_feat=0.0024`；`lambda_zid_compact=0.032`；`lambda_proxy_unknown=0.0045`；`proxy_unknown_core_quantile=0.90`；`proxy_unknown_accept_quantile=0.85`；`proxy_unknown_vaccept_cvar_alpha=0.30`；`lambda_soft_unknown_mixup=0.0045`；`lambda_source_episode=0.0035`；`lambda_sat_cls=0.68`；`lambda_sat_cons=0`。|
 |其余历史损失项|`lambda_u=0.16`；`lambda_ent=0.01`；`lambda_domain=1`；`lambda_adv=0.35`；`lambda_group_ce=0.16`；`lambda_fishr=0.04`；`tau_min=0.92`；`tau_max=0.97`；`pseudo_quantile=0.86`；`use_ema_teacher=true`。完整逐旗标receipt由启动器`--print-contract`给出，并可用`--validate-contract-file`逐字节校验。|
@@ -40,21 +40,22 @@ ADV3B02在本任务中没有独立source-frozen的端点真实unknown决策规�
 
 |文件|用途|状态|
 |---|---|---|
-|`code/scripts/launch_phase1_adv3b02_clic6_v1_20260813.sh`|六折训练入口、冻结合同、根目录防覆盖、PID表与限定技术停止逻辑|已实现|
-|`code/tests/test_phase1_adv3b02_clic6_baseline.py`|六折命令/角色/全部关键旗标、真实训练器解析、无目标侧接口、根目录保护和合同漂移拒绝|已实现|
+|`code/scripts/launch_phase1_adv3b02_clic6_v1_20260813.sh`|六折训练入口、冻结合同、全六fold预检、根目录防覆盖、PID表与限定技术停止逻辑|已实现|
+|`code/tests/test_phase1_adv3b02_clic6_baseline.py`|六折命令/角色/全部关键旗标、真实训练器解析与运行时dry-run、无目标侧接口、全六fold预检、根目录保护和合同漂移拒绝|已实现|
 |本报告|预注册、N607交接与结果表模板|已建立|
 
 |验证命令|结果|
 |---|---|
-|`python -m pytest code/tests/test_phase1_adv3b02_clic6_baseline.py -q`|5/5通过。先前RED为启动器不存在，5项均按预期失败；GREEN后通过。|
+|`python -m pytest code/tests/test_phase1_adv3b02_clic6_baseline.py -q`|7/7通过。最初5项RED为启动器不存在；独立审查后新增两项RED：六条命令的`train(args --dry_run)`被`joint_safe`运行时守卫拒绝，及F6碰撞未能在任何child启动前拒绝。修复后7项均GREEN。|
 |`bash -n code/scripts/launch_phase1_adv3b02_clic6_v1_20260813.sh`|通过。|
 |`bash code/scripts/launch_phase1_adv3b02_clic6_v1_20260813.sh --dry-run`|通过；恰六条F1→F6源侧命令。|
-|真实`train_ssdg.build_arg_parser().parse_args(...)`|六条命令均接受`--from_scratch true`、`--checkpoint_selection final_only`及全部训练旗标。|
-|历史旗标逐项差异审计|历史ADV3B02命令157个旗标与新命令162个旗标比较：除预注册的split/比例/路径/身份变化及5个新增final-only／三角色旗标外，`unexpected_changed=[]`、`missing_historical=[]`、`unexpected_added=[]`。|
+|真实`train_ssdg.build_arg_parser().parse_args(...)`和`train(args --dry_run)`|六条命令均接受`--from_scratch true`、`--checkpoint_selection final_only`、`best_metric=source_val_sat_hmean`和全部训练旗标；逐条追加`--dry_run`后，真实`train_ssdg.train(args)`均返回0且未构造数据/模型。|
+|F6碰撞行为测试|预建`RUN_ROOT/F6_ADV3B02_CLIC`后，启动器在任何PID、日志、根目录或F1—F5目录写入前以`refusing to overwrite planned fold output: F6_ADV3B02_CLIC`退出。|
+|历史旗标逐项差异审计|历史ADV3B02命令157个旗标与新命令162个旗标比较：除预注册的split/比例/路径/身份、`best_metric=source_val_sat_hmean`、`enable_joint_safe_guard=false`变化及5个新增final-only／三角色旗标外，`unexpected_changed=[]`、`missing_historical=[]`、`unexpected_added=[]`。|
 |`python -m py_compile code/SSDG/train_ssdg.py`|通过。|
 |`git diff --check`|通过。|
 
-计划Task1 Git提交：`PENDING_TASK1_COMMIT`。提交后回填commit、launcher/test/report的SHA256和干净工作树摘要；未提交前不得N607同步或启动。
+Git实现谱系：初始Task1入口提交为`72640e30fe713d5aca365e2cb07fa52522fa4d02`；独立审查NO-GO后的代码/测试修复提交为`d86926470065c0d9a68b9d94e9f6a79e2032ea47`。修复版本文件SHA256：launcher=`FCABDA8ABA3A29D8DEE81D1E16C90A9E211402B10270B1C80FB9B56B832DAD22`；测试=`FB825FDECC75E7F0F2E5B447454E51FC91C4FA280E230E71118CD6231F086372`。未完成独立P0/P1复审、N607 preflight和唯一runner handoff前不得同步或启动。
 
 ## 5.N607发布合同
 
@@ -71,7 +72,7 @@ ADV3B02在本任务中没有独立source-frozen的端点真实unknown决策规�
 
 每折预期工件为`final_ssdg.pth`、训练器默认`metrics_epoch.csv`/`metrics_epoch.jsonl`、`phase2_zid_prototypes.pt`、完整`F#_ADV3B02_CLIC.out`日志、`F#_ADV3B02_CLIC.pid`和`status/F#_ADV3B02_CLIC.status`。外层预期工件为`frozen_contract.txt`、`outer.pid`、`pids.tsv`及必要时的`systemic_stop.status`。训练器当前ADV路径不承诺不存在的CLIC专属terminal/config JSON；完成性以final checkpoint、嵌入checkpoint的args、完整log、PID/GPU绑定和本任务冻结合同共同核验。
 
-N607 runner在启动前必须确认release哈希、训练器可编译、数据可见、run/log根均不存在、GPU0—5资源可用及每卡训练进程数不超过2。启动后立即核验outer PID、六个child PID、CWD/cmdline/run-root、GPU映射和日志增长。停止仅限协议/hash/覆盖错误，或至少两折在有效`final_ssdg.pth`前出现相同确定性异常指纹；停止时仅向已登记的本run child PID发送有限`TERM`，保留所有部分工件。accuracy、loss、DG、proxy或任何性能值绝不构成停止、重试或选择依据。
+N607 runner在启动前必须确认release哈希、训练器可编译、数据可见、run/log根均不存在、六个planned output/log路径均不存在、GPU0—5资源可用及每卡训练进程数不超过2。启动后立即核验outer PID、六个child PID、CWD/cmdline/run-root、GPU映射和日志增长。停止仅限协议/hash/覆盖错误，或至少两折在有效`final_ssdg.pth`前出现相同确定性异常指纹；停止时仅向已登记的本run child PID发送有限`TERM`，保留所有部分工件。accuracy、loss、DG、proxy或任何性能值绝不构成停止、重试或选择依据。
 
 ## 7.风险与后续接口
 
