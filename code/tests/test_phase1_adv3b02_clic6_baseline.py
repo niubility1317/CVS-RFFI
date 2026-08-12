@@ -8,7 +8,9 @@ accidental target-side input must make the real launcher fail this suite.
 """
 
 import json
+import os
 import shlex
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -578,6 +580,102 @@ def test_adv3b02_smoke_flag_zero_does_not_freeze_the_f1_profile(tmp_path: Path) 
     args.use_feature_masks = False
     args.dry_run = True
     assert train_ssdg.train(args) == 0
+
+
+def test_adv3b02_smoke_rejects_bash_env_forged_formal_profile_before_data(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Break caught: inherited BASH_ENV can forge the recovered formal F1 row."""
+
+    from SSDG import train_ssdg
+
+    args = _adv3b02_smoke_args(tmp_path)
+    args.lambda_proto = 9.99
+    bash_env = tmp_path / "forge-formal-profile.sh"
+    bash_env.write_text(
+        """printf() {
+  if [[ \"$1\" == \" %q\" ]]; then
+    shift
+    for item in \"$@\"; do
+      [[ \"$item\" == \"0.0032\" ]] && item='9.99'
+      builtin printf ' %q' \"$item\"
+    done
+  else
+    builtin printf \"$@\"
+  fi
+}
+""",
+        encoding="utf-8",
+        newline="\n",
+    )
+    if os.name == "nt":
+        # WSL imports only variables named through WSLENV.  Preserve the
+        # explicit inherited-environment attack the production helper used to
+        # permit.  Pass an already WSL-addressable path verbatim: the legacy
+        # bash.exe launcher does not convert BASH_ENV reliably with ``/u``.
+        wsl_entries = [
+            item
+            for item in os.environ.get("WSLENV", "").split(":")
+            if item and not item.startswith("BASH_ENV/") and item != "BASH_ENV"
+        ]
+        monkeypatch.setenv("WSLENV", ":".join([*wsl_entries, "BASH_ENV"]))
+        monkeypatch.setenv("BASH_ENV", _wsl_path(bash_env))
+    else:
+        monkeypatch.setenv("BASH_ENV", str(bash_env))
+
+    attack = subprocess.run(
+        ["bash", _wsl_path(LAUNCHER) if os.name == "nt" else str(LAUNCHER), "--dry-run"],
+        cwd=REPO_ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    forged_values = _arg_map(_trainer_args(_command_tokens(attack.stdout.splitlines()[0])))
+    assert forged_values["--lambda_proto"] == "9.99"
+    monkeypatch.setattr(
+        train_ssdg,
+        "_build_ssdg_wisig_data",
+        lambda *_args, **_kwargs: pytest.fail(
+            "forged formal profile reached ADV smoke data construction"
+        ),
+    )
+    with pytest.raises(ValueError, match="lambda_proto"):
+        train_ssdg.train(args)
+
+
+def test_adv3b02_smoke_rejects_bash_resolved_from_an_untrusted_path(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Break caught: a caller PATH can replace the formal-profile shell."""
+
+    from SSDG import train_ssdg
+
+    actual_bash = shutil.which("bash")
+    if actual_bash is None:
+        pytest.skip("no local bash is available to exercise PATH rejection")
+    fake_bin = tmp_path / "fake-bin"
+    fake_bin.mkdir()
+    if os.name == "nt":
+        fake_bash = fake_bin / "bash.exe"
+        shutil.copy2(actual_bash, fake_bash)
+    else:
+        fake_bash = fake_bin / "bash"
+        fake_bash.write_text("#!/bin/sh\nexec /bin/bash \"$@\"\n", encoding="utf-8")
+        fake_bash.chmod(0o755)
+    monkeypatch.setenv("PATH", str(fake_bin) + os.pathsep + os.environ.get("PATH", ""))
+
+    args = _adv3b02_smoke_args(tmp_path)
+    monkeypatch.setattr(
+        train_ssdg,
+        "_build_ssdg_wisig_data",
+        lambda *_args, **_kwargs: pytest.fail(
+            "untrusted PATH bash reached ADV smoke data construction"
+        ),
+    )
+    with pytest.raises(ValueError, match="untrusted bash"):
+        train_ssdg.train(args)
 
 
 def _smoke_source_evidence() -> dict[str, object]:

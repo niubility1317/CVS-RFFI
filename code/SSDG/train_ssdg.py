@@ -9,6 +9,7 @@ import math
 import os
 import random
 import shlex
+import shutil
 import subprocess
 import time
 from collections import defaultdict
@@ -6763,6 +6764,67 @@ def _adv3b02_technical_smoke_bash_path(path: Path) -> str:
     return str(resolved)
 
 
+def _trusted_adv3b02_technical_smoke_bash() -> str:
+    """Resolve only the platform bash used for frozen-profile recovery."""
+
+    if os.name == "nt":
+        system_root = Path(os.environ.get("SystemRoot", r"C:\Windows"))
+        candidates = [system_root / "System32" / "bash.exe"]
+    else:
+        candidates = [Path("/usr/bin/bash"), Path("/bin/bash")]
+    trusted = []
+    for candidate in candidates:
+        try:
+            resolved = candidate.resolve(strict=True)
+        except OSError:
+            continue
+        if resolved.is_file():
+            trusted.append(resolved)
+    if not trusted:
+        raise ValueError(
+            "ADV3B02 technical smoke requires a trusted absolute system bash"
+        )
+    discovered = shutil.which("bash")
+    if not discovered:
+        raise ValueError("ADV3B02 technical smoke could not resolve system bash")
+    try:
+        resolved_discovered = Path(discovered).resolve(strict=True)
+    except OSError as error:
+        raise ValueError(
+            "ADV3B02 technical smoke could not resolve the discovered bash path"
+        ) from error
+    if resolved_discovered not in trusted:
+        raise ValueError(
+            "ADV3B02 technical smoke refused untrusted bash resolved from PATH: "
+            f"{resolved_discovered}"
+        )
+    return str(resolved_discovered)
+
+
+def _adv3b02_technical_smoke_profile_environment() -> Dict[str, str]:
+    """Build the minimal environment for the non-evaluating formal dry-run."""
+
+    environment = {"PATH": "/usr/bin:/bin"}
+    for key in ("LANG", "LC_ALL", "LC_CTYPE"):
+        value = os.environ.get(key)
+        if value:
+            environment[key] = value
+    if os.name == "nt":
+        for key in ("SystemRoot", "WINDIR", "COMSPEC", "PATHEXT"):
+            value = os.environ.get(key)
+            if value:
+                environment[key] = value
+    # Start from an allowlist, then keep these removals explicit because an
+    # inherited Bash startup hook could forge the non-evaluating formal row.
+    for key in ("BASH_ENV", "ENV", "SHELLOPTS", "BASHOPTS", "WSLENV"):
+        environment.pop(key, None)
+    for key in tuple(environment):
+        if key.startswith("BASH_FUNC_"):
+            environment.pop(key, None)
+    environment["RUN_ID"] = _ADV3B02_TECHNICAL_SMOKE_RUN_ID
+    return environment
+
+
 def _formal_adv3b02_technical_smoke_f1_args() -> argparse.Namespace:
     """Recover the F1 parser namespace from the adjacent frozen formal launcher.
 
@@ -6779,22 +6841,11 @@ def _formal_adv3b02_technical_smoke_f1_args() -> argparse.Namespace:
         raise ValueError(
             "ADV3B02 technical smoke requires its adjacent frozen formal launcher"
         )
-    environment = os.environ.copy()
-    for key in (
-        "RUN_ID",
-        "RUN_ROOT",
-        "LOG_ROOT",
-        "PROJECT_ROOT",
-        "CODE_ROOT",
-        "PYTHON",
-        "WISIG_PKL",
-        "TRAIN_SCRIPT",
-    ):
-        environment.pop(key, None)
-    environment["RUN_ID"] = _ADV3B02_TECHNICAL_SMOKE_RUN_ID
+    bash_path = _trusted_adv3b02_technical_smoke_bash()
+    environment = _adv3b02_technical_smoke_profile_environment()
     try:
         completed = subprocess.run(
-            ["bash", _adv3b02_technical_smoke_bash_path(launcher), "--dry-run"],
+            [bash_path, _adv3b02_technical_smoke_bash_path(launcher), "--dry-run"],
             check=True,
             capture_output=True,
             text=True,

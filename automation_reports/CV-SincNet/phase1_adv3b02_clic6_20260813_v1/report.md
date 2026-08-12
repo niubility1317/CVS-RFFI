@@ -48,7 +48,7 @@ ADV3B02在本任务中没有独立source-frozen的端点真实unknown决策规�
 
 |验证命令|结果|
 |---|---|
-|`python -m pytest code/tests/test_phase1_adv3b02_clic6_baseline.py -q`|27/27通过。除原7项六fold合同外，覆盖F1独立入口、仅0/3 batch、错误方法在数据构建前拒绝、完整正式F1 parser profile逐字段绑定、方法/loss/零权重/布尔/场景schedule漂移拒绝、真实1/2 batch首轮不足时在任何source-V评估前拒绝、三次有限有效optimizer step receipt、非有限batch拒绝、receipt不可覆盖及flag=0不约束正式F2—F6。|
+|`python -m pytest code/tests/test_phase1_adv3b02_clic6_baseline.py -q`|29/29通过。除原7项六fold合同外，覆盖F1独立入口、仅0/3 batch、错误方法在数据构建前拒绝、完整正式F1 parser profile逐字段绑定、方法/loss/零权重/布尔/场景schedule漂移拒绝、真实1/2 batch首轮不足时在任何source-V评估前拒绝、三次有限有效optimizer step receipt、非有限batch拒绝、receipt不可覆盖、`BASH_ENV`伪造formal profile和PATH伪bash拒绝，以及flag=0不约束正式F2—F6。|
 |`bash -n code/scripts/launch_phase1_adv3b02_clic6_v1_20260813.sh`|通过。|
 |`bash code/scripts/launch_phase1_adv3b02_clic6_v1_20260813.sh --dry-run`|通过；恰六条F1→F6源侧命令。|
 |真实`train_ssdg.build_arg_parser().parse_args(...)`和`train(args --dry_run)`|六条命令均接受`--from_scratch true`、`--checkpoint_selection final_only`、`best_metric=source_val_sat_hmean`和全部训练旗标；逐条追加`--dry_run`后，真实`train_ssdg.train(args)`均返回0且未构造数据/模型。|
@@ -73,6 +73,8 @@ Git实现谱系：初始Task1入口提交为`72640e30fe713d5aca365e2cb07fa52522f
 正式六fold启动前有且只有一次强制F1技术烟测门：runner必须从同一release以`bash <release>/code/scripts/smoke_phase1_adv3b02_clic_f1_v1_20260813.sh`启动，固定写入`runs/.smoke_phase1_adv3b02_clic6_20260813_v1_F1/F1_ADV3B02_CLIC`与对应logs根。PID文件记录的是前台烟测wrapper PID；训练子进程及其CWD/cmdline须由runner在运行期另行核验。技术PASS严格要求receipt schema=`cvs.phase1.adv3b02_technical_smoke.v1`、`batches=forward=backward=optimizer_attempts=optimizer_effective_steps=3`、nonfinite=0、source-val/target/query/test row访问和selection反馈全为0。烟测失败、缺receipt或进程绑定不闭合时，`FORMAL_INVOCATION=0`，不得调用正式六fold启动器；烟测通过后才允许唯一formal invocation=1。烟测不读取性能，也不构成checkpoint或候选选择。
 
 首次Task2提交`fc6e4146`经独立审查判定`P0=0/P1=2/NO-GO`：直接训练器调用可漂移`lambda_proto`等方法profile，且真实loader一轮不足3批时会进入source validation。修复版本在任何通用校验或数据构建前，从同一release的正式launcher F1 dry-run机械解析完整parser namespace，除隔离output/export/control字段外逐字段精确比较，`wisig_pkl`亦不得漂移；同时在第一轮batch loop结束、任何source-V评估之前对实际batch数不足3立即fail-closed且不写receipt。该修复须重新获得独立`P0=0/P1=0`后方可进入N607。
+
+第二轮独立攻击发现，继承的`BASH_ENV`可重定义`printf`并伪造formal F1 dry-run，PATH也可替换用于profile恢复的bash。最终实现只接受平台系统bash的绝对解析路径，并以最小环境运行formal dry-run：固定`PATH=/usr/bin:/bin`，仅保留locale及Windows启动所需系统变量，显式排除`BASH_ENV`、`ENV`、`SHELLOPTS`、`BASHOPTS`、`WSLENV`和`BASH_FUNC_*`。这是Task2最后一轮release-engineering修复；关闭真实入口后，不再以同进程恶意猴补、重复签名或额外authority扩大阻断。
 
 ## 6.预期工件、健康与停止规则
 
