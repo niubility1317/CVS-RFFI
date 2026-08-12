@@ -22,7 +22,7 @@ from cvsrffi import phase1_clic as _clic
 
 
 EXPECTED_BINDING_SCHEMA = "cvs.phase1.clic_leo_binding.v1"
-EXPECTED_TRAINING_RUN_LEAF = "phase1_clic12_20260811_v1"
+EXPECTED_TRAINING_RUN_LEAF = "phase1_clic12_20260812_v5"
 EXPECTED_SCENARIOS = tuple(_clic.FORMAL_LEO_WEAK_SCENARIOS)
 EXPECTED_METHOD = "P1_CLIC"
 

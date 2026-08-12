@@ -143,7 +143,7 @@ existing exact-head输入<code>feat_joint</code>记为<code>z_base</code>。定�
 
 ## 6. Phase1训练权限与C／G公平
 
-训练run ID冻结为<code>phase1_clic12_20260811_v1</code>，候选为<code>F1C_CLIC12</code>至<code>F6G_CLIC12</code>。C／G使用同一GeoSat-C final-only warm start、source fold、local4类顺序、物理batch顺序、seed、sampler、40E、new AdamW、AMP和existing共同<code>L_base</code>。每个source-L训练物理样本只使用existing clean和当批唯一单LEO视图；CLIC不调用信道模拟器，不增加view。
+训练run ID冻结为实际完成且不可覆盖的<code>phase1_clic12_20260812_v5</code>，候选为<code>F1C_CLIC12</code>至<code>F6G_CLIC12</code>。C／G使用同一GeoSat-C final-only warm start、source fold、local4类顺序、物理batch顺序、seed、sampler、40E、new AdamW、AMP和existing共同<code>L_base</code>。每个source-L训练物理样本只使用existing clean和当批唯一单LEO视图；CLIC不调用信道模拟器，不增加view。
 
 C／G均启用CLIC模块并训练全部相同参数；唯一方法变量是<code>operator_mode=raw_phase_control</code>或<code>operator_mode=complex_local_invariant_curvature</code>。所有旧Phase1候选开关和loss权重必须为false／0。U零iterate／zero-forward；V、proxy、held、target、正式unknown、day、fold和scorer均零训练、校准、选择或状态反馈。目标域LEO测试只允许在final checkpoint与预测输出都不可变后执行，不能改变这一训练权限。
 
@@ -217,7 +217,7 @@ bundle不得包含raw／clean IQ、单样本feature／logit、source replay、�
 
 ## 11. 后冻结矩阵与七项非补偿门
 
-后冻结run ID固定为<code>phase1_clic_postfreeze_20260811_v1</code>。保留既有42步：12 source clean export、12 source LEO export／binding、12 fixed400 TX互斥source-proxy和6 same-fold pair；每个pair同时封存C／G两个<code>clic_source_policy_state</code>，不另计步骤。再增加6个G deployment bundle export，并为12个C／G final checkpoint各执行1次封存目标capsule的registered／unknown共同LEO weak零适配推理／隔离评分，总计60步。阶段计数固定为<code>12+12+12+6+6+12=60</code>，不因C control predictor state或target unknown增加训练臂、fold、epoch、checkpoint、bundle阶段或反馈式重试。F6必须重开F1—F5原始source clean／LEO／binding／proxy／checkpoint／bundle、C／G source-policy state和12份target预测／评分原件，不能信任prior pair自报摘要。
+后冻结run ID固定为新的不可覆盖路径<code>phase1_clic_postfreeze_20260812_v1</code>。保留既有42步：12 source clean export、12 source LEO export／binding、12 fixed400 TX互斥source-proxy和6 same-fold pair；每个pair同时封存C／G两个<code>clic_source_policy_state</code>，不另计步骤。再增加6个G deployment bundle export，并为12个C／G final checkpoint各执行1次封存目标capsule的registered／unknown共同LEO weak零适配推理／隔离评分，总计60步。阶段计数固定为<code>12+12+12+6+6+12=60</code>，不因C control predictor state或target unknown增加训练臂、fold、epoch、checkpoint、bundle阶段或反馈式重试。F6必须重开F1—F5原始source clean／LEO／binding／proxy／checkpoint／bundle、C／G source-policy state和12份target预测／评分原件，不能信任prior pair自报摘要。
 
 目标capsule必须在启动前固定<code>protocol_schema=p2_min_v1</code>、<code>capsule_id</code>、<code>split_id</code>、<code>R_t</code>集合SHA、registered-known／unknown TX集合SHA、两种角色合并后的physical-ID集合SHA、三scene物理ID两两不交分区SHA、truth／role-blind scene／seed assignment SHA和received-IQ聚合SHA。CLIC的C／G及六fold共用这些字节；任何checkpoint、operator或运行状态变化不得触发数据重建、数据重验证或重新分scene。offline sealer只复核既有builder／validator receipt并输出IQ-only predictor package与隔离truth sidecar；模型进程只可见opaque token、scene和received-IQ SHA。每个target阶段只允许一次backbone forward／样本，12份输出全部按字节SHA封存并验真后，truth-side scorer才可独立读取标签与角色。每个CLIC predictor state必须从其checkpoint／terminal封存一份不可变candidate训练数据配置原件；共同target package必须从既有cache builder／validator receipt封存一份candidate known-target测试配置原件。prediction artifact必须保存两份原件的路径、原始字节SHA、规范化canonical SHA，并让每个known语义cell绑定同一<code>known_test_config_sha256</code>；scorer只能从已验证prediction读取这些配置，不能接收调用方临时对象。ADV3B02基线不受“与CLIC逐字节同包”约束，但必须由只读生产入口生成<code>cvs.phase1.adv3b02_target_known_reference.v1</code>：它封存checkpoint身份／SHA、规范化训练数据配置／SHA、规范化known-target测试配置／SHA、原始预测或分层指标原件／SHA，以及每个语义cell的fold配置键、scene、receiver／TX／class universe、分子和正分母。reference只需提供target-known比较证据，不得被误要求unknown指标。配置等价或所需cell不完整时，不得进入非劣门。
 
@@ -283,16 +283,16 @@ Phase2旧类support适应继续使用现有合法同公式接口；新类只有�
 |CLIC-10|AMP／图释放|一次正常backward／unscale／step，finite与skip均释放图根|code/cvsrffi/phase1_clic.py、code/SSDG/train_ssdg.py|implemented/local verified|`ssr-gpu`下Task5 trainer单scaled backward／unscale／标准step-update接线、finite／overflow saved-tensor根释放负测及真实C／G有限路径通过|禁gc／empty_cache，下一forward前释放|
 |CLIC-11|receipt终态|scalar／count／SHA-only config、failure、terminal和资源逐batch闭合|code/cvsrffi/phase1_clic.py、code/SSDG/train_ssdg.py|implemented/local verified|`ssr-gpu`下strict warm-start、common实际物理行SHA、resource／AMP／failure及noncircular checkpoint→SHA→strict core→versioned envelope terminal篡改负测通过|严格core可原样重验；外层只绑定checkpoint path／SHA，不存IQ／feature／ID|
 |CLIC-12|训练机械验证|CLI、py_compile、focused测试、help、12臂dry-run和旧机制关闭|test／launcher目标文件|implemented/local verified|`ssr-gpu`下Task5完整CLIC164项、HNCCD／HSCF／RCMMC含postfreeze共享280项、py_compile、help、bash-n、12臂dry-run、diff-check及真实C／G一批动态烟测通过；fresh独立终审P0=0/P1=0|不得以AST替代真实forward；当前NO_N607／NO_PERFORMANCE_RESULT|
-|CLIC-13|训练矩阵|6fold×C／G、40E、固定seed和immutable run root|training launcher／report|pending|本地12臂dry-run和独立审查通过；仅授权后由唯一Runner执行|N607未跑；P2：正式launcher固定seed，但direct CLI seed fail-closed门留待后续，不构成Task5阻塞|
+|CLIC-13|训练矩阵|6fold×C／G、40E、固定seed和immutable run root|training launcher／report|verified|N607 run <code>phase1_clic12_20260812_v5</code>完成12／12 final checkpoint、12／12 terminal和12／12 config receipt；各臂40／40epoch、1200 batch，AMP／effective step／graph release均1200，overflow=0，failure=0|仅为技术训练完成；尚未读取性能|
 |CLIC-14|后冻结七门|sealed60、F6 raw reopen、source-L clean几何、三scene同字节LEO尾部校准、配置匹配ADV3B02非劣、真实unknown三scene70％显式拒识和七项非补偿门|postfreeze目标文件|pending|Task6 source clean／LEO／fixed400 proxy／PAIR／F6原始重开已本地实现并通过53项；target package、配置匹配非劣和真实unknown门仍待Task7—8；每scene×7RX×4class总／正范数行均≥20，global higher-q90/q95只作经验上界；ADV3B02只要求训练／测试配置及指标口径等价，不要求同capsule／同received-IQ字节|V／proxy／target零fit／零阈值；defer不计入70％，无性能补偿|
 |CLIC-15|deployment bundle|6／6真实G checkpoint导出、reload、source-only几何／tail规则和禁止成员闭合|bundle exporter／tests|implemented/local verified|Task6 bundle容器、exact model／CLIC state、source geometry／三scenepolicy、nonfinite／禁止成员、strict state rebuild与单样本reload本地闭合；Task5+6联合217项通过|真实6／6 final checkpoint尚未执行；只存聚合state／规则／SHA，bundle门不等于Phase3|
-|CLIC-16|N607训练|唯一release、launch、监控和小工件回收|N607 runner／automation report|deferred|仅在本地实现、复审、commit后执行|当前未授权启动|
+|CLIC-16|N607训练|唯一release、launch、监控和小工件回收|N607 runner／automation report|verified|唯一Runner完成<code>phase1_clic12_20260812_v5</code>；报告commit <code>d7887f0a</code>，run-owned PID／GPU／SSH均清零|状态为TRAINING_TECHNICALLY_COMPLETE／NO_PERFORMANCE_RESULT；后冻结使用新run ID|
 |CLIC-17|性能与晋级|读取sealed同row性能并作七门判定|主Agent／最终报告|deferred|需ARTIFACTS_COMPLETE后独立分析|当前NO_PERFORMANCE_RESULT|
 |CLIC-18|旧路线去重|八个永久拒绝机制及其它旧loss不得复活或拼接|全实现面|rejected|设计静态排除；实现复审再搜旧identity|非CLIC组成|
 |CLIC-19|SQSF替代案|Sinc频率轴假设与warm-start映射未闭合，本轮不采用|无目标文件|rejected|独立二选一审查|不是性能永久拒绝|
 |CLIC-20|用户目标域补充|每个C／G checkpoint均报告同一封存目标capsule的registered-known DG与registered／unknown单LEO weak盲态开放集指标，并与source-known、source-proxy及配置匹配ADV3B02基线同row封存|code/evaluate_phase1_clic_target_leo.py及postfreeze矩阵|pending|IQ-only package、目标预测SHA、source-frozen规则、隔离scorer、逐scene分子／分母、known错误、unknown显式拒识／defer、ADV3B02配置等价清单／SHA、C／G same-row及zero-feedback负测|ADV3B02不强制同包；真实unknown全体及三scene分别≥70％；单节点确认不等于Phase3协同|
 
-当前追踪计数：verified=6，implemented/local verified=7，pending=3，deferred=2，rejected=2，blocked=0。
+当前追踪计数：verified=8，implemented/local verified=7，pending=3，deferred=0，rejected=2，blocked=0。
 
 最高风险项是CLIC-14／CLIC-20：解析不变性只覆盖全局复增益、常相位和线性CFO，不能保证时变多径下的identity／channel分离；必须同时由source 18个LEO最差切片、封存目标域LEO weak零适配切片和6fold source-proxy双门证伪，不能由本地纯函数测试解除。
 

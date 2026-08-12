@@ -21,7 +21,7 @@ import torch
 from cvsrffi import phase1_clic as _clic
 
 
-EXPECTED_TRAINING_RUN_ID = "phase1_clic12_20260811_v1"
+EXPECTED_TRAINING_RUN_ID = "phase1_clic12_20260812_v5"
 EXPECTED_LV_EXPORT_SCHEMA = "cvs.phase1.clic_lv_export.v1"
 EXPECTED_CHECKPOINT_ROLE = "training_final_only"
 EXPECTED_CHECKPOINT_SELECTION = "final_only"

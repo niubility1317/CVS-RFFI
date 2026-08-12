@@ -42,8 +42,8 @@ HELD_TX = ("tx-held",)
 PROXY_TX = ("tx-proxy",)
 SOURCE_RX = ("rx-0", "rx-1")
 SOURCE_DAYS = ("day-0", "day-1")
-TRAINING_RUN = "phase1_clic12_20260811_v1"
-POSTFREEZE_MATRIX = "phase1_clic_postfreeze_20260811_v1"
+TRAINING_RUN = "phase1_clic12_20260812_v5"
+POSTFREEZE_MATRIX = "phase1_clic_postfreeze_20260812_v1"
 
 
 def _load_clic_core_fixture():
