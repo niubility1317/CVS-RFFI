@@ -74,7 +74,8 @@ def _validate_tcra_row(row: Mapping[str,Any], active: bool) -> None:
         if _sha(row.get(p+'e0_state_sha256'),'E0 state') == _sha(row.get(p+'final_state_sha256'),'final state'): raise D92TCRAHard10RunnerError('fit audit TCRA state did not change')
         counts=[int(_finite(row.get(p+n),n,0)) for n in ('requested_atomic_ascent_count','applied_atomic_ascent_count','generated_atomic_ascent_count','selected_atomic_ascent_count','rejected_atomic_ascent_count','prefix_guard_rejected_count','greedy_step_count')]
         requested,applied,generated,selected,rejected,prefix_rejected,steps=counts
-        if requested!=applied or requested!=selected or generated!=selected+rejected or prefix_rejected>rejected or steps!=selected+prefix_rejected or selected<1 or row.get(p+'aggregate_saturation_count')!=0: raise D92TCRAHard10RunnerError('fit audit TCRA atomic receipt drift')
+        saturation=int(_finite(row.get(p+'aggregate_saturation_count'),'aggregate_saturation_count',0))
+        if requested!=applied or requested!=selected or generated!=selected+rejected or prefix_rejected>rejected or steps!=selected+prefix_rejected or selected<1 or saturation<0 or saturation>rejected: raise D92TCRAHard10RunnerError('fit audit TCRA atomic receipt drift')
         if row.get(p+'modified_state_field_names')!=['coef2_qint8'] or row.get(p+'competitor_code_decrement_count')!=0: raise D92TCRAHard10RunnerError('fit audit TCRA state-field drift')
         for n in ('old_tail_count_by_class','old_tail_gain_by_class'):
             if not isinstance(row.get(p+n),list) or len(row[p+n])!=6: raise D92TCRAHard10RunnerError(f'fit audit {n} drift')

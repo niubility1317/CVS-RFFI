@@ -88,6 +88,28 @@ def test_fit_audit_accepts_active_and_k1_alias(tmp_path: Path, k_shot: int) -> N
     runner._validate_fit_audit(path, k_shot=k_shot)
 
 
+def test_fit_audit_accepts_skipped_saturated_atom_for_active_candidate(
+    tmp_path: Path,
+) -> None:
+    path = tmp_path / "fit_audit.json"
+    row = _row(10)
+    row["d92_e0d_tcra_aggregate_saturation_count"] = 1
+    _write(path, [{**row, "scenario": scene} for scene in runner.SCENES])
+    runner._validate_fit_audit(path, k_shot=10)
+
+
+@pytest.mark.parametrize("saturation", [-1, 3])
+def test_fit_audit_rejects_impossible_saturation_count(
+    tmp_path: Path, saturation: int
+) -> None:
+    path = tmp_path / "fit_audit.json"
+    row = _row(10)
+    row["d92_e0d_tcra_aggregate_saturation_count"] = saturation
+    _write(path, [{**row, "scenario": scene} for scene in runner.SCENES])
+    with pytest.raises(runner.D92TCRAHard10RunnerError):
+        runner._validate_fit_audit(path, k_shot=10)
+
+
 def test_fit_audit_rejects_fallback_for_k_gt_2(tmp_path: Path) -> None:
     path = tmp_path / "fit_audit.json"
     row = _row(10)
