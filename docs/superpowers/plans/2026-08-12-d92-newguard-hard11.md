@@ -100,3 +100,12 @@
 - [ ] Apply strict verdict: any one of the eight mean directions wrong is `REJECT_ROUTE`; all eight positive but below magnitude is `REVISE_ONCE`; all magnitude/stability/resource gates pass is `ADVANCE_TO_TARGET125_CANDIDATE`.
 - [ ] Update both report copies and every traceability row with direct verification evidence; run a requirement-by-requirement reverse audit.
 - [ ] Commit the result report. Do not launch Target125 automatically.
+
+## 终态记录（2026-08-12）
+
+- Task1–Task5均已执行；v1/v2在真实K>2 smoke处技术停止，v3完成11job、33scene-arm、8shard及truth-last分析。
+- v3运行的是后来引入的20档量化回缩变体；终态独立审计发现它违反本计划“单一max-min候选、任何保护失败即E0”的冻结定义，且deployment pass遗漏三项闭包量。
+- 纠偏实现已恢复单一预注册强度，删除多强度搜索，并把部署态Xnew残差、旧类组零和及包络等式纳入core、Slim、Query和runner硬门。
+- 对v3不可变artifact按原method-lock兼容读取、以纠正后的严格门重算：八项相对E0均为0；30个same-outer/same-scene资源配对的wall中位比1.74784、p90 179.172ms、peak最大增量5,951,488字节；唯一裁决`REJECT_ROUTE`。
+- 因严格Pareto必要条件失败，不允许`REVISE_ONCE`，不运行Target125，也不再为NewGuard调整强度或容差。
+- 终态纠偏Git commit：`8ec37964`；NewGuard聚焦`146 passed`，相邻E0OCF/FloorBoost`51 passed`，独立终审`APPROVE / P0=0 / P1=0`。

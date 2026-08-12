@@ -12,7 +12,7 @@
 |轮次|方法|合法性能或部署结果|资源结果|结论|
 |---|---|---|---|---|
 |1|`E0_FULL_MAXMIN_FLOORBOOST`|相对E0：old floor`+10.3333pp`、old BA`+2.9444pp`、forgetting`-2.9444pp`；但seen-new`-12.1583pp`、H`-6.0634pp`、new→old`+17.4667pp`|wall中位数`142.708ms`、P90`199.324ms`、配对中位倍率`1.907×`|旧类整体bias把old-vs-new边界推向旧类；拒绝该机制及其系数扫描|
-|2|`E0_FULL_BIDIRECTIONAL_NEWGUARD_MAXMIN`|10/10 performance outer均active且部署头非E0字节，但八项与E0全部精确tie；安全扰动没有改变最终类别决策|wall P90`175.999ms`、相对E0 P90倍率`1.856×`；query/state精确相等|连续扰动加多轮D42回缩既慢又无决策效应；拒绝该路线|
+|2|`E0_FULL_BIDIRECTIONAL_NEWGUARD_MAXMIN`|10/10 performance outer均active且部署头非E0字节，但八项与E0全部精确tie；安全扰动没有改变最终类别决策|终态30个same-outer/same-scene资源配对：wall P90`179.172ms`、配对中位比`1.74784×`、peak最大增量`5,951,488`字节；query/state精确相等|连续扰动加多轮D42回缩既慢又无决策效应；拒绝该路线|
 |3|`E0_FULL_BLOCK_PARETO_DISTILL`|真实K10 smoke三场景中，连续唯一候选经D42后均与E0完整头byte-exact并回退；正式score为0|smoke诊断wall中位数`280.772ms`、P90`283.718ms`、peak最大`15,040,512B`；实际fit=2|双fit连续蒸馏无法跨越D42格点且明显超资源；拒绝该路线|
 
 ## 3.保留与否决的科学结论
@@ -38,4 +38,3 @@
 - FloorBoost：`E:\type10-7\local_artifacts\d92_e0_full_maxmin_floorboost_hard11_20260812_v1\analysis`。
 - NewGuard v3：`E:\type10-7\local_artifacts\d92_e0_full_bidirectional_newguard_hard11_20260812_v3\analysis`。
 - Pareto Distill：`E:\type10-7\local_artifacts\d92_e0_full_block_pareto_distill_hard11_20260812_v1`。
-

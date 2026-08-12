@@ -6,7 +6,7 @@
 
 1. `E0_FULL_ONLY`是唯一正式基线。当前Hard10均值：`H=73.3472%`、`old BA=74.8611%`、`c_old_acc=74.8611%`、`old floor=44.8333%`、`seen_new_acc=72.0333%`、`forgetting=12.9167%`、`new_to_old=15.0417%`、`old_to_new=15.3333%`。
 2. FloorBoost证明单向抬旧类可以改善old floor和遗忘，但代价过大：相对E0，old floor`+10.3333pp`、forgetting`-2.9444pp`，同时seen-new`-12.1583pp`、H`-6.0634pp`。因此禁止再次采用纯旧类bias、纯old-contrast增强或“保旧优先、再看新类”的串行方案。
-3. NewGuard v3在10/10难例均成功激活且无fallback，但八项相对E0全部为`0.0000pp`；注册wall p90为`175.999ms`、相对E0为`1.856×`。因此禁止继续微调NewGuard尺度、放宽保护容差或使用多轮codec回缩；“头字节改变但决策不变”视为无效路线。
+3. NewGuard v3在10/10难例均成功激活且无fallback，但八项相对E0全部为`0.0000pp`；终态30个same-outer/same-scene资源配对的注册wall p90为`179.172ms`、配对中位比为`1.74784×`、peak最大增量为`5,951,488`字节。因此禁止继续微调NewGuard尺度、放宽保护容差或使用多轮codec回缩；“头字节改变但决策不变”视为无效路线。
 4. 同一Hard10上的历史D92 FULL五项方向优于E0：H约`+0.8201pp`、old acc约`+1.2778pp`、old floor约`+3.6667pp`、seen-new约`+0.3417pp`、forgetting约`-1.2778pp`。这只作为机制方向证据，不能代替八项正式结果；优先研究如何以更低注册成本恢复D92中FULL/BLOCK互补几何的有效部分。
 
 ## 二、首选科学假设
