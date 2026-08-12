@@ -5,7 +5,7 @@
 - 实验ID：`phase1_clic12_20260811_v1`
 - 预注册时间：2026-08-12（Asia/Hong_Kong）
 - 操作方：Codex主控；N607唯一runner待交接
-- 当前状态：`LOCAL_VERIFIED / PREREGISTERED / NOT_LAUNCHED`
+- 当前状态：`LOCAL_VERIFIED / READY_TO_LAUNCH / NOT_LAUNCHED`
 - 目标：在冻结的六折source-only Phase1矩阵上训练CLIC对照臂C与机制臂G，为后续clean、三种LEO weak、source-proxy unknown和目标域盲态评测生成12份真实final checkpoint与严格训练回执。
 - 假设：固定lag集合`{1,2,4,8}`的多尺度三点复曲率token，在不改变训练数据、主干、分类头、损失、优化器、epoch和物理批顺序的前提下，可能改善LEO weak下的身份域泛化和source-only未知能量几何。
 - 对照：C=`raw_phase_control`；G=`complex_local_invariant_curvature`。两臂仅token算子不同。
