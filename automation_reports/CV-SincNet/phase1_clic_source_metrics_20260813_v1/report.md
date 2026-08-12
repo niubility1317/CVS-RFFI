@@ -49,3 +49,32 @@
 - 修复：`_ImmutablePublication`现封存临时文件写完并`fsync`后的SHA；`os.link`前核临时身份和该SHA，最终NPZ及receipt的每次发布后核验均与此预封SHA比较。发布后不得以路径当前内容重新建立基线。
 - 清理边界：最终已发布工件只在身份和预封SHA都一致时删除；若检测到同inode原地篡改则保留可疑外部内容。仅本方已经成功独占创建、但尚未形成可封SHA的临时文件，在写入异常时按身份清理，避免遗留`.tmp`永久阻塞下一次安全运行。
 - GREEN：同inode有效NPZ篡改、同inodereceipt篡改和写中途异常临时清理均通过；完整Task1聚焦测试现为`19/19`。这仍是本地工件完整性修复，未运行N607或产生任何性能结果。
+
+## Task2本地实现：source-V单次forward与同checkpoint指标
+
+- 当前状态：`LOCAL_VERIFIED / NO_PERFORMANCE_RESULT`。本节实现本地file-only前向与评分器；尚未运行N607、同步文件、读取目标工件或产生任何性能数值。
+- 新增工件：`code/export_phase1_clic_source_v_leo_features.py`和`code/evaluate_phase1_clic_source_metrics.py`。前者对每个`F*{C,G}_CLIC12`只消费同fold的`source_validation_known_leo_weak`缓存；后者只消费两臂冻结的clean-v4、V-forward、PAIR-v3和terminal/checkpoint收据。
+- forward重新打开training-v5最终checkpoint、terminal receipt、同臂clean-v4 metadata/manifest、Task1 V缓存/receipt与PAIR-v3。clean-v4仅通过Task1已有metadata-only重开器验证L/V/proxy物理互斥和held-V身份，不读取或评分source-L/proxy特征行。
+- source-V缓存与clean-v4须同时满足同一V索引SHA、V完整metadata顺序SHA，以及逐行TX/RX/day/sig一致；forward负载再逐行绑定缓存的TX/RX/day/physical/scene，`raw_labels`必须等于冻结local4类别顺序。任何TOCTOU、非有限数、重复physical ID、类顺序、轴或场景错位均失败关闭。
+- PAIR-v3只读复用既有source-L geometry/tail policy和fixed400 proxy诊断。每个场景policy必须与PAIR的`single_leo_common_binding`的received-IQ/physical-order SHA一致；所有V/proxy指标路径均保持`fit_rows=0`与`threshold_fit_rows=0`。
+- V前向使用单个固定received-IQ DataLoader，`shuffle=false`、`satellite_tta_policy=none`、`received_existing`，每个physical ID恰好一次。进入Torch和返回NumPy都使用安全buffer/list桥接，不调用`torch.from_numpy`或`Tensor.numpy`。
+- feature NPZ和binding、fold pair metrics receipt以及six-fold aggregate receipt都使用Task1的预封SHA、同目录无覆盖发布和发布后identity/SHA核验；所有新receipt均写入`POST_TARGET_COMPLETION_AUDIT_NON_SELECTION`，不能用于训练、阈值、选择、重试、复活或晋级。
+
+## 指标与门禁合同
+
+| 切片 | 正确性 | 封存字段 |
+|---|---|---|
+| clean-V | 唯一local4`argmax(tx_logits)==truth` | overall、macro、class/RX/day原始correct/denominator、四个minimum floor |
+| 每个LEO场景V | `decision=registered`且冻结local4预测等于truth；`unknown`/`defer`均计错 | 与clean-V相同的原始cells/floors及known unknown/defer错误计数 |
+| proxy | 仅PAIR-v3的`AUROC_unknown`、`u_gap` | C/G双侧零fit/threshold，要求`delta_AUROC>0`和`delta_u_gap>0` |
+
+- 每fold的clean及三个formal scene均逐项检查overall/min-class/min-RX/min-day的`G-C>=-2pp`。
+- 每fold的三scene等权overall以及完整`6×3=18`scene等权overall均要求`>=-2pp`。原始axis分子/分母必须各自回加到overall，不能由不一致或零分母的cell补偿。
+- gate不通过只返回`passed=false`，不会触发重试或停止；该source证据也不能补偿已失败的target-real-unknown门。
+
+## Task2测试与本地验证
+
+- RED已在生产API缺失时记录为`ModuleNotFoundError: evaluate_phase1_clic_source_metrics`；随后每个新增绑定、原始axis一致性、非整数标签、cache/clean身份和PAIR policy/common-binding负例均先观察到失败，再最小实现GREEN。
+- 当前聚焦：`python -m pytest -q code/tests/test_phase1_clic_source_metrics.py`通过`17/17`。覆盖cache/receipt哈希漂移、target访问标志、V-only角色、单physical单forward、旧Torch/NumPy桥接禁止、非有限和非整数输入、known unknown/defer计错、零分母/角色/scene复用、clean/cache/feature元数据绑定、每fold/全18门禁、严格proxy增益、CLI`--help`，以及pair-score编排中的每臂clean-v4 SHA传递和不可覆盖输出。
+- 受影响回归：`python -m pytest -q code/tests/test_phase1_clic_postfreeze.py code/tests/test_phase1_clic_common_receipt_export.py`全绿；仅保留既有PyTorch`autocast`弃用警告。
+- 静态验证：新模块`py_compile`、两份CLI`--help`和`git diff --check`均通过。当前没有N607运行、目标访问或性能结果。
