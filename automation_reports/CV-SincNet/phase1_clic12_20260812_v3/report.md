@@ -3,7 +3,7 @@
 ## 1. 状态
 
 - 实验ID：`phase1_clic12_20260812_v3`
-- 当前状态：`LOCAL_VERIFIED / PREREGISTERED / NOT_LAUNCHED`
+- 当前状态：`LANDED / REMOTE_STATIC_VERIFIED / READY_TO_LAUNCH`
 - 本轮是发布工程第二次且最后一次修复后的独立one-shot入口；不得恢复v1/v2，也不得在v3失败后继续堆叠launcher修补。
 - v1：argparse布尔参数缺陷，12/12训练前退出，`NO_PERFORMANCE_RESULT`。
 - v2：修复布尔解析后，12/12在数据构建前因缺少proxy-unknown TX集合退出，12份failure receipt、0 checkpoint，`NO_PERFORMANCE_RESULT`。
@@ -50,8 +50,8 @@ GPU映射不变：0=`F1C,F5G`；1=`F1G,F5C`；2=`F2C,F6G`；3=`F2G,F6C`；4=`F3C
 
 ## 6. 运行回填
 
-- archive SHA/bytes：待runner
-- SCP/launch次数：待runner
-- release静态门：待runner
+- archive SHA/bytes：`DE1E9CBA4D216DE8996467AA1A952BB4AC02609B1F05D9234396900DE61542CA`，266854400 bytes；SCP=1，远端SHA/bytes闭合。
+- SCP/launch次数：SCP=1，launch待执行且retry=NO。
+- release静态门：远端py_compile、`train_ssdg.py --help`、`bash -n`、真实parser12/12、TX分区4+1+1六TX闭合、12行dry-run（C6/G6、`lambda_sat_cons=0.10`）及无pycache通过。
 - PID/GPU/日志首波：待runner
 - 最终状态：待runner
